@@ -1,168 +1,159 @@
-Return-Path: <linux-btrfs+bounces-8797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955CD998AEE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:06:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9112C998B22
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:14:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C551A1C24289
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:06:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE9FEB381D9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:06:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E50E1CEAD6;
-	Thu, 10 Oct 2024 15:01:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86141CF281;
+	Thu, 10 Oct 2024 15:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YvKiIlsB";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YvKiIlsB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53211CEAB3;
-	Thu, 10 Oct 2024 15:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174631CEAB3;
+	Thu, 10 Oct 2024 15:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728572509; cv=none; b=E6OFWHMCzLdGTPnrDK04qmHIrMSfxKYF6UcyzElsxN9zQ1csCC/siFuPIGkCq/+6cT6OvPdYibKQd6+BPx/KLD2M4XLviM02B2UCs6r3SpY+I6EoQWIyFIsI1gGl3uC1d/SpQ5CnuKTaL0q9Q0EIj+P2MIJgCMj6yIn4ni+0Wow=
+	t=1728572525; cv=none; b=ICJ/bXMyFEbJvVY2OELczaS1GhzrIYdNZV0TSBva13T7ZlBawb8FJxxdQXcq6izaVWSwcTQ3tfIqYgMIEk7EA3AN+Wq8ufAYXs5YEPPC7IzxXM+s5rhO/HolHnyEDtTCY2NiaX0NyWyFVg5sQInZ5E7MGGklaiPcSD5zFiNAEMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728572509; c=relaxed/simple;
-	bh=LzsG5zy+onTdkegSw8IXtWNghv1bv/fmdCElJ/2wVQ8=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rQRIqtGQiNKAO6YXoqh8Y189+Fc2Vrb/DtJVn5sKp65SiX6uN/GROXFFrrGvOnoI7AFtfWlvHdVDpeZTutvez+wo7TZPUgG2V9V6rWppYQ/f9cPLv7xG60pN6nQfKs00x0tefR9vDme5IJb8Ne6WByhGUkXU5rD00cBtK7OBzas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XPXsv3xj1z6J7tq;
-	Thu, 10 Oct 2024 22:57:23 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 745C7140CF4;
-	Thu, 10 Oct 2024 23:01:44 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 10 Oct
- 2024 17:01:43 +0200
-Date: Thu, 10 Oct 2024 16:01:42 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 22/28] cxl/region/extent: Expose region extent
- information in sysfs
-Message-ID: <20241010160142.00005a5c@Huawei.com>
-In-Reply-To: <20241007-dcd-type2-upstream-v4-22-c261ee6eeded@intel.com>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
-	<20241007-dcd-type2-upstream-v4-22-c261ee6eeded@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1728572525; c=relaxed/simple;
+	bh=R3lTl2iaXolcH9id3gL2csQ4+YyBwcG0jNSPApUumv0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jkn+fHP1EbzZjCTttXU1r3WmGRiIop/9jxg80ot+EyZQPSZrryfKp9AUKIFEUVKHi53RvIfMnhkJvjvqrE6YJA/CpEsSBj6fbXmMSM6ElLfHhDoLZ09/KSOLFG6nmbzXxpJ/+fjhW9PBISKZoNM3n4nMsrnyT1/jm0FUg56PPxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YvKiIlsB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YvKiIlsB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 132791F7FA;
+	Thu, 10 Oct 2024 15:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728572522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ZM7HeuFpavIdZER+cohvEsb87S5cGATsj8ndPgJnlmM=;
+	b=YvKiIlsBIcVA7Sjm9i7EthnJf+QGIcZBKQ/0cT5eJX5NepvR3d4/sC9e0TvaLhF8S6vyuA
+	s/9N40k6tp+L8dq6BIAG3by44xct3Cc5YYQbv6J693QU4EkKGhOxGmmqUG7WpC25xhQQeU
+	pzSiBNFzLeK2Qfd+hwqV97CgzZj2CGg=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=YvKiIlsB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728572522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ZM7HeuFpavIdZER+cohvEsb87S5cGATsj8ndPgJnlmM=;
+	b=YvKiIlsBIcVA7Sjm9i7EthnJf+QGIcZBKQ/0cT5eJX5NepvR3d4/sC9e0TvaLhF8S6vyuA
+	s/9N40k6tp+L8dq6BIAG3by44xct3Cc5YYQbv6J693QU4EkKGhOxGmmqUG7WpC25xhQQeU
+	pzSiBNFzLeK2Qfd+hwqV97CgzZj2CGg=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 087E713A6E;
+	Thu, 10 Oct 2024 15:02:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +rPRAWrsB2c+cwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Thu, 10 Oct 2024 15:02:02 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.12-rc3
+Date: Thu, 10 Oct 2024 17:01:57 +0200
+Message-ID: <cover.1728571063.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 132791F7FA
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Mon, 07 Oct 2024 18:16:28 -0500
-ira.weiny@intel.com wrote:
+Hi,
 
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Extent information can be helpful to the user to coordinate memory usage
-> with the external orchestrator and FM.
-> 
-> Expose the details of region extents by creating the following
-> sysfs entries.
-> 
->         /sys/bus/cxl/devices/dax_regionX/extentX.Y
->         /sys/bus/cxl/devices/dax_regionX/extentX.Y/offset
->         /sys/bus/cxl/devices/dax_regionX/extentX.Y/length
->         /sys/bus/cxl/devices/dax_regionX/extentX.Y/tag
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-Trivial comments inline.
+please pull a few more fixes, thanks.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+- update fstrim loop and add more cancellation points, fix reported
+  delayed or blocked suspend if there's a huge chunk queued
 
-> ---
-> Changes:
-> [djiang: Split sysfs docs up]
-> [iweiny: Adjust sysfs docs dates]
-> ---
->  Documentation/ABI/testing/sysfs-bus-cxl | 32 ++++++++++++++++++
->  drivers/cxl/core/extent.c               | 58 +++++++++++++++++++++++++++++++++
->  2 files changed, 90 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> index b63ab622515f..64918180a3c9 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-cxl
-> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> @@ -632,3 +632,35 @@ Description:
->  		See Documentation/ABI/stable/sysfs-devices-node. access0 provides
->  		the number to the closest initiator and access1 provides the
->  		number to the closest CPU.
-> +
-> +What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/offset
-> +Date:		December, 2024
-> +KernelVersion:	v6.13
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) [For Dynamic Capacity regions only] Users can use the
-> +		extent information to create DAX devices on specific extents.
-> +		This is done by creating and destroying DAX devices in specific
-> +		sequences and looking at the mappings created. 
+- fix error handling in recent qgroup xarray conversion
 
-Similar to earlier patch, maybe put this doc for the directory, then
-have much less duplication?
+- in zoned mode, fix warning printing device path without RCU protection
 
+- again fix invalid extent xarray state (6252690f7e1b), lost due to
+  refactoring
 
-> Extent offset
-> +		within the region.
-> +
-> +What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/length
-> +Date:		December, 2024
-> +KernelVersion:	v6.13
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) [For Dynamic Capacity regions only] Users can use the
-> +		extent information to create DAX devices on specific extents.
-> +		This is done by creating and destroying DAX devices in specific
-> +		sequences and looking at the mappings created.  Extent length
-> +		within the region.
-> +
-> +What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/tag
-> +Date:		December, 2024
-> +KernelVersion:	v6.13
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) [For Dynamic Capacity regions only] Users can use the
-> +		extent information to create DAX devices on specific extents.
-> +		This is done by creating and destroying DAX devices in specific
-> +		sequences and looking at the mappings created.  Extent tag.
+----------------------------------------------------------------
+The following changes since commit d6e7ac65d4c106149d08a0ffba39fc516ae3d21b:
 
-Maybe say we are treating it as a UUID?
+  btrfs: disable rate limiting when debug enabled (2024-10-01 19:29:41 +0200)
 
-> diff --git a/drivers/cxl/core/extent.c b/drivers/cxl/core/extent.c
-> index 69a7614ba6a9..a1eb6e8e4f1a 100644
-> --- a/drivers/cxl/core/extent.c
-> +++ b/drivers/cxl/core/extent.c
-> @@ -6,6 +6,63 @@
+are available in the Git repository at:
 
-> +static struct attribute *region_extent_attrs[] = {
-> +	&dev_attr_offset.attr,
-> +	&dev_attr_length.attr,
-> +	&dev_attr_tag.attr,
-> +	NULL,
-No need for trailing comma (one of my 'favourite' review comments :)
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc2-tag
 
-> +};
+for you to fetch changes up to e761be2a0744086fc4793a4870d4b5746b7fe8cd:
+
+  btrfs: fix clear_dirty and writeback ordering in submit_one_sector() (2024-10-09 13:23:51 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (2):
+      btrfs: fix missing error handling when adding delayed ref with qgroups enabled
+      btrfs: zoned: fix missing RCU locking in error message when loading zone info
+
+Luca Stefani (2):
+      btrfs: split remaining space to discard in chunks
+      btrfs: add cancellation points to trim loops
+
+Naohiro Aota (1):
+      btrfs: fix clear_dirty and writeback ordering in submit_one_sector()
+
+ fs/btrfs/delayed-ref.c      | 42 +++++++++++++++++++++++++++++++++---------
+ fs/btrfs/extent-tree.c      | 26 +++++++++++++++++++++-----
+ fs/btrfs/extent_io.c        | 14 +++++++-------
+ fs/btrfs/free-space-cache.c |  4 ++--
+ fs/btrfs/free-space-cache.h |  6 ++++++
+ fs/btrfs/volumes.h          |  6 ++++++
+ fs/btrfs/zoned.c            |  2 +-
+ 7 files changed, 76 insertions(+), 24 deletions(-)
 
