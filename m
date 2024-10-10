@@ -1,159 +1,160 @@
-Return-Path: <linux-btrfs+bounces-8798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8799-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9112C998B22
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:14:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B507B998B03
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE9FEB381D9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:06:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B5071F24561
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86141CF281;
-	Thu, 10 Oct 2024 15:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YvKiIlsB";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YvKiIlsB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F197E1CCEFC;
+	Thu, 10 Oct 2024 15:06:56 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174631CEAB3;
-	Thu, 10 Oct 2024 15:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFA11C3F28;
+	Thu, 10 Oct 2024 15:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728572525; cv=none; b=ICJ/bXMyFEbJvVY2OELczaS1GhzrIYdNZV0TSBva13T7ZlBawb8FJxxdQXcq6izaVWSwcTQ3tfIqYgMIEk7EA3AN+Wq8ufAYXs5YEPPC7IzxXM+s5rhO/HolHnyEDtTCY2NiaX0NyWyFVg5sQInZ5E7MGGklaiPcSD5zFiNAEMI=
+	t=1728572816; cv=none; b=hdQRVUFDUaDp2eD5K43w+jDzQ7Gy3WdlOEtUgFFQ1uxWKujFM+37E2/xZflEMWbD5lA1HyD0lbACs2exVGbWxXcquIUedjoJeUNbzmK1aLJMbStelck02pD7oJPJZ2Qf5MeKDQ6fAkEnewnEVAS3Xo8EO2X1TTGuL5Do+tt1sLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728572525; c=relaxed/simple;
-	bh=R3lTl2iaXolcH9id3gL2csQ4+YyBwcG0jNSPApUumv0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jkn+fHP1EbzZjCTttXU1r3WmGRiIop/9jxg80ot+EyZQPSZrryfKp9AUKIFEUVKHi53RvIfMnhkJvjvqrE6YJA/CpEsSBj6fbXmMSM6ElLfHhDoLZ09/KSOLFG6nmbzXxpJ/+fjhW9PBISKZoNM3n4nMsrnyT1/jm0FUg56PPxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YvKiIlsB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YvKiIlsB; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 132791F7FA;
-	Thu, 10 Oct 2024 15:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728572522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ZM7HeuFpavIdZER+cohvEsb87S5cGATsj8ndPgJnlmM=;
-	b=YvKiIlsBIcVA7Sjm9i7EthnJf+QGIcZBKQ/0cT5eJX5NepvR3d4/sC9e0TvaLhF8S6vyuA
-	s/9N40k6tp+L8dq6BIAG3by44xct3Cc5YYQbv6J693QU4EkKGhOxGmmqUG7WpC25xhQQeU
-	pzSiBNFzLeK2Qfd+hwqV97CgzZj2CGg=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=YvKiIlsB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728572522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ZM7HeuFpavIdZER+cohvEsb87S5cGATsj8ndPgJnlmM=;
-	b=YvKiIlsBIcVA7Sjm9i7EthnJf+QGIcZBKQ/0cT5eJX5NepvR3d4/sC9e0TvaLhF8S6vyuA
-	s/9N40k6tp+L8dq6BIAG3by44xct3Cc5YYQbv6J693QU4EkKGhOxGmmqUG7WpC25xhQQeU
-	pzSiBNFzLeK2Qfd+hwqV97CgzZj2CGg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 087E713A6E;
-	Thu, 10 Oct 2024 15:02:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +rPRAWrsB2c+cwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Thu, 10 Oct 2024 15:02:02 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.12-rc3
-Date: Thu, 10 Oct 2024 17:01:57 +0200
-Message-ID: <cover.1728571063.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1728572816; c=relaxed/simple;
+	bh=BIketMS89atT45B0z2jQqiv1qI4m4Qy8CNbnnPp7YsI=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QfxQjFqY1h0KWCMQ5ycQEe1D1GHVbRw8+Pdeb2Q6EFzwCPR1axEs+9fIF5EOlYOwPeMaXtzqfHxBNBhXKzVuw+/Cs7WHZpDpMm2Z/7+oFd2Mzp5sF56wxj8jicoJ0tBg8fYSqNp3G5W5dBKz7iKncW40/lYR1OQlYWNPR1d07R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XPY4Q18TLz6HJy8;
+	Thu, 10 Oct 2024 23:06:30 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0D343140A36;
+	Thu, 10 Oct 2024 23:06:51 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 10 Oct
+ 2024 17:06:50 +0200
+Date: Thu, 10 Oct 2024 16:06:49 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
+ Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 23/28] dax/bus: Factor out dev dax resize logic
+Message-ID: <20241010160649.00007941@Huawei.com>
+In-Reply-To: <20241007-dcd-type2-upstream-v4-23-c261ee6eeded@intel.com>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+	<20241007-dcd-type2-upstream-v4-23-c261ee6eeded@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 132791F7FA
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-Hi,
+On Mon, 07 Oct 2024 18:16:29 -0500
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-please pull a few more fixes, thanks.
+> Dynamic Capacity regions must limit dev dax resources to those areas
+> which have extents backing real memory.  Such DAX regions are dubbed
+> 'sparse' regions.  In order to manage where memory is available four
+> alternatives were considered:
+> 
+> 1) Create a single region resource child on region creation which
+>    reserves the entire region.  Then as extents are added punch holes in
+>    this reservation.  This requires new resource manipulation to punch
+>    the holes and still requires an additional iteration over the extent
+>    areas which may already have existing dev dax resources used.
+> 
+> 2) Maintain an ordered xarray of extents which can be queried while
+>    processing the resize logic.  The issue is that existing region->res
+>    children may artificially limit the allocation size sent to
+>    alloc_dev_dax_range().  IE the resource children can't be directly
+>    used in the resize logic to find where space in the region is.  This
+>    also poses a problem of managing the available size in 2 places.
+> 
+> 3) Maintain a separate resource tree with extents.  This option is the
+>    same as 2) but with the different data structure.  Most ideally there
+>    should be a unified representation of the resource tree not two places
+>    to look for space.
+> 
+> 4) Create region resource children for each extent.  Manage the dax dev
+>    resize logic in the same way as before but use a region child
+>    (extent) resource as the parents to find space within each extent.
+> 
+> Option 4 can leverage the existing resize algorithm to find space within
+> the extents.  It manages the available space in a singular resource tree
+> which is less complicated for finding space.
+> 
+> In preparation for this change, factor out the dev_dax_resize logic.
+> For static regions use dax_region->res as the parent to find space for
+> the dax ranges.  Future patches will use the same algorithm with
+> individual extent resources as the parent.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+> Changes:
+> [Jonathan: Fix handling of alloc]
 
-- update fstrim loop and add more cancellation points, fix reported
-  delayed or blocked suspend if there's a huge chunk queued
+Trivial comments inline.
+Not an area I know much about, so treat this one as a 'smells ok'
+type of tag.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-- fix error handling in recent qgroup xarray conversion
 
-- in zoned mode, fix warning printing device path without RCU protection
 
-- again fix invalid extent xarray state (6252690f7e1b), lost due to
-  refactoring
+> +
+> +static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> +		struct dev_dax *dev_dax, resource_size_t size)
+> +{
+> +	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+	resource_size_t to_alloc;
 
-----------------------------------------------------------------
-The following changes since commit d6e7ac65d4c106149d08a0ffba39fc516ae3d21b:
+on it's own line.  That was hard to spot all the way over there.
+Obviously this was in original code, but maybe slip a tidy up in whilst
+you are moving it?
 
-  btrfs: disable rate limiting when debug enabled (2024-10-01 19:29:41 +0200)
+> +	resource_size_t dev_size = dev_dax_size(dev_dax);
+> +	struct device *dev = &dev_dax->dev;
+> +	resource_size_t alloc;
+> +
+> +	if (dev->driver)
+> +		return -EBUSY;
+> +	if (size == dev_size)
+> +		return 0;
+> +	if (size > dev_size && size - dev_size > avail)
+> +		return -ENOSPC;
+> +	if (size < dev_size)
+> +		return dev_dax_shrink(dev_dax, size);
+> +
+> +	to_alloc = size - dev_size;
+> +	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+> +			"resize of %pa misaligned\n", &to_alloc))
+> +		return -ENXIO;
+> +
+> +retry:
+> +	alloc = dev_dax_resize_static(&dax_region->res, dev_dax, to_alloc);
+> +	if (alloc <= 0)
+> +		return alloc;
+>  	to_alloc -= alloc;
+>  	if (to_alloc)
+>  		goto retry;
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc2-tag
-
-for you to fetch changes up to e761be2a0744086fc4793a4870d4b5746b7fe8cd:
-
-  btrfs: fix clear_dirty and writeback ordering in submit_one_sector() (2024-10-09 13:23:51 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (2):
-      btrfs: fix missing error handling when adding delayed ref with qgroups enabled
-      btrfs: zoned: fix missing RCU locking in error message when loading zone info
-
-Luca Stefani (2):
-      btrfs: split remaining space to discard in chunks
-      btrfs: add cancellation points to trim loops
-
-Naohiro Aota (1):
-      btrfs: fix clear_dirty and writeback ordering in submit_one_sector()
-
- fs/btrfs/delayed-ref.c      | 42 +++++++++++++++++++++++++++++++++---------
- fs/btrfs/extent-tree.c      | 26 +++++++++++++++++++++-----
- fs/btrfs/extent_io.c        | 14 +++++++-------
- fs/btrfs/free-space-cache.c |  4 ++--
- fs/btrfs/free-space-cache.h |  6 ++++++
- fs/btrfs/volumes.h          |  6 ++++++
- fs/btrfs/zoned.c            |  2 +-
- 7 files changed, 76 insertions(+), 24 deletions(-)
 
