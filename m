@@ -1,167 +1,190 @@
-Return-Path: <linux-btrfs+bounces-8771-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8772-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8702D997CBC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 07:52:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CAE7997CBD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 07:56:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2225428446D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 05:52:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBE39B23833
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 05:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAAE19DF9A;
-	Thu, 10 Oct 2024 05:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D3C19DF9A;
+	Thu, 10 Oct 2024 05:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="SQ8d8L2/";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="YraQf7Z7"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="OZ/dEKY5";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="GY9KGx6J"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E7F18C03D
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 05:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3706818C03D
+	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 05:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728539523; cv=fail; b=GuQ3kTCRiSeQntnJFYXSy4T2w9VjAI1fCBX7vbiI6kUNiVcHcjmZdoFfGcyd2WIyX8m3p5xHgyrlWx7GXdy+jO3p3qOCWFQ+G7QuxVjw5h6F7r4JWdWSBy4x6Huowd4eN5wKops3T8Fj8rA4Ngf7zD88JjX4ODEnDwOiVjkFJ+M=
+	t=1728539751; cv=fail; b=ntBBivPiD0GNkQI3JIFxfl3F3QRg7NUx+PBmH/b6C6LlQUyqgPirz6LP/LP7qSIBcbH9PEvGANMTlv2d+K//hBFEMYxfJ4Of0Sbb+KgP3IccmXpYfC1ox6b6LYQSGWmnoEtcQUNuUbMgkY2Lr5dUswuhcUMahmww+TDJZ2VecSM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728539523; c=relaxed/simple;
-	bh=D6C55zs/K538auYUQ42zAx7uhqdvg5XfrG1LoZu5L68=;
+	s=arc-20240116; t=1728539751; c=relaxed/simple;
+	bh=xjb9Toqo/uMe2G/gd16Q7jLIhxWsMefeyR0RawnIZHY=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=IoubRhS4pB2LiAHU3lBQDUmUGckU9RLdEv1PXVtnOdKurNS65Ehj6A2mqccMUYvX894ynAOjpstB35b2p4dyJFvirx+u1f/f2WJffjmNxg9xik7QvCBCUvZWldw5uj6QZTra9ofnUUKt5pQyE1Ew0K5llWMYQu5Zn2tguE90PpU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=SQ8d8L2/; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=YraQf7Z7; arc=fail smtp.client-ip=216.71.153.141
+	 Content-Type:MIME-Version; b=gjFQhGGbozUCQfqaf5AxxC9wDdKdd7wSO5at6OulHM5AvBY39VOhwhkr1k8YEG6duoo2o5hDdzFfB8N6kRIrEk821he4yHgMBTRW5gyMLXjzeD3yr9J8ab0tdjHwppd5Ao9cz+wVIlXvWPC85NvrIlxCeDUmc5o086CnqWmzwXg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=OZ/dEKY5; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=GY9KGx6J; arc=fail smtp.client-ip=216.71.153.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1728539522; x=1760075522;
+  t=1728539749; x=1760075749;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-id:content-transfer-encoding:
    mime-version;
-  bh=D6C55zs/K538auYUQ42zAx7uhqdvg5XfrG1LoZu5L68=;
-  b=SQ8d8L2/tF+prQTvOeI340Q2ascpXU7fOxlyvsoJzGCeaFkynnessOcr
-   HOov2x7iz4Z/v053AP2E2aAPXySokSG77p7qicrUWAqoxfiGwXYupwvAY
-   tqzjobI+RtKK/BIfbvT3YQzRZOCCP4ewdcLdlW/4vzEdr9JcPN3A/KPGk
-   1/BJSTkCL3Y6VYFtr4PK+JcFseGlIgV8u213ZQwQ7egCrtsnuadOlT0MN
-   zKd6wmCGzYk2Au6Oim2EEm/JXfu8driCzwQkoZ9lxN4fjeJIN7/1H/cm5
-   +LlzhyJD6dW56Loayi9TSNAMxCfgd0Js44nz6MJqf9gZPK2w6topJMHtD
-   w==;
-X-CSE-ConnectionGUID: TD/Tm7F4TsmVz661Ia5cKA==
-X-CSE-MsgGUID: lAabB3TQSfa2sOmdDu2vgw==
+  bh=xjb9Toqo/uMe2G/gd16Q7jLIhxWsMefeyR0RawnIZHY=;
+  b=OZ/dEKY5z1LHvIy3kf687iInnYVXVNU/cSg7E+v1st62eBTpNliptJMY
+   089KYCutgFE94BN9hHdOBHQDVYnrGTjnJZVOJo0niZR2Fhyabvzycy3uc
+   dXJ3AZb+bQRQ0SKqEZPtMTM218xt17NS+fIE0WAge4etShsjJccpvB0Sl
+   OYCrhQVowOjhS7RH9xVya48ZsbvjdgPmBdN5Te8l/oVAa4cqsrynmABDt
+   VhmBtBGhZD8p1td1mjNJsp7hl5kV/Ew6GU8FLc3mhCcVUwxyNBBQ7bwXK
+   5/AHne35VlrnC1NrVN7yWFEFiXYQHHaEl6i/IDtjsDEAxxNl6dT+I3YWJ
+   Q==;
+X-CSE-ConnectionGUID: Oj4HyRjLRfa6MQJ6CmsY1g==
+X-CSE-MsgGUID: YKn2d/6lQG+3M6JakHsgXQ==
 X-IronPort-AV: E=Sophos;i="6.11,192,1725292800"; 
-   d="scan'208";a="28741457"
-Received: from mail-westcentralusazlp17010007.outbound.protection.outlook.com (HELO CY4PR05CU001.outbound.protection.outlook.com) ([40.93.6.7])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2024 13:51:55 +0800
+   d="scan'208";a="28742278"
+Received: from mail-dm3nam02lp2045.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.45])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2024 13:55:48 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=u8LzyssTXr2vpSaUc6+rt1yDlRsb18ywkFNyzSM/5gWPWR1atW2HYOBfWd8bJ8br/u2bIxlaVv8LbdicPuJ/zFoXWiyph6ZoSX4IhOJ2dPIT176nr+lLxKRVSbiBQ86ZAjZtbliFq/+5XPITLEZTXhmYkLiKIQ1TIq/j6JzGyXX273HjnvNXHiN4Y1YNRPq3F2i7/3Y0F9dvAgI4l2+Nt2tFwvujLiTiKH46R7nds5ayHnhiykNRB9UV4IZ0HBoB1afgB6ppiU0WW23C312UlB+jksG2G2cLbfBTgpc9XToLkG/XHGpnVmbAqsVQ0/m28IbZ+nDaHB3cGc6/esJ5aw==
+ b=T6ydQShHiPSEc3dwY0U7GAavS1+2W5ALzX1L7SpOlzLOtD+HfEd0JrA6Aq+erKn0AVZl3RqU30a1iuy6YFyeOdaDJ+RFkqA4TYDsQVNZqIgX2oYOsezyKIi+Xr1Lk9O3kuHXJGa3ggHXYOVj/ziRZ0DGkeC0HiIwZ70OmL/kNbIHIqEfaSLYX2W0XhZeeZcnYrEKcrp0ZS3ztdUHV2N4yRLDBO32UlPyRkX9QvEIIEbLLXtKLB9sANTzjFVUg7QH30ZVg17rFFExRTINup0wlZihlCG05tKSdNGbL3fj5rc04wat1aQlsSiWBVqr0zxT+mOUlXqIEmJFwfJbEnhtFA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yE1OdofeQDi7p8eTNIkI4H2lWU1kp1L29lsXR8yOL2o=;
- b=gWAGBik2tJNZd3GdQZl6DIXvWiTcV0dIY+x4stDguj923dbcnER0tANCSXaOo4Vm7VuIzcfDWTm+4rxWYZgmHpEeCZo+F9fzmMEiomhROtFNn+Tz92cAcSVbgNwH9+8lOGissLDzFAUkGrf6UO31JUU200v8lEySeothyki6rh7u+pf89cYgNUY3Qs9ZO05tkBSPbbzqTMFG3L+U4i/nIKkUE1L1shD1bREBYRWs2x8ksmcuBGPLKJY6svRwjbaqVRrlXK5WaEvo9xgy6xMhcDrtDQkup7w93uKT5Ueo7HbJWVLJEOAxG2oBlftuq67CR6Cpoy5b4lGBlHsB/vwXTw==
+ bh=xjb9Toqo/uMe2G/gd16Q7jLIhxWsMefeyR0RawnIZHY=;
+ b=xQ9tQSyVypWGM2CoWZJJhrW6UDfMKsgPEHCsba77NAvYjFhdxB94LAqhMKG8wSEQAoHsTFn7iFvXIeNsporlP76J53h4GBNX5QPWwfI/hjs+ZA4fvZjMwu7pryPelDAZKL/TnLmvONMyRb2Tc53k2yZ+KujXhhfO6EjOnsrmXXYBKrytLX3N56Eea5qCBdENkwI/MZssG3gcM1yly76AZBn91wwZnCD8s4xPI0CMFJbrAROnlYwik12+a19i/7PuoApdbPTY+QGKuUAki6XU5Ew74Gzk8GcyCoO97fa7urW6HLFAshl+HpXhyUngU4Br1EKQ6Gfw/6Fpzf35VHZeMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yE1OdofeQDi7p8eTNIkI4H2lWU1kp1L29lsXR8yOL2o=;
- b=YraQf7Z7FDKYhn7JIfEnl86JK0zhsdb4RxjRH7B68lXaVaaFh8NIOO2+XlGr14i83hFJHnxbVn/awXUj/aFeJaIg/uJE5vaKDulpJUXD89AyA9/J0738RLmsSpLQ/gMuRQNlfRMtLHf+VCE8TZzKbyf+IhMVmuExw/r+n/nyZF4=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by IA0PR04MB8835.namprd04.prod.outlook.com (2603:10b6:208:48f::19) with
+ bh=xjb9Toqo/uMe2G/gd16Q7jLIhxWsMefeyR0RawnIZHY=;
+ b=GY9KGx6JLO/oH9tIJXNcekUwy/ls2Ar6L5wpIOAe9/VKcd3MFum5xBhP7HMZON/szk21o7P7XAg53VoDsIzpVgGSzQrd7rJS3dfcMASg4nyR1dhh15XqsGMgOg01A0WebMHwyd22h6MQLLp8i8noteqN+hjprqg81A0gsGdWq1U=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM6PR04MB6681.namprd04.prod.outlook.com (2603:10b6:5:24c::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.18; Thu, 10 Oct
- 2024 05:51:51 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2%5]) with mapi id 15.20.8048.013; Thu, 10 Oct 2024
- 05:51:50 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: David Sterba <dsterba@suse.cz>
-CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, WenRuo Qu
-	<wqu@suse.com>, hch <hch@lst.de>
-Subject: Re: [PATCH] btrfs: fix error propagation of split bios
-Thread-Topic: [PATCH] btrfs: fix error propagation of split bios
-Thread-Index: AQHbGmQKc8ebTW6DfUy+t8NONhFyRLJ+pIyAgADXqoA=
-Date: Thu, 10 Oct 2024 05:51:50 +0000
-Message-ID: <l37wmp4eebrjz3be5nbezvpdz3dm4u2ilru647yjh3dzjkbg4u@wtxtu4hxuyf4>
-References:
- <db5c272fc27c59ddded5c691373c26458698cb1a.1728489285.git.naohiro.aota@wdc.com>
- <20241009165955.GM1609@twin.jikos.cz>
-In-Reply-To: <20241009165955.GM1609@twin.jikos.cz>
-Accept-Language: ja-JP, en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.16; Thu, 10 Oct
+ 2024 05:55:46 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8048.013; Thu, 10 Oct 2024
+ 05:55:45 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Filipe Manana <fdmanana@kernel.org>, Johannes Thumshirn <jth@kernel.org>
+CC: David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+	Filipe Manana <fdmanana@suse.com>, Naohiro Aota <Naohiro.Aota@wdc.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] btrfs: implement partial deletion of RAID stripe
+ extents
+Thread-Topic: [PATCH v3 1/2] btrfs: implement partial deletion of RAID stripe
+ extents
+Thread-Index: AQHbGmBpcs30+Qb4ZUSrcQZ0vkIQurJ+n40AgADdyoA=
+Date: Thu, 10 Oct 2024 05:55:45 +0000
+Message-ID: <353f80a5-3fda-4061-9438-6b53e1500d8d@wdc.com>
+References: <20241009153032.23336-1-jth@kernel.org>
+ <20241009153032.23336-2-jth@kernel.org>
+ <CAL3q7H6Nv+GSpPHMsQ-H4gdz4vk-ecXgtScqCHP1wsNkaB7H9w@mail.gmail.com>
+In-Reply-To:
+ <CAL3q7H6Nv+GSpPHMsQ-H4gdz4vk-ecXgtScqCHP1wsNkaB7H9w@mail.gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wdc.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|IA0PR04MB8835:EE_
-x-ms-office365-filtering-correlation-id: 7ad413dc-0e18-44f3-7671-08dce8efa2ef
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM6PR04MB6681:EE_
+x-ms-office365-filtering-correlation-id: 0e92ef3c-d2c9-48d4-519c-08dce8f02f0b
 wdcipoutbound: EOP-TRUE
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|366016|10070799003|1800799024|38070700018;
 x-microsoft-antispam-message-info:
- =?us-ascii?Q?VSfrEnJKYWT0J8rDIfbeDs+GYWwkeGCPZmWOdJ15H0CV0WZXQv8ljnd7x+QQ?=
- =?us-ascii?Q?+4uXbbieGYno5E00NHYP7o1wlgDxje4+WI7ufOOAy4Kd+Ix2NlcO90/hzB/r?=
- =?us-ascii?Q?LKAH994PaYCc0s3LeYYiAZFNwZaCOI2NBvlYV740AY5LB2fE9MOkFVUZeDlP?=
- =?us-ascii?Q?Cn7N1EsMWK4E6Ez9yrPYe+T9H8Sewc/cllHNYNYimuqc35IhqPyW8H79b2Yi?=
- =?us-ascii?Q?dcL8+kiG4rQn2TmXCndvPEcvuERUGqeEdZCJwgQDvbDWN7OEVQ+1F35otMSn?=
- =?us-ascii?Q?BNU3REyDMNxmcMj1gkkbpdLqkwB79tiJfHzwhd8LzDLo0gwiKYLeIRgORHKX?=
- =?us-ascii?Q?A3m8AlcILh4r+Ci5VnsncXf0Py4C/fESabKHZ6Nk4qz7PamVFPjAuV8cOioM?=
- =?us-ascii?Q?Z3M59UX2MbYr3MBJPBEwrvetY//Hg2IEu4UXR5/wJoS18xpTqEA7+PT0TjEx?=
- =?us-ascii?Q?pCkuEyvQ4+Mxl4xVGdtHOZRXlaC8Heu6PcO9gLWWMm44CESKcidu1/BUh/K0?=
- =?us-ascii?Q?zzn9p0QftiTaNRyDLL/fu8Xgh10kfdZkzbWlbyZiDoFoVf8kPuuZJZ6F9aBf?=
- =?us-ascii?Q?YJrzKIQpOBgfkvA5YCzX8XK8nVt14CNoJSx3WDofOtG1ZdaTEh9M7f0rdg3j?=
- =?us-ascii?Q?kXWWqNKnHtpdEw25ztsJ0Zg0y4AoPqMmsmQtkOQBg+U1GIid4jiNpYJYgQbo?=
- =?us-ascii?Q?LvMkvWACLTvkIhuVy5OXSE7viQJUYxMhtT44s1miFWqolmDS+noJM4A0y9Ot?=
- =?us-ascii?Q?Y7tvLO15G0myIoZ8D1kh5sgfqCM/7wz8c2bYC05ZECw/jhSf9+zwEn0XiXev?=
- =?us-ascii?Q?QCj1bB/3Jg/ZTv0LXZD4TpYI+3anuuXBNb5pgNgER40Htur16Kr/i2JxF+ui?=
- =?us-ascii?Q?8BjVeOBmQG5z6Lj53FfiXbt381p5OQE15OysPA4wVHb7Dlh8Krg8JD3LI71S?=
- =?us-ascii?Q?k8REbayAXmY5MfN371dYTv/k6i7nSKN0MopY7CHVxL4gP82xn+Hehm2VdPSO?=
- =?us-ascii?Q?WA1ylILGESBKStqzNMfJo/Ok/AsJRCX32VOMPtYQVCGS3aFUUFhOons5eL3v?=
- =?us-ascii?Q?RCigcXBvJnwQs1mrl/1bE5DsxW6zUheTa9N1l5v/mTPVfHQ1xKt4VaqTnG4T?=
- =?us-ascii?Q?4J6r1Z8A908yE971leK1piIouuq7l4QCBUevGfch1daJ/Yx1mM8r9B/8I/vc?=
- =?us-ascii?Q?OFBWPcgkGu+UXWSyZHRJ6z+vGS4V8n0G5bY7cgu8IvY5PcwX4TQP/GUk+SgG?=
- =?us-ascii?Q?Iyn10upk4/vsDW8YFvX7HPu4OhpdsDPcPnUMZFKwkqdPuGqlHId6AdwJTvp6?=
- =?us-ascii?Q?owM/7lYxtxjbPns5g/iOvhihNlobnIHPQcnpS4k2ZN0oeg=3D=3D?=
+ =?utf-8?B?SlhGQXkxclBVblNOa1pSQS8rZlVmRXhIZzlwN29iNkk3TVVBR2tZbmR2dEU0?=
+ =?utf-8?B?elFuRTVvc1hkUExoWTh3WXN2bWZPZGRkSlBiRWNHSVpFSkJrVENrVWZ4Mzls?=
+ =?utf-8?B?T25wS0tXZW9RY0lUMSsyQ2VQaHB5Wi9GYy9tOFNRamg2UFFza2hHR0FZR1V1?=
+ =?utf-8?B?MmxaakNWSjJ3ZldGRVY5QTlsWTlXMnZtSUdvR3lvUDF4K1E5VG8xVEVOYlZl?=
+ =?utf-8?B?ckdqYlNERkoxUytoV1pIbTlNb2dZUlpXa0c5MEFRS01pMG4xUmVKalFYSDJq?=
+ =?utf-8?B?bXNhd2JUY2VwSi9Scjk5U2FmV3hOMUFLNXdVSm9OMDgyT0dFOFlkZDFXSURy?=
+ =?utf-8?B?TUJ1SjBqemhFRzNSUXIyOHlnbVI1NGRlaWhEdE4vZ0pUZUdiclJsTGdOWU9G?=
+ =?utf-8?B?Vlo2UjAyc00zQkxueDFUdVIzbVhVQ20yOHRjQkRrUmhXaVkvb1FIdUpKaHRN?=
+ =?utf-8?B?R3NoSzlIMFBwMWh3ZzFyWHFHaHJLaXZqWUs4ejRCTENaSlZhc1BBR1UvZ1NS?=
+ =?utf-8?B?YWxWVkJtMTc0WjcrK0dPaVBCK2Z3RkdxSFJoSk9NUDlKU0dTUVVCTFRGU0Z3?=
+ =?utf-8?B?dWV0SUFsMi9MSkxvQXJCakNiclF0bk5xdFY3UGxPVGs5SDdIamk5V01UMXlx?=
+ =?utf-8?B?T015cFZiVzF6enFRSmZHM0Z4Z3ZrUFp5SkFiSG5kVDYvWlY3Mzg3U3NGcEhm?=
+ =?utf-8?B?UnJIOTJqVXpMWGJHOWhHQktYUDBjY29NUklUR0VtUlJKQlhtdVZGbkNkN3JN?=
+ =?utf-8?B?WTNkVkRpQ2RmNGg3NFUwS2ZVNEplYjY2eUdNamlscXoxekFqTHpjN1A3TFBl?=
+ =?utf-8?B?dlhaRFg5TDdVOGI3V0FnSS95Y0FLVmVwbEdMSU96SmlQYW1nRWtZb2dpVk8x?=
+ =?utf-8?B?LzVIcS9oaEV4R2xBR0RYRWVTNHIvTkVCbDh1ZTk1aHo3Q0MzcHhKL0lRVzVW?=
+ =?utf-8?B?dzV1REhWZFNMT3dxeCtJTHE5enlWK2RKU3dpVlB5TlQvM0tJQXNZKzNZc2pL?=
+ =?utf-8?B?K2xMRUthd1ZqeXEvRU9CRm1QY05rc2dPaVFTdzg4RHJPc2k0SHdNZnVCS0tx?=
+ =?utf-8?B?Yk9MRTlnWTh6TE9CNityenZmL2Q4VEU0bG1jNHVHUmpLMjB3U1g0MUxoOVl1?=
+ =?utf-8?B?enVKTTgyU0pSc2dBckk1eXJWMEpYV1FSSTJ4OUZPSTJuZjhra3JONGRUZ200?=
+ =?utf-8?B?dUdLSHoyUlEyM0JTQllBU29oNU84NXB1S2tLT2poMzU5SXlGdzB2dk83Y3Uv?=
+ =?utf-8?B?eDZTblhkZTJqN2IxMytIQlllSjZzQzNzdGFQVVM4b1VmUTg2dkwva1laR1ZZ?=
+ =?utf-8?B?M2xNZ3JNYnErYmVaV0RhbVNJZjNic2x3K2VKSDNLRmZCcWFTb1AyYmxGTVNP?=
+ =?utf-8?B?UHFEOTNpaTIyT1Z6YTdzTFJjdmtSYktzMEl1U1c1ZlRBTVNXcmRkc0RFK0NL?=
+ =?utf-8?B?UUcveWNsdDYzdE9TL21KbVhTazc2eFZLak96dGpoMVJVQTh5Vkc0dUFqbXZP?=
+ =?utf-8?B?SmZTUndVWHNYQ3R6YUhPU1F5WjN4T3BEdFJaakNXNDJTWEswUCtHR3JFcU9k?=
+ =?utf-8?B?ZFZVMy9Db2JDNWhoVEtURHJvRHh5MHY5OVFFUFVtcllRdjFxalBwVURQLytM?=
+ =?utf-8?B?TjUzbFduU1JLRFBuS1lmZVJxQlFMRi9qZ0pxL1MvRkxwWEcrZ3B0RUpGRytG?=
+ =?utf-8?B?RjJleHU4YkNJYTBxR0gyekh2S0dnWTNZemNIcTNEKzhDLzVseFhmN0YyVWFm?=
+ =?utf-8?B?dGxJWGNjVUZMTVhFS1E3QWtNRERFVm1UZVUxZ0RqMlZkQ0NqTm0xVGMvME5k?=
+ =?utf-8?B?MmhlaEdXZGpuZzl3eHB3dz09?=
 x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(10070799003)(1800799024)(38070700018);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?e1oUIUOINKOOsaxAQBAfa0RwEsW7kCGaXrvJXjna7X2df+Naz/MAHTDvlsyQ?=
- =?us-ascii?Q?5p45HA4vz9MomwtShrvibiodg9x2tVux9ES5koqEdQIBwzFiw/llHmEK3qvu?=
- =?us-ascii?Q?Up9ukoUgtz4CNt2VVBHp/akaiEp69xR/Zal8nW04lWFuT2xjScbIRJpDi/4y?=
- =?us-ascii?Q?UNXSSDkZXjScRC9rb7fx6p8jVk0F0j5+NS15Iwoi8xqnTZAaXmahajg6ZrSg?=
- =?us-ascii?Q?a/EBlzfDSkGOLVUnBlVzmdg9XQB3GoDakqerweeBnOFuRjHk5Z6AC+siWKYQ?=
- =?us-ascii?Q?iCkWVTR8y0lXN5H82yEnemjF+1ddYJhz20LWSIqgJumDbQ7Wz1HrFvO2BgMz?=
- =?us-ascii?Q?jqZbnHJY7F8CE+vgFrwMKX87EtUGnZfFpOOHaBE5+2h0nwP6QMc++0yN1dcw?=
- =?us-ascii?Q?eEtAESslxHyIlkt8Kb0UZgmjNRvYCh4IJhLLiLyK3ee3iyBA3zhR/5H/DCWe?=
- =?us-ascii?Q?qxFN1eHOMSF/ogoYDqZ1V0HcxnzqKtmyShhJB2JmtMgyukMDPKJbg0Wo4wfo?=
- =?us-ascii?Q?lLyWnT3xT+mRP363vmmUvjqcntscYfyPI5gbe7ZglGgFAbdgRKIN6ojdfdfI?=
- =?us-ascii?Q?KYXlyLcbZJvG2tfK1W2kPHxSHXpm7QhuV2k48SKKtTqjHDxwfA2zCJd5APhp?=
- =?us-ascii?Q?xlgdVnB2uCHb0Fo2imsayhKhe1kUGcHdF+Y2XrnJgft2dLPLc0nBzo8Q1CxG?=
- =?us-ascii?Q?/qqnZr62IdI6X+VmoYGcBAK//SBAOIxR2L4h8IKHYlcTmPuktjZIZ7PYyofN?=
- =?us-ascii?Q?MRA5UiB8z1vXcAuHXlFqx59x0p2GbIiHhVlmkg945TmMq4nMNxzYi+dhk5/L?=
- =?us-ascii?Q?xRugLF6b0FCIVjlGhSrW99VIZgq+GL8ivVYmYFqj9OB1wetJQJwcS1LqpWUN?=
- =?us-ascii?Q?iH12tQ9PS1AzW13RmFgQFHKrouD0UKqMGDWVO0B9+vJkEZ6002B4710giEyl?=
- =?us-ascii?Q?C6Wglk2RifNuwcX+cZek3vhhJxgf41I3LqDf9PKKc4edJSZnDPyBHMfCZTik?=
- =?us-ascii?Q?4BHs6T856w40vwz/S9kPAafWV6UlcNj7uQC1jP6tmi1hJ3Jo42fIM1ZbeVy0?=
- =?us-ascii?Q?HJ8j38qx9NXX9/KZ09FRRkZ9BfiDPUuuLX6885SLvd7tmtBC8s+vW01eVjAr?=
- =?us-ascii?Q?Oke35WVQQJYXpgKNtE+dcvBFcnhgAm3VwEJTRmWyZ0PgApvrH/NT2X7Rqwug?=
- =?us-ascii?Q?GcKlMcIDE3Q/Ynk2jwEX3STQ5hqZH8mfI3gnCrFRtasVjLEvzkKrbQb2d43G?=
- =?us-ascii?Q?EikILc2HW74QEtQDrpFT3aX0tArRn4bu+H4tzFK1LCUXKtAQT4y5xMh6SHMz?=
- =?us-ascii?Q?A9oLLEjUUPtW41wwekRtMgOMecI93vnEOpNUoSBrB/JJD/MxuBxdEqWLr6FL?=
- =?us-ascii?Q?k8lhFdIqkKjjrwPFCXebBDKRXjj5c4qxnY325uZN13nY+xS8k1k+iHvU9ybs?=
- =?us-ascii?Q?6IYkG9L0ckJUKZ2vRT5P0f9Qjau3CwOXxATAlELBDvr44d05PHQdG7FCP2wX?=
- =?us-ascii?Q?DEMoizTlLgUx6APCvuA0Pde4s0deHjv2tfp5hieKK2Z9N4nOU8AVpKdIGM0a?=
- =?us-ascii?Q?edKTKX//Iezbq/gs32ndl58tjoY7fhv/mJX8tsafrKbARxYvblm5j450DV5O?=
- =?us-ascii?Q?CQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <05CBDEE6C410EC4FB1199E378F931CE0@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ =?utf-8?B?VWNING1wZDAybFRLaHVuVDQxeENnWWMxcTJBc0xOclV2d2xTR2hJcGZmaGpp?=
+ =?utf-8?B?OS9kMGFOWElvR3JFOC9VTkw3aWt1U2dsZDVhcExHMDJBeUZxTVBoMjQ4R0p3?=
+ =?utf-8?B?bDd0S3ZMRlYxWE5Eanh1SlZxUHVZOGJOa202TWQyUzRONHA4U1JQRlZhTkhD?=
+ =?utf-8?B?YmhHeGc3UkI1M2JrT3lXZ2NqN09wQWI0VXUvSW5KSWJEK29ETG9ZUTJYVGN6?=
+ =?utf-8?B?eHloeGpmK2tmc3U0aTRVTXdsL1JyQ2gyaUVzK0FvTXcwdG1jenhqSmJNSURG?=
+ =?utf-8?B?VDNKSTc4OUJqTUt5elZCMnFMMmMyMGpQVVBUTGJsMlBvQUFVYUNlRXRSbzBP?=
+ =?utf-8?B?NDlzUG8zbTNGMWM0S2J3bmx6OERGVW1Fd0dGK2dEdjZVL25PS1pkZnhrajBi?=
+ =?utf-8?B?VVc2b0lpR3ZWbEFSM284T0NQSDNxekpHNWFmL1BoaHRSM1VEZkVDdEVFRlRQ?=
+ =?utf-8?B?cDNDRy9lRlViWW9WbHR2Y05MN1o2bmxWSStCck9VcW0xdVVFakR0Z2t2bHFP?=
+ =?utf-8?B?YjRaMCt6ZElYdXZCOWxmekc3MzhMZ09tMEhxMHNSaVYwbXlUbGx0TTRZNzU4?=
+ =?utf-8?B?Yzl1cGlzRiszeGR2R0pTSjhJUkdrQWxXczZiS0gyZjhTMGVvbnVHaGRRaTFJ?=
+ =?utf-8?B?SVdXa09pZmRzR0UwVDV6c01NWUpPKzUyM21qRmYwZ2NvK0ZESXZZTkNKbngr?=
+ =?utf-8?B?RCtJcVdydUEwVm9TMnE5OTJUWEl5ZGRpZjhTOGxXaFB1bXRaQlZsejVxbmZ4?=
+ =?utf-8?B?a2thWkQzYUJXSUt4c2VZbGlyTmlKKzZBWUJhQysrTUZHZFBZZ0s1WWRYaW1F?=
+ =?utf-8?B?QmJQRjl6TjA5SXpSdjI1M0crV0ZFU200TVJQejBoOTkrNEsyM014clVXZEZ0?=
+ =?utf-8?B?UkNYNGdjYm9pTUtKWTdmT3JDb2JtcDRScGg2b1YzZ3ArZjkvbVZZVFlBejJx?=
+ =?utf-8?B?OFlJTEt2dzFKdTA4NDcwT3kxV0VLdnFlZ1lMOXJqTHR3bHM3T3o2TnBkajV5?=
+ =?utf-8?B?QWl3SVlXVTZUbUdQTnZPMWFuYTl0Q3dCekJzOGFoV0tSVHRaZmxPQ0lEYmpW?=
+ =?utf-8?B?NTh3RHo1eW1lbHFXd0wxMjBwbUdVV0NNZE9pb1BQVGFsSkNTTTF5Q2NtZ0py?=
+ =?utf-8?B?Zzh6MXA0NFFNMjBLVFVORnZzT2RxZCthamdEZXN6Qi8rbUpCNFd4bFl2UG56?=
+ =?utf-8?B?YjRzcjEwbzlzV1lFSGxIRGdaZGJtdWZnQkNkSkphMWdRVEZrNHVrY0hzcTRS?=
+ =?utf-8?B?SnM2NkxoamJmcTVUYkdaTWFFWTFVWUQwcWZHSTVMQXdyUUE4TnRyU1diVlhE?=
+ =?utf-8?B?c0p6a2hPdVRCb0FsbkpFem4zNXBySjg1MEVKbTZLdy9MUEtNRU9lbVVwYjFx?=
+ =?utf-8?B?SmY5aDIrYjljQWNNbEJCSGVVU256WUY3aUF3REtRQkErOTJNQkY5VC9DcmlS?=
+ =?utf-8?B?bkd3UjNLbmkwSjkrVW1zdi9sY1V4SUtvZG5mUkZDUk16Wi9VWDZhSkl2cmpt?=
+ =?utf-8?B?clhnK1ZYcThINTlObXc3eERjUGRMMzk2bkpUNXVCNzdNQ0hpL1JCK1ZPYlNJ?=
+ =?utf-8?B?TUNNZXU2Y1ViaWR4aFJ1eVFvRmpEMWorWHpkN3cyNm4rU1ozOWpVMGdUdVNB?=
+ =?utf-8?B?cFNhTWpmNU1vODNheWpSNWREWVp3NEFwMEhBb2p4bHRpMUhqWS9vejJzWUZT?=
+ =?utf-8?B?Y3p6c1JIMnczVzNrUndDTGhDWDJyQi95NE1GS0tTWk9hODh2NUVkMzFCR1VP?=
+ =?utf-8?B?Zmd0VFYrWXl2SGVZcVdLREErQ1Q3QjFqTzBYTUpQNUZiUXk4SG1iRzhXeVM3?=
+ =?utf-8?B?NHpmMGhVWDFrTC94SlVhNU84eVRqSFNjazRnY2NhdzdZK2JUWUZBcml1NkQ2?=
+ =?utf-8?B?RWVWdlFBRHREejVYcnJNVVhPYnZCMjcwNzVYU2lqaVBNa0JsUHNHTEdUNXZ5?=
+ =?utf-8?B?cUtSTTdGcEVMb0FlNTRCRGd3eEtxNkNGcWZMeUw4RWhDL2J3d3VnaWVDUVJu?=
+ =?utf-8?B?VnRHVGxlRXVReE5PZEhBWUh4UW9hL29hVGI0UTZMZEpEWUNudE9GdWkvUkNr?=
+ =?utf-8?B?aytTamp5WlZMby9lZysvRGliQzk4WDNmSXFTemVtUFFMbWJJUkozb1hKZncx?=
+ =?utf-8?B?VUlpOE85YlhodUh3c2cva2VKRUpST0lMZHNjeDBXa1J0UDNZaGpoZFlkSE1J?=
+ =?utf-8?B?dllJVzRRM216SUh0MlQwY3c5YmtNWGdDYjIxV29YalpUT3lhTTcwNFE2cWov?=
+ =?utf-8?B?YlFzMTgzVTJVL21BSnVSck51Z01BPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <63FCE6A80C34294BA4E512CFB335E2A7@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -170,295 +193,72 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	yWVSEbagLr2Dqq3QFtzGJqEAvRQR5pJKmxLSSP5aW3uTyPNCCm3uP9fvB+QULvdjLBg5wQ4zNFOoQPxXwz9u5cdWgWbsygZMKIbwXZWXl03ySTToyeE+vJbp7qYVEsVVbsMeCTFT3kBsUVltWK7RdVgAOnKdA334PVNbWvzXGRpYHm0wMgL3o+UVhMzHC8YS9k7cGVpL60esNsCB6Y1y4mT2nvgc027Ia60hwAyqx8VNsiNTbItVVWLVzvQmXKsBwQU8w3LpSDvyt47CjRloXhwds4CsOnLD7jWWmbOpbpbvjC7lZdjBHbuORGwXL+6HNiEDhltrNuGr0KbUOSZERP5lJAdg1wISNSxYefQHZCDUgnjiSBKnAbJrbmsqri39i7WNDO/mUSOmRhtd8qBSS1BxuegAFAdJ9Khu+2OjNX8gueRQreIQjl5F7nRXg9qnaNwcXCYx8ID5qzVBEqWwkRnMONK5kKHh4mFTjI3jyJ6wQikENSpUWOnNHoXFWORhvQ9dQvwVnxmYETwFkEETLo3MswCldcAl1yG2agMU3/HmH/2MkPqn464oFyFgG1RLkBHdNcriPlQlvcQBXPexVDZcOT+dmNx8bRi9dvK0xIhF+HBVCD4b+0+sROS5fkVj
+	S18LwdT+b72f/U6hj0+IKucGyimHsSvef9Bb36hY4kqkTK/Ha1TwRiKH8h4gBGq6cnuj3DyfRi95agLyqsTR7/hhcCiCW4YWM/dCccRezQ6+xZviudrIfLLl9655bvGMOtkqP0WSwlkEkw5oR98ntJTufhLOZS3AQmp1FzNPyeHiy82Svo8aHqp+Ws6rBpRRNSdfK0nDJ3TXHkEhST47ngrbje66B/9H/MPV0+xN2SAI3yAL76GJKYMLOuUyC1Cnp4Cf7I7EJqPm3QEkFUHzzTo4vVsTUgbAEFzNrA3twLaBRkBt2GgMiVcoWofwzhu2E5WosJGRVVWU5WmwPhendl9Jpcaf8oillOxTTse91/rlkaKBCj8AqDqjw/WAaZqfk0GlyMbWI6aJsZsrIsUH6TSAC0v5ZYejZjb9GiPjQlJm/v/VPD4q6+aAnaFtr3BytP507xlXCiUQ3HhvGvxW2B9qaozqU+lYQ+oLJ6ByJmX20rhUvVhSketogkdhibwLGf13jAGCoqLIysGo/e3REyA7gT5V7tIv/7JwjLsHaei99VgD5pmlwma7gamu7+Ld8Bx7cS6ZL3yQ7+AZHtrBPnaa/xQZq9UlkB+PcvL2BVoX1ZYD1Yq5L079CD0bTPa4
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ad413dc-0e18-44f3-7671-08dce8efa2ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2024 05:51:50.8010
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e92ef3c-d2c9-48d4-519c-08dce8f02f0b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2024 05:55:45.8800
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 335St8sVEgNu9y/5/fiD/y5yEg+8BCTAtlUYRu2o6gucUQIGeOzccOIdp/HBJguY8Ej7bxY5/fA5EFN0scGzxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR04MB8835
+X-MS-Exchange-CrossTenant-userprincipalname: RHlFJpm1wohyI9ZekXsquJSFlej9A4vNO9Iv/vnsUbHAGEUdnSbk+9vrLtUol6W+h89E1AbdrLHsicJhc5q/bKBoZy+vO46YAqI4Agl0uGk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6681
 
-On Wed, Oct 09, 2024 at 06:59:55PM GMT, David Sterba wrote:
-> On Thu, Oct 10, 2024 at 12:57:50AM +0900, Naohiro Aota wrote:
-> > The purpose of btrfs_bbio_propagate_error() shall be propagating an err=
-or
-> > of split bio to its original btrfs_bio, and tell the error to the upper
-> > layer. However, it's not working well on some cases.
-> >=20
-> > * Case 1. Immediate (or quick) end_bio with an error
-> >=20
-> > When btrfs sends btrfs_bio to mirrored devices, btrfs calls
-> > btrfs_bio_end_io() when all the mirroring bios are completed. If that
-> > btrfs_bio was split, it is from btrfs_clone_bioset and its end_io funct=
-ion
-> > is btrfs_orig_write_end_io. For this case, btrfs_bbio_propagate_error()
-> > accesses the orig_bbio's bio context to increase the error count.
-> >=20
-> > That works well in most cases. However, if the end_io is called enough
-> > fast, orig_bbio's bio context may not be properly set at that time. Sin=
-ce
-> > the bio context is set when the orig_bbio (the last btrfs_bio) is sent =
-to
-> > devices, that might be too late for earlier split btrfs_bio's completio=
-n.
-> > That will result in NULL pointer dereference.
-> >=20
-> > That bug is easily reproducible by running btrfs/146 on zoned devices a=
-nd
-> > it shows the following trace.
-> >=20
-> >     [   20.923980][   T13] BUG: kernel NULL pointer dereference, addres=
-s: 0000000000000020
-> >     [   20.925234][   T13] #PF: supervisor read access in kernel mode
-> >     [   20.926122][   T13] #PF: error_code(0x0000) - not-present page
-> >     [   20.927118][   T13] PGD 0 P4D 0
-> >     [   20.927607][   T13] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
-> >     [   20.928424][   T13] CPU: 1 UID: 0 PID: 13 Comm: kworker/u32:1 No=
-t tainted 6.11.0-rc7-BTRFS-ZNS+ #474
-> >     [   20.929740][   T13] Hardware name: Bochs Bochs, BIOS Bochs 01/01=
-/2011
-> >     [   20.930697][   T13] Workqueue: writeback wb_workfn (flush-btrfs-=
-5)
-> >     [   20.931643][   T13] RIP: 0010:btrfs_bio_end_io+0xae/0xc0 [btrfs]
-> >     [   20.932573][ T1415] BTRFS error (device dm-0): bdev /dev/mapper/=
-error-test errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
-> >     [   20.932871][   T13] Code: ba e1 48 8b 7b 10 e8 f1 f5 f6 ff eb da=
- 48 81 bf 10 01 00 00 40 0c 33 a0 74 09 40 88 b5 f1 00 00 00 eb b8 48 8b 85=
- 18 01 00 00 <48> 8b 40 20 0f b7 50 24 f0 01 50 20 eb a3 0f 1f 40 00 90 90 =
-90 90
-> >     [   20.936623][   T13] RSP: 0018:ffffc9000006f248 EFLAGS: 00010246
-> >     [   20.937543][   T13] RAX: 0000000000000000 RBX: ffff888005a7f080 =
-RCX: ffffc9000006f1dc
-> >     [   20.938788][   T13] RDX: 0000000000000000 RSI: 000000000000000a =
-RDI: ffff888005a7f080
-> >     [   20.940016][   T13] RBP: ffff888011dfc540 R08: 0000000000000000 =
-R09: 0000000000000001
-> >     [   20.941227][   T13] R10: ffffffff82e508e0 R11: 0000000000000005 =
-R12: ffff88800ddfbe58
-> >     [   20.942375][   T13] R13: ffff888005a7f080 R14: ffff888005a7f158 =
-R15: ffff888005a7f158
-> >     [   20.943531][   T13] FS:  0000000000000000(0000) GS:ffff88803ea80=
-000(0000) knlGS:0000000000000000
-> >     [   20.944838][   T13] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800=
-50033
-> >     [   20.945811][   T13] CR2: 0000000000000020 CR3: 0000000002e22006 =
-CR4: 0000000000370ef0
-> >     [   20.946984][   T13] DR0: 0000000000000000 DR1: 0000000000000000 =
-DR2: 0000000000000000
-> >     [   20.948150][   T13] DR3: 0000000000000000 DR6: 00000000fffe0ff0 =
-DR7: 0000000000000400
-> >     [   20.949327][   T13] Call Trace:
-> >     [   20.949949][   T13]  <TASK>
-> >     [   20.950374][   T13]  ? __die_body.cold+0x19/0x26
-> >     [   20.951066][   T13]  ? page_fault_oops+0x13e/0x2b0
-> >     [   20.951766][   T13]  ? _printk+0x58/0x73
-> >     [   20.952358][   T13]  ? do_user_addr_fault+0x5f/0x750
-> >     [   20.953120][   T13]  ? exc_page_fault+0x76/0x240
-> >     [   20.953827][   T13]  ? asm_exc_page_fault+0x22/0x30
-> >     [   20.954606][   T13]  ? btrfs_bio_end_io+0xae/0xc0 [btrfs]
-> >     [   20.955616][   T13]  ? btrfs_log_dev_io_error+0x7f/0x90 [btrfs]
-> >     [   20.956682][   T13]  btrfs_orig_write_end_io+0x51/0x90 [btrfs]
-> >     [   20.957769][   T13]  dm_submit_bio+0x5c2/0xa50 [dm_mod]
-> >     [   20.958623][   T13]  ? find_held_lock+0x2b/0x80
-> >     [   20.959339][   T13]  ? blk_try_enter_queue+0x90/0x1e0
-> >     [   20.960228][   T13]  __submit_bio+0xe0/0x130
-> >     [   20.960879][   T13]  ? ktime_get+0x10a/0x160
-> >     [   20.961546][   T13]  ? lockdep_hardirqs_on+0x74/0x100
-> >     [   20.962310][   T13]  submit_bio_noacct_nocheck+0x199/0x410
-> >     [   20.963140][   T13]  btrfs_submit_bio+0x7d/0x150 [btrfs]
-> >     [   20.964089][   T13]  btrfs_submit_chunk+0x1a1/0x6d0 [btrfs]
-> >     [   20.965066][   T13]  ? lockdep_hardirqs_on+0x74/0x100
-> >     [   20.965824][   T13]  ? __folio_start_writeback+0x10/0x2c0
-> >     [   20.966659][   T13]  btrfs_submit_bbio+0x1c/0x40 [btrfs]
-> >     [   20.967617][   T13]  submit_one_bio+0x44/0x60 [btrfs]
-> >     [   20.968536][   T13]  submit_extent_folio+0x13f/0x330 [btrfs]
-> >     [   20.969552][   T13]  ? btrfs_set_range_writeback+0xa3/0xd0 [btrf=
-s]
-> >     [   20.970625][   T13]  extent_writepage_io+0x18b/0x360 [btrfs]
-> >     [   20.971632][   T13]  extent_write_locked_range+0x17c/0x340 [btrf=
-s]
-> >     [   20.972702][   T13]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrf=
-s]
-> >     [   20.973857][   T13]  run_delalloc_cow+0x71/0xd0 [btrfs]
-> >     [   20.974841][   T13]  btrfs_run_delalloc_range+0x176/0x500 [btrfs=
-]
-> >     [   20.975870][   T13]  ? find_lock_delalloc_range+0x119/0x260 [btr=
-fs]
-> >     [   20.976911][   T13]  writepage_delalloc+0x2ab/0x480 [btrfs]
-> >     [   20.977792][   T13]  extent_write_cache_pages+0x236/0x7d0 [btrfs=
-]
-> >     [   20.978728][   T13]  btrfs_writepages+0x72/0x130 [btrfs]
-> >     [   20.979531][   T13]  do_writepages+0xd4/0x240
-> >     [   20.980111][   T13]  ? find_held_lock+0x2b/0x80
-> >     [   20.980695][   T13]  ? wbc_attach_and_unlock_inode+0x12c/0x290
-> >     [   20.981461][   T13]  ? wbc_attach_and_unlock_inode+0x12c/0x290
-> >     [   20.982213][   T13]  __writeback_single_inode+0x5c/0x4c0
-> >     [   20.982859][   T13]  ? do_raw_spin_unlock+0x49/0xb0
-> >     [   20.983439][   T13]  writeback_sb_inodes+0x22c/0x560
-> >     [   20.984079][   T13]  __writeback_inodes_wb+0x4c/0xe0
-> >     [   20.984886][   T13]  wb_writeback+0x1d6/0x3f0
-> >     [   20.985536][   T13]  wb_workfn+0x334/0x520
-> >     [   20.986044][   T13]  process_one_work+0x1ee/0x570
-> >     [   20.986580][   T13]  ? lock_is_held_type+0xc6/0x130
-> >     [   20.987142][   T13]  worker_thread+0x1d1/0x3b0
-> >     [   20.987918][   T13]  ? __pfx_worker_thread+0x10/0x10
-> >     [   20.988690][   T13]  kthread+0xee/0x120
-> >     [   20.989180][   T13]  ? __pfx_kthread+0x10/0x10
-> >     [   20.989915][   T13]  ret_from_fork+0x30/0x50
-> >     [   20.990615][   T13]  ? __pfx_kthread+0x10/0x10
-> >     [   20.991336][   T13]  ret_from_fork_asm+0x1a/0x30
-> >     [   20.992106][   T13]  </TASK>
-> >     [   20.992482][   T13] Modules linked in: dm_mod btrfs blake2b_gene=
-ric xor raid6_pq rapl
-> >     [   20.993406][   T13] CR2: 0000000000000020
-> >     [   20.993884][   T13] ---[ end trace 0000000000000000 ]---
-> >     [   20.993954][ T1415] BUG: kernel NULL pointer dereference, addres=
-s: 0000000000000020
-> >=20
-> > * Case 2. Earlier completion of orig_bbio for mirrored btrfs_bios
-> >=20
-> > btrfs_bbio_propagate_error() assumes the end_io function for orig_bbio =
-is
-> > called last among split bios. In that case, btrfs_orig_write_end_io() s=
-ets
-> > the bio->bi_status to BLK_STS_IOERR by seeing the bioc->error [1].
-> > Otherwise, the increased orig_bio's bioc->error is not checked by anyon=
-e
-> > and return BLK_STS_OK to the upper layer.
-> >=20
-> > [1] Actually, this is not true. Because we only increases orig_bioc->er=
-rors
-> > by max_errors, the condition "atomic_read(&bioc->error) > bioc->max_err=
-ors"
-> > is still not met if only one split btrfs_bio fails.
-> >=20
-> > * Case 3. Later completion of orig_bbio for un-mirrored btrfs_bios
-> >=20
-> > In contrast to the above case, btrfs_bbio_propagate_error() is not work=
-ing
-> > well if un-mirrored orig_bbio is completed last. It sets
-> > orig_bbio->bio.bi_status to the btrfs_bio's error. But, that is easily
-> > over-written by orig_bbio's completion status. If the status is BLK_STS=
-_OK,
-> > the upper layer would not know the failure.
-> >=20
-> > * Solution
-> >=20
-> > Considering the above cases, we can only save the error status in the
-> > orig_bbio itself as it is always available. Also, the saved error statu=
-s
-> > should be propagated when all the split btrfs_bios are finished (i.e,
-> > bbio->pending_ios =3D=3D 0).
-> >=20
-> > This commit introduces "status" to btrfs_bbio and uses the last saved e=
-rror
-> > status for bbio->bio.bi_status.
-> >=20
-> > With this commit, btrfs/146 on zoned devices does not hit the NULL poin=
-ter
-> > dereference.
-> >=20
-> > Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
-> > CC: stable@vger.kernel.org # 6.6+
-> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > ---
-> >  fs/btrfs/bio.c | 33 +++++++++------------------------
-> >  fs/btrfs/bio.h |  3 +++
-> >  2 files changed, 12 insertions(+), 24 deletions(-)
-> >=20
-> > diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> > index 056f8a171bba..a43d88bdcae7 100644
-> > --- a/fs/btrfs/bio.c
-> > +++ b/fs/btrfs/bio.c
-> > @@ -49,6 +49,7 @@ void btrfs_bio_init(struct btrfs_bio *bbio, struct bt=
-rfs_fs_info *fs_info,
-> >  	bbio->end_io =3D end_io;
-> >  	bbio->private =3D private;
-> >  	atomic_set(&bbio->pending_ios, 1);
-> > +	atomic_set(&bbio->status, BLK_STS_OK);
-> >  }
-> > =20
-> >  /*
-> > @@ -120,41 +121,25 @@ static void __btrfs_bio_end_io(struct btrfs_bio *=
-bbio)
-> >  	}
-> >  }
-> > =20
-> > -static void btrfs_orig_write_end_io(struct bio *bio);
-> > -
-> > -static void btrfs_bbio_propagate_error(struct btrfs_bio *bbio,
-> > -				       struct btrfs_bio *orig_bbio)
-> > -{
-> > -	/*
-> > -	 * For writes we tolerate nr_mirrors - 1 write failures, so we can't
-> > -	 * just blindly propagate a write failure here.  Instead increment th=
-e
-> > -	 * error count in the original I/O context so that it is guaranteed t=
-o
-> > -	 * be larger than the error tolerance.
-> > -	 */
-> > -	if (bbio->bio.bi_end_io =3D=3D &btrfs_orig_write_end_io) {
-> > -		struct btrfs_io_stripe *orig_stripe =3D orig_bbio->bio.bi_private;
-> > -		struct btrfs_io_context *orig_bioc =3D orig_stripe->bioc;
-> > -
-> > -		atomic_add(orig_bioc->max_errors, &orig_bioc->error);
-> > -	} else {
-> > -		orig_bbio->bio.bi_status =3D bbio->bio.bi_status;
-> > -	}
-> > -}
-> > -
-> >  void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
-> >  {
-> >  	bbio->bio.bi_status =3D status;
-> >  	if (bbio->bio.bi_pool =3D=3D &btrfs_clone_bioset) {
-> >  		struct btrfs_bio *orig_bbio =3D bbio->private;
-> > =20
-> > -		if (bbio->bio.bi_status)
-> > -			btrfs_bbio_propagate_error(bbio, orig_bbio);
-> > +		/* Save the last error. */
-> > +		if (bbio->bio.bi_status !=3D BLK_STS_OK)
-> > +			atomic_set(&orig_bbio->status, bbio->bio.bi_status);
-> >  		btrfs_cleanup_bio(bbio);
-> >  		bbio =3D orig_bbio;
-> >  	}
-> > =20
-> > -	if (atomic_dec_and_test(&bbio->pending_ios))
-> > +	if (atomic_dec_and_test(&bbio->pending_ios)) {
-> > +		/* Load split bio's error which might be set above. */
-> > +		if (status =3D=3D BLK_STS_OK)
-> > +			bbio->bio.bi_status =3D atomic_read(&bbio->status);
-> >  		__btrfs_bio_end_io(bbio);
-> > +	}
-> >  }
-> > =20
-> >  static int next_repair_mirror(struct btrfs_failed_bio *fbio, int cur_m=
-irror)
-> > diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> > index e48612340745..b8f7f6071bc2 100644
-> > --- a/fs/btrfs/bio.h
-> > +++ b/fs/btrfs/bio.h
-> > @@ -79,6 +79,9 @@ struct btrfs_bio {
-> >  	/* File system that this I/O operates on. */
-> >  	struct btrfs_fs_info *fs_info;
-> > =20
-> > +	/* Set the error status of split bio. */
-> > +	atomic_t status;
->=20
-> To repeat my comments from slack here. This should not be atomic when
-> it's using only set and read, a plain int or blk_sts_t.
-
-Yes, I'll change this to blk_status_t for better understanding.
-
->=20
-> The logic of storing the last error in btrfs_bio makes sense, I don't
-> see other ways to do it. If there are multiple errors we can store the
-> first one or the last one, we'd always lose some information. When it's
-> the first one it could be set by cmpxchg.
-
-Sure. I'll use cmpxchg to save the first one.=
+T24gMDkuMTAuMjQgMTg6NDIsIEZpbGlwZSBNYW5hbmEgd3JvdGU6DQoNCj4+DQo+PiArc3RhdGlj
+IGludCBidHJmc19wYXJ0aWFsbHlfZGVsZXRlX3JhaWRfZXh0ZW50KHN0cnVjdCBidHJmc190cmFu
+c19oYW5kbGUgKnRyYW5zLA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHN0cnVjdCBidHJmc19wYXRoICpwYXRoLA0KPj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBidHJmc19rZXkgKm9sZGtleSwNCj4+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1NjQgbmV3bGVu
+LCB1NjQgZnJvbnRwYWQpDQo+PiArew0KPj4gKyAgICAgICBzdHJ1Y3QgYnRyZnNfcm9vdCAqc3Ry
+aXBlX3Jvb3QgPSB0cmFucy0+ZnNfaW5mby0+c3RyaXBlX3Jvb3Q7DQo+PiArICAgICAgIHN0cnVj
+dCBidHJmc19zdHJpcGVfZXh0ZW50ICpleHRlbnQsICpuZXc7DQo+PiArICAgICAgIHN0cnVjdCBl
+eHRlbnRfYnVmZmVyICpsZWFmID0gcGF0aC0+bm9kZXNbMF07DQo+PiArICAgICAgIGludCBzbG90
+ID0gcGF0aC0+c2xvdHNbMF07DQo+PiArICAgICAgIGNvbnN0IHNpemVfdCBpdGVtX3NpemUgPSBi
+dHJmc19pdGVtX3NpemUobGVhZiwgc2xvdCk7DQo+PiArICAgICAgIHN0cnVjdCBidHJmc19rZXkg
+bmV3a2V5Ow0KPj4gKyAgICAgICBpbnQgcmV0Ow0KPj4gKyAgICAgICBpbnQgaTsNCj4+ICsNCj4+
+ICsgICAgICAgbmV3ID0ga3phbGxvYyhpdGVtX3NpemUsIEdGUF9OT0ZTKTsNCj4+ICsgICAgICAg
+aWYgKCFuZXcpDQo+PiArICAgICAgICAgICAgICAgcmV0dXJuIC1FTk9NRU07DQo+PiArDQo+PiAr
+ICAgICAgIG1lbWNweSgmbmV3a2V5LCBvbGRrZXksIHNpemVvZihzdHJ1Y3QgYnRyZnNfa2V5KSk7
+DQo+PiArICAgICAgIG5ld2tleS5vYmplY3RpZCArPSBmcm9udHBhZDsNCj4+ICsgICAgICAgbmV3
+a2V5Lm9mZnNldCAtPSBuZXdsZW47DQo+PiArDQo+PiArICAgICAgIGV4dGVudCA9IGJ0cmZzX2l0
+ZW1fcHRyKGxlYWYsIHNsb3QsIHN0cnVjdCBidHJmc19zdHJpcGVfZXh0ZW50KTsNCj4+ICsNCj4+
+ICsgICAgICAgZm9yIChpID0gMDsgaSA8IGJ0cmZzX251bV9yYWlkX3N0cmlwZXMoaXRlbV9zaXpl
+KTsgaSsrKSB7DQo+IA0KPiBUaGUgbG9vcCB2YXJpYWJsZSBjb3VsZCBiZSBkZWNsYXJlZCBoZXJl
+IGluIHRoZSBmb3IgZXhwcmVzc2lvbiwgYXMNCj4gaXQncyBub3QgdXNlZCBhbnl3aGVyZSBvdXRz
+aWRlIGl0Lg0KDQp5dXAgd2lsbCBmaXggdGhhdCB1cC4NCg0KPj4gKyAgICAgICAgICAgICAgIHU2
+NCBkZXZpZDsNCj4+ICsgICAgICAgICAgICAgICB1NjQgcGh5czsNCj4+ICsNCj4+ICsgICAgICAg
+ICAgICAgICBkZXZpZCA9IGJ0cmZzX3JhaWRfc3RyaWRlX2RldmlkKGxlYWYsICZleHRlbnQtPnN0
+cmlkZXNbaV0pOw0KPj4gKyAgICAgICAgICAgICAgIGJ0cmZzX3NldF9zdGFja19yYWlkX3N0cmlk
+ZV9kZXZpZCgmbmV3LT5zdHJpZGVzW2ldLCBkZXZpZCk7DQo+PiArDQo+PiArICAgICAgICAgICAg
+ICAgcGh5cyA9IGJ0cmZzX3JhaWRfc3RyaWRlX3BoeXNpY2FsKGxlYWYsICZleHRlbnQtPnN0cmlk
+ZXNbaV0pOw0KPj4gKyAgICAgICAgICAgICAgIHBoeXMgKz0gZnJvbnRwYWQ7DQo+PiArICAgICAg
+ICAgICAgICAgYnRyZnNfc2V0X3N0YWNrX3JhaWRfc3RyaWRlX3BoeXNpY2FsKCZuZXctPnN0cmlk
+ZXNbaV0sIHBoeXMpOw0KPj4gKyAgICAgICB9DQo+PiArDQo+PiArICAgICAgIHJldCA9IGJ0cmZz
+X2RlbF9pdGVtKHRyYW5zLCBzdHJpcGVfcm9vdCwgcGF0aCk7DQo+PiArICAgICAgIGlmIChyZXQp
+DQo+PiArICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+PiArDQo+PiArICAgICAgIGJ0cmZzX3Jl
+bGVhc2VfcGF0aChwYXRoKTsNCj4+ICsgICAgICAgcmV0ID0gYnRyZnNfaW5zZXJ0X2l0ZW0odHJh
+bnMsIHN0cmlwZV9yb290LCAmbmV3a2V5LCBuZXcsIGl0ZW1fc2l6ZSk7DQo+IA0KPiBTbyBpbnN0
+ZWFkIG9mIGRvaW5nIGEgZGVsZXRpb24gZm9sbG93ZWQgYnkgYW4gaW5zZXJ0aW9uLCB3aGljaCBp
+bXBsaWVzDQo+IHR3byBzZWFyY2hlcyBpbiB0aGUgYnRyZWUgYW5kIG9jY2FzaW9uYWwgbm9kZS9s
+ZWFmIG1lcmdlcyBhbmQgc3BsaXRzLA0KPiBjYW4ndCB3ZSBkbyB0aGlzIGluIGEgc2luZ2xlIHNl
+YXJjaD8NCj4gQnkgYWRqdXN0aW5nIGl0ZW0ga2V5cywgdXBkYXRpbmcgaXRlbXMgYW5kIGR1cGxp
+Y2F0aW5nIHRoZW0gKGZvbGxvd2VkDQo+IGJ5IHVwZGF0aW5nIHRoZW0pLCBzaW1pbGFyIHRvIHdo
+YXQgd2UgZG8gYXQgYnRyZnNfZHJvcF9leHRlbnRzKCkgZm9yDQo+IGV4YW1wbGUuDQo+IE90aGVy
+d2lzZSB0aGlzIG1heSByZXN1bHQgaW4gdmVyeSBoaWdoIGxvY2sgY29udGVudGlvbiBhbmQgZXh0
+cmEgd29yay4NCj4gDQo+IEl0J3Mgb2sgZm9yIGFuIGluaXRpYWwgaW1wbGVtZW50YXRpb24gYW5k
+IGNhbiBiZSBpbXByb3ZlZCBsYXRlciwgYnV0IEkNCj4gd2FzIGp1c3QgY3VyaW91cyBpZiB0aGVy
+ZSdzIGFueSByZWFzb24gYmVzaWRlcyBzaW1wbGljaXR5IGZvciBub3cuDQoNCg0KSSBkaWQgaGF2
+ZSBhIHZlcnNpb24gdXNpbmcgYnRyZnNfZHVwbGljYXRlX2l0ZW0oKSBhbmQgZHJvcHBlZCBpdCBh
+Z2Fpbi4gDQpCdXQgeWVzIHN1cmUgSSBjYW4gcmVzdXJyZWN0IGl0Lg0KDQpCdXQgZmlyc3RseSBJ
+IGhhdmUgdG8gZmluZCBvdXQgd2h5IGJvdGggb2YgdGhlc2UgKC0gYW5kICspIGFyZSBidWdneS4N
+Cg0KLQkJCWlmIChwYXRoLT5zbG90c1swXSA9PSAwKQ0KLQkJCQlicmVhazsNCi0JCQlwYXRoLT5z
+bG90c1swXS0tOw0KKwkJCWlmIChwYXRoLT5zbG90c1swXSA+IDApDQorCQkJCXBhdGgtPnNsb3Rz
+WzBdLS07DQogIAkJDQpUaGUgJy0nIHZlcnNpb24gcGFzc2VzIHhmc3Rlc3RzIGJ1dCBub3QgdGhl
+IHNlbGZ0ZXN0IChhcyBpdCdzIHRoZSAxc3QgDQppdGVtIGluIHRoZSB0cmVlLCBzbyBpdCBkb2Vz
+bid0IGZpbmQgaXQgYW5kIGJhaWwgb3V0KSwgdGhlICcrJyB2ZXJzaW9uIA0KcGFzc2VzIHRoZSBz
+ZWxmdGVzdCBidXQgZ2l2ZXMgRlMgZGF0YSBjb3JydXB0aW9uIG9uIHhmc3Rlc3RzLCBiZWNhdXNl
+IGl0IA0KZGVsZXRlcyB0aGUgd3JvbmcgZGF0YS4NCg==
 
