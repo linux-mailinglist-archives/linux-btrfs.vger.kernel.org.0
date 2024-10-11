@@ -1,222 +1,243 @@
-Return-Path: <linux-btrfs+bounces-8864-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8865-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B3F799AD16
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 21:49:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1465599ADA0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 22:38:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27ED9282E3B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 19:49:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DB0DB23655
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 20:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF2D1D0E0F;
-	Fri, 11 Oct 2024 19:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8941D1507;
+	Fri, 11 Oct 2024 20:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Bdt/19IO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K6BqPEkY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VgEFy2gk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a3-smtp.messagingengine.com (fout-a3-smtp.messagingengine.com [103.168.172.146])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8081D0F5D
-	for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2024 19:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728676132; cv=none; b=lDFbQSLvY/3ayVYhdVFQPCdh37OU+sMZS4KjaPXxirDETJvjLAvOwzM6pthqPgEbexfQmWISCEIQ8EViWWqfBr36mOWywH0W/8kz78Uxk2a32LHjmvICnAX/mv5qyowaFQrcW+JOULRZ1IqddByVr8KyxSqhf0lh4ry/na4/LLM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728676132; c=relaxed/simple;
-	bh=9EV9X+dC7S1Jqb9Y7IstWe0ZdQzIKaPbhbmCCsikc1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ElymAkLuBxcSqk7q5UQC35ZKE4C024FOKKT8m4rjKLPMh77bPj6O3RxoNRJ92vPNALwxhrcco6Oiqu/DOhdF3O3FGPUH5+dwcElNJKD59EEyp/AyD8JcvvPn5t+xl+GCOzrpxztvQYCyN4N36yrVNom7bdEQHcfZtRnYptdO/sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Bdt/19IO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K6BqPEkY; arc=none smtp.client-ip=103.168.172.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.phl.internal (Postfix) with ESMTP id 116331380205;
-	Fri, 11 Oct 2024 15:48:48 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-12.internal (MEProxy); Fri, 11 Oct 2024 15:48:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1728676128; x=1728762528; bh=f0l6EAXqtT
-	lN16i/14ZR6Fp86c3HwFzcLJZTQEURv9o=; b=Bdt/19IObEkUwekzaO/wsVRito
-	uqC9MD7nQhr9IBR1yvAEAet5XMHLN2pgh/XMJaV1CO6RNefji2/vlvFAo9FY6L/P
-	aV+ceerBNvWLxxF7xEV89WScEOv+QuI8XA4bXojn+zZJ7yx2UtgP5Jq9YMoeKufJ
-	O/nnktUut4/4VTHHFKSJyrONaTzyTlCZSoYV2rIIGg07vwbj4vMYVnFlCW1vyjYt
-	ftxGJb0VfKRuAV/fHd9pSe3PUtADju822YoEM1Ok5cWdBqktGdauC1pkLK7nADD4
-	nKJip48rwliSnaoRV8FEknW66xxRfae+UAUqyRA/l7D0qW7HTEziuEkBctoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1728676128; x=1728762528; bh=f0l6EAXqtTlN16i/14ZR6Fp86c3H
-	wFzcLJZTQEURv9o=; b=K6BqPEkYJmr/h2E5k7+U79v9MvbU2Ae3G02opc3Lfgv+
-	PDdCXXbWZzIKibX/ZPGrfgtwLgEG6t3uZcP8ggIiEe95CreB7cWHLDVbysxyn/sj
-	Pf1/6TomF3nT1bXLFKnLD3GUJ7zelBiac8f+Sbc6nK7YDHXcrFgLSeK1GBsgh5SZ
-	JR8Jn+1xQR2HkpfYHJ7DCucb0/CdQPrfIrFcAxQXRlhTo8UnlF/xMMwX1LQ6+208
-	U8lAgZH7eL6zaXLpaIerDbgHjoboG70pc/xKTPmyLRt9lt5K+dR8MAfHebpV0BFA
-	dKZtvJUBcQUnjaTRFnfAedUatakFHrlMO2XpdBC9TQ==
-X-ME-Sender: <xms:H4EJZ3Ij-QNWiAk4zXEq7e-khx-ObMGSi0BO2C_Y8Beriat4aKEZdQ>
-    <xme:H4EJZ7Kf-lc2zUpWap0TMNsy5RaFHLqkrvH4__1RKSdx3F41Zw00GLlpz-tfpUTNw
-    -Tgf9YX8nGhoUDPRHc>
-X-ME-Received: <xmr:H4EJZ_tCqCz1GKz_MhZbnJ1uLUrlViPQLTFuejm92DYgARSlJYIf661pTt8t5G7-6E5dH1LTb9VxQn7KZDs7MnKHG14>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefkedgudegtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepieetieeggfekkeduiedtiefggfelueevleehteeuvefgvdel
-    kefhledukeeihedunecuffhomhgrihhnpehgihhthhhusgdrtghomhdprhhunhdrshhhpd
-    hlphgtrdgvvhgvnhhtshenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedpmhhoug
-    gvpehsmhhtphhouhhtpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtiidprhgt
-    phhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:H4EJZwZzGd781reyKCmjaX_8z611r_w4zsDtf7vbXrMS3A5rs6DU2w>
-    <xmx:H4EJZ-Yh-efSnTMhkmG3vhMhYaCk88AU9tASWwQ0RYhoGrlLcGc4Zw>
-    <xmx:H4EJZ0Cvds7lHPneo0hJob0FpFinYBXtwPNeF4gDrkkprMO5Z-6XDQ>
-    <xmx:H4EJZ8avmQvRlm78I_UV8J6zZcs87fHicrP65DDnXormpZkxcB1vug>
-    <xmx:IIEJZ-G8DU7FhFdpRuOVTdbrW0X0gIDuk5j_wVmXfD53--tX5qqPzcKM>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Oct 2024 15:48:47 -0400 (EDT)
-Date: Fri, 11 Oct 2024 12:48:31 -0700
-From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs: try to search for data csums in commit root
-Message-ID: <20241011194831.GA2832667@zen.localdomain>
-References: <0a59693a70f542120a0302e9864e7f9b86e1cb4c.1728415983.git.boris@bur.io>
- <20241011174603.GA1609@twin.jikos.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1FB19B3CB;
+	Fri, 11 Oct 2024 20:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728679106; cv=fail; b=BVjNLOIQYwimCPY1uHWHaDL88C/BW0CMk+7rlB5hYp+Mhr2vKyOY4ZFfZCaijGIiMVvn6Pq0/ES3/adaT6dXGvCT0S17fM8c4Tl+OIuqWtJqU7Io7hCMYIwJpNOPhpzL48uiq1OdijWINMm9FIyV9pfQW3aO3kMCRV7qTlrpoJg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728679106; c=relaxed/simple;
+	bh=TN06abKnyHnPe8ujbPS7t+Vypi97uRydXUevwEruehs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=EL7ITspzyo8obo6jmkUTCtLpqMz6MUrbMJQPsKFHKyAg7Awcg1C2sBcP8SMcY1lmP9jUW5xGE2kK+gPFdD/CV3vntzBDy42D8ttsMumGetFOf8EdzRE//mtl4b/iRW+UayMkmOtMyUxbMghol2NDhX1oP/kjMANiVU79DKBbcTs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VgEFy2gk; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728679105; x=1760215105;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=TN06abKnyHnPe8ujbPS7t+Vypi97uRydXUevwEruehs=;
+  b=VgEFy2gkGkQU259VLMZ/UdgCpSPLXLk6hv7OrAxD7Fvf+Gk288BmML9/
+   +hoVGTCyIG3LEnAQtFonB4nWtI4KEOYwncaDCnmqV2VcuW1foes7oAi++
+   YLqwqsL0tV2mndig2x12P8CupDTF3+LBiMJnaVkzYJN+Z3yHwkfsEvxyW
+   e/iOyh7Odtuu/qLJZ9mT132cxmg+g5Hgj9HylZBlVrCZ/YmQjgMC2xGCW
+   kudUYc7oKQG5JQqDysBs1aByPORjEHHTNLKz4Qi9nt/PS5ukEIzoYWeWy
+   QMvx+8cW+9chNZ6NoRrXTYhgVgnI61mGLgmC1Y0JobJN7XlNYK00TNo0x
+   w==;
+X-CSE-ConnectionGUID: 9kGpW//mRWG/YbzotM5kXg==
+X-CSE-MsgGUID: 7fwjcYm+Sy+KrdiLeJ1TBA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="39463739"
+X-IronPort-AV: E=Sophos;i="6.11,196,1725346800"; 
+   d="scan'208";a="39463739"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2024 13:38:24 -0700
+X-CSE-ConnectionGUID: wEPQbErySMWiQvO4ub+kew==
+X-CSE-MsgGUID: qRKNiSmcSwWU4rPvf8xe+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,196,1725346800"; 
+   d="scan'208";a="81014707"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Oct 2024 13:38:24 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Fri, 11 Oct 2024 13:38:23 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Fri, 11 Oct 2024 13:38:23 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 11 Oct 2024 13:38:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fjQYsi6P4JqiuGAcGF9fG8smaleeNcEMAxXINYAudrA0/Q/SMWgBJw58K2FlnI8aQoOwiCZuWBKY5ZCSKrto/G4J7M+rc7LydmAhEISnl/Coese7BkzF/7WiQKGGsSSuebaRpPrSSFbZZSLB33onjiYKH2rO736SSxp4v++9LV0hkb4FEUkGxh9U+t4gwgKjn6ffv4eoTkdd+Wruk+WIHPAERFCw8CTzXuRquhuQ/xhM92335b9C9EI6hWHSgB5h+Py49nr4JGHkW8wHqctjhtk1h/FszjNupJdhyeeSGi1OnUD/tUwozidu3F3lEtrylLMhfI0SVhS6F+9CCDhXcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7noy4HOjjPxndstDBlybTQwEwCu4S+2zewtIIOvG+z0=;
+ b=gQe8PxC8zWEixkLiz4EjEuSG3pwXpn47dcsESY94bMT1QnmlqptGo8XDdjSNXgo7nJONkY9F/lRHTpAnCASigjsNJbvvSTSvKgEswB8RuVi84Jkgfh0c93g1K4IVDtqJyBI+lASadMhyokfHgCkRolycOvtHrdX8xDVXv50P9MFXekAPY3Qg64+UqNSPxLn5hVUyNL+rCP2qlJlvDUTr8ZYkcIKvQ4/RUzcBfQ9frf8xbRA0Q6mLFYbbXVtkPOrAGaf4blRTmBlhbSPU2cQSR1uxkX6iWFtpT/GSuzW1UfhD0MsUgmCjzmMENJXgImfwSUxlDABfK2uraAOOPXoFsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by CH0PR11MB8190.namprd11.prod.outlook.com (2603:10b6:610:188::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.18; Fri, 11 Oct
+ 2024 20:38:18 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57%3]) with mapi id 15.20.8048.018; Fri, 11 Oct 2024
+ 20:38:18 +0000
+Date: Fri, 11 Oct 2024 15:38:12 -0500
+From: Ira Weiny <ira.weiny@intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Jonathan
+ Cameron" <Jonathan.Cameron@huawei.com>, Navneet Singh
+	<navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, Andrew Morton
+	<akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown
+	<lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>
+Subject: Re: [PATCH v4 12/28] cxl/cdat: Gather DSMAS data for DCD regions
+Message-ID: <67098cb436d87_a55db294f8@iweiny-mobl.notmuch>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-12-c261ee6eeded@intel.com>
+ <CAJZ5v0iFco4htzfW1sYYKKh67oe4GsnUBOPRiunHQ1n2FHa3hA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iFco4htzfW1sYYKKh67oe4GsnUBOPRiunHQ1n2FHa3hA@mail.gmail.com>
+X-ClientProxiedBy: MW4PR04CA0188.namprd04.prod.outlook.com
+ (2603:10b6:303:86::13) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241011174603.GA1609@twin.jikos.cz>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|CH0PR11MB8190:EE_
+X-MS-Office365-Filtering-Correlation-Id: 29ab2738-a44d-448c-6514-08dcea34a339
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?WEQ2Y2FvRzA2NkRzd0RicGRSWGk3dVYyTFNWM2lJbU1yREtkVVBQLzArNXZi?=
+ =?utf-8?B?RERWRmh3bDRNa1hGdGphNzk0djNNRlRnUStvRGU4ZHRzQjh4bTdPMllZOGlk?=
+ =?utf-8?B?WWs0MjRLenJ4cCttcUpTTDZ5T2pDekQ2emd5VkhlaCtSMTFZNWdqaFhTVlFa?=
+ =?utf-8?B?Z3IrVG5TdStYTjR5aVN5djRoaVpEV0d0S1daazZHNHVyNEU3R2diWTBxWEdG?=
+ =?utf-8?B?NDhTL09EOEEzNTI5R0U1VDhFTkdXQ1NiZEFWUnl5cVhxcVBFM2diTzQ2bTNq?=
+ =?utf-8?B?QnJBd3VKaUdjTEs1enI5VVkwN2VvUzI4alhkeSsxVk1mbTM0Vk9kbmx3WkVT?=
+ =?utf-8?B?ZDNyYXNqL3FrOTd6K3d2ODg4OVBTMkNUZGNNR3FobWU4K3lEaGdRMDNucGxq?=
+ =?utf-8?B?NDM3MEhqdk5HbmZLVEZtQ1A3aXNVakhhVjNIeit0UXJmKzZBZ3FUWkc2NUFp?=
+ =?utf-8?B?SytLUlZrdXZNN1Y4eXhCK0l5QnhjcGdsZmRjckVVanU4clZoTm9UbVBYdjNT?=
+ =?utf-8?B?RzRHZVZRS0dRR3lpNm1FN3hQZUd4N0traUhNUHU2NHRkMWRyUXlFdm5DMTUv?=
+ =?utf-8?B?bVhpN0dzNnJtckdxcDhIU3NjSVRjbHd0U0ZEblJMeDNBRmFxVTg1N1BmQzVC?=
+ =?utf-8?B?aldkb2o2VjdNYk5wOUVDbGFld2Frd3hReTB1emIvL01TSTZyNE01ZDYxK2px?=
+ =?utf-8?B?aWh2TGp5QmV3WnhqRnE4NkwwWTBGNWNoMFZBWTRkYkgrZ2V0dHkvbXdLQ2E1?=
+ =?utf-8?B?MUF2cklHQTZvbm5ob25GV0tFczRFWWNjMGJ3VUVrMFpBblYzWC9memkwQzhK?=
+ =?utf-8?B?a2xPN05rRUl3MENzUGhYZ2ErWkFQMmE2YmJtUEswRHp2eUNpcHVhYzR6N2hs?=
+ =?utf-8?B?SEpmWmJUKzZZMGZpakxXK0lnZ1FlbW5leG5HUGV6REhOUW1Xc2tXNHl1eGJz?=
+ =?utf-8?B?RXpyS3dQcDRYSkd2T3p5WkFRNHVibHZaYzBiQ09tREtBeWJMRXRUUXFGcFBI?=
+ =?utf-8?B?bnRmNlZvaERGNU1hLzFiQUZvTkhkbGwrTEJoWWpWdm43bFZ5bHhLbTJHdmNx?=
+ =?utf-8?B?Zzk4cldLcmQwQzd2VkoxWjZjTjRSVFRwNWk2MDM3YXpCVHBCZHNPMFJDQ1RO?=
+ =?utf-8?B?OU9PZkpCdkl2YjUwM3FldEF5N1hCWnJNR0JrOUNtTU9YRWgyQlV2N0lkUm9B?=
+ =?utf-8?B?MlF2b1ZCVDd1MFQrSVJUeXd3ZTJ5S01sdG1XUXl3NUpWcGsxR2lwZExOakxr?=
+ =?utf-8?B?aDArK04zK0RSTGdaNWJiTys4NW9Dbzc3VTBWaUEvK21jd2VKTnpHVTJiMVRZ?=
+ =?utf-8?B?YllOaHJrTGxyTEYyd1creEdiRHArYTBnYUlXRVhMVklmSmx0K0pjUTVJcmZJ?=
+ =?utf-8?B?VllEaDdLQm9mb0Jxc21TL3hSU3QySHlVWU9sU293UkdoSGxWUWFVL2tZQUp0?=
+ =?utf-8?B?dXAvcWhid1dHVkR0ckVNNjV4VDQ4MERJbDVtNjBvSCtjcEdxdDZWK08xa2p2?=
+ =?utf-8?B?Vlp2alJZamtYcERZdFJUdXVNZEhwNDVaVWhZTllHeEx6L3ljRUZxSUxmUCtr?=
+ =?utf-8?B?OHdRNDU0YkRtN1NtMXhyU0FJQWs1NG9LZTlvTjVJbWhOWXRBSm45REY0bE5z?=
+ =?utf-8?B?NjVXUCtZZzBxcnlSYk5RWll6WGNLazl2OWNoK29weVNKaDhJUG5iS1c0eHRs?=
+ =?utf-8?B?OHowQnZVQ2dqSXB0cjFKdElGd3dWSmlDY1lJNzBlajlha2czeE1kOEhRPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjI1anRuTVN0dGlkVmM3S2xYQ2N2ZEhpVGxqUnlwL1RKQW9KaE51akJFaFp0?=
+ =?utf-8?B?NXR5N3hyUUVZU2ZNeGFWR0cwOVJpTC9UcFgydllZS05MMU1qbHlpeUVzM1Nh?=
+ =?utf-8?B?N2pzY2VvdGk1ZnNmVDJzWlRwZnBMb09qOW9SOHM1clRhVzRGYkNUaGRsTHFh?=
+ =?utf-8?B?MHNOUlJYdlRVSGNrc0pzTS83SzhkTDF6aHFSTmc3OGNvQ2Q2dDMzd01SS0Uw?=
+ =?utf-8?B?ay9rRlFsL0NJemtEanRSN29yT0lWVzdzdjNjSjF2TVE0emttUFQ2aEYxMnQ4?=
+ =?utf-8?B?bGFkNGpTVytqQVBLY2hYWkQwbWExUVcrZVhlOHN3T09aOFEzeXRxdHhkd01m?=
+ =?utf-8?B?NVNad091RG9ic2tqMUtUNStobThxTjJhQ2dVMmlZanl4VERFM3k4YUJUOXJJ?=
+ =?utf-8?B?dVRMWnVDL2F2QmUvVVZlbjNtaWdNUzV5WGtkM1BycjZwZmpwcWZMZ05vNE5W?=
+ =?utf-8?B?Y3hGR2x4c2tYOElIay9kL3pYZllYRm02VEM2V0lKd1kyRVNIb2ltYS9sNGNa?=
+ =?utf-8?B?eEVjbzV5azZYSEZLMUVKdlFsTHZDWDY4enRhanFPZTU2b2w0enVJKzNPSXIx?=
+ =?utf-8?B?SXZESkxFMGcwV0dkSTQ0Z2VYcFhNOVlvQjlyYVRSZjU0d0dqMjBOQk1FQVAv?=
+ =?utf-8?B?N0lVTks2UjQ1SnM3ZDlvRk9rcDZNbVdMcnJXQXpyREdmcHRxSStuV2Rka3Bo?=
+ =?utf-8?B?UE9acmM0ZEFMdDA2OXYvdWFtUVZIZmFaS0crYTdYa1J1UFI0US9rQ041MUxp?=
+ =?utf-8?B?cU05dndaa2N1UXJweXNNaXBFUjlCRk9YdWdrelVtVzhTUHdTYmJYemV2TlNl?=
+ =?utf-8?B?UkdFeXJUdUdGUUV4U1VVamltbE1MNXZUTGlhTjB6SkljWE40Q0xjNFlhdERt?=
+ =?utf-8?B?L0o3R2tRMERkR1E2MW5SVUJBakc4ZWpUUkgzOEMzN3VxdG1BWWZqdXQyZUJ6?=
+ =?utf-8?B?eHZTZzhIUnJxR0k1eE8xS2dJZkNGZ1h0SFExa25nWjZ6RDI0eko0MjExOXBD?=
+ =?utf-8?B?OEZIKzB1dDF5VXZRWDc2VVN6Vk5SZzZrdnRrZDRVK3lUcXpLSkFGcjA1NHZ0?=
+ =?utf-8?B?YUZwcFQxdTQ0ZkV5Q2gyRXIybEJyaUxvY3ZZRklvdkloOFB2emRzSktpQUlZ?=
+ =?utf-8?B?b1RjbFZHTGlEZXJwMFpldHpJNUZUdHcrWUVNWnl6NkdpakVLb3B4VnNEOXEv?=
+ =?utf-8?B?THlDUlJVUWZPNGs4SjA2bG9rNENyMnF1MHRlYzNEaUVidnpIRWFJWlV2TS9R?=
+ =?utf-8?B?eEk1azd2UmluTFdWSHZOR05VdWIxM3VzVlZRRlRjWnJnSmVpVlZrVGdtU1gx?=
+ =?utf-8?B?RDFySkxyMDh6OVlmTDh0cXV2SktIK3JjZW5kVTg0VnQ4RjYwYkZWQTdmb2Vk?=
+ =?utf-8?B?TVJtcml1cktWNm94OUU3WVhnNUx2WWlVQ1RsWGJza1VFaTdaei9tcGhPZGZ3?=
+ =?utf-8?B?bUZVRFZWNlA2TU9uaHJDRXhMM3JKeXVEUmJld1hXa01VUzdvTTdNSTI1UFh6?=
+ =?utf-8?B?MWRTSXl2RThjalpCZDFESWwwTkp0RU1BL3VSbml0SXE3Y1NVRjE3dWNaVGk1?=
+ =?utf-8?B?Tk5Uc2lZdThRMHJTS1FjN3ZOYURoK0F3cy9Reis4RWJXNnBWWlhlOFJwbUJ5?=
+ =?utf-8?B?dlBLT2ZNU3ZqdEdNQ1oxMUlKTG1DQUU5a0daZkRMRFlLSUFmc1RxNlNPT0VV?=
+ =?utf-8?B?U0FSV3BTTUIwRHVSZEt1RzQ1Yk9ZY2s3MjhkRkx6REI3TXgzcHlVVkFidmxu?=
+ =?utf-8?B?RzJHc21DRFdublJacE9UNmorUzF1VEo1ZnNKbDlaTFVWNkZ2ZjVOMzhycTZI?=
+ =?utf-8?B?cEpSdVlJVjRmQkxCM0V3eDkwZU9FdEE5TXdXN0Zsa3YwVk0wdU1tMFY1Ujdw?=
+ =?utf-8?B?TGZwRmZSSjlubVNnUExFT2lNOWxjR1V4bmxSbTRnK1RUNURTYXFZT2dueDg5?=
+ =?utf-8?B?bGp3NngxTEo4VkErSjNEUTc3TFZyZ3VNM2xJc3o0dlhoYnkwa29STVV3azRr?=
+ =?utf-8?B?aDlCQ0w1K3BUajZhVkpVcTNZK242bXVSeU40OXVaTDBZWW9TUWl6U3NKY0NS?=
+ =?utf-8?B?OHh5RU9hbm9yeVpGVkZGVzJRUTYvd2FFaXE2Q3hVQ3RUVHBkaHBmL2ZMcDJV?=
+ =?utf-8?Q?wacg5Hz52S76P9oJfQkoS9DQA?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29ab2738-a44d-448c-6514-08dcea34a339
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 20:38:18.2647
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hJRFrua5VQAcgaDgqeh+O7CQBlG+u5KapVxvs6i4aX0N45WX1bqTEpe8huSLqUGqpDdbY9AL5W8wwwGE/mOxtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8190
+X-OriginatorOrg: intel.com
 
-On Fri, Oct 11, 2024 at 07:46:03PM +0200, David Sterba wrote:
-> On Tue, Oct 08, 2024 at 12:36:34PM -0700, Boris Burkov wrote:
-> > If you run a workload like:
-> > - a cgroup that does tons of data reading, with a harsh memory limit
-> > - a second cgroup that tries to write new files
-> > e.g.:
-> > https://github.com/boryas/scripts/blob/main/sh/noisy-neighbor/run.sh
-> > 
-> > then what quickly occurs is:
-> > - a high degree of contention on the csum root node eb rwsem
-> > - memory starved cgroup doing tons of reclaim on CPU.
-> > - many reader threads in the memory starved cgroup "holding" the sem
-> >   as readers, but not scheduling promptly. i.e., task __state == 0, but
-> >   not running on a cpu.
-> > - btrfs_commit_transaction stuck trying to acquire the sem as a writer.
-> > 
-> > This results in VERY long transactions. On my test system, that script
-> > produces 20-30s long transaction commits. This then results in
-> > seriously degraded performance for any cgroup using the filesystem (the
-> > victim cgroup in the script).
-> > 
-> > This reproducer is a bit silly, as the villanous cgroup is using almost
-> > all of its memory.max for kernel memory (specifically pagetables) but it
-> > sort of doesn't matter, as I am most interested in the btrfs locking
-> > behavior. It isn't an academic problem, as we see this exact problem in
-> > production at Meta with one cgroup over memory.max ruining btrfs
-> > performance for the whole system.
-> > 
-> > The underlying scheduling "problem" with global rwsems is sort of thorny
-> > and apparently well known. e.g.
-> > https://lpc.events/event/18/contributions/1883/
-> > 
-> > As a result, our main lever in the short term is just trying to reduce
-> > contention on our various rwsems. In the case of the csum tree, we can
-> > either redesign btree locking (hard...) or try to use the commit root
-> > when we can. Luckily, it seems likely that many reads are for old extents
-> > written many transactions ago, and that for those we *can* in fact
-> > search the commit root!
-> > 
-> > This change detects when we are trying to read an old extent (according
-> > to extent map generation) and then wires that through bio_ctrl to the
-> > btrfs_bio, which unfortunately isn't allocated yet when we have this
-> > information. When we go to lookup the csums in lookup_bio_sums we can
-> > check this condition on the btrfs_bio and do the commit root lookup
-> > accordingly.
-> > 
-> > With the fix, on that same test case, commit latencies no longer exceed
-> > ~400ms on my system.
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> > Changelog:
-> > v2:
-> > - hold the commit_root_sem for the duration of the entire lookup, not
-> >   just per btrfs_search_slot. Note that we can't naively do the thing
-> >   where we release the lock every loop as that is exactly what we are
-> >   trying to avoid. Theoretically, we could re-grab the lock and fully
-> >   start over if the lock is write contended or something. I suspect the
-> >   rwsem fairness features will let the commit writer get it fast enough
-> >   anyway.
+Rafael J. Wysocki wrote:
+> On Tue, Oct 8, 2024 at 1:17 AM Ira Weiny <ira.weiny@intel.com> wrote:
+> >
+
+[snip]
+
+> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> > index 199afc2cd122..387fc821703a 100644
+> > --- a/include/acpi/actbl1.h
+> > +++ b/include/acpi/actbl1.h
+> > @@ -403,6 +403,8 @@ struct acpi_cdat_dsmas {
+> >  /* Flags for subtable above */
+> >
+> >  #define ACPI_CDAT_DSMAS_NON_VOLATILE        (1 << 2)
+> > +#define ACPI_CDAT_DSMAS_SHAREABLE           (1 << 3)
+> > +#define ACPI_CDAT_DSMAS_READ_ONLY           (1 << 6)
+> >
+> >  /* Subtable 1: Device scoped Latency and Bandwidth Information Structure (DSLBIS) */
+> >
 > 
-> I'd rather let the locking primitives do the fairness, mutex spinning or
-> other optimizations, unless you'd find a good reason to add some try
-> locks or contention checks. But such things are hard to predict just
-> from the code, this depends on data, how many threads are involved.
-> Regrabbing could be left as an option when there is some corner case.
-> 
+> Is there an upstream ACPICA commit for this?
 
-Agreed.
+There is a PR for it now.
 
-> > 
-> > ---
-> >  fs/btrfs/bio.h       |  1 +
-> >  fs/btrfs/extent_io.c | 21 +++++++++++++++++++++
-> >  fs/btrfs/file-item.c | 10 ++++++++++
-> >  3 files changed, 32 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> > index e48612340745..159f6a4425a6 100644
-> > --- a/fs/btrfs/bio.h
-> > +++ b/fs/btrfs/bio.h
-> > @@ -48,6 +48,7 @@ struct btrfs_bio {
-> >  			u8 *csum;
-> >  			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
-> >  			struct bvec_iter saved_iter;
-> > +			bool commit_root_csum;
-> 
-> Can you please find another way how to store this? Maybe the bio flags
-> have some bits free. Otherwise this adds 8 bytes to btrfs_bio, while
-> this structure should be optimized for size.  It's ok to use bool for
-> simplicity in the first versions when you're testing the locking.
+	https://github.com/acpica/acpica/pull/976
 
-Ooh, good point!
+Do I need to reference that in this patch?  Or wait for it to be merged
+and drop this hunk?
 
-I started looking into it some more and it's tricky but I have a few
-ideas, curious what you think:
-
-1. Export the btrfs_bio_ctrl and optionally wire it through the
-   callstack. For data reads it is still live on the stack, we just can't
-   be sure that containerof will work in general. Or just wire the bool
-   through the calls. This is pretty "trivial" but also ugly.
-2. We already allocate an io context in multi-device scenarios. we could
-   allocate a smaller one for single. That doesn't seem that different
-   than adding a flags to btrfs_bio.
-3. Figure out how to stuff it into struct btrfs_bio. For example, I
-   think we aren't using btrfs_bio->private until later, so we could put
-   a to-be-overwritten submit control struct in there.
-4. Figure out how to stuff it into struct bio. This would be your
-   bi_flags idea. However, I'm confused how to do that safely. Doesn't
-   the block layer own those bits? It seems aggressive for me to try
-   to use them. bio has a bi_private as well, which might be unset in
-   the context we care about.
-
-I'm leaning towards option 3: taking advantage of the yet unset
-btrfs_bio->private
-
-Thanks for the review,
-Boris
+Ira
 
