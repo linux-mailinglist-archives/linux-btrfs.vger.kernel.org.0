@@ -1,145 +1,351 @@
-Return-Path: <linux-btrfs+bounces-8834-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8835-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74B1999A42
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 04:18:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86263999AA7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 04:41:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52EC91F246E8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 02:18:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2F321F244D3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2024 02:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B884A1F9434;
-	Fri, 11 Oct 2024 02:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E361F4725;
+	Fri, 11 Oct 2024 02:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OBzk3v/B"
+	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="SCE39OcV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.synology.com (mail.synology.com [211.23.38.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FA41F8F16;
-	Fri, 11 Oct 2024 02:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAD717BA9
+	for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2024 02:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728612932; cv=none; b=QCmLZmgzA3IXeb40vufKCZAy0olw4WCIHQRwf23pRRxuAe50PKSVmspi+iezlNmYjSccFGiBrtDbkomDwbbEkiSaVKLlsz46ufIt9sFWtQxHKYbvN/Jzsmndf++XBTsYEmFyFYumMlFAeo1bC+Ug+nAKTQWw7TR2x79yDAwFUxU=
+	t=1728614471; cv=none; b=KSz7Z1g3fl8Sf9loJVKDlc6SFIVZoKTy9UgvjKCdbxqOS/vuVqN+2CA1pXzpgPC/L9oMeIYREuZHZUXFVIphYr5QTpqJZ42U6PWsTdtaD5D+w77klgk4OrfcNv3ntVH+rZhy63wVLWAtOev8gOQkAX6kLhFSpKmAjmucpuYei/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728612932; c=relaxed/simple;
-	bh=gKiPKrKK60BJmsa5junoqJcObDYTvmnASwTlUEIPmT0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R4gBlF8S0yp7Mv51+3XzwFjwg/2BBvVqh/1am+0CfAzk8qmx3Gln+nOry8BbmpGhdAjFmZHDsTRtc22LGBWq0RJ2aegWRjdbr6TfCrTqvBEiDZNxZ5U2DjQtCTCwQ3/qqpy45PaxxniKS3Riku7UCnDu0W0+lmUa0KM4xgE9teI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OBzk3v/B; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20b7259be6fso16491805ad.0;
-        Thu, 10 Oct 2024 19:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728612930; x=1729217730; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G70sgRbW5zVDibTqLQGClZ8RjbVJyvgKa5ojU/Ri918=;
-        b=OBzk3v/B9RuhNBUTEH7jFTurJY2cDiar41HEcLcU6PWRoA8jUIjrX2jVz0v27AELY3
-         zxzFeD+hT73MwnVmsnlivRf/zcl5ApJi/cKi6VIKoA/9vefM53mPj4KbmoWf/4GQPe1i
-         /8QieYDAoK5fpmdMFeI78T6uAdv9lWfB3mbf6k3Q+zXWUW1Zuzd58/f4V5EHrlsOkoAE
-         iLJF16twSPddzdYdur6kHPJnjvKpIe4ZQx54QfkkTP2ptbjEY/LKcrXJEiJ5RbTmAlig
-         cLmgrDw3NyhCMHqv5VS83ycUPqAJc+MQMLVqLsoxov9G4ywlaIamJVoPMNNmFF4r/rCV
-         cs2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728612930; x=1729217730;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G70sgRbW5zVDibTqLQGClZ8RjbVJyvgKa5ojU/Ri918=;
-        b=Z98+kWOdAr1MpG92kr20QJUELAjW+GM68FGunGx0KGGl+CasJs8jDT8iX6XO47Fxzo
-         dbM40f+XbqJu/VhhIwxXXs7hCjLuHZBcnwLP23YAVhnSghBgJb4guF875N7Gp87CrOxG
-         /ahr7a1j00eGfIMsGlYA9Gx3Up3T16vB0bgzCGqlyKKt5ZjWYwXUlS1Io1xNqMkKQhWf
-         BBqr8flwRxsSJ/rg0KQGhQeAgLDoFNdx8FLVThgkAcw3SwstVSFWWSc3vby7l2O7BAYF
-         1rQxSJIxgvxyAK+ca3WTOXoU9I+BRdVeG3FYEHx9Vh4BdJTVLGNLp9GSnyTL8vYhggaw
-         /KkA==
-X-Forwarded-Encrypted: i=1; AJvYcCU96iDsmObkdWUCJEpVN63Wg+KX729Iesvofp3Gk/Oub6H9/ezmS5NSSSlcttOH9guL2aSCOKxyNWLZoX6n@vger.kernel.org, AJvYcCVBuPoWchl2i78Xc0degEp7dh0Ox2EZiAqabZtzQxih9nwjCePhQBMUucKBfhUt4WURVjM2HzC7abPA/g==@vger.kernel.org, AJvYcCW2C7U9Jel80OkzvDSQpVbqKMCtHy3CVQU8SRE8hwqwccDFPgp/OdpXyKiMSIMm2kS8Rp9m6YRGS9TP@vger.kernel.org, AJvYcCXLM+P0cD9EpXVoJWyh02ro3b+3pL3XhLsI7WPsQ13DwBkiH+htrHd2oJLts/d51+ClvB1qTw1WWvWs@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsDgac/jlxVMyyC4rFXTeNDdFMTAMUxDEOZJ/ZM2MG2uCYP4Y7
-	tgUAkACCV9jrLj2lvRU5FRJEUtve+EodoWd1DL5Q1dX6Qou8nat+
-X-Google-Smtp-Source: AGHT+IE+MmEO12vUoLLKgbmMkNfIYHaPi9xzVe//y2m2AiK1pGN+UkN2eoeP1RMMb86Uy/RRTG6kzw==
-X-Received: by 2002:a17:902:f789:b0:20c:9821:69a9 with SMTP id d9443c01a7336-20ca169e77dmr10577485ad.37.1728612929724;
-        Thu, 10 Oct 2024 19:15:29 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c350ee8sm15532475ad.295.2024.10.10.19.15.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 19:15:29 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 99E6E4374224; Fri, 11 Oct 2024 09:15:23 +0700 (WIB)
-Date: Fri, 11 Oct 2024 09:15:23 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: ira.weiny@intel.com, Dave Jiang <dave.jiang@intel.com>,
-	Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 13/28] cxl/mem: Expose DCD partition capabilities in
- sysfs
-Message-ID: <ZwiKOyvXFXfAiOOU@archie.me>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-13-c261ee6eeded@intel.com>
+	s=arc-20240116; t=1728614471; c=relaxed/simple;
+	bh=t3ghN3RTMr5uFgwJko1H0CjYchF6DkBpT/fMS1jxVoE=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ojHowmwRZAezwvOcWhkEuLr11fQRMs7a/sJ2Ane6e+HM++8FfsEMbdqUcZsfvg18RZcGMCKjAL4lAC5gcrg3oRuZcgPI0C9lcTI3b2SV7MjmrjRbtXCm3dobtrziceiOlM0gvmmYcFMt+AhINW3O3qiC+IeejRqgfNqiIvkG/dM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=SCE39OcV; arc=none smtp.client-ip=211.23.38.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
+Subject: Re: [PATCH] btrfs: reduce lock contention when eb cache miss for
+ btree search
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+	t=1728614461; bh=t3ghN3RTMr5uFgwJko1H0CjYchF6DkBpT/fMS1jxVoE=;
+	h=Subject:To:Cc:References:From:Date:In-Reply-To;
+	b=SCE39OcVAAj5WQewU7STjliokOXbcwIuHw/grWskzCCQJNt5wRCUZ6ibBFOAdrjPX
+	 jNiME2SceA2SKNrxy1Z95TdNKj4WVyvJXP0e/2xkg9+PsS/FW4YVLCYSzqex2+eJpI
+	 0Gw+hi9sPn2loi5Iqa4P6pk4lD5OG6Q97lJqkERg=
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org
+References: <20241009020149.23467-1-robbieko@synology.com>
+ <CAL3q7H4sjkQ2-s=jdP-bsF3Jpc7iqGTkOfKe1asfo17+a4Mvgg@mail.gmail.com>
+ <CAL3q7H4sdxdnLx9uaSDrhVpJCdsik+ZPVCH4cjeZKCBKY_ohzw@mail.gmail.com>
+From: robbieko <robbieko@synology.com>
+Message-ID: <66227591-281e-8c66-ed55-fdd6a8c4cf9f@synology.com>
+Date: Fri, 11 Oct 2024 10:40:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="oaAeGPAZ1RHcucEh"
-Content-Disposition: inline
-In-Reply-To: <20241007-dcd-type2-upstream-v4-13-c261ee6eeded@intel.com>
+In-Reply-To: <CAL3q7H4sdxdnLx9uaSDrhVpJCdsik+ZPVCH4cjeZKCBKY_ohzw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Spam-Flag: no
+X-Synology-Virus-Status: no
+X-Synology-MCP-Status: no
 
 
---oaAeGPAZ1RHcucEh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Filipe Manana 於 2024/10/9 下午11:09 寫道:
+> On Wed, Oct 9, 2024 at 3:18 PM Filipe Manana <fdmanana@kernel.org> wrote:
+>> On Wed, Oct 9, 2024 at 3:09 AM robbieko <robbieko@synology.com> wrote:
+>>> From: Robbie Ko <robbieko@synology.com>
+>>>
+>>> When crawling btree, if an eb cache miss occurs, we change to use
+>>> the eb read lock and release all previous locks to reduce lock contention.
+>>>
+>>> Because we have prepared the check parameters and the read lock
+>>> of eb we hold, we can ensure that no race will occur during the check
+>>> and cause unexpected errors.
+>>>
+>>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>>> ---
+>>>   fs/btrfs/ctree.c | 88 ++++++++++++++++++++++++++++--------------------
+>>>   1 file changed, 52 insertions(+), 36 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+>>> index 0cc919d15b14..0efbe61497f3 100644
+>>> --- a/fs/btrfs/ctree.c
+>>> +++ b/fs/btrfs/ctree.c
+>>> @@ -1515,12 +1515,12 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
+>>>          struct btrfs_tree_parent_check check = { 0 };
+>>>          u64 blocknr;
+>>>          u64 gen;
+>>> -       struct extent_buffer *tmp;
+>>> -       int ret;
+>>> +       struct extent_buffer *tmp = NULL;
+>>> +       int ret, err;
+>> Please avoid declaring two (or more) variables in the same line. 1 per
+>> line is prefered for readability and be consistent with this
+>> function's code.
 
-On Mon, Oct 07, 2024 at 06:16:19PM -0500, ira.weiny@intel.com wrote:
-> +What:		/sys/bus/cxl/devices/memX/dcY/qos_class
-> +Date:		December, 2024
-> +KernelVersion:	v6.13
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) Dynamic Capacity (DC) region information.  Devices only
-> +		export dcY if DCD partition Y is supported.  For CXL host
-> +		platforms that support "QoS Telemmetry" this attribute conveys
-> +		a comma delimited list of platform specific cookies that
-> +		identifies a QoS performance class for the persistent partition
-> +		of the CXL mem device. These class-ids can be compared against
-> +		a similar "qos_class" published for a root decoder. While it is
-> +		not required that the endpoints map their local memory-class to
-> +		a matching platform class, mismatches are not recommended and
-> +		there are platform specific performance related side-effects
-"... mismatches are not recommended as there are ..."
-> +		that may result. First class-id is displayed.
-> =20
+Okay, I'll modify it.
 
-Thanks.
+>>
+>>>          int parent_level;
+>>> -       bool unlock_up;
+>>> +       bool create = false;
+>>> +       bool lock = false;
+>>>
+>>> -       unlock_up = ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level + 1]);
+>>>          blocknr = btrfs_node_blockptr(*eb_ret, slot);
+>>>          gen = btrfs_node_ptr_generation(*eb_ret, slot);
+>>>          parent_level = btrfs_header_level(*eb_ret);
+>>> @@ -1551,52 +1551,66 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
+>>>                           */
+>>>                          if (btrfs_verify_level_key(tmp,
+>>>                                          parent_level - 1, &check.first_key, gen)) {
+>>> -                               free_extent_buffer(tmp);
+>>> -                               return -EUCLEAN;
+>>> +                               ret = -EUCLEAN;
+>>> +                               goto out;
+>>>                          }
+>>>                          *eb_ret = tmp;
+>>> -                       return 0;
+>>> +                       tmp = NULL;
+>>> +                       ret = 0;
+>>> +                       goto out;
+>> By setting tmp to NULL and jumping to the out label, we leak a
+>> reference on the tmp extent buffer.
+We assign tmp to eb_ret, so we don't leak.
+>>
+>>>                  }
+>>>
+>>>                  if (p->nowait) {
+>>> -                       free_extent_buffer(tmp);
+>>> -                       return -EAGAIN;
+>>> +                       ret = -EAGAIN;
+>>> +                       btrfs_release_path(p);
+>> To reduce the critical section sizes, please set ret to -EAGAIN after
+>> releasing the path.
+Okay, I'll modify it.
+>>
+>>> +                       goto out;
+>>>                  }
+>>>
+>>> -               if (unlock_up)
+>>> -                       btrfs_unlock_up_safe(p, level + 1);
+>>> +               ret = -EAGAIN;
+>>> +               btrfs_unlock_up_safe(p, level + 1);
+>> Same here, set ret after the unlocking.
+>>
+>> But why set ret to -EAGAIN? Here we know p->nowait is false.
+> Nevermind this is because of the unconditional unlock now.
+Yes, because we unlock unconditionally, the ret value of this function 
+must be -EAGAIN.
+>
+>>> +               btrfs_tree_read_lock(tmp);
+>>> +               lock = true;
+>> And here, with the same reasoning, set 'lock' to true before calling
+>> btrfs_tree_read_lock().
+>>
+>>> +               btrfs_release_path(p);
+>>>
+>>>                  /* now we're allowed to do a blocking uptodate check */
+>>> -               ret = btrfs_read_extent_buffer(tmp, &check);
+>>> -               if (ret) {
+>>> -                       free_extent_buffer(tmp);
+>>> -                       btrfs_release_path(p);
+>>> -                       return ret;
+>>> +               err = btrfs_read_extent_buffer(tmp, &check);
+>>> +               if (err) {
+>>> +                       ret = err;
+>>> +                       goto out;
+>> Why do we need to have this 'err' variable?
+>> Why not use 'ret' and simplify?
+>>
+>>>                  }
+>>> -
+>>> -               if (unlock_up)
+>>> -                       ret = -EAGAIN;
+>>> -
+>>>                  goto out;
+>>>          } else if (p->nowait) {
+>>> -               return -EAGAIN;
+>>> -       }
+>>> -
+>>> -       if (unlock_up) {
+>>> -               btrfs_unlock_up_safe(p, level + 1);
+>>>                  ret = -EAGAIN;
+>>> -       } else {
+>>> -               ret = 0;
+>>> +               btrfs_release_path(p);
+>> Same here, set 'ret' to -EAGAIN after releasing the path.
+>>
+>>> +               goto out;
+>>>          }
+>>>
+>>> +       ret = -EAGAIN;
+>>> +       btrfs_unlock_up_safe(p, level + 1);
+>> Same here.
+>>
+>> But why set ret to -EAGAIN? Here we know p->nowait is false.
+> Nevermind this is because of the unconditional unlock now.
+>
+> In both cases we still don't need the 'err' variable.
+> Just set 'ret' to -EAGAIN if btrfs_find_create_tree_block() below
+> doesn't return an error and btrfs_read_extent_buffer() below and above
+> don't return an error.
 
---=20
-An old man doll... just what I always wanted! - Clara
+Indeed, we can only use ret value to receive the result of 
+btrfs_find_create_tree_block or btrfs_read_extent_buffer.
+If the function returns correctly (return 0), we must change ret to 
+-EAGAIN again and again,
+which is undoubtedly an increase in the function complexity.
+Therefore, I use the err variable. If other err occurs, the err can be 
+set to ret,
+so that the caller can immediately stop and continue searching.
 
---oaAeGPAZ1RHcucEh
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+>>> +
+>>>          if (p->reada != READA_NONE)
+>>>                  reada_for_search(fs_info, p, level, slot, key->objectid);
+>>>
+>>> -       tmp = read_tree_block(fs_info, blocknr, &check);
+>>> +       tmp = btrfs_find_create_tree_block(fs_info, blocknr, check.owner_root, check.level);
+>>>          if (IS_ERR(tmp)) {
+>>> +               ret = PTR_ERR(tmp);
+>>> +               tmp = NULL;
+>>>                  btrfs_release_path(p);
+>>> -               return PTR_ERR(tmp);
+>>> +               goto out;
+>>>          }
+>>> +       create = true;
+>>> +
+>>> +       btrfs_tree_read_lock(tmp);
+>>> +       lock = true;
+>> Same here, set 'lock' to true before the call to btrfs_tree_read_lock();
+>>
+>>> +       btrfs_release_path(p);
+>>> +
+>>> +       /* now we're allowed to do a blocking uptodate check */
+>> Please capitalize the first word of a sentence and end the sentence
+>> with punctuation.
+>> This is the preferred style and we strive to do that for new comments
+>> or code that moves comments around.
+Okay, I'll modify it.
+>>
+>>> +       err = btrfs_read_extent_buffer(tmp, &check);
+>> This can block, so if p->nowait at this point we should instead exit
+>> with -EAGAIN and not call this function.
+>>
+>>> +       if (err) {
+>>> +               ret = err;
+>>> +               goto out;
+>>> +       }
+>> Same here, no need to use extra variable 'err', can just use 'ret'.
+>>
+>>> +
+>>>          /*
+>>>           * If the read above didn't mark this buffer up to date,
+>>>           * it will never end up being up to date.  Set ret to EIO now
+>>> @@ -1607,11 +1621,13 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
+>>>                  ret = -EIO;
+>>>
+>>>   out:
+>>> -       if (ret == 0) {
+>>> -               *eb_ret = tmp;
+>>> -       } else {
+>>> -               free_extent_buffer(tmp);
+>>> -               btrfs_release_path(p);
+>>> +       if (tmp) {
+>>> +               if (lock)
+>>> +                       btrfs_tree_read_unlock(tmp);
+>>> +               if (create && ret && ret != -EAGAIN)
+>>> +                       free_extent_buffer_stale(tmp);
+>>> +               else
+>>> +                       free_extent_buffer(tmp);
+>> So in the success case we no longer set *eb_ret to tmp. Why? The
+>> callers expect that.
+> Ok, it's because of the -EAGAIN due to having the unconditional unlock now.
+>
+> And btw, have you observed any case where this improved anything? Any
+> benchmarks?
 
------BEGIN PGP SIGNATURE-----
+In the case of very high-speed 4k random write (cow), using nvme will 
+improve.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZwiKOwAKCRD2uYlJVVFO
-o8NIAQCZrs5IPtJRWJ3wy4dqN3eWUxQgLyspoOpH7V3EXTsEbwEAuEOVomNyr5Hp
-JxCkGB4XGrygV0ZUzfdlEEXL1qkYYgo=
-=v9WZ
------END PGP SIGNATURE-----
+But I can't give it a clear data improvement, because there are still many
 
---oaAeGPAZ1RHcucEh--
+different bottlenecks in the context of 4k random write,
+
+and other patches need to be used to achieve significant improvements.
+
+>
+> I can't see how this can make anything better because this function is
+> never called for a root node, and therefore level + 1 <
+> BTRFS_MAX_LEVEL.
+
+The main improvement point of this patch is that if a eb cache miss 
+occurs in a leaf and needs to execute IO,
+our original approach is to release level 2~MAX, but this patch is 
+changed to release level 1~MAX.
+We even Level 1 has also been released, so before releasing level 1, we 
+changed to take the lock of level 0 to avoid race.
+This change reduces the lock contention of level 1.
+
+>
+> But there is one case where this patch causes unnecessary path
+> releases and makes the caller retry a search:
+> when none of the levels above were locked. That's why we had the
+> following expression before:
+>
+> unlock_up = ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level + 1]);
+>
+> So we wouldn't make the caller retry the search if upper levels aren't
+> locked or p->skip_locking == 1.
+> But now after this patch we make the caller retry the search in that case.
+
+Indeed, I missed something about skip_locking. In this case, there is no 
+need to search again, I will correct it.
+
+Thank you for your review.
+
+>
+> Thanks.
+>
+>> Thanks.
+>>
+>>>          }
+>>>
+>>>          return ret;
+>>> @@ -2198,7 +2214,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+>>>                  }
+>>>
+>>>                  err = read_block_for_search(root, p, &b, level, slot, key);
+>>> -               if (err == -EAGAIN)
+>>> +               if (err == -EAGAIN && !p->nowait)
+>>>                          goto again;
+>>>                  if (err) {
+>>>                          ret = err;
+>>> @@ -2325,7 +2341,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
+>>>                  }
+>>>
+>>>                  err = read_block_for_search(root, p, &b, level, slot, key);
+>>> -               if (err == -EAGAIN)
+>>> +               if (err == -EAGAIN && !p->nowait)
+>>>                          goto again;
+>>>                  if (err) {
+>>>                          ret = err;
+>>> --
+>>> 2.17.1
+>>>
+>>>
 
