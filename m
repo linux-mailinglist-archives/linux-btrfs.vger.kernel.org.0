@@ -1,255 +1,157 @@
-Return-Path: <linux-btrfs+bounces-8872-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8873-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B37D99B178
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2024 09:19:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AFBC99B202
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2024 10:10:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67037B21034
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2024 07:18:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF3841F22653
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2024 08:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C693813CA8A;
-	Sat, 12 Oct 2024 07:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF59145A03;
+	Sat, 12 Oct 2024 08:10:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Dm0S19Aq";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Dm0S19Aq"
+	dkim=pass (1024-bit key) header.d=urbackup.org header.i=@urbackup.org header.b="KgzVCq6a";
+	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="aK80M2MG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from a4-4.smtp-out.eu-west-1.amazonses.com (a4-4.smtp-out.eu-west-1.amazonses.com [54.240.4.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BC5126BE1;
-	Sat, 12 Oct 2024 07:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AF6137742
+	for <linux-btrfs@vger.kernel.org>; Sat, 12 Oct 2024 08:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.240.4.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728717528; cv=none; b=ezAAnTaYHGbB0VSsaF32MuvvCzX5Cj+G/a/ZRccZEmjc96K49YznxTA0VkXuD0fuQfsALqaIZoWUFYbf1zzH0dx4vNQrtEtFog8/A0uQC2+X7XNwvrBWyIuS+f50KVft4rfURcfD4bTO4Vn3xRLgA7U/CYHQo9aP39oA50IO0oA=
+	t=1728720633; cv=none; b=kY+nSStdLDFG7nvvt7+DzwawvnFg4+J7haFo6YP/6QxyMCTBguzA9qpUMYNkhrO4Iq2lbOx6P1dK80/3I8iSaDAh4nlpbitljHmITju9jsf7QOCjWJZeaS+HUcwaLQecOf9EimHXOgSCBotArMQ/UerpJejMEfjtw4VT+SpHJwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728717528; c=relaxed/simple;
-	bh=vocXvbaFptiy92uqXIWXfr/lle+8J8OxakpF2X/qI6o=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=OrsM38qkQL3fWN0t7MrSBUQlimfnN7na5rnm3basB3K2VDwyIINVBs7UsUceClj7fGRBVWkAnZP1Pz7ucr3CfdCln+FzCmku6trTmETJSJ8gqpDq6usvbp0dpG2DK+vh38as8mLESOW6vEwH+q1QKonDGl9GiXWPD0BbGp2Ikl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Dm0S19Aq; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Dm0S19Aq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7A4FF1FF1E;
-	Sat, 12 Oct 2024 07:18:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728717523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=6xDmYW996hVi7qp1KTb37TXogP68P+AYjEFMQxy5P9Q=;
-	b=Dm0S19AqzdBDrBKCFDVDmuy/laPJ7y2xvDkic3t3pxakOA7Y0FVhuyPsx/4XOXqxJ8BwQA
-	0ehhFfxGvfEtD/1I3QHHNaRKwz6yXS73RwYup9XySCz2c2zZaV5iNlMx523XC+YLqFbnDp
-	s7qvQ2i+mDIrlL145jeO6SQjsSHPpbA=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Dm0S19Aq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728717523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=6xDmYW996hVi7qp1KTb37TXogP68P+AYjEFMQxy5P9Q=;
-	b=Dm0S19AqzdBDrBKCFDVDmuy/laPJ7y2xvDkic3t3pxakOA7Y0FVhuyPsx/4XOXqxJ8BwQA
-	0ehhFfxGvfEtD/1I3QHHNaRKwz6yXS73RwYup9XySCz2c2zZaV5iNlMx523XC+YLqFbnDp
-	s7qvQ2i+mDIrlL145jeO6SQjsSHPpbA=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7ADF4136BA;
-	Sat, 12 Oct 2024 07:18:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id a3dfD9IiCmcbIQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sat, 12 Oct 2024 07:18:42 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: btrfs/002: fix the OOM caused by too large block size
-Date: Sat, 12 Oct 2024 17:48:24 +1030
-Message-ID: <20241012071824.124468-1-wqu@suse.com>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1728720633; c=relaxed/simple;
+	bh=nqhw4AXkOp/2V0D6AADK/LgN6VdNhrAeCNfdRutHHRA=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=H6xkr57bzq5rTddzq6JsWS+Ubweh96cXAv3OvAXRyDrsOBQORWZmlmRGzgzDuKg03RBODsWjQu0FH5bUOg/C0mZom68KTpltjhyOfeksusoglJqlJ8hwNDPpZce8rsSHnQJS4TqUZCfY0Ia4Ijg/rqjuVqIOXMyKJZVp8mCpysw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=urbackup.org; spf=pass smtp.mailfrom=bounce.urbackup.org; dkim=pass (1024-bit key) header.d=urbackup.org header.i=@urbackup.org header.b=KgzVCq6a; dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b=aK80M2MG; arc=none smtp.client-ip=54.240.4.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=urbackup.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.urbackup.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=vbsgq4olmwpaxkmtpgfbbmccllr2wq3g; d=urbackup.org; t=1728720630;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type:Content-Transfer-Encoding;
+	bh=nqhw4AXkOp/2V0D6AADK/LgN6VdNhrAeCNfdRutHHRA=;
+	b=KgzVCq6aAWuNvLdJHBv5tmgYHNUwfjJWZs4/4Y6R2cw5MW6rcbUS7HC8+EiMaFDY
+	VhZQZl9FeB7BLNokHMjnaIjx1dDzWzudp9a2f8PCs5SaMBplyln4kRoBSApDBnFV3Tm
+	qkiBZ5o3eNaa6j4JR//oRctSSyCAwg7W2ArXwOwg=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=uku4taia5b5tsbglxyj6zym32efj7xqv; d=amazonses.com; t=1728720630;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+	bh=nqhw4AXkOp/2V0D6AADK/LgN6VdNhrAeCNfdRutHHRA=;
+	b=aK80M2MG4CfObIeF59Vp+VbnHhwPoS4L/A2529Kz4L3WSZXYoRfEJ/RyAEfM1Vhb
+	X4mp/3gNZ7brdNbpSy+QcKhjxe8hZBtpw3Qq2uHVl88y4r+KRKhhI7kV3F/lfcDRbCu
+	ktKcn70Cm+9u9nTDYTZnXFmSedZCq/6aPgwY+MuE=
+Message-ID: <010201927fc76ecd-1130f575-7e05-469b-a721-d4ef98432dfe-000000@eu-west-1.amazonses.com>
+Date: Sat, 12 Oct 2024 08:10:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Martin Raiber <martin@urbackup.org>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: ENOSPC in btrfs_delete_unused_bgs (6.6)
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 7A4FF1FF1E
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Feedback-ID: ::1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+X-SES-Outgoing: 2024.10.12-54.240.4.4
 
-[BUG]
-When running the test case btrfs/002, with 64K page size and 64K sector
-size, and the VM doesn't have much memory (in my case 4G Vram), the test
-case will trigger OOM and fail:
+Hi,
 
-btrfs/002 4s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests-dev/results//btrfs/002.out.bad)
-    --- tests/btrfs/002.out	2024-04-25 18:13:45.035555469 +0930
-    +++ /home/adam/xfstests-dev/results//btrfs/002.out.bad	2024-10-12 17:19:48.785156223 +1030
-    @@ -1,2 +1 @@
-     QA output created by 002
-    -Silence is golden
-    ...
+currently getting following ENOSPC, remount to read-only after running for a few days:
 
-The OOM is triggered by the dd process, and a lot of dd processes are
-using too much memory:
 
- dd invoked oom-killer: gfp_mask=0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_COMP|__GFP_ZERO), order=0, oom_score_adj=250
- CPU: 0 UID: 0 PID: 185764 Comm: dd Not tainted 6.12.0-rc2-custom+ #76
- Hardware name: QEMU KVM Virtual Machine, BIOS unknown 2/2/2022
- Tasks state (memory values in pages):
- [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
- [ 185665]     0 185665     8688     3840     3840        0         0   458752     4832           250 dd
- [ 185672]     0 185672     8688     2432     2432        0         0   393216     5312           250 dd
- [ 185680]     0 185680     8688     2016     2016        0         0   458752     4960           250 dd
- [ 185686]     0 185686     8688     2080     2080        0         0   458752     3584           250 dd
- [ 185693]     0 185693     8688     2144     2144        0         0   458752     4384           250 dd
- [ 185700]     0 185700     8688     2176     2176        0         0   458752     3584           250 dd
- [ 185707]     0 185707     8688     1792     1792        0         0   524288     3616           250 dd
- [ 185714]     0 185714     8688     2304     2304        0         0   458752     3488           250 dd
- [ 185721]     0 185721     8688     1920     1920        0         0   458752     2624           250 dd
- [ 185728]     0 185728     8688     2272     2272        0         0   393216     2528           250 dd
- [ 185735]     0 185735     8688     2048     2048        0         0   393216     3552           250 dd
- [ 185742]     0 185742     8688     1984     1984        0         0   458752     2816           250 dd
- [ 185751]     0 185751     8688     1600     1600        0         0   458752     2784           250 dd
- [ 185756]     0 185756     8688     1120     1120        0         0   458752     2400           250 dd
- [ 185764]     0 185764     8688     1504     1504        0         0   393216     2240           250 dd
- [ 185772]     0 185772     8688     1504     1504        0         0   458752     1984           250 dd
- [ 185777]     0 185777     8688     1280     1280        0         0   393216     2336           250 dd
- [ 185784]     0 185784     8688     2144     2144        0         0   393216     2272           250 dd
- [ 185791]     0 185791     8688     2176     2176        0         0   458752      576           250 dd
- [ 185798]     0 185798     8688     1696     1696        0         0   458752     1536           250 dd
- [ 185806]     0 185806     8688     1728     1728        0         0   393216      544           250 dd
- [ 185815]     0 185815     8688     2240     2240        0         0   458752        0           250 dd
- [ 185819]     0 185819     8688     1504     1504        0         0   458752      384           250 dd
- [ 185826]     0 185826     8688     1536     1536        0         0   458752      160           250 dd
- [ 185833]     0 185833     8688     2944     2944        0         0   458752       64           250 dd
- [ 185838]     0 185838     8688     2400     2400        0         0   458752        0           250 dd
- [ 185847]     0 185847     8688      864      864        0         0   458752        0           250 dd
- [ 185853]     0 185853     8688     1088     1088        0         0   393216        0           250 dd
- [ 185860]     0 185860     8688      416      416        0         0   393216        0           250 dd
- [ 185867]     0 185867     8688      352      352        0         0   458752        0           250 dd
+[286211.180852] ------------[ cut here ]------------
+[286211.180856] BTRFS: Transaction aborted (error -28)
+[286211.180889] WARNING: CPU: 4 PID: 7160 at fs/btrfs/volumes.c:3198 btrfs_remove_chunk+0x96e/0x990
+[286211.180898] Modules linked in: loop dm_crypt bfq xfs raid1 md_mod dm_mod st sr_mod cdrom bridge stp llc ext4 intel_rapl_msr crc16 intel_rapl_common mbcache jbd2 ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 snd_pcm sg hyperv_drm snd_timer drm_shmem_helper hyperv_key>
+[286211.181012] CPU: 4 PID: 7160 Comm: btrfs-cleaner Tainted: G        W          6.6.54 #2
+[286211.181016] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090007  05/18/2018
+[286211.181019] RIP: 0010:btrfs_remove_chunk+0x96e/0x990
+[286211.181024] Code: c5 fe ff ff be fb ff ff ff 48 c7 c7 20 71 b1 9b e8 87 59 b4 ff 0f 0b e9 df fe ff ff 89 ce 48 c7 c7 20 71 b1 9b e8 72 59 b4 ff <0f> 0b 8b 0c 24 e9 54 ff ff ff 89 ee 48 c7 c7 20 71 b1 9b e8 5a 59
+[286211.181027] RSP: 0018:ffffacbecf35fd70 EFLAGS: 00010286
+[286211.181031] RAX: 0000000000000000 RBX: ffff988e93a10d80 RCX: 0000000000000027
+[286211.181034] RDX: ffff9892b92213c8 RSI: 0000000000000001 RDI: ffff9892b92213c0
+[286211.181036] RBP: ffff988f186e2670 R08: 0000000000000000 R09: ffffacbecf35fc08
+[286211.181039] R10: 0000000000000003 R11: ffffffff9c1e2408 R12: 00056d6f6c180000
+[286211.181041] R13: ffff988eb96dc888 R14: 0000000000000001 R15: ffff988b5343a640
+[286211.181044] FS:  0000000000000000(0000) GS:ffff9892b9200000(0000) knlGS:0000000000000000
+[286211.181047] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[286211.181050] CR2: 00007f1a32634340 CR3: 00000004773b0000 CR4: 00000000003506e0
+[286211.181054] Call Trace:
+[286211.181057]  <TASK>
+[286211.181060]  ? btrfs_remove_chunk+0x96e/0x990
+[286211.181064]  ? __warn+0x81/0x130
+[286211.181071]  ? btrfs_remove_chunk+0x96e/0x990
+[286211.181076]  ? report_bug+0x171/0x1a0
+[286211.181081]  ? srso_return_thunk+0x5/0x5f
+[286211.181086]  ? prb_read_valid+0x1b/0x30
+[286211.181093]  ? handle_bug+0x41/0x70
+[286211.181097]  ? exc_invalid_op+0x17/0x70
+[286211.181101]  ? asm_exc_invalid_op+0x1a/0x20
+[286211.181111]  ? btrfs_remove_chunk+0x96e/0x990
+[286211.181122]  btrfs_delete_unused_bgs+0x70e/0x9b0
+[286211.181134]  ? __pfx_cleaner_kthread+0x10/0x10
+[286211.181139]  cleaner_kthread+0xf5/0x130
+[286211.181144]  kthread+0xe8/0x120
+[286211.181149]  ? __pfx_kthread+0x10/0x10
+[286211.181153]  ret_from_fork+0x34/0x50
+[286211.181159]  ? __pfx_kthread+0x10/0x10
+[286211.181162]  ret_from_fork_asm+0x1b/0x30
+[286211.181173]  </TASK>
+[286211.181175] ---[ end trace 0000000000000000 ]---
+[286211.181178] BTRFS info (device loop0: state A): dumping space info:
+[286211.181181] BTRFS info (device loop0: state A): space_info DATA has 2241260216320 free, is not full
+[286211.181185] BTRFS info (device loop0: state A): space_info total=27155909967872, used=7519504883712, pinned=0, reserved=5688012247040, may_use=11706058747904, readonly=1073872896 zone_unusable=0
+[286211.181191] BTRFS info (device loop0: state A): space_info METADATA has 128141934592 free, is not full
+[286211.181194] BTRFS info (device loop0: state A): space_info total=346287833088, used=199112523776, pinned=212992, reserved=24543232, may_use=19008618496, readonly=0 zone_unusable=0
+[286211.181199] BTRFS info (device loop0: state A): space_info SYSTEM has 0 free, is not full
+[286211.181202] BTRFS info (device loop0: state A): space_info total=4194304, used=3358720, pinned=32768, reserved=802816, may_use=0, readonly=0 zone_unusable=0
+[286211.181207] BTRFS info (device loop0: state A): global_block_rsv: size 536870912 reserved 536002560
+[286211.181210] BTRFS info (device loop0: state A): trans_block_rsv: size 1048576 reserved 1048576
+[286211.181213] BTRFS info (device loop0: state A): chunk_block_rsv: size 0 reserved 0
+[286211.181216] BTRFS info (device loop0: state A): delayed_block_rsv: size 1572864 reserved 1572864
+[286211.181219] BTRFS info (device loop0: state A): delayed_refs_rsv: size 17007902720 reserved 17007902720
+[286211.181222] BTRFS: error (device loop0: state A) in btrfs_remove_chunk:3198: errno=-28 No space left
+[286211.181252] BTRFS info (device loop0: state EA): forced readonly
 
-[CAUSE]
-The test case workload _fill_blk() is going to fill the file to its block
-boundary.
 
-But the implementation is not taking larger blocks into consideration.
+The device should have plenty of free space:
 
-	FSIZE=`stat -t $i | cut -d" " -f2`
-	BLKS=`stat -c "%B" $i`
-	NBLK=`stat -c "%b" $i`
-	FALLOC=$(($BLKS * $NBLK))
-	WS=$(($FALLOC - $FSIZE))
+Overall:
+    Device size:                  28.08TiB
+    Device allocated:             25.07TiB
+    Device unallocated:            3.02TiB
+    Device missing:                  0.00B
+    Device slack:               1023.97PiB
+    Used:                         22.79TiB
+    Free (estimated):              5.16TiB      (min: 5.16TiB)
+    Free (statfs, df):             5.16TiB
+    Data ratio:                       1.00
+    Metadata ratio:                   1.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
 
-$FSIZE is the file size, $BLKS is the size of each reported block,
-$NBLK is the number of blocks the file takes, thus $FALLOC is the
-rounded up block size.
+Data,single: Size:24.75TiB, Used:22.61TiB (91.36%)
+   /dev/loop0     24.75TiB
 
-For 64K sector size, the BLKS is 512, and BLKS is 128 (one 64K sector).
-$FALLOC is the correct value of 64K (10K rounded up to 64K).
+Metadata,single: Size:322.50GiB, Used:187.11GiB (58.02%)
+   /dev/loop0    322.50GiB
 
-Then the problem comes to how the write is done:
+System,single: Size:4.00MiB, Used:3.20MiB (80.08%)
+   /dev/loop0      4.00MiB
 
-	_ddt of=$i oseek=$FSIZE obs=$WS count=1 status=noxfer 2>/dev/null &
+Unallocated:
+   /dev/loop0      3.02TiB
 
-Unfrotunately the above command is using output block size of 54K, and
-need to skip 10K * 54K bytes, resulting a file size of 540M.
+Regards,
 
-So far although it's not the correct intention, it's not yet causing
-problem.
-
-But during _append_file(), we further enlarge the file by:
-
-		FSIZE=`stat -t $i | cut -d" " -f2`
-		dd if=$X of=$i seek=1 bs=$FSIZE obs=$FSIZE count=1 status=noxfer 2>/dev/null &
-
-In above case, since the previous file is 540M size, the output block
-size will also be 540M, taking a lot of memory.
-
-Furthermore since the workload is run in background, we can have many dd
-processes taking up at least 540M, causing huge memory usage and trigger
-OOM.
-
-[FIX]
-The original code is already not doing what it should do, just get rid of
-the cursed dd command usage inside _fill_blk(), and use pwrite from
-xfs_io instead.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/002 | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/tests/btrfs/002 b/tests/btrfs/002
-index f223cc60..0c231b89 100755
---- a/tests/btrfs/002
-+++ b/tests/btrfs/002
-@@ -70,19 +70,14 @@ _read_modify_write()
- _fill_blk()
- {
- 	local FSIZE
--	local BLKS
--	local NBLK
--	local FALLOC
--	local WS
-+	local NEWSIZE
- 
- 	for i in `find /$1 -type f`
- 	do
- 		FSIZE=`stat -t $i | cut -d" " -f2`
--		BLKS=`stat -c "%B" $i`
--		NBLK=`stat -c "%b" $i`
--		FALLOC=$(($BLKS * $NBLK))
--		WS=$(($FALLOC - $FSIZE))
--		_ddt of=$i oseek=$FSIZE obs=$WS count=1 status=noxfer 2>/dev/null &
-+		NEWSIZE=$(( ($FSIZE + $blksize -1 ) / $blksize * $blksize ))
-+
-+		$XFS_IO_PROG -c "pwrite -i /dev/urandom $FSIZE $(( $NEWSIZE - $FSIZE ))" $i > /dev/null &
- 	done
- 	wait $!
- }
-@@ -118,6 +113,7 @@ $BTRFS_UTIL_PROG subvolume create $firstvol > /dev/null || _fail "btrfs subvolum
- dirp=`mktemp -duq $firstvol/dir.XXXXXX`
- _populate_fs -n 1 -f 20 -d 10 -r $dirp -s 10 -c
- SNAPNAME=0
-+blksize=$(_get_block_size $SCRATCH_MNT)
- _create_snap $firstvol
- _save_checksum $firstvol $tmp.sv1.sum
- _verify_checksum $SNAPNAME $tmp.sv1.sum
--- 
-2.47.0
+Martin
 
 
