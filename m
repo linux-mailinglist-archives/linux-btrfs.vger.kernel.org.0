@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8918-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8919-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE8299D8AC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2024 22:57:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F57E99D8B1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2024 22:59:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 434F1B22326
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2024 20:57:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E7B9282C7F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2024 20:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665511D0141;
-	Mon, 14 Oct 2024 20:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B3F1D0B9B;
+	Mon, 14 Oct 2024 20:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LZiU+Q/n"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="pOxEtyge"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787371C75FA
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2024 20:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84AF41C879A
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2024 20:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728939410; cv=none; b=E0M3fVwuHax5n7KNJEfKfAk+eOcTuGmdzIDpAcA3h1zujqBJPkmC/4hNjG6M+Z6XGE8MTrbYsK3TPTLujoKhIKWmPUAWOqf2/k6jY59t2xg0osSs0iX57xQwPynf7nz/aqRPBP/OPJjx27p6sR26W8NSdSa0tM+fj3pxQmEk6mI=
+	t=1728939574; cv=none; b=JVoauTFlCeYppGsV+XjTxedrgVupAQ3jNWv/esXRry6jHA3IAMayq47Dd4T4aGmtmCPCmlXTZfjPhdyyDE7nX11Udv5koUPo56RMOQar783Vzxz+tG2VicB2JitwZCRsvBSLpd7LrMmD2OpEu1sbr0OtPtH0my6hUxsK7Y6I5Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728939410; c=relaxed/simple;
-	bh=J2m+AssnDLRVka9hX0xwY699Mw17ap5ax4BoBMvYGJU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uPhKNXtXzMLtkqqTeMMLH/Pw/+lM7fiRsTXTEKlyEXPcP6aPp7e7eyl2GYkqIBA7SZIN1Hm19vkEsk/eTt3WITyD1hLIji8OURfAPnPlq2Fnqx7yju8amnRoRue0pDnS9OcOYMdYRYonFdFKoZ69y57BNq7ufedvRxN28B2FXVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LZiU+Q/n; arc=none smtp.client-ip=212.227.15.15
+	s=arc-20240116; t=1728939574; c=relaxed/simple;
+	bh=4YaEBr9JSfCz2LkaiflYQAUNBXMO5sBFDbLFjQZbpT8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fAqcEqmu/eJaY42N5r8WZYDCMul1/2qwsSwe1ghRoQDJygpMETl35pMmOPUSnZ6G6k4laXH2dZekWkgKh2wEjdDwRLg6rxCn9b8QrmWIt/t3JknirxnOOY42GRhcmL4I5ONyONmDAmC+lH6Cw17PpbqylvmBTtJt3zCiHGK5Zpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=pOxEtyge; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1728939401; x=1729544201; i=quwenruo.btrfs@gmx.com;
-	bh=0K9wM2IQOiG2Ci5pRy5Tjwph+hHLSwh4EATtZXX0kSI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1728939569; x=1729544369; i=quwenruo.btrfs@gmx.com;
+	bh=4YaEBr9JSfCz2LkaiflYQAUNBXMO5sBFDbLFjQZbpT8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=LZiU+Q/nrfd9Kv+17btW6Ab5twkw7th/uTEu8zEDVFloA44Nr6wP5mZ0qHU3ki53
-	 DcrybFQTp3wbk3MWEl829aYEz45bvM0FlpwDOv00yBslKv8tuIVzJ5wuGRemVQ37U
-	 Z731R3+XVW6CwUuMnlNGSMebmnotSSY8sowZ0mAWlYLN3TiSo3SuHe+QSjUwj4C22
-	 Al7/4gx+LdfpzXIOiA/lsq6rBSLPIo4U8ylxzbpv9iz47dkWo8dU1AkuCMjt7SsG6
-	 zlsCYcOSp2iwqDbtZ44j0iONqBO9cGUSll/uPVhggiRebB/rH2yYXON0hNpl4c3Mn
-	 oe+9jgzZoa44Pk4/jg==
+	b=pOxEtygeW65N7RWym905J+78vK989lxSUw8/TnOFJCbqwQxj5ZFJx9+fcMB+M8+Q
+	 IO/psQgVXht/dxqtH7V3UceDcW5EK6kkiMr4SPgo10oNFr8FkIy+kWLQCGhBKLVqQ
+	 AyxxxY3ACmImsdPugM71AlAgBlnOYtBwylqD+e2GLjHS461fYaEMMP3QItwpqGCAU
+	 fotx2C/a93/+I2eiE/U7+63q97dxfctilip39pAYfT3QeAOY8O8Kwgkhk+e1zA6P7
+	 67WotVBai/+IxrMXSaWzKj4p2z3olfjqVwImAUIV2o7ItBzj8RyRZJm9/ALmMgFHl
+	 HCPrMrVvtSY+3FDaog==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNt0M-1tKLWC3ObQ-00KabP; Mon, 14
- Oct 2024 22:56:41 +0200
-Message-ID: <74f576b3-03bd-4861-bb3c-571a7bb75265@gmx.com>
-Date: Tue, 15 Oct 2024 07:26:38 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mv2xO-1trBL71Glc-00v6sA; Mon, 14
+ Oct 2024 22:59:29 +0200
+Message-ID: <71da1b88-1026-4eb8-9946-104b5f46c605@gmx.com>
+Date: Tue, 15 Oct 2024 07:29:26 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix use-after-free on head ref when adding delayed
- ref
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <02fc507b62b19be2348fc08de8b13bd7af1a440e.1728922973.git.fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: use FGP_STABLE to wait for folio writeback
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <9b564309ec83dc89ffd90676e593f9d7ce24ae77.1728880585.git.wqu@suse.com>
+ <20241014141622.GB1609@twin.jikos.cz>
+ <8ef15f84-6523-4e47-beda-fa440128df0e@gmx.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,79 +90,73 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <02fc507b62b19be2348fc08de8b13bd7af1a440e.1728922973.git.fdmanana@suse.com>
+In-Reply-To: <8ef15f84-6523-4e47-beda-fa440128df0e@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XCNZLsf5DNjXqx9kKS/svj6pIUPwfHm+Ov4wY2Z7bhQ7+K6wCVW
- pf3XqPEcWj9LgsoTX9FzP0V9o7A+nmpC23a4ryP4U/jC6gCkV6U6DPWXjcjhvTSsovyvCki
- Ggil6xhiy1m546WtmR9XwvwnmJMBt5U4rTwa8hy3Ia6xSRXhc4IrFceKHghFYxHNymsRaRz
- vbgyMf51iuRlfADQ18HjQ==
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:Rg3o0yi4OV1znIkkeBthRxQThxEAHuk75F8EZu/fFJF5GotAWZ1
+ lH0FUcljCQCsfOoKO3iWNSuVuo1RNM5KhZVg9ZPyA8NPIGnb1AYLFI5XgE83uZsuG7uDqP+
+ 4ObIpB5/9lXYVQ/2ZQRnjzd5BZQhZxdRFY7LiH6y3qNbJWnFlnhZcIJLdapRnquqhzczPN1
+ plrMBCjB9PtUzNEpWRuTQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Qw6pewpLmPU=;DcN74gBoLE+W6zuIQMwz8HLEi4F
- vL5/B7TQlSrYqQK3aP6bYlmZggp8Y7Tu5znHbHxtNlPehqeEIPMgAtw+o5Vc0/mg7hMNXvxVw
- FR0jsAsJkC67zOSLd8SYOFXqM1e2djb5iDIzTRpu+5LKjroSLmt3k5uNj0C2GqLTyjCwAK127
- i2gh434DhVi/Y2NZFqRiNsOWGULqKG0nADJOOG8VdOgYz++mxPXmZDSRb4W0DmhLLOJ7eDxwB
- V61lvNmPRo5LQXWXTdh3E+uH0Z3ANcHWtlfrHeTd2YUSfHJ+tFaUGzRybskopQU1pVFFAI6vV
- Fb05Nawo0G2LQx67acu9ECLcpj+FBmr9y5azzAg5lSzskr9pKKSBmAY8D0INWtmj/Ro1YhKi4
- yEFuYodqsZaHzAicL9a2PBIWy4cX2GeajzGbNDSoaUD/uc/KACyYKRM5ZN9C2O6CFZJjUbref
- abDlpbx7IGAoS16elZrhgbn2FS3pg/vHcOHl61UtLEIjinTpvN05BS88QSsExgCRhsXjlfgix
- WtQTlVp9QZo1O09pIucNeuL/cgNYn+wkeclIshZRsDEfDsvuSRPfUpvtZPi26xjZD5IqMw9pz
- MOJJqSpZ2HMNf1SnGU/k/xDXgdHWSpCyqvXWRhAiS2M4Fzy3pOeEa5eWsIUrTXJeGuZDZO9iX
- z3MXnuLMOM9YVkUmM9DFtpu/HogaemN66J/uWxP93x4hjcsgz1vbjxT2Cg1fdQy8DPwDkk/iD
- /RJkZmH7WdAdICU5Z1TVATHGdX1YI6O/EVf0ytCD9DIzF5EwbbWQ5ygjZ0ck2L+vjN3im69pC
- C34qRvsu5kIdZbDrYbU7nsPVILvpieZAfqnhD0ztVU104=
+UI-OutboundReport: notjunk:1;M01:P0:cW0AY2ZxLXc=;n5kxITiiFaRa3ES/JQct0W5ZOgo
+ cqKpJVaT83JW4AD7RdHhLfpFbJkMHea/7NsdcIB4jzeRlihie6mijjEUgFZSJw3jcWQPeT7PN
+ 6+wC88U5G8BQDKI9hM4RVOT8IPPYfCwLp/v0hRbrU+mu+jkfpn4KRvxYNuIiJVJy6wDyDxx8R
+ z9ghaR/DSiiC7SH5Mh4hlcPwHy09Ev1GrynB6e6NDGjx5WB6tXaTKi+h8wSJqnKE6HXe8qUUm
+ lLP/KVap59BHmWM/J3B6aAoXLhgZaCezKD5ylVEqFWyQVYPxVx9+P7hQBCvTLrpvOf6Lpk98s
+ 1W1aN9pv3PiHu9wNg3FwVnfrZ5gT7lLlGXFtehD1w/76I21t5KYOcvuVvZ4RZ9Ogb328JD2Jn
+ USRAcRjR+SJBK42f+oiH8znh10oHPtfFeTkZYBG6Oe1zU3PKmAGQMsA58M+TE4XmIzwtdR1Ff
+ Xc5s8gwVpDmzqjdrU655XwvfZ6u870bLN7wv4duLLrRzQJdD7RPkAOiU3pU+5xf3NQ301xuiv
+ L1Q3pCyYEdZhZI1RZWqs21PDwZi2H0GmFFzwR7t2QZBof8c9X9gaAXt1dLDj0iUz1AuuyVuk/
+ zesQmRty5YHeQJGOqsaetzEk+twW+Ilu7oJnK5nk9YC22HhCfOWao0uhFgpEx8Zn+uVvXwfup
+ HNEvFPLZgfZ4SJXmJHS0UPq+0zaBYd+Dxzd24zqpr8rnIDYBGQKUcrzEuG9y3kcHMfvSLiOoa
+ ii3VK4KRcyWMpnSlX46/JXwXvaq0F6/kgeK/QGD9HSClhWxxyoIxfToQDC6NQANEFg8J8SGJE
+ oKAHqkI1cRMf29DZu5kdaBIQ==
 
-
-
-=E5=9C=A8 2024/10/15 02:54, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> At add_delayed_ref(), if we added a qgroup record, we can trigger a
-> use-after-free on the head reference when calling
-> btrfs_qgroup_trace_extent_post() since we are not holding the delayed re=
-fs
-> spinlock anymore at that point and in the meanwhile other task may have
-> removed the head reference after running delayed refs.
->
-> So fix this by extracting the bytenr from the generic reference instead
-> of the head reference.
->
-> Reported-by: syzbot+c3a3a153f0190dca5be9@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/670d3f2c.050a0220.3e960.0066.G=
-AE@google.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> ---
->
-> This is meant to be squashed into the following patch that is in for-nex=
-t
-> but not in Linus' tree:
->
->    "btrfs: qgroups: remove bytenr field from struct btrfs_qgroup_extent_=
-record"
->
->   fs/btrfs/delayed-ref.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 13c2e00d1270..04586aa11917 100644
-> --- a/fs/btrfs/delayed-ref.c
-> +++ b/fs/btrfs/delayed-ref.c
-> @@ -1074,7 +1074,7 @@ static int add_delayed_ref(struct btrfs_trans_hand=
-le *trans,
->   		kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
->
->   	if (qrecord_inserted)
-> -		return btrfs_qgroup_trace_extent_post(trans, record, head_ref->bytenr=
-);
-> +		return btrfs_qgroup_trace_extent_post(trans, record, generic_ref->byt=
-enr);
->   	return 0;
->
->   free_record:
-
+DQoNCuWcqCAyMDI0LzEwLzE1IDA3OjI1LCBRdSBXZW5ydW8g5YaZ6YGTOg0KPiANCj4gDQo+IOWc
+qCAyMDI0LzEwLzE1IDAwOjQ2LCBEYXZpZCBTdGVyYmEg5YaZ6YGTOg0KPj4gT24gTW9uLCBPY3Qg
+MTQsIDIwMjQgYXQgMDM6MDY6MzFQTSArMTAzMCwgUXUgV2VucnVvIHdyb3RlOg0KPj4+IF9fZmls
+ZW1hcF9nZXRfZm9saW8oKSBwcm92aWRlcyB0aGUgZmxhZyBGR1BfU1RBQkxFIHRvIHdhaXQgZm9y
+DQo+Pj4gd3JpdGViYWNrLg0KPj4+DQo+Pj4gVGhlcmUgYXJlIHR3byBjYWxsIHNpdGVzIGRvaW5n
+IF9fZmlsZW1hcF9nZXRfZm9saW8oKSB0aGVuDQo+Pj4gZm9saW9fd2FpdF93cml0ZWJhY2soKToN
+Cj4+Pg0KPj4+IC0gYnRyZnNfdHJ1bmNhdGVfYmxvY2soKQ0KPj4+IC0gZGVmcmFnX3ByZXBhcmVf
+b25lX2ZvbGlvKCkNCj4+Pg0KPj4+IFdlIGNhbiBkaXJlY3RseSB1dGlsaXplIHRoYXQgZmxhZyBp
+bnN0ZWFkIG9mIG1hbnVhbGx5IGNhbGxpbmcNCj4+PiBmb2xpb193YWl0X3dyaXRlYmFjaygpLg0K
+Pj4NCj4+IFdlIGNhbiBkbyB0aGF0IGJ1dCBJJ20gbWlzc2luZyBhIGp1c3RpZmljYXRpb24gZm9y
+IHRoYXQuIFRoZSBleHBsaWNpdA0KPj4gd3JpdGViYWNrIGNhbGxzIGFyZSBkb25lIGF0IGEgZGlm
+ZmVyZW50IHBvaW50cyB0aGFuIHdoYXQgRkdQX1NUQUJMRQ0KPj4gZG9lcy4gU28gd2hhdCdzIHRo
+ZSBkaWZmZXJlbmNlPw0KPj4NCj4gDQo+IFRMO0RSLCBpdCdzIG5vdCBzYWZlIHRvIHJlYWQgZm9s
+aW8gYmVmb3JlIHdhaXRpbmcgZm9yIHdyaXRlYmFjayBpbiB0aGVvcnkuDQo+IA0KPiBUaGVyZSBp
+cyBhIHBvc3NpYmxlIHJhY2UsIG1vc3RseSByZWxhdGVkIHRvIG15IHByZXZpb3VzIGF0dGVtcHQg
+b2YNCj4gc3VicGFnZSBwYXJ0aWFsIHVwdG9kYXRlIHN1cHBvcnQ6DQo+IA0KPiAgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIFRocmVhZCBBwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBUaHJlYWQgQg0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IGV4dGVudF93cml0ZXBhZ2VfaW8oKcKgwqDCoMKg
+wqDCoMKgwqDCoCB8DQo+IHwtIHN1Ym1pdF9vbmVfc2VjdG9yKCnCoMKgwqDCoMKgwqDCoMKgIHwN
+Cj4gIMKgIHwtIGZvbGlvX3NldF93cml0ZWJhY2soKcKgwqDCoMKgIHwNCj4gIMKgwqDCoMKgIFRo
+ZSBmb2xpbyBpcyBwYXJ0aWFsIGRpcnR5fA0KPiAgwqDCoMKgwqAgYW5kIHVuaW52b2x2ZWQgc2Vj
+dG9ycyBhcmV8DQo+ICDCoMKgwqDCoCBub3QgdXB0b2RhdGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB8DQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgfCBidHJmc190cnVuY2F0ZV9ibG9jaygpDQo+ICDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCB8LSBidHJm
+c19kb19yZWFkcGFnZSgpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgfC0gc3VibWl0X29uZV9mb2xpbw0KPiAgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHzCoMKgwqDCoMKgIFRoaXMgd2lsbCByZWFkIGFsbCBzZWN0b3JzDQo+ICDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoMKg
+wqAgZnJvbSBkaXNrLCBidXQgdGhhdCB3cml0ZWJhY2sNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoCBzZWN0
+b3IgaXMgbm90IHlldCBmaW5pc2hlZA0KPiANCj4gSW4gdGhpcyBjYXNlLCB3ZSBjYW4gcmVhZCBv
+dXQgZ2FyYmFnZSBmcm9tIGRpc2ssIHNpbmNlIHRoZSB3cml0ZSBpcyBub3QNCj4geWV0IGZpbmlz
+aGVkLg0KPiANCj4gVGhpcyBpcyBub3QgeWV0IHBvc3NpYmxlLCBiZWNhdXNlIHdlIGFsd2F5cyBy
+ZWFkIG91dCB0aGUgd2hvbGUgcGFnZSBzbw0KPiBpbiB0aGF0IGNhc2UgdGhyZWFkIEIgd29uJ3Qg
+dHJpZ2dlciBhIHJlYWQuDQoNCkhlcmUgSSBtZWFuIGF0IHBhZ2UgZGlydHkgdGltZSwgd2UgYWx3
+YXlzIHJlYWQgb3V0IHRoZSB3aG9sZSBwYWdlIGlmIHRoZSANCndyaXRlIHJhbmdlIGlzIG5vdCBw
+YWdlIGFsaWduZWQuDQoNClNvIHdlIHdvbid0IGhhdmUgcGFydGlhbCBwYWdlIHVwdG9kYXRlIHll
+dC4NCg0KQnV0IHRoZSByYWNlIGlzIHN0aWxsIGhlcmUuDQoNCj4gDQo+IA0KPiBCdXQgdGhpcyBh
+bHJlYWR5IHNob3dzIHRoZSB3YXkgd2Ugd2FpdCBmb3Igd3JpdGViYWNrIGlzIG5vdCBzYWZlLg0K
+PiBBbmQgdGhhdCdzIHdoeSBubyBvdGhlciBmaWxlc3lzdGVtcyBtYW51YWxseSB3YWl0IGZvciB3
+cml0ZWJhY2sgYWZ0ZXINCj4gcmVhZGluZyB0aGUgZm9saW8uDQo+IA0KPiBUaHVzIEkgdGhpbmsg
+ZG9pbmcgRkdQX1NUQUJMRSBpcyB3YXkgbW9yZSBzYWZlciwgYW5kIHRoYXQncyB3aHkgYWxsDQo+
+IG90aGVyIGZzZXMgYXJlIGRvaW5nIHRoaXMgd2F5IGluc3RlYWQuDQo+IA0KPiBUaGFua3MsDQo+
+IFF1DQo+IA0KDQo=
 
