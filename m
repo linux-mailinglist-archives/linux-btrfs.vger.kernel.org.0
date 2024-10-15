@@ -1,218 +1,297 @@
-Return-Path: <linux-btrfs+bounces-8928-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8929-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A605199E194
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 10:51:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3722199E31D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 11:51:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 149A3B221A3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 08:51:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AB801C21C9C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 09:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BF01CF7AA;
-	Tue, 15 Oct 2024 08:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19B71DF25F;
+	Tue, 15 Oct 2024 09:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="UvS+L7DJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OeJcmpt9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBBE1CDA1C;
-	Tue, 15 Oct 2024 08:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728982239; cv=fail; b=JjZ10cgKBgyLW20qIf7a/jU+SyfTJs/3Ks86WXlcQzcl+A4/thVwHr+bL6J6uSQdECqfKcmzRwp3Zzsj8GnTjcasRAKS+kkfVtgxdlyLeOoOcpZTNjV/UZajGCb1HfYEmgg+LSSZLoRoj2YoK4fODdG8aHfN9fSSuoQVrVvToyM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728982239; c=relaxed/simple;
-	bh=AWMshC5EQIRqZ4/MICxqubkvy775QQUgUfEjntXNLq4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=dU9+jJEcU+5QnBYHuTWZwfhoXZ6a195MqAus3Cn2uqbQtJOr2FHx1LNJDm9WtlZDAcONYw5LK6mV8kL8QavGzZbnyHNhZVCmpxWvARoFKiwhOWO/E+8hznXTXrpyn6sWmtlLYpC0fLrbumHvXeR6n4+IvsehDddR17PBSSmw49Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=UvS+L7DJ; arc=fail smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49F6QIka016493;
-	Tue, 15 Oct 2024 01:50:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-id:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	s2048-2021-q4; bh=AWMshC5EQIRqZ4/MICxqubkvy775QQUgUfEjntXNLq4=; b=
-	UvS+L7DJLU42DtVA92K/RQ3LPWYIkoHJd+Q1Hu2t+YuYOCF+K3QqI2kAM3y/EVbJ
-	UYWoaxnq/TmlGMUCXMIug8e0JwVKGODZpakSH4gWZLZ/DSxRYSCONulsBYQ8enlA
-	8x56es0qAfPxT8LdOwpkidkn2CZwYQT2lKZkKZDwt5ld5o1it3jBxsqU/41MEU0/
-	bDYmlU6F/Hv5xVMoqTI9nqqT+ek3YsNrOsmSamAEVFwcQ0BLirjF7f1ap6IaqejE
-	guFcnjo9CHXPeF3KzueYqnnwRy7tuHJfwFwqlYK/TtYEFpsPIMYdcOcJREDNLfSZ
-	hc17PFf8d9MZ6xFDY3h6Jw==
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 428c4stx1s-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 01:50:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VnOWP7Cnc84Ij0AwwPI22H6TNaffKgejncGTQzUX9NQuKaK5Ct6d6vpmB9rR68ofDm9c+vdJGMa1hXxNC7l1jtXbiIZ1etnK1vSPnRq0WaIWFUYSMLE1XU7+MNjOQOSgI9ZZby0lUtWM5wlCzEdishcO8k9uPJwoOw7M9QhgPu2lrTjNZRMg73X1/adO9doVcapASdvPWwRIKRy815OetZLuMgDgqAS7zF6lw/jdfCWkVIisjKClqsJlqXTqjUrz4z09igCsYejDRcJuYsuMRdtkd5UGVW5QM164149OINKy5w2hQ06gcuxV9UV5Vqg5GCGXBUCz/FeACyxISGFlUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dk8KnLIfN90I3etmTPxUEzwaZU3W1NTgFeHvA4iw/+4=;
- b=QIB9KYLwSrHRd9qGH/yev01qVka2Je8Mc53SGG11HomW5PC0yvOeykTPyCDU/Xw97xl7t8bqGLuNfzHwETm7GyxrVH/Eo8sxbWdbMszugVV8oda/Y9xTrO3WLeWKHeVcPk1WGlmxjeHm7dsu5h4DrCVNkMXJ4B+XmwHQ8wJYerujrXnp6bJ1cQwLAdaQz9jyVy6CPkQylFFJziScKvwaQmL/41eq41ZGG2pbYuvPawyCkJTuq7hJ511DJFlJdM0jyt46uJBTdU9uNBjQARVHlGa5kPknsXCInazDZfjj9vCnHhFoAEe6Vfl7hJGCoB2X3dm28Z9sZXx529Y96Jv7xQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from PH0PR15MB5659.namprd15.prod.outlook.com (2603:10b6:510:282::21)
- by MW4PR15MB4555.namprd15.prod.outlook.com (2603:10b6:303:108::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.27; Tue, 15 Oct
- 2024 08:50:33 +0000
-Received: from PH0PR15MB5659.namprd15.prod.outlook.com
- ([fe80::dffe:b107:49d:a49d]) by PH0PR15MB5659.namprd15.prod.outlook.com
- ([fe80::dffe:b107:49d:a49d%3]) with mapi id 15.20.8048.020; Tue, 15 Oct 2024
- 08:50:33 +0000
-From: Mark Harmstone <maharmstone@meta.com>
-To: Boris Burkov <boris@bur.io>, Mark Harmstone <maharmstone@meta.com>
-CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-Subject: Re: [PATCH v3 0/5] btrfs: encoded reads via io_uring
-Thread-Topic: [PATCH v3 0/5] btrfs: encoded reads via io_uring
-Thread-Index: AQHbHl0hWvUhKg3cm02UtrvBgL2H/rKGhLiAgAD9IwA=
-Date: Tue, 15 Oct 2024 08:50:33 +0000
-Message-ID: <9e42d2da-4160-4f9f-af24-c5e90a555cac@meta.com>
-References: <20241014171838.304953-1-maharmstone@fb.com>
- <20241014174431.GA879246@zen.localdomain>
-In-Reply-To: <20241014174431.GA879246@zen.localdomain>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR15MB5659:EE_|MW4PR15MB4555:EE_
-x-ms-office365-filtering-correlation-id: edac03d4-a028-4e94-13d1-08dcecf66e31
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?cmZ1Z3NqQ3FDQzM0cnVKSXVLRnRiUkNEMVRMenJsOERrbkw3QU1ZRUwrR3lG?=
- =?utf-8?B?a25lTWhWRFBsbVhaYmlMM2tXb2MzZTNuWmRqekt0WmgyWmYySTUwTms3S2FQ?=
- =?utf-8?B?NHdLajZLWFdVR3I4MWo4dXRCV2ZvTEJPbUNCS2NWektCbWVZeWVBSlRHWXAw?=
- =?utf-8?B?V2cvcW5KZ2ZFWVkrWkQxRTZIS2xVRVhrU1NhMDE0ak45REdhRjk3MjBSUkJy?=
- =?utf-8?B?UXJHWkFLZUJUREQ0czJUTHlQSVFtQ0ZnRUxyQW9iL1hOY3BSZGlPSVk3L01J?=
- =?utf-8?B?ZWpoY24vYVpEd1drNzJHVmV1WjNWeHcwUWhVMDFJSFJiWmQ0SEdrYUN3UUFD?=
- =?utf-8?B?M1cwY2ovbTlyYUFDTERibStKd0k3aEo1SWRzM1RPeHFwTmtzRTF3M1QveXlx?=
- =?utf-8?B?SmdlN2xpN1E4VEd5NFBhMHRTRDNnY2hHd21Kd1ZFYTdvTnF5eEhUVnV2VHZr?=
- =?utf-8?B?VHFRSEYwRDNGbjk3Z25ES2RveEVKMDIzOTJtVVlVcXFSU0FXTklxQnJJb0dL?=
- =?utf-8?B?OWFtWWc2VjhrSFZaSWQvcnYyNGNKM3BGNG05bEtnRlFUdzJ0d2NLY2pwQm5Y?=
- =?utf-8?B?YkhJc3RLNjBlOUwzQWpucWVNOXYrWWlpSFBPK3lkMEE4N3k4VThoMStXVEJv?=
- =?utf-8?B?ZlZuMCtLNWkwVHVUcHpjamVVRFRsZFlneDlQYXFUUWJOYUhPd1ZGMFVSd0p2?=
- =?utf-8?B?UDVxNVRLa0NWTVd2Zmt3R0VkdjFMTSt5dmtyaEdhZWhyNG11RUdXdnBhNTlO?=
- =?utf-8?B?T1loWFJoZXB0S2MyUmJOaDNkZnNkZ1dTampzcVRuSGkwZ2JvQVpwNGwrdlcv?=
- =?utf-8?B?cWsyNkluMXB5ZmNnNjJSQXlRWUF0aDBucEo5VkNYU1puOE5pRy9pckJGNlp6?=
- =?utf-8?B?RjN0UUVma0ovTUtFcFpRU3NhV3NiL0hpRHUzOElLMm1LT0lqZmFkUzlsb2Zn?=
- =?utf-8?B?U3l2bEF0ZnJzZG8wdXNUcmpYSUZuWWFiYTZoZEhhSW5nM05LT1FoanZ5cEZ0?=
- =?utf-8?B?eVM4clJJYi80REVpZXc2azMzVVZkdWs0d0Rrc1BJd3QzbHpINDduUkc5bUVj?=
- =?utf-8?B?N3J4RjUzb0k3dkw2OEpNVWtwclpzMTJmZDNzWUZoRHFIL2F2RklOQkNGM3dZ?=
- =?utf-8?B?ZUMrNFA2MWdoTHRsL1RBeVhFOXNwcnNWK3dMd2tqQlRjNGVEd24yZmxOVlAw?=
- =?utf-8?B?djR2M0t0ZEU5VE5RVTV4eTMxZDUrN3VQSW5MeWZndUt6djdTUjEwRVBwOWhy?=
- =?utf-8?B?UlVHRFEyMUdxOTJYUG1tUC9ZcHdrenlCNjdSOVRjMytsaUpLQS9CNk9OcTZ1?=
- =?utf-8?B?Y3h1Z25iSVNKS29PbU05YnhrNEgzRTFqdGNZcTVrd2ZHa29BMW9jdDZVQ0tj?=
- =?utf-8?B?TjNaVzBuSmFYWGh2Vm9BMGJOZTNETTZ0MVRYTzRJYU1BRy9MV2UyeEY2N1c2?=
- =?utf-8?B?R3lDM0cyc0hTTXB3V1lBN1RQclBwMmVTMUp2cmZXWXRHT0Y5S3pzQndtMmVi?=
- =?utf-8?B?RW1CZDJoT0o0SnhQSXZxaWdTNXF1NGZic1NQQmpzZ2QrK3hpMXdabDdGaFA2?=
- =?utf-8?B?V0lZeHhTVTlBM0U1VTFBNkJyaERFK1hkbldPMlJFN29oZGIzMFdpUE1rcUxO?=
- =?utf-8?B?QnZZb2crVVlUMW5xbTg5NkdkWXNMM0xQNG1vZWI0T3ZuV05tTVR3WmI4WFZP?=
- =?utf-8?B?SHRtSjBRaWVlcTNtMk9kcjVXVitJeUlzeVpNck8wbGJYem9uSWlTbU9CdldN?=
- =?utf-8?B?VXlOeU1NWE5XZE8wRllNL0hDSHVZMXd0QUtQS1YxSHhVQkQrUkNNSnE5TXgz?=
- =?utf-8?B?a0VEWWFUaXNDcGlkT25QQT09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5659.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?aE1tdkJ3UmtJV2pNeUMySUsvSTY0NE5Xc1orR0s5dW94Ujg3VzRQR3luS0ZF?=
- =?utf-8?B?UUIxTEVnNDgxaUxISEpJL3BUd0pNc0VvenkvQUt6U05tdEY5MkRleCtQRnpt?=
- =?utf-8?B?c085UUZUUXBaejFqMllCMkIxSVVFRFYvT0tBR2RMNTVZU0xQVHlWeDdIQkRW?=
- =?utf-8?B?NzB0ODhoNDJWWVYrd2gzOFZKNUlyRU5EbzhMajdhWXBHM1d6Q3J4WG9jcXEy?=
- =?utf-8?B?U1B2c1Q0M0VRbjdZVTI1Qms4NU44ZG1mK2d1T1ZON21XTXk4MXpCZTRWaERP?=
- =?utf-8?B?YXN4Y2VCL2RtQ0FrbUpUOUdWSElXWWpQdldqQnJyeEJzOFNBT2gyV2J3Ulda?=
- =?utf-8?B?ZGtYencrd1VsRWdZOTVma2xhWjgrK2MrUlhaRFZ1SUpBSldBZnhJOWY3MDhS?=
- =?utf-8?B?NHN4MzlZM0NJblY4TXpFM2ZKNCtPczliYUgya1pScldObzJrTnJlZ3hxSzJE?=
- =?utf-8?B?TkttaHBHWU1VR1pqdGo3b1ErWWRuNE9qYmxmaXdyQm5lWnhCa2JrQ281c1Ra?=
- =?utf-8?B?RzdZUU9zWldTQjZZd2FPL1FtUEdlQjhtNmFZRFA2dkdRSEE1K0FFcUdnSWo0?=
- =?utf-8?B?aVNVU0JtL0hBdmFLWlBuYUZBZ3ZIUTFwSm1jTTBZQkpHRnlmTWFXR1NFV3Ex?=
- =?utf-8?B?eW5ITkRTck9JOXkrMWVnRm1YeGx4anBxZ3NLMmhKS1RBTW9wc1pvOGRhQW52?=
- =?utf-8?B?UzlDWGd6bHpma0MxNlJIc3ZJbkI5aWxwcEMvVTVMbVpMSVMycWxrTnBFZlRa?=
- =?utf-8?B?L0RRWk1UYUFBVmR5TGVabmhtdC9xVlJIRHBxdGpTeGRxRHdUSHFRbFZtdE1H?=
- =?utf-8?B?UEN0dXNZRksvdzFieGFjaHlyTlFtSzAwU1U2eVNHVUxKYURLMTUzeHZWN2Vw?=
- =?utf-8?B?TkpoQ1Q0MDVzaURhZFdzZjFXNVF1eGpWa2VSOTVVQjJDcjJiSzlZWlllS1hH?=
- =?utf-8?B?cC9qZVRoVEc5WXFaSTZoYW9JMWRXcVBIanczMEZ3eDN1c3pxSUQwc0owVTk0?=
- =?utf-8?B?OERaZEZwWDRZblJ5VlV5NkxjUFVtZFlmRmdNSHlMeWR3aTUxUEg2MnJZZmpt?=
- =?utf-8?B?YTFmQU1HK0NKaDFLQnM4NUZwSlBXY3NHakFpdnZ2Q3BMTEJIdE10OHY1QzBU?=
- =?utf-8?B?ekFsOXFmd1lIY1JNenZaSWtRZDZIejRmV0szWTF5dHJQd2Vkb1Q3ZXNmYWtz?=
- =?utf-8?B?NVp1K1pzNldQNk80M1B6TzhZL0lzWlhjSzJKQWgzaUpzSUczLzJ5MytEMUFm?=
- =?utf-8?B?NmJNS2tVMWRzZC9uRGE0V1hRNU1PeThWUGpOVkRDdGkwRGlKM2NxeDNRSTk4?=
- =?utf-8?B?YjBNK0o2bkY0TlRpUmxHZHdpTzRSQ1VRSko4cVVMdm11Q0JYYVNWaU9sVWVV?=
- =?utf-8?B?Z0RneHJabjc0NHhKd1dZTXZ6VTh1VE1ucHpFNnpsZElXNDBvSEJmMkJ0YU1a?=
- =?utf-8?B?V25raDBFeW1hZTNCQWxHNjFXSUVJVm5qRk5QL2pZdFRzMk9KYjdDUEJvZk1W?=
- =?utf-8?B?amtkdTY1eU9zTjYxODRDcE9TaXJ2N3hHMnFKNytYekMxV1FlN2NVemVSanVG?=
- =?utf-8?B?VEdvMHpwbDdJbytub1hEdlR1RGtyZnRiemxqb1I4ak0wTWJkZ1htOVNCWVEx?=
- =?utf-8?B?SkhVT25zVnFjYUV6eXhNVHpFZEFxVi82cWNtNFA2UEFvT0ZMRU91clp2Mjho?=
- =?utf-8?B?VnhZa1BCbXhTQnMyQ2tDalg3WVFOWWl1eURtL1NUT2hWalNuKzh2Qmxhbkk2?=
- =?utf-8?B?Wmt4aWhBVGNXMDFPOTlNVmxBQUJWaFZ4YmswNFBCSUJIZzVlKzBmTTNqaEdB?=
- =?utf-8?B?YXR3NlA4YTNneVpNandQcmpMZko1bnk5UHJjdGdXV2dMVEhDcGNvR2MrUXNz?=
- =?utf-8?B?YmhsY3djSVVJTUtweTR2bVl2b2hBZDlkM3FNYXRvRXFLUlllQkFIV0Jldlo2?=
- =?utf-8?B?YnJQZDhRUjJEZ2RzTVVia2xvemFRK1diakhJVlFUcjJLa2piTVV2bGt0TGV3?=
- =?utf-8?B?ZFdiZ0p0K29zaTJnZ0VWeGkvNDJUUkV4cXJYLzNKeUw3OXZwRkd4ZDBXZ3c1?=
- =?utf-8?B?alRYOFBtM3QyVkk0enhjcFRGT3lFbTZjRitJcWpsQjVFOVdYN0drRHlPSkZ4?=
- =?utf-8?Q?fTcQ=3D?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8ABC7F7FC
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 09:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728985907; cv=none; b=F019KY90DV2jTlhXaHnwbY0SZfRfLt0X8AyeDlMfcsU1uJj6TdgtSVlQLd2a6ecasAAfys7SX8XskYTYobOuYl/oN54Jl4H8o8sBIIKHEgj8wRDEMrBrgawfq8nrVyjbJGvfQ7GJFljVmHFXZEza5d+q80+RTaAfhCE/DAxjAvo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728985907; c=relaxed/simple;
+	bh=eUuMkebMeU5G0l3sMPUCiHuysyrn/A8rSllezjAamN4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dgb+XvDeivq8I3G6wR7jH8eHVTToqylhmAS3xX9qb2vzkyUjEa+mKE+aCbZ2gN21icHODfivjPEOFUqvVaAmEB84fAvpUPHl8inLTZDPo6KWsYxighzsADMueqQ9yL5h49KwtS79LHfmoLUEQilEXKKLFGjiMjtlsKbwoT6wZNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OeJcmpt9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E647C4CEC6
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 09:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728985907;
+	bh=eUuMkebMeU5G0l3sMPUCiHuysyrn/A8rSllezjAamN4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=OeJcmpt9wQevl1MIPWHSczSbwcDqD/kggVIELxwHQtiV9oylNytLMbtaFdL5echNH
+	 ysuLtNqbcLeGTt1La5wHx0XRTJNwZMqPVIv3zniESbxg+0zWYWPTaJPVxEfAvoOo7y
+	 Tl5E5Sgrt2gNrLYJ9/gu0+rJYMRlts+0C5j5ZRA+s6++xaPgu2RIxEELN61dt41pIf
+	 PcregRKMguD7MkBVuEHkigkXw7K1c0v8jXShoKfuVCEeotI54CLrEM5vgke8QRhoYF
+	 y792kLqvobT4APrWXkW+VQOnWPXK4yWMF8ix/mXgFdBns8K/FD2bPjrVuN1GVrB7Fw
+	 kTlobUCaTAVrg==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2fb4af0b6beso25723991fa.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 02:51:47 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw0mlYzaXsT/BgyuCDWt4ZJw8c8+prtVaTnD6ctgJbdgnHKYpB9
+	67WVi4d4+EAXmofxC2b8JwNx7bhn05BZ7rMgJJgd3O15OQ5IItbECAxW6RFGnoloE0iQ/KN+/mE
+	gTWlySu+UFkNzyxAhTk+UUXtuTdA=
+X-Google-Smtp-Source: AGHT+IHnQ+uxoJPGa7iDu0qDr2LYx0mJezkZPOmJgilCQIPlI8+4lsgyzUI/x5hmjt9RGPahcUc599LGt45OqzwJbmY=
+X-Received: by 2002:a05:651c:546:b0:2fb:2a96:37fd with SMTP id
+ 38308e7fff4ca-2fb3f2c518dmr56102881fa.29.1728985905841; Tue, 15 Oct 2024
+ 02:51:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5659.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: edac03d4-a028-4e94-13d1-08dcecf66e31
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2024 08:50:33.4233
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: A1hr61YmwPG86AsAjKfROcsOfP/5PMpI6MInJQPhPwBxyh4kjYmiXK6Q4DIEdKRCypC3pf9NgluK6BOFGbIdPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4555
-Content-Type: text/plain; charset="utf-8"
+References: <20241015074137.26067-1-robbieko@synology.com>
+In-Reply-To: <20241015074137.26067-1-robbieko@synology.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 15 Oct 2024 10:51:08 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5L85QJ1_6xax6fw+tnWwaVm8Y7FjzTC94_gTvfDoY7rQ@mail.gmail.com>
+Message-ID: <CAL3q7H5L85QJ1_6xax6fw+tnWwaVm8Y7FjzTC94_gTvfDoY7rQ@mail.gmail.com>
+Subject: Re: [PATCH v3] btrfs: reduce lock contention when eb cache miss for
+ btree search
+To: robbieko <robbieko@synology.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-ID: <C5DBD8B45700E94C8C61DE5AB3198C62@namprd15.prod.outlook.com>
-X-Proofpoint-GUID: Es7TorHWxX0-W0Drn6A9T-W8iSGCKlfc
-X-Proofpoint-ORIG-GUID: Es7TorHWxX0-W0Drn6A9T-W8iSGCKlfc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On 14/10/24 18:44, Boris Burkov wrote:
-> >=20
-> On Mon, Oct 14, 2024 at 06:18:22PM +0100, Mark Harmstone wrote:
->> This is a re-do of my previous patchsets: I wasn't happy with how
->> synchronous the previous version was in many ways, nor quite how badly
->> it butchered the existing ioctl.
->>
->> This adds an io_uring cmd to btrfs to match the behaviour of the
->> existing BTRFS_IOC_ENCODED_READ ioctl, which allows the reading of
->> potentially compressed extents directly from the disk.
->>
->> Pavel mentioned on the previous patches whether we definitely need to
->> keep the inode and the extent locked while doing I/O; I think the answer
->> is probably yes, a) to prevent races with no-COW extents, and b) to
->> prevent the extent from being deallocated from under us. But I think
->> it's possible to resolve this, as a future optimization.
->=20
-> What branch is this based off of? I attempted to apply it to the current
-> btrfs for-next and
-> "btrfs: change btrfs_encoded_read_regular_fill_pages to take a callback"
-> did not apply cleanly.
+On Tue, Oct 15, 2024 at 8:41=E2=80=AFAM robbieko <robbieko@synology.com> wr=
+ote:
+>
+> From: Robbie Ko <robbieko@synology.com>
+>
+> When crawling btree, if an eb cache miss occurs, we change to use
+> the eb read lock and release all previous locks (include parent lock)
+> to reduce lock contention.
+>
+> If a eb cache miss occurs in a leaf and needs to execute IO, before
+> this change we released locks only from level 2 and up and we
+> read a leaf's content from disk while holding a lock on its parent
+> (level 1), causing the unnecessary lock contention on the parent,
+> after this change we release locks from level 1 and up, but we lock
+> level 0, and read leaf's content from disk.
+>
+> Because we have prepared the check parameters and the read lock
+> of eb we hold, we can ensure that no race will occur during the check
+> and cause unexpected errors.
+>
+> Signed-off-by: Robbie Ko <robbieko@synology.com>
+> ---
+> v3: Improve the change log, and change variable named
+> v2: Add skip_locking handle
+>  fs/btrfs/ctree.c | 101 ++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 70 insertions(+), 31 deletions(-)
+>
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 0cc919d15b14..dc1d4e05214a 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -1515,12 +1515,14 @@ read_block_for_search(struct btrfs_root *root, st=
+ruct btrfs_path *p,
+>         struct btrfs_tree_parent_check check =3D { 0 };
+>         u64 blocknr;
+>         u64 gen;
+> -       struct extent_buffer *tmp;
+> -       int ret;
+> +       struct extent_buffer *tmp =3D NULL;
+> +       int ret =3D 0;
+>         int parent_level;
+> -       bool unlock_up;
+> +       int err;
+> +       bool read_tmp =3D false;
+> +       bool tmp_locked =3D false;
+> +       bool path_released =3D false;
+>
+> -       unlock_up =3D ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level + =
+1]);
+>         blocknr =3D btrfs_node_blockptr(*eb_ret, slot);
+>         gen =3D btrfs_node_ptr_generation(*eb_ret, slot);
+>         parent_level =3D btrfs_header_level(*eb_ret);
+> @@ -1551,68 +1553,105 @@ read_block_for_search(struct btrfs_root *root, s=
+truct btrfs_path *p,
+>                          */
+>                         if (btrfs_verify_level_key(tmp,
+>                                         parent_level - 1, &check.first_ke=
+y, gen)) {
+> -                               free_extent_buffer(tmp);
+> -                               return -EUCLEAN;
+> +                               ret =3D -EUCLEAN;
+> +                               goto out;
+>                         }
+>                         *eb_ret =3D tmp;
+> -                       return 0;
+> +                       tmp =3D NULL;
+> +                       ret =3D 0;
+> +                       goto out;
+>                 }
+>
+>                 if (p->nowait) {
+> -                       free_extent_buffer(tmp);
+> -                       return -EAGAIN;
+> +                       ret =3D -EAGAIN;
+> +                       goto out;
+>                 }
+>
+> -               if (unlock_up)
+> +               if (!p->skip_locking) {
+>                         btrfs_unlock_up_safe(p, level + 1);
+> -
+> -               /* now we're allowed to do a blocking uptodate check */
+> -               ret =3D btrfs_read_extent_buffer(tmp, &check);
+> -               if (ret) {
+> -                       free_extent_buffer(tmp);
+> +                       tmp_locked =3D true;
+> +                       btrfs_tree_read_lock(tmp);
+>                         btrfs_release_path(p);
+> -                       return ret;
+> +                       ret =3D -EAGAIN;
+> +                       path_released =3D true;
+>                 }
+>
+> -               if (unlock_up)
+> -                       ret =3D -EAGAIN;
+> +               /* Now we're allowed to do a blocking uptodate check. */
+> +               err =3D btrfs_read_extent_buffer(tmp, &check);
+> +               if (err) {
+> +                       ret =3D err;
+> +                       goto out;
+> +               }
+>
+> +               if (ret =3D=3D 0) {
+> +                       ASSERT(!tmp_locked);
+> +                       *eb_ret =3D tmp;
+> +                       tmp =3D NULL;
+> +               }
+>                 goto out;
+>         } else if (p->nowait) {
+> -               return -EAGAIN;
+> +               ret =3D -EAGAIN;
+> +               goto out;
+>         }
+>
+> -       if (unlock_up) {
+> +       if (!p->skip_locking) {
+>                 btrfs_unlock_up_safe(p, level + 1);
+>                 ret =3D -EAGAIN;
+> -       } else {
+> -               ret =3D 0;
+>         }
+>
+>         if (p->reada !=3D READA_NONE)
+>                 reada_for_search(fs_info, p, level, slot, key->objectid);
+>
+> -       tmp =3D read_tree_block(fs_info, blocknr, &check);
+> +       tmp =3D btrfs_find_create_tree_block(fs_info, blocknr, check.owne=
+r_root, check.level);
+>         if (IS_ERR(tmp)) {
+> +               ret =3D PTR_ERR(tmp);
+> +               tmp =3D NULL;
+> +               goto out;
+> +       }
+> +       read_tmp =3D true;
+> +
+> +       if (!p->skip_locking) {
+> +               ASSERT(ret);
 
-This is against v6.11, because it's the latest stable version. I'm=20
-guessing it ought to have been against upstream/master...
+We can be more explicit here and do instead:
 
-Mark
+ASSERT(ret =3D=3D -EAGAIN);
 
+The patch looks good to me, and I'll soon add it to the for-next
+branch, after some testing, with that small change if you're ok with
+it.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> +               tmp_locked =3D true;
+> +               btrfs_tree_read_lock(tmp);
+>                 btrfs_release_path(p);
+> -               return PTR_ERR(tmp);
+> +               path_released =3D true;
+> +       }
+> +
+> +       /* Now we're allowed to do a blocking uptodate check. */
+> +       err =3D btrfs_read_extent_buffer(tmp, &check);
+> +       if (err) {
+> +               ret =3D err;
+> +               goto out;
+>         }
+> +
+>         /*
+>          * If the read above didn't mark this buffer up to date,
+>          * it will never end up being up to date.  Set ret to EIO now
+>          * and give up so that our caller doesn't loop forever
+>          * on our EAGAINs.
+>          */
+> -       if (!extent_buffer_uptodate(tmp))
+> +       if (!extent_buffer_uptodate(tmp)) {
+>                 ret =3D -EIO;
+> +               goto out;
+> +       }
+>
+> -out:
+>         if (ret =3D=3D 0) {
+> +               ASSERT(!tmp_locked);
+>                 *eb_ret =3D tmp;
+> -       } else {
+> -               free_extent_buffer(tmp);
+> -               btrfs_release_path(p);
+> +               tmp =3D NULL;
+> +       }
+> +out:
+> +       if (tmp) {
+> +               if (tmp_locked)
+> +                       btrfs_tree_read_unlock(tmp);
+> +               if (read_tmp && ret && ret !=3D -EAGAIN)
+> +                       free_extent_buffer_stale(tmp);
+> +               else
+> +                       free_extent_buffer(tmp);
+>         }
+> +       if (ret && !path_released)
+> +               btrfs_release_path(p);
+>
+>         return ret;
+>  }
+> @@ -2198,7 +2237,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *tr=
+ans, struct btrfs_root *root,
+>                 }
+>
+>                 err =3D read_block_for_search(root, p, &b, level, slot, k=
+ey);
+> -               if (err =3D=3D -EAGAIN)
+> +               if (err =3D=3D -EAGAIN && !p->nowait)
+>                         goto again;
+>                 if (err) {
+>                         ret =3D err;
+> @@ -2325,7 +2364,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, =
+const struct btrfs_key *key,
+>                 }
+>
+>                 err =3D read_block_for_search(root, p, &b, level, slot, k=
+ey);
+> -               if (err =3D=3D -EAGAIN)
+> +               if (err =3D=3D -EAGAIN && !p->nowait)
+>                         goto again;
+>                 if (err) {
+>                         ret =3D err;
+> --
+> 2.17.1
+>
+>
 
