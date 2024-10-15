@@ -1,128 +1,189 @@
-Return-Path: <linux-btrfs+bounces-8943-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8944-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A20299F858
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 22:57:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A45599FA1D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 23:42:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E7BE2838C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 20:57:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845FA1C2125B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 21:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5EC1F9ED7;
-	Tue, 15 Oct 2024 20:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0223320262F;
+	Tue, 15 Oct 2024 21:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="dQhH2PU5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e33xvKmB"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="nhP1T0QY";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="o4f2jqGt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
+Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF881F80DD
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 20:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB651F80BC;
+	Tue, 15 Oct 2024 21:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729025867; cv=none; b=gmhtsOQbDrWWBzYKRRmjL0xruYh3VVL1mTotTEzCCSKNzZ727fZU0s2YJHboZqQMTU4pjYB8TkzNbPARPzd/oIDty2uJb0e7pBMKP5Yxa3ysTPvQs5kxXX89kYm+YGAiZD+CBOaISwljjOTokgjhlUsOhbewye9KEndxrYDsrd8=
+	t=1729028019; cv=none; b=baI+J+yv+fEpjw5JtEjqbSL+mzK/qhXNB6fDIvxMWr2JQTTCXS0/00eORdSlB3O3s7H0//TvOB2V9M+xdHumci0GR3duUe9dY7NzZZM1jiL6svV1SuFa5h3mM2uTTcLJOVCisSx3XkC1iC7OKeXWZt8ymjrqzGBVppP84gtvc1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729025867; c=relaxed/simple;
-	bh=yqx8ovaoNsCcjnZnHw4+BSB722qpkqYyVi0OOPVbF8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QihqMI4Cbrf66M1zDYPMcNc9UDBK5rbZjbWrc4AR7W4gUySShbOO59FuojAY8rZ23VPf1zKtqmokbrmR5M5ei4ybGhhuyfE0u38XthW8toHBAmINuqwp/ErZwBp/0SUkbM0dl7WWkLwqygF0v+P8NyP7T3nsIKphjdxe6ceGBto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=dQhH2PU5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e33xvKmB; arc=none smtp.client-ip=103.168.172.155
+	s=arc-20240116; t=1729028019; c=relaxed/simple;
+	bh=Ai8jqOfsBX+iXUmm0/sd57CqZLmwcRTDiCcH4AFW4jE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IJc2jsmCul2OSrZANvErmJLa3UjjtgwhAdowdUgg8rDzMwTdkZApUO5GJaSoDbB+9Oa9vEplqsg9N8RXfHn/03b0tLy5M9abSmk+/Cp3YRfgQ3Bs02p/Kaua4dr7mxICVkW8Zepc4dmiS77lP4UasRtVC1TG3oxYZY7JxsaLoSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=nhP1T0QY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=o4f2jqGt; arc=none smtp.client-ip=103.168.172.156
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id B95C11140179;
-	Tue, 15 Oct 2024 16:57:44 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Tue, 15 Oct 2024 16:57:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1729025864; x=1729112264; bh=rvrHdQkqj3
-	+pxnn6hVEVREwj63cng3Ts7fqByfXd62M=; b=dQhH2PU5fPc4iWWu0TH+8Y1VEc
-	gDTX/iA7C8Kt0enkGF98J+iNh3+UQ3EOeYHeA0yGeBdjKZTJQBDcpphAgvCVHyYO
-	gQI8TFB26DZCqtcOYpMp/5/wUo1eORgtK86NzLHBG7okZ2dSKGVPoLxZPPQxBto1
-	pHuOtypBjcvsn+D3/5TI040lKW8aEAjdPofM3mFV4mSBfqMIjG5HH+7/TvwGdMAn
-	0O5w6usqEIir3J1k/fhPt1AadaIw2elsH96kDjRYcBn6t+JT6f5+G5xGEHXEenhN
-	6f+KrEEQ3ZNjqIQKIMM0CIq84dFds3gCJwch0DliRgtB9tIDPYJ17r0SiYUw==
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id B864B11401B0;
+	Tue, 15 Oct 2024 17:33:35 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Tue, 15 Oct 2024 17:33:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1729028015; x=1729114415; bh=XdlTjey+JfsKfK1lb0yUE
+	YWOS/uMOTZlgL/nOGu8nOw=; b=nhP1T0QYCOvjHIOfB3rk4vNjAYpe1TK6bdfvP
+	9/LrnBY7qiLeNZTCwdIgInqBgWbSctoH41yQIRpD+jV6ixpATmwq95cV3wTDloHk
+	oU17L6U3lMJTPtUrG2pTzJTzMgvzol+XCCk0dQD7qh5Gk7NPOyK5scjW3UWHCKqD
+	S6CBargtOoHov/MgOYmS43HmSiZOLCpdp7IzlKXRgD1zT2Hr2HPTmA3HpzmXLD3S
+	GKNjYKR29J+R/klbsqlCozhRimbU9quNxA/IDYXWYbNDyZB6GgIxnUB0p6sS9r9+
+	vhRfPI3YUcjlo+Nj6VAluHJLY+aiR+Xs+nkRHflCTExff5WOg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1729025864; x=1729112264; bh=rvrHdQkqj3+pxnn6hVEVREwj63cn
-	g3Ts7fqByfXd62M=; b=e33xvKmByp9jrqZOPmvWDwFw9Yi0UHEZcYVt/sGkAZzx
-	cu9ibbxrBOvKhB8MtVEoyq25/es4ZuQMUW64iQZZRkSxZtTJ/ts9aBIlSw+gI+3r
-	L1X0szCpbksi1wqGpyx29NaYidrWb6vvcaw8jmWWhmtUYtCsXFPZArQ5tzOKstY8
-	ObLHZ5Db8k9oHBckFH/b24XWa4nP3+sC8gAgkgt9G/08lOLCSAiQyh0pE7PLrW8a
-	XpVu1It+NOsBR0OXzwH/hbTFkNxA2sgACNwyjE8wYtCvsmkDLXjwIr22SPefmd05
-	ty0a8hJGiGeI/zibZuqoSaJlG92BYfGr+E5oeyGI7g==
-X-ME-Sender: <xms:SNcOZ5PnKrrY0HpMpr3MuXFZmQKh5wtKZFNQMsUG31nffkG6SmYnGA>
-    <xme:SNcOZ7_HzA1aRXT5XcDWHuiFJJDBO8eOsi4FYCKreScRCqBDzfsHPJH1FsUbywCd1
-    hm6PpmA5o1JDHcaopI>
-X-ME-Received: <xmr:SNcOZ4T-Gpl9GjtPQCJ2LCEINCe-u2FP76yvodKOND71YHXmS35e6OTQNj8rTpulrV5PIzSapnTzjTw9PSlOFOcLP34>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdegjedgudehhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
-    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopehmrghhrghrmhhsthhonhgvsehfsgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:SNcOZ1tivM8saVatQGWLHoGsLLnyPhz3fKHbQlE38zrijueuH6ODhQ>
-    <xmx:SNcOZxdnu4Wl6GdMjRU1f29HqFyT258SM2lE9o-hDuY02ICLTkc5-g>
-    <xmx:SNcOZx0rhMuqDsC6NzvJlkXeGV0znDDVfWLnw52X933qmx888SXg2Q>
-    <xmx:SNcOZ9_6W71_DooM7e8fpW2wOi6OhCx3QEwL6TWl6ZZeO6KCIby9uQ>
-    <xmx:SNcOZyqgTY6PupCx7uot91BBajmKAucg6AsNoJ_4taXSy7iHvvouQz0j>
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729028015; x=1729114415; bh=XdlTjey+JfsKfK1lb0yUEYWOS/uM
+	OTZlgL/nOGu8nOw=; b=o4f2jqGtj0ygpK1zi+t+L1zxeYmcoDfu+qvlv/HZMTCv
+	JfmdgQRW9E1DTnoFYwsHqvHy8M63AtXqikYBoKi6BsoNCJK+SPP3UC9CG2ynkLQH
+	BsMzI4/NtpaZdlkey74H35plM0B1s51FhybzB1/YDVBHAyH4lVzAgE2h1EviyNvU
+	5dF/wqRdcyJbNK3RQ+MAnQ4cqwfWpCuew0NJDKuADUGUAPxK9/73ft7yG2EfQHyn
+	IcIUC5nHoXwUsw0mvP6jhF+MBrWxdMh8y0yTn8hbe0cisKy07jwuHqOfvigdPX1H
+	AocnxXzwDWUI0OH6eEkjvxpH2OFTMK0gBMJzIyF0iA==
+X-ME-Sender: <xms:r98OZziQixwZHP3XkqcOph9xP4H7f1ml73_C8XQxxW5wmfa8QiyIbA>
+    <xme:r98OZwDUlFYPJFfGDY9K_OvvdvcO259IMriaoZYcYgrEcUFUIwLp1Gfj6l0b2F1W2
+    gltWL3JtbA9aEjNuhk>
+X-ME-Received: <xmr:r98OZzGcNvvA6V6Yc5P_NkgZwMlapCr8UPWLt8dFseCm1DhfU3q__hdrCZpD7Jahp5p83PGhgNBSyNqVw-3Mh_ojybw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdegkecutefuodetggdotefrodftvfcurf
+    hrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffrtefo
+    kffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffogg
+    fgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhs
+    segsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgf
+    ejjeeigeekudduteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtth
+    hopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhs
+    sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmh
+    esfhgsrdgtohhmpdhrtghpthhtohepfhhsthgvshhtshesvhhgvghrrdhkvghrnhgvlhdr
+    ohhrgh
+X-ME-Proxy: <xmx:r98OZwTzo8bQnGerF8Tp06KTLrFRYrLubZ3KIE8UQdTNIq3cB4tITA>
+    <xmx:r98OZwzVF5xBEUXolUACRVOTe-mkeoWU_ZIagFspcbzcM_Xu1Z9xOw>
+    <xmx:r98OZ24ahS_CptBaWwCqCh_ju33tVooWRfxCGtYnvi6otG4Gvvq51Q>
+    <xmx:r98OZ1ymcAWqLgHBxKLWu7B-Z6iaNLZkYyoD400BQ4o5ks7vdtxFHg>
+    <xmx:r98OZ88fIdWDLwde_CuhAdN7gABfwPgjCU7kj8vOqvhRJ_GFdVWTCMuZ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 15 Oct 2024 16:57:44 -0400 (EDT)
-Date: Tue, 15 Oct 2024 13:57:21 -0700
+ 15 Oct 2024 17:33:35 -0400 (EDT)
 From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix wrong sizeof in btrfs_do_encoded_write
-Message-ID: <20241015205721.GA1841334@zen.localdomain>
-References: <20241015113736.1006573-1-maharmstone@fb.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com,
+	fstests@vger.kernel.org
+Subject: [PATCH] btrfs: add test for cleaner thread under seed-sprout
+Date: Tue, 15 Oct 2024 14:33:12 -0700
+Message-ID: <37a3018160b04d127ec8eef1f1ccfb3583ce0e40.1729027883.git.boris@bur.io>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241015113736.1006573-1-maharmstone@fb.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 15, 2024 at 12:37:29PM +0100, Mark Harmstone wrote:
-> btrfs_do_encoded_write was converted to use folios in 400b172b8cdc, but
-> we're still allocating based on sizeof(struct page *) rather than
-> sizeof(struct folio *).
-> 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
-> ---
->  fs/btrfs/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 5618ca02934a..5bffc2c77718 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -9495,7 +9495,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
->  	 */
->  	disk_num_bytes = ALIGN(orig_count, fs_info->sectorsize);
->  	nr_folios = DIV_ROUND_UP(disk_num_bytes, PAGE_SIZE);
-> -	folios = kvcalloc(nr_folios, sizeof(struct page *), GFP_KERNEL_ACCOUNT);
-> +	folios = kvcalloc(nr_folios, sizeof(struct folio *), GFP_KERNEL_ACCOUNT);
->  	if (!folios)
->  		return -ENOMEM;
->  	for (i = 0; i < nr_folios; i++) {
-> -- 
-> 2.44.2
-> 
+We have a longstanding bug that creating a seed sprout fs with the
+ro->rw transition done with
+
+mount -o remount,rw $mnt
+
+instead of
+
+umount $mnt
+mount $sprout_dev $mnt
+
+results in an fs without BTRFS_FS_OPEN set, which fails to ever run the
+critical btrfs cleaner thread.
+
+This test reproduces that bug and detects it by creating and deleting a
+subvolume, then triggering the cleaner thread. The expected behavior is
+for the cleaner thread to delete the stale subvolume and for the list to
+show no entries. Without the fix, we see a DELETED entry for the subvol.
+
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ tests/btrfs/323     | 46 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/323.out |  2 ++
+ 2 files changed, 48 insertions(+)
+ create mode 100755 tests/btrfs/323
+ create mode 100644 tests/btrfs/323.out
+
+diff --git a/tests/btrfs/323 b/tests/btrfs/323
+new file mode 100755
+index 000000000..0aa45633b
+--- /dev/null
++++ b/tests/btrfs/323
+@@ -0,0 +1,46 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2024 YOUR NAME HERE.  All Rights Reserved.
++#
++# FS QA Test 323
++#
++# Test that remounted seed/sprout device FS is fully functional. For example, that it can purge stale subvolumes.
++#
++. ./common/preamble
++_begin_fstest auto quick seed remount
++
++. ./common/filter
++_require_test
++_require_command "$BTRFS_TUNE_PROG" btrfstune
++_require_scratch_dev_pool 2
++
++_fixed_by_kernel_commit XXXXXXXX \
++	"btrfs: do not clear read-only when adding sprout device"
++
++_scratch_dev_pool_get 2
++dev_seed=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
++dev_sprout=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
++
++# create a read-write fs based off a read-only seed device
++_mkfs_dev $dev_seed
++$BTRFS_TUNE_PROG -S 1 $dev_seed
++_mount $dev_seed $SCRATCH_MNT >>$seqres.full 2>&1 
++_btrfs device add -f $dev_sprout $SCRATCH_MNT >>$seqres.full
++_mount -o remount,rw $SCRATCH_MNT
++
++# do stuff in the seed/sprout fs
++_btrfs subvolume create $SCRATCH_MNT/subv
++_btrfs subvolume delete $SCRATCH_MNT/subv
++
++# trigger cleaner thread without remounting
++_btrfs filesystem sync $SCRATCH_MNT
++
++# expect no deleted subvolumes remaining
++$BTRFS_UTIL_PROG subvolume list -d $SCRATCH_MNT
++
++_scratch_dev_pool_put
++
++# success, all done
++echo "Silence is golden"
++status=0
++exit
+diff --git a/tests/btrfs/323.out b/tests/btrfs/323.out
+new file mode 100644
+index 000000000..5dba9b5f0
+--- /dev/null
++++ b/tests/btrfs/323.out
+@@ -0,0 +1,2 @@
++QA output created by 323
++Silence is golden
+-- 
+2.46.0
+
 
