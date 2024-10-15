@@ -1,221 +1,244 @@
-Return-Path: <linux-btrfs+bounces-8922-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8923-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8410999DAB0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 02:32:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E9C299DB46
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 03:26:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E0A828305E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 00:32:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831E61C21286
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 01:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC590BA4B;
-	Tue, 15 Oct 2024 00:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D9314B959;
+	Tue, 15 Oct 2024 01:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HDWsp0Yv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uVk1LLw4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HDWsp0Yv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uVk1LLw4"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NRkKluVq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90AE33C5
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 00:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D30184F
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 01:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728952319; cv=none; b=o82I/yDwGR1fr6X2YFIrrhEthsvN1HxQKg2v8cWECIbydh3vd0oUvL34JqmqMisBKKQwARKahAA9EMCPuUe+jdPCSzbjlEl/HwYYt7/TlQR4mzmYY0bnREQaivy2E/l4ASWbiH8iA0r8zDAzhr5lz932L+gudmAuhozuIJkJars=
+	t=1728955607; cv=none; b=ZUDe3S71eRydfBXIjasUKvyNobc+sxcKxiYri8Za7DOB5y4/+tgMR4lymyQstHHLdRMmD0qYgVdHfuKjfbXO0OLqK4LqpirA7ftAnlX1XfNNGb4n9yqj16gGflMMmCKmwXc55FTAEV3RosPswvgFq4RJ/oAWEJeNSyat5JQNjLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728952319; c=relaxed/simple;
-	bh=uAUJmYIzHV2KURPKwaTHIQb5Lfk1xKiBvE6ZCVE4j+g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oU6QHyQO+ZGB95ahuG3u+p2zG5i5YaTShXDLBx072HO2xKOz2FZ55sdam++pzO2JvWxxZa+G+GvdLAp4s5p7EVfY9+ltWuSpjS3JFZFWp+7PVxcstKZZ74vcsQ3PslAhdgbka1hl3FLhvvf57VJ0qbik7zzUUsMlQgyXZQvvXQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HDWsp0Yv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uVk1LLw4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HDWsp0Yv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uVk1LLw4; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 61B731FE06;
-	Tue, 15 Oct 2024 00:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728952314;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oE9bzDmMCiD4j0ssCcmy5JvWhn/FeeLHIQYfLk3Q14g=;
-	b=HDWsp0Yv9QomuKiEKxGm21Ae8iYq+I02rj7V3Lmfpl4hROThbSVM4zc9ZjHzemqbTusQUq
-	G/xDMt3/bGjwSka4HCENx01r1GVqAt8y86/Y4x3UF7LzbyjQmUhQ8Cm9PXad5/NmR4MXxX
-	8ntV43Dg7B+pmadqO50++Be7RvT/R6o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728952314;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oE9bzDmMCiD4j0ssCcmy5JvWhn/FeeLHIQYfLk3Q14g=;
-	b=uVk1LLw4m/GGWv5Inek/8jaWCQozlWUTrkJ5PfhOVFo5uq0dcm9iKT8NJiH0FzqiSlwF5b
-	AgpN8vHB1UJg75Cw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=HDWsp0Yv;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uVk1LLw4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728952314;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oE9bzDmMCiD4j0ssCcmy5JvWhn/FeeLHIQYfLk3Q14g=;
-	b=HDWsp0Yv9QomuKiEKxGm21Ae8iYq+I02rj7V3Lmfpl4hROThbSVM4zc9ZjHzemqbTusQUq
-	G/xDMt3/bGjwSka4HCENx01r1GVqAt8y86/Y4x3UF7LzbyjQmUhQ8Cm9PXad5/NmR4MXxX
-	8ntV43Dg7B+pmadqO50++Be7RvT/R6o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728952314;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oE9bzDmMCiD4j0ssCcmy5JvWhn/FeeLHIQYfLk3Q14g=;
-	b=uVk1LLw4m/GGWv5Inek/8jaWCQozlWUTrkJ5PfhOVFo5uq0dcm9iKT8NJiH0FzqiSlwF5b
-	AgpN8vHB1UJg75Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36E45136C7;
-	Tue, 15 Oct 2024 00:31:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eQndDPq3DWcSEgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 15 Oct 2024 00:31:54 +0000
-Date: Tue, 15 Oct 2024 02:31:49 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use FGP_STABLE to wait for folio writeback
-Message-ID: <20241015003148.GG1609@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <9b564309ec83dc89ffd90676e593f9d7ce24ae77.1728880585.git.wqu@suse.com>
- <20241014141622.GB1609@twin.jikos.cz>
- <8ef15f84-6523-4e47-beda-fa440128df0e@gmx.com>
+	s=arc-20240116; t=1728955607; c=relaxed/simple;
+	bh=oWWc48IEepZcz4U74eQ/gE/p06rqMG9MXfj7xo8d81U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IzOoSvt8ax1oFOdCoA86rILfGc1N1SlmrK0Y/VOCUQDTFZbDpgbK0r9UwR10YlSp1+1t0Af2RsokdB9FYgdb0T+nibeo3/3nWS5+Li5mivxd9+csVzM9pZNXmID3Q0tMXJLq21YxNd64Ps/7nAaH4jIOxcAxef7ulOS+dhZjM1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NRkKluVq; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2fb443746b8so13666261fa.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2024 18:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1728955602; x=1729560402; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=JhdLtvCHRpRCgGmVfpOpPi8dywyXU/wFQD/Fn20fU2k=;
+        b=NRkKluVqbVDxeAJqhtwNSqUb3ZRHwbZRdA7U6RnkLdFj7+lQO+2vYYx4c3rknOX5Ds
+         B1NWSe7qS51Mzg2k+5cFv+t9QvuC9w0i59mzobOivx3typnO8+iEooiw0nq5k9W5cJM0
+         gw/zqU3yYwEnLxv6mP68E5UgVLBIC/RI3zplzEmEBCPY/iBJAWSc/kDux4LCu5r/TjyL
+         lwyShE+6GGkzn+ZWcOspwJ1nPGcewCUIlammiMwjaFgbSPRHCPGTqTSHb1zgcdm0rSU6
+         V5mbSyzrh53qr4bIpt3H7160SOVI3Tr2yIb6aT4ZHj7AVyG02ZFZD7ru6TmgnVx6sEjP
+         v+QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728955602; x=1729560402;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JhdLtvCHRpRCgGmVfpOpPi8dywyXU/wFQD/Fn20fU2k=;
+        b=OmwxlL0Gh1CZE/HQe2XZGcQsGyxy7UUOFfxbcTquY4ySX5JrZEFjJrXKAQYm3MCS2X
+         V4slVCQW28nU0e/Nrg1jAxfWo3y3Nrfs+dWgqJz1z/O/ALe0No7f4atgNfWhtqRSa2X2
+         OGZBr7mA2gYZCm1/xTE9s8b4efRC/0lOoLNehjZ+GFmjvzE7LTDWPHWSaE9dCAqyLnE6
+         6lAnSfI/w6GmtBBe5GEQIhujUcwZjQKca85BTzeAKHhDHvMDEAudkQUEOaPUXPtXXXBT
+         HijkLoqeT5NjEptXh03Tr+GfOrHtvTGGH9wU/Fm58sdGADIF5ByyuahvLfZcn6LJGJKo
+         5b8g==
+X-Gm-Message-State: AOJu0Yw8p9YPoid3Y6WaZbVFKu97zGtPf0HBE+JNiWa1IQpSZdQzeeb+
+	ZHESL1xSNBtk/WavhpWgxIrDSzHgvpmAHzf/mtOzWqwwnKUbb5EFhYcB2tUsFVs=
+X-Google-Smtp-Source: AGHT+IG5vV+MZ8NusdcQq4Yj+z7X8Cmm+Q6ZXaNQ+nr8uH7ip62UyiKBoDhwkZcVn6GS8D+Tuwlbtg==
+X-Received: by 2002:a2e:e19:0:b0:2f5:2e2:eadf with SMTP id 38308e7fff4ca-2fb3270ab14mr48452021fa.10.1728955601224;
+        Mon, 14 Oct 2024 18:26:41 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e773a2fc7sm192132b3a.54.2024.10.14.18.26.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Oct 2024 18:26:40 -0700 (PDT)
+Message-ID: <3c6ce709-472a-4fbc-ad54-b7257c18c62d@suse.com>
+Date: Tue, 15 Oct 2024 11:56:36 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: use FGP_STABLE to wait for folio writeback
+To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <9b564309ec83dc89ffd90676e593f9d7ce24ae77.1728880585.git.wqu@suse.com>
+ <20241014141622.GB1609@twin.jikos.cz>
+ <8ef15f84-6523-4e47-beda-fa440128df0e@gmx.com>
+ <20241015003148.GG1609@suse.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20241015003148.GG1609@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ef15f84-6523-4e47-beda-fa440128df0e@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 61B731FE06
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmx.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Tue, Oct 15, 2024 at 07:25:20AM +1030, Qu Wenruo wrote:
-> 在 2024/10/15 00:46, David Sterba 写道:
-> > On Mon, Oct 14, 2024 at 03:06:31PM +1030, Qu Wenruo wrote:
-> >> __filemap_get_folio() provides the flag FGP_STABLE to wait for
-> >> writeback.
-> >>
-> >> There are two call sites doing __filemap_get_folio() then
-> >> folio_wait_writeback():
-> >>
-> >> - btrfs_truncate_block()
-> >> - defrag_prepare_one_folio()
-> >>
-> >> We can directly utilize that flag instead of manually calling
-> >> folio_wait_writeback().
-> >
-> > We can do that but I'm missing a justification for that. The explicit
-> > writeback calls are done at a different points than what FGP_STABLE
-> > does. So what's the difference?
-> >
-> 
-> TL;DR, it's not safe to read folio before waiting for writeback in theory.
-> 
-> There is a possible race, mostly related to my previous attempt of
-> subpage partial uptodate support:
-> 
->               Thread A          |           Thread B
-> -------------------------------+-----------------------------
-> extent_writepage_io()          |
-> |- submit_one_sector()         |
->    |- folio_set_writeback()     |
->       The folio is partial dirty|
->       and uninvolved sectors are|
->       not uptodate              |
->                                 | btrfs_truncate_block()
->                                 | |- btrfs_do_readpage()
->                                 |   |- submit_one_folio
->                                 |      This will read all sectors
->                                 |      from disk, but that writeback
->                                 |      sector is not yet finished
-> 
-> In this case, we can read out garbage from disk, since the write is not
-> yet finished.
-> 
-> This is not yet possible, because we always read out the whole page so
-> in that case thread B won't trigger a read.
-> 
-> But this already shows the way we wait for writeback is not safe.
-> And that's why no other filesystems manually wait for writeback after
-> reading the folio.
-> 
-> Thus I think doing FGP_STABLE is way more safer, and that's why all
-> other fses are doing this way instead.
 
-I'm not disputing we need it and I may be missing something, what I
-noticed in the patch is maybe a generic pattern, structure read at some
-time and then synced/written, but there could be some change in
-bettween.  One example is one you show (theoretically or not).
 
-The writeback is a kind of synchronization point, but also in parallel
-with the data/metadata in page cache. If the state, regarding writeback,
-is not safe and we can either get old data or could get partially synced
-data (ie. ok in page cache but not regarding writeback) it is a
-problematic pattern.
+在 2024/10/15 11:01, David Sterba 写道:
+> On Tue, Oct 15, 2024 at 07:25:20AM +1030, Qu Wenruo wrote:
+>> 在 2024/10/15 00:46, David Sterba 写道:
+>>> On Mon, Oct 14, 2024 at 03:06:31PM +1030, Qu Wenruo wrote:
+>>>> __filemap_get_folio() provides the flag FGP_STABLE to wait for
+>>>> writeback.
+>>>>
+>>>> There are two call sites doing __filemap_get_folio() then
+>>>> folio_wait_writeback():
+>>>>
+>>>> - btrfs_truncate_block()
+>>>> - defrag_prepare_one_folio()
+>>>>
+>>>> We can directly utilize that flag instead of manually calling
+>>>> folio_wait_writeback().
+>>>
+>>> We can do that but I'm missing a justification for that. The explicit
+>>> writeback calls are done at a different points than what FGP_STABLE
+>>> does. So what's the difference?
+>>>
+>>
+>> TL;DR, it's not safe to read folio before waiting for writeback in theory.
+>>
+>> There is a possible race, mostly related to my previous attempt of
+>> subpage partial uptodate support:
+>>
+>>                Thread A          |           Thread B
+>> -------------------------------+-----------------------------
+>> extent_writepage_io()          |
+>> |- submit_one_sector()         |
+>>     |- folio_set_writeback()     |
+>>        The folio is partial dirty|
+>>        and uninvolved sectors are|
+>>        not uptodate              |
+>>                                  | btrfs_truncate_block()
+>>                                  | |- btrfs_do_readpage()
+>>                                  |   |- submit_one_folio
+>>                                  |      This will read all sectors
+>>                                  |      from disk, but that writeback
+>>                                  |      sector is not yet finished
+>>
+>> In this case, we can read out garbage from disk, since the write is not
+>> yet finished.
+>>
+>> This is not yet possible, because we always read out the whole page so
+>> in that case thread B won't trigger a read.
+>>
+>> But this already shows the way we wait for writeback is not safe.
+>> And that's why no other filesystems manually wait for writeback after
+>> reading the folio.
+>>
+>> Thus I think doing FGP_STABLE is way more safer, and that's why all
+>> other fses are doing this way instead.
+> 
+> I'm not disputing we need it and I may be missing something, what I
+> noticed in the patch is maybe a generic pattern, structure read at some
+> time and then synced/written, but there could be some change in
+> bettween.  One example is one you show (theoretically or not).
+> 
+> The writeback is a kind of synchronization point, but also in parallel
+> with the data/metadata in page cache. If the state, regarding writeback,
+> is not safe and we can either get old data or could get partially synced
+> data (ie. ok in page cache but not regarding writeback) it is a
+> problematic pattern.
 
-You found two cases, truncate and defrag. Both are different I think,
-truncate comes from normal MM operations, while defrag is triggered by
-an ioctl (still trying to be in sync with MM).
+The writeback is a sync point, but it's more like an optimization to 
+reduce page lock contention.
 
-I'm not sure we can copy what other filesystems do, even if it's just on
-the basic principle of COW vs update in place + journaling. We copy the
-and do the next update and don't have to care about previous state, so
-even a split between read and writeback does no harm.
+E.g. when a page contains several blocks, and some blocks are dirty and 
+being written back, but also some sectors needs to be read.
+If implemented properly, the not uptodate blocks can be properly read 
+meanwhile without waiting for the writeback to finish.
+
+But from the safety point of view, I strongly prefer to wait for the 
+folio writeback in such case.
+
+Especially considering all the existing get folio + read + wait for 
+writeback is from the time where we only consider sectorsize == page size.
+
+We have enabled sectorsize < page size since 5.15, and we should have 
+dropped the wrong assumption for years.
+
+> 
+> You found two cases, truncate and defrag. Both are different I think,
+> truncate comes from normal MM operations, while defrag is triggered by
+> an ioctl (still trying to be in sync with MM).
+> 
+> I'm not sure we can copy what other filesystems do, even if it's just on
+> the basic principle of COW vs update in place + journaling.
+
+I do not think COW is making any difference. All the COW handling is at 
+delalloc time, meanwhile the folio get/lock/read/wait sequence is more 
+common for page dirtying (regular buffered write, defrag, truncate are 
+all in a similar situation).
+
+Page cache is here just to provide file content cache, it doesn't care 
+about if it's COW or NOT.
+
+Furthermore, COW is no longer our exclusive feature, XFS has supported 
+it for quite some time, and there is no special handling just for the 
+page cache.
+(Meanwhile XFS and ext4 has much better blocksize < page size handling 
+than us for years)
+
+
+And I have already explained in that case, waiting for the writeback at 
+folio get time is much safer (although reduces concurrency).
+
+Just for the data safety, I believe you need to provide a much stronger 
+argument than COW vs overwrite (which is completely unrelated).
+
+> We copy the
+> and do the next update and don't have to care about previous state, so
+> even a split between read and writeback does no harm.
+
+Although I love the csum/datacow, I do not see any strong reason not to 
+follow the more common (and IMHO safer) way to wait for the writeback.
+
+I have explained the possible race, and I do not think I need to repeat 
+that example again.
+
+If you didn't fully understand why my example, please let me know where 
+it's unclear that I can explain it better.
+
+Thanks,
+Qu
 
