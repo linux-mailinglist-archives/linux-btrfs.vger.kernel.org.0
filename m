@@ -1,103 +1,130 @@
-Return-Path: <linux-btrfs+bounces-8930-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8931-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2EF699E60E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 13:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E67699EA01
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 14:39:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34392B22AE5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 11:37:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DC111C21391
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 12:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656A91E7640;
-	Tue, 15 Oct 2024 11:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5530C227B94;
+	Tue, 15 Oct 2024 12:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="UtnlKiwM"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="P97ClPkU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from out203-205-221-190.mail.qq.com (out203-205-221-190.mail.qq.com [203.205.221.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900E31D90CD
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 11:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E85227B93;
+	Tue, 15 Oct 2024 12:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728992270; cv=none; b=DXPYCtXPfmRMfqbApr6Ks4CS1VzRmrgeeTHkYvKWLm1x94enBWXJZtdEJgNFYHhFAzhLM5tSllAq+VLOXGz43C98WKVtZcNtB3IRdiFcTpB8xcXxJ2YHFeehCJ4DEWJonVQICH9KR6U7Go/RQb09H1Rdu9mzAvSTt9r/6Pv5sLk=
+	t=1728995962; cv=none; b=iUkFW5zHWUgfj9WEcnFDuG2A04F5BJEqVjW6Ie7kqfZruMMHK7QK9LgO2+vYc2i778dL76yTW1vN0eYCo6wuqF/T0/EVe6kixCtIqqPnkrtevRqSI+Wl+fkNT/BNbxB2srV/eAe+EQKcH7UqhZnnSq1+vE6a846py2aHZLvYn/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728992270; c=relaxed/simple;
-	bh=NcBCWZW6v/fFVfHJNBffEW3Iz0IHzStm6xBE16wfRKg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YJqiSQkbIAF1UBBRX+nyTlVNs1RHa1G/ELr0+knRalAhml05n70Y6uBU+D0hQsqgBvrOjBvCGoevtCC2ua9TnwV5okqXYe7o/2e+u7hrQ2XA+E9LKlOmVvRMnfqoxaLvitpbDdDQLDXj9/WqjE2rsZrIP8u+442mH7Cq6Ti2PxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=UtnlKiwM; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49F6QHkP021101
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 04:37:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=Wd5EMyguFyzxFesO4xLNdyM
-	mj63QCXLB5n5NON+OTb8=; b=UtnlKiwM7AMAz5falJynXZQCRCxVKuSzHcWa46+
-	vDjqfr/ZZf5ElEIjGaxUB4oqe6xRsdZiIbFKlZSMOOY6kUgpySr5JfTTqGBLy2IV
-	qKsFCYCqDMKSk871BXoeWh2wvk8mc9y9IrOwlyfeCnZdkXC9KVm17+ZW0PnLl7R/
-	MZEE=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4291we7fsn-10
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2024 04:37:47 -0700 (PDT)
-Received: from twshared16035.07.ash9.facebook.com (2620:10d:c085:108::150d) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Tue, 15 Oct 2024 11:37:39 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 2591E7C96B44; Tue, 15 Oct 2024 12:37:37 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH] btrfs: fix wrong sizeof in btrfs_do_encoded_write
-Date: Tue, 15 Oct 2024 12:37:29 +0100
-Message-ID: <20241015113736.1006573-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1728995962; c=relaxed/simple;
+	bh=x+iDAAYTgZt7thPALE/GpuoN/+1g28XVcuiZEr2MEbk=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=qFFxRW+BSTQ/sI/EbIEzSyfXT0z27rLqsh34xOxjr5NqE1BK7vzMbYe3n35+h9+8/1cbkoLaz28NPOJKALEAQEZDxPzT8Mhl8W25hY2CCsX/eifjJerscjSSdbLEbuGPbcKjq97Ogm4+/tQg/zs2DptSicddFeu88ZAANJDgqaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=P97ClPkU; arc=none smtp.client-ip=203.205.221.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1728995958; bh=6mzUwp6tTsQPmtvvHIUC4eTR4DQea9zTLMhz8Df/uUs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=P97ClPkUXGlR5ZxiiS1Jdwqv5wq16M56QYYXIMfSgRhptIZUn3OwITKJMJ/pgDvpw
+	 Qoq6NVXebNpsc9tGI1v7ZhY7VRwxnoaHLQPvYLr9uA0kmQn3OsmF1UCqnY0JUYTueN
+	 jr7s/bIwcV9xByybxXzdiQm7aC2owPWSNCJWflH8=
+Received: from pek-lxu-l1.wrs.com ([111.198.224.50])
+	by newxmesmtplogicsvrsza15-1.qq.com (NewEsmtp) with SMTP
+	id 6AD19C34; Tue, 15 Oct 2024 20:26:45 +0800
+X-QQ-mid: xmsmtpt1728995205t9pig5lzf
+Message-ID: <tencent_0EBF9E731B704B091B022578BA9EBB8E3308@qq.com>
+X-QQ-XMAILINFO: NDz66ktblfzJrZJDwmHjGNtPHzbvecvgaHO9S260NFM0PyeeXQZAeHYqUX/EuD
+	 x/i7GprzXlhbKdlhEODCaiALa3OMv+dg4dY94//BbETSFOyxC6RqW3wvGDUMYyK2huoZm4iKOnV0
+	 zjpGHbWQeOj17p7eGMSQS3hfsyIzhHZO62AwN+XJckbTuCXIW+eQDpPLPOED6J02BNZkHvME4V3r
+	 sNNJflEY23E8lw2PVxyNmh/aDFiz6wGAf1WTSGmHWcRdyZknY9STw843auJWw4JBpwnA+maPfb5T
+	 i7YDOodrOdAycLqFEd9FsXtyVTKQcN+BSQd4eBXU3ZdwgF2B3wpO2mFLK0FBOcQakjcbIAMpLAaM
+	 n2MM1Jav6uGED56VveP9/KiPYMVbkmnEDaLZb0c0mW4nil/DO6+ke7CmK0K64vjpcaZVJgSi55I+
+	 zUTimoe8BvR6NV3T3lGANO4KAKpUY438yEPDcl//RJKJXRydQEUzomdcw3ghBAvnhWCKwP+x1NqQ
+	 zi/3Gb1lLjUd3CDerOChFkoqJJkBs0Ho2Wa3YfAH2k6jsC+NVKoXXWMJD5unZJkx5Uc4y7kiDA5U
+	 b8e0Y+VT8PZnJersrV3BKRfOsVOIZjQl4OMWrwWKPgdqiLNHnHh6Ecn6itN+OtWE88bWSRs+5RAl
+	 qsTIC0JeXp6U+MwQDaI+d/r2LNXHPEEFvT54bMPtaz7aHUsEBBdOmEysud2GJpqFkV60ht1Z4ALk
+	 HiiSAbQGYC4usk7kOMA/bdHC0tW7VHkoxMwHu6cStsNrq5pQ96D6i2xhFLTopZ17JFT7D4hwyYuM
+	 OkF3TcoeacP4WgY+Nl9Zpo71RylLZLVLdQe0FmR7e8OyVi3xlVQR6On3eyjEG5zbrJSGQNKYsf1r
+	 XGFe0s4Hqk3MJUEaqqfh7j+NMtWnP1bF55/7ejcPs4Ueu9ZmHjjADsPruCdY3NER8uXsX357i5Gq
+	 5bRSKJCXiE/B7KchFdJQ==
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c3a3a153f0190dca5be9@syzkaller.appspotmail.com
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH next] btrfs: Accessing head_ref within delayed_refs lock
+Date: Tue, 15 Oct 2024 20:26:46 +0800
+X-OQ-MSGID: <20241015122645.136494-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.47.0
+In-Reply-To: <670d3f2c.050a0220.3e960.0066.GAE@google.com>
+References: <670d3f2c.050a0220.3e960.0066.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: nx9HJbKwFeU6BW3VayJYNyDRMyFC6YQj
-X-Proofpoint-ORIG-GUID: nx9HJbKwFeU6BW3VayJYNyDRMyFC6YQj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+Content-Transfer-Encoding: 8bit
 
-btrfs_do_encoded_write was converted to use folios in 400b172b8cdc, but
-we're still allocating based on sizeof(struct page *) rather than
-sizeof(struct folio *).
+This is because the thread routine btrfs_work_helper released head_def after
+exiting delayed_refs->lock in add_delayed_ref.
+Causing add_delayed_ref to encounter uaf when accessing head_def->bytenr
+outside the delayed_refs->lock.
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+Move head_ref->bytenr into the protection range of delayed_refs->lock 
+to avoid uaf in add_delayed_ref.
+
+Fixes: a3aad8f4f5d9 ("btrfs: qgroups: remove bytenr field from struct btrfs_qgroup_extent_record")
+Reported-and-tested-by: syzbot+c3a3a153f0190dca5be9@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=c3a3a153f0190dca5be9
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/delayed-ref.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5618ca02934a..5bffc2c77718 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9495,7 +9495,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, =
-struct iov_iter *from,
- 	 */
- 	disk_num_bytes =3D ALIGN(orig_count, fs_info->sectorsize);
- 	nr_folios =3D DIV_ROUND_UP(disk_num_bytes, PAGE_SIZE);
--	folios =3D kvcalloc(nr_folios, sizeof(struct page *), GFP_KERNEL_ACCOUN=
-T);
-+	folios =3D kvcalloc(nr_folios, sizeof(struct folio *), GFP_KERNEL_ACCOU=
-NT);
- 	if (!folios)
- 		return -ENOMEM;
- 	for (i =3D 0; i < nr_folios; i++) {
---=20
-2.44.2
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index 13c2e00d1270..f50fc05847a1 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -1012,6 +1012,7 @@ static int add_delayed_ref(struct btrfs_trans_handle *trans,
+ 	int action = generic_ref->action;
+ 	bool merged;
+ 	int ret;
++	u64 bytenr;
+ 
+ 	node = kmem_cache_alloc(btrfs_delayed_ref_node_cachep, GFP_NOFS);
+ 	if (!node)
+@@ -1056,6 +1057,7 @@ static int add_delayed_ref(struct btrfs_trans_handle *trans,
+ 		goto free_record;
+ 	}
+ 	head_ref = new_head_ref;
++	bytenr = head_ref->bytenr;
+ 
+ 	merged = insert_delayed_ref(trans, head_ref, node);
+ 	spin_unlock(&delayed_refs->lock);
+@@ -1074,7 +1076,7 @@ static int add_delayed_ref(struct btrfs_trans_handle *trans,
+ 		kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
+ 
+ 	if (qrecord_inserted)
+-		return btrfs_qgroup_trace_extent_post(trans, record, head_ref->bytenr);
++		return btrfs_qgroup_trace_extent_post(trans, record, bytenr);
+ 	return 0;
+ 
+ free_record:
+-- 
+2.43.0
 
 
