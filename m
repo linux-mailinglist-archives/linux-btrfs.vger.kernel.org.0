@@ -1,219 +1,388 @@
-Return-Path: <linux-btrfs+bounces-8954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3AC49A0031
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 06:28:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 769D29A079B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 12:41:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52D20B2688F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 04:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F40111F26643
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 10:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C97F18B49F;
-	Wed, 16 Oct 2024 04:25:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C684206E6D;
+	Wed, 16 Oct 2024 10:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="c9T99MWz"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="F9nx+CHx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8B118B47A;
-	Wed, 16 Oct 2024 04:25:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729052724; cv=none; b=mEWk8tSma5NTr8Et7ocCCBwCf+MjNhCDDlcaPf0xumEX9/1E34K6Yg6AafIIWtzRghcliN+Wyy7E4C7RzawzcQ5eqQ2JgkuKFn+Z+suCOTVv0E9P3CxpgTshY78SSbupFxraylOgGZcrwueZgoF19ua5ZAtEAqaw3U/Exupxugk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729052724; c=relaxed/simple;
-	bh=uqvk/tRj+S6ibTglXMsQluv2gY7fdie13fTs0LCIjOk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CGYOe8BY/o3RkPDPFTC2RS1108Z40CV/ymbUg4J+gKjNoI9XBw3ZioYTXGNnlxb8V3XHQK/rC3UdGp339QovKlMqweBw3Mgxv7rgMYuL74dM0Qb28UPkyzuxs7GxdmPT3i15NnmnBnVr6TdWNJaOXYxFAf0QN6Ice5s2hDxeEr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=c9T99MWz; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1729052713; x=1729657513; i=quwenruo.btrfs@gmx.com;
-	bh=x8kEetWCVFd7YmYiLs+qXShY70fxVgqv2o+yrzHNepo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=c9T99MWzphlYUOI17AMFd0qSJlBVBT8ZLJ8aSsyjA8L79wfYn7hQ4YrqgJt0Q8Kb
-	 nGns3Okwm52OFQr2nyZIeLVQhgfcG4MI6xeOY+b24a61uwksxEwCvEhrnbhYD1WVs
-	 d5XnBQEjKsHQ4QiEzvxm14OtWr6SQr3JJznVvhw38JI9fmn8lE4WjD6L+Jb/5fIHi
-	 L/B4QZAiCJujaIZcN0MUNQMinAZ39xV+wjcZbmZ7q8HSLh7PvSNtBAKeuvf0+l4R3
-	 6gUmWP0Ic7Feo9S7t2uT31mlMpZwxrD49A5gcWEPnkwL3heiC1IXmEy+sZc9SF3Go
-	 H2a69afI3ozoCiKQJA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1po0-1syjjc3voW-002FTa; Wed, 16
- Oct 2024 06:25:13 +0200
-Message-ID: <7773a237-9c97-42c4-8548-913faa24654b@gmx.com>
-Date: Wed, 16 Oct 2024 14:55:09 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A4EB67E
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 10:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729075273; cv=fail; b=evCkLAmArVS93hB8wxLTnMLbWe4BSQvcw0p/RzMBT1zkxcSTumf33zGxg4JRSb0FLSvtyHx9W1dG/3a3O8tkMRVydw1srTpoR8f9qRNb/g6oAV72PL1dWEDiF/50BOd0mb+x50Nlj5QABXqyMwcb60XuUflPPyICJbpNymmTf5g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729075273; c=relaxed/simple;
+	bh=VeQAXApGgdklXdfWEn8nLMzFmJ0wdMKSOdHktc/pvmU=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=JmVmSvNkfH8s4zrHKOKc5rlKLmEu2FfwEgirwglpZJa5tROc/K5UYQvSzElPwCaKm7ksXhUh9dyIafSZ+oDaW6PJK7HF8/UH0BLKQ1v1WFRyPAlfm4fQOx1oM6UH1LJiMGSYsTa6ep6QF6cIzvi7zfUA9OpP3RIgRVLxYpS0Qeo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=F9nx+CHx; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49G6d6Vs022728
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 03:41:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=
+	content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=EY32MWiGVDv6JISpePL6UXlRBX6SqMmCWjEXrrTBtf4=; b=
+	F9nx+CHxEO32M/fU3+Sjam3j8Fhr19wZIL57IPUdTLCh7RyB51YxdU0X8/CntpbW
+	CEvZaiW/DKFunUBKikqShN3RoaZ2/EGwpL7d6AuVDXIBHUFC14UIbqnUIArhxPnD
+	MHGSDH5jw0ivzi9piqENghX7Sn2XY5TCC0IDieP+msxYUzehSCzaZVMk2E9muNxZ
+	TkzhjUqEEmqb+WrQfKMkE6zGKaFIF4zE2Jq0k+rvtFJ5DPk8mdDJUY+F9JBExBJT
+	4lbRxpjxh8v8mFrf9mgufrFXa9QZ2ZAs3X6zTGEVw5JJrAjnl6/Xhtgd8+9yxDFL
+	ttgai/iwwubam+ius5Cy0Q==
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42a8dah41e-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 03:41:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LCwD6QbhqicNb73KVrcW1jzApz5LLX9u/nYUA7/DGlYY5cXuE7rzPYzt9aaJb/n9tLfV5Vjo8bVdhq9cyCscoqJwyLbudZywk5AlYUqALf5k33A6GHg9iApvzAi4R1wwGHaCsbISCNOlMHM5TeC5hQi264Izkjc5bZ/7WPBWGwsJGZAmu35QgxiAzCAehp/C+komyCLeFe4WIz/8DgUA4OXzZ8nqtHJHmitAUlojKRHKtkin1cR7HRoJ2XxVLloZIzda6Xgf3l6pDEvZcrMCb0eE9Vb+dqzfpzGxd5W/YFlQJfQ0a3RTsw84BnOBHZLl4COr5YxO1UCQENlB9iliFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rlHEJR0aufOIW1RJjxxafz0DVOCA90LxFnv1oqT8sXw=;
+ b=cvsipOxRcs+900Uc5MtIaAHyX53XYA69y1nTXuIbbqjF3wJxtY2iEEoEWZSZwYzk58hswnA/c+w2uYr+HUvK5o7kLt0yL/35hYHYroE+oq6L6nvuYRPlcx/HehhxStakRutg9sqIooLhZSeKukuAz2PxJOPbaD/iEdjMxHicyeiglIxfOk4YpLiZZ4zffAiAOPM9sPNpWmbwD3lR3+czsbuLxNvPC+jXl8zOPYIQytfSvHizEBEHrYaqb6/FmQtWP0P7Tow5UjY1Sz+vistkhl6RFtP5fz4hxtxbuwaZJUJCBREIYNGeOBlQqTBCfC4ukD/aE4+tnkawjgD4yes9Mw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA3PR15MB5654.namprd15.prod.outlook.com (2603:10b6:806:320::15)
+ by SN7PR15MB5684.namprd15.prod.outlook.com (2603:10b6:806:345::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.17; Wed, 16 Oct
+ 2024 10:41:06 +0000
+Received: from SA3PR15MB5654.namprd15.prod.outlook.com
+ ([fe80::bf27:429d:bb10:6bab]) by SA3PR15MB5654.namprd15.prod.outlook.com
+ ([fe80::bf27:429d:bb10:6bab%7]) with mapi id 15.20.8048.020; Wed, 16 Oct 2024
+ 10:41:06 +0000
+From: Mark Harmstone <maharmstone@meta.com>
+To: Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: kernel 6.8.5, bad tree block start, couldn't read tree root,
+ including any of the backup roots
+Thread-Topic: kernel 6.8.5, bad tree block start, couldn't read tree root,
+ including any of the backup roots
+Thread-Index: AQHbHxC5PZiiDoyPPEaA4NRSgMk0L7KJMayA
+Date: Wed, 16 Oct 2024 10:41:06 +0000
+Message-ID: <6a648270-bf74-443a-bdf2-02026b97d927@meta.com>
+References: <4717ca78-1d70-4aa7-bebb-d303c4ada4ca@app.fastmail.com>
+In-Reply-To: <4717ca78-1d70-4aa7-bebb-d303c4ada4ca@app.fastmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA3PR15MB5654:EE_|SN7PR15MB5684:EE_
+x-ms-office365-filtering-correlation-id: d74bdf90-ed4f-4061-2d05-08dcedcf0a41
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|10070799003|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?b1BXR25CZmh1a2FkbldLRFVteEY1MlFGQ3h4NEYvdEMvRkVPaGdZbkl4RW52?=
+ =?utf-8?B?TGRrOVlpOG5wQlRVMmlCQkdNSStUWDVhYlZqVmEwa3hLMTJvOHhrVDNRaDBN?=
+ =?utf-8?B?am5VaVV6WXNVNGduMmRmaG83c0VGUGs4LzNIVkFxU2M2UkxQUDc2QkpqMVNN?=
+ =?utf-8?B?ZGdNazZId3E5TDBtRlRhSjA5MFpyVVp0blZ0NUk1WFE0ZVplVUFsTFg2N0tK?=
+ =?utf-8?B?ZStjZVFRTDlOZDMrVHdHZGo5eEdENzdOOWx2UnpZN1RsNnRtdVM4SW1TY3V0?=
+ =?utf-8?B?TDNEZ0JrL1dRNlJ3UEl0UHV1SXd2YXZFZEpma3owWGZKWVk2MWhKc2JtZlZu?=
+ =?utf-8?B?clJmTTlwSXkxWkVvbm8xK1F2TktVNVM5WGNvVi9MbVdjNS9hTlQxb0hkdnMv?=
+ =?utf-8?B?M29wMEgvSWpHT0VlNGNuOXIzcFJZb3JWTXBkTU1EM2F1WndSR3o5dnEyWnhl?=
+ =?utf-8?B?MlVRUmNYQy9SRi95clNnczNCWStRcnNpRElyKzNxRGtNZGJlck1Vd2pvMmsy?=
+ =?utf-8?B?ODJCNDlTY2VSbURLUFZuU0tPMEord1NVMUM5SFJCUENtNUEyb1E2cDVYeG0w?=
+ =?utf-8?B?R2pQbDR4aEZmQ2hXN0pzOXFjSkR1c2w1akZzeitsNXorcm94MmxFc0RIWU5D?=
+ =?utf-8?B?VzBVcEpmN1NUMUYvd3NyWlBUdjBXUk5leGhjNFBqTGM2bDdzeHJhQVZDdGZo?=
+ =?utf-8?B?NnZ4b2tGT3ZoSkw5V295ZVcwa0krazVSdWxvQ0xLdFV2NTRTV1FlNE0vYmNN?=
+ =?utf-8?B?a0dRNDZKcXkvbTVZVlZMUWw3cUdramRkVFpENWF6WWppaVlieUc3SktHY0c2?=
+ =?utf-8?B?Q2E4Uy9mV09JUUk3OGUyemwyL1MrWi8rdGUrNTUrVHJSdnczcmkyemZXQkFy?=
+ =?utf-8?B?b2VOVmthcTFnK0FqeStFL3VCa2l0K2ZiS3V4QllqbHI5dHd0RzVVOEdUZzVL?=
+ =?utf-8?B?bG4yWFJrQmgvWXN1bDNNVFZMeWRLWjAwU2IwaTcxbCs3ZXF2cEtxbGNXbWsw?=
+ =?utf-8?B?MTlzcC81ZG0ybEtqVWNSdHRqN3V6Z2cyR1ZBaDhXakxPOVAvSTRhZzlrTTJY?=
+ =?utf-8?B?LzU0N3BKN3hseWpzU0FTM1ZFdWVWcjhJR3kyeTNrOVhnVFV0TzBJb2lxbjVi?=
+ =?utf-8?B?YVc1aHU2SXRhc1RoeGpVL2UzbE1UTmJ5MVhhWlR0NXJmbDRXa25DOVVmZHQz?=
+ =?utf-8?B?ekZZR3pXcCtUdmNYVFpBQjVsWFF2UXNHajdVT0JjUksxaTBaTHhGdWtVQkdi?=
+ =?utf-8?B?STNrSm04S0VtcXRkNWVLOWpIaG5XM1dUSWVzY1psdlBIbG1tVHFvNzlXdjg3?=
+ =?utf-8?B?V0d1MFVVWUZsRFZkQXpoRHFXL3dYN01uby9paWY1OEFWK1FqOEFsdHBoYS9P?=
+ =?utf-8?B?WFdSQWZGR1llSWw2eHRicExyRG5hOTV4UENRNDE0UnROMlpjOVIvc1RiWTBa?=
+ =?utf-8?B?bllaY2VSNlhKUkNZdVYvdnJ6T0V2WGNEaEQ4U2drNWx5UW1qZnBta1hvcmJO?=
+ =?utf-8?B?M0lPeXJtTXc2ek9zaXpWUm5NN3JBejNNWGRHbXVCcEJPT0huc3czSjd2TEZZ?=
+ =?utf-8?B?VEl1L0xvelRTbXlGYWNicm9iQ3R5eEoyVGh2TGZiYWcvc0ZxeTlHNzJEOFR3?=
+ =?utf-8?B?NWVydGNWekkxbXFaeGt1U1V5YzVQbTBURVV2cCtqaExDcEZVSzlIOE5QZ0hw?=
+ =?utf-8?B?SHZObE9YQzJKYlNsL01hUzF2d0FnQ05Xd0JnQktXcXEzaTRzRW02M2dBPT0=?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR15MB5654.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(10070799003)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?M2hQVThXR2FQNzFVRC95S0pTYXFEU2xadENxeFMzYUZwRjdteVhhc3NZUUho?=
+ =?utf-8?B?VE5KZWhLdyt4dHlhMGFjU25vTm82c0JablhwT2ZEdjMweDRneGdxMGZGZlhy?=
+ =?utf-8?B?RzVTN2FkZytOa3FxM0NLSUdncnhPS3FzOWZtUkJRK3NaUTdwQVZrZUJHOURN?=
+ =?utf-8?B?aVJScHNZL1RJZTF2bS8zeFpBUlhmV2sxc2t3TjZ0SGMxOW5QQzJpUFVRWFd4?=
+ =?utf-8?B?OXJCN0ZJZjRWWGRlenZpcjUyQVphMEpZTDJpbzJ3d3dZUlg0RTltZ2NGbmU1?=
+ =?utf-8?B?SzZDNS91amlHV1NxKzNKUktKZkszSkM2TTdaRk9jbHRYZjVvTTd5RzNSU2Zw?=
+ =?utf-8?B?TU5VaXV2RGU5OFZNWTRXQ25SUlRhL1M2dlM5R3dqWVJ6ckhONndqL1BRZ0Rl?=
+ =?utf-8?B?R1EzMERxOXVUSlhmajVsSktsQzBjQldoUFUyOEZOUFJUa28xaHdLaTJMdzJW?=
+ =?utf-8?B?NWhlNm9PVlBoKzJuTWQyZUxtT0FJS3Y4dUtqTmRFMTlpRDBmNFNoazdUdkhl?=
+ =?utf-8?B?bmw0Qzg0eFFnOVlwanRuV3ZZRlREMDlLb2ZCU3JFSHF6T1p0VnJzVXk0UTJo?=
+ =?utf-8?B?MFVTdEFROUFTeUt2L0tDQUhnaFBCK1M0azQrRmZOeXlCVTlxVnExSTE5SW1m?=
+ =?utf-8?B?OTJrMVpEZFgvSk50aElzSHdOV0RnV09kWjV4ZHQ5WlM4MGpYK0M3Tk1ySVEr?=
+ =?utf-8?B?WWhHd3JCeEowR2pBWjVoYStjak1FQW5tVzRWb3A3cmdwNEFmdWgxTUo1cGVU?=
+ =?utf-8?B?cXNGSVNIdS9YNERSSWd6dVNBVHJDSklwUUkxNC9TNHNnQXFZZ3gzamhoSndG?=
+ =?utf-8?B?MDR1VTN2VkQ4SDI3UTRjM1JhNGp2aVRlQXEyMk42VElPZkVKYkczdXNvQito?=
+ =?utf-8?B?aFlyanJMQVVwRDNwNmxSZ1MwVHAzbW10RHhTKzBrclZKV2dQVXdIL1JVRXNN?=
+ =?utf-8?B?aU4yMi9ZT0UyNWhnN1NUZHZmempTSVRjcFI4UnN0YUF4Uk1oa2laNGdjRFd6?=
+ =?utf-8?B?cVpkZzBXWnBMY0hPMUdsWXJoVjlWdk5RYW8zeEJvMnVqZkM4T21IcG4vQkZx?=
+ =?utf-8?B?ckhFcmF1VWpuOFdvS2NjYWlZSVNmWCthZWt4Ykw4TzRKWE5JK0h4bHU1S0tM?=
+ =?utf-8?B?c2RTcUk4ajM1NFd6eHBML3JqVXFyMVhvYnVuSDVkM0xNV2lPZ1BSMHl5TU9u?=
+ =?utf-8?B?VURSd0h3V05CT2tNZWlSZWtzdHlYTk8vMmI3cWF1TmIyS3ZpcWNyNHo2Kytj?=
+ =?utf-8?B?ZjBOUzB0RWFvUlQ0UXRGNS93L0pzbk43U0lqYTVoU3MxNmkrR2xKYnFuT2M1?=
+ =?utf-8?B?c3BWd1Fqei8wUGpKNU5ydWVmdmtKRllxdFp3aEcwNVczVUwrMnY5aEp0ZU1t?=
+ =?utf-8?B?UndmWEdtb0RrRW1zV1o5dTFvdEVsMnpubGhEV3M1b29HZGE1d0xNRnRWN3VM?=
+ =?utf-8?B?SHhCQ2tEdDhRWmtla2JZbENUTDE0bTkzRTdJd0xKdTVvTEsyd3RuOS8rVVZy?=
+ =?utf-8?B?bzF6dVpvazlVREg3aHM4WU4vUHZqdDFZSHdWOEZKcTYwdkhGWTRSS29NcmxT?=
+ =?utf-8?B?M0JVQW5LTDB0aStJSTNtZTN1b0h3ZWhOVGNROU0vdGJiVUpaOWkvOEdNcUcr?=
+ =?utf-8?B?TC9iV216OFo4ZDNuOFg4NVJ1eTZZK1NBUmhWVjkvaHZsemYxd1YwbjFITGZD?=
+ =?utf-8?B?aUZnVHdJQ0FYSzVueDEybHFhQVZqVlIyejk1SS9UWEwrZmpwYlJ3NEFwUmcz?=
+ =?utf-8?B?WFFya3ZsL1pJMlBKNlV3MStXbEgzaUgxcjY4RURIKzNKU2h0aUtGYTFwVnRX?=
+ =?utf-8?B?ajU1RXJteWRlOTIrbmkvMmtNS3pWemQwa2VFYU9uY0lDWG9qb21YNnFKNkZa?=
+ =?utf-8?B?UVBVNnkwd0NHZzRxUzd6ZFNERWFVL0ZHaTQ2aHJoQkVCSE5OczJCTy9rb3dT?=
+ =?utf-8?B?OHVJc3d4M3lRTVE1R0RGODhZZmJqbG1ERW1Fb05jaTlQSVMyL1N5anUza3JF?=
+ =?utf-8?B?VDVxc0VEYVk3Rk81MkRIaU1hSW1mdjZQRFNkVlFndnFtRGNJUnNmb1p5SjRx?=
+ =?utf-8?B?OGFCdHQ3djJnWjdoY2lYVnhmdVJVMWhJeUI1RzFXWEJWVXdXT3p0K3o0R3JV?=
+ =?utf-8?B?dFVsNElsaW9BY1pLUVZVRTRoNnVCMWdhRUw0L2RNQ29ZT3pjaHB0c1BWQ3hh?=
+ =?utf-8?Q?aEb3M5MVBnbyJZ71mDFmAhk=3D?=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: add test for cleaner thread under seed-sprout
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com, fstests@vger.kernel.org
-References: <9925ac0001b867a523a8c9c838536b50c2b19348.1729034727.git.boris@bur.io>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <9925ac0001b867a523a8c9c838536b50c2b19348.1729034727.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR15MB5654.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d74bdf90-ed4f-4061-2d05-08dcedcf0a41
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2024 10:41:06.5380
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YRZcFZI8qTS986fxaw6ufr5glfC9cuQbfHUC8LbxaRD0ge92sU/iM08FGaYJLPr7Z/ktE6ZrnWdUOhZJmr+I1A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB5684
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:aTA+qoTWGgWZANXFSxiLVW46RdraH08/48LVCHGYT4LvYyY6Yay
- Y9ZUV0GZd7t0WeG9jtFrXCw1H318lcwn8PNRY7NDQeJJ1zE+NHdItC4Vqz7Wv7BC+xEDktF
- 1IAcb4fbJQifNw5wm31qzB/8dKptbBfcSWRm1E3EWX882m78lJ1UGNMF2+wpZM5pWrafRF3
- eiVXOj+GANly0zHlE3o+Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:+x67Jnb4MUk=;36XTp45IfnpeRjpKKdJADacZORY
- JB46FDT6wd0SMN1Tz5bIv+/TdqB7hUsP07vrbMsln74NZucFN820ajuGTeKkPIUmo/oNlMTW6
- 9fkA9vvtuKXFFzhHNT9WMW3bKonwtN9DRxWk8i4PhNEnfKT/6LNbm1H+StV3MF1cKAuz7Zmrx
- XRjvQ8n8gqOfrieG9hbnF9+re9xSoxrhocwyl6irfNuycJudewmk49wrVEjSRHd7LICuxqOvP
- HCSScUn/KFLDIN9Vd3c8rgVCw3U/0jsOSX8KEPI9mN5a9TO9nzu6jQuvPssSDOtVeOkvAmn+u
- E5yLprvPq8roafbm0MU+Uh3do7K84EN05XhiEAQlS8GWTxurjbBDZF9aI/QAWohOyjdax9Epx
- cB5SplNtrqtp6AHqucaYggrGrbXP8pNK0W7EYzqPbuTv7qm1lT0ykOCqgD0ziCon+LjuVaFRu
- WdF4SPOLHujd3ZBDGyTcJ7eMaVZlqZjvYjn0rMJT9AvlG8AZmUn5T//UnU6ltQuQQZfXeKn48
- HLA3V7vmMnewSC/SyZ+pX2OrfrDGG4d+kIA8McHNwFtQwoOTCKtqxKbWAgG2+LqT39XBFv8H+
- nrWIlUo/v/2kvjxeRpjCvoxY+M8Tkki/uV1bR3XLO6Mtt/86cWXIEno53ALXB/eqrLWab/K1A
- EAx9jL9fwVhEQyzvB9pgU5q4fPraUF+u8nNXqFSs05rNljOKZt0vk+ZCVjw1jn40ASJsw9BGF
- mq+eRCrragyZn19zVb0i0fCN8S+UNhV7UJgppgoPMeptvw+2pS4hTHGBe6FANglf5JjCBTGne
- GuzsqXSD6O3/kgjQ+eUP6KJw==
+Content-ID: <05B9DD98955A3E4D9524D32B6C019EBF@namprd15.prod.outlook.com>
+X-Proofpoint-GUID: 6Ly03KPwT1sUzkzjNK9NCNf1aIIDY197
+X-Proofpoint-ORIG-GUID: 6Ly03KPwT1sUzkzjNK9NCNf1aIIDY197
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
+This looks like a disk error to me.
 
+This was interesting though:
+ > checksum verify failed on 808009728 wanted 0x00000000 found 0xca72d647
+ > checksum verify failed on 808009728 wanted 0x780fa0fd found 0x2ce4b8af
 
-=E5=9C=A8 2024/10/16 09:57, Boris Burkov =E5=86=99=E9=81=93:
-> We have a longstanding bug that creating a seed sprout fs with the
-> ro->rw transition done with
->
-> mount -o remount,rw $mnt
->
-> instead of
->
-> umount $mnt
-> mount $sprout_dev $mnt
->
-> results in an fs without BTRFS_FS_OPEN set, which fails to ever run the
-> critical btrfs cleaner thread.
->
-> This test reproduces that bug and detects it by creating and deleting a
-> subvolume, then triggering the cleaner thread. The expected behavior is
-> for the cleaner thread to delete the stale subvolume and for the list to
-> show no entries. Without the fix, we see a DELETED entry for the subvol.
->
-> Signed-off-by: Boris Burkov <boris@bur.io>
+Why would btrfs check be reporting two different "found" values for the=20
+same block?
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Mark
 
-Thanks,
-Qu
-
-> ---
-> Changelog:
-> v2:
-> - update to real copyright info
-> - add extra rw->ro transition checks
-> - remove unnecessary _require_test
-> ---
->   tests/btrfs/323     | 49 +++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/323.out |  2 ++
->   2 files changed, 51 insertions(+)
->   create mode 100755 tests/btrfs/323
->   create mode 100644 tests/btrfs/323.out
->
-> diff --git a/tests/btrfs/323 b/tests/btrfs/323
-> new file mode 100755
-> index 000000000..ca57b1a1e
-> --- /dev/null
-> +++ b/tests/btrfs/323
-> @@ -0,0 +1,49 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 323
-> +#
-> +# Test that remounted seed/sprout device FS is fully functional. For ex=
-ample, that it can purge stale subvolumes.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick seed remount
-> +
-> +. ./common/filter
-> +_require_command "$BTRFS_TUNE_PROG" btrfstune
-> +_require_scratch_dev_pool 2
-> +
-> +_fixed_by_kernel_commit XXXXXXXX \
-> +	"btrfs: do not clear read-only when adding sprout device"
-> +
-> +_scratch_dev_pool_get 2
-> +dev_seed=3D$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
-> +dev_sprout=3D$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
-> +
-> +# create a read-only fs based off a read-only seed device
-> +_mkfs_dev $dev_seed
-> +$BTRFS_TUNE_PROG -S 1 $dev_seed
-> +_mount $dev_seed $SCRATCH_MNT >>$seqres.full 2>&1
-> +_btrfs device add -f $dev_sprout $SCRATCH_MNT >>$seqres.full
-> +
-> +# switch ro to rw, checking that it was ro before and rw after
-> +findmnt -n -O rw $SCRATCH_MNT
-> +_mount -o remount,rw $SCRATCH_MNT
-> +findmnt -n -O ro $SCRATCH_MNT
-> +
-> +# do stuff in the seed/sprout fs
-> +_btrfs subvolume create $SCRATCH_MNT/subv
-> +_btrfs subvolume delete $SCRATCH_MNT/subv
-> +
-> +# trigger cleaner thread without remounting
-> +_btrfs filesystem sync $SCRATCH_MNT
-> +
-> +# expect no deleted subvolumes remaining
-> +$BTRFS_UTIL_PROG subvolume list -d $SCRATCH_MNT
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/323.out b/tests/btrfs/323.out
-> new file mode 100644
-> index 000000000..5dba9b5f0
-> --- /dev/null
-> +++ b/tests/btrfs/323.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 323
-> +Silence is golden
+On 15/10/24 15:43, Chris Murphy wrote:
+> >=20
+> Fedora user report:
+> kernel 6.8.5-301.fc40.x86_64
+> btrfs-progs 6.8
+> Kioxia NVMe KXG80ZNV1T02, firmware 11304102 (used by Dell, seems firmware=
+ is current)
+> https://urldefense.com/v3/__https://discussion.fedoraproject.org/t/stuck-=
+in-emergency-mode-after-force-shutdown/133615__;!!Bt8RZUm9aw!6m27MG8w3IYorE=
+7KW3kmXdlLaSPpbskKASUnTigu4mMYKmsfvKrUgGv1nB13_24XicYXvDPOt1cF_G_j0w$
+>=20
+> Description:
+> User reports system was suspended, and wouldn't wake from suspend. And po=
+wer was forced off to recover. The problem appears on the subsequent boot. =
+This post contains the most relevant photo of kernel messages showing the m=
+ount errors, including both copies (DUP metadata) of all the backup tree ro=
+ots.
+>=20
+> https://urldefense.com/v3/__https://discussion.fedoraproject.org/t/133615=
+/15__;!!Bt8RZUm9aw!6m27MG8w3IYorE7KW3kmXdlLaSPpbskKASUnTigu4mMYKmsfvKrUgGv1=
+nB13_24XicYXvDPOt1dplAlvvg$
+>=20
+> Supers all look good:
+>=20
+> superblock: bytenr=3D65536, device=3D/dev/nvme0n1p3
+> ---------------------------------------------------------
+> csum_type		0 (crc32c)
+> csum_size		4
+> csum			0x79e5611c [match]
+> bytenr			65536
+> flags			0x1
+> 			( WRITTEN )
+> magic			_BHRfS_M [match]
+> fsid			2c03e734-1b38-49e9-991a-1f85b9cc97f7
+> metadata_uuid		00000000-0000-0000-0000-000000000000
+> label			fedora
+> generation		38863
+> root			808009728
+> sys_array_size		129
+> chunk_root_generation	32970
+> root_level		0
+> chunk_root		24854528
+> chunk_root_level	0
+> log_root		0
+> log_root_transid (deprecated)	0
+> log_root_level		0
+> total_bytes		1022505254912
+> bytes_used		81702764544
+> sectorsize		4096
+> nodesize		16384
+> leafsize (deprecated)	16384
+> stripesize		4096
+> root_dir		6
+> num_devices		1
+> compat_flags		0x0
+> compat_ro_flags		0x3
+> 			( FREE_SPACE_TREE |
+> 			  FREE_SPACE_TREE_VALID )
+> incompat_flags		0x371
+> 			( MIXED_BACKREF |
+> 			  COMPRESS_ZSTD |
+> 			  BIG_METADATA |
+> 			  EXTENDED_IREF |
+> 			  SKINNY_METADATA |
+> 			  NO_HOLES )
+> cache_generation	0
+> uuid_tree_generation	38863
+> dev_item.uuid		0aab31a2-3c63-4c6f-bc4c-8f4b4bad66ac
+> dev_item.fsid		2c03e734-1b38-49e9-991a-1f85b9cc97f7 [match]
+> dev_item.type		0
+> dev_item.total_bytes	1022505254912
+> dev_item.bytes_used	89145737216
+> dev_item.io_align	4096
+> dev_item.io_width	4096
+> dev_item.sector_size	4096
+> dev_item.devid		1
+> dev_item.dev_group	0
+> dev_item.seek_speed	0
+> dev_item.bandwidth	0
+> dev_item.generation	0
+> sys_chunk_array[2048]:
+> 	item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+> 		length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+> 		io_align 65536 io_width 65536 sector_size 4096
+> 		num_stripes 2 sub_stripes 1
+> 			stripe 0 devid 1 offset 22020096
+> 			dev_uuid 0aab31a2-3c63-4c6f-bc4c-8f4b4bad66ac
+> 			stripe 1 devid 1 offset 30408704
+> 			dev_uuid 0aab31a2-3c63-4c6f-bc4c-8f4b4bad66ac
+> backup_roots[4]:
+> 	backup 0:
+> 		backup_tree_root:	803454976	gen: 38861	level: 0
+> 		backup_chunk_root:	24854528	gen: 32970	level: 0
+> 		backup_extent_root:	802881536	gen: 38861	level: 2
+> 		backup_fs_root:		30572544	gen: 9	level: 0
+> 		backup_dev_root:	73252864	gen: 36528	level: 0
+> 		csum_root:	801767424	gen: 38861	level: 2
+> 		backup_total_bytes:	1022505254912
+> 		backup_bytes_used:	81702764544
+> 		backup_num_devices:	1
+>=20
+> 	backup 1:
+> 		backup_tree_root:	804864000	gen: 38862	level: 0
+> 		backup_chunk_root:	24854528	gen: 32970	level: 0
+> 		backup_extent_root:	804093952	gen: 38862	level: 2
+> 		backup_fs_root:		30572544	gen: 9	level: 0
+> 		backup_dev_root:	73252864	gen: 36528	level: 0
+> 		csum_root:	801931264	gen: 38862	level: 2
+> 		backup_total_bytes:	1022505254912
+> 		backup_bytes_used:	81702899712
+> 		backup_num_devices:	1
+>=20
+> 	backup 2:
+> 		backup_tree_root:	808009728	gen: 38863	level: 0
+> 		backup_chunk_root:	24854528	gen: 32970	level: 0
+> 		backup_extent_root:	806535168	gen: 38863	level: 2
+> 		backup_fs_root:		30572544	gen: 9	level: 0
+> 		backup_dev_root:	73252864	gen: 36528	level: 0
+> 		csum_root:	803799040	gen: 38863	level: 2
+> 		backup_total_bytes:	1022505254912
+> 		backup_bytes_used:	81702764544
+> 		backup_num_devices:	1
+>=20
+> 	backup 3:
+> 		backup_tree_root:	801734656	gen: 38860	level: 0
+> 		backup_chunk_root:	24854528	gen: 32970	level: 0
+> 		backup_extent_root:	800374784	gen: 38860	level: 2
+> 		backup_fs_root:		30572544	gen: 9	level: 0
+> 		backup_dev_root:	73252864	gen: 36528	level: 0
+> 		csum_root:	797999104	gen: 38860	level: 2
+> 		backup_total_bytes:	1022505254912
+> 		backup_bytes_used:	81702764544
+> 		backup_num_devices:	1
+>=20
+>=20
+> btrfs insp dump-t -b 808009728 $DEV
+> btrfs-progs v6.8
+> checksum verify failed on 808009728 wanted 0x00000000 found 0xca72d647
+> checksum verify failed on 808009728 wanted 0x780fa0fd found 0x2ce4b8af
+> Couldn't read tree root
+> checksum verify failed on 808009728 wanted 0x00000000 found 0xca72d647
+> checksum verify failed on 808009728 wanted 0x780fa0fd found 0x2ce4b8af
+> ERROR: failed to read tree block 808009728
+>=20
+> btrfs insp dump-t -b 80486400 $DEV
+> btrfs-progs v6.8
+> checksum verify failed on 808009728 wanted 0x00000000 found 0xca72d647
+> checksum verify failed on 808009728 wanted 0x780fa0fd found 0x2ce4b8af
+> Couldn't read tree root
+> checksum verify failed on 80486400 wanted 0x00000000 found 0x973bc4ee
+> checksum verify failed on 80486400 wanted 0x00000000 found 0x14f430d1
+> ERROR: failed to read tree block 80486400
+>=20
+>=20
+> btrfs insp dump-t -b 803454976 $DEV
+> btrfs-progs v6.8
+> checksum verify failed on 808009728 wanted 0x00000000 found 0xca72d647
+> checksum verify failed on 808009728 wanted 0x780fa0fd found 0x2ce4b8af
+> Couldn't read tree root
+> checksum verify failed on 803454976 wanted 0x080fd04c found 0x4431a259
+> checksum verify failed on 803454976 wanted 0x00000000 found 0x3be418cb
+> ERROR: failed to read tree block 803454976
+>=20
+>=20
+> btrfs insp dump-t -b 801734656 $DEV
+> btrfs-progs v6.8
+> checksum verify failed on 808009728 wanted 0x00000000 found 0xca72d647
+> checksum verify failed on 808009728 wanted 0x780fa0fd found 0x2ce4b8af
+> Couldn't read tree root
+> checksum verify failed on 801734656 wanted 0x080fd04c found 0x69344e69
+> checksum verify failed on 801734656 wanted 0x00000000 found 0x818d4e83
+> ERROR: failed to read tree block 801734656
+>=20
+>=20
+> But I'm not sure where to suggest the user go from here since none of the=
+ tree roots can be read. That seems like quite a lot of problems all at onc=
+e to different parts of the media.
+>=20
+> thanks,
+>=20
+>=20
+> --
+> Chris Murphy
+>=20
 
 
