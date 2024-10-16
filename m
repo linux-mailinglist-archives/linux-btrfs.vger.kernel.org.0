@@ -1,212 +1,169 @@
-Return-Path: <linux-btrfs+bounces-8956-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8957-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ACEF9A0819
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 13:10:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0C09A0BE1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 15:49:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FA1D282B82
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 11:10:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6784E1F24865
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 13:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2272076B0;
-	Wed, 16 Oct 2024 11:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 136F9209F29;
+	Wed, 16 Oct 2024 13:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BV9kZYCw"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YlWWN8i6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/XdrUWvi";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YlWWN8i6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/XdrUWvi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433B31C07EA;
-	Wed, 16 Oct 2024 11:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2582071FF;
+	Wed, 16 Oct 2024 13:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729077025; cv=none; b=FshOAPfVjrIizaJEWnyop/urkKpdu8X0z/MqKkYa2ATzYVEQopOrFXDaBWsVNGHjMcSHAFtEE5TxBaSqqBJoxSUmo+zlJvvh8rnkrLfkfJ2TpWDcYU9e/OHJBucarDJAJ2IEHZKvV65cErZmwbrlN/p+jhKuXQQERaANMc0ns8k=
+	t=1729086569; cv=none; b=thSr/BQS/cZtpUNV0wPxR63nICAz+Y5geB5wjoTosErw5Ic85u4k8BGMP/R8nta0RgRpirqN8Hr3T+cMC4vWU1xLetKiWk4XPtZqi2+CJd/wJTzZfJpOp/QokxZpokMvvoqGW1hCDr7EDyGaN3cRwAIQqDF4mZi/wP/Sq0NSoHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729077025; c=relaxed/simple;
-	bh=O2cuOoIXjcfjaimiMrzckaCV2XXDjo9KLgsWqT+luQw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YZdKB0CBoG58j+T8KBnFFJN9VD1tjHLkz3DlzNG2f5JD6lwW/8B65PPaTOK63tPpps33k0N+Icf3Apk2pjTJyUKnCW1m/zPGzws2yUfR6ZsOt9BzXQxkY/IM7zz7kmzk2rWRwyUiFPx5jpo1WY39HvxeaJ3bBOCMV+iav/xZMi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BV9kZYCw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEA0FC4CEC5;
-	Wed, 16 Oct 2024 11:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729077024;
-	bh=O2cuOoIXjcfjaimiMrzckaCV2XXDjo9KLgsWqT+luQw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BV9kZYCwBmZj/r3vEMdQemadan0oXxTxSgMElJNEUAHkat32Y56asTulL6oOgjetN
-	 Wy6ZSy+Jl7VVUUtqx1FrvkALrRkk1waScmUp9l6ZsY0ROnwMUkKx7NHWjQmR4g8t2X
-	 4vhAaq+3n83qA0bmubzPO3wTx1PhgG2dD0hzkIPFAiCNq3xoFzrMHHaEdDu3Xj7gu7
-	 4bU5GtZbjY6Mi2VfxYWNHpkYqevWg4b9phlWG9ypCM2rw9XwNh4UGfGo9NTmIv4D9X
-	 cCijjxJgr7/swQrUoedcT9jxlbe58M/HeEiN0N3pKtbeLlbkVSl+Axh7e7K1qgnpgP
-	 Ud0xLaVfLIZhA==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-539f1292a9bso4375137e87.2;
-        Wed, 16 Oct 2024 04:10:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWPKyyOUF2MOa2gGlloHPQee+OPzK/CMS6/CxLiBoCTEPt18mCQgaBt3VDegpcphq+JADh4v/G32zRqxw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yys282glspFyyc19lx4jgtH0t6Gle4hTql8N68mVEXoI2ziC95p
-	vpTlF08+bN7OdY+gbxVS/PU2hUGK8u9L+EM3wAUB8CqzjDx11D6xUBFjbAhkj5bd3A7Ze3imKhf
-	nkSn6f5IGVr19aGMpwOiffbmESfs=
-X-Google-Smtp-Source: AGHT+IEi1BAJJ1+jZyt4SL/39rY0gpC0lnJ3Kgns6uXEBXlkaK2vToY4EH/gLeBfx8nCr7OnJNfZsFz2084/ronfIA8=
-X-Received: by 2002:a05:6512:4506:b0:52c:fd46:bf07 with SMTP id
- 2adb3069b0e04-53a0704058dmr1066359e87.49.1729077023193; Wed, 16 Oct 2024
- 04:10:23 -0700 (PDT)
+	s=arc-20240116; t=1729086569; c=relaxed/simple;
+	bh=T6S8MHzsWbbhpYc744BPFdnVgsatESf28s6fE5cIgzc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UPRPb3oNQhKjrI96z4lcIfzcdb0sjtRBRF32Tg2INxQkB5rk4iWltQV3IoK2A0mEcLh5k+v7+4iEysSiImzFNEVeGrJfONci86G7H5aMQhukJ+fPNnNoHNdcU9ByL3QBAuNIM6xFvZjb7jJLgbQ6ehdSPssmpY6k9EbRF0fNFIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YlWWN8i6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/XdrUWvi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YlWWN8i6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/XdrUWvi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9FBC91F7BF;
+	Wed, 16 Oct 2024 13:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729086564;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=48OaqHqP6b/X39O0Tmy1hbH3rm7+b4nKvK9d8AlpvyA=;
+	b=YlWWN8i6PN4mmfXfbNRlHh9xevZm279VV9a6dbcmhGzSCWhpJ9Sj1DJungPUP1Rvkz6ZmL
+	3m4CBGyai3yymS++ZhGaj4jwLJUojxpaMcXKDXrw52LJhR64suGV67Ls5yg9qeovqg2RJH
+	nif7cjUZxKQZNpweS6vhF2meDxhAk8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729086564;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=48OaqHqP6b/X39O0Tmy1hbH3rm7+b4nKvK9d8AlpvyA=;
+	b=/XdrUWvi05UtXOFTd6Vnn2eoBrIACZIqGuEhu6TT1iT8ODQ22CuarPB172F/ScFcx+Hy2q
+	PbSie0zOl7TBCKBg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=YlWWN8i6;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/XdrUWvi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729086564;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=48OaqHqP6b/X39O0Tmy1hbH3rm7+b4nKvK9d8AlpvyA=;
+	b=YlWWN8i6PN4mmfXfbNRlHh9xevZm279VV9a6dbcmhGzSCWhpJ9Sj1DJungPUP1Rvkz6ZmL
+	3m4CBGyai3yymS++ZhGaj4jwLJUojxpaMcXKDXrw52LJhR64suGV67Ls5yg9qeovqg2RJH
+	nif7cjUZxKQZNpweS6vhF2meDxhAk8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729086564;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=48OaqHqP6b/X39O0Tmy1hbH3rm7+b4nKvK9d8AlpvyA=;
+	b=/XdrUWvi05UtXOFTd6Vnn2eoBrIACZIqGuEhu6TT1iT8ODQ22CuarPB172F/ScFcx+Hy2q
+	PbSie0zOl7TBCKBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F6341376C;
+	Wed, 16 Oct 2024 13:49:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BkneHmTED2cdEQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 16 Oct 2024 13:49:24 +0000
+Date: Wed, 16 Oct 2024 15:49:19 +0200
+From: David Sterba <dsterba@suse.cz>
+To: kernel test robot <lkp@intel.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>, oe-kbuild-all@lists.linux.dev,
+	David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	linux-btrfs@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [linux-next:master 4584/4954] ERROR: modpost: "__cmpxchg_small"
+ [fs/btrfs/btrfs.ko] undefined!
+Message-ID: <20241016134919.GO1609@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <202410161911.LbOFjfPQ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241015153957.2099812-1-maharmstone@fb.com>
-In-Reply-To: <20241015153957.2099812-1-maharmstone@fb.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 16 Oct 2024 12:09:46 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4wLLTLi_sfKEQB8qsQ6G7VxWBfK_4FwSi4qL5Z3bkycQ@mail.gmail.com>
-Message-ID: <CAL3q7H4wLLTLi_sfKEQB8qsQ6G7VxWBfK_4FwSi4qL5Z3bkycQ@mail.gmail.com>
-Subject: Re: [PATCH] generic: add test for missing btrfs csums in log when
- doing async on subpage vol
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202410161911.LbOFjfPQ-lkp@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 9FBC91F7BF
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	SUBJECT_ENDS_EXCLAIM(0.20)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim,suse.cz:mid,intel.com:email];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-On Tue, Oct 15, 2024 at 4:42=E2=80=AFPM Mark Harmstone <maharmstone@fb.com>=
- wrote:
->
-> Adds a test for a bug we encountered on Linux 6.4 on aarch64, where a
-> race could mean that csums weren't getting written to the log tree,
-> leading to corruption when it was replayed.
->
-> The patches to detect log this tree corruption are in btrfs-progs 6.11.
+On Wed, Oct 16, 2024 at 07:10:49PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   15e7d45e786a62a211dd0098fee7c57f84f8c681
+> commit: c87222d18145c93b0ebd860ae9166afb1457129c [4584/4954] btrfs: fix error propagation of split bios
+> config: mips-ip30_defconfig (https://download.01.org/0day-ci/archive/20241016/202410161911.LbOFjfPQ-lkp@intel.com/config)
+> compiler: mips64-linux-gcc (GCC) 14.1.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241016/202410161911.LbOFjfPQ-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202410161911.LbOFjfPQ-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> WARNING: modpost: missing MODULE_DESCRIPTION() in lib/zlib_inflate/zlib_inflate.o
+> >> ERROR: modpost: "__cmpxchg_small" [fs/btrfs/btrfs.ko] undefined!
 
-This shouldn't be needed right?
-Because after log replay the csums are missing and 'btrfs check'
-detects (IIRC) missing csums for extents referred by file extent items
-in a subvolume tree - if it doesn't then it should be improved.
-
->
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-> ---
-> This is a genericized version of the test I originally proposed as
-> btrfs/333.
->
->  tests/generic/757     | 71 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/757.out |  2 ++
->  2 files changed, 73 insertions(+)
->  create mode 100755 tests/generic/757
->  create mode 100644 tests/generic/757.out
->
-> diff --git a/tests/generic/757 b/tests/generic/757
-> new file mode 100755
-> index 00000000..6ad3d01e
-> --- /dev/null
-> +++ b/tests/generic/757
-> @@ -0,0 +1,71 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# FS QA Test 757
-> +#
-> +# Test async dio with fsync to test a btrfs bug where a race meant that =
-csums
-> +# weren't getting written to the log tree, causing corruptions on remoun=
-t.
-> +# This can be seen on subpage FSes on Linux 6.4.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick metadata log recoveryloop
-> +
-> +_fixed_by_kernel_commit e917ff56c8e7 \
-> +       "btrfs: determine synchronous writers from bio or writeback contr=
-ol"
-
-For generic tests what we do is:
-
-[ $FSTYP =3D=3D "btrfs" ] && _fixed_by_kernel_commit .....
-
-As long as the failure has not been observed and fixed on other filesystems=
-.
-In case one day a regression happens in another fs, we just add a
-corresponding line using the same logic.
-
-Otherwise if the test one days fails on another fs and fstests
-suggests that that commit is missing, it would be odd.
-
-Everything else looks good, so with that fixed (maybe Zorro can change
-that when picking the patch):
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-
-> +
-> +fio_config=3D$tmp.fio
-> +
-> +. ./common/dmlogwrites
-> +
-> +_require_scratch
-> +_require_log_writes
-> +
-> +cat >$fio_config <<EOF
-> +[global]
-> +iodepth=3D128
-> +direct=3D1
-> +ioengine=3Dlibaio
-> +rw=3Drandwrite
-> +runtime=3D1s
-> +[job0]
-> +rw=3Drandwrite
-> +filename=3D$SCRATCH_MNT/file
-> +size=3D1g
-> +fdatasync=3D1
-> +EOF
-> +
-> +_require_fio $fio_config
-> +
-> +cat $fio_config >> $seqres.full
-> +
-> +_log_writes_init $SCRATCH_DEV
-> +_log_writes_mkfs >> $seqres.full 2>&1
-> +_log_writes_mark mkfs
-> +
-> +_log_writes_mount
-> +
-> +$FIO_PROG $fio_config > /dev/null 2>&1
-> +_log_writes_unmount
-> +
-> +_log_writes_remove
-> +
-> +prev=3D$(_log_writes_mark_to_entry_number mkfs)
-> +[ -z "$prev" ] && _fail "failed to locate entry mark 'mkfs'"
-> +cur=3D$(_log_writes_find_next_fua $prev)
-> +[ -z "$cur" ] && _fail "failed to locate next FUA write"
-> +
-> +while [ ! -z "$cur" ]; do
-> +       _log_writes_replay_log_range $cur $SCRATCH_DEV >> $seqres.full
-> +
-> +       _check_scratch_fs
-> +
-> +       prev=3D$cur
-> +       cur=3D$(_log_writes_find_next_fua $(($cur + 1)))
-> +       [ -z "$cur" ] && break
-> +done
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/generic/757.out b/tests/generic/757.out
-> new file mode 100644
-> index 00000000..dfbc8094
-> --- /dev/null
-> +++ b/tests/generic/757.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 757
-> +Silence is golden
-> --
-> 2.44.2
->
->
+On mips64-linux-gcc (mips-ip30_defconfig), arch/mips/kernel/cmpxchg.c:__cmpxchg_small()
+is not exported for modules.
 
