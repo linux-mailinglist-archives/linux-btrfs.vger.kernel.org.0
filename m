@@ -1,90 +1,160 @@
-Return-Path: <linux-btrfs+bounces-8970-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8971-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC259A0FEC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 18:42:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286979A1038
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 18:59:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F3CE1C20E9F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 16:42:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A3ED1C21188
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 16:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475A2212F05;
-	Wed, 16 Oct 2024 16:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2CA2101B1;
+	Wed, 16 Oct 2024 16:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lg5/N1BJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NrxJzigD"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE4420FAA1
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 16:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54A820C031;
+	Wed, 16 Oct 2024 16:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729096919; cv=none; b=TwhDxyMuWkcw3ze2l2jScKZTHk4cY+a+hA4IDvpbW9M8SnIl7Ye5NZY8Ijo+4PPWwFe1FMexU9M3o+9rUpzCp7DsFCzo7fMWU91aggFDoMid68JrrSOreJKCie/RNqVbTLkNUZ5T06soIo58653hyxXrcZzqmddkEXvnYCirBr0=
+	t=1729097973; cv=none; b=lDtu7cG4vRrsdcYvqhlreFI5G0ob0D4cCy3rgBe9FPI86fdOtWZukAGuLj7gdU4XSNShKPtxJ+vZouRZkhgWCrbundy0sL+e0XRorgVTW7oYrC7/jrI+fKXKOtEqC4EEYZJJtXkOLGjIo/K+qhmEPW6yOgE2ioScBRrF6j3XbOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729096919; c=relaxed/simple;
-	bh=31TtaAkmtkQCd5WsDW4pTydGhhuewNq8vL0RBikOqnU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fv5z+8Zb1ESVmogO/jDuzwsUUh/tAQy4sNuGcqp4F/woCF0OLahZ91OAE031UaIfJqjzk0R6a0eGqO2gAJQtNZWg2oLURqAoRNDdvESy9gabZqXtE1bzdcCT8kdXB5oeDJE8tzelV3ZD2dUMQAAb/x1JlLG9T49qwDvUlR14TQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lg5/N1BJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06783C4CECE
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 16:41:59 +0000 (UTC)
+	s=arc-20240116; t=1729097973; c=relaxed/simple;
+	bh=WSA6cXI9paugRSBVmePqzHVAXr82KSH6RNrOaBQM73M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pEvEyhV8jobc+JOX0QzNuauAzZtzuS7KwYmhVT07yDDgYmeH8Qh8LhH80677J7xAp3edEvyAYMNwdn5RFr+9uaWHXYY8siqCmu+h747B6KoEsEXifnXKrMNQdqv7lRdJepkC80WK9ZwNOlcsMcK9rjuYROo6pSE1cdI8A8Z0WZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NrxJzigD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 332EEC4CEC5;
+	Wed, 16 Oct 2024 16:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729096919;
-	bh=31TtaAkmtkQCd5WsDW4pTydGhhuewNq8vL0RBikOqnU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Lg5/N1BJRfBkL/KhGX7IL247WnXSfeKNwfjStzi2jRDbbauNQT+IzWiO49nilCV4z
-	 a2MDbgfT2EaIEWXAjxlO3FB9eg3flIKBAZVD6EKdepNmSt/L2EUX4StByoCqwl0JrS
-	 Xr+F/88ZI+FMJKXVdtcdpud35HZPldtx8UGz+REyFVtusFNzXO1dVzvfkiZVOlQsEd
-	 fHubsDK/KhFWsg9K4FkYI5m+q3hdWn/8TVBSujJNGfJGrU4n1lHpOpPXP3z56Be20P
-	 jiIfHMPbjtP3A6CznRZwE1j9s9cKOfT+Zo6cnurxdgppgAZ2BLNiyiwEOFWgu441hW
-	 Wi7+wHxlT/IrQ==
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5c935d99dc5so98663a12.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 09:41:58 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwJ96E1brsOAnLh4w6VE94pldcBCHhTQxuOIGLB+vdgOZjZTCSO
-	kHqw8Ffgn+2aZtse05VWxS0HklV3LBvIfdTWBZYDf0Zdlz3q9eiV2EwFXFLQIMKEn6BkUzV5sj6
-	Nk5nIJOUE6szN/M2Lh94GPkrl6xk=
-X-Google-Smtp-Source: AGHT+IELv6tG3zBr/xeySR+kD8xsksVpP0rDGbnQ1kMa7/3e3GjVFegzM1Z8quVl19Xkkosug+Pdm7ypkQM4kCfNyEg=
-X-Received: by 2002:a17:906:d269:b0:a99:f230:8d7c with SMTP id
- a640c23a62f3a-a9a34e4a923mr357845766b.54.1729096917617; Wed, 16 Oct 2024
- 09:41:57 -0700 (PDT)
+	s=k20201202; t=1729097973;
+	bh=WSA6cXI9paugRSBVmePqzHVAXr82KSH6RNrOaBQM73M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NrxJzigDbh/gSdc+iOlC5oMELDYBbHtNqAYPRBzoy+vyQbY2/i51f38aJ2fNQwR5c
+	 VD1PdckDwndDgVDRZuK0aTdQEZnBMKzRusul/NI+9DCHZkGgPYagx9G7ZYqZQQdFRz
+	 HRULNwqmDNyjZuscgs8xkU16p3K4gqxjwxXvWvzBjJAkldomwCJ4DCuxJu/Klht+/M
+	 kH4Rf/ifTnkNO7XtnN5He2fSGBCY+h6y4oug/PYQh/MZknJQ3+YxaZ8odjEVQu4R0G
+	 oOrLvlZkJ1G2piOWN1TQieA/CDwtXoQAGc3hJUyd1QhGx7UYZYi46RR+TJQIgcjoUR
+	 LGgfppYeG14Yw==
+Date: Wed, 16 Oct 2024 09:59:29 -0700
+From: Kees Cook <kees@kernel.org>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+	Fan Ni <fan.ni@samsung.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
+	linux-kernel@vger.kernel.org, "Li, Ming" <ming4.li@intel.com>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 08/28] cxl/mem: Read dynamic capacity configuration
+ from the device
+Message-ID: <202410160958.518EB9DB6@keescook>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-8-c261ee6eeded@intel.com>
+ <20241009134936.00003e0e@Huawei.com>
+ <670c6037718f_9710f294d0@iweiny-mobl.notmuch>
+ <20241016165415.00002bad@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1729075703.git.fdmanana@suse.com> <22e345124a6e35e4dbc07e9564475b5c97b37a41.1729075703.git.fdmanana@suse.com>
- <20241016154951.GR1609@twin.jikos.cz>
-In-Reply-To: <20241016154951.GR1609@twin.jikos.cz>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 16 Oct 2024 17:41:20 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5D4c3OOFQFq5WNW65muhXa-fQLFsdhu73wSdG8Zz6LxQ@mail.gmail.com>
-Message-ID: <CAL3q7H5D4c3OOFQFq5WNW65muhXa-fQLFsdhu73wSdG8Zz6LxQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] btrfs: remove redundant initialization from btrfs_readahead_tree_block()
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241016165415.00002bad@Huawei.com>
 
-On Wed, Oct 16, 2024 at 4:49=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Wed, Oct 16, 2024 at 03:20:22PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > It's pointless to initialize the has_first_key field of the stack local
-> > btrfs_tree_parent_check structure since it all fields not explicitly
-> > initialized are zeroed out, plus it's a bit odd because the field is
-> > of type bool and we are assigning 0 instead of false to it (however it'=
-s
-> > not incorrect since 0 is converted to false). Just remove the explicit
-> > initialization due to its redundancy.
->
-> Makes sense, I've noticed there's one more to remove from
-> btrfs_qgroup_trace_subtree() you can squash it to this patch too.
+On Wed, Oct 16, 2024 at 04:54:15PM +0100, Jonathan Cameron wrote:
+> On Sun, 13 Oct 2024 19:05:11 -0500
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > Jonathan Cameron wrote:
+> > > On Mon, 07 Oct 2024 18:16:14 -0500
+> > > ira.weiny@intel.com wrote:
+> > >   
+> > > > From: Navneet Singh <navneet.singh@intel.com>
+> > > > 
+> > > > Devices which optionally support Dynamic Capacity (DC) are configured
+> > > > via mailbox commands.  CXL 3.1 requires the host to issue the Get DC
+> > > > Configuration command in order to properly configure DCDs.  Without the
+> > > > Get DC Configuration command DCD can't be supported.
+> > > > 
+> > > > Implement the DC mailbox commands as specified in CXL 3.1 section
+> > > > 8.2.9.9.9 (opcodes 48XXh) to read and store the DCD configuration
+> > > > information.  Disable DCD if DCD is not supported.  Leverage the Get DC
+> > > > Configuration command supported bit to indicate if DCD support.
+> > > > 
+> > > > Linux has no use for the trailing fields of the Get Dynamic Capacity
+> > > > Configuration Output Payload (Total number of supported extents, number
+> > > > of available extents, total number of supported tags, and number of
+> > > > available tags). Avoid defining those fields to use the more useful
+> > > > dynamic C array.
+> > > > 
+> > > > Cc: "Li, Ming" <ming4.li@intel.com>
+> > > > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> > > > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>  
+> > > 
+> > > Looks fine to me.  Trivial comment inline  
+> > 
+> > Thanks.
+> > 
+> > > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > 
+> > > 
+> > >   
+> > > > diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> > > > index e8907c403edb..0690b917b1e0 100644
+> > > > --- a/drivers/cxl/cxlmem.h
+> > > > +++ b/drivers/cxl/cxlmem.h  
+> > > ...
+> > >   
+> > > > +/* See CXL 3.1 Table 8-164 get dynamic capacity config Output Payload */
+> > > > +struct cxl_mbox_get_dc_config_out {
+> > > > +	u8 avail_region_count;
+> > > > +	u8 regions_returned;
+> > > > +	u8 rsvd[6];
+> > > > +	/* See CXL 3.1 Table 8-165 */
+> > > > +	struct cxl_dc_region_config {
+> > > > +		__le64 region_base;
+> > > > +		__le64 region_decode_length;
+> > > > +		__le64 region_length;
+> > > > +		__le64 region_block_size;
+> > > > +		__le32 region_dsmad_handle;
+> > > > +		u8 flags;
+> > > > +		u8 rsvd[3];
+> > > > +	} __packed region[];  
+> > > 
+> > > Could throw in a __counted_by I think?  
+> > 
+> > I was not sure if this would work considering this is coming from the hardware.
+> > From what I have read I think it will but only because the region count can't
+> > be byte swapped.
+> 
+> __counted_by_le() deals potentially larger values by just making
+> the __counted_by go away on big endian architectures.
+> 
+> 
+> > 
+> > Is this something we want to do with structs coming from hardware when we can?
+> 
+> I think we still do.  Gustavo, Kees?
 
-Ah yes, done and added to for-next. Thanks.
+As long as "regions_returned" got correctly set by hardware before
+anything in the kernel touches the "region" array, it can totally be
+used by a __counted_by annotation.
+
+-- 
+Kees Cook
 
