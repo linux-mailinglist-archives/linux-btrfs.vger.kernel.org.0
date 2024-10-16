@@ -1,263 +1,341 @@
-Return-Path: <linux-btrfs+bounces-8973-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24AEA9A1090
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 19:24:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCDB39A10BF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 19:36:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D81B32822AF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 17:24:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0271A1C21AB5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 17:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F52C20FAB2;
-	Wed, 16 Oct 2024 17:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE5B212F10;
+	Wed, 16 Oct 2024 17:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="CPoBlL+P";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DA+c+rHt"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jl2rk/wm";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Yz7rHJJ8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EBC18732A
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 17:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729099473; cv=none; b=AlIUuO4al3yAsjQ4gFVgLTPpM8NPgBGU5NQQc+iFsUENzfEJw++dT+BVG+obqKOtzZOKPT5m/2evP060w3Oo6YwKEWOmE2seq8yoZVz4GR4GS/pa9wE4P/YJjQUslq0hpXH8E1UNj7CZPlccuG1PF8sJY7iV6BLVIKVsRiQkKo0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729099473; c=relaxed/simple;
-	bh=0Gp+NGx8ltZCELqsXOlvY7Fzv6tc9wXCPsAnaJZXqFY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iwtb5pmbMkD6qeWfItFHM7aBJgfo9XtCa8kzLFYpFA71ksTn8keRqhCK1GgkbdlW6aiYj8ThQnKvhhdYHZH+7nQNmb5n6zoY7rMdGtjpOPuddUl1stBsxjPqHqj9RDNyJGOod3udqpeJAstZJTs+yvXPfefMqDPq7ysdcnAmOI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=CPoBlL+P; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DA+c+rHt; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.phl.internal (Postfix) with ESMTP id 5172E13801B7;
-	Wed, 16 Oct 2024 13:24:29 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Wed, 16 Oct 2024 13:24:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1729099469;
-	 x=1729185869; bh=Kt2nBYm3Ns3FIbv0Xl/ieA9j9OM7ePoOqwp/nGk5LDE=; b=
-	CPoBlL+PCz5GlmLVET/N01TRIEmJcAe7k2Es0eskmK8lHwEPO41aUahWsAkbHQdP
-	UjO8w+kg4oOX7lrHYgA+rsGFn+ooGp9L1QpgOCpBCKnZyDbrqS+nQ8X/RNBRTm5O
-	UWNoanMV52SV1HALC/kBMrbJf6euK9iFPrfRDZwl40ee+SIaVlb3L4wZ3kCOshdV
-	e28AbpD2rgjOZ5kZcxX+AzBSNeVRigqnZ3u3aTONKxG+v1aLs1tIHfl6DNJ6bueM
-	+hNm1VPxmJvVFuhO7sFs6hgshnXZi0dRTTjY0I2Ecx3o+ULQFOKbAagwz00SqsU3
-	UW+7JAZAXB5dyWWjdNpxIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1729099469; x=
-	1729185869; bh=Kt2nBYm3Ns3FIbv0Xl/ieA9j9OM7ePoOqwp/nGk5LDE=; b=D
-	A+c+rHtim+B5tSi6TM1TLRwRQYxxXvRWgz9SiN/ST0lbvesTmFyzC6cDXmZcQHTM
-	rIX9DdTilApxKDhhZhkHM2+z1mu7XYcnoQZ9qZo6D84hFAS2Gvyid/t54lufSzmv
-	nahw36OCapNBLjtTAoQ844lrwrLa/yBFDtMuk1oF7oqt0i7aUPqvyxFZUZAR96iB
-	By6zrcv0H7juk7sJV+l0ej+okzDaqrlnufHb9WdrPzgOBrHijIbmj//jozsuzUvh
-	dPKMU3vko+Id8X5RZyNV5zsFZou45Q+kPS6rqjRDs3r+fTtHNxmi2KJXhsmAqLBV
-	k7kjPk+cch8HvNFrxELww==
-X-ME-Sender: <xms:zPYPZzaSvLz1Bw7rlYPW5VNr7TsPJ1rLWDcnjZOjkQCzM8aOw09Jrg>
-    <xme:zPYPZybhZK2ay456XzdM7ZXsiCFxj8xzo3Mfp9CHVOh5XBxQWvHdklKTachScq5Lw
-    O6jbl64haD-cBm_uEA>
-X-ME-Received: <xmr:zPYPZ19ZpPB02yIw3YpNo2Vj6OocZXy_L-LZ3-Q4kFqIlPVS3ew4Fm6sBjrrkwr6FGZ0GflZRDg7hSLB4tyPq8aPJxc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdegledgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddt
-    jeenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
-    enucggtffrrghtthgvrhhnpedujedvkeffhfduleeijeevueffueehieffudejleekffeg
-    vdelgefgffegfefhhfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusg
-    drtghomhdprhgvrgguqdhonhhlhidrtggrthenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpth
-    htohepfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghnrghnugdrjhgrihhn
-    sehorhgrtghlvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrh
-    drkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgt
-    ohhm
-X-ME-Proxy: <xmx:zPYPZ5rTvChL9c412II0rSZqffrj2MpO_d4E3hshqDyPM08PfsCQQQ>
-    <xmx:zfYPZ-o4vtjpuPMInrEVtOokeKiNov1jiUiy6Hqdi50mPhTqH4W7Xw>
-    <xmx:zfYPZ_QTvxQZXNAADe86WQU20kj1mu4uiZXnaX8hrAO4g328l1NmfA>
-    <xmx:zfYPZ2pI1vC62J4heSmhv6mXfqpuN1qKcFWYasnUp2uPcRjbTxNkMg>
-    <xmx:zfYPZxWE8q0FlR1n_YPMYzKtjnX1uUyHNMPVANrXgzUxwbZ1MnO4Bu6A>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Oct 2024 13:24:28 -0400 (EDT)
-Date: Wed, 16 Oct 2024 10:24:04 -0700
-From: Boris Burkov <boris@bur.io>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: do not clear read-only when adding sprout device
-Message-ID: <20241016172404.GA2521545@zen.localdomain>
-References: <a9aa42f6bc2739ab46ce015f749e15177f8730d6.1729028033.git.boris@bur.io>
- <694552b3-5f70-48d2-a62f-4c2b8caf10fd@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F3121263F;
+	Wed, 16 Oct 2024 17:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729100146; cv=fail; b=TBMfhaVlf9wntVN6lz61FSzoHO9k8C0pte7pv0KaINtiUXB1bg+alzBZumeavR+APwpnswqJfdXmlVQpK/UZQtj2pc246k2q5LxPQVXYgTksBsdl7RBkQ7HNBIG2hnVgbgFEMZ06XMq4peT+g+WU8iu0IB8jnUSPlokQ4JK6wnA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729100146; c=relaxed/simple;
+	bh=2V63VqIbtATOL2wGP5R1r42wxoFqWzD2RlbgkDfNjwk=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=TH2va5hIRTKxtGo3IMZtGQkKgHdCj4Y8RFvPH3Rpm5q53dHaxHNwpr35xv3vZKbhkq8j8nXzYs2+TsrC/SoZaiQ2+c8gsyiSjyn4S3rnlRWzjHcNrGDNmqHmpm7YXrunI+3AYuaV/7BW/TjKHSPUCfIr05pPledl0+f6Z7RIQBM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jl2rk/wm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Yz7rHJJ8; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49GGBguO017890;
+	Wed, 16 Oct 2024 17:35:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=PtjCaZNWYFdYauZniIUwKpP1V4wqK3qSFPNKYe6ntqQ=; b=
+	jl2rk/wmna3y+1P4GpY/H6etcSlNDxjb1WqywPdFjIgkIN3qOPvORxAuFFg5SRbm
+	lzbZvh1vf1dcAU+pa6nrpYHlib3091efAzXF65MlEgeXuC3ZBKjAGuAbUFrAW9R4
+	uxAV0OYwmdop0dIS5As/MHnQEExoTnC/bL6LpmJqvHe9KrqVzj+JHBk0LwbHFSL4
+	NbAvzXvrj9+bVxcopLuBjnj1rmNfsTweDW8yi+28Uh4kquKCZxrfk0LUczJ77QKq
+	5tpf21CBdJruG8D2/ErfQgYdXuEVk+koxQhhyPi+R7LA/Wtp/jnlgP63MD2lcv94
+	aBDVgqvgujo630pOfNLuCw==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 427fhcm1b3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 16 Oct 2024 17:35:39 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49GGan2W019884;
+	Wed, 16 Oct 2024 17:35:38 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2048.outbound.protection.outlook.com [104.47.58.48])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 427fj95r43-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 16 Oct 2024 17:35:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=f0Y1CWHn+hw/EAcRCHUB4pZ9rmfmwkgt+tJKCzCgAK6OcKWavChjIwL5CNo/3CJPiRHmWy3h21gTQQniAOYI5FUlVYdEXI5Zvc9mf91VHaoKKgNepMqW2x8Hmg8VihRafeiFlSB6XQT7s0DQVIu9w3JUh+8kaMCIlgO30V5/9p9PK/kiVvcDmuT8YN3TIfBMuXe7viMSr3616Zs7bgWSSFkvaSP3IzwqA5pf+qUnP5Dy5VVfgOF+qNoxSKb1lTfY57w2IrxQT3H5vwRwninBMIegTncDRtLaMpIBKDr3B/u6jhe+1OiC9A348a1QCYTQvYVYf/PBfSfmT6yRCQzhZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PtjCaZNWYFdYauZniIUwKpP1V4wqK3qSFPNKYe6ntqQ=;
+ b=fGPx7YJqrdT0kTx8Zd/D+5Ke/dPyIh+22Zw47jN8YtoZMwnutzRK+r/LTrp/1THWxbhhIzQjoOqlc6X+YNJEjJQIREZTVa1nLs0uUf1cOm+wcJJ8mZUUJouW/sw+qoq4/7At49ieKtdKjSImJDEGM5Oe7vY5KEWILRn+XrD7CN8WRXE+m6+1Qt68ii3iSEz57EB1Tso61ewjPHUU6HG9sMq7o5gvDs1Hqa4Q9IfRr4AuxK+AtT42hwJc5HL+RoGsHB84AW7Al8UrCLEx5/5dF0rM9HM7XHI4kQLGZKv0FFpJEk08FQGFFro9/DO4gI889sl90MibBgbRSQnmIuauww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PtjCaZNWYFdYauZniIUwKpP1V4wqK3qSFPNKYe6ntqQ=;
+ b=Yz7rHJJ86/sIg1EGTJ8VKMDUpcJVfSIuZGyMXDBQ87dnPHxfObTEHc7lm4HgR61ugpq51FJc1CzaeXEpMHaf8D9iY1l9pH+nOKxPii/InAuDX0n9GCuUGb4iVKstnNW9AGnSZsxFfnHYDVAhLWyX49weVi9+qOC1Hlx76RborbU=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH0PR10MB4743.namprd10.prod.outlook.com (2603:10b6:510:3e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.19; Wed, 16 Oct
+ 2024 17:35:35 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.8069.016; Wed, 16 Oct 2024
+ 17:35:35 +0000
+Message-ID: <ea728b24-5ffe-465e-a5aa-73a28b04c7c6@oracle.com>
+Date: Thu, 17 Oct 2024 01:35:30 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: add test for cleaner thread under seed-sprout
+To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, fstests@vger.kernel.org
+References: <9925ac0001b867a523a8c9c838536b50c2b19348.1729034727.git.boris@bur.io>
+Content-Language: en-US
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <9925ac0001b867a523a8c9c838536b50c2b19348.1729034727.git.boris@bur.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2P153CA0010.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::13) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <694552b3-5f70-48d2-a62f-4c2b8caf10fd@oracle.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH0PR10MB4743:EE_
+X-MS-Office365-Filtering-Correlation-Id: ea64e3be-144f-4356-8d15-08dcee08f0ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?djg1Wlp3aTd5RHNnUEN6TnNrNHhWMmpCeVNDR2x5QjJkSy9lbzBiNWMxcWo1?=
+ =?utf-8?B?Mkh2SW9lNTJiQmV0YmZwcytEYXlKd1p2NWJ6MGxpaUxQNHpKWnJDNDNRMlli?=
+ =?utf-8?B?TWRNUUYrTS9sV0VWQnhtbFlhSEkrL2xTd1lwWXIrT0owWHpvMW9MQXpDT1ox?=
+ =?utf-8?B?MWNOc3MrazlwTG1nMmdFZU1tUWIvMlpURXh1YW05cEhDVVlPVFZGTW5mU0tr?=
+ =?utf-8?B?Z3dZemRlbklZbTJTVDJ4bThpSkY3Wno0WlBqckYzYXprY0RNaHdXNXQxTkNL?=
+ =?utf-8?B?c1ZScnZ3UGtEUmo0VFZFZE5mZEhiVkszRE1Mbml5NGpyenhONlJhSUkzcTAy?=
+ =?utf-8?B?dzE3MDJLbHRhcTlDWUNIUFFpSWVyYWp2V3NBUmJ0L3RucENYWDcvWGU3RlFa?=
+ =?utf-8?B?U2RUenAva1V5YWloRGVnZWVIaWdRZ0JrNENsTHlJWjI4eUhiVUVna3lidWRF?=
+ =?utf-8?B?VFl3d1prZEpvM1NWWStYbGUvekkzNU9JTWJKMU9oc3F2cDN2QXJlUG56MDRy?=
+ =?utf-8?B?Wm0wNlBvdEhxZ0ExWm9TRWY3VnVaQ1QxZnFmRzhuTWEyOFUwRklsS2Q2R3lM?=
+ =?utf-8?B?RkEvbjkzZDRoQmlLc2dPa3lucFlZbHdKL3lXRFk3ckthT2FDaVVtbUM5Y2dE?=
+ =?utf-8?B?cDZHZjhDK2M3R1MzQmJIZnV5cTc3SHJpNnVLckxWL2tYcWFQWDVUeTlDcWdH?=
+ =?utf-8?B?SE1kWm1XdmRDMFByLzBwdEFseXlSUnVhdE9QR3VhVmVrRmV3dVV5aU9qT2FG?=
+ =?utf-8?B?VmtwNUVLVExwM2lEbkpySnF6bitJOEp3b2krMmZFcnREc1AzYnJ0cUtEV3dO?=
+ =?utf-8?B?VGtBdDdCVHJoKzZUTmhGTDVGVU9YL0NkOEZRdnR4dlUvdUJNaXlOVmt4NzJM?=
+ =?utf-8?B?dFNLZGY2bGJZcGRVK2RHQWR4aWlDM2JibnZiQTdCRjNRZ3E3bFY1SmZTUlBn?=
+ =?utf-8?B?Z2NuQmtUS0tSNDRwYVVWWXhNZzNhTnZ3UW1tRUFEZUx0Q3JMeE9SVytUTjFk?=
+ =?utf-8?B?OVo1b1crUmtIT2paaEZKRm0weDVCYWJkQmFNVWNQWFlUOW9BWjR6SDlqcElu?=
+ =?utf-8?B?MVNUSW1tL2lLbVFJblg1UEVGbU83d1ZkQ0FobFJzUmREV3VnVXphN3loVVNt?=
+ =?utf-8?B?YklEZGZabndzZmROYWpoei9FaUxGSzQxVUdPS3VVd2dGOVlPOXJ4NEpaWTFs?=
+ =?utf-8?B?OFpwYUh3K0EyTnZaa0JFV0l2NFBrSStFWmxnbGVxd09XTkRhK255dHNVMDlI?=
+ =?utf-8?B?RGkxZVNDTlhEdlNKREFLNkhON29TTnFya09qdGY0Uk1tZjN2aVVNWUVZaTMy?=
+ =?utf-8?B?UVR6bmxyY0w0dkJ5clY3WGJzV29JQXVKMTZHTGVZc1lIRGgwQlZKTzlYejht?=
+ =?utf-8?B?R3pCTGNXNENhamo1Q3hrUGtXek5WcTQ5WGdsRGdwM29BTHlrb1NMU3MzVjA5?=
+ =?utf-8?B?NzFVVDNEUmpESEJubXhiNmc3S09UYy85d2hPVWUrbEJod0J5VTY2czRkdnlZ?=
+ =?utf-8?B?bllhOXoxQ0VlemhXWXpOR3N4YXB6SjM1M0VLNlMxM0Y1ZFdNZFg0bXJpUlAv?=
+ =?utf-8?B?NVNoZ0ZkYktWTlVTSmMrWG5Jc3prb3l4WnI5azEzeitDUjlMdGttb3VETHJ4?=
+ =?utf-8?B?V2hqWHY0QWx5Vm8vWEhOdUNFWmh6cExkS3dLMTMvT2QxTGhZVUh0M1NVcHJ1?=
+ =?utf-8?B?d281SXE5aE9LUnVoYnd1N1hnbzhEa2RHY0ZqNEtLQ0hDYnRXUlFYM1p3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TlNpWUlzUVpyRmI3cnRrY1BPaml5dGxKREk5UnVYTGlFbnRjSlRLMW5WYmZr?=
+ =?utf-8?B?cmNnYlNaVlhwQVJnajV6bnBsTEUyanhSTnpmWElLWk9MQ0czRVdYKytDQmhP?=
+ =?utf-8?B?NjJBajI5Y2pISGoxVVpQU2ZERVpZR243N0dDM2I3K2NkT3JXY0wrZWpuQk5Y?=
+ =?utf-8?B?Y1JpRVFGdE5rbElnZVBZUm02RzUvWDlvWmVyY0J3c3gyNHh6SEkrM0ZnYUNo?=
+ =?utf-8?B?dnJOYVFDZ1hzUHB6L2txdmhXZUJuMnk2VUl1c043SlFDL3VDWjFkN2xCZEpN?=
+ =?utf-8?B?UlJUWmIzVStVRnJFWGRLK0ZjZGErN3JheFltSmlwTlNyQkxFVTJFdTdTbSs4?=
+ =?utf-8?B?S3dlRnJ3QTlZL0c3dCt3Z3ZPNWxrWDRySnlFRE5qZ1pFaXRLditFc3BXdVFE?=
+ =?utf-8?B?a2RjcFJDbEx6MStnT01uQ1plbzVra1VqQ1FxK3VKTlE3NHNHL0dVSWN1WUNF?=
+ =?utf-8?B?c3VueHlqeWxEYk5zR2R2REV3aDBjZlU3U0tuMnRoWHROUWNHcDNMMU5JNE9v?=
+ =?utf-8?B?dkdkZXJYMmNrbEpmREtELzJtakx4U3gyUDB1WUVWTDRGWFB4UktBa1p4djU2?=
+ =?utf-8?B?UGNCNXBacDFudlRiYjVuTnZzdmdER3dQU2FhNVBDT3hid2JVMm5WVnM5Mm9m?=
+ =?utf-8?B?L1JuYVQ0dmVUeUNpeldEcEdnL21ycS9hWCtMbjM4ckdxSlZQdEcwbHUxNklQ?=
+ =?utf-8?B?eU4yVDhEQjkzeWF0bzZWWkk4U1dJZzZuS3I0bkNwN2U3Q3pEc3NlREwvc3hx?=
+ =?utf-8?B?YTB0bHRXdzZlSTkxREZTcWYraEJhdVdXNUN0eVNYbmZSZ1lNWktLTmVYUzlp?=
+ =?utf-8?B?aFZONHErdDEza3k1MDd6NkpMUk5yOTB2SGxmZW9hQkVMUW4rZVlOL25vZVZK?=
+ =?utf-8?B?UkxlUDk2R3FYMTlPNW9GSGlDeWJldXF1SU5YUEVMQkY2bDFSUkY2TFZDZE1Y?=
+ =?utf-8?B?S1NKUlJUMkcxMmFDSEVYbHJaUlk0NE45ZUZmV1pxY04zSmxmZnVqZ0RBa2VV?=
+ =?utf-8?B?Uk5LRlRaUUhpaG5VT1N0S1BrZU5tMTFNbnRwQXZYUHpaVlZhcHJQL1lsUW5S?=
+ =?utf-8?B?aEMzdm9qYS9nQzl3VDk5MHI5N3pQc1MrZ3BmdzlBTHVHeFNBaUcreTlBSjNO?=
+ =?utf-8?B?ejlMZWlxUjNvczVNazZrNWZZSTZ3T3FRWWRvUTdaMWpjUEo1ZUxlTGRUazhZ?=
+ =?utf-8?B?a2NiMnZ6OUZHYUp1cU4zUXVKWkt5QmIrV05GbmJ3Y3RKcnFnS1NZZEFXMEhM?=
+ =?utf-8?B?QitrYXh5WVpzWktpY2VWdEVOL2JSbGRBNDUzTnZGVXFKUEpJbWdrU1lCZUp1?=
+ =?utf-8?B?WFRXTHZ2MFlKMlFYcVgwa0FiT0ZuNXRJOWxuajJrZGtZNExIeGhrMzRZeVQw?=
+ =?utf-8?B?ZXR4NU9YNkoybUJlNWl6TDFnTnZ6V3ArTDdySmFicHVoNkg1WjV5ZDBVdTky?=
+ =?utf-8?B?SUNFTU5ndjJxSi9MTG5PN1hDbTYycm8rcU1yUFpJeDNja1UwRmxLSU9iMDFW?=
+ =?utf-8?B?VGZqbk5VOTJyRVp2ZW1tV0tsZW96NHRsUHYxSEY4eTloeFE5YkcxOGt2SEhS?=
+ =?utf-8?B?QmZ1Z0Fya3dTa2FzNEZZVjZZWHpOOHdVRlgzc1VITzdTbWxSSXppNmoyZTMx?=
+ =?utf-8?B?cDlSTG9IVG1qRWZuaWpGdEQ4YUtZQllndENFV2tLd2VxZjc3M0F0dHllQnFk?=
+ =?utf-8?B?aWMyUFhseXNLTWwzZWtaY0hodG5PcmhtS2U0QSs3a1hJT2F6bHJvLzRNMU9s?=
+ =?utf-8?B?aEl4WFpEUVVraGQ0M2t3cFdxcTh2YTRSZUx5bEIrUmtkWXVzbHFsblA3OExq?=
+ =?utf-8?B?R09CUnRnOTBPUDVmclFUdDdmM29KVDgydi90OGRQQ01FVlAvMmdkTkhubHNt?=
+ =?utf-8?B?SHBpODhINGdEbmw4V2xtMWM2UmtyVGxsVFBkalFQYlpudzBtcjRKeDBmRG5q?=
+ =?utf-8?B?ZzFOWTBaQmRLSVIrd2g3S0ltWldsdk4xTWxvcERqeWF4QnF3UkhHSnorWTN0?=
+ =?utf-8?B?OEEvaThrMG9uYjU2TmNMWXdBMkxBc2xTWTJtVHJOdSsyaUl1blVaTDlKRW1R?=
+ =?utf-8?B?UXZhOFZwdUt5eTZZUmlSNXk0UU1hb2RwOVRXc2JrcEN5Ynd0RzFDWm5aZTM2?=
+ =?utf-8?Q?e8nttQeV09Ukp3GWeZlxix/bf?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	0pMW/hpx5/Q4S8dnCrxmSgRSzBo5S9Nh1H0esc6qrmTEXTweq8pt2XQth3lQMOmaMiYyP+4X5uazvzRSdzYp1hT/WsetCcJw3a/CSu8nR0m5Fb5l5sb9xOxb54t5SGppX09xlJxGIbYaTikfWjSZNCP/F1Yjchwdk9AelWrZ353gD2p3pIohZXHlZtglPRbmtlVZSzBw5NN5t7ZtBTEdWbCN4/7NrngRMzxVCLt9LOnOBnmLKGCxL4SRVBVy6REKRjNkv5uvf+GtDOA9Nn6eTKeRrAFVJ++wz98cAyE3wNts1vbr/jaJti6mPEBTJiKb/cnvo0t93ivdtNbFwtwU00/SCkTfAxQaTduyX8Fzz+9kFGmdXzFCzjfyjiSG+A2BEhT+K7bwm24k6L9UZS8Uj+fAWpiJgCKmVw3XNpCz7tlPQq0gNApxPY5eiA4kEE7XsI4L5AaFXjj7GFoOS314f7XLWjNyDezHUDxYadtZyY1LWjH9s3/FoMJ7M3VYLs7wb2aKAtB38lwgRLOOuWYn3CCWp18fssa13WlSOlV0m7pesOw7s7QoWzOIYAFj9ijd61AQVcRgLw0AYJTxwNO7qMSGYwY/ucvkKuN1VSjX+Ic=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea64e3be-144f-4356-8d15-08dcee08f0ce
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2024 17:35:35.0325
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y9px9l6rgdujeTQmE2Xp/AH8K+E7bp/xTznDFpp6v+rZ7SA3OOCcK1ZPNaWqB31fKj14t2UYNxA1AYS3aGwqqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4743
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-16_13,2024-10-16_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 phishscore=0
+ adultscore=0 bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2410160113
+X-Proofpoint-GUID: Vl_JCHKsxYeq6SwKKauHbU4CpYXfmVcm
+X-Proofpoint-ORIG-GUID: Vl_JCHKsxYeq6SwKKauHbU4CpYXfmVcm
 
-On Thu, Oct 17, 2024 at 01:14:16AM +0800, Anand Jain wrote:
-> On 16/10/24 05:38, Boris Burkov wrote:
-> > If you follow the seed/sprout wiki, it suggests the following workflow:
-> > 
-> > btrfstune -S 1 seed_dev
-> > mount seed_dev mnt
-> > btrfs device add sprout_dev
-> > mount -o remount,rw mnt
-> > 
+On 16/10/24 07:27, Boris Burkov wrote:
+> We have a longstanding bug that creating a seed sprout fs with the
+> ro->rw transition done with
 > 
+> mount -o remount,rw $mnt
 > 
+> instead of
 > 
-> > The first mount mounts the FS readonly, which results in not setting
-> > BTRFS_FS_OPEN, and setting the readonly bit on the sb. The device add
-> > somewhat surprisingly clears the readonly bit on the sb (though the
-> > mount is still practically readonly, from the users perspective...).
-> > Finally, the remount checks the readonly bit on the sb against the flag
-> > and sees no change, so it does not run the code intended to run on
-> > ro->rw transitions, leaving BTRFS_FS_OPEN unset.
-> > 
-> > As a result, when the cleaner_kthread runs, it sees no BTRFS_FS_OPEN and
-> > does no work. This results in leaking deleted snapshots until we run out
-> > of space.
-> > 
-> > I propose fixing it at the first departure from what feels reasonable:
-> > when we clear the readonly bit on the sb during device add.
-> > 
-> > A new fstest I have written reproduces the bug and confirms the fix.
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> > Note that this is a resend of an old unmerged fix:
-> > https://lore.kernel.org/linux-btrfs/16c05d39566858bb8bc1e03bd19947cf2b601b98.1647906815.git.boris@bur.io/T/#u
-> > Some other ideas for fixing it by modifying how we set BTRFS_FS_OPEN
-> > were also explored but not merged around that time:
-> > https://lore.kernel.org/linux-btrfs/cover.1654216941.git.anand.jain@oracle.com/
-> > 
-> > I don't have a strong preference, but I would really like to see this
-> > trivial bug fixed. For what it is worth, we have been carrying this
-> > patch internally at Meta since I first sent it with no incident.
-> > ---
+> umount $mnt
+> mount $sprout_dev $mnt
 > 
+> results in an fs without BTRFS_FS_OPEN set, which fails to ever run the
+> critical btrfs cleaner thread.
 > 
-> I remember fixing this before. I tested on 5.15, and the bug isn't
-> there, but it’s back in 6.10, so something broke in between.
-> We need to track it down.
+> This test reproduces that bug and detects it by creating and deleting a
+> subvolume, then triggering the cleaner thread. The expected behavior is
+> for the cleaner thread to delete the stale subvolume and for the list to
+> show no entries. Without the fix, we see a DELETED entry for the subvol.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+> Changelog:
+> v2:
+> - update to real copyright info
+> - add extra rw->ro transition checks
+> - remove unnecessary _require_test
+> ---
+>   tests/btrfs/323     | 49 +++++++++++++++++++++++++++++++++++++++++++++
+>   tests/btrfs/323.out |  2 ++
+>   2 files changed, 51 insertions(+)
+>   create mode 100755 tests/btrfs/323
+>   create mode 100644 tests/btrfs/323.out
+> 
+> diff --git a/tests/btrfs/323 b/tests/btrfs/323
+> new file mode 100755
+> index 000000000..ca57b1a1e
+> --- /dev/null
+> +++ b/tests/btrfs/323
+> @@ -0,0 +1,49 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
+> +#
+> +# FS QA Test 323
+> +#
+> +# Test that remounted seed/sprout device FS is fully functional. For example, that it can purge stale subvolumes.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick seed remount
 
-Thanks for weighing in again, and for re-testing on 5.15. That's
-interesting that it broke again. And sorry if I didn't follow the rdonly
-check patches properly and those did end up getting merged. Poor code
-archaeology on my part :)
+This test case includes device addition; please also add the
+'volume' group.
 
-At any rate, I have pushed this patch into for-next for now, as I
-think it constitutes an improvement without breaking any documented
-behavior. If you look into what happened between 5.15 and 6.11 and want
-to back it out with a different fix, I will not be offended.
+> +
+> +. ./common/filter
+> +_require_command "$BTRFS_TUNE_PROG" btrfstune
+> +_require_scratch_dev_pool 2
+> +
+> +_fixed_by_kernel_commit XXXXXXXX \
+> +	"btrfs: do not clear read-only when adding sprout device"
+> +
 
-If we also land the fstest I submitted, then hopefully future kernels
-will *not* be breaking this again!
+
+> +_scratch_dev_pool_get 2
+> +dev_seed=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
+> +dev_sprout=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
+> +
+
+There are predefined variables $SCRATCH_DEV and $SPARE_DEV for these:
+
+_scratch_dev_pool_get 1
+_spare_dev_get
+
+
+> +# create a read-only fs based off a read-only seed device
+> +_mkfs_dev $dev_seed
+
+_scratch_mkfs
+
+
+> +$BTRFS_TUNE_PROG -S 1 $dev_seed
+
+$BTRFS_TUNE_PROG -S 1 $SCRATCH_DEV
+
+
+> +_mount $dev_seed $SCRATCH_MNT >>$seqres.full 2>&1
+
+
+_scratch_mount
+
+
+> +_btrfs device add -f $dev_sprout $SCRATCH_MNT >>$seqres.full
+> +
+
+
+_btrfs device add -f $SPARE_DEV $SCRATCH_MNT >> $seqres.full
+
+
+
+> +# switch ro to rw, checking that it was ro before and rw after
+> +findmnt -n -O rw $SCRATCH_MNT
+> +_mount -o remount,rw $SCRATCH_MNT
+> +findmnt -n -O ro $SCRATCH_MNT
+> +
+> +# do stuff in the seed/sprout fs
+> +_btrfs subvolume create $SCRATCH_MNT/subv
+> +_btrfs subvolume delete $SCRATCH_MNT/subv
+> +
+> +# trigger cleaner thread without remounting
+> +_btrfs filesystem sync $SCRATCH_MNT
+> +
+> +# expect no deleted subvolumes remaining
+> +$BTRFS_UTIL_PROG subvolume list -d $SCRATCH_MNT
+> +
+
+_spare_dev_put
+
+> +_scratch_dev_pool_put
+> +
+
 
 Thanks,
-Boris
+Anand
 
-> 
-> The original design (kernel 4.x and below) makes the filesystem switch
-> to read-write mode after adding a sprout because:
-> 
->    You can’t add a device to a normal read-only filesystem
->  so with seed read-only mount is different.
->    With a seed device, adding a writable device transforms
->  it into a new read-write filesystem with a _new_ FSID and
->  fs_devices. Logically, read-write at this stage makes sense,
->  but I’m okay without it and in fact we had fixed this before,
->  but a patch somewhere seems to have broken it again.
-> 
-> 
-> (Demo below. :<x> is the return code from the 'run' command at
->  https://github.com/asj/run.git)
-> 
-> 
-> ----- 5.15.0-208.159.3.2.el9uek.x86_64 ----
-> $ mkfs.btrfs -fq /dev/loop0 :0
-> $ btrfstune -S1 /dev/loop0 :0
-> $ mount /dev/loop0 /btrfs :0
-> mount: /btrfs: WARNING: source write-protected, mounted read-only.
-> 
-> $ cat /proc/self/mounts | grep btrfs :0
-> /dev/loop0 /btrfs btrfs ro,relatime,space_cache=v2,subvolid=5,subvol=/ 0 0
-> 
-> $ findmnt -o SOURCE,UUID /btrfs :0
-> SOURCE     UUID
-> /dev/loop0 64f21b87-4e4c-4786-b2cd-c09a5ccd2afa
-> 
-> $ btrfs fi show -m :0
-> Label: none  uuid: 64f21b87-4e4c-4786-b2cd-c09a5ccd2afa
-> 	Total devices 1 FS bytes used 144.00KiB
-> 	devid    1 size 3.00GiB used 536.00MiB path /dev/loop0
-> 
-> $ ls /sys/fs/btrfs :0
-> 64f21b87-4e4c-4786-b2cd-c09a5ccd2afa
-> features
-> 
-> $ btrfs dev add -f /dev/loop1 /btrfs :0
-> 
-> # After adding the device, the path and UUID are different,
-> # so it’s a new filesystem. (But, as I said, I’m fine with
-> # keeping it read-only and needing remount,rw.
-> 
-> $ cat /proc/self/mounts | grep btrfs :0
-> /dev/loop1 /btrfs btrfs ro,relatime,space_cache=v2,subvolid=5,subvol=/ 0 0
-> 
-> $ findmnt -o SOURCE,UUID /btrfs :0
-> SOURCE     UUID
-> /dev/loop1 948cea35-18db-45da-9ec8-3d46cb5f0413
-> 
-> $ btrfs fi show -m :0
-> Label: none  uuid: 948cea35-18db-45da-9ec8-3d46cb5f0413
-> 	Total devices 2 FS bytes used 144.00KiB
-> 	devid    1 size 3.00GiB used 520.00MiB path /dev/loop0
-> 	devid    2 size 3.00GiB used 576.00MiB path /dev/loop1
-> 
-> 
-> $ ls /sys/fs/btrfs :0
-> 948cea35-18db-45da-9ec8-3d46cb5f0413
-> features
-> ---------
-> 
-> 
-> Thanks, Anand
-> 
-> >   fs/btrfs/volumes.c | 4 ----
-> >   1 file changed, 4 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index dc9f54849f39..84e861dcb350 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -2841,8 +2841,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
-> >   	set_blocksize(device->bdev_file, BTRFS_BDEV_BLOCKSIZE);
-> >   	if (seeding_dev) {
-> > -		btrfs_clear_sb_rdonly(sb);
-> > -
-> >   		/* GFP_KERNEL allocation must not be under device_list_mutex */
-> >   		seed_devices = btrfs_init_sprout(fs_info);
-> >   		if (IS_ERR(seed_devices)) {
-> > @@ -2985,8 +2983,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
-> >   	mutex_unlock(&fs_info->chunk_mutex);
-> >   	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-> >   error_trans:
-> > -	if (seeding_dev)
-> > -		btrfs_set_sb_rdonly(sb);
-> >   	if (trans)
-> >   		btrfs_end_transaction(trans);
-> >   error_free_zone:
-> 
+> +# success, all done
+> +echo "Silence is golden"
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/323.out b/tests/btrfs/323.out
+> new file mode 100644
+> index 000000000..5dba9b5f0
+> --- /dev/null
+> +++ b/tests/btrfs/323.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 323
+> +Silence is golden
+
 
