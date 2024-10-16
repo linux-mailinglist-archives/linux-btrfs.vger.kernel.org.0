@@ -1,198 +1,167 @@
-Return-Path: <linux-btrfs+bounces-8951-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8952-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34E7099FC75
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 01:27:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E69A99FD13
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 02:25:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DAD9B231CE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2024 23:27:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538592845F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 00:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A82E1D95B5;
-	Tue, 15 Oct 2024 23:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8067494;
+	Wed, 16 Oct 2024 00:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="XEbFZhpQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="b52I6V80"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rr3llLDU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="madFG0LA";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rr3llLDU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="madFG0LA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E8A21E3BC;
-	Tue, 15 Oct 2024 23:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EDE821E3CD
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 00:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729034859; cv=none; b=OeXamnYC7s3ZgmNXk5dXthGbMn3Isrzbn2J/zkBvF0GpKEo03QOxa+YBlHsBxBeFGZ7dfFHWecwLVNIwIkyApcidLVKjVLxEQRPEcRE1bbL9ULJj13gEtVBZgy/acEnKmSRm/h7TtisJKrvK7e2y+qBOlCN/Hvwe4DuxP5VaBAk=
+	t=1729038334; cv=none; b=rg27DctzZB9vdh3j4xruZviyz57CRr2ehpwo7h5v4dGjO8E4Nx5+Lfys5NbIlZDF3S0bEfK4DIdbRiRtcZZ6+TC41fwx2sIe0iTLvzHaYW8KcWWV0Grak3T4kx5+0h3TWkwLAfcPTGcRvAjnoEslEZ0tAdgCknU6twtT1xS0Z90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729034859; c=relaxed/simple;
-	bh=WNDGENH2QeJYwCcM+NoDG5Kg71HZpwDTq7WvSuJ/97g=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=fnEz/OXAf328leS7ukewKZ1233/TdcUhW3ezLbeonuLSRRR3yxw/a+KLTCbGSAJ5VAcqWWLh1a23R8t2hP9p8iFkorQRRPNwqyeXoAf5md7jnogzhIAPl9li5xI6+RAwGsrT3/yUqXDV/QTi89xRZRo1fJYzRXVnGifAQUcBPeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=XEbFZhpQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=b52I6V80; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 056D5114015C;
-	Tue, 15 Oct 2024 19:27:36 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Tue, 15 Oct 2024 19:27:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1729034856; x=1729121256; bh=iMYxw+d7fl5tFdAyd1OXA
-	z6F6WMW1HgYkyxztSD1G8Y=; b=XEbFZhpQUPknUaeTCMGjCfcT8pbr6ZcQd07l5
-	/FC6zIDuY0fygPrzUA8P9TwQutzU3ecwGnOm81uASu24HK0dAcqTbpSM08/FLDUm
-	099DID6BEICRvlnKU6Xfn+CiuJtl/Ev0uqQ52uNt9PvG1ReLLsCYpHdOGU12tzVI
-	6o6Y0bXEqkgHzRPaLubcBq2+p2uFaz8U3zHG7HYL3ERTW94EYMbCHEUIcy04gqqw
-	wEtNRZ4PQYeyczqiRCAdf9rtON5YWQyi02rWvXTCDFTdezGRAXAZLjU4KOCHMF8J
-	P7B8pQ88iEMiv2iuDGVbnO5Waf1uRpk+PQVf6HVyhj8p0lgRA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1729034856; x=1729121256; bh=iMYxw+d7fl5tFdAyd1OXAz6F6WMW
-	1HgYkyxztSD1G8Y=; b=b52I6V8038llO5HyJf24QplIeADTjl0jPDQIY1CR7EIw
-	BklHWPxH3q5q7XgWg82yLyN4s28iXDeGqhlHvib/Io/8DYc8kZNuZO71JPUggotT
-	U7B9HCIgKCozuyTbIwiCu5IIas2srqo9UR8/C+XAPiTzLWEugU6f7J26ws8dWsdX
-	QVrvjMqbFDQWGV25BeNJ14/m8PBvhFi5S7wGfz7XDzQPgfEeT/nR5q7R2rFSY54V
-	BKe5Iyu3ffHSWDvz81jDQJ3L7rOZyWrN8tP3hG4ihBjqfQWLO0suORudr2lPegmZ
-	UlCTOjuMWHTDnJngduMuW+XEUuJQvxr9Jg7nU0ITIA==
-X-ME-Sender: <xms:Z_oOZ3BUVLyazgwf1l1HvM-FCQww-IHLXNl9UrYK4_O5sooUM9jF3Q>
-    <xme:Z_oOZ9iv-jJoNYA_somaHHodlkvTWaxRBfz134I9BAvlJnl8R3aHxXf_w_HH7fpCp
-    5l7rP8ITFCYfMXyqc8>
-X-ME-Received: <xmr:Z_oOZylHOVG6w6ZcPWsY0sKF2cmo_8_l0fQlHPJP6GxwjqjNMHvjDmSAFprfKvKZmJegfVwTyCugiBofNbcXXhI8uuo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdegkedgvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffuff
-    fkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosgho
-    rhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevle
-    eifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtg
-    hpthhtohepfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsght
-    rhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqth
-    gvrghmsehfsgdrtghomhdprhgtphhtthhopehfshhtvghsthhssehvghgvrhdrkhgvrhhn
-    vghlrdhorhhg
-X-ME-Proxy: <xmx:Z_oOZ5yOAXg9ayaiZrgzbC9p4xyPF13R_HalUtiDmJDNk-Iu1LS2Ng>
-    <xmx:Z_oOZ8Sk3XqmGT64jjWMCGpQ7gbeMPFp7yP0nmaW51JIGPkkIPwM3w>
-    <xmx:Z_oOZ8bb_c-GVFWNZ8FNi7jUJAbdS1zfnMaGkBALaOB6v2WlOLlM6g>
-    <xmx:Z_oOZ9QIsGPHtnLtwugKr3sNMMpKfbnvS9sgNFgvs2oaJ-8PTwd6Qg>
-    <xmx:Z_oOZye0fx4oBVPPetfwCesufWZje_AGG2wsIPZSvm2OC6MFgmsQDHYB>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 15 Oct 2024 19:27:35 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: [PATCH v2] btrfs: add test for cleaner thread under seed-sprout
-Date: Tue, 15 Oct 2024 16:27:12 -0700
-Message-ID: <9925ac0001b867a523a8c9c838536b50c2b19348.1729034727.git.boris@bur.io>
-X-Mailer: git-send-email 2.46.2
+	s=arc-20240116; t=1729038334; c=relaxed/simple;
+	bh=c7lhTgvGiHb/2HwVwNVsfIuHDrwwDIct7ltqv8UaHa0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tcl9+i9po+N9cOPWM1zDpPcmSs47TICvgfbq11qmSrabSrdVfraoZB8Qeql+u2VRm78QEllh9vSiO5lABHothp84Dv90vn2Y+5uS9Nnagih5c+ktBO/E2/vbgxPLs8YvascIZgFzvw9HSbFR6SxKG6tgM0Vr4FrO/qxczfa35Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rr3llLDU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=madFG0LA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rr3llLDU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=madFG0LA; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7F4CB21B68;
+	Wed, 16 Oct 2024 00:25:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729038330;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/jYDe9UqIC2fMkVI8et8OpK753RTIgwmcBiYIqlgbRE=;
+	b=Rr3llLDUOSgnau11n//Q9yFFni+YYA0lHa2asgV9siACvgooQEbe4LaI0jFncB/J4acmOP
+	OVukZn70n6M8KhOsmDX0UVg4qh2n0QeWnIN3f98gY4GkJmDkmtMgj7wqpMHNhyC8le4eaa
+	4a55faPsZGu/0Nht9EcdjEOSY9Zr0Po=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729038330;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/jYDe9UqIC2fMkVI8et8OpK753RTIgwmcBiYIqlgbRE=;
+	b=madFG0LACfIngmTxdtvUECmxOew7lK1TesPBYG/86RI3qDLGnxpXIzY+CmUJFZElCedj0K
+	txDMV21C4FdUDNAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729038330;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/jYDe9UqIC2fMkVI8et8OpK753RTIgwmcBiYIqlgbRE=;
+	b=Rr3llLDUOSgnau11n//Q9yFFni+YYA0lHa2asgV9siACvgooQEbe4LaI0jFncB/J4acmOP
+	OVukZn70n6M8KhOsmDX0UVg4qh2n0QeWnIN3f98gY4GkJmDkmtMgj7wqpMHNhyC8le4eaa
+	4a55faPsZGu/0Nht9EcdjEOSY9Zr0Po=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729038330;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/jYDe9UqIC2fMkVI8et8OpK753RTIgwmcBiYIqlgbRE=;
+	b=madFG0LACfIngmTxdtvUECmxOew7lK1TesPBYG/86RI3qDLGnxpXIzY+CmUJFZElCedj0K
+	txDMV21C4FdUDNAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68D2C13433;
+	Wed, 16 Oct 2024 00:25:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lsJXGfoHD2dhJwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 16 Oct 2024 00:25:30 +0000
+Date: Wed, 16 Oct 2024 02:25:25 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Boris Burkov <boris@bur.io>
+Cc: David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: Re: [PATCH v3] btrfs: try to search for data csums in commit root
+Message-ID: <20241016002525.GM1609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <01721e6680b4a05c06cea8afc98b1726102ba5f5.1728947030.git.boris@bur.io>
+ <20241015154320.GI1609@twin.jikos.cz>
+ <20241015180144.GA1731591@zen.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241015180144.GA1731591@zen.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.99 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.19)[-0.927];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -3.99
+X-Spam-Flag: NO
 
-We have a longstanding bug that creating a seed sprout fs with the
-ro->rw transition done with
+On Tue, Oct 15, 2024 at 11:01:44AM -0700, Boris Burkov wrote:
+> > > +#define BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT	1U << (BIO_FLAG_LAST + 1)
+> > 
+> > All expressions in macros should be in ( ), namelly when there's a
+> > potential for operator precedence change like with "<<" after the macro
+> > is expanded in some code.
+> > 
+> > > +#define BTRFS_BIO_PRIVATE_FLAG_MASK	(BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT)
+> > 
+> > Do you plan to add more such flags to private? This looks line one level
+> > more of abstraction than we need for this optimization. This could be
+> > simply used as BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT. And for that
+> > reason the helpers do not need to sound generic that it manipulates
+> > 'private', the names can be btrfs_bio_set_csum_search_commit_root(),
+> > which is IMHO expressing the same semantics.
+> 
+> I don't plan to add any more btrfs private bio flags. I made the
+> judgment that doing it generically with checking (particularly for the
+> important and explicit clear before submit) was better than the one off,
+> because it made what was being done as clear as possible. It's still not
+> perfectly clear, because of the whole "private flags" name not being
+> perfect.
+> 
+> Since there is only one user, I totally see the argument for just doing
+> it as a one-off. Would you like me to rewrite it to
+> btrfs_bio_set_csum_search_commit_root?
 
-mount -o remount,rw $mnt
-
-instead of
-
-umount $mnt
-mount $sprout_dev $mnt
-
-results in an fs without BTRFS_FS_OPEN set, which fails to ever run the
-critical btrfs cleaner thread.
-
-This test reproduces that bug and detects it by creating and deleting a
-subvolume, then triggering the cleaner thread. The expected behavior is
-for the cleaner thread to delete the stale subvolume and for the list to
-show no entries. Without the fix, we see a DELETED entry for the subvol.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-Changelog:
-v2:
-- update to real copyright info
-- add extra rw->ro transition checks
-- remove unnecessary _require_test
----
- tests/btrfs/323     | 49 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/323.out |  2 ++
- 2 files changed, 51 insertions(+)
- create mode 100755 tests/btrfs/323
- create mode 100644 tests/btrfs/323.out
-
-diff --git a/tests/btrfs/323 b/tests/btrfs/323
-new file mode 100755
-index 000000000..ca57b1a1e
---- /dev/null
-+++ b/tests/btrfs/323
-@@ -0,0 +1,49 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 323
-+#
-+# Test that remounted seed/sprout device FS is fully functional. For example, that it can purge stale subvolumes.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick seed remount
-+
-+. ./common/filter
-+_require_command "$BTRFS_TUNE_PROG" btrfstune
-+_require_scratch_dev_pool 2
-+
-+_fixed_by_kernel_commit XXXXXXXX \
-+	"btrfs: do not clear read-only when adding sprout device"
-+
-+_scratch_dev_pool_get 2
-+dev_seed=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
-+dev_sprout=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
-+
-+# create a read-only fs based off a read-only seed device
-+_mkfs_dev $dev_seed
-+$BTRFS_TUNE_PROG -S 1 $dev_seed
-+_mount $dev_seed $SCRATCH_MNT >>$seqres.full 2>&1 
-+_btrfs device add -f $dev_sprout $SCRATCH_MNT >>$seqres.full
-+
-+# switch ro to rw, checking that it was ro before and rw after
-+findmnt -n -O rw $SCRATCH_MNT
-+_mount -o remount,rw $SCRATCH_MNT
-+findmnt -n -O ro $SCRATCH_MNT
-+
-+# do stuff in the seed/sprout fs
-+_btrfs subvolume create $SCRATCH_MNT/subv
-+_btrfs subvolume delete $SCRATCH_MNT/subv
-+
-+# trigger cleaner thread without remounting
-+_btrfs filesystem sync $SCRATCH_MNT
-+
-+# expect no deleted subvolumes remaining
-+$BTRFS_UTIL_PROG subvolume list -d $SCRATCH_MNT
-+
-+_scratch_dev_pool_put
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/323.out b/tests/btrfs/323.out
-new file mode 100644
-index 000000000..5dba9b5f0
---- /dev/null
-+++ b/tests/btrfs/323.out
-@@ -0,0 +1,2 @@
-+QA output created by 323
-+Silence is golden
--- 
-2.46.0
-
+Yes please, make it specific for the csum search root. Making it generic
+works when we have at least two, in use or soon to be used, but as you
+say no plans for more so it's best to keep it suitable what we need now.
+If it is for any reason needaed in the future we know how to extend the
+interface, so no big deal.
 
