@@ -1,165 +1,146 @@
-Return-Path: <linux-btrfs+bounces-8966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8967-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E66329A0EF4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 17:49:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC379A0F0A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 17:51:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA753288196
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 15:49:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C6B21C22AE8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 15:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973F72139CD;
-	Wed, 16 Oct 2024 15:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7A320F5CB;
+	Wed, 16 Oct 2024 15:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iki50YnI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NYxOC63V";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sS0iFRrs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zIkJqlgH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8C7212EE5;
-	Wed, 16 Oct 2024 15:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B0F20F5BD
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 15:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729093713; cv=none; b=OJDl/oMZW0uARuhplsGzZQzLKvJBh5ON+vqJpiITii2qXl8eDi8YRPsF2tpoUd+MWuXPklBp7KjtkzfZGr29ruhgc33LmkYnr2KhBH/ppu8DvKMBGxwFY7/rVl1xXLqKjlX3WGh5F4EcdaENMENMlY/ksxleu7njTw3zlvcmWbE=
+	t=1729093796; cv=none; b=WkSpP4bYviPh8r6lrMZKfEEmJFG5cPEp8uk7xg3DTMkbD5FeXic7fOqyRyL+XpJ5xqEmhkV6Y014CDZNPVyo+BmNQF552aGZGUG0EBbKbiDjbrMy20k7SFPkSysNxPBEpF12KiVX1H1U0EGXpigs4Lt+VtHUC/2PhrJiK/R+FZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729093713; c=relaxed/simple;
-	bh=SOQ2c8KSJM+2PRLcOjVRDsewAuvHhY5x/hPLOZ0bp58=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DLIgiZBFCeEhSAhhUdIc+fYt7ZejewmU3fLuoeBD81SZGyTtTx+yRq2dRb9ehT6E9RdXM+COanPko5uGCyrKwgcYZXIVNSsCaRiNHgsjQBq/bp3yN0pkZm4j2DNK5xVB6btmASUBUvVinaaA4LVKQLlk6srOLgd9KjksX/0A9X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XTFjL5h0sz6D8cB;
-	Wed, 16 Oct 2024 23:47:50 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 72483140A71;
-	Wed, 16 Oct 2024 23:48:28 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 16 Oct
- 2024 17:48:27 +0200
-Date: Wed, 16 Oct 2024 16:48:26 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 05/28] dax: Document dax dev range tuple
-Message-ID: <20241016164826.000068e9@Huawei.com>
-In-Reply-To: <67098d5a946b8_9710f29462@iweiny-mobl.notmuch>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
-	<20241007-dcd-type2-upstream-v4-5-c261ee6eeded@intel.com>
-	<20241009134201.000011b4@Huawei.com>
-	<67098d5a946b8_9710f29462@iweiny-mobl.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1729093796; c=relaxed/simple;
+	bh=ozMswQpw73nppenD0NfEF24EfsroWtik5jYGGmw4/Ec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J12M1NofDmvfY4FDrBF1w3quJv1anSooyYtbmPdhN2GuvhoUTGz9LKaQNr3nsQDTttGv/4hjTOIKAg1W3YS+1Y5HHJ0Xy3xKmDJC8KR0A7KrQriv3ecmiWNApXWqnBPOt3uhRDaGpDeAudKOQM/Sxox1YXdBhx+9kqXgatnX/5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iki50YnI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NYxOC63V; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sS0iFRrs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zIkJqlgH; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EAD6621B93;
+	Wed, 16 Oct 2024 15:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729093793;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BlPoEeJ/JlLOBxXfdspwN7F7Z2atBKV/Wujt9qSJ2WQ=;
+	b=iki50YnIuLbCQo2PdIzZUZnBROh3a5S1b5fC0Xlx3zLQw0U1VvDapsB7mY7SxmjiHA2lsy
+	xNXH6YBdLptIho6okoxJsqK6flFE2bh3UuW9fk6bgBgt9tC+bQ+BWx6onhtSsgf8tr3zPk
+	Wo5oLaSmLx7sJPJre0RC9i1aIfPUayE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729093793;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BlPoEeJ/JlLOBxXfdspwN7F7Z2atBKV/Wujt9qSJ2WQ=;
+	b=NYxOC63VbfnjlHjA3hQr12t45JMDCd90yb9+aOlU84thsxmKntEdYvEh3+qxSHohFelkGw
+	irffAz/+HXwa+RDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729093792;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BlPoEeJ/JlLOBxXfdspwN7F7Z2atBKV/Wujt9qSJ2WQ=;
+	b=sS0iFRrsszziNWnEd9wmlXhAGoVjBJicARbV6NoDWBi1t/bAUZ7thGvUr8nrjdboowwmUi
+	PWGVk1x7AdXRH+/ezNdNFNQxuBHzl4qwOMKZYWVOxMbrduOqsJiCMjugmJQtzhBow1ooyk
+	V5df79B4vwxkcnPrQ27LjFxkxQuFbrM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729093792;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BlPoEeJ/JlLOBxXfdspwN7F7Z2atBKV/Wujt9qSJ2WQ=;
+	b=zIkJqlgHFmvTv1LL/oh82wVnNLwzA9VnAI/VfpaH/ZM8seW0cTP0uiakws29WBHqMcpTty
+	q1EGlB3QgX6lKEDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D14DE1376C;
+	Wed, 16 Oct 2024 15:49:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7evhMqDgD2fUNwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 16 Oct 2024 15:49:52 +0000
+Date: Wed, 16 Oct 2024 17:49:51 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/4] btrfs: remove redundant initialization from
+ btrfs_readahead_tree_block()
+Message-ID: <20241016154951.GR1609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1729075703.git.fdmanana@suse.com>
+ <22e345124a6e35e4dbc07e9564475b5c97b37a41.1729075703.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22e345124a6e35e4dbc07e9564475b5c97b37a41.1729075703.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
 
-On Fri, 11 Oct 2024 15:40:58 -0500
-Ira Weiny <ira.weiny@intel.com> wrote:
+On Wed, Oct 16, 2024 at 03:20:22PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> It's pointless to initialize the has_first_key field of the stack local
+> btrfs_tree_parent_check structure since it all fields not explicitly
+> initialized are zeroed out, plus it's a bit odd because the field is
+> of type bool and we are assigning 0 instead of false to it (however it's
+> not incorrect since 0 is converted to false). Just remove the explicit
+> initialization due to its redundancy.
 
-> Jonathan Cameron wrote:
-> > On Mon, 07 Oct 2024 18:16:11 -0500
-> > Ira Weiny <ira.weiny@intel.com> wrote:
-> >   
-> > > The device DAX structure is being enhanced to track additional DCD
-> > > information.
-> > > 
-> > > The current range tuple was not fully documented.  Document it prior to
-> > > adding information for DC.
-> > > 
-> > > Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > >   
-> > Isn't this a nested struct?
-> > https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
-> > 
-> > I'm not quite sure how we document when it's a nested pointer to a
-> > a structure.  Is it the same as for a 'normal' nested struct?  
-> 
-> In this case I think it best to document the struct and just document the
-> reference.  See below.
-> 
-> >     
-> > > ---
-> > > Changes:
-> > > [iweiny: move to start of series]
-> > > ---
-> > >  drivers/dax/dax-private.h | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> > > index 446617b73aea..ccde98c3d4e2 100644
-> > > --- a/drivers/dax/dax-private.h
-> > > +++ b/drivers/dax/dax-private.h
-> > > @@ -58,7 +58,10 @@ struct dax_mapping {
-> > >   * @dev - device core
-> > >   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
-> > >   * @nr_range: size of @ranges
-> > > - * @ranges: resource-span + pgoff tuples for the instance
-> > > + * @ranges: range tuples of memory used
-> > > + * @pgoff: page offset  
-> >       @ranges.pgoff?
-> > etc  
-> 
-> Ok yea.
-> 
-> As for the pointer to a structure.  I think the best thing to do is simply
-> document that structure.
-> 
-> Something like this building on this patch:
-> 
-> 
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index ccde98c3d4e2..b9816c933575 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -40,6 +40,12 @@ struct dax_region {
->         struct device *youngest;
->  };
->  
-> +/**
-> + * struct dax_mapping - device to display mapping range attributes
-> + * @dev: device representing this range
-> + * @range_id: index within dev_dax ranges array
-> + * @id: ida of this mapping
-> + */
->  struct dax_mapping {
->         struct device dev;
->         int range_id;
-> @@ -59,9 +65,9 @@ struct dax_mapping {
->   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
->   * @nr_range: size of @ranges
->   * @ranges: range tuples of memory used
-> - * @pgoff: page offset
-> - * @range: resource-span
-> - * @mapping: device to assist in interrogating the range layout
-> + * @ranges.pgoff: page offset
-> + * @ranges.range: resource-span
-> + * @ranges.mapping: reference to the dax_mapping for this range
-
-Maybe just pull out definition of struct dev_dax_range?
-Avoids this confusion and no particularly obvious reason why it
-is embedded in the definition of dev_dax.
-
->   */
->  struct dev_dax {
->         struct dax_region *region;
-> 
-
+Makes sense, I've noticed there's one more to remove from
+btrfs_qgroup_trace_subtree() you can squash it to this patch too.
 
