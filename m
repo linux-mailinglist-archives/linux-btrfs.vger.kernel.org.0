@@ -1,163 +1,165 @@
-Return-Path: <linux-btrfs+bounces-8965-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D2999A0E2F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 17:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E66329A0EF4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 17:49:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0893E28338B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 15:28:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA753288196
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2024 15:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5270820E034;
-	Wed, 16 Oct 2024 15:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKhOrFPR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dvLa54c/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKhOrFPR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dvLa54c/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973F72139CD;
+	Wed, 16 Oct 2024 15:48:33 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C7820E01F
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2024 15:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8C7212EE5;
+	Wed, 16 Oct 2024 15:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729092522; cv=none; b=qAcVeZ3nRVXU7oHD1xYKmqla6uubwwG0Anis0q5IAd0095/sMGVFra9DurDeF3Iq8OQS9XOVpBK5EiPl4K/qJ8B73sykDLVdgE0VfGaPf5IS7i6NpfaKG4gnUP+YKhNGjsGHmrqz6e3equWqiTKeCtJtnLqOtD4zDM6CRLsonc8=
+	t=1729093713; cv=none; b=OJDl/oMZW0uARuhplsGzZQzLKvJBh5ON+vqJpiITii2qXl8eDi8YRPsF2tpoUd+MWuXPklBp7KjtkzfZGr29ruhgc33LmkYnr2KhBH/ppu8DvKMBGxwFY7/rVl1xXLqKjlX3WGh5F4EcdaENMENMlY/ksxleu7njTw3zlvcmWbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729092522; c=relaxed/simple;
-	bh=vg2pqLLvIYeEPj4eaPD88pq2T0W8jHhCdTBZjbLpBb8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NY4YmRvblOPDtW6iP3dPoKjzmWand0jqPZtZHqItX24Xz3lAHOnTBV/0GstHoCE5q9ttbMukto01Aw51ZnvZvN2NH0fF4vp1ebIuW0sk7dqKQ45SdK2hSfT0wYA0ExXuTA207K4OQrlXmYIiBh1CRa2+L8cd3yZrTA7OOxRUm94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKhOrFPR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dvLa54c/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKhOrFPR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dvLa54c/; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 045A521E65;
-	Wed, 16 Oct 2024 15:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729092519;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fGBb4Z2++sNJVT3uSidCPPhEaGMy4Qvv3NRRl6IfchU=;
-	b=OKhOrFPRXcw98MEX3odoiRcS6SvuOhGp/psvDEFwzOGJVHwREQJ+z05PcbSHq0Z4mE9Icd
-	54u8clzDg9MrO/NWzU4Ma2lbXZxw8qlLDyv6CFTC1fmcJNz+7QozkE2UXHZKyBiz+p9WYc
-	b0l9MLpanP+bRWD+JduxHhXhWMomMyQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729092519;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fGBb4Z2++sNJVT3uSidCPPhEaGMy4Qvv3NRRl6IfchU=;
-	b=dvLa54c/G5cAqcbUYYWyyqNbbGawNDqAcd7KN51ghqDEhyIHmZvt1v1cEvYnMsGYiZLZC1
-	aJsHSsVkLfoUGXDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729092519;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fGBb4Z2++sNJVT3uSidCPPhEaGMy4Qvv3NRRl6IfchU=;
-	b=OKhOrFPRXcw98MEX3odoiRcS6SvuOhGp/psvDEFwzOGJVHwREQJ+z05PcbSHq0Z4mE9Icd
-	54u8clzDg9MrO/NWzU4Ma2lbXZxw8qlLDyv6CFTC1fmcJNz+7QozkE2UXHZKyBiz+p9WYc
-	b0l9MLpanP+bRWD+JduxHhXhWMomMyQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729092519;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fGBb4Z2++sNJVT3uSidCPPhEaGMy4Qvv3NRRl6IfchU=;
-	b=dvLa54c/G5cAqcbUYYWyyqNbbGawNDqAcd7KN51ghqDEhyIHmZvt1v1cEvYnMsGYiZLZC1
-	aJsHSsVkLfoUGXDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E5C9C1376C;
-	Wed, 16 Oct 2024 15:28:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OivfN6bbD2cmMQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 16 Oct 2024 15:28:38 +0000
-Date: Wed, 16 Oct 2024 17:28:37 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] btrfs: unify the read and writer locks for
- btrfs_subpage
-Message-ID: <20241016152837.GQ1609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1728452897.git.wqu@suse.com>
+	s=arc-20240116; t=1729093713; c=relaxed/simple;
+	bh=SOQ2c8KSJM+2PRLcOjVRDsewAuvHhY5x/hPLOZ0bp58=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DLIgiZBFCeEhSAhhUdIc+fYt7ZejewmU3fLuoeBD81SZGyTtTx+yRq2dRb9ehT6E9RdXM+COanPko5uGCyrKwgcYZXIVNSsCaRiNHgsjQBq/bp3yN0pkZm4j2DNK5xVB6btmASUBUvVinaaA4LVKQLlk6srOLgd9KjksX/0A9X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XTFjL5h0sz6D8cB;
+	Wed, 16 Oct 2024 23:47:50 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 72483140A71;
+	Wed, 16 Oct 2024 23:48:28 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 16 Oct
+ 2024 17:48:27 +0200
+Date: Wed, 16 Oct 2024 16:48:26 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
+ Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 05/28] dax: Document dax dev range tuple
+Message-ID: <20241016164826.000068e9@Huawei.com>
+In-Reply-To: <67098d5a946b8_9710f29462@iweiny-mobl.notmuch>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+	<20241007-dcd-type2-upstream-v4-5-c261ee6eeded@intel.com>
+	<20241009134201.000011b4@Huawei.com>
+	<67098d5a946b8_9710f29462@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1728452897.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Wed, Oct 09, 2024 at 04:21:05PM +1030, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Rename btrfs_subpage::locked to btrfs_subpage::nr_locked
-> 
-> When the handling of sector size < page size is introduced, there are
-> two types of locking, reader and writer lock.
-> 
-> The main reason for the reader lock is to handle metadata to make sure
-> the page::private is not released when there is still a metadata being
-> read.
-> 
-> However since commit d7172f52e993 ("btrfs: use per-buffer locking for
-> extent_buffer reading"), metadata read no longer relies on
-> btrfs_subpage::readers.
-> 
-> Making the writer lock as the only utilized subpage locking.
-> 
-> This patchset converts all the existing reader lock usage and rename the
-> writer lock into a generic lock.
-> 
-> This patchset relies on this patch "btrfs: fix the delalloc range
-> locking if sector size < page size", as it removes the last user of
-> btrfs_folio_start_writer_lock().
-> 
-> Qu Wenruo (2):
->   btrfs: unify to use writer locks for subpage locking
->   btrfs: rename btrfs_folio_(set|start|end)_writer_lock()
+On Fri, 11 Oct 2024 15:40:58 -0500
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+> Jonathan Cameron wrote:
+> > On Mon, 07 Oct 2024 18:16:11 -0500
+> > Ira Weiny <ira.weiny@intel.com> wrote:
+> >   
+> > > The device DAX structure is being enhanced to track additional DCD
+> > > information.
+> > > 
+> > > The current range tuple was not fully documented.  Document it prior to
+> > > adding information for DC.
+> > > 
+> > > Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > >   
+> > Isn't this a nested struct?
+> > https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
+> > 
+> > I'm not quite sure how we document when it's a nested pointer to a
+> > a structure.  Is it the same as for a 'normal' nested struct?  
+> 
+> In this case I think it best to document the struct and just document the
+> reference.  See below.
+> 
+> >     
+> > > ---
+> > > Changes:
+> > > [iweiny: move to start of series]
+> > > ---
+> > >  drivers/dax/dax-private.h | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> > > index 446617b73aea..ccde98c3d4e2 100644
+> > > --- a/drivers/dax/dax-private.h
+> > > +++ b/drivers/dax/dax-private.h
+> > > @@ -58,7 +58,10 @@ struct dax_mapping {
+> > >   * @dev - device core
+> > >   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+> > >   * @nr_range: size of @ranges
+> > > - * @ranges: resource-span + pgoff tuples for the instance
+> > > + * @ranges: range tuples of memory used
+> > > + * @pgoff: page offset  
+> >       @ranges.pgoff?
+> > etc  
+> 
+> Ok yea.
+> 
+> As for the pointer to a structure.  I think the best thing to do is simply
+> document that structure.
+> 
+> Something like this building on this patch:
+> 
+> 
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index ccde98c3d4e2..b9816c933575 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -40,6 +40,12 @@ struct dax_region {
+>         struct device *youngest;
+>  };
+>  
+> +/**
+> + * struct dax_mapping - device to display mapping range attributes
+> + * @dev: device representing this range
+> + * @range_id: index within dev_dax ranges array
+> + * @id: ida of this mapping
+> + */
+>  struct dax_mapping {
+>         struct device dev;
+>         int range_id;
+> @@ -59,9 +65,9 @@ struct dax_mapping {
+>   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+>   * @nr_range: size of @ranges
+>   * @ranges: range tuples of memory used
+> - * @pgoff: page offset
+> - * @range: resource-span
+> - * @mapping: device to assist in interrogating the range layout
+> + * @ranges.pgoff: page offset
+> + * @ranges.range: resource-span
+> + * @ranges.mapping: reference to the dax_mapping for this range
+
+Maybe just pull out definition of struct dev_dax_range?
+Avoids this confusion and no particularly obvious reason why it
+is embedded in the definition of dev_dax.
+
+>   */
+>  struct dev_dax {
+>         struct dax_region *region;
+> 
+
 
