@@ -1,224 +1,281 @@
-Return-Path: <linux-btrfs+bounces-8989-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8990-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B7369A2E81
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 22:29:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A63B9A2F02
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 22:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D86282ABC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 20:29:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D8CA280C91
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 20:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60232281E2;
-	Thu, 17 Oct 2024 20:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04DC1DFDAC;
+	Thu, 17 Oct 2024 20:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="leHQDlVp"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ucrlAf7L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C188622738A;
-	Thu, 17 Oct 2024 20:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729196964; cv=fail; b=L7mEuFX9zwB+uUHRlSGpPRtdYse4vNjj9p9dYPxqr1yQgeMs5yJSY/steRbSXmD16XxsACNU1kUNXGqiBcxwiR1fnQyWygVFvaj3yrceth2GCoQ0q6MJvOFs1+eGzs/+ufEAjpqA67nPn07FMGaEyePVqkkbpDyiokAOsHMUmYQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729196964; c=relaxed/simple;
-	bh=t6vp905Jfxwi7FzL7Ob+lLGe56EZaEa37GWs66ZVWE4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ik4oit20Rr554HGZeIJ9/7nw+scFKmEPUk3O/onUB/F/ZebBnGw/S8ECcMf2LfS1zHmv6gFcdlhkfn80lBuhdhdxYHUm2CRRMv36loyAxBsyXggydgaDyAJp2EfUF0PDEaq3UHwSfkdMB8aOgSNmhLwXj8lbGCvI8ijwQi4Z5CE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=leHQDlVp; arc=fail smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729196958; x=1760732958;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=t6vp905Jfxwi7FzL7Ob+lLGe56EZaEa37GWs66ZVWE4=;
-  b=leHQDlVpiVfAXAvNLCSQiQaa4alkzHZvwyO9Vn9i27lSDKJ/yGXNaV49
-   5vhf7MBBYl8TRzVSdrxBpRMs9pu8iExRMljQOjZTAXMTxImj++ypWWf+j
-   4TAR+j5lKDN0TNoDjKspEdZ8PXbwro6xYMfa1ufekNvhRQGk5S7wdY+eg
-   5RnRJ/liHdmcY/U48g1eRf3NssjevLuGkgD7OaDZtQJTBu55SmfLe7BT1
-   eH0ax49/juqXyQGk4tSiaQyyn3W1yrkrigj2os5NtlJURbguOJv8CQcc4
-   d7Efei0VvvKlfnD2VcP7nP1GV52C2y4Kz9V/gLPGTaKOI5pa4DrXo0Mok
-   A==;
-X-CSE-ConnectionGUID: WzBnjpV7S9mgxUceXlptYg==
-X-CSE-MsgGUID: EnoZASwkSN2zjlhDRvmMKg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="46170749"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="46170749"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2024 13:29:18 -0700
-X-CSE-ConnectionGUID: CJHbJL0fTyyWDLxdjYyG3w==
-X-CSE-MsgGUID: nt+IyeR8RzKm2qw3YfOCOQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,211,1725346800"; 
-   d="scan'208";a="109478182"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Oct 2024 13:29:17 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 17 Oct 2024 13:29:16 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 17 Oct 2024 13:29:16 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 17 Oct 2024 13:29:16 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 17 Oct 2024 13:29:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=iiMNF6rHR97aZ27zZyvxUg7JQ3/D7MFoZJxyJ82Xo8io/8UoqNSCpXiG/8pcIuGZ1uat2Gfc/ldEHzEYAt0jKL1onzH3D+HUBQDY4oSa1cerFmXnVyVb4aVQRzYxgb28GCXvmOObH5t7gjpGx+FgUpd2m18QHaBT9GFx9FBtOCHQq5UdE3wEfAiWMq09ZT4D5AT0fjuKGD1G3PPYT7T5u+fLux75Hd/ZWFLlAH5dGK8wN4HWH5PXCUFCLHQg4vu8pwDuQScRYI1J2q64BA7deVjwbTGuM9FaN56WLLDz7sWS9Idf1xfWdvBuU4uViaQP5w6fNKyVdiQ2v7W56qy4Rw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/qiW+B7+1bewn5oWLz5VHGCNddiLGKmFZ+Z9qTbe/0o=;
- b=pzRqkmH5Ndtte4+HshON8lkyq5Hxe7wRl+to0aS3gEBdceAN0n6fq3aKBFU4bsUodSHM7eEhNSjNiM7IQ0d2RLfwJON3mXaWluKIT4eaRVmwFKdZfZefsT3k+TvhBJ5h7uISH5RvUjWnF4fmcqWlSrHDDvAO94tTYQVAzkKDI0W6EAAdYdRUN09CU6SXpeeqw0nrW+oz70+fYXSADx504IzmjEQcWuij2r59K1mUX085ibDOW6f1ujg4+eOW7gSz915pcyxIDs2njKipPkuo9rfkGydzXd8kT2sIUUvjJbYwbcVpokl/7prCgbT7dLIkGquSbT/REXcMiHiYTSjlHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by MW3PR11MB4554.namprd11.prod.outlook.com (2603:10b6:303:5d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.18; Thu, 17 Oct
- 2024 20:29:12 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57%3]) with mapi id 15.20.8048.020; Thu, 17 Oct 2024
- 20:29:12 +0000
-Date: Thu, 17 Oct 2024 15:29:02 -0500
-From: Ira Weiny <ira.weiny@intel.com>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Ira Weiny
-	<ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 15/28] cxl/region: Refactor common create region code
-Message-ID: <6711738e4caae_2cee294da@iweiny-mobl.notmuch>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-15-c261ee6eeded@intel.com>
- <20241010141826.0000796e@Huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20241010141826.0000796e@Huawei.com>
-X-ClientProxiedBy: MW4PR04CA0050.namprd04.prod.outlook.com
- (2603:10b6:303:6a::25) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5452D143895
+	for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 20:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729198077; cv=none; b=hzVhCr2ElT3BMCjLl00BVkmB4z3JvAFxF424ATmKmvCs5a3DpLYeqWVEaZAh6IVVKZYTjGZGGWttKM/rlKD27fY8Csyf5lc2TH2U+9zeqLKT/mGTZJHAersXEGyLBfelX1Ds1tF8GuigRAsObV7fXFgG7juc6U1Zih3c6UVu1L0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729198077; c=relaxed/simple;
+	bh=XcbavoEu3aZJu82x4UsdimDqIUlCFw6EHPJJewmwUkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gCfysxyyMXDEBOF2UpplX7M5KmaccYwePMlcU9j4pHHCO3mjV7aykg+SfYCC5qzZT+6DZlZVOQnVK8Jd30+9l+Zs0vQzVesqCfHBUYITmudVy8NGEq+piWinvnDEw66k7dxzz0P7ej4z7eQSfGN93+hDYqeKmnVMdeEcry08kkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ucrlAf7L; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1729198058; x=1729802858; i=quwenruo.btrfs@gmx.com;
+	bh=T/Xv7fnTnNkueBpxrXAcgYq5u0Dt84pmV/S9hvPAmlo=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=ucrlAf7LJ3FkXYOXBzY2+GVRv5MsLWJrY1CP4T/LHALZQ7LaLrSkB32oxwbRlbdB
+	 H05i8k3GdByZ4PWbH2vcdSQ1JWFuA+MDFyYJzbhJsUU8H2/aOqxqksnrtWU03IAob
+	 nm4VVR50vmR7AqDzDrdir+ovwe3antu2tx598WDK7SUNxWZiPpjA5vYd4MLZ3s85f
+	 KptYM9hTUaVvrdZflqPUClfgiTAsQbwlLAmnUUxnso6PL1jyZaZj08gynXuTpBXIr
+	 Qy/+Wg9bWbT20k5lSDbsKvbJ6ojILEw7vMxU2/DPtDZCaWUqEYWwMFlQf14eC1d4U
+	 QUw4qklYyQxC4rJhiw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpUUm-1tiWaj3qGa-00pr9k; Thu, 17
+ Oct 2024 22:47:38 +0200
+Message-ID: <12c0bb30-7ee5-4aec-9fe8-f40ee01ec9a7@gmx.com>
+Date: Fri, 18 Oct 2024 07:17:34 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|MW3PR11MB4554:EE_
-X-MS-Office365-Filtering-Correlation-Id: a912e9a8-d126-4d97-d1cb-08dceeea5c69
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?dVsYAYB785u3mOx8bUftpaAsq8y6SqugKSGbmpIocJdAu25a9jSM/+xXz8Sb?=
- =?us-ascii?Q?PIAUgp+84Jifa3wZCEO1Vr3zKtbfAcJGbqqpdpaLmOmzH164Jo9cQ50XgO7W?=
- =?us-ascii?Q?SITYga9OIX1pfBJj7qCzBk5WE8LwnDDSpPOlH8bXkANP5J8pxOtTWDMdCyki?=
- =?us-ascii?Q?Y84ymTsq9sMBzsQfwVKQ6rRwjugdg2p2JK5bnNmdNOOIhfoXoJubgirdaFE7?=
- =?us-ascii?Q?cjR0LRsRIcIuTi2WQvbdV4H14MuNtRQwsKFkM/gFuAgVJt0aOsvzkk29mD0S?=
- =?us-ascii?Q?KszpiOE9x7Vm1KLeHTasdYIK1vsOFnUuXCT6APMf+mpDAEqN6WsIdDN5aq4k?=
- =?us-ascii?Q?KiJ6/NsFStZpL0RZ8R9c0M3Z4hNd0IczX/Y/NhFWT/YBhjLufVuRqWLhyUis?=
- =?us-ascii?Q?Bdb8Tg+VNQkPdjdBcxD5O0UeU0VswawUSJCRpuAnhxGT956bR0PgWaFNNA/n?=
- =?us-ascii?Q?xhk/EF2ZCdjNGvrQBzp6PucA3CxvhAIHoXE7o9fhunun4DDLwefcTRxdf8BY?=
- =?us-ascii?Q?4GwIwetk4WRZurqCViQs5cSE0/8AqCN85jTVqTFgy4ckXIhwzZ3CQL+dt0Im?=
- =?us-ascii?Q?ZcTn8sy4xpIu7w+O4l9lox8mqL3Bw6oO0Ny7n2xCCcb/CBWuSLnM3l8OGgEk?=
- =?us-ascii?Q?Zv7cn58dHl8EMuq+vxoSHGAM4TpY+GlymX6ahOuebPjmvoFCeoBrtLBs/afB?=
- =?us-ascii?Q?oWyu6zoVxtxScuz/YDG3vywqdCjuap8zUZTqCqbVTNeqIpXlbhMYADEtnnBB?=
- =?us-ascii?Q?CR49ef+FzA64eNtlWBbjcOo6YdrtcqqhE8EwqnrQVatyVAWUohfNXd2U0XJg?=
- =?us-ascii?Q?n9sQkq382Oy0DIINaM9y9D8Li9gmIYBCeBOqt+cI1RzIzEMQvx2lS5KT31by?=
- =?us-ascii?Q?SGjp1kXE7GNpa6uTjncpV5pDPayVsEn5OCN2zZdojm8SNeRDEJw00ID0X7lH?=
- =?us-ascii?Q?Hjx8lBLLf6wte4cYS0ouN9rmbWyRObIbxWvaQjgxcUDq2Zl55RsB+9GRUTtv?=
- =?us-ascii?Q?ykn3YSwwL0rAA2nzlz/rJQyUaejQe57rFTAO8I4wCMSa2sDMoGwfk96/ohGG?=
- =?us-ascii?Q?xknAZ0hIoQKnm5nKgjVoVKFG6Op8RWIrxzntzxFc8nRjT13stSd+LNl5Sq3a?=
- =?us-ascii?Q?/cfdJzU5wCYJJN4UUSsJ82wEGNo8lzk8HSiS5Sne3z/fiLrs91pVr/1C+Yra?=
- =?us-ascii?Q?odgbdvLInF0/xZGS/Py9vAzAhTsDtHw3yIoa2G3+uUgYmhpsFlAEBANzOfcH?=
- =?us-ascii?Q?5HeYOaIdMSzbK3QiuxzN0fTtV/VyvbpeLq9JVRJwZaVaY54NfCKzVvdzVfOT?=
- =?us-ascii?Q?+C2JsXLoBW75SPD9MvwV7Phn?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+vmynPRh5GJSzTEQCNysEJPV50B3M3+E1PZd/oNY639QAUP38U78HV2zGaYq?=
- =?us-ascii?Q?3+vDfVszs5QQE0zW6nV1QuOdtLVXnO5Ro4nG/tmlMaRY0Hi3wBy0lg3j1S8T?=
- =?us-ascii?Q?nGpud6GSln1RpJf/gVJ4LmiBlMGoJgqLsH0MgmlEUMgZpWA0XGrpfHslzZeQ?=
- =?us-ascii?Q?uTgeFCuIyh9AzTZmhmBCSPLJFKuPLUK7cIQyoqSjTe4awhLeFVFbk8kHvdTT?=
- =?us-ascii?Q?1NMEYp2G69i4YY3AXYcmyojbGZkXTwEmCI41O+92WNhiNC1j5kRCp4sIhSEs?=
- =?us-ascii?Q?upuWgpOdHU9k9FD0Bc+Kf8XAXKS4XP1vugo79Z/FuBHoWPXlcuuwXGEgVpel?=
- =?us-ascii?Q?gAk0HFnnPjpr7DaSH3Jls0EySA7imnOX7maH6PZ+l9hbirzDoz02VWOf+KsA?=
- =?us-ascii?Q?jTx4Jb/C7jzAP0uW6IGz+JeXfvHVFM3r0KCd0qV5mJOYJOmY8k6mZ9vayC1e?=
- =?us-ascii?Q?ZuZQtBsD7fLvoqUeaTduPfB2zeuupZzTP4UGXGbdC0mQUbv9dN3MqXPfBDlW?=
- =?us-ascii?Q?GQ0WEMBjPmezT2KaPGJtifEc7JtvtvC7kOZJgDsNzHUr5DQAb6Jg2XLRhJMe?=
- =?us-ascii?Q?ljUSAH4ma+Hb4h1HBvxf59bCEErLEOsM8+C05KwXA3VvV4J+Vf4qsZii1OFS?=
- =?us-ascii?Q?tKnvZHNKHMY7BDPd+0FMLqNeHtqBQ1zS0l+Qr7MDz+iZU3Mj4qhUx7APDzkt?=
- =?us-ascii?Q?XtFH5d2HICXVECYcTxnSOgsiqFueHOeYySVJLSdrg/OLjW3/3tpAMbagyDDh?=
- =?us-ascii?Q?NITW1iPJVMDrBUBvPVTjneChgjoIVOu7tBXcZ2glU7TVlWmLrdbJi9h2sJ1Q?=
- =?us-ascii?Q?5GcFaXoU0BZjctr58NromXmGeFDB4aGnwQELnt2eTiQtsEgGWQQreFC1qPKl?=
- =?us-ascii?Q?zzLq8gB1/JLZwwL634bxO8dkqN1TQoO7idn0EjX5g6xMOxaeDmt2xYkN5TVf?=
- =?us-ascii?Q?u3F9I6GHvseN/2TSk6n0WHKWiH3/BasuMN2nj58YF4bWzX8/cmsJn5f5A1/t?=
- =?us-ascii?Q?ZipeR3He0Q+Ckc3WrvXEorz3LizBfv5wrbi72VT3KSodXyKY8hyq6pebChiw?=
- =?us-ascii?Q?A9G2mX+uFUtsW+goojTVKxj6E42/FKk7X4YwQ+fr+bV5duVM95lty65FdHLu?=
- =?us-ascii?Q?5+6e0pqUdKGj24w/G3CGEYYmg4mUFQWqB/05H6Kvxs24rIJYN6djL1cOgd5F?=
- =?us-ascii?Q?Zj3cBEoidZ0RPznqbkoD35c0qbKRUJhh5gZSsrN2lF2TZmVnpL28Z4IAyp3V?=
- =?us-ascii?Q?p+eN8SUnbe2pdY2XWUYAqImER/4EGTrda4GCQY0btqG7/foHHLWMe0yoDdyv?=
- =?us-ascii?Q?n/2xItRTVOfLPn7TuGzVc4sruQ6FHUdoQFmek4aGvdQtrHOJJitIZqXl03En?=
- =?us-ascii?Q?cIn+Y7P0WuCTyrAmlLXiTDT3Z7ISqVDyFkyXR9p77LGqoV+LtOk+XSbpHvgP?=
- =?us-ascii?Q?rx12AKmP9gSRPh4THdR/CeI73tWKbPi2289xgGS2nzmfRlhW2gqyXd7JO2Pv?=
- =?us-ascii?Q?eUL4gZxxsWlUr1E5wfAkCUvmmoukZa5QlH9Yr43BqS6N2edXj5svVEcxQuEf?=
- =?us-ascii?Q?4tNIQ+cRgYlKFZMdiXBVvJTRLE9Xl1lcbs/OfwDj?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a912e9a8-d126-4d97-d1cb-08dceeea5c69
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2024 20:29:12.3189
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3JwOZoAnsv42JFskqBebXUXBJbtupB0fqYwI0Zj0dfBLNF26dlkItQXtBWSaLFLRLtPBJxmDgLp239KjQxlYxQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4554
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: do not clear read-only when adding sprout device
+To: Anand Jain <anand.jain@oracle.com>, Boris Burkov <boris@bur.io>,
+ linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <a9aa42f6bc2739ab46ce015f749e15177f8730d6.1729028033.git.boris@bur.io>
+ <694552b3-5f70-48d2-a62f-4c2b8caf10fd@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <694552b3-5f70-48d2-a62f-4c2b8caf10fd@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BtHOwHT0oY/9K4yB98f/9wQV3iA1b2hWRv114dZLB/Yj7fQ8VZ7
+ ArFCZ+2kq1EW4guVYcQxVxmed+EbP6jeEU0zm/SVm+4780Zpz0hQ24ttCfZ14X5QERqcsjO
+ Kw1NHGVz+9lU9ZmwOD8FQcRiLrDeaiW5XVs4NcdFkpYeD9CqA0ClcoT33Xgnmp4xKmyo6kv
+ zSgOVZuvrLDlAJseFDE2g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:xL6bhNMTouI=;tONqYuYNfSzCTI9mo3Ci9VW377Z
+ 8Jr9mXjcsodIkNLH8Y835rbraUO9jo73ta3fiUbSRacJySDBnBUARooA3jq1Budyy+z4NGrvu
+ zu29ZHQwNGeanqMZzdXiHLGVwP0njJQL3bVb1e2Rn5McLT9PZppe4BIWVclm4/SSmFHvBnwSW
+ XEL1FYgkEo7uGS9+B7QqniiFY55F5v1uxdacF/OX3PYgo06FByNtxEuH3qoZL488pqdtR9By2
+ FH1L79JU4d3ILdu64VfXMR36VlzESO3xJkd+s4xsGsxIBXbL4FaxBdL1R1CGmexzKG0s2mA0N
+ dmwSMV5Lbp8TE8EoRnpQD6r/KFxWXSpQ9TDQCeb6IwfuRKdSSvmQC5SQdEr+UXbcJletqOM9H
+ NA/YgeQ+xN5WbaTD5biDaNz+DyFMT5sheYF5LfSnyhs3r3CqLML7I+C7H3NP12MH3zjKlz4Ws
+ wdBhLj9kWOUL7m3ofR47ymeHma3FPmYrLS1rtVAMn/BA/3rxJjxTVVT71Gh0M9s8rujAKADmn
+ 89JM4QfxWbWfIdZb/kqUZ3XV+3kxp8ExRgNfel/HPCUGrJJCGrm6ivvxo7uNzVGpVBhM9FyId
+ qPSzShSkerijU3CXSB7s8pltzSniFUmXUksobAuQ9MjhKorBCQAr8GdOfO1p1jvyN55uwqUKy
+ B6EmgzAbDxZ/utCN7YMOnoB6LFpcbPqkhTRAqkuUrNbk2OKMo66JgiCTLIO8muPBVzdq8e66S
+ wlc7u60ngAw0CvwrRQhkm4Y1kFl4Uv05bcWttMQgYQvjpirYgearr7+8fknib4NxScdrHrfNH
+ /Bi+GlodGWHLRbol2ikrcvgPA+leGIT5SumbEn1VD2vNM=
 
-Jonathan Cameron wrote:
-> On Mon, 07 Oct 2024 18:16:21 -0500
-> Ira Weiny <ira.weiny@intel.com> wrote:
-> 
-> > create_pmem_region_store() and create_ram_region_store() are identical
-> > with the exception of the region mode.  With the addition of DC region
-> > mode this would end up being 3 copies of the same code.
-> > 
-> > Refactor create_pmem_region_store() and create_ram_region_store() to use
-> > a single common function to be used in subsequent DC code.
-> > 
-> > Suggested-by: Fan Ni <fan.ni@samsung.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> Nice.
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> Is it worth dragging out cleanup like this to the start of the series so
-> Dave can queue it up as 'good to have whatever' and reduce this set
-> a bit?
 
-The problem was that this patch depended on the region mode change...  But
-that was an easy change.
 
-I've moved it forward.
+=E5=9C=A8 2024/10/17 03:44, Anand Jain =E5=86=99=E9=81=93:
+> On 16/10/24 05:38, Boris Burkov wrote:
+>> If you follow the seed/sprout wiki, it suggests the following workflow:
+>>
+>> btrfstune -S 1 seed_dev
+>> mount seed_dev mnt
+>> btrfs device add sprout_dev
+>> mount -o remount,rw mnt
+>>
+>
+>
+>
+>> The first mount mounts the FS readonly, which results in not setting
+>> BTRFS_FS_OPEN, and setting the readonly bit on the sb. The device add
+>> somewhat surprisingly clears the readonly bit on the sb (though the
+>> mount is still practically readonly, from the users perspective...).
+>> Finally, the remount checks the readonly bit on the sb against the flag
+>> and sees no change, so it does not run the code intended to run on
+>> ro->rw transitions, leaving BTRFS_FS_OPEN unset.
+>>
+>> As a result, when the cleaner_kthread runs, it sees no BTRFS_FS_OPEN an=
+d
+>> does no work. This results in leaking deleted snapshots until we run ou=
+t
+>> of space.
+>>
+>> I propose fixing it at the first departure from what feels reasonable:
+>> when we clear the readonly bit on the sb during device add.
+>>
+>> A new fstest I have written reproduces the bug and confirms the fix.
+>>
+>> Signed-off-by: Boris Burkov <boris@bur.io>
+>> ---
+>> Note that this is a resend of an old unmerged fix:
+>> https://lore.kernel.org/linux-
+>> btrfs/16c05d39566858bb8bc1e03bd19947cf2b601b98.1647906815.git.boris@bur=
+.io/T/#u
+>> Some other ideas for fixing it by modifying how we set BTRFS_FS_OPEN
+>> were also explored but not merged around that time:
+>> https://lore.kernel.org/linux-btrfs/
+>> cover.1654216941.git.anand.jain@oracle.com/
+>>
+>> I don't have a strong preference, but I would really like to see this
+>> trivial bug fixed. For what it is worth, we have been carrying this
+>> patch internally at Meta since I first sent it with no incident.
+>> ---
+>
+>
+> I remember fixing this before. I tested on 5.15, and the bug isn't
+> there, but it=E2=80=99s back in 6.10, so something broke in between.
+> We need to track it down.
+>
+> The original design (kernel 4.x and below) makes the filesystem switch
+> to read-write mode after adding a sprout because:
+>
+>  =C2=A0=C2=A0 You can=E2=80=99t add a device to a normal read-only files=
+ystem
+>  =C2=A0so with seed read-only mount is different.
+>  =C2=A0=C2=A0 With a seed device, adding a writable device transforms
+>  =C2=A0it into a new read-write filesystem with a _new_ FSID and
+>  =C2=A0fs_devices. Logically, read-write at this stage makes sense,
+>  =C2=A0but I=E2=80=99m okay without it and in fact we had fixed this bef=
+ore,
+>  =C2=A0but a patch somewhere seems to have broken it again.
+>
+>
+> (Demo below. :<x> is the return code from the 'run' command at
+>  =C2=A0https://github.com/asj/run.git)
+>
+>
+> ----- 5.15.0-208.159.3.2.el9uek.x86_64 ----
 
-Ira
+I also tried it on upstream kernel v5.15.94, the behavior is still the
+old changed to RW immediately after device add:
+
+[adam@btrfs-vm ~]$ uname -a
+Linux btrfs-vm 5.15.94-1-lts #1 SMP Wed, 15 Feb 2023 07:09:02 +0000
+x86_64 GNU/Linux
+[adam@btrfs-vm ~]$ sudo mkfs.btrfs  -f /dev/test/scratch1 > /dev/null
+[adam@btrfs-vm ~]$ sudo btrfstune -S 1 /dev/test/scratch1
+[adam@btrfs-vm ~]$ sudo mount /dev/test/scratch1  /mnt/btrfs/
+mount: /mnt/btrfs: WARNING: source write-protected, mounted read-only.
+[adam@btrfs-vm ~]$ sudo btrfs device add -f /dev/test/scratch2  /mnt/btrfs=
+/
+Performing full device TRIM /dev/test/scratch2 (10.00GiB) ...
+[adam@btrfs-vm ~]$ sudo touch /mnt/btrfs/file
+[adam@btrfs-vm ~]$ mount | grep mnt/btrfs
+/dev/mapper/test-scratch2 on /mnt/btrfs type btrfs
+(rw,relatime,space_cache=3Dv2,subvolid=3D5,subvol=3D/)
+
+So it looks like it's some extra backports causing the behavior change.
+
+But I still strongly prefer to keep it RO.
+Even if it's a different fs under the hood, it still suddenly changes
+the RO/RW status of a mount point without letting the user to know.
+
+Thanks,
+Qu
+
+> $ mkfs.btrfs -fq /dev/loop0 :0
+> $ btrfstune -S1 /dev/loop0 :0
+> $ mount /dev/loop0 /btrfs :0
+> mount: /btrfs: WARNING: source write-protected, mounted read-only.
+>
+> $ cat /proc/self/mounts | grep btrfs :0
+> /dev/loop0 /btrfs btrfs ro,relatime,space_cache=3Dv2,subvolid=3D5,subvol=
+=3D/ 0 0
+>
+> $ findmnt -o SOURCE,UUID /btrfs :0
+> SOURCE=C2=A0=C2=A0=C2=A0=C2=A0 UUID
+> /dev/loop0 64f21b87-4e4c-4786-b2cd-c09a5ccd2afa
+>
+> $ btrfs fi show -m :0
+> Label: none=C2=A0 uuid: 64f21b87-4e4c-4786-b2cd-c09a5ccd2afa
+>  =C2=A0=C2=A0=C2=A0=C2=A0Total devices 1 FS bytes used 144.00KiB
+>  =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 3.00GiB used 536=
+.00MiB path /dev/loop0
+>
+> $ ls /sys/fs/btrfs :0
+> 64f21b87-4e4c-4786-b2cd-c09a5ccd2afa
+> features
+>
+> $ btrfs dev add -f /dev/loop1 /btrfs :0
+>
+> # After adding the device, the path and UUID are different,
+> # so it=E2=80=99s a new filesystem. (But, as I said, I=E2=80=99m fine wi=
+th
+> # keeping it read-only and needing remount,rw.
+>
+> $ cat /proc/self/mounts | grep btrfs :0
+> /dev/loop1 /btrfs btrfs ro,relatime,space_cache=3Dv2,subvolid=3D5,subvol=
+=3D/ 0 0
+>
+> $ findmnt -o SOURCE,UUID /btrfs :0
+> SOURCE=C2=A0=C2=A0=C2=A0=C2=A0 UUID
+> /dev/loop1 948cea35-18db-45da-9ec8-3d46cb5f0413
+>
+> $ btrfs fi show -m :0
+> Label: none=C2=A0 uuid: 948cea35-18db-45da-9ec8-3d46cb5f0413
+>  =C2=A0=C2=A0=C2=A0=C2=A0Total devices 2 FS bytes used 144.00KiB
+>  =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 3.00GiB used 520=
+.00MiB path /dev/loop0
+>  =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 2 size 3.00GiB used 576=
+.00MiB path /dev/loop1
+>
+>
+> $ ls /sys/fs/btrfs :0
+> 948cea35-18db-45da-9ec8-3d46cb5f0413
+> features
+> ---------
+>
+>
+> Thanks, Anand
+>
+>> =C2=A0 fs/btrfs/volumes.c | 4 ----
+>> =C2=A0 1 file changed, 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index dc9f54849f39..84e861dcb350 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -2841,8 +2841,6 @@ int btrfs_init_new_device(struct btrfs_fs_info
+>> *fs_info, const char *device_path
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_blocksize(device->bdev_file, BTRFS_B=
+DEV_BLOCKSIZE);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (seeding_dev) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_clear_sb_rdonly(sb);
+>> -
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* GFP_KERNEL al=
+location must not be under device_list_mutex */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seed_devices =3D=
+ btrfs_init_sprout(fs_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(seed_=
+devices)) {
+>> @@ -2985,8 +2983,6 @@ int btrfs_init_new_device(struct btrfs_fs_info
+>> *fs_info, const char *device_path
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&fs_info->chunk_mutex);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&fs_info->fs_devices->devic=
+e_list_mutex);
+>> =C2=A0 error_trans:
+>> -=C2=A0=C2=A0=C2=A0 if (seeding_dev)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_sb_rdonly(sb);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (trans)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_end_transa=
+ction(trans);
+>> =C2=A0 error_free_zone:
+>
+>
+
 
