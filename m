@@ -1,274 +1,224 @@
-Return-Path: <linux-btrfs+bounces-8988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8989-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A099F9A2E78
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 22:27:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B7369A2E81
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 22:29:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31F3E1F23A02
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 20:27:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D86282ABC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 20:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70D7227BA9;
-	Thu, 17 Oct 2024 20:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60232281E2;
+	Thu, 17 Oct 2024 20:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=horse64.org header.i=@horse64.org header.b="MJGd/LYf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="leHQDlVp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.ekdawn.com (mail.ekdawn.com [159.69.120.39])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9F21D0411
-	for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 20:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.120.39
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729196859; cv=none; b=L4a2s1RS7/nU7nMHP1K2qpRLstVhfOiC9kpcuSDb17ZJV+KykibRGqzdKik1YFjTnl1oNR1P7ysW/VUzacPFb1shpfj8fCmJ5mmJi3xd3hsqhI8xtI6obqtAmCf4ajU0cAMvqzIfAXyRXkGuT4zFePIJS8mHROz1vhRQyT8+kKE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729196859; c=relaxed/simple;
-	bh=aCBvVjbMsG3dlE7kfdqyeVIr3iVuwvzDhFcmmu4O3oM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=aS9ixTFUZKmui1MWKzCg7nTaNeANCVNXo+BB2yWrKdenxFt6e9Unu1olhtn6DrLX91Tq9yo5AJF5Qthq4wlvzJg8MI3t9u74cvQfN+5tXOAtJAkmVXKS8EXwGY3FbalcXVoWO/9auwrmmuownuSJF90tKHzlDSZ0WI+yHsEUtw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=horse64.org; spf=pass smtp.mailfrom=mail.ekdawn.com; dkim=pass (4096-bit key) header.d=horse64.org header.i=@horse64.org header.b=MJGd/LYf; arc=none smtp.client-ip=159.69.120.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=horse64.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ekdawn.com
-Received: from [10.42.0.106] (dynamic-176-003-154-234.176.3.pool.telefonica.de [176.3.154.234])
-	by mail.ekdawn.com (Postfix) with ESMTPSA id 8826C1859CC;
-	Thu, 17 Oct 2024 20:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=horse64.org; s=dkim1;
-	t=1729196217; bh=aCBvVjbMsG3dlE7kfdqyeVIr3iVuwvzDhFcmmu4O3oM=;
-	h=Message-ID:Date:Subject:To:From:From:Sender:To:CC:Subject:
-	 Message-Id:Date;
-	b=MJGd/LYfYedfwzb+JIG4MRmGeXoni/VUC2/bUpHzuwZnFUyrk04EDdv8GFgf5FoMf
-	 xTDsAa0reNHesyNOn0ggwhTaXtMGyGBf0f9igdsMkjh4oDjgAUSUKdi6PomheiOJad
-	 1PEXocEa3zYxcxuAhJjpHzxYyLJmFi0b0JNnqeadTZTlt8M2ZWzsrsvXYHnCyNUvyY
-	 Yr8lBd9GNuX5zeBWwvjstEAQC4f+1Sab3bt8gZ/A0kovY24m5ZiLH6uGgo7+dnrY3u
-	 YfrvqqtSxZhfbPyuz+0aeT2yAJHDTxkj/oeEZGTjxWkiMSRWGTDpqz7bglNQ9vr4rm
-	 clRCDzZVyIGZmJWa6DwGGE9nX8SGekdEvozWYcUeMO5W4CGaYaKHW+/HgeI23UXYvl
-	 0rfaMf9nz/+lNlbV4MkFxDi0ShqRquwpRKcgw9NSZ7Za16lGrn+QHWbEvpJG/tzm14
-	 GVqUz1emRAybJCXEqWWV0RPwGfYmcOzklnakHEENosR/Cz3cOiTRweLdX71bV9muKm
-	 5tJXWUCc3vjhDpM9J4FwkxGFHy1F5CbyDwOt25jFrVA1nsxw/YKQc1ZjuN3bHxxZGu
-	 5OZ+IANjMmy12fVcuMz+i4ZkfOGcNKZkWA1kcRexA3pSaEkDCL5fIDSgcDsegXXuPR
-	 dJCcfVB4zxkCjE1v3vVdiP1c=
-Message-ID: <4e928770-efc9-4849-9471-e6379d4fe08f@horse64.org>
-Date: Thu, 17 Oct 2024 22:17:34 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C188622738A;
+	Thu, 17 Oct 2024 20:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729196964; cv=fail; b=L7mEuFX9zwB+uUHRlSGpPRtdYse4vNjj9p9dYPxqr1yQgeMs5yJSY/steRbSXmD16XxsACNU1kUNXGqiBcxwiR1fnQyWygVFvaj3yrceth2GCoQ0q6MJvOFs1+eGzs/+ufEAjpqA67nPn07FMGaEyePVqkkbpDyiokAOsHMUmYQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729196964; c=relaxed/simple;
+	bh=t6vp905Jfxwi7FzL7Ob+lLGe56EZaEa37GWs66ZVWE4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ik4oit20Rr554HGZeIJ9/7nw+scFKmEPUk3O/onUB/F/ZebBnGw/S8ECcMf2LfS1zHmv6gFcdlhkfn80lBuhdhdxYHUm2CRRMv36loyAxBsyXggydgaDyAJp2EfUF0PDEaq3UHwSfkdMB8aOgSNmhLwXj8lbGCvI8ijwQi4Z5CE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=leHQDlVp; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1729196958; x=1760732958;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=t6vp905Jfxwi7FzL7Ob+lLGe56EZaEa37GWs66ZVWE4=;
+  b=leHQDlVpiVfAXAvNLCSQiQaa4alkzHZvwyO9Vn9i27lSDKJ/yGXNaV49
+   5vhf7MBBYl8TRzVSdrxBpRMs9pu8iExRMljQOjZTAXMTxImj++ypWWf+j
+   4TAR+j5lKDN0TNoDjKspEdZ8PXbwro6xYMfa1ufekNvhRQGk5S7wdY+eg
+   5RnRJ/liHdmcY/U48g1eRf3NssjevLuGkgD7OaDZtQJTBu55SmfLe7BT1
+   eH0ax49/juqXyQGk4tSiaQyyn3W1yrkrigj2os5NtlJURbguOJv8CQcc4
+   d7Efei0VvvKlfnD2VcP7nP1GV52C2y4Kz9V/gLPGTaKOI5pa4DrXo0Mok
+   A==;
+X-CSE-ConnectionGUID: WzBnjpV7S9mgxUceXlptYg==
+X-CSE-MsgGUID: EnoZASwkSN2zjlhDRvmMKg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="46170749"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="46170749"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2024 13:29:18 -0700
+X-CSE-ConnectionGUID: CJHbJL0fTyyWDLxdjYyG3w==
+X-CSE-MsgGUID: nt+IyeR8RzKm2qw3YfOCOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,211,1725346800"; 
+   d="scan'208";a="109478182"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Oct 2024 13:29:17 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 17 Oct 2024 13:29:16 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 17 Oct 2024 13:29:16 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 17 Oct 2024 13:29:16 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 17 Oct 2024 13:29:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=iiMNF6rHR97aZ27zZyvxUg7JQ3/D7MFoZJxyJ82Xo8io/8UoqNSCpXiG/8pcIuGZ1uat2Gfc/ldEHzEYAt0jKL1onzH3D+HUBQDY4oSa1cerFmXnVyVb4aVQRzYxgb28GCXvmOObH5t7gjpGx+FgUpd2m18QHaBT9GFx9FBtOCHQq5UdE3wEfAiWMq09ZT4D5AT0fjuKGD1G3PPYT7T5u+fLux75Hd/ZWFLlAH5dGK8wN4HWH5PXCUFCLHQg4vu8pwDuQScRYI1J2q64BA7deVjwbTGuM9FaN56WLLDz7sWS9Idf1xfWdvBuU4uViaQP5w6fNKyVdiQ2v7W56qy4Rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/qiW+B7+1bewn5oWLz5VHGCNddiLGKmFZ+Z9qTbe/0o=;
+ b=pzRqkmH5Ndtte4+HshON8lkyq5Hxe7wRl+to0aS3gEBdceAN0n6fq3aKBFU4bsUodSHM7eEhNSjNiM7IQ0d2RLfwJON3mXaWluKIT4eaRVmwFKdZfZefsT3k+TvhBJ5h7uISH5RvUjWnF4fmcqWlSrHDDvAO94tTYQVAzkKDI0W6EAAdYdRUN09CU6SXpeeqw0nrW+oz70+fYXSADx504IzmjEQcWuij2r59K1mUX085ibDOW6f1ujg4+eOW7gSz915pcyxIDs2njKipPkuo9rfkGydzXd8kT2sIUUvjJbYwbcVpokl/7prCgbT7dLIkGquSbT/REXcMiHiYTSjlHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by MW3PR11MB4554.namprd11.prod.outlook.com (2603:10b6:303:5d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.18; Thu, 17 Oct
+ 2024 20:29:12 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57%3]) with mapi id 15.20.8048.020; Thu, 17 Oct 2024
+ 20:29:12 +0000
+Date: Thu, 17 Oct 2024 15:29:02 -0500
+From: Ira Weiny <ira.weiny@intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Ira Weiny
+	<ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
+ Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 15/28] cxl/region: Refactor common create region code
+Message-ID: <6711738e4caae_2cee294da@iweiny-mobl.notmuch>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-15-c261ee6eeded@intel.com>
+ <20241010141826.0000796e@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20241010141826.0000796e@Huawei.com>
+X-ClientProxiedBy: MW4PR04CA0050.namprd04.prod.outlook.com
+ (2603:10b6:303:6a::25) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs corruption issue on Pine64 PinePhone
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <9b4f0e79-6e77-48a4-b87d-b27454ffb399@horse64.org>
- <b9103729-c51a-487f-8360-e49d3e9fc5e4@horse64.org>
- <e53fdb4e-bbb2-4777-b822-f1173dfed3db@gmx.com>
- <7d692229-d3d5-4b82-a70a-b7371c8724f0@horse64.org>
- <1e96ef22-b51d-488a-ab90-84fd85c981ea@gmx.com>
- <ad8a9333-8732-4d78-a86b-22dea00aabbe@horse64.org>
- <716c3de3-63be-420e-b11e-cfd3eab9aea9@gmx.com>
- <78b10401-1366-4551-9e5f-4c480baa0727@horse64.org>
- <bf24d64d-9bf7-48ad-9a36-7ae7d262a6b8@horse64.org>
- <33f0ecec-585d-4a02-a8a5-319759401e5f@gmx.com>
-Content-Language: en-US
-From: Ellie <el@horse64.org>
-In-Reply-To: <33f0ecec-585d-4a02-a8a5-319759401e5f@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|MW3PR11MB4554:EE_
+X-MS-Office365-Filtering-Correlation-Id: a912e9a8-d126-4d97-d1cb-08dceeea5c69
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?dVsYAYB785u3mOx8bUftpaAsq8y6SqugKSGbmpIocJdAu25a9jSM/+xXz8Sb?=
+ =?us-ascii?Q?PIAUgp+84Jifa3wZCEO1Vr3zKtbfAcJGbqqpdpaLmOmzH164Jo9cQ50XgO7W?=
+ =?us-ascii?Q?SITYga9OIX1pfBJj7qCzBk5WE8LwnDDSpPOlH8bXkANP5J8pxOtTWDMdCyki?=
+ =?us-ascii?Q?Y84ymTsq9sMBzsQfwVKQ6rRwjugdg2p2JK5bnNmdNOOIhfoXoJubgirdaFE7?=
+ =?us-ascii?Q?cjR0LRsRIcIuTi2WQvbdV4H14MuNtRQwsKFkM/gFuAgVJt0aOsvzkk29mD0S?=
+ =?us-ascii?Q?KszpiOE9x7Vm1KLeHTasdYIK1vsOFnUuXCT6APMf+mpDAEqN6WsIdDN5aq4k?=
+ =?us-ascii?Q?KiJ6/NsFStZpL0RZ8R9c0M3Z4hNd0IczX/Y/NhFWT/YBhjLufVuRqWLhyUis?=
+ =?us-ascii?Q?Bdb8Tg+VNQkPdjdBcxD5O0UeU0VswawUSJCRpuAnhxGT956bR0PgWaFNNA/n?=
+ =?us-ascii?Q?xhk/EF2ZCdjNGvrQBzp6PucA3CxvhAIHoXE7o9fhunun4DDLwefcTRxdf8BY?=
+ =?us-ascii?Q?4GwIwetk4WRZurqCViQs5cSE0/8AqCN85jTVqTFgy4ckXIhwzZ3CQL+dt0Im?=
+ =?us-ascii?Q?ZcTn8sy4xpIu7w+O4l9lox8mqL3Bw6oO0Ny7n2xCCcb/CBWuSLnM3l8OGgEk?=
+ =?us-ascii?Q?Zv7cn58dHl8EMuq+vxoSHGAM4TpY+GlymX6ahOuebPjmvoFCeoBrtLBs/afB?=
+ =?us-ascii?Q?oWyu6zoVxtxScuz/YDG3vywqdCjuap8zUZTqCqbVTNeqIpXlbhMYADEtnnBB?=
+ =?us-ascii?Q?CR49ef+FzA64eNtlWBbjcOo6YdrtcqqhE8EwqnrQVatyVAWUohfNXd2U0XJg?=
+ =?us-ascii?Q?n9sQkq382Oy0DIINaM9y9D8Li9gmIYBCeBOqt+cI1RzIzEMQvx2lS5KT31by?=
+ =?us-ascii?Q?SGjp1kXE7GNpa6uTjncpV5pDPayVsEn5OCN2zZdojm8SNeRDEJw00ID0X7lH?=
+ =?us-ascii?Q?Hjx8lBLLf6wte4cYS0ouN9rmbWyRObIbxWvaQjgxcUDq2Zl55RsB+9GRUTtv?=
+ =?us-ascii?Q?ykn3YSwwL0rAA2nzlz/rJQyUaejQe57rFTAO8I4wCMSa2sDMoGwfk96/ohGG?=
+ =?us-ascii?Q?xknAZ0hIoQKnm5nKgjVoVKFG6Op8RWIrxzntzxFc8nRjT13stSd+LNl5Sq3a?=
+ =?us-ascii?Q?/cfdJzU5wCYJJN4UUSsJ82wEGNo8lzk8HSiS5Sne3z/fiLrs91pVr/1C+Yra?=
+ =?us-ascii?Q?odgbdvLInF0/xZGS/Py9vAzAhTsDtHw3yIoa2G3+uUgYmhpsFlAEBANzOfcH?=
+ =?us-ascii?Q?5HeYOaIdMSzbK3QiuxzN0fTtV/VyvbpeLq9JVRJwZaVaY54NfCKzVvdzVfOT?=
+ =?us-ascii?Q?+C2JsXLoBW75SPD9MvwV7Phn?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+vmynPRh5GJSzTEQCNysEJPV50B3M3+E1PZd/oNY639QAUP38U78HV2zGaYq?=
+ =?us-ascii?Q?3+vDfVszs5QQE0zW6nV1QuOdtLVXnO5Ro4nG/tmlMaRY0Hi3wBy0lg3j1S8T?=
+ =?us-ascii?Q?nGpud6GSln1RpJf/gVJ4LmiBlMGoJgqLsH0MgmlEUMgZpWA0XGrpfHslzZeQ?=
+ =?us-ascii?Q?uTgeFCuIyh9AzTZmhmBCSPLJFKuPLUK7cIQyoqSjTe4awhLeFVFbk8kHvdTT?=
+ =?us-ascii?Q?1NMEYp2G69i4YY3AXYcmyojbGZkXTwEmCI41O+92WNhiNC1j5kRCp4sIhSEs?=
+ =?us-ascii?Q?upuWgpOdHU9k9FD0Bc+Kf8XAXKS4XP1vugo79Z/FuBHoWPXlcuuwXGEgVpel?=
+ =?us-ascii?Q?gAk0HFnnPjpr7DaSH3Jls0EySA7imnOX7maH6PZ+l9hbirzDoz02VWOf+KsA?=
+ =?us-ascii?Q?jTx4Jb/C7jzAP0uW6IGz+JeXfvHVFM3r0KCd0qV5mJOYJOmY8k6mZ9vayC1e?=
+ =?us-ascii?Q?ZuZQtBsD7fLvoqUeaTduPfB2zeuupZzTP4UGXGbdC0mQUbv9dN3MqXPfBDlW?=
+ =?us-ascii?Q?GQ0WEMBjPmezT2KaPGJtifEc7JtvtvC7kOZJgDsNzHUr5DQAb6Jg2XLRhJMe?=
+ =?us-ascii?Q?ljUSAH4ma+Hb4h1HBvxf59bCEErLEOsM8+C05KwXA3VvV4J+Vf4qsZii1OFS?=
+ =?us-ascii?Q?tKnvZHNKHMY7BDPd+0FMLqNeHtqBQ1zS0l+Qr7MDz+iZU3Mj4qhUx7APDzkt?=
+ =?us-ascii?Q?XtFH5d2HICXVECYcTxnSOgsiqFueHOeYySVJLSdrg/OLjW3/3tpAMbagyDDh?=
+ =?us-ascii?Q?NITW1iPJVMDrBUBvPVTjneChgjoIVOu7tBXcZ2glU7TVlWmLrdbJi9h2sJ1Q?=
+ =?us-ascii?Q?5GcFaXoU0BZjctr58NromXmGeFDB4aGnwQELnt2eTiQtsEgGWQQreFC1qPKl?=
+ =?us-ascii?Q?zzLq8gB1/JLZwwL634bxO8dkqN1TQoO7idn0EjX5g6xMOxaeDmt2xYkN5TVf?=
+ =?us-ascii?Q?u3F9I6GHvseN/2TSk6n0WHKWiH3/BasuMN2nj58YF4bWzX8/cmsJn5f5A1/t?=
+ =?us-ascii?Q?ZipeR3He0Q+Ckc3WrvXEorz3LizBfv5wrbi72VT3KSodXyKY8hyq6pebChiw?=
+ =?us-ascii?Q?A9G2mX+uFUtsW+goojTVKxj6E42/FKk7X4YwQ+fr+bV5duVM95lty65FdHLu?=
+ =?us-ascii?Q?5+6e0pqUdKGj24w/G3CGEYYmg4mUFQWqB/05H6Kvxs24rIJYN6djL1cOgd5F?=
+ =?us-ascii?Q?Zj3cBEoidZ0RPznqbkoD35c0qbKRUJhh5gZSsrN2lF2TZmVnpL28Z4IAyp3V?=
+ =?us-ascii?Q?p+eN8SUnbe2pdY2XWUYAqImER/4EGTrda4GCQY0btqG7/foHHLWMe0yoDdyv?=
+ =?us-ascii?Q?n/2xItRTVOfLPn7TuGzVc4sruQ6FHUdoQFmek4aGvdQtrHOJJitIZqXl03En?=
+ =?us-ascii?Q?cIn+Y7P0WuCTyrAmlLXiTDT3Z7ISqVDyFkyXR9p77LGqoV+LtOk+XSbpHvgP?=
+ =?us-ascii?Q?rx12AKmP9gSRPh4THdR/CeI73tWKbPi2289xgGS2nzmfRlhW2gqyXd7JO2Pv?=
+ =?us-ascii?Q?eUL4gZxxsWlUr1E5wfAkCUvmmoukZa5QlH9Yr43BqS6N2edXj5svVEcxQuEf?=
+ =?us-ascii?Q?4tNIQ+cRgYlKFZMdiXBVvJTRLE9Xl1lcbs/OfwDj?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a912e9a8-d126-4d97-d1cb-08dceeea5c69
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2024 20:29:12.3189
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3JwOZoAnsv42JFskqBebXUXBJbtupB0fqYwI0Zj0dfBLNF26dlkItQXtBWSaLFLRLtPBJxmDgLp239KjQxlYxQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4554
+X-OriginatorOrg: intel.com
 
-
-
-On 8/19/24 7:29 AM, Qu Wenruo wrote:
+Jonathan Cameron wrote:
+> On Mon, 07 Oct 2024 18:16:21 -0500
+> Ira Weiny <ira.weiny@intel.com> wrote:
 > 
+> > create_pmem_region_store() and create_ram_region_store() are identical
+> > with the exception of the region mode.  With the addition of DC region
+> > mode this would end up being 3 copies of the same code.
+> > 
+> > Refactor create_pmem_region_store() and create_ram_region_store() to use
+> > a single common function to be used in subsequent DC code.
+> > 
+> > Suggested-by: Fan Ni <fan.ni@samsung.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> Nice.
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > 
-> 在 2024/8/19 13:28, ellie 写道:
->> Is there something else I could provide to help track this down? I
->> assume just because the file contents happen to be fine, doesn't mean
->> there wasn't corruption, like for example in the metadata. My apologies
->> for taking up your time.
-> 
-> This means, by somehow the data checksum is incorrect.
-> 
-> This doesn't sound sane to me, so I can only come up two possible reasons:
-> 
-> 1. The checksum algorithm on the platform is insane
->     IIRC the SOC is pretty mature (although it also means old), this
->     doesn't sound possible to me.
-> 
-> 2. Memory hardware is incorrect
->     Thus causing bitflip for data csum.
-> 
-> Other than above two reasons, I can not come up with other reasons
-> unfortunately.
-> 
-> Thanks,
-> Qu
-> 
+> Is it worth dragging out cleanup like this to the start of the series so
+> Dave can queue it up as 'good to have whatever' and reduce this set
+> a bit?
 
-I did let a memtest run on this device recently, which didn't reveal 
-anything suspicious. However, this device was known to have memory 
-hiccups: https://forum.pine64.org/showthread.php?tid=9832&page=10 As far 
-as I know they were supposedly resolved, but I wouldn't be able to 
-judge. I would assume memtest would show them if still present, but 
-again I'm not sure.
+The problem was that this patch depended on the region mode change...  But
+that was an easy change.
 
-The checksum errors seem to be permanent whenever they happen, I can 
-test this again if needed but I'm pretty sure I recall rerunning btrfs 
-checks and the same error came back up again. I can only do very 
-uninformed nonsense guesses what this means, but I guess this could 
-imply there is a problem writing the metadata while the actual file is 
-written correctly.
+I've moved it forward.
 
-I hope some of this is helpful for some ideas.
-
-Regards,
-
-Ellie
-
->>>>>>>> 在 2024/8/5 15:25, ellie 写道:
->>>>>>>>> On 8/5/24 07:39, ellie wrote:
->>>>>>>>>> Dear kernel list,
->>>>>>>>>>
->>>>>>>>>> I'm hoping this is the right place to sent this. But there seems
->>>>>>>>>> to be
->>>>>>>>>> a btrfs corruption issue on the Pine64 PinePhone:
->>>>>>>>>>
->>>>>>>>>> https://gitlab.com/postmarketOS/pmaports/-/issues/3058
->>>>>>>>>>
->>>>>>>>>> The kernel is 6.9.10, I wouldn't know what exact additional
->>>>>>>>>> patches
->>>>>>>>>> may be used by postmarketOS (which is based on Alpine). The
->>>>>>>>>> device is
->>>>>>>>>> the PinePhone revision 1.2a or newer https://wiki.pine64.org/ 
->>>>>>>>>> wiki/
->>>>>>>>>> PinePhone#Hardware_revisions sadly there doesn't seem to be a
->>>>>>>>>> way to
->>>>>>>>>> check in software if it's 1.2a or 1.2b, and I don't remember 
->>>>>>>>>> which
->>>>>>>>>> it is.
->>>>>>>>>>
->>>>>>>>>> This is on an SD Card, so an inherently rather unreliable storage
->>>>>>>>>> medium. However, I tried two cards from what I believe to be two
->>>>>>>>>> different vendors, Lexar and SanDisk, and I'm seeing this with
->>>>>>>>>> both.
->>>>>>>>>>
->>>>>>>>>> The PinePhone had various chipset instability issues before, like
->>>>>>>>>> https://gitlab.com/postmarketOS/pmaports/-/issues/805 which I
->>>>>>>>>> believe
->>>>>>>>>> has however been fixed since. I have no idea if that's
->>>>>>>>>> relevant, I'm
->>>>>>>>>> just pointing it out. I also don't know if other filesystems, 
->>>>>>>>>> like
->>>>>>>>>> ext4 that I used before, might have also had corruption and just
->>>>>>>>>> didn't detect it. Not that I ever noticed anything, but I'm not
->>>>>>>>>> sure I
->>>>>>>>>> necessarily ever would have.
->>>>>>>>
->>>>>>>> In the detailed report in pmOS issue, you mentioned it's a video
->>>>>>>> file.
->>>>>>>>
->>>>>>>> I'm wondering if all the corruptions you see are from video files,
->>>>>>>> especially if the video files are all recorded on the file.
->>>>>>>>
->>>>>>>> If that's the case, it may be related to the IO pattern,
->>>>>>>> especially if
->>>>>>>> the recording tool is using direct IO and didn't have proper
->>>>>>>> writeback
->>>>>>>> wait for those direct IO.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> Qu
->>>>>>>>
->>>>>>>
->>>>>>> Thanks so much for the quick input!
->>>>>>>
->>>>>>> All the files I mentioned in bug reports were written by
->>>>>>> syncthing, so
->>>>>>> there wasn't any on-device video recording involved. I once saw
->>>>>>> Nheko's
->>>>>>> database file corrupt however, so it's apparently not limited to
->>>>>>> syncthing. I'm guessing video files are affected so often simply
->>>>>>> due to
->>>>>>> their large size.
->>>>>>
->>>>>> I did a quick clone and search of syncthing.
->>>>>>
->>>>>> There is no usage of O_DIRECT directly, so I guess it's not the known
->>>>>> csum mismatch caused by bad sync of direct IO writeback.
->>>>>>
->>>>>> In that case, since the corrupted file is syncthing synchronized, can
->>>>>> you do a diff of the binary data?
->>>>>>
->>>>>> To avoid the EIO from btrfs, you can use "-o rescue=all,ro" to
->>>>>> mount the
->>>>>> sdcard on another system, then compare the binary.
->>>>>> (e.g. "xxd file.good > good.xxd; xxd file.bad > bad.xxd; diff *.xxd")
->>>>>>
->>>>>> At this stage, we need to find out what's really causing the problem,
->>>>>> the btrfs itself or some thing lower level.
->>>>>> (I strongly hope it's not btrfs, but either way it's not going to
->>>>>> end up
->>>>>> well)
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>> Thanks for your detailed instructions! I was about to do as you said
->>>>> and
->>>>> ran the sync for a few hours, stopped it, and planned to run btrfs
->>>>> scrub
->>>>> this evening. However, I then ran into a hard shutdown due to what
->>>>> might
->>>>> be an upower bug (won't lie, was very annoyed at that point):
->>>>>
->>>>> https://gitlab.com/postmarketOS/pmaports/-/issues/3073
->>>>>
->>>>> Should I still attach a diff for an affected file I find now? Or are
->>>>> the
->>>>> results going to be worthless if there was a hard shutdown in between,
->>>>> and I need to first fix the filesystem, repeat the sync test, and
->>>>> repeat
->>>>> finding a new corruption error to diff?
->>>>
->>>> As long as you didn't touch those files, and scrub still reports errors
->>>> on that file, the diff is still very helpful to provide some clue.
->>>>
->>>
->>> I finally had a new corrupted file pop up, this was actually after any
->>> unintended sudden shutdown so there shouldn't be any interference from
->>> that:
->>>
->>> [128958.860335] BTRFS error (device dm-0): unable to fixup (regular)
->>> error at logical 133906497536 on dev /dev/mapper/root physical
->>> 135089684480
->>> [128958.862548] BTRFS warning (device dm-0): checksum error at logical
->>> 133906497536 on dev /dev/mapper/root, physical 135089684480, root 257,
->>> inode 331715, offset 102400, length 4096, links 1 (path: ellie/Music/
->>> Baldur's Gate (2) II Shadows of Amn (2000)/06 City Gates.mp3)
->>>
->>> However, when manually mounting the file on the computer where it
->>> originates from and where the undamaged original file is:
->>>
->>> /mnt # mount -t btrfs -o rescue=all,ro,subvol=/@home,defaults /dev/
->>> mapper/blamap p64
->>> /mnt # ls p64/
->>> ellie
->>> /mnt # cp p64/ellie/Music/Baldur\'s\ Gate\ \(2\)\ II\ Shadows\ of\
->>> Amn\ \(2000\)/06\ City\ Gates.mp3 ./
->>> /mnt # diff 06\ City\ Gates.mp3 /home/ellie/Music/Baldur\'s\ Gate\
->>> \(2\)\ II\ Shadows\ of\ Amn\ \(2000\)/06\ City\ Gates.mp3
->>> /mnt # diff 06\ City\ Gates.mp3 /home/ellie/Music/Baldur\'s\ Gate\
->>> \(2\)\ II\ Shadows\ of\ Amn\ \(2000\)/06\ City\ Gates.mp3
->>> /mnt #
->>>
->>> It seems like file is exactly the same, which I assume isn't meant to
->>> happen.
->>>
->>> I'm not sure what that implies, but I hope it's helpful info!
->>>
->>> Regards,
->>>
->>> Ellie
->>>
->>
-
+Ira
 
