@@ -1,57 +1,57 @@
-Return-Path: <linux-btrfs+bounces-8984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51AE99A1DCB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 11:04:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2438B9A1DCC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 11:04:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FD061C20A86
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86D66B231A4
 	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 09:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB491D8E16;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087641D8E0F;
 	Thu, 17 Oct 2024 09:04:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690DB1D88A4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E551D88C2
 	for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 09:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729155869; cv=none; b=Wd0DaeahMfzmrEW/MakkgEm0VLhZ+dWy/NT16XqNzEVQyWrXSIwrlW3Xz2PmJn3RCAxI7tCfSUXN+IkG2bZJgEGJ3MUfcQeExjVaeR8yEpyd0bQeiVCEBcA60eA2cXZnhhQbAO5FSPxpzhAz0MvYwyYfytX6nsf8ymbwTDbzU3I=
+	t=1729155869; cv=none; b=e5FBCQ6Bz+70nIpF7Y3XJEU5EKXLVT+CqimOQWMTJgFFTutRJ26MBTsK0Qy4xZ7JAwcNsoQ4mAKlef51/gLWJQvM1LIDRRPfg1EgSze6A9ZMjpsIX9S16Zy5bmG/xqg5iBvEl3AofELZLRGdzssqd7Fflk2dn8FJ5/QrjboC0ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729155869; c=relaxed/simple;
-	bh=UbFN251aIqsI+ArgL5vxr4xQqjV2r/jBVhUT/EHZqfA=;
+	bh=6LHgcceAUHQ8U0uB9pG7WHgmDTigK76Qx//DU8jrEeg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OvgE+FdKmL56sHm4o0n4gWHrPEqXmoqQldz7SC34476Z2k53oor7dBDLD8JSr7xNLilwDJqgUSmxOucy6Jtz7ywuG34Km3XJZzwLG0UAMb8xsmXm6lpYKlvM5Xho02N/53J3IhAa7uTSuQTTvVfaKDj8TjIyzDrJ0nm6cDsmxXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.53
+	 MIME-Version; b=aK0ZVYosvLJhXnERq+3kv9nZtkKoUpS57mknvn/uIckkRqdkiWQBfxu0wl4iQHzOIoSC7WTzFxMhlKgJ9ypA9dgEJ/o2FuAfUcGNfbDcHr31PkwkMelUbvs9i4OA9gucdsmLZ7hGfsiRzInwGbctX2yCEspKOf4oM3mb/jvPBgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-37d4d1b48f3so505872f8f.1
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-431195c3538so6180895e9.3
         for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 02:04:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729155864; x=1729760664;
+        d=1e100.net; s=20230601; t=1729155865; x=1729760665;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ta4yLfokfKjcxUBVwUJ5T2AqG9n+LaN4CApBi7u8OxI=;
-        b=nF+uDH1aATozXwR9k7vEjBdm5v9O1Udcok3Q+ISfLoQbLQHfB1d5ALn1Qv8PTMWNPD
-         kZejxPTSD/Cdvgi4ZoHq+Bh2AfFLxYellyg86N0GDZrAXIdlWpgSIigX9DP6biODcAVg
-         I+QlzxbnMgH9HQoWicoToBujRxnPJNC7r6g8jriaQJjs6XG7LZtC1Uasvanau9iiVgRg
-         2qjVTJAByhBjivZUz6xbPdIBlw2EpG4MqeHKAEvwOJcRPUF5555Y3SLYD8gJbZUmp+d4
-         TGfj5rf9M3Bm0GrCtAJBz9FpPDng+iB1OBd+eX9EjUkcX9LebKc1g79eezOQ9yqW+kVa
-         UVxw==
-X-Gm-Message-State: AOJu0YzBcjahFeCASvwaN973CD2EG8W3ZKqRVK/psz7ZFGlib45fHSg6
-	IlDBBoF1Xh3BZUF95hQ/Y4zTfbcdF7GVbEIUQ02ED6DgGftF31WQZ7EowtPp
-X-Google-Smtp-Source: AGHT+IESi5mr0vlaGJtVma/UdCdKZ5aSkd9xQipARtCvcF/BWU1cFoFbBGwejx2nt/rP65BL4JmQPw==
-X-Received: by 2002:a05:6000:111:b0:37c:d537:9dc0 with SMTP id ffacd0b85a97d-37d551847cfmr14195828f8f.12.1729155864195;
+        bh=xFAy95CVd1dVFAN4ux4JTrzom1j7KnPogOoHKAFUC+U=;
+        b=jMdM9Pg7pFlvwdQQYK04qep/HGrX6U+L0hSa+Y+/R1wCDxovj1wMJIVN/Roah0utbH
+         yOFaw/KFZKJDTEk0CjKGJ4CsfvvIp72cu+sKnIhe/GWBq+h6ZPIWr/jQ4u07KW1OZvnz
+         UCYZFwooL+unj2pwXyftoQVmsL7vkopcHcO9lqOpMjco1M3a6mdR/S38S6h3eMxcnZiq
+         x/T/vC8dCI8B4FbA+Tjx2m4bSY8VgWwEHjwoNEJd8EThr5PpFWs68+kBYlP+IRU5hpnb
+         JZnE6jIl8DonHd4/dqJ0OW2AkFjyyccqB4QHhqwvDtvFwjrs1QIpWhuNkD/nSklf+HFI
+         sOOg==
+X-Gm-Message-State: AOJu0YyUqjqmT1gD91a56Tae+KVrD49E6iJz4hotyK3rmJRY54L1T4Az
+	wXa1Xr112ZK/LsrTEadj4DlXMXRGiRkRBh78kGdvcaw7bVneO68euEZu+rJf
+X-Google-Smtp-Source: AGHT+IGI1jml9gEFij5BU805yeGv0m97KimxqKANyWH03R6vpVLfwPFcF0RymMQUxQnz9sknzc8fLw==
+X-Received: by 2002:a05:600c:4fd0:b0:430:56c1:644c with SMTP id 5b1f17b1804b1-4314a384f82mr52537665e9.31.1729155864993;
         Thu, 17 Oct 2024 02:04:24 -0700 (PDT)
 Received: from nuc.fritz.box (p200300f6f71fdb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71f:db00:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43158c37fbesm19700495e9.8.2024.10.17.02.04.23
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43158c37fbesm19700495e9.8.2024.10.17.02.04.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2024 02:04:23 -0700 (PDT)
+        Thu, 17 Oct 2024 02:04:24 -0700 (PDT)
 From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
 Cc: Josef Bacik <josef@toxicpanda.com>,
@@ -59,9 +59,9 @@ Cc: Josef Bacik <josef@toxicpanda.com>,
 	Filipe Manana <fdmanana@suse.com>,
 	Naohiro Aota <naohiro.aota@wdc.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v4 1/2] btrfs: implement partial deletion of RAID stripe extents
-Date: Thu, 17 Oct 2024 11:04:10 +0200
-Message-ID: <20241017090411.25336-2-jth@kernel.org>
+Subject: [PATCH v4 2/2] btrfs: implement self-tests for partial RAID srtipe-tree delete
+Date: Thu, 17 Oct 2024 11:04:11 +0200
+Message-ID: <20241017090411.25336-3-jth@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241017090411.25336-1-jth@kernel.org>
 References: <20241017090411.25336-1-jth@kernel.org>
@@ -75,176 +75,258 @@ Content-Transfer-Encoding: 8bit
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-In our CI system, the RAID stripe tree configuration sometimes fails with
-the following ASSERT():
+Implement self-tests for partial deletion of RAID stripe-tree entries.
 
- assertion failed: found_start >= start && found_end <= end, in fs/btrfs/raid-stripe-tree.c:64
-
-This ASSERT()ion triggers, because for the initial design of RAID
-stripe-tree, I had the "one ordered-extent equals one bio" rule of zoned
-btrfs in mind.
-
-But for a RAID stripe-tree based system, that is not hosted on a zoned
-storage device, but on a regular device this rule doesn't apply.
-
-So in case the range we want to delete starts in the middle of the
-previous item, grab the item and "truncate" it's length. That is, clone
-the item, subtract the deleted portion from the key's offset, delete the
-old item and insert the new one.
-
-In case the range to delete ends in the middle of an item, we have to
-adjust both the item's key as well as the stripe extents and then
-re-insert the modified clone into the tree after deleting the old stripe
-extent.
+These two new tests cover both the deletion of the front of a RAID
+stripe-tree stripe extent as well as truncation of an item to make it
+smaller.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/ctree.c            |  1 +
- fs/btrfs/raid-stripe-tree.c | 94 ++++++++++++++++++++++++++++++++++---
- 2 files changed, 88 insertions(+), 7 deletions(-)
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 223 ++++++++++++++++++++++++
+ 1 file changed, 223 insertions(+)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index b11ec86102e3..3f320f6e7767 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -3863,6 +3863,7 @@ static noinline int setup_leaf_for_split(struct btrfs_trans_handle *trans,
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+diff --git a/fs/btrfs/tests/raid-stripe-tree-tests.c b/fs/btrfs/tests/raid-stripe-tree-tests.c
+index b8013ab13c43..5f1f1342b291 100644
+--- a/fs/btrfs/tests/raid-stripe-tree-tests.c
++++ b/fs/btrfs/tests/raid-stripe-tree-tests.c
+@@ -29,6 +29,227 @@ static struct btrfs_device *btrfs_device_by_devid(struct btrfs_fs_devices *fs_de
+ 	return NULL;
+ }
  
- 	BUG_ON(key.type != BTRFS_EXTENT_DATA_KEY &&
-+	       key.type != BTRFS_RAID_STRIPE_KEY &&
- 	       key.type != BTRFS_EXTENT_CSUM_KEY);
- 
- 	if (btrfs_leaf_free_space(leaf) >= ins_len)
-diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index 41970bbdb05f..569273e42d85 100644
---- a/fs/btrfs/raid-stripe-tree.c
-+++ b/fs/btrfs/raid-stripe-tree.c
-@@ -13,6 +13,50 @@
- #include "volumes.h"
- #include "print-tree.h"
- 
-+static int btrfs_partially_delete_raid_extent(struct btrfs_trans_handle *trans,
-+					      struct btrfs_path *path,
-+					      struct btrfs_key *oldkey,
-+					      u64 newlen, u64 frontpad)
++/*
++ * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and then
++ * delete the 1st 32K, making the new start address 1M+32K.
++ */
++static int test_front_delete(struct btrfs_trans_handle *trans)
 +{
-+	struct btrfs_root *stripe_root = trans->fs_info->stripe_root;
-+	struct btrfs_stripe_extent *extent;
-+	struct extent_buffer *leaf;
-+	int slot;
-+	size_t item_size;
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_io_context *bioc;
++	struct btrfs_io_stripe io_stripe = { 0 };
++	u64 map_type = RST_TEST_RAID1_TYPE;
++	u64 logical = SZ_1M;
++	u64 len = SZ_64K;
 +	int ret;
-+	struct btrfs_key newkey = {
-+		.objectid = oldkey->objectid + frontpad,
-+		.type = BTRFS_RAID_STRIPE_KEY,
-+		.offset = newlen,
-+	};
 +
-+	ASSERT(oldkey->type == BTRFS_RAID_STRIPE_KEY);
-+	ret = btrfs_duplicate_item(trans, stripe_root, path, &newkey);
-+	if (ret)
-+		return ret;
-+
-+	leaf = path->nodes[0];
-+	slot = path->slots[0];
-+	item_size = btrfs_item_size(leaf, slot);
-+	extent = btrfs_item_ptr(leaf, slot, struct btrfs_stripe_extent);
-+
-+	for (int i = 0; i < btrfs_num_raid_stripes(item_size); i++) {
-+		struct btrfs_raid_stride *stride = &extent->strides[i];
-+		u64 phys;
-+
-+		phys = btrfs_raid_stride_physical(leaf, stride);
-+		btrfs_set_raid_stride_physical(leaf, stride, phys + frontpad);
++	bioc = alloc_btrfs_io_context(fs_info, logical, RST_TEST_NUM_DEVICES);
++	if (!bioc) {
++		test_std_err(TEST_ALLOC_IO_CONTEXT);
++		ret = -ENOMEM;
++		goto out;
 +	}
 +
-+	btrfs_mark_buffer_dirty(trans, leaf);
++	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
++	bioc->map_type = map_type;
++	bioc->size = len;
 +
-+	/* delete the old item, after we've inserted a new one. */
-+	path->slots[0]--;
-+	ret = btrfs_del_item(trans, stripe_root, path);
++	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
 +
++		stripe->dev = btrfs_device_by_devid(fs_info->fs_devices, i);
++		if (!stripe->dev) {
++			test_err("cannot find device with devid %d", i);
++			ret = -EINVAL;
++			goto out;
++		}
++
++		stripe->physical = logical + i * SZ_1G;
++	}
++
++	ret = btrfs_insert_one_raid_extent(trans, bioc);
++	if (ret) {
++		test_err("inserting RAID extent failed: %d", ret);
++		goto out;
++	}
++
++	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
++					   &io_stripe);
++	if (ret) {
++		test_err("lookup of RAID extent [%llu, %llu] failed", logical,
++			 logical + len);
++		goto out;
++	}
++
++	if (io_stripe.physical != logical) {
++		test_err("invalid physical address, expected %llu got %llu",
++			 logical, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_64K) {
++		test_err("invalid stripe length, expected %llu got %llu",
++			 (u64)SZ_64K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_delete_raid_extent(trans, logical, SZ_32K);
++	if (ret) {
++		test_err("deleting RAID extent [%llu, %llu] failed", logical,
++			 logical + SZ_32K);
++		goto out;
++	}
++
++	len = SZ_32K;
++	ret = btrfs_get_raid_extent_offset(fs_info, logical + SZ_32K, &len,
++					   map_type, 0, &io_stripe);
++	if (ret) {
++		test_err("lookup of RAID extent [%llu, %llu] failed",
++			 logical + SZ_32K, logical + SZ_32K + len);
++		goto out;
++	}
++
++	if (io_stripe.physical != logical + SZ_32K) {
++		test_err("invalid physical address, expected %llu, got %llu",
++			 logical + SZ_32K, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_32K) {
++		test_err("invalid stripe length, expected %llu, got %llu",
++			 (u64)SZ_32K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
++					   &io_stripe);
++	if (!ret) {
++		ret = -EINVAL;
++		test_err("lookup of RAID extent [%llu, %llu] succeeded, should fail",
++			 logical, logical + SZ_32K);
++		goto out;
++	}
++
++	ret = btrfs_delete_raid_extent(trans, logical + SZ_32K, SZ_32K);
++ out:
 +	return ret;
 +}
 +
- int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 length)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
-@@ -36,23 +80,24 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
- 	while (1) {
- 		key.objectid = start;
- 		key.type = BTRFS_RAID_STRIPE_KEY;
--		key.offset = length;
-+		key.offset = 0;
- 
- 		ret = btrfs_search_slot(trans, stripe_root, &key, path, -1, 1);
- 		if (ret < 0)
- 			break;
--		if (ret > 0) {
--			ret = 0;
--			if (path->slots[0] == 0)
--				break;
++/*
++ * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and then
++ * truncate the stripe extent down to 32K.
++ */
++static int test_tail_delete(struct btrfs_trans_handle *trans)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_io_context *bioc;
++	struct btrfs_io_stripe io_stripe = { 0 };
++	u64 map_type = RST_TEST_RAID1_TYPE;
++	u64 logical = SZ_1M;
++	u64 len = SZ_64K;
++	int ret;
 +
-+		if (path->slots[0] == btrfs_header_nritems(path->nodes[0]))
- 			path->slots[0]--;
--		}
- 
- 		leaf = path->nodes[0];
- 		slot = path->slots[0];
- 		btrfs_item_key_to_cpu(leaf, &key, slot);
- 		found_start = key.objectid;
- 		found_end = found_start + key.offset;
-+		ret = 0;
++	bioc = alloc_btrfs_io_context(fs_info, logical, RST_TEST_NUM_DEVICES);
++	if (!bioc) {
++		test_std_err(TEST_ALLOC_IO_CONTEXT);
++		ret = -ENOMEM;
++		goto out;
++	}
 +
-+		if (key.type != BTRFS_RAID_STRIPE_KEY)
-+			break;
- 
- 		/* That stripe ends before we start, we're done. */
- 		if (found_end <= start)
-@@ -61,7 +106,42 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
- 		trace_btrfs_raid_extent_delete(fs_info, start, end,
- 					       found_start, found_end);
- 
--		ASSERT(found_start >= start && found_end <= end);
-+		/*
-+		 * The stripe extent starts before the range we want to delete:
-+		 *
-+		 * |--- RAID Stripe Extent ---|
-+		 * |--- keep  ---|--- drop ---|
-+		 *
-+		 * This means we have to duplicate the tree item, truncate the
-+		 * length to the new size and then re-insert the item.
-+		 */
-+		if (found_start < start) {
-+			u64 diff = start - found_start;
++	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
++	bioc->map_type = map_type;
++	bioc->size = len;
 +
-+			ret = btrfs_partially_delete_raid_extent(trans, path,
-+								 &key,
-+								 diff, 0);
-+			break;
++	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
++
++		stripe->dev = btrfs_device_by_devid(fs_info->fs_devices, i);
++		if (!stripe->dev) {
++			test_err("cannot find device with devid %d", i);
++			ret = -EINVAL;
++			goto out;
 +		}
 +
-+		/*
-+		 * The stripe extent ends after the range we want to delete:
-+		 *
-+		 * |--- RAID Stripe Extent ---|
-+		 * |--- drop  ---|--- keep ---|
-+		 *
-+		 * This means we have to duplicate the tree item, truncate the
-+		 * length to the new size and then re-insert the item.
-+		 */
-+		if (found_end > end) {
-+			u64 diff = found_end - end;
++		stripe->physical = logical + i * SZ_1G;
++	}
 +
-+			ret = btrfs_partially_delete_raid_extent(trans, path,
-+								 &key,
-+								 diff, diff);
-+			break;
-+		}
++	ret = btrfs_insert_one_raid_extent(trans, bioc);
++	if (ret) {
++		test_err("inserting RAID extent failed: %d", ret);
++		goto out;
++	}
 +
- 		ret = btrfs_del_item(trans, stripe_root, path);
- 		if (ret)
- 			break;
++	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
++	if (!io_stripe.dev) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
++					   &io_stripe);
++	if (ret) {
++		test_err("lookup of RAID extent [%llu, %llu] failed", logical,
++			 logical + len);
++		goto out;
++	}
++
++	if (io_stripe.physical != logical) {
++		test_err("invalid physical address, expected %llu got %llu",
++			 logical, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_64K) {
++		test_err("invalid stripe length, expected %llu got %llu",
++			 (u64)SZ_64K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_delete_raid_extent(trans, logical + SZ_32K, SZ_32K);
++	if (ret) {
++		test_err("deleting RAID extent [%llu, %llu] failed",
++			 logical + SZ_32K, logical + SZ_64K);
++		goto out;
++	}
++
++	len = SZ_32K;
++	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0, &io_stripe);
++	if (ret) {
++		test_err("lookup of RAID extent [%llu, %llu] failed", logical,
++			 logical + len);
++		goto out;
++	}
++
++	if (io_stripe.physical != logical) {
++		test_err("invalid physical address, expected %llu, got %llu",
++			 logical, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_32K) {
++		test_err("invalid stripe length, expected %llu, got %llu",
++			 (u64)SZ_32K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_delete_raid_extent(trans, logical, len);
++	if (ret)
++		test_err("deleting RAID extent [%llu, %llu] failed", logical,
++			 logical + len);
++
++out:
++	btrfs_put_bioc(bioc);
++	return ret;
++}
++
+ /*
+  * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and then
+  * overwrite the whole range giving it new physical address at an offset of 1G.
+@@ -235,6 +456,8 @@ static int test_simple_create_delete(struct btrfs_trans_handle *trans)
+ static const test_func_t tests[] = {
+ 	test_simple_create_delete,
+ 	test_create_update_delete,
++	test_tail_delete,
++	test_front_delete,
+ };
+ 
+ static int run_test(test_func_t test, u32 sectorsize, u32 nodesize)
 -- 
 2.43.0
 
