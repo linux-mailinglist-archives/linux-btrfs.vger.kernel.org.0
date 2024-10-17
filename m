@@ -1,114 +1,103 @@
-Return-Path: <linux-btrfs+bounces-8981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8982-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A4E9A1BDA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 09:41:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304189A1DCA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 11:04:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6860282B2B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 07:41:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAD421F230CD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2024 09:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DE51D043A;
-	Thu, 17 Oct 2024 07:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2A51D8E12;
+	Thu, 17 Oct 2024 09:04:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E701925B2
-	for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 07:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22521C683
+	for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 09:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729150887; cv=none; b=BlYjJkIw6/yGRbR3zjdXaaApm9g3l6nuDQIWfRsD+A+nXAfWg67rsY8jW2kcemksOppdVAGNOw+FzKJmH0iTFNGjEmbfMDZdxmGWttcQPeru8knNEfcwlQa550OQNojXLsDiVG3U8d5F35V8+IG4/EGwoGkzdCxTTKcQZBsAt+c=
+	t=1729155869; cv=none; b=ez8Z7eYnCyARDAJdQdTc2aX7doNyPLQxFDp2Nu9XdjHYJdsDJOiZI+I7j/qfJ+bIqCU0PHhNoxbFXbKc7WLX0zESL3auhpqczEFsXQPhCgV6r93xvfFbWd3iFo6VxA5pskTC5cF9bCZz9wBYmHJ3wc/Kb0r+MwUQmItThJATomM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729150887; c=relaxed/simple;
-	bh=P1Dsi3+IYj0bErxeIZuerB+AsrPBXmpgEy3WjMw7Pxc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=p3Wx/hVkIacH0he4wnEgQo7xZMbIzzro2J5kW0GhzWbKB1x4OkN3wrCd1EPbHH4/V2UahpdJGY419kGpmzWFCrjTi2EfNZnUhMPAUiC641eNFrS2mkwCpX7Odsr9RZy5QVsUlJl5cb/ttTgO1puygmJJZdIV2SZZmigI8BlY5aQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-8354a877867so75099639f.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 00:41:23 -0700 (PDT)
+	s=arc-20240116; t=1729155869; c=relaxed/simple;
+	bh=NJOmyhCMwCfgTjBDimASAQcflTEmisG8+Srhk0e8L9s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VAgFDYz/3XYNsiUP9sU23bEgz/JBUtYwE78/jhb+KbH1l1sfgOmyfxSXwGBALxiMrLsI6vF+HrEpnyUIZfIFOuB8TCZyhwPCVvxK3CoUgBHpxvnoP85jCIoJAo7NhEQXVdKYoryj4Tz/yhuw11sIoNekiUpYTOSS0U3fg81WJUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-539983beb19so734900e87.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2024 02:04:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729150883; x=1729755683;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=twraIx6v7EeW0fvs6+LLXx9fI0U3apnMCHFOxLhs3Cw=;
-        b=eW/LjF7LlGfuUNKSP0xx1ZWuRV91Z8Gch4ueGqE5tFq7GTvCqPo0SOY2a32N8KeHUP
-         cNuaSQ/ZW7uCE1FceidpNw2LfSIfapATp/dtdSyFflo0TZA1f+mtmLQvSCissFgntf3j
-         dKv33+ADH0qgCGblBOsNIWvasEQCxqagWnTW3m2tFCXNetMnkU2722ZqI4EtbFihza6G
-         exRidWpTsaphNE46QS1P2o9z35KoJBDkQpo1Qc0tR8y8nflnb3jSdCiAIWAWGi49Z/vT
-         lgFdRtJg0FM1XbxbEpTgYhCkQVJ+vG/dcVrlEgtaKLlFBWfMOvWBG/+UWkyp6z0y0ZIH
-         uHZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqMNu5kdxdp2nj8hrqFxdez1Nvh6HODpOGyvP81zuiA8GEk07TZEhedJCAFqKWM7S+bymYpTejZMUyyQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGBju2UdcnXKGRu7YBF0xdDqjbcR+LPt0GgQvjE3zkB0u2fZGC
-	V7bAM8pkLPoJkPtv2e0hg7dx8lXkl++3wbdC9lZyx9mHS8wiXkWVhLg10iVzx7LukxEOOYWy/g7
-	lLm4G4MBr6/cG+pFUZgByuSt9fHnyrf/lzidsiONtbS7fgZgaw1lsro4=
-X-Google-Smtp-Source: AGHT+IFLV1SspDQBzN5lZbhK1Le1LNTOVhZxltTotSTbUjUIKa81XiuuRiATe0Jjyb71rkrU2wvgwasSwjjCISFoIuOyIf2/CsSM
+        d=1e100.net; s=20230601; t=1729155864; x=1729760664;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lhvGp1Ykd0KSpMcemJnI1FixjA1e6qjP3JFUGONO3Tc=;
+        b=chn08j4LU0yF8VHPS1QVCCbaswqO11bTnXxAKNjvZaA53Q6ukXZNtuWV6w8c1t2+Kl
+         A6C1dS4e2ZReUBB6EQf2+kW9449aWp96QDZsDtAu2QMTo29QqWfgb48y8On2YZgZrkjB
+         EThXB+WtI38ytZGoIWSlcxK7OaWkodaKLoPXgBInhj2OspfCwNfbi8JPQME+WN/bx+kM
+         NNbxz9iLrbUJyCWdO45jaHiZ1xu+27i0GdGi8et/+8j/pF4biVXx18Q1GyfDZhATrKTK
+         ez52QM2cXbpncCfFJCwuh1CxyKI5NW61zjExM6HsUFCqbbklOSwp+cAcI9XVx5W6AFwp
+         E1+w==
+X-Gm-Message-State: AOJu0Yzm/erOFmwNcYxm0XtvwFSF6pxUGwjbAVdPDfaxNvhccWDUA6RV
+	mziZGwSXNDHpVvANA5uHCUtjKxBOg14Ce11HB9Jvyo2g/YCqHQucbIFr3Hoo
+X-Google-Smtp-Source: AGHT+IFQjeqrDX09rDqRyP83uZQw8SCITgyH1agd29K4Duxc6WOMVhFNcZruKcnRmjwkk+m8s0B1fw==
+X-Received: by 2002:a05:6512:3e1f:b0:539:fa3d:a73 with SMTP id 2adb3069b0e04-539fa3d0be6mr7039794e87.39.1729155863373;
+        Thu, 17 Oct 2024 02:04:23 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71fdb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71f:db00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43158c37fbesm19700495e9.8.2024.10.17.02.04.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Oct 2024 02:04:22 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Filipe Manana <fdmanana@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v4 0/2] implement truncation for RAID stripe-extents
+Date: Thu, 17 Oct 2024 11:04:09 +0200
+Message-ID: <20241017090411.25336-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:6c15:b0:834:d7b6:4fea with SMTP id
- ca18e2360f4ac-83a94422fa4mr750133539f.6.1729150883204; Thu, 17 Oct 2024
- 00:41:23 -0700 (PDT)
-Date: Thu, 17 Oct 2024 00:41:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6710bfa3.050a0220.d9b66.0184.GAE@google.com>
-Subject: [syzbot] Monthly btrfs report (Oct 2024)
-From: syzbot <syzbot+list4edd512a8e42b59922f1@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello btrfs maintainers/developers,
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+Implement truncation of RAID stripe-tree entries and add selftests for these
+two edge cases of deletion to the RAID stripe-tree selftests.
 
-During the period, 4 new issues were detected and 2 were fixed.
-In total, 36 issues are still open and 89 have been fixed so far.
+Changes to v3:
+- Use btrfs_duplicate_item() (Filipe)
+- User key.offset = 0 in btrfs_search_slot() so we can find "front" delete
+Link to v3:
+https://lore.kernel.org/linux-btrfs/20241009153032.23336-1-jth@kernel.org
 
-Some of the still happening issues:
+Changes to v2:
+- Correctly adjust the btree keys and insert new items instead (Filipe)
+- Add selftests
 
-Ref  Crashes Repro Title
-<1>  16427   Yes   VFS: Busy inodes after unmount (use-after-free)
-                   https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-<2>  6309    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<3>  3340    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<4>  632     Yes   KMSAN: uninit-value in __crc32c_le_base (4)
-                   https://syzkaller.appspot.com/bug?extid=549710bad9c798e25b15
-<5>  302     Yes   WARNING in lookup_inline_extent_backref
-                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-<6>  287     Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<7>  279     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<8>  241     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<9>  86      Yes   WARNING in btrfs_put_block_group
-                   https://syzkaller.appspot.com/bug?extid=e38c6fff39c0d7d6f121
-<10> 61      Yes   kernel BUG in clear_state_bit
-                   https://syzkaller.appspot.com/bug?extid=78dbea1c214b5413bdd3
+Link to v2:
+https://lore.kernel.org/linux-btrfs/20240911095206.31060-1-jth@kernel.org
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Johannes Thumshirn (2):
+  btrfs: implement partial deletion of RAID stripe extents
+  btrfs: implement self-tests for partial RAID srtipe-tree delete
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+ fs/btrfs/ctree.c                        |   1 +
+ fs/btrfs/raid-stripe-tree.c             |  78 ++++++++-
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 214 ++++++++++++++++++++++++
+ 3 files changed, 292 insertions(+), 1 deletion(-)
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+-- 
+2.43.0
 
-You may send multiple commands in a single email message.
 
