@@ -1,305 +1,262 @@
-Return-Path: <linux-btrfs+bounces-9000-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9001-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359519A45E4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 20:26:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A2779A475F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 21:48:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5054284CD4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 18:26:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9753287557
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 19:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206022040B3;
-	Fri, 18 Oct 2024 18:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A07A205AA3;
+	Fri, 18 Oct 2024 19:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gsmckuvg"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="UI3RORSh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gPkpu5VO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from fout-a3-smtp.messagingengine.com (fout-a3-smtp.messagingengine.com [103.168.172.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CEA2038DD;
-	Fri, 18 Oct 2024 18:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729275990; cv=fail; b=GEy5Nd1OVh/AgzohiZO2Br58IGwrMgtkk8Z1A4KoUOy8Eht4rOaG9GU9yHN4o491DvjOFo9N9JJg0X7mmd/+ojGiPvpwQjyu3+8NoXx7CbiP5q2O7Ep3XZPt7UTxrVB6oTJNgaTfue0ZWqQ+FxIV5kg88ZobbhciK3Pq+lR7rcQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729275990; c=relaxed/simple;
-	bh=f67otBe5EMA2kH4X2rVvWyj2b/m3sCQSMwy8LCd4bg0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=VXopPbq8J56GgzqIhXAIC/qY15drQGFGk02c4t//J0Hj9hMs7AfKArZcvYU1ze5YagUJDEotma/h/95JLPuVwTFep7w60rNqd4VvU0a3wsS9k5hZ5HYZCr4NvDNkn5Txr9tbqfV6HTnSqoh14sIg7mjdFLoHR/4TGdV8GF/WVqA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gsmckuvg; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729275988; x=1760811988;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=f67otBe5EMA2kH4X2rVvWyj2b/m3sCQSMwy8LCd4bg0=;
-  b=GsmckuvgfRHe69Qt4letdfo3ihwe4O4EQTDl32hcrG4L9htoVsgddfFl
-   pDePVtU1pXVmrPYcN80oIBBKCOusuvcLzeuVdO7aQvVaiupLOVl8JLa5J
-   Gmo9NKykMDO3PEpvNEM6Hy/Yiffp0nnw0YM1PSZdUE24jnzfDyMcZkv4A
-   JMooCr4jXtQ424up1QuWppOWbvLuryagHRGfcY1q6kz19DYKcAEs+pweA
-   RM2v1J994N2UIY72on+nos4/WfViL/MEp6HSvv++wTxGTp50exnPxxtDC
-   XhblyfVSEzdg0ST+mmntBSXB5SMme/Bw/swh8zlb7mX0FACQkVCUKO1uw
-   A==;
-X-CSE-ConnectionGUID: c6+DyoOQQ8qS0UM8Ay296Q==
-X-CSE-MsgGUID: vsTPIm4sT52Oskx5Te6cPg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11229"; a="54229389"
-X-IronPort-AV: E=Sophos;i="6.11,214,1725346800"; 
-   d="scan'208";a="54229389"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2024 11:26:27 -0700
-X-CSE-ConnectionGUID: AHO2E8CIT6O3n3Qmzit3mg==
-X-CSE-MsgGUID: IL7BGzU2T/S944UQysirqw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,214,1725346800"; 
-   d="scan'208";a="83734586"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Oct 2024 11:26:27 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Fri, 18 Oct 2024 11:26:26 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Fri, 18 Oct 2024 11:26:26 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Fri, 18 Oct 2024 11:26:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WJoP2EXP/rLpSHwPzqUnP63DFI3EyiQNBXYeujoIA5FfN9Z0Ls7SWaIBnfoHqdr5jWB4DgAHlnPRv4tpwxq67lVBXEE+bfcAyhBVDI7Ror1n7qi7LzM9cqJUMpQEITxEbys0gOxgZ5b7iZDkz5vKnKufOtYjS4cE+zzsDbhz+1wsMbACC7R8uaC/yh2SC3Jit//cd4xNPS8HoO9TcGMCIg9nUqEqDpqT3td6o3mlg+CUJ83xAwEdtBdbNBgOYzYhQx0f1sJ2Lpz0pUEWiHcGjSslRh91BOjrcyTv9UFlXPRSEeBn+DCSo3YH4XsPbqyQ03+tDOj9GNPRrDG2bPQl+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LB2mvj1K+/kisY7rbSLYHTrnv48Y2hosGduXgX+NHis=;
- b=pLjLi6+Mo9hZ2FZSkONippZggAghT7/OcRDw7WHqlDoFLYubEsOtBXT+oGDpGVcZuqjteEVvAHeaWRSYOr7WctHE9zpP061m6W2Ux2yyKM0ZuXE8wBqhqzgurM7LWd7z8A+k9QPeq36362UniJC1ViRC0V2qgJSlNqMPRhZUavUcsfmjhYxQKQuLkaucknsre1nxjFwVaD0ea8BqDvJdyKDaSZdDXiHIEUBld9fWalNlbYL5+0xaWvVsqU/ujHrPd1fl63dwpwO5/cqbjIXJwOv1HJ+1RE9I+PCIos4oRt0k5fjbde45SPBpqmo4r9QzgCA2LCMHTUwaY7ypDR0T8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by MW4PR11MB6838.namprd11.prod.outlook.com (2603:10b6:303:213::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.24; Fri, 18 Oct
- 2024 18:26:23 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57%3]) with mapi id 15.20.8048.020; Fri, 18 Oct 2024
- 18:26:23 +0000
-Date: Fri, 18 Oct 2024 13:26:14 -0500
-From: Ira Weiny <ira.weiny@intel.com>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 22/28] cxl/region/extent: Expose region extent
- information in sysfs
-Message-ID: <6712a846dad09_2cee2945a@iweiny-mobl.notmuch>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-22-c261ee6eeded@intel.com>
- <20241010160142.00005a5c@Huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20241010160142.00005a5c@Huawei.com>
-X-ClientProxiedBy: MW4PR03CA0340.namprd03.prod.outlook.com
- (2603:10b6:303:dc::15) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17388204937
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Oct 2024 19:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729280880; cv=none; b=jUZ3Z8StPnEF+l9wVQP4xdHwoQ+F7QvLiCTCKSXOUl4UOvsx0C7un55ctQHpIVVG1TD0u9rRTcJVre0QOQ4mo3Bde2LrsrcvHBtlnsmamCqHtKHw2l2a/G19rjNkd8DBmARCKE2WDtMPhcTlvqVhrrRSboo8bWmm6kpFUnWkDHE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729280880; c=relaxed/simple;
+	bh=1F+lSWvlIB8XsDvc05W2ALSbiofZZNUc2nzj7MSsaz4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=h7xTvipC4nQMmN7OieT7ibQKLK0GDCotEt1cN+zYUwCC4sfgf5GS9k7SD3utdL12+K8SGJoGct+hOfxaUpvow4c4GANNEwMnSSqWGnQa4QyGmhlC3vPoaWlgQaYmsb2UIJkhecyocu1VqnlrQDofgb69TjMtRXwbf0Ekh0CL5OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=UI3RORSh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gPkpu5VO; arc=none smtp.client-ip=103.168.172.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id 02F3B1380198;
+	Fri, 18 Oct 2024 15:47:57 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Fri, 18 Oct 2024 15:47:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1729280876; x=1729367276; bh=J1Uf8NjoA5SB713Fwm9p4
+	Wp5pSLwMysJnCekQtQVCCA=; b=UI3RORShOdHbUZQ7jtJMO+FyRb7cvDRba/kxd
+	cWsJC7Pa/3wDxo1KFSAgCS1KeyCbb66lEGxOX0nuNKm0KKaaYISUbQk9Cgy5vi1C
+	396C+7qSYIHUK6bPAaGENjzQkg2Kwl084BTo9NwR58B2mwv3tIWuqctrHSItFENL
+	bduxo+BLNYNrtmrSsogxdc7k9BSk1Yq9CIURE+acaekplYtNIJcK70QfzzM7D079
+	ajgAFhewfx13eccflvUpKM7fQP6n4nbUAOMOTPmHGfEzN9b+8U82fu+/OiHvL9sY
+	Er6VLbO8JjlEVsZ0MT8WOg943m9TZA/CKoSnzO3RsT2BhtyQA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729280876; x=1729367276; bh=J1Uf8NjoA5SB713Fwm9p4Wp5pSLw
+	MysJnCekQtQVCCA=; b=gPkpu5VOYXaZqqkdEK4s72L6nmJ92alHHnttI6MX36lB
+	2kTLa/9ifC53SAL5TIGtG3PhipIMMaT1CJ8Zdl+k0PkuFD26HwHDpp5E8nY2ha+I
+	lPZ8COo5Q4/VfRMuZzhkSZpDSLjBc2NQQvkm+/ZfVVDVmDmqXErbQfZenGKuYN77
+	EoI5lcu2MIl84yFHW+ToXyReNDqK0FOk8onl6YhE7RoSXYSRWVTYH8pIyBcK6wkf
+	j8SGmFupwFA3zKHcTq8EMpAH4VZyDgt8w/B1EpkjktjCeyDb5aRdJ4PCm1CUr6DL
+	bpPU8u2TlbKQ4Ug/k1JV0IM7FKgBU3+dAFi7EMvxYw==
+X-ME-Sender: <xms:bLsSZ0MnGdSd4x-DvWx3llveAFLdj9ZNW47RUMZWYkRsDeNuIJHGLg>
+    <xme:bLsSZ68FtnuPVxvCXn6BHn93liz0emDt3XgNl7Tq8WChShqPDIoj920Irx6ZXbk1h
+    uZ18nVa6hvU0VdR57c>
+X-ME-Received: <xmr:bLsSZ7T9Tywh8RNjNmndMnxoZd3T93_D48aNmzUZFXHl5zHX2huFcOBULRMgR9XZLRXeNPlK5fXYP_UloVN9SjwsTF4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehfedgudegtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegs
+    ohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffve
+    elieefgfejjeeigeekudduteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprh
+    gtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgs
+    thhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqd
+    htvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:bLsSZ8sp0vrz07wzPmWQKwSYciqwDyF7FLHf0AJQGAOhx_eSmCxNLA>
+    <xmx:bLsSZ8fxb2oISw-pAEKjN7-C32_q3r54eirKU3i8t0bLIXSgeSSusw>
+    <xmx:bLsSZw1YPdtPE5oWY3dWJnKGEo97HZQFAhOL2VoI5lb7Vc3F_cuzmQ>
+    <xmx:bLsSZw-901qrO1SsUqWDUkD7d880Zu-Lx9QKzfP1tDfUniU48Qxkxw>
+    <xmx:bLsSZ9rQJoeoo4Bkhmmw_Zj6D74aEs9jxeo5g_vPlwYRQADVP0UPafzI>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 18 Oct 2024 15:47:56 -0400 (EDT)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: hold merge refcount during extent_map merge
+Date: Fri, 18 Oct 2024 12:47:22 -0700
+Message-ID: <04478f1919b69f470f1c56bae80512491c97a8b1.1729277554.git.boris@bur.io>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|MW4PR11MB6838:EE_
-X-MS-Office365-Filtering-Correlation-Id: 325b69ff-5ef0-400f-4f0d-08dcefa25e5e
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?uS9it/ROv5fx8wAoxaEXusBcKA2u2snPkG394u3ARnrvFO/zQRAidlNE47L1?=
- =?us-ascii?Q?05hLeV1hV6OmO+WVgFojY1MNNWM/8GfOgRhLRx8QnuF6L4U2fJ+p7EkQaozK?=
- =?us-ascii?Q?QOpY3PnUp36UOkp2w8RInViVl6hD2wF15uFOOrzQ+66r66f6gx0O7eLBUmVf?=
- =?us-ascii?Q?Q/fRpWfuLCrwX67nn7vAiy8dFlwtqfHdoGxT+ShnQhbYdCMcRVtPcjW8toPq?=
- =?us-ascii?Q?yr+HwTsgmhfuK1wtJE4IIyWNhb6qw496uQoNlM2HRwEVKopvsPnyvw7OJ+et?=
- =?us-ascii?Q?WtaIYh2QYaNKalM4zDsMWYzi2Gl6GytPFwP5oBeCPVDwuhFL3LfHUSM8wsxB?=
- =?us-ascii?Q?6muHLE1bUPHDRVcYZ/TVaZ/0HvxU549AfSbzi0uzUPSq+cREtDoijDhrBbvi?=
- =?us-ascii?Q?lMlFj1hI3pzosehoCFY2kWe1uTbfVhyLQL1crEL4ugDq2MhU2r8EDIDG4f0C?=
- =?us-ascii?Q?9iMkjqbMR0yhQF1HSqBrHE/wWcc9AQ2dwfRyxRlWDhzRE9unNgFkXVTatun9?=
- =?us-ascii?Q?w2cbPPLO+8HUnoPsgcBmd1/8pUfA3r763Ppc8wN/udRqvKIWoZVwRiDrQLE5?=
- =?us-ascii?Q?oQRxaKyFtcVuXO3Xv1TMbMzrmiWKlM60my95p5GkIvD4KjcW14J5AUpoWoPy?=
- =?us-ascii?Q?J5d6QHyyDkjsn5+P9JM4BgJGj45wuQe00k+Ii7L+n/SP8kAEGspL9uh9wZxY?=
- =?us-ascii?Q?g+bIZqDak2qOVxKp/YVKfpq245Y0lSHxW9DCEEWIymCk5xAl/aNZUxlJZrqT?=
- =?us-ascii?Q?l5VBUAmo5BtzO8Ivk8lB3Yo1bLC3vZjrWODkpA/6LHE5mUOptcTv971qJ4KC?=
- =?us-ascii?Q?T1ipe7QcAvoh2HF8SaVgOXi+VqgiglyULdBtX8GqblzQBrqLG88d8u1i53dF?=
- =?us-ascii?Q?BEF5ViQ+8sNXd6qgWQ/JwZ9BAmskkjAf5rJ7dnCEZgmOKB0umAczzJLO+lSp?=
- =?us-ascii?Q?xJcZDdetbiihXRNlKmTYfijXTH93rLG8XrXc+p6+knP7m8YwtztHhm9LekVg?=
- =?us-ascii?Q?Fb12CTvCgTQxOUqVTxKE4Pw3kbfsG9jKC6AqmoA7tTEQq7745SY2ELFkUcQ8?=
- =?us-ascii?Q?nKhmJKoucmqOnQGQs0ApIzOyaQVSy/BjWX85m6JQb3+/12w3fGS6E95i7Bwo?=
- =?us-ascii?Q?vdDWBNYoS5xknEU0pOI0Br2IYyAyttlV4oYE7I+SGRKsLX+74Nogb+VAt3P7?=
- =?us-ascii?Q?/Y1ZCwIWl1s2xSd5dohLXqryZ6OpezwAFncX97YaxOdgCjyo8Ww63yqO7q83?=
- =?us-ascii?Q?NrPrY1VewcnJ08uaoiOsxa8PHW5u1o++K7kviHZE3zIck40LE33lMAUQL58a?=
- =?us-ascii?Q?oWtFbhc4KWzdzn9c1UEci7tG?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LZl3llosAL/POnjyanlnYgAtPJ8Ow73M5RXjlP962uNa9NXJS5T4f5Y5GXXq?=
- =?us-ascii?Q?QlLWaF4gHZ5RMPAd/AVYz+kK9l2oVvGlYcJHKZxWFwPvGlDoZzLKRvDjiBbL?=
- =?us-ascii?Q?OvcRU15jHL2UMC2hVR24YuD+W/DCOQT4AKOnhJczF6r+rfaUWvUj4dq4jDWn?=
- =?us-ascii?Q?KONon1v3E6EtZZGj8Q+3JMnLlgOcpMUnIfwuz6NKRnOnKGearJ52p2y4wI5d?=
- =?us-ascii?Q?GS2k+GV6oyO1N+Fw0fsdLiL4QTH5hs92ihK2Q8Qtvk2Gz3bl51PLkwR+fHYb?=
- =?us-ascii?Q?Qj24IYy9MvAJRPZMZc864dBi5MvgPChmCdGi7uC1ylgU9fuC20Y2ZhX/hHhI?=
- =?us-ascii?Q?zWWiSKZWcutur057bzMMUhQ4ZyYOCVOsbDuVgbSiT1rbdLLxoOCv8KXmvEuY?=
- =?us-ascii?Q?yfd8yvNAcgHI7D0U3+J+rDR3KLnyP4qT1pKPnQ5xw/d7YDArUUr5thK4dNlx?=
- =?us-ascii?Q?IehZJ7/a2sZ1WDAbXgygi9RIDOyCkd2qnJ1kGpQEaDBYwjn0SUv/rt10Mfto?=
- =?us-ascii?Q?uGLFDnetX+LbX70hbtGxmuUTSdPAFDt/x51COMnctsIEOt6NYm8RI4C6hPuB?=
- =?us-ascii?Q?r1PmNfoyofozYXnTOEHDYc87y7OoIOWB/ojm2kF3HPfg+B58wAIC0BTjrX12?=
- =?us-ascii?Q?tnguMvv7rIqT7mz48frO9s4Czm0B5cc46ma0zteo1IQTwuEPXxAqW7y7Tsxv?=
- =?us-ascii?Q?ARo5HsvQlpIksS5w1WPYho49qMTXA4/7X1yj0EBeHNyn+Y7fx84E5o0BlFdj?=
- =?us-ascii?Q?fFgFztl7bugjoz3jXdZphtI2GTRPW3Ij8Vb3ywZkSaK2z0AgAn/nVjP4fLkF?=
- =?us-ascii?Q?vLBl/9hkvADc7uHzYJdPpJJz+DAUhhwGayEcebNQObXuCzCNzy5n+9bHQ0yS?=
- =?us-ascii?Q?POmA6RTGeGTmnkmPCqnQrwGFKw7Pmea87+DpsXLkDshPf6rhbxkoh1RgQtGC?=
- =?us-ascii?Q?8oLVdjZs8P64O8HfuGWwJd3QRUrdBBBF4FF5m+UcA0mRIh/HoFhwzN7TYWW4?=
- =?us-ascii?Q?gFYyeGqQXUKURSua/xkXAnrUUFgtrk5MhmepJbsAB1/RqgG+07BxqhgEDUTJ?=
- =?us-ascii?Q?5nOaDkhucCvrVwn2a5KlAlzuKMBVTmwK+CSed6yU5FnQm7gjN+WSYtUKSDBN?=
- =?us-ascii?Q?2WS7YrDkO2WI1wSHVSXn2VZI8bIzIA6ESQNfx7VevCWiuEeRsZGWYAa5GJpH?=
- =?us-ascii?Q?krtfzD7lUIuLxyXTLbpVDyplG7xTDA7XsZJqoP8BPJTiVkJIV0/kDLhipvfC?=
- =?us-ascii?Q?lzpQ3Yea3Gc63myOxsWtjX5zMtb5PFbNK4wTtlE2t8IgVsYdIj9icJe6puyw?=
- =?us-ascii?Q?zUVMFyFoe/uHNBgDVTngZCbOlZ25RU2rfkrOTbKiabH4V4cI09syLqbzSQfE?=
- =?us-ascii?Q?qkWxps+V7pT0XRxJt+0ieUtbJJ8CpFJRR+mSFtXVHfBKKzjsuTobqxc+T5Wq?=
- =?us-ascii?Q?8lx73twslDBLXR6ZAqSFfqmiJaeSAIgq7j9mTgtqGYlrjK0pgQ26cyV2ZEMu?=
- =?us-ascii?Q?OZ27yGZhW8fQJm14G3tiUe5KTPp9kGsux5LtxaBk53ANvr0+4jNnqM6+ix8e?=
- =?us-ascii?Q?QFzn3YtHvWk66Ie+d4xCBZp8VjOYgTDAwhGoHKfD?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 325b69ff-5ef0-400f-4f0d-08dcefa25e5e
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2024 18:26:23.0128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tkFSa8YpE7EpkvXh0g1ZJ6TjXXA5IPxwPoA/3FnBO/sjAbDyeHaKVwITmPRj8s8Dsz9Lu4TNpRxG9pP59CVmFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6838
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-Jonathan Cameron wrote:
-> On Mon, 07 Oct 2024 18:16:28 -0500
-> ira.weiny@intel.com wrote:
-> 
-> > From: Navneet Singh <navneet.singh@intel.com>
-> > 
-> > Extent information can be helpful to the user to coordinate memory usage
-> > with the external orchestrator and FM.
-> > 
-> > Expose the details of region extents by creating the following
-> > sysfs entries.
-> > 
-> >         /sys/bus/cxl/devices/dax_regionX/extentX.Y
-> >         /sys/bus/cxl/devices/dax_regionX/extentX.Y/offset
-> >         /sys/bus/cxl/devices/dax_regionX/extentX.Y/length
-> >         /sys/bus/cxl/devices/dax_regionX/extentX.Y/tag
-> > 
-> > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> Trivial comments inline.
-> 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+In debugging some corrupt squashfs files, we observed symptoms of
+corrupt page cache pages but correct on-disk contents. Further
+investigation revealed that the exact symptom was a correct page
+followed by an incorrect, duplicate, page. This got us thinking about
+extent maps.
 
-Thanks!
+commit ac05ca913e9f ("Btrfs: fix race between using extent maps and merging them")
+enforces a reference count on the primary `em` extent_map being merged,
+as that one gets modified.
 
-> 
-> > ---
-> > Changes:
-> > [djiang: Split sysfs docs up]
-> > [iweiny: Adjust sysfs docs dates]
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-cxl | 32 ++++++++++++++++++
-> >  drivers/cxl/core/extent.c               | 58 +++++++++++++++++++++++++++++++++
-> >  2 files changed, 90 insertions(+)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> > index b63ab622515f..64918180a3c9 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-cxl
-> > +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> > @@ -632,3 +632,35 @@ Description:
-> >  		See Documentation/ABI/stable/sysfs-devices-node. access0 provides
-> >  		the number to the closest initiator and access1 provides the
-> >  		number to the closest CPU.
-> > +
-> > +What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/offset
-> > +Date:		December, 2024
-> > +KernelVersion:	v6.13
-> > +Contact:	linux-cxl@vger.kernel.org
-> > +Description:
-> > +		(RO) [For Dynamic Capacity regions only] Users can use the
-> > +		extent information to create DAX devices on specific extents.
-> > +		This is done by creating and destroying DAX devices in specific
-> > +		sequences and looking at the mappings created. 
-> 
-> Similar to earlier patch, maybe put this doc for the directory, then
-> have much less duplication?
-> 
+However, since,
+commit 3d2ac9922465 ("btrfs: introduce new members for extent_map")
+both 'em' and 'merge' get modified, which introduced the same race and
+need for refcounting for 'merge'.
 
-But none of the other directories are done this way so I'm inclined to keep it.
+We were able to reproduce this by looping the affected squashfs workload
+in parallel on a bunch of separate btrfs-es while also dropping caches.
 
-> 
-> > Extent offset
-> > +		within the region.
-> > +
-> > +What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/length
-> > +Date:		December, 2024
-> > +KernelVersion:	v6.13
-> > +Contact:	linux-cxl@vger.kernel.org
-> > +Description:
-> > +		(RO) [For Dynamic Capacity regions only] Users can use the
-> > +		extent information to create DAX devices on specific extents.
-> > +		This is done by creating and destroying DAX devices in specific
-> > +		sequences and looking at the mappings created.  Extent length
-> > +		within the region.
-> > +
-> > +What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/tag
-> > +Date:		December, 2024
-> > +KernelVersion:	v6.13
-> > +Contact:	linux-cxl@vger.kernel.org
-> > +Description:
-> > +		(RO) [For Dynamic Capacity regions only] Users can use the
-> > +		extent information to create DAX devices on specific extents.
-> > +		This is done by creating and destroying DAX devices in specific
-> > +		sequences and looking at the mappings created.  Extent tag.
-> 
-> Maybe say we are treating it as a UUID?
+The fix is two-fold:
+- check the refs > 2 criterion for both 'em' and 'merge'
+- actually refcount 'merge' which we currently grab without a refcount
+  via rb_prev or rb_next.
 
-ok...  How about?
+The other option we considered, but did not implement, was to stop
+modifying 'merge' as it gets deleted immediately after. However, it was
+less clear what effect that would have on the racing thread holding the
+reference, so we went with this fix.
 
-<quote>
-...  looking at the mappings created.  UUID extent tag.
-</quote>
+Fixes: 3d2ac9922465 ("btrfs: introduce new members for extent_map")
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/extent_map.c | 92 +++++++++++++++++++++++++++----------------
+ 1 file changed, 57 insertions(+), 35 deletions(-)
 
-> > diff --git a/drivers/cxl/core/extent.c b/drivers/cxl/core/extent.c
-> > index 69a7614ba6a9..a1eb6e8e4f1a 100644
-> > --- a/drivers/cxl/core/extent.c
-> > +++ b/drivers/cxl/core/extent.c
-> > @@ -6,6 +6,63 @@
-> 
-> > +static struct attribute *region_extent_attrs[] = {
-> > +	&dev_attr_offset.attr,
-> > +	&dev_attr_length.attr,
-> > +	&dev_attr_tag.attr,
-> > +	NULL,
-> No need for trailing comma (one of my 'favourite' review comments :)
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index d58d6fc40da1..108cd7573f61 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -215,6 +215,16 @@ static bool can_merge_extent_map(const struct extent_map *em)
+ 
+ 	if (em->flags & EXTENT_FLAG_LOGGING)
+ 		return false;
++	/*
++	 * We can't modify an extent map that is in the tree and that is being
++	 * used by another task, as it can cause that other task to see it in
++	 * inconsistent state during the merging. We always have 1 reference for
++	 * the tree and 1 for this task (which is unpinning the extent map or
++	 * clearing the logging flag), so anything > 2 means it's being used by
++	 * other tasks too.
++	 */
++	if (refcount_read(&em->refs) > 2)
++		return false;
+ 
+ 	/*
+ 	 * We don't want to merge stuff that hasn't been written to the log yet
+@@ -333,57 +343,69 @@ static void validate_extent_map(struct btrfs_fs_info *fs_info, struct extent_map
+ 	}
+ }
+ 
+-static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
++static int try_merge_one_map(struct btrfs_inode *inode, struct extent_map *em,
++			     struct extent_map *merge, bool prev_merge)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct extent_map *merge = NULL;
+-	struct rb_node *rb;
++	struct extent_map *prev;
++	struct extent_map *next;
+ 
++	if (prev_merge) {
++		prev = merge;
++		next = em;
++	} else {
++		prev = em;
++		next = merge;
++	}
+ 	/*
+-	 * We can't modify an extent map that is in the tree and that is being
+-	 * used by another task, as it can cause that other task to see it in
+-	 * inconsistent state during the merging. We always have 1 reference for
+-	 * the tree and 1 for this task (which is unpinning the extent map or
+-	 * clearing the logging flag), so anything > 2 means it's being used by
+-	 * other tasks too.
+-	 */
+-	if (refcount_read(&em->refs) > 2)
+-		return;
++	* Take a refcount for merge so we can maintain a proper
++	* use count across threads for checking mergeability.
++	*/
++	refcount_inc(&merge->refs);
++	if (!can_merge_extent_map(merge))
++		goto no_merge;
++
++	if (!mergeable_maps(prev, next))
++		goto no_merge;
++
++	if (prev_merge)
++		em->start = merge->start;
++	em->len += merge->len;
++	em->generation = max(em->generation, merge->generation);
++	if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
++		merge_ondisk_extents(prev, next);
++	em->flags |= EXTENT_FLAG_MERGED;
++
++	validate_extent_map(fs_info, em);
++	refcount_dec(&merge->refs);
++	remove_em(inode, merge);
++	free_extent_map(merge);
++	return 0;
++no_merge:
++	refcount_dec(&merge->refs);
++	return 1;
++}
++
++static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
++{
++	struct extent_map *merge = NULL;
++	struct rb_node *rb;
+ 
+ 	if (!can_merge_extent_map(em))
+ 		return;
+ 
+ 	if (em->start != 0) {
+ 		rb = rb_prev(&em->rb_node);
+-		if (rb)
++		if (rb) {
+ 			merge = rb_entry(rb, struct extent_map, rb_node);
+-		if (rb && can_merge_extent_map(merge) && mergeable_maps(merge, em)) {
+-			em->start = merge->start;
+-			em->len += merge->len;
+-			em->generation = max(em->generation, merge->generation);
+-
+-			if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+-				merge_ondisk_extents(merge, em);
+-			em->flags |= EXTENT_FLAG_MERGED;
+-
+-			validate_extent_map(fs_info, em);
+-			remove_em(inode, merge);
+-			free_extent_map(merge);
++			try_merge_one_map(inode, em, merge, true);
+ 		}
+ 	}
+ 
+ 	rb = rb_next(&em->rb_node);
+-	if (rb)
++	if (rb) {
+ 		merge = rb_entry(rb, struct extent_map, rb_node);
+-	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
+-		em->len += merge->len;
+-		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+-			merge_ondisk_extents(em, merge);
+-		validate_extent_map(fs_info, em);
+-		em->generation = max(em->generation, merge->generation);
+-		em->flags |= EXTENT_FLAG_MERGED;
+-		remove_em(inode, merge);
+-		free_extent_map(merge);
++		try_merge_one_map(inode, em, merge, false);
+ 	}
+ }
+ 
+-- 
+2.47.0
 
-I'm noticing...  :-D
-
-Ira
 
