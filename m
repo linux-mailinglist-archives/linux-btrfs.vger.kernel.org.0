@@ -1,191 +1,228 @@
-Return-Path: <linux-btrfs+bounces-9005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9006-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789FF9A4A1A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Oct 2024 01:35:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF1399A4A1B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Oct 2024 01:37:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311001F23572
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 23:35:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25F49B21BC5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 23:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3243018E758;
-	Fri, 18 Oct 2024 23:34:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F16A18FC75;
+	Fri, 18 Oct 2024 23:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="I4NFnOI8";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QWul7Xik"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZeU9bEMe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128FA14F9D9
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Oct 2024 23:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52BD14F9D9
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Oct 2024 23:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729294497; cv=none; b=lxhM3XsXZ9X7qDY7e/34+jgzcc3iDDrZlW+iKoeDR63fmY/Itf0Sv9TrYtSUZr0T/tlHB7Bgu38AlmN+F9MXlS8cWBzZXxAfXSRa5s0sw9HMxGkahmAJeEbz7nxE1QLBFZJPzQjzs5z/rcmL6n9nNrNtyCoiGiIpLFFR7HeYfKw=
+	t=1729294644; cv=none; b=cimunD7VOhe4+X0A6WQQiA6HhuTW3wMlOxz5c1ZOtpwHvecRM2Vz9Jskn3TKLHDWTlyhVZRVwzLmR1ASi59QuxzTY4EsUd+fVMolPLGjrvFrcg5OG7cyJyA06rcArZAt1y+yoZMZGk83qMELaCI8RnGDCo+J56fpAwk6UVe8gCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729294497; c=relaxed/simple;
-	bh=8bIpWhGJ4zShd1hMeEnBOmkoz4qmVX5lJ/OR6LWGBmo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=TAH2vARk2RHe8NNOC3gBpmqZ/okQsVRsjOHhKwHWtc2ah4JvueVW1z/5SjOKMQ4R14kmRcAkXFlJrGLQ55n7dun9HG38lJtngOcW+YdxZPneJHN9DAKIAZuRb/i8wvmkmWGtivHAcikP8TMJEH8LolbaR6VSWo9r4/ktM5eQkUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=I4NFnOI8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QWul7Xik; arc=none smtp.client-ip=103.168.172.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfout.phl.internal (Postfix) with ESMTP id 108151380185;
-	Fri, 18 Oct 2024 19:34:54 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-10.internal (MEProxy); Fri, 18 Oct 2024 19:34:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1729294494; x=1729380894; bh=7kW2Cu0eAOAXfc/xlbZyH
-	1oSrfzAuq1+6KxwCwg3hZU=; b=I4NFnOI8YWuqncRI5BuqMol3skE4OsrVGqvwU
-	NUoqIPKg6r3jSnuFtXYBjnCaq91aIeesHz2oW6/H4HbL6nQjfpgxPoQ1sAj4IpDM
-	waPn+Q0+Xt4Db/bwor2/YoB2sNqGFviNJ4a0J0hlLkaXvLRfIzrMwJOogQMcppJu
-	1oSKCuZjFG706iCDOBUX4zb/02kg2rCuoE8ZS9uH9MKD8Kk8Y5c9SBjh+VGEWqOl
-	EXwTJBQL9Ivs3BKubJm4rfgpM23u6pZLZiwLjdt9J6Qbf8LbP+K+3VTG/ZWcszgg
-	ZoO1xE88yE2zyYH5gmgG9iEkQSmYu2NI3yFgeiyBv5ZHbvPpA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1729294494; x=1729380894; bh=7kW2Cu0eAOAXfc/xlbZyH1oSrfzA
-	uq1+6KxwCwg3hZU=; b=QWul7Xikhsz3v2Zjgih8xNJbBix2ucsJnU4pELOWxCeT
-	lj2Y7tABMuQ+z4Q3SHFapsmrDPccMlPGijAvL4FeLARZVknqWABY5Y4clkt+fovr
-	6OetXiCMCb+1mirX7dxDGQXHwZsmfK5+cbfyOtiQJ4S3VvBbP0kAnlB2PHt/0+vm
-	NRN3iF3ApU+aHlyHkwAKDpu3SpeoKhtPBYJ1EpHv5+6IVbL34bdL+emBkTNTNawJ
-	dknd1rglUg4G9i6VQoj6OdZS73TloGTEFWgXl1LZKGQKCd84ZvCI/QmACPKqeCtI
-	LC6hGYzyvaxkDgei5lY5aGizQopvh8XIaSFw5fu3BQ==
-X-ME-Sender: <xms:nfASZ99Hix5TmoO2u8CyLEoDm3em_tInIkV5O-SyEDM-Nyb68UyTng>
-    <xme:nfASZxsQag_-BPzwGMDtNsIVGTsGYNcI8gKBrzaAcdCKomlgs5NYp-yJuzR76VEI3
-    jLcYGn1g37Rz6WnrBI>
-X-ME-Received: <xmr:nfASZ7B15RQhCszpg9aLCT7m8CESq29foz1_mIUih-re7eiPfW96OCSPaZ7l5oI-mI45UnLwVU9IqnNlq4xvQC-6rw8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehgedgvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffuff
-    fkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosgho
-    rhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevle
-    eifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtg
-    hpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsght
-    rhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqth
-    gvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:nfASZxeoknAREpEEhtgcZSS-T_xqGCqEhNj2mZS0p2ygQB9SSUZFlQ>
-    <xmx:nfASZyMA7tToI9LE_rBaMV-EywsRA9itfL6wt2V7mI6v5ndHPQ1A6w>
-    <xmx:nfASZzkdoHjUob6wcZ_mFV1SrL1L8GlqfkLTdplErD9CXo1bzLHwHA>
-    <xmx:nfASZ8s4lwdYpRuJjnMMIrdq6iCfZEOL66guQOxcqDYnnDz_QsABlQ>
-    <xmx:nvASZ7bOncOAwLi24uG1U7FwuLzmzNZnpnC3l-0GVXnVvZ4m_2T3M9I2>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Oct 2024 19:34:53 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v2] btrfs: make dropped merge extent_map immutable
-Date: Fri, 18 Oct 2024 16:34:20 -0700
-Message-ID: <76ba30ab42dc77209f9cc1274b06619c7d474303.1729294376.git.boris@bur.io>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1729294644; c=relaxed/simple;
+	bh=d4hF9LHW76HoBUTcnXj+QxpBwCRNWXp3axYVzHwQY/4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=odbhG4gMguIcT5ZdXEnt6QnHLsf7JLuBVfSsQ8tHYQqrstT/b0Z/n9fFlQie3Nl9IHWv+JPUPgyCdvKdU3+zSOovwFtXhTSOF2KlzRsXkJ09uyNm+2w1+jAS76vBA0icgXe1PXK3g1Sv4L9SjFwE4jJA6+4XhgLQ754bHCJJXgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ZeU9bEMe; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1729294633; x=1729899433; i=quwenruo.btrfs@gmx.com;
+	bh=u50m67r9tTXJyogqQyoZBiu5pHDtSNbgCbRfKe8rpN8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=ZeU9bEMevB0KLyYGEcrPo3gLoGQlWQRqebVNDBnzSk1CnVnBtKgtm0ngwbnJ5K21
+	 E8gR12aH1vDZMRCcTGZtkZs9T/HN7D68zu6CvhKWMfZyJOp3dGE647xI+C9IvEbaU
+	 9mbAcrJYP8CpiuHml5y4kZiCrQ2lEfJnH1UJoL/5stpfZwN0eu6YxpLh2YwQZwGVc
+	 t+AmVYMpp3HW8ncXAd7CuX9yiGda7biqc65KJxmkQNJraxV/MbC43mB17ajtbOBus
+	 N1Hh47uPSQ+ET8QTECVd9CcvJ+uNC3UznHdTMgeMhtorJ2Hb4ylDt2NJbPEBAX/QV
+	 sBM7Y9gLFTqksRBuAg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiPl-1tVpCv2h3N-00U3CB; Sat, 19
+ Oct 2024 01:37:13 +0200
+Message-ID: <01b1cb0e-4642-452d-894d-bc14607c94c5@gmx.com>
+Date: Sat, 19 Oct 2024 10:07:06 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: make dropped merge extent_map immutable
+To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+References: <76ba30ab42dc77209f9cc1274b06619c7d474303.1729294376.git.boris@bur.io>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <76ba30ab42dc77209f9cc1274b06619c7d474303.1729294376.git.boris@bur.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YEk3zRZnuL6bCmf2SAhkZzHhyYBp4FiHeKLmyANGIPR17V95WW5
+ cbxvoxxnCbPpSOJl5ETgPILpiRGZML58BKJ4BpZDft/L3RgKPXPcE5HgM+9ZGxLMdhmN6nZ
+ L2D+o7b7BFuAoiK7zijmqfv5CuawS+O46RNoqQY2tyrWjZhhdKT+Gfsqb6JZrxGdQI1qFs3
+ C615FQpWBQyAD1K+3vF0w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8fJXiUd+Mes=;FaZs/Qe971Li+Ucp0y2er/9JwFK
+ VIfjzbQ2AolRt2ytapsFZY0hNzCqf1iFud1JzSMlNjuvcHLDG4apVCz3rCdo2EjdZvQDAIYtt
+ Pkw+IEfZh+9e2t9asyiLPqwggV/LhOB9keqnPWLq4A50/IY/ZmBqVlCAkghR9PpU+SydVhyym
+ RmIAOrYUkTk0PtVmEh2jWnO6xPnGN3IdQ3HrhLs3T9RS9IX/YYbz81jiOEwHRdB35vsFKzfNG
+ EgC92XpCD7XQ4PzeCtl3laktz4ItJE1d/YOtY0wrO2kT1aVLz8cIT4+Avu2ZkOPIWtyWN8u0Z
+ f+LZKbxWXIp1dtY9QO72CBtEstz4IhJ7eES1NEdly4JIpPKyt44FRuluozDNlkj7Q51fGHFkd
+ YTI8+xjRmez5FfD82+L3OB3mfWD7K5ocVBDuqmj5hRr+GKz963JUNziEE+Cvm86aSjPJZxcfb
+ 4e0Q4cmlfIR1K984gkbYM4pRMcXkcGdcZED94RwsHCxT4EevliQJOiR1fUVOy+q+rpMLE1Uxj
+ UkIuadI4VxJLmF7/Q27qUcD61f78cMiKAa3ri4fRkB5OmWVyrHcMS0QeFGQiDbMsTuGGzaYIQ
+ LM4RblOoZ89IoYMVcf0A3PZR/3gNYefoMNobexJRJHQZvEQTP0tE0sLPTaxWs1HHQFReKy/Rt
+ xszYz5fbG6IX/zxUNZbt1wHAWdCVaHBy0NQhSqGvIkPytaFz4L/DEbasVNsw1AQbV9U7928xN
+ xlLhdrVTW2SGfBJPROlbGBs9jhwBeni8WQYU7inNui2JHMRem8gOE8IQIbBKx2ht3LG1lhroh
+ +4SXkYii/puP0vw3BdbLkBUg==
 
-In debugging some corrupt squashfs files, we observed symptoms of
-corrupt page cache pages but correct on-disk contents. Further
-investigation revealed that the exact symptom was a correct page
-followed by an incorrect, duplicate, page. This got us thinking about
-extent maps.
 
-commit ac05ca913e9f ("Btrfs: fix race between using extent maps and merging them")
-enforces a reference count on the primary `em` extent_map being merged,
-as that one gets modified.
 
-However, since,
-commit 3d2ac9922465 ("btrfs: introduce new members for extent_map")
-both 'em' and 'merge' get modified, which started modifying 'merge'
-and thus introduced the same race.
+=E5=9C=A8 2024/10/19 10:04, Boris Burkov =E5=86=99=E9=81=93:
+> In debugging some corrupt squashfs files, we observed symptoms of
+> corrupt page cache pages but correct on-disk contents. Further
+> investigation revealed that the exact symptom was a correct page
+> followed by an incorrect, duplicate, page. This got us thinking about
+> extent maps.
+>
+> commit ac05ca913e9f ("Btrfs: fix race between using extent maps and merg=
+ing them")
+> enforces a reference count on the primary `em` extent_map being merged,
+> as that one gets modified.
+>
+> However, since,
+> commit 3d2ac9922465 ("btrfs: introduce new members for extent_map")
+> both 'em' and 'merge' get modified, which started modifying 'merge'
+> and thus introduced the same race.
+>
+> We were able to reproduce this by looping the affected squashfs workload
+> in parallel on a bunch of separate btrfs-es while also dropping caches.
+> We are still working on a simple enough reproducer to make into an fstes=
+t.
+>
+> The simplest fix is to stop modifying 'merge', which is not essential,
+> as it is dropped immediately after the merge. This behavior is simply
+> a consequence of the order of the two extent maps being important in
+> computing the new values. Modify merge_ondisk_extents to take prev and
+> next by const* and also take a third merged parameter that it puts the
+> results in. Note that this introduces the rather odd behavior of passing
+> 'em' to merge_ondisk_extents as a const * and as a regular ptr.
+>
+> Fixes: 3d2ac9922465 ("btrfs: introduce new members for extent_map")
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-We were able to reproduce this by looping the affected squashfs workload
-in parallel on a bunch of separate btrfs-es while also dropping caches.
-We are still working on a simple enough reproducer to make into an fstest.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-The simplest fix is to stop modifying 'merge', which is not essential,
-as it is dropped immediately after the merge. This behavior is simply
-a consequence of the order of the two extent maps being important in
-computing the new values. Modify merge_ondisk_extents to take prev and
-next by const* and also take a third merged parameter that it puts the
-results in. Note that this introduces the rather odd behavior of passing
-'em' to merge_ondisk_extents as a const * and as a regular ptr.
+Just some small nitpicks inlined below, which can be done at merge time.
 
-Fixes: 3d2ac9922465 ("btrfs: introduce new members for extent_map")
-Signed-off-by: Omar Sandoval <osandov@fb.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-Changelog:
-v2:
-- make 'merge' immutable instead of refcounting it
----
- fs/btrfs/extent_map.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+> ---
+> Changelog:
+> v2:
+> - make 'merge' immutable instead of refcounting it
+> ---
+>   fs/btrfs/extent_map.c | 20 ++++++++------------
+>   1 file changed, 8 insertions(+), 12 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> index d58d6fc40da1..a8290724475a 100644
+> --- a/fs/btrfs/extent_map.c
+> +++ b/fs/btrfs/extent_map.c
+> @@ -252,7 +252,8 @@ static bool mergeable_maps(const struct extent_map *=
+prev, const struct extent_ma
+>    * @prev and @next will be both updated to point to the new merged ran=
+ge.
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index d58d6fc40da1..a8290724475a 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -252,7 +252,8 @@ static bool mergeable_maps(const struct extent_map *prev, const struct extent_ma
-  * @prev and @next will be both updated to point to the new merged range.
-  * Thus one of them should be removed by the caller.
-  */
--static void merge_ondisk_extents(struct extent_map *prev, struct extent_map *next)
-+static void merge_ondisk_extents(struct extent_map const *prev, struct extent_map const *next,
-+				 struct extent_map *merged)
- {
- 	u64 new_disk_bytenr;
- 	u64 new_disk_num_bytes;
-@@ -287,15 +288,10 @@ static void merge_ondisk_extents(struct extent_map *prev, struct extent_map *nex
- 			     new_disk_bytenr;
- 	new_offset = prev->disk_bytenr + prev->offset - new_disk_bytenr;
- 
--	prev->disk_bytenr = new_disk_bytenr;
--	prev->disk_num_bytes = new_disk_num_bytes;
--	prev->ram_bytes = new_disk_num_bytes;
--	prev->offset = new_offset;
--
--	next->disk_bytenr = new_disk_bytenr;
--	next->disk_num_bytes = new_disk_num_bytes;
--	next->ram_bytes = new_disk_num_bytes;
--	next->offset = new_offset;
-+	merged->disk_bytenr = new_disk_bytenr;
-+	merged->disk_num_bytes = new_disk_num_bytes;
-+	merged->ram_bytes = new_disk_num_bytes;
-+	merged->offset = new_offset;
- }
- 
- static void dump_extent_map(struct btrfs_fs_info *fs_info, const char *prefix,
-@@ -363,7 +359,7 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
- 			em->generation = max(em->generation, merge->generation);
- 
- 			if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
--				merge_ondisk_extents(merge, em);
-+				merge_ondisk_extents(merge, em, em);
- 			em->flags |= EXTENT_FLAG_MERGED;
- 
- 			validate_extent_map(fs_info, em);
-@@ -378,7 +374,7 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
- 	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
- 		em->len += merge->len;
- 		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
--			merge_ondisk_extents(em, merge);
-+			merge_ondisk_extents(em, merge, em);
- 		validate_extent_map(fs_info, em);
- 		em->generation = max(em->generation, merge->generation);
- 		em->flags |= EXTENT_FLAG_MERGED;
--- 
-2.47.0
+This comment needs to be updated.
+
+Thanks,
+Qu
+
+>    * Thus one of them should be removed by the caller.
+>    */
+> -static void merge_ondisk_extents(struct extent_map *prev, struct extent=
+_map *next)
+> +static void merge_ondisk_extents(struct extent_map const *prev, struct =
+extent_map const *next,
+> +				 struct extent_map *merged)
+>   {
+>   	u64 new_disk_bytenr;
+>   	u64 new_disk_num_bytes;
+> @@ -287,15 +288,10 @@ static void merge_ondisk_extents(struct extent_map=
+ *prev, struct extent_map *nex
+>   			     new_disk_bytenr;
+>   	new_offset =3D prev->disk_bytenr + prev->offset - new_disk_bytenr;
+>
+> -	prev->disk_bytenr =3D new_disk_bytenr;
+> -	prev->disk_num_bytes =3D new_disk_num_bytes;
+> -	prev->ram_bytes =3D new_disk_num_bytes;
+> -	prev->offset =3D new_offset;
+> -
+> -	next->disk_bytenr =3D new_disk_bytenr;
+> -	next->disk_num_bytes =3D new_disk_num_bytes;
+> -	next->ram_bytes =3D new_disk_num_bytes;
+> -	next->offset =3D new_offset;
+> +	merged->disk_bytenr =3D new_disk_bytenr;
+> +	merged->disk_num_bytes =3D new_disk_num_bytes;
+> +	merged->ram_bytes =3D new_disk_num_bytes;
+> +	merged->offset =3D new_offset;
+>   }
+>
+>   static void dump_extent_map(struct btrfs_fs_info *fs_info, const char =
+*prefix,
+> @@ -363,7 +359,7 @@ static void try_merge_map(struct btrfs_inode *inode,=
+ struct extent_map *em)
+>   			em->generation =3D max(em->generation, merge->generation);
+>
+>   			if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+> -				merge_ondisk_extents(merge, em);
+> +				merge_ondisk_extents(merge, em, em);
+>   			em->flags |=3D EXTENT_FLAG_MERGED;
+>
+>   			validate_extent_map(fs_info, em);
+> @@ -378,7 +374,7 @@ static void try_merge_map(struct btrfs_inode *inode,=
+ struct extent_map *em)
+>   	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
+>   		em->len +=3D merge->len;
+>   		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+> -			merge_ondisk_extents(em, merge);
+> +			merge_ondisk_extents(em, merge, em);
+>   		validate_extent_map(fs_info, em);
+>   		em->generation =3D max(em->generation, merge->generation);
+>   		em->flags |=3D EXTENT_FLAG_MERGED;
 
 
