@@ -1,320 +1,191 @@
-Return-Path: <linux-btrfs+bounces-9004-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AA9B9A4995
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Oct 2024 00:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 789FF9A4A1A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Oct 2024 01:35:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3581C1F23CE7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 22:19:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311001F23572
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2024 23:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BF8190462;
-	Fri, 18 Oct 2024 22:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3243018E758;
+	Fri, 18 Oct 2024 23:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Wr6igucZ";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="cebi8ERm"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="I4NFnOI8";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QWul7Xik"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA23D188010;
-	Fri, 18 Oct 2024 22:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729289979; cv=fail; b=mQI/xGzwI1ZJIdqeDl728uoe5UpmR6LLxqnoPA6Q8YeZP7H/g1zIlHiaSu1uOVynZ2abxFSRGi+ICHBHlI+sg0SID/HdXCmr1KzjDcGXJ/tP+nqJcDMFiMEq6ho9VYlasPJ0EMrjr7SwuP6/r67S1Vmgv94u0f5UyKBCf1xH1ZM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729289979; c=relaxed/simple;
-	bh=oQ4MKIVHEtoiE66TGJBeEiTNL3k7s+3q+Xr+/YL5w2o=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=C3K/qD7wrBC45ZgN5ux7aVYJQA1GPBxxGr66Q2LmLlccqmiUqJJxBF8I96H8nv4P/92RWTA8HQhWWPeTvVXTIjDEvEDz6WYF3NDAKWrDCUTy7/yAGsj3kjBX3ww3STx9FxQC3u6QxLTW9U+ixdDfeGq4y9n12uBGWe3JWR6GTWQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Wr6igucZ; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=cebi8ERm; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49ILuiDU027830;
-	Fri, 18 Oct 2024 22:19:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=w9AMDvUT1ERUd4z29PkOlJd32tkn2G6ZPf+s5CUCsEc=; b=
-	Wr6igucZBpgKkbHA6tg5nXjaJAjY66gSB5sAi5Xl0gEPRlp+deOWIRS7EeGmIyGN
-	JfzyYddPZmXtsXcYKduGdyJ/ZUW2QlwQ2Fs0AtVy3qEc5X9IGxT2wKkSjbKavhuR
-	53T2Do6uSslQ694oPhhJD0CPDz/6Jko+HjZ1dRfz73CW0aQrq2ED1VY2m/vlyPA9
-	LSwa/8vtCWhchVQ7V4h/I7YsiwwFrau67YVnRlHZty8kMWwHCJaVQdgRYtOJcEpd
-	HCUpwFEILvAOA1ohn3Wfc+2wS15A7UDqpcXyZHg4BYsZl8xk5MDUCgVBj35kwQsV
-	8mY1EdyzT2arhmY0UZ965g==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 427h09s7gr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 18 Oct 2024 22:19:33 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49IJmAxC026718;
-	Fri, 18 Oct 2024 22:19:32 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2044.outbound.protection.outlook.com [104.47.56.44])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 427fjjrfbe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 18 Oct 2024 22:19:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=E6YKT9ugliRSzVcyXdYqkLdEWDsQ0OAc3R0B8yma4xUBAQ5R4nZWBMe1ZKpc6uAoiCH692mIyAqyCcPveluZoLvufnQ0BEMc2Hbf8zUyyRAMlDlh1JbvtjIpuNd5HSuECH7GW3Tcx4KCNL0cKsCmIOMylsl0gtdI6fIQ9PJ+v4ktaPVXOl1pd1WJV1UVcR6ebQPJVbqn+osZcBbWxMIvWTEpOS6L/hrGQiWq5AimIbWkDs4fnXGF+RZRNRpkIAYnlX99jGCSss072mylBvRSY5Hm59H3BCzNNAtWkRMLtArl29qJmxhLhGPTNdOAVYaqH2lRH75KtElmLIFEJYr1iQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w9AMDvUT1ERUd4z29PkOlJd32tkn2G6ZPf+s5CUCsEc=;
- b=XAIIDVHcpa/hTfNR/67sw02OzyQaplzDBXgRBVkrMcUkvFwuoUXkFzql/9I5DQAyiKWhhiaUbtHHzLb27pMpsO0dvSp3hVWjg1DH6+szLC/g8yVjgM71jPKWnILaj4nZzW/VO/znsVtxU2pGo0H5Dw+Ug5ZTUEdOpAl3S1B9DOw/Ef1ObhbtAA2qfAV/uMIvioFbcAWDUlx3QcGFqX6A5LXSw7ijCvfmdZBaPC2p6Moei/3sYTMyEa9DwfthE15T6hl3dFDvGmUt13YOvWLbvfFXkSsoHphh3pXduiQXgWL4OfFmoZChfzYPXFdZIdvk5HP1s8WNXEpT1ffI0hNgzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w9AMDvUT1ERUd4z29PkOlJd32tkn2G6ZPf+s5CUCsEc=;
- b=cebi8ERm/q5P/oB2z+oFw0ugcjKft3FaXZpbbXziNvtd2ENlbW9agezUV5kC8Q3EM1x0F2G4R+y331CPh2hNeiiztY2d1OOPvhb26uQWB/FE2kfICSlhQH/WyuIzxA9JbchWqkPny7hshXram1hw0qqkzx0xcjERb3pXW/DP3IA=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DM6PR10MB4252.namprd10.prod.outlook.com (2603:10b6:5:215::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.23; Fri, 18 Oct
- 2024 22:19:25 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.8069.016; Fri, 18 Oct 2024
- 22:19:24 +0000
-Message-ID: <ef523540-c7b3-4827-ae9f-ea55130f5060@oracle.com>
-Date: Sat, 19 Oct 2024 06:19:20 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] btrfs: add test for cleaner thread under seed-sprout
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, kernel-team@fb.com
-References: <20ebca40c55ed9207b6ea77aa50e93f3baf698ad.1729101127.git.boris@bur.io>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20ebca40c55ed9207b6ea77aa50e93f3baf698ad.1729101127.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR06CA0010.apcprd06.prod.outlook.com
- (2603:1096:4:186::6) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128FA14F9D9
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Oct 2024 23:34:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729294497; cv=none; b=lxhM3XsXZ9X7qDY7e/34+jgzcc3iDDrZlW+iKoeDR63fmY/Itf0Sv9TrYtSUZr0T/tlHB7Bgu38AlmN+F9MXlS8cWBzZXxAfXSRa5s0sw9HMxGkahmAJeEbz7nxE1QLBFZJPzQjzs5z/rcmL6n9nNrNtyCoiGiIpLFFR7HeYfKw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729294497; c=relaxed/simple;
+	bh=8bIpWhGJ4zShd1hMeEnBOmkoz4qmVX5lJ/OR6LWGBmo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=TAH2vARk2RHe8NNOC3gBpmqZ/okQsVRsjOHhKwHWtc2ah4JvueVW1z/5SjOKMQ4R14kmRcAkXFlJrGLQ55n7dun9HG38lJtngOcW+YdxZPneJHN9DAKIAZuRb/i8wvmkmWGtivHAcikP8TMJEH8LolbaR6VSWo9r4/ktM5eQkUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=I4NFnOI8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QWul7Xik; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfout.phl.internal (Postfix) with ESMTP id 108151380185;
+	Fri, 18 Oct 2024 19:34:54 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-10.internal (MEProxy); Fri, 18 Oct 2024 19:34:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1729294494; x=1729380894; bh=7kW2Cu0eAOAXfc/xlbZyH
+	1oSrfzAuq1+6KxwCwg3hZU=; b=I4NFnOI8YWuqncRI5BuqMol3skE4OsrVGqvwU
+	NUoqIPKg6r3jSnuFtXYBjnCaq91aIeesHz2oW6/H4HbL6nQjfpgxPoQ1sAj4IpDM
+	waPn+Q0+Xt4Db/bwor2/YoB2sNqGFviNJ4a0J0hlLkaXvLRfIzrMwJOogQMcppJu
+	1oSKCuZjFG706iCDOBUX4zb/02kg2rCuoE8ZS9uH9MKD8Kk8Y5c9SBjh+VGEWqOl
+	EXwTJBQL9Ivs3BKubJm4rfgpM23u6pZLZiwLjdt9J6Qbf8LbP+K+3VTG/ZWcszgg
+	ZoO1xE88yE2zyYH5gmgG9iEkQSmYu2NI3yFgeiyBv5ZHbvPpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1729294494; x=1729380894; bh=7kW2Cu0eAOAXfc/xlbZyH1oSrfzA
+	uq1+6KxwCwg3hZU=; b=QWul7Xikhsz3v2Zjgih8xNJbBix2ucsJnU4pELOWxCeT
+	lj2Y7tABMuQ+z4Q3SHFapsmrDPccMlPGijAvL4FeLARZVknqWABY5Y4clkt+fovr
+	6OetXiCMCb+1mirX7dxDGQXHwZsmfK5+cbfyOtiQJ4S3VvBbP0kAnlB2PHt/0+vm
+	NRN3iF3ApU+aHlyHkwAKDpu3SpeoKhtPBYJ1EpHv5+6IVbL34bdL+emBkTNTNawJ
+	dknd1rglUg4G9i6VQoj6OdZS73TloGTEFWgXl1LZKGQKCd84ZvCI/QmACPKqeCtI
+	LC6hGYzyvaxkDgei5lY5aGizQopvh8XIaSFw5fu3BQ==
+X-ME-Sender: <xms:nfASZ99Hix5TmoO2u8CyLEoDm3em_tInIkV5O-SyEDM-Nyb68UyTng>
+    <xme:nfASZxsQag_-BPzwGMDtNsIVGTsGYNcI8gKBrzaAcdCKomlgs5NYp-yJuzR76VEI3
+    jLcYGn1g37Rz6WnrBI>
+X-ME-Received: <xmr:nfASZ7B15RQhCszpg9aLCT7m8CESq29foz1_mIUih-re7eiPfW96OCSPaZ7l5oI-mI45UnLwVU9IqnNlq4xvQC-6rw8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehgedgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffuff
+    fkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosgho
+    rhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevle
+    eifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtg
+    hpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsght
+    rhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqth
+    gvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:nfASZxeoknAREpEEhtgcZSS-T_xqGCqEhNj2mZS0p2ygQB9SSUZFlQ>
+    <xmx:nfASZyMA7tToI9LE_rBaMV-EywsRA9itfL6wt2V7mI6v5ndHPQ1A6w>
+    <xmx:nfASZzkdoHjUob6wcZ_mFV1SrL1L8GlqfkLTdplErD9CXo1bzLHwHA>
+    <xmx:nfASZ8s4lwdYpRuJjnMMIrdq6iCfZEOL66guQOxcqDYnnDz_QsABlQ>
+    <xmx:nvASZ7bOncOAwLi24uG1U7FwuLzmzNZnpnC3l-0GVXnVvZ4m_2T3M9I2>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 18 Oct 2024 19:34:53 -0400 (EDT)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2] btrfs: make dropped merge extent_map immutable
+Date: Fri, 18 Oct 2024 16:34:20 -0700
+Message-ID: <76ba30ab42dc77209f9cc1274b06619c7d474303.1729294376.git.boris@bur.io>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DM6PR10MB4252:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0f5f23c-4976-470e-23bd-08dcefc2ebfa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WWJWVGtpSnVicm5RRzZUOVJ0amkwTisveTN4Y0ZXbFU3bytIOFJIWStxNWQr?=
- =?utf-8?B?T2JqQ3RPbkdGOFlMVzVKQmh6bmI5MzRDZ3lzTmc4Y1htQ2t5TTJDZkhSUEZK?=
- =?utf-8?B?VUNJenNJQTZuR1grUmFjQUFzSkpEQk83bi9VWFE0cW9WclBERElFcm1IM29k?=
- =?utf-8?B?THFhaEdFNzdmMHkyM2lTWUZiSGFKMURVNUhhQk9CdUFxQzVNOVBQREdwWnBp?=
- =?utf-8?B?Uk5aSVJHM3hFcnl1NXc3bnEvOTFVV2NKcSt3blBRYVoxQ2Q2bUhYcTA3VU96?=
- =?utf-8?B?c3IxcVBBbVF0ZjA2OGZLcjNxNXpZYXU5Um1CWEtLYVM5TE10Q0MzaDZIYUxh?=
- =?utf-8?B?NW1DQXkwVXZkek9rUm5JaWlwN0d6dXpmT2hXYzRXenR0elB6aEJUQVZoZGZk?=
- =?utf-8?B?bHNpSHZEcUltc1FEWDhEWjQ5UitKZGJFK21vQ0F2TjhYM1RJMnAvYUJyb3BQ?=
- =?utf-8?B?TTNFbEF6VXRrQjhCRld5ek04RG5oVFZxNC9DSjMrRzlpTG5YMHNJY04wazZn?=
- =?utf-8?B?RDF6TWJvMFIyNllUckJHdStITUJPaVhrQzRQclNCSncrUFB3L3F1VUpoY1Ay?=
- =?utf-8?B?VHd3elNEdEc1bU9TSlRFbkp5KzduY3lQVTIxWlNQNk9Tbm1ySytzODdvTnRk?=
- =?utf-8?B?VEFpUzRma3ovWVJmaVNOZDNEcnNqNmpwcGdzK2M3MFBZRFRGTXNyb2V2ZTBB?=
- =?utf-8?B?dGxsUHJmOG1tYVE5ODNIZHFvZ204QVdYQ3FpeHkvNFVUbm1mZlM2MUlpNUk4?=
- =?utf-8?B?T1h4YnNVWmFjYXNiSksxaWJBMi9uaWkrblMyN1R0U0xvNlR5T3VXdnNIUFFQ?=
- =?utf-8?B?cGVNQnVTbGhLSHFJVUdvK3hWSmQrWDdJSGx2MFdUVDJwK04wN29IUm1aaDdn?=
- =?utf-8?B?SFFISVAyaDB0cXRCL1hOTnpkT2R0MW01RjNrYWlNaW5pQ3dXY1ZkVWsvbjNh?=
- =?utf-8?B?b1E3c01FdHhuZE1obThNZWRYUTBTMG9VTUdTbmQ0RVl5WkkycFpwbFdpYlBw?=
- =?utf-8?B?dk81RzR2YmN6dUFZdVRoc25iT09HL1FqaVg4WWNiTG1ic3MxeW5UNUxuWklr?=
- =?utf-8?B?NjVpYVkwcFhacFhPbXl5UjNta1JmWjhvanVvcXdIYjE2TmM3akQ3Rm5UMHQ4?=
- =?utf-8?B?a1FKTWg4Y0MrUWkydnMzdjN0S25CQVB3bHFQNFlwZ0s0MmxVOWdsYTlqWk1s?=
- =?utf-8?B?cjVBbDYxcUlwK2NzWElNZ0RaNlVISERHZnFET0k1N2VjYkRXL3haV2tZQUJz?=
- =?utf-8?B?ZmtWWmlUOGJ5K2lCQ3N5ZGMrOTR3dmxmL201OURyY3M3MFVsUTBnSVFzb1pJ?=
- =?utf-8?B?M0k3R1djVzhLNDZhY29GSW5DQ3ExMENjeGdGcTNnY1RnUUpGbE5BM3ZQeWFW?=
- =?utf-8?B?dlgzRk1xWCtDa29PeDMrb2tXMjUrd1VhRW9ZR1ZmWlVrUi83dVlqRlM1VDAx?=
- =?utf-8?B?dFozZENoczdjNUlnTkVGM0pWSmpDUXh5ZWlhanZxREo0WEgwSzQ1YVFGWFRP?=
- =?utf-8?B?c2IrcFZNSFA5Uno2a3gzWE02TW9MbTVxdlU5bHhuZWEwN0lveTJUdXJJcm8v?=
- =?utf-8?B?ZjZwSXd5bnQ1SmhYaEhKby9vc0VoREJrQWJDc3NpMDlod3kvak5MVkU4RWFw?=
- =?utf-8?B?eStHL0Z1ZW1wUW9TYStTUDU3ZTVpc3A2aFpnU21lZDE4VU5SaEVub2xHTnhk?=
- =?utf-8?B?VXNXZWxwUHMvSXJoTEE3bHZUczVUcUJmT3N3KzlValRuaGpBaFVrZ2JoaVlr?=
- =?utf-8?Q?IxqgRggHfZwWSRyrYTae3BAABoQQXdf+KDMlGNx?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WHVtOXVvMVBwdDg0THFJNCtqbHN6TXFoSmI0ZUJ5WmxyUTlYbE9RMEdvNENv?=
- =?utf-8?B?WGJIWlViTXQ1bWZCM2FIUHhyL05DWlk1emprQW5PS0x1b0tWQjl3Z0k0TjdX?=
- =?utf-8?B?MXBLUmlYd2pldlhOYTRrUlB6elprTnBwTk9TbUlCUEpZanEwN2FOdUM1S3N2?=
- =?utf-8?B?YnlxaVdIUCtkOWxmVVJ1MzBTd0ZtY1RaMkVMYjBvTkliN1RjWkIzYjBUNHYv?=
- =?utf-8?B?T3BPblQyNnFNWDRnbmREVzlqeklhbjJEV3g4Q2FXc0RpRGUrN3JPT0VkODFv?=
- =?utf-8?B?ZkdQMkJDemo0SlRZcVpmS3l1V2VOcHJmYk1ZNXhvejcrclNSSmc2VUdzOGVE?=
- =?utf-8?B?eTdkMmJpUC9OYnNTcnhObjArMWlmYXJrUTdIZnMrTWRUczJLUE12VEtjRkpo?=
- =?utf-8?B?aXRhektialc0Yktud01uU2NsYlk0cE0veHd6dkEvM2sycmxPYkJkeDlVcnVW?=
- =?utf-8?B?djF0dkxjeU5FSXA4QXM5YmpYWDFvbnR3Q0N0Nyt5ZXRpTThJN3QvTU1QYzBF?=
- =?utf-8?B?ZHBBQVRET0IvUWZCYUxUWUg4VGJnejdaVWJGMnY2ZGprVGkvUHFrd1l1NFBU?=
- =?utf-8?B?M1lGdWhjQmpYRDFvM0VYZ1BhR2d4Y210aS8xeVhxV1VGT0xRYXpXb28zekpO?=
- =?utf-8?B?KytCT0dZTi9JRUNFQmJOTlZyZFN4Rlg5MjlxdkU5RDVhNml0K0thZVhYWTl2?=
- =?utf-8?B?eWtrampoM2ZnSkE0dFJpWmpBVDRrelBrcnE4M1p2ZHdCM29udzBBTFdlMkFD?=
- =?utf-8?B?aVhEb3F0M3E2RGN3VGQ5RXMyR1B5ZHlpV2k2RDA0MXg2VkFReU9adWRZUTFM?=
- =?utf-8?B?dnFTY2pKSWtOREtuSS9GN0s4UnZLemx1Y2VVU2dDa0VjNm1BT1dPbE9QeXNW?=
- =?utf-8?B?QUc0Z1NLNThTb1l6eDE0bmYwNC9IWmxlWDBDaHhIc2pMaDB6c3l2WVZLS0Nt?=
- =?utf-8?B?cXp0L1RML0J6VWh6VFVMOWVRaFpQWjBDWjVjRFpXTzQ1NTZuS1BpQnFCYWM3?=
- =?utf-8?B?bWZ2UzB2U1lrRTUvTUMyTWxsdi8zRzBxZUtxd2ovQWxvWWFXVUJxMkFob1VZ?=
- =?utf-8?B?aGdZL3p0eDczZW1LTVc3VFdXRnNTY2FlNTRJT2ZrQUdhZnBVcThVL2Z6WnZm?=
- =?utf-8?B?enMzZG5oVkk4Rm94TFNCQkpxZTRTZ0IrUmwxYWNEbG9YNCtoL3lyR0t3dGl6?=
- =?utf-8?B?THJSeW5IQ1lqQUdoVFZ5SHpYelRIbjdqU25JMXp4L3hlZEFpaDhtaDZkc3Ew?=
- =?utf-8?B?dDU4cGpxbVA4UUtYRDRrZE1TekFvRG1WdTF1eTFTeGMyNXUxUkdDT0tsZ3dN?=
- =?utf-8?B?L1Yrb29PQll4b2NPeXF0cEt2Z3FlY2N2WU1NVVZHTjdnU2NlMGJwcFlkZm41?=
- =?utf-8?B?c0FTQjRUVGllZnNLdXNsZE0yRndxMGk5bDZmVyt4SzBiSlFJUjRDWk9TeWhL?=
- =?utf-8?B?V0xQb0lpTXNWZzNaakFZbTNyM3RhV3VyQmlQTG4vaVkvdGxVTkY4TUsrOFYy?=
- =?utf-8?B?b3pvd1FxeTBabEtwb3pTWHBqcXFsTGcwV0tBOGFWeWR4eS93Qk02d0pRallJ?=
- =?utf-8?B?S2g4UmRNZnFENVM0eTdQMmR6N3J2Nys0RVZNSEo4OVZvdGV2YkhWUXdoYzVi?=
- =?utf-8?B?L25uT3YrNmdpblpJYUdSWjNqMmMrVnU1NVpJa0RudTFzSUwvM3p0VmVKbFpX?=
- =?utf-8?B?UDhHTENBTElqakk1OE9BZlhoSXNNTjl0aEdxQi9KK1Z3b0lTZTQxbjZSTm02?=
- =?utf-8?B?SXptWklBcGM2TXJibldYditQd01LMFdRZUdyeUtJRFFQcjhUUFRtRXNVakNl?=
- =?utf-8?B?cldQT0lVZGw3a3BvNlVoOW9hZmdsMzZudUdTTG9relkxejY1MTlsYWtKSngw?=
- =?utf-8?B?STh2ZG1teUVINUpGL0p3K0ZoNUFWYjFtMUFsTmlneEl5ejg2VTFBNnZqdUI2?=
- =?utf-8?B?dDJ4VUxaRFdPRG9VQS8xcUR1SDhNM2pRekFESGJOcFpMeTdTaFNQTTdFOGx2?=
- =?utf-8?B?UUNYRllHZXdRTlBwR1ZzbHNVK1N3Z3FKZTErbnBTblJaaGs2M0ZReHlLb2t1?=
- =?utf-8?B?OHpjMlpFM1ZnWnUxdG9QK0tHOStWTjE3ZnJBZHdsRnhPSXI0aWFqVlZ0TWJK?=
- =?utf-8?Q?TfWLINDqpbxgC8n60O4GAj4Ak?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	EqNm8T7vPOxGLx0fPGJWRLtQEa3Y3r3oHt0692QHhm7DBnU7PESo6Z3LHnKFeu5WulP1eBNTRTMb3u6B6+JCx4beSy/rbx9MXg0PXr3PnJB8GJVJ4dinY4egYyk8wk42dgANQ+uFixGl8mYt/1lFDyg0TwpCdgEfVAScipvLrjxucWQWXHCBz/kLPp18okD1/2k9g8yRH53mCcltogU+fXA5G9FQlHuqb7Bvcu0MkGQIGx/VeLGwz+TKNG+j9elHXAFqKFYlVhluCzqt/O1Ml2MjJECcH5EL+J+jQHesMKKLHSIZhmVKpPkdDBRjDJ/7iga+ssVdY1EPw4HM3LjxCqP8RRFd30oMXtLqPk3Bi3y98PL8udRjMBAt1+f2kTiNdYKfdmgh4AYnE738RB4njya+OVnPbV2uoQVx2O+X85IzgWiwH8iCEvmNde8Q21h5FCQkkM74CjMu/7WzdrKRKNFFmguPmje+7zHL+Dklafk1CRiVxN6PkBmiwYa9KeUrXQV7QIwk11FnXbufsfZaEKwF3Kych/DaTJDuRfYms1qdmL4yiyteOi6NnfwJ4ztomMGcxLAKpE8ZYJSAvzlDRHntKDvOtgMaBI3677zTNJM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0f5f23c-4976-470e-23bd-08dcefc2ebfa
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2024 22:19:24.4773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OSTDMW97/qTChWG7craUr0P6KF8lAwYBQP4hgZkrpk7xKrOA66b+URobEL+tqqiAsVJKnh4qC6UGG2kdtxj7tw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4252
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-18_17,2024-10-17_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- spamscore=0 malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2409260000 definitions=main-2410180143
-X-Proofpoint-GUID: fyTYjyIbg6AAJHC_g1Js9fPHuOhcRKLw
-X-Proofpoint-ORIG-GUID: fyTYjyIbg6AAJHC_g1Js9fPHuOhcRKLw
+Content-Transfer-Encoding: 8bit
 
-On 17/10/24 01:54, Boris Burkov wrote:
-> We have a longstanding bug that creating a seed sprout fs with the
-> ro->rw transition done with
-> 
-> mount -o remount,rw $mnt
-> 
-> instead of
-> 
-> umount $mnt
-> mount $sprout_dev $mnt
-> 
-> results in an fs without BTRFS_FS_OPEN set, which fails to ever run the
-> critical btrfs cleaner thread.
-> 
-> This test reproduces that bug and detects it by creating and deleting a
-> subvolume, then triggering the cleaner thread. The expected behavior is
-> for the cleaner thread to delete the stale subvolume and for the list to
-> show no entries. Without the fix, we see a DELETED entry for the subvol.
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
-> Changelog:
-> v3:
-> - add volume group
-> - switch to SCRATCH_DEV/SPARE_DEV
-> - filter scratch devs from mount/findmnt output instead of suppressing.
->    This adds the expected read only message that comes with mounting seed
->    devices to the golden output, and makes the ro/rw check more natural.
-> v2:
-> - update to real copyright info
-> - add extra rw->ro transition checks
-> - remove unnecessary _require_test
-> ---
->   tests/btrfs/323     | 47 +++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/323.out |  4 ++++
->   2 files changed, 51 insertions(+)
->   create mode 100755 tests/btrfs/323
->   create mode 100644 tests/btrfs/323.out
-> 
-> diff --git a/tests/btrfs/323 b/tests/btrfs/323
-> new file mode 100755
-> index 000000000..4e389d66a
-> --- /dev/null
-> +++ b/tests/btrfs/323
-> @@ -0,0 +1,47 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 323
-> +#
-> +# Test that remounted seed/sprout device FS is fully functional. For example, that it can purge stale subvolumes.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick seed remount
+In debugging some corrupt squashfs files, we observed symptoms of
+corrupt page cache pages but correct on-disk contents. Further
+investigation revealed that the exact symptom was a correct page
+followed by an incorrect, duplicate, page. This got us thinking about
+extent maps.
 
-volume
+commit ac05ca913e9f ("Btrfs: fix race between using extent maps and merging them")
+enforces a reference count on the primary `em` extent_map being merged,
+as that one gets modified.
 
-Zorro, can you pls add it while merging.
+However, since,
+commit 3d2ac9922465 ("btrfs: introduce new members for extent_map")
+both 'em' and 'merge' get modified, which started modifying 'merge'
+and thus introduced the same race.
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+We were able to reproduce this by looping the affected squashfs workload
+in parallel on a bunch of separate btrfs-es while also dropping caches.
+We are still working on a simple enough reproducer to make into an fstest.
 
-Thanks
-Anand
+The simplest fix is to stop modifying 'merge', which is not essential,
+as it is dropped immediately after the merge. This behavior is simply
+a consequence of the order of the two extent maps being important in
+computing the new values. Modify merge_ondisk_extents to take prev and
+next by const* and also take a third merged parameter that it puts the
+results in. Note that this introduces the rather odd behavior of passing
+'em' to merge_ondisk_extents as a const * and as a regular ptr.
 
+Fixes: 3d2ac9922465 ("btrfs: introduce new members for extent_map")
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+Changelog:
+v2:
+- make 'merge' immutable instead of refcounting it
+---
+ fs/btrfs/extent_map.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-> +
-> +. ./common/filter
-> +_require_command "$BTRFS_TUNE_PROG" btrfstune
-> +_require_scratch_dev_pool 2
-> +
-> +_fixed_by_kernel_commit XXXXXXXX \
-> +	"btrfs: do not clear read-only when adding sprout device"
-> +
-> +_scratch_dev_pool_get 1
-> +_spare_dev_get
-> +
-> +# create a read-only fs based off a read-only seed device
-> +_scratch_mkfs >>$seqres.full
-> +$BTRFS_TUNE_PROG -S 1 $SCRATCH_DEV
-> +_scratch_mount 2>&1 | _filter_scratch
-> +_btrfs device add -f $SPARE_DEV $SCRATCH_MNT >>$seqres.full
-> +
-> +# switch ro to rw, checking that it was ro before and rw after
-> +findmnt -n -O ro -o TARGET $SCRATCH_MNT | _filter_scratch
-> +_mount -o remount,rw $SCRATCH_MNT
-> +findmnt -n -O rw -o TARGET $SCRATCH_MNT | _filter_scratch
-> +
-> +# do stuff in the seed/sprout fs
-> +_btrfs subvolume create $SCRATCH_MNT/subv
-> +_btrfs subvolume delete $SCRATCH_MNT/subv
-> +
-> +# trigger cleaner thread without remounting
-> +_btrfs filesystem sync $SCRATCH_MNT
-> +
-> +# expect no deleted subvolumes remaining
-> +$BTRFS_UTIL_PROG subvolume list -d $SCRATCH_MNT
-> +
-> +_spare_dev_put
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/323.out b/tests/btrfs/323.out
-> new file mode 100644
-> index 000000000..1ca2e4b13
-> --- /dev/null
-> +++ b/tests/btrfs/323.out
-> @@ -0,0 +1,4 @@
-> +QA output created by 323
-> +mount: SCRATCH_MNT: WARNING: source write-protected, mounted read-only.
-> +SCRATCH_MNT
-> +SCRATCH_MNT
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index d58d6fc40da1..a8290724475a 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -252,7 +252,8 @@ static bool mergeable_maps(const struct extent_map *prev, const struct extent_ma
+  * @prev and @next will be both updated to point to the new merged range.
+  * Thus one of them should be removed by the caller.
+  */
+-static void merge_ondisk_extents(struct extent_map *prev, struct extent_map *next)
++static void merge_ondisk_extents(struct extent_map const *prev, struct extent_map const *next,
++				 struct extent_map *merged)
+ {
+ 	u64 new_disk_bytenr;
+ 	u64 new_disk_num_bytes;
+@@ -287,15 +288,10 @@ static void merge_ondisk_extents(struct extent_map *prev, struct extent_map *nex
+ 			     new_disk_bytenr;
+ 	new_offset = prev->disk_bytenr + prev->offset - new_disk_bytenr;
+ 
+-	prev->disk_bytenr = new_disk_bytenr;
+-	prev->disk_num_bytes = new_disk_num_bytes;
+-	prev->ram_bytes = new_disk_num_bytes;
+-	prev->offset = new_offset;
+-
+-	next->disk_bytenr = new_disk_bytenr;
+-	next->disk_num_bytes = new_disk_num_bytes;
+-	next->ram_bytes = new_disk_num_bytes;
+-	next->offset = new_offset;
++	merged->disk_bytenr = new_disk_bytenr;
++	merged->disk_num_bytes = new_disk_num_bytes;
++	merged->ram_bytes = new_disk_num_bytes;
++	merged->offset = new_offset;
+ }
+ 
+ static void dump_extent_map(struct btrfs_fs_info *fs_info, const char *prefix,
+@@ -363,7 +359,7 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
+ 			em->generation = max(em->generation, merge->generation);
+ 
+ 			if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+-				merge_ondisk_extents(merge, em);
++				merge_ondisk_extents(merge, em, em);
+ 			em->flags |= EXTENT_FLAG_MERGED;
+ 
+ 			validate_extent_map(fs_info, em);
+@@ -378,7 +374,7 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
+ 	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
+ 		em->len += merge->len;
+ 		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+-			merge_ondisk_extents(em, merge);
++			merge_ondisk_extents(em, merge, em);
+ 		validate_extent_map(fs_info, em);
+ 		em->generation = max(em->generation, merge->generation);
+ 		em->flags |= EXTENT_FLAG_MERGED;
+-- 
+2.47.0
 
 
