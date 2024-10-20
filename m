@@ -1,196 +1,281 @@
-Return-Path: <linux-btrfs+bounces-9012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9013-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5A49A52ED
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Oct 2024 08:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 727DF9A5371
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Oct 2024 12:18:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 344B61F212FA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Oct 2024 06:45:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 920011F22657
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Oct 2024 10:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1F618B09;
-	Sun, 20 Oct 2024 06:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381C9126BE6;
+	Sun, 20 Oct 2024 10:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=coker.com.au header.i=@coker.com.au header.b="pzUz46PV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.sws.net.au (smtp.sws.net.au [144.76.186.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837A0F9CB
-	for <linux-btrfs@vger.kernel.org>; Sun, 20 Oct 2024 06:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA317485
+	for <linux-btrfs@vger.kernel.org>; Sun, 20 Oct 2024 10:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.186.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729406728; cv=none; b=qCXJ0hwjznNinHT8//DV6E2NX/ltDOzWFE60bvEiUIM37zBHdvLbMbrQLLo8r0Hjp5gyZMvB+skZgn5FohsUbYVkXtrZ5VVzqoFeIdROz7BQ/IXmLVlkUqVEF1tyFroeyt58jVznGWo1goFzxBuqBmwaHV9vz8kKVNzYyG9JIu4=
+	t=1729419529; cv=none; b=BxanWBrKUjvWuBvaDe7FeIgNdb4FgBVQh6iEXY71Edg4sCngUVbjhG4X4nOaGPCl/fDH3yFN5NDk+QSPiDGhpfKL3hTdr7/0ikSYNpSSCJNDm3uDixZSIKLVb4PJDVMSvpDhvTbgbB4cnq6Fu/81jIaVFjygGQIHaCrSJWF8dw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729406728; c=relaxed/simple;
-	bh=aNWzB6IOj0MBINu6/wEFKuO6BveptNVD8H/1L25NDfM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OvlNBx23HgsY5jlH6RfsEzekqRG/VckU00dxEFJlqnC/ih42/xQpY1ofaIl1gOg3LvReXxjRj5YrCZ58Cy7qIU5X5JO6Fw9Np8nonQYWQEusG93f/21L8P8oOFPqedvhek+077vMrFxnDvurO467ylNfoVB7L1RZJfmW2+NbRoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-83a8c0df400so364908039f.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Oct 2024 23:45:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729406725; x=1730011525;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0cXuAih9iXg2aI5LiI0A+t7QUSULHFv/pwLY1KXI/r8=;
-        b=YxurMcR5g1yu7ogMaM5Ilkhrnv/okJRFC29wBw8xD8ADF0DYiezHWIuZsmrkXi5+RI
-         BO9L3miEG3+nk9KvJRB9KKUUFHWCMeBDRP6ZGy1Di2KsrDFgqZyDUF+0AyOvGtAdfK4a
-         38GGQGbaFk3wReD+51D6l917tESx3PT9B6FUBmrYiYyFu4u6D7LOhHlnYup0ZR3wioNS
-         v6I6rl3DnmqACbv9ccGWVwCH5oa4bE7H40i295t46bcR8b4FbBn+ulAxwk0AmiHT7flj
-         UbNrNzjkzu7gtgatLsiVoyM+GTCLr5GtDBwXL0O96QJTWyApVwi894S2TR/EeNxFevtj
-         JjwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoPEXY5pdimjGVrJQUkXB50WwO17bVaiz394UWHPq5ErHO+cAk8LKrO7COl+xWLwYesKHgp+idUAp6MQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrYQF2t0Mh5odLcBCwOvT0ZiYOxjQW2egIA8jLUf/7AqxPsCk7
-	Blp4/nXoxFjjg0X6xFtvVKSdRIA05SoPAvi1Y16geTfI3d3kv8WY7YavJLRfEROuZ7H1ze8jVmS
-	OJ5k/cI51RzaaWXcQlHyRgsuW+SNlCJ/A8HKwrQxd0dhyuw3iJAbArtg=
-X-Google-Smtp-Source: AGHT+IHTEZi+Vyaqn/YxC4vkDlDlsoQ4TxcKX699DQP6aAUL2ZN6Zn9CNKsUAT3SoZgS92sl//tx8VvNuJ1V1INmzk0yAEFeAenI
+	s=arc-20240116; t=1729419529; c=relaxed/simple;
+	bh=i8MdBK0bWdCWfW6iOSqWDjuPZ3eI3s/TCREhKQEdoqc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rjI1Oy7KDhOlunKuV8AAo3VZGRXdI0lAIwe2iKl4mRezkeix3PGBv7IV6yXKvXbN6IO65rmeY9dgk9PMK1ofvLHguwAxyPNv+vjwXl7jYIuhJ9SnV3Embe35fN+GH/EOMye1/Uf/gIIvVSb76bq0TEFVnCtX26C2UFYNIEIeR00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=coker.com.au; spf=pass smtp.mailfrom=coker.com.au; dkim=pass (1024-bit key) header.d=coker.com.au header.i=@coker.com.au header.b=pzUz46PV; arc=none smtp.client-ip=144.76.186.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=coker.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=coker.com.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=coker.com.au;
+	s=2008; t=1729418996;
+	bh=NysYr3zC6we4BGAwuobFoxTls4Trtrv3xMQCasUwkQc=; l=9768;
+	h=From:To:Reply-To:Subject:Date:From;
+	b=pzUz46PV5bUEq8BSXPzkPiLDOCfL1y2Dy7KFciypwF1FOpcirlu683SSQtmLJ+2Ip
+	 VY0VZVTriPT1fbl8AurWUQLbVvfdtHo+XcxizQM8B1g9vHku4oNkc4GglRyBL60v4F
+	 4+9rrTSyjn/vOSKSaK/GA1Ay2J6JW1QJ+QLhoWTM=
+Received: from xev.coker.com.au (localhost [127.0.0.1])
+	by smtp.sws.net.au (Postfix) with ESMTP id 17CDCEB84
+	for <linux-btrfs@vger.kernel.org>; Sun, 20 Oct 2024 21:09:56 +1100 (AEDT)
+Received: by xev.coker.com.au (Postfix, from userid 1001)
+	id 2E77B58E9E00; Sun, 20 Oct 2024 21:09:51 +1100 (AEDT)
+From: Russell Coker <russell@coker.com.au>
+To: linux-btrfs@vger.kernel.org
+Reply-To: russell@coker.com.au
+Subject: strangely uncorrectable errors with RAID-5
+Date: Sun, 20 Oct 2024 21:09:50 +1100
+Message-ID: <23840777.EfDdHjke4D@xev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2168:b0:3a3:b497:f951 with SMTP id
- e9e14a558f8ab-3a3f40b58d4mr61262995ab.23.1729406725470; Sat, 19 Oct 2024
- 23:45:25 -0700 (PDT)
-Date: Sat, 19 Oct 2024 23:45:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6714a705.050a0220.1e4b4d.0035.GAE@google.com>
-Subject: [syzbot] [btrfs?] general protection fault in put_pwq_unlocked (2)
-From: syzbot <syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com>
-To: cem@kernel.org, clm@fb.com, djwong@kernel.org, dsterba@suse.com, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hello,
+I've been testing out BTRFS RAID-5 with Debian kernels 6.10.9 and 6.11.2 from 
+Unstable.
 
-syzbot found the following issue on:
+I know that RAID-5 is not expected to be good enough for real data but it 
+still seemed interesting to test it as apparently there have been improvemnts 
+recently.  I created some errors that SHOULD be recoverable (and are 
+recoverable with RAID-1) which turned out to not be recoverable (according to 
+BTRFS) even though the diff command reported that the data was intact.  Now I 
+can't get the filesystem to an error-free status.
 
-HEAD commit:    f9e4825524aa Merge tag 'input-for-v6.12-rc3' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=129220a7980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78db40d8379956d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=aa930d41d2f32904c5da
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+To test it I created a 4 device RAID-5 filesystem and ran the following script 
+to stress it a bit:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+#!/bin/bash
+set -e
+cd /mnt
+while true ; do
+  cp -r usr usr2
+  cp -r usr usr3
+  cp -r usr usr4
+  cp -r usr usr5
+  sync
+  diff -ru usr usr2
+  diff -ru usr usr3
+  diff -ru usr usr4
+  diff -ru usr usr5
+  rm -rf usr?
+done
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c73069e3297a/disk-f9e48255.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/efe8e01d8c7c/vmlinux-f9e48255.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/35d48123aca0/bzImage-f9e48255.xz
+Then I ran the following script to cause corruption and scrub it to see what 
+happens:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com
+#!/bin/bash
+set -e
+while true ; do
+  for DEV in c d e f ; do
+    dd if=/dev/zero of=/dev/vd$DEV oseek=$((20+$RANDOM%3*1000)) bs=1024k \ 
+count=1000
+    sync
+    btrfs scrub start -B /mnt
+    sync
+  done
+done
 
-XFS (loop2): Unmounting Filesystem bfdc47fc-10d8-4eed-a562-11a831b3f791
-Oops: general protection fault, probably for non-canonical address 0xe01ffbf110170e7f: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: maybe wild-memory-access in range [0x00ffff8880b873f8-0x00ffff8880b873ff]
-CPU: 1 UID: 0 PID: 5226 Comm: syz-executor Not tainted 6.12.0-rc3-syzkaller-00403-gf9e4825524aa #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:__lock_acquire+0x69/0x2050 kernel/locking/lockdep.c:5065
-Code: b6 04 30 84 c0 0f 85 9b 16 00 00 45 31 f6 83 3d f8 a7 ab 0e 00 0f 84 b6 13 00 00 89 54 24 54 89 5c 24 68 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 b9 2b 8b 00 48 be 00 00 00 00 00 fc
-RSP: 0000:ffffc90004247970 EFLAGS: 00010002
-RAX: 001ffff110170e7f RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 00ffff8880b873f9
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: dffffc0000000000 R11: fffffbfff2037a4e R12: ffff8880617c0000
-R13: 0000000000000001 R14: 0000000000000000 R15: 00ffff8880b873f9
-FS:  00005555724f4500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe0c1d37a8c CR3: 0000000061f58000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
- _raw_spin_lock_irq+0xd3/0x120 kernel/locking/spinlock.c:170
- put_pwq_unlocked+0x42/0x190 kernel/workqueue.c:1662
- destroy_workqueue+0x99d/0xc40 kernel/workqueue.c:5883
- xfs_destroy_mount_workqueues+0xd3/0x100 fs/xfs/xfs_super.c:605
- xfs_fs_put_super+0x13a/0x150 fs/xfs/xfs_super.c:1152
- generic_shutdown_super+0x139/0x2d0 fs/super.c:642
- kill_block_super+0x44/0x90 fs/super.c:1696
- xfs_kill_sb+0x15/0x50 fs/xfs/xfs_super.c:2056
- deactivate_locked_super+0xc4/0x130 fs/super.c:473
- cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
- task_work_run+0x24f/0x310 kernel/task_work.c:228
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x168/0x370 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fa6f997f327
-Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007fff96927f68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fa6f997f327
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff96928020
-RBP: 00007fff96928020 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff969290a0
-R13: 00007fa6f99f0134 R14: 0000000000026639 R15: 00007fff969290e0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__lock_acquire+0x69/0x2050 kernel/locking/lockdep.c:5065
-Code: b6 04 30 84 c0 0f 85 9b 16 00 00 45 31 f6 83 3d f8 a7 ab 0e 00 0f 84 b6 13 00 00 89 54 24 54 89 5c 24 68 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 b9 2b 8b 00 48 be 00 00 00 00 00 fc
-RSP: 0000:ffffc90004247970 EFLAGS: 00010002
-RAX: 001ffff110170e7f RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 00ffff8880b873f9
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: dffffc0000000000 R11: fffffbfff2037a4e R12: ffff8880617c0000
-R13: 0000000000000001 R14: 0000000000000000 R15: 00ffff8880b873f9
-FS:  00005555724f4500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe0c1d37a8c CR3: 0000000061f58000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	b6 04                	mov    $0x4,%dh
-   2:	30 84 c0 0f 85 9b 16 	xor    %al,0x169b850f(%rax,%rax,8)
-   9:	00 00                	add    %al,(%rax)
-   b:	45 31 f6             	xor    %r14d,%r14d
-   e:	83 3d f8 a7 ab 0e 00 	cmpl   $0x0,0xeaba7f8(%rip)        # 0xeaba80d
-  15:	0f 84 b6 13 00 00    	je     0x13d1
-  1b:	89 54 24 54          	mov    %edx,0x54(%rsp)
-  1f:	89 5c 24 68          	mov    %ebx,0x68(%rsp)
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruction
-  2e:	74 12                	je     0x42
-  30:	4c 89 ff             	mov    %r15,%rdi
-  33:	e8 b9 2b 8b 00       	call   0x8b2bf1
-  38:	48                   	rex.W
-  39:	be 00 00 00 00       	mov    $0x0,%esi
-  3e:	00 fc                	add    %bh,%ah
+It didn't take very long before it reported problems scrubbing the filesystem 
+even though the diff commands didn't report any errors.  According to diff 
+that filesystem has not lost any data, but now even after rebooting I get the 
+following when I run a scrub:
 
+root@testing1:~# btrfs scrub start -B /mnt
+Starting scrub on devid 1
+Starting scrub on devid 2
+Starting scrub on devid 3
+Starting scrub on devid 4
+ERROR: scrubbing /mnt failed for device id 1: ret=-1, errno=5 (Input/output 
+error)
+ERROR: scrubbing /mnt failed for device id 2: ret=-1, errno=5 (Input/output 
+error)
+ERROR: scrubbing /mnt failed for device id 3: ret=-1, errno=5 (Input/output 
+error)
+ERROR: scrubbing /mnt failed for device id 4: ret=-1, errno=5 (Input/output 
+error)
+scrub canceled for f8a30d07-f92e-4dfc-a62f-f49d35b70467
+Scrub started:    Sun Oct 20 10:01:21 2024
+Status:           aborted
+Duration:         0:00:03
+Total to scrub:   332.22MiB
+Rate:             110.74MiB/s (some device limits set)
+Error summary:    csum=4
+  Corrected:      0
+  Uncorrectable:  4
+  Unverified:     0
+root@testing1:~# btrfs scrub start -B /mnt
+Starting scrub on devid 1
+Starting scrub on devid 2
+Starting scrub on devid 3
+Starting scrub on devid 4
+ERROR: scrubbing /mnt failed for device id 1: ret=-1, errno=5 (Input/output 
+error)
+ERROR: scrubbing /mnt failed for device id 2: ret=-1, errno=5 (Input/output 
+error)
+ERROR: scrubbing /mnt failed for device id 3: ret=-1, errno=5 (Input/output 
+error)
+ERROR: scrubbing /mnt failed for device id 4: ret=-1, errno=5 (Input/output 
+error)
+scrub canceled for f8a30d07-f92e-4dfc-a62f-f49d35b70467
+Scrub started:    Sun Oct 20 10:01:27 2024
+Status:           aborted
+Duration:         0:00:03
+Total to scrub:   332.22MiB
+Rate:             110.74MiB/s (some device limits set)
+Error summary:    csum=4
+  Corrected:      0
+  Uncorrectable:  4
+  Unverified:     0
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Below is some output from dmesg:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[   36.975742] BTRFS info (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 
+0, corrupt 5443, gen 0
+[   36.976083] BTRFS info (device vdc): bdev /dev/vde errs: wr 0, rd 0, flush 
+0, corrupt 13127, gen 0
+[   36.976397] BTRFS info (device vdc): bdev /dev/vdf errs: wr 0, rd 0, flush 
+0, corrupt 1412, gen 0
+[   38.877364] BTRFS info (device vdc): scrub: started on devid 3
+[   38.878607] BTRFS info (device vdc): scrub: started on devid 4
+[   38.880468] BTRFS info (device vdc): scrub: started on devid 1
+[   38.885000] BTRFS info (device vdc): scrub: started on devid 2
+[   39.347569] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.350325] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.353158] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.355091] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.355786] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   39.356293] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   39.357059] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   39.357198] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.357602] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   39.359539] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.363175] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   39.364156] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   39.364813] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   39.365519] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   39.365838] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.368456] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   39.369461] BTRFS error (device vdc): unrepaired sectors detected, full 
+stripe 411893760 data stripe 2 errors 0-3
+[   39.370175] BTRFS info (device vdc): scrub: not finished on devid 4 with 
+status: -5
+[   41.231719] BTRFS error (device vdc): bad tree block start, mirror 1 want 
+412024832 have 0
+[   41.232326] BTRFS error (device vdc): bad tree block start, mirror 2 want 
+412024832 have 0
+[   41.232832] BTRFS error (device vdc): bad tree block start, mirror 1 want 
+412024832 have 0
+[   41.233470] BTRFS error (device vdc): bad tree block start, mirror 2 want 
+412024832 have 0
+[   41.234085] BTRFS info (device vdc): scrub: not finished on devid 1 with 
+status: -5
+[   41.234170] BTRFS info (device vdc): scrub: not finished on devid 2 with 
+status: -5
+[   41.234231] BTRFS info (device vdc): scrub: not finished on devid 3 with 
+status: -5
+[   44.243128] BTRFS info (device vdc): scrub: started on devid 1
+[   44.243901] BTRFS info (device vdc): scrub: started on devid 2
+[   44.243928] BTRFS info (device vdc): scrub: started on devid 4
+[   44.244796] BTRFS info (device vdc): scrub: started on devid 3
+[   44.774710] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.793802] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.797168] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.803175] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.807162] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   44.810892] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   44.811443] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   44.823205] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.823540] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   44.823544] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   44.823546] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   44.823547] BTRFS error (device vdc): unable to fixup (regular) error at 
+logical 412024832 on dev /dev/vde physical 315555840
+[   44.823549] BTRFS warning (device vdc): checksum error at logical 412024832 
+on dev /dev/vde, physical 315555840: metadata leaf (level 0) in tree 2
+[   44.832155] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.838895] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.844663] BTRFS warning (device vdc): tree block 412024832 mirror 1 has 
+bad bytenr, has 0 want 412024832
+[   44.845561] BTRFS error (device vdc): unrepaired sectors detected, full 
+stripe 411893760 data stripe 2 errors 0-3
+[   44.846842] BTRFS info (device vdc): scrub: not finished on devid 4 with 
+status: -5
+[   47.746767] BTRFS error (device vdc): bad tree block start, mirror 1 want 
+412024832 have 0
+[   47.748256] BTRFS error (device vdc): bad tree block start, mirror 2 want 
+412024832 have 0
+[   47.749069] BTRFS info (device vdc): scrub: not finished on devid 3 with 
+status: -5
+[   47.754752] BTRFS error (device vdc): bad tree block start, mirror 1 want 
+412024832 have 0
+[   47.755952] BTRFS error (device vdc): bad tree block start, mirror 2 want 
+412024832 have 0
+[   47.758766] BTRFS info (device vdc): scrub: not finished on devid 2 with 
+status: -5
+[   47.822683] BTRFS error (device vdc): bad tree block start, mirror 1 want 
+412024832 have 0
+[   47.826760] BTRFS error (device vdc): bad tree block start, mirror 2 want 
+412024832 have 0
+[   47.834688] BTRFS info (device vdc): scrub: not finished on devid 1 with 
+status: -5
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+-- 
+My Main Blog         http://etbe.coker.com.au/
+My Documents Blog    http://doc.coker.com.au/
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
