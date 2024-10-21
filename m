@@ -1,103 +1,102 @@
-Return-Path: <linux-btrfs+bounces-9033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9034-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D7AE9A723B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 20:23:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1788E9A728E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 20:43:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E45C9B21D95
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 18:23:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 375621C213CB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 18:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9DA1F942D;
-	Mon, 21 Oct 2024 18:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C331FAC39;
+	Mon, 21 Oct 2024 18:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RlatGtgO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MamAPHjh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RlatGtgO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MamAPHjh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZzgEH10h";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TgTLCFzt";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZzgEH10h";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TgTLCFzt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981EC193409;
-	Mon, 21 Oct 2024 18:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B836B78C76
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2024 18:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729535010; cv=none; b=OOPlxQGcDJc7PInsCnr5pHN7oBJvngP7hTM2+1jvWoqY7Qz3+qyMHRL59WgoMbEwPRmLWQYFM6jDUUKlAe3HGYuzwJyZcRMppZopAyxpnEwwtJDTKHlOpyqOPL1TQ/Z+4HTs3mkBS1jyA+RoLtLApIE/20Yr0kudSVDaXm4eOcw=
+	t=1729536183; cv=none; b=OFErNz7ETQ4CaR2ajKUHiZo11zoOckkbk7Y2MF9y/C1HBuiuV9Jcvb7a3ggVtx4B2+7uoekCaK+4u6te5SNvuN4LcaUvGPEA7FUFGkfOqQsw4NodTv+VeGrcE03Da2IeVVGPwzN26dxRLfDGwx/XtyTldccz2Sug+IJCK0c0ILg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729535010; c=relaxed/simple;
-	bh=VNUzRSbXDhZLV3Nj2QX1hw833SMLqsoKV4EiYmnqE1U=;
+	s=arc-20240116; t=1729536183; c=relaxed/simple;
+	bh=wkA6hBZqXi5vganp408CEgwMpxQyyCNkoxQmtZDw6jM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bJ6Fi9iqOR06fCD5udVpIl8jUj9DfS1FlvpX5Juz3H2Ltx+T8wIbyUMi76BNeib9anrUzcCGiWDknWvWzswai7KnBv0t+0ErGeEW6Pnn3K/mjLZfZS9QAkIMn7qRzrDmxK9wT9e09QT1tWBEB/RhQRM6So3KWV8Hos/TXlkm4eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RlatGtgO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MamAPHjh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RlatGtgO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MamAPHjh; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z5sV8L4GOO2nTkaWm2ilEoqjpbS8wgCN+iU5O4tQomanyLfsuhPT80WwZRiB+ib8/f0VJQ9rb1rMfPrinpiXCVHi9VFBcpRuicH17FiVTIL9r8jI4GK0R0R8zoFsEnr5FEKJCchloqFyxHlnWWk/b5U2SoUD7LUrWAoeTzCoukk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZzgEH10h; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TgTLCFzt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZzgEH10h; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TgTLCFzt; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CB9A01F460;
-	Mon, 21 Oct 2024 18:23:25 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 08E3321C22;
+	Mon, 21 Oct 2024 18:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729535005;
+	t=1729536179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YEYgKOz5Gx8656Ir9rc63mprmMrVN+JVSRt7f/8F30o=;
-	b=RlatGtgOoSD/jjKFckgqPufk+jY5kWfNms3LIdJ9t6wFK/yW1SWqy8MJ7WxKbP2eHYfYlu
-	AgMsi37e7mJ6m+pY1Ed2W0q+P4apJ2uvd59yYYsK8H6askJkXSOWlXySyC5TEMmPtqkAzv
-	Y1mcQzWHnuX3VA4aKvta9kd++VUF6Fg=
+	bh=H+ntZO3PFbKFJlpSOHDTHDftnQbVH6sa+tnFkQBqSKU=;
+	b=ZzgEH10hmDxq/QfG22Cj0KrLMFGFOdgt6Sb/YCMMRVV7uKYmToBXjZhPHd5kpwc71oVdko
+	NaTlDu4ouWh7BY62fe64PGNXjmS2Uo/Q4HacrwI3bo8g4aSVQ+D7w4hcU5wLNnSzGHqgax
+	dBjuqGKE6nTfy461yoP+Rwltd0sfnLE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729535005;
+	s=susede2_ed25519; t=1729536179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YEYgKOz5Gx8656Ir9rc63mprmMrVN+JVSRt7f/8F30o=;
-	b=MamAPHjhj+VofW8NUGOfmkonmztzUKiRmhB+WjxHveIax8gNcPROBVZkDvJKKx/Mfw7LH6
-	p6ElW5M14+p4nwCA==
-Authentication-Results: smtp-out2.suse.de;
+	bh=H+ntZO3PFbKFJlpSOHDTHDftnQbVH6sa+tnFkQBqSKU=;
+	b=TgTLCFzt/0iMSIv/aOJIbXjv1gXwOuX+GwdZfDOINdjU/tYu4/hnbXPQk8u4+jT4W6libN
+	1/sKIA17h5U4SlCg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729535005;
+	t=1729536179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YEYgKOz5Gx8656Ir9rc63mprmMrVN+JVSRt7f/8F30o=;
-	b=RlatGtgOoSD/jjKFckgqPufk+jY5kWfNms3LIdJ9t6wFK/yW1SWqy8MJ7WxKbP2eHYfYlu
-	AgMsi37e7mJ6m+pY1Ed2W0q+P4apJ2uvd59yYYsK8H6askJkXSOWlXySyC5TEMmPtqkAzv
-	Y1mcQzWHnuX3VA4aKvta9kd++VUF6Fg=
+	bh=H+ntZO3PFbKFJlpSOHDTHDftnQbVH6sa+tnFkQBqSKU=;
+	b=ZzgEH10hmDxq/QfG22Cj0KrLMFGFOdgt6Sb/YCMMRVV7uKYmToBXjZhPHd5kpwc71oVdko
+	NaTlDu4ouWh7BY62fe64PGNXjmS2Uo/Q4HacrwI3bo8g4aSVQ+D7w4hcU5wLNnSzGHqgax
+	dBjuqGKE6nTfy461yoP+Rwltd0sfnLE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729535005;
+	s=susede2_ed25519; t=1729536179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YEYgKOz5Gx8656Ir9rc63mprmMrVN+JVSRt7f/8F30o=;
-	b=MamAPHjhj+VofW8NUGOfmkonmztzUKiRmhB+WjxHveIax8gNcPROBVZkDvJKKx/Mfw7LH6
-	p6ElW5M14+p4nwCA==
+	bh=H+ntZO3PFbKFJlpSOHDTHDftnQbVH6sa+tnFkQBqSKU=;
+	b=TgTLCFzt/0iMSIv/aOJIbXjv1gXwOuX+GwdZfDOINdjU/tYu4/hnbXPQk8u4+jT4W6libN
+	1/sKIA17h5U4SlCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4E08139E0;
-	Mon, 21 Oct 2024 18:23:25 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC6A2136DC;
+	Mon, 21 Oct 2024 18:42:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ffuOKx2cFmcgIAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 21 Oct 2024 18:23:25 +0000
-Date: Mon, 21 Oct 2024 20:23:24 +0200
+	id V1ySNbKgFmdJJQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 21 Oct 2024 18:42:58 +0000
+Date: Mon, 21 Oct 2024 20:42:53 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@meta.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
-Message-ID: <20241021182324.GA24631@suse.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, wqu@suse.com,
+	hrx@bupt.moe, waxhead@dirtcellar.net
+Subject: Re: [PATCH v2 0/3] raid1 balancing methods
+Message-ID: <20241021184253.GB24631@suse.cz>
 Reply-To: dsterba@suse.cz
-References: <20241014171838.304953-1-maharmstone@fb.com>
- <20241014171838.304953-6-maharmstone@fb.com>
- <20241021135005.GC17835@twin.jikos.cz>
- <f4f64bfe-c92b-4656-adec-d073b6286451@meta.com>
+References: <cover.1728608421.git.anand.jain@oracle.com>
+ <20241021140518.GD17835@twin.jikos.cz>
+ <788e9d8f-df2e-4d54-b60c-dddbc47fd701@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -106,7 +105,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f4f64bfe-c92b-4656-adec-d073b6286451@meta.com>
+In-Reply-To: <788e9d8f-df2e-4d54-b60c-dddbc47fd701@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Score: -4.00
 X-Spamd-Result: default: False [-4.00 / 50.00];
@@ -117,78 +116,145 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 	MIME_GOOD(-0.10)[text/plain];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_FIVE(0.00)[6];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:replyto];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Mon, Oct 21, 2024 at 05:05:20PM +0000, Mark Harmstone wrote:
-> >> +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
-> >> +				    unsigned int issue_flags)
-> >> +{
-> >> +	size_t copy_end_kernel = offsetofend(struct btrfs_ioctl_encoded_io_args,
-> >> +					     flags);
-> >> +	size_t copy_end;
-> >> +	struct btrfs_ioctl_encoded_io_args args = {0};
-> >                                                  = { 0 }
-> >> +	int ret;
-> >> +	u64 disk_bytenr, disk_io_size;
-> >> +	struct file *file = cmd->file;
-> >> +	struct btrfs_inode *inode = BTRFS_I(file->f_inode);
-> >> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> >> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> >> +	struct iovec iovstack[UIO_FASTIOV];
-> >> +	struct iovec *iov = iovstack;
-> >> +	struct iov_iter iter;
-> >> +	loff_t pos;
-> >> +	struct kiocb kiocb;
-> >> +	struct extent_state *cached_state = NULL;
-> >> +	u64 start, lockend;
+On Mon, Oct 21, 2024 at 11:36:10PM +0800, Anand Jain wrote:
+> > I think it's safe to start with the round-round robin policy, but the
+> > syntax is strange, why the [ ] are mandatory? Also please call it
+> > round-robin, or 'rr' for short.
+> 
+> I'm fine with round-robin. The [ ] part is not mandatory; if the
+> min_contiguous_read value is not specified, it will default to a
+> predefined value.
+> 
+> > The default of sector size is IMHO a wrong value, switching devices so
+> > often will drop the performance just because of the io request overhead.
+> 
+> >  From what I rememer values around 200k were reasonable, so either 192k
+> > or 256k should be the default. We may also drop the configurable value
+> > at all and provide a few hard coded sizes like rr-256k, rr-512k, rr-1m,
+> > if not only to drop parsing of user strings.
+> 
+> I'm okay with a default value of 256k. For the experimental feature,
+> we can keep it configurable, allowing the opportunity to experiment
+> with other values as well
+
+Yeah, for experimenting it makes sense to make it flexible, no need to
+patch and reboot the kernel. For final we should settle on some
+reasonable values.
+
+> >> 5. Tested FIO random read/write and defrag compression workloads with
+> >>     min_contiguous_read set to sector size, 192k, and 256k.
+> >>
+> >>     RAID1 balancing method rotation is better for multi-process workloads
+> >>     such as fio and also single-process workload such as defragmentation.
+> >>
+> >>       $ fio --filename=/btrfs/foo --size=5Gi --direct=1 --rw=randrw --bs=4k \
+> >>          --ioengine=libaio --iodepth=256 --runtime=120 --numjobs=4 \
+> >>          --time_based --group_reporting --name=iops-test-job --eta-newline=1
+> >>
+> >>
+> >> |         |            |            | Read I/O count  |
+> >> |         | Read       | Write      | devid1 | devid2 |
+> >> |---------|------------|------------|--------|--------|
+> >> | pid     | 20.3MiB/s  | 20.5MiB/s  | 313895 | 313895 |
+> >> | rotation|            |            |        |        |
+> >> |     4096| 20.4MiB/s  | 20.5MiB/s  | 313895 | 313895 |
+> >> |   196608| 20.2MiB/s  | 20.2MiB/s  | 310152 | 310175 |
+> >> |   262144| 20.3MiB/s  | 20.4MiB/s  | 312180 | 312191 |
+> >> |  latency| 18.4MiB/s  | 18.4MiB/s  | 272980 | 291683 |
+> >> | devid:1 | 14.8MiB/s  | 14.9MiB/s  | 456376 | 0      |
+> >>
+> >>     rotation RAID1 balancing technique performs more than 2x better for
+> >>     single-process defrag.
+> >>
+> >>        $ time -p btrfs filesystem defrag -r -f -c /btrfs
+> >>
+> >>
+> >> |         | Time  | Read I/O Count  |
+> >> |         | Real  | devid1 | devid2 |
+> >> |---------|-------|--------|--------|
+> >> | pid     | 18.00s| 3800   | 0      |
+> >> | rotation|       |        |        |
+> >> |     4096|  8.95s| 1900   | 1901   |
+> >> |   196608|  8.50s| 1881   | 1919   |
+> >> |   262144|  8.80s| 1881   | 1919   |
+> >> | latency | 17.18s| 3800   | 0      |
+> >> | devid:2 | 17.48s| 0      | 3800   |
+> >>
+> >> Rotation keeps all devices active, and for now, the Rotation RAID1
+> >> balancing method is preferable as default. More workload testing is
+> >> needed while the code is EXPERIMENTAL.
 > > 
-> > The stack consumption looks quite high.
+> > Yeah round-robin will be a good defalt, we only need to verify the chunk
+> > size and then do the switch in the next release.
+> > 
 > 
-> 696 bytes, compared to 672 in btrfs_ioctl_encoded_read. 
-> btrfs_ioctl_encoded write is pretty big too. Probably the easiest thing 
-> here would be to allocate btrfs_uring_priv early and pass that around, I 
-> think.
+> Yes..
 > 
-> Do you have a recommendation for what the maximum stack size of a 
-> function should be?
+> >> While Latency is better during the failing/unstable block layer transport.
+> >> As of now these two techniques, are needed to be further independently
+> >> tested with different worloads, and in the long term we should be merge
+> >> these technique to a unified heuristic.
+> > 
+> > This sounds like he latency is good for a specific case and maybe a
+> > fallback if the device becomes faulty, but once the layer below becomes
+> > unstable we may need to skip reading from the device. This is also a
+> > different mode of operation than balancing reads.
+> > 
+> 
+> If the latency on the faulty path is so high that it shouldn't pick that
+> path at all, so it works. However, the round-robin balancing is unaware
+> of dynamic faults on the device path. IMO, a round-robin method that is
+> latency aware (with ~20% variance) would be better.
 
-It depends from where the function is called. For ioctl callbacks, like
-btrfs_ioctl_encoded_read it's the first function using kernel stack
-leaving enough for any deep IO stacks (DM/NFS/iSCSI/...). If something
-similar applies to the io_uring callbacks then it's probably fine.
+We should not mix the faulty device handling mode to the read balancing,
+at least for now. A back off algorithm that checks number of failed io
+requests should precede the balancing.
 
-Using a separate off-stack structure works but it's a penalty as it
-needs the allcation. The io_uring is meant for high performance so if
-the on-stack allocation is safe then keep it like that.
+> >> Rotation keeps all devices active, and for now, the Rotation RAID1
+> >> balancing method should be the default. More workload testing is needed
+> >> while the code is EXPERIMENTAL.
+> >>
+> >> Latency is smarter with unstable block layer transport.
+> >>
+> >> Both techniques need independent testing across workloads, with the goal of
+> >> eventually merging them into a unified approach? for the long term.
+> >>
+> >> Devid is a hands-on approach, provides manual or user-space script control.
+> >>
+> >> These RAID1 balancing methods are tunable via the sysfs knob.
+> >> The mount -o option and btrfs properties are under consideration.
+> > 
+> > To move forward with the feature I think the round robin and preferred
+> > device id can be merged. I'm not sure about the latency but if it's
+> > under experimental we can take it as is and tune later.
+> 
+> I hope the experimental feature also means we can change the name of the
+> balancing method at any time. Once we have tested a fair combination of
+> block device types, we'll definitely need a method that can
+> automatically tune based on the device type, which will require adding
+> or dropping balancing methods accordingly.
 
-I've checked on a release config the stack consumption and the encoded
-ioctl functions are not the worst:
-
-tree-log.c:btrfs_sync_log                       728 static
-scrub.c:scrub_verify_one_metadata               552 dynamic,bounded
-inode.c:print_data_reloc_error                  544 dynamic,bounded
-uuid-tree.c:btrfs_uuid_scan_kthread             520 static
-tree-checker.c:check_root_item                  504 static
-file-item.c:btrfs_csum_one_bio                  496 static
-inode.c:btrfs_start_delalloc_roots              488 static
-scrub.c:scrub_raid56_parity_stripe              464 dynamic,bounded
-disk-io.c:write_dev_supers                      464 static
-ioctl.c:btrfs_ioctl_encoded_write               456 dynamic,bounded
-ioctl.c:btrfs_ioctl_encoded_read                456 dynamic,bounded
+Yes we can change the names. The automatic tuning would need some
+feedback that measures the load and tries to improve the throughput,
+this is where we got stuck last time. So for now let's do some
+starightforward policy that on average works better than the current pid
+policy. I hope that tha round-robin-256k can be a good default, but of
+course we need more data for that.
 
