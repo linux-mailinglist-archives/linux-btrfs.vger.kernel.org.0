@@ -1,321 +1,226 @@
-Return-Path: <linux-btrfs+bounces-9040-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9041-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F5F09A8FCA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 21:28:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 361EF9A8FCD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 21:30:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E50A2281D54
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 19:28:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAAA61F22E7B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 19:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8731FBC8B;
-	Mon, 21 Oct 2024 19:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0E91EF945;
+	Mon, 21 Oct 2024 19:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nun+qR78";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nun+qR78"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Hn24H+35";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HU2CyUyF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C859A1F8EEC
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2024 19:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F314A1FB3F1
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2024 19:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729538921; cv=none; b=XlVRqBHu3rZlR3Dn1QTmB8C4u7rzh7ztRPzFBEjibgVhOfl+5ggno5UZpgwD1U+hB5JzX1S8UC+sAvS24LFuaF5lWQG3m/eUf+VwLI7ZejgL47p68FE75t6hemMyioGhvBdJUN4GIXS0AMlUj8LKnJwyWDaNiNEk6NGUSArCW8Y=
+	t=1729539008; cv=none; b=oTt1o3qJfxAQsy/eNCjNxqNjU0xzEApyft4/mtQnpu8MEqvsgXhJlN3icPP4mDb58xfrwq58Y/RRLC/c+GJLgmZsUDON4gMjnMAvG5Ch6ZEOX/y9tVYR5rxiyTdNk1e14foBEiIzQJ5pMtSIuxxMmHqRX9wjf9Nfwqih7nGryCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729538921; c=relaxed/simple;
-	bh=r84EtK05pzmpcGfd4qEfEUaQJLaFEPpFP4u1PAn2Mac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RDkb7NK19AcFEMW1cOVIzsBqq91l4d/Jgm2Jkk9SQJtZ3Z3kzc6c+bQ60scu9HFvVm9X54POzKChNWhD3zvs80LY0mxSCXQjeDVAHunAe2fYXsMmIVoVA3SINXA9xWLITvu1IQ5rreCjfPUZagfZvIkQP/Si6tUKLijTjb1FsQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nun+qR78; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nun+qR78; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C4B161FCE0;
-	Mon, 21 Oct 2024 19:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1729538915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=NfI519/6kVCjPy4WqzV3yzIp+5Z3a25Vkd5h64t/Q/0=;
-	b=nun+qR78lUMmL5/9KgKMQ6d6UEr0qePDIZUHx5C16QMpNNle+JiUje3txtpJHzOai6RmLQ
-	+YBTL1ZC9e8K7XmmwsukPLf5lluhh+k/LEYS9uLeRuJZiBvEAsN/QUICRbla6ctOaBADC8
-	z7AcNxZy6JT1DjHOYHxZCvyzTHaSIBc=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1729538915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=NfI519/6kVCjPy4WqzV3yzIp+5Z3a25Vkd5h64t/Q/0=;
-	b=nun+qR78lUMmL5/9KgKMQ6d6UEr0qePDIZUHx5C16QMpNNle+JiUje3txtpJHzOai6RmLQ
-	+YBTL1ZC9e8K7XmmwsukPLf5lluhh+k/LEYS9uLeRuJZiBvEAsN/QUICRbla6ctOaBADC8
-	z7AcNxZy6JT1DjHOYHxZCvyzTHaSIBc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD616136DC;
-	Mon, 21 Oct 2024 19:28:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vLo0LmOrFmfpMQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Mon, 21 Oct 2024 19:28:35 +0000
-From: David Sterba <dsterba@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: add new ioctl to wait for cleaned subvolumes
-Date: Mon, 21 Oct 2024 21:28:26 +0200
-Message-ID: <20241021192826.10206-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1729539008; c=relaxed/simple;
+	bh=Bo+XG1xG01hsBPAPx8G3g51Dwj0JI0HvnHNEEXRmocE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gz31fbUf4R957H0vJz4GOiKWPzcN9kBZrbeHzsbQ5k7xg1W4yqkzYZbu8gGFLmrbrd2+wIrIXPi68ieZUhQ4vBbqLgYbgp5FHwYl8SrXRuoLSnLziGsI70bgLTuDwJs8wYN2NnhE6QsChPp+E9ELF87/0xAwDAHFoGTGLk8Mi9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Hn24H+35; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HU2CyUyF; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.phl.internal (Postfix) with ESMTP id 07F6813806E4;
+	Mon, 21 Oct 2024 15:30:05 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Mon, 21 Oct 2024 15:30:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1729539005; x=1729625405; bh=sR124NpQA8
+	3XkapmZ5HnkSVu7MnCFLQMQh/qpQv0ufI=; b=Hn24H+3599qLJAaUL10anDLhpi
+	V727eqNKvcAkOd0/ulodZ3E5+UJlhrmxi+lPvsNVSB3M2IRnZesLorN6c7G2NbUB
+	bLpYiRMk2h/0dWklOJe/1aTvOy8HJ1WrIsciC9Ik+P6oBB+mAM51V+6ZFvjsp+ZP
+	0TZzFkYsQjIbF6XWHlEtNblX6Dhv3NUcoC3BzhdyZIZZ7I83CTmrZ01DMKJxo+2a
+	JSgbsyWHDVkVtsPnMACQVYsag7VI1R1+DehDrc7IxVYfh+0Xi3NRJwoZVl250stp
+	VhOdhylyxS7JZC7sx/0VZsa2V7P5F1/zLJq77ncST+wPS2Z//NdV7rZnhT/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1729539005; x=1729625405; bh=sR124NpQA83XkapmZ5HnkSVu7MnC
+	FLQMQh/qpQv0ufI=; b=HU2CyUyFg6cLAtoe+bNPOuMWXQKF8zTqWERKwKEyOs6/
+	vStahTSMYy0dmdCPkc1ozKRuDfEFQxUOlKtL256bOZQPPlWNGSgl+tk1q5dWSRA4
+	0drHhG00q13OJNh/d3PvEcRlJsVYmFxN0URArtdkIW3h5ifbi5oF5VM8LtzEGc8o
+	MeOu1oFFSB8iqDO2WLXlc9X//tQwvLvzsJX0+MX24gMCyySQZoR2pNqs5GiAckr1
+	2yiAJ0THGYnBSGzKcInSy3KfY1QkEyssYQvs885Utj5A2uBG1hagPesverxtbmBZ
+	pqn2zcNoOgsVJwtQzlr7UEq6w93fG/YBepSn1fHgTA==
+X-ME-Sender: <xms:vKsWZ_II0wJfONDQfbViVuQcTC21-f8movT48LYM5UuCnMBNlEKP5g>
+    <xme:vKsWZzJX8jDqqeMxoavQH2e1Jmi_YrSW21LNudtHWrM31A_oHjyh5o_Pdr8LSX8g8
+    hJ9VnFe6yVAQcx5fdw>
+X-ME-Received: <xmr:vKsWZ3tk_kbeywAxzpUvNdaKC03Zp2Fcko2lMj-00cpuKnxbLgx7arF7zYVbY9pcmRxq3A66aW4TWGdIJ-o2U_2OKTY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehledgudefkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
+    cuggftrfgrthhtvghrnhepiefgffekheetvdeivdetieethedtgedujeefgeeivddvgefg
+    heelveduueevledunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpvghlrghsthhotg
+    hlohhuugdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedpmhhouggvpe
+    hsmhhtphhouhhtpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtiidprhgtphht
+    thhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
+    htohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:vKsWZ4a23liVV0lsLx-JPuaqHMbydCbQvsyOudGwasknvcZ9jkt_yg>
+    <xmx:vKsWZ2bfm6KzOCbw4muGjAKJn2NTtKLw9Q3r_LheuO_qzrFvIWe5lw>
+    <xmx:vKsWZ8BeAi6b4feUSLsUoZKfN3w89hITAhjnhqoo7rq_Aw-Mm15O2g>
+    <xmx:vKsWZ0ZpwAMYDLTgtIZIsNI1nnkteJ-j8JAzRD8V1AVjnhUtBjOa0w>
+    <xmx:vKsWZ2Hcjz48LX-Q3jJUDm0QJMEugVSdueH2KTw0wHrdS9MrHxjQZj-3>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 21 Oct 2024 15:30:04 -0400 (EDT)
+Date: Mon, 21 Oct 2024 12:29:31 -0700
+From: Boris Burkov <boris@bur.io>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not clear read-only when adding sprout device
+Message-ID: <20241021192931.GA2861189@zen.localdomain>
+References: <a9aa42f6bc2739ab46ce015f749e15177f8730d6.1729028033.git.boris@bur.io>
+ <20241017140112.GT1609@twin.jikos.cz>
+ <20241017164159.GA3061885@zen.localdomain>
+ <20241021185651.GC24631@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241021185651.GC24631@suse.cz>
 
-Add a new unprivileged ioctl that will let the command
-'btrfs subvolume sync' work without the (privileged) SEARCH_TREE ioctl.
+On Mon, Oct 21, 2024 at 08:56:51PM +0200, David Sterba wrote:
+> On Thu, Oct 17, 2024 at 09:41:59AM -0700, Boris Burkov wrote:
+> > On Thu, Oct 17, 2024 at 04:01:12PM +0200, David Sterba wrote:
+> > > On Tue, Oct 15, 2024 at 02:38:34PM -0700, Boris Burkov wrote:
+> > > > If you follow the seed/sprout wiki, it suggests the following workflow:
+> > > > 
+> > > > btrfstune -S 1 seed_dev
+> > > > mount seed_dev mnt
+> > > > btrfs device add sprout_dev
+> > > > mount -o remount,rw mnt
+> > > > 
+> > > > The first mount mounts the FS readonly, which results in not setting
+> > > > BTRFS_FS_OPEN, and setting the readonly bit on the sb. The device add
+> > > > somewhat surprisingly clears the readonly bit on the sb (though the
+> > > > mount is still practically readonly, from the users perspective...).
+> > > > Finally, the remount checks the readonly bit on the sb against the flag
+> > > > and sees no change, so it does not run the code intended to run on
+> > > > ro->rw transitions, leaving BTRFS_FS_OPEN unset.
+> > > > 
+> > > > As a result, when the cleaner_kthread runs, it sees no BTRFS_FS_OPEN and
+> > > > does no work. This results in leaking deleted snapshots until we run out
+> > > > of space.
+> > > > 
+> > > > I propose fixing it at the first departure from what feels reasonable:
+> > > > when we clear the readonly bit on the sb during device add.
+> > > > 
+> > > > A new fstest I have written reproduces the bug and confirms the fix.
+> > > > 
+> > > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > > > ---
+> > > > Note that this is a resend of an old unmerged fix:
+> > > > https://lore.kernel.org/linux-btrfs/16c05d39566858bb8bc1e03bd19947cf2b601b98.1647906815.git.boris@bur.io/T/#u
+> > > > Some other ideas for fixing it by modifying how we set BTRFS_FS_OPEN
+> > > > were also explored but not merged around that time:
+> > > > https://lore.kernel.org/linux-btrfs/cover.1654216941.git.anand.jain@oracle.com/
+> > > > 
+> > > > I don't have a strong preference, but I would really like to see this
+> > > > trivial bug fixed. For what it is worth, we have been carrying this
+> > > > patch internally at Meta since I first sent it with no incident.
+> > > 
+> > > We have an unresolved dispute about the fix and now the patch got to
+> > > for-next within a few days because it got two reviews but not mine.
+> > > The way you use it in Meta works for you but the fix is changing
+> > > behaviour so we can either ignore everybody else relying on the old
+> > > way or say that seeding is so niche that we don't care and see what we
+> > > can do once we get some report.
+> > 
+> > Please feel free to remove it, and I am happy to review whatever other
+> > fix you think is best. Sorry for rushing, I just wanted to get it done
+> > and out of my head so I could move on to other issues.
+> 
+> I'm concerned because change like that needs an announcement,
+> documentation changes or eventually an optional change so both use cases
+> are available. I haven't merged it since the last time you or somebody
+> posted it because I don't see a way how to fix it without fixing the bug
+> and not breaking the use case.
+> 
 
-There are several modes of operation, where the most common ones are to
-wait on a specific subvolume or all currently queued for cleaning. This
-is utilized e.g. in backup applications that delete subvolumes and wait
-until they're cleaned to check for remaining space.
+That's fair. However, I assume we agree we need some fix, somewhere.
+Anyone who is really currently relying on this and not cycle mounting
+after adding the device doesn't get a cleaner thread, which includes
+empty block group cleanup, autorelocation, deleting snapshots, and defrag.
+I think subvolume cleanup and block group cleanup are probably the worst
+to lose.
 
-The other modes are for flexibility, e.g. for monitoring or
-checkpoints in the queue of deleted subvolumes, again without the need
-to use SEARCH_TREE.
+So let's step back from me impulsively stuffing this in to for-next and
+do the right thing together :)
 
-Notes:
+Thinking of our options, in no particular order:
 
-- waiting is interruptible, the timeout is set to 1 second and is not
-  configurable
+1a. just land the fix
+It's not great if a lot of people rely on the fs "working" after device
+add. Some of them might quickly find the proper steps in the docs, but
+this might confuse/upset people.
 
-- repeated calls to the ioctl see a different state, so this is
-  inherently racy when using e.g. the count or peek next/last
+1b. land the fix but properly socialize it
+We can also make btrfs device add notice that it is seed sprout and add
+a loud message that you need to remount rw. If this requires skipping a
+merge or two while we socialize it to obvious or google-able users, that
+seems reasonable.
 
-Use cases:
+1c. land the fix and make btrfs-progs do the remount after the device add
+This is kind of weird, but does preserve the expected behavior. We could
+also add some seed sprout specific flags or commands as the "main" way to
+do it.
 
-- a subvolume A was deleted, wait for cleaning (WAIT_FOR_ONE)
+2. have the device add detect the seed sprout case and really make the
+fs read-write
+If we are committed to the behavior, and don't believe in a userspace
+only fix, then it could be possible to make the current path which
+simply clears the ro bit also invoke some or all of the remount rw
+logic.
 
-- a bunch of subvolumes were deleted, wait for all (WAIT_FOR_QUEUED or
-  PEEK_LAST + WAIT_FOR_ONE)
+3. do nothing (remove the fix from for-next)
+I keep carrying an internal patch forever, upstream stays in danger of
+running an fs without a cleaner. If no one runs a long-lived fs off a live
+cd for long enough to care, maybe it is ok, too. But stuff like this is
+out there in google, for example:
+https://blog.elastocloud.org/2022/11/btrfs-seed-devices-for-ab-system-updates.html
 
-- count how many are queued (not blocking), for monitoring purposes
+That's all I can think of, but I'm definitely open to other ideas!
 
-- report progress (PEEK_NEXT), may miss some if cleaning is quick
+Thanks,
+Boris
 
-- own waiting in user space (PEEK_LAST until it's 0)
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ioctl.c           | 114 +++++++++++++++++++++++++++++++++++++
- include/uapi/linux/btrfs.h |  25 ++++++++
- 2 files changed, 139 insertions(+)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 226c91fe31a7..2d58859786c9 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4690,6 +4690,118 @@ static int btrfs_ioctl_encoded_write(struct file *file, void __user *argp, bool
- 	return ret;
- }
- 
-+static int btrfs_ioctl_subvol_sync(struct btrfs_fs_info *fs_info, void __user *argp)
-+{
-+	struct btrfs_root *root;
-+	struct btrfs_ioctl_subvol_wait args = { 0 };
-+	signed long sched_ret;
-+	int refs;
-+	u64 root_flags;
-+	bool wait_for_deletion = false;
-+
-+	if (copy_from_user(&args, argp, sizeof(args)))
-+		return -EFAULT;
-+
-+	switch (args.mode) {
-+	case BTRFS_SUBVOL_SYNC_WAIT_FOR_QUEUED:
-+		/*
-+		 * Wait for the first one deleted that waits until all previous
-+		 * are cleaned.
-+		 */
-+		spin_lock(&fs_info->trans_lock);
-+		root = list_last_entry(&fs_info->dead_roots, struct btrfs_root, root_list);
-+		args.subvolid = btrfs_root_id(root);
-+		spin_unlock(&fs_info->trans_lock);
-+
-+		fallthrough;
-+	case BTRFS_SUBVOL_SYNC_WAIT_FOR_ONE:
-+		if ((0 < args.subvolid && args.subvolid < BTRFS_FIRST_FREE_OBJECTID) ||
-+		    BTRFS_LAST_FREE_OBJECTID < args.subvolid)
-+			return -EINVAL;
-+		break;
-+	case BTRFS_SUBVOL_SYNC_COUNT:
-+		spin_lock(&fs_info->trans_lock);
-+		args.count = list_count_nodes(&fs_info->dead_roots);
-+		spin_unlock(&fs_info->trans_lock);
-+		if (copy_to_user(argp, &args, sizeof(args)))
-+			return -EFAULT;
-+		return 0;
-+	case BTRFS_SUBVOL_SYNC_PEEK_FIRST:
-+		spin_lock(&fs_info->trans_lock);
-+		/* Last in the list was deleted first. */
-+		if (!list_empty(&fs_info->dead_roots)) {
-+			root = list_last_entry(&fs_info->dead_roots,
-+					       struct btrfs_root, root_list);
-+			args.subvolid = btrfs_root_id(root);
-+		} else {
-+			args.subvolid = 0;
-+		}
-+		spin_unlock(&fs_info->trans_lock);
-+		if (copy_to_user(argp, &args, sizeof(args)))
-+			return -EFAULT;
-+		return 0;
-+	case BTRFS_SUBVOL_SYNC_PEEK_LAST:
-+		spin_lock(&fs_info->trans_lock);
-+		/* First in the list was deleted last */
-+		if (!list_empty(&fs_info->dead_roots)) {
-+			root = list_first_entry(&fs_info->dead_roots,
-+						struct btrfs_root, root_list);
-+			args.subvolid = btrfs_root_id(root);
-+		} else {
-+			args.subvolid = 0;
-+		}
-+		spin_unlock(&fs_info->trans_lock);
-+		if (copy_to_user(argp, &args, sizeof(args)))
-+			return -EFAULT;
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* 32bit limitation: fs_roots_radix key is not wide enough. */
-+	if (sizeof(unsigned long) != sizeof(u64) && args.subvolid > U32_MAX)
-+		return -EOVERFLOW;
-+
-+wait_again:
-+	/* Wait for the specific one. */
-+	if (down_read_interruptible(&fs_info->subvol_sem) == -EINTR)
-+		return -EINTR;
-+	refs = -1;
-+	spin_lock(&fs_info->fs_roots_radix_lock);
-+	root = radix_tree_lookup(&fs_info->fs_roots_radix, (unsigned long)args.subvolid);
-+	if (root) {
-+		spin_lock(&root->root_item_lock);
-+		refs = btrfs_root_refs(&root->root_item);
-+		root_flags = btrfs_root_flags(&root->root_item);
-+		spin_unlock(&root->root_item_lock);
-+	}
-+	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	up_read(&fs_info->subvol_sem);
-+
-+	/* Subvolume not deleted at all. */
-+	if (refs > 0)
-+		return -EEXIST;
-+	/* We've waited and now the subvolume is gone. */
-+	if (wait_for_deletion && refs == -1) {
-+		/* Return the one we waited for as the last one. */
-+		if (copy_to_user(argp, &args, sizeof(args)))
-+			return -EFAULT;
-+		return 0;
-+	}
-+	/* Subvolume not found on first try (deleted or never existed). */
-+	if (refs == -1)
-+		return -ENOENT;
-+
-+	wait_for_deletion = true;
-+	ASSERT(root_flags & BTRFS_ROOT_SUBVOL_DEAD);
-+	sched_ret = schedule_timeout_interruptible(HZ);
-+	/* Early wake up or error. */
-+	if (sched_ret != 0)
-+		return -EINTR;
-+
-+	goto wait_again;
-+}
-+
- long btrfs_ioctl(struct file *file, unsigned int
- 		cmd, unsigned long arg)
- {
-@@ -4841,6 +4953,8 @@ long btrfs_ioctl(struct file *file, unsigned int
- 	case BTRFS_IOC_ENCODED_WRITE_32:
- 		return btrfs_ioctl_encoded_write(file, argp, true);
- #endif
-+	case BTRFS_IOC_SUBVOL_SYNC_WAIT:
-+		return btrfs_ioctl_subvol_sync(fs_info, argp);
- 	}
- 
- 	return -ENOTTY;
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index cdf6ad872149..e2362a7ef206 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -1049,6 +1049,29 @@ struct btrfs_ioctl_encoded_io_args {
- #define BTRFS_ENCODED_IO_ENCRYPTION_NONE 0
- #define BTRFS_ENCODED_IO_ENCRYPTION_TYPES 1
- 
-+/*
-+ * Wait for subvolume cleaning process. This queries the kernel queue and it
-+ * can change between the calls.
-+ *
-+ * - FOR_ONE	- specify the subvolid
-+ * - FOR_QUEUED - wait for all currently queued
-+ * - COUNT	- count number of queued
-+ * - PEEK_FIRST - read which is the first in the queue (to be cleaned or being
-+ * 		  cleaned already), or 0 if the queue is empty
-+ * - PEEK_LAST  - read the last subvolid in the queue, or 0 if the queue is empty
-+ */
-+struct btrfs_ioctl_subvol_wait {
-+	u64 subvolid;
-+	u32 mode;
-+	u32 count;
-+};
-+
-+#define BTRFS_SUBVOL_SYNC_WAIT_FOR_ONE		(0)
-+#define BTRFS_SUBVOL_SYNC_WAIT_FOR_QUEUED	(1)
-+#define BTRFS_SUBVOL_SYNC_COUNT			(2)
-+#define BTRFS_SUBVOL_SYNC_PEEK_FIRST		(3)
-+#define BTRFS_SUBVOL_SYNC_PEEK_LAST		(4)
-+
- /* Error codes as returned by the kernel */
- enum btrfs_err_code {
- 	BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET = 1,
-@@ -1181,6 +1204,8 @@ enum btrfs_err_code {
- 				    struct btrfs_ioctl_encoded_io_args)
- #define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, \
- 				     struct btrfs_ioctl_encoded_io_args)
-+#define BTRFS_IOC_SUBVOL_SYNC_WAIT _IOW(BTRFS_IOCTL_MAGIC, 65, \
-+					struct btrfs_ioctl_subvol_wait)
- 
- #ifdef __cplusplus
- }
--- 
-2.45.0
-
+> > I assume your concern is that before this fix, the filesystem is actually
+> > read-write after the device add, which this patch breaks?
+> > 
+> > My only argument against this is that the documentation has always said
+> > you needed to remount/cycle-mount after adding the sprout, so there is
+> > no fair reason to assume this would work. (In fact, it *doesn't*, the fs
+> > is once again in a unexpected, degraded, state...)
+> > 
+> > But if existing LiveCD users are relying on this undocumented behavior,
+> > then I think you are right and it's a bad idea to break them.
+> 
+> The problem here is that we don't know how the feature is used, the
+> documentation came much later than the feature. So I take it as that
+> people rely on code, not documenation, even if there's an undocumented
+> behaviour.
 
