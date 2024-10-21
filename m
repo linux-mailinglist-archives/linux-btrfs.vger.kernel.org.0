@@ -1,518 +1,139 @@
-Return-Path: <linux-btrfs+bounces-9023-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9022-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D86C39A6AFD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 15:50:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 560629A6AF5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 15:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67C4B1F226F5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 13:50:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84EF71C23B30
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 13:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638911F9402;
-	Mon, 21 Oct 2024 13:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O0HgLyh6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kLQvQjNG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bBEbosy/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nfjM1NrQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76351F9420;
+	Mon, 21 Oct 2024 13:48:04 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E419D1F893A;
-	Mon, 21 Oct 2024 13:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1E7323D;
+	Mon, 21 Oct 2024 13:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729518611; cv=none; b=piyWALTjy3J+Iwl5RuA5uehVgvj2TzE0AJaJxBnA1l2GqdaZxx94A8Nl6ULNvB/5e8RUPkk8wmmQ8Eo0nMlAQH1+9c+GR7vDe8sUN5c3D5Z0pkbUl/rDo0vrGZdS5TpOiHZqfvBE7wssSrHK24J1tTX0UfBGX8WZ5dBWvozBXM4=
+	t=1729518484; cv=none; b=aANC4gmABpzZ73WzXgEkAR3DB6/x0F1hs54Lx374qXRnGszo5iZM8TD5FHJUxF9ICm6GJoWewErYlulYCX08/hxpVR6kZRngC5P65UK0tTtHHh0E+g5Z7qtlzIib1lHzcesNK8BUS+hDOc+y/+wU8Dch3S3MOvrrwj5SqMRycmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729518611; c=relaxed/simple;
-	bh=Mk4WP6CpZUAGBdxTK3XDp41r9HAu4WggClc7ImgtTmg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ozRJ71PA19zDl/WJKrEv+zdG0FLbGi0Embd0jHiY3usa2PK2oaYGTRNvcgyo29gGC+liLezwkdw+KfZRoeso4P3sDi1dmyhJ2hsURDKBXPYi6m2WCfHPgL7vjoaNI9Tc+0b0ff0v2DEVzuMQku6NezU25xOB7qlFUGX8pHrZT5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O0HgLyh6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kLQvQjNG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bBEbosy/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nfjM1NrQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D93221FC30;
-	Mon, 21 Oct 2024 13:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729518607;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j32sOaTX8Z5KiUM7kADyk2rsoZ2zkdVwYZam0ikQ/OQ=;
-	b=O0HgLyh6YxgsuoGlgdD2WQpVs+KEi5Zw2v8IYcpjgjYZWnsnOARfXVxIbuxqKZjfFVMcNL
-	x/zeL2CxYz2SClMNzHNRKOt++c0d0OrLWyjQMcDBni3PEEeCbvhesHYLJt+v8nBeMKO7gW
-	La1zucr6jKahnVKBkL8/ImL4tNasfQI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729518607;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j32sOaTX8Z5KiUM7kADyk2rsoZ2zkdVwYZam0ikQ/OQ=;
-	b=kLQvQjNG8bKZSNhugjV0BAhwa9ruNrQpQZfY/bp1IqEuzSwNmIYclhhsKI6iiES2j7xXVM
-	7OQbDuQhVlpdI9CQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="bBEbosy/";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nfjM1NrQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729518606;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j32sOaTX8Z5KiUM7kADyk2rsoZ2zkdVwYZam0ikQ/OQ=;
-	b=bBEbosy/Z0eOAbsbdcUulY237+ovbxRxyauJGaVW0rbm92aEDsEi0p7HS8V2qZBWU04AYV
-	LbcgQeD4huf85iJ7tFZYBeMSBYE6ITUGp+Xu6V25utOrFoL5HY8lFoSCjvJwhIYs/w6r9d
-	TvqJ99Z0X6j+b0mO67GTwxMK4k7Shh8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729518606;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j32sOaTX8Z5KiUM7kADyk2rsoZ2zkdVwYZam0ikQ/OQ=;
-	b=nfjM1NrQCAA5Q8sKaX36KZH+O/Tap6ljteRhx8M4uapBvefetNPTMOV1bBPrWLhNWqPRs4
-	Z+wLIBi+MsCVJCDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4FC9139E0;
-	Mon, 21 Oct 2024 13:50:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bQD+Kw5cFmfsSAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 21 Oct 2024 13:50:06 +0000
-Date: Mon, 21 Oct 2024 15:50:05 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org
-Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
-Message-ID: <20241021135005.GC17835@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20241014171838.304953-1-maharmstone@fb.com>
- <20241014171838.304953-6-maharmstone@fb.com>
+	s=arc-20240116; t=1729518484; c=relaxed/simple;
+	bh=wbvPfx4k4ND3GZ/p2WA4lION7rS+/T/Lg3SpvWUr0rk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=SFHFMmG69QSLvdvXYq1OXHVxFEwaktVFONmDfSga4Fc5ckDhYLA0j+mY3RDlKND9ibI3UTEgzdkVZbjUaQBcEJCGvcCdzqxCn1KQlsq10V0ucgGWc51wPlJlnHuky8cEnu4/FfmqWwa9vSca7RoTvHLKX1eqiDGnhAuJvXioqZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XXGpP0Vl0z4f3jXr;
+	Mon, 21 Oct 2024 21:47:41 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 6885C1A092F;
+	Mon, 21 Oct 2024 21:47:58 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+	by APP4 (Coremail) with SMTP id gCh0CgCn28eIWxZnwijhEg--.13131S4;
+	Mon, 21 Oct 2024 21:47:56 +0800 (CST)
+From: Zhihao Cheng <chengzhihao@huaweicloud.com>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	Anand.Jain@oracle.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chengzhihao1@huawei.com
+Subject: [PATCH] btrfs: Fix UAF in __btrfs_free_extra_devids()
+Date: Mon, 21 Oct 2024 22:02:15 +0800
+Message-Id: <20241021140215.2948551-1-chengzhihao@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241014171838.304953-6-maharmstone@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: D93221FC30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCn28eIWxZnwijhEg--.13131S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF4kWw18Xw1xWF18ZFyUGFg_yoW8uw4xpr
+	n8GFy5trykWw1DCrW7W3y8C3Z3Xw4qyayrWrn8urWrK3yUAFyYvF93Cw1jg340y3ykJF1D
+	Xry3W34vqrnxCaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UZSdgUUUUU=
+X-CM-SenderInfo: xfkh0wx2klxt3r6k3tpzhluzxrxghudrp/
 
-On Mon, Oct 14, 2024 at 06:18:27PM +0100, Mark Harmstone wrote:
-> Adds an io_uring command for encoded reads, using the same interface as
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Add ...
+Mounting btrfs from two images(which have the same one fsid and two
+different dev_uuids) in certain executing order may trigger an UAF
+for variable 'device->bdev_file' in __btrfs_free_extra_devids(). And
+following are the details:
+1. Attach image_1 to loop0, attach image_2 to loop1, and scan btrfs
+   devices by ioctl(BTRFS_IOC_SCAN_DEV):
+             /  btrfs_device_1 → loop0
+   fs_device
+             \  btrfs_device_2 → loop1
+2. mount /dev/loop0 /mnt
+   btrfs_open_devices
+    btrfs_device_1->bdev_file = btrfs_get_bdev_and_sb(loop0)
+    btrfs_device_2->bdev_file = btrfs_get_bdev_and_sb(loop1)
+   btrfs_fill_super
+    open_ctree
+     fail: btrfs_close_devices // -ENOMEM
+	    btrfs_close_bdev(btrfs_device_1)
+             fput(btrfs_device_1->bdev_file)
+	      // btrfs_device_1->bdev_file is freed
+	    btrfs_close_bdev(btrfs_device_2)
+             fput(btrfs_device_2->bdev_file)
+2. mount /dev/loop1 /mnt
+   btrfs_open_devices
+    btrfs_get_bdev_and_sb(&bdev_file)
+     // EIO, btrfs_device_1->bdev_file is not assigned,
+     // which points to a freed memory area
+    btrfs_device_2->bdev_file = btrfs_get_bdev_and_sb(loop1)
+   btrfs_fill_super
+    open_ctree
+     btrfs_free_extra_devids
+      if (btrfs_device_1->bdev_file)
+       fput(btrfs_device_1->bdev_file) // UAF !
 
-> the existing BTRFS_IOC_ENCODED_READ ioctl.
+Fix it by setting 'device->bdev_file' as 'NULL' after closing the
+btrfs_device in btrfs_close_one_device().
 
-This is probably a good summary in a changelog but the patch is quite
-long so it feels like this should be described in a more detail how it's
-done. Connecting two interfaces can be done in various ways, so at least
-mention that it's a simple pass through, or if there are any
-complications regardign locking, object lifetime and such.
+Fixes: 142388194191 ("btrfs: do not background blkdev_put()")
+CC: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=219408
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/btrfs/volumes.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-> ---
->  fs/btrfs/file.c  |   1 +
->  fs/btrfs/ioctl.c | 283 +++++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/ioctl.h |   1 +
->  3 files changed, 285 insertions(+)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 2aeb8116549c..e33ca73fef8c 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3774,6 +3774,7 @@ const struct file_operations btrfs_file_operations = {
->  	.compat_ioctl	= btrfs_compat_ioctl,
->  #endif
->  	.remap_file_range = btrfs_remap_file_range,
-> +	.uring_cmd	= btrfs_uring_cmd,
->  	.fop_flags	= FOP_BUFFER_RASYNC | FOP_BUFFER_WASYNC,
->  };
->  
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 8c9ff4898ab0..c0393575cf5e 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -29,6 +29,7 @@
->  #include <linux/fileattr.h>
->  #include <linux/fsverity.h>
->  #include <linux/sched/xacct.h>
-> +#include <linux/io_uring/cmd.h>
->  #include "ctree.h"
->  #include "disk-io.h"
->  #include "export.h"
-> @@ -4723,6 +4724,288 @@ static int btrfs_ioctl_encoded_write(struct file *file, void __user *argp, bool
->  	return ret;
->  }
->  
-> +struct btrfs_uring_priv {
-> +	struct io_uring_cmd *cmd;
-> +	struct page **pages;
-> +	unsigned long nr_pages;
-> +	struct kiocb iocb;
-> +	struct iovec *iov;
-> +	struct iov_iter iter;
-> +	struct extent_state *cached_state;
-> +	u64 count;
-> +	bool compressed;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 8f340ad1d938..eb51b609190f 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1105,6 +1105,7 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+ 	if (device->bdev) {
+ 		fs_devices->open_devices--;
+ 		device->bdev = NULL;
++		device->bdev_file = NULL;
+ 	}
+ 	clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+ 	btrfs_destroy_dev_zone_info(device);
+-- 
+2.39.2
 
-This leaves a 7 byte hole.
-
-> +	u64 start;
-> +	u64 lockend;
-> +};
-
-The whole structure should be documented and the members too if it's not
-obvious what they are used for.
-
-> +
-> +static void btrfs_uring_read_finished(struct io_uring_cmd *cmd,
-> +				      unsigned int issue_flags)
-> +{
-> +	struct btrfs_uring_priv *priv = (struct btrfs_uring_priv *)*(uintptr_t*)cmd->pdu;
-> +	struct btrfs_inode *inode = BTRFS_I(file_inode(priv->iocb.ki_filp));
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	unsigned long i;
-
-Why is this long?
-
-> +	u64 cur;
-> +	size_t page_offset;
-> +	ssize_t ret;
-> +
-> +	if (priv->compressed) {
-> +		i = 0;
-> +		page_offset = 0;
-> +	} else {
-> +		i = (priv->iocb.ki_pos - priv->start) >> PAGE_SHIFT;
-> +		page_offset = (priv->iocb.ki_pos - priv->start) & (PAGE_SIZE - 1);
-
-Please don't open code page_offset()
-
-> +	}
-> +	cur = 0;
-> +	while (cur < priv->count) {
-> +		size_t bytes = min_t(size_t, priv->count - cur,
-> +				     PAGE_SIZE - page_offset);
-> +
-> +		if (copy_page_to_iter(priv->pages[i], page_offset, bytes,
-> +				      &priv->iter) != bytes) {
-> +			ret = -EFAULT;
-> +			goto out;
-> +		}
-> +
-> +		i++;
-> +		cur += bytes;
-> +		page_offset = 0;
-> +	}
-> +	ret = priv->count;
-> +
-> +out:
-> +	unlock_extent(io_tree, priv->start, priv->lockend, &priv->cached_state);
-> +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +
-> +	io_uring_cmd_done(cmd, ret, 0, issue_flags);
-> +	add_rchar(current, ret);
-> +
-> +	for (unsigned long i = 0; i < priv->nr_pages; i++) {
-
-Shadowing 'i' of the same type as is declared in the function. Maybe
-don't call it just 'i' but index as it's used outside of a loop.
-
-> +		__free_page(priv->pages[i]);
-> +	}
-
-Please drop the outer { } for a single statement block.
-
-> +
-> +	kfree(priv->pages);
-> +	kfree(priv->iov);
-> +	kfree(priv);
-> +}
-> +
-> +static void btrfs_uring_read_extent_cb(void *ctx, int err)
-> +{
-> +	struct btrfs_uring_priv *priv = ctx;
-> +
-> +	*(uintptr_t*)priv->cmd->pdu = (uintptr_t)priv;
-
-Isn't there a helper for that? Type casting should be done in justified
-cases and as an exception.
-
-> +	io_uring_cmd_complete_in_task(priv->cmd, btrfs_uring_read_finished);
-> +}
-> +
-> +static int btrfs_uring_read_extent(struct kiocb *iocb, struct iov_iter *iter,
-> +				   u64 start, u64 lockend,
-> +				   struct extent_state *cached_state,
-> +				   u64 disk_bytenr, u64 disk_io_size,
-> +				   size_t count, bool compressed,
-> +				   struct iovec *iov,
-> +				   struct io_uring_cmd *cmd)
-> +{
-> +	struct btrfs_inode *inode = BTRFS_I(file_inode(iocb->ki_filp));
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	struct page **pages;
-> +	struct btrfs_uring_priv *priv = NULL;
-> +	unsigned long nr_pages;
-> +	int ret;
-> +
-> +	nr_pages = DIV_ROUND_UP(disk_io_size, PAGE_SIZE);
-> +	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
-> +	if (!pages)
-> +		return -ENOMEM;
-> +	ret = btrfs_alloc_page_array(nr_pages, pages, 0);
-
-The allocation sizes are derived from disk_io_size that comes from the
-outside, potentially making large allocatoins. Or is there some inherent
-limit on the maximu size?
-
-> +	if (ret) {
-> +		ret = -ENOMEM;
-> +		goto fail;
-> +	}
-> +
-> +	priv = kmalloc(sizeof(*priv), GFP_NOFS);
-> +	if (!priv) {
-> +		ret = -ENOMEM;
-> +		goto fail;
-> +	}
-> +
-> +	priv->iocb = *iocb;
-> +	priv->iov = iov;
-> +	priv->iter = *iter;
-> +	priv->count = count;
-> +	priv->cmd = cmd;
-> +	priv->cached_state = cached_state;
-> +	priv->compressed = compressed;
-> +	priv->nr_pages = nr_pages;
-> +	priv->pages = pages;
-> +	priv->start = start;
-> +	priv->lockend = lockend;
-> +
-> +	ret = btrfs_encoded_read_regular_fill_pages(inode, start, disk_bytenr,
-> +						    disk_io_size, pages,
-> +						    btrfs_uring_read_extent_cb,
-> +						    priv);
-> +	if (ret)
-> +		goto fail;
-> +
-> +	return -EIOCBQUEUED;
-> +
-> +fail:
-> +	unlock_extent(io_tree, start, lockend, &cached_state);
-> +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +	kfree(priv);
-
-Does this leak pages and priv->pages?
-
-> +	return ret;
-> +}
-> +
-> +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
-> +				    unsigned int issue_flags)
-> +{
-> +	size_t copy_end_kernel = offsetofend(struct btrfs_ioctl_encoded_io_args,
-> +					     flags);
-> +	size_t copy_end;
-> +	struct btrfs_ioctl_encoded_io_args args = {0};
-                                                = { 0 }
-> +	int ret;
-> +	u64 disk_bytenr, disk_io_size;
-> +	struct file *file = cmd->file;
-> +	struct btrfs_inode *inode = BTRFS_I(file->f_inode);
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	struct iovec iovstack[UIO_FASTIOV];
-> +	struct iovec *iov = iovstack;
-> +	struct iov_iter iter;
-> +	loff_t pos;
-> +	struct kiocb kiocb;
-> +	struct extent_state *cached_state = NULL;
-> +	u64 start, lockend;
-
-The stack consumption looks quite high.
-
-> +
-> +	if (!capable(CAP_SYS_ADMIN)) {
-> +		ret = -EPERM;
-> +		goto out_acct;
-> +	}
-> +
-> +	if (issue_flags & IO_URING_F_COMPAT) {
-> +#if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
-> +		struct btrfs_ioctl_encoded_io_args_32 args32;
-> +
-> +		copy_end = offsetofend(struct btrfs_ioctl_encoded_io_args_32,
-> +				       flags);
-> +		if (copy_from_user(&args32, (const void *)cmd->sqe->addr,
-> +				   copy_end)) {
-> +			ret = -EFAULT;
-> +			goto out_acct;
-> +		}
-> +		args.iov = compat_ptr(args32.iov);
-> +		args.iovcnt = args32.iovcnt;
-> +		args.offset = args32.offset;
-> +		args.flags = args32.flags;
-> +#else
-> +		return -ENOTTY;
-> +#endif
-> +	} else {
-> +		copy_end = copy_end_kernel;
-> +		if (copy_from_user(&args, (const void *)cmd->sqe->addr,
-> +				   copy_end)) {
-> +			ret = -EFAULT;
-> +			goto out_acct;
-> +		}
-> +	}
-> +
-> +	if (args.flags != 0)
-> +		return -EINVAL;
-> +
-> +	ret = import_iovec(ITER_DEST, args.iov, args.iovcnt, ARRAY_SIZE(iovstack),
-> +			   &iov, &iter);
-> +	if (ret < 0)
-> +		goto out_acct;
-> +
-> +	if (iov_iter_count(&iter) == 0) {
-> +		ret = 0;
-> +		goto out_free;
-> +	}
-> +
-> +	pos = args.offset;
-> +	ret = rw_verify_area(READ, file, &pos, args.len);
-> +	if (ret < 0)
-> +		goto out_free;
-> +
-> +	init_sync_kiocb(&kiocb, file);
-> +	kiocb.ki_pos = pos;
-> +
-> +	start = ALIGN_DOWN(pos, fs_info->sectorsize);
-> +	lockend = start + BTRFS_MAX_UNCOMPRESSED - 1;
-> +
-> +	ret = btrfs_encoded_read(&kiocb, &iter, &args,
-> +				 issue_flags & IO_URING_F_NONBLOCK,
-> +				 &cached_state, &disk_bytenr, &disk_io_size);
-> +	if (ret < 0 && ret != -EIOCBQUEUED)
-> +		goto out_free;
-> +
-> +	file_accessed(file);
-> +
-> +	if (copy_to_user((void*)(uintptr_t)cmd->sqe->addr + copy_end,
-> +			 (char *)&args + copy_end_kernel,
-
-So many type casts again
-
-> +			 sizeof(args) - copy_end_kernel)) {
-> +		if (ret == -EIOCBQUEUED) {
-> +			unlock_extent(io_tree, start, lockend, &cached_state);
-> +			btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +		}
-> +		ret = -EFAULT;
-> +		goto out_free;
-> +	}
-> +
-> +	if (ret == -EIOCBQUEUED) {
-> +		u64 count;
-> +
-> +		/* If we've optimized things by storing the iovecs on the stack,
-> +		 * undo this.  */
-
-This is not proper comment formatting.
-
-> +		if (!iov) {
-> +			iov = kmalloc(sizeof(struct iovec) * args.iovcnt,
-> +				      GFP_NOFS);
-> +			if (!iov) {
-> +				unlock_extent(io_tree, start, lockend,
-> +					      &cached_state);
-> +				btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +				ret = -ENOMEM;
-> +				goto out_acct;
-> +			}
-> +
-> +			memcpy(iov, iovstack,
-> +			       sizeof(struct iovec) * args.iovcnt);
-> +		}
-> +
-> +		count = min_t(u64, iov_iter_count(&iter), disk_io_size);
-> +
-> +		ret = btrfs_uring_read_extent(&kiocb, &iter, start, lockend,
-> +					      cached_state, disk_bytenr,
-> +					      disk_io_size, count,
-> +					      args.compression, iov, cmd);
-> +
-> +		goto out_acct;
-> +	}
-> +
-> +out_free:
-> +	kfree(iov);
-> +
-> +out_acct:
-> +	if (ret > 0)
-> +		add_rchar(current, ret);
-> +	inc_syscr(current);
-> +
-> +	return ret;
-> +}
-> +
-> +int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> +{
-> +	switch (cmd->cmd_op) {
-> +	case BTRFS_IOC_ENCODED_READ:
-> +#if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
-> +	case BTRFS_IOC_ENCODED_READ_32:
-> +#endif
-> +		return btrfs_uring_encoded_read(cmd, issue_flags);
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
->  long btrfs_ioctl(struct file *file, unsigned int
->  		cmd, unsigned long arg)
->  {
 
