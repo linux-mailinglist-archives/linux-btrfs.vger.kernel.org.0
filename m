@@ -1,212 +1,349 @@
-Return-Path: <linux-btrfs+bounces-9038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8306C9A72F8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 21:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B222D9A72FA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 21:10:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB74EB224BB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 19:10:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13483B22839
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 19:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846AE1FBCBA;
-	Mon, 21 Oct 2024 19:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332001FBC8D;
+	Mon, 21 Oct 2024 19:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="jgc+iFFq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Kk10WHSq"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rWWsKeMt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ybRL6GtR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rWWsKeMt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ybRL6GtR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6922209B
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2024 19:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FEA1FBC81
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2024 19:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729537811; cv=none; b=ZAZtXS40XVQ+tPtcelzR0Jz7WDMU5mXIWyv4OIYBeTj6HSg8MK3k+8G0I/IFQ7fhPlBW6AM1S5sPnYG2qT9yz5zfDMfKIR6ci9/MiuI0mATt07f7lxUHVVoQXakmHUOfpJL7BmXb0SesxcLnCBhKMBEP8Ismz5ul8CXCqrFHXwg=
+	t=1729537847; cv=none; b=LhgbxhK3M3QRA4H/egQ+jj2UqAcK85eCRU4xxHj0E1/b+JUSYV1fyritLIlFBVyuIkkjJNGdPCa8UzuzHx+5SRU6HK4vtcmbjgJQT9X5r9+m8e1DUc9RGFuWucj6Me1Ls+S3EwuhadgDRRnC5Fv4OscY+Pmg/ijSUnWN9HQn7ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729537811; c=relaxed/simple;
-	bh=Zy/TWGeAVE+u/GAOaQ0qA99oVh1g7wB5l6hXYqBHTww=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GlhtIwVieJUidkcbX17UdZWGlVYWXfFgyTQzfxF6p+SaG94pI/yJvKNbs2nQHyp7CKkgSb7yHxxqoKxSHqxJuMTkRyBttYds7uA6ePFXDESIG4l5ioIHR2gXQiJQTmW6/6SyOlnCs8gyLGjWnHCpfr+Rvzv8tvl09t94qhyJULU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=jgc+iFFq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Kk10WHSq; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id E000511402AC;
-	Mon, 21 Oct 2024 15:10:07 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Mon, 21 Oct 2024 15:10:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1729537807; x=1729624207; bh=aHp5lsCnjOIlZ25hNlg9a
-	mYcQ235Plq85UMiL+7PS6Y=; b=jgc+iFFquBpS1Tvrjsw0jTJeyXXSvO0Luvl3G
-	KCLryH3g+YVxi0Nd1S/xeMDGeDYtfKYCBpVSCZlT35ojfcs+yXx4BgxL4f9HRt+o
-	Ul6ViPMzuzek9n9fXcViVoJrEx7XB2Ch9Mnn1coDwN74kvFIRICZFN5xlMqd1/8T
-	2IjGd8rgpmL3qJ8WAqHDerQYlSQc3JT6LQv2GznWWA67J9SQVcOMUP5hPLC89JrT
-	oAuOz5EKmNGIhwBBtpOqYaG3kH8eYLrxIaM1oGuilo1wco7CC9Vrupp/9w5fSx3Z
-	5Q8PSK905MSM3TCB/3JvD762yv8ZthcpO1PiXuVlAvdgrzkow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1729537807; x=1729624207; bh=aHp5lsCnjOIlZ25hNlg9amYcQ235
-	Plq85UMiL+7PS6Y=; b=Kk10WHSq3X4PHC0TrC+5pTQCWFtYOlEgq8Fc1q3g327t
-	/zhLg73hgWXGWh6Jbuup19AKWM4/0SBNLm8HeTTFHvu+/THgA4XogfbRUeVHTprp
-	tS+8eL+LXq8bcTBZCvtlynhbeAoSOD1O37OSCFIJwfs2H5CGfMKlbuFQ4nEUlBdh
-	b8CGrzQDlylskrP6lVWJ3dvsP/vOQ/sjwPy/7HOYXd0QoNfn9MhDjW81fSJnrNlZ
-	Bm5FO72JSAc+vd7xo17rV/eDhcrSatb4wEMciXKpw9QmcbdUmixKQUVoXYP7bSpO
-	ZJ4EncXZWAWs2/VUUb5R3e2eLPW/6IJn9dG9hih/LQ==
-X-ME-Sender: <xms:D6cWZ1QrkLShMB0lrOo8h68dR6PmiVJwt_aoSXVIUoXt_YGdd6fbPw>
-    <xme:D6cWZ-wGtnnVrDOGaXlebJZFysIg7MNe-KiOZkiPDwp8CvpvWkvHEsnn97rW87H-u
-    arGUU56iwUEjg6yzRg>
-X-ME-Received: <xmr:D6cWZ61SqV2A_tUkaFbl3NY2qqAlLJR6fiCSAMVzvAeZ4-C1IwOFBYnFMGYtCKEsgf1xhaZGkRDgELqFjgCEV2H7MaY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdehledgudefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvuf
-    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegs
-    ohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffve
-    elieefgfejjeeigeekudduteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprh
-    gtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgs
-    thhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqd
-    htvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:D6cWZ9ANv4MHsOy_DuKSHA8EwDJKd411IbdOkcCvos_hZ9glp5MrDg>
-    <xmx:D6cWZ-iFxRazAO4NEAGUZJ-RFPJlqBVIclhLuPAvDw21xd83I_WPPA>
-    <xmx:D6cWZxoQL0scvyJEMZiZV_U1w_sXryXExmDPd92govsGszQRvVbINQ>
-    <xmx:D6cWZ5jIFiI2wFmOxnVJwMa1Pn87N1KsaQxXQiBjtI-rqPWwkFe_Xg>
-    <xmx:D6cWZxto9My2M0ZEe9xzlE5JFHj93X9ljaEUXFJ_XEwTjIaTjoEIwFIo>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Oct 2024 15:10:07 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v4] btrfs: fix read corruption due to race with extent map merging
-Date: Mon, 21 Oct 2024 12:09:30 -0700
-Message-ID: <9b98ba80e2cf32f6fb3b15dae9ee92507a9d59c7.1729537596.git.boris@bur.io>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1729537847; c=relaxed/simple;
+	bh=N0EZpWqatc87O6+OrjbfnGzQEE49x6De2EarRPj4hrA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hmF8Q1sRkwHFFySdtpefLPKF4S7+G0/Yi/cxKN3EuTBvl1iK8+O5fceiEpPdCUNCqS6vxy6UfHOc8QUwPMeXa4dJEXWBPLKvdHulgmsL9sd8kCWGyopxQByLLVDX9oSycAB+cYIf2xPS2+WfxVWtiV6B3vCdzuBkdScu/jp8Prc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rWWsKeMt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ybRL6GtR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rWWsKeMt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ybRL6GtR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B57821DEF;
+	Mon, 21 Oct 2024 19:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729537840;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EhYMzpGTMcI9yf3iD+dMfOzPyaA8nNW6yTkYVrS3dvo=;
+	b=rWWsKeMtZxKkv1EzLeAFR9Ze8K7RPGd3Py2wq3A/jFJAfSdhwR6uycvWuF5+BfG94eQlVv
+	xSImvtxmiNNgM5aC7B48U1oZDhXVqg9IZoFQkDOF8bRVex5/QwGAW9Ps5YVF5Q1fLpR+12
+	FwvFArWFml5zGyj/Ee+x1adpchMZLyU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729537840;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EhYMzpGTMcI9yf3iD+dMfOzPyaA8nNW6yTkYVrS3dvo=;
+	b=ybRL6GtRNgZGwmdi+KPANGe5aBES7KjO9gsqEr+jv4uxR+1HUuaoOxBgRsYZ+wR2dAOO0+
+	xvfBBMgP4WOduaAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729537840;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EhYMzpGTMcI9yf3iD+dMfOzPyaA8nNW6yTkYVrS3dvo=;
+	b=rWWsKeMtZxKkv1EzLeAFR9Ze8K7RPGd3Py2wq3A/jFJAfSdhwR6uycvWuF5+BfG94eQlVv
+	xSImvtxmiNNgM5aC7B48U1oZDhXVqg9IZoFQkDOF8bRVex5/QwGAW9Ps5YVF5Q1fLpR+12
+	FwvFArWFml5zGyj/Ee+x1adpchMZLyU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729537840;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EhYMzpGTMcI9yf3iD+dMfOzPyaA8nNW6yTkYVrS3dvo=;
+	b=ybRL6GtRNgZGwmdi+KPANGe5aBES7KjO9gsqEr+jv4uxR+1HUuaoOxBgRsYZ+wR2dAOO0+
+	xvfBBMgP4WOduaAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D14A136DC;
+	Mon, 21 Oct 2024 19:10:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Ob6uDjCnFmf5LAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 21 Oct 2024 19:10:40 +0000
+Date: Mon, 21 Oct 2024 21:10:35 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5] btrfs: try to search for data csums in commit root
+Message-ID: <20241021191035.GE24631@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <8e334e4412410a46d3928950c796c9914cebdf92.1729537203.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e334e4412410a46d3928950c796c9914cebdf92.1729537203.git.boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-In debugging some corrupt squashfs files, we observed symptoms of
-corrupt page cache pages but correct on-disk contents. Further
-investigation revealed that the exact symptom was a correct page
-followed by an incorrect, duplicate, page. This got us thinking about
-extent maps.
+On Mon, Oct 21, 2024 at 12:01:53PM -0700, Boris Burkov wrote:
+> If you run a workload like:
+> - a cgroup that does tons of data reading, with a harsh memory limit
+> - a second cgroup that tries to write new files
+> e.g.:
+> https://github.com/boryas/scripts/blob/main/sh/noisy-neighbor/run.sh
+> 
+> then what quickly occurs is:
+> - a high degree of contention on the csum root node eb rwsem
+> - memory starved cgroup doing tons of reclaim on CPU.
+> - many reader threads in the memory starved cgroup "holding" the sem
+>   as readers, but not scheduling promptly. i.e., task __state == 0, but
+>   not running on a cpu.
+> - btrfs_commit_transaction stuck trying to acquire the sem as a writer.
+> 
+> This results in VERY long transactions. On my test system, that script
+> produces 20-30s long transaction commits. This then results in
+> seriously degraded performance for any cgroup using the filesystem (the
+> victim cgroup in the script).
+> 
+> This reproducer is a bit silly, as the villanous cgroup is using almost
+> all of its memory.max for kernel memory (specifically pagetables) but it
+> sort of doesn't matter, as I am most interested in the btrfs locking
+> behavior. It isn't an academic problem, as we see this exact problem in
+> production at Meta with one cgroup over memory.max ruining btrfs
+> performance for the whole system.
+> 
+> The underlying scheduling "problem" with global rwsems is sort of thorny
+> and apparently well known. e.g.
+> https://lpc.events/event/18/contributions/1883/
+> 
+> As a result, our main lever in the short term is just trying to reduce
+> contention on our various rwsems. In the case of the csum tree, we can
+> either redesign btree locking (hard...) or try to use the commit root
+> when we can. Luckily, it seems likely that many reads are for old extents
+> written many transactions ago, and that for those we *can* in fact
+> search the commit root!
+> 
+> This change detects when we are trying to read an old extent (according
+> to extent map generation) and then wires that through bio_ctrl to the
+> btrfs_bio, which unfortunately isn't allocated yet when we have this
+> information. Luckily, we don't need this flag in the bio after
+> submitting, so we can save space by setting it on bbio->bio.bi_flags
+> and clear before submitting, so the block layer is unaffected.
+> 
+> When we go to lookup the csums in lookup_bio_sums we can check this
+> condition on the btrfs_bio and do the commit root lookup accordingly.
+> 
+> With the fix, on that same test case, commit latencies no longer exceed
+> ~400ms on my system.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+> Changelog:
+> v5:
+> - static inline flag functions
+> - make bbio const for the getter
+> - move around and improve the comments
 
-commit ac05ca913e9f ("Btrfs: fix race between using extent maps and merging them")
-enforces a reference count on the primary `em` extent_map being merged,
-as that one gets modified.
+v5 looks good, thanks.
 
-However, since,
-commit 3d2ac9922465 ("btrfs: introduce new members for extent_map")
-both 'em' and 'merge' get modified, which started modifying 'merge'
-and thus introduced the same race.
+> v4:
+> - replace generic private flag machinery with specific function for the
+>   one flag
+> - move the bio_ctrl field to take advantage of alignment
+> v3:
+> - add some simple machinery for setting/getting/clearing btrfs private
+>   flags in bi_flags
+> - clear those flags before bio_submit (ensure no-op wrt block layer)
+> - store the csum commit root flag there to save space
+> v2:
+> - hold the commit_root_sem for the duration of the entire lookup, not
+>   just per btrfs_search_slot. Note that we can't naively do the thing
+>   where we release the lock every loop as that is exactly what we are
+>   trying to avoid. Theoretically, we could re-grab the lock and fully
+>   start over if the lock is write contended or something. I suspect the
+>   rwsem fairness features will let the commit writer get it fast enough
+>   anyway.
+> 
+> ---
+>  fs/btrfs/bio.c       |  8 ++++++++
+>  fs/btrfs/bio.h       | 17 +++++++++++++++++
+>  fs/btrfs/extent_io.c | 20 ++++++++++++++++++++
+>  fs/btrfs/file-item.c | 30 ++++++++++++++++++++++++++++++
+>  4 files changed, 75 insertions(+)
+> 
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 1f216d07eff6..4d675f6dd3e9 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -482,6 +482,14 @@ static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
+>  static void btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
+>  			     struct btrfs_io_stripe *smap, int mirror_num)
+>  {
+> +	/*
+> +	 * It is important to clear the bits we used in bio->bi_flags.
+> +	 * Because bio->bi_flags belongs to the block layer, we should
+> +	 * avoid leaving stray bits set when we transfer ownership of
+> +	 * the bio by submitting it.
+> +	 */
+> +	btrfs_bio_clear_csum_search_commit_root(btrfs_bio(bio));
+> +
+>  	if (!bioc) {
+>  		/* Single mirror read/write fast path. */
+>  		btrfs_bio(bio)->mirror_num = mirror_num;
+> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+> index e2fe16074ad6..8915863d0d0f 100644
+> --- a/fs/btrfs/bio.h
+> +++ b/fs/btrfs/bio.h
+> @@ -104,6 +104,23 @@ struct btrfs_bio *btrfs_bio_alloc(unsigned int nr_vecs, blk_opf_t opf,
+>  				  btrfs_bio_end_io_t end_io, void *private);
+>  void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status);
+>  
+> +#define BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT	(1U << (BIO_FLAG_LAST + 1))
+> +
+> +static inline void btrfs_bio_set_csum_search_commit_root(struct btrfs_bio *bbio)
+> +{
+> +	bbio->bio.bi_flags |= BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
+> +}
+> +
+> +static inline void btrfs_bio_clear_csum_search_commit_root(struct btrfs_bio *bbio)
+> +{
+> +	bbio->bio.bi_flags &= ~BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
+> +}
+> +
+> +static inline bool btrfs_bio_csum_search_commit_root(const struct btrfs_bio *bbio)
+> +{
+> +	return bbio->bio.bi_flags & BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
+> +}
+> +
+>  /* Submit using blkcg_punt_bio_submit. */
+>  #define REQ_BTRFS_CGROUP_PUNT			REQ_FS_PRIVATE
+>  
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 1beaba232532..bdd7673d989c 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -99,6 +99,15 @@ struct btrfs_bio_ctrl {
+>  	enum btrfs_compression_type compress_type;
+>  	u32 len_to_oe_boundary;
+>  	blk_opf_t opf;
+> +	/*
+> +	 * If this is a data read bio, we set this to true if the extent is
+> +	 * from a past transaction and thus it is safe to search for csums
+> +	 * in the commit root. Otherwise, we set it to false.
+> +	 *
+> +	 * See the comment in btrfs_lookup_bio_sums for more detail on the
+> +	 * need for this optimization.
+> +	 */
+> +	bool csum_search_commit_root;
+>  	btrfs_bio_end_io_t end_io_func;
+>  	struct writeback_control *wbc;
+>  
+> @@ -771,6 +780,9 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
+>  			alloc_new_bio(inode, bio_ctrl, disk_bytenr,
+>  				      folio_pos(folio) + pg_offset);
+>  		}
+> +		if (btrfs_op(&bio_ctrl->bbio->bio) == BTRFS_MAP_READ &&
+> +		    is_data_inode(inode) && bio_ctrl->csum_search_commit_root)
+> +			btrfs_bio_set_csum_search_commit_root(bio_ctrl->bbio);
+>  
+>  		/* Cap to the current ordered extent boundary if there is one. */
+>  		if (len > bio_ctrl->len_to_oe_boundary) {
+> @@ -1049,6 +1061,14 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+>  		if (prev_em_start)
+>  			*prev_em_start = em->start;
+>  
+> +		/*
+> +		 * At this point, we know it is safe to search for
+> +		 * csums in the commit root, but we have not yet
+> +		 * allocated a bio, so stash it in bio_ctrl.
+> +		 */
+> +		if (em->generation < btrfs_get_fs_generation(fs_info))
+> +			bio_ctrl->csum_search_commit_root = true;
+> +
+>  		free_extent_map(em);
+>  		em = NULL;
+>  
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 886749b39672..cd63769959f9 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -401,6 +401,33 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+>  		path->skip_locking = 1;
+>  	}
+>  
+> +	/*
+> +	 * If we are searching for a csum of an extent from a past
+> +	 * transaction, we can search in the commit root and reduce
+> +	 * lock contention on the csum tree root node's extent buffer.
+> +	 *
+> +	 * This is important because that lock is an rwswem which gets
+> +	 * pretty heavy write load, unlike the commit_root_csum.
+                                               ^^^^^^^^^^^^^^^^
 
-We were able to reproduce this by looping the affected squashfs workload
-in parallel on a bunch of separate btrfs-es while also dropping caches.
-We are still working on a simple enough reproducer to make into an fstest.
+commit_root_sem?
 
-The simplest fix is to stop modifying 'merge', which is not essential,
-as it is dropped immediately after the merge. This behavior is simply
-a consequence of the order of the two extent maps being important in
-computing the new values. Modify merge_ondisk_extents to take prev and
-next by const* and also take a third merged parameter that it puts the
-results in. Note that this introduces the rather odd behavior of passing
-'em' to merge_ondisk_extents as a const * and as a regular ptr.
+> +	 *
+> +	 * Due to how rwsem is implemented, there is a possible
+> +	 * priority inversion where the readers holding the lock don't
+> +	 * get scheduled (say they're in a cgroup stuck in heavy reclaim)
+> +	 * which then blocks writers, including transaction commit. By
+> +	 * using a semaphore with fewer writers (only a commit switching
+> +	 * the roots), we make this issue less likely.
+> +	 *
+> +	 * Note that we don't rely on btrfs_search_slot to lock the
+> +	 * commit root csum. We call search_slot multiple times, which would
+                       sem
 
-Fixes: 3d2ac9922465 ("btrfs: introduce new members for extent_map")
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-Changelog:
-v4:
-- make the subject clearer
-v3:
-- use correct const pointer
-- update comment
-v2:
-- make 'merge' immutable instead of refcounting it
----
- fs/btrfs/extent_map.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+> +	 * create a potential race where a commit comes in between searches
+> +	 * while we are not holding the commit_root_csum, and we get csums
+                                                    sem
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index d58d6fc40da1..26101fb577f3 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -246,13 +246,19 @@ static bool mergeable_maps(const struct extent_map *prev, const struct extent_ma
- /*
-  * Handle the on-disk data extents merge for @prev and @next.
-  *
-+ * @prev: left extent to merge
-+ * @next: right extent to merge
-+ * @merged: the extent we will not discard after the merge; updated with new values
-+ *
-+ * After this, one of the two extents is the new merged extent and the other is
-+ * removed from the tree and likely freed. Note that @merged is one of @prev/@next
-+ * so there is const/non-const aliasing occurring here.
-+ *
-  * Only touches disk_bytenr/disk_num_bytes/offset/ram_bytes.
-  * For now only uncompressed regular extent can be merged.
-- *
-- * @prev and @next will be both updated to point to the new merged range.
-- * Thus one of them should be removed by the caller.
-  */
--static void merge_ondisk_extents(struct extent_map *prev, struct extent_map *next)
-+static void merge_ondisk_extents(const struct extent_map *prev, const struct extent_map *next,
-+				 struct extent_map *merged)
- {
- 	u64 new_disk_bytenr;
- 	u64 new_disk_num_bytes;
-@@ -287,15 +293,10 @@ static void merge_ondisk_extents(struct extent_map *prev, struct extent_map *nex
- 			     new_disk_bytenr;
- 	new_offset = prev->disk_bytenr + prev->offset - new_disk_bytenr;
- 
--	prev->disk_bytenr = new_disk_bytenr;
--	prev->disk_num_bytes = new_disk_num_bytes;
--	prev->ram_bytes = new_disk_num_bytes;
--	prev->offset = new_offset;
--
--	next->disk_bytenr = new_disk_bytenr;
--	next->disk_num_bytes = new_disk_num_bytes;
--	next->ram_bytes = new_disk_num_bytes;
--	next->offset = new_offset;
-+	merged->disk_bytenr = new_disk_bytenr;
-+	merged->disk_num_bytes = new_disk_num_bytes;
-+	merged->ram_bytes = new_disk_num_bytes;
-+	merged->offset = new_offset;
- }
- 
- static void dump_extent_map(struct btrfs_fs_info *fs_info, const char *prefix,
-@@ -363,7 +364,7 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
- 			em->generation = max(em->generation, merge->generation);
- 
- 			if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
--				merge_ondisk_extents(merge, em);
-+				merge_ondisk_extents(merge, em, em);
- 			em->flags |= EXTENT_FLAG_MERGED;
- 
- 			validate_extent_map(fs_info, em);
-@@ -378,7 +379,7 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
- 	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
- 		em->len += merge->len;
- 		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
--			merge_ondisk_extents(em, merge);
-+			merge_ondisk_extents(em, merge, em);
- 		validate_extent_map(fs_info, em);
- 		em->generation = max(em->generation, merge->generation);
- 		em->flags |= EXTENT_FLAG_MERGED;
--- 
-2.47.0
+Only typos so you can fix it once you add it to for-next, also please
+reflow the comments so they fit 80 columns per line.
 
+Reviewed-by: David Sterba <dsterba@suse.com>
 
