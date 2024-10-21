@@ -1,139 +1,388 @@
-Return-Path: <linux-btrfs+bounces-9022-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 560629A6AF5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 15:48:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547519A6B86
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 16:06:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84EF71C23B30
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 13:48:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1084D2832E3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2024 14:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76351F9420;
-	Mon, 21 Oct 2024 13:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31FF01FA249;
+	Mon, 21 Oct 2024 14:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iu8ALFKA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1E7323D;
-	Mon, 21 Oct 2024 13:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729518484; cv=none; b=aANC4gmABpzZ73WzXgEkAR3DB6/x0F1hs54Lx374qXRnGszo5iZM8TD5FHJUxF9ICm6GJoWewErYlulYCX08/hxpVR6kZRngC5P65UK0tTtHHh0E+g5Z7qtlzIib1lHzcesNK8BUS+hDOc+y/+wU8Dch3S3MOvrrwj5SqMRycmE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729518484; c=relaxed/simple;
-	bh=wbvPfx4k4ND3GZ/p2WA4lION7rS+/T/Lg3SpvWUr0rk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=SFHFMmG69QSLvdvXYq1OXHVxFEwaktVFONmDfSga4Fc5ckDhYLA0j+mY3RDlKND9ibI3UTEgzdkVZbjUaQBcEJCGvcCdzqxCn1KQlsq10V0ucgGWc51wPlJlnHuky8cEnu4/FfmqWwa9vSca7RoTvHLKX1eqiDGnhAuJvXioqZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XXGpP0Vl0z4f3jXr;
-	Mon, 21 Oct 2024 21:47:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 6885C1A092F;
-	Mon, 21 Oct 2024 21:47:58 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-	by APP4 (Coremail) with SMTP id gCh0CgCn28eIWxZnwijhEg--.13131S4;
-	Mon, 21 Oct 2024 21:47:56 +0800 (CST)
-From: Zhihao Cheng <chengzhihao@huaweicloud.com>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com,
-	Anand.Jain@oracle.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chengzhihao1@huawei.com
-Subject: [PATCH] btrfs: Fix UAF in __btrfs_free_extra_devids()
-Date: Mon, 21 Oct 2024 22:02:15 +0800
-Message-Id: <20241021140215.2948551-1-chengzhihao@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223FE1F9A8F;
+	Mon, 21 Oct 2024 14:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729519517; cv=fail; b=imBbbcZcAOSAFUoo/r6SMI83RZuNqLF2d0g5Zf4sAQjZIGnTCQGsUQWjtKaQKfxHuIa+5N/fR2Ubqm4oYroB+sMqTRMjVrkTkgwVOl2h+JeBXyoooKQc0q186K/Yus14suEqKUfRdOSTIVzftIZrJ51hjfBE/YI2rTmBISKmbg4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729519517; c=relaxed/simple;
+	bh=o3uEcmrUhndbyBrTfWB/276eCnehUHTySx5OlXFGNOU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=JsS7gGPwtbIQnen2Z15BWVMEogOykLm94ugk+OdOXduUlMNsLMwv4Z6mawvUme+7ZUtPZscUD3i5lPu+tYSkqSOrjpTg/9Z+88sJctYTcTpcwIBoIGAg5aLstJNA2f32Pyf5VtRwU8jlC0dJ+pBkaXv03mrp1mIWR1earZJ4S4o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iu8ALFKA; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1729519516; x=1761055516;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=o3uEcmrUhndbyBrTfWB/276eCnehUHTySx5OlXFGNOU=;
+  b=iu8ALFKAi6Tdk9/PbhOS393FUZBST7oWSw7xbxB50wGQYopSCQaS34wk
+   hYXlXi1NdDhHN/nSTHGey7twk7hKek1foBSg9HZLs97Xs7pwl7W4E13bL
+   xiwe6D9yo+75YSY5i/wQmgRgcC9jwuDNzJzheqlp/k+MDcxJgcOakX01I
+   yJnnajPHufJT+FeFob0cw62ORdgGu+ITUL9wQxtsJJ1wpq+1896/ESpRo
+   w0xyTuuYkOQpPMNmXvPDoT/XmKkkNpAl/UIJ+rqZWJ/CriBq/WILBkp+x
+   N/yQJPwVSMekzLGnTa3Gzd9L8GkvahmJgjbHfjafWAKZc93RGLLADaXTR
+   A==;
+X-CSE-ConnectionGUID: oZHFE0WEQ921U/ICCpUsPQ==
+X-CSE-MsgGUID: ZLTOZJsqQmSH7xKFcEYPTA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="46469245"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="46469245"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2024 07:04:50 -0700
+X-CSE-ConnectionGUID: GEueAy7rRCW7cp2tLE1xbg==
+X-CSE-MsgGUID: KC7MElVEQZmjXs8vQbCHYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,221,1725346800"; 
+   d="scan'208";a="84326996"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Oct 2024 07:04:50 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 21 Oct 2024 07:04:49 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Mon, 21 Oct 2024 07:04:49 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.45) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 21 Oct 2024 07:04:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HZxPrGsjDeGLXNsWlDxXuwZIISSbEf9bvlZhu9csytQSwUlpyCcU+1DOuVFIct5JDKmdJJIMrmwpssSjhlBiipxDChvSHzHlQqj967CFQa5Z0MZke6wS27MtopVTPyMOJQwMMPvDyOZ+L4M5VNj9qsfPBJDsv7Ft27+LDPxscv0ZmjAu5gytyYbL/+Vs5su7iHH/n8ZdL2WslQ6erVtjGhBJgEXVrLqyn8bFjLH/XCmV7+mu8QG4SS21l83yNm833xGBlrA8DaGEs1qAXNGGURRbY6wXPbLNgFYGV2wQLnUoEBzbTcWgY+XvqNy9QQyAiswa+r0fah8mf6O2DFvTxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QGVqqoYTCXZwUFWdpB9g6VvlDgkp9dZynb6xH58jP7s=;
+ b=IFcfx8vCA7wVC7OU3/H+N3lkFZ9i3QYzn87v/yfX6r4GvR3eG5ubrRluPfdotI+eUSZAvvGMtBcMVpl6+gtI/yz7gc7z60lUJfdauv0/nlP6C4srXrBgXpzoyVjw8hbI/rasSPk87c6T8//KuIZ1B1wmpqNXehVoLLRpHgi5G6LSE+L+fV4L+OVWY9uZDVq+J4Yz9ly0ic19lbQ6uFIvXxq7VuTWAYBozzffebytj7di/RutzfKUN10DTfnqmr7ScWk/uMp+tjrGZ3cXzvzTY3A/SA/pDZifKh6X+AWO7n6T7vPJ1wvnQ4WJkrGoIhxjg5v/Jd1MeZiOzEDZM7t3LA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SA1PR11MB5924.namprd11.prod.outlook.com (2603:10b6:806:23b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.28; Mon, 21 Oct
+ 2024 14:04:44 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57%3]) with mapi id 15.20.8069.027; Mon, 21 Oct 2024
+ 14:04:44 +0000
+Date: Mon, 21 Oct 2024 09:04:36 -0500
+From: Ira Weiny <ira.weiny@intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Ira Weiny
+	<ira.weiny@intel.com>
+CC: "Li, Ming4" <ming4.li@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Fan
+ Ni" <fan.ni@samsung.com>, Navneet Singh <navneet.singh@intel.com>, "Jonathan
+ Corbet" <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>, "Dan
+ Williams" <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 21/28] cxl/extent: Process DCD events and realize
+ region extents
+Message-ID: <67165f7447c77_8cb17294f0@iweiny-mobl.notmuch>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-21-c261ee6eeded@intel.com>
+ <4337ddd9-312b-4fb7-9597-81e8b00d57cb@intel.com>
+ <6706de3530f5c_40429294b8@iweiny-mobl.notmuch>
+ <20241010155014.00004bdd@Huawei.com>
+ <67117e57479b3_2cee2942d@iweiny-mobl.notmuch>
+ <20241018100307.000008a9@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20241018100307.000008a9@Huawei.com>
+X-ClientProxiedBy: MW4PR03CA0307.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::12) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn28eIWxZnwijhEg--.13131S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF4kWw18Xw1xWF18ZFyUGFg_yoW8uw4xpr
-	n8GFy5trykWw1DCrW7W3y8C3Z3Xw4qyayrWrn8urWrK3yUAFyYvF93Cw1jg340y3ykJF1D
-	Xry3W34vqrnxCaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UZSdgUUUUU=
-X-CM-SenderInfo: xfkh0wx2klxt3r6k3tpzhluzxrxghudrp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SA1PR11MB5924:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a52e199-6c77-42bf-ee1b-08dcf1d95095
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|7416014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?9Rmv7GU1UdmoNM80QfqEhJOBJiUiZy8ANKQgTwVTNfJUDkIPe/eGLuZD/ka9?=
+ =?us-ascii?Q?nT8s7Pcm7S992Bp9+FlQztep/pltdZAvAo4dGvZuDaFPdKn1ilFGO7jswwYr?=
+ =?us-ascii?Q?Yar/eFHT8mSJslnzDLHXTVD4NRrNKIdu6e0HebgHXdG6EvF9BQdjXMiTxowD?=
+ =?us-ascii?Q?R05YfQMfI/LgO/OmgWLqBeQ0Cz8sHvhJ2POB+o6MEE+sT1BaKuOtCcgbJAa7?=
+ =?us-ascii?Q?b+peVrI2kJGn+p4/l0PqbICh6bIISp0VYEz9dlwPJyuhHVQApcs0LZVz6i92?=
+ =?us-ascii?Q?QfOacazS/3vaqjmNojhwe8qTcLF3esnicKEVDww1H1KkemI3Dtzvv9PnrI3A?=
+ =?us-ascii?Q?ueymIkeg59PijbAIAVBOI7Bo+4Kamdkw+W8bLreYTcB7+r5/J5/9OGHOWhdS?=
+ =?us-ascii?Q?yrGm+Q5KpTCKFuGNxrBpDTha3feJsBuakZ4F59R19KiXdDK9f7wJEkWQhu12?=
+ =?us-ascii?Q?Mr5Zv0d6tGsVepUm0f3FhOlgh/ABbWAPfIoWM7y289SYQrZZkHUNlRnUYWCa?=
+ =?us-ascii?Q?cE4MwsyRFjOrTbzZKLdfPPuv9SelbNzOItDiYmnWmvgNyy2BSbUnAXaouGlI?=
+ =?us-ascii?Q?WEx1XVusKAdZzKYpDRcqZgKsjwcjGDiZP/nSrf88FgZryf1gHDeXWDZkdQJ+?=
+ =?us-ascii?Q?dHlOJbc6pUO8HjusyxAnj1zFGmy8k/IF/nrdbOSH7Rt3RDwZz+4WS2UkQcaN?=
+ =?us-ascii?Q?LIWinu/kUhHJHbMkM3k0mB4ptADpb3Az2oXkdYo2iqAk5fM4H0Jc/dBWC+1K?=
+ =?us-ascii?Q?iU9q3P6Zivy0rr0vl3dbJIpCprtoGhibkJ4M8yJtEuPyEPsRmKCRFDg0NadD?=
+ =?us-ascii?Q?+wOOumdpcp8e8PAsq8P68ViCN4fH9KCJwuwb+qwtBaoh2uXD3E0VWDHTmwES?=
+ =?us-ascii?Q?pS0Cf2u2zYJQb7rbqkijnG1cspbrHQ4gAaJDwapuBWX7D/Y+OB+qvl3Y9J6o?=
+ =?us-ascii?Q?zwL4jGdImCiM8TGMHBdHCViHXmgZDYYzX5+oH8EyLwVHf0dOTxO2mZNlEtxd?=
+ =?us-ascii?Q?9np9pZVvfmf7tNaiR/LbsI+cWCAWkqzmgy3jb7kT0r5LsmbyCTPygcaWLwLE?=
+ =?us-ascii?Q?nsWztgu3bFbh/2iJ6Fe9otSHhGUioNdPICpeBDJBNy+p99QPCx0tQ/TQsMlY?=
+ =?us-ascii?Q?XeVIxyZZ8n6VSHgO2zShFPoHbnuCMeSgV3XDeCqqPvolMRezDgtGLMLRbjhK?=
+ =?us-ascii?Q?EDhW2sh6pQyDQFL5UWfbSIHT6o1imn0bo8lxghnKGJyoUp7/RPn2UnvDOvS6?=
+ =?us-ascii?Q?KCd7VvxjOsC9ZNR41CndDiJ19qb4whGd5AfjeJ+dgQYjfBAzVO/4/rm/4N3d?=
+ =?us-ascii?Q?kDpAseMFFYJ/gAFmzxyl8bi3?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7Zh6beXqdh3xyqh8TzpLXRxY6d9GwwqoIR7EWDCrvfNOXPAnDYxK3OKA1TJ8?=
+ =?us-ascii?Q?o3euwWhf2fN2Kqf/w2arCFqRFA0JbBHoGIIG9Q7v8DV226/wWxORWbJ75ehD?=
+ =?us-ascii?Q?bA4f9Y17Zy0/wtLI7VPHyIijdRxO1G0nU+NnKoo2/ijcwrlNghH2ZaYbeafV?=
+ =?us-ascii?Q?sBgb9fKmwsYqGzF3QjTq+G9nN0HhTK4D5OO2ZS6F7XfGDjmuIC9SvXVJYlnw?=
+ =?us-ascii?Q?kEbrItJBg9xhtx2WeYyZRxGSwOBZTDrrrKLckIWpkszB2h8zJEVFgcjZc1n8?=
+ =?us-ascii?Q?mrlEWmbsyaF8KmE/PiE2WORjaCIBi7bNO7hNLf6fgEmXgOMX/Wqc5IY7A9+T?=
+ =?us-ascii?Q?Ui3gVfOp0yYa29n9g1KGaZg28YfrGai+r3ZmcLzhB3h0Zi0KJnQxsLv4AmM8?=
+ =?us-ascii?Q?qdC6iKIgnSflJqueJYXs+y0giepkc977AiJdPbCYRcUvCenJ+3nrgt+hCK8A?=
+ =?us-ascii?Q?JQOjYKhVXm28mS2fp3zliGYywLcLnz3/iUKe6GqXpNRJPyyxeuCV71hGVgWx?=
+ =?us-ascii?Q?tF98trb+1efkSp5Xpeh0qcuoWlIdfcHhLAHRV6VGxDL3M5XVzw8Zm0EGiOiT?=
+ =?us-ascii?Q?SBY2dGRt5bzyUlySNnu4neucMBO9wOkwh2gAypd3cbpSF6VjJ7ZS7Y10xY74?=
+ =?us-ascii?Q?Lfw6Jzs8wfkHNwW/F6vIGb1TotLxVI6cCjN21c0RW1i+E4I47XaXcNnI7iNB?=
+ =?us-ascii?Q?8Vk7LWcmE7LZzSbzBZZGN0AQ5smjsnVb1dpt6fS5Px4NFBmtBCTzs69d+9aT?=
+ =?us-ascii?Q?9R2z1UoAsRzQArCgvp0sz2x8qfHyHgsOmhst2wui/8b8rmAKBN6qwpLIrbNJ?=
+ =?us-ascii?Q?1lo/iwRA2ef8gbQT3xVtfGlBgbgzAF5O8CV5LY/+PBSnVFiHPJbe0rnrUzcW?=
+ =?us-ascii?Q?g0OymDEhHbYrFYtmOO56k+Po7LXCGtIvZvlD8JFtwA3tap5cn7Z6xdFe1iCs?=
+ =?us-ascii?Q?mA3U4ygd9L6WTPelU2R7fiuB0rNSX2RObPkvgVevSFJpI220LbIJP7pf/rZI?=
+ =?us-ascii?Q?aOHXtbm+nLYc0mN7ZJ3ZDCq6lARx0LF5asFE7hVtziqO0KcbrmhMt9IOQC1B?=
+ =?us-ascii?Q?oZAcoLT7MKCQLpGoECaD1+vTg+f81pGs4JRAaqqt/J4aH7aPLa1pR7y7bgjE?=
+ =?us-ascii?Q?fgMlZ1367NQ/Ii4ufvQKOpSG3tOxsceqpclV41OcKiJJtHnus3ryK3MlwIc7?=
+ =?us-ascii?Q?Nbo5zz1X0QYpYFOPkCZzhTggEcSr16yhCIlaocmHYVaQ2l/Bn+bVhUEQQLL1?=
+ =?us-ascii?Q?xzP6lqmunKrhm7LHnaUxLSFB+JM1O2x5L/A5FTw+fuL8kM7KvZK3ptr+ru8K?=
+ =?us-ascii?Q?5r+s12B9YCvC51MEXoTAu42O3SqBPUGA6SsoEbsp9dtLdbkIqR4f+xBcbkZ1?=
+ =?us-ascii?Q?7E00aqMDMN6gPx7/HkdI/X4QIn72bLY0K7lvhZX7nyNWuxuwsP1zdtUds71K?=
+ =?us-ascii?Q?2aftEHGTee0h9doGr33e2nJ7ZrP285kzfrBme2/OKVYGiYreGzIWFPa5Bn5r?=
+ =?us-ascii?Q?R7VdA75GkLUzfzdhXufdGN/Urw+m2dlNAGtAdDO+jThwcdRq+c41cnrcOKhA?=
+ =?us-ascii?Q?9pZaEz4S2QjeAp2UP0XhMzI++6Un336PWpcYhtJP?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a52e199-6c77-42bf-ee1b-08dcf1d95095
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2024 14:04:44.5046
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VIa/nJxg+ES1147eeIxb+NngAymS7nFtnmfPVSSnwTeOKvs68PwVIJRRoSzhCPKVukV3gDhkofvD+SKk71vPtQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5924
+X-OriginatorOrg: intel.com
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+Jonathan Cameron wrote:
+> On Thu, 17 Oct 2024 16:15:03 -0500
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > Jonathan Cameron wrote:
+> > > On Wed, 9 Oct 2024 14:49:09 -0500
+> > > Ira Weiny <ira.weiny@intel.com> wrote:
+> > >   
+> > > > Li, Ming4 wrote:  
+> > > > > On 10/8/2024 7:16 AM, ira.weiny@intel.com wrote:    
+> > > > > > From: Navneet Singh <navneet.singh@intel.com>
+> > > > > >    
+> > 
+> > [snip]
+> > 
 
-Mounting btrfs from two images(which have the same one fsid and two
-different dev_uuids) in certain executing order may trigger an UAF
-for variable 'device->bdev_file' in __btrfs_free_extra_devids(). And
-following are the details:
-1. Attach image_1 to loop0, attach image_2 to loop1, and scan btrfs
-   devices by ioctl(BTRFS_IOC_SCAN_DEV):
-             /  btrfs_device_1 → loop0
-   fs_device
-             \  btrfs_device_2 → loop1
-2. mount /dev/loop0 /mnt
-   btrfs_open_devices
-    btrfs_device_1->bdev_file = btrfs_get_bdev_and_sb(loop0)
-    btrfs_device_2->bdev_file = btrfs_get_bdev_and_sb(loop1)
-   btrfs_fill_super
-    open_ctree
-     fail: btrfs_close_devices // -ENOMEM
-	    btrfs_close_bdev(btrfs_device_1)
-             fput(btrfs_device_1->bdev_file)
-	      // btrfs_device_1->bdev_file is freed
-	    btrfs_close_bdev(btrfs_device_2)
-             fput(btrfs_device_2->bdev_file)
-2. mount /dev/loop1 /mnt
-   btrfs_open_devices
-    btrfs_get_bdev_and_sb(&bdev_file)
-     // EIO, btrfs_device_1->bdev_file is not assigned,
-     // which points to a freed memory area
-    btrfs_device_2->bdev_file = btrfs_get_bdev_and_sb(loop1)
-   btrfs_fill_super
-    open_ctree
-     btrfs_free_extra_devids
-      if (btrfs_device_1->bdev_file)
-       fput(btrfs_device_1->bdev_file) // UAF !
+[snip]
 
-Fix it by setting 'device->bdev_file' as 'NULL' after closing the
-btrfs_device in btrfs_close_one_device().
+> > 
+> > So...  for clarity among all of us here is the new function.  I'm not thrilled
+> > with the use of a goto but I think it is ok here.
+> 
+> Easy enough to avoid and I don't think it hurts readability much to do so.
 
-Fixes: 142388194191 ("btrfs: do not background blkdev_put()")
-CC: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=219408
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/btrfs/volumes.c | 1 +
- 1 file changed, 1 insertion(+)
+I disagree...  See below.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 8f340ad1d938..eb51b609190f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1105,6 +1105,7 @@ static void btrfs_close_one_device(struct btrfs_device *device)
- 	if (device->bdev) {
- 		fs_devices->open_devices--;
- 		device->bdev = NULL;
-+		device->bdev_file = NULL;
- 	}
- 	clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 	btrfs_destroy_dev_zone_info(device);
--- 
-2.39.2
+> 
+> Your code should work though.
+> 
+> > 
+> > Ira
+> > 
+> > static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,      
+> >                                struct xarray *extent_array, int cnt)           
+> > {                                                                              
+> >        struct cxl_mailbox *cxl_mbox = &mds->cxlds.cxl_mbox;                    
+> >        struct cxl_mbox_dc_response *p;                                         
+> >        struct cxl_mbox_cmd mbox_cmd;                                           
+> >        struct cxl_extent *extent;                                              
+> >        unsigned long index;                                                    
+> >        u32 pl_index;                                                           
+> >        int rc;                                                                 
+> >                                                                                
+> >        size_t pl_size = struct_size(p, extent_list, cnt);                      
+> >        u32 max_extents = cnt;                                              
+> >                                                                                
+> >        /* May have to use more bit on response. */                             
+> >        if (pl_size > cxl_mbox->payload_size) {                                 
+> >                max_extents = (cxl_mbox->payload_size - sizeof(*p)) /           
+> >                              sizeof(struct updated_extent_list);               
+> >                pl_size = struct_size(p, extent_list, max_extents);
+>              
+> >        }                                                                       
+> >                                                                                
+> >        struct cxl_mbox_dc_response *response __free(kfree) =                   
+> >                                                kzalloc(pl_size, GFP_KERNEL);   
+> >        if (!response)                                                          
+> >                return -ENOMEM;                                                 
+> >                                                                                
+> >        pl_index = 0;                                                           
+> >        if (cnt == 0)                                                           
+> >                goto send_zero_accepted;
+> >        xa_for_each(extent_array, index, extent) {                              
+> >                response->extent_list[pl_index].dpa_start = extent->start_dpa;  
+> >                response->extent_list[pl_index].length = extent->length;        
+> >                pl_index++;                                                     
+> >                response->extent_list_size = cpu_to_le32(pl_index);    
+> 
+> Why set this here - to me makes more sense to set it only once but I can
+> see the logic either way.
 
+I put it here to group it with the changing of pl_index.  It is extra work.
+
+Since I'm resending I'll make the quick change.
+
+>          
+> >   
+> >                if (pl_index == max_extents) {                                  
+> >                        mbox_cmd = (struct cxl_mbox_cmd) {                      
+> >                                .opcode = opcode,                               
+> >                                .size_in = struct_size(response, extent_list,   
+> >                                                       pl_index),               
+> >                                .payload_in = response,                         
+> >                        };                                                      
+> >                                                                                
+> >                        response->flags = 0;                                    
+> >                        if (pl_index < cnt)                                     
+> >                                response->flags &= CXL_DCD_EVENT_MORE;          
+> >                                                                                
+> >                        rc = cxl_internal_send_cmd(cxl_mbox, &mbox_cmd);        
+> >                        if (rc)                                                 
+> >                                return rc;                                      
+> >                        cnt -= pl_index;                                        
+> >                        pl_index = 0;                                          
+> >                }                                                               
+> >        }                                                                       
+> >                                                                                
+> >        if (!pl_index)                                                          
+> >                return 0;                                                       
+> >                                                                                
+> > send_zero_accepted:                                                            
+> >        mbox_cmd = (struct cxl_mbox_cmd) {                                      
+> >                .opcode = opcode,                                               
+> >                .size_in = struct_size(response, extent_list,                   
+> >                                       pl_index),                               
+> >                .payload_in = response,                                         
+> >        };                                                                      
+> >                                                                                
+> >        response->flags = 0;                                                    
+> >        return cxl_internal_send_cmd(cxl_mbox, &mbox_cmd);                      
+> > }                
+> 
+> 
+> Alternative form for what you have...
+
+Sure but lots of indentation on the common path which I have grown
+to avoid...  :-/
+
+Looking at this fresh...  A helper function works best.
+
+
+
+static int send_one_response(struct cxl_mailbox *cxl_mbox,
+                             struct cxl_mbox_dc_response *response,
+                             int opcode, u32 extent_list_size, u8 flags)
+{
+        struct cxl_mbox_cmd mbox_cmd = (struct cxl_mbox_cmd) {
+                .opcode = opcode,
+                .size_in = struct_size(response, extent_list, extent_list_size),
+                .payload_in = response,
+        };
+
+        response->extent_list_size = cpu_to_le32(extent_list_size);
+        response->flags = flags;
+        return cxl_internal_send_cmd(cxl_mbox, &mbox_cmd);
+}
+
+static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,
+                                struct xarray *extent_array, int cnt)
+{
+        struct cxl_mailbox *cxl_mbox = &mds->cxlds.cxl_mbox;
+        struct cxl_mbox_dc_response *p;
+        struct cxl_extent *extent;
+        unsigned long index;
+        u32 pl_index;
+
+        size_t pl_size = struct_size(p, extent_list, cnt);
+        u32 max_extents = cnt;
+
+        /* May have to use more bit on response. */
+        if (pl_size > cxl_mbox->payload_size) {
+                max_extents = (cxl_mbox->payload_size - sizeof(*p)) /
+                              sizeof(struct updated_extent_list);
+                pl_size = struct_size(p, extent_list, max_extents);
+        }
+
+        struct cxl_mbox_dc_response *response __free(kfree) =
+                                                kzalloc(pl_size, GFP_KERNEL);
+        if (!response)
+                return -ENOMEM;
+
+        if (cnt == 0)
+                return send_one_response(cxl_mbox, response, opcode, 0, 0);
+
+        pl_index = 0;
+        xa_for_each(extent_array, index, extent) {
+                response->extent_list[pl_index].dpa_start = extent->start_dpa;
+                response->extent_list[pl_index].length = extent->length;
+                pl_index++;
+
+                if (pl_index == max_extents) {
+                        u8 flags = 0;
+                        int rc;
+
+                        if (pl_index < cnt)
+                                flags &= CXL_DCD_EVENT_MORE;
+                        rc = send_one_response(cxl_mbox, response, opcode,
+                                               pl_index, flags);
+                        if (rc) 
+                                return rc;
+                        cnt -= pl_index;
+                        pl_index = 0;
+                }
+        }
+
+        if (!pl_index) /* nothing more to do */
+                return 0;
+        return send_one_response(cxl_mbox, response, opcode, pl_index, 0);
+}
 
