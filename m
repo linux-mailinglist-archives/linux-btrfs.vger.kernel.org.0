@@ -1,217 +1,138 @@
-Return-Path: <linux-btrfs+bounces-9075-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB799AB250
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2024 17:42:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 726209AB49D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2024 19:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E47681C221A2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2024 15:42:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A22941C23249
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2024 17:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1C51A08DB;
-	Tue, 22 Oct 2024 15:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOs0qJGu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9A11BCA14;
+	Tue, 22 Oct 2024 17:01:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E3D2E406
-	for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2024 15:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E117483;
+	Tue, 22 Oct 2024 17:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729611737; cv=none; b=u2f4t7u6HPAcxczUSYigo53VntVGpIB4Aj2V3Xv2gMMXuZK1uNOwgE2LaFbYz5gezH7wJCWvGgXnsuKRrldl/VkS5N49KvxsVW9cixaYvaNiBVV1m8LJc0qpPBe7uPt6nIcPGdVNI9N/nE+P/TlHSI4PonubQYZif+RWADF7Hso=
+	t=1729616490; cv=none; b=KBrFrlkbvYQQ1peRTDNXO3jrcijLWJEL0/8lRI+V93k0lOElJ3zONBqH5s3lPg0NhrSNTqG4qh8eZimppT//ATB8xdZTK05Aw+aXtcB4bkvSMdM4QtncKn/FNmo/nbFWQnvTuO/pkMfdW9SxthwTkJY3OJWPJ4IZ6b2PDkTll8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729611737; c=relaxed/simple;
-	bh=jRml7AzyD0psi9rGyY9OYl6vhpA9+ZQnop/pVG+TI5o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=etX/zks4kBVisVVPpPbi4uWMTI130Y6riamI/+UKoM7HVDH3cFf5yKnnRTvClJq0px8K+ilGNP1aHUVEpzNN6Ls5hRbTRJj7jgZod+Nkw289d7FKatOVN9PxifNyEdirE9VBhQKAfjQj1867i0/S9QOGsj6tTiKHshCJHDgnG+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOs0qJGu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6035C4CEC3
-	for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2024 15:42:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729611736;
-	bh=jRml7AzyD0psi9rGyY9OYl6vhpA9+ZQnop/pVG+TI5o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YOs0qJGumpZIFDfPqNMEIpiwZdkRjQmQxA3IaiGHzaEaTm7Qoa8CjqwgYa9Gfn0CQ
-	 vitR8XO3fU1RugUcrqtvWhUK0fpQWwuqowjNVc+QZ0H/mTxwQ1T5Q4sI5MNgm/j44K
-	 1hruO5UaKsDqjjHk8hJi6szZaWvXa1Fpo4fgaBpwtWefTOq99qv5PqjIm1oQfOSgmo
-	 Wa27JWZXibOPNLpN5GZKBVhRbReCRmW+/68VR0i4Jm48Nd1RlNz5B+YahaCqrXJCxx
-	 MHg4TGx7csS2qAEREXeqQ7hrwHYBBNSgcFuiPM7ONsM3cC3CV1ufyaN8x8c7ckeMGV
-	 Fcl1nkAVp9l9g==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a9a628b68a7so753776266b.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2024 08:42:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVih11XXn/nv5IesX56CVuufQuX/BUInwJCrqp/ic8kT8kFgUoEmcx9Agku9+7FdudFqZGXa1yTiqXfnA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWmxhrxhzID9Cj+b0Env8Xp0/jLRqYimDQPuS8Moh7oMnC56cR
-	/0oAx4yzrYxi57JQ53VFIGrN08OEip2PKuOWyuJyFqoeAmkQqX3hbAPbqutqNWgJwknAHa1TQDo
-	pfgLjrPMAL/It7IQDbPfAuvLuA3U=
-X-Google-Smtp-Source: AGHT+IE5CbzklnKLv/pLc8+5+Se/MOOaeYrs9WY6TdQXP+6LjRyPfgrF5Qf0fXt2HqZ3TzIachv5iuGl5caX8ZX3Tak=
-X-Received: by 2002:a17:907:72c1:b0:a99:8a5c:a357 with SMTP id
- a640c23a62f3a-a9a69ca4b7bmr1683433366b.58.1729611735392; Tue, 22 Oct 2024
- 08:42:15 -0700 (PDT)
+	s=arc-20240116; t=1729616490; c=relaxed/simple;
+	bh=PPNSYZKPWMLanxucQDtSVxv8/bs3/sUN4XUPU8RmAq4=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iZWj7lHJs2dVZwgyfnB7WFfrl3Xl1hc0dJ9Wwp1kPjneS4J4qoqrsoRT0wJtp/wzAleRJeOE82LcbusENR1jEvJwtVMAK6Pnc+o3MXxo9B0dkrJ9HxX8CZVeyzYF6Df5+W6WAIRH+P6fjmbpDDtnIXtuXm6cMKYQ2ekAU2rdvBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XXyy56sgYz6LD5g;
+	Wed, 23 Oct 2024 00:56:45 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1E2DD140B55;
+	Wed, 23 Oct 2024 01:01:25 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 22 Oct
+ 2024 19:01:24 +0200
+Date: Tue, 22 Oct 2024 18:01:22 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
+ Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 21/28] cxl/extent: Process DCD events and realize
+ region extents
+Message-ID: <20241022180122.00006074@Huawei.com>
+In-Reply-To: <6716a165823b7_8cb1729437@iweiny-mobl.notmuch>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+	<20241007-dcd-type2-upstream-v4-21-c261ee6eeded@intel.com>
+	<20241010155821.00005079@Huawei.com>
+	<6711842d88fa_2cee2946a@iweiny-mobl.notmuch>
+	<20241018100909.00001ec2@Huawei.com>
+	<6716a165823b7_8cb1729437@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241017090411.25336-1-jth@kernel.org> <20241017090411.25336-2-jth@kernel.org>
- <CAL3q7H45VMP=NeU7itO4M-T4m0kA9XYEsTkLttODy5W4_m5OLw@mail.gmail.com> <0e990104-19c5-4695-bbdb-4dbceba80490@wdc.com>
-In-Reply-To: <0e990104-19c5-4695-bbdb-4dbceba80490@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 22 Oct 2024 16:41:38 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5VdtA193w6YP5vbSO_TM8tw58xqFrUYbbP4sZBsuOpfA@mail.gmail.com>
-Message-ID: <CAL3q7H5VdtA193w6YP5vbSO_TM8tw58xqFrUYbbP4sZBsuOpfA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] btrfs: implement partial deletion of RAID stripe extents
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: Johannes Thumshirn <jth@kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>, 
-	Naohiro Aota <Naohiro.Aota@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Tue, Oct 22, 2024 at 4:37=E2=80=AFPM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 22.10.24 15:53, Filipe Manana wrote:
-> > On Thu, Oct 17, 2024 at 10:04=E2=80=AFAM Johannes Thumshirn <jth@kernel=
-.org> wrote:
-> >>
-> >> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> >>
-> >> In our CI system, the RAID stripe tree configuration sometimes fails w=
-ith
-> >> the following ASSERT():
-> >>
-> >>   assertion failed: found_start >=3D start && found_end <=3D end, in f=
-s/btrfs/raid-stripe-tree.c:64
-> >>
-> >> This ASSERT()ion triggers, because for the initial design of RAID
-> >> stripe-tree, I had the "one ordered-extent equals one bio" rule of zon=
-ed
-> >> btrfs in mind.
-> >>
-> >> But for a RAID stripe-tree based system, that is not hosted on a zoned
-> >> storage device, but on a regular device this rule doesn't apply.
-> >>
-> >> So in case the range we want to delete starts in the middle of the
-> >> previous item, grab the item and "truncate" it's length. That is, clon=
-e
-> >> the item, subtract the deleted portion from the key's offset, delete t=
-he
-> >> old item and insert the new one.
-> >>
-> >> In case the range to delete ends in the middle of an item, we have to
-> >> adjust both the item's key as well as the stripe extents and then
-> >> re-insert the modified clone into the tree after deleting the old stri=
-pe
-> >> extent.
-> >>
-> >> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> >> ---
-> >>   fs/btrfs/ctree.c            |  1 +
-> >>   fs/btrfs/raid-stripe-tree.c | 94 ++++++++++++++++++++++++++++++++++-=
---
-> >>   2 files changed, 88 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> >> index b11ec86102e3..3f320f6e7767 100644
-> >> --- a/fs/btrfs/ctree.c
-> >> +++ b/fs/btrfs/ctree.c
-> >> @@ -3863,6 +3863,7 @@ static noinline int setup_leaf_for_split(struct =
-btrfs_trans_handle *trans,
-> >>          btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> >>
-> >>          BUG_ON(key.type !=3D BTRFS_EXTENT_DATA_KEY &&
-> >> +              key.type !=3D BTRFS_RAID_STRIPE_KEY &&
-> >>                 key.type !=3D BTRFS_EXTENT_CSUM_KEY);
-> >>
-> >>          if (btrfs_leaf_free_space(leaf) >=3D ins_len)
-> >> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> >> index 41970bbdb05f..569273e42d85 100644
-> >> --- a/fs/btrfs/raid-stripe-tree.c
-> >> +++ b/fs/btrfs/raid-stripe-tree.c
-> >> @@ -13,6 +13,50 @@
-> >>   #include "volumes.h"
-> >>   #include "print-tree.h"
-> >>
-> >> +static int btrfs_partially_delete_raid_extent(struct btrfs_trans_hand=
-le *trans,
-> >> +                                             struct btrfs_path *path,
-> >> +                                             struct btrfs_key *oldkey=
-,
-> >
-> > oldkey can be made const.
-> >
-> >> +                                             u64 newlen, u64 frontpad=
-)
-> >> +{
-> >> +       struct btrfs_root *stripe_root =3D trans->fs_info->stripe_root=
-;
-> >> +       struct btrfs_stripe_extent *extent;
-> >> +       struct extent_buffer *leaf;
-> >> +       int slot;
-> >> +       size_t item_size;
-> >> +       int ret;
-> >> +       struct btrfs_key newkey =3D {
-> >> +               .objectid =3D oldkey->objectid + frontpad,
-> >> +               .type =3D BTRFS_RAID_STRIPE_KEY,
-> >> +               .offset =3D newlen,
-> >> +       };
-> >> +
-> >> +       ASSERT(oldkey->type =3D=3D BTRFS_RAID_STRIPE_KEY);
-> >> +       ret =3D btrfs_duplicate_item(trans, stripe_root, path, &newkey=
-);
-> >> +       if (ret)
-> >> +               return ret;
-> >> +
-> >> +       leaf =3D path->nodes[0];
-> >> +       slot =3D path->slots[0];
-> >> +       item_size =3D btrfs_item_size(leaf, slot);
-> >> +       extent =3D btrfs_item_ptr(leaf, slot, struct btrfs_stripe_exte=
-nt);
-> >> +
-> >> +       for (int i =3D 0; i < btrfs_num_raid_stripes(item_size); i++) =
-{
-> >> +               struct btrfs_raid_stride *stride =3D &extent->strides[=
-i];
-> >> +               u64 phys;
-> >> +
-> >> +               phys =3D btrfs_raid_stride_physical(leaf, stride);
-> >> +               btrfs_set_raid_stride_physical(leaf, stride, phys + fr=
-ontpad);
-> >> +       }
-> >> +
-> >> +       btrfs_mark_buffer_dirty(trans, leaf);
-> >
-> > This is redundant, it was already done by btrfs_duplicate_item(), by
-> > the btrfs_search_slot() call in the caller and done by
-> > btrfs_del_item() below as well.
-> >
-> >
-> >> +
-> >> +       /* delete the old item, after we've inserted a new one. */
-> >> +       path->slots[0]--;
-> >> +       ret =3D btrfs_del_item(trans, stripe_root, path);
-> >
-> > So actually looking at this, we don't need  btrfs_duplicate_item()
-> > plus btrfs_del_item(), this can be more lightweight and simpler by
-> > doing just:
-> >
-> > 1) Do the for loop as it is.
-> >
-> > 2) Then after, or before the for loop, the order doesn't really
-> > matter, just do:   btrfs_set_item_key_safe(trans, path, &newkey).
-> >
-> > Less code and it avoids adding a new item and deleting another one,
-> > with the shiftings of data in the leaf, etc.
->
-> Oh I didn't know about btrfs_set_item_key_safe(), that sounds like a
-> good plan thanks :)
-> Can I still get rid of btrfs_mark_buffer_dirty then?
+On Mon, 21 Oct 2024 13:45:57 -0500
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-Yes, even because btrfs_set_item_key_safe() already does it.
+> Jonathan Cameron wrote:
+> > On Thu, 17 Oct 2024 16:39:57 -0500
+> > Ira Weiny <ira.weiny@intel.com> wrote:
+> >   
+> > > Jonathan Cameron wrote:  
+> > > > On Mon, 07 Oct 2024 18:16:27 -0500
+> > > > ira.weiny@intel.com wrote:
+> > > >     
+> 
+> [snip]
+> 
+> > > > > Simplify extent tracking with the following restrictions.
+> > > > > 
+> > > > > 	1) Flag for removal any extent which overlaps a requested
+> > > > > 	   release range.
+> > > > > 	2) Refuse the offer of extents which overlap already accepted
+> > > > > 	   memory ranges.
+> > > > > 	3) Accept again a range which has already been accepted by the
+> > > > > 	   host.  Eating duplicates serves three purposes.  First, this
+> > > > > 	   simplifies the code if the device should get out of sync with
+> > > > > 	   the host.     
+> > > > 
+> > > > Maybe scream about this a little.  AFAIK that happening is a device
+> > > > bug.    
+> > > 
+> > > Agreed but because of the 2nd purpose this is difficult to scream about because
+> > > this situation can come up in normal operation.  Here is the scenario:
+> > > 
+> > > 1) Device has 2 DCD partitions active, A and B
+> > > 2) Host crashes
+> > > 3) Region X is created on A
+> > > 4) Region Y is created on B
+> > > 5) Region Y scans for extents
+> > > 6) Region X surfaces a new extent while Y is scanning
+> > > 7) Gen number changes due to new extent in X
+> > > 8) Region Y rescans for existing extents and sees duplicates.
+> > > 
+> > > These duplicates need to be ignored without signaling an error.  
+> > Hmm. If we can know that path is the trigger (should be able to
+> > as it's a scan after a gen number change), can we just muffle the
+> > screams on that path? (Halloween is close, the analogies will get
+> > ever worse :)  
+> 
+> Ok yea since this would be a device error we should do something here.  But the
+> code is going to be somewhat convoluted to print an error whenever this
+> happens.
+> 
+> What if we make this a warning and change the rescan debug message to a warning
+> as well?  This would allow enough bread crumbs to determine if a device is
+> failing without a lot of extra code to alter print messages on the fly?
+
+Sounds ok to me.
+
+Jonathan
+
+> 
+> Ira
+> 
+
 
