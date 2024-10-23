@@ -1,164 +1,148 @@
-Return-Path: <linux-btrfs+bounces-9103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59B19AD44D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 20:53:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9AE99AD5D4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 22:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12A5C1C21904
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 18:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB90E283EDE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 20:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F76A1D14E4;
-	Wed, 23 Oct 2024 18:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5B21E2612;
+	Wed, 23 Oct 2024 20:53:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lN1avmHx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JnavtVbm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lN1avmHx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JnavtVbm"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="eVuZWGM1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C051CC170
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 18:53:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2288213AA2B
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 20:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729709621; cv=none; b=X0C7WnvmM4R6bQDnMr/Cf6cPAbvf+Z2VDFq2CCuvWANwsvCCvXSs2ZNsWEj1hDAZPMOWrO+JkbhEJLZbWvTI7Prc42mVdQwDO5h7BjvJ1BAclNsefuOjXHUZY5HbOUAmuCoHDdf+KkJp+By9UeJQXHy+WG4PjMx6tSkUW/X0rlk=
+	t=1729716809; cv=none; b=Juh83X5DlqM7N4qLNxVEPXZs0/qjy02mcn39CvlpGirCKBYw2pTodb6pVd/i92q7+XXhfvmXkvTUWhNn7tyzSeqp52cNam06OOGPg6xqncrkcO4raJBTumyZ0l4VpEniVEK0f94DIdVh0jnaSKfN2/kpMO90doTNZAuonzeQ2Eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729709621; c=relaxed/simple;
-	bh=p4uyfLrzTdtcRbyoDn8Wxgihhz9/233wIkDCG94BK8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DYb3z32lwP2g7f9dBDX/qyV1cz/GDdPn4tJMyH3bq005wZJ8zUHHaf2W7gxlk3Q7HbVbNN++06+rl3G+t0DoSFgJFANyTvBR3ns1pqRrTNDdeKdPJ+SL+1MuXIRYDVtOBHu06I6gERTsU2GIkQg9olV0r4DTYRQ3sVsy8HyNW1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lN1avmHx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JnavtVbm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lN1avmHx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JnavtVbm; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D6E121CCD;
-	Wed, 23 Oct 2024 18:53:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729709618;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CCyjqh4pAA4OywtQ4mvzYxl9qDb1KOjHggIOSt19DU4=;
-	b=lN1avmHxS6cgE0syTNKqqe5jiwZZ0e4Gi63IN5hvBPcJ9GYAS4yDQU3mg/88Hubt7rPGjf
-	wbNyEJAPq/xuJUIdptjrUEvLhJK3K/pw52l0WuCbauWWmKcGcfN0BJ5IPkn2uOdMy/HPRP
-	l8xjrlnuDK5t5ZhhgQTXtb2QHKsvZCc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729709618;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CCyjqh4pAA4OywtQ4mvzYxl9qDb1KOjHggIOSt19DU4=;
-	b=JnavtVbmePOJr4MjAf5Txyk63HD4Jhn5vvLPnQYccfMc/lnblpToStQ4PxS/LfT1e5PWqq
-	MrGrWRhy4HpcvbCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1729709618;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CCyjqh4pAA4OywtQ4mvzYxl9qDb1KOjHggIOSt19DU4=;
-	b=lN1avmHxS6cgE0syTNKqqe5jiwZZ0e4Gi63IN5hvBPcJ9GYAS4yDQU3mg/88Hubt7rPGjf
-	wbNyEJAPq/xuJUIdptjrUEvLhJK3K/pw52l0WuCbauWWmKcGcfN0BJ5IPkn2uOdMy/HPRP
-	l8xjrlnuDK5t5ZhhgQTXtb2QHKsvZCc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1729709618;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CCyjqh4pAA4OywtQ4mvzYxl9qDb1KOjHggIOSt19DU4=;
-	b=JnavtVbmePOJr4MjAf5Txyk63HD4Jhn5vvLPnQYccfMc/lnblpToStQ4PxS/LfT1e5PWqq
-	MrGrWRhy4HpcvbCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E054313A63;
-	Wed, 23 Oct 2024 18:53:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9DpFNjFGGWeqYwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 23 Oct 2024 18:53:37 +0000
-Date: Wed, 23 Oct 2024 20:53:32 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v5 2/2] btrfs: implement self-tests for partial RAID
- srtipe-tree delete
-Message-ID: <20241023185332.GE31418@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20241023132518.19830-1-jth@kernel.org>
- <20241023132518.19830-3-jth@kernel.org>
- <CAL3q7H7houfrJjOOnmpA6T4xQDa-y1AqsA1AKBQZuOV4ygUVMA@mail.gmail.com>
+	s=arc-20240116; t=1729716809; c=relaxed/simple;
+	bh=nfTMr5aK56YUWe69BNDyv1L13mTMgc8mL6ZlNV3oKIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dP5574OytybcXhz5wWB414rFO4RCm1rekWB7nSuIl1cFYvwVOfEVLYxgVE/hYKdk8ldmL+9PI051UL2Bsq0Y/lB9qZ+RWvkEbQmLbUdqlpbXLAiNEIw61STToT6mK0iBIXBlFjW+r5z37RjrtW1qHcxUb2l9qTKK2mnR4mKAjGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=eVuZWGM1; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1729716804; x=1730321604; i=quwenruo.btrfs@gmx.com;
+	bh=+DZQvhaDmGYoFCfmRzjDXxSHamn6MVXSy0UH3z4+8rc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=eVuZWGM1jAOhiVT/rskapeG962Rt/T85R7nV06jD1WkaSvHRaYcHcctialR4be+r
+	 NDNa3JXQVrPwwCxa6u80nzKQf68Z8Tu2rV0o2TIMWlssxhK2rj/WExQB2wMN9/rY+
+	 xd+67APe4QmMnRjQ8Rm1MLEaF9uQy+yhg1mkMdo/scuLnCGzs1GAlQmA8xybbJ7AS
+	 Rn47ILnb8DURc4452C4oh0Bo53NyVZFJOsa1rTSSUBdN4pBYlIAJCtmc7MvkZIxPF
+	 D6L8T3TtXOu2eeehrkMPrGOEIXQ9ST6LSW3soTfqtjLKMvMuSPjywJwW8/C701SMp
+	 z/m08bC2RRUxHriSQw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mlf0K-1tmMa12hrm-00oYs0; Wed, 23
+ Oct 2024 22:53:24 +0200
+Message-ID: <08e45ca0-5ed9-4684-940f-1e956a936628@gmx.com>
+Date: Thu, 24 Oct 2024 07:23:20 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7houfrJjOOnmpA6T4xQDa-y1AqsA1AKBQZuOV4ygUVMA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: fix mount failure due to remount races
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Enno Gotthold <egotthold@suse.com>,
+ Fabian Vogt <fvogt@suse.com>
+References: <a682e48c161eece38f8d803103068fed5959537d.1729665365.git.wqu@suse.com>
+ <20241023163237.GD31418@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20241023163237.GD31418@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8sqmwNIoGe7RCcC58/r+iD5mDc0sSBISIcKKzYES/QCVlQCn2ag
+ 6xEnWOwj8cQbuvlX19uKY9Wdx1IQi8BPQccupbsOxjdEjLJaeE/PodWwb2Payq3mDNs5B1+
+ P1c8qTJMrTb4S5+aU6vq7/8cmFYQeZu1C2fPcPWlmCs32SNiTRoeMAn6603fgpav+gby4RW
+ xZhax/ZaF6xjiBW1mZhkA==
 X-Spam-Flag: NO
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:2OzW8KBUYjw=;WUAyl0jfEuxMMuDi6rlxnPaYVtr
+ LmC+uezP8jLFimDb5TBWg5OZbeTQ4SAqEhZFWNiyeo4H0nrZtt+vBaXLGXNjMRJeT4qNBRIy0
+ Rklo1Z99Kkk7ndXgBx8uS+oToAEDrajmlE+SH8D1Qx4s4kW+j0Vx1joapkK4dPjmLNHSN7Yc6
+ pB8ENinJnOCLe3Y6hwvMl1E3tDXxCDiphqDwAbW5M6kxPhDe26YkHf4nIj6W8X+XDC2Br0/BY
+ K0/gYWEgsCv5X9LzVNPxGTvKImgkuUCbFpiYJLLv3QPztp71LHisOMyWeq/W4xvVUZslQpWrY
+ az7/MIVlO2Q9YT4rctdw2DummuchQS8t+pnfPYsVvgG73I5Fos1yBzQp6zSYaJQfQ4phtBgo3
+ C/lFRKmpKbZUUbgREe9sPXtcw5GX4lxiYlqopRmpzCOJtKyVzARUJBiFW1DEjzLQXh77tIDIo
+ NSX5ENcIB8VCTJK7Ni5TGVLQqKcm0ExsukUVQKNtE0NnQEiww3jX6Clx3yRD+KS/anehTfmUR
+ nkMErhE7UrYyA0yIZAhOwtN+AX+gKuRLMmqd47Eq6bTxDecMnQcsR8X3aSzLVJ4rH35nAWsp1
+ dxCp40UIElHd4Hi2TcXeHzDYkN6xjaYEkYgY14X1QQYVlM2U2PzuPegGN4MD/vcyTG5m8DR71
+ d/QH6yFaRik/y8oW/MjHtxMTcND1o7UfwXfIgP9ZIdHiLpTfjEbOhbMijuKd25l+B8L9q9Tzh
+ 9DREz8+2TPPramXdc276dM5PeAfDNcRJomecDkR5/s2Wl5ywCzaDh2bk5WsWTtnscX/yTMQqZ
+ 0VhSGp0EAYq1wcBPopOjNehA==
 
-On Wed, Oct 23, 2024 at 06:45:49PM +0100, Filipe Manana wrote:
-> On Wed, Oct 23, 2024 at 2:25 PM Johannes Thumshirn <jth@kernel.org> wrote:
-> > +                                          &io_stripe);
-> > +       if (!ret) {
-> > +               ret = -EINVAL;
-> > +               test_err("lookup of RAID extent [%llu, %llu] succeeded, should fail",
-> > +                        logical, logical + SZ_32K);
-> > +               goto out;
-> > +       }
-> > +
-> > +       ret = btrfs_delete_raid_extent(trans, logical + SZ_32K, SZ_32K);
-> > +       btrfs_put_bioc(bioc);
-> > + out:
-> 
-> The btrfs_put_bioc(bioc) call needs to be put under the 'out' label,
-> otherwise we will leak it in case an error happens.
-> It is correct in the next test function, but not in this one.
 
-Fixed in for-next, thanks.
+
+=E5=9C=A8 2024/10/24 03:02, David Sterba =E5=86=99=E9=81=93:
+> On Wed, Oct 23, 2024 at 05:08:51PM +1030, Qu Wenruo wrote:
+>> +	if (!(fc->sb_flags & SB_RDONLY) && (mnt->mnt_sb->s_flags & SB_RDONLY)=
+)
+>> +		ret =3D btrfs_reconfigure(fc);
+>
+> This gives me a warning (gcc 13.3.0):
+>
+> fs/btrfs/super.c: In function =E2=80=98btrfs_reconfigure_for_mount=E2=80=
+=99:
+> fs/btrfs/super.c:2011:56: warning: suggest parentheses around =E2=80=98&=
+&=E2=80=99 within =E2=80=98||=E2=80=99 [-Wparentheses]
+>   2011 |         if (!fc->oldapi || !(fc->sb_flags & SB_RDONLY) && (mnt-=
+>mnt_sb->s_flags & SB_RDONLY))
+>        |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+>
+>
+Weird, my local patch/branch shows no fc->oldapi usage, thus no warning.
+
+The involved lines are:
+
+-	ret =3D btrfs_reconfigure(fc);
++	if (!(fc->sb_flags & SB_RDONLY) && (mnt->mnt_sb->s_flags & SB_RDONLY))
++		ret =3D btrfs_reconfigure(fc);
+
+Thus no warning.
+
+Thanks,
+Qu
 
