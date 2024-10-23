@@ -1,197 +1,272 @@
-Return-Path: <linux-btrfs+bounces-9090-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9091-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD54A9AC30E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 11:08:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B16E9AC666
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 11:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A033281C2F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 09:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26396281EA2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 09:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B2D175D2D;
-	Wed, 23 Oct 2024 09:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAD2199384;
+	Wed, 23 Oct 2024 09:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DIfdvxCU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0DB1156F3A
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 09:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2CD145323;
+	Wed, 23 Oct 2024 09:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729674520; cv=none; b=pcnOIevzUnefr2lHEwDdNvw7osS4YMZT0hYK9NPLfL7t3VxaMfKpHJLq4rr4na2Ft1lvm/65gtzpGd12JrgH7uFBWduIdMRkHIn6VJOOVfUGikt6MeHEl0PwpQFnYS5gVPhHhxZjhCCSMDag1j5vL/+eGtjvrBivfR5w5ywHSl0=
+	t=1729675683; cv=none; b=BnwSlVdAK6NUxq/fKGaRZzqgvGtvXE4vY8eDueIcU4Pr2ri4pheyMFpJKZUOJpWOM3d8qvnAT2Wowt4xNJMx4Fj+SAvGgFnQPBF27tpM0j+utYCdUiGTF5j8OJeZo5uSmT1K7WevwmJZUVYVky/Y1Af9F+A7EF1Ljn90OAwkrD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729674520; c=relaxed/simple;
-	bh=zEqtjKIPHRyCLSz2AKxhu0W5IyazP2Kj/dcZoCoovZs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=URHK9982ACQ9/Hjfvg2tyIP5x5lkg2a4GLAlTLbLDBis/9PfqHQClH1qDthQ0MNZiPjt+Fa8naOL7Q0ct4AmLYdB2pNipnFAKMk7BCP/jmDx61VLCAQlQkbvijjgJYEcYWU7l0bVf4kS3pB9DWiuG/1dN9JTqmMePD/OP9LcLpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3da2d46b9so52589985ab.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 02:08:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729674518; x=1730279318;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7x3De/oISwjfrDk09tDIxDDeq0y554RwIR8zLg9MxfU=;
-        b=p3UlICikWBwO8Yyvg9dNIJ5sANc4NTlu7/hukEppTXRcxMQALc5D9vNvcvzuXpBOSb
-         zEtPlvwa0BliOcBUYzNfyrgkFeQkZ/xFvBjdnF3eYKoOFM4PVK9jdgpgSg+C+WfMclup
-         qS7g7jPkGGu3aQi8cDqHs8R83B+mZ4y6psCLJ6xeRHM0RSmxcL4kI1uO1y9VLVGigbCy
-         3/dZaZWYqlz8nrvZ80jPjsQCILHwg86Fig10GrtsWJuUdApbHnowXyUIPTPPgPtnUpV/
-         1lfD8M3khUb56fWvII8H3SSpK7N5GsyZdvFF8xhVdlpWvzR/eFBSQfO+D+ot8J4b+K4N
-         EMDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRdlpeOQ0RYcW8KMFTcZDlNia7xzYW6ZDcnbIkglrDOMBDBZIfzEzIL3QUj/RT5Yutf9Z2HohSXLUqhg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXMNQ8KqwQq3l1d9PqNpZ2FCFqinTOJzWv5OVVPH1wNfquhzBT
-	rr7PNyr/FgFHBi20BxVuzdyI3xlX+EWz4XZk/LrLVtudPWsjihLwDkPvLkQ7E6CFfdeaF5HB/Dd
-	W1prSk+RaLnl/h7q4v80+hhc3dVPJ6M1aP++49qlCPXbqy6it45UKgkY=
-X-Google-Smtp-Source: AGHT+IGVd8RWxriAdjeQ26FuLwFn4saFDWlWPe7tOOqWCDsplhsVxb/XtiKImoB0Ti47VzRLi/+FCoNq91NnAzR5BwN4/Oj3gC9P
+	s=arc-20240116; t=1729675683; c=relaxed/simple;
+	bh=rlMR3UIfQEaBa2hJRgFDHZ26CyFAJ/oxOOrJQ9z3WhA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=geHyqygZU0A2KmFPZi+KHKkzax1m0QqHUA0sat31cNaYXCm51EPE2B27p/x/4nBTkjI+WQGET0i0rn1JmXAVVJlMEM/3KbLPzvLVIug457ouiqS3mWBEH4ViJZzmRsFkLdrjF0IIYU/m2xvQzYCA21i3VKO3eaoiqnR6Akx9ARM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DIfdvxCU; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1729675674; x=1730280474; i=quwenruo.btrfs@gmx.com;
+	bh=rlMR3UIfQEaBa2hJRgFDHZ26CyFAJ/oxOOrJQ9z3WhA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=DIfdvxCUlXVIdWLFwY6DGv5vIKI8OdGss84onWoioRBoTBxNoHutgVHEN6mvOy+Z
+	 g0i3K67Ng80+Zd9xbJ16M0ibznqB9PNHbiWe7HjrNIshiqPqO8ah6nBkzbcq7OrAZ
+	 wpjOAPy/1ibhaJ+t6mBqltgkym0MHSaojHX8pOR61wk2JXVebgvXjA+MnJQLNqtcO
+	 0UedvsRxTRXAV9XI7DljDpi8fnzx4EmxgE3xA9OmJT1uqI22BOrUyCIko4v8ao2Ld
+	 QFkPQ50a1sCCbaeaWn4bYvCWzGDJnfldIuxwTcdyVvqP54jwIELr30azKZXxdfQZn
+	 mvdcPSG0XIunVg2Qtg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfYm-1tABV32QFk-0070Fe; Wed, 23
+ Oct 2024 11:27:54 +0200
+Message-ID: <4265cdf6-b28b-444e-94aa-67f9b051c5f1@gmx.com>
+Date: Wed, 23 Oct 2024 19:57:50 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1486:b0:3a0:9aef:4d0 with SMTP id
- e9e14a558f8ab-3a4d592cdecmr17763035ab.5.1729674518019; Wed, 23 Oct 2024
- 02:08:38 -0700 (PDT)
-Date: Wed, 23 Oct 2024 02:08:37 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6718bd15.050a0220.10f4f4.01a0.GAE@google.com>
-Subject: [syzbot] [btrfs?] general protection fault in btrfs_lookup_csums_bitmap
-From: syzbot <syzbot+5d2b33d7835870519b5f@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    b04ae0f45168 Merge tag 'v6.12-rc3-smb3-client-fixes' of gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11478430580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cfbd94c114a3d407
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d2b33d7835870519b5f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1162d240580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15478430580000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-b04ae0f4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3e40a4ec7885/vmlinux-b04ae0f4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9312d8ec05d3/bzImage-b04ae0f4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/d4d1e4e89afc/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5d2b33d7835870519b5f@syzkaller.appspotmail.com
-
-workqueue: max_active 32767 requested for btrfs-compressed-write is out of range, clamping between 1 and 512
-workqueue: max_active 32767 requested for btrfs-scrub is out of range, clamping between 1 and 512
-BTRFS info (device loop0 state CS): scrub: started on devid 1
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000041: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000208-0x000000000000020f]
-CPU: 0 UID: 0 PID: 5110 Comm: syz-executor381 Not tainted 6.12.0-rc3-syzkaller-00319-gb04ae0f45168 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:btrfs_lookup_csums_bitmap+0xc4/0x1600 fs/btrfs/file-item.c:615
-Code: 8c 24 a8 00 00 00 42 c7 44 31 08 f3 f3 f3 f3 e8 d2 83 e1 fd 48 89 9c 24 88 00 00 00 48 81 c3 08 02 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 9d 39 4b fe 4c 8b 2b ba 11 00 00
-RSP: 0018:ffffc9000af5f100 EFLAGS: 00010206
-RAX: 0000000000000041 RBX: 0000000000000208 RCX: ffff888000cf2440
-RDX: 0000000000000000 RSI: ffff888047132080 RDI: 0000000000000000
-RBP: ffffc9000af5f290 R08: ffff88801fb3c800 R09: ffffc9000af5f420
-R10: dffffc0000000000 R11: ffffed1008e2402e R12: 0000000000500000
-R13: ffffc9000af5f420 R14: dffffc0000000000 R15: 0000000000500000
-FS:  00005555764d5480(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055572fc64400 CR3: 0000000040a06000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- scrub_find_fill_first_stripe+0xe96/0x1200 fs/btrfs/scrub.c:1618
- queue_scrub_stripe fs/btrfs/scrub.c:1912 [inline]
- scrub_simple_mirror+0x5c6/0x960 fs/btrfs/scrub.c:2144
- scrub_stripe+0xa7a/0x2a60 fs/btrfs/scrub.c:2310
- scrub_chunk+0x2e3/0x470 fs/btrfs/scrub.c:2442
- scrub_enumerate_chunks+0xc4f/0x16a0 fs/btrfs/scrub.c:2706
- btrfs_scrub_dev+0x774/0xde0 fs/btrfs/scrub.c:3028
- btrfs_ioctl_scrub+0x236/0x370 fs/btrfs/ioctl.c:3251
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f4e99a28f19
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcb799b9b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f4e99a28f19
-RDX: 0000000020000000 RSI: 00000000c400941b RDI: 0000000000000004
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffcb799ba00
-R13: 00007ffcb799bc88 R14: 431bde82d7b634db R15: 00007f4e99a7103b
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_lookup_csums_bitmap+0xc4/0x1600 fs/btrfs/file-item.c:615
-Code: 8c 24 a8 00 00 00 42 c7 44 31 08 f3 f3 f3 f3 e8 d2 83 e1 fd 48 89 9c 24 88 00 00 00 48 81 c3 08 02 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 9d 39 4b fe 4c 8b 2b ba 11 00 00
-RSP: 0018:ffffc9000af5f100 EFLAGS: 00010206
-RAX: 0000000000000041 RBX: 0000000000000208 RCX: ffff888000cf2440
-RDX: 0000000000000000 RSI: ffff888047132080 RDI: 0000000000000000
-RBP: ffffc9000af5f290 R08: ffff88801fb3c800 R09: ffffc9000af5f420
-R10: dffffc0000000000 R11: ffffed1008e2402e R12: 0000000000500000
-R13: ffffc9000af5f420 R14: dffffc0000000000 R15: 0000000000500000
-FS:  00005555764d5480(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055572fc64400 CR3: 0000000040a06000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	8c 24 a8             	mov    %fs,(%rax,%rbp,4)
-   3:	00 00                	add    %al,(%rax)
-   5:	00 42 c7             	add    %al,-0x39(%rdx)
-   8:	44 31 08             	xor    %r9d,(%rax)
-   b:	f3 f3 f3 f3 e8 d2 83 	repz repz repz repz call 0xfde183e6
-  12:	e1 fd
-  14:	48 89 9c 24 88 00 00 	mov    %rbx,0x88(%rsp)
-  1b:	00
-  1c:	48 81 c3 08 02 00 00 	add    $0x208,%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 df             	mov    %rbx,%rdi
-  34:	e8 9d 39 4b fe       	call   0xfe4b39d6
-  39:	4c 8b 2b             	mov    (%rbx),%r13
-  3c:	ba                   	.byte 0xba
-  3d:	11 00                	adc    %eax,(%rax)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs/012: fix false alerts when SELinux is enabled
+To: Anand Jain <anand.jain@oracle.com>, Zorro Lang <zlang@redhat.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+ fstests@vger.kernel.org, Long An <lan@suse.com>
+References: <5538c72ca7c1bf2eb0ff3dbaa73903869ba47e95.1729209889.git.wqu@suse.com>
+ <96e09109-1b9c-4f15-a07d-26501ed891a3@oracle.com>
+ <8f1acfa5-37f9-4deb-af9e-d2f7576e0c26@gmx.com>
+ <20241023041228.d3rkmmci5vnw5ict@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <1a2e7839-09c3-4584-be31-c783f940c41f@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <1a2e7839-09c3-4584-be31-c783f940c41f@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WHzA06wFpnzfdUkWKPT0F8w1K0wi9a8wxABfcd7NoVLLpMzwHgl
+ 6xNRSM67gZiifO6tFQNUH+cBhxr5dqpwxrwsANNWhEXnHlWj4BjWH7KGNWhoNeTpm7pdJ1L
+ 4SiMn1UVDpE3hRDo1ZT3ZCxOUIhMx/djgAqHLSZfVG+9Ke5jXgwki54OzCPv1V2d0Y1OQLp
+ pNLDPv0ByJyqN5OWYSycw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:LNQVVj8BrzY=;3nTlWr4cBes8wWiJpollMHMMpzA
+ gwxtuD5dEo3HWBtQCcBRTUjbtlLtpq7y3ZvDdK4KQWkmrTPLCvVIQx64IGhtTFCB7AshYSRjR
+ kDyqryc9KOe2BTLjjyEPRE0lpYt3WA9JpTuqhIEuoSCrWGNEDnZ1prHPSTVkvFWEXPcKiJCHd
+ hI6CYIrTBk/2F4Y/lr7XgzUue+raVhmtF9sXG9RD6cTn2M+ya7Z2VdtB3dyA8Lmfljolx3KZZ
+ U2OwlFpXP9RYEx7FNVQfisj43YuF4GHK/8uVF+/0zaVS3S8a9ThwbaCbjMWk5TkuXWr09pBYP
+ 1mKGfZ+RlTQswulq5A2AmrOHNCLBDWaT/bVenAk/uiOCpcso9dcJEZiks1Recmd9pYdIIeqEV
+ y6jrRDhgzyC5UCIEiYM4nTjsWD/mr0yVQm1ruiLSvLoNOUprezLNYt5dG4U8jmsfm5/mDRixr
+ 7gaCSg9pJgmTzYM8RDPdEc7+QSp92c+zLyRQgefleQJxnSTMfcD6HchMpVhqUXnCyPZt5yrdG
+ xrFT739O1Sk9GyZCjjCtGaR3M46MbEDRHPyRiV2maAU6JTohlsWOUBI4rs2yr1TDENl08uzb0
+ dGRYg/MxxHx6Ko2LWF9WhWbhZwHwZit+b0hekKdelkuS/0MgVdMnD8ydwsFHWS63qjYMXPmfL
+ KxjyYgkqWEjhPDt6YQj1e0Me3+3y+crUzKq6Oqf2OrTD49Fo5ArwjbKc0qOazgWz093M0tNEQ
+ T77YMBmtPvjVzlicPoGSnh0baeOiSfOeY/XzyYpq3INN3h7jCwSacJ8RCzkLHrcL8S2kQgUGh
+ rtmjdocg9soHRe7hw1k4xVldOMb3m8+08dXi4++K4/RRM=
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+=E5=9C=A8 2024/10/23 19:30, Anand Jain =E5=86=99=E9=81=93:
+>
+>
+> On 23/10/24 12:12, Zorro Lang wrote:
+>> On Tue, Oct 22, 2024 at 01:12:15PM +1030, Qu Wenruo wrote:
+>>>
+>>>
+>>> =E5=9C=A8 2024/10/19 08:45, Anand Jain =E5=86=99=E9=81=93:
+>>>> On 18/10/24 08:04, Qu Wenruo wrote:
+>>>>> [FALSE FAILURE]
+>>>>> If SELinux is enabled, the test btrfs/012 will fail due to metadata
+>>>>> mismatch:
+>>>>>
+>>>>> FSTYP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -- btrfs
+>>>>> PLATFORM=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -- Linux/x86_64 localhost 6.4=
+.0-150600.23.25-default #1
+>>>>> SMP PREEMPT_DYNAMIC Tue Oct=C2=A0 1 10:54:01 UTC 2024 (ea7c56d)
+>>>>> MKFS_OPTIONS=C2=A0 -- /dev/loop1
+>>>>> MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/loop1=
+ /
+>>>>> mnt/scratch
+>>>>>
+>>>>> btrfs/012=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - output mismatch (see=
+ /home/adam/xfstests-dev/
+>>>>> results//btrfs/012.out.bad)
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 --- tests/btrfs/012.out=C2=A0=C2=A0=
+=C2=A0 2024-10-18 10:15:29.132894338 +1030
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +++ /home/adam/xfstests-dev/results//=
+btrfs/012.out.bad
+>>>>> 2024-10-18 10:25:51.834819708 +1030
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 @@ -1,6 +1,1390 @@
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QA output created by 012
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Checking converted btrfs agains=
+t the original one:
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -OK
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +metadata mismatch in /p0/d2/f4
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +metadata mismatch in /p0/d2/f5
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +metadata and data mismatch in /p0/d2=
+/
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +metadata and data mismatch in /p0/
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>>>>
+>>>>> [CAUSE]
+>>>>> All the mismatch happens in the metadata, to be more especific,
+>>>>> it's the
+>>>>> security xattrs.
+>>>>>
+>>>>> Although btrfs-convert properly convert all xattrs including the
+>>>>> security ones, at mount time we will get new SELinux labels,
+>>>>> causing the
+>>>>> mismatch between the converted and original fs.
+>>>>>
+>>>>> [FIX]
+>>>>> Override SELINUX_MOUNT_OPTIONS so that we will not touch the securit=
+y
+>>>>> xattrs, and that should fix the false alert.
+>>>>>
+>>>>> Reported-by: Long An <lan@suse.com>
+>>>>> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1231524
+>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>>> ---
+>>>>> =C2=A0=C2=A0 tests/btrfs/012 | 5 +++++
+>>>>> =C2=A0=C2=A0 1 file changed, 5 insertions(+)
+>>>>>
+>>>>> diff --git a/tests/btrfs/012 b/tests/btrfs/012
+>>>>> index b23e039f4c9f..5811b3b339cb 100755
+>>>>> --- a/tests/btrfs/012
+>>>>> +++ b/tests/btrfs/012
+>>>>> @@ -32,6 +32,11 @@ _require_extra_fs ext4
+>>>>> =C2=A0=C2=A0 BASENAME=3D"stressdir"
+>>>>> =C2=A0=C2=A0 BLOCK_SIZE=3D`_get_block_size $TEST_DIR`
+>>>>> +# Override the SELinux mount options, or it will lead to unexpected
+>>>>> +# different security.selinux between the original and converted fs,
+>>>>> +# causing false metadata mismatch during fssum.
+>>>>> +export SELINUX_MOUNT_OPTIONS=3D""
+>>>>> +
+>>>>
+>>>> SELINUX_MOUNT_OPTIONS is set only when SELinux is enabled on the
+>>>> system,
+>>>> so disabling SELinux will suffice.
+>>>
+>>> Are you suggesting to disable SELinux just to pass the test case?
+>>>
+>>> Then it doesn't sound correct to me at all.
+>>>
+>>> It should be the test case to adapt to all kinds of systems, not the
+>>> other way.
+>>
+>> Hi Anand, I think Qu is right, it's not worth disable the whole SELinux
+>> (at the beginning of fstests running), just for a single test case.
+>> I just hope to make sure btrfs forks agree this's a failure which shoul=
+d
+>> be fixed in test side, but not change the selinux config for btrfs-prog=
+s.
+>> If you're sure about it, I'll merge this patch :)
+>>
+>
+> Yes, I realized that a bit later.
+>
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>
+>
+>
+> Even if we create _require_selinux() and _reset_selinux_mount_options(),
+> there are only a few consumers, such as btrfs/075 and generic/700 for
+> the former, and btrfs/008, btrfs/019, and generic/700 for the latter.
+> Do you think it is better?
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+I think the current way of overriding SELINUX_MOUNT_OPTIONS is good enough=
+.
+There aren't that many test cases bothering xattr that carefully (except
+those fssums ones).
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Thanks,
+Qu
+>
+> Thx, Anand
+>
+>
+>> Thanks,
+>> Zorro
+>>
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>>
+>>>> -------
+>>>> fstests/common/config:
+>>>> if [ -x /usr/sbin/selinuxenabled ] && /usr/sbin/selinuxenabled; then
+>>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 : ${SELINUX_MOUNT_O=
+PTIONS:=3D"-o context=3D$(stat -c %C /)"}
+>>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 export SELINUX_MOUN=
+T_OPTIONS
+>>>> fi
+>>>> ----------
+>>>>
+>>>> Thanks, Anand
+>>>>
+>>>>> =C2=A0=C2=A0 # Create & populate an ext4 filesystem
+>>>>> =C2=A0=C2=A0 $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqre=
+s.full
+>>>>> 2>&1 || \
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _notrun "Could not create ext4 =
+filesystem"
+>>>>
+>>>>
+>>>
+>>>
+>>
+>
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
