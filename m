@@ -1,87 +1,108 @@
-Return-Path: <linux-btrfs+bounces-9095-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9096-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A569AC8D3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 13:22:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53979ACB23
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 15:25:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71EECB236D7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 11:22:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52AA3B214DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 13:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44105199384;
-	Wed, 23 Oct 2024 11:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D80A1ADFF7;
+	Wed, 23 Oct 2024 13:25:34 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5770154439;
-	Wed, 23 Oct 2024 11:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845AC1ABEA7
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 13:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729682533; cv=none; b=lub6637LkqAeV+F70DqkFx2NZUFm4dYtEBixtqEq1tJOdoXtb9PG7Jg3PmvH4uod0tStaACVyrOySeBFhoWsrAJVFJXtPuE/3ueuJL+QAM+DreKsAjlGRFq90R/eLWRo+5OhdNFnXsq3SaI88YXV2KiIpKLsB6aN3iMvL+Td2dg=
+	t=1729689934; cv=none; b=XVXO4HUYzqcKjz9RlrMwJ9Q+VFn294KtuzDDdSnXGr9A0AAb41j+67lUVWzzICtlmUW+fOFr8uBHYRMl7xuqDybKzZjTn+WR+A3RfWHXh3VDDSh7R1RxRplELQnc85Ghi0PwyvcyT3lqBoH9yoVI9usWn1vsTo7/hFghbdpB+a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729682533; c=relaxed/simple;
-	bh=64C3SPxTd7AQQp65zjJ4dsy+GxKDPAo+C0dNOzIWPkw=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JXPPKGm3nqxRcauuWItyrCqFnyAHmyRaC3tvE/fv4yKwN1bhn9NVimLCCOGZqGWB/dW3ZhUCOW+bwBy0Va81OSWN3k9DXI2OLNSaRUairq3Z3czacOt/wgLvOXUXyOYLLxWxKDo0aZeFeKYWJuehMZcmcJoEOGN4Jk0+/GfGPpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XYRR45Ft1z6FCrJ;
-	Wed, 23 Oct 2024 19:20:00 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id A5D3714022E;
-	Wed, 23 Oct 2024 19:22:03 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 23 Oct
- 2024 13:22:02 +0200
-Date: Wed, 23 Oct 2024 12:22:01 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 24/28] dax/region: Create resources on sparse DAX
- regions
-Message-ID: <20241023122201.000005a4@Huawei.com>
-In-Reply-To: <67184f4ef593_7253d294d5@iweiny-mobl.notmuch>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
-	<20241007-dcd-type2-upstream-v4-24-c261ee6eeded@intel.com>
-	<20241010162745.00007b31@Huawei.com>
-	<67184f4ef593_7253d294d5@iweiny-mobl.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1729689934; c=relaxed/simple;
+	bh=xPWOo6FP+ffH8YAt+0UbdH07FS3ygLbZIFlK2Mhnrf4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o4lSy+0nhQlXwiuLWBdhiCDDwUYeGH7mU5eC24ZdhWIXiCHNg7J6dKiJyM57E0slqh+JofcPXNL4UyEKXrrrj3qvshHxJyL1zgjtSzV4NvxO4AzUpYkxtfSS1eiVgkYP1EV8Md0/ZmJtey0azzA78H7Pfnt9qrD8UgrjbbHphMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-37d70df0b1aso5408080f8f.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 06:25:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729689931; x=1730294731;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xg9gJ0USTP5zQV606VjuAKMcL1cVJcgrzvn+NmgkAWQ=;
+        b=aaIR5qAhzFUDAxN/kUn8rE+mbVg7EhofkQgjYyBagVpFeq37Tsvp84DXUeeH4HXt24
+         6h16781zR0jdFflVLEDR/89cDC0AxX/n3e7vmpUYCf4x/L/jn3ABp9cbyf6roWe4csMP
+         GCW5BQkgNE+rBaiDymDcv+vtY5itr1ygB6DH5pyeckqmSvDdjwFK5baZqgfXQPEd38C8
+         xrFay25puUe7CRIPf7v8yIfh124udq2fI5gq6NA0EY1XKx6UA0dnzh15yjQNdWXJ4P1M
+         Wu+uU9wn+gPx32V4brxvhItp0YP9K23avauJjBnoOJ0SB1VAH6d6kId8XVYGrP+VryDv
+         RuoQ==
+X-Gm-Message-State: AOJu0YzGK+kadcD3Vm0GO8dtAJ89zkk4gM5eosZiBIR5IhnN6Whx+O9g
+	wcg5EU4k3rILhUM+UZEqV1BeFEYX4B7IQAIuwJ5wVeh9eBPhVa0orV1rjg==
+X-Google-Smtp-Source: AGHT+IFHilaYUELJAaJ6TN8qwnCCTShK7TqrVJv9UiSYaRUA6lXvq11cA214Z9AF7SqlZGnAMecylQ==
+X-Received: by 2002:adf:9b8c:0:b0:37d:4894:6895 with SMTP id ffacd0b85a97d-37efcf101afmr1561025f8f.15.1729689930455;
+        Wed, 23 Oct 2024 06:25:30 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71fdb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71f:db00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43186c1e387sm16169935e9.41.2024.10.23.06.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2024 06:25:28 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Filipe Manana <fdmanana@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH v5 0/2] implement truncation for RAID stripe-extents
+Date: Wed, 23 Oct 2024 15:25:16 +0200
+Message-ID: <20241023132518.19830-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Transfer-Encoding: 8bit
+
+Implement truncation of RAID stripe-tree entries and add selftests for these
+two edge cases of deletion to the RAID stripe-tree selftests.
+
+Changes to v4:
+- Use btrfs_set_item_key_save() instead of duplicate item (Filipe)
+- Add forgotten btrfs_put_bioc() in selftests (Filipe)
+
+Link to v4:
+https://lore.kernel.org/linux-btrfs/20241017090411.25336-1-jth@kernel.org
+
+Changes to v3:
+- Use btrfs_duplicate_item() (Filipe)
+- User key.offset = 0 in btrfs_search_slot() so we can find "front" delete
+Link to v3:
+https://lore.kernel.org/linux-btrfs/20241009153032.23336-1-jth@kernel.org
+
+Changes to v2:
+- Correctly adjust the btree keys and insert new items instead (Filipe)
+- Add selftests
+
+Link to v2:
+https://lore.kernel.org/linux-btrfs/20240911095206.31060-1-jth@kernel.org
 
 
-> > > +EXPORT_SYMBOL_GPL(dax_region_add_resource);  
-> > Adding quite a few exports. Is it time to namespace DAX exports?
-> > Perhaps a follow up series.  
-> 
-> Perhaps.  The calls have a dax_ prefix.  In addition, I thought use of the
-> export namespaces were out of favor?
+Johannes Thumshirn (2):
+  btrfs: implement partial deletion of RAID stripe extents
+  btrfs: implement self-tests for partial RAID srtipe-tree delete
 
-I guess I missed a change in the wind.
-Any references?
+ fs/btrfs/raid-stripe-tree.c             |  81 ++++++++-
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 224 ++++++++++++++++++++++++
+ 2 files changed, 298 insertions(+), 7 deletions(-)
 
+-- 
+2.43.0
 
-Jonathan
 
