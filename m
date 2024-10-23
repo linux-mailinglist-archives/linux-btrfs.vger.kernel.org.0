@@ -1,159 +1,565 @@
-Return-Path: <linux-btrfs+bounces-9105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BCD9AD658
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 23:08:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6646D9AD85C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 01:14:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FFDC1F26AD9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 21:08:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D8CA1C21BA5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2024 23:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200FE1E9070;
-	Wed, 23 Oct 2024 21:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47DF1FF036;
+	Wed, 23 Oct 2024 23:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="b+e0H0th"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k8+0txDg";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k8+0txDg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E933E155757;
-	Wed, 23 Oct 2024 21:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B64155345
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 23:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729717693; cv=none; b=ds0Mf+U8d9zp8bzwvQUCou0T7g7QujmkuZvOszgHqHkYAdkmsZJAGRrQduPDaANe4UswQSU/BOjTQLbYUCPgP5u/7S3ss2vxYNqEcis84KK4VMA3yxDqEskEAKn+8khXqYJJ0Jvps8/tbeEhAQ8g5TlltdJS9Obme3K8+ts25ts=
+	t=1729725251; cv=none; b=L6AxXX7LqHAKbK0LdPLGh18Mw3yZihb0105+jlKa/BsMxCJib8Yo5cFg9PntTOiDGz40nJeVIWlbk69CWBvygv7hy/XHTl1VGOEBZqF7+lmGjnHcGalAbIGQ3nOC4ikBA6ClcVAiHwklpP6mTtEP+Nmg168wNFyLRKWdlpuxOx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729717693; c=relaxed/simple;
-	bh=JvK5hqeHkhaAz7PJV4BGvl+87T31ZzUZ26uvW+5Nuzw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cE3uYCDZKgQiDN3nYwDuevpo8lzhZjytLrvrkJl7CDuG1ixIgBixYOgLfn357PU53fgEWvMBLcpUH/3cHVBY+/XyM5N8bijp6fkyHOoh4qMZk/G5mqAretBrVxTT5pP+7hsc4QZI15t2Moh05eN9f9b7xatr5l/onwSZwuuwk1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=b+e0H0th; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1729717680; x=1730322480; i=quwenruo.btrfs@gmx.com;
-	bh=v1wt7PY2yIezjNuYTtxw+NYJOeA9FXABuYr9urNbQmw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=b+e0H0thvdyedLojodPT9bMs1s0Uc+9k+WbE6akv/g/cvebcwLS1mzNXRivmGYlT
-	 W2310QfkSpqD/jU+DXsRtbrHtUH8cmLZWBjE+v02ZJUTHEoot6dddkAxXTgKDBHCQ
-	 RsPjhdI5URpERybWKxaBbiwOdclDIvGman4ApgNkU6vpGQf2X2ptx9b0ndgiGFj90
-	 wEMSyfKeUdUxcKhy2xh97eTgG5QgAxsL5Rx/t1mkO2CZTZoi+1GW1x2XkhB13zgGD
-	 NVWupD8MqPn1son2xOO/5n1pKKvzFzM7DFbYqVd99IxaJczaC4wWfXsBPyDrUMVMC
-	 GWYdRddJoEeSfrJBew==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJVDW-1tJ3bj2x1k-00PaaD; Wed, 23
- Oct 2024 23:08:00 +0200
-Message-ID: <d409289e-bfb5-48a1-87b5-f25b5b9c9502@gmx.com>
-Date: Thu, 24 Oct 2024 07:37:55 +1030
+	s=arc-20240116; t=1729725251; c=relaxed/simple;
+	bh=yEagmO0nRHQmmnLnDD6w/HnAzIyAwToaZK0U9OZSNNI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ecXQ0NXPPHEi9XXDB9/A6whEhPlNFCZtlnIzMtt/1qPd2AxM5Oe3veIHFYuPhTS9CMjxLyIwduhZrP2Xk3+44/fN6vcTWGbVO31px0USL4WHKnsH6+UCPIAq0khAV3CXpufdk6pJOuxJ1rhQcSGKC3SL6dYtCy/wXFU2mL/ER6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k8+0txDg; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k8+0txDg; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3D6D721A73
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 23:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1729725246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=RAPeT9Cp22OZhZO+4d+2H6Nisa1RNN6Dzat84puQcq0=;
+	b=k8+0txDgzprp0Y7MUajEff63ohWluydVu84Ucc7QqNuzkeGEmvcSDqeeTob/GvNqlUCMsV
+	bDWkKk4ZF+fJ64xi+nlzNDmOVqOM9fgoH5vYQ8rAIyKbEeuYvqWTKJpjYNfqjjLEgkg8+N
+	tvXGv+bHmcyN6HW2YveVgasEHrmd4YE=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1729725246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=RAPeT9Cp22OZhZO+4d+2H6Nisa1RNN6Dzat84puQcq0=;
+	b=k8+0txDgzprp0Y7MUajEff63ohWluydVu84Ucc7QqNuzkeGEmvcSDqeeTob/GvNqlUCMsV
+	bDWkKk4ZF+fJ64xi+nlzNDmOVqOM9fgoH5vYQ8rAIyKbEeuYvqWTKJpjYNfqjjLEgkg8+N
+	tvXGv+bHmcyN6HW2YveVgasEHrmd4YE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6858C13A63
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 23:14:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id J+yxCT2DGWc3JwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2024 23:14:05 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: avoid deadlock when reading a partial uptodate folio
+Date: Thu, 24 Oct 2024 09:43:47 +1030
+Message-ID: <62bf73ada7be2888d45a787c2b6fd252103a5d25.1729725088.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: add a sanity check for csum root before fill the
- data csum
-To: Edward Adam Davis <eadavis@qq.com>,
- syzbot+5d2b33d7835870519b5f@syzkaller.appspotmail.com
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <6718bd15.050a0220.10f4f4.01a0.GAE@google.com>
- <tencent_B5CA92105D925DA2993D4FD20DDD25BF8D07@qq.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <tencent_B5CA92105D925DA2993D4FD20DDD25BF8D07@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QrCmk5neeIFQFCHgTQAzNmuhhRngOQtfkuR19eu1LpAG1MlTT9Y
- hJX5M4UqeykKzjk/AF1lxJ95fvP+WaaF2K7sj80yO5DENM9HByzpiHixAfExn++iJCHrkC8
- H9Ftmd///Qpa0gXqaJ/POgVQcNnYPcvDodcS53GILNWy/1Y4JvtTrpTi06W/cSGorlneWWz
- W/SolxVGPCBnRx+CGYhYw==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:c4eO0mQdfKw=;OlAqyBUQfTKjgx+qUE/qOIz/jek
- /0aNV6BlWp+CGNkJFN0DYipKWdSyISxehuVK3KW+ELRWWNWOjW9W07rlf8EAzNfbsyqVANZo/
- /1wQ8Yec1444nLz7zdLbqAY62pGp8uiINBOAYelyF0JNggummpIetTl6COFb72V96pbC51Q2g
- 49wmHd1QsfJ3sG0bbUDi8xtbctuaKTGGeKYVDuu7YgYfQso8rb7yFIYaVwjSVZTrhbOgOD0n4
- TTk2F0OaP68t25kgJlDdDr31OC6VvNk2Grej8Fu/DlakICrPO3swbq9F4+qH8X9UDKs6j+wAm
- jAdGtXCGxSaCMEsHXWhbYSOWS+rWBGazERO1/U2p2zsXYNCc97tIbGzwtbDEGwXtGEzSQ7B7O
- m5nZwbQoaihiWYqMyM89UzPO63Q73k7QsjYAZoUq+HAVGZYXW+FjKIibR/mWnJTYLPUI32Z87
- DThmki9B7PowV5uAxFHTBz9s4m7r4lfwsJwecTzBvju7Me5fon0WbW28KtP05L/3zrls1DQcd
- 4ipsI6x9m/dxSzoi4vJ91nqpmNpYN40sSSm6XdjpmPtCKU0Ehz6x7jXUupEIgu2x+NlivHGKv
- 9NkfNAfCA+RnN+R/ybs5xjKaNdRni6JKh05ij0cKOWpGbBee5B6DjuH5RqQ9kXhrfdcD9oXVx
- uf1bLNT5isD5YeP8M2C60kvxlz1R/ZUI3yQiJWIPlYDbco3N76w754yJ2gjgpBGI56yAkGXUS
- T7GM4+evkMXxuC0SX/yal95v84fIAJ+sG+tIcOdOljqN+S/N94Kfb3nf0XWD/8kiGrRRBrgui
- w1SQlsiy14uASHG6QOp9b67Qef3GJOBakeDrLrNwQaieM=
 
+[BUG]
+This is for a deadlock only possible after the out-of-tree patch
+"btrfs: allow buffered write to skip full page if it's sector aligned".
 
+For now it's impossible to hit the deadlock, the reason will be
+explained in [CAUSE] section.
 
-=E5=9C=A8 2024/10/23 21:34, Edward Adam Davis =E5=86=99=E9=81=93:
-> Syzbot reported a null-ptr-deref in btrfs_lookup_csums_bitmap.
-> The btrfs info contains IGNOREDATACSUMS, which prevents the csum root fr=
-om
-> being loaded.
-> Before filling in the csum data, check the flag BTRFS_FS_STATE_NO_DATA_C=
-SUMS
-> to confirm that the csum root has been loaded.
->
-> Reported-and-tested-by: syzbot+5d2b33d7835870519b5f@syzkaller.appspotmai=
-l.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3D5d2b33d7835870519b5f
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+If the sector size is smaller than page size, and we allow btrfs to
+avoid reading the full page because the buffered write range is
+sector aligned, we can hit a hang with generic/095 runs:
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+  __switch_to+0xf8/0x168
+  __schedule+0x328/0x8a8
+  schedule+0x54/0x140
+  io_schedule+0x44/0x68
+  folio_wait_bit_common+0x198/0x3f8
+  __folio_lock+0x24/0x40
+  extent_write_cache_pages+0x2e0/0x4c0 [btrfs]
+  btrfs_writepages+0x94/0x158 [btrfs]
+  do_writepages+0x74/0x190
+  filemap_fdatawrite_wbc+0x88/0xc8
+  __filemap_fdatawrite_range+0x6c/0xa8
+  filemap_fdatawrite_range+0x1c/0x30
+  btrfs_start_ordered_extent+0x264/0x2e0 [btrfs]
+  btrfs_lock_and_flush_ordered_range+0x8c/0x160 [btrfs]
+  __get_extent_map+0xa0/0x220 [btrfs]
+  btrfs_do_readpage+0x1bc/0x5d8 [btrfs]
+  btrfs_read_folio+0x50/0xa0 [btrfs]
+  filemap_read_folio+0x54/0x110
+  filemap_update_page+0x2e0/0x3b8
+  filemap_get_pages+0x228/0x4d8
+  filemap_read+0x11c/0x3b8
+  btrfs_file_read_iter+0x74/0x90 [btrfs]
+  new_sync_read+0xd0/0x1d0
+  vfs_read+0x1a0/0x1f0
 
-Thanks,
-Qu
+There is also the minimal fio reproducer extracted from that test case
+to reproduce the deadlock:
 
-> ---
->   fs/btrfs/scrub.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 3a3427428074..1ba4d8ba902b 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1602,7 +1602,8 @@ static int scrub_find_fill_first_stripe(struct btr=
-fs_block_group *bg,
->   	}
->
->   	/* Now fill the data csum. */
-> -	if (bg->flags & BTRFS_BLOCK_GROUP_DATA) {
-> +	if (!test_bit(BTRFS_FS_STATE_NO_DATA_CSUMS, &fs_info->fs_state) &&
-> +	    bg->flags & BTRFS_BLOCK_GROUP_DATA) {
->   		int sector_nr;
->   		unsigned long csum_bitmap =3D 0;
->
+  [global]
+  bs=8k
+  iodepth=1
+  randrepeat=1
+  size=256k
+  directory=$mnt
+  numjobs=1
+  [job1]
+  ioengine=sync
+  bs=512
+  direct=1
+  rw=randread
+  filename=file1
+  [job2]
+  ioengine=libaio
+  rw=randwrite
+  direct=1
+  filename=file1
+  [job3]
+  ioengine=posixaio
+  rw=randwrite
+  filename=file1
+
+[CAUSE]
+The above call trace shows that, during the folio read a writeback is
+triggered on the same folio.
+And since during btrfs_do_readpage(), the folio is locked, the writeback
+will never be able to lock the folio, thus it is waiting on itself thus
+causing the deadlock.
+
+The root cause is a little complex, the system is 64K page sized, with
+4K sector size:
+
+1) The folio has its range [48K, 64K) marked dirty by buffered write
+
+   0          16K         32K          48K         64K
+   |                                   |///////////|
+                                             \- sector Uptodate|Dirty
+
+2) Writeback finished for [48K, 64K), but ordered extent not yet finished
+
+   0          16K         32K          48K         64K
+   |                                   |///////////|
+                                             \- sector Uptodate
+					        extent map PINNED
+						OE still here
+
+3) The folio is released from page cache
+   This can be triggered by direct IO through the following call chain:
+
+   iomap_dio_rw()
+   \- kiocb_invalidate_pages()
+    \- filemap_invalidate_pages()
+     \- invalidate_inode_pages2_range()
+      \- invalidate_complete_folio2()
+       \- filemap_release_folio()
+        \- btrfs_release_folio()
+	 \- __btrfs_release_folio()
+	  \- try_release_extent_mapping()
+
+   Since there is no extent state with EXTENT_LOCKED flag in the folio
+   range, btrfs allows the folio to be released.
+   Now there is no folio->private to record which block is uptodate.
+   But extent map and OE are still here.
+
+   0          16K         32K          48K         64K
+   |                                   |///////////|
+                                             \- extent map PINNED
+						OE still here
+
+4) Buffered write dirtied range [0, 16K)
+   Since it's sector aligned, btrfs didn't read the full folio from disk.
+
+   0          16K         32K          48K         64K
+   |//////////|                        |///////////|
+       \- sector Uptodate|Dirty              \- extent map PINNED
+						OE still here
+
+5) Read on the folio is triggered
+   For the range [0, 16K), since it's already uptodate, btrfs skips this
+   range.
+   For the range [16K, 48K), btrfs submit the read from disk.
+
+   The problem comes to the range [48K, 64K), the following call chain
+   happens:
+
+   btrfs_do_readpage()
+   \- __get_extent_map()
+    \- btrfs_lock_and_flush_ordered_range()
+     \- btrfs_start_ordered_extent()
+      \- filemap_fdatawrite_range()
+       \- btrfs_writepages()
+        \- extent_write_cache_pages()
+	 \- folio_lock()
+
+   Since the folio indeed has dirty sectors in range [0, 16K), the range
+   will be written back.
+
+   But the folio is already locked by the folio read, the writeback
+   will never be able to lock the folio, thus lead to the deadlock.
+
+This sequence can only happen if all the following conditions are met:
+
+- The sector size is smaller than page size.
+  Or we won't have mixed dirty blocks in the same folio we're reading.
+
+- We allow the buffered write to skip the folio read if it's sector
+  aligned.
+  This is done by the incoming patch
+  "btrfs: allow buffered write to skip full page if it's sector aligned".
+
+  The ultimate goal of that patch is to reduce unnecessary read for sector
+  size < page size cases, and to pass generic/563.
+
+  Otherwise the folio will be read from the disk during buffered write,
+  before marking it dirty.
+  Thus will not trigger the deadlock.
+
+[FIX]
+Break the step 5) of the above case.
+
+By passing an optional @locked_folio into btrfs_start_ordered_extent()
+and btrfs_lock_and_flush_ordered_range().
+If we got such locked folio skip the writeback for ranges of that folio.
+
+Here we also do extra asserts to make sure the target
+range is already not dirty, or the ordered extent we wait will never be
+able to finish, since part of the ordered extent is never submitted.
+
+So far only the call site inside __get_extent_map() is passing the new
+parameter.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Update the commit message to be more clear of each call chain
+
+- Update the commit message to fix grammar errors
+
+- Remove the unnecessary change on the range of __get_extent_map()
+  The root fix is inside the btrfs_start_ordered_extent().
+  The change to the __get_extent_map() range has no effect at all.
+
+RFC->v1:
+- Go with extra @locked_folio parameter for btrfs_start_ordered_extent()
+  This is more straightforward compared to skipping folio releasing.
+  This also solves some painful slowdown of other test cases.
+---
+ fs/btrfs/defrag.c       |  2 +-
+ fs/btrfs/direct-io.c    |  2 +-
+ fs/btrfs/extent_io.c    |  3 +-
+ fs/btrfs/file.c         |  8 ++---
+ fs/btrfs/inode.c        |  6 ++--
+ fs/btrfs/ordered-data.c | 67 ++++++++++++++++++++++++++++++++++++-----
+ fs/btrfs/ordered-data.h |  8 +++--
+ 7 files changed, 75 insertions(+), 21 deletions(-)
+
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index 1644470b9df7..2467990d6ac7 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -902,7 +902,7 @@ static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t
+ 			break;
+ 
+ 		folio_unlock(folio);
+-		btrfs_start_ordered_extent(ordered);
++		btrfs_start_ordered_extent(ordered, NULL);
+ 		btrfs_put_ordered_extent(ordered);
+ 		folio_lock(folio);
+ 		/*
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index a7c3e221378d..2fb02aa19be0 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -103,7 +103,7 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
+ 			 */
+ 			if (writing ||
+ 			    test_bit(BTRFS_ORDERED_DIRECT, &ordered->flags))
+-				btrfs_start_ordered_extent(ordered);
++				btrfs_start_ordered_extent(ordered, NULL);
+ 			else
+ 				ret = nowait ? -EAGAIN : -ENOTBLK;
+ 			btrfs_put_ordered_extent(ordered);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 7680dd94fddf..d83ee70707cf 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -922,7 +922,8 @@ static struct extent_map *__get_extent_map(struct inode *inode,
+ 		*em_cached = NULL;
+ 	}
+ 
+-	btrfs_lock_and_flush_ordered_range(BTRFS_I(inode), start, start + len - 1, &cached_state);
++	btrfs_lock_and_flush_ordered_range(BTRFS_I(inode), folio, start,
++					   start + len - 1, &cached_state);
+ 	em = btrfs_get_extent(BTRFS_I(inode), folio, start, len);
+ 	if (!IS_ERR(em)) {
+ 		BUG_ON(*em_cached);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 676eddc9daaf..7521fbefa9fd 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -987,7 +987,7 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct folio *folio,
+ 				      cached_state);
+ 			folio_unlock(folio);
+ 			folio_put(folio);
+-			btrfs_start_ordered_extent(ordered);
++			btrfs_start_ordered_extent(ordered, NULL);
+ 			btrfs_put_ordered_extent(ordered);
+ 			return -EAGAIN;
+ 		}
+@@ -1055,8 +1055,8 @@ int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
+ 			return -EAGAIN;
+ 		}
+ 	} else {
+-		btrfs_lock_and_flush_ordered_range(inode, lockstart, lockend,
+-						   &cached_state);
++		btrfs_lock_and_flush_ordered_range(inode, NULL, lockstart,
++						   lockend, &cached_state);
+ 	}
+ 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
+ 			       NULL, nowait, false);
+@@ -1895,7 +1895,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 		unlock_extent(io_tree, page_start, page_end, &cached_state);
+ 		folio_unlock(folio);
+ 		up_read(&BTRFS_I(inode)->i_mmap_lock);
+-		btrfs_start_ordered_extent(ordered);
++		btrfs_start_ordered_extent(ordered, NULL);
+ 		btrfs_put_ordered_extent(ordered);
+ 		goto again;
+ 	}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a21701571cbb..56bd33cf864b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2773,7 +2773,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 		unlock_extent(&inode->io_tree, page_start, page_end,
+ 			      &cached_state);
+ 		folio_unlock(folio);
+-		btrfs_start_ordered_extent(ordered);
++		btrfs_start_ordered_extent(ordered, NULL);
+ 		btrfs_put_ordered_extent(ordered);
+ 		goto again;
+ 	}
+@@ -4783,7 +4783,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
+ 		unlock_extent(io_tree, block_start, block_end, &cached_state);
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+-		btrfs_start_ordered_extent(ordered);
++		btrfs_start_ordered_extent(ordered, NULL);
+ 		btrfs_put_ordered_extent(ordered);
+ 		goto again;
+ 	}
+@@ -4918,7 +4918,7 @@ int btrfs_cont_expand(struct btrfs_inode *inode, loff_t oldsize, loff_t size)
+ 	if (size <= hole_start)
+ 		return 0;
+ 
+-	btrfs_lock_and_flush_ordered_range(inode, hole_start, block_end - 1,
++	btrfs_lock_and_flush_ordered_range(inode, NULL, hole_start, block_end - 1,
+ 					   &cached_state);
+ 	cur_offset = hole_start;
+ 	while (1) {
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 2104d60c2161..35b2c441ee6f 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -729,7 +729,7 @@ static void btrfs_run_ordered_extent_work(struct btrfs_work *work)
+ 	struct btrfs_ordered_extent *ordered;
+ 
+ 	ordered = container_of(work, struct btrfs_ordered_extent, flush_work);
+-	btrfs_start_ordered_extent(ordered);
++	btrfs_start_ordered_extent(ordered, NULL);
+ 	complete(&ordered->completion);
+ }
+ 
+@@ -845,12 +845,14 @@ void btrfs_wait_ordered_roots(struct btrfs_fs_info *fs_info, u64 nr,
+  * Wait on page writeback for all the pages in the extent and the IO completion
+  * code to insert metadata into the btree corresponding to the extent.
+  */
+-void btrfs_start_ordered_extent(struct btrfs_ordered_extent *entry)
++void btrfs_start_ordered_extent(struct btrfs_ordered_extent *entry,
++				struct folio *locked_folio)
+ {
+ 	u64 start = entry->file_offset;
+ 	u64 end = start + entry->num_bytes - 1;
+ 	struct btrfs_inode *inode = entry->inode;
+ 	bool freespace_inode;
++	bool skip_writeback = false;
+ 
+ 	trace_btrfs_ordered_extent_start(inode, entry);
+ 
+@@ -860,13 +862,59 @@ void btrfs_start_ordered_extent(struct btrfs_ordered_extent *entry)
+ 	 */
+ 	freespace_inode = btrfs_is_free_space_inode(inode);
+ 
++	/*
++	 * The locked folio covers the ordered extent range and the full
++	 * folio is dirty.
++	 * We can not trigger writeback on it, as we will try to lock
++	 * the same folio we already hold.
++	 *
++	 * This only happens for sector size < page size case, and even
++	 * that happens we're still safe because this can only happen
++	 * when the range is submitted and finished, but OE is not yet
++	 * finished.
++	 */
++	if (locked_folio) {
++		const u64 skip_start = max_t(u64, folio_pos(locked_folio), start);
++		const u64 skip_end = min_t(u64,
++				folio_pos(locked_folio) + folio_size(locked_folio),
++				end + 1) - 1;
++
++		ASSERT(folio_test_locked(locked_folio));
++
++		/* The folio should intersect with the OE range. */
++		ASSERT(folio_pos(locked_folio) <= end ||
++		       folio_pos(locked_folio) + folio_size(locked_folio) > start);
++
++		/*
++		 * The range must not be dirty.
++		 *
++		 * Since we will skip writeback for the folio, if the involved range
++		 * is dirty the range will never be submitted, thus the ordered
++		 * extent we are going to wait will never finish, cause another deadlock.
++		 */
++		btrfs_folio_assert_not_dirty(inode->root->fs_info, locked_folio,
++					     skip_start, skip_end  + 1 - skip_start);
++		skip_writeback = true;
++	}
+ 	/*
+ 	 * pages in the range can be dirty, clean or writeback.  We
+ 	 * start IO on any dirty ones so the wait doesn't stall waiting
+ 	 * for the flusher thread to find them
+ 	 */
+-	if (!test_bit(BTRFS_ORDERED_DIRECT, &entry->flags))
+-		filemap_fdatawrite_range(inode->vfs_inode.i_mapping, start, end);
++	if (!test_bit(BTRFS_ORDERED_DIRECT, &entry->flags)) {
++		if (!skip_writeback) {
++			filemap_fdatawrite_range(inode->vfs_inode.i_mapping, start, end);
++		} else {
++			/* Need to skip the locked folio range. */
++			if (start < folio_pos(locked_folio))
++				filemap_fdatawrite_range(inode->vfs_inode.i_mapping,
++						start, folio_pos(locked_folio) - 1);
++			if (end + 1 > folio_pos(locked_folio) + folio_size(locked_folio))
++				filemap_fdatawrite_range(inode->vfs_inode.i_mapping,
++						folio_pos(locked_folio) + folio_size(locked_folio),
++						end);
++		}
++	}
+ 
+ 	if (!freespace_inode)
+ 		btrfs_might_wait_for_event(inode->root->fs_info, btrfs_ordered_extent);
+@@ -921,7 +969,7 @@ int btrfs_wait_ordered_range(struct btrfs_inode *inode, u64 start, u64 len)
+ 			btrfs_put_ordered_extent(ordered);
+ 			break;
+ 		}
+-		btrfs_start_ordered_extent(ordered);
++		btrfs_start_ordered_extent(ordered, NULL);
+ 		end = ordered->file_offset;
+ 		/*
+ 		 * If the ordered extent had an error save the error but don't
+@@ -1141,6 +1189,8 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+  * @inode:        Inode whose ordered tree is to be searched
+  * @start:        Beginning of range to flush
+  * @end:          Last byte of range to lock
++ * @locked_folio: If passed, will not start writeback of this folio, to avoid
++ *		  locking the same folio already locked by the caller.
+  * @cached_state: If passed, will return the extent state responsible for the
+  *                locked range. It's the caller's responsibility to free the
+  *                cached state.
+@@ -1148,8 +1198,9 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+  * Always return with the given range locked, ensuring after it's called no
+  * order extent can be pending.
+  */
+-void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, u64 start,
+-					u64 end,
++void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode,
++					struct folio *locked_folio,
++					u64 start, u64 end,
+ 					struct extent_state **cached_state)
+ {
+ 	struct btrfs_ordered_extent *ordered;
+@@ -1174,7 +1225,7 @@ void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, u64 start,
+ 			break;
+ 		}
+ 		unlock_extent(&inode->io_tree, start, end, cachedp);
+-		btrfs_start_ordered_extent(ordered);
++		btrfs_start_ordered_extent(ordered, locked_folio);
+ 		btrfs_put_ordered_extent(ordered);
+ 	}
+ }
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index 4e152736d06c..a4bb24572c73 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -191,7 +191,8 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+ 			   struct btrfs_ordered_sum *sum);
+ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
+ 							 u64 file_offset);
+-void btrfs_start_ordered_extent(struct btrfs_ordered_extent *entry);
++void btrfs_start_ordered_extent(struct btrfs_ordered_extent *entry,
++				struct folio *locked_folio);
+ int btrfs_wait_ordered_range(struct btrfs_inode *inode, u64 start, u64 len);
+ struct btrfs_ordered_extent *
+ btrfs_lookup_first_ordered_extent(struct btrfs_inode *inode, u64 file_offset);
+@@ -207,8 +208,9 @@ u64 btrfs_wait_ordered_extents(struct btrfs_root *root, u64 nr,
+ 			       const struct btrfs_block_group *bg);
+ void btrfs_wait_ordered_roots(struct btrfs_fs_info *fs_info, u64 nr,
+ 			      const struct btrfs_block_group *bg);
+-void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, u64 start,
+-					u64 end,
++void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode,
++					struct folio *locked_folio,
++					u64 start, u64 end,
+ 					struct extent_state **cached_state);
+ bool btrfs_try_lock_ordered_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 				  struct extent_state **cached_state);
+-- 
+2.47.0
 
 
