@@ -1,215 +1,299 @@
-Return-Path: <linux-btrfs+bounces-9118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536AD9ADAB1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 05:51:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49919ADAFD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 06:39:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 108D52828C2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 03:51:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 086DD1C20FBF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 04:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F44167D80;
-	Thu, 24 Oct 2024 03:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882C816DEA2;
+	Thu, 24 Oct 2024 04:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UFMeVdDy"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Z01KGdja"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC954165F01;
-	Thu, 24 Oct 2024 03:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729741870; cv=fail; b=U2b+lXCFAtEPJWWM64DWgAlIUNpKc18XJFmr291lRvbt13dz5QBFZab/7ylMpfiS4KNpkiTx6VvUA7weCWtllWDtA3ZTtVKDPTnT+x680KIpEIN2Yb/pXAzfsqc+DG139gzVvFZnqFr5n5gJLTxmFlOu7XqP2BV02ulAVMlU5Xg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729741870; c=relaxed/simple;
-	bh=rBCA5I/KQQpcIAcEYZPMtEbHqW5xtbEDJ5FhM8EOSok=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=OE7vCrPk1iEG1do1IQ2VznzmazdU/p1/iqR2C8DdSXAGRBYiocvYX0NvkayL5XwJsb7BJOgbJ6OBmQcVNkM99QTT2LM1WMw7WzG+H7U+qRk4qbG8AE0REXvHmDgBWuw9aINQP1nFUnz+z/RuxWGv6eTsDiWm8/vRRtuj4bh/emg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UFMeVdDy; arc=fail smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729741869; x=1761277869;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=rBCA5I/KQQpcIAcEYZPMtEbHqW5xtbEDJ5FhM8EOSok=;
-  b=UFMeVdDyxanCGCWwUCNp3iiO0NS3RPhhfT1KKkhWPXypUhdn4WCrIqpw
-   678M+wuvyv55uHXlyVjTYb23FpdIw/LzGxmqQCCEAV1V1MrGMYmVmnGxi
-   GIEe/MVPmuSbidUkRIRhdhnHLvwyQHjL43RvAi24qZ0UsVm3oFsGktK88
-   wkPJtY0kUj/+Y2iwDfa16p/x6vmaA4O/Q6GD2HUlYZQI3eySOn9Et8OeV
-   k7wM2kjOugy4Y2r3Shpx8lheG9GlBehqCRM6/3SQGFhjBQ8R53b8jeRXU
-   kwL0XmwkXIOpj2IlysYO+jjzP11nLSBLvvzbnCmqcu13m6XjzYiPGdUVA
-   g==;
-X-CSE-ConnectionGUID: AQCiqaDfQ22Ft0PX8c5a/Q==
-X-CSE-MsgGUID: 870Ko1OiRZ214aosnRT2iQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11234"; a="28818283"
-X-IronPort-AV: E=Sophos;i="6.11,228,1725346800"; 
-   d="scan'208";a="28818283"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2024 20:51:08 -0700
-X-CSE-ConnectionGUID: kCROT1mhTACqEJQ1HA9Tdg==
-X-CSE-MsgGUID: WELRfp5BRkq8fjF5XFt9eA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,228,1725346800"; 
-   d="scan'208";a="80127570"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Oct 2024 20:51:08 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Wed, 23 Oct 2024 20:51:07 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Wed, 23 Oct 2024 20:51:07 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 23 Oct 2024 20:51:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gp8/zFw17UbJu3SD4GPBqK801GRVQu1fIyJrBtemj32ByhCgABgsDHYCtMCT/WOgraRaMmW7jqCLC0bNpy+rWJVMqvmfQDyaFVnv2XI1Y0yn35lHUm0GsLz0rWGaH6iDOlko59HJ46XDzshnPicOsUH25S3i2OCqLoC/bTtBrG/eA4oawHYD7xefkObvPZG+cUG6ctmensQU8Fg6i74QnL6yza9g7hX0aLRWef8FgheFsfCJ2AagjXuu6+aBCFBajfMvJH7JXkpFcJ9g1lDmqbUVSSZKuSe6u2fjve7G9QXLtNftrUPCV1tiBSlZmxXNFagBwmVV383iH5hJqSSytg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c4V52rImdwsg3LrN2NIBleaKZuN7Yue0nJtDA6R2kxc=;
- b=vwJgXQGTUvb+Hw+NNhlT+XGZ7oYwlnTKIpOaDfokYLblmt4SZrdIHnzy3JCU5TsHzEiZEseib+R0+vcCZkeXHIUAW4AUxtglrofIrVTFrTqlOOAF1TEqfTpz2s+XvIbIPo2JADG0XFZleFaQ/4m+BDDQL3aHY9Xmzqa+RCsqJFH4vTq4Aq2WOtnSSkBS9cfWf8AOrnzxWKLN7eHu4pNOfLZknrYrejHQLMVS5BnFIMQtwFakMEyEWSGbAWjobWbREdfhzTaGj294LNesxrxTYCPuBzSTa5xBv2HW9kUQN1GgDkr/IuMRcqfdRWWkBf519Qk4iQhH8m0Ul/PA54qZsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by DS0PR11MB8113.namprd11.prod.outlook.com (2603:10b6:8:127::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.29; Thu, 24 Oct
- 2024 03:51:02 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57%3]) with mapi id 15.20.8069.027; Thu, 24 Oct 2024
- 03:51:00 +0000
-Date: Wed, 23 Oct 2024 22:50:54 -0500
-From: Ira Weiny <ira.weiny@intel.com>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Ira Weiny
-	<ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 24/28] dax/region: Create resources on sparse DAX
- regions
-Message-ID: <6719c41e4af2e_da1f92944f@iweiny-mobl.notmuch>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-24-c261ee6eeded@intel.com>
- <20241010162745.00007b31@Huawei.com>
- <67184f4ef593_7253d294d5@iweiny-mobl.notmuch>
- <20241023122201.000005a4@Huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20241023122201.000005a4@Huawei.com>
-X-ClientProxiedBy: MW4PR04CA0375.namprd04.prod.outlook.com
- (2603:10b6:303:81::20) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4366116130C
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 04:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729744790; cv=none; b=tiw647LK1rw6IueNuPmPwBjSugKuJTBQFG/SALlTcrxj74l+PhSEQAM6n/eVd1n5JjISNqlYuhMWSvMy1pJ/XzjE9evKW6pRkjsTDIGGV/nXixQ84xa1skqVfQbCIY6cfpFROwd4iLwY+vlPAAJH2cASzG8Vj4Gd7UtuCtuUc78=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729744790; c=relaxed/simple;
+	bh=W/4dMQ/N14dzTK355zht4+nY0TcHm1JiB262jv4+Ocs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bcDa1OIihJ3XcNQLZjNm4IlQn2OiRQKg3vVhHr7BIpv+gszBiViPgrFwMIF0dLJ6TZEowWLWNbvULtE/N/ip10aAi4YWL66M3faQrluCU8iO+LxtE9l7+GferSij+BCJgBdy3N2syQVN3Bln3nFzy4Gl2PiSPZhnGGCitoLND9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Z01KGdja; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1729744772; x=1730349572; i=quwenruo.btrfs@gmx.com;
+	bh=zm18A+sZ5S+Vz4TMRtWOxZ0jJebC0zqypeXoQFdCFWY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Z01KGdjaq3u44s5iTesJL+RC8PIXCRLDNh3WWXH1b8lgJSd/pfa2AO0cQbdNTbLN
+	 zOA9Of0rNynZRFGpAMNY8YGxFlp+7aKgVFUQfx37YD5D1fB4H7xDGIq5u+MNhrcfZ
+	 w0bgo8Pf5Axznx0QbmB5jEn41NsCbhnCc+og8bt9qFKrk7erzl3ot+PUPX0nyIdCt
+	 OTJjKfEKLLpY1hT42kb1x1q3r6IU19dwCd6f9jdGp0Qg0yKHTjK/O3Z9sfaOTucxX
+	 xf/3Z0W5Emcn0gQVio8BWyXo17TjTBCazCTmC+r1zGchuAyq1u5zgZyIvU4IEEuC7
+	 Kd9e5PF9/FFCxgv4EQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXUN-1tMjIK3e7D-00RcYn; Thu, 24
+ Oct 2024 06:39:32 +0200
+Message-ID: <4ac82503-83db-4ac1-a14d-7195a1a4d880@gmx.com>
+Date: Thu, 24 Oct 2024 15:09:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DS0PR11MB8113:EE_
-X-MS-Office365-Filtering-Correlation-Id: 632d097f-f96a-4425-fcd0-08dcf3df12f3
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?ni1kb9QdgEOEKoNNIuuVqkqWP0wabCjzbv11ChWIP4vLKbocHHBoSEKhUytH?=
- =?us-ascii?Q?4+Ykzx1BoBwP8jBZSjyW8TUhs7NEHvyvyPKYRpDJxTQKAprBNwyoVBHc567W?=
- =?us-ascii?Q?37Y/Y/sNnn5keVbVFv4TcAPOVca30/rp+G4cyzmOJJw95m6vAP2wG/6rMQ3B?=
- =?us-ascii?Q?S56EaP4OXfo+95i3ooXheV6GtBT98X47BFfjKFM7wqQSgtxmfqg3uVfljXzj?=
- =?us-ascii?Q?vSWxDCmNmBr11cP6k6oUjXI/9/F3awB3oWFewwz1/Fc2OxLyATfzK5oE+OMV?=
- =?us-ascii?Q?anZbJcqzO6vIVjwgk2kEIxRzFbvgHUhnYDzycIdO4lE1kBxrkT8NkvsrucdD?=
- =?us-ascii?Q?s5HeYAPJ8NRs2cEMRbyUMgDkn+tVCcGDoPK+FckhMPyswapY+YSUBysmnjzD?=
- =?us-ascii?Q?VtMCuRdd9sMY+Hbdp0Wonl7c7rKe1DBCNUP1m1NIpnkHMOQdDTMW73kh2if3?=
- =?us-ascii?Q?d1+2V3qq2YZ2jvgl0H7HjQla618IiuzIyZhyxVZ5veOhlr1SH7nsQbBQVWqe?=
- =?us-ascii?Q?IzrQAZFLWAZy9DabjV2FSNr4g5qUiqK9Pu3BaTY2plb6f5DHC+oqd1qBfpkE?=
- =?us-ascii?Q?CMDeP5LZa42jXO19BmdoeNwRY91iu/2CXD8y5OZskTh56cx9+IYPl+qcOVP6?=
- =?us-ascii?Q?DKsImIyqFlrKhZ/hwd+lgWG8WPQAmvhAE7hMBcDSRosvspCBfxqMKIYVpKSR?=
- =?us-ascii?Q?WP5xUpMTpIilux+EnUXx6XE2xpz+A0yYpxlU3wlpGshS/BSF1C9gYLxNcqbm?=
- =?us-ascii?Q?kbMAUOdVaetQhYZrXe5oAbxBmxGByVQYKfgNzpd3Pgu546bPIh54VCGlNy7W?=
- =?us-ascii?Q?I3o9LdSsCnrEiNDeEFTAsYwE+0ZZ4tRc7sXMgRRM4z3bzzgk5xhu0dbJ1Mje?=
- =?us-ascii?Q?E9hXNQ2mWxw6+C/SR1NTCNUdqVGeCWpIlVdEcPpptG0F0FkDclKEK4dqrm6I?=
- =?us-ascii?Q?NtRZSB61aqEanqnf3aYlmAPz5in3C+FAAi5tMOm3a8CNeJvw3XCyP9qNkx8l?=
- =?us-ascii?Q?RXcnUR5lht3MTR5YINjrsKvLHDBe+dt0n8EP7Dg9Ng55nUMybuVRpCkhSxEH?=
- =?us-ascii?Q?YSI1YO8bH7I2HItefhHG+lL3boH6pXPTwO4lDT4GAAKTwofluN8oZ32EQei7?=
- =?us-ascii?Q?b71DyPBeZqAH7cBOer9CE/alRB55JkWkaadHvkTaQcb5sVelnXRRd5SoWfyi?=
- =?us-ascii?Q?NOkJ3N057T3AtvrtqxK93Ng/+wM1tp6EksbH+x+6cx6iu9f0/5t+GcYekjgE?=
- =?us-ascii?Q?hfdM9r6lWA2rZf6ok9LuVyDwDX/WnNGSuSFhm9VJ1Xj9Fv4SEnsD+jS6pQVB?=
- =?us-ascii?Q?Pxs=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3/46grEh5DZ9VNU7ERZdp95T3Slcn7o6PKLamP8/jAbzOu2DiDEcUAhPD+uo?=
- =?us-ascii?Q?lW+emz8JFOpfla39QU9TSrzNUYGl+UqxqQ9THeS+rkSpV2ceEQTnb3a2kdPG?=
- =?us-ascii?Q?DzePCJDW2ZX5+v0zI5IsxKTgqwZhevx5GnEvsl0Ez5RUW5NHMR26CD9hlwUI?=
- =?us-ascii?Q?1bIjYwFHUmaaRazZWXXW8sdNEVaNSb/iDfaJRwT3q+Za/Y2eYO9BW0qRCkBI?=
- =?us-ascii?Q?NoIQm6uALd45u8UFFsoc6tfTu/0CBPFbXonHE2Q7vkfcnW/ypfONVwITvUr7?=
- =?us-ascii?Q?CvHbAj5k+oYLJhGX0NTroa+uKJ2WuLIEepgNwEiTaMTW+7vspeD7Xd+KbMOH?=
- =?us-ascii?Q?y6cwQGTbn0SFTehgFtBNjzUW+GUVKT3FyafnbvDA7LwNKefDPGjoMiAFhtXy?=
- =?us-ascii?Q?rroyQGWwfrDYsDRNV9G2tdfFhdiwg8Z5KK3SPNChjoIFoiMZpJDnoLE8Jrq9?=
- =?us-ascii?Q?jhk3BzjqEKRRbP2K6aljkuGmm1niqEYItGy2Em4eoOoU58uGghmpex7aMXXp?=
- =?us-ascii?Q?0lVb7a2eTlE5ZtIGIY4Upmru+J2PYzQB4Sj9K44c16qmzmXySsLC1Fot/Bqo?=
- =?us-ascii?Q?Bd4LvShZ82irY+vK0VTJFSYX5rM7gNq/O1L6fGZ64GXlEIGLunOJ2G5W4clF?=
- =?us-ascii?Q?0wtNs8U9TMvbUWf+aEYna+s+J4k/lqLnDGqq5qXcdDjoB4iordhaj4PS7VON?=
- =?us-ascii?Q?d+/2TiwakFjLghTiwDtmfakyw4jXZpGpxf1kL2WD98srKPSl9RyOW0U7+9AH?=
- =?us-ascii?Q?E6OAlvEgG1e0ChDjt+NCnoFMlO7vTGCf1vW2PPX3mOqkjWFYs2RBHPXpuZXH?=
- =?us-ascii?Q?yFCZTcRt6fEHNjsf7ezkPibT3WWkUHffBzG76W2guqwOPFwPcaTwkCG0d+GY?=
- =?us-ascii?Q?jA69TNQQDOy1xwd6baZWdtikWaT+YSll4t7LEyJ0Xkpm/M2Ys83pQv5Ila5n?=
- =?us-ascii?Q?A8SoSPVy82vodq4NQe+Hh3h6qb5Z6BeLO1ke3AiSNuahEjz/+W1tpiRQXcoV?=
- =?us-ascii?Q?lxohVmRglN6s+QmlXEnGQ2rumot5HrQh2i3qaS0V24Cl71WGnGRWSWf1mWJG?=
- =?us-ascii?Q?UBVZ30lEqDZKGJhI52KO90xLMC97DSYjzDgfEOq5V0sj0wh5ikhH+Hk4Cvk7?=
- =?us-ascii?Q?FNY0gZ8cHwRSJqlOx3RzSd60SLSUVXuGewW0k97MNsRo/wjLmfRz2dQ3So2J?=
- =?us-ascii?Q?jNvIE9ZytnQ1g8gVt6xiw1SfouSD00mIEqMxPAn26L4OWdc73Y3TwCRuESru?=
- =?us-ascii?Q?MVNZ2oJH4G7gXhyxW+9maNjZT8njaPwn4V7972Ikbn+MmxaOf/Ou7Vt7eJEs?=
- =?us-ascii?Q?Rhq/4IhjH1RJ0sh4ndogxg2CNs0b4C0d5XLa66HSgXwLwI5buCW+lk2Ylka7?=
- =?us-ascii?Q?3CToKAUX6D/kLfWAo5R8ftjgtuwoJQh7Czgv/A1EioAxE6lXs+t6G7pyxxXr?=
- =?us-ascii?Q?pnWuhESoSbde7bZw6d7+Fe5HDENvs1/7SQKQ+UTFmk2A5rHshSOZRGgm6Xg8?=
- =?us-ascii?Q?zJyoYKbCmzC+6i2d7NumNrPRwVxr1baA2lqQ2xIZgsqDNJrO9bizJsEw1Kg7?=
- =?us-ascii?Q?IyW0W2K8dIpTRHB/Aawm79aH4jfEn9Qwkf+9EAXi?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 632d097f-f96a-4425-fcd0-08dcf3df12f3
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2024 03:51:00.3478
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y9WkDDiV9iaelCZyShbh3kSJ39D6zgoUFd7MeBsXBdqowLZqSP2NTIlLZIWDteK89af4Jr70+HYjjywNdB5Ybg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8113
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] raid1 balancing methods
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc: dsterba@suse.com, wqu@suse.com, hrx@bupt.moe, waxhead@dirtcellar.net
+References: <cover.1728608421.git.anand.jain@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <cover.1728608421.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:K9ii/NHN8Kiwh0drwKa2/3HHZEfn31q95UfeI0eb1EIdcu5tzBd
+ s5vpkoMx1CLpVMo1QCGMdH+25dyE03/bXi28o2pyF+OgfrXZgDrNtg6zWVmS0dLWX6vHy33
+ big6M23e3tDognXg3KNiDLNbBGTcDGSeVk+GI3lpJ7HewTM6fs+PaHVlxmssuOicH5zoVMH
+ HcrCaUZ0383C8kRdq6q5Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:S27pmGqZ2vg=;lG+M1pn2etHjPpiQaUCtNYSBr5v
+ m7ubVMVZXKj1KUpwI9h+IdneVFCEPXmrWGmq6H2eE3myto5x2OOaUU6W3rjlJ+2j6/32AFe56
+ TfjPLXIQx3mbzJTbVW5AABnYnBEWSb14m9j8UDfwB9FwhtldS2Uz1jaJLjC/GwKgsiJ+P50h8
+ qRVPq8eFxgRNH650sn5SUdrT7LNAH/aUG+B+ZgUGWMEXtunhs7OHb2mJnDsSmUaW65CP1KkOw
+ 9Vvy30Tzz3V/klgRrZsCjqZ+AYBUgaGLcYIfvZCAGRrUFMZptRoA/8p0k2p7CJk/FPOGEY9dv
+ dDS/26iJvQsnLYu4QYeclkM3i3gtVI0X/0pnMABKsxGHMDzrUIHDSk9tHG3uabq8SlGPfT7Wv
+ uecy+zbkwy0CAsQaMytMMXv2YvguHsXiTq2kV/IbRqkZvvPRIqV2Uz4JJTYSPtze5M1Q4aVrP
+ T1cyQ0uOkWWzEycveZehaPABEg9nHyK1E6Nq+KjC0r+5LLIDDgL0ksL9VU75V5TivEwcZbvV1
+ N6HBXeR3lluhzxKfS2Yr+MnspETgLoT3JQPRotyATXyRrq21WjdnPhJA7CxMLyXnZGDeMG40d
+ INfWZtVDz8CX+F3zISjseI8NZwIofo/tPAECUfFwp6xwfW3/5vKZR7ZUpBiu+7weIEQ4mXNNs
+ Q369FYf/LgAUe6VQWF0aJfvheM0sEazplR2wdUdVY3uDwiCJTJUk2ipelhmh1zhJgnc6PIRua
+ DyYCQhJxcaelmKVwVS+oTHAZguvx+8qMJyCdDkjhOL5RsUB6WG5zE2j5rHxrJLxSWyl2FIczT
+ Rac9S2pGb8/v2qr8mfnKSAfA==
 
-Jonathan Cameron wrote:
-> 
-> > > > +EXPORT_SYMBOL_GPL(dax_region_add_resource);  
-> > > Adding quite a few exports. Is it time to namespace DAX exports?
-> > > Perhaps a follow up series.  
-> > 
-> > Perhaps.  The calls have a dax_ prefix.  In addition, I thought use of the
-> > export namespaces were out of favor?
-> 
-> I guess I missed a change in the wind.
-> Any references?
 
-I think Dan mentioned this to me off-line WRT the CXL namespace.  I'll
-double check with him.  Regardless that is all something which should be
-done separate from this series as I need to reduce, not add, to it right
-now.
 
-Ira
+=E5=9C=A8 2024/10/11 13:19, Anand Jain =E5=86=99=E9=81=93:
+> v2:
+> 1. Move new features to CONFIG_BTRFS_EXPERIMENTAL instead of CONFIG_BTRF=
+S_DEBUG.
+> 2. Correct the typo from %est_wait to %best_wait.
+> 3. Initialize %best_wait to U64_MAX and remove the check for 0.
+> 4. Implement rotation with a minimum contiguous read threshold before
+>     switching to the next stripe. Configure this, using:
+>
+>          echo rotation:[min_contiguous_read] > /sys/fs/btrfs/<uuid>/read=
+_policy
+>
+>     The default value is the sector size, and the min_contiguous_read
+>     value must be a multiple of the sector size.
+>
+> 5. Tested FIO random read/write and defrag compression workloads with
+>     min_contiguous_read set to sector size, 192k, and 256k.
+>
+>     RAID1 balancing method rotation is better for multi-process workload=
+s
+>     such as fio and also single-process workload such as defragmentation=
+.
+>
+>       $ fio --filename=3D/btrfs/foo --size=3D5Gi --direct=3D1 --rw=3Dran=
+drw --bs=3D4k \
+>          --ioengine=3Dlibaio --iodepth=3D256 --runtime=3D120 --numjobs=
+=3D4 \
+>          --time_based --group_reporting --name=3Diops-test-job --eta-new=
+line=3D1
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Although not 100% happy with the min_contiguous_read setting, since it's
+an optional one and still experimental, I'm fine with series so far.
+
+
+Just want to express my concern about going mount option.
+
+I know sysfs is not a good way to setup a lot of features, but mount
+option is way too committed to me, even under experimental features.
+
+But I also understand without mount option it can be pretty hard to
+setup the read policy for fstests runs.
+
+So I'd prefer to have some on-disk solution (XATTR or temporary items)
+to save the read policy.
+It's less committed compared to mount option (aka, much easier to revert
+the change with breaking any compatibility), and can help for future
+features.
+
+Thanks,
+Qu
+>
+>
+> |         |            |            | Read I/O count  |
+> |         | Read       | Write      | devid1 | devid2 |
+> |---------|------------|------------|--------|--------|
+> | pid     | 20.3MiB/s  | 20.5MiB/s  | 313895 | 313895 |
+> | rotation|            |            |        |        |
+> |     4096| 20.4MiB/s  | 20.5MiB/s  | 313895 | 313895 |
+> |   196608| 20.2MiB/s  | 20.2MiB/s  | 310152 | 310175 |
+> |   262144| 20.3MiB/s  | 20.4MiB/s  | 312180 | 312191 |
+> |  latency| 18.4MiB/s  | 18.4MiB/s  | 272980 | 291683 |
+> | devid:1 | 14.8MiB/s  | 14.9MiB/s  | 456376 | 0      |
+>
+>     rotation RAID1 balancing technique performs more than 2x better for
+>     single-process defrag.
+>
+>        $ time -p btrfs filesystem defrag -r -f -c /btrfs
+>
+>
+> |         | Time  | Read I/O Count  |
+> |         | Real  | devid1 | devid2 |
+> |---------|-------|--------|--------|
+> | pid     | 18.00s| 3800   | 0      |
+> | rotation|       |        |        |
+> |     4096|  8.95s| 1900   | 1901   |
+> |   196608|  8.50s| 1881   | 1919   |
+> |   262144|  8.80s| 1881   | 1919   |
+> | latency | 17.18s| 3800   | 0      |
+> | devid:2 | 17.48s| 0      | 3800   |
+>
+> Rotation keeps all devices active, and for now, the Rotation RAID1
+> balancing method is preferable as default. More workload testing is
+> needed while the code is EXPERIMENTAL.
+> While Latency is better during the failing/unstable block layer transpor=
+t.
+> As of now these two techniques, are needed to be further independently
+> tested with different worloads, and in the long term we should be merge
+> these technique to a unified heuristic.
+>
+> Rotation keeps all devices active, and for now, the Rotation RAID1
+> balancing method should be the default. More workload testing is needed
+> while the code is EXPERIMENTAL.
+>
+> Latency is smarter with unstable block layer transport.
+>
+> Both techniques need independent testing across workloads, with the goal=
+ of
+> eventually merging them into a unified approach? for the long term.
+>
+> Devid is a hands-on approach, provides manual or user-space script contr=
+ol.
+>
+> These RAID1 balancing methods are tunable via the sysfs knob.
+> The mount -o option and btrfs properties are under consideration.
+>
+> Thx.
+>
+> --------- original v1 ------------
+>
+> The RAID1-balancing methods helps distribute read I/O across devices, an=
+d
+> this patch introduces three balancing methods: rotation, latency, and
+> devid. These methods are enabled under the `CONFIG_BTRFS_DEBUG` config
+> option and are on top of the previously added
+> `/sys/fs/btrfs/<UUID>/read_policy` interface to configure the desired
+> RAID1 read balancing method.
+>
+> I've tested these patches using fio and filesystem defragmentation
+> workloads on a two-device RAID1 setup (with both data and metadata
+> mirrored across identical devices). I tracked device read counts by
+> extracting stats from `/sys/devices/<..>/stat` for each device. Below is
+> a summary of the results, with each result the average of three
+> iterations.
+>
+> A typical generic random rw workload:
+>
+> $ fio --filename=3D/btrfs/foo --size=3D10Gi --direct=3D1 --rw=3Drandrw -=
+-bs=3D4k \
+>    --ioengine=3Dlibaio --iodepth=3D256 --runtime=3D120 --numjobs=3D4 --t=
+ime_based \
+>    --group_reporting --name=3Diops-test-job --eta-newline=3D1
+>
+> |         |            |            | Read I/O count  |
+> |         | Read       | Write      | devid1 | devid2 |
+> |---------|------------|------------|--------|--------|
+> | pid     | 29.4MiB/s  | 29.5MiB/s  | 456548 | 447975 |
+> | rotation| 29.3MiB/s  | 29.3MiB/s  | 450105 | 450055 |
+> | latency | 21.9MiB/s  | 21.9MiB/s  | 672387 | 0      |
+> | devid:1 | 22.0MiB/s  | 22.0MiB/s  | 674788 | 0      |
+>
+> Defragmentation with compression workload:
+>
+> $ xfs_io -f -d -c 'pwrite -S 0xab 0 1G' /btrfs/foo
+> $ sync
+> $ echo 3 > /proc/sys/vm/drop_caches
+> $ btrfs filesystem defrag -f -c /btrfs/foo
+>
+> |         | Time  | Read I/O Count  |
+> |         | Real  | devid1 | devid2 |
+> |---------|-------|--------|--------|
+> | pid     | 21.61s| 3810   | 0      |
+> | rotation| 11.55s| 1905   | 1905   |
+> | latency | 20.99s| 0      | 3810   |
+> | devid:2 | 21.41s| 0      | 3810   |
+>
+> . The PID-based balancing method works well for the generic random rw fi=
+o
+>    workload.
+> . The rotation method is ideal when you want to keep both devices active=
+,
+>    and it boosts performance in sequential defragmentation scenarios.
+> . The latency-based method work well when we have mixed device types or
+>    when one device experiences intermittent I/O failures the latency
+>    increases and it automatically picks the other device for further Rea=
+d
+>    IOs.
+> . The devid method is a more hands-on approach, useful for diagnosing an=
+d
+>    testing RAID1 mirror synchronizations.
+>
+> Anand Jain (3):
+>    btrfs: introduce RAID1 round-robin read balancing
+>    btrfs: use the path with the lowest latency for RAID1 reads
+>    btrfs: add RAID1 preferred read device
+>
+>   fs/btrfs/disk-io.c |   4 ++
+>   fs/btrfs/sysfs.c   | 116 +++++++++++++++++++++++++++++++++++++++------
+>   fs/btrfs/volumes.c | 109 ++++++++++++++++++++++++++++++++++++++++++
+>   fs/btrfs/volumes.h |  16 +++++++
+>   4 files changed, 230 insertions(+), 15 deletions(-)
+>
+
 
