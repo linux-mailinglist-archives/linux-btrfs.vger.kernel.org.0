@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-9138-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9139-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E3069AEBE2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 18:25:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB269AEBE3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 18:25:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C85D51C21CB4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 16:25:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD52E1F23B59
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 16:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06351F8906;
-	Thu, 24 Oct 2024 16:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9417F1F80AD;
+	Thu, 24 Oct 2024 16:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IgPMKl5Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EFfaIS4H"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C2F1F80CB
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 16:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB45A1F8911
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 16:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729787079; cv=none; b=AapT40LNw0szO2aGf4w+a6oNikBuPDgJZ2UlmezcKEwUpjJliVOUFnqNXvh779O/LtqzwFCOwKzp45FcZi2qJ+lEOx96gCYbhXxqRwuFJBVAM1j8cvW5WjK5Odo5Dlv80MQQTdT0Qw7IQ3cKEQMmvg06MQlSUdCdfYTFFbR0PqQ=
+	t=1729787080; cv=none; b=JCtkhZFzbVAs0GF6ENuLjYBDleCfqMRz5m9oNVwOGoUtM0GzZrS9B1oWybP4ftYPkKgyQDPyfTZfkbFj34KnK7bwRd13Zld8JqGQ98mjcF/8vozO/uq5UTs3aBU0MgnpnLH7VinTBeT18a77O57RA8hznfD8DGCGdbLcjpbwcxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729787079; c=relaxed/simple;
-	bh=7d5LUESd+DOElFD1B8mbHNTwd/K8rHoNMvoa0pfHiDg=;
+	s=arc-20240116; t=1729787080; c=relaxed/simple;
+	bh=tIEXAMiiyzCNNviFnqKb9GcIDIuV+rg7CMCHNF70ch0=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R2vGlaJ+/wX0RPi+/0oSF45xJMSE+SU1krmHMMuEfQ6Js5c6mN5b/PDfFBAwBgvh5JqOCcx3hT2GIm1YZiSdZ8Aaoe5WgZZt653p3FTj7rSIYyp7E40UYyMaVMNEE6jLOECpbAEGpnZ2YQg9ZVIg5UlLS7PbNd1UUTiRp42Xw7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IgPMKl5Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F865C4CEC7
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 16:24:38 +0000 (UTC)
+	 MIME-Version; b=nwbazHHlnjP5uS5cJJ4S87osBEw2+ZFEET6OyYB537baV6qVc2XmTGhUWPkuVqwxbCaA5ybNvf9yZhBqHb3BJpi03ya5qx5ehMMv6FqLTnUkZrdvOSVDeMZE0eOIMGwdKYUmK3nWcCT0v8fy/Q6v45eF/JkHDRb1ceWkfKUyEnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EFfaIS4H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A797DC4CEE3
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 16:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729787079;
-	bh=7d5LUESd+DOElFD1B8mbHNTwd/K8rHoNMvoa0pfHiDg=;
+	s=k20201202; t=1729787080;
+	bh=tIEXAMiiyzCNNviFnqKb9GcIDIuV+rg7CMCHNF70ch0=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=IgPMKl5ZP0yM/g9Jhle2Z/l2zF80XQJ/FrlIOEOpWz59GoeghtVjqdqoOogQ8vXVa
-	 tgpCnOPUzgxpc0gQ+A15PeF6oC3sb/HvGdRw/OFWf1f8MYw18RJ/L+qmEr2Ct0K4e1
-	 +iwOGuhsp4mLXHnLb1YQ4hFdmllrPUAF+ZDKC3Q9qhPwf7Uwm4Y8VUePm9qPfcFZZn
-	 aesvOvwH+HmX32wV3C9pbvYeeIYWI9vh+82wueL75v4JamPx6QH3mofMOloN+mY+Pj
-	 lM1t7uGekoCkjFxnGP2J6czg8gCES1ta39lba5m3FRIyx4wWCVQ3ZjJySoF/wMdpeb
-	 Fiu1wXDcKTWRg==
+	b=EFfaIS4HNkx2E704j8osihBm7VPKAh5kL1tA6hhqzBk0+P46wMHiqtIKivlVKma+j
+	 l6vEJQBV6Wt77qqrC7QBsf+IC54TUQxTzqSwC5O82I29DqnQ2lRCBRielHyO/xPkMX
+	 9eFsWO6Zu9DftUXoAAEKxuUKfbk2WCVsn4ClopSzV3Zq1oTrssHF3Q9EppSAeXIcb3
+	 OsIU4iEiV04UQQoJCyWNSNV6hDyRUL4tYiBeBlomLlBSFtlr9+nFmTRbzcRsmESj7f
+	 GjDw9KITipj6yp85OTrdcrCwDKH3p+uJaoFHXs+Xy5AARjIxAnS5k1Ts9EsZ11qLMB
+	 fPCdURjfuvQ/A==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/18] btrfs: simplify obtaining a delayed ref head
-Date: Thu, 24 Oct 2024 17:24:17 +0100
-Message-Id: <c40a406e59ea50a899f917fdec65051263b499d2.1729784713.git.fdmanana@suse.com>
+Subject: [PATCH 10/18] btrfs: move delayed ref head unselection to delayed-ref.c
+Date: Thu, 24 Oct 2024 17:24:18 +0100
+Message-Id: <024e3f6fb496a05a691765d97e25220f325cf4f8.1729784713.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1729784712.git.fdmanana@suse.com>
 References: <cover.1729784712.git.fdmanana@suse.com>
@@ -59,152 +59,104 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of doing it in two steps outside of delayed-ref.c, leaking low
-level details such as locking, move the logic entirely to delayed-ref.c
-under btrfs_select_ref_head(), reducing code and making things simpler
-for the caller.
+The unselect_delayed_ref_head() at extent-tree.c doesn't really belong in
+that file as it's a delayed refs specific detail and therefore should be
+at delayed-ref.c. Further its inverse, btrfs_select_ref_head(), is at
+delayed-ref.c, so it only makes sense to have it there too.
+
+So move unselect_delayed_ref_head() into delayed-ref.c and rename it to
+btrfs_unselect_ref_head() so that its name closely matches its inverse
+(btrfs_select_ref_head()).
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-ref.c | 27 ++++++++++++++++++++++-----
- fs/btrfs/delayed-ref.h |  2 --
- fs/btrfs/extent-tree.c | 35 +----------------------------------
- 3 files changed, 23 insertions(+), 41 deletions(-)
+ fs/btrfs/delayed-ref.c | 10 ++++++++++
+ fs/btrfs/delayed-ref.h |  2 ++
+ fs/btrfs/extent-tree.c | 16 +++-------------
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 2bfece87bcda..9174c6dbbce5 100644
+index 9174c6dbbce5..ffa06f931fa8 100644
 --- a/fs/btrfs/delayed-ref.c
 +++ b/fs/btrfs/delayed-ref.c
-@@ -431,8 +431,8 @@ static struct btrfs_delayed_ref_head *find_ref_head(
- 	return NULL;
- }
- 
--bool btrfs_delayed_ref_lock(struct btrfs_delayed_ref_root *delayed_refs,
--			    struct btrfs_delayed_ref_head *head)
-+static bool btrfs_delayed_ref_lock(struct btrfs_delayed_ref_root *delayed_refs,
-+				   struct btrfs_delayed_ref_head *head)
- {
- 	lockdep_assert_held(&delayed_refs->lock);
- 	if (mutex_trylock(&head->mutex))
-@@ -561,8 +561,9 @@ struct btrfs_delayed_ref_head *btrfs_select_ref_head(
- 		struct btrfs_delayed_ref_root *delayed_refs)
- {
- 	struct btrfs_delayed_ref_head *head;
-+	bool locked;
- 
--	lockdep_assert_held(&delayed_refs->lock);
-+	spin_lock(&delayed_refs->lock);
- again:
- 	head = find_ref_head(delayed_refs, delayed_refs->run_delayed_start,
- 			     true);
-@@ -570,16 +571,20 @@ struct btrfs_delayed_ref_head *btrfs_select_ref_head(
- 		delayed_refs->run_delayed_start = 0;
- 		head = find_first_ref_head(delayed_refs);
- 	}
--	if (!head)
-+	if (!head) {
-+		spin_unlock(&delayed_refs->lock);
- 		return NULL;
-+	}
- 
- 	while (head->processing) {
- 		struct rb_node *node;
- 
- 		node = rb_next(&head->href_node);
- 		if (!node) {
--			if (delayed_refs->run_delayed_start == 0)
-+			if (delayed_refs->run_delayed_start == 0) {
-+				spin_unlock(&delayed_refs->lock);
- 				return NULL;
-+			}
- 			delayed_refs->run_delayed_start = 0;
- 			goto again;
- 		}
-@@ -592,6 +597,18 @@ struct btrfs_delayed_ref_head *btrfs_select_ref_head(
- 	delayed_refs->num_heads_ready--;
- 	delayed_refs->run_delayed_start = head->bytenr +
- 		head->num_bytes;
-+
-+	locked = btrfs_delayed_ref_lock(delayed_refs, head);
-+	spin_unlock(&delayed_refs->lock);
-+
-+	/*
-+	 * We may have dropped the spin lock to get the head mutex lock, and
-+	 * that might have given someone else time to free the head.  If that's
-+	 * true, it has been removed from our list and we can move on.
-+	 */
-+	if (!locked)
-+		return ERR_PTR(-EAGAIN);
-+
+@@ -612,6 +612,16 @@ struct btrfs_delayed_ref_head *btrfs_select_ref_head(
  	return head;
  }
  
++void btrfs_unselect_ref_head(struct btrfs_delayed_ref_root *delayed_refs,
++			     struct btrfs_delayed_ref_head *head)
++{
++	spin_lock(&delayed_refs->lock);
++	head->processing = false;
++	delayed_refs->num_heads_ready++;
++	spin_unlock(&delayed_refs->lock);
++	btrfs_delayed_ref_unlock(head);
++}
++
+ void btrfs_delete_ref_head(struct btrfs_delayed_ref_root *delayed_refs,
+ 			   struct btrfs_delayed_ref_head *head)
+ {
 diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-index 04730c650212..956fbe5d6984 100644
+index 956fbe5d6984..d70de7ee63e5 100644
 --- a/fs/btrfs/delayed-ref.h
 +++ b/fs/btrfs/delayed-ref.h
-@@ -369,8 +369,6 @@ void btrfs_merge_delayed_refs(struct btrfs_fs_info *fs_info,
- struct btrfs_delayed_ref_head *
- btrfs_find_delayed_ref_head(struct btrfs_delayed_ref_root *delayed_refs,
- 			    u64 bytenr);
--bool btrfs_delayed_ref_lock(struct btrfs_delayed_ref_root *delayed_refs,
--			    struct btrfs_delayed_ref_head *head);
- static inline void btrfs_delayed_ref_unlock(struct btrfs_delayed_ref_head *head)
- {
- 	mutex_unlock(&head->mutex);
+@@ -378,6 +378,8 @@ void btrfs_delete_ref_head(struct btrfs_delayed_ref_root *delayed_refs,
+ 
+ struct btrfs_delayed_ref_head *btrfs_select_ref_head(
+ 		struct btrfs_delayed_ref_root *delayed_refs);
++void btrfs_unselect_ref_head(struct btrfs_delayed_ref_root *delayed_refs,
++			     struct btrfs_delayed_ref_head *head);
+ 
+ int btrfs_check_delayed_seq(struct btrfs_fs_info *fs_info, u64 seq);
+ 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 95d749cec49e..f5320a9cdf8f 100644
+index f5320a9cdf8f..2e00267ad362 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -1933,39 +1933,6 @@ static int cleanup_ref_head(struct btrfs_trans_handle *trans,
- 	return ret;
+@@ -1807,16 +1807,6 @@ select_delayed_ref(struct btrfs_delayed_ref_head *head)
+ 	return ref;
  }
  
--static struct btrfs_delayed_ref_head *btrfs_obtain_ref_head(
--					struct btrfs_trans_handle *trans)
+-static void unselect_delayed_ref_head(struct btrfs_delayed_ref_root *delayed_refs,
+-				      struct btrfs_delayed_ref_head *head)
 -{
--	struct btrfs_delayed_ref_root *delayed_refs =
--		&trans->transaction->delayed_refs;
--	struct btrfs_delayed_ref_head *head = NULL;
--	bool locked;
--
 -	spin_lock(&delayed_refs->lock);
--	head = btrfs_select_ref_head(delayed_refs);
--	if (!head) {
--		spin_unlock(&delayed_refs->lock);
--		return head;
--	}
--
--	/*
--	 * Grab the lock that says we are going to process all the refs for
--	 * this head
--	 */
--	locked = btrfs_delayed_ref_lock(delayed_refs, head);
+-	head->processing = false;
+-	delayed_refs->num_heads_ready++;
 -	spin_unlock(&delayed_refs->lock);
--
--	/*
--	 * We may have dropped the spin lock to get the head mutex lock, and
--	 * that might have given someone else time to free the head.  If that's
--	 * true, it has been removed from our list and we can move on.
--	 */
--	if (!locked)
--		head = ERR_PTR(-EAGAIN);
--
--	return head;
+-	btrfs_delayed_ref_unlock(head);
 -}
 -
- static int btrfs_run_delayed_refs_for_head(struct btrfs_trans_handle *trans,
- 					   struct btrfs_delayed_ref_head *locked_ref,
- 					   u64 *bytes_released)
-@@ -2072,7 +2039,7 @@ static noinline int __btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
+ static struct btrfs_delayed_extent_op *cleanup_extent_op(
+ 				struct btrfs_delayed_ref_head *head)
+ {
+@@ -1891,7 +1881,7 @@ static int cleanup_ref_head(struct btrfs_trans_handle *trans,
  
- 	do {
- 		if (!locked_ref) {
--			locked_ref = btrfs_obtain_ref_head(trans);
-+			locked_ref = btrfs_select_ref_head(delayed_refs);
- 			if (IS_ERR_OR_NULL(locked_ref)) {
- 				if (PTR_ERR(locked_ref) == -EAGAIN) {
- 					continue;
+ 	ret = run_and_cleanup_extent_op(trans, head);
+ 	if (ret < 0) {
+-		unselect_delayed_ref_head(delayed_refs, head);
++		btrfs_unselect_ref_head(delayed_refs, head);
+ 		btrfs_debug(fs_info, "run_delayed_extent_op returned %d", ret);
+ 		return ret;
+ 	} else if (ret) {
+@@ -1953,7 +1943,7 @@ static int btrfs_run_delayed_refs_for_head(struct btrfs_trans_handle *trans,
+ 		if (ref->seq &&
+ 		    btrfs_check_delayed_seq(fs_info, ref->seq)) {
+ 			spin_unlock(&locked_ref->lock);
+-			unselect_delayed_ref_head(delayed_refs, locked_ref);
++			btrfs_unselect_ref_head(delayed_refs, locked_ref);
+ 			return -EAGAIN;
+ 		}
+ 
+@@ -2001,7 +1991,7 @@ static int btrfs_run_delayed_refs_for_head(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_free_delayed_extent_op(extent_op);
+ 		if (ret) {
+-			unselect_delayed_ref_head(delayed_refs, locked_ref);
++			btrfs_unselect_ref_head(delayed_refs, locked_ref);
+ 			btrfs_put_delayed_ref(ref);
+ 			return ret;
+ 		}
 -- 
 2.43.0
 
