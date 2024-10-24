@@ -1,183 +1,119 @@
-Return-Path: <linux-btrfs+bounces-9127-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9128-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE52D9AE5AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 15:08:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721219AE5F0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 15:20:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5462867BD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 13:08:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0382DB25A61
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 13:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10E81DD0C7;
-	Thu, 24 Oct 2024 13:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA511DD0CA;
+	Thu, 24 Oct 2024 13:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IUwy91ey"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RiI211BT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AF91DAC81;
-	Thu, 24 Oct 2024 13:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0252A1DFEF
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 13:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729775181; cv=none; b=hyUSP4FLmRYKBq1Atu52SVO6LUS/ywZaEWhOm+24W127mffqmA4QpjAe6VKV3z4AevAAoLA8bQ7YptrpXZ+uz0pHxUqAeek6RjEfIB8FgabfRjgcn2GRmoaYVvXxfP4vv4zp771yjOAbnXM+IOO14DMZGLK8/Yi4PI2/NhmA0kc=
+	t=1729776015; cv=none; b=aryCbIPujo/24CPTDPI5l3oQM2bOJTXk4dXWur2RQIReAKTTWQ1kwAlrvBxNKESFCm5GqQbZqMejAdHGsgSkL+CzA7tAMoNDUFPJsBwRMFVr4UwQi6PIBi0OzzhfAZnxy5534oa5d/2Tp7smtI6Ey6B15G7p9o4aunfRu8P2Fv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729775181; c=relaxed/simple;
-	bh=aIlKmQ9ihfSARIg+FYKEOZAZucVXvsiEVelFMuAtHng=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I452ma5fAzfdodjnmb7MogtLSxYsMOUsGUZn6tZBjp6qnpbxlt+aXyoGFU7t7haMDhu7F0PL8jkqytXI/EnJCxEUREQJSTYZiS7jiVS1MotmOCixj/iztZo7jIR4MiWnOlndCNEfrkGny1WZZtmDSVcgTbEhtLJku/jZ1DE6h58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IUwy91ey; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4609e784352so5615371cf.0;
-        Thu, 24 Oct 2024 06:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729775179; x=1730379979; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EV440ACCLF9AlGZ+8I23qHeuAgKIxh1fOgjLQ6Jdp94=;
-        b=IUwy91eyZGO0Tj3CZCx3bmDNUYyrq0ij/X3t6JKvTz/Zxr+IO5XcOnWp/bZwXR9ghQ
-         U31TW+pTGiTUyZ5dHRBdNB1oLanpIE/sKZBn6exLRH8CtV6zv6Xm+h2gY1qb3BSP79qf
-         0N2N46S+pdb/s3hKYiftYLRoSoQNo+Of7LBi2dU1aEoJFWyk6kcbJdwbHOPiZyaIr73D
-         lgJgnMG66ms6trgkU+gRk5p6FEl1CuwlJsFizTMDtUo/vFULXouaiPdICXt+uQclnVAk
-         jTb2YVk455NKpS4ySAnr1RnHDwj5/MCHE1kYoLpVKjKM3xbFB5vfbe+6++Tqa3NvwLAl
-         TVSw==
+	s=arc-20240116; t=1729776015; c=relaxed/simple;
+	bh=R2INtfzSnpxZhUbY/N7iGAAfGhG/ByhdP2AB7v8J2+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RK9H5CYxprLYKSF4zjx/yTTCalkoMJSBv/bJqdkpHn0NvL5Qv7Q8xqA9/fLprshLRSwSqTp5p0Es4lI6AtIb2nwdsxX+/Hg6eoKEefJbgRGZi2mP6LKNodm0kQjZa6pJhnFVYBGLILngTaGdvkSLz35nlympLioXrnAwthnk3v4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RiI211BT; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729776012;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8iJ7W3nz4WvfyoieNtKm3ENtdAmy3aJMmF0WG4f6orY=;
+	b=RiI211BTU07V3MaLStoIApAFKsfGYzAji3sRPapWs7SCCvgvdkOUYvEByIL6fkBDd9xplh
+	ZymZNdzuxuVZbmLJwju2v3NG8emLivcbT4VUtmC4a16xejCkKz1ZKTp5cspJVmCcCvOTd4
+	yZ5S9MvD8IhbPugMhac/gUynV/iMuVo=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-FFCeXdIIP_aaDq5slM2rgA-1; Thu, 24 Oct 2024 09:20:10 -0400
+X-MC-Unique: FFCeXdIIP_aaDq5slM2rgA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-207510f3242so9727995ad.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 06:20:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729775179; x=1730379979;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EV440ACCLF9AlGZ+8I23qHeuAgKIxh1fOgjLQ6Jdp94=;
-        b=p1uhEjK6Qyv/Gf26bPrUC95khU15hLY6KcDfreUCpkid7Ib5+ip2d0CO7vpyax9qWn
-         OPmdSNQh5WxJSmqzK4XG4FIw+7qFdW16zcl3EWB1+I5M9YBsjUcKIh1UnErfAeaYT5L7
-         6YkkDkjsnhNf9jbmC0FU0xLI/LHH49lz6wDwJozBUDK0NTFJY3YN0o6snnHIUmw7m2bV
-         6VDKdeQkdAfy9K/P3aIBTfjZDlII6N62csjRh83iYt5KVHPLge99MViM8gmLYbhodCl1
-         G7H6qCIKzBafgP0LU5LZ9xZezjUcSGui7m4yb+NkTnMyFfyTloI6swKLFs9Phkkp5HWQ
-         N+aw==
-X-Forwarded-Encrypted: i=1; AJvYcCUawHG+xYB3s/m2spNLqv8q1bQObnn24V5uP5ieAEmPYiilYfVg7daFEbh5pIJnm+3t+IxCm6o8XCobmDI=@vger.kernel.org, AJvYcCVvUyJReoCIMrQ/xObR40vFDPNUZD9hU6ng6rRkmHb89IMnk+Og718q8qOp+yRzBG377A6oTCxqaleL@vger.kernel.org, AJvYcCWcptVhwct6vKbLJWHdd3bbT8BeNRP/5z7SBWXdknaY5UUVVV/4VKXiqlvpoOv1X70h4cTtpO8zeHX+WFxJQQ==@vger.kernel.org, AJvYcCXevy/KyyYGPVEOdYUIyrXzSzCosYMPaSNgjlKKB5YyFDQEHMm/uSEDiDdeOwzE9DoINRfj2vYR+LfheZBupw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNv2yLwNzuEW+G/p4lukqsVElr5AgM6wDzOjPgD/9voM1cSkCF
-	RUFtPCT8Vk6HuV1SiQoAShj88zNt1QaelPczXQ5jqcKXtviLQZHjgfOU8IlODKFfiZg3EFBuC9c
-	B2gLk3ws+9YQxUA90lwt0pnXqrFQ=
-X-Google-Smtp-Source: AGHT+IEIz8fnfbns+VURqZ8Fl6RXgEBHOkqEMI4OdzbZoLgol68YL2Busr8J0hKYCSW/XqtN8XJgmuR8iMUv5K38FlE=
-X-Received: by 2002:ac8:5b8d:0:b0:460:39be:10a8 with SMTP id
- d75a77b69052e-461146d6ef7mr65129111cf.32.1729775178536; Thu, 24 Oct 2024
- 06:06:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729776009; x=1730380809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8iJ7W3nz4WvfyoieNtKm3ENtdAmy3aJMmF0WG4f6orY=;
+        b=dheTAFuMAtFXxHlS++O1N32OBZZfQIzs76XnJtEfO6cRgZc68DSgzdwVKhq1TUdZJj
+         dmw6+uTxOPgMPM5EEQB8MCgKIcpXBzMe/HBsvE6Ety6MgpTs2Aj0NAEkQjvCuvrPx1II
+         sg+H2jko8dbnj/6/DCMMZfgB0ruyxZUB246hw+MdV0BfIkQ2prtGxa5lWJWrTd87OKzs
+         ozP+nZv1YE8HDQDjLVnCNXbzxJn0ct/0zGy8znRyc6nATKOF9OM0N0pFLogA93XfdUmc
+         Jce69NaWmL/wmgVOPl0+0xFMmP43F8pSxqMyqkUTsKlu5FQq3VrEP6r/x8yWcHsYTaQi
+         f68Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX22Zknp4Cn1ysJ2yKO3uSInp4ujPU1regZdMzlPgfJ/ht7pmQahF3Q1Z9A5Tp70scrP7gsoje2oXu7ug==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxx0YFKPTWGxRLSV5dXeI1zZ+9oB5JcYuHnDBWkmazEHkDmozzT
+	5+1YtkgZ+e/MpMR7AyWNKBYY7AnngRnpMBFr6+zlybwfqe/lUAYF6Fe3R6wt61atnfTaUjjxPJL
+	4FgJ/aF7rtLDBpDi55V7IX8SaJ5lEbmlLdEuUcbanMkFdN9uff5NkcybXeLkk
+X-Received: by 2002:a17:902:d50d:b0:20b:b238:9d02 with SMTP id d9443c01a7336-20fa9e62d13mr82149785ad.33.1729776009487;
+        Thu, 24 Oct 2024 06:20:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFvW9z1JTtlbfYBN395xVJAQWFiwEBT3KCPZwAslFGgJ/BgpM1/xnrVvqALn9Te4Tviz7UGdQ==
+X-Received: by 2002:a17:902:d50d:b0:20b:b238:9d02 with SMTP id d9443c01a7336-20fa9e62d13mr82149535ad.33.1729776009099;
+        Thu, 24 Oct 2024 06:20:09 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7f0de428sm72571315ad.230.2024.10.24.06.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2024 06:20:08 -0700 (PDT)
+Date: Thu, 24 Oct 2024 21:20:03 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org,
+	zlang@kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: avoid deadlock when reading a partial uptodate
+ folio
+Message-ID: <20241024132003.64sxshdq4qh6fnwu@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <62bf73ada7be2888d45a787c2b6fd252103a5d25.1729725088.git.wqu@suse.com>
+ <ZxnXtI_6HCwvCvLT@infradead.org>
+ <d373ef6a-956e-4319-ad2c-36f67a887a58@suse.com>
+ <ZxnaqgJrYFjGxPEn@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1725481503.git.josef@toxicpanda.com> <4b235bf62c99f1f1196edc9da4258167314dc3c3.1725481503.git.josef@toxicpanda.com>
-In-Reply-To: <4b235bf62c99f1f1196edc9da4258167314dc3c3.1725481503.git.josef@toxicpanda.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 24 Oct 2024 15:06:07 +0200
-Message-ID: <CAOQ4uxgxCHmKLhFHMiD39SWw7evZmfkG9dkyk2X=qQc+zXjn-w@mail.gmail.com>
-Subject: Re: [PATCH v5 03/18] fsnotify: generate pre-content permission event
- on open
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	brauner@kernel.org, linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZxnaqgJrYFjGxPEn@infradead.org>
 
-On Wed, Sep 4, 2024 at 10:29=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> From: Amir Goldstein <amir73il@gmail.com>
->
-> FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on open depending on
-> file open mode.  The pre-content event will be generated in addition to
-> FS_OPEN_PERM, but without sb_writers held and after file was truncated
-> in case file was opened with O_CREAT and/or O_TRUNC.
->
-> The event will have a range info of (0..0) to provide an opportunity
-> to fill entire file content on open.
->
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
-> ---
->  fs/namei.c               |  9 +++++++++
->  include/linux/fsnotify.h | 10 +++++++++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 3a4c40e12f78..c16487e3742d 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -3735,6 +3735,15 @@ static int do_open(struct nameidata *nd,
->         }
->         if (do_truncate)
->                 mnt_drop_write(nd->path.mnt);
-> +
-> +       /*
-> +        * This permission hook is different than fsnotify_open_perm() ho=
-ok.
-> +        * This is a pre-content hook that is called without sb_writers h=
-eld
-> +        * and after the file was truncated.
-> +        */
-> +       if (!error)
-> +               error =3D fsnotify_file_perm(file, MAY_OPEN);
-> +
+On Wed, Oct 23, 2024 at 10:27:06PM -0700, Christoph Hellwig wrote:
+> On Thu, Oct 24, 2024 at 03:54:54PM +1030, Qu Wenruo wrote:
+> > And generic/095 has a much higher chance to trigger it than the minimal one.
+> > The minimal one is only easier to debug and faster to finish one run.
+> > 
+> > Do I still need to add the minimal one to fstests?
+> 
+> If I have bug with a well known isolated reproducer I love
+> having it in xfstests.  I don't know if everyone agrees, though.
 
-Josef,
-
-Please change that for v6 to:
-
-                   error =3D fsnotify_file_area_perm(file, MAY_OPEN,
-&file->f_pos, 0);
-
-...
-
->         return error;
->  }
->
-> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
-> index 7600a0c045ba..fb3837b8de4c 100644
-> --- a/include/linux/fsnotify.h
-> +++ b/include/linux/fsnotify.h
-> @@ -168,6 +168,10 @@ static inline int fsnotify_file_area_perm(struct fil=
-e *file, int perm_mask,
->                 fsnotify_mask =3D FS_PRE_MODIFY;
->         else if (perm_mask & (MAY_READ | MAY_ACCESS))
->                 fsnotify_mask =3D FS_PRE_ACCESS;
-> +       else if (perm_mask & MAY_OPEN && file->f_mode & FMODE_WRITER)
-> +               fsnotify_mask =3D FS_PRE_MODIFY;
-> +       else if (perm_mask & MAY_OPEN)
-> +               fsnotify_mask =3D FS_PRE_ACCESS;
->         else
->                 return 0;
->
-> @@ -176,10 +180,14 @@ static inline int fsnotify_file_area_perm(struct fi=
-le *file, int perm_mask,
->
->  /*
->   * fsnotify_file_perm - permission hook before file access
-> + *
-> + * Called from read()/write() with perm_mask MAY_READ/MAY_WRITE.
-> + * Called from open() with MAY_OPEN without sb_writers held and after th=
-e file
-> + * was truncated. Note that this is a different event from fsnotify_open=
-_perm().
->   */
->  static inline int fsnotify_file_perm(struct file *file, int perm_mask)
->  {
-> -       return fsnotify_file_area_perm(file, perm_mask, NULL, 0);
-> +       return fsnotify_file_area_perm(file, perm_mask, &file->f_pos, 0);
->  }
-
-... and drop this change, because this change will make readdir()
-start reporting odd file ranges and HSM won't be able to tell the
-difference between an opendir() and a readdir().
-
-And I will send an extra patch for reporting an event with
-range [size..size] for truncate(size).
+generic/095 isn't a specific test case for a known issue, it's a common test case.
+If you want to have a reproducer for a particular bug, feel free add it to xfstests,
+mark _fixed_by_xxxx and describe more details about that bug in the test case.
+If one day we update g/095, it might not cover the bug you need. Then a specific
+regression test case will help.
 
 Thanks,
-Amir.
+Zorro
+
+> 
+> 
+
 
