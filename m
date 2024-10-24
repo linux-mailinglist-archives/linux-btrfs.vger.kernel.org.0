@@ -1,110 +1,133 @@
-Return-Path: <linux-btrfs+bounces-9113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 257CB9AD9F2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 04:31:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0209AD9F5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 04:32:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D980D28366A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 02:31:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C51F7283123
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 02:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021ED14F12F;
-	Thu, 24 Oct 2024 02:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C56113665B;
+	Thu, 24 Oct 2024 02:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iaMiVMKy"
+	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="c9kPkx6r"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mail.synology.com (mail.synology.com [211.23.38.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E6B339A0;
-	Thu, 24 Oct 2024 02:31:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FA6339A0
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 02:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729737075; cv=none; b=f7xzn/vQtWo5RmsFAu2GTrTlsFfa/U6ioaWA9VvS+6VscQE7l4yUuzipugbHKiX2x5JFjRaoG3vXziE62QbhWEIR4oHqTFXsJDierqP4vWA1ESxdanKv3xMmYytHrIfd9ncMgduVVG3N82UtK4vGJzuPhzSMHqgey+voQwo6yPc=
+	t=1729737131; cv=none; b=dLhDzssJWtMxUNxF87mXgIvmG8t0pKv2O8ERaHS/kLaudFbGSSyVFd8EXawisCBrCH0CsYQ3L/Ks2jZqB1LwPIzDQZFUx3g9JAQRnE1ta36fa2bg5/kAcPe5jCdK5h657A2Y17ZmaQcr3LX1MSYZFPAd2th1tOpGz0a8b7FgL40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729737075; c=relaxed/simple;
-	bh=3gPDbpxeAad/3hbgmxkPBQLN7nUzwrGrc2f1U4pDXlw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tQrqd5MPGVLe5Qpj3fJjQKUVz4tzV2zcZ9j31tLrMkl4Vd2QDPqeF1CD2Se2ueZ8wXQAToUHQcCMgLXn2p/d+lfFshmM7iJw57ffYOVXhzP/ExGgWe/Vj6xw1LZsebLsFG6x9DHSYfwsT7CAv44wrTrbgk71opQUy9CaRkx0E24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iaMiVMKy; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729737072; x=1761273072;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3gPDbpxeAad/3hbgmxkPBQLN7nUzwrGrc2f1U4pDXlw=;
-  b=iaMiVMKy9Gqxr1tG9eQu+y1QSHUnMZDnv2Ob0nDq3BxrN6PI31Nrss2f
-   VK8PJxSdqaErTzXwkudj1+6nyU8hrB7zPxpNJkijcR126lFrsPpWJDKZb
-   yH7Sc85pWdZ2qJ+9toApvz+bApWikzi2tMFfUpN6erQshchdi7JOY5dLR
-   EXikw46oU5KYyhC3cpP4F/0l7StHAhT2vd2lG/lJapSDqddeOnuqTmFml
-   Lrsy06QRuv+zr5wc8ShfDXfU82/BIvafWyStt416QC3/0nB7Qq3bkWvC0
-   MAn5B57xLhnEgdI4Al2ZeozcmtxTzTh+wEo5t2j9hKABtEB5f7MvKZkWa
-   g==;
-X-CSE-ConnectionGUID: PLd6+dD8QMCOYiRnWP5RWA==
-X-CSE-MsgGUID: oQ/jqMGvSoaf2hEm0mqzQg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11234"; a="28793263"
-X-IronPort-AV: E=Sophos;i="6.11,227,1725346800"; 
-   d="scan'208";a="28793263"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2024 19:31:11 -0700
-X-CSE-ConnectionGUID: w4ONfiewTWeW9xcD1BYo5Q==
-X-CSE-MsgGUID: g5s1ciq4Q3CG+JLPCSS5FA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,227,1725346800"; 
-   d="scan'208";a="80114351"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2.lan) ([10.125.110.250])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2024 19:30:42 -0700
-Date: Wed, 23 Oct 2024 19:30:40 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 20/28] cxl/core: Return endpoint decoder information
- from region search
-Message-ID: <ZxmxUCGDuqeIp4TW@aschofie-mobl2.lan>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-20-c261ee6eeded@intel.com>
+	s=arc-20240116; t=1729737131; c=relaxed/simple;
+	bh=dHlybn9VUnHMzYYj3XLNv4YOARHbgp7CfxNeS4+TVhs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=OD46wdnUkAinYNTwycGZihk/CIeOZkEqAHuK2KUZChWm4YBI0ndsgg/d8x67EgRzcqauTDhw7QAutqpG4sygBTc1i2jENb9dSSDcRfo6lPfR2KLH+vleyJsUkU/Zogcq+qshPk/oFfYghUhR0L5dywQYfDO26XjkuIbdB0R3Iqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=c9kPkx6r; arc=none smtp.client-ip=211.23.38.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
+From: robbieko <robbieko@synology.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+	t=1729737127; bh=dHlybn9VUnHMzYYj3XLNv4YOARHbgp7CfxNeS4+TVhs=;
+	h=From:To:Cc:Subject:Date;
+	b=c9kPkx6rt9s04/aFcXCrq+Z+lSMnbeOfOGl9MA8mgIL+17TCR8hhI71UWeXXXb7yd
+	 /o7kd6M7kIUKFgO0ZTnKdhI71xZY/1O51sofLhnoXcPv48QkYMnfbPWLbPvuWJBUuQ
+	 t2y0ftn1Qdzyf3mPRFES+A67HaWKtFloMy+xEcnE=
+To: linux-btrfs@vger.kernel.org
+Cc: Robbie Ko <robbieko@synology.com>
+Subject: [PATCH] btrfs: reduce extent tree lock contention when searching for inline backref
+Date: Thu, 24 Oct 2024 10:31:42 +0800
+Message-Id: <20241024023142.25127-1-robbieko@synology.com>
+X-Synology-Spam-Flag: no
+X-Synology-Virus-Status: no
+X-Synology-MCP-Status: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241007-dcd-type2-upstream-v4-20-c261ee6eeded@intel.com>
 
-On Mon, Oct 07, 2024 at 06:16:26PM -0500, Ira Weiny wrote:
-> cxl_dpa_to_region() finds the region from a <DPA, device> tuple.
-> The search involves finding the device endpoint decoder as well.
-> 
-> Dynamic capacity extent processing uses the endpoint decoder HPA
-> information to calculate the HPA offset.  In addition, well behaved
-> extents should be contained within an endpoint decoder.
-> 
-> Return the endpoint decoder found to be used in subsequent DCD code.
+From: Robbie Ko <robbieko@synology.com>
 
-Reviewed-by: Alison Schofield <alison.schofield@intel.com>
+When inserting extent backref, in order to check whether refs other than
+inline refs are used, we always use keep locks for tree search, which
+will increase the lock contention of extent-tree.
 
-BTW - I reviewed this patch when it first appeard in the DCD series
-and looked for other ways to layer the delivery of cxled and cxlr.
-Nothing clever appeared and looking at how DCD uses it in the 
-future patch made this feel less yucky - it does want both cxled &
-cxlr so it can have them here all at once ;)
+We do not need the parent node every time to determine whether normal
+refs are used.
+It is only needed when the extent-item is the last item in a leaf.
 
+Therefore, we change to first use keep_locks=0 for search.
+If the extent-item happens to be the last item in the leaf, we then
+change to keep_locks=1 for the second search to reduce lock contention.
 
-snip
+Signed-off-by: Robbie Ko <robbieko@synology.com>
+---
+ fs/btrfs/extent-tree.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index a5966324607d..54d149a41506 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -795,7 +795,6 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 	if (insert) {
+ 		extra_size = btrfs_extent_inline_ref_size(want);
+ 		path->search_for_extension = 1;
+-		path->keep_locks = 1;
+ 	} else
+ 		extra_size = -1;
+ 
+@@ -946,6 +945,25 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 			ret = -EAGAIN;
+ 			goto out;
+ 		}
++
++		if (path->slots[0] + 1 < btrfs_header_nritems(path->nodes[0])) {
++			struct btrfs_key tmp_key;
++
++			btrfs_item_key_to_cpu(path->nodes[0], &tmp_key, path->slots[0] + 1);
++			if (tmp_key.objectid == bytenr &&
++				tmp_key.type < BTRFS_BLOCK_GROUP_ITEM_KEY) {
++				ret = -EAGAIN;
++				goto out;
++			}
++			goto enoent;
++		}
++
++		if (!path->keep_locks) {
++			btrfs_release_path(path);
++			path->keep_locks = 1;
++			goto again;
++		}
++
+ 		/*
+ 		 * To add new inline back ref, we have to make sure
+ 		 * there is no corresponding back ref item.
+@@ -959,13 +977,15 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 			goto out;
+ 		}
+ 	}
++enoent:
+ 	*ref_ret = (struct btrfs_extent_inline_ref *)ptr;
+ out:
+-	if (insert) {
++	if (path->keep_locks) {
+ 		path->keep_locks = 0;
+-		path->search_for_extension = 0;
+ 		btrfs_unlock_up_safe(path, 1);
+ 	}
++	if (insert)
++		path->search_for_extension = 0;
+ 	return ret;
+ }
+ 
+-- 
+2.17.1
+
 
