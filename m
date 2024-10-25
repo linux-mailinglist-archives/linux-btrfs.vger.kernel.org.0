@@ -1,96 +1,89 @@
-Return-Path: <linux-btrfs+bounces-9153-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5309AF75C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2024 04:24:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DCB79AF799
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2024 04:44:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 272BE1F22CED
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2024 02:24:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 260FBB221CE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2024 02:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C529913B294;
-	Fri, 25 Oct 2024 02:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2832A18BBB6;
+	Fri, 25 Oct 2024 02:44:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DA279C8;
-	Fri, 25 Oct 2024 02:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA20818BBA1
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Oct 2024 02:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729823045; cv=none; b=FZFd55kGtlaTbfMsOPseRTCLSkPyQXLziJ85HLVLwdXeeWriiT8+7vMMR7rJ0PgxN0NTAWFrGKiF3NaitvefewK24lI8eOubG1xvYhCGFX0/2v6LYsYqdGBzCzGF5Sx9Q5wWk2hHeRdv4h9ENowO0hjigebYDOiQ/pLMAMki/Q8=
+	t=1729824246; cv=none; b=KFUzYHVwuLI7fowpELQk+roC2qn+wJpQSCb3g50d3xw33Qx+vB7ugFhXSrATC40O3+d1KrXfgn0LmZKFMUWnQZ7uMUj5cSIBHEJZI5c+J1yWtFiyugOko/wb2GxnG9FNQWqxXPSOHBT/PxuNPrXXg9A3YHzlEfgVPUoRkIPoCUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729823045; c=relaxed/simple;
-	bh=l1qhUpsRfILc9gua6QCYo1/17WafQYRrt8hOzFiHIlk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D9/o2+dRzUFB6XBPqjbqE/24xa73b+DjxpH16ugR35Wvejud3TaY0XlA2E5gius2Ej9EDNJCxUtDZFlNqtCCiLMEEmO+tmM32CC4+OPH54kxQoMwpzQCz8sCq57Xhn2QX7Bqi8hZ0NrVbryJ3XMd0uWxkAIAVnuoO6j3xUSdoH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49P0sMo8023119;
-	Fri, 25 Oct 2024 02:23:52 GMT
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 42f2g427y4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 25 Oct 2024 02:23:52 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 24 Oct 2024 19:23:51 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Thu, 24 Oct 2024 19:23:49 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com>
-CC: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
-        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] [btrfs?] general protection fault in btrfs_search_slot
-Date: Fri, 25 Oct 2024 10:23:48 +0800
-Message-ID: <20241025022348.1255662-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <6719c407.050a0220.10f4f4.01dc.GAE@google.com>
-References: <6719c407.050a0220.10f4f4.01dc.GAE@google.com>
+	s=arc-20240116; t=1729824246; c=relaxed/simple;
+	bh=809b/Pdx9nZs4k99B4LNprT67d7N88aPd1zEAnaWSeM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=usktUCW55JnaiIOnr2cDGfui9hnPq9WvsfKmC02uh38Qww7d4vdl17hWN81RGGElm0A97NktW561MMDJkI9L8SpqFRHkztYjqduNldBvvqzP2yXnPc+6wsipwGeo7mpoyTp5rK1cVFzAeAdJEXPsXT8bKSHrpLIvDUh5C9mJ7js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a4e77be28dso329015ab.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2024 19:44:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729824244; x=1730429044;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rf1NB7CaiBqSkY3iCUMsw6mB4tHAKpKKf4qb08+kcVg=;
+        b=wV8nZ772rsbHnnu+JfK1XzgzSOJoqzNFfPrxGdy3tKEBQ6Th0ALf2vN0hFRHYOXyBK
+         lb2ShsqJ5xxUFiotVNyVJ+4MJbtKIJdVgScsMjBeGt/VMtOuuUuFAMjZ+LARZ3gjFZyl
+         kIWMv+stBn8EXVQtTpzKyrksE2yeLp/8/T+xJHLaXaXvxENhW9eIq6byaiHCblTr9qc+
+         vYHqfkgQZTBDWzufJrsyOYRJMlVT0CfltkQ7ys72WC63d5AjmCHZRJs9A9OUkEkmiaxy
+         Rbr9ZgdYkZElBCpKVzXzltge/awW4VXDiBNC+5j2khFyxPILXhzLNzMlfXROj9zv6Z+W
+         UbOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHCWIxY1a4wpSpfaGhWO3CqnCVRclm+dI6yxkf/cEfA6mb3sshrfCiIesku6o4xMANjnFm8LGCBSkB/A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNfJ096Lc8hoHdkIsddq/5PheWFgPlwK+GrZHWN0ilsY4DAAfr
+	tXtKO0wRKOcahjUS7AjI0NVx1C89qB2zm7I0hiOUysjPK05m7I0zPj7rtZ2f7pl5mMPFgS2aoRR
+	21orAEp28ajNJX5xkyrBkFS1e/WvT+Hco2UoG7U4a8Oo4CISKx8UMPoM=
+X-Google-Smtp-Source: AGHT+IF9vK7j9JaMv5meiucavo9afosGlNIjCvwwNTF/nwEV2vRqnoIc01V0snq23E6oX1pVIh37G7/2zYKHOOfDteVjrArRaevR
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 0CSmBXtuyEYCu_yM1qlq9IXqmwVwLZaM
-X-Proofpoint-GUID: 0CSmBXtuyEYCu_yM1qlq9IXqmwVwLZaM
-X-Authority-Analysis: v=2.4 cv=eoKNzZpX c=1 sm=1 tr=0 ts=671b0138 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=DAUX931o1VcA:10 a=g5S_A3WLY7ZMYIQGvTMA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-25_02,2024-10-24_02,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- bulkscore=0 phishscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=721 spamscore=0 impostorscore=0 mlxscore=0
- classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
- engine=8.21.0-2409260000 definitions=main-2410250017
+X-Received: by 2002:a05:6e02:1569:b0:3a0:a070:b81 with SMTP id
+ e9e14a558f8ab-3a4d59df6c9mr99235555ab.23.1729824243965; Thu, 24 Oct 2024
+ 19:44:03 -0700 (PDT)
+Date: Thu, 24 Oct 2024 19:44:03 -0700
+In-Reply-To: <20241025022348.1255662-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <671b05f3.050a0220.381c35.0008.GAE@google.com>
+Subject: Re: [syzbot] [btrfs?] general protection fault in btrfs_search_slot
+From: syzbot <syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lizhi.xu@windriver.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-use the input logical can't find the extent root, so add sanity check for
-extent root before search slot.
+Hello,
 
-#syz test
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index f8e1d5b2c512..87eaf5dd2d5d 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -2213,6 +2213,9 @@ int extent_from_logical(struct btrfs_fs_info *fs_info, u64 logical,
- 	key.objectid = logical;
- 	key.offset = (u64)-1;
- 
-+	if (!extent_root)
-+		return -ENOENT;
-+
- 	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
- 	if (ret < 0)
- 		return ret;
+Reported-by: syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com
+Tested-by: syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         ae90f6a6 Merge tag 'bpf-fixes' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11823287980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fc6f8ce8c5369043
+dashboard link: https://syzkaller.appspot.com/bug?extid=3030e17bd57a73d39bd7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=169c3287980000
+
+Note: testing is done by a robot and is best-effort only.
 
