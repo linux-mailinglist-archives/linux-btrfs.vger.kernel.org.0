@@ -1,79 +1,96 @@
-Return-Path: <linux-btrfs+bounces-9152-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9153-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F6FE9AF3B7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 22:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5309AF75C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2024 04:24:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A3691F233C9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2024 20:34:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 272BE1F22CED
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2024 02:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E1621733C;
-	Thu, 24 Oct 2024 20:33:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzngCsO7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C529913B294;
+	Fri, 25 Oct 2024 02:24:05 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95642170C8;
-	Thu, 24 Oct 2024 20:33:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DA279C8;
+	Fri, 25 Oct 2024 02:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729802013; cv=none; b=umv3JpMuto4aJ2JHd3Y5CfkdcVho74X/I3+L0Ocd/1sr1gxgZRgv7SVdZUZRrvra6BvWn1hAVBDarzNG+5GMzRTrwMD39WQKou1gDVXYsOEKofu6KjwLQEgMJVq4Rm8H6b09iyVC3bKUKtuI2mmcJhMlItZciW8fw136XX4m03M=
+	t=1729823045; cv=none; b=FZFd55kGtlaTbfMsOPseRTCLSkPyQXLziJ85HLVLwdXeeWriiT8+7vMMR7rJ0PgxN0NTAWFrGKiF3NaitvefewK24lI8eOubG1xvYhCGFX0/2v6LYsYqdGBzCzGF5Sx9Q5wWk2hHeRdv4h9ENowO0hjigebYDOiQ/pLMAMki/Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729802013; c=relaxed/simple;
-	bh=Tp5ZDAJeowDuC6t4OmwW98MAJS6XqiZUg79PtiHjBfs=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=lLVbKLNRoVkaMkBr6RItVhdXJL5XXZCAjd4Ht8xtwxbG578O+5QEWAGGH8wk32x4lJEKGy0bDWYqQ9a05D5HjOicdxPriST280frDUqevUrLLh7tU6VOa6eRZ1k9T9FGUilgKaIfWem49r08Un57u1gpPRFLEfO1upENF1zyEYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzngCsO7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80CE7C4CEC7;
-	Thu, 24 Oct 2024 20:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729802013;
-	bh=Tp5ZDAJeowDuC6t4OmwW98MAJS6XqiZUg79PtiHjBfs=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=dzngCsO7OIG8yHxxuzZHhMa2M9WDor8vVQn9WDFOZi43uImEb77jT+C5BnOkG39sv
-	 DlkzqjCn2YnuCk8mzKDSGmYuFQrlIqpIddgbukR9ywNitxA75TRH8M2Fin9oYEO8XQ
-	 OSA/223CwV31+EJT5IPrjZAR3KPq/CwadZbQyvLAPAsFmevIdQdKum6HplQ6l1WElV
-	 KUJZF7mD/YlRgSeuWMxAMeobQFL/+ufnQsURjeOsTYbgo75QOGLL3WmJhMqYy7izI0
-	 Z5KXR2dbueRa0PJRh455ZY5zqTLFsJlz+pmWc02I3agWlWaiuhFcAfzUZT+kdjIYoY
-	 Ltx8KazXEopow==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7133D380DBDC;
-	Thu, 24 Oct 2024 20:33:41 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.12-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1729698780.git.dsterba@suse.com>
-References: <cover.1729698780.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1729698780.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc4-tag
-X-PR-Tracked-Commit-Id: 75f49c3dc7b7423d3734f2e4dabe3dac8d064338
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4e46774408d942efe4eb35dc62e5af3af71b9a30
-Message-Id: <172980202004.2376768.16927447334209514312.pr-tracker-bot@kernel.org>
-Date: Thu, 24 Oct 2024 20:33:40 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1729823045; c=relaxed/simple;
+	bh=l1qhUpsRfILc9gua6QCYo1/17WafQYRrt8hOzFiHIlk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=D9/o2+dRzUFB6XBPqjbqE/24xa73b+DjxpH16ugR35Wvejud3TaY0XlA2E5gius2Ej9EDNJCxUtDZFlNqtCCiLMEEmO+tmM32CC4+OPH54kxQoMwpzQCz8sCq57Xhn2QX7Bqi8hZ0NrVbryJ3XMd0uWxkAIAVnuoO6j3xUSdoH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49P0sMo8023119;
+	Fri, 25 Oct 2024 02:23:52 GMT
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 42f2g427y4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 25 Oct 2024 02:23:52 +0000 (GMT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 24 Oct 2024 19:23:51 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.39 via Frontend Transport; Thu, 24 Oct 2024 19:23:49 -0700
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com>
+CC: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
+        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [btrfs?] general protection fault in btrfs_search_slot
+Date: Fri, 25 Oct 2024 10:23:48 +0800
+Message-ID: <20241025022348.1255662-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <6719c407.050a0220.10f4f4.01dc.GAE@google.com>
+References: <6719c407.050a0220.10f4f4.01dc.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 0CSmBXtuyEYCu_yM1qlq9IXqmwVwLZaM
+X-Proofpoint-GUID: 0CSmBXtuyEYCu_yM1qlq9IXqmwVwLZaM
+X-Authority-Analysis: v=2.4 cv=eoKNzZpX c=1 sm=1 tr=0 ts=671b0138 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=DAUX931o1VcA:10 a=g5S_A3WLY7ZMYIQGvTMA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-25_02,2024-10-24_02,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=721 spamscore=0 impostorscore=0 mlxscore=0
+ classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
+ engine=8.21.0-2409260000 definitions=main-2410250017
 
-The pull request you sent on Wed, 23 Oct 2024 18:07:39 +0200:
+use the input logical can't find the extent root, so add sanity check for
+extent root before search slot.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc4-tag
+#syz test
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4e46774408d942efe4eb35dc62e5af3af71b9a30
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index f8e1d5b2c512..87eaf5dd2d5d 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2213,6 +2213,9 @@ int extent_from_logical(struct btrfs_fs_info *fs_info, u64 logical,
+ 	key.objectid = logical;
+ 	key.offset = (u64)-1;
+ 
++	if (!extent_root)
++		return -ENOENT;
++
+ 	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
+ 	if (ret < 0)
+ 		return ret;
 
