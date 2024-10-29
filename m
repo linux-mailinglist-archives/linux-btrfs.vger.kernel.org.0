@@ -1,192 +1,125 @@
-Return-Path: <linux-btrfs+bounces-9200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9201-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E10339B4243
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 07:17:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 011769B4555
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 10:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9923328378C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 06:17:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 935FE28336B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 09:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556B220125C;
-	Tue, 29 Oct 2024 06:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="METqrzLD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709AD2040A1;
+	Tue, 29 Oct 2024 09:11:45 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272C9201246
-	for <linux-btrfs@vger.kernel.org>; Tue, 29 Oct 2024 06:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF17D200BBC;
+	Tue, 29 Oct 2024 09:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730182612; cv=none; b=o+/isiW61QWOH9MTyiCXWnqBrswX+bFu8IuiZFqkgLQW+L6rr3Tj959mgr4jdh59D4MOyaoNmyoAorzMCcvarky/Vp7dgCPoaq1Ebe6Z8U31ZZkYpO1wcwkXKZIjig9QJT+kLwPBkWhj0Bh0ChyI0h6EnYt47pj/TTMwi8afqpk=
+	t=1730193104; cv=none; b=Fv+EYXp48FBnnYdYetNl1ttpY+GhLfti6ygCdY3meeQ3TVrGyYNxD8fGu+sMELeeNIQUkPwrwSPxT5xL7lIV1+QBqMrMB8BCfpnjnjM82qSBdN227hs0aoA5F4rbp2WvojBJj1BvxAOwojI+QIu0u6b54JJ1XqE5MnjrugQ7Aek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730182612; c=relaxed/simple;
-	bh=XrmeIbjHbnjuaUwQoNA/YbY499+ndPeQJjspgVyiRpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YHMuUtFoC8sSK68i1FLtvdZRO43kg110yrMMidwKRh+zml9qPbqjE2nf3svV0idykPm9iE3ZUpnBaeDpQVP6956eaSUqhfcej0k9MhNFXzX0B1P577WdGCWdRp47++9lDM6tcb0q4TqlC9vv8M5v0h9FR2lHOcD4DgtEc9F/fbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=METqrzLD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730182609;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Or3+CxHdnioWL/qi6wXUXvbnWL0KyBWluBUWDiViLJA=;
-	b=METqrzLDJJ/4wjkSZqr2DzkJjwD9C26lxdnfPhdRQip/JyL8/It6NIugMZmHLOFIyb6rLd
-	3mkzQVonSyPEuLJt66EPj8mAbsjzj1C5jxFk1JJoSzemT1b60GPBar0AxbpWevhBcMN7py
-	E7onvIE9qMJuvqEc6c5QI8c9/hWO+RM=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-568-s7tV46nKPVS_QP2N5Lmrcw-1; Tue, 29 Oct 2024 02:16:47 -0400
-X-MC-Unique: s7tV46nKPVS_QP2N5Lmrcw-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2e2e146c77cso6348159a91.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Oct 2024 23:16:47 -0700 (PDT)
+	s=arc-20240116; t=1730193104; c=relaxed/simple;
+	bh=SvUjc0ShhUJ8PhVnVn5bxNftQP0fRbqFlsWFRRWwIMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rUrUvGPaCkAZSaq1y6IX7rgNeNf2JhtdaWUiNBt6We3DvDD0oPhYwqpRWWTkNLWFG7Oc37B1GXNQBsrdt/+mLNNsa24Ys7CPlAhLeWZMeDSY0oUT2kHilbQmeGp7vGW94JMFXr8QjYfVZ+Ch44STZKrt9GTk5RllvMBhOSzN3DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-539eb97f26aso5319918e87.2;
+        Tue, 29 Oct 2024 02:11:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730182606; x=1730787406;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Or3+CxHdnioWL/qi6wXUXvbnWL0KyBWluBUWDiViLJA=;
-        b=jHo8ikfx9cCi+VAv3Ydq1vGwqxYw0EHFAei/OOhBNkhlKf1MIuRd143F5E7SC9+G27
-         Ooby9JplMMtRisg7SYYyJdVkgWpaY0htMvVix3pqjQ1R2X4FTjPOHyBlfHbUfUNqqX+o
-         3GIbBWHb7xlHvC9xc27Xs1TnixL4GOwYG6qsdtD4CmudXpKvOQ2/XF823ItiRKQGQZWk
-         8r5SEMmVVVdrvxjo45mqCZ5Ury4hxVrJYExJhkJgkEJLd26OG/Cxobrs87xu3M8wA2sP
-         ZfTz/3B1q6L3jXn1WkV0zDTzuo3PhpF3PuEowyviIhkzc2u9MzMXRP4tUVrjlDtaoFi6
-         R1pw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+mQU+KXBkTEPsF4OgEI75hVDcJMHbTjIc56oAEkomnV6lR7Vt2VcwxFn5loeAx1ruS6GBB44t8XEq6g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy74ThmsGSQ8u3q4g8XItCMXeKnMwXqcWFc2zoY/bfJIMGJbrs1
-	kmD/FSgog/yEok83VVqeY8lyCFLdshyJ4ZYg0hgNKEjsi/oj7LoLrtPGwI2FFMA6YvORUGh+myS
-	VDAs2fFRnRnQIKfoS45KsPwPymHdff+/dUtvA2UYBTDBCUkWCOn/bdFPow8Gk
-X-Received: by 2002:a17:90b:17cb:b0:2e2:cc47:ce1a with SMTP id 98e67ed59e1d1-2e8f104ec26mr14407869a91.1.1730182606282;
-        Mon, 28 Oct 2024 23:16:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHWIvLNo2JBvAu4HMlptuic4O2nf6gBjOH4r4QTrT6sy9OT17UxChmQ7zEIcRSnldJbOuOzoQ==
-X-Received: by 2002:a17:90b:17cb:b0:2e2:cc47:ce1a with SMTP id 98e67ed59e1d1-2e8f104ec26mr14407856a91.1.1730182605939;
-        Mon, 28 Oct 2024 23:16:45 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e8e3771814sm8481218a91.52.2024.10.28.23.16.44
+        d=1e100.net; s=20230601; t=1730193101; x=1730797901;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SHFBQa6cjEimlbCXbA9xxyetkthyL4ca8SFHWzeSkLA=;
+        b=P7T9iXh55ZBwpEyZeqwmPcIpj2xA5ABILTnrfWK+52AGWNPfIXiDByblLVsVhL1twX
+         G+1hv/EztDs7Pknnn3o2qmZeQj3Cch4c4Gnbni9L9eUf/YGIVScn3x4+dVrt0DGGOCrx
+         XjnAWQC05byhsM5g9crgK0BJGowNVfFEL94zVDpwUK0flf6TFhHnzUqPskBzOPpPWMDw
+         EElzV4VmDCv4WXuAuLGPqy1Xp+uo3lcjazJ37indzAXyygVdeXIYiKy4AKiIcJITyHaC
+         i8ITkX9uP2dnDRnzS3RqThS/i5Mn3HSONwD5sa+ucnmLATuPBrmA8NlXsAoU2mUnHVw5
+         7TYw==
+X-Forwarded-Encrypted: i=1; AJvYcCVCOqlFwvo+94cWiQr6pn3f6EHAzFhEWFn7wN+NlKqj4yuIHnn+mx/1EzX3qY7raWcTP14V2uVf2DIUtA==@vger.kernel.org, AJvYcCXTCMluGaBRvwnhscXxeYAQGmfQVOnFA4PJs/OGJGp+mmu67pragERiYeqSssq8jorsO6gkAiKrTd2TWg==@vger.kernel.org, AJvYcCXeRGvTK9dtNd7/WO2SZq9yLuNPK1MhVkF7zDquNtgP9cewXHlwcXjnVXtlwViH+bPG+lBKc0olt6Djw8RI@vger.kernel.org
+X-Gm-Message-State: AOJu0YxK0WdsmW83HaT0dP2W5EA0BgH0AtqvDiMCG9pZ6rqh5p0CYYph
+	hgs74ApkkOtO+K4MznQnMQ8TKEsk6a7eByRp1HaWwQGIOb+4rfwZ
+X-Google-Smtp-Source: AGHT+IFJTESo4oJeQB4cKVRo8UjWHZscVtmUPs2gtEXYHYwUup2fKpV699zrxFmWr9bDUda49tBLDQ==
+X-Received: by 2002:a05:6512:3404:b0:53b:27ba:2d11 with SMTP id 2adb3069b0e04-53b348cb2cbmr6032968e87.16.1730193100751;
+        Tue, 29 Oct 2024 02:11:40 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71fdb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71f:db00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b929a8sm12000095f8f.103.2024.10.29.02.11.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2024 23:16:45 -0700 (PDT)
-Date: Tue, 29 Oct 2024 14:16:42 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: generic/366: add a new test case to verify
- if certain fio load will hang the filesystem
-Message-ID: <20241029061642.xehxncr42utyd4oy@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20241028233525.30973-1-wqu@suse.com>
- <20241029055639.hskowarhtrowgiwe@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <b78d9fe5-f9c9-4235-b748-78153ef28f20@gmx.com>
+        Tue, 29 Oct 2024 02:11:40 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	axboe@kernel.dk,
+	song@kernel.org,
+	yukuai3@huawei.com,
+	hch@lst.de,
+	martin.petersen@oracle.com,
+	hare@suse.de,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: handle bio_split() error
+Date: Tue, 29 Oct 2024 10:11:21 +0100
+Message-ID: <20241029091121.16281-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20241028152730.3377030-1-john.g.garry@oracle.com>
+References: <20241028152730.3377030-1-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b78d9fe5-f9c9-4235-b748-78153ef28f20@gmx.com>
 
-On Tue, Oct 29, 2024 at 04:33:52PM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/10/29 16:26, Zorro Lang 写道:
-> > On Tue, Oct 29, 2024 at 10:05:25AM +1030, Qu Wenruo wrote:
-> [...]
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest auto quick
-> >                              ^^
-> >                              rw
-> > 
-> > I think we can keep the "rw" group as g/095 does.
-> 
-> If that's the only missing part, mind to add that rw group when merging?
-> 
-> The remaining two points may not need modification, explained inlined.
-> 
-> > > +	# Now read is triggered on that folio.
-> > > +	# Btrfs will need to wait for any existing ordered extents in the folio range,
-> > > +	# that wait will also trigger writeback if the folio is dirty.
-> > > +	# That writeback will happen for range [48K, 64K), but since the whole folio
-> > > +	# is locked for read, writeback will also try to lock the same folio, causing
-> > > +	# a deadlock.
-> > > +	$FIO_PROG $fio_config --ignore_error=,EIO --output=$fio_out
-> > 
-> > Looks like this test doesn't mix DIO and buffered IO, so this EIO ignoring might not be
-> > needed.
-> 
-> I'm not sure about the EIO part, but at least job2 and job3 are all
-> doing writes, one is buffered and the other is direct.
-> So it's still mixing both.
-> 
-> > 
-> > > +	# umount before checking dmesg in case umount triggers any WARNING or Oops
-> > > +	_scratch_unmount
-> > > +
-> > > +	_check_dmesg _filter_aiodio_dmesg
-> > 
-> > This test removed mmap test part, so this dmesg filter might not be needed either ?
-> > If so, don't need to import above "./common/filter" either.
-> 
-> Since it's still mixing buffered and direct IO, I can hit the aiodio
-> error message just like this:
-> 
-> [91619.077752] BTRFS warning (device dm-2): read-write for sector size
-> 4096 with page size 65536 is experimental
-> [91619.086204] BTRFS info (device dm-2): checking UUID tree
-> [91619.473510] Page cache invalidation failure on direct I/O.  Possible
-> data corruption due to collision with buffered I/O!
-> 
-> So I'm afraid we need the filter too.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Oh, thanks for your confirming. I can merge this patch with that tiny change. If there's
-not more review points from btrfs list, I'll merge it. It looks good to me now.
+Now that bio_split() can return errors, add error handling for it in
+btrfs_split_bio() and ultimately btrfs_submit_chunk().
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
 
-> 
-> Thanks,
-> Qu
-> 
-> > 
-> > Others looks good to me.
-> > 
-> > Thanks,
-> > Zorro
-> > 
-> > > +
-> > > +	echo "=== fio $i/$iterations ===" >> $seqres.full
-> > > +	cat $fio_out >> $seqres.full
-> > > +done
-> > > +
-> > > +echo "Silence is golden"
-> > > +
-> > > +# success, all done
-> > > +status=0
-> > > +exit
-> > > diff --git a/tests/generic/366.out b/tests/generic/366.out
-> > > new file mode 100644
-> > > index 00000000..1fe90e06
-> > > --- /dev/null
-> > > +++ b/tests/generic/366.out
-> > > @@ -0,0 +1,2 @@
-> > > +QA output created by 366
-> > > +Silence is golden
-> > > --
-> > > 2.46.0
-> > > 
-> > > 
-> > 
-> > 
-> 
+John,
+in case you have to send a v3, can you please include this one in your series?
+
+ fs/btrfs/bio.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 1f216d07eff6..96cacd5c03a5 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -81,6 +81,9 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
+ 
+ 	bio = bio_split(&orig_bbio->bio, map_length >> SECTOR_SHIFT, GFP_NOFS,
+ 			&btrfs_clone_bioset);
++	if (IS_ERR(bio))
++		return ERR_CAST(bio);
++
+ 	bbio = btrfs_bio(bio);
+ 	btrfs_bio_init(bbio, fs_info, NULL, orig_bbio);
+ 	bbio->inode = orig_bbio->inode;
+@@ -687,6 +690,10 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 
+ 	if (map_length < length) {
+ 		bbio = btrfs_split_bio(fs_info, bbio, map_length);
++		if (IS_ERR(bbio)) {
++			ret = PTR_ERR(bbio);
++			goto fail;
++		}
+ 		bio = &bbio->bio;
+ 	}
+ 
+-- 
+2.43.0
 
 
