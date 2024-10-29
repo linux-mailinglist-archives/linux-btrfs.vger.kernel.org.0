@@ -1,196 +1,347 @@
-Return-Path: <linux-btrfs+bounces-9210-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9211-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46C049B53CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 21:35:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 124009B5449
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 21:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F111F23E4C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 20:35:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85C89B239FD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2024 20:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7B5207A2F;
-	Tue, 29 Oct 2024 20:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480B320C00E;
+	Tue, 29 Oct 2024 20:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QrtaK8yp"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ACCfkiDc";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ACCfkiDc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417491DDA31;
-	Tue, 29 Oct 2024 20:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4764620BB5B
+	for <linux-btrfs@vger.kernel.org>; Tue, 29 Oct 2024 20:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730234112; cv=none; b=ZjJMVtKnv+y8u3FRhu+HwTp3Lu5zaYr8xslLzIEDjm/BBtMFiwsBii3fl00B7wQV9arNW4gerg85GT9SQ2kAvTK7nuDSRmCOIBUNrcRxAJnJwhl7vVdVMILTA5VtyjC7HzvIlsJAkAAmKu+0tak1BIvuKBJDFHik/la/hJNqA78=
+	t=1730234535; cv=none; b=SZhyehEnSRA6FKK2YxmX+YNuDQaPAmisqtqT2YItokhAF+93MlwSOc6M7IAJKeJAQDKFzCEAa8kL0R7Px6VRO6byfnHY2lbtzSw9LlRXwXZgtrcaWG/8IA6wqC7qRuv0CS6KmYITMTD6q+s9ZfSQTsd2Qoo7FRinC6mn4dM+7/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730234112; c=relaxed/simple;
-	bh=Sjbi8PEbxyGAWEWf49Rc8jCY43wCQ/1nCbnscjm+SYI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=gLAbYhCmQj37CS5nMECLM1x9zCDFl/pV0csOyMayMNX504t06Z+fznSPbk//9u3p4DDpo1wFu7B30C/tMEWUTQGM8AbmetQ8jNk1FvrE9zE0BhWSdE9HN/Ve/xLuNqA5GlM8gYnJsW14zsowZwXqeeJr5YGmSR8DymRiZkE0hOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QrtaK8yp; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730234110; x=1761770110;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=Sjbi8PEbxyGAWEWf49Rc8jCY43wCQ/1nCbnscjm+SYI=;
-  b=QrtaK8ypPl/8t9w+/tqEgDBDygdzyd2vk3kxRKHvDcGj0Nufc0Q8+Zaq
-   F56bB95Av9/bFNm8PVOSIPcTE6Jmja2N8/9UrmHYpUEJzRihIoGo4+88n
-   wO8+UED0pp7WrhrjiJml2rbe11C37ezc6V8pIIv644BMAF7tmE1v+KqpV
-   KsnpxnZcOihk2uWX0G8XwhgGTYJI4f7zaaSWPJAbcWv0zxcFzs5bbaxhw
-   Q/+CwLCYi+brF4n05dr7IbTg2HJmeRAjYPomBgHQB5BouZObutvAAxsXW
-   jBiiiYgp2sKADSDsbfjzGTCJAqHIR3htfRUZFEpmC7IA5qlPsjXK2Gt4G
-   g==;
-X-CSE-ConnectionGUID: CPj1g8qhSHq5c5uU2M7g1A==
-X-CSE-MsgGUID: o+HQMyV+RnuS/WrZQ9Ir1Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="29865453"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="29865453"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2024 13:35:09 -0700
-X-CSE-ConnectionGUID: u+OFs3aiSN+77JgDCBiXtg==
-X-CSE-MsgGUID: nYjNqNCCTn+zANVaVeOecw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,243,1725346800"; 
-   d="scan'208";a="81712077"
-Received: from ldmartin-desk2.corp.intel.com (HELO localhost) ([10.125.108.77])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2024 13:35:07 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Tue, 29 Oct 2024 15:34:36 -0500
-Subject: [PATCH v5 01/27] range: Add range_overlaps()
+	s=arc-20240116; t=1730234535; c=relaxed/simple;
+	bh=tQs9Jy2aa1ZDZUC6qoIzMjqqhqGTI1zW9ypCWLGY1A8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NEWy0tH32JoYJVvVO97Wy71uqRU/0eNA5YAIVf19yBbQRUdAoL/lZUcZJl9Ig5/zxMCqCO7OctF7NpCCmMxUv0p7R/03bWeRE84REe/WUP9wgTgRCKZ7iL8HsaKOV0x/wmrCWVLfIJNWm8c8B50cyCbolqWxs87491flpkPx/PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ACCfkiDc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ACCfkiDc; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 212AB1F79F;
+	Tue, 29 Oct 2024 20:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1730234529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=4UYyvIBzzh+8aHER0AolG9qW95zOoxP8Oyd6zmwIN3U=;
+	b=ACCfkiDccKeDsRgtgZ+JFljAlGMa9fYbG6QrsleT4Wnd4Sy0X37kZChpXc6Qi6IsF4uE4n
+	10JRM6jH5/mV9Hxwx9eMkmsCJkKGhbj9LIRSckj2xlyIH7Ptj2psrgEtGYhF64bQSjTvrV
+	5fpZtCSNFzyOSulZPRJnHRjzrwRkizs=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ACCfkiDc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1730234529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=4UYyvIBzzh+8aHER0AolG9qW95zOoxP8Oyd6zmwIN3U=;
+	b=ACCfkiDccKeDsRgtgZ+JFljAlGMa9fYbG6QrsleT4Wnd4Sy0X37kZChpXc6Qi6IsF4uE4n
+	10JRM6jH5/mV9Hxwx9eMkmsCJkKGhbj9LIRSckj2xlyIH7Ptj2psrgEtGYhF64bQSjTvrV
+	5fpZtCSNFzyOSulZPRJnHRjzrwRkizs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1701F136A5;
+	Tue, 29 Oct 2024 20:42:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TP9ZBaFIIWfOZwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 29 Oct 2024 20:42:09 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH v2] btrfs: add new ioctl to wait for cleaned subvolumes
+Date: Tue, 29 Oct 2024 21:41:47 +0100
+Message-ID: <20241029204147.32031-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241029-dcd-type2-upstream-v5-1-8739cb67c374@intel.com>
-References: <20241029-dcd-type2-upstream-v5-0-8739cb67c374@intel.com>
-In-Reply-To: <20241029-dcd-type2-upstream-v5-0-8739cb67c374@intel.com>
-To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
- Navneet Singh <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>, 
- Davidlohr Bueso <dave@stgolabs.net>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
- linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org, 
- nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, 
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.15-dev-2a633
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1730234086; l=3607;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=Sjbi8PEbxyGAWEWf49Rc8jCY43wCQ/1nCbnscjm+SYI=;
- b=W4UVYywSz5/8EH9S+fg/68G4NopwHqkmmOgzff6WEKaHLXREF24MTGRPYtJSTPEsecgAO8Rb/
- mEmZTPknZXaDoG3VpyfDv+2jylWb78OHUBL6w9KHr+Eo2x85gFxfqhL
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 212AB1F79F
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-Code to support CXL Dynamic Capacity devices will have extent ranges
-which need to be compared for intersection not a subset as is being
-checked in range_contains().
+Add a new unprivileged ioctl that will let the command
+'btrfs subvolume sync' work without the (privileged) SEARCH_TREE ioctl.
 
-range_overlaps() is defined in btrfs with a different meaning from what
-is required in the standard range code.  Dan Williams pointed this out
-in [1].  Adjust the btrfs call according to his suggestion there.
+There are several modes of operation, where the most common ones are to
+wait on a specific subvolume or all currently queued for cleaning. This
+is utilized e.g. in backup applications that delete subvolumes and wait
+until they're cleaned to check for remaining space.
 
-Then add a generic range_overlaps().
+The other modes are for flexibility, e.g. for monitoring or
+checkpoints in the queue of deleted subvolumes, again without the need
+to use SEARCH_TREE.
 
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Link: https://lore.kernel.org/all/65949f79ef908_8dc68294f2@dwillia2-xfh.jf.intel.com.notmuch/ [1]
-Acked-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Fan Ni <fan.ni@samsung.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Notes:
 
+- waiting is interruptible, the timeout is set to 1 second and is not
+  configurable
+
+- repeated calls to the ioctl see a different state, so this is
+  inherently racy when using e.g. the count or peek next/last
+
+Use cases:
+
+- a subvolume A was deleted, wait for cleaning (WAIT_FOR_ONE)
+
+- a bunch of subvolumes were deleted, wait for all (WAIT_FOR_QUEUED or
+  PEEK_LAST + WAIT_FOR_ONE)
+
+- count how many are queued (not blocking), for monitoring purposes
+
+- report progress (PEEK_NEXT), may miss some if cleaning is quick
+
+- own waiting in user space (PEEK_LAST until it's 0)
+
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
-Changes:
-[David: constify parameters]
----
- fs/btrfs/ordered-data.c | 10 +++++-----
- include/linux/range.h   |  8 ++++++++
- 2 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 2104d60c216166d577ef81750c63167248f33b6a..744c3375ee6a88e0fc01ef7664e923a48cbe6dca 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -111,8 +111,8 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 file_offset,
- 	return NULL;
+v2:
+- rewrite waiting loop as while instead of goto
+- handle empty list in WAIT_FOR_QUEUED mode and after
+  radix_tree_lookup() call
+
+ fs/btrfs/ioctl.c           | 128 +++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/btrfs.h |  25 ++++++++
+ 2 files changed, 153 insertions(+)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 7f2731ef3dbb..a08c7e6fece5 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -5029,6 +5029,132 @@ int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags)
+ 	return -EINVAL;
  }
  
--static int range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
--			  u64 len)
-+static int btrfs_range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
-+				u64 len)
- {
- 	if (file_offset + len <= entry->file_offset ||
- 	    entry->file_offset + entry->num_bytes <= file_offset)
-@@ -985,7 +985,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
- 
- 	while (1) {
- 		entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
--		if (range_overlaps(entry, file_offset, len))
-+		if (btrfs_range_overlaps(entry, file_offset, len))
- 			break;
- 
- 		if (entry->file_offset >= file_offset + len) {
-@@ -1114,12 +1114,12 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
- 	}
- 	if (prev) {
- 		entry = rb_entry(prev, struct btrfs_ordered_extent, rb_node);
--		if (range_overlaps(entry, file_offset, len))
-+		if (btrfs_range_overlaps(entry, file_offset, len))
- 			goto out;
- 	}
- 	if (next) {
- 		entry = rb_entry(next, struct btrfs_ordered_extent, rb_node);
--		if (range_overlaps(entry, file_offset, len))
-+		if (btrfs_range_overlaps(entry, file_offset, len))
- 			goto out;
- 	}
- 	/* No ordered extent in the range */
-diff --git a/include/linux/range.h b/include/linux/range.h
-index 6ad0b73cb7adc0ee53451b8fed0a70772adc98fa..876cd5355158eff267a42991ba17fa35a1d31600 100644
---- a/include/linux/range.h
-+++ b/include/linux/range.h
-@@ -13,11 +13,19 @@ static inline u64 range_len(const struct range *range)
- 	return range->end - range->start + 1;
- }
- 
-+/* True if r1 completely contains r2 */
- static inline bool range_contains(struct range *r1, struct range *r2)
- {
- 	return r1->start <= r2->start && r1->end >= r2->end;
- }
- 
-+/* True if any part of r1 overlaps r2 */
-+static inline bool range_overlaps(const struct range *r1,
-+				  const struct range *r2)
++static int btrfs_ioctl_subvol_sync(struct btrfs_fs_info *fs_info, void __user *argp)
 +{
-+	return r1->start <= r2->end && r1->end >= r2->start;
++	struct btrfs_root *root;
++	struct btrfs_ioctl_subvol_wait args = { 0 };
++	signed long sched_ret;
++	int refs;
++	u64 root_flags;
++	bool wait_for_deletion = false;
++	bool found = false;
++
++	if (copy_from_user(&args, argp, sizeof(args)))
++		return -EFAULT;
++
++	switch (args.mode) {
++	case BTRFS_SUBVOL_SYNC_WAIT_FOR_QUEUED:
++		/*
++		 * Wait for the first one deleted that waits until all previous
++		 * are cleaned.
++		 */
++		spin_lock(&fs_info->trans_lock);
++		if (!list_empty(&fs_info->dead_roots)) {
++			root = list_last_entry(&fs_info->dead_roots,
++					       struct btrfs_root, root_list);
++			args.subvolid = btrfs_root_id(root);
++			found = true;
++		}
++		spin_unlock(&fs_info->trans_lock);
++		if (!found)
++			return -ENOENT;
++
++		fallthrough;
++	case BTRFS_SUBVOL_SYNC_WAIT_FOR_ONE:
++		if ((0 < args.subvolid && args.subvolid < BTRFS_FIRST_FREE_OBJECTID) ||
++		    BTRFS_LAST_FREE_OBJECTID < args.subvolid)
++			return -EINVAL;
++		break;
++	case BTRFS_SUBVOL_SYNC_COUNT:
++		spin_lock(&fs_info->trans_lock);
++		args.count = list_count_nodes(&fs_info->dead_roots);
++		spin_unlock(&fs_info->trans_lock);
++		if (copy_to_user(argp, &args, sizeof(args)))
++			return -EFAULT;
++		return 0;
++	case BTRFS_SUBVOL_SYNC_PEEK_FIRST:
++		spin_lock(&fs_info->trans_lock);
++		/* Last in the list was deleted first. */
++		if (!list_empty(&fs_info->dead_roots)) {
++			root = list_last_entry(&fs_info->dead_roots,
++					       struct btrfs_root, root_list);
++			args.subvolid = btrfs_root_id(root);
++		} else {
++			args.subvolid = 0;
++		}
++		spin_unlock(&fs_info->trans_lock);
++		if (copy_to_user(argp, &args, sizeof(args)))
++			return -EFAULT;
++		return 0;
++	case BTRFS_SUBVOL_SYNC_PEEK_LAST:
++		spin_lock(&fs_info->trans_lock);
++		/* First in the list was deleted last. */
++		if (!list_empty(&fs_info->dead_roots)) {
++			root = list_first_entry(&fs_info->dead_roots,
++						struct btrfs_root, root_list);
++			args.subvolid = btrfs_root_id(root);
++		} else {
++			args.subvolid = 0;
++		}
++		spin_unlock(&fs_info->trans_lock);
++		if (copy_to_user(argp, &args, sizeof(args)))
++			return -EFAULT;
++		return 0;
++	default:
++		return -EINVAL;
++	}
++
++	/* 32bit limitation: fs_roots_radix key is not wide enough. */
++	if (sizeof(unsigned long) != sizeof(u64) && args.subvolid > U32_MAX)
++		return -EOVERFLOW;
++
++	while (1) {
++		/* Wait for the specific one. */
++		if (down_read_interruptible(&fs_info->subvol_sem) == -EINTR)
++			return -EINTR;
++		refs = -1;
++		spin_lock(&fs_info->fs_roots_radix_lock);
++		root = radix_tree_lookup(&fs_info->fs_roots_radix,
++					 (unsigned long)args.subvolid);
++		if (root) {
++			spin_lock(&root->root_item_lock);
++			refs = btrfs_root_refs(&root->root_item);
++			root_flags = btrfs_root_flags(&root->root_item);
++			spin_unlock(&root->root_item_lock);
++		}
++		spin_unlock(&fs_info->fs_roots_radix_lock);
++		up_read(&fs_info->subvol_sem);
++
++		/* Subvolume does not exist. */
++		if (!root)
++			return -ENOENT;
++
++		/* Subvolume not deleted at all. */
++		if (refs > 0)
++			return -EEXIST;
++		/* We've waited and now the subvolume is gone. */
++		if (wait_for_deletion && refs == -1) {
++			/* Return the one we waited for as the last one. */
++			if (copy_to_user(argp, &args, sizeof(args)))
++				return -EFAULT;
++			return 0;
++		}
++
++		/* Subvolume not found on the first try (deleted or never existed). */
++		if (refs == -1)
++			return -ENOENT;
++
++		wait_for_deletion = true;
++		ASSERT(root_flags & BTRFS_ROOT_SUBVOL_DEAD);
++		sched_ret = schedule_timeout_interruptible(HZ);
++		/* Early wake up or error. */
++		if (sched_ret != 0)
++			return -EINTR;
++	}
++
++	return 0;
 +}
 +
- int add_range(struct range *range, int az, int nr_range,
- 		u64 start, u64 end);
+ long btrfs_ioctl(struct file *file, unsigned int
+ 		cmd, unsigned long arg)
+ {
+@@ -5180,6 +5306,8 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 	case BTRFS_IOC_ENCODED_WRITE_32:
+ 		return btrfs_ioctl_encoded_write(file, argp, true);
+ #endif
++	case BTRFS_IOC_SUBVOL_SYNC_WAIT:
++		return btrfs_ioctl_subvol_sync(fs_info, argp);
+ 	}
  
-
+ 	return -ENOTTY;
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index cdf6ad872149..d3b222d7af24 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -1049,6 +1049,29 @@ struct btrfs_ioctl_encoded_io_args {
+ #define BTRFS_ENCODED_IO_ENCRYPTION_NONE 0
+ #define BTRFS_ENCODED_IO_ENCRYPTION_TYPES 1
+ 
++/*
++ * Wait for subvolume cleaning process. This queries the kernel queue and it
++ * can change between the calls.
++ *
++ * - FOR_ONE	- specify the subvolid
++ * - FOR_QUEUED - wait for all currently queued
++ * - COUNT	- count number of queued
++ * - PEEK_FIRST - read which is the first in the queue (to be cleaned or being
++ * 		  cleaned already), or 0 if the queue is empty
++ * - PEEK_LAST  - read the last subvolid in the queue, or 0 if the queue is empty
++ */
++struct btrfs_ioctl_subvol_wait {
++	__u64 subvolid;
++	__u32 mode;
++	__u32 count;
++};
++
++#define BTRFS_SUBVOL_SYNC_WAIT_FOR_ONE		(0)
++#define BTRFS_SUBVOL_SYNC_WAIT_FOR_QUEUED	(1)
++#define BTRFS_SUBVOL_SYNC_COUNT			(2)
++#define BTRFS_SUBVOL_SYNC_PEEK_FIRST		(3)
++#define BTRFS_SUBVOL_SYNC_PEEK_LAST		(4)
++
+ /* Error codes as returned by the kernel */
+ enum btrfs_err_code {
+ 	BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET = 1,
+@@ -1181,6 +1204,8 @@ enum btrfs_err_code {
+ 				    struct btrfs_ioctl_encoded_io_args)
+ #define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, \
+ 				     struct btrfs_ioctl_encoded_io_args)
++#define BTRFS_IOC_SUBVOL_SYNC_WAIT _IOW(BTRFS_IOCTL_MAGIC, 65, \
++					struct btrfs_ioctl_subvol_wait)
+ 
+ #ifdef __cplusplus
+ }
 -- 
-2.47.0
+2.45.0
 
 
