@@ -1,309 +1,151 @@
-Return-Path: <linux-btrfs+bounces-9234-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9235-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78AF69B5A51
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 04:23:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC369B5BC3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 07:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B62F1B2252E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 03:23:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDBA0283D5C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 06:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B751991BD;
-	Wed, 30 Oct 2024 03:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415A81D1F77;
+	Wed, 30 Oct 2024 06:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MoYH8AO5"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pJPe4jTr";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pJPe4jTr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4280815E96;
-	Wed, 30 Oct 2024 03:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34DE63CB
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 06:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730258576; cv=none; b=kb0mIoSu86NKeDLt8aXwJMvZcZEgI8Ivesfb/A1dmEYCJz9ma9LifkOeB+g9EHtod/LdpDPqaXWb8xIf44c3jzN7o3TMcsNda5+IZbHvYrMylrLNt9EbhpbZL1ejDO+AjHcrWg5RSp/pD0SiBkjj1DxLSJSr/0+JpWmR/lf10eE=
+	t=1730270080; cv=none; b=FbxThpZ0eA6qaiLKOA6/DJkwc86BJPQgzi+idiud+//7ndPTwU5Kx8/qU8GEm6WSTjC9zn/JwRB7TO4CB3/g2R3n1LiVM5thGZvO7w5QcYoB/GIVQ90hRD602C7KTD/1vfb/7TGbP8rki06HtbpiXXL2iWpO/CkPBclxY8FbEtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730258576; c=relaxed/simple;
-	bh=7LdLeyC91oYolHTxW8qO5k7n1UFa1LaDj5VPQLULCuw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HJHDOdagV8tz7ZTdMxpVwKZgG5bilq1INvmUBLObiEpNc9ayScuDT9YnKBbewFDSN76/zC6Gnof5h9V8Me/UquBFpMJw16OpujH4v3UKUkzekew5wfaKqv96rBOPGDBadRwCBkwb74YF9twXW+t8Ej3PD1TNL3qWSc3NWLOS1Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MoYH8AO5; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5c9c28c1e63so7203374a12.0;
-        Tue, 29 Oct 2024 20:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730258572; x=1730863372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=To+9twS6JlN4C9uCDBQQCtjCfMww1W/Bkv+Om9NWJIc=;
-        b=MoYH8AO52fg2Je3wIoMFlHxnbLTaJmrCw71etrJzU65ZUlMHZKI7fAh1alN2R2GiBL
-         shSgM+1dUjvEQu+Ey8s/7U/GXF6NpjR8UsOzuMz1QaJDL8vwTgeupw42P4i1G7QvKeAe
-         Majodwl3ngrYlPqsJIOb6qCOTrNsiDuIlWYOk/5EDi+1DiNib7QooEieFkLE7QjCu9gI
-         66RANDkDzHG1WYnje2TG1fv0s5wuDV2oeqwPbAA0iROx7R1P2CtDZHV9OFci5pmQirgM
-         Sw/PL7awbFGpPVSJQ3WVVGAxxg6/R6UUZN83ofLva0bRm6OwebFCwLbHbVpPL0mNZbOs
-         PGuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730258572; x=1730863372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=To+9twS6JlN4C9uCDBQQCtjCfMww1W/Bkv+Om9NWJIc=;
-        b=NYtBgjXpbX9Y0qV1W+5z0KiI0KwJ2RyaBAZAXTS+W/+37KW5tXX0RS4TTeRb78pE//
-         oPcUIWEGSZ8XybiT90C6I3u3Dl62a1+5Xf34fW0Bh2t3Rvy+J4fmNb8DHvT/zh4XgOLL
-         RdSjs3YZu81rx+XWVSl811luBgPMMhLVLKh0lO2Y3oEhNb4XBh4ptNSDSqTpuHJFHM9L
-         ND7gHZ+dXjR90Mv6GgCmSUnuOzrxi+Wi3BCG/7Tu7F9d+fXcGRBCzKQ1MFOJnz3uf4Gj
-         pMGDJbk/HvyU00CIL39F2Rb4O/FOJ6AuCsHHznnH+DDRLNTg7GZihq/IbzWJ0KS3KkMK
-         xDRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXSA8gL/AWUebuqyuke2N32JQDC72p4gEiqzBepRqp61FW9zaS6P1DWk+mQjhXupIAb4zNc3vL5jsqP0Bo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1Yqy2XS8tchEs0fxg7Uafeg8dfs1Foaj7vR5NdrC8lHEuao18
-	hiLh+aiP89Rfsm6HYSBwiXLt24YbGRH7UCU6zrQFkDv8/79nE8lYFJgVOLhY2AUIO7GaRBl9sM1
-	KOfTV3DarbSpwvwLxtflAbhTagaY=
-X-Google-Smtp-Source: AGHT+IEsG/L+s3k3Lf5oCaIQBOgD8O/tG2xqN/WjAMGdKRHg1CwbulOeVA7wg43Unry5XWnV4uxM/biJS7HiMz5NgEI=
-X-Received: by 2002:a17:907:940e:b0:a99:ce2f:b0ff with SMTP id
- a640c23a62f3a-a9de5eccebcmr1418601066b.33.1730258572257; Tue, 29 Oct 2024
- 20:22:52 -0700 (PDT)
+	s=arc-20240116; t=1730270080; c=relaxed/simple;
+	bh=riwxwpwVidbVWZO8HjaCu1cu4Gw2MSCjEvBvrPq6Uoc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=r6XI9rfhe9uwhKa+MySR8pATmGASpNUNBgoshyd6dLBwcsDxiD+9K72JNO3VN5YyrmTmqRa5OzL8laaKinGWaD2ZYT8zAR90h9cObwkdy9yv3BFGLQmI+u2LNv7dFHCLMoupsfHQWK5jkGybnfB0bCS0n8YkPbQU81TWms1ayLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pJPe4jTr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pJPe4jTr; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A04631FDCA
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 06:34:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1730270075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8rSG+JTWleC0JYjqNdHs0CKXyRzOTuPdnA5FPxX4q30=;
+	b=pJPe4jTrvWlENP4kEjTp9h7zyBqVtWmMpE9J5AzW4H0Gzq5nhjnCi44C5FakNPsU+rVa9g
+	GQgjH3bONJlvyOZtsWGO5mrw+uTR7aY3vTrftdTkCc685oQ1xgZPkdSH0yZ3C5LGVZuXIZ
+	YnYgLjtqtxr7keuN1zfOfp3Pc/IGJBI=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=pJPe4jTr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1730270075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8rSG+JTWleC0JYjqNdHs0CKXyRzOTuPdnA5FPxX4q30=;
+	b=pJPe4jTrvWlENP4kEjTp9h7zyBqVtWmMpE9J5AzW4H0Gzq5nhjnCi44C5FakNPsU+rVa9g
+	GQgjH3bONJlvyOZtsWGO5mrw+uTR7aY3vTrftdTkCc685oQ1xgZPkdSH0yZ3C5LGVZuXIZ
+	YnYgLjtqtxr7keuN1zfOfp3Pc/IGJBI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA138136A5
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 06:34:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LtJUJnrTIWcFcwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 06:34:34 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/6] btrfs: sector size < page size enhancement
+Date: Wed, 30 Oct 2024 17:03:56 +1030
+Message-ID: <cover.1730269807.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241025065448.3231672-1-haisuwang@tencent.com>
- <20241025065448.3231672-3-haisuwang@tencent.com> <4d0603d4-1503-4e8f-bfe2-ed205b598072@gmx.com>
-In-Reply-To: <4d0603d4-1503-4e8f-bfe2-ed205b598072@gmx.com>
-From: hs wang <iamhswang@gmail.com>
-Date: Wed, 30 Oct 2024 11:22:40 +0800
-Message-ID: <CALv5hoSEPXi3dNXg1DMKJQ3R3OnzVew+tNJQssWGt2g4O8aSiQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: simplify regions mark and keep start unchanged
- in err handling
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, 
-	dsterba@suse.com, wqu@suse.com, boris@bur.io, linux-kernel@vger.kernel.org, 
-	Haisu Wang <haisuwang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: A04631FDCA
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2024=E5=B9=B410=E6=9C=8830=E6=
-=97=A5=E5=91=A8=E4=B8=89 11:01=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> =E5=9C=A8 2024/10/25 17:24, iamhswang@gmail.com =E5=86=99=E9=81=93:
-> > From: Haisu Wang <haisuwang@tencent.com>
-> >
-> > Simplify the regions mark by using cur_alloc_size only to present
-> > the reserved but may failed to alloced extent. Remove the ram_size
-> > as well since it is always consistent to the cur_alloc_size in the
-> > context. Advanced the start mark in normal path until extent succeed
-> > alloced and keep the start unchanged in error handling path.
-> >
-> > PASSed the fstest generic/475 test for a hundred times with quota
-> > enabled. And a modified generic/475 test by removing the sleep time
-> > for a hundred times. About one tenth of the tests do enter the error
-> > handling path due to fail to reserve extent.
-> >
->
-> Although this patch is already merged into for-next, it looks like the
-> next patch will again change the error handling, mostly render the this
-> one useless:
->
-> https://lore.kernel.org/linux-btrfs/2a0925f0264daf90741ed0a7ba7ed4b4888cf=
-778.1728725060.git.wqu@suse.com/
->
-> The newer patch will change the error handling to a simpler one, so
-> instead of 3 regions, there will be only 2.
->
-Sounds better and a completely rewrite, i will catch up the details.
+This series contains several sector size < page size fixes and
+optimization:
 
-> There will be no change needed from your side, I will update my patches
-> to solve the conflicts, just in case if you find the error handling is
-> different in the future.
->
+- Pass generic/563 with 4k sector size and 16K/64K page size
+  The last patch.
 
-Thanks. Understanding the changes, may compile and play after the polishmen=
-t.
+  The test case is a special cgroup one, which requires the fs to avoid
+  reading the whole folio as long as the buffered write range is btrfs
+  sector aligned.
 
-Best regards,
-Haisu Wang
+- Fix generic/750 failure with 4K sector size and 16K/64K page size
+  It's a double ordered extent accounting for sector size < page size
+  cases.
+  The first patch.
 
-> Thanks,
-> Qu
->
-> > Suggested-by: Qu Wenruo <wqu@suse.com>
-> > Signed-off-by: Haisu Wang <haisuwang@tencent.com>
-> > ---
-> >   fs/btrfs/inode.c | 32 ++++++++++++++------------------
-> >   1 file changed, 14 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 3646734a7e59..7e67a6d50be2 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -1359,7 +1359,6 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >       u64 alloc_hint =3D 0;
-> >       u64 orig_start =3D start;
-> >       u64 num_bytes;
-> > -     unsigned long ram_size;
-> >       u64 cur_alloc_size =3D 0;
-> >       u64 min_alloc_size;
-> >       u64 blocksize =3D fs_info->sectorsize;
-> > @@ -1367,7 +1366,6 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >       struct extent_map *em;
-> >       unsigned clear_bits;
-> >       unsigned long page_ops;
-> > -     bool extent_reserved =3D false;
-> >       int ret =3D 0;
-> >
-> >       if (btrfs_is_free_space_inode(inode)) {
-> > @@ -1421,8 +1419,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >               struct btrfs_ordered_extent *ordered;
-> >               struct btrfs_file_extent file_extent;
-> >
-> > -             cur_alloc_size =3D num_bytes;
-> > -             ret =3D btrfs_reserve_extent(root, cur_alloc_size, cur_al=
-loc_size,
-> > +             ret =3D btrfs_reserve_extent(root, num_bytes, num_bytes,
-> >                                          min_alloc_size, 0, alloc_hint,
-> >                                          &ins, 1, 1);
-> >               if (ret =3D=3D -EAGAIN) {
-> > @@ -1453,9 +1450,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >               if (ret < 0)
-> >                       goto out_unlock;
-> >               cur_alloc_size =3D ins.offset;
-> > -             extent_reserved =3D true;
-> >
-> > -             ram_size =3D ins.offset;
-> >               file_extent.disk_bytenr =3D ins.objectid;
-> >               file_extent.disk_num_bytes =3D ins.offset;
-> >               file_extent.num_bytes =3D ins.offset;
-> > @@ -1463,14 +1458,14 @@ static noinline int cow_file_range(struct btrfs=
-_inode *inode,
-> >               file_extent.offset =3D 0;
-> >               file_extent.compression =3D BTRFS_COMPRESS_NONE;
-> >
-> > -             lock_extent(&inode->io_tree, start, start + ram_size - 1,
-> > +             lock_extent(&inode->io_tree, start, start + cur_alloc_siz=
-e - 1,
-> >                           &cached);
-> >
-> >               em =3D btrfs_create_io_em(inode, start, &file_extent,
-> >                                       BTRFS_ORDERED_REGULAR);
-> >               if (IS_ERR(em)) {
-> >                       unlock_extent(&inode->io_tree, start,
-> > -                                   start + ram_size - 1, &cached);
-> > +                                   start + cur_alloc_size - 1, &cached=
-);
-> >                       ret =3D PTR_ERR(em);
-> >                       goto out_reserve;
-> >               }
-> > @@ -1480,7 +1475,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >                                                    1 << BTRFS_ORDERED_R=
-EGULAR);
-> >               if (IS_ERR(ordered)) {
-> >                       unlock_extent(&inode->io_tree, start,
-> > -                                   start + ram_size - 1, &cached);
-> > +                                   start + cur_alloc_size - 1, &cached=
-);
-> >                       ret =3D PTR_ERR(ordered);
-> >                       goto out_drop_extent_cache;
-> >               }
-> > @@ -1501,7 +1496,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >                        */
-> >                       if (ret)
-> >                               btrfs_drop_extent_map_range(inode, start,
-> > -                                                         start + ram_s=
-ize - 1,
-> > +                                                         start + cur_a=
-lloc_size - 1,
-> >                                                           false);
-> >               }
-> >               btrfs_put_ordered_extent(ordered);
-> > @@ -1519,7 +1514,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >               page_ops =3D (keep_locked ? 0 : PAGE_UNLOCK);
-> >               page_ops |=3D PAGE_SET_ORDERED;
-> >
-> > -             extent_clear_unlock_delalloc(inode, start, start + ram_si=
-ze - 1,
-> > +             extent_clear_unlock_delalloc(inode, start, start + cur_al=
-loc_size - 1,
-> >                                            locked_folio, &cached,
-> >                                            EXTENT_LOCKED | EXTENT_DELAL=
-LOC,
-> >                                            page_ops);
-> > @@ -1529,7 +1524,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >                       num_bytes -=3D cur_alloc_size;
-> >               alloc_hint =3D ins.objectid + ins.offset;
-> >               start +=3D cur_alloc_size;
-> > -             extent_reserved =3D false;
-> > +             cur_alloc_size =3D 0;
-> >
-> >               /*
-> >                * btrfs_reloc_clone_csums() error, since start is increa=
-sed
-> > @@ -1545,7 +1540,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >       return ret;
-> >
-> >   out_drop_extent_cache:
-> > -     btrfs_drop_extent_map_range(inode, start, start + ram_size - 1, f=
-alse);
-> > +     btrfs_drop_extent_map_range(inode, start, start + cur_alloc_size =
-- 1, false);
-> >   out_reserve:
-> >       btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-> >       btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
-> > @@ -1599,13 +1594,12 @@ static noinline int cow_file_range(struct btrfs=
-_inode *inode,
-> >        * to decrement again the data space_info's bytes_may_use counter=
-,
-> >        * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
-> >        */
-> > -     if (extent_reserved) {
-> > +     if (cur_alloc_size) {
-> >               extent_clear_unlock_delalloc(inode, start,
-> >                                            start + cur_alloc_size - 1,
-> >                                            locked_folio, &cached, clear=
-_bits,
-> >                                            page_ops);
-> >               btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size=
-, NULL);
-> > -             start +=3D cur_alloc_size;
-> >       }
-> >
-> >       /*
-> > @@ -1614,11 +1608,13 @@ static noinline int cow_file_range(struct btrfs=
-_inode *inode,
-> >        * space_info's bytes_may_use counter, reserved in
-> >        * btrfs_check_data_free_space().
-> >        */
-> > -     if (start < end) {
-> > +     if (start + cur_alloc_size < end) {
-> >               clear_bits |=3D EXTENT_CLEAR_DATA_RESV;
-> > -             extent_clear_unlock_delalloc(inode, start, end, locked_fo=
-lio,
-> > +             extent_clear_unlock_delalloc(inode, start + cur_alloc_siz=
-e,
-> > +                                          end, locked_folio,
-> >                                            &cached, clear_bits, page_op=
-s);
-> > -             btrfs_qgroup_free_data(inode, NULL, start, end - start + =
-1, NULL);
-> > +             btrfs_qgroup_free_data(inode, NULL, start + cur_alloc_siz=
-e,
-> > +                             end - start - cur_alloc_size + 1, NULL);
-> >       }
-> >       return ret;
-> >   }
->
+The remaining are all preparations for the above goals.
+
+It's now rebased to the latest misc-next branch.
+
+Qu Wenruo (6):
+  btrfs: fix double accounting of ordered extents during errors
+  btrfs: extract the inner loop of cow_file_range() to enhance the error
+    handling
+  btrfs: use FGP_STABLE to wait for folio writeback
+  btrfs: make btrfs_do_readpage() to do block-by-block read
+  btrfs: avoid deadlock when reading a partial uptodate folio
+  btrfs: allow buffered write to skip full page if it's sector aligned
+
+ fs/btrfs/defrag.c       |   6 +-
+ fs/btrfs/direct-io.c    |   2 +-
+ fs/btrfs/extent_io.c    |  85 ++++++----
+ fs/btrfs/file.c         |  13 +-
+ fs/btrfs/inode.c        | 347 ++++++++++++++++++++--------------------
+ fs/btrfs/ordered-data.c |  67 +++++++-
+ fs/btrfs/ordered-data.h |   8 +-
+ 7 files changed, 306 insertions(+), 222 deletions(-)
+
+-- 
+2.47.0
+
 
