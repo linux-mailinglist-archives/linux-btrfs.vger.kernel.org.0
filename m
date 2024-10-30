@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-9223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E44549B58DC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:56:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690AB9B58DD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0E5E1C22C4C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 00:56:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9B31F23DBA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 00:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231303D96A;
-	Wed, 30 Oct 2024 00:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981C847F69;
+	Wed, 30 Oct 2024 00:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LkhGmLRe";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LkhGmLRe"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dJuWNM74";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dJuWNM74"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3C6282F4
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 00:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4282F31A60
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 00:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730249788; cv=none; b=PqmKFQDU7svwWdteUdTPnfAlR72GW5VI4VSnw3aPNsfM9MeKyVWHh4265eSWF3N8dXEM9b8AIPA49KxRt+AIMZ9utaaExMsK3aNLhWXD8wPOpBPnoeskkNhSk8Qy3CyYqPPBfn3JSNS57YJCbYk1uho4643Gb20tj2iABLbKKBg=
+	t=1730249789; cv=none; b=sRC3Eq9sEkymn2YIvqwNXAWM8sMCxEh+XomlI+3nV4lroRJWmI2XOz7vR/T6skHgzvKps3xa/YpAKhnI2cjcW9MmWbEspMQlYu7USBYxoiHC/TxQjOZO37+LfD8wjYjXTcRF/AV8PlPrkEPakGhB00m/Kb1deaiCq7jehEa9o2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730249788; c=relaxed/simple;
-	bh=b+Yei9Mf5OSH86dqlQqhKU/OQ8vcJFVHfDnghhr/qc0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JDYiopLbjS8zPb2Ag/qLGWBpkAOikRfV4pvbyyll13jpR7AOTTWsf+mIlZpRe4rWoVhhbJPs8BCrp2zDX12Hy0WiJ85G4hiN97qYCoqgjNe/nAJaHqowuoR+5l95SWwXE6bIutfs9mHVJUrBJlZPmuqVOGb+H+jE5atCxVs5UFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LkhGmLRe; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LkhGmLRe; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1730249789; c=relaxed/simple;
+	bh=eqcU6OGwBvcxAJe2nBm34z55IKBZn83NKIXIPgia6FY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uvSD1FnmhW2kKxvRmN6LDB+mU9haFL0rvxyEFYOmhxYyH26kqq6YYVj5QLuwVzQ8fhNhT6p2JPEG9dLKLKdzeZA2j9D52UdeZeTqyj03QSBN4Put0kS1xG17F2lfKRpYQKfJ0MLrFBWBDWwJnXE5Jj6w2E2GYs7ibkaa5QRasPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dJuWNM74; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dJuWNM74; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A728621D55
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 00:56:23 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7C46A21DD0;
+	Wed, 30 Oct 2024 00:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1730249783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1730249785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N9mJTfrm8ClPgyghBF9L6l+W6yKAVv4DjHfjGEQpmDM=;
-	b=LkhGmLReWH3IJwo2Uu1lDersWJTKRMSIojJjXqRmZCNs1eZUMuBzl+xZs7A7UsRhWXAJSl
-	AeIM9kZLVTavuieV+dby34N3IkmoqFfCgBCIHczuvOEem0qDVw/2LEX8drLx74Xst1d5vJ
-	GNLIuZShT7+Bk518tNrjqr5dq9j2C7c=
+	bh=Ou8wb0I++Dlb4mEV2+sf47RPAVY6jwzdTNmVh9V6rLU=;
+	b=dJuWNM74F0piQA8RK18pJ8gSWVeomB24EpKA8JveIukD+k0gVKL8Lfp8IG1Xkx7ZOd2J48
+	JpoRqQvgkkyGh7ZsD20qUyaMrak49j3sZwsX08Vs4FosBaaG2YsjBXx/Yj03+ru6rgajcs
+	sakK9vnquZnV1yfSHMC3jkwbHlOneEY=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=LkhGmLRe
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1730249783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1730249785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N9mJTfrm8ClPgyghBF9L6l+W6yKAVv4DjHfjGEQpmDM=;
-	b=LkhGmLReWH3IJwo2Uu1lDersWJTKRMSIojJjXqRmZCNs1eZUMuBzl+xZs7A7UsRhWXAJSl
-	AeIM9kZLVTavuieV+dby34N3IkmoqFfCgBCIHczuvOEem0qDVw/2LEX8drLx74Xst1d5vJ
-	GNLIuZShT7+Bk518tNrjqr5dq9j2C7c=
+	bh=Ou8wb0I++Dlb4mEV2+sf47RPAVY6jwzdTNmVh9V6rLU=;
+	b=dJuWNM74F0piQA8RK18pJ8gSWVeomB24EpKA8JveIukD+k0gVKL8Lfp8IG1Xkx7ZOd2J48
+	JpoRqQvgkkyGh7ZsD20qUyaMrak49j3sZwsX08Vs4FosBaaG2YsjBXx/Yj03+ru6rgajcs
+	sakK9vnquZnV1yfSHMC3jkwbHlOneEY=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D9573136A5
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 00:56:22 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E2CC136A5;
+	Wed, 30 Oct 2024 00:56:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eCekJTaEIWdJJAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 00:56:22 +0000
+	id sJJxNzeEIWdJJAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 30 Oct 2024 00:56:23 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: fix per-subvolume RO/RW flags with new mount API
-Date: Wed, 30 Oct 2024 11:25:47 +1030
-Message-ID: <530cb7c961043767d15eac6c86d6cfd9a5d19ac5.1730249396.git.wqu@suse.com>
+Cc: Enno Gotthold <egotthold@suse.com>,
+	Fabian Vogt <fvogt@suse.com>
+Subject: [PATCH 2/2] btrfs: fix mount failure due to remount races
+Date: Wed, 30 Oct 2024 11:25:48 +1030
+Message-ID: <a682e48c161eece38f8d803103068fed5959537d.1730249396.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1730249396.git.wqu@suse.com>
 References: <cover.1730249396.git.wqu@suse.com>
@@ -84,141 +85,222 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A728621D55
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
 	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
 	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.com:url];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
 [BUG]
-With util-linux 2.40.2, the mount is already utilizing the new mount
-API. e.g:
+The following reproducer can cause btrfs mount to fail:
 
- # strace  mount -o subvol=subv1,ro /dev/test/scratch1 /mnt/test/
- ...
- fsconfig(3, FSCONFIG_SET_STRING, "source", "/dev/mapper/test-scratch1", 0) = 0
- fsconfig(3, FSCONFIG_SET_STRING, "subvol", "subv1", 0) = 0
- fsconfig(3, FSCONFIG_SET_FLAG, "ro", NULL, 0) = 0
- fsconfig(3, FSCONFIG_CMD_CREATE, NULL, NULL, 0) = 0
- fsmount(3, FSMOUNT_CLOEXEC, 0)          = 4
- mount_setattr(4, "", AT_EMPTY_PATH, {attr_set=MOUNT_ATTR_RDONLY, attr_clr=0, propagation=0 /* MS_??? */, userns_fd=0}, 32) = 0
- move_mount(4, "", AT_FDCWD, "/mnt/test", MOVE_MOUNT_F_EMPTY_PATH) = 0
+  dev="/dev/test/scratch1"
+  mnt1="/mnt/test"
+  mnt2="/mnt/scratch"
 
-But this leads to a new problem, that per-subvolume RO/RW mount no
-longer works, if the initial mount is RO:
+  mkfs.btrfs -f $dev
+  mount $dev $mnt1
+  btrfs subvolume create $mnt1/subvol1
+  btrfs subvolume create $mnt1/subvol2
+  umount $mnt1
 
- # mount -o subvol=subv1,ro /dev/test/scratch1 /mnt/test
- # mount -o rw,subvol=subv2 /dev/test/scratch1  /mnt/scratch
- # mount | grep mnt
- /dev/mapper/test-scratch1 on /mnt/test type btrfs (ro,relatime,discard=async,space_cache=v2,subvolid=256,subvol=/subv1)
- /dev/mapper/test-scratch1 on /mnt/scratch type btrfs (ro,relatime,discard=async,space_cache=v2,subvolid=257,subvol=/subv2)
- # touch /mnt/scratch/foobar
- touch: cannot touch '/mnt/scratch/foobar': Read-only file system
+  mount $dev $mnt1 -o subvol=subvol1
+  while mount -o remount,ro $mnt1; do mount -o remount,rw $mnt1; done &
+  bg=$!
+
+  while mount $dev $mnt2 -o subvol=subvol2; do umount $mnt2; done
+
+  kill $bg
+  wait
+  umount -R $mnt1
+  umount -R $mnt2
+
+The script will fail with the following error:
+
+ mount: /mnt/scratch: /dev/mapper/test-scratch1 already mounted on /mnt/test.
+       dmesg(1) may have more information after failed mount system call.
+ umount: /mnt/test: target is busy.
+ umount: /mnt/scratch/: not mounted
+
+And there is no kernel error message.
 
 [CAUSE]
-We have the remount "hack" to handle the RO->RW change, but if the mount
-is using the new mount API, we do not do the hack, and rely on the mount
-tool NOT to set the ro flag.
+During the btrfs mount, to support mounting different subvolumes with
+different RO/RW flags, we have a small hack during the mount:
 
-But that's not how the mount tool is doing for the new API:
+  Retry with matching RO flags if the initial mount fail with -EBUSY.
 
- fsconfig(3, FSCONFIG_SET_STRING, "source", "/dev/mapper/test-scratch1", 0) = 0
- fsconfig(3, FSCONFIG_SET_STRING, "subvol", "subv1", 0) = 0
- fsconfig(3, FSCONFIG_SET_FLAG, "ro", NULL, 0) = 0 <<<< Setting RO flag for super block
- fsconfig(3, FSCONFIG_CMD_CREATE, NULL, NULL, 0) = 0
- fsmount(3, FSMOUNT_CLOEXEC, 0)          = 4
- mount_setattr(4, "", AT_EMPTY_PATH, {attr_set=MOUNT_ATTR_RDONLY, attr_clr=0, propagation=0 /* MS_??? */, userns_fd=0}, 32) = 0
- move_mount(4, "", AT_FDCWD, "/mnt/test", MOVE_MOUNT_F_EMPTY_PATH) = 0
+The problem is, during that retry we do not hold any super block lock
+(s_umount), this meanings there can be a remount process changing the RO
+flags of the original fs super block.
 
-This means we will set the super block RO at the first mount.
-
-Later RW mount will not try to reconfigure the fs to RW because the
-mount tool is already using the new API.
-
-This totally breaks the per-subvolume RO/RW mount behavior.
+If so, we can have an EBUSY error during retry.
+And this time we treat any failure as an error, without any retry and
+cause the above EBUSY mount failure.
 
 [FIX]
-Do not skip the reconfiguration even using the new API.
-The old comments are just expecting the mount tool to properly skip RO
-flag set even we specify "ro", which is not the reality.
+The current retry behavior is racy because we do not have a super block
+thus no way to hold s_umount to prevent the race with remount.
 
-And remove the comments pushing all the responsibility to mount command,
-replace them with ones matching the reality instead.
+Solve the root problem by allowing fc->sb_flags to mismatch from the
+sb->s_flags at btrfs_get_tree_super().
+
+Then at the re-entry point btrfs_get_tree_subvol(), manually check the
+fc->s_flags against sb->s_flags, if it's a RO->RW mismatch, then
+reconfigure with s_umount lock hold.
 
 Fixes: f044b318675f ("btrfs: handle the ro->rw transition for mounting different subvolumes")
+Reported-by: Enno Gotthold <egotthold@suse.com>
+Reported-by: Fabian Vogt <fvogt@suse.com>
+[ Special thanks for the reproducer and early analyze pointing to btrfs ]
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1231836
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/super.c | 24 +++++-------------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
+Changelog:
+v2:
+- Instead of brute force retry-until-success-or-failure, allow sb flags
+  mismatch during btrfs_get_tree_super()
+  So that we can utilize sb->s_umount to prevent race.
+
+- Rebased after patch "btrfs: fix per-subvolume RO/RW flags with new mount API"
+  Fortunately or unfortunately my distro is already utilizing the new
+  mount API and I found the per-subvolume RO/RW support is broken again.
+
+  Unlike the original expectation, the new API is not the new hope, but
+  allows the old bug to strike back.
+
+  So this patch can only be applied after that fix.
+---
+ fs/btrfs/super.c | 66 ++++++++++++++++++++----------------------------
+ 1 file changed, 27 insertions(+), 39 deletions(-)
 
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 6cc9291c4552..d77cce8d633e 100644
+index d77cce8d633e..d137ce2b5038 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -1977,25 +1977,11 @@ static int btrfs_get_tree_super(struct fs_context *fc)
-  *     fsconfig(FSCONFIG_SET_FLAG, "ro"). This option is seen by the filesystem
-  *     in fc->sb_flags.
+@@ -1885,18 +1885,21 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 
+ 	if (sb->s_root) {
+ 		btrfs_close_devices(fs_devices);
+-		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
+-			ret = -EBUSY;
++		/*
++		 * At this stage we may have RO flag mismatch between
++		 * fc->sb_flags and sb->s_flags.
++		 * Caller should detect such mismatch and reconfigure
++		 * with sb->s_umount rwsem hold if needed.
++		 */
+ 	} else {
+ 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
+ 		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
+ 		ret = btrfs_fill_super(sb, fs_devices);
+-	}
+-
+-	if (ret) {
+-		deactivate_locked_super(sb);
+-		return ret;
++		if (ret) {
++			deactivate_locked_super(sb);
++			return ret;
++		}
+ 	}
+ 
+ 	btrfs_clear_oneshot_options(fs_info);
+@@ -1983,39 +1986,18 @@ static int btrfs_get_tree_super(struct fs_context *fc)
   *
-- * This disambiguation has rather positive consequences.  Mounting a subvolume
-- * ro will not also turn the superblock ro. Only the mount for the subvolume
-- * will become ro.
-+ * But in reality, even the newer util-linux mount command, which is already
-+ * utilizing the new mount API, is still setting fsconfig(FSCONFIG_SET_FLAG, "ro")
-+ * no matter if it's a btrfs or not, setting the whole super block RO.
-  *
-- * So, if the superblock creation request comes from the new mount API the
-- * caller must have explicitly done:
-- *
-- *      fsconfig(FSCONFIG_SET_FLAG, "ro")
-- *      fsmount/mount_setattr(MOUNT_ATTR_RDONLY)
-- *
-- * IOW, at some point the caller must have explicitly turned the whole
-- * superblock ro and we shouldn't just undo it like we did for the old mount
-- * API. In any case, it lets us avoid the hack in the new mount API.
-- *
-- * Consequently, the remounting hack must only be used for requests originating
-- * from the old mount API and should be marked for full deprecation so it can be
-- * turned off in a couple of years.
-- *
-- * The new mount API has no reason to support this hack.
-+ * So here we always needs the remount hack to support per-subvolume RO/RW flags.
+  * So here we always needs the remount hack to support per-subvolume RO/RW flags.
   */
- static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
+-static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
++static int btrfs_reconfigure_for_mount(struct fs_context *fc, struct vfsmount *mnt)
  {
-@@ -2017,7 +2003,7 @@ static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
- 	if (IS_ERR(mnt))
- 		return mnt;
+-	struct vfsmount *mnt;
+-	int ret;
+-	const bool ro2rw = !(fc->sb_flags & SB_RDONLY);
++	int ret = 0;
  
--	if (!fc->oldapi || !ro2rw)
-+	if (!ro2rw)
- 		return mnt;
+-	/*
+-	 * We got an EBUSY because our SB_RDONLY flag didn't match the existing
+-	 * super block, so invert our setting here and retry the mount so we
+-	 * can get our vfsmount.
+-	 */
+-	if (ro2rw)
+-		fc->sb_flags |= SB_RDONLY;
+-	else
+-		fc->sb_flags &= ~SB_RDONLY;
++	if (fc->sb_flags & SB_RDONLY)
++		return ret;
  
- 	/* We need to convert to rw, call reconfigure. */
+-	mnt = fc_mount(fc);
+-	if (IS_ERR(mnt))
+-		return mnt;
+-
+-	if (!ro2rw)
+-		return mnt;
+-
+-	/* We need to convert to rw, call reconfigure. */
+-	fc->sb_flags &= ~SB_RDONLY;
+ 	down_write(&mnt->mnt_sb->s_umount);
+-	ret = btrfs_reconfigure(fc);
++	if (!(fc->sb_flags & SB_RDONLY) && (mnt->mnt_sb->s_flags & SB_RDONLY))
++		ret = btrfs_reconfigure(fc);
+ 	up_write(&mnt->mnt_sb->s_umount);
+-	if (ret) {
+-		mntput(mnt);
+-		return ERR_PTR(ret);
+-	}
+-	return mnt;
++	return ret;
+ }
+ 
+ static int btrfs_get_tree_subvol(struct fs_context *fc)
+@@ -2025,6 +2007,7 @@ static int btrfs_get_tree_subvol(struct fs_context *fc)
+ 	struct fs_context *dup_fc;
+ 	struct dentry *dentry;
+ 	struct vfsmount *mnt;
++	int ret = 0;
+ 
+ 	/*
+ 	 * Setup a dummy root and fs_info for test/set super.  This is because
+@@ -2067,11 +2050,16 @@ static int btrfs_get_tree_subvol(struct fs_context *fc)
+ 	fc->security = NULL;
+ 
+ 	mnt = fc_mount(dup_fc);
+-	if (PTR_ERR_OR_ZERO(mnt) == -EBUSY)
+-		mnt = btrfs_reconfigure_for_mount(dup_fc);
+-	put_fs_context(dup_fc);
+-	if (IS_ERR(mnt))
++	if (IS_ERR(mnt)) {
++		put_fs_context(dup_fc);
+ 		return PTR_ERR(mnt);
++	}
++	ret = btrfs_reconfigure_for_mount(dup_fc, mnt);
++	put_fs_context(dup_fc);
++	if (ret) {
++		mntput(mnt);
++		return ret;
++	}
+ 
+ 	/*
+ 	 * This free's ->subvol_name, because if it isn't set we have to
 -- 
 2.47.0
 
