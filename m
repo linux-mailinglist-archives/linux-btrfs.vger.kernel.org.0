@@ -1,367 +1,414 @@
-Return-Path: <linux-btrfs+bounces-9225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621B19B58E0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:59:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 213EA9B58E9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 02:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD051C22BCF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 00:59:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40EEC1C22B38
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138EF3D551;
-	Wed, 30 Oct 2024 00:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF3E84E0A;
+	Wed, 30 Oct 2024 01:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XnCAtlVp"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="PzIV8ALm";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="XaOC3NdP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A885A282F4;
-	Wed, 30 Oct 2024 00:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730249959; cv=none; b=ANIQ2EM/K4cQUK759PSHioAtCpMNlCQkPsX4INohQFNpl0H5Ifbbnr/ZVfju0Fdmq0qZfw2XhuAJleQy2kyKF8r/nFs443fakC6CcUKPgCYw8KjiUGpH89bqfbiSQAeZEJgNXAfGqyjdc2rVl8DBl5wpy0Yx6Ui0ZkZu4a7y5ag=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730249959; c=relaxed/simple;
-	bh=23j3p/pIVZzpLwXm3oJr46ZJTztiveMI7B4CcPfzuh4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UZBaZXvZoTlz2y9nOqOY9GDO+lQ1a8VFWt8DdrT4raOK4+Ml3n3gHXR7G2hkxZoQ7Qd8BVCQktuDLWfygiF+6jxRb2uoqyRZTAbBcsCnXGPsbR6CQ114c+wwZjCKyzVIb5mk2yXEwmV/J9qWWz3maeRWPk4jnmZVlvZIuWxcR68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XnCAtlVp; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4315f24a6bbso57605295e9.1;
-        Tue, 29 Oct 2024 17:59:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C512D383A2;
+	Wed, 30 Oct 2024 01:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730250103; cv=fail; b=E/IAGOHEYQ/h2dIobJjrpId9kA0XlpXroNHL2biuZ5+3K1OD6hiILSQrj/pUprXFPHLavBt+7N+1bIDeWr8Xxo1/F26gWxQDMVitHKq1VEZva8mDq0mossCc+GgRQsSywqtJq1fh4/H6MlSHMSu7/6JlAiBNwP9fSeMTCAe2QYw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730250103; c=relaxed/simple;
+	bh=ArxP35KMhWpJbSUv6IFUtryr0hp6XZyq5z3NBhmveSU=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=qhJkGdNODtbG6SNcF14NaqXaU8LMRDbP4Qsh+miFJXqmBMRuj591y/bqL87tDwV+Kx9YpdvE/wvqblqKNYdwaxvO6/guXUrO7mmKaoMJIAbkKrtfwXbJ3JC2eGorbVODXkFqdJgIPbPWpoXv//XKM0nkvI8tWM6Xt/OoVyO3dB0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=PzIV8ALm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=XaOC3NdP; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49TGffnY003785;
+	Wed, 30 Oct 2024 01:01:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=Wn253kuSlIT+Sj+N3yyCZEopIRSN0QWdX8yZh8yVrjo=; b=
+	PzIV8ALm/RlMKkSPXyko77mV50ZNA8QPq7DPfCAEfDrLwYXgTq++vVxOAnG8uOrE
+	KirAYkqsoIaxJjqcJgT4TOBdRSRsObj9xWIRwr7kV2YR9HgvO2c9gVXZ5Cck5WFo
+	fDANKpRTtKZs3x/+5Scw6slBUOxmy4cvC9qPy49NUNFIq8bVwqaULaw7AjK5FD3b
+	j1HLjASShuZfMiUQWZD70oJR0e2eRShmcNpwrfNfk2e4sjUqePVnlu6IZVlb2lHz
+	wi7fkUiY7TuPPe6MiiWP/bdGl4m556aVbgvEdhQUICkC9CqXk45u2G3JV1jN1LVW
+	f59VDWxf7Vsn+vu7kNKJTg==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42grgwetf0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 30 Oct 2024 01:01:35 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49TMTJXx010127;
+	Wed, 30 Oct 2024 01:01:35 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2048.outbound.protection.outlook.com [104.47.58.48])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42hn8xnfpj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 30 Oct 2024 01:01:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QRLdtpugKk1C4lAhkw19+a6FA2fY/1Z4GUxl39jyzTP5jDLCnTWMDsIoQOPtG1KHlJmGXM6xXBd7W4DfGdCrmHYPRHf6R5Jep6r5CgAPv3PFuLtKt8eEjY2CHptdkw13H9YEheaYMHblFGvZx22Uqt81fZT3sF6baz7JoqfSk3vNswUOk651u96deGMzWxjEyQuntRBn8Tdz5AvlJUPHlT2X3OxSDXCIJ657OHPRRy1Nc2LNv9Zfijox0v7ZUaK0UWLe6pOpXnAtmZYXpJR7VN04iyP9ZFMGLIcMhpOrLf0DjTLLPCO6mPjA5L78IL+ZhGJQCOUB1WIBrUommiEhYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Wn253kuSlIT+Sj+N3yyCZEopIRSN0QWdX8yZh8yVrjo=;
+ b=maw98n9Zoh4YEKIVx/aY1CMKsBtgorypz6e0yiN0qbKbsJKm3i3XFeQ8X12+imjviskcsWjsLVtDkt1dX1Bl6t5riTScMebeGrKDASCMjzjXI7EcJuq0siJPZKPnMVflXMfMvQsykzmD35twSlyd9MlBwf9oDAdZK8B3K/8WLyHl71yRHpBAoShR5zV+WnAVWBN8IPTuHzpvlQIF6hSLvOkLqoAZJgxQ6YcQL1IGniXvZl+B/ZNAFyhf54UG4hokGjKb9wHTvboMoPT2w7OfiLUjV5PY8VOk3LzZiox/2U6UrMHdM4B4pCFHG7+wKFXi6qIqjv87fOaOPBRy3JUALA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730249955; x=1730854755; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xFfQqO0PEPy7BDZYVvfE+jH63zcuQllaI2N88CBZSRA=;
-        b=XnCAtlVpaGs5/45gBERVHA9tBoqvJB1LoQqhEp3SFqUUB3l2zYdY2AAE4Cm2oUWj+d
-         WdEPKCmC8foRs4Z8pBokgIZG1/2G+/Jf/4wUmQc783uuITcHTNljBZL0mIRQ9z/u5XHw
-         NHkLDPqSqDLGwRfArJezKz20DEr8T4c0Q6kKRT/N3IK5cwBc9qKyKlLHGaPU6rxRmLdE
-         fGaQpCb89T7Mq5Ok8U7JvwleL1lKb+4Wr80zuIg9fYTiD1E2evTXINL9qsY/EhxcUujY
-         9BFE7lSrqb0hBZ0PPgW2/4g5zvafvKao06a39xfHXHbVTq5IrViagZRvkjg1Cv8GP+JQ
-         qIWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730249955; x=1730854755;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xFfQqO0PEPy7BDZYVvfE+jH63zcuQllaI2N88CBZSRA=;
-        b=CBVxXF1e4e6gHZ2Sk3IV+zdpuQoWmcYveD5ukiR4mP8LmyzTHd9gF0DKJJnhoN2xsE
-         DEsKNVv5fHX3kVIA5qk4YdxnbixyrmI+q0biuTWKFuuFwBJojpEflTmbk0fEX5WTwVcO
-         SAd0dPtG1wGRvYQZOBR9tR2HAPufnKCuDsBRdeBUp+JxyUbP9v5BJLcG1HuuW/uyRESw
-         9BAreAJjJIPjFfXze1xf9b0CagT/49t+ovBLRtyKehG2Lc0NotissCqkz4c+9weihocj
-         MB2Lww2x0bcdoGVjL6UIjr5V1MmKXH6Vu79TGtqE/SoKs+upD0+981UUcpstRpRsiIeZ
-         1TaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX1fTbmaoeG88LXOmznB1hd5Y/1sXpRHsv1cch2yXKS0XiuDCGbtEQFSsJxxpqyNPXAkW5fI7bgWgGWXw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKcuPYUsqVn1p5iA3ARhSMk1wGa5g8+6qSg4X1Wu7sqY5uT8Qo
-	9AJS+GZY3Qb2RTKjdZ/uaUBA8jgOuszPz+SBz1dhP0S4hu+DB1cCuSFedQ==
-X-Google-Smtp-Source: AGHT+IFEHcdv88xPkUrQV0AzWfnSZ2aPkGqIs1jHBfK/8Z5KojLfVJNgwqhHvPcqI6IrtzeHsjhWxw==
-X-Received: by 2002:a05:600c:1d01:b0:42c:a6da:a149 with SMTP id 5b1f17b1804b1-4319ad048cdmr124447705e9.25.1730249954564;
-        Tue, 29 Oct 2024 17:59:14 -0700 (PDT)
-Received: from [192.168.42.216] ([148.252.146.177])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd9ca9f1sm4935145e9.46.2024.10.29.17.59.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Oct 2024 17:59:14 -0700 (PDT)
-Message-ID: <63db1884-3170-499d-87c8-678923320699@gmail.com>
-Date: Wed, 30 Oct 2024 00:59:33 +0000
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wn253kuSlIT+Sj+N3yyCZEopIRSN0QWdX8yZh8yVrjo=;
+ b=XaOC3NdPbZf9eZCoEEjOup1hFu8mohASAvNqsv49a03IYQ+cgPz4xw6NBdDboplallgWV2xb12kNl1SCnC3PMFpG9K8+ol7DcXdhvTQHprJct3EYeWSQTE7KEgXykyb7Zsx4uxLBdtzkyshHjSjkbMlq3iY3uA2COUxiLXa2+6I=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BLAPR10MB4851.namprd10.prod.outlook.com (2603:10b6:208:332::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.20; Wed, 30 Oct
+ 2024 01:01:31 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.8114.015; Wed, 30 Oct 2024
+ 01:01:31 +0000
+Message-ID: <793076f2-c1f2-453e-a17f-2cf4dce2fcc6@oracle.com>
+Date: Wed, 30 Oct 2024 09:01:27 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: add a test for defrag of contiguous file extents
+From: Anand Jain <anand.jain@oracle.com>
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <e592bcc458f5c2ec41930975003702a667c92a8e.1730220751.git.fdmanana@suse.com>
+ <a88924e1-4ff0-4cca-9d28-cd23f7a67b58@oracle.com>
+Content-Language: en-US
+In-Reply-To: <a88924e1-4ff0-4cca-9d28-cd23f7a67b58@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0168.apcprd04.prod.outlook.com (2603:1096:4::30)
+ To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-Cc: io-uring@vger.kernel.org
-References: <20241022145024.1046883-1-maharmstone@fb.com>
- <20241022145024.1046883-6-maharmstone@fb.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20241022145024.1046883-6-maharmstone@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BLAPR10MB4851:EE_
+X-MS-Office365-Filtering-Correlation-Id: 413eb338-706d-47d5-26ed-08dcf87e6472
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?b0RlaU0wNnYwRXk4a3ZhMVpLU3Q1RFl1aVJlR0NwWm9ST0FzVnhLbnlWU0Na?=
+ =?utf-8?B?RlFZME1ZRENXN2QwSHlNQ3NEYUwvZDZGeE04YUlGWDZybEZoM2REeENYdzQ5?=
+ =?utf-8?B?ajRDcnc3U1Vod0VlR0l1bnFsSlE5bDdQSGtQaE9EU3FPajJ4ekM0b1FqZkY4?=
+ =?utf-8?B?VUVmVy9QQ1c3M1J6TjI2eWdpR3dyNjBsNkVPd3dxZVY2NUtRUm5uZllBRWJW?=
+ =?utf-8?B?b0hpditlYjJDNjVFVHlRS1lPMUhmMEFZTFlzMzFNdm9YQTRSUEV3TVRHOXo5?=
+ =?utf-8?B?a2JFOFluaUtjSGJBY1ZmZlpNQ3diRVUveGNnRXdKbVF2dy9LeldidWNYM0R5?=
+ =?utf-8?B?ZkIrWmVnbHF0TTNXZW0xY3ppTWFzWDNMb0VhcHMrc1NZaTlwWGlWRGRZZTAr?=
+ =?utf-8?B?T0hrbnArbFZzd281UmtkejA1K21YNGdTQmdnbEl5bEtZWFl4WU1MQzRBa1NE?=
+ =?utf-8?B?eC9HN2hhVTNUaWp0VVk1dkJZalVIOXhYdVYzc1NWYWplMmw4LzJnN1pjSTl3?=
+ =?utf-8?B?ZGxkNUQ5TWxVWjZ4M3FyVEc5b0Z5Sk9lRmpVdWxHb3ZUUGprQ3NwUkFZYSs4?=
+ =?utf-8?B?OUdaSFZLNjNob2FaWDIxY25SVVhmSFZUbHpjeEJxNklEZWczNjE3QmFIU3Jy?=
+ =?utf-8?B?MkhxT3pLT0RpVWdreUluUGpvcTZEZDFoRGZBZ1RldUkrREZUS2xMKzUrUlV6?=
+ =?utf-8?B?VWFPV2xxSDVaVlc5NU9tZjl2ai93LzZBMUZ2VEQyWlZ2RHJGckNRNThlSWZZ?=
+ =?utf-8?B?a29oUkZ0ckJETUhUaFBZa0RmZ2Y5d2Q1a3dBNG03RkZNR2lUOFBzaFJIOFNm?=
+ =?utf-8?B?WkwrZk5kMWJYK0phWFlGMDhKYldrLzdFNVducDh3a1lVakNvbzJldFRYM3B6?=
+ =?utf-8?B?RGZpR1pLRlZqZEkxd1oxdytQZWtmaFQ1aXBFd3haOVRPcVovcGNVd3l2b00w?=
+ =?utf-8?B?RXNqRkd3WFpueHJvekF4ZFpTZmlXVnBRcW9QcEcxT0RnU01FNzBQaytTTzJY?=
+ =?utf-8?B?ejA4bDNQTVhhSjJ3K0wyZXhtUitxMGFpbDBWUzNKbHVMTTVOeGNFT2JrSUUr?=
+ =?utf-8?B?VDJHbldUTUU2cjR6U0FPcEw0MnRrYlJpU3dVMUJqNU1FVzU4YXdkWDZ5ZVZO?=
+ =?utf-8?B?N2ZtUGVERE52TjdpcHVQZnZIWTNzYjZaazZNWHkvRmJIRUM2WiswWTlsZXFj?=
+ =?utf-8?B?YTZBWGM1eFlEREdWMVZkUEh3NU5Hbk40enlkRW5wWUYyZTMvNGI1ano5MEpM?=
+ =?utf-8?B?cEFuTGxqTFNYWXlSUFkrYmc2cTlkS2dSeWsxSFhORG4xeDVpdW5DVDhxT1dV?=
+ =?utf-8?B?UFduQUtjVUlRVmFHOFhOZmhJTFZFSE8yUjRwYWJDYzVUL3M4REwvNmNDNjll?=
+ =?utf-8?B?Mlhyakw1VjlNZGg4Q3JsT3YyY003dW5QWmFDbjhmZEc1Q3k3eDZ0MW5lU3pG?=
+ =?utf-8?B?SWxhN0ZPZit0V3NUenJGS2pHSDVCeSt2eGlYY0l2TGlxSlRhVEpwZ2ZGOTI2?=
+ =?utf-8?B?V0R0cmFTeFpiU2dnczVSRWphVlFpK0w3emhrNUNPRWVKb1M0SjJrc0Y1ekFZ?=
+ =?utf-8?B?MytWVDNWVDVsNDJuSUtNZmhuYmF5ZVZYc3Y1RFNqYm1xMy94NWRsclduUzhQ?=
+ =?utf-8?B?eEdJWG1uVEZDZXpwNVFndUN1RFJXQUlQMy9pVUN2VVFwbzczR2ZNamtsOG1Z?=
+ =?utf-8?B?ekI0VzBacFM5RnJvbWg4Y3RlU3RDMkl2aWZLZHcrM3JUenA3SnpYVmFFelox?=
+ =?utf-8?Q?D2ucli1auO+usTYfz+zT8XaAE1MbO/V3GD3PlET?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OThFS0FyYUdxMTRRdjhiOGVmcGo2Q1Zza2VORHVHd3JWeTJOTFVTSERGMVZo?=
+ =?utf-8?B?SlcvUGtxS2NtUS9yNUZpRDRZQytseDFPT3RlUVdnODRLdXZtblVDeThoVmF2?=
+ =?utf-8?B?TWkvWDJpK0lzeXRkdElMZGM2ZW1iMUR0d1hha2RRR1VneFJDU3lTdk5iRWNV?=
+ =?utf-8?B?LzA4MytSY0l6NStqR1I1eXNxaVo1dVRWRCtzUkE5czZWdjBXRW1tSklOUG4y?=
+ =?utf-8?B?VzVxMmc2WXpiQmRCYTEvbFY0V1hYM21HeEdscGVJRHpHMU16bTBoUndxb3pn?=
+ =?utf-8?B?MzJDUHhXeS8velhIemJUSUhPOXd2T24rMGVkRGdYZVo3dVJmT1l2TjhYa3RY?=
+ =?utf-8?B?U216ckVsRE9Lc0h2NlV0S3R2eVNCa1pyM0x0Znp4T3A4eldZMkRiNTJybG9G?=
+ =?utf-8?B?VEhSQXRCUUVqZWdVeDlPbGlWRlRGMEg4a3R1ZE9LTWZxYkE3S1U5ZWtKR1Y2?=
+ =?utf-8?B?L0tSWEU2ZUg3VXcweGluWDdHbXJIYTlWZ3pvdW1hcUlBNVM4UGRWTThUNjFO?=
+ =?utf-8?B?S1MvRThFV2NreTBoaUVaQWViMldJWXpyK09WMjdTblA5RVdPM040L3p5UEhz?=
+ =?utf-8?B?eENKdE9tVXJseisxdWwreWRTakJZV25aZlgxQ0FCaGdaWjIxQXhzdGRXaUhm?=
+ =?utf-8?B?QzRLMGtZVHpGZHFsclRnMkFSNEoxMU9IV3lDdmdtTkVvZ3JwL2dmVExncmVI?=
+ =?utf-8?B?MEdBcjM5UG5zN0wzemNwOXJVWXhRZjVMOHZZdzlaMkx2OWZQQlpiZnRPYjFs?=
+ =?utf-8?B?UXNaT1prUUlQRTVhWjBxUDhvREtSTVJlZXd5L1ErVmpid2dqUGhtV3pjL1FH?=
+ =?utf-8?B?Rk1zVzlSRXFNR29NQUdFdUtVSU1MSlhrd29WNk1FSFk4WWYvR2czaGhubEFh?=
+ =?utf-8?B?aXJhUFl6NGlQYVFLRWh2WUk5WTFycDhYeElXYnliUjhoOUdmQVErbUxmSXdZ?=
+ =?utf-8?B?a1NvQ1JhVEovZllGOEhUMlU4cmZxT3c5VHF1a1oybUpvdkxldDV5Y3A4ZW1G?=
+ =?utf-8?B?UTNaVXRJdjBycmhTWnZHMVBXSUVud21KcXJFUk1ib0dEaUNNeU1uMHgzK2wr?=
+ =?utf-8?B?dkIzaHVWUXlOT1VveDI0UGdPUU9IbXozNS9qcXBLSUJTVmlScitMUVc0cVFG?=
+ =?utf-8?B?QjdVTHZQMjc1Vnkvb0gzYVlvcmdZTXZOYXlsQk40aWNnUmF4c04vNnZyVEVw?=
+ =?utf-8?B?a3hFTEJuN2RQL1RIaHlPeWE4ZVAxVHd4L1ZpMkJmYXQ2V1dZeU9Wcy9DdjMw?=
+ =?utf-8?B?OW4xclN0N2QxdDFpM3B0ZU9vKzNqZHFZRHhrS2hjWnJlWXVXNmNMdk9CRHV3?=
+ =?utf-8?B?Q0g0Z3A5NXJUSS84NGJtYnhoRGNJaEpuTjRTSlEwVHh5OUNTak1ramZZTUxX?=
+ =?utf-8?B?MHFhcG9hN2Z1OUtCbitGd0ZXYnpPVUc5YlhpVmllbHhOYk5zRGtUQmhOa0FT?=
+ =?utf-8?B?aEJMVWFWWW4wSUM4YTdEazhhWExndUdsWFNFeFpDcjY0MmFGY1l0eWJtTnVq?=
+ =?utf-8?B?cmF1WmFFN05rbGRwWlhSMDlhb2RtYnJBOXFOSGF3RzJxSFIyVjlnNElGWHZu?=
+ =?utf-8?B?OTdqbE84Z2NmVjV0Y2Z5eW1lN09RRkdmOW94MERnVlNvRDdhNlNYWGhPSXc2?=
+ =?utf-8?B?a1ptSFZGU29IdVlnTm5iZ3IzbGtZZFBoQ0lJcDFzUGVMczk5MGlYcHFMaDdS?=
+ =?utf-8?B?THo1WmVZcFArd1BEaDVUdTI0T2hDSUg5MHZYdkJ0L2NGaVhTYUZQOWt4czdE?=
+ =?utf-8?B?bTAzeG5qdDl3SW5ueERDT2x1RlJSb0xCOXNybGZvcWFMKzV0aGQ1YkZjRXJ6?=
+ =?utf-8?B?S0VtZnZoV0h0ZSsybFdMRFhZZHBtbW9kbUNIaDliY3JBZVlBNVhsMzJwYXR4?=
+ =?utf-8?B?RW5pc28xa1M2ZzBCcUE0dkx5NUZFbmttb05TWTRuOUJyWDUxaHROdEdHTExZ?=
+ =?utf-8?B?UGdXYk5XakJOMURZMjVrMU1UcHlxMHNCd3I2ZnpadFZ2c1VOR0NhNDFWZ0pk?=
+ =?utf-8?B?NnlTbUxXWVBSeHlxeWFNcXVUWHpDMmtKWGhNcExlcUpLT3hmdG85RW9NNzJ5?=
+ =?utf-8?B?cWxzRG16Nm1wcnVldWlzQ29QTkJHUHFwaTFRRzF2MXNWOFVQOTJpOG9EVVl6?=
+ =?utf-8?Q?S/vluzv2bZVvsiMb2Fb/K9EtO?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	aGYx/YPnUakOCbbuw25VrAzzBY4gFPbzxOB3kRb1DzYwtXYvpq6rIr5X6b3+DFJO/bFwBO2Lm+RcjjMKhPeomwlFoR7GbLB2mGfiQ+PBcIrw5e91+SRYo5s9fvOFm1xHkZSKtTEt/BI6w/ow4X3raFQ32UEcuMpbBHcTHpZFjsLPbZ+8hSqe3D0h0Ukqb9ypPs8zczUyn9sdB0ODcqHk8KRcphhFThsZws8bf8+rAT7k2faG5p0p/aYfw2yFtHak++qLM1RILM3JpxK/LfVfu1qJ4C3IsIEZfZ72mY7wpQKCD3UXYe8MKQUJz1UJ4JX2u/R4EYMDF+n/Y2EeGcDJAqpHAirEKrMA4JJnU8DoTg0wrHmXHF4WepGRT6lVHR5Tp5Cssmixdac96xTzmw8BuwWCen0KbZlIdxUc3TCSS1uMPf3h0IcX/To+6R9F3NbwU7attXPnn4srOZ7108+wJA5LBW0TM1QJHFuZ5O/mSz/NzlkTwHQDoPYqJoE+h3JkhxHYegknvTalFke7GrVl+m63vqUWv5U2Y4EF/kSNmfNhE42ZJgQnum0UGaDYmzuUbIi0dNmI2g3XxzXbCsMPMMf2qn81dAK0WkRiXsc3wIM=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 413eb338-706d-47d5-26ed-08dcf87e6472
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2024 01:01:31.7672
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8vFaOvPz/9oyd7CeGzKPUrC4XblQBRltiNii73BzdHFDfbKpRFGKnXk/pjPMxhkXXDowVDKVuZRw7jU9fLO45A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4851
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-29_20,2024-10-29_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ phishscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2410300006
+X-Proofpoint-ORIG-GUID: rMakCIiBFolLtN2ANDTnQ9WywJNZ9ehT
+X-Proofpoint-GUID: rMakCIiBFolLtN2ANDTnQ9WywJNZ9ehT
 
-On 10/22/24 15:50, Mark Harmstone wrote:
-...
-> +static void btrfs_uring_read_finished(struct io_uring_cmd *cmd,
-> +				      unsigned int issue_flags)
-> +{
-> +	struct btrfs_uring_priv *priv =
-> +		*io_uring_cmd_to_pdu(cmd, struct btrfs_uring_priv *);
-> +	struct btrfs_inode *inode = BTRFS_I(file_inode(priv->iocb.ki_filp));
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	unsigned long i;
-> +	u64 cur;
-> +	size_t page_offset;
-> +	ssize_t ret;
-> +
-> +	if (priv->err) {
-> +		ret = priv->err;
-> +		goto out;
-> +	}
-> +
-> +	if (priv->compressed) {
-> +		i = 0;
-> +		page_offset = 0;
-> +	} else {
-> +		i = (priv->iocb.ki_pos - priv->start) >> PAGE_SHIFT;
-> +		page_offset = offset_in_page(priv->iocb.ki_pos - priv->start);
-> +	}
-> +	cur = 0;
-> +	while (cur < priv->count) {
-> +		size_t bytes = min_t(size_t, priv->count - cur,
-> +				     PAGE_SIZE - page_offset);
-> +
-> +		if (copy_page_to_iter(priv->pages[i], page_offset, bytes,
-> +				      &priv->iter) != bytes) {
-
-If that's an iovec backed iter that might fail, you'd need to
-steal this patch
-
-https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-12-9739c753666e@ddn.com/
-
-and fail if "issue_flags & IO_URING_F_TASK_DEAD", see
-
-https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-13-9739c753666e@ddn.com/
 
 
-> +			ret = -EFAULT;
-> +			goto out;
-> +		}
-> +
-> +		i++;
-> +		cur += bytes;
-> +		page_offset = 0;
-> +	}
-> +	ret = priv->count;
-> +
-> +out:
-> +	unlock_extent(io_tree, priv->start, priv->lockend, &priv->cached_state);
-> +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+On 30/10/24 08:48, Anand Jain wrote:
+> On 30/10/24 01:23, fdmanana@kernel.org wrote:
+>> From: Filipe Manana <fdmanana@suse.com>
+>>
+>> Test that defrag merges adjacent extents that are contiguous.
+>> This exercises a regression fixed by a patchset for the kernel that is
+>> comprissed of the following patches:
+>>
+>>    btrfs: fix extent map merging not happening for adjacent extents
+>>    btrfs: fix defrag not merging contiguous extents due to merged 
+>> extent maps
+>>
+>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>> ---
+>>   tests/btrfs/325     | 80 +++++++++++++++++++++++++++++++++++++++++++++
+>>   tests/btrfs/325.out | 22 +++++++++++++
+>>   2 files changed, 102 insertions(+)
+>>   create mode 100755 tests/btrfs/325
+>>   create mode 100644 tests/btrfs/325.out
+>>
+>> diff --git a/tests/btrfs/325 b/tests/btrfs/325
+>> new file mode 100755
+>> index 00000000..0b1ab3c2
+>> --- /dev/null
+>> +++ b/tests/btrfs/325
+>> @@ -0,0 +1,80 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+>> +#
+>> +# FS QA Test 325
+>> +#
+>> +# Test that defrag merges adjacent extents that are contiguous.
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto quick preallocrw defrag
+>> +
+>> +. ./common/filter
+>> +
+>> +_require_scratch
+>> +_require_btrfs_command inspect-internal dump-tree
+>> +_require_xfs_io_command "falloc"
+>> +
+>> +_fixed_by_kernel_commit xxxxxxxxxxxx \
+>> +    "btrfs: fix extent map merging not happening for adjacent extents"
+>> +_fixed_by_kernel_commit xxxxxxxxxxxx \
+>> +    "btrfs: fix defrag not merging contiguous extents due to merged 
+>> extent maps"
+>> +
+>> +count_file_extent_items()
+>> +{
+>> +    # We count file extent extent items through dump-tree instead of 
+>> using
+>> +    # fiemap because fiemap merges adjacent extent items when they are
+>> +    # contiguous.
+>> +    # We unmount because all metadata must be ondisk for dump-tree to 
+>> see
+>> +    # it and work correctly.
+>> +    _scratch_unmount
+>> +    $BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV | \
+>> +        grep EXTENT_DATA | wc -l
+>> +    _scratch_mount
+>> +}
+>> +
+>> +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
+>> +_scratch_mount
+>> +
+>> +# Create a file with a size of 256K and 4 written extents of 64K each.
+>> +# We fallocate to guarantee exact extent size, even if compression mount
+>> +# option is give, and write to them because defrag skips prealloc 
+>> extents.
 
-When called via io_uring_cmd_complete_in_task() this function might
-not get run in any reasonable amount of time. Even worse, a
-misbehaving user can block it until the task dies.
 
-I don't remember if rwsem allows unlock being executed in a different
-task than the pairing lock, but blocking it for that long could be a
-problem. I might not remember it right but I think Boris meantioned
-that the O_DIRECT path drops the inode lock right after submission
-without waiting for bios to complete. Is that right? Can we do it
-here as well?
+>> +$XFS_IO_PROG -f -c "falloc 0 64K" \
+>> +         -c "pwrite -S 0xab 0 64K" \
+>> +         -c "falloc 64K 64K" \
+>> +         -c "pwrite -S 0xcd 64K 64K" \
+>> +         -c "falloc 128K 64K" \
+>> +         -c "pwrite -S 0xef 128K 64K" \
+>> +         -c "falloc 192K 64K" \
+>> +         -c "pwrite -S 0x73 192K 64K" \
+>> +         $SCRATCH_MNT/foo | _filter_xfs_io
+>> +
 
-> +
-> +	io_uring_cmd_done(cmd, ret, 0, issue_flags);
-> +	add_rchar(current, ret);
-> +
-> +	for (unsigned long index = 0; index < priv->nr_pages; index++)
-> +		__free_page(priv->pages[index]);
-> +
-> +	kfree(priv->pages);
-> +	kfree(priv->iov);
-> +	kfree(priv);
-> +}
-> +
-> +void btrfs_uring_read_extent_endio(void *ctx, int err)
-> +{
-> +	struct btrfs_uring_priv *priv = ctx;
-> +
-> +	priv->err = err;
-> +
-> +	*io_uring_cmd_to_pdu(priv->cmd, struct btrfs_uring_priv *) = priv;
+With the fix applied, this test case fails when the compress option is used.
 
-a nit, I'd suggest to create a temp var, should be easier to
-read. It'd even be nicer if you wrap it into a structure
-as suggested last time.
+--------------
+FSTYP         -- btrfs
+PLATFORM      -- Linux/aarch64 dev2 6.12.0-rc4+ #36 SMP PREEMPT_DYNAMIC 
+Tue Oct 29 00:25:40 +08 2024
+MKFS_OPTIONS  -- /dev/sdb
+MOUNT_OPTIONS -- -o compress -o context=system_u:object_r:root_t:s0 
+/dev/sdb /mnt/scratch
 
-struct io_btrfs_cmd {
-	struct btrfs_uring_priv *priv;
-};
+btrfs/325 1s ... - output mismatch (see 
+/Volumes/work/ws/fstests/results//btrfs/325.out.bad)
+     --- tests/btrfs/325.out	2024-10-30 08:07:48.507531048 +0800
+     +++ /Volumes/work/ws/fstests/results//btrfs/325.out.bad	2024-10-30 
+08:57:35.097186024 +0800
+     @@ -8,8 +8,8 @@
+      wrote 65536/65536 bytes at offset 196608
+      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+      Initial number of file extent items: 4
+     -Number of file extent items after defrag with 128K treshold: 1
+     -Number of file extent items after defrag with 256K treshold: 1
+     +Number of file extent items after defrag with 128K treshold: 2
+     +Number of file extent items after defrag with 256K treshold: 2
+     ...
+     (Run 'diff -u /Volumes/work/ws/fstests/tests/btrfs/325.out 
+/Volumes/work/ws/fstests/results//btrfs/325.out.bad'  to see the entire 
+diff)
+--------------
 
-struct io_btrfs_cmd *bc = io_uring_cmd_to_pdu(cmd, struct io_btrfs_cmd);
-bc->priv = priv;
+One approach is to use random data, ensuring that compression remains
+ineffective.
 
-> +	io_uring_cmd_complete_in_task(priv->cmd, btrfs_uring_read_finished);
-> +}
-> +
-> +static int btrfs_uring_read_extent(struct kiocb *iocb, struct iov_iter *iter,
-> +				   u64 start, u64 lockend,
-> +				   struct extent_state *cached_state,
-> +				   u64 disk_bytenr, u64 disk_io_size,
-> +				   size_t count, bool compressed,
-> +				   struct iovec *iov,
-> +				   struct io_uring_cmd *cmd)
-> +{
-> +	struct btrfs_inode *inode = BTRFS_I(file_inode(iocb->ki_filp));
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	struct page **pages;
-> +	struct btrfs_uring_priv *priv = NULL;
-> +	unsigned long nr_pages;
-> +	int ret;
-> +
-> +	nr_pages = DIV_ROUND_UP(disk_io_size, PAGE_SIZE);
-> +	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
-> +	if (!pages)
-> +		return -ENOMEM;
-> +	ret = btrfs_alloc_page_array(nr_pages, pages, 0);
-> +	if (ret) {
-> +		ret = -ENOMEM;
-> +		goto fail;
-> +	}
-> +
-> +	priv = kmalloc(sizeof(*priv), GFP_NOFS);
-> +	if (!priv) {
-> +		ret = -ENOMEM;
-> +		goto fail;
-> +	}
-> +
-> +	priv->iocb = *iocb;
-> +	priv->iov = iov;
-> +	priv->iter = *iter;
-> +	priv->count = count;
-> +	priv->cmd = cmd;
-> +	priv->cached_state = cached_state;
-> +	priv->compressed = compressed;
-> +	priv->nr_pages = nr_pages;
-> +	priv->pages = pages;
-> +	priv->start = start;
-> +	priv->lockend = lockend;
-> +	priv->err = 0;
-> +
-> +	ret = btrfs_encoded_read_regular_fill_pages(inode, disk_bytenr,
-> +						    disk_io_size, pages,
-> +						    priv);
-> +	if (ret && ret != -EIOCBQUEUED)
-> +		goto fail;
 
-Turning both into return EIOCBQUEUED is a bit suspicious, but
-I lack context to say. Might make sense to return ret and let
-the caller handle it.
+>> +echo -n "Initial number of file extent items: "
+>> +count_file_extent_items
+>> +
+>> +# Read the whole file in order to load extent maps and merge them.
+>> +cat $SCRATCH_MNT/foo > /dev/null
+>> +
+>> +# Now defragment with a threshold of 128K. After this we expect to 
+>> get a file
+> 
+>> +# with 1 file extent item - the treshold is 128K but since all the 
+>> extents are
+> 
+>> +# contiguous, they should be merged into a single one of 256K.
+>> +$BTRFS_UTIL_PROG filesystem defragment -t 128K $SCRATCH_MNT/foo
+> 
+>> +echo -n "Number of file extent items after defrag with 128K treshold: "
+> 
+> Nit: s/treshold/threshold/g
+> 
+>> +count_file_extent_items
+>> +
+>> +# Read the whole file in order to load extent maps and merge them.
+>> +cat $SCRATCH_MNT/foo > /dev/null
+>> +
+>> +# Now defragment with a threshold of 256K. After this we expect to 
+>> get a file
+>> +# with only 1 file extent item.
+>> +$BTRFS_UTIL_PROG filesystem defragment -t 256K $SCRATCH_MNT/foo
+>> +echo -n "Number of file extent items after defrag with 256K treshold: "
+>> +count_file_extent_items
+>> +
+>> +# Check that the file has the expected data, that defrag didn't cause 
+>> any data
+>> +# loss or corruption.
+>> +echo "File data after defrag:"
+>> +_hexdump $SCRATCH_MNT/foo
+>> +
+> 
+> Nice.
+> 
+> Nit: This can be a generic test-case.
+> 
 
-> +
-> +	/*
-> +	 * If we return -EIOCBQUEUED, we're deferring the cleanup to
-> +	 * btrfs_uring_read_finished, which will handle unlocking the extent
-> +	 * and inode and freeing the allocations.
-> +	 */
-> +
-> +	return -EIOCBQUEUED;
-> +
-> +fail:
-> +	unlock_extent(io_tree, start, lockend, &cached_state);
-> +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +	kfree(priv);
-> +	return ret;
-> +}
-> +
-> +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
-> +				    unsigned int issue_flags)
-> +{
-> +	size_t copy_end_kernel = offsetofend(struct btrfs_ioctl_encoded_io_args,
-> +					     flags);
-> +	size_t copy_end;
-> +	struct btrfs_ioctl_encoded_io_args args = { 0 };
-> +	int ret;
-> +	u64 disk_bytenr, disk_io_size;
-> +	struct file *file = cmd->file;
-> +	struct btrfs_inode *inode = BTRFS_I(file->f_inode);
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	struct iovec iovstack[UIO_FASTIOV];
-> +	struct iovec *iov = iovstack;
-> +	struct iov_iter iter;
-> +	loff_t pos;
-> +	struct kiocb kiocb;
-> +	struct extent_state *cached_state = NULL;
-> +	u64 start, lockend;
-> +	void __user *sqe_addr = u64_to_user_ptr(READ_ONCE(cmd->sqe->addr));
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-Let's rename it, I was taken aback for a brief second why
-you're copy_from_user() from an SQE / the ring, which turns
-out to be a user pointer to a btrfs structure.
+Please ignore the rb for now.
 
-...
-> +	ret = btrfs_encoded_read(&kiocb, &iter, &args, &cached_state,
-> +				 &disk_bytenr, &disk_io_size);
-> +	if (ret < 0 && ret != -EIOCBQUEUED)
-> +		goto out_free;
-> +
-> +	file_accessed(file);
-> +
-> +	if (copy_to_user(sqe_addr + copy_end, (char *)&args + copy_end_kernel,
-> +			 sizeof(args) - copy_end_kernel)) {
-> +		if (ret == -EIOCBQUEUED) {
-> +			unlock_extent(io_tree, start, lockend, &cached_state);
-> +			btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +		}> +		ret = -EFAULT;
-> +		goto out_free;
+Thanks, Anand
 
-It seems we're saving iov in the priv structure, who can access the iovec
-after the request is submitted? -EIOCBQUEUED in general means that the
-request is submitted and will get completed async, e.g. via callback, and
-if the bio callback can use the iov maybe via the iter, this goto will be
-a use after free.
 
-Also, you're returning -EFAULT back to io_uring, which will kill the
-io_uring request / cmd while there might still be in flight bios that
-can try to access it.
+> 
+> Thx, Anand
+> 
+> 
+>> +status=0
+>> +exit
+>> diff --git a/tests/btrfs/325.out b/tests/btrfs/325.out
+>> new file mode 100644
+>> index 00000000..96053925
+>> --- /dev/null
+>> +++ b/tests/btrfs/325.out
+>> @@ -0,0 +1,22 @@
+>> +QA output created by 325
+>> +wrote 65536/65536 bytes at offset 0
+>> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>> +wrote 65536/65536 bytes at offset 65536
+>> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>> +wrote 65536/65536 bytes at offset 131072
+>> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>> +wrote 65536/65536 bytes at offset 196608
+>> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>> +Initial number of file extent items: 4
+>> +Number of file extent items after defrag with 128K treshold: 1
+>> +Number of file extent items after defrag with 256K treshold: 1
+>> +File data after defrag:
+>> +000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab  
+>> >................<
+>> +*
+>> +010000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  
+>> >................<
+>> +*
+>> +020000 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef  
+>> >................<
+>> +*
+>> +030000 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73  
+>> >ssssssssssssssss<
+>> +*
+>> +040000
+> 
 
-Can you inject errors into the copy and test please?
-
-> +	}
-> +
-> +	if (ret == -EIOCBQUEUED) {
-> +		u64 count;
-> +
-> +		/*
-> +		 * If we've optimized things by storing the iovecs on the stack,
-> +		 * undo this.
-> +		 */> +		if (!iov) {
-> +			iov = kmalloc(sizeof(struct iovec) * args.iovcnt,
-> +				      GFP_NOFS);
-> +			if (!iov) {
-> +				unlock_extent(io_tree, start, lockend,
-> +					      &cached_state);
-> +				btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> +				ret = -ENOMEM;
-> +				goto out_acct;
-> +			}
-> +
-> +			memcpy(iov, iovstack,
-> +			       sizeof(struct iovec) * args.iovcnt);
-> +		}
-> +
-> +		count = min_t(u64, iov_iter_count(&iter), disk_io_size);
-> +
-> +		/* Match ioctl by not returning past EOF if uncompressed */
-> +		if (!args.compression)
-> +			count = min_t(u64, count, args.len);
-> +
-> +		ret = btrfs_uring_read_extent(&kiocb, &iter, start, lockend,
-> +					      cached_state, disk_bytenr,
-> +					      disk_io_size, count,
-> +					      args.compression, iov, cmd);
-> +
-> +		goto out_acct;
-> +	}
-> +
-> +out_free:
-> +	kfree(iov);
-> +
-> +out_acct:
-> +	if (ret > 0)
-> +		add_rchar(current, ret);
-> +	inc_syscr(current);
-> +
-> +	return ret;
-> +}
-
--- 
-Pavel Begunkov
 
