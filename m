@@ -1,100 +1,99 @@
-Return-Path: <linux-btrfs+bounces-9230-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9231-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5609B59B4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 03:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEADB9B59C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 03:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD64B225A0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 02:01:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14649B22B6B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 02:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC11191F81;
-	Wed, 30 Oct 2024 02:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDC4193075;
+	Wed, 30 Oct 2024 02:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="X8NNCH5l";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ISC8Ezja"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ZdXKe3sO";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="xH87mAzd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975A3D531;
-	Wed, 30 Oct 2024 02:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2440450FE;
+	Wed, 30 Oct 2024 02:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730253673; cv=fail; b=XpNuyQiadO7CjpVQ3oRYiFy35NSCfTpvzY95P1qLk1n6p9GQ33PS51GdxJYOufFuM0zDsgON8pfIw/xqok9bokyWAb7uwhESIoYt9PfF7KiJEInrCzgiyAo3kdnLB85rlhiIIVSQmS7KsPT/3OpWGJzJcBrHfWIDEulJn4Sr1YA=
+	t=1730254222; cv=fail; b=cycxd2wEkzbLY1iFFu2ZQxxs0gaaF/PVfyHikmNGTNso21p8CZxQBATxGN1/5uq8OkVGBqOXGomTMvqxJisJYgvx1WjT2D7ChFj+wFKRw/L4WSOP4koX8wGan57exbJUlpVN5UTE/LrhC0Ufqm8MjV8hh/duhLE9cGA6r6LJun8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730253673; c=relaxed/simple;
-	bh=UI1sTNQ4jHD7TXbmIyVwKNa9YG//sYeRHMFv3616yI4=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=qxL8rIu7er90oWj6+QqH7ZyGj+tqs92Z8maibDtSlEQRfbcaLFLntKjO9MR1gbjkf/tVkCeiXeanU2Ew3NoybN8L+zM7+6yXh8zzWAMJtDr2D9j+xv0xS1A1QBkD3PVZZHWDcVtbn2qe/0qLcuq6jL7N/ERL5j9byJtV6SC7zhw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=X8NNCH5l; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ISC8Ezja; arc=fail smtp.client-ip=205.220.165.32
+	s=arc-20240116; t=1730254222; c=relaxed/simple;
+	bh=NlZmpAXzOuVDnJwF+TvBffc4+LsKv0kf7XTX1hku6VU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=oowAHRaQ3h5kji8y6mHK9JpZsLP04N1nrr7zoce709kjUUImm+qT09oy4QB0G2DJMW1P9265OBWd0BzH8S+9dyEVWi3nMVq5z/+hpO9L38Qt0h7ksPod4YoSy+u+Fz0VtRM1mpXPAw5G/CACIiNTuf4hBfcYsOqkSIZXIHQ6e5A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ZdXKe3sO; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=xH87mAzd; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49U1htp6030237;
-	Wed, 30 Oct 2024 02:01:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49U1fbMw018349;
+	Wed, 30 Oct 2024 02:10:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=GzwSDEj42hT/Avx8Jb78ENN6rmDKZnfkCzOJiRpk3pw=; b=
-	X8NNCH5lBVgBXDhUGZmcFOPA/p3wR+R5/IfvvuFG4rjMhUgI6eunfcQcbdX6dJk6
-	dJ+f0USHFO9WWWZ7ZxnEe9YXjo/vWV+x7qLnKOOii4XmfFkVr93yHZmnYySuJm0U
-	1l0S14ReSf7tyn9U3IQFlwdhXM6EZJ1NT/GKRQnasd+VXjO+ab+vCPo8qLYszq9M
-	zqyEJUZX52Gq6dJ+r8OebDKM8O1gD+uLg7lVmaAULIrPvrOvraD5ZzBB4Zn+QBoq
-	9xGlfdspIlDJJ7srRTVALq3QS2Nu8dWPW3a2HKTIsvaW4bs1M+wIk+Y6J3dI70c3
-	ZRHYDQNQ7Uim27BlTSfSqA==
+	corp-2023-11-20; bh=pOlE9IJO2G85NbMjAdy3Vqg6nGqVKkJf0CGOVlMr89U=; b=
+	ZdXKe3sOtyGt+ifNqP0OZV1Ezo52E95CcyI+Dge9FQ+/xpidoAXqZ8dL+BMwJ2X4
+	ereJR+hpjqJY8MaJsnIYkztJtz/eaQ8MHXaZIatSLVr9zUZv0dXvChlogUUvS6qO
+	F6s/2vmSFjK9LkXsoKZXd9NiWtNyJ62CdK9AGQSP2MuBJzQL89o/L6mctEVmhJke
+	Zvd9Ei6UHpAFcHU0y1uEyGhZWHf7F9ESdrYFYNVFR75scxkNhBt0XDlm0uOitaMt
+	4hAk3Wwc/erAaZhgz7GdWtl17sCmfd9lgd0Ie7Y2zVEZHTfqqYrO0FseK0rXXSic
+	tznh3Tkxt/VpsY9rPpNUAw==
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42grgweuyr-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42grc1xvdy-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 30 Oct 2024 02:01:07 +0000 (GMT)
+	Wed, 30 Oct 2024 02:10:14 +0000 (GMT)
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49TNb9mg011760;
-	Wed, 30 Oct 2024 02:01:03 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 42hnadd6x7-1
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49TNHdd8011821;
+	Wed, 30 Oct 2024 02:10:14 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2042.outbound.protection.outlook.com [104.47.70.42])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 42hnaddfd4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 30 Oct 2024 02:01:03 +0000
+	Wed, 30 Oct 2024 02:10:14 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ADz8aRZunyE5VEuz2Dt/SpFQQxWjNsCBU+LzMawiCRLSOWxiDU7/kpSaI1hBif2lxnkM36Ru6awP8gXFAswzxefH/B/ncSzwWsspCmz9b+fA3LjdUKuKuinu8OBMmkLmGarBNvnCs9YFBIdeifJL5yPlhqNXOIfuJo+PnPyH8i9bNXC7SQZ/ortHHXeiNeooGyC5ZyWxF/Tc0TFACjPgRNb9gKQV6E8FCLS/sIzTuFp6uiZc2r9kF6DsV323wDtm8RX5StErgRMrnkMQXvQ/7XCt9Q3xG8U7NJRPpGWdeBGGupPmgRTOZXrY8Pfd9q23V/ruf0AV+8AXJcjI4gzYVA==
+ b=crgVeWizE4XgEebxCT72sOc/YVok8cJ0cxLAFIFZGLB7kFJ5yKtG743urVpYj2k9Hnfjmf93FVvhp0/EL1tBxwanJY84XcdzVk8c21SS4S3152yL6d3oFTHFkQj8eUlYW5r6Ay99mAG8fAkhn+D+7JgecIrqmdo2fCb67Oy8eZypz6qk9XkPDFU7yQChP45/XZzdxSTXcNza7lrVKDIXQK6CdhYHTmS9uFP+SB4+EqhMgwn8IvKmMjg9xoM6zWAdrWFPro8CB7YVr8VmoGGejNvuRl55enpHhh/9CF4rZYiX2zwgrhYGaWpWYToB5ZX67DLSi7pV7eNXPuVAI3fGvA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GzwSDEj42hT/Avx8Jb78ENN6rmDKZnfkCzOJiRpk3pw=;
- b=Znee4BZ1zj8IBrxn5s0ew4oiOgqOzwV0fAPlhk/eudHLRtiAIfcVEmYv9+OoE2AzAvAVgWaAG6gEwx1KkcKPDSLt34QnAV+nKYbgJ9+GwUU+8bOzNmrWY6fRdMQW9cuBr8kRqvkHLDW1mvPiR20idJQwZeTXIbpF9kxL/55CGnjwwSrw3jvEClNJzgvq6mOS7kbqyY0fPTai5Is+6l1bl5S9jqMbkopgeRq6CPAChX/lDH2L60ppKIry5UMdpIm9KdoIPkytbnBGTTTxo5yUwOUl1pq+uXNzkG7D3+5ZTQUHT4o/iEq0EEXk+pEjzvwBbnR/OuQHDr0paWjPSLkoVw==
+ bh=pOlE9IJO2G85NbMjAdy3Vqg6nGqVKkJf0CGOVlMr89U=;
+ b=Lqllku6OVLGKhR+Wbw2lgFWlZPUcbpGH1tz7gbJiEE0Y0BEJw3Ujct5UeTpM5nSFYm6BRWuATq6RcgOa7diRgv/A1kl6A55tW1I18fdT5v7Pf/bEheHXKDc2trdA6/czCFuGqwWSuREbO2nEVhbI0pCYSieuBKI95Z+W+CXuZTifzjluQPWNEULA3NEN5xQTxnyIrwgYMOrVb14ZEt7Tij/nDWZFgAkHrGydbQJ+Wn/BmDNSXgTA9i5fyTw0Mw/kLSF2Mj5TGgTJWA9gVc+Fs6Dqb5AOJmstHv8Gcygez83q/KkyT65doxG/wdYbdp1G+5BeQ7O0uIhxEZFZbXpA5A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GzwSDEj42hT/Avx8Jb78ENN6rmDKZnfkCzOJiRpk3pw=;
- b=ISC8EzjaZrfjO6M23+NYIUWfCturOJcC9m/xMzYyPvunP+2S0TuBb8MoX9Zea8WQy26xP/y/HaREImdFEXq7ovggXXGFfWBd11TwYFGMM+epWymPnF5ZD+EjVH91rTbBOTToFkj5TqQKrkKmySTa1zJjJQKLDKa8u83MhB8hf2g=
+ bh=pOlE9IJO2G85NbMjAdy3Vqg6nGqVKkJf0CGOVlMr89U=;
+ b=xH87mAzd0goHUNJgeTcwDnDMpTALHodnwG1JdRO/dILhDyfwqBotMx99F6XTJWDTvcRCMhdY9QDPew6Pn44Wy7k9xUy/6k0viT1/8WwGGJCyRhITMFbiyaTntVcr7mZ9uDaMjqU0V9imMP23ZlwY51LNQWqDJCg5Gt0iYTwOv6M=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by BY5PR10MB4338.namprd10.prod.outlook.com (2603:10b6:a03:207::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.32; Wed, 30 Oct
- 2024 02:00:55 +0000
+ 2024 02:10:11 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.8114.015; Wed, 30 Oct 2024
- 02:00:55 +0000
-Message-ID: <cb5fac77-6764-4486-9f36-90f447e0b6d6@oracle.com>
-Date: Wed, 30 Oct 2024 10:00:49 +0800
+ 02:10:11 +0000
+Message-ID: <49e0218a-4b57-49a0-995b-abe287bc3d84@oracle.com>
+Date: Wed, 30 Oct 2024 10:10:07 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fstests: generic/366: add a new test case to verify if
- certain fio load will hang the filesystem
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <20241028233525.30973-1-wqu@suse.com>
+Subject: Re: [PATCH] btrfs/287: make the test work when compression is enabled
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <9991dab5ca241c17f531f49dab5dbaa6e9146c45.1730220754.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20241028233525.30973-1-wqu@suse.com>
+In-Reply-To: <9991dab5ca241c17f531f49dab5dbaa6e9146c45.1730220754.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0214.apcprd04.prod.outlook.com
- (2603:1096:4:187::17) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: SI2PR02CA0054.apcprd02.prod.outlook.com
+ (2603:1096:4:196::13) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -104,94 +103,94 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BY5PR10MB4338:EE_
-X-MS-Office365-Filtering-Correlation-Id: e70a8bfa-a5fc-4cb1-e80a-08dcf886b094
+X-MS-Office365-Filtering-Correlation-Id: a8a83970-46b7-4e58-3171-08dcf887fbc3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Mkt4U1pVa1E4U2Fsa0pDUVZ3cmNhTTJxV0FRdXhadDZQVU4rYWdrNUdnNWhG?=
- =?utf-8?B?RDQvNFhVREdDMTk2Y1JiTjhWVXpXZHBNSFdYbGZmdmJRd29uWHowSzhJeUM5?=
- =?utf-8?B?LzFXbUNnVEFwL0FMRUtId3NWZTU1MXlSQ0lLU1p0NmVjcTErckN1cDFxeVJD?=
- =?utf-8?B?VWFJWWg0RlV3MEI2NW4xWm54THVuWWxlY3dRUUZUN2pJNVNIKyt4Yk1YZWxQ?=
- =?utf-8?B?NGR5Y1ZCR3VvcmNvNFRNMWRvOWdwVVlKbGZsTkdoT3ppdGpOMC9SbWIybVhy?=
- =?utf-8?B?dXA3MTRVclpvamc0VVBHN3AwVHVxMjVaQ3d5cG9WVzhHejF1YzV4SlphNGRN?=
- =?utf-8?B?aDB4VXo4cGtnbTJrb1oxSkpmVzRhUGZ0eWZxOVJGa0p3ZEYrR1NmVEs2dnlk?=
- =?utf-8?B?dlFzMURlSFFFYSs0VEFkOStCNEZrcHFwN00xNlNNZURKeS8vWUNBTW5kWkh1?=
- =?utf-8?B?V2NJRjF5SHBIV3VjNEMyeldlTmhSNmVNKzZiMzhEekQ4eVV1aE1WQzJ0QmNt?=
- =?utf-8?B?MmI2WjFTN2kwZzVGY3p0U1lyN25GRmFiMXFxT0p4WXcxRytBWC8yditDS0xq?=
- =?utf-8?B?SlBydFBjK0dyYjlRc1kzeVlScHdlcEhDRzEwL0FHL2p0VWllQXVXTXVnVldI?=
- =?utf-8?B?a0lWajdUNWc0cUdYYkd2dm9uQU83UHBJUVJONDBzbHhTNWR4blJ1WmFwRTND?=
- =?utf-8?B?N3ZUY293V2lHUkIwOXZTWHh3d3UrNGhBWlFmTjg4S2krbEgrcE9leG9IMnZL?=
- =?utf-8?B?UENVdVBxWVJxV2xnRjFpRklHSzhwekozL2QzbDlVenFWWWJzelZtcHdROVpp?=
- =?utf-8?B?Z01SUVg2d05xSDJva0dZS3VLemJTR0NwdTJmc2dMNmIva1V5K2FIRldBQnJi?=
- =?utf-8?B?c2xsaVJDVnVtOFJiekxhYWtYM1RqbHFzbFNMbmdzWVdDc2hQZ1JtTktrR3RE?=
- =?utf-8?B?TXZhMUlFQk5jTE9xS0llYTk2d3gwamFRTC9ScUdrNGQ1cVl2eG50QUZML1VC?=
- =?utf-8?B?bGtYNTcrRkozcXcrc0RmTGlGU3R4TDlLQ3pKaDdkTENoZ3BMUG9Kc2prT1M3?=
- =?utf-8?B?YzB1YTBvbm01MzhGTkVJaFdKUjF5MzBTSTBRNzFpbXM2L3YxRGhzbG5XNmVU?=
- =?utf-8?B?MW9UNFFnMUkrcHhCaFlGMUdZNm9raHV0TDF1Y0tWTE5aZkppemUyN3JkNHBS?=
- =?utf-8?B?UnM2TmVLNm53Z1YvWTVjZDViR3Y3M2JWSWIzODAwZzlQVEJqSjF2akhGZ0cv?=
- =?utf-8?B?SlJTczdJU0g0ODZETWk1d2FDczJXeXNIb3lwdEhQRWZ1V0RvY3pqZzU0NlVi?=
- =?utf-8?B?ZHM4SE9hNTFDa1FKS0FvM0JYY3ljS1gwNTJjdVBXUzNXQS9uM2NBNkpZRGkw?=
- =?utf-8?B?bzlyd3FRYlR6UFNGM1UvaEMrazByTnc3bmkzOFg0d1JUZW1DQ2lzTXpaQmEy?=
- =?utf-8?B?aHZmbkErMHROSUFoNlJKTWFhd0NDYlRGMlFXN2taQW9FNnpDTXJESkhIL09j?=
- =?utf-8?B?Nk5KS2dsUy95Y205dS9pcnBrTmdjdkNsNEZLQmZaQmpUaGhBbjBESW5VMzM5?=
- =?utf-8?B?b0hHYStadXlwR3dnRHNhVkZrVVlsWEpTaW1ZbDM4bGdBSC9HZWJMOFhpZThO?=
- =?utf-8?B?Y2RLOC9GbGpOcXpwZG9nNVNuQm1nQ0Z3VnVkM242QWI4ZkdUTjhrK1YvSGFh?=
- =?utf-8?B?cHF0NDFrQXVMTzRtMHJYN09zb0JkZUxJV3VaVE44WlUzRW5YNUkvN1MvazNJ?=
- =?utf-8?Q?t+RpSI3ExtDz8dAnKGOaB273DYwI6EG2EmNM/lh?=
+	=?utf-8?B?ejN4ZHZTdjJzVWFwMEVFMjJ5cVlkSEh2Y2RiSFV5eThvOWdqcXlCYnh2VVB0?=
+ =?utf-8?B?TzQzTnpyNTBzUHE4SG9tNE9kTFJTTWN6eUtySHZDekRkeitQTVZ0d1FKb2tP?=
+ =?utf-8?B?VUFxNHVrV2l3N1kyQmk1OU5qTXphVmpnQ3ZaVXlxYVJ3bDNhc0FiMFpacmxq?=
+ =?utf-8?B?R21WaWthc0k0UnB1Y2VubmVtNDdpZVBqek9tenlzVldKNzJHUktrYXlkaC9P?=
+ =?utf-8?B?dUZMZDBjUDQxOFlma1lmQTlGV3RqTmcycmlyaHB4dEdOYVN4clJleWNibk5V?=
+ =?utf-8?B?ejZrcVlVbElmYVh2WVFqU0RnMlpsalpoakNSTTBJeFNVKzAyRmVhZzI0Vjl0?=
+ =?utf-8?B?eDdyaVNuem9qL2ZabVlsVkYrc1hKVWZUQlh5SEhRSFhnMUI2dWNNN3ZPbzRy?=
+ =?utf-8?B?T01JckZvQjBNemczcDYzWEM2QmJUMUpWdHZTV0tDQzZuU0lvTVBsVnJhZ0pR?=
+ =?utf-8?B?cUk0Mlg1SzhYelFSNDVkWnNzM0hrTHBsRW1aQ2k4UXZOSW1nWUp1YkFEWTE1?=
+ =?utf-8?B?MkRBNnFORG9SeWxtTk95QzRTL0hRZHdhR25rMUxrU01RZmNuaEpmaW12U1g2?=
+ =?utf-8?B?cXhaUldlYm5qMVkvOWJHTEloZ2JUT2FFZm93TUtadkw2Y0p4dzc3eUdVNnAr?=
+ =?utf-8?B?eitUY2Rwc2dYbTNFbit4b3hpT0ljT2tUZnh4ZWc3eFR1OGN0aGlNeXNCRXhC?=
+ =?utf-8?B?VndxNkdiKzVOSmx6V29LaVpMUjdTalBZcElPbnRURE5TeXRaTGFRUGJkUVJ5?=
+ =?utf-8?B?ajVnajYxaFJxc2I3N2g4M3hNaEVaTXpRdkFyTWN4YUxqYlk2K3p2cWRWTGkw?=
+ =?utf-8?B?b0R2RTUwUWE5enFZMkNVeCt0dkxBQkdmcHlRdmNHbEpyejk3QVl3UVFzRnRy?=
+ =?utf-8?B?L29nV29FZThXZ3VKZlR5enE2UXc3SndFQlYzU1phQjN1ejU2M01LSXFVWUly?=
+ =?utf-8?B?TkUreUJxT0tuNG5wM2hPYUpXdi9GSlIwVlRyVGlJZXRTT1lYSStVblNhamdX?=
+ =?utf-8?B?VzU5N1B4c1lkcjdtSDZxUitQVXF3TkNpNnNrQUp4em9sMUFsMWxEcXRLYVpq?=
+ =?utf-8?B?N0pJdkJ2MzdDVU8wQ3dvU1ZITXZpNDAzNWR5UW9tV3hzTFphU0hKcXFaWldP?=
+ =?utf-8?B?dDV0SmNpL2Fnc2xoWXJvS1FBMXBQbksxVzk3MnAzbytKR3hsMjg2QlE1Rkt0?=
+ =?utf-8?B?ZHRwUG5sc3FObDR6MHF2NUxTOXJTSnVPU01RUTd4cURabnFTcmhaZzM1bVM2?=
+ =?utf-8?B?Tm5EekVNUWg3RmVPekZaMXJKQzk4Nm1lNExCSkRvY1hnZ3VCc3drSWVTNDBK?=
+ =?utf-8?B?Vll4NFl1M1dwenVQRWhtWnU5ZE5wTXNFK2Ztb2lEdk9VdlRyeDZDVXpKSmx3?=
+ =?utf-8?B?WEF0SC9SZE5YYnhmTHRjWUZNTjhKM1ZwY3dFWTM1Z1cvcUFVWkpKV3dZQTFY?=
+ =?utf-8?B?QWV5TVFjNWF5WXRpdER4OWhNbklzdGlwS0hwRkhyTDhrQ1F3d09lcXJXZk9v?=
+ =?utf-8?B?OFVuTUMzQisvVDZBNk9MU09IeU92R0VRVTVySUNmeFhQTk96WU1wK2dUOXRl?=
+ =?utf-8?B?dzdwV2tkY1Y5VUg2UVFraFJYOG9BTkQzMm5hVmNvVzhSWlA2Z2RueDZ0NSs2?=
+ =?utf-8?B?RFhtOUJvVmZrRXoxRGZ0ZkRIcmJPYTYyb002TjJHSUpuMXdndjIvcUZkUmtp?=
+ =?utf-8?B?em1FSU1la2FIMVQ5dmpZYkRQOEZrdU9uNWlrSko0aEx1YXUzK3AxWitCd2ow?=
+ =?utf-8?Q?F+ri6dzdG3zXX8y1zQo8jKw4QQwP93F+oRKYIl9?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aHVlcllCR0NvSlNDcWkzcWhwL1FHSzdnTmZrTWFRaHpYMjZmbXJ2YkhrcEVi?=
- =?utf-8?B?cENMMjlUU1Z2aDNKYjZPOUxCMnZtaFRGNjkxRUp6WGZFYndKVmQ3c1JyWWhB?=
- =?utf-8?B?OCtzM0JJdkhUb0V2cDZoa3ZzQmxMd0dES2w3VW4wN3Q1d3c1RFF0WU5lQnV6?=
- =?utf-8?B?RjdnV3VUVGZJekltRWNVSjJkY3BwNTBLdnZiTTQyNEFSWjdYTktvYkJjZmpI?=
- =?utf-8?B?T3ZScmd4V1c0U0IzSlpIWTR1VXJrTFV1WVZVZlZUSk90K0tHWldJKytuM1dO?=
- =?utf-8?B?RHRpekpXTGNidUNzOUl2V2s2WENhVzVqT01ySmYwNXBXZlBjVCtrdnlZL01i?=
- =?utf-8?B?am5zQnRNTEs2UzFtaFYwRjNkVEZJaFVqcTRzcnkwSGpUVWFCdC9BbmYybVBx?=
- =?utf-8?B?cVZKOTlSeEJ2dnFzQ0lVVHR1TXdMVElyTmxVRTc1MUN0cFZWOWR1TU9zWlZI?=
- =?utf-8?B?VjV0WDQzcnFpRWhVMldZSXhXL3pLZ2trN3RtNUgrZVlubWMvUS9yc1BYRm53?=
- =?utf-8?B?N2dKVmNzVFFTcTYvTnk0Zm5rUFJEMlNlc1N5VHNvTkNWVFlmL3hyYTh3aWZ6?=
- =?utf-8?B?c0p1cWFkdVJHM2JLMXBiaGxwNTNIQm1ZeTdsbmxnUUZldGpjSTR3NXlYYnVP?=
- =?utf-8?B?UFZBdDRNUUlmckpTcklnQTFpdStoWWFTVjFtNDhQZVp5NzNZM0dzREdSazJJ?=
- =?utf-8?B?d1gvMmdtNlM0Um5uSElGbjdSays3SkRiZFZRYlNBRG9Qa2cvOWpRVDNibHNH?=
- =?utf-8?B?Q004Njl1WFMxWXVaV2xIeVhHSk15NVNid0pYQW9aVGluczVOclFpQ0hTYmJa?=
- =?utf-8?B?YzNHZm8zWDhZWkRrcDZEd2NrcUxPNlJyVTB4Q1FPY2pjTFppUnVYNjBqWDVX?=
- =?utf-8?B?YXJ4S1NTa1AxU0FWZGNpeXVJZzIzUWdpZHdQeUx6WG1kbWsrQnJxeHROSHF4?=
- =?utf-8?B?cGdneDBMU1lUSUtJUEcwblYyU3VMcE5qbTVza2FjR3RqZUFSRFJDeGgyOVpI?=
- =?utf-8?B?bkN1RWtYZndHRzZIQThlV1JUVzc3ZmRmdzlkbG8rWWk1RHE4MW5xTmFMaDk2?=
- =?utf-8?B?TitXV04vU3RKRHhxVTNsVTdmZGIyeHA1Q1dxNVVpZXNGVEhYS0ViODFXamw0?=
- =?utf-8?B?Z1p3SGphZCsrdkZLU2M0YStQdm1BUHhMYURXbnJPc1cwcmNSUTJYQmZSMHB3?=
- =?utf-8?B?cjl5SVZLSVhITUNDUkVNTS9XRVk4TDdmbnl6ZE4wYXQyajRJbXJUUGJKa04z?=
- =?utf-8?B?b1VwdHkrWDVXOEdnZzM2TmIrdU9temRXd3llUW1kSFRPUUJXbFFLRER4ZHky?=
- =?utf-8?B?Q0FDWUlkcjVVbXNkUnE3UFBmUFlmT0NJNkpEdXhwS0VUbEExclVtWWY1Y1Uy?=
- =?utf-8?B?T0t4TU5wVDFXZThNRWV2WG0vcFcwTVM5cEEyY2gvRjk0aFIrVWFyNjJTaXNU?=
- =?utf-8?B?ay9vVlliYWpTajBEVkxFOGpwRHk4UjkwQmlwYzRRbjhnZ29Wb0p1cDBhOVJO?=
- =?utf-8?B?NVBEVW9CZFlTQ2lHQ0V4Q0FnTkU4cnZSY3FEbUl1RWNhNytVTmJqQ1lCelQ2?=
- =?utf-8?B?Y0x4NTlreDNvNE9ZSU5aN0RiRzZuZTJvZjQ5d2hCWDdKN3AyVkgyUUNNTnJr?=
- =?utf-8?B?ZkdUWU5aT1Y2Uk13ZW5PVXlPbGFHREZnR3FOU2NsTVNJdG00QmNjUzZUNjRr?=
- =?utf-8?B?T0ttdHF6TDE1NENWVTRjU3BlSTJyeWhoZzl0M1YvSmtqbFdFeC9DS0VTaW5E?=
- =?utf-8?B?WWtQTndHRmdwZlVSd1FhdzMxd1VJekVIZVpCUzNrUlJyTHJnZ2ErTnBpUlFm?=
- =?utf-8?B?RXpXVTFzeFNDdExCMUZ3YTZEcUQvY2sya3I0T2hONjdYR0h2MUJ5T3UrSnl2?=
- =?utf-8?B?ZWs4Y25ORHduS3BnQ2RJRFZCQ0FUMFJzcUJOQXJZTDYzdlZObDh4R3hHZlJQ?=
- =?utf-8?B?dnVYeU15WjZ2QVdMQjhabGhRREVEV0JGZWNyTVlnZEJYVTZ2VDRvQkR2aFdC?=
- =?utf-8?B?YXJpZFNVdVRaNkRDZlVqa0QwQkRmMEFtNWNIckZzeE9IeXhuT3REQy9WMWRU?=
- =?utf-8?B?WjhmcUkyTDlTbnpwdzE1UG94eXYweG10enZJNXE1RmNZSmUvcEZTTzVUTkY2?=
- =?utf-8?Q?4Ds9KwpswJSAs8d95aDmfT73U?=
+	=?utf-8?B?YkJzUDAwdy9Ib3pzRGRXb21OLy83ZThlRlA1cnRpWjBGQ0VuUHFxKzJmNkd5?=
+ =?utf-8?B?YkRwSGtmYzJrZ08wdW9HVVBRVzJMei9WaFYrc2ZaOUxkdGRWZlBSODZKN1ht?=
+ =?utf-8?B?ZERSbnJMREdsbFFSZWdHcGdzYXFzb2swV0lOREg3eldVeXE2ekVaK2Y2NGNa?=
+ =?utf-8?B?ZkM2cW9kS0kvK25oenF0OXlWaDM4cmw2M1dabDhYMjErSVZVTEp6ZkgrenV0?=
+ =?utf-8?B?anRnaWFFTzY2bllBS1R3RzF1a2NEaVBYd1R3TThBOG1UUzBSbHlZeDN2VEpv?=
+ =?utf-8?B?b3gzTGJSMEZ6MlZIS04raHJ3akloVWYvdWtPWkUwWE85dEl0cTdmUnREQndP?=
+ =?utf-8?B?TmthbjZJVHc5Mml1TzJ3ZmNlMXZlTll4ckNHR0VQVDJRdU1FZUxDMHJ6dnJR?=
+ =?utf-8?B?SzNmZ0YyMjdLKzY5cWNUS0xEQlNBUENncU5FWmE1ektTbTN6V2NodlFjemVu?=
+ =?utf-8?B?UDdtY1NPSmhiZnk2K0JLN2llK1JGVmRWM2MwdlpqOWlCZlNRKy8wcGxTVXBa?=
+ =?utf-8?B?MDRzVVdOU0xybVNJZFFOcFZXaDB0cXZRQTkxaGh2UFVnWHBXUG1sNG9JMWRF?=
+ =?utf-8?B?QzVhNm92Z2pyZHJSSVBIZTlaZE5ubjRMQlA3V3RkRG5YOXlGeXQvU3kxbVNm?=
+ =?utf-8?B?ME5PRG1wdXJhMFdFbk5ycmhqSkl5elZUWkUyNXhSWityTnJKMXF3K0wyaWd4?=
+ =?utf-8?B?RWhKb1BDcnF6eklWU3FJcis5Mm8vSFp4eWRic1VBRE9WaWgyelBERjlTekJD?=
+ =?utf-8?B?TE04VXd4SEl0VE8xMVdMRVZoZlFKczdWNXlodnBIYThCcGt1dWIxRGRjbFkx?=
+ =?utf-8?B?Y2VWS0ZkMDRKSWpBSS83eXNjTSt5NUhSK1dzSFQ0eEZKaTQwVkdsbFNLOUNu?=
+ =?utf-8?B?bjFBVm5GcDhLVGcvYkx6dVB4akZObnlTNmUwQ3FVSEN3cUxBU09HdDdaNFdw?=
+ =?utf-8?B?ZzNxSnZkdGptTVhRdFlEUkt4aXlmWXljU0U3UlNGWFk3K0V1RGRwOFhjZHZ6?=
+ =?utf-8?B?Yi9zRzFxemFLaTBZWDZFeTZ1UXhQNGNXVmZDYjhZY3YrR0J2M1ZhZU43RHE4?=
+ =?utf-8?B?S0pZRkdQS0UwR1dKci9mVUVnV2x2MTEzQ09SSnJJRG1jT0F3a0F5SmtVSnFE?=
+ =?utf-8?B?QmhRelJHVDJvdVMrczF0RTl0Sm5BOWhDdWxKV0hqZTBkamJkRlRUQUZ2L2Ji?=
+ =?utf-8?B?ZER3Q1FDYzZ3ay81RkhJaWxid1lHSTJyNm1mRll3SXY3WjQ2YVUzVHJ1Z3U5?=
+ =?utf-8?B?S25ja0VXdXI0amZUaEFQV1JGblF6cHhQVkRtR1BXR01tQjk3cDY3eEJ0UmlH?=
+ =?utf-8?B?dDJZWXEwbEw2MEhvWkJqWi9xaU8zV3lOaFhncSs3bEJMdS92R2dZeEZMbEVt?=
+ =?utf-8?B?TldFNUpuTGNJalNGYjlsTmdBMjNMUVZrZFRmbjZmeTNtb2wzdzgxTHpJOW1L?=
+ =?utf-8?B?SFIvd3ArdStrdnVHeWYxSFBiUGZPYXZ0K2Jpa0JXYjdhWGMzR3dBdm16eUlH?=
+ =?utf-8?B?bGQyR0dGTGUvdnluV2M4b01hcFJNT1BqQnU0MGN0MUxRSm93TVNFeFpaeDdE?=
+ =?utf-8?B?NFFVUHUzZ0dkL2NDNWxFWVdIbERmYWtJUm9HRUtmZTQ2Wlc2aDlvSS9mc2hN?=
+ =?utf-8?B?T3F2cEpUWUxCelZYd2lIT3BFZGZ3c2ZWYzk0cDlUYzBvOUhxc2NTZU5YT2NT?=
+ =?utf-8?B?ZzhGTUpPRTM1UnRWaHJ3dVRnSUplRk4zbW1Ha1FMZGNWVUZUL2o3bjRqeklE?=
+ =?utf-8?B?THMyTHpwVk5VZlpLUHFJdktJeTcxTFpUcEFlODhyWkZHV3YxenY3T2hScVJm?=
+ =?utf-8?B?OThZamJ1MDQyNWx3enN5MXN5eDBhVnRmUnBMZTZuVzNoVk5CVnI0bEJoSE0r?=
+ =?utf-8?B?WHE4ckFKWDZFZTMxYlNTcDBKZUdWVzhKemx1TVdkSzlyTTJiYzRyMWhMYWtz?=
+ =?utf-8?B?R2xOd0ExOXViZTRrdTJoRmx4bnE4aW5ScFdpQktPVjBuK2hRVU1PVGk5WDRm?=
+ =?utf-8?B?QXYzSDRPNUVzRVJ3K01GVURyWXpFbXZWazRSQzBKREdDZHpTUzZVTTN5ZEF3?=
+ =?utf-8?B?Z01ZV0JHU3FoV2FNdEd5QlpLUGF2bVpHOEh6M0JRbTJOVnQ1M1cxTVZjUkRI?=
+ =?utf-8?Q?rahpzCuqgO5WRkJm3nXlsQkRg?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Sqpka7BkYo1UKjHv1l4EhQ9AiZ5wgSGii2TbKPbb0u/DZCRceYQDmtc4eletO9c0IjboYsFZ8HGIUXPo9l+sGZsQU4GPleIdF4wwTiwWFzKvAaMtUiR9UfPTz3GpG692JxKQVkGYCjJZY88fyzy6qe5beZEgvAabW+23DVt/Cb9e2GyTacyIdJv3Fy+qneMVrRktHTGDK7S32APMV8HIAaNkHXQ798ei3a6r87Hw7IDalDPy38AkcdAO37sJsY1L8kF3bIp56jh3xpIzWo8snKD81awM5peFeXT7re8CEkq7IMVbThC99syoExuhek9ierBs6fUEBrktJcHtdz0MBrUNybkb78QmCJNS+Na9EshekwhG7MkuSDXroogy9DKbesvbHA0JlZRKRqvpTYlaaKMkfWNgoh6G2R11apuS4oPCT163ZE8nftWfgWJpDtm5TqfQwbSuIR7dD3naViYIdKwnoCPL0jy0Xjr+VPWzJNbYxvmsLsS8jF80xxyrPCfdwNvL5FDJVbvV8ZvIMI+OZ3miDQqUMcFa+2Qih1ITSuEAKvHN4xyqe0CxYlc3ghas1dCimUKwZBPVlrWlXn2o21EnyyDW9JZrBpk1wMl1CbI=
+	cl3Vnu7PWWBCKjLhnwjip5Ic0gJXwBa1WjC0NwB98jcDU0wf/KGr/pT5w/94ON87Q702x9WML7HfkzB4e4AbCF3HOu6o9ercTU8m2vxgfnvKvDOkL+6AI83cd/wq7fwQk4WafHfqJmD7cjvwYmODCz7aakB+agQwyxqWEPqEzovcq2M6nvTXEoZ1YbRJEMbpjZTrdx9NNzU5+gTp+sO+sAnRCde7vK2Z2U8HJp6VM3cOkDD6Ush/ymizVtlmbck0Q1b6bsKJqxMU7ae6/BLVLoOv0xiY14oXk5/osG5ZW1zIQXfKyUmcIIC68lDQMIC/lP0Y3SHaxuI+NOvbJuP9BfC4P778XZQtdeb4+vC87GG0YU6cZbnhMiX6vee+fdbq00BHe2RSLFn3N2Kx9wz3h3jGyQgFtyWsUdwSeDQVa1tz47aqtnoNrdtpxv8rTJ5GqIhMWwH+x1YiGxp8bqeXUZJ3wQm6CIyFqDHkHYRwGv25Y/k8BA6b8xXfops+itEF6ENCxtRApfpAii2F0nK5l52O/t220WN+ZeaYgnWcQjzxrH+yTF10w9iUuRMTBV+GmxvzwLBSw4rH6kIGFo4gUwyaqi5WGVagksnkNVkQpWg=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e70a8bfa-a5fc-4cb1-e80a-08dcf886b094
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8a83970-46b7-4e58-3171-08dcf887fbc3
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2024 02:00:55.4566
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2024 02:10:11.0874
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kBcoH3sWMBHVLmylre2xj6xuEmi3Lf+feVFT8bcybzfOhk/9ABcvUGNlWUSjSdZALUlZpts93xlD2D95kG9RLg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: hL1mM12Wln/8BkIEllv8bYf/T2b09UiBn7JzPnlYaeme+pyhsa5LtNThDqSDdbH0Xh4aKN6lv6xaSNESWQE02A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4338
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
@@ -199,210 +198,106 @@ X-Proofpoint-Virus-Version: vendor=baseguard
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
  bulkscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
- definitions=main-2410300014
-X-Proofpoint-ORIG-GUID: 3TufwCIrJNGT-aR9ts0H_pGl2EftFtY-
-X-Proofpoint-GUID: 3TufwCIrJNGT-aR9ts0H_pGl2EftFtY-
+ definitions=main-2410300016
+X-Proofpoint-GUID: g041GIZ__sYgBsquVVo2HP6_zLPdMWgj
+X-Proofpoint-ORIG-GUID: g041GIZ__sYgBsquVVo2HP6_zLPdMWgj
 
-On 29/10/24 07:35, Qu Wenruo wrote:
-> [BUG]
-> During the development to make btrfs pass generic/563 (which needs to
-> make btrfs to support partial folios), generic/095 causes hangs
-> during tests.
+On 30/10/24 01:21, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> The call trace for the hanging process looks like this:
+> When running btrfs/287 with compression enabled (mount options), the test
+> fails because it expects to find 4M extents, however compression limits
+> the maximum size of extents to 128K, breaking the tests' expectations.
 > 
->    __switch_to+0xf8/0x168
->    __schedule+0x328/0x8a8
->    schedule+0x54/0x140
->    io_schedule+0x44/0x68
->    folio_wait_bit_common+0x198/0x3f8
->    __folio_lock+0x24/0x40
->    extent_write_cache_pages+0x2e0/0x4c0 [btrfs]
->    btrfs_writepages+0x94/0x158 [btrfs]
->    do_writepages+0x74/0x190
->    filemap_fdatawrite_wbc+0x88/0xc8
->    __filemap_fdatawrite_range+0x6c/0xa8
->    filemap_fdatawrite_range+0x1c/0x30
->    btrfs_start_ordered_extent+0x264/0x2e0 [btrfs]
->    btrfs_lock_and_flush_ordered_range+0x8c/0x160 [btrfs]
->    __get_extent_map+0xa0/0x220 [btrfs]
->    btrfs_do_readpage+0x1bc/0x5d8 [btrfs]
->    btrfs_read_folio+0x50/0xa0 [btrfs]
->    filemap_read_folio+0x54/0x110
->    filemap_update_page+0x2e0/0x3b8
->    filemap_get_pages+0x228/0x4d8
->    filemap_read+0x11c/0x3b8
->    btrfs_file_read_iter+0x74/0x90 [btrfs]
->    new_sync_read+0xd0/0x1d0
->    vfs_read+0x1a0/0x1f0
+> Example:
 > 
-> [CAUSE]
-> The root cause is a btrfs specific behavior that during a folio read, we
-> can trigger writeback of the same folio, which will try to lock the same
-> folio already locked by the read process.
+>    $ MOUNT_OPTIONS="-o compress" ./check btrfs/287
+>    FSTYP         -- btrfs
+>    PLATFORM      -- Linux/x86_64 debian0 6.12.0-rc4-btrfs-next-177+ #1 SMP PREEMPT_DYNAMIC Thu Oct 24 17:14:37 WEST 2024
+>    MKFS_OPTIONS  -- /dev/sdc
+>    MOUNT_OPTIONS -- -o compress /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
 > 
-> The fix is already sent to the mailing list:
-> https://lore.kernel.org/linux-btrfs/62bf73ada7be2888d45a787c2b6fd252103a5d25.1729725088.git.wqu@suse.com/
+>    btrfs/287 2s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad)
+>        --- tests/btrfs/287.out	2024-10-19 18:21:30.451644840 +0100
+>        +++ /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad	2024-10-29 16:31:20.926612583 +0000
+>        @@ -25,22 +25,14 @@
+>         resolve first extent with ignore offset option:
+>         inode 257 offset 16777216 root 5
+>         inode 257 offset 8388608 root 5
+>        -inode 257 offset 2097152 root 5
+>         resolve first extent +1M offset:
+>        -inode 257 offset 17825792 root 5
+>        -inode 257 offset 9437184 root 5
+>        ...
+>        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/287.out /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad'  to see the entire diff)
 > 
-> This problem can only happen if all the following conditions are met:
+>    HINT: You _MAY_ be missing kernel fix:
+>          0cad8f14d70c btrfs: fix backref walking not returning all inode refs
 > 
-> - The sector size of btrfs is smaller than page size
->    To have partial uptodate folios.
+>    Ran: btrfs/287
+>    Failures: btrfs/287
+>    Failed 1 of 1 tests
 > 
-> - Btrfs won't read the full folio if buffered write is block aligned
->    This is done by the not yet merged patch:
->    https://lore.kernel.org/linux-btrfs/ac2639ec4e9ac176d33e95ef7ecf008fa6be5461.1727833878.git.wqu@suse.com/
+> Fix this by creating the two 4M extents with fallocate, so that the test
+> works regardless of compression being enabled or not.
 > 
-> [TEST CASE]
-> During the debugging of that generic/095 hang, I extracted a minimal
-> reproducer which is much smaller and faster, although it still requires
-> several runs to trigger a hang.
-> 
-> The test case will run the fio workload 32 times by default, which is
-> more than enough to trigger the hang.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Fix the duplicated _fixed_by_kernel_commit line
-> - Fix a typo in the commit message
-> - Update the comments to show the workload and how it hangs btrfs
-> ---
->   tests/generic/366     | 106 ++++++++++++++++++++++++++++++++++++++++++
->   tests/generic/366.out |   2 +
->   2 files changed, 108 insertions(+)
->   create mode 100755 tests/generic/366
->   create mode 100644 tests/generic/366.out
-> 
-> diff --git a/tests/generic/366 b/tests/generic/366
-> new file mode 100755
-> index 00000000..9d31c1c8
-> --- /dev/null
-> +++ b/tests/generic/366
-> @@ -0,0 +1,106 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 366
-> +#
-> +# Test if mixed direct read, direct write and buffered write on the same file will
-> +# hang the filesystem.
-> +#
-> +# This is exposed by an incoming btrfs feature, which allows a folio to be
-> +# partial uptodate if the buffered write range is block aligned but not yet
-> +# full folio aligned.
-> +#
-> +# Such behavior makes btrfs to hang reliably under generic/095.
-> +# This is the extracted minimal reproducer for 4k block size and 64K page size.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick
-> +
-> +. ./common/filter
-> +
-> +_require_scratch
-> +_require_odirect
-> +_require_aio
-> +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"btrfs: avoid deadlock when reading a partial uptodate folio"
-> +
-> +iterations=$((32 * LOAD_FACTOR))
-> +
-> +fio_config=$tmp.fio
-> +fio_out=$tmp.fio.out
-> +blksz=`$here/src/min_dio_alignment $SCRATCH_MNT $SCRATCH_DEV`
-> +cat >$fio_config <<EOF
-> +[global]
-> +bs=8k
-> +iodepth=1
-> +randrepeat=1
-> +size=256k
-> +directory=$SCRATCH_MNT
-> +numjobs=1
-> +[job1]
-> +ioengine=sync
-> +bs=512
-> +direct=1
-> +rw=randread
-> +filename=file1
-> +[job2]
-> +ioengine=libaio
-> +rw=randwrite
-> +direct=1
-> +filename=file1
-> +[job3]
-> +ioengine=posixaio
-> +rw=randwrite
-> +filename=file1
-> +EOF
-> +_require_fio $fio_config
-> +
-> +for (( i = 0; i < $iterations; i++)); do
-> +	_scratch_mkfs >>$seqres.full 2>&1
-> +	_scratch_mount
-> +	# There's a known EIO failure to report collisions between directio and buffered
-> +	# writes to userspace, refer to upstream linux 5a9d929d6e13. So ignore EIO error
-> +	# at here.
-> +	#
-> +	# And for btrfs if sector size < page size, if we have a partial
-> +	# uptodate folio caused by a buffered write, e.g:
-> +	#
-> +	#    0          16K         32K          48K         64K
-> +	#    |                                   |///////////|
-> +	#					     \- sector Uptodate|Dirty
-> +	#
-> +	# Then writeback happens and finished, but btrfs' ordered extent not
-> +	# yet finished.
-> +	# In that case, the folio can be released from the page cache (since
-> +	# the folio is not under IO/lock).
-> +	#
-> +	# Then new buffered writes into the folio happened, re-dirty the folio:
-> +	#   0          16K         32K          48K         64K
-> +	#   |//////////|                        |///////////|
-> +	#      \- sector Uptodate|Dirty              \- No sector flags
-> +	#                                               extent map PINNED
-> +	#                                               OE still here
-> +	#
-> +	# Now read is triggered on that folio.
-> +	# Btrfs will need to wait for any existing ordered extents in the folio range,
-> +	# that wait will also trigger writeback if the folio is dirty.
-> +	# That writeback will happen for range [48K, 64K), but since the whole folio
-> +	# is locked for read, writeback will also try to lock the same folio, causing
-> +	# a deadlock.
-> +	$FIO_PROG $fio_config --ignore_error=,EIO --output=$fio_out
-> +	# umount before checking dmesg in case umount triggers any WARNING or Oops
-> +	_scratch_unmount
-> +
-> +	_check_dmesg _filter_aiodio_dmesg
-> +
-> +	echo "=== fio $i/$iterations ===" >> $seqres.full
-> +	cat $fio_out >> $seqres.full
-> +done
-> +
-> +echo "Silence is golden"
-> +
-
-Thanks!
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
+Thanks, Anand
 
-
-
-
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/366.out b/tests/generic/366.out
-> new file mode 100644
-> index 00000000..1fe90e06
-> --- /dev/null
-> +++ b/tests/generic/366.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 366
-> +Silence is golden
+> ---
+>   tests/btrfs/287     | 10 +++++-----
+>   tests/btrfs/287.out |  4 ----
+>   2 files changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tests/btrfs/287 b/tests/btrfs/287
+> index e88f4e0a..a51b31ed 100755
+> --- a/tests/btrfs/287
+> +++ b/tests/btrfs/287
+> @@ -7,13 +7,14 @@
+>   # Test btrfs' logical to inode ioctls (v1 and v2).
+>   #
+>   . ./common/preamble
+> -_begin_fstest auto quick snapshot clone punch logical_resolve
+> +_begin_fstest auto quick snapshot clone prealloc punch logical_resolve
+>   
+>   . ./common/filter.btrfs
+>   . ./common/reflink
+>   
+>   _require_btrfs_scratch_logical_resolve_v2
+>   _require_scratch_reflink
+> +_require_xfs_io_command "falloc"
+>   _require_xfs_io_command "fpunch"
+>   
+>   # This is a test case to test the logical to ino ioctl in general but it also
+> @@ -42,10 +43,9 @@ _scratch_mount
+>   #
+>   # 1) One 4M extent covering the file range [0, 4M)
+>   # 2) Another 4M extent covering the file range [4M, 8M)
+> -$XFS_IO_PROG -f -c "pwrite -S 0xab -b 4M 0 4M" \
+> -	     -c "fsync" \
+> -	     -c "pwrite -S 0xcd -b 4M 4M 8M" \
+> -	     -c "fsync" $SCRATCH_MNT/foo | _filter_xfs_io
+> +$XFS_IO_PROG -f -c "falloc 0 4M" \
+> +                -c "falloc 4M 4M" \
+> +                $SCRATCH_MNT/foo
+>   
+>   echo "resolve first extent:"
+>   first_extent_bytenr=$(_btrfs_get_file_extent_item_bytenr "$SCRATCH_MNT/foo" 0)
+> diff --git a/tests/btrfs/287.out b/tests/btrfs/287.out
+> index 4814594f..48541f7e 100644
+> --- a/tests/btrfs/287.out
+> +++ b/tests/btrfs/287.out
+> @@ -1,8 +1,4 @@
+>   QA output created by 287
+> -wrote 4194304/4194304 bytes at offset 0
+> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -wrote 8388608/8388608 bytes at offset 4194304
+> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>   resolve first extent:
+>   inode 257 offset 0 root 5
+>   resolve second extent:
 
 
