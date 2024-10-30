@@ -1,307 +1,367 @@
-Return-Path: <linux-btrfs+bounces-9224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690AB9B58DD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 621B19B58E0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9B31F23DBA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 00:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD051C22BCF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 00:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981C847F69;
-	Wed, 30 Oct 2024 00:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138EF3D551;
+	Wed, 30 Oct 2024 00:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dJuWNM74";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dJuWNM74"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XnCAtlVp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4282F31A60
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2024 00:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A885A282F4;
+	Wed, 30 Oct 2024 00:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730249789; cv=none; b=sRC3Eq9sEkymn2YIvqwNXAWM8sMCxEh+XomlI+3nV4lroRJWmI2XOz7vR/T6skHgzvKps3xa/YpAKhnI2cjcW9MmWbEspMQlYu7USBYxoiHC/TxQjOZO37+LfD8wjYjXTcRF/AV8PlPrkEPakGhB00m/Kb1deaiCq7jehEa9o2g=
+	t=1730249959; cv=none; b=ANIQ2EM/K4cQUK759PSHioAtCpMNlCQkPsX4INohQFNpl0H5Ifbbnr/ZVfju0Fdmq0qZfw2XhuAJleQy2kyKF8r/nFs443fakC6CcUKPgCYw8KjiUGpH89bqfbiSQAeZEJgNXAfGqyjdc2rVl8DBl5wpy0Yx6Ui0ZkZu4a7y5ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730249789; c=relaxed/simple;
-	bh=eqcU6OGwBvcxAJe2nBm34z55IKBZn83NKIXIPgia6FY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uvSD1FnmhW2kKxvRmN6LDB+mU9haFL0rvxyEFYOmhxYyH26kqq6YYVj5QLuwVzQ8fhNhT6p2JPEG9dLKLKdzeZA2j9D52UdeZeTqyj03QSBN4Put0kS1xG17F2lfKRpYQKfJ0MLrFBWBDWwJnXE5Jj6w2E2GYs7ibkaa5QRasPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dJuWNM74; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dJuWNM74; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7C46A21DD0;
-	Wed, 30 Oct 2024 00:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1730249785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ou8wb0I++Dlb4mEV2+sf47RPAVY6jwzdTNmVh9V6rLU=;
-	b=dJuWNM74F0piQA8RK18pJ8gSWVeomB24EpKA8JveIukD+k0gVKL8Lfp8IG1Xkx7ZOd2J48
-	JpoRqQvgkkyGh7ZsD20qUyaMrak49j3sZwsX08Vs4FosBaaG2YsjBXx/Yj03+ru6rgajcs
-	sakK9vnquZnV1yfSHMC3jkwbHlOneEY=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1730249785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ou8wb0I++Dlb4mEV2+sf47RPAVY6jwzdTNmVh9V6rLU=;
-	b=dJuWNM74F0piQA8RK18pJ8gSWVeomB24EpKA8JveIukD+k0gVKL8Lfp8IG1Xkx7ZOd2J48
-	JpoRqQvgkkyGh7ZsD20qUyaMrak49j3sZwsX08Vs4FosBaaG2YsjBXx/Yj03+ru6rgajcs
-	sakK9vnquZnV1yfSHMC3jkwbHlOneEY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E2CC136A5;
-	Wed, 30 Oct 2024 00:56:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sJJxNzeEIWdJJAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 30 Oct 2024 00:56:23 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Enno Gotthold <egotthold@suse.com>,
-	Fabian Vogt <fvogt@suse.com>
-Subject: [PATCH 2/2] btrfs: fix mount failure due to remount races
-Date: Wed, 30 Oct 2024 11:25:48 +1030
-Message-ID: <a682e48c161eece38f8d803103068fed5959537d.1730249396.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <cover.1730249396.git.wqu@suse.com>
-References: <cover.1730249396.git.wqu@suse.com>
+	s=arc-20240116; t=1730249959; c=relaxed/simple;
+	bh=23j3p/pIVZzpLwXm3oJr46ZJTztiveMI7B4CcPfzuh4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UZBaZXvZoTlz2y9nOqOY9GDO+lQ1a8VFWt8DdrT4raOK4+Ml3n3gHXR7G2hkxZoQ7Qd8BVCQktuDLWfygiF+6jxRb2uoqyRZTAbBcsCnXGPsbR6CQ114c+wwZjCKyzVIb5mk2yXEwmV/J9qWWz3maeRWPk4jnmZVlvZIuWxcR68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XnCAtlVp; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4315f24a6bbso57605295e9.1;
+        Tue, 29 Oct 2024 17:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730249955; x=1730854755; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xFfQqO0PEPy7BDZYVvfE+jH63zcuQllaI2N88CBZSRA=;
+        b=XnCAtlVpaGs5/45gBERVHA9tBoqvJB1LoQqhEp3SFqUUB3l2zYdY2AAE4Cm2oUWj+d
+         WdEPKCmC8foRs4Z8pBokgIZG1/2G+/Jf/4wUmQc783uuITcHTNljBZL0mIRQ9z/u5XHw
+         NHkLDPqSqDLGwRfArJezKz20DEr8T4c0Q6kKRT/N3IK5cwBc9qKyKlLHGaPU6rxRmLdE
+         fGaQpCb89T7Mq5Ok8U7JvwleL1lKb+4Wr80zuIg9fYTiD1E2evTXINL9qsY/EhxcUujY
+         9BFE7lSrqb0hBZ0PPgW2/4g5zvafvKao06a39xfHXHbVTq5IrViagZRvkjg1Cv8GP+JQ
+         qIWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730249955; x=1730854755;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xFfQqO0PEPy7BDZYVvfE+jH63zcuQllaI2N88CBZSRA=;
+        b=CBVxXF1e4e6gHZ2Sk3IV+zdpuQoWmcYveD5ukiR4mP8LmyzTHd9gF0DKJJnhoN2xsE
+         DEsKNVv5fHX3kVIA5qk4YdxnbixyrmI+q0biuTWKFuuFwBJojpEflTmbk0fEX5WTwVcO
+         SAd0dPtG1wGRvYQZOBR9tR2HAPufnKCuDsBRdeBUp+JxyUbP9v5BJLcG1HuuW/uyRESw
+         9BAreAJjJIPjFfXze1xf9b0CagT/49t+ovBLRtyKehG2Lc0NotissCqkz4c+9weihocj
+         MB2Lww2x0bcdoGVjL6UIjr5V1MmKXH6Vu79TGtqE/SoKs+upD0+981UUcpstRpRsiIeZ
+         1TaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX1fTbmaoeG88LXOmznB1hd5Y/1sXpRHsv1cch2yXKS0XiuDCGbtEQFSsJxxpqyNPXAkW5fI7bgWgGWXw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKcuPYUsqVn1p5iA3ARhSMk1wGa5g8+6qSg4X1Wu7sqY5uT8Qo
+	9AJS+GZY3Qb2RTKjdZ/uaUBA8jgOuszPz+SBz1dhP0S4hu+DB1cCuSFedQ==
+X-Google-Smtp-Source: AGHT+IFEHcdv88xPkUrQV0AzWfnSZ2aPkGqIs1jHBfK/8Z5KojLfVJNgwqhHvPcqI6IrtzeHsjhWxw==
+X-Received: by 2002:a05:600c:1d01:b0:42c:a6da:a149 with SMTP id 5b1f17b1804b1-4319ad048cdmr124447705e9.25.1730249954564;
+        Tue, 29 Oct 2024 17:59:14 -0700 (PDT)
+Received: from [192.168.42.216] ([148.252.146.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd9ca9f1sm4935145e9.46.2024.10.29.17.59.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Oct 2024 17:59:14 -0700 (PDT)
+Message-ID: <63db1884-3170-499d-87c8-678923320699@gmail.com>
+Date: Wed, 30 Oct 2024 00:59:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.com:url];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+Cc: io-uring@vger.kernel.org
+References: <20241022145024.1046883-1-maharmstone@fb.com>
+ <20241022145024.1046883-6-maharmstone@fb.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20241022145024.1046883-6-maharmstone@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-[BUG]
-The following reproducer can cause btrfs mount to fail:
+On 10/22/24 15:50, Mark Harmstone wrote:
+...
+> +static void btrfs_uring_read_finished(struct io_uring_cmd *cmd,
+> +				      unsigned int issue_flags)
+> +{
+> +	struct btrfs_uring_priv *priv =
+> +		*io_uring_cmd_to_pdu(cmd, struct btrfs_uring_priv *);
+> +	struct btrfs_inode *inode = BTRFS_I(file_inode(priv->iocb.ki_filp));
+> +	struct extent_io_tree *io_tree = &inode->io_tree;
+> +	unsigned long i;
+> +	u64 cur;
+> +	size_t page_offset;
+> +	ssize_t ret;
+> +
+> +	if (priv->err) {
+> +		ret = priv->err;
+> +		goto out;
+> +	}
+> +
+> +	if (priv->compressed) {
+> +		i = 0;
+> +		page_offset = 0;
+> +	} else {
+> +		i = (priv->iocb.ki_pos - priv->start) >> PAGE_SHIFT;
+> +		page_offset = offset_in_page(priv->iocb.ki_pos - priv->start);
+> +	}
+> +	cur = 0;
+> +	while (cur < priv->count) {
+> +		size_t bytes = min_t(size_t, priv->count - cur,
+> +				     PAGE_SIZE - page_offset);
+> +
+> +		if (copy_page_to_iter(priv->pages[i], page_offset, bytes,
+> +				      &priv->iter) != bytes) {
 
-  dev="/dev/test/scratch1"
-  mnt1="/mnt/test"
-  mnt2="/mnt/scratch"
+If that's an iovec backed iter that might fail, you'd need to
+steal this patch
 
-  mkfs.btrfs -f $dev
-  mount $dev $mnt1
-  btrfs subvolume create $mnt1/subvol1
-  btrfs subvolume create $mnt1/subvol2
-  umount $mnt1
+https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-12-9739c753666e@ddn.com/
 
-  mount $dev $mnt1 -o subvol=subvol1
-  while mount -o remount,ro $mnt1; do mount -o remount,rw $mnt1; done &
-  bg=$!
+and fail if "issue_flags & IO_URING_F_TASK_DEAD", see
 
-  while mount $dev $mnt2 -o subvol=subvol2; do umount $mnt2; done
+https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-13-9739c753666e@ddn.com/
 
-  kill $bg
-  wait
-  umount -R $mnt1
-  umount -R $mnt2
 
-The script will fail with the following error:
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +
+> +		i++;
+> +		cur += bytes;
+> +		page_offset = 0;
+> +	}
+> +	ret = priv->count;
+> +
+> +out:
+> +	unlock_extent(io_tree, priv->start, priv->lockend, &priv->cached_state);
+> +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
 
- mount: /mnt/scratch: /dev/mapper/test-scratch1 already mounted on /mnt/test.
-       dmesg(1) may have more information after failed mount system call.
- umount: /mnt/test: target is busy.
- umount: /mnt/scratch/: not mounted
+When called via io_uring_cmd_complete_in_task() this function might
+not get run in any reasonable amount of time. Even worse, a
+misbehaving user can block it until the task dies.
 
-And there is no kernel error message.
+I don't remember if rwsem allows unlock being executed in a different
+task than the pairing lock, but blocking it for that long could be a
+problem. I might not remember it right but I think Boris meantioned
+that the O_DIRECT path drops the inode lock right after submission
+without waiting for bios to complete. Is that right? Can we do it
+here as well?
 
-[CAUSE]
-During the btrfs mount, to support mounting different subvolumes with
-different RO/RW flags, we have a small hack during the mount:
+> +
+> +	io_uring_cmd_done(cmd, ret, 0, issue_flags);
+> +	add_rchar(current, ret);
+> +
+> +	for (unsigned long index = 0; index < priv->nr_pages; index++)
+> +		__free_page(priv->pages[index]);
+> +
+> +	kfree(priv->pages);
+> +	kfree(priv->iov);
+> +	kfree(priv);
+> +}
+> +
+> +void btrfs_uring_read_extent_endio(void *ctx, int err)
+> +{
+> +	struct btrfs_uring_priv *priv = ctx;
+> +
+> +	priv->err = err;
+> +
+> +	*io_uring_cmd_to_pdu(priv->cmd, struct btrfs_uring_priv *) = priv;
 
-  Retry with matching RO flags if the initial mount fail with -EBUSY.
+a nit, I'd suggest to create a temp var, should be easier to
+read. It'd even be nicer if you wrap it into a structure
+as suggested last time.
 
-The problem is, during that retry we do not hold any super block lock
-(s_umount), this meanings there can be a remount process changing the RO
-flags of the original fs super block.
+struct io_btrfs_cmd {
+	struct btrfs_uring_priv *priv;
+};
 
-If so, we can have an EBUSY error during retry.
-And this time we treat any failure as an error, without any retry and
-cause the above EBUSY mount failure.
+struct io_btrfs_cmd *bc = io_uring_cmd_to_pdu(cmd, struct io_btrfs_cmd);
+bc->priv = priv;
 
-[FIX]
-The current retry behavior is racy because we do not have a super block
-thus no way to hold s_umount to prevent the race with remount.
+> +	io_uring_cmd_complete_in_task(priv->cmd, btrfs_uring_read_finished);
+> +}
+> +
+> +static int btrfs_uring_read_extent(struct kiocb *iocb, struct iov_iter *iter,
+> +				   u64 start, u64 lockend,
+> +				   struct extent_state *cached_state,
+> +				   u64 disk_bytenr, u64 disk_io_size,
+> +				   size_t count, bool compressed,
+> +				   struct iovec *iov,
+> +				   struct io_uring_cmd *cmd)
+> +{
+> +	struct btrfs_inode *inode = BTRFS_I(file_inode(iocb->ki_filp));
+> +	struct extent_io_tree *io_tree = &inode->io_tree;
+> +	struct page **pages;
+> +	struct btrfs_uring_priv *priv = NULL;
+> +	unsigned long nr_pages;
+> +	int ret;
+> +
+> +	nr_pages = DIV_ROUND_UP(disk_io_size, PAGE_SIZE);
+> +	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+> +	if (!pages)
+> +		return -ENOMEM;
+> +	ret = btrfs_alloc_page_array(nr_pages, pages, 0);
+> +	if (ret) {
+> +		ret = -ENOMEM;
+> +		goto fail;
+> +	}
+> +
+> +	priv = kmalloc(sizeof(*priv), GFP_NOFS);
+> +	if (!priv) {
+> +		ret = -ENOMEM;
+> +		goto fail;
+> +	}
+> +
+> +	priv->iocb = *iocb;
+> +	priv->iov = iov;
+> +	priv->iter = *iter;
+> +	priv->count = count;
+> +	priv->cmd = cmd;
+> +	priv->cached_state = cached_state;
+> +	priv->compressed = compressed;
+> +	priv->nr_pages = nr_pages;
+> +	priv->pages = pages;
+> +	priv->start = start;
+> +	priv->lockend = lockend;
+> +	priv->err = 0;
+> +
+> +	ret = btrfs_encoded_read_regular_fill_pages(inode, disk_bytenr,
+> +						    disk_io_size, pages,
+> +						    priv);
+> +	if (ret && ret != -EIOCBQUEUED)
+> +		goto fail;
 
-Solve the root problem by allowing fc->sb_flags to mismatch from the
-sb->s_flags at btrfs_get_tree_super().
+Turning both into return EIOCBQUEUED is a bit suspicious, but
+I lack context to say. Might make sense to return ret and let
+the caller handle it.
 
-Then at the re-entry point btrfs_get_tree_subvol(), manually check the
-fc->s_flags against sb->s_flags, if it's a RO->RW mismatch, then
-reconfigure with s_umount lock hold.
+> +
+> +	/*
+> +	 * If we return -EIOCBQUEUED, we're deferring the cleanup to
+> +	 * btrfs_uring_read_finished, which will handle unlocking the extent
+> +	 * and inode and freeing the allocations.
+> +	 */
+> +
+> +	return -EIOCBQUEUED;
+> +
+> +fail:
+> +	unlock_extent(io_tree, start, lockend, &cached_state);
+> +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+> +	kfree(priv);
+> +	return ret;
+> +}
+> +
+> +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
+> +				    unsigned int issue_flags)
+> +{
+> +	size_t copy_end_kernel = offsetofend(struct btrfs_ioctl_encoded_io_args,
+> +					     flags);
+> +	size_t copy_end;
+> +	struct btrfs_ioctl_encoded_io_args args = { 0 };
+> +	int ret;
+> +	u64 disk_bytenr, disk_io_size;
+> +	struct file *file = cmd->file;
+> +	struct btrfs_inode *inode = BTRFS_I(file->f_inode);
+> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +	struct extent_io_tree *io_tree = &inode->io_tree;
+> +	struct iovec iovstack[UIO_FASTIOV];
+> +	struct iovec *iov = iovstack;
+> +	struct iov_iter iter;
+> +	loff_t pos;
+> +	struct kiocb kiocb;
+> +	struct extent_state *cached_state = NULL;
+> +	u64 start, lockend;
+> +	void __user *sqe_addr = u64_to_user_ptr(READ_ONCE(cmd->sqe->addr));
 
-Fixes: f044b318675f ("btrfs: handle the ro->rw transition for mounting different subvolumes")
-Reported-by: Enno Gotthold <egotthold@suse.com>
-Reported-by: Fabian Vogt <fvogt@suse.com>
-[ Special thanks for the reproducer and early analyze pointing to btrfs ]
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1231836
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Instead of brute force retry-until-success-or-failure, allow sb flags
-  mismatch during btrfs_get_tree_super()
-  So that we can utilize sb->s_umount to prevent race.
+Let's rename it, I was taken aback for a brief second why
+you're copy_from_user() from an SQE / the ring, which turns
+out to be a user pointer to a btrfs structure.
 
-- Rebased after patch "btrfs: fix per-subvolume RO/RW flags with new mount API"
-  Fortunately or unfortunately my distro is already utilizing the new
-  mount API and I found the per-subvolume RO/RW support is broken again.
+...
+> +	ret = btrfs_encoded_read(&kiocb, &iter, &args, &cached_state,
+> +				 &disk_bytenr, &disk_io_size);
+> +	if (ret < 0 && ret != -EIOCBQUEUED)
+> +		goto out_free;
+> +
+> +	file_accessed(file);
+> +
+> +	if (copy_to_user(sqe_addr + copy_end, (char *)&args + copy_end_kernel,
+> +			 sizeof(args) - copy_end_kernel)) {
+> +		if (ret == -EIOCBQUEUED) {
+> +			unlock_extent(io_tree, start, lockend, &cached_state);
+> +			btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+> +		}> +		ret = -EFAULT;
+> +		goto out_free;
 
-  Unlike the original expectation, the new API is not the new hope, but
-  allows the old bug to strike back.
+It seems we're saving iov in the priv structure, who can access the iovec
+after the request is submitted? -EIOCBQUEUED in general means that the
+request is submitted and will get completed async, e.g. via callback, and
+if the bio callback can use the iov maybe via the iter, this goto will be
+a use after free.
 
-  So this patch can only be applied after that fix.
----
- fs/btrfs/super.c | 66 ++++++++++++++++++++----------------------------
- 1 file changed, 27 insertions(+), 39 deletions(-)
+Also, you're returning -EFAULT back to io_uring, which will kill the
+io_uring request / cmd while there might still be in flight bios that
+can try to access it.
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index d77cce8d633e..d137ce2b5038 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1885,18 +1885,21 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 
- 	if (sb->s_root) {
- 		btrfs_close_devices(fs_devices);
--		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
--			ret = -EBUSY;
-+		/*
-+		 * At this stage we may have RO flag mismatch between
-+		 * fc->sb_flags and sb->s_flags.
-+		 * Caller should detect such mismatch and reconfigure
-+		 * with sb->s_umount rwsem hold if needed.
-+		 */
- 	} else {
- 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
- 		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
- 		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
- 		ret = btrfs_fill_super(sb, fs_devices);
--	}
--
--	if (ret) {
--		deactivate_locked_super(sb);
--		return ret;
-+		if (ret) {
-+			deactivate_locked_super(sb);
-+			return ret;
-+		}
- 	}
- 
- 	btrfs_clear_oneshot_options(fs_info);
-@@ -1983,39 +1986,18 @@ static int btrfs_get_tree_super(struct fs_context *fc)
-  *
-  * So here we always needs the remount hack to support per-subvolume RO/RW flags.
-  */
--static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
-+static int btrfs_reconfigure_for_mount(struct fs_context *fc, struct vfsmount *mnt)
- {
--	struct vfsmount *mnt;
--	int ret;
--	const bool ro2rw = !(fc->sb_flags & SB_RDONLY);
-+	int ret = 0;
- 
--	/*
--	 * We got an EBUSY because our SB_RDONLY flag didn't match the existing
--	 * super block, so invert our setting here and retry the mount so we
--	 * can get our vfsmount.
--	 */
--	if (ro2rw)
--		fc->sb_flags |= SB_RDONLY;
--	else
--		fc->sb_flags &= ~SB_RDONLY;
-+	if (fc->sb_flags & SB_RDONLY)
-+		return ret;
- 
--	mnt = fc_mount(fc);
--	if (IS_ERR(mnt))
--		return mnt;
--
--	if (!ro2rw)
--		return mnt;
--
--	/* We need to convert to rw, call reconfigure. */
--	fc->sb_flags &= ~SB_RDONLY;
- 	down_write(&mnt->mnt_sb->s_umount);
--	ret = btrfs_reconfigure(fc);
-+	if (!(fc->sb_flags & SB_RDONLY) && (mnt->mnt_sb->s_flags & SB_RDONLY))
-+		ret = btrfs_reconfigure(fc);
- 	up_write(&mnt->mnt_sb->s_umount);
--	if (ret) {
--		mntput(mnt);
--		return ERR_PTR(ret);
--	}
--	return mnt;
-+	return ret;
- }
- 
- static int btrfs_get_tree_subvol(struct fs_context *fc)
-@@ -2025,6 +2007,7 @@ static int btrfs_get_tree_subvol(struct fs_context *fc)
- 	struct fs_context *dup_fc;
- 	struct dentry *dentry;
- 	struct vfsmount *mnt;
-+	int ret = 0;
- 
- 	/*
- 	 * Setup a dummy root and fs_info for test/set super.  This is because
-@@ -2067,11 +2050,16 @@ static int btrfs_get_tree_subvol(struct fs_context *fc)
- 	fc->security = NULL;
- 
- 	mnt = fc_mount(dup_fc);
--	if (PTR_ERR_OR_ZERO(mnt) == -EBUSY)
--		mnt = btrfs_reconfigure_for_mount(dup_fc);
--	put_fs_context(dup_fc);
--	if (IS_ERR(mnt))
-+	if (IS_ERR(mnt)) {
-+		put_fs_context(dup_fc);
- 		return PTR_ERR(mnt);
-+	}
-+	ret = btrfs_reconfigure_for_mount(dup_fc, mnt);
-+	put_fs_context(dup_fc);
-+	if (ret) {
-+		mntput(mnt);
-+		return ret;
-+	}
- 
- 	/*
- 	 * This free's ->subvol_name, because if it isn't set we have to
+Can you inject errors into the copy and test please?
+
+> +	}
+> +
+> +	if (ret == -EIOCBQUEUED) {
+> +		u64 count;
+> +
+> +		/*
+> +		 * If we've optimized things by storing the iovecs on the stack,
+> +		 * undo this.
+> +		 */> +		if (!iov) {
+> +			iov = kmalloc(sizeof(struct iovec) * args.iovcnt,
+> +				      GFP_NOFS);
+> +			if (!iov) {
+> +				unlock_extent(io_tree, start, lockend,
+> +					      &cached_state);
+> +				btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+> +				ret = -ENOMEM;
+> +				goto out_acct;
+> +			}
+> +
+> +			memcpy(iov, iovstack,
+> +			       sizeof(struct iovec) * args.iovcnt);
+> +		}
+> +
+> +		count = min_t(u64, iov_iter_count(&iter), disk_io_size);
+> +
+> +		/* Match ioctl by not returning past EOF if uncompressed */
+> +		if (!args.compression)
+> +			count = min_t(u64, count, args.len);
+> +
+> +		ret = btrfs_uring_read_extent(&kiocb, &iter, start, lockend,
+> +					      cached_state, disk_bytenr,
+> +					      disk_io_size, count,
+> +					      args.compression, iov, cmd);
+> +
+> +		goto out_acct;
+> +	}
+> +
+> +out_free:
+> +	kfree(iov);
+> +
+> +out_acct:
+> +	if (ret > 0)
+> +		add_rchar(current, ret);
+> +	inc_syscr(current);
+> +
+> +	return ret;
+> +}
+
 -- 
-2.47.0
-
+Pavel Begunkov
 
