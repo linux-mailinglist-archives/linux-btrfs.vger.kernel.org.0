@@ -1,392 +1,247 @@
-Return-Path: <linux-btrfs+bounces-9228-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9229-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29C39B5916
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 02:24:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 509939B5989
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 02:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91FDB2847C8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:24:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7232B1C22585
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 01:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8D614D717;
-	Wed, 30 Oct 2024 01:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FBC199953;
+	Wed, 30 Oct 2024 01:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gug7oMCB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NX4e0OVU";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gug7oMCB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NX4e0OVU"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="frd/Vwls";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="wjtCZFcH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9C8171CD;
-	Wed, 30 Oct 2024 01:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730251465; cv=none; b=aqgkEcZ2zX9go0HHLMg2rHPZwUUzqI33hprj1NmDZpO+bCmG9BiRpLXeXAifAGbUO0SXu8O1P8oYE78BROGkJ1rPPsiWZsc3QnaPB7GGfezCXmyW8UQhHzLemHhbZCZbHJJYkgnzd2x5B0p0+7QUav5RX0x+EmZ1bEKZ+SDvu0E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730251465; c=relaxed/simple;
-	bh=7bnZLOtENrYRYQRPt2oxYhyVFtWH82AiAqJu5vr3Vt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SzqSLl183I1Kp9HtpbMoEZ8hmj8ixr7ZS1nzgfZ71kJwH4Nl8WcldysOfJbZFZKSIdKFzQzgNHXBAtrFk6W1ClgQ+nxXEE6hAW5ikuHFNzwUi6JatT5Hq9dUJGjlPYnkwLKnQke+7CY2fF2mh5VyUyiQPqWhxXWcg194VC+x4Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gug7oMCB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NX4e0OVU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gug7oMCB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NX4e0OVU; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 680E321FCC;
-	Wed, 30 Oct 2024 01:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1730251460;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNkM7CdeX8tl74VBcm+oiDiSzllmIGgu8MUfGSwdnhQ=;
-	b=gug7oMCBtCtdtolCo+JIBk4UZKXRcqFt8XlYzYlCfeJhlkKJPQ5TKmrFiSlpH6ztNGvFRX
-	Dvm0YKwzmZzVA+oTsv5iHw/+YNKv3EMeaqDXpuUq7cnAYzPBkXD41xDs8A4dBUy3TjBtsU
-	XfhdJBeTjXpio3ASuAhWYQ+sDgZ265s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1730251460;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNkM7CdeX8tl74VBcm+oiDiSzllmIGgu8MUfGSwdnhQ=;
-	b=NX4e0OVUKtyh7EMRK7ZGH1jRjWI2FBDbtvtfkX33Iwfo7cmBoT0yabm7pfvC17ec7HfRwh
-	sXqAl/tGZ5TykDCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gug7oMCB;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NX4e0OVU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1730251460;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNkM7CdeX8tl74VBcm+oiDiSzllmIGgu8MUfGSwdnhQ=;
-	b=gug7oMCBtCtdtolCo+JIBk4UZKXRcqFt8XlYzYlCfeJhlkKJPQ5TKmrFiSlpH6ztNGvFRX
-	Dvm0YKwzmZzVA+oTsv5iHw/+YNKv3EMeaqDXpuUq7cnAYzPBkXD41xDs8A4dBUy3TjBtsU
-	XfhdJBeTjXpio3ASuAhWYQ+sDgZ265s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1730251460;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNkM7CdeX8tl74VBcm+oiDiSzllmIGgu8MUfGSwdnhQ=;
-	b=NX4e0OVUKtyh7EMRK7ZGH1jRjWI2FBDbtvtfkX33Iwfo7cmBoT0yabm7pfvC17ec7HfRwh
-	sXqAl/tGZ5TykDCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2607913721;
-	Wed, 30 Oct 2024 01:24:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gPMICcSKIWe0KgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 30 Oct 2024 01:24:20 +0000
-Date: Wed, 30 Oct 2024 02:24:03 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
-Message-ID: <20241030012403.GX31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207EE3398E;
+	Wed, 30 Oct 2024 01:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730252815; cv=fail; b=eyn15kLnOchqSO7rvZSHuM/7qLf2m9qNaQJ/jkaOiwLrmpWPDxxpUwFYjmWwzZWHbhZXySGTiJ0nDTWUl/MPSP+BWcdCQSYtLA9Ls7oT0RJHGNQWB5e+KsuqAXKlC+b8iGruOyUepFSJbCjDrfqvDZd2SkG7ENob7uEsAFlZTK4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730252815; c=relaxed/simple;
+	bh=U6KI/cz7s38pPtLtxR5kUgDQDuVDQPrDdWwY8pzWNRY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=hLlKKnJ6d7fcZP45l049WfleYScmk7DSR0KQo4rsJJAjAzuEsjYe5pmuAvUWrq5o11n90UocZ/XJdWKYkbgEqhqLcirs2/EA2wXXlXBoKhS3VXzIJBQztgWyb6f53fnltuajKA8/YMqHoYbxU/PFZMfesSmfxFT2qJrritZRL4o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=frd/Vwls; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=wjtCZFcH; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49U1feKR021364;
+	Wed, 30 Oct 2024 01:46:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=J9A4lfb35gZoVIZXFaeg4PLrqsfdokVMP7RPbs2qizs=; b=
+	frd/VwlsbUTQ9noPEJE06C4vfSl39W28nFEkEwuFo5XxzGLL3sifGwqgRKkn8XAI
+	jCcEBK/RGYS4S+lCKBz2zMf4yWkaGONcP4z4ixB/sp7UKCbErVxcHE3XtNIzjfQY
+	vxo+MRyqJCx05n2SZoZCVgFmIE/IBE+8wsgLni4dLfxQnWgQlRyuuGojn40muXPs
+	Bwx4dC3+PKgP+xOiVQPq20uwJ0mE11y0ixcnBXxK5Ta/8bPymI5VcbEtngId2TuQ
+	VsgsQlRz/kF237802bQZn21WI043nXhPCwn6P0YUophJZZGKiYkLofeoMnVNWarx
+	oGLLC0c9XNuAciJqO2wQmg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42grdqeuvt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 30 Oct 2024 01:46:50 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49TNSiq9040464;
+	Wed, 30 Oct 2024 01:46:49 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42hnapy2qk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 30 Oct 2024 01:46:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=KCvIXJWKWqD4VZ32E6J/M7qzu9QNa7Pds8IaOhuHfmgrCaAAY5ma55d4Mb8r4CBwruJQCrOYNqOMSrIbaUJs6Anoy3y/or2JWzCcTi6nMrsqG5oDqrThZpKDeBefuD36OTfEG0JMo89v35WZh0QQh6qOR8BT/78o9WuSRHIpoy/G5ovjb1lLPN1QtGgiZsb75j0a+42WGxaX9Yd6mC1KF1U0mbjArnvb9ttdPTmSdV/RncAVtVRNyWveXwQ2LUNi50zVbZR2IfVfKC8gq+xVuYY0aqwGxho57K9V/XPepXomOYveIUUwBICSbTwEhlOvcEbehAYdg8tTtJeJr9lH/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J9A4lfb35gZoVIZXFaeg4PLrqsfdokVMP7RPbs2qizs=;
+ b=zDVM3AgL+J3GuAkPWb9Ty+Sq2cyAV/R5/Rb/Sf/PzQgoD47hC/egPFGD3+1z4h/A1EYciGckdAnymGkav6b2Rgsv8z0l6nJFEWbLh2s49YqiEIlFMzA7HdpjEnHQXEpoz7M7WMwPVt0dZlXK933I0ze+CviUm9RIK3inDk5kjXczV5DLSwQ1iT6fPlgbJp/3M8ovZUlQQ6kE69dxoUypU8WAi/sByrIC4zb3+Xq6X9d2qYkbJ39O9HQQU3d70XJX9s/sERjW8qGcFcequJ1fS3wqSPFth5GrkAZnSNg5vDOzsdjUq7hJc3V34rgnKcOQCpDptxYH4kQa5UL1ChQZfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J9A4lfb35gZoVIZXFaeg4PLrqsfdokVMP7RPbs2qizs=;
+ b=wjtCZFcHCzvv/5FmwvAptBdRav6/3rkDWWa4S7NLarariUGjXGtN9IbCc3mwfw6t5/9/dW4PXyj181vpefGgHSYcAu/VuHOm/RtU+T1Nmr2U26WTD4SaPJcbP0VlFtTDKXZwCq7QUPF64sw9Bve5jGVKaVEHUqPnMLpWN4qTOVk=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CH2PR10MB4216.namprd10.prod.outlook.com (2603:10b6:610:7d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.32; Wed, 30 Oct
+ 2024 01:46:47 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.8114.015; Wed, 30 Oct 2024
+ 01:46:46 +0000
+Message-ID: <a3e107b6-9878-4b06-9b9a-2abf3bbf9a43@oracle.com>
+Date: Wed, 30 Oct 2024 09:46:43 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] btrfs: remove pointless addition in
+ btrfs_encoded_read
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
 References: <20241022145024.1046883-1-maharmstone@fb.com>
- <20241022145024.1046883-6-maharmstone@fb.com>
- <63db1884-3170-499d-87c8-678923320699@gmail.com>
+ <20241022145024.1046883-2-maharmstone@fb.com>
+Content-Language: en-US
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20241022145024.1046883-2-maharmstone@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0016.apcprd02.prod.outlook.com
+ (2603:1096:4:194::9) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63db1884-3170-499d-87c8-678923320699@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 680E321FCC
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CH2PR10MB4216:EE_
+X-MS-Office365-Filtering-Correlation-Id: 89edffec-6978-48bc-c7e1-08dcf884b6bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?QnV6RVpra3ZRTVZ0VFZBdFV6WERGSTdvanB4bmkzV3EvblVNZFBIZy95c0hR?=
+ =?utf-8?B?aVBEbXpUZ05GT1J2S2NnZElpbW5ENmFrb25MSVN1TERHTU9QQm50aFdRQ2VC?=
+ =?utf-8?B?VE5SM1dib25PMCtXSEhBNGJoRmJxcTZVWnNEWXZTSG1DZlNyTVZUN0dZZnhT?=
+ =?utf-8?B?NnFrQS9RYnl2NU9jaktXVWZjYS9CTVlUWDhwaCtXcGZhd0w4NTBhdlFTYzBu?=
+ =?utf-8?B?czBXb1cwcldjbGRCL2d0MURhakdHeUg1RUU0T3pDa3VONWtSdGpzNm1pWm9p?=
+ =?utf-8?B?Nmxwak9wcitTWElueFFTd3d0OWpsZ2ZGa3pJRHZoQ2dCNGtsUE9hNEF0WWtm?=
+ =?utf-8?B?Wmk3aHh2ajVpbDd1a20zQ2N4eFVZdlZQT3NvTUR6VTRtcUZMaXgxK1MrZGY0?=
+ =?utf-8?B?dHVXUHpJNjVTOTBpV1NRT3dFN1JHN1lWZytrQklGZ2Rsb1RJNlV6UmFUWUIw?=
+ =?utf-8?B?S2dDN3VzK04xM1JQSU5PNGZ2RUF5UE8zUW5mekJLZU9HczZLeERoWUhaZkhT?=
+ =?utf-8?B?dXBrUGpJY1UvNXJhb3JJSFJFb0NLeUF6WFlNMkEyTFdCYStLTUxmYk43YWRH?=
+ =?utf-8?B?bWs2QnBBTzQzWDh0TThiS1Y5akRQUStROHNWa2xuaWxpUmJhYm93Tm5wWFRK?=
+ =?utf-8?B?cjNxMURjUUNqRWZCb3ZMWG1mU2VXTDFiZW5UVDFlTlRYVTJHUVgrNHYrR1FZ?=
+ =?utf-8?B?RlJWNmZRRkZFU09yNTk5alZrazBrKzFWaU9kMFJMSTI4WE5LUHl6K3dBQTZH?=
+ =?utf-8?B?dkREOTdRTmdERkMxOHFLUVZxWWdnM2Z6Y2lla3RDZDd4OE0xQzIzZW51MWNa?=
+ =?utf-8?B?NDk3TnJxaDFPTTlEV3lXT3pqVWRZQkRDOTZWZVFQdmxGQ2pPV0kyU0RwVGdM?=
+ =?utf-8?B?alUvRnFZM1ZlejgrOU40L0RPdWJQR3V4N1JLb2dza0kxNy9GQVB1TlY3RjlH?=
+ =?utf-8?B?SnEyc0s4aUNSZkdNWnN5TTNtYkFIUU5xTnhDK3pEbGZMSWl3Z2d5VlhDUkFw?=
+ =?utf-8?B?K2JrNW9zeGQvMTRVbHZ4UWtYSFZFSCt3dWlHeXNlUnoxSDZUV2NQNFR6anhN?=
+ =?utf-8?B?algzSG5QcCs4TERoOUlySHFnU21rVVFycmFLdE5aZjc3dkZqd2wrWjNSWGpu?=
+ =?utf-8?B?TVBpdHByeWpJcDFNNUh3K2pSNjFpYzB1WG15cnZ1eEorTng3dHNWTlFsSHVX?=
+ =?utf-8?B?bnFFZG5ldHVnUEY1bDIycVhsUnMvaTdDSTJCNTcyem9oRzM4L2h0QUc0TXlJ?=
+ =?utf-8?B?KzlkUmFmNGlicFNxMDc3TENXa3dSTEJqTG1RWUswUVhoNnBxWVRwTlVwZEkr?=
+ =?utf-8?B?K2w2aFJFK1puS2F6UzlRT1c1T2VoNUFmR0pJWEI4TW1zRVhRbmNMTFVzVVdz?=
+ =?utf-8?B?SFloaUJHUDNoclNyWXp6Y21rL1RvUEJBSzlBUmNXRnB6TStXRkRVdCttZ1Z2?=
+ =?utf-8?B?OEhYa1JQU0doT3N5cUNtNEFDWXh3SE91RUFBdkhqQ1crRWcrL291K2s0dTBQ?=
+ =?utf-8?B?SFV6RjJJQ21NNnFIbWxmRk11ZzFISW9nYU5xaXFtcUZ4WkovZ1JjU1daUlhl?=
+ =?utf-8?B?eiszRFdYK0J2S2UwNHRWNVRxc1l2bUsvVE83RXZEMDR3enNCMEd6QkNWYVBx?=
+ =?utf-8?B?SDFFc0dTQmE4U3cwWkp3eDNaWnBvWnVBK1AzTW93Z3dUWS80M0xTejhDblky?=
+ =?utf-8?B?ZnByNHFCRTQ2T0ZMemF1SDluQWY5Qm9mTWlFb2dlKzNqeG9ibk1yQlNYN0RM?=
+ =?utf-8?Q?ZE2upxJGdfZ2yuznP2IryollT49fYUih4CGU+yU?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Q0Y0NEJFOHovaDNad0haYm1tOUpmeDRSY3FkVFE5a3hZRXdUbGVOUmdmSlZS?=
+ =?utf-8?B?STdQYWg2NUFPWWtKczVzWUxOd2FCaDlSYmdGZHZGN0UrbWZjQ2I1WGV3alBq?=
+ =?utf-8?B?TDVCOXdQQ3czMW5mVFp6K2tnTWZ6U21PSUF3dkl6QVp3THRUem15clZHYyti?=
+ =?utf-8?B?ZkZxQ2hncVdyNndoeXg2MU80NG4wOW1EeEwrcExRN0pXKytsam9uZ3RPZGtm?=
+ =?utf-8?B?bGJqR2lQZ2JsbG9HTXlHb1E4T0xtWGxGcjJHR3hkKzdCYys1N0kwdXNNSnll?=
+ =?utf-8?B?MURtT1dIdEhPVFN5N0FIcWNBNkx1VjNCbVlBNG9sVFdiVDh5VjhwdEM5MnBn?=
+ =?utf-8?B?WWdWQXlrNUQ2SmxZWG4xRTZBamtaUGxodVVjU2dmTUV4S1VmSzRHeHNxQVFy?=
+ =?utf-8?B?c2lFTWUyeCtrb2tCMndjZTVNTnJIemxTQjFFckFFVFYzajR5aXIreVpvZHVs?=
+ =?utf-8?B?NGxtamtSKytBelRjTDJmMkM3bTBVWFJaV3dCTWxBeFFibmo4Zjk5MmZJZXRx?=
+ =?utf-8?B?bEd4Um9udmVnalJPakMyTkhrTUxVWE1yTmxKa2RBYllIeXlQaXlodlk4TVl5?=
+ =?utf-8?B?MlBNMUVkRkIyVGJpNzZKQVQzK0pGeEZoeG9iR3dKUUFQVmpMWERiTmRlaVpl?=
+ =?utf-8?B?dHAxRWZvbzU1eEpkNHZUbmQxczdCeS95Tlg3U1UzU3lzR3NEb01NYS83Uit4?=
+ =?utf-8?B?UFFteS9zakVHdHZsTUV6SWtZOTFJanhYT2kvRklmdjJYMFdTWTg1bjh4NGZz?=
+ =?utf-8?B?YVZZTlp5eVVSK2hKc3pFd1ExdE9VUTJDd2JxalFOd1Q2bHpQdkMxZkIvYkFM?=
+ =?utf-8?B?N2NHMUszc3gwdVhMbFkyNlBUNmxSLzJEYzhLLzFwMzV0YVlhQ1ZGS0loNUFX?=
+ =?utf-8?B?eFFhTWZiK2VQUEtsRHE4MnlLVTNSSE1JMm1ESlVsMzdJeDkvTDZYczRMY2My?=
+ =?utf-8?B?Q1ZPRDBCM3VYclNtdmZhRzZrckl2c3FtOXNsajRiamUybUhIWlVMTnhMdEw1?=
+ =?utf-8?B?ZHNsaDFHai9TY0lDay9mK2krL2p6QTRYT3RtZHowL0lFRnRGVG5RQ2d6VGxk?=
+ =?utf-8?B?T2l4SzU5ajNHblNlSE9OK3JGbHdISlVvTW43WVk0U3puUkxid3YvVVNNNGpo?=
+ =?utf-8?B?d2hhQXEwVnllSUhuQVdUZXdTY2VRUW0wRngwbzJHRjB1T2xMZUViREliTzB1?=
+ =?utf-8?B?aTBGSWNoRUxReFIxRVdSTUo5Y29FQkRJT2cwUmVhYjg0QmZVWlM3VHM1VE5I?=
+ =?utf-8?B?TzFyMXJWUVRQTTFTYURuUEg0dTdybGtoMnZ2bjFMcXFsNFFKWHp6bll3RFBV?=
+ =?utf-8?B?djJ4cHE2Q3lBY1JvbkkxRzhBU0RjWExHTlFHV3hwbzhsajZMejJsYW84eXNG?=
+ =?utf-8?B?MlZSMzJhbWJYYkFDZ2dXR2N5OUwwcVNRSTVZaW9HMTBmTWJWZWx5aGZhMmVp?=
+ =?utf-8?B?dmVxVkJkR0NTRlQvWE1YcmwwZ3lwbytnUVN2R0RhVFRhU1FYQVhMWFpHNC9V?=
+ =?utf-8?B?SFIwMGt1OHcxWi84V2pPelpRV3IyUDlNSDVBTkY1SGIrZnBzOHg3QUVXV2JZ?=
+ =?utf-8?B?dXp4NmhZU09xUjB0bCtYK25xUkFwa1ZsUGpvcTVyQU9lZFZwM1pRMENZTUEr?=
+ =?utf-8?B?aU12T3VTRzE3OHlQczRxUGJhQytNS2RxeXFLREZXVjQ2ZnN1K1VmTTFXQ2xa?=
+ =?utf-8?B?K1BpMFZBLzJFVGFPM1YvTjZpNnVXYkpwcnVXN0ZEbXBHN0xOVSswYWdJTDAx?=
+ =?utf-8?B?eHNoSmJXNG9tUm5OT2toWjhxN3FvNjBUOXdtK3lvL3VIOXI5aUFkQ0lmdmpO?=
+ =?utf-8?B?RnV3MjEyWjgvWDVHTDIvbGdWdnowdlNvVnRuRGgrS1M4NENmbEhQWU1jODVB?=
+ =?utf-8?B?dVVVOEtkR0VXd2NxSkNRTkt3VXdVR25aT0lRcExWRWowMkVRWUlTdllDNXJl?=
+ =?utf-8?B?Ui9YenFkS040T2RvTnI5R0RrbXpCZVA0QnUzT1FOMDl2bFBYaWhLT1I2T0lq?=
+ =?utf-8?B?L0hRVzBrZkR4VVZLMHFyTVV2M1EvdnkxSG5tek1HdEs5YzBtMVlEQ0h0RUlW?=
+ =?utf-8?B?dS9WdWhQUWdEWWtkSUNPUXlFcTFjUFBaaVlnV2RrM3NnWVVaeGZTdkpKUzBT?=
+ =?utf-8?Q?Opilk/8Mn2aa4Qq0NEzMsXpO9?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	xcEU9Ln41dpsB84VN3dtwq86CNMznzfwXx1519OkqU8Isd6UZZEg/hR9T48hcQcTQJqG//9FIxj4CVOAkaszWo/OW0XAdhE9gjJLbqSHyZ+1OZdGULpoQJwvrJnCqq+yJdL7OjD3fbPusZ2qucK9O1a3KquFaCOqBgOlAoVDyO7lPIJoImfWsbOeyoMrolWGvpDyEpmGhQ+cgEMtWxeSodEIaLLf99oK7q8Ktg56cJA5BFepakuv5xpdj9WcSS5jTkqCXilfjbwtmnOb1GBWN7h2LEd82GRQ0ty41sUDIgWYiwYrHspLbUbClrlpQvOoQLhOvaSodnTfJ++ZZvEjx6l7pmox1PGivEDLw9quLlM85Qmmtiu/V7bbJ2LXEvVqcfm45IFvkzBYvRg7iq/0g7nIolAUI7VkGO19ePhe8/4Dr72oYVDw+C6GYkVufe3J+xOYyFS2Vsn5UbHNVXZukz6G4g7bObyypmpjU9Lx3mRw7UYtudkBifvldBN0CwVttUKBQj4TdXyr1gPUQ4BHdsn0T4AIIP0htYEhUDmbbTcqc424AH5H7AUCbcud/bJH5QJMZgXQE+LhqsQPan9VyCpktNz9yOh99CnQSlW6Hvg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89edffec-6978-48bc-c7e1-08dcf884b6bd
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2024 01:46:46.8540
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FMd3GtzQrQiJdjwnqIEWfG863aeClW+fJ5rZBrSRpcBRe8sbVAWYEdhwxYBTpBCSgvE69PMDazRunM14KZ40yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4216
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-29_20,2024-10-29_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2410300012
+X-Proofpoint-GUID: Ej4T4-U_hRqjKKlbsUYkM1tCiTRAshci
+X-Proofpoint-ORIG-GUID: Ej4T4-U_hRqjKKlbsUYkM1tCiTRAshci
 
-On Wed, Oct 30, 2024 at 12:59:33AM +0000, Pavel Begunkov wrote:
-> On 10/22/24 15:50, Mark Harmstone wrote:
-> ...
-> > +static void btrfs_uring_read_finished(struct io_uring_cmd *cmd,
-> > +				      unsigned int issue_flags)
-> > +{
-> > +	struct btrfs_uring_priv *priv =
-> > +		*io_uring_cmd_to_pdu(cmd, struct btrfs_uring_priv *);
-> > +	struct btrfs_inode *inode = BTRFS_I(file_inode(priv->iocb.ki_filp));
-> > +	struct extent_io_tree *io_tree = &inode->io_tree;
-> > +	unsigned long i;
-> > +	u64 cur;
-> > +	size_t page_offset;
-> > +	ssize_t ret;
-> > +
-> > +	if (priv->err) {
-> > +		ret = priv->err;
-> > +		goto out;
-> > +	}
-> > +
-> > +	if (priv->compressed) {
-> > +		i = 0;
-> > +		page_offset = 0;
-> > +	} else {
-> > +		i = (priv->iocb.ki_pos - priv->start) >> PAGE_SHIFT;
-> > +		page_offset = offset_in_page(priv->iocb.ki_pos - priv->start);
-> > +	}
-> > +	cur = 0;
-> > +	while (cur < priv->count) {
-> > +		size_t bytes = min_t(size_t, priv->count - cur,
-> > +				     PAGE_SIZE - page_offset);
-> > +
-> > +		if (copy_page_to_iter(priv->pages[i], page_offset, bytes,
-> > +				      &priv->iter) != bytes) {
+On 22/10/24 22:50, Mark Harmstone wrote:
+> iocb->ki_pos isn't used after this function, so there's no point in
+> changing its value.
 > 
-> If that's an iovec backed iter that might fail, you'd need to
-> steal this patch
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> ---
+>   fs/btrfs/inode.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-12-9739c753666e@ddn.com/
-> 
-> and fail if "issue_flags & IO_URING_F_TASK_DEAD", see
-> 
-> https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-13-9739c753666e@ddn.com/
-> 
-> 
-> > +			ret = -EFAULT;
-> > +			goto out;
-> > +		}
-> > +
-> > +		i++;
-> > +		cur += bytes;
-> > +		page_offset = 0;
-> > +	}
-> > +	ret = priv->count;
-> > +
-> > +out:
-> > +	unlock_extent(io_tree, priv->start, priv->lockend, &priv->cached_state);
-> > +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> 
-> When called via io_uring_cmd_complete_in_task() this function might
-> not get run in any reasonable amount of time. Even worse, a
-> misbehaving user can block it until the task dies.
-> 
-> I don't remember if rwsem allows unlock being executed in a different
-> task than the pairing lock, but blocking it for that long could be a
-> problem. I might not remember it right but I think Boris meantioned
-> that the O_DIRECT path drops the inode lock right after submission
-> without waiting for bios to complete. Is that right? Can we do it
-> here as well?
-> 
-> > +
-> > +	io_uring_cmd_done(cmd, ret, 0, issue_flags);
-> > +	add_rchar(current, ret);
-> > +
-> > +	for (unsigned long index = 0; index < priv->nr_pages; index++)
-> > +		__free_page(priv->pages[index]);
-> > +
-> > +	kfree(priv->pages);
-> > +	kfree(priv->iov);
-> > +	kfree(priv);
-> > +}
-> > +
-> > +void btrfs_uring_read_extent_endio(void *ctx, int err)
-> > +{
-> > +	struct btrfs_uring_priv *priv = ctx;
-> > +
-> > +	priv->err = err;
-> > +
-> > +	*io_uring_cmd_to_pdu(priv->cmd, struct btrfs_uring_priv *) = priv;
-> 
-> a nit, I'd suggest to create a temp var, should be easier to
-> read. It'd even be nicer if you wrap it into a structure
-> as suggested last time.
-> 
-> struct io_btrfs_cmd {
-> 	struct btrfs_uring_priv *priv;
-> };
-> 
-> struct io_btrfs_cmd *bc = io_uring_cmd_to_pdu(cmd, struct io_btrfs_cmd);
-> bc->priv = priv;
-> 
-> > +	io_uring_cmd_complete_in_task(priv->cmd, btrfs_uring_read_finished);
-> > +}
-> > +
-> > +static int btrfs_uring_read_extent(struct kiocb *iocb, struct iov_iter *iter,
-> > +				   u64 start, u64 lockend,
-> > +				   struct extent_state *cached_state,
-> > +				   u64 disk_bytenr, u64 disk_io_size,
-> > +				   size_t count, bool compressed,
-> > +				   struct iovec *iov,
-> > +				   struct io_uring_cmd *cmd)
-> > +{
-> > +	struct btrfs_inode *inode = BTRFS_I(file_inode(iocb->ki_filp));
-> > +	struct extent_io_tree *io_tree = &inode->io_tree;
-> > +	struct page **pages;
-> > +	struct btrfs_uring_priv *priv = NULL;
-> > +	unsigned long nr_pages;
-> > +	int ret;
-> > +
-> > +	nr_pages = DIV_ROUND_UP(disk_io_size, PAGE_SIZE);
-> > +	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
-> > +	if (!pages)
-> > +		return -ENOMEM;
-> > +	ret = btrfs_alloc_page_array(nr_pages, pages, 0);
-> > +	if (ret) {
-> > +		ret = -ENOMEM;
-> > +		goto fail;
-> > +	}
-> > +
-> > +	priv = kmalloc(sizeof(*priv), GFP_NOFS);
-> > +	if (!priv) {
-> > +		ret = -ENOMEM;
-> > +		goto fail;
-> > +	}
-> > +
-> > +	priv->iocb = *iocb;
-> > +	priv->iov = iov;
-> > +	priv->iter = *iter;
-> > +	priv->count = count;
-> > +	priv->cmd = cmd;
-> > +	priv->cached_state = cached_state;
-> > +	priv->compressed = compressed;
-> > +	priv->nr_pages = nr_pages;
-> > +	priv->pages = pages;
-> > +	priv->start = start;
-> > +	priv->lockend = lockend;
-> > +	priv->err = 0;
-> > +
-> > +	ret = btrfs_encoded_read_regular_fill_pages(inode, disk_bytenr,
-> > +						    disk_io_size, pages,
-> > +						    priv);
-> > +	if (ret && ret != -EIOCBQUEUED)
-> > +		goto fail;
-> 
-> Turning both into return EIOCBQUEUED is a bit suspicious, but
-> I lack context to say. Might make sense to return ret and let
-> the caller handle it.
-> 
-> > +
-> > +	/*
-> > +	 * If we return -EIOCBQUEUED, we're deferring the cleanup to
-> > +	 * btrfs_uring_read_finished, which will handle unlocking the extent
-> > +	 * and inode and freeing the allocations.
-> > +	 */
-> > +
-> > +	return -EIOCBQUEUED;
-> > +
-> > +fail:
-> > +	unlock_extent(io_tree, start, lockend, &cached_state);
-> > +	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> > +	kfree(priv);
-> > +	return ret;
-> > +}
-> > +
-> > +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
-> > +				    unsigned int issue_flags)
-> > +{
-> > +	size_t copy_end_kernel = offsetofend(struct btrfs_ioctl_encoded_io_args,
-> > +					     flags);
-> > +	size_t copy_end;
-> > +	struct btrfs_ioctl_encoded_io_args args = { 0 };
-> > +	int ret;
-> > +	u64 disk_bytenr, disk_io_size;
-> > +	struct file *file = cmd->file;
-> > +	struct btrfs_inode *inode = BTRFS_I(file->f_inode);
-> > +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> > +	struct extent_io_tree *io_tree = &inode->io_tree;
-> > +	struct iovec iovstack[UIO_FASTIOV];
-> > +	struct iovec *iov = iovstack;
-> > +	struct iov_iter iter;
-> > +	loff_t pos;
-> > +	struct kiocb kiocb;
-> > +	struct extent_state *cached_state = NULL;
-> > +	u64 start, lockend;
-> > +	void __user *sqe_addr = u64_to_user_ptr(READ_ONCE(cmd->sqe->addr));
-> 
-> Let's rename it, I was taken aback for a brief second why
-> you're copy_from_user() from an SQE / the ring, which turns
-> out to be a user pointer to a btrfs structure.
-> 
-> ...
-> > +	ret = btrfs_encoded_read(&kiocb, &iter, &args, &cached_state,
-> > +				 &disk_bytenr, &disk_io_size);
-> > +	if (ret < 0 && ret != -EIOCBQUEUED)
-> > +		goto out_free;
-> > +
-> > +	file_accessed(file);
-> > +
-> > +	if (copy_to_user(sqe_addr + copy_end, (char *)&args + copy_end_kernel,
-> > +			 sizeof(args) - copy_end_kernel)) {
-> > +		if (ret == -EIOCBQUEUED) {
-> > +			unlock_extent(io_tree, start, lockend, &cached_state);
-> > +			btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> > +		}> +		ret = -EFAULT;
-> > +		goto out_free;
-> 
-> It seems we're saving iov in the priv structure, who can access the iovec
-> after the request is submitted? -EIOCBQUEUED in general means that the
-> request is submitted and will get completed async, e.g. via callback, and
-> if the bio callback can use the iov maybe via the iter, this goto will be
-> a use after free.
-> 
-> Also, you're returning -EFAULT back to io_uring, which will kill the
-> io_uring request / cmd while there might still be in flight bios that
-> can try to access it.
-> 
-> Can you inject errors into the copy and test please?
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 7c5ef2c5c7e8..94098a4c782d 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9252,7 +9252,7 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
+>   		ret = btrfs_encoded_read_inline(iocb, iter, start, lockend,
+>   						&cached_state, extent_start,
+>   						count, encoded, &unlocked);
+> -		goto out;
+> +		goto out_em;
 
-Thanks for the comments. I get the impression that there are known
-problems on the io_uring side, so until that is resolved the btrfs part
-may be insecure or with known runtime bugs, but in the end it does not
-need any change. We just need to wait until it's resoved on the
-interface level.
 
-The patches you point to are from FUSE trying to wire up io_uring so
-this looks like an interface problem. We recently have gained a config
-option level gurard for experimental and unstable features so we can add
-the code but don't have to expose users to the functionality unless they
-konw there are risks or known problems. The io_uring and encoded read
-has a performance benefit and I'd like to get the patches in for 6.13
-but if there's something serious, one option is not add the code or at
-least guard it (behind a config option).
+Proceed to out_unlock_extent; free_extent_map() has already been called
+two lines above, and %em is now NULL.
 
-I'm open to both and we have at least one -rc kernel to decide.
+Thanks, Anand
+
+>   	}
+>   
+>   	/*
+> @@ -9318,9 +9318,6 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
+>   						 &unlocked);
+>   	}
+>   
+> -out:
+> -	if (ret >= 0)
+> -		iocb->ki_pos += encoded->len;
+>   out_em:
+>   	free_extent_map(em);
+>   out_unlock_extent:
+
 
