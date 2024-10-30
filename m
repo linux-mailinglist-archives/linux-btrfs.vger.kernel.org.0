@@ -1,279 +1,205 @@
-Return-Path: <linux-btrfs+bounces-9246-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9247-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12C79B5D81
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 09:20:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 356D19B6235
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 12:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ED37281D9C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 08:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5979D1C2188E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 11:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9421E0DFF;
-	Wed, 30 Oct 2024 08:20:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744E21E572F;
+	Wed, 30 Oct 2024 11:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bxVjmMlx"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="dAnyJ3ov"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316741991D8;
-	Wed, 30 Oct 2024 08:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730276442; cv=none; b=S9//VtYgyLgwzPOcYnjNpy9CQY6dWbAXUjoCP01HrzwtxXXSXXPTviaP6EsMKRHERV4ozY3CTm7D3uNkkoZOyvD2m0RMcOFV8QrDUvajLw29cWTnlIgJkyjKnLHd/tFh8k4pOOc77vZ9MrDOGLTJJVb585VrLKTsr76rCYE4trg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730276442; c=relaxed/simple;
-	bh=eHTPMLPPOTrabIceX5qJSw7OjGYrYuNz41ET1XWIihw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UP5C9qrGERV8eg1FUK8inLEcMm4WmMijTi2IcmiZQhx4HpFDsKKj2S+g6GnZiXlVA8mYFAibVY/Kb8Vr0t7bwZjPqXYoXQ94n6UctqO4ZC0IhXZqxPeho9Cd5fX170D9drrm26vHt+bYZhRHGUtEW0NlGXMwZAIhZ9l0pHn9sVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bxVjmMlx; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1730276431; x=1730881231; i=quwenruo.btrfs@gmx.com;
-	bh=kwm6T/WhFWZ2g7ulHCgHjFJbClMCQRs2F6Q1MEL3Gqw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=bxVjmMlxZ8omfkYGiAG9ZRbouMMxmwi+J8ah1f2xktliYk9Td8r4oyD8EaDik1Lx
-	 o2i/Ijrx+67Kd3ImtbelHH7o3f5Ny0TNofLSnuAs+z072zDNv3UVECEbzytiBtC2q
-	 9g8A4Et/ZsCyBAdMMhf3OyKcFUnBdSgNQqG3amkbD61TkbHwL5H1EfnBDkOsMv/X/
-	 IRa3Xx6WRWoMlmc5DMsTKKuUPH+jz32/qgB1PlUoXHVz3V4Ihy/Jn2e2NeYOzaDys
-	 uMlkyxwG8xSUaHCBLyb99JhAkBIVNrFXr4LBmmb55++HnF2WHVlDGWBSfRmMcQ6jK
-	 9FOZR8rjJyTLudfdWw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McpJg-1tffwL0Uja-00fjs0; Wed, 30
- Oct 2024 09:20:31 +0100
-Message-ID: <a3e41a97-aa8a-4553-b184-adc89c201177@gmx.com>
-Date: Wed, 30 Oct 2024 18:50:28 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CE01DC759;
+	Wed, 30 Oct 2024 11:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730288914; cv=fail; b=PRpiIEq4VVPKOLSVOeJLfVGNDYP0LYEmf2i+/MRoH9vQUg8/74ZNYe+gL8AGuMQenPSI8MgQQi+a4nkxlvRHaOOTYaUT2j7X/37TGrnR18o8XDIo0DPNK9L/oemSE7hxslpM+3SZ6ObOsGA71sPQZyUKWmlVB9U8NuccICk8FP4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730288914; c=relaxed/simple;
+	bh=PnO3ZxJuNm8QL9FLsXDy7d8tzBWug5YAP3tHduInMvg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rlC3bUKl72JFeooCHlBVsqyssqRiPitEIUpalc3Yyw6t/IYRquwMuwzQjhHTmRF8JB+X8whpI8nQlrXiIzSPbGgQAZSnBbD1qK06HpbUKTCAkZIRfkUW3Jp0yC7w+QTLmhxruI0YtT4ua6PKLyyAihQ5KAKp0i+3Xkv9w6re+z8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=dAnyJ3ov; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49UAngGR004844;
+	Wed, 30 Oct 2024 04:48:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=PnO3ZxJuNm8QL9FLsXDy7d8tzBWug5YAP3tHduInMvg=; b=
+	dAnyJ3ov8m0tizr+zD378IyRh7KzjV+abp3IUSrG7BLk2p2T9xKBQAn4UaRmdnpi
+	M7rZvuQt4gU0ZPAvfN0Z76gaXaxg/DU3j4eIdvfzdlBeja8/EiuT9heYLw41x4RB
+	LVY7Y1dgziMMTujvhQldToEaipsKZpDho2n3cZI9SPwx7pAc116Xq09JaT+ZsfwV
+	8VVZy1zeQdC6UUs4HOA1EK12OAP7aWnJ0NJIjwZFqVeq04FM3jhGbcZJQnNiIimO
+	Jb/uL4DXGyOnCuT/9Hl10/nFQkMXd5RBT0kEGPlr1TX8IZnGqbF4xkoi0rYVNymD
+	3gSGofv8KPObYn5N30Al2Q==
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42kkcmraj1-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 30 Oct 2024 04:48:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=woMc2I/LRoJnlCLc6+LF/nOhXkVuI5YWy0guAZ5xFusOKUUVSBygyJqO2JS5gyeOf0ku/tYlw7bId0AFbwQWq2A9IuAcbMiOEvenvwqoIk8anuwqfNzKZpEioE35I71zjlD6MNg1eOdkw5uNKdIPa3UbW9ctYAXdFGlnokbVyxROtvUSMQoy7pLaXiM4yjZi13jLVpQr4+rFqZpp4GXrBo2ffvk9A/T8iMDClUdhFyHJk8dJqOfJ8rLDocmQvQjOICbzvM4u3Fj/mM0J14Mxz3aJNg/QU66h7RaberBEW4jzlSahFwLPezzWpZi7fsVF1OTzouAZ/KkGugfrZovRjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PnO3ZxJuNm8QL9FLsXDy7d8tzBWug5YAP3tHduInMvg=;
+ b=ItZMimC9U4pIYt+QM0foWMtE7NsaB5sr8CJTriQ/+m5tok7S7NvKGJSt+HtYxQDj9+TQJn9DlTKifO5oSFh22R7pY+pEZREGQM7Wcmriv2KOEPjjsVkVzAdRf5AZFcueLJH/piuWO3sykS+uqpViMO22wHjOynrPmmAwMc687cBdM/Q64aDjbMUhQtHYaE7QKXcQ8N5iWn8dJq/h5z62+tvcS02bdXEwVHMKIzuG3Luo+aghDVNRNFW5XfVVMzPjUBoZFLdzSUxyFtugodko/oEAKm9o+rKtLBguKHM/DOAW9A7w7aml6xwJvtyQmI00oGUlJ8Sw3Id/Gvdso0xDLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
+ by CO1PR15MB5034.namprd15.prod.outlook.com (2603:10b6:303:e9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.20; Wed, 30 Oct
+ 2024 11:48:27 +0000
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8%6]) with mapi id 15.20.8093.024; Wed, 30 Oct 2024
+ 11:48:26 +0000
+From: Mark Harmstone <maharmstone@meta.com>
+To: Anand Jain <anand.jain@oracle.com>, Mark Harmstone <maharmstone@meta.com>
+CC: "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 0/5] btrfs: io_uring interface for encoded reads
+Thread-Topic: [PATCH v4 0/5] btrfs: io_uring interface for encoded reads
+Thread-Index: AQHbJJHBGU/CKSkKSEaVm6GhyzSUH7Kei0MAgACu2oA=
+Date: Wed, 30 Oct 2024 11:48:26 +0000
+Message-ID: <236674a5-a96d-4a87-8015-66e2bb4cf660@meta.com>
+References: <20241022145024.1046883-1-maharmstone@fb.com>
+ <2117807e-3863-4809-8447-a7dd2bec436a@oracle.com>
+In-Reply-To: <2117807e-3863-4809-8447-a7dd2bec436a@oracle.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|CO1PR15MB5034:EE_
+x-ms-office365-filtering-correlation-id: 469bffcb-8e08-4770-9132-08dcf8d8c419
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|366016|376014|10070799003|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?STZwUmlYaXpjc0pXVnNCSStYYm9Sc1B2blRRakt1d0U3czB2dzZMem8ydnFn?=
+ =?utf-8?B?TkJEREJhY2w1eE8wT2dVZGdJYXdoNmQ1OCs3WGtrZFkvVHpqZWRJaWcxYnox?=
+ =?utf-8?B?MmRSdEo3WmlFc2IwWXMwbHdJVHpBa2tzemgzQll2VU1kS2l1M1FGVG4yUElx?=
+ =?utf-8?B?MXhRamtsYkNQRmhjdHZqWDBkVjVoRHIrNk1EdnFiRmIxa3RhL3FXUCt4bWpJ?=
+ =?utf-8?B?ZmQzUUtQcTlqaXNiWHk4RmFyZ1BEc09WWDVFR1JOMTBHQXBadGdBNm5PUFh3?=
+ =?utf-8?B?SjNHUGtvYWZaUnN5cnNmaTBFRVovREk2S1djZStyM0xPQWhLN3BRZ01qWnZX?=
+ =?utf-8?B?UlFHUHEvSEdWUFd2UEtxa2diODdEWjhkZ25ZcUo2cldNWGVWbjFJTmtrakFv?=
+ =?utf-8?B?YklTUkNkNGR6anAzcHFHK0JKUjhJT3orZ0pRODRSanRKdHg1SDBPZ1NQeEpt?=
+ =?utf-8?B?Nlh1SWpUYXFsbFYrRThUV0hCYmZZSFBnYlhGWDJ3c3FwRnhqSTNqQ0VlQ1ZR?=
+ =?utf-8?B?eWpueElIZ042YWhmVXlubUw1d1ovYUxaRE5MMzZkSCthYVN4V2Q5a3lCVllO?=
+ =?utf-8?B?V1RQRjNXZXVZK0x1MW1YTFFIb2l4dUVNVXd3eEhrdUZuOWpMRzlIbXgzSWI5?=
+ =?utf-8?B?NitIOXN6QTJKbkJTeWMzVHF6eVFFSWVQUkRHUXlFSmIzT2dvdTFMbDI2S281?=
+ =?utf-8?B?d2JsaitXY1FKNTVPTkhRcjBaZm4yVW8zOG5yd09hcm45L1JsU09LSnpCL1Bi?=
+ =?utf-8?B?cDlxdWlsQVhwOEs3cS9BNm5SQkVYaFhac3R0bzJJRUIvTHFkSFZmbDhVMmIv?=
+ =?utf-8?B?c01SVUg1V2RuSC9Ea1AyMS9LdEhxWFlXK2NCM1RPRXpzNm5GVW5YREhBbEp6?=
+ =?utf-8?B?ejJZYjRuVWh5UUJTNHUrRE5vcFZLZzZJMVBmdnNmRERYaCtMcGE3VHdXWDh2?=
+ =?utf-8?B?aytQOFgvQm9Mb3JPeHBFcEZUSkwxV0VDUjdCWDBKOTJ0MjcrR0w4RkJtdUJp?=
+ =?utf-8?B?OXkzUGhaazdLSTd0OEhaUUZSTUU1UmtFOWpXd1NUTWg5MllRaDk1RDdtcGdl?=
+ =?utf-8?B?dk0rYUJ6c3JrVFM5Q05ySEZXU1RpWC9IOHdVWHZxVTdJSUlDZ1VjWTRpZ0xZ?=
+ =?utf-8?B?UkN1Q1pzdmowVTBzUnhxU1p5cWpYODNJL09OMGg3N2lvUkFWeU9qeFVJNkRk?=
+ =?utf-8?B?OGdsUTJqa1pCaEZWZktteHE3SlpPbnUyQnFmMlVmejA3T0ppMnozV3VJd3Nw?=
+ =?utf-8?B?Tmw0RXFrUkFTQUREUnorSndROGhWbktrRmZYY1YxdFpxK3ZxR051eXRTcE5p?=
+ =?utf-8?B?eVYrUTVWNUR3M2JNbXl5RzdLVkFqNE9jVHd5dmJMbkxJNnFycDRZLzdHRGhZ?=
+ =?utf-8?B?WUFHL1RweTRNeTZqWWFEZVI3Wng4a1NTS3VxeE4zNE1LcWpVQ1BPRTdQc0dn?=
+ =?utf-8?B?NDZiQ3VCT0x2ODlRdkNxNUN2YXYzU1ByVDRRaE5oaG5RcTNFR3pGaFMrWE4x?=
+ =?utf-8?B?YncwaDNOcHNZcGxwV3o1K3c3aGw2V2lrR2tJdSswTWNsQ2c5R3h0MXFkeG5o?=
+ =?utf-8?B?SDVQaXpZUmV5ZWM5QnJpSEpaVTFqcTUxSm9mZXJ5clI4UGpOaGdBelFQVzBt?=
+ =?utf-8?B?akM5di9UN3o1MWdNTVR0YlFWSHIxcmdIeHh6dmVHMmtNcjVJMEozSDdQZktn?=
+ =?utf-8?B?K1A2TlNFRHdpN2hIaTBick9JR1EvdmpScUU3blJyaHpEdFUrWFZvQm9VbHZR?=
+ =?utf-8?B?ZVQ3YmkzR3VRTEZoWktVUzZTMjJpUFFYRDBkb1VZZHA0dS9Cb1VkallsQ1cx?=
+ =?utf-8?Q?i/4neMzEh3557l3qF7ib4dihRQ9can/V1ChNM=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(10070799003)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?NGJNZzlIejVjSDZCOU84alRUMFFrSGwwUDcrVFErN3hPY0N3ODVsUFM0UnRu?=
+ =?utf-8?B?VlhjSVBLS2p1NDkwQnNKazZtS1BlVnZJVCtmQy9CQ3JDTi94RG90amdLYllv?=
+ =?utf-8?B?V0p0UzVoaGhwVXZrZEVmWE9jQmttcFE4emhGSEJjeG5zQTlsMTNQTmRuK3VV?=
+ =?utf-8?B?em85cW1BNHBnWkRqS291TVM2MXF4TjZHeFhJdzBkci93VUp2WVQ3Q3E4SExB?=
+ =?utf-8?B?YVN4NHVwRStjclZITDlocEUxblVTTDBZbHVJT1ZkdCsvYVVqdHcvaWlPb0dG?=
+ =?utf-8?B?NTM5dFV0RDBvdnNkcDdrVXJxWjVmOUFqeU94WFlJLzFYd004NkdqMUVGRGF5?=
+ =?utf-8?B?WmZEN0pkdFhRdzZRZ0tXRWd3L2x2b2YvYXVVckFuV214Qmo4ZGl0MVNpeWpn?=
+ =?utf-8?B?T1ZoRDlNNVZpd0hrWTRXQ3pLSmgySWhYd2djcVhzdjNWb1Urb2htN1VwM0Rl?=
+ =?utf-8?B?MVFlL2xEcXFlNzZTbFc4Y1B6UjZjNjF5TU5RTTZvSjhJcHNGWHpkcDFMUVBX?=
+ =?utf-8?B?czJteVB5QW1yeDBFQUpTNFJVM3REeEYzU2JISUNiUGZtaDFISG5pVjl4NUVv?=
+ =?utf-8?B?VS8ybkUyMUVmZU1xaERDQnAyaEgxME9STHFXNWg4cXVNSzZiS2Q2YW9xMVJj?=
+ =?utf-8?B?TEZmc1RVT1pkaWF5eHhMYkg1MGRFbUU3KzFPMloxd3lSQUtsdnVLNklkOTVX?=
+ =?utf-8?B?MS9BRHBUVHJxdjdENG53ODN3TlBuZHBDL2Q0S3lyVDJ5ZVFLQ1hPYzdlRDBQ?=
+ =?utf-8?B?TlpaOEZnclJOSVBuWGVPaG4xa3JYMFY1bDU5L1lJenp0WXN1YVJyRElHM2x2?=
+ =?utf-8?B?WFg4c1hzLzE5Q25NVUJORW5DZ0kzbGFuZTM4bFR5R0JSSERwb1kzQ0hYTmNJ?=
+ =?utf-8?B?RUIrQk1EbW92S1NGeGN4eVliRi9ZejNIYXRUNTVjdUc3WFZaTGpxdDNORlpY?=
+ =?utf-8?B?QzlGZnRsUUhIdnliMS9hS0dXZWprSlB0UEVSd294QzZuYXMzd2pyQVVUMnds?=
+ =?utf-8?B?WDhVc2s4Tmg2a1ZERVZsSlVOTmh5aGw1dk9FZHBHeW5ocEd5dHdRZzFicllV?=
+ =?utf-8?B?U0o3Rjk4Q3hCOEZIZ2U5MzhvU1dTTDQ2UjVDb2FjeC9LWWc1RXFWOU1ydWFa?=
+ =?utf-8?B?UEZRMTFoYkpUVy9KQjZWNENFZXRZT05QK3pyUzZRazJqTG5lSHpiRldMTmRi?=
+ =?utf-8?B?V2hkUGEvWmlqZmlBemRVdGI0c0VCWnF0cm9PSG92czUrbUpMT216bnRlQjRF?=
+ =?utf-8?B?WGU0cHdJUjRadklIem4zb1JhK3dTMVFlV2ZzWnNPT01GNDJxMFBGVGN5U3k2?=
+ =?utf-8?B?RWlLMzIyRGprMUhXaU1RcWVVT0x4T0Q3dnZqYStjQ3JVUXEwQkl5bGk5SHpu?=
+ =?utf-8?B?MmlicFNqWXZUMHhrZ0M4c1NZdi81UXlaQ203NW1yRHlEMkY3eDJpb2pkUzFu?=
+ =?utf-8?B?a3l4RWIwUmt6MGJtL2hmb3pjdExnTjU1dEFZQ0tpTGgzTGRDdUFmZExranUv?=
+ =?utf-8?B?dFF5ZmM5Z1FxalRpekZCNTBpT3JMYVl4YTNHQ1FnL0k2WUt2dXhiZnY0ejJS?=
+ =?utf-8?B?Q0Y2M3ZDbWdvcVhWZ2ZtT1IzVlNBTWlIanFaMU1YbjY3L2Y2Q0lrOE1PNnk4?=
+ =?utf-8?B?VDBtZmtKN0IwVkN4UnVKeFFsMTRVWlRoWW5meG4zUXhZSlFEZytYTVNxejB4?=
+ =?utf-8?B?TVFjTkZKZUtpZlcwRGlXakF3eGkzNlBYYWhTeE5qaGlVNmluSEpldWdYOW1t?=
+ =?utf-8?B?SWUwWkZvU3FIbm8rMjY1bm5JdSt1S2gxUlVvVGtuclJWUWdpU1V3dDJQelRs?=
+ =?utf-8?B?RnlTMUF5UzRhWGQ4eFZpTXFtWDhUbk1TNU83aCtXZTB1aW1uODdWUzhROXN6?=
+ =?utf-8?B?Ty95ZlhyS01VU2wvaHFyN2E4dU1zNVNXYlNkdTlLb01Id2c1ZHFmQ3VrTmZT?=
+ =?utf-8?B?MmNZaVQyRzg3UFNyRXBaMnNrRFN6Mk1vV0U0SXRuMzJwTE5UeUlPL0VWR1ox?=
+ =?utf-8?B?aEtsY0t1bVVVWmhTMWlzblA1ZjBXWm5rK1hnbjArZk5FRGtwdTlCSjVOLzBE?=
+ =?utf-8?B?aUJhcTFRRXBMMDY2bUFELzRxOWVNeWpjUnRSMkhLVTBFNHkyQlh1MmZFdHEv?=
+ =?utf-8?B?ZDVJK3VZMVVIOGVqWlJpWTRGc0YwdjVRMkRjRnFqOG1aYnRMRmR4T1I4bFc3?=
+ =?utf-8?Q?CWaOPoU+oAz5N5KULSlg0lI=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <52B64106FD36344282837959FE76700D@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: add a test for defrag of contiguous file
- extents
-To: fdmanana@kernel.org, fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <e592bcc458f5c2ec41930975003702a667c92a8e.1730220751.git.fdmanana@suse.com>
- <fc85e9cdeb879a76b78229c374c96b37776d222b.1730274466.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <fc85e9cdeb879a76b78229c374c96b37776d222b.1730274466.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:g3yS15fM1NuUwHpm1I6/t6n9KypCHShfgQTHy/yOj2FF4udaw+o
- BhiMEofX7WOD7mlgJkQZUavMavd7L2l2CUQrh5a9FqIML0yEU3GOPXPqOUVZ0zuUKrrsZo7
- TwoRjmGLXbY31qkbhEwlp9o4ET3p5AGrwt4KB4tjLYyaZ6btdsdHd86zzyWjjMiKw/Wxt+b
- mGY3eeFcbno/g8sqBRDXg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YAx1RfKdIN8=;tsvqFpZsUOW4UhdnR9ttWMW+BCk
- 6X0vR0/Y+jTY5/lAfuRuR8GCdbVbsHJdCpgJQlg3ZmAibLhjl2nSFFu807Bug0mHCzQHDFqph
- VUquddupETWgJJS/BxxVJKn6F+f6g0QJkDgFqBstwkAWQGWdFNloNXrTMRK6npgHqk3Qzfq7X
- C4pEXwmwpY4ueTL/Ybvh06290Fppmp98KCI1rlHDCCeLNryRWiafNxsacE7K7PcAPEMY2thFd
- CAInuboTJMcdAAjdJx3+zJxBl57nPZbRGddGWTkY4VylrKicLGCjkfGiMIR/RIBBdVuKcdNAT
- FRWzlqi1HNF6lDmwkOMmMxe/rZhLWk2thCHLlsvKPqCQRTMhRbXqplhVHecZl/F4hf9tRnMF1
- nLPwFFfXduP0TWdWnbsbJD4r9d8o82hkebwm02IuPDca9/WnkcQrN2ARWrUYUujc4Mj7e0nfP
- DYKcs+upQzs/tE3CsLAdVM0b9Df5QjeG8OVRkv3VFZp+H/zBbsrOaEOkJeT0nFjMxSJY8zI0T
- vt33jHQvnF2opaD+Bfl/h4cbVLEOeAY6TPimppsdUVc/bxSeO4r4dSpj/eUH5swYYTRbP+wJS
- rNlDezW+1AdwUa2QIGPleoaogjqe//qsSvMLCxDhZMyCdg/83bz/tn4V7akY3c+zLv3TI/Xnp
- pZh53ZWaOmHYSFB1g6SQMrH9jfdI1xKDw9zBDrEV3CZsBYx2VBpT+PeJLikShznZucYOouLcS
- hIDASFLVKhvYI3vN5IDRyXWs+PMA3FXS7C1XrbGM6wF24+idHkLm4FlQt1d1nheIkqL+NuxGA
- F5TfZySWoKNeGvqnqvEmSXVw==
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 469bffcb-8e08-4770-9132-08dcf8d8c419
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2024 11:48:26.6238
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q5yDAOmhQjtCz4LI0xdaU5KRKYCtw7fYH/u+BcRZudW1IKnpWHBtOJ86N8Cy8BdyKVYefTuRx1GWxixn4yiZ5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR15MB5034
+X-Proofpoint-GUID: Ajjt7Ayi7td055bEdcWUMyRlIwWLxluS
+X-Proofpoint-ORIG-GUID: Ajjt7Ayi7td055bEdcWUMyRlIwWLxluS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-
-
-=E5=9C=A8 2024/10/30 18:20, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> Test that defrag merges adjacent extents that are contiguous.
-> This exercises a regression fixed by a patchset for the kernel that is
-> comprissed of the following patches:
->
->    btrfs: fix extent map merging not happening for adjacent extents
->    btrfs: fix defrag not merging contiguous extents due to merged extent=
- maps
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> ---
->
-> V2: Fix typo (treshold -> threshold), make the test be skipped if compre=
-ssion
->      is enabled.
->
->   tests/btrfs/325     | 83 +++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/325.out | 22 ++++++++++++
->   2 files changed, 105 insertions(+)
->   create mode 100755 tests/btrfs/325
->   create mode 100644 tests/btrfs/325.out
->
-> diff --git a/tests/btrfs/325 b/tests/btrfs/325
-> new file mode 100755
-> index 00000000..48470509
-> --- /dev/null
-> +++ b/tests/btrfs/325
-> @@ -0,0 +1,83 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 325
-> +#
-> +# Test that defrag merges adjacent extents that are contiguous.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick preallocrw defrag
-> +
-> +. ./common/filter
-> +
-> +_require_scratch
-> +_require_btrfs_command inspect-internal dump-tree
-> +_require_xfs_io_command "falloc"
-> +# We want to test getting a 256K extent after defrag, so skip the test =
-if
-> +# compression is enabled (with compression the maximum extent size is 1=
-28K).
-> +_require_no_compress
-> +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"btrfs: fix extent map merging not happening for adjacent extents"
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"btrfs: fix defrag not merging contiguous extents due to merged extent=
- maps"
-> +
-> +count_file_extent_items()
-> +{
-> +	# We count file extent extent items through dump-tree instead of using
-> +	# fiemap because fiemap merges adjacent extent items when they are
-> +	# contiguous.
-> +	# We unmount because all metadata must be ondisk for dump-tree to see
-> +	# it and work correctly.
-> +	_scratch_unmount
-> +	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV | \
-> +		grep EXTENT_DATA | wc -l
-> +	_scratch_mount
-> +}
-> +
-> +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +# Create a file with a size of 256K and 4 written extents of 64K each.
-> +# We fallocate to guarantee exact extent size, even if compression moun=
-t
-> +# option is give, and write to them because defrag skips prealloc exten=
-ts.
-> +$XFS_IO_PROG -f -c "falloc 0 64K" \
-> +	     -c "pwrite -S 0xab 0 64K" \
-> +	     -c "falloc 64K 64K" \
-> +	     -c "pwrite -S 0xcd 64K 64K" \
-> +	     -c "falloc 128K 64K" \
-> +	     -c "pwrite -S 0xef 128K 64K" \
-> +	     -c "falloc 192K 64K" \
-> +	     -c "pwrite -S 0x73 192K 64K" \
-> +	     $SCRATCH_MNT/foo | _filter_xfs_io
-> +
-> +echo -n "Initial number of file extent items: "
-> +count_file_extent_items
-> +
-> +# Read the whole file in order to load extent maps and merge them.
-> +cat $SCRATCH_MNT/foo > /dev/null
-> +
-> +# Now defragment with a threshold of 128K. After this we expect to get =
-a file
-> +# with 1 file extent item - the threshold is 128K but since all the ext=
-ents are
-> +# contiguous, they should be merged into a single one of 256K.
-> +$BTRFS_UTIL_PROG filesystem defragment -t 128K $SCRATCH_MNT/foo
-> +echo -n "Number of file extent items after defrag with 128K threshold: =
-"
-> +count_file_extent_items
-> +
-> +# Read the whole file in order to load extent maps and merge them.
-> +cat $SCRATCH_MNT/foo > /dev/null
-> +
-> +# Now defragment with a threshold of 256K. After this we expect to get =
-a file
-> +# with only 1 file extent item.
-> +$BTRFS_UTIL_PROG filesystem defragment -t 256K $SCRATCH_MNT/foo
-> +echo -n "Number of file extent items after defrag with 256K threshold: =
-"
-> +count_file_extent_items
-> +
-> +# Check that the file has the expected data, that defrag didn't cause a=
-ny data
-> +# loss or corruption.
-> +echo "File data after defrag:"
-> +_hexdump $SCRATCH_MNT/foo
-> +
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/325.out b/tests/btrfs/325.out
-> new file mode 100644
-> index 00000000..c0df8137
-> --- /dev/null
-> +++ b/tests/btrfs/325.out
-> @@ -0,0 +1,22 @@
-> +QA output created by 325
-> +wrote 65536/65536 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +wrote 65536/65536 bytes at offset 65536
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +wrote 65536/65536 bytes at offset 131072
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +wrote 65536/65536 bytes at offset 196608
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Initial number of file extent items: 4
-> +Number of file extent items after defrag with 128K threshold: 1
-> +Number of file extent items after defrag with 256K threshold: 1
-> +File data after defrag:
-> +000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab  >..............=
-..<
-> +*
-> +010000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >..............=
-..<
-> +*
-> +020000 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef  >..............=
-..<
-> +*
-> +030000 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73  >ssssssssssssss=
-ss<
-> +*
-> +040000
-
+T24gMzAvMTAvMjQgMDE6MjIsIEFuYW5kIEphaW4gd3JvdGU6DQo+IE9uIDIyLzEwLzI0IDIyOjUw
+LCBNYXJrIEhhcm1zdG9uZSB3cm90ZToNCj4+IFRoaXMgaXMgdmVyc2lvbiA0IG9mIGEgcGF0Y2gg
+c2VyaWVzIHRvIGFkZCBhbiBpb191cmluZyBpbnRlcmZhY2UgZm9yDQo+PiBlbmNvZGVkIHJlYWRz
+LiBUaGUgcHJpbmNpcGFsIHVzZSBjYXNlIGZvciB0aGlzIGlzIHRvIGV2ZW50dWFsbHkgYWxsb3cN
+Cj4+IGJ0cmZzIHNlbmQgYW5kIHJlY2VpdmUgdG8gb3BlcmF0ZSBhc3luY2hyb25vdXNseSwNCj4g
+DQo+IEhvdyB3b3VsZCB5b3UgZGVmaW5lIGFuIGFzeW5jaHJvbm91c2x5IG9wZXJhdGVkIEJ0cmZz
+IHNlbmQgYW5kIHJlY2VpdmU/DQo+IEFyZSB5b3UgcmVmZXJyaW5nIHRvIEJ0cmZzIHNlbmQgYW5k
+IHJlY2VpdmUgdGhlIGxldmVyYWdpbmcgaW9fdXJpbmcNCj4gYXN5bmNocm9ub3VzIG9wZXJhdGlv
+bj8NCg0KWWVzLiBUaGUgaWRlYWwgZm9yIGJ0cmZzIHJlY2VpdmUgd291bGQgYmUgaWYgd2UgY291
+bGQgbW1hcCB0aGUgc3RyZWFtIA0KZmlsZSwgbG9vcCB0aHJvdWdoIHRoZSBUTFYgZW50cmllcyB0
+cmFuc2xhdGluZyB0aGVtIGludG8gaW9fdXJpbmcgU1FFcywgDQp0aGVuIHdhaXQgYXQgdGhlIGVu
+ZCBmb3IgY29tcGxldGlvbi4NCg0KTWFyaw0KDQo=
 
