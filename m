@@ -1,240 +1,228 @@
-Return-Path: <linux-btrfs+bounces-9249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9250-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD54E9B6516
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 15:01:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EF129B653E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 15:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0CED1C21E97
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 14:01:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598831C20B36
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2024 14:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CB31F131C;
-	Wed, 30 Oct 2024 14:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31D91EF93E;
+	Wed, 30 Oct 2024 14:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kRQ6vm3k"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="UiU+RGaJ";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="xkrrqPiW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA971EF94E;
-	Wed, 30 Oct 2024 14:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730296880; cv=none; b=Q8fv/w0gzBBAxzp6Ms0cTM1+eFpi5nOsxc8zth5rgZSTlbS+nN7zWFrLc/69C8G6GzCJNdtgP/keMGU1um9TgEQRH8PSX9U/dqwXDTdk9pLKd/0/8bfPOOeJpB050DBjWbQIVjwTExST6w5/aKNzIDiIb9kvRzS86ry3Ccg9R1I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730296880; c=relaxed/simple;
-	bh=YIhTsercrbzL7x0w06FHLQISue1sNjFdKSssjAjGdqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oBOCIbtN4NiGdMxYTBowpNTl9PzuhIqHTsUxZ29X5mCyIxdtQ/v33LdLytkLO4aiLkVkGuc8JSUhXbwrE9zNg0H2plhETyJO5U+Hf5Jy+1wxcFly7oz+4GFfv2jqTkuvgyEICOCyLhLduNGn9lcUibtrrB6i94fDdW/vGAAP+mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kRQ6vm3k; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730296876; x=1761832876;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YIhTsercrbzL7x0w06FHLQISue1sNjFdKSssjAjGdqw=;
-  b=kRQ6vm3kk2r5V1ZILNOAsabLdYexIAdZDf7N8M/WDS6QtEKxJzDfIfjh
-   paZp8UkxWYp+YiUv5r9t20tqtTGqYMitjjE0I2ZRZ+pO6fyBXRDTA4wk8
-   qPfqnLaVLpWvifHIUnX+YlmYtQHZMSaEZV29Lg5MTzYtB9REkkDboSr2k
-   dfSnxoyW7iE3q13iv8vWYd2Bmqn4A4L1nG0vmKNDBc9rzAMFPpeMYzYzl
-   LY3CJwgWUDd/dliUgqM1Nb+Gu8Nc4KtZWvWTO5lbvKBBY/21X70B6qCwX
-   AHHMHrrlKmlWXeow/OtEMs/Pft6rzBpl7ccS3uUng1VBrRXJDRxTdf9yC
-   g==;
-X-CSE-ConnectionGUID: 1nskTdLHQPyhhWgvQIyNsw==
-X-CSE-MsgGUID: onDg7ezQRguPbiZCVatVJA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11241"; a="29416464"
-X-IronPort-AV: E=Sophos;i="6.11,245,1725346800"; 
-   d="scan'208";a="29416464"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2024 07:01:15 -0700
-X-CSE-ConnectionGUID: XO4nsi38RbOjeSgf09lQ9Q==
-X-CSE-MsgGUID: M/qK/mcFRLO3gGzk/0zsnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="87111576"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 30 Oct 2024 07:01:12 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t69G1-000euW-1b;
-	Wed, 30 Oct 2024 14:01:09 +0000
-Date: Wed, 30 Oct 2024 22:00:47 +0800
-From: kernel test robot <lkp@intel.com>
-To: Johannes Thumshirn <jth@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B328D1E8852;
+	Wed, 30 Oct 2024 14:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730297211; cv=fail; b=HjK0XeXHFSh6Dsku8KepgYy0r/uSCNj1ZeXx0KbtGPaiIq53Hshz/C++B0tYJYOhFNxDo/MN8HYBc93LI10cZOD0iFazSdlntFbFrmrKTTg99fgdShQxtrXabdqTZbLozrcA2Zi87k5k/HbtJYAreXcGqq1l0BZxNOtMUio1fiw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730297211; c=relaxed/simple;
+	bh=sxyN3j1TLhxDbT8WWJj6vKiAk+GSHllI+uiUWiLO7zw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jpw/UqgI0E6O/TODSWdC/yatRvzyBoM9iYQS6LSQQtDTDP12xXDwkOd8JeFzq9uDhpruR4Kh33TLBWo22imRKSakvk6KSNAxIfoFf0YU/MSnVENgzYJO+vYOXNGqoLqmaep1kstlAXYhl1cDO/ogjB/EcCg6gKoV7hqmJWxeha8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=UiU+RGaJ; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=xkrrqPiW; arc=fail smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1730297209; x=1761833209;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=sxyN3j1TLhxDbT8WWJj6vKiAk+GSHllI+uiUWiLO7zw=;
+  b=UiU+RGaJ12vNiIM2C/QZDDHB0RqsQMRFf6Hn2dnFfS3mCnnBB5U97swg
+   dtnn/zRXeyDDa87xY7CDSqcH+yrXSunfKRCPCRYdXj9IHONu8Wx2/0SLg
+   beEw8WnsPHn5oSYSgBEDWR5OdblxbXG4ftzTtdsg1rox2QveDsdMMRxX0
+   KsM8eIneQujFCBbtwnkc5wj9y7hgpqzp0pvI/u0a/wCNXL97Y2mxRyfz3
+   zJ1DmqjzhIU2sLAgSxfZRlaoN/Z7Jh6jtDYm6ZC3KKIYbMmhAOdmPWhWa
+   d1TgJiPzc9SVczVCos9Ubh49rjvRyEYqONxYLzQe9pV/VLiMiKxkagPc0
+   A==;
+X-CSE-ConnectionGUID: fnaTQPp0T0SyXh3BcyPPmg==
+X-CSE-MsgGUID: 0Zp7iecLQYmdPeK/GJHeAA==
+X-IronPort-AV: E=Sophos;i="6.11,245,1725292800"; 
+   d="scan'208";a="31348190"
+Received: from mail-westusazlp17013078.outbound.protection.outlook.com (HELO SJ2PR03CU002.outbound.protection.outlook.com) ([40.93.1.78])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Oct 2024 22:06:42 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GBxVt3Zaux3DDV2DzyYVGk7ZzkoxP580ZOsrGKq3EUx+9xVwZW1GsQxfZJ6uw4tO/JfhNO3xRJtaLqDjZiECGrOJPmgNDK0uO02FPFW7dizCcMiXLWnDVraTvUvY5nZwdARKF+XxZnr/bXIms+fy8ybbRRwnt6JuJwFbid8nwRvKNR6oKswviGd3wN2/Eg4LXzWgjp1eZEE77iDOUV0KeUynZjhcIT6Sim9SOixC4LXe0TQJym8RgM+gJt/gCb3guTqdPsHpizA7RCd1pHc1r+SegPm7k6UNq1YjGXinOzQX/B3Vu5BS7+UjH1EgL7Orr0L+/esgix7nKonTPWUKfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sxyN3j1TLhxDbT8WWJj6vKiAk+GSHllI+uiUWiLO7zw=;
+ b=GuKA8ced+M+gzPHtn5H1l3uEqEJCCIaxKIeq4Ouwm8YV+vYxONU+L/zLuLhzwKrxeufT4Quw315kGbhyVzXkagnbdnajCsqp5YurnyR6LbQ9xJu5RTqWxMv19tgbar9twe1HWgTGrJi4IfoNjU7YA11vOUK/0h7giuWUfSzeTtdzPYFTKtw3QxKNz/VZoi1uKoN1jkbU/QHWDNEIGdLKB/3usERyrO7Y7X0N3sV15jfABqs60YXrS1LKhU3RBRKqxe5Qm5hIULkt1L2Wu1JKQCe05ePYbNjzSixHE+DE9yPUmn14w/YMuCy8Q2PbIY6QAo9SLI8KEJthTsbLJdCItg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sxyN3j1TLhxDbT8WWJj6vKiAk+GSHllI+uiUWiLO7zw=;
+ b=xkrrqPiW4WkruZr+q//APq2DKW/Sv690c7Mtg1V1mK712CBctGdxr1k3kCGLtX+BUobK2sTNMHR7LmgRtTGgojlE5stqWWb3zG9wsjecvreY3H2ORddIJRfQlTOsjfw+0eQUJxgw4khosbmr3f3neM7V6LOI0TNqVQUSMIQNyqQ=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM6PR04MB6315.namprd04.prod.outlook.com (2603:10b6:5:1e4::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.32; Wed, 30 Oct
+ 2024 14:06:39 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%4]) with mapi id 15.20.8093.027; Wed, 30 Oct 2024
+ 14:06:39 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: kernel test robot <lkp@intel.com>, Johannes Thumshirn <jth@kernel.org>,
 	John Garry <john.g.garry@oracle.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org, axboe@kernel.dk, song@kernel.org,
-	yukuai3@huawei.com, hch@lst.de, martin.petersen@oracle.com,
-	hare@suse.de, Johannes Thumshirn <johannes.thumshirn@wdc.com>
+CC: "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>, "axboe@kernel.dk"
+	<axboe@kernel.dk>, "song@kernel.org" <song@kernel.org>, "yukuai3@huawei.com"
+	<yukuai3@huawei.com>, hch <hch@lst.de>, "martin.petersen@oracle.com"
+	<martin.petersen@oracle.com>, "hare@suse.de" <hare@suse.de>
 Subject: Re: [PATCH] btrfs: handle bio_split() error
-Message-ID: <202410302118.6igPxwWv-lkp@intel.com>
+Thread-Topic: [PATCH] btrfs: handle bio_split() error
+Thread-Index: AQHbKeKi9TIjMidpj0CKdqAwMRBjTrKfVHeAgAABpIA=
+Date: Wed, 30 Oct 2024 14:06:39 +0000
+Message-ID: <c9936883-d766-41f5-9a54-35702585ff6a@wdc.com>
 References: <20241029091121.16281-1-jth@kernel.org>
+ <202410302118.6igPxwWv-lkp@intel.com>
+In-Reply-To: <202410302118.6igPxwWv-lkp@intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM6PR04MB6315:EE_
+x-ms-office365-filtering-correlation-id: 4a63c06d-ae77-45d1-771d-08dcf8ec1301
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|7416014|366016|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?Y2hFbkdyWmphcFd5ZDVaa21kbE51QnNhSGFLbmF5MXRpdWpndGxIb3pDSnlj?=
+ =?utf-8?B?QSs5cEthaWllMmRKZUFsZTk4M1RpL0hCU1NMbGRtdmdvdU1JOE9aa3RJWVVh?=
+ =?utf-8?B?WCs1b1l2Qm1TcUJ6ZldqcTNNakQrUW9XVzNHcno4eGVrTlVydyt5ZEkzTVRU?=
+ =?utf-8?B?dXBobzZ0dVNpSWFJODFIMm5qR1BzRm41TEkvSm96WWFwUmViWTRmTUhKUEVp?=
+ =?utf-8?B?V3FWdkxXWXlEcHRQQWdCTXAwTTNZWmcxeDhVc1JaYjNaS25sMmd0RzJ3VlhF?=
+ =?utf-8?B?L3RtVnovK3BRL1JQTEtSWmQ1NnFWQjUyUjFuL2M1S0RJWmVEWk9ySUp6TDJ3?=
+ =?utf-8?B?anRSdktnWEhSaXdNeHk3QWRQcHMvSHloRnA2b2F1SnRUWWlEalRMem1FK3JI?=
+ =?utf-8?B?TDM1SUI0WlZIRCs4bUR2bUZmaDdZUlJEbzA5SnB1Sys0ejhCYXlRNmpvNUc0?=
+ =?utf-8?B?VGRna3MzbUdXK2ErVFhIVVNpdUNQRlJlNFJmdG15TGNQQXVZVTVqbk04OGxJ?=
+ =?utf-8?B?WFlqLzVBUFhqOWY0aTBvbEhhNmNxdUVIRXRLTGQ5REJ6ZlhUR0JqQzhjRlU5?=
+ =?utf-8?B?QmZLYk9MZDhzNjA2VVZtVjZTbGlmUkxBTWZENVVkRzRGei80YURHcWloeGVm?=
+ =?utf-8?B?ejdpZnFvSzB2MVFmS3BDZ1c3MzlIMkREZytobFQ0SFZ1ZWhlWk1TdlJmWUxj?=
+ =?utf-8?B?andFWTU3cHNOQWNkenJVandNRTQ3TGloTEs2UGdiWXRyTzJCSFdncDJMSjlY?=
+ =?utf-8?B?WlNXNERQUk1DWDE0SFFiK1hqb2tlekNub0l5ejJQWHRwRnpRUlNFM3pNY0dw?=
+ =?utf-8?B?d3paYVFLZ1YxVGh0V1pNMU9iZ2ZRR0VjaCt1WUdtSHVaZHVucjFWSGlvTXI0?=
+ =?utf-8?B?V1N3ZmNhM1llNnl5SjlRRFRGclpTNHlab2RaQkF2RmYvVGo1anpEZURlKzlX?=
+ =?utf-8?B?T3c2NUplUDNURFBnMmN3Rk5BY2w2NGlQQ3ZTQUpZT0IzZjd3dTRzTTZLRERU?=
+ =?utf-8?B?bzBFUEpuajV6eXpvZnhMeGdPVmVXWnV5M3lGSDdmSnBzQktnM0RQaGJ6dDJv?=
+ =?utf-8?B?WDdKaDc1M0h5Zm5aZWp2dlhvTzh4MmpEeFVpVi82MWdwckJUK3M3a29XVzRG?=
+ =?utf-8?B?SklaRFRKTSt5SVVKWUlVbnNQc0pSMEpRVG0wOTFpL2FMMmNkaUVieUI0ejVv?=
+ =?utf-8?B?eDV0NWVKSWVMQ2duZWpnaUlrUWFZV01IUUxnVHc3MTMrUGJuTU1LM3ZGZ3NL?=
+ =?utf-8?B?R1d5SmlzTWFLSG9WMTNBYnM2UExuLzFGNk0rVUtxNmV2Y3NpWDRQWTkxdkVF?=
+ =?utf-8?B?MW5kSWxMVnpmMTdFeXBmQi9BZmUrUXFoZmZYQ0hHeng5Vm9yay9nMUdRU2JT?=
+ =?utf-8?B?LzJBMWgvckVNRURlZGcwZXBFOG4reEFBWVI0ZDdnTHVNNEYwQ29SaC9EYzVP?=
+ =?utf-8?B?V3MxbjZvSXNUb0xvRkE2c044SE9hVXoxV20vc1ZET3ZvemtQSmdSbk9JZHgw?=
+ =?utf-8?B?Z0FNR3NBT0hvNU5aakF5ZHJMTUNTNmQzTFo5TENoVFJKSlBOQXUrTzZjN3lL?=
+ =?utf-8?B?cnJpNXhhK1pkc2JreHFqVTI0bjgyWWd2NVZ5Q0s1c2wrcU82YkJScW5ZYmlH?=
+ =?utf-8?B?YWI2RnZRRGZQNW90Tkt6Sys4UGRZNUtWMS9KbWY4K285M0ZtSFNvRDhsZWZr?=
+ =?utf-8?B?UHJuMUFVTGlMdm5qN2F0UTVIWDVNd0tPVytjWUh5enVFNVFpQnBXV09jTG9l?=
+ =?utf-8?B?cy90QlVxODIwaWZhM1RtYW80ZnFFaUsyZHBOVmVsTjYrMUdDUEpTRVBrRjFW?=
+ =?utf-8?Q?kv/dUwCumPfPKtRRpn+4db+/VfMcpiv7xvsyA=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?MUUrNVFZQXF3L3oxNitXY2hURGw2TkhhMTladWREUlY5NDVCTTJLM2JYVUdK?=
+ =?utf-8?B?RnVadGEzM1hTa2p0RDBJTVhvZGhBYm1iam9oRWY1Z09udlZwdm4rQ3lHS0pM?=
+ =?utf-8?B?Wnp6OGkwWUZCRnlCTkxLbEUrSnZZVXh6eHM4K09NUzQ2N2xSQkpwRDVuNGZG?=
+ =?utf-8?B?d01udGNnejlqTllDSmlHU09aM1lLbU5URDlER0Z0QUFKRStuRTlFQnFZUHp6?=
+ =?utf-8?B?d0gzTmU4M1RENm1MMG84b2llVzNSOTAwNHBGSTFzT1JXOHQ2VkczUE9Rbjk0?=
+ =?utf-8?B?RU9uQVBuZUx2VWFjb1Y2MXE5UkhCbE5LUER3QlRNNGp2SnBsREFNMVo0bFlt?=
+ =?utf-8?B?b3JYa1lRcXFEUnZSKzkvdVJHVXA5Z1VxVCtPSGEzcFU1MDhaNTI1RTdNV24v?=
+ =?utf-8?B?QlhxM0srNjc5cXFKVUxFZElrclR4bGswRlJweU9QK2U0aFdDU2dtSEthM0Ux?=
+ =?utf-8?B?ekMyQ3BJN3h4U2Vmbzd1eW1aZWdOT1E4Ryt0bzBwaWxHVWIvY2RPYThvenRu?=
+ =?utf-8?B?bzVVNStOVWhFRlZ6WXRlQ2gyZG9vcm12UzlrZys3NVp6dnRvSFNvTXNxMGcr?=
+ =?utf-8?B?QlgwUE5aOVJEbDZMTjJLckk5UXdtMEFnTExYU2kzSEdVd2l2dkYwRWRSTGJx?=
+ =?utf-8?B?TlZRK1lMclI1SVpUbXpUWDcvb1FSVjBGbTdidlUzNmFPL00wS3o4U0xMNVFC?=
+ =?utf-8?B?SnYzZ0RaU0VFNm93ekZIZmFiVGhEamdpYmM2MWNtc2lQWG1RVkxyWmplZmt0?=
+ =?utf-8?B?czRvcE94OThKY2FyVjFGaVg4T3UvbkwwOTc3eTR6cnVralVsZHRnZUdsOVJl?=
+ =?utf-8?B?MjBNMkpIQmJTWmpRNHdWb3hPOW5TdnR3cjFoZHVLbmhWMldMRnJ6RXJmZzNk?=
+ =?utf-8?B?ZXNISEhUQ2MxMVBWeSsrUHhSYzllelR0YWNrU0hIYjNWM1Y2ZU5wb1h0cFJz?=
+ =?utf-8?B?NnVIUXdtTU56azZHNmVXTlpOd3lGL1lZTGwrMTkwWG80VFNRamY1ZG5mWEw2?=
+ =?utf-8?B?R2NxS3VYc0ZRQ3Z6blUzVmRPekswZzNkN2V4aC9YMFFDOGNQQjBwZFJUS1Nm?=
+ =?utf-8?B?WEs5M0VFRHNyZ0d6UjZXMTc0Rks0VEwxNm53Znpzd25VS09ESjl0N3BZNVph?=
+ =?utf-8?B?eC9KOGcwNFBHV2dJTm5EUmlraEJJcEhPK2dMenZxeC9SRTRQMGowWEpHVFNG?=
+ =?utf-8?B?WVJxUHpHSVROT0VQc241Q3p2dFdENDFJUndPMnZ4dE5uclZ2VklGeE50N1J1?=
+ =?utf-8?B?N2hvWHprUXo1WFV5TjRONWYrUFRyakJnTERzckhxTW1LTHBLYVIzR0lvVXFH?=
+ =?utf-8?B?Q2Myd2FRRWt0aGRRSkhZLzFCRzZ6VHJOUDBQSXM4NHp0UHNnRXkzNERCOGZk?=
+ =?utf-8?B?MnRlMWc2VVBwOUFnUVczWm1vbnRSTjYrL2MyUGRuKzZXandwbVB0L1NmK3pr?=
+ =?utf-8?B?Z21SMWl4SGZ3WCtwdkxpZ2RkSWhvdUFjT25BakVuYUk4VG1tZURkMWNWTkY0?=
+ =?utf-8?B?Z2p4alUxQ0RpcFlVSmVoZURTTXloSnhEbHBtOFhNbjlHV05YY0JhUzI1YlVM?=
+ =?utf-8?B?WjZxWDFMUDdkbHoybjk5TGRIM0hHME1KTkhYVktYcjlmNmcxVzNnK1RlUW9C?=
+ =?utf-8?B?SmhLdG5lZXhRdkIwRFROcVQ1RDdVZXdlbTkzZGFmY1BOcFE5VzB5VkFDVlg5?=
+ =?utf-8?B?dmZlTU80WE5FVzVLdGlGcVFKN3dSSUFobDJHY3MvWG5XeHpuZ2ZaNlIvcjF2?=
+ =?utf-8?B?SWc0em92Y21rYXRaRXlMM2xTTjk0RnZydDBqN2hFZmtCM1I0Qi9HN2VuY2FY?=
+ =?utf-8?B?bk1WclFDV0FqcS9Wa2FoSUQ4OGppYSsva25XMFhsbmN5b3I2aE5zOTErdis1?=
+ =?utf-8?B?Umg0ck1ab1ZmTnpWNFdaSC9zZDBnMHoweUI4UExoVzhaUmFJSUhHaGtnOTVP?=
+ =?utf-8?B?cmR6ZVpsb0F5WnNFUjhaUjF6N0dWMTZJMjNzbFNET0dQN2dkZmErTFJBb1dU?=
+ =?utf-8?B?VDlZVzVrMGxhWXpTcThtMm8yemxJZitRajJjM2ZSK0g0c21TVXpkc3A2eHYy?=
+ =?utf-8?B?ZlU0by92WjFyYklLREdtWUZ5ZnhCVTh6b3dRSnoyZFJVVE9DTDZHdTcycjRR?=
+ =?utf-8?B?bk5DbHZyVzRQUGhkOE44UmVlWlJMc041UEU2ZHo2RmpBWE5FRDZRS0w4QzhX?=
+ =?utf-8?B?Qmc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <18DED409E552534CB24AD338BAF504AC@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241029091121.16281-1-jth@kernel.org>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	MLEn+YGZp/+elvhEw9JCmQtKrKbgsev8WIyxWaSUwXQzumz+uCMDDC1bPfTXucFlsdvw5fcT/lFhZYZe3Zks9u5xTIBu/08v82WXzPJ9W7NU7dnIZU1YMSgIubL9H6wPVy0LjjL+0cXDiSNdau4Sxugf4A4kwqNNbA6OA7u6PDz+3e1SpkweIjUeeJS7p2DNf96QDqI6Lf0Qf3Esz73Sg85YpBUl/OysNIOrkZh9xCzjWeGXiipQD5hREehpnqaONtRUYUbpv0CZ4+LAYLBhk+9iAk24sWK3JXpwcQUT7eujqpGee4w3/diCIQmSvRxJXooOkGN1JGIHRVJRfT0stJuO9apKswWymjF3RrlmTWCFZBsm1+f0TYtelZXZ7Wr4nY6H8miAUTZ98CWtM/CWz6PyoH6nSlDTBth3MEukPschOquS1M2pRtRVYS4TGaLmAkkaXu3LdaYcDyO3zgBbcFmEKsbh5CwhnBnD4m1iTiEmugzPT5lSzM0QgzOdMgLsCzKmTf/g7kCg2GjliiFXDn34wWOOA7Uo3ANxgmnTdViA7WqoUzCYlUsOmPCA7NkBHgnOZA5SxZosPTqO3ysJbVtpPHxIc28u5DEQOiOnM7pbUZkvVef9Pf66M4Qsl6vw
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a63c06d-ae77-45d1-771d-08dcf8ec1301
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2024 14:06:39.4184
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NrfodsGKU7VAjsKRDo/WnujkgUI3n6J+fiL8gpqSwK3AD6YiG7nnT2EUfzZ0kOPZsupFqtO9qBJbI8aC+nPZw8EdBtaBi3+Gd/h8mRideX4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6315
 
-Hi Johannes,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on linus/master v6.12-rc5 next-20241030]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Johannes-Thumshirn/btrfs-handle-bio_split-error/20241029-171227
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/20241029091121.16281-1-jth%40kernel.org
-patch subject: [PATCH] btrfs: handle bio_split() error
-config: x86_64-randconfig-121-20241030 (https://download.01.org/0day-ci/archive/20241030/202410302118.6igPxwWv-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241030/202410302118.6igPxwWv-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410302118.6igPxwWv-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> fs/btrfs/bio.c:694:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted blk_status_t [assigned] [usertype] ret @@     got long @@
-   fs/btrfs/bio.c:694:29: sparse:     expected restricted blk_status_t [assigned] [usertype] ret
-   fs/btrfs/bio.c:694:29: sparse:     got long
-   fs/btrfs/bio.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
-   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
-   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
-
-vim +694 fs/btrfs/bio.c
-
-   659	
-   660	static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
-   661	{
-   662		struct btrfs_inode *inode = bbio->inode;
-   663		struct btrfs_fs_info *fs_info = bbio->fs_info;
-   664		struct bio *bio = &bbio->bio;
-   665		u64 logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-   666		u64 length = bio->bi_iter.bi_size;
-   667		u64 map_length = length;
-   668		bool use_append = btrfs_use_zone_append(bbio);
-   669		struct btrfs_io_context *bioc = NULL;
-   670		struct btrfs_io_stripe smap;
-   671		blk_status_t ret;
-   672		int error;
-   673	
-   674		if (!bbio->inode || btrfs_is_data_reloc_root(inode->root))
-   675			smap.rst_search_commit_root = true;
-   676		else
-   677			smap.rst_search_commit_root = false;
-   678	
-   679		btrfs_bio_counter_inc_blocked(fs_info);
-   680		error = btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_length,
-   681					&bioc, &smap, &mirror_num);
-   682		if (error) {
-   683			ret = errno_to_blk_status(error);
-   684			goto fail;
-   685		}
-   686	
-   687		map_length = min(map_length, length);
-   688		if (use_append)
-   689			map_length = btrfs_append_map_length(bbio, map_length);
-   690	
-   691		if (map_length < length) {
-   692			bbio = btrfs_split_bio(fs_info, bbio, map_length);
-   693			if (IS_ERR(bbio)) {
- > 694				ret = PTR_ERR(bbio);
-   695				goto fail;
-   696			}
-   697			bio = &bbio->bio;
-   698		}
-   699	
-   700		/*
-   701		 * Save the iter for the end_io handler and preload the checksums for
-   702		 * data reads.
-   703		 */
-   704		if (bio_op(bio) == REQ_OP_READ && is_data_bbio(bbio)) {
-   705			bbio->saved_iter = bio->bi_iter;
-   706			ret = btrfs_lookup_bio_sums(bbio);
-   707			if (ret)
-   708				goto fail;
-   709		}
-   710	
-   711		if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
-   712			if (use_append) {
-   713				bio->bi_opf &= ~REQ_OP_WRITE;
-   714				bio->bi_opf |= REQ_OP_ZONE_APPEND;
-   715			}
-   716	
-   717			if (is_data_bbio(bbio) && bioc &&
-   718			    btrfs_need_stripe_tree_update(bioc->fs_info, bioc->map_type)) {
-   719				/*
-   720				 * No locking for the list update, as we only add to
-   721				 * the list in the I/O submission path, and list
-   722				 * iteration only happens in the completion path, which
-   723				 * can't happen until after the last submission.
-   724				 */
-   725				btrfs_get_bioc(bioc);
-   726				list_add_tail(&bioc->rst_ordered_entry, &bbio->ordered->bioc_list);
-   727			}
-   728	
-   729			/*
-   730			 * Csum items for reloc roots have already been cloned at this
-   731			 * point, so they are handled as part of the no-checksum case.
-   732			 */
-   733			if (inode && !(inode->flags & BTRFS_INODE_NODATASUM) &&
-   734			    !test_bit(BTRFS_FS_STATE_NO_DATA_CSUMS, &fs_info->fs_state) &&
-   735			    !btrfs_is_data_reloc_root(inode->root)) {
-   736				if (should_async_write(bbio) &&
-   737				    btrfs_wq_submit_bio(bbio, bioc, &smap, mirror_num))
-   738					goto done;
-   739	
-   740				ret = btrfs_bio_csum(bbio);
-   741				if (ret)
-   742					goto fail;
-   743			} else if (use_append ||
-   744				   (btrfs_is_zoned(fs_info) && inode &&
-   745				    inode->flags & BTRFS_INODE_NODATASUM)) {
-   746				ret = btrfs_alloc_dummy_sum(bbio);
-   747				if (ret)
-   748					goto fail;
-   749			}
-   750		}
-   751	
-   752		btrfs_submit_bio(bio, bioc, &smap, mirror_num);
-   753	done:
-   754		return map_length == length;
-   755	
-   756	fail:
-   757		btrfs_bio_counter_dec(fs_info);
-   758		/*
-   759		 * We have split the original bbio, now we have to end both the current
-   760		 * @bbio and remaining one, as the remaining one will never be submitted.
-   761		 */
-   762		if (map_length < length) {
-   763			struct btrfs_bio *remaining = bbio->private;
-   764	
-   765			ASSERT(bbio->bio.bi_pool == &btrfs_clone_bioset);
-   766			ASSERT(remaining);
-   767	
-   768			btrfs_bio_end_io(remaining, ret);
-   769		}
-   770		btrfs_bio_end_io(bbio, ret);
-   771		/* Do not submit another chunk */
-   772		return true;
-   773	}
-   774	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+T24gMzAuMTAuMjQgMTU6MDEsIGtlcm5lbCB0ZXN0IHJvYm90IHdyb3RlOg0KDQo+IHNwYXJzZSB3
+YXJuaW5nczogKG5ldyBvbmVzIHByZWZpeGVkIGJ5ID4+KQ0KPj4+IGZzL2J0cmZzL2Jpby5jOjY5
+NDoyOTogc3BhcnNlOiBzcGFyc2U6IGluY29ycmVjdCB0eXBlIGluIGFzc2lnbm1lbnQgKGRpZmZl
+cmVudCBiYXNlIHR5cGVzKSBAQCAgICAgZXhwZWN0ZWQgcmVzdHJpY3RlZCBibGtfc3RhdHVzX3Qg
+W2Fzc2lnbmVkXSBbdXNlcnR5cGVdIHJldCBAQCAgICAgZ290IGxvbmcgQEANCg0KWWVwIHRoYXQg
+ZGVmaW5pdGl2ZWx5IG5lZWRzIHRvIGJlOg0KDQpkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvYmlvLmMg
+Yi9mcy9idHJmcy9iaW8uYw0KaW5kZXggOTZjYWNkNWMwM2E1Li44NDdhZjI4ZWNmZjkgMTAwNjQ0
+DQotLS0gYS9mcy9idHJmcy9iaW8uYw0KKysrIGIvZnMvYnRyZnMvYmlvLmMNCkBAIC02OTEsNyAr
+NjkxLDcgQEAgc3RhdGljIGJvb2wgYnRyZnNfc3VibWl0X2NodW5rKHN0cnVjdCBidHJmc19iaW8g
+DQoqYmJpbywgaW50IG1pcnJvcl9udW0pDQogICAgICAgICBpZiAobWFwX2xlbmd0aCA8IGxlbmd0
+aCkgew0KICAgICAgICAgICAgICAgICBiYmlvID0gYnRyZnNfc3BsaXRfYmlvKGZzX2luZm8sIGJi
+aW8sIG1hcF9sZW5ndGgpOw0KICAgICAgICAgICAgICAgICBpZiAoSVNfRVJSKGJiaW8pKSB7DQot
+ICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBQVFJfRVJSKGJiaW8pOw0KKyAgICAgICAgICAg
+ICAgICAgICAgICAgcmV0ID0gZXJybm9fdG9fYmxrX3N0YXR1cyhQVFJfRVJSKGJiaW8pKTsNCiAg
+ICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGZhaWw7DQogICAgICAgICAgICAgICAgIH0NCiAg
+ICAgICAgICAgICAgICAgYmlvID0gJmJiaW8tPmJpbzsNCg0KQ2FuIHlvdSBmb2xkIHRoYXQgaW4g
+Sm9obiBvciBkbyB5b3Ugd2FudCBtZSB0byBzZW5kIGEgbmV3IHZlcnNpb24/DQo=
 
