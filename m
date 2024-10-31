@@ -1,577 +1,235 @@
-Return-Path: <linux-btrfs+bounces-9269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E6379B80E5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 18:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CBB39B8145
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 18:32:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFE49B218D8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 17:09:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 856EAB23D58
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 17:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5F31BE23C;
-	Thu, 31 Oct 2024 17:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861B91C2443;
+	Thu, 31 Oct 2024 17:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="mI+uxhlI"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="L4WjqTxB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983341BC9ED;
-	Thu, 31 Oct 2024 17:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730394540; cv=fail; b=cPpsOBrdEg2B1w6hToUmYguOjP5sYmnBT4Z/yzeMvwvpS+OYIwr/DQpS0MNnUQkI4SY730ewQb9u9UoFJq1DGbwkvtgSP8O6r7qojHbcbDnT77UiRGjsubONcRtdXArErADoWxhMmDOVxBGLK08KTEzIiAWUxcNE7zIE08+k2FQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730394540; c=relaxed/simple;
-	bh=cclqR7TobUy3rto8FmI7p2d5cZVHbMmr8xnyC3MU5G4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=SDHACV/0Q1CyjdVU/ISzkDk8MXpnEAdxqtL/WrKeEs7qo8z49Urschgqbvok/cOaXSks4Aj5PfKeXQPQ6JDMcMdGaqnNJhJBbkhlh7WzMnCBtLJMCJe5wWAMq5jwiS8v47ECAB9BagVQgrLJs0RGidl/5wyq1j5UcGiYd8Nk7UI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=mI+uxhlI; arc=fail smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49VGltkG013825;
-	Thu, 31 Oct 2024 10:08:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-id:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	s2048-2021-q4; bh=gFUA5fN89Wk5T512d3esRynTpFXVzjEdPMMOUZAiSTI=; b=
-	mI+uxhlIamv0OQSykGOCV2yB5ZSan+kCCwmuGnXHtHCJZLY9vjKEeP+y/tU7AYnK
-	C2cjzwit5mkSScZa1xNvM3MaQY6guITrhziCIlxapNLCV3J4DFIo7Jnmf0YYXZ48
-	S6QaEzqa4DzKZdGU5E6NC+G0Voo+sxC9P9fzZA7APVDgZPXlMHaQfR/G/WnrKQIX
-	W57nPIgMWVZsu1Wh3dAYLQRC16fv0ATuKkDqXjjlqeZqi3lCLfNGxhftojn9KO11
-	21txKctelOJyjOYQbASBOwfr1HtFyG5xytV/BHPekMP4HUcPRY7gct8Z395cfSne
-	keA3FlRUreayPb/ljMV0nA==
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42mdmqr91x-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 31 Oct 2024 10:08:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=n+n/gMclmzF32gcguw6j6gwXKL4pv1GSWZt/37xiRBGyI0VfyK0x3LJHHV0Yv1xFe5yQ9ohUSh1ruEWvdRTva38bHSkYZxENOaVhjPiy9F7Y3Gg/EHI4gBkeyNPQAoVfW+yH+PjkJQIw4lqdGtRqPe1qHRubL1+tGxDz5/PpfxHcc3mxfphrz6nKWvD7tYwoFtNvcv42LPmbeuR/sbmdha0osi5sistKH4VfLOTvy5xs0P/RlPueaSvSYtRj9LAh+eF1OQ5et0F2OtVIbSgGx6EmfjgKfQI6+tPL7fisw3Yvs2JWSIT0w8mxQJLku6oOLP/CJnOEXStW64worrAWMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7GfMQp87lmRTlkSKirTUAf+PNsNGGdz+oDlY7qipAC8=;
- b=BjjW/WZB0pBOYvyK1Ed11DAH2ff9K/DhKrRASvkjz36qR3biTuKz7f9gDKw5x+HEFrVAmk12uTRHQbuCNev8mpOrDaU3cyhSvGtG18dLgjtKgI1A3qO50kgt9PXXbZ73RWZfViVWqUeiDPc5DawUr3Dq6afySGQWnPZKoeJZ4QokR0cOYrTzkhTbC7vZc1EWH8+tyxOnSiaupZmE0QEzfST/WU8UXnXA1YpgO8DY/PbWfJDANuftP21qkhmCm7i/HrVi59oxeYYD5C3tbdq97BRtds8qX2bppQ+8px+OyFPuOHao6ckYxT0KT4kTdR1xcQ5lphbpeDizmDC+dNcEhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
- by SA1PR15MB4853.namprd15.prod.outlook.com (2603:10b6:806:1e0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.20; Thu, 31 Oct
- 2024 17:08:52 +0000
-Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
- ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
- ([fe80::bff4:aff5:7657:9fe8%6]) with mapi id 15.20.8093.024; Thu, 31 Oct 2024
- 17:08:52 +0000
-From: Mark Harmstone <maharmstone@meta.com>
-To: Pavel Begunkov <asml.silence@gmail.com>,
-        Mark Harmstone
-	<maharmstone@meta.com>,
-        "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-CC: "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
-Thread-Topic: [PATCH 5/5] btrfs: add io_uring command for encoded reads
-Thread-Index: AQHbJJHC7Q2WygCDb0ahtsoMBhbyubKehNOAgAKhJoA=
-Date: Thu, 31 Oct 2024 17:08:52 +0000
-Message-ID: <46aa1f2a-d0c6-429e-a862-1b3b8c37c109@meta.com>
-References: <20241022145024.1046883-1-maharmstone@fb.com>
- <20241022145024.1046883-6-maharmstone@fb.com>
- <63db1884-3170-499d-87c8-678923320699@gmail.com>
-In-Reply-To: <63db1884-3170-499d-87c8-678923320699@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|SA1PR15MB4853:EE_
-x-ms-office365-filtering-correlation-id: e0df5aa8-b931-484d-828f-08dcf9ceb205
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?ZVdaMEFzaU1rSnBSWFpYYm1ubnh6ZXIwZnM5RlV5RWFQd0FHYTl6cklXQkNZ?=
- =?utf-8?B?UnJwTS80WXcwejh4bmxoQ0pHQnlhV3Y1T2tKMWdQOW1WellmWUd1WHZvMGxS?=
- =?utf-8?B?cmZiN1IvWkYrT0xiUGFzZk9lSmhFWUEzdDR6TzhuV3NFY3IzKzdpZzE1SnVR?=
- =?utf-8?B?bjZwTVJVNE82dWIvdFphcUxhczRpdGpBVW1XZXdYcnNaSndqYkZ4MDFlYnNl?=
- =?utf-8?B?c0srWXZvaHNnd3lJbUF6RHAzZEJ1ZlgybVJPZFNXOVV1YjNyOWc4NTAzb0NE?=
- =?utf-8?B?WFJpck5aTWFneWc1UnBScFFoYVdVOHp5WFpVb0dHWnBodUpGSWlPWUdBaitm?=
- =?utf-8?B?ek05M1Izc0dPUXVQanQrZFF1d2cxSEM0L2kwYW5MczZrOFhhTzA1Mkl3TUJZ?=
- =?utf-8?B?SkJjMmd6dWJ4UGF6M3FLUTRPellMMjdObTh4bUhFcm0xdkZvbWJtZVArZ2dl?=
- =?utf-8?B?N090SEVOY0xiL3AxYm5EelFIY3BkODVWbm5SWVlQRFIwTVpIMWp2TjhnL0Zo?=
- =?utf-8?B?Yk9Yc0d0Z0xWY2lENU5TSVZqZmNCNmRqQkNyL1lqMHdPbEJoQVNWMDBrKy93?=
- =?utf-8?B?R0ZXcnZ0Z0RjWFpwRUhqbFRaZkdpNG1ML2J3MFRGbFdGRDJrNkdiSHRQOUt5?=
- =?utf-8?B?OExIbktqcFVhT29LT1ozRURxajJmR1I0MlZXVVA3WUJwczkxQTNFOUpkTHZL?=
- =?utf-8?B?WCtyeFZ5d1QxcGFIZGVuSHZlNWd6MUl5ajNRSWpYZ2lyTkVPOWxFOEN4cS9K?=
- =?utf-8?B?c0hwWlJ5NE5ZUU16M2dINDRQK3dONE5pWVBHdWZJbkk2Z0REL2c2OHAyQkFv?=
- =?utf-8?B?QkllUHZVM0VIN2F4TkI1dG1DbEFqYTh6RVBTeExkTGtBUXJWY2pHOEdTRndF?=
- =?utf-8?B?YWJaYURyN2NrQUlmQXB3UGZFYnd5d3luUWMyVFJlMGxkUEFEK2Z5aWZ5Z0tm?=
- =?utf-8?B?TVdHMmNCOGxnakhJQ1ZXUlozVUIvY0E5bm9vdEZKZ3pXSmtPdnFobllxRk1U?=
- =?utf-8?B?WUw3M3VVRVMwaGU1WnBEcnNpVXhZc2IvK2Y4dW9aRER1RW9vYm8zM1FJT0hL?=
- =?utf-8?B?aXVGRDhEMHZsdHZrZGpVcVZUQnhCY3VLSE5aaWdlM21GVDhhcDNHMTNBbXpS?=
- =?utf-8?B?MFkvSXc3ekNNemczUnkxV2FzTVdXbHY0VU53VTBOVEt3ZkxMVWx5K0lDNHN2?=
- =?utf-8?B?WVNhVk5NQSszK24yajU4MW5MWUM0Q1NzZXZHUGhiSkd0dytkamFLTjVmNWF6?=
- =?utf-8?B?eHVVdGJUVVhnaFJPakJhVkVERnZSeEo4cThRK0tsN09kREN0d0ZTZHNqZENM?=
- =?utf-8?B?VHBmazI4ZHBFWktwTXJYWjR1N2M3R0Q1UUtGbjZVRDI5RzFvcks3QkhnMVdX?=
- =?utf-8?B?NVJlTVhIZWV4OS82ZERBRW4wdFl4aHJJYkc0K2pyQ055Y0lNSzVyb3V4dU4v?=
- =?utf-8?B?bkkwU2o3d0tHMEtIOHgybEp6eGRLNTc3SitFV0RNRnpwUFBNa2MwTUd0a3Mv?=
- =?utf-8?B?ZVRkc1E5QWdCdU1aakc0WHliSzlWTlZKTzhEWlRtNlVpWFB3OWhXTCtpWTFG?=
- =?utf-8?B?aHphNDFqY0lZaDJtZmVRVVR3QndYelRMMVNUS2k2bUQ1cTdsTVhVQ0VQVHhk?=
- =?utf-8?B?blc2M2FqTEVMZ1M0ZHRzUCtDcDcvWWNPV1J2ODNPVkZ1alA5aGIvRjcwZXMr?=
- =?utf-8?B?NUQ5NmZGZDEraUxNZmhZWVJvcVR0TkpEK05ZcWJNZU13WGJ5NGQxdUNzRmNt?=
- =?utf-8?B?dzFEaUJMQ3VGRTNQQ0JRT3RjOE9SY2RuQzBqRS9FSjcxTWVBakVjZDZrZkdP?=
- =?utf-8?B?bTJLOWJGa3BZTmIvZU9hTEJsM0FFaittUlN0aHBqMEJCTWl0S0NaUjIyM1NW?=
- =?utf-8?Q?s+qGjzQKRNYi9?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?c3Q1Yy9Bd0VVQzhhSUdiRzFOaU1ydUhKbHFxMkVpa0FGclRIaDBNOEFuYnQ3?=
- =?utf-8?B?MjdMNzZQcC80eE8waEYwU01MWGZFUWpycjBXMDgvOXlCSGpuOU1DOW00Ni9z?=
- =?utf-8?B?NU1kNWFkUjZQdjh5bCtKOVlYRVFSaUx5K0JvcTNVVGZyVkFTamRVaWZwczVL?=
- =?utf-8?B?VjZCVG9lUzBCY2JxVitRN0xoNnRkam5VeEdieUQ5WVU2b0J0OFRpZStwd1J2?=
- =?utf-8?B?L3ZqckE4VWozVHltblBLaVduSnBoQ3VhaDZIeE9ZUHUvNnZENG1nTUVBYVFL?=
- =?utf-8?B?V1REcDVSQzF3Y3E5bXJvZkhZWVhNaW85d1hNaVNWTC9DZ2V6VFVrMmtlcjdC?=
- =?utf-8?B?clVxbEZER3ZJc1NvYTNyRGgyRUEzN0JFeXk2Sk1maTRmQXJYSW91UFZFZXZ3?=
- =?utf-8?B?cW5ZVUtmMmE1RCtlbUFvaFl5Slk0SlBJYksrNGZEaFN6K0l2dWhVSTcvYWgy?=
- =?utf-8?B?ak9YOE9ERkh1QWZmWXQxU2FoUEs0THFKbGY5MEgwUWlDd1EzcTZwaWdCZDdh?=
- =?utf-8?B?ZW5OQllqT3ZLbzhNeWdBU0FBU2xNQ3hJTU5ZNTVVS083aG15VXU4Q1hOSVl4?=
- =?utf-8?B?OVYwa2s3T0dFbGFKdFVDbTFxRU5pdjdBVXgyM3ZnYzBmMm8vOGRna25VUGY2?=
- =?utf-8?B?c3dZd1dLUXpkTVM3QXhhaHBndlFaTVdsMjhUd2gySzhGWkc4bisxeUd2Q1Ni?=
- =?utf-8?B?QXRVNVdKa3FGRGFYMEp2dktCbitxWjlSUUJkRUZQR0lxNk03UktRNE5Lek02?=
- =?utf-8?B?NE5HNjZCbTVBOVNvUFpQZ2hIc2tFcU1nOVlxZEhiKzJpUmlOUlRqMDdiYVVx?=
- =?utf-8?B?Y0JrOC82TU92UWdTR244bGVObTNySVk2UTZmTVZ2MGZtOW9Od0VvRWpzQlJH?=
- =?utf-8?B?YzdNSGpMRldIK0ZGUjFxZlRkSVRiMVdxN3g4cTBoa2FyNlZ5enVyaE9aL2hM?=
- =?utf-8?B?dVFzRWdSRlpNZXVLZnUwTktXMS96K0t4bE1tRlBrOXBQeVE1T1dTNjBUZERh?=
- =?utf-8?B?bEtHSGlEcTdFVEtXcXJHWDBsMXJhZmZNZEpWeUM3QTNqK0hWQk9tOWcyNnVm?=
- =?utf-8?B?eVlGV0lPaXNpZTYxTkgvTHRJRXN4aDhzemZ5RkpadWdKK0NkVkhwdmdTdVhG?=
- =?utf-8?B?dzU4bTZlVTdFVVJEek5ONVJFT0h2aDZhUGQ2dlFLWU1UZzFPVmNscEF1d3Y5?=
- =?utf-8?B?cnNjZERuT0NIbjBWK2JJVTNYRExtN0Y4S1VyUTBVVVkvRGtnVUM3YU5wVHNl?=
- =?utf-8?B?aTJETGJRNzBWcXFSVEkvY01Zc00rcFlsQlg4aGVQZlNtek1MUllGZy9pWmVs?=
- =?utf-8?B?RUhic2FvejRXTTRGYWVSMTZjS293Wk9kRzR1d01abXVsNFBiUENvMVYvaThO?=
- =?utf-8?B?K3ZnWWR3eUhzaXJaK0hQVmRZQ3h5VG0vTUxtOUI4eTdXeUNTMjNhQklyYnF3?=
- =?utf-8?B?QmtqSjNUV2NWWGg2ZU9vY1JXSVRsbXpVRTdoNDZYWklLRFJtSmlyRW03ZU16?=
- =?utf-8?B?Qzd1L21GOEZzYlRPTkhiOGp4VnpmdnMvYW4zQTFjcCtsSk1DNm1MdU5YR2NX?=
- =?utf-8?B?Si9jSFEyU3hQZ2htaHBwdS94RmFVK0JSRklVWmU2Q3E3Q2NpdngyU05qWEJK?=
- =?utf-8?B?cS82cVU3a0lpclNhQXJFSzgvTEJxWnFQbXVEdjEvUFlCWTdHUWFqTDZOZEEx?=
- =?utf-8?B?Tk11VkxuRkoyWEZPUnlpZWZRTWp0Qis4Ym84NEczb0N6U3Y4YUdQeVJFWStx?=
- =?utf-8?B?ODlKQ3ZtWE1US2YrcllJL1diOFpNbmJWcDhJakQ4Z1d3K1k3WFFqeHdZRUMx?=
- =?utf-8?B?Y0U2R3NrZjl1SHlsYjM3SW94czhkWW5JakxkdStVOUhYS3JzWkFkSzNtczUr?=
- =?utf-8?B?SVdMMXpncnJpeUIyY0VZRCtJSndzVTFQaVJQMjNKOFd6dzh0bXMxS1N6YmNT?=
- =?utf-8?B?UVBrMVEvT1Z1eTkvN3p6ZmlIcC9taGN4TVd5VzlEL1luZDd1dklvbTlkenNy?=
- =?utf-8?B?Ykd2NlRhTVdNWDBIUXZlYWJRNCtDUTdYbHVBUDRIZ212bytJUzJkMmREY3N5?=
- =?utf-8?B?TDhQWktDNFFGM3N1dE05UG90MWVJNTRvRUtCRkNCZmhaRkU0TXVzQXpReklO?=
- =?utf-8?Q?E4XQ=3D?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C75B12BF24;
+	Thu, 31 Oct 2024 17:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730395920; cv=none; b=I/UTdlVfFP4pyupQUmqceBBOxJ/Du8TwkDK6MQ3nADuVnhZJOmV1F5CQ0GjMxdnfhSv9YRXon8QG3Sr5TYmqdHr1D9mXh1s5I+Ls7nrxaBH3wVcS92dRsOYdNNOqMRhWZMn/DVYkfoz8uBGFTaAtzYd4uSarODXDFRJgLw+1NaU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730395920; c=relaxed/simple;
+	bh=xGVT2nBFCDAbzlIh7Ah1fbzejAdzg17V5Cpg2c4tHcY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q6Z51Im0hI5/Uot/c32BU8E2YfPQbMT1lj+QYoTKOOPYHA48TLfYTVows6FMgNVQRV9Q3rbU9aph1+XKpPcKPNMMBqMuoxyltiNpQt5+gDDFwI7vJobbNXVviMoQnRS3EibzgpboHqInD8h2mKatWDj0SJCXZzJKv/Vy/F9otLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=L4WjqTxB; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Ffw5aTG/Bg8AZvVV88lvHBoZWy1zMvuq5Y4L7YnrbgE=; b=L4WjqTxBbEYzeWZS79F4oi3fLN
+	DQRV8F4k3QheS9+mQuPSDjQLUMzjppXK0+Up04zWhnkgMJVX6X50RZvY8sSMbfoBxnVm9Dn8sUTHN
+	ylnFebThg+uuZpPbkrTdyM6qWuhC9pYOXmgkPYPunDWWVPud1qVSMdgb/ImjMbqL0wQNOZQcDV2Fb
+	RATS7IzlnaLXDvV2SKK+kcI9XqANr2Hzhuxb+Z0AHcvsRfGzOX5Up5jLv4bKLk60BNY0W9OzGzza8
+	eDwMlr74hgZ2QqrKX5hKhINDjJxZjp34aG4t7EuRjCHEfzXCQcYdh5vtY5HoCLcCPuMQgWQbbMy0A
+	636bhaNw==;
+Received: from [189.78.222.89] (helo=[192.168.15.100])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1t6Z18-0007Hm-Rc; Thu, 31 Oct 2024 18:31:31 +0100
+Message-ID: <c104f427-f9d9-498c-a719-ed6bf118226d@igalia.com>
+Date: Thu, 31 Oct 2024 14:31:21 -0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0df5aa8-b931-484d-828f-08dcf9ceb205
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2024 17:08:52.4695
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jynCjH286Z9bly3BG5rGcq8PGjmazs53rHpGjy64m7RS+Mbsvfs/Z4PUoJpRihAj04Tce0+ZzAbBS5uCW+enCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4853
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-ID: <32B9D9F890E77145A3837A938134114A@namprd15.prod.outlook.com>
-X-Proofpoint-GUID: _YmuKfPrLPukB1cegRe9yTgSAIlOOdrc
-X-Proofpoint-ORIG-GUID: _YmuKfPrLPukB1cegRe9yTgSAIlOOdrc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 8/9] tmpfs: Expose filesystem features via sysfs
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Gabriel Krisman Bertazi <krisman@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com, kernel-dev@igalia.com,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+ Gabriel Krisman Bertazi <krisman@suse.de>, llvm@lists.linux.dev,
+ linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
+References: <20241021-tonyk-tmpfs-v8-0-f443d5814194@igalia.com>
+ <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
+ <20241031051822.GA2947788@thelio-3990X>
+Content-Language: en-US
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20241031051822.GA2947788@thelio-3990X>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thanks Pavel.
+Hi Nathan,
 
-On 30/10/24 00:59, Pavel Begunkov wrote:
-> >=20
-> On 10/22/24 15:50, Mark Harmstone wrote:
-> ...
->> +static void btrfs_uring_read_finished(struct io_uring_cmd *cmd,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int issu=
-e_flags)
+Em 31/10/2024 02:18, Nathan Chancellor escreveu:
+> Hi André,
+> 
+> On Mon, Oct 21, 2024 at 01:37:24PM -0300, André Almeida wrote:
+>> Expose filesystem features through sysfs, so userspace can query if
+>> tmpfs support casefold.
+>>
+>> This follows the same setup as defined by ext4 and f2fs to expose
+>> casefold support to userspace.
+>>
+>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+>> Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+>> ---
+>>   mm/shmem.c | 37 +++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 37 insertions(+)
+>>
+>> diff --git a/mm/shmem.c b/mm/shmem.c
+>> index ea01628e443423d82d44277e085b867ab9bf4b28..0739143d1419c732359d3a3c3457c3acb90c5b22 100644
+>> --- a/mm/shmem.c
+>> +++ b/mm/shmem.c
+>> @@ -5546,3 +5546,40 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+>>   	return page;
+>>   }
+>>   EXPORT_SYMBOL_GPL(shmem_read_mapping_page_gfp);
+>> +
+>> +#if defined(CONFIG_SYSFS) && defined(CONFIG_TMPFS)
+>> +#if IS_ENABLED(CONFIG_UNICODE)
+>> +static DEVICE_STRING_ATTR_RO(casefold, 0444, "supported");
+>> +#endif
+>> +
+>> +static struct attribute *tmpfs_attributes[] = {
+>> +#if IS_ENABLED(CONFIG_UNICODE)
+>> +	&dev_attr_casefold.attr.attr,
+>> +#endif
+>> +	NULL
+>> +};
+>> +
+>> +static const struct attribute_group tmpfs_attribute_group = {
+>> +	.attrs = tmpfs_attributes,
+>> +	.name = "features"
+>> +};
+>> +
+>> +static struct kobject *tmpfs_kobj;
+>> +
+>> +static int __init tmpfs_sysfs_init(void)
 >> +{
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_uring_priv *priv =3D
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *io_uring_cmd_to_pdu(cmd, st=
-ruct btrfs_uring_priv *);
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_inode *inode =3D BTRFS_I(file_inode(pri=
-v->iocb.ki_filp));
->> +=C2=A0=C2=A0=C2=A0 struct extent_io_tree *io_tree =3D &inode->io_tree;
->> +=C2=A0=C2=A0=C2=A0 unsigned long i;
->> +=C2=A0=C2=A0=C2=A0 u64 cur;
->> +=C2=A0=C2=A0=C2=A0 size_t page_offset;
->> +=C2=A0=C2=A0=C2=A0 ssize_t ret;
+>> +	int ret;
 >> +
->> +=C2=A0=C2=A0=C2=A0 if (priv->err) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D priv->err;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->> +=C2=A0=C2=A0=C2=A0 }
+>> +	tmpfs_kobj = kobject_create_and_add("tmpfs", fs_kobj);
+>> +	if (!tmpfs_kobj)
+>> +		return -ENOMEM;
 >> +
->> +=C2=A0=C2=A0=C2=A0 if (priv->compressed) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i =3D 0;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page_offset =3D 0;
->> +=C2=A0=C2=A0=C2=A0 } else {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i =3D (priv->iocb.ki_pos - p=
-riv->start) >> PAGE_SHIFT;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page_offset =3D offset_in_pa=
-ge(priv->iocb.ki_pos - priv->start);
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 cur =3D 0;
->> +=C2=A0=C2=A0=C2=A0 while (cur < priv->count) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size_t bytes =3D min_t(size_=
-t, priv->count - cur,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PAGE_SIZE - page_offset=
-);
+>> +	ret = sysfs_create_group(tmpfs_kobj, &tmpfs_attribute_group);
+>> +	if (ret)
+>> +		kobject_put(tmpfs_kobj);
 >> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (copy_page_to_iter(priv->=
-pages[i], page_offset, bytes,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &priv->iter) !=3D=
- bytes) {
->=20
-> If that's an iovec backed iter that might fail, you'd need to
-> steal this patch
->=20
-> https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-12-9739c=
-753666e@ddn.com/
->=20
-> and fail if "issue_flags & IO_URING_F_TASK_DEAD", see
->=20
-> https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-13-9739c=
-753666e@ddn.com/
-
-Thanks, I've sent a patchset including your patch. Does it make a=20
-difference, though? If the task has died, presumably copy_page_to_iter=20
-can't copy to another process' memory...?
-
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D -EFAULT;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto=
- out;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i++;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur +=3D bytes;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page_offset =3D 0;
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 ret =3D priv->count;
->> +
->> +out:
->> +=C2=A0=C2=A0=C2=A0 unlock_extent(io_tree, priv->start, priv->lockend,=20
->> &priv->cached_state);
->> +=C2=A0=C2=A0=C2=A0 btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
->=20
-> When called via io_uring_cmd_complete_in_task() this function might
-> not get run in any reasonable amount of time. Even worse, a
-> misbehaving user can block it until the task dies.
->=20
-> I don't remember if rwsem allows unlock being executed in a different
-> task than the pairing lock, but blocking it for that long could be a
-> problem. I might not remember it right but I think Boris meantioned
-> that the O_DIRECT path drops the inode lock right after submission
-> without waiting for bios to complete. Is that right? Can we do it
-> here as well?
-
-We can't release the inode lock until we've released the extent lock. I=20
-do intend to look into reducing the amount of time we hold the extent=20
-lock, if we can, but it's not trivial to do this in a safe manner.
-We could perhaps move the unlocking to btrfs_uring_read_extent_endio=20
-instead, but it looks unlocking an rwsem in a different context might=20
-cause problems with PREEMPT_RT(?).
-
->> +
->> +=C2=A0=C2=A0=C2=A0 io_uring_cmd_done(cmd, ret, 0, issue_flags);
->> +=C2=A0=C2=A0=C2=A0 add_rchar(current, ret);
->> +
->> +=C2=A0=C2=A0=C2=A0 for (unsigned long index =3D 0; index < priv->nr_pag=
-es; index++)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __free_page(priv->pages[inde=
-x]);
->> +
->> +=C2=A0=C2=A0=C2=A0 kfree(priv->pages);
->> +=C2=A0=C2=A0=C2=A0 kfree(priv->iov);
->> +=C2=A0=C2=A0=C2=A0 kfree(priv);
+>> +	return ret;
 >> +}
 >> +
->> +void btrfs_uring_read_extent_endio(void *ctx, int err)
->> +{
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_uring_priv *priv =3D ctx;
->> +
->> +=C2=A0=C2=A0=C2=A0 priv->err =3D err;
->> +
->> +=C2=A0=C2=A0=C2=A0 *io_uring_cmd_to_pdu(priv->cmd, struct btrfs_uring_p=
-riv *) =3D priv;
->=20
-> a nit, I'd suggest to create a temp var, should be easier to
-> read. It'd even be nicer if you wrap it into a structure
-> as suggested last time.
->=20
-> struct io_btrfs_cmd {
->  =C2=A0=C2=A0=C2=A0=C2=A0struct btrfs_uring_priv *priv;
-> };
->=20
-> struct io_btrfs_cmd *bc =3D io_uring_cmd_to_pdu(cmd, struct io_btrfs_cmd);
-> bc->priv =3D priv;
+>> +fs_initcall(tmpfs_sysfs_init);
+>> +#endif /* CONFIG_SYSFS && CONFIG_TMPFS */
+>>
+>> -- 
+>> 2.47.0
+>>
+> 
+> This change as commit 5132f08bd332 ("tmpfs: Expose filesystem features
+> via sysfs") in -next introduces a kCFI violation when accessing
+> /sys/fs/tmpfs/features/casefold. An attribute group created with
+> sysfs_create_group() has ->sysfs_ops() set to kobj_sysfs_ops, which has
+> a ->show() value of kobj_attr_show(). When kobj_attr_show() goes to call
+> the attribute's ->show() value after container_of(), there will be a
+> type mismatch in the case of the casefold attr, as it was defined with a
+> ->show() value of device_show_string() but that does not match the type
+> of ->show() in 'struct kobj_attribute'.
+> 
+> I can easily reproduce this with the following commands:
+> 
+>    $ printf 'CONFIG_%s=y\n' CFI_CLANG UNICODE >kernel/configs/repro.config
+> 
+>    $ make -skj"$(nproc)" ARCH=arm64 LLVM=1 mrproper virtconfig repro.config Image.gz
+>    ...
+> 
+>    $ curl -LSs https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/arm64-rootfs.cpio.zst | zstd -d >rootfs.cpio
+> 
+>    $ qemu-system-aarch64 \
+>        -display none \
+>        -nodefaults \
+>        -cpu max,pauth-impdef=true \
+>        -machine virt,gic-version=max,virtualization=true \
+>        -append 'console=ttyAMA0 earlycon rdinit=/bin/sh' \
+>        -kernel arch/arm64/boot/Image.gz \
+>        -initrd rootfs.cpio \
+>        -m 512m \
+>        -serial mon:stdio
+>    ...
+>    # mount -t sysfs sys /sys
+>    # cat /sys/fs/tmpfs/features/casefold
+>    [   70.558496] CFI failure at kobj_attr_show+0x2c/0x4c (target: device_show_string+0x0/0x38; expected type: 0xc527b809)
+>    [   70.560018] Internal error: Oops - CFI: 00000000f2008228 [#1] PREEMPT SMP
+>    [   70.560647] Modules linked in:
+>    [   70.561770] CPU: 0 UID: 0 PID: 46 Comm: cat Not tainted 6.12.0-rc4-00008-g5132f08bd332 #1
+>    [   70.562429] Hardware name: linux,dummy-virt (DT)
+>    [   70.562897] pstate: 21402009 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+>    [   70.563377] pc : kobj_attr_show+0x2c/0x4c
+>    [   70.563674] lr : sysfs_kf_seq_show+0xb4/0x130
+>    [   70.563987] sp : ffff80008043bac0
+>    [   70.564236] x29: ffff80008043bac0 x28: 000000007ffff001 x27: 0000000000000000
+>    [   70.564877] x26: 0000000001000000 x25: 000000007ffff001 x24: 0000000000000001
+>    [   70.565339] x23: fff000000238a000 x22: ffff9fa31a3996f8 x21: fff00000023fc000
+>    [   70.565806] x20: fff000000201df80 x19: fff000000238b000 x18: 0000000000000000
+>    [   70.566273] x17: 00000000c527b809 x16: 00000000df43c25c x15: fff000001fef8200
+>    [   70.566727] x14: 0000000000000000 x13: fff00000022450f0 x12: 0000000000001000
+>    [   70.567177] x11: fff00000023fc000 x10: 0000000000000000 x9 : ffff9fa31a18fac4
+>    [   70.567682] x8 : ffff9fa319badde4 x7 : 0000000000000000 x6 : 000000000000003f
+>    [   70.568138] x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000004
+>    [   70.568585] x2 : fff00000023fc000 x1 : ffff9fa31a881f90 x0 : fff000000201df80
+>    [   70.569169] Call trace:
+>    [   70.569389]  kobj_attr_show+0x2c/0x4c
+>    [   70.569706]  sysfs_kf_seq_show+0xb4/0x130
+>    [   70.570020]  kernfs_seq_show+0x44/0x54
+>    [   70.570280]  seq_read_iter+0x14c/0x4b0
+>    [   70.570543]  kernfs_fop_read_iter+0x60/0x198
+>    [   70.570820]  copy_splice_read+0x1f0/0x2f4
+>    [   70.571092]  splice_direct_to_actor+0xf4/0x2e0
+>    [   70.571376]  do_splice_direct+0x68/0xb8
+>    [   70.571626]  do_sendfile+0x1e8/0x488
+>    [   70.571874]  __arm64_sys_sendfile64+0xe0/0x12c
+>    [   70.572161]  invoke_syscall+0x58/0x114
+>    [   70.572424]  el0_svc_common+0xa8/0xdc
+>    [   70.572676]  do_el0_svc+0x1c/0x28
+>    [   70.572910]  el0_svc+0x38/0x68
+>    [   70.573132]  el0t_64_sync_handler+0x90/0xfc
+>    [   70.573394]  el0t_64_sync+0x190/0x19
+>    [   70.574001] Code: 72970131 72b8a4f1 6b11021f 54000040 (d4304500)
+>    [   70.574635] ---[ end trace 0000000000000000 ]---
+> 
+> I am not sure if there is a better API exists or if a local copy should
+> be rolled but I think the current scheme is definitely wrong because
+> there is no 'struct device' here.
+> 
 
-No problem, I've sent a patch for this.
+Thank you for the report, I'm trying to fix it, it seems I have used 
+something for device drivers in a filesystem. I wonder how btrfs doesn't 
+get this error, since tmpfs_sysfs_init() is very similar to 
+btrfs_init_sysfs().
 
->> +=C2=A0=C2=A0=C2=A0 io_uring_cmd_complete_in_task(priv->cmd, btrfs_uring=
-_read_finished);
->> +}
->> +
->> +static int btrfs_uring_read_extent(struct kiocb *iocb, struct=20
->> iov_iter *iter,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 start, u64 lockend,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_state *cached_state,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 disk_bytenr, u64 disk_io_size,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size_t count, bool compressed,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct iovec *iov,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct io_uring_cmd *cmd)
->> +{
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_inode *inode =3D BTRFS_I(file_inode(ioc=
-b->ki_filp));
->> +=C2=A0=C2=A0=C2=A0 struct extent_io_tree *io_tree =3D &inode->io_tree;
->> +=C2=A0=C2=A0=C2=A0 struct page **pages;
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_uring_priv *priv =3D NULL;
->> +=C2=A0=C2=A0=C2=A0 unsigned long nr_pages;
->> +=C2=A0=C2=A0=C2=A0 int ret;
->> +
->> +=C2=A0=C2=A0=C2=A0 nr_pages =3D DIV_ROUND_UP(disk_io_size, PAGE_SIZE);
->> +=C2=A0=C2=A0=C2=A0 pages =3D kcalloc(nr_pages, sizeof(struct page *), G=
-FP_NOFS);
->> +=C2=A0=C2=A0=C2=A0 if (!pages)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_alloc_page_array(nr_pages, pages, 0);
->> +=C2=A0=C2=A0=C2=A0 if (ret) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto fail;
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 priv =3D kmalloc(sizeof(*priv), GFP_NOFS);
->> +=C2=A0=C2=A0=C2=A0 if (!priv) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto fail;
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 priv->iocb =3D *iocb;
->> +=C2=A0=C2=A0=C2=A0 priv->iov =3D iov;
->> +=C2=A0=C2=A0=C2=A0 priv->iter =3D *iter;
->> +=C2=A0=C2=A0=C2=A0 priv->count =3D count;
->> +=C2=A0=C2=A0=C2=A0 priv->cmd =3D cmd;
->> +=C2=A0=C2=A0=C2=A0 priv->cached_state =3D cached_state;
->> +=C2=A0=C2=A0=C2=A0 priv->compressed =3D compressed;
->> +=C2=A0=C2=A0=C2=A0 priv->nr_pages =3D nr_pages;
->> +=C2=A0=C2=A0=C2=A0 priv->pages =3D pages;
->> +=C2=A0=C2=A0=C2=A0 priv->start =3D start;
->> +=C2=A0=C2=A0=C2=A0 priv->lockend =3D lockend;
->> +=C2=A0=C2=A0=C2=A0 priv->err =3D 0;
->> +
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_encoded_read_regular_fill_pages(inode,=
- disk_bytenr,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 disk_io_size, pages,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 priv);
->> +=C2=A0=C2=A0=C2=A0 if (ret && ret !=3D -EIOCBQUEUED)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto fail;
->=20
-> Turning both into return EIOCBQUEUED is a bit suspicious, but
-> I lack context to say. Might make sense to return ret and let
-> the caller handle it.
-
-btrfs_encoded_read_regular_fill_pages returns 0 if the bio completes=20
-before the function can finish, -EIOCBQUEUED otherwise. In either case=20
-the behaviour of the calling function will be the same.
-
->> +
->> +=C2=A0=C2=A0=C2=A0 /*
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * If we return -EIOCBQUEUED, we're deferring t=
-he cleanup to
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * btrfs_uring_read_finished, which will handle=
- unlocking the extent
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * and inode and freeing the allocations.
->> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->> +
->> +=C2=A0=C2=A0=C2=A0 return -EIOCBQUEUED;
->> +
->> +fail:
->> +=C2=A0=C2=A0=C2=A0 unlock_extent(io_tree, start, lockend, &cached_state=
-);
->> +=C2=A0=C2=A0=C2=A0 btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
->> +=C2=A0=C2=A0=C2=A0 kfree(priv);
->> +=C2=A0=C2=A0=C2=A0 return ret;
->> +}
->> +
->> +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int issue_flags)
->> +{
->> +=C2=A0=C2=A0=C2=A0 size_t copy_end_kernel =3D offsetofend(struct=20
->> btrfs_ioctl_encoded_io_args,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- flags);
->> +=C2=A0=C2=A0=C2=A0 size_t copy_end;
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_encoded_io_args args =3D { 0 };
->> +=C2=A0=C2=A0=C2=A0 int ret;
->> +=C2=A0=C2=A0=C2=A0 u64 disk_bytenr, disk_io_size;
->> +=C2=A0=C2=A0=C2=A0 struct file *file =3D cmd->file;
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_inode *inode =3D BTRFS_I(file->f_inode);
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D inode->root->fs_in=
-fo;
->> +=C2=A0=C2=A0=C2=A0 struct extent_io_tree *io_tree =3D &inode->io_tree;
->> +=C2=A0=C2=A0=C2=A0 struct iovec iovstack[UIO_FASTIOV];
->> +=C2=A0=C2=A0=C2=A0 struct iovec *iov =3D iovstack;
->> +=C2=A0=C2=A0=C2=A0 struct iov_iter iter;
->> +=C2=A0=C2=A0=C2=A0 loff_t pos;
->> +=C2=A0=C2=A0=C2=A0 struct kiocb kiocb;
->> +=C2=A0=C2=A0=C2=A0 struct extent_state *cached_state =3D NULL;
->> +=C2=A0=C2=A0=C2=A0 u64 start, lockend;
->> +=C2=A0=C2=A0=C2=A0 void __user *sqe_addr =3D u64_to_user_ptr(READ_ONCE(=
-cmd->sqe->addr));
->=20
-> Let's rename it, I was taken aback for a brief second why
-> you're copy_from_user() from an SQE / the ring, which turns
-> out to be a user pointer to a btrfs structure.
-
-sqe_addr being the addr field in the SQE, not the address of the SQE. I=20
-can see how it might be misleading, though.
-
-> ...
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_encoded_read(&kiocb, &iter, &args, &ca=
-ched_state,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 &disk_bytenr, &disk_io_size);
->> +=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -EIOCBQUEUED)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_free;
->> +
->> +=C2=A0=C2=A0=C2=A0 file_accessed(file);
->> +
->> +=C2=A0=C2=A0=C2=A0 if (copy_to_user(sqe_addr + copy_end, (char *)&args =
-+=20
->> copy_end_kernel,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 sizeof(args) - copy_end_kernel)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D -EIOCBQUEUED)=
- {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unlo=
-ck_extent(io_tree, start, lockend, &cached_state);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrf=
-s_inode_unlock(inode, BTRFS_ILOCK_SHARED);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -EFAULT;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_free;
->=20
-> It seems we're saving iov in the priv structure, who can access the iovec
-> after the request is submitted? -EIOCBQUEUED in general means that the
-> request is submitted and will get completed async, e.g. via callback, and
-> if the bio callback can use the iov maybe via the iter, this goto will be
-> a use after free.
->=20
-> Also, you're returning -EFAULT back to io_uring, which will kill the
-> io_uring request / cmd while there might still be in flight bios that
-> can try to access it.
->=20
-> Can you inject errors into the copy and test please?
-
-The bio hasn't been submitted at this point, that happens in=20
-btrfs_uring_read_extent. So far all we've done is read the metadata from=20
-the page cache. The copy_to_user here is copying the metadata info to=20
-the userspace structure.
-
->=20
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 if (ret =3D=3D -EIOCBQUEUED) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 count;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we've optimized t=
-hings by storing the iovecs on the stack,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * undo this.
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */> +=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!iov) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iov =
-=3D kmalloc(sizeof(struct iovec) * args.iovcnt,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GFP_NOFS);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (=
-!iov) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 unlock_extent(io_tree, start, lockend,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 &cached_state);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 goto out_acct;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memc=
-py(iov, iovstack,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(struct iovec) * args.iovcnt);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 count =3D min_t(u64, iov_ite=
-r_count(&iter), disk_io_size);
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Match ioctl by not return=
-ing past EOF if uncompressed */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!args.compression)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 coun=
-t =3D min_t(u64, count, args.len);
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_uring_read_ext=
-ent(&kiocb, &iter, start, lockend,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 cached_state, disk_bytenr,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 disk_io_size, count,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 args.compression, iov, cmd);
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_acct;
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +out_free:
->> +=C2=A0=C2=A0=C2=A0 kfree(iov);
->> +
->> +out_acct:
->> +=C2=A0=C2=A0=C2=A0 if (ret > 0)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 add_rchar(current, ret);
->> +=C2=A0=C2=A0=C2=A0 inc_syscr(current);
->> +
->> +=C2=A0=C2=A0=C2=A0 return ret;
->> +}
->=20
+> If there is any patch I can test or further information I can provide, I
+> am more than happy to do so.
+> 
+> Cheers,
+> Nathan
 
 
