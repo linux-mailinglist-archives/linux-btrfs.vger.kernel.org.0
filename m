@@ -1,232 +1,266 @@
-Return-Path: <linux-btrfs+bounces-9271-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9272-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C189B825B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 19:14:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A00E9B828E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 19:26:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 021871F23128
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 18:14:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D30F1C213A6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2024 18:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D9E1C9B95;
-	Thu, 31 Oct 2024 18:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71E31C9DC9;
+	Thu, 31 Oct 2024 18:25:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qv7OuOK7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mfUPPNPB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E8F1BD000;
-	Thu, 31 Oct 2024 18:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6194BECF;
+	Thu, 31 Oct 2024 18:25:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730398434; cv=none; b=m0ZuhdeEIQZQhmLxRsz22FmQ0FretvXdBb90snpwbU4DSZ++C3KlUa/U98FpvwketCKj5zXGNXE9PtU7JydXpeAcum2GLIUKjePwSphFji1EjO4JVPbiga82nLRajvLVgkG1ER6suFat/K0Q7zsK/PM4nxz2ckXLpHptiIgMHjg=
+	t=1730399156; cv=none; b=StTEaDlhKs1a67oJ16UEDqX4jyXV0ToY18JPHq9/g03SjOGh3OaqOBLV1Fmsmg8Maq7qlNx8kuo2IueQaGwDiiq2zPo44O1yoMefZEO6AG5H5mgjNYCTogTyJu+iaE0wBVMM85T4uxxixdgBrX4yCf7WtVRzcLz/uoPYZ0J2+RQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730398434; c=relaxed/simple;
-	bh=6TKrJg/emMufwx5afPy1lcRH0AYFrELgAHBnsPz+13k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QYD3tSz6Z/DiYh6nMP3QTn0UJlNmugdDDIdubhGzuBP3GNuSNYRJnXY8gaSD7xcOIQ7hw7F+ne+f18kUT9kAQpRpFJdahr+RYp+llLlOFHlGHPJ5qk4kLRWYiRJukW7RVGu12xbRPwEh+h/AAidGiIaA0S0szgWGBL9LdRC6XP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qv7OuOK7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE1B2C4CECF;
-	Thu, 31 Oct 2024 18:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730398434;
-	bh=6TKrJg/emMufwx5afPy1lcRH0AYFrELgAHBnsPz+13k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qv7OuOK7dRxA2KAheVIq5dKvVqLqATTcGnmL/q7E2/YS5FUtuSiEMEkwKcM9efYKj
-	 Tf0gnRnjBpXP9kIO3eoP/8buVf70rvZBbD7J+rHmsINEfZG25u3lz5UBMsI8QzhiTB
-	 /iVU1Yq2CFuICoRJH4CxHZ4AN5VC2uCV4RzOiRa4UaeSIgulISwrbW3O0Wq8BnwFjO
-	 7gM0vMwSuSJuyZg2yTNcpyBXwqgaM4exkA+VgFFWzBF1/q+xfki7jGZsi6TvMt47xm
-	 J/8OVUwSOkrrH29RJJxCB3U7Wv06tEnVy9nNd/vmlCY1Vika9gQFK0TdJM6k/66LwN
-	 DnqHjpblzXdoQ==
-Date: Thu, 31 Oct 2024 11:13:51 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Cc: Gabriel Krisman Bertazi <krisman@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com,
-	kernel-dev@igalia.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-mm@kvack.org, linux-doc@vger.kernel.org,
-	Gabriel Krisman Bertazi <krisman@suse.de>, llvm@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v8 8/9] tmpfs: Expose filesystem features via sysfs
-Message-ID: <20241031181351.GA1181429@thelio-3990X>
-References: <20241021-tonyk-tmpfs-v8-0-f443d5814194@igalia.com>
- <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
- <20241031051822.GA2947788@thelio-3990X>
- <c104f427-f9d9-498c-a719-ed6bf118226d@igalia.com>
+	s=arc-20240116; t=1730399156; c=relaxed/simple;
+	bh=AhY6d4Mww3sZhpDrfAu9tYQBx1ULanuYD6CAOvfp9/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aEiYYZwRsUmk/XrwrAIu6egO/DQXwg8qPR6v1JEvKzpp8Lc/5/ARoaibB8DyWx18r0kLW7mnX9VqJg+UOWsPvl70OyQEfgdeTjaHkAet9f9SxlqKQ9FSQBDUIP055gPYstMwoDMpQeI1uow6wQwS680t7TxI2b+VdLnAoG0WeCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mfUPPNPB; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a99f646ff1bso150013866b.2;
+        Thu, 31 Oct 2024 11:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730399153; x=1731003953; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bgxmxzIovDLOUycrc9UMIVdVx3QmZlDRnF4E1HfSqPA=;
+        b=mfUPPNPB9Eg3Xs7u7y7H4JwefvBT8TQKipG62BeXP+hzqL7693a6lrFWkThj981Au/
+         9WW6MiM7eE/XepOh9ady2yMZlodtrtE5e0rSfLf4yKu9CKSr9eW2aLEOC6Y55rooqnS2
+         4c6qfpky5QMoKukiQHenoGe7JKIm3HFigzemaDQnhrjpx9qfPWtxdAeU24mNANZbDTxU
+         CWuuo3xb0v26iEW35ccjeOC6930hXSxLTnocMkhUJr9HGFDIScnxaJN6UCbMMMuQKyfy
+         BFmlGgNCkD12lIM93+1DplIuplOzN1RuSO2ZgFh+fQpp15E/MQKtMHMYUmy1u+ZitCZw
+         +aow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730399153; x=1731003953;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bgxmxzIovDLOUycrc9UMIVdVx3QmZlDRnF4E1HfSqPA=;
+        b=aGlYVlTRIJZv3uzCNOMWwUnNcNkcU3+suSNrQi9Q98cqhjVWhQ36xqHAjJIwS/j7kM
+         OgN5hKfYfDm0CyiKxrJmZPxB1ps1reI38LXcNbUPudjz6ZtsQnWcgbbWF4kY53Bglwo/
+         6yaiq0tMywer2fSUfKFEbDDu5h29Gf5UU3zeWhwm8eaByvwjm2nUL8yVq7aVNCy+tNGz
+         3flTu5tWFynTywPHHp9thT6LOo905m7XdOZILIJEnDVJD8a2bMeGwdl0GI9fclnV0E5o
+         w4ycORW+O3jI9lxKoE81NEDuNgmRyA7/Fno/+uW/aYEgGil6Z3jJvhyQyrn9pm/hHblH
+         h7Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBUpSoHD/XhbY2S0G6WNw1Pdk+Be8zuqvG4d/zGA+jyKimU1lLTo7sXUQsxQ/mDK7Hd+JMgHbknACRDA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYHVbeJ+vrYnYojJwu7LoTlbjPX7a0Mff5WexckuEaduBjuMta
+	Eyt+yGIaIszcr5p2ghUeTX0+hLMrgOlDu53D+v7g+neSfxS0cDAcgcKftg==
+X-Google-Smtp-Source: AGHT+IGQ8XbY662szyYfx+s4/CYow/Hh3WOqH9vbOz4ioV4bmXMVsduAReZt71BDP3wm5MKaFznjUQ==
+X-Received: by 2002:a17:907:94cb:b0:a9a:6b4c:9d2c with SMTP id a640c23a62f3a-a9e3a7f4453mr872727766b.59.1730399152269;
+        Thu, 31 Oct 2024 11:25:52 -0700 (PDT)
+Received: from [192.168.42.203] ([163.114.131.193])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9e565f9b63sm92033066b.110.2024.10.31.11.25.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Oct 2024 11:25:51 -0700 (PDT)
+Message-ID: <fad6bb86-0646-4039-b234-5752f3f833f0@gmail.com>
+Date: Thu, 31 Oct 2024 18:26:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] btrfs: add io_uring command for encoded reads
+To: Mark Harmstone <maharmstone@meta.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Cc: "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
+References: <20241022145024.1046883-1-maharmstone@fb.com>
+ <20241022145024.1046883-6-maharmstone@fb.com>
+ <63db1884-3170-499d-87c8-678923320699@gmail.com>
+ <46aa1f2a-d0c6-429e-a862-1b3b8c37c109@meta.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <46aa1f2a-d0c6-429e-a862-1b3b8c37c109@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c104f427-f9d9-498c-a719-ed6bf118226d@igalia.com>
 
-On Thu, Oct 31, 2024 at 02:31:21PM -0300, Andr� Almeida wrote:
-> Hi Nathan,
+On 10/31/24 17:08, Mark Harmstone wrote:
+> Thanks Pavel.
 > 
-> Em 31/10/2024 02:18, Nathan Chancellor escreveu:
-> > Hi Andr�,
-> > 
-> > On Mon, Oct 21, 2024 at 01:37:24PM -0300, Andr� Almeida wrote:
-> > > Expose filesystem features through sysfs, so userspace can query if
-> > > tmpfs support casefold.
-> > > 
-> > > This follows the same setup as defined by ext4 and f2fs to expose
-> > > casefold support to userspace.
-> > > 
-> > > Signed-off-by: Andr� Almeida <andrealmeid@igalia.com>
-> > > Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
-> > > ---
-> > >   mm/shmem.c | 37 +++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 37 insertions(+)
-> > > 
-> > > diff --git a/mm/shmem.c b/mm/shmem.c
-> > > index ea01628e443423d82d44277e085b867ab9bf4b28..0739143d1419c732359d3a3c3457c3acb90c5b22 100644
-> > > --- a/mm/shmem.c
-> > > +++ b/mm/shmem.c
-> > > @@ -5546,3 +5546,40 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
-> > >   	return page;
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(shmem_read_mapping_page_gfp);
-> > > +
-> > > +#if defined(CONFIG_SYSFS) && defined(CONFIG_TMPFS)
-> > > +#if IS_ENABLED(CONFIG_UNICODE)
-> > > +static DEVICE_STRING_ATTR_RO(casefold, 0444, "supported");
-> > > +#endif
-> > > +
-> > > +static struct attribute *tmpfs_attributes[] = {
-> > > +#if IS_ENABLED(CONFIG_UNICODE)
-> > > +	&dev_attr_casefold.attr.attr,
-> > > +#endif
-> > > +	NULL
-> > > +};
-> > > +
-> > > +static const struct attribute_group tmpfs_attribute_group = {
-> > > +	.attrs = tmpfs_attributes,
-> > > +	.name = "features"
-> > > +};
-> > > +
-> > > +static struct kobject *tmpfs_kobj;
-> > > +
-> > > +static int __init tmpfs_sysfs_init(void)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	tmpfs_kobj = kobject_create_and_add("tmpfs", fs_kobj);
-> > > +	if (!tmpfs_kobj)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	ret = sysfs_create_group(tmpfs_kobj, &tmpfs_attribute_group);
-> > > +	if (ret)
-> > > +		kobject_put(tmpfs_kobj);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +fs_initcall(tmpfs_sysfs_init);
-> > > +#endif /* CONFIG_SYSFS && CONFIG_TMPFS */
-> > > 
-> > > -- 
-> > > 2.47.0
-> > > 
-> > 
-> > This change as commit 5132f08bd332 ("tmpfs: Expose filesystem features
-> > via sysfs") in -next introduces a kCFI violation when accessing
-> > /sys/fs/tmpfs/features/casefold. An attribute group created with
-> > sysfs_create_group() has ->sysfs_ops() set to kobj_sysfs_ops, which has
-> > a ->show() value of kobj_attr_show(). When kobj_attr_show() goes to call
-> > the attribute's ->show() value after container_of(), there will be a
-> > type mismatch in the case of the casefold attr, as it was defined with a
-> > ->show() value of device_show_string() but that does not match the type
-> > of ->show() in 'struct kobj_attribute'.
-> > 
-> > I can easily reproduce this with the following commands:
-> > 
-> >    $ printf 'CONFIG_%s=y\n' CFI_CLANG UNICODE >kernel/configs/repro.config
-> > 
-> >    $ make -skj"$(nproc)" ARCH=arm64 LLVM=1 mrproper virtconfig repro.config Image.gz
-> >    ...
-> > 
-> >    $ curl -LSs https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/arm64-rootfs.cpio.zst | zstd -d >rootfs.cpio
-> > 
-> >    $ qemu-system-aarch64 \
-> >        -display none \
-> >        -nodefaults \
-> >        -cpu max,pauth-impdef=true \
-> >        -machine virt,gic-version=max,virtualization=true \
-> >        -append 'console=ttyAMA0 earlycon rdinit=/bin/sh' \
-> >        -kernel arch/arm64/boot/Image.gz \
-> >        -initrd rootfs.cpio \
-> >        -m 512m \
-> >        -serial mon:stdio
-> >    ...
-> >    # mount -t sysfs sys /sys
-> >    # cat /sys/fs/tmpfs/features/casefold
-> >    [   70.558496] CFI failure at kobj_attr_show+0x2c/0x4c (target: device_show_string+0x0/0x38; expected type: 0xc527b809)
-> >    [   70.560018] Internal error: Oops - CFI: 00000000f2008228 [#1] PREEMPT SMP
-> >    [   70.560647] Modules linked in:
-> >    [   70.561770] CPU: 0 UID: 0 PID: 46 Comm: cat Not tainted 6.12.0-rc4-00008-g5132f08bd332 #1
-> >    [   70.562429] Hardware name: linux,dummy-virt (DT)
-> >    [   70.562897] pstate: 21402009 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-> >    [   70.563377] pc : kobj_attr_show+0x2c/0x4c
-> >    [   70.563674] lr : sysfs_kf_seq_show+0xb4/0x130
-> >    [   70.563987] sp : ffff80008043bac0
-> >    [   70.564236] x29: ffff80008043bac0 x28: 000000007ffff001 x27: 0000000000000000
-> >    [   70.564877] x26: 0000000001000000 x25: 000000007ffff001 x24: 0000000000000001
-> >    [   70.565339] x23: fff000000238a000 x22: ffff9fa31a3996f8 x21: fff00000023fc000
-> >    [   70.565806] x20: fff000000201df80 x19: fff000000238b000 x18: 0000000000000000
-> >    [   70.566273] x17: 00000000c527b809 x16: 00000000df43c25c x15: fff000001fef8200
-> >    [   70.566727] x14: 0000000000000000 x13: fff00000022450f0 x12: 0000000000001000
-> >    [   70.567177] x11: fff00000023fc000 x10: 0000000000000000 x9 : ffff9fa31a18fac4
-> >    [   70.567682] x8 : ffff9fa319badde4 x7 : 0000000000000000 x6 : 000000000000003f
-> >    [   70.568138] x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000004
-> >    [   70.568585] x2 : fff00000023fc000 x1 : ffff9fa31a881f90 x0 : fff000000201df80
-> >    [   70.569169] Call trace:
-> >    [   70.569389]  kobj_attr_show+0x2c/0x4c
-> >    [   70.569706]  sysfs_kf_seq_show+0xb4/0x130
-> >    [   70.570020]  kernfs_seq_show+0x44/0x54
-> >    [   70.570280]  seq_read_iter+0x14c/0x4b0
-> >    [   70.570543]  kernfs_fop_read_iter+0x60/0x198
-> >    [   70.570820]  copy_splice_read+0x1f0/0x2f4
-> >    [   70.571092]  splice_direct_to_actor+0xf4/0x2e0
-> >    [   70.571376]  do_splice_direct+0x68/0xb8
-> >    [   70.571626]  do_sendfile+0x1e8/0x488
-> >    [   70.571874]  __arm64_sys_sendfile64+0xe0/0x12c
-> >    [   70.572161]  invoke_syscall+0x58/0x114
-> >    [   70.572424]  el0_svc_common+0xa8/0xdc
-> >    [   70.572676]  do_el0_svc+0x1c/0x28
-> >    [   70.572910]  el0_svc+0x38/0x68
-> >    [   70.573132]  el0t_64_sync_handler+0x90/0xfc
-> >    [   70.573394]  el0t_64_sync+0x190/0x19
-> >    [   70.574001] Code: 72970131 72b8a4f1 6b11021f 54000040 (d4304500)
-> >    [   70.574635] ---[ end trace 0000000000000000 ]---
-> > 
-> > I am not sure if there is a better API exists or if a local copy should
-> > be rolled but I think the current scheme is definitely wrong because
-> > there is no 'struct device' here.
-> > 
+...
+>> If that's an iovec backed iter that might fail, you'd need to
+>> steal this patch
+>>
+>> https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-12-9739c753666e@ddn.com/
+>>
+>> and fail if "issue_flags & IO_URING_F_TASK_DEAD", see
+>>
+>> https://lore.kernel.org/all/20241016-fuse-uring-for-6-10-rfc4-v4-13-9739c753666e@ddn.com/
 > 
-> Thank you for the report, I'm trying to fix it, it seems I have used
-> something for device drivers in a filesystem. I wonder how btrfs doesn't get
-> this error, since tmpfs_sysfs_init() is very similar to btrfs_init_sysfs().
+> Thanks, I've sent a patchset including your patch. Does it make a
+> difference, though? If the task has died, presumably copy_page_to_iter
+> can't copy to another process' memory...?
 
-Upon a quick glance, it looks like all of the btrfs sysfs functions
-properly match the ->show() and ->store() type in kobj_attribute, so
-there is no type mismatch when they are called indirectly.
+IIRC copy_to_user will crash without mm set, not sure about
+copy_page_to_iter(). Regardless, when the original task has dies
+and it gets run from io_uring's fallback path, you shouldn't
+make any assumptions about the current task.
 
-Cheers,
-Nathan
+>>> +            ret = -EFAULT;
+>>> +            goto out;
+>>> +        }
+>>> +
+>>> +        i++;
+>>> +        cur += bytes;
+>>> +        page_offset = 0;
+>>> +    }
+>>> +    ret = priv->count;
+>>> +
+>>> +out:
+>>> +    unlock_extent(io_tree, priv->start, priv->lockend,
+>>> &priv->cached_state);
+>>> +    btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+>>
+>> When called via io_uring_cmd_complete_in_task() this function might
+>> not get run in any reasonable amount of time. Even worse, a
+>> misbehaving user can block it until the task dies.
+>>
+>> I don't remember if rwsem allows unlock being executed in a different
+>> task than the pairing lock, but blocking it for that long could be a
+>> problem. I might not remember it right but I think Boris meantioned
+>> that the O_DIRECT path drops the inode lock right after submission
+>> without waiting for bios to complete. Is that right? Can we do it
+>> here as well?
+> 
+> We can't release the inode lock until we've released the extent lock. I
+> do intend to look into reducing the amount of time we hold the extent
+> lock, if we can, but it's not trivial to do this in a safe manner.
+
+I lack the btrfs knowledge, but sounds like it can be done the
+same way the async dio path works.
+
+> We could perhaps move the unlocking to btrfs_uring_read_extent_endio
+> instead, but it looks unlocking an rwsem in a different context might
+> cause problems with PREEMPT_RT(?).
+
+At least from a quick glance it doesn't seem that locks in
+__clear_extent_bit are [soft]irq protected. Would be a good
+idea to give it a run with lockdep enabled.
+
+
+...
+>>> +    ret = btrfs_encoded_read_regular_fill_pages(inode, disk_bytenr,
+>>> +                            disk_io_size, pages,
+>>> +                            priv);
+>>> +    if (ret && ret != -EIOCBQUEUED)
+>>> +        goto fail;
+>>
+>> Turning both into return EIOCBQUEUED is a bit suspicious, but
+>> I lack context to say. Might make sense to return ret and let
+>> the caller handle it.
+> 
+> btrfs_encoded_read_regular_fill_pages returns 0 if the bio completes
+> before the function can finish, -EIOCBQUEUED otherwise. In either case
+> the behaviour of the calling function will be the same.
+
+Ok
+
+...
+>>> +    if (copy_to_user(sqe_addr + copy_end, (char *)&args +
+>>> copy_end_kernel,
+>>> +             sizeof(args) - copy_end_kernel)) {
+>>> +        if (ret == -EIOCBQUEUED) {
+>>> +            unlock_extent(io_tree, start, lockend, &cached_state);
+>>> +            btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+>>> +        }
+>>> +        ret = -EFAULT;
+>>> +        goto out_free;
+>>
+>> It seems we're saving iov in the priv structure, who can access the iovec
+>> after the request is submitted? -EIOCBQUEUED in general means that the
+>> request is submitted and will get completed async, e.g. via callback, and
+>> if the bio callback can use the iov maybe via the iter, this goto will be
+>> a use after free.
+>>
+>> Also, you're returning -EFAULT back to io_uring, which will kill the
+>> io_uring request / cmd while there might still be in flight bios that
+>> can try to access it.
+>>
+>> Can you inject errors into the copy and test please?
+> 
+> The bio hasn't been submitted at this point, that happens in
+> btrfs_uring_read_extent. So far all we've done is read the metadata from
+> the page cache. The copy_to_user here is copying the metadata info to
+> the userspace structure.
+
+I see, in this case it should be fine, but why is it -EIOCBQUEUED
+then? It always meant that it queued up the request and will
+complete it asynchronously, and that's where the confusion sprouted
+from. Not looking deeper but sounds more like -EAGAIN? Assuming it's
+returned because we can't block
+
+>>> +    }
+>>> +
+>>> +    if (ret == -EIOCBQUEUED) {
+>>> +        u64 count;
+>>> +
+>>> +        /*
+>>> +         * If we've optimized things by storing the iovecs on the stack,
+>>> +         * undo this.
+>>> +         */> +        if (!iov) {
+>>> +            iov = kmalloc(sizeof(struct iovec) * args.iovcnt,
+>>> +                      GFP_NOFS);
+>>> +            if (!iov) {
+>>> +                unlock_extent(io_tree, start, lockend,
+>>> +                          &cached_state);
+>>> +                btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+>>> +                ret = -ENOMEM;
+>>> +                goto out_acct;
+>>> +            }
+>>> +
+>>> +            memcpy(iov, iovstack,
+>>> +                   sizeof(struct iovec) * args.iovcnt);
+
+As an optimisation in the future you can allocate it
+together with the btrfs_priv structure.
+
+>>> +        }
+>>> +
+>>> +        count = min_t(u64, iov_iter_count(&iter), disk_io_size);
+>>> +
+>>> +        /* Match ioctl by not returning past EOF if uncompressed */
+>>> +        if (!args.compression)
+>>> +            count = min_t(u64, count, args.len);
+>>> +
+>>> +        ret = btrfs_uring_read_extent(&kiocb, &iter, start, lockend,
+>>> +                          cached_state, disk_bytenr,
+>>> +                          disk_io_size, count,
+>>> +                          args.compression, iov, cmd);
+
+So that's the only spot where asynchronous code branches off
+in this function? Do I read you right?
+
+>>> +
+>>> +        goto out_acct;
+>>> +    }
+>>> +
+>>> +out_free:
+>>> +    kfree(iov);
+>>> +
+>>> +out_acct:
+>>> +    if (ret > 0)
+>>> +        add_rchar(current, ret);
+>>> +    inc_syscr(current);
+>>> +
+>>> +    return ret;
+>>> +}
+
+-- 
+Pavel Begunkov
 
