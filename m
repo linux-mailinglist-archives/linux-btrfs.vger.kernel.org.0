@@ -1,214 +1,148 @@
-Return-Path: <linux-btrfs+bounces-9274-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9275-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EAA49B8992
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 04:05:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1137B9B89BF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 04:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24E7C1F22816
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 03:05:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A293282D9A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 03:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545C913E02E;
-	Fri,  1 Nov 2024 03:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3AAD140E34;
+	Fri,  1 Nov 2024 03:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VTK3caCy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cafcejSz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DCE813D62B;
-	Fri,  1 Nov 2024 03:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E843137745
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Nov 2024 03:14:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730430336; cv=none; b=s67G1AWs9xR6Zmap4xAJMv1wA35MfKQIfcm5bdfQN10A6Yq9DBlVYVzv2JHGvGbCIA0gAW8uSDVC4M4qBtrkVkg0rDsYaprWUrdVKngOlr5agSj/6iJpd6VT4BQLJuAglooGsJ3UBQxDe9QQa2M1mZrjiL5tNPy3agED5IMlIHQ=
+	t=1730430884; cv=none; b=bYMjn9ZeeHiTyHL0kaShHVJSbyj9sZ0rzC24NBVcTG8gUd8xGJDaiAEn6SW28C4XFrV4S1tzSwFbrAj6vgzWVO/VrVZ3KBwF2uRtS526WY/+wUQV8J4pRC3f6iCN1hX1+siWqdMbBJjuT6oG1UwhVk/EtWUW8tuWIrArt2j53NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730430336; c=relaxed/simple;
-	bh=UMAjIFTxb038mRY/DOqBjPt1qf2e7jUa6X6VeHt6sPM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=G//sxyFrUCHy77V4pFyTBnLQEw8hOMaiVmkN5XZsu48Z87Ekz1JMW+vCesvxGNQGgXNB0A/Q7xaFYkwztwBVGUKUqPYy9wXK9jMxn7XbidPIpv1A+C4a0wCPlDSg7iFSysVfPqfd/SxXJGTDXSirE6oMiQ5DhDiihjGuGqG1VTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VTK3caCy; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-720be27db27so1069304b3a.2;
-        Thu, 31 Oct 2024 20:05:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730430333; x=1731035133; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UMAjIFTxb038mRY/DOqBjPt1qf2e7jUa6X6VeHt6sPM=;
-        b=VTK3caCycAttP1VNvf731UWf6CBEZL6WCOM+ig73VDKxSekwuO5AHiuGmcW7y/Wa/r
-         uL5Ihg/22pub62tpffNAm9Dwz/tT94yeoMzJljpbrG4DhqXQJoPvSOkzndUSDQlAb406
-         oGmTFC7CTbpM+OQ4ds4h3b7qAmS/XTtyKiVi7VxB4PVc8bCFxpQ32uizG1nkwv54h/St
-         ZrpOl8lKuUhllCOD76ym14DDneAEkRCc0ep6gOFea3Rl6MByx8Qsex3LnN0D0dCydkmx
-         KkMqTgxGUiHFTSe5fxRzoLIr5b832Kz5Akqn4YvmsvvUVoIs6hX8oUYpLUJ2nd+uU2x1
-         xAxw==
+	s=arc-20240116; t=1730430884; c=relaxed/simple;
+	bh=oJADQyT41cgDG+Httm4CpIwqTTPYTI5B/RlituotPkA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X1rBF/cMyQDN+LmMR0gucfuxdW0HqxJ+QKQg8heA/py/wiw44KMSOp5m9abb4EX0F0C7XgJELaBKJOia38PKPEqhoBa9v91f4xI5f/yS3/oRHwWmaZMBReJjz5KKl738YqjDodyrpeyJ4DnNK5dMJxg83vr8OM9Jo4sNEhDdGvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cafcejSz; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1730430880;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xUNsVE8/tr5g8xke4lHMsKbEdjO/nnTnT+u8kvQk1cA=;
+	b=cafcejSzEBugXymEDvB8X0dap/GM7z46P+AS9k1fMDlIpYipMBl7T3wqpq23wSAVdH6zLo
+	ZTQ6vMVKfCidrRieJey7P3WRs26fiolMGwB/E1PQSgCBayNtW++k9+IAjX1b3/7+LjnqmC
+	L1hkYHfrng/mDxYJKAjLeyZVTXbYSDw=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-504-ESK7R_rXNtmsSKLOxfKctg-1; Thu, 31 Oct 2024 23:14:38 -0400
+X-MC-Unique: ESK7R_rXNtmsSKLOxfKctg-1
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-84feb9e9a14so390504241.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Oct 2024 20:14:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730430333; x=1731035133;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=UMAjIFTxb038mRY/DOqBjPt1qf2e7jUa6X6VeHt6sPM=;
-        b=D83geIsRZrKl3XKLclhf9LOF0OXjgUOX3jjKjKL+0VtG+0aJDU5Qkz3eFqbbYnLsfp
-         x14nI7P0t1zRzO2Oowp15Afu91jZvbqlsNovcf1Ro9XzRBjQj7tyIXYN7WeqVDweExHZ
-         fi0Y1fh0AjiD4GbwuBk8ib3F7NRy9ZunZdFMjXsBqSwiJPMSjRmxeM01Q9E7kL34ljT7
-         6+2I76D73BnwpLkvWJPjhdo3qxsycR8p898wQ3pWKh9Jz6/8vOsc4AahdtwU0t6e9uPp
-         tirhER4AmiwZnv4HyYr/EF4iKzpgWGCFpX0prdcDl+NqKXnp5JhMMv2g4ljTYJFZCLZ0
-         JCEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKpazSRCSADMWytE5beEQ2B8+VFX9SsniZnLqe9zeFzFAElSaKgKrU6rKxSiVjERaIIgTF6j7bUuhcXw==@vger.kernel.org, AJvYcCUfYAIfHQtd75LHt/KwfQjjHLoUacDRfiv6w6K/KyMX04LJHAxjPqNAUYwJnjnv1K3p/N2FLCn8DgGpd6sD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz49uW++3Ldul0z2sbQvGSJbb2UnGiPHoqGI2Z4pGyprKF+TO9X
-	VrcivyS3IYcSpUVQqQmXsiC9bJlud+NhmoXoAWJeV4E4m0vqV98N
-X-Google-Smtp-Source: AGHT+IFGf6NYKVxemBxfuuMetCcyT8rki2cc+r2rMYoUQlJBeAPgLKLH7yEdLxXuciXLDjEtwEZIBw==
-X-Received: by 2002:a05:6a21:1643:b0:1d9:18b7:48c with SMTP id adf61e73a8af0-1d9eeb06596mr11826772637.6.1730430333264;
-        Thu, 31 Oct 2024 20:05:33 -0700 (PDT)
-Received: from [10.172.23.36] ([38.207.141.200])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ee45299f00sm1408292a12.8.2024.10.31.20.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2024 20:05:32 -0700 (PDT)
-Message-ID: <dc7a742f3b2a4162f5f0a1f45a20c1fb76ce8eaa.camel@gmail.com>
-Subject: Re: [syzbot] kernel BUG in close_ctree
-From: Julian Sun <sunjunchao2870@gmail.com>
-To: syzbot <syzbot+2665d678fffcc4608e18@syzkaller.appspotmail.com>, 
- clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org,  linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-Date: Fri, 01 Nov 2024 11:05:29 +0800
-In-Reply-To: <000000000000aeaf5a05ee4e96d7@google.com>
-References: <000000000000aeaf5a05ee4e96d7@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=1e100.net; s=20230601; t=1730430878; x=1731035678;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xUNsVE8/tr5g8xke4lHMsKbEdjO/nnTnT+u8kvQk1cA=;
+        b=GjpIv8iBASVF97AaJQP9DP06AaHAx8GurD1oj9q3Tx53Xmy+0zrQzlyS//ZTjkJLT9
+         M5nuSrcnNoZFJUvyuujW5VusmnrGiDDAQ1eyYTBHTh09vl0/p98hfvX3v9v0dGkkUfha
+         gFcLD7o8Ry3t/L+xHHhLqF+PGfVOlmGkPmgKMs+FsezSSfgL+aaE8CDcQME1ZorL9otu
+         AfN9O0iUPwVqS+g5vFvN7T6ajiIUjAH0AJknVRstV8hOeygz9aqzBL+6nxBlTZKz2HO0
+         xr4lunmmlf/TQspmB8e/tyEkpCtWaIBzGp8oBxp6iRD2gFzKW9KxUUUdrVAoCCm26cp5
+         g4cA==
+X-Gm-Message-State: AOJu0YyW18OT8FhHcqK7RMaQG8yv5v4T4FAYTPdpy1Xiv+42n1djPFUQ
+	w4Jlth2X9kMLcIZOT3pUQX1Ver3AKVXOqiLGrMblAz9s/5eM/ZWuXYaQ3sCd5XVBkeND+EktWK/
+	FaoTplgCBG5V4fqh0pTQ+7MfVGSQeblRFV2+Sh7WziAtgTHMWUyBMQCh43h9uPEibXv8c/KPrZg
+	x+69CK4Q3dtIbm+NGOKZB/31dNv8fkyTKtMT8=
+X-Received: by 2002:a05:6102:3046:b0:4a4:8a29:a8ff with SMTP id ada2fe7eead31-4a954305f97mr6147490137.17.1730430878192;
+        Thu, 31 Oct 2024 20:14:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEnNZrFrJlLcR97lRnzjQMxmyfGvoTqh6eerFNfkVie4XmhlfrmsgL3EqoUexT6N2x6AOG1HoyJUYwjxTugqS4=
+X-Received: by 2002:a05:6102:3046:b0:4a4:8a29:a8ff with SMTP id
+ ada2fe7eead31-4a954305f97mr6147485137.17.1730430877866; Thu, 31 Oct 2024
+ 20:14:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241031163257.3616106-1-maharmstone@fb.com>
+In-Reply-To: <20241031163257.3616106-1-maharmstone@fb.com>
+From: Ming Lei <ming.lei@redhat.com>
+Date: Fri, 1 Nov 2024 11:14:07 +0800
+Message-ID: <CAFj5m9+Gta6BQLUXf76PaCXCKSPj-uNL8CDKuAEm2bpwzd3Vnw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] io_uring/cmd: let cmds to know about dying task
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, 
+	Pavel Begunkov <asml.silence@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2022-11-25 at 09:09 -0800, syzbot wrote:
-> > syzbot has found a reproducer for the following issue on:
-> >=20
-> > HEAD commit:=C2=A0=C2=A0=C2=A0 c3eb11fbb826 Merge tag 'pci-v6.1-fixes-3=
-' of
-> > git://git.ker..
-> > git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 upstream
-> > console+strace:
-> > https://syzkaller.appspot.com/x/log.txt?x=3D115013c5880000
-> > kernel config:=C2=A0=20
-> > https://syzkaller.appspot.com/x/.config?x=3D8d01b6e3197974dd
-> > dashboard link:=20
-> > https://syzkaller.appspot.com/bug?extid=3D2665d678fffcc4608e18
-> > compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Debian clang version
-> > 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld
-> > (GNU Binutils for Debian) 2.35.2
-> > syz repro:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=20
-> > https://syzkaller.appspot.com/x/repro.syz?x=3D1360d8e3880000
-> > C reproducer:=C2=A0=C2=A0
-> > https://syzkaller.appspot.com/x/repro.c?x=3D175f0d53880000
-> >=20
-> > Downloadable assets:
-> > disk image:=20
-> > https://storage.googleapis.com/syzbot-assets/d81ac029767f/disk-c3eb11fb=
-.raw.xz
-> > vmlinux:=20
-> > https://storage.googleapis.com/syzbot-assets/b68346b5b73c/vmlinux-c3eb1=
-1fb.xz
-> > kernel image:=20
-> > https://storage.googleapis.com/syzbot-assets/410a61724587/bzImage-c3eb1=
-1fb.xz
-> > mounted in repro:=20
-> > https://storage.googleapis.com/syzbot-assets/f5bd1887114f/mount_0.gz
-> >=20
-> > IMPORTANT: if you fix the issue, please add the following tag to the
-> > commit:
-> > Reported-by: syzbot+2665d678fffcc4608e18@syzkaller.appspotmail.com
-> >=20
-> > assertion failed: list_empty(&fs_info->delayed_iputs), in
-> > fs/btrfs/disk-io.c:4664
-> > ------------[ cut here ]------------
-> > kernel BUG at fs/btrfs/ctree.h:3713!
-> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> > CPU: 1 PID: 3632 Comm: syz-executor235 Not tainted
-> > 6.1.0-rc6-syzkaller-00015-gc3eb11fbb826 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > Google 10/26/2022
-> > RIP: 0010:assertfail+0x1a/0x1c fs/btrfs/ctree.h:3713
-> > Code: 48 c7 c2 80 aa 38 8b 31 c0 e8 ef e3 ff ff 0f 0b 89 f1 48 89 fe 48
-> > c7 c7 60 d9 38 8b 48 c7 c2 50 0a 39 8b 31 c0 e8 d3 e3 ff ff <0f> 0b 55
-> > 48
-> > 89 e5 41 57 41 56 41 55 41 54 53 48 83 e4 e0 48 81 ec
-> > RSP: 0018:ffffc90003d7fa58 EFLAGS: 00010246
-> > RAX: 0000000000000051 RBX: ffff88807c960d58 RCX: 83509907ab950400
-> > RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> > RBP: ffffc90003d7fbe8 R08: ffffffff816e568d R09: fffff520007aff05
-> > R10: fffff520007aff05 R11: 1ffff920007aff04 R12: 0000000000000000
-> > R13: ffff88807c960000 R14: dffffc0000000000 R15: dffffc0000000000
-> > FS:=C2=A0 00005555573a6300(0000) GS:ffff8880b9900000(0000)
-> > knlGS:0000000000000000
-> > CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007ffcab996e28 CR3: 0000000078318000 CR4: 00000000003506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> > =C2=A0<TASK>
-> > =C2=A0close_ctree+0x818/0xbde fs/btrfs/disk-io.c:4664
-> > =C2=A0generic_shutdown_super+0x130/0x310 fs/super.c:492
-> > =C2=A0kill_anon_super+0x36/0x60 fs/super.c:1086
-> > =C2=A0btrfs_kill_super+0x3d/0x50 fs/btrfs/super.c:2441
-> > =C2=A0deactivate_locked_super+0xa7/0xf0 fs/super.c:332
-> > =C2=A0cleanup_mnt+0x494/0x520 fs/namespace.c:1186
-> > =C2=A0task_work_run+0x243/0x300 kernel/task_work.c:179
-> > =C2=A0ptrace_notify+0x29a/0x340 kernel/signal.c:2354
-> > =C2=A0ptrace_report_syscall include/linux/ptrace.h:420 [inline]
-> > =C2=A0ptrace_report_syscall_exit include/linux/ptrace.h:482 [inline]
-> > =C2=A0syscall_exit_work+0x8c/0xe0 kernel/entry/common.c:251
-> > =C2=A0syscall_exit_to_user_mode_prepare+0x63/0xc0 kernel/entry/common.c=
-:278
-> > =C2=A0__syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inlin=
-e]
-> > =C2=A0syscall_exit_to_user_mode+0xa/0x60 kernel/entry/common.c:296
-> > =C2=A0do_syscall_64+0x49/0xb0 arch/x86/entry/common.c:86
-> > =C2=A0entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > RIP: 0033:0x7fd3e400af67
-> > Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 b8 ff ff ff f7 d8 64
-> > 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01
-> > f0
-> > ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007ffcab997568 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fd3e400af67
-> > RDX: 00007ffcab99762a RSI: 000000000000000a RDI: 00007ffcab997620
-> > RBP: 00007ffcab997620 R08: 00000000ffffffff R09: 00007ffcab997400
-> > R10: 00005555573a7653 R11: 0000000000000202 R12: 00007ffcab9986e0
-> > R13: 00005555573a75f0 R14: 00007ffcab997590 R15: 00007ffcab998700
-> > =C2=A0</TASK>
-> > Modules linked in:
-> > ---[ end trace 0000000000000000 ]---
-> > RIP: 0010:assertfail+0x1a/0x1c fs/btrfs/ctree.h:3713
-> > Code: 48 c7 c2 80 aa 38 8b 31 c0 e8 ef e3 ff ff 0f 0b 89 f1 48 89 fe 48
-> > c7 c7 60 d9 38 8b 48 c7 c2 50 0a 39 8b 31 c0 e8 d3 e3 ff ff <0f> 0b 55
-> > 48
-> > 89 e5 41 57 41 56 41 55 41 54 53 48 83 e4 e0 48 81 ec
-> > RSP: 0018:ffffc90003d7fa58 EFLAGS: 00010246
-> > RAX: 0000000000000051 RBX: ffff88807c960d58 RCX: 83509907ab950400
-> > RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> > RBP: ffffc90003d7fbe8 R08: ffffffff816e568d R09: fffff520007aff05
-> > R10: fffff520007aff05 R11: 1ffff920007aff04 R12: 0000000000000000
-> > R13: ffff88807c960000 R14: dffffc0000000000 R15: dffffc0000000000
-> > FS:=C2=A0 00005555573a6300(0000) GS:ffff8880b9800000(0000)
-> > knlGS:0000000000000000
-> > CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007fd3e405ad48 CR3: 0000000078318000 CR4: 00000000003506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >=20
+On Fri, Nov 1, 2024 at 12:33=E2=80=AFAM Mark Harmstone <maharmstone@fb.com>=
+ wrote:
+>
+> From: Pavel Begunkov <asml.silence@gmail.com>
+>
+> When the taks that submitted a request is dying, a task work for that
+> request might get run by a kernel thread or even worse by a half
+> dismantled task. We can't just cancel the task work without running the
+> callback as the cmd might need to do some clean up, so pass a flag
+> instead. If set, it's not safe to access any task resources and the
+> callback is expected to cancel the cmd ASAP.
+>
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  include/linux/io_uring_types.h | 1 +
+>  io_uring/uring_cmd.c           | 6 +++++-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_type=
+s.h
+> index 4b9ba523978d..2ee5dc105b58 100644
+> --- a/include/linux/io_uring_types.h
+> +++ b/include/linux/io_uring_types.h
+> @@ -37,6 +37,7 @@ enum io_uring_cmd_flags {
+>         /* set when uring wants to cancel a previously issued command */
+>         IO_URING_F_CANCEL               =3D (1 << 11),
+>         IO_URING_F_COMPAT               =3D (1 << 12),
+> +       IO_URING_F_TASK_DEAD            =3D (1 << 13),
+>  };
+>
+>  struct io_wq_work_node {
+> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> index 39c3c816ec78..78a8ba5d39ae 100644
+> --- a/io_uring/uring_cmd.c
+> +++ b/io_uring/uring_cmd.c
+> @@ -119,9 +119,13 @@ EXPORT_SYMBOL_GPL(io_uring_cmd_mark_cancelable);
+>  static void io_uring_cmd_work(struct io_kiocb *req, struct io_tw_state *=
+ts)
+>  {
+>         struct io_uring_cmd *ioucmd =3D io_kiocb_to_cmd(req, struct io_ur=
+ing_cmd);
+> +       unsigned int flags =3D IO_URING_F_COMPLETE_DEFER;
+> +
+> +       if (req->task !=3D current)
+> +               flags |=3D IO_URING_F_TASK_DEAD;
 
-#syz test: upstream
+Looks fine,
 
---=20
-Julian Sun <sunjunchao2870@gmail.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
---=20
-Julian Sun <sunjunchao2870@gmail.com>
+BTW,  uring_cmd can get notified when the ring/task is dying if
+io_uring_cmd_mark_cancelable() is called on the command.
+
+
+Thanks,
+Ming
+
 
