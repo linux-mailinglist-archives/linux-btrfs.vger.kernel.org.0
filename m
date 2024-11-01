@@ -1,193 +1,255 @@
-Return-Path: <linux-btrfs+bounces-9293-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9294-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 534D09B8D43
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 09:45:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03D209B8D61
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 09:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D739B1F22F20
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 08:45:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 720881F232A9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 08:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33634157484;
-	Fri,  1 Nov 2024 08:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE7C157E88;
+	Fri,  1 Nov 2024 08:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TwkLVXvY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1TuU1qr"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C8C156C76;
-	Fri,  1 Nov 2024 08:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0097E4087C;
+	Fri,  1 Nov 2024 08:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730450691; cv=none; b=ujZM3KI+o5PBlRpiNoKIEsx/fvtVKmHjtyTc3L7SfrOxW9g9NM2G/GgPXcrGi7HXb4FR7Q3YGMzMBp2J+4Jdpp3Q/7WYAyC80U8XrUXFLhquClE0qaVVd/mMwkTETOXhfNqyTGsq2f5g4GiBM0g6cY9drCfsPxZ1re4/RF07cgY=
+	t=1730451553; cv=none; b=aHl2sNsgUmeBhpqDsDTHdN1SMYt9YFL08MbJPQnRxLow7cg6jjj3u6mZ4kdm+CmILRvPRclL76eGcVmnvgVno0giLl91hSFfuS036b15jN3r7fADihZu/kqWgqckUI0SWrRlGS5HkRLQs4hEbQFftYWqHlbqLw7bptXbj+7/JR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730450691; c=relaxed/simple;
-	bh=hFP28qqDVRgB/iKvSSyW9TfPZ4Jslyo2VBj6dqTndBw=;
+	s=arc-20240116; t=1730451553; c=relaxed/simple;
+	bh=H+5V0XY3aMrrKPNq8QFPPGwjf6XQduVmsMfl2J3R5dQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k45HdHPvEpfcxK98KX9CW6LvPSEdlwQclV3yRpv1DxnVRSWkh1maeRTkke4+sQnBJ/Kl/rR600abp3eOecqWYRxnOUbZYS0KvEuBpZlogk+B2+DL5G7njn3GO++V+S7WQedIb3p1KqZn0R3hlVAENIpC5gJBWM2slgXoLz4Rer8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TwkLVXvY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC674C4CED2;
-	Fri,  1 Nov 2024 08:44:50 +0000 (UTC)
+	 To:Cc:Content-Type; b=uBpWqQkNbMYaJnOwSQ7Ua/lopkgA7odc6r12oD03cNM7HpjnXXPAGHRKbuFuo/gU++4oAXZ86y2g2Y6xBJmv6kGnhv6AVtB4y+k9vb9CYE2Pbfa3Lb6ivL4eH895v44VkezmNgzKkZzat2r9lkto7DaIee+H9tHsGEmn9m5jwXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1TuU1qr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D786C4CECD;
+	Fri,  1 Nov 2024 08:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730450690;
-	bh=hFP28qqDVRgB/iKvSSyW9TfPZ4Jslyo2VBj6dqTndBw=;
+	s=k20201202; t=1730451552;
+	bh=H+5V0XY3aMrrKPNq8QFPPGwjf6XQduVmsMfl2J3R5dQ=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TwkLVXvYCaMFI97mmnq+k/ItgLFJxcTPn/fzrGWmJa1SoeboCyI1Ao6PQH6QLXX2B
-	 jOkZo6/PyL55sgwUMdVkCwA0yl0e3K/JCeHlvjIpBhXCQdSiC+F2QfFx7tzDAARsv4
-	 QKKtkOQgkbtZbu3N6rs45kHw1hx2hjX25tVNTJ6PfsDLthB/2bI8Zd9uJVSwUhUZWE
-	 wKzW0YQ3riXz37ATM0fGtug+ZZoVA4Zu6Ty2VxBDnxO3l/KDgMi7dVigGD0o8I3pXm
-	 dGVZQb+DYV9CGpAF9MmyyCKxYiTIRnpq6RhEqJUd9xUqOohcSW4/Fiv3m1LGNvBjYh
-	 Z8hLoZByb8sJw==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a9a1b71d7ffso263260866b.1;
-        Fri, 01 Nov 2024 01:44:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVBld1314Xf4P4vqo4Cb4DJ0+GdvA/GY8v8rm1w4RPaRnbW3MeiyrNle9BY8Q7KNZc+0yWLx0geFhayLw==@vger.kernel.org, AJvYcCWTY8gwhRqcLBzVaRrGBOzByyWzhrOLBi1mEC9Sw3bAMk/6QDMiYnHxjY+C/3qdKOaFMQOmzNcHkwgURvdu@vger.kernel.org
-X-Gm-Message-State: AOJu0Yys22alv+JUcyZ7Z9d7WQzek5sDKBU+hGv5dIeEQZ5yyDIJgIDO
-	AKKKf/s+/pPsVmbc6s9gW8m12gDGr2MJs4le1F7eseh6hWXv/Cngrs4qmQdXjUuSStKWy3vnXOC
-	BwurNjOAHH+APxvosNqddFZ7SIAU=
-X-Google-Smtp-Source: AGHT+IEVwtRe7s10AaJwV9WO4s8T9YvjzGOIPTgdCfRvbONjS/QQ4GuOliA1z4AHKzar52jyc8l6KPnXbjODHg7sZtU=
-X-Received: by 2002:a17:907:6e86:b0:a99:5234:c56c with SMTP id
- a640c23a62f3a-a9e3a6210bdmr902147266b.33.1730450689405; Fri, 01 Nov 2024
- 01:44:49 -0700 (PDT)
+	b=l1TuU1qr+1RlfeFx2pCXcMMFXFZjg+LuD0LGIxxivJ4ARlXieQ9KiWbxuKTcHhISs
+	 X+vQg1AWLspS0T+osLsGpPrJtxGZtEl1C+bRqgCf1MqRAp1aM4iKizQUOlxZRllIqm
+	 LVydl9kLJI6ByQZ8jq4wrqlomty6SoLvlbBOZQtzPMYv2QhtGdb8Y7lmI6wcyz0pVz
+	 T4ylFH4aUTFRmnrPVWSPb1wPChWapr9tDUGDPqpr4AvGgAgVEaPwY0tRemYrCm7Us1
+	 QAUuW6huaFQ+mf6/wAGUfIdd24t5b6q+Nq9HkBe52jNCk8IUa5A1zqJZAq6WX/eo7E
+	 zO2FFPYMs3exw==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a99f629a7aaso282342266b.1;
+        Fri, 01 Nov 2024 01:59:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXmp29rPAnWznv690mK8eQAux5C3JcaFbcfy7rFUpf1BXdPyVOjAe8Xmm7Zjch5k/OsWgQRmKgy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4VDHAfanagAkNMSo0yd0m6nY/DUzV2oRy86pi/n4eJB3ncDjD
+	9dYfg8jXUQKao/J9o9INNJXBR72/G0QF67u7aIfK/nx2IUoSn7qbU9KDMYzs3nw4RpGT0iQFQWd
+	Q9uTfh4IWPTX52xO3S7o68Qjm/M4=
+X-Google-Smtp-Source: AGHT+IHJ1oUHtoPVuaY6EmoXI7hOT3mUWXQBECr0xCxhJkaCQ4G+Q3Uls+9g58GCpzcZysvwjtcCQtXPs6aZ9bfJSEc=
+X-Received: by 2002:a17:907:3f9f:b0:a99:ee26:f416 with SMTP id
+ a640c23a62f3a-a9e653323f2mr252531766b.14.1730451551007; Fri, 01 Nov 2024
+ 01:59:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101035133.925251-1-zhenghaoran@buaa.edu.cn>
-In-Reply-To: <20241101035133.925251-1-zhenghaoran@buaa.edu.cn>
+References: <20241101050743.113687-1-wqu@suse.com>
+In-Reply-To: <20241101050743.113687-1-wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 1 Nov 2024 08:44:12 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5SAEs75APMgRLNGZD+Mg6ic04+78M_rseabtidf1w05w@mail.gmail.com>
-Message-ID: <CAL3q7H5SAEs75APMgRLNGZD+Mg6ic04+78M_rseabtidf1w05w@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Fix data race in log_conflicting_inodes
-To: Hao-ran Zheng <zhenghaoran@buaa.edu.cn>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	baijiaju1990@gmail.com, 21371365@buaa.edu.cn
+Date: Fri, 1 Nov 2024 08:58:34 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5rxudiGOee=7cVqX9vjiVsigkxmbV4hBL97Goy8pFVeA@mail.gmail.com>
+Message-ID: <CAL3q7H5rxudiGOee=7cVqX9vjiVsigkxmbV4hBL97Goy8pFVeA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: a new test case to verify mount behavior with
+ background remounting
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 1, 2024 at 3:52=E2=80=AFAM Hao-ran Zheng <zhenghaoran@buaa.edu.=
-cn> wrote:
+On Fri, Nov 1, 2024 at 5:08=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> The Data Race occurs when the `log_conflicting_inodes()` function is
-> executed in different threads at the same time. When one thread assigns
-> a value to `ctx->logging_conflict_inodes` while another thread performs
-> an `if(ctx->logging_conflict_inodes)` judgment or modifies it at the
-> same time, a data contention problem may arise.
-
-No, there's no problem at all.
-A log context is thread local, it's never shared between threads.
-
+> [BUG]
+> When there is a process in the background remounting a btrfs, switching
+> between RO/RW, then another process try to mount another subvolume of
+> the same btrfs read-only, we can hit a race causing the RW mount to fail
+> with -EBUSY:
 >
-> Further, an atomicity violation may also occur here. Consider the
-> following case, when a thread A `if(ctx->logging_conflict_inodes)`
-> passes the judgment, the execution switches to another thread B, at
-> which time the value of `ctx->logging_conflict_inodes` has not yet
-> been assigned true, which would result in multiple threads executing
-> `log_conflicting_inodes()`.
+> [CAUSE]
+> During the btrfs mount, to support mounting different subvolumes with
+> different RO/RW flags, we have a small hack during the mount:
+>
+>   Retry with matching RO flags if the initial mount fail with -EBUSY.
+>
+> The problem is, during that retry we do not hold any super block lock
+> (s_umount), this meanings there can be a remount process changing the RO
+> flags of the original fs super block.
+>
+> If so, we can have an EBUSY error during retry.
+> And this time we treat any failure as an error, without any retry and
+> cause the above EBUSY mount failure.
+>
+> [FIX]
+> The fix is already sent to the mailing list.
+> The fix is to allow btrfs to have different RO flag between super block
+> and mount point during mount, and if the RO flag mismatch, reconfigure
+> the fs to RW with s_umount hold, so that there will be no race.
+>
+> [TEST CASE]
+> The test case will create two processes:
+>
+> - Remounting an existing subvolume mount point
+>   Switching between RO and RW
+>
+> - Mounting another subvolume RW
+>   After a successful mount, unmount and retry.
+>
+> This is enough to trigger the -EBUSY error in less than 5 seconds.
+> To be extra safe, the test case will run for 10 seconds at least, and
+> follow TIME_FACTOR for extra loads.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/325     | 80 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/325.out |  2 ++
+>  2 files changed, 82 insertions(+)
+>  create mode 100755 tests/btrfs/325
+>  create mode 100644 tests/btrfs/325.out
+>
+> diff --git a/tests/btrfs/325 b/tests/btrfs/325
+> new file mode 100755
+> index 00000000..d0713b39
+> --- /dev/null
+> +++ b/tests/btrfs/325
+> @@ -0,0 +1,80 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 325
+> +#
+> +# Test that mounting a subvolume read-write will success, with another
+> +# subvolume being remounted RO/RW at background
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick mount remount
+> +
+> +_fixed_by_kernel_commit xxxxxxxxxxxx \
+> +       "btrfs: fix mount failure due to remount races"
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       umount "$subv1_mount" &> /dev/null
+> +       umount "$subv2_mount" &> /dev/null
 
-No. When you make such claims, please provide a sequence diagram that
-shows how the tasks interact, what their call stacks are, so that we
-can see where the race happens.
+$UMOUNT_PROG
 
-But again, this is completely wrong because a log context (struct
-btrfs_log_ctx) is never shared between threads.
+> +       rm -rf -- "$subv1_mount" &> /dev/null
+> +       rm -rf -- "$subv2_mount" &> /dev/null
+> +}
+> +
+> +# For the extra mount points
+> +_require_test
+> +_require_scratch
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1 >> $seqres.full
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol2 >> $seqres.full
+> +_scratch_unmount
+> +
+> +subv1_mount=3D"$TEST_DIR/subvol1_mount"
+> +subv2_mount=3D"$TEST_DIR/subvol2_mount"
+> +mkdir -p "$subv1_mount"
+> +mkdir -p "$subv2_mount"
+> +
+> +# Subv1 remount workload, mount the subv1 and switching it between
+> +# RO and RW.
+> +_mount "$SCRATCH_DEV" "$subv1_mount" -o subvol=3Dsubvol1
+> +while _mount -o remount,ro "$subv1_mount"; do
+> +       mount -o remount,rw "$subv1_mount"
+
+_mount here too.
+
+> +done &
+> +subv1_pid=3D$!
+> +
+> +# Subv2 rw mount workload
+> +# For unpatched kernel, this will fail with -EBUSY.
+> +#
+> +# To maintain the per-subvolume RO/RW mount, if the existing btrfs is
+> +# mounted RO, unpatched btrfs will retry with its RO flag reverted,
+> +# then reconfigure the fs to RW.
+> +#
+> +# But such retry has no super blocl lock hold, thus if another remount
+
+blocl -> block
+
+> +# process has already remounted the fs RW, the attempt will fail and
+> +# return -EBUSY.
+> +#
+> +# Patched kernel will allow the superblock and mount point RO flags
+> +# to differ, and then hold the s_umount to reconfigure the superblock
+> +# to RW, preventing any possible race.
+> +while _mount "$SCRATCH_DEV" "$subv2_mount "-o subvol=3Dsubvol2; do
+> +       umount "$subv2_mount";
+
+$UMOUNT_PROG
+
+> +done &
+> +subv2_pid=3D$!
+
+We should have the _cleanup function kill and wait for $subv1_pid and
+$subv2_pid in case the test is interrupted, something like:
+
+kill $subv1_pid $subv2_pid &> /dev/null
+wait $subv1_pid $subv2_pid &> /dev/null
+
+> +
+> +sleep $(( 10 * $TIME_FACTOR ))
+> +
+> +kill $subv1_pid
+> +kill $subv2_pid
+
+Add a 'wait' here, to make sure the umounts below don't fail in case
+the subvolumes are mounted.
+
+> +umount "$subv1_mount" &> /dev/null
+> +umount "$subv2_mount" &> /dev/null
+
+$UMOUNT_PROG
+
+> +rm -rf -- "$subv1_mount" &> /dev/null
+> +rm -rf -- "$subv2_mount" &> /dev/null
+
+
+Also, why these "&> /dev/null" redirections?
+If we have the 'wait', the umounts should succeed and the rm -fr
+shouldn't fail - in fact it's useful to test that they don't fail,
+that the umounts were successful in case the subvolumes were mounted.
 
 Thanks.
 
->
-> To address this issue, it is recommended to add locks to protect
-> `logging_conflict_inodes` in the `btrfs_log_ctx` structure, and lock
-> protection during assignment and judgment. This modification ensures
-> that the value of `ctx->logging_conflict_inodes` does not change during
-> the validation process, thereby maintaining its integrity.
->
-> Signed-off-by: Hao-ran Zheng <zhenghaoran@buaa.edu.cn>
-> ---
->  fs/btrfs/tree-log.c | 7 +++++++
->  fs/btrfs/tree-log.h | 1 +
->  2 files changed, 8 insertions(+)
->
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 9637c7cdc0cf..9cdbf280ca9a 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -2854,6 +2854,7 @@ void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, =
-struct btrfs_inode *inode)
->         INIT_LIST_HEAD(&ctx->conflict_inodes);
->         ctx->num_conflict_inodes =3D 0;
->         ctx->logging_conflict_inodes =3D false;
-> +       spin_lock_init(&ctx->logging_conflict_inodes_lock);
->         ctx->scratch_eb =3D NULL;
->  }
->
-> @@ -5779,16 +5780,20 @@ static int log_conflicting_inodes(struct btrfs_tr=
-ans_handle *trans,
->                                   struct btrfs_log_ctx *ctx)
->  {
->         int ret =3D 0;
-> +       unsigned long logging_conflict_inodes_flags;
->
->         /*
->          * Conflicting inodes are logged by the first call to btrfs_log_i=
-node(),
->          * otherwise we could have unbounded recursion of btrfs_log_inode=
-()
->          * calls. This check guarantees we can have only 1 level of recur=
-sion.
->          */
-> +       spin_lock_irqsave(&ctx->conflict_inodes_lock, logging_conflict_in=
-odes_flags);
-
-Even if this was remotely correct, why the irqsave? The fsync code is
-never called under irq context.
-
->         if (ctx->logging_conflict_inodes)
-> +               spin_unlock_irqrestore(&ctx->conflict_inodes_lock, loggin=
-g_conflict_inodes_flags);
->                 return 0;
->
->         ctx->logging_conflict_inodes =3D true;
-> +       spin_unlock_irqrestore(&ctx->conflict_inodes_lock, logging_confli=
-ct_inodes_flags);
->
->         /*
->          * New conflicting inodes may be found and added to the list whil=
-e we
-> @@ -5869,7 +5874,9 @@ static int log_conflicting_inodes(struct btrfs_tran=
-s_handle *trans,
->                         break;
->         }
->
-> +       spin_lock_irqsave(&ctx->conflict_inodes_lock, logging_conflict_in=
-odes_flags);
->         ctx->logging_conflict_inodes =3D false;
-> +       spin_unlock_irqrestore(&ctx->conflict_inodes_lock, logging_confli=
-ct_inodes_flags);
->         if (ret)
->                 free_conflicting_inodes(ctx);
->
-> diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-> index dc313e6bb2fa..0f862d0c80f2 100644
-> --- a/fs/btrfs/tree-log.h
-> +++ b/fs/btrfs/tree-log.h
-> @@ -44,6 +44,7 @@ struct btrfs_log_ctx {
->         struct list_head conflict_inodes;
->         int num_conflict_inodes;
->         bool logging_conflict_inodes;
-> +       spinlock_t logging_conflict_inodes_lock;
->         /*
->          * Used for fsyncs that need to copy items from the subvolume tre=
-e to
->          * the log tree (full sync flag set or copy everything flag set) =
-to
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/325.out b/tests/btrfs/325.out
+> new file mode 100644
+> index 00000000..cf13795c
+> --- /dev/null
+> +++ b/tests/btrfs/325.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 325
+> +Silence is golden
 > --
-> 2.34.1
+> 2.46.0
 >
 >
 
