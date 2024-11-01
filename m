@@ -1,148 +1,162 @@
-Return-Path: <linux-btrfs+bounces-9275-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9276-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1137B9B89BF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 04:14:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E7C9B8A1F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 04:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A293282D9A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 03:14:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0491E1C21E9A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2024 03:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3AAD140E34;
-	Fri,  1 Nov 2024 03:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588C6145FEB;
+	Fri,  1 Nov 2024 03:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cafcejSz"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="ol2xBmPp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E843137745
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Nov 2024 03:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D544C79;
+	Fri,  1 Nov 2024 03:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730430884; cv=none; b=bYMjn9ZeeHiTyHL0kaShHVJSbyj9sZ0rzC24NBVcTG8gUd8xGJDaiAEn6SW28C4XFrV4S1tzSwFbrAj6vgzWVO/VrVZ3KBwF2uRtS526WY/+wUQV8J4pRC3f6iCN1hX1+siWqdMbBJjuT6oG1UwhVk/EtWUW8tuWIrArt2j53NA=
+	t=1730433135; cv=none; b=ODUryCqbT3aUmfYv59FGuGKCxtLU5y1kzlOo6z/YIHM0+ogN6pNFYiiE7CxcNRvrFh8G7cvZIcE6TnhaHzBKjpeoqazB4uBccreLH6WAhvqoN5JFXYfPGb4zGsHRwiDksxR33qXWkriHL0Bc/yKA3OMQjvS9LWmQ3EmalOB0gtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730430884; c=relaxed/simple;
-	bh=oJADQyT41cgDG+Httm4CpIwqTTPYTI5B/RlituotPkA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X1rBF/cMyQDN+LmMR0gucfuxdW0HqxJ+QKQg8heA/py/wiw44KMSOp5m9abb4EX0F0C7XgJELaBKJOia38PKPEqhoBa9v91f4xI5f/yS3/oRHwWmaZMBReJjz5KKl738YqjDodyrpeyJ4DnNK5dMJxg83vr8OM9Jo4sNEhDdGvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cafcejSz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730430880;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xUNsVE8/tr5g8xke4lHMsKbEdjO/nnTnT+u8kvQk1cA=;
-	b=cafcejSzEBugXymEDvB8X0dap/GM7z46P+AS9k1fMDlIpYipMBl7T3wqpq23wSAVdH6zLo
-	ZTQ6vMVKfCidrRieJey7P3WRs26fiolMGwB/E1PQSgCBayNtW++k9+IAjX1b3/7+LjnqmC
-	L1hkYHfrng/mDxYJKAjLeyZVTXbYSDw=
-Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
- [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-504-ESK7R_rXNtmsSKLOxfKctg-1; Thu, 31 Oct 2024 23:14:38 -0400
-X-MC-Unique: ESK7R_rXNtmsSKLOxfKctg-1
-Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-84feb9e9a14so390504241.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Oct 2024 20:14:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730430878; x=1731035678;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xUNsVE8/tr5g8xke4lHMsKbEdjO/nnTnT+u8kvQk1cA=;
-        b=GjpIv8iBASVF97AaJQP9DP06AaHAx8GurD1oj9q3Tx53Xmy+0zrQzlyS//ZTjkJLT9
-         M5nuSrcnNoZFJUvyuujW5VusmnrGiDDAQ1eyYTBHTh09vl0/p98hfvX3v9v0dGkkUfha
-         gFcLD7o8Ry3t/L+xHHhLqF+PGfVOlmGkPmgKMs+FsezSSfgL+aaE8CDcQME1ZorL9otu
-         AfN9O0iUPwVqS+g5vFvN7T6ajiIUjAH0AJknVRstV8hOeygz9aqzBL+6nxBlTZKz2HO0
-         xr4lunmmlf/TQspmB8e/tyEkpCtWaIBzGp8oBxp6iRD2gFzKW9KxUUUdrVAoCCm26cp5
-         g4cA==
-X-Gm-Message-State: AOJu0YyW18OT8FhHcqK7RMaQG8yv5v4T4FAYTPdpy1Xiv+42n1djPFUQ
-	w4Jlth2X9kMLcIZOT3pUQX1Ver3AKVXOqiLGrMblAz9s/5eM/ZWuXYaQ3sCd5XVBkeND+EktWK/
-	FaoTplgCBG5V4fqh0pTQ+7MfVGSQeblRFV2+Sh7WziAtgTHMWUyBMQCh43h9uPEibXv8c/KPrZg
-	x+69CK4Q3dtIbm+NGOKZB/31dNv8fkyTKtMT8=
-X-Received: by 2002:a05:6102:3046:b0:4a4:8a29:a8ff with SMTP id ada2fe7eead31-4a954305f97mr6147490137.17.1730430878192;
-        Thu, 31 Oct 2024 20:14:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEnNZrFrJlLcR97lRnzjQMxmyfGvoTqh6eerFNfkVie4XmhlfrmsgL3EqoUexT6N2x6AOG1HoyJUYwjxTugqS4=
-X-Received: by 2002:a05:6102:3046:b0:4a4:8a29:a8ff with SMTP id
- ada2fe7eead31-4a954305f97mr6147485137.17.1730430877866; Thu, 31 Oct 2024
- 20:14:37 -0700 (PDT)
+	s=arc-20240116; t=1730433135; c=relaxed/simple;
+	bh=JpflwicX9fBsBZhasywynZ/y0TYwmbhCSocnbcuYT8o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KFexS0hsVpJ+dJemQAilK025CfnNTzdz3rC6PUqCptXsLoFoVfiOwu5o2+EuLkoiiqoF/e1ImFX6rbtd83jOuNuBXTjHgaz6nWVXgP64AVKgrHDCHRF1NqEcIDbLynus11htqe57PO/wzwF9ojOu7RZY8zdTKEqtHtieRNGvZQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn; spf=pass smtp.mailfrom=buaa.edu.cn; dkim=fail (0-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b=ol2xBmPp reason="key not found in DNS"; arc=none smtp.client-ip=129.150.39.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=VL6U2qeALI
+	oeBGhO9KbfQQvXF5+xanMkAj0oSY2OYdA=; b=ol2xBmPpdecje3+hFbWxb6Y3WY
+	6L38i1wKhX2g21+OxTFlcccVbmUP65XZaTYlGaEOT9aTHL+xs1RBc9RYItAFbUp0
+	m4rodrEDiNVgWOt4w8/+ursDO2t56PUqrDuMfGGb+7dDSrUVtjN5SJtM2akADtZn
+	UjLf4WF8rpj2irtCk=
+Received: from s1eepy-QiTianM540-A739.. (unknown [10.130.146.61])
+	by coremail-app2 (Coremail) with SMTP id Nyz+CgAX2AFHUCRn5Ya_AA--.11076S2;
+	Fri, 01 Nov 2024 11:51:48 +0800 (CST)
+From: Hao-ran Zheng <zhenghaoran@buaa.edu.cn>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: baijiaju1990@gmail.com,
+	zhenghaoran@buaa.edu.cn,
+	21371365@buaa.edu.cn
+Subject: [PATCH] btrfs: Fix data race in log_conflicting_inodes
+Date: Fri,  1 Nov 2024 11:51:33 +0800
+Message-Id: <20241101035133.925251-1-zhenghaoran@buaa.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241031163257.3616106-1-maharmstone@fb.com>
-In-Reply-To: <20241031163257.3616106-1-maharmstone@fb.com>
-From: Ming Lei <ming.lei@redhat.com>
-Date: Fri, 1 Nov 2024 11:14:07 +0800
-Message-ID: <CAFj5m9+Gta6BQLUXf76PaCXCKSPj-uNL8CDKuAEm2bpwzd3Vnw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] io_uring/cmd: let cmds to know about dying task
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, 
-	Pavel Begunkov <asml.silence@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Nyz+CgAX2AFHUCRn5Ya_AA--.11076S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF4DKFy5JFW8CF13tryDtrb_yoW5tFy7pF
+	4xWFyUG3y5X34rKF92yw4kWr1agFZxGF4UCry5Cr4xArWUXrnrtrnYvwnrCF15K34xCw1Y
+	grWrAF17u3WfArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkF1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kE
+	wVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x
+	0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF
+	7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F4
+	0Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC
+	6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIec
+	xEwVCm-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F1DJr1UJwCFx2IqxVCF
+	s4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI
+	8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
+	IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+	AIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
+X-CM-SenderInfo: 1v1sjjazstiqpexdthxhgxhubq/
 
-On Fri, Nov 1, 2024 at 12:33=E2=80=AFAM Mark Harmstone <maharmstone@fb.com>=
- wrote:
->
-> From: Pavel Begunkov <asml.silence@gmail.com>
->
-> When the taks that submitted a request is dying, a task work for that
-> request might get run by a kernel thread or even worse by a half
-> dismantled task. We can't just cancel the task work without running the
-> callback as the cmd might need to do some clean up, so pass a flag
-> instead. If set, it's not safe to access any task resources and the
-> callback is expected to cancel the cmd ASAP.
->
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  include/linux/io_uring_types.h | 1 +
->  io_uring/uring_cmd.c           | 6 +++++-
->  2 files changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_type=
-s.h
-> index 4b9ba523978d..2ee5dc105b58 100644
-> --- a/include/linux/io_uring_types.h
-> +++ b/include/linux/io_uring_types.h
-> @@ -37,6 +37,7 @@ enum io_uring_cmd_flags {
->         /* set when uring wants to cancel a previously issued command */
->         IO_URING_F_CANCEL               =3D (1 << 11),
->         IO_URING_F_COMPAT               =3D (1 << 12),
-> +       IO_URING_F_TASK_DEAD            =3D (1 << 13),
->  };
->
->  struct io_wq_work_node {
-> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> index 39c3c816ec78..78a8ba5d39ae 100644
-> --- a/io_uring/uring_cmd.c
-> +++ b/io_uring/uring_cmd.c
-> @@ -119,9 +119,13 @@ EXPORT_SYMBOL_GPL(io_uring_cmd_mark_cancelable);
->  static void io_uring_cmd_work(struct io_kiocb *req, struct io_tw_state *=
-ts)
->  {
->         struct io_uring_cmd *ioucmd =3D io_kiocb_to_cmd(req, struct io_ur=
-ing_cmd);
-> +       unsigned int flags =3D IO_URING_F_COMPLETE_DEFER;
-> +
-> +       if (req->task !=3D current)
-> +               flags |=3D IO_URING_F_TASK_DEAD;
+The Data Race occurs when the `log_conflicting_inodes()` function is
+executed in different threads at the same time. When one thread assigns
+a value to `ctx->logging_conflict_inodes` while another thread performs
+an `if(ctx->logging_conflict_inodes)` judgment or modifies it at the
+same time, a data contention problem may arise.
 
-Looks fine,
+Further, an atomicity violation may also occur here. Consider the
+following case, when a thread A `if(ctx->logging_conflict_inodes)`
+passes the judgment, the execution switches to another thread B, at
+which time the value of `ctx->logging_conflict_inodes` has not yet
+been assigned true, which would result in multiple threads executing
+`log_conflicting_inodes()`.
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+To address this issue, it is recommended to add locks to protect
+`logging_conflict_inodes` in the `btrfs_log_ctx` structure, and lock
+protection during assignment and judgment. This modification ensures
+that the value of `ctx->logging_conflict_inodes` does not change during
+the validation process, thereby maintaining its integrity.
 
-BTW,  uring_cmd can get notified when the ring/task is dying if
-io_uring_cmd_mark_cancelable() is called on the command.
+Signed-off-by: Hao-ran Zheng <zhenghaoran@buaa.edu.cn>
+---
+ fs/btrfs/tree-log.c | 7 +++++++
+ fs/btrfs/tree-log.h | 1 +
+ 2 files changed, 8 insertions(+)
 
-
-Thanks,
-Ming
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 9637c7cdc0cf..9cdbf280ca9a 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2854,6 +2854,7 @@ void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct btrfs_inode *inode)
+ 	INIT_LIST_HEAD(&ctx->conflict_inodes);
+ 	ctx->num_conflict_inodes = 0;
+ 	ctx->logging_conflict_inodes = false;
++	spin_lock_init(&ctx->logging_conflict_inodes_lock);
+ 	ctx->scratch_eb = NULL;
+ }
+ 
+@@ -5779,16 +5780,20 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
+ 				  struct btrfs_log_ctx *ctx)
+ {
+ 	int ret = 0;
++	unsigned long logging_conflict_inodes_flags;
+ 
+ 	/*
+ 	 * Conflicting inodes are logged by the first call to btrfs_log_inode(),
+ 	 * otherwise we could have unbounded recursion of btrfs_log_inode()
+ 	 * calls. This check guarantees we can have only 1 level of recursion.
+ 	 */
++	spin_lock_irqsave(&ctx->conflict_inodes_lock, logging_conflict_inodes_flags);
+ 	if (ctx->logging_conflict_inodes)
++		spin_unlock_irqrestore(&ctx->conflict_inodes_lock, logging_conflict_inodes_flags);
+ 		return 0;
+ 
+ 	ctx->logging_conflict_inodes = true;
++	spin_unlock_irqrestore(&ctx->conflict_inodes_lock, logging_conflict_inodes_flags);
+ 
+ 	/*
+ 	 * New conflicting inodes may be found and added to the list while we
+@@ -5869,7 +5874,9 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
+ 			break;
+ 	}
+ 
++	spin_lock_irqsave(&ctx->conflict_inodes_lock, logging_conflict_inodes_flags);
+ 	ctx->logging_conflict_inodes = false;
++	spin_unlock_irqrestore(&ctx->conflict_inodes_lock, logging_conflict_inodes_flags);
+ 	if (ret)
+ 		free_conflicting_inodes(ctx);
+ 
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index dc313e6bb2fa..0f862d0c80f2 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -44,6 +44,7 @@ struct btrfs_log_ctx {
+ 	struct list_head conflict_inodes;
+ 	int num_conflict_inodes;
+ 	bool logging_conflict_inodes;
++	spinlock_t logging_conflict_inodes_lock;
+ 	/*
+ 	 * Used for fsyncs that need to copy items from the subvolume tree to
+ 	 * the log tree (full sync flag set or copy everything flag set) to
+-- 
+2.34.1
 
 
