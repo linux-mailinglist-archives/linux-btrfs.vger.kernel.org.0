@@ -1,94 +1,108 @@
-Return-Path: <linux-btrfs+bounces-9307-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 036709BA85D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Nov 2024 22:44:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D559B9BA86C
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Nov 2024 23:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35BC61C20D6F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Nov 2024 21:44:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46EB0B20C56
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Nov 2024 22:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7CA18C02F;
-	Sun,  3 Nov 2024 21:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7E618C02B;
+	Sun,  3 Nov 2024 22:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/R9nKwh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712A818BBA0
-	for <linux-btrfs@vger.kernel.org>; Sun,  3 Nov 2024 21:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3536D176233;
+	Sun,  3 Nov 2024 22:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730670244; cv=none; b=lTjtAwMicxazUJWLiIaYZtayxzYJkmXr0MDUEDUuHKmJuxY3UtrNp1JodfRXn5RHwugWTS2ekQCnXC9Ck+pKIgzEdZ6Ia5rUL2UbU/68UQ3E6uHTA3xZxdV3wbVYH0dVugosDWYZ2Fz3qGn+U9BdUqFmjIymYByuvpmpms3KIqQ=
+	t=1730671307; cv=none; b=nh27k5qAN4mkzn17o0MM8cKlkFvwB3cSVqW5fTfcCVqOld1a3PkH6MKAo6aDMU9WfA4YBoH4ESYWpB/r9n9g3mlCFjmGDgLEzo+4Sp7z7fAhxLzGT5UkjdfbkEoy6oi+FF/FevhYzBTbTZfrT5SS5nO1hypaTvJ4QMqJ1OEPHPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730670244; c=relaxed/simple;
-	bh=zBF+GSZ7YwNI69KX7PqHEYoUS8rHRpZofDiCqhQh7zs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=JitGuSSt4L0S3gxJVi2ej7XbT3l7loTO6CtrgguXKd+Ft4yyYVqFnlGSBMIZQ2IHIAv6bwGGZsQX4Ww3YWeqr7C/4/FchNSBiHX/fX4JGJQSsME3bWoCoW+fp14KlydMSVH1sUsG6iZBkZJWw/4HKp7CWXK/vy0CcRD62g5wI4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a6b563871eso25814655ab.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 03 Nov 2024 13:44:03 -0800 (PST)
+	s=arc-20240116; t=1730671307; c=relaxed/simple;
+	bh=/c7+eVEfAlyBOZLUxM7Po2DGxU0pdwK6+J+qznd6Y9E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bJxdxWYjXrI1urVwttNHnu1Pc2+37H2gS7sjaoGTiOYKdVCtrpcpmCFMc8oPoPHROqA+/+n6wXzkpYG8Cx8vktETZNuGOCYHRyhdlQqRlwjXQmex5wCDMHXRHXkC6R+llX6FX3PajRKC5oXceOGTiru5EM3xN60vLWLlDA5ddZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/R9nKwh; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-37d518f9abcso2516736f8f.2;
+        Sun, 03 Nov 2024 14:01:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730671304; x=1731276104; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9ywM/fl3gftWQ4VJhR6v55mxzawiaiTlz+rX2vu+q50=;
+        b=Q/R9nKwhXxG90TW0JTYHg35rypNl9QARpfYxKtU0vuTUMqQKMN8LG/vCub6gVIA1GH
+         VDe3400dumNfqtOsxcQ/vSSflUtnbfAT80unfYxKaH1yDnP+NjZ3rbkihNmtnuyqbFpI
+         biQWtqgmARcDL/Z/DX87PSDKx3WUlrt+L2KirT4EGnHlTXShHdibf5c50T/htF7CO6Cb
+         Q1AXNcRkXqG3+k8cIjKz0YA0Gxp21GaAuUYMZxao21iJjbKPhJ9cKTGpprLEDFIXfxYJ
+         Tc35zcntmWINx8hr8+1zZh6XbMi91YdgItXQ0DEMMYKUY4XpnrRSFVcVwX9GZDEQOokj
+         w7Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730670242; x=1731275042;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1730671304; x=1731276104;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nH3g9Eu+SKqvYL/+QnSsbCoqULeFX9qeqY4PZFurRu0=;
-        b=E2nh6pUAt1qGZ7UTSuOH2+E09zSfA5qAzlSXG5dGOJSbphcJ4Cu0dvuDhG2te1RF95
-         Xu25CIi5hIwEgls7ZOum/675i/0RwcZ0+bC7SYFLiHE5mJngXbqp9YUwOTy12qyotI0H
-         TBJoPSwQlurrB9CR9pKILdtd7qGs9GvCzBy2AeYk5homPmSxLZUOy0qowAjkzHE5dR2K
-         qtbz0UFG+YC8ujc9zz5a2TBiX0vs+C3lpbVx0uOQZFDx2LCNpJc4kSy7naMWS5sUPSM1
-         E/zIAwoyk/LDWggibRMQBJ34A0U1yyIWk1SfNlzAgT4cQFiUAaAAt1B8s/e/ex0kPxth
-         xjtg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKZ6tB85aDpR+ErfH/Ir0KW/ppQauKTEH4OFw6q3RPmOgkGg8L63K6E/rEu/vFDfJXdxNp3a18esivQA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcK7VgxNz44PL6OKArYU/mVrIMAm/1bDACn0OSWb8WBKWH4aV6
-	vLpF34SVV68jXbPRTOXLzEHaUgzjcmlkpssZ05+8w7DItz0D8dxx4ABxfZKdOSBI1xprE96qCoB
-	KwtPJJMpW+81HWIsrSp/CiT1q0SEhofdrg9L9ig+z5kdNTgXAAiBeF2I=
-X-Google-Smtp-Source: AGHT+IFJVqyxrCZoTiT9u5k8v+EEl2TJthYI0xfdgiwkO6ptTdgPSRRexRCdRY0mgnkrmOicDBwi7Ua5HWlxfaMuXnN0s4zw8FME
+        bh=9ywM/fl3gftWQ4VJhR6v55mxzawiaiTlz+rX2vu+q50=;
+        b=DzAn1kOec/ZgS2tst2dbSEVpPFQZ/UJOnxn2ORYB3UKw0NdvsgYue9/YHx73aU+LA1
+         aC+zQsPeteQNSLbHg5yAunnUpv/1bOrWjNHFRR7VbNc3hkp9KVYANSLP8sfustg/Amgq
+         9rfaCsHBya49nu39kxKYDh83oWaPvNSj2ocuqLiVm2sHX/l7oqrx8orn7GLm08IgcXMW
+         x4JveJL13uK4ednJt8fQ60BeNCEvljV5jI2T/99t78/rJeKhozO12fBNfamMyH1NAVR5
+         ZmEKnw/zhyABls2ZN4JxnDfs1l5QDpiPyNVnZv8zDlAUJEzrdDR82FEZzDLAUgKcmGG9
+         s65g==
+X-Forwarded-Encrypted: i=1; AJvYcCXd9Si6MADPMLlr7pP7REtzw+TcvgaWaIQTdH6m49rtBN+QbupqF7vntmeOpUxAuD11F212zJXVU7bpJg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yytr5h590Hru9x6y43fkAfnCHgA6cFqNXFaowpYuOC2q86sZT7O
+	fjq7VPIHPB2GGq7Txh51JP7L3OH2z0DK9+GnFSLKb3QqnhQMPwnPr6EbmQ==
+X-Google-Smtp-Source: AGHT+IGJHBYXy3GgeVC/ezo0/wH8PfuQ6ICosf6MptraxyqnPsyOhSbDA/MOc8i3e9D2ovmx5irLsQ==
+X-Received: by 2002:a05:6000:104a:b0:37d:2de4:d64 with SMTP id ffacd0b85a97d-38061162c32mr19755152f8f.35.1730671304194;
+        Sun, 03 Nov 2024 14:01:44 -0800 (PST)
+Received: from [192.168.42.207] ([85.255.236.151])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381c10e734csm11495671f8f.60.2024.11.03.14.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Nov 2024 14:01:43 -0800 (PST)
+Message-ID: <ede8da14-539b-4f84-b46c-518457df4339@gmail.com>
+Date: Sun, 3 Nov 2024 22:01:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:188d:b0:3a6:b360:c6e5 with SMTP id
- e9e14a558f8ab-3a6b360c89amr92635775ab.16.1730670242500; Sun, 03 Nov 2024
- 13:44:02 -0800 (PST)
-Date: Sun, 03 Nov 2024 13:44:02 -0800
-In-Reply-To: <6719c407.050a0220.10f4f4.01dc.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6727eea2.050a0220.35b515.01a6.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] general protection fault in btrfs_search_slot
-From: syzbot <syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, dsterba@suse.cz, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lizhi.xu@windriver.com, quwenruo.btrfs@gmx.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] io_uring/cmd: let cmds to know about dying task
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+Cc: io-uring@vger.kernel.org
+References: <20241031163257.3616106-1-maharmstone@fb.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20241031163257.3616106-1-maharmstone@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-syzbot has bisected this issue to:
+On 10/31/24 16:32, Mark Harmstone wrote:
+> From: Pavel Begunkov <asml.silence@gmail.com>
+> 
+> When the taks that submitted a request is dying, a task work for that
+> request might get run by a kernel thread or even worse by a half
+> dismantled task. We can't just cancel the task work without running the
+> callback as the cmd might need to do some clean up, so pass a flag
+> instead. If set, it's not safe to access any task resources and the
+> callback is expected to cancel the cmd ASAP.
 
-commit 42437a6386ffeaaf200731e73d723ea491f3fe7d
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Fri Oct 16 15:29:18 2020 +0000
+I was just going to write that you didn't CC io_uring for the
+rest of the series, but I can't find it in the btrfs list, did
+did something go wrong?
 
-    btrfs: introduce mount option rescue=ignorebadroots
+Regardless, I think it should be fine to merge it through
+the btrfs tree
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=178b4d5f980000
-start commit:   3e5e6c9900c3 Merge tag 'nfsd-6.12-3' of git://git.kernel.o..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=144b4d5f980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=104b4d5f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f527353e21e067e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=3030e17bd57a73d39bd7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14bc8d5f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ba6b40580000
-
-Reported-by: syzbot+3030e17bd57a73d39bd7@syzkaller.appspotmail.com
-Fixes: 42437a6386ff ("btrfs: introduce mount option rescue=ignorebadroots")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Pavel Begunkov
 
