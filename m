@@ -1,57 +1,70 @@
-Return-Path: <linux-btrfs+bounces-9322-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9323-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB71C9BB3AB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 12:41:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5C49BB465
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 13:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A9981C222D6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 11:41:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA584B24144
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 12:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F681B0F1C;
-	Mon,  4 Nov 2024 11:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D6/wZDNd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA1C1B5EBC;
+	Mon,  4 Nov 2024 12:14:09 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B635C23A6;
-	Mon,  4 Nov 2024 11:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48FC1BB6BA;
+	Mon,  4 Nov 2024 12:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730720493; cv=none; b=GgYZMRqug8nfLkHbwxdJLHZeWxlVW0gSrt/E+ozEv7jsPjvdy3kwOh/dWlkCyDQZJCoUackORmZ+vkegTK7R+9uj+TIAg2EdJpSreGz2F30DYCdwWpT+GuxwD0Dz+DQKvI4+0Q0pYFXT9fDaYjyoK9eHWTBev/QAfgmezZZeVAI=
+	t=1730722448; cv=none; b=M2SIB57Ig39z4vi14ZOxY/vJBCGwb8+IKwWO+BYCr22by5CtzqXeLJSv/CrklubrvuK1zioKbltHvfbqvAS7n6FazXyBKCCKCR7LcPOfEEFKCaG+18WZna8Xf8+ptWbSfGASP1j7JPTdrfemzVrTyEdjubDSMhw+HMyBag7bLxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730720493; c=relaxed/simple;
-	bh=fBID/fDXogeNfjCL38YrAn4PXXXNGhZ+nlPIoKwQTq8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G5Ej11Xbbe3C2h4UQ/RM/orViNvt8mCoC9cPQVY1nd2iPcj2Omub2369LnbmhiSpfQOl+YaBnya7YpYVZ+doaDFGjk5J8fLRE5xRzil2GBquDnbbeP+aK43gSlZ1WdYlCdUWvA2igY5SwsmgEOdYK6kdVPLfWZhIoRo/+ASsaT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D6/wZDNd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0979BC4CECE;
-	Mon,  4 Nov 2024 11:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730720493;
-	bh=fBID/fDXogeNfjCL38YrAn4PXXXNGhZ+nlPIoKwQTq8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D6/wZDNdWMVzdkE601psMCIAds/gRgP3RkMcQIivcJvTKqX2RLalywnuweRu0bk2q
-	 Gte0sqngYF2tcdv2pdC2F0L5adSckyGS6K4xHj4HVtEbrMQ7tMsWY2f//utUphpihH
-	 bt69eJykV2JwKsKLV7mdChyTjf8J5evCj8BpLJna5KvUk/y/jYjybOj9C68einzYSE
-	 Is6AhxYaG6BMsxjL9nUtj5xSCEYoqyikWCBSYcnPfQ+f/5jEiOBQVERymCaA80+P+6
-	 RKXz9Y7cqq4TpDy4/bt4ZWzWcM1pkuejDnquUeyx5be1qJlvIFSkT49QA0Zv264GAf
-	 84pekgwwkLo+A==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v3] btrfs: add a test for defrag of contiguous file extents
-Date: Mon,  4 Nov 2024 11:41:23 +0000
-Message-ID: <92697a8420a5c756acfe247352419562793a2196.1730720132.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <e592bcc458f5c2ec41930975003702a667c92a8e.1730220751.git.fdmanana@suse.com>
-References: <e592bcc458f5c2ec41930975003702a667c92a8e.1730220751.git.fdmanana@suse.com>
+	s=arc-20240116; t=1730722448; c=relaxed/simple;
+	bh=LlJTpzPFOcXD6rJumc2gatXqNvI8NA9EdhmLf5bd0yg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bUgq1gj602hDPdL5184xDEhDHFMya901vTJI/WpSorJdJad/EpTj+XKHKNCYV3TYlX/Jeakkw6X7xNAJFlKJ4XxxJoDQvGtrDT+HyGP56vWo73AAml3J0XlrZK3z+ygkk9Q1H2ZuLz9P99oVlNTS6SjE89bdofKnaNJaeRSOi2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a9a850270e2so692809366b.0;
+        Mon, 04 Nov 2024 04:14:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730722445; x=1731327245;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oLfhXe+DOk/Zvr718XsKSVZCtaQ0VoFVxnwJJzDWUIw=;
+        b=Xg6TiatSQOqTyxVXajrgVhXE5z0U+xtM8NJkwdjqJ2BJSWZTAkHn3Yxr9kVsTMZpuM
+         N57bBNIeQJ+qkw3if7tLag8cA8qf8UQ0mRYDt/5eh9vL1KibxOOzZMPKvemTJT7OjVxj
+         e4J1uhYOv7DFclbH0t703joD+1VK8YYJIoQ5oEOYpNqmyED9IZ70twyhwnlY2DlIppdF
+         rM5INUUclODH8TC7ORsh0t/zfhE0o7BFCCOSM8yVzRFnORXBF4JKGCDKf0TR29jklI2J
+         nSkTTTpKz8UzapbFGsyM2w2AHlRrajUWgc9VNrtVcmFmK1AsugJBR2MZKXXcu3c16EYt
+         5AEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVSkFmNyf+FoJ29VnPdvWIk51kphP8sC5FiB6mzwPQQBSMwCUKvjfDvydS7qVJVO4O8up2VDv2wa1BGmIKn@vger.kernel.org, AJvYcCW1OQ8/zobVBwYBca8uiy9LQfI5wsClNoK8ksr5CE1B0gQWdwpbfj/ujtThH4B0cCurpfIz3XVparEVfA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyotnqNlyq+OMIeuERH5S66kxPQTiJjTWjlSA/EV9R++t+ytFl
+	Vdd56YcJH++o9RVT1HH4JBDNxIkRYw0bbax36Zuaga//jY3zh7sm
+X-Google-Smtp-Source: AGHT+IEjEmNi1Mf4Lrwzo59HZaxOA4fUhH1eR1qk3q6/SqNWYRNG9+oN+bdCXPzY4FnI+PsKaQYCmg==
+X-Received: by 2002:a17:907:2dac:b0:a9a:82e2:e8ce with SMTP id a640c23a62f3a-a9e6587e288mr1356965066b.40.1730722444776;
+        Mon, 04 Nov 2024 04:14:04 -0800 (PST)
+Received: from nuc.fritz.box (p200300f6f71fdb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71f:db00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9e56494052sm543350466b.29.2024.11.04.04.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Nov 2024 04:14:04 -0800 (PST)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Cc: linux-block@vger.kernel.org,
+	John Garry <john.g.garry@oracle.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3] btrfs: handle bio_split() error
+Date: Mon,  4 Nov 2024 13:13:17 +0100
+Message-ID: <20241104121318.16784-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -60,148 +73,78 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Test that defrag merges adjacent extents that are contiguous.
-This exercises a regression fixed by a patchset for the kernel that is
-comprissed of the following patches:
+Now that bio_split() can return errors, add error handling for it in
+btrfs_split_bio() and ultimately btrfs_submit_chunk().
 
-  btrfs: fix extent map merging not happening for adjacent extents
-  btrfs: fix defrag not merging contiguous extents due to merged extent maps
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
 
-V3: Add git commit IDs, the patches were merged into Linus' tree (6.12-rc6).
+This is based on top of John Garry's series "bio_split() error handling
+rework" explicitly on the patch titled "block: Rework bio_split() return
+value", which are as of now (Tue Oct 29 10:02:16 2024) not yet merged into
+any tree.
 
-V2: Fix typo (treshold -> threshold), make the test be skipped if compression
-    is enabled.
+Changes to v2:
+- assign the split bbio to a new variable, so we can keep the old error
+  paths and end the original bbio
 
- tests/btrfs/325     | 83 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/325.out | 22 ++++++++++++
- 2 files changed, 105 insertions(+)
- create mode 100755 tests/btrfs/325
- create mode 100644 tests/btrfs/325.out
+Changes to v1:
+- convert ERR_PTR to blk_status_t
+- correctly fail already split bbios
+---
+ fs/btrfs/bio.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/tests/btrfs/325 b/tests/btrfs/325
-new file mode 100755
-index 00000000..ad86bae5
---- /dev/null
-+++ b/tests/btrfs/325
-@@ -0,0 +1,83 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 325
-+#
-+# Test that defrag merges adjacent extents that are contiguous.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick preallocrw defrag
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 1f216d07eff6..7a0998d0abe3 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -81,6 +81,9 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
+ 
+ 	bio = bio_split(&orig_bbio->bio, map_length >> SECTOR_SHIFT, GFP_NOFS,
+ 			&btrfs_clone_bioset);
++	if (IS_ERR(bio))
++		return ERR_CAST(bio);
 +
-+. ./common/filter
+ 	bbio = btrfs_bio(bio);
+ 	btrfs_bio_init(bbio, fs_info, NULL, orig_bbio);
+ 	bbio->inode = orig_bbio->inode;
+@@ -678,7 +681,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 				&bioc, &smap, &mirror_num);
+ 	if (error) {
+ 		ret = errno_to_blk_status(error);
+-		goto fail;
++		goto end_bbio;
+ 	}
+ 
+ 	map_length = min(map_length, length);
+@@ -686,7 +689,14 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 		map_length = btrfs_append_map_length(bbio, map_length);
+ 
+ 	if (map_length < length) {
+-		bbio = btrfs_split_bio(fs_info, bbio, map_length);
++		struct btrfs_bio *split;
 +
-+_require_scratch
-+_require_btrfs_command inspect-internal dump-tree
-+_require_xfs_io_command "falloc"
-+# We want to test getting a 256K extent after defrag, so skip the test if
-+# compression is enabled (with compression the maximum extent size is 128K).
-+_require_no_compress
-+
-+_fixed_by_kernel_commit a0f062539085 \
-+	"btrfs: fix extent map merging not happening for adjacent extents"
-+_fixed_by_kernel_commit 77b0d113eec4 \
-+	"btrfs: fix defrag not merging contiguous extents due to merged extent maps"
-+
-+count_file_extent_items()
-+{
-+	# We count file extent extent items through dump-tree instead of using
-+	# fiemap because fiemap merges adjacent extent items when they are
-+	# contiguous.
-+	# We unmount because all metadata must be ondisk for dump-tree to see
-+	# it and work correctly.
-+	_scratch_unmount
-+	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV | \
-+		grep EXTENT_DATA | wc -l
-+	_scratch_mount
-+}
-+
-+_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-+_scratch_mount
-+
-+# Create a file with a size of 256K and 4 written extents of 64K each.
-+# We fallocate to guarantee exact extent size, even if compression mount
-+# option is give, and write to them because defrag skips prealloc extents.
-+$XFS_IO_PROG -f -c "falloc 0 64K" \
-+	     -c "pwrite -S 0xab 0 64K" \
-+	     -c "falloc 64K 64K" \
-+	     -c "pwrite -S 0xcd 64K 64K" \
-+	     -c "falloc 128K 64K" \
-+	     -c "pwrite -S 0xef 128K 64K" \
-+	     -c "falloc 192K 64K" \
-+	     -c "pwrite -S 0x73 192K 64K" \
-+	     $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+echo -n "Initial number of file extent items: "
-+count_file_extent_items
-+
-+# Read the whole file in order to load extent maps and merge them.
-+cat $SCRATCH_MNT/foo > /dev/null
-+
-+# Now defragment with a threshold of 128K. After this we expect to get a file
-+# with 1 file extent item - the threshold is 128K but since all the extents are
-+# contiguous, they should be merged into a single one of 256K.
-+$BTRFS_UTIL_PROG filesystem defragment -t 128K $SCRATCH_MNT/foo
-+echo -n "Number of file extent items after defrag with 128K threshold: "
-+count_file_extent_items
-+
-+# Read the whole file in order to load extent maps and merge them.
-+cat $SCRATCH_MNT/foo > /dev/null
-+
-+# Now defragment with a threshold of 256K. After this we expect to get a file
-+# with only 1 file extent item.
-+$BTRFS_UTIL_PROG filesystem defragment -t 256K $SCRATCH_MNT/foo
-+echo -n "Number of file extent items after defrag with 256K threshold: "
-+count_file_extent_items
-+
-+# Check that the file has the expected data, that defrag didn't cause any data
-+# loss or corruption.
-+echo "File data after defrag:"
-+_hexdump $SCRATCH_MNT/foo
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/325.out b/tests/btrfs/325.out
-new file mode 100644
-index 00000000..c0df8137
---- /dev/null
-+++ b/tests/btrfs/325.out
-@@ -0,0 +1,22 @@
-+QA output created by 325
-+wrote 65536/65536 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 65536/65536 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 65536/65536 bytes at offset 131072
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 65536/65536 bytes at offset 196608
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Initial number of file extent items: 4
-+Number of file extent items after defrag with 128K threshold: 1
-+Number of file extent items after defrag with 256K threshold: 1
-+File data after defrag:
-+000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab  >................<
-+*
-+010000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
-+*
-+020000 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef  >................<
-+*
-+030000 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73  >ssssssssssssssss<
-+*
-+040000
++		split = btrfs_split_bio(fs_info, bbio, map_length);
++		if (IS_ERR(split)) {
++			ret = errno_to_blk_status(PTR_ERR(split));
++			goto end_bbio;
++		}
++		bbio = split;
+ 		bio = &bbio->bio;
+ 	}
+ 
+@@ -760,6 +770,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 
+ 		btrfs_bio_end_io(remaining, ret);
+ 	}
++end_bbio:
+ 	btrfs_bio_end_io(bbio, ret);
+ 	/* Do not submit another chunk */
+ 	return true;
 -- 
-2.45.2
+2.43.0
 
 
