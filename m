@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-9308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9309-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D559B9BA86C
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Nov 2024 23:01:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2F69BA9B6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 01:14:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46EB0B20C56
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Nov 2024 22:01:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ABA1281A77
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 00:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7E618C02B;
-	Sun,  3 Nov 2024 22:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802D12566;
+	Mon,  4 Nov 2024 00:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/R9nKwh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yk3Igf6A"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3536D176233;
-	Sun,  3 Nov 2024 22:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19081382;
+	Mon,  4 Nov 2024 00:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730671307; cv=none; b=nh27k5qAN4mkzn17o0MM8cKlkFvwB3cSVqW5fTfcCVqOld1a3PkH6MKAo6aDMU9WfA4YBoH4ESYWpB/r9n9g3mlCFjmGDgLEzo+4Sp7z7fAhxLzGT5UkjdfbkEoy6oi+FF/FevhYzBTbTZfrT5SS5nO1hypaTvJ4QMqJ1OEPHPw=
+	t=1730679234; cv=none; b=CwyKAnS4oKHFvHV7CZgoLo4hvk0YxAlYxtkIJkHliMnfabf3ja2R+D9tKF8cKeCzjC4p3aqylFmfAIHzs6103b6UjuCGiK087dNmPhkl+NdjZL85/0O6Q5fBm5QNV8UzdRma/4eUWZkCd0Cna6dbkNqF6iiupqdXc7IFxaDFTEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730671307; c=relaxed/simple;
-	bh=/c7+eVEfAlyBOZLUxM7Po2DGxU0pdwK6+J+qznd6Y9E=;
+	s=arc-20240116; t=1730679234; c=relaxed/simple;
+	bh=V++SIrL4pMEI5pNUJcrMt1+JJeKlvbC3HnCBqGa7ds0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bJxdxWYjXrI1urVwttNHnu1Pc2+37H2gS7sjaoGTiOYKdVCtrpcpmCFMc8oPoPHROqA+/+n6wXzkpYG8Cx8vktETZNuGOCYHRyhdlQqRlwjXQmex5wCDMHXRHXkC6R+llX6FX3PajRKC5oXceOGTiru5EM3xN60vLWLlDA5ddZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/R9nKwh; arc=none smtp.client-ip=209.85.221.43
+	 In-Reply-To:Content-Type; b=dEAFLCvLGXhif4mSlIImS7k2ill9EA0rq1dilNMHwejSS9lduHGRGzX7APEvzQzcHdBopb5KPGglkvC1sCfOUcWlddWYPPVQzhyuZFNqEzeTlByobSQ6j0lbGBFGAscRZDeI2VBm06MdvPOMbfJmDqo+fvVcUeLcETNq/zc32aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yk3Igf6A; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-37d518f9abcso2516736f8f.2;
-        Sun, 03 Nov 2024 14:01:45 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4314f38d274so45272965e9.1;
+        Sun, 03 Nov 2024 16:13:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730671304; x=1731276104; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730679231; x=1731284031; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9ywM/fl3gftWQ4VJhR6v55mxzawiaiTlz+rX2vu+q50=;
-        b=Q/R9nKwhXxG90TW0JTYHg35rypNl9QARpfYxKtU0vuTUMqQKMN8LG/vCub6gVIA1GH
-         VDe3400dumNfqtOsxcQ/vSSflUtnbfAT80unfYxKaH1yDnP+NjZ3rbkihNmtnuyqbFpI
-         biQWtqgmARcDL/Z/DX87PSDKx3WUlrt+L2KirT4EGnHlTXShHdibf5c50T/htF7CO6Cb
-         Q1AXNcRkXqG3+k8cIjKz0YA0Gxp21GaAuUYMZxao21iJjbKPhJ9cKTGpprLEDFIXfxYJ
-         Tc35zcntmWINx8hr8+1zZh6XbMi91YdgItXQ0DEMMYKUY4XpnrRSFVcVwX9GZDEQOokj
-         w7Yg==
+        bh=qHtR0AfGexz+ECaBa1rWLsytx49UMV+ptX5eA/FmtyM=;
+        b=Yk3Igf6AFDcgb4TiiUDwxvxcfCEfGG7ntI5NCocEiqWCGXMTurM353uTTrPIClYSgZ
+         BjuRb+S8WD2YM8AxIaIb+b8KEnkhmDaAQ3a9EcCQYaECuJtc0vt9fwRaCKJuWEkJ/VY9
+         Zrfjs6ZcKuiMhprrLOMb+Y5v8Q07nYj9QkgfcsWWX+606q6HVrcu0sh76FFbeS8XhZ22
+         vc8sSuJpyQZzZRvUiAHJfyTDe+KlfBBBatdxLi2GqY+puWFdcqRrF7JjEoJc2+XSIN/I
+         T0ZbjjNccItstKKINAgYQrsQpEs0Hfrv04x4AGdH7NW5na4H5lKN1kub5QOBUci0q8u2
+         591g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730671304; x=1731276104;
+        d=1e100.net; s=20230601; t=1730679231; x=1731284031;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ywM/fl3gftWQ4VJhR6v55mxzawiaiTlz+rX2vu+q50=;
-        b=DzAn1kOec/ZgS2tst2dbSEVpPFQZ/UJOnxn2ORYB3UKw0NdvsgYue9/YHx73aU+LA1
-         aC+zQsPeteQNSLbHg5yAunnUpv/1bOrWjNHFRR7VbNc3hkp9KVYANSLP8sfustg/Amgq
-         9rfaCsHBya49nu39kxKYDh83oWaPvNSj2ocuqLiVm2sHX/l7oqrx8orn7GLm08IgcXMW
-         x4JveJL13uK4ednJt8fQ60BeNCEvljV5jI2T/99t78/rJeKhozO12fBNfamMyH1NAVR5
-         ZmEKnw/zhyABls2ZN4JxnDfs1l5QDpiPyNVnZv8zDlAUJEzrdDR82FEZzDLAUgKcmGG9
-         s65g==
-X-Forwarded-Encrypted: i=1; AJvYcCXd9Si6MADPMLlr7pP7REtzw+TcvgaWaIQTdH6m49rtBN+QbupqF7vntmeOpUxAuD11F212zJXVU7bpJg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yytr5h590Hru9x6y43fkAfnCHgA6cFqNXFaowpYuOC2q86sZT7O
-	fjq7VPIHPB2GGq7Txh51JP7L3OH2z0DK9+GnFSLKb3QqnhQMPwnPr6EbmQ==
-X-Google-Smtp-Source: AGHT+IGJHBYXy3GgeVC/ezo0/wH8PfuQ6ICosf6MptraxyqnPsyOhSbDA/MOc8i3e9D2ovmx5irLsQ==
-X-Received: by 2002:a05:6000:104a:b0:37d:2de4:d64 with SMTP id ffacd0b85a97d-38061162c32mr19755152f8f.35.1730671304194;
-        Sun, 03 Nov 2024 14:01:44 -0800 (PST)
+        bh=qHtR0AfGexz+ECaBa1rWLsytx49UMV+ptX5eA/FmtyM=;
+        b=rF6YSvhdiMc/IBY6cAReCX73NtIDqDWOAkIcUOAWmpGJJrEVOL+sj2ExXPnEkijiWb
+         90S2ATYIJ3mpsBn0jVntjcqAZNGh/dg93ytcpmSRCPLVj8G22LB37RKeX6OgM/ndq9Ru
+         qDD9CHlwt6t2Ukmt/EdU4Fe/8jOIIJtLd3ydCyWu7Biq6seH6NZmBWSfnOtM2O+9zLGX
+         LXGtJoTMi6fwVI1A2kmCUhhpqi4BnaB4vrDHbqsQuNOXL0NaVJi0tGHZbnNX7hky8EvC
+         x6c+tzT4lR1oH6WsEUlIv5K/i2ZK4QbAjheR7KUBVjbvp2Qgxnzlbu46/7tYS9Mf1dYw
+         Pc6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVdRWO6FXzzzDpu0zklk637PepN8PNhEVdrTcsIC17mow9n3geVSEwsyNJjUTiywdJFI4ZOnzZBxWiK1w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+y2I5j4aoPmXHvwlzBH6tN4Acz4N07R5LBPsI0C9MbQiJPPF1
+	wRRDwZwhjxQ279DTMWJodpjzaQxo18/p4ORLcCJC4LYm0g332NeH
+X-Google-Smtp-Source: AGHT+IFWaY88FKDr62Jz6iapJJrl387wL7YmSC/0yid8IHAKqK3QFl/b8mcZDksathVD+kVP7aFJGA==
+X-Received: by 2002:a05:600c:a07:b0:431:4b88:d407 with SMTP id 5b1f17b1804b1-432868a5b83mr98239235e9.5.1730679231335;
+        Sun, 03 Nov 2024 16:13:51 -0800 (PST)
 Received: from [192.168.42.207] ([85.255.236.151])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381c10e734csm11495671f8f.60.2024.11.03.14.01.43
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bb78b809sm186294235e9.1.2024.11.03.16.13.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Nov 2024 14:01:43 -0800 (PST)
-Message-ID: <ede8da14-539b-4f84-b46c-518457df4339@gmail.com>
-Date: Sun, 3 Nov 2024 22:01:49 +0000
+        Sun, 03 Nov 2024 16:13:50 -0800 (PST)
+Message-ID: <35cdcdbf-aebb-4928-9ebd-e5123881c116@gmail.com>
+Date: Mon, 4 Nov 2024 00:13:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -87,21 +87,28 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 10/31/24 16:32, Mark Harmstone wrote:
-> From: Pavel Begunkov <asml.silence@gmail.com>
-> 
-> When the taks that submitted a request is dying, a task work for that
-> request might get run by a kernel thread or even worse by a half
-> dismantled task. We can't just cancel the task work without running the
-> callback as the cmd might need to do some clean up, so pass a flag
-> instead. If set, it's not safe to access any task resources and the
-> callback is expected to cancel the cmd ASAP.
+...
+>   struct io_wq_work_node {
+> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> index 39c3c816ec78..78a8ba5d39ae 100644
+> --- a/io_uring/uring_cmd.c
+> +++ b/io_uring/uring_cmd.c
+> @@ -119,9 +119,13 @@ EXPORT_SYMBOL_GPL(io_uring_cmd_mark_cancelable);
+>   static void io_uring_cmd_work(struct io_kiocb *req, struct io_tw_state *ts)
+>   {
+>   	struct io_uring_cmd *ioucmd = io_kiocb_to_cmd(req, struct io_uring_cmd);
+> +	unsigned int flags = IO_URING_F_COMPLETE_DEFER;
+> +
+> +	if (req->task != current)
+> +		flags |= IO_URING_F_TASK_DEAD;
 
-I was just going to write that you didn't CC io_uring for the
-rest of the series, but I can't find it in the btrfs list, did
-did something go wrong?
+Actually, the patch is broken. I have no clue why Bernd changed
+it and left my name, here was the original:
 
-Regardless, I think it should be fine to merge it through
-the btrfs tree
+https://lore.kernel.org/io-uring/d2528a1c-3d7c-4124-953c-02e8e415529e@gmail.com/
+
+also now it'll also conflict with patches Jens is queuing, I'll send
+a replacement btrfs can take.
 
 -- 
 Pavel Begunkov
