@@ -1,51 +1,80 @@
-Return-Path: <linux-btrfs+bounces-9325-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9326-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68069BB933
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 16:42:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D91B9BB9E9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 17:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 034961C20F39
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 15:42:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAA1CB2156D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 16:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5D11C07CA;
-	Mon,  4 Nov 2024 15:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABF41C175C;
+	Mon,  4 Nov 2024 16:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BoLPOZ0w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bPZV4Fd5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3EE1B6CE8
-	for <linux-btrfs@vger.kernel.org>; Mon,  4 Nov 2024 15:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C44E1B393D;
+	Mon,  4 Nov 2024 16:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730734926; cv=none; b=W/TWc3fGlsNdHaci95cO6Kvy6PuGFNaYru3D3KHVBQo59kHEZeNg8NuF8C1Rdy10Li857vgyuw1viMUkLYhQ61lL2+JhEXUdGw1Auf2varCx8OZa9aib2fPqolAksvJrb3e2UlzE6MppRKpiG+ubMVOogomq0sRu612yLPJWGUA=
+	t=1730736728; cv=none; b=gWKJ4V3TKf3Ize9eHtgXkDMBI1GuzMNC52Kj3ZvB34/5YC4AoIAKB61+MdVNKTK3zU679TAE7oVGAmikNfoQbH0jUbK1KQCC6yb6z6Q73SkY+S0o1qDtRW9CxOw4+KAAh8/nhGEMpJKvdbrMRqiRpLIDkuXE+Zpi8kvMum0kK94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730734926; c=relaxed/simple;
-	bh=FhPQnOD4kwEPrMYAsXaT4v7PdOD4WtGGs4kfacOF2j0=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=JKoaWgWi+a68gVei6ZTexP5SuwiGS69e4zWGf2HQH8rtNNpM7FMUSwhjuM3KSke9OJQPTJA3CZTRgNgM61Emb85+gyBouuHEb+AVaBK8Qm4zNfF67HZtqjZuT/cDTovrOrT7VTvpx0zq+qmVj2maAJHyoWnxaJbHt8daSIyOMxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BoLPOZ0w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EC9EC4CECE
-	for <linux-btrfs@vger.kernel.org>; Mon,  4 Nov 2024 15:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730734923;
-	bh=FhPQnOD4kwEPrMYAsXaT4v7PdOD4WtGGs4kfacOF2j0=;
-	h=From:To:Subject:Date:From;
-	b=BoLPOZ0waDmLl9uPpflSaD0uGG4XMpAoGGzU9wE+zb4DPQQl74B+YbrkYz5COWbrD
-	 2fQacFec8GvMA+ZY1iGHQulHj5GT6JVMgFY182IZjjc7+8/pI0mp27iIkEB/LDGTdH
-	 ctS3LQd27iq55Ca5ccxo3+wa1Go4LBdu11yeP9aksKJsmEgBkva378ar+ED5EOi3+Q
-	 9jz6n3BDL9uWP7/EXFtMwTHZI+KnFgtjcPjswKn7C++Kc3YB/VFkd/5pGJG0sDiYCe
-	 ++clnMgNPdHZq76Yg9QJYTfBqsSekSC3ZVOqBE23+Ipmq80bBfI3KmdxC8+6GQXBLs
-	 X7Y9AexroJXkg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: reinitialize delayed ref list after deleting it from the list
-Date: Mon,  4 Nov 2024 15:42:00 +0000
-Message-Id: <6bcfd46957685e044fbeab230ca13cbf6f469de3.1730734807.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1730736728; c=relaxed/simple;
+	bh=vPRwe90zHahHOOj0Z2Qh+3WOfaePnL2PTtvbs7zA2M8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C+GG7Et7M0/W9BoG5jviDL5Qo0RhWVVZrBUBbVghz8o2CRxlh2J6zFVMFhbYVnhQyi+5lTw4mZW3TvGn034878K3MflM/zQjKTlgG83CjEcgf/VAH0o+xK1K7MvagTzHiLr+GC453ulHWRC0GlatwaY7o8QQTY7w0ZwoJSvoIAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bPZV4Fd5; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9eaaab29bcso111887566b.2;
+        Mon, 04 Nov 2024 08:12:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730736724; x=1731341524; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e/5b8ihx5vuRnwO1en4w28K6JwXaOVMpIi0lr9UaU58=;
+        b=bPZV4Fd5tII7vFXOCW3Y0GsTCeP25GhthmiEn7+b4Pbk2FaATtG0/g+8HBkwGYTxzD
+         bpoWnBHtjomacJojXWRjd23Oh7b5Vftko8xXx3ntXYpIdN8tqx+7VxiUZzY8BpB5tMmm
+         nX0rZpS660GuAPNCKtcWY+xyk62s37LPfmDmXc34kSpL+qIpZ48/F019pYE9YL70HpK2
+         mIQQzA1W6isuyf+sXBp4OBrqmSB0U2QvWlGXmZZcUTODQP5nd2a7emLaUNclVnndHyPh
+         O2eHhP3Xsd4o9b7PJxKOCVTIBurdUsK0heuh/95BvyHXEPmjWL20j3+3mKncRB/aH8vH
+         fP5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730736724; x=1731341524;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e/5b8ihx5vuRnwO1en4w28K6JwXaOVMpIi0lr9UaU58=;
+        b=qE+kqXqGdCxboP24YMVLw8/NCKnH73j0wEDJXnP9MqbXigz+tKMTvHtQSWOGi+cKko
+         JGpHOlY2g+SoBUQ82pKAL5bO/1QBluoauYa+Dil7dJhf1MBZrdewJCfcs8IHK8lP3hRs
+         KrewP8WXesgn3C023x13IO7Zj9gKFs6/7KfowA+kF9mepq4eqP6UtY8aJTPWyU9UqoDX
+         aVnK0usGs9Bx1uOsQM4dnxbsko+u4IqjRinRxHIoW5R2QOIApNRV0bkciv2h6H1pIgPd
+         aIemy7cZUtbA3mkKAOPuj7uZNL6oHxd0YRjUeye9oqeRb0QyyFClaF+RmF9qtAgeEhOj
+         2tuA==
+X-Forwarded-Encrypted: i=1; AJvYcCUAUmxgJQoV7Gqghfrwl8kohqDW7mI5HIvZX5eZ6V9P9n+OtHG0GCp6GWNj6MVsEmbzW/hN3oPYa5PRkw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxB3o6zRfGFjH7/wgdQ/djRnpWvxZtpBlp9761pcUZs+Q2fTSiL
+	iY9IrVXHwp1OHC509HRfHwSS3BPaajt6/aIQMisQyWENtz5b3KjSS9NsKw==
+X-Google-Smtp-Source: AGHT+IFB7u+BFwqO1pg0HGy/EQuPa6tUq16WBgDsMOF3rH+L9Pv6arPDwilF40PC4gAAX+UMLHuYvQ==
+X-Received: by 2002:a17:907:868a:b0:a99:e745:d47f with SMTP id a640c23a62f3a-a9e508e50a5mr1533875166b.21.1730736723945;
+        Mon, 04 Nov 2024 08:12:03 -0800 (PST)
+Received: from 127.0.0.1localhost ([163.114.131.193])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9e565f75e7sm576594566b.142.2024.11.04.08.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Nov 2024 08:12:03 -0800 (PST)
+From: Pavel Begunkov <asml.silence@gmail.com>
+To: io-uring@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>,
+	asml.silence@gmail.com,
+	maharmstone@fb.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH] io_uring/cmd: let cmds to know about dying task
+Date: Mon,  4 Nov 2024 16:12:04 +0000
+Message-ID: <55888b6a644b4fc490849832fd5c5e5bfed523ef.1730687879.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,47 +83,55 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+When the taks that submitted a request is dying, a task work for that
+request might get run by a kernel thread or even worse by a half
+dismantled task. We can't just cancel the task work without running the
+callback as the cmd might need to do some clean up, so pass a flag
+instead. If set, it's not safe to access any task resources and the
+callback is expected to cancel the cmd ASAP.
 
-At insert_delayed_ref() if we need to update the action of an existing
-ref to BTRFS_DROP_DELAYED_REF, we delete the ref from its ref head's
-ref_add_list using list_del(), which leaves the ref's add_list member
-not reinitialized, as list_del() sets the next and prev members of the
-list to LIST_POISON1 and LIST_POISON2, respectively.
-
-If later we end up calling drop_delayed_ref() agains the ref, which can
-happen during merging or when destroying delayed refs due to a transaction
-abort, we can trigger a crash since at drop_delayed_ref() we call
-list_empty() against the ref's add_list, which returns true since
-the list was not reinitialized after the list_del() and as a consequence
-we call list_del() again at drop_delayed_ref(). This results in an
-invalid list access since the next and prev members are set to poison
-pointers, resulting in a splat if CONFIG_LIST_HARDENED and
-CONFIG_DEBUG_LIST are set or invalid poison pointer dereferences
-otherwise.
-
-So fix this by deleting from the list with list_del_init() instead.
-
-Fixes: 1d57ee941692 ("btrfs: improve delayed refs iterations")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- fs/btrfs/delayed-ref.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 012fce255866..4d2ad5b66928 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -594,7 +594,7 @@ static bool insert_delayed_ref(struct btrfs_trans_handle *trans,
- 					      &href->ref_add_list);
- 			else if (ref->action == BTRFS_DROP_DELAYED_REF) {
- 				ASSERT(!list_empty(&exist->add_list));
--				list_del(&exist->add_list);
-+				list_del_init(&exist->add_list);
- 			} else {
- 				ASSERT(0);
- 			}
+Made a bit fancier to avoid conflicts. Mark, as before I'd suggest you
+to take it and send together with the fix.
+
+ include/linux/io_uring_types.h | 1 +
+ io_uring/uring_cmd.c           | 6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
+index ad5001102c86..bfdf9cbceda9 100644
+--- a/include/linux/io_uring_types.h
++++ b/include/linux/io_uring_types.h
+@@ -37,6 +37,7 @@ enum io_uring_cmd_flags {
+ 	/* set when uring wants to cancel a previously issued command */
+ 	IO_URING_F_CANCEL		= (1 << 11),
+ 	IO_URING_F_COMPAT		= (1 << 12),
++	IO_URING_F_TASK_DEAD		= (1 << 13),
+ };
+ 
+ struct io_wq_work_node {
+diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+index 40b8b777ba12..f0113548ec92 100644
+--- a/io_uring/uring_cmd.c
++++ b/io_uring/uring_cmd.c
+@@ -119,9 +119,13 @@ EXPORT_SYMBOL_GPL(io_uring_cmd_mark_cancelable);
+ static void io_uring_cmd_work(struct io_kiocb *req, struct io_tw_state *ts)
+ {
+ 	struct io_uring_cmd *ioucmd = io_kiocb_to_cmd(req, struct io_uring_cmd);
++	unsigned int flags = IO_URING_F_COMPLETE_DEFER;
++
++	if (current->flags & (PF_EXITING | PF_KTHREAD))
++		flags |= IO_URING_F_TASK_DEAD;
+ 
+ 	/* task_work executor checks the deffered list completion */
+-	ioucmd->task_work_cb(ioucmd, IO_URING_F_COMPLETE_DEFER);
++	ioucmd->task_work_cb(ioucmd, flags);
+ }
+ 
+ void __io_uring_cmd_do_in_task(struct io_uring_cmd *ioucmd,
 -- 
-2.45.2
+2.46.0
 
 
