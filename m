@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-9314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E13C9BAC87
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 07:27:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C62B9BAC8A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 07:27:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B756F1F2220B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 06:27:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8930DB2137F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2024 06:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF07418C357;
-	Mon,  4 Nov 2024 06:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D01918E364;
+	Mon,  4 Nov 2024 06:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n3uGDmY4"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="feo4lkFq"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5211618562F;
-	Mon,  4 Nov 2024 06:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E2A18E055;
+	Mon,  4 Nov 2024 06:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730701622; cv=none; b=ShnpqfJHNuaYWJDwiygZjIWdOomF0u5SdbkHoUBsRI9pH3OSNcvb7iTKmoYfgTnlwDd+TmyBzhU0nLGOILMPPklEIUjvbEMMa0jlAKSTGIgj0vxksy8Buyn0mXPZJNZqIM45XDJw3LzmSvGnOvN6Ms8pVCsoQ4iD6D7Fh41ZtT0=
+	t=1730701624; cv=none; b=D0q77x53DW/D1ITCFQzHiFMf+YBm+jMCLarfvvw1dTI90EgsWbdQiQVd/SOPirxcybDr7DLBfKrC1L/vM64+Zjnf8ZouscthZP2UNuuBGgVHw575S4YI7f+1PexfXfVmw/yFFC+YDS+Ylbc3qgGpvdYjUTmAuC44kytAzKX+FDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730701622; c=relaxed/simple;
-	bh=g6OYhJEpuFSZK+RD+Rcgv51mtkjmW9XYxjjcxWbViNA=;
+	s=arc-20240116; t=1730701624; c=relaxed/simple;
+	bh=azT/nFSf6O23BcSY14Qav6wZktxauuKFYgRYZ7pxFzU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FreWuIpmSrD6xdvt70hPERmO53FZi2Bbf1+uilXJkeNi8Mvub0bWF3UNnBHf7PcpM3BjtDzs7j49M9x1D4n2QUw7DdaKUJyCCBJr08cN/AxT0YKP5CGtRJ6N7gDr07bJoLXDf3JQHCpKGGiQhlEFnojbX60xS3G5s2U0mYQD1zU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=n3uGDmY4; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=S2mw9g8yzmEkdBcuWyNcwRtEljOKRVnDpxQ6cMMtDwJAEdr9vqpXn096j1Z66W611ZnHHuu9BbCzTeR/eDDiM5KMmdcdb6xbPI1ouHFw2PmX+TUrF3/vC5gioOhstFE7LCoz8Jaxua4vB6j/ghsydoPDKcN1loeLLWycYdrDoVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=feo4lkFq; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=UQTaU5P/0JZcdZzVmIgMgjW5rz31/6LiQC/DFO7xtXw=; b=n3uGDmY4t4ineTx+aJ9cLtOLal
-	uazOnNWgd2Lggupez2fHbcWkmwkihYnipWBv3hL98CoR5T9S6EkLba4rlpNe2C0VYbJhhGlyPq7Xj
-	jnZxC68d7vkz6tnXx5Zb0eawWQuolDvZiSmLMiyQKgEkCrLfpKx68WMBBQNljvz5qzgGNa0zbmZ/E
-	RkZQ3clseZjim+HYznOpSCmRUq0nopEb7n1KgbOJbZzrq9izHWRkjENflABhrW5q8B9lYtUxvQ9Nm
-	ymccRnDy9LRsH9Xi8Ww6SmCt3fkVf34+U2FfkpWj0dzWeIaF/YCZMosYYx0rHWaTZ5wVeKn5ygKcx
-	XQ88Pdmg==;
+	bh=oaCuK3vkoOE1dSVOtHe46/RXy5sHzSmiC0OTM79f9S0=; b=feo4lkFqHb0iC7/NYjKy+EcfRk
+	CBI8OZHgdt4nLXZvT0r87wDZUmIevqWGhPxNz+vpU44BRpFLTxIoyVFF4h5dCvXfgpBHAm4oNpU1i
+	q+nZWmdPPOnE9tcDr+PUipQSaxKpdSJt2SqDh5bsLwi4ba0DV/1dB0AHc2nMuTpSmxRddpRea3KCw
+	Jjisq4TRlOQsXwXr7Aftn2oNReeZUL7zB6AyIcaJIq0j32Uuz06FAyg4nuFhK5ka8XZBRC2oliKaq
+	9s3nwHhpKE1U8ga2WTZ59H9NWExaHMmRKFK/QypKvWwbkQ8m1iM5jakzDSWlg5YM8KxCNX2m5gnzx
+	PpGSitrQ==;
 Received: from 2a02-8389-2341-5b80-c843-e027-3367-36ce.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:c843:e027:3367:36ce] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1t7qYE-0000000Cl38-1bvG;
-	Mon, 04 Nov 2024 06:26:59 +0000
+	id 1t7qYH-0000000Cl3c-2RTe;
+	Mon, 04 Nov 2024 06:27:02 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>,
 	Chris Mason <clm@fb.com>,
@@ -54,9 +54,9 @@ To: Jens Axboe <axboe@kernel.dk>,
 Cc: linux-block@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 3/5] block: lift bio_is_zone_append to bio.h
-Date: Mon,  4 Nov 2024 07:26:31 +0100
-Message-ID: <20241104062647.91160-4-hch@lst.de>
+Subject: [PATCH 4/5] btrfs: use bio_is_zone_append in the completion handler
+Date: Mon,  4 Nov 2024 07:26:32 +0100
+Message-ID: <20241104062647.91160-5-hch@lst.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241104062647.91160-1-hch@lst.de>
 References: <20241104062647.91160-1-hch@lst.de>
@@ -69,72 +69,47 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Make bio_is_zone_append globally available, because file systems need
-to use to check for a zone append bio in their end_io handlers to deal
-with the block layer emulation.
+Otherwise it won't catch bios turned into regular writes by the
+block level zone write plugging.
 
+Fixes: 9b1ce7f0c6f8 ("block: Implement zone append emulation")
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- block/blk.h         |  9 ---------
- include/linux/bio.h | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 9 deletions(-)
+ fs/btrfs/bio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk.h b/block/blk.h
-index 63d5df0dc29c..6060e1e180a3 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -457,11 +457,6 @@ static inline bool bio_zone_write_plugging(struct bio *bio)
- {
- 	return bio_flagged(bio, BIO_ZONE_WRITE_PLUGGING);
- }
--static inline bool bio_is_zone_append(struct bio *bio)
--{
--	return bio_op(bio) == REQ_OP_ZONE_APPEND ||
--		bio_flagged(bio, BIO_EMULATES_ZONE_APPEND);
--}
- void blk_zone_write_plug_bio_merged(struct bio *bio);
- void blk_zone_write_plug_init_request(struct request *rq);
- static inline void blk_zone_update_request_bio(struct request *rq,
-@@ -510,10 +505,6 @@ static inline bool bio_zone_write_plugging(struct bio *bio)
- {
- 	return false;
- }
--static inline bool bio_is_zone_append(struct bio *bio)
--{
--	return false;
--}
- static inline void blk_zone_write_plug_bio_merged(struct bio *bio)
- {
- }
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 4a1bf43ca53d..60830a6a5939 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -675,6 +675,23 @@ static inline void bio_clear_polled(struct bio *bio)
- 	bio->bi_opf &= ~REQ_POLLED;
- }
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index fec5c6cde0a7..0f096e226908 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -366,7 +366,7 @@ static void btrfs_simple_end_io(struct bio *bio)
+ 		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
+ 		queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->end_io_work);
+ 	} else {
+-		if (bio_op(bio) == REQ_OP_ZONE_APPEND && !bio->bi_status)
++		if (bio_is_zone_append(bio) && !bio->bi_status)
+ 			btrfs_record_physical_zoned(bbio);
+ 		btrfs_bio_end_io(bbio, bbio->bio.bi_status);
+ 	}
+@@ -409,7 +409,7 @@ static void btrfs_orig_write_end_io(struct bio *bio)
+ 	else
+ 		bio->bi_status = BLK_STS_OK;
  
-+/**
-+ * bio_is_zone_append - is this a zone append bio?
-+ * @bio:	bio to check
-+ *
-+ * Check if @bio is a zone append operation.  Core block layer code and end_io
-+ * handlers must use this instead of an open coded REQ_OP_ZONE_APPEND check
-+ * because the block layer can rewrite REQ_OP_ZONE_APPEND to REQ_OP_WRITE if
-+ * it is not natively supported.
-+ */
-+static inline bool bio_is_zone_append(struct bio *bio)
-+{
-+	if (!IS_ENABLED(CONFIG_BLK_DEV_ZONED))
-+		return false;
-+	return bio_op(bio) == REQ_OP_ZONE_APPEND ||
-+		bio_flagged(bio, BIO_EMULATES_ZONE_APPEND);
-+}
-+
- struct bio *blk_next_bio(struct bio *bio, struct block_device *bdev,
- 		unsigned int nr_pages, blk_opf_t opf, gfp_t gfp);
- struct bio *bio_chain_and_submit(struct bio *prev, struct bio *new);
+-	if (bio_op(bio) == REQ_OP_ZONE_APPEND && !bio->bi_status)
++	if (bio_is_zone_append(bio) && !bio->bi_status)
+ 		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+ 
+ 	btrfs_bio_end_io(bbio, bbio->bio.bi_status);
+@@ -423,7 +423,7 @@ static void btrfs_clone_write_end_io(struct bio *bio)
+ 	if (bio->bi_status) {
+ 		atomic_inc(&stripe->bioc->error);
+ 		btrfs_log_dev_io_error(bio, stripe->dev);
+-	} else if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
++	} else if (bio_is_zone_append(bio)) {
+ 		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+ 	}
+ 
 -- 
 2.45.2
 
