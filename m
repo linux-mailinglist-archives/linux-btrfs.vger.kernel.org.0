@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-9342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D96F9BD73B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 21:51:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054F19BD73C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 21:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCDE5B2308D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 20:51:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AC791F23F5B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 20:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2D0215C51;
-	Tue,  5 Nov 2024 20:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536B2215C51;
+	Tue,  5 Nov 2024 20:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DygWuC5Y"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="E8HEhxuL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884603D81
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 20:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7993D81
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 20:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730839856; cv=none; b=Q/ZX+uUkQ1Zw0P0uItd4EeoscwrUBfzpFaCVc2L6TfHkEgGQkcQu3TwXvn9zPWf0SYgh5I2PJYg0JreRKKd9cQZhwIgUw3GSG4fnyF4myNB29VWbhkGAHFDhH2YPgjKPyi3/vmEAU8GRaagMGRGmD4ZJDKmsz2EPQ6oZEmilhLI=
+	t=1730839887; cv=none; b=UQJb9W9fnLyqLpDiiGJ4oCr0H/Q06yoUaMUcsCXoB0RPl66Q1+iP0pEXlbEmEfd/xm9vzO6XBdt81tT+1zY6uVfqJE3Suv/Jv9mcbE2mxNXOJEoxC+S/myd7h4qF6XHY8Alz/WiBDUjuA6ny4y3ubKFZRwo1+8mQ2OS/v+eDvPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730839856; c=relaxed/simple;
-	bh=fDoNZvIL3uh+d6gVhJMqZMGTHOQMaSZmKM5gRqS6ILE=;
+	s=arc-20240116; t=1730839887; c=relaxed/simple;
+	bh=VDEG6t4fUpx0B/LIGvkBpL/eWGtuU7gf2t/yVYVftX0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tkDCXks/W0HsWqVJ0mo0rebtjwI+XUluw75q8a+NGQXNcJY4sSNYWS23hgTxc7BkX+7BmGDTFh0CPU0J7Ds4Y2Sj7qcaVou6ihT49NOXuxmn051gIMDPWP2ernwjXA4MskNfkd+dkVElp4rsEQKiX92akL0MHZky15YfrcGnl1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DygWuC5Y; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=B9cfIEg/cWBVFEsBq8UZN97c8Vc/RJG9qffC5oa+AZ/j6sRqGzO8izIxBk3u0x3NqqP+XmBpFft3nDQBQSjNNLOvYXmxH1zwELFd2C2CbX3xaU16BD8rac/Y9Ht3ktWh7zG1wNzycWOzz659XtEvMkgyv0NzkiguAL2u3zscJHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=E8HEhxuL; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1730839847; x=1731444647; i=quwenruo.btrfs@gmx.com;
-	bh=oX5wXzun1ua4hZP7PiaNEPZtQFD0SkBlmk0QNC7HwHI=;
+	s=s31663417; t=1730839879; x=1731444679; i=quwenruo.btrfs@gmx.com;
+	bh=VtjniE11kdiYbYQpy5wl3FG7NI1/VaCfspVdWc5o2f4=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=DygWuC5Yc2xqUZgsmjuxViGI30AXyloI5u7uyUJ8e7uLUZ5jxvZ0Ha8/+MQHK6Ue
-	 x/Fp5gvssvWdCxZ03GHZJkl41SP03ap1VRxARO0m1GTXc05DlwVQAtiLSsgNd3Nhs
-	 0jZMVmL0SS1ii5W87rokf4pVLHKS+8FXG2TxFKyeowSsNLjc6ioGD4uT9JkHbtoCR
-	 YJw+7yHqqFoEhrMSAvxQAUle7I5vFhcj8XbXaEpN6kbFM+7ExuppxVQL/+vkZRa2o
-	 eFn31nRTh8DLZSNGNGACRFAagbR+21+EDMX1weWlF9zQ+fOV+1DOP0m+feKCr0ovj
-	 V1gXvghOeITBFCQxlw==
+	b=E8HEhxuLELBMMTAhGwoft3N/ZTZZ3r1DD9ufDvBwzHgWO1V4EkJDiOas5D5eAfBR
+	 a3LkIXbmYhlFZBIs5oX3hgYqBkrlpg2i3WJc1EJ9Sl3apJMePXT0vTCD5g9Eknuam
+	 hVLFpOWBpJFx+vXx6Me9g9J60eXy2igNRRf+cJknfF8jUTyxAe22l/6KaV8ZQzuEw
+	 NeKtVsRWTm7UYs5CNZLLsog8lE18MfRNc24r07kGN7+0vAfYgb3GMMoMq7axZth2W
+	 Fa+fz5p6vaDJ2lgiiR4+rkPAx+OJKuE6b+Fwj9K0e2y7oK2JuKOkzSimv1CGHjivL
+	 1skVfEvznAZgfXtiNg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Msq2E-1twxpe2sCO-00yvLI; Tue, 05
- Nov 2024 21:50:47 +0100
-Message-ID: <d1392590-f85e-4a1c-8ec9-b757d3d76769@gmx.com>
-Date: Wed, 6 Nov 2024 07:20:43 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH9i-1tgOMN0qyq-00dhdX; Tue, 05
+ Nov 2024 21:51:19 +0100
+Message-ID: <f6595be8-5dd7-442d-9573-b849be1ac8c7@gmx.com>
+Date: Wed, 6 Nov 2024 07:21:16 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: remove hole from struct btrfs_delayed_node
+Subject: Re: [PATCH] btrfs: simplify logic to decrement snapshot counter at
+ btrfs_mksnapshot()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <008db737b88fdf9993be37ff44edc89e31a3677a.1730808362.git.fdmanana@suse.com>
+References: <e2938504101b0832739b3421f8d07b809a9f5232.1730818481.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,124 +88,40 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <008db737b88fdf9993be37ff44edc89e31a3677a.1730808362.git.fdmanana@suse.com>
+In-Reply-To: <e2938504101b0832739b3421f8d07b809a9f5232.1730818481.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DyrQlVzF2xXe81DLzGUHyk6m/UoQLxNeJr5AP4TZs7pj+qoY64j
- 87EdZ7PAjCZPtNn+5DCg1G8S/pzPou7SbpM4nbeFE9kdnYFJon//ygaGXXz2vzQDKlbqwa0
- YqJjT9egnR3rxpw1gqarKxYMmv8cnUEbwyG/5MQs6+M4TrK7W3qGvLMC6/6SBx0hwDzhrS6
- nx41uVjoztqC1q6ofFGAw==
+X-Provags-ID: V03:K1:SO+6WZtHU0YNQojiD9bEQPHTwv3toDkXjLkk6gSyRx30ZAwbpBK
+ 7GnEnQepfDhogk8LmAnuyhGO31/ahsCXqHgtQX+CwqgFc18X0TLcchCSiMGggwOjPJ/tUuD
+ az052N9zS+cl4Q4z/EXF5O7ugWOctQ1jjhHXJiGt95iNlOVh+zLeBuEY3JdY69GrfVri8bT
+ 8FPONC8/eT82nDRNUyewA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aoJdbJ9/qgM=;zEp5SgnGjYwm2xuU3zVYjIXUb9k
- AHa6bS60zsklIbsVPdJ+6u9adepbDvt2rTr5HBPQRsfwyjLkYzwQ8inouFxfsDSzXoJRPVkto
- jRJmS2ooeA57wxc23EG32ve1QuYTL+BpwUtTHM3VxrzYMcMgCPB7uVRmkhsbA+iM2mHpCxG69
- 8f5bGxoxxDAex/xYNmX0A7yPSpCk8EdMnAUQUMGAzFwn9I5RFVf6W3mTKfxBTU4ENErzy7MZJ
- jDOGS7N70s1xPtFIOnzB8Aeufo+Rk9M7CNi/1CVgD8L5auGKAeCOkWmG0/Ae2Bn+l76mbpxft
- uqsOVhCcPbPeEK0EA8DKOXDtQzcE+A6+3IUXpWusXw3A8o45IGxCvKCNExgth+AcuKzKGIfp/
- lcAffJ30BnWhiu/RxLsc0EL0T9j9izeVzPO/Tk4O2vReBJTnEF9SnnXtsRY7SD8i1bngxJQHm
- pTe3AOxscsifdWu8h6YRuAGm8tWb6kdX7pyNH3bHc9i7dy2F9yFqpSSMmWv7OsgOnTL6IiSPM
- T5FFsG+2S72HkJFMcRIEhxiCXlpcnPpNxg2vxlR7sZrmwsmgp/FnNTDj+4MlwRq2XfkMKytqk
- az+70w+8HjHf6TI3WNzKK5iv3K1li5D7KKq3AIBURg7h6ny6uDFZGT29KFMbawSi5HtBGzZKb
- 3OetWT9OPU1DqNdQqwNeUEa1ggWsx1zTeIHA7IbjBBN2Y+93u9JIhQS1RkXnoG0yagr0LXA0G
- GlZan/ibSVBcKPg2nPEh4trjUTCK4tvv5q2PDR+nJeDZrRdF5qHJTPbjes4gRhr8GaoU28SBl
- KQygY1kdStgtFfuR29DtaZVg==
+UI-OutboundReport: notjunk:1;M01:P0:W1EZ9VyFXt0=;1YJgsSBj9t0IjoNuKnthygju/Io
+ bme8Dvo1Bc9+MO2XlyHFzHGSZChtzClNP8zcr5N2f7qqLtOVhZttvOdmmOzoi/Dxhc2DL0j/m
+ 3IZnKmPHo6aNyzMRNpoE3GiLD7D8HTgAoXjyb5F5HJDIoCTreyya5svNlp964bGQRT/uVSmk3
+ 6gLQXH32lKoPXWBYek8q6KntOmfTJzyAcjFhnzd4ELVZNYn4Mw4IjocHqzCyDrwet3sgzTWST
+ btEglsNNs+Hhe8jGENHPb7+l0bIokcSgos+0j/8kIZfXwCodSuJjuVz6kYIhK6yaA4qK2htXz
+ +1h0ovlQlPGgeZHPQYK8I7VAocOt+sjq4EWQo67cE8APCh7/5U2w0cLzFTUTP6bkNHAX08xMc
+ RRkdAjSzRBY+AnDz+59syxaJlgRCyfURZFkGNY63LuQs1RRe14Z8PpCL2u6Z+B4dpXoYfyJEQ
+ DQkc1Ygph/GKYqV2PnKBt+QXROOMu6EBWOBLcNfhaCyn1/ZaRCTvEPE3HtXz46a3Tkr6MKLPQ
+ Rqii08KDl0+VU+sF26pE0QHKV4sTmG7A89SHKFJsmtRsog5MbhkgJHpTrBfibsDTUMQZUhPV2
+ HnEosQnAV6SrVgv5msH5IcKKTZMRayERfEgJ555FoFKDjETYkBeNLlrFVXyrsGTfTIZTeILTa
+ ddsArkTC8NqXEC+iHMwkUiBgIiGhJO3wvKfxZ9VxnsE925PhpsfAXi+DO+mhoGeLXaJ49Pi9V
+ Jj0Vja+2yNixXQ3+Rmn2qPuPDKgBxJijv2G7LS0a9xLhS8WK3jVO03ngwoLd/N8Dw45p0JZpH
+ ace2hTh/Fqh3yfGrzRtVKcvQ==
 
 
 
-=E5=9C=A8 2024/11/5 22:38, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/11/6 01:27, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> On x86_64 and a release kernel, there's a 4 bytes hole in the structure
-> after the ref count field:
->
->    struct btrfs_delayed_node {
->            u64                        inode_id;             /*     0    =
- 8 */
->            u64                        bytes_reserved;       /*     8    =
- 8 */
->            struct btrfs_root *        root;                 /*    16    =
- 8 */
->            struct list_head           n_list;               /*    24    =
-16 */
->            struct list_head           p_list;               /*    40    =
-16 */
->            struct rb_root_cached      ins_root;             /*    56    =
-16 */
->            /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
->            struct rb_root_cached      del_root;             /*    72    =
-16 */
->            struct mutex               mutex;                /*    88    =
-32 */
->            struct btrfs_inode_item    inode_item;           /*   120   1=
-60 */
->            /* --- cacheline 4 boundary (256 bytes) was 24 bytes ago --- =
-*/
->            refcount_t                 refs;                 /*   280    =
- 4 */
->
->            /* XXX 4 bytes hole, try to pack */
->
->            u64                        index_cnt;            /*   288    =
- 8 */
->            long unsigned int          flags;                /*   296    =
- 8 */
->            int                        count;                /*   304    =
- 4 */
->            u32                        curr_index_batch_size; /*   308   =
-  4 */
->            u32                        index_item_leaves;    /*   312    =
- 4 */
->
->            /* size: 320, cachelines: 5, members: 15 */
->            /* sum members: 312, holes: 1, sum holes: 4 */
->            /* padding: 4 */
->    };
->
-> Move the 'count' field, which is 4 bytes long, to just below the ref cou=
-nt
-> field, so we eliminate the hole and reduce the structure size from 320
-> bytes down to 312 bytes:
->
->    struct btrfs_delayed_node {
->            u64                        inode_id;             /*     0    =
- 8 */
->            u64                        bytes_reserved;       /*     8    =
- 8 */
->            struct btrfs_root *        root;                 /*    16    =
- 8 */
->            struct list_head           n_list;               /*    24    =
-16 */
->            struct list_head           p_list;               /*    40    =
-16 */
->            struct rb_root_cached      ins_root;             /*    56    =
-16 */
->            /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
->            struct rb_root_cached      del_root;             /*    72    =
-16 */
->            struct mutex               mutex;                /*    88    =
-32 */
->            struct btrfs_inode_item    inode_item;           /*   120   1=
-60 */
->            /* --- cacheline 4 boundary (256 bytes) was 24 bytes ago --- =
-*/
->            refcount_t                 refs;                 /*   280    =
- 4 */
->            int                        count;                /*   284    =
- 4 */
->            u64                        index_cnt;            /*   288    =
- 8 */
->            long unsigned int          flags;                /*   296    =
- 8 */
->            u32                        curr_index_batch_size; /*   304   =
-  4 */
->            u32                        index_item_leaves;    /*   308    =
- 4 */
->
->            /* size: 312, cachelines: 5, members: 15 */
->            /* last cacheline: 56 bytes */
->    };
->
-> This now allows to have 13 delayed nodes per 4K page instead of 12.
+> There's no point in having a 'snapshot_force_cow' variable to track if w=
+e
+> need to decrement the root->snapshot_force_cow counter, as we never jump
+> to the 'out' label after incrementing the counter. Simplify this by
+> removing the variable and always decrementing the counter before the 'ou=
+t'
+> label, right after the call to btrfs_mksubvol().
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -213,23 +130,39 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/delayed-inode.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   fs/btrfs/ioctl.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
 >
-> diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
-> index 7cfefdfe54ea..f4d9feac0d0e 100644
-> --- a/fs/btrfs/delayed-inode.h
-> +++ b/fs/btrfs/delayed-inode.h
-> @@ -64,9 +64,9 @@ struct btrfs_delayed_node {
->   	struct mutex mutex;
->   	struct btrfs_inode_item inode_item;
->   	refcount_t refs;
-> +	int count;
->   	u64 index_cnt;
->   	unsigned long flags;
-> -	int count;
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index cd3e82cc842b..26a07cbeb3a4 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1049,7 +1049,6 @@ static noinline int btrfs_mksnapshot(const struct =
+path *parent,
+>   				   struct btrfs_qgroup_inherit *inherit)
+>   {
+>   	int ret;
+> -	bool snapshot_force_cow =3D false;
+>
 >   	/*
->   	 * The size of the next batch of dir index items to insert (if this
->   	 * node is from a directory inode). Protected by @mutex.
+>   	 * Force new buffered writes to reserve space even when NOCOW is
+> @@ -1068,15 +1067,13 @@ static noinline int btrfs_mksnapshot(const struc=
+t path *parent,
+>   	 * creation.
+>   	 */
+>   	atomic_inc(&root->snapshot_force_cow);
+> -	snapshot_force_cow =3D true;
+>
+>   	btrfs_wait_ordered_extents(root, U64_MAX, NULL);
+>
+>   	ret =3D btrfs_mksubvol(parent, idmap, name, namelen,
+>   			     root, readonly, inherit);
+> +	atomic_dec(&root->snapshot_force_cow);
+>   out:
+> -	if (snapshot_force_cow)
+> -		atomic_dec(&root->snapshot_force_cow);
+>   	btrfs_drew_read_unlock(&root->snapshot_lock);
+>   	return ret;
+>   }
 
 
