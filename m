@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-9334-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6D49BC5F9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 07:48:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD4D9BC5F4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 07:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5701C2157E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 06:48:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD65C1F22E70
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 06:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A791FDF89;
-	Tue,  5 Nov 2024 06:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB14E1FCC73;
+	Tue,  5 Nov 2024 06:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HrQnNRah";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HrQnNRah"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MPONSHuO";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MPONSHuO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22A71C75FA
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 06:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D121714A0
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 06:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730789324; cv=none; b=T1qh0zhvaYt9tbkq3MFhRW4IFMTl193SFdoyqyJHk22HrqEGWsZMTc0XKfEiczkFdW0X72JvVrA/fiSwdkjT1VEcXuiwJWABC+W86GCw5n6Akb90EAFv6CjxmAcLrMxzJ0YabgdQKjWQKIfTJr3lf0o2/Ba9nU2SfQBu6M+23bM=
+	t=1730789322; cv=none; b=gDUfL9yNywf7sw+iiykH4S2J5CIwj8SfFiWEdeCsEpOivWk4x3ZkqaO1JiWd3AsRk4zvmE7AoT0lC2USw1nfke4DFuaAfVjDEtJRaAC0NqWjkasFFLfN0eJmDmonmjcjcO72LjU+fcNOfLOk7T3lComLYZPe5NAS0Q2lSYK2zwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730789324; c=relaxed/simple;
-	bh=Eu8ZhQtIC/jvL2zWHwDXb9BCzIqg7+eLoyhP8OOaD9A=;
+	s=arc-20240116; t=1730789322; c=relaxed/simple;
+	bh=v0QeLkMeQIGiWqLMX28s6BLEgndE0d0qz+JPEkFO6+E=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LN2QVmKUAC6VfBX4G1XshAol2fauv4wtaPvMcZ1ufaRcr5n4bOCIo/s6aiq1gpCzmHXTSaHXar9O1fi1t+zUI7cKaC0lxi4UC0/LexpATh7ese8Xj0+DH6fF8GVPDwP21sL1oZkuOxPsZvAjzj2N5kY67/GxSH6O11bBDF1xa8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HrQnNRah; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HrQnNRah; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=jHmOkteP7/89rlYe6xAip/3kLM65A0VJO6obp4NeOn+dxP9w5L1eBvvZ3WEZNssI4dg1IVoESW7ggxanycaaSKNyQsRgg+P7NKcrIEIn3UtN/wcKauAYWgTr3yJ7FilyIPHCgO3BDYLpYrRGWzZ8FCDDq7vvZTMlrl0sFl63h9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MPONSHuO; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MPONSHuO; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6CEAA21BC6
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 06:48:34 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 948581FE5F
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 06:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1730789314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1730789315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NYH4CbH58cY3XW4XyIgJyfPuQoAHRcc/geCvNqsRGpg=;
-	b=HrQnNRahpHXKsZRD+vEcXnpRfZ5qJCi8qtCxVIMuC1NYNvWrgTNUfDNeneTs985+SgOhu6
-	+gM05xdCHfZt6wYrN/ANwEJLC34K8Yu3fa1yvZVjqX7bzvb1wAvpcXYXJrOOB/UAT1RIYB
-	HygJey9ufsNSuB6eb5qXEQQOVX9p5/U=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=HrQnNRah
+	bh=jfyF0LR1RZGtgdekeaMI1YLSbGk4CaNMatapyvShFBQ=;
+	b=MPONSHuOB7b43jiq4kddpDPc2o+CWB32S0NFVGcUVfyR9PUP1UzCMk0AS/+SGMvkA3DBYP
+	Fd+vCC5L1V3szdcl2e/nwy0JjTzLhSuNh3FdH4InPSEXulGEI4JvOvwkuIl94m1FZjQMXP
+	KCUs+53eUkY7lwxHnVMu+WGq9YplBzI=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=MPONSHuO
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1730789314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1730789315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NYH4CbH58cY3XW4XyIgJyfPuQoAHRcc/geCvNqsRGpg=;
-	b=HrQnNRahpHXKsZRD+vEcXnpRfZ5qJCi8qtCxVIMuC1NYNvWrgTNUfDNeneTs985+SgOhu6
-	+gM05xdCHfZt6wYrN/ANwEJLC34K8Yu3fa1yvZVjqX7bzvb1wAvpcXYXJrOOB/UAT1RIYB
-	HygJey9ufsNSuB6eb5qXEQQOVX9p5/U=
+	bh=jfyF0LR1RZGtgdekeaMI1YLSbGk4CaNMatapyvShFBQ=;
+	b=MPONSHuOB7b43jiq4kddpDPc2o+CWB32S0NFVGcUVfyR9PUP1UzCMk0AS/+SGMvkA3DBYP
+	Fd+vCC5L1V3szdcl2e/nwy0JjTzLhSuNh3FdH4InPSEXulGEI4JvOvwkuIl94m1FZjQMXP
+	KCUs+53eUkY7lwxHnVMu+WGq9YplBzI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6607113964
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 06:48:33 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D2EB713964
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 06:48:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sPGKCsG/KWeUDgAAD6G6ig
+	id wCclJcK/KWeUDgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 05 Nov 2024 06:48:33 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 05 Nov 2024 06:48:34 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: do not call btrfs_record_file_extent() out of btrfs-convert
-Date: Tue,  5 Nov 2024 17:18:13 +1030
-Message-ID: <ad7acbbad20cd3d88cf1482726aefae1506ce926.1730788965.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: make btrfs_insert_file_extent() to accept an on-stack file extent item
+Date: Tue,  5 Nov 2024 17:18:14 +1030
+Message-ID: <4d5c932e1a1625e6c314e1d67758953047423978.1730788965.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1730788965.git.wqu@suse.com>
 References: <cover.1730788965.git.wqu@suse.com>
@@ -84,8 +84,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6CEAA21BC6
-X-Spam-Level: 
+X-Rspamd-Queue-Id: 948581FE5F
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -112,250 +113,81 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-The function btrfs_record_file_extent() has extra handling that's
-specific to convert, like allowing the range to be split by block group
-boundary and image file extent boundary.
+Just like insert_reserved_file_extent() from the kernel, we can make
+btrfs_insert_file_extent() to accept an on-stack file extent item
+directly.
 
-All of these split can only lead to corruption for non-converted fs.
-As the only caller out of btrfs-convert is rootdir, which expects the
-file extent item insert to respect the reserved data extent, and never
-to be split.
+This makes btrfs_insert_file_extent() more flex, and it can now handle
+the converted file extent where it has an non-zero offset.
 
-Thankfully this is not going to cause huge problem, as
-btrfs_record_file_extent() has extra checks if the data extent overlaps
-with any existing one, and if it doesn't the handling will be the same
-as the kernel.
-
-But to avoid abuse, change btrfs_record_file_extent() by:
-
-- Rename it to btrfs_convert_file_extent()
-  And add extra comments on that it is specific to btrfs-convert.
-
-- Move it to convert/common.[ch]
-
-- Introduce a helper insert_reserved_file_extent() for rootdir.c
+And this makes it much easier to expand for future compressed file
+extent generation.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- common/extent-tree-utils.c | 240 ------------------------------------
- common/extent-tree-utils.h |   5 -
- convert/common.c           | 242 ++++++++++++++++++++++++++++++++++++-
- convert/common.h           |   6 +
- convert/main.c             |  10 +-
- convert/source-fs.c        |   4 +-
- convert/source-reiserfs.c  |   2 +-
- mkfs/rootdir.c             |  95 ++++++++++++++-
- 8 files changed, 349 insertions(+), 255 deletions(-)
+ convert/common.c          | 33 +++++++++++++----------------
+ kernel-shared/file-item.c | 44 +++++++++------------------------------
+ kernel-shared/file-item.h |  4 ++--
+ kernel-shared/file.c      |  6 +++++-
+ mkfs/rootdir.c            | 33 +++++++++++++++++------------
+ 5 files changed, 51 insertions(+), 69 deletions(-)
 
-diff --git a/common/extent-tree-utils.c b/common/extent-tree-utils.c
-index 9f7e543f3bd1..135798b98511 100644
---- a/common/extent-tree-utils.c
-+++ b/common/extent-tree-utils.c
-@@ -15,18 +15,13 @@
-  */
- 
- #include "kerncompat.h"
--#include <errno.h>
- #include <stddef.h>
- #include "kernel-shared/accessors.h"
- #include "kernel-shared/uapi/btrfs_tree.h"
- #include "kernel-shared/ctree.h"
- #include "kernel-shared/disk-io.h"
--#include "kernel-shared/file-item.h"
- #include "kernel-shared/transaction.h"
--#include "kernel-shared/free-space-tree.h"
--#include "common/internal.h"
- #include "common/extent-tree-utils.h"
--#include "common/messages.h"
- 
- /*
-  * Search in extent tree to found next meta/data extent. Caller needs to check
-@@ -50,238 +45,3 @@ int btrfs_next_extent_item(struct btrfs_root *root, struct btrfs_path *path,
- 		return 0;
- 	}
- }
--
--static void __get_extent_size(struct btrfs_root *root, struct btrfs_path *path,
--			      u64 *start, u64 *len)
--{
--	struct btrfs_key key;
--
--	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
--	BUG_ON(!(key.type == BTRFS_EXTENT_ITEM_KEY ||
--		 key.type == BTRFS_METADATA_ITEM_KEY));
--	*start = key.objectid;
--	if (key.type == BTRFS_EXTENT_ITEM_KEY)
--		*len = key.offset;
--	else
--		*len = root->fs_info->nodesize;
--}
--
--/*
-- * Find first overlap extent for range [bytenr, bytenr + len).
-- *
-- * Return 0 for found and point path to it.
-- * Return >0 for not found.
-- * Return <0 for err
-- */
--static int btrfs_search_overlap_extent(struct btrfs_root *root,
--				       struct btrfs_path *path, u64 bytenr, u64 len)
--{
--	struct btrfs_key key;
--	u64 cur_start;
--	u64 cur_len;
--	int ret;
--
--	key.objectid = bytenr;
--	key.type = BTRFS_EXTENT_DATA_KEY;
--	key.offset = (u64)-1;
--
--	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
--	if (ret < 0)
--		return ret;
--	if (ret == 0) {
--		error_msg(ERROR_MSG_UNEXPECTED, "EXTENT_DATA found at %llu", bytenr);
--		return -EUCLEAN;
--	}
--
--	ret = btrfs_previous_extent_item(root, path, 0);
--	if (ret < 0)
--		return ret;
--	/* No previous, check next extent. */
--	if (ret > 0)
--		goto next;
--	__get_extent_size(root, path, &cur_start, &cur_len);
--	/* Tail overlap. */
--	if (cur_start + cur_len > bytenr)
--		return 1;
--
--next:
--	ret = btrfs_next_extent_item(root, path, bytenr + len);
--	if (ret < 0)
--		return ret;
--	/* No next, prev already checked, no overlap. */
--	if (ret > 0)
--		return 0;
--	__get_extent_size(root, path, &cur_start, &cur_len);
--	/* Head overlap.*/
--	if (cur_start < bytenr + len)
--		return 1;
--	return 0;
--}
--
--static int __btrfs_record_file_extent(struct btrfs_trans_handle *trans,
--				      struct btrfs_root *root, u64 objectid,
--				      struct btrfs_inode_item *inode,
--				      u64 file_pos, u64 disk_bytenr,
--				      u64 *ret_num_bytes)
--{
--	int ret;
--	struct btrfs_fs_info *info = root->fs_info;
--	struct btrfs_root *extent_root = btrfs_extent_root(info, disk_bytenr);
+diff --git a/convert/common.c b/convert/common.c
+index 0ec9f2ec193f..802b809ca837 100644
+--- a/convert/common.c
++++ b/convert/common.c
+@@ -987,8 +987,7 @@ static int __btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 	struct btrfs_fs_info *info = root->fs_info;
+ 	struct btrfs_root *extent_root = btrfs_extent_root(info, disk_bytenr);
 -	struct extent_buffer *leaf;
 -	struct btrfs_file_extent_item *fi;
--	struct btrfs_key ins_key;
--	struct btrfs_path *path;
--	struct btrfs_extent_item *ei;
--	u64 nbytes;
--	u64 extent_num_bytes;
--	u64 extent_bytenr;
--	u64 extent_offset;
--	u64 num_bytes = *ret_num_bytes;
--
--	/*
--	 * @objectid should be an inode number, thus it must not be smaller
--	 * than BTRFS_FIRST_FREE_OBJECTID.
--	 */
--	UASSERT(objectid >= BTRFS_FIRST_FREE_OBJECTID);
--
--	/*
--	 * All supported file system should not use its 0 extent.  As it's for
--	 * hole.  And hole extent has no size limit, no need to loop.
--	 */
--	if (disk_bytenr == 0) {
--		ret = btrfs_insert_file_extent(trans, root, objectid,
++	struct btrfs_file_extent_item stack_fi = { 0 };
+ 	struct btrfs_key ins_key;
+ 	struct btrfs_path *path;
+ 	struct btrfs_extent_item *ei;
+@@ -1009,9 +1008,11 @@ static int __btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
+ 	 * hole.  And hole extent has no size limit, no need to loop.
+ 	 */
+ 	if (disk_bytenr == 0) {
++		btrfs_set_stack_file_extent_type(&stack_fi, BTRFS_FILE_EXTENT_REG);
++		btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
++		btrfs_set_stack_file_extent_ram_bytes(&stack_fi, num_bytes);
+ 		ret = btrfs_insert_file_extent(trans, root, objectid,
 -					       file_pos, disk_bytenr,
 -					       num_bytes, num_bytes);
--		return ret;
--	}
--	num_bytes = min_t(u64, num_bytes, BTRFS_MAX_EXTENT_SIZE);
--
--	path = btrfs_alloc_path();
--	if (!path)
--		return -ENOMEM;
--
--	/* First to check extent overlap. */
--	ret = btrfs_search_overlap_extent(extent_root, path, disk_bytenr, num_bytes);
--	if (ret < 0)
--		goto fail;
--	if (ret > 0) {
--		/* Found overlap. */
--		u64 cur_start;
--		u64 cur_len;
--
--		__get_extent_size(extent_root, path, &cur_start, &cur_len);
--		/* For convert case, this extent should be a subset of existing one. */
--		if (disk_bytenr < cur_start) {
--			error_msg(ERROR_MSG_UNEXPECTED,
--				  "invalid range disk_bytenr < cur_start: %llu < %llu",
--				  disk_bytenr, cur_start);
--			ret = -EUCLEAN;
--			goto fail;
--		}
--
--		extent_bytenr = cur_start;
--		extent_num_bytes = cur_len;
--		extent_offset = disk_bytenr - extent_bytenr;
--	} else {
--		/* No overlap, create new extent. */
--		btrfs_release_path(path);
--		ins_key.objectid = disk_bytenr;
--		ins_key.type = BTRFS_EXTENT_ITEM_KEY;
--		ins_key.offset = num_bytes;
--
--		ret = btrfs_insert_empty_item(trans, extent_root, path,
--					      &ins_key, sizeof(*ei));
--		if (ret == 0) {
--			leaf = path->nodes[0];
--			ei = btrfs_item_ptr(leaf, path->slots[0],
--					    struct btrfs_extent_item);
--
--			btrfs_set_extent_refs(leaf, ei, 0);
--			btrfs_set_extent_generation(leaf, ei, trans->transid);
--			btrfs_set_extent_flags(leaf, ei,
--					       BTRFS_EXTENT_FLAG_DATA);
--			btrfs_mark_buffer_dirty(leaf);
--
--			ret = btrfs_update_block_group(trans, disk_bytenr,
--						       num_bytes, 1, 0);
--			if (ret)
--				goto fail;
--		} else if (ret != -EEXIST) {
--			goto fail;
--		}
--
--		ret = remove_from_free_space_tree(trans, disk_bytenr, num_bytes);
--		if (ret)
--			goto fail;
--
--		btrfs_run_delayed_refs(trans, -1);
--		extent_bytenr = disk_bytenr;
--		extent_num_bytes = num_bytes;
--		extent_offset = 0;
--	}
--	btrfs_release_path(path);
--	ins_key.objectid = objectid;
--	ins_key.type = BTRFS_EXTENT_DATA_KEY;
--	ins_key.offset = file_pos;
++					       file_pos, &stack_fi);
+ 		return ret;
+ 	}
+ 	num_bytes = min_t(u64, num_bytes, BTRFS_MAX_EXTENT_SIZE);
+@@ -1052,6 +1053,8 @@ static int __btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_insert_empty_item(trans, extent_root, path,
+ 					      &ins_key, sizeof(*ei));
+ 		if (ret == 0) {
++			struct extent_buffer *leaf;
++
+ 			leaf = path->nodes[0];
+ 			ei = btrfs_item_ptr(leaf, path->slots[0],
+ 					    struct btrfs_extent_item);
+@@ -1083,26 +1086,18 @@ static int __btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
+ 	ins_key.objectid = objectid;
+ 	ins_key.type = BTRFS_EXTENT_DATA_KEY;
+ 	ins_key.offset = file_pos;
 -	ret = btrfs_insert_empty_item(trans, root, path, &ins_key, sizeof(*fi));
--	if (ret)
--		goto fail;
++	btrfs_set_stack_file_extent_type(&stack_fi, BTRFS_FILE_EXTENT_REG);
++	btrfs_set_stack_file_extent_disk_bytenr(&stack_fi, extent_bytenr);
++	btrfs_set_stack_file_extent_disk_num_bytes(&stack_fi, extent_num_bytes);
++	btrfs_set_stack_file_extent_offset(&stack_fi, extent_offset);
++	btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
++	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, extent_num_bytes);
++	ret = btrfs_insert_file_extent(trans, root, objectid, file_pos, &stack_fi);
+ 	if (ret)
+ 		goto fail;
 -	leaf = path->nodes[0];
 -	fi = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
 -	btrfs_set_file_extent_generation(leaf, fi, trans->transid);
@@ -369,546 +201,201 @@ index 9f7e543f3bd1..135798b98511 100644
 -	btrfs_set_file_extent_encryption(leaf, fi, 0);
 -	btrfs_set_file_extent_other_encoding(leaf, fi, 0);
 -	btrfs_mark_buffer_dirty(leaf);
--
--	nbytes = btrfs_stack_inode_nbytes(inode) + num_bytes;
--	btrfs_set_stack_inode_nbytes(inode, nbytes);
+ 
+ 	nbytes = btrfs_stack_inode_nbytes(inode) + num_bytes;
+ 	btrfs_set_stack_inode_nbytes(inode, nbytes);
 -	btrfs_release_path(path);
+ 
+ 	ret = btrfs_inc_extent_ref(trans, extent_bytenr, extent_num_bytes,
+ 				   0, root->root_key.objectid, objectid,
+diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
+index eb9024022d9f..0de2a216c54d 100644
+--- a/kernel-shared/file-item.c
++++ b/kernel-shared/file-item.c
+@@ -33,55 +33,31 @@
+ 			       size) - 1))
+ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+-			     u64 objectid, u64 pos, u64 offset,
+-			     u64 disk_num_bytes, u64 num_bytes)
++			     u64 ino, u64 file_pos,
++			     struct btrfs_file_extent_item *stack_fi)
+ {
+ 	int ret = 0;
+ 	int is_hole = 0;
+-	struct btrfs_file_extent_item *item;
+ 	struct btrfs_key file_key;
+-	struct btrfs_path *path;
+-	struct extent_buffer *leaf;
+ 
+-	if (offset == 0)
++	if (btrfs_stack_file_extent_disk_bytenr(stack_fi) == 0)
+ 		is_hole = 1;
++
+ 	/* For NO_HOLES, we don't insert hole file extent */
+ 	if (btrfs_fs_incompat(root->fs_info, NO_HOLES) && is_hole)
+ 		return 0;
+ 
+ 	/* For hole, its disk_bytenr and disk_num_bytes must be 0 */
+ 	if (is_hole)
+-		disk_num_bytes = 0;
++		btrfs_set_stack_file_extent_disk_num_bytes(stack_fi, 0);
+ 
+-	path = btrfs_alloc_path();
+-	if (!path)
+-		return -ENOMEM;
 -
--	ret = btrfs_inc_extent_ref(trans, extent_bytenr, extent_num_bytes,
--				   0, root->root_key.objectid, objectid,
--				   file_pos - extent_offset);
--	if (ret)
--		goto fail;
--	ret = 0;
--	*ret_num_bytes = min(extent_num_bytes - extent_offset, num_bytes);
--fail:
+-	file_key.objectid = objectid;
++	file_key.objectid = ino;
+ 	file_key.type = BTRFS_EXTENT_DATA_KEY;
+-	file_key.offset = pos;
++	file_key.offset = file_pos;
+ 
+-	ret = btrfs_insert_empty_item(trans, root, path, &file_key,
+-				      sizeof(*item));
+-	if (ret < 0)
+-		goto out;
+-	BUG_ON(ret);
+-	leaf = path->nodes[0];
+-	item = btrfs_item_ptr(leaf, path->slots[0],
+-			      struct btrfs_file_extent_item);
+-	btrfs_set_file_extent_disk_bytenr(leaf, item, offset);
+-	btrfs_set_file_extent_disk_num_bytes(leaf, item, disk_num_bytes);
+-	btrfs_set_file_extent_offset(leaf, item, 0);
+-	btrfs_set_file_extent_num_bytes(leaf, item, num_bytes);
+-	btrfs_set_file_extent_ram_bytes(leaf, item, num_bytes);
+-	btrfs_set_file_extent_generation(leaf, item, trans->transid);
+-	btrfs_set_file_extent_type(leaf, item, BTRFS_FILE_EXTENT_REG);
+-	btrfs_set_file_extent_compression(leaf, item, 0);
+-	btrfs_set_file_extent_encryption(leaf, item, 0);
+-	btrfs_set_file_extent_other_encoding(leaf, item, 0);
+-	btrfs_mark_buffer_dirty(leaf);
+-out:
 -	btrfs_free_path(path);
--	return ret;
--}
--
--/*
-- * Record a file extent. Do all the required works, such as inserting file
-- * extent item, inserting extent item and backref item into extent tree and
-- * updating block accounting.
-- */
--int btrfs_record_file_extent(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root, u64 objectid,
--			     struct btrfs_inode_item *inode,
--			     u64 file_pos, u64 disk_bytenr,
--			     u64 num_bytes)
--{
--	u64 cur_disk_bytenr = disk_bytenr;
--	u64 cur_file_pos = file_pos;
--	u64 cur_num_bytes = num_bytes;
--	int ret = 0;
--
--	while (num_bytes > 0) {
--		ret = __btrfs_record_file_extent(trans, root, objectid,
--						 inode, cur_file_pos,
--						 cur_disk_bytenr,
--						 &cur_num_bytes);
--		if (ret < 0)
--			break;
--		cur_disk_bytenr += cur_num_bytes;
--		cur_file_pos += cur_num_bytes;
--		num_bytes -= cur_num_bytes;
--	}
--	return ret;
--}
-diff --git a/common/extent-tree-utils.h b/common/extent-tree-utils.h
-index f03d9c438375..e9d121345276 100644
---- a/common/extent-tree-utils.h
-+++ b/common/extent-tree-utils.h
-@@ -27,10 +27,5 @@ struct btrfs_trans_handle;
- 
- int btrfs_next_extent_item(struct btrfs_root *root, struct btrfs_path *path,
- 			   u64 max_objectid);
--int btrfs_record_file_extent(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root, u64 objectid,
--			     struct btrfs_inode_item *inode,
--			     u64 file_pos, u64 disk_bytenr,
--			     u64 num_bytes);
- 
- #endif
-diff --git a/convert/common.c b/convert/common.c
-index b093fdb5f14f..0ec9f2ec193f 100644
---- a/convert/common.c
-+++ b/convert/common.c
-@@ -27,10 +27,13 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/accessors.h"
--#include "kernel-shared/uapi/btrfs_tree.h"
-+#include "kernel-shared/file-item.h"
-+#include "kernel-shared/transaction.h"
-+#include "kernel-shared/free-space-tree.h"
- #include "common/path-utils.h"
- #include "common/messages.h"
- #include "common/string-utils.h"
-+#include "common/extent-tree-utils.h"
- #include "common/fsfeatures.h"
- #include "mkfs/common.h"
- #include "convert/common.h"
-@@ -908,3 +911,240 @@ out:
++	btrfs_set_stack_file_extent_generation(stack_fi, trans->transid);
++	ret = btrfs_insert_item(trans, root, &file_key, stack_fi,
++				sizeof(struct btrfs_file_extent_item));
  	return ret;
  }
  
-+static void __get_extent_size(struct btrfs_root *root, struct btrfs_path *path,
-+			      u64 *start, u64 *len)
-+{
-+	struct btrfs_key key;
-+
-+	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+	BUG_ON(!(key.type == BTRFS_EXTENT_ITEM_KEY ||
-+		 key.type == BTRFS_METADATA_ITEM_KEY));
-+	*start = key.objectid;
-+	if (key.type == BTRFS_EXTENT_ITEM_KEY)
-+		*len = key.offset;
-+	else
-+		*len = root->fs_info->nodesize;
-+}
-+
-+/*
-+ * Find first overlap extent for range [bytenr, bytenr + len).
-+ *
-+ * Return 0 for found and point path to it.
-+ * Return >0 for not found.
-+ * Return <0 for err
-+ */
-+static int btrfs_search_overlap_extent(struct btrfs_root *root,
-+				       struct btrfs_path *path, u64 bytenr, u64 len)
-+{
-+	struct btrfs_key key;
-+	u64 cur_start;
-+	u64 cur_len;
-+	int ret;
-+
-+	key.objectid = bytenr;
-+	key.type = BTRFS_EXTENT_DATA_KEY;
-+	key.offset = (u64)-1;
-+
-+	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-+	if (ret < 0)
-+		return ret;
-+	if (ret == 0) {
-+		error_msg(ERROR_MSG_UNEXPECTED, "EXTENT_DATA found at %llu", bytenr);
-+		return -EUCLEAN;
-+	}
-+
-+	ret = btrfs_previous_extent_item(root, path, 0);
-+	if (ret < 0)
-+		return ret;
-+	/* No previous, check next extent. */
-+	if (ret > 0)
-+		goto next;
-+	__get_extent_size(root, path, &cur_start, &cur_len);
-+	/* Tail overlap. */
-+	if (cur_start + cur_len > bytenr)
-+		return 1;
-+
-+next:
-+	ret = btrfs_next_extent_item(root, path, bytenr + len);
-+	if (ret < 0)
-+		return ret;
-+	/* No next, prev already checked, no overlap. */
-+	if (ret > 0)
-+		return 0;
-+	__get_extent_size(root, path, &cur_start, &cur_len);
-+	/* Head overlap.*/
-+	if (cur_start < bytenr + len)
-+		return 1;
-+	return 0;
-+}
-+
-+static int __btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
-+				       struct btrfs_root *root, u64 objectid,
-+				       struct btrfs_inode_item *inode,
-+				       u64 file_pos, u64 disk_bytenr,
-+				       u64 *ret_num_bytes)
-+{
-+	int ret;
-+	struct btrfs_fs_info *info = root->fs_info;
-+	struct btrfs_root *extent_root = btrfs_extent_root(info, disk_bytenr);
-+	struct extent_buffer *leaf;
-+	struct btrfs_file_extent_item *fi;
-+	struct btrfs_key ins_key;
-+	struct btrfs_path *path;
-+	struct btrfs_extent_item *ei;
-+	u64 nbytes;
-+	u64 extent_num_bytes;
-+	u64 extent_bytenr;
-+	u64 extent_offset;
-+	u64 num_bytes = *ret_num_bytes;
-+
-+	/*
-+	 * @objectid should be an inode number, thus it must not be smaller
-+	 * than BTRFS_FIRST_FREE_OBJECTID.
-+	 */
-+	UASSERT(objectid >= BTRFS_FIRST_FREE_OBJECTID);
-+
-+	/*
-+	 * All supported file system should not use its 0 extent.  As it's for
-+	 * hole.  And hole extent has no size limit, no need to loop.
-+	 */
-+	if (disk_bytenr == 0) {
-+		ret = btrfs_insert_file_extent(trans, root, objectid,
-+					       file_pos, disk_bytenr,
-+					       num_bytes, num_bytes);
-+		return ret;
-+	}
-+	num_bytes = min_t(u64, num_bytes, BTRFS_MAX_EXTENT_SIZE);
-+
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
-+
-+	/* First to check extent overlap. */
-+	ret = btrfs_search_overlap_extent(extent_root, path, disk_bytenr, num_bytes);
-+	if (ret < 0)
-+		goto fail;
-+	if (ret > 0) {
-+		/* Found overlap. */
-+		u64 cur_start;
-+		u64 cur_len;
-+
-+		__get_extent_size(extent_root, path, &cur_start, &cur_len);
-+		/* For convert case, this extent should be a subset of existing one. */
-+		if (disk_bytenr < cur_start) {
-+			error_msg(ERROR_MSG_UNEXPECTED,
-+				  "invalid range disk_bytenr < cur_start: %llu < %llu",
-+				  disk_bytenr, cur_start);
-+			ret = -EUCLEAN;
-+			goto fail;
-+		}
-+
-+		extent_bytenr = cur_start;
-+		extent_num_bytes = cur_len;
-+		extent_offset = disk_bytenr - extent_bytenr;
-+	} else {
-+		/* No overlap, create new extent. */
-+		btrfs_release_path(path);
-+		ins_key.objectid = disk_bytenr;
-+		ins_key.type = BTRFS_EXTENT_ITEM_KEY;
-+		ins_key.offset = num_bytes;
-+
-+		ret = btrfs_insert_empty_item(trans, extent_root, path,
-+					      &ins_key, sizeof(*ei));
-+		if (ret == 0) {
-+			leaf = path->nodes[0];
-+			ei = btrfs_item_ptr(leaf, path->slots[0],
-+					    struct btrfs_extent_item);
-+
-+			btrfs_set_extent_refs(leaf, ei, 0);
-+			btrfs_set_extent_generation(leaf, ei, trans->transid);
-+			btrfs_set_extent_flags(leaf, ei,
-+					       BTRFS_EXTENT_FLAG_DATA);
-+			btrfs_mark_buffer_dirty(leaf);
-+
-+			ret = btrfs_update_block_group(trans, disk_bytenr,
-+						       num_bytes, 1, 0);
-+			if (ret)
-+				goto fail;
-+		} else if (ret != -EEXIST) {
-+			goto fail;
-+		}
-+
-+		ret = remove_from_free_space_tree(trans, disk_bytenr, num_bytes);
-+		if (ret)
-+			goto fail;
-+
-+		btrfs_run_delayed_refs(trans, -1);
-+		extent_bytenr = disk_bytenr;
-+		extent_num_bytes = num_bytes;
-+		extent_offset = 0;
-+	}
-+	btrfs_release_path(path);
-+	ins_key.objectid = objectid;
-+	ins_key.type = BTRFS_EXTENT_DATA_KEY;
-+	ins_key.offset = file_pos;
-+	ret = btrfs_insert_empty_item(trans, root, path, &ins_key, sizeof(*fi));
-+	if (ret)
-+		goto fail;
-+	leaf = path->nodes[0];
-+	fi = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
-+	btrfs_set_file_extent_generation(leaf, fi, trans->transid);
-+	btrfs_set_file_extent_type(leaf, fi, BTRFS_FILE_EXTENT_REG);
-+	btrfs_set_file_extent_disk_bytenr(leaf, fi, extent_bytenr);
-+	btrfs_set_file_extent_disk_num_bytes(leaf, fi, extent_num_bytes);
-+	btrfs_set_file_extent_offset(leaf, fi, extent_offset);
-+	btrfs_set_file_extent_num_bytes(leaf, fi, num_bytes);
-+	btrfs_set_file_extent_ram_bytes(leaf, fi, extent_num_bytes);
-+	btrfs_set_file_extent_compression(leaf, fi, 0);
-+	btrfs_set_file_extent_encryption(leaf, fi, 0);
-+	btrfs_set_file_extent_other_encoding(leaf, fi, 0);
-+	btrfs_mark_buffer_dirty(leaf);
-+
-+	nbytes = btrfs_stack_inode_nbytes(inode) + num_bytes;
-+	btrfs_set_stack_inode_nbytes(inode, nbytes);
-+	btrfs_release_path(path);
-+
-+	ret = btrfs_inc_extent_ref(trans, extent_bytenr, extent_num_bytes,
-+				   0, root->root_key.objectid, objectid,
-+				   file_pos - extent_offset);
-+	if (ret)
-+		goto fail;
-+	ret = 0;
-+	*ret_num_bytes = min(extent_num_bytes - extent_offset, num_bytes);
-+fail:
-+	btrfs_free_path(path);
-+	return ret;
-+}
-+
-+/*
-+ * Insert file extent using converted image. Do all the required works,
-+ * such as inserting file extent item, inserting extent item and backref item
-+ * into extent tree and updating block accounting.
-+ *
-+ * This is for btrfs-convert only, thus it won't support compressed regular
-+ * file extents.
-+ */
-+int btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
-+			      struct btrfs_root *root, u64 objectid,
-+			      struct btrfs_inode_item *inode,
-+			      u64 file_pos, u64 disk_bytenr,
-+			      u64 num_bytes)
-+{
-+	u64 cur_disk_bytenr = disk_bytenr;
-+	u64 cur_file_pos = file_pos;
-+	u64 cur_num_bytes = num_bytes;
-+	int ret = 0;
-+
-+	while (num_bytes > 0) {
-+		ret = __btrfs_convert_file_extent(trans, root, objectid,
-+						  inode, cur_file_pos,
-+						  cur_disk_bytenr,
-+						  &cur_num_bytes);
-+		if (ret < 0)
-+			break;
-+		cur_disk_bytenr += cur_num_bytes;
-+		cur_file_pos += cur_num_bytes;
-+		num_bytes -= cur_num_bytes;
-+	}
-+	return ret;
-+}
-diff --git a/convert/common.h b/convert/common.h
-index 581ef3298304..7678c1656507 100644
---- a/convert/common.h
-+++ b/convert/common.h
-@@ -23,6 +23,7 @@
- #define __BTRFS_CONVERT_COMMON_H__
+diff --git a/kernel-shared/file-item.h b/kernel-shared/file-item.h
+index 2c1e17c990dc..cb38a1fc0296 100644
+--- a/kernel-shared/file-item.h
++++ b/kernel-shared/file-item.h
+@@ -85,8 +85,8 @@ u64 btrfs_file_extent_end(const struct btrfs_path *path);
+  */
+ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+-			     u64 objectid, u64 pos, u64 offset,
+-			     u64 disk_num_bytes, u64 num_bytes);
++			     u64 ino, u64 file_pos,
++			     struct btrfs_file_extent_item *stack_fi);
+ int btrfs_csum_file_block(struct btrfs_trans_handle *trans, u64 logical,
+ 			  u64 csum_objectid, u32 csum_type, const char *data);
+ int btrfs_insert_inline_extent(struct btrfs_trans_handle *trans,
+diff --git a/kernel-shared/file.c b/kernel-shared/file.c
+index 414a01b3ec4b..7ed1b6891795 100644
+--- a/kernel-shared/file.c
++++ b/kernel-shared/file.c
+@@ -152,6 +152,7 @@ int btrfs_punch_hole(struct btrfs_trans_handle *trans,
+ 		     u64 ino, u64 offset, u64 len)
+ {
+ 	struct btrfs_path *path;
++	struct btrfs_file_extent_item stack_fi = { 0 };
+ 	int ret = 0;
  
- #include "kerncompat.h"
-+#include "kernel-shared/uapi/btrfs_tree.h"
- #include "common/extent-cache.h"
- 
- struct btrfs_mkfs_config;
-@@ -84,4 +85,9 @@ static inline u64 range_end(const struct simple_range *range)
- 	return (range->start + range->len);
- }
- 
-+int btrfs_convert_file_extent(struct btrfs_trans_handle *trans,
-+			      struct btrfs_root *root, u64 objectid,
-+			      struct btrfs_inode_item *inode,
-+			      u64 file_pos, u64 disk_bytenr,
-+			      u64 num_bytes);
- #endif
-diff --git a/convert/main.c b/convert/main.c
-index a227cc6fef84..805682705dff 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -337,7 +337,7 @@ static int create_image_file_range(struct btrfs_trans_handle *trans,
- 		error("remaining length not sectorsize aligned: %llu", len);
- 		return -EINVAL;
+ 	path = btrfs_alloc_path();
+@@ -166,7 +167,10 @@ int btrfs_punch_hole(struct btrfs_trans_handle *trans,
+ 		goto out;
  	}
--	ret = btrfs_record_file_extent(trans, root, ino, inode, bytenr,
-+	ret = btrfs_convert_file_extent(trans, root, ino, inode, bytenr,
- 				       disk_bytenr, len);
- 	if (ret < 0)
- 		return ret;
-@@ -426,8 +426,8 @@ static int migrate_one_reserved_range(struct btrfs_trans_handle *trans,
- 			break;
  
- 		/* Now handle extent item and file extent things */
--		ret = btrfs_record_file_extent(trans, root, ino, inode, cur_off,
--					       key.objectid, key.offset);
-+		ret = btrfs_convert_file_extent(trans, root, ino, inode, cur_off,
-+					        key.objectid, key.offset);
- 		if (ret < 0)
- 			break;
- 		/* Finally, insert csum items */
-@@ -438,7 +438,7 @@ static int migrate_one_reserved_range(struct btrfs_trans_handle *trans,
- 		/* Don't forget to insert hole */
- 		hole_len = cur_off - hole_start;
- 		if (hole_len) {
--			ret = btrfs_record_file_extent(trans, root, ino, inode,
-+			ret = btrfs_convert_file_extent(trans, root, ino, inode,
- 					hole_start, 0, hole_len);
- 			if (ret < 0)
- 				break;
-@@ -455,7 +455,7 @@ static int migrate_one_reserved_range(struct btrfs_trans_handle *trans,
- 	 *                   | Hole |
- 	 */
- 	if (range_end(range) - hole_start > 0)
--		ret = btrfs_record_file_extent(trans, root, ino, inode,
-+		ret = btrfs_convert_file_extent(trans, root, ino, inode,
- 				hole_start, 0, range_end(range) - hole_start);
+-	ret = btrfs_insert_file_extent(trans, root, ino, offset, 0, 0, len);
++	btrfs_set_stack_file_extent_type(&stack_fi, BTRFS_FILE_EXTENT_REG);
++	btrfs_set_stack_file_extent_num_bytes(&stack_fi, len);
++	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, len);
++	ret = btrfs_insert_file_extent(trans, root, ino, offset, &stack_fi);
+ out:
+ 	btrfs_free_path(path);
  	return ret;
- }
-diff --git a/convert/source-fs.c b/convert/source-fs.c
-index 97c989d9ab13..8a296bd9c7f4 100644
---- a/convert/source-fs.c
-+++ b/convert/source-fs.c
-@@ -260,7 +260,7 @@ int record_file_blocks(struct blk_iterate_data *data,
- 
- 	/* Hole, pass it to record_file_extent directly */
- 	if (old_disk_bytenr == 0)
--		return btrfs_record_file_extent(data->trans, root,
-+		return btrfs_convert_file_extent(data->trans, root,
- 				data->objectid, data->inode, file_pos, 0,
- 				num_bytes);
- 
-@@ -314,7 +314,7 @@ int record_file_blocks(struct blk_iterate_data *data,
- 			real_disk_bytenr = 0;
- 		cur_len = min(key.offset + extent_num_bytes,
- 			      old_disk_bytenr + num_bytes) - cur_off;
--		ret = btrfs_record_file_extent(data->trans, data->root,
-+		ret = btrfs_convert_file_extent(data->trans, data->root,
- 					data->objectid, data->inode, file_pos,
- 					real_disk_bytenr, cur_len);
- 		if (ret < 0)
-diff --git a/convert/source-reiserfs.c b/convert/source-reiserfs.c
-index 3475b15277dc..32d60c09fb0c 100644
---- a/convert/source-reiserfs.c
-+++ b/convert/source-reiserfs.c
-@@ -364,7 +364,7 @@ static int convert_direct(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		return ret;
- 
--	return btrfs_record_file_extent(trans, root, objectid, inode, offset,
-+	return btrfs_convert_file_extent(trans, root, objectid, inode, offset,
- 					key.objectid, sectorsize);
- }
- 
 diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index ffe9aa1f9af1..526fa255306f 100644
+index 526fa255306f..5fa480886139 100644
 --- a/mkfs/rootdir.c
 +++ b/mkfs/rootdir.c
-@@ -36,6 +36,7 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/transaction.h"
- #include "kernel-shared/file-item.h"
-+#include "kernel-shared/free-space-tree.h"
- #include "common/internal.h"
- #include "common/messages.h"
- #include "common/utils.h"
-@@ -362,6 +363,98 @@ fail:
- 	return ret;
- }
+@@ -366,17 +366,21 @@ fail:
+ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 				       struct btrfs_root *root, u64 ino,
+ 				       struct btrfs_inode_item *inode,
+-				       u64 file_pos, u64 disk_bytenr,
+-				       u64 num_bytes)
++				       u64 file_pos,
++				       struct btrfs_file_extent_item *stack_fi)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+-	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, disk_bytenr);
++	struct btrfs_root *extent_root;
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_key ins_key;
+ 	struct btrfs_path *path;
+ 	struct btrfs_extent_item *ei;
++	u64 disk_bytenr = btrfs_stack_file_extent_disk_bytenr(stack_fi);
++	u64 disk_num_bytes = btrfs_stack_file_extent_disk_num_bytes(stack_fi);
++	u64 num_bytes = btrfs_stack_file_extent_num_bytes(stack_fi);
+ 	int ret;
  
-+static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
-+				       struct btrfs_root *root, u64 ino,
-+				       struct btrfs_inode_item *inode,
-+				       u64 file_pos, u64 disk_bytenr,
-+				       u64 num_bytes)
-+{
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, disk_bytenr);
-+	struct extent_buffer *leaf;
-+	struct btrfs_key ins_key;
-+	struct btrfs_path *path;
-+	struct btrfs_extent_item *ei;
-+	int ret;
-+
-+	/*
-+	 * @ino should be an inode number, thus it must not be smaller
-+	 * than BTRFS_FIRST_FREE_OBJECTID.
-+	 */
-+	UASSERT(ino >= BTRFS_FIRST_FREE_OBJECTID);
-+
-+	/* The reserved data extent should never exceed the upper limit. */
-+	UASSERT(num_bytes <= BTRFS_MAX_EXTENT_SIZE);
-+
-+	/*
-+	 * All supported file system should not use its 0 extent.  As it's for
-+	 * hole.  And hole extent has no size limit, no need to loop.
-+	 */
-+	if (disk_bytenr == 0) {
-+		ret = btrfs_insert_file_extent(trans, root, ino,
-+					       file_pos, disk_bytenr,
-+					       num_bytes, num_bytes);
-+		return ret;
-+	}
-+
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
-+
-+	ins_key.objectid = disk_bytenr;
-+	ins_key.type = BTRFS_EXTENT_ITEM_KEY;
-+	ins_key.offset = num_bytes;
-+
-+	/* Update extent tree. */
-+	ret = btrfs_insert_empty_item(trans, extent_root, path,
-+				      &ins_key, sizeof(*ei));
-+	if (ret == 0) {
-+		leaf = path->nodes[0];
-+		ei = btrfs_item_ptr(leaf, path->slots[0],
-+				    struct btrfs_extent_item);
-+
-+		btrfs_set_extent_refs(leaf, ei, 0);
-+		btrfs_set_extent_generation(leaf, ei, trans->transid);
-+		btrfs_set_extent_flags(leaf, ei,
-+				       BTRFS_EXTENT_FLAG_DATA);
-+		btrfs_mark_buffer_dirty(leaf);
-+
-+		ret = btrfs_update_block_group(trans, disk_bytenr,
-+					       num_bytes, 1, 0);
-+		if (ret)
-+			goto fail;
-+	} else if (ret != -EEXIST) {
-+		goto fail;
-+	}
-+	btrfs_release_path(path);
-+
-+	ret = remove_from_free_space_tree(trans, disk_bytenr, num_bytes);
-+	if (ret)
-+		goto fail;
-+
-+	btrfs_run_delayed_refs(trans, -1);
-+
-+	ins_key.objectid = ino;
-+	ins_key.type = BTRFS_EXTENT_DATA_KEY;
-+	ins_key.offset = file_pos;
-+	ret = btrfs_insert_file_extent(trans, root, ino, file_pos, disk_bytenr,
-+				       num_bytes, num_bytes);
-+	if (ret)
-+		goto fail;
-+	btrfs_set_stack_inode_nbytes(inode,
-+			btrfs_stack_inode_nbytes(inode) + num_bytes);
-+
-+	ret = btrfs_inc_extent_ref(trans, disk_bytenr, num_bytes,
-+				   0, root->root_key.objectid, ino,
-+				   file_pos);
-+	if (ret)
-+		goto fail;
-+	ret = 0;
-+fail:
-+	btrfs_free_path(path);
-+	return ret;
-+}
-+
- static int add_file_items(struct btrfs_trans_handle *trans,
- 			  struct btrfs_root *root,
- 			  struct btrfs_inode_item *btrfs_inode, u64 objectid,
-@@ -471,7 +564,7 @@ again:
++	extent_root = btrfs_extent_root(fs_info, disk_bytenr);
+ 	/*
+ 	 * @ino should be an inode number, thus it must not be smaller
+ 	 * than BTRFS_FIRST_FREE_OBJECTID.
+@@ -384,18 +388,15 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	UASSERT(ino >= BTRFS_FIRST_FREE_OBJECTID);
+ 
+ 	/* The reserved data extent should never exceed the upper limit. */
+-	UASSERT(num_bytes <= BTRFS_MAX_EXTENT_SIZE);
++	UASSERT(disk_num_bytes <= BTRFS_MAX_EXTENT_SIZE);
+ 
+ 	/*
+ 	 * All supported file system should not use its 0 extent.  As it's for
+ 	 * hole.  And hole extent has no size limit, no need to loop.
+ 	 */
+-	if (disk_bytenr == 0) {
+-		ret = btrfs_insert_file_extent(trans, root, ino,
+-					       file_pos, disk_bytenr,
+-					       num_bytes, num_bytes);
+-		return ret;
+-	}
++	if (disk_bytenr == 0)
++		return btrfs_insert_file_extent(trans, root, ino,
++					       file_pos, stack_fi);
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+@@ -437,8 +438,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	ins_key.objectid = ino;
+ 	ins_key.type = BTRFS_EXTENT_DATA_KEY;
+ 	ins_key.offset = file_pos;
+-	ret = btrfs_insert_file_extent(trans, root, ino, file_pos, disk_bytenr,
+-				       num_bytes, num_bytes);
++	ret = btrfs_insert_file_extent(trans, root, ino, file_pos, stack_fi);
+ 	if (ret)
+ 		goto fail;
+ 	btrfs_set_stack_inode_nbytes(inode,
+@@ -564,8 +564,15 @@ again:
  	}
  
  	if (bytes_read) {
--		ret = btrfs_record_file_extent(trans, root, objectid,
-+		ret = insert_reserved_file_extent(trans, root, objectid,
- 				btrfs_inode, file_pos, first_block, cur_bytes);
++		struct btrfs_file_extent_item stack_fi = { 0 };
++
++		btrfs_set_stack_file_extent_type(&stack_fi, BTRFS_FILE_EXTENT_REG);
++		btrfs_set_stack_file_extent_disk_bytenr(&stack_fi, first_block);
++		btrfs_set_stack_file_extent_disk_num_bytes(&stack_fi, cur_bytes);
++		btrfs_set_stack_file_extent_num_bytes(&stack_fi, cur_bytes);
++		btrfs_set_stack_file_extent_ram_bytes(&stack_fi, cur_bytes);
+ 		ret = insert_reserved_file_extent(trans, root, objectid,
+-				btrfs_inode, file_pos, first_block, cur_bytes);
++				btrfs_inode, file_pos, &stack_fi);
  		if (ret)
  			goto end;
+ 
 -- 
 2.47.0
 
