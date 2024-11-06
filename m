@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-9376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9377-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AE639BF87F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 22:28:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE92B9BF880
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 22:30:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 051981F2352E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 21:28:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB8C21C20E66
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 21:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D1920CCC8;
-	Wed,  6 Nov 2024 21:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B6520C48B;
+	Wed,  6 Nov 2024 21:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Yr3JuHU2"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AB0RtOhN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC3313A26F
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 21:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36DA13CFAD
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 21:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730928529; cv=none; b=jMAvO9I58Dzz4Oueo5qXVh+ajubkiXwpBbBmGwrwBPwp3SDZjUDS4IrXZquAiOxjCmwvGX935STUnq60eGHjiyDOU4Ik11HgwYWfZIT1+mVyyDKHP02YOZLN4KkuHaq+uoWfFJjCy3x/by6o4dAb1QEYPWQMghVJoYtVJZML3Ms=
+	t=1730928594; cv=none; b=llgW3aOAiKmzUNYGn86QReoeWZKtZvEcaAdK89c+7/OyLjPgP5QAN+95vLE96/KBAkwRstV9uSGCSo2fvU0UMRXAxDBmy6tmHzzHEkRHjiGJZd7KQK6cCDa6b3FS99kozadCnhD9iyVQRKApNjKhy+Hjr17YGFdxloDXR/0yl9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730928529; c=relaxed/simple;
-	bh=qefi6k6S4deqHDw0HKU6NSgDFp25y5YlP+2HQVcSRy4=;
+	s=arc-20240116; t=1730928594; c=relaxed/simple;
+	bh=CsHlfyD9rOFOkfCDD47W+SBA4DpFQ8PixHgMfkf2vRo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=an+SUElWwEkgK6XZLmntOiTVQbbVd1zCTEm6ccul99B4wroiszecZrL1hPDg9Kw4rgIv76PLMomHL1GSu/LW9t93Xr2z7vjeWr1IbsGZyX1CMyY08BLjBWuS5qdDuzO6SkOJIpK8a2VDC6quDTwBQo91Hnob6O4lc5r6rs7PsRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Yr3JuHU2; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=T3aqhUnN9IXG/jx0qUipOrSmwny6MxVguAsoLgiaRPMZmy/h/luIhXvqDmdjflUsdD/m+UhaW2FsqMnzF8YptxWAQ9s7rHgPZdMnxCtnI8NsKzbU+2ufcRyZhPZEJPYN+3/xh7+3GygTBj+h3kCdX1U2cTJGDCoLIzqmiNMmuQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=AB0RtOhN; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1730928520; x=1731533320; i=quwenruo.btrfs@gmx.com;
-	bh=quWlWYv9FjKqyTOHoM7upLhK5hxtgpxmrpxptR4p7zQ=;
+	s=s31663417; t=1730928586; x=1731533386; i=quwenruo.btrfs@gmx.com;
+	bh=q5C3EaBlxMOXicSfsbNl97EaGaUDDV9d/DBITb/IxbQ=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Yr3JuHU2/isZsFqzkKluubG6GYcAAlBVS4jH1ludL2YW/SKeRRlyTt7wePxFnJld
-	 70gPBxcgn+c7ZMO6L7wwHkKp6J8nJYQIMm5lhCqpeYqfxK8fwUrYdeYC7ekpF4ShD
-	 x/PT/bOfLaMx5e/ust4GwincY58fYDwBOvuTONMFcWVan4/AoizIuUOY6jAh0Wj4G
-	 hyFp7KkNAP8iBSTjnDpTB7YP+gF7t9izF7b9wvVj0qE2+Su0PUMVu+A4T7t0+mtIZ
-	 I6VP+HCqhf0F5e8JJhGg3cbDAbVLBP0BdoZkDtKDkiRzcjO072zYduLbDhVpyzWY0
-	 ITXJIojpDmoGQHrwAg==
+	b=AB0RtOhNC6iS4XyFZKQG3n6Ug7zieVmhtcGR3uLi08QoEjkT/1A8ak+DWbn1iKev
+	 0AGyUhUhpHO6f0MMoN9sBNFabuZws4U27frpK9BOXbd8lv0A6XakI5N/mIYm2w9rp
+	 8eJejHxGtYHQYy+96h28ldhh8IIxuYJYWyA/hgAHhK1it4MWN4ABsuyuIIHMsO0fy
+	 5SR+Jt/U6xcPnRvSq9lg8igB2LViXydvNRKWcOFlCkHi39A/JQ81encKK9TQhrI9F
+	 cZiexgby9bEs4Id5+IdwIkSFhqiQXZTr571lLMettFlx2laK+vbHMCo2gumdCv4An
+	 g6bFv0aXh4fRzkhZjg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvsEn-1tzekZ0FdP-00yGkh; Wed, 06
- Nov 2024 22:28:40 +0100
-Message-ID: <b9bb4737-bd4f-4ac1-92cc-b7f82e047d8e@gmx.com>
-Date: Thu, 7 Nov 2024 07:58:37 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6bfw-1ttLDY0pDC-00r1az; Wed, 06
+ Nov 2024 22:29:46 +0100
+Message-ID: <2298f69e-4ba4-4151-99be-ec3b806744a7@gmx.com>
+Date: Thu, 7 Nov 2024 07:59:44 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: remove check for NULL fs_info at
- btrfs_folio_end_lock_bitmap()
+Subject: Re: [PATCH] btrfs: fix warning on PTR_ERR() against NULL device at
+ btrfs_control_ioctl()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <9e430348860c37c68f7db326df933c0d3ae8bcc0.1730898720.git.fdmanana@suse.com>
+References: <5bbe65395fcb54fd561cc17a705ce6d50d0cc5c0.1730898948.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,48 +88,41 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <9e430348860c37c68f7db326df933c0d3ae8bcc0.1730898720.git.fdmanana@suse.com>
+In-Reply-To: <5bbe65395fcb54fd561cc17a705ce6d50d0cc5c0.1730898948.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tnL58QSMekpMcOG8UJJ5RoHuHdm+4dCD47RTYNelSjjVZ+UHKNq
- GGCipIe9LFUSC1NwOR/u92kQPwcqMRLVsbeUbYBtIW9+q/aeYQrOU/xVZoBm91qa2iV9aYl
- WVhHegQw2Rjg9NNvQ6VW0pAgEdZtC0Y7YLu3h338agZBnr2p4APo9vffLBA+y8483szm1up
- dIqSvmvQUqdyz5sdg59Rw==
+X-Provags-ID: V03:K1:+4PeItdjx/+PBxgQUK6Y+BmcxDZkE9AgI8r2gMstoPRuPdcIvaZ
+ qbo8R23zumCkOgYdUQPKJqDA6iLoQ4CaEC5yELbJmFf30Fanbb0yM02ZtlJpnGrLYN9q1al
+ s5I4pjEzP0+RLvC7c6y7OIHGkt6bJ2ASM28wAeW+42+No6f6nKWGqbM9VyQycExONj7ItHX
+ /UlPNckW/i5wSibG7W9OQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dlK9Xtd4bgU=;/1EsDJn2iSBLGdgJ7QlC2zs0olS
- T4Qw/CrUCfDYTeiphdmjyd1YhYwvunCrmsqlpEVpnOMaov2WDZLHzVL+TUpa5RXATFrjKdVh3
- t2KhsXpPhc/JJLl8WJTr9N5mlaHiecJeeyc6/wsgX7b8YQWfdiKOLgtGw6pXuns0J2NFvIlCE
- s7/l+hLHKCB8dxo7UrREsWp/2YY8pBtm85V/MvamAGTBer6v8Vk3t32ZIJ3eWt6o0dDr5dWie
- 2mvp6IVEWULQLLdWati20N0ogePtpixEQnd7AIWMk5VSJJkkzZB3mXDTDeYxQ3MN1uynIdurq
- m04+rPw0h6ZnpCHq7hkY9G08/F6xtLt08SDnkjE46q0PjkHNrHDWEQ4LU0tnpKu0zEWgBJ6gF
- DCDGz6lmzmH7RyWIR2rUV0F6ZrLFHmYeR1KkSou1z/HcEfOIt10veYw3966OZZUnJW0yDaZK1
- MfAzrvjLe/1Qm4UrqajcaberLfvuTK8b9gF94Mzh+mmBtHO+YK1Y/DHnkgrsHojLYbsQ6MhLR
- HJbWngjK/Xby25poIYb2oVJNljbpNtPisDW0GScEbE865TPojT5E3L3QPiV+7MZjejumsIev/
- 6e6fqWkdp9r/wKL7UPjrd1Sqx/4L0FxlX/rFBcNFD14uSi4DZJOu0IQIUlA5FjugyEOJv/5xl
- 7hJ7kvm7hHLhAqg/UR++F3TWqMSbjpER9Jfe/3ZurSEwv1hGKCuJh5hzP2gyn2fBRf5v8M/4j
- 5EY7PRiOulI/Nr0qHK/bvj25o7b3c3nqjDIl/ce20WpQyvg64gFC8qVUzQgRWwOcUya5inYNm
- NvvABP5hxA5gl2bqDqRko9mQ==
+UI-OutboundReport: notjunk:1;M01:P0:V3DKoe1Ux8I=;tk1LxsFjMPrpus/LLU0mQkMXsJo
+ OBMi0THcHURkcNPvdlTaa0I3q+R3X6kEYQem8AaF92nRsCsa+JgNwPJ4a80RR+pTkkARqLyhV
+ 4aNntgj32XTrvaAczgswLjHQxMMMViZwOLO80bMTc+EODapgLvM7T3j7Uj/yCYHsnHjPZMw36
+ VRe91Bd+V1hnRXrV0wozzAKZH9BlY2zT4XRKRblZFPYXv/NYeJeUVSLDBfUkMPNZr99DZ5qO3
+ PJc7tDUjdkZm5cjY/eZDB3R7qFpvefA9C6Bt/id2zp+uzkKgj4/7qSLFGGUtrv5xQMYqgyjO3
+ q0Pqc2V1dLW424RTPzJWPnZODSJ7G3NC2oMSqVQoU3vMyI9+CR2MwpptpUFRjFiJWasK2l99X
+ f55Hymias5Q/PMNLbnQdf3nRzN5WUnlkQUr5LzXQ/m2lpKcl+wTnTgjwXPaKkSMJrp+rpScJc
+ MT8Xd4SVk3QI/KSfJ7imwOMUAF14uljjKSms5uQgt3VrLOlqMEJnn12FhuCkcytvxfboP4Oo7
+ tznqfwYexMYh+jC8ef5Xz/dhkqTy9eoDQQ19QEmXjraEthtpRBN3M6u3FkpSXiPhDdMv+Axo2
+ YPTU1mh3MoQ8ZI4FGclml8MNlnjFNczbP9zwyFOrM87FiLgzkYfZTblKNswAh80b8LYj54qtQ
+ Gz+EFCNyXIbtq7TU4FApEAouLl/iM1Pr3stdl2DSwksvaR4KWjb23QqKX8l7ZNd3QecZa12Ds
+ Ywh1KU/hdo1i75MYxBEi1gI7Ti5vFcKMvisZC783xbW3DdhWh6cy7GMdt6Q+NneI27Z5aUd5d
+ gnWklhmjNrLexpuA8oh+SKvAN6+7l8zTwFUG8dtqFItyrNEO+n0EBu9Hm6F1GpLOrtFeMMfUb
+ Bf8Bcn8SnT/cpRTxNt3kgRG/OZLbsKzJCPvf569AyUX+yENgbri60bRBD
 
 
 
-=E5=9C=A8 2024/11/6 23:43, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/11/6 23:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> Smatch complains about possibly dereferecing a NULL fs_info at
-> btrfs_folio_end_lock_bitmap():
+> Smatch complains about calling PTR_ERR() against a NULL pointer:
 >
->    fs/btrfs/subpage.c:332 btrfs_folio_end_lock_bitmap() warn: variable d=
-ereferenced before check 'fs_info' (see line 326)
+>    fs/btrfs/super.c:2272 btrfs_control_ioctl() warn: passing zero to 'PT=
+R_ERR'
 >
-> because we access fs_info to set the 'start_bit' variable before doing t=
-he
-> check for a NULL fs_info.
->
-> However fs_info is never NULL, since in the only caller of
-> btrfs_folio_end_lock_bitmap() is extent_writepage(), where we have an
-> inode which always as a non-NULL fs_info.
->
-> So remove the check for a NULL fs_info at btrfs_folio_end_lock_bitmap().
+> Fix this by calling PTR_ERR() against the device pointer only if it
+> contains an error.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -139,23 +132,25 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/subpage.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   fs/btrfs/super.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index d4cab3c55742..8c68059ac1b0 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -329,7 +329,7 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_=
-fs_info *fs_info,
->   	int cleared =3D 0;
->   	int bit;
->
-> -	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio->mapping)) =
-{
-> +	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
->   		folio_unlock(folio);
->   		return;
->   	}
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 6cc9291c4552..9a09a1251057 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -2269,7 +2269,10 @@ static long btrfs_control_ioctl(struct file *file=
+, unsigned int cmd,
+>   		device =3D btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
+>   		if (IS_ERR_OR_NULL(device)) {
+>   			mutex_unlock(&uuid_mutex);
+> -			ret =3D PTR_ERR(device);
+> +			if (IS_ERR(device))
+> +				ret =3D PTR_ERR(device);
+> +			else
+> +				ret =3D 0;
+>   			break;
+>   		}
+>   		ret =3D !(device->fs_devices->num_devices =3D=3D
 
 
