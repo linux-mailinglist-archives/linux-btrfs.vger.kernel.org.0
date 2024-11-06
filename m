@@ -1,153 +1,317 @@
-Return-Path: <linux-btrfs+bounces-9344-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9345-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0848C9BDB43
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:39:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBBB69BDBE1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 03:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104021C223C8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 01:39:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE4611C22E6A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A4418A92F;
-	Wed,  6 Nov 2024 01:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D7418FDBA;
+	Wed,  6 Nov 2024 02:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="EDoFYNxL";
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="Jo2LHQna"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NaY/q0bA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F4F17B50E
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 01:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DFF18FDB2;
+	Wed,  6 Nov 2024 02:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730857183; cv=none; b=ozY1F1YKHwsmaH7XeCfqpfpVIgZhzgqEqzjnKLuO6OQ9KB4um0oRR3m8ZfDv6yhcYvNGijbTDsVpd9Rmvq1uzKtVpQcI7RBzQK3FGm32nC5Zeq8NmFqEBjunMjv8sf79d+ZCaswUYqHiU0HZQoAGWZXujybL3EAXW6/r9tydVwI=
+	t=1730858940; cv=none; b=F3N0wzW7g4Xlm6svSvwQkDQswS6Zhc3VKTrSK10p7ptCxjbPMsY/gM7Uf2YQNtsG8hDeuBlt5CWwuxnl6jNXtEnpMks3rCbQ/re1G0zylxjLNetyAjNP5VpThuPSWHfXgSCVrS5to5fuJsAFuJhnPNvRJy/LnwgmO8bYo3vpApU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730857183; c=relaxed/simple;
-	bh=c2uxv5qHguLu+StJ/chrI3QGHYueHDNHFb2zBkZAidc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jd8aLTdY2zm9MpNbA7r98DI6vVj/7msY+AvQnTRfWHwaDIidH7EDzjSJhbudcOBTpiRfCcwfV0L7jxcz+JThVZuTrNkX8Gdu8bva44zf+Yv8u8j0sfQNBaV3BnGp5q23gRW9mXDm+vkvpYsZMWjr8wzeFyp5OhpEkFWIHhX7JWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=EDoFYNxL; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=Jo2LHQna; arc=none smtp.client-ip=35.74.137.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1730856581;
-	bh=c2uxv5qHguLu+StJ/chrI3QGHYueHDNHFb2zBkZAidc=;
+	s=arc-20240116; t=1730858940; c=relaxed/simple;
+	bh=op6QI+fsYV8w5cPICVAzlKeUzGRqLXvjFmRyKCwaxJ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=erUD+nHuo5aFjVbB8/RQjFanYhloZYYkqIj8y/LyGwuETqkgVDdbtkjusoees4e1mfQoFNmU7ZyIlI6ZDkeFR0ScSZl9P3w+ZAh6Yq7eH7rYYP+UeZnOejzL1GQQOWOi1HhGq4w2pmdnFm+rm/oJ0YLH9/wVLPnpaMURKhKz1Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NaY/q0bA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 338F0C4CECF;
+	Wed,  6 Nov 2024 02:08:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730858940;
+	bh=op6QI+fsYV8w5cPICVAzlKeUzGRqLXvjFmRyKCwaxJ0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=EDoFYNxLNte275Sv2ULn/bgIQfSeuP+I9nkRE/5N5c5gyYl7OLWr/DViEiY+zSGrp
-	 8lr/rPGAk5dX9WPJL29DlIHdyTnGhoo1+GMtGSITpSls3gePsu/2z+882xan+pb0gr
-	 N3CHKe5Ab0V7V6XK+YDNJpQh9VNxb3QLf+oEf2mwphJylsYXcuAJVCsWRHMXhYQ0sv
-	 3meoTWi0LkYzDBunhJS1MxXGZCX57c04v5CfUI4ALu4cQnxOZBn68HT6Oc6+8ZF7Zt
-	 KOJX4ZG0GTE2IYWXIhatVAqq4udhOufysOAIyy8R9+ha3EHGyO2FgKPsB+VJeJ/YYw
-	 C2idVWSWxjDFQ==
-Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id 770E76E3
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 10:29:41 +0900 (JST)
-Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=Jo2LHQna;
-	dkim-atps=neutral
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id BA6216E3
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 10:29:40 +0900 (JST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-71e479829c8so7805487b3a.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Nov 2024 17:29:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1730856580; x=1731461380; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fd5ICPguw1+lRE+0puBHipb5HB9mk41ModgfZE+n2gQ=;
-        b=Jo2LHQna2poi6nbFP/U/wAUb3gGsmwZmKEOW0QlhD2yVZkD81TlnTbGNTd8P1i+4BU
-         noMwKxuVUBce6exx0Ig/q0HQePXZNxG8Buo4Pq9iq/Fkchq3D4301vsIawqMJpyNZzI2
-         4c3pbFvzBEDdO7guI1f7V2nLBKjYSLl30htksbvXmC7w9TI3+eWgDvmqAa1l9+EC7+L6
-         wwuPeqcoN3suZnIu2HVHqXVlYTjE9KSUdi2D/yuYHu+sPIrWXY9p3tEyyLCztPnOLqky
-         uSWDGIAV4p7s7xyz1AU0DaoQvn5nCSvCCY4wYPWkMfqWrX5fmUzhx/9i4kv27aio2luW
-         8hBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730856580; x=1731461380;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fd5ICPguw1+lRE+0puBHipb5HB9mk41ModgfZE+n2gQ=;
-        b=uXpw1DpPGuatyfJF2fqRxxfP8oi1vOzXX46nsuwkH9tlEeYFJAy5qUe7W0ZuJ9bKWt
-         zySj8WXvG1r3Kj+UiyyXDRHs+bvwMJUcS4PB+i89UkuIeATMESaUSe7c3uEPLdrvKSaa
-         1wbGPzLGSkYL6mqtvAZdGgAhvsL//Pe6a4Ng09515fjjzvWC1x9FQarmbmm7XCsd8REk
-         t6EjdxYsgr+isQjh5EjnbHS8QFR7p1HkKsTB+c/7cEkwMpxvUfwMAad3eySRozjuktXb
-         dKKTeV2sahxDJrZSGLsRJmTv3+vZ1eAgWZ46aYUcYSyzljLviOPKkGWP2yc+GnK9saGq
-         9iNA==
-X-Forwarded-Encrypted: i=1; AJvYcCVEDjgFd/c0Xa151M/TA4OZPNDEBq0Rt5Kp3djqi1esrwTgkO0voMa23v11Ty9RKr00SBF4KVAQSklh+Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3suHknoCVC6ZBG4XkkaUfHj0Kwc4Q+FVL5HUEUfKTo9viWK/r
-	uVBKjjpleiqIzzPHvEijsj7ey5fcopduOKdpf429VmbqbUJ7a8rOOsy6Qr+sr0skt41U+24xKbp
-	w/sRHsjDG6xLEZ+JD1+BAEzUYeDnQGrNDym2IS4oOxE6Sw3ArWvEUXlpdtGjV9A==
-X-Received: by 2002:a05:6a20:6728:b0:1da:5bb:f8ca with SMTP id adf61e73a8af0-1da05bbfd2cmr26539215637.0.1730856579798;
-        Tue, 05 Nov 2024 17:29:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH7as1amWFonIQwC5GIbgRZsm4z0xynOmhDngNYPoKhimG9557YG5ncgOG/jmOKaxshE0BTBw==
-X-Received: by 2002:a05:6a20:6728:b0:1da:5bb:f8ca with SMTP id adf61e73a8af0-1da05bbfd2cmr26539206637.0.1730856579488;
-        Tue, 05 Nov 2024 17:29:39 -0800 (PST)
-Received: from localhost (117.209.187.35.bc.googleusercontent.com. [35.187.209.117])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e99a525494sm211251a91.10.2024.11.05.17.29.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Nov 2024 17:29:39 -0800 (PST)
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-To: =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Qu Wenruo <wqu@suse.com>,
-	Tom Rini <trini@konsulko.com>
-Cc: Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	b=NaY/q0bAgrSDQdS8040x7eNMYDkeinYMpVpQKme2XCwNw5bsoL3oKFMZcMbdIKVSu
+	 6d8iOQwz63uLuN0zE00OwwgBLO1i4kMPzGgax2A1oaldp1tQFHob/6VGCuIjBmNEDj
+	 HoYKdn29AlEORUqX1f+YF3nwMOhOU1x7iEwMNIFjTwrK0cvfAvDR/CS77zAb8ELhKr
+	 sqnPn9puZ8XkyahJnSDawLBgSH6/qKwwuZMszjeHhpzA4btfn6/GW3zrYc1C7vwkqh
+	 Bw2VE8p/wE2xxkcl1o1Dv8emIZUYLJxZxYRJidrPqZwy0ybE13/tthwowdHgyQBbIS
+	 QIEIH4FpV9wEQ==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	naohiro.aota@wdc.com
+Cc: Qu Wenruo <wqu@suse.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
-	u-boot@lists.denx.de
-Subject: [u-boot PATCH] fs: btrfs: hide 'Cannot lookup file' errors on 'load'
-Date: Wed,  6 Nov 2024 10:29:17 +0900
-Message-Id: <20241106012918.1395878-1-dominique.martinet@atmark-techno.com>
-X-Mailer: git-send-email 2.39.5
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "btrfs: fix error propagation of split bios" failed to apply to v6.6-stable tree
+Date: Tue,  5 Nov 2024 21:08:56 -0500
+Message-ID: <20241106020857.164572-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Patchwork-Hint: ignore
+X-stable: review
 Content-Transfer-Encoding: 8bit
 
-Running commands such as 'load mmc 2:1 $addr $path' when path does not
-exists historically do not print any error on filesystems such as ext4
-or fat.
-Changing the root filesystem to btrfs would make existing boot script
-print 'Cannot lookup file xxx' errors, confusing customers wondering if
-there is a problem when the mmc load command was used in a if (for
-example to load boot.scr conditionally)
+The patch below does not apply to the v6.6-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-Make that printf a debug message so it is not displayed by default, like
-it is on other filesystems
+Thanks,
+Sasha
 
-Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+------------------ original commit in Linus's tree ------------------
+
+From d48e1dea3931de64c26717adc2b89743c7ab6594 Mon Sep 17 00:00:00 2001
+From: Naohiro Aota <naohiro.aota@wdc.com>
+Date: Wed, 9 Oct 2024 22:52:06 +0900
+Subject: [PATCH] btrfs: fix error propagation of split bios
+
+The purpose of btrfs_bbio_propagate_error() shall be propagating an error
+of split bio to its original btrfs_bio, and tell the error to the upper
+layer. However, it's not working well on some cases.
+
+* Case 1. Immediate (or quick) end_bio with an error
+
+When btrfs sends btrfs_bio to mirrored devices, btrfs calls
+btrfs_bio_end_io() when all the mirroring bios are completed. If that
+btrfs_bio was split, it is from btrfs_clone_bioset and its end_io function
+is btrfs_orig_write_end_io. For this case, btrfs_bbio_propagate_error()
+accesses the orig_bbio's bio context to increase the error count.
+
+That works well in most cases. However, if the end_io is called enough
+fast, orig_bbio's (remaining part after split) bio context may not be
+properly set at that time. Since the bio context is set when the orig_bbio
+(the last btrfs_bio) is sent to devices, that might be too late for earlier
+split btrfs_bio's completion.  That will result in NULL pointer
+dereference.
+
+That bug is easily reproducible by running btrfs/146 on zoned devices [1]
+and it shows the following trace.
+
+[1] You need raid-stripe-tree feature as it create "-d raid0 -m raid1" FS.
+
+  BUG: kernel NULL pointer dereference, address: 0000000000000020
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: Oops: 0000 [#1] PREEMPT SMP PTI
+  CPU: 1 UID: 0 PID: 13 Comm: kworker/u32:1 Not tainted 6.11.0-rc7-BTRFS-ZNS+ #474
+  Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+  Workqueue: writeback wb_workfn (flush-btrfs-5)
+  RIP: 0010:btrfs_bio_end_io+0xae/0xc0 [btrfs]
+  BTRFS error (device dm-0): bdev /dev/mapper/error-test errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
+  RSP: 0018:ffffc9000006f248 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff888005a7f080 RCX: ffffc9000006f1dc
+  RDX: 0000000000000000 RSI: 000000000000000a RDI: ffff888005a7f080
+  RBP: ffff888011dfc540 R08: 0000000000000000 R09: 0000000000000001
+  R10: ffffffff82e508e0 R11: 0000000000000005 R12: ffff88800ddfbe58
+  R13: ffff888005a7f080 R14: ffff888005a7f158 R15: ffff888005a7f158
+  FS:  0000000000000000(0000) GS:ffff88803ea80000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000020 CR3: 0000000002e22006 CR4: 0000000000370ef0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   <TASK>
+   ? __die_body.cold+0x19/0x26
+   ? page_fault_oops+0x13e/0x2b0
+   ? _printk+0x58/0x73
+   ? do_user_addr_fault+0x5f/0x750
+   ? exc_page_fault+0x76/0x240
+   ? asm_exc_page_fault+0x22/0x30
+   ? btrfs_bio_end_io+0xae/0xc0 [btrfs]
+   ? btrfs_log_dev_io_error+0x7f/0x90 [btrfs]
+   btrfs_orig_write_end_io+0x51/0x90 [btrfs]
+   dm_submit_bio+0x5c2/0xa50 [dm_mod]
+   ? find_held_lock+0x2b/0x80
+   ? blk_try_enter_queue+0x90/0x1e0
+   __submit_bio+0xe0/0x130
+   ? ktime_get+0x10a/0x160
+   ? lockdep_hardirqs_on+0x74/0x100
+   submit_bio_noacct_nocheck+0x199/0x410
+   btrfs_submit_bio+0x7d/0x150 [btrfs]
+   btrfs_submit_chunk+0x1a1/0x6d0 [btrfs]
+   ? lockdep_hardirqs_on+0x74/0x100
+   ? __folio_start_writeback+0x10/0x2c0
+   btrfs_submit_bbio+0x1c/0x40 [btrfs]
+   submit_one_bio+0x44/0x60 [btrfs]
+   submit_extent_folio+0x13f/0x330 [btrfs]
+   ? btrfs_set_range_writeback+0xa3/0xd0 [btrfs]
+   extent_writepage_io+0x18b/0x360 [btrfs]
+   extent_write_locked_range+0x17c/0x340 [btrfs]
+   ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+   run_delalloc_cow+0x71/0xd0 [btrfs]
+   btrfs_run_delalloc_range+0x176/0x500 [btrfs]
+   ? find_lock_delalloc_range+0x119/0x260 [btrfs]
+   writepage_delalloc+0x2ab/0x480 [btrfs]
+   extent_write_cache_pages+0x236/0x7d0 [btrfs]
+   btrfs_writepages+0x72/0x130 [btrfs]
+   do_writepages+0xd4/0x240
+   ? find_held_lock+0x2b/0x80
+   ? wbc_attach_and_unlock_inode+0x12c/0x290
+   ? wbc_attach_and_unlock_inode+0x12c/0x290
+   __writeback_single_inode+0x5c/0x4c0
+   ? do_raw_spin_unlock+0x49/0xb0
+   writeback_sb_inodes+0x22c/0x560
+   __writeback_inodes_wb+0x4c/0xe0
+   wb_writeback+0x1d6/0x3f0
+   wb_workfn+0x334/0x520
+   process_one_work+0x1ee/0x570
+   ? lock_is_held_type+0xc6/0x130
+   worker_thread+0x1d1/0x3b0
+   ? __pfx_worker_thread+0x10/0x10
+   kthread+0xee/0x120
+   ? __pfx_kthread+0x10/0x10
+   ret_from_fork+0x30/0x50
+   ? __pfx_kthread+0x10/0x10
+   ret_from_fork_asm+0x1a/0x30
+   </TASK>
+  Modules linked in: dm_mod btrfs blake2b_generic xor raid6_pq rapl
+  CR2: 0000000000000020
+
+* Case 2. Earlier completion of orig_bbio for mirrored btrfs_bios
+
+btrfs_bbio_propagate_error() assumes the end_io function for orig_bbio is
+called last among split bios. In that case, btrfs_orig_write_end_io() sets
+the bio->bi_status to BLK_STS_IOERR by seeing the bioc->error [2].
+Otherwise, the increased orig_bio's bioc->error is not checked by anyone
+and return BLK_STS_OK to the upper layer.
+
+[2] Actually, this is not true. Because we only increases orig_bioc->errors
+by max_errors, the condition "atomic_read(&bioc->error) > bioc->max_errors"
+is still not met if only one split btrfs_bio fails.
+
+* Case 3. Later completion of orig_bbio for un-mirrored btrfs_bios
+
+In contrast to the above case, btrfs_bbio_propagate_error() is not working
+well if un-mirrored orig_bbio is completed last. It sets
+orig_bbio->bio.bi_status to the btrfs_bio's error. But, that is easily
+over-written by orig_bbio's completion status. If the status is BLK_STS_OK,
+the upper layer would not know the failure.
+
+* Solution
+
+Considering the above cases, we can only save the error status in the
+orig_bbio (remaining part after split) itself as it is always
+available. Also, the saved error status should be propagated when all the
+split btrfs_bios are finished (i.e, bbio->pending_ios == 0).
+
+This commit introduces "status" to btrfs_bbio and saves the first error of
+split bios to original btrfs_bio's "status" variable. When all the split
+bios are finished, the saved status is loaded into original btrfs_bio's
+status.
+
+With this commit, btrfs/146 on zoned devices does not hit the NULL pointer
+dereference anymore.
+
+Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
+CC: stable@vger.kernel.org # 6.6+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
-iirc this also used to trip up some test in test/fs but I don't recall
-what.
+ fs/btrfs/bio.c | 37 +++++++++++++------------------------
+ fs/btrfs/bio.h |  3 +++
+ 2 files changed, 16 insertions(+), 24 deletions(-)
 
-It might make sense to print that error but I think we ought to be
-coherent and either print it for all fs or none; but if we print it
-we'll need to prepare a new command to test file existence before
-loading it.
-
-Thanks!
-
- fs/btrfs/btrfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
-index 350cff0cbca0..f3087f690fa4 100644
---- a/fs/btrfs/btrfs.c
-+++ b/fs/btrfs/btrfs.c
-@@ -193,7 +193,7 @@ int btrfs_size(const char *file, loff_t *size)
- 	ret = btrfs_lookup_path(fs_info->fs_root, BTRFS_FIRST_FREE_OBJECTID,
- 				file, &root, &ino, &type, 40);
- 	if (ret < 0) {
--		printf("Cannot lookup file %s\n", file);
-+		debug("Cannot lookup file %s\n", file);
- 		return ret;
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index ce13416bc10f0..f83ec5a1baa60 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -49,6 +49,7 @@ void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_fs_info *fs_info,
+ 	bbio->end_io = end_io;
+ 	bbio->private = private;
+ 	atomic_set(&bbio->pending_ios, 1);
++	WRITE_ONCE(bbio->status, BLK_STS_OK);
+ }
+ 
+ /*
+@@ -120,41 +121,29 @@ static void __btrfs_bio_end_io(struct btrfs_bio *bbio)
  	}
- 	if (type != BTRFS_FT_REG_FILE) {
+ }
+ 
+-static void btrfs_orig_write_end_io(struct bio *bio);
+-
+-static void btrfs_bbio_propagate_error(struct btrfs_bio *bbio,
+-				       struct btrfs_bio *orig_bbio)
+-{
+-	/*
+-	 * For writes we tolerate nr_mirrors - 1 write failures, so we can't
+-	 * just blindly propagate a write failure here.  Instead increment the
+-	 * error count in the original I/O context so that it is guaranteed to
+-	 * be larger than the error tolerance.
+-	 */
+-	if (bbio->bio.bi_end_io == &btrfs_orig_write_end_io) {
+-		struct btrfs_io_stripe *orig_stripe = orig_bbio->bio.bi_private;
+-		struct btrfs_io_context *orig_bioc = orig_stripe->bioc;
+-
+-		atomic_add(orig_bioc->max_errors, &orig_bioc->error);
+-	} else {
+-		orig_bbio->bio.bi_status = bbio->bio.bi_status;
+-	}
+-}
+-
+ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ {
+ 	bbio->bio.bi_status = status;
+ 	if (bbio->bio.bi_pool == &btrfs_clone_bioset) {
+ 		struct btrfs_bio *orig_bbio = bbio->private;
+ 
+-		if (bbio->bio.bi_status)
+-			btrfs_bbio_propagate_error(bbio, orig_bbio);
+ 		btrfs_cleanup_bio(bbio);
+ 		bbio = orig_bbio;
+ 	}
+ 
+-	if (atomic_dec_and_test(&bbio->pending_ios))
++	/*
++	 * At this point, bbio always points to the original btrfs_bio. Save
++	 * the first error in it.
++	 */
++	if (status != BLK_STS_OK)
++		cmpxchg(&bbio->status, BLK_STS_OK, status);
++
++	if (atomic_dec_and_test(&bbio->pending_ios)) {
++		/* Load split bio's error which might be set above. */
++		if (status == BLK_STS_OK)
++			bbio->bio.bi_status = READ_ONCE(bbio->status);
+ 		__btrfs_bio_end_io(bbio);
++	}
+ }
+ 
+ static int next_repair_mirror(struct btrfs_failed_bio *fbio, int cur_mirror)
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index e486123407458..e2fe16074ad65 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -79,6 +79,9 @@ struct btrfs_bio {
+ 	/* File system that this I/O operates on. */
+ 	struct btrfs_fs_info *fs_info;
+ 
++	/* Save the first error status of split bio. */
++	blk_status_t status;
++
+ 	/*
+ 	 * This member must come last, bio_alloc_bioset will allocate enough
+ 	 * bytes for entire btrfs_bio but relies on bio being last.
 -- 
-2.39.5
+2.43.0
+
+
 
 
 
