@@ -1,150 +1,169 @@
-Return-Path: <linux-btrfs+bounces-9355-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9356-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D35469BDCCB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 03:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 636EF9BDDEB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 05:23:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E3501C230F1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:31:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D7E01C22505
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 04:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB1721858E;
-	Wed,  6 Nov 2024 02:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F66190493;
+	Wed,  6 Nov 2024 04:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZIA6ZAKr"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="keHYHDbu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DE91D63D0;
-	Wed,  6 Nov 2024 02:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89443211
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 04:23:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730859263; cv=none; b=YCsf6ystoxpFZ6NFOMHww/BPY7edJGpDwxjKdz3J4oZAe0lIB4R7ny0TE1udtJLY7356k06DM/kS/WvdSrpkExR+Gph+anpnc8hA2W+XklPKiJknFVQmSzymiIYIyZraCmgmOGgFMSZKecb+VjHKV5dZvr247xc65K7SkC/pkhw=
+	t=1730867011; cv=none; b=bZdl8vjM1Ux0ChEZRzFjH5XhlEGvJZzvdCrz9g1WIkUY2DZaB2x4OhALZ9SWXIlzLohJnZ2fAN0ueWDRTwhn7WdEgW0lOjIThlrct5VEa95BHYP+1Ow8W028Tm7Oh6h9/tufUEy2Ely6iKjWIxuYeqJfb8TowJJ4I8a4uyQRshM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730859263; c=relaxed/simple;
-	bh=ez8FPAF/vO6THiWw9cXs7uQjz58NFAfhxWNbI6/tDak=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QoCpuEw/8UbfvXwWfMU0n8S8Edk/2CapmYiG+AQa7cvm3egLqNg3M9gJDmeapnDYoUKMJJ46f3q0HfdZw4O7pz+NEoal6veuh/r/+CKg3oyBf7gNtY+kIsXGmQ2TOTVWyfRq6AxDfh8KdCW1cGNN+JXMfL9B3xr7VG4MirdgVRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZIA6ZAKr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26799C4CECF;
-	Wed,  6 Nov 2024 02:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730859263;
-	bh=ez8FPAF/vO6THiWw9cXs7uQjz58NFAfhxWNbI6/tDak=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ZIA6ZAKrkN4k+FQy3R2xv5wVv/Dwitjq8rEit7IY6a9vuCvkkY0yGI6FnPy914kk3
-	 1eqoY2aPwoq49tjWisoCqxoHbu6rEEYVQhJOLDx1e0zAiRjc4NboyDIm+6QJnhau07
-	 Zulz3XCPCgTSpcIXkDEfR16ZOLgAGf18er5J3fzfrWwI2dngua2NSAFAqqK1mxHPe3
-	 FBQ2ivKS5KbHoLsBS8HeDTcqG4jgMSYM4+2kT8MPNl1zdbkgwrMj11o4IZRi1r4ywg
-	 0EYCZx/tha1D9EN7VQsERliUyHl1vyjyC3sAYRpSm3YvAgVR4M9OP1xsv6ENjI+j8L
-	 cN303QdVJxEtQ==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	chengzhihao1@huawei.com
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "btrfs: fix use-after-free of block device file in __btrfs_free_extra_devids()" failed to apply to v4.19-stable tree
-Date: Tue,  5 Nov 2024 21:14:19 -0500
-Message-ID: <20241106021420.184196-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1730867011; c=relaxed/simple;
+	bh=Jry4Vp1Xc9wkg6BS+84uNHEUNN7AAMuwG4E9FuR//0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QymqVOEPCvRXSfpGGQ7VBzYqbjFKsoBV9a6Eqg22KEcW2rA7s2j5jwC8EAYhz6zJgka32MPCHJnOpxjA6ECgkaj/G6pHZ9W70sU43P6PcjGlCWtCCvf2QkoFHKKJKm9u6+KIQ5rocFM2m7TFX44giXoS4dxq12exfb+mwzfoQmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=keHYHDbu; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1730866999; x=1731471799; i=quwenruo.btrfs@gmx.com;
+	bh=8wSnnxJsFdfZn32ul//unmWKV4Zv/eDK7tv/M4m88eE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=keHYHDbubKwfVEExdyVae3aQFNLltFJ6exxIt9iIDHxZTBFfrwAK6eoVqVo21hHf
+	 K5Yw/m+6DZ5UB8e0X3FYPoOoPvq0cgqDfyaIAaY56QbyJHmxOZha88jBrS1dxRqbA
+	 aVKakSmhkBFk76/E+hCkwO90ncFS88tYDFJB3yj9EUCRxVi1nUf9m+X91ShHj3WN1
+	 bzt2OwNxu75mPJOQZfaYr3Xk616sZqeDxaejMmjw07AZcUYpKs6KSvYZA/FeZvTmm
+	 PQRdzXPnfYGtbm5REYCB5nxhakepl2jKYmyOdZSZDw2pSD7KBZCPHVJleL98JE28W
+	 M3KizYd5xdxA+Dv65A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqaxU-1tdBTz19N2-00eZ53; Wed, 06
+ Nov 2024 05:23:19 +0100
+Message-ID: <864430d3-65d7-48c5-8f59-30869ff565f3@gmx.com>
+Date: Wed, 6 Nov 2024 14:53:15 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-The patch below does not apply to the v4.19-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
-
-Thanks,
-Sasha
-
------------------- original commit in Linus's tree ------------------
-
-From aec8e6bf839101784f3ef037dcdb9432c3f32343 Mon Sep 17 00:00:00 2001
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Date: Mon, 21 Oct 2024 22:02:15 +0800
-Subject: [PATCH] btrfs: fix use-after-free of block device file in
- __btrfs_free_extra_devids()
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Mounting btrfs from two images (which have the same one fsid and two
-different dev_uuids) in certain executing order may trigger an UAF for
-variable 'device->bdev_file' in __btrfs_free_extra_devids(). And
-following are the details:
-
-1. Attach image_1 to loop0, attach image_2 to loop1, and scan btrfs
-   devices by ioctl(BTRFS_IOC_SCAN_DEV):
-
-             /  btrfs_device_1 → loop0
-   fs_device
-             \  btrfs_device_2 → loop1
-2. mount /dev/loop0 /mnt
-   btrfs_open_devices
-    btrfs_device_1->bdev_file = btrfs_get_bdev_and_sb(loop0)
-    btrfs_device_2->bdev_file = btrfs_get_bdev_and_sb(loop1)
-   btrfs_fill_super
-    open_ctree
-     fail: btrfs_close_devices // -ENOMEM
-	    btrfs_close_bdev(btrfs_device_1)
-             fput(btrfs_device_1->bdev_file)
-	      // btrfs_device_1->bdev_file is freed
-	    btrfs_close_bdev(btrfs_device_2)
-             fput(btrfs_device_2->bdev_file)
-
-3. mount /dev/loop1 /mnt
-   btrfs_open_devices
-    btrfs_get_bdev_and_sb(&bdev_file)
-     // EIO, btrfs_device_1->bdev_file is not assigned,
-     // which points to a freed memory area
-    btrfs_device_2->bdev_file = btrfs_get_bdev_and_sb(loop1)
-   btrfs_fill_super
-    open_ctree
-     btrfs_free_extra_devids
-      if (btrfs_device_1->bdev_file)
-       fput(btrfs_device_1->bdev_file) // UAF !
-
-Fix it by setting 'device->bdev_file' as 'NULL' after closing the
-btrfs_device in btrfs_close_one_device().
-
-Fixes: 142388194191 ("btrfs: do not background blkdev_put()")
-CC: stable@vger.kernel.org # 4.19+
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=219408
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/volumes.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 8f340ad1d9384..eb51b609190fb 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1105,6 +1105,7 @@ static void btrfs_close_one_device(struct btrfs_device *device)
- 	if (device->bdev) {
- 		fs_devices->open_devices--;
- 		device->bdev = NULL;
-+		device->bdev_file = NULL;
- 	}
- 	clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 	btrfs_destroy_dev_zone_info(device);
--- 
-2.43.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [u-boot PATCH] fs: btrfs: hide 'Cannot lookup file' errors on
+ 'load'
+To: Dominique Martinet <dominique.martinet@atmark-techno.com>,
+ =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>, Qu Wenruo <wqu@suse.com>,
+ Tom Rini <trini@konsulko.com>
+Cc: linux-btrfs@vger.kernel.org, u-boot@lists.denx.de
+References: <20241106012918.1395878-1-dominique.martinet@atmark-techno.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20241106012918.1395878-1-dominique.martinet@atmark-techno.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:j1sjjEgfLwoRLEoBSDWWmf/M4DVwrhH9KQVsvE150wfnFaU0eM8
+ 8TgUgwqhoz4eH/7pRjTawC6ywBwVHvkMxMCmPAnT2dkKwpNui3yI7/LW5bTR3taFuxSo9uJ
+ v+21ISWOxP2H0B+QDTahCAzecjBAKk79TEFxX4UZoVt4DTlOqgSy1z30S2R9RAWagwQrLRQ
+ dBW3cKTk4wecwt3lqHspw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:5+7NKCrtaek=;GImmB3UlW/N8+OnxDEmcPgObUA8
+ 2mgoSnGYO3RIYgYRGu8vQ3KNSqRiNQquIDhTeQ5j9tpd1r7L3nBHVG5WqgX89+/a4dTBCCXth
+ lCamWeDlAtV6ozzJrUCr6yzUtP8KXLry5LaLhvPC+7XElZ3cUalc1CuH/PpLCxsjId3abaMqZ
+ RHv57LdI3/Pmu4vI9xoZbLq8NUQ8M27Y+eIY1fpMVQz82lFxVBdfFlzSmcK+jzP7RKhLUxiSt
+ 7NlLjAJ+DdPMZqfHMypOlRuJOrv07Mb4dN/4xiaGCJzqBxulGy8sC40CwuW/R2Hf6BBNvJLc0
+ /TTyoQdR2mr+U588OqHcQd5f9NFcr6rbuvdonr+84I0gIlTriz5o/7/Y7PbOLIjVDj7+ZUwRA
+ 2DZjzk56NZJD4d6eV/7WB9oFg26SbQUuTgGHGh1Z+Msu2Au7g/7vZUVu27jbZYNOnmgCKwiSd
+ ueEdh64Sl6tEUzag3Gbby0TusN+E3kLx0tLrvt/0j+rJ5BOVxIH8CtZHouiWacLywOcwLnyJC
+ UJvLXEgGxoK40gbBgBfUmTlLTN+32HO2d09hURJ2JUhJ22elDQ8CYtZTBV3ZQQW0UCysz6JcU
+ F6He7b+w1yjCP67y5YsYnLqq7B+qwrK473qF+SD8i5l6kLUqjGpc/Fsvlhv1vPKknxL1HI4AS
+ csE3REbpnYMtF/qfg8JYVaaOQZUdeq6i4zxxLIoioYDTCCUk7fhg9McmChZ6aoEvazsdCWqHB
+ X1G+KK0MO1bUZjirLeBsjEi5TSQHC7mXBOzdZafBpsFSJ0f/pSv00g1d4qtAO9eQ8ZWVZSTcl
+ HGnTI0Dp9bItxSpLoLRrTwjQ==
 
 
 
+=E5=9C=A8 2024/11/6 11:59, Dominique Martinet =E5=86=99=E9=81=93:
+> Running commands such as 'load mmc 2:1 $addr $path' when path does not
+> exists historically do not print any error on filesystems such as ext4
+> or fat.
+> Changing the root filesystem to btrfs would make existing boot script
+> print 'Cannot lookup file xxx' errors, confusing customers wondering if
+> there is a problem when the mmc load command was used in a if (for
+> example to load boot.scr conditionally)
+>
+> Make that printf a debug message so it is not displayed by default, like
+> it is on other filesystems
+>
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Since other fses are already not output that error message, we have no
+extra reason not to follow them.
+
+Thanks for the fix,
+Qu
+
+> ---
+> iirc this also used to trip up some test in test/fs but I don't recall
+> what.
+>
+> It might make sense to print that error but I think we ought to be
+> coherent and either print it for all fs or none; but if we print it
+> we'll need to prepare a new command to test file existence before
+> loading it.
+>
+> Thanks!
+>
+>   fs/btrfs/btrfs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
+> index 350cff0cbca0..f3087f690fa4 100644
+> --- a/fs/btrfs/btrfs.c
+> +++ b/fs/btrfs/btrfs.c
+> @@ -193,7 +193,7 @@ int btrfs_size(const char *file, loff_t *size)
+>   	ret =3D btrfs_lookup_path(fs_info->fs_root, BTRFS_FIRST_FREE_OBJECTID=
+,
+>   				file, &root, &ino, &type, 40);
+>   	if (ret < 0) {
+> -		printf("Cannot lookup file %s\n", file);
+> +		debug("Cannot lookup file %s\n", file);
+>   		return ret;
+>   	}
+>   	if (type !=3D BTRFS_FT_REG_FILE) {
 
 
