@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-9352-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9353-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F6C9BDC54
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 03:20:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05F239BDC7C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 03:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4901C2032E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:19:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B327E283CEA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323EF1DE4EA;
-	Wed,  6 Nov 2024 02:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13B31E04A2;
+	Wed,  6 Nov 2024 02:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3MPQCwy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qrvb1GjU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF901991C3;
-	Wed,  6 Nov 2024 02:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6CC19066B;
+	Wed,  6 Nov 2024 02:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730859103; cv=none; b=DfiKn2q8Edp8mrOIbOoleT22b1VtiIb7Q4I4HjSqFQ6w6s14jsSxAxnmsjWgqZXnw7Qw1ZIimPjRDqjNFd1SkjamIAl8zahkD86C/d3UpDuAsVtC5LJ5SvIbXHdQn1aJeeN6qq5FplgY2DIjeG81Vc3u64mhwg2YCDnIzRbrqMM=
+	t=1730859158; cv=none; b=VONokXgmmYzahQ+EB3UWV38opkVKp6f1KRKovaREvRAahGwLcrt3fl5ilE+SQC2NeNHsJe3RP1Kwo/9lymQ7f9Xd8Zncyhh7DkljA31hZ+h0G5URLmvf2Obkk/VtACbnwRWxwkzvWPo0+MPUBC2TKS1BDWkZ5k9rS+tbcdXZMNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730859103; c=relaxed/simple;
-	bh=dArZ5O3BV7Wmscyd9tx3w06lMeP5aBch2T1dtyCoZO8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DbPe8HXzoG3m5FZ/3omP6rwbhW3WAMY/0PMV0lsD1RTAXm4Ws+8T7R9MUfknejq3zD8TJ2Gy8Fvf9ZlLNIqiqjvImkU4jDT0EVl0Ann5KqBKRJ0REY+1fIz30vxrqmA0X//vCxJJrdGan5AJqss+N7mAojmt8TAvqMNCRWMHyo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3MPQCwy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B259C4CECF;
-	Wed,  6 Nov 2024 02:11:42 +0000 (UTC)
+	s=arc-20240116; t=1730859158; c=relaxed/simple;
+	bh=xYv2q5+y/jFqolt3LNkFi9zvPdqElsu3XZIBDXT/qZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=I1gePBhJHQ2B2lX7wvVY7R39/I3+BW4dva5sbEd5lnntnmvrz2KE3RAkvySWJizG39Zrkth6KEiVQqgA8xjWoZjrDRElqdXh5woo3RIJs1FHKAX4xToKXkAx8dwItlKGyaTnAdhr1lNRoMJr6sVA5AkaO9F7G2CnWh+B4sVRKpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qrvb1GjU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF03C4CECF;
+	Wed,  6 Nov 2024 02:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730859103;
-	bh=dArZ5O3BV7Wmscyd9tx3w06lMeP5aBch2T1dtyCoZO8=;
+	s=k20201202; t=1730859157;
+	bh=xYv2q5+y/jFqolt3LNkFi9zvPdqElsu3XZIBDXT/qZQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=X3MPQCwy+oDgyt3+eByV9OxzGbtaXob1yXD1Rmt+KrE5znE8LUsOdCRzwbdmkAhDS
-	 2iuDt86zlkmHl/dSU1YIpW+X11/rfeuPYJ4N29RA4/l76KPBhUj2EXSxJqD9UwxOus
-	 8YVYcwM7h5YCtnb1lmNvyb7TIN8T+uk3Es75p4d6DorhYQ8KOCTikzAdziutn6zO8/
-	 AuPfRWChf5GeA5bYVOnfMOu7OTo/Uq/aGhNmprYvgnd+4aOgSR8rl+qBk8Lei7c6/t
-	 ++oXaVZ9A2XKP4BR3xx21EyBzs1kQt9KWwDqHMticF9dyB+jPGDKCEgVDwfLtt8emu
-	 vDSI3Y161+RtQ==
+	b=qrvb1GjUn+2vti7vHoKkrdmc0ygfYTyRIxskJm9E4s2Uni9i8Vkeuddj5inLimBnf
+	 7qsFAPHjcrXso87mcj20MHCMLDg+10yysGvGp2/eR4oo9plGwPhgYXmc9yxlJ2ahpJ
+	 a1KVYmpKzqDrV+evEFyFObl3vJnFyaty2bs1MyoS/S1nAyDuFy/lImcaaKF2Pkwn8Q
+	 AdaTKj6XH/Fd/FjPkKmUxtpk0ubnIl5xVpZR+vjcVRrnvy/yjgYGWpxZnuf/xeYd8k
+	 qgsR/tPfilf79PLe3auouSuqhA2K44xUeL4429CcggYHOKxwjDLuURxvDwAloeCQVc
+	 VODRPhHL0WO5w==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	chengzhihao1@huawei.com
 Cc: David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "btrfs: fix use-after-free of block device file in __btrfs_free_extra_devids()" failed to apply to v5.15-stable tree
-Date: Tue,  5 Nov 2024 21:11:39 -0500
-Message-ID: <20241106021140.182370-1-sashal@kernel.org>
+Subject: FAILED: Patch "btrfs: fix use-after-free of block device file in __btrfs_free_extra_devids()" failed to apply to v5.10-stable tree
+Date: Tue,  5 Nov 2024 21:12:34 -0500
+Message-ID: <20241106021235.183010-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -61,7 +61,7 @@ X-stable: review
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The patch below does not apply to the v5.15-stable tree.
+The patch below does not apply to the v5.10-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
