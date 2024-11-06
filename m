@@ -1,168 +1,153 @@
-Return-Path: <linux-btrfs+bounces-9343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9344-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054F19BD73C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 21:51:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0848C9BDB43
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AC791F23F5B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2024 20:51:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104021C223C8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 01:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536B2215C51;
-	Tue,  5 Nov 2024 20:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A4418A92F;
+	Wed,  6 Nov 2024 01:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="E8HEhxuL"
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="EDoFYNxL";
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="Jo2LHQna"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7993D81
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2024 20:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F4F17B50E
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 01:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730839887; cv=none; b=UQJb9W9fnLyqLpDiiGJ4oCr0H/Q06yoUaMUcsCXoB0RPl66Q1+iP0pEXlbEmEfd/xm9vzO6XBdt81tT+1zY6uVfqJE3Suv/Jv9mcbE2mxNXOJEoxC+S/myd7h4qF6XHY8Alz/WiBDUjuA6ny4y3ubKFZRwo1+8mQ2OS/v+eDvPQ=
+	t=1730857183; cv=none; b=ozY1F1YKHwsmaH7XeCfqpfpVIgZhzgqEqzjnKLuO6OQ9KB4um0oRR3m8ZfDv6yhcYvNGijbTDsVpd9Rmvq1uzKtVpQcI7RBzQK3FGm32nC5Zeq8NmFqEBjunMjv8sf79d+ZCaswUYqHiU0HZQoAGWZXujybL3EAXW6/r9tydVwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730839887; c=relaxed/simple;
-	bh=VDEG6t4fUpx0B/LIGvkBpL/eWGtuU7gf2t/yVYVftX0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=B9cfIEg/cWBVFEsBq8UZN97c8Vc/RJG9qffC5oa+AZ/j6sRqGzO8izIxBk3u0x3NqqP+XmBpFft3nDQBQSjNNLOvYXmxH1zwELFd2C2CbX3xaU16BD8rac/Y9Ht3ktWh7zG1wNzycWOzz659XtEvMkgyv0NzkiguAL2u3zscJHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=E8HEhxuL; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1730839879; x=1731444679; i=quwenruo.btrfs@gmx.com;
-	bh=VtjniE11kdiYbYQpy5wl3FG7NI1/VaCfspVdWc5o2f4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=E8HEhxuLELBMMTAhGwoft3N/ZTZZ3r1DD9ufDvBwzHgWO1V4EkJDiOas5D5eAfBR
-	 a3LkIXbmYhlFZBIs5oX3hgYqBkrlpg2i3WJc1EJ9Sl3apJMePXT0vTCD5g9Eknuam
-	 hVLFpOWBpJFx+vXx6Me9g9J60eXy2igNRRf+cJknfF8jUTyxAe22l/6KaV8ZQzuEw
-	 NeKtVsRWTm7UYs5CNZLLsog8lE18MfRNc24r07kGN7+0vAfYgb3GMMoMq7axZth2W
-	 Fa+fz5p6vaDJ2lgiiR4+rkPAx+OJKuE6b+Fwj9K0e2y7oK2JuKOkzSimv1CGHjivL
-	 1skVfEvznAZgfXtiNg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH9i-1tgOMN0qyq-00dhdX; Tue, 05
- Nov 2024 21:51:19 +0100
-Message-ID: <f6595be8-5dd7-442d-9573-b849be1ac8c7@gmx.com>
-Date: Wed, 6 Nov 2024 07:21:16 +1030
+	s=arc-20240116; t=1730857183; c=relaxed/simple;
+	bh=c2uxv5qHguLu+StJ/chrI3QGHYueHDNHFb2zBkZAidc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jd8aLTdY2zm9MpNbA7r98DI6vVj/7msY+AvQnTRfWHwaDIidH7EDzjSJhbudcOBTpiRfCcwfV0L7jxcz+JThVZuTrNkX8Gdu8bva44zf+Yv8u8j0sfQNBaV3BnGp5q23gRW9mXDm+vkvpYsZMWjr8wzeFyp5OhpEkFWIHhX7JWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=EDoFYNxL; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=Jo2LHQna; arc=none smtp.client-ip=35.74.137.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
+	s=gw2_bookworm; t=1730856581;
+	bh=c2uxv5qHguLu+StJ/chrI3QGHYueHDNHFb2zBkZAidc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EDoFYNxLNte275Sv2ULn/bgIQfSeuP+I9nkRE/5N5c5gyYl7OLWr/DViEiY+zSGrp
+	 8lr/rPGAk5dX9WPJL29DlIHdyTnGhoo1+GMtGSITpSls3gePsu/2z+882xan+pb0gr
+	 N3CHKe5Ab0V7V6XK+YDNJpQh9VNxb3QLf+oEf2mwphJylsYXcuAJVCsWRHMXhYQ0sv
+	 3meoTWi0LkYzDBunhJS1MxXGZCX57c04v5CfUI4ALu4cQnxOZBn68HT6Oc6+8ZF7Zt
+	 KOJX4ZG0GTE2IYWXIhatVAqq4udhOufysOAIyy8R9+ha3EHGyO2FgKPsB+VJeJ/YYw
+	 C2idVWSWxjDFQ==
+Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
+	by gw2.atmark-techno.com (Postfix) with ESMTP id 770E76E3
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 10:29:41 +0900 (JST)
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=Jo2LHQna;
+	dkim-atps=neutral
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id BA6216E3
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 10:29:40 +0900 (JST)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-71e479829c8so7805487b3a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Nov 2024 17:29:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1730856580; x=1731461380; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fd5ICPguw1+lRE+0puBHipb5HB9mk41ModgfZE+n2gQ=;
+        b=Jo2LHQna2poi6nbFP/U/wAUb3gGsmwZmKEOW0QlhD2yVZkD81TlnTbGNTd8P1i+4BU
+         noMwKxuVUBce6exx0Ig/q0HQePXZNxG8Buo4Pq9iq/Fkchq3D4301vsIawqMJpyNZzI2
+         4c3pbFvzBEDdO7guI1f7V2nLBKjYSLl30htksbvXmC7w9TI3+eWgDvmqAa1l9+EC7+L6
+         wwuPeqcoN3suZnIu2HVHqXVlYTjE9KSUdi2D/yuYHu+sPIrWXY9p3tEyyLCztPnOLqky
+         uSWDGIAV4p7s7xyz1AU0DaoQvn5nCSvCCY4wYPWkMfqWrX5fmUzhx/9i4kv27aio2luW
+         8hBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730856580; x=1731461380;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fd5ICPguw1+lRE+0puBHipb5HB9mk41ModgfZE+n2gQ=;
+        b=uXpw1DpPGuatyfJF2fqRxxfP8oi1vOzXX46nsuwkH9tlEeYFJAy5qUe7W0ZuJ9bKWt
+         zySj8WXvG1r3Kj+UiyyXDRHs+bvwMJUcS4PB+i89UkuIeATMESaUSe7c3uEPLdrvKSaa
+         1wbGPzLGSkYL6mqtvAZdGgAhvsL//Pe6a4Ng09515fjjzvWC1x9FQarmbmm7XCsd8REk
+         t6EjdxYsgr+isQjh5EjnbHS8QFR7p1HkKsTB+c/7cEkwMpxvUfwMAad3eySRozjuktXb
+         dKKTeV2sahxDJrZSGLsRJmTv3+vZ1eAgWZ46aYUcYSyzljLviOPKkGWP2yc+GnK9saGq
+         9iNA==
+X-Forwarded-Encrypted: i=1; AJvYcCVEDjgFd/c0Xa151M/TA4OZPNDEBq0Rt5Kp3djqi1esrwTgkO0voMa23v11Ty9RKr00SBF4KVAQSklh+Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3suHknoCVC6ZBG4XkkaUfHj0Kwc4Q+FVL5HUEUfKTo9viWK/r
+	uVBKjjpleiqIzzPHvEijsj7ey5fcopduOKdpf429VmbqbUJ7a8rOOsy6Qr+sr0skt41U+24xKbp
+	w/sRHsjDG6xLEZ+JD1+BAEzUYeDnQGrNDym2IS4oOxE6Sw3ArWvEUXlpdtGjV9A==
+X-Received: by 2002:a05:6a20:6728:b0:1da:5bb:f8ca with SMTP id adf61e73a8af0-1da05bbfd2cmr26539215637.0.1730856579798;
+        Tue, 05 Nov 2024 17:29:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH7as1amWFonIQwC5GIbgRZsm4z0xynOmhDngNYPoKhimG9557YG5ncgOG/jmOKaxshE0BTBw==
+X-Received: by 2002:a05:6a20:6728:b0:1da:5bb:f8ca with SMTP id adf61e73a8af0-1da05bbfd2cmr26539206637.0.1730856579488;
+        Tue, 05 Nov 2024 17:29:39 -0800 (PST)
+Received: from localhost (117.209.187.35.bc.googleusercontent.com. [35.187.209.117])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e99a525494sm211251a91.10.2024.11.05.17.29.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Nov 2024 17:29:39 -0800 (PST)
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Qu Wenruo <wqu@suse.com>,
+	Tom Rini <trini@konsulko.com>
+Cc: Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	linux-btrfs@vger.kernel.org,
+	u-boot@lists.denx.de
+Subject: [u-boot PATCH] fs: btrfs: hide 'Cannot lookup file' errors on 'load'
+Date: Wed,  6 Nov 2024 10:29:17 +0900
+Message-Id: <20241106012918.1395878-1-dominique.martinet@atmark-techno.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: simplify logic to decrement snapshot counter at
- btrfs_mksnapshot()
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <e2938504101b0832739b3421f8d07b809a9f5232.1730818481.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <e2938504101b0832739b3421f8d07b809a9f5232.1730818481.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SO+6WZtHU0YNQojiD9bEQPHTwv3toDkXjLkk6gSyRx30ZAwbpBK
- 7GnEnQepfDhogk8LmAnuyhGO31/ahsCXqHgtQX+CwqgFc18X0TLcchCSiMGggwOjPJ/tUuD
- az052N9zS+cl4Q4z/EXF5O7ugWOctQ1jjhHXJiGt95iNlOVh+zLeBuEY3JdY69GrfVri8bT
- 8FPONC8/eT82nDRNUyewA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:W1EZ9VyFXt0=;1YJgsSBj9t0IjoNuKnthygju/Io
- bme8Dvo1Bc9+MO2XlyHFzHGSZChtzClNP8zcr5N2f7qqLtOVhZttvOdmmOzoi/Dxhc2DL0j/m
- 3IZnKmPHo6aNyzMRNpoE3GiLD7D8HTgAoXjyb5F5HJDIoCTreyya5svNlp964bGQRT/uVSmk3
- 6gLQXH32lKoPXWBYek8q6KntOmfTJzyAcjFhnzd4ELVZNYn4Mw4IjocHqzCyDrwet3sgzTWST
- btEglsNNs+Hhe8jGENHPb7+l0bIokcSgos+0j/8kIZfXwCodSuJjuVz6kYIhK6yaA4qK2htXz
- +1h0ovlQlPGgeZHPQYK8I7VAocOt+sjq4EWQo67cE8APCh7/5U2w0cLzFTUTP6bkNHAX08xMc
- RRkdAjSzRBY+AnDz+59syxaJlgRCyfURZFkGNY63LuQs1RRe14Z8PpCL2u6Z+B4dpXoYfyJEQ
- DQkc1Ygph/GKYqV2PnKBt+QXROOMu6EBWOBLcNfhaCyn1/ZaRCTvEPE3HtXz46a3Tkr6MKLPQ
- Rqii08KDl0+VU+sF26pE0QHKV4sTmG7A89SHKFJsmtRsog5MbhkgJHpTrBfibsDTUMQZUhPV2
- HnEosQnAV6SrVgv5msH5IcKKTZMRayERfEgJ555FoFKDjETYkBeNLlrFVXyrsGTfTIZTeILTa
- ddsArkTC8NqXEC+iHMwkUiBgIiGhJO3wvKfxZ9VxnsE925PhpsfAXi+DO+mhoGeLXaJ49Pi9V
- Jj0Vja+2yNixXQ3+Rmn2qPuPDKgBxJijv2G7LS0a9xLhS8WK3jVO03ngwoLd/N8Dw45p0JZpH
- ace2hTh/Fqh3yfGrzRtVKcvQ==
+Content-Transfer-Encoding: 8bit
 
+Running commands such as 'load mmc 2:1 $addr $path' when path does not
+exists historically do not print any error on filesystems such as ext4
+or fat.
+Changing the root filesystem to btrfs would make existing boot script
+print 'Cannot lookup file xxx' errors, confusing customers wondering if
+there is a problem when the mmc load command was used in a if (for
+example to load boot.scr conditionally)
 
+Make that printf a debug message so it is not displayed by default, like
+it is on other filesystems
 
-=E5=9C=A8 2024/11/6 01:27, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> There's no point in having a 'snapshot_force_cow' variable to track if w=
-e
-> need to decrement the root->snapshot_force_cow counter, as we never jump
-> to the 'out' label after incrementing the counter. Simplify this by
-> removing the variable and always decrementing the counter before the 'ou=
-t'
-> label, right after the call to btrfs_mksubvol().
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+---
+iirc this also used to trip up some test in test/fs but I don't recall
+what.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+It might make sense to print that error but I think we ought to be
+coherent and either print it for all fs or none; but if we print it
+we'll need to prepare a new command to test file existence before
+loading it.
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/ioctl.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index cd3e82cc842b..26a07cbeb3a4 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1049,7 +1049,6 @@ static noinline int btrfs_mksnapshot(const struct =
-path *parent,
->   				   struct btrfs_qgroup_inherit *inherit)
->   {
->   	int ret;
-> -	bool snapshot_force_cow =3D false;
->
->   	/*
->   	 * Force new buffered writes to reserve space even when NOCOW is
-> @@ -1068,15 +1067,13 @@ static noinline int btrfs_mksnapshot(const struc=
-t path *parent,
->   	 * creation.
->   	 */
->   	atomic_inc(&root->snapshot_force_cow);
-> -	snapshot_force_cow =3D true;
->
->   	btrfs_wait_ordered_extents(root, U64_MAX, NULL);
->
->   	ret =3D btrfs_mksubvol(parent, idmap, name, namelen,
->   			     root, readonly, inherit);
-> +	atomic_dec(&root->snapshot_force_cow);
->   out:
-> -	if (snapshot_force_cow)
-> -		atomic_dec(&root->snapshot_force_cow);
->   	btrfs_drew_read_unlock(&root->snapshot_lock);
->   	return ret;
->   }
+Thanks!
+
+ fs/btrfs/btrfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
+index 350cff0cbca0..f3087f690fa4 100644
+--- a/fs/btrfs/btrfs.c
++++ b/fs/btrfs/btrfs.c
+@@ -193,7 +193,7 @@ int btrfs_size(const char *file, loff_t *size)
+ 	ret = btrfs_lookup_path(fs_info->fs_root, BTRFS_FIRST_FREE_OBJECTID,
+ 				file, &root, &ino, &type, 40);
+ 	if (ret < 0) {
+-		printf("Cannot lookup file %s\n", file);
++		debug("Cannot lookup file %s\n", file);
+ 		return ret;
+ 	}
+ 	if (type != BTRFS_FT_REG_FILE) {
+-- 
+2.39.5
+
 
 
