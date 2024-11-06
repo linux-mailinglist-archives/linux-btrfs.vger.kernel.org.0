@@ -1,169 +1,309 @@
-Return-Path: <linux-btrfs+bounces-9356-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9357-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 636EF9BDDEB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 05:23:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 975FE9BDE04
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 05:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D7E01C22505
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 04:23:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5364C284AD7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 04:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F66190493;
-	Wed,  6 Nov 2024 04:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD54618FDBE;
+	Wed,  6 Nov 2024 04:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="keHYHDbu"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="H8wjPsbJ";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="H8wjPsbJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89443211
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Nov 2024 04:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D61576035;
+	Wed,  6 Nov 2024 04:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730867011; cv=none; b=bZdl8vjM1Ux0ChEZRzFjH5XhlEGvJZzvdCrz9g1WIkUY2DZaB2x4OhALZ9SWXIlzLohJnZ2fAN0ueWDRTwhn7WdEgW0lOjIThlrct5VEa95BHYP+1Ow8W028Tm7Oh6h9/tufUEy2Ely6iKjWIxuYeqJfb8TowJJ4I8a4uyQRshM=
+	t=1730868078; cv=none; b=MzZ7C6Z+Yya5fsT+aZDKHs0sNhc1+wp/Odiz0Ua3B1xPurjCo7zxvbHmaSKoOISn7d8cvv5c8fJVwpvOG3sGnBdJUoDnp1xBnvFgFzI2WwrjwhC6fe7/mXGbHe9KiEEmJd0zGiTZ7X/Cyp++XQKrYVIBdwRNAH+/BGL+nCaqoks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730867011; c=relaxed/simple;
-	bh=Jry4Vp1Xc9wkg6BS+84uNHEUNN7AAMuwG4E9FuR//0s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QymqVOEPCvRXSfpGGQ7VBzYqbjFKsoBV9a6Eqg22KEcW2rA7s2j5jwC8EAYhz6zJgka32MPCHJnOpxjA6ECgkaj/G6pHZ9W70sU43P6PcjGlCWtCCvf2QkoFHKKJKm9u6+KIQ5rocFM2m7TFX44giXoS4dxq12exfb+mwzfoQmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=keHYHDbu; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1730866999; x=1731471799; i=quwenruo.btrfs@gmx.com;
-	bh=8wSnnxJsFdfZn32ul//unmWKV4Zv/eDK7tv/M4m88eE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=keHYHDbubKwfVEExdyVae3aQFNLltFJ6exxIt9iIDHxZTBFfrwAK6eoVqVo21hHf
-	 K5Yw/m+6DZ5UB8e0X3FYPoOoPvq0cgqDfyaIAaY56QbyJHmxOZha88jBrS1dxRqbA
-	 aVKakSmhkBFk76/E+hCkwO90ncFS88tYDFJB3yj9EUCRxVi1nUf9m+X91ShHj3WN1
-	 bzt2OwNxu75mPJOQZfaYr3Xk616sZqeDxaejMmjw07AZcUYpKs6KSvYZA/FeZvTmm
-	 PQRdzXPnfYGtbm5REYCB5nxhakepl2jKYmyOdZSZDw2pSD7KBZCPHVJleL98JE28W
-	 M3KizYd5xdxA+Dv65A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqaxU-1tdBTz19N2-00eZ53; Wed, 06
- Nov 2024 05:23:19 +0100
-Message-ID: <864430d3-65d7-48c5-8f59-30869ff565f3@gmx.com>
-Date: Wed, 6 Nov 2024 14:53:15 +1030
+	s=arc-20240116; t=1730868078; c=relaxed/simple;
+	bh=Ft8LQwhW39ZRoBRTpShwfuqBL4EqUW+yYN93rrUuLHs=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=T9siwG3ZAgzfAMqVgUz3e3Kbqp6PHYBZeoHNbbvYteNG+GQ/h42kuJSIDKeUVmy/6iYP8sBbyuEdHS/sEFR7tllWsBobZDbe9U58x7toqiBs3xrKhQGwSkQhhQeD6o1DpgxYl+9JuQlNgZHpG0loJFlEOjm3jZUsT5qp8MuJmo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=H8wjPsbJ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=H8wjPsbJ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6580A21C29;
+	Wed,  6 Nov 2024 04:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1730868074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=pXzv5ltxofrgMSC6Ee8vWlZ/zuePv50hzHdjda0jL4Q=;
+	b=H8wjPsbJCXehboN8VejVw0P+P3S1M5Mc9hJHuxODC8XpThmw2Vm3QuO5mZ10luaNwGZ+gM
+	UdZ0MtDXJKT8XqKI5iVaJwfGzra2oh3/08EdyBmqh6f+obF18Z/DqtAwEUNwmqz2aqhD/Z
+	d3GaWiI4xE54LGnRC9EzigiRcU9F8M0=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=H8wjPsbJ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1730868074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=pXzv5ltxofrgMSC6Ee8vWlZ/zuePv50hzHdjda0jL4Q=;
+	b=H8wjPsbJCXehboN8VejVw0P+P3S1M5Mc9hJHuxODC8XpThmw2Vm3QuO5mZ10luaNwGZ+gM
+	UdZ0MtDXJKT8XqKI5iVaJwfGzra2oh3/08EdyBmqh6f+obF18Z/DqtAwEUNwmqz2aqhD/Z
+	d3GaWiI4xE54LGnRC9EzigiRcU9F8M0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6745613736;
+	Wed,  6 Nov 2024 04:41:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ExXFCmnzKmdqBAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 06 Nov 2024 04:41:13 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH v3] btrfs: a new test case to verify mount behavior with background remounting
+Date: Wed,  6 Nov 2024 15:10:51 +1030
+Message-ID: <20241106044051.12712-1-wqu@suse.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [u-boot PATCH] fs: btrfs: hide 'Cannot lookup file' errors on
- 'load'
-To: Dominique Martinet <dominique.martinet@atmark-techno.com>,
- =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>, Qu Wenruo <wqu@suse.com>,
- Tom Rini <trini@konsulko.com>
-Cc: linux-btrfs@vger.kernel.org, u-boot@lists.denx.de
-References: <20241106012918.1395878-1-dominique.martinet@atmark-techno.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20241106012918.1395878-1-dominique.martinet@atmark-techno.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:j1sjjEgfLwoRLEoBSDWWmf/M4DVwrhH9KQVsvE150wfnFaU0eM8
- 8TgUgwqhoz4eH/7pRjTawC6ywBwVHvkMxMCmPAnT2dkKwpNui3yI7/LW5bTR3taFuxSo9uJ
- v+21ISWOxP2H0B+QDTahCAzecjBAKk79TEFxX4UZoVt4DTlOqgSy1z30S2R9RAWagwQrLRQ
- dBW3cKTk4wecwt3lqHspw==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 6580A21C29
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5+7NKCrtaek=;GImmB3UlW/N8+OnxDEmcPgObUA8
- 2mgoSnGYO3RIYgYRGu8vQ3KNSqRiNQquIDhTeQ5j9tpd1r7L3nBHVG5WqgX89+/a4dTBCCXth
- lCamWeDlAtV6ozzJrUCr6yzUtP8KXLry5LaLhvPC+7XElZ3cUalc1CuH/PpLCxsjId3abaMqZ
- RHv57LdI3/Pmu4vI9xoZbLq8NUQ8M27Y+eIY1fpMVQz82lFxVBdfFlzSmcK+jzP7RKhLUxiSt
- 7NlLjAJ+DdPMZqfHMypOlRuJOrv07Mb4dN/4xiaGCJzqBxulGy8sC40CwuW/R2Hf6BBNvJLc0
- /TTyoQdR2mr+U588OqHcQd5f9NFcr6rbuvdonr+84I0gIlTriz5o/7/Y7PbOLIjVDj7+ZUwRA
- 2DZjzk56NZJD4d6eV/7WB9oFg26SbQUuTgGHGh1Z+Msu2Au7g/7vZUVu27jbZYNOnmgCKwiSd
- ueEdh64Sl6tEUzag3Gbby0TusN+E3kLx0tLrvt/0j+rJ5BOVxIH8CtZHouiWacLywOcwLnyJC
- UJvLXEgGxoK40gbBgBfUmTlLTN+32HO2d09hURJ2JUhJ22elDQ8CYtZTBV3ZQQW0UCysz6JcU
- F6He7b+w1yjCP67y5YsYnLqq7B+qwrK473qF+SD8i5l6kLUqjGpc/Fsvlhv1vPKknxL1HI4AS
- csE3REbpnYMtF/qfg8JYVaaOQZUdeq6i4zxxLIoioYDTCCUk7fhg9McmChZ6aoEvazsdCWqHB
- X1G+KK0MO1bUZjirLeBsjEi5TSQHC7mXBOzdZafBpsFSJ0f/pSv00g1d4qtAO9eQ8ZWVZSTcl
- HGnTI0Dp9bItxSpLoLRrTwjQ==
+X-Spam-Level: 
 
+[BUG]
+When there is a process in the background remounting a btrfs, switching
+between RO/RW, then another process try to mount another subvolume of
+the same btrfs read-only, we can hit a race causing the RW mount to fail
+with -EBUSY:
 
+[CAUSE]
+During the btrfs mount, to support mounting different subvolumes with
+different RO/RW flags, we have a small hack during the mount:
 
-=E5=9C=A8 2024/11/6 11:59, Dominique Martinet =E5=86=99=E9=81=93:
-> Running commands such as 'load mmc 2:1 $addr $path' when path does not
-> exists historically do not print any error on filesystems such as ext4
-> or fat.
-> Changing the root filesystem to btrfs would make existing boot script
-> print 'Cannot lookup file xxx' errors, confusing customers wondering if
-> there is a problem when the mmc load command was used in a if (for
-> example to load boot.scr conditionally)
->
-> Make that printf a debug message so it is not displayed by default, like
-> it is on other filesystems
->
-> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+  Retry with matching RO flags if the initial mount fail with -EBUSY.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+The problem is, during that retry we do not hold any super block lock
+(s_umount), this meanings there can be a remount process changing the RO
+flags of the original fs super block.
 
-Since other fses are already not output that error message, we have no
-extra reason not to follow them.
+If so, we can have an EBUSY error during retry.
+And this time we treat any failure as an error, without any retry and
+cause the above EBUSY mount failure.
 
-Thanks for the fix,
-Qu
+[FIX]
+The fix is already sent to the mailing list.
+The fix is to allow btrfs to have different RO flag between super block
+and mount point during mount, and if the RO flag mismatch, reconfigure
+the fs to RW with s_umount hold, so that there will be no race.
 
-> ---
-> iirc this also used to trip up some test in test/fs but I don't recall
-> what.
->
-> It might make sense to print that error but I think we ought to be
-> coherent and either print it for all fs or none; but if we print it
-> we'll need to prepare a new command to test file existence before
-> loading it.
->
-> Thanks!
->
->   fs/btrfs/btrfs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
-> index 350cff0cbca0..f3087f690fa4 100644
-> --- a/fs/btrfs/btrfs.c
-> +++ b/fs/btrfs/btrfs.c
-> @@ -193,7 +193,7 @@ int btrfs_size(const char *file, loff_t *size)
->   	ret =3D btrfs_lookup_path(fs_info->fs_root, BTRFS_FIRST_FREE_OBJECTID=
-,
->   				file, &root, &ino, &type, 40);
->   	if (ret < 0) {
-> -		printf("Cannot lookup file %s\n", file);
-> +		debug("Cannot lookup file %s\n", file);
->   		return ret;
->   	}
->   	if (type !=3D BTRFS_FT_REG_FILE) {
+[TEST CASE]
+The test case will create two processes:
+
+- Remounting an existing subvolume mount point
+  Switching between RO and RW
+
+- Mounting another subvolume RW
+  After a successful mount, unmount and retry.
+
+This is enough to trigger the -EBUSY error in less than 5 seconds.
+To be extra safe, the test case will run for 10 seconds at least, and
+follow TIME_FACTOR for extra loads.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v3:
+- Also remove the default temporaray files in cleanup
+
+- Unset mount/remount pid and avoid killing them if unset during cleanup
+
+- Remove the mount points to avoid name conflicts
+
+- Extra comments on the the final unmounts for both mount point and
+  cleanup
+
+v2:
+- Better signal handling for both remount and mount workload
+  Need to do the extra handling for both workload
+
+- Wait for any child process to exit before cleanup
+
+- Keep the stderr of the final rm command
+
+- Keep the stderr of the unmount of $subv1_mount
+  Which should always be mounted.
+
+- Use "$UMOUNT_PROG" instead of direct "umount"
+
+- Use "_mount" instead of direct "mount"
+
+- Fix a typo of "block"
+---
+ tests/btrfs/325     | 107 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/325.out |   2 +
+ 2 files changed, 109 insertions(+)
+ create mode 100755 tests/btrfs/325
+ create mode 100644 tests/btrfs/325.out
+
+diff --git a/tests/btrfs/325 b/tests/btrfs/325
+new file mode 100755
+index 00000000..0f4984f1
+--- /dev/null
++++ b/tests/btrfs/325
+@@ -0,0 +1,107 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 325
++#
++# Test that mounting a subvolume read-write will success, with another
++# subvolume being remounted RO/RW at background
++#
++. ./common/preamble
++_begin_fstest auto quick mount remount
++
++_fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: fix mount failure due to remount races"
++
++_cleanup()
++{
++	cd /
++	rm -rf -- $tmp.*
++	[ -n "$mount_pid" ] && kill $mount_pid &> /dev/null
++	[ -n "$remount_pid" ] && kill $remount_pid &> /dev/null
++	wait
++	$UMOUNT_PROG "$subv1_mount" &> /dev/null
++	$UMOUNT_PROG "$subv2_mount" &> /dev/null
++	rm -rf -- "$subv1_mount" "$subv2_mount"
++}
++
++# For the extra mount points
++_require_test
++_require_scratch
++
++_scratch_mkfs >> $seqres.full 2>&1
++_scratch_mount
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1 >> $seqres.full
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol2 >> $seqres.full
++_scratch_unmount
++
++subv1_mount="$TEST_DIR/subvol1_mount"
++subv2_mount="$TEST_DIR/subvol2_mount"
++rm -rf "$subv1_mount" "$subv2_mount"
++mkdir -p "$subv1_mount"
++mkdir -p "$subv2_mount"
++_mount "$SCRATCH_DEV" "$subv1_mount" -o subvol=subvol1
++
++# Subv1 remount workload, mount the subv1 and switching it between
++# RO and RW.
++remount_workload()
++{
++	trap "wait; exit" SIGTERM
++	while true; do
++		_mount -o remount,ro "$subv1_mount"
++		_mount -o remount,rw "$subv1_mount"
++	done
++}
++
++remount_workload &
++remount_pid=$!
++
++# Subv2 rw mount workload
++# For unpatched kernel, this will fail with -EBUSY.
++#
++# To maintain the per-subvolume RO/RW mount, if the existing btrfs is
++# mounted RO, unpatched btrfs will retry with its RO flag reverted,
++# then reconfigure the fs to RW.
++#
++# But such retry has no super block lock hold, thus if another remount
++# process has already remounted the fs RW, the attempt will fail and
++# return -EBUSY.
++#
++# Patched kernel will allow the superblock and mount point RO flags
++# to differ, and then hold the s_umount to reconfigure the super block
++# to RW, preventing any possible race.
++mount_workload()
++{
++	trap "wait; exit" SIGTERM
++	while true; do
++		_mount "$SCRATCH_DEV" "$subv2_mount"
++		$UMOUNT_PROG "$subv2_mount"
++	done
++}
++
++mount_workload &
++mount_pid=$!
++
++sleep $(( 10 * $TIME_FACTOR ))
++
++kill "$remount_pid" "$mount_pid"
++wait
++unset remount_pid mount_pid
++
++# Subv1 is always mounted, thus the umount should never fail.
++$UMOUNT_PROG "$subv1_mount"
++
++# Subv2 may have already been unmounted, so here we ignore all output.
++# This may hide some errors like -EBUSY, but the next rm line would
++# detect any still mounted subvolume so we're still safe.
++$UMOUNT_PROG "$subv2_mount" &> /dev/null
++
++# If above unmount, especially subv2 is not properly unmounted,
++# the rm should fail with some error message
++rm -r -- "$subv1_mount" "$subv2_mount"
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/325.out b/tests/btrfs/325.out
+new file mode 100644
+index 00000000..cf13795c
+--- /dev/null
++++ b/tests/btrfs/325.out
+@@ -0,0 +1,2 @@
++QA output created by 325
++Silence is golden
+-- 
+2.46.0
 
 
