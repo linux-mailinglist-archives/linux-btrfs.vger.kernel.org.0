@@ -1,45 +1,45 @@
-Return-Path: <linux-btrfs+bounces-9347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9348-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87DDB9BDBEE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 03:11:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29A939BDBFC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 03:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7821F258CF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:11:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2100B23030
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Nov 2024 02:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EC719258E;
-	Wed,  6 Nov 2024 02:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7151CC8BA;
+	Wed,  6 Nov 2024 02:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TbzRWRYu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="feB1JIKm"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E527619006B;
-	Wed,  6 Nov 2024 02:09:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546921CC887;
+	Wed,  6 Nov 2024 02:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730858964; cv=none; b=oNMZQ57trMztOOJRkKrQBUg2ti6vgWjiNyLbb+xyNCJ/g+3NNAbzjwTeQ2BkRHKpzBPaqpepgPOiXZjPtAN1ABw2JFNcapzwXS1K8A68EjEUx5+z/AFTmF4HniRvQ21oEwefZOYmb8NBDuQMYbtCJ2+6N0wMT5pc3vwiS3omS5M=
+	t=1730858985; cv=none; b=HlXibSL0qTWao268hMR9+0Ddrh/Y+geDkKGaYc38H8Xq6oM38LBpHf1EbXbayAeXgp6XuUnblAHIl1rUxi6rsKLUdX7v1IpJFX8dBBx5I1jxRxkdTtltvbFAJn4q8FM+2DglLGhJD0QpxGbQdNTvznhkdXsIeaGZIaACSDzuorc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730858964; c=relaxed/simple;
-	bh=msElaN0h388wkDiBJ7aFMbSNP21TiZEWT0zi+8xApAA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n/ZqZzFKpW/7dosci9gO91z4MZHItVDKMCrkVpvTXkDS/PTnrKO/sRuhj0DBCJIpfuAwoejP7IDAbHVwcq2eEpIi+bLpNib1CIpV/YH7bqiesqvBIWFfo6zTRW6m7ywmq+x6y/WuezybCd7UmujLmxAU1/lenUC3k0iAeFZb28Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TbzRWRYu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDFA9C4CECF;
-	Wed,  6 Nov 2024 02:09:22 +0000 (UTC)
+	s=arc-20240116; t=1730858985; c=relaxed/simple;
+	bh=UYVVTwzIzZVes1NNOPT6nwoHhvCAcSGlPc0j0APmPZE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jMbs/v5eNFSZfGuNXYR6mxW1ixOb8Wv5khcvD1fM5/AmeEk3cQqwZzA0nBYA8D+Y7Q8Nw6Q5mwgnFlrjK5jZGWZOejj/giSvaN7uc7pG5V1bB6xMyudsw4Y7R7SThp89tBSiESUYzwxuSx6V+2pJJV/zyguhjwkH+BA+zi/3amA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=feB1JIKm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F16D6C4CECF;
+	Wed,  6 Nov 2024 02:09:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730858963;
-	bh=msElaN0h388wkDiBJ7aFMbSNP21TiZEWT0zi+8xApAA=;
+	s=k20201202; t=1730858984;
+	bh=UYVVTwzIzZVes1NNOPT6nwoHhvCAcSGlPc0j0APmPZE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=TbzRWRYu91vy5SFK8q66MgFGXV70xxOD2qRLYgfuey3vVsNZbTj8ZuqRzjHPLhAm7
-	 33SPQLI8yZNMRV/RyVHeNQBiQ/tqhkv9UTtmZuksCnL8WwiPKpmioDOHnVggK3ZdAX
-	 HK8KC7VPqX9TMmT14yp6JdgeFn9X7IWP22/XR0wgV8g/fxOYQxlpRi7EQVwwhy48gh
-	 zSuVzSBppaOl7UvgBSJLT33WgWIphyQMIFGSCJla0rtOPOS/DrkLORdk/q93B5e7Xo
-	 xYWgyGs5gOnsiczDMMDhmLoPM9Jjx8n1nxAXPBrgfOjEJyxJX4HOSpLU5A3T/ajBk8
-	 rWKY+N3OuwDGQ==
+	b=feB1JIKmQDOrU7vXrAnP/z2DBrHvhlpbpd0vw9D60WH56i//lg8ZzmRSIvkhVpzSp
+	 s8KBeYHNR2PvCq33Vd1idBBuU8wKmXDAg43ebQ/V22YsxO6DarRBUndW5O4iRWN44N
+	 uVbpu7mitsuWVfQ9ZayuUqJHgxxJWHbY7qCO7H8mYsd6hfNSY3WOmQIL3uE74JcczN
+	 NYAcA0r0Oe5z5eVM7N2Rg5Hb+wWPvXwr0+1uEbfoKJRWuwJvTbyZCK2fCVPz8RV8By
+	 xIwRBv23YtFt21BPN7h/HpxH5JdcJWRU918mnXfDURd+D8qkSmdE/mXQlltXdzuJl5
+	 gh0wykJXkzs2Q==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	fdmanana@suse.com
@@ -47,9 +47,9 @@ Cc: Qu Wenruo <wqu@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "btrfs: fix extent map merging not happening for adjacent extents" failed to apply to v6.6-stable tree
-Date: Tue,  5 Nov 2024 21:09:19 -0500
-Message-ID: <20241106020921.164780-1-sashal@kernel.org>
+Subject: FAILED: Patch "btrfs: fix defrag not merging contiguous extents due to merged extent maps" failed to apply to v6.6-stable tree
+Date: Tue,  5 Nov 2024 21:09:41 -0500
+Message-ID: <20241106020942.170673-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -71,108 +71,117 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From a0f0625390858321525c2a8d04e174a546bd19b3 Mon Sep 17 00:00:00 2001
+From 77b0d113eec49a7390ff1a08ca1923e89f5f86c6 Mon Sep 17 00:00:00 2001
 From: Filipe Manana <fdmanana@suse.com>
-Date: Mon, 28 Oct 2024 16:23:00 +0000
-Subject: [PATCH] btrfs: fix extent map merging not happening for adjacent
- extents
+Date: Tue, 29 Oct 2024 15:18:45 +0000
+Subject: [PATCH] btrfs: fix defrag not merging contiguous extents due to
+ merged extent maps
 
-If we have 3 or more adjacent extents in a file, that is, consecutive file
-extent items pointing to adjacent extents, within a contiguous file range
-and compatible flags, we end up not merging all the extents into a single
-extent map.
+When running defrag (manual defrag) against a file that has extents that
+are contiguous and we already have the respective extent maps loaded and
+merged, we end up not defragging the range covered by those contiguous
+extents. This happens when we have an extent map that was the result of
+merging multiple extent maps for contiguous extents and the length of the
+merged extent map is greater than or equals to the defrag threshold
+length.
 
-For example:
+The script below reproduces this scenario:
 
-  $ mkfs.btrfs -f /dev/sdc
-  $ mount /dev/sdc /mnt/sdc
+   $ cat test.sh
+   #!/bin/bash
 
-  $ xfs_io -f -d -c "pwrite -b 64K 0 64K" \
-                 -c "pwrite -b 64K 64K 64K" \
-                 -c "pwrite -b 64K 128K 64K" \
-                 -c "pwrite -b 64K 192K 64K" \
-                 /mnt/sdc/foo
+   DEV=/dev/sdi
+   MNT=/mnt/sdi
 
-After all the ordered extents complete we unpin the extent maps and try
-to merge them, but instead of getting a single extent map we get two
-because:
+   mkfs.btrfs -f $DEV
+   mount $DEV $MNT
 
-1) When the first ordered extent completes (file range [0, 64K)) we
-   unpin its extent map and attempt to merge it with the extent map for
-   the range [64K, 128K), but we can't because that extent map is still
-   pinned;
+   # Create a 256K file with 4 extents of 64K each.
+   xfs_io -f -c "falloc 0 64K" \
+             -c "pwrite 0 64K" \
+             -c "falloc 64K 64K" \
+             -c "pwrite 64K 64K" \
+             -c "falloc 128K 64K" \
+             -c "pwrite 128K 64K" \
+             -c "falloc 192K 64K" \
+             -c "pwrite 192K 64K" \
+             $MNT/foo
 
-2) When the second ordered extent completes (file range [64K, 128K)), we
-   unpin its extent map and merge it with the previous extent map, for
-   file range [0, 64K), but we can't merge with the next extent map, for
-   the file range [128K, 192K), because this one is still pinned.
+   umount $MNT
+   echo -n "Initial number of file extent items: "
+   btrfs inspect-internal dump-tree -t 5 $DEV | grep EXTENT_DATA | wc -l
 
-   The merged extent map for the file range [0, 128K) gets the flag
-   EXTENT_MAP_MERGED set;
+   mount $DEV $MNT
+   # Read the whole file in order to load and merge extent maps.
+   cat $MNT/foo > /dev/null
 
-3) When the third ordered extent completes (file range [128K, 192K)), we
-   unpin its extent map and attempt to merge it with the previous extent
-   map, for file range [0, 128K), but we can't because that extent map
-   has the flag EXTENT_MAP_MERGED set (mergeable_maps() returns false
-   due to different flags) while the extent map for the range [128K, 192K)
-   doesn't have that flag set.
+   btrfs filesystem defragment -t 128K $MNT/foo
+   umount $MNT
+   echo -n "Number of file extent items after defrag with 128K threshold: "
+   btrfs inspect-internal dump-tree -t 5 $DEV | grep EXTENT_DATA | wc -l
 
-   We also can't merge it with the next extent map, for file range
-   [192K, 256K), because that one is still pinned.
+   mount $DEV $MNT
+   # Read the whole file in order to load and merge extent maps.
+   cat $MNT/foo > /dev/null
 
-   At this moment we have 3 extent maps:
+   btrfs filesystem defragment -t 256K $MNT/foo
+   umount $MNT
+   echo -n "Number of file extent items after defrag with 256K threshold: "
+   btrfs inspect-internal dump-tree -t 5 $DEV | grep EXTENT_DATA | wc -l
 
-   One for file range [0, 128K), with the flag EXTENT_MAP_MERGED set.
-   One for file range [128K, 192K).
-   One for file range [192K, 256K) which is still pinned;
+Running it:
 
-4) When the fourth and final extent completes (file range [192K, 256K)),
-   we unpin its extent map and attempt to merge it with the previous
-   extent map, for file range [128K, 192K), which succeeds since none
-   of these extent maps have the EXTENT_MAP_MERGED flag set.
+   $ ./test.sh
+   Initial number of file extent items: 4
+   Number of file extent items after defrag with 128K threshold: 4
+   Number of file extent items after defrag with 256K threshold: 4
 
-   So we end up with 2 extent maps:
+The 4 extents don't get merged because we have an extent map with a size
+of 256K that is the result of merging the individual extent maps for each
+of the four 64K extents and at defrag_lookup_extent() we have a value of
+zero for the generation threshold ('newer_than' argument) since this is a
+manual defrag. As a consequence we don't call defrag_get_extent() to get
+an extent map representing a single file extent item in the inode's
+subvolume tree, so we end up using the merged extent map at
+defrag_collect_targets() and decide not to defrag.
 
-   One for file range [0, 128K), with the flag EXTENT_MAP_MERGED set.
-   One for file range [128K, 256K), with the flag EXTENT_MAP_MERGED set.
+Fix this by updating defrag_lookup_extent() to always discard extent maps
+that were merged and call defrag_get_extent() regardless of the minimum
+generation threshold ('newer_than' argument).
 
-   Since after merging extent maps we don't attempt to merge again, that
-   is, merge the resulting extent map with the one that is now preceding
-   it (and the one following it), we end up with those two extent maps,
-   when we could have had a single extent map to represent the whole file.
+A test case for fstests will be sent along soon.
 
-Fix this by making mergeable_maps() ignore the EXTENT_MAP_MERGED flag.
-While this doesn't present any functional issue, it prevents the merging
-of extent maps which allows to save memory, and can make defrag not
-merging extents too (that will be addressed in the next patch).
-
-Fixes: 199257a78bb0 ("btrfs: defrag: don't use merged extent map for their generation check")
 CC: stable@vger.kernel.org # 6.1+
+Fixes: 199257a78bb0 ("btrfs: defrag: don't use merged extent map for their generation check")
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_map.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/btrfs/defrag.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 668c617444a50..1d93e1202c339 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -230,7 +230,12 @@ static bool mergeable_maps(const struct extent_map *prev, const struct extent_ma
- 	if (extent_map_end(prev) != next->start)
- 		return false;
- 
--	if (prev->flags != next->flags)
-+	/*
-+	 * The merged flag is not an on-disk flag, it just indicates we had the
-+	 * extent maps of 2 (or more) adjacent extents merged, so factor it out.
-+	 */
-+	if ((prev->flags & ~EXTENT_FLAG_MERGED) !=
-+	    (next->flags & ~EXTENT_FLAG_MERGED))
- 		return false;
- 
- 	if (next->disk_bytenr < EXTENT_MAP_LAST_BYTE - 1)
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index b95ef44c326bd..968dae9539482 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -763,12 +763,12 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
+ 	 * We can get a merged extent, in that case, we need to re-search
+ 	 * tree to get the original em for defrag.
+ 	 *
+-	 * If @newer_than is 0 or em::generation < newer_than, we can trust
+-	 * this em, as either we don't care about the generation, or the
+-	 * merged extent map will be rejected anyway.
++	 * This is because even if we have adjacent extents that are contiguous
++	 * and compatible (same type and flags), we still want to defrag them
++	 * so that we use less metadata (extent items in the extent tree and
++	 * file extent items in the inode's subvolume tree).
+ 	 */
+-	if (em && (em->flags & EXTENT_FLAG_MERGED) &&
+-	    newer_than && em->generation >= newer_than) {
++	if (em && (em->flags & EXTENT_FLAG_MERGED)) {
+ 		free_extent_map(em);
+ 		em = NULL;
+ 	}
 -- 
 2.43.0
 
