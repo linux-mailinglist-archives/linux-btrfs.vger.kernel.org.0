@@ -1,98 +1,107 @@
-Return-Path: <linux-btrfs+bounces-9399-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9400-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B53C9C2B6D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2024 10:37:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871A29C2D85
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2024 14:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7784B21E6F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2024 09:37:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90DC1C20FDB
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2024 13:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A551465AB;
-	Sat,  9 Nov 2024 09:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8112C197A81;
+	Sat,  9 Nov 2024 13:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="Kk3yUV0m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1yAgy2m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7F6288D1
-	for <linux-btrfs@vger.kernel.org>; Sat,  9 Nov 2024 09:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16306195385
+	for <linux-btrfs@vger.kernel.org>; Sat,  9 Nov 2024 13:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731145047; cv=none; b=OU6xJP8QOchNzEXrTM5AflI2JSV7Xvaz0jAe8WznpBUvPuchKrJlXbBxSPq8bP6MuEEorkviSqG4RydDoVfFtliIOx8ShgKTwai3cfHUoVpeJiDB8O8Cw2+mBUZy3XpvF7Q8VKPvwELfdoe7AVcw3Mz7fz72OH4u+Ri2FKXBjP8=
+	t=1731158474; cv=none; b=BOAqef45gcH214D7N3cQjqL60Mzw/a/8kmNtaHK6CqUhByTsxt3YgFJEigXKTWwqi/BadFpHY9w+nm3pohBq4XQjxUkY+5juRr6RfiWWZcRXSaJKezF17Hg8qyts3DVLi1ER6rQqSccg9jLbxU+QY5JuxS3EJLyANpOLxL3F67M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731145047; c=relaxed/simple;
-	bh=WUSzPC8LbEZflAiPwWuJ6yP6ZjLxEoe3h9ZGCgKbiUs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TjoFCPm1cr7rBAvCDVwbJeXoRPnkAU49EuK2pns+FHXvO1udARGzraxprIAimYq7d+W/7at2Z/qaqnAOehkksXlIwElvPBaoLAbvQPUnnrwSOtd4r+G7B/GY11tBjN7WB1XE2I43RKNqoRDrDPMf957WcHsMT/vWIRCMbzi021s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=Kk3yUV0m; arc=none smtp.client-ip=104.245.9.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
-DKIM-Signature: a=rsa-sha256; bh=cxO0GmgaAdtV8tJp1nxO8HDTT0hbYq1WO3k4oMyY/lo=;
- c=relaxed/relaxed; d=archlinuxcn.org;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
- i=@archlinuxcn.org; s=default; t=1731145040; v=1; x=1731577040;
- b=Kk3yUV0mvsvu3mSN7cg4hH9C83lqE4ukbJiYpKzyFH9MgoQJfc7NrjDj3luaCMKZsGrD8Gki
- vWXDqkOGcrwFPriYKEK6Q+8Fyc227nRE0cW2MO5XWCNc6bfDvJWO78qWOKRa4rIQgLfN92kQGQf
- RD9tu3xNr45PJaMwsjNde0FpipmUpS1bECs2rRfOa2PSN7+IG0y9EOWz/Lpo9vjhRuFpUlHKjiB
- FWdP6lg/yy3qlF2xWDZBM6A+IfN2Ko3tf6vezcqWJ0shugr5krFPn8Bg33Nm8wNi4S8op6U/DZa
- GtJn2qrpj09Jg0HKfXLFMV8XRhX4n0GkCFCeWFLYyYOWA==
-Received: by wiki.archlinuxcn.org (envelope-sender
- <integral@archlinuxcn.org>) with ESMTPS id 1500ce07; Sat, 09 Nov 2024
- 17:37:20 +0800
-From: Integral <integral@archlinuxcn.org>
-To: linux-btrfs@vger.kernel.org,
-	wqu@suse.com
-Cc: integral@archlinuxcn.org
-Subject: [PATCH] btrfs-progs: replace sizeof() with ARRAY_SIZE() macro
-Date: Sat,  9 Nov 2024 17:37:04 +0800
-Message-ID: <20241109093704.84519-1-integral@archlinuxcn.org>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1731158474; c=relaxed/simple;
+	bh=5JJLo2a8rI60wGee5CTsU0I0QUnlU2RsPjxjDX8nGLc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XyXzRXB9o3iwDLSdUvJw5NdSpA1J8G5gEdKE5/bkvkSlipknbzoqFgyNNeDOjGBHzpO0WxM6C2IJOBgO6InSuWPeXMoRRUJTuR2ksKWp9FyDeebtXipYShP6qpbSXAsgXiU0VRPenapWX236LK2Chq7E+zOo6L5ev7uv9ywGEII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1yAgy2m; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-539fe02c386so4019794e87.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 09 Nov 2024 05:21:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731158471; x=1731763271; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RHeKvIjiCu/ngUTSkWrd9Z9AM5NsweZyS9tn4aso7LQ=;
+        b=L1yAgy2m2aJMxretFbQZj4LfEYkd97Ap3KP8H85ukbRECJyZXQSAQtDCsJfRTRlUQ4
+         UaWVCmfY4MkptSkGvQ+merrs3kMfZPLyhW9ZyqkewOlp4ohsTgM6f7A9QPV2kL/PtrI6
+         r5GUj10hM0ubo24sy1RkqB5Lhx6HysndgRzku6XOraT3LUNKbJiFKNB0xIj1X/S70eCa
+         6RV13FgVEM0eILliUKSn70OpWq3ZPuvcDbx8ny6vWgtou8m0Ba9i+bTXQzMyaBMJsVPt
+         9/e+OTeGCJ2p609PIkdjkgMdO5NAioNFn8vIDn5IQ2pln4mRUM8gC8zG/y8Q7QZG0Ks8
+         myTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731158471; x=1731763271;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHeKvIjiCu/ngUTSkWrd9Z9AM5NsweZyS9tn4aso7LQ=;
+        b=wy9Mq4BIFmxFV+jcOm6AzrzDMPKw82x72DPy+qV9gLF166jr2P0sv3uF79HoAagvEx
+         XsPS6hEQITqnBCHGLX8XQ4RGpatjLScTuC5kdFXi4o2hBR+z6vmz8m3egOc+s8vqb5C2
+         idFdcF0Brb08LsCmdSeC1y3nwalry6eWzN26BAdfvrKK2zGSgxpDcjyLqLjci1gag7Rr
+         J6XKvLbIB+LlUS9fYe+JM3zSGEDnqynbwvJFaFhA4Cf5u+5m+WL7ymCNMDJei9Aq4Krj
+         LI9i3zywLrIh3wZPLiz6TrPKne7XhKCJvS4E6sB/MlGKp0xgugKqVQjMb63rDUOBFIIJ
+         +txg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbedjOeKfIVWlN1KGtryp7/VYq/pzrP4ZulSs9LqGsxhwgyBs9h+o9FTnPkXw7WBaE/ywsIKCOna8CKQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLkmRFeaCDfNAW84g5xI+gkEQ7QIBKRd+xVFcj8fN+FweDGXJU
+	1NMeGkElgwsvKvs9AJ50Nw3J8TBK6L8Hith2rWQQ8pVhdBH/B6zvjHshqA==
+X-Google-Smtp-Source: AGHT+IE2k/AnkDoLZR41gv12tlg/U/7oOc/7pmq8XxJ8LQH8E1MRLaiaqqFT8eI/Hp49pbf/JvOv7Q==
+X-Received: by 2002:a05:6512:2813:b0:539:f1d2:725b with SMTP id 2adb3069b0e04-53d866b2220mr2226254e87.4.1731158470806;
+        Sat, 09 Nov 2024 05:21:10 -0800 (PST)
+Received: from ?IPV6:2a00:1370:8180:371b:43bf:b92f:f22:ccb5? ([2a00:1370:8180:371b:43bf:b92f:f22:ccb5])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53d8c3cbf20sm203723e87.132.2024.11.09.05.21.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Nov 2024 05:21:10 -0800 (PST)
+Message-ID: <1cf9958b-bc89-4000-9c14-ef800e5f58bd@gmail.com>
+Date: Sat, 9 Nov 2024 16:21:03 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: Recovering from/avoiding metadata space exhaustion
+To: Stefan N <stefannnau@gmail.com>, Andrea Gelmini <andrea.gelmini@gmail.com>
+Cc: Chris Murphy <lists@colorremedies.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CA+W5K0pYAyHS6K5Oy2h03KKgP9+6Q0stOYBrNY7vSmA+J4SdfA@mail.gmail.com>
+ <CA+W5K0pnbNZL+rPu=vF1TTYnrx+=qhUSuNjx-ueDNc=ip+yjpA@mail.gmail.com>
+ <fb093ca9-2deb-4eae-93ee-8442e01e7470@app.fastmail.com>
+ <CAK-xaQaCY5uLz0Sg4f4VupFFxf707RS26DBLaVxJ3UJgs5Eoug@mail.gmail.com>
+ <CA+W5K0ovc1fbgYJMDhXx_kJNUBdV7pZ0DSwqkPzcqodAEn0=Qw@mail.gmail.com>
+Content-Language: en-US, ru-RU
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <CA+W5K0ovc1fbgYJMDhXx_kJNUBdV7pZ0DSwqkPzcqodAEn0=Qw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Use ARRAY_SIZE() macro to simplify for loop.
+09.11.2024 10:01, Stefan N wrote:
+> 
+> $ mount -o rw,degraded,clear_cache,skip_balance -U my-uuid /mnt/array
+> 
+> BTRFS info (device sdd1): first mount of my-uuid
+> BTRFS info (device sdd1): using crc32c (crc32c-intel) checksum algorithm
+> BTRFS info (device sdd1): using free-space-tree
+> BTRFS info (device sdd1): rebuilding free space tree
 
-Signed-off-by: Integral <integral@archlinuxcn.org>
----
- common/format-output.c | 2 +-
- common/sort-utils.h    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+You could try mounting with clear-cache,nospace_cache or btrfs-check 
+--clear-space-cache.
 
-diff --git a/common/format-output.c b/common/format-output.c
-index 3b333ed5..f150a4f2 100644
---- a/common/format-output.c
-+++ b/common/format-output.c
-@@ -149,7 +149,7 @@ static bool fmt_set_unquoted(struct format_ctx *fctx, const struct rowspec *row,
- {
- 	static const char *types[] = { "%llu", "bool" };
- 
--	for (int i = 0; i < sizeof(types) / sizeof(types[0]); i++)
-+	for (int i = 0; i < ARRAY_SIZE(types); i++)
- 		if (strcmp(types[i], row->fmt) == 0)
- 			return true;
- 
-diff --git a/common/sort-utils.h b/common/sort-utils.h
-index 09be7b7d..a8af9658 100644
---- a/common/sort-utils.h
-+++ b/common/sort-utils.h
-@@ -56,7 +56,7 @@ void test() {
- 	const char *sortby[] = { "size", "id" };
- 
- 	compare_init(&comp, sortit);
--	for (i = 0; i < sizeof(sortby) / sizeof(sortby[0]); i++) {
-+	for (i = 0; i < ARRAY_SIZE(sortby); i++) {
- 		ret = compare_add_sort_key(&comp, sortby[i]);
- 		if (ret < 0) {
- 			printf("ERROR adding sort key %s\n", sortby[i]);
--- 
-2.47.0
 
 
