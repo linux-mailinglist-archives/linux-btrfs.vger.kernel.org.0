@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-9451-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9452-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7A619C46AC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 21:23:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A65249C46AD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 21:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F0D41F26437
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 20:23:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B61A289A57
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 20:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BB61C8FA2;
-	Mon, 11 Nov 2024 20:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6431C9B9B;
+	Mon, 11 Nov 2024 20:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="KsDTylkz"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ul3sfdrd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F6C1C8FA8
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 20:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289781C9B97
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 20:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731356378; cv=none; b=pQ1EmYCBMiTaqDf6NZwjIVzI+8T5t9xzdFQFyutA92E7rL4E3FW+cVgx+ErJ3us13V/ACmFDnt3aDVWyL1QTTd6XQBb5Q9EwUkZhZYMG9sEk16OuruKpI12WJdaA/CHBAlkbE+tpq9eeDeKBclUx6NSLnYRGfoXNOG9cgyrtFWc=
+	t=1731356379; cv=none; b=DCA+wBYL99boKCHR8X6/FbWapbke2XuQmCnuaM8RAJn4yZoHp+qksGx4UD34x0izSH1pIiKViHpzc2QepOml0JPWB10vhhBf0WHRAbp0n4RSPVdevKg919hl750BasCgwwcSW/4ZxCUCamXfUINsCeCjbN5FONb0jkvQNsNXMl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731356378; c=relaxed/simple;
-	bh=ebiNpZYnvVnRivNXQB+8i4kmhiMBzkGPNaNaMTrbD18=;
+	s=arc-20240116; t=1731356379; c=relaxed/simple;
+	bh=g8f8HPGo6FF6bNhCenpptLnEwEhFsJS2XcfOHpq3gpw=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HcS8+xzzDA+f28/4A6YYu40CnRQ2k6MVSeXGxb2KhzGCXv+FTVD9nomhIwqEAbYZFtInbsz2cm14Y+lpJeXYwmZHROfl67+vE2/4WGyI065R03HMhggIGg70Hz31mgHCyD1hs7ygpaQEonQbe9muXcD/+4j2EZyoYwdTCPhOXBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=KsDTylkz; arc=none smtp.client-ip=209.85.219.47
+	 MIME-Version; b=epF6VTgR8vOJT46zlARThqcXIXVYzxQjv1YJN19zxsnecEGhV2+UhR/Q5v+P2OlOXasLaS5i8XkrGx63ks+2i+KKP9QadReTGNz6Z62DK16JG+HP4DeR4Z5rc0zbz0NLf1zHu6oCzJVLiOGD6s8QTT1XlXrNW2nLdtPaG+4Cits=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ul3sfdrd; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6cc250bbc9eso36653136d6.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 12:19:36 -0800 (PST)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7b158542592so343955085a.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 12:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731356375; x=1731961175; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731356377; x=1731961177; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=K354FbH7N36y1HXaBsHf/k0mJrRSZmAsPpq48Ppw2zw=;
-        b=KsDTylkzOgGiWbe4xY9fDmY/F7+0m5JC1Y4l7qPBaZeAv0ydV8vhzH+V9fHZ3NwPZf
-         veb1C7wPnCqaG1gdsoVAkVG1FNVyhNSzDr9MO63p1F+rB/2jMR9b45XGdS4ANqDShUgS
-         6EWwoOPpd4CiqUei5swGsFI1oYllzegAIbuaHT2JmArM8BAYM0ZX7RPsMDbwUj0Js6TM
-         G1AT9ygGUe0T1yODjStHH+6+0V/waG7Y56iLa4d325OsIoS2SSFuf+9pUTjZrNUi4+ur
-         nMHDjuGo5dxvE3I5i/hJMEXjWaKjhOPp/J+hMjtAMP/JDvyjtWlJVVa9M3Do10WfdbAl
-         fqOw==
+        bh=qkyyLOcMapxd8eZps50M2cPjgtuAOvBDRyUA+1LsM90=;
+        b=ul3sfdrdnV34wC5BOw9gEuQZTFZo6RWEaCK/AQr3weUiTVU/eJkPtu9fgqudOsJXnv
+         mZQj0sOAbfHNRFTehmU174vQivZGCUYNwADSJ9qV7Wyw/j3oyq5/gRKmj06ki2wD6JNy
+         75RkjRTrqTQ/lCnQa22zFxX7asmDSp3503jGvAIce+8FbpLPJ6UB6O/AJPUeLCiV+aCR
+         7+PZ6R7vOGnkwyTkgTDuCySVK9RNBzQhe5LdYWDiV1Ej1FOBlVtMQwdGy495bC+y56mu
+         6ZCDJEMlkyjuYiDc5dW7atL7J8aPlLG605AIYviz0sGSZc6jaB8FO3OYgiwfU0pytqqC
+         apdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731356375; x=1731961175;
+        d=1e100.net; s=20230601; t=1731356377; x=1731961177;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K354FbH7N36y1HXaBsHf/k0mJrRSZmAsPpq48Ppw2zw=;
-        b=wS823jb8HAMqW0mb/pa7siOeUvwT5ettJnxevL1gVCYtWRuKssTWO1ZPyBtVGqH3So
-         wmsfw1HiCZEubGgItTfaiD6GLMv15F/lQ+1SY4a6ks8ysL0PqSWCqjjSW6s7vYr+5bWb
-         xHdEdIZN6GuL5IqJUh/PbmTI0WSX7DhG/j9KNxhYbCuR8Qw9w25ClwgVN9lphcCBnCR9
-         xt96QmbLt0tJ72T39WZk+rfeL0wkrkrG54m9ramc1aUSmvkDER+Gv7eWKiRmPr/CWh0t
-         TUbc2YW33zb/vhk8EU67uTeSsptahNN+FcJoHDXPPGFRVA7aAB6XZ3OH+ACk+iQtdI2n
-         9bjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWhGKEqd0aP0rolyl8UGyv9aVUFois/BW86zQ9s0U5NjTEhNJrOJsWxjSd9X/JmGCEi2pShbOic76/gjw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmhMc5WV6LgMcmVyTA1trE2YcEggqsyL3HiW7mMEhaK1qJbhvi
-	TdwlLyO32NM/5pfkEoLzSKoU6ISdUs838i848m/MYRfKfhqqJxxPbBCb0uiTUVI=
-X-Google-Smtp-Source: AGHT+IHFQZuz+k/JoyCiK5HhS+saKZlDM8Ru8ImET04ZPdGlwroC1m2336uogkksO+jSLPZVucywhA==
-X-Received: by 2002:a05:6214:4518:b0:6cb:5273:7265 with SMTP id 6a1803df08f44-6d39e1800c0mr180760506d6.20.1731356375457;
-        Mon, 11 Nov 2024 12:19:35 -0800 (PST)
+        bh=qkyyLOcMapxd8eZps50M2cPjgtuAOvBDRyUA+1LsM90=;
+        b=TxhRyqVd+lvbETyvFQAmCBIcqv03chqz8uiIGysPGmJl33w6OuqY9CsZpKb5rN2Axy
+         t8bTOWHVA+o++bYe+LZAbdeRmz+v1T6bb910xrjvGqJvsesmuGBvJ8UoE+sqzUjb8ccz
+         c2cPHtZJ5RG71oVd1BNdyucU2SzF7Iukjh2pXRgghCfYXXsjfnNSloCHQl0AkhHRiTTN
+         2rWHZ3Q/e4nHhdF5Y3SaPCTb2UFQ18yC57IfretttOpKnsBBdbFPmx5sVix+0c+o84ON
+         AN/YHmSsbchiLqix0jz0Tbb9lrWc1j7SJdAATALKYQ7s0PbKY1HUUX4xocNQ0Z+iMNbE
+         mV7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXTATS9mLut+C4lo3eghoezPmIYerQGqTKzLrR5SEqwBSmNL+5R/3NkDLZYx8j8MqAFmCKMOcoVjqSXow==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpmJhfYJ84J+2cHMy5+Ywq92aMdbyVKMCeQHdMNvGYsT0q8zX2
+	fDrb6sexnSDP7z4/FNGpDNxUbiZ3WBa3/7+aswh3EAopdK7TsAnrzJqjMnZFfJw=
+X-Google-Smtp-Source: AGHT+IGjGL9g3kFfcH+6V8KAtQzfg7b48XSPpKvHKYOiM22WInprVkhEgNc7K8iBcMmLd7E6fsLBYg==
+X-Received: by 2002:a05:620a:19a7:b0:7b1:3e41:849f with SMTP id af79cd13be357-7b331eff745mr2211412185a.47.1731356377090;
+        Mon, 11 Nov 2024 12:19:37 -0800 (PST)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3961df2d2sm63665716d6.25.2024.11.11.12.19.34
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b32acae57asm525455685a.81.2024.11.11.12.19.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 12:19:34 -0800 (PST)
+        Mon, 11 Nov 2024 12:19:36 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -78,9 +78,9 @@ To: kernel-team@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH v6 15/17] xfs: add pre-content fsnotify hook for write faults
-Date: Mon, 11 Nov 2024 15:18:04 -0500
-Message-ID: <339a520d48acf1c8dc736460d09fd240201d6e00.1731355931.git.josef@toxicpanda.com>
+Subject: [PATCH v6 16/17] btrfs: disable defrag on pre-content watched files
+Date: Mon, 11 Nov 2024 15:18:05 -0500
+Message-ID: <c46f21bd55082ccf7380d438d82d3ebbaea284f9.1731355931.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1731355931.git.josef@toxicpanda.com>
 References: <cover.1731355931.git.josef@toxicpanda.com>
@@ -92,30 +92,39 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-xfs has it's own handling for write faults, so we need to add the
-pre-content fsnotify hook for this case.  Reads go through filemap_fault
-so they're handled properly there.
+We queue up inodes to be defrag'ed asynchronously, which means we do not
+have their original file for readahead.  This means that the code to
+skip readahead on pre-content watched files will not run, and we could
+potentially read in empty pages.
+
+Handle this corner case by disabling defrag on files that are currently
+being watched for pre-content events.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/xfs/xfs_file.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/btrfs/ioctl.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index b19916b11fd5..d1966f996c77 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1442,6 +1442,10 @@ xfs_write_fault(
- 	unsigned int		lock_mode = XFS_MMAPLOCK_SHARED;
- 	vm_fault_t		ret;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 226c91fe31a7..9b13df1ea729 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2638,6 +2638,15 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
+ 			goto out;
+ 		}
  
-+	ret = filemap_fsnotify_fault(vmf);
-+	if (unlikely(ret))
-+		return ret;
++		/*
++		 * Don't allow defrag on pre-content watched files, as it could
++		 * populate the page cache with 0's via readahead.
++		 */
++		if (fsnotify_file_has_pre_content_watches(file)) {
++			ret = -EINVAL;
++			goto out;
++		}
 +
- 	sb_start_pagefault(inode->i_sb);
- 	file_update_time(vmf->vma->vm_file);
- 
+ 		if (argp) {
+ 			if (copy_from_user(&range, argp, sizeof(range))) {
+ 				ret = -EFAULT;
 -- 
 2.43.0
 
