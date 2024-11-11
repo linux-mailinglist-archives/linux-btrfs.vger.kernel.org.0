@@ -1,73 +1,72 @@
-Return-Path: <linux-btrfs+bounces-9475-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67FA49C4A32
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 00:57:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D16929C4A33
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 00:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19EE61F21BFC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 23:57:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8992B1F20587
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 23:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441661E04AE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72471E0DE9;
 	Mon, 11 Nov 2024 23:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MQOeFTKf"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="s3fWExQA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF031D07AA
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 23:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF291D172F
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 23:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731368953; cv=none; b=Ag1ufTRnkz+fKMdv8uzuB53MZ4qGj73pzMYhgDJiCJZ5094VVq4/h+xL8hBhGDT+mPLONZSjAMnvhyRkZcjSVJdJIehKmyCKx3WHS0YBxCrAhwj6+06uPDOESJJwEmWDSZwD/Bw4z49r3ebIDyLPxjLCHl9RjBWn7yQW2kA7ghk=
+	t=1731368953; cv=none; b=kal77eA2EXencPd9uaRrC50Qka1rrqPHkWpb9B2dbU+/AW/ePNAQL71q+g42OSIJ2bX7DIG9NPAddMlsNSSS5Du7eaUyysc8/CvBt3DKtqmEWqjl+JlvXUqTv8oI3QYHtOPzAyGXSRgSIkySQHg44JbsZK9lVUYLJQVGyDoGFD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1731368953; c=relaxed/simple;
-	bh=JN6ziuaz3h3w93syhui0sSuROUWYBUO3x3xlg3f4CsA=;
+	bh=cP6gr8wADb4EASrEnj9VSH3qpQrBlalS1qET7KiSVew=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kEJcL68cM1uWF5EY3nl24B4vRhhJ16go3Z/ca90q/7vLY7xx+TzfkqkSAQQveym5loAYpCqP8jBXctT1X9kOwaueLpDkAkkdeyaXqI6clnUW42aVwYGxAfVJ5ua2kw3xsQCcKX1pma5dOo373I3Dj9p7j05wKIsu+wpJJI5kH20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MQOeFTKf; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=LLfH371EyF4/hrceVUxSfKbpR9eeJcZGi+GBrdnnuiLNFCloMGuBuLS6dmZKjIMTkJJbyBc2IIsqeXHrNv6J/fvrNAtwkLIZ55PSDuYgX2xhmXGhAf/Lpn93kuwTZuHId7ppSsKWuPGGzBJJbXg9ANLB3czRPPLxorXPNdaJxpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=s3fWExQA; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7240d93fffdso4129979b3a.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 15:49:10 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-720d01caa66so4744615b3a.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 15:49:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368950; x=1731973750; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368952; x=1731973752; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LL88Qd2tMlsmBvcuEyGfQPoq7EBSjG4mmD1oB3CTmL4=;
-        b=MQOeFTKfgntx/fL0KS1w5ehtnzLw2J47Mgw4aCD7qt3FE0GsZguoRF9UzEZDgQNRgw
-         aFV52MGH6xiQKxHGYiA1kQ5dpioB9Eb2OR4Hcr1snqxBl+9BCvPqY53HaGpaY5Dv+Kxt
-         5uSsPI702LUrz9n1i44B0UVSu0D/HdbH9sI6vGKOckND5vcI7xCVX4UyWAKHjqOvqbeV
-         H6z2/+sDDjg6Ql5St4JCD+3NCRqUcBKc2ATPKwnEKp4Z874xUa6nZGAqIBzYYA1Ms9TM
-         2EC1Jigln0/b4vOYbtqVWAsGezZdc3xX9GQP/UGaLCY75z7A1NSNfrTGydecQF7a/u2V
-         zVLg==
+        bh=ieWCO7ZvnQOESu0rOvKqnHS1oC/GZ0fSczrbrfzlBys=;
+        b=s3fWExQAqJNrjrhXBcABkuMixXrWdIudo4LplxBPh5u2i3FIjQz8RSwmrUEgHJwJZq
+         4nbroCZ69uk0s+dMKoqZuQA55Q5dTQoVv2sORNjhWPfC/aSmYILESoMsUEEb8Csh+yKz
+         24tJ1Cgq7JAqc5GibDIG0D5vvDg2IQ/lkgMaALDkkKdTBtUlskK/8Nj7xgcWo/hfFMJb
+         lyavRh1R1g/HoSPd37GSLf9ifexOvMNPCvg0YrR2Va5+2oULo5MjCxjric8+vwXL4mFH
+         T7mi/ZhHCZGKMmuF3nrFGuz8GPZkC76x1KAiPgeBGpMVdgciw11mo/kH0lOSTZs8rjYu
+         ukoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731368950; x=1731973750;
+        d=1e100.net; s=20230601; t=1731368952; x=1731973752;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LL88Qd2tMlsmBvcuEyGfQPoq7EBSjG4mmD1oB3CTmL4=;
-        b=kohAXKeoFkwjAxpgzr6gHNKZGL8sWLDpwkSznBDM6XssSLaKmEy17Mao33KwvEInX0
-         pJGt9KO56xX0noSbAeqJpF5iq74cksj7ZuKljysg0TnW+9F6i/TLON+ex6cDjTadh4dD
-         W5nO6c+CfZ6svHeaOjaOzLnZJUpTLqdDiPAEzEN2SLMdonFRb3bzyr52lJJiQ+9CdEcU
-         OqwPB6UbRaOPF5ucVU4omKgXGrt9kzN8GCq35ciSBIILJscSaO9FB4pn/33Z2rXgOL5z
-         Jf7WRxJwqvo85hfGLk1wyCD54n4auZc9/lguLR+/RLDnQfKdy5fUIfQmEITHpuF1Bq6q
-         hYyw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3FyrgYB/5E9Do7tAmQ1l33Tp/rdptykfeVtKBCucN4gyxqXwXWEgvqSxJhweedvpopwkdt3jRUBLyeQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLOhkVl6Mtz6dmQax6qdYpeBVPKpm46g++NULM8nJRMEIt0sxp
-	aQ0MeNzSrMWny9bTNF7lGUcvgk9xGxSG9R+tpc0bqS7tAtULbe2kYlBj6kOPoX3l/9p5GnW4tX8
-	BGiI=
-X-Google-Smtp-Source: AGHT+IGxdsMu1dfGOYWXi1R28aWFhjsN5Q3I34Dwpy3CjKRXcDtvBr7LZlUVTVK3RyQbj+sGtC8u7g==
-X-Received: by 2002:a05:6a00:3a29:b0:71e:680d:5e94 with SMTP id d2e1a72fcca58-724133510d7mr19932677b3a.19.1731368949731;
-        Mon, 11 Nov 2024 15:49:09 -0800 (PST)
+        bh=ieWCO7ZvnQOESu0rOvKqnHS1oC/GZ0fSczrbrfzlBys=;
+        b=CpepBtjudVPUVgSRwpP2oXnq6vljplXftkJxqjev4Hw2FQ40akZ+VAb0TWioid/yNj
+         QrwUn26uVvzq7OGsAWQoFoK/hxEtZTxnZCXCoeWdDD4wGrv1/CtaWbjs/qNusgbG2d6x
+         xAP7rvqS+8pBOASXYvinwpyXryOFklBQjG1mjXAzh61YIDIiQ7Rd5S5M2pyedKgF3dtS
+         0WFohgR7v3oj1Ai3VsD3F5/OI0r5XtL/XuzRNadZfhroyKik51NimCIXv5elK4JQ8J84
+         8QDA5Euqh+eXaRVIDNZV+k2Ytz22rp4p/axeTZZv/ln1Q5DaatVX2JXxLLvJPWqU20PL
+         q4Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWYDE23JUHqYzHz4MLUuTGy4PZDn1i21w7z3awTuuE2VVICh+7+9ZW81qJMqYWBkdoZT8S5A2f5rSbb7g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyXtgE9wkIWOqz7e/S9mssEpk2Q+6y29J6F53mFIfNrwdU719F
+	dH0pivIv6Rsoh2fDA/S68xA+07PQ36LBFDjJRrDnvgfCkbBSwr5oq6ykf+KCjXA=
+X-Google-Smtp-Source: AGHT+IEuKUU8LmiDGdVSE8HEQD2DSqpmQWqCoCseRpXFHWRMzDS4n8tdQLpPQA0yFxWxU+7dmSvSgA==
+X-Received: by 2002:a05:6a00:a1d:b0:71e:693c:107c with SMTP id d2e1a72fcca58-724132c15a3mr18685493b3a.11.1731368951711;
+        Mon, 11 Nov 2024 15:49:11 -0800 (PST)
 Received: from localhost.localdomain ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.49.08
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.49.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 15:49:09 -0800 (PST)
+        Mon, 11 Nov 2024 15:49:10 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-mm@kvack.org,
 	linux-fsdevel@vger.kernel.org
@@ -80,9 +79,9 @@ Cc: hannes@cmpxchg.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 14/16] xfs: punt uncached write completions to the completion wq
-Date: Mon, 11 Nov 2024 16:37:41 -0700
-Message-ID: <20241111234842.2024180-15-axboe@kernel.dk>
+Subject: [PATCH 15/16] xfs: flag as supporting FOP_UNCACHED
+Date: Mon, 11 Nov 2024 16:37:42 -0700
+Message-ID: <20241111234842.2024180-16-axboe@kernel.dk>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241111234842.2024180-1-axboe@kernel.dk>
 References: <20241111234842.2024180-1-axboe@kernel.dk>
@@ -94,34 +93,38 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-They need non-irq context guaranteed, to be able to prune ranges from
-the page cache. Treat them like unwritten extents and punt them to the
-completion workqueue.
+Read side was already fully supported, for the write side all that's
+needed now is calling generic_uncached_write() when uncached writes
+have been submitted. With that, enable the use of RWF_UNCACHED with XFS
+by flagging support with FOP_UNCACHED.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- fs/xfs/xfs_aops.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/xfs/xfs_file.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-index 559a3a577097..c86fc2b8f344 100644
---- a/fs/xfs/xfs_aops.c
-+++ b/fs/xfs/xfs_aops.c
-@@ -416,9 +416,12 @@ xfs_prepare_ioend(
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index b19916b11fd5..1a7f46e13464 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -825,6 +825,7 @@ xfs_file_buffered_write(
  
- 	memalloc_nofs_restore(nofs_flag);
+ 	if (ret > 0) {
+ 		XFS_STATS_ADD(ip->i_mount, xs_write_bytes, ret);
++		generic_uncached_write(iocb, ret);
+ 		/* Handle various SYNC-type writes */
+ 		ret = generic_write_sync(iocb, ret);
+ 	}
+@@ -1595,7 +1596,8 @@ const struct file_operations xfs_file_operations = {
+ 	.fadvise	= xfs_file_fadvise,
+ 	.remap_file_range = xfs_file_remap_range,
+ 	.fop_flags	= FOP_MMAP_SYNC | FOP_BUFFER_RASYNC |
+-			  FOP_BUFFER_WASYNC | FOP_DIO_PARALLEL_WRITE,
++			  FOP_BUFFER_WASYNC | FOP_DIO_PARALLEL_WRITE |
++			  FOP_UNCACHED,
+ };
  
--	/* send ioends that might require a transaction to the completion wq */
-+	/*
-+	 * Send ioends that might require a transaction or need blocking
-+	 * context to the completion wq
-+	 */
- 	if (xfs_ioend_is_append(ioend) || ioend->io_type == IOMAP_UNWRITTEN ||
--	    (ioend->io_flags & IOMAP_F_SHARED))
-+	    (ioend->io_flags & (IOMAP_F_SHARED|IOMAP_F_UNCACHED)))
- 		ioend->io_bio.bi_end_io = xfs_end_bio;
- 	return status;
- }
+ const struct file_operations xfs_dir_file_operations = {
 -- 
 2.45.2
 
