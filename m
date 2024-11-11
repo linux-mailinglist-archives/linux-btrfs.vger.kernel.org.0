@@ -1,144 +1,94 @@
-Return-Path: <linux-btrfs+bounces-9409-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9410-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4324F9C377F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 05:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C6869C37EB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 06:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA2771F21EB4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 04:27:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23B751F21C97
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 05:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4446814B956;
-	Mon, 11 Nov 2024 04:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23EA1531E2;
+	Mon, 11 Nov 2024 05:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bLoQ9ZzN"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T1+WSmdM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC1F32C8E;
-	Mon, 11 Nov 2024 04:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718F518E1F;
+	Mon, 11 Nov 2024 05:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731299234; cv=none; b=Epi24Bjxbb1aexGnpqnGcr+AvAcm0+HmKs6S4UDTnRqnMEjvhPQr55ujzsMIl30ZtBJ6NUu99R0qlw38xDpAGz5R5Lk8GJBaaYRPTD8HjvSIx11w0/ro6YnscrUY6Bfeiq/Gzd+BwDTbfgRwO4HmrxCIoD0sPJvz8yRlUnB8srI=
+	t=1731304333; cv=none; b=N/9ewoG92qVhBdjQRAU9SCy/7hySgYjYF1SB+70f5OTqXoanOshxPBvy68m9eEI5ogvo0/Lw5EkHaNYI/P5Ofl/v4GzbTTFDFFucTs37WR69dGn6M2tlhPb9t2QFeHir8U9s7/tAo1HS4HWk3yhjCV8rTfVzrEoP2wLcJleBuPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731299234; c=relaxed/simple;
-	bh=jWJseAgdkVsRV45N5IT9+z7BLfZgg+UOTOPUDONmzEs=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=FY5WBePFVwTLIwtwmiwkJERsAHhaO+0pYA8HbEQSjgrStNYcel64zJ9l9WfT/x1BKCjrq2TeFVdRwHcetz7AHUeOQ3OpHaOOhTKujwekU5pmXtvblTkHKK1JYzHRI9KHLnJWb+FDrry+HG71lBmKH1xP5S9EWcMvUFxA5CjHv3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bLoQ9ZzN; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1731299229; x=1731904029; i=quwenruo.btrfs@gmx.com;
-	bh=87IPDM0rzH9w7Vyj/nCxfWfodIkyFfirQkRrjE1gcM8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
-	 Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=bLoQ9ZzNhlU16L3GzY+P9AIPqWde31bjsyOUPFDpN446lO5KDjBpHimhdWd2VcxR
-	 vIo8iuGqkvL9WESq5AhIbA/hdry8cL/wCKALDSuI9vcZDMthVEMDtDpjJCKOQ/8ZJ
-	 6NUVfCD8dzx6CodOawq+/tbSmV+WaEpOCh4MAGUkuDSeQuyJpDQhCLjTYDSdOkMQ9
-	 AkRgn/8JAN//xmweAkjuOsOyvsz4xu86aEQAf1TgFXVv1jcCN+IwK0zjnEtzBC+Qw
-	 z4H9RvZtxCWJQJN/j8pu4nyWXwbVootzjjty9yuipkR7pSvkfxNkfg4cE4KN6nciK
-	 yq1g/hrZn5Bd+WCwBQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbivM-1tnGXD0qVy-00eG29; Mon, 11
- Nov 2024 05:27:09 +0100
-Message-ID: <561428e6-3f71-48cb-bd73-46cc21789f6f@gmx.com>
-Date: Mon, 11 Nov 2024 14:57:06 +1030
+	s=arc-20240116; t=1731304333; c=relaxed/simple;
+	bh=EO1QHIM5+jGSfEBNzYbLoWnFYHOurX46zYafIDiSrjA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X/kvqpkK+fIJ8kJbz5Hqim8xebEYE7japcTQfJCCKIG+AgpSmoCaqj7JpiopE3RfFD3SZefg9F2vDbvJffZsBGh2r0NG1Wg2qV56go9vliNPExMb96Bxi9E1LPhQ0erE09Zg+y+3YQFDLCIVZqWqNIVeo4513LfYK7VDkOYc68U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T1+WSmdM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=/tjpwVMdHaeR0AMQS52svXXyIw2bL3kG9DW5H+2u1Gc=; b=T1+WSmdM+UAnQkcVtBJhUIxV99
+	HZRtGy8E2LaE5e/wamHDg0up4A6l2BhNrt3WIO7BEQBaOioByu9e+I2bWAow3I2DSFtKh215bUsRn
+	YmL4nRo+eyiZ5WXFN4LcJNQFL4e45RYk11vuA/bqkGXInnej3UrpTVmONtMR29tM9BG0idHAS2ra2
+	TViCy51WbWJ5IaOPTlW978MvprYcdfeD0xpZjHNTkMU0ir4DCITREv2MOAo73DeXzR+2K5XiN5yJy
+	52ZiVH6rj4xmou6wqZfFO5fdRY1rHdFHPLMGDNaRa7TSVE8eatxJnEFSxJwwFNMe6vDufiYaReIRf
+	FD4a4DOw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tANLO-0000000GQGy-26jq;
+	Mon, 11 Nov 2024 05:52:10 +0000
+Date: Sun, 10 Nov 2024 21:52:10 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: About using on-stack fsdata pointer for write_begin() and
+ write_end() callbacks
+Message-ID: <ZzGbioLSB3m7ozq1@infradead.org>
+References: <561428e6-3f71-48cb-bd73-46cc21789f6f@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-fsdevel@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: About using on-stack fsdata pointer for write_begin() and write_end()
- callbacks
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:POIEgZS+MNLrselfk0m6ffNoOmih8NOsWgCslejF/lBkWd9EckR
- sFGHJi+9LpeSpW+XY2CJX03UyxaadeyYb7evN/b33Ym5sI80orwgjzfADVG81LJ68V7m5V7
- aQwuG2qkWP5rAUdd1ikhqRIH8af1odOrz3syvp+OksMc/9FNUlYY/H10bPvM/d8lp9x6OAp
- WDlwaoLwoMG3r6nZjzd2A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Ngmt3Z+Uk/Y=;GjJj06/tOybXrmbkXQQD9GuRqhT
- sO2qdt49kd0pj0B3UqF3qXMUnZlt9FdmsO0/YAvW3nJhdtqdpAVrWmIsYepx+UYqJKqQb4ncQ
- scrTjT1id0MRN+kXuiXcT6yWv/FQgJ97nWALHejHnaLxYpF03mMqMvCemqspmYdwHgv4njNH4
- XGaFH2LGhL4HLsmnO3GCYZhe+4Fpr5tKsulq4uMjf8yxAsDXILwnNcqOlBuRCX1U6BPCfuofZ
- kHpUifiZDfAeTbYK2vkpt3d2/+wSpjOxYvlNNYbjzF1sMrViKUYOnKB6r6QjF3wkZSUN2S/mJ
- hfCH3W2gaLyxdaNe/OyA54S2Pgh9NV+UnJLur0BTJ44zzp+E0TCKdy69fMq5FsNl755+0XNmp
- BA7jheT7dNGOqf/VSSomHAQ2LqM7BlJHEkhZaAnIj61jvH2Fab5GmzOPpumvnrLImiyMBUAlL
- hkCJR+gAl9aO4JScPPtOeeTKjBJ0Cd1YSSLOdmF7mwDXfQWJzS+eXR5KGlG02zCesz3LHqyzV
- N8EgbGM7u06pQzpwil0FaEWeYvZPO4ELxsrB5iKrnaDAbFCKHX+qG0bD+xCk2JAVaTPxm0vMI
- y/C90sP3IqGx4/ag7XI1vGJnUuTh3T7Y1JhqwdIk6+ltSUzl+bdW1vVK3NlUglo/BXIahRPnR
- fYRYV1c+8H0284K4DpoqblGSN3NpMghUNom2a9shPtoAfAZdia7Bz3QnvLM6DfhxUJyrThNmV
- VqohG1TzKjet+Tc562jFdULsNtJ3Cr57naTu0xroS30eQBHBEkKPmCH5HaeYf+ktG6QejgSLH
- f6qj1sppuq+67bhEZfiCpcyQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <561428e6-3f71-48cb-bd73-46cc21789f6f@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Hi,
+On Mon, Nov 11, 2024 at 02:57:06PM +1030, Qu Wenruo wrote:
+> Hi,
+> 
+> Recently I'm working on migrating btrfs_buffered_write() to utilize
+> write_begin() and write_end() callbacks.
 
-Recently I'm working on migrating btrfs_buffered_write() to utilize
-write_begin() and write_end() callbacks.
+Why?  They aren't exactly efficient, and it's just going to create
+more Churn for Goldwyn's iomap work.
 
-Currently only the following filesystems really utilizing that pointer:
+> Currently only the following filesystems really utilizing that pointer:
+> 
+> - bcachefs
+>   Which is a structure of 24 bytes without any extra pointer.
 
-- bcachefs
-   Which is a structure of 24 bytes without any extra pointer.
+And as pointed out last time willy and I did go through the users of
+write_begin/end this is just dead code that is never called.
 
-- f2fs (for compression)
-   Which is holding a pointer to an array of pages.
+> Thus I'm wondering should we make perform_generic_write() to accept a
+> *fsdata pointer, other than making write_begin() to allocate one.
+> So that we only need to allocate the memory (or use the on-stack one)
+> once per write, other than once per folio.
 
-- ext4
-   Only utilize that pointer as a flag for ext4_da_write_begin()
+And that scheme was one of my suggestions back then, together with
+removing write_begin/end from address_space_operations because they
+aren't operations called by MM/pagecache code, but just callbacks
+provided by the file system to perform_generic_write.
 
-- ocfs2
-   This a large structure holding a lot of things
-
-- (Future) btrfs
-   Only holds a pointer and a bool.
-   (Also needs a way to pass ki_flags to support IOCB_NOWAIT though)
-
-Thus I'm wondering should we make perform_generic_write() to accept a
-*fsdata pointer, other than making write_begin() to allocate one.
-So that we only need to allocate the memory (or use the on-stack one)
-once per write, other than once per folio.
-
-This will cause no change to f2fs/ext4, but should benefit
-ocfs2/bcachefs and of-course btrfs.
-
-Or is there some special corner case that relies on the current behavior?
-
-Thanks,
-Qu
 
