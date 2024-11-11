@@ -1,112 +1,126 @@
-Return-Path: <linux-btrfs+bounces-9434-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9435-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C37F9C4592
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 20:06:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B899C4616
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 20:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A6BC1F221F6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 19:06:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED734B2272A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2024 19:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947E41AAE3A;
-	Mon, 11 Nov 2024 19:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB161AAE0D;
+	Mon, 11 Nov 2024 19:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="ajVCwE40"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sm+75VVC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCDE1AB539
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 19:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FDA2AEE0
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 19:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731351997; cv=none; b=fFAUX3nbilHQjIqn22bX2dH+1tSeiwOkgI7CRdHEWgfvsMqQCAnljMcpRFJAEFTTt+JBHlrajNj7+pGaby6ZLLKvRvt7vByY4j6hFOKnjyDVruGeyDV+mczuzXzDP75x6H6yxX5eF6tGXi3XT73gyvArHMEgvsQr2+4kU9qkOsM=
+	t=1731354330; cv=none; b=ZT42OmXH5/v7nuizMus644BQzOl0KJctvPD0NSUOyY8Av6+UFkpxYKvcmpgZLEKXaOmFt7RroFBwJ3AWGRY8qUV9vPCfP7qlavZqysfD+7HyuVC6mgg8Hp0BwVupi0xlVagSOeAA29J72cSfEZiQmuqqT+neSVFTCFEu1SB/ZzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731351997; c=relaxed/simple;
-	bh=O0LxaXvsTxA2mly+DTCcUT1Kd9UAn5H+1ERJxB10BvA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VsRjoDnoyGO1+Q7p1BTcSf8WKP9Uy9je0o+C//2HV82a3ZCXmcjWuKiVNm5vKy1XItE0D2vQW/9hhGIPYfFdZipE1tmFCuKtWz3cSKIpwqp9945CpnZNUrYN6WQuZCwMQvKUhVSrhVsx6o4iU2II8r0VOB92sha7ARAsoXEP/WM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=ajVCwE40; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4ABH6qqZ027452
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 11:06:34 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=nr+zNcDjHQh8UWooacXGEIL
-	Pvm0Wb9wYnKoIOh/74Ho=; b=ajVCwE40B6kEX7h7iPAduU38ePhiZ8o4h9TRTTO
-	ulfXVryp2nDMvgFLQHkME6B7W9MbpAWOvmbI8PzaP91GRLzUHs5r8zs2/JlPodw+
-	ITYCpcERb1qyiW6jVFjGCzQMsMRoBH0cz0Kw5qPRjrX9Wb4OMBJwqNuon2WMx+HJ
-	QkQk=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42unf3183e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 11:06:34 -0800 (PST)
-Received: from twshared13976.17.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Mon, 11 Nov 2024 19:06:33 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 733EC8901285; Mon, 11 Nov 2024 19:06:20 +0000 (GMT)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>, kernel test robot <lkp@intel.com>
-Subject: [PATCH] btrfs: use kmemdup in btrfs_uring_encoded_read
-Date: Mon, 11 Nov 2024 19:06:06 +0000
-Message-ID: <20241111190619.164853-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1731354330; c=relaxed/simple;
+	bh=fVIwmPSEyggbFyf3YoqDBAG/ttDebsnDiuaZIkJVWks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jmJRccIOS1aAkDkI4BGCsJ93t8AqrC+NXm0cGnIOyIgI2MbnjbgEkqt5hZ7LMTmps7IE30UqzUz4b1L+pASxCIOIDDaqcndmkFX0G4+RfT3cLUV+SNLDQ2eH5EUKaJHzknx5hhCUizUHY+H+ScWQjf/DFbOEQ5T7/75w9as8TR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sm+75VVC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731354327;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KqLw0TSAVME91KT/AGX/wbm5nqSWrShInFV5Vs47FMQ=;
+	b=Sm+75VVCjsaGQae28aVBULUiOPQj5r4maCbgvadJfwThTqCX9ZcBy33IfJ/1pZ/yM2fHWc
+	h3y3NRlSaodthhU1OgV7WPTbJ5NlqbP1jE8t/ktBb1iFCDnLb2cMYLnRSst6/uS6wrC+7L
+	fb1CEJe1cydusQhHJbmvSumxu3pFOqE=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-jmnZIerAO6yXIcb5OLyb8Q-1; Mon, 11 Nov 2024 14:45:26 -0500
+X-MC-Unique: jmnZIerAO6yXIcb5OLyb8Q-1
+X-Mimecast-MFC-AGG-ID: jmnZIerAO6yXIcb5OLyb8Q
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-72065695191so5252044b3a.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2024 11:45:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731354324; x=1731959124;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KqLw0TSAVME91KT/AGX/wbm5nqSWrShInFV5Vs47FMQ=;
+        b=ssTBwiJeGkVcShEiQMKe7UKKaQI+zYZ5Ucn9Xdj2FbDhEmTzNJ83eErDqq3IOZ/CwU
+         VqPbrb3pGLS41vzhIrEoRKkzIQ8AVgdX2IDlFAaKhMar1rw4YBLkAjPTW7tpejjOYkZr
+         iRDG4bAi+O7m5r3oBE1X0go60Bku0M2nmMDeVtOXIwvZg78HG8ycAqpcTXKxLDVChNbQ
+         VpMkLa8s8MTUi6Nvhc0oprYJ/Bq8Oe/n2aQPOMSLE2bbDiWFRGZAOCb4XakgVRYMI9fT
+         4h87s5rJ3Bi1HNNFmqXLIIkwsC75tdAncq0vEMqOd9g7p7V495SDLMqoguDguB0cd+X3
+         0nnw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9UXLI7JGDy+66zbZ5wZEYYFcjDor3kvZ4vDZX2ZsGv2IRPNmm3UYEq+olWhU1oz9b1Dm5TsRghTv/8Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzcxt2TBgZgrF9CHZZ7yGYaIQeRLo6Vg3nLLWJD6DP+OKlxYxhT
+	XM1b/jr+t23SqNsOF1u0CekP4pc/ciLGkGHOFdVsUKPqEc2W1NvXX9qJ63KdQldaF7QxN9LdjAf
+	LIsQU0dsOsR9NNer4ylemjiA1oWEMmrpTssKPLqphIy7Bq/D/i8bEDNKleMxC
+X-Received: by 2002:a05:6a00:3cca:b0:71e:7ab6:8ea6 with SMTP id d2e1a72fcca58-72413384ebbmr17526346b3a.25.1731354324220;
+        Mon, 11 Nov 2024 11:45:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGCewOlB11baezzNOtqcqMmLjJAQuXf7s20SaqBym9VA1VaSckalXwtsvHt9UtOnDk0qPAdOw==
+X-Received: by 2002:a05:6a00:3cca:b0:71e:7ab6:8ea6 with SMTP id d2e1a72fcca58-72413384ebbmr17526328b3a.25.1731354323886;
+        Mon, 11 Nov 2024 11:45:23 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ec7sm9507541b3a.55.2024.11.11.11.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2024 11:45:23 -0800 (PST)
+Date: Tue, 12 Nov 2024 03:45:20 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH] fstests: check for ext3 support in btrfs/136
+Message-ID: <20241111194520.qxilxxu5nf5lenjy@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <4c41adf81241f5d23b5a10251564b1630cabc500.1731327765.git.jth@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 5UsxlqRSOdo1-dacIWaTrGdAmDT6mCle
-X-Proofpoint-GUID: 5UsxlqRSOdo1-dacIWaTrGdAmDT6mCle
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c41adf81241f5d23b5a10251564b1630cabc500.1731327765.git.jth@kernel.org>
 
-Use kmemdup in btrfs_uring_encoded_read rather than kmalloc followed by
-memcpy.
+On Mon, Nov 11, 2024 at 01:24:53PM +0100, Johannes Thumshirn wrote:
+> Test-case btrfs/136 requires ext3 support, so check for ext3 using
+> _require_extra_fs.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202411050846.GI8oh5IK-lkp@i=
-ntel.com/
----
- fs/btrfs/ioctl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Makes sense to me,
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 9ff1aea7910c..fb1a21533825 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4983,15 +4983,14 @@ static int btrfs_uring_encoded_read(struct io_uri=
-ng_cmd *cmd, unsigned int issue
- 		 * undo this.
- 		 */
- 		if (!iov) {
--			iov =3D kmalloc(sizeof(struct iovec) * args.iovcnt, GFP_NOFS);
-+			iov =3D kmemdup(iovstack, sizeof(struct iovec) * args.iovcnt,
-+				      GFP_NOFS);
- 			if (!iov) {
- 				unlock_extent(io_tree, start, lockend, &cached_state);
- 				btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
- 				ret =3D -ENOMEM;
- 				goto out_acct;
- 			}
--
--			memcpy(iov, iovstack, sizeof(struct iovec) * args.iovcnt);
- 		}
-=20
- 		count =3D min_t(u64, iov_iter_count(&iter), disk_io_size);
---=20
-2.45.2
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+>  tests/btrfs/136 | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tests/btrfs/136 b/tests/btrfs/136
+> index 9b5b3331119f..2a5280fb9bd1 100755
+> --- a/tests/btrfs/136
+> +++ b/tests/btrfs/136
+> @@ -20,6 +20,8 @@ _require_scratch_nocheck
+>  # ext4 does not support zoned block device
+>  _require_non_zoned_device "${SCRATCH_DEV}"
+>  
+> +_require_extra_fs ext3
+> +
+>  _require_command "$BTRFS_CONVERT_PROG" btrfs-convert
+>  _require_command "$MKFS_EXT4_PROG" mkfs.ext4
+>  _require_command "$E2FSCK_PROG" e2fsck
+> -- 
+> 2.43.0
+> 
 
 
