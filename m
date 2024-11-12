@@ -1,94 +1,275 @@
-Return-Path: <linux-btrfs+bounces-9509-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9510-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68B809C55D7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 12:11:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5259C593A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 14:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FF9A1F23E30
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 11:11:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2C31280EA3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 13:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5820721A4DB;
-	Tue, 12 Nov 2024 10:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44AE242AA4;
+	Tue, 12 Nov 2024 13:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="TrJAdfMO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFF621A4D8
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 10:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E2F70838
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 13:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731408427; cv=none; b=rakx1Yu9HqUD8u3u5ZKvl5EZbhROjHvFyxTjb1ZmIy94rL5bHezdHJc4QwFGpr7Oij/OlnRjNQZovz2kTN7S939h8moFQSIbSwJoYzFcvVClMTRKxTO+IFYsLpdmhAMfRlM0SVlb/zJ/mmH/VFNkT7oVW3XLhi9x6yftjlfPwMM=
+	t=1731418585; cv=none; b=syl5szmIRQREHmGG1BCMSv0hbl/8iJDDEuka3nIL1Fxp5br2WiXFErYztSwrpIcwvvGzFQbKZrMFx1JZr/CHO7NaYLbl30m3lymTXj9gkpRuDpYzq+beHDMOapQaib/epZr/9hclBM/YoJVZd71gMpm2cPb4HkU3P6vBR7k7fSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731408427; c=relaxed/simple;
-	bh=rXIKhEU72H1RcLIFpAa7JunqYcnDVMViT+nYxnw87G0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jCe8gHc42F0mhzWnyrkwhMivzDJUiwp4B19WV65rKry+GG0nEg8O19p+QVRj/U7GF7/Bn4IbphzoKDw3NWvVxMa+ZPYqqWjlLIXhMGXI6f2EBA4ufAxkRdT2zJjlryszAtqzlmgWAOfHJGtJYrWfKhvDTPn4uVQrP58PlSlK4c8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-83aed4f24a9so637008739f.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 02:47:06 -0800 (PST)
+	s=arc-20240116; t=1731418585; c=relaxed/simple;
+	bh=UYMynpzb2neHmOqjVl3+/I9ELWYwbSrCsGyBvOAQhe0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OeD+I+7pkWUMIZNCnU1ju1ctxoB8s7L+Ls6yt64hfAoay3B4o8okjd2R/FasQp/SU9k0tFD14v7d4rIOsLqbR2LkAK8h5rhQK4d3ntodKhn3dqy2JrigTCiZSMmbOlES13ue5GTudTLid6pb1h4AmINhrYZqDGxogMmDENJrBVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=TrJAdfMO; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7ee020ec76dso4359548a12.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 05:36:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1731418583; x=1732023383; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t6Oh4OX2Jyzis83TRylUMhyFscGtnBD3LHLbc+6KIU8=;
+        b=TrJAdfMOlI9mBVmk6TvKipxIGwo9pyW6N3t/wyGzr1NOh0/DQLxDE4hg2G1Cg15cqD
+         yWx3T2CT12EtjUuPNvJJe6C/cyQ0U/V7RAcwLzq0x4dKfshuzyJZT8d1LK91p5cqjAVP
+         vcj1vWpwFIpanq9Z3QDvcMCRkk8RZgd9W9X5RFKFJmJDkB7d8u1YaDqkSgtrD+2uSSLd
+         2GSQwhjGB3WCGM3YgKsmhGRAd1apeL8robDH5UhRrojaq6SKklOrpbsMKXI+v6wtUX2V
+         gvGItBmpz0WRMxOn8xK9jMXKilXi8HVjsk21eNZxYfUfZ0wwaQ1Dciy+DCoSH9NbJNum
+         w4vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731408425; x=1732013225;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HUEXXXbZsOV3K4ZOSzag31ZTriNveRJONabbIiA5GQ0=;
-        b=sZO/aUap64FvRezqPBxmbjPTky5064lhtRI4Q9u/sXWg+EEASa4fKfcw6h6LCYKCol
-         BL1oTit4vtoiR2WjnN9OUwbJ1+vJJM8qJ1uHp/S1yvjF2NSRvRtgI+QNvOfYOK8yMxBs
-         0+i+mInxEQwU4WDofGtpk2p18g3mtOXVbjhD+w0HTBrfBzwfCHvIR//bpx+avHE3QS66
-         sDUXhDLmK0iLH+SXx1b/5T6+IvyxxbxfF+2HAQNgJZqlByvexBbtr+u21BbDSo0LmRAY
-         uv2ryBJcA78A0DNJ63GXDokMR0ckjLlxeHYq1M+d7mxR6twGzwN5HB6w8iigKXEl+1iZ
-         vyMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVe6n46yH8uoKRR/GYZeZ6FfiMA4dRJ5U4K9Vme7n5x5xp4mFvbwNo/etnkTU0bPGtuGRCGoCeV7yx43g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxToT7Z32n4Uz/X4wS1/UfCi8zo8JED85LFiMoZwn39QYSQw1Sf
-	GirWHsc0GAd/R4hGZRCHVqSlS5d5fLG8PNM53KEs9OTdo5r+U1EAzWHXmEvnpXajXLRpi8rh1kW
-	qM7LjhdSR2euAMSyTLcmBixo9CUJdwQhWoSr7ivkkfnAnv+DbRNoCqWw=
-X-Google-Smtp-Source: AGHT+IHZGRC9Lswed6EUSybfxVqaJOf5Ywk+UOv55XUcMFxi/KOPeODSaFm/cPcMIYK8XkU96GoiE6/HP0bVsHLMvzgRGZBSw4xe
+        d=1e100.net; s=20230601; t=1731418583; x=1732023383;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t6Oh4OX2Jyzis83TRylUMhyFscGtnBD3LHLbc+6KIU8=;
+        b=R7NFEKcPyKxhz49vKkfIDnQQ1fkx50KqrEfH9awDKqd2a/NPMLiFiiAAIlulSvAjwy
+         0c7vnBEewqO1racV/+TUKCg3JKXC9ZomaYaH0SBhd6pTULQYS1321dq3XVbtiV+R2uWt
+         KPrPz3FJxXYiTqC355FzNfLN0o/HcX+2gwP+R9B7oEyfS1FJ1tQAQ6oOl+seY3UfShhK
+         otkpHTzU13VGLKGDq/U5FW0dOtwmUaX11dwcdaPHSvgUVLZo54q82Gws1HzOL0BM+D1G
+         3uJvVWys7padullL/fciUDiGdxRLcu2ptKxrFoJyrhJZq2X+s0miYM0aXPLrqg3yL2u/
+         BAIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUigdBmnMc0fNhmA3U2N4Hk4r2etj7RxBrpB2fXYeV3rC8Dr0WGVqHgyGki/IoM6PMr/ADNab6M9slMsQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3Sqx6LIk6n03RRdbFbm1p8yZWdhpA/OUxr/pATRZpRi++JQ9Z
+	5LPqfq5nIccDwPh4IyytLK7foxQ2IeZBJWGnPbSmlHqlZ6xPLJsUn+ueE4L6QWc=
+X-Google-Smtp-Source: AGHT+IFIqnnMyIxMivt2cPh+q7ifEJlIf3ezR4cfEqcYFyOgxpQyOhRuCX6EGtaMImreoqHFw37fdQ==
+X-Received: by 2002:a17:90b:5484:b0:2e2:bb32:73eb with SMTP id 98e67ed59e1d1-2e9b178ea9emr22376758a91.31.1731418582953;
+        Tue, 12 Nov 2024 05:36:22 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-86-168.pa.vic.optusnet.com.au. [49.186.86.168])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9e8148d9dsm645777a91.2.2024.11.12.05.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2024 05:36:22 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1tAr46-00DelY-1w;
+	Wed, 13 Nov 2024 00:36:18 +1100
+Date: Wed, 13 Nov 2024 00:36:18 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org, clm@meta.com,
+	linux-kernel@vger.kernel.org, willy@infradead.org,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 10/16] mm/filemap: make buffered writes work with
+ RWF_UNCACHED
+Message-ID: <ZzNZ0iqx8EMlGVf0@dread.disaster.area>
+References: <20241111234842.2024180-1-axboe@kernel.dk>
+ <20241111234842.2024180-11-axboe@kernel.dk>
+ <ZzKn4OyHXq5r6eiI@dread.disaster.area>
+ <0487b852-6e2b-4879-adf1-88ba75bdecc0@kernel.dk>
+ <ZzMLmYNQFzw9Xywv@dread.disaster.area>
+ <2sjhov4poma4o4efvwe2xk474iorxwvf4ifqa5oee74744ke2e@lipjana3f5ti>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1706:b0:3a0:a311:6773 with SMTP id
- e9e14a558f8ab-3a6f1a4ebd5mr139622835ab.21.1731408425421; Tue, 12 Nov 2024
- 02:47:05 -0800 (PST)
-Date: Tue, 12 Nov 2024 02:47:05 -0800
-In-Reply-To: <0000000000001b6052062139be1c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67333229.050a0220.5d845.0000.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] general protection fault in btrfs_root_node
-From: syzbot <syzbot+9c3e0cdfbfe351b0bc0e@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, dsterba@suse.cz, ghanshyam1898@gmail.com, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, quwenruo.btrfs@gmx.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2sjhov4poma4o4efvwe2xk474iorxwvf4ifqa5oee74744ke2e@lipjana3f5ti>
 
-syzbot has bisected this issue to:
+On Tue, Nov 12, 2024 at 11:50:46AM +0200, Kirill A. Shutemov wrote:
+> On Tue, Nov 12, 2024 at 07:02:33PM +1100, Dave Chinner wrote:
+> > I think the post-IO invalidation that these IOs do is largely
+> > irrelevant to how the page cache processes the write. Indeed,
+> > from userspace, the functionality in this patchset would be
+> > implemented like this:
+> > 
+> > oneshot_data_write(fd, buf, len, off)
+> > {
+> > 	/* write into page cache */
+> > 	pwrite(fd, buf, len, off);
+> > 
+> > 	/* force the write through the page cache */
+> > 	sync_file_range(fd, off, len, SYNC_FILE_RANGE_WRITE | SYNC_FILE_RANGE_WAIT_AFTER);
+> > 
+> > 	/* Invalidate the single use data in the cache now it is on disk */
+> > 	posix_fadvise(fd, off, len, POSIX_FADV_DONTNEED);
+> > }
+> > 
+> > Allowing the application to control writeback and invalidation
+> > granularity is a much more flexible solution to the problem here;
+> > when IO is sequential, delayed allocation will be allowed to ensure
+> > large contiguous extents are created and that will greatly reduce
+> > file fragmentation on XFS, btrfs, bcachefs and ext4. For random
+> > writes, it'll submit async IOs in batches...
+> > 
+> > Given that io_uring already supports sync_file_range() and
+> > posix_fadvise(), I'm wondering why we need an new IO API to perform
+> > this specific write-through behaviour in a way that is less flexible
+> > than what applications can already implement through existing
+> > APIs....
+> 
+> Attaching the hint to the IO operation allows kernel to keep the data in
+> page cache if it is there for other reason. You cannot do it with a
+> separate syscall.
 
-commit 42437a6386ffeaaf200731e73d723ea491f3fe7d
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Fri Oct 16 15:29:18 2020 +0000
+Sure we can. FADV_NOREUSE is attached to the struct file - that's
+available to every IO that is done on that file. Hence we know
+before we start every IO on that file if we only need to preserve
+existing page cache or all data we access.
 
-    btrfs: introduce mount option rescue=ignorebadroots
+Having a file marked like this doesn't affect any other application
+that is accessing the same inode. It just means that the specific
+fd opened by a specific process will not perturb the long term
+residency of the page cache on that inode.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16ef335f980000
-start commit:   2d5404caa8c7 Linux 6.12-rc7
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15ef335f980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11ef335f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1503500c6f615d24
-dashboard link: https://syzkaller.appspot.com/bug?extid=9c3e0cdfbfe351b0bc0e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a1935f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158934e8580000
+> Consider a scenario of a nightly backup of the data. The same data is in
+> cache because the actual workload needs it. You don't want backup task to
+> invalidate the data from cache. Your snippet would do that.
 
-Reported-by: syzbot+9c3e0cdfbfe351b0bc0e@syzkaller.appspotmail.com
-Fixes: 42437a6386ff ("btrfs: introduce mount option rescue=ignorebadroots")
+The code I presented was essentially just a demonstration of what
+"uncached IO" was doing. That it is actually cached IO, and that it
+can be done from userspace right now. Yes, it's not exactly the same
+cache invalidation semantics, but that's not the point.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+The point was that the existing APIs are *much more flexible* than
+this proposal, and we don't actually need new kernel functionality
+for applications to see the same benchmark results as Jens has
+presented. All they need to do is be modified to use existing APIs.
+
+The additional point to that end is that FADV_NOREUSE should be
+hooke dup to the conditional cache invalidation mechanism Jens added
+to the page cache IO paths. Then we have all the functionality of
+this patch set individually selectable by userspace applications
+without needing a new IO API to be rolled out. i.e. the snippet
+then bcomes:
+
+	/* don't cache after IO */
+	fadvise(fd, FADV_NORESUSE)
+	....
+	write(fd, buf, len, off);
+	/* write through */
+	sync_file_range(fd, off, len, SYNC_FILE_RANGE);
+
+Note how this doesn't need to block in sync_file_range() before
+doing the invalidation anymore? We've separated the cache control
+behaviour from the writeback behaviour. We can now do both write
+back and write through buffered writes that clean up the page cache
+after IO completion has occurred - write-through is not restricted
+to uncached writes, nor is the cache purge after writeback
+completion.
+
+IOWs, we can do:
+
+	/* don't cache after IO */
+	fadvise(fd, FADV_NORESUSE)
+	....
+	off = pos;
+	count = 4096;
+	while (off < pos + len) {
+		ret = write(fd, buf, count, off);
+		/* get more data and put it in buf */
+		off += ret;
+	}
+	/* write through */
+	sync_file_range(fd, pos, len, SYNC_FILE_RANGE);
+
+And now we only do one set of writeback on the file range, instead
+of one per IO. And we still get the page cache being released on
+writeback Io completion.
+
+This is a *much* better API for IO and page cache control. It is not
+constrained to individual IOs, so applications can allow the page
+cache to write-combine data from multiple syscalls into a single
+physical extent allocation and writeback IO.
+
+This is much more efficient for modern filesytsems - the "writeback
+per IO" model forces filesystms like XFS and ext4 to work like ext3
+did, and defeats buffered write IO optimisations like dealyed
+allocation. If we are going to do small "allocation and write IO"
+patterns, we may as well be using direct IO as it is optimised for
+that sort of behaviour.
+
+So let's conside the backup application example. IMO, backup
+applications  really don't want to use this new uncached IO
+mechanism for either reading or writing data.
+
+Backup programs do sequential data read IO as they walk the backup set -
+if they are doing buffered IO then we -really- want readahead to be
+active.
+
+However, uncached IO turns off readahead, which is the equivalent of
+the backup application doing:
+
+	fadvise(fd, FADV_RANDOM);
+	while (len > 0) {
+		ret = read(fd, buf, len, off);
+		fadvise(fd, FADV_DONTNEED, off, len);
+
+		/* do stuff with buf */
+
+		off += ret;
+		len -= ret;
+	}
+
+Sequential buffered read IO after setting FADV_RANDOM absolutely
+*sucks* from a performance perspective.
+
+This is when FADV_NOREUSE is useful. We can leave readahead turned
+on, and when we do the first read from the page cache after
+readahead completes, we can then apply the NOREUSE policy. i.e. if
+the data we are reading has not been accessed, then turf it after
+reading if NOREUSE is set. If the data was already resident in
+cache, then leave it there as per a normal read.
+
+IOWs, if we separate the cache control from the read IO itself,
+there is no need to turn off readahead to implement "drop cache
+on-read" semantics. We just need to know if the folio has been
+accessed or not to determine what to do with it.
+
+Let's also consider the backup data file - that is written
+sequentially.  It's going to be large and we don't know it's size
+ahead of time. If we are using buffered writes we want delayed
+allocation to optimise the file layout and hence writeback IO
+throughput.  We also want to drop the page cache when writeback
+eventually happens, but we really don't want writeback to happen on
+every write.
+
+IOWs, backup programs can take advantage of "drop cache when clean"
+semantics, but can't really take any significant advantage from
+per-IO write-through semantics. IOWs, backup applications really
+want per-file NOREUSE write semantics that are seperately controlled
+w.r.t. cache write-through behaviour.
+
+One of the points I tried to make was that the uncached IO proposal
+smashes multiple disparate semantics into a single per-IO control
+bit. The backup application example above shows exactly how that API
+isn't actually very good for the applications that could benefit
+from the functionality this patchset adds to the page cache to
+support that single control bit...
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
