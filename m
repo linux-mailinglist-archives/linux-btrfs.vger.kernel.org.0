@@ -1,272 +1,337 @@
-Return-Path: <linux-btrfs+bounces-9518-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9519-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 048909C5ABD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 15:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4C339C5AC6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 15:46:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B88C028A3E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 14:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A568F283B3E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 14:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9161FF7C7;
-	Tue, 12 Nov 2024 14:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5121FEFBD;
+	Tue, 12 Nov 2024 14:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VdJotj/u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p2Os1x1F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB151FF034;
-	Tue, 12 Nov 2024 14:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0995483A14
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 14:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731422588; cv=none; b=cOlSUBDvubXQIbD6oNwn/DBd88jET7rOwRoFe2M1f+ehDmNXpkzITbAjxRUbKxd2z212ndi0tZtS89+5RxOblAR/k1YbUGt7oFhNdAntsyO6L7rEfM5sn49cWdD5wn23qCG6aEZwo0gsZfo9XkH6RCBTKLxCvOVxcs0MSPit/DI=
+	t=1731422759; cv=none; b=C+Ks13uARCLiL1KkqhLMXL2FlanKOacxZnSylpNeoZm9GW1QodPyUbKIhCkQ0OkxU4QPnwEi2YE0qsq6YH6bB8zzoHlG1HfQlHa6cCdsyHdKeLKHMYwEobK34UFsk5vN9ty/rTpzjneqFRkjqRSVYz1XbDUPdQeV6AwRDPEhHR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731422588; c=relaxed/simple;
-	bh=H7ySh2TXkX33QhtlaMClLoqvD9TtVhHSZgSzQrVzRTI=;
+	s=arc-20240116; t=1731422759; c=relaxed/simple;
+	bh=H1jPGxMKg62FGCvZ/jSdbiYXOfanALNgpLqcRryNLmk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kyl/9byTVVxd8SJ4rhjCxwVNULVt2k0AG1U57d97a2GFUClqI3uw28S8R2atYrVlDpG2aPo0eQiSG4Pz4zj6TP8rExJjWAZBnNCPOv5mZf8NkaFQhfDQ1/YmmOZjdztr0zF7A23YghrZ4EYvOvYtCdLTkzzbgqsVrdbXUkAe4IU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VdJotj/u; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6cbf0769512so38767336d6.3;
-        Tue, 12 Nov 2024 06:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731422586; x=1732027386; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pJitszLJDg3VwSrulTOUYyc6BMdqCAbB6MWmGHGc2b0=;
-        b=VdJotj/uTs9EJl2h2nDC1avNu5STfHGA9+MQy1yfFmANN4yLaxCjmJMO66TuUfo8fc
-         Nltg49ueQJ75EVVqNqrDFIWlXQmyJkVh3alJYeYCeIfoesTBRxfkjS8jXtlZeIQ6spMh
-         M4CsMagFTiO10aoavOTg7uznXPCmnsZYyp2c6bodlpNEu0aVx5l7V6qSf67egYcbbqL4
-         Xg8Gex6CPsI+j8IK28SEQGmXj6zCgpoektfWux+Z+cz7rihetfDt+dJBfhGwMlDmpFDe
-         UeyHyN3IIJjtCIJNBV5GFfLU75GA3T5FP3Rud5yeeByadbwIr6bGYG8Yvxz1lmSRgwQD
-         CGpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731422586; x=1732027386;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pJitszLJDg3VwSrulTOUYyc6BMdqCAbB6MWmGHGc2b0=;
-        b=IDLnhtbQd67JfTy2vY7PoPxq95ceR+MCxqqx+VLLiOldbN6k8f57B5xpRv4ryDVdUK
-         83DXkZIA/n8twt0bqx+jb0VLgDnlhP+hAqSSZ7v6471XATk2uGU0ydk0N2wXQAcgpRui
-         684MbKUFbYqIEB+PpQEjrDgKFDNSh4xwSuNWbJOw3gPB8fRr385NUEHXIs2eIgbD65Lk
-         IvUT0O7CbXZHuDEW9mm2X3A+6aj+v530wEh7idnPW+he5WwGEv7F3B/XJ7MJKKd+jMn3
-         8QEPJq2UE+N5qW+kOfr1W7yMDOJLXjZS35FlaMtxvriiSPXd0x7E0MxgWW6eXPzNFOIy
-         lBIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV7eSymWFA2ImE7Pk6H9rJveDQoqCbTnrGfRFG5/LpLZ9Lnf+bNBgmyuKP6kV4ccT4wJfdrNNXqyedv8w==@vger.kernel.org, AJvYcCVSSY9ocrsgf6ym1E7QzEDxXYr8aPIXzjGdhGenup+4RKT7oQXvHnOIW0h1y4F7QlOmV947JgphsgJB@vger.kernel.org, AJvYcCW7rz8rlgssdQzSSEY9bl1O6kMZ8sc5LKHdQDRWCEAgz39gPK4pSA0U1I0zdZeRCSEcsAxzHCtyo+DRHsvp1A==@vger.kernel.org, AJvYcCXAhlh09rFTpFmVR2DqaC/C2gjIVinmFp1a4OYT7s4Ez2ZICcim8asHiXQrGmERrTA6IZQJyNiTytrUlg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUEpAnD8dIm8PQWPeHpdWOBeJTu+kE6st/9TGvy1gSvgoW2+rm
-	WP6LN92CFRoTVo+CXOfoYlar2NyfDDI8FFUPtAR+Z6E5OkwLnTysjRHB4CHwM57q+hp0shWtROG
-	95RlSsR4GiFCDq9XWJ0rJWSQdms8=
-X-Google-Smtp-Source: AGHT+IHsEbdNRX2EeabFHLNPiKKT4tbxGfpFRPEv0WvCJKomF8HYSNpQhaRbhjSeBcbJAKgMvEpxWFBpgcQI7gZI5is=
-X-Received: by 2002:a0c:f413:0:b0:6cb:fbb1:d1ba with SMTP id
- 6a1803df08f44-6d39e107822mr203778346d6.9.1731422585638; Tue, 12 Nov 2024
- 06:43:05 -0800 (PST)
+	 To:Cc:Content-Type; b=Sh1ElAZYGSnt4W7K5rpzkfj/8YK5zR4YCUZ7LLX2/8tfnut9RwP4IyJIAZXA+HFQ4V5HxZylyY00om3Dn7mVejLEavqh7RAkS+MbvlpT9ffJBYZJYc00VYxE+c2vwXeG/W4JVUzQSljvy7mBaMc4A5arsIq+A5Ve+9Go/6ofNmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p2Os1x1F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91AC6C4CED6
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 14:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731422758;
+	bh=H1jPGxMKg62FGCvZ/jSdbiYXOfanALNgpLqcRryNLmk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=p2Os1x1FjcH3hAtBLzEu7Bf9Y34GCaeNIb9htscY5wJJDGcX43/jRVq1hOaWH7ESK
+	 B6FUkHq/ey9jupjLeXu0uBlKiVf3jFnJ4Em/XRripnCrl2rbtEJDvzZJbWzT7iJBsa
+	 CgQm9u30ffzDSB6ZoCbNPLw2oyNsTb7Urr4xZKi1vIJ/QGkbt+/7SqeNRPGGDU2tCw
+	 uPvxyh1QWxOrXQjMlZpRWp36tsfrJwvUEEPY9IZIypJY9Xp+eMp5RnBTXznt56w/PD
+	 vfwg7fK4VFzUleEcAj3U3Ts9cmd5UjOulsD2ZlvJeMrgRX1foj02CA9/iTIXycxL/B
+	 pSC73Y5lTmUuQ==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5cb15b84544so8297800a12.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 06:45:58 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz+TAntB7xJyt50yW1ybDp6ckGv8yThSrPfOechor4x1CO8Xaxt
+	uOALK1xeyY/zg3nvDOyEjHraJpUPGKvo61mJjYarjHmeLeBvXbD0jyLbGqNXFMI10iHZEsh6BZm
+	xY7IjEb0Il/nIaBLIWZOCvuHCdzQ=
+X-Google-Smtp-Source: AGHT+IHV4Om/OKNQGnwHDPVA5u9kG/IWQhrMTLkzMx80FTrO9fzKfsmK5F60Yy+FtTgJbcfVCF/d7uycnxOrTh+SOCA=
+X-Received: by 2002:a17:907:3f8a:b0:a9e:c954:6afb with SMTP id
+ a640c23a62f3a-a9ef0018b25mr1696344166b.51.1731422757066; Tue, 12 Nov 2024
+ 06:45:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731355931.git.josef@toxicpanda.com> <b509ec78c045d67d4d7e31976eba4b708b238b66.1731355931.git.josef@toxicpanda.com>
- <CAHk-=wh4BEjbfaO93hiZs3YXoNmV=YkWT4=OOhuxM3vD2S-1iA@mail.gmail.com>
- <CAEzrpqdtSAoS+p4i0EzWFr0Nrpw1Q2hphatV7Sk4VM49=L3kGw@mail.gmail.com>
- <CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com>
- <CAOQ4uxgxtQhe_3mj5SwH9568xEFsxtNqexLfw9Wx_53LPmyD=Q@mail.gmail.com>
- <CAHk-=wgUV27XF8g23=aWNJecRbn8fCDDW2=10y9yJ122+d8JrA@mail.gmail.com>
- <CAOQ4uxh7aT+EvWYMa9v=SyRjfdh4Je_FmS0+TNqonHE5Z+_TPw@mail.gmail.com> <20241112135457.zxzhtoe537gapkmu@quack3>
-In-Reply-To: <20241112135457.zxzhtoe537gapkmu@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 12 Nov 2024 15:42:54 +0100
-Message-ID: <CAOQ4uxihtPaKT02CSS37DW0JXTPFFnfaRrH781oKHzbpuBC8vw@mail.gmail.com>
-Subject: Re: [PATCH v6 06/17] fsnotify: generate pre-content permission event
- on open
-To: Jan Kara <jack@suse.cz>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
-Content-Type: multipart/mixed; boundary="0000000000002c97f80626b83cf0"
-
---0000000000002c97f80626b83cf0
+References: <cover.1731407982.git.jth@kernel.org> <7a14a2b897cbeb9a149bed18397ead70ec79345a.1731407982.git.jth@kernel.org>
+In-Reply-To: <7a14a2b897cbeb9a149bed18397ead70ec79345a.1731407982.git.jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 12 Nov 2024 14:45:20 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6qyPn0aeq=LiFpubpvLH6Z7CzZ6649zYPpGFvjuVeCQg@mail.gmail.com>
+Message-ID: <CAL3q7H6qyPn0aeq=LiFpubpvLH6Z7CzZ6649zYPpGFvjuVeCQg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] btrfs: fix use-after-free in btrfs_encoded_read_endio
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
+	Mark Harmstone <maharmstone@fb.com>, Omar Sandoval <osandov@osandov.com>, 
+	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, Damien Le Moal <Damien.LeMoal@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 12, 2024 at 2:55=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+On Tue, Nov 12, 2024 at 1:54=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
 >
-> On Tue 12-11-24 09:11:32, Amir Goldstein wrote:
-> > On Tue, Nov 12, 2024 at 1:37=E2=80=AFAM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > > On Mon, 11 Nov 2024 at 16:00, Amir Goldstein <amir73il@gmail.com> wro=
-te:
-> > > >
-> > > > I think that's a good idea for pre-content events, because it's fin=
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> Shinichiro reported the following use-after free that sometimes is
+> happening in our CI system when running fstests' btrfs/284 on a TCMU
+> runner device:
+>
+>    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>    BUG: KASAN: slab-use-after-free in lock_release+0x708/0x780
+>    Read of size 8 at addr ffff888106a83f18 by task kworker/u80:6/219
+>
+>    CPU: 8 UID: 0 PID: 219 Comm: kworker/u80:6 Not tainted 6.12.0-rc6-kts+=
+ #15
+>    Hardware name: Supermicro Super Server/X11SPi-TF, BIOS 3.3 02/21/2020
+>    Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
+>    Call Trace:
+>     <TASK>
+>     dump_stack_lvl+0x6e/0xa0
+>     ? lock_release+0x708/0x780
+>     print_report+0x174/0x505
+>     ? lock_release+0x708/0x780
+>     ? __virt_addr_valid+0x224/0x410
+>     ? lock_release+0x708/0x780
+>     kasan_report+0xda/0x1b0
+>     ? lock_release+0x708/0x780
+>     ? __wake_up+0x44/0x60
+>     lock_release+0x708/0x780
+>     ? __pfx_lock_release+0x10/0x10
+>     ? __pfx_do_raw_spin_lock+0x10/0x10
+>     ? lock_is_held_type+0x9a/0x110
+>     _raw_spin_unlock_irqrestore+0x1f/0x60
+>     __wake_up+0x44/0x60
+>     btrfs_encoded_read_endio+0x14b/0x190 [btrfs]
+>     btrfs_check_read_bio+0x8d9/0x1360 [btrfs]
+>     ? lock_release+0x1b0/0x780
+>     ? trace_lock_acquire+0x12f/0x1a0
+>     ? __pfx_btrfs_check_read_bio+0x10/0x10 [btrfs]
+>     ? process_one_work+0x7e3/0x1460
+>     ? lock_acquire+0x31/0xc0
+>     ? process_one_work+0x7e3/0x1460
+>     process_one_work+0x85c/0x1460
+>     ? __pfx_process_one_work+0x10/0x10
+>     ? assign_work+0x16c/0x240
+>     worker_thread+0x5e6/0xfc0
+>     ? __pfx_worker_thread+0x10/0x10
+>     kthread+0x2c3/0x3a0
+>     ? __pfx_kthread+0x10/0x10
+>     ret_from_fork+0x31/0x70
+>     ? __pfx_kthread+0x10/0x10
+>     ret_from_fork_asm+0x1a/0x30
+>     </TASK>
+>
+>    Allocated by task 3661:
+>     kasan_save_stack+0x30/0x50
+>     kasan_save_track+0x14/0x30
+>     __kasan_kmalloc+0xaa/0xb0
+>     btrfs_encoded_read_regular_fill_pages+0x16c/0x6d0 [btrfs]
+>     send_extent_data+0xf0f/0x24a0 [btrfs]
+>     process_extent+0x48a/0x1830 [btrfs]
+>     changed_cb+0x178b/0x2ea0 [btrfs]
+>     btrfs_ioctl_send+0x3bf9/0x5c20 [btrfs]
+>     _btrfs_ioctl_send+0x117/0x330 [btrfs]
+>     btrfs_ioctl+0x184a/0x60a0 [btrfs]
+>     __x64_sys_ioctl+0x12e/0x1a0
+>     do_syscall_64+0x95/0x180
+>     entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>
+>    Freed by task 3661:
+>     kasan_save_stack+0x30/0x50
+>     kasan_save_track+0x14/0x30
+>     kasan_save_free_info+0x3b/0x70
+>     __kasan_slab_free+0x4f/0x70
+>     kfree+0x143/0x490
+>     btrfs_encoded_read_regular_fill_pages+0x531/0x6d0 [btrfs]
+>     send_extent_data+0xf0f/0x24a0 [btrfs]
+>     process_extent+0x48a/0x1830 [btrfs]
+>     changed_cb+0x178b/0x2ea0 [btrfs]
+>     btrfs_ioctl_send+0x3bf9/0x5c20 [btrfs]
+>     _btrfs_ioctl_send+0x117/0x330 [btrfs]
+>     btrfs_ioctl+0x184a/0x60a0 [btrfs]
+>     __x64_sys_ioctl+0x12e/0x1a0
+>     do_syscall_64+0x95/0x180
+>     entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>
+>    The buggy address belongs to the object at ffff888106a83f00
+>     which belongs to the cache kmalloc-rnd-07-96 of size 96
+>    The buggy address is located 24 bytes inside of
+>     freed 96-byte region [ffff888106a83f00, ffff888106a83f60)
+>
+>    The buggy address belongs to the physical page:
+>    page: refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88810=
+6a83800 pfn:0x106a83
+>    flags: 0x17ffffc0000000(node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
+>    page_type: f5(slab)
+>    raw: 0017ffffc0000000 ffff888100053680 ffffea0004917200 00000000000000=
+04
+>    raw: ffff888106a83800 0000000080200019 00000001f5000000 00000000000000=
+00
+>    page dumped because: kasan: bad access detected
+>
+>    Memory state around the buggy address:
+>     ffff888106a83e00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>     ffff888106a83e80: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>    >ffff888106a83f00: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>                                ^
+>     ffff888106a83f80: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>     ffff888106a84000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Further analyzing the trace and the crash dump's vmcore file shows that
+> the wake_up() call in btrfs_encoded_read_endio() is calling wake_up() on
+> the wait_queue that is in the private data passed to the end_io handler.
+>
+> Commit 4ff47df40447 ("btrfs: move priv off stack in
+> btrfs_encoded_read_regular_fill_pages()") moved 'struct
+> btrfs_encoded_read_private' off the stack.
+>
+> Before that commit one can see a corruption of the private data when
+> analyzing the vmcore after a crash:
+>
+> *(struct btrfs_encoded_read_private *)0xffff88815626eec8 =3D {
+>         .wait =3D (wait_queue_head_t){
+>                 .lock =3D (spinlock_t){
+>                         .rlock =3D (struct raw_spinlock){
+>                                 .raw_lock =3D (arch_spinlock_t){
+>                                         .val =3D (atomic_t){
+>                                                 .counter =3D (int)-200588=
+5696,
+>                                         },
+>                                         .locked =3D (u8)0,
+>                                         .pending =3D (u8)157,
+>                                         .locked_pending =3D (u16)40192,
+>                                         .tail =3D (u16)34928,
+>                                 },
+>                                 .magic =3D (unsigned int)536325682,
+>                                 .owner_cpu =3D (unsigned int)29,
+>                                 .owner =3D (void *)__SCT__tp_func_btrfs_t=
+ransaction_commit+0x0 =3D 0x0,
+>                                 .dep_map =3D (struct lockdep_map){
+>                                         .key =3D (struct lock_class_key *=
+)0xffff8881575a3b6c,
+>                                         .class_cache =3D (struct lock_cla=
+ss *[2]){ 0xffff8882a71985c0, 0xffffea00066f5d40 },
+>                                         .name =3D (const char *)0xffff888=
+15626f100 =3D "",
+>                                         .wait_type_outer =3D (u8)37,
+>                                         .wait_type_inner =3D (u8)178,
+>                                         .lock_type =3D (u8)154,
+>                                 },
+>                         },
+>                         .__padding =3D (u8 [24]){ 0, 157, 112, 136, 50, 1=
+74, 247, 31, 29 },
+>                         .dep_map =3D (struct lockdep_map){
+>                                 .key =3D (struct lock_class_key *)0xffff8=
+881575a3b6c,
+>                                 .class_cache =3D (struct lock_class *[2])=
+{ 0xffff8882a71985c0, 0xffffea00066f5d40 },
+>                                 .name =3D (const char *)0xffff88815626f10=
+0 =3D "",
+>                                 .wait_type_outer =3D (u8)37,
+>                                 .wait_type_inner =3D (u8)178,
+>                                 .lock_type =3D (u8)154,
+>                         },
+>                 },
+>                 .head =3D (struct list_head){
+>                         .next =3D (struct list_head *)0x112cca,
+>                         .prev =3D (struct list_head *)0x47,
+>                 },
+>         },
+>         .pending =3D (atomic_t){
+>                 .counter =3D (int)-1491499288,
+>         },
+>         .status =3D (blk_status_t)130,
+> }
+>
+> Here we can see several indicators of in-memory data corruption, e.g. the
+> large negative atomic values of ->pending or
+> ->wait->lock->rlock->raw_lock->val, as well as the bogus spinlock magic
+> 0x1ff7ae32 (decimal 536325682 above) instead of 0xdead4ead or the bogus
+> pointer values for ->wait->head.
+>
+> To fix this, move the call to bio_put() before the atomic_test operation
+> so the submitter side in btrfs_encoded_read_regular_fill_pages() is not
+> woken up before the bio is cleaned up.
+
+This is the part I don't see what's the relation to the use-after-free
+problem on the private structure.
+This seems like a cleanup that should be a separate patch with its own
+changelog.
+
+>
+> Also change atomic_dec_return() to atomic_dec_and_test() to fix the
+> corruption, as atomic_dec_return() is defined as two instructions on
+> x86_64, whereas atomic_dec_and_test() is defined as a single atomic
+> operation. This can lead to a situation where counter value is already
+> decremented but the if statement in btrfs_encoded_read_endio() is not
+> completely processed, i.e. the 0 test has not completed. If another threa=
+d
+> continues executing btrfs_encoded_read_regular_fill_pages() the
+> atomic_dec_return() there can see an already updated ->pending counter an=
+d
+> continues by freeing the private data. Continuing in the endio handler th=
 e
-> > > > to say that if the sb/mount was not watched by a pre-content event =
-listener
-> > > > at the time of file open, then we do not care.
-> > >
-> > > Right.
-> > >
-> > > > The problem is that legacy inotify/fanotify watches can be added af=
-ter
-> > > > file is open, so that is allegedly why this optimization was not do=
-ne for
-> > > > fsnotify hooks in the past.
-> > >
-> > > So honestly, even if the legacy fsnotify hooks can't look at the file
-> > > flag, they could damn well look at an inode flag.
-> >
-> > Legacy fanotify has a mount watch (FAN_MARK_MOUNT),
-> > which is the common way for Anti-malware to set watches on
-> > filesystems, so I am not sure what you are saying.
-> >
-> > > And I'm not even convinced that we couldn't fix them to just look at =
-a
-> > > file flag, and say "tough luck, somebody opened that file before you
-> > > started watching, you don't get to see what they did".
-> >
-> > That would specifically break tail -f (for inotify) and probably many o=
-ther
-> > tools, but as long as we also look at the inode flags (i_fsnotify_mask)
-> > and the dentry flags (DCACHE_FSNOTIFY_PARENT_WATCHED),
-> > then I think we may be able to get away with changing the semantics
-> > for open files on a fanotify mount watch.
+> test for 0 succeeds and the wait_queue is woken up, resulting in a
+> use-after-free.
+
+This is the sort of explanation that should have been in v1.
+Basically, that the non-atomicity of atomic_dec_return() can make the
+waiter see the 0 value and free the private structure before the waker
+does a wake_up() against the private's wait queue.
+
+So with bio_put() change in a separate patch:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+(or with it but with an explanation on how this relates to the
+use-after-free, which I can't see)
+
+Thanks.
+
 >
-> Yes, I agree we cannot afford to generate FS_MODIFY event only if the mar=
-k
-> was placed after file open. There's too much stuff in userspace depending
-> on this since this behavior dates back to inotify interface sometime in
-> 2010 or so.
+> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> Suggested-by: Damien Le Moal <Damien.LeMoal@wdc.com>
+> Fixes: 1881fba89bd5 ("btrfs: add BTRFS_IOC_ENCODED_READ ioctl")
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/inode.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> > Specifically, I would really like to eliminate completely the cost of
-> > FAN_ACCESS_PERM event, which could be gated on file flag, because
-> > this is only for security/Anti-malware and I don't think this event is
-> > practically
-> > useful and it sure does not need to guarantee permission events to moun=
-t
-> > watchers on already open files.
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 22b8e2764619..cb8b23a3e56b 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9089,7 +9089,8 @@ static void btrfs_encoded_read_endio(struct btrfs_b=
+io *bbio)
+>                  */
+>                 WRITE_ONCE(priv->status, bbio->bio.bi_status);
+>         }
+> -       if (atomic_dec_return(&priv->pending) =3D=3D 0) {
+> +       bio_put(&bbio->bio);
+> +       if (atomic_dec_and_test(&priv->pending)) {
+>                 int err =3D blk_status_to_errno(READ_ONCE(priv->status));
 >
-> For traditional fanotify permission events I agree generating them only i=
-f
-> the mark was placed before open is likely fine but we'll have to try and
-> see whether something breaks. For the new pre-content events I like the
-> per-file flag as Linus suggested. That should indeed save us some cache
-> misses in some fast paths.
-
-FWIW, attached a patch that implements FMODE_NOTIFY_PERM
-I have asked Oliver to run his performance tests to see if we can
-observe an improvement with existing workloads, but is sure is going
-to be useful for pre-content events.
-
-For example, here is what the pre content helper looks like after
-I adapted Josef's patches to use the flag:
-
-static inline bool fsnotify_file_has_pre_content_watches(struct file *file)
-{
-        if (!(file->f_mode & FMODE_NOTIFY_PERM))
-                return false;
-
-        if (!(file_inode(file)->i_sb->s_iflags & SB_I_ALLOW_HSM))
-                return false;
-
-        return fsnotify_file_object_watched(file, FSNOTIFY_PRE_CONTENT_EVEN=
-TS);
-}
-
-Thanks,
-Amir.
-
---0000000000002c97f80626b83cf0
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-fsnotify-opt-in-for-permission-events-at-file_open_p.patch"
-Content-Disposition: attachment; 
-	filename="0001-fsnotify-opt-in-for-permission-events-at-file_open_p.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_m3ek7wxp0>
-X-Attachment-Id: f_m3ek7wxp0
-
-RnJvbSA4YzhlOTQ1MmQxNTNhMTkxODQ3MGNiZTUyYThlYjY1MDVjNjc1OTExIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgpE
-YXRlOiBUdWUsIDEyIE5vdiAyMDI0IDEzOjQ2OjA4ICswMTAwClN1YmplY3Q6IFtQQVRDSF0gZnNu
-b3RpZnk6IG9wdC1pbiBmb3IgcGVybWlzc2lvbiBldmVudHMgYXQgZmlsZV9vcGVuX3Blcm0oKQog
-dGltZQoKTGVnYWN5IGlub3RpZnkvZmFub3RpZnkgbGlzdGVuZXJzIGNhbiBhZGQgd2F0Y2hlcyBm
-b3IgZXZlbnRzIG9uIGlub2RlLApwYXJlbnQgb3IgbW91bnQgYW5kIGV4cGVjdCB0byBnZXQgZXZl
-bnRzIChlLmcuIEZTX01PRElGWSkgb24gZmlsZXMgdGhhdAp3ZXJlIGFscmVhZHkgb3BlbiBhdCB0
-aGUgdGltZSBvZiBzZXR0aW5nIHVwIHRoZSB3YXRjaGVzLgoKZmFub3RpZnkgcGVybWlzc2lvbiBl
-dmVudHMgYXJlIHR5cGljYWxseSB1c2VkIGJ5IEFudGktbWFsd2FyZSBzb2Z3YXJlLAp0aGF0IGlz
-IHdhdGNoaW5nIHRoZSBlbnRpcmUgbW91bnQgYW5kIGl0IGlzIG5vdCBjb21tb24gdG8gaGF2ZSBt
-b3JlIHRoYXQKb25lIEFudGktbWFsd2FyZSBlbmdpbmUgaW5zdGFsbGVkIG9uIGEgc3lzdGVtLgoK
-VG8gcmVkdWNlIHRoZSBvdmVyaGVhZCBvZiB0aGUgZnNub3RpZnlfZmlsZV9wZXJtKCkgaG9va3Mg
-b24gZXZlcnkgZmlsZQphY2Nlc3MsIHJlbGF4IHRoZSBzZW1hbnRpY3Mgb2YgdGhlIGxlZ2FjeSBG
-QU5fT1BFTl9QRVJNIGV2ZW50IHRvIGdlbmVyYXRlCmV2ZW50cyBvbmx5IGlmIHRoZXJlIHdlcmUg
-KmFueSogcGVybWlzc2lvbiBldmVudCBsaXN0ZW5lcnMgb24gdGhlCmZpbGVzeXN0ZW0gYXQgdGhl
-IHRpbWUgdGhhdCB0aGUgZmlsZSB3YXMgb3Blbi4KClRoZSBuZXcgc2VtYW50aWNzLCBpbXBsZW1l
-bnRlZCB3aXRoIHRoZSBvcHQtaW4gRk1PREVfTk9USUZZX1BFUk0gZmxhZwphcmUgYWxzbyBnb2lu
-ZyB0byBhcHBseSB0byB0aGUgbmV3IGZhbm90aWZ5IHByZS1jb250ZW50IGV2ZW50IGluIG9yZGVy
-CnRvIHJlZHVjZSB0aGUgY29zdCBvZiB0aGUgcHJlLWNvbnRlbnQgZXZlbnQgdmZzIGhvb2tzLgoK
-U3VnZ2VzdGVkLWJ5OiBMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRhdGlvbi5v
-cmc+Ckxpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWZzZGV2ZWwvQ0FIay09d2o4
-TD1tdGNSVGk9TkVDSE1HZlpRZ1hPcF91aXgxWVZoMDRmRW1yS2FNblhBQG1haWwuZ21haWwuY29t
-LwpTaWduZWQtb2ZmLWJ5OiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgotLS0K
-IGluY2x1ZGUvbGludXgvZnMuaCAgICAgICB8ICAzICsrLQogaW5jbHVkZS9saW51eC9mc25vdGlm
-eS5oIHwgNDcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLQogMiBmaWxl
-cyBjaGFuZ2VkLCAzNSBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
-YS9pbmNsdWRlL2xpbnV4L2ZzLmggYi9pbmNsdWRlL2xpbnV4L2ZzLmgKaW5kZXggOWMxMzIyMjM2
-MmY1Li45YjU4ZTk4ODdlNGIgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvZnMuaAorKysgYi9p
-bmNsdWRlL2xpbnV4L2ZzLmgKQEAgLTE3Myw3ICsxNzMsOCBAQCB0eXBlZGVmIGludCAoZGlvX2lv
-ZG9uZV90KShzdHJ1Y3Qga2lvY2IgKmlvY2IsIGxvZmZfdCBvZmZzZXQsCiAKICNkZWZpbmUJRk1P
-REVfTk9SRVVTRQkJKChfX2ZvcmNlIGZtb2RlX3QpKDEgPDwgMjMpKQogCi0vKiBGTU9ERV8qIGJp
-dCAyNCAqLworLyogRmlsZSBtYXkgZ2VuZXJhdGUgZmFub3RpZnkgYWNjZXNzIHBlcm1pc3Npb24g
-ZXZlbnRzICovCisjZGVmaW5lIEZNT0RFX05PVElGWV9QRVJNCSgoX19mb3JjZSBmbW9kZV90KSgx
-IDw8IDI0KSkKIAogLyogRmlsZSBpcyBlbWJlZGRlZCBpbiBiYWNraW5nX2ZpbGUgb2JqZWN0ICov
-CiAjZGVmaW5lIEZNT0RFX0JBQ0tJTkcJCSgoX19mb3JjZSBmbW9kZV90KSgxIDw8IDI1KSkKZGlm
-ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvZnNub3RpZnkuaCBiL2luY2x1ZGUvbGludXgvZnNub3Rp
-ZnkuaAppbmRleCAyNzg2MjBlMDYzYWIuLmYwZmQzZGNhZTY1NCAxMDA2NDQKLS0tIGEvaW5jbHVk
-ZS9saW51eC9mc25vdGlmeS5oCisrKyBiL2luY2x1ZGUvbGludXgvZnNub3RpZnkuaApAQCAtMTA4
-LDEwICsxMDgsOSBAQCBzdGF0aWMgaW5saW5lIHZvaWQgZnNub3RpZnlfZGVudHJ5KHN0cnVjdCBk
-ZW50cnkgKmRlbnRyeSwgX191MzIgbWFzaykKIAlmc25vdGlmeV9wYXJlbnQoZGVudHJ5LCBtYXNr
-LCBkZW50cnksIEZTTk9USUZZX0VWRU5UX0RFTlRSWSk7CiB9CiAKLXN0YXRpYyBpbmxpbmUgaW50
-IGZzbm90aWZ5X2ZpbGUoc3RydWN0IGZpbGUgKmZpbGUsIF9fdTMyIG1hc2spCisvKiBTaG91bGQg
-ZXZlbnRzIGJlIGdlbmVyYXRlZCBvbiB0aGlzIG9wZW4gZmlsZSByZWdhcmRsZXNzIG9mIHdhdGNo
-ZXM/ICovCitzdGF0aWMgaW5saW5lIGJvb2wgZnNub3RpZnlfZmlsZV93YXRjaGFibGUoc3RydWN0
-IGZpbGUgKmZpbGUsIF9fdTMyIG1hc2spCiB7Ci0JY29uc3Qgc3RydWN0IHBhdGggKnBhdGg7Ci0K
-IAkvKgogCSAqIEZNT0RFX05PTk9USUZZIGFyZSBmZHMgZ2VuZXJhdGVkIGJ5IGZhbm90aWZ5IGl0
-c2VsZiB3aGljaCBzaG91bGQgbm90CiAJICogZ2VuZXJhdGUgbmV3IGV2ZW50cy4gV2UgYWxzbyBk
-b24ndCB3YW50IHRvIGdlbmVyYXRlIGV2ZW50cyBmb3IKQEAgLTExOSwxNCArMTE4LDM3IEBAIHN0
-YXRpYyBpbmxpbmUgaW50IGZzbm90aWZ5X2ZpbGUoc3RydWN0IGZpbGUgKmZpbGUsIF9fdTMyIG1h
-c2spCiAJICogaGFuZGxlIGNyZWF0aW9uIC8gZGVzdHJ1Y3Rpb24gZXZlbnRzIGFuZCBub3QgInJl
-YWwiIGZpbGUgZXZlbnRzLgogCSAqLwogCWlmIChmaWxlLT5mX21vZGUgJiAoRk1PREVfTk9OT1RJ
-RlkgfCBGTU9ERV9QQVRIKSkKKwkJcmV0dXJuIGZhbHNlOworCisJLyogUGVybWlzc2lvbiBldmVu
-dHMgcmVxdWlyZSB0aGF0IHdhdGNoZXMgYXJlIHNldCBiZWZvcmUgRlNfT1BFTl9QRVJNICovCisJ
-aWYgKG1hc2sgJiBBTExfRlNOT1RJRllfUEVSTV9FVkVOVFMgJiB+RlNfT1BFTl9QRVJNICYmCisJ
-ICAgICEoZmlsZS0+Zl9tb2RlICYgRk1PREVfTk9USUZZX1BFUk0pKQorCQlyZXR1cm4gZmFsc2U7
-CisKKwlyZXR1cm4gdHJ1ZTsKK30KKworc3RhdGljIGlubGluZSBpbnQgZnNub3RpZnlfZmlsZShz
-dHJ1Y3QgZmlsZSAqZmlsZSwgX191MzIgbWFzaykKK3sKKwljb25zdCBzdHJ1Y3QgcGF0aCAqcGF0
-aDsKKworCWlmICghZnNub3RpZnlfZmlsZV93YXRjaGFibGUoZmlsZSwgbWFzaykpCiAJCXJldHVy
-biAwOwogCiAJcGF0aCA9ICZmaWxlLT5mX3BhdGg7Ci0JLyogUGVybWlzc2lvbiBldmVudHMgcmVx
-dWlyZSBncm91cCBwcmlvID49IEZTTk9USUZZX1BSSU9fQ09OVEVOVCAqLwotCWlmIChtYXNrICYg
-QUxMX0ZTTk9USUZZX1BFUk1fRVZFTlRTICYmCi0JICAgICFmc25vdGlmeV9zYl9oYXNfcHJpb3Jp
-dHlfd2F0Y2hlcnMocGF0aC0+ZGVudHJ5LT5kX3NiLAotCQkJCQkgICAgICAgRlNOT1RJRllfUFJJ
-T19DT05URU5UKSkKLQkJcmV0dXJuIDA7CisJLyoKKwkgKiBQZXJtaXNzaW9uIGV2ZW50cyByZXF1
-aXJlIGdyb3VwIHByaW8gPj0gRlNOT1RJRllfUFJJT19DT05URU5ULgorCSAqIFVubGVzcyBwZXJt
-aXNzaW9uIGV2ZW50IHdhdGNoZXJzIGV4aXN0IGF0IEZTX09QRU5fUEVSTSB0aW1lLAorCSAqIG9w
-ZXJhdGlvbnMgb24gZmlsZSB3aWxsIG5vdCBiZSBnZW5lcmF0aW5nIGFueSBwZXJtaXNzaW9uIGV2
-ZW50cy4KKwkgKi8KKwlpZiAobWFzayAmIEFMTF9GU05PVElGWV9QRVJNX0VWRU5UUykgeworCQlp
-ZiAoIWZzbm90aWZ5X3NiX2hhc19wcmlvcml0eV93YXRjaGVycyhwYXRoLT5kZW50cnktPmRfc2Is
-CisJCQkJCQkgICAgICAgRlNOT1RJRllfUFJJT19DT05URU5UKSkKKwkJCXJldHVybiAwOworCisJ
-CWlmIChtYXNrICYgRlNfT1BFTl9QRVJNKQorCQkJZmlsZS0+Zl9tb2RlIHw9IEZNT0RFX05PVElG
-WV9QRVJNOworCX0KIAogCXJldHVybiBmc25vdGlmeV9wYXJlbnQocGF0aC0+ZGVudHJ5LCBtYXNr
-LCBwYXRoLCBGU05PVElGWV9FVkVOVF9QQVRIKTsKIH0KQEAgLTE2NiwxNSArMTg4LDEyIEBAIHN0
-YXRpYyBpbmxpbmUgaW50IGZzbm90aWZ5X2ZpbGVfcGVybShzdHJ1Y3QgZmlsZSAqZmlsZSwgaW50
-IHBlcm1fbWFzaykKICAqLwogc3RhdGljIGlubGluZSBpbnQgZnNub3RpZnlfb3Blbl9wZXJtKHN0
-cnVjdCBmaWxlICpmaWxlKQogewotCWludCByZXQ7CisJaW50IHJldCA9IGZzbm90aWZ5X2ZpbGUo
-ZmlsZSwgRlNfT1BFTl9QRVJNKTsKIAotCWlmIChmaWxlLT5mX2ZsYWdzICYgX19GTU9ERV9FWEVD
-KSB7CisJaWYgKCFyZXQgJiYgZmlsZS0+Zl9mbGFncyAmIF9fRk1PREVfRVhFQykKIAkJcmV0ID0g
-ZnNub3RpZnlfZmlsZShmaWxlLCBGU19PUEVOX0VYRUNfUEVSTSk7Ci0JCWlmIChyZXQpCi0JCQly
-ZXR1cm4gcmV0OwotCX0KIAotCXJldHVybiBmc25vdGlmeV9maWxlKGZpbGUsIEZTX09QRU5fUEVS
-TSk7CisJcmV0dXJuIHJldDsKIH0KIAogI2Vsc2UKLS0gCjIuMzQuMQoK
---0000000000002c97f80626b83cf0--
+>                 if (priv->uring_ctx) {
+> @@ -9099,7 +9100,6 @@ static void btrfs_encoded_read_endio(struct btrfs_b=
+io *bbio)
+>                         wake_up(&priv->wait);
+>                 }
+>         }
+> -       bio_put(&bbio->bio);
+>  }
+>
+>  int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
+> --
+> 2.43.0
+>
+>
 
