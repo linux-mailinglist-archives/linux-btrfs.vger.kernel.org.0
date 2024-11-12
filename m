@@ -1,63 +1,61 @@
-Return-Path: <linux-btrfs+bounces-9524-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47C99C5CC6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 17:05:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7189C5D57
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 17:32:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 893EC282895
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 16:05:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23451F235A1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 16:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D967020650B;
-	Tue, 12 Nov 2024 16:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B79207211;
+	Tue, 12 Nov 2024 16:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="q2HQ+ot9"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="fAx2Nj8j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4391220262E
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 16:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD485205AAC
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 16:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731427278; cv=none; b=lOpgZzQXFJ70mfqvp9oX1q1jSAk6KpFlUFACmZkb9XsasEiVI6tRMTbi6RSRSJY2KqyEzeihGXMPyycE1SgedZHAis2gH19e+01nsUU6f3GnFB8T/UAKHEB2sTcQy1ISc4V90UtduLg+tyUx+Jp1rEvVH/dpadPnamvK0mvFF3U=
+	t=1731429064; cv=none; b=rrtvnrqK//fASFgTZXyYG9cbE5e6aAaqDXPKJ91E4inxhnT9tx0ADNJd9NNmW5mD+kSqHSswsTZE3WdQV66jN614WdpO0yGfSuq949Hy4QaxGGzW4Xn6mwScXqNcr5vEkZLU7YkuTP3KStvLOhRRJLkI0wo66tEByqOvF+Gn3d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731427278; c=relaxed/simple;
-	bh=HTPZOHKYxzXhZGWt9rW1OUy3iZOFY1V4N1uQTkhOzYg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YnmT5ozfnATDicvl8bKZ0dLCb3Vw6Izkgs9YMB0dYwtW8Zt30vk0mfSs4AFc2F5MD86hdvHQpCxwFeDIHhDcmmzcF5X1+KymCV1tki0l4sOvz9/2FdPEfKdGsYnfnibPJJMValY99PjnWJJjAPyDehDXECf3y3Y2Ad8J2loz5vY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=q2HQ+ot9; arc=none smtp.client-ip=67.231.145.42
+	s=arc-20240116; t=1731429064; c=relaxed/simple;
+	bh=VNWs4lJ7gieJ8qYMcGgkoiMsOw2wzlQrK2uG6cSAcNg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eqxBSCUyYmJDHiYAbq+sxeEuE90UxJq8eTmbLYZxpF8sdUsSmW9ccGYJL4vPdWLU1wdU0VdHlUN0n+F81iDLjhYCYi28hwshEWPDkb/0FZ2lvBULM6hs9XLxvYepLOEXsf7Os3qPCC4lakgSsC+MP/CKUgtmzntCyrP0TEGzSc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=fAx2Nj8j; arc=none smtp.client-ip=67.231.153.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4ACB1ure032070
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 08:01:15 -0800
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4ACAUS6U023768
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 08:31:00 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
 	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=asJdRrPZFJjALEEdjXTmRr/
-	jWZb1HN05yvTTx7UPX8Q=; b=q2HQ+ot9o4seoITwkNKIS+FGT6b8GpIzC536JCX
-	DTasTziysEWQdPfLZmGzmlkqIh9JfiPI2rMYQ/DQE+mkblyb+kgYMzATluknNJm8
-	Ivwg9vRJOW4ybYy8EWMaLWl1+ax+L0aRv6tgn1qPlD/AUzW792KRz5U/zGyHvUBX
-	t9B8=
+	:mime-version:subject:to; s=facebook; bh=NSnTXW6rmt53Ko8ssjbFmfR
+	0T1sJIyfSFre9XduMcJQ=; b=fAx2Nj8jUgisR19iUYyYpnWygJiLVrpVDV3MAZJ
+	bFDVTVFBqwmaGIYUQDEK294RdSP3UdbDrbbjp7QPQu1Rwlag2QxFtl618gSaeR/y
+	r3+XjNhg8Rp6AWnmN8VdUC6XJ56nsS5WuwWPd/3bv4zmcXI43hiou0zmqRUwStp2
+	SCjY=
 Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42v5sea2pf-3
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42v5ar2gs7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 08:01:14 -0800 (PST)
-Received: from twshared13460.05.ash9.facebook.com (2620:10d:c0a8:1b::2d) by
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 08:31:00 -0800 (PST)
+Received: from twshared18321.17.frc2.facebook.com (2620:10d:c0a8:1c::1b) by
  mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Tue, 12 Nov 2024 16:01:14 +0000
+ 15.2.1544.11; Tue, 12 Nov 2024 16:30:59 +0000
 Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id B54848964BC1; Tue, 12 Nov 2024 16:01:01 +0000 (GMT)
+	id B72418966EE1; Tue, 12 Nov 2024 16:30:51 +0000 (GMT)
 From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>,
-        Johannes Thumshirn
-	<johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs: fix lockdep warnings on io_uring encoded reads
-Date: Tue, 12 Nov 2024 16:00:49 +0000
-Message-ID: <20241112160055.1829361-1-maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>, <io-uring@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH] btrfs: add io_uring interface for encoded writes
+Date: Tue, 12 Nov 2024 16:29:55 +0000
+Message-ID: <20241112163021.1948119-1-maharmstone@fb.com>
 X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -68,59 +66,172 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: nMS5x32ofcs1Y7h2jc7ZhHPU4szxoOi9
-X-Proofpoint-GUID: nMS5x32ofcs1Y7h2jc7ZhHPU4szxoOi9
+X-Proofpoint-ORIG-GUID: LMC6Xaqps9t9pOxWdWsL2qRNc396vc42
+X-Proofpoint-GUID: LMC6Xaqps9t9pOxWdWsL2qRNc396vc42
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_02,2024-10-04_01,2024-09-30_01
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-Lockdep doesn't like the fact that btrfs_uring_read_extent() returns to
-userspace still holding the inode lock, even though we release it once
-the I/O finishes. Add calls to rwsem_release() and rwsem_acquire_read() t=
-o
-work round this.
+Add an io_uring interface for encoded writes, with the same parameters
+as the BTRFS_IOC_ENCODED_WRITE ioctl.
+
+As with the encoded reads code, there's a test program for this at
+https://github.com/maharmstone/io_uring-encoded, and I'll get this
+worked into an fstest.
+
+How io_uring works is that it initially calls btrfs_uring_cmd with the
+IO_URING_F_NONBLOCK flag set, and if we return -EAGAIN it tries again in
+a kthread with the flag cleared.
+
+Ideally we'd honour this and call try_lock etc., but there's still a lot
+of work to be done to create non-blocking versions of all the functions
+in our write path. Instead, just validate the input in
+btrfs_uring_encoded_write() on the first pass and return -EAGAIN, with a
+view to properly optimizing the happy path later on.
 
 Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-Reported-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/ioctl.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ fs/btrfs/ioctl.c | 116 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 1fdeb216bf6c..6ea01e4f940e 100644
+index 6478216305c7..37578270686a 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -4752,6 +4752,11 @@ static void btrfs_uring_read_finished(struct io_ur=
-ing_cmd *cmd, unsigned int iss
- 	size_t page_offset;
- 	ssize_t ret;
+@@ -5030,6 +5030,116 @@ static int btrfs_uring_encoded_read(struct io_uri=
+ng_cmd *cmd, unsigned int issue
+ 	return ret;
+ }
 =20
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	/* The inode lock has already been acquired in btrfs_uring_read_extent.=
-  */
-+	rwsem_acquire_read(&inode->vfs_inode.i_rwsem.dep_map, 0, 0, _THIS_IP_);
-+#endif
++static int btrfs_uring_encoded_write(struct io_uring_cmd *cmd, unsigned =
+int issue_flags)
++{
++	struct btrfs_ioctl_encoded_io_args args;
++	struct iovec iovstack[UIO_FASTIOV];
++	struct iovec *iov =3D iovstack;
++	struct iov_iter iter;
++	loff_t pos;
++	struct kiocb kiocb;
++	struct file *file;
++	ssize_t ret;
++	void __user *sqe_addr;
 +
- 	if (priv->err) {
- 		ret =3D priv->err;
- 		goto out;
-@@ -4860,6 +4865,15 @@ static int btrfs_uring_read_extent(struct kiocb *i=
-ocb, struct iov_iter *iter,
- 	 * and inode and freeing the allocations.
- 	 */
-=20
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	/*
-+	 * We're returning to userspace with the inode lock held, and that's
-+	 * okay - it'll get unlocked in a kthread.  Call rwsem_release to
-+	 * avoid confusing lockdep.
-+	 */
-+	rwsem_release(&inode->vfs_inode.i_rwsem.dep_map, _THIS_IP_);
-+#endif
++	if (!capable(CAP_SYS_ADMIN)) {
++		ret =3D -EPERM;
++		goto out_acct;
++	}
 +
- 	return -EIOCBQUEUED;
++	file =3D cmd->file;
++	sqe_addr =3D u64_to_user_ptr(READ_ONCE(cmd->sqe->addr));
++
++	if (!(file->f_mode & FMODE_WRITE)) {
++		ret =3D -EBADF;
++		goto out_acct;
++	}
++
++	if (issue_flags & IO_URING_F_COMPAT) {
++#if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
++		struct btrfs_ioctl_encoded_io_args_32 args32;
++
++		if (copy_from_user(&args32, sqe_addr, sizeof(args32))) {
++			ret =3D -EFAULT;
++			goto out_acct;
++		}
++		args.iov =3D compat_ptr(args32.iov);
++		args.iovcnt =3D args32.iovcnt;
++		args.offset =3D args32.offset;
++		args.flags =3D args32.flags;
++		args.len =3D args32.len;
++		args.unencoded_len =3D args32.unencoded_len;
++		args.unencoded_offset =3D args32.unencoded_offset;
++		args.compression =3D args32.compression;
++		args.encryption =3D args32.encryption;
++		memcpy(args.reserved, args32.reserved, sizeof(args.reserved));
++#else
++		return -ENOTTY;
++#endif
++	} else {
++		if (copy_from_user(&args, sqe_addr, sizeof(args))) {
++			ret =3D -EFAULT;
++			goto out_acct;
++		}
++	}
++
++	ret =3D -EINVAL;
++	if (args.flags !=3D 0)
++		goto out_acct;
++	if (memchr_inv(args.reserved, 0, sizeof(args.reserved)))
++		goto out_acct;
++	if (args.compression =3D=3D BTRFS_ENCODED_IO_COMPRESSION_NONE &&
++	    args.encryption =3D=3D BTRFS_ENCODED_IO_ENCRYPTION_NONE)
++		goto out_acct;
++	if (args.compression >=3D BTRFS_ENCODED_IO_COMPRESSION_TYPES ||
++	    args.encryption >=3D BTRFS_ENCODED_IO_ENCRYPTION_TYPES)
++		goto out_acct;
++	if (args.unencoded_offset > args.unencoded_len)
++		goto out_acct;
++	if (args.len > args.unencoded_len - args.unencoded_offset)
++		goto out_acct;
++
++	if (issue_flags & IO_URING_F_NONBLOCK) {
++		ret =3D -EAGAIN;
++		goto out_acct;
++	}
++
++	ret =3D import_iovec(ITER_SOURCE, args.iov, args.iovcnt, ARRAY_SIZE(iov=
+stack),
++			   &iov, &iter);
++	if (ret < 0)
++		goto out_acct;
++
++	if (iov_iter_count(&iter) =3D=3D 0) {
++		ret =3D 0;
++		goto out_iov;
++	}
++	pos =3D args.offset;
++	ret =3D rw_verify_area(WRITE, file, &pos, args.len);
++	if (ret < 0)
++		goto out_iov;
++
++	init_sync_kiocb(&kiocb, file);
++	ret =3D kiocb_set_rw_flags(&kiocb, 0, WRITE);
++	if (ret)
++		goto out_iov;
++	kiocb.ki_pos =3D pos;
++
++	file_start_write(file);
++
++	ret =3D btrfs_do_write_iter(&kiocb, &iter, &args);
++	if (ret > 0)
++		fsnotify_modify(file);
++
++	file_end_write(file);
++out_iov:
++	kfree(iov);
++out_acct:
++	if (ret > 0)
++		add_wchar(current, ret);
++	inc_syscw(current);
++	return ret;
++}
++
+ int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags)
+ {
+ 	switch (cmd->cmd_op) {
+@@ -5038,6 +5148,12 @@ int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsi=
+gned int issue_flags)
+ 	case BTRFS_IOC_ENCODED_READ_32:
+ #endif
+ 		return btrfs_uring_encoded_read(cmd, issue_flags);
++
++	case BTRFS_IOC_ENCODED_WRITE:
++#if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
++	case BTRFS_IOC_ENCODED_WRITE_32:
++#endif
++		return btrfs_uring_encoded_write(cmd, issue_flags);
+ 	}
 =20
- out_fail:
+ 	return -EINVAL;
 --=20
 2.45.2
 
