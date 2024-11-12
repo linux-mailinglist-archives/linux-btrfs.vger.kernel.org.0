@@ -1,261 +1,215 @@
-Return-Path: <linux-btrfs+bounces-9520-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9521-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B6B19C5AE7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 15:51:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F8DE9C5B2E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 16:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF6D71F217B5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 14:51:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0BD81F22F87
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 15:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CE31FF615;
-	Tue, 12 Nov 2024 14:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764AF201261;
+	Tue, 12 Nov 2024 14:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MMWaQqzU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVJVPIf1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289BF2309A3
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 14:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04B41FF5F4
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 14:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731423086; cv=none; b=gCcsdtH1b5Y12kWKN1y07nFuPY6xgaXI1bGDJisYx/iCi9xp2uBSA7pH+WnUvMbe3S9WKk3leUNBJf1/bJqe2h5kKD6JRexb4LoRbzbIx8TZpTgkls8cP2uhkeb86TrE6yTw0VtgCOpDjHhdx4ohlNpiYmb3VHpheglW4e5udgE=
+	t=1731423508; cv=none; b=qPD7Xnh5iQslaqzHeeKPkQm9wgba+nZb48m2ZlNCURhIVyK8174TBINN02ygkRCdosAwdN2aZDa9pp916ooR5WxJ2JXOgY1+kRm5VsIpXovhuVWvrgjpmyoaUBA3n8KYzhVEMFr2Rxb6ymxdfN+jKyI9BOYalVed2KPZjrwHaRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731423086; c=relaxed/simple;
-	bh=mqQhsAaxwWysPBIhvxpmHkNJDSNibPBlWN5Kv3bKH+U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JLvdlpBLF0fhEIGy0LAh0y/QMSIlnjidNkEEkKTT33i6CAWX3b2xwW93aGvIHC9Ec8kFbrdYCQ4BN9du8oSJrjlv9/3NWpjEAQAUtxmFCD9urJrBRx4/IlEyTZx/uBEyscL99S3jBimO0P6lTMBVW2b2FLWq9O9NWWlB8I0VuUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MMWaQqzU; arc=none smtp.client-ip=209.85.210.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-71811707775so3114925a34.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 06:51:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731423083; x=1732027883; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gvE32TaYAXjgECParzeSgw6HkypztPHssnr8m+v8i78=;
-        b=MMWaQqzUDQDT1sfOfxiY65TAT9MMPmlRKLKvFdLPP9pl0T2umtwURHkpfFLHRNLmE9
-         7Io/SDzMfM+TIjkbKoYHts7giQXM3zhPvoh40kX35s+fR6leqO2JoxMskuIDVSQ9TT35
-         cYX1rXUdLYaBsw5hKJhFJPAnf7ZQXiA91bKRLYr5AhN5oWQd+MEetGjPyquQW+GlOMPu
-         xAQwUpy5NF/CwOvvWtipGB99muWOWB4/pLa4Z+O/YnjYf9fi1jq6jNHtARZ6pVfwCxfH
-         F5e2KmWCPHnQzFUZWHH5JR+8/yatUNWuKdmermCkmnUBCV+EMOkrfKrhhRhbNL/LD+07
-         G08A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731423083; x=1732027883;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gvE32TaYAXjgECParzeSgw6HkypztPHssnr8m+v8i78=;
-        b=oKjuqVdQpu1OkFW0mpsmTvRdOGvPnof5m1TvXFpiTRYkoAQFBB2dzMAtxFPS9IHc3b
-         pVPljUHO0/ygvU6FxY7iWk87Uc+NMoKl53LS7YYQ91XtBc6te+kOTXcxAssYY3nmijGG
-         5Jq6YEtUi0LOhN8cirFlMVkBj51F4XqPM9CxkjehFa5w17M/L0Rmbu4xxvbdSoOqXuSr
-         UxKlDSKs8uvNtK40T8MSbg9TjLRjiyAbtBgpq/4BlTu3q9er3Vg768tC9m/DXlRV8uJe
-         r8gIXzuDcfH3TmJsyl/yvAFkZZlDmS4uFfH5E7OtYnOfcSxX4+BwggZ15k6uz99BTUzQ
-         0kaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXeFW5flU+5igqF/CRhYIBHmS4Z1wCca4sc/St4aAEHNc8cZ5njJw0VkOUAQbPd2aOFTo2hFngTJ93X0g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPOcrcvTtA1cvgZ3L9AlN5ZCpcKKitzwD09zOy3Y+6FjdHsLXu
-	arznaIRwISVt5TamvA+mAYw61uOTQ49OS+jhQNdnqRGL2VC1Y+2dghCrXxo1gp0=
-X-Google-Smtp-Source: AGHT+IH7Ryn2K78a+7vMPHSR7u3Kh0PU/404i9EkCLLhxngvy6O/IjGB1rfvrkuz3xsVwrzASt/5mA==
-X-Received: by 2002:a05:6830:6d86:b0:710:f1cd:b237 with SMTP id 46e09a7af769-71a1c2860eemr14833704a34.20.1731423083214;
-        Tue, 12 Nov 2024 06:51:23 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-71a10833f05sm2722374a34.31.2024.11.12.06.51.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Nov 2024 06:51:22 -0800 (PST)
-Message-ID: <20b661ee-a7aa-4116-a0ec-96da9343af61@kernel.dk>
-Date: Tue, 12 Nov 2024 07:51:21 -0700
+	s=arc-20240116; t=1731423508; c=relaxed/simple;
+	bh=ACsvNW8DPotsBYPQmC8WG6Zz+LnN9sjqBGvgw5IBlE0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XN22ywdQvmqaEgL25yH4R1YlaplwXkSiFkzRLmVVuqAEPnjfxy3jzWRqwytRqbAiXxleAE3aH9mpKzsqGsyTD7Sklqt+1LAVSvKQmdWHdAzSfQ2wdKlvbofej8FzeQ0yHyET4ZNmy221/ZNp8K97eRjTkoLAIShq2jMKxOEFcLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVJVPIf1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80C0CC4CED6
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 14:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731423508;
+	bh=ACsvNW8DPotsBYPQmC8WG6Zz+LnN9sjqBGvgw5IBlE0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HVJVPIf1W7aPjYKjeOpWIzQQ/ROrFWlHztAG3aecuDIoNjJp6jlZUmPu2wBCHLXB7
+	 4xc0sLRPMa8Xmn8jwhmKntawfPziSUu7eeoa0UXh5NFxniVN2kMXno1canuSax/kDD
+	 2EpZDPhQHabHfLPBSpHgjOOFdWSgFVzcH2P0r5EFxqUUY9imZ1bbt/CQfl+FEgHimH
+	 wzsSHp5FnLkuTBrG1/ZOOPfQRvT2t1mE6mWJeXCtOzG3fOxVmCIstFMjvQf+3jsmtS
+	 sB3T8I0kOaySMN8BXuVASFnjqJu6h6jFnNl5OvSHN7XGSbWlTGIM0WkDwi5CR7GMiC
+	 jX7n31KRXi8ag==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a99f646ff1bso869607466b.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 06:58:28 -0800 (PST)
+X-Gm-Message-State: AOJu0Yzt1IQ2oe0fMzXSAzkXikxFAQ4HFwvIM2H4dXj++Pi9VU1NLrQY
+	RtrAf9s4vdGDdwv+F7FvU3r/IdQeu7w6Axo8o3j4NyO9TOnLEwOOvMn0khcuvY55qPTY0EUPNY/
+	9cTANHJUB9VDGL7+/w1kfNueGPIo=
+X-Google-Smtp-Source: AGHT+IEFZK3QCm/CJtlXNQ8E/Z/wh9rlCdjiMZ5t6ZlBSsz76rm15LtHHJkvg32wAJwPAiDaMraIUsTgWce9UbBs44I=
+X-Received: by 2002:a17:906:dac9:b0:a9e:c266:2e15 with SMTP id
+ a640c23a62f3a-aa1b10a20bemr325937066b.27.1731423506981; Tue, 12 Nov 2024
+ 06:58:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/16] mm/filemap: make buffered writes work with
- RWF_UNCACHED
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
- clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
- kirill@shutemov.name, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-References: <20241111234842.2024180-1-axboe@kernel.dk>
- <20241111234842.2024180-11-axboe@kernel.dk>
- <ZzKn4OyHXq5r6eiI@dread.disaster.area>
- <0487b852-6e2b-4879-adf1-88ba75bdecc0@kernel.dk>
- <ZzMLmYNQFzw9Xywv@dread.disaster.area>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZzMLmYNQFzw9Xywv@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <cover.1731407982.git.jth@kernel.org> <efda9415bfe4a33b764d82fe9f7a522a23b4586f.1731419476.git.jth@kernel.org>
+In-Reply-To: <efda9415bfe4a33b764d82fe9f7a522a23b4586f.1731419476.git.jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 12 Nov 2024 14:57:50 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7rLgUBk6CrhpTuyFU3L4ww4qmsZqdpERO3A34nmY1fOw@mail.gmail.com>
+Message-ID: <CAL3q7H7rLgUBk6CrhpTuyFU3L4ww4qmsZqdpERO3A34nmY1fOw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] btrfs: simplify waiting for encoded read endios
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
+	Damien Le Moal <Damien.LeMoal@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/12/24 1:02 AM, Dave Chinner wrote:
-> On Mon, Nov 11, 2024 at 06:27:46PM -0700, Jens Axboe wrote:
->> On 11/11/24 5:57 PM, Dave Chinner wrote:
->>> On Mon, Nov 11, 2024 at 04:37:37PM -0700, Jens Axboe wrote:
->>>> If RWF_UNCACHED is set for a write, mark new folios being written with
->>>> uncached. This is done by passing in the fact that it's an uncached write
->>>> through the folio pointer. We can only get there when IOCB_UNCACHED was
->>>> allowed, which can only happen if the file system opts in. Opting in means
->>>> they need to check for the LSB in the folio pointer to know if it's an
->>>> uncached write or not. If it is, then FGP_UNCACHED should be used if
->>>> creating new folios is necessary.
->>>>
->>>> Uncached writes will drop any folios they create upon writeback
->>>> completion, but leave folios that may exist in that range alone. Since
->>>> ->write_begin() doesn't currently take any flags, and to avoid needing
->>>> to change the callback kernel wide, use the foliop being passed in to
->>>> ->write_begin() to signal if this is an uncached write or not. File
->>>> systems can then use that to mark newly created folios as uncached.
->>>>
->>>> Add a helper, generic_uncached_write(), that generic_file_write_iter()
->>>> calls upon successful completion of an uncached write.
->>>
->>> This doesn't implement an "uncached" write operation. This
->>> implements a cache write-through operation.
->>
->> It's uncached in the sense that the range gets pruned on writeback
->> completion.
-> 
-> That's not the definition of "uncached". Direct IO is, by
-> definition, "uncached" because it bypasses the cache and is not
-> coherent with the contents of the cache.
+On Tue, Nov 12, 2024 at 1:54=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> Simplify the I/O completion path for encoded reads by using a
+> completion instead of a wait_queue.
+>
+> Furthermore skip taking an extra reference that is instantly
+> dropped anyways and convert btrfs_encoded_read_private::pending into a
+> refcount_t filed instead of atomic_t.
+>
+> Freeing of the private data is now handled at a common place in
+> btrfs_encoded_read_regular_fill_pages() and if btrfs_encoded_read_endio()
+> is freeing the data in case it has an io_uring context associated, the
+> btrfs_bio's private filed is NULLed to avoid a double free of the private
+> data.
+>
+> Suggested-by: Damien Le Moal <Damien.LeMoal@wdc.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/inode.c | 31 ++++++++++++++++---------------
+>  1 file changed, 16 insertions(+), 15 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index cb8b23a3e56b..3093905364e5 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9068,9 +9068,9 @@ static ssize_t btrfs_encoded_read_inline(
+>  }
+>
+>  struct btrfs_encoded_read_private {
+> -       wait_queue_head_t wait;
+> +       struct completion done;
+>         void *uring_ctx;
+> -       atomic_t pending;
+> +       refcount_t refs;
+>         blk_status_t status;
+>  };
+>
+> @@ -9090,14 +9090,15 @@ static void btrfs_encoded_read_endio(struct btrfs=
+_bio *bbio)
+>                 WRITE_ONCE(priv->status, bbio->bio.bi_status);
+>         }
+>         bio_put(&bbio->bio);
+> -       if (atomic_dec_and_test(&priv->pending)) {
+> +       if (refcount_dec_and_test(&priv->refs)) {
+>                 int err =3D blk_status_to_errno(READ_ONCE(priv->status));
+>
+>                 if (priv->uring_ctx) {
+>                         btrfs_uring_read_extent_endio(priv->uring_ctx, er=
+r);
+> +                       bbio->private =3D NULL;
 
-I grant you it's not the best word in the world to describe it, but it
-is uncached in the sense that it's not persistent in cache. It does very
-much use the page cache as the synchronization point, exactly to avoid
-the pitfalls of the giant mess that is O_DIRECT. But it's not persistent
-in cache, whereas write-through very much traditionally is. Hence I
-think uncached is a much better word than write-through, though as
-mentioned I'll be happy to take other suggestions. Write-through isn't
-it though, as the uncached concept is as much about reads as it is about
-writes.
+Isn't this racy?
 
-> This IO, however, is moving the data coherently through the cache
-> (both on read and write).  The cached folios are transient - i.e.
-> -temporarily resident- in the cache whilst the IO is in progress -
-> but this behaviour does not make it "uncached IO".
-> 
-> Calling it "uncached IO " is simply wrong from any direction I look
-> at it....
+We decremented priv->refs to 0, the task at
+btrfs_encoded_read_regular_fill_pages() sees it as 0 and sees
+bbio->private still as non-NULL, does a kfree() on it and then we do
+it here again.
 
-As mentioned, better words welcome :-)
+I.e. we should set bbio->private to NULL before decrementing, and
+possibly some barriers.
 
->> For write-through, I'd consider that just the fact that it
->> gets kicked off once dirtied rather than wait for writeback to get
->> kicked at some point.
->>
->> So I'd say write-through is a subset of that.
-> 
-> I think the post-IO invalidation that these IOs do is largely
-> irrelevant to how the page cache processes the write. Indeed,
-> from userspace, the functionality in this patchset would be
-> implemented like this:
-> 
-> oneshot_data_write(fd, buf, len, off)
-> {
-> 	/* write into page cache */
-> 	pwrite(fd, buf, len, off);
-> 
-> 	/* force the write through the page cache */
-> 	sync_file_range(fd, off, len, SYNC_FILE_RANGE_WRITE | SYNC_FILE_RANGE_WAIT_AFTER);
-> 
-> 	/* Invalidate the single use data in the cache now it is on disk */
-> 	posix_fadvise(fd, off, len, POSIX_FADV_DONTNEED);
-> }
+Thanks.
 
-Right, you could do that, it'd obviously just be much slower as you lose
-the pipelining of the writes. This is the reason for the patch, after
-all.
 
-> Allowing the application to control writeback and invalidation
-> granularity is a much more flexible solution to the problem here;
-> when IO is sequential, delayed allocation will be allowed to ensure
-> large contiguous extents are created and that will greatly reduce
-> file fragmentation on XFS, btrfs, bcachefs and ext4. For random
-> writes, it'll submit async IOs in batches...
-> 
-> Given that io_uring already supports sync_file_range() and
-> posix_fadvise(), I'm wondering why we need an new IO API to perform
-> this specific write-through behaviour in a way that is less flexible
-> than what applications can already implement through existing
-> APIs....
-
-Just to make it available generically, it's just a read/write flag after
-all. And yes, you can very much do this already with io_uring, just by
-linking the ops. But the way I see it, it's a generic solution to a
-generic problem.
-
->>> That also gives us a common place for adding cache write-through
->>> trigger logic (think writebehind trigger logic similar to readahead)
->>> and this is also a place where we could automatically tag mapping
->>> ranges for reclaim on writeback completion....
->>
->> I appreciate that you seemingly like the concept, but not that you are
->> also seemingly trying to commandeer this to be something else. Unless
->> you like the automatic reclaiming as well, it's not clear to me.
-> 
-> I'm not trying to commandeer anything.
-
-No? You're very much trying to steer it in a direction that you find
-better. There's a difference between making suggestions, or speaking
-like you are sitting on the ultimate truth.
-
-> Having thought about it more, I think this new API is unneccesary
-> for custom written applications to perform fine grained control of
-> page cache residency of one-shot data. We already have APIs that
-> allow applications to do exactly what this patchset is doing. rather
-> than choosing to modify whatever benchmark being used to use
-> existing APIs, a choice was made to modify both the applicaiton and
-> the kernel to implement a whole new API....
-> 
-> I think that was the -wrong choice-.
-> 
-> I think this partially because the kernel modifications are don't
-> really help further us towards the goal of transparent mode
-> switching in the page cache.
-> 
-> Read-through should be a mode that the readahead control activates,
-> not be something triggered by a special read() syscall flag. We
-> already have access patterns and fadvise modes guiding this.
-> Write-through should be controlled in a similar way.
-> 
-> And making the data being read and written behave as transient page
-> caceh objects should be done via an existing fadvise mode, too,
-> because the model you have implemented here exactly matches the 
-> definition of FADV_NOREUSE:
-> 
-> 	POSIX_FADV_NOREUSE
->               The specified data will be accessed only once.
-> 
-> Having a new per-IO flag that effectively collides existing
-> control functionality into a single inflexible API bit doesn't
-> really make a whole lot of sense to me.
-> 
-> IOWs, I'm not questioning whether we need rw-through modes and/or
-> IO-transient residency for page cache based IO - it's been on our
-> radar for a while. I'm more concerned that the chosen API in this
-> patchset is a poor one as it cannot replace any of the existing
-> controls we already have for these sorts of application directed
-> page cache manipulations...
-
-We'll just have to disagree, then. Per-file settings is fine for sync
-IO, for anything async per-io is the way to go. It's why we have things
-like RWF_NOWAIT as well, where O_NONBLOCK exists too. I'd argue that
-RWF_NOWAIT should always have been a thing, and O_NONBLOCK is a mistake.
-That's why RWF_UNCACHED exists. And yes, the FADV_NOREUSE was already
-discussed with Willy and Yu, and I already did a poc patch to just
-unconditionally set RWF_UNCACHED for FADV_NOREUSE enabled files. While
-it's not exactly the same concept, I think the overlap is large enough
-that it makes sense to do that. Especially since, historically,
-FADV_NOREUSE has been largely a no-op and even know it doesn't have well
-defined semantics.
-
--- 
-Jens Axboe
+>                         kfree(priv);
+>                 } else {
+> -                       wake_up(&priv->wait);
+> +                       complete(&priv->done);
+>                 }
+>         }
+>  }
+> @@ -9116,8 +9117,8 @@ int btrfs_encoded_read_regular_fill_pages(struct bt=
+rfs_inode *inode,
+>         if (!priv)
+>                 return -ENOMEM;
+>
+> -       init_waitqueue_head(&priv->wait);
+> -       atomic_set(&priv->pending, 1);
+> +       init_completion(&priv->done);
+> +       refcount_set(&priv->refs, 1);
+>         priv->status =3D 0;
+>         priv->uring_ctx =3D uring_ctx;
+>
+> @@ -9130,7 +9131,7 @@ int btrfs_encoded_read_regular_fill_pages(struct bt=
+rfs_inode *inode,
+>                 size_t bytes =3D min_t(u64, disk_io_size, PAGE_SIZE);
+>
+>                 if (bio_add_page(&bbio->bio, pages[i], bytes, 0) < bytes)=
+ {
+> -                       atomic_inc(&priv->pending);
+> +                       refcount_inc(&priv->refs);
+>                         btrfs_submit_bbio(bbio, 0);
+>
+>                         bbio =3D btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_REA=
+D, fs_info,
+> @@ -9145,26 +9146,26 @@ int btrfs_encoded_read_regular_fill_pages(struct =
+btrfs_inode *inode,
+>                 disk_io_size -=3D bytes;
+>         } while (disk_io_size);
+>
+> -       atomic_inc(&priv->pending);
+>         btrfs_submit_bbio(bbio, 0);
+>
+>         if (uring_ctx) {
+> -               if (atomic_dec_return(&priv->pending) =3D=3D 0) {
+> +               if (bbio->private && refcount_read(&priv->refs) =3D=3D 0)=
+ {
+>                         ret =3D blk_status_to_errno(READ_ONCE(priv->statu=
+s));
+>                         btrfs_uring_read_extent_endio(uring_ctx, ret);
+> -                       kfree(priv);
+> -                       return ret;
+> +                       goto out;
+>                 }
+>
+>                 return -EIOCBQUEUED;
+>         } else {
+> -               if (atomic_dec_return(&priv->pending) !=3D 0)
+> -                       io_wait_event(priv->wait, !atomic_read(&priv->pen=
+ding));
+> +               wait_for_completion_io(&priv->done);
+>                 /* See btrfs_encoded_read_endio() for ordering. */
+>                 ret =3D blk_status_to_errno(READ_ONCE(priv->status));
+> -               kfree(priv);
+> -               return ret;
+>         }
+> +
+> +out:
+> +       kfree(priv);
+> +       return ret;
+> +
+>  }
+>
+>  ssize_t btrfs_encoded_read_regular(struct kiocb *iocb, struct iov_iter *=
+iter,
+> --
+> 2.43.0
+>
+>
 
