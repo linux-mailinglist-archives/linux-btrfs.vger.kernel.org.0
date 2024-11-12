@@ -1,98 +1,284 @@
-Return-Path: <linux-btrfs+bounces-9560-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9532-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383729C633C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 22:19:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2DC9C640F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 23:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0517283CD5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 21:19:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EA85B61EF4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2024 17:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A7821A4B9;
-	Tue, 12 Nov 2024 21:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D68E216211;
+	Tue, 12 Nov 2024 17:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="W9yGcKdm"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="jXJjs3/J"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1E514C59C
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 21:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C25421500C
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 17:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731446373; cv=none; b=G1DAtcOP1fx4YcVCcfvzK+AZB4Ha/R0Tsxi15nr44bLlUDYQp7ErZvT82pigVan4D3eRgXfE2YJbC+XWaq5PTMuMFF2Uu6EtCFXp18z+c6Hx1s2MxXsGCyPkSL8FvWdTWcoe6ZbITJzQZyCgcUtE50fSVxJ6WBjO+jOZQeZMp1w=
+	t=1731434191; cv=none; b=e0UBAaI4x9UGJyxWF1MDxHAxiNKB2tsT+3iu8FFv59Nk6NOnRDbHaV+XLc1t5cDB0YrDkN0Dm0/kfWgVmbmo5muZov6xRJ52NDFfcVMQcdGUlDtFxiUYPD+InywdQM4HHrX1/6kZFr3OE4Feie1wuUe6Xzieg/iKEodI/MoyR8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731446373; c=relaxed/simple;
-	bh=SEL6X6hdUxF6ym4A9NUSeFNUTCyHas6dfssLeN1VhQo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=qdsaBq1Z+ZOvRVGq4QEtI060yG9MPFK1B8yDDBVs7f1rPvEkrQiqKf3smLZW84+RboAqe1e9889qhOjv4JPZLwhd5tuio7SMN9BblmHZOVWhxn0iLClVnYEgJEA2TMnJZvpeYYcdC2ncYDvOTeNmSheIVvg5inUh/XTYNgDXUc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=W9yGcKdm; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3e604425aa0so3583830b6e.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 13:19:31 -0800 (PST)
+	s=arc-20240116; t=1731434191; c=relaxed/simple;
+	bh=esdaILa7AKbxpOU9tYwViCla+kycTwZVmfRFoeCuTbc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=KD6lxSFTglJLkNFew79alftbqB+AbCWIV40PwMzzDqGoeegwC9abbwcELKuiFA8AULAXwK+5NspnOp89PWRLhY2ZnW0dnxFEgafucn1+/xHqDGMipJRSOOWTaBaSVqjejomcFAFhVFTxxJgyXLPLPd0U3KbawW3kohUyhoUK+tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=jXJjs3/J; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6ea5f68e17aso60632077b3.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 09:56:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731446371; x=1732051171; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g0LGAAhnzSPN+1d55yonk1/GMChB/jRmj1V/dRhQ/hk=;
-        b=W9yGcKdm9K8ak393hUNH6YNvpU7+rVuMK+LhHjG9X5mUJQ3I4xbZMgY605A+2HgtwW
-         0ybjcxib3ozswqOJL7yaznh51ZtEcS/9Uy6t15KTrhZtZSD9w6pK1rYczs2SzGKQXLSQ
-         K8zDwGDMJfq4ToU9TOhQhGyGjTeEpjcllk4R7NHme08rV5hqJkmwK3+n8DiIzfb2O4sn
-         l94nnyZ48ErGGT4J7C85e1OxFbV+9yBgxHm7YfveVIAnki1MDQTt6Vi6DxTAPXaEKceS
-         4pWI/VqPMs0ZSdd/OaTxMLeXgXH9Y1I6C/8Bgp8qly+d8gLUZfd7Oz1kn/zmvwikkNLu
-         MipQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731434187; x=1732038987; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g48wmOGZabKsmMEfPaYhGe4dtOd9ozHYTrWY8XD5r2k=;
+        b=jXJjs3/JH2+IHUofpAGDd/ER77BXeXxFTIaFQ2KZI/fccpVkpLuwAv/Rfrf7rze+Ls
+         qkUQoIkYC1B6mUCDwp0AFMjgvyAwVZl/Sd4exzZaP5GwRqVLQawWIdj/FFp12OTB24bi
+         QW2R+zCla6MKFz3j8yh6PxubErEDbAIsCDffxF9EpNeKpcIwfK/kOcJq8wgCtrTM8Ifx
+         SndTZGOPpZUWM3WmhAcBeUGPMjidpq4LFotZ2RkX2LioHr0Qrn7dJXhCzBtJaqb5RUqh
+         RPYmf5F8UVIqhpbZmRiSPZLrxXKK2nSsXQb1YTe80NJ0ZZqLs9Er8sCIhugET0rUIgJa
+         K9yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731446371; x=1732051171;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g0LGAAhnzSPN+1d55yonk1/GMChB/jRmj1V/dRhQ/hk=;
-        b=G7hk67FSoYANAdlJuBZALfP5NHnGo2yQUNKYu6VtSd88uLnRDqzp5SDBauClpuXrFK
-         PQoNcnEOvhAbEweLq7yknuaq6SyL2q3gDQRX75E5W892Lgv++pGiyZuMrrlsOLcji1Gn
-         ozStQQjd5O49szg5DWj+7wDNii4PTAlOOL5NKuNliOxeCDCnuHa/9NKZAnkFIqjCDTEp
-         PbkeJTDn0jM8+AtDUC7AXPwBQxTtRdTJDQc1GDAwZAV6zJXxWJob+a8fRZIy0ASJCGI1
-         KR0Ty4zz2u2PvbthNKV0vBFg9YqtUc0DwOf0VJ/Vze9EJ1lRrv1/xWRjUBhM5mDiA8m2
-         wGAg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0BRxzryXJZIlLb0eEuzq3WgZFXFsYooS1c6M/G+xtqwEHXmKFlPu/cVu5JOGDPqdOXr+HLwOBRq3ddg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzU5PlWOaWYpVdH7hgElPxpSr8R4ulPsH/xzTu3wUasv1zp1LgU
-	k2jYZVnlUaKeyz9fw4kEya3RZtn3CM/FbL8vVThpJ6+bmKSQ2f6VsnuKCry/mfUwxw/t5ZvLeVC
-	5EAw=
-X-Google-Smtp-Source: AGHT+IHRWQzNVJxVEAh22puDycpcVGRjweG7PJYNurtD1CyzmW7C4IptCPtXOB2QuJi+mTvvENQ8tw==
-X-Received: by 2002:a05:6808:138c:b0:3e6:2f8c:317a with SMTP id 5614622812f47-3e79469a506mr14762715b6e.2.1731446371234;
-        Tue, 12 Nov 2024 13:19:31 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e7b0969cddsm74292b6e.17.2024.11.12.13.19.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Nov 2024 13:19:30 -0800 (PST)
-Message-ID: <4c59f6ff-c766-4820-9b7d-c5bd453ed3bc@kernel.dk>
-Date: Tue, 12 Nov 2024 14:19:29 -0700
+        d=1e100.net; s=20230601; t=1731434187; x=1732038987;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g48wmOGZabKsmMEfPaYhGe4dtOd9ozHYTrWY8XD5r2k=;
+        b=oCb9Qsr4DhUkRSX0eVxfeIEbkzPCkqqrd7NZ+N51tyTxYHWI+JunSN26IB0/kNXKfT
+         In6LkarsVHbFnwwLdNW361684hiWv853rG9PZOB0QRbk/raZ3ryunBr/joo3ZXuh8tcK
+         WAuRsUhPiIB9PBGQ9y99DB4nCSEjzT6zNkAnBDbxa56IlUXLjtSYL+d1nfCQBOvrZJQP
+         /uwQnOdxIkbgdcj6QotUfaUYUKZCkEGPOLjgHXHu7IMribWoncqqYRNfJx5SIsGdgk1K
+         lXeKLl3lOBtJf76BgWLCc3msvF9mzXb2bPdffkzgOgvlnfxEPoIu2QlvZtcCWNozfuLW
+         psTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVV16egh1fuOIghZNbe2J78UuSeYSDHyMKaivas2udlybLwWsuk7lfo3xid6mhmg3HdnYahv1Dk+nvOSg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YylALlnWSEx3aMAC54ZOiGbKHv2bFej9jHP62H/J7wov+cD8oyg
+	D89Zllf8AVCfxsRGEKDgKzx/czcbrF1Ogap+xglBqILwJTFkgXh/Z/CTBNfvCiM=
+X-Google-Smtp-Source: AGHT+IGENyk2mAziIYhZQg41cfzA0HPYUllNcDo1wflc5oTm5yw6vvf+phT1j0QUEo4365Asvd+k2g==
+X-Received: by 2002:a05:690c:6f92:b0:6ea:8556:1cd6 with SMTP id 00721157ae682-6eaddf84222mr180166387b3.30.1731434187543;
+        Tue, 12 Nov 2024 09:56:27 -0800 (PST)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eaceb7b34fsm26786047b3.115.2024.11.12.09.56.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2024 09:56:26 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
+To: kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org,
+	jack@suse.cz,
+	amir73il@gmail.com,
+	brauner@kernel.org,
+	torvalds@linux-foundation.org,
+	linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH v7 00/18] fanotify: add pre-content hooks
+Date: Tue, 12 Nov 2024 12:55:15 -0500
+Message-ID: <cover.1731433903.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: add io_uring interface for encoded writes
-From: Jens Axboe <axboe@kernel.dk>
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
- io-uring@vger.kernel.org
-References: <20241112163021.1948119-1-maharmstone@fb.com>
- <5ecbdce7-d143-4cee-b771-bf94a08f801a@kernel.dk>
-Content-Language: en-US
-In-Reply-To: <5ecbdce7-d143-4cee-b771-bf94a08f801a@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/12/24 2:01 PM, Jens Axboe wrote:
-> I'm also pondering if the encoded read side suffers from the same issue?
+v6: https://lore.kernel.org/linux-fsdevel/cover.1731355931.git.josef@toxicpanda.com/
+v5: https://lore.kernel.org/linux-fsdevel/cover.1725481503.git.josef@toxicpanda.com/
+v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
+v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
+v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
+v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
 
-It does, it needs the same fixup.
+v6->v7:
+- As per Linus's suggestion, Amir added the file flag FMODE_NOTIFY_PERM that
+  will be set at open time if the file has permission related watches (this is
+  the original malware style permission watches and the new precontent watches).
+  All of the VFS hooks and the page fault hooks use this flag to determine if
+  they should generate a notification to allow for a much cheaper check in the
+  common case.
+
+v5->v6:
+- Linus had problems with this and rejected Jan's PR
+  (https://lore.kernel.org/linux-fsdevel/20240923110348.tbwihs42dxxltabc@quack3/),
+  so I'm respinning this series to address his concerns.  Hopefully this is more
+  acceptable.
+- Change the page fault hooks to happen only in the case where we have to add a
+  page, not where there exists pages already.
+- Amir added a hook to truncate.
+- We made the flag per SB instead of per fstype, Amir wanted this because of
+  some potential issues with other file system specific work he's doing.
+- Dropped the bcachefs patch, there were some concerns that we were doing
+  something wrong, and it's not a huge deal to not have this feature for now.
+- Unfortunately the xfs write fault path still has to do the page fault hook
+  before we know if we have a page or not, this is because of the locking that's
+  done before we get to the part where we know if we have a page already or not,
+  so that's the path that is still the same from last iteration.
+- I've re-validated this series with btrfs, xfs, and ext4 to make sure I didn't
+  break anything.
+
+v4->v5:
+- Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
+  to respin the series anyway.
+- Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
+- Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
+- Added a patch to disable btrfs defrag on pre-content watched files.
+- Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
+- Added two fstests (which will be posted separately) to validate everything,
+  re-validated the series with btrfs, xfs, ext4, and bcachefs to make sure I
+  didn't break anything.
+
+v3->v4:
+- Trying to send a final verson Friday at 5pm before you go on vacation is a
+  recipe for silly mistakes, fixed the xfs handling yet again, per Christoph's
+  review.
+- Reworked the file system helper so it's handling of fpin was a little less
+  silly, per Chinner's suggestion.
+- Updated the return values to not or in VM_FAULT_RETRY, as we have a comment
+  in filemap_fault that says if VM_FAULT_ERROR is set we won't have
+  VM_FAULT_RETRY set.
+
+v2->v3:
+- Fix the pagefault path to do MAY_ACCESS instead, updated the perm handler to
+  emit PRE_ACCESS in this case, so we can avoid the extraneous perm event as per
+  Amir's suggestion.
+- Reworked the exported helper so the per-filesystem changes are much smaller,
+  per Amir's suggestion.
+- Fixed the screwup for DAX writes per Chinner's suggestion.
+- Added Christian's reviewed-by's where appropriate.
+
+v1->v2:
+- reworked the page fault logic based on Jan's suggestion and turned it into a
+  helper.
+- Added 3 patches per-fs where we need to call the fsnotify helper from their
+  ->fault handlers.
+- Disabled readahead in the case that there's a pre-content watch in place.
+- Disabled huge faults when there's a pre-content watch in place (entirely
+  because it's untested, theoretically it should be straightforward to do).
+- Updated the command numbers.
+- Addressed the random spelling/grammer mistakes that Jan pointed out.
+- Addressed the other random nits from Jan.
+
+--- Original email ---
+
+Hello,
+
+These are the patches for the bare bones pre-content fanotify support.  The
+majority of this work is Amir's, my contribution to this has solely been around
+adding the page fault hooks, testing and validating everything.  I'm sending it
+because Amir is traveling a bunch, and I touched it last so I'm going to take
+all the hate and he can take all the credit.
+
+There is a PoC that I've been using to validate this work, you can find the git
+repo here
+
+https://github.com/josefbacik/remote-fetch
+
+This consists of 3 different tools.
+
+1. populate.  This just creates all the stub files in the directory from the
+   source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+   recursively create all of the stub files and directories.
+2. remote-fetch.  This is the actual PoC, you just point it at the source and
+   destination directory and then you can do whatever.  ./remote-fetch ~/linux
+   ~/hsm-linux.
+3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+   will be turned into the selftest with remote-fetch.  It creates a file and
+   then you can validate the file matches the right pattern with both normal
+   reads and mmap.  Normally I do something like
+
+   ./mmap-validate create ~/src/foo
+   ./populate ~/src ~/dst
+   ./rmeote-fetch ~/src ~/dst
+   ./mmap-validate validate ~/dst/foo
+
+I did a bunch of testing, I also got some performance numbers.  I copied a
+kernel tree, and then did remote-fetch, and then make -j4
+
+Normal
+real    9m49.709s
+user    28m11.372s
+sys     4m57.304s
+
+HSM
+real    10m6.454s
+user    29m10.517s
+sys     5m2.617s
+
+So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+to see the size
+
+[root@fedora ~]# du -hs /src/linux
+1.6G    /src/linux
+[root@fedora ~]# du -hs dst
+125M    dst
+
+This mirrors the sort of savings we've seen in production.
+
+Meta has had these patches (minus the page fault patch) deployed in production
+for almost a year with our own utility for doing on-demand package fetching.
+The savings from this has been pretty significant.
+
+The page-fault hooks are necessary for the last thing we need, which is
+on-demand range fetching of executables.  Some of our binaries are several gigs
+large, having the ability to remote fetch them on demand is a huge win for us
+not only with space savings, but with startup time of containers.
+
+There will be tests for this going into LTP once we're satisfied with the
+patches and they're on their way upstream.  Thanks,
+
+Josef
+
+Amir Goldstein (11):
+  fsnotify: opt-in for permission events at file_open_perm() time
+  fanotify: don't skip extra event info if no info_mode is set
+  fanotify: rename a misnamed constant
+  fanotify: reserve event bit of deprecated FAN_DIR_MODIFY
+  fsnotify: introduce pre-content permission events
+  fsnotify: pass optional file access range in pre-content event
+  fsnotify: generate pre-content permission event on open
+  fsnotify: generate pre-content permission event on truncate
+  fanotify: introduce FAN_PRE_ACCESS permission event
+  fanotify: report file range info with pre-content events
+  fanotify: allow to set errno in FAN_DENY permission response
+
+Josef Bacik (7):
+  fanotify: add a helper to check for pre content events
+  fanotify: disable readahead if we have pre-content watches
+  mm: don't allow huge faults for files with pre content watches
+  fsnotify: generate pre-content permission event on page fault
+  xfs: add pre-content fsnotify hook for write faults
+  btrfs: disable defrag on pre-content watched files
+  fs: enable pre-content events on supported file systems
+
+ fs/btrfs/ioctl.c                   |   9 +++
+ fs/btrfs/super.c                   |   2 +-
+ fs/ext4/super.c                    |   3 +
+ fs/namei.c                         |  10 ++-
+ fs/notify/fanotify/fanotify.c      |  33 ++++++--
+ fs/notify/fanotify/fanotify.h      |  15 ++++
+ fs/notify/fanotify/fanotify_user.c | 120 +++++++++++++++++++++++------
+ fs/notify/fsnotify.c               |  14 +++-
+ fs/open.c                          |  31 +++++---
+ fs/xfs/xfs_file.c                  |   4 +
+ fs/xfs/xfs_super.c                 |   2 +-
+ include/linux/fanotify.h           |  19 +++--
+ include/linux/fs.h                 |   4 +-
+ include/linux/fsnotify.h           | 120 ++++++++++++++++++++++++-----
+ include/linux/fsnotify_backend.h   |  71 ++++++++++++++++-
+ include/linux/mm.h                 |   1 +
+ include/uapi/linux/fanotify.h      |  18 +++++
+ mm/filemap.c                       |  90 ++++++++++++++++++++++
+ mm/memory.c                        |  22 ++++++
+ mm/readahead.c                     |  13 ++++
+ security/selinux/hooks.c           |   3 +-
+ 21 files changed, 532 insertions(+), 72 deletions(-)
 
 -- 
-Jens Axboe
+2.43.0
+
 
