@@ -1,124 +1,103 @@
-Return-Path: <linux-btrfs+bounces-9569-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9570-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 094349C6659
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 01:58:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12C419C668D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 02:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2768281A9E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 00:58:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE2661F23D79
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 01:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A678171D2;
-	Wed, 13 Nov 2024 00:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15581CF9B;
+	Wed, 13 Nov 2024 01:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WrAMPD0h"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="NWnQS4xv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5FCB641
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 00:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D832309AC;
+	Wed, 13 Nov 2024 01:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731459510; cv=none; b=sLFBjrtypcd4FvQdf3ffN8a9uiMX+Djf/BOvH+8TU2pUfOW/R7fAR8Xo8+uiet++HFqriRGentFvUJXLI4WHrZRFQ5HEFbf4CRJ4FP6eTBuAgA8RBzFH1pECD5u+5FTtNtYDVI7DnpFERWrIEH6uRDJ2Renf4quosJ/bd97/kV4=
+	t=1731460801; cv=none; b=qQLalPp3+K0KMN+AtTxd5kWc8eRyo7rVy7eTKZGmzHF0qTRKJoZHB/3jLURmcZKClUggEkgpfDMTQmTckWhCoq2klPMlJ1mLgxbI6+ri8zoZu83sq7l8RQokm8tteL3lZlivOmduQzphqcWI5yLCIGemSG7QtvfLYeExekGwuIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731459510; c=relaxed/simple;
-	bh=n3j6hYJca3iK+8w4R60+GpDVT4tBx8PgHWEo86e/9FM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gjHEcYPAoMTPmb1+2/NElaDemPEZ9sW0RgxCMjBFEetWm77pjRTcznX23m8NNeX20grGRbgXf43QJ9+m5TEdoLnww7iDE4fe+znhMBRiCmjfEXkISx3ecSp/PGbJQpWKNIHzbadxeZVoOOJWuw2gG0zyfJxbJm7umsmCStbD6Lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WrAMPD0h; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a99f646ff1bso940097666b.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 16:58:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1731459506; x=1732064306; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5tJ813zBq+G2Ew0iXW8JEVhQMVvtnrBGzEzzKoVgMoc=;
-        b=WrAMPD0hBykJQg5vXL1ugr1Wt/FYOZNNQoH5TUoTzUZs90nZSTTil62NlehgKVoP1u
-         OUqCX1u/q9GGrE8+qVutYWvdZmZ8e4vt1YJfyrRGHxvRgU3SHzsSg626TwsYQKqWtg58
-         VZ5Fa6r/A24apSR/G5ihzY1GlQx9GqKL0laeg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731459506; x=1732064306;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5tJ813zBq+G2Ew0iXW8JEVhQMVvtnrBGzEzzKoVgMoc=;
-        b=Sdu2Tpb9weTDTUivt6GqICb1kUjQVUZmjbx9Ofe1t7uqsN6fY3cdCmBnJ5snviPWLU
-         0livTSALxhpRWPatVBDBNOkJzsFr/HI2scim6yer16jFCO9s1oUIniBPWNsgqphpB3z2
-         YqT3aHTl+RKDWulCP5Ra1OlYuRJnfKLEpRLsqfSZz/VjaCPU0SxgJb4U5Vuv8C8GFDd5
-         gPTjLg6FcbK5vFPoISQFldvtLdIIxGDNVFCKF73CabZyE3wtkKeXfYduz8rK3rz/XzCq
-         IlrO8a0oeNlGmlaizxMrX6VXUBx+BFH7tV0e979lgd1q+dNWdgHHlmYouvVixHcGuGXG
-         ViHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWnafdcfJ4ytp9Brqm553BbxlX1FuunuQECVGvaAfKu6eIMinr9pywxxAyKVxLovK8XGlPMdA9+l90WvA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4UAoj/cxlVYxeCt6zGm4TUv/lzVMddy2YRrQmVdxFQIH5VyjD
-	llSgDTQNAlGvu1+WuhbH5m+5pKhB2fsWTDsqGuuf7dEXsQRpXbEeKfWYrBMzyYT6ivn7jxCEOdC
-	I+H/iUw==
-X-Google-Smtp-Source: AGHT+IE0KTm3auj0RtTtyIRN8FEq5LBOoD55kTfXmG/0RRHDkvKmhiE0rrw9JKlZ8tFyP2ExEMXjAQ==
-X-Received: by 2002:a17:906:4788:b0:a9e:c446:c284 with SMTP id a640c23a62f3a-aa1c57ef392mr487090866b.55.1731459505844;
-        Tue, 12 Nov 2024 16:58:25 -0800 (PST)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9efd2fe9fdsm554079366b.132.2024.11.12.16.58.22
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Nov 2024 16:58:23 -0800 (PST)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so503107166b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2024 16:58:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW1WhQO5QXk920jr+h0lMbE/b9zMWh7OZgpRbg4TUhx3xVBUmO7eFfDnbQyptL/kIeV+Iid3CmFFm+TyQ==@vger.kernel.org
-X-Received: by 2002:a17:907:1c11:b0:a9e:b08e:3de1 with SMTP id
- a640c23a62f3a-aa1b10a9779mr425956266b.36.1731459502310; Tue, 12 Nov 2024
- 16:58:22 -0800 (PST)
+	s=arc-20240116; t=1731460801; c=relaxed/simple;
+	bh=EEW2fQlOgw7/LdLNgEFcmqde26RG5RGhFq5cl9pKORY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fdizncf6YWY/ICzPb8k70YEGnuU9uT91l335/YpjVoEC3bj2gg7Kg3dSn8SQxQJi7np8gJNCjrcxIhmcPGTjd59XIM8pGAr6QI2PwisG+k97eibiFGYFhHppQMlQ9E4Nef5M39F4q76uUlSLt5q5+KK9WssbOK52fW+TDHNYOTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=NWnQS4xv; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+xBD1LG1LcD2WvJWHLClpL4CkoduBy/hMixH+3L2C0k=; b=NWnQS4xver1owBO+dn2OG3m35m
+	YqYGw2WubUWRGvoj6Nj/I0yVjQQcIshCS5hh7T6H6svbkoLqNtVuFjUB6lmVEGiItwgK6KwVHP24w
+	249wjP8HAnySe2tiW15dmU9Uco4QR5sjxt/u9ffiwypdBNYN1uhFwXXejD2H6698UzgMHy4AafB12
+	noJhUGXPkJjMlejOr9GPIsgaRcCFPvZ6px03xHvhivHqv+Ei3lp9e0ZtFCY1u5aerpBN+jrgq1G5E
+	gOe27ozCV21rRcIkZI5ePTtJ5sgUfkPdiou88Fr9qkqoyxHzsVsJUjrR0Bq2zx/K0t+ut4sXOvs9h
+	ibbU2D6g==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tB230-0000000EJRo-3OnO;
+	Wed, 13 Nov 2024 01:19:54 +0000
+Date: Wed, 13 Nov 2024 01:19:54 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	brauner@kernel.org, linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission
+ events
+Message-ID: <20241113011954.GG3387508@ZenIV>
+References: <cover.1731433903.git.josef@toxicpanda.com>
+ <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com>
+ <20241113001251.GF3387508@ZenIV>
+ <CAHk-=wg02AubUBZ5DxLra7b5w2+hxawdipPqEHemg=Lf8b1TDA@mail.gmail.com>
+ <CAHk-=wgVzOQDNASK8tU3JoZHUgp7BMTmuo2Njmqh4NvEMYTrCw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <60a2309da948dc81e4c66b9e5fe3f1e2faa2010e.1731433903.git.josef@toxicpanda.com>
- <CAHk-=wgNFNYinkWCUvT2UnH2E2K_qPexEPgrm-xgr68YXnEQ_g@mail.gmail.com> <CAOQ4uxgakk8pW39JkjL1Up-dGZtTDn06QAQvX8p0fVZksCzA9Q@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgakk8pW39JkjL1Up-dGZtTDn06QAQvX8p0fVZksCzA9Q@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 12 Nov 2024 16:58:06 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiMy72pfXi7SQZoth5tY9bkXaA+_4vpoY_tOhqAmowvBw@mail.gmail.com>
-Message-ID: <CAHk-=wiMy72pfXi7SQZoth5tY9bkXaA+_4vpoY_tOhqAmowvBw@mail.gmail.com>
-Subject: Re: [PATCH v7 07/18] fsnotify: generate pre-content permission event
- on open
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgVzOQDNASK8tU3JoZHUgp7BMTmuo2Njmqh4NvEMYTrCw@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, 12 Nov 2024 at 15:41, Amir Goldstein <amir73il@gmail.com> wrote:
->
-> You wrote it should be called "in the open path" - that is ambiguous.
-> pre-content hook must be called without sb_writers held, so current
-> (in linux-next) location of fsnotify_open_perm() is not good in case of
-> O_CREATE flag, so I am not sure where a good location is.
-> Easier is to drop this patch.
+On Tue, Nov 12, 2024 at 04:38:42PM -0800, Linus Torvalds wrote:
+> Looking at that locking code in fadvise() just for the f_mode use does
+> make me think this would be a really good cleanup.
+> 
+> I note that our fcntl code seems buggy as-is, because while it does
+> use f_lock for assignments (good), it clearly does *not* use them for
+> reading.
+> 
+> So it looks like you can actually read inconsistent values.
+> 
+> I get the feeling that f_flags would want WRITE_ONCE/READ_ONCE in
+> _addition_ to the f_lock use it has.
 
-Dropping that patch obviously removes my objection.
+AFAICS, fasync logics is the fishy part - the rest should be sane.
 
-But since none of the whole "return errors" is valid with a truncate
-or a new file creation anyway, isn't the whole thing kind of moot?
+> The f_mode thing with fadvise() smells like the same bug. Just because
+> the modifications are serialized wrt each other doesn't mean that
+> readers are then automatically ok.
 
-I guess do_open() could do it, but only inside a
+Reads are also under ->f_lock in there, AFAICS...
 
-        if (!error && !do_truncate && !(file->f_mode & FMODE_CREATED))
-                error = fsnotify_opened_old(file);
-
-kind of thing. With a big comment about how this is a pre-read hook,
-and not relevant for a new file or a truncate event since then it's
-always empty anyway.
-
-But hey, if you don't absolutely need it in the first place, not
-having it is *MUCH* preferable.
-
-It sounds like the whole point was to catch reads - not opens. So then
-you should catch it at read() time, not at open() time.
-
-                Linus
+Another thing in the vicinity is ->f_mode modifications after the calls
+of anon_inode_getfile() in several callers - probably ought to switch
+those to anon_inode_getfile_fmode().  That had been discussed back in
+April when the function got merged, but "convert to using it" followup
+series hadn't materialized...
 
