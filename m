@@ -1,231 +1,231 @@
-Return-Path: <linux-btrfs+bounces-9621-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9622-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03F09C7D65
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 22:13:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19EAF9C7D98
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 22:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90DDA2855FD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 21:13:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DBD91F23BE4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 21:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808412038B1;
-	Wed, 13 Nov 2024 21:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD67B18C013;
+	Wed, 13 Nov 2024 21:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="i02y8HTZ"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Dl6K496/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE3920721F
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 21:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C461C9B97
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 21:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731532336; cv=none; b=F1v8Sd2XMY82VFZjPP+vqlkhVcksgEk8aRkAmhlpINB61HYeFi7bYdT5ytZgnGMWeQ8a2UhjA2XV5dgJBDG5Fz991foVSXJxEpwNvGRPPF+bM1aJ83KQBdV6SN5mZvyRRAN7Uo3OsjQeL86fHqGORBUgJPYeDVejZF7E4rPYWSQ=
+	t=1731532960; cv=none; b=tCYn578oVN9aVnZauWzVaq7db/SNBPNwcmc6YR0kt2nECmQviqmiILQkjMSnalGu9awff7LOhV0sorkScerjdjrbrqrmaXDWq12E1bEz6J4GnRpYFxA+2SNDtAvdPZKPGKc2+F4UbOJZqqmLp2Eb6hwh7+0U62WQIanjzP8etWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731532336; c=relaxed/simple;
-	bh=PigVtzRqKksvm7NcS5o/1T0zq8HAgMWfHZrN6atL2Qg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CdYgLbCS4TD16l1Pe40MZBhUPh3lP9g3mUNCgcfiMGqEe4QfyyHWtHsHkloQoLvfAR4xg2ZOrNXKOdcNB27jW6wVkzXAwrRLCKxqx/QHP57KFTVG10UW0f/3pnr62y+PZF9teo3Pnbp+o1SfWvk8Q3vgTr3PHF1YeUDmBk3oGHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=i02y8HTZ; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1731532321; x=1732137121; i=quwenruo.btrfs@gmx.com;
-	bh=Uz/BEe8mbENl88QPIN3g3CK4O24DG6J78qAMOs5k48E=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=i02y8HTZ+FcuI9K8BpC5oBmkApg3M5wiNGh6PMOkNkSD5URi7mCuLBz24RXFybH4
-	 eCVrBmQm765QyTqv+TS8IL/4xmJjZrHC46E/XEWo9cDj4MSHbZsGNR+6/kK8WZbXh
-	 XZeSS3iALTLgp3d+FkRszCYB/CpHlQ1UuQFwCmHmnpFWtHo3QNX1TA+CDHg66/mpe
-	 /VzOPYJVBuUJtwQCyTcGyWUx9iIZ9MNesHALsxLZVGAc19XGSC3Zt5JPlBw1ZRqWO
-	 dxZDnXuP9ejj+Ul+kbgC8lc07XYiK0bRCuNhdbBTagI8XjZhZQFBE202VIyIm56ph
-	 LKF8uTL+1UxapAEniA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6KUT-1tr5XU19mz-017VYx; Wed, 13
- Nov 2024 22:12:01 +0100
-Message-ID: <5589e48f-5db5-4da4-8043-8f1e72b7c9d3@gmx.com>
-Date: Thu, 14 Nov 2024 07:41:57 +1030
+	s=arc-20240116; t=1731532960; c=relaxed/simple;
+	bh=Jvfi6gi0QE67lenDTGKJxQmHEYcTqUzyqhTTUKPYxeg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VuY6/Npa5JUAjNnBOtNdNRwGxQ0zEpl5+xqsyNFCqnEvaVuxQh+KPSplr27ZlsgAgimkUcBQdMFyMV/bnYJ6PWR+h/kdlS4JGpXplowbTnmzgxeFsgQSxBCzxut53xUN3zSsfIwf/N1529s3XxCeQB016yYR92Yuo1hN9jSqVao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Dl6K496/; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5cf6f7ee970so1442485a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 13:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1731532957; x=1732137757; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lgXRlfeexjjlrQuWCwCm2fkGA5K7DLXozqP8RwYmyvA=;
+        b=Dl6K496/B+gS5mKaR3mB12ePiLzIS4fhP+D+MOHjajQ3fsOydwT+O8fBShJkDARnbU
+         GDdzS9NYpjySVlZ0GhuFMVjEITRheRn2MrBPyIHDcwhpoKEZlY+b64XkewBVSMT9Qq3m
+         G1c+EHxZW2HNbTWEkjvarikBLNMkrvm5NDl0Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731532957; x=1732137757;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lgXRlfeexjjlrQuWCwCm2fkGA5K7DLXozqP8RwYmyvA=;
+        b=BFJaiJYeGtEl9HABuhTevxv3CvKbsCOXRsAc6mdxh34tskIv7P5V7vTG0rhZD5w0+Z
+         460nAyCMXAe7GDtDnzUbDBs6fODNhEMOeSuSNHDSTNNtJq4MWWNNe2Na+Q7lKbr/9UaV
+         X5djHq64IBHWWPnBNiKN5jeWk06rJLfHOcXNZsD8KhFYOO8PuNjVz4QEgWrL8EwiuIcB
+         mRDIMGvtcQ8RntD/SwZb/j5/tjpNQkxMWAreGnB2xlRPlmsMApnQBIWqKc6FDN9hLiXT
+         LopstsvdUXZLfLxWKADQs/P/OGq9gbHB8zBixcKbkhWci8c/dQ+P3Yl8XfLb/yif1mfX
+         ZGJA==
+X-Forwarded-Encrypted: i=1; AJvYcCXKYSQof4ay/HWH/MP70w8EqSgFaE++qIWGyvoM5ORPEqL5soAdakCalutpfxUFaXJL4l6s3RASjgpPyQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFDsxQA/bfR3B+vPvXQ0tcUGIX0FC4FMQlbl7l28J6yqyIXCqU
+	tWalnGNIR//oiW7mEUe9np5RuDLJrmveNkW5Q6oTc+sGU/O7K38kmCRQc6/pdyixlkupxbJGGez
+	qhDM=
+X-Google-Smtp-Source: AGHT+IG5sVFZh2DG5o/IQ9U9CNWGkPDuZK5uxRxZnvP1AWkuWGDjvp2lT3PjFhBCpi6ho079RR3nhw==
+X-Received: by 2002:a05:6402:2689:b0:5cf:3d11:c141 with SMTP id 4fb4d7f45d1cf-5cf4f3b225dmr6802877a12.23.1731532957136;
+        Wed, 13 Nov 2024 13:22:37 -0800 (PST)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cf03c7c90dsm7926182a12.80.2024.11.13.13.22.34
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Nov 2024 13:22:36 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so2838766b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 13:22:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVC8SFbjperZjOfIoxsba1DNTf4C9twSAzSIeW7S6mHzNyEHuuSONLkczT/PG9ZqnHu0fSHPTpL1Bd8Eg==@vger.kernel.org
+X-Received: by 2002:a17:907:2dac:b0:a9e:c341:c896 with SMTP id
+ a640c23a62f3a-aa1b10a4500mr814204866b.32.1731532954269; Wed, 13 Nov 2024
+ 13:22:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] btrfs: simplify waiting for encoded read endios
-To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>, Damien Le Moal <dlemoal@kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>,
- Mark Harmstone <maharmstone@fb.com>, Omar Sandoval <osandov@osandov.com>
-References: <cover.1731517699.git.jth@kernel.org>
- <59f75f70e743049cbb019752baf094a7e2f044fa.1731518011.git.jth@kernel.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <59f75f70e743049cbb019752baf094a7e2f044fa.1731518011.git.jth@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mj0LZtbfTAbRV9yq+ZqCP18f+uFRDgON1sOFvP/K6Zstw6/aTCs
- w0oUv3mMmLzLWAZWeL+O1pJXjIKa12kWyQ9+rtaBLFQXOw3IraCiv/8L6VPzgRuf7Ku+Fx1
- VbcXz7l4gVhI8B5gGWjn9D0gq9QHC01HQxNNfS6OvZncaNWr3VtiGzwjqTioOklrbl+i08s
- zw648QoiEisEZFqm4LUAQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:bBnppsu2IJc=;/qMf/7Nh780X87m2vAfZiOL5+Lj
- J4hz1vkTacqd+ZIF0JrPvHcVLjY3HToWOPxv6EhNHR/axcPaiwUks10ihUpYZGVXCecatZH2e
- l92EGsc8Hc/vPpdvRtG9xCsLTl04DLLpMVvaQumE2RPcvzh65IGyCfCR2f6vdVCnIdkU00QAU
- IhjXCn4t5g2O2qOuIDUQTEPdA0GDTmR6ia2faJeqaosxqynXMeu6djxZvi8HF7YyCclj8nkaS
- F/XjIyfV1v7K5yFdUcVKqBEEBNFF/Vo9hlaOJnEAQFqrgk7XlMlx8krZHHmD1aN20GPf2L+Un
- 8PDWcrmWUlaBkDW/TCLG+DOyILJatPLVOef9D2yLBW0fatw9mkol9ZjKiWKm7k0/QvvqRB75n
- N6HBNFidVfnxcxTwzDvrSEDVywpJAvD5e/vX+D3VLOM1dblZBW6kghVFLMWIHZoROj45JeMvA
- 3Vpb2LOjZ3R1b2QW3UMcZT+kKQYZ6+Fz2AuDtxhLKYX0rPj6C01A7Hfh7dgLyAnuDHjPK9f+y
- w+2qkU9Xk31zffIOCTgohdiBdZHdDspaBwvQ1U8GsKwglK4PU05nWk0w3MBcfND5axLQrNF46
- 8lXy+j3T0bjM7WUW1BCBiU7G1k4trkI5b7gZqOcXI7WXVw674/PL/PnZOVW1xw0MHF+DgtYc8
- ZlXFZDLhTl6zGOIoohvaSmAI6cb5OgRL78J1YL38oL0+TG0Jj8PFdP8SB1UfTjOMKflMWL2p+
- KrY9isgHNc+glcK2fm2r12pIdLTdGPIqIWgAsEIyHjdNcpzqbPlPC9dTAsFo5A6aiqhVZyXWj
- UwoVYzhWzRVrudu7f2xcZCheNPQoe7OIw5yX/7V0uIM6igZP1IgO/IdT5jgzDHH1jTQylIw/j
- e1OaLNQbHN6p3zBilFnxIb/8Lsi8ZvAhoqdFzA4dB0R7vFKuofWp+oIC9
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com> <CAOQ4uxjQHh=fUnBw=KwuchjRt_4JbaZAqrkDd93E2_mrqv_Pkw@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjQHh=fUnBw=KwuchjRt_4JbaZAqrkDd93E2_mrqv_Pkw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 13 Nov 2024 13:22:17 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wirrmNUD9mD5OByfJ3XFb7rgept4kARNQuA+xCHTSDhyw@mail.gmail.com>
+Message-ID: <CAHk-=wirrmNUD9mD5OByfJ3XFb7rgept4kARNQuA+xCHTSDhyw@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 13 Nov 2024 at 11:11, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> >
+> > This whole "add another crazy inline function using another crazy
+> > helper needs to STOP. Later on in the patch series you do
+> >
+>
+> The patch that I sent did add another convenience helper
+> fsnotify_path(), but as long as it is not hiding crazy tests,
+> and does not expand to huge inlined code, I don't see the problem.
 
+So I don't mind adding a new inline function for convenience.
 
-=E5=9C=A8 2024/11/14 03:46, Johannes Thumshirn =E5=86=99=E9=81=93:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Simplify the I/O completion path for encoded reads by using a
-> completion instead of a wait_queue.
->
-> Furthermore use refcount_t instead of atomic_t for reference counting th=
-e
-> private data.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+But I do mind the whole "multiple levels of inline functions" model,
+and the thing I _particularly_ hate is the "mask is usually constant
+so that the effect of the inline function is practically two different
+things" as exemplified by "fsnotify_file()" and friends.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+At that point, the inline function isn't a helper any more, it's a
+hindrance to understanding what the heck is going on.
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/inode.c | 23 ++++++++++++-----------
->   1 file changed, 12 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index fdad1adee1a3..3ba78dc3abaa 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3,6 +3,7 @@
->    * Copyright (C) 2007 Oracle.  All rights reserved.
->    */
->
-> +#include "linux/completion.h"
->   #include <crypto/hash.h>
->   #include <linux/kernel.h>
->   #include <linux/bio.h>
-> @@ -9068,9 +9069,9 @@ static ssize_t btrfs_encoded_read_inline(
->   }
->
->   struct btrfs_encoded_read_private {
-> -	wait_queue_head_t wait;
-> +	struct completion done;
->   	void *uring_ctx;
-> -	atomic_t pending;
-> +	refcount_t pending_refs;
->   	blk_status_t status;
->   };
->
-> @@ -9089,14 +9090,14 @@ static void btrfs_encoded_read_endio(struct btrf=
-s_bio *bbio)
->   		 */
->   		WRITE_ONCE(priv->status, bbio->bio.bi_status);
->   	}
-> -	if (atomic_dec_and_test(&priv->pending)) {
-> +	if (refcount_dec_and_test(&priv->pending_refs)) {
->   		int err =3D blk_status_to_errno(READ_ONCE(priv->status));
->
->   		if (priv->uring_ctx) {
->   			btrfs_uring_read_extent_endio(priv->uring_ctx, err);
->   			kfree(priv);
->   		} else {
-> -			wake_up(&priv->wait);
-> +			complete(&priv->done);
->   		}
->   	}
->   	bio_put(&bbio->bio);
-> @@ -9116,8 +9117,8 @@ int btrfs_encoded_read_regular_fill_pages(struct b=
-trfs_inode *inode,
->   	if (!priv)
->   		return -ENOMEM;
->
-> -	init_waitqueue_head(&priv->wait);
-> -	atomic_set(&priv->pending, 1);
-> +	init_completion(&priv->done);
-> +	refcount_set(&priv->pending_refs, 1);
->   	priv->status =3D 0;
->   	priv->uring_ctx =3D uring_ctx;
->
-> @@ -9130,7 +9131,7 @@ int btrfs_encoded_read_regular_fill_pages(struct b=
-trfs_inode *inode,
->   		size_t bytes =3D min_t(u64, disk_io_size, PAGE_SIZE);
->
->   		if (bio_add_page(&bbio->bio, pages[i], bytes, 0) < bytes) {
-> -			atomic_inc(&priv->pending);
-> +			refcount_inc(&priv->pending_refs);
->   			btrfs_submit_bbio(bbio, 0);
->
->   			bbio =3D btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, fs_info,
-> @@ -9145,11 +9146,11 @@ int btrfs_encoded_read_regular_fill_pages(struct=
- btrfs_inode *inode,
->   		disk_io_size -=3D bytes;
->   	} while (disk_io_size);
->
-> -	atomic_inc(&priv->pending);
-> +	refcount_inc(&priv->pending_refs);
->   	btrfs_submit_bbio(bbio, 0);
->
->   	if (uring_ctx) {
-> -		if (atomic_dec_return(&priv->pending) =3D=3D 0) {
-> +		if (refcount_dec_and_test(&priv->pending_refs)) {
->   			ret =3D blk_status_to_errno(READ_ONCE(priv->status));
->   			btrfs_uring_read_extent_endio(uring_ctx, ret);
->   			kfree(priv);
-> @@ -9158,8 +9159,8 @@ int btrfs_encoded_read_regular_fill_pages(struct b=
-trfs_inode *inode,
->
->   		return -EIOCBQUEUED;
->   	} else {
-> -		if (atomic_dec_return(&priv->pending) !=3D 0)
-> -			io_wait_event(priv->wait, !atomic_read(&priv->pending));
-> +		if (!refcount_dec_and_test(&priv->pending_refs))
-> +			wait_for_completion_io(&priv->done);
->   		/* See btrfs_encoded_read_endio() for ordering. */
->   		ret =3D blk_status_to_errno(READ_ONCE(priv->status));
->   		kfree(priv);
+Basically, as an example: fsnotify_file() is actually two very
+different things depending on the "mask" argument, an that argument is
+*typically* a constant.
 
+In fact, in fsnotify_file_area_perm() is very much is a constant, but
+to make it extra non-obvious, it's a *hidden* constant, using
+
+        __u32 fsnotify_mask = FS_ACCESS_PERM;
+
+to hide the fact that it's actually calling fsnotify_file() with that
+constant argument.
+
+And in fsnotify_open() it's not exactly a constant, but it's kind of
+one: when you actually look at fsnotify_file(), it has that "I do a
+different filtering event based on mask", and the two different
+constants fsnotify_open() uses are actually the same for that mask.
+
+In other words, that whole "mask" test part of fsnotify_file()
+
+        /* Permission events require group prio >= FSNOTIFY_PRIO_CONTENT */
+        if (mask & ALL_FSNOTIFY_PERM_EVENTS &&
+            !fsnotify_sb_has_priority_watchers(path->dentry->d_sb,
+                                               FSNOTIFY_PRIO_CONTENT))
+                return 0;
+
+mess is actually STATICALLY TRUE OR FALSE, but it's made out to be
+somehow an "arghumenty" to the function, and it's really obfuscated.
+
+That is the kind of "helper inline" that I don't want to see in the
+new paths. Making that conditional more complicated was part of what I
+objected to in one of the patches.
+
+> Those convenience helpers help me to maintain readability and code
+> reuse.
+
+ABSOLUTELY NOT.
+
+That "convenience helkper" does exactly the opposite. It explicitly
+and actively obfuscates when the actual
+fsnotify_sb_has_priority_watchers() filtering is done.
+
+That helper is evil.
+
+Just go and look at the actual uses, let's take
+fsnotify_file_area_perm() as an example. As mentioned, as an extra
+level of obfuscation, that horrid "helper" function tries to hide how
+"mask" is constant by doing
+
+        __u32 fsnotify_mask = FS_ACCESS_PERM;
+
+and then never modifying it, and then doing
+
+        return fsnotify_file(file, fsnotify_mask);
+
+but if you walk through the logic, you now see that ok, that means
+that the "mask" conditional fsnotify_file() is actually just
+
+    FS_ACCESS_PERM & ALL_FSNOTIFY_PERM_EVENTS
+
+which is always true, so it means that fsnotify_file_area_perm()
+unconditionally does that
+
+    fsnotify_sb_has_priority_watchers(..)
+
+filitering.
+
+And dammit, you shouldn't have to walk through that pointless "helper"
+variable, and that pointless "helper" inline function to see that. It
+shouldn't be the case that fsnotify_file() does two completely
+different things based on a constant argument.
+
+It would have literally been much clearer to just have two explicitly
+different versions of that function, *WITHOUT* some kind of
+pseudo-conditional that isn't actually a conditional, and just have
+fsnotify_file_area_perm() be very explicit about the fact that it uses
+the fsnotify_sb_has_priority_watchers() logic.
+
+IOW, that conditional only makes it harder to see what the actual
+rules are. For no good reason.
+
+Look, magically for some reason fsnotify_name() could do the same
+thing without this kind of silly obfuscation. It just unconditonally
+calls fsnotify_sb_has_watchers() to filter the events. No silly games
+with doing two entirely different things based on a random constant
+argument.
+
+So this is why I say that any new fsnotify events will be NAK'ed and
+not merged by me unless it's all obvious, and unless it all obviously
+DOES NOT USE these inline garbage "helper" functions.
+
+The new logic had better be very obviously *only* using the
+file->f_mode bits, and just calling out-of-line to do the work. If I
+have to walk through several layers of inline functions, and look at
+what magic arguments those inline functions get just to see what the
+hell they actually do, I'm not going to merge it.
+
+Because I'm really tired of actively obfuscated VFS hooks that use
+inline functions to hide what the hell they are doing and whether they
+are expensive or not.
+
+Your fsnotify_file_range() uses fsnotify_parent(), which is another of
+those "it does two different things" functions that either call
+fsnotify() on the dentry, or call __fsnotify_parent() on it if it's an
+inode, which means that it's another case of "what does this actually
+do" which is pointlessly hard to follow, since clearly for a truncate
+event it can't be a directory.
+
+And to make matters worse, fsnotify_truncate_perm() actually checks
+truncate events for directories and regular files, when truncates
+can't actually happen for anything but regular files in the first
+place. So  your helper function does a nonsensical cray-cray test that
+shouldn't exist.
+
+That makes it another "this is not a helper function, this is just obfuscation".
+
+                 Linus
 
