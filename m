@@ -1,223 +1,215 @@
-Return-Path: <linux-btrfs+bounces-9615-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9616-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321F69C7BFF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 20:12:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 010369C7C24
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 20:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B799A1F22148
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 19:12:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C06284D14
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 19:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19547205AD4;
-	Wed, 13 Nov 2024 19:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95D920512C;
+	Wed, 13 Nov 2024 19:29:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2ADR705"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Er06bXmH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8673416DEB4;
-	Wed, 13 Nov 2024 19:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A935920495A
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 19:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731525118; cv=none; b=Pmz/A7ZpNIUS6i/J+j9gMgLbNLRCEZ4CvBBfck8jedF2qyvp7uhoQwV2m1b2lU5k7UJfu0SRM9pkqX+aI7MbHRG0skdeaFS2mopesrWfoBrJKqYpIPoNqK4bykD1sTwn/c37YqmHoZ70QhVTpqdZ/yiLUm67ixockPPHHXkczTM=
+	t=1731526185; cv=none; b=n+w05ppieR2F3UBV3+XkRZjimOKJ16appi/TAk0CCeCQyDax7B0awlWqaue45KrSbCbkRD3EoptmcOSSrMg24BEQ2n7h8rTvKFrUx3zqFlzzU1JWKu9fnXFpSOSrcAdZ/KxX7tXcWv1d78SqF7+xeOO60gc144MNzy6ndkQbVVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731525118; c=relaxed/simple;
-	bh=HlfbFcV5sJcpj5zqs1ySc/VnU7ycIKL2nKgQXNS9MFw=;
+	s=arc-20240116; t=1731526185; c=relaxed/simple;
+	bh=77d3kOpor1IR8t4bg5S9Wy93M7J2Bmw1KiK1XqC6COQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qfO9NNhXIWkmUHBwvNAMXu/eqvD2xL8ktQT51r/r3IEFGbIpd1ppHqFICu1ycyJC8C3VoTkjaJdt15zIRablxJ50GPdF0pmFOlpF2GWNsgHVJHJkqNtQCnOxFA3d87b3DYhoIRL53cVdJ+yGt9K7OYVL5P7eGXjhRC0dWgQVxyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2ADR705; arc=none smtp.client-ip=209.85.218.54
+	 To:Cc:Content-Type; b=AD8ZLUjVQmCtDsyQT1bj9wbsDvHGyZXgjindDIAi+2tYIT1Z2R6JYg1IQLWc3b3rPzFADR5qLvu/G8/86GXKqDkM3010LgbeEuQdI1soTSnluwgpNzY/TK+tysOPV53AjDtNLZKyUPsMrx+s8opb3MwiFgFZPDAqc2KnMk8tzSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Er06bXmH; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aa1f73966a5so248262166b.2;
-        Wed, 13 Nov 2024 11:11:56 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9a850270e2so1331873766b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 11:29:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731525115; x=1732129915; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731526182; x=1732130982; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Q+8FNc2ytDg7RieFT9goBSoHoyxH/PoPvWuBdU9IS4=;
-        b=S2ADR705P/WwKnilB4kq9tYAWgOtjg4GkOnQx6+iTn+bWBcsKKpNNRr233o80rjJJI
-         sNA+s1SdeYTRbxdP886YlL4UZ5CRB9uCiQ6iVzcEJqaRTRBmwj/oAeQv6dap9dbB9j6f
-         458eCQ9bxeaxFQKr0cfNWpDu0KcheOGKG9UWHI5EmftRlDs7ypBSeQ/vbHxpvzsxQHvZ
-         W4s/dr7xANDqVWOfQGXiPZ8s7bgMQC1c103RkQK4XxLh0fOWPOl+UHjwIDLZKy74Alec
-         nmp/Y23HoyDPcSZQBRCIj/HKt4UBljdU2VQzpQF6jnuLSogi7usL2JjXWTGYcuQ2onxN
-         1aqA==
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AihdxBpbdK3Kpuu9AJzuwO597SuKCfseCX8a9ar+Fko=;
+        b=Er06bXmH9lqVkLMY60vltLxMGUnbURQL4Q0ADFczVfM+/L3beWqd87RKo8O+nALa0z
+         7exPe+LNbGt21arb89xGXon+r3zHQhQEhPPQ5ECQQ+wqC8Ne4aMnYBBvGHCBlHLa4G96
+         gYcbGumNHE9n5qKir6uAbUEWzWF/1iSY5IFABhYvdHmX/vAKAdKvU+o06Pf2vJlPwlmJ
+         aB046sXAwoPqeWmAWqVEAxdlVO3E0FE/JnYAinJPOb6HAevvkWv4B8d9QvVct7i6QYqW
+         HV7hARMXdmEnZtWiHOvQ4VEoDIbf5WGBjMHVvSaZWYWt5MDsLnOLbPSyon5ZT/RP+9O2
+         Nowg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731525115; x=1732129915;
+        d=1e100.net; s=20230601; t=1731526182; x=1732130982;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Q+8FNc2ytDg7RieFT9goBSoHoyxH/PoPvWuBdU9IS4=;
-        b=ia8nyISWRetVuFkUcv6gmEIL4ala+1fMEleW8QxMB/ivW0zY68/SrQQPOxKzw8PiDW
-         AptHEDtoBEjjRac8H4GVG8z+7q6157uXX4IK2TBoHY9AZnf/K0OgDG74F/6mVTMCaUS/
-         N1HyHSIc4pKxouIsUtBRzt3J+5O02YZrZdVeDIOy7X836gKG8Ujfes8Ee++lhjMdo4SV
-         QiTomgB1vGiiYVV4f19o8nZxb68j/bHtq7xeDy9koYN0TY9v/no9DvLVUB/m3lWG8+2y
-         lpIDMOTdFDJte2AMvKuQKTk7O6quOvWFY4N3gn7W4NhBsSUZI6SHr7dVFCIDH/fCWwxP
-         maUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbkA0GoYNDAEAl7tCSSRq5fEnjpQ9waEKoJZfmDXcrPM6a8qJPG7vdejsRrSKRMSTqZrwiQLNIENo3DA==@vger.kernel.org, AJvYcCVUutivNnGtxF3BqQN11/oxAYqQEQMbeK6zJ3EjAf0eSEF+fUJd2REbtXmGi/hikQnVQv+uxINC15A+DQ==@vger.kernel.org, AJvYcCWYyuTcq7eUiOtli29I+No+BevXTCO7qKDfP3WAUDJr3VG+0qOlXM9viNFax5q6WG7TeU/RRUExkPWS+8cOzw==@vger.kernel.org, AJvYcCXuI0n8cF6erFC/jdhbp5WD3M6ewDoSUM6ddy0ZMUrmWxS5s21DqKadTG+F++8C4fZ+ycHwUZnpyXzC@vger.kernel.org
-X-Gm-Message-State: AOJu0YxW0682tTKkIhlvS5mSOfrrzLnzvw9sQeEToLrSGLD4LPy+Ix0t
-	jxISgRIpHLJUVWIkbaOTDrxwYra8e5FV7BavBQ4udsA5LOrei6UOGZCXTaOsKmjgUuHt6tlcgYo
-	3rKKI1A3NfmT1F9/b6Ty5jDnQIQ4=
-X-Google-Smtp-Source: AGHT+IFjcv0P8IIDO97PcCN5S7SxQV9ik2hLtub35kKA7vznAH6u+jV8u+K37Im4T2XozTvcOCmVqkexlWfmeUKgKM4=
-X-Received: by 2002:a17:907:3f8a:b0:a9e:c954:6afb with SMTP id
- a640c23a62f3a-a9ef0018b25mr2166360666b.51.1731525113311; Wed, 13 Nov 2024
- 11:11:53 -0800 (PST)
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AihdxBpbdK3Kpuu9AJzuwO597SuKCfseCX8a9ar+Fko=;
+        b=YEvtYvaJROHOS0sWhUwBuC98I5jPIDgpiLsUvzZWQkKNqM71udvV/zezlUFd+A0opY
+         T+9jBona9HPFMTxKcAVUIwatpAD1qTZMTXMvuWWT2t6TPMa9sie11L5iINpP/XtHqrtl
+         zuPaTrg8ilV3yjdrO3IKUvBEGftmpA7+zgX/Dn0JobWrALBJdAtnKdgtr5N/RXMksPtU
+         1u85ByGc1a2Aa0soj034Nz96GXTT2c/rJSKqGsOc3u9mzCSiNlgnj0hsiQqpAVlUjcXN
+         5P1YTuqqzWutS9FxvP/3nV81L3EPrikwLZ1kW0+ZlB1973a2y0LPFj2PUjTsz8hGFoG1
+         ou5A==
+X-Gm-Message-State: AOJu0Yxlu0qXRv/c8bi+kBV9R+MuCYDzw7u+vjc0MNBV5i/D+n4smM2k
+	fTV3oJdTcndCT2dGIo1XLgNgo+Z3zOr0S66jLQn4yhgSavYKomaZgTG+6Z7PlIhltQZIrncac60
+	rHJrpRxKmVnOkddrUqfw838cpozF/LQ==
+X-Google-Smtp-Source: AGHT+IHTL8YeU+tBBSFTDOHEaNVEj0pnZPFFeUlrWTmIIXdw2w1aynLgXZON/SlcPSN7nvA2xcGmC5iseIJQZSpvY5A=
+X-Received: by 2002:a17:907:2d8b:b0:a9a:80cc:c972 with SMTP id
+ a640c23a62f3a-a9eeff2484emr2059299066b.27.1731526181585; Wed, 13 Nov 2024
+ 11:29:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
- <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 13 Nov 2024 20:11:39 +0100
-Message-ID: <CAOQ4uxjQHh=fUnBw=KwuchjRt_4JbaZAqrkDd93E2_mrqv_Pkw@mail.gmail.com>
-Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
+References: <cover.1731517699.git.jth@kernel.org> <59f75f70e743049cbb019752baf094a7e2f044fa.1731518011.git.jth@kernel.org>
+In-Reply-To: <59f75f70e743049cbb019752baf094a7e2f044fa.1731518011.git.jth@kernel.org>
+Reply-To: fdmanana@gmail.com
+From: Filipe Manana <fdmanana@gmail.com>
+Date: Wed, 13 Nov 2024 19:29:05 +0000
+Message-ID: <CAL3q7H7pGTb=vL5m5+EDeyOrrYLKM5kGt-LxsoqhfjNcFL8TVw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] btrfs: simplify waiting for encoded read endios
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
+	Mark Harmstone <maharmstone@fb.com>, Omar Sandoval <osandov@osandov.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 12, 2024 at 9:12=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, Nov 13, 2024 at 5:17=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
 >
-> On Tue, 12 Nov 2024 at 09:56, Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> >  #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
-> > +static inline int fsnotify_pre_content(struct file *file)
-> > +{
-> > +       struct inode *inode =3D file_inode(file);
-> > +
-> > +       /*
-> > +        * Pre-content events are only reported for regular files and d=
-irs
-> > +        * if there are any pre-content event watchers on this sb.
-> > +        */
-> > +       if ((!S_ISDIR(inode->i_mode) && !S_ISREG(inode->i_mode)) ||
-> > +           !(inode->i_sb->s_iflags & SB_I_ALLOW_HSM) ||
-> > +           !fsnotify_sb_has_priority_watchers(inode->i_sb,
-> > +                                              FSNOTIFY_PRIO_PRE_CONTEN=
-T))
-> > +               return 0;
-> > +
-> > +       return fsnotify_file(file, FS_PRE_ACCESS);
-> > +}
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >
-> Yeah, no.
+> Simplify the I/O completion path for encoded reads by using a
+> completion instead of a wait_queue.
 >
-> None of this should check inode->i_sb->s_iflags at any point.
+> Furthermore use refcount_t instead of atomic_t for reference counting the
+> private data.
 >
-> The "is there a pre-content" thing should check one thing, and one
-> thing only: that "is this file watched" flag.
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good now, thanks.
+
+> ---
+>  fs/btrfs/inode.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
 >
-> The whole indecipherable mess of inline functions that do random
-> things in <linux/fsnotify.h> needs to be cleaned up, not made even
-> more indecipherable.
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index fdad1adee1a3..3ba78dc3abaa 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3,6 +3,7 @@
+>   * Copyright (C) 2007 Oracle.  All rights reserved.
+>   */
 >
-> I'm NAKing this whole series until this is all sane and cleaned up,
-> and I don't want to see a new hacky version being sent out tomorrow
-> with just another layer of new hacks, with random new inline functions
-> that call other inline functions and have complex odd conditionals
-> that make no sense.
+> +#include "linux/completion.h"
+>  #include <crypto/hash.h>
+>  #include <linux/kernel.h>
+>  #include <linux/bio.h>
+> @@ -9068,9 +9069,9 @@ static ssize_t btrfs_encoded_read_inline(
+>  }
 >
-> Really. If the new hooks don't have that *SINGLE* bit test, they will
-> not get merged.
+>  struct btrfs_encoded_read_private {
+> -       wait_queue_head_t wait;
+> +       struct completion done;
+>         void *uring_ctx;
+> -       atomic_t pending;
+> +       refcount_t pending_refs;
+>         blk_status_t status;
+>  };
 >
-> And that *SINGLE* bit test had better not be hidden under multiple
-> layers of odd inline functions.
+> @@ -9089,14 +9090,14 @@ static void btrfs_encoded_read_endio(struct btrfs=
+_bio *bbio)
+>                  */
+>                 WRITE_ONCE(priv->status, bbio->bio.bi_status);
+>         }
+> -       if (atomic_dec_and_test(&priv->pending)) {
+> +       if (refcount_dec_and_test(&priv->pending_refs)) {
+>                 int err =3D blk_status_to_errno(READ_ONCE(priv->status));
 >
-> You DO NOT get to use the same old broken complex function for the new
-> hooks that then mix these odd helpers.
-
-Up to here I understand.
-
+>                 if (priv->uring_ctx) {
+>                         btrfs_uring_read_extent_endio(priv->uring_ctx, er=
+r);
+>                         kfree(priv);
+>                 } else {
+> -                       wake_up(&priv->wait);
+> +                       complete(&priv->done);
+>                 }
+>         }
+>         bio_put(&bbio->bio);
+> @@ -9116,8 +9117,8 @@ int btrfs_encoded_read_regular_fill_pages(struct bt=
+rfs_inode *inode,
+>         if (!priv)
+>                 return -ENOMEM;
 >
-> This whole "add another crazy inline function using another crazy
-> helper needs to STOP. Later on in the patch series you do
+> -       init_waitqueue_head(&priv->wait);
+> -       atomic_set(&priv->pending, 1);
+> +       init_completion(&priv->done);
+> +       refcount_set(&priv->pending_refs, 1);
+>         priv->status =3D 0;
+>         priv->uring_ctx =3D uring_ctx;
+>
+> @@ -9130,7 +9131,7 @@ int btrfs_encoded_read_regular_fill_pages(struct bt=
+rfs_inode *inode,
+>                 size_t bytes =3D min_t(u64, disk_io_size, PAGE_SIZE);
+>
+>                 if (bio_add_page(&bbio->bio, pages[i], bytes, 0) < bytes)=
+ {
+> -                       atomic_inc(&priv->pending);
+> +                       refcount_inc(&priv->pending_refs);
+>                         btrfs_submit_bbio(bbio, 0);
+>
+>                         bbio =3D btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_REA=
+D, fs_info,
+> @@ -9145,11 +9146,11 @@ int btrfs_encoded_read_regular_fill_pages(struct =
+btrfs_inode *inode,
+>                 disk_io_size -=3D bytes;
+>         } while (disk_io_size);
+>
+> -       atomic_inc(&priv->pending);
+> +       refcount_inc(&priv->pending_refs);
+>         btrfs_submit_bbio(bbio, 0);
+>
+>         if (uring_ctx) {
+> -               if (atomic_dec_return(&priv->pending) =3D=3D 0) {
+> +               if (refcount_dec_and_test(&priv->pending_refs)) {
+>                         ret =3D blk_status_to_errno(READ_ONCE(priv->statu=
+s));
+>                         btrfs_uring_read_extent_endio(uring_ctx, ret);
+>                         kfree(priv);
+> @@ -9158,8 +9159,8 @@ int btrfs_encoded_read_regular_fill_pages(struct bt=
+rfs_inode *inode,
+>
+>                 return -EIOCBQUEUED;
+>         } else {
+> -               if (atomic_dec_return(&priv->pending) !=3D 0)
+> -                       io_wait_event(priv->wait, !atomic_read(&priv->pen=
+ding));
+> +               if (!refcount_dec_and_test(&priv->pending_refs))
+> +                       wait_for_completion_io(&priv->done);
+>                 /* See btrfs_encoded_read_endio() for ordering. */
+>                 ret =3D blk_status_to_errno(READ_ONCE(priv->status));
+>                 kfree(priv);
+> --
+> 2.43.0
+>
 >
 
-The patch that I sent did add another convenience helper
-fsnotify_path(), but as long as it is not hiding crazy tests,
-and does not expand to huge inlined code, I don't see the problem.
 
-Those convenience helpers help me to maintain readability and code
-reuse. I do agree that the new hooks that can use the new open-time
-check semantics should not expand to huge inlined code.
+--=20
+Filipe David Manana,
 
-> +/*
-> + * fsnotify_truncate_perm - permission hook before file truncate
-> + */
-> +static inline int fsnotify_truncate_perm(const struct path *path,
-> loff_t length)
-> +{
-> +       return fsnotify_pre_content(path, &length, 0);
-> +}
->
-
-This example that you pointed at, I do not understand.
-truncate() does not happen on an open file, so I cannot use the
-FMODE_NONOTIFY_ test.
-
-This is what I have in my WIP branch:
-
-static inline int fsnotify_file_range(const struct path *path,
-                                      const loff_t *ppos, size_t count)
-{
-        struct file_range range;
-        const void *data;
-        int data_type;
-
-        /* Report page aligned range only when pos is known */
-        if (ppos) {
-                range.path =3D path;
-                range.pos =3D PAGE_ALIGN_DOWN(*ppos);
-                range.count =3D PAGE_ALIGN(*ppos + count) - range.pos;
-                data =3D &range;
-                data_type =3D FSNOTIFY_EVENT_FILE_RANGE;
-        } else {
-                data =3D path;
-                data_type =3D FSNOTIFY_EVENT_PATH;
-        }
-
-        return fsnotify_parent(path->dentry, FS_PRE_ACCESS, data, data_type=
-);
-}
-
-/*
- * fsnotify_truncate_perm - permission hook before file truncate
- */
-static inline int fsnotify_truncate_perm(const struct path *path, loff_t le=
-ngth)
-{
-        struct inode *inode =3D d_inode(path->dentry);
-
-        /*
-         * Pre-content events are only reported for regular files and dirs
-         * if there are any pre-content event watchers on this sb.
-         */
-        if ((!S_ISDIR(inode->i_mode) && !S_ISREG(inode->i_mode)) ||
-            !(inode->i_sb->s_iflags & SB_I_ALLOW_HSM) ||
-            !unlikely(fsnotify_sb_has_priority_watchers(inode->i_sb,
-                                               FSNOTIFY_PRIO_PRE_CONTENT)))
-                return 0;
-
-        return fsnotify_file_range(path, &length, 0);
-}
-
-fsnotify_file_range() does not need to be inlined, but I do want
-to reuse the code of fsnotify_file_range() which is also called for
-the common file pre-access hook.
-
-So did you mean that the unlikely stuff (i.e. fsnotify_file_range())
-should be an indirect call? or something else?
-
-Thanks,
-Amir.
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
 
