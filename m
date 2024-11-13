@@ -1,98 +1,106 @@
-Return-Path: <linux-btrfs+bounces-9605-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9607-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 461D89C794B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 17:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2E69C796B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 17:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A10E284B07
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 16:50:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96AB62821A2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 16:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B141FBF7F;
-	Wed, 13 Nov 2024 16:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7BC1FF5F2;
+	Wed, 13 Nov 2024 16:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=opsone.ch header.i=@opsone.ch header.b="cCaoB8uo"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XsocD30/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.opsone.ch (mail.opsone.ch [185.17.70.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955DC1F80BB
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 16:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.17.70.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FAC16DEA2
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 16:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731516620; cv=none; b=lZE3vj7ShvcXBi5F0gCSvJEDsg5H516TfICoE5OrPLtLGLdDeP2mxJ6CO/TJnPQhvOxQKx13u1BeWubsK0jrrRv4uBaUCiOTRXIO1slGhcyXOUFpWUn+uZZrFPwq19UUxJvQHoyfAEm3mv/FFRTkV+64BvOOuvIV6pKhHgHmjIY=
+	t=1731517075; cv=none; b=t9xcuWK7ReymxKuxu/JwHzIxUP1EPJ0hxkBsd2O+mbaUE9aThHrywmGPjN4axJGnPHpJ1e3G7VlwVxSpz/zF1FiglqgN1qY2P0AtRZT6cqDjacKvvB4BdKJIWVnL4ZzEJcbeCDKOvCbtBZMNG1LvjA6MW+QTFL3zuqppUwZifhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731516620; c=relaxed/simple;
-	bh=uebfwi1vlkxw8yIVD6D1puZEU5V/+OoqwxucdcOPdF8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NrMwjT8OnmcBAsqmXXbmuSqxI2hebPo6Vb70riPsfnWkEsF1WZ+3hxFq/j/lsPcdzCSNMmevh2DDQBaBMJSGiqpiIG0tAIeErIL6QAbTJMRO65isYADpo9eLCoehmRFF3Uv6nuBbmVgskkuqvKF8iG5ijN8/xiV8QIUizO+5wRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opsone.ch; spf=pass smtp.mailfrom=opsone.ch; dkim=pass (2048-bit key) header.d=opsone.ch header.i=@opsone.ch header.b=cCaoB8uo; arc=none smtp.client-ip=185.17.70.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opsone.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opsone.ch
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EB66515B8B1D;
-	Wed, 13 Nov 2024 17:50:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opsone.ch; s=dkim;
-	t=1731516616; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=vL2/aSBNjJ5tCri0AxPJ93K5g9JsGvekGoXzOZ2aHW0=;
-	b=cCaoB8uoRSNpA7WwnMpS1loqDIHsFmAHwHfCP6T95zfrCJaKnoLaF1VfgKxUkaN6+E4qkM
-	zAigDmGhFJtxxUk5Wg4Mkeadq97ggIplm0T4t9tbc2UVoAhtMArKveye/4k0PSypE9XYVP
-	flHrK9roDe+1L7xafXSGHYL6GFX9llX33t1cX97D1mHKmPPCKhf4uJ72N9zpy2iHBTKXA8
-	k7rBvGIeEPhHs+umKevre1cv/v4qUi93Cj3ZhwH33Ct1fZPeY2x/sCO49jxrk1AfpZRJcm
-	lj3+L8stRpPNJeTSS04gF0kvxJl0tXllwrXhkpj2h+4wNrLQO0NjnhVWNn/sAg==
-Message-ID: <7ea5aa7f-2591-4fd2-b07f-9c47661a8e5a@opsone.ch>
-Date: Wed, 13 Nov 2024 17:50:15 +0100
+	s=arc-20240116; t=1731517075; c=relaxed/simple;
+	bh=csPBoYSDByNBHf+k5gUPUX7+wR76Q1hEBFh0oJb/HtE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=to+fYELMkN+8AQla6DgOako3OkulW640KE70mldbul0E4ar1Hl1gP35rVmLKvs/Dx5fnyLxUD+znAtNvLHazsU7xVz/968J5dSOk3MFsjmcJk20+eV5sQHVoTpkZQzErxZ6PnKN6N1O1PQlEBgSt51lLfU1UpIIu3zro7LrsueU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XsocD30/; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so643087266b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 08:57:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1731517072; x=1732121872; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=r6dKI9I0XiNa6P0LadyJEAqhNHGcRQ6Z3i6i70GfR1Y=;
+        b=XsocD30/gXul2vROh5Ys/l609H69kF00w7ADaURIHXGD2wnw+esQzMhYoLpPUNux1E
+         enpgwxayRyyogPs5s0BfTt4louTe7d2f64Fs7nPY/zaEBDf8mHLPx3b/3tIkSuvLY02i
+         HEoA0zTwcH3VjX7zxw3Pp+HS25XsCpSdpgnkg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731517072; x=1732121872;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r6dKI9I0XiNa6P0LadyJEAqhNHGcRQ6Z3i6i70GfR1Y=;
+        b=gkFc8Uj8Rt3b/kwsv9AmwtcOtRbN/t4WPG1UM6reiIKK3BvVIMqmWTPZB0VnYKC9Nu
+         Fr5xOi+siidlEwOWYPqaDTnXYPoX0d5XPxQHZN+o+78fPkWxJxNiNwe87Cv7b3U8FOtI
+         Dc96lHyZD/ypTRPhB7//TwRlQWET+AeAURjzJEOFgaN3CT3ZjKNt2GWd8f7Cnh4E54IU
+         vCfHDHWT8ALphXqtqMl7NFwhEk6y5rCSIhT+Wopmw7ZNKZqtJ0gNGVbk8UimUKcEDcY0
+         svgUGcLomuXUD3qhqOhH35e5st0hPG+q6CjAgZLScg8Q+3GFh8uyP1Nc4GFrkisKZACH
+         nX+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWhpsjfqLfB4+JIfBnSkvwO/XB6f+tziIIlErNgDs2iRSBhXBX3x8yxLSn+i1vMHqwXn9PXv2RWtrWHpQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyN3DbxfIWN0kAucTISiMofbzWIIA7a3kIi9HLKs+Hoi63Av9Q1
+	xFjaOl6R8WaDu/7B5VUkNbne5LS6uQEEQfnyw2L0coaYzpmJf7ApnauorkzPUlMFWm6vIq5nP9v
+	cJN9BLQ==
+X-Google-Smtp-Source: AGHT+IHKDMdbEFKu7F6q4FW6ygtqUtdFdNpKhuzGnRmo0Vbt6Rhwzv9tYJbtqGWDGHIYuLQGP+aXUA==
+X-Received: by 2002:a17:907:1c12:b0:a9a:dac:2ab9 with SMTP id a640c23a62f3a-aa1c57aff74mr562654966b.42.1731517071698;
+        Wed, 13 Nov 2024 08:57:51 -0800 (PST)
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0dc4c97sm881986566b.131.2024.11.13.08.57.51
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Nov 2024 08:57:51 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5cf6f7ee970so1034906a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 08:57:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXtgwfBBKRzFH0Fr/+dFq4wd4eKcjD2flsGZUII4jj35T1kNTlgk6L01wfNe6fsx6lYTOo4cYqVKmBHjw==@vger.kernel.org
+X-Received: by 2002:a17:906:7308:b0:a9a:3718:6d6 with SMTP id
+ a640c23a62f3a-aa1c57ffee4mr725890666b.58.1731517070805; Wed, 13 Nov 2024
+ 08:57:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: send: fix invalid clone operation for file that
- got its size decreased
-Content-Language: de-CH
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <5a406a607fcccec01684056ab011ff0742f06439.1727432566.git.fdmanana@suse.com>
- <794af660cbd6c6fc417a683bfc914bbf9fb34ab0.1727434488.git.fdmanana@suse.com>
- <42062cf0-e5fd-430f-9aff-51a4bb9ca3ae@opsone.ch>
- <CAL3q7H4ufOCatWrsMoDLCfMmZNddFirO6P+WwDBJjV3Y+=cSAg@mail.gmail.com>
-From: Markus <markus@opsone.ch>
-In-Reply-To: <CAL3q7H4ufOCatWrsMoDLCfMmZNddFirO6P+WwDBJjV3Y+=cSAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com> <CAOQ4uxjob2qKk4MRqPeNtbhfdSfP0VO-R5VWw0txMCGLwJ-Z1g@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjob2qKk4MRqPeNtbhfdSfP0VO-R5VWw0txMCGLwJ-Z1g@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 13 Nov 2024 08:57:34 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wigQ0ew96Yv29tJUrUKBZRC-x=fDjCTQ7gc4yPys2Ngrw@mail.gmail.com>
+Message-ID: <CAHk-=wigQ0ew96Yv29tJUrUKBZRC-x=fDjCTQ7gc4yPys2Ngrw@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Am 13.11.24 um 16:01 schrieb Filipe Manana:
-> On Wed, Nov 13, 2024 at 1:07 PM Markus <markus@opsone.ch> wrote:
-> 
-> I don't know what Debian's 6.1.0-27 matches, but upstream the fix went
-> into 6.1.113, and the bug first appeared in 6.1.107.
-> So for 6.1 kernels, it only affected releases between 6.1.107 and 6.1.112.
-> 
-> So check if that kernel corresponds to 6.1.113+, and if the issue
-> still happens, run 'btrfs receive' with -vv and provide the output to
-> help figure out if it's the same issue or something else.
+On Tue, 12 Nov 2024 at 16:06, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> Maybe I could use just this one bit, but together with the existing
+> FMODE_NONOTIFY bit, I get 4 modes, which correspond to the
+> highest watching priority:
 
-Debian Linux Kernel 6.1.0-26-amd64 is 6.1.112. However, my problem has
-just been solved with Debian 12.8 [1] released on 9 November 2024.
+So you'd use two bits, but one of those would re-use the existing
+FMODE_NONOTIFY? That sounds perfectly fine to me.
 
-After the installation, I am on 6.1.115, now I can no longer reproduce
-the problem with the instructions from the patch.
-
-[1] https://lists.debian.org/debian-announce/2024/msg00008.html
-
-> Balance doesn't make aligned extents become aligned and vice-versa (if
-> so it would change file sizes and cause corruption), doesn't make
-> extents that were not shared become shared and vice-versa, and doesn't
-> do any changes to the extent layout of a file. So, no, balance is
-> totally unrelated.
-
-Many thanks for your explanations!
-
-Thanks,
-Markus
+             Linus
 
