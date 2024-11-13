@@ -1,142 +1,321 @@
-Return-Path: <linux-btrfs+bounces-9595-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9596-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF829C731F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 15:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C50099C7483
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 15:38:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 577DC281D47
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 14:14:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8379A2819B4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 14:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7BF1DDA15;
-	Wed, 13 Nov 2024 14:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0802036E3;
+	Wed, 13 Nov 2024 14:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=konsulko.com header.i=@konsulko.com header.b="Nzq/5cRa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XydvH+7x"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0634B282ED
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 14:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477DD1FF7A4;
+	Wed, 13 Nov 2024 14:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731507261; cv=none; b=k823C5p1ulNsEsLivjN/FZ2QcXd71szOKMZB1u/R2HoWHi0wDgeMnJnJJUq3e8TviHKinNVilqeYSiHMxcsA/PGUnyg7H3TEmsa2i9wHrehzVJM9sj7Ebm5hTUeMdLQVOKUNzgfwkoDc79Il5Qvnn/3LqeDrBtJwoaMxBxVtt9k=
+	t=1731508607; cv=none; b=uPdJWT9TliJux3Pg2OGFYGadVddaIlsvnNy4ecn7PwP6jqTb/vKuz+2kjJqnSBckN4eM7ZFDspeOg7exfkveXkGc2/UyIDJIMH2jY1+XO8w1DOg+fD3Bat6tPm4XNLQJaX5agSNHOcRU1z+PfnEEWfpVhlak4rsaGS1CxrXURuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731507261; c=relaxed/simple;
-	bh=W7xg/St2RsQ48M03wr4KKSEH6cOWTZciPUvuhGG/HdY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXA5j8BEBL3l39AFyC8lDx3fAqxUfylDQ84HuLVsL/o6pHQglpq7tBQkZY/d3TMI7wTaSYAjkSN4V8bCSngN3yf3PyK/qd0spoEIUnDQSf7wM4v1+A5VJsJVYLlTbiEZnAVl25x4S48fv7XZCK4JEuR8JnP0UioYWKvi77mThMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=konsulko.com; spf=pass smtp.mailfrom=konsulko.com; dkim=pass (1024-bit key) header.d=konsulko.com header.i=@konsulko.com header.b=Nzq/5cRa; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=konsulko.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=konsulko.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6cbf0e6414aso33800386d6.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 06:14:19 -0800 (PST)
+	s=arc-20240116; t=1731508607; c=relaxed/simple;
+	bh=4ZOYAY9l9J0p+/pagouIG7S5TCj2naHI1ZJy9Dt8YLk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ep2eMU0WFd+MF6+EJGCEqs5uHi5zI1sZVIVNMlstxp7ZGlL7IVPIKh32GVCCCr7ukbkHBIqm3yWp7bMgMQjCrf4D5Nv20i6/aBb2eVK71nreb8hpfxPPSyIEjtY+fKrjX/e6AHgNApK8UD3sv0Pe6BL7y4p6HVvccf8Nw/i9+Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XydvH+7x; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6cc1b20ce54so47718526d6.0;
+        Wed, 13 Nov 2024 06:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google; t=1731507259; x=1732112059; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W7xg/St2RsQ48M03wr4KKSEH6cOWTZciPUvuhGG/HdY=;
-        b=Nzq/5cRaH2nYJFoLH3fP6jtnQXegWv8NeJpBj1fc4l4z9ndw2JXVei69wt9vsUbn4l
-         gftEe/DgWqfN4efy9az+Dofp3x3mDiqR5zjNGsijMDf9ZXW4krZ3TxQdvPCYaz7vRg1b
-         F26QR3FY30LAqnsFxU6gc8+onNYuoXSuwc6Dw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731507259; x=1732112059;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1731508604; x=1732113404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W7xg/St2RsQ48M03wr4KKSEH6cOWTZciPUvuhGG/HdY=;
-        b=CPamD02V+vC3HVaad/tHm9oA/4OUPy3EsTLucHGV45gfwTwv3wA+Ql00HYTcIg2ayA
-         /NFc+kiJ8O2FaQ7+Jta2dZYhwMTTcXI6sj/k8d7E5aZEbcV+4W8FxwO+iydpWJ9Z7I1Z
-         mC/nmbiNdPaCwaHn6uKsa6kOEKkqzuwx23+lCbtnPxc+/1Qxxp4boaUV1EPC7WxPLMCg
-         jlZlqZp4V37chCAK7GbpWAUPAQfwroKdzVETLt5EtwjXhHvEAfevkvPaW9ChdV9LkBQ9
-         uyqbbciNhJdXe+Kjnd1EOnDGkfE7OJt+rFp225E9ezkDkLrV2B/0kxgYyqfRWrEVHq1M
-         LFUA==
-X-Forwarded-Encrypted: i=1; AJvYcCWc9m8+4399Epv+TU9QDdCMCEsz6V2KPqJfm6oBfDc+I6zKT/XBeCzJJtX0rrEIBoy3Gb/PnPHXnIxJbA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyL0wpeu1oZPn+wHrCycRvocVAGt7re0Ll2DeM0Z0J7di90rf8o
-	4uApIFUQiPxA1i4C1Oi7GghCg9lI+6w/VxnZMw8NcjMM5mAka5cRR6fzUJ+RrmQ=
-X-Google-Smtp-Source: AGHT+IFKNu8RFpUKb82zmFeg078VdB750jdzdO9JqfTChqkxZwxG+7WDOw2JaruFaSuWNkHf270sYQ==
-X-Received: by 2002:a05:6214:419c:b0:6cb:c85c:5654 with SMTP id 6a1803df08f44-6d39e166f57mr244471876d6.4.1731507258769;
-        Wed, 13 Nov 2024 06:14:18 -0800 (PST)
-Received: from bill-the-cat ([187.144.30.219])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3961df062sm84370036d6.11.2024.11.13.06.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 06:14:18 -0800 (PST)
-Date: Wed, 13 Nov 2024 08:14:15 -0600
-From: Tom Rini <trini@konsulko.com>
-To: Dominique Martinet <asmadeus@codewreck.org>
-Cc: Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Qu Wenruo <wqu@suse.com>,
-	Dominique Martinet <dominique.martinet@atmark-techno.com>,
-	linux-btrfs@vger.kernel.org, u-boot@lists.denx.de
-Subject: Re: [u-boot PATCH] fs: btrfs: hide 'Cannot lookup file' errors on
- 'load'
-Message-ID: <20241113141415.GL3600562@bill-the-cat>
-References: <ZzRAEgQYS46yM7Ct@codewreck.org>
+        bh=5TpO1rEDli92wfsqt+A461mrFCCbHcRm9Ir9kcXs4JU=;
+        b=XydvH+7xyHsDmu2URrGPRxYFtb/LrDn4o5vsr5PlpoG71TNinbSyczAgN8A2chjdiG
+         7Phje9nlfdnp6oTjW+XY7Iv6guQFViTX6cYMUxFjqSHaPsCaFLtU/LSF0TEtd7PCQRSd
+         iG3pDSW0SSF5wJzI+Rz9XTxaHbBxm05g5cJXUuQ1OMAfYqwX/AJspwxMO0pEY7jG3zDr
+         wkcJlRlrDW49Hp1aFXdIdKghASHl+UpBvHMRlsS2go0ICBAEJ7193nAd4NVGsTFGsYzA
+         yhnSzbe+zXtmPSduazYR0xNepKckAIpaisbz1kn3kJfuZjkwbNnJlMJUEq5gXPR3NyuC
+         mvMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731508604; x=1732113404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5TpO1rEDli92wfsqt+A461mrFCCbHcRm9Ir9kcXs4JU=;
+        b=UbFqrtaKo80BBBIXB2bhvhdB7vHDjZwdziZzgCgRrjfcNf1uMN2Y9GiN7IBK2qk76l
+         U1gGVz+7SYHmEQ3Fjx52jbZCixWkL9frYv6ITnCP4RRJ76BcSsFVQkJoCTBnu9jDzX93
+         00H+V5ZFB5ZwPQJ214pBPLtTgqN7quPrOlEqbgAXZw/cU4ksffuhhRQwPbjq25ekmmMy
+         BYTSDTAJuiFz9ckkJ9o7W3Z5/dm5wp2eajocbmDdF1m6nRe39SLEJHj8n/fr2Lacidyb
+         ceW5l3mPFgNcbZ8e2lyNXu4Jg6aq3UIxhWPkl75VujPwIJAn+eDbg3IniAPoO0mvENcy
+         Jj/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVNllex5CjnX4LL0+AN9k7KO4iI1VQpsrrv2uHCbnc1NZ1MACaDeA4RLNpJP7e7zd5hOY+4pzQRWt0szg==@vger.kernel.org, AJvYcCW2afoO0DNq/4VXpXzc0jjV1cjYOEunPNuxVx10H2lEyHF83oAo3QmeSHWRxjAherPn/C8pBl2j26jf2A==@vger.kernel.org, AJvYcCWoTYjrzMAwc/QLuH4Jier2eANN+5ysjvFLj2R3kS/WIAbWewT9YvXPDzQDgptyfoo81CA5epwgvhC11d5ZWQ==@vger.kernel.org, AJvYcCWxRkntwicpMMhN7Jv4877Gl+M7+yTjPW09BThuG1srbqrm1ChJ21+NcCpLvCgPdC+yudlKWib4ZvC0@vger.kernel.org
+X-Gm-Message-State: AOJu0YwA33UVzvMYzPAjcPpFutpsoXdGbma5EtW9X9k1Rnu8wmneo9Gt
+	EOSKUwaIkNXdqSiXeDIriHN+/WR65Lhq6xkoVDyaiGt3md1VuwyNokpmSdwo9b7HF82znUc7usq
+	V4UCtLynZ6NmDgEEg0/D3pAnGC/k=
+X-Google-Smtp-Source: AGHT+IHDM6yIlJ+rbWXJBsM1kdPByZi+pkkssJXLfoBLa9nCWP4173NtLKc4WYnD4Kt86lm779n87BvsYqF4dqhC3AQ=
+X-Received: by 2002:a05:6214:4589:b0:6d3:9359:26ef with SMTP id
+ 6a1803df08f44-6d39e0f6663mr268917446d6.6.1731508604035; Wed, 13 Nov 2024
+ 06:36:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lyup+x3+f3wwzdiC"
-Content-Disposition: inline
-In-Reply-To: <ZzRAEgQYS46yM7Ct@codewreck.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-
-
---lyup+x3+f3wwzdiC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com>
+ <20241113001251.GF3387508@ZenIV> <CAHk-=wg02AubUBZ5DxLra7b5w2+hxawdipPqEHemg=Lf8b1TDA@mail.gmail.com>
+ <CAHk-=wgVzOQDNASK8tU3JoZHUgp7BMTmuo2Njmqh4NvEMYTrCw@mail.gmail.com>
+ <20241113011954.GG3387508@ZenIV> <20241113043003.GH3387508@ZenIV>
+In-Reply-To: <20241113043003.GH3387508@ZenIV>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 13 Nov 2024 15:36:33 +0100
+Message-ID: <CAOQ4uxj01mrrPQMyygdyDAGpyA=K=SPH88E2tpY5RuSsqG9iiA@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
+	brauner@kernel.org, linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 13, 2024 at 02:58:42PM +0900, Dominique Martinet wrote:
-> Dominique Martinet wrote on Wed, Nov 06, 2024 at 09:56:42AM +0900:
-> > Running commands such as 'load mmc 2:1 $addr $path' when path does not
-> > exists historically do not print any error on filesystems such as ext4
-> > or fat.
-> > Changing the root filesystem to btrfs would make existing boot script
-> > print 'Cannot lookup file xxx' errors, confusing customers wondering if
-> > there is a problem when the mmc load command was used in a if (for
-> > example to load boot.scr conditionally)
->=20
-> Ugh, sorry, I was a bit quick on checking with an updated u-boot on
-> this... our tree is *cough* slightly *cough* old and that was the case
-> at the time, but since somewhere in 2020 there is a warning in fs/fs.c
-> in case load fails.
->=20
-> That doesn't change the fact that this patch is useful to avoid the
-> message being printed twice, but I'll need to update my scripts anyway
-> to use `size` first instead (as a first approximation of `test -e`)
->=20
-> Please let me know if you want me to resend this with an updated commit
-> message; otherwise I'll let this sleep.
+On Wed, Nov 13, 2024 at 5:30=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> w=
+rote:
+>
+> On Wed, Nov 13, 2024 at 01:19:54AM +0000, Al Viro wrote:
+> > On Tue, Nov 12, 2024 at 04:38:42PM -0800, Linus Torvalds wrote:
+> > > Looking at that locking code in fadvise() just for the f_mode use doe=
+s
+> > > make me think this would be a really good cleanup.
+> > >
+> > > I note that our fcntl code seems buggy as-is, because while it does
+> > > use f_lock for assignments (good), it clearly does *not* use them for
+> > > reading.
+> > >
+> > > So it looks like you can actually read inconsistent values.
+> > >
+> > > I get the feeling that f_flags would want WRITE_ONCE/READ_ONCE in
+> > > _addition_ to the f_lock use it has.
+> >
+> > AFAICS, fasync logics is the fishy part - the rest should be sane.
+> >
+> > > The f_mode thing with fadvise() smells like the same bug. Just becaus=
+e
+> > > the modifications are serialized wrt each other doesn't mean that
+> > > readers are then automatically ok.
+> >
+> > Reads are also under ->f_lock in there, AFAICS...
+> >
+> > Another thing in the vicinity is ->f_mode modifications after the calls
+> > of anon_inode_getfile() in several callers - probably ought to switch
+> > those to anon_inode_getfile_fmode().  That had been discussed back in
+> > April when the function got merged, but "convert to using it" followup
+> > series hadn't materialized...
+>
+> While we are at it, there's is a couple of kludges I really hate -
+> mixing __FMODE_NONOTIFY and __FMODE_EXEC with O_... flags.
+>
+> E.g. for __FMODE_NONOTIFY all it takes is switching fanotify from
+> anon_inode_getfd() to anon_inode_getfile_fmode() and adding
+> a dentry_open_nonotify() to be used by fanotify on the other path.
+> That's it - no more weird shit in OPEN_FMODE(), etc.
+>
+> For __FMODE_EXEC it might get trickier (nfs is the main consumer),
+> but I seriously suspect that something like "have path_openat()
+> check op->acc_mode & MAY_EXEC and set FMODE_EXEC in ->f_mode
+> right after struct file allocation" would make a good starting
+> point; yes, it would affect uselib(2), but... I've no idea whether
+> it wouldn't be the right thing to do; would be hard to test.
+>
+> Anyway, untested __FMODE_NONOTIFY side of it:
+>
+> diff --git a/fs/fcntl.c b/fs/fcntl.c
+> index 22dd9dcce7ec..ebd1c82bfb6b 100644
+> --- a/fs/fcntl.c
+> +++ b/fs/fcntl.c
+> @@ -1161,10 +1161,10 @@ static int __init fcntl_init(void)
+>          * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
+>          * is defined as O_NONBLOCK on some platforms and not on others.
+>          */
+> -       BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=3D
+> +       BUILD_BUG_ON(20 - 1 /* for O_RDONLY being 0 */ !=3D
+>                 HWEIGHT32(
+>                         (VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
+> -                       __FMODE_EXEC | __FMODE_NONOTIFY));
+> +                       __FMODE_EXEC));
+>
+>         fasync_cache =3D kmem_cache_create("fasync_cache",
+>                                          sizeof(struct fasync_struct), 0,
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fano=
+tify_user.c
+> index 9644bc72e457..43fbf29ef03a 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -101,8 +101,7 @@ static void __init fanotify_sysctls_init(void)
+>   *
+>   * Internal and external open flags are stored together in field f_flags=
+ of
+>   * struct file. Only external open flags shall be allowed in event_f_fla=
+gs.
+> - * Internal flags like FMODE_NONOTIFY, FMODE_EXEC, FMODE_NOCMTIME shall =
+be
+> - * excluded.
+> + * Internal flags like FMODE_EXEC shall be excluded.
+>   */
+>  #define        FANOTIFY_INIT_ALL_EVENT_F_BITS                          (=
+ \
+>                 O_ACCMODE       | O_APPEND      | O_NONBLOCK    | \
+> @@ -262,8 +261,8 @@ static int create_fd(struct fsnotify_group *group, co=
+nst struct path *path,
+>          * we need a new file handle for the userspace program so it can =
+read even if it was
+>          * originally opened O_WRONLY.
+>          */
+> -       new_file =3D dentry_open(path,
+> -                              group->fanotify_data.f_flags | __FMODE_NON=
+OTIFY,
+> +       new_file =3D dentry_open_nonotify(path,
+> +                              group->fanotify_data.f_flags,
 
-Yes, please reword the commit message based on current overall behavior,
-thanks!
+I would make this a bit more generic helper and the comment above
+is truly clueless:
 
---=20
-Tom
+        /*
+-        * we need a new file handle for the userspace program so it
+can read even if it was
+-        * originally opened O_WRONLY.
++        * We provide an fd for the userspace program, so it could access t=
+he
++        * file without generating fanotify events itself.
+         */
+-       new_file =3D dentry_open(path,
+-                              group->fanotify_data.f_flags | __FMODE_NONOT=
+IFY,
+-                              current_cred());
++       new_file =3D dentry_open_fmode(path, group->fanotify_data.f_flags,
++                                    FMODE_NONOTIFY, current_cred());
 
---lyup+x3+f3wwzdiC
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmc0tDcACgkQFHw5/5Y0
-tyzquwv+P0eoEjhBQ+UOy6mWWmsEz0kw+ucwXk4Bjs+hF47kGH0wNw87Uxjd1s3a
-cI6lzx5c+8SZYg7VR6+eSZ5GibhTiFVuHRz6KKM7O/WKDYJb0WuFa/hXTzz7H8Sl
-QSni/1e+6u9XQXcAMD0lulll+gMCdQlhQ+ukt6pWjKVMDA9HcL+0GE+MpgtfV1f9
-g2ouY3r4XbsqRPbXbWc1GAutFk1gNzOeLiiIjNcR16t7zdrblwDQLqQ2q3pWKXhR
-ZiET1+Lk404tke0K6yO3VP527TbFocE3jBQM2OeIBEUoSgWYhJmvV8PiFYom6Itr
-hvcXPuYLSS03rilcIxgv7lkgGHmOH9XxW1VUea1Vh/JD5xvgfjmpuMIPAjqJY78/
-tiI/HQ34RxyO+9cZE12SpuumwEvkb6lI7hAS65PJsJhfwro1wDCd0BIkr6C/TMD4
-Az4xFddsVL0l5Hem7W45GzP+irfHF8/KzyWXrkX/RhxApI+lIID8+SN/Wsi219qh
-YMb5Wmkm
-=q3Gb
------END PGP SIGNATURE-----
+>                                current_cred());
+>         if (IS_ERR(new_file)) {
+>                 /*
+> @@ -1404,6 +1403,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags,=
+ unsigned int, event_f_flags)
+>         unsigned int fid_mode =3D flags & FANOTIFY_FID_BITS;
+>         unsigned int class =3D flags & FANOTIFY_CLASS_BITS;
+>         unsigned int internal_flags =3D 0;
+> +       struct file *file;
+>
+>         pr_debug("%s: flags=3D%x event_f_flags=3D%x\n",
+>                  __func__, flags, event_f_flags);
+> @@ -1472,7 +1472,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags,=
+ unsigned int, event_f_flags)
+>             (!(fid_mode & FAN_REPORT_NAME) || !(fid_mode & FAN_REPORT_FID=
+)))
+>                 return -EINVAL;
+>
+> -       f_flags =3D O_RDWR | __FMODE_NONOTIFY;
+> +       f_flags =3D O_RDWR;
+>         if (flags & FAN_CLOEXEC)
+>                 f_flags |=3D O_CLOEXEC;
+>         if (flags & FAN_NONBLOCK)
+> @@ -1550,10 +1550,18 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flag=
+s, unsigned int, event_f_flags)
+>                         goto out_destroy_group;
+>         }
+>
+> -       fd =3D anon_inode_getfd("[fanotify]", &fanotify_fops, group, f_fl=
+ags);
+> +       fd =3D get_unused_fd_flags(flags);
 
---lyup+x3+f3wwzdiC--
+s/flags/f_flags
+
+>         if (fd < 0)
+>                 goto out_destroy_group;
+>
+> +       file =3D anon_inode_getfile_fmode("[fanotify]", &fanotify_fops, g=
+roup,
+> +                                       f_flags, FMODE_NONOTIFY);
+> +       if (IS_ERR(file)) {
+> +               fd =3D PTR_ERR(file);
+> +               put_unused_fd(fd);
+> +               goto out_destroy_group;
+> +       }
+> +       fd_install(fd, file);
+>         return fd;
+>
+>  out_destroy_group:
+> diff --git a/fs/open.c b/fs/open.c
+> index acaeb3e25c88..04cb581528ff 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -1118,6 +1118,23 @@ struct file *dentry_open(const struct path *path, =
+int flags,
+>  }
+>  EXPORT_SYMBOL(dentry_open);
+>
+> +struct file *dentry_open_nonotify(const struct path *path, int flags,
+> +                        const struct cred *cred)
+> +{
+> +       struct file *f =3D alloc_empty_file(flags, cred);
+> +       if (!IS_ERR(f)) {
+> +               int error;
+> +
+> +               f->f_mode |=3D FMODE_NONOTIFY;
+> +               error =3D vfs_open(path, f);
+> +               if (error) {
+> +                       fput(f);
+> +                       f =3D ERR_PTR(error);
+> +               }
+> +       }
+> +       return f;
+> +}
+> +
+>  /**
+>   * dentry_create - Create and open a file
+>   * @path: path to create
+> @@ -1215,7 +1232,7 @@ inline struct open_how build_open_how(int flags, um=
+ode_t mode)
+>  inline int build_open_flags(const struct open_how *how, struct open_flag=
+s *op)
+>  {
+>         u64 flags =3D how->flags;
+> -       u64 strip =3D __FMODE_NONOTIFY | O_CLOEXEC;
+> +       u64 strip =3D O_CLOEXEC;
+>         int lookup_flags =3D 0;
+>         int acc_mode =3D ACC_MODE(flags);
+>
+
+Get rid of another stale comment:
+
+        /*
+-        * Strip flags that either shouldn't be set by userspace like
+-        * FMODE_NONOTIFY or that aren't relevant in determining struct
+-        * open_flags like O_CLOEXEC.
++        * Strip flags that aren't relevant in determining struct open_flag=
+s.
+         */
+
+With these changed, you can add:
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+With the f_flags typo fixed, this passed LTP sanity tests, but I am
+going to test the NONOTIFY functionally some more.
+
+Thanks,
+Amir.
 
