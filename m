@@ -1,134 +1,118 @@
-Return-Path: <linux-btrfs+bounces-9612-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9613-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B969C7B41
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 19:34:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D669C7B80
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 19:47:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F29551F285F9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 18:34:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B66C328969B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 18:46:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68382205ABD;
-	Wed, 13 Nov 2024 18:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161672040AF;
+	Wed, 13 Nov 2024 18:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="imPsjuW2"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="HrYh2Zfd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BF5200C90;
-	Wed, 13 Nov 2024 18:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8631B200C90
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 18:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731522824; cv=none; b=UTmqaQhX15GodRZhysBcCRoZ7qkymTKiAlQH6ccLHCHfbrwfMtiCvqeUmm8k8YxUq27a+Q0c7BzBwUDbe9RPB64ChF9i8aoeTCGvPSiq29kDHo2RDvh6XVc3zwML1IV7NkTBFUrrff8WQ9K1eUSuL+6rT1eye3HNl+ZsC/6ohWU=
+	t=1731523610; cv=none; b=fE1+PZ1w8rPqVUV1RK3VlPL6OIoXTBcrwriao81kY+q77DYTftRVdgM11fwzLOkMfst1z+SrWd5Nw898PIlaSFieL6lZ7a7uHomtnAgZFm8/jFj/xVqyTCMNAg3xqXOsUpvMz2wxVtaXJaEO/Q4wcjpiRehdg7AADjKkfdvDApI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731522824; c=relaxed/simple;
-	bh=epwvJnoTFUIhrGRAE1h/sE9a1tEfCBtKLtMp0kEUtUQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lOhgFkGV9n/ZT6JlVtOfOM03W8tWVlwMqalZx2qb9lTKqc5r81jmNBHUtN9NmH/VpeQskUo1xxkdfsviVi0UdYAj0aHq7GtWXYdyooL1eDpn3ubDdOqDjxzKk4mtaMj6PtsyQVXfU3qaEoN7Yy95nge/LD5wz+gsd5+/T4lsiR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=imPsjuW2; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-460da5a39fdso51725041cf.1;
-        Wed, 13 Nov 2024 10:33:42 -0800 (PST)
+	s=arc-20240116; t=1731523610; c=relaxed/simple;
+	bh=bjjmahyNCuDcOLFnSRDq1hTf8a7Q4M0XE3GdCGOoN+s=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=T/iwWDwH7R7pMG+04V/aMcHYPaK46RYZGGEu3dwydhFIwQH3FkVYgawMQYCTuT5IXKhNd/8O/QMcyH0vPYYyRKpQercO7Jrrv0hNNdo10DWTa6XX4vy9uVoxsU5kt5k4DRj9uGAu0hbY4MCkf5rBuA+Sj+Nw11X/h8Xfyjsr9tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=HrYh2Zfd; arc=none smtp.client-ip=209.85.160.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-28862804c9dso600456fac.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 10:46:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731522822; x=1732127622; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731523607; x=1732128407; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cEAYPbzxEEGvecCJCUytCkqZZ5wbRQKBjqWUJAfVZRA=;
-        b=imPsjuW25P2elilN70Xm6nsOg6Fj9YPV1YhTqkgKWMa4D3dQjG132unkCVXGtspAm0
-         lpA2tDIf1MT4VZpdRDXMfkVOEKC/VqHiTKvfkzgtmSpntuOJBauWSlkucqaQdZVTF377
-         uWGUlHyOUbGE1VB/Vw/VNKQXtuXH/SkAPZPtTOSonyGLqG/NKScR0wO+rhd4C/9zVDSh
-         ule+cyfyYbxPTTBNcyjBqL6ewuV8VPaLzODhqPjydfZFi9V4HlH3H4SjP8rt3p3eMFsK
-         GN4pyJcnKWfq0ykzkjyjOUKuhG5qE5YEOb+5wpUvefAdYFwH5GH1hoPnSdlOdmz/gdeA
-         7tiw==
+        bh=6Y6LZQ+uMnK0S2LY6YW0GGjZ/J1h8Erndb3dSaVvNh8=;
+        b=HrYh2Zfdu9OAmuzooQQRKHi1LLIPwilwqIlwCOffSRr2HAJ5H1VjWywPoLWDNJJ7ZX
+         1s4ZBo1n/2k5Y/LFuUaSCQMtVrNi+Is4IU0juGMyT9reMN7h9Md6hvAG9nIM2ABwNszf
+         cfMSN3iXbg5vqQ9DaopJFoBPTocTKybygj5lEJgnoJhj4znfFCR5HPWFUH2zC+7yzpKq
+         GaKV4ZudhXkS/VZfrVb5SrcQh0j33JKVR40TYaZtLjXtSJoQv85QpJmyvJ1HYLlYnuJL
+         92v6MaryJk2AC8GZTjWup8hs65V3O+ZAKtKbwR6lrsR0kPoMV6XcnIDvEKiY+RtVHrHd
+         oFWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731522822; x=1732127622;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1731523607; x=1732128407;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cEAYPbzxEEGvecCJCUytCkqZZ5wbRQKBjqWUJAfVZRA=;
-        b=gOjuoXeNcIPDGZRPlC0rIJPuVeCJ7Qb5Uyz5gkpz+/csLsiXNzTpm7rWECJCrAIYzD
-         Udk8OkEb2L+JDBtKUMDaAznG3Ti1+zI1gQcLu/bOU85Wpncnk8LceWcjzITXGOXFzEUE
-         JugiZPfifkf5u3UMokN+9dCAbTuqRGeX/xC8uY/isM7wF1BqNRZyBP6QmaRcOxnYNDTa
-         T1UtL1kS4n1zqQTaw/i5ktNyyTAxkNiPglNAasPNzU9fcRXLh31vqYxaE4+YoUnFXqI7
-         rd5zQCn1OeG71hdlom7viob2uqubfRY8/PzIFpFCYxDb6ETaT3c75BatQsZLO1y8a87T
-         /OSA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+uZeAAs8fgC5U1ZptWDRUN87StzWNS1Xuy/PdlOYVffY/dhTj6MdrJL3MzYkBF2cBdqZ4W4xBJl25@vger.kernel.org, AJvYcCUjhLXLl4FlOlKrRSTEMvs3Cd/lraSQaLlUfyeBZB2NRl8f9gBVGG+DriLa8u8+DdTEwn4+3ZziCOihtA==@vger.kernel.org, AJvYcCVCxd9/yXLySMJYmrLyFJIsv2jliEWRnzmTFMLoAgMDj+1uNi9aDinanmQCmse1HGnQmwJ+FAo2yYR7v+o2Ww==@vger.kernel.org, AJvYcCVkIJ71NVGN2E30qRwJKe3wMWwmynrFaL3T7oN/sCoepoGczWivxI3ewZrDqkdgPvB5R+9wHCYZ3R6N9A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPwfAOPJU1qrZb9TZkNC7LckmmwzEJRJsaej8XyT7xxJpfntdA
-	1VD1PPYw0yMvRqdkaKdoMbXWZ6/tA/0ybsjlrtrIWIvW0X89mq4AxOWbFm6HJqMm7gc9gbHz0v4
-	KMO+HPyEVpLfoOX962gQP8WjPa90=
-X-Google-Smtp-Source: AGHT+IFPeK8LsWBd11UIJ1HMjFwTxuHxrQfNEAnlG5VRDPByzvKN/slVc8pIz4HMqf/6Jwtq6PY//EGtUUqdQ2qDnfs=
-X-Received: by 2002:a05:622a:1191:b0:458:34df:1e6a with SMTP id
- d75a77b69052e-46309421dedmr307570801cf.48.1731522821788; Wed, 13 Nov 2024
- 10:33:41 -0800 (PST)
+        bh=6Y6LZQ+uMnK0S2LY6YW0GGjZ/J1h8Erndb3dSaVvNh8=;
+        b=VNVrURDQwnRcJ2VvGjbr0s2LQOSSCgAZVOwRdOPA2+SzQdw0BkGVVv2ZGBM+98DuTt
+         O26JIew1pOWFWJQQs0qRi0CWhy1UUUN2eCR2YFE1Bs6wKOEmFJR/vAtALDzHXm2bsEI4
+         vZ/ZsM4Ln9KOXbIkzmUnqDDg9XyO2j0YXJOquT94lvUhDD2XBWwgPC0SQv/4xv5rE0y6
+         zQFmt001Ms6QwsJcYR5yv7P6Xh6IU3rfKQq1EgUDdLihsrTNK36iYI4REN2NFBcO7Atz
+         rWzQVmCnrv23ebvBltgWo54IZR3/CQP9sQMqnJn0wxbyArvF5R7ExmTK7W0DTcfNIuxY
+         jRzw==
+X-Forwarded-Encrypted: i=1; AJvYcCV5koG8XubbiHd/x4H065MQV+/je564phFk+w0w8miLEf0bXxN7UC8PkHNOr8I1/iJ4qitwMZkg7+4mQg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyyN6Zhp3ktSFtwa73DW4ZBDIlB+SP/pisQeBgYE3msxpwx7FrF
+	ZmjbIpdx8csgV56cBIZ46JnOHjgJjcr29aT91BxGl2kUwLSs9QwaQ1rPBB3Ym2E=
+X-Google-Smtp-Source: AGHT+IElqrUcRF3HfiSejpBqxBPsTzd7rzIjNzdtYsCTXlXDVD2IYEpSiVKFvfLa6IZJOe2HhDecgw==
+X-Received: by 2002:a05:6870:2b0f:b0:288:3915:db28 with SMTP id 586e51a60fabf-296069ed640mr386417fac.5.1731523607575;
+        Wed, 13 Nov 2024 10:46:47 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-295e92afbcbsm1023381fac.40.2024.11.13.10.46.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2024 10:46:47 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, Yi Zhang <yi.zhang@redhat.com>, 
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
+In-Reply-To: <20241113084541.34315-2-hch@lst.de>
+References: <20241113084541.34315-1-hch@lst.de>
+ <20241113084541.34315-2-hch@lst.de>
+Subject: Re: [PATCH 1/2] block: export blk_validate_limits
+Message-Id: <173152360663.2243093.16019874347039852484.b4-ty@kernel.dk>
+Date: Wed, 13 Nov 2024 11:46:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <44afe46517b379b6b998a35ba99dd2e1f55a2c7d.1731433903.git.josef@toxicpanda.com>
-In-Reply-To: <44afe46517b379b6b998a35ba99dd2e1f55a2c7d.1731433903.git.josef@toxicpanda.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 13 Nov 2024 19:33:30 +0100
-Message-ID: <CAOQ4uxhj7tQ1E4TmMbjodfiJtuosPdGp4B9WZQ2Qc76zs=g6sg@mail.gmail.com>
-Subject: Re: [PATCH v7 12/18] fanotify: add a helper to check for pre content events
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	brauner@kernel.org, torvalds@linux-foundation.org, linux-xfs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.2
 
-On Tue, Nov 12, 2024 at 6:56=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> We want to emit events during page fault, and calling into fanotify
-> could be expensive, so add a helper to allow us to skip calling into
-> fanotify from page fault.  This will also be used to disable readahead
-> for content watched files which will be handled in a subsequent patch.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/notify/fsnotify.c             | 12 ++++++++++++
->  include/linux/fsnotify_backend.h | 26 ++++++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
->
-> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-> index cab5a1a16e57..17047c44cf91 100644
-> --- a/fs/notify/fsnotify.c
-> +++ b/fs/notify/fsnotify.c
-> @@ -203,6 +203,18 @@ static inline bool fsnotify_object_watched(struct in=
-ode *inode, __u32 mnt_mask,
->         return mask & marks_mask & ALL_FSNOTIFY_EVENTS;
->  }
->
-> +#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
-> +bool fsnotify_file_object_watched(struct file *file, __u32 mask)
-> +{
-> +       struct inode *inode =3D file_inode(file);
-> +       __u32 mnt_mask =3D real_mount(file->f_path.mnt)->mnt_fsnotify_mas=
-k;
-> +
-> +       return fsnotify_object_watched(inode, mnt_mask, mask);
-> +}
-> +EXPORT_SYMBOL_GPL(fsnotify_file_object_watched);
-> +#endif
-> +
 
-FYI, I was going to use this helper to set the FMODE_ flags, but
-I noticed that it is missing the check for parent watching pre content
-events.
+On Wed, 13 Nov 2024 09:45:35 +0100, Christoph Hellwig wrote:
+> While block drivers do the validation as part of committing them to the
+> queue, users that use the limit outside of a block device context have
+> to validate the limits and fill in the calculated values as well.
+> 
+> So far btrfs is the only user of queue limits without a block device,
+> and it has gotten away with that more or less by accident.  But with
+> commit 559218d43ec9 ("block: pre-calculate max_zone_append_sectors")
+> this became fatal for setups that have small max zone append size,
+> as it won't be limited now.
+> 
+> [...]
 
-The other user of fsnotify_object_watched(), __fsnotify_parent()
-explicitly checks the fsnotify_inode_watches_children() mask.
+Applied, thanks!
 
-I will need to add this.
+[1/2] block: export blk_validate_limits
+      commit: 470d2bc3a0bc19a849cc7478c02d3f5ecaa1233e
+[2/2] btrfs: validate queue limits
+      commit: e559ee022658c70bdc07c4846bf279f5a5abc494
 
-Thanks,
-Amir.
+Best regards,
+-- 
+Jens Axboe
+
+
+
 
