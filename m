@@ -1,235 +1,204 @@
-Return-Path: <linux-btrfs+bounces-9603-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9604-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BDC9C791B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 17:43:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4F39C7937
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 17:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538B6285A04
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 16:43:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 693881F23476
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 16:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44351DEFC1;
-	Wed, 13 Nov 2024 16:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB7516EB5D;
+	Wed, 13 Nov 2024 16:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWrkEfra"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Hpc2xgPU";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="T+Z78Y2G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5E71632E5
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 16:43:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731516200; cv=none; b=JgobgxLg68P7n6voDxQBewd5gE6bcBJRvC5UrX6lBaDlvvPEQ1AiPdd1ARxV4/7p448/+xAWuXHuR5ieNhnfNZd2fzwPF6zerF+jXiWQGhHxdsU3MBzZD8wrfYZxasrlQleCQsimcXhDtnDslQ8TYXKQVVtikA2fsPKck91Gn7Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731516200; c=relaxed/simple;
-	bh=qlPT4vQugIDHW+krYG6icsaEOUB+kdIUGry0T4gbRxY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t++AyNxjiB766eKfzzDGXlXbO6h1jELfBY5AOXo0gpj1Zf9xO6JAgUEK5DbIaQnT7mhFnRmfelM84PruAiZl3tX3tuYJjjs3XSNRP85YyBC+1sXj0avGltlSGYLeKsmlAdU8F8nLsn4qJrTobCWWm0aM9+gLtiiJhxJ+QNRUup4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWrkEfra; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A94C4CECF
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 16:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731516199;
-	bh=qlPT4vQugIDHW+krYG6icsaEOUB+kdIUGry0T4gbRxY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dWrkEfratZl++7B9cdS2d8uRlOVZ1zDw4evfQ3ZWnvuYtO1PoTYIxXbRZIRzhvt+m
-	 DIxNMnSy7LoNdb3ldDbu3dZWQkI8ri3hwTTZ94kP1+Lr7R8XdrXSq0zQp//pIvnBU9
-	 0HyBubcIrFkhapvacaT0Oz740qmJq3rVir3BWQo+VH89Vg5Lat8Y3eeDD9qOq6+glX
-	 6amkGpKxFyd8Y1Q380MBbjZVdeLUafX8YukZnGhClb554wCM+n0XZwr5teCwhTr7uM
-	 IbIGNo/S0/z04h7/dqCmrD3TeRyZGcdhJT6Z5oD0/gnHKGg/QOS5Usvn9T+Kc41BAf
-	 Ca18NagHVwqOw==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5cf745608c8so230004a12.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 08:43:19 -0800 (PST)
-X-Gm-Message-State: AOJu0YwLJ3q/l2SDqIE3qWuPzrF+aJGzAt3hnLrmJCdrFZVy6GHX7hSg
-	TPgQx6yXVoOmXMbjhMx5jEOnSxCPA+MCPT+V2fDg04aDEo+NxAMmYAXurEmQZCgRrU+E0DRKWo2
-	2bNz41O4BXEXrmE0GWmbMGygJd9o=
-X-Google-Smtp-Source: AGHT+IGjenxDDCsX0mSUSk93lAJbWegQtAkJ5lkF02W/7dwOJMwmSzyjQd/uK+fx1stUx6g48mLUXAc2gRIuZDAyksE=
-X-Received: by 2002:a17:906:6a1c:b0:a99:6791:5449 with SMTP id
- a640c23a62f3a-a9ef0019165mr2143371866b.52.1731516197847; Wed, 13 Nov 2024
- 08:43:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1DC7E111
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 16:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731516398; cv=fail; b=Uf/Z0LRjhraH3FXGKYWWGXgKZnFCSk5LD/KsHAkmR0hXjrDP52BYHFc1ubmhQnZ0pl/SSAUFZtiyDQEvL2rNvXuSoRtckIwjUd6/9sy6LGsHV05Uw9p3D0AgUsUIMaqaCz4IKlrMux4qcBYOj5GaM6B3uPAwX1UtlCrTVuLLzs8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731516398; c=relaxed/simple;
+	bh=qemtCHi9poXNpTBzg0eHvfNt2n3ddmdzLrDDrV8QmOw=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RBUZFzu6juBit05FZ+CEDLp8qFcPU0gNOh6zMmIzMkbsM1aV8pP8jF9p8mChg1/vkdGuPS0z285CZHK+Gdzk59rMJEqxe2GqyMl1wgdLp4kONrASke5gZ2vAchmK0X9v1CInzDPx8TcqxCDoAJWLyEeiaezdnNivo+KiOiX0tIA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Hpc2xgPU; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=T+Z78Y2G; arc=fail smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1731516396; x=1763052396;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=qemtCHi9poXNpTBzg0eHvfNt2n3ddmdzLrDDrV8QmOw=;
+  b=Hpc2xgPUURL+4FtpLhLHj068AByd3HLrRwx8QyZgSd4malzth0dojq6y
+   6gejrhlbSiLiiBQgLbt45ykT99zvjUk1qj2kaejJ15JbY+F2biHlZAnz3
+   xwwgsOnejHlhMzXEAsmJHmlMWjy4LGE4WtCz5Yic0FGNCD5S5gyj1vAjI
+   jxzDkBVnaZ0w3jt/1cGBjAUMPF1x0RWWrK/LlPMg8oZfVT9cT4oY73azy
+   zxtltEM7VLEqjpYB9wPjcPrLvukT9xsT8/peFgPGxZyddcxlAQTNGQzjS
+   +ZcygjZMJfeUeNb0rKXCkq+MOGU8CaHINbeqpYwZrkRpakGfah//2fzUj
+   Q==;
+X-CSE-ConnectionGUID: DE2iotwKQKKa3Kj8nLcbhw==
+X-CSE-MsgGUID: SbmIKcIpRN+6rtilY1qR1g==
+X-IronPort-AV: E=Sophos;i="6.12,151,1728921600"; 
+   d="scan'208";a="32468746"
+Received: from mail-eastus2azlp17011030.outbound.protection.outlook.com (HELO BN8PR05CU002.outbound.protection.outlook.com) ([40.93.12.30])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2024 00:46:33 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rgOfzbodkRrq5gmSzAK1Bnu7Vys3pCJplGK6xwUkPa9veD0i1indfhqmzFcj5UZehQ/3OTsMw+pV1mY9HpQ4nq5yIK2qVzKioR5pArAr27FjiH7/mO3YIg1KK84nGnpH9dvpZLfzTeDgSDLN6JBzgYcEP8HUtpFJZbFkslCPF8qQbTTkw28cjJ8EvluA0OhDHJvs7OUTI0M1zquoSauPIvfQha3CBh7bxuiBg7fDSLTAlN9pNEg8fn81S7RF9rvG7WZrya3mJuMN/7tcKWqKUkSKojoFvq9eUa4taocWN8t1sQp0yneXdrD3X9odGqp2Gefn4rKziKo8mlmz4wvWaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qemtCHi9poXNpTBzg0eHvfNt2n3ddmdzLrDDrV8QmOw=;
+ b=EODXScpNXAzN3K3+VYYn0eQwAy8hBcmUzrFVrGsoQ7YxGexWpsVorFZGwaX3DUfErETW2EojMOfILXiLPdX6zEa+F/TVOxWoZW01HNnQPFiLOcOu5o1htAy3uo0NbpDh2KVz5AKewAxrgDEaW6FYemTzLazUkb7mJRxi2/T61g6S9pXAlX3m6akSBxT3UnZRfr/R9C7tLUdIj8kq9C/5gcwwkv3Zhu+/yrzl6jnt6fUI8HTU3iAODxInfjrY2GqpZ8eRoESHk12sqNRpMU9nMSpT5n5YF0oApXcyBNNV96y4LOtB5HL678eydfmMLvENC/xewNR211wJ94RM53KVJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qemtCHi9poXNpTBzg0eHvfNt2n3ddmdzLrDDrV8QmOw=;
+ b=T+Z78Y2GWZXCROWsBnortsiW3k7PhpEQrDoXewtPAVARDdV5BWXCXxWoUihxGTbbSvCpIdWk1TWB41oqtSc0RsZVkZ6Ly76mmwGuwyZk1vsRCsLzILqUait1eC68h3ZkUUecgMr7Xm/Z5cUXgHBOMYbXvSagIXnG+hp4U9l1ImQ=
+Received: from SA0PR04MB7418.namprd04.prod.outlook.com (2603:10b6:806:e7::18)
+ by IA3PR04MB9331.namprd04.prod.outlook.com (2603:10b6:208:508::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.17; Wed, 13 Nov
+ 2024 16:46:31 +0000
+Received: from SA0PR04MB7418.namprd04.prod.outlook.com
+ ([fe80::17f4:5aba:f655:afe9]) by SA0PR04MB7418.namprd04.prod.outlook.com
+ ([fe80::17f4:5aba:f655:afe9%5]) with mapi id 15.20.8158.013; Wed, 13 Nov 2024
+ 16:46:31 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Josef Bacik <josef@toxicpanda.com>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>, "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH] btrfs: fix improper generation check in snapshot delete
+Thread-Topic: [PATCH] btrfs: fix improper generation check in snapshot delete
+Thread-Index: AQHbNemWi8GBHdXSekKm8Xo/bNLdXrK1a1uA
+Date: Wed, 13 Nov 2024 16:46:31 +0000
+Message-ID: <f8b5263b-309b-4290-8b69-1f86b8fb1578@wdc.com>
+References:
+ <b1b8f27cad83060a4157af8f7514681a85956549.1731515508.git.josef@toxicpanda.com>
+In-Reply-To:
+ <b1b8f27cad83060a4157af8f7514681a85956549.1731515508.git.josef@toxicpanda.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA0PR04MB7418:EE_|IA3PR04MB9331:EE_
+x-ms-office365-filtering-correlation-id: 04fc00e9-a478-434c-18f2-08dd0402ba42
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?ci9XbnhqOFRDN0VWeEYvUXRWTURBODdJVnZOcTBVZGNwUmlRMjRRUGJkV1A1?=
+ =?utf-8?B?VE9QclhPQ0F5UTBJNURMa24wZmlFc1AyNVN2RlZqMFBMWXpSMkJrcXlZYXBv?=
+ =?utf-8?B?S1hML0s5dHdsSFQ0elkxT0VDbUIrSkR2cHRFanZLMjRqWWhsQlN1MldDcDA4?=
+ =?utf-8?B?TXUvaW1DSXZzME1VYmNlVm00M2FkR0xiR21uRFAyb1VsUlpQbjRXcjZhQW94?=
+ =?utf-8?B?dG9QS29mTDEwQW1sQjFUQjArbXQ3dEl0Z28vQUNQWmN6d3JRMEZyOVdSRGp2?=
+ =?utf-8?B?N3dyRW5ObXp2dWZBMVcrNjh4THpNWmY0ZnpFSy9OSlBpY2VnWWRIbnRZZVZo?=
+ =?utf-8?B?QjFOaGhjRW1YZVZhTkQzK2FsM1BScXBudVV4ekxDbW1BWlo0Mlp6KzRIaEV3?=
+ =?utf-8?B?M1hRZ1F3My94aWFiRkpBY0RwMFBIVlBFTkVJc2xQVXBINVJPakU5Ykp3TElh?=
+ =?utf-8?B?bXJpWUEyN3lFR09MZTZOQjAvY1ZCaDNaa2xIT3o0NzVybFY2OFEvWkowN3h5?=
+ =?utf-8?B?R1lUeG5Jd0dhMmlVR0hDQi9NMzFLeDZHdjJSTjg3eW1VU2xoYjNSVzdSN0Iv?=
+ =?utf-8?B?MkQyTFh0VVI5ald5UDMvbS9palhmOWJ0eWhBaEUrNzAyTWNjcWg1aXhUQVlW?=
+ =?utf-8?B?eUVsbFVWU21ITTFrTUlLcWxzSHNrVnFMOWM0ZDAySFFibXpiS0tPQmlpUUpS?=
+ =?utf-8?B?NEM1M3FqN2RVSy9zTENSSnFMQUoxVUNicStKeFBab1M5SUxNSzlvVDh5bXlw?=
+ =?utf-8?B?UmpQc3FNTGFNOWpxNGxSVzJGY3dOd1diUEg4Sk8yNWVGWm5FMkk4aGZmTUp4?=
+ =?utf-8?B?d2lYYkp4S083ZStTQzBYYzFBSTk1b3ZIN1NzQitQSHJJaTA1VVdmYk5yMzVy?=
+ =?utf-8?B?SDNQZzlDSWFBN3dUbkNtblpuK2JsNlpyS2p3Nk5MdW9RNjQ4QStGV1plS2RW?=
+ =?utf-8?B?Qm5QZkJ3VGNsVmNTbzM2dklSRlB6QzMxY1lUMnRCdjgvNXRRL0szZ0pqK2Vx?=
+ =?utf-8?B?cVhISFhVN3BZWTJBbDNjbU9kRDlzVXA4TUNaL0xvSWZKSEhNQU5BQWlJMjFH?=
+ =?utf-8?B?SHoxMDY3ZlM0eFpxT0Q5Q3FtOWZJWGovY1VWYkIrRmh4a0ZFZkJPZWNReUQz?=
+ =?utf-8?B?TmFLWmpLN2thUzd3ZUk4T3ZVRVhqMC85djhZWU9OTDRPNVVqUCs5YVgzbjBl?=
+ =?utf-8?B?SWpaU0VyZzgwZXpQSE52NGRIbC92bHUwNWtLRHlnRGw2ZllrQ3A4UzF6d1Jm?=
+ =?utf-8?B?a1FwNW83MFhzSlo4MjFpMUpWVVpteFJkQmdnOVA0NUtiOHcrc1ZhbWkyMXd4?=
+ =?utf-8?B?UGZuVk03V1YzVy9nczYzWSsxdjZzc3pvWldzL0VqeHZsMU5XeGtIQXl6a1ll?=
+ =?utf-8?B?eW5uQjJnTnROaGV5djdQU2tGcGVZY1NCUGhBWUtjdGszQWZ4ckw3UHlwOFpX?=
+ =?utf-8?B?Q1k1a0VzOWl6Zmdmb3pvSENUY0ZNUnRQZVZpYzdSUDNYQ3pyZnNtcTg0eWZ1?=
+ =?utf-8?B?RkRnc3E3TFplbnFwTTBmNmwvWmtGV3R0a2JZcURNNmRVajR5bVVUSHZUbldy?=
+ =?utf-8?B?VGtkbWRYMDVlUjJhVG96R252djYxWDJHeU5jSTgyaC8xaGVVSlN0ZzR3aXg0?=
+ =?utf-8?B?cVBMVStOU3dDUHlERmxRdHQxbWRRK2I5SGdnMVB6QUl6cnlEOFRTV3dKOFla?=
+ =?utf-8?B?TEVLWmlUOWtUYmFhdEZFazdBTENhQkFlZlA5TUVHRFpNMWZSYlR6TmVDcTM3?=
+ =?utf-8?B?eUI1VFJGL3hwT3N2cHd1TWNMWVZwQWgvZktLa3ZiTk83N3QvU3AzWkZ4YXM5?=
+ =?utf-8?Q?KQkaYU7Wv4ApcCwFGgeF9ksp53IH3EtIIW+S0=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR04MB7418.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?K2FDMVZNYXg3VXdQK0xEVnhiVDIvdDh3S1gyUC96M291V3NmT0hIN005M21z?=
+ =?utf-8?B?RWM4K1RUeGtzL2hLenZIZFFIL3IzcXZXV0QvN3ZJbTBGaGtWejhhekNZVUI3?=
+ =?utf-8?B?akxSNUk3dVR0ZGNyR0lvRmxCL2UrUUluSWx4N3M3am40ZE9wemFhRW5saHN6?=
+ =?utf-8?B?NjNyck85T2lIK2ZremIrbW9seWVtWXc0RzZlVjNnUFB3SFhncnJPNER0WkZH?=
+ =?utf-8?B?YTV6eGowVGVMYTZTT280NHFJMDZTR3AxNGlHTS81Y0JmMG1FVVArYVJJSGYx?=
+ =?utf-8?B?L01ISzZYRCtweVlMd2pwdksxbW5yK1V6WTVJZlVRV0g1a0U5L1hTN2dZdFM0?=
+ =?utf-8?B?SmJDL09rcFNsT0IyRjFoZHo2Sjk4bFJMMng5OE5RcUpieUd3OEw4Mnd2SVA4?=
+ =?utf-8?B?T1NuajVlVzdONkdOTzRzWHF6L2NDUW93bGZVOHNiTTRWWFArcVk1a05uZ0tp?=
+ =?utf-8?B?R295VU1zZzJ5TVV2dzY1WW5YREJ3c3E5NUdCY2FiWG9lY29nTkRnOFA4L2F1?=
+ =?utf-8?B?d0wxSWY0NUQrQ2tDNmErWUduRkJtK1dIL2trRnU4cUxWdjVwVWE5QlAraXUr?=
+ =?utf-8?B?eHlmZFlCK2tEOUE0WDltMDhsRi9XTStYSzRDVm5sYlNUWnhtTVY0cFkzQm8v?=
+ =?utf-8?B?cVhPMEtsNlJVNENUTTh2TzlTZk5QSEkwdWNBeUFiUXliMk9Bc0Q5Nk1RcG5u?=
+ =?utf-8?B?L0FDRjZaUnNDNWozOVU2b2dVK2Zvd1lTcFhkcjlXcExtN3Q1ZElBRzhiOWIy?=
+ =?utf-8?B?T1FuWGhtcUd6TW9QM3JoK3ZNZE1qdzNpWmZjZlB2bzR3eHBLMkxoVVBJQVp4?=
+ =?utf-8?B?Q3NwQmk1VlIvMEZ4OEhsYWt1WGRLZ2xWT2hodW1KTGlVbW5FU0psN0NkdmZC?=
+ =?utf-8?B?UGR0R0Y0MU5lU1R1cGdoNFhxOFBtajRqZi9wV0NBS1VMamJXVC9CWUhYVXJV?=
+ =?utf-8?B?YndjVEpQNXc4RUVjNnpveEpCVnpWWmc2RU9rWXQ5dTVtOFc0ZUdGNFFsR1JR?=
+ =?utf-8?B?V0p5Z0tYeTB2NmlnWHEyOWw5YUxJbUFBZ29nTHE3WUl0ZHlJN3A2aWhicWMv?=
+ =?utf-8?B?MXFsdWlQeGtUbmR4a2padHZjS2xaS2RwTTdrYnFvU2xvSW1KYi9JT21qZUF6?=
+ =?utf-8?B?KzVxTTA1WTFnYXdDNFVmL0NCZno4Rnh3eUNNM3FscjJuZlBNQ0w5aFVPMDRu?=
+ =?utf-8?B?cWFZeno3QUpvTVAzTnRNTEJYWFBleHlkQi9wUVcvc2UxUm0ydFhVRDdnTFpl?=
+ =?utf-8?B?cHNQa2NZaUZEUFVQcVZQQ2YvaXBmRGxuekVWei9hdWxYQ0ZMZTRoR211RnpJ?=
+ =?utf-8?B?N1VYRDNjUUNzK3RSbWJnZWZwT0RzVlQyNkE1USt0SGtrRjhJTUNQamJXZndi?=
+ =?utf-8?B?dUlld09xN3lneTB3ckNNd2w2OUVEaTUvQ0VxaVVwV3FVRU1uUkJXbUIrR1la?=
+ =?utf-8?B?RTRFc1JpQnBJVkRyQisvcENIY2VodC9wRW04OXZqTWd4MHJjaCtOeE1YWnVZ?=
+ =?utf-8?B?enpYWTNBSGZEOWZOcGduWUlDeEVEYmtDMWhyTjg3eDdZVy9RYTZKWnd4a1N3?=
+ =?utf-8?B?Y05xNzhxOVZhS21rOUVYZzZ3dy95ZmF6YlcvaGhsTHFTcUUxM3ZEc2J0d2Za?=
+ =?utf-8?B?RXFvRkZVeVRvRHdKUlZKeXJtTHk5VVE4bFQyMGcyM1dSdGJLZ0p0M3FpamNW?=
+ =?utf-8?B?R2VvM21Sck5vanBqczNLRkZtektoN2tKdUxtWkYxMnd2Si90TWRoOEQ5ZW5Y?=
+ =?utf-8?B?VlV6VG1mNlRFTVdaK212SnNhcGt6Rmo4OFN2VEVRWEVmdVU2Y3U4emVXdzV6?=
+ =?utf-8?B?eHF1UTc5Y0Q0bExkMkNLa2F0K3FNbld2OFJJVUtFbGordTBDaWQzTklWU1di?=
+ =?utf-8?B?NG5DZWdjZE5QcVJQUmVWemYvVTF4ckVUVVZsemNQSk04NlpIRC8rbUNvc2tu?=
+ =?utf-8?B?RzFBSnFxRlI5MVhncExIQm15QkI1QlFCVGRhbTFIMFpxclJ2NlE1WnNzbWxw?=
+ =?utf-8?B?RFprUk04dE5tQjdlZjNsOTNoSnNKK2hJRm81RFNmRm51Nncza2p6U1ZiWVdM?=
+ =?utf-8?B?T2pwek9Rc2lMUWdCRThxazJwK08ySU9CT1A3cDk3VUNTcGVlYTlISjZGM0Qr?=
+ =?utf-8?B?M1pEVjdSTDlNSDRQYlkwOUdIajc5UzByOGhqUmEyNTNYTnh0Wngwb1NDejJ4?=
+ =?utf-8?B?cUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A601EA1838C6F441ABD1801864335BC1@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b1b8f27cad83060a4157af8f7514681a85956549.1731515508.git.josef@toxicpanda.com>
-In-Reply-To: <b1b8f27cad83060a4157af8f7514681a85956549.1731515508.git.josef@toxicpanda.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 13 Nov 2024 16:42:40 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H71cVf-aetLvCOBQqxE=iRpB=Vsg_LyyPeNqXe2abthgg@mail.gmail.com>
-Message-ID: <CAL3q7H71cVf-aetLvCOBQqxE=iRpB=Vsg_LyyPeNqXe2abthgg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix improper generation check in snapshot delete
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	4WAMtXY2vZPY1iTIXV1QRPdoehhkdPmqdHzqIfNu+bsViUfjre4b8XKoS3S2pg7aOZiGm+UeNc/16OTs7JSMQrnNeI/qEuKuq5PkRYkyczEx5Bss/0Wdmlke2uzYtXLgP4YH/2pM3S23cbpyjQtVyYjfocodGYfSyNK+H1YT1mdEGXyitpUiBif1PrLfKVGtITp3IJ3YoCwvYQyo7WrlXrBG0678mvWDbpdpkCBvfcVF4e3khVB9HP4rAWXH/gBxdlhuiZsJB/b+WlkJr7d1GUwngylFixI3VoP4lYRgApocPnaOq7IHO6qXb86dgjLbrERlly2NAKC268wk81xSFMAC86DMCjm5rKlqgvwhVTLGBR25INFHV6g81dPeel+Ko3UPSj0YQQqVCP0G3m6yqIgT/6Z7D+hwfHXFRRYgYRogKz3KyhFx8e8cEX9gfStZ4X82fG220LQdhu2oWEk3jiqaB9xVw4dxwZXT9cGsKBSFZnQ4e06PmIZtn5XLaY0OJDAkDedUOz3Jt5T57nrFj3b6MafYarTGcvinx+D3ULAQv3DX0SIswpLEW+QmLkvsoSiXUzH2ZLKPFrSS8EMVFjx+rGwPY3Mqrz2D/7ZqN7OscEB8aOWXKl9+IedKuOgV
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR04MB7418.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04fc00e9-a478-434c-18f2-08dd0402ba42
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2024 16:46:31.7392
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0JhxGqDpSeWc0iUnXcQfeJo+WXNahW69pHBaL0db1/C6TmxxxmMhVXOsC84Rxuh1VKPkJnnVo9VQ9r4CgjM59TAusch+l9nOwPlEU83N7NA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR04MB9331
 
-On Wed, Nov 13, 2024 at 4:32=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> We have been using the following check
->
-> if (generation <=3D root->root_key.offset)
->
-> to make decisions about whether or not to visit a node during snapshot
-> delete.  This is because for normal subvolumes this is set to 0, and for
-> snapshots it's set to the creation generation.  The idea being that if
-> the generation of the node is less than or equal to our creation
-> generation then we don't need to visit that node, because it doesn't
-> belong to us, we can simply drop our reference and move on.
->
-> However reloc roots don't have their generation stored in
-> root->root_key.offset, instead that is the objectid of their
-> corresponding fs root.  This means we can incorrectly not walk into
-> nodes that need to be dropped when deleting a reloc root.
->
-> There are a variety of consequences to making the wrong choice in two
-> distinct areas.
->
-> visit_node_for_delete()
->
-> 1. False positive.  We think we are newer than the block when we really
->    aren't.  We don't visit the node and drop our reference to the node
->    and carry on.  This would result in leaked space.
-> 2. False negative.  We do decide to walk down into a block that we
->    should have just dropped our reference to.  However this means that
->    the child node will have refs > 1, so we will switch to
->    UPDATE_BACKREF, and then the subsequent walk_down_proc will notice
->    that btrfs_header_owner(node) !=3D root->root_key.objectid and it'll
->    break out of the loop, and then walk_up_proc will drop our reference,
->    so this appears to be ok.
->
-> do_walk_down()
->
-> 1. False positive.  We are in UPDATE_BACKREF and incorrectly decide that
->    we are done and don't need to update the backref for our lower nodes.
->    This is another case that simply won't happen with relocation, as we
->    only have to do UPDATE_BACKREF if the node below us was shared and
->    didn't have FULL_BACKREF set, and since we don't own that node
->    because we're a reloc root we actually won't end up in this case.
-> 2. False negative.  Again this is tricky because as described above, we
->    simply wouldn't be here from relocation, because we don't own any of
->    the nodes because we never set btrfs_header_owner() to the reloc root
->    objectid, and we always use FULL_BACKREF, we never actually need to
->    set FULL_BACKREF on any children.
->
-> Having spent a lot of time stressing relocation/snapshot delete recently
-> I've not seen this pop in practice.  But this is objectively incorrect,
-> so fix this to get the correct starting generation based on the root
-> we're dropping to keep me from thinking there's a problem here.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/extent-tree.c |  6 +++---
->  fs/btrfs/root-tree.c   | 20 ++++++++++++++++++++
->  fs/btrfs/root-tree.h   |  1 +
->  3 files changed, 24 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 412e318e4a22..43a771f7bd7a 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -5285,7 +5285,7 @@ static bool visit_node_for_delete(struct btrfs_root=
- *root, struct walk_control *
->          * reference to it.
->          */
->         generation =3D btrfs_node_ptr_generation(eb, slot);
-> -       if (!wc->update_ref || generation <=3D root->root_key.offset)
-> +       if (!wc->update_ref || generation <=3D btrfs_root_origin_generati=
-on(root))
->                 return false;
->
->         /*
-> @@ -5340,7 +5340,7 @@ static noinline void reada_walk_down(struct btrfs_t=
-rans_handle *trans,
->                         goto reada;
->
->                 if (wc->stage =3D=3D UPDATE_BACKREF &&
-> -                   generation <=3D root->root_key.offset)
-> +                   generation <=3D btrfs_root_origin_generation(root))
->                         continue;
->
->                 /* We don't lock the tree block, it's OK to be racy here =
-*/
-> @@ -5683,7 +5683,7 @@ static noinline int do_walk_down(struct btrfs_trans=
-_handle *trans,
->          * for the subtree
->          */
->         if (wc->stage =3D=3D UPDATE_BACKREF &&
-> -           generation <=3D root->root_key.offset) {
-> +           generation <=3D btrfs_root_origin_generation(root)) {
->                 wc->lookup_info =3D 1;
->                 return 1;
->         }
-> diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-> index 33962671a96c..017a155ffd5e 100644
-> --- a/fs/btrfs/root-tree.c
-> +++ b/fs/btrfs/root-tree.c
-> @@ -547,3 +547,23 @@ int btrfs_subvolume_reserve_metadata(struct btrfs_ro=
-ot *root,
->         }
->         return ret;
->  }
-> +
-> +/*
-> + * btrfs_root_start_generation - return the generation this root started=
- with.
-> + * @root - the root we're chcking
-> + *
-> + * Every normal root that is created with root->root_key.offset set to i=
-t's
-> + * originating generation.  If it is a snapshot it is the generation whe=
-n the
-> + * snapshot was created.
-> + *
-> + * However for TREE_RELOC roots root_key.offset is the objectid of the o=
-wning
-> + * tree root.  Thankfully we copy the root item of the owning tree root,=
- which
-> + * has it's last_snapshot set to what we would have root_key.offset set =
-to, so
-> + * return that if we are a TREE_RELOC root.
-> + */
-> +u64 btrfs_root_origin_generation(struct btrfs_root *root)
-
-The root argument can be made const.
-
-> +{
-> +       if (btrfs_root_id(root) =3D=3D BTRFS_TREE_RELOC_OBJECTID)
-> +               return btrfs_root_last_snapshot(&root->root_item);
-> +       return root->root_key.offset;
-
-This is so small and trivial that it could be instead a static inline
-function at fs.h.
-
-Also having this in root-tree.c/h is a bit odd since this is generic
-and actually never used against the root tree but subvolume/snapshot
-and relocation roots.
-So one more reason to make it static inline and place it at fs.h,
-where we have btrfs_root_id() and other generic root related
-functions.
-
-Otherwise it looks fine, thanks.
-
-> +}
-> diff --git a/fs/btrfs/root-tree.h b/fs/btrfs/root-tree.h
-> index 8f5739e732b9..030b74e821e4 100644
-> --- a/fs/btrfs/root-tree.h
-> +++ b/fs/btrfs/root-tree.h
-> @@ -38,5 +38,6 @@ void btrfs_set_root_node(struct btrfs_root_item *item,
->                          struct extent_buffer *node);
->  void btrfs_check_and_init_root_item(struct btrfs_root_item *item);
->  void btrfs_update_root_times(struct btrfs_trans_handle *trans, struct bt=
-rfs_root *root);
-> +u64 btrfs_root_origin_generation(struct btrfs_root *root);
->
->  #endif
-> --
-> 2.43.0
->
->
+T24gMTMuMTEuMjQgMTc6MzIsIEpvc2VmIEJhY2lrIHdyb3RlOg0KPiArICogQHJvb3QgLSB0aGUg
+cm9vdCB3ZSdyZSBjaGNraW5nDQoNCkNoZWNraW5nDQoNCk90aGVyd2lzZSwNClJldmlld2VkLWJ5
+OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRodW1zaGlybkB3ZGMuY29tPg0K
 
