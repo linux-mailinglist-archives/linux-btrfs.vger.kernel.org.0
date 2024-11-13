@@ -1,145 +1,113 @@
-Return-Path: <linux-btrfs+bounces-9599-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9600-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3AE9C77E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 16:55:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827DA9C7941
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 17:50:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 344F61F21072
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 15:55:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A42F6B3DC36
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2024 16:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3909213CA93;
-	Wed, 13 Nov 2024 15:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9ADA7E792;
+	Wed, 13 Nov 2024 16:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="helnGw1z";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vw07JzBJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="helnGw1z";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vw07JzBJ"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="KCtzAYyw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5797083B;
-	Wed, 13 Nov 2024 15:54:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4958E7E0E8
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 16:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731513298; cv=none; b=Wc9a7c2ssw3pkZtodityT7wHV3VMU2xWlkQa26dNJLJKe/cSysuyFEVZV1QIGMD+7opqPLbUT/zRHgQmN3+G0QbH3XBv30Uh18gcBPd3TsRRJEvNwr0CAGD3vd6qNFzpi48XkWD+JAALZIE3YDV+D7B75LXtQKzcpbQaAY3Tz24=
+	t=1731513922; cv=none; b=tUMau45BiAWhiIEmXZc0DklvkYgqJQCbcrDs9uJIPE+OPIgA8JvJ3jt1wr0f8oO4qOUKXGP5lybf0zsnkLuVVgFLpfH42WwHPxUcmZO7Fqm58mJ6MZrZyKHkny++RzDQkrFop1NRDPioEORCN60SRw8MB9DKRDH2guq8BfCibyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731513298; c=relaxed/simple;
-	bh=FeA4bpgiNidNL2opV8gP3BBCHF0vODranb5dontX6+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XcVXsUQZ9qzNd0WNiT6xr1mCsAP6Zve31MTpjTT8R2g7mK24If7V2YvcpQhrS5hhZKD/MBGEBoBLazEFr4qwozYFmoNIIHwc42Dyy93bAGy0xNjxwzgKwVK3Uvny1E9dSpuuaGFnBEfNyRvlGgo7iI9F8+61QGBUEv1QD0BzCsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=helnGw1z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vw07JzBJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=helnGw1z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vw07JzBJ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C0CD421166;
-	Wed, 13 Nov 2024 15:54:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731513294;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uUuf4uNap9rncTSP9UYbe3/HtwXFGkUWLN9x+qDvWY8=;
-	b=helnGw1zmqop/3BeWJzx15qvaVwjv9XUtWObsZPNLMHLjOFL1vHkm1VgZbTavkN/efibla
-	M23rsRgERwxgWWm7Q4DF6QQ3BDgeLPQt7QAcHHJOPOowy18U8ZC30DiTw7Afn5OtMOrOvc
-	sRTMcSnS9YuxA0DFcykxwLnLYd8QWag=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731513294;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uUuf4uNap9rncTSP9UYbe3/HtwXFGkUWLN9x+qDvWY8=;
-	b=vw07JzBJnECEu6LJJQo6/NYeTo9IomdrtKlZcxfJFWY1MpTIJ/MHt8d2/2bujebEb7uMtV
-	DiAVKlsm1F9wymDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731513294;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uUuf4uNap9rncTSP9UYbe3/HtwXFGkUWLN9x+qDvWY8=;
-	b=helnGw1zmqop/3BeWJzx15qvaVwjv9XUtWObsZPNLMHLjOFL1vHkm1VgZbTavkN/efibla
-	M23rsRgERwxgWWm7Q4DF6QQ3BDgeLPQt7QAcHHJOPOowy18U8ZC30DiTw7Afn5OtMOrOvc
-	sRTMcSnS9YuxA0DFcykxwLnLYd8QWag=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731513294;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uUuf4uNap9rncTSP9UYbe3/HtwXFGkUWLN9x+qDvWY8=;
-	b=vw07JzBJnECEu6LJJQo6/NYeTo9IomdrtKlZcxfJFWY1MpTIJ/MHt8d2/2bujebEb7uMtV
-	DiAVKlsm1F9wymDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EF5013A6E;
-	Wed, 13 Nov 2024 15:54:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1G1FJs7LNGfLJgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 13 Nov 2024 15:54:54 +0000
-Date: Wed, 13 Nov 2024 16:54:49 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Yi Zhang <yi.zhang@redhat.com>, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org
-Subject: Re: validate queue limits in btrfs
-Message-ID: <20241113155449.GQ31418@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20241113084541.34315-1-hch@lst.de>
+	s=arc-20240116; t=1731513922; c=relaxed/simple;
+	bh=Na/grnMDZNedpgQeysiBdj5+/PYqTh2BndPQC5ZI/ZU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xxxa3cwSSGE23NlOYFHQiWiSyQjPlPCnj83oG78RAe0Z1VAc24Oy+i1ROGv6RfZjjFQ9Z1xHTx+41qmf0YDrYIQjuTFLmrZ40M+iB0TM/4O9zGdSkMlH2J9zMWbB3vzDidihpJM0Zt0GBXzR+owSNj9HUCJaq6JwTqnAmIgBumw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=KCtzAYyw; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6ce3fc4e58bso40532356d6.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2024 08:05:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731513919; x=1732118719; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vcFDogal5NryDPa48hgqdxJVj4yDxQkvbCrhPZCGTxk=;
+        b=KCtzAYyw9Ve7WG6Rr23mWNWxNHubNRn5djB2eA3xLnAtzmAquL4is+s+Sa9E4FEjyh
+         JnPYRYY7cpZ2XCU+/f+Xc756/cYT+x0ndtUfcXbXnemadCfX8eh9256INSKwSo1K+2VZ
+         rXZoGUm5A7oXxf4Qsah61ZVaGRCvh/osMKcCUALnbrKios0Ln9vB8pSoekqKdHxUiDiA
+         KN6T+szkn7G4WnldFUmJWG+DpKhJ1DRvdawB+Wi5V7pvWmKR8F3XnemDLgYsIB384uxH
+         F5d9rNFXcJB/8DikCy7iicQvK/whMOqETMHtIc9IFrdR3YZ4SKVY/QixSocDtlRpiVU3
+         NGYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731513919; x=1732118719;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vcFDogal5NryDPa48hgqdxJVj4yDxQkvbCrhPZCGTxk=;
+        b=BOdR+i8gBxHcWT1o9+L28ymU1PTucIxp4kSpJzhFbfz+1a9OKBKeJUInieyVwUvv5p
+         0GeuU2bFtczkDb7PADYPMlrGboXW4285ribyozLv+coKAnQ8Xw1tuSC7Xsi1fmNuT+Vr
+         QnyHivIHC+PE7sTu+qb11DnhaIwzzwiYP7ucJ5r/1eHEKkOmSgovSD0J+iOsFTH+/G1i
+         Qsg0MSim1+KZKAf91OXbfJB1RABUoFF/JEJ4Ik7Gu+xkiv+q5+YRtnJdBoN0ugRSj39s
+         XuBToP6F3aVtK4a+z6o+FxUu50IDjAWdoKYKNagF4El7jDBAOkB7XfHxFmthoFUujHDh
+         AOgg==
+X-Gm-Message-State: AOJu0YwOGsv/iWDwdDs7UopkPv8DQhM/xCQKhsi/Vre4mjewQ9PnI7Pn
+	NXdpNUcLwUB0VAUCZc22iOKRdzKi3MQgmtSEZltVKSapI8iNzmCzU8gM4/Ct0FQq7rlRvDY9yzD
+	Z
+X-Google-Smtp-Source: AGHT+IGpr3Pe7mhvy60jSiQoQxLE3e5pAsnbCLZr3nlAa4MV8tpy17afRGHY6BZ3hQO21VrAWk7p3A==
+X-Received: by 2002:a05:6214:570f:b0:6d1:7438:7b94 with SMTP id 6a1803df08f44-6d3dd0813b5mr41710106d6.47.1731513918626;
+        Wed, 13 Nov 2024 08:05:18 -0800 (PST)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3961ecc7asm85440196d6.43.2024.11.13.08.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2024 08:05:17 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Cc: stable@vger.kernel.org
+Subject: [PATCH] btrfs: fix incorrect comparison for delayed refs
+Date: Wed, 13 Nov 2024 11:05:13 -0500
+Message-ID: <fc61fb63e534111f5837c204ec341c876637af69.1731513908.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241113084541.34315-1-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 13, 2024 at 09:45:34AM +0100, Christoph Hellwig wrote:
-> Hi Jens, hi btrfs maintainers,
-> 
-> a recent patch from me exposed the fact that btrfs did call the helper
-> to validate the queue limits, which is also used to fill in precalculated
-> values.  This series fixes that and is needed to fix a blktests regression
-> in the current block tree.   I'd thus recommend to merge it through the
-> block tree ASAP.
+When I reworked delayed ref comparison in cf4f04325b2b ("btrfs: move
+->parent and ->ref_root into btrfs_delayed_ref_node"), I made a mistake
+and returned -1 for the case where ref1->ref_root was > than
+ref2->ref_root.  This is a subtle bug that can result in improper
+delayed ref running order, which can result in transaction aborts.
 
-Ok, ack for the btrfs patch, thanks.
+cc: stable@vger.kernel.org
+Fixes: cf4f04325b2b ("btrfs: move ->parent and ->ref_root into btrfs_delayed_ref_node")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/delayed-ref.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index 4d2ad5b66928..0d878dbbabba 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -299,7 +299,7 @@ static int comp_refs(struct btrfs_delayed_ref_node *ref1,
+ 		if (ref1->ref_root < ref2->ref_root)
+ 			return -1;
+ 		if (ref1->ref_root > ref2->ref_root)
+-			return -1;
++			return 1;
+ 		if (ref1->type == BTRFS_EXTENT_DATA_REF_KEY)
+ 			ret = comp_data_refs(ref1, ref2);
+ 	}
+-- 
+2.43.0
+
 
