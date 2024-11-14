@@ -1,245 +1,205 @@
-Return-Path: <linux-btrfs+bounces-9635-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9636-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40ABA9C8A15
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 13:36:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C3E9C8AAD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 13:48:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60EA7B31685
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 12:28:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96D731F2469F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 12:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C331F9AB6;
-	Thu, 14 Nov 2024 12:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98AC1FA851;
+	Thu, 14 Nov 2024 12:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MruVZxws"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="azVh2FaG";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="mEU+yvuk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B871F9A9E
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 12:28:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731587294; cv=none; b=BNw90ZlgcbiCD7ygfG2bdgDu9n0D6ljX9+EruI24QazBE8oQOKL+KFcVOT0iQDtmoqwwa8rTWK7+8mc+5LwLiafinlTFIU8ykcHcpQdml0XUNcvIr5lwYj0X1KttZUQ+M8j9gNW4GEE4ZHXSXdvpatgZwEMCA3PyJqN8zKVVKxg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731587294; c=relaxed/simple;
-	bh=mu7O6v1l5iNVmaRUgT5ZAD1rw5R9FbbcdM5sd7cbCc8=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=fVLgfAGBLnUf6hCKW3pn9/Bl4o1uapJerErwcizD5DxzwEBBfReUzeCSYoVCaN7HixgL2iwAg505Th6gpve4LqLa2KKQ2PsSRvL/Gj/Yjf7GnLNAL3lk/2md9XKqJlFtpuPGdwoGvFHz7yta9HqjRfeVY7XDT3LOhItOURXj52E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MruVZxws; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03710C4CECD
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 12:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731587293;
-	bh=mu7O6v1l5iNVmaRUgT5ZAD1rw5R9FbbcdM5sd7cbCc8=;
-	h=From:To:Subject:Date:From;
-	b=MruVZxwsW4Kv4zqnrtAyNCI9RWPvUwvC+wj+lrap6P0pAACAJ/q76VgL+EU7nM/bt
-	 kcOrnW89tNofdiriTUIDOlGJCdSHenzib8Yc3JFXF/BiKKMPL+rflgR7q3wTs9xlgk
-	 HW58yHfbCnIe4zBJz5YRiEwRik9o+FwRSZR1XZzwi9L0maon6Hc4jvXbOmgSBaxtVa
-	 X2GnvLUJ/7i3WFHn6N/rfywZnQLWwz6pjAp8BBp5w1rWtHTm8UxJeO7QD6VbMlMuV3
-	 6rToeEMGPx/JO3yGZz9LsCPMtytEml2ND6Kebd5DEUqun7mYFDC3EKKDsICtM/GYo+
-	 kR4RzaPom+Giw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix deadlock between transaction commits and extent locks
-Date: Thu, 14 Nov 2024 12:28:09 +0000
-Message-Id: <47f1eba1edf0ae59484c3ff1e8e3c4a4269a7444.1731587182.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57C81F8F1A
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 12:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731588487; cv=fail; b=JjVJivlHsWGNM/4zqm/0N+w3Uu6AhDGwzCyC2oZ9rIOFkNj6HBQ65bimjW+W30ngcqfyrWaV8mHWEsgvxdlQi8mNO1pbAWyVHAio+ZIouFXHDj983Exv5cHFhIppTXbWtWSZ0i5hwLnfcA3rWR5ZAdDEGEhry1wLPs8blaGqY3o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731588487; c=relaxed/simple;
+	bh=DVwWsSiLptHka4xm+B2diVIXP8PPYDV0XlmXo2X3Ih4=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=qW0xeZzMcX2ywSepHwJ7sJyXjlCbB8Ei0E6kvZvJSioNaiBkhmZni0aWImgUkMNmmm9A04WasNWqFm75UoAWPXzUqdyZFTama8Mk4v8BfbBPRhDdP+q6HUrbAUBrMtTMMVcyx2ig0E58U22HXpr+xNxqewliFBaHufbgxgkzq/Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=azVh2FaG; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=mEU+yvuk; arc=fail smtp.client-ip=216.71.154.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1731588485; x=1763124485;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=DVwWsSiLptHka4xm+B2diVIXP8PPYDV0XlmXo2X3Ih4=;
+  b=azVh2FaGRH1/mmSK4vdR3VH5by/qOz4+MzV6iITZ5hgySnesLNFZPcVE
+   5+VLWDzYRlSj4JM0K3Km6BLQzixRJkEikFHVXUxPb4WQFwXANa1AF9rrE
+   Ds0nWfFJb5hBfp7cL78JuLyk6eSwcv42maFj7+w34hlzudakDYJtwkS+p
+   E/xtv/gQifVhb2Lf7Qtuu/FRonWo77TInobqtbxW0NB9EqtQwQC7wQYSW
+   js8clx+PhKS09l9irbqLRR5dUtidFrcP8+G2f6pO2yAfW2a1wvlunQbWs
+   wnR0hNpnxUqdcG/2/VArXMLtVIXw+cU+oHw5XMK1sRW9lBlXCaDizKIlO
+   w==;
+X-CSE-ConnectionGUID: vGQE+g+gTT6WF2kaxljPBw==
+X-CSE-MsgGUID: RXfr6QqhSdqnA1vUVOvM8A==
+X-IronPort-AV: E=Sophos;i="6.12,154,1728921600"; 
+   d="scan'208";a="31415789"
+Received: from mail-bn8nam11lp2171.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.171])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2024 20:47:59 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pX2pL35SrkTIK1G5A2721vHQa5KbbHQ0KR4NpxIM3OLvP4GQ5717sFCFOC3uOmfRwsClheg13hGsQIwz8rUcHwGu8+NMXdPStJoX/KYwsMz5Kkmv1pB0sTiHqzg9yw4X6EjDp6l2I+TVaVrzoCLdui+SSl8qLdLja8byxPOTXXYER7iYLe6/ttN0QsazhN48IQKiuTqJLNXurME68XLD6r9WUn2mc/ZKrPcOOvIRZwsINkrmSq82Vse5q8QUyv2XIGSTygC6IP/XX6uL73L3s4IDadj97OEaugsJkVJ7fBWLIpiOKCHNFC+0mavi0/SfKbFKZPB8swrOqGIICtzUMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DVwWsSiLptHka4xm+B2diVIXP8PPYDV0XlmXo2X3Ih4=;
+ b=GWt8g/z9Jc4/VIa6IYyWIMpbO/h4xX5Uhnak5/JvjTDkxmnpGt7RxD4NuSbBWbtrH1kS7dlUCOx5hJ3pbUnPLq+xXklMC9tskPvIEQsRensmetEte/i/iTiy//hCLQF+1N5RTltEWkk16Yf+Mlp479CvuD0fl8n2hjNj9LlOHqXR4YCxaotH5Oht42sU2yYDRYvMtqWuON+3hClHJfHkivoJaGiv/x4inRsUhWme9P/MQVdyV/RHxAa0oIkYcc5hk/R1YIWt4hxN1BV3fnEp1TLdspQ4Jqw25DlZIco/Jlr4UUB3+R2H3hcXFWzUhQjm9ZfPi0KH7n0ny3tx+TGh+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DVwWsSiLptHka4xm+B2diVIXP8PPYDV0XlmXo2X3Ih4=;
+ b=mEU+yvuktcJ4E3n3Pqsh8Uvc+PRVf47CRNHsAK4L679yi8wda5D/u3sq/nxeKjb1COtEdXyHhxhdeGGymZ9Mo0E9cUPFKkUOqKIpvQHXS2W2rLZAb1Gg6GCO+ZPcqWrgNH8y/3r6FN2jbmIDyFeCHo5t662oCyuwzMIH/YTVafY=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by MN2PR04MB6990.namprd04.prod.outlook.com (2603:10b6:208:19f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.17; Thu, 14 Nov
+ 2024 12:47:57 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%4]) with mapi id 15.20.8158.013; Thu, 14 Nov 2024
+ 12:47:57 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: fix deadlock between transaction commits and
+ extent locks
+Thread-Topic: [PATCH] btrfs: fix deadlock between transaction commits and
+ extent locks
+Thread-Index: AQHbNpIIxTbjvW0o1kC4SrMqIfjW9bK2ubYA
+Date: Thu, 14 Nov 2024 12:47:57 +0000
+Message-ID: <81295f44-d0c7-464f-a6d6-d23b757096d2@wdc.com>
+References:
+ <47f1eba1edf0ae59484c3ff1e8e3c4a4269a7444.1731587182.git.fdmanana@suse.com>
+In-Reply-To:
+ <47f1eba1edf0ae59484c3ff1e8e3c4a4269a7444.1731587182.git.fdmanana@suse.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|MN2PR04MB6990:EE_
+x-ms-office365-filtering-correlation-id: ea906876-2666-4009-ad40-08dd04aa9088
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?VEdBZDI3c01aUTExT1pibTg0U0dJYTRTeUZZV3dDL0V6OGpYWVhzYnl1YzQy?=
+ =?utf-8?B?bzJjUGF6cVkzcGk2N2xBZ1gxOVk1bmh5STkyaFh2bFVEQTdBQUZxeVpNajk1?=
+ =?utf-8?B?Slo0VWhQaWY2QklPOG5aVW5OUkhrV2lPQVlmaDFaUlJFNVpDY2hwbzgvMjYx?=
+ =?utf-8?B?aDRvcWdpZ0NYUnQwMDJ1VnVyM29lSGN2bTdVNW1XWXlLakQzdTducUozVGxa?=
+ =?utf-8?B?SHhiZkNJOHZRY1Q1Zk1qMWRVbnpMZEhqbEwwa0R5Umo2M1VIZWR5RjFTMXpi?=
+ =?utf-8?B?Tlo5MjFzbW82Z25KTFlIbVF4U243QU8vc3M3aWlybU5PNm1vNXlaQ21raWFl?=
+ =?utf-8?B?Q29hdTJ0UkNDV3NoK1NsQWdxRENNRU1iZXFoYU00RmpzblJ0c00xdVBObXFE?=
+ =?utf-8?B?bng2VFFNR1E3MUNsMFVKM3FnWGNQcDJrR0t3THVGN2tBalF2NjFjT3BaUFhz?=
+ =?utf-8?B?Ymd1K2NPRzVVTlRuUzNNNkcrYkFZb2VuNkpYYTlWQ1hUTTRFRW55SkR3NDE0?=
+ =?utf-8?B?TGFuYWpoV05UcEpCc3JVQ1hIeHQvaFlBckw0QXNVNFUwK1pscExzbXRYdi8r?=
+ =?utf-8?B?aTNab3RWWlRFVDNEUzk3M1dtOGs4c0kxTnNaT3poT0xtWVBINmFHUytKMzlD?=
+ =?utf-8?B?U0hZUFRyV1lhUzZSZFkrRkpzaGRtVURHbW4rNHpBUG9mMWxkTzBsaHMrNzZW?=
+ =?utf-8?B?dlJaSWJKS3BWU3BPWWNOWXBiZ21tWjU3ZWg3a1V6VUpwa0VBNGx3Q1JoL0ZQ?=
+ =?utf-8?B?cVFUN0l6L0ZsUEVLclUzUmROYWlUd2xNTXVsaHc5ejNlejJJY0J5MTgrdnZU?=
+ =?utf-8?B?eTgySFprdGk2aFNMSHkvNFdsclJ5bmluQVpQYWhaMXpDa2loM0ZwUnNTNWhC?=
+ =?utf-8?B?b05EbUN0eWpEaVRPeXFxR2JNcjRTRHp0WVh3ajZVTEpZQjlYT2lSQXdKRXdK?=
+ =?utf-8?B?YWMxampmSVY1SWlGWDBuVDdaRkltWitWK3FOVUhERW5vVnRFakh0MFJGSXI4?=
+ =?utf-8?B?S3FZQXBpMXZab1ppdHlkVmxXNmtHcDhCR1NKdWhFVUVjbTJtTEVlOWkxc0Zi?=
+ =?utf-8?B?QVBiZXFQc2hWVC8vZTRaMnBXWjVOTXkxWjgwVnJ0V01jbFdXendObjMyWEc3?=
+ =?utf-8?B?YTB5WDlQaS85YUxQYUpadWpzNUcwOExFNjJ1MGh1Z09YbU5DY1B5am5EMmo4?=
+ =?utf-8?B?UTVkN2ZZVzBHVUp2OWZDWnhqbTZqVnVCcFRQT1dIa3hsNnhaTXFUYmJvTGJO?=
+ =?utf-8?B?Z3EyT2orWW5ncGQyUWZqOHpxTmtSSzYrZTh2WWFjMkJGZjY0eUNSMi8vSXpH?=
+ =?utf-8?B?NUN0REQ4VUloQU9PbFNBWDJpeENBK2c1dy9PcytWRXJCWEtPYkx2cUNZUk9U?=
+ =?utf-8?B?bE5OUFQzck93OWJHWFhubzBZWUMzN2Jjd1Uzemh4bXd3akhPTkpxckJvT1Vt?=
+ =?utf-8?B?ZkEwQnlPRUZJRFh0bXdURVdnai9DNUs5RGd5WDg0WmE4UC9rb21PTjdpb0d6?=
+ =?utf-8?B?MGlLdm5CQXFYRHdIUW82cjR5WnRBZHNta1grRi9ZNjBRS3V1R2ZvcmN5U1Bl?=
+ =?utf-8?B?bFo3SGVJY1RhZ3R6bkpEK3R6OWdjbkRuZUs4Q3RpYjdVMXpnTU1LRk9sY1o5?=
+ =?utf-8?B?eEZvSzZrc0ZqbE5tZWcrR3ZubEY4Wkt1QnZ1VXpOMzFFbkRrT3FGcDVhTC9m?=
+ =?utf-8?B?QzlPcHhFSDlFQlFwRGJqWTJDM08xQXZITG9OR0hCOVpnWUI0TUlLNVNTM0xY?=
+ =?utf-8?B?T05aamVJK0xRYTRmMSs0ZE9vVUhuTE5abDU5WmJLaDc2eTk5YzRUc0prajJZ?=
+ =?utf-8?Q?ChOEd5zZrOf0aYa/z+NNgbUOTQU+tnXHFB2uI=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?TzZYa2VzM3lsc3lGaWRUczVKOHBSbUNkbzlRaGJ4eGMxS0NGK1pGTzIrSzkx?=
+ =?utf-8?B?S0VmQmxuUE8rK0lvVGNFYkh0d1hEdmltVzVjNVNBTzZqNm1rN0pVS3A0WEto?=
+ =?utf-8?B?cDNZeldiRG9KNkFaRTVKd0ZvcHpwdWlCLytqWndnRzFpb0QrNjdQN1lKQU1t?=
+ =?utf-8?B?VDNsU0ZlaENPTnNuem81Mmo2bWR1a2swOGpoT212UWZYQnhkSEtLa1pXODU1?=
+ =?utf-8?B?VjFvT3BScEM5K3lwNTZuZTA2MkZWbWtWTFBJdXpFcVp1QzlialRlSjhzanV2?=
+ =?utf-8?B?aWxVdU1ZUXMwazlscXBha1RsT1FUNXFFUnM4SXhQODhsU28yM0ZkSUwzd0ow?=
+ =?utf-8?B?bGJkdnYyWmJGeGxwOHBEbVZ4c0JkRVZqNDd4cXNhUTZXMld2Wi9BZGxIVFlE?=
+ =?utf-8?B?bC9BVzVkR3pnQ1pKb1ROV3lBeXBWSHh1Q1ZubmIyMjNCS0JsYjdjZTFlMzRz?=
+ =?utf-8?B?S2d0bmZpbkZGcDdiVnBiUWM1M1BPNVZlNlBRV3QzaWU4eU52STNBdlhaM2N4?=
+ =?utf-8?B?Z01aM3FadUU2VVVEMll3Z0lIb0tQdFIyZUh2MmJVSzJQTng0VG8rTWJuUmxk?=
+ =?utf-8?B?NHVuYU10ZlB2ajlmZXF0T240QkxYRytkdVlUK0d3ejdNaEI4dU50L0Q5TkRp?=
+ =?utf-8?B?RHRET01ocVVsQlAzMk1IWjVTa2tNUjUzZ3g2Y2ZQbDJKZFhwakIwaGd4K2xR?=
+ =?utf-8?B?dWtCKzBxU1hrMHNTTUV6d0NJMlVBcXBJNjNvMjNSdFVqTG5XNlRSSCtVQWRh?=
+ =?utf-8?B?NEFkcXY2aG9pUUcrVmlieTR2VzZIaUxwUUUzbENETVJCaVRjTkUwWVlJSmp0?=
+ =?utf-8?B?bjZFcU5PM1FiaUtlbjQxK1RrNUhtUVAvOU9MWHZYK3dSUlk4UFU2YXZwdUdH?=
+ =?utf-8?B?SUxCVUZ6UURncWVMRXJ2cVN0OG1LYTh1ejVUcys1NjBjMzBlWnpydlB0cEIz?=
+ =?utf-8?B?VnB5UzJqRlNTNVZGcndqZGZQWktlcGNib3gvQjluTE5FQ1Q5NE9OdFdzSjQx?=
+ =?utf-8?B?V2tzcVFjV3VWbmJ1Z1g4Q0JVenNraXZ1WW9vSkJISW02T2RYQy9yaWEzem5T?=
+ =?utf-8?B?TEp4Wk1zMUdhTXBsU3lNVHVaWmpxSFMyNTYxeXdrRTVyclVKdnMyaUFJNm5m?=
+ =?utf-8?B?MUhWR1hXeGVhNHJ0TVZBODVxY0tZYkJwTXQ0a2xvTUVhQmFwRXZYTzRweGU1?=
+ =?utf-8?B?cEdDOU50eVo2cUs2VnhTRWI1RWp4ZG16RkFjOTY1S05tS00zS1pMUWszazlE?=
+ =?utf-8?B?WVdUcjc4N1puOHVZL3d5QlhGcDJtdVVLWXdJaWI0eG9yckFLNytpOUhXeGJX?=
+ =?utf-8?B?d2FKdUU2T0dsa0N4c2pSa1ZIWUl6bVNkWHhGWTN5WXZLNFVsdVNMZjFucGZ4?=
+ =?utf-8?B?cmZ3UTcxWjZIMXBFK0pEdXVodzZ1UldINVovZnFDK201S2pud2dhQWllbkNB?=
+ =?utf-8?B?S05CTE14MDlnbGFreUJCa1Z3YTJ2SVkwakpUWlVyYlR2SGJhenhjcGpsU0c4?=
+ =?utf-8?B?NGFsUHBqa0Nyc2pqT0VXaWYvOTFRamh6azVWQjQxRzNhRVJkQkQrVVpVQjZn?=
+ =?utf-8?B?TzZ6VnZsN2R1am5UT0RJdExyUlZpTjFJY1V5YS8xcnVCU3h3bUpFQzNFMmU5?=
+ =?utf-8?B?ZFAwWkQ3a2JsYzRnTElLc1JVREpPSmdaNFBCdFpMaS80UHJxL3N0ZTQ1NXRt?=
+ =?utf-8?B?dXovbTNweDZGM0FlUXM1dW8xbkR4dDh5MVkvcmlFakVua1VUc3JUTnhFNkUx?=
+ =?utf-8?B?M1NxbFJibnp0UFAvN01SYkJMb0RGdXhGQ240eDJ1V3hHeVpnUkMyTGlZSWFU?=
+ =?utf-8?B?SEZyb2Y3TGFZcE9mOHFDUisvZzdmSUlUUHV6NkRGdTdYV2F6Z0pzbTVoaXZK?=
+ =?utf-8?B?ZktqVllRZkc4WEYwNTExWXpLKzhQVDJ2VS84NXcwNVFWWVAyVGFBT3lpSmlu?=
+ =?utf-8?B?Y3RzWUdVOGczWDBjMDNZTjdEeXV2VWt5RitXZzkzTitNS1kwTjlROU5CTHdR?=
+ =?utf-8?B?Y2MyY1ViakpjNHBDWFFNdFA4U3FRZkNtUDZWYll2YUVQeG05VWZSTTE4S0h0?=
+ =?utf-8?B?Y0FidEpydHNTcUdDVi9QSTcvN0l6M2RRb015Zlp4bG5mV2QrRUVkL3lEM0Fy?=
+ =?utf-8?B?dzVzcGZFS1NZZG5HTzdzOTN0QnpFcFpvcEV3WXEyTjY2emtwM0xHQUl2dmNt?=
+ =?utf-8?B?dlE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <78A0D8BFC0CA1A4FB498254AA59CF841@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	kZhc8VX8YoUSMe6lBytpc/Oh5aWBZcgd+z9JLTt3xNo+SqDyoifemJLk56vnjfCXUutKqSVEZ+JwNc5LkOXc3UJ1pDJGhFt1b0XA3sgysHULUztAh1hllIEhaNfZlnle27/QO8AAV0lOW/3Br2LQhHjQu3/HnW0JaP5VGIKKbTGNkk9E0ApRfXfdnoo58/4qZX8YaQGPVtt+OBLgFC3FQssYh+TPnrSMeJ4aMzoq4hTa3zr/5M8UkxjWcQhhULmvhdtmjScsMD6Q5n4ZghNHCOOWtsLM54QrscjypyWEJtIVk5RI7t4FPeMp3tmVN9x25lnT6jC/jCXUT3tcvfqSw2WbFTW4SnBIvdEWvr3D89X2BiPmBZokPK8Zl6z+/7uUUswfPQQ9MVl+KMfE9qfFrDMPnjFSwgujsEbInMP3RRLotcvy2G2LrOHDAPh6qDY8Qz6Y6kfyxkcjQ+hyrqP3ljigZfJSjJAB2JkWNlyEp3vOBcCYUpWBrZ4gX1Jj1EMD635PTqyeupdbJmUoee0mJmlM1DkPzhzY0ta8jTUiCDL8LBjCRTx3mM8j2KfR7yXFb+SxJYRaBfUs6shqO89lWlEgnb+tf6uXOscUi7I1Zz7rnRsUYUAOkxJk/zzMNAxh
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea906876-2666-4009-ad40-08dd04aa9088
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2024 12:47:57.1895
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gkFYDqVQhNoTkfJFs5YtN9A8BqbDAnjCDwvsg7JFxs3pbAEW+n4YuGOuRyF6m5OX37Fma7QwuRV1rykwZ8vMz+tkVReChjCkguH+brmSj7M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6990
 
-From: Filipe Manana <fdmanana@suse.com>
-
-When running a workload with fsstress and duperemove (generic/561) we can
-hit a deadlock related to transaction commits and locking extent ranges,
-as described below.
-
-Task A hanging during a transaction commit, waiting for all other writers
-to complete:
-
-  [178317.334817] INFO: task fsstress:555623 blocked for more than 120 seconds.
-  [178317.335693]       Not tainted 6.12.0-rc6-btrfs-next-179+ #1
-  [178317.336528] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  [178317.337673] task:fsstress        state:D stack:0     pid:555623 tgid:555623 ppid:555620 flags:0x00004002
-  [178317.337679] Call Trace:
-  [178317.337681]  <TASK>
-  [178317.337685]  __schedule+0x364/0xbe0
-  [178317.337691]  schedule+0x26/0xa0
-  [178317.337695]  btrfs_commit_transaction+0x5c5/0x1050 [btrfs]
-  [178317.337769]  ? start_transaction+0xc4/0x800 [btrfs]
-  [178317.337815]  ? __pfx_autoremove_wake_function+0x10/0x10
-  [178317.337819]  btrfs_mksubvol+0x381/0x640 [btrfs]
-  [178317.337878]  btrfs_mksnapshot+0x7a/0xb0 [btrfs]
-  [178317.337935]  __btrfs_ioctl_snap_create+0x1bb/0x1d0 [btrfs]
-  [178317.337995]  btrfs_ioctl_snap_create_v2+0x103/0x130 [btrfs]
-  [178317.338053]  btrfs_ioctl+0x29b/0x2a90 [btrfs]
-  [178317.338118]  ? kmem_cache_alloc_noprof+0x5f/0x2c0
-  [178317.338126]  ? getname_flags+0x45/0x1f0
-  [178317.338133]  ? _raw_spin_unlock+0x15/0x30
-  [178317.338145]  ? __x64_sys_ioctl+0x88/0xc0
-  [178317.338149]  __x64_sys_ioctl+0x88/0xc0
-  [178317.338152]  do_syscall_64+0x4a/0x110
-  [178317.338160]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-  [178317.338190] RIP: 0033:0x7f13c28e271b
-
-Which corresponds to line 2361 of transaction.c:
-
-  $ cat -n fs/btrfs/transaction.c
-  (...)
-  2162  int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
-  2163  {
-  (...)
-  2349          spin_lock(&fs_info->trans_lock);
-  2350          add_pending_snapshot(trans);
-  2351          cur_trans->state = TRANS_STATE_COMMIT_DOING;
-  2352          spin_unlock(&fs_info->trans_lock);
-  2353
-  2354          /*
-  2355           * The thread has started/joined the transaction thus it holds the
-  2356           * lockdep map as a reader. It has to release it before acquiring the
-  2357           * lockdep map as a writer.
-  2358           */
-  2359          btrfs_lockdep_release(fs_info, btrfs_trans_num_writers);
-  2360          btrfs_might_wait_for_event(fs_info, btrfs_trans_num_writers);
-  2361          wait_event(cur_trans->writer_wait,
-  2362                     atomic_read(&cur_trans->num_writers) == 1);
-  (...)
-
-The transaction is in the TRANS_STATE_COMMIT_DOING state and so it's
-waiting for all other existing writers to complete and release their
-transaction handle.
-
-Task B is running ordered extent completion and blocked waiting to lock an
-extent range in an inode's io tree:
-
-  [178317.327411] INFO: task kworker/u48:8:554545 blocked for more than 120 seconds.
-  [178317.328630]       Not tainted 6.12.0-rc6-btrfs-next-179+ #1
-  [178317.329635] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  [178317.330872] task:kworker/u48:8   state:D stack:0     pid:554545 tgid:554545 ppid:2      flags:0x00004000
-  [178317.330878] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
-  [178317.330944] Call Trace:
-  [178317.330945]  <TASK>
-  [178317.330947]  __schedule+0x364/0xbe0
-  [178317.330952]  schedule+0x26/0xa0
-  [178317.330955]  __lock_extent+0x337/0x3a0 [btrfs]
-  [178317.331014]  ? __pfx_autoremove_wake_function+0x10/0x10
-  [178317.331017]  btrfs_finish_one_ordered+0x47a/0xaa0 [btrfs]
-  [178317.331074]  ? psi_group_change+0x132/0x2d0
-  [178317.331078]  btrfs_work_helper+0xbd/0x370 [btrfs]
-  [178317.331140]  process_scheduled_works+0xd3/0x460
-  [178317.331144]  ? __pfx_worker_thread+0x10/0x10
-  [178317.331146]  worker_thread+0x121/0x250
-  [178317.331149]  ? __pfx_worker_thread+0x10/0x10
-  [178317.331151]  kthread+0xe9/0x120
-  [178317.331154]  ? __pfx_kthread+0x10/0x10
-  [178317.331157]  ret_from_fork+0x2d/0x50
-  [178317.331159]  ? __pfx_kthread+0x10/0x10
-  [178317.331162]  ret_from_fork_asm+0x1a/0x30
-
-This extent range locking happens after joining the current transaction,
-so task A is waiting for task B to release its transaction handle
-(decrementing the transaction's num_writers counter).
-
-Task C while doing a fiemap it tries to join the current transaction:
-
-  [242682.812815] task:pool            state:D stack:0     pid:560767 tgid:560724 ppid:555622 flags:0x00004006
-  [242682.812827] Call Trace:
-  [242682.812856]  <TASK>
-  [242682.812864]  __schedule+0x364/0xbe0
-  [242682.812879]  ? _raw_spin_unlock_irqrestore+0x23/0x40
-  [242682.812897]  schedule+0x26/0xa0
-  [242682.812909]  wait_current_trans+0xd6/0x130 [btrfs]
-  [242682.813148]  ? __pfx_autoremove_wake_function+0x10/0x10
-  [242682.813162]  start_transaction+0x3d4/0x800 [btrfs]
-  [242682.813399]  btrfs_is_data_extent_shared+0xd2/0x440 [btrfs]
-  [242682.813723]  fiemap_process_hole+0x2a2/0x300 [btrfs]
-  [242682.813995]  extent_fiemap+0x9b8/0xb80 [btrfs]
-  [242682.814249]  btrfs_fiemap+0x78/0xc0 [btrfs]
-  [242682.814501]  do_vfs_ioctl+0x2db/0xa50
-  [242682.814519]  __x64_sys_ioctl+0x6a/0xc0
-  [242682.814531]  do_syscall_64+0x4a/0x110
-  [242682.814544]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-  [242682.814556] RIP: 0033:0x7efff595e71b
-
-It tries to join the current transaction, but it can't because the
-transaction is in the TRANS_STATE_COMMIT_DOING state, so
-join_transaction() returns -EBUSY to start_transaction() and makes it
-wait for the current transaction to complete. And while it's waiting
-for the transaction to complete, it's holding an extent range locked
-in the same inode that task B is operating, which causes a deadlock
-between these 3 tasks. The extent range for the inode was locked at
-the start of the fiemap operation, early at extent_fiemap().
-
-In short these tasks deadlock because:
-
-1) Task A is waiting for task B to release its transaction handle;
-
-2) Task B is waiting to lock an extent range for an inode while holding a
-   transaction handle open;
-
-3) Task C is waiting for the current transaction to complete (for task A
-   to finish the transaction commit) while holding the extent range for
-   the inode locked, so task B can't progress and release its transaction
-   handle.
-
-This results in an ABBA deadlock involving transaction commits and extent
-locks. Extent locks are higher level locks, like inode VFS locks, and
-should always be acquired before joining or starting a transaction, but
-recently commit 2206265f41e9 ("btrfs: remove code duplication in ordered
-extent finishing") accidentally changed btrfs_finish_one_ordered() to do
-the transaction join before locking the extent range.
-
-Fix this by making sure that btrfs_finish_one_ordered() always locks the
-extent before joining a transaction and add an explicit comment about the
-need for this order.
-
-Fixes: 2206265f41e9 ("btrfs: remove code duplication in ordered extent finishing")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 22b8e2764619..cfdb537636fe 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3063,6 +3063,19 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 			goto out;
- 	}
- 
-+	/*
-+	 * If it's a COW write we need to lock the extent range as we will be
-+	 * inserting/replacing file extent items and unpinning an extent map.
-+	 * This must be taken before joining a transaction, as it's a higher
-+	 * level lock (like the inode's VFS lock), otherwise we can run into an
-+	 * ABBA deadlock with other tasks (transactions work like a lock,
-+	 * depending on their current state).
-+	 */
-+	if (!test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
-+		clear_bits |= EXTENT_LOCKED;
-+		lock_extent(io_tree, start, end, &cached_state);
-+	}
-+
- 	if (freespace_inode)
- 		trans = btrfs_join_transaction_spacecache(root);
- 	else
-@@ -3099,9 +3112,6 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 		goto out;
- 	}
- 
--	clear_bits |= EXTENT_LOCKED;
--	lock_extent(io_tree, start, end, &cached_state);
--
- 	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
- 		compress_type = ordered_extent->compress_type;
- 	if (test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
--- 
-2.45.2
-
+T2ggc2gqdCwgbXkgYmFkLg0KUmV2aWV3ZWQtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5u
+ZXMudGh1bXNoaXJuQHdkYy5jb20+DQo=
 
