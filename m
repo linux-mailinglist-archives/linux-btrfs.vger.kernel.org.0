@@ -1,324 +1,235 @@
-Return-Path: <linux-btrfs+bounces-9662-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9663-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA7EE9C90B8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 18:23:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B879C90DD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 18:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E67C1F23A9B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 17:23:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D0A1F23B67
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 17:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43EC18BC21;
-	Thu, 14 Nov 2024 17:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC07218B494;
+	Thu, 14 Nov 2024 17:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJMRhPzX"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="W7PC7HZz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2950F6F2F3;
-	Thu, 14 Nov 2024 17:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731604959; cv=none; b=Ln4wId8SV2jRdVSGB1NJD9345+s4g1VMgTNw8ncZ6Hd9xKIMfUp5ByfLOwByXsehG3e2f0tWhzz+OZBGqEYTznLWOrQS8++tQT5XlikyoiLhYp55W3yRRhEg8mgcYn/Lrmv7SOIMOMf82cyY41MSUeNvMJTXbDe0Ima5McQ8huY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731604959; c=relaxed/simple;
-	bh=coBv7kOMWr4FUkylnULciwEVU/uk2ko3fjjBkmaG4ic=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KhGNKJKD73gkjk3jXloxEzay6N//7FvE4EeVb1cTXVdnzpvahDykgFncHaXDAUlkBA0sHF/MStkEA3sUFWgu+pOHdWqzznUMeV6qrg/K6I45IwpQRED5wCR4BsI9zomwXuFj1nwIVgxhF7tywnVQZNDGAiPNcDE/xZ/zC7T1dfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LJMRhPzX; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b18da94ba9so72589185a.0;
-        Thu, 14 Nov 2024 09:22:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731604957; x=1732209757; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OeFJjr3sAvxDHgXGKvBlBBH/HNXVr6YZMX5uUHaIfVg=;
-        b=LJMRhPzX4Z5H/E7IZAd45/5CNNvpFk1cfOJvSkUtyK2uPEzwDMY9QvGXNpPhmU/iWb
-         TyRszd7nj7Orv64xYzEi1NpwGG1NbbmhHguT42t32Td0yXdxBklYtWl+6TlM6s54RYfN
-         hRdkT6NEJrl4pck8VjtuG6vrYWJT702bOBuajgOaACd26cKMYwLOF+S79cvJJxUMOJ01
-         45OOWti4pQEHygzaVWXsQmTHccJ9T8XEc+6yfgkYF30RhT4EdvA0FIAaADhbghqiDsrf
-         r8rT1Eh3QMhq25/c9c5Us8F10Ip/azrzi2liyVlVEMUzuceno4dGUQdBn9I+HKOAVwUZ
-         Do/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731604957; x=1732209757;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OeFJjr3sAvxDHgXGKvBlBBH/HNXVr6YZMX5uUHaIfVg=;
-        b=p3pcroDvtiIrKTg4unCugvnIuIl6IpWoLsX7WTJVJJY3dX7rKwBeYdNl8QOH88VeRz
-         cp6vW/vlqD2IP23F4rDEsLnGCLZ3TAJuRsiHHA/+uLEmI+Ikp2C3a9Fycf5bR5cuXj3B
-         MFQrwu7OU4MtWcizRpTiaGSMFSr8cegEHeB+fbpqMoYfv4IOR6SJarr21Nxc6nRh9uSo
-         ObqhiL4yyNQNajsnyFSgZ+jeE/VJdOYvvdGDUxz3dt96SEpy268y6IT4dRyCtsp1zrp3
-         nP8My1SjRIeye+UKeVU3p0LfWh/MeOONmAuzq6c2WIi+sdQHVlLXH8Uv0ygIJFHI1KwJ
-         F7/A==
-X-Forwarded-Encrypted: i=1; AJvYcCUo6BQ+FKpnR2DF+IND+bTcRqc32CY6PFV4UL9D+O/MNOatUH3YdgGJ5/IPvnOoxaHpyVWcsJyUctFy@vger.kernel.org, AJvYcCUzMghRXj9BhyFhHU7KF/bYsqfwlLtkE6TpB/YYpIO32hT8b86IgQDzAm3D5svFEfP7frk712lSp2t7X4bLng==@vger.kernel.org, AJvYcCWfZra3sszKrUF135SHzpXaufdGHbrb4UJI35mQKkbvEONHfE8cpC4gNFncU/F0P9HHC5regbwebsWvgA==@vger.kernel.org, AJvYcCXju8F9gT/0NpSoRBa+7M1jNVdszZwUjaJhqae3bstuK898sBvlu7gj+tYpEm8kR8HbY/vXvcqcuohSnA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxyjgy9wj0+QwXL48kBl3xbt7Jz0CucaxJxMewdB2lzgQwOlNBN
-	KLYejlRm6xx2eJZjcfZdnc6jIzYqhlaCiM3jUWsEAhSsK25fkVCssInXaUfAjiP3KrpCEENEFd2
-	CIu/DY+eMq4Zrbsx22pE1HFqabTE=
-X-Google-Smtp-Source: AGHT+IGWy+vxnndz1151nIk1OoEYSziwAZ6Hll6nVis3K2RK0WbhxR9+FRkzy7ldvbq1Mbv1M4ojoumTX5Yaw3ABvqg=
-X-Received: by 2002:a05:620a:2894:b0:7a9:abdf:f517 with SMTP id
- af79cd13be357-7b35a545fc5mr637868285a.25.1731604956930; Thu, 14 Nov 2024
- 09:22:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A342262A3
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 17:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731605680; cv=fail; b=hbS9WI+Gt9seONiy9yOsT04b2pOSRrkxzjD09QtbFvoOYtuuLS+Ogel+u3S6H2mhM3G0lfEStxECSwZHaagvgf7mHIozcYpIQRHvVlOuWrBf6wG8E0HNg4uxWlU+3ebsHCgglSP7c1ybnZDc6IEoAgvSwkBheslZ7efLM30D2G8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731605680; c=relaxed/simple;
+	bh=V/Y127A0ZJ5zZ2hBLckXZaNmwpQb1/dtjIc+ST4n2cU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=JnVsJwHUkVIYXhq0HvgNXI1YS6LIBnGT0ygOG1an0wB83jyVPvbxpRQasxNQuW1/fmkpATURmkCFm1s2UwEACOiVtBDtQ1ZFRmu/EjvmtihuaqdKR2Tq0WYL02i3CHpM0Us1zyZGbZRPIz3+jDUKtg0VDwPIQzt1VbicMqCeNrs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=W7PC7HZz; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AEHNvIO006393
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 09:34:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=3qMqEvAwyVkA3lYGPpH4PV8KQzfmmwQ6f853wp3pJvc=; b=
+	W7PC7HZzSKJ4LXwhraHW2U3bmFMZruDP+9B5aL9LvcMpqcodxFNfN+Xc2udAkMgI
+	jIYKYqVQBO119og5jFjI0tXvFaRv8AExEVCyXf/yu7xSMDcZdBNK0Wh+i8MuFGsc
+	SRQYGP+VQCLa+NdsfHILe9jw+KB7K4cwVvNUTkWSQBHWxjCU7+pClMZhGR6XAt7d
+	X2CRrq6+qXUd10CUoy93WAF0GadXZhkOc3fn1X+YjiFlXxgoU2FDXjpmfFIvB3kZ
+	w7ZURTgEtlrH4ThEEf7ckOsv08wvvq2yr4lr08hidCbsxRcQEsbRr6FGoPT/Bnas
+	r9MBjWDwx0IwyX7DSdZ9lA==
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42wbtfcdhq-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 09:34:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YsvdMctMXQBNMhNnLrczmxk9AEe55zuwOx0b2nRKI4Gv7N25TPCZuERuJSdv5QQstdMHqK6oASSSpdjV7B3zwmNEi4i/rqgCiQqifyU7JKJ4KFa+NJsUrLjCbycrnY4qpaq5/ECKUf35cCJ6leBk2pXEOLwdsoJvM83UztvxoBg/2ZXyyfLe1GPFJM7ddaQPDL52Glwql72TC3QNt2R9BA2c/+KClhmc93EjcGVnZMQ5uDpiLa82kq8KTY+rkyD8IVRAZz2MTlLiPQagmM8+IiNa6VVr+K1Av6tmEJ+NPvLgCI10ZwzZv7Sjpe6fh/uvCG0ydqY7JOEXnTtBV+AEYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KaseJlfOV/RVgKmjoqXafU+ErQeFsWRH7ge89IenOak=;
+ b=V9xaHPsIQj3Q1POPmuQnpCeRYA5IhBfS9Bf37XPa/JprY8gauFp9cHbHeIxWV/gz8gxc73qTcMlO8dzMSxK3EP8Z56k640NHF9oQLizPl27H4JRaQ2OT2vVNiFSGQNG7CduY35dHepWVVZE95npk/G17DWzZmkxs6f5FvqZRSh33HY60+STmSlIwIWjoEtmTN1Q1C2pFukFyCkK7Sz43BejF4E4lzqqXF0yNQvpsJGWpGfYSoeWxL+OQ7gam35jIGToN8gYx0Cch5aOX8rXUPngvxHL31b5ArEvmde/HXFQeiPWKuAAED6JzFBF0UhWwTy2WzxiOfxPqN1WomrKXqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
+ by CO1PR15MB5004.namprd15.prod.outlook.com (2603:10b6:303:eb::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.17; Thu, 14 Nov
+ 2024 17:34:30 +0000
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8%4]) with mapi id 15.20.8137.027; Thu, 14 Nov 2024
+ 17:34:30 +0000
+From: Mark Harmstone <maharmstone@meta.com>
+To: "dsterba@suse.cz" <dsterba@suse.cz>
+CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: remove unused macros in ctree.h
+Thread-Topic: [PATCH] btrfs: remove unused macros in ctree.h
+Thread-Index: AQHbNqkm4XTAH2ij3k6NlPnpVUZKuLK28sUAgAAW04A=
+Date: Thu, 14 Nov 2024 17:34:30 +0000
+Message-ID: <94f303ab-78df-4925-825c-61d470de6574@meta.com>
+References: <20241114152312.2775224-1-maharmstone@fb.com>
+ <20241114161248.GV31418@twin.jikos.cz>
+In-Reply-To: <20241114161248.GV31418@twin.jikos.cz>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|CO1PR15MB5004:EE_
+x-ms-office365-filtering-correlation-id: d7e7f088-cedb-4c56-8071-08dd04d2988d
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|1800799024|376014|10070799003|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?bmdJUG9BUEpCZUY5YWlpL2VzYlJyb1dPQmVMUWdsZ1hyWWl4REVHRmZVelZW?=
+ =?utf-8?B?S294dWlSQWt0eGhRWTJ3eFdML0ZEeER0K2FtcXcrWUgrYlMxaWIzQ0J2R2l4?=
+ =?utf-8?B?RStTUlpxTkgvTHZlcDRNZlA5T05SRlZka1NWeGJnL2c3SVM5RmI5R3BtNkNO?=
+ =?utf-8?B?VkNSbmxyaUNsZTc1RnBTVmVIbFFFQTU4aTRucUdkZkxSMy9HdnliQ2h3SUYv?=
+ =?utf-8?B?NE5IMmZaU3l1YjZIVlUzd2RUc3Y4SnFoeE9XWDNqSmRvOGlzL1JKNHpmTjd6?=
+ =?utf-8?B?NG55S2MxQnBWZW03MWE3U2Nzd3VRNmlGZEx2MWcxUEhwTTNSR2ZSTHdxbDNv?=
+ =?utf-8?B?dXpibHJMWHVTaXUrbWdKOSt4RnlPdko5RStVcGcyNmw1b2pzZWlYenB5dDZ6?=
+ =?utf-8?B?aitGd2g4MVdnODRjWGNSL3NvWTF5OXdCRFdFcFFlcFBSUXd2MldBd09NbnJJ?=
+ =?utf-8?B?b0tEbTE0SHI0dFNNeWhvRkpSai94VitFSS9TSGxheU9sRHY0ejZjVWx0TVZt?=
+ =?utf-8?B?YVhwOTNqOUhPMUUxS0N4dnhjWCs3cUZyWEZNN1Z2ZllIMHJqcEEzQ0s1Wk8r?=
+ =?utf-8?B?Qmw4eFVjbWNvdmFnV1pmZE1xOGJ6UmZYNUhYaUFPRkYwNXpqNnE0ZldKSkU1?=
+ =?utf-8?B?dTROenpZekM5YWpLUG41UVFUUkR3bEtKSXpjTWhZcmIwc1FUTk1TaGNaMGhP?=
+ =?utf-8?B?OHZKVWlQZWt0blMzS2ptQ3hZWlUwaHlpaFpLbWhOd0ozdDJRQVV5TnJyM2o0?=
+ =?utf-8?B?dnc1UjQydGZPc3JOUXBZcCtRNnN0VHJoN2NWTHFFRzdZRFR6d3RUVjl3QTdj?=
+ =?utf-8?B?OW5XSitjSHMwaHZ4Y3gvSFJkbVhNSHpHNk5udmk2THVUTW4zTWpIUzBlOENz?=
+ =?utf-8?B?dnppVEFYWTZvRWh2d2ZSU1hIZ0o4MWhBU2tab0RZd2ErajJlaXIwcTJ3b21I?=
+ =?utf-8?B?QjNxS0F3Rm9KQXlJOUthSmpnVWxDdzdhdHoyaHpydElTQ2NjTFNYR21LZU10?=
+ =?utf-8?B?ZHZ4aFlmN1UzdTRjMVpGaktOa005eWptaU1hRUErS2Eyc0lBdnQrVXJmR21I?=
+ =?utf-8?B?cHF3VmVPeW9OUk15STVycGprMnRuOGsvMzA3YXh4Z2tBN0M3ZTZ2TzZEYTFt?=
+ =?utf-8?B?MGF0RlRHaTJBalpkQ3dMVUpUSkZJS1lKejFHdExxK1pZVVNZZ3Y3dTIxbDZK?=
+ =?utf-8?B?SkR3UXBJdFc0bTJKTFZqTTN3VEpXTVlZQ2F4NmtZdUZHRERJWFBzZ0Zxd2hn?=
+ =?utf-8?B?ZWVBc3Q4Zllsby81MjVvaWQ2NzJnd2lPaVBnaEdHeDRiUU1FUGVrbm1vZ0RG?=
+ =?utf-8?B?djllaC9VTndQUUM5TktpeGRvSm52MW9PTWR0T3YvV2NET1dDay9yTzl3N2Nh?=
+ =?utf-8?B?eUhaUlpYdmQ0ZzVNYTJhbUxaVWdGeGp6UFVtNmRjUUR6UFNrZWJVMXZFenN5?=
+ =?utf-8?B?ZEZUVG1USDNWUWhMK00zNkxoMmJLbzE2cU1UMkErS2k2d0pMbGdqZW15TnZW?=
+ =?utf-8?B?RUVHTWZjdUQyeUk0dW5KRHFIcG5TelkyTDlBMXNNZE1yYkRBT3JrUFpqYXpi?=
+ =?utf-8?B?bFpST3U4MWxuUGs1enJiNXA1TjYrZE1Cb05WKy9DcmFmNVVYSmh0dWV1TDI5?=
+ =?utf-8?B?RllKRVFmNSt0aUxaSmpPQmdoTjZhSkhDYW9zM1ZOQkxpUkhhd2tUNEpsa1FC?=
+ =?utf-8?B?NnJ6bEE3QVJsd2xEYzZCSEVUTS9oK0hmR01PSjZvN1NCcmYyT2lPZmhxYnVB?=
+ =?utf-8?B?elZrckYxWE5QZ3cxY0JjeEhld2JOZnhmZWxFK2xMVjZ6MDlRcWl1cVRVMEZ0?=
+ =?utf-8?B?enhic3ZMaUdlSWFjOC9NOExkeVhsVXRHT3NDaWFQRlZVN3puNkZLMHcxb1ZE?=
+ =?utf-8?Q?CDW/CbesAL5MA?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(10070799003)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?R3E5NjY0RXE2bVMzN0JweTJwd1B4N3Qvalg4dnhPRkM1YmVWb3l6YlFJSkVp?=
+ =?utf-8?B?dkxKamhQTEsrMG1nUjFadmlwSm9VZktGMFlnb1l2RlBVQ2Q4QURUdTJ0aEds?=
+ =?utf-8?B?NnF2WlZXSGxVa0NIYXBKeE1ybkhjbmEyNHlYS1U2RW5aUkM1R2RRd3VoUktm?=
+ =?utf-8?B?Q2lpNkwrNTlPM01KM095L0syTVpjbWRqUGd2VGdLTmZRdi81WVJldHk5NmYv?=
+ =?utf-8?B?bGZhcW9rcGlVSGFXUXY4WEpNM2hCcFE1WmR5bWZUeS9WMHJ4V2NsdG1OYUhp?=
+ =?utf-8?B?U0JRVnhRbkVmcGlGdFVUbnVRNUYwS3lSc2N2TFE4MklCNFhJZkRoWXZUR1Nw?=
+ =?utf-8?B?Qy9CcndWdjRvM1oxN0FjT1pjbWVRanArNXpjM2kzNmFQNVhpQmQyaFZmSkl5?=
+ =?utf-8?B?UVQ5VkxGYUhLY3VaTFFsaVNHaWtjc01CTzd0SlhTa2g5cHpFcEVBanFlcnIw?=
+ =?utf-8?B?ejk2TlBPSGdvb2JvUGltZUY0VDRiWDFvbDc4U2xhaGRpT2YyOGtJYXFLbWdI?=
+ =?utf-8?B?d1VBcTFrZFBvY05UWVpRZmN0b1k4VlUyNnhtUDIzN0tFQThpNURDYXNqWldk?=
+ =?utf-8?B?UW9MYlMvakwzVmtHTXovK3pXNm9qdnRUZUhJTWhYNitTQ3hDcUVOMU15aVow?=
+ =?utf-8?B?aU5SN1dLSzRudWFOTFdycGtKWlZib3c5TDlQNlg1YzhWTzVSZ21yck5ibm5z?=
+ =?utf-8?B?aG9ZWDkzRnY2YS9FUk8yK3BKZDdKakxOcDZZTHVTZ25zU3RlM2tXL3Z3L0ZK?=
+ =?utf-8?B?QTloQ2E5TEpMTm00enNBS0Q2OFZqdVd5N2Q3ZU9Cb1kyUDNSUElrZGlEeEVE?=
+ =?utf-8?B?N25PckdwLzU3R3ZyZS9yWFRNSXdnbmlaRCtMcVdUZ014cXZid1Y0VFlkM2Ry?=
+ =?utf-8?B?Sm40UlNmczlrc0lTZm9XdWs1UDVnWHlmR3JGb0xTdHl2MEVzUlJEWTdqUmZJ?=
+ =?utf-8?B?bWY2a3Q0NkpFRUVwZk1Jc29CMFdvRmh6ZmxjamxvL2NXdysxZFZaeVBHQjJm?=
+ =?utf-8?B?MVF3blFNd1Rld1JrYWx0bEZBcGpXM1hwdS9iM3A0YjVrOWxEUjk2OTJkTmx2?=
+ =?utf-8?B?NVRsS0dnMzRSWG8rdWd4MGYwZ0d6Q21jZ0REMDN6WXM5YU1mcEt1TlpaNG9M?=
+ =?utf-8?B?eUpGbDNjZHVDWkxtWDJTSWcvYjEyVW5JbTVUcFZCY09jM1V1TWloZ1lHeWY0?=
+ =?utf-8?B?MCtYNXltcVpnczZ5S0k4UTF2RGgwUTNDeGVONDNtME1xVjJhMmdGVTZLRE9o?=
+ =?utf-8?B?L1NaUTloUFI4Lzd4ZGMxUTJCdStNb09URUVJRDB0dW1MTEoyaGJZOHcva05C?=
+ =?utf-8?B?U3dCWFVNVklKQStQbDlIWnhXK1cxenA0Z2lrZEFWZlFzTU05K3hsVm5LQjdS?=
+ =?utf-8?B?bk42UlJlRWYzaUVFQVRlaGhnZ2Q3K0R3TUw2cTBwYnF3NEhQTkxnK3ZuOVdt?=
+ =?utf-8?B?b20rTStBemNBcWlyTGdhQXZkNUNTVEx5MXFyL1AwVldhSGdPeU53SnFKQktv?=
+ =?utf-8?B?enpGUTZGbFFRVmUxUmVldXY2NkZ1TjdpcUZseGgrQ09ZRlo4ZHdEMG4zZ0FO?=
+ =?utf-8?B?VjJoNWkydkZCVkxkNmFtaGF4TTFFQndGTHVTcUQ3VDlIR2VrNUQ0TWZlZzNH?=
+ =?utf-8?B?OC83VU9NM2x1aFVYNmsrWi9Nb0x0aXVmWnRxbm0wUzRUODV2cUFWK3hDcUNI?=
+ =?utf-8?B?aWM1NUVpTkR2Nm9pOU1takV3NjZTb04vN3ptTlhVRklnTXFZZTlhNWV1dndG?=
+ =?utf-8?B?aE9FMldoTzlKSCtEaUIyL2kxY2tzdWhXRi85N1lrNzB4YUVFRkhnWEcxd04w?=
+ =?utf-8?B?bzNNRW5XUDlja1JJc0JQdGZTazFnSXJFZWhBaHRVbExBeExwODlIYkJxaGVm?=
+ =?utf-8?B?Ui9TSFdpcXBrN1FXR2kwS2lkUzJrMUpzQUJmQkZSWlBSSHM0TUdSWU02T0k0?=
+ =?utf-8?B?a2dYbEU2NUdxTkFvc1B1cDJid0RwdE5FSVFoSTU0dnlwWVdCam5qS09VSmhu?=
+ =?utf-8?B?VTJ6TWJiU3p5Q2F6S3R5T2xmSCtLS2hrcTRjdkZCVnVFZ0Z0SnNHNjZqVk5O?=
+ =?utf-8?B?N2w0VVJKWUo5VHV1MWNDTHFicmhuUyt6R05neDlCZ2JEcU1ZVGUySzE5ZndC?=
+ =?utf-8?B?M3lFOHkxaVlVdTk2YjJ1TlRyb3ZkbnNKZnZXQzIyaGRqa2E5eHJLcUkzNFh1?=
+ =?utf-8?Q?d8IiSGiPljE2xOcsWs16OWc=3D?=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
- <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
- <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
- <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com>
- <CAOQ4uxjob2qKk4MRqPeNtbhfdSfP0VO-R5VWw0txMCGLwJ-Z1g@mail.gmail.com>
- <CAHk-=wigQ0ew96Yv29tJUrUKBZRC-x=fDjCTQ7gc4yPys2Ngrw@mail.gmail.com>
- <CAOQ4uxjeWrJtcgsC0YEmjdMPBOOpfz=zQ9VuG=z-Sc6WYNJOjQ@mail.gmail.com> <20241114150127.clibtrycjd3ke5ld@quack3>
-In-Reply-To: <20241114150127.clibtrycjd3ke5ld@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 14 Nov 2024 18:22:25 +0100
-Message-ID: <CAOQ4uxgNoDUcgSjo=oK6QmzCuEdgauDs2H6WGbD=RuzkZX115Q@mail.gmail.com>
-Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
-To: Jan Kara <jack@suse.cz>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7e7f088-cedb-4c56-8071-08dd04d2988d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2024 17:34:30.5197
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gVxK0aIFPoqi2aUYbkTBtcyc7eV1MeWzuaZ0aJ8DeT9PAUhBdbixcDcVaB4HgwHfunmgPaKkOZdvlMrI2cdoDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR15MB5004
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+Content-ID: <EC62B2C09CAEB64790C60489CE62AB70@namprd15.prod.outlook.com>
+X-Proofpoint-ORIG-GUID: JM7qhiP0j8JYcxtVyb0IdxO1PpuH65Y-
+X-Proofpoint-GUID: JM7qhiP0j8JYcxtVyb0IdxO1PpuH65Y-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On Thu, Nov 14, 2024 at 4:01=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 13-11-24 19:49:31, Amir Goldstein wrote:
-> > From 7a2cd74654a53684d545b96c57c9091e420b3add Mon Sep 17 00:00:00 2001
-> > From: Amir Goldstein <amir73il@gmail.com>
-> > Date: Tue, 12 Nov 2024 13:46:08 +0100
-> > Subject: [PATCH] fsnotify: opt-in for permission events at file open ti=
-me
-> >
-> > Legacy inotify/fanotify listeners can add watches for events on inode,
-> > parent or mount and expect to get events (e.g. FS_MODIFY) on files that
-> > were already open at the time of setting up the watches.
-> >
-> > fanotify permission events are typically used by Anti-malware sofware,
-> > that is watching the entire mount and it is not common to have more tha=
-t
-> > one Anti-malware engine installed on a system.
-> >
-> > To reduce the overhead of the fsnotify_file_perm() hooks on every file
-> > access, relax the semantics of the legacy FAN_ACCESS_PERM event to gene=
-rate
-> > events only if there were *any* permission event listeners on the
-> > filesystem at the time that the file was opened.
-> >
-> > The new semantic is implemented by extending the FMODE_NONOTIFY bit int=
-o
-> > two FMODE_NONOTIFY_* bits, that are used to store a mode for which of t=
-he
-> > events types to report.
-> >
-> > This is going to apply to the new fanotify pre-content events in order
-> > to reduce the cost of the new pre-content event vfs hooks.
-> >
-> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Link: https://lore.kernel.org/linux-fsdevel/CAHk-=3Dwj8L=3DmtcRTi=3DNEC=
-HMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com/
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
->
-> Couple of notes below.
->
-> > diff --git a/fs/open.c b/fs/open.c
-> > index 226aca8c7909..194c2c8d8cd4 100644
-> > --- a/fs/open.c
-> > +++ b/fs/open.c
-> > @@ -901,7 +901,7 @@ static int do_dentry_open(struct file *f,
-> >       f->f_sb_err =3D file_sample_sb_err(f);
-> >
-> >       if (unlikely(f->f_flags & O_PATH)) {
-> > -             f->f_mode =3D FMODE_PATH | FMODE_OPENED;
-> > +             f->f_mode =3D FMODE_PATH | FMODE_OPENED | FMODE_NONOTIFY;
-> >               f->f_op =3D &empty_fops;
-> >               return 0;
-> >       }
-> > @@ -929,6 +929,12 @@ static int do_dentry_open(struct file *f,
-> >       if (error)
-> >               goto cleanup_all;
-> >
-> > +     /*
-> > +      * Set FMODE_NONOTIFY_* bits according to existing permission wat=
-ches.
-> > +      * If FMODE_NONOTIFY was already set for an fanotify fd, this doe=
-sn't
-> > +      * change anything.
-> > +      */
-> > +     f->f_mode |=3D fsnotify_file_mode(f);
->
-> Maybe it would be obvious to do this like:
->
->         file_set_fsnotify_mode(f);
->
-> Because currently this depends on the details of how exactly FMODE_NONOTI=
-FY
-> is encoded.
->
+Ah, ignore this then. Thanks David
 
-ok. makes sense.
+On 14/11/24 16:12, David Sterba wrote:
+> >=20
+> On Thu, Nov 14, 2024 at 03:22:53PM +0000, Mark Harmstone wrote:
+>> The Private2 #ifdefs in ctree.h for pages are no longer used, as of
+>> commit d71b53c3cb0a. Remove them, and update the comment to be about fol=
+ios.
+>>
+>> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+>> ---
+>>   fs/btrfs/ctree.h | 7 ++-----
+>>   1 file changed, 2 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index 317a3712270f..60c205ac5278 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -744,14 +744,11 @@ const char *btrfs_super_csum_driver(u16 csum_type);
+>>   size_t __attribute_const__ btrfs_get_num_csums(void);
+>>  =20
+>>   /*
+>> - * We use page status Private2 to indicate there is an ordered extent w=
+ith
+>> + * We use folio status private_2 to indicate there is an ordered extent=
+ with
+>>    * unfinished IO.
+>>    *
+>> - * Rename the Private2 accessors to Ordered, to improve readability.
+>> + * Rename the private_2 accessors to ordered, to improve readability.
+>>    */
+>> -#define PageOrdered(page)		PagePrivate2(page)
+>> -#define SetPageOrdered(page)		SetPagePrivate2(page)
+>> -#define ClearPageOrdered(page)		ClearPagePrivate2(page)
+>>   #define folio_test_ordered(folio)	folio_test_private_2(folio)
+>>   #define folio_set_ordered(folio)	folio_set_private_2(folio)
+>>   #define folio_clear_ordered(folio)	folio_clear_private_2(folio)
+>=20
+> While this is right, there's a patch (now in linux-next)
+> https://lore.kernel.org/all/20241002040111.1023018-5-willy@infradead.org/
+> that removes that (with some other updates).
 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 70359dd669ff..dd583ce7dba8 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -173,13 +173,14 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, lo=
-ff_t offset,
-> >
-> >  #define      FMODE_NOREUSE           ((__force fmode_t)(1 << 23))
-> >
-> > -/* FMODE_* bit 24 */
-> > -
-> >  /* File is embedded in backing_file object */
-> > -#define FMODE_BACKING                ((__force fmode_t)(1 << 25))
-> > +#define FMODE_BACKING                ((__force fmode_t)(1 << 24))
-> > +
-> > +/* File shouldn't generate fanotify pre-content events */
-> > +#define FMODE_NONOTIFY_HSM   ((__force fmode_t)(1 << 25))
-> >
-> > -/* File was opened by fanotify and shouldn't generate fanotify events =
-*/
-> > -#define FMODE_NONOTIFY               ((__force fmode_t)(1 << 26))
-> > +/* File shouldn't generate fanotify permission events */
-> > +#define FMODE_NONOTIFY_PERM  ((__force fmode_t)(1 << 26))
-> >
-> >  /* File is capable of returning -EAGAIN if I/O will block */
-> >  #define FMODE_NOWAIT         ((__force fmode_t)(1 << 27))
-> > @@ -190,6 +191,21 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, lof=
-f_t offset,
-> >  /* File does not contribute to nr_files count */
-> >  #define FMODE_NOACCOUNT              ((__force fmode_t)(1 << 29))
-> >
-> > +/*
-> > + * The two FMODE_NONOTIFY_ bits used together have a special meaning o=
-f
-> > + * not reporting any events at all including non-permission events.
-> > + * These are the possible values of FMODE_NOTIFY(f->f_mode) and their =
-meaning:
-> > + *
-> > + * FMODE_NONOTIFY_HSM - suppress only pre-content events.
-> > + * FMODE_NONOTIFY_PERM - suppress permission (incl. pre-content) event=
-s.
-> > + * FMODE_NONOTIFY - suppress all (incl. non-permission) events.
-> > + */
-> > +#define FMODE_NONOTIFY_MASK \
-> > +     (FMODE_NONOTIFY_HSM | FMODE_NONOTIFY_PERM)
-> > +#define FMODE_NONOTIFY FMODE_NONOTIFY_MASK
-> > +#define FMODE_NOTIFY(mode) \
-> > +     ((mode) & FMODE_NONOTIFY_MASK)
->
-> This looks a bit error-prone to me (FMODE_NONOTIFY looks like another FMO=
-DE
-> flag but in fact it is not which is an invitation for subtle bugs) and th=
-e
-> tests below which are sometimes done as (FMODE_NOTIFY(mode) =3D=3D xxx) a=
-nd
-> sometimes as (file->f_mode & xxx) are inconsistent and confusing (unless =
-you
-> understand what's happening under the hood).
->
-> So how about defining macros like FMODE_FSNOTIFY_NORMAL(),
-> FMODE_FSNOTIFY_CONTENT() and FMODE_FSNOTIFY_PRE_CONTENT() which evaluate =
-to
-> true if we should be sending normal/content/pre-content events to the fil=
-e.
-> With appropriate comments this should make things more obvious.
->
-
-ok, maybe something like this:
-
-#define FMODE_FSNOTIFY_NONE(mode) \
-        (FMODE_FSNOTIFY(mode) =3D=3D FMODE_NONOTIFY)
-#define FMODE_FSNOTIFY_NORMAL(mode) \
-        (FMODE_FSNOTIFY(mode) =3D=3D FMODE_NONOTIFY_PERM)
-#define FMODE_FSNOTIFY_PERM(mode) \
-        (!((mode) & FMODE_NONOTIFY_PERM))
-#define FMODE_FSNOTIFY_HSM(mode) \
-        (FMODE_FSNOTIFY(mode) =3D=3D 0)
-
-At least keeping the double negatives contained in one place.
-
-And then we have these users in the final code:
-
-static inline bool fsnotify_file_has_pre_content_watches(struct file *file)
-{
-        return file && unlikely(FMODE_FSNOTIFY_HSM(file->f_mode));
-}
-
-static inline int fsnotify_open_perm(struct file *file)
-{
-        int ret;
-
-        if (likely(!FMODE_FSNOTIFY_PERM(file->f_mode)))
-                return 0;
-...
-
-static inline int fsnotify_file(struct file *file, __u32 mask)
-{
-        if (FMODE_FSNOTIFY_NONE(file->f_mode))
-                return 0;
-...
-
-BTW, I prefer using PERM,HSM instead of the FSNOTIFY_PRIO_
-names for brevity, but also because at the moment of this patch
-FMODE_NONOTIFY_PERM means "suppress permission events
-if there are no listeners with priority >=3D FSNOTIFY_PRIO_CONTENT
-at all on any objects of the filesystem".
-
-It does NOT mean that there ARE permission events watchers on the file's
-sb/mnt/inode or parent, but what the users of the flag care about really is
-whether the specific file is being watched for permission events.
-
-I was contemplating if we should add the following check at open time
-as following patches add for pre-content watchers also for
-permission watchers on the specific file:
-
-        /*
-         * Permission events is a super set of pre-content events, so if th=
-ere
-         * are no permission event watchers, there are also no pre-content =
-event
-         * watchers and this is implied from the single FMODE_NONOTIFY_PERM=
- bit.
-         */
-        if (likely(!fsnotify_sb_has_priority_watchers(sb,
-                                                FSNOTIFY_PRIO_CONTENT)))
-                return FMODE_NONOTIFY_PERM;
-
-+        /*
-+         * There are content watchers in the filesystem, but are there
-+         * permission event watchers on this specific file?
-+         */
-+        if (likely(!fsnotify_file_object_watched(file,
-+                                                 ALL_FSNOTIFY_PERM_EVENTS)=
-))
-+                return FMODE_NONOTIFY_PERM;
-+
-
-I decided not to stretch the behavior change too much and also since
-Anti-malware permission watchers often watch all the mounts of a
-filesystem, there is probably little to gain from this extra check.
-But we can reconsider this in the future.
-
-WDYT?
-
-In any case, IMO the language of FMODE_FSNOTIFY_PERM() matches
-the meaning of the users better and makes the code easier to understand.
-
-FMODE_FSNOTIFY_HSM() is debatable, but at least it is short ;)
-
-Anyway, I will send v2 with your suggestions.
-
-Thanks,
-Amir.
 
