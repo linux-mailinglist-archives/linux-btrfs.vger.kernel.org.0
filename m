@@ -1,99 +1,134 @@
-Return-Path: <linux-btrfs+bounces-9664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9666-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E449C9103
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 18:43:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794B49C91C2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 19:39:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 215E4B364BB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 17:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DC8A1F2297C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 18:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C2D818BC28;
-	Thu, 14 Nov 2024 17:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nqG4qmmM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F8C1990D3;
+	Thu, 14 Nov 2024 18:39:18 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF52262A3
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 17:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17DE18E030
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 18:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731605843; cv=none; b=jQUQuQzU9s4ycf6aIGEyKM6wFvVjx+9psEGS7SgjTmN59O4+TI2qj8vRMJ1bTtrgxOdfBFMReoH1SIUfyRka/3lRtWIS379yTWE2mh1V020reCO7ULeswOImDBLLy9715NqKRuzli43JeZPeHdL7squnM+MJIFwtE64/c2SBmY0=
+	t=1731609558; cv=none; b=ZecExnyVJ4RS4F8S/uuypfBfQRWfy3pBn8XwmDzcKkmBSqXt7pS5avEcVPJ4lVdSQqb0P6M9J1GYjja6eoVo99SZenFa9Zc3FL7djOKZApwENvi6v4l0+9KMqkCA897LnVrBg2PuRqistcNz39s0uChTS1DH1DTQJcy5BVp5zBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731605843; c=relaxed/simple;
-	bh=Nv2NO+TPjsL/SC+SqMg9Pb0B0kDAHjFQfBTKKUbPcqs=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=E6GnLivwDQrhGaHOT60gdAi8uvPPuHG9IWAA42o0mnWsOQeggOZRll3swZLCw2H8oc1Ljs6yoyFunx2I169ja9ljtg/R+R4r3K2/U1Ztb1TyY3mkgyx00/efa/OEHMirwBna3vdQYfnsOcYFGjM9bCjJA74PfbJ3SsCGPPE677s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nqG4qmmM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580E3C4CECD
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 17:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731605842;
-	bh=Nv2NO+TPjsL/SC+SqMg9Pb0B0kDAHjFQfBTKKUbPcqs=;
-	h=From:To:Subject:Date:From;
-	b=nqG4qmmMyoYpPxrxR+pCQA8ep0PNScg0X02+0RpfNkbBgHPdKDRtpmxSjEA9gp1kH
-	 Wi9TwOWptz1glTlx4g3O60PIFhAaEaBQv1VQFbO905HxOQQgW6Rq5trHgs0YeSiCUF
-	 S37jg/D05s55dEcr2ihY7YCpr3C1WpoGK2lZQY41q0cC5H/4FqNZBAIQ4UCou06E54
-	 K26d3yl//3p0ZEfeegZjturXQ0qX0Qv8k67bQA1l08PJ/I3upHxKYY/1QlaRuZ4IUe
-	 85Wxo2+e/4u0BJw6G5xCtDSxoXXqXTfG35VN7dhZNFCFvmmGlRGBu1YIiLmQ//kdyU
-	 S7ofFVY9d44zg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: sysfs: advertise experimental features only if CONFIG_BTRFS_EXPERIMENTAL=y
-Date: Thu, 14 Nov 2024 17:37:19 +0000
-Message-Id: <c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8f.1731605782.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1731609558; c=relaxed/simple;
+	bh=yFb9p1CM9KKXIMqV7z5piViB5DxNlkMXO8I82bz0a20=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UnvvoI1MzoADrBHgbJDYKFF6x9JNCrtwNkrsmlrJe5dbulba2YeVdHFtTpSOemlv3Cw9aO8qhcIU8JPOQZq3CS8+Qn1oQk2tM6/XBvhQcfZhw1FDQ09uafFr8E4cuGL3SGq9VScxYGngMOZlG//EjxI/VdZc5D06HLTLUUIywcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a9a850270e2so183046766b.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 10:39:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731609555; x=1732214355;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vpIiC4+dXXXG/ni9NIrBfRiACPRHsAI3/biRUJPax2k=;
+        b=hFbB6DTWBSP9xTBjUQ2uBwQ8+h/rCEn9ZJsjxvPM+KyU4hS6iuw4UGnnjbUD7XgbUX
+         IXr6VwXr8UnLChvfxwSfgawm1tRBN5H9OUCIHEPtOESR5LP9HipC/HZqYgY0YDNR6Bwr
+         YKv2jdMLZDdEO3wCYZNq5vP5x6sPpqWfpfywbbq4Uxm7FZqEj6he0ve3kWhT+gafREfi
+         wUtKmZeynfDU9uiZoDKahYtwEyJ4pqvAa4LfX1PD3XtfgQWRzOL6rrby7iyIk5FjLoqg
+         i2sWdCYlgZAqPQwBMEIYQX8aC5zGORBnCDsZ28hjeXxMeaFMlt55D578khfrDlvHlV3z
+         IIrw==
+X-Gm-Message-State: AOJu0Yy+qojvn3T/MpDOaB3fIdN6Pi0Wph1UMovXcDmJVrzao5snG/LE
+	fIZ8W2+LP0p/BesThucyihe+Nfjho/Ga72ODMn+AA7jlOqT4a267InR2bhvjJ94=
+X-Google-Smtp-Source: AGHT+IHFMdb0o8F/DsEgcu/PHxiFSZpJF5aR+9vxr46ufSQkSTig9FzKgl7DqSAd73bB+ctrz2rmyg==
+X-Received: by 2002:a17:906:c143:b0:a9a:ea4:2834 with SMTP id a640c23a62f3a-aa20cd2fdb1mr325887466b.33.1731609554420;
+        Thu, 14 Nov 2024 10:39:14 -0800 (PST)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20e04676csm90281566b.157.2024.11.14.10.39.14
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Nov 2024 10:39:14 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a9a850270e2so183042466b.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 10:39:14 -0800 (PST)
+X-Received: by 2002:a17:907:7b9a:b0:a99:8a0e:8710 with SMTP id
+ a640c23a62f3a-aa20ccfe85emr316487266b.14.1731609553553; Thu, 14 Nov 2024
+ 10:39:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8f.1731605782.git.fdmanana@suse.com>
+In-Reply-To: <c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8f.1731605782.git.fdmanana@suse.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Thu, 14 Nov 2024 13:38:37 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je86Jpte80B9MMmMhGUoUuCuJVx=+u1Rhct3h5+h9d_66g@mail.gmail.com>
+Message-ID: <CAEg-Je86Jpte80B9MMmMhGUoUuCuJVx=+u1Rhct3h5+h9d_66g@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: sysfs: advertise experimental features only if CONFIG_BTRFS_EXPERIMENTAL=y
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Nov 14, 2024 at 12:37=E2=80=AFPM <fdmanana@kernel.org> wrote:
+>
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> We are advertising experimental features through sysfs if
+> CONFIG_BTRFS_DEBUG is set, without looking if CONFIG_BTRFS_EXPERIMENTAL
+> is set. This is wrong as it will result in reporting experimental
+> features as supported when CONFIG_BTRFS_EXPERIMENTAL is not set but
+> CONFIG_BTRFS_DEBUG is set.
+>
+> Fix this by checking for CONFIG_BTRFS_EXPERIMENTAL instead of
+> CONFIG_BTRFS_DEBUG.
+>
+> Fixes: 67cd3f221769 ("btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CON=
+FIG_BTRFS_DEBUG")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/sysfs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index b843308e2bc6..fdcbf650ac31 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -295,7 +295,7 @@ BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
+>  #ifdef CONFIG_BLK_DEV_ZONED
+>  BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+>  #endif
+> -#ifdef CONFIG_BTRFS_DEBUG
+> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
+>  /* Remove once support for extent tree v2 is feature complete */
+>  BTRFS_FEAT_ATTR_INCOMPAT(extent_tree_v2, EXTENT_TREE_V2);
+>  /* Remove once support for raid stripe tree is feature complete. */
+> @@ -329,7 +329,7 @@ static struct attribute *btrfs_supported_feature_attr=
+s[] =3D {
+>  #ifdef CONFIG_BLK_DEV_ZONED
+>         BTRFS_FEAT_ATTR_PTR(zoned),
+>  #endif
+> -#ifdef CONFIG_BTRFS_DEBUG
+> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
+>         BTRFS_FEAT_ATTR_PTR(extent_tree_v2),
+>         BTRFS_FEAT_ATTR_PTR(raid_stripe_tree),
+>  #endif
+> --
+> 2.45.2
+>
 
-We are advertising experimental features through sysfs if
-CONFIG_BTRFS_DEBUG is set, without looking if CONFIG_BTRFS_EXPERIMENTAL
-is set. This is wrong as it will result in reporting experimental
-features as supported when CONFIG_BTRFS_EXPERIMENTAL is not set but
-CONFIG_BTRFS_DEBUG is set.
+LGTM.
 
-Fix this by checking for CONFIG_BTRFS_EXPERIMENTAL instead of
-CONFIG_BTRFS_DEBUG.
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
-Fixes: 67cd3f221769 ("btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CONFIG_BTRFS_DEBUG")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index b843308e2bc6..fdcbf650ac31 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -295,7 +295,7 @@ BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
- #ifdef CONFIG_BLK_DEV_ZONED
- BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
- #endif
--#ifdef CONFIG_BTRFS_DEBUG
-+#ifdef CONFIG_BTRFS_EXPERIMENTAL
- /* Remove once support for extent tree v2 is feature complete */
- BTRFS_FEAT_ATTR_INCOMPAT(extent_tree_v2, EXTENT_TREE_V2);
- /* Remove once support for raid stripe tree is feature complete. */
-@@ -329,7 +329,7 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
- #ifdef CONFIG_BLK_DEV_ZONED
- 	BTRFS_FEAT_ATTR_PTR(zoned),
- #endif
--#ifdef CONFIG_BTRFS_DEBUG
-+#ifdef CONFIG_BTRFS_EXPERIMENTAL
- 	BTRFS_FEAT_ATTR_PTR(extent_tree_v2),
- 	BTRFS_FEAT_ATTR_PTR(raid_stripe_tree),
- #endif
--- 
-2.45.2
-
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
