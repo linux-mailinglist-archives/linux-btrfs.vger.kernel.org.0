@@ -1,127 +1,99 @@
-Return-Path: <linux-btrfs+bounces-9665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 613EB9C90ED
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 18:38:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E449C9103
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 18:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2287C282D7D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 17:38:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 215E4B364BB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 17:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A7918C022;
-	Thu, 14 Nov 2024 17:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C2D818BC28;
+	Thu, 14 Nov 2024 17:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUwsdTLT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nqG4qmmM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB8518BB9F
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 17:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF52262A3
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 17:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731605913; cv=none; b=XCc3iHS7DhXXdXGjHHQHsefDP2c8CbkuuYvA+c/O1+HMM2xd01stSE475RbLqutwapD/VooMkrsOFLjvcPX5pFj4cqS4xnDvlrbQuQ3l6szE8vOhB4pxk/3Pu5HUUojuXA+LEsj3TUGksrWOcP1+qLdUfmEjbT0yOSpVAhoUfdc=
+	t=1731605843; cv=none; b=jQUQuQzU9s4ycf6aIGEyKM6wFvVjx+9psEGS7SgjTmN59O4+TI2qj8vRMJ1bTtrgxOdfBFMReoH1SIUfyRka/3lRtWIS379yTWE2mh1V020reCO7ULeswOImDBLLy9715NqKRuzli43JeZPeHdL7squnM+MJIFwtE64/c2SBmY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731605913; c=relaxed/simple;
-	bh=Mu/lYvCwce3YsJFXxC6i4tB7GeX27NNP4UDQVzE2Koc=;
-	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=BjOkBH8DrvgFb6p6RAQ0jKRg5p0HDSmA2A2tG0I1WzwcKJ7y3ioWt9OVDgrtrjC3DlbX0OknRE9SwG0VHaR8PRJ0L49aqzN1o8i6enDrQF1LvqbcDFCZZYgSNZpjveCavZ4HaaFVVVjV5yA9UBa8uxDlQvLYNaJ2IiRQGDjXyO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUwsdTLT; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2fb4af0b6beso15703641fa.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 09:38:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731605910; x=1732210710; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:to:content-language:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DAOh3Ih2DlH9IWG8wA2+N4nZ05uTLuR2Ne7wVI28ud4=;
-        b=AUwsdTLTaS8N8165CIiMph6E9Pau6mfyZt0pLsKQoDiC6MjEelJ23ShpMITz3Hnb2W
-         BBwHma6w83YDk0mVpr/dMff6nDSk5C8z18dxi8nXo+3+5CuqPacoJVw2n6kySa266k3I
-         EiIypGXVKHfuV5Ia8Xwa7fpOZ/wWnjYuT62hVCCaDfBrLt3mG9xctbOTrOO50ecrPvwP
-         H6ASQDS7FB8DYC+PsvDKJkM6uVzOKJH2xQIL4QrYAc0gFXmKw1b7gXUeSF6Cvm7QKj7g
-         nUQlE+gUc4PvmslRIxExSvLfSA4v9TLgi+cYZp1B3pO7ofjAU0hyimzQylBdmeTHK6sI
-         x0cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731605910; x=1732210710;
-        h=content-transfer-encoding:subject:to:content-language:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DAOh3Ih2DlH9IWG8wA2+N4nZ05uTLuR2Ne7wVI28ud4=;
-        b=UsRtC8QtY8lmzsXjIyBN+Naw0Eu+aM0UFt910B/Li8uoYAVL19ANlIC9FtWYu1TXz4
-         LGjGGa+qi0+5RbR9Nj2DlLgnGTkKqE4l7sdnEXDZORDX9m28+IcoCNwu/G3S7TTqFEfJ
-         VWFPdO3w/QvWZEQ/jO/Pf098bV+3fLuD0Yf+GZYWHIokCJbYVj9Pwg7ytwcCkGgXemGX
-         e6MOSdhtUEclMQi+KXwQNMdfNTVdQ+c2DX+iz9FCch8mY836bENYB02hiyZSSfX/1p80
-         6fDl/rHKKg3zA0OURlloVjDjppDuFgl/osIYXEaDqWtPi95lGWoMJYcel7ibYU8enPNY
-         ++7w==
-X-Gm-Message-State: AOJu0YwRUM4yuaJd32eHfGtrHpN/sjie39/xRyboKDMmqi1vnjjcPZPa
-	O+Tj17I5Z0VG2PHqU2dxazguDjBhl6OcUHt3AVzvdGW3IoUi7vuD36hAOQ==
-X-Google-Smtp-Source: AGHT+IEXKlhWHTdlbi9oZ4MlqzDLSixvZjVCGN6r+LV9fuJBXm7EzN75Yr+OQa63VXbFiG+3o+8zfg==
-X-Received: by 2002:a2e:be89:0:b0:2fb:cff:b535 with SMTP id 38308e7fff4ca-2ff59027b26mr25465521fa.13.1731605908407;
-        Thu, 14 Nov 2024 09:38:28 -0800 (PST)
-Received: from [192.168.10.194] (net-188-216-175-96.cust.vodafonedsl.it. [188.216.175.96])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20df50ab9sm85623066b.51.2024.11.14.09.38.27
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Nov 2024 09:38:28 -0800 (PST)
-Message-ID: <e4e79b2b-ebca-4ca2-a028-084a6dfcb3e8@gmail.com>
-Date: Thu, 14 Nov 2024 18:38:27 +0100
+	s=arc-20240116; t=1731605843; c=relaxed/simple;
+	bh=Nv2NO+TPjsL/SC+SqMg9Pb0B0kDAHjFQfBTKKUbPcqs=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=E6GnLivwDQrhGaHOT60gdAi8uvPPuHG9IWAA42o0mnWsOQeggOZRll3swZLCw2H8oc1Ljs6yoyFunx2I169ja9ljtg/R+R4r3K2/U1Ztb1TyY3mkgyx00/efa/OEHMirwBna3vdQYfnsOcYFGjM9bCjJA74PfbJ3SsCGPPE677s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nqG4qmmM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580E3C4CECD
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 17:37:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731605842;
+	bh=Nv2NO+TPjsL/SC+SqMg9Pb0B0kDAHjFQfBTKKUbPcqs=;
+	h=From:To:Subject:Date:From;
+	b=nqG4qmmMyoYpPxrxR+pCQA8ep0PNScg0X02+0RpfNkbBgHPdKDRtpmxSjEA9gp1kH
+	 Wi9TwOWptz1glTlx4g3O60PIFhAaEaBQv1VQFbO905HxOQQgW6Rq5trHgs0YeSiCUF
+	 S37jg/D05s55dEcr2ihY7YCpr3C1WpoGK2lZQY41q0cC5H/4FqNZBAIQ4UCou06E54
+	 K26d3yl//3p0ZEfeegZjturXQ0qX0Qv8k67bQA1l08PJ/I3upHxKYY/1QlaRuZ4IUe
+	 85Wxo2+e/4u0BJw6G5xCtDSxoXXqXTfG35VN7dhZNFCFvmmGlRGBu1YIiLmQ//kdyU
+	 S7ofFVY9d44zg==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: sysfs: advertise experimental features only if CONFIG_BTRFS_EXPERIMENTAL=y
+Date: Thu, 14 Nov 2024 17:37:19 +0000
+Message-Id: <c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8f.1731605782.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Sergio Callegari <sergio.callegari@gmail.com>
-Content-Language: en-US, it-IT
-To: linux-btrfs@vger.kernel.org
-Subject: btrfs scrub results in kernel oops does not proceed and cannot be
- canceled
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Filipe Manana <fdmanana@suse.com>
 
-yesterday my laptop (kernel 6.10.13) froze coming out of hibernation. 
-After that it will not boot anymore, saying that the root (that is on 
-btrfs) cannot be mounted. I am dropped to an emergency shell and if I 
-try to manually mount from there, I get level verify errors.
+We are advertising experimental features through sysfs if
+CONFIG_BTRFS_DEBUG is set, without looking if CONFIG_BTRFS_EXPERIMENTAL
+is set. This is wrong as it will result in reporting experimental
+features as supported when CONFIG_BTRFS_EXPERIMENTAL is not set but
+CONFIG_BTRFS_DEBUG is set.
 
-Tried to boot a live iso (with kernel 6.11.5) and to see what might be 
-going on.
+Fix this by checking for CONFIG_BTRFS_EXPERIMENTAL instead of
+CONFIG_BTRFS_DEBUG.
 
-Managed to mount with -o rescue=ibadroots,ro getting transid errors.
+Fixes: 67cd3f221769 ("btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CONFIG_BTRFS_DEBUG")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-- As soon as I start the scrub the kernel oopses.
-- The scrub does not seem to progress (calling it with status).
-- The scrub cannot be canceled.
-
-The kernel oops appears scary. Even if my filesystem is corrupted the 
-way in which these tools break rather than erroring out in a nicer way 
-is not very helpful.
-
-The plain btrfs check report a level error on one root and I think I do 
-not have backup roots.
-
-- is there a way to find out if the problem affects all subvolumes or a 
-single one?
-- is there a way to find out what can be trusted attempting a data 
-recovery with the mount based on -o rescue=ibadroots,ro?
-
-Is there any way to find out if my nvme (the hardware device) can be 
-trusted to be used again (namely if the problem originated from the 
-hardware of from an error in the kernel)? The fact that the problem 
-appeared when using hibernation makes me thing that maybe the nvme is 
-not at fault and that it was something else.
-
-Any clue on what could be tried on my side? Why does the kernel end up 
-in an oops?
-
-Thanks,
-
-Sergio
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index b843308e2bc6..fdcbf650ac31 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -295,7 +295,7 @@ BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
+ #ifdef CONFIG_BLK_DEV_ZONED
+ BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+ #endif
+-#ifdef CONFIG_BTRFS_DEBUG
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
+ /* Remove once support for extent tree v2 is feature complete */
+ BTRFS_FEAT_ATTR_INCOMPAT(extent_tree_v2, EXTENT_TREE_V2);
+ /* Remove once support for raid stripe tree is feature complete. */
+@@ -329,7 +329,7 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	BTRFS_FEAT_ATTR_PTR(zoned),
+ #endif
+-#ifdef CONFIG_BTRFS_DEBUG
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
+ 	BTRFS_FEAT_ATTR_PTR(extent_tree_v2),
+ 	BTRFS_FEAT_ATTR_PTR(raid_stripe_tree),
+ #endif
+-- 
+2.45.2
 
 
