@@ -1,68 +1,72 @@
-Return-Path: <linux-btrfs+bounces-9630-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9631-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBCC39C848A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 09:04:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A64A9C848B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 09:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0FFF28531C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 08:04:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBDB8B23924
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 08:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A511F666B;
-	Thu, 14 Nov 2024 08:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CF71F7087;
+	Thu, 14 Nov 2024 08:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="GurdA/Gw"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="MH3sgjUs"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEAA1F4FDA
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 08:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2AF163
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 08:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731571484; cv=none; b=ctr6yhQFiuNxBh+1uAbicYNYV90XaKH81PpmGCu6cdAfoc+/Z5vHxmS8Qfo4FUm/o+Y9GnsFmsaWkASMjOjDejoFI2N3HPvvGMEy6sfz9MTrO9YVviyCvcurT/dr8N16gPu7yipDTvCoBZNi7lhCC/MEtHV2o0EjqJhlIwQCiEg=
+	t=1731571486; cv=none; b=DeQwXBbK5k6i0WaYu0Nrw/gLxTZbSkbfI9dZ3QA72LOJWz0/NZ8RhFb0bq+197uz08wpEs7BDHczQvaH4NdwvW6qlPI/whWw3/HVRrldvEA5i+Xfj8xYm/RRjXSZ5prpU+PjacHhQPKA6yiDHwNGYWOVvIcsDYX9nZhMmqx6jMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731571484; c=relaxed/simple;
-	bh=lblzJr6tSetd9VzjRsAcfwoY/hJedHN/YAkbbDrf6FI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bSdcQ08ftWivnuP7X3mnwjQpv8PNsuUbXzYBdbKEOygBxXMpFE+XliLmzdB21bUnMgJOjZftkYkvfaBftk6xeM6sQoeGvTF7CjlgecADTLmDA1HbUh9hhQjSKd0WJ+ZDRsvcv90owq4guXEU6Y7re/X9h7GauxbuiRt5rnP18lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=GurdA/Gw; arc=none smtp.client-ip=216.71.153.141
+	s=arc-20240116; t=1731571486; c=relaxed/simple;
+	bh=8Ouzb4E8uaeyT8WcHy1CYAR5KmZHhOFOlwP8qUO+sO8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AHKmgOYOApwlA9xJyTOtetwhYzw2A2bqiGRzSqt0bkzRCcXtyWB56ExbBHa4nTTwKapQLMl7es8anFmasi53LpmtQSF4ls38ogUVs8YO2PpM3IZZJEx3RpPWOyOVmZ8SzpYay6FFPdN2WuCh+nR9EozAgbm7ftBoAX1eIy0ywy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=MH3sgjUs; arc=none smtp.client-ip=216.71.153.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1731571483; x=1763107483;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lblzJr6tSetd9VzjRsAcfwoY/hJedHN/YAkbbDrf6FI=;
-  b=GurdA/GwBPbMyqUUytxAr1JuyF6ZZdWEla1aAue7023iDOQzfXfyApxu
-   yVgC/0WWHhzp4zd2eaOVuQwlsHnJzaPLTINfMwnvNfqFYkOB2RWS7FFTS
-   s7E4MjTYqqGrKVtl3HyBVT+u6330kSyRDK0Vh238OZ1WWhVHkH1q+LyPp
-   dPV2iUEp24p3lk/scrBqn7vKkS/1F59/my66ZkqooHUxWG7eazkWY9ScE
-   e9wSoNhQ0gMFxQ6G73BcGkEslA55j0R7ACwrh7oe+CeHFlHw3nvv9OQIO
-   09fQ4rceA4Fvf64OQJY1suaJzpVr4YORlzFmWrEabcHF/s7GxLO3ZjvbI
-   Q==;
-X-CSE-ConnectionGUID: 7fQV/mrHR1iqt6KdjXxjTg==
-X-CSE-MsgGUID: jaBU/3bYT02zYLgEgeoDPQ==
+  t=1731571485; x=1763107485;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=8Ouzb4E8uaeyT8WcHy1CYAR5KmZHhOFOlwP8qUO+sO8=;
+  b=MH3sgjUsXTtkfk9ERmWcG//z7zVpfsQBIvRGuRcjQvQMbRMqZl00ZfIv
+   jnr13Gj2CI3NFZRhb4SLPwHzs8jkrhyrIQv8mbwU6I4N4x860uwbQwiu4
+   BCrysrDhhErc37wfXTi9abcmCSr+Sjs3JeGozsBcUz1LtMD4lnbDaF4gL
+   DwfjclpKm1/DbH5qJ57El3+J5+4VQsavQbHXUzhViKbdUqXbymbgfGt1s
+   kcqw6BYcFjdoDQIhbjlAQb7qbcgG7hVirgItyzXbmNqWUcKhceFhzm19Y
+   BCDGxf5c4U6tguExRB2eaIDBoHrdGeKfs5Mrq6Kr8aasw1YpbAQYD5nXf
+   A==;
+X-CSE-ConnectionGUID: OD8Od+lMQw+NyJBdVvAWQg==
+X-CSE-MsgGUID: gx1ChyehRNSQe1/FCNAHTA==
 X-IronPort-AV: E=Sophos;i="6.12,153,1728921600"; 
-   d="scan'208";a="31543756"
+   d="scan'208";a="31543757"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2024 16:04:42 +0800
-IronPort-SDR: 6735a1d9_AJgEUXPa15c1uckqvccqS4JGpNz11TQ7yFfL0wamY9boPJr
- r/aBszK3st8SPO63y3AMbjq4VsTpxxGwpJUdZaQ==
+  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2024 16:04:43 +0800
+IronPort-SDR: 6735a1d9_bDNtDp3+RqbGwypPcQ/pf1fAIxqspIXQevKZNgaj4oUnc7T
+ N+zAFbfOUvn3QlQ/8fxA8r4CZiI1/Hdlefw6wtw==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Nov 2024 23:08:09 -0800
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Nov 2024 23:08:10 -0800
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.24])
-  by uls-op-cesaip01.wdc.com with ESMTP; 14 Nov 2024 00:04:41 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 14 Nov 2024 00:04:42 -0800
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 0/3] btrfs: zoned: implement ZONE_RESET space_info reclaiming
-Date: Thu, 14 Nov 2024 17:04:26 +0900
-Message-ID: <cover.1731571240.git.naohiro.aota@wdc.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 1/3] btrfs: introduce btrfs_return_free_space()
+Date: Thu, 14 Nov 2024 17:04:27 +0900
+Message-ID: <8848f10974bbbf4dc2618c606ee71ee0142b2bbe.1731571240.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <cover.1731571240.git.naohiro.aota@wdc.com>
+References: <cover.1731571240.git.naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -71,96 +75,116 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is a longstanding early ENOSPC issue on the zoned mode. When there
-are heavy write operations on a nearly ENOSPC file system, freeing up
-the space and resetting the zones often cannot catch up the write speed.
-That results in an early ENOSPC. For example, running the following fio
-script, which repeatedly over-writes 15 GB files on 20 GB file system
-results in a ENOSPC shown below.
+This commit factors out a part of unpin_extent_range() into a function for
+the next commit. Also, move the "len" variable into the loop to clarify we
+don't need to carry it beyond an iteration.
 
-Fio script:
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/extent-tree.c | 25 ++++---------------------
+ fs/btrfs/space-info.c  | 29 +++++++++++++++++++++++++++++
+ fs/btrfs/space-info.h  |  1 +
+ 3 files changed, 34 insertions(+), 21 deletions(-)
 
-  [test]
-  filename=/mnt/scratch/test
-  readwrite=write
-  ioengine=libaio
-  direct=1
-  loops=10
-  filesize=15G
-  bs=128k
-
-Result:
-
-  BTRFS info (device nvme0n1): cannot satisfy tickets, dumping space info
-  BTRFS info (device nvme0n1): space_info DATA has 0 free, is full
-  BTRFS info (device nvme0n1): space_info total=20535312384, used=16106127360, pinned=0, reserved=0, may_use=0,
-  readonly=0 zone_unusable=4429185024
-  BTRFS info (device nvme0n1): failing ticket with 131072 bytes
-  BTRFS info (device nvme0n1): space_info DATA has 0 free, is full
-  BTRFS info (device nvme0n1): space_info total=20535312384, used=16106127360, pinned=0, reserved=0, may_use=0,
-  readonly=0 zone_unusable=4429185024
-  BTRFS info (device nvme0n1): global_block_rsv: size 25870336 reserved 25853952
-  BTRFS info (device nvme0n1): trans_block_rsv: size 0 reserved 0
-  BTRFS info (device nvme0n1): chunk_block_rsv: size 0 reserved 0
-  BTRFS info (device nvme0n1): delayed_block_rsv: size 0 reserved 0
-  BTRFS info (device nvme0n1): delayed_refs_rsv: size 0 reserved 0
-  fio: io_u error on file /mnt/scratch/test: No space left on device: write offset=13287555072, buflen=131072
-  fio: pid=869, err=28/file:io_u.c:1962, func=io_u error, error=No space left on device
-  ...
-  Run status group 0 (all jobs):
-    WRITE: bw=113MiB/s (118MB/s), 113MiB/s-113MiB/s (118MB/s-118MB/s), io=27.4GiB (29.4GB), run=248965-248965msec
-
-As the result shows, fio fails only after 27GB. Instead, it should be
-able to write 150 GB by freeing over-written region. The space_info
-status shows that there is 4.1 GB zone_unusable in the DATA space. While
-this space will be eventually freed after a transaction commit and zone
-reset, the space_info dump means btrfs is too slow to reuse the zone_unusable.
-
-There are some reasons to hit ENOSPC early and this series only
-addresses one of them: unusable block group is not reclaimed enough
-fast. This series introduces a new space_info reclaim method
-ZONE_RESET. That method will pick a block group in the unused list and
-send ZONE_RESET command to free up and reuse the zone_unusable space.
-
-For the first implementation, the ZONE_RESET is only applied to a block
-group whose region is fully zone_unusable. Reclaiming partial
-zone_unusable block group could be implemented later.
-
-Patches 1 and 2 do the preparation for the patch 3 and there are no
-functional change. Patch 3 introduces the new space_info reclaim method
-ZONE_RESET described above.
-
-Following series will fully fix ENOSPC issue on the above fio script.
-One will separate space_info of regular data and relocation data. And,
-another will rework zone resetting of deleted block group to let it set
-the empty zone bit early.
-
-Changes:
-- v2:
-  - Use the ordinal locking style.
-  - Rewrite btrfs_return_free_space() to reduce indent level.
-  - Add some extra comment.
-- v1: https://lore.kernel.org/linux-btrfs/gjr4vwt5qm7j36xnjijp5wqttpmh62trhsq5vqeotcqm6kx2pq@qovd36rh7hap/T/
-
-Naohiro Aota (3):
-  btrfs: introduce btrfs_return_free_space()
-  btrfs: drop fs_info argument from btrfs_update_space_info_*
-  btrfs: zoned: reclaim unused zone by zone resetting
-
- fs/btrfs/block-group.c       |  16 ++---
- fs/btrfs/block-rsv.c         |  10 +--
- fs/btrfs/delalloc-space.c    |   2 +-
- fs/btrfs/delayed-ref.c       |   5 +-
- fs/btrfs/extent-tree.c       |  35 ++--------
- fs/btrfs/inode.c             |   2 +-
- fs/btrfs/space-info.c        |  69 ++++++++++++++++---
- fs/btrfs/space-info.h        |  15 +++--
- fs/btrfs/transaction.c       |   3 +-
- fs/btrfs/zoned.c             | 124 +++++++++++++++++++++++++++++++++++
- fs/btrfs/zoned.h             |   7 ++
- include/trace/events/btrfs.h |   3 +-
- 12 files changed, 223 insertions(+), 68 deletions(-)
-
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 412e318e4a22..ce7c963dd0a6 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2724,15 +2724,15 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_block_group *cache = NULL;
+ 	struct btrfs_space_info *space_info;
+-	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+ 	struct btrfs_free_cluster *cluster = NULL;
+-	u64 len;
+ 	u64 total_unpinned = 0;
+ 	u64 empty_cluster = 0;
+ 	bool readonly;
+ 	int ret = 0;
+ 
+ 	while (start <= end) {
++		u64 len;
++
+ 		readonly = false;
+ 		if (!cache ||
+ 		    start >= cache->start + cache->length) {
+@@ -2790,25 +2790,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+ 			readonly = true;
+ 		}
+ 		spin_unlock(&cache->lock);
+-		if (!readonly && return_free_space &&
+-		    global_rsv->space_info == space_info) {
+-			spin_lock(&global_rsv->lock);
+-			if (!global_rsv->full) {
+-				u64 to_add = min(len, global_rsv->size -
+-						      global_rsv->reserved);
+-
+-				global_rsv->reserved += to_add;
+-				btrfs_space_info_update_bytes_may_use(fs_info,
+-						space_info, to_add);
+-				if (global_rsv->reserved >= global_rsv->size)
+-					global_rsv->full = 1;
+-				len -= to_add;
+-			}
+-			spin_unlock(&global_rsv->lock);
+-		}
+-		/* Add to any tickets we may have */
+-		if (!readonly && return_free_space && len)
+-			btrfs_try_granting_tickets(fs_info, space_info);
++		if (!readonly && return_free_space)
++			btrfs_return_free_space(space_info, len);
+ 		spin_unlock(&space_info->lock);
+ 	}
+ 
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 255e85f78313..93818339a9a9 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -2082,3 +2082,32 @@ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info)
+ 			do_reclaim_sweep(space_info, raid);
+ 	}
+ }
++
++void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 len)
++{
++	struct btrfs_fs_info *fs_info = space_info->fs_info;
++	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
++
++	lockdep_assert_held(&space_info->lock);
++
++	/* Prioritize the global reservation to receive the freed space. */
++	if (global_rsv->space_info != space_info)
++		goto grant;
++
++	spin_lock(&global_rsv->lock);
++	if (!global_rsv->full) {
++		u64 to_add = min(len, global_rsv->size - global_rsv->reserved);
++
++		global_rsv->reserved += to_add;
++		btrfs_space_info_update_bytes_may_use(fs_info, space_info, to_add);
++		if (global_rsv->reserved >= global_rsv->size)
++			global_rsv->full = 1;
++		len -= to_add;
++	}
++	spin_unlock(&global_rsv->lock);
++
++grant:
++	/* Add to any tickets we may have */
++	if (len)
++		btrfs_try_granting_tickets(fs_info, space_info);
++}
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index efbecc0c5258..4c9e8aabee51 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -295,5 +295,6 @@ void btrfs_set_periodic_reclaim_ready(struct btrfs_space_info *space_info, bool
+ bool btrfs_should_periodic_reclaim(struct btrfs_space_info *space_info);
+ int btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_info);
+ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info);
++void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 len);
+ 
+ #endif /* BTRFS_SPACE_INFO_H */
 -- 
 2.47.0
 
