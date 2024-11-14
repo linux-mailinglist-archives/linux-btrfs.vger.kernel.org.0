@@ -1,403 +1,234 @@
-Return-Path: <linux-btrfs+bounces-9633-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9634-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7161F9C848D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 09:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A9859C86AB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 10:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B80321F212B4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 08:05:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E230A1F2570B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 09:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DEC1F7091;
-	Thu, 14 Nov 2024 08:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7536E1F8EEA;
+	Thu, 14 Nov 2024 09:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="XQuRrZoq"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="n5LUhp7z";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Axx4c8vw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA7D1F6686
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 08:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731571488; cv=none; b=s4imYc6b6UrKTGYNddnGhzDhOPhg92f+MV0Yctxd3GHXXtJPiJYHu2mwjClUGQFlV3owCaxCdQ3adXQXSSim2GGYQUsiWmGIgABN/vVqhvHF5rfFXfphYK7tTuK1XM8ZVzze69y+8iwgmPcuDYMkRNY4TVTpCq91HoYn2MxsnNU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731571488; c=relaxed/simple;
-	bh=/qKspSoNrijAjosztYEfSEVwQ6+wchTrIuHCfl+DERk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AcCnUX26u/BjoMccHg7BNcx4gsjEKmq8bA9k811dtYnFCliJBTphpyss9452EW/btsqbki89SSoAVwTFrgafoXW3AdjLLxfm5ckC0KwMtxXx9NSNkqE6HqV3fMMnXmSdkSP/6c3L9xbbNCL74KblM0IBFtZu5D39rPc9e1uBOl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=XQuRrZoq; arc=none smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1731571487; x=1763107487;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/qKspSoNrijAjosztYEfSEVwQ6+wchTrIuHCfl+DERk=;
-  b=XQuRrZoq7LsjUJHHjNepMO32bPKLKDWq2F67aVTsluSS7m8yFaptBFxU
-   gObReF24youZ1t2nj/ysv6jcPo2kEpdr2lfxQlBO53Wz2kkVyWeunKDRi
-   kDsBh3Ophi70n5epHs9+CiLfe/loSR0O5fzXJxcZZSdr8NvWrybMTGFU9
-   uJGbOq7wRzOTviWHZOt65m7mXi7ZCeo5CIijkEKjTbq2hfqYky9CFNd1b
-   0huruaJbSjEXldgl1pvne2Bm6K8eU7HgT4falsmjhDs76YZVKQ6OFdNks
-   DQAicPZ6BcDrIO1zvU5/Dzgo8tL/HEiXWMj72nz/n+RtO8ThYGlxGBj2o
-   w==;
-X-CSE-ConnectionGUID: FEDbaTLaTs+Qys0my561tg==
-X-CSE-MsgGUID: 6jJcHgGSQOWcBBaB5BjHXA==
-X-IronPort-AV: E=Sophos;i="6.12,153,1728921600"; 
-   d="scan'208";a="31543764"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Nov 2024 16:04:45 +0800
-IronPort-SDR: 6735a1db_HcLGGzyyHTrta7pcgAFcrRVNcuEBbX5wG75I2kZB5aR6CH6
- 3i2e8z5lkXcspMiIStA6MF/dr3Vx6W6dAp2K9KQ==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Nov 2024 23:08:12 -0800
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.24])
-  by uls-op-cesaip01.wdc.com with ESMTP; 14 Nov 2024 00:04:43 -0800
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 3/3] btrfs: zoned: reclaim unused zone by zone resetting
-Date: Thu, 14 Nov 2024 17:04:29 +0900
-Message-ID: <a452ed2c524c5b67aa7523ae5130d35fbef2207e.1731571240.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <cover.1731571240.git.naohiro.aota@wdc.com>
-References: <cover.1731571240.git.naohiro.aota@wdc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60931F7577;
+	Thu, 14 Nov 2024 09:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731578201; cv=fail; b=bXGWL6ebReDaEFXmOVNRnYUZX3FD7Dd6LiCckFJiC6qrseuOpurjVcwuJ+OcQEPWuSs9e/AvB0rFQn3ik2mx0o+MZVmv5QNhGqWYzTruuQ6XoN0g4cmrF9jQFwJmryOtGMOB0DliTBVqDdFWiF+45RaBgvpuiknr49gMu+Nrpg8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731578201; c=relaxed/simple;
+	bh=EISaw3K4pjXyrMCbRxIohpbcWIUNC8Er6grUyAgN/WQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=K2BHkZJhTZNgLyVbXTgaVDQKYhErYAW6QnUW9F5JGxj5/tZXz+SLNx70N5SI3GOLXu9385PKodBsRAvvzthSHSFcN5LePvJcTuoddBycFi1MT0n6erqfbaXTJFk4/RRD0eiTUPqmIi8O3vHa++iZIysB2jmoqpcyvvhmX+5GfSE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=n5LUhp7z; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Axx4c8vw; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AE1gV9M002606;
+	Thu, 14 Nov 2024 09:56:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=K+7EqGvQ2K+9z0XPkDmnMAptcLYxTxfJ33Xz0sNY37c=; b=
+	n5LUhp7zQqxr/BD+PdbPKxn2OO5oy6cUBiaspmCImZGU/b8nMCdsb34LwaQPByuz
+	CgjuyJUVs0Ctm1zMTguaYadPSsp60kKNHWER0BlbSZZtzVVot0I/gsnaVkKjFtWo
+	w0u60gNouvytvRhl4GS+ekufO9WoZM6WP4W9X3G0/iUBTf9dOWWcMZW6ODc9I39Z
+	LOBRsnIArrqjJAekmNI1R30/NOG9WsT+mbBcBtZkPhXSN8QTnn8GSQe087t7PKUh
+	l0Nkv2fFjGwNa0JE+7ARjXj/JpVRJbJ9hFJ9RRmxBdwBXilEJD6AHez/LhB9MT46
+	Zg3TicdFZnd1FOEgg+1gcg==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42vsp4jguu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 14 Nov 2024 09:56:34 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4AE9dqoP005695;
+	Thu, 14 Nov 2024 09:56:28 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 42sx6axaxb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 14 Nov 2024 09:56:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HkxjspJ2RKS0iVD4nKTjhMom6NsGg5qmcmwOHNtVZyr9/wtc33D2YugimtKZ7xG6NXYjCcRiKCOb+Q4/FqTsAmQGUwI/qHbe2QYBnkxLwPdW6mBFCjeyl7On/bh6E71zsqORebGbI0NNlUBqYuA3n2D77FyC4AOrEkhv1yt7uVKCQ0V4hx63M0wSHuwtvm5UsRHPjeqTffaXlRL07LY6gQC3I3ZIHetW5UyIflIlRAcyW3m4EMOLZvrW047D5+S1+Mqz1FVU85mxi0q/WkOljmFpJb++tl1nCRpCLmxKUQFc6sLuB9x8nqMDEIq499/i8uEZ1vTxzt2vdg6TLY28dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K+7EqGvQ2K+9z0XPkDmnMAptcLYxTxfJ33Xz0sNY37c=;
+ b=rd8ng4uJCU42VjVxN6WiBigrDO/K8HGIAVV5hg9I1XDhBjlF5vEOaJDuu3t1rB0zrZ/2cpi2YwFpm9m8DmMidjaX+1+WmJTa3KsPeRuzOGSYDry+BEOeNJaavUzHrlieI9dHw4DRWpTbI3HVqC5NmR0hHsX2tvQatziSddO2DRF2S8GbUH+v07a/oiszbXLPOEsZP9vjgKbfPY9dLxlewTy68PpxcLJ1BEtK9iLLn007x4Xekku/PDIA1oAysJLV9Pqsc4wX3+TbEBmjdsfRVSFJGQ8PAKIpvHYU2Ut98PMRfyAeIpXNwItHnHkDO64JqflU71Hs373w7IILjVlB1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K+7EqGvQ2K+9z0XPkDmnMAptcLYxTxfJ33Xz0sNY37c=;
+ b=Axx4c8vwE34OavHhTjSkhq44MqmW3Xn4Bx4fiSxpYCQMltBg+bJt97H1s1MxSj6v+2aJB1SBN8IeRGO6H2ejUF4fi4WqgYmbFckjT0ybVPhbck3ny/yNHRdRRwCnJXVINWjXW93WMVaJZ4ccJ46j2lmjM0m0Kwv36Yt49tb3gV0=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SJ0PR10MB6431.namprd10.prod.outlook.com (2603:10b6:a03:486::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.29; Thu, 14 Nov
+ 2024 09:56:26 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65%4]) with mapi id 15.20.8158.017; Thu, 14 Nov 2024
+ 09:56:26 +0000
+Message-ID: <fdedcc89-6fae-4f2c-b1a5-6d5abf9a7cdc@oracle.com>
+Date: Thu, 14 Nov 2024 17:56:21 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fstests: check for ext3 support in btrfs/136
+To: Johannes Thumshirn <jth@kernel.org>, Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <4c41adf81241f5d23b5a10251564b1630cabc500.1731327765.git.jth@kernel.org>
+Content-Language: en-US
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <4c41adf81241f5d23b5a10251564b1630cabc500.1731327765.git.jth@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI1PR02CA0044.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::6) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB6431:EE_
+X-MS-Office365-Filtering-Correlation-Id: a9ff3b5b-f3bb-4c31-13bc-08dd04929aa5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|10070799003;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?bTYwbGVOREY3NVdocDdXOXRaZTc1U2Nub1BZOUdmaUFNdWkwYWhpRS9CSnRS?=
+ =?utf-8?B?MG5xaE1mc3hYdWdUUkNJc2lZRXNIMkM4R0toTk9ObWh5QXBiMFNOdDhIR1p0?=
+ =?utf-8?B?ZEZJb1dUSjVkdUt3MlFObVhNdXA4M0U4N0g0UjVmc0ZWMWY4Q3JEOTd6WDlu?=
+ =?utf-8?B?SnN6YWJ5aGdxRjcwOEgvOEJMVzVrenJKYmhsb0RZVTljME44MURZMDlqQ0R0?=
+ =?utf-8?B?S3FBZGFnY2lwaExOckd0dmlDUTZYYTRPK1ZRdlNBUUxUWVdidWVYN0dxbjcx?=
+ =?utf-8?B?dEtDNUJPT0dqRmZyQTlKamRDL1pNSmRvcW1EVnlEanl5MVJkTjNtTGVqNzZt?=
+ =?utf-8?B?UTZKNjNic3ZzZGtTcnkrcHFNTm9TNC9FUEJOa25jcXFSYUJDTHVMb0RNNnBQ?=
+ =?utf-8?B?YklHL1NnYlU2a3pnRENsUE1QOHlnMzU1VmpnZklrQUZ2MERMNkw1OXRIdkZQ?=
+ =?utf-8?B?MXAvYzlUUk5SL2k0S2JCcndhb0dIRWxvQUZEOWtQaHQrWXdJaUhscTk3NjF0?=
+ =?utf-8?B?ZWNGWHBORkJqeUYrR1hHUzZnWGh0dDIvQ2xHTEhjc0RXSjZZOWhMbTN4OFZS?=
+ =?utf-8?B?QXNJeW85UHhEeTY1aE9Zcm5tNWVGY1VmWk9WbzVIL2Fhb2pCbGpjN0JtVEhH?=
+ =?utf-8?B?NWd4YkJhTm1FTWE0WUlhd1I0Zk1QcENqS3d1L2cwemUrM1ZnclRGRjBBdHVv?=
+ =?utf-8?B?Z1JOa0F4Qlc4MlhDeFpPVU5yOHhBdVZqVEJSb3hzZndJaGRQNVA0Z1d2Ylpz?=
+ =?utf-8?B?cCtoMDNCczFiT3V6b0ZxQjJFZ3VpNy9tdVEvSHpIUlpwSndMaGVlOHhWZ2Nn?=
+ =?utf-8?B?VmZTdEs5RzNMckFtcjVyc2RVU2FIODIweXhVU3l2Z3BKeUJYeUttckp5L3JW?=
+ =?utf-8?B?SllmQ0FRditBQ0VMRnVzU0pPNVlJbWt0WlFmMXY1cmZidS9UazBCbGwydGhh?=
+ =?utf-8?B?cnlsNFhRYnFkYUliVFY4RUtZVkhZU21CUm00c1pDcjg1SExMOFIzWm9vRE5r?=
+ =?utf-8?B?RmFEbG42dmphNW56alh2SzhvNU4xZWlDV0VOdlovVllRQkJ6Kyt2MzlOenhq?=
+ =?utf-8?B?WS91cjJBeDYxem5zQUpNWmZ2LzRCdTRLbzlZVVI2QTZvRkU1VzdTdzdGZTNP?=
+ =?utf-8?B?MWFsYk0yc1RWTlpZOGV0VDR2NVlBRml1NTF1K1M1c3BLRWFtOVZNcjJ5TXlv?=
+ =?utf-8?B?SXZURS9MZkdRRmFISGVSN2luVm9uOTZkNW92ZU5SNVFyUy8vdk1GdjQ4NTZu?=
+ =?utf-8?B?QjhWaHlaamhhVSt1eDRaaFZSYUplWnFiYUJpRXZ2NjdwcVRTeStDS0xtN3pL?=
+ =?utf-8?B?MDhDOXBFaVlFZFdJS2syRkxWcXJHdzI5NXpJVVZlUG5rODJiWnBxMFJnRVlx?=
+ =?utf-8?B?N2FhVFYwRXE4SUhTNFBTLzVYU1dGNXA4RWYyK282dFZVdjM5TFU0QzR3TC9E?=
+ =?utf-8?B?NWVlT0I3NTBmMlJCKzg1S0NyUXBsMmR5M1k4bFA4RlBTZkFUdHh3Z2ExbVdJ?=
+ =?utf-8?B?ZFhCMkJjakpMMzJqRk9CcTFiOFNVUnFYZS9veWJoaGl1L0NoNTk5eVM2ZGJi?=
+ =?utf-8?B?eFVFSmtMTkZpSGlqZkx2NXVaZzFFRVd4bzlBSEx3QnhEdDNmaVo5dUxSSXBC?=
+ =?utf-8?B?emttVmVER1dYSVcva0tjRHp2S2ZFeUNHL3luZzJRUGZmTzRVcUw0bkJ0aDFt?=
+ =?utf-8?B?NEZCdERaSkZ0N0RZOUN3T3lWZkF2TU9VWUVrL2tiTjY1UFNyMDRVaTRkYXRL?=
+ =?utf-8?Q?YVu5RdkohRPNoUHPHA=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(10070799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NkMyWjltRFBLT2FENm0reG1PMXBTd0VzVmJCREtudlE0ZndXOFFhUEU0ZkpK?=
+ =?utf-8?B?ZUlSK2RsWUxnVnVVakozWVpuQjdjTEZnVUVURzJhYVhzbjBGcCtoQWlvMHVK?=
+ =?utf-8?B?blp6TXVMY1JlR3EwYnZYS3FlMWlZVzU4ZHBYLzducWdzKzcvcHZsOUFZWklp?=
+ =?utf-8?B?dDExZDJ6eVV3ZjZXSGN1Z1U0T0dMV1NlZU9ZTkp3WkVXb3BBbEJDbTFJMWdw?=
+ =?utf-8?B?cThLb0RDSEZ3MzdIV0twd0RlQUVrbTJid1UrblpyaXBXaVB0emVlT0MrZkhY?=
+ =?utf-8?B?Z3V4dGZBc0YvN1ZPSXZZQm50Zk9oRlQ1emJOQUtUR3Q0TXg1NTZoOXFlOWJB?=
+ =?utf-8?B?WkFwTmxCVElJRzVhc2JNZFptSmV1ak4rUUhFUEtvRUtOV1ViempHc1Z2R3Rr?=
+ =?utf-8?B?MStlMlpGSGk1a0xsUHQ4RkpIbk14b0srdWRObzRiNFlXOVZCZE50NksyYWVa?=
+ =?utf-8?B?ai9DMy93aXV3b3NzZ3IyaUR3U3RZOHBaUzZNdjdlNjZEbXpzN245SXoxcFh0?=
+ =?utf-8?B?aWpNRkhIcW1aMGg2WVVxVXdhT2dha0hmY2pGcWk2MzdrQVBZOGJ5QmRhT2tS?=
+ =?utf-8?B?MHRQRElrakdrZnBVcHRacFFUWmp5SXpCbUZvYjBBMVZjMEVjZ1ViODJieC9o?=
+ =?utf-8?B?K1AyS285M2VaaS94TmpkYXVsaGFSdE5wUTFycGdqd3pxZDRlcElTbEVWSG9T?=
+ =?utf-8?B?Q0FxbDkrL1B3K3doWUU0WjcwdWJMNmJaNXVDV01rbkNXVGZsbXhNRTdIQ1FP?=
+ =?utf-8?B?RFFLTzZLTXpPREVtbnE5bU1YZm5idmVhaFB5VHZ1ajY1bHRtUlNFWmUzNVNR?=
+ =?utf-8?B?UW5oVFFnZzNXY2ZYdXI4cUxtV1BKVGVKT1FpSS9LZFQ4U09FSnJ3OW03czdX?=
+ =?utf-8?B?M0ZJbnNLaUptQlRhQ1I5MTZDd1F0T0pZUXhpTUdvV3NpMytoZGNGR2ZmUkNP?=
+ =?utf-8?B?MVZhaThPL3RVdHg5TUpmQUMvTU5GaU5pcmtVaC8vYkVNSTA0U1NPLzg3YmNJ?=
+ =?utf-8?B?Vkg4aDhXWDRrY2NXaFZDWGtrZG5UdnF4M0FvU1dXUkh5L1hoWlNvRkxSVDVZ?=
+ =?utf-8?B?cGo3ZW9vaXVmWnpxdnNqU1UzMFd0Ty8vRlB0eXI4YW03elpjZzQ4S0VkM3VD?=
+ =?utf-8?B?VDBwNjU4TkdlMlNDSTA2SDh4d0syR3BtRUlrS1ZZRDZTbWdCM2pmOGxCQXpq?=
+ =?utf-8?B?QVlWYldvSlFFb0xnVE9TbGhGMkZ4ZHBJN0x0WGJ5UjN1UHUzN3ZpYTFCODRm?=
+ =?utf-8?B?aTRabU4zeHVJR0ROZVcwUStwNllRK3NmSG9NUWlyVVVuRVh0cHVzcG03Vmp0?=
+ =?utf-8?B?MkN0bnJUOGJ5SDFnNU1qTFQ5NHp4WUpOdW5OOXJtM3N6cktPWlNDYjVFb2lI?=
+ =?utf-8?B?Yk80L1ZzMmI1Y1IxbndZaGhxTE1zS2NFU201OXpLWDFlQ3o5cEpRSEtIaXVR?=
+ =?utf-8?B?c1I1MXdqMHFFRmNmMUdmYVpCVUNTc1F5c2Q2U2hkWUxIeExyQ1pCTE9vSG1D?=
+ =?utf-8?B?ejRYazhCNnVuSUZjWFhYUTVMNUozdWRIY2JEMTdOOWpmNFQ4QnU5RFE0eHN0?=
+ =?utf-8?B?VEpLUUVwUy9aZy9YZTZqU3FwS013Uy9YRzk0eFA3NVBqUkMzQkRadnhXVmxa?=
+ =?utf-8?B?ZWZFZjFMS0VKaFpTclNkMG5xR2JpZm82aGZLWmQrcGNJMmh4bTVLU2pPV25Z?=
+ =?utf-8?B?U21SMnF3dDltRll1MXFTcTJESkljckw2NlFESFRPV2NyWGxTRmF1emxrVlBN?=
+ =?utf-8?B?ZmZKako1VWxaWjNIRUZhNVdGNTJpbCsvbzBvSXQ0RTM2emhvdnFJemx4VlM4?=
+ =?utf-8?B?eUVFWGxFeUNqK0ZXNldLeVFweUJRcEovZ3dFZVJsMzVHR3pCclZxRml1M1BC?=
+ =?utf-8?B?MStJZUtFQ2E1VnV3U3diY0p3ZWYwSnovaTVtTk9Va3puUEtobVNWRlltS0Vn?=
+ =?utf-8?B?OW1YMFY3eXI5OTVnbnB5RG5qMERKMTEwRW1oUk8xelBDaStYZXJ2bHNUbTJ0?=
+ =?utf-8?B?Vjd5VlZUR1NNUFB4UVZ0MjExeXFvaCsrMjVKaTlIMlZ0L2I5TGhEeVZDM2ta?=
+ =?utf-8?B?UzhqaFRiSHZCVERwYTRkR2d1bDhNRHR5eDluSUFobklQemtTT245eDM5b2dI?=
+ =?utf-8?B?Y21mcTlCaEFZdGRQWlgzVmVrV1RWdVo1TnQxMjV5bW5EbUYrNHBLdHliOUkr?=
+ =?utf-8?Q?BByfdmRYeN2B9+NqB2+xcUk=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	9yaA/YEO/1TQcSMo2lruiBuTg5xXYy2L7v1g8AIlIIJNVC/IsTCzKWPrs5UFqW/YEmhoseRhXbNX5pS6TnMuo+lB2B4WXNttpHmKoW62FJn/29o5L1qEE9ouXMoCWjF8H0ruxXDFYkXrYDF//vp7z7/lY0f9FjVQwPRK8kph+lI1fpw0zPcSQFcx/9oHuH1E9dxW5h/N0jf5nUazUEbf+a2igAe0quiSpK2ewhiVNkNZPCP3XYJZiEeudVZawJjVbJ/1ijeCc9BdhlvOopv1kDWiXMRYvrjNd1X33syvPkBTvOJY7N4Fz6AHa7Gy2Cach/lR218fTtoH56brLV13hKRwFHBTn3C2DWUgHe1fwKVtUiVcwGXwCjdpYswtKXVMm27pQnEzKl7/Axqd24tjuhH8di1qQQnsBPktkGkS4zCBYvbj4qtJkSWsfVzJfCrDBkrL553zH2GoV3j0JK5IqSu26CUYAo1j25ufHu/1WJ+g9eH6qyBC2Wrfo8UmHPNLy1X3XSfdSl/GGIXDmoA3vyAMtc39mfhHqUGbrx3G8v6n74zizaEy+ClIJgXCm/BUHgHQWcO9e5qZ+keAcKsWZj9cfPFqRqSNcrad3zW8prc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9ff3b5b-f3bb-4c31-13bc-08dd04929aa5
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2024 09:56:26.6041
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1XvjGqJwuNFRcEX7RKodo2rK5ABJMw5GztjtmdeM82G+I8vDQO1XIhHmXBdaZc6w2noIobc/2dW4wMvJf3VM0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB6431
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-11-14_03,2024-11-13_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2409260000 definitions=main-2411140076
+X-Proofpoint-ORIG-GUID: UxmxglsUGM-VbQJuGSiHVQCfJ7Sul0Ar
+X-Proofpoint-GUID: UxmxglsUGM-VbQJuGSiHVQCfJ7Sul0Ar
 
-On the zoned mode, once used and freed region is still not reusable after the
-freeing. The underlying zone needs to be reset before reusing. Btrfs resets a
-zone when it removes a block group, and then new block group is allocated on
-the zones to reuse the zones. But, it is sometime too late to catch up with a
-write side.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-This commit introduces a new space-info reclaim method ZONE_RESET. That will
-pick a block group from the unused list and reset its zone to reuse the
-zone_unusable space. It is faster than removing the block group and re-creating
-a new block group on the same zones.
 
-For the first implementation, the ZONE_RESET is only applied to a block group
-whose region is fully zone_unusable. Reclaiming partial zone_unusable block
-group could be implemented later.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/space-info.c        |  28 +++++++-
- fs/btrfs/space-info.h        |   5 ++
- fs/btrfs/zoned.c             | 124 +++++++++++++++++++++++++++++++++++
- fs/btrfs/zoned.h             |   7 ++
- include/trace/events/btrfs.h |   3 +-
- 5 files changed, 164 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 7b3c514eb6f9..981da9e1b009 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -14,6 +14,7 @@
- #include "fs.h"
- #include "accessors.h"
- #include "extent-tree.h"
-+#include "zoned.h"
- 
- /*
-  * HOW DOES SPACE RESERVATION WORK
-@@ -127,6 +128,14 @@
-  *     churn a lot and we can avoid making some extent tree modifications if we
-  *     are able to delay for as long as possible.
-  *
-+ *   RESET_ZONES
-+ *     This state works only for the zoned mode. On the zoned mode, we cannot
-+ *     reuse once allocated then freed region until we reset the zone, due to
-+ *     the sequential write zone requirement. The RESET_ZONES state resets the
-+ *     zones of an unused block group and let btrfs reuse the space. The reusing
-+ *     is faster than removing the block group and allocating another block
-+ *     group on the zones.
-+ *
-  *   ALLOC_CHUNK
-  *     We will skip this the first time through space reservation, because of
-  *     overcommit and we don't want to have a lot of useless metadata space when
-@@ -832,6 +841,9 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 		 */
- 		ret = btrfs_commit_current_transaction(root);
- 		break;
-+	case RESET_ZONES:
-+		ret = btrfs_reset_unused_block_groups(space_info, num_bytes);
-+		break;
- 	default:
- 		ret = -ENOSPC;
- 		break;
-@@ -1084,9 +1096,14 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 	enum btrfs_flush_state flush_state;
- 	int commit_cycles = 0;
- 	u64 last_tickets_id;
-+	enum btrfs_flush_state final_state;
- 
- 	fs_info = container_of(work, struct btrfs_fs_info, async_reclaim_work);
- 	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
-+	if (btrfs_is_zoned(fs_info))
-+		final_state = RESET_ZONES;
-+	else
-+		final_state = COMMIT_TRANS;
- 
- 	spin_lock(&space_info->lock);
- 	to_reclaim = btrfs_calc_reclaim_metadata_size(fs_info, space_info);
-@@ -1139,7 +1156,7 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 		if (flush_state == ALLOC_CHUNK_FORCE && !commit_cycles)
- 			flush_state++;
- 
--		if (flush_state > COMMIT_TRANS) {
-+		if (flush_state > final_state) {
- 			commit_cycles++;
- 			if (commit_cycles > 2) {
- 				if (maybe_fail_all_tickets(fs_info, space_info)) {
-@@ -1153,7 +1170,7 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 			}
- 		}
- 		spin_unlock(&space_info->lock);
--	} while (flush_state <= COMMIT_TRANS);
-+	} while (flush_state <= final_state);
- }
- 
- /*
-@@ -1284,6 +1301,10 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
-  *   This is where we reclaim all of the pinned space generated by running the
-  *   iputs
-  *
-+ * RESET_ZONES
-+ *   This state works only for the zoned mode. We scan the unused block
-+ *   group list and reset the zones and reuse the block group.
-+ *
-  * ALLOC_CHUNK_FORCE
-  *   For data we start with alloc chunk force, however we could have been full
-  *   before, and then the transaction commit could have freed new block groups,
-@@ -1293,6 +1314,7 @@ static const enum btrfs_flush_state data_flush_states[] = {
- 	FLUSH_DELALLOC_FULL,
- 	RUN_DELAYED_IPUTS,
- 	COMMIT_TRANS,
-+	RESET_ZONES,
- 	ALLOC_CHUNK_FORCE,
- };
- 
-@@ -1384,6 +1406,7 @@ void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
- static const enum btrfs_flush_state priority_flush_states[] = {
- 	FLUSH_DELAYED_ITEMS_NR,
- 	FLUSH_DELAYED_ITEMS,
-+	RESET_ZONES,
- 	ALLOC_CHUNK,
- };
- 
-@@ -1397,6 +1420,7 @@ static const enum btrfs_flush_state evict_flush_states[] = {
- 	FLUSH_DELALLOC_FULL,
- 	ALLOC_CHUNK,
- 	COMMIT_TRANS,
-+	RESET_ZONES,
- };
- 
- static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 69071afc0d47..a96efdb5e681 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -79,6 +79,10 @@ enum btrfs_reserve_flush_enum {
- 	BTRFS_RESERVE_FLUSH_EMERGENCY,
- };
- 
-+/*
-+ * Please be aware that the order of enum values will be the order of the reclaim
-+ * process in btrfs_async_reclaim_metadata_space().
-+ */
- enum btrfs_flush_state {
- 	FLUSH_DELAYED_ITEMS_NR	= 1,
- 	FLUSH_DELAYED_ITEMS	= 2,
-@@ -91,6 +95,7 @@ enum btrfs_flush_state {
- 	ALLOC_CHUNK_FORCE	= 9,
- 	RUN_DELAYED_IPUTS	= 10,
- 	COMMIT_TRANS		= 11,
-+	RESET_ZONES		= 12,
- };
- 
- struct btrfs_space_info {
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index cb32966380f5..a294617dc25d 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2648,3 +2648,127 @@ void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info)
- 	}
- 	spin_unlock(&fs_info->zone_active_bgs_lock);
- }
-+
-+/*
-+ * Reset the zones of unused block groups from @space_info->bytes_zone_unusable.
-+ *
-+ * This one resets the zones of a block group, so we can reuse the region
-+ * without removing the block group. On the other hand, btrfs_delete_unused_bgs()
-+ * just removes a block group and frees up the underlying zones. So, we still
-+ * need to allocate a new block group to reuse the zones.
-+ *
-+ * Resetting is faster than deleting/recreating a block group. It is similar
-+ * to freeing the logical space on the regular mode. However, we cannot change
-+ * the block group's profile with this operation.
-+ *
-+ * @space_info:	the space to work on
-+ * @num_bytes:	targeting reclaim bytes
-+ */
-+int btrfs_reset_unused_block_groups(struct btrfs_space_info *space_info, u64 num_bytes)
-+{
-+	struct btrfs_fs_info *fs_info = space_info->fs_info;
-+	const sector_t zone_size_sectors = fs_info->zone_size >> SECTOR_SHIFT;
-+
-+	if (!btrfs_is_zoned(fs_info))
-+		return 0;
-+
-+	while (num_bytes > 0) {
-+		struct btrfs_chunk_map *map;
-+		struct btrfs_block_group *bg = NULL;
-+		bool found = false;
-+		u64 reclaimed = 0;
-+
-+		/*
-+		 * Here, we choose a fully zone_unusable block group. It's
-+		 * technically possible to reset a partly zone_unusable block
-+		 * group, which still has some free space left. However,
-+		 * handling that needs to cope with the allocation side, which
-+		 * makes the logic more complex. So, let's handle the easy case
-+		 * for now.
-+		 */
-+		spin_lock(&fs_info->unused_bgs_lock);
-+		list_for_each_entry(bg, &fs_info->unused_bgs, bg_list) {
-+			if ((bg->flags & BTRFS_BLOCK_GROUP_TYPE_MASK) != space_info->flags)
-+				continue;
-+
-+			/*
-+			 * Use trylock to avoid locking order violation. In
-+			 * btrfs_reclaim_bgs_work(), the lock order is
-+			 * &bg->lock -> &fs_info->unused_bgs_lock. We skips a
-+			 * block group, if we cannot take its lock.
-+			 */
-+			if (!spin_trylock(&bg->lock))
-+				continue;
-+			if (btrfs_is_block_group_used(bg) || bg->zone_unusable < bg->length) {
-+				spin_unlock(&bg->lock);
-+				continue;
-+			}
-+			spin_unlock(&bg->lock);
-+			found = true;
-+			break;
-+		}
-+		if (!found) {
-+			spin_unlock(&fs_info->unused_bgs_lock);
-+			return 0;
-+		}
-+
-+		list_del_init(&bg->bg_list);
-+		btrfs_put_block_group(bg);
-+		spin_unlock(&fs_info->unused_bgs_lock);
-+
-+		/*
-+		 * Since the block group is fully zone_unusable and we cannot
-+		 * allocate anymore from this block group, we don't need to set
-+		 * this block group read-only.
-+		 */
-+
-+		down_read(&fs_info->dev_replace.rwsem);
-+		map = bg->physical_map;
-+		for (int i = 0; i < map->num_stripes; i++) {
-+			struct btrfs_io_stripe *stripe = &map->stripes[i];
-+			unsigned int nofs_flags;
-+			int ret;
-+
-+			nofs_flags = memalloc_nofs_save();
-+			ret = blkdev_zone_mgmt(stripe->dev->bdev, REQ_OP_ZONE_RESET,
-+					       stripe->physical >> SECTOR_SHIFT,
-+					       zone_size_sectors);
-+			memalloc_nofs_restore(nofs_flags);
-+
-+			if (ret) {
-+				up_read(&fs_info->dev_replace.rwsem);
-+				return ret;
-+			}
-+		}
-+		up_read(&fs_info->dev_replace.rwsem);
-+
-+		spin_lock(&space_info->lock);
-+		spin_lock(&bg->lock);
-+		ASSERT(!btrfs_is_block_group_used(bg));
-+		if (bg->ro) {
-+			spin_unlock(&bg->lock);
-+			spin_unlock(&space_info->lock);
-+			continue;
-+		}
-+
-+		reclaimed = bg->alloc_offset;
-+		bg->zone_unusable = bg->length - bg->zone_capacity;
-+		bg->alloc_offset = 0;
-+		/*
-+		 * This holds because we currently reset fully used then freed
-+		 * block group.
-+		 */
-+		ASSERT(reclaimed == bg->zone_capacity);
-+		bg->free_space_ctl->free_space += reclaimed;
-+		space_info->bytes_zone_unusable -= reclaimed;
-+		spin_unlock(&bg->lock);
-+		btrfs_return_free_space(space_info, reclaimed);
-+		spin_unlock(&space_info->lock);
-+
-+		if (num_bytes <= reclaimed)
-+			break;
-+		num_bytes -= reclaimed;
-+	}
-+
-+	return 0;
-+}
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 7612e6572605..9672bf4c3335 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -96,6 +96,7 @@ int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_info);
- int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
- 				struct btrfs_space_info *space_info, bool do_finish);
- void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info);
-+int btrfs_reset_unused_block_groups(struct btrfs_space_info *space_info, u64 num_bytes);
- #else /* CONFIG_BLK_DEV_ZONED */
- 
- static inline int btrfs_get_dev_zone_info_all_devices(struct btrfs_fs_info *fs_info)
-@@ -265,6 +266,12 @@ static inline int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
- 
- static inline void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info) { }
- 
-+static inline int btrfs_reset_unused_block_groups(struct btrfs_space_info *space_info,
-+						  u64 num_bytes)
-+{
-+	return 0;
-+}
-+
- #endif
- 
- static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 4df93ca9b7a8..549ab3b41961 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -100,7 +100,8 @@ struct find_free_extent_ctl;
- 	EM( ALLOC_CHUNK,		"ALLOC_CHUNK")			\
- 	EM( ALLOC_CHUNK_FORCE,		"ALLOC_CHUNK_FORCE")		\
- 	EM( RUN_DELAYED_IPUTS,		"RUN_DELAYED_IPUTS")		\
--	EMe(COMMIT_TRANS,		"COMMIT_TRANS")
-+	EM( COMMIT_TRANS,		"COMMIT_TRANS")			\
-+	EMe(RESET_ZONES,		"RESET_ZONES")
- 
- /*
-  * First define the enums in the above macros to be exported to userspace via
--- 
-2.47.0
+On 11/11/24 20:24, Johannes Thumshirn wrote:
+> Test-case btrfs/136 requires ext3 support, so check for ext3 using
+> _require_extra_fs.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>   tests/btrfs/136 | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/tests/btrfs/136 b/tests/btrfs/136
+> index 9b5b3331119f..2a5280fb9bd1 100755
+> --- a/tests/btrfs/136
+> +++ b/tests/btrfs/136
+> @@ -20,6 +20,8 @@ _require_scratch_nocheck
+>   # ext4 does not support zoned block device
+>   _require_non_zoned_device "${SCRATCH_DEV}"
+>   
+> +_require_extra_fs ext3
+> +
+>   _require_command "$BTRFS_CONVERT_PROG" btrfs-convert
+>   _require_command "$MKFS_EXT4_PROG" mkfs.ext4
+>   _require_command "$E2FSCK_PROG" e2fsck
 
 
