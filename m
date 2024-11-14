@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-9670-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9671-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83FF19C92FD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 21:12:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B14959C9301
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 21:12:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 086101F22626
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 20:12:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75ABF2812C1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2024 20:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00701AB526;
-	Thu, 14 Nov 2024 20:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398621AB50B;
+	Thu, 14 Nov 2024 20:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Kf4Nbu2E"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="h9nzfzso"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59BD91AAE28
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 20:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067D41AA7B4
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2024 20:12:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731615110; cv=none; b=kewBGWZzGeRMCU0v9ypHbj9wmLI/UESf5zWoYYQ/bMQUttp6+I900Rtua31qZpLjfvC6wLTGLFVANDu47JFMfrUwmGaBYEarTclahpqr867tfacLL11wxNzZLjljpcVln75VnxGbTKG3Fh9kAPgHukIXOMVBviujguLoa6GqV9c=
+	t=1731615158; cv=none; b=EMuieLTjHlhdkjRxis4OGWzdvV6ywDwazPyDIQjaasmYCVHKkdzuHBPNnu8L8u/KICVBlr/RqMuLqojUCscFQVUGRSGJ8COZkXqdFFf2nCCCJxnDwunu4h8t9UtYMu81Dl5JvqTDJcPAVEHmYGWFyoDPCLJslWwj3jCzxM3E8rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731615110; c=relaxed/simple;
-	bh=yYpNP/HGu9Gs2KCfug2pfv4qbVjQIIWpk5yneQNZRFw=;
+	s=arc-20240116; t=1731615158; c=relaxed/simple;
+	bh=kKuBUUcJ7iQv0C465vm1Y+sJ78Q2YYOurx8izpJHZng=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KRgPWDncXzYlsDuwr1sF3VkWZGydFW/3MxC8GhIeSdgE0tMUnJjumqIpVwTkTFH1dM47Lm67u00tc3QuzsiN0oK3ZK/rjs73oAbeRQah7gpwY/sYg/sRCrmdOAyO62uftHAIir9XpcneDaZOYI45ggBFDcjFq8oWAmqNN6Wd2Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Kf4Nbu2E; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=rbgUP9kWfbGdGNm6ogcvjm/pGo9oPKNuaOXQujChEATZABwNIgm2gRPXeSc79Vl3FMmC4VXGgKyXHXJnzj8HYYdEtAKx4z1ix8i3ZIu8twiHnuIDPysuyAWocNUJJYbm7IOaDA5WzNzeLPSeGj9Du2eVBPb0HdHouXfZY/fHqUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=h9nzfzso; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1731615102; x=1732219902; i=quwenruo.btrfs@gmx.com;
-	bh=q5rcr3E6gjWk4q+WRAxHm/xrhQqY4fX2FMtS3TWdULg=;
+	s=s31663417; t=1731615150; x=1732219950; i=quwenruo.btrfs@gmx.com;
+	bh=A7YWKP7QmYeoeG1vrnxV7EwgjtkrHMDpLAA98ZEeMMY=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Kf4Nbu2EJD+rHiMViDTz0XGbZMGsxEWY5924sxjhJB62W+l63CuLfZisZSTwTjIw
-	 PoAxHmWgRFVPRuGFPA8W/La/5/9cG7iFJKG9+mDA/+KILC7qxTVg1U9M2Pn6zfplb
-	 OgELVZp/fkDSmTqrG+4QoFF7AnBGnHaDVF6zlYlvA2xvbvHoE7zTvAfvKCBw7ZM6I
-	 FyWjuLzfrwAoNHHwkNRQUYwAlPDMNuNuiYsKCWeHMNZ170VeIb4p2yLqlugAYVPY/
-	 koiR5gfY7Zkrhs3nzl/m28L2w1fkEF9FTIFX8OnFYP9Mg5VRrYYLQleUbJXAUqLkz
-	 YXU8uYatYj88xBd5ew==
+	b=h9nzfzsoMv2kamSNoFSvEonN2ZF872BPe3OGn05N1TY7IvSSyM21RzDKq8vhevkJ
+	 +r6Qq4sLph1xEO+VqkK3L4PfAbF2ZT5Wgt4GqEvVXJGfHvlAqlzjw7JJODFyCPGgC
+	 /Z3uchpbdyLSVpw1WlWDrFaWeBONMmunwnvoF0zsuSr0a9QBiZXsGx458ZMbPa8q+
+	 vInrjYs7cbFYCkSLb/FS0eWAzIHgx3SZv4VT/+hVpMNuwf0KPgfy3XcXNFL+rrn7/
+	 koBWL9WCdt69t1DJXy3cRazWbmcDlX2zlvuXxzav0DhuZv9YiUMhZTQPplStoCdtf
+	 WXBFLFqrOogUf1xxww==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Udt-1t9jB10NBJ-004QBO; Thu, 14
- Nov 2024 21:11:42 +0100
-Message-ID: <ad2b1e16-595e-448a-b05a-66290f04a284@gmx.com>
-Date: Fri, 15 Nov 2024 06:41:39 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTRMi-1tLXZR1gWC-00RsYH; Thu, 14
+ Nov 2024 21:12:29 +0100
+Message-ID: <8233efd8-43be-4f69-b7aa-2c06e3468ac1@gmx.com>
+Date: Fri, 15 Nov 2024 06:42:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: remove unused macros in ctree.h
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-References: <20241114152312.2775224-1-maharmstone@fb.com>
+Subject: Re: [PATCH] btrfs: sysfs: advertise experimental features only if
+ CONFIG_BTRFS_EXPERIMENTAL=y
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8f.1731605782.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,75 +88,79 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20241114152312.2775224-1-maharmstone@fb.com>
+In-Reply-To: <c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8f.1731605782.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mG+wOtRZPKscpYcCy1Z7Ysir+uNpZTZSMEVLOyfXGmw6jU8BjZX
- mkCZ7fP3Puz/OktygKBnZC4FHxy0YwvnF+fpM/zqWzzD24elrd8LDCZDRrpiw8q3JeGahWg
- 9zoYkR1KzsdNFM3ygV45vjf0vd0IdeFRrNp1VQVNLrRe4j3YXXTqaZ4jT48bjum0dm56ABB
- iP7/A6/spzBhWtEoP1HHA==
+X-Provags-ID: V03:K1:LfH1+VvOF0tqXuD4McKIGpFqqtofqKRocNEaoN/rKtG+LMX/V6y
+ hA4q5oGz2r40xriECuSsjonSfFpJCoDaHXxoaPq9k66hbYYjzin3LcqKTHpvWyYuLlqSwil
+ oab/3RXTjOL9hvE6fw863hW8uyQz5nGG++kjZbmWOSE+yEh81UOyAdM16PlYeielhQux9uz
+ DXZeSBBhxhkHKQ/QKupzQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fEHx75gDYVo=;QejC3alk1aAXD1Vsnau63WWgZmI
- gDz+4sHsBJSmVZgrDFngMvRDqyA+hD7zDPAzVZ4TO7r8U8WL6+2VYbVftaQDq7qKdeiKzCGzG
- MIlqgbAGMlmSj1moNFMnM2+H7vcbJol5N396UMtYZpLyNSuMAcMUu+O9s5jRZnGPpIbABZJGl
- lj0VTxT1vqcQOQnyztWsucxV2DUyNZqetqJixnd/VKjnYMXO4wsxAfSV1atPVw9Z7KEiDjjKU
- 5K5xXlI4vjcn3xg9o7AqAZkGEveP873sKmGBaRIqg6ZBjZOjMmxDXXG0+BR88mI9X0TY6LmaG
- 6HAPugwfUW0fuIFLGcl4qUeBx2Hqzh4ror4QuLiHNTpLZNXFuY6cym48BUonQF7U6KeJzEL1d
- pjd4VSuhrFc90eMJcXhIVj0prB9Kb/PFMUs5w6rf3ueH8FPCJFAf1yys1+8BUteCew3WzpI3E
- yz6Ls7A4kUasdKqxaG5D2/N+xR5QYAEMThOK8+5R+Wg10yn/Tf3cB47THAbwPBvnhvSWjjWHP
- 0jU6HnxJsSEmyXGLY4iT6WojbH+OzcNcaj3xKHcPdPhrkc9G2brw52VB94aQITszrpA7BAnBZ
- nvmERQRBvNlrxDHkNR6lH4JY2H+l/6ia9clz1Prl8cF5KBhIOQSBbbGay1MFbljJF6PuKdNPw
- URnhLToFelCF4s9xC4YSquaTy01LS27zCzmIMNTGGkQN0/KH6vz6fZoxYnW0AzW2wNjj2pDn+
- GoAmyBq8xPh1WK57KOg1427GwZxz7Ax0FaU/VSLQNozt0FMNyM27TLT9Laet8YbdTouk6ldDD
- nCIJ8BAZJRrdNw1gCb1YAAgBwrHekqgauIdRLnDd3cRsuR36G7A3qz6NvS1IBnpikjfSaIXb3
- 9uidVN90MPI3Ylbx20FuY6D7d9er6MPx+nDD6wGP50qnrqh5OxsoxOf0H
+UI-OutboundReport: notjunk:1;M01:P0:RTwm01IR6Js=;LdMES68PIGk63MHr874K4SRWFCr
+ wl4Xu6sX8JaqGa9WmG/KhIuh28/2KzvsBMr98rgvBU46iI7d/Rmnn4aQQAq9aEx+VlpbxiWzk
+ mglYb/zTzuXxlxhLwImMkHd216r5Wk5adOu/1XwIdFjlkCN6giZwfVjnkIrFpRfReO6ize9EH
+ KdOe4XRbSCgHM+RRyhhJdCsE8eUc0aDljfeL4weir+P5UwpKbxeIEEdleNrEwpNqvDIsBZ/es
+ epAPlGMEeW/g0Lbc+6sDZuUx0TDzSwa9N1esNdM+tWDnWKPp2LXMm8T1wR7KmKL1fqb02kpet
+ 2AeeLTYu1q/NRWL4gWHydmnka52CmzKKYT54LNJsMylUaZAwQYYAMO2kjZK5Kt7QZCEHx2C42
+ 5Kzdb3oGipuW5ToFudbsdC+m9yg79fthrp7MJ3Cp7aVnoDOyx6P3WkAgb1HRxc7HHTUDnz60c
+ ncSmWdvTs0vPh4b9ZIy5xgfqkp40xLmbvCrcwigbX3xXW9IL9//KCGkFUkLDkfx8PRDHotgPw
+ ekXF73vLmyoD7cWvhcSx7bZFsKIIpAsijguM+Xdl7AVJySYQTqtpfBE7yb8SuzBF1jAG+foRv
+ W/wz4dgxv3vJBZ57usSMJ4amsagg1GB14hAMcE3vZVLQpOneGvffffrEEkxIcgdnpDT+4ChnQ
+ 3CIqyyVBlT+yhAY4AHEDnRhKi+Hr4nvnJk/qPhRJEzwM2zCKWNMmYxFTrwiADzcL2k4gVctMZ
+ QNey57VaCZULMwpupcUC5+XO5497BeS7B1CxZcRXwvyFd/mo+ByGep8RXEic3qN33p+RPpSj1
+ QQR0E74gkfqPoHfOdcTbTPdjypCP+Ze7BgvNPpES7l/4aXSDaJsFDecLvuRWBHSl6L/tl1olK
+ 8XOOSUMCQYrQMj2V+wdc2xtYDjOHd3Z1vcePtQ+i3adOnFLw8+YTzNcFD
 
 
 
-=E5=9C=A8 2024/11/15 01:52, Mark Harmstone =E5=86=99=E9=81=93:
-> The Private2 #ifdefs in ctree.h for pages are no longer used, as of
-> commit d71b53c3cb0a. Remove them, and update the comment to be about fol=
-ios.
+=E5=9C=A8 2024/11/15 04:07, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> We are advertising experimental features through sysfs if
+> CONFIG_BTRFS_DEBUG is set, without looking if CONFIG_BTRFS_EXPERIMENTAL
+> is set. This is wrong as it will result in reporting experimental
+> features as supported when CONFIG_BTRFS_EXPERIMENTAL is not set but
+> CONFIG_BTRFS_DEBUG is set.
+>
+> Fix this by checking for CONFIG_BTRFS_EXPERIMENTAL instead of
+> CONFIG_BTRFS_DEBUG.
+>
+> Fixes: 67cd3f221769 ("btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CO=
+NFIG_BTRFS_DEBUG")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-This is going to cause conflicts with the patch migrating private2 to
-owner2:
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-https://lore.kernel.org/linux-btrfs/20241002040111.1023018-5-willy@infrade=
-ad.org/
-
-And that patch also removes the page opeartions.
-
-Thanks,
+My bad, thanks for fixing it.
 Qu
+
 > ---
->   fs/btrfs/ctree.h | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
+>   fs/btrfs/sysfs.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 317a3712270f..60c205ac5278 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -744,14 +744,11 @@ const char *btrfs_super_csum_driver(u16 csum_type)=
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index b843308e2bc6..fdcbf650ac31 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -295,7 +295,7 @@ BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA)=
 ;
->   size_t __attribute_const__ btrfs_get_num_csums(void);
->
->   /*
-> - * We use page status Private2 to indicate there is an ordered extent w=
-ith
-> + * We use folio status private_2 to indicate there is an ordered extent=
- with
->    * unfinished IO.
->    *
-> - * Rename the Private2 accessors to Ordered, to improve readability.
-> + * Rename the private_2 accessors to ordered, to improve readability.
->    */
-> -#define PageOrdered(page)		PagePrivate2(page)
-> -#define SetPageOrdered(page)		SetPagePrivate2(page)
-> -#define ClearPageOrdered(page)		ClearPagePrivate2(page)
->   #define folio_test_ordered(folio)	folio_test_private_2(folio)
->   #define folio_set_ordered(folio)	folio_set_private_2(folio)
->   #define folio_clear_ordered(folio)	folio_clear_private_2(folio)
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+>   #endif
+> -#ifdef CONFIG_BTRFS_DEBUG
+> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
+>   /* Remove once support for extent tree v2 is feature complete */
+>   BTRFS_FEAT_ATTR_INCOMPAT(extent_tree_v2, EXTENT_TREE_V2);
+>   /* Remove once support for raid stripe tree is feature complete. */
+> @@ -329,7 +329,7 @@ static struct attribute *btrfs_supported_feature_att=
+rs[] =3D {
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   	BTRFS_FEAT_ATTR_PTR(zoned),
+>   #endif
+> -#ifdef CONFIG_BTRFS_DEBUG
+> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
+>   	BTRFS_FEAT_ATTR_PTR(extent_tree_v2),
+>   	BTRFS_FEAT_ATTR_PTR(raid_stripe_tree),
+>   #endif
 
 
