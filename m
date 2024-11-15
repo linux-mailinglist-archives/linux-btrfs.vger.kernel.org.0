@@ -1,267 +1,162 @@
-Return-Path: <linux-btrfs+bounces-9738-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9740-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10CF99CF4CD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 20:29:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBA199CFB75
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Nov 2024 01:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CE8AB2C38F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 19:17:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494501F2395A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Nov 2024 00:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D371D90AE;
-	Fri, 15 Nov 2024 19:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AD2632;
+	Sat, 16 Nov 2024 00:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="auJxVQZJ"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="sGiGMVNS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF151CEE97
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 19:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CD9161
+	for <linux-btrfs@vger.kernel.org>; Sat, 16 Nov 2024 00:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731698245; cv=none; b=Onz0hNk1Z7bRDFckFZL4ehxK30tCssjUgIPUUAKbi1nLMsgWctyJjSnWZNl4EuYd7Br4Md5MRdE8t1kUeQXqbF2oLHBKH8gPaqe9fUpIzhFO84XT17KfHG170TBeOh5iys+J3gBAJwUHacSk2d6CFEe0qbGoC3IMo9JlpZUZke0=
+	t=1731715898; cv=none; b=b/kI77Wj3kqsaYoY2pjxJqiDxePTlOwy6FR40gGacfCcyI8YHWiMmbfLfSlQc/j0V6Zu5Zoqxc1ZSl+rzL5OgEwrOe4WCPCbgFkcjcjnaqW2crCbdeYiUnQ8oxg5+tbLUaQjqhSO0eqhjDXhSl84AC1ltjfIAjvDCmJR853E7sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731698245; c=relaxed/simple;
-	bh=djKS5m7UsB5NOqcqCRt358iGjMmrAu+44a5u7CzbLrY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eIlQsC8RLwevZ5AQpasB98f09hgMTZfSC98IHPdq0aUzhAmNV/E3+CwlAkxzUqQU+qsVAgsiN1Wl4jwpk+xEKgtUwKPdE2BvmUXtR09w22xFEp6RKkOVRA+yrDnTY4v7hdoGkifn1RK1W2WxkQAeP3UU2UUjGTl9UPvCkcexkCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=auJxVQZJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E2ACC4CED6
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 19:17:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731698245;
-	bh=djKS5m7UsB5NOqcqCRt358iGjMmrAu+44a5u7CzbLrY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=auJxVQZJaHXr6jUL+smWN/iGlkgmGc6NI8+f/FcaBm6iAZMGvImbZ9KSeO0D5LAD0
-	 6bie3k28YbgErTcuQlkFSmIpMLoi3vKFJ/pmNTOSGjEUrWijdSeUjAqlSg+HiiLo2q
-	 Ho7HdEV897xOdiMAaQ2m0BMQk6cMvCT5tvVrtapqQ3kRa24UOXtfgjs/9/U7wqAfkf
-	 hySBsAoFq9EsIlhFSbCpWN3xHUX7d0J2wZLMp9jV3juXdE6Ryf9tz5uGZoHzF/j2FJ
-	 E+PW1OFY8qN7WrXHXTNBpCGU7AqulSbWNfjllAEc0mRdsvg9RppIHMI73D8zRZHsA5
-	 OzhQVmJ4RH7BQ==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5cf6f804233so1529814a12.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 11:17:25 -0800 (PST)
-X-Gm-Message-State: AOJu0Yz7EkpMOMrsLu5gHlCTZyXWGCye410V85htCE5FXf4x8LVpXVXe
-	GrD6q4qwUKEywQn8Xe+HFWe5VixpbaZouNIyAa8LobMMA5yIUZxGoK5zWPDY8PYsSToDU6UtvaR
-	cTDN8dcafixhkCwtml+fpY8dh5UM=
-X-Google-Smtp-Source: AGHT+IFx7f7I6Pjy0GyN3tXWmK00B8dhyVq0yOuNyCqCf/7hw8iwSfVpLy9uo0wVRydGZorrAtJ3CR1i77xH6wqKxYY=
-X-Received: by 2002:a17:907:2d90:b0:aa3:5ca5:2ca4 with SMTP id
- a640c23a62f3a-aa483441d9cmr344440466b.25.1731698243921; Fri, 15 Nov 2024
- 11:17:23 -0800 (PST)
+	s=arc-20240116; t=1731715898; c=relaxed/simple;
+	bh=ZDd22aLXsHUlz+/sWCHa722WxZWgpdc2GQHlchHZLq0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=ALocc3269bpC2IliSXkuQWedgGzdTwX1iCHBQKJMVG149SzW9HxIIonX4AYRJ5554bPWjgFPXo/V2v4NVW54SB+BZjy6LpeRzOQXGTpbi+zpHdkk6tqhLXAjbYDD3mzXG8tf2vNz6nHLplEdWE5IZbf+e4t89cmVGMKE5EKVGug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=sGiGMVNS; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20241116001127epoutp026d1e86fc267209da4f4083c37f939d3a~ISmyvFp362145121451epoutp02j
+	for <linux-btrfs@vger.kernel.org>; Sat, 16 Nov 2024 00:11:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20241116001127epoutp026d1e86fc267209da4f4083c37f939d3a~ISmyvFp362145121451epoutp02j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1731715887;
+	bh=No3ppOzw7WEg6GIw4Zr2BqJS8f5DrhfSGHVofyxaJIo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=sGiGMVNSrmJSt/z40HWxqsR/Ha6J6ylnZ7upphyk3rBgG1+TzZ7gSKNBsDx/vNoxo
+	 LLJm9NmY/YeaWIsoaaOPpmC1NCH3iRuRDHdPYgIDBhUjMUIdA7l8sehlz9H3rFa2Eo
+	 zCjMcMLOL1BmkXW0nXuYIV63dq2n/NqSmRHLis3Q=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+	20241116001126epcas5p4d7097a4556cbfa2491227ebc7bff47b7~ISmx-dVN62680926809epcas5p4J;
+	Sat, 16 Nov 2024 00:11:26 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.178]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4XqvSY2dsxz4x9Pw; Sat, 16 Nov
+	2024 00:11:25 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	16.F3.09770.D23E7376; Sat, 16 Nov 2024 09:11:25 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+	20241115030334epcas5p3e8a335a111b09c1296ff7dc67b5413e7~IBTyscmMu2125921259epcas5p3C;
+	Fri, 15 Nov 2024 03:03:34 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20241115030334epsmtrp13937b100d1965fd6919ce373c80441de~IBTyr1xBE0185801858epsmtrp1D;
+	Fri, 15 Nov 2024 03:03:34 +0000 (GMT)
+X-AuditID: b6c32a4a-e25fa7000000262a-e5-6737e32d1b92
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	C3.26.18937.60AB6376; Fri, 15 Nov 2024 12:03:34 +0900 (KST)
+Received: from dpss52-OptiPlex-9020.. (unknown [109.105.118.52]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20241115030333epsmtip12461f9f6bda722200de1a8c5450411b1~IBTxpTgjJ2706327063epsmtip1O;
+	Fri, 15 Nov 2024 03:03:33 +0000 (GMT)
+From: Jing Xia <j.xia@samsung.com>
+To: dsterba@suse.cz
+Cc: clm@fb.com, dsterba@suse.com, j.xia@samsung.com, josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: Re: Re: Re: [PATCH] fs/btrfs: Pass write-hint for buffered IO
+Date: Fri, 15 Nov 2024 11:05:12 +0800
+Message-Id: <20241115030512.3319144-1-j.xia@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240920055208.29635-1-j.xia@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731076425.git.anand.jain@oracle.com>
-In-Reply-To: <cover.1731076425.git.anand.jain@oracle.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 15 Nov 2024 19:16:47 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4PjErPf0XxBwLgK_2Sm1ABen4Xb-bi2Bj_+zM7uB7YCA@mail.gmail.com>
-Message-ID: <CAL3q7H4PjErPf0XxBwLgK_2Sm1ABen4Xb-bi2Bj_+zM7uB7YCA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] raid1 balancing methods
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, wqu@suse.com, hrx@bupt.moe, 
-	waxhead@dirtcellar.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmlq7uY/N0g19LBC0m9c9gt7jwo5HJ
+	YvHv7ywWO5etZbf4uGc1k8Wfh4YWlx6vYLc4O+EDqwOHx8Tmd+wefVtWMXqs33KVxePMgiPs
+	HhM2b2T1+LxJLoAtKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJ
+	xSdA1y0zB+geJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BSYFecWJucWleul5e
+	aomVoYGBkSlQYUJ2xoHZj9gLznBVPLh+i7WBcR1HFyMnh4SAicTOR+sZuxi5OIQEdjNKTGr9
+	wAThfGKU+HniBTOc8+/HclaYlj97r0EldjJKXLh/mRXC+coosaZhDyNIFZuAksSdRWeYQWwR
+	AWGJBWtPA83l4GAWyJD48TMTJCws4CaxbPNRsHIWAVWJR28OsIDYvAIWEidnT2aDWCYvsf/g
+	WbAxnALmEpPfXGeGqBGUODnzCVg9M1BN89bZzBD1X9klPq0MhbBdJNpvfoWKC0u8Or6FHcKW
+	knjZ3wZlF0s0T33NAnK/hEADo0TD6V+MEAlriW3r10HdrCmxfpc+RFhWYuopkDDIXj6J3t9P
+	mCDivBI75sHY8hKP1s5gBmmVEBCV+LtKEiLsITFv0V1oUHcxSmxbNJ11AqPCLCTvzELyziyE
+	zQsYmVcxSqYWFOempxabFhjlpZbDIzk5P3cTIziJanntYHz44IPeIUYmDsZDjBIczEoivJdc
+	zdOFeFMSK6tSi/Lji0pzUosPMZoCw3sis5Rocj4wjeeVxBuaWBqYmJmZmVgamxkqifO+bp2b
+	IiSQnliSmp2aWpBaBNPHxMEp1cAUVennmPfumIT7XiWdp4wV7ip/6zw6KkIdc4L2SKScS5J6
+	WxYRWLjl3KzSafseWN6X6E0xCnj97t/9H4+25a0WunPJwdLw7tFZKW19f/7IusqXHD0ss+d4
+	nn3H008BezVKFzyJmp93sPh8wkOVhx+X+nsf+PHdfgVPTIn386jpD98pPNrF2v56vZ/w5A+n
+	VZbfjLs/o6p0tuAyuZZ5ucktX67Mi9vfdNon6MQy7Zw/JT5vviknbNh2dv9ESanDRxa+Nsh4
+	rf7y1+3TLwuvKYUJe8qcOvqOyWemqHdYSfvWEBHWxt+3A7MFwrdybPIV/Ro44+68BkmdyniF
+	Z+wbuRLE/VMCndjVbqv7qU5y7hdVYinOSDTUYi4qTgQAyJyQNCsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsWy7bCSnC7bLrN0g/2P9Swm9c9gt7jwo5HJ
+	YvHv7ywWO5etZbf4uGc1k8Wfh4YWlx6vYLc4O+EDqwOHx8Tmd+wefVtWMXqs33KVxePMgiPs
+	HhM2b2T1+LxJLoAtissmJTUnsyy1SN8ugSvjwOxH7AVnuCoeXL/F2sC4jqOLkZNDQsBE4s/e
+	a8xdjFwcQgLbGSXuHm1kgUiISlw5e5gNwhaWWPnvOTuILSTwmVFidUMRiM0moCRxZ9EZZhBb
+	BKhmwdrTTF2MHBzMAnkSl5/pg4SFBdwklm0+yghiswioSjx6cwBsPK+AhcTJ2ZOhxstL7D94
+	FmwMp4C5xOQ315lBxggJmElcW+QDUS4ocXLmE7BWZqDy5q2zmScwCsxCkpqFJLWAkWkVo2hq
+	QXFuem5ygaFecWJucWleul5yfu4mRnBoawXtYFy2/q/eIUYmDsZDjBIczEoivKecjdOFeFMS
+	K6tSi/Lji0pzUosPMUpzsCiJ8yrndKYICaQnlqRmp6YWpBbBZJk4OKUamArOnn2040RKz8t9
+	102sLBrVOGbNfL8y4YOz57Sth37tEr9WGXTxRJtNguwFbS6/i3fuJjty6bxOuj5/U5BbwQr+
+	re36x8tzRXNLrqSFR1cLmDc1rzZt96yw9WaIZ7e3+lRlXc09MW6nzc9op87vZ6et2WF3Zce7
+	ojlLb/TsqY5yWtz+eEL7Ke8UeWZmTaO4hRXfReUP3Hixe+7ile/Md3a/K5t/V2DLjqsbnm2u
+	KAppacyb/r+pSp3FM+H8zf2rBS5uc9nVabBA66aMjeH9r+yrzNZr3u3R7jp6R/vSszSX+cy1
+	b1K0D3TUOs+zV9tneqyL6QRjjcTPirt/Nkmve+mgk3z+neSy7ef/lGt8rFNiKc5INNRiLipO
+	BAC43uLk3AIAAA==
+X-CMS-MailID: 20241115030334epcas5p3e8a335a111b09c1296ff7dc67b5413e7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20241115030334epcas5p3e8a335a111b09c1296ff7dc67b5413e7
+References: <20240920055208.29635-1-j.xia@samsung.com>
+	<CGME20241115030334epcas5p3e8a335a111b09c1296ff7dc67b5413e7@epcas5p3.samsung.com>
 
-On Fri, Nov 15, 2024 at 2:55=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
-wrote:
->
-> v3:
-> 1. Removed the latency-based RAID1 balancing patch. (Per David's review)
-> 2. Renamed "rotation" to "round-robin" and set the per-set
->    min_contiguous_read to 256k. (Per David's review)
-> 3. Added raid1-balancing module configuration for fstests testing.
->    raid1-balancing can now be configured through both module load
->    parameters and sysfs.
->
-> The logic of individual methods remains unchanged, and performance metric=
-s
-> are consistent with v2.
->
-> -----
-> v2:
-> 1. Move new features to CONFIG_BTRFS_EXPERIMENTAL instead of CONFIG_BTRFS=
-_DEBUG.
-> 2. Correct the typo from %est_wait to %best_wait.
-> 3. Initialize %best_wait to U64_MAX and remove the check for 0.
-> 4. Implement rotation with a minimum contiguous read threshold before
->    switching to the next stripe. Configure this, using:
->
->         echo rotation:[min_contiguous_read] > /sys/fs/btrfs/<uuid>/read_p=
-olicy
->
->    The default value is the sector size, and the min_contiguous_read
->    value must be a multiple of the sector size.
->
-> 5. Tested FIO random read/write and defrag compression workloads with
->    min_contiguous_read set to sector size, 192k, and 256k.
->
->    RAID1 balancing method rotation is better for multi-process workloads
->    such as fio and also single-process workload such as defragmentation.
->
->      $ fio --filename=3D/btrfs/foo --size=3D5Gi --direct=3D1 --rw=3Drandr=
-w --bs=3D4k \
->         --ioengine=3Dlibaio --iodepth=3D256 --runtime=3D120 --numjobs=3D4=
- \
->         --time_based --group_reporting --name=3Diops-test-job --eta-newli=
-ne=3D1
->
->
-> |         |            |            | Read I/O count  |
-> |         | Read       | Write      | devid1 | devid2 |
-> |---------|------------|------------|--------|--------|
-> | pid     | 20.3MiB/s  | 20.5MiB/s  | 313895 | 313895 |
-> | rotation|            |            |        |        |
-> |     4096| 20.4MiB/s  | 20.5MiB/s  | 313895 | 313895 |
-> |   196608| 20.2MiB/s  | 20.2MiB/s  | 310152 | 310175 |
-> |   262144| 20.3MiB/s  | 20.4MiB/s  | 312180 | 312191 |
-> |  latency| 18.4MiB/s  | 18.4MiB/s  | 272980 | 291683 |
-> | devid:1 | 14.8MiB/s  | 14.9MiB/s  | 456376 | 0      |
->
->    rotation RAID1 balancing technique performs more than 2x better for
->    single-process defrag.
->
->       $ time -p btrfs filesystem defrag -r -f -c /btrfs
->
->
-> |         | Time  | Read I/O Count  |
-> |         | Real  | devid1 | devid2 |
-> |---------|-------|--------|--------|
-> | pid     | 18.00s| 3800   | 0      |
-> | rotation|       |        |        |
-> |     4096|  8.95s| 1900   | 1901   |
-> |   196608|  8.50s| 1881   | 1919   |
-> |   262144|  8.80s| 1881   | 1919   |
-> | latency | 17.18s| 3800   | 0      |
-> | devid:2 | 17.48s| 0      | 3800   |
->
-> Rotation keeps all devices active, and for now, the Rotation RAID1
-> balancing method is preferable as default. More workload testing is
-> needed while the code is EXPERIMENTAL.
-> While Latency is better during the failing/unstable block layer transport=
-.
-> As of now these two techniques, are needed to be further independently
-> tested with different worloads, and in the long term we should be merge
-> these technique to a unified heuristic.
->
-> Rotation keeps all devices active, and for now, the Rotation RAID1
-> balancing method should be the default. More workload testing is needed
-> while the code is EXPERIMENTAL.
->
-> Latency is smarter with unstable block layer transport.
->
-> Both techniques need independent testing across workloads, with the goal =
-of
-> eventually merging them into a unified approach? for the long term.
->
-> Devid is a hands-on approach, provides manual or user-space script contro=
-l.
->
-> These RAID1 balancing methods are tunable via the sysfs knob.
-> The mount -o option and btrfs properties are under consideration.
->
-> Thx.
->
-> --------- original v1 ------------
->
-> The RAID1-balancing methods helps distribute read I/O across devices, and
-> this patch introduces three balancing methods: rotation, latency, and
-> devid. These methods are enabled under the `CONFIG_BTRFS_DEBUG` config
-> option and are on top of the previously added
-> `/sys/fs/btrfs/<UUID>/read_policy` interface to configure the desired
-> RAID1 read balancing method.
->
-> I've tested these patches using fio and filesystem defragmentation
-> workloads on a two-device RAID1 setup (with both data and metadata
-> mirrored across identical devices). I tracked device read counts by
-> extracting stats from `/sys/devices/<..>/stat` for each device. Below is
-> a summary of the results, with each result the average of three
-> iterations.
->
-> A typical generic random rw workload:
->
-> $ fio --filename=3D/btrfs/foo --size=3D10Gi --direct=3D1 --rw=3Drandrw --=
-bs=3D4k \
->   --ioengine=3Dlibaio --iodepth=3D256 --runtime=3D120 --numjobs=3D4 --tim=
-e_based \
->   --group_reporting --name=3Diops-test-job --eta-newline=3D1
->
-> |         |            |            | Read I/O count  |
-> |         | Read       | Write      | devid1 | devid2 |
-> |---------|------------|------------|--------|--------|
-> | pid     | 29.4MiB/s  | 29.5MiB/s  | 456548 | 447975 |
-> | rotation| 29.3MiB/s  | 29.3MiB/s  | 450105 | 450055 |
-> | latency | 21.9MiB/s  | 21.9MiB/s  | 672387 | 0      |
-> | devid:1 | 22.0MiB/s  | 22.0MiB/s  | 674788 | 0      |
->
-> Defragmentation with compression workload:
->
-> $ xfs_io -f -d -c 'pwrite -S 0xab 0 1G' /btrfs/foo
-> $ sync
-> $ echo 3 > /proc/sys/vm/drop_caches
-> $ btrfs filesystem defrag -f -c /btrfs/foo
->
-> |         | Time  | Read I/O Count  |
-> |         | Real  | devid1 | devid2 |
-> |---------|-------|--------|--------|
-> | pid     | 21.61s| 3810   | 0      |
-> | rotation| 11.55s| 1905   | 1905   |
-> | latency | 20.99s| 0      | 3810   |
-> | devid:2 | 21.41s| 0      | 3810   |
->
-> . The PID-based balancing method works well for the generic random rw fio
->   workload.
-> . The rotation method is ideal when you want to keep both devices active,
->   and it boosts performance in sequential defragmentation scenarios.
-> . The latency-based method work well when we have mixed device types or
->   when one device experiences intermittent I/O failures the latency
->   increases and it automatically picks the other device for further Read
->   IOs.
-> . The devid method is a more hands-on approach, useful for diagnosing and
->   testing RAID1 mirror synchronizations.
->
-> Anand Jain (10):
->   btrfs: initialize fs_devices->fs_info earlier
->   btrfs: simplify output formatting in btrfs_read_policy_show
->   btrfs: add btrfs_read_policy_to_enum helper and refactor read policy
->     store
->   btrfs: handle value associated with raid1 balancing parameter
->   btrfs: introduce RAID1 round-robin read balancing
->   btrfs: add RAID1 preferred read device
->   btrfs: pr CONFIG_BTRFS_EXPERIMENTAL status
->   btrfs: fix CONFIG_BTRFS_EXPERIMENTAL migration
+> > On Tue, Sep 03, 2024 at 01:40:12PM +0800, j.xia wrote:
+> > > Commit 449813515d3e ("block, fs: Restore the per-bio/request data
+> > > lifetime fields") restored write-hint support in btrfs. But that is
+> > > applicable only for direct IO. This patch supports passing
+> > > write-hint for buffered IO from btrfs file system to block layer
+> > > by filling bi_write_hint of struct bio in alloc_new_bio().
+> > 
+> > What's the status of the write hints? The commit chain is revert,
+>   
+>   "enum rw_hint" include/linux/rw_hint.h defines the status.
+> 
+> > removal and mentioning that NVMe does not make use of the write hint so
+> > what hardware is using it?
+> 
+>   New NVMe Flexible Data Placement (FDP) SSD (TP4146) is able to 
+>   use hint to place data in different streams. 
+>   The related patch is
+>   Link: https://lore.kernel.org/all/20240910150200.6589-6-joshi.k@samsung.com
+> 
+> > 
+> > The patch is probably ok as it passes the information from inode to bio,
+> > otherwise btrfs does not make any use of it, we have heuristics around
+> > extent size, not the expected write lifetime expectancy.
+> 
 
-Why are these two patches, which are fixes unrelated to the raid
-balancing feature, in the middle of this patchset?
-These should go as a separate patchset...
 
-Also for the second patch, there's already a fix from yesterday and in for-=
-next:
+fcntl() interface can be used to set/get write life time hints.
+Now the write hint can be passed from inode->i_write_hint to
+bio->bi_write_hint for direct IO. This patch completes this
+feature for buffered IO.
 
-https://lore.kernel.org/linux-btrfs/c7b550091f427a79ec5a9aa6c5ac6b5efbdb4e8=
-f.1731605782.git.fdmanana@suse.com/
-
-Thanks.
-
->   btrfs: enable RAID1 balancing configuration via modprobe parameter
->   btrfs: modload to print RAID1 balancing status
->
->  fs/btrfs/disk-io.c |   1 +
->  fs/btrfs/super.c   |  22 +++++-
->  fs/btrfs/sysfs.c   | 181 ++++++++++++++++++++++++++++++++++++++++-----
->  fs/btrfs/sysfs.h   |   5 ++
->  fs/btrfs/volumes.c |  86 ++++++++++++++++++++-
->  fs/btrfs/volumes.h |  14 ++++
->  6 files changed, 286 insertions(+), 23 deletions(-)
->
-> --
-> 2.46.1
->
 >
 
