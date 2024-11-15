@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-9708-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9710-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955049CF009
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 16:34:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3725A9CF012
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 16:34:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5610E2887DF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 15:34:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC6F828403D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 15:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE661D90B3;
-	Fri, 15 Nov 2024 15:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257CD1E25EB;
+	Fri, 15 Nov 2024 15:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="CN4yeK7t"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="spA1OglA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBAF1D47D2
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1E31D79B7
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731684686; cv=none; b=shBoDYxzdhIwREmdnuvjJnFkpi9iI63uqx41HMn4lxT0PwuKARoCY6WmLbXmMdH0uFxI+tG+qdg3VdR0fS4o5uOUjYPOD7pH5BzxQpah7b0PNwKe9OStp+eAsPFGh7Bx80CDef+gGwYna8sI6k1GCQql3GW+H51hgIwO4r+Yv4I=
+	t=1731684689; cv=none; b=kQOZHVtp57GppQ4MC84aXnT9I/8QD8jsPUWFxDC3Pkbp/xTuh8a+frvMARUAqB8mpfD6ckSfOcGxvg3MvYwgmxW1o6ayKz2N/s6rkd+4IsImHZInNPOdTQSxGMX02mQ+jtZC6EI1Qcw7LB4845YFRQwUoCtWKFnfMCyOUclvqJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731684686; c=relaxed/simple;
-	bh=e50Qfn4GCw5AIdzXYs640LPuGmdwEnwaxcQ/v4hGxAA=;
+	s=arc-20240116; t=1731684689; c=relaxed/simple;
+	bh=JByGqE+7zI1PkwzTHs3XXvSyjr5uNafvFWqg8yGYuSA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OHKlJFNoJAvj+Mx1uvGfEUtH5hV9ohcN+vaceUU7KfdFX8xT8EyjySsfUFoVz+iLTRUHTAQW0CYmwrpQd7/cl3RYvvCz0FAI6ke294qsUlEpHEckAPhRkXrjv2YDdZA7RKoiQVDh5ZWiiKqiw8AwQFfE4elrvXdzzIseEmjuCnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=CN4yeK7t; arc=none smtp.client-ip=209.85.219.179
+	 MIME-Version; b=bnwRUtE7aL+g0IPJDwGsWvxJGjTCN1/1IzmQeDWc5XDKh3vr3vyOkfx9TJ6gcZurTIBKi/rn2LvKVe1gwNHJ35j5Ma04OB2bQZs/Enu1rnkJ/4qiAqKes13rBWOiHwJr6WZ6JlzNG2wvITXIRbl3gt6yIdLyR44YUoq5n4ukMw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=spA1OglA; arc=none smtp.client-ip=209.85.219.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e380f16217cso1999562276.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 07:31:24 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e30eca40dedso1856464276.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 07:31:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684683; x=1732289483; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684685; x=1732289485; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kR1XeBSj0UKEAyle1L8EQtWLZrkZWI4sB29nFtL0fR8=;
-        b=CN4yeK7tk6IllvdX/x8UQxYCoUyVf0de5kGPjaw44ixDSTsNfjDkMP2OUjTIyfzYxq
-         UWTgi688CdhA6mj6M1sKRl+DJLmWeEjovDwL7tJVVOIGPTB6M9+NGLZwnIPFQRLaiFix
-         M9ILUP5HY1B+giopiMoMayRQ5UW0nvopv6fDtBIEAxVKMCJfClCBhL9g2IzwUvkearKF
-         NPfWA/lPOIQA+N05jgxMp4LUGAnsWYJlQVpf1WEqi8E2FhKVbeqXsgXVA22A6hI3HH9M
-         173fQqo9IMtaWlkWuAz698Lo8MUIZfwOMXrkJfEOhFCNcG4GGzWOgh5ZODPlwMe5bQ/h
-         02OQ==
+        bh=kj8DHbC84OPYXlyGqV3jogaZDMjK7DzZOpBQs/P23MY=;
+        b=spA1OglAOwba3VqMXr+8pAXS4f4LNZSslouXRx8nWBn1zcOE/UQ6ueXuIq5ZqUPiOH
+         X7lFkeUKaHqJsJtdPWu+qfbL9FohL6PmYSqWsr3yyVmsH0cqNTEbK8K79FlSaTffW61K
+         ISLaQXTl0ECB/Rs+7C3H2j8JZQrWhPzCUe9wwo7zHnhP1Cb0aOOc3DhKH8sjlJhNASv+
+         876KfM/OdKMJjLkgU9GsKB7G4PPxgDX0S/mcSdJ+yMYUUeBiNrLw0UlfQGWDEYvU2Ly+
+         kMJfMQPsRQeW0BxopI0X8N59ae7AC5PO1whTxU7yGUhjeLpd6z05p+YTKKSLuy9Gwes8
+         /0JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731684683; x=1732289483;
+        d=1e100.net; s=20230601; t=1731684685; x=1732289485;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kR1XeBSj0UKEAyle1L8EQtWLZrkZWI4sB29nFtL0fR8=;
-        b=BR3nfhOuW0SdE8PS0xEy1qQS23go1Tdh/aZToEsRCmDqsxS3lsOb4Qgy3bPifge++k
-         wGld8Q9ZEO65hKdZifp10Dnx5k1SimD7NjECro3huG15EEGyfP234P53NYjHQhntbwIq
-         Gki3sKE/pvDbVcerAYkP5xGb3V17+2z5ROaNqcs5Jb/i+/577o7Jt+vvc5d2+pQKHnsJ
-         tie8tA/neLwHpqVolu1HJWd8gqfYYL4oD/E6JxcE1cSCLmlQI8JzXGCmIPeI078xADlk
-         Pg2YUxshKEcfBGXIi0WKp0791Hpb14Yx7OPwyZrOIaftKsSREHRHZOSaeH3vfVraNaDz
-         FSNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXn58CgLjoXBvmpq8Lagk998cqgr5kGwDP+cfGmkfEnNSd9yRnTqpmwPtuMQ99Cvmk0vea0nft+uLE9fg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMkC0J12tQdaCUDsHvM3va6+ozxn1oxGenf4GErEPmM5uh/7RI
-	II18azHrnOwut9KjqilxYaSDNKurqO4yCceN76STcTjA0bPEzjtuhMn3oUKu7Io=
-X-Google-Smtp-Source: AGHT+IGBdJCygNHz6DEBCdeiVRgK2IumpYj4jyGOaPbgCKPpYL6CnPz3nA2B5qY78/GCUuIzkqAI7g==
-X-Received: by 2002:a05:6902:2b86:b0:e30:e1f3:2aab with SMTP id 3f1490d57ef6-e38263a1b87mr2546246276.39.1731684683163;
-        Fri, 15 Nov 2024 07:31:23 -0800 (PST)
+        bh=kj8DHbC84OPYXlyGqV3jogaZDMjK7DzZOpBQs/P23MY=;
+        b=P54FP3jkKYE0bnek/xEj8Xqbg6DZIes3f/SfzPfONnkLs5tnKJb7MyDMYD180s/9WF
+         /aToCtH+XtOEm7lL6rutffhnb/bpXFZTM5k3EtkJmnQ3fnph7v9UHPaE3j6mjc3aDHFQ
+         O1I9tm4ZfNGfkOtK+GqmSWGRpVk/9T45HlJTuQRa5HwlBMV3brDjxNfnWyva6MeF8eyP
+         7yrv3Yg4+K79kbfGpp7M+fojAawi3ukXO+8id331a7HAv7qO9pbzIwZ1j9JxDc33ph4e
+         d1+jUnJ7H0t/vl3lkOcyZ8OzdraZMhEKJHhIjWyUWvWKRNPkd7pwRbS0k3jyDudG5PZX
+         v9kA==
+X-Forwarded-Encrypted: i=1; AJvYcCUG86fQvfZw2a2BCOicrqkUdY8SU3m7t6Nz9etuytki9fbD+eMWoZVrY/7UTr0ohv+jpCmAwXqAv2s97g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDGxNertGtvj2ijZBmmF5r6iOE/d8dlXf3B+FmXqFvt+p0QdJs
+	e/93BWq8X/wWan22QVNYn6XOruGObyzhPpwyZoH2zHlr2GJwYPNfaKvC2Rul4aM=
+X-Google-Smtp-Source: AGHT+IH8WmaESCVDYemYdBxVVvrkUDwhBuFm4p8CVuem1Xk6vUMMQWpt5yAHUnnmjhKyVYoAl9xVug==
+X-Received: by 2002:a05:690c:46c4:b0:6ea:ebba:3059 with SMTP id 00721157ae682-6ee558d9384mr37985407b3.0.1731684684910;
+        Fri, 15 Nov 2024 07:31:24 -0800 (PST)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e38152fe65dsm991511276.35.2024.11.15.07.31.22
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ee44413490sm7666367b3.95.2024.11.15.07.31.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 07:31:22 -0800 (PST)
+        Fri, 15 Nov 2024 07:31:24 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -79,9 +79,9 @@ To: kernel-team@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH v8 01/19] fs: get rid of __FMODE_NONOTIFY kludge
-Date: Fri, 15 Nov 2024 10:30:14 -0500
-Message-ID: <d1231137e7b661a382459e79a764259509a4115d.1731684329.git.josef@toxicpanda.com>
+Subject: [PATCH v8 02/19] fsnotify: opt-in for permission events at file open time
+Date: Fri, 15 Nov 2024 10:30:15 -0500
+Message-ID: <5ea5f8e283d1edb55aa79c35187bfe344056af14.1731684329.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1731684329.git.josef@toxicpanda.com>
 References: <cover.1731684329.git.josef@toxicpanda.com>
@@ -93,195 +93,242 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Amir Goldstein <amir73il@gmail.com>
 
-All it takes to get rid of the __FMODE_NONOTIFY kludge is switching
-fanotify from anon_inode_getfd() to anon_inode_getfile_fmode() and adding
-a dentry_open_fmode() helper to be used by fanotify on the other path.
-That's it - no more weird shit in OPEN_FMODE(), etc.
+Legacy inotify/fanotify listeners can add watches for events on inode,
+parent or mount and expect to get events (e.g. FS_MODIFY) on files that
+were already open at the time of setting up the watches.
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Link: https://lore.kernel.org/linux-fsdevel/20241113043003.GH3387508@ZenIV/
+fanotify permission events are typically used by Anti-malware sofware,
+that is watching the entire mount and it is not common to have more that
+one Anti-malware engine installed on a system.
+
+To reduce the overhead of the fsnotify_file_perm() hooks on every file
+access, relax the semantics of the legacy FAN_ACCESS_PERM event to generate
+events only if there were *any* permission event listeners on the
+filesystem at the time that the file was opened.
+
+The new semantic is implemented by extending the FMODE_NONOTIFY bit into
+two FMODE_NONOTIFY_* bits, that are used to store a mode for which of the
+events types to report.
+
+This is going to apply to the new fanotify pre-content events in order
+to reduce the cost of the new pre-content event vfs hooks.
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/linux-fsdevel/CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com/
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- fs/fcntl.c                         |  4 ++--
- fs/notify/fanotify/fanotify_user.c | 25 ++++++++++++++++---------
- fs/open.c                          | 23 +++++++++++++++++++----
- include/linux/fs.h                 |  6 +++---
- include/uapi/asm-generic/fcntl.h   |  1 -
- 5 files changed, 40 insertions(+), 19 deletions(-)
+ fs/open.c                |  8 ++++-
+ include/linux/fs.h       | 35 ++++++++++++++++---
+ include/linux/fsnotify.h | 72 +++++++++++++++++++++++++++++++---------
+ 3 files changed, 93 insertions(+), 22 deletions(-)
 
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index ac77dd912412..88db23aa864a 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -1155,10 +1155,10 @@ static int __init fcntl_init(void)
- 	 * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
- 	 * is defined as O_NONBLOCK on some platforms and not on others.
- 	 */
--	BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=
-+	BUILD_BUG_ON(20 - 1 /* for O_RDONLY being 0 */ !=
- 		HWEIGHT32(
- 			(VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
--			__FMODE_EXEC | __FMODE_NONOTIFY));
-+			__FMODE_EXEC));
- 
- 	fasync_cache = kmem_cache_create("fasync_cache",
- 					 sizeof(struct fasync_struct), 0,
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 2d85c71717d6..919ff59cb802 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -100,8 +100,7 @@ static void __init fanotify_sysctls_init(void)
-  *
-  * Internal and external open flags are stored together in field f_flags of
-  * struct file. Only external open flags shall be allowed in event_f_flags.
-- * Internal flags like FMODE_NONOTIFY, FMODE_EXEC, FMODE_NOCMTIME shall be
-- * excluded.
-+ * Internal flags like FMODE_EXEC shall be excluded.
-  */
- #define	FANOTIFY_INIT_ALL_EVENT_F_BITS				( \
- 		O_ACCMODE	| O_APPEND	| O_NONBLOCK	| \
-@@ -258,12 +257,11 @@ static int create_fd(struct fsnotify_group *group, const struct path *path,
- 		return client_fd;
- 
- 	/*
--	 * we need a new file handle for the userspace program so it can read even if it was
--	 * originally opened O_WRONLY.
-+	 * We provide an fd for the userspace program, so it could access the
-+	 * file without generating fanotify events itself.
- 	 */
--	new_file = dentry_open(path,
--			       group->fanotify_data.f_flags | __FMODE_NONOTIFY,
--			       current_cred());
-+	new_file = dentry_open_nonotify(path, group->fanotify_data.f_flags,
-+					current_cred());
- 	if (IS_ERR(new_file)) {
- 		put_unused_fd(client_fd);
- 		client_fd = PTR_ERR(new_file);
-@@ -1409,6 +1407,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
- 	unsigned int fid_mode = flags & FANOTIFY_FID_BITS;
- 	unsigned int class = flags & FANOTIFY_CLASS_BITS;
- 	unsigned int internal_flags = 0;
-+	struct file *file;
- 
- 	pr_debug("%s: flags=%x event_f_flags=%x\n",
- 		 __func__, flags, event_f_flags);
-@@ -1477,7 +1476,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
- 	    (!(fid_mode & FAN_REPORT_NAME) || !(fid_mode & FAN_REPORT_FID)))
- 		return -EINVAL;
- 
--	f_flags = O_RDWR | __FMODE_NONOTIFY;
-+	f_flags = O_RDWR;
- 	if (flags & FAN_CLOEXEC)
- 		f_flags |= O_CLOEXEC;
- 	if (flags & FAN_NONBLOCK)
-@@ -1555,10 +1554,18 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
- 			goto out_destroy_group;
- 	}
- 
--	fd = anon_inode_getfd("[fanotify]", &fanotify_fops, group, f_flags);
-+	fd = get_unused_fd_flags(f_flags);
- 	if (fd < 0)
- 		goto out_destroy_group;
- 
-+	file = anon_inode_getfile_fmode("[fanotify]", &fanotify_fops, group,
-+					f_flags, FMODE_NONOTIFY);
-+	if (IS_ERR(file)) {
-+		fd = PTR_ERR(file);
-+		put_unused_fd(fd);
-+		goto out_destroy_group;
-+	}
-+	fd_install(fd, file);
- 	return fd;
- 
- out_destroy_group:
 diff --git a/fs/open.c b/fs/open.c
-index e6911101fe71..c3490286092e 100644
+index c3490286092e..1a9483872e1f 100644
 --- a/fs/open.c
 +++ b/fs/open.c
-@@ -1105,6 +1105,23 @@ struct file *dentry_open(const struct path *path, int flags,
- }
- EXPORT_SYMBOL(dentry_open);
+@@ -901,7 +901,7 @@ static int do_dentry_open(struct file *f,
+ 	f->f_sb_err = file_sample_sb_err(f);
  
-+struct file *dentry_open_nonotify(const struct path *path, int flags,
-+				  const struct cred *cred)
-+{
-+	struct file *f = alloc_empty_file(flags, cred);
-+	if (!IS_ERR(f)) {
-+		int error;
-+
-+		f->f_mode |= FMODE_NONOTIFY;
-+		error = vfs_open(path, f);
-+		if (error) {
-+			fput(f);
-+			f = ERR_PTR(error);
-+		}
-+	}
-+	return f;
-+}
-+
- /**
-  * dentry_create - Create and open a file
-  * @path: path to create
-@@ -1202,7 +1219,7 @@ inline struct open_how build_open_how(int flags, umode_t mode)
- inline int build_open_flags(const struct open_how *how, struct open_flags *op)
- {
- 	u64 flags = how->flags;
--	u64 strip = __FMODE_NONOTIFY | O_CLOEXEC;
-+	u64 strip = O_CLOEXEC;
- 	int lookup_flags = 0;
- 	int acc_mode = ACC_MODE(flags);
+ 	if (unlikely(f->f_flags & O_PATH)) {
+-		f->f_mode = FMODE_PATH | FMODE_OPENED;
++		f->f_mode = FMODE_PATH | FMODE_OPENED | FMODE_NONOTIFY;
+ 		f->f_op = &empty_fops;
+ 		return 0;
+ 	}
+@@ -929,6 +929,12 @@ static int do_dentry_open(struct file *f,
+ 	if (error)
+ 		goto cleanup_all;
  
-@@ -1210,9 +1227,7 @@ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
- 			 "struct open_flags doesn't yet handle flags > 32 bits");
- 
- 	/*
--	 * Strip flags that either shouldn't be set by userspace like
--	 * FMODE_NONOTIFY or that aren't relevant in determining struct
--	 * open_flags like O_CLOEXEC.
-+	 * Strip flags that aren't relevant in determining struct open_flags.
- 	 */
- 	flags &= ~strip;
- 
++	/*
++	 * Set FMODE_NONOTIFY_* bits according to existing permission watches.
++	 * If FMODE_NONOTIFY was already set for an fanotify fd, this doesn't
++	 * change anything.
++	 */
++	file_set_fsnotify_mode(f);
+ 	error = fsnotify_open_perm(f);
+ 	if (error)
+ 		goto cleanup_all;
 diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 9c13222362f5..23bd058576b1 100644
+index 23bd058576b1..8e5c783013d2 100644
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h
-@@ -2750,6 +2750,8 @@ static inline struct file *file_open_root_mnt(struct vfsmount *mnt,
+@@ -173,13 +173,14 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
+ 
+ #define	FMODE_NOREUSE		((__force fmode_t)(1 << 23))
+ 
+-/* FMODE_* bit 24 */
+-
+ /* File is embedded in backing_file object */
+-#define FMODE_BACKING		((__force fmode_t)(1 << 25))
++#define FMODE_BACKING		((__force fmode_t)(1 << 24))
+ 
+-/* File was opened by fanotify and shouldn't generate fanotify events */
+-#define FMODE_NONOTIFY		((__force fmode_t)(1 << 26))
++/* File shouldn't generate fanotify pre-content events */
++#define FMODE_NONOTIFY_HSM	((__force fmode_t)(1 << 25))
++
++/* File shouldn't generate fanotify permission events */
++#define FMODE_NONOTIFY_PERM	((__force fmode_t)(1 << 26))
+ 
+ /* File is capable of returning -EAGAIN if I/O will block */
+ #define FMODE_NOWAIT		((__force fmode_t)(1 << 27))
+@@ -190,6 +191,30 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
+ /* File does not contribute to nr_files count */
+ #define FMODE_NOACCOUNT		((__force fmode_t)(1 << 29))
+ 
++/*
++ * The two FMODE_NONOTIFY_ bits used together have a special meaning of
++ * not reporting any events at all including non-permission events.
++ * These are the possible values of FMODE_FSNOTIFY(f->f_mode) and their meaning:
++ *
++ * FMODE_NONOTIFY_HSM - suppress only pre-content events.
++ * FMODE_NONOTIFY_PERM - suppress permission (incl. pre-content) events.
++ * FMODE_NONOTIFY - suppress all (incl. non-permission) events.
++ */
++#define FMODE_FSNOTIFY_MASK \
++	(FMODE_NONOTIFY_HSM | FMODE_NONOTIFY_PERM)
++#define FMODE_NONOTIFY FMODE_FSNOTIFY_MASK
++#define FMODE_FSNOTIFY(mode) \
++	((mode) & FMODE_FSNOTIFY_MASK)
++
++#define FMODE_FSNOTIFY_NONE(mode) \
++	(FMODE_FSNOTIFY(mode) == FMODE_NONOTIFY)
++#define FMODE_FSNOTIFY_NORMAL(mode) \
++	(FMODE_FSNOTIFY(mode) == FMODE_NONOTIFY_PERM)
++#define FMODE_FSNOTIFY_PERM(mode) \
++	(!((mode) & FMODE_NONOTIFY_PERM))
++#define FMODE_FSNOTIFY_HSM(mode) \
++	(FMODE_FSNOTIFY(mode) == 0)
++
+ /*
+  * Attribute flags.  These should be or-ed together to figure out what
+  * has been changed!
+diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
+index 278620e063ab..54ec97366d7c 100644
+--- a/include/linux/fsnotify.h
++++ b/include/linux/fsnotify.h
+@@ -108,38 +108,68 @@ static inline void fsnotify_dentry(struct dentry *dentry, __u32 mask)
+ 	fsnotify_parent(dentry, mask, dentry, FSNOTIFY_EVENT_DENTRY);
  }
- struct file *dentry_open(const struct path *path, int flags,
- 			 const struct cred *creds);
-+struct file *dentry_open_nonotify(const struct path *path, int flags,
-+				  const struct cred *cred);
- struct file *dentry_create(const struct path *path, int flags, umode_t mode,
- 			   const struct cred *cred);
- struct path *backing_file_user_path(struct file *f);
-@@ -3706,11 +3708,9 @@ struct ctl_table;
- int __init list_bdev_fs_names(char *buf, size_t size);
  
- #define __FMODE_EXEC		((__force int) FMODE_EXEC)
--#define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
- 
- #define ACC_MODE(x) ("\004\002\006\006"[(x)&O_ACCMODE])
--#define OPEN_FMODE(flag) ((__force fmode_t)(((flag + 1) & O_ACCMODE) | \
--					    (flag & __FMODE_NONOTIFY)))
-+#define OPEN_FMODE(flag) ((__force fmode_t)(((flag + 1) & O_ACCMODE)))
- 
- static inline bool is_sxid(umode_t mode)
++static inline int fsnotify_path(const struct path *path, __u32 mask)
++{
++	return fsnotify_parent(path->dentry, mask, path, FSNOTIFY_EVENT_PATH);
++}
++
+ static inline int fsnotify_file(struct file *file, __u32 mask)
  {
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 80f37a0d40d7..613475285643 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -6,7 +6,6 @@
+-	const struct path *path;
+-
+ 	/*
+ 	 * FMODE_NONOTIFY are fds generated by fanotify itself which should not
+ 	 * generate new events. We also don't want to generate events for
+ 	 * FMODE_PATH fds (involves open & close events) as they are just
+ 	 * handle creation / destruction events and not "real" file events.
+ 	 */
+-	if (file->f_mode & (FMODE_NONOTIFY | FMODE_PATH))
++	if (FMODE_FSNOTIFY_NONE(file->f_mode))
+ 		return 0;
+ 
+-	path = &file->f_path;
+-	/* Permission events require group prio >= FSNOTIFY_PRIO_CONTENT */
+-	if (mask & ALL_FSNOTIFY_PERM_EVENTS &&
+-	    !fsnotify_sb_has_priority_watchers(path->dentry->d_sb,
+-					       FSNOTIFY_PRIO_CONTENT))
+-		return 0;
+-
+-	return fsnotify_parent(path->dentry, mask, path, FSNOTIFY_EVENT_PATH);
++	return fsnotify_path(&file->f_path, mask);
+ }
+ 
+ #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
++/*
++ * At open time we check fsnotify_sb_has_priority_watchers() and set the
++ * FMODE_NONOTIFY_ mode bits accordignly.
++ * Later, fsnotify permission hooks do not check if there are permission event
++ * watches, but that there were permission event watches at open time.
++ */
++static void file_set_fsnotify_mode(struct file *file)
++{
++	struct super_block *sb = file->f_path.dentry->d_sb;
++
++	/* Is it a file opened by fanotify? */
++	if (FMODE_FSNOTIFY_NONE(file->f_mode))
++		return;
++
++	/*
++	 * Permission events is a super set of pre-content events, so if there
++	 * are no permission event watchers, there are also no pre-content event
++	 * watchers and this is implied from the single FMODE_NONOTIFY_PERM bit.
++	 */
++	if (likely(!fsnotify_sb_has_priority_watchers(sb,
++						FSNOTIFY_PRIO_CONTENT))) {
++		file->f_mode |= FMODE_NONOTIFY_PERM;
++		return;
++	}
++
++	/*
++	 * FMODE_NONOTIFY_HSM bit means there are permission event watchers, but
++	 * no pre-content event watchers.
++	 */
++	if (likely(!fsnotify_sb_has_priority_watchers(sb,
++						FSNOTIFY_PRIO_PRE_CONTENT))) {
++		file->f_mode |= FMODE_NONOTIFY_HSM;
++		return;
++	}
++}
++
+ /*
+  * fsnotify_file_area_perm - permission hook before access to file range
+  */
+ static inline int fsnotify_file_area_perm(struct file *file, int perm_mask,
+ 					  const loff_t *ppos, size_t count)
+ {
+-	__u32 fsnotify_mask = FS_ACCESS_PERM;
+-
+ 	/*
+ 	 * filesystem may be modified in the context of permission events
+ 	 * (e.g. by HSM filling a file on access), so sb freeze protection
+@@ -150,7 +180,10 @@ static inline int fsnotify_file_area_perm(struct file *file, int perm_mask,
+ 	if (!(perm_mask & MAY_READ))
+ 		return 0;
+ 
+-	return fsnotify_file(file, fsnotify_mask);
++	if (likely(file->f_mode & FMODE_NONOTIFY_PERM))
++		return 0;
++
++	return fsnotify_path(&file->f_path, FS_ACCESS_PERM);
+ }
  
  /*
-  * FMODE_EXEC is 0x20
-- * FMODE_NONOTIFY is 0x4000000
-  * These cannot be used by userspace O_* until internal and external open
-  * flags are split.
-  * -Eric Paris
+@@ -168,16 +201,23 @@ static inline int fsnotify_open_perm(struct file *file)
+ {
+ 	int ret;
+ 
++	if (likely(!FMODE_FSNOTIFY_PERM(file->f_mode)))
++		return 0;
++
+ 	if (file->f_flags & __FMODE_EXEC) {
+-		ret = fsnotify_file(file, FS_OPEN_EXEC_PERM);
++		ret = fsnotify_path(&file->f_path, FS_OPEN_EXEC_PERM);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	return fsnotify_file(file, FS_OPEN_PERM);
++	return fsnotify_path(&file->f_path, FS_OPEN_PERM);
+ }
+ 
+ #else
++static inline void file_set_fsnotify_mode(struct file *file)
++{
++}
++
+ static inline int fsnotify_file_area_perm(struct file *file, int perm_mask,
+ 					  const loff_t *ppos, size_t count)
+ {
 -- 
 2.43.0
 
