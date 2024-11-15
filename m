@@ -1,69 +1,72 @@
-Return-Path: <linux-btrfs+bounces-9707-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9708-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C3929CF013
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 16:35:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 955049CF009
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 16:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2E2DB3A3BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 15:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5610E2887DF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 15:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0851D89E4;
-	Fri, 15 Nov 2024 15:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE661D90B3;
+	Fri, 15 Nov 2024 15:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="VHE0vNg3"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="CN4yeK7t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA09D1CEAD1
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBAF1D47D2
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731684685; cv=none; b=U+mwYTCydqMz65DiIk42rFH+XE2ptxycnfupl5pdzR4ePblEhQamiaS9xT55Oxu5RtnMc3aMT/wZqhtMScq8SOy4nzNq00Ubtq+kVS6MpKek0xr46dbeDGX2GNBtL7jzVMN91a22psUZ4xDGSP6Q0BDOe4pCH1EWAReCknka/Ic=
+	t=1731684686; cv=none; b=shBoDYxzdhIwREmdnuvjJnFkpi9iI63uqx41HMn4lxT0PwuKARoCY6WmLbXmMdH0uFxI+tG+qdg3VdR0fS4o5uOUjYPOD7pH5BzxQpah7b0PNwKe9OStp+eAsPFGh7Bx80CDef+gGwYna8sI6k1GCQql3GW+H51hgIwO4r+Yv4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731684685; c=relaxed/simple;
-	bh=hp4usW8Ej11+8+PqZlhGZByHONHHqdNTmMAhepWwZC4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VB8Kh+4h5mSu7ukvrNL6MQdBBpAs5YvCGZmOcr/G5F2bZrb6+VqDu9mpzloF0gYKLyEOpZk//cx2VA5MQRHtmrm84RYRtOIR9rHD0DcSsl3lIRXthRkoiaKwOL3J5D/ZBbtmWv+ku+PkQ0Ab+BuKYocdwGivexReRctNjwxwGuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=VHE0vNg3; arc=none smtp.client-ip=209.85.128.179
+	s=arc-20240116; t=1731684686; c=relaxed/simple;
+	bh=e50Qfn4GCw5AIdzXYs640LPuGmdwEnwaxcQ/v4hGxAA=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=OHKlJFNoJAvj+Mx1uvGfEUtH5hV9ohcN+vaceUU7KfdFX8xT8EyjySsfUFoVz+iLTRUHTAQW0CYmwrpQd7/cl3RYvvCz0FAI6ke294qsUlEpHEckAPhRkXrjv2YDdZA7RKoiQVDh5ZWiiKqiw8AwQFfE4elrvXdzzIseEmjuCnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=CN4yeK7t; arc=none smtp.client-ip=209.85.219.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6e5a5a59094so19384247b3.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 07:31:22 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e380f16217cso1999562276.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 07:31:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684682; x=1732289482; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VUtk4+vV369ZskHbswJIOBkvN0frqjKE2l/5ygvxLAI=;
-        b=VHE0vNg3j6b+b5EQ+4+I71Mh0M0knTrZycmHLOJsEHn6MKHXKOcFwZOJ70cZmKHxFA
-         YPFwyq6w8VYHNcVC73W6vkWujCjOAK9f5NADW37dwVeqAhU+PCT5aAhgyI0ay7zKDYxK
-         YtId3ROUzIiG2DBLDD78NF/SWWo3iDnC1CEN0GPCHsqnjbd0qgotYpEePRSDPZOvwblT
-         5DBZCjM8cmTNmB/L6/dxnhK2RMryCir4460aMG6dbgDsIlUh/pFbcxJX56iBJ67TCMoK
-         J2ztsAd2LDMGiYwWmIxiZ2vRMPaiIqn1Pfu1bRwKe0orUob5A4u1llWyUII7+o8BPuG2
-         fSrQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684683; x=1732289483; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kR1XeBSj0UKEAyle1L8EQtWLZrkZWI4sB29nFtL0fR8=;
+        b=CN4yeK7tk6IllvdX/x8UQxYCoUyVf0de5kGPjaw44ixDSTsNfjDkMP2OUjTIyfzYxq
+         UWTgi688CdhA6mj6M1sKRl+DJLmWeEjovDwL7tJVVOIGPTB6M9+NGLZwnIPFQRLaiFix
+         M9ILUP5HY1B+giopiMoMayRQ5UW0nvopv6fDtBIEAxVKMCJfClCBhL9g2IzwUvkearKF
+         NPfWA/lPOIQA+N05jgxMp4LUGAnsWYJlQVpf1WEqi8E2FhKVbeqXsgXVA22A6hI3HH9M
+         173fQqo9IMtaWlkWuAz698Lo8MUIZfwOMXrkJfEOhFCNcG4GGzWOgh5ZODPlwMe5bQ/h
+         02OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731684682; x=1732289482;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VUtk4+vV369ZskHbswJIOBkvN0frqjKE2l/5ygvxLAI=;
-        b=NOdQRttpy6j/ttUhLukcx7XWMTreHdG3skbHfeTqKFKs12dF0gC/k8w8Os2Cd2hkA/
-         Q3ihHo8ykN+ZTVhIbPciiq0MEN254qIpiG1ocxaOU7CQmipYauSBPV1jYWhPlZPWzIVI
-         G+Oi2oqfWkG/NQY/0uO/BK1b0o7LQe2JBtQDb2Xqs4Th/KlOVZEUAvy/0qHyHB5DgqxJ
-         +pBA1IZUW6UC+I9wKEY2tuM9Zc2yvj68hqWtY9tNY07D9KKHM9o5ys+j0XXPaL021vqu
-         w/83hCoimk7oNniQjK96FodLR6rYEoQshBN/s4HGEiT0jSUXxUmTAXyfqHdLsA9dChJP
-         GFyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfMFb7VjPhBwcBPxGi9Z4SQ4xuUqmCXULGr5wCXf1nJwO/j68AJ2aVzHuGpDjz/qKiPEv5oVCQhZ3XLg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPWocYXnNjBhiyOhGSZsKF0B3VXeWy5RPEYiteZH6juJM0uq4+
-	iNsWBEK0remdZO30PfYI5BsjCtOAngs3sr0MnVX+qmGpz2F/PyUn1oz7i1tkrZ4=
-X-Google-Smtp-Source: AGHT+IEtrgHfueknW4D9O6DxGEsrZzaExI8RD/i4XVu0Bk+G5X9g8sl2lzwD4VPcS/0dPBXA19z4iQ==
-X-Received: by 2002:a05:690c:3348:b0:6e3:16da:e74 with SMTP id 00721157ae682-6ee55a709a1mr39043347b3.16.1731684681590;
-        Fri, 15 Nov 2024 07:31:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731684683; x=1732289483;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kR1XeBSj0UKEAyle1L8EQtWLZrkZWI4sB29nFtL0fR8=;
+        b=BR3nfhOuW0SdE8PS0xEy1qQS23go1Tdh/aZToEsRCmDqsxS3lsOb4Qgy3bPifge++k
+         wGld8Q9ZEO65hKdZifp10Dnx5k1SimD7NjECro3huG15EEGyfP234P53NYjHQhntbwIq
+         Gki3sKE/pvDbVcerAYkP5xGb3V17+2z5ROaNqcs5Jb/i+/577o7Jt+vvc5d2+pQKHnsJ
+         tie8tA/neLwHpqVolu1HJWd8gqfYYL4oD/E6JxcE1cSCLmlQI8JzXGCmIPeI078xADlk
+         Pg2YUxshKEcfBGXIi0WKp0791Hpb14Yx7OPwyZrOIaftKsSREHRHZOSaeH3vfVraNaDz
+         FSNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXn58CgLjoXBvmpq8Lagk998cqgr5kGwDP+cfGmkfEnNSd9yRnTqpmwPtuMQ99Cvmk0vea0nft+uLE9fg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMkC0J12tQdaCUDsHvM3va6+ozxn1oxGenf4GErEPmM5uh/7RI
+	II18azHrnOwut9KjqilxYaSDNKurqO4yCceN76STcTjA0bPEzjtuhMn3oUKu7Io=
+X-Google-Smtp-Source: AGHT+IGBdJCygNHz6DEBCdeiVRgK2IumpYj4jyGOaPbgCKPpYL6CnPz3nA2B5qY78/GCUuIzkqAI7g==
+X-Received: by 2002:a05:6902:2b86:b0:e30:e1f3:2aab with SMTP id 3f1490d57ef6-e38263a1b87mr2546246276.39.1731684683163;
+        Fri, 15 Nov 2024 07:31:23 -0800 (PST)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ee444477b5sm7768357b3.110.2024.11.15.07.31.20
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e38152fe65dsm991511276.35.2024.11.15.07.31.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 07:31:21 -0800 (PST)
+        Fri, 15 Nov 2024 07:31:22 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -76,10 +79,12 @@ To: kernel-team@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH v8 00/19] fanotify: add pre-content hooks
-Date: Fri, 15 Nov 2024 10:30:13 -0500
-Message-ID: <cover.1731684329.git.josef@toxicpanda.com>
+Subject: [PATCH v8 01/19] fs: get rid of __FMODE_NONOTIFY kludge
+Date: Fri, 15 Nov 2024 10:30:14 -0500
+Message-ID: <d1231137e7b661a382459e79a764259509a4115d.1731684329.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1731684329.git.josef@toxicpanda.com>
+References: <cover.1731684329.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -88,209 +93,195 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-v7: https://lore.kernel.org/linux-fsdevel/cover.1731433903.git.josef@toxicpanda.com/
-v6: https://lore.kernel.org/linux-fsdevel/cover.1731355931.git.josef@toxicpanda.com/
-v5: https://lore.kernel.org/linux-fsdevel/cover.1725481503.git.josef@toxicpanda.com/
-v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
-v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
-v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
-v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-v7->v8:
-- A bunch of work from Amir to cleanup the fast path for the common case of no
-  watches, which cascades through the rest of th series to update the helpers
-  and the hooks to use the new helpers.
-- A patch from Al to get rid of the __FMODE_NONOTIFY flag and cleanup the usage
-  there, thanks Al!
+All it takes to get rid of the __FMODE_NONOTIFY kludge is switching
+fanotify from anon_inode_getfd() to anon_inode_getfile_fmode() and adding
+a dentry_open_fmode() helper to be used by fanotify on the other path.
+That's it - no more weird shit in OPEN_FMODE(), etc.
 
-v6->v7:
-- As per Linus's suggestion, Amir added the file flag FMODE_NOTIFY_PERM that
-  will be set at open time if the file has permission related watches (this is
-  the original malware style permission watches and the new precontent watches).
-  All of the VFS hooks and the page fault hooks use this flag to determine if
-  they should generate a notification to allow for a much cheaper check in the
-  common case.
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Link: https://lore.kernel.org/linux-fsdevel/20241113043003.GH3387508@ZenIV/
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+---
+ fs/fcntl.c                         |  4 ++--
+ fs/notify/fanotify/fanotify_user.c | 25 ++++++++++++++++---------
+ fs/open.c                          | 23 +++++++++++++++++++----
+ include/linux/fs.h                 |  6 +++---
+ include/uapi/asm-generic/fcntl.h   |  1 -
+ 5 files changed, 40 insertions(+), 19 deletions(-)
 
-v5->v6:
-- Linus had problems with this and rejected Jan's PR
-  (https://lore.kernel.org/linux-fsdevel/20240923110348.tbwihs42dxxltabc@quack3/),
-  so I'm respinning this series to address his concerns.  Hopefully this is more
-  acceptable.
-- Change the page fault hooks to happen only in the case where we have to add a
-  page, not where there exists pages already.
-- Amir added a hook to truncate.
-- We made the flag per SB instead of per fstype, Amir wanted this because of
-  some potential issues with other file system specific work he's doing.
-- Dropped the bcachefs patch, there were some concerns that we were doing
-  something wrong, and it's not a huge deal to not have this feature for now.
-- Unfortunately the xfs write fault path still has to do the page fault hook
-  before we know if we have a page or not, this is because of the locking that's
-  done before we get to the part where we know if we have a page already or not,
-  so that's the path that is still the same from last iteration.
-- I've re-validated this series with btrfs, xfs, and ext4 to make sure I didn't
-  break anything.
-
-v4->v5:
-- Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
-  to respin the series anyway.
-- Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
-- Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
-- Added a patch to disable btrfs defrag on pre-content watched files.
-- Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
-- Added two fstests (which will be posted separately) to validate everything,
-  re-validated the series with btrfs, xfs, ext4, and bcachefs to make sure I
-  didn't break anything.
-
-v3->v4:
-- Trying to send a final verson Friday at 5pm before you go on vacation is a
-  recipe for silly mistakes, fixed the xfs handling yet again, per Christoph's
-  review.
-- Reworked the file system helper so it's handling of fpin was a little less
-  silly, per Chinner's suggestion.
-- Updated the return values to not or in VM_FAULT_RETRY, as we have a comment
-  in filemap_fault that says if VM_FAULT_ERROR is set we won't have
-  VM_FAULT_RETRY set.
-
-v2->v3:
-- Fix the pagefault path to do MAY_ACCESS instead, updated the perm handler to
-  emit PRE_ACCESS in this case, so we can avoid the extraneous perm event as per
-  Amir's suggestion.
-- Reworked the exported helper so the per-filesystem changes are much smaller,
-  per Amir's suggestion.
-- Fixed the screwup for DAX writes per Chinner's suggestion.
-- Added Christian's reviewed-by's where appropriate.
-
-v1->v2:
-- reworked the page fault logic based on Jan's suggestion and turned it into a
-  helper.
-- Added 3 patches per-fs where we need to call the fsnotify helper from their
-  ->fault handlers.
-- Disabled readahead in the case that there's a pre-content watch in place.
-- Disabled huge faults when there's a pre-content watch in place (entirely
-  because it's untested, theoretically it should be straightforward to do).
-- Updated the command numbers.
-- Addressed the random spelling/grammer mistakes that Jan pointed out.
-- Addressed the other random nits from Jan.
-
---- Original email ---
-
-Hello,
-
-These are the patches for the bare bones pre-content fanotify support.  The
-majority of this work is Amir's, my contribution to this has solely been around
-adding the page fault hooks, testing and validating everything.  I'm sending it
-because Amir is traveling a bunch, and I touched it last so I'm going to take
-all the hate and he can take all the credit.
-
-There is a PoC that I've been using to validate this work, you can find the git
-repo here
-
-https://github.com/josefbacik/remote-fetch
-
-This consists of 3 different tools.
-
-1. populate.  This just creates all the stub files in the directory from the
-   source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
-   recursively create all of the stub files and directories.
-2. remote-fetch.  This is the actual PoC, you just point it at the source and
-   destination directory and then you can do whatever.  ./remote-fetch ~/linux
-   ~/hsm-linux.
-3. mmap-validate.  This was to validate the pagefault thing, this is likely what
-   will be turned into the selftest with remote-fetch.  It creates a file and
-   then you can validate the file matches the right pattern with both normal
-   reads and mmap.  Normally I do something like
-
-   ./mmap-validate create ~/src/foo
-   ./populate ~/src ~/dst
-   ./rmeote-fetch ~/src ~/dst
-   ./mmap-validate validate ~/dst/foo
-
-I did a bunch of testing, I also got some performance numbers.  I copied a
-kernel tree, and then did remote-fetch, and then make -j4
-
-Normal
-real    9m49.709s
-user    28m11.372s
-sys     4m57.304s
-
-HSM
-real    10m6.454s
-user    29m10.517s
-sys     5m2.617s
-
-So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
-to see the size
-
-[root@fedora ~]# du -hs /src/linux
-1.6G    /src/linux
-[root@fedora ~]# du -hs dst
-125M    dst
-
-This mirrors the sort of savings we've seen in production.
-
-Meta has had these patches (minus the page fault patch) deployed in production
-for almost a year with our own utility for doing on-demand package fetching.
-The savings from this has been pretty significant.
-
-The page-fault hooks are necessary for the last thing we need, which is
-on-demand range fetching of executables.  Some of our binaries are several gigs
-large, having the ability to remote fetch them on demand is a huge win for us
-not only with space savings, but with startup time of containers.
-
-There will be tests for this going into LTP once we're satisfied with the
-patches and they're on their way upstream.  Thanks,
-
-Josef
-
-Al Viro (1):
-  fs: get rid of __FMODE_NONOTIFY kludge
-
-Amir Goldstein (12):
-  fsnotify: opt-in for permission events at file open time
-  fsnotify: add helper to check if file is actually being watched
-  fanotify: don't skip extra event info if no info_mode is set
-  fanotify: rename a misnamed constant
-  fanotify: reserve event bit of deprecated FAN_DIR_MODIFY
-  fsnotify: introduce pre-content permission events
-  fsnotify: pass optional file access range in pre-content event
-  fsnotify: generate pre-content permission event on truncate
-  fanotify: introduce FAN_PRE_ACCESS permission event
-  fanotify: report file range info with pre-content events
-  fanotify: allow to set errno in FAN_DENY permission response
-  fanotify: add a helper to check for pre content events
-
-Josef Bacik (6):
-  fanotify: disable readahead if we have pre-content watches
-  mm: don't allow huge faults for files with pre content watches
-  fsnotify: generate pre-content permission event on page fault
-  xfs: add pre-content fsnotify hook for write faults
-  btrfs: disable defrag on pre-content watched files
-  fs: enable pre-content events on supported file systems
-
- fs/btrfs/ioctl.c                   |   9 ++
- fs/btrfs/super.c                   |   2 +-
- fs/ext4/super.c                    |   3 +
- fs/fcntl.c                         |   4 +-
- fs/notify/fanotify/fanotify.c      |  33 +++++--
- fs/notify/fanotify/fanotify.h      |  15 +++
- fs/notify/fanotify/fanotify_user.c | 145 +++++++++++++++++++++++------
- fs/notify/fsnotify.c               |  56 +++++++++--
- fs/open.c                          |  62 +++++++++---
- fs/xfs/xfs_file.c                  |   4 +
- fs/xfs/xfs_super.c                 |   2 +-
- include/linux/fanotify.h           |  19 +++-
- include/linux/fs.h                 |  42 +++++++--
- include/linux/fsnotify.h           | 135 +++++++++++++++++++++++----
- include/linux/fsnotify_backend.h   |  60 +++++++++++-
- include/linux/mm.h                 |   1 +
- include/uapi/asm-generic/fcntl.h   |   1 -
- include/uapi/linux/fanotify.h      |  18 ++++
- mm/filemap.c                       |  90 ++++++++++++++++++
- mm/memory.c                        |  22 +++++
- mm/readahead.c                     |  13 +++
- security/selinux/hooks.c           |   3 +-
- 22 files changed, 639 insertions(+), 100 deletions(-)
-
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index ac77dd912412..88db23aa864a 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -1155,10 +1155,10 @@ static int __init fcntl_init(void)
+ 	 * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
+ 	 * is defined as O_NONBLOCK on some platforms and not on others.
+ 	 */
+-	BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=
++	BUILD_BUG_ON(20 - 1 /* for O_RDONLY being 0 */ !=
+ 		HWEIGHT32(
+ 			(VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
+-			__FMODE_EXEC | __FMODE_NONOTIFY));
++			__FMODE_EXEC));
+ 
+ 	fasync_cache = kmem_cache_create("fasync_cache",
+ 					 sizeof(struct fasync_struct), 0,
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 2d85c71717d6..919ff59cb802 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -100,8 +100,7 @@ static void __init fanotify_sysctls_init(void)
+  *
+  * Internal and external open flags are stored together in field f_flags of
+  * struct file. Only external open flags shall be allowed in event_f_flags.
+- * Internal flags like FMODE_NONOTIFY, FMODE_EXEC, FMODE_NOCMTIME shall be
+- * excluded.
++ * Internal flags like FMODE_EXEC shall be excluded.
+  */
+ #define	FANOTIFY_INIT_ALL_EVENT_F_BITS				( \
+ 		O_ACCMODE	| O_APPEND	| O_NONBLOCK	| \
+@@ -258,12 +257,11 @@ static int create_fd(struct fsnotify_group *group, const struct path *path,
+ 		return client_fd;
+ 
+ 	/*
+-	 * we need a new file handle for the userspace program so it can read even if it was
+-	 * originally opened O_WRONLY.
++	 * We provide an fd for the userspace program, so it could access the
++	 * file without generating fanotify events itself.
+ 	 */
+-	new_file = dentry_open(path,
+-			       group->fanotify_data.f_flags | __FMODE_NONOTIFY,
+-			       current_cred());
++	new_file = dentry_open_nonotify(path, group->fanotify_data.f_flags,
++					current_cred());
+ 	if (IS_ERR(new_file)) {
+ 		put_unused_fd(client_fd);
+ 		client_fd = PTR_ERR(new_file);
+@@ -1409,6 +1407,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
+ 	unsigned int fid_mode = flags & FANOTIFY_FID_BITS;
+ 	unsigned int class = flags & FANOTIFY_CLASS_BITS;
+ 	unsigned int internal_flags = 0;
++	struct file *file;
+ 
+ 	pr_debug("%s: flags=%x event_f_flags=%x\n",
+ 		 __func__, flags, event_f_flags);
+@@ -1477,7 +1476,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
+ 	    (!(fid_mode & FAN_REPORT_NAME) || !(fid_mode & FAN_REPORT_FID)))
+ 		return -EINVAL;
+ 
+-	f_flags = O_RDWR | __FMODE_NONOTIFY;
++	f_flags = O_RDWR;
+ 	if (flags & FAN_CLOEXEC)
+ 		f_flags |= O_CLOEXEC;
+ 	if (flags & FAN_NONBLOCK)
+@@ -1555,10 +1554,18 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
+ 			goto out_destroy_group;
+ 	}
+ 
+-	fd = anon_inode_getfd("[fanotify]", &fanotify_fops, group, f_flags);
++	fd = get_unused_fd_flags(f_flags);
+ 	if (fd < 0)
+ 		goto out_destroy_group;
+ 
++	file = anon_inode_getfile_fmode("[fanotify]", &fanotify_fops, group,
++					f_flags, FMODE_NONOTIFY);
++	if (IS_ERR(file)) {
++		fd = PTR_ERR(file);
++		put_unused_fd(fd);
++		goto out_destroy_group;
++	}
++	fd_install(fd, file);
+ 	return fd;
+ 
+ out_destroy_group:
+diff --git a/fs/open.c b/fs/open.c
+index e6911101fe71..c3490286092e 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -1105,6 +1105,23 @@ struct file *dentry_open(const struct path *path, int flags,
+ }
+ EXPORT_SYMBOL(dentry_open);
+ 
++struct file *dentry_open_nonotify(const struct path *path, int flags,
++				  const struct cred *cred)
++{
++	struct file *f = alloc_empty_file(flags, cred);
++	if (!IS_ERR(f)) {
++		int error;
++
++		f->f_mode |= FMODE_NONOTIFY;
++		error = vfs_open(path, f);
++		if (error) {
++			fput(f);
++			f = ERR_PTR(error);
++		}
++	}
++	return f;
++}
++
+ /**
+  * dentry_create - Create and open a file
+  * @path: path to create
+@@ -1202,7 +1219,7 @@ inline struct open_how build_open_how(int flags, umode_t mode)
+ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
+ {
+ 	u64 flags = how->flags;
+-	u64 strip = __FMODE_NONOTIFY | O_CLOEXEC;
++	u64 strip = O_CLOEXEC;
+ 	int lookup_flags = 0;
+ 	int acc_mode = ACC_MODE(flags);
+ 
+@@ -1210,9 +1227,7 @@ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
+ 			 "struct open_flags doesn't yet handle flags > 32 bits");
+ 
+ 	/*
+-	 * Strip flags that either shouldn't be set by userspace like
+-	 * FMODE_NONOTIFY or that aren't relevant in determining struct
+-	 * open_flags like O_CLOEXEC.
++	 * Strip flags that aren't relevant in determining struct open_flags.
+ 	 */
+ 	flags &= ~strip;
+ 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 9c13222362f5..23bd058576b1 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2750,6 +2750,8 @@ static inline struct file *file_open_root_mnt(struct vfsmount *mnt,
+ }
+ struct file *dentry_open(const struct path *path, int flags,
+ 			 const struct cred *creds);
++struct file *dentry_open_nonotify(const struct path *path, int flags,
++				  const struct cred *cred);
+ struct file *dentry_create(const struct path *path, int flags, umode_t mode,
+ 			   const struct cred *cred);
+ struct path *backing_file_user_path(struct file *f);
+@@ -3706,11 +3708,9 @@ struct ctl_table;
+ int __init list_bdev_fs_names(char *buf, size_t size);
+ 
+ #define __FMODE_EXEC		((__force int) FMODE_EXEC)
+-#define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
+ 
+ #define ACC_MODE(x) ("\004\002\006\006"[(x)&O_ACCMODE])
+-#define OPEN_FMODE(flag) ((__force fmode_t)(((flag + 1) & O_ACCMODE) | \
+-					    (flag & __FMODE_NONOTIFY)))
++#define OPEN_FMODE(flag) ((__force fmode_t)(((flag + 1) & O_ACCMODE)))
+ 
+ static inline bool is_sxid(umode_t mode)
+ {
+diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+index 80f37a0d40d7..613475285643 100644
+--- a/include/uapi/asm-generic/fcntl.h
++++ b/include/uapi/asm-generic/fcntl.h
+@@ -6,7 +6,6 @@
+ 
+ /*
+  * FMODE_EXEC is 0x20
+- * FMODE_NONOTIFY is 0x4000000
+  * These cannot be used by userspace O_* until internal and external open
+  * flags are split.
+  * -Eric Paris
 -- 
 2.43.0
 
