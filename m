@@ -1,151 +1,91 @@
-Return-Path: <linux-btrfs+bounces-9728-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989E99CF0B7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 16:53:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE8149CF0BB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 16:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45AEF1F2AB67
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 15:53:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D2FB28B606
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 15:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3C001E104C;
-	Fri, 15 Nov 2024 15:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100AA1D5AA7;
+	Fri, 15 Nov 2024 15:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="AoYYPuxL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vLupoSiP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B71C1E103B
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B011D516F
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731685785; cv=none; b=OFBiqaZzs7sFnO6ifFnL/xF6O45axWosng2W02s6AHp9Bq4gqiSrfOoCH2drdk3QmGmKVgNOwWOh+oUaCMe/5usBr9W6BqLz0xAHpynRwt7W7jRkW9DpdwQLq1kHHX2trAWZFHOUTT6pZbVKo1ZWuyBqiVA3xdNq4K3fPhG2+m0=
+	t=1731685963; cv=none; b=aan9YB65T9Cvkq5qqJpQR+4aGAaHwAFMy/xHsjtO/sY0tE+iuehqtlKIgtRlHpXvTZwghCUltpa/6v83AAmw2WaHTcjhklZW4dswKapSVZpXFy1345y0pQL8UislBQ1kjw3UPbShEfNY1RtNEuL/NjN1LSDZc21Vb/99EqGNOHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731685785; c=relaxed/simple;
-	bh=ph4w429BD1ycyH1RPeP3LgUvoo3aLJjycvjX7xDjfCw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rwZ4MIWBpXxnPG/HSI2LXKrs4DNYwjnYMDLQafcyGThO/umSQzlBTRRQ8SUoqJGEtMZDEsjthUqT2bdBe+YehJ4S74U8pHge2lcB8XpghwA+lCxHmlej0nPZGm1YtEinJywan268nLBWSxqzaCXd4n9AxogCEShzBMBiF1zNl5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=AoYYPuxL; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AFEMjAC008027
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 07:49:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=CQRVVCQCdcPeBYozSf90X2D
-	78Qj0uWQTPc6kSveM6lg=; b=AoYYPuxL5wQlQ/KnqXCpkgC7rdZdT/+IPH/VMCx
-	1R+LLuUVdALfAA80omBEH/U8+Ei4t8FqGGEHPiUNekzCS4osJBl9jYKGPQivBhXF
-	Murl+JBISftEokUTdFOSgCqauwOE8AE3dqUhzViV2kjDx9s7VXeEaILT0XD9Wz7p
-	w5Rw=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42x6cmh7yt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 07:49:43 -0800 (PST)
-Received: from twshared25495.03.ash8.facebook.com (2620:10d:c085:108::150d) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Fri, 15 Nov 2024 15:49:42 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id C781C8AC4461; Fri, 15 Nov 2024 15:49:28 +0000 (GMT)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>,
-        Johannes Thumshirn
-	<johannes.thumshirn@wdc.com>
-Subject: [PATCH v2] btrfs: fix lockdep warnings on io_uring encoded reads
-Date: Fri, 15 Nov 2024 15:49:17 +0000
-Message-ID: <20241115154925.1175086-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1731685963; c=relaxed/simple;
+	bh=sevheC8pnOmSZBVl4QStrgjvKkTvWW9U7/z1M5Z52yk=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=DQ6rwPAeV5AJFuT3atkNmNPwqsoRe92Ks8DeF1ECvQVOsvE+f6qNE/k09XKL2axVDpI2NLi31qlk7PjF7F2SVfFbm7i46Qyiop3ljucNRmGDb8SiVx+/BZzTwW379266uP+MGhFHjAywdIVHp0866D6CJ2jJA1s5tBGlLxiwSWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vLupoSiP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B189FC4CEE6
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 15:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731685962;
+	bh=sevheC8pnOmSZBVl4QStrgjvKkTvWW9U7/z1M5Z52yk=;
+	h=From:To:Subject:Date:From;
+	b=vLupoSiPHHwi8rUFDt0UqQ0II/FVTBM+DIehY5TnY8lFMtm6Am7DrL50qCe2WUnj1
+	 xxARN0RqHOV6oruSSQCjiYRBc0+NN2AgWphkR6aOC2SohlVaNDvSM0N6AI7HUljPt1
+	 XYLYwZmB/l+g7E9gzCnKBfvAA5QSBxskC+wAlWHOB9kSH/bk2Rena0jbwQxTtpH/WZ
+	 BkBmEmOiiYO9GSejNxZqxuMIzhAG/OhwAbouKXStBDXZkwBGfoVXSBazuaRy8Thbc3
+	 ShOG3EFw4XkiedrYb6Sy5nGC9q8QJ8ZZDWC9dsRsrJcGHViwRpL7frPs2jvF8q4tyn
+	 8Q9ZmhHDauqFw==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: dont loop for nowait writes when checking for cross references
+Date: Fri, 15 Nov 2024 15:52:38 +0000
+Message-Id: <82b293d9026f9ff3670a4c0ea4df9bf4afa8f4d2.1731685895.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ND3Riyzmk4KGYs2eFsp_GkSsFlIh4k_9
-X-Proofpoint-ORIG-GUID: ND3Riyzmk4KGYs2eFsp_GkSsFlIh4k_9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+Content-Transfer-Encoding: 8bit
 
-Lockdep doesn't like the fact that btrfs_uring_read_extent() returns to
-userspace still holding the inode lock, even though we release it once
-the I/O finishes. Add calls to rwsem_release() and rwsem_acquire_read() t=
-o
-work round this.
+From: Filipe Manana <fdmanana@suse.com>
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-Reported-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+When checking for delayed refs when verifying if there are cross
+references for a data extent, we stop if the path has nowait set and we
+can't try lock the delayed ref head's mutex, returning -EAGAIN with the
+goal of making a write fallback to a blocking context. However we ignore
+the -EAGAIN at btrfs_cross_ref_exist() when check_delayed_ref() returns
+it, and keep looping instead of immediately returning the -EGAIN to the
+caller.
+
+Fix this by not looping if we get -EAGAIN and we have a nowait path.
+
+Fixes: 26ce91144631 ("btrfs: make can_nocow_extent nowait compatible")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
-Changelog:
-v2: Add btrfs_lockdep_inode_acquire and btrfs_lockdep_inode_release
-helpers, and remove unneeded CONFIG_DEBUG_LOCK_ALLOC #ifdefs.
+ fs/btrfs/extent-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- fs/btrfs/ioctl.c   | 10 ++++++++++
- fs/btrfs/locking.h | 10 ++++++++++
- 2 files changed, 20 insertions(+)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 1fdeb216bf6c..f8680e7cc974 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4752,6 +4752,9 @@ static void btrfs_uring_read_finished(struct io_uri=
-ng_cmd *cmd, unsigned int iss
- 	size_t page_offset;
- 	ssize_t ret;
-=20
-+	/* The inode lock has already been acquired in btrfs_uring_read_extent.=
-  */
-+	btrfs_lockdep_inode_acquire(inode, i_rwsem);
-+
- 	if (priv->err) {
- 		ret =3D priv->err;
- 		goto out;
-@@ -4860,6 +4863,13 @@ static int btrfs_uring_read_extent(struct kiocb *i=
-ocb, struct iov_iter *iter,
- 	 * and inode and freeing the allocations.
- 	 */
-=20
-+	/*
-+	 * We're returning to userspace with the inode lock held, and that's
-+	 * okay - it'll get unlocked in a worker thread.  Call
-+	 * btrfs_lockdep_inode_release() to avoid confusing lockdep.
-+	 */
-+	btrfs_lockdep_inode_release(inode, i_rwsem);
-+
- 	return -EIOCBQUEUED;
-=20
- out_fail:
-diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-index 46c8be2afab1..35036b151bf5 100644
---- a/fs/btrfs/locking.h
-+++ b/fs/btrfs/locking.h
-@@ -128,6 +128,16 @@ enum btrfs_lockdep_trans_states {
- #define btrfs_lockdep_release(owner, lock)					\
- 	rwsem_release(&owner->lock##_map, _THIS_IP_)
-=20
-+/*
-+ * Used to account for the fact that when doing io_uring encoded I/O, we=
- can
-+ * return to userspace with the inode lock still held.
-+ */
-+#define btrfs_lockdep_inode_acquire(owner, lock)				\
-+	rwsem_acquire_read(&owner->vfs_inode.lock.dep_map, 0, 0, _THIS_IP_)
-+
-+#define btrfs_lockdep_inode_release(owner, lock)				\
-+	rwsem_release(&owner->vfs_inode.lock.dep_map, _THIS_IP_)
-+
- /*
-  * Macros for the transaction states wait events, similar to the generic=
- wait
-  * event macros.
---=20
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 412e318e4a22..bd09dd3ad1a0 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2422,7 +2422,7 @@ int btrfs_cross_ref_exist(struct btrfs_root *root, u64 objectid, u64 offset,
+ 			goto out;
+ 
+ 		ret = check_delayed_ref(root, path, objectid, offset, bytenr);
+-	} while (ret == -EAGAIN);
++	} while (ret == -EAGAIN && !path->nowait);
+ 
+ out:
+ 	btrfs_release_path(path);
+-- 
 2.45.2
 
 
