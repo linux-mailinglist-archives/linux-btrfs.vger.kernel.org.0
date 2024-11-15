@@ -1,166 +1,79 @@
-Return-Path: <linux-btrfs+bounces-9736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9737-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 719AE9CF401
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 19:33:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 884029CF49F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 20:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBFD81F216BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 18:33:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54C80B34C9B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 19:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0399127E18;
-	Fri, 15 Nov 2024 18:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFFC1E32B0;
+	Fri, 15 Nov 2024 18:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tZqOZ0b/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="P+8VBZBT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="urtIJzvC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dmqDh472"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQOewYp2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A7217BB32
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2024 18:33:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1493E17BB32;
+	Fri, 15 Nov 2024 18:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731695591; cv=none; b=M0lMrqNLPyi/rcIAQ0VMBjTMNQdRvtIEsqyphxJg7qHr9QXgtDsMYWUeEawBwGJL/ALoinxh7SGQ8JQBaDoKShgS0gRWqLi6A2C5MX89WG7jUv9CgTpOZW6dOIGs7qKRTXfokdKMSzi0rHFdDtIU+aG3m93tSGn9aeCzUqpF0x4=
+	t=1731697156; cv=none; b=W1X8e/+Ou1hq1BsJCZZHjZvPGPn5zk6luYKnF26PYsP9RR1vlNFP7jgIm7AGUVQTjYaga31e2ODdzVn8jp8eDQ2sZnkV8ZpFU1vlZn5VyMies74e94b1/2KFjLYvxzULB60y65b/gVqYpJjXHWw0iLkh35x3EEtoRLVXG6rymCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731695591; c=relaxed/simple;
-	bh=e1tVTM+GMTy3G6GuuY1IhakQ7YHm2fCkR/PdopBb4IY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YzIAK4abS8uZ0qpc+Ni31tRtWANrlZ0NZcGgBbxTfOEbg88P0gJG18N8caeuNEuc8ps203GCuZNwSHyzr9on4FBtskgAGA/A8VGRKvj7M2j9Vk3GZtaQI0LkI2NrLg9nxR4GoeKb/HVsgu4O9bvf/EVop87QyeFPfEasGgcDZSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tZqOZ0b/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=P+8VBZBT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=urtIJzvC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dmqDh472; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3AD5B2116D;
-	Fri, 15 Nov 2024 18:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731695588;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+rQskchxlvFbVB9/OGYCE9mhhE9Ga6ffi03/Hd8CLTA=;
-	b=tZqOZ0b/Q98wQQsBBf7G4cnCvPFuxeXqsFLShCwFMKoTFcoLXfNddRf0F9yVjpac1AqlM/
-	7eO7NmsM9D7EvvzI/KrtbU7u0MglhavEb66prkZU+Q9mvKH6x0enmWY+NCN1yrxlNbnOLR
-	o3SZJ7JujCeABlpkDzA/LpvVXrW/ciQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731695588;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+rQskchxlvFbVB9/OGYCE9mhhE9Ga6ffi03/Hd8CLTA=;
-	b=P+8VBZBTWTWK/5j2R/tuaNm42/5dvjVLaTD3Tq3hjNNXKx46lrApJaqfYff7lNvlP1cphc
-	nYO3oy2h17jRqWAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731695587;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+rQskchxlvFbVB9/OGYCE9mhhE9Ga6ffi03/Hd8CLTA=;
-	b=urtIJzvCFGvLObzxqhWmZvJw61KTUFZcQ5PDCl4M+A03Y7nZ7Sjon6qz//yZyMrRYB0Lsd
-	lkCN4ZsAUyUVFfJc244XqoG4iLf37vEQZr3jKaZrTFA92GrkZaOplvKhhUHpX/KFl3C3Em
-	11zMcFGWBRbY8dZk9IK+X8ITvZfLTXc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731695587;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+rQskchxlvFbVB9/OGYCE9mhhE9Ga6ffi03/Hd8CLTA=;
-	b=dmqDh472aYnwgsJwfrt47CDbxKuNsSW9tZxLljhUuucfiWLcK/BrUXEaFC6GyUcBuJEMTt
-	ETTqON4KckTqbrCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2280113485;
-	Fri, 15 Nov 2024 18:33:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YZbuB+OTN2f4cgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 15 Nov 2024 18:33:07 +0000
-Date: Fri, 15 Nov 2024 19:33:05 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs: add delayed ref self tests
-Message-ID: <20241115183305.GW31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1731614132.git.josef@toxicpanda.com>
- <78564483832375111f2d9541678cffa5d3c0c30a.1731614132.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1731697156; c=relaxed/simple;
+	bh=r59Ls4+rTUamoue6EZmgBDa2jy0/MC32GWcYDvnT+E4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=CbblriODTzI2HQAVGcLjZ8Vtd6YGKHwrLZIBnOECHexgR301dvg8445n4vMXNZ57YTcm1yQqIkd54kQ4rXZInZak8+BLNPGf0tB4By0i09ecFZwDSpHzg354Np3J1x8c4VNFBvg0IcVhRXxP5J9kHdtAXcWNvKR0Rp5RpA42cNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQOewYp2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E835BC4CECF;
+	Fri, 15 Nov 2024 18:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731697155;
+	bh=r59Ls4+rTUamoue6EZmgBDa2jy0/MC32GWcYDvnT+E4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=cQOewYp265raist0ikKvnaVCgxP7Yb+/kDtUKxNI09SUmG2EJB8lmcwfg8Zj+jZtf
+	 0T7dlyC7u/7xk2bRGDVtFSyRZcay0GkMhd4SPW6G7Aiy3R7ksZLTONcpCZPQNz//10
+	 AuxV4o3Feziru3QN+Jp199XkiyNCmPkVv8IkHOsijK9qhDf8HbQ17jGlIkmjoukxzy
+	 +lNRoU+QYt4heVBuFx2lAYzNFuBZWU8/h/w6aqxg+cCmyy7zKmbEmNuZVPkxgtncFq
+	 f+GjZPM3qwDfSogfRki0A3QYs4mbTvqgZVDFLrGMsw4HMnyc5FeIqjNC0Azztcv54J
+	 Eqh1XvMkXEwlg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0073809A80;
+	Fri, 15 Nov 2024 18:59:27 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fix for 6.12-rc8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1731619157.git.dsterba@suse.com>
+References: <cover.1731619157.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1731619157.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc7-tag
+X-PR-Tracked-Commit-Id: 7d493a5ecc26f861421af6e64427d5f697ddd395
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c9dd4571ad38654f26c07ff2b7c7dba03301fc76
+Message-Id: <173169716648.2685462.18005617827996840039.pr-tracker-bot@kernel.org>
+Date: Fri, 15 Nov 2024 18:59:26 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <78564483832375111f2d9541678cffa5d3c0c30a.1731614132.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,twin.jikos.cz:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Thu, Nov 14, 2024 at 02:57:49PM -0500, Josef Bacik wrote:
-> +	node_check.root = FAKE_ROOT_OBJECTID;
-> +	if (validate_ref_node(node, &node_check)) {
-> +		test_err("node check failed");
-> +		goto out;
-> +	}
-> +	delete_delayed_ref_node(head, node);
-> +	ret = 0;
-> +out:
-> +	if (head)
-> +		btrfs_unselect_ref_head(delayed_refs, head);
-> +	btrfs_destroy_delayed_refs(trans->transaction);
-> +	return ret;
-> +}
-> +
-> +int btrfs_test_delayed_refs(u32 sectorsize, u32 nodesize)
-> +{
-> +	struct btrfs_transaction transaction;
-> +	struct btrfs_trans_handle trans;
+The pull request you sent on Thu, 14 Nov 2024 22:22:10 +0100:
 
-Build complains
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc7-tag
 
-  CC [M]  fs/btrfs/tests/delayed-refs-tests.o
-fs/btrfs/tests/delayed-refs-tests.c: In function ‘btrfs_test_delayed_refs’:
-fs/btrfs/tests/delayed-refs-tests.c:1012:1: warning: the frame size of 2056 bytes is larger than 2048 bytes [-Wframe-larger-than=]
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c9dd4571ad38654f26c07ff2b7c7dba03301fc76
 
-Please change that to kmalloc so we don't get warning reports on configs that
-bloat data structures. On release config the sizes are like 480 + 168, which is ok.
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
