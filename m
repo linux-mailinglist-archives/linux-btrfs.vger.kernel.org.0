@@ -1,145 +1,244 @@
-Return-Path: <linux-btrfs+bounces-9683-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9684-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947209CDAE1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 09:49:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E0719CDB64
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 10:20:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18A2AB24577
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 08:49:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A92C01F21F41
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2024 09:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C73118E76F;
-	Fri, 15 Nov 2024 08:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861BD18FDA9;
+	Fri, 15 Nov 2024 09:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="KjYK9ERW";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Csxz+lyZ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iMtKBObL";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iMtKBObL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8A018BC36;
-	Fri, 15 Nov 2024 08:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B06189F39;
+	Fri, 15 Nov 2024 09:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731660561; cv=none; b=tLAMdmh7BJsSW4fYJ23ZF/n8sZccPlp/mIdv8aq4xS9RLoZvgFJ+8LJuPAHdwBiekfF93xMEGLM8dBraSRGwfyXPW3DfOHrNY8BgCIEfWLwJkbokYFwuIzqSeG9dAtdNvajm9alErlwGDDEcc9usN2wTO0OZ3eLYA936sRslQfw=
+	t=1731662393; cv=none; b=tSNqTgXjdS7nhAnOQlgtYt7NEhbkhCItf6Z6of+BP8sQkmoDoyBivweoB0mFVv833/L+mmHlUAKIOpUBXJIryKxyfVg6PQonqwuJM769ZA4Ou57SCt8WGM6qz4C1+WlbWJ226Ii92xrA00QTmiNb5oFHO1D91RvpCsZT1wGc48c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731660561; c=relaxed/simple;
-	bh=Wk98YQs1fhjFtM7kc4yXuBwnDskMKxFjh/w65kt/2wM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DO2quheCrB4uD/tkt3vqtdfUvlqNAykBHfQcciw3tuUdk0c7l+k4GOHGM3smeucJmSo7PjfpiX2zyGgEk6kjzBct1mGakeoGevbjVDfuT0+O8DnJXNVNaDj3EqqzQ+HHdRmSDJ0OWAqUdrBlWbh12GN2X8SVz/guYIYilDUWWJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=KjYK9ERW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Csxz+lyZ; arc=none smtp.client-ip=202.12.124.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfout.stl.internal (Postfix) with ESMTP id 37C651140151;
-	Fri, 15 Nov 2024 03:49:17 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Fri, 15 Nov 2024 03:49:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1731660557; x=
-	1731746957; bh=Iaji9P4Funvw7r0qArvkXpNAHznh5sdnkxmV7nx9XAk=; b=K
-	jYK9ERWo+b/9O9yWM3VYBPdlzRIhn/GsCwKz65L9HH8qqkP/wDYnJdej5Sdxv1Oa
-	o8aUlQFMaz7EU1sF9bMNL93pUaR8lc5vGlkl/kHBzbDYhX/W8KUq/2PrmUUUemcY
-	yTkCN0FFKazvuUGzbwLFLYtptvUP6sdbxrHR3v77ZtUSszCkxHYrkP7/OU2WT5I4
-	nl1N6gkhm2utCFaqm81/n6PbZ2bfMSwNaWfGwnqKamxndIqg9L+1b69Fe3+sdMNC
-	giY1cuzGyy8BNhSrT76X/0rqWvMcrHe3dnxDFjCEtOiTxfqI9ScTEIE74ycflQZg
-	DIcfFOaiABhUrBrcPyldg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1731660557; x=1731746957; bh=Iaji9P4Funvw7r0qArvkXpNAHznh5sdnkxm
-	V7nx9XAk=; b=Csxz+lyZaPEgendotkPPZbMtqk7t4iaGLW/c54YxIJJCdfFREiH
-	KATPLJ0GRBSRF7oA5MJbIsoK2NBxFUBhKxZfCCHd7tb4oIT0mqpatlJZSl9vX0iK
-	cwsuzTo0LfJ3xiKzJK0RGIJ+mF8GD6+ZQwZc7YHxR3Bvi13AcNh1giAei2goxWZ6
-	gtg7oHnlCfKKjEbgGGzjDURGzEMg0eZPEfIQX8tNwpLWhWXm3SWS1qmFJor4p5Bw
-	+9qcmNZwVswh82WH0z2CYBccWyRRJNab8/HUy7753Z+H+KW+UfAuvS9FG1LDk9ip
-	c56fRBrZ5g1o5LEsZ/hlI38UsHOtK6JlKfg==
-X-ME-Sender: <xms:DAs3Z5Asdbehi4P3hc7OUrnaUGYzB0ZavqkZDSzdetYcfqkoVrCItA>
-    <xme:DAs3Z3h1o5_97bBaZ8rW0cclaxdQK33C-6lEA5Fy16w965dEedSIbVNdGQ-cYRMtO
-    5pxsmYJy9_MgrkmYks>
-X-ME-Received: <xmr:DAs3Z0ksIyYjd8A5Ft4XH2D_RR4BIZ4wCL0TNMGfOdKlzX7PMh-ShQgwE45cfWoBgqW3pA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdefgdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvden
-    ucfhrhhomhepfdfmihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlse
-    hshhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeffvdevueetudfhhfff
-    veelhfetfeevveekleevjeduudevvdduvdelteduvefhkeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhv
-    rdhnrghmvgdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgtph
-    htthhopegrgigsohgvsehkvghrnhgvlhdrughkpdhrtghpthhtoheplhhinhhugidqmhhm
-    sehkvhgrtghkrdhorhhgpdhrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvg
-    hrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhrghnnhgvshestghmphigtghhghdr
-    ohhrghdprhgtphhtthhopegtlhhmsehmvghtrgdrtghomhdprhgtphhtthhopehlihhnuh
-    igqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeifihhl
-    lhihsehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfsh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgvgihtgees
-    vhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:DAs3Zzzd8jzmVBNcCn-cDOM4zaeAoPNE2KHHdmr5ekAmt9POByt36w>
-    <xmx:DAs3Z-Tev12Kfd5rRCyu9FQAS6CquRgSdsDJZiNBdOqUAcpO23GN9Q>
-    <xmx:DAs3Z2ZbCQAg1NIhakA2wVdhw1XKrZAVFEULRQwl9NBPdKJV0HVRRQ>
-    <xmx:DAs3Z_Qfv5Rs8nDB9uffzNIzrGA9xMrPGvHOCybQ8ni5FTdPM_8HWg>
-    <xmx:DQs3Z6YT5f0sbbQQjcItTIVFoyLoyuqnRTfw9MlesicUQdmCwc0XtJIq>
-Feedback-ID: ie3994620:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 15 Nov 2024 03:49:12 -0500 (EST)
-Date: Fri, 15 Nov 2024 10:49:08 +0200
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org, 
-	clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org, 
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	bfoster@redhat.com
-Subject: Re: [PATCH 08/17] mm/filemap: add read support for RWF_UNCACHED
-Message-ID: <66q2ojkbzy2l7ozzc4ilputbgvdtwav4r4qdvnl7x32tuutums@zachqbvl7y3w>
-References: <20241114152743.2381672-2-axboe@kernel.dk>
- <20241114152743.2381672-10-axboe@kernel.dk>
+	s=arc-20240116; t=1731662393; c=relaxed/simple;
+	bh=xDKowZfzuQlfGDqCe1JXTFqYxcBrR5OHTVFEXaRC72A=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=hZRkeZReFiFobRPzJgqBpQTfWoJZOzd7ZwVZwao+mTbnds3GhqeJ4NbShlWwM4vthoWoHTkMHUgtrzRYluYONBm7TnnIAq9B6EM+Fs9xzdb2cl0rT4QNggaS9lb1N5a1heeHzIUPk2QOJUCZ854tkPf/XbuLkWxVkuDgz6BP+g8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iMtKBObL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iMtKBObL; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 586B81F750;
+	Fri, 15 Nov 2024 09:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1731662389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nWMcFZFec5tgShlvJNyBry+yTFhC7vNfcrU3Vnuwc9Y=;
+	b=iMtKBObLXCEQz3QJuNrhV4G2fpniIT14EitSYXilnsAS2YJXQyDhAYHb6AqgjG9QfewiaW
+	brjVWBwSSq7HTW4wS0XZmk62UhgEMUqjYnLOCxDXzRs0ar3/Pk8XpbawOY8/+PfFloq385
+	htjEUoCqiMWrqlEU//r3aA1dQqO4DAA=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1731662389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nWMcFZFec5tgShlvJNyBry+yTFhC7vNfcrU3Vnuwc9Y=;
+	b=iMtKBObLXCEQz3QJuNrhV4G2fpniIT14EitSYXilnsAS2YJXQyDhAYHb6AqgjG9QfewiaW
+	brjVWBwSSq7HTW4wS0XZmk62UhgEMUqjYnLOCxDXzRs0ar3/Pk8XpbawOY8/+PfFloq385
+	htjEUoCqiMWrqlEU//r3aA1dQqO4DAA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30A1913485;
+	Fri, 15 Nov 2024 09:19:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ayNxNjMSN2fPQAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 15 Nov 2024 09:19:47 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] btrfs/327: add a test case to verify inline extent data read
+Date: Fri, 15 Nov 2024 19:49:26 +1030
+Message-ID: <20241115091926.101742-1-wqu@suse.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241114152743.2381672-10-axboe@kernel.dk>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-On Thu, Nov 14, 2024 at 08:25:12AM -0700, Jens Axboe wrote:
-> @@ -2595,6 +2601,20 @@ static inline bool pos_same_folio(loff_t pos1, loff_t pos2, struct folio *folio)
->  	return (pos1 >> shift == pos2 >> shift);
->  }
->  
-> +static void filemap_uncached_read(struct address_space *mapping,
-> +				  struct folio *folio)
-> +{
-> +	if (!folio_test_uncached(folio))
-> +		return;
-> +	if (folio_test_writeback(folio))
-> +		return;
+[BUG]
+When developing sector size < page size handling for btrfs, I'm hitting
+a data corruption, which is only possible with the following out-of-tree
+patches:
 
-Do we want to drop out here if the folio is dirty, but not yet under
-writeback?
+  btrfs: allow inline data extents creation if sector size < page size
+  btrfs: allow buffered write to skip full page if it's sector aligned
 
-It is checked inside folio_unmap_invalidate(), but we will lose
-PG_uncached if we get there.
+[CAUSE]
+Thankfully no upstream kernels are affected, even if some one is
+mounting a btrfs created by x86_64 with inlined data extents, they won't
+hit the corruption.
 
-> +	if (folio_test_clear_uncached(folio)) {
-> +		folio_lock(folio);
-> +		folio_unmap_invalidate(mapping, folio, 0);
-> +		folio_unlock(folio);
-> +	}
-> +}
-> +
->  /**
->   * filemap_read - Read data from the page cache.
->   * @iocb: The iocb to read.
+The root cause is that when reading inline extents, we zero out the
+whole remaining range until folio end.
 
+This means such zeroing out can cover ranges that is dirtied but not yet
+written back, thus lead to data corruption.
+
+This needs all the following conditions to be met:
+
+- Sector size < page size
+  So no x86_64 is affected. The most common users should be Asahi Linux.
+  But they are safe due to the next two conditions.
+
+- Inline data extents are present
+  For sector size < page size cases, we do not allow creating new inline
+  data extents but only reading it.
+
+  But even all above cases are met by using a x86_64 created btrfs with
+  inlined data extents, the next point will still save us.
+
+- Partial uptodate folios are allowed
+  This requires the out-of-tree patch "btrfs: allow buffered write to skip
+  full page if it's sector aligned", or buffered write will read out the
+  whole folio before dirting any range.
+
+So end users are completely safe.
+
+[TEST CASE]
+The test case itself is pretty straightforward:
+
+- Buffered write [0, 4k)
+- Drop all page cache
+- Buffered write [8k, 12k)
+- Verify the file content
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+For anyone who wants to verify the failure, please fetch the following
+branch, and reset to commit 4df35fbb829dfbcf64a914e5c8f652d9a3ad5227
+("btrfs: allow inline data extents creation if sector size < page
+size").
+
+ https://github.com/adam900710/linux.git subpage
+
+The top commit e7338d321bdf48e3b503c40e8eca7d7592709c83
+("btrfs: fix inline data extent reads which zero out the remaining part") is the fix.
+---
+ tests/btrfs/327     | 58 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/327.out |  2 ++
+ 2 files changed, 60 insertions(+)
+ create mode 100755 tests/btrfs/327
+ create mode 100644 tests/btrfs/327.out
+
+diff --git a/tests/btrfs/327 b/tests/btrfs/327
+new file mode 100755
+index 00000000..72269fc7
+--- /dev/null
++++ b/tests/btrfs/327
+@@ -0,0 +1,58 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 327
++#
++# Make sure reading inlined extents doesn't cause any corruption.
++#
++# This is a preventive test case inspired by btrfs/149, which can cause
++# data corruption when the following out-of-tree patches are applied and
++# the sector size is smaller than page size:
++#
++#  btrfs: allow inline data extents creation if sector size < page size
++#  btrfs: allow buffered write to skip full page if it's sector aligned
++#
++# Thankfully no upstream kernel is affected.
++
++. ./common/preamble
++_begin_fstest auto quick compress
++
++_require_scratch
++
++# We need 4K sector size support, especially this case can only be triggered
++# with sector size < page size for now.
++#
++# We do not check the page size and not_run so far, as in the long term btrfs
++# will support larger folios, then in that future 4K page size should be enough
++# to trigger the bug.
++_require_btrfs_support_sectorsize 4096
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount "-o compress,max_inline=4095"
++
++# Create one inlined data extent, only when using compression we can
++# create an inlined data extent up to sectorsize.
++# And for sector size < page size cases, we need the out-of-tree patch
++# "btrfs: allow inline data extents creation if sector size < page size" to
++# create such extent.
++xfs_io -f -c "pwrite 0 4k" "$SCRATCH_MNT/foobar" > /dev/null
++
++# Drop the cache, we need to read out the above inlined data extent.
++echo 3 > /proc/sys/vm/drop_caches
++
++# Write into range [8k, 12k), with the out-of-tree patch "btrfs: allow
++# buffered write to skip full page if it's sector aligned", such write will not
++# trigger the read on the folio.
++xfs_io -f -c "pwrite 8k 4k" "$SCRATCH_MNT/foobar" > /dev/null
++
++# Verify the checksum, for the affected devel branch, the read of inline extent
++# will zero out all the remaining range of the folio, screwing up the content
++# at [8K, 12k).
++_md5_checksum "$SCRATCH_MNT/foobar"
++
++_scratch_unmount
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/327.out b/tests/btrfs/327.out
+new file mode 100644
+index 00000000..aebf8c72
+--- /dev/null
++++ b/tests/btrfs/327.out
+@@ -0,0 +1,2 @@
++QA output created by 327
++277f3840b275c74d01e979ea9d75ac19
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.46.0
+
 
