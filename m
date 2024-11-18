@@ -1,114 +1,124 @@
-Return-Path: <linux-btrfs+bounces-9748-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDCD99D0EC1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 11:40:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F40319D13FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 16:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833991F21FBC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 10:40:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7E86B27F76
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 14:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDE9196C6C;
-	Mon, 18 Nov 2024 10:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 154841A9B51;
+	Mon, 18 Nov 2024 14:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k0Is1buZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239EB143C69
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 10:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DDF1A9B26
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 14:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731926369; cv=none; b=tEZPR7CW37NvjLMtRJYlVDnpPnBAfrhx9LBdjI39MSqC0NT9OUpKmgbG9C0YOJPd+xF7J6DWjQbtIw+qFmJkGllMrNXDYp0JzXlFCtRQf9Awi6nFKgr/W4vfBVl1s30KuJJ2uM9DZ2k8yJa0HT+L4UdtiKb0YBsTaTzJeFXwPFs=
+	t=1731941403; cv=none; b=HfV/lA0gRD867sNjKsMPmIjdefr/10phKLT9PTWa/mKtzGvkHIEi8hAAEHLB9QF5Or9Kaezalc3iUZnMMXBsJz6gKIySScoIA03NS4OabP5oMf0TPn/fPawUXMUNYyi2BbCita1XxllBrY3BjHDGqXHW5XDbVZT7OjF8MdQmhSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731926369; c=relaxed/simple;
-	bh=8cMHE7/1igewBZghqDxwQ01J1Xow0bKbnf1uog8Z17U=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kVq8fdTZPaT30flQd/hrn7BboFjkB6cTX87+JHOTq+bwFepSHkmMNc6Ot0uz4r/gIYmLWfHIK40vFT4Nkz8Hg8Ck93z5qHm4awp4rkkSYAHlPu0sKAAKziSKGT9mK2nfwrXMZLrA3eQYiT5yV0c0LTz/okRurO472Wa5Y9j6jts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a3c4554d29so16995375ab.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 02:39:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731926366; x=1732531166;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	s=arc-20240116; t=1731941403; c=relaxed/simple;
+	bh=jabCupIh1FJFAKWSdaG7M5rrT0Y7L0LAPYbB0FE65Q0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DMfxShSI8/UZ6xvRFr20FwgSU6mU0L+aJKyoOTAxwEDhRypNBvkReG1kUaH82bblL4qce2dB242Jd6T4JSNmhlaGCzjS3YjR0h6fQK3NSQPhCZhgVHJfhVNj+dRVMZsfNt8SgeGsDdEFd6UhcD3qR2SZvIg6Bsc43CMPDx5VUSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k0Is1buZ; arc=none smtp.client-ip=209.85.160.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-294ec8e1d8aso1683421fac.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 06:50:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731941400; x=1732546200; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zz0dExI+86k71TVQecrMYRF7YIQdaQH8XNcjQimG3ic=;
-        b=LyA0kB+ojWmUHKAfF5cdwPaJAhAJHrO+FFYUCDHHl3W4jYskdmtfi+EVOdV0IjVhwW
-         w+BoYEyoJGO4suuhMPXKeNB+CyHmGh6/PsMVcJ+2D5vhNUCt+7+v6xnYi093FA0DJGo0
-         kau/BQL0kER7bCtPYP9HWXUQBMI3t7qOLAMuAUr+iypsxcJWQzwfCkwr/+e9pMUlFH2C
-         vaoGVyM53q2ffTvxKd9Kzgh5P3IozqVKjM9htjWRWSKR7pNdM1NF2TCdjV04A5J5IEes
-         iIh4Li8YMMJtuKsGKmezJxfIYRxKTiXGzKTLi2PM+0HnIR7wn6bPJU1kZ3gv4jS6dbdj
-         hJFA==
-X-Forwarded-Encrypted: i=1; AJvYcCX060Aw6TaRdKOyuzxCFbuE33yFEvT9VB6DApgfP5oJenJFuH2XljDdmkb4/wPRadw1JrCFo7YD/GpU1g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJV1H0CEHH/sqDwCrlCRxjmwliZSx8uBTkmZep5JpbP8yDj7T+
-	KFbvNuycop7dKx1EdTuFJ6ac0LmQ/hcs9vBWogqhPqG0uS2EL5AoThaUeWGIk2VFMuUNPI6b/nb
-	aJzrJD7qy0QFSNhRKJXSpEmTUGat/MI41Y8Ye5khanzaGt7o1Ecm9oRo=
-X-Google-Smtp-Source: AGHT+IHvazNoiLGiKhZl60TcHrnStLVFbWVn+JHz6a7P1bf7lHGan6O1gpSewzj9QKvdSeOCNbjEB9Fl4x/q9sGnMroRMVpmy/MU
+        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
+        b=k0Is1buZhEVRX8aA2YpNv8xH51kd3XdbQCdU6sjFm6apcmft7wlkZzhH7Mb9GK/+2G
+         1ych5iZYYRNoEgNf/GkM0axLJb9fKsMg61umrjWEmu90EW9mrMb1789SRAbRJEhfjo6y
+         Xmccgf3Vb9OQ5OYpKxWee2AxCS87/bX4pAKbglFrVIXGqo2Tj9/DNJukkN8cSrx9Vw6d
+         GL5P2MEa+d1yuxxcKeDri93rmq7rjaGcTCBL87Ks5NGABsRSD9DPWYcfdy6Uhy0xWtZ5
+         +SU85X3/ub2mgUOCY6QgZVRoxVXkkmtf+jTTNLtdabubJEcV5dBnSLlNhBBJk/jCdviS
+         RnQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731941400; x=1732546200;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
+        b=aqU3l5I+3W8D33YUa2f1QQDbXYT6ePzYtlKGqD3sS9maFVXDJg15ZZTiCJMS1eoxbu
+         w14loi+7JCiY8w9HQwpiCVhblD2v8vROmv/ai2N61qZaepZ50vkogcMBqUsDdO3sZ9UY
+         dXKEWykEvZb8m61ICBM70ipLkwQzyxoOSrfAt10XfNGiDL4Tz3aCWg0Ze3RGBJ3Qd9VL
+         w8rkAAKSKaoVOZieDRAlfcDhcibVykhccR5bLLVq99zEDAW+Cjc675+WEYKLHupId8gZ
+         B+arIy2lL99qAYKNYf63S/ZR5xRvhfB7dQEEBciDesUIxGvbUXVpmCOaEwLEy5nJDCgb
+         967w==
+X-Forwarded-Encrypted: i=1; AJvYcCVz/IyUB2XMPc1FOOrEpiUQDoY4vSHXafTH+ti2RzGNnDPjX/2peh6szKfxkaIkLnrE34SVDI3GqAd9jQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyy76VPbUmX+O1Dig2chSKOrfqmVoDEiPGxzXSEC4xGqojXDuLA
+	5FOyi18W2H3KZIh7ml/OmvrJzeRayue8aLMf/sH50/6LDBUjX2plzw9cJLMJpuA=
+X-Google-Smtp-Source: AGHT+IF4SYJY9kdWkwrKjlAiH5Z+Bn8SZkqEPmKpcyMndgMPRn4H9T8dbqU6Hyt3/gFfCCmMTdbpdA==
+X-Received: by 2002:a05:6870:ab0b:b0:287:1b05:297d with SMTP id 586e51a60fabf-2962e01ad0dmr10557378fac.33.1731941400385;
+        Mon, 18 Nov 2024 06:50:00 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-29651852c27sm2626597fac.2.2024.11.18.06.49.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Nov 2024 06:49:59 -0800 (PST)
+Message-ID: <c54063db-5f82-46d6-ba7b-5e4a0073ebf9@kernel.dk>
+Date: Mon, 18 Nov 2024 07:49:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3c08:b0:3a0:a71b:75e5 with SMTP id
- e9e14a558f8ab-3a748027c23mr104739245ab.7.1731926366093; Mon, 18 Nov 2024
- 02:39:26 -0800 (PST)
-Date: Mon, 18 Nov 2024 02:39:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <673b195e.050a0220.87769.002e.GAE@google.com>
-Subject: [syzbot] Monthly btrfs report (Nov 2024)
-From: syzbot <syzbot+list69ba8ebe12d504efee8b@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/17] mm/filemap: make buffered writes work with
+ RWF_UNCACHED
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hannes@cmpxchg.org,
+ clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
+ kirill@shutemov.name, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, bfoster@redhat.com,
+ Yang Erkun <yangerkun@huawei.com>
+References: <20241114152743.2381672-2-axboe@kernel.dk>
+ <20241114152743.2381672-12-axboe@kernel.dk>
+ <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello btrfs maintainers/developers,
+On 11/18/24 1:42 AM, Baokun Li wrote:
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index 45510d0b8de0..122ae821989f 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -2877,6 +2877,11 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
+>>                   (iocb->ki_flags & IOCB_SYNC) ? 0 : 1);
+>>           if (ret)
+>>               return ret;
+>> +    } else if (iocb->ki_flags & IOCB_UNCACHED) {
+>> +        struct address_space *mapping = iocb->ki_filp->f_mapping;
+>> +
+>> +        filemap_fdatawrite_range_kick(mapping, iocb->ki_pos,
+>> +                          iocb->ki_pos + count);
+>>       }
+>>   
+> 
+> Hi Jens,
+> 
+> The filemap_fdatawrite_range_kick() helper function is not added until
+> the next patch, so you should swap the order of patch 10 and patch 11.
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+Ah thanks, not sure how I missed that. I'll swap them for the next
+posting, and also do a basic bisection test just to ensure I did't do
+more of those...
 
-During the period, 10 new issues were detected and 0 were fixed.
-In total, 43 issues are still open and 90 have already been fixed.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  6387    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  3458    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<3>  362     Yes   BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (7)
-                   https://syzkaller.appspot.com/bug?extid=74f79df25c37437e4d5a
-<4>  319     Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<5>  303     Yes   WARNING in lookup_inline_extent_backref
-                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-<6>  291     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<7>  245     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<8>  141     Yes   WARNING in cleanup_transaction
-                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
-<9>  90      Yes   WARNING in btrfs_put_block_group
-                   https://syzkaller.appspot.com/bug?extid=e38c6fff39c0d7d6f121
-<10> 72      Yes   kernel BUG in clear_state_bit
-                   https://syzkaller.appspot.com/bug?extid=78dbea1c214b5413bdd3
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+-- 
+Jens Axboe
 
