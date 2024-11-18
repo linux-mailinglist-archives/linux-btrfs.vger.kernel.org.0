@@ -1,124 +1,182 @@
-Return-Path: <linux-btrfs+bounces-9749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F40319D13FF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 16:07:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9497B9D17E1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 19:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7E86B27F76
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 14:50:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DC541F213D4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2024 18:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 154841A9B51;
-	Mon, 18 Nov 2024 14:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB91C1DEFC2;
+	Mon, 18 Nov 2024 18:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k0Is1buZ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jSwXpjPJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="86ROUx0e";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ch4xaa8s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TBDhvAui"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DDF1A9B26
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 14:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35888199FBF;
+	Mon, 18 Nov 2024 18:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731941403; cv=none; b=HfV/lA0gRD867sNjKsMPmIjdefr/10phKLT9PTWa/mKtzGvkHIEi8hAAEHLB9QF5Or9Kaezalc3iUZnMMXBsJz6gKIySScoIA03NS4OabP5oMf0TPn/fPawUXMUNYyi2BbCita1XxllBrY3BjHDGqXHW5XDbVZT7OjF8MdQmhSo=
+	t=1731953680; cv=none; b=ReYajbQjwEhrg42WdpKhsNTdKOC58MIMA4DNhpjQ928n9ryZs34ZwW3omzYnamJxAhQ3vvb3YSx9W8Fa96oZmJOhHTnuAvTl2weGKiu5+QdfPXNNy7AXH2t1gU4+q7NCjeUbZQcH+gW06QCzC5tSh6XKXntKMSTL/LfNy60utqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731941403; c=relaxed/simple;
-	bh=jabCupIh1FJFAKWSdaG7M5rrT0Y7L0LAPYbB0FE65Q0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DMfxShSI8/UZ6xvRFr20FwgSU6mU0L+aJKyoOTAxwEDhRypNBvkReG1kUaH82bblL4qce2dB242Jd6T4JSNmhlaGCzjS3YjR0h6fQK3NSQPhCZhgVHJfhVNj+dRVMZsfNt8SgeGsDdEFd6UhcD3qR2SZvIg6Bsc43CMPDx5VUSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k0Is1buZ; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-294ec8e1d8aso1683421fac.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 06:50:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731941400; x=1732546200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
-        b=k0Is1buZhEVRX8aA2YpNv8xH51kd3XdbQCdU6sjFm6apcmft7wlkZzhH7Mb9GK/+2G
-         1ych5iZYYRNoEgNf/GkM0axLJb9fKsMg61umrjWEmu90EW9mrMb1789SRAbRJEhfjo6y
-         Xmccgf3Vb9OQ5OYpKxWee2AxCS87/bX4pAKbglFrVIXGqo2Tj9/DNJukkN8cSrx9Vw6d
-         GL5P2MEa+d1yuxxcKeDri93rmq7rjaGcTCBL87Ks5NGABsRSD9DPWYcfdy6Uhy0xWtZ5
-         +SU85X3/ub2mgUOCY6QgZVRoxVXkkmtf+jTTNLtdabubJEcV5dBnSLlNhBBJk/jCdviS
-         RnQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731941400; x=1732546200;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
-        b=aqU3l5I+3W8D33YUa2f1QQDbXYT6ePzYtlKGqD3sS9maFVXDJg15ZZTiCJMS1eoxbu
-         w14loi+7JCiY8w9HQwpiCVhblD2v8vROmv/ai2N61qZaepZ50vkogcMBqUsDdO3sZ9UY
-         dXKEWykEvZb8m61ICBM70ipLkwQzyxoOSrfAt10XfNGiDL4Tz3aCWg0Ze3RGBJ3Qd9VL
-         w8rkAAKSKaoVOZieDRAlfcDhcibVykhccR5bLLVq99zEDAW+Cjc675+WEYKLHupId8gZ
-         B+arIy2lL99qAYKNYf63S/ZR5xRvhfB7dQEEBciDesUIxGvbUXVpmCOaEwLEy5nJDCgb
-         967w==
-X-Forwarded-Encrypted: i=1; AJvYcCVz/IyUB2XMPc1FOOrEpiUQDoY4vSHXafTH+ti2RzGNnDPjX/2peh6szKfxkaIkLnrE34SVDI3GqAd9jQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyy76VPbUmX+O1Dig2chSKOrfqmVoDEiPGxzXSEC4xGqojXDuLA
-	5FOyi18W2H3KZIh7ml/OmvrJzeRayue8aLMf/sH50/6LDBUjX2plzw9cJLMJpuA=
-X-Google-Smtp-Source: AGHT+IF4SYJY9kdWkwrKjlAiH5Z+Bn8SZkqEPmKpcyMndgMPRn4H9T8dbqU6Hyt3/gFfCCmMTdbpdA==
-X-Received: by 2002:a05:6870:ab0b:b0:287:1b05:297d with SMTP id 586e51a60fabf-2962e01ad0dmr10557378fac.33.1731941400385;
-        Mon, 18 Nov 2024 06:50:00 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-29651852c27sm2626597fac.2.2024.11.18.06.49.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Nov 2024 06:49:59 -0800 (PST)
-Message-ID: <c54063db-5f82-46d6-ba7b-5e4a0073ebf9@kernel.dk>
-Date: Mon, 18 Nov 2024 07:49:58 -0700
+	s=arc-20240116; t=1731953680; c=relaxed/simple;
+	bh=6DUb29KItG037LbAN08Kp8gw17BtqjN3QpEmPJudJLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rxyOlKK+vbWJ9YkKsXVWEbz60x1gWSfdvt5mzKbCKUXa5FOktqkisn1sNO8ybXRv4IjwGkkLTdrrbMvoB7Fm122zo0nUiiA/wLApvcUR9VeTg82M9VlWbo7BSrhCbOwWpu7Y26HnrtKkfrmOqsqSdNkL1GLQAxiATymZCoEXvYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jSwXpjPJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=86ROUx0e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ch4xaa8s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TBDhvAui; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 45FD61F365;
+	Mon, 18 Nov 2024 18:14:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1731953676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=md9G+/9cSr7JpPaP78XtOG3skD1kyowear2VacQB+is=;
+	b=jSwXpjPJdyP3H9kg2vP6YVPy6sMElERXItbvv/fUYhTmq8g1QZ1MsmPPS1rM66VPUFsiuG
+	DgSiLR/2k6hkqbUQALIoW6akd29RL6r4TKRNM31LEya2loOMax9+nrDVeTI1GyiyomK8Km
+	55ZJ5cmjlZo0hV2bxZNAj2T7Gh91XOw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1731953676;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=md9G+/9cSr7JpPaP78XtOG3skD1kyowear2VacQB+is=;
+	b=86ROUx0e0I30RVzHdIaRVEUbV4xjvw6UF+v1YTkUCd/zPtq5gPbd4ZY60/BgGf6j1EPT4U
+	YIqyE0FG1oJmbeBg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ch4xaa8s;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=TBDhvAui
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1731953675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=md9G+/9cSr7JpPaP78XtOG3skD1kyowear2VacQB+is=;
+	b=ch4xaa8s317XGBtr2Ge9VfJFvlBX/S9XN4vXUSSS5WdtF6ZpUcPhj+J8or/csizv3pct83
+	wE8++FlhQZG6od51OOfpRLzZ1gB19DJKnNmfEhfUwkIHXeD9hzumSoXP27EwSDIFGgUy6f
+	jWB+fk83OpTtIQzxGH1AdOQ92t4WpQY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1731953675;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=md9G+/9cSr7JpPaP78XtOG3skD1kyowear2VacQB+is=;
+	b=TBDhvAui+7AK/qG/gNQBM9MyLcvk2gO1AmzGWyykr4br2aEPuF4eZUGiytDJd91KlLHKyI
+	ZIyKVXVcsKTdUTDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35A45134A0;
+	Mon, 18 Nov 2024 18:14:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZF3RDAuEO2dIPwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 18 Nov 2024 18:14:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C3826A0984; Mon, 18 Nov 2024 19:14:34 +0100 (CET)
+Date: Mon, 18 Nov 2024 19:14:34 +0100
+From: Jan Kara <jack@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org,
+	torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 01/19] fs: get rid of __FMODE_NONOTIFY kludge
+Message-ID: <20241118181434.iwsu2yqlkjyw4wkw@quack3>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <d1231137e7b661a382459e79a764259509a4115d.1731684329.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/17] mm/filemap: make buffered writes work with
- RWF_UNCACHED
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hannes@cmpxchg.org,
- clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
- kirill@shutemov.name, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, bfoster@redhat.com,
- Yang Erkun <yangerkun@huawei.com>
-References: <20241114152743.2381672-2-axboe@kernel.dk>
- <20241114152743.2381672-12-axboe@kernel.dk>
- <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1231137e7b661a382459e79a764259509a4115d.1731684329.git.josef@toxicpanda.com>
+X-Rspamd-Queue-Id: 45FD61F365
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,linux.org.uk:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,vger.kernel.org,suse.cz,gmail.com,kernel.org,linux-foundation.org,zeniv.linux.org.uk,kvack.org];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 11/18/24 1:42 AM, Baokun Li wrote:
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index 45510d0b8de0..122ae821989f 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -2877,6 +2877,11 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
->>                   (iocb->ki_flags & IOCB_SYNC) ? 0 : 1);
->>           if (ret)
->>               return ret;
->> +    } else if (iocb->ki_flags & IOCB_UNCACHED) {
->> +        struct address_space *mapping = iocb->ki_filp->f_mapping;
->> +
->> +        filemap_fdatawrite_range_kick(mapping, iocb->ki_pos,
->> +                          iocb->ki_pos + count);
->>       }
->>   
+On Fri 15-11-24 10:30:14, Josef Bacik wrote:
+> From: Al Viro <viro@zeniv.linux.org.uk>
 > 
-> Hi Jens,
+> All it takes to get rid of the __FMODE_NONOTIFY kludge is switching
+> fanotify from anon_inode_getfd() to anon_inode_getfile_fmode() and adding
+> a dentry_open_fmode() helper to be used by fanotify on the other path.
+    ^^^ this ended up being dentry_open_nonotify()
+
+> That's it - no more weird shit in OPEN_FMODE(), etc.
 > 
-> The filemap_fdatawrite_range_kick() helper function is not added until
-> the next patch, so you should swap the order of patch 10 and patch 11.
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Link: https://lore.kernel.org/linux-fsdevel/20241113043003.GH3387508@ZenIV/
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 
-Ah thanks, not sure how I missed that. I'll swap them for the next
-posting, and also do a basic bisection test just to ensure I did't do
-more of those...
+...
 
+> @@ -3706,11 +3708,9 @@ struct ctl_table;
+>  int __init list_bdev_fs_names(char *buf, size_t size);
+>  
+>  #define __FMODE_EXEC		((__force int) FMODE_EXEC)
+> -#define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
+>  
+>  #define ACC_MODE(x) ("\004\002\006\006"[(x)&O_ACCMODE])
+> -#define OPEN_FMODE(flag) ((__force fmode_t)(((flag + 1) & O_ACCMODE) | \
+> -					    (flag & __FMODE_NONOTIFY)))
+> +#define OPEN_FMODE(flag) ((__force fmode_t)(((flag + 1) & O_ACCMODE)))
+					       ^^^ one more level of braces
+than necessary now
+
+Otherwise looks good to me. Don't need to resend just because of this, I
+can fix this up if there's nothing else.
+
+								Honza
 -- 
-Jens Axboe
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
