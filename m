@@ -1,148 +1,166 @@
-Return-Path: <linux-btrfs+bounces-9754-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9756-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A369D1D73
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 02:43:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB9A9D1F3F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 05:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3ED1F221A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 01:43:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02055282862
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 04:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F225D12BF24;
-	Tue, 19 Nov 2024 01:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C12414A09E;
+	Tue, 19 Nov 2024 04:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="EYHWUzx0";
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="AOE5eYX3"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GrIcwqkQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41DDF8C0B
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 01:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B27420E6
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 04:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731980627; cv=none; b=DEDFw0ucl+Ja1Ad9CwgEXDr/EEx7Zg0RLSNs2nOfbIML+O51MViKdAuQoTzTZZYagYu9tLcmoqwjboIw/3lugsQAv2/wgalGFt8CiXk+DePOS+6a491ut3R+INQHLnBwOAnmZ2KOm61tWCNYQZN25FtiWyU1ZtolTrTg5+lLlFY=
+	t=1731990696; cv=none; b=dyppUV2yI5f/nrEEtPHxrg3SR1FAqPJJPTXFhJGQBgjfxB4Uz+5qJ62nqmyOlSPb0IxqQ3znOhO4bv8CMKS58n3I/hUZd4vycuf7gezBshccC9nXg3XWi/q0+ZM3cGSuGOjvH2gIky03uW3l9iXVDOavg5vcOc0yrvuqZ/zmsVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731980627; c=relaxed/simple;
-	bh=CKJrvopa6ozLYeKw33jSVd4A5UnSuCl1grm29yT76z4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HHt3tgppFLR96aKuKhkeULGFE9Hm4t6c3Pw1F5B6A1bcsVQQ9Lg2JF8ZiVsIfFEN+Q+3KlzL8VDkXiiOXD4hj3gc1SLjA5KeKBneORZkhT87cQ9ZNwIpundZQTa5N/pv/0souXdJWGFxKo935w2eppJHcwuqmbpXvc9MHx0DMPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=EYHWUzx0; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=AOE5eYX3; arc=none smtp.client-ip=35.74.137.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1731980625;
-	bh=CKJrvopa6ozLYeKw33jSVd4A5UnSuCl1grm29yT76z4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=EYHWUzx0t4R/uaNOreg9gJpZ5d4CR4xtNr2NXZoOsWgXVRXBL/wCQKMl4g92v0Ym8
-	 ox4Lpike0YHy7PDPYR0cyKkv8SGWV3XBuyK4qzZ7yPP9XmhVjnxhvo+mewoFNKkftb
-	 bhIUz8cQ4i/GemsrgfMVJ5WYmUa9rlE6ajfudNXL2+L5Nw0WMMPXyeLXplKoMScqVc
-	 fxB/SsQnSrtfIP1p2sTGbLTNtNrjhYb2doxI2xQf6e32BcyTMTdgM1ot4bQNb+BvOD
-	 0eplnW+MuNFEEXj2URu4uQFJC80uBItwS05wIhK/6dG1M27sTktQnxZqoxri7Nv2rI
-	 iwOpAW2NYjtvw==
-Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id 38986105
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 10:43:45 +0900 (JST)
-Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=AOE5eYX3;
-	dkim-atps=neutral
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id DA5373BC
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 10:43:44 +0900 (JST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-21205195adeso19254435ad.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2024 17:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1731980624; x=1732585424; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m6jAkMu+ET95IMimeGZDWYrcMncnCAOMJmk+LzAD+nk=;
-        b=AOE5eYX3uErirOuz5Cz//CI6pvQnp+x1NPKkm6b+6gS8eDB8HZbu1+pPUVqyJi3XyN
-         0s98Cj2l3XoIODHmOuGfwe7wo7c7M7PCPJp3Pr5lMVVcS7Ihlr6n7frwqns41Zj3mWpr
-         b5kucBNg0gwQMZqG9h5wzGTJAVAeiZwxdjX9CNImouqx5bP0eGK2V5fYEm7wrAVVQm+m
-         y5DBiPR7jp41AgEL7BdpMpPvnMqyXPh814AbC5CnO8mEI/AZTsBFOc5YlJIAy2VW237m
-         Lu4LuBqkrVeWQFohKJk7OvUpVBnuJBckReVM++0WN6UNidrYy4gRG7lFbhT6Xr3D849i
-         gP9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731980624; x=1732585424;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m6jAkMu+ET95IMimeGZDWYrcMncnCAOMJmk+LzAD+nk=;
-        b=sb8+FHsePdcj0gUk8HPze1jSU9iO1lqqzMl8iURHKqb+9ZZ0TLgMErX1YRi1+8kagQ
-         kf5TV4S4BrdE/QVwBkjD/FuJtpEOyHlvLKB4qAavw46xzPgX8eApuK+ECSFkzEXCobJN
-         t/TKLwrsR71qYWjCwkLbv8UtnwKqoviArRogVGWknx9+pRA3byWek94C2wAPQvE2lwDH
-         80cO7/mVd13QpHnBuxrd8ekVAG4OHMO8DOykx687HJkxYl70laX/43Vo0TFKPhBtvyj1
-         oEmTG+2Wc8DtJcGgxeZDdPDN/TTJozyN1wAYvL1m/nANtQaLKhnpFzXpYo/zyQV72GxB
-         F7SQ==
-X-Gm-Message-State: AOJu0YwCTn1ajE4KHXqu+uj/Tu5DBepXtpERg+e1BgaxJi3MYJwz+c9G
-	EYrnctvPChgJi55vD1H9q2uGXX7WwwA/4jxVkG0/DyFsK3bzV4zJnu5FqFK6iZioKNzO9i5KaJJ
-	ymNOejiEfNv1HcgC/kEQq/rUO4MabBaF/IMZnCPFpa+u3DoRC4Z87bcGk2i8exNfoI3V9dA==
-X-Received: by 2002:a17:903:1c7:b0:211:f119:2f92 with SMTP id d9443c01a7336-211f11930dfmr107332455ad.51.1731980623908;
-        Mon, 18 Nov 2024 17:43:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFR291RwCMUQwNiHsDHHqQ4F1wYAF6rO3JytmDlU5sQyWG/ikwOh5JYx09icoLrx5M8NF1KKQ==
-X-Received: by 2002:a17:903:1c7:b0:211:f119:2f92 with SMTP id d9443c01a7336-211f11930dfmr107332325ad.51.1731980623598;
-        Mon, 18 Nov 2024 17:43:43 -0800 (PST)
-Received: from localhost (117.209.187.35.bc.googleusercontent.com. [35.187.209.117])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211d0dc30a9sm63271655ad.47.2024.11.18.17.43.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Nov 2024 17:43:43 -0800 (PST)
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-To: linux-btrfs@vger.kernel.org,
-	wqu@suse.com
-Cc: Dominique Martinet <dominique.martinet@atmark-techno.com>
-Subject: [PATCH] btrfs-progs: utils: ask_user: flush stdout after prompt
-Date: Tue, 19 Nov 2024 10:43:39 +0900
-Message-Id: <20241119014339.3640843-1-dominique.martinet@atmark-techno.com>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1731990696; c=relaxed/simple;
+	bh=PeCxBQLVk+KCZbcqrJzm+2IDYm+s9czjIcb0CYf0ct4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=OvDwpYU8o+fDfTa/HgKX6BtT+aIEIkb8e5ZeYLKJc8IWjR4c3xiZF5evUEPbjrxmGEy1rk6q77cCe1nMoaH5zXDpxfHVc/h3qBvF9WQF09sCN0DpIa1jH2ztGAjvwET0C0/9Vb6ckA6OJz8H15HKvlz8eWf6dksv3ox8QbRcX4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GrIcwqkQ; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1731990691; x=1732595491; i=quwenruo.btrfs@gmx.com;
+	bh=x+CnndK9hMspg1NCdmiAmJM4UGGVWE7jt6ECR8ubIMQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=GrIcwqkQHsSlgIZjpOoB+DDPmSCykiONx+XPLDzhHPRwDmREBPGbg34LC8P47TRs
+	 XxTA5zm8I2RGBcbvGrI5Shr/dlBolXXJo0SVFBeQTnI62OaWLaXerqM9AW0+eVTw9
+	 8AlumkZ/w/VXRfcdoxXW67ZqoVfwF4BheASKbxcKK1cj4Eb/Al49JDnhR2vw3c8iX
+	 pIcxJxHZo2GRUYKZ7aa/sbLFk1s6P2W7r6qGoME3L/F4BiXk6yusUpWzPI0sIx2HO
+	 ZrdCn2JNt1tUjYpu2htXotNJz2eIftn6eBZhmYMYwds2nW+w6NDd+TN9v6lBh6yo7
+	 KqA8ZziZr/qlPxJvwA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mi2Nv-1tiRv92PDN-00mKHG; Tue, 19
+ Nov 2024 05:31:31 +0100
+Message-ID: <4007dcda-e89f-42c8-ba6f-59895de3a7a6@gmx.com>
+Date: Tue, 19 Nov 2024 15:01:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs-progs: device-utils: include libgen.h for musl
+To: Dominique Martinet <dominique.martinet@atmark-techno.com>,
+ linux-btrfs@vger.kernel.org, wqu@suse.com
+References: <20241119014326.3639742-1-dominique.martinet@atmark-techno.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20241119014326.3639742-1-dominique.martinet@atmark-techno.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Dq4Dhrz80j5pqdUFB4ZXcL6/vqbwbRNy2H6IIvvgaHjR4Latyig
+ NLYj3jOYO+3UwfRYYHVzkFHSU0kBKmP4TGOWsVq9l8XZVJIZjbEZYHPp+A0X+TLNiKn0qDA
+ H+1fRY4EEo614hEtYSMqQoyGu8kczsi5yL2QAgboZ7k3UTkIfqeXtahjRi7VbFbSsbTN5NG
+ jIXcgq54tv2p+wvflPleg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:tPeglHfitxg=;TJsy0z1uf+aHj9PvXIl8n6fuu0B
+ k/+rFyt9fYri6yTQNxqepk/7ggGb6VszZXL4nUeGrX8qABfgjMwBCRxw6hhAtjBBU05mwYgoP
+ okENWl7zDXyxiKu+H79LJP4Ou8RNdHZRHxqjDpfRxkgXBQKxWq1Rww0T7SZepTxQfcLJPdjka
+ ClNF34Hncg8X4rcGnpvHaEBbkbTkaTzrM0bLGGysLQJuKEmPthM7gdw70VMdW1xa01cAe3rQh
+ LCLiYLEvPedsxHMTS9qtqHpQ0wv+XYB1r2mglvnqaKDjJi8Lz/zAcYjcrAz1F7Q56EZGgDwnl
+ RXQQOXcbtInQLnHN80yuroeAK4efq+4fkz3udfhZKG+fuzBdxOgI4h2z4vljc+Sx+zfxuNoym
+ 12av/ZCG9YOvHKJicJwQ75Lwy+mSjxW68pyXCh+/zHcEt0dL3OEwHTQFUeSD4lz29C+sjaImW
+ bb3Q/yTwLlioHPD47xzV/ieK1CUz8p2EtQQyyXFnkhm+xMxPvPyY0Ju2iAndyVkhKjbqxTmHo
+ 3jdOwLL5zLaHvXN24KuzX+aTTspjNqV87OUD8t+NVmM99mgOSuIODaLhbyKx4wGeVkc3ZNIDk
+ PJbU26vhS+BAPXp9T4GY7Px19IHW1TWiZGRAno/Ua7KVJYsdPC0ftpqkEpsz/32w2AJEkJGm9
+ pXt7LNW+mjtUxblEzckXDHt1ETEpnpYsg6pX2UeZyDoNLEhg1DUIQ/fvZLZxaffsKBRq72IGD
+ owSzmcSYF4JCRy6CKOwBVIM/b335XJymihOpUIrVYRhz8O09qpLPhRjuo45k/bstRCjpyWcse
+ Sv+P4PBCV0NROb4l7peLfTNfaMxZYNqE5iPJR2RzG7bncLJX7vClQEQcsMnSRqMQqo3qHc9MB
+ Lj8mr94KhhvyHDfTulRlF8X2Cs3LTPD+/c/FP7MqWsAdesAjbdVh31Wd0
 
-when stdio is line buffered printf will not flush anything (on musl?),
-leaving the program hanging without displaying any prompt and weird
-dialogs such as the following:
-```
-alpine:~# btrfstune -S 0 /dev/mmcblk1p1
-WARNING: this is dangerous, clearing the seeding flag may cause the derived device not to be mountable!
-y
-WARNING: seeding flag is not set on /dev/mmcblk1p1
-We are going to clear the seeding flag, are you sure? [y/N]: alpine:~#
-```
 
-forcing flush makes the prompt display properly
 
-Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
----
+=E5=9C=A8 2024/11/19 12:13, Dominique Martinet =E5=86=99=E9=81=93:
+> musl 1.2.5 no longer defines basename in strings.h and requires includin=
+g
+> libgen.h as specified by POSIX, and builds now fail with this without it=
+:
+> common/device-utils.c: In function 'device_get_partition_size_sysfs':
+> common/device-utils.c:345:16: warning: implicit declaration of function =
+'basename' [-Wimplicit-function-declaration]
+>    345 |         name =3D basename(path);
+>        |                ^~~~~~~~
+> common/device-utils.c:345:14: warning: assignment to 'char *' from 'int'=
+ makes pointer from integer without a cast [-Wint-conversion]
+>    345 |         name =3D basename(path);
+>        |              ^
+>
+> Link: https://gitlab.alpinelinux.org/alpine/aports/-/issues/16106
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-I don't think this behaviour is musl-specific, but it seems odd this was
-never reported before.. perhaps glibc flushes on fgets?
-Anyway, it's easy to fix and there is probably no downside so here's a patch.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-I've tested it works as expected, e.g. prompt is now properly displayed
-before waiting for input.
-
- common/utils.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/common/utils.c b/common/utils.c
-index 3ca7cff396fe..9515abd47af8 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -416,6 +416,7 @@ int ask_user(const char *question)
- 	char *answer;
-
- 	printf("%s [y/N]: ", question);
-+	fflush(stdout);
-
- 	return fgets(buf, sizeof(buf) - 1, stdin) &&
- 	       (answer = strtok_r(buf, " \t\n\r", &saveptr)) &&
---
-2.39.5
-
+Thanks,
+Qu
+> ---
+>
+> This was fixed in alpine for a while but the patch never seems to have
+> been sent (at least a quick search didn't turn it up)
+>
+> It doesn't break anything for other libcs so probably harmless as is.
+>
+>   common/device-utils.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/common/device-utils.c b/common/device-utils.c
+> index c39e6d6166ad..56924acd7901 100644
+> --- a/common/device-utils.c
+> +++ b/common/device-utils.c
+> @@ -22,6 +22,7 @@
+>   #include <linux/blkzoned.h>
+>   #endif
+>   #include <linux/fs.h>
+> +#include <libgen.h>
+>   #include <limits.h>
+>   #include <stdio.h>
+>   #include <stdlib.h>
+> --
+> 2.39.5
+>
+>
+>
 
 
