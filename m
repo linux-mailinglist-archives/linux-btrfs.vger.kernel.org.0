@@ -1,93 +1,97 @@
-Return-Path: <linux-btrfs+bounces-9758-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AF559D207A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 07:56:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4839D207B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 07:56:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228571F224C0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 06:56:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29380B2102B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2024 06:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7768F14B06A;
-	Tue, 19 Nov 2024 06:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F93A146A60;
+	Tue, 19 Nov 2024 06:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Njbbstmb";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="EGbFpQTu"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gglB81ui";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SOK1da19"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02F513B7B3
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBA613B7B3
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731999400; cv=fail; b=aRya6I2fwVGf1hpwQGDkuj/LRfnRysPcO61AitXyNQKKwgiwwMpo6LDOMePL7gCdbO791RESDVe77FQfP65V7J5wXLBuen09Cj1A80guZd6kfeTxSLo3EMDGB0TfTCd1StYk1Oa3K2el2CKVnLvzRD3U02gxfLOOOKvXsxGYhHA=
+	t=1731999405; cv=fail; b=Pf5tdV/tAQcApsvAvNChF3KwmBDFbPM1qWS/ebaCjQYM/TAnO8Nhi30A+YzDpRDR2mp5v3Vz6g5Rk/YD1FOc7lYkw1SaEGswbGrg+W+Di6v5gjo12N/sdpcgkWLw3IY2JT/MYgPDuosW/q5XEVcHdywaDufUIuJLCSChwedLOGw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731999400; c=relaxed/simple;
-	bh=CkmgMoKXSDrxX0mKJhnkJ5hb07pWBr0fX0AFcpMfm08=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=DNqaeymUtqH0tffaTgVcceGTVZg04QQ9nR37iDlrRyKjzwJmEcEiVxOaQ/krTPGXuHZ+LkcMwQxjp8ltqoN6aWWCCxdWAsNNGVbWtKNA9tnBlNqpI4enF1S3Os5pgzdGdmV5zH3NzmafZb664ScwRfoziBENR5zBtX93t+UmOCA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Njbbstmb; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=EGbFpQTu; arc=fail smtp.client-ip=205.220.165.32
+	s=arc-20240116; t=1731999405; c=relaxed/simple;
+	bh=mZJe5nH0fxgz/W7BLNkIyFH+tX44GNiuS01w4Td0HT4=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JO1h3/RCec1+/xZRPu3G1xRDtp7Q/lbRoOBsNhnK4P4Gto8rl8jUjMTpwMQ5V24py2FHhLmGPgCUv6xq6b9AqP6E+pw7/W0r38ny2mYJdW48Eed4xaS+/bzTG48yeSLhLrcpeaG0StJoGcBiOGQWeCcFNI4RrIGnlKyiVICBD0M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gglB81ui; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SOK1da19; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AJ6BiD0028002
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:37 GMT
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AJ6Bqwq021470
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=corp-2023-11-20; bh=hUafGZs0T8edf+OI
-	HZihXjwVjz40LBk79qQmfZon2I8=; b=NjbbstmbzoSoQtzxjuwaSQOE4Xc1rhbb
-	TDMSR24IDJxC4A1TbKKGroIbyAsZNt0FSLIWtcAT9ZHJPokVtAjs6Xv/CXeVGRCe
-	DIzgEuIOpyvjx99m1TDTRVbCbC/YzSEn4cNZV74tkaW82rXOdlzXFZYWolc9oWbM
-	kV+oxMIq3jREYviwJS3YmvvqL5kwjgSVcjgfms11EKY3TBMFY7t6FHJp5EaQcDrG
-	Fnf80ZAQemvDzP54IQG+gwzgWO1wrcfTf4/+Rw3QvRlC35FJ95D4nUcAlGipZHCa
-	qpImId8FLqjMj7blkx8C76nYbjioB5AcqJ4UaEBSaJ6Z5zGSJAqkfw==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42xjaa4ayx-1
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=ap9X1agMoh2V7I0904U97WkEy7Nv4jX4YpZXY9pSlio=; b=
+	gglB81uiWAZCNCjUBR/3Y+fFGmC0OXPUBMmBlCTr7RiCAa1UIWVVEulPRq6RDcXB
+	c4XAhmatvGfG2vNCfwj2M/mNEHoAOAI6W8A+3oWmOEvLd2bfasA0zPJ2iUsDUY0N
+	nWS/7Y+wAikhrraGLUlyTzobQu1VvoKkLXqAIGlZk6wdAWNZ9gfAuQtrC3nlQyyg
+	VW0mO84BcOCHws9rfrv7mUvfbWuZgSe4BhtSMLWZICXVBLRjpRNfJARpv+l2UX3O
+	ucz/oMTYtP02ww1LL42lUGCBHg98RG8QTFezUSamI1ad8TeOSzk8tC5ILN5YaV2J
+	A69myx4VuVJywCTjcPt3vg==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42xkxsv6kw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:37 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4AJ5vDgC037967
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:37 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42xhu8awbg-1
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:41 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4AJ4om2c039974
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:41 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42xhu82mhf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:36 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2024 06:56:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yQj0AzbnFCc/MfQjUYJbhqiMeDTGXntXvwnjqnbEVE8BrN/e5wvuz+WwVc3zLkRSzVkY/xg9HMz6t/hGkaOUAWl5sTtG0Zr9gOv6+Ss3vI0W/8XlPA4/na35KVFDCD+rbH9jlEk6mHFm4gju3iBcxcuTQOI2mIdPXjERvMNj54oV27G2tFMS21UGqvbLHxAPiyZWCsACOtPwJXGCRLCjEvadpJNJyjBW5j+5JlYjuGI738GXS70E8OgOv342oM2UwywavhESvngUYqNJ1+eaG+aL/VmZs7JTbzLICO9Wan6EnL5CotrABsCTqVpYYwpn6kicB3Zqp0mF1jL3GGogkg==
+ b=cvE6iqeRsjzyiNWVj/EkcEQeQlYbmKdJvQ02+0hfOhrIUZYIHcqUtCwAqgBbQ63OQoe59SXpKZxQ2RV1BPaHH1WABJL9ffQwtZsXKVwYl6mhjJ2Honj7rOH4qLeG8V3HwodGEy28ej/GRDoYd+nQd3fKJmpcni+OeY/+VYtjlMtjQX0OmxEesO23YlNRySmj06l9hFlzA7SU8CqFYD1FAy7HIYwCfa3TPJFF/1lRK1j1MWY1fAsbP1urmJ84nQPkQo+aZg0ci4sGiqBvE2ZzgJHvWhP+hfxJr29toht3/waIuK+TqLmitRAdFJVVESOdK5MlOrAn+8gUU9pCI2LXLw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hUafGZs0T8edf+OIHZihXjwVjz40LBk79qQmfZon2I8=;
- b=fQhKfFpiAg//WyRm8doIzGeByZW3mjm/XBRsKlQkOK4q/VZPMpIIWuV0g7s24ztSu3psR1nhGw3QcTIwBiIRQH8Bk8+3Ja/5EvM8D03RpKhvX/5tRqlkY8B9pLBwcA702RhIQZtAW4cc0+fh+gQbOe/DHoKp2eiVvSTWO6S9swtmQmyNtwzY4aI5u9lsaWszjhVdgegc4G8yZSgyOIUed1r9Dbo/p2e55epFXq2N3C5kr6qo/oGMSNmhT/fi6c+E9C5KYRuLJMyZYzrh1Ov6qJVG8SmIAoYWK+YUz3VpGsMEyF3gwmUqWS7Z7kZPXRwgGvHRNihaCDmuzLmVC8qtQg==
+ bh=ap9X1agMoh2V7I0904U97WkEy7Nv4jX4YpZXY9pSlio=;
+ b=pcT/bg3smU/ujUkpjJoDB506j456P3/0+Tbf+gVKvC7NjkMZ0ZRymvqhrni8fmQFhEYWBTfv8NtxKcJqPxc/kgsUaXot037tFp5dya95MASxJ3m8+Jh0nAM6+b5tq02KdRNWmhnVm/7lcQVF4qewdjt7KOq0501s//NJ+JZjHSPo0UJPoLLy0CvDjLGr3dHF/apUmCkNytapxR6oMCVh0SozBhuy3m6YjkUuPfyjlKoZzpfZzNOijQZQ8nQGv1+CdWrnzEw1T835FFDfmZSzQLfpEUgxLM2yc+UBw4y0tRN252bt/6znXKyzPclc2B9Z/hvEz2db8DC7BZ9fixENLA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hUafGZs0T8edf+OIHZihXjwVjz40LBk79qQmfZon2I8=;
- b=EGbFpQTu5ytt2xZZ0lnJH48uJrnki8ETuD+1yfkmexcPG85TFnknFQSYYuEgTsiQnLh9ni3KbXvsXCTibDBAIHD5Ik9/rK+Lt+bNYrhT0msbYIdpQ5k8VWdiyka4KSAWh1/gS4Mtn/kr+INdljddPx20iB6WugM4VeRVfCSKMTc=
+ bh=ap9X1agMoh2V7I0904U97WkEy7Nv4jX4YpZXY9pSlio=;
+ b=SOK1da19tJJwiCnTmjnVFtHcLp1rBKsOvbyy20fTgRqpdILS0zVWj0rgQYELK8RpCDpKevgRyIJguSDu+UaNJhKNEbScK81aAO6gU+7B64C0r1NTeyY/PCDRdnCMhvwjzaI4Rgr4UULdLXeG5VfJzV1VOThCdiFffp+tySC/nyg=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by SJ0PR10MB4606.namprd10.prod.outlook.com (2603:10b6:a03:2da::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.23; Tue, 19 Nov
- 2024 06:56:34 +0000
+ 2024 06:56:38 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65%2]) with mapi id 15.20.8158.023; Tue, 19 Nov 2024
- 06:56:34 +0000
+ 06:56:38 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs-progs: fix documentation build errors
-Date: Tue, 19 Nov 2024 14:56:14 +0800
-Message-ID: <cover.1731998908.git.anand.jain@oracle.com>
+Subject: [PATCH 1/3] btrfs-progs: fix doc compile error in CHANGES file
+Date: Tue, 19 Nov 2024 14:56:15 +0800
+Message-ID: <e4fda6ed6633a59f6a8424c93c1b4a1362acfa28.1731998908.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <cover.1731998908.git.anand.jain@oracle.com>
+References: <cover.1731998908.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0006.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::14) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: SI2PR01CA0027.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::7) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -97,103 +101,247 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB4606:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54e6aa2c-aac5-4285-2665-08dd08674e2a
+X-MS-Office365-Filtering-Correlation-Id: 635af71e-2581-484f-df05-08dd08675095
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1H+QMfOfPhPzbNS7sIEBZCHSESMz70bJkgFa8JVLPf1iREdutaWRYYDygYIW?=
- =?us-ascii?Q?qnfGlR622CVoF4txlQ/Awk+QzIkEPOJsVEhcLMa6RM9RfEcLMLsrnQJ8suka?=
- =?us-ascii?Q?jIVqCo+9BIRiJHHzPOim9T+CBcbNXaV6DTqbBOhpNvWNclMutuPN3hjThwFi?=
- =?us-ascii?Q?Z3BwZQf6HZwzVjZnzgO6kvNHMVFituo4Yh+8TZXqaLfUlM03PWrcRDywX7tr?=
- =?us-ascii?Q?sjNNQyQ/Wtaeuu5Oo9YTPuhWFoK+MYvyQf52f/+j7sUo9baUefYHEicKU6HC?=
- =?us-ascii?Q?HqcB5uZSCwa+/jrdaWQNIbrnZ70h4+xzcTpFoa+8t8+qY5q+G0v/VIrIQqlz?=
- =?us-ascii?Q?mWdEJqOInJ1oDCeZIMdSVRm4pkpvBe4BXNbKeHP4TTE/D6Jt63hXAL2gH2vp?=
- =?us-ascii?Q?foWAqQqSVj+alNX03jH4ldvgmFuVVjmbcZF23zMhiRBnms7U5T0iPKGMoxt8?=
- =?us-ascii?Q?Bzz224X+gR76IvdavNCNN6x+BuJ2VuBSw0AdfxoOTui95niXn1vBWFnwbJcy?=
- =?us-ascii?Q?J5y2mrt76ShDGzfyVbKyy9vyaIJuRFyX/aqkfDnuqaDdvkQtOHwifyKnXaat?=
- =?us-ascii?Q?wPhU+g8geij1OBKUKaR9rQx9Tv7GjnIFfd5FJgZOboYU1kFKG6ip8pxx4Ysu?=
- =?us-ascii?Q?6/aAKQZUTMcx3x6iShedQFNnEb9kC0+09YSHQpS7LyRGsLJYLDOwBmMekBfi?=
- =?us-ascii?Q?ND/4+JCrGH8Dhh60ogqsmo8AWVrcW7ArNEqV0EBBRbLwhP5K1ZsPfQKtbatd?=
- =?us-ascii?Q?W0k57wmdWoJSLavp8Pe9I631SuMTieQ+n8eKOqsiwczqKx1ztfZ5bIfKu9uf?=
- =?us-ascii?Q?Qhnlh81H7ITQBnjZlxbYIlzd3tmlmhdobjqHZvtk2Exis5f5ohaXgZHn2e/+?=
- =?us-ascii?Q?8uiV+fleheNjikfSPgR57h/pRqbGQiUbTnwYWFuAHf9uyxy/amf5OEFfrS/O?=
- =?us-ascii?Q?N5xMipYHVUS/SDcL38StqIUgKgCpPvAFd95GgQvyagLp7CMXBP+0WW2avkRt?=
- =?us-ascii?Q?jupHMEvZLDbrbwwnAGrP6kCmKTj3SZ5qy74PtHf3W/K1AMhhci00TlopR+1U?=
- =?us-ascii?Q?zQCj2k5Aa7lP5NpdGuD9H7H07CANpj4UrYGJUQEH45LbPHp6m6W5BM3rEiNu?=
- =?us-ascii?Q?pzuRCpzuCcGP8eqgq0vQKE/4arbBeYX3DyOX4k7UifV60xpe2Dlypts7BECS?=
- =?us-ascii?Q?JKFKIO6+bepGqNF8QZd2UPs/ZkDeIkzIeKAg6EhLbbarE8eq/XUrKYtmp4up?=
- =?us-ascii?Q?7yYZAN7vFs86/DNQAu1ic5AA0CecksRmZuvtBE+FxzGQfhF/I7E+ia/Qfy1x?=
- =?us-ascii?Q?eGE=3D?=
+	=?us-ascii?Q?3O1pv3A5+BWUYY/XRqfih2Vr7QYRZkLKk7jr8LQINrJ+77GdsKUrZmj5l/WJ?=
+ =?us-ascii?Q?PCBxBB+xLPmAcbthQCi/vwLJl2Y42bp7vfi4WkvjCKa2dCeueloDIO8mzlSO?=
+ =?us-ascii?Q?+Mk71oYlJhxO6dR+Q0G3KZDmAXEgH1ng0OgO5J3rwE2bUacNVQQtBQxwViSs?=
+ =?us-ascii?Q?OYQEp6Mzh6D1vt9sVHH9qeWYVnFeP2Vm/xXtN0ZG9E1r6ayJquC+H6EzmKrL?=
+ =?us-ascii?Q?4sS09JZoRl5iwPbiZzoKh7K3KA0BHdV1m8CM5hG3DcmyYPeitlKPFi3zK/j0?=
+ =?us-ascii?Q?mmRhStRPpuamArArSKtqlvH2ZY2zOsrPyljGMA/KWavRHnVtPlcSb7tM3om3?=
+ =?us-ascii?Q?K0RnRBZNIsN1Xh0x3CwxiNVxnPDCpwDvYtlfmwXa3Nteh4tjvNO3C7pm926h?=
+ =?us-ascii?Q?7PBxS1Y0gpgiLiBCz6DEbdyQ+O087FDC5qIwac6fr4N0Z6oPLJZP5dN5/yMh?=
+ =?us-ascii?Q?DTadSnbFMaL91BAJA+kRqYPRe36GWeAxu7vv96K1DfqdiAO78mWf/DQgVlDt?=
+ =?us-ascii?Q?SLTOGUy+5J+SsRt1XYCZJif73KWVAsL0GGCPcIDAGuB8ZPyoFiQG1dCbGf8h?=
+ =?us-ascii?Q?GTjNxBrOJzrXqM3MX/1i4oBotMCjhMm30RrPatV5/bm0BsZnVex4Ne+5gtDM?=
+ =?us-ascii?Q?ULmxs6fyIUAd39KWMu7/qNITdPsCUS6ouXIVwY9mzSSAqEKoS5XPwJzgsN9H?=
+ =?us-ascii?Q?4vQvXRRz9Y28YyvaqtwX1r1aZOn4HlSlRIdBPhIuL2zGLFm0csUEYBdf9ZwZ?=
+ =?us-ascii?Q?W/Tm5xGNQYeIkt1kBYZIndMj9X10KrniM2wTjUWA6WXN18xHTAqB/jqejFpE?=
+ =?us-ascii?Q?XkhottZUdraxE2+pnSbNFdN3GxGjK+bSjjyvW8P0oySOiEI5jTDmjak+YO2c?=
+ =?us-ascii?Q?6kC3GmVIzs9V/y6DMiXMmw9FnKll3fb3iy5K2L9rsf6XXy7/4nE6tLyw6vTK?=
+ =?us-ascii?Q?LdV/9Imo/pWFA5+z4CguviCLd+fjT6/VjaniZtQv6LQX30tUp2+i4wjXTYx8?=
+ =?us-ascii?Q?ekcip297oZphtpyGunqOZQuyx64HRsae/YcQet8b5uH37YKKMvWl+1mQFf9i?=
+ =?us-ascii?Q?TRjA/85ciSTjxneHW3xqBPTXOSvQh5EA40PyTxKK6YFsRXhHNTuJiPr73Ewi?=
+ =?us-ascii?Q?y2Md8UdljLW9T9Y49Isc1gR6hbnMsOzaidya+Kwi05hjkVQgvGcCIlrizvij?=
+ =?us-ascii?Q?09ThWz1iaNblIjjyMzG8IPFGjHHpXzH1K9YUqV60mVsoqpzJNIQdlsJeBKiS?=
+ =?us-ascii?Q?Sa1LPx6Sta/v1cb5ehqWOm3uXLutaPsIP4EHu5lxD8G2Az2GjJJoG8m6Hqmi?=
+ =?us-ascii?Q?irNYWlnYJ3x/cKgIR3BRGKwE?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xS/xpOkG5cdq9kXLulJtnsy/voxT+ftoXp56zHSUXjBNigniqCqvBqHgkrln?=
- =?us-ascii?Q?U9rCgmLOV7W5f0U/ezqzRVBvXmgJUeBZcKPCxBLAlQhKptFYXqW1Ts/EI4yi?=
- =?us-ascii?Q?h+VIHE52Zs1oDXRiDwlUsL9QxCIm6GfDgjLr2jvgfl7EAME2lzmleDaK+pu8?=
- =?us-ascii?Q?GTTGj0iUl0CthunGrBKmUAG8KjcnW47tcXu+iRtZkl4HpFoU5sAzfEaMCGq6?=
- =?us-ascii?Q?zjAfFQzZV56aRosZ7lRtSa7ZyI++sEUl3BqVvNZ+7qMXGM3el9UNGGehzDXm?=
- =?us-ascii?Q?ppJOULac0Qx5yggZoVbzgVkMBjFE02DQuzvCPR0PWSK6bi1nln3xVKGBSPUY?=
- =?us-ascii?Q?yTt0ZxeYMcuW0S286qiWiaZ7c/m2pEwjA8SDexUuf79WyK/0HTKwWnFUE2bE?=
- =?us-ascii?Q?+X8KDlqAbyuwM5IRLA8oFhZ3DWMCMh7sU7dyLvMOL5VXkKDEUT9sc26m0l50?=
- =?us-ascii?Q?+iezkdUP37Kjv+bFCzfrtEUaFh0bQoLm7vjhdVAubRjskFM8o9pgNEQ0xsWq?=
- =?us-ascii?Q?dgvim2HQ18CTasOeQKvjkvSdaZXsXpPj3qig11mtOszC2gKmMiUtiHbdsHnC?=
- =?us-ascii?Q?ocnNXjj90Q1WMsVpSL2IQQGkWGcnrlPJc3Dt/UltqGm3oWDMzeS8TGdl+EIQ?=
- =?us-ascii?Q?vhTXoakRGjAIA1z2P9A+gkdF4sAnh6Ov2dnrAvzZzchj5MMceEv+b/NPAlR2?=
- =?us-ascii?Q?bOnNT9y9kO8ivXtQCI3DlD84hOuBUmiPsh8wXuQeNJqpvw42VHhbevYZbbcl?=
- =?us-ascii?Q?cViyM1SvnIlh42CCoOS4IXCR6OeBxusBkSGbqlbtHeQjgBN62G3O9gfBTlqu?=
- =?us-ascii?Q?0pxBLpXnClATTMOH+/XPOt426DghdCLGRVw2YCyC5S/eYimA6U9iD7IQZ5Lh?=
- =?us-ascii?Q?H7n0ry7+Wb9ht1TbCBzMn+KTFPvD2Pk/WuB4SgPJIweZmatG6W7BlIuvHS18?=
- =?us-ascii?Q?t7upK13OIA8VdG6CeX+f+i9gRXLAVanJszE5dUht9exkBYBW04FqZL7YDuiC?=
- =?us-ascii?Q?mnuGhdsz+zj6BbfKkttsRymW4gVVFkRgEChjZqhKVXidD0/ndsW5wTt6Qd8L?=
- =?us-ascii?Q?AuSb8ggBlG+Pnf3u/qiy+YHTS55ozhm5gkxJ7nQs3IK7wPQLWh3jZRYhD5z6?=
- =?us-ascii?Q?oOFLltjZVpwiSJJepPljjgy51J8uthFLbwZtvhT4ZbnfVjAhAPoIVST9mC7b?=
- =?us-ascii?Q?eZQG9NGqnvCEOupPWq0G2Cw73b0iC3RhA8ZQziKGFGN/K9rYagJWzZp6qQnM?=
- =?us-ascii?Q?Sg5UiXAmbFXoUErh4dSiwP9jZIdbhZhcyOIi2bKFCAVs+zjf3CloMs7w8JLm?=
- =?us-ascii?Q?Ci55WW71yx9Fu7wdFMrfYF8LUV1LVftxdP4BmHqtDqZGeRBddgwGDePndtt0?=
- =?us-ascii?Q?SPHqLKxNfGs1ocaS/6f/vJKEIMe1Una0C/PRTAwC9EjltdcBcNFxjK6ztqZj?=
- =?us-ascii?Q?zhpETEDwF9SzwTXqd95AGFTw/tk7hc+Lsj2i2fzEGohz8SFBaPa9aX6dQChA?=
- =?us-ascii?Q?LTNVocYgtD/OBm3J+4f7STvg68dDkVgSRH9FfFsXuprXZI+kBhbvJUyh9dzT?=
- =?us-ascii?Q?272ETp6QpzQypyYV2k4WRGzl/iEOlXyyCMa2fbFd?=
+	=?us-ascii?Q?xz0eLlJCcQc0QwEWcEr+U3Hdeb57njx6UttoypyB5Ri9yZ10stVcBRHdZjSL?=
+ =?us-ascii?Q?UOaILJ6JtRJ2HZnS9CB+UxqrwzUvoPYdnkVVe0ZYjmjpBTsbDtLzSs/cjgZ7?=
+ =?us-ascii?Q?fG0dpj/7j8IVYlL/tmJ3Te0PUKAwg889N7CsXNrxN41tAfqrZPCg9n1hmV4R?=
+ =?us-ascii?Q?2xzg/Vs5oTno9tKgxZrTdQMTAM2OoZANGqfGVkPKKbG1b4lDjHV8U5hYElQm?=
+ =?us-ascii?Q?PGTpkn8MsJgS35geK5V27MBYWFC1qAwubuNjhhi3u6I9Keolc/GKKEA4mYhF?=
+ =?us-ascii?Q?W1f2+0go1xuzSNjLpC/C5v1ZcTRMSXQGHoBa95EK1SPaO3bV4DXW61l1w8SM?=
+ =?us-ascii?Q?CElCGpmccNACBzDIiXsJSo/O5S6/69Bl2AbL1AeNeaPIqHK1t0bihSpABlLO?=
+ =?us-ascii?Q?BxZXo3T3rY13byr0DuxjKBmTEtwtCVch9dmFCISpIWWXwarvnVZr5ohgihpG?=
+ =?us-ascii?Q?4oLus/YhDi+Li+WGZ6vLlxB0nsSczRdu7ieT4NXD/Y77h+lK4yJJzzgmRuu6?=
+ =?us-ascii?Q?OjDAU3TtdkhdDyZCNBZ11iFd/q6Fh00i1U/bxel3ioo4ZFQgVlzdlX/Mpzpj?=
+ =?us-ascii?Q?2j/CWvSip9bDwXXbAzV47F8YVJH6eQA2xmdLZkeAau+lDddAAG4XB5a5868g?=
+ =?us-ascii?Q?HXZuijHeyROI8+KfIC2w21Y7LgcNtZl5ElwUqnL6Un7bphf4A9BpTc0GNb8+?=
+ =?us-ascii?Q?f9nJ6TRCPUpABVrN8UBbjgydhE05OYEdDWWfNKgiHgz2pNAMftSTx6d/GeKk?=
+ =?us-ascii?Q?qBYm2kBZhEotXx/epzFSNzlXFXaP8OMi9icaN9rrHvRFjXIjLhFMccVvuW0Y?=
+ =?us-ascii?Q?tpLPzGsUy3JP/HjF6W4PdIYlw4xgfx6C4C0hMRq2CTjkT3Jxwn1kTH4Thvzz?=
+ =?us-ascii?Q?wQsULFcvSt43M1qLC9hdFPXcCF3SnZZZLnblfYZMJPgFzCw1dP913hiMN2xL?=
+ =?us-ascii?Q?QO7VGxkoSOlVXI+78WyvViWMue9JUi/WxqggNgrkmx3PUgsv14zIByEZj7Li?=
+ =?us-ascii?Q?uxFMq3JGpDkZq3bK9JbJkdYTfGafmZw9aY81bXXGvRAl0IUd7wqppr3zGKxY?=
+ =?us-ascii?Q?gNwzxZ/pNtTBojJBbfSXKe9Caa8Y+lBFfn1sx1B6gOb5IQxwNnCmRQVwwSzx?=
+ =?us-ascii?Q?rLRHmUaMcZ+5Da48RfdA+45QFxOiTFlfliZ0eVNZqoxrbgalYAOogtChTMIq?=
+ =?us-ascii?Q?4jx/n/WPRH5Q2YsepTAq7SynZJTlJbS+yT3ypl0e2l+QRqeosxxkLEan8T66?=
+ =?us-ascii?Q?XnQ6Of8RNQCRWkV7LgpGDg1T/Gssy+cqSpAZRgssITZIJ9+t5RVsKNI7/1ZT?=
+ =?us-ascii?Q?m8UzTbK05byLD+DvxD6UVTzZ6L9xlp/gykH+zcshkWIvUGu74pfkmmTyTsWO?=
+ =?us-ascii?Q?5RWynhhIcZdtj2mihFiqipvMYVTOMz+Ro5/58rhdiQgGIefxe8jKF9FHCjLo?=
+ =?us-ascii?Q?az1Fw3Vw+CMY+xT1qiJiWikIKFJp3uRRr0tWCdp2u6ZMNfVjeoT59CWqPedO?=
+ =?us-ascii?Q?ySjGTLY/9PHZJyypfEvStb5upZm+0G1obJy4uNf7e1VMPoxvXnlZcKgraT79?=
+ =?us-ascii?Q?eJXs0wOLUk1YrKOVtQ5emEF69eCEVivIoiC1idoK?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	tU2jaIiKAT5eOGeNRhKRXrmLEnvrA1Q0xYLZeeCLCzWeCcFBg5ZUfPCQSVhgIX9eoXYe3INyHdvdkTv2Pksiykr3GU4Av/qL3130LY/ei8xgZmk2I4JGmjDx7/rgqfmZzoXIJ5erkkzBOzLyQjFIZ3OudRZk4zgRqJMaXZAG4sKVJkYyCeCv4x7d9XxSzKXFQI/4BmcUHdijRnVLH3v4x570iCmIdML6EUUBANKo72KvnGa8EVqIU09cgo61b/tTF+pv4hl1mpA6yJpHJbNj67ISdEYVwMPuq9vafw5ImlND/7D3VJctKiFzie7QTffoGuCa1UZOUHe6+vN+wPVcLX36zuHuR7mta7O16ASr8Re17TUw4JLbZAHDmpNrAmyrS+GsAqlNgkQq8exErzJ/XP4YZpNVHpYUtrPlTMT5Lha+m7HncIPJjxUllGzemVg3G9qeXGcyi02ELFx/+qx9kKd4wN1N3XKIQTu/ieyvLpWIVjCk72BoO1P+rkCLbSFCwuf6mQ8ghCjJW1vce93SgGLlnPzUkoVKDKTTOfcqPdzn74yNnCKFDWmKNx8SMj8gijQwCYI29F8JrOLE8ZZxc+uz5S9n8rfy9VnSlubVmX0=
+	BA8e/+mHnrcus1qijDSUcN4g7pkRK2OyRgCPqUzsR8njnktWL46nGkWNwMKirDiUI9o+80e1gTVrAdl3BEp8zrh/iqe6nE6RAfEo8v5cfL8FH0WCDHpcc85+UnWWf9sM7cB/DPWqlKM34v4VmoiMg4j3XQdJLOD36WVqqKmwg2CoNoLSCnVTYquvqUnyPvMq70+kkKzSKF+PdnLJPsdYBQdKJgnczlPAY9JaV1k5a9vzTe4JgQPBNDJCjpiBcgt1NK8nd/uvYJlzzmkL4yUIYtJK9jcebP7smsA9eFCTYiSbvoFKQ/jrBk/d6iY201JNtUbpqfuRO9oHz0Yp5Tku9r5UZP5U2dcyrfJPG7KG/Oz+bsMXBN7B7BHYdVq3pHgbGCIyJJ1/ERTrtRUostvproSd40PGgJQvdvZZ+uotRDxasr7FeRTJAyvvCNhBRGQiQM484E2PJG8NTrRQJ7tjQQ+xbhj8+Ct8jm8IbNQRA18TWJmIMdghWXaSP/E782a3R5KYkQjVM0flg/lHajwTEwjwOMyTmwRAVz3tdzyiT/c55g+RGPfMxamdkQ2omPkediWmem3lzAlMvHegLFJsCqETXcvv9JO6hJfRVhIguc0=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54e6aa2c-aac5-4285-2665-08dd08674e2a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 635af71e-2581-484f-df05-08dd08675095
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2024 06:56:34.3593
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2024 06:56:38.5832
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vmbrUSVgYVMPT7JPDyGFVtDObkF83Bsbrm/Y0RjP9PxG1Nu0lkB3LYr7W7gs/DwTKpp1TnyQn3DxIAZ9F4BIQw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 64bunB2xCaUarIpz5kHpTcP/L7b4iu+sHpAwSzEULsaqHVEPWjaOCEM2CY5ieZTIBWyrJbTPMGqGDPwUSiV4hQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4606
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-11-18_17,2024-11-18_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
  definitions=main-2411190051
-X-Proofpoint-ORIG-GUID: Kxc-3_yuB_2fPYQ8yPjE1uFUY0weiJyb
-X-Proofpoint-GUID: Kxc-3_yuB_2fPYQ8yPjE1uFUY0weiJyb
+X-Proofpoint-GUID: v0WmEYmWC2oDY4AxXOv-3MgLLQV0Uh0D
+X-Proofpoint-ORIG-GUID: v0WmEYmWC2oDY4AxXOv-3MgLLQV0Uh0D
 
-This patchset addresses documentation build issues related to
-link formatting, indentation, and target name handling.
+On python3-sphinx 7.2.6. and python3-sphinx_rtd_theme 2.0.0 there are
+build errors.
 
-Anand Jain (3):
-  btrfs-progs: fix doc compile error in CHANGES file
-  btrfs-progs: fix doc build issue caused by confusion between BTRFS_
-    and target
-  btrfs-progs: fix doc build errors correct hyperlink formatting
+Making all in Documentation
+    [SPHINX] man
+../CHANGES:26: ERROR: Unexpected indentation.
+../CHANGES:29: WARNING: Block quote ends without a blank line; unexpected unindent.
+../CHANGES:204: ERROR: Unexpected indentation.
+../CHANGES:205: WARNING: Block quote ends without a blank line; unexpected unindent.
 
- CHANGES                              | 22 +++----
- Documentation/Kernel-by-version.rst  | 88 ++++++++++++++--------------
- Documentation/dev/On-disk-format.rst |  2 +-
- 3 files changed, 56 insertions(+), 56 deletions(-)
+Fix them by adjusting the indentation in the CHANGES file. The sublist
+should be indented two spaces further than the main list.
 
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ CHANGES                             | 22 +++++-----
+ Documentation/Kernel-by-version.rst | 68 ++++++++++++++---------------
+ 2 files changed, 45 insertions(+), 45 deletions(-)
+
+diff --git a/CHANGES b/CHANGES
+index e2eed4b4390d..d7f326c450e1 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -22,10 +22,10 @@ btrfs-progs-6.11 (2024-09-17)
+ btrfs-progs-6.10 (2024-07-30)
+ -----------------------------
+    * inspect:
+-     * list-chunks: new command to print information about chunks (i.e.
+-       the physical chunks as stored on devices), sortable; requires root as
+-       it's using SEARCH_TREE ioctl
+-     * tree-stats:
++      * list-chunks: new command to print information about chunks (i.e.
++        the physical chunks as stored on devices), sortable; requires root as
++        it's using SEARCH_TREE ioctl
++      * tree-stats:
+         * new option -t to print only the given tree
+         * add long options for size units
+    * filesystem df: with increased verbosity print per-type information from sysfs
+@@ -199,13 +199,13 @@ btrfs-progs-6.6 (2023-11-03)
+      future)
+    * dump-tree: output sequence number for inline refs
+    * fixes:
+-     * fi resize: fallback to lowest devid when 1 does not exist, previously the
+-       command would fail with "No such device"
+-     * fi usage: fix "devices 0 != 1" message and broken output on multi-device
+-       filesystem
+-     * open files in non-blocking mode when reading fsid, this could hang when
+-       trying to open fifo files or some special character devices, was observed
+-       with 'prop set/get'
++      * fi resize: fallback to lowest devid when 1 does not exist, previously the
++        command would fail with "No such device"
++      * fi usage: fix "devices 0 != 1" message and broken output on multi-device
++        filesystem
++      * open files in non-blocking mode when reading fsid, this could hang when
++        trying to open fifo files or some special character devices, was observed
++        with 'prop set/get'
+    * experimental:
+       * mkfs: parametric zone size for emulated zoned mode
+    * other:
+diff --git a/Documentation/Kernel-by-version.rst b/Documentation/Kernel-by-version.rst
+index c76a9c040115..d1adc3ee6ebf 100644
+--- a/Documentation/Kernel-by-version.rst
++++ b/Documentation/Kernel-by-version.rst
+@@ -512,20 +512,20 @@ Pull requests:
+ Core changes:
+ 
+ -  convert extent buffers to folios:
+-   - direct API conversion where possible
+-   - performance can drop by a few percent on metadata heavy
+-     workloads, the folio sizes are not constant and the calculations
+-     add up in the item helpers
+-   - both regular and subpage modes
+-   - data cannot be converted yet, we need to port that to iomap and
+-     there are some other generic changes required
++    - direct API conversion where possible
++    - performance can drop by a few percent on metadata heavy
++      workloads, the folio sizes are not constant and the calculations
++      add up in the item helpers
++    - both regular and subpage modes
++    - data cannot be converted yet, we need to port that to iomap and
++      there are some other generic changes required
+ 
+ -  convert mount to the new API, should not be user visible:
+-   - options deprecated long time ago have been removed: inode_cache,
+-     recovery
+-   - the new logic that splits mount to two phases slightly changes
+-     timing of device scanning for multi-device filesystems
+-   - LSM options will now work (like for selinux)
++    - options deprecated long time ago have been removed: inode_cache,
++      recovery
++    - the new logic that splits mount to two phases slightly changes
++      timing of device scanning for multi-device filesystems
++    - LSM options will now work (like for selinux)
+ 
+ - convert delayed nodes radix tree to xarray, preserving the
+   preload-like logic that still allows to allocate with GFP_NOFS
+@@ -576,9 +576,9 @@ Performance improvements:
+   delayed allocation bits, applies to several common workload types
+ 
+ - features under CONFIG_BTRFS_DEBUG:
+-  - sysfs knob for setting the how checksums are calculated when submitting IO,
+-    inline or offloaded to a thread, this affects latency and throughput on some
+-    block group profiles
++   - sysfs knob for setting the how checksums are calculated when submitting IO,
++     inline or offloaded to a thread, this affects latency and throughput on some
++     block group profiles
+ 
+ Notable fixes:
+ 
+@@ -644,29 +644,29 @@ Pull requests:
+ User visible features:
+ 
+ - dynamic block group reclaim:
+-  - tunable framework to avoid situations where eager data allocations prevent
+-    creating new metadata chunks due to lack of unallocated space
+-  - reuse sysfs knob bg_reclaim_threshold (otherwise used only in zoned mode)
+-    for a fixed value threshold
+-  - new on/off sysfs knob "dynamic_reclaim" calculating the value based on
+-    heuristics, aiming to keep spare working space for relocating chunks but
+-    not to needlessly relocate partially utilized block groups or reclaim newly
+-    allocated ones
+-  - stats are exported in sysfs per block group type, files "reclaim_*"
+-  - this may increase IO load at unexpected times but the corner case of no
+-    allocatable block groups is known to be worse
++   - tunable framework to avoid situations where eager data allocations prevent
++     creating new metadata chunks due to lack of unallocated space
++   - reuse sysfs knob bg_reclaim_threshold (otherwise used only in zoned mode)
++     for a fixed value threshold
++   - new on/off sysfs knob "dynamic_reclaim" calculating the value based on
++     heuristics, aiming to keep spare working space for relocating chunks but
++     not to needlessly relocate partially utilized block groups or reclaim newly
++     allocated ones
++   - stats are exported in sysfs per block group type, files "reclaim_*"
++   - this may increase IO load at unexpected times but the corner case of no
++     allocatable block groups is known to be worse
+ 
+ - automatically remove qgroup of deleted subvolumes:
+-  - adjust qgroup removal conditions, make sure all related subvolume data are
+-    already removed, or return EBUSY, also take into account setting of sysfs
+-    drop_subtree_threshold
+-  - also works in squota mode
++   - adjust qgroup removal conditions, make sure all related subvolume data are
++     already removed, or return EBUSY, also take into account setting of sysfs
++     drop_subtree_threshold
++   - also works in squota mode
+ 
+ -  mount option updates: new modes of 'rescue=' that allow to mount images
+-   (read-only) that could have been partially converted by user space tools
+-  - ignoremetacsums  - invalid metadata checksums are ignored
+-  - ignoresuperflags - super block flags that track conversion in progress
+-                       (like UUID or checksums)
++    (read-only) that could have been partially converted by user space tools
++     - ignoremetacsums  - invalid metadata checksums are ignored
++     - ignoresuperflags - super block flags that track conversion in progress
++                          (like UUID or checksums)
+ 
+ Other notable changes or fixes:
+ 
 -- 
 2.47.0
 
