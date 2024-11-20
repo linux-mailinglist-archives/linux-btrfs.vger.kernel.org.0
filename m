@@ -1,185 +1,171 @@
-Return-Path: <linux-btrfs+bounces-9795-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9796-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C019D42D3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 21:05:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8250C9D43C4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 23:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88B752827C3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 20:05:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8B2028368A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 22:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1631714CA;
-	Wed, 20 Nov 2024 20:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC93D1BC086;
+	Wed, 20 Nov 2024 22:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="I4nlS5qa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2RuY2pOi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="I4nlS5qa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2RuY2pOi"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="YqvcxOjE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7E116F8E9
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Nov 2024 20:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F3333998;
+	Wed, 20 Nov 2024 22:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732133112; cv=none; b=Vw1tna4rFg/BE//b0ZfnLPcAgNCMTMy5J9nLWn0eq52WsXwDF9qeCj2E6XmWV6pCj8SyX5ulRNfFHkZq7GzHVOuKSVOLsHtgEYN3nrhJk7tqYiguwcl9Ou9mzm19jWWh+fT4eaHNih5CMszzilt5r+XpB/MyICHACnhhddP5jys=
+	t=1732140431; cv=none; b=GsxcdpzqmAxGbHRC42yNGc2r+9lPnsxtGC5nwuoKXtWUv9OJ+rKN3NyNkSZfiZJoDMOwY9hO5BBRJ4aluLjtksXiXsRv0LBJRWDlt8ziMDINu3Hzk4a7E/ypFgnauFtV538RFkkj2vj8SS/dxWOwfhEdB2hG8c82nBs2Rngpl7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732133112; c=relaxed/simple;
-	bh=LDUt9atQ8gNBIz2ZDx3s1fJne4fAiXZUkHejRPSYklg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bK+9Rieex0NAT/D9g9KIINtLBNeHqD/rn9p8UDGu2O2y9SIxIPuMSce/LPQVkSUDaslMrsAcB/Z1Gmlrfa8NUPdrXmD5oqLyO0msx53/4lxrURVR8itIzvqGNQiqOp0FGELxe1XB9QzhKAoi9Kmrqexf8FPUmtgn+XkuegLqo8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=I4nlS5qa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2RuY2pOi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=I4nlS5qa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2RuY2pOi; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4647E211CF;
-	Wed, 20 Nov 2024 20:05:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732133107;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p52Gox+5WzN9As7amvW2ErtMwheHbvzyDFi8nJfkBpY=;
-	b=I4nlS5qa+HUOTC7bkwJ0KFWXyWr4RJ4WvBwTKMtaOh/PutlrEPJ9i9CtI/VhLjhUdRJzpO
-	3CUpYrNQNZn7bxwuKNCAFrz5at0UbNcXp1GtaCTwfgI5x/dlkYg8Eg6J1h+VN3TQccHz4g
-	B5K2hAwlw9daezn2rO0pUV+57fo6iwc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732133107;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p52Gox+5WzN9As7amvW2ErtMwheHbvzyDFi8nJfkBpY=;
-	b=2RuY2pOi8qcTkbTpKXePOTI99EUs1HBJvexn0zKlIcXw5hkggk9puJzkm6/Vybk2BSvdW2
-	Zxg+MeqNvKY3ubAg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=I4nlS5qa;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2RuY2pOi
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732133107;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p52Gox+5WzN9As7amvW2ErtMwheHbvzyDFi8nJfkBpY=;
-	b=I4nlS5qa+HUOTC7bkwJ0KFWXyWr4RJ4WvBwTKMtaOh/PutlrEPJ9i9CtI/VhLjhUdRJzpO
-	3CUpYrNQNZn7bxwuKNCAFrz5at0UbNcXp1GtaCTwfgI5x/dlkYg8Eg6J1h+VN3TQccHz4g
-	B5K2hAwlw9daezn2rO0pUV+57fo6iwc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732133107;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p52Gox+5WzN9As7amvW2ErtMwheHbvzyDFi8nJfkBpY=;
-	b=2RuY2pOi8qcTkbTpKXePOTI99EUs1HBJvexn0zKlIcXw5hkggk9puJzkm6/Vybk2BSvdW2
-	Zxg+MeqNvKY3ubAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 302F3137CF;
-	Wed, 20 Nov 2024 20:05:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8QuRC/NAPmenEgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 20 Nov 2024 20:05:07 +0000
-Date: Wed, 20 Nov 2024 21:05:06 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Dominique Martinet <dominique.martinet@atmark-techno.com>
-Cc: linux-btrfs@vger.kernel.org, wqu@suse.com
-Subject: Re: [PATCH] btrfs-progs: device-utils: include libgen.h for musl
-Message-ID: <20241120200505.GX31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20241119014326.3639742-1-dominique.martinet@atmark-techno.com>
+	s=arc-20240116; t=1732140431; c=relaxed/simple;
+	bh=TcoueP1+LPjAqEKWEbJ58Np0bSqbg757lhFVZsREuxw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p8jRw4gf3zqBQb1xGgZkwCRS2N+32lDzu94WfbolEGw7VpRJWQ6J9Jg/TXMLWsN55t/ZfRUm5GChVT0kM54rx1Nc8pGiPP9MyNcoE1x8S9AbPXk/cuOg4yFnPK/M0bwlI8PlXIbnehbAUlhJ9uGnmQgHCQ1sXF+1cCMxy3Z7QAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=YqvcxOjE; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1732140422; x=1732745222; i=quwenruo.btrfs@gmx.com;
+	bh=KQkwEdGradvceENobCLXZ2bQPiyM8Zvog1e4KGbgXg8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=YqvcxOjEKU6Ix7YiOOz0MKnQsTCzFlw/qPFApUw5GBiLi1TRlTKB+LqusH2K/UBL
+	 2IGtD6A/GurXR4EjDGBA+1t3poEL9C/qUXFZMvACNUGKkipKVxt+QGuzlEcBmgnkv
+	 NRwAA7Ynbi4xe7/0eFx79NnEHT/60Sef/W4h2TdY0LSFee5+I6QdjHy/fPEhoRfO0
+	 k9cgKixlyRqAI7sqmdnpL6wntY7Govjux0MO0IdcUmwNBCZ4DL6F8M6Mhvkbjdq83
+	 cIrJRldQ/Ac0eFLshTeFuRbFwIO5ux57QGntGsXBWJtm70Xp0DFsmzozEsfD8CzEz
+	 GU9oJB4LDPo1M8Ekzg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MplXz-1tWzvc3SYf-00dNSO; Wed, 20
+ Nov 2024 23:07:02 +0100
+Message-ID: <1141f20f-86e4-4638-adc4-5cb290f87691@gmx.com>
+Date: Thu, 21 Nov 2024 08:36:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241119014326.3639742-1-dominique.martinet@atmark-techno.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 4647E211CF
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fstests: fix blksize_t printf format warnings across
+ architectures
+To: Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
+References: <c4847cd94f86bd98fc563f112e177b317dc21111.1732102551.git.anand.jain@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <c4847cd94f86bd98fc563f112e177b317dc21111.1732102551.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7Jy1/iK0JvEKL5DCMLaF3rDju68UjdhpGKPnqdxycB30kjS4Ffk
+ Lp/+QcXtl2kdw4Kf94pvCFaO1lAmZ/+i7OBht+9GKr4HAO0B5DQgPkqAiLm7LO7R3wxVnmJ
+ gAfT9eMya8J8EtGXjrdWjz/Vi/wXSjqj6+WredU+/kmRqhDPdKjwA7+fPt0eb5dEwp6lwml
+ uCj1mK19ZDnOO+JLVTBuw==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:pDgitaMPl4s=;SV8h4iBs/QXOaarLMzd0AqKW+Y/
+ 9HMd5wfc/uiRNbe3tdmq+rvhPZIPp6Fq7fzSrDGbIwRfdkSUFxX7eXWcCslK+M8zzgiVZZcYt
+ +J4lt0/ga7WIIct9zIzzIHE8Yl0yYs2AokGmMhpdzWBRIUXXzzVoOT0fEJYl+Bpt+fkwAlFg/
+ vSsGrAmJRj8VSsKo7KKqfF1NbsWpbM06UyVaTtbnXMWISbp+Rr8WCzOMe6baFthSbGfewXm7C
+ 6sEdceH/M7o8inivSvGNouVQgnDljpe/efl8qBZhUWXFvF1sSRs64Qjg6hE5SBql7P/zsWZIG
+ yhrYBkRLg8hgQ3nSJ3FXL2vfIcri+Y+m7IceYocIqHyHPpGiOmZdNqzfpgXtGkoreC/zsJaK0
+ 8Rbb9sHHycdVErCjD+YSHVKJjsArqkyBAcBSsTZrweYa3sKAatRRcAAHBc60zod+bdLbxTCcM
+ 7IsfvEGDr+UB5jW6tkqIeFfWkq1DZi1tbhxCjlITFqU6T/iwbp+PmxG5K7yP89U1HDF0TmOWJ
+ HxUVFTAZRpv6PembjBMWTwpDUD1eMejzIpE8QwoMz4DnZRJzHRgIMXvsZwByeC0XswRPhv1ip
+ cLEk1lMkOvFmLeewuzERWz5fd7CbKq32R5lvM8DrQUOOeEPkoKGO4m4iJL9FqfXNQVoLvUWV4
+ fy9HLBuXwyQAxtDq1qHI3QG41wfLmM+XTWZm79g2M/kZDxreWfQPWpujUW6fC7SqhGyBYSujn
+ g8EF6YY0CvXi2Qwbx62u0ZfuRqvZzcaFdLzzRrLc8iQBUKOtgCgQ/E1Ujf149oqILkt0eR+WY
+ IDV9va1TqL3aVwxG2npbPAYJDjaW4gwY26qjOHwmO6DwChYJLrzSLIagcwstswetC+BKbzZ9W
+ 1/VGDJQzmUU9kQ0QXaiXWmkK44I8BKPasjcgsTKgjmXrXU2YNYCSdp6n6
 
-On Tue, Nov 19, 2024 at 10:43:26AM +0900, Dominique Martinet wrote:
-> musl 1.2.5 no longer defines basename in strings.h and requires including
-> libgen.h as specified by POSIX, and builds now fail with this without it:
-> common/device-utils.c: In function 'device_get_partition_size_sysfs':
-> common/device-utils.c:345:16: warning: implicit declaration of function 'basename' [-Wimplicit-function-declaration]
->   345 |         name = basename(path);
->       |                ^~~~~~~~
-> common/device-utils.c:345:14: warning: assignment to 'char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->   345 |         name = basename(path);
->       |              ^
-> 
-> Link: https://gitlab.alpinelinux.org/alpine/aports/-/issues/16106
-> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+
+
+=E5=9C=A8 2024/11/20 22:10, Anand Jain =E5=86=99=E9=81=93:
+> Fix format string warnings when printing blksize_t values that vary
+> across architectures. The warning occurs because blksize_t is defined
+> differently between architectures: aarch64 architectures blksize_t is
+> int, on x86-64 it's long-int.  Cast the values to long. Fixes warnings
+> as below.
+>
+>   seek_sanity_test.c:110:45: warning: format '%ld' expects argument of t=
+ype
+>   'long int', but argument 3 has type 'blksize_t' {aka 'int'}
+>
+>   attr_replace_test.c:70:22: warning: format '%ld' expects argument of t=
+ype
+>   'long int', but argument 3 has type '__blksize_t' {aka 'int'}
+
+Why not just use %zu instead?
+
+Thanks,
+Qu
+
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
-> 
-> This was fixed in alpine for a while but the patch never seems to have
-> been sent (at least a quick search didn't turn it up)
-> 
-> It doesn't break anything for other libcs so probably harmless as is.
-> 
->  common/device-utils.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/common/device-utils.c b/common/device-utils.c
-> index c39e6d6166ad..56924acd7901 100644
-> --- a/common/device-utils.c
-> +++ b/common/device-utils.c
-> @@ -22,6 +22,7 @@
->  #include <linux/blkzoned.h>
->  #endif
->  #include <linux/fs.h>
-> +#include <libgen.h>
+>   src/attr_replace_test.c | 2 +-
+>   src/seek_sanity_test.c  | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/src/attr_replace_test.c b/src/attr_replace_test.c
+> index 1218e7264c8f..5d560a633361 100644
+> --- a/src/attr_replace_test.c
+> +++ b/src/attr_replace_test.c
+> @@ -67,7 +67,7 @@ int main(int argc, char *argv[])
+>   	if (ret < 0) die();
+>   	size =3D sbuf.st_blksize * 3 / 4;
+>   	if (!size)
+> -		fail("Invalid st_blksize(%ld)\n", sbuf.st_blksize);
+> +		fail("Invalid st_blksize(%ld)\n", (long)sbuf.st_blksize);
+>   	size =3D MIN(size, maxsize);
+>   	value =3D malloc(size);
+>   	if (!value)
+> diff --git a/src/seek_sanity_test.c b/src/seek_sanity_test.c
+> index a61ed3da9a8f..c5930357911f 100644
+> --- a/src/seek_sanity_test.c
+> +++ b/src/seek_sanity_test.c
+> @@ -107,7 +107,7 @@ static int get_io_sizes(int fd)
+>   		offset +=3D pos ? 0 : 1;
+>   	alloc_size =3D offset;
+>   done:
+> -	fprintf(stdout, "Allocation size: %ld\n", alloc_size);
+> +	fprintf(stdout, "Allocation size: %ld\n", (long)alloc_size);
+>   	return 0;
+>
+>   fail:
 
-Please don't add libgen.h anywhere, this causes problems so the solution
-we ended up was a one place with correct includes, which is
-path-utils.c. Then path_basename() needs to be used instead of plain
-basename() calls.
-
-For reference:
-
-- issue 778
-- commit 884a609a77a6ddb7f0e0ba8789e0f0fc0e899dab
-- commit d95a14949d80c7c7d6bb081d812ddcd39ba4b24d
 
