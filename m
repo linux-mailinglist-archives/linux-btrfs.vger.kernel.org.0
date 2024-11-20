@@ -1,219 +1,125 @@
-Return-Path: <linux-btrfs+bounces-9788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9789-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227BD9D3FDD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 17:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 646BD9D4008
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 17:28:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D79AF284842
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 16:16:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 339D328335D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 16:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E42514F9FB;
-	Wed, 20 Nov 2024 16:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E391C14F108;
+	Wed, 20 Nov 2024 16:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IisjzLSh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6R5ZHaJW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IisjzLSh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6R5ZHaJW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZeqHHHOd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194F713957C;
-	Wed, 20 Nov 2024 16:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFAC13D638;
+	Wed, 20 Nov 2024 16:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732119391; cv=none; b=H6n/83+GE7tmdIqmnutAW4uqV4cOgIATE/3XrCp3bjI6OhhO5G5yrJ6cOdD/3sNp99wVwGqbwsMcA3Vyl1HdkQ4INVKRKoXAfq3FCMjsRceSRARnQhhZBLoa/Z1H7rsUy8ui+rZQPeEqpkNNlqschJJXE2EedtbHHIRelZNavyA=
+	t=1732120108; cv=none; b=dCAJV894TkFcxtIQWJR9kCxXjO/M+vnfkzvYWAuCeoO+9JqxMKsQKvlig5ejgVoat2ZLxudESekjhNydQ8gMdM96LWpD8WZYYOYR2kpO+B4PEaUgmzBwdVkcRM3btIaVQX0bV2nJPUcQR9wf3YHwVYVWz5ajo8ZerNZU8NogwUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732119391; c=relaxed/simple;
-	bh=2zJoHAyB8rvbnBz3xn6o2akF7IGLbhyjd5tgXI0WmMc=;
+	s=arc-20240116; t=1732120108; c=relaxed/simple;
+	bh=FwCA5kpv5qBVIFi6jHShRB71izAMJl84UI018I3EImk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OdJqwuxjD3PEIeq30X8MwJHhQKhYe3h2HElN7xsffsMk/Q82mu40hY3TETo92VbOsU/n2Vwup1LlIwo88UFG4RwuVv2IApAAW/KwVJQBWw4+NRzJhlzIDZtSk3aO2ea6fJbdlhWLwlN0myFGIFucr8MhkUTYOlu0LBu/bn8SGVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IisjzLSh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6R5ZHaJW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IisjzLSh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6R5ZHaJW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3BF2C219B3;
-	Wed, 20 Nov 2024 16:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732119388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=IisjzLShbwz7Pj1uEHoXXbbKY/Uieu+EWXzK2LpFMn4x55huJksMH4KvC7c+Np7thb9Xr1
-	fyflW0FGhu7K87I8XIMxRAcsmSwUZuQIfOZYJcuzS0Y8Duqb9zOTXRhBJpNGObZqt55a5v
-	moGTA+2Dl+1jTxPMDLtVPvKuuVxBBVs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732119388;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=6R5ZHaJWwGwfgTvxo4AQbJvD7X9Zi+P7MjsUD+TAY0+NTfvSIhPtg1ebrUKTKC/8WB/xup
-	sy6+m4iFeMkFt3CQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732119388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=IisjzLShbwz7Pj1uEHoXXbbKY/Uieu+EWXzK2LpFMn4x55huJksMH4KvC7c+Np7thb9Xr1
-	fyflW0FGhu7K87I8XIMxRAcsmSwUZuQIfOZYJcuzS0Y8Duqb9zOTXRhBJpNGObZqt55a5v
-	moGTA+2Dl+1jTxPMDLtVPvKuuVxBBVs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732119388;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=6R5ZHaJWwGwfgTvxo4AQbJvD7X9Zi+P7MjsUD+TAY0+NTfvSIhPtg1ebrUKTKC/8WB/xup
-	sy6+m4iFeMkFt3CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B0B1137CF;
-	Wed, 20 Nov 2024 16:16:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WrvrCVwLPmdEUwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 20 Nov 2024 16:16:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C9B38A08A2; Wed, 20 Nov 2024 17:16:23 +0100 (CET)
-Date: Wed, 20 Nov 2024 17:16:23 +0100
-From: Jan Kara <jack@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org, torvalds@linux-foundation.org,
-	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 09/19] fsnotify: generate pre-content permission event
- on truncate
-Message-ID: <20241120161623.brmiiggtwcvcre3u@quack3>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <23af8201db6ac2efdea94f09ab067d81ba5de7a7.1731684329.git.josef@toxicpanda.com>
- <20241120152340.gu7edmtm2j3lmxoy@quack3>
- <CAOQ4uxiyAU7n4w-BMZx9gzL_DTeKMPkBOy9OZzZYEsqkMHWAGw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qrOkK8n3/oSQ/8ym3Lls+IpsKA/zGpbHvlXVlBUVuK8+zLGUxSnMfZNPMOJv3SNNWCuF5He4k3Lg0qagX/5OEP2sfW9Z8mEuPAkv1rZFUgtA1J2jg24WwaV0G9BIB5/GWmaR7b3axcdTRbacrtjXLgiWw112JaaaxEOUSGFlkNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZeqHHHOd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6362CC4CECD;
+	Wed, 20 Nov 2024 16:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732120105;
+	bh=FwCA5kpv5qBVIFi6jHShRB71izAMJl84UI018I3EImk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZeqHHHOd/fueuNwvyIx/uID2irjKJ9kFoJLTgqPiaZN1qmmuXZDmv5onILfpTIWvH
+	 bWW1M1lBXjGTg4WpaUr6a1YJIV+feCQlSNuDWTR0h3sY2ZE0d24GrbGSNFUZIiEbdZ
+	 1Ay29mSRSsJNl0i2J17gEuMoysQL8ee/8dT0KsEMYIkjL98k048MdFUAxKALBOUbm8
+	 KV7f4PN4q83ucMqfe1rcH2BaypwSdHaJmrpuLFu02Kqc5KPSpaE/TcBAjOWEjiEg6Q
+	 or+OTrEZAnQpxrejwrX6Y/8QAO3TlK3P0gE8S1vtA57n0piXpvwD7GhGXvlQYdZmai
+	 Umy2c1Db8puZA==
+Date: Wed, 20 Nov 2024 08:28:24 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: fix blksize_t printf format warnings across
+ architectures
+Message-ID: <20241120162824.GC9438@frogsfrogsfrogs>
+References: <c4847cd94f86bd98fc563f112e177b317dc21111.1732102551.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxiyAU7n4w-BMZx9gzL_DTeKMPkBOy9OZzZYEsqkMHWAGw@mail.gmail.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <c4847cd94f86bd98fc563f112e177b317dc21111.1732102551.git.anand.jain@oracle.com>
 
-On Wed 20-11-24 16:57:30, Amir Goldstein wrote:
-> On Wed, Nov 20, 2024 at 4:23 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Fri 15-11-24 10:30:22, Josef Bacik wrote:
-> > > From: Amir Goldstein <amir73il@gmail.com>
-> > >
-> > > Generate FS_PRE_ACCESS event before truncate, without sb_writers held.
-> > >
-> > > Move the security hooks also before sb_start_write() to conform with
-> > > other security hooks (e.g. in write, fallocate).
-> > >
-> > > The event will have a range info of the page surrounding the new size
-> > > to provide an opportunity to fill the conetnt at the end of file before
-> > > truncating to non-page aligned size.
-> > >
-> > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> >
-> > I was thinking about this. One small issue is that similarly as the
-> > filesystems may do RMW of tail page during truncate, they will do RMW of
-> > head & tail pages on hole punch or zero range so we should have some
-> > strategically sprinkled fsnotify_truncate_perm() calls there as well.
-> > That's easy enough to fix.
+On Wed, Nov 20, 2024 at 07:40:41PM +0800, Anand Jain wrote:
+> Fix format string warnings when printing blksize_t values that vary
+> across architectures. The warning occurs because blksize_t is defined
+> differently between architectures: aarch64 architectures blksize_t is
+> int, on x86-64 it's long-int.  Cast the values to long. Fixes warnings
+> as below.
 > 
-> fallocate already has fsnotify_file_area_perm() hook.
-> What is missing?
-
-Sorry, I've missed that in the patch that was adding it.
-
-> > But there's another problem which I'm more worried about: If we have
-> > a file 64k large, user punches 12k..20k and then does read for 0..64k, then
-> > how does HSM daemon in userspace know what data to fill in? When we'll have
-> > modify pre-content event, daemon can watch it and since punch will send modify
-> > for 12k-20k, the daemon knows the local (empty) page cache is the source of
-> > truth. But without modify event this is just a recipe for data corruption
-> > AFAICT.
-> >
-> > So it seems the current setting with access pre-content event has only chance
-> > to work reliably in read-only mode? So we should probably refuse writeable
-> > open if file is being watched for pre-content events and similarly refuse
-> > truncate?
+>  seek_sanity_test.c:110:45: warning: format '%ld' expects argument of type
+>  'long int', but argument 3 has type 'blksize_t' {aka 'int'}
 > 
-> I am confused. not sure I understand the problem.
+>  attr_replace_test.c:70:22: warning: format '%ld' expects argument of type
+>  'long int', but argument 3 has type '__blksize_t' {aka 'int'}
 > 
-> In the events that you specific, punch hole WILL generate a FS_PRE_ACCESS
-> event for 12k-20k.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+
+I waded through a whole bunch of glibc typedef and macro crud and
+discovered that on x64 it can even be long long.  I think.  There were
+so many levels of indirection that I am not certain that my analysis was
+correct. :(
+
+However, I don't see any harm in explicitly casting to long.  Nobody has
+yet come up with a 8GB fsblock filesystem, so we're ok for now. :P
+
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
+> ---
+>  src/attr_replace_test.c | 2 +-
+>  src/seek_sanity_test.c  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> When HSM gets a FS_PRE_ACCESS event for 12k-20k it MUST fill the content
-> and keep to itself that 12k-20k is the source of truth from now on.
-
-Ah, right. I've got confused and didn't realize we'll be sending FS_PRE_ACCESS
-for 12k-20k. Thanks for clarification!
-
-> The extra FS_PRE_ACCESS event on 0..64k absolutely does not change that.
-> IOW, a FS_PRE_ACCESS event on 0..64k definitely does NOT mean that
-> HSM NEEDS to fill content in 0..64k, it just means that it MAY needs
-> to fill content
-> if it hasn't done that for a range before the event.
+> diff --git a/src/attr_replace_test.c b/src/attr_replace_test.c
+> index 1218e7264c8f..5d560a633361 100644
+> --- a/src/attr_replace_test.c
+> +++ b/src/attr_replace_test.c
+> @@ -67,7 +67,7 @@ int main(int argc, char *argv[])
+>  	if (ret < 0) die();
+>  	size = sbuf.st_blksize * 3 / 4;
+>  	if (!size)
+> -		fail("Invalid st_blksize(%ld)\n", sbuf.st_blksize);
+> +		fail("Invalid st_blksize(%ld)\n", (long)sbuf.st_blksize);
+>  	size = MIN(size, maxsize);
+>  	value = malloc(size);
+>  	if (!value)
+> diff --git a/src/seek_sanity_test.c b/src/seek_sanity_test.c
+> index a61ed3da9a8f..c5930357911f 100644
+> --- a/src/seek_sanity_test.c
+> +++ b/src/seek_sanity_test.c
+> @@ -107,7 +107,7 @@ static int get_io_sizes(int fd)
+>  		offset += pos ? 0 : 1;
+>  	alloc_size = offset;
+>  done:
+> -	fprintf(stdout, "Allocation size: %ld\n", alloc_size);
+> +	fprintf(stdout, "Allocation size: %ld\n", (long)alloc_size);
+>  	return 0;
+>  
+>  fail:
+> -- 
+> 2.47.0
 > 
-> To reiterate this important point, it is HSM responsibility to maintain the
->  "content filled map" per file is its own way, under no circumstances it is
-> assumed that fiemap or page cache state has anything to do with the
-> "content filled map".
 > 
-> The *only* thing that HSM can assume if that if its "content filled map"
-> is empty for some range, then page cache is NOT yet populated in that
-> range and that also relies on how HSM and mount are being initialized
-> and exposed to users.
-
-OK, understood and makes sense.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
