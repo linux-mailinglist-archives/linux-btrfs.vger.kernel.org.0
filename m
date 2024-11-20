@@ -1,56 +1,87 @@
-Return-Path: <linux-btrfs+bounces-9797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991DA9D43E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 23:22:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA0D9D43E5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 23:23:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E7542834D6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 22:22:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E530728334A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 22:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9801C1F11;
-	Wed, 20 Nov 2024 22:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739E61BBBE8;
+	Wed, 20 Nov 2024 22:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXdxpbYu"
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="ceuE+MrF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5620154BE0;
-	Wed, 20 Nov 2024 22:21:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BF62F2A
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Nov 2024 22:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732141314; cv=none; b=ouCkehmPFh0NpBGm3j3ywXr+3zJhkLKUYDjDspoyJZZDDO5xa2D/o9D1eZGXYpA7DAGxQeNro9wuGADlAmbyacroOmekwvnwT1EEsYFlRaxn9m6Igrunj6B/K0eHe6OPjBldXnHWYt43/St/NvQXvOBw49FJdYDu9YogXmWisUw=
+	t=1732141411; cv=none; b=pzi2OrW99LbyDsg0j9Vps5KWDRsP5+k5dyj3B2wgf+h/DfQdptGzz3+Y210eDpKGMu//YEoeY1hcqRLjPfPwhXHYXBOVLqPZGzi0DisbdPSAYDgR0egotfLN2IeZrGPwUY3ncsQzghfTaPtth1fv6ohTA1avC8bkk1ETClVks8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732141314; c=relaxed/simple;
-	bh=SoroNqA40CTc4MCD+Dy3fguymXOPJHB9yu3SetcIPYw=;
+	s=arc-20240116; t=1732141411; c=relaxed/simple;
+	bh=F3TL01q3W/kLNMiyds9fPHngq6RnHQ6vCEgxj74YBg8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JKwL1ItmZwyyYqmMpBN7dwnAHgXHDyc0X1K+T1Cx/UylJBAkKgVJchf/tOH1VHMsLNCoJB6mqVUj98ZT074fFzX/KdAHR866TP7PCPdvvroyBIHWNtRH9KISz25CuySe3xnviWuwRnOYGDnudvITcQKb5gbOf7ihA6ikyg6vu6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXdxpbYu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C89BC4CECD;
-	Wed, 20 Nov 2024 22:21:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732141313;
-	bh=SoroNqA40CTc4MCD+Dy3fguymXOPJHB9yu3SetcIPYw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HXdxpbYunQEEO2sy4f6HmdVID1JQ+Qa5VA5mHmrp9b70d6KCBOrNu31vsIC/8XDAP
-	 RSy72iRwwYa/ltoRwc7qNq4co2HyUNe/WuPnTlF033pg9m9dfBnf+ZGNhvrN8IRGuL
-	 P4PcnmgHmolDZqVb+mA+OojNoeXUKtGF2rJGgt3lGuLyr6+Mpwly1kj4uLHroo3f/X
-	 VTgy3AYNfgjjc7Lo5ofMbXKi1xjHwdtpMnzGvbOc856+5nFB7dSTYe1lb/DH3bjU59
-	 C+X16V+HNonfqQIHcMofIndVam2W4eoNPQc8MOug8VIkXHkYW35k2MRLvbomGqJxkN
-	 oGTAJLUYQ93Uw==
-Date: Wed, 20 Nov 2024 14:21:52 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] fstests: fix blksize_t printf format warnings across
- architectures
-Message-ID: <20241120222152.GD9438@frogsfrogsfrogs>
-References: <c4847cd94f86bd98fc563f112e177b317dc21111.1732102551.git.anand.jain@oracle.com>
- <1141f20f-86e4-4638-adc4-5cb290f87691@gmx.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pi6Z7QgWpZXYLJgaE00IU/BEfksOU3nDfLsoUZC8bOopteje50VNBFyAc9TNhbfQiGluG0w6s14gvJs7NmezXXc53kW9VPcoxtQZHzsnynu2jGIrjCsscjOa/MIV7n2I1DvUd/VgYQj1deYQiMySvW+zg7lBAXW2BN9+vw26aAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=ceuE+MrF; arc=none smtp.client-ip=35.74.137.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=ceuE+MrF;
+	dkim-atps=neutral
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id D9B1A376
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2024 07:23:22 +0900 (JST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2120c443728so2050815ad.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Nov 2024 14:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1732141402; x=1732746202; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5hKknO2Dc/7N8CoZJDGOTQxjWTIBBUE+CfnTvDM9udA=;
+        b=ceuE+MrFh7KnHIKepgVL1J1perZDywWBbQdMGkG7dnT69cyr0DyvUZBiiWfdvsnsVw
+         kRF3NKGWiQHJc/GabtQGtS/TaT+DRUNwLiMh3GAYpqLkSVmAGAo5bxcxD3vpB2Lq1CfL
+         UHrzvsBiIcy/ac/yZhcE5c+/6VmlxNo0UEkUdDY8+Whc4Kret/QTw8XDMGwCBNCPDPmS
+         GyUbeFUG9vGYSqx9mE7UMPYLL+vZJgDQe5jVaL/vhzOtrHlHLxwuI2oeN3gThQuofR8X
+         coFrRz5btA5KhsTCwmDQ9ACtmZqnjYT2E9RPMwYzPJDYrnDMCyzczxe8hEHBQSnyPw1c
+         q84w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732141402; x=1732746202;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5hKknO2Dc/7N8CoZJDGOTQxjWTIBBUE+CfnTvDM9udA=;
+        b=wvUC+4DvXE2bf751WofP94CDcCQPjPpNhcftVrcMg2IykIN1Z1Cve27M5BkLVm5y1c
+         hZTTbeLzxZ/Twg2kbpLooHbWXiWjg8G+yzZHecjqvKofvNO/p7eXx3y508gqDXM0h4sp
+         2YcH8LWHG+moYHtvw9OM8eVLtaG9lJygnrDADz5osUBe0zC7TxK2CaSYCA18NdCi2Z1L
+         F73tHU3C+4x330wSSXaaRhuGmVRy7J27fRM+urdUeIlcsHylERDl/814KWgRwoELEy/o
+         rRbVn/auWSnv8jY5YGWXu20yZD7I+X2EExwj5ye2ID+/LvvjuyVloqTMCZJZMMcwqm8e
+         yxTw==
+X-Gm-Message-State: AOJu0Yzmy8JKP6hhBhpySAA8ZC5/GLRc2gw8MbdIsTM5XpchrhPVGwK1
+	jZMH7lKKqELsIIX6EJnxe436T1ExKLAZOiB3xwHZb1TmrK2O1zZqK0uKZQVyzwubsdcT/gWigKn
+	O0nvc8mvQKDo8qElo0sW1UIUFj3EVDhx1GcFHyom1Gyb91PoquXH5KZy9FdijeWnzQGe1nw==
+X-Received: by 2002:a17:903:646:b0:20c:b9ca:c12d with SMTP id d9443c01a7336-2126cb209demr38552715ad.38.1732141401955;
+        Wed, 20 Nov 2024 14:23:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEHX4gHxvEUKjKdKwmkqqodxTitPsaksC9HSHzWof4Nr4QxIZSVijDE0k0bi8RtfplA5WV04Q==
+X-Received: by 2002:a17:903:646:b0:20c:b9ca:c12d with SMTP id d9443c01a7336-2126cb209demr38552635ad.38.1732141401684;
+        Wed, 20 Nov 2024 14:23:21 -0800 (PST)
+Received: from localhost (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-212882d0ca3sm541615ad.172.2024.11.20.14.23.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Nov 2024 14:23:21 -0800 (PST)
+Date: Thu, 21 Nov 2024 07:23:09 +0900
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org, wqu@suse.com
+Subject: Re: [PATCH] btrfs-progs: device-utils: include libgen.h for musl
+Message-ID: <Zz5hTSPUCurvevGd@atmark-techno.com>
+References: <20241119014326.3639742-1-dominique.martinet@atmark-techno.com>
+ <20241120200505.GX31418@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,73 +90,29 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1141f20f-86e4-4638-adc4-5cb290f87691@gmx.com>
+In-Reply-To: <20241120200505.GX31418@twin.jikos.cz>
 
-On Thu, Nov 21, 2024 at 08:36:58AM +1030, Qu Wenruo wrote:
+David Sterba wrote on Wed, Nov 20, 2024 at 09:05:06PM +0100:
+> > +#include <libgen.h>
 > 
-> 
-> 在 2024/11/20 22:10, Anand Jain 写道:
-> > Fix format string warnings when printing blksize_t values that vary
-> > across architectures. The warning occurs because blksize_t is defined
-> > differently between architectures: aarch64 architectures blksize_t is
-> > int, on x86-64 it's long-int.  Cast the values to long. Fixes warnings
-> > as below.
-> > 
-> >   seek_sanity_test.c:110:45: warning: format '%ld' expects argument of type
-> >   'long int', but argument 3 has type 'blksize_t' {aka 'int'}
-> > 
-> >   attr_replace_test.c:70:22: warning: format '%ld' expects argument of type
-> >   'long int', but argument 3 has type '__blksize_t' {aka 'int'}
-> 
-> Why not just use %zu instead?
+> Please don't add libgen.h anywhere, this causes problems so the solution
+> we ended up was a one place with correct includes, which is
+> path-utils.c. Then path_basename() needs to be used instead of plain
+> basename() calls.
 
-From printf(3):
+Argh, sorry.
+I'm not sure what I built the other day that produced this warning,
+master has been fixed for a while.. Please forget about this patch.
 
-       z      A  following  integer conversion corresponds to a size_t
-              or ssize_t argument, or a following n conversion  corre‐
-              sponds to a pointer to a size_t argument.
-
-blksize_t is not a ssize_t.
-
---D
-
-> Thanks,
-> Qu
+> For reference:
 > 
-> > 
-> > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> > ---
-> >   src/attr_replace_test.c | 2 +-
-> >   src/seek_sanity_test.c  | 2 +-
-> >   2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/src/attr_replace_test.c b/src/attr_replace_test.c
-> > index 1218e7264c8f..5d560a633361 100644
-> > --- a/src/attr_replace_test.c
-> > +++ b/src/attr_replace_test.c
-> > @@ -67,7 +67,7 @@ int main(int argc, char *argv[])
-> >   	if (ret < 0) die();
-> >   	size = sbuf.st_blksize * 3 / 4;
-> >   	if (!size)
-> > -		fail("Invalid st_blksize(%ld)\n", sbuf.st_blksize);
-> > +		fail("Invalid st_blksize(%ld)\n", (long)sbuf.st_blksize);
-> >   	size = MIN(size, maxsize);
-> >   	value = malloc(size);
-> >   	if (!value)
-> > diff --git a/src/seek_sanity_test.c b/src/seek_sanity_test.c
-> > index a61ed3da9a8f..c5930357911f 100644
-> > --- a/src/seek_sanity_test.c
-> > +++ b/src/seek_sanity_test.c
-> > @@ -107,7 +107,7 @@ static int get_io_sizes(int fd)
-> >   		offset += pos ? 0 : 1;
-> >   	alloc_size = offset;
-> >   done:
-> > -	fprintf(stdout, "Allocation size: %ld\n", alloc_size);
-> > +	fprintf(stdout, "Allocation size: %ld\n", (long)alloc_size);
-> >   	return 0;
-> > 
-> >   fail:
-> 
-> 
+> - issue 778
+> - commit 884a609a77a6ddb7f0e0ba8789e0f0fc0e899dab
+> - commit d95a14949d80c7c7d6bb081d812ddcd39ba4b24d
+
+Thanks for the references, I'll go drop the patch from alpine so others
+don't make the same mistake.
+
+-- 
+Dominique
 
