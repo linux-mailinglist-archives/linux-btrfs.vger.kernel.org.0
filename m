@@ -1,130 +1,103 @@
-Return-Path: <linux-btrfs+bounces-9792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862319D405F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 17:44:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C6C49D4084
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 17:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3460C1F2164A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 16:44:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 224BA28241A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2024 16:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D99919F41C;
-	Wed, 20 Nov 2024 16:44:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCE01552E0;
+	Wed, 20 Nov 2024 16:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDK50TSC"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="iH+2mqbZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA67A155C9E;
-	Wed, 20 Nov 2024 16:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B56214D28C
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Nov 2024 16:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732121051; cv=none; b=nkhA6qQCO4sDu4Lz975kORcK6i/y8v/v3BIFNst1GAZIbq6sLAw9jfHUlDvEr3E4FO/bIeGxerZlr+j7uDxSvSYq+3Hy8ZbErzoALp/ScizateGMiMDYEyxwcduItbD0EqcEAfDax7FBcQ5/y/siviqrUUU7H0ggcZIId0f7w6M=
+	t=1732121370; cv=none; b=oi9s9VHFIyKmjGWOXH87yQI7hVbzhBj3W80WNm5YpEDzYZrA0Fl3QA32gEAj8s/riYhGNscR3dLq4O1DOvgFPUaqDpCu/duLXLwrqdeqBcsk9qQ/rIllHiRsuNRuFb7i9UVLZD4VeVfQEfrQ7znFjfgVrRLxk8+UnVeI3GRtoHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732121051; c=relaxed/simple;
-	bh=DpSstyBNXehAIdkVgYzcUY0JA+H/10s65svDrFNR7zA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uKhc/r5PgeN5ovZRGt/67TrP0/WFPeFQD5l5yhyiV9Tacv9RpyEMpBQlLyp7HgbaJ45vdZXjJr9sBSLFbvzd4f6uB2pRO9GIIBJUqNLaO5q5F51plu6ZbGouzEeKvHEWr9AxOSq9cD+4DhSWPd8PXMFscVjbSOTg80/+Yo635Ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDK50TSC; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so1149779266b.0;
-        Wed, 20 Nov 2024 08:44:09 -0800 (PST)
+	s=arc-20240116; t=1732121370; c=relaxed/simple;
+	bh=uTcW/OXkP/DVlYo+bDrcBN3tSEWrHeyWrIUDmBqXaFE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dPd1PH2B2M9rqCZsqGR7+v7g6C5beiSeTAbwftjSGhoeQafEBRYTxZPmVKQ98MznxCWp6TXCXtYf06sUCWWvClOEwqXyoGub6C0EgBYXKu95dNVtpBlXonArqx/vbvisF52EDksBnVf43P+yVSUC1UQbwuI9Y7v74AEdc58iZ18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=iH+2mqbZ; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3e6005781c0so3684612b6e.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Nov 2024 08:49:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732121048; x=1732725848; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rWVEODKI+88+Agjr2ZU2Q9hWiLJ3T/8rKLt5bQ4kjxA=;
-        b=KDK50TSCebJysaOiwXl2i/jfgKWdgn12d6lO9daOAgWJEHadPe7+bckkOFG2PreN67
-         hnUGIf0k7Le/JVDXrjtpxVi2jNl3Qu/HcngiWmr1nzIojLz/lxJgez37LLlcWNcoWMOW
-         LBKaPCTDu6AGEGrSfliG0FRpiu1D0yjxx9vdLLSlOsjCr2eK2ALZ9U9+kNj4c0KQHhg+
-         +Y2CLtEbWnvWproiKyfXyWwKsV6NSniTiXG5usLTJaMQhVW5qvFJixQQhdJkZ9Kt+O2r
-         udObIn1s+4ldwpTRCDO5KSCttPhIrTe9DmxPQdnCpzNjvc8pGk5JRS/iySBaIQeWyPiV
-         1gWg==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1732121366; x=1732726166; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=NSXJWfERfexWCJawwZmjuxM0TstuZH3uBUhDK90vA7c=;
+        b=iH+2mqbZjb+fIDp7kJsH2ypmZgl58Ju0yj5myVjpWTmbRMg4v3EdXuL6kKDee/GaHo
+         ICyahGcBCgltgZMOo7b3TIQHlUsY2tPbo3YFIDDFgLF7DNCYPmUezWKug4j6wI/uETv8
+         Gh2aAx8BRpnPLHuUtAn8S8nCyb5ItA+ZKY2gPiucmE+Nn4qSaCf2OWS8ABCv/N5O4eWt
+         P3hh8oaZiqsHqH5M2UVm6kenJSi/npXnR2oKqbkJ5z2cAIAfGx6Os78EDiYJ8Bp8geQx
+         9h1v9MVZimdfNrDsLca9mJuF2wLpfE/GdcwBZ/VF7PJ3TGwGawH3Rm5o1OZf9PgkDk7M
+         hzeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732121048; x=1732725848;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rWVEODKI+88+Agjr2ZU2Q9hWiLJ3T/8rKLt5bQ4kjxA=;
-        b=abzJ5BrHgs+s4S9zf/SIANU0iK6yXPOzmjjuEUeQl1K6HcnSERZp5nRsMOWbnLRFUu
-         T5aB60BLVpfUOQ1scofNa6xn3xaR+FbD5Q5QzOjJ76lqBE+pwQJSoouuVSi/6swOFsGc
-         2A/tiObVSsXedgNqWAO0kwqWEzdJH9J/A0XSzLuRl9nEfjUpqosqJMBiavXiUIUdTNir
-         1RS/6rJjd3GhEMriyC8eHFex5P5/Fj7evTEFbFP4OHuq3ZkBnBhWONMz7m2PYQVzAafg
-         TpbKCPVVxXtIkvsU3TphepvBOe/vBeWX5u3L/GDkc0akOfysPURIgU+SKi6NJ2rVojPx
-         xZUw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBFgSZhZz4D6rjANww+gC9nMyVYfXj+0qsN3LYqOcSFMjjUm26fqMZibm8gGn1oEPGO5BY8ugOYd6oihj71Q==@vger.kernel.org, AJvYcCUGyYMwNhPUXVhQHy0527yPAudyBpp0nWS51Smu+dnaYInOHUFZyBdPMUdYvXng7ZX2lkbGjhkSvYXguw==@vger.kernel.org, AJvYcCUqDETnSZrnUOTEf6QXpMnUIngzAEucEQAFcZZBmZUgR57SwtP59GoHNCw4EvDYuL4kRNLPLUva3DLERw==@vger.kernel.org, AJvYcCVj+nUHhFdGiEJgw59tcHWcX0yppQEBqxliUqfnqE1O9va3cLXJtuGtLwIf/8bYIAB51Q+juV9Z+iEN@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQ7nLtpH6iEWja+ywJV0c6DayEhIHWCLSQsMH2CBW7vwbUg+s9
-	Mv6nED1wubSWbwc6rXM7zsAi1FJTIu2sAWbYMoU8J1RpUCeCXxkbpVHeLKcUc0Ccb/tiTI7piRG
-	G2f3KCLNpXZSGd8AVidLcAc2N10QDzfNp
-X-Google-Smtp-Source: AGHT+IFRj2qVclJYRDudeqZEjpO92T0D0Sk7p9QgbbdfOz7d553nkrCjYZfuL1UJBGykslPgM/P8DEqHCvh1hl8Y+bU=
-X-Received: by 2002:a17:907:7287:b0:a9e:c446:c284 with SMTP id
- a640c23a62f3a-aa4dd761e13mr357796566b.55.1732121047806; Wed, 20 Nov 2024
- 08:44:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732121366; x=1732726166;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NSXJWfERfexWCJawwZmjuxM0TstuZH3uBUhDK90vA7c=;
+        b=GXn48CE2WsICX3fCCihHTYPDzEC/ppXnfSCsLZ4a7IrTEdmGbeuV90jnmr0DZx8jUZ
+         iQrBwnoqwUpLPI/iyi4+dcM6p/E7JLGDcVUA5eOm8qUDDw3a/h0twzOrJ+T1uIAhC0ql
+         OwzPE7v1l2/74hJiIupCF1OfBo9Rv4kT4vbS6llMhk5zUcsR0b1mSTBP+LJL7YGewq4u
+         RO0ME/7lAI9+JV1EEzmrkbym/JLkZFbAkfiArSxd4DVDVvPYKflX4A3dgHG0sc96O1sx
+         uon7UgYxSYHvz9n7XBaKbhK5iFz/Nx17QrSs5ciZPCQjRf0L+KD2Tj93dgAjOO+Iis5i
+         77UA==
+X-Forwarded-Encrypted: i=1; AJvYcCVzzE3cCfAeoGNRam/XuDnAg9new8LIPn7Hz/VMVCY0f2GW703I0ZcAEsSl3E4Q/OR0fYohY+4mW/wpAw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyb4YFc64wLdlGA1OvN5GvROkc25jE1tSrBXsE5i92KaWAN4YhH
+	TVn9yvVNYKFDPhWAwTPvwf/YZPj9EiFkyt8TWjcgEAzabLoNmr4dIpnk/G7/qr/nyt4JAZNURM0
+	2JjY=
+X-Google-Smtp-Source: AGHT+IFvK3/eQntYouSJyiYiPaa68TxNVW7hxbWFCD0pCaluEsNtDf75KWjGPnoR0UXIzEf0uqVYxQ==
+X-Received: by 2002:a05:6808:2110:b0:3e6:58cd:fb22 with SMTP id 5614622812f47-3e7eb7130bemr3258601b6e.10.1732121365929;
+        Wed, 20 Nov 2024 08:49:25 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e7bccfb837sm4317101b6e.1.2024.11.20.08.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Nov 2024 08:49:25 -0800 (PST)
+Message-ID: <a537b557-c9a9-40f9-b230-62f6b35eccd3@kernel.dk>
+Date: Wed, 20 Nov 2024 09:49:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <657f50e37d6d8f908c13f652129bcdd34ed7f4a9.1731684329.git.josef@toxicpanda.com>
- <20241120154448.onc2q5rsusfs4zsm@quack3>
-In-Reply-To: <20241120154448.onc2q5rsusfs4zsm@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 20 Nov 2024 17:43:56 +0100
-Message-ID: <CAOQ4uxjLraeWK78d69DRTpuAWWmaPSaHmi-15hW2KRLES6M4qQ@mail.gmail.com>
-Subject: Re: [PATCH v8 13/19] fanotify: add a helper to check for pre content events
-To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] io_uring: use sizeof for
+ io_issue_defs[IORING_OP_URING_CMD].async_size
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
+ io-uring@vger.kernel.org
+References: <20241120160231.1106844-1-maharmstone@fb.com>
+ <20241120160231.1106844-2-maharmstone@fb.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20241120160231.1106844-2-maharmstone@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 20, 2024 at 4:44=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Fri 15-11-24 10:30:26, Josef Bacik wrote:
-> > From: Amir Goldstein <amir73il@gmail.com>
-> >
-> > We want to emit events during page fault, and calling into fanotify
-> > could be expensive, so add a helper to allow us to skip calling into
-> > fanotify from page fault.  This will also be used to disable readahead
-> > for content watched files which will be handled in a subsequent patch.
-> >
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > ---
-> >  include/linux/fsnotify.h | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
-> > index 08893429a818..d5a0d8648000 100644
-> > --- a/include/linux/fsnotify.h
-> > +++ b/include/linux/fsnotify.h
-> > @@ -178,6 +178,11 @@ static inline void file_set_fsnotify_mode(struct f=
-ile *file)
-> >       }
-> >  }
-> >
-> > +static inline bool fsnotify_file_has_pre_content_watches(struct file *=
-file)
-> > +{
-> > +     return file && unlikely(FMODE_FSNOTIFY_HSM(file->f_mode));
-> > +}
-> > +
->
-> I was pondering about this and since we are trying to make these quick
-> checks more explicit, I'll probably drop this helper. Also the 'file &&'
-> part looks strange (I understand page_cache_[a]sync_ra() need it but I'd
-> rather handle it explicitely there).
+On 11/20/24 9:02 AM, Mark Harmstone wrote:
+> Correct the value of io_issue_defs[IORING_OP_URING_CMD].async_size so
+> that it is derived from the size of the struct rather than being
+> calculated.
 
-Makes sense.
+You should probably just fold this with patch 1, where the type is
+changed.
 
-Thanks,
-Amir.
+-- 
+Jens Axboe
+
 
