@@ -1,109 +1,136 @@
-Return-Path: <linux-btrfs+bounces-9833-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9834-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2234A9D4C20
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2024 12:39:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075609D4E8D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2024 15:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9AFF281AEB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2024 11:39:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50111B22C0F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2024 14:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B90B1D2F6D;
-	Thu, 21 Nov 2024 11:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A011D932F;
+	Thu, 21 Nov 2024 14:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K9lnfuf6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9b5+Yox"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F0E3C47B;
-	Thu, 21 Nov 2024 11:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA35F1D63FD;
+	Thu, 21 Nov 2024 14:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732189162; cv=none; b=KbIDW68AvnZebBhcXXrqAXj9kyngCqbi89yQYPufKXhM+/tnVZ8lMNPKiiIbJco29SxKin80cPfeHtfsYugGbLtFqaBuXieANE2XCBhR0rSEfxex0DwUJqq+PKZlbWgvynH6regcZcps9zvpdQTZ4pE0UZgx2fgUTKgkexuyny4=
+	t=1732198731; cv=none; b=CJKYLG/w8g6AhOvkV6H3NbiEOeeHGeLViiGfqQwxRHmAE3OxK+APufrGyQ+/mFcQ7I3AI7HJTJNkMsBCUwgLxe366SWI71yrfxUmZB5ZwgJso+ePXf7Pucfe574h/63gKsiSDun4Zulu5qddlSCcFRjxlOrpjejy0igVEw7f9LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732189162; c=relaxed/simple;
-	bh=xAYaBEUf9TwtHxHoBr4FgtqZpbowLusqakRP77r9kOA=;
+	s=arc-20240116; t=1732198731; c=relaxed/simple;
+	bh=bNvc0py64DAf3/4lI8U9CHFwkfOTtYkeLHfMBzYWgL0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MCno/MqgehAKT9PwTv0ISRhGvlLHDqzeSP3x/i6NKY4/SNZ/hw7CPNixhcRJEwvDv82pJHnXp15rjbMfCNH2FRJYIiCFoKR3q1nVGDXRocRg/lJx7d5lAjQ+OGCOlrBVArhn7LUJjT7LglXusboJT8mrxyRi3dnDzGU19dB4cVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K9lnfuf6; arc=none smtp.client-ip=209.85.218.54
+	 To:Cc:Content-Type; b=laxbt52zaRamPTskvndM1cnoJkI5SpukVtTU4etGvmSrwPthSX8QNkagkpUNMaGO25/FPDc3OyOkMZGHtd7GeF/toI3+MZjobk1RUWPr3KxoXzmMY9Md0ONl07Drv+uhMTHpbGvV262+/m9UT2xX8i6guey+oLoDkLewGGVJJrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9b5+Yox; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aa1e51ce601so164509466b.3;
-        Thu, 21 Nov 2024 03:39:20 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2fb51e00c05so17819901fa.0;
+        Thu, 21 Nov 2024 06:18:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732189159; x=1732793959; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=flmqqIvHrYVf7qQ/T7+htw1AlPLKr76abtaAFtyx13k=;
-        b=K9lnfuf6WIqcBztGoyhzjJcULOQ8WWiSLMEvaJIu1d0yN+u9NixCXxNG+Ym99tzF1V
-         8kTQJIDgV66Mbtyq8hYqacdFmJCH8pg4FuG5r5ykXe5Tl47NokZARxL+Mhcvh1vj/72h
-         3m8XCbmviYJ8xVpVkHdGooHkEXmc/SQWPzFkxgXU15col4maFGcorO/7OyvIhzDmH6X4
-         wKfmHW5Xz4EGMc/dyKcVJEwTj+dT581w2kR82lZtWvrU26cPJA92RnjZZVwZhJem00nE
-         bPRtCz8s1YRrZnEWBGMEE8suIPrzff/f2QiZItRjy4oloRN447V5GACVSGyRgZ6LFIUM
-         Pfqg==
+        d=gmail.com; s=20230601; t=1732198728; x=1732803528; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pO8DokmCbNTYcYBfKWRaeP/dEwanubQ3Z/RPc3+IoOQ=;
+        b=C9b5+YoxQTsg22CtxdHmQ+C/UgBNpLrp4SWsE50vJkVtO7GH6k0/VL71mGSFjinVYO
+         nsvWfCUJEhpKB/god6w7lDyunqtQzJ0FT17WFq43nym4fLJJI/FNR5Qb3HtlIuYLCBo0
+         fLjIB+p8ogntOxbEhVxaV4W0n7dxpmC167o/CscEQsLwk0dAJbwHaRZ02VLrpfB1LHQG
+         8X2RecRpiMbq6XtbhmmEbguecXZXH0Y6qdvYgHrYXi8Fzj25zIz9JqAmrVrdvOX7y9wg
+         JgMlsZh4ZwewEEII2EbEffATIfTApSdbyPL9afwGvETPV05ZDeD71D+TUH4v5S8hwnMJ
+         LzVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732189159; x=1732793959;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=flmqqIvHrYVf7qQ/T7+htw1AlPLKr76abtaAFtyx13k=;
-        b=UohRHBrCqAZg/5jVQgx0uBsDlVDuQ1jco+VKmtqA5YVdGimqQpX1MIU42IKzvqxhN1
-         a2oloUtSaC8mbldDm7jX0Pb+c45YxoL5M08I91NjziM5yuGFe0YB4KnEil4uyn7hDZDo
-         6kQvIXoP6nfOLiwkObia7xl28iM3ZNhykEX1rRHOZMWgFS1YY4DQwixpjGV2Cr55o1mS
-         Z7wpFWoSs8FDMa5gquyz8MbjHjMfz4df8DZH1njn+FkoUeDjm87AdjTyHjEI6Ef7b3Mw
-         MnWfX6CAJiXCYpELEsBIlQ6Z8eCe0dkvshEH8g7TDU/jLQCylVahQicI5t7VH6CYGHRy
-         DP+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWD1TvAWkySb8n9Q6lIQtB7TI4isL+uSiavjtzHMEd52asUhOSLVyKDn2Z+BP0o7Cjg1dj2pWvsRuN/cA==@vger.kernel.org, AJvYcCWKJogvt+BqwGESOf8M5+5GKrQ+An+llWHGWDmMFrS8BR6K6lSMdvhFvo5VRFXibzmV8HZphbcjbyQlyg==@vger.kernel.org, AJvYcCWKNlxIQPArCOXT9eZ6pa3EU3hKkubRJHCKsWSdxRP9PAoIxi++YJiB5Pohy79w/NeUmoihwUXgrLDJ@vger.kernel.org, AJvYcCWW3ghwwuADyG22yLCT3XWD+ybE++Cb38jzHr/MZXiBGKfCTK7kqs6SzIiLLHVbrlIxfR4CgUgvkAyjvT5BQA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPGikDZqOoi3vp9aTJ3heNvxBA4PkD1SsUt/jyYFp9GL8zp2f8
-	+lKV1XcgLdcZ+cEY7OOvfW9GYTr/D895hplLXmIXrQ2lh4E8swnr0UxkWpSMdksiTZtzcnnxt/l
-	gW/VFgrk1hVbv1Tk4UCDM2S7FBec=
-X-Gm-Gg: ASbGncvXzHHxBpabeD+B0w7zIvTogKt9xSZysfbrB5Q90XfJvaeZf+9IVbImMcr5KmM
-	mjabZTIK0lJK0Dz1SDvNcw6zAG8t2Ytk=
-X-Google-Smtp-Source: AGHT+IFxJ5PMK5EI0p5RcxskpZT0i1r125FE0cgnA0p0b/AF7qbdGGhs4weZZIOjMWdg/3y0jLQKqWHCYKcLqfZpGX4=
-X-Received: by 2002:a17:906:eec8:b0:a99:77f0:51f7 with SMTP id
- a640c23a62f3a-aa4dd799d4bmr586113866b.61.1732189158565; Thu, 21 Nov 2024
- 03:39:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732198728; x=1732803528;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pO8DokmCbNTYcYBfKWRaeP/dEwanubQ3Z/RPc3+IoOQ=;
+        b=hIaeuUZCH0M4r5N5PxGDEmkUvAKdpwAU4lc/f7ZN8v/Bm0vmeR4yMygcmi2Veqt3sB
+         G+rw0Mf2UM6jEf0p3cVJf1yCPhXvk0qBxEOEq+IBXhzJHC0CcTxy0x4ee5Nscdm09YO2
+         gBOMBSMLDwOigdJgpDW0sHO+T61Z/IuUvgXF3dAVoJbvLfvOzkysnejDw6jr6lCj3ENE
+         /S40xf78ypL88oiJ8zBXEIfghblmlr6XkmR+owyrcv6DfuH5x+vjFEzCHraXZPbbxJt5
+         go14NGL7ntBBO2aaeDGH5DYwmX7P5NgH6yqUxx2f8gGM2vG5EVEFIsr8jsW4CJAAEeY3
+         onGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVRDzeOXdIq3k1/ek6OA4xS/OvNrKx2pmY6axGo1rQlG6i5mROf5OyuEHK2M/hnLr4hTbEMyVjDZSN5w==@vger.kernel.org, AJvYcCUp53BwGoJ4WZC9YRWAOe9iXJlncIwf/eYolXIVOyda8CY3OR6dcQX8zyQsGfutAhFyGGf/9C7ZMQ2Y@vger.kernel.org, AJvYcCW3L+MkSiNS1mssbLbV9u516veyTB9A4aXFYSGK7jnOpQCLI6s6zeRuYn9zlf6noSf0qf5Cld9Bdh7YF/Cxrg==@vger.kernel.org, AJvYcCXzBD1nSm3gJoY5vbxG+ScBR9h7g9b9CYtn9hKt+IE6bGPvrkqqFeX8Tl2DmuqPn+SGyfhSMiNKHMwv3A==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywbu/fLB1wDxhamDxujh5sRvf4mXNTgpsO+4+LLmEihrEPU75rW
+	dsqJcbJB5mfUBY6oFEOtPwSR1sar0f3NUOXLAh+McrJ/921k4p7facNXGe3/zCaDfytleeK6hrZ
+	8OVJcaO6wNgcCxmn1Jt+kkJriJjlYcclCP4I=
+X-Gm-Gg: ASbGnctnyCR0Ht11o8GcMSpkMUpevrJZvyI9bo7WuKJx2JPt2Nz8Hs/RpecoAQDfd+z
+	FLsQx85AtFE+Gb2kQk9OXQcsoro0oepg=
+X-Google-Smtp-Source: AGHT+IEE9uu1LLPFKTWP8pimZf7yZgaRdrUeWk2IUF2LLnQpNe7uZnVbznEcE/8soKYRUUWZb2SAtbqxpd+Sov4cXAQ=
+X-Received: by 2002:a05:651c:221b:b0:2fb:6362:284e with SMTP id
+ 38308e7fff4ca-2ff8db165bdmr58987841fa.8.1732198727467; Thu, 21 Nov 2024
+ 06:18:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <5ea5f8e283d1edb55aa79c35187bfe344056af14.1731684329.git.josef@toxicpanda.com>
- <20241120155309.lecjqqhohgcgyrkf@quack3> <20241121-boxring-abhandeln-c2095863da2d@brauner>
-In-Reply-To: <20241121-boxring-abhandeln-c2095863da2d@brauner>
+References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
+ <20241121104428.wtlrfhadcvipkjia@quack3>
+In-Reply-To: <20241121104428.wtlrfhadcvipkjia@quack3>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 21 Nov 2024 12:39:07 +0100
-Message-ID: <CAOQ4uxiu3hkx9KJdcb0EchARyM+mYS-Yz+xU9w4MBRUH6RoDzg@mail.gmail.com>
-Subject: Re: [PATCH v8 02/19] fsnotify: opt-in for permission events at file
- open time
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, 
-	linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, 
-	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Date: Thu, 21 Nov 2024 15:18:36 +0100
+Message-ID: <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
+Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
+To: Jan Kara <jack@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
+	linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> This is fine by me. But I want to preemptively caution to please not
-> spread the disease of further defines based on such multi-bit defines
-> like fanotify does. I'm specifically worried about stuff like:
+On Thu, Nov 21, 2024 at 11:44=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
 >
-> #define ALL_FSNOTIFY_PERM_EVENTS (FS_OPEN_PERM | FS_ACCESS_PERM | \
->                                   FS_OPEN_EXEC_PERM)
+> On Fri 15-11-24 10:30:23, Josef Bacik wrote:
+> > From: Amir Goldstein <amir73il@gmail.com>
+> >
+> > Similar to FAN_ACCESS_PERM permission event, but it is only allowed wit=
+h
+> > class FAN_CLASS_PRE_CONTENT and only allowed on regular files and dirs.
+> >
+> > Unlike FAN_ACCESS_PERM, it is safe to write to the file being accessed
+> > in the context of the event handler.
+> >
+> > This pre-content event is meant to be used by hierarchical storage
+> > managers that want to fill the content of files on first read access.
+> >
+> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 >
-> #define FS_EVENTS_POSS_ON_CHILD   (ALL_FSNOTIFY_PERM_EVENTS | \
->                                    FS_ACCESS | FS_MODIFY | FS_ATTRIB | \
->                                    FS_CLOSE_WRITE | FS_CLOSE_NOWRITE | \
->                                    FS_OPEN | FS_OPEN_EXEC)
+> Here I was wondering about one thing:
+>
+> > +     /*
+> > +      * Filesystems need to opt-into pre-content evnets (a.k.a HSM)
+> > +      * and they are only supported on regular files and directories.
+> > +      */
+> > +     if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
+> > +             if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM))
+> > +                     return -EINVAL;
+> > +             if (!is_dir && !d_is_reg(path->dentry))
+> > +                     return -EINVAL;
+> > +     }
+>
+> AFAICS, currently no pre-content events are generated for directories. So
+> perhaps we should refuse directories here as well for now? I'd like to
 
-What do you mean?
-Those are masks for event groups, which we test in many cases.
-What is wrong with those defined?
+readdir() does emit PRE_ACCESS (without a range) and also always
+emitted ACCESS_PERM. my POC is using that PRE_ACCESS to populate
+directories on-demand, although the functionality is incomplete without the
+"populate on lookup" event.
 
-For FMODE_, we do not plan to add anymore defined (famous last words).
+> avoid the mistake of original fanotify which had some events available on
+> directories but they did nothing and then you have to ponder hard whether
+> you're going to break userspace if you actually start emitting them...
+
+But in any case, the FAN_ONDIR built-in filter is applicable to PRE_ACCESS.
 
 Thanks,
 Amir.
