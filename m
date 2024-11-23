@@ -1,185 +1,266 @@
-Return-Path: <linux-btrfs+bounces-9842-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9843-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C11C39D5FFB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2024 14:51:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 230B79D6B6E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Nov 2024 21:20:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DB821F23037
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2024 13:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE0FE282A5A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Nov 2024 20:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9155757EB;
-	Fri, 22 Nov 2024 13:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD31619340F;
+	Sat, 23 Nov 2024 20:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9PPjpiq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bcv8SubQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131C712E7F;
-	Fri, 22 Nov 2024 13:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E84517BA6
+	for <linux-btrfs@vger.kernel.org>; Sat, 23 Nov 2024 20:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732283499; cv=none; b=rPtZTv2dNJUyEtUt+pcFBynk2w8WPIozRP0z4xzdj5XCw3YVYzno66ZRy2UNOK4esF1z/6ZF3x822uWvoiclSj5vHUOro12rEaj2zuKq7Z5ZwfI2JdYqRXyhNOGcXli0hkjZfGo6XA1vPaW7fC5AWWIYQJEjRMSQ2vDY1DN9/KQ=
+	t=1732393235; cv=none; b=Yb6EGMXQvS0OLudu5e+Qu632jXWnNiiexa3S7FYNp+VASX60RLTP3ktBGHEzMD/7jhrIkLZ9G+H6pds+SdqbSLlzRONM1zlG3xle76MH6XX+QAcBcPBQkfDrQfyG4h4QbAk4nYmNHWXZM06nx0o5ucLIN3pxc61d4i+wiIP5G4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732283499; c=relaxed/simple;
-	bh=FUSPjYnmqvq3EZk+YaMlZMRYm+mAt5sMmrYQadC1O2g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b8mwwj53vzjI6D3p1kYdpBxhy2cbAEnY73jNf//6S9d9P8+TjNKqMcIj8/EZORfTD6vGoyrfhbzsChNs+/oDsKIOAHH2Tf/UxbZWADlQ69YxEZAVCwemHQIIWOTX5CXus96pfXohSHutGV/23BZ1nI6zgkY/YH3Hg459Yi8mfFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9PPjpiq; arc=none smtp.client-ip=209.85.167.54
+	s=arc-20240116; t=1732393235; c=relaxed/simple;
+	bh=TSIXj0vN7x46qk/e9JjE1yn47X1Fmb7un/jY/h8kFL8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=nI+4/tx82f0j/goSUZDEvrs854z8vMtVSb02oidsDRyMeVNnu+hW5Gkj42OT4ILvCL61o4b3+dQe3ReI8V2ebD3DXxG2mNj8dwWXf1RqcuYlyAHCvhGW1fAP+bnWYuYNe1EjAow9bmCZQuvK9+4wAWbpyhKDapF4Zkp91IPF6ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bcv8SubQ; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-53da2140769so2516127e87.3;
-        Fri, 22 Nov 2024 05:51:37 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-431481433bdso28814775e9.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Nov 2024 12:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732283496; x=1732888296; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O1M+VNoDV01ttI4ykAkLiT0TH7dIi4lr51PaobubPkY=;
-        b=E9PPjpiqRbbSa7J3T9vUDuBGgA9SOh1kNLjk7K/5ROfBDth04v0vWA0qtv0U3U1Du+
-         8vOojvYVoMfT1KSk1kaV4IyR0qm5UZdIDRTZe24xi5Gc1RsRW0LGaUOlPkKXk32XefNF
-         TMNgm1DS3e1I8xWQyCisW/92ay9e2xs1nIgzYsEtYMyEwFhoBJGLDYft+VzdHTHHcbS+
-         bCS5idpnPDtQx57wzXVNPNEPUX/EXXpUsjCuoX1HpsPrZjLaNgrqWV2gmW8DeAeXi4jb
-         VNEQ5FpJ2pcPjSBUJ+pFLQm74uL8ZYTTE4D22xWy9Bxn8mhrJfPzS96483g/EkzazJjI
-         r27w==
+        d=gmail.com; s=20230601; t=1732393231; x=1732998031; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OWxGV8VftvSsma7ZiBHXLvqGocXXC45z1W1PeoufShA=;
+        b=bcv8SubQPmDj65Nxjw0PVpWyGuz8L2HZSTwuv3qBIWebqTJgycE0B/+XW8dD29c5G6
+         xKJFv679lYIvH85EQrEPb0RhsOhwJZzjIgFQCYVH+Rf+NEAdvNInpLaY8DiA5gUa1Qbr
+         7YAm3SZBwaRqPmKtiRu2dKGkofTvXQUqYdamo2y/bfLDcswjOJmI6Pkz1GQM4Q7l/XHW
+         7zzimkVUa9P9Eli7myLZ/x+ZurnPDdl6EdESrBjXPi6wD40E/s+6L8SJEWO+WX0tJOuP
+         Gl3oKVLynWma6g+3gddjAzlmgUlHaO6ArFK5FSarbBQaOdPvGoI3MGCsKTEk2ZN1t6p0
+         Yuqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732283496; x=1732888296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O1M+VNoDV01ttI4ykAkLiT0TH7dIi4lr51PaobubPkY=;
-        b=g65hLxst0YlG+nk0SH61RgdJmm7yLEpi5wyHMr410e9LaewRL5gKBwkROHJE580O2u
-         QLdwrkvfqzakkoUIJHL8Ssz4ghGrtx5cn3V6ZKhxEMX+ZVqkUDVVzBPw73ag1ZdoQWnI
-         9mtCvjwujbIggTSgLCZ86A7ZkZTz9Sad/jhed5uDI8gD0n00sMxUcOkyrDV77urURCZb
-         Xmy4O2UJwMpZIdGIIRgcOJqggm96xPoasRy5e4y4vwCcagcHrTyVlHdPxgRyVPPbCTsd
-         H7O+5Bbrr8Lh1sV5UCnL3m8WVqZoccHxB7SXivJSf5cVIHcryAhBTY/i2MVsTMKoOST8
-         OAEA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkdoubayeRCfLRPouKPolAoZWuQ5gkV+MmtsAAmF82il7rd5ehKse1W5o7S5/TMFF1KmooSbq1uZNmag==@vger.kernel.org, AJvYcCWf+8ocdmKX7htEBxQi+BasjnRAp707vwXVJMrXCOtIMKCynFFJ+niom7iLSNUQi5bFxwhof8sB3DT4@vger.kernel.org, AJvYcCXYuetgmrM5d5wGNJF2UAFFW3pWIxcg/86LKtXo4C4ZcFRfi4c4AABtz3795OU3aFTURtj7Idz1V3dVpA==@vger.kernel.org, AJvYcCXtmElmaOy/TZ6a2rfwfVTPNQW/0lwPOU9sADVbcp8QEg3E+J7mfGxi+CLKo+WeERS4tIFpjUc9m60gq0/Lmw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2HQlnRGHFAQDJwhG1kmf6fTLiwemLWMmVXgcpOEWa+4DBiOmQ
-	OZTyBh52a3A7z7vyWMmPVC6WN+wO2hTbfY1HXOH7R5pgyjbWkaedKFJGxrrQsOORqo9rjiO1/h7
-	SlTNvk1Tfp0aKL9VwAd5ZsoF31UQ=
-X-Gm-Gg: ASbGnctM+/2K/xe/mrq6tWi38y4JF4m3R7xiWGRzo076PQLZNWdhiHKNRl8hZZA0v7a
-	884ixZJc1DRmvHceqVMO57ovibTue1Ag=
-X-Google-Smtp-Source: AGHT+IFksCaFnz5KcROoZ2l24vat56l/bmgqMqDIpj9UInqeXkdyaOzrJLTT+HRXZb32Fn4KXFKnG0FbN2YKckPb6S0=
-X-Received: by 2002:a05:6512:3d06:b0:539:9645:97ab with SMTP id
- 2adb3069b0e04-53dd389d83dmr1593356e87.33.1732283495537; Fri, 22 Nov 2024
- 05:51:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732393231; x=1732998031;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OWxGV8VftvSsma7ZiBHXLvqGocXXC45z1W1PeoufShA=;
+        b=BegUjJ9vz+5mE2Rd4BWJpbQ/xAHsdYGS7hvQt9SlDVCSp5ZR+lf+ALC5OZTDraII1L
+         Mg2TZ7CVx+7X3uu5ojaK/lpxPa8UY5CxllZcO4nzjMdNhV2Cu2NSrmQSXAQ3qhv5cvTy
+         4fmOeYBP20qQp+MKH/cqFt6Mibw1ppfTppl1lpeK6zSjvQqg5IrWiOGBaxqWkImrTLuP
+         umgVHcjiG5RBhbm6b4CidYfanXKBpuHxSF6ZTdAFb2LgNX4EA2OlSgyHYEYIY7jD3+br
+         SlmrQLbDQbWn4tka9tnPk2mbYaPD2g1bn/0qDqNTrLyKUYbI+vnZ7OFXORzcit90j6bC
+         rpvg==
+X-Gm-Message-State: AOJu0YwkIgRFPnBLQggCmL1m1iTft9/rZ5K77+p9AmqyDs4oRZduxnoT
+	5XtA5orsLzZBv15sR5A4A2oXrJBPTM7kYRkTGGzKhuVlOB7tBpvOWx3P2mHS
+X-Gm-Gg: ASbGncupMxnJqnOz28UXQXqe5tIaagbIi90P//hyJ4Zg6q4JuLeGy38AarvaylYwtSc
+	YuViwaPyeo4pIukdfrCsmzH4QNxTxGB6EBdb+Uc1cYS7yOnz4nxbht0H1M/v5Q5Q6hwmGqBakLU
+	9GjZLVIyj012qdDUuSx6h/uq9U3H9fS3q908pQ5ZbKvgR/jWE0eRYtPBmhJQGJTLGu2NxaDqnX+
+	73L1HDektSuB9Xy7a9kLdNKcKmiwJzdbhj56RGLN7fuX1vmyP5muG7BXgM=
+X-Google-Smtp-Source: AGHT+IGpg0OhQgEkdMBy5NiNWoiW8E7iuHkDv70x5lGXztrQAFM5+hbSMwo3lRtdhzxFoUANEEcpyQ==
+X-Received: by 2002:a05:600c:5643:b0:430:5887:c238 with SMTP id 5b1f17b1804b1-434872f5942mr55681945e9.11.1732393231098;
+        Sat, 23 Nov 2024 12:20:31 -0800 (PST)
+Received: from debian.local ([84.66.149.209])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434932dbc7esm19701585e9.37.2024.11.23.12.20.29
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Nov 2024 12:20:30 -0800 (PST)
+Date: Sat, 23 Nov 2024 20:20:28 +0000
+From: Chris Bainbridge <chris.bainbridge@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Subject: WARNING: possible circular locking dependency detected
+Message-ID: <Z0I5DApYx_uqT2pb@debian.local>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
- <20241121104428.wtlrfhadcvipkjia@quack3> <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
- <20241121163618.ubz7zplrnh66aajw@quack3> <CAOQ4uxhsEA2zj-a6H+==S+6G8nv+BQEJDoGjJeimX0yRhHso2w@mail.gmail.com>
- <CAOQ4uxgsjKwX7eoYcjU8SRWjRw39MNv=CMjjO1mQGr9Cd4iafQ@mail.gmail.com> <20241122124215.3k3udv5o6eys6ffy@quack3>
-In-Reply-To: <20241122124215.3k3udv5o6eys6ffy@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 22 Nov 2024 14:51:23 +0100
-Message-ID: <CAOQ4uxgCU6fETZTMdyzQmfyE4oBF_xgqpBdVjP20K1Yp1BSDxQ@mail.gmail.com>
-Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
-To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, Nov 22, 2024 at 1:42=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 21-11-24 19:37:43, Amir Goldstein wrote:
-> > On Thu, Nov 21, 2024 at 7:31=E2=80=AFPM Amir Goldstein <amir73il@gmail.=
-com> wrote:
-> > > On Thu, Nov 21, 2024 at 5:36=E2=80=AFPM Jan Kara <jack@suse.cz> wrote=
-:
-> > > > On Thu 21-11-24 15:18:36, Amir Goldstein wrote:
-> > > > > On Thu, Nov 21, 2024 at 11:44=E2=80=AFAM Jan Kara <jack@suse.cz> =
-wrote:
-> > > > > and also always emitted ACCESS_PERM.
-> > > >
-> > > > I know that and it's one of those mostly useless events AFAICT.
-> > > >
-> > > > > my POC is using that PRE_ACCESS to populate
-> > > > > directories on-demand, although the functionality is incomplete w=
-ithout the
-> > > > > "populate on lookup" event.
-> > > >
-> > > > Exactly. Without "populate on lookup" doing "populate on readdir" i=
-s ok for
-> > > > a demo but not really usable in practice because you can get spurio=
-us
-> > > > ENOENT from a lookup.
-> > > >
-> > > > > > avoid the mistake of original fanotify which had some events av=
-ailable on
-> > > > > > directories but they did nothing and then you have to ponder ha=
-rd whether
-> > > > > > you're going to break userspace if you actually start emitting =
-them...
-> > > > >
-> > > > > But in any case, the FAN_ONDIR built-in filter is applicable to P=
-RE_ACCESS.
-> > > >
-> > > > Well, I'm not so concerned about filtering out uninteresting events=
-. I'm
-> > > > more concerned about emitting the event now and figuring out later =
-that we
-> > > > need to emit it in different places or with some other info when ac=
-tual
-> > > > production users appear.
-> > > >
-> > > > But I've realized we must allow pre-content marks to be placed on d=
-irs so
-> > > > that such marks can be placed on parents watching children. What we=
-'d need
-> > > > to forbid is a combination of FAN_ONDIR and FAN_PRE_ACCESS, wouldn'=
-t we?
-> > >
-> > > Yes, I think that can work well for now.
-> > >
-> >
-> > Only it does not require only check at API time that both flags are not
-> > set, because FAN_ONDIR can be set earlier and then FAN_PRE_ACCESS
-> > can be added later and vice versa, so need to do this in
-> > fanotify_may_update_existing_mark() AFAICT.
->
-> I have now something like:
->
-> @@ -1356,7 +1356,7 @@ static int fanotify_group_init_error_pool(struct fs=
-notify_group *group)
->  }
->
->  static int fanotify_may_update_existing_mark(struct fsnotify_mark *fsn_m=
-ark,
-> -                                             unsigned int fan_flags)
-> +                                            __u32 mask, unsigned int fan=
-_flags)
->  {
->         /*
->          * Non evictable mark cannot be downgraded to evictable mark.
-> @@ -1383,6 +1383,11 @@ static int fanotify_may_update_existing_mark(struc=
-t fsnotify_mark *fsn_mark,
->             fsn_mark->flags & FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY)
->                 return -EEXIST;
->
-> +       /* For now pre-content events are not generated for directories *=
-/
-> +       mask |=3D fsn_mark->mask;
-> +       if (mask & FANOTIFY_PRE_CONTENT_EVENTS && mask & FAN_ONDIR)
-> +               return -EEXIST;
-> +
+I noticed this splat in the log of a new kernel build. I think it was
+triggered when mounting a btrfs filesystem from a USB drive, but I
+wasn't able to reproduce it so easily.
 
-EEXIST is going to be confusing if there was never any mark.
-Either return -EINVAL here or also check this condition on the added mask
-itself before calling fanotify_add_mark() and return -EINVAL there.
+[  781.752971] ======================================================
+[  781.752973] WARNING: possible circular locking dependency detected
+[  781.752974] 6.12.0-08446-g228a1157fb9f #5 Not tainted
+[  781.752976] ------------------------------------------------------
+[  781.752977] kswapd0/141 is trying to acquire lock:
+[  781.752978] ffff991d17e61ce8 (&delayed_node->mutex){+.+.}-{4:4}, at: __btrfs_release_delayed_node.part.0+0x3f/0x280 [btrfs]
+[  781.753030]
+               but task is already holding lock:
+[  781.753031] ffffffffa00c8100 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xc9/0xa80
+[  781.753037]
+               which lock already depends on the new lock.
 
-I prefer two distinct errors, but probably one is also good enough.
+[  781.753038]
+               the existing dependency chain (in reverse order) is:
+[  781.753039]
+               -> #3 (fs_reclaim){+.+.}-{0:0}:
+[  781.753042]        fs_reclaim_acquire+0xbd/0xf0
+[  781.753045]        __kmalloc_node_noprof+0xa9/0x4f0
+[  781.753048]        __kvmalloc_node_noprof+0x24/0x100
+[  781.753049]        sbitmap_init_node+0x98/0x240
+[  781.753053]        scsi_realloc_sdev_budget_map+0xdd/0x1d0
+[  781.753056]        scsi_add_lun+0x458/0x760
+[  781.753058]        scsi_probe_and_add_lun+0x15e/0x480
+[  781.753060]        __scsi_scan_target+0xfb/0x230
+[  781.753062]        scsi_scan_channel+0x65/0xc0
+[  781.753064]        scsi_scan_host_selected+0xfb/0x160
+[  781.753066]        do_scsi_scan_host+0x9d/0xb0
+[  781.753067]        do_scan_async+0x1c/0x1a0
+[  781.753069]        async_run_entry_fn+0x2d/0x120
+[  781.753072]        process_one_work+0x210/0x730
+[  781.753075]        worker_thread+0x193/0x350
+[  781.753077]        kthread+0xf3/0x120
+[  781.753079]        ret_from_fork+0x40/0x70
+[  781.753081]        ret_from_fork_asm+0x11/0x20
+[  781.753084]
+               -> #2 (&q->q_usage_counter(io)#10){++++}-{0:0}:
+[  781.753087]        blk_mq_submit_bio+0x970/0xb40
+[  781.753090]        __submit_bio+0x116/0x200
+[  781.753093]        submit_bio_noacct_nocheck+0x1bf/0x420
+[  781.753095]        submit_bio_noacct+0x1cd/0x620
+[  781.753097]        submit_bio+0x38/0x100
+[  781.753099]        btrfs_submit_dev_bio+0xf1/0x340 [btrfs]
+[  781.753132]        btrfs_submit_bio+0x132/0x170 [btrfs]
+[  781.753160]        btrfs_submit_chunk+0x19a/0x650 [btrfs]
+[  781.753187]        btrfs_submit_bbio+0x1b/0x30 [btrfs]
+[  781.753215]        read_extent_buffer_pages+0x197/0x220 [btrfs]
+[  781.753254]        btrfs_read_extent_buffer+0x95/0x1d0 [btrfs]
+[  781.753292]        read_block_for_search+0x21c/0x3b0 [btrfs]
+[  781.753328]        btrfs_search_slot+0x362/0x1030 [btrfs]
+[  781.753359]        btrfs_init_root_free_objectid+0x88/0x120 [btrfs]
+[  781.753392]        btrfs_get_root_ref+0x21a/0x3c0 [btrfs]
+[  781.753422]        btrfs_get_fs_root+0x13/0x20 [btrfs]
+[  781.753450]        btrfs_lookup_dentry+0x606/0x670 [btrfs]
+[  781.753482]        btrfs_lookup+0x12/0x40 [btrfs]
+[  781.753511]        __lookup_slow+0xf9/0x1a0
+[  781.753514]        walk_component+0x10c/0x180
+[  781.753516]        path_lookupat+0x67/0x1a0
+[  781.753518]        filename_lookup+0xee/0x200
+[  781.753520]        vfs_path_lookup+0x54/0x90
+[  781.753522]        mount_subtree+0x8b/0x150
+[  781.753525]        btrfs_get_tree+0x3a3/0x890 [btrfs]
+[  781.753557]        vfs_get_tree+0x27/0x100
+[  781.753563]        path_mount+0x4f3/0xc00
+[  781.753566]        __x64_sys_mount+0x120/0x160
+[  781.753568]        x64_sys_call+0x8a1/0xfb0
+[  781.753569]        do_syscall_64+0x87/0x140
+[  781.753573]        entry_SYSCALL_64_after_hwframe+0x4b/0x53
+[  781.753578]
+               -> #1 (btrfs-tree-01){++++}-{4:4}:
+[  781.753581]        lock_release+0x12f/0x2c0
+[  781.753586]        up_write+0x1c/0x1f0
+[  781.753587]        btrfs_tree_unlock+0x33/0xc0 [btrfs]
+[  781.753625]        unlock_up+0x1ce/0x380 [btrfs]
+[  781.753657]        btrfs_search_slot+0x33a/0x1030 [btrfs]
+[  781.753683]        btrfs_lookup_inode+0x52/0xe0 [btrfs]
+[  781.753702]        __btrfs_update_delayed_inode+0x6f/0x2f0 [btrfs]
+[  781.753723]        btrfs_commit_inode_delayed_inode+0x123/0x130 [btrfs]
+[  781.753741]        btrfs_evict_inode+0x2ff/0x440 [btrfs]
+[  781.753761]        evict+0x11f/0x2d0
+[  781.753763]        iput.part.0+0x1bb/0x290
+[  781.753764]        iput+0x1c/0x30
+[  781.753765]        do_unlinkat+0x2d2/0x320
+[  781.753767]        __x64_sys_unlinkat+0x35/0x70
+[  781.753768]        x64_sys_call+0x51b/0xfb0
+[  781.753769]        do_syscall_64+0x87/0x140
+[  781.753771]        entry_SYSCALL_64_after_hwframe+0x4b/0x53
+[  781.753773]
+               -> #0 (&delayed_node->mutex){+.+.}-{4:4}:
+[  781.753774]        __lock_acquire+0x1615/0x27d0
+[  781.753776]        lock_acquire+0xc9/0x300
+[  781.753777]        __mutex_lock+0xd9/0xe80
+[  781.753780]        mutex_lock_nested+0x1b/0x30
+[  781.753781]        __btrfs_release_delayed_node.part.0+0x3f/0x280 [btrfs]
+[  781.753799]        btrfs_remove_delayed_node+0x2a/0x40 [btrfs]
+[  781.753816]        btrfs_evict_inode+0x1a5/0x440 [btrfs]
+[  781.753834]        evict+0x11f/0x2d0
+[  781.753835]        dispose_list+0x39/0x80
+[  781.753836]        prune_icache_sb+0x59/0x90
+[  781.753838]        super_cache_scan+0x14e/0x1d0
+[  781.753839]        do_shrink_slab+0x176/0x7a0
+[  781.753841]        shrink_slab+0x4b6/0x970
+[  781.753842]        shrink_one+0x125/0x200
+[  781.753844]        shrink_node+0xc75/0x13c0
+[  781.753846]        balance_pgdat+0x50b/0xa80
+[  781.753847]        kswapd+0x224/0x480
+[  781.753849]        kthread+0xf3/0x120
+[  781.753850]        ret_from_fork+0x40/0x70
+[  781.753852]        ret_from_fork_asm+0x11/0x20
+[  781.753853]
+               other info that might help us debug this:
 
-Thanks,
-Amir.
+[  781.753853] Chain exists of:
+                 &delayed_node->mutex --> &q->q_usage_counter(io)#10 --> fs_reclaim
+
+[  781.753856]  Possible unsafe locking scenario:
+
+[  781.753857]        CPU0                    CPU1
+[  781.753858]        ----                    ----
+[  781.753858]   lock(fs_reclaim);
+[  781.753859]                                lock(&q->q_usage_counter(io)#10);
+[  781.753861]                                lock(fs_reclaim);
+[  781.753862]   lock(&delayed_node->mutex);
+[  781.753863]
+                *** DEADLOCK ***
+
+[  781.753864] 2 locks held by kswapd0/141:
+[  781.753865]  #0: ffffffffa00c8100 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xc9/0xa80
+[  781.753868]  #1: ffff991d1dbc30e0 (&type->s_umount_key#30){++++}-{4:4}, at: super_cache_scan+0x39/0x1d0
+[  781.753872]
+               stack backtrace:
+[  781.753873] CPU: 13 UID: 0 PID: 141 Comm: kswapd0 Not tainted 6.12.0-08446-g228a1157fb9f #5
+[  781.753875] Hardware name: HP HP Pavilion Aero Laptop 13-be0xxx/8916, BIOS F.12 04/11/2023
+[  781.753876] Call Trace:
+[  781.753877]  <TASK>
+[  781.753880]  dump_stack_lvl+0x8d/0xe0
+[  781.753883]  dump_stack+0x10/0x20
+[  781.753885]  print_circular_bug+0x27d/0x350
+[  781.753887]  check_noncircular+0x14c/0x170
+[  781.753889]  __lock_acquire+0x1615/0x27d0
+[  781.753892]  lock_acquire+0xc9/0x300
+[  781.753894]  ? __btrfs_release_delayed_node.part.0+0x3f/0x280 [btrfs]
+[  781.753912]  __mutex_lock+0xd9/0xe80
+[  781.753914]  ? __btrfs_release_delayed_node.part.0+0x3f/0x280 [btrfs]
+[  781.753931]  ? __btrfs_release_delayed_node.part.0+0x3f/0x280 [btrfs]
+[  781.753948]  mutex_lock_nested+0x1b/0x30
+[  781.753949]  ? mutex_lock_nested+0x1b/0x30
+[  781.753951]  __btrfs_release_delayed_node.part.0+0x3f/0x280 [btrfs]
+[  781.753968]  btrfs_remove_delayed_node+0x2a/0x40 [btrfs]
+[  781.753984]  btrfs_evict_inode+0x1a5/0x440 [btrfs]
+[  781.754003]  ? lock_release+0xda/0x2c0
+[  781.754007]  evict+0x11f/0x2d0
+[  781.754009]  dispose_list+0x39/0x80
+[  781.754010]  prune_icache_sb+0x59/0x90
+[  781.754011]  super_cache_scan+0x14e/0x1d0
+[  781.754014]  do_shrink_slab+0x176/0x7a0
+[  781.754016]  shrink_slab+0x4b6/0x970
+[  781.754018]  ? mark_held_locks+0x4d/0x80
+[  781.754019]  ? shrink_slab+0x2fe/0x970
+[  781.754021]  ? shrink_slab+0x383/0x970
+[  781.754023]  shrink_one+0x125/0x200
+[  781.754025]  ? shrink_node+0xc59/0x13c0
+[  781.754027]  shrink_node+0xc75/0x13c0
+[  781.754029]  ? shrink_node+0xaa7/0x13c0
+[  781.754031]  ? mem_cgroup_iter+0x352/0x470
+[  781.754034]  balance_pgdat+0x50b/0xa80
+[  781.754035]  ? balance_pgdat+0x50b/0xa80
+[  781.754037]  ? finish_task_switch.isra.0+0xd7/0x3a0
+[  781.754042]  kswapd+0x224/0x480
+[  781.754044]  ? sugov_hold_freq+0xc0/0xc0
+[  781.754046]  ? balance_pgdat+0xa80/0xa80
+[  781.754047]  kthread+0xf3/0x120
+[  781.754049]  ? kthread_insert_work_sanity_check+0x60/0x60
+[  781.754051]  ret_from_fork+0x40/0x70
+[  781.754052]  ? kthread_insert_work_sanity_check+0x60/0x60
+[  781.754054]  ret_from_fork_asm+0x11/0x20
+[  781.754057]  </TASK>
 
