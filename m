@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-9869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE239D6EC1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 13:52:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 835A89D6ED0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 13:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D312A280BE5
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 12:52:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FEB3281705
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 12:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1D81DFD81;
-	Sun, 24 Nov 2024 12:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F7D1E04A2;
+	Sun, 24 Nov 2024 12:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPYfBpXD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tJdUuOMU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8AC1DF961;
-	Sun, 24 Nov 2024 12:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEEE1E00B1;
+	Sun, 24 Nov 2024 12:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732452135; cv=none; b=udzAL6v7NYxFqrctIvSauqW2CClm8o+x8WHHfTb84r7rJn2kcY3oFnOHxgf0+2PSNLoSMeI4XDQcozmAJYWQLDG+s2Pn5YnR5mqvaqXUWZ5U7mPXHLUl3zprSQEkNX28QtzHvgOPMDHG5jnvJqSMw1f9sbAWgyimCmlDtI5bH7Y=
+	t=1732452148; cv=none; b=XDfG7e4Z8Q6aL55ilQHaqXurSmqQ9Q0apE3XgYkdv4eUFraLopv+PfF1W82uiMbscVsifmSG+AkB3YOB3Hne+HnrG0Biak9Y1mHYmT5kUCT0toR5MDgsxRX/0Y7IEBXKDOAgX3BZYRM6X1jEpGW95LYSVDataaaa/Mns1NWxfEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732452135; c=relaxed/simple;
-	bh=wQ+vV9+r0GA04N4cnRt5JvKV8b5DK370VKu85jWBr6I=;
+	s=arc-20240116; t=1732452148; c=relaxed/simple;
+	bh=/l6mhQhX9t/HGmElU6gDa5zC79V9Pz8SJDT1b04P/nM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BfpME5ov2IbFW2gRpbX7lX1Ic79XDRcNNqhOY70atd+4D0FA31uTIAmrvOBfzE0QFK60jrjmw6qTOcqbjf1hLvs8SXjAcMCVuqGMMhECMdJb/yBilQv9rahv1sE6++GZ/PTG1/er18iPhmoUOTYgAQ+/SL3WGVz35yxkNGU+c90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oPYfBpXD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B254FC4CECC;
-	Sun, 24 Nov 2024 12:42:14 +0000 (UTC)
+	 MIME-Version; b=GwVLg+ckE50zKlZXydPqIlHqG/dKcPUqRPGkN970rmTPhy0Ak0iDa1PR+oJ6vf+4EhuOMZnicf6wbdVU5pEhVoXPhxCNRiWfb6ybgqZ4TRsSt1NNawtirWGZR6TxJWGBjp9q/O/DREsHo4H+m0Sl68T7wuvHdud/acOEbyaAVms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tJdUuOMU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8337EC4CECC;
+	Sun, 24 Nov 2024 12:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732452135;
-	bh=wQ+vV9+r0GA04N4cnRt5JvKV8b5DK370VKu85jWBr6I=;
+	s=k20201202; t=1732452148;
+	bh=/l6mhQhX9t/HGmElU6gDa5zC79V9Pz8SJDT1b04P/nM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oPYfBpXDQEH3y5iAk6PoFS6eY49Ft3HCX4TmaHdEoudlT7tYkLaFta2YXX9ploh5a
-	 zCkrMH0TI+7RtpoUjYfSFhE7LgJA/wr87zB4OXP97vf8MvW9cd/AgLWa5LXx/ZMCBZ
-	 capJ3YYO96D3u3EAiSlwSI4EykOW/NjGqD6BYubLET6/tGgG2nYnCL54pz3pNrCyWY
-	 82mH4nzP1jX2z5LSJRO2fqAvsMmJF9GuhJRU0R39hxA4VV08AawixdCVR1ZacwiHk0
-	 J96N9z2UG5IZOfUWWJhbGSpMlv8ggVlLilt2/XwYNahxvkG7iZR4YOI4X+TT/V0pT6
-	 08PX6WimMqGVg==
+	b=tJdUuOMUyJUPhshRe131ZijV9qiUyWolGbmmk7IC9gq9/y3bdZradxBd2jKwsfupA
+	 aDjkvs79Sk+RInqY3G9OropkYe2abbrUx8odnQgxnCfbCzvz4W8FwFq/d57YtBEmeo
+	 0JdDjQlFc4P2YPZPrnBptOS2HgH1xGIB0KlX4N/j6y+6rIOcri73rc4TMBuB9+bzh0
+	 6AimilDXgYoSmHa1Dga97UsZXmAr5e8U6W644fuXiFXgPng7PtqWmER6wMiUDvI7P/
+	 R3WDMDFx9YsvgWKFXrN8lRXC8ywMsEmiAWT3DnEsqSCRFMylCNil6Smv9BNt5W6LKo
+	 xrAUsyJvhjcRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 3/5] btrfs: fix warning on PTR_ERR() against NULL device at btrfs_control_ioctl()
-Date: Sun, 24 Nov 2024 07:42:02 -0500
-Message-ID: <20241124124210.3337020-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 2/2] btrfs: fix warning on PTR_ERR() against NULL device at btrfs_control_ioctl()
+Date: Sun, 24 Nov 2024 07:42:21 -0500
+Message-ID: <20241124124224.3337144-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124124210.3337020-1-sashal@kernel.org>
-References: <20241124124210.3337020-1-sashal@kernel.org>
+In-Reply-To: <20241124124224.3337144-1-sashal@kernel.org>
+References: <20241124124224.3337144-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.230
+X-stable-base: Linux 5.4.286
 Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
@@ -89,10 +89,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index ea731fa8bd350..fc6ace10995c4 100644
+index ea8b5b2d859d7..c80bc69ad6a82 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -2359,7 +2359,10 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+@@ -2227,7 +2227,10 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
  					       &btrfs_root_fs_type);
  		if (IS_ERR(device)) {
  			mutex_unlock(&uuid_mutex);
