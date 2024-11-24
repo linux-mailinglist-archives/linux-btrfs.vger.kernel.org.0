@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-9856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9857-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D1BD9D6E75
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 13:47:08 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E579D6E6C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 13:46:18 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A83C161DEA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 12:45:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71DCDB23F12
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 12:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B42B1BD032;
-	Sun, 24 Nov 2024 12:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B0F1C07F1;
+	Sun, 24 Nov 2024 12:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eItMR5Fb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hmydMylR"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 383301BD51B;
-	Sun, 24 Nov 2024 12:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D191BE86E;
+	Sun, 24 Nov 2024 12:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732452037; cv=none; b=agtn3DBMBqZk/lUrepztk/Es7LGGrfleQA4EQ742G3FueHtPY3a0JrOF3xzFZBsf7O41rr9QfmrfD5R224FPPnQabUgpGz+sBgeoM9ErBz2dcC6uNuIEDaENCF44T89hirv0Dp4QE0IJ61WD7JMAt85mYiEudn4AQbwUwG9baac=
+	t=1732452038; cv=none; b=NMmO3d38+6/GtZZJD4Z+gkOVZRZn4AdXgxHhmrwEpH4b7adsEfWQB4y6pm+29JwJ3PTJtqln5JL6hOlxSAyWk5VLosKamY7ephwV62HiSICJf5m9MSL9vkbvXy90lyZ5sl1suXDPJ9ukLnSib84IC3Y+jPWPFl61n+e1NhgT3Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732452037; c=relaxed/simple;
-	bh=kf/Jf3V31fW8hO+VxEsSPFmELtXyVQQbka/zqXAS9LY=;
+	s=arc-20240116; t=1732452038; c=relaxed/simple;
+	bh=DdI9q3XIEjQeW//zsmhBZaKiC6fpf5J2GogKRQNE5y0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=At/DDu8ggHuy+G7yN1ksjEpYZyQZryGYD8wV/PLmozy4lbZ5wI/lJNwBTqtXUbpylm2P5/+jfvqLw8dg4GfjvT3O4ZPJsWqQ7FnhCEW+0E37A4dZKVNXv9eQo0ONNraKEKgVfcIurC63ZxgKuUID8F3BPHqI7EqO4OGSN55RBnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eItMR5Fb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A1D5C4CECC;
-	Sun, 24 Nov 2024 12:40:35 +0000 (UTC)
+	 MIME-Version; b=OKNP1he7xnf8mA1fk9Z1WJK79B7fdIYXDoO3KCG4BR3xEegxh0K0L+suUlZusd8xtqkHX3vsrjaK6T6x5DG6PwszXIj0FZaHbVwT3Og/a3JcGwAFXhDiMl4S2IEHfoBRYFcq8fXLOJjtRb8og4WTt3SeN+osadh5cg6+MPEsqZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hmydMylR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFCCC4CED1;
+	Sun, 24 Nov 2024 12:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732452036;
-	bh=kf/Jf3V31fW8hO+VxEsSPFmELtXyVQQbka/zqXAS9LY=;
+	s=k20201202; t=1732452038;
+	bh=DdI9q3XIEjQeW//zsmhBZaKiC6fpf5J2GogKRQNE5y0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eItMR5Fbdsf2Z2AgdOt2dvPar3y8LWTQx8iTL+hlz5mvTlesGQ0My1Ph4fuz0FZeG
-	 2u6s2CtkGRIA1jRar8hOgh3E1iUqX99Eq8xYF9y3FbjS/N6jK8Rga9LrVTDd4hikfj
-	 ToPEK4DSFYPFVmtNGDGR24G/CXf+nLzT6MrBJejp452GRWIZA6eQ1x4YyoyDejKz4e
-	 dzwk6cOnMkzw4mE0VAb26Lid7RJSiPHUUD+ONNrXTPmAguEdgHtNlpM6gOG2sND4/M
-	 xV6Wfhbr0th8MLspDiVQDNMP2TSFExN9/+nQ71scwz9am0x9LG7qK3tSi0o/1pSgHx
-	 ACMDBf1lgSC8g==
+	b=hmydMylRlDzrIOe3mnTl95e7rf0L59PPQpHfHe6jECDaGTClt5Zc52CFV7VJk26xo
+	 2vT7VdEMbG1lW4WE/VVeruavRoy6lpZ4jrqzGbCwDOrGQQD9j5W+DVbaZ0zmYJ4cCm
+	 izm2gwRC9kHnsQa+MZOJrQqmsiYqdXhHmryLRu/c/3LoHxPSw6Uhr6gclgYFePCGnT
+	 GlC0lqQlSfRBBkOPh1pXmOKfx/ikMjm4kKoNj5O1wvYY8JiyoDDfVI/VBkKWt6qGMQ
+	 BNikvkiwAolKIoghlJTn9SH5lbRIPc0HpYBX90e3fYJczMPRKoVKnZ7GlnIgxjE+tT
+	 3E5P716/cy5fw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Robbie Ko <robbieko@synology.com>,
-	Filipe Manana <fdmanana@suse.com>,
+Cc: Boris Burkov <boris@bur.io>,
+	Qu Wenruo <wqu@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 11/16] btrfs: reduce lock contention when eb cache miss for btree search
-Date: Sun, 24 Nov 2024 07:39:48 -0500
-Message-ID: <20241124124009.3336072-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 12/16] btrfs: do not clear read-only when adding sprout device
+Date: Sun, 24 Nov 2024 07:39:49 -0500
+Message-ID: <20241124124009.3336072-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241124124009.3336072-1-sashal@kernel.org>
 References: <20241124124009.3336072-1-sashal@kernel.org>
@@ -68,205 +68,64 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.11.10
 Content-Transfer-Encoding: 8bit
 
-From: Robbie Ko <robbieko@synology.com>
+From: Boris Burkov <boris@bur.io>
 
-[ Upstream commit 99785998ed1cea142e20f4904ced26537a37bf74 ]
+[ Upstream commit 70958a949d852cbecc3d46127bf0b24786df0130 ]
 
-When crawling btree, if an eb cache miss occurs, we change to use the eb
-read lock and release all previous locks (including the parent lock) to
-reduce lock contention.
+If you follow the seed/sprout wiki, it suggests the following workflow:
 
-If an eb cache miss occurs in a leaf and needs to execute IO, before this
-change we released locks only from level 2 and up and we read a leaf's
-content from disk while holding a lock on its parent (level 1), causing
-the unnecessary lock contention on the parent, after this change we
-release locks from level 1 and up, but we lock level 0, and read leaf's
-content from disk.
+btrfstune -S 1 seed_dev
+mount seed_dev mnt
+btrfs device add sprout_dev
+mount -o remount,rw mnt
 
-Because we have prepared the check parameters and the read lock of eb we
-hold, we can ensure that no race will occur during the check and cause
-unexpected errors.
+The first mount mounts the FS readonly, which results in not setting
+BTRFS_FS_OPEN, and setting the readonly bit on the sb. The device add
+somewhat surprisingly clears the readonly bit on the sb (though the
+mount is still practically readonly, from the users perspective...).
+Finally, the remount checks the readonly bit on the sb against the flag
+and sees no change, so it does not run the code intended to run on
+ro->rw transitions, leaving BTRFS_FS_OPEN unset.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Robbie Ko <robbieko@synology.com>
+As a result, when the cleaner_kthread runs, it sees no BTRFS_FS_OPEN and
+does no work. This results in leaking deleted snapshots until we run out
+of space.
+
+I propose fixing it at the first departure from what feels reasonable:
+when we clear the readonly bit on the sb during device add.
+
+A new fstest I have written reproduces the bug and confirms the fix.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/ctree.c | 101 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 70 insertions(+), 31 deletions(-)
+ fs/btrfs/volumes.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 451203055bbfb..dfb6d16aac1dd 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1515,12 +1515,14 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
- 	struct btrfs_tree_parent_check check = { 0 };
- 	u64 blocknr;
- 	u64 gen;
--	struct extent_buffer *tmp;
--	int ret;
-+	struct extent_buffer *tmp = NULL;
-+	int ret = 0;
- 	int parent_level;
--	bool unlock_up;
-+	int err;
-+	bool read_tmp = false;
-+	bool tmp_locked = false;
-+	bool path_released = false;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a06d530835d4e..28b79341e7e05 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2840,8 +2840,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 	set_blocksize(device->bdev_file, BTRFS_BDEV_BLOCKSIZE);
  
--	unlock_up = ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level + 1]);
- 	blocknr = btrfs_node_blockptr(*eb_ret, slot);
- 	gen = btrfs_node_ptr_generation(*eb_ret, slot);
- 	parent_level = btrfs_header_level(*eb_ret);
-@@ -1551,68 +1553,105 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
- 			 */
- 			if (btrfs_verify_level_key(tmp,
- 					parent_level - 1, &check.first_key, gen)) {
--				free_extent_buffer(tmp);
--				return -EUCLEAN;
-+				ret = -EUCLEAN;
-+				goto out;
- 			}
- 			*eb_ret = tmp;
--			return 0;
-+			tmp = NULL;
-+			ret = 0;
-+			goto out;
- 		}
- 
- 		if (p->nowait) {
--			free_extent_buffer(tmp);
--			return -EAGAIN;
-+			ret = -EAGAIN;
-+			goto out;
- 		}
- 
--		if (unlock_up)
-+		if (!p->skip_locking) {
- 			btrfs_unlock_up_safe(p, level + 1);
+ 	if (seeding_dev) {
+-		btrfs_clear_sb_rdonly(sb);
 -
--		/* now we're allowed to do a blocking uptodate check */
--		ret = btrfs_read_extent_buffer(tmp, &check);
--		if (ret) {
--			free_extent_buffer(tmp);
-+			tmp_locked = true;
-+			btrfs_tree_read_lock(tmp);
- 			btrfs_release_path(p);
--			return ret;
-+			ret = -EAGAIN;
-+			path_released = true;
- 		}
- 
--		if (unlock_up)
--			ret = -EAGAIN;
-+		/* Now we're allowed to do a blocking uptodate check. */
-+		err = btrfs_read_extent_buffer(tmp, &check);
-+		if (err) {
-+			ret = err;
-+			goto out;
-+		}
- 
-+		if (ret == 0) {
-+			ASSERT(!tmp_locked);
-+			*eb_ret = tmp;
-+			tmp = NULL;
-+		}
- 		goto out;
- 	} else if (p->nowait) {
--		return -EAGAIN;
-+		ret = -EAGAIN;
-+		goto out;
- 	}
- 
--	if (unlock_up) {
-+	if (!p->skip_locking) {
- 		btrfs_unlock_up_safe(p, level + 1);
- 		ret = -EAGAIN;
--	} else {
--		ret = 0;
- 	}
- 
- 	if (p->reada != READA_NONE)
- 		reada_for_search(fs_info, p, level, slot, key->objectid);
- 
--	tmp = read_tree_block(fs_info, blocknr, &check);
-+	tmp = btrfs_find_create_tree_block(fs_info, blocknr, check.owner_root, check.level);
- 	if (IS_ERR(tmp)) {
-+		ret = PTR_ERR(tmp);
-+		tmp = NULL;
-+		goto out;
-+	}
-+	read_tmp = true;
-+
-+	if (!p->skip_locking) {
-+		ASSERT(ret == -EAGAIN);
-+		tmp_locked = true;
-+		btrfs_tree_read_lock(tmp);
- 		btrfs_release_path(p);
--		return PTR_ERR(tmp);
-+		path_released = true;
-+	}
-+
-+	/* Now we're allowed to do a blocking uptodate check. */
-+	err = btrfs_read_extent_buffer(tmp, &check);
-+	if (err) {
-+		ret = err;
-+		goto out;
- 	}
-+
- 	/*
- 	 * If the read above didn't mark this buffer up to date,
- 	 * it will never end up being up to date.  Set ret to EIO now
- 	 * and give up so that our caller doesn't loop forever
- 	 * on our EAGAINs.
- 	 */
--	if (!extent_buffer_uptodate(tmp))
-+	if (!extent_buffer_uptodate(tmp)) {
- 		ret = -EIO;
-+		goto out;
-+	}
- 
--out:
- 	if (ret == 0) {
-+		ASSERT(!tmp_locked);
- 		*eb_ret = tmp;
--	} else {
--		free_extent_buffer(tmp);
--		btrfs_release_path(p);
-+		tmp = NULL;
-+	}
-+out:
-+	if (tmp) {
-+		if (tmp_locked)
-+			btrfs_tree_read_unlock(tmp);
-+		if (read_tmp && ret && ret != -EAGAIN)
-+			free_extent_buffer_stale(tmp);
-+		else
-+			free_extent_buffer(tmp);
- 	}
-+	if (ret && !path_released)
-+		btrfs_release_path(p);
- 
- 	return ret;
- }
-@@ -2198,7 +2237,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		}
- 
- 		err = read_block_for_search(root, p, &b, level, slot, key);
--		if (err == -EAGAIN)
-+		if (err == -EAGAIN && !p->nowait)
- 			goto again;
- 		if (err) {
- 			ret = err;
-@@ -2325,7 +2364,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
- 		}
- 
- 		err = read_block_for_search(root, p, &b, level, slot, key);
--		if (err == -EAGAIN)
-+		if (err == -EAGAIN && !p->nowait)
- 			goto again;
- 		if (err) {
- 			ret = err;
+ 		/* GFP_KERNEL allocation must not be under device_list_mutex */
+ 		seed_devices = btrfs_init_sprout(fs_info);
+ 		if (IS_ERR(seed_devices)) {
+@@ -2984,8 +2982,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 	mutex_unlock(&fs_info->chunk_mutex);
+ 	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+ error_trans:
+-	if (seeding_dev)
+-		btrfs_set_sb_rdonly(sb);
+ 	if (trans)
+ 		btrfs_end_transaction(trans);
+ error_free_zone:
 -- 
 2.43.0
 
