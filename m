@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-9880-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9881-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6DCF9D7947
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 00:58:14 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C699D7948
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 00:58:15 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA34EB246BE
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBA7616304D
 	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 23:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB9E18C03F;
-	Sun, 24 Nov 2024 23:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C221818C337;
+	Sun, 24 Nov 2024 23:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MdulkvLr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aQXotmp4"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L04u2Cvq";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L04u2Cvq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B315E6F06D
-	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A30185924
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732492676; cv=none; b=pwPDKUGbt2N416Ajv3lfY+9mb1p8gxfgxDzzSCqQLOyAtN9Qdg57CQhmY9EM0VrHLDtTb0M5SRxbncv/RndboLNWi8iCCbecUpb6ny5SCB+zrrYk2ahyhllDihKKJ0NKdK1zkzfXTvZOsOFiDEicoXZ3Y8tr8qy4Nj1tu32EoPw=
+	t=1732492678; cv=none; b=TTE3ENZbKHEiDACqUAREK0bHqr3rBwZxwHnybo1AfOB0PjqBXFQzKR5AEqKE9+18WnBxjYw1S8MPHZez/Fpd6MtgxPeQfkh5TcEcAJfjFPAyJ/8SJX9Ew3NHtyZEEuAWgszqDbqYD70+aij340AmgQhNc0V0gUiZTzfqYHs6xB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732492676; c=relaxed/simple;
-	bh=Vm4d13l0CvAR50OVqhFblQ1yg8lcF2qUoxyscmkpLlk=;
+	s=arc-20240116; t=1732492678; c=relaxed/simple;
+	bh=bpotUu4X/Un0NASejgVQv/8UT9cctHerHKQgUqVkufk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oqXGKgdZeWJXJSqYlXaV4V6AE7GFXa1DsfJ/nDnwK4AVoc5KcHSkFaujPMaGxaXHwgE890bcQIrOmngQaFBmM2/+ELLVD/bBVLywOFrD4yq/Z3XHrOZYs9raFS0DjLSv1hiTCZtdlEmk9W6ZYynYem+lPV6pjXTCpkv/nMXf408=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MdulkvLr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aQXotmp4; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=n3lQxIIoofgjCxGOD5bx58lznySB/jjxgNYLqbEsB4+fW1ZWFPV3LXGlrBFPhLxyQmlHrHLUGG8vmDqoyjMTQHadYLy+gkx/ZBUXmMvWun2VDjCq72QukS32+fCJp7Q//44AM2/56WpCsWfVejzrFgBkjGAmehkWKNNgZ/1TAfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=L04u2Cvq; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=L04u2Cvq; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ECB421F393
-	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:52 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5B2112118D
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1732492673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1732492674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=so7/6GOxeSpbQNjQboq6R+3Z6R/ExJ2IA1K0ZFLXALA=;
-	b=MdulkvLrEi8jluL96UfDqJvhJ4wIDIjGaj0AEYMtb8AKDq9tkcyAhwULUW5hlTrkftSAC/
-	Z3xin86GnaCw9vXaulA/cb9w+AIv73u9UnfgulqhKeblbNWzJTW6x94o7/2yYQnjRn5n0g
-	aYDGeh0s0L5ZKOm2bT42SEoyC5YBnIo=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=aQXotmp4
+	bh=MYwCwOJdld1rVPWkcWsrmneXKsud0MRuW/B1j/pfa9U=;
+	b=L04u2CvqJGgbXcBZ9omrMabtW1/6AtEWXubz913yAwFTfsybSvRSLpYKPlwuoiol+t7HzS
+	5BLUtv3cWeMVQmeV5f2FIKf1hGZ4YnNmfc3gYxdA2JcdPnb9jbjc2Pd6fG4YHkQUdM52JK
+	zRpWAkz66Lk64Qj27Q58YnxsrCEI6/M=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=L04u2Cvq
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1732492672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1732492674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=so7/6GOxeSpbQNjQboq6R+3Z6R/ExJ2IA1K0ZFLXALA=;
-	b=aQXotmp4XHM3kBUqArxidmEC+clx4kOSoP/0n1uMEP8LPHVydCwJ8tYn2HIrMZNAjmMAqp
-	io3of/NZquMqRjEerhs4tyFeWv6MG7tRl+YOAapY6gSe9lC+lkLLr9Y7l6FAZ+1MdvniF4
-	gVmfV2y4MOvUVBTul14EYmEiPoF/j2U=
+	bh=MYwCwOJdld1rVPWkcWsrmneXKsud0MRuW/B1j/pfa9U=;
+	b=L04u2CvqJGgbXcBZ9omrMabtW1/6AtEWXubz913yAwFTfsybSvRSLpYKPlwuoiol+t7HzS
+	5BLUtv3cWeMVQmeV5f2FIKf1hGZ4YnNmfc3gYxdA2JcdPnb9jbjc2Pd6fG4YHkQUdM52JK
+	zRpWAkz66Lk64Qj27Q58YnxsrCEI6/M=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D94E132CF
-	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:51 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7173C132CF
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GJQgLn+9Q2emSQAAD6G6ig
+	id YAzjCoG9Q2emSQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:51 +0000
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:53 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/7] btrfs: use FGP_STABLE to wait for folio writeback
-Date: Mon, 25 Nov 2024 10:27:24 +1030
-Message-ID: <70c6b105c5aab0336c1c491b0c1158cc6b8e3fd4.1732492421.git.wqu@suse.com>
+Subject: [PATCH v2 5/7] btrfs: make btrfs_do_readpage() to do block-by-block read
+Date: Mon, 25 Nov 2024 10:27:25 +1030
+Message-ID: <805cd02d604d20b11fc3daedac4774171e0de068.1732492421.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1732492421.git.wqu@suse.com>
 References: <cover.1732492421.git.wqu@suse.com>
@@ -84,7 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: ECB421F393
+X-Rspamd-Queue-Id: 5B2112118D
 X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -115,68 +115,134 @@ X-Rspamd-Action: no action
 X-Spam-Score: -3.01
 X-Spam-Flag: NO
 
-__filemap_get_folio() provides the flag FGP_STABLE to wait for
-writeback.
+Currently if a btrfs has sector size < page size, btrfs_do_readpage()
+will handle the range extent by extent, this is good for performance as
+it doesn't need to re-lookup the same extent map again and again
+(although __get_extent_map() already does extra cached em check).
 
-There are two call sites doing __filemap_get_folio() then
-folio_wait_writeback():
+This is totally fine and is a valid optimization, but it has an
+assumption that, there is no partial uptodate range in the page.
 
-- btrfs_truncate_block()
-- defrag_prepare_one_folio()
+Meanwhile there is an incoming feature, requiring btrfs to skip the full
+page read if a buffered write range covers a full sector but not a full
+page.
 
-We can directly utilize that flag instead of manually calling
-folio_wait_writeback().
+In that case, we can have a page that is partially uptodate, and the
+current per-extent lookup can not handle such case.
+
+So here we change btrfs_do_readpage() to do block-by-block read, this
+simplifies the following things:
+
+- Remove the need for @iosize variable
+  Because we just use sectorsize as our increment.
+
+- Remove @pg_offset, and calculate it inside the loop when needed
+  It's just offset_in_folio().
+
+- Use a for() loop instead of a while() loop
+
+This will slightly reduce the read performance for
+sector size < page size cases, but for the future where we can skip a
+full page read for a lot of cases, it should still be worthy.
+
+For sector size == page size, this brings no performance change.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/defrag.c | 4 +---
- fs/btrfs/inode.c  | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ fs/btrfs/extent_io.c | 37 ++++++++++++-------------------------
+ 1 file changed, 12 insertions(+), 25 deletions(-)
 
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 968dae953948..c7fef49bbec8 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -865,7 +865,7 @@ static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1c2246d36672..5fa200632472 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -961,9 +961,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 	u64 block_start;
+ 	struct extent_map *em;
+ 	int ret = 0;
+-	size_t pg_offset = 0;
+-	size_t iosize;
+-	size_t blocksize = fs_info->sectorsize;
++	const size_t blocksize = fs_info->sectorsize;
  
- again:
- 	folio = __filemap_get_folio(mapping, index,
--				    FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
-+			FGP_LOCK | FGP_ACCESSED | FGP_CREAT | FGP_STABLE, mask);
- 	if (IS_ERR(folio))
- 		return folio;
+ 	ret = set_folio_extent_mapped(folio);
+ 	if (ret < 0) {
+@@ -974,23 +972,22 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 	if (folio->index == last_byte >> folio_shift(folio)) {
+ 		size_t zero_offset = offset_in_folio(folio, last_byte);
  
-@@ -1222,8 +1222,6 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 			goto free_folios;
+-		if (zero_offset) {
+-			iosize = folio_size(folio) - zero_offset;
+-			folio_zero_range(folio, zero_offset, iosize);
+-		}
++		if (zero_offset)
++			folio_zero_range(folio, zero_offset,
++					 folio_size(folio) - zero_offset);
+ 	}
+ 	bio_ctrl->end_io_func = end_bbio_data_read;
+ 	begin_folio_read(fs_info, folio);
+-	while (cur <= end) {
++	for (cur = start; cur <= end; cur += blocksize) {
+ 		enum btrfs_compression_type compress_type = BTRFS_COMPRESS_NONE;
++		unsigned long pg_offset = offset_in_folio(folio, cur);
+ 		bool force_bio_submit = false;
+ 		u64 disk_bytenr;
+ 
+ 		ASSERT(IS_ALIGNED(cur, fs_info->sectorsize));
+ 		if (cur >= last_byte) {
+-			iosize = folio_size(folio) - pg_offset;
+-			folio_zero_range(folio, pg_offset, iosize);
+-			end_folio_read(folio, true, cur, iosize);
++			folio_zero_range(folio, pg_offset, end - cur + 1);
++			end_folio_read(folio, true, cur, end - cur + 1);
+ 			break;
  		}
- 	}
--	for (i = 0; i < nr_pages; i++)
--		folio_wait_writeback(folios[i]);
+ 		em = __get_extent_map(inode, folio, cur, end - cur + 1,
+@@ -1005,8 +1002,6 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
  
- 	/* Lock the pages range */
- 	lock_extent(&inode->io_tree, start_index << PAGE_SHIFT,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f9b1d78eb7ff..09dbf5f22304 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4775,7 +4775,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 	}
- again:
- 	folio = __filemap_get_folio(mapping, index,
--				    FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
-+			FGP_LOCK | FGP_ACCESSED | FGP_CREAT | FGP_STABLE, mask);
- 	if (IS_ERR(folio)) {
- 		btrfs_delalloc_release_space(inode, data_reserved, block_start,
- 					     blocksize, true);
-@@ -4808,8 +4808,6 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 	if (ret < 0)
- 		goto out_unlock;
+ 		compress_type = extent_map_compression(em);
  
--	folio_wait_writeback(folio);
+-		iosize = min(extent_map_end(em) - cur, end - cur + 1);
+-		iosize = ALIGN(iosize, blocksize);
+ 		if (compress_type != BTRFS_COMPRESS_NONE)
+ 			disk_bytenr = em->disk_bytenr;
+ 		else
+@@ -1062,18 +1057,13 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 
+ 		/* we've found a hole, just zero and go on */
+ 		if (block_start == EXTENT_MAP_HOLE) {
+-			folio_zero_range(folio, pg_offset, iosize);
 -
- 	lock_extent(io_tree, block_start, block_end, &cached_state);
+-			end_folio_read(folio, true, cur, iosize);
+-			cur = cur + iosize;
+-			pg_offset += iosize;
++			folio_zero_range(folio, pg_offset, blocksize);
++			end_folio_read(folio, true, cur, blocksize);
+ 			continue;
+ 		}
+ 		/* the get_extent function already copied into the folio */
+ 		if (block_start == EXTENT_MAP_INLINE) {
+-			end_folio_read(folio, true, cur, iosize);
+-			cur = cur + iosize;
+-			pg_offset += iosize;
++			end_folio_read(folio, true, cur, blocksize);
+ 			continue;
+ 		}
  
- 	ordered = btrfs_lookup_ordered_extent(inode, block_start);
+@@ -1084,12 +1074,9 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 
+ 		if (force_bio_submit)
+ 			submit_one_bio(bio_ctrl);
+-		submit_extent_folio(bio_ctrl, disk_bytenr, folio, iosize,
++		submit_extent_folio(bio_ctrl, disk_bytenr, folio, blocksize,
+ 				    pg_offset);
+-		cur = cur + iosize;
+-		pg_offset += iosize;
+ 	}
+-
+ 	return 0;
+ }
+ 
 -- 
 2.47.0
 
