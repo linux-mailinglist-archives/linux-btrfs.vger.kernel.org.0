@@ -1,144 +1,133 @@
-Return-Path: <linux-btrfs+bounces-9874-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFBEA9D786A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 22:48:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4EE9D78E8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 23:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B68AD282255
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 21:48:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D8F9B25991
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 22:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53FCF17B4EC;
-	Sun, 24 Nov 2024 21:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31C017E472;
+	Sun, 24 Nov 2024 22:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tm7XtDTo"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Pg0uqhs5";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Pg0uqhs5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386A22500BA;
-	Sun, 24 Nov 2024 21:48:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECF1169397
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 22:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732484901; cv=none; b=Yx7YtVoJSp0zAnb90jQBCYyS/aBXa6XF0pFn9FZ5hGKB1J2sBYioP0coNj5yNtnimZhF+W+6alTP8VvGqgjxTMKN98sDc7E7FOGpC4L/iReBYQTesColRvtDnOUU9pXppCC8vcgKQKoWl8N3IHrC4yV0B40Ho8NPtcOEpzjSYXc=
+	t=1732488232; cv=none; b=sao8B07/CRdrVzAq7KRXB2ZFJqjwlGDsIO5CwQ5EAVlN7w1+Y4gx0YbSdrz/Yxg8SsnTrDxEwgq5ymWTKKY/vidGlIyDHrJskS1YpBYRr5+u1WKFhP/UBkRGBcg6XLOaw2Q7qEAJjPlzUl8BpnXl5w5Mg3AoC7FID4m1Q7ZtWBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732484901; c=relaxed/simple;
-	bh=jNTAPP/MfNPEwet+Ok+/W1RZ2VIy1+gzv/XDoCfYEdc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X3N74drCANtgfUT66zxD1wXyNDnRQ8rvLvspU/PN03Vx1DadcwRghlnbgKVOSU7951oMPnGYzrnGhYB4b/V636hHiLBtqkOXS+2Oc1IWiCQtFuxAWaW3wlfoSO9Qme3hqLhrllJxc/aqFynwLWfeFtfGi1yQHzGNiIQiH93ex+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tm7XtDTo; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FUIkB0nu6kVu8Kh8kg7nHVT5DQReYZ3ZBRdCsxIWzDQ=; b=tm7XtDTooTSDxUSCSm73zsVteU
-	xNt1bxswAxTe1kUbhDqRSsyw4BqsSMOgY6R/MoZBbnu4Gk0Nw6Dx2v15m13pfQF6suCXsjqGZj2+n
-	pOL4RQ0ohNtn7o/Te8+EjTMA/LFadHLAmmmHy6efDsu/5I2Aj4vNsqF1bi7B8SIwEbtX8Mn5mrYaq
-	n/CHXbj9vStw0VwSLOziTJoqYZZ3k9+/fIP8pFE2pMhl1MH6OIZ3lUEXU96VjJVs8qvQqRHYuYOEj
-	wlfhwGgt3OQJUb37navH3TrkKkKRiN3B4yvYpkO2SGRIhTutILInHoOrRo5MaTno6/1JU/9mvAPdV
-	vQYqwPaw==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tFK85-0000000Awx1-2C4n;
-	Sun, 24 Nov 2024 21:26:53 +0000
-Date: Sun, 24 Nov 2024 21:26:53 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: syzbot <syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] kernel BUG in __folio_start_writeback
-Message-ID: <Z0OaHcMWcRtohZfz@casper.infradead.org>
-References: <67432dee.050a0220.1cc393.0041.GAE@google.com>
+	s=arc-20240116; t=1732488232; c=relaxed/simple;
+	bh=EDoHqbN6guOoX0fVu5kd+C0bKXcmeidHri/8OQY1Y/8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=JRTsLEjcuD74xt1XOFByAgCMFashYfdHuuXo/3dfUdfjCDjAoUQZgxoXxpCCjljNoNGGofDYYAQJUH7G4mHkM0uv5ISqydyjjkMU40jyd/AAWhTe/kuCYqmsM25uIa0OOStFrcyfGFD1I17ewfy25cvm9MlvgO2xpoIaD/TxY3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Pg0uqhs5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Pg0uqhs5; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A0AEE2118A
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 22:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732488222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8xEKE2m0F0EsvEanoqcaK1aJZ5FEx6QEaLStsf51mz8=;
+	b=Pg0uqhs5pY1FivbDkYG4tTYU54fWQDBXE4/JGLEXdOHFAG+rwHR/lWVgw9WZxQS9Y/3qAU
+	Nf8YwM3KZZtAD09UtZKbnYdPfOJY+IuyEOiB9JRzQMXRv/ujf46h3FZ6ci748m+wOiPvtf
+	kGUwtZMIJNAmTtSxt4eDGLDIuSRgqMM=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732488222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8xEKE2m0F0EsvEanoqcaK1aJZ5FEx6QEaLStsf51mz8=;
+	b=Pg0uqhs5pY1FivbDkYG4tTYU54fWQDBXE4/JGLEXdOHFAG+rwHR/lWVgw9WZxQS9Y/3qAU
+	Nf8YwM3KZZtAD09UtZKbnYdPfOJY+IuyEOiB9JRzQMXRv/ujf46h3FZ6ci748m+wOiPvtf
+	kGUwtZMIJNAmTtSxt4eDGLDIuSRgqMM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CEEF213690
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 22:43:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id x4e+Ix2sQ2erNwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 22:43:41 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: use PTR_ERR() instead of PTR_ERR_OR_ZERO() for btrfs_get_extent()
+Date: Mon, 25 Nov 2024 09:13:24 +1030
+Message-ID: <1453d9d1513fa03098f5bf4d2fbecb29f7fd1332.1732488201.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67432dee.050a0220.1cc393.0041.GAE@google.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-On Sun, Nov 24, 2024 at 05:45:18AM -0800, syzbot wrote:
-> 
->  __fput+0x5ba/0xa50 fs/file_table.c:458
->  task_work_run+0x24f/0x310 kernel/task_work.c:239
->  resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
->  exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
->  syscall_exit_to_user_mode+0x13f/0x340 kernel/entry/common.c:218
->  do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+The function btrfs_get_extent() will only return an PTR_ERR() or a valid
+extent map pointer. It will not return NULL.
 
-This is:
+Thus the usage of PTR_ERR_OR_ZERO() inside submit_one_sector() is not
+needed, use plain PTR_ERR() instead, and that is the only usage of
+PTR_ERR_OR_ZERO() after btrfs_get_extent().
 
-        VM_BUG_ON_FOLIO(folio_test_writeback(folio), folio);
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ie we've called __folio_start_writeback() on a folio which is already
-under writeback.
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index e629d2ee152a..438974d4def4 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1335,7 +1335,7 @@ static int submit_one_sector(struct btrfs_inode *inode,
+ 
+ 	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
+ 	if (IS_ERR(em))
+-		return PTR_ERR_OR_ZERO(em);
++		return PTR_ERR(em);
+ 
+ 	extent_offset = filepos - em->start;
+ 	em_end = extent_map_end(em);
+-- 
+2.47.0
 
-Higher up in the trace, we have the useful information:
-
- page: refcount:6 mapcount:0 mapping:ffff888077139710 index:0x3 pfn:0x72ae5
- memcg:ffff888140adc000
- aops:btrfs_aops ino:105 dentry name(?):"file2"
- flags: 0xfff000000040ab(locked|waiters|uptodate|lru|private|writeback|node=0|zone=1|lastcpupid=0x7ff)
- raw: 00fff000000040ab ffffea0001c8f408 ffffea0000939708 ffff888077139710
- raw: 0000000000000003 0000000000000001 00000006ffffffff ffff888140adc000
- page dumped because: VM_BUG_ON_FOLIO(folio_test_writeback(folio))
- page_owner tracks the page as allocated
-
-The interesting part of the page_owner stacktrace is:
-
-  filemap_alloc_folio_noprof+0xdf/0x500
-  __filemap_get_folio+0x446/0xbd0
-  prepare_one_folio+0xb6/0xa20
-  btrfs_buffered_write+0x6bd/0x1150
-  btrfs_direct_write+0x52d/0xa30
-  btrfs_do_write_iter+0x2a0/0x760
-  do_iter_readv_writev+0x600/0x880
-  vfs_writev+0x376/0xba0
-
-(ie not very interesting)
-
-> Workqueue: btrfs-delalloc btrfs_work_helper
-> RIP: 0010:__folio_start_writeback+0xc06/0x1050 mm/page-writeback.c:3119
-> Call Trace:
->  <TASK>
->  process_one_folio fs/btrfs/extent_io.c:187 [inline]
->  __process_folios_contig+0x31c/0x540 fs/btrfs/extent_io.c:216
->  submit_one_async_extent fs/btrfs/inode.c:1229 [inline]
->  submit_compressed_extents+0xdb3/0x16e0 fs/btrfs/inode.c:1632
->  run_ordered_work fs/btrfs/async-thread.c:245 [inline]
->  btrfs_work_helper+0x56b/0xc50 fs/btrfs/async-thread.c:324
->  process_one_work kernel/workqueue.c:3229 [inline]
-
-This looks like a race?
-
-process_one_folio() calls
-btrfs_folio_clamp_set_writeback calls
-btrfs_subpage_set_writeback:
-
-        spin_lock_irqsave(&subpage->lock, flags);
-        bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits)
-;
-        if (!folio_test_writeback(folio))
-                folio_start_writeback(folio);
-        spin_unlock_irqrestore(&subpage->lock, flags);
-
-so somebody else set writeback after we tested for writeback here.
-
-One thing that comes to mind is that _usually_ we take folio_lock()
-first, then start writeback, then call folio_unlock() and btrfs isn't
-doing that here (afaict).  Maybe that's not the source of the bug?
-
-If it is, should we have a VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio)
-in __folio_start_writeback()?  Or is there somewhere that can't lock the
-folio before starting writeback?
 
