@@ -1,299 +1,307 @@
-Return-Path: <linux-btrfs+bounces-9844-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9845-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D8749D6CED
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 08:31:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394239D6E2C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 13:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813F9B212AD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 07:31:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 744B4B21D8F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 12:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624B4156F3A;
-	Sun, 24 Nov 2024 07:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC2B1922FC;
+	Sun, 24 Nov 2024 12:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UtQX3YWC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dj5nWtG1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7EA3D0D5
-	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 07:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78B01917DE;
+	Sun, 24 Nov 2024 12:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732433497; cv=none; b=gIvqlKwdo/aMLQuJVP6DMu5YgfKdOmUq93ukpWzF8L4L7F+CRuXIYn5WTRZf2kQo2fhqQ+HEQtf5npM0wQyquGqEpcJWBcbCye/z/KmPm2/M+wJjwKwdBsWywvhWNECw4T4MJULASdoLOWpHOgyJYcWS/y2MmGSSi06poCtX89k=
+	t=1732451973; cv=none; b=cRdKKi6pQRb2AzQWqo0Y87a62FlZk5w96DFlUyEMX9wE69DTqUs5JuT6EHk7VQZ4k3jojAJ4QHC0D63ztycSZer+tYWtbAedrfpKmTDicrAtWm0XAoQvuvZd0w4UVmgLhng40IUq7rrl36wa/yO5iIqrWl2Fhxtwe/GBrWJeibw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732433497; c=relaxed/simple;
-	bh=vw6SoLQ+KhHbcAfEOw39JTdI6RD2GDTaLROMRxrcQ0o=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=tLHOS/5C7fpeo04qm81YsTWz06YKIU5oKnOPGh5W4eJuHdC+1n+2lK1CYabV6kFhDqnChGIMcLW6MBsqDQksUY8sAn2TSKwBn6d57cLSJ3dtEUXQ6NiuWmWywBkihIXmJ5cvIOTO5LRQFVwQvuaRgSXq1JTa4DruYSMY7hSJomk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UtQX3YWC; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3822ec43fb0so2718813f8f.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Nov 2024 23:31:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1732433492; x=1733038292; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A8USLEmttCnlD1YP8mUQeQmsOMai+Su6bIpgdnzzYhg=;
-        b=UtQX3YWCOXC54EngjPZTu7XLdLo1j5YsIIgikGLw/jCooCVS0CYrerhk2iFG28tMWE
-         XZM/veW5AvXuB9/OszMXo/mEo9wPuRC58MwM+XRHDq6LiRygsi94hoAtYRPF1ikvJScG
-         60LhyE7SHZ6Dt+E30+DLdddsCkz0cKTs53TJUV+o6vC1fbZBQbC0HhgguatqiCfi7S8W
-         n+sJEzdTNwJBUrYYhQIDaIp9qUqG/3isjarrIUAI4kChlsGX+gryuB07LMC3kDwdHrs1
-         IBglJxnqUgcp2B9RnxQkD90hkBZgL5Q9JChRc70MmFzykZwjAhZamc8dd+VtOc3BnLMD
-         8qVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732433492; x=1733038292;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A8USLEmttCnlD1YP8mUQeQmsOMai+Su6bIpgdnzzYhg=;
-        b=iERUAJsjkqxFz1Uo1QWe3B9bak8A6P9zmju1mwfW4s8UDwme6bAxeSG8XA6IRHfiJy
-         w4u7kWYgDFAcqU2+cZ9Hy7Q7jnEOulYWCkcrXWu8A+FgLy5OpcXt5EiBiuev9xpFQaDX
-         uqtrUs6ttKwesbMm66UovhR9u6oa0F7hG63/yjnXC04k22yEwVKAUlx4zQ0IL57IUCQ+
-         j1hQC5YFq3ldMmGIrpsQvFVQW5iY0Dj8zo3OcALrH+ffuyyWQkPIHIrca1t2fXDJIkPV
-         K15Rf7rm34wPYaU4cEqeAcAk0/+rTexnscwnU1r8m60TB7KPI8mZ1TMLiLBvuL/NfoBz
-         TBtA==
-X-Gm-Message-State: AOJu0YzuUw7z5aCWYKtbINQYjG+9r5u045OXsD4pps0psTB2/UUxWn2r
-	QnG+o7ziEMFuhA6Bwsj2w3V6NNfHEIaz0DdO5cWo7/15W+/Oyt/BU3posioRR3VyvZgYcOZwb1t
-	g
-X-Gm-Gg: ASbGnctJWzHf+7P9xvJWeRqFhZQfmj9oAI4Q2JjqemOJNFr/r5uPnczY16ffr51sBoR
-	TgQng67bTSYpZh96RnJBXCZ14DngSAE7WPr6A+HMS2qSiQJWfpw3lhG5C7DP9R9tDxozFnF8bOl
-	AC+sSM2bzACueIw37pG24NZubTIMoRvKAO3bv+vZQoOVRzburHhkk1SB3JnQ+jKUIx8FaVkWtqA
-	v0biNOMZS+MnSHp7WSwBdqM1AMfPtGGk5OiHRLXRo+lx3DOenOxJ9dfr1vgG/LS7e+9pAoVUqwg
-	0A==
-X-Google-Smtp-Source: AGHT+IHFAEGhxao4m7o290oMFW/cM6ska/7P2ObXU8OHcfiia2NCpy3dg9jQXlUOFkYTqrZUuwaDAQ==
-X-Received: by 2002:a5d:588e:0:b0:382:383e:84e2 with SMTP id ffacd0b85a97d-38260bc93acmr8617085f8f.46.1732433491401;
-        Sat, 23 Nov 2024 23:31:31 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ead0314497sm7932632a91.17.2024.11.23.23.31.29
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Nov 2024 23:31:30 -0800 (PST)
-Message-ID: <2327765d-c139-495e-94f0-5bab11adf440@suse.com>
-Date: Sun, 24 Nov 2024 18:01:27 +1030
+	s=arc-20240116; t=1732451973; c=relaxed/simple;
+	bh=Wai5QgjNn6fP2jjYouXyrNsDJerhSLIVUPEOBCvjao8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NGIJC9z1+ket/p2tmOsOsOhOhYM77XkenMARGTDS1DMepdfCrPCwbgSjM1ZJq0VuGHlqKreSwzIDyA7N+6pME0HISUabW81NypVfWCf+8Nw8keMIxMBhnxR83cEGP+UE3CVlxiaamgBcvSXrdkvH1/xVeqVO0Cuma34x4ALBJxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dj5nWtG1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70DEAC4CED6;
+	Sun, 24 Nov 2024 12:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732451973;
+	bh=Wai5QgjNn6fP2jjYouXyrNsDJerhSLIVUPEOBCvjao8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dj5nWtG1CYDckKsKfyMzJuQTSUvwF3I5vaolXohsrshltX5frmFyUYYzhaIvIIz6b
+	 ZTIAGB8su0dyPfjy3K85/l719wdHhxewDsf3gpWIBiCEE5NAQW9dCJWO3zK+L0CYHN
+	 st+ewLirTC/m9h2SwMcuBgTI8nH3nXFsx1kxsaZZo72J2WiaFzRTCO6XC4+42AwwlU
+	 eCwQ1HeSk1M+4keCmJkbaKodY0LS201obvyd6VyoqOSbYZHSpZnHhWDzRz3zqIbtXf
+	 YZTLoIE+I1OzuE7IBpoOn8Qis0LuyxMyRAwcs/fi+dVrjPnlwoVadtSf6woEf23y6k
+	 sIVkGjn62uJ3Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Filipe Manana <fdmanana@suse.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.12 08/19] btrfs: don't take dev_replace rwsem on task already holding it
+Date: Sun, 24 Nov 2024 07:38:43 -0500
+Message-ID: <20241124123912.3335344-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20241124123912.3335344-1-sashal@kernel.org>
+References: <20241124123912.3335344-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] btrfs: fix double accounting of ordered extents
- during errors
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1730269807.git.wqu@suse.com>
- <2faab8a96c6dd2a414a96e4cebae97ecbddf021d.1730269807.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <2faab8a96c6dd2a414a96e4cebae97ecbddf021d.1730269807.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.12.1
 Content-Transfer-Encoding: 8bit
 
-I know this is part of the subpage patches, but this is really a bug fix 
-for the existing subpage handling.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Appreciate if anyone can give this a review.
+[ Upstream commit 8cca35cb29f81eba3e96ec44dad8696c8a2f9138 ]
 
-Thanks,
-Qu
+Running fstests btrfs/011 with MKFS_OPTIONS="-O rst" to force the usage of
+the RAID stripe-tree, we get the following splat from lockdep:
 
-在 2024/10/30 17:03, Qu Wenruo 写道:
-> [BUG]
-> Btrfs will fail generic/750 randomly if its sector size is smaller than
-> page size.
-> 
-> One of the warning looks like this:
-> 
->   ------------[ cut here ]------------
->   WARNING: CPU: 1 PID: 90263 at fs/btrfs/ordered-data.c:360 can_finish_ordered_extent+0x33c/0x390 [btrfs]
->   CPU: 1 UID: 0 PID: 90263 Comm: kworker/u18:1 Tainted: G           OE      6.12.0-rc3-custom+ #79
->   Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
->   pc : can_finish_ordered_extent+0x33c/0x390 [btrfs]
->   lr : can_finish_ordered_extent+0xdc/0x390 [btrfs]
->   Call trace:
->    can_finish_ordered_extent+0x33c/0x390 [btrfs]
->    btrfs_mark_ordered_io_finished+0x130/0x2b8 [btrfs]
->    extent_writepage+0xfc/0x338 [btrfs]
->    extent_write_cache_pages+0x1d4/0x4b8 [btrfs]
->    btrfs_writepages+0x94/0x158 [btrfs]
->    do_writepages+0x74/0x190
->    filemap_fdatawrite_wbc+0x88/0xc8
->    start_delalloc_inodes+0x180/0x3b0 [btrfs]
->    btrfs_start_delalloc_roots+0x17c/0x288 [btrfs]
->    shrink_delalloc+0x11c/0x280 [btrfs]
->    flush_space+0x27c/0x310 [btrfs]
->    btrfs_async_reclaim_metadata_space+0xcc/0x208 [btrfs]
->    process_one_work+0x228/0x670
->    worker_thread+0x1bc/0x360
->    kthread+0x100/0x118
->    ret_from_fork+0x10/0x20
->   irq event stamp: 9784200
->   hardirqs last  enabled at (9784199): [<ffffd21ec54dc01c>] _raw_spin_unlock_irqrestore+0x74/0x80
->   hardirqs last disabled at (9784200): [<ffffd21ec54db374>] _raw_spin_lock_irqsave+0x8c/0xa0
->   softirqs last  enabled at (9784148): [<ffffd21ec472ff44>] handle_softirqs+0x45c/0x4b0
->   softirqs last disabled at (9784141): [<ffffd21ec46d01e4>] __do_softirq+0x1c/0x28
->   ---[ end trace 0000000000000000 ]---
->   BTRFS critical (device dm-2): bad ordered extent accounting, root=5 ino=1492 OE offset=1654784 OE len=57344 to_dec=49152 left=0
-> 
-> [CAUSE]
-> The function btrfs_mark_ordered_io_finished() is called for marking all
-> ordered extents in the page range as finished, for error handling.
-> 
-> But for sector size < page size cases, we can have multiple ordered
-> extents in one page.
-> 
-> If extent_writepage_io() failed (the only possible case is
-> submit_one_sector() failed to grab an extent map), then the call site
-> inside extent_writepage() will call btrfs_mark_ordered_io_finished() to
-> finish the created ordered extents.
-> 
-> However some range of the ordered extent may have been submitted already,
-> then btrfs_mark_ordered_io_finished() is called on the same range, causing
-> double accounting.
-> 
-> [FIX]
-> - Introduce a new member btrfs_bio_ctrl::last_submitted
->    This will trace the last sector submitted through
->    extent_writepage_io().
-> 
->    So for the above extent_writepage() case, we will know exactly which
->    sectors are submitted and should not do the ordered extent accounting.
-> 
-> - Introduce a helper cleanup_ordered_extents()
->    This will do a sector-by-sector cleanup with
->    btrfs_bio_ctrl::last_submitted and btrfs_bio_ctrl::submit_bitmap into
->    consideartion.
-> 
->    Using @last_submitted is to avoid double accounting on the submitted
->    ranges.
->    Meanwhile using @submit_bitmap is to avoid touching ranges going
->    through compression.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/extent_io.c | 41 +++++++++++++++++++++++++++++++++++++----
->   1 file changed, 37 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index e629d2ee152a..427bfbe737f2 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -108,6 +108,14 @@ struct btrfs_bio_ctrl {
->   	 * This is to avoid touching ranges covered by compression/inline.
->   	 */
->   	unsigned long submit_bitmap;
-> +
-> +	/*
-> +	 * The end (exclusive) of the last submitted range in the folio.
-> +	 *
-> +	 * This is for sector size < page size case where we may hit error
-> +	 * half way.
-> +	 */
-> +	u64 last_submitted;
->   };
->   
->   static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-> @@ -1435,6 +1443,7 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
->   		ret = submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
->   		if (ret < 0)
->   			goto out;
-> +		bio_ctrl->last_submitted = cur + fs_info->sectorsize;
->   		submitted_io = true;
->   	}
->   out:
-> @@ -1453,6 +1462,24 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
->   	return ret;
->   }
->   
-> +static void cleanup_ordered_extents(struct btrfs_inode *inode,
-> +				    struct folio *folio, u64 file_pos,
-> +				    u64 num_bytes, unsigned long *bitmap)
-> +{
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> +	unsigned int cur_bit = (file_pos - folio_pos(folio)) >> fs_info->sectorsize_bits;
-> +
-> +	for_each_set_bit_from(cur_bit, bitmap, fs_info->sectors_per_page) {
-> +		u64 cur_pos = folio_pos(folio) + (cur_bit << fs_info->sectorsize_bits);
-> +
-> +		if (cur_pos >= file_pos + num_bytes)
-> +			break;
-> +
-> +		btrfs_mark_ordered_io_finished(inode, folio, cur_pos,
-> +					       fs_info->sectorsize, false);
-> +	}
-> +}
-> +
->   /*
->    * the writepage semantics are similar to regular writepage.  extent
->    * records are inserted to lock ranges in the tree, and as dirty areas
-> @@ -1492,6 +1519,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
->   	 * The proper bitmap can only be initialized until writepage_delalloc().
->   	 */
->   	bio_ctrl->submit_bitmap = (unsigned long)-1;
-> +	bio_ctrl->last_submitted = page_start;
->   	ret = set_folio_extent_mapped(folio);
->   	if (ret < 0)
->   		goto done;
-> @@ -1511,8 +1539,10 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
->   
->   done:
->   	if (ret) {
-> -		btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
-> -					       page_start, PAGE_SIZE, !ret);
-> +		cleanup_ordered_extents(BTRFS_I(inode), folio,
-> +				bio_ctrl->last_submitted,
-> +				page_start + PAGE_SIZE - bio_ctrl->last_submitted,
-> +				&bio_ctrl->submit_bitmap);
->   		mapping_set_error(folio->mapping, ret);
->   	}
->   
-> @@ -2288,14 +2318,17 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
->   		 * extent_writepage_io() will do the truncation correctly.
->   		 */
->   		bio_ctrl.submit_bitmap = (unsigned long)-1;
-> +		bio_ctrl.last_submitted = cur;
->   		ret = extent_writepage_io(BTRFS_I(inode), folio, cur, cur_len,
->   					  &bio_ctrl, i_size);
->   		if (ret == 1)
->   			goto next_page;
->   
->   		if (ret) {
-> -			btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
-> -						       cur, cur_len, !ret);
-> +			cleanup_ordered_extents(BTRFS_I(inode), folio,
-> +					bio_ctrl.last_submitted,
-> +					cur_end + 1 - bio_ctrl.last_submitted,
-> +					&bio_ctrl.submit_bitmap);
->   			mapping_set_error(mapping, ret);
->   		}
->   		btrfs_folio_end_lock(fs_info, folio, cur, cur_len);
+ BTRFS info (device sdd): dev_replace from /dev/sdd (devid 1) to /dev/sdb started
+
+ ============================================
+ WARNING: possible recursive locking detected
+ 6.11.0-rc3-btrfs-for-next #599 Not tainted
+ --------------------------------------------
+ btrfs/2326 is trying to acquire lock:
+ ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_map_block+0x39f/0x2250
+
+ but task is already holding lock:
+ ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_map_block+0x39f/0x2250
+
+ other info that might help us debug this:
+  Possible unsafe locking scenario:
+
+        CPU0
+        ----
+   lock(&fs_info->dev_replace.rwsem);
+   lock(&fs_info->dev_replace.rwsem);
+
+  *** DEADLOCK ***
+
+  May be due to missing lock nesting notation
+
+ 1 lock held by btrfs/2326:
+  #0: ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_map_block+0x39f/0x2250
+
+ stack backtrace:
+ CPU: 1 UID: 0 PID: 2326 Comm: btrfs Not tainted 6.11.0-rc3-btrfs-for-next #599
+ Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+ Call Trace:
+  <TASK>
+  dump_stack_lvl+0x5b/0x80
+  __lock_acquire+0x2798/0x69d0
+  ? __pfx___lock_acquire+0x10/0x10
+  ? __pfx___lock_acquire+0x10/0x10
+  lock_acquire+0x19d/0x4a0
+  ? btrfs_map_block+0x39f/0x2250
+  ? __pfx_lock_acquire+0x10/0x10
+  ? find_held_lock+0x2d/0x110
+  ? lock_is_held_type+0x8f/0x100
+  down_read+0x8e/0x440
+  ? btrfs_map_block+0x39f/0x2250
+  ? __pfx_down_read+0x10/0x10
+  ? do_raw_read_unlock+0x44/0x70
+  ? _raw_read_unlock+0x23/0x40
+  btrfs_map_block+0x39f/0x2250
+  ? btrfs_dev_replace_by_ioctl+0xd69/0x1d00
+  ? btrfs_bio_counter_inc_blocked+0xd9/0x2e0
+  ? __kasan_slab_alloc+0x6e/0x70
+  ? __pfx_btrfs_map_block+0x10/0x10
+  ? __pfx_btrfs_bio_counter_inc_blocked+0x10/0x10
+  ? kmem_cache_alloc_noprof+0x1f2/0x300
+  ? mempool_alloc_noprof+0xed/0x2b0
+  btrfs_submit_chunk+0x28d/0x17e0
+  ? __pfx_btrfs_submit_chunk+0x10/0x10
+  ? bvec_alloc+0xd7/0x1b0
+  ? bio_add_folio+0x171/0x270
+  ? __pfx_bio_add_folio+0x10/0x10
+  ? __kasan_check_read+0x20/0x20
+  btrfs_submit_bio+0x37/0x80
+  read_extent_buffer_pages+0x3df/0x6c0
+  btrfs_read_extent_buffer+0x13e/0x5f0
+  read_tree_block+0x81/0xe0
+  read_block_for_search+0x4bd/0x7a0
+  ? __pfx_read_block_for_search+0x10/0x10
+  btrfs_search_slot+0x78d/0x2720
+  ? __pfx_btrfs_search_slot+0x10/0x10
+  ? lock_is_held_type+0x8f/0x100
+  ? kasan_save_track+0x14/0x30
+  ? __kasan_slab_alloc+0x6e/0x70
+  ? kmem_cache_alloc_noprof+0x1f2/0x300
+  btrfs_get_raid_extent_offset+0x181/0x820
+  ? __pfx_lock_acquire+0x10/0x10
+  ? __pfx_btrfs_get_raid_extent_offset+0x10/0x10
+  ? down_read+0x194/0x440
+  ? __pfx_down_read+0x10/0x10
+  ? do_raw_read_unlock+0x44/0x70
+  ? _raw_read_unlock+0x23/0x40
+  btrfs_map_block+0x5b5/0x2250
+  ? __pfx_btrfs_map_block+0x10/0x10
+  scrub_submit_initial_read+0x8fe/0x11b0
+  ? __pfx_scrub_submit_initial_read+0x10/0x10
+  submit_initial_group_read+0x161/0x3a0
+  ? lock_release+0x20e/0x710
+  ? __pfx_submit_initial_group_read+0x10/0x10
+  ? __pfx_lock_release+0x10/0x10
+  scrub_simple_mirror.isra.0+0x3eb/0x580
+  scrub_stripe+0xe4d/0x1440
+  ? lock_release+0x20e/0x710
+  ? __pfx_scrub_stripe+0x10/0x10
+  ? __pfx_lock_release+0x10/0x10
+  ? do_raw_read_unlock+0x44/0x70
+  ? _raw_read_unlock+0x23/0x40
+  scrub_chunk+0x257/0x4a0
+  scrub_enumerate_chunks+0x64c/0xf70
+  ? __mutex_unlock_slowpath+0x147/0x5f0
+  ? __pfx_scrub_enumerate_chunks+0x10/0x10
+  ? bit_wait_timeout+0xb0/0x170
+  ? __up_read+0x189/0x700
+  ? scrub_workers_get+0x231/0x300
+  ? up_write+0x490/0x4f0
+  btrfs_scrub_dev+0x52e/0xcd0
+  ? create_pending_snapshots+0x230/0x250
+  ? __pfx_btrfs_scrub_dev+0x10/0x10
+  btrfs_dev_replace_by_ioctl+0xd69/0x1d00
+  ? lock_acquire+0x19d/0x4a0
+  ? __pfx_btrfs_dev_replace_by_ioctl+0x10/0x10
+  ? lock_release+0x20e/0x710
+  ? btrfs_ioctl+0xa09/0x74f0
+  ? __pfx_lock_release+0x10/0x10
+  ? do_raw_spin_lock+0x11e/0x240
+  ? __pfx_do_raw_spin_lock+0x10/0x10
+  btrfs_ioctl+0xa14/0x74f0
+  ? lock_acquire+0x19d/0x4a0
+  ? find_held_lock+0x2d/0x110
+  ? __pfx_btrfs_ioctl+0x10/0x10
+  ? lock_release+0x20e/0x710
+  ? do_sigaction+0x3f0/0x860
+  ? __pfx_do_vfs_ioctl+0x10/0x10
+  ? do_raw_spin_lock+0x11e/0x240
+  ? lockdep_hardirqs_on_prepare+0x270/0x3e0
+  ? _raw_spin_unlock_irq+0x28/0x50
+  ? do_sigaction+0x3f0/0x860
+  ? __pfx_do_sigaction+0x10/0x10
+  ? __x64_sys_rt_sigaction+0x18e/0x1e0
+  ? __pfx___x64_sys_rt_sigaction+0x10/0x10
+  ? __x64_sys_close+0x7c/0xd0
+  __x64_sys_ioctl+0x137/0x190
+  do_syscall_64+0x71/0x140
+  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+ RIP: 0033:0x7f0bd1114f9b
+ Code: Unable to access opcode bytes at 0x7f0bd1114f71.
+ RSP: 002b:00007ffc8a8c3130 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+ RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f0bd1114f9b
+ RDX: 00007ffc8a8c35e0 RSI: 00000000ca289435 RDI: 0000000000000003
+ RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000007
+ R10: 0000000000000008 R11: 0000000000000246 R12: 00007ffc8a8c6c85
+ R13: 00000000398e72a0 R14: 0000000000004361 R15: 0000000000000004
+  </TASK>
+
+This happens because on RAID stripe-tree filesystems we recurse back into
+btrfs_map_block() on scrub to perform the logical to device physical
+mapping.
+
+But as the device replace task is already holding the dev_replace::rwsem
+we deadlock.
+
+So don't take the dev_replace::rwsem in case our task is the task performing
+the device replace.
+
+Suggested-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/dev-replace.c | 2 ++
+ fs/btrfs/fs.h          | 2 ++
+ fs/btrfs/volumes.c     | 8 +++++---
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 83d5cdd77f293..604399e59a3d1 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -641,6 +641,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+ 		return ret;
+ 
+ 	down_write(&dev_replace->rwsem);
++	dev_replace->replace_task = current;
+ 	switch (dev_replace->replace_state) {
+ 	case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
+ 	case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
+@@ -994,6 +995,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	list_add(&tgt_device->dev_alloc_list, &fs_devices->alloc_list);
+ 	fs_devices->rw_devices++;
+ 
++	dev_replace->replace_task = NULL;
+ 	up_write(&dev_replace->rwsem);
+ 	btrfs_rm_dev_replace_blocked(fs_info);
+ 
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 79f64e383eddf..cbfb225858a59 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -317,6 +317,8 @@ struct btrfs_dev_replace {
+ 
+ 	struct percpu_counter bio_counter;
+ 	wait_queue_head_t replace_wait;
++
++	struct task_struct *replace_task;
+ };
+ 
+ /*
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index eb51b609190fb..920df7585b0d1 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6481,13 +6481,15 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	max_len = btrfs_max_io_len(map, map_offset, &io_geom);
+ 	*length = min_t(u64, map->chunk_len - map_offset, max_len);
+ 
+-	down_read(&dev_replace->rwsem);
++	if (dev_replace->replace_task != current)
++		down_read(&dev_replace->rwsem);
++
+ 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
+ 	/*
+ 	 * Hold the semaphore for read during the whole operation, write is
+ 	 * requested at commit time but must wait.
+ 	 */
+-	if (!dev_replace_is_ongoing)
++	if (!dev_replace_is_ongoing && dev_replace->replace_task != current)
+ 		up_read(&dev_replace->rwsem);
+ 
+ 	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+@@ -6627,7 +6629,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	bioc->mirror_num = io_geom.mirror_num;
+ 
+ out:
+-	if (dev_replace_is_ongoing) {
++	if (dev_replace_is_ongoing && dev_replace->replace_task != current) {
+ 		lockdep_assert_held(&dev_replace->rwsem);
+ 		/* Unlock and let waiting writers proceed */
+ 		up_read(&dev_replace->rwsem);
+-- 
+2.43.0
 
 
