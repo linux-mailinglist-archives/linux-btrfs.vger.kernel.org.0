@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-9877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9878-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D31959D7944
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 00:58:03 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E033D9D7945
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 00:58:04 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48580B244A0
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A367163047
 	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Nov 2024 23:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E1618B475;
-	Sun, 24 Nov 2024 23:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC0118BC06;
+	Sun, 24 Nov 2024 23:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pd2c5CHj";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pd2c5CHj"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="r0pYRF71";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="r0pYRF71"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64723A1B5;
-	Sun, 24 Nov 2024 23:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B702500BD
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732492673; cv=none; b=lPhR9SRQ0vUbucYPsmpOvx+HiIQN+c44B+hkBXL7a4U2Fhizr0hWSG3Y4ASnMTUykjT1Ude09eHji9AsNJJcAVK3HlAciJjSV5GCnN3sHoQC+isDmAaLl4lNoUqwgP/hKkVqM6nfOMkDfLsfFUhL5P55h4TQqfrlw5RBtgJRW+g=
+	t=1732492674; cv=none; b=jGaqsmVjdt6FeV1+GUbr9Mxpi32r2y+PUb661sp09EP6K87rZ6i2NmUgrMqVhnZPyoqx2jgeZOsryRLT0EkrFx37gB54/7WZxxw786ttM8uwvFWpyi0zmJOcgAVWQ8PeHBTOkXm2bRLp7XhJG/8uPhvIinRj0k/TLk+Ynv1cROY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732492673; c=relaxed/simple;
-	bh=1it2bmALOUFjbVfLzFBPZL4ssNqgWxVdoDQjcaIxhUQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gbyjEMBDsXQD7cVefY4B8YJ07ZY1qw7epOwX87S3yl7PD1fpqaUAgVVmA1NIxIbw8zDltUQu/AQONEtFlRlip79A4ZGW/mPK1Bfd78uEvdP3YfU49V4Yadfu8HGaNQf1eznpZ246MGCe1sj/0MerbSPEk0zLv5lJT0eDinWFKPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pd2c5CHj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pd2c5CHj; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1732492674; c=relaxed/simple;
+	bh=Uy0UpMlK7C/7+otXF/RMdlzWiFooOAfOVsfBzoKJ7Ys=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nSq+hX672g7hvUH9mlNWH0kmsIqbQ5gRRrBY4dgQifKxvdbmzyAgLU/40pGP6YzO4pM8uBEcpIyLe3ktSBEpvG09wVgfegXV4CMh4IqMgh8/HgvvKY6UQuaS3esSc37xSZNn8ZxCAZaKguaXSvIXhsNLwZBfFfokfgq8+FLz4pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=r0pYRF71; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=r0pYRF71; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A7A691F381;
-	Sun, 24 Nov 2024 23:57:48 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 226D71F38C
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1732492668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1732492670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XY97jdhXj1f2RgFKbwDZR8FO5rD6dbybMky1LNX7Oxk=;
-	b=pd2c5CHjWQ0HKPja6tE8mC9EyGltdPCXxhKL67ZKr/i+O6BO71YgIFRFipjIES1ilzt9bL
-	lnJHTBBekxNdL0lDXYtyqyeTGpAZEYQKCp/IwAz92BG2Rbwa3yIG5t3ryGCc3tDsgHB10l
-	XoY8TyQXiKGss9kW9glNQpBYyeQ1zOs=
+	bh=t/G1/6IQBC+EShBZljA39MqNUo2TUEQVCC3igNKTlWA=;
+	b=r0pYRF712JOAPmvQxqpKuhZynQyR+9GDfietCzU2fmQcg0Fm0kTYDrw8dsPw2KGdlMf0tF
+	ZOEAriENtpruOU7Rgl2lZI3B9MDiRvif7CBT+fToBfu78NVD8KxB3qVNK6KVCyYN5lCJCZ
+	wvU1jNawjHV1Wkra6jpgPc6bVVxqNe8=
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=r0pYRF71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1732492668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1732492670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XY97jdhXj1f2RgFKbwDZR8FO5rD6dbybMky1LNX7Oxk=;
-	b=pd2c5CHjWQ0HKPja6tE8mC9EyGltdPCXxhKL67ZKr/i+O6BO71YgIFRFipjIES1ilzt9bL
-	lnJHTBBekxNdL0lDXYtyqyeTGpAZEYQKCp/IwAz92BG2Rbwa3yIG5t3ryGCc3tDsgHB10l
-	XoY8TyQXiKGss9kW9glNQpBYyeQ1zOs=
+	bh=t/G1/6IQBC+EShBZljA39MqNUo2TUEQVCC3igNKTlWA=;
+	b=r0pYRF712JOAPmvQxqpKuhZynQyR+9GDfietCzU2fmQcg0Fm0kTYDrw8dsPw2KGdlMf0tF
+	ZOEAriENtpruOU7Rgl2lZI3B9MDiRvif7CBT+fToBfu78NVD8KxB3qVNK6KVCyYN5lCJCZ
+	wvU1jNawjHV1Wkra6jpgPc6bVVxqNe8=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 83B07132CF;
-	Sun, 24 Nov 2024 23:57:47 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 383DF132CF
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gCllD3u9Q2emSQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sun, 24 Nov 2024 23:57:47 +0000
+	id kMWUOHy9Q2emSQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sun, 24 Nov 2024 23:57:48 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH v2 1/7] btrfs: fix double accounting of ordered extents during errors
-Date: Mon, 25 Nov 2024 10:27:21 +1030
-Message-ID: <3f91b3e146ca8314c21b9afb44ad84def3d2223d.1732492421.git.wqu@suse.com>
+Subject: [PATCH v2 2/7] btrfs: fix inline data extent reads which zero out the remaining part
+Date: Mon, 25 Nov 2024 10:27:22 +1030
+Message-ID: <64faec049512590bd766d4a822768f8a150204b0.1732492421.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1732492421.git.wqu@suse.com>
 References: <cover.1732492421.git.wqu@suse.com>
@@ -84,235 +84,163 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.79
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.19)[-0.953];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 226D71F38C
 X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-[BUG]
-Btrfs will fail generic/750 randomly if its sector size is smaller than
-page size.
+[BUG in DEVEL BRANCH]
+This bug itself can only be reproduced with the following out-of-tree
+patches:
 
-One of the warning looks like this:
+  btrfs: allow inline data extents creation if sector size < page size
+  btrfs: allow buffered write to skip full page if it's sector aligned
 
- ------------[ cut here ]------------
- WARNING: CPU: 1 PID: 90263 at fs/btrfs/ordered-data.c:360 can_finish_ordered_extent+0x33c/0x390 [btrfs]
- CPU: 1 UID: 0 PID: 90263 Comm: kworker/u18:1 Tainted: G           OE      6.12.0-rc3-custom+ #79
- Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
- pc : can_finish_ordered_extent+0x33c/0x390 [btrfs]
- lr : can_finish_ordered_extent+0xdc/0x390 [btrfs]
- Call trace:
-  can_finish_ordered_extent+0x33c/0x390 [btrfs]
-  btrfs_mark_ordered_io_finished+0x130/0x2b8 [btrfs]
-  extent_writepage+0xfc/0x338 [btrfs]
-  extent_write_cache_pages+0x1d4/0x4b8 [btrfs]
-  btrfs_writepages+0x94/0x158 [btrfs]
-  do_writepages+0x74/0x190
-  filemap_fdatawrite_wbc+0x88/0xc8
-  start_delalloc_inodes+0x180/0x3b0 [btrfs]
-  btrfs_start_delalloc_roots+0x17c/0x288 [btrfs]
-  shrink_delalloc+0x11c/0x280 [btrfs]
-  flush_space+0x27c/0x310 [btrfs]
-  btrfs_async_reclaim_metadata_space+0xcc/0x208 [btrfs]
-  process_one_work+0x228/0x670
-  worker_thread+0x1bc/0x360
-  kthread+0x100/0x118
-  ret_from_fork+0x10/0x20
- irq event stamp: 9784200
- hardirqs last  enabled at (9784199): [<ffffd21ec54dc01c>] _raw_spin_unlock_irqrestore+0x74/0x80
- hardirqs last disabled at (9784200): [<ffffd21ec54db374>] _raw_spin_lock_irqsave+0x8c/0xa0
- softirqs last  enabled at (9784148): [<ffffd21ec472ff44>] handle_softirqs+0x45c/0x4b0
- softirqs last disabled at (9784141): [<ffffd21ec46d01e4>] __do_softirq+0x1c/0x28
- ---[ end trace 0000000000000000 ]---
- BTRFS critical (device dm-2): bad ordered extent accounting, root=5 ino=1492 OE offset=1654784 OE len=57344 to_dec=49152 left=0
+With those out-of-tree patches, we can hit a data corruption:
+
+  # mkfs.btrfs -f -s 4k $dev
+  # mount $dev $mnt -o compress=zstd
+  # xfs_io -f -c "pwrite 0 4k" $mnt/foobar
+  # sync
+  # echo 3 > /proc/sys/vm/drop_caches
+  # xfs_io -f -c" pwrite 8k 4k" $mnt/foobar
+  # md5sum $mnt/foobar
+  65df683add4707de8200bad14745b9ec
+
+Meanwhile such workload should result a md5sum of
+  277f3840b275c74d01e979ea9d75ac19
 
 [CAUSE]
-There are several error paths not properly handling during folio
-writeback:
+The first buffered write into range [0, 4k) will result a compressed
+inline extent (relies on the patch "btrfs: allow inline data extents
+creation if sector size < page size" to create such inline extent):
 
-1) Partially submitted folio
-   During extent_writepage_io() if some error happened (the only
-   possible case is submit_one_sector() failed to grab an extent map),
-   then we can have partially submitted folio.
+	item 6 key (257 EXTENT_DATA 0) itemoff 15823 itemsize 40
+		generation 9 type 0 (inline)
+		inline extent data size 19 ram_bytes 4096 compression 3 (zstd)
 
-   Since extent_writepage_io() failed, we need to call
-   btrfs_mark_ordered_io_finished() to cleanup the submitted range.
+Then all page cache is dropped, and we do the new write into range
+[8K, 12K)
 
-   But we will call btrfs_mark_ordered_io_finished() for submitted range
-   too, causing double accounting.
+With the out-of-tree patch "btrfs: allow buffered write to skip full page if
+it's sector aligned", such aligned write won't trigger the full folio
+read, so we just dirtied range [8K, 12K), and range [0, 4K) is not
+uptodate.
 
-2) Partially created ordered extents
-   We cal also fail at writepage_delalloc(), which will stop creating
-   new ordered extents if it hit any error from
-   btrfs_run_delalloc_range().
+Then md5sum triggered the full folio read, causing us to read the
+inlined data extent.
 
-   In that case, we will call btrfs_mark_ordered_io_finished() for
-   ranges where there is no ordered extent at all.
-
-Both bugs are only affecting sector size < page size cases.
+Then inside function read_inline_extent() and uncomress_inline(), we zero
+out all the remaining part of the folio, including the new dirtied range
+[8K, 12K), leading to the corruption.
 
 [FIX]
-- Introduce a new member btrfs_bio_ctrl::last_submitted
-  This will trace the last sector submitted through
-  extent_writepage_io().
+Thankfully the bug is not yet reaching any end users.
+For upstream kernel, the [8K, 12K) write itself will trigger the full
+folio read before doing any write, thus everything is still fine.
 
-  So for the above extent_writepage() case, we will know exactly which
-  sectors are submitted and should not do the ordered extent accounting.
+Furthermore, for the existing btrfs users with sector size < page size
+(the most common one is Asahi Linux) with inline data extents created
+from x86_64, they are still fine, because two factors are saving us:
 
-- Clear the submit_bitmap for ranges where no ordered extent is created
-  So if btrfs_run_delalloc_range() failed for a range, it will be not
-  cleaned up.
+- Inline extents are always at offset 0
 
-- Introduce a helper cleanup_ordered_extents()
-  This will do a sector-by-sector cleanup with
-  btrfs_bio_ctrl::last_submitted and btrfs_bio_ctrl::submit_bitmap into
-  consideartion.
+- Folio read always follows the file offset order
 
-  Using @last_submitted is to avoid double accounting on the submitted
-  ranges.
-  Meanwhile using @submit_bitmap is to avoid touching ranges going
-  through compression.
+So we always read out the inline extent, zeroing the remaining folio
+(which has no contents yet), then read the next sector, copying the
+correct content to the zeroed out part.
+No end users are affected thankfully.
 
-cc: stable@vger.kernel.org # 5.15+
+The fix is to make both read_inline_extent() and uncomress_inline() to
+only zero out the sector, not the whole page.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 54 ++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 47 insertions(+), 7 deletions(-)
+ fs/btrfs/inode.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e629d2ee152a..1c2246d36672 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -108,6 +108,14 @@ struct btrfs_bio_ctrl {
- 	 * This is to avoid touching ranges covered by compression/inline.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 3ab6d183f5e8..25ed18c12a68 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6712,6 +6712,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
+ {
+ 	int ret;
+ 	struct extent_buffer *leaf = path->nodes[0];
++	const u32 sectorsize = leaf->fs_info->sectorsize;
+ 	char *tmp;
+ 	size_t max_size;
+ 	unsigned long inline_size;
+@@ -6740,17 +6741,19 @@ static noinline int uncompress_inline(struct btrfs_path *path,
+ 	 * cover that region here.
  	 */
- 	unsigned long submit_bitmap;
-+
-+	/*
-+	 * The end (exclusive) of the last submitted range in the folio.
-+	 *
-+	 * This is for sector size < page size case where we may hit error
-+	 * half way.
-+	 */
-+	u64 last_submitted;
- };
  
- static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-@@ -1254,11 +1262,18 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 
- 		/*
- 		 * We have some ranges that's going to be submitted asynchronously
--		 * (compression or inline).  These range have their own control
-+		 * (compression or inline, ret > 0).  These range have their own control
- 		 * on when to unlock the pages.  We should not touch them
--		 * anymore, so clear the range from the submission bitmap.
-+		 * anymore.
-+		 *
-+		 * We can also have some ranges where we didn't even call
-+		 * btrfs_run_delalloc_range() (as previous run failed, ret < 0).
-+		 * These error ranges should not be submitted nor cleaned up as
-+		 * there is no ordered extent allocated for them.
-+		 *
-+		 * For either cases, we should clear the submit_bitmap.
- 		 */
--		if (ret > 0) {
-+		if (ret) {
- 			unsigned int start_bit = (found_start - page_start) >>
- 						 fs_info->sectorsize_bits;
- 			unsigned int end_bit = (min(page_end + 1, found_start + found_len) -
-@@ -1435,6 +1450,7 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 		ret = submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
- 		if (ret < 0)
- 			goto out;
-+		bio_ctrl->last_submitted = cur + fs_info->sectorsize;
- 		submitted_io = true;
- 	}
- out:
-@@ -1453,6 +1469,24 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+-	if (max_size < PAGE_SIZE)
+-		folio_zero_range(folio, max_size, PAGE_SIZE - max_size);
++	if (max_size < sectorsize)
++		folio_zero_range(folio, max_size, sectorsize - max_size);
+ 	kfree(tmp);
  	return ret;
  }
  
-+static void cleanup_ordered_extents(struct btrfs_inode *inode,
-+				    struct folio *folio, u64 file_pos,
-+				    u64 num_bytes, unsigned long *bitmap)
-+{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	unsigned int cur_bit = (file_pos - folio_pos(folio)) >> fs_info->sectorsize_bits;
-+
-+	for_each_set_bit_from(cur_bit, bitmap, fs_info->sectors_per_page) {
-+		u64 cur_pos = folio_pos(folio) + (cur_bit << fs_info->sectorsize_bits);
-+
-+		if (cur_pos >= file_pos + num_bytes)
-+			break;
-+
-+		btrfs_mark_ordered_io_finished(inode, folio, cur_pos,
-+					       fs_info->sectorsize, false);
-+	}
-+}
-+
- /*
-  * the writepage semantics are similar to regular writepage.  extent
-  * records are inserted to lock ranges in the tree, and as dirty areas
-@@ -1492,6 +1526,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
- 	 * The proper bitmap can only be initialized until writepage_delalloc().
- 	 */
- 	bio_ctrl->submit_bitmap = (unsigned long)-1;
-+	bio_ctrl->last_submitted = page_start;
- 	ret = set_folio_extent_mapped(folio);
- 	if (ret < 0)
- 		goto done;
-@@ -1511,8 +1546,10 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+-static int read_inline_extent(struct btrfs_path *path, struct folio *folio)
++static int read_inline_extent(struct btrfs_fs_info *fs_info,
++			      struct btrfs_path *path, struct folio *folio)
+ {
+ 	struct btrfs_file_extent_item *fi;
+ 	void *kaddr;
+ 	size_t copy_size;
++	const u32 sectorsize = fs_info->sectorsize;
  
- done:
- 	if (ret) {
--		btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
--					       page_start, PAGE_SIZE, !ret);
-+		cleanup_ordered_extents(BTRFS_I(inode), folio,
-+				bio_ctrl->last_submitted,
-+				page_start + PAGE_SIZE - bio_ctrl->last_submitted,
-+				&bio_ctrl->submit_bitmap);
- 		mapping_set_error(folio->mapping, ret);
- 	}
+ 	if (!folio || folio_test_uptodate(folio))
+ 		return 0;
+@@ -6768,8 +6771,8 @@ static int read_inline_extent(struct btrfs_path *path, struct folio *folio)
+ 	read_extent_buffer(path->nodes[0], kaddr,
+ 			   btrfs_file_extent_inline_start(fi), copy_size);
+ 	kunmap_local(kaddr);
+-	if (copy_size < PAGE_SIZE)
+-		folio_zero_range(folio, copy_size, PAGE_SIZE - copy_size);
++	if (copy_size < sectorsize)
++		folio_zero_range(folio, copy_size, sectorsize - copy_size);
+ 	return 0;
+ }
  
-@@ -2288,14 +2325,17 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
- 		 * extent_writepage_io() will do the truncation correctly.
- 		 */
- 		bio_ctrl.submit_bitmap = (unsigned long)-1;
-+		bio_ctrl.last_submitted = cur;
- 		ret = extent_writepage_io(BTRFS_I(inode), folio, cur, cur_len,
- 					  &bio_ctrl, i_size);
- 		if (ret == 1)
- 			goto next_page;
+@@ -6944,7 +6947,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 		ASSERT(em->disk_bytenr == EXTENT_MAP_INLINE);
+ 		ASSERT(em->len == fs_info->sectorsize);
  
- 		if (ret) {
--			btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
--						       cur, cur_len, !ret);
-+			cleanup_ordered_extents(BTRFS_I(inode), folio,
-+					bio_ctrl.last_submitted,
-+					cur_end + 1 - bio_ctrl.last_submitted,
-+					&bio_ctrl.submit_bitmap);
- 			mapping_set_error(mapping, ret);
- 		}
- 		btrfs_folio_end_lock(fs_info, folio, cur, cur_len);
+-		ret = read_inline_extent(path, folio);
++		ret = read_inline_extent(fs_info, path, folio);
+ 		if (ret < 0)
+ 			goto out;
+ 		goto insert;
 -- 
 2.47.0
 
