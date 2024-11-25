@@ -1,234 +1,301 @@
-Return-Path: <linux-btrfs+bounces-9888-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9889-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7668B9D83B4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 11:45:10 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C339D8455
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 12:24:05 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3FDA1686A6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 10:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8895128498A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 11:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F1815DBB3;
-	Mon, 25 Nov 2024 10:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F00F199920;
+	Mon, 25 Nov 2024 11:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OMj66Qtp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BFPW1ZYf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DABDA54765
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2024 10:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1EE198A19;
+	Mon, 25 Nov 2024 11:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732531502; cv=none; b=YDJeGVPdzjbh2j/fv4YYaxJU3jtcAOyt6WIH/K8NTA+PywCM3iItC/dxFaQj9S3JDQrdwbnepfjotWENSPECtP3ICJwSXov/9WbeoVZHoTzL8vzN8TPagFeI11X2QiafkAAiTCtj61/fvCdU0uS1pb8zyQLzxTM6kIDni85vA7k=
+	t=1732533835; cv=none; b=fIakfMI/NUr3d6YKdf8VPBSGLU+eudXUxQy7kbGkk6coV1qMa7rairQlFzd8zgYfP+WW/LQVe1FbueU5B/qu4+Bl5M6N8u9YkWB3mg/Y5/VFtr3jNpfM5ideFSHOBAmf0bD++cHjQ+uDBAxRPidMYWAlTY+/40VYj/Qtg077ThU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732531502; c=relaxed/simple;
-	bh=kZdaHAQtCHnFnRq3H97r0Ug52tXwPXrGYKr2qs1glFI=;
+	s=arc-20240116; t=1732533835; c=relaxed/simple;
+	bh=QIe/5SOpMVjZG/VSB2hYXMoS58PeMejgW8vGitpkatE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fYmDt9uPtZf8HgQcsLO2zbGn85RjjooAE9m1FUizk0CxXycbopJbSSEB9fNuME2pv5bu7mT3V2WYZEGDJcltOQOfcjZDyKAIwvIahA+V4CavTibobC6580CZ/yl8rxcAk+nZDhf9Fz9mBcMRNv66xsTlZL2nWm8cYSY1kQ6s918=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OMj66Qtp; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3e5f968230bso1655127b6e.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2024 02:45:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732531500; x=1733136300; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o2ywDb4pqcHbTILd3FflHBb9fI4CP4o/IDmngu0zY28=;
-        b=OMj66QtpuQRD96RiRmlnRtpz/20HkvtwAbuKCpv1AjF9m47AE+iGCP0xfP0WWX12ch
-         3U6k2yVFD/d7+OX9VYMTTRgumU53tJSNZWa3bmL74xWb2RvjMHD3bBZVVABz5DDRf7s0
-         OmxlNhOsjHH8SOwgN3rtGXS4TyzIpyL7qYDuuN4RV8CT1niyL9K4clUfxHe8kzfnfBz3
-         gXjgphODpw8HTeSmxkffoppzobNgUXK8inS4MT/hYVYuPR0VmbAylnqOkFZCzlyZ9fjl
-         uItT5RhxjPrtRbV7jhW3n7nV2XJUlYbfjJ5gtuTpM1r/RZqcSA6oANW7T3gXsBVEKOMT
-         OPEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732531500; x=1733136300;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o2ywDb4pqcHbTILd3FflHBb9fI4CP4o/IDmngu0zY28=;
-        b=YpVeLAvnsLSDiGLiLBT+NmZt+WlBeqJOss6JQ97vq39Q11gsCmtOtOU14QvTG54Twn
-         H9ZsoVQctiEMX5zMs4W6efIPIa7DN6YZrePCrlZZlWyEzfw7r7QjgnaWWUlkkTPQ/yB3
-         rATGREPWwJu6Em5LpyXD68q12jA9Z8JeNu0rzgzi8pLmXf6A+Wx01e372oBvQu5nf6Wb
-         /igU6IPJiqYTyEqdTFLrWSEouywxvsR5yMTm7xeF+DVlaZUTOOICpKK/woTmwe457T2g
-         6U6wXAmjzlK4lyODRJxYgfBGr/cZzPQntXLpBbGiKf+lDkuyx/B37G+JKMBi2kI/wCnL
-         ABYg==
-X-Forwarded-Encrypted: i=1; AJvYcCWS3YlLkRHwAmf9UHb9fjrbn3ZeVehX42+umvBucnulw9vjTYdxua2JMf+MD3Mw+1dfhOhpX97YUbsD5g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYJcoZtOj401f8jGebQ3C/dn0KX5KED0xSEocVap9aFHspeJq4
-	1JGSdmn07we1UnCS0xdQrXNF39A8Wwj0qy0vS/E4nJGeG2CT3Islb0GUkeU6ivvCdcCW24FeSix
-	6ikxa2+07dd6jwBz1amiByjX9z0WoMsr7FtQa
-X-Gm-Gg: ASbGncvPJBPy4oAoKG1746cKnSe8PA3JXG8gt8XRZxrWSe/QsAO50mtQehBlTWrP8Uv
-	7HT6OCnug2NUHYVO1Oi1CDMfCojzsTlObXmpQU5uh6k2aBwP9wwkvKVLG9ua+fg==
-X-Google-Smtp-Source: AGHT+IH8TwjCvQn3Y6hEpYBfkn+q5l9OPxBB2DzQD1EFl2WttTCP0fZZCnC5hlT6wr5ifs2eGd9Q1HKmy9NrK+jFSMo=
-X-Received: by 2002:a05:6808:1882:b0:3e6:1057:21af with SMTP id
- 5614622812f47-3e915af0592mr8691789b6e.41.1732531499790; Mon, 25 Nov 2024
- 02:44:59 -0800 (PST)
+	 To:Cc:Content-Type; b=qsGFLNuLRgQP1dFajzJZtZGx/7Qpp6Duz3AlSt1WJ9sxBdidmGhFAtKxpMg10qg1Xt1uGDlmLrA/rXHSdeHwilUpB2uho0U3cH6dDJ74dwg8c09E/xIt9NY1xYc9PLNpEZBeWX7IhmFBCpxKVpHKLdJwXOL9CoaKKAnwLodtX1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BFPW1ZYf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93C8AC4CED2;
+	Mon, 25 Nov 2024 11:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732533835;
+	bh=QIe/5SOpMVjZG/VSB2hYXMoS58PeMejgW8vGitpkatE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BFPW1ZYfPMW+dJ9yUROpIARNQCvXly4ohp5Qn5oUPqYo/oMIAuuEy+Fd+F2dtK4KF
+	 Cx8V5FmxJ1l+90OevHuzoGOrNRPZhzJLN/XBx8ydbjw5AH1W/pr5i3AlG2A4QZyrTC
+	 i6KrSC35TI7i2hsdGurUzFWeEpwp70llgz/LOdGntfZIQzmiSPe3UQRvnJ1FM8kbe2
+	 Qnbi+zC0j1edy3hG89QU/gcojGG2MT3+PsASWdeVdAW5VQF2xHGZrw+IAcayRfQOGU
+	 cwGdf4B1osx4D9hJifvN64OAmRnuJ297T2bRvjAZ6Ut+oox5+hTFAOMNt+aWxRou2N
+	 ImGGIueEM6Ykg==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ffc76368c6so7345251fa.0;
+        Mon, 25 Nov 2024 03:23:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV9caofwsP06dogTk3vTvU6fXA5ErgbOUlorO742uIMxPnYvOPuHGGoKyxSpeQp9bI8Apw+AA/X@vger.kernel.org, AJvYcCX9jRtlHtoealj96o0nDgKISz8kHk/06roTUajKmuQr/VQ5O+PIIOZ8D2OyBe5UPAqLF5NuGNy2vLhqGw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAc6wFi0lg4Dr7gCrXjMKM23OKgdPcB+1VTUxey++4G8K5F/s/
+	eU3+7EcIwBABLdhWj1+bIX1J8F1xDM+DQhoEzlm6whs/dV9kymG1sBSIJv3pMlZ3JxDSuYu+mTR
+	PmQid4Cj4QFuC3r7kTkYExdiRMpU=
+X-Google-Smtp-Source: AGHT+IFhv2d61B2RrHMhonRCF1TU0Ryh643ZspntrcDL5fPWsQD/5uEtjCXcqmPaftm7bstHbpjevf/xt6y0hB8K9Zs=
+X-Received: by 2002:a2e:be9f:0:b0:2ff:c77c:c71e with SMTP id
+ 38308e7fff4ca-2ffc77cc9dfmr13078251fa.20.1732533833743; Mon, 25 Nov 2024
+ 03:23:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <67432dee.050a0220.1cc393.0041.GAE@google.com> <Z0OaHcMWcRtohZfz@casper.infradead.org>
- <b57b3d18-7a70-4efa-a356-809c6ab29c02@suse.com>
-In-Reply-To: <b57b3d18-7a70-4efa-a356-809c6ab29c02@suse.com>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Mon, 25 Nov 2024 11:44:48 +0100
-Message-ID: <CANp29Y7KjqP9h1ONFG5LW=3Nc0RWgcdj4PmAszqze0azPpvdLg@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in __folio_start_writeback
-To: Qu Wenruo <wqu@suse.com>
-Cc: Matthew Wilcox <willy@infradead.org>, 
-	syzbot <syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20241124123912.3335344-1-sashal@kernel.org> <20241124123912.3335344-13-sashal@kernel.org>
+In-Reply-To: <20241124123912.3335344-13-sashal@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 25 Nov 2024 11:23:17 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4n+7ZN228X9VGvgLX9S7cw5J27cJSGSiSCHjFbY9htLQ@mail.gmail.com>
+Message-ID: <CAL3q7H4n+7ZN228X9VGvgLX9S7cw5J27cJSGSiSCHjFbY9htLQ@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.12 13/19] btrfs: reduce lock contention when eb
+ cache miss for btree search
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Robbie Ko <robbieko@synology.com>, Filipe Manana <fdmanana@suse.com>, 
+	David Sterba <dsterba@suse.com>, clm@fb.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 25, 2024 at 1:30=E2=80=AFAM 'Qu Wenruo' via syzkaller-bugs
-<syzkaller-bugs@googlegroups.com> wrote:
+On Sun, Nov 24, 2024 at 12:46=E2=80=AFPM Sasha Levin <sashal@kernel.org> wr=
+ote:
 >
+> From: Robbie Ko <robbieko@synology.com>
 >
->
-> =E5=9C=A8 2024/11/25 07:56, Matthew Wilcox =E5=86=99=E9=81=93:
-> > On Sun, Nov 24, 2024 at 05:45:18AM -0800, syzbot wrote:
-> >>
-> >>   __fput+0x5ba/0xa50 fs/file_table.c:458
-> >>   task_work_run+0x24f/0x310 kernel/task_work.c:239
-> >>   resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
-> >>   exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
-> >>   exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
-> >>   __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
-> >>   syscall_exit_to_user_mode+0x13f/0x340 kernel/entry/common.c:218
-> >>   do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
-> >>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> >
-> > This is:
-> >
-> >          VM_BUG_ON_FOLIO(folio_test_writeback(folio), folio);
-> >
-> > ie we've called __folio_start_writeback() on a folio which is already
-> > under writeback.
-> >
-> > Higher up in the trace, we have the useful information:
-> >
-> >   page: refcount:6 mapcount:0 mapping:ffff888077139710 index:0x3 pfn:0x=
-72ae5
-> >   memcg:ffff888140adc000
-> >   aops:btrfs_aops ino:105 dentry name(?):"file2"
-> >   flags: 0xfff000000040ab(locked|waiters|uptodate|lru|private|writeback=
-|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-> >   raw: 00fff000000040ab ffffea0001c8f408 ffffea0000939708 ffff888077139=
-710
-> >   raw: 0000000000000003 0000000000000001 00000006ffffffff ffff888140adc=
-000
-> >   page dumped because: VM_BUG_ON_FOLIO(folio_test_writeback(folio))
-> >   page_owner tracks the page as allocated
-> >
-> > The interesting part of the page_owner stacktrace is:
-> >
-> >    filemap_alloc_folio_noprof+0xdf/0x500
-> >    __filemap_get_folio+0x446/0xbd0
-> >    prepare_one_folio+0xb6/0xa20
-> >    btrfs_buffered_write+0x6bd/0x1150
-> >    btrfs_direct_write+0x52d/0xa30
-> >    btrfs_do_write_iter+0x2a0/0x760
-> >    do_iter_readv_writev+0x600/0x880
-> >    vfs_writev+0x376/0xba0
-> >
-> > (ie not very interesting)
-> >
-> >> Workqueue: btrfs-delalloc btrfs_work_helper
-> >> RIP: 0010:__folio_start_writeback+0xc06/0x1050 mm/page-writeback.c:311=
-9
-> >> Call Trace:
-> >>   <TASK>
-> >>   process_one_folio fs/btrfs/extent_io.c:187 [inline]
-> >>   __process_folios_contig+0x31c/0x540 fs/btrfs/extent_io.c:216
-> >>   submit_one_async_extent fs/btrfs/inode.c:1229 [inline]
-> >>   submit_compressed_extents+0xdb3/0x16e0 fs/btrfs/inode.c:1632
-> >>   run_ordered_work fs/btrfs/async-thread.c:245 [inline]
-> >>   btrfs_work_helper+0x56b/0xc50 fs/btrfs/async-thread.c:324
-> >>   process_one_work kernel/workqueue.c:3229 [inline]
-> >
-> > This looks like a race?
-> >
-> > process_one_folio() calls
-> > btrfs_folio_clamp_set_writeback calls
-> > btrfs_subpage_set_writeback:
-> >
-> >          spin_lock_irqsave(&subpage->lock, flags);
-> >          bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sector=
-size_bits)
-> > ;
-> >          if (!folio_test_writeback(folio))
-> >                  folio_start_writeback(folio);
-> >          spin_unlock_irqrestore(&subpage->lock, flags);
-> >
-> > so somebody else set writeback after we tested for writeback here.
->
-> The test VM is using X86_64, thus we won't go into the subpage routine,
-> but directly call folio_start_writeback().
->
-> >
-> > One thing that comes to mind is that _usually_ we take folio_lock()
-> > first, then start writeback, then call folio_unlock() and btrfs isn't
-> > doing that here (afaict).  Maybe that's not the source of the bug?
->
-> We still hold the folio locked, do submission then unlock.
->
-> You can check extent_writepage(), where at the entrance we check if the
-> folio is still locked.
-> Then inside extent_writepage_io() we do the submission, setting the
-> folio writeback inside submit_one_sector().
-> Eventually unlock the folio at the end of extent_writepage(), that's for
-> the uncompressed writes.
->
-> There are a lot of special handling for async submission (compression),
-> but it  still holds the folio locked, do compression and submission, and
-> unlock, just all in another thread (this case).
->
-> So it looks like something is wrong when transferring the ownership of
-> the page cache folios to the compression path, or some not properly
-> handled error path.
->
-> Unfortunately I'm not really able to reproduce the case using the
-> reproducer...
+> [ Upstream commit 99785998ed1cea142e20f4904ced26537a37bf74 ]
 
-I've just tried to reproduce locally using the downloadable assets and
-the kernel crashed ~ after 1 minute of running the attached C repro.
+Why is this being picked for stable?
 
-[   87.616440][ T9044] ------------[ cut here ]------------
-[   87.617126][ T9044] kernel BUG at mm/page-writeback.c:3119!
-[   87.619308][ T9044] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PT=
-I
-[   87.620174][ T9044] CPU: 1 UID: 0 PID: 9044 Comm: kworker/u10:6 Not
-tainted 6.12.0-syzkaller-08446-g228a1157fb9f #0
+It's not a bug fix or anything critical.
+It's just a performance optimization, and it's not even one where we
+know (AFAIK) of any workload where it would give very significant
+gains to justify backporting to stable.
 
-Here are the instructions I followed:
-https://github.com/google/syzkaller/blob/master/docs/syzbot_assets.md#run-a=
--c-reproducer
-
---=20
-Aleksandr
+Thanks.
 
 >
-> Thanks,
-> Qu
+> When crawling btree, if an eb cache miss occurs, we change to use the eb
+> read lock and release all previous locks (including the parent lock) to
+> reduce lock contention.
 >
+> If an eb cache miss occurs in a leaf and needs to execute IO, before this
+> change we released locks only from level 2 and up and we read a leaf's
+> content from disk while holding a lock on its parent (level 1), causing
+> the unnecessary lock contention on the parent, after this change we
+> release locks from level 1 and up, but we lock level 0, and read leaf's
+> content from disk.
 >
+> Because we have prepared the check parameters and the read lock of eb we
+> hold, we can ensure that no race will occur during the check and cause
+> unexpected errors.
 >
-> >
-> > If it is, should we have a VM_BUG_ON_FOLIO(!folio_test_locked(folio), f=
-olio)
-> > in __folio_start_writeback()?  Or is there somewhere that can't lock th=
-e
-> > folio before starting writeback?
-> >
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Robbie Ko <robbieko@synology.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  fs/btrfs/ctree.c | 101 ++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 70 insertions(+), 31 deletions(-)
+>
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 0cc919d15b144..dd92acd66624f 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -1515,12 +1515,14 @@ read_block_for_search(struct btrfs_root *root, st=
+ruct btrfs_path *p,
+>         struct btrfs_tree_parent_check check =3D { 0 };
+>         u64 blocknr;
+>         u64 gen;
+> -       struct extent_buffer *tmp;
+> -       int ret;
+> +       struct extent_buffer *tmp =3D NULL;
+> +       int ret =3D 0;
+>         int parent_level;
+> -       bool unlock_up;
+> +       int err;
+> +       bool read_tmp =3D false;
+> +       bool tmp_locked =3D false;
+> +       bool path_released =3D false;
+>
+> -       unlock_up =3D ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level + =
+1]);
+>         blocknr =3D btrfs_node_blockptr(*eb_ret, slot);
+>         gen =3D btrfs_node_ptr_generation(*eb_ret, slot);
+>         parent_level =3D btrfs_header_level(*eb_ret);
+> @@ -1551,68 +1553,105 @@ read_block_for_search(struct btrfs_root *root, s=
+truct btrfs_path *p,
+>                          */
+>                         if (btrfs_verify_level_key(tmp,
+>                                         parent_level - 1, &check.first_ke=
+y, gen)) {
+> -                               free_extent_buffer(tmp);
+> -                               return -EUCLEAN;
+> +                               ret =3D -EUCLEAN;
+> +                               goto out;
+>                         }
+>                         *eb_ret =3D tmp;
+> -                       return 0;
+> +                       tmp =3D NULL;
+> +                       ret =3D 0;
+> +                       goto out;
+>                 }
+>
+>                 if (p->nowait) {
+> -                       free_extent_buffer(tmp);
+> -                       return -EAGAIN;
+> +                       ret =3D -EAGAIN;
+> +                       goto out;
+>                 }
+>
+> -               if (unlock_up)
+> +               if (!p->skip_locking) {
+>                         btrfs_unlock_up_safe(p, level + 1);
+> -
+> -               /* now we're allowed to do a blocking uptodate check */
+> -               ret =3D btrfs_read_extent_buffer(tmp, &check);
+> -               if (ret) {
+> -                       free_extent_buffer(tmp);
+> +                       tmp_locked =3D true;
+> +                       btrfs_tree_read_lock(tmp);
+>                         btrfs_release_path(p);
+> -                       return ret;
+> +                       ret =3D -EAGAIN;
+> +                       path_released =3D true;
+>                 }
+>
+> -               if (unlock_up)
+> -                       ret =3D -EAGAIN;
+> +               /* Now we're allowed to do a blocking uptodate check. */
+> +               err =3D btrfs_read_extent_buffer(tmp, &check);
+> +               if (err) {
+> +                       ret =3D err;
+> +                       goto out;
+> +               }
+>
+> +               if (ret =3D=3D 0) {
+> +                       ASSERT(!tmp_locked);
+> +                       *eb_ret =3D tmp;
+> +                       tmp =3D NULL;
+> +               }
+>                 goto out;
+>         } else if (p->nowait) {
+> -               return -EAGAIN;
+> +               ret =3D -EAGAIN;
+> +               goto out;
+>         }
+>
+> -       if (unlock_up) {
+> +       if (!p->skip_locking) {
+>                 btrfs_unlock_up_safe(p, level + 1);
+>                 ret =3D -EAGAIN;
+> -       } else {
+> -               ret =3D 0;
+>         }
+>
+>         if (p->reada !=3D READA_NONE)
+>                 reada_for_search(fs_info, p, level, slot, key->objectid);
+>
+> -       tmp =3D read_tree_block(fs_info, blocknr, &check);
+> +       tmp =3D btrfs_find_create_tree_block(fs_info, blocknr, check.owne=
+r_root, check.level);
+>         if (IS_ERR(tmp)) {
+> +               ret =3D PTR_ERR(tmp);
+> +               tmp =3D NULL;
+> +               goto out;
+> +       }
+> +       read_tmp =3D true;
+> +
+> +       if (!p->skip_locking) {
+> +               ASSERT(ret =3D=3D -EAGAIN);
+> +               tmp_locked =3D true;
+> +               btrfs_tree_read_lock(tmp);
+>                 btrfs_release_path(p);
+> -               return PTR_ERR(tmp);
+> +               path_released =3D true;
+> +       }
+> +
+> +       /* Now we're allowed to do a blocking uptodate check. */
+> +       err =3D btrfs_read_extent_buffer(tmp, &check);
+> +       if (err) {
+> +               ret =3D err;
+> +               goto out;
+>         }
+> +
+>         /*
+>          * If the read above didn't mark this buffer up to date,
+>          * it will never end up being up to date.  Set ret to EIO now
+>          * and give up so that our caller doesn't loop forever
+>          * on our EAGAINs.
+>          */
+> -       if (!extent_buffer_uptodate(tmp))
+> +       if (!extent_buffer_uptodate(tmp)) {
+>                 ret =3D -EIO;
+> +               goto out;
+> +       }
+>
+> -out:
+>         if (ret =3D=3D 0) {
+> +               ASSERT(!tmp_locked);
+>                 *eb_ret =3D tmp;
+> -       } else {
+> -               free_extent_buffer(tmp);
+> -               btrfs_release_path(p);
+> +               tmp =3D NULL;
+> +       }
+> +out:
+> +       if (tmp) {
+> +               if (tmp_locked)
+> +                       btrfs_tree_read_unlock(tmp);
+> +               if (read_tmp && ret && ret !=3D -EAGAIN)
+> +                       free_extent_buffer_stale(tmp);
+> +               else
+> +                       free_extent_buffer(tmp);
+>         }
+> +       if (ret && !path_released)
+> +               btrfs_release_path(p);
+>
+>         return ret;
+>  }
+> @@ -2198,7 +2237,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *tr=
+ans, struct btrfs_root *root,
+>                 }
+>
+>                 err =3D read_block_for_search(root, p, &b, level, slot, k=
+ey);
+> -               if (err =3D=3D -EAGAIN)
+> +               if (err =3D=3D -EAGAIN && !p->nowait)
+>                         goto again;
+>                 if (err) {
+>                         ret =3D err;
+> @@ -2325,7 +2364,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, =
+const struct btrfs_key *key,
+>                 }
+>
+>                 err =3D read_block_for_search(root, p, &b, level, slot, k=
+ey);
+> -               if (err =3D=3D -EAGAIN)
+> +               if (err =3D=3D -EAGAIN && !p->nowait)
+>                         goto again;
+>                 if (err) {
+>                         ret =3D err;
+> --
+> 2.43.0
+>
 >
 
