@@ -1,188 +1,125 @@
-Return-Path: <linux-btrfs+bounces-9925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9926-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CD89D9EDF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 22:30:34 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 325729D9F76
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2024 00:09:48 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EEBCB227AF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 21:30:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D92EE168AD5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 23:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6956D1DF74F;
-	Tue, 26 Nov 2024 21:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824931DEFC0;
+	Tue, 26 Nov 2024 23:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TooC99W1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d6xCoSzi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220FD1DDA24
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 21:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303B91ACDED
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 23:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732656624; cv=none; b=ob2/54jL5UnNKNfwhRTQq/Br2PcicAnSJvsjtPYMBlKbHrWP8ykAMjc8HTiuk3aWjyeu56EQ57aDptMWxOMP/zwFc5sw/TuCYJh3/5jWRnLikkDskNwS1LzpMqm3En2nMZUnmTeBYJ16irigIzJeOUx7BDm8OnND9lG+N+WBNIA=
+	t=1732662582; cv=none; b=lPDMZBnt3jVY8WlCP0e6jxISrvaYDXVzTc6IiJStsESfcYGXK4A/cpn8rk3T0F+PV0FuUNDindgVkFB7ffRPHB50lD3eTd0454dBipRoMTCPwxdp/SWM/Ag1Qk9SiP6VehmlEFgicAEF35cSDGgOZGkU29SkuQ1F8K0wM+aRiVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732656624; c=relaxed/simple;
-	bh=nc/kPL7x06z/7C1m3uApAa8hQ9eu75T8uVpyBBjvRvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=umARwtsrSu2jyCwHnmjZ1YWYFNVgEmG8Cn0rlcUDC14jnbm7byMduvmYT9P6W7aM4XRrgz6JKTRi2wsfXytLtZFNI/xN/JaLhnV2H8t9oSqa3IfY4Vx6A/EW83HSUgKNqW0eXBtKeKXo/KZ5QVjM1EXHVmQlOg9+YnEA0JcUYLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TooC99W1; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1732656619; x=1733261419; i=quwenruo.btrfs@gmx.com;
-	bh=Qp0fHoUV5Xcs1doq0R7Wz5l+mtxeyf3OzBDFwR6VXM0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=TooC99W183sQhCwcHy1cMNbNYXmKxSzpVVTLwuCp0yJBR9itPBDxgtRSKMlQX57p
-	 zNbWPHkZOWWtMVHUmEe3XT7BenNQI0d8DTOdPlWrFd3GJHsyVlSrTeolzI75dNI6b
-	 bfVBz+6Ex98upxLVpxegPixn1fWxMtdJx4ke/4UAvmjhMwZlNVCDsvFn7M26k0jxr
-	 P/JayJsIr43wW6D0lcz26foMI9px37EKq4oIBpSkL93H2cHciaza4nJBuMBm3St16
-	 g89RW+qCpQArSzn388SG2MiXm3NIbwKmCFx6XrbbbdMyfaNq+uEnbYch6aBYupCAU
-	 ZhSaKkZxu4GywwEbwg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGQj7-1tUYf00CT7-00FOwr; Tue, 26
- Nov 2024 22:30:19 +0100
-Message-ID: <1748c8ff-30a6-4583-bdbb-b3513bc3d860@gmx.com>
-Date: Wed, 27 Nov 2024 08:00:15 +1030
+	s=arc-20240116; t=1732662582; c=relaxed/simple;
+	bh=sZmY+CmpI1Oq/9817F5e10FA/AK91kXvlmO1Ek8+2zg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FGYBcUhoIPhglt0IYXC3LS2fu+CjmOWB6wRsz5um0fAhRRS27IW4/CQZthut/l7LnS5MKoxxTltMnIWYUPRgjDd95t51MvetIT71IDupAMaStbp+x3d0nwQDuBoOxleL8yQJRXyZait2V1pcIQ7+F89NkR+vemLHJaF5XiSd4NU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d6xCoSzi; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-53da353eb2eso9593143e87.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 15:09:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732662579; x=1733267379; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sZmY+CmpI1Oq/9817F5e10FA/AK91kXvlmO1Ek8+2zg=;
+        b=d6xCoSziX5eS2g9d7TUGHD9HmGOfMrrffdb2yO3FAkSQjb/1mYkofTI7t12mrXMQj3
+         e8kZ+oSZjeoUdi9g7AvWY3aSoxeJHwMpFVeHoxdRV6CoQOgrWMINrNTyPki9o9fTP5xr
+         FjvAvLiPdcD+/YofzAQKSViknAKEgC4gAVNYsMrQqT2KsXQKMhH5Hd0XULyiZfwv0usj
+         uCU745dU6n5ckMR0jZ/+Yy6k2G/CpL3J5rm7KD3MCxk42uz7UhXFoHqZvCmF9HZtzUrj
+         pqax2sJwEaEn/QkvGYdSZbZ3QkjDviUsG9e/txVzmm+HyZ5CFA8tQq5mccMW52QxK+kZ
+         2GCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732662579; x=1733267379;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sZmY+CmpI1Oq/9817F5e10FA/AK91kXvlmO1Ek8+2zg=;
+        b=jPa4O6cWM7G/1Wf3/tgSDhcqD1gqjlzGBwOgVwCo0IREVQU8Id9UVcLiGKCLNJqozL
+         R8/nI03/rMG/2FYVNZxv4VWVwtBjyJr+3CvAAK075/CYq8Yfs0tYAJrCdA2HviMstidf
+         pP6FqMyMm4JBmQZSgUMYAVxoOgmKSVUbjytbcGVVb5d2U/G6lReosV393b6uw0EKpmOI
+         Nd8hlsQ6t0Cda44jrVR7uiMG08WMd/Aa1R9qYTMvCmnqo+0iyIYv6VoQ2OnhAtdA3nDI
+         n5GRLqkwK0gADuyZZkKQ9tHyiBfeyUFxJ9LVv+8LsEpUVrqSqViFJnjnlohRSmR7+QN/
+         ZInQ==
+X-Gm-Message-State: AOJu0YxugDIAoxNGf3JCV4APoK1y7wduf/bHrW01fLKIrj5or8yukS5v
+	aYU3PkKFA6GmuB34TU2GC5BRhUfcLS8zMrA+yibDDjkv+/oB6pZRcjshhBDpBdPLIE5/PtAD6vP
+	Ov6au6Jw8TlOBu7Fq2GrUfubF7wae462h
+X-Gm-Gg: ASbGnct0PNa7LLZDEfoQ7iiftXa6BgQ56ysgeEkPL8pfAxxiUzJUOblARkFZeH8RBzf
+	L4Bv/orjvf2ZNTzfs0v6Q3TwSSwUKWtCvkklhEwngzRvs4d+zf3EKUXra+QRfOwEO
+X-Google-Smtp-Source: AGHT+IG+8d2G5pIUT0i6y/uPJ2EgGCi+TTKpTsdWn6juIRcJRibguM8qcmpNriI8zD+gLxNE0IftcXvdE0iB+idahpM=
+X-Received: by 2002:a05:6512:2389:b0:53d:dbc1:f332 with SMTP id
+ 2adb3069b0e04-53df00d9452mr453243e87.25.1732662579104; Tue, 26 Nov 2024
+ 15:09:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
+ <1748c8ff-30a6-4583-bdbb-b3513bc3d860@gmx.com>
+In-Reply-To: <1748c8ff-30a6-4583-bdbb-b3513bc3d860@gmx.com>
+From: Brett Dikeman <brett.dikeman@gmail.com>
+Date: Tue, 26 Nov 2024 18:09:27 -0500
+Message-ID: <CAFiC_bzov3zete3VabFQQMQ3rUS-TdHikNqRMUW_xggFmrtoNw@mail.gmail.com>
 Subject: Re: corrupt leaf, invalid data ref objectid value, read time tree
  block corruption detected Inbox
-To: Brett Dikeman <brett.dikeman@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WSO7tC85/IxNCUnAgBTNVJFCLq3aY6y8X50VWCwO2gouS4PG6Yy
- 7rZiZlvyOStR5Jid11gVJlzOK22h6nP0eoVlMJMp7OxgqY4kbNjtRqX9ebHGLkkY1y46rcp
- Bf1rASwVRvVDWyfaAjOESztINfMGsCFjA7E8Pb/Rr9GO13NuXdlpnIMMrR1f5EiFFsHZXPJ
- tFyjWYtwfjKpa0NygdzpA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mG3l2v5O2vo=;yLFJIPWdGz+0SwHEPBE1L3gCOpB
- EPB0GG85Kvxy4J5vg0r25wITRhw9SKQgQZl2KhQv/GT1h2Lzc+upZ+Y3h6cFJQEIO/roitZlf
- mBs2Jbbu31DliWDJ/LgpSENeoclhmt9nec0G7UjzUnIKLSfxypw8fnuKjtgpNLIM5byp7bMA7
- DaIXy+GUSojNkbbEvXjzlOmq6/4LFCPZAxAfloZIO2HgioyrgZ+CUph5/pcjNLzzs0u5jZcZL
- q8Bwd512bCMTYWQaW2VfQM4HBaunvc27gG7LTNSPxqn4pK0732dnHT5vqBOZaU9jpYEo1h0K0
- EG+L0Ekkft+lV8U6VlTt28T5hVykGebm9HziXKSBFyRsECApvs1FmIUyuCwQqH8jmYTQLEKcn
- 3SSg6zmIpy4YMYhkTlaW7ltOTnKH8Zf8ZGNMEBJ2cKR8RZcPYISjlGKjlMLU5fNvIdYb445GS
- LmvpONL6afd8QGIKHxFxqauL5GMiKbXnUcs/Vdl3aVVta8U46mYxjKMs57D6pOqRE0r2qNaoW
- t3kZyi9cMUPC9F7VNjfcpd+X6q/m2TQCi+14m6F5CafTN9ewpx25tFtE0/9gSRNrzNUgUVcdw
- bjWK2TJEJU4WmscnIoyZ6LKGSdi3jsKFYgpuc6e+q2Xq+sjEgzf0iSpBtp4JDdfiYOu17aWS3
- sxiO9IyV6cgEP4tz9xEGnJUE2i3REDIHEpT1RZRpQ+HHxaPFKtZH9UbI8Z8fU29ncLzym43Mv
- LIDe0d2jkbmTDxv3PPwZ7/23KNSpAl808b4d8I6DTiTrOTiEj4vmntCFvrvf4+CjqcqVKqkLh
- KuKNwDfyDUoxPgbiCcTyJK2wFfNJG/ao4Xv+lF92gz8nnd2gFUPCzG9Rzhp7lGKxe+ElvvV6d
- 1wfJ310zD5exstIA7RpA8jjOgyEARFd4Lcz3yuXt6ajVTB8BReDEMZ3aswjXGORb9tmnGhyst
- q7M75aIaWOMmAEMo0JJdhJ9HKruXoW8V8BqCqTV2igwFFtAnC8nLFXONBYw6A6xL5p4IYMcaE
- 93LrAfQ66j4458wh5/PKKNjOxLQ7awqTMxh0U5Ba69g9ehzfv4Mhg/6VG3iP2t3hV05YNOx6o
- IjW2OoYoP42vFpsyWuodoN+suEdv9A
 
+On Tue, Nov 26, 2024 at 4:30=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
 
+> Inode cache is what you need to clear.
 
-=E5=9C=A8 2024/11/27 02:41, Brett Dikeman =E5=86=99=E9=81=93:
-> Greetings,
->
-> I have a filesystem that re-mounted read-only very shortly after I
-> started a btrfs defrag with zst compression enabled (which is not to
-> say I think this was the cause.) The volume  resides on a Debian
-> Bookworm system and is very simple configuration/feature-wise; it does
-> not use quotas, snapshots, or sub-volumes. In the few hours prior to
-> running the defrag command, I deleted a large number of files that
-> totaled about 100GB of space. Prior to that, the filesystem hasn't
-> seen changes in months; even atimes are disabled.
->
-> btrfs check completes with no errors generated in dmesg or the
-> terminal during the check, it takes what seems like a reasonable
-> amount of time with not much interruption in disk activity. A scrub
-> progresses at expected speeds but suddenly stops with a status of
-> "success" after a few GB.). There are no signs of drive failure from
-> SMART parameters, and no kernel messages that would suggest drive
-> failure, such as timeouts or SATA errors. However, I am currently
-> running a nondestructive-write badblocks test to address this
-> possibility a bit more - both drives have made it  in to 10% so far,
-> with no errors in dmesg or badblocks.
->
-> What I have tried:
->
-> - upgraded btrfsprogs to bookworm-backports because bookworm's
-> btrfsprogs is old enough that it doesn't include several rescue
-> commands.
-> - clearing the zero log
-> - clearing the inode cache
+Brilliant! Thank you, Qu. It did mount cleanly. Shame Debian's
+toolchain is so out-of-date. I pinged the maintainer asking if they
+could pull 6.11.
 
-Inode cache is what you need to clear.
+Is there anything I could have done that would have caused the
+corrupted inode cache?
 
-But you need a much newer progs, at least v6.11, to fully clear the
-inode cache.
+'btrfs check' thought the second drive was busy after unmounting, but
+a reboot cured that.
 
-> - clearing the space cache.
->
-> It was mounting OK until around when I updated the tools package and
-> ran some of the above commands. During one attempt to run a scrub,
-> there was dmesg output I unfortunately did not catch, but I remember
-> something that looked similar to what I've seen when I had md array
-> that ended up with different-aged metadata when one drive was booted
-> out of a 4-drive array; I had to force md to ignore its timestamp.
->
-> Any recommendations on how to proceed would be greatly appreciated.
-> dmesg output is included as an attachment.
->
-> uname -a output:
-> 6.11.5+bpo-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.11.5-1~bpo12+1
-> (2024-11-11) x86_64 GNU/Linux
->
-> btrfs version:
-> btrfs-progs v6.6.3
+check found the following; Is the fix for this to clear the free space cach=
+e?
 
-Too old progs, that will not fully clear all inode cache.
-
-After using v6.11 to fully clear inode cache, your fs should be totally
-fine.
-
-Thanks,
-Qu
->
-> #  btrfs fi show
-> Label: none  uuid: b1e76acd-525d-46f2-b2a6-b0403dcdc135
-> Total devices 2 FS bytes used 1.37TiB
-> devid    1 size 1.82TiB used 1.44TiB path /dev/sdd
-> devid    2 size 1.82TiB used 1.44TiB path /dev/sdc
-
+[1/8] checking log skipped (none written)
+[2/8] checking root items
+[3/8] checking extents
+[4/8] checking free space cache
+block group 6471811072 has wrong amount of free space, free space
+cache has 42901504 block group has 43040768
+failed to load free space cache for block group 6471811072
+[5/8] checking fs roots
+[6/8] checking only csums items (without verifying data)
+[7/8] checking root refs
+[8/8] checking quota groups skipped (not enabled on this FS)
+found 1504346918912 bytes used, no error found
+total csum bytes: 1466184264
+total tree bytes: 2501361664
+total fs tree bytes: 718209024
+total extent tree bytes: 106008576
+btree space waste bytes: 375584870
+file data blocks allocated: 1512284389376
+ referenced 1380845105152
 
