@@ -1,79 +1,56 @@
-Return-Path: <linux-btrfs+bounces-9924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E6949D9E5A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 21:19:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15CD89D9EDF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 22:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19CBC2854F1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 20:19:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EEBCB227AF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 21:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702A91DE894;
-	Tue, 26 Nov 2024 20:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6956D1DF74F;
+	Tue, 26 Nov 2024 21:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GHuXwZWC"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TooC99W1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4712A13AD18
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 20:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220FD1DDA24
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 21:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732652373; cv=none; b=RVK3QO8rEDx0Y0rA99/fDFKmPZnG4rseK4/yZi5Up6GCtTp0xAPi1XXPyu41DbrdD4/6j4jY9aDGixccJvAXPmRY6ladYMv9qcNqMUZtBfy6wy8+Wh2y/q2j/NdDtNYcgOostD2GgEocZ5b+NHFLU49wBawreJB34YRBxhoRWIw=
+	t=1732656624; cv=none; b=ob2/54jL5UnNKNfwhRTQq/Br2PcicAnSJvsjtPYMBlKbHrWP8ykAMjc8HTiuk3aWjyeu56EQ57aDptMWxOMP/zwFc5sw/TuCYJh3/5jWRnLikkDskNwS1LzpMqm3En2nMZUnmTeBYJ16irigIzJeOUx7BDm8OnND9lG+N+WBNIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732652373; c=relaxed/simple;
-	bh=12b369pzBQ6U5ajgNObRTLsD38/43bJ8gUC9pORQmX4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jk1x6o55K3h1f1dxQzDmvTfEpKGsUnibg+jF53cf9TKa2LLp8+6exbcGozBPEdCt75pGPyXKFMKoHIcpzedCQOi0yF2y8U3knaT7jUexSnYaytIIGlBqcZaDG6R99sWgdZhqH9sQMEe8ZUBYPaIM9B9kfmm7J3UN3MqI9y8w8Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GHuXwZWC; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4314c4cb752so55101615e9.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 12:19:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1732652369; x=1733257169; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=2dNSUPTomNcRmsS+1bEVJZpFYySMYDqUFlQRzVqiXek=;
-        b=GHuXwZWCwcuvbd8Qep5/j6aiHVSB5ZVmhhvZCgOzVdoEng/5XbAu2wcJEUUvLBPmPZ
-         DoOS82SfGrH90yYH84J/lr+qQSzfNJiVsyJKKas1ne9pkHuQWD0aPLcVPLHGWp3uNXm2
-         G5mJm7E4EkxsS/vNgJYzFECzoiAZiOTgaT7rz9o6E8zfSR6acTjB920cWV0qFv/0SUv5
-         ROCpNnWLkzsM/U+fgO5lU0VRDGlKuZPgIZ0c8nnATJ07h/KUNnt9AqcUXGwDJAddEuMT
-         X7rf4dwtjAmoNJKcGZynDRFtbhfq/cTIUgeo2/fhA7dKkV80Jbywvpxr9Ids+Fstzo0V
-         tdTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732652369; x=1733257169;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2dNSUPTomNcRmsS+1bEVJZpFYySMYDqUFlQRzVqiXek=;
-        b=TP5IiepYO54tp1Hl6HdO9Xtjp1hvUc81CJsR0K8M6wDwPwnmlYp3J0PYxo4mnOdNmo
-         dbp42CxyV09D6qSo393rBRdn6QXdrjJSim+Mdqr4I4RBVqaehX3kkrcqM31Vk/1eeCsg
-         kSUirAoLxSZjfvXie4TZFwIQW4pvGPhfC1Z03Lfv23fGCF4lhJwQz2yxerzkrC5JR98F
-         LkO3zgC/y1LDZebkJVzL16WpJ1WHNyj2i5C5Oz68HKe3z0g1qRjTtIbJmraaWcfm4fTh
-         2kXfr/sx84ttPfqYHPRtxMQQN4gtI69Qd0d0TGDEIbE94387fxDRDtlZB0BYaZusKNZj
-         DuIQ==
-X-Gm-Message-State: AOJu0Yx/S5vl0l9w9xZY/Et9LhUZrBJ0PHfrQliAspe92VaU86RSdmeS
-	3s0iejTfyRUTdVlotu/ssvu1SYznphPjxWjovH+fnDZcn7naRItyw0WKWTOCyuo=
-X-Gm-Gg: ASbGnct64TvU9dLnsNE/Zy7lDDpqNHaLjbrGmgeT583VVnpV6pk5GlwrMyF+LjFKoLe
-	I0XxpBWE1cptCcI1wRbffnqOBADFbVQnPi2mHw04B71kPetwShPdkC7yjPk8E6EPhOCfRGvhI20
-	2kEnQqM74QF2AlbjN5lSUupn1u5QBMYhcye3+8ulSRVwa8rQrDvUNkA96DRlwtYWOaHuQXondlu
-	z3NwEQ5HkyH8fOhlqJZ3UPE1ey0HsH/eoByV6zjZvGIUE9LlPSqvr7suLr+3tzWLT4Q2bTmG77U
-	MQ==
-X-Google-Smtp-Source: AGHT+IF8FRNDT4xzDBWiXuqY/LVm7UmzDDcfEG7YVWQ6FtN0imydyLUVn2K2seMNM8rOEz6nXfyCoA==
-X-Received: by 2002:a05:6000:1541:b0:37e:f8a1:596e with SMTP id ffacd0b85a97d-385c6eb6aeemr195024f8f.11.1732652369376;
-        Tue, 26 Nov 2024 12:19:29 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de454bd4sm9072994b3a.26.2024.11.26.12.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Nov 2024 12:19:28 -0800 (PST)
-Message-ID: <e2047224-4fdf-4801-9006-1ef88ec53944@suse.com>
-Date: Wed, 27 Nov 2024 06:49:25 +1030
+	s=arc-20240116; t=1732656624; c=relaxed/simple;
+	bh=nc/kPL7x06z/7C1m3uApAa8hQ9eu75T8uVpyBBjvRvE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=umARwtsrSu2jyCwHnmjZ1YWYFNVgEmG8Cn0rlcUDC14jnbm7byMduvmYT9P6W7aM4XRrgz6JKTRi2wsfXytLtZFNI/xN/JaLhnV2H8t9oSqa3IfY4Vx6A/EW83HSUgKNqW0eXBtKeKXo/KZ5QVjM1EXHVmQlOg9+YnEA0JcUYLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TooC99W1; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1732656619; x=1733261419; i=quwenruo.btrfs@gmx.com;
+	bh=Qp0fHoUV5Xcs1doq0R7Wz5l+mtxeyf3OzBDFwR6VXM0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=TooC99W183sQhCwcHy1cMNbNYXmKxSzpVVTLwuCp0yJBR9itPBDxgtRSKMlQX57p
+	 zNbWPHkZOWWtMVHUmEe3XT7BenNQI0d8DTOdPlWrFd3GJHsyVlSrTeolzI75dNI6b
+	 bfVBz+6Ex98upxLVpxegPixn1fWxMtdJx4ke/4UAvmjhMwZlNVCDsvFn7M26k0jxr
+	 P/JayJsIr43wW6D0lcz26foMI9px37EKq4oIBpSkL93H2cHciaza4nJBuMBm3St16
+	 g89RW+qCpQArSzn388SG2MiXm3NIbwKmCFx6XrbbbdMyfaNq+uEnbYch6aBYupCAU
+	 ZhSaKkZxu4GywwEbwg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGQj7-1tUYf00CT7-00FOwr; Tue, 26
+ Nov 2024 22:30:19 +0100
+Message-ID: <1748c8ff-30a6-4583-bdbb-b3513bc3d860@gmx.com>
+Date: Wed, 27 Nov 2024 08:00:15 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,72 +58,131 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] btrfs: fix double accounting of ordered extents
- during errors
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1730269807.git.wqu@suse.com>
- <2faab8a96c6dd2a414a96e4cebae97ecbddf021d.1730269807.git.wqu@suse.com>
- <2327765d-c139-495e-94f0-5bab11adf440@suse.com>
- <20241126160817.GJ31418@twin.jikos.cz>
+Subject: Re: corrupt leaf, invalid data ref objectid value, read time tree
+ block corruption detected Inbox
+To: Brett Dikeman <brett.dikeman@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20241126160817.GJ31418@twin.jikos.cz>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WSO7tC85/IxNCUnAgBTNVJFCLq3aY6y8X50VWCwO2gouS4PG6Yy
+ 7rZiZlvyOStR5Jid11gVJlzOK22h6nP0eoVlMJMp7OxgqY4kbNjtRqX9ebHGLkkY1y46rcp
+ Bf1rASwVRvVDWyfaAjOESztINfMGsCFjA7E8Pb/Rr9GO13NuXdlpnIMMrR1f5EiFFsHZXPJ
+ tFyjWYtwfjKpa0NygdzpA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:mG3l2v5O2vo=;yLFJIPWdGz+0SwHEPBE1L3gCOpB
+ EPB0GG85Kvxy4J5vg0r25wITRhw9SKQgQZl2KhQv/GT1h2Lzc+upZ+Y3h6cFJQEIO/roitZlf
+ mBs2Jbbu31DliWDJ/LgpSENeoclhmt9nec0G7UjzUnIKLSfxypw8fnuKjtgpNLIM5byp7bMA7
+ DaIXy+GUSojNkbbEvXjzlOmq6/4LFCPZAxAfloZIO2HgioyrgZ+CUph5/pcjNLzzs0u5jZcZL
+ q8Bwd512bCMTYWQaW2VfQM4HBaunvc27gG7LTNSPxqn4pK0732dnHT5vqBOZaU9jpYEo1h0K0
+ EG+L0Ekkft+lV8U6VlTt28T5hVykGebm9HziXKSBFyRsECApvs1FmIUyuCwQqH8jmYTQLEKcn
+ 3SSg6zmIpy4YMYhkTlaW7ltOTnKH8Zf8ZGNMEBJ2cKR8RZcPYISjlGKjlMLU5fNvIdYb445GS
+ LmvpONL6afd8QGIKHxFxqauL5GMiKbXnUcs/Vdl3aVVta8U46mYxjKMs57D6pOqRE0r2qNaoW
+ t3kZyi9cMUPC9F7VNjfcpd+X6q/m2TQCi+14m6F5CafTN9ewpx25tFtE0/9gSRNrzNUgUVcdw
+ bjWK2TJEJU4WmscnIoyZ6LKGSdi3jsKFYgpuc6e+q2Xq+sjEgzf0iSpBtp4JDdfiYOu17aWS3
+ sxiO9IyV6cgEP4tz9xEGnJUE2i3REDIHEpT1RZRpQ+HHxaPFKtZH9UbI8Z8fU29ncLzym43Mv
+ LIDe0d2jkbmTDxv3PPwZ7/23KNSpAl808b4d8I6DTiTrOTiEj4vmntCFvrvf4+CjqcqVKqkLh
+ KuKNwDfyDUoxPgbiCcTyJK2wFfNJG/ao4Xv+lF92gz8nnd2gFUPCzG9Rzhp7lGKxe+ElvvV6d
+ 1wfJ310zD5exstIA7RpA8jjOgyEARFd4Lcz3yuXt6ajVTB8BReDEMZ3aswjXGORb9tmnGhyst
+ q7M75aIaWOMmAEMo0JJdhJ9HKruXoW8V8BqCqTV2igwFFtAnC8nLFXONBYw6A6xL5p4IYMcaE
+ 93LrAfQ66j4458wh5/PKKNjOxLQ7awqTMxh0U5Ba69g9ehzfv4Mhg/6VG3iP2t3hV05YNOx6o
+ IjW2OoYoP42vFpsyWuodoN+suEdv9A
 
 
 
-在 2024/11/27 02:38, David Sterba 写道:
-> On Sun, Nov 24, 2024 at 06:01:27PM +1030, Qu Wenruo wrote:
->> I know this is part of the subpage patches, but this is really a bug fix
->> for the existing subpage handling.
->>
->> Appreciate if anyone can give this a review.
-> 
-> Looks correct to me. One suggestion to clean up the parameters and to
-> pass bio_ctrl and read the last_sibmitted and the bitmap directly, so
-> something like that:
-> 
-> cleanup_ordered_extents(BTRFS_I(inode), folio, &bio_ctrl, cur_end + 1);
-> 
-> replacing the parameters with the values in the function. Though after
-> another thought, the explicit expressions like
-> "page_start + PAGE_SIZE - bio_ctrl->last_submitted"
-> and "cur_end + 1 - bio_ctrl.last_submitted" make it a bit readable. Up
-> to you.
+=E5=9C=A8 2024/11/27 02:41, Brett Dikeman =E5=86=99=E9=81=93:
+> Greetings,
+>
+> I have a filesystem that re-mounted read-only very shortly after I
+> started a btrfs defrag with zst compression enabled (which is not to
+> say I think this was the cause.) The volume  resides on a Debian
+> Bookworm system and is very simple configuration/feature-wise; it does
+> not use quotas, snapshots, or sub-volumes. In the few hours prior to
+> running the defrag command, I deleted a large number of files that
+> totaled about 100GB of space. Prior to that, the filesystem hasn't
+> seen changes in months; even atimes are disabled.
+>
+> btrfs check completes with no errors generated in dmesg or the
+> terminal during the check, it takes what seems like a reasonable
+> amount of time with not much interruption in disk activity. A scrub
+> progresses at expected speeds but suddenly stops with a status of
+> "success" after a few GB.). There are no signs of drive failure from
+> SMART parameters, and no kernel messages that would suggest drive
+> failure, such as timeouts or SATA errors. However, I am currently
+> running a nondestructive-write badblocks test to address this
+> possibility a bit more - both drives have made it  in to 10% so far,
+> with no errors in dmesg or badblocks.
+>
+> What I have tried:
+>
+> - upgraded btrfsprogs to bookworm-backports because bookworm's
+> btrfsprogs is old enough that it doesn't include several rescue
+> commands.
+> - clearing the zero log
+> - clearing the inode cache
 
-This one is replaced by this series:
+Inode cache is what you need to clear.
 
-https://lore.kernel.org/linux-btrfs/cover.1732596971.git.wqu@suse.com/
+But you need a much newer progs, at least v6.11, to fully clear the
+inode cache.
 
-However I'm still hitting hangs where some ordered extent never finishes.
-(At least better than crash, but still not ideal)
+> - clearing the space cache.
+>
+> It was mounting OK until around when I updated the tools package and
+> ran some of the above commands. During one attempt to run a scrub,
+> there was dmesg output I unfortunately did not catch, but I remember
+> something that looked similar to what I've seen when I had md array
+> that ended up with different-aged metadata when one drive was booted
+> out of a 4-drive array; I had to force md to ignore its timestamp.
+>
+> Any recommendations on how to proceed would be greatly appreciated.
+> dmesg output is included as an attachment.
+>
+> uname -a output:
+> 6.11.5+bpo-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.11.5-1~bpo12+1
+> (2024-11-11) x86_64 GNU/Linux
+>
+> btrfs version:
+> btrfs-progs v6.6.3
+
+Too old progs, that will not fully clear all inode cache.
+
+After using v6.11 to fully clear inode cache, your fs should be totally
+fine.
 
 Thanks,
 Qu
+>
+> #  btrfs fi show
+> Label: none  uuid: b1e76acd-525d-46f2-b2a6-b0403dcdc135
+> Total devices 2 FS bytes used 1.37TiB
+> devid    1 size 1.82TiB used 1.44TiB path /dev/sdd
+> devid    2 size 1.82TiB used 1.44TiB path /dev/sdc
+
 
