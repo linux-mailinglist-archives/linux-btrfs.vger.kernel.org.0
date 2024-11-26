@@ -1,190 +1,380 @@
-Return-Path: <linux-btrfs+bounces-9902-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9903-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A63AF9D8EBC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 23:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 624849D8F66
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 01:02:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A6D728110B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2024 22:55:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2264A28B2E7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 00:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960B01C9B7A;
-	Mon, 25 Nov 2024 22:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A25Pdiqm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAC279DC;
+	Tue, 26 Nov 2024 00:02:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2F216EB4C
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2024 22:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A74F4C83
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 00:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732575315; cv=none; b=bU57Roz3x0SUiIdNbVgmz3211NmxD08k+9RSmKgvL+56Ley8j1TSUbJKPbuU4UoPP845XFrFrx9SXGaNYUKDRJWaKNQYQVG5/CcRqZuez9vcIW7Ob57Gj7A29W+XqY5pmb/+PXNUbGeo4/Am9VPRGrdQWdIXoTtwrzkXvCMcJBI=
+	t=1732579350; cv=none; b=Z4gb1s2NRQRL+p/FnFUfnTmb1oxikAUmVO7JKCUVDDyrljSbBgybkt0deJnM2KI/WXTDJ0MUmDJeCFTPKYfqMHOQCc7TBTIMyRIT44RYRHMJylF7H4nqpuqEVruv/wRIg5L9DByNr6G+rKXbI8q8PW3t1Ws+TqhKCJV7Vcx0LLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732575315; c=relaxed/simple;
-	bh=dYeDjb0MGWP2ArDI1qzoikFBCa6/ulvNxGTl5oiENyk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=BW/ne7DXdQVGMAzVX8Elv2votKFi1ZoNN0z2gL0KbkPxj2YpKmCye56djAPL7EGrlmL3WWRTclm0AQRE2yAIM8YR3pHGwUF097GqSFSY7yhOdow5VlT31ZxhrBhWNg71+Wocda7/plqtPvkt9e+Yw2lPW+XFCRDnzaW3Gj7NMhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A25Pdiqm; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3823cae4be1so3080455f8f.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2024 14:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1732575311; x=1733180111; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vtlbmPVJwv4yKsEkk/utArmqSBoZPmxQnL8JrW/v+ts=;
-        b=A25PdiqmqaLRlJ/euTGIjqrCDIIPz/2XjTlgWSHI0OCRrRKKT7dlVDz1HsoArjcMGZ
-         05GC7mquLseClJaIxM5aZhc/yhVeI8uN+ouwtbyl7nARBJIUPF5Sn6QC6MwPDQpMqG6v
-         2oVIxf58a90AyeSWbcDnKyQCeTHDzuxGhltwGqOpkxqE0uidUeNI3yLGjvNE+7oePGE9
-         kE4RGKO9G149uvwECWIr3LWJBeSoWu3EQqZ2UVwJ1M9iLg4l3au0sHNDx64avqq8pc2A
-         nDKmWq6aXBByvGalYHp38hKWQHEW2uDAOm2ifOqXzQW77wgCQO90MJKD8LydL6iwJnoK
-         rsgg==
+	s=arc-20240116; t=1732579350; c=relaxed/simple;
+	bh=L97FXXViOke/So7heRFF3Qu+EGXAJkZM60fqFA1C8lU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fuRSnrNnUbGED32keQfKPjy/r/ykwNcd+BHIre6G+leLa2uKrPHk7rAmZNeZFdJYxR1XqybXclMzLBbrW3QIWLphupKJipuMFmQrCX50Tyrz6iftgpu2yj5NLIGlisUDwZYW1UNYyEz6Xk2xRIIor1rRC6evnZjZUGhNGRGGXhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a79039ae30so52486135ab.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2024 16:02:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732575311; x=1733180111;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vtlbmPVJwv4yKsEkk/utArmqSBoZPmxQnL8JrW/v+ts=;
-        b=p5XgC8zsZdZBfiVUkvQqQEqO8c4xF2Lzb0SJVs/WW68nyd+wsvYSPV4eMbvrjYSa7W
-         7ftpsUOWg/+JvHjazcvHG18bNwF81SnjmnWxAym/BKf7pDQQpHpxnNiCEUN/zcIdr/iw
-         Ru0FyFSYsMo+oDqbEFM+WcaXaUw+9GziHYsCh4FXdFF4TjVoZuttJfS79VRfymPhjkrp
-         7pq4xB5eCRXicJWHL/Hzq0kxTCb0xJY83VFPV4v3wWW6T0RUrP6aNJePCGvPeYZtaZ8N
-         z88SI4Mj1+/46yPBstp0debuOklPe8OHwRr6puJtJX2zaDaDAYR8mkEYk1z91vzaft6+
-         Xchw==
-X-Gm-Message-State: AOJu0Yz+rDRroDSlP5ZSslh+HUOhI5DgAfeapUO5ej+8qCG/JrfaQpE+
-	yGeD2A4bESOJlkgAPERThRz2f0NZPCleAePMZ95Qf52VV97yKOiPWGjojn2AytYr7JWBviFE7rc
-	o
-X-Gm-Gg: ASbGncsmuXJzrNdkudXv3eijeJneZUD5jg+yN+VUqz1SHIpRoHYxwDQFXBvC90Jhm9D
-	Szz4Mf81axGH1o9Oj+weitVZVjRk0L5HnIQf1WVa++glbgjy4+313eHZAaGYYkhlgu6D/A386iH
-	cOBgFls6ZIzHigv702iVj66mSnd/TrqLtHTzxQkG+vdr/HRQmTrrjF8ROGSScZaqy/Xr6PLgzRd
-	w3qNyfgRK3pDrfIUFvILWwMiermXUid1vbNshABkGi7KDav1kAC/nTQHVqBob1FFjC6WKb+7ko1
-	DQ==
-X-Google-Smtp-Source: AGHT+IH+x4+tU3l0bEOrla5/cR66Fo4qOvBfCM9oo8gHH9UJC+PZYGCJUr2Oh92FVAVJDK+Tc+BYqw==
-X-Received: by 2002:a05:6000:1449:b0:378:89d8:8242 with SMTP id ffacd0b85a97d-38260b763c5mr13546131f8f.26.1732575311389;
-        Mon, 25 Nov 2024 14:55:11 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2129dba22f4sm70896835ad.100.2024.11.25.14.55.09
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Nov 2024 14:55:10 -0800 (PST)
-Message-ID: <5dfe1379-0910-4e4a-b21c-6a92fd74c83f@suse.com>
-Date: Tue, 26 Nov 2024 09:25:07 +1030
+        d=1e100.net; s=20230601; t=1732579347; x=1733184147;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1VGyvlQpCUhqKQA83jeMS9qHghOg588rybdYFLNIRas=;
+        b=rpdatxiBsBFajzeJf/xlitUcCWd44R7gwoGaRJVNxG7T4uTRn2MiFSuYI9v9+CBQqh
+         MZ0NJu0amDSuT643lDk9/ddp5UYuPQwNsFdLBYM9JPbDHW0IRNCkB6P4XZQkB5RSwae2
+         QM5Kmk90al4KN0+q2cSlT5ZCog2PC8/wbNHEhxyRang5aJEfelIqJkdlsaHcQ1FMwIYz
+         bGP1f93UI3+8Muohiod2TbtPjxigTSob2SI9jO4PblxWG+zIpF0Pn/Dq5EDMbSNZw6hT
+         liUZzxsmh+J7won+tUeF9nHnqn0VFd86pd1oslHZ4hHZBM83MY9AV25dYlyfkODhNhpS
+         M3jg==
+X-Forwarded-Encrypted: i=1; AJvYcCVlAyLc2Jkf+L9cPiFGGaZqhf3z7/m3TuEikavxx19EDX4AzMCuJyMO9istjCUCPKTxz7yihh4EdI+FGw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1vKGV6cprhFxD6+aUO3PlbfNqX/r6o+cOFZqlTqJwc26MYgFV
+	gPk+Zhw0WKumMeH7DZOPahhD5hRKGGYX+DcKOMPKzHZSVUzC2DMaxBDcRGJTySDmJG9cxVEOjZE
+	wiFxfehCgHD5b07ZPUHvajMdvEP3eTXMYkScVnHOer/1SBR51qBk0ORA=
+X-Google-Smtp-Source: AGHT+IGfMT7oYRb607hrFwjRvBPwhHHtHM8jN7SZ7PnngTd/LEU9EczuBACSdWEaHQFcyxrXIQC0CrfZ+v7ogWVKcJO/EZsVi87r
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/7] btrfs: sector size < page size enhancement
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1732492421.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1732492421.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:12e7:b0:3a7:86ab:bebe with SMTP id
+ e9e14a558f8ab-3a79af75dc2mr150617505ab.16.1732579347547; Mon, 25 Nov 2024
+ 16:02:27 -0800 (PST)
+Date: Mon, 25 Nov 2024 16:02:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67451013.050a0220.1286eb.000a.GAE@google.com>
+Subject: [syzbot] [btrfs?] possible deadlock in btrfs_finish_one_ordered
+From: syzbot <syzbot+a8356bab106afd565cbd@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    43fb83c17ba2 Merge tag 'soc-arm-6.13' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=133e8ec0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1638cad79464dac0
+dashboard link: https://syzkaller.appspot.com/bug?extid=a8356bab106afd565cbd
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6b7a3a910252/disk-43fb83c1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/78e328593d54/vmlinux-43fb83c1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3dd5bf3f229a/bzImage-43fb83c1.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a8356bab106afd565cbd@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.12.0-syzkaller-03657-g43fb83c17ba2 #0 Not tainted
+------------------------------------------------------
+kworker/u8:4/72 is trying to acquire lock:
+ffff88807ee86610 (sb_internal#2){.+.+}-{0:0}, at: btrfs_finish_one_ordered+0x3a8/0x2200 fs/btrfs/inode.c:3069
+
+but task is already holding lock:
+ffff88806a552588 (btrfs_ordered_extent){++++}-{0:0}, at: btrfs_finish_one_ordered+0xa1c/0x2200 fs/btrfs/inode.c:3047
+
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-在 2024/11/25 10:27, Qu Wenruo 写道:
-> [CHANGELOG]
-> v2:
-> - Add the new fix for inline data read which can cause data corruption
->    Thankfully this doesn't affect any one until the last patch enabling
->    the partial uptodate folio support.
-> 
->    But it is still required before we enabling partial uptodate folio, as
->    a btrfs can be generated on x86_64 with inline data extents, then
->    booted on an aarch64 system.
-> 
-> - Update the double accounting fix to cover errors from
->    writepage_delalloc()
->    WHich is the missing case which can still reproduce generic/750 crash.
+-> #9 (btrfs_ordered_extent){++++}-{0:0}:
+       btrfs_start_ordered_extent+0x4e9/0x6f0 fs/btrfs/ordered-data.c:872
+       btrfs_page_mkwrite+0x925/0x18b0 fs/btrfs/file.c:1870
+       do_page_mkwrite+0x17a/0x380 mm/memory.c:3162
+       wp_page_shared mm/memory.c:3563 [inline]
+       do_wp_page+0xcbf/0x49d0 mm/memory.c:3713
+       handle_pte_fault mm/memory.c:5782 [inline]
+       __handle_mm_fault+0x1a93/0x2a10 mm/memory.c:5909
+       handle_mm_fault+0x3fa/0xaa0 mm/memory.c:6077
+       do_user_addr_fault+0x60d/0x13f0 arch/x86/mm/fault.c:1338
+       handle_page_fault arch/x86/mm/fault.c:1481 [inline]
+       exc_page_fault+0x5c/0xc0 arch/x86/mm/fault.c:1539
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
 
-Please delay the series.
+-> #8 (sb_pagefaults#2){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1725 [inline]
+       sb_start_pagefault include/linux/fs.h:1890 [inline]
+       btrfs_page_mkwrite+0x2b5/0x18b0 fs/btrfs/file.c:1813
+       do_page_mkwrite+0x17a/0x380 mm/memory.c:3162
+       do_shared_fault mm/memory.c:5373 [inline]
+       do_fault mm/memory.c:5435 [inline]
+       do_pte_missing+0x29e/0x3e70 mm/memory.c:3965
+       handle_pte_fault mm/memory.c:5766 [inline]
+       __handle_mm_fault+0x100a/0x2a10 mm/memory.c:5909
+       handle_mm_fault+0x3fa/0xaa0 mm/memory.c:6077
+       do_user_addr_fault+0x7a3/0x13f0 arch/x86/mm/fault.c:1389
+       handle_page_fault arch/x86/mm/fault.c:1481 [inline]
+       exc_page_fault+0x5c/0xc0 arch/x86/mm/fault.c:1539
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
 
-At least before I got a full fix for the generic/750.
+-> #7 (&mm->mmap_lock){++++}-{4:4}:
+       __might_fault mm/memory.c:6716 [inline]
+       __might_fault+0x11b/0x190 mm/memory.c:6709
+       _inline_copy_from_user include/linux/uaccess.h:162 [inline]
+       _copy_from_user+0x29/0xd0 lib/usercopy.c:18
+       copy_from_user include/linux/uaccess.h:212 [inline]
+       __blk_trace_setup+0xa8/0x180 kernel/trace/blktrace.c:626
+       blk_trace_setup+0x47/0x70 kernel/trace/blktrace.c:648
+       sg_ioctl_common drivers/scsi/sg.c:1121 [inline]
+       sg_ioctl+0x65e/0x2750 drivers/scsi/sg.c:1163
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:906 [inline]
+       __se_sys_ioctl fs/ioctl.c:892 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:892
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-The problem is more complex than I thought, all related to the 
-btrfs_run_delalloc_range() failure.
+-> #6 (&q->debugfs_mutex){+.+.}-{4:4}:
+       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+       __mutex_lock+0x19b/0xa60 kernel/locking/mutex.c:735
+       blk_mq_init_sched+0x42b/0x640 block/blk-mq-sched.c:473
+       elevator_init_mq+0x2cd/0x420 block/elevator.c:610
+       add_disk_fwnode+0x113/0x1300 block/genhd.c:413
+       sd_probe+0xa86/0x1000 drivers/scsi/sd.c:4024
+       call_driver_probe drivers/base/dd.c:579 [inline]
+       really_probe+0x241/0xa90 drivers/base/dd.c:658
+       __driver_probe_device+0x1de/0x440 drivers/base/dd.c:800
+       driver_probe_device+0x4c/0x1b0 drivers/base/dd.c:830
+       __device_attach_driver+0x1df/0x310 drivers/base/dd.c:958
+       bus_for_each_drv+0x15a/0x1e0 drivers/base/bus.c:459
+       __device_attach_async_helper+0x1d3/0x290 drivers/base/dd.c:987
+       async_run_entry_fn+0x9f/0x530 kernel/async.c:129
+       process_one_work+0x9c8/0x1ba0 kernel/workqueue.c:3229
+       process_scheduled_works kernel/workqueue.c:3310 [inline]
+       worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
+       kthread+0x2c4/0x3a0 kernel/kthread.c:389
+       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-Since we can have multiple delalloc ranges inside a folio, the handling 
-is way more complex.
+-> #5 (&q->q_usage_counter(queue)#50){++++}-{0:0}:
+       blk_queue_enter+0x50f/0x640 block/blk-core.c:328
+       blk_mq_alloc_request+0x59b/0x950 block/blk-mq.c:652
+       scsi_alloc_request drivers/scsi/scsi_lib.c:1222 [inline]
+       scsi_execute_cmd+0x1eb/0xf40 drivers/scsi/scsi_lib.c:304
+       read_capacity_16+0x213/0xe10 drivers/scsi/sd.c:2655
+       sd_read_capacity drivers/scsi/sd.c:2824 [inline]
+       sd_revalidate_disk.isra.0+0x1a06/0xa8d0 drivers/scsi/sd.c:3734
+       sd_probe+0x904/0x1000 drivers/scsi/sd.c:4010
+       call_driver_probe drivers/base/dd.c:579 [inline]
+       really_probe+0x241/0xa90 drivers/base/dd.c:658
+       __driver_probe_device+0x1de/0x440 drivers/base/dd.c:800
+       driver_probe_device+0x4c/0x1b0 drivers/base/dd.c:830
+       __device_attach_driver+0x1df/0x310 drivers/base/dd.c:958
+       bus_for_each_drv+0x15a/0x1e0 drivers/base/bus.c:459
+       __device_attach_async_helper+0x1d3/0x290 drivers/base/dd.c:987
+       async_run_entry_fn+0x9f/0x530 kernel/async.c:129
+       process_one_work+0x9c8/0x1ba0 kernel/workqueue.c:3229
+       process_scheduled_works kernel/workqueue.c:3310 [inline]
+       worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
+       kthread+0x2c4/0x3a0 kernel/kthread.c:389
+       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-I need to try to find out a minimal fix first and get it backported, 
-then maybe a proper rework to change the behavior from 
-map-map-submit-submit to something more aligned to iomap's 
-map-submit-map-submit.
+-> #4 (&q->limits_lock){+.+.}-{4:4}:
+       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+       __mutex_lock+0x19b/0xa60 kernel/locking/mutex.c:735
+       queue_limits_start_update include/linux/blkdev.h:945 [inline]
+       loop_reconfigure_limits+0x2da/0x8d0 drivers/block/loop.c:1003
+       loop_set_block_size drivers/block/loop.c:1473 [inline]
+       lo_simple_ioctl drivers/block/loop.c:1496 [inline]
+       lo_ioctl+0x901/0x18b0 drivers/block/loop.c:1559
+       blkdev_ioctl+0x279/0x6d0 block/ioctl.c:693
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:906 [inline]
+       __se_sys_ioctl fs/ioctl.c:892 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:892
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Thanks,
-Qu
-> 
-> This series contains several sector size < page size fixes and
-> optimization:
-> 
-> - Pass generic/563 with 4k sector size and 16K/64K page size
->    The last patch.
-> 
->    The test case is a special cgroup one, which requires the fs to avoid
->    reading the whole folio as long as the buffered write range is btrfs
->    sector aligned.
-> 
-> - Fix generic/750 failure with 4K sector size and 16K/64K page size
->    It's a double ordered extent accounting for sector size < page size
->    cases, covering two different error paths.
->    The first patch.
-> 
-> The remaining are all preparations for the above goals.
-> 
-> Qu Wenruo (7):
->    btrfs: fix double accounting of ordered extents during errors
->    btrfs: fix inline data extent reads which zero out the remaining part
->    btrfs: extract the inner loop of cow_file_range() to enhance the error
->      handling
->    btrfs: use FGP_STABLE to wait for folio writeback
->    btrfs: make btrfs_do_readpage() to do block-by-block read
->    btrfs: avoid deadlock when reading a partial uptodate folio
->    btrfs: allow buffered write to skip full page if it's sector aligned
-> 
->   fs/btrfs/defrag.c       |   6 +-
->   fs/btrfs/direct-io.c    |   2 +-
->   fs/btrfs/extent_io.c    |  98 +++++++----
->   fs/btrfs/file.c         |  13 +-
->   fs/btrfs/inode.c        | 362 +++++++++++++++++++++-------------------
->   fs/btrfs/ordered-data.c |  67 +++++++-
->   fs/btrfs/ordered-data.h |   8 +-
->   7 files changed, 325 insertions(+), 231 deletions(-)
-> 
+-> #3 (&q->q_usage_counter(io)#17){++++}-{0:0}:
+       bio_queue_enter block/blk.h:75 [inline]
+       blk_mq_submit_bio+0x1fc4/0x24c0 block/blk-mq.c:3092
+       __submit_bio+0x384/0x540 block/blk-core.c:629
+       __submit_bio_noacct_mq block/blk-core.c:710 [inline]
+       submit_bio_noacct_nocheck+0x6fb/0xd70 block/blk-core.c:739
+       submit_bio_noacct+0x93a/0x1e10 block/blk-core.c:868
+       btrfs_submit_dev_bio+0x54d/0xb20 fs/btrfs/bio.c:456
+       btrfs_submit_bio+0x50b/0x6d0 fs/btrfs/bio.c:493
+       btrfs_submit_chunk fs/btrfs/bio.c:745 [inline]
+       btrfs_submit_bbio+0x5c0/0x19c0 fs/btrfs/bio.c:773
+       submit_eb_page fs/btrfs/extent_io.c:1931 [inline]
+       btree_write_cache_pages+0xb95/0x11c0 fs/btrfs/extent_io.c:1981
+       btree_writepages+0x187/0x1e0 fs/btrfs/disk-io.c:520
+       do_writepages+0x1b6/0x820 mm/page-writeback.c:2683
+       filemap_fdatawrite_wbc mm/filemap.c:398 [inline]
+       filemap_fdatawrite_wbc+0x104/0x160 mm/filemap.c:388
+       __filemap_fdatawrite_range+0xb3/0xf0 mm/filemap.c:431
+       btrfs_write_marked_extents+0x116/0x2e0 fs/btrfs/transaction.c:1149
+       btrfs_write_and_wait_transaction+0xec/0x2a0 fs/btrfs/transaction.c:1257
+       btrfs_commit_transaction+0x1fcf/0x3b30 fs/btrfs/transaction.c:2519
+       btrfs_sync_fs+0x134/0x7b0 fs/btrfs/super.c:1040
+       sync_filesystem+0x1cf/0x290 fs/sync.c:66
+       generic_shutdown_super+0x7e/0x3d0 fs/super.c:621
+       kill_anon_super+0x3a/0x60 fs/super.c:1237
+       btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2112
+       deactivate_locked_super+0xc1/0x1a0 fs/super.c:473
+       deactivate_super+0xde/0x100 fs/super.c:506
+       cleanup_mnt+0x222/0x450 fs/namespace.c:1373
+       task_work_run+0x151/0x250 kernel/task_work.c:239
+       resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+       exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+       __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+       syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
+       do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
+-> #2 (&fs_info->tree_log_mutex){+.+.}-{4:4}:
+       __lock_release kernel/locking/lockdep.c:5563 [inline]
+       lock_release+0x369/0x6f0 kernel/locking/lockdep.c:5870
+       __mutex_unlock_slowpath+0xa3/0x690 kernel/locking/mutex.c:896
+       btrfs_commit_transaction+0x1f16/0x3b30 fs/btrfs/transaction.c:2509
+       insert_balance_item.isra.0+0x343/0x390 fs/btrfs/volumes.c:3757
+       btrfs_balance+0x1085/0x3ef0 fs/btrfs/volumes.c:4633
+       btrfs_ioctl_balance fs/btrfs/ioctl.c:3670 [inline]
+       btrfs_ioctl+0x39c8/0x5b70 fs/btrfs/ioctl.c:5242
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:906 [inline]
+       __se_sys_ioctl fs/ioctl.c:892 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:892
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #1 (btrfs_trans_unblocked){++++}-{0:0}:
+       wait_current_trans+0x241/0x490 fs/btrfs/transaction.c:523
+       start_transaction+0x41c/0x1aa0 fs/btrfs/transaction.c:694
+       btrfs_create_common+0x18b/0x270 fs/btrfs/inode.c:6562
+       btrfs_create+0x114/0x160 fs/btrfs/inode.c:6608
+       lookup_open.isra.0+0x1177/0x14c0 fs/namei.c:3649
+       open_last_lookups fs/namei.c:3748 [inline]
+       path_openat+0x904/0x2d60 fs/namei.c:3984
+       do_filp_open+0x20c/0x470 fs/namei.c:4014
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1398
+       do_sys_open fs/open.c:1413 [inline]
+       __do_sys_open fs/open.c:1421 [inline]
+       __se_sys_open fs/open.c:1417 [inline]
+       __x64_sys_open+0x154/0x1e0 fs/open.c:1417
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (sb_internal#2){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3161 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+       validate_chain kernel/locking/lockdep.c:3904 [inline]
+       __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5226
+       lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5849
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1725 [inline]
+       sb_start_intwrite include/linux/fs.h:1908 [inline]
+       start_transaction+0xbd3/0x1aa0 fs/btrfs/transaction.c:691
+       btrfs_finish_one_ordered+0x3a8/0x2200 fs/btrfs/inode.c:3069
+       btrfs_work_helper+0x228/0xc90 fs/btrfs/async-thread.c:314
+       process_one_work+0x9c8/0x1ba0 kernel/workqueue.c:3229
+       process_scheduled_works kernel/workqueue.c:3310 [inline]
+       worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
+       kthread+0x2c4/0x3a0 kernel/kthread.c:389
+       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+other info that might help us debug this:
+
+Chain exists of:
+  sb_internal#2 --> sb_pagefaults#2 --> btrfs_ordered_extent
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(btrfs_ordered_extent);
+                               lock(sb_pagefaults#2);
+                               lock(btrfs_ordered_extent);
+  rlock(sb_internal#2);
+
+ *** DEADLOCK ***
+
+3 locks held by kworker/u8:4/72:
+ #0: ffff88806bec4148 ((wq_completion)btrfs-endio-write){+.+.}-{0:0}, at: process_one_work+0x129b/0x1ba0 kernel/workqueue.c:3204
+ #1: ffffc900020afd80 ((work_completion)(&work->normal_work)){+.+.}-{0:0}, at: process_one_work+0x921/0x1ba0 kernel/workqueue.c:3205
+ #2: ffff88806a552588 (btrfs_ordered_extent){++++}-{0:0}, at: btrfs_finish_one_ordered+0xa1c/0x2200 fs/btrfs/inode.c:3047
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 72 Comm: kworker/u8:4 Not tainted 6.12.0-syzkaller-03657-g43fb83c17ba2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
+Workqueue: btrfs-endio-write btrfs_work_helper
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
+ print_circular_bug+0x419/0x5d0 kernel/locking/lockdep.c:2074
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2206
+ check_prev_add kernel/locking/lockdep.c:3161 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+ validate_chain kernel/locking/lockdep.c:3904 [inline]
+ __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5226
+ lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5849
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write include/linux/fs.h:1725 [inline]
+ sb_start_intwrite include/linux/fs.h:1908 [inline]
+ start_transaction+0xbd3/0x1aa0 fs/btrfs/transaction.c:691
+ btrfs_finish_one_ordered+0x3a8/0x2200 fs/btrfs/inode.c:3069
+ btrfs_work_helper+0x228/0xc90 fs/btrfs/async-thread.c:314
+ process_one_work+0x9c8/0x1ba0 kernel/workqueue.c:3229
+ process_scheduled_works kernel/workqueue.c:3310 [inline]
+ worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
+ kthread+0x2c4/0x3a0 kernel/kthread.c:389
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
