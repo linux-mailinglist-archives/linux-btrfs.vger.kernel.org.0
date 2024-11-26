@@ -1,102 +1,101 @@
-Return-Path: <linux-btrfs+bounces-9920-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9921-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B2F89D9B57
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 17:24:48 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883B39D9D0D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 19:01:04 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB2D9163E11
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 16:24:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EC162855CB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 18:01:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A971DA112;
-	Tue, 26 Nov 2024 16:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECB711DC184;
+	Tue, 26 Nov 2024 18:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eWqNYyrS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZuA+4uGY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eWqNYyrS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZuA+4uGY"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0EnaJ/Bg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vsvx5TLK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ftX/oI5T";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gx5CpAap"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932571D9A41
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 16:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E131DDA36
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 18:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732638247; cv=none; b=arm2TCE6H9ESAyxytSsiugTu4tDaxz1K0xPpstvtAv9G00+qiie4pDngcb3FaPx3aoaztJfeknXBMosEdPzKUnOr0QHK5lUgWNiJpLdecCEAQdJ+RV5fVT9Mds6bRFVXwR2yk1Lyq/De8I/RJw6tkIHuHmBfbjCqr0HhHxUeS/U=
+	t=1732644053; cv=none; b=jVu4AOzGV/ER4xBYdBB5OLouPnDwlj0Debd3jjZIsFGnUVkz1bUioKs9x2WYYS9+XWKuUFpxS6Ww/sWtTqfiMK/rQQpshw1nLgr4yjPYKBtAgm2dQjuStu4GG50i9BT+CwfsrtcLFICGYwzE6p7UVUnXYB/i72qEPjjqqdykzXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732638247; c=relaxed/simple;
-	bh=GOJKLlLUw5Y+CPxQP7IBKM0WmwxqKL1D0ctk/hAdHjM=;
+	s=arc-20240116; t=1732644053; c=relaxed/simple;
+	bh=5DOd3fz+ItUnWo4UL9M3pDzTO4yjHJ9URWN3IH1LZDA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aV4/VefS0Zzd13JG6M0Jj9FcLU6aLvtUP0vXp/DmLZ4AOKOFi2q65VlvUWadvun+qS/FceRSeFjTqHDpR9G7fevEY3OU48JCXQf3sKOk6/e0Pppn3V4ZypHlcNJGWpTYVmQzEV8pDzKWy99tzzvo9kao1mYVHpyLXLJPmnCD7Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eWqNYyrS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZuA+4uGY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eWqNYyrS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZuA+4uGY; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=MNXpqVb6el84rgSGcphxQ+wVcFdrip33ceFg+ZTMeSJ47o2QonT46JWZbgHgZE0kL30bIEFHdHNpg5M2m0jn4zi4euFcPYyyg+YLzdmUBJUe5Ks0sHsxyBgVTh5Q+a7E32ggLx28bGDOaOtB7JN2gt+WN0E/akglpnxGoPYDqjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0EnaJ/Bg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vsvx5TLK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ftX/oI5T; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gx5CpAap; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BC28D2115E;
-	Tue, 26 Nov 2024 16:24:03 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CC9E32117E;
+	Tue, 26 Nov 2024 18:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732638243;
+	t=1732644048;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vWmWPGH6ouotSFOjlPtAPz7Oh4NOAMzdgCeLxdfVSzc=;
-	b=eWqNYyrSQ0nqiVSET0Hkn7tQkeHdEUtb6/amEyOkPj9FN3kduxJkbGlY1U4IB+IaiIQGrR
-	qxQCh2drc0AruPYszqt7Ze3kNWW2CxZfI+oYAe8oK+6MWcwo/pZqb4h5akzAYGYcIoxQk8
-	pmCh6PYDZpUDoLnZRD15I46dYsz8f48=
+	bh=ruXQ2Na7A/oOXHI5y0cpOcwK98C7iM2gKujsI1amRRw=;
+	b=0EnaJ/BglQPO0Bj17pNGcgP90+AFUPHl+24WI6+5J42khLTWc88jJlJZfLCu0ZSdL/TiXu
+	qfl7af5J8ie0I3ZIy4S9PYYes8xXhfuYcMaRPb9nIufhSbrFNWVK1z6oDaKCGOrVCipzT6
+	d6f36uyI4/EjVPKBxiBuAhZ15QkchPI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732638243;
+	s=susede2_ed25519; t=1732644048;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vWmWPGH6ouotSFOjlPtAPz7Oh4NOAMzdgCeLxdfVSzc=;
-	b=ZuA+4uGYHITb/KYSkwxWEKIEuYDFiwugC7bQAodPe8a9fdOPqRmpgtLpPDthOVn9zIB+WA
-	pTNJuKNUo1lOjtCg==
+	bh=ruXQ2Na7A/oOXHI5y0cpOcwK98C7iM2gKujsI1amRRw=;
+	b=Vsvx5TLKz45EnZFUkng7wklBD8hBnV6yH7krVC7u6aobGQWt2SaFP1/fm0ZPTlnGK0vG3s
+	/sTIQyqRRDP5RdBg==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eWqNYyrS;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZuA+4uGY
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="ftX/oI5T";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gx5CpAap
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732638243;
+	t=1732644047;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vWmWPGH6ouotSFOjlPtAPz7Oh4NOAMzdgCeLxdfVSzc=;
-	b=eWqNYyrSQ0nqiVSET0Hkn7tQkeHdEUtb6/amEyOkPj9FN3kduxJkbGlY1U4IB+IaiIQGrR
-	qxQCh2drc0AruPYszqt7Ze3kNWW2CxZfI+oYAe8oK+6MWcwo/pZqb4h5akzAYGYcIoxQk8
-	pmCh6PYDZpUDoLnZRD15I46dYsz8f48=
+	bh=ruXQ2Na7A/oOXHI5y0cpOcwK98C7iM2gKujsI1amRRw=;
+	b=ftX/oI5TertVglrs0NHaJnOz12JI4+9k396p19PrZLAmZGBb64MCN2xif8hTBCa9xJEb6n
+	wuZkrZqALTl8lgMsECDo+le/0L+7TE4kkguOIIOzkWT0U7rkBiOyqD9aGd5xezjx76Yd5L
+	59on30Lv4MuoTAsTw7GvApTWjfGDn2o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732638243;
+	s=susede2_ed25519; t=1732644047;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vWmWPGH6ouotSFOjlPtAPz7Oh4NOAMzdgCeLxdfVSzc=;
-	b=ZuA+4uGYHITb/KYSkwxWEKIEuYDFiwugC7bQAodPe8a9fdOPqRmpgtLpPDthOVn9zIB+WA
-	pTNJuKNUo1lOjtCg==
+	bh=ruXQ2Na7A/oOXHI5y0cpOcwK98C7iM2gKujsI1amRRw=;
+	b=gx5CpAapsn95yEz7nREq1cQ9ZwR5bNxpaGzVRqSwt8g5MjjJFkqMtJjXEBsMFvQn3Icedz
+	RJMFumuv8mvrAzCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EC06139AA;
-	Tue, 26 Nov 2024 16:24:03 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2680139AA;
+	Tue, 26 Nov 2024 18:00:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ldNRJiP2RWcjIQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 26 Nov 2024 16:24:03 +0000
-Date: Tue, 26 Nov 2024 17:23:58 +0100
+	id Tc5FK88MRmcTQAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 26 Nov 2024 18:00:47 +0000
+Date: Tue, 26 Nov 2024 19:00:46 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Allison Karlitskaya <allison.karlitskaya@redhat.com>
-Cc: dsterba@suse.cz, ebiggers@kernel.org, fsverity@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH] btrfs: add FS_IOC_READ_VERITY_METADATA ioctl
-Message-ID: <20241126162358.GL31418@twin.jikos.cz>
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH v2] btrfs: fix lockdep warnings on io_uring encoded reads
+Message-ID: <20241126180046.GM31418@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20241126151123.GF31418@twin.jikos.cz>
- <20241126152331.90434-1-allison.karlitskaya@redhat.com>
+References: <20241115154925.1175086-1-maharmstone@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -105,10 +104,11 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241126152331.90434-1-allison.karlitskaya@redhat.com>
+In-Reply-To: <20241115154925.1175086-1-maharmstone@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: BC28D2115E
-X-Spam-Level: 
+X-Rspamd-Queue-Id: CC9E32117E
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.21 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -117,49 +117,34 @@ X-Spamd-Result: default: False [-4.21 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
+	ARC_NA(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Nov 26, 2024 at 04:23:31PM +0100, Allison Karlitskaya wrote:
-> 146054090b085 introduced fs-verity support for btrfs, but didn't add
-
-Please use full reference of commits with the subject lines, like
-146054090b08 ("btrfs: initial fsverity support")
-
-The git alias command for that is below, you can name it like you want:
-
-	show -s --pretty='format:%h (\"%s\")'
-
-> support for FS_IOC_READ_VERITY_METADATA to directly query the Merkle
-> tree, descriptor and signature blocks for fs-verity enabled files.
+On Fri, Nov 15, 2024 at 03:49:17PM +0000, Mark Harmstone wrote:
+> Lockdep doesn't like the fact that btrfs_uring_read_extent() returns to
+> userspace still holding the inode lock, even though we release it once
+> the I/O finishes. Add calls to rwsem_release() and rwsem_acquire_read() to
+> work round this.
 > 
-> Add the (trival) implementation: we just need to wire it through to the
-> fs-verity code, the same way as is done in the other two filesystems
-> which support this ioctl (ext4, f2fs). The fs-verity code already has
-> access to the required data.
-> 
-> Signed-off-by: Allison Karlitskaya <allison.karlitskaya@redhat.com>
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> Reported-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Added to for-next, thanks.
 
