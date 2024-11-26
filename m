@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-9923-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4DF29D9E59
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 21:18:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6949D9E5A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 21:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 645C62857FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 20:18:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19CBC2854F1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2024 20:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2D81DE880;
-	Tue, 26 Nov 2024 20:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702A91DE894;
+	Tue, 26 Nov 2024 20:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VtK4DpA1"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GHuXwZWC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B8D13AD18
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 20:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4712A13AD18
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 20:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732652297; cv=none; b=jjDcgtF0dtRPok4gefKYPvLiLMf2mRDjA1LGuCwC7gFUa7/dp01nZFyZvcrDmDgzoRWj+/H7+UJg8fzvH8P2/qLs4gbKiCvaBJjuDW4dgJBsNmiunG6jCAy/W3Tn73zn3T4qjPZDpMMAVmqreVi2NsIu0MG+f+Hw3Slr74BTEYo=
+	t=1732652373; cv=none; b=RVK3QO8rEDx0Y0rA99/fDFKmPZnG4rseK4/yZi5Up6GCtTp0xAPi1XXPyu41DbrdD4/6j4jY9aDGixccJvAXPmRY6ladYMv9qcNqMUZtBfy6wy8+Wh2y/q2j/NdDtNYcgOostD2GgEocZ5b+NHFLU49wBawreJB34YRBxhoRWIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732652297; c=relaxed/simple;
-	bh=YkQ8qpP0TATYnqHfYd+XUcsf8A4LfLMh/2ATYwTirGY=;
+	s=arc-20240116; t=1732652373; c=relaxed/simple;
+	bh=12b369pzBQ6U5ajgNObRTLsD38/43bJ8gUC9pORQmX4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e2PKuTjro9Q7j61Qvlnxd6Y53WSdUO8YECCtUMDR81FGJbOB4NK8X/oSXc4CptlnLRBbPf74Tjn/3y6qRgVUcxKm8R2001c6LRHeVei37iCQNLnNMCM4SR00S6DEJaQ0SHGs5XaMAt5eC4j2aOT6safBiuwgUC4nFN4u+u2XTPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VtK4DpA1; arc=none smtp.client-ip=209.85.221.52
+	 In-Reply-To:Content-Type; b=Jk1x6o55K3h1f1dxQzDmvTfEpKGsUnibg+jF53cf9TKa2LLp8+6exbcGozBPEdCt75pGPyXKFMKoHIcpzedCQOi0yF2y8U3knaT7jUexSnYaytIIGlBqcZaDG6R99sWgdZhqH9sQMEe8ZUBYPaIM9B9kfmm7J3UN3MqI9y8w8Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GHuXwZWC; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3823eaad37aso87438f8f.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 12:18:14 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4314c4cb752so55101615e9.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 12:19:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1732652293; x=1733257093; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1732652369; x=1733257169; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DpnVxYvojYmrPX2LNMiiT/2b6M0NiTzXvMbAU80fWdU=;
-        b=VtK4DpA19qPYob37RqRdR7yO7HKKHMvJBglvz1YBqri+QQbjgqTo1vFJR7uWSIIxy5
-         CE1+C34bW4Zt100twCUWxzAhvTaJBfpb7NxMX1QHRTLKgQOYUewdmsiYnk+ADU/tgCC1
-         35OYHQzUeXhCC02JKMlaqawSEgIJxe1kdUsB2tqJeC1Kly6cjCXREfM9HdFWe1YxSe/+
-         ypdpt8tZVS4qGfZE/ouxjdpFhTPp7FEr22S4rUz90zDV+GQQidvJQIgAsUIif7zM5jyf
-         QYIZ2tcvvYipKYDsfCzH33W1RNZBm0Y0JSG2zFCKIfjqqcLlh1tus0OsFI+XqXRWV6mL
-         gb3g==
+        bh=2dNSUPTomNcRmsS+1bEVJZpFYySMYDqUFlQRzVqiXek=;
+        b=GHuXwZWCwcuvbd8Qep5/j6aiHVSB5ZVmhhvZCgOzVdoEng/5XbAu2wcJEUUvLBPmPZ
+         DoOS82SfGrH90yYH84J/lr+qQSzfNJiVsyJKKas1ne9pkHuQWD0aPLcVPLHGWp3uNXm2
+         G5mJm7E4EkxsS/vNgJYzFECzoiAZiOTgaT7rz9o6E8zfSR6acTjB920cWV0qFv/0SUv5
+         ROCpNnWLkzsM/U+fgO5lU0VRDGlKuZPgIZ0c8nnATJ07h/KUNnt9AqcUXGwDJAddEuMT
+         X7rf4dwtjAmoNJKcGZynDRFtbhfq/cTIUgeo2/fhA7dKkV80Jbywvpxr9Ids+Fstzo0V
+         tdTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732652293; x=1733257093;
+        d=1e100.net; s=20230601; t=1732652369; x=1733257169;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DpnVxYvojYmrPX2LNMiiT/2b6M0NiTzXvMbAU80fWdU=;
-        b=ZRc2thuiR4HQISSOsDvbQh8GgHSJv7xIWdOU5p0iWY9F7AHDal9BlR18NY/X36ofPl
-         N309bL3Em5t+asSBmAtrH/D+UmBdHrzK/8770bl3izSkVV5i2Me8TF4PeEK4xmHHnW1M
-         fCX3uqGRdyvsWM3kbClSXpNwFLeQmoDpvGLRPjQ5I4eQkia4zsfvpM8t2ZkUZtxK0lXP
-         ZvCUVtEwq6hqDlA2iUyQrtp6gcQIZ7Cy0qyuxR0xyq6XLOMdWWgPkt/DRZQQ4J4UgdK4
-         sA59gPNoLIIVf/uJLWHzV9Ip5KAV7WHcgn2XglcsekxV+56rw8K/LQBDvcQvE/0A8iTA
-         i5MQ==
-X-Gm-Message-State: AOJu0YzvxhAPGfmnZMpkHME+/SSf/5R1OzqN7Sgac9dbmO8YSjIp1H++
-	77kZTCw8irvU7Wlcwb1JzlAsDVZcK5yjkeyHL7t1Bp5zZA9MxMbr1Z1n0ymKmd4=
-X-Gm-Gg: ASbGncu4Jws5Folqm4oM2qqTnRAPJcxYogxauVtqQf/Pg8c07bOsckqMhZdqoQcxYna
-	3ZTomkzHWVsKcEW2MU7U3/0b+YEf0dtGFT6s8Ag0e6Fcw1PWi/n+Ej0kJ3yknni7JqYC62L3Q2H
-	pVouMpD38/XU6FLkRxFtS4cbvywen8+1WAdxUdi1IbHSTBxotjGWc9Fwc5ljgK5tlr34Bhc2Io8
-	Csq+zo2ft0nQoQm1+EES5hoO7m8bhx1dE2QIMR/1N9AE7/p5/HsRvJQXhMKdJXBLzIRlektLHLv
-	xA==
-X-Google-Smtp-Source: AGHT+IH3QG5CT0YsZdZxpxxElI+M3798SYte7iX+8rU5+cZVy8cmnvNX9trtBemTg7o/Ss7VHA34CQ==
-X-Received: by 2002:a5d:5985:0:b0:381:f0d0:ed2c with SMTP id ffacd0b85a97d-385bfb1e4d0mr3716323f8f.29.1732652293195;
-        Tue, 26 Nov 2024 12:18:13 -0800 (PST)
+        bh=2dNSUPTomNcRmsS+1bEVJZpFYySMYDqUFlQRzVqiXek=;
+        b=TP5IiepYO54tp1Hl6HdO9Xtjp1hvUc81CJsR0K8M6wDwPwnmlYp3J0PYxo4mnOdNmo
+         dbp42CxyV09D6qSo393rBRdn6QXdrjJSim+Mdqr4I4RBVqaehX3kkrcqM31Vk/1eeCsg
+         kSUirAoLxSZjfvXie4TZFwIQW4pvGPhfC1Z03Lfv23fGCF4lhJwQz2yxerzkrC5JR98F
+         LkO3zgC/y1LDZebkJVzL16WpJ1WHNyj2i5C5Oz68HKe3z0g1qRjTtIbJmraaWcfm4fTh
+         2kXfr/sx84ttPfqYHPRtxMQQN4gtI69Qd0d0TGDEIbE94387fxDRDtlZB0BYaZusKNZj
+         DuIQ==
+X-Gm-Message-State: AOJu0Yx/S5vl0l9w9xZY/Et9LhUZrBJ0PHfrQliAspe92VaU86RSdmeS
+	3s0iejTfyRUTdVlotu/ssvu1SYznphPjxWjovH+fnDZcn7naRItyw0WKWTOCyuo=
+X-Gm-Gg: ASbGnct64TvU9dLnsNE/Zy7lDDpqNHaLjbrGmgeT583VVnpV6pk5GlwrMyF+LjFKoLe
+	I0XxpBWE1cptCcI1wRbffnqOBADFbVQnPi2mHw04B71kPetwShPdkC7yjPk8E6EPhOCfRGvhI20
+	2kEnQqM74QF2AlbjN5lSUupn1u5QBMYhcye3+8ulSRVwa8rQrDvUNkA96DRlwtYWOaHuQXondlu
+	z3NwEQ5HkyH8fOhlqJZ3UPE1ey0HsH/eoByV6zjZvGIUE9LlPSqvr7suLr+3tzWLT4Q2bTmG77U
+	MQ==
+X-Google-Smtp-Source: AGHT+IF8FRNDT4xzDBWiXuqY/LVm7UmzDDcfEG7YVWQ6FtN0imydyLUVn2K2seMNM8rOEz6nXfyCoA==
+X-Received: by 2002:a05:6000:1541:b0:37e:f8a1:596e with SMTP id ffacd0b85a97d-385c6eb6aeemr195024f8f.11.1732652369376;
+        Tue, 26 Nov 2024 12:19:29 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724e775819csm8211293b3a.0.2024.11.26.12.18.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de454bd4sm9072994b3a.26.2024.11.26.12.19.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Nov 2024 12:18:12 -0800 (PST)
-Message-ID: <e6211467-c1b1-4dcc-9ec9-96d69a3c2948@suse.com>
-Date: Wed, 27 Nov 2024 06:48:08 +1030
+        Tue, 26 Nov 2024 12:19:28 -0800 (PST)
+Message-ID: <e2047224-4fdf-4801-9006-1ef88ec53944@suse.com>
+Date: Wed, 27 Nov 2024 06:49:25 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,12 +81,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: validate system chunk array at
- btrfs_validate_super()
+Subject: Re: [PATCH 1/6] btrfs: fix double accounting of ordered extents
+ during errors
 To: dsterba@suse.cz
 Cc: linux-btrfs@vger.kernel.org
-References: <5d205dc4e1126be4c33b1eac62ba625075749469.1732080133.git.wqu@suse.com>
- <20241126182132.GN31418@twin.jikos.cz>
+References: <cover.1730269807.git.wqu@suse.com>
+ <2faab8a96c6dd2a414a96e4cebae97ecbddf021d.1730269807.git.wqu@suse.com>
+ <2327765d-c139-495e-94f0-5bab11adf440@suse.com>
+ <20241126160817.GJ31418@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -113,83 +115,37 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20241126182132.GN31418@twin.jikos.cz>
+In-Reply-To: <20241126160817.GJ31418@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/11/27 04:51, David Sterba 写道:
-> On Wed, Nov 20, 2024 at 03:52:18PM +1030, Qu Wenruo wrote:
->> Currently btrfs_validate_super() only does a very basic check on the
->> array chunk size (not too large than the available space, but not too
->> small to contain no chunk).
+在 2024/11/27 02:38, David Sterba 写道:
+> On Sun, Nov 24, 2024 at 06:01:27PM +1030, Qu Wenruo wrote:
+>> I know this is part of the subpage patches, but this is really a bug fix
+>> for the existing subpage handling.
 >>
->> The more comprehensive checks (the regular chunk checks and size check
->> inside the system chunk array) is all done inside
->> btrfs_read_sys_array().
->>
->> It's not a big deal, but for the sake of concentrated verification, we
->> should validate the system chunk array at the time of super block
->> validation.
+>> Appreciate if anyone can give this a review.
 > 
-> Makes sense.
+> Looks correct to me. One suggestion to clean up the parameters and to
+> pass bio_ctrl and read the last_sibmitted and the bitmap directly, so
+> something like that:
 > 
->> So this patch does the following modification:
->>
->> - Introduce a helper btrfs_check_system_chunk_array()
->>    * Validate the disk key
->>    * Validate the size before we access the full chunk/stripe items.
->>    * Do the full chunk item validation
->>
->> - Call btrfs_check_system_chunk_array() at btrfs_validate_super()
->>
->> - Simplify the checks inside btrfs_read_sys_array()
->>    Now the checks will be converted to an ASSERT().
->>
->> - Simplify the checks inside read_one_chunk()
->>    Now all chunk items inside system chunk array and chunk tree is
->>    verified, there is no need to verify it again inside read_one_chunk().
->>
->> This change has the following advantages:
->>
->> - More comprehensive checks at write time
->>    Although this also means extra memcpy() for the superblocks at write
->>    time, due to the limits that we need a dummy extent buffer to utilize
->>    all the extent buffer helpers.
+> cleanup_ordered_extents(BTRFS_I(inode), folio, &bio_ctrl, cur_end + 1);
 > 
-> Well, the memcpy() is not the problem but rather calling
-> alloc_dummy_extent_buffer() at the time we want to write the superblock.
-> This requires allocation of the extent buffer structure and all the
-> pages/folios. And the alloc/free would be done for each commit. A system
-> under load and memory pressure won't be able to flush the data. This a
-> known pattern we want to avoid.
+> replacing the parameters with the values in the function. Though after
+> another thought, the explicit expressions like
+> "page_start + PAGE_SIZE - bio_ctrl->last_submitted"
+> and "cur_end + 1 - bio_ctrl.last_submitted" make it a bit readable. Up
+> to you.
 
-That's exactly the concern I have too.
-> 
-> So either preallocate the dummy extent buffer and keep it around
-> (possibly freeing the unused pages/folios), or somehow make the extent
-> buffer helpers work with the superblock.
+This one is replaced by this series:
 
-Preallocation makes sense.
+https://lore.kernel.org/linux-btrfs/cover.1732596971.git.wqu@suse.com/
 
-> 
-> There are 2 trivial helpers that we can replace
-> (btrfs_chunk_num_stripes, btrfs_chunk_type), but
-> btrfs_check_chunk_valid() needs a proper eb with folio array.
-
-And the reason for full eb helpers is, chunk tree blocks can be 
-multi-paged, so that we need the eb helpers to handle cross-page cases.
-
-For superblock one, we can accept full on-stack pointer, since a sb is 
-fixed to 4096 bytes, no more than one page for all archs.
-
-So if you really need, I can go with dedicated helpers for sb chunk, but 
-I'm not sure if it's the best solution.
-Considering we will have a lot of unaligned access anyway.
-
-(I really hope one or more decades ago, the on-disk format design is 
-aligned to u32)
+However I'm still hitting hangs where some ordered extent never finishes.
+(At least better than crash, but still not ideal)
 
 Thanks,
 Qu
