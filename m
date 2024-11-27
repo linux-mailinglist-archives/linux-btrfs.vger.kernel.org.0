@@ -1,130 +1,173 @@
-Return-Path: <linux-btrfs+bounces-9933-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15009DA2F2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2024 08:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD569DA39E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2024 09:16:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30969B21B8A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2024 07:20:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06FB7B216CB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2024 08:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298B014A0B3;
-	Wed, 27 Nov 2024 07:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0D217B427;
+	Wed, 27 Nov 2024 08:15:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BbD6a+4b"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GKmzoF6Q";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GKmzoF6Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78C51114
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2024 07:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB074208A5
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2024 08:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732691996; cv=none; b=bBWXQnQ6oHO8+jBc+K23z65Be/9XCNNnVUuD4rft87CdssbjLanz/LMZpPfgCbbb3nZdgtmH1DwsT5/X2TJ2pC9DBihFJTCVRzZ/Ixsn5epJRexj6hPt6p4oDy8V40zWd6GoqJIKFe3ctGrOLuz0zoaF3/gjxyYU0/7L3U3y9Sg=
+	t=1732695351; cv=none; b=o25lUE40Gt3ztEciSuITXto9VAoSFs3TsBcX4zt3wURTDJzuOxSs8kpZNK/P4h2pFHs6Ya4UgTibkaHaqUWVKMZNqpSvibhTf0BiK52+OGo8y976bX+dblJdnJkuBUzO16YE4qAs9B5hJ7b5fu8qL1oVas6VQnO7N4Jc2TAtE1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732691996; c=relaxed/simple;
-	bh=HFq+uqWEj126zlSPegQQSXm4ff8G3zBnDUl2AfXL6P8=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=jse8thdQFQZZtAwH7twn+FqTYYt4aYIKMw5U9wPggR1WMWM42R9Wr08BnzgbaD7TLVle6u4rjVOo1QyHzonD5LtK/o0UYccrEasvJfppXP6WYg89RjMUEVAo1SXk1+fYTCqcD6Kx0qsKjyWEC30JmTX34Wby6mHelhA6HQ7oLW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BbD6a+4b; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e3824e1adcdso6103209276.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2024 23:19:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732691994; x=1733296794; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tVVb4SLlKr8883TE+CZqF+3tLMm51q7pBFSOiEzDKQo=;
-        b=BbD6a+4bS/YbrRwOT4SGrF1HLsPpvnupXI2XLx2croGsgmtk1SruyNG6eGLldPPuWw
-         awj1/fV5RI6B7eGS95E38Uu9Qvaz1An8hWZV2QAzoZEINhJcCngQMQyjtgObzdACf6kR
-         NgBYvA13nq7FTaMNh3aPqVRojKGMRx8jGl5dbUhroLj+az7RU7Sn3fQgqoHBeqdYP42g
-         IuWNpoNlp2McBhDv+NJoGqjwbWocZf7S5DE9O4LslHTvxI6/gVDOHWRBu1hR4p2mzXg2
-         /tk4REGUVq3u7QbwyFP1uN9cbi+SJpq8zZoO3AhTFdFc9E14Gu47azmAJ9kDCLNcrVvl
-         6/Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732691994; x=1733296794;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tVVb4SLlKr8883TE+CZqF+3tLMm51q7pBFSOiEzDKQo=;
-        b=nVmxp5E903Tsml2NXkXbYtggI0dWB17A81fND+pncquqcxRrdKrsY6eKFz933m1LZZ
-         HfkqvmnqBc9JYo1sAEVnij3AWj84UMhp+3GaBRnhRjWXWgJEWeL1elxL1zaJ2M7mTxAq
-         uxEpbF2iTUHvYKOUFJEIQdQE7BHdygZFhzvs34CbZOzPxotfU1su3SL5SU4cWLg4skpY
-         vsxjwRgfpZYu/XkzU8WRptCfUPbMB1yi4Ls0qm8ibNVXY/DLbVd45lekNTcSPRpQCE3N
-         J1221WlaQYQS7MPSHaS2UXAbqwsZmE2YHqUOk7DX51vS3wTRvRGNjW5AkMATgT2NEGgN
-         A6qg==
-X-Gm-Message-State: AOJu0YwZOFIPkRyR2zYcsq7DMyUIAaQic7CDU8PTh2YXzusOWQDVE851
-	cdwU1zcMP5Xx9VYvd7KMnvaHPi3ue/c9KNmXW9Ho5wzgHeTkjOMNdiMUlmrEvrzHfue5vOwUB01
-	hFjg9gI5+UYbp3tuoFR4ymxqDZPemMMR9JNp+BQ==
-X-Gm-Gg: ASbGncsJcUWSo1PmWEaov/dz55V1iwz7HCrvYpk+Qfo2WhJnTbVbBjIWvp8SBXPa9tl
-	dszpgNM9e5jN2CL3NuwK3LOs46k/1kTL12dxnufFERa9B11KduWmXs7OUJJyogIDx
-X-Google-Smtp-Source: AGHT+IEWpA0Tie/2O2t3iMr16MNW7HVJk5kXt6meWwsntpbIWHrwUz0U/6E9DsungswxRjBQ7+Pk5K0l6xUd4hcYOTM=
-X-Received: by 2002:a05:6902:120b:b0:e28:f03e:fc2b with SMTP id
- 3f1490d57ef6-e395b8d761amr1623325276.25.1732691993749; Tue, 26 Nov 2024
- 23:19:53 -0800 (PST)
+	s=arc-20240116; t=1732695351; c=relaxed/simple;
+	bh=/qVe2eBk8o7DWT9J4KPmnuTup7+UjT2Tp5YducMbKMU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=e31kaceeEQBg8AjV/YEmdKrOq6QDe1DkkvVgYyvP089RxU4GshTeV4ARBKtmFWLB6yDWpps198eSNFyUxvwTRSS2K4I4C86XKG8UcVFxJMVypQkdRdes2CGzLPDZ2B6FmiCyDGSdYAJJeM5JBayCYktJ5mv2sRTooNpEuv4TJkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GKmzoF6Q; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GKmzoF6Q; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CFAEE2120E
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2024 08:15:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732695347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GRlzALMpvWhJHRJlmPggCsYV8coH8fMCpV3QUVR6bkE=;
+	b=GKmzoF6QKChosjreLTf53FirUPYlpJzwgSxj9jnsp1Bk/0fOS5efljer2kfZ2OWJT9Z4w4
+	HFSyr927mNwDu6gnLvLHdWAUmsgI/CFxTeFpKRogC9/pFuHxhhnEj5yf5LPA8ltpr9+1kf
+	k8FdLn8B2spfTJuuy8/jK2LYVQ1MvB4=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732695347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GRlzALMpvWhJHRJlmPggCsYV8coH8fMCpV3QUVR6bkE=;
+	b=GKmzoF6QKChosjreLTf53FirUPYlpJzwgSxj9jnsp1Bk/0fOS5efljer2kfZ2OWJT9Z4w4
+	HFSyr927mNwDu6gnLvLHdWAUmsgI/CFxTeFpKRogC9/pFuHxhhnEj5yf5LPA8ltpr9+1kf
+	k8FdLn8B2spfTJuuy8/jK2LYVQ1MvB4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0C07A139AA
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2024 08:15:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yScVLzLVRmcBJgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2024 08:15:46 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs: error handling fixes for extent_writepage()
+Date: Wed, 27 Nov 2024 18:45:27 +1030
+Message-ID: <cover.1732695237.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Clemens Eisserer <linuxhippy@gmail.com>
-Date: Wed, 27 Nov 2024 08:19:42 +0100
-Message-ID: <CAFvQSYRxZ80O6cEVnU5_qG0HP2Lwn0LnBYmyy5EuCvX=Pa8ukQ@mail.gmail.com>
-Subject: "fixed up error" during scrub reported multiple times for same logical
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Hi,
+[CHANGELOG]
+v2:
+- Update the commit message for the first patch
+  It turns out the root cause is the race between
+  btrfs_finish_one_ordered() and btrfs_mark_ordered_io_finished()
 
-My raspberry pi 3 started to report "fixed up error" during its daily scrubs.
+  And that race is possible no matter if the sector size is smaller than
+  page size.
 
-It first happend a week ago and was reported twice:
+  So update the commit message to reflect that.
 
-[842808.255024] BTRFS info (device mmcblk0p3): scrub: started on devid 1
-[843029.896557] BTRFS error (device mmcblk0p3): fixed up error at
-logical 10461577216 on dev /dev/mmcblk0p3 physical 7416512512
-[843029.896603] BTRFS error (device mmcblk0p3): fixed up error at
-logical 10461577216 on dev /dev/mmcblk0p3 physical 7416512512
-[843065.684027] BTRFS info (device mmcblk0p3): scrub: finished on
-devid 1 with status: 0
+- Remove comments update in the patch
+  To make backport easier.
 
-so I thought maybe some single-bit corruption of some sort.
-In the following few days the error did not appear, up until today
-when saw it reported 3 times:
+- Update the commit message for the second patch
+  Mostly to down play the possible problem, as the extent map is already
+  pinned, thus no way to failed to grab the extent map.
 
-[1534011.639564] BTRFS info (device mmcblk0p3): scrub: started on devid 1
-[1534222.124239] BTRFS error (device mmcblk0p3): fixed up error at
-logical 10461577216 on dev /dev/mmcblk0p3 physical 7416512512
-[1534222.124291] BTRFS error (device mmcblk0p3): fixed up error at
-logical 10461577216 on dev /dev/mmcblk0p3 physical 7416512512
-[1534222.124302] BTRFS error (device mmcblk0p3): fixed up error at
-logical 10461577216 on dev /dev/mmcblk0p3 physical 7416512512
-[1534237.709186] BTRFS info (device mmcblk0p3): scrub: finished on
-devid 1 with status: 0
+It's more and more common to hit crash in my aarch64 testing VM.
 
-I tried to find what is at the reported logical, but no luck:
+The main symptom is ordered extent double accounting, causing various
+problems mostly kernel warning and crashes (for debug builds).
 
-btrfs inspect-internal logical-resolve -o 10461577216 /
-ERROR: logical ino ioctl: No such file or directory
+The direct cause the failure from writepage_delalloc() with -ENOSPC,
+which is another rabbit hole, but here we need to focus on the error
+handling.
 
- the device stats still look harmless:
-root@raspberrypi:~# btrfs dev stats /
-[/dev/mmcblk0p3].write_io_errs    0
-[/dev/mmcblk0p3].read_io_errs     0
-[/dev/mmcblk0p3].flush_io_errs    0
-[/dev/mmcblk0p3].corruption_errs  0
-[/dev/mmcblk0p3].generation_errs  0
+All the call traces points to the btrfs_mark_ordered_io_finished()
+inside extent_writepage() for error handling.
 
-root@raspberrypi:~# btrfs fi df /
-Data, single: total=8.01GiB, used=3.71GiB
-System, DUP: total=32.00MiB, used=16.00KiB
-Metadata, DUP: total=768.00MiB, used=284.06MiB
-GlobalReserve, single: total=28.67MiB, used=0.00B
+It turns out that btrfs_mark_ordered_io_finished() inside
+extent_writepage() is racing with the same cleanup inside
+btrfs_run_delalloc_range().
 
-Does "fixed up" mean it was corrected with no corruption left?
-And why is the same logical reported multiple times during a single scrub run?
+And if the one inside extent_writepage() is called before the ordered
+extent removed from the ordered tree (the removal is queued in a
+workqueue), then we hit the double accounting.
 
-Thanks & best regards, Clemens
+
+There is also a theoretical failure path from submit_one_sector(),  but
+I have never hit a case caused by that failure, the fix is only for the
+sake of consistency.
+
+Both fixes are similar, by moving the btrfs_mark_ordered_io_finished()
+calls for error handling into each function, so that we can avoid
+touching ranges that is already covered.
+
+Although these fixes are mostly for backports, the proper fix in the end
+would be reworking how we handle dirty folio writeback.
+
+The current way is map-map-map, then submit-submit-submit (run delalloc
+for every dirty sector of the folio, then submit all dirty sectors).
+
+The planned new fix would be more like iomap to go
+map-submit-map-submit-map-submit (run one delalloc, then immeidately submit
+it).
+
+
+Qu Wenruo (2):
+  btrfs: fix double accounting race in extent_writepage()
+  btrfs: handle submit_one_sector() error inside extent_writepage_io()
+
+ fs/btrfs/extent_io.c | 63 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 48 insertions(+), 15 deletions(-)
+
+-- 
+2.47.0
+
 
