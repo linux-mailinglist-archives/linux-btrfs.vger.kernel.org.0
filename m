@@ -1,144 +1,184 @@
-Return-Path: <linux-btrfs+bounces-9948-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9949-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1110D9DB7CA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2024 13:38:36 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A81B3163A3A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2024 12:38:32 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED6919DF5F;
-	Thu, 28 Nov 2024 12:38:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Or1EFYZe"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6FB49DB853
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2024 14:10:36 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D96E1E4BE
-	for <linux-btrfs@vger.kernel.org>; Thu, 28 Nov 2024 12:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 780B8282172
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2024 13:10:35 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4720A1A9B2E;
+	Thu, 28 Nov 2024 13:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fyZI45Sj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WqyrTGkN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fyZI45Sj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WqyrTGkN"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F491A9B21
+	for <linux-btrfs@vger.kernel.org>; Thu, 28 Nov 2024 13:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732797509; cv=none; b=pOA9pUmKTu8b9s1Zh7Pbr4cdRUd8G3XDHZVEOSTCLrXDtLe0bop6y7nPNQWyBs5bXKtbdzGtNGEOOtqMINMX9V7xWzwvSPdduCV6EsGuOKcfPGixT6tX5KNtj6Km/8nKlZGOCiUkbqXi3uEdrWXRqvQFA1Zli7orcBHo5Ybp0aw=
+	t=1732799423; cv=none; b=eWjG3M4II2o25hu+PEMrMiq+HiOY++c5ZgnYZhPs5Ho61d+Ws/qolhPOzmNbrGwP74xkOkf0PzznFAdZgSMyvQJCKVQyYKrT6tS7S8seDa4H8yYMK6FcQPAcWCGN4v0O4Y9iE+f21chHQHWh20UZ2qrI4jGSlevcFvFQxQjknA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732797509; c=relaxed/simple;
-	bh=RS/bR9WSC3MRyBE8rDRXSergm0NkhFYHZEBAcrBiWR4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kA9Wutv/m+2joPm5Gb7p3VQQWhRdaSlWyJo23EtzdVRJ92hBwk1cyogseqzVOASliNBWmTugrVtD7jhXsPlSk3vGpGddkChqoGxR5JEx9Moy+uRFNyXSxjli12M0eDh4S6a/F4qgxVXGTEYeE9VCLUXP+QR9lcnXbGKsRv+Z0po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Or1EFYZe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7214FC4CECE
-	for <linux-btrfs@vger.kernel.org>; Thu, 28 Nov 2024 12:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732797509;
-	bh=RS/bR9WSC3MRyBE8rDRXSergm0NkhFYHZEBAcrBiWR4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Or1EFYZeA5NrwQO+tLrTJ4zjvOgSFgECGdWXUkFudrcS4ukOn4aLaPkAwhhST/GtZ
-	 O+G3jt2AMkMelYfLxAtwDu7KmQtRcrRMp3XgjiIevbaRV4szrRo2U0GLJtoPq7AJ7N
-	 Otq3sAQx75qDqDg5QM+qxSJdWsKM9rKaEfxxnQcAZ4MoQeXqzGgwImHiCotqITmUZ+
-	 zdZLtw+8m/kuNTIvodvHu/VgdBFCEz87femyH2+pQmWE82c7qdLrYPPGEO6TlIhahQ
-	 ukHSF21AWy5FemdGHH0uSX+TuJZ2gXKiQy9J02dSyq5nSXsNFdQcmtyLXKuyLJUvVj
-	 saxsYPr3SnuGQ==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5cfddb70965so916790a12.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Nov 2024 04:38:29 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw14S4S4dE+nrp3x6/mQub17YYdyw/vp9MY0IwGrSVNUJCh6pVB
-	++HANgTZRa1LWbN/DAL4/M3yPdmp3OTvBiyOFReaD5R765UIsIZIH096qovdzncI386EQmRSNnb
-	5sfAUofwzBlOUa9t+riamVan1rUk=
-X-Google-Smtp-Source: AGHT+IFhFngKLnx4f2v1XyqEkUxmIGGnNs3EWbINroMurFv+jbyxpKFhEIPGnUPpaBXt8UuIrojxO4IyHGdx+QQ77NA=
-X-Received: by 2002:a17:907:61a2:b0:aa5:4d72:6dd7 with SMTP id
- a640c23a62f3a-aa580f58471mr483519166b.29.1732797507953; Thu, 28 Nov 2024
- 04:38:27 -0800 (PST)
+	s=arc-20240116; t=1732799423; c=relaxed/simple;
+	bh=WbuXA1X3NuF4pLAjTbek/O+2a5YoXCZVaFwopFiYD10=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GNYFX84NzrmYCrFlugLRtjmYsjvvTg3ZOeNT/LHKZIjIqd4avxzVdhtvYX9qps89Uil74T76D+xEZNukBeIVACbcPVnapoqBwqkhsEoCS7r72TY6iWPlo6xKDL8MntPhacbUCpYhYHxHWSxBD99kFoc1RUwHRGY8ThJdl6IRgwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fyZI45Sj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WqyrTGkN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fyZI45Sj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WqyrTGkN; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BE421F44F;
+	Thu, 28 Nov 2024 13:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732799419;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jmiE4vTNagaFt1Y5OGvTEi6tUwpvq894u/JpeduNjsg=;
+	b=fyZI45SjRte9bDvuABhrgMJmi5Y7osjj09e3Y/F5g6DgLdNUfaFdwH4tVM0sA5tTUNqKL3
+	i9JbeyG6CYy11MwyACQ+Rns4zJR9llvBiLDP86S6iwoiBaoA0mSOkIaM8shEJQd9b7pbkG
+	Eckbj3rR91IOgUakQkWr88bEj0+7tsg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732799419;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jmiE4vTNagaFt1Y5OGvTEi6tUwpvq894u/JpeduNjsg=;
+	b=WqyrTGkNGT8pSZKMwlMmxiTcR4zF400k8irUykUxfLnS6jmqoksIw5LyU1fGiABQLD4RSF
+	E3xXVXsslbGWy6Cw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732799419;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jmiE4vTNagaFt1Y5OGvTEi6tUwpvq894u/JpeduNjsg=;
+	b=fyZI45SjRte9bDvuABhrgMJmi5Y7osjj09e3Y/F5g6DgLdNUfaFdwH4tVM0sA5tTUNqKL3
+	i9JbeyG6CYy11MwyACQ+Rns4zJR9llvBiLDP86S6iwoiBaoA0mSOkIaM8shEJQd9b7pbkG
+	Eckbj3rR91IOgUakQkWr88bEj0+7tsg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732799419;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jmiE4vTNagaFt1Y5OGvTEi6tUwpvq894u/JpeduNjsg=;
+	b=WqyrTGkNGT8pSZKMwlMmxiTcR4zF400k8irUykUxfLnS6jmqoksIw5LyU1fGiABQLD4RSF
+	E3xXVXsslbGWy6Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5034313690;
+	Thu, 28 Nov 2024 13:10:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pSQKE7trSGfadwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 28 Nov 2024 13:10:19 +0000
+Date: Thu, 28 Nov 2024 14:10:14 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: extra debug output for sector size < page
+ size cases
+Message-ID: <20241128131014.GQ31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1732680197.git.wqu@suse.com>
+ <20241127153039.GO31418@twin.jikos.cz>
+ <09d0450d-1f4c-4d48-ab95-fc7c2b78c0ec@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241128093428.21485-1-jth@kernel.org>
-In-Reply-To: <20241128093428.21485-1-jth@kernel.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 28 Nov 2024 12:37:50 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5gy1wd-07a8rGdo2=AYHioPO1FXp3CD-5yBYDzSwL6DA@mail.gmail.com>
-Message-ID: <CAL3q7H5gy1wd-07a8rGdo2=AYHioPO1FXp3CD-5yBYDzSwL6DA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: don't BUG_ON() in btrfs_drop_extents()
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, 
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <09d0450d-1f4c-4d48-ab95-fc7c2b78c0ec@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[gmx.com];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Thu, Nov 28, 2024 at 9:34=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
- wrote:
->
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> btrfs_drop_extents() calls BUG_ON() in case the counter of to be deleted
-> extents is greater than 0 in two code paths. But both of these code paths
-> can handle errors, so there's no need to crash the kernel, but gracefully
-> bail out.
->
-> For developer builds with CONFIG_BTRFS_ASSERT turned on, ASSERT() that
-> this conditon is never met.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/file.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index fbb753300071..33f0de10df5b 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -245,7 +245,11 @@ int btrfs_drop_extents(struct btrfs_trans_handle *tr=
-ans,
->  next_slot:
->                 leaf =3D path->nodes[0];
->                 if (path->slots[0] >=3D btrfs_header_nritems(leaf)) {
-> -                       BUG_ON(del_nr > 0);
-> +                       ASSERT(del_nr =3D=3D 0);
-> +                       if (del_nr > 0) {
-> +                               ret =3D -EINVAL;
-> +                               break;
-> +                       }
->                         ret =3D btrfs_next_leaf(root, path);
->                         if (ret < 0)
->                                 break;
-> @@ -321,7 +325,11 @@ int btrfs_drop_extents(struct btrfs_trans_handle *tr=
-ans,
->                  *  | -------- extent -------- |
->                  */
->                 if (args->start > key.offset && args->end < extent_end) {
-> -                       BUG_ON(del_nr > 0);
-> +                       ASSERT(del_nr =3D=3D 0);
-> +                       if (del_nr > 0) {
-> +                               ret =3D -EINVAL;
-> +                               break;
-> +                       }
+On Thu, Nov 28, 2024 at 07:00:58AM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/11/28 02:00, David Sterba 写道:
+> > On Wed, Nov 27, 2024 at 02:36:35PM +1030, Qu Wenruo wrote:
+> >> The first patch is the long existing bug that full subpage bitmap dump
+> >> is not working for checked bitmap.
+> >> Thankfully even myself is not affected by the bug.
+> >>
+> >> The second one is for a crash I hit where ASSERT() got triggered in
+> >> btrfs_folio_set_locked() after a btrfs_run_delalloc_range() failure.
+> >>
+> >> The last one is for the btrfs_run_delalloc_range() failure, which is
+> >> not that rare in my environment, I guess the unsafe cache mode for my
+> >> aarch64 VM makes it too easy to hit ENOSPC.
+> >>
+> >> But ENOSPC from btrfs_run_delalloc_range() itself is already a problem
+> >> for our data/metadata space reservation code, thus it should be
+> >> outputted even for non-debug build.
+> >>
+> >> Qu Wenruo (3):
+> >>    btrfs: subpage: fix the bitmap dump for the locked flags
+> >>    btrfs: subpage: dump the involved bitmap when ASSERT() failed
+> >>    btrfs: add extra error messages for extent_writepage() failure
+> >
+> > Reviewed-by: David Sterba <dsterba@suse.com>
+> 
+> Thanks for the review.
+> 
+> Although I'd prefer this series to be merged after the double accounting
+> fix (which also affects non-subpage cases)
+> 
+> The problem is in the 3rd patch, which is touching the code just after
+> btrfs_run_delalloc_range() returned.
+> 
+> That area is also where the double accounting fix is touching.
+> 
+> To make backport a little easier, I'd prefer make the fix first, then
+> the extra debug patches.
 
-Why only these 2 BUG_ON()'s?
-
-There's another BUG_ON(del_nr > 0) below.
-
-There's also a similar one further below:
-
-BUG_ON(del_slot + del_nr !=3D path->slots[0]);
-
-Also, I'd rather have a WARN_ON() in the if statements, so that in
-case assertions are disabled (and they are disabled on some distros by
-default),
-we get better chances of the issue getting noticed and reported by users.
-
-Thanks.
-
-
->                         if (extent_type =3D=3D BTRFS_FILE_EXTENT_INLINE) =
-{
->                                 ret =3D -EOPNOTSUPP;
->                                 break;
-> --
-> 2.47.0
->
->
+Right, no objections here. As you've been finding the problems any
+debugging and reporting improvement is good.
 
