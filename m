@@ -1,145 +1,138 @@
-Return-Path: <linux-btrfs+bounces-9973-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1FE09DEB42
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 17:45:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCA319DEC86
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 20:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E02E1629C7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 16:45:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 965B9161B11
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 19:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BDC154BE0;
-	Fri, 29 Nov 2024 16:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E63C1A2643;
+	Fri, 29 Nov 2024 19:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RKN203KW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ulnVcy+h";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RKN203KW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ulnVcy+h"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V/TeIhZ2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V/TeIhZ2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362D515AF6
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 16:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC35914D430
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 19:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732898741; cv=none; b=Z2OiSydF6Dwb0xKSI9Ns9YlavqXnSF0PU2hYHrK+OBQiT/mO4YzbRwxGVaXPSOUUxnGDPKdcEtP8HqNFTbr/m5gbaAT+GjVsynSbc0fn0yzHJEsqJFbrXJZlGgcRiHBjhdZorpig150Naiyyu5T9ay26sUJ6PY2G9zOyezsU9cI=
+	t=1732909037; cv=none; b=bZO3iVUYZW6lor3A4xX+nUg5vE9+7HZFHHqgPXKjNg4MpCLg7WiWq0RmPFb6E/3B3D1fYhbVKlnBG9tHsg2XS4+yXTzGdcGDQrAHpSqteGHacoFwqfPE2ghZqT1nq8hVZyMM/E60EdVB6ey4WmisP2i+Mlob/g5FU1+Ti81jGOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732898741; c=relaxed/simple;
-	bh=qF5eSIp/eifIaKPufgYEpmThDCu2v07JU+mJkbyKEbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JpqKFzl5UawmBa0j3e+BY1Y0UFWvIdK6iMzPBHdzdDReZYBoE3TKzU5874Ij5oH4gnHo3mTMGpgiI95ONmrEsSnVYC2QmvzqVuJzX52yeo6cisRsWu3vCg46vqfzoEERi7lwnQLF3T9wgclu8/YwJjohsjc1L44Xvq6rpGifttE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RKN203KW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ulnVcy+h; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RKN203KW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ulnVcy+h; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1732909037; c=relaxed/simple;
+	bh=CE1w2lNeXlizFBtZnnPhXY9Fm6oDkrqRP9pgCym8KGw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=sdMpy4Y6k+SEPuQDVDJEsloeoDL7YPY+XKcIJstCmXEY1m8UWOHpcJxbaAvnX15aImr6TaNmEO8NSyvHFESxtOecKZcmGhsnMYJvbpxhD862uGDSCywWBL4IpvA893rE/fe9czbeMLI2iRGnBsHY2CDxegrXmAUSuFEEdZ44z2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V/TeIhZ2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V/TeIhZ2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 441B11F390;
-	Fri, 29 Nov 2024 16:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732898738;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Hh1Jg47frSSuCArr5TMmsiQhoNqBmW8H/y3fWylCGg=;
-	b=RKN203KWQw0RJ5hiZ3Zo6hdIsTeiP9ST42CzkTxYBjALQXqdB6LqUObmvG4PMmvLXJZXXU
-	bbAmS3ZeEMnWC9DkCg67izD7dTb1Pz0QtmRkZGrsr6oPQMsxYuaDeaakiQjI9B3kG9UakD
-	AYPvvF87nIuXoEZExuwjti/Eo93J8zA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732898738;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Hh1Jg47frSSuCArr5TMmsiQhoNqBmW8H/y3fWylCGg=;
-	b=ulnVcy+hUsQot9vyJGQUoikQTFzcwVcY7/jk4az1V3fzLDGLiSXBbWv5tScwgw1bU10Lu0
-	W/alQ3n6EoZhLCDg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732898738;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Hh1Jg47frSSuCArr5TMmsiQhoNqBmW8H/y3fWylCGg=;
-	b=RKN203KWQw0RJ5hiZ3Zo6hdIsTeiP9ST42CzkTxYBjALQXqdB6LqUObmvG4PMmvLXJZXXU
-	bbAmS3ZeEMnWC9DkCg67izD7dTb1Pz0QtmRkZGrsr6oPQMsxYuaDeaakiQjI9B3kG9UakD
-	AYPvvF87nIuXoEZExuwjti/Eo93J8zA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732898738;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Hh1Jg47frSSuCArr5TMmsiQhoNqBmW8H/y3fWylCGg=;
-	b=ulnVcy+hUsQot9vyJGQUoikQTFzcwVcY7/jk4az1V3fzLDGLiSXBbWv5tScwgw1bU10Lu0
-	W/alQ3n6EoZhLCDg==
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BC1E721183
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 19:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732909033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=dT/ogGax/vsX6pKDA4braux67mteNJr3xl1OjNzzsIc=;
+	b=V/TeIhZ2hLZ+sAdNu48zfWxg6y4P/NJ7WvaZIDCJo5VPhc4/wX4mvd/C1TS/h+AOa1rtp7
+	D6zvZ2dkVlMYi/YTt99su5RV37AKBLsjY91H0xAI9tWqv1DrHlQNA1BzOCMt/Cdibxuub6
+	6SwGXUks0Ro8afnZ6c3oRvaTi8tSIBs=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="V/TeIhZ2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732909033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=dT/ogGax/vsX6pKDA4braux67mteNJr3xl1OjNzzsIc=;
+	b=V/TeIhZ2hLZ+sAdNu48zfWxg6y4P/NJ7WvaZIDCJo5VPhc4/wX4mvd/C1TS/h+AOa1rtp7
+	D6zvZ2dkVlMYi/YTt99su5RV37AKBLsjY91H0xAI9tWqv1DrHlQNA1BzOCMt/Cdibxuub6
+	6SwGXUks0Ro8afnZ6c3oRvaTi8tSIBs=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28942139AA;
-	Fri, 29 Nov 2024 16:45:38 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABE44137CF
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 19:37:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +N5kCbLvSWfPXwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 29 Nov 2024 16:45:38 +0000
-Date: Fri, 29 Nov 2024 17:45:32 +0100
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix missing snapshot drew unlock when root is
- dead during swap activation
-Message-ID: <20241129164532.GZ31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <76ef43063706a4ef1a4313ba03ca6225e7d7dbac.1732887615.git.fdmanana@suse.com>
+	id 7dLyKekXSmd8EAAAD6G6ig
+	(envelope-from <dsterba@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 19:37:13 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 6.12
+Date: Fri, 29 Nov 2024 20:37:02 +0100
+Message-ID: <20241129193704.7991-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76ef43063706a4ef1a4313ba03ca6225e7d7dbac.1732887615.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: BC1E721183
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	ARC_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Fri, Nov 29, 2024 at 01:41:37PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When activating a swap file we acquire the root's snapshot drew lock and
-> then check if the root is dead, failing and returning with -EPERM if it's
-> dead but without unlocking the root's snapshot lock. Fix this by adding
-> the missing unlock.
-> 
-> Fixes: 60021bd754c6 ("btrfs: prevent subvol with swapfile from being deleted")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Hi,
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+btrfs-progs version 6.12 have been released.
+
+Changelog:
+
+* subvolume delete: add new option to do recursive subvolume deletion (for
+  regular user delete only accessible subvolumes)
+* mkfs:
+  * new option --subvol to create subvolumes in given paths, read-write,
+    read-only and default
+  * add hard link detection support for --rootdir option
+* fixes:
+  * receive: message verbosity fixes
+  * check: fix false positive report of missing checksum for extent holes
+  * check: handle compressed extents when checking tree log
+  * when asking Y/N user questions, flush the terminal so the question is
+    displayed (e.g. btrfstune -S)
+* other
+  * code refactoring, error handling
+  * python packaging fixes
+  * documentation updates
+  * new tests
+
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+Release: https://github.com/kdave/btrfs-progs/releases/tag/v6.12
 
