@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-9975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9976-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96EB9DECBB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 21:38:01 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE1F9DECBD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 21:39:34 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EB5428272A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 20:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FAB8163F8D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 20:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885B115B547;
-	Fri, 29 Nov 2024 20:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C40419DF47;
+	Fri, 29 Nov 2024 20:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JsTP3Foy"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gdGe8OAL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B11465BA
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 20:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6725F44C77
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 20:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732912675; cv=none; b=Cot+8emnJgyJb8izP8YW+qtD3rZvqd7F9w9F4NG1u3+ZRLemSoTJGYfx2XK0DanpvaOu9rO5ebRm066Qg+caXBkZ36ZTQ4EhykHZd2QWTwR2CxZuWym5zyLF6VBTU+Xiv5Lobt/u+D+OS2bLKEEO/eqctMdDaE1kMEHvpdAnah8=
+	t=1732912767; cv=none; b=mTH8hnmrT1MXh2bdla5Zh1wlu5yy3a3tk99wPtyp4vEzKg0pH6P88z9wd1uXLEkGCZz4xJo88OUwofkJkc3O5d6/6OkTNqpIoY2ageJw10HMEr7xgEff94ZbAPKQ0B4eYrNgdS5FhzweaA64iw4KTNpoydiRZSJZGiIL5Y8CPac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732912675; c=relaxed/simple;
-	bh=U6MZe6Ya6KjAGTn/vsXJ53SlFX1gtU6f8sWuiamKq/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SLhqs5eWLuWdls0FXE/1qwrSJm6c7s3D9YNVbvFWjlNdD75IJJwER8KnQv2NZPMV/2/QiTUOycVcgVbEzYsRXdq1KRJSBAsTiA1Gv2r4aJKz+6iKONGYE1oFR0CnUyICZnBsvDYwabG+QEV90uo6jS0BcqtODb/nRLTtiOq+mLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JsTP3Foy; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1732912767; c=relaxed/simple;
+	bh=/G398bZ7HnU8StpZaAekiKQV4qcN/hc6t0WriCUAU+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=A4P8m6J+sIdo4vmAeWVv41/zda9TH8vJlEcxyxtg/ChXAljc9BcSBf6n9Hhy/JfbpEgfXmX/IFmlC0TSvr0Vlb+8un0WuqjBPv9lEhFB2hfwy6lv4NMdiaZDTe/Ws5MzmkMuUQnhxxLCL2oILlPDRONilhEg9Ejk6hzlcUddno0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gdGe8OAL; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1732912664; x=1733517464; i=quwenruo.btrfs@gmx.com;
-	bh=Ti9NqVRpRGA5f6YVwLqPIDqId1wIA3RqFpBHDBuJddM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1732912759; x=1733517559; i=quwenruo.btrfs@gmx.com;
+	bh=D8E8DyF/OS/zSIme0Cj4owS/B3DD1vfYAFI9SimNz6w=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=JsTP3FoyeBNZaPJ39DINtMYtBqcLXY0pY367OOoGK/gxmn4rQ/DOYbQMDOS/DmH2
-	 qeN7al7ZtJPyv69ZXT+wXiXHgkVKKBegXmm7Jd5N287HSbgojw6gpYo/ZZtppw0/5
-	 NvX/dgdy9XsZ4MtGVisNieQYQF59+0J8v2tjTw0QthDePgjf7L6ZdWuoHKWLcxNPG
-	 uA5VRmBy1EOEGk0VWLB+wc8IDR0hfxGi0wCwd6+iPFYdVaZ0eR6QjzcgIqcHqFL97
-	 CSidOUlqkyRC+ZU7o3mpsrkvGV3sTEdmx5tYDi9Q4okO6ijXmMM1X0TUu4jj2Nw+5
-	 aam6G97ajUS0UPQniQ==
+	b=gdGe8OAL8GSipnZUubxvii2ZVrKMe7bra+lo9e+QLdtQCW06nHWfpedNb7KwY4SX
+	 IUONzMueROW4ewTX4SZ2Vl2V1AcFGhS4Jjv6MdVZfFSq/3wxdtOJ44+DFcvxnfUoZ
+	 Z8jWKmlwYVlrIiEfpQMx0yTcy/Fz9Si4+NASnMRSU7otMVtl+gY2ODhB56rDwIf75
+	 BS7dlogBUShaZnLEGogYq5IMHT6ERsQnvbaFVlwK4zVzSN0qebnlt9XsLjrUU1OFJ
+	 fePYXkJseX6fqMOqOPHFDa4vGk7nk/mlxfayAMYJ3L7GpzfjjqFxwv3SiyjPb3IzU
+	 x2FPY0d6yMo6//5row==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Ml6m4-1ty84p2pSe-00a7c1; Fri, 29
- Nov 2024 21:37:44 +0100
-Message-ID: <8cbf6d19-4969-4a60-88d7-30842db789c7@gmx.com>
-Date: Sat, 30 Nov 2024 07:07:40 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1McYCb-1tpdm72tmX-00ifxW; Fri, 29
+ Nov 2024 21:39:19 +0100
+Message-ID: <f84f7da0-4fc1-4549-8231-8462ae6dc2b3@gmx.com>
+Date: Sat, 30 Nov 2024 07:09:16 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: don't BUG_ON() in btrfs_drop_extents()
-To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <be18a9fcfa768add6a23e3dee5dfcce55b0814f5.1732812639.git.jth@kernel.org>
+Subject: Re: [PATCH] btrfs: fix missing snapshot drew unlock when root is dead
+ during swap activation
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <76ef43063706a4ef1a4313ba03ca6225e7d7dbac.1732887615.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,123 +88,67 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <be18a9fcfa768add6a23e3dee5dfcce55b0814f5.1732812639.git.jth@kernel.org>
+In-Reply-To: <76ef43063706a4ef1a4313ba03ca6225e7d7dbac.1732887615.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Fb0lkJ4oYqtZ96ychKsOaxlXMwEftayGYGqUJ8q1V9YTycxR2/3
- +I9FfPM/plAmQrY4h5vf58bJKTaBVyhDlTH8F+uZ5ZBxcllXoC0E20squUvm6PaSe6SNNfn
- mih5wa0xLBef88pZjiJInpSU/2LlHIblE6ghxIu2If0i7pVKRAbwdsj86RZVk2T0mWz86PB
- V85Y3gxvHyrss7h2QLedQ==
+X-Provags-ID: V03:K1:cIJqUe9qWeF/ttkLAmtQcjdj45u2TRtSgNAiZ0TgS6yIzbMJLAK
+ ++4Cd2+JO0rw7o+sC98tNVz2OBwPgJYjKvCV8sTCLTL0Q89gHpzimttQxMfcZn5fyoVpF6p
+ 2qCfWaNIyqtHPMl8G1t0oHCLAfWXzAodjDQaYL3RVZ0/rvglPQZ1bCHQaM+VOymrJL1mJZq
+ ILw8uus3YZoGS0t46HBmg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2m/qs1Uq5lA=;22OVB0Rn/u5UJy4lZ2/PFpaiTbR
- gcE8KmjF/NtGVsiCfKSU9WkMQGDq4/2X+r8ARuSwoCTN+fGQX4eK2YBHVMl0cZS3HA0Vpsxe9
- SEpo1K3bmm6f5avttvcnGnYBGGDPw8hNq+1NP7RwXebliBkbwLgpzYkG59Kdq7tJPIyaCWxsI
- nbjOCIOtIVx1PUYHmzPicgoTz/jTT609vowYqo9Q6HnFW5Id+gY1gB+oKWV4uNMt9NtlGkLo9
- WkuJ9uUhYCkbZFD1gTqpd6SVY9nw++WsdeH1Rs9dyTyjoJsJPqcLdvvdg9S7zp+qGQm+WhUPe
- eH8ZIC+Le2WMYTUGxMzRGPbVxTEtovfGdZrHChxuzK/9aCUgn+IUH+/wYVITjbJkN2qMmbW7Q
- KO0J0kqRugYup0fbldECqqSs8XAbtvqdtY9BfSd5Q3V7PEwiyHLo/0qH9aZqwEoMVPKIvTSEK
- 4KDnex1HDOQnqpiGguFp0gseqRLAvX0073VG56bYDXVV9cm9x5/IgQBbxY7gLFZI3ZOnoelKD
- 1lBPaBt8+TUvh7ji2fXTZ/xelyIo/ATqETeJ9rjVpdPwI9RsuqxdNmwZdTyFN1rPMaUgz6ha5
- hznkB9LPKuwNi/Wki46O/cwFAfyVb1HMG2mI7VbJceBHlpJRCz1ByKITQGcZ3rKqLU8lp5KaL
- HbL0lCZDYt5ce0oNQK+N80OpZlhXuxWm9M2yRTBQEouArG4QqWsMka9u413x2R8dewtMWlxu4
- wYMkJJZ2dpS14aVDCtBK342zyA+zshk4/sBLLotHAuNiR64Y1WQiAWD9Y+2vzemV5/SwPXwVM
- wX2hp/+YdF/Wo+XsaOdCS+YEZJQL5ujYJL+eQ++v0MQxX9h83pHQqcRodmxUo8bVQzcB3Cb2K
- GutvAFRrmWaMWwGHnWNHn76pLn9yCB9hy7Qwt/3wrw8re62IK4KxlqlmZeS871pU57Qsl+329
- PM4pMGLF9gYdVZfjHEBWH+BtbdWNm1BVTJ6u5iVmtmmOPsJi+2lssQZaddRphgqjN4uWO6Nz+
- Ozl1740R4pya2Nm0eYNxNj4PZ85OS+sRDfjjpmHAChREuaA9kEhJg2FQHIIsUw4AqmWV5ehL8
- DXJGL3k5PheecsNS2z7zhLnOJ4XW3g
+UI-OutboundReport: notjunk:1;M01:P0:BNt5cMNl35k=;NbAZ56j+KMlJmGQJv5tXuo8SouB
+ zmzq5iOlICx0AX3HgH1nVCwMS/ppxadHDmpshGWwxOzw2DGnYE/tyL6CQSmHNIvhWVOG33umb
+ zIj3NlAOYpv4dneuVV3xegQd02Do3F/5yK8BxUojH5FxmvS36lGUO32dSgVZh/bioPquA8bwy
+ imZQ+949HmFkaUFiG1JSr7rdGYIKsVZkOrQJtvCnTJw+qsDZA+oi2lKboE9N1TG2DAkLLahvX
+ 8eGlvWMZq8FHmtepbpyrXC398xeu7WrPcuiU+HpegkpCvvfthmBHG2kVrg8x3txs1snYeC7DL
+ h3aZr/8mwlSxV8AIhRaLeCvpC3xbgVOxg7dQ4Y1/0y09l9XHqSN/VB74yVow7NYTmcCH6Y6TY
+ FWiXiSHn+TaqJWxqgoktjO08+FAayVeK8o8dYzvqnmkHOoLcpwIeMSK9BUYKXic4/InsOk5w0
+ PmZ/WVv9cuL0DcRlByAnXUNXSTRjcqWHCAlmj4SVv3VcP1X2FO6/XHAx2JyDtju5TLLtlDo6C
+ D/0An1EkkSXrrvePE8kayLTKtC9RVMONLlljMUdiyQwZemf8wed9CgCcy+ggrH1EIlHRb+bRm
+ H0WGTfv0+f6kBZvGo+o4AsUv4qA0RzWmgVoYxohGwo++igiFcHeTvIKPD7B6vQlNhUAnpA7JS
+ BzrwWJpAE5zqYlgeAz4pHkdMXNDJWFSDhwJBd+AyG4q0k8O4xFRgV6HqXahYtYeW8VRpEHIu4
+ fTafDxOJijNNd2oYQW7xqNZtI3omMm4dAWTaQh6n8oD8l2q3GpWkhMubKvy3lgXNU8GVYYLBn
+ c/eM5Oc9YhQjql73FsTE1dc+hh1KoIUL/sAL9yLMbTaJ+eEvgdYtxTO9dzw3O+1T4ly0k5cmx
+ PAAYOq6NBdNGI70TjwxNNFPLsY2a0gSt1IHsnG2mhzowJU1ZI3sIXJ3ISasGVzWBwopRYJGyG
+ ZouhCF5tQaBAHZH9dx0kET22zTY0mFScQK9vfLT1SXpKqAfyWy0ngi6bipFZkpZq66fMsRwfB
+ XR+xOJOsw8YvQ3sdNhmdcGU+T1ZDWszEW47yGGbPwtvV4U22D3Qe07jKuPvtYoLXVvxM+XY5i
+ h+rLDTJlojiA7EhEwWD6INFomUgDst
 
 
 
-=E5=9C=A8 2024/11/29 23:41, Johannes Thumshirn =E5=86=99=E9=81=93:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+=E5=9C=A8 2024/11/30 00:11, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> btrfs_drop_extents() calls BUG_ON() in case the counter of to be deleted
-> extents is greater than 0. But all of these code paths can handle errors=
-,
-> so there's no need to crash the kernel. Instead WARN() that the conditio=
-n
-> has been met and gracefully bail out.
+> When activating a swap file we acquire the root's snapshot drew lock and
+> then check if the root is dead, failing and returning with -EPERM if it'=
+s
+> dead but without unlocking the root's snapshot lock. Fix this by adding
+> the missing unlock.
 >
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
-> Changes to v1:
-> - Fix spelling error in commit message
-> - Change ASSERT() to WARN_ON()
-> - Take care of the other BUG_ON() cases as well
->
-> Link to v1:
-> - https://lore.kernel.org/linux-btrfs/20241128093428.21485-1-jth@kernel.=
-org
-> ---
->   fs/btrfs/file.c | 20 ++++++++++++++++----
->   1 file changed, 16 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index fbb753300071..f70ce6c65d12 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -245,7 +245,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *t=
-rans,
->   next_slot:
->   		leaf =3D path->nodes[0];
->   		if (path->slots[0] >=3D btrfs_header_nritems(leaf)) {
-> -			BUG_ON(del_nr > 0);
-> +			if (WARN_ON(del_nr > 0)) {
-> +				ret =3D -EINVAL;
-> +				break;
-> +			}
->   			ret =3D btrfs_next_leaf(root, path);
->   			if (ret < 0)
->   				break;
-> @@ -321,7 +324,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *t=
-rans,
->   		 *  | -------- extent -------- |
->   		 */
->   		if (args->start > key.offset && args->end < extent_end) {
-> -			BUG_ON(del_nr > 0);
-> +			if (WARN_ON(del_nr > 0)) {
-> +				ret =3D -EINVAL;
+> Fixes: 60021bd754c6 ("btrfs: prevent subvol with swapfile from being del=
+eted")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Do we also want to dump the leaf and output a more readable error message?
-
-Just like what we did inside
-lookup_inlin_extent_backref()/update_inline_extent_backref()/insert_inline=
-_extent_backref()/__btrfs_free_extent()/...?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> +				break;
-> +			}
->   			if (extent_type =3D=3D BTRFS_FILE_EXTENT_INLINE) {
->   				ret =3D -EOPNOTSUPP;
->   				break;
-> @@ -409,7 +415,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *t=
-rans,
->   		 *  | -------- extent -------- |
->   		 */
->   		if (args->start > key.offset && args->end >=3D extent_end) {
-> -			BUG_ON(del_nr > 0);
-> +			if (WARN_ON(del_nr > 0)) {
-> +				ret =3D -EINVAL;
-> +				break;
-> +			}
->   			if (extent_type =3D=3D BTRFS_FILE_EXTENT_INLINE) {
->   				ret =3D -EOPNOTSUPP;
->   				break;
-> @@ -437,7 +446,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *t=
-rans,
->   				del_slot =3D path->slots[0];
->   				del_nr =3D 1;
->   			} else {
-> -				BUG_ON(del_slot + del_nr !=3D path->slots[0]);
-> +				if (WARN_ON(del_slot + del_nr !=3D path->slots[0])) {
-> +					ret =3D -EINVAL;
-> +					break;
-> +				}
->   				del_nr++;
->   			}
+> ---
+>   fs/btrfs/inode.c | 1 +
+>   1 file changed, 1 insertion(+)
 >
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 9267861f8ab0..6baa0269a85b 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9876,6 +9876,7 @@ static int btrfs_swap_activate(struct swap_info_st=
+ruct *sis, struct file *file,
+>   	if (btrfs_root_dead(root)) {
+>   		spin_unlock(&root->root_item_lock);
+>
+> +		btrfs_drew_write_unlock(&root->snapshot_lock);
+>   		btrfs_exclop_finish(fs_info);
+>   		btrfs_warn(fs_info,
+>   		"cannot activate swapfile because subvolume %llu is being deleted",
 
 
