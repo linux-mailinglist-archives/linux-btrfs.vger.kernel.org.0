@@ -1,206 +1,211 @@
-Return-Path: <linux-btrfs+bounces-9970-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9971-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CBA9DE821
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 14:54:34 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F5B1641C5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 13:54:25 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293F81A073A;
-	Fri, 29 Nov 2024 13:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Ynjgz6O2";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="nJr8Bne/"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 802B49DEAD7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 17:21:33 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CEC19F133
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 13:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732888456; cv=fail; b=j3e5gewBDrFtTidh/gWQl5ZirlHpXILWOCoTgU05IsVw8lCaCjwHPpwOvu38Y36unyMyE9HeyBUgmTYWwaiMm7r1aIuAVWpgS05RS5yiDK2OiX4krgUzqSi+oRPq/f3LTL9nuBpJlsp6COIgSgzFlUaUvPuMeaR4m3W3NSnlVPw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732888456; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=SsV9MBhrnrepEut0FTCOqZH1kiITgfTm7XnWN2p1ai98NQFn+h37TqxKnKFpGagSSa2r8GAKSmkSEK8RYpTwjqNihVMM4hYAkc5h+6H40N2cpLcg7PPzkuzJfEpCEJEgv7AqfdZmvuk0l93xbUuaiWYbscSdA5cGGkf3dNI/Bc4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Ynjgz6O2; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=nJr8Bne/; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1732888454; x=1764424454;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=Ynjgz6O2wJ7BLshkT9DauS0DgaYkYynutMJ4tCUYy+OatAqP/m6Kv3aR
-   +bJAConBzrnUV/zhn8Gvbr89gLPun3Z3PpYLG1VhpK9IUlHJiad3Z80H5
-   DPz/7grWIN8E1vlUHlXBhl4gvpQvrFAqfXFf7oBzocbewzqorlqsh1B83
-   aU7VBAonfgUjdGOgysXGEnd2aliw9Wj7/r2BLaVl3ljLuCDu7936YfiUQ
-   JKGj6veU2IRKABiJjYUi1Q1lF5xUAIUyDY4R6IgwE4k048JT7zwZs5YMV
-   MKcbXGEBNQhzYpx2r2JGALaB0DIYOA9k1P+ed+rmWl1Fz/uw2qOvn7i3P
-   g==;
-X-CSE-ConnectionGUID: aIeO35hbSM+bX8+k6Crf+g==
-X-CSE-MsgGUID: DnnzAlKmSWe6m8fp1sCeMA==
-X-IronPort-AV: E=Sophos;i="6.12,195,1728921600"; 
-   d="scan'208";a="33724136"
-Received: from mail-westusazlp17012039.outbound.protection.outlook.com (HELO SJ2PR03CU001.outbound.protection.outlook.com) ([40.93.1.39])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Nov 2024 21:54:07 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cRdeK47Gtsd3r6HdT7X2UUbPSJEcELxdX1OEYVSAKSR9khpWa3y/Nvmyxh/VgwWy4Lz6ZoFTQXa3Wz4Np8LIeOr3OXcb+S8BAYkJE2bRLL7vQWQYVZZY117aV3S2T1yRh4STR1zYtwhPr5SNOLbXHYPSsgoTSkX6r2AXrQZ6o0QmrShZLWN8hoq0suDp5N/4h7hY+2/Fbw78uummi/pZAbmqC8xYcF1SEJbzDQUMINl3CFWT/iz9V87WWzukpau2/Dtxkav8po2Xb+j8G8bDwqhZXyys3D+tkpv9ECO+K23if+HZ6SIN2rUhi2PIYBdJttRo0qm8FcIQJ/zHdozM5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=rDOA5BzDuSqDz2yCVSvuvTW+FdNMHXzcOv+Elt6uDa+BDknoxUNVHgaspE5oAggwGSWR/QDkm92s1FKWCmjB/NyvY5RUoGdlglA2xnGWvamHh90O7zTFZYpiG7zPNE+3Xmy1/DXTBVJG1z74l79n+WQ3HRANW6vm0WBgkXDgFhTdki4ITrU2LZrMaVGj8wzTcD2xPo0j+HD7Ykc6VKAacu7BbyQUVzyQ8+Nl1ZBy/uG9pucEGQ528kbPKI3DgHlgSL1Ij46MpS919YYurXA/ieh+9ps8OXqhne7ZIIKusBBBEyyKfPzOtDQfz7BJ+8I0SNdvtjYxUf/Kl/HKMGu1cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=nJr8Bne/F22HwzZep9FIz/utZiHKLhhmDVmwPaY1iteCO3sHjTuqUkbrA2vjtYnjCQbk6C4uWCTNzfK6vhuxxWvARI1S0jUxwFjapuSuY79rTMtHtw6MKQ2WYNRb1vKhneB/xHT6lcqVt9tn5EKOOMH+SgTCo8OdxUCZ2pEDc/Q=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by SA1PR04MB8821.namprd04.prod.outlook.com (2603:10b6:806:38a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.14; Fri, 29 Nov
- 2024 13:54:05 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%6]) with mapi id 15.20.8207.014; Fri, 29 Nov 2024
- 13:54:05 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: fix missing snapshot drew unlock when root is dead
- during swap activation
-Thread-Topic: [PATCH] btrfs: fix missing snapshot drew unlock when root is
- dead during swap activation
-Thread-Index: AQHbQmRwrznnXfap7kmturTx/s5lorLOR4QA
-Date: Fri, 29 Nov 2024 13:54:05 +0000
-Message-ID: <75b0b8ce-057d-4fd1-a3f9-4fed3da733a7@wdc.com>
-References:
- <76ef43063706a4ef1a4313ba03ca6225e7d7dbac.1732887615.git.fdmanana@suse.com>
-In-Reply-To:
- <76ef43063706a4ef1a4313ba03ca6225e7d7dbac.1732887615.git.fdmanana@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SA1PR04MB8821:EE_
-x-ms-office365-filtering-correlation-id: a27c443c-c953-42be-97a8-08dd107d49f1
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?V29rVjY5Qy9Pc2N1cFptRmRXZW4vNjdBU1pRZzRtOUdiQUx6WHN6OUpJQm1U?=
- =?utf-8?B?dmNkbWdiTUhZQ2tsT1owVTNRQk5kMlZzeHJoMHJDdGlVY3ZsTzdZeWZaelhC?=
- =?utf-8?B?N1FNR3dPWE9oc0RrdUhjb3RTOGVyMFVNMFp4MitOTGd6NFhpWURHTUp1Y0t3?=
- =?utf-8?B?S2NJYWt2TDZOQ3ZkaXV6M1h1WU8yWGFLL29lbnBrNnJ1TkFaVU95OGtmd3VI?=
- =?utf-8?B?Y3Rmbm1LaDlONnQ5TVhEVHh1aGsxWFJNdUd3ZkZ1RkQzN0tFNkxOZVdhSVd2?=
- =?utf-8?B?RC9LU3JqaDRZY3gxWlhNTThBZHRCZEkxZGFHRGc2VHFKN05LaU42YXZMU1lr?=
- =?utf-8?B?V1ZMcWtBOXpnclBUc0hxMmtQT2FrRG95T2NXS2ovRkd5QmJQQzdrYnFUZTht?=
- =?utf-8?B?SnloeEtnS2pWMUMvd2JPZ1p4eTgzTklwTXpkVkIwNkxQL0ZWbHQ3M2ZsNzc0?=
- =?utf-8?B?WDNRdTlnalArNlRETEc3cWg4TVZRN2JaRlpIMlZ6d0poVFZSbVFtTXZGWEs0?=
- =?utf-8?B?MzFDaHVOMjlxTEx0c2hqTkc4YnFCNW9JNzJkdzdZVkcyUTJ2elVSbys2Y0hW?=
- =?utf-8?B?RmJqcTRTZFQ2N2tLMzJFTUdTU0dOUUdXeFRKYXgxMUM2NUY4VTdoWmhVdnRC?=
- =?utf-8?B?MFVKZ21qQW9YRVllcG91SVNVRjQvb29BS0twUXRNZGxJV3ppS1NLQVFHUjZ3?=
- =?utf-8?B?R2lqTkRFQ3BxWmRmdldtUlRuaXRqZ0pOTmR0TGRMVU9YNGhjbm5VbDMzSTZS?=
- =?utf-8?B?WFdMK3ViL2NDZ2xQeUhhVWFOOU1nb0luTkx4SmM1TngzWlh3NldVYjY3YnZL?=
- =?utf-8?B?UXp6LytlaldMVEFGQXE5V243T0tjRmxTNS9iSmRKOU1pK251UnN2bjBJUmV4?=
- =?utf-8?B?c0R5MFNGU0FVajBrRzA3dUMrSHE5R3k2cGxhTTZSVXVUb3g1VEIxNDUycUxC?=
- =?utf-8?B?T1paeWh6SG45UENaTTN5RStiRmlRZDdvUlBPWSsyTHoyT0RHVW5LTnc2ZzhG?=
- =?utf-8?B?eDRJdGdrMVUzMVZLQmtHNFMwSGNGd091K0t2OGw2V3d1WGRVVFZHTVNleWpy?=
- =?utf-8?B?eXo5Y2Q0Um1wNXZrLzhMRjN3YTlRaEdxaksxQkI1MDdDcmNMQ2lWSlErL0FR?=
- =?utf-8?B?bHE1amp2SmJYazk0dmg0b0JWSFMrV1VrZjlCVmYzb0VYOWdUbU1iNllXWXYx?=
- =?utf-8?B?RjdkNWJtU1FxcElrR3FuVTZLcVlkemNodnFIaVErK2kyTkNaZDZueTFORm8v?=
- =?utf-8?B?bVdPeEFzV3hIN1Z0czhXYnRWNlZJNnlsOXo4QnZGQzA1bDRHNGdrTVN4RS9X?=
- =?utf-8?B?azNqSTIrT2F0ZnJvejU1Vk5MN0pMcXJLTGsyTGZ5TUVLbDd6d0tZNnJMVUYz?=
- =?utf-8?B?c1lzdXBQNXJnUFRVN1pzQktIWFlHV1lLQjAvaVVvZ1czSHl2L0tqOTBJUlQx?=
- =?utf-8?B?bExhVWZVZkxwdGlKdEgrbUsraUcrTXM1eEZ3YXd2OHAyUFArVDUwdHdFdHlE?=
- =?utf-8?B?bURkS0Q4R29wWnM4NlVQVWw4VzhpUWZTTHNUNlN6cXhsWlR6UTNzYTZpcThL?=
- =?utf-8?B?ZVdEUDQ5VjBQbXpxdHlrSmV4Q3BwdHBHc3BIdGtOVlNmZUZ2dlIxVDE0ZXU2?=
- =?utf-8?B?VlptT0E3dGZnTTlsZVdCZXhQWHpEK3NTWjNscnRmcklZTlV2dExhK3ltOXRn?=
- =?utf-8?B?U1RmV3B3emo1V0lxWW9SaTlXcUpPelpCcXlMT1JDZEx5ZU9ZMkVFNmxoR3By?=
- =?utf-8?B?MjNFV2kydVIvVlh1UlBTUzlYS0lUV2hWc3lzV1dLZFh0SEFVSm9CalFaa3Zm?=
- =?utf-8?B?cytuOENLTlF4K09iYm1nS3pBUnc1emNqenBDbXFLalQ4WnRiZzVLVUxFTEdl?=
- =?utf-8?B?MldIUGdKR1BVdDVlWkFDV0ZFKzFFK01lQjI2dVpEeE9IUmc9PQ==?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?WXBYWjZiemVlVDBla1dEU1VBMzhiVzBzUk5SdGlLL1BEenlKNWthSkhadTRn?=
- =?utf-8?B?QTB5WldJTjhRQmI2cGZGYkpkbStaZDJjOWlrMFZyYTFCcFZzd0RmU3NGRTZj?=
- =?utf-8?B?aVc1QjY2UzBLM2xIa3JYSmR4VHM4Z0VqRjB2YlVxcXE1TTZCQWd3QmtWTzBP?=
- =?utf-8?B?UlJLek9UR3Bid3hzK24xcnBHRVpnVkVzd1A2aHlEWXZNU3dVaGVDcVZ3dldD?=
- =?utf-8?B?akFXbHpSUWpOdnlGWG42UWZReUZYYTVWV096cm9pK3ovVlozYUhhbGI2Y0Fi?=
- =?utf-8?B?ZFFIKzBhd0xqYmczVDFNRXJUVVZwRUtvNEZVUkZyLzM5QUxmcCtQb1BRWXVY?=
- =?utf-8?B?MlQ5UUd0cXdZbFBQdGFZNEtZQ01PbnlKcWM0WnhKdk1FMmdOSFJIZmNweWJw?=
- =?utf-8?B?S2pPNVhSSkUvbk5qbHpJQVhCN09BYkNZUWc5d25Zb3FBQlhyeTc5VTQ3Zmx6?=
- =?utf-8?B?YXRvdEhIU1NpVTlDOVUrOWJKMkFESXFMT3Baa212dkFhNS9YdGtBY0VENTJK?=
- =?utf-8?B?TzZYVG91aTFLaS9FR3BZR1pTZHFRSWFFU2VzVTZNM0hjUFN2aXo5WTBLMkM4?=
- =?utf-8?B?UVlkSmtHbGd5VGZqeGhrRWVWR0V1Nm80Y3g3WkRDM2NqUkVYSjlmZkxaWFFq?=
- =?utf-8?B?L0pzRjZHZnZPeFc0VDZET3ozWFRNQVZkWWdDeXVDTnJ3RElvKzB4VGVOWE5P?=
- =?utf-8?B?MWlWYndkWmpRdUJTS3pWODYvK2NVUGRzRW9Ldk5DU0RhblpydTZ3WXdQY3Vh?=
- =?utf-8?B?YXR3ZDl3ajY4TEJoYytSaWw5RzlmWTdma040cEQ4NURrYXowUUpUakVKRlZ6?=
- =?utf-8?B?UFRVbEVsckw2M3lqbUxoK1RMK25NVnc0ZVdwNHczMnNYcFZ2TTZXVWY3bS9K?=
- =?utf-8?B?TmVVdVl3bWY0RHBIS0ZlaGIwN016SnNiVnU1anpsaEROSDRMcEE2MHAzNmdt?=
- =?utf-8?B?cWJlTUMvL05Va2pQbmVSVnNmZitzR2pheGZrL1dtV3FkWTlvRHdXaWVhR0I5?=
- =?utf-8?B?UjM0Y1pSTjJHejMzRE9UUmdTYTdYVlVyazBRcStHTHo3T0ZNakxHNU9qUFhK?=
- =?utf-8?B?RmcwWmVLWjdWUWlPQjF0dFJubkZUZk5rTGhsNmxVeDRtN3BibmlwQzRDR0ts?=
- =?utf-8?B?ay9HQXgvK3lMcmlFTVJob3JoZkNmazFPV2pydzJZbFpsaHJPaVdXenJoOEFx?=
- =?utf-8?B?QUsxVjFxZzVHQ3M2dXV3aEh5U2s5ektxclJyVEtnR1lPYTQ5MlJIaWxheEZz?=
- =?utf-8?B?emh1VDl4MzkxTzFBWWtTY2ZHMitDYmk4ODNhRnNXdDQ4Nkh1YUI3MWo2Tmwx?=
- =?utf-8?B?TVlzamxkVkprTTBlQ1d3a1RqZXdRcStVVUl2R3FRR0FYb3FpbFppM1Ezemtu?=
- =?utf-8?B?cTFHQ2c3SXlNN3ZoTWhKY1JiUlV5NC9IdlM4cHBvUUZrVmEzTmh5ZmxocFZn?=
- =?utf-8?B?clFRYU91NjZ0Zk1UcENPdkdRSGNQRm50RTdXaHJhKzA1am82bTBVbFBZTm1M?=
- =?utf-8?B?MVJKMjZDaS9zc1lRMGRQT2ZiVmFpaWF0YmRDWlIrTVh1dVg4d01Ccy85Z2U3?=
- =?utf-8?B?ZVFhalJsL0VITlJXLzZTaGdJUWpvRFdSUHUwQXNHb3ROb0oxd1lmOGxuRWh6?=
- =?utf-8?B?N3BNMVJ6Q280M0FmUkRyZTBJMEdtR2I3VlBRVTJLTW5xbEZOMGVRaG84dXYw?=
- =?utf-8?B?OUhiWlhCbzNMK1NtYWI5V3lleUhNeHkyMzgwTmRGenNzbU1yU3dwb1NQNENX?=
- =?utf-8?B?K1RlMlFYV0VGOEhkZHM0VVQ0SDM5Q2xETDdsaXo2YUtCWUxFOGl0UTRWZVRG?=
- =?utf-8?B?dTVXYk1ITGxsbEsreGRXZUNhSmRtQ2ZLMUEvNGY4VDJ5MXY4U0FnUHBBKzV2?=
- =?utf-8?B?MXpZWGNBMStWZ21hOFB2NUc3cktDZUFxRzJuNXlQN3k1UEpTblZhMWliemVI?=
- =?utf-8?B?TW5pa0xrVjZTVTN5RXg4NnBtVVpPcUJpblJkQmR3cUN4dmtuZUdYSmRKQU40?=
- =?utf-8?B?SUd1bVI2QnpKR09OdGNOb2JOOWF6TUlXTlNQek5pQ3V3a3hlMXdNZTdkMDgw?=
- =?utf-8?B?NVNFYnVJMnR3Mkc2WE9UUzBTc1RWWlNERVB3RUQyUHBhTlQwekVCQU1tbU5I?=
- =?utf-8?B?KzlxWGdzdXBhSkYwNjI2dno5T3cwUnhmSU5rKzAyYXZWZGY4ZENOZmpMZlV3?=
- =?utf-8?B?Umc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2658F0B692BAB6489A0C719F88C62221@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F5F828156B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 16:21:32 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F8714B077;
+	Fri, 29 Nov 2024 16:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WmHWsFEX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9LEa+V/x";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WmHWsFEX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9LEa+V/x"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCCF1B95B
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 16:21:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1732897287; cv=none; b=n+Vn8Lk1g1xdjdqBsITtpubxHUzNWActNhn0qMCpASVOMPFgMXJgVSr8bopwmdifEKnV5c/jWo+kfpdkB3vsjTYf2AlWb6IvRfM8t5mlD+sSaoOSfalO3Npgjl4eA6CSlMtKQuS6USwAPQl62G5I492TvreFCS/q/xgP9TBBE+E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1732897287; c=relaxed/simple;
+	bh=3fU+9Pj3WhnkGMrQgGafD5IKfRk0LEQDTn+nHqIhqd4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IaYY1oLUn9mS4BLN4DQGjsPPDjBkIUliRL4MmH01B2N55HUYZeqCzXKce0B+xpCMumnpvXF4GaMHt6V+zGkIBPrdEZ2VG40Ltd9OC4TUg4f4dxBCAEBS7Nho2ClqxSGKSwENwES5qnAnrRrB9FHv4Hl1REwo6Azi5NYI6/xQ69U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WmHWsFEX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9LEa+V/x; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WmHWsFEX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9LEa+V/x; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C7E4621125;
+	Fri, 29 Nov 2024 16:21:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732897282;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kachbt7op/AlznUCTSgNtwThieEEIjdBYx/++b+Lvw4=;
+	b=WmHWsFEXebYGfyQ3OXm9/ohKxoPXA/XM3JKejNL01SbzN18DjRqLeczfL88uPcwFkL7vz+
+	qUJ0MKg1ODk0h33JSUiXzQfL0/kKX/jPreK6s1iawWAMsHXKiGCUPuZ4G8QvmKQG94xXxr
+	Hl3ho9ZP7NoJJXqyFH6usuf0ys522P0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732897282;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kachbt7op/AlznUCTSgNtwThieEEIjdBYx/++b+Lvw4=;
+	b=9LEa+V/xeEDkE/lyd+6rVMRkFBJcnZOuZwWGxusliNe5OcUArau5+QEFjoUYaI7gVMSAAj
+	lb4suPanpKeHh/Cw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732897282;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kachbt7op/AlznUCTSgNtwThieEEIjdBYx/++b+Lvw4=;
+	b=WmHWsFEXebYGfyQ3OXm9/ohKxoPXA/XM3JKejNL01SbzN18DjRqLeczfL88uPcwFkL7vz+
+	qUJ0MKg1ODk0h33JSUiXzQfL0/kKX/jPreK6s1iawWAMsHXKiGCUPuZ4G8QvmKQG94xXxr
+	Hl3ho9ZP7NoJJXqyFH6usuf0ys522P0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732897282;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kachbt7op/AlznUCTSgNtwThieEEIjdBYx/++b+Lvw4=;
+	b=9LEa+V/xeEDkE/lyd+6rVMRkFBJcnZOuZwWGxusliNe5OcUArau5+QEFjoUYaI7gVMSAAj
+	lb4suPanpKeHh/Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABB30133F3;
+	Fri, 29 Nov 2024 16:21:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TImrKQLqSWdfWAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 29 Nov 2024 16:21:22 +0000
+Date: Fri, 29 Nov 2024 17:21:21 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Naohiro Aota <naohiro.aota@wdc.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] btrfs: zoned: implement ZONE_RESET space_info
+ reclaiming
+Message-ID: <20241129162121.GX31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1731571240.git.naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	lErRXmQuABnFTlixfM0kViF15hfCSVrivkKvB99PmqJZN4yRoxa7elf3RHFFpP0jiNU5ezwxlaAkl/J96dDdzVb0Q9X9hYgH1kMx8hRiYw7iVwNTIrdYpB1KlUNztFD01exUBYjgy4fDS9kRmcXW9ItUqtnk5nCsjnmHS/vXmNOGu9xx476z0ra3fJKpUMzJqZZWqoB8g8c7uXwUW+aoDqRnw3C3eJtZ8M3U1DfhP2U2f3vLq6zjJucYhjaXYaPnYSM4odcFgQJTeJ0QxE9B2B35VrGpTBWVoHLd2GwXUkbrUR4qL7tRJhSPlkKyQZ77sodNVHJBDI46E8RQGEKWsuRURl+Ry8Hu3iVzNIpxVRxvdjB76XU4iXje2u1XmBM1Jujq+vpAUX6uw5a/E1Sn+kSl8gz7UbIGpnvT+pHaj7KJ64NmsvczJBHEgGz64HjvAQ4GD13oxdZt/fRwN1aONYgyRk+2V+tq8YlytxalroDtWZlsKXbGhMYTh5R5VvAShsxrJEOKOLJ1Drl53LJeOWxHPJLQgQCQ3WhV9baij3kMtqhK2H9kizigmXa2AwEGmu0w4swcnr2bFn7vdj9vQLM9GLtJK8g7UjJudAeYvTb1tApc0SCTDAaEAClGPlMK
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a27c443c-c953-42be-97a8-08dd107d49f1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2024 13:54:05.3581
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mRqt2l66KCwxFQD6BgcwhKoXSHeKcbmX7vsvPpniunm3PRdmkwxckE17EJR4StsN1V1Qz9uL1CvLpiOLqUfkqEXKMK0bqY6ovfuDAkEl9h0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR04MB8821
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1731571240.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Thu, Nov 14, 2024 at 05:04:26PM +0900, Naohiro Aota wrote:
+> There is a longstanding early ENOSPC issue on the zoned mode. When there
+> are heavy write operations on a nearly ENOSPC file system, freeing up
+> the space and resetting the zones often cannot catch up the write speed.
+> That results in an early ENOSPC. For example, running the following fio
+> script, which repeatedly over-writes 15 GB files on 20 GB file system
+> results in a ENOSPC shown below.
+> 
+> Fio script:
+> 
+>   [test]
+>   filename=/mnt/scratch/test
+>   readwrite=write
+>   ioengine=libaio
+>   direct=1
+>   loops=10
+>   filesize=15G
+>   bs=128k
+> 
+> Result:
+> 
+>   BTRFS info (device nvme0n1): cannot satisfy tickets, dumping space info
+>   BTRFS info (device nvme0n1): space_info DATA has 0 free, is full
+>   BTRFS info (device nvme0n1): space_info total=20535312384, used=16106127360, pinned=0, reserved=0, may_use=0,
+>   readonly=0 zone_unusable=4429185024
+>   BTRFS info (device nvme0n1): failing ticket with 131072 bytes
+>   BTRFS info (device nvme0n1): space_info DATA has 0 free, is full
+>   BTRFS info (device nvme0n1): space_info total=20535312384, used=16106127360, pinned=0, reserved=0, may_use=0,
+>   readonly=0 zone_unusable=4429185024
+>   BTRFS info (device nvme0n1): global_block_rsv: size 25870336 reserved 25853952
+>   BTRFS info (device nvme0n1): trans_block_rsv: size 0 reserved 0
+>   BTRFS info (device nvme0n1): chunk_block_rsv: size 0 reserved 0
+>   BTRFS info (device nvme0n1): delayed_block_rsv: size 0 reserved 0
+>   BTRFS info (device nvme0n1): delayed_refs_rsv: size 0 reserved 0
+>   fio: io_u error on file /mnt/scratch/test: No space left on device: write offset=13287555072, buflen=131072
+>   fio: pid=869, err=28/file:io_u.c:1962, func=io_u error, error=No space left on device
+>   ...
+>   Run status group 0 (all jobs):
+>     WRITE: bw=113MiB/s (118MB/s), 113MiB/s-113MiB/s (118MB/s-118MB/s), io=27.4GiB (29.4GB), run=248965-248965msec
+> 
+> As the result shows, fio fails only after 27GB. Instead, it should be
+> able to write 150 GB by freeing over-written region. The space_info
+> status shows that there is 4.1 GB zone_unusable in the DATA space. While
+> this space will be eventually freed after a transaction commit and zone
+> reset, the space_info dump means btrfs is too slow to reuse the zone_unusable.
+> 
+> There are some reasons to hit ENOSPC early and this series only
+> addresses one of them: unusable block group is not reclaimed enough
+> fast. This series introduces a new space_info reclaim method
+> ZONE_RESET. That method will pick a block group in the unused list and
+> send ZONE_RESET command to free up and reuse the zone_unusable space.
+> 
+> For the first implementation, the ZONE_RESET is only applied to a block
+> group whose region is fully zone_unusable. Reclaiming partial
+> zone_unusable block group could be implemented later.
+> 
+> Patches 1 and 2 do the preparation for the patch 3 and there are no
+> functional change. Patch 3 introduces the new space_info reclaim method
+> ZONE_RESET described above.
+> 
+> Following series will fully fix ENOSPC issue on the above fio script.
+> One will separate space_info of regular data and relocation data. And,
+> another will rework zone resetting of deleted block group to let it set
+> the empty zone bit early.
+> 
+> Changes:
+> - v2:
+>   - Use the ordinal locking style.
+>   - Rewrite btrfs_return_free_space() to reduce indent level.
+>   - Add some extra comment.
+> - v1: https://lore.kernel.org/linux-btrfs/gjr4vwt5qm7j36xnjijp5wqttpmh62trhsq5vqeotcqm6kx2pq@qovd36rh7hap/T/
+> 
+> Naohiro Aota (3):
+>   btrfs: introduce btrfs_return_free_space()
+>   btrfs: drop fs_info argument from btrfs_update_space_info_*
+>   btrfs: zoned: reclaim unused zone by zone resetting
+
+The logic sounds ok to me, I've added the patches to for-next, thanks.
 
