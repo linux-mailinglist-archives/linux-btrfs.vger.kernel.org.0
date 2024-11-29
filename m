@@ -1,75 +1,69 @@
-Return-Path: <linux-btrfs+bounces-9966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9967-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D5009DC033
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 09:02:34 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631F49DE704
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 14:11:53 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBA2EB20A8E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 08:02:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57AF1163F23
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2024 13:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07225158875;
-	Fri, 29 Nov 2024 08:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V8sWKUQA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V8sWKUQA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C675A19D8B7;
+	Fri, 29 Nov 2024 13:11:44 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFD01581E1;
-	Fri, 29 Nov 2024 08:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0CB156991
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 13:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732867299; cv=none; b=BSk26caeYyR4L3Vy0bfWPsESgA+IDlls3/4DnIw00Ev9ytXjhESU9h1SVt9z5PUXwFg+f77VHG6T4Y7SynzmkezFgF9pRPsjOb8INRPG1DAz9PxNxLfPasTksZNY2Wis7EYvCMbsOOCQ0njRON52BBuvNvcV20weqwxbGSbOUGo=
+	t=1732885904; cv=none; b=FPC4QeYELcEpDJ0JLDvrZ7KQDcQ6w2El6UnBG8G3J9BQ9jgQGZDYY9/uV7Y4ZIcryrkKNKgWq0bZIz0e+zc5T4nw9KtULpd6kjSn8QOvL9ugofoByLd2BIGyhZWxse6P6N8lB7xZ6MgtEGQA05kgUswW2nWM+gR4CE0K9vnuZwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732867299; c=relaxed/simple;
-	bh=4X8ji4NpJvb4/98bZ9okzZx1P3sIj36Z9TzMuefqK48=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j0ip+AKsNM2VYC8de7hFTJVYnWfp1TiuHKFGIiuBAkCJKOSpZlZ2tfpqzjtQx+9mETbTKmKxuRTF65qszkqc1fEif617FK3vsNoNYio8VhB8/ODP5DTjwP9iEmcrkQdz53vjCZ7IU1VEGt/EGrsejlWzc2u6mn01ma9Hzc4FkFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V8sWKUQA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V8sWKUQA; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1DBCC21171;
-	Fri, 29 Nov 2024 08:01:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1732867289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=m0UHUDYXDoqPbdg3gmyZIIC14Kz7EjSHm1CxVtkCePA=;
-	b=V8sWKUQAzUsLa6Ot0jcgo3epEr89NYrpbYv1EZjyDbGuyBK/njnKNOO2+A7iqG4/Ns1S5s
-	PC6Zh/UlvaCtdtIVvCQm3eKqR9bEIyDjrpU6TikZAV/+wtIa+Lf9QW1/3SypVIXeETUa8V
-	q2BEsnMwRa07lwlh1h4io30Dy3N9edI=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1732867289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=m0UHUDYXDoqPbdg3gmyZIIC14Kz7EjSHm1CxVtkCePA=;
-	b=V8sWKUQAzUsLa6Ot0jcgo3epEr89NYrpbYv1EZjyDbGuyBK/njnKNOO2+A7iqG4/Ns1S5s
-	PC6Zh/UlvaCtdtIVvCQm3eKqR9bEIyDjrpU6TikZAV/+wtIa+Lf9QW1/3SypVIXeETUa8V
-	q2BEsnMwRa07lwlh1h4io30Dy3N9edI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 057DE133F3;
-	Fri, 29 Nov 2024 08:01:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OAnwLNd0SWdMNwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 29 Nov 2024 08:01:27 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1732885904; c=relaxed/simple;
+	bh=QUiPWBt0g+z97Sd6AuKbSA4VaGfMuTFvqFhGF+NN/hs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AEEn4TbMqQKzpBpxgnhMzzj9GpzFniccK22n+LKO/wbNnovw5KPZYtghmS2SDv7Ib0OvrzBUKSCytBOcE/hBR8fhBcTqmasbiMxyFS4RfBE72432y6n6Em8DjFImpO0lJ+n7HjmgEOlz/Ax4Q5+6mnQA7daYUjjD5h82mPUN7H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-434b3e32e9dso13226685e9.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 05:11:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732885901; x=1733490701;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UvhIxdlSyuuvXaCCDjGlpzvBupmAGp//zqxK9iNXT1E=;
+        b=fJhvKeRMnmsZhpub6zkmALtvLn1apsXbDYz4Jih3Wu8t50dPzrmhn54Kn0iccCcWpt
+         H+xBQyA0Wa9FN2x65n7AaxJtkCbOGOA6xWF1Q827Lxq/uOFVL3eWUYAZJUIHFYCzSeWq
+         vEn6XRMIcD5U1E2z/LSTaUILo4exbAHkj8IOIhKCe+7acENNNbw5d2fUkCVVYri+AapI
+         W6PPVGTgHeRIJWWSwInpGZYfk02/6yEKSkUhkK4QUjw5pJ2qEX2LDk4hPIZ60pLijAVj
+         vvLoCxXYO+DUYiIRtgRXz24fxjlBge2KcU7UY/nDL3/r8+K+OG7k0+v0XZltdscErJn6
+         CAfA==
+X-Gm-Message-State: AOJu0YxJi0jKgeIH+bDIJkmCzASb7cbVJKs4iny/5G43NA7LlU24yGcb
+	6ewOBmdszIT1x1gBDp/ObQjSJdtqj/5VtN4a92smB5+WzLaTlHOITnpCyw==
+X-Gm-Gg: ASbGncv60cUugqFu7SfaANODXfirJLUGSqrH8YgEFP2BruUmZWANqlmoN1kL008sI/p
+	llxCz57GGJp/bYcTR0eEkk/kUKNoxa/5MG+DEDWHBXBlm3jd5WkF0LcC99wAbDt2fuJzmbZqg1k
+	WUHLurO2xy2DpqzqnkVnLHWiYhzdMHi7HKMRffFbzD66LfA+kR2rd/CUAt6Rv9Uk/Do7CDbLKdX
+	ptzz4gzudBIboqvwPZXBsWzEI5EGlQs1lnTP8zoAANj3zEc1y8FVDFKwHWXAyliKl17AVRt0G2s
+	hvlzUlXXs6n3Dmxlron8xNS0Dzb37p5c
+X-Google-Smtp-Source: AGHT+IFQa++MpN20ymYZ5gXMWROQm0+XQVqMPsHYHdKszJrSbmt8Kftx2Bu8qh2pAVCcIawP4WGHCQ==
+X-Received: by 2002:a05:600c:1ca7:b0:434:a202:7a0d with SMTP id 5b1f17b1804b1-434a9de44b7mr94213285e9.22.1732885889035;
+        Fri, 29 Nov 2024 05:11:29 -0800 (PST)
+Received: from nuc.fritz.box (p200300f6f7081700fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f708:1700:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385e17574ebsm100805f8f.30.2024.11.29.05.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Nov 2024 05:11:26 -0800 (PST)
+From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] btrfs: do proper folio cleanup when cow_file_range() failed
-Date: Fri, 29 Nov 2024 18:31:06 +1030
-Message-ID: <0b4675971b718709497ca35c0d69e06db0c69d58.1732867087.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.0
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: don't BUG_ON() in btrfs_drop_extents()
+Date: Fri, 29 Nov 2024 14:11:17 +0100
+Message-ID: <be18a9fcfa768add6a23e3dee5dfcce55b0814f5.1732812639.git.jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,276 +71,80 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
 
-[BUG]
-When testing with COW fixup marked as BUG_ON() (this is involved with the
-new pin_user_pages*() change, which should not result new out-of-band
-dirty pages), I hit a crash triggered by the BUG_ON() from hitting COW
-fixup path.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-This BUG_ON() happens just after a failed btrfs_run_delalloc_range():
+btrfs_drop_extents() calls BUG_ON() in case the counter of to be deleted
+extents is greater than 0. But all of these code paths can handle errors,
+so there's no need to crash the kernel. Instead WARN() that the condition
+has been met and gracefully bail out.
 
- BTRFS error (device dm-2): failed to run delalloc range, root 348 ino 405 folio 65536 submit_bitmap 6-15 start 90112 len 106496: -28
- ------------[ cut here ]------------
- kernel BUG at fs/btrfs/extent_io.c:1444!
- Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
- CPU: 0 UID: 0 PID: 434621 Comm: kworker/u24:8 Tainted: G           OE      6.12.0-rc7-custom+ #86
- Hardware name: QEMU KVM Virtual Machine, BIOS unknown 2/2/2022
- Workqueue: events_unbound btrfs_async_reclaim_data_space [btrfs]
- pc : extent_writepage_io+0x2d4/0x308 [btrfs]
- lr : extent_writepage_io+0x2d4/0x308 [btrfs]
- Call trace:
-  extent_writepage_io+0x2d4/0x308 [btrfs]
-  extent_writepage+0x218/0x330 [btrfs]
-  extent_write_cache_pages+0x1d4/0x4b0 [btrfs]
-  btrfs_writepages+0x94/0x150 [btrfs]
-  do_writepages+0x74/0x190
-  filemap_fdatawrite_wbc+0x88/0xc8
-  start_delalloc_inodes+0x180/0x3b0 [btrfs]
-  btrfs_start_delalloc_roots+0x174/0x280 [btrfs]
-  shrink_delalloc+0x114/0x280 [btrfs]
-  flush_space+0x250/0x2f8 [btrfs]
-  btrfs_async_reclaim_data_space+0x180/0x228 [btrfs]
-  process_one_work+0x164/0x408
-  worker_thread+0x25c/0x388
-  kthread+0x100/0x118
-  ret_from_fork+0x10/0x20
- Code: aa1403e1 9402f3ef aa1403e0 9402f36f (d4210000)
- ---[ end trace 0000000000000000 ]---
-
-[CAUSE]
-That failure is mostly from cow_file_range(), where we can hit -ENOSPC.
-
-Although the -ENOSPC is already a bug related to our space reservation
-code, let's just focus on the error handling.
-
-For example, we have the following dirty range [0, 64K) of an inode,
-with 4K sector size and 4K page size:
-
-   0        16K        32K       48K       64K
-   |///////////////////////////////////////|
-   |#######################################|
-
-Where |///| means page are still dirty, and |###| means the extent io
-tree has EXTENT_DELALLOC flag.
-
-- Enter extent_writepage() for page 0
-
-- Enter btrfs_run_delalloc_range() for range [0, 64K)
-
-- Enter cow_file_range() for range [0, 64K)
-
-- Function btrfs_reserve_extent() only reserved one 16K extent
-  So we created extent map and ordered extent for range [0, 16K)
-
-   0        16K        32K       48K       64K
-   |////////|//////////////////////////////|
-   |<- OE ->|##############################|
-
-   And range [0, 16K) has its delalloc flag cleared.
-   But since we haven't yet submit any bio, involved 4 pages are still
-   dirty.
-
-- Function btrfs_reserve_extent() return with -ENOSPC
-  Now we have to run error cleanup, which will clear all
-  EXTENT_DELALLOC* flags and clear the dirty flags for the remaining
-  ranges:
-
-   0        16K        32K       48K       64K
-   |////////|                              |
-   |        |                              |
-
-  Note that range [0, 16K) still has their pages dirty.
-
-- Some time later, writeback are triggered again for the range [0, 16K)
-  since the page range still have dirty flags.
-
-- btrfs_run_delalloc_range() will do nothing because there is no
-  EXTENT_DELALLOC flag.
-
-- extent_writepage_io() find page 0 has no ordered flag
-  Which falls into the COW fixup path, triggering the BUG_ON().
-
-Unfortunately this error handling bug dates back to the introduction of btrfs.
-Thankfully with the abuse of cow fixup, at least it won't crash the
-kernel.
-
-[FIX]
-Instead of immediately unlock the extent and folios, we keep the extent
-and folios locked until either erroring out or the whole delalloc range
-finished.
-
-When the whole delalloc range finished without error, we just unlock the
-whole range with PAGE_SET_ORDERED (and PAGE_UNLOCK for !keep_locked
-cases), with EXTENT_DELALLOC and EXTENT_LOCKED cleared.
-And those involved folios will be properly submitted, with their dirty
-flags cleared during submission.
-
-For the error path, it will be a little more complex:
-
-- The range with ordered extent allocated (range (1))
-  We only clear the EXTENT_DELALLOC and EXTENT_LOCKED, as the remaining
-  flags are cleaned up by
-  btrfs_mark_ordered_io_finished()->btrfs_finish_one_ordered().
-
-  For folios we finish the IO (clear dirty, start writeback and
-  immediately finish the writeback) and unlock the folios.
-
-- The range with reserved extent but no ordered extent (range(2))
-- The range we never touched (range(3))
-  For both range (2) and range(3) the behavior is not changed.
-
-Now even if cow_file_range() failed halfway with some successfully
-reserved extents/ordered extents, we will keep all folios clean, so
-there will be no future writeback triggered on them.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/inode.c | 63 ++++++++++++++++++++++++------------------------
- 1 file changed, 31 insertions(+), 32 deletions(-)
----
-The similar bug exists for nocow path too (and other routines like
-zoned), the fix for nocow will come later after the patch get reviewed.
+Changes to v1:
+- Fix spelling error in commit message
+- Change ASSERT() to WARN_ON()
+- Take care of the other BUG_ON() cases as well
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9267861f8ab0..e8232ac7917f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1372,6 +1372,17 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+Link to v1:
+- https://lore.kernel.org/linux-btrfs/20241128093428.21485-1-jth@kernel.org
+---
+ fs/btrfs/file.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index fbb753300071..f70ce6c65d12 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -245,7 +245,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ next_slot:
+ 		leaf = path->nodes[0];
+ 		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
+-			BUG_ON(del_nr > 0);
++			if (WARN_ON(del_nr > 0)) {
++				ret = -EINVAL;
++				break;
++			}
+ 			ret = btrfs_next_leaf(root, path);
+ 			if (ret < 0)
+ 				break;
+@@ -321,7 +324,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 		 *  | -------- extent -------- |
+ 		 */
+ 		if (args->start > key.offset && args->end < extent_end) {
+-			BUG_ON(del_nr > 0);
++			if (WARN_ON(del_nr > 0)) {
++				ret = -EINVAL;
++				break;
++			}
+ 			if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+ 				ret = -EOPNOTSUPP;
+ 				break;
+@@ -409,7 +415,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 		 *  | -------- extent -------- |
+ 		 */
+ 		if (args->start > key.offset && args->end >= extent_end) {
+-			BUG_ON(del_nr > 0);
++			if (WARN_ON(del_nr > 0)) {
++				ret = -EINVAL;
++				break;
++			}
+ 			if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+ 				ret = -EOPNOTSUPP;
+ 				break;
+@@ -437,7 +446,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 				del_slot = path->slots[0];
+ 				del_nr = 1;
+ 			} else {
+-				BUG_ON(del_slot + del_nr != path->slots[0]);
++				if (WARN_ON(del_slot + del_nr != path->slots[0])) {
++					ret = -EINVAL;
++					break;
++				}
+ 				del_nr++;
+ 			}
  
- 	alloc_hint = btrfs_get_extent_allocation_hint(inode, start, num_bytes);
- 
-+	/*
-+	 * We're not doing compressed IO, don't unlock the first page
-+	 * (which the caller expects to stay locked), don't clear any
-+	 * dirty bits and don't set any writeback bits
-+	 *
-+	 * Do set the Ordered (Private2) bit so we know this page was
-+	 * properly setup for writepage.
-+	 */
-+	page_ops = (keep_locked ? 0 : PAGE_UNLOCK);
-+	page_ops |= PAGE_SET_ORDERED;
-+
- 	/*
- 	 * Relocation relies on the relocated extents to have exactly the same
- 	 * size as the original extents. Normally writeback for relocation data
-@@ -1431,6 +1442,10 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		file_extent.offset = 0;
- 		file_extent.compression = BTRFS_COMPRESS_NONE;
- 
-+		/*
-+		 * Locked range will be released either during error clean up or
-+		 * after the whole range is finished.
-+		 */
- 		lock_extent(&inode->io_tree, start, start + cur_alloc_size - 1,
- 			    &cached);
- 
-@@ -1476,21 +1491,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 
- 		btrfs_dec_block_group_reservations(fs_info, ins.objectid);
- 
--		/*
--		 * We're not doing compressed IO, don't unlock the first page
--		 * (which the caller expects to stay locked), don't clear any
--		 * dirty bits and don't set any writeback bits
--		 *
--		 * Do set the Ordered (Private2) bit so we know this page was
--		 * properly setup for writepage.
--		 */
--		page_ops = (keep_locked ? 0 : PAGE_UNLOCK);
--		page_ops |= PAGE_SET_ORDERED;
--
--		extent_clear_unlock_delalloc(inode, start, start + cur_alloc_size - 1,
--					     locked_folio, &cached,
--					     EXTENT_LOCKED | EXTENT_DELALLOC,
--					     page_ops);
- 		if (num_bytes < cur_alloc_size)
- 			num_bytes = 0;
- 		else
-@@ -1507,6 +1507,9 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		if (ret)
- 			goto out_unlock;
- 	}
-+	extent_clear_unlock_delalloc(inode, orig_start, end, locked_folio, &cached,
-+				     EXTENT_LOCKED | EXTENT_DELALLOC,
-+				     page_ops);
- done:
- 	if (done_offset)
- 		*done_offset = end;
-@@ -1527,35 +1530,31 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	 * We process each region below.
- 	 */
- 
--	clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
--		EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
--	page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
--
- 	/*
- 	 * For the range (1). We have already instantiated the ordered extents
- 	 * for this region. They are cleaned up by
- 	 * btrfs_cleanup_ordered_extents() in e.g,
--	 * btrfs_run_delalloc_range(). EXTENT_LOCKED | EXTENT_DELALLOC are
--	 * already cleared in the above loop. And, EXTENT_DELALLOC_NEW |
--	 * EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV are handled by the cleanup
--	 * function.
-+	 * btrfs_run_delalloc_range().
-+	 * EXTENT_DELALLOC_NEW | EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV
-+	 * are also handled by the cleanup function.
- 	 *
--	 * However, in case of @keep_locked, we still need to unlock the pages
--	 * (except @locked_folio) to ensure all the pages are unlocked.
-+	 * So here we only clear EXTENT_LOCKED and EXTENT_DELALLOC flag,
-+	 * and finish the writeback of the involved folios, which will be
-+	 * never submitted.
- 	 */
--	if (keep_locked && orig_start < start) {
-+	if (orig_start < start) {
-+		clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC;
-+		page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
-+
- 		if (!locked_folio)
- 			mapping_set_error(inode->vfs_inode.i_mapping, ret);
- 		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
- 					     locked_folio, NULL, 0, page_ops);
- 	}
- 
--	/*
--	 * At this point we're unlocked, we want to make sure we're only
--	 * clearing these flags under the extent lock, so lock the rest of the
--	 * range and clear everything up.
--	 */
--	lock_extent(&inode->io_tree, start, end, NULL);
-+	clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
-+		EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
-+	page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
- 
- 	/*
- 	 * For the range (2). If we reserved an extent for our delalloc range
 -- 
-2.47.0
+2.43.0
 
 
