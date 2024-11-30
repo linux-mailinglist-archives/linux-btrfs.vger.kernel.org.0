@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-9981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9982-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9DB9DEEF8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 05:37:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44DD69DEF2A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 07:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83E1CB21688
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 04:37:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616FC2818D4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 06:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2B0137930;
-	Sat, 30 Nov 2024 04:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059061487C8;
+	Sat, 30 Nov 2024 06:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Olk4NC8H"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SlSm4s0g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79923FC2
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2024 04:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CD5130E4A
+	for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2024 06:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732941467; cv=none; b=jS9q2iVCn7xgUpaZ6hTii7F6qM+4JgImVfBam21AbihdEGPJbNY1yOKb3m9oZqXi1Ric3BE9r5Y7TWu652c9BmZcZgevusdkhErsAbhExDaqz8yMf2UxfnQcXxITe1gffkZr/ilBSv0/W6Rfei7jmgVbhlMrSKrSDPKGPb+yXaM=
+	t=1732948624; cv=none; b=bRlXRChk4CAycRPBld3esG4nt2dNleBA5Qru3QaiSD/KBafsITKswtPlxGV4B+ryx1aIUNd1lXcdFTnlwLJ2Si9MllbChBAE9mHU689hhDdZwOYT4/fLDI6xqJknyI4h5Bc4f8OdXlye1qLEjpRmbR7rNholo7+mJlMr9cy+Tb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732941467; c=relaxed/simple;
-	bh=avRm1YsSbDQ3uNdqg4XIyNQjQzx+Wkd519gQbC+kuxE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mkQpk9AoL7OO9HaTsiqpgZ/SA8sQqEALySxEpPJvKiRUFLQ6YRwanKbDgdcKhDOdrKo+AKSLlEQfHSjuC4bENS6zYs3UGUetkTVWYyCY23tuxjNqKvdBVUEKuq8B7Uz48l7F+kL1zzDUTO+pkSAgge9jqCrID9inJY2x4VQY0aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Olk4NC8H; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1732948624; c=relaxed/simple;
+	bh=qq9AwRXG9Y0MKpI/uuID0yHTuLcUuXdr+9+Cxu/cWlI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=iSyvZbHLEFAJik42Izp4y1SgdVOivi+E6C1pYw9vradtMfZz99rZf3nX/bsm4iPe7Qbc4VDUW/RkQhyexP5IF28drD1zMTDXxrq+4Chs/J8OZ07F/BP+wDXefaZsrIZhNXU4Cyh6D7rrpQ2Q9Gv7WIpkSRiqIIejcj6BpTKz9Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SlSm4s0g; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-434aa222d96so28121995e9.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 20:37:44 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-385e27c75f4so338836f8f.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 22:37:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1732941463; x=1733546263; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1732948619; x=1733553419; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=a1WSwHkqHUyOi2IoL+DAQ0pEGLCRVT+XMDuYnMpQK5k=;
-        b=Olk4NC8HJYGe+Q4NchMubfmoZL5rgUBsKWe4za2ZTNy91usT5oCyTPxPRO9TsUJC4G
-         6cRoEcmoNxHWcEVskiYYkzPRDWonIiAMBCl81nzIxSWnK6WZ5K09fIv8oxTIk5u4mZDD
-         s97Ey8U1RlVN7EQsn8/uPxTMgiLxE2Pth/A5iHXJHM0wxYG3eeBtfhmX4pNdSQD4KzLU
-         EvXXvACsO8cOCaC0NIHj7ZHhCcdsYsb75fpusyaRKa8tQ0DPCkCZ5V3KGuuW52Shyd/Q
-         5fpI9gV5Xmt9qiWSJ6QZw6wTfD47nA3h7aHJxrXQ1sqhLNuTd84rbct+sjZ+sGnAznYV
-         x3TQ==
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=P+ctTfoeCCp7NyB71Xn2LcHzgljZipVMdjQU3ruAJ8Y=;
+        b=SlSm4s0gG0mgw/+JGsHmWre7b88rNgfQq/icESkghrp5t0lNT2qdboWETxQaPPYZKM
+         4T1QNcEeZ/MDkuZgPtuGx6RQXg3koeP6FbMG4Q6t6lwJG5Kr2DkmAXTrgwS6kj/1orv7
+         yqH0z+guLyRXqd3joPmn2niNIuXA79W8iqs5Q8DFhDiO4Vt2Kt5BOdjhjAJYhgoA6r50
+         AMTXHWosV9pW7Sxhln9voWZgnM46dBfDhZTX9joS2fwbmzx2blKiB9rR7s5RVmqsasm6
+         pubT8YMSTdtdA7+56fpeF/RDhznTm0yJQHT32xZ6m9+g1fe6rJejFePccN8/c6q92mKF
+         nnzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732941463; x=1733546263;
+        d=1e100.net; s=20230601; t=1732948619; x=1733553419;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a1WSwHkqHUyOi2IoL+DAQ0pEGLCRVT+XMDuYnMpQK5k=;
-        b=pjIEX/kjbglw8oqxQgjBm5d8KVYf17dPHex8DpRCKK+7xwEU1kEdk1z2izGVnL9xVj
-         RoV7ZEFe/lIYVwY0Sbnx3ETmYpgtHXoaN2DMx6ufP4Ba3yAij7SFAzADJrv3bs8lThUR
-         Vnqal+2cZn4vefq5rFP3WRoyQk/kh7m2UGu0tX/zm+4Yh52FUUmEE1kGwlf8dik6g5RR
-         h4Q4oToEzJ2tAv2baPNYbHUhBXVUuneDNckLjholgFU+HGU4o+g+ZceAOZGrxrFHq4EJ
-         dgiBJLjq8qrXwOPvdAAB0eroYh9EhOvuhpn3IpAVjqsFe04gjklbKRhTLdzEyZk1DYrD
-         Bj1Q==
-X-Gm-Message-State: AOJu0YwZT08XjMCbbv/o1a7WN8rbHcsj2d4FbprIPa+pUhjwuHdyNvBE
-	w+6M68KGXM00NNumupmjn9c9WWqFgUypAJiSoG4RSPdZnS8gTf+yZQZvXiLcZJk=
-X-Gm-Gg: ASbGnctOfA0SeDt1c4VC8ysbdfNMLDLhh1ZxBMg3OPl/Jkk23q+h1g29C4jU//t14JD
-	L7wkiq5NxkPpea74Cs7go1XLa867Yt9iiRrdUHj48qizLRMAOj4SNswr6BJeGsBN0QpXiWSh1qJ
-	0iI+bXSLxMUMLPGligWIBbdl5bkwzuvxWvD1K3E3e61QTkwWhIswniCv8CMD/zWLWF5/qSwc5WV
-	wxvLfEQM3ZtTvCFMOvzIAymrZ8hxH+1c5vzfEJpjs66PUiEpxgPSBGXReTIcSEOXFwNfYo6/MXM
-	3A==
-X-Google-Smtp-Source: AGHT+IFIFnS2IIJTS8EpnAWbTCc26yxI7XMfQx/E7MI2oKGRndfgdmEp6XPIUBjCJQwJL1eAXGfT7Q==
-X-Received: by 2002:a05:600c:4e8a:b0:431:562a:54be with SMTP id 5b1f17b1804b1-434a9dc36c1mr153933135e9.9.1732941462136;
-        Fri, 29 Nov 2024 20:37:42 -0800 (PST)
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P+ctTfoeCCp7NyB71Xn2LcHzgljZipVMdjQU3ruAJ8Y=;
+        b=cm5kGLitVGGZGWJrDleQxUXLGiOx+SwJ6BmwBf8tsCbbAoeeLCIXbP2ZbAlFaKLzIB
+         tFQxkIyQSsO6cY/AtU1SNSMge2zobRL2V8x7/qQHEfpiYIcXxkhWu9HKiMlKVWeNT1w9
+         XghpcKc9ztCeQUhdrHLpcarQ+Y8YGp1r9AXarhC5kAmKHVAful4oeewHQ50wmhtF5G83
+         DKMGqk2bppwYyg7ss04N45JYcAYe+ty1sFm4bLuJQWYjxbzuzi5pv6Mj6ybx+SAmvTCz
+         c05zNe65aBITzCwhuosMF+CMwczV4Nbi4wOiXe4h8DkMESn1L+XPq5gaiZEMMGGdLJIY
+         xXtg==
+X-Forwarded-Encrypted: i=1; AJvYcCXG/kSqETgVi6/rEo1nMF7KQyAm4MN8ULtG+G1vEhRAG3cco0e3SHT3h/4msOtzdaMKrVkEx9e/YOPPOQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPbapzEUyelXmehE/i8q+mgGnMr1aPpQJxsELjIfDsVJYrN01T
+	PHe/+639E6MVC9R616NE5iJhIvMHyagiulP3CmKKXNmzSx6bWD9YkNQAA3DZRPc=
+X-Gm-Gg: ASbGncul4Bk9+wNHRYy9VeSNa3VjQYnYrffOcJiHbsLqAxcpZ/2V3kH0MTt6dCqxI9P
+	isuC32p9AlYJRfChYOL4NJOCK3jAUwRG/6rbnxlYh8EXsT8sZshY9l1Zo5eb1pCxvSxWHmXsfZl
+	SuXu/w3N2zMOBRodDRsUo40OGncajUMHvMOL78yN810acgmjVrV5zPpWFJz2T1/kTTtbkylD984
+	rFogrj2nPX65gd+KhD5ZlzMwhzqgA5X2yF/34XCZRKRv+PUJz1dZEVXMdp/3NtpLsuWcmH2GFxC
+	aw==
+X-Google-Smtp-Source: AGHT+IGcLElPDk4aF16QViUhmHGp0ugDNRn8khESMWAYIIEkrD7KWvr6m9CIfQ/45+5sU4LYWA4PBQ==
+X-Received: by 2002:a05:6000:18ac:b0:385:df6d:6fc7 with SMTP id ffacd0b85a97d-385df6d71b8mr4417022f8f.25.1732948618616;
+        Fri, 29 Nov 2024 22:36:58 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254176fe28sm4331148b3a.72.2024.11.29.20.37.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21542d8d5e6sm21673685ad.206.2024.11.29.22.36.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Nov 2024 20:37:41 -0800 (PST)
-Message-ID: <f409d283-88c0-45d7-b8df-e4d1ec227117@suse.com>
-Date: Sat, 30 Nov 2024 15:07:37 +1030
+        Fri, 29 Nov 2024 22:36:57 -0800 (PST)
+Message-ID: <7a8955d4-4283-426f-8bbf-8f81787fb08e@suse.com>
+Date: Sat, 30 Nov 2024 17:06:52 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,16 +82,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: corrupt leaf, invalid data ref objectid value, read time tree
- block corruption detected Inbox
-To: Nicholas D Steeves <sten@debian.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- Brett Dikeman <brett.dikeman@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
- <1748c8ff-30a6-4583-bdbb-b3513bc3d860@gmx.com>
- <CAFiC_bzov3zete3VabFQQMQ3rUS-TdHikNqRMUW_xggFmrtoNw@mail.gmail.com>
- <cfc9177b-ab53-40c2-b627-0045e9348938@gmx.com>
- <87h67pmspi.fsf@digitalmercury.freeddns.org>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in __folio_start_writeback
+To: syzbot <syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
+ josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
+References: <67432dee.050a0220.1cc393.0041.GAE@google.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -117,114 +115,119 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <87h67pmspi.fsf@digitalmercury.freeddns.org>
+In-Reply-To: <67432dee.050a0220.1cc393.0041.GAE@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+#syz test: https://github.com/adam900710/linux.git writeback_fix
 
-
-在 2024/11/30 11:41, Nicholas D Steeves 写道:
-> Qu Wenruo <quwenruo.btrfs@gmx.com> writes:
+在 2024/11/25 00:15, syzbot 写道:
+> Hello,
 > 
->> 在 2024/11/27 09:39, Brett Dikeman 写道:
->>> On Tue, Nov 26, 2024 at 4:30 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>>
->>>> Inode cache is what you need to clear.
->>>
->>> Brilliant! Thank you, Qu. It did mount cleanly. Shame Debian's
->>> toolchain is so out-of-date. I pinged the maintainer asking if they
->>> could pull 6.11.
->>>
->>> Is there anything I could have done that would have caused the
->>> corrupted inode cache?
->>
->> It's not corrupted, but us deprecating that feature quite some time ago.
->> And then a recently enhanced sanity check just treat such long
->> deprecated feature as an error, thus rejecting those tree blocks.
->>
->>>
->>> 'btrfs check' thought the second drive was busy after unmounting, but
->>> a reboot cured that.
->>>
->>> check found the following; Is the fix for this to clear the free space cache?
->>
->> I'd recommend to go v2 cache directly.
->>
->> You may not want to hear, but we're going to deprecate v1 cache too.
->>
->> V2 cache has way better crash handling, I have not yet seen a corrupted
->> v2 cache yet.
+> syzbot found the following issue on:
 > 
-> Let's avoid a "btrfs is the only fs that ate my data" storm.  Would it
-> be sufficient to provide free space cache v2 migration instructions in
-> our release notes?
-
-So far when we deprecate the v1 cache, it should require no user 
-interruption.
-
-We will silently delete v1 cache and rebuild v2 cache on the next rw 
-mount, at least that's my plan.
-
-Unlike the offending inode cache feature, v1 cache is a very common 
-feature, thus I believe we won't hit the same situation again, until v1 
-cache is fully deprecated for years if not decades.
-
->  If not, would you be willing to write something?
-
-I believe the current man page is showing it good enough:
-
-   If v2 is enabled, and v1 space cache will be cleared (at the first
-   mount) and kernels without v2 support will only be able to mount the
-   filesystem in read-only mode.
-
-And since v2 cache is supported since 4.5, we have no need to bother any 
-compatibility problem either.
-
-> Alternatively, should this be automatic, and in-kernel?  Debian users
-> tend to have long-running installations and don't tend to reinstall.  I
-> think you'll agree we ought to get ahead of the thousands of users who
-> have v1 cache and who ran mkfs with btrfs-progs as early as 4.4 or 4.9.
+> HEAD commit:    228a1157fb9f Merge tag '6.13-rc-part1-SMB3-client-fixes' o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13820530580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=402159daa216c89d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=aac7bff85be224de5156
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13840778580000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17840778580000
 > 
-> Most users will migrate from a recent 6.1.x (close to kernel.org's)
-> directly to 6.12.x (what seems to be the most likely LTS).  Many have
-> also tracked the stable mainline or have recently upgraded to 6.11.
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/d32a8e8c5aae/disk-228a1157.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/28d5c070092e/vmlinux-228a1157.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/45af4bfd9e8e/bzImage-228a1157.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/69603aa12e8f/mount_0.gz
 > 
-> Beyond that, I'm not aware of any format chances (other than some new
-> experimental raid56 stuff), but it might also be nice to know if there's
-> a threshold where it would be better to reformat an "aged" filesystem.
-
-There is no recommendation to format an "aged" fs at all.
-
-All our new features (v2 cache, no_holes, block-group-tree, even new 
-checksums) have a way to migrate the existing fs to the new format.
-
-The only difference is, some will be done automatically by the kernel 
-(v2 cache), some needs to be done with unmounted fs and btrfstune tool 
-(bg tree, new checksums format).
-
-The offline migration is not ideal for end users, but at least that's 
-what we have for now.
-
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com
+> 
+>   __fput+0x5ba/0xa50 fs/file_table.c:458
+>   task_work_run+0x24f/0x310 kernel/task_work.c:239
+>   resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+>   exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+>   exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+>   __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+>   syscall_exit_to_user_mode+0x13f/0x340 kernel/entry/common.c:218
+>   do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
+>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> ------------[ cut here ]------------
+> kernel BUG at mm/page-writeback.c:3119!
+> Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> CPU: 0 UID: 0 PID: 12 Comm: kworker/u8:1 Not tainted 6.12.0-syzkaller-08446-g228a1157fb9f #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+> Workqueue: btrfs-delalloc btrfs_work_helper
+> RIP: 0010:__folio_start_writeback+0xc06/0x1050 mm/page-writeback.c:3119
+> Code: 25 ff 0f 00 00 0f 84 d3 00 00 00 e8 14 ae c3 ff e9 ba f5 ff ff e8 0a ae c3 ff 4c 89 f7 48 c7 c6 00 2e 14 8c e8 8b 4f 0d 00 90 <0f> 0b e8 f3 ad c3 ff 4c 89 f7 48 c7 c6 60 34 14 8c e8 74 4f 0d 00
+> RSP: 0018:ffffc90000117500 EFLAGS: 00010246
+> RAX: ed413247a2060f00 RBX: 0000000000000002 RCX: 0000000000000001
+> RDX: dffffc0000000000 RSI: ffffffff8c0ad620 RDI: 0000000000000001
+> RBP: ffffc90000117670 R08: ffffffff942b2967 R09: 1ffffffff285652c
+> R10: dffffc0000000000 R11: fffffbfff285652d R12: 0000000000000000
+> R13: 1ffff92000022eac R14: ffffea0001cab940 R15: ffff888077139710
+> FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f6661870000 CR3: 00000000792b2000 CR4: 00000000003526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   process_one_folio fs/btrfs/extent_io.c:187 [inline]
+>   __process_folios_contig+0x31c/0x540 fs/btrfs/extent_io.c:216
+>   submit_one_async_extent fs/btrfs/inode.c:1229 [inline]
+>   submit_compressed_extents+0xdb3/0x16e0 fs/btrfs/inode.c:1632
+>   run_ordered_work fs/btrfs/async-thread.c:245 [inline]
+>   btrfs_work_helper+0x56b/0xc50 fs/btrfs/async-thread.c:324
+>   process_one_work kernel/workqueue.c:3229 [inline]
+>   process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+>   worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+>   kthread+0x2f0/0x390 kernel/kthread.c:389
+>   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>   </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:__folio_start_writeback+0xc06/0x1050 mm/page-writeback.c:3119
+> Code: 25 ff 0f 00 00 0f 84 d3 00 00 00 e8 14 ae c3 ff e9 ba f5 ff ff e8 0a ae c3 ff 4c 89 f7 48 c7 c6 00 2e 14 8c e8 8b 4f 0d 00 90 <0f> 0b e8 f3 ad c3 ff 4c 89 f7 48 c7 c6 60 34 14 8c e8 74 4f 0d 00
+> RSP: 0018:ffffc90000117500 EFLAGS: 00010246
+> RAX: ed413247a2060f00 RBX: 0000000000000002 RCX: 0000000000000001
+> RDX: dffffc0000000000 RSI: ffffffff8c0ad620 RDI: 0000000000000001
+> RBP: ffffc90000117670 R08: ffffffff942b2967 R09: 1ffffffff285652c
+> R10: dffffc0000000000 R11: fffffbfff285652d R12: 0000000000000000
+> R13: 1ffff92000022eac R14: ffffea0001cab940 R15: ffff888077139710
+> FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055ec8463e668 CR3: 000000007ed5e000 CR4: 00000000003526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 > 
 > 
-> Kind regards,
-> Nicholas
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> P.S. We'll fix the ancient btrfs-progs problem before the new year.  The
-> current issue is where "strong package ownership" processes slow things
-> down.
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
-I'd recommend to provide something like PPA repo for a newer/latest 
-btrfs-progs static build for end users who do not want to build 
-btrfs-progs by themselves, and still want a latest prog no matter the 
-Debian version.
-
-But the inode cache cleanup code is really an exception, where the 
-feature is so rare that we do not even have proper test coverage for it 
-at all.
-
-Until we hit the situation where inode cache cleanup is definitely needed...
-
-Thanks,
-Qu
 
