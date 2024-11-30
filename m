@@ -1,139 +1,190 @@
-Return-Path: <linux-btrfs+bounces-9983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FD029DEF30
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 08:01:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B929DEF3F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 08:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DA612817A2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 07:01:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46AD2B21A38
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 07:43:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E8A1494B3;
-	Sat, 30 Nov 2024 07:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565E7149C6A;
+	Sat, 30 Nov 2024 07:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mn4R2m+z";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hwyAgYPM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A637F1FB3
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2024 07:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4746113C81B
+	for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2024 07:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732950064; cv=none; b=pQtlp4lfeOBe90sn8BA6cM4jw2TWIdtQfEOAHI9Vb+lHnbZzTFiSMQUYKFciF7ycgjSTU4VMvEVH+wN8A2kPw3QsLQbukG3NfEiFViJNLN5LBjlFuO55UHIPtdJgh88deyuer95tIuIS/zB1ndFne/yCVMRrdwSmJe2E45KBrvE=
+	t=1732952620; cv=none; b=iYXRWh1VMTq2WzzP/vnt+WVeXGfvGbVIyPQDCRSOqDQhiSeeDMIxHDHrAB62VvSMNTAnd5v9gdvwBAjks03eVG7FXsI1dabPbcCIUR4SQ4P2KdK89k2T9LzrQQtpxMUWNGk+zSrMCNhKFiGGe06pMFC3UVPj8y96bvP0OU5fL+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732950064; c=relaxed/simple;
-	bh=OY1eKMfzylYTtl4grnVqMabv/V9aIK9uPXcUUo8Mm1I=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=EDNTmzdQAsOK4lg0qc34+x2ouCKFuekA+LaOwewUt7JF6iiRNcSxYQZzBTL9DtcjjZMsyZvbPeN8DB5ff+xc0tbnaKI/E3vGfhKAt4lbACPn+Q2UIm3Zuwms7XtR6l434qD90e1GSCflUw3khPODVsxReHYSKFr+dYdOtHuVinc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a77a808c27so28244675ab.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 23:01:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732950062; x=1733554862;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v+zxhPd1B69/sIFMXZtn9rBj6FwpaUPCmD+eIHTPevA=;
-        b=MXKCAz1eya8aBtFkDi4eD5Au4IYORjqFyNVdjHErfboF2WNj8moauXg9wEgngMjJVI
-         wuLbtmOt+mA6BifqA7bBR6hL12HketM5l9wRiAAjjhsvBPLUzxKR4a3WJKjp0aqQ9iWY
-         4qQqW1sOFwC2ZnzdmlZJJ8xxVaov6zcKGizrd3kZ7DkAFrZ3wWuhacKN0gdQ/azHzBrK
-         atAnKenTJyg1WIba9H8EIrOyjPaQ2UH/u+8F/RJm92/3R0XM2pIyMWzfHyZA/fbbkGUV
-         35ExO+2f4C2K5IK1PMQh1GeWNTc/Ps5h/Y71ZUk51VgePJo+7MyTFsmG5/iBJvUxtmUW
-         UxXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUStssApJgtELzXmQFFgg6vUXNebNz7ghZcvBnBNx2V29hjlqfuKmXpUwN65VY7FoLskDOf9EAPbq8og==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6kNliXA2wo9D6Euvwit4UKxNYre+XAfqZTLUc46VL5O8K6ZKC
-	qS13X4hfgQE7bD+AD0qt3IC4effhR5/Py/WTmqBmP9jiuuo4s5zVgRyHMYP9h93IzCmrb/EL0IZ
-	nCB3Q58sDqcPYY7c1c4srLEXra1NdjBGmocajDTuzgTxRafBzQkN3JSk=
-X-Google-Smtp-Source: AGHT+IHeoGfoPkw3PRfOf8JHtKOi73u9Fp0HDvkM6xnHnj1HrU8duhBqWbHVCBhIBjL2qSoU8NcACDtbz5LDXUShrDGYkO3D2GnC
+	s=arc-20240116; t=1732952620; c=relaxed/simple;
+	bh=vHOQ8olpj/0tCObua4ViR9Uwi8tt916vdjTvmU+c/HQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ty5hsUq7dnWLpAoi5p3J+CQHuc9GEDZeO1j3VIsPsXfHg3yaehl+pCp0igxkXIyNAYZNnmfiC5OHsXnJEUbBUf8sVArwdz3U3Z2W7G3UwykFsBmAdkjkZ3T97kQkCeLcDyFCq3w542YsHhv2uVSJekXI4t+OlpaPQmthuNtzMOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mn4R2m+z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hwyAgYPM; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 25D681F38C;
+	Sat, 30 Nov 2024 07:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732952615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zjyzO0gAbXSQtO/BAYQTK8FSHQ/NSLDKtnlFp2EidUk=;
+	b=mn4R2m+zcvWbnBivtv4wie4dUHnaPMdn42k96CexOrEWeZnUiVhttTD1LAa4PKp/Kuo/sn
+	5VGtYAlosUZYorsz1N0BYhT8KXOwGVQ/D/J9wT9kgbVvgwsvyY8jrXNrvou2qrjlTigTgb
+	XS5w5KuiqK2r3aiN0pRmrhz+X8s290c=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=hwyAgYPM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1732952614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zjyzO0gAbXSQtO/BAYQTK8FSHQ/NSLDKtnlFp2EidUk=;
+	b=hwyAgYPMTgKvUbXjTE+yRvsKgzjvcPVMQTjbzdpWxFjwzVQ3MKxAZS+e//JxevmABOxxUl
+	iATqB7g3jIVrpAJln1X9GEo9caIYXDtpfRa9CIEIXEFyBmgTutPEI9V2BONgm3E8Fugy2B
+	Z4CDYxQ5jI5R4YSWgMrc4949IaxeahE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0C32613A15;
+	Sat, 30 Nov 2024 07:43:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Sq0bLyTCSmczYAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sat, 30 Nov 2024 07:43:32 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: properly wait for writeback before buffered write
+Date: Sat, 30 Nov 2024 18:13:15 +1030
+Message-ID: <7fae80d0a144312c09e4e40ff3491b6ce77ee4f5.1732952536.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:148e:b0:3a7:e047:733f with SMTP id
- e9e14a558f8ab-3a7e0477ab5mr40974295ab.1.1732950061919; Fri, 29 Nov 2024
- 23:01:01 -0800 (PST)
-Date: Fri, 29 Nov 2024 23:01:01 -0800
-In-Reply-To: <7a8955d4-4283-426f-8bbf-8f81787fb08e@suse.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <674ab82d.050a0220.253251.00d8.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in __folio_start_writeback
-From: syzbot <syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, willy@infradead.org, 
-	wqu@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 25D681F38C
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	TAGGED_RCPT(0.00)[aac7bff85be224de5156];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Hello,
+[BUG]
+Syzbot reported a crash where btrfs is call folio_start_writeback()
+while the folio is already marked writeback:
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: MAX_LOCKDEP_KEYS too low!
-
-BUG: MAX_LOCKDEP_KEYS too low!
-turning off the locking correctness validator.
-CPU: 1 UID: 0 PID: 18394 Comm: syz-executor388 Not tainted 6.12.0-rc7-syzkaller-00133-g17a4e91a431b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Call Trace:
+------------[ cut here ]------------
+kernel BUG at mm/page-writeback.c:3119!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 12 Comm: kworker/u8:1 Not tainted 6.12.0-syzkaller-08446-g228a1157fb9f #0
+Workqueue: btrfs-delalloc btrfs_work_helper
+RIP: 0010:__folio_start_writeback+0xc06/0x1050 mm/page-writeback.c:3119
  <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- register_lock_class+0x827/0x980 kernel/locking/lockdep.c:1328
- __lock_acquire+0xf3/0x2100 kernel/locking/lockdep.c:5077
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
- touch_wq_lockdep_map+0xc7/0x170 kernel/workqueue.c:3880
- __flush_workqueue+0x14f/0x1600 kernel/workqueue.c:3922
- drain_workqueue+0xc9/0x3a0 kernel/workqueue.c:4086
- destroy_workqueue+0xba/0xc40 kernel/workqueue.c:5830
- btrfs_stop_all_workers+0xbb/0x2a0 fs/btrfs/disk-io.c:1782
- close_ctree+0x6bb/0xd60 fs/btrfs/disk-io.c:4360
- generic_shutdown_super+0x139/0x2d0 fs/super.c:642
- kill_anon_super+0x3b/0x70 fs/super.c:1237
- btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2112
- deactivate_locked_super+0xc4/0x130 fs/super.c:473
- cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
- task_work_run+0x24f/0x310 kernel/task_work.c:239
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x168/0x370 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f378bf8c357
-Code: 08 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffd4c441108 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f378bf8c357
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffd4c4411c0
-RBP: 00007ffd4c4411c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000202 R12: 00007ffd4c442280
-R13: 00005555591197d0 R14: 431bde82d7b634db R15: 00007ffd4c442224
+ process_one_folio fs/btrfs/extent_io.c:187 [inline]
+ __process_folios_contig+0x31c/0x540 fs/btrfs/extent_io.c:216
+ submit_one_async_extent fs/btrfs/inode.c:1229 [inline]
+ submit_compressed_extents+0xdb3/0x16e0 fs/btrfs/inode.c:1632
+ run_ordered_work fs/btrfs/async-thread.c:245 [inline]
+ btrfs_work_helper+0x56b/0xc50 fs/btrfs/async-thread.c:324
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
  </TASK>
-BTRFS info (device loop2): last unmount of filesystem bf719321-eb1f-43c1-9145-be0044cdbc04
-BTRFS info (device loop2): last unmount of filesystem 454c899b-20f1-4098-b6bd-9b424eb38c60
-BTRFS info (device loop2): last unmount of filesystem e789dab4-7b2e-44bb-bb97-19a8dd7be099
-BTRFS info (device loop2): last unmount of filesystem a11fd0de-3a92-4478-af85-4e70dfb2fb44
-BTRFS info (device loop2): last unmount of filesystem 85ccfa0b-566f-4eb9-b1a6-ea2fe97ca044
-BTRFS info (device loop2): last unmount of filesystem 5a8c012e-dba3-4ff5-a22f-46e4b5bb2f55
-BTRFS info (device loop2): last unmount of filesystem 2fe685f2-8834-419b-bd91-466d40ccece7
-BTRFS info (device loop2): last unmount of filesystem fc366aaa-c1c0-4d55-9034-d39fce006f22
-BTRFS info (device loop2): last unmount of filesystem 364312bb-b5a2-487f-aaa2-e36f3a1b701f
-BTRFS info (device loop2): last unmount of filesystem 14d642db-7b15-43e4-81e6-4b8fac6a25f8
+---[ end trace 0000000000000000 ]---
 
+Furthermore syzbot bisected the cause to commit c87c299776e4
+("btrfs: make buffered write to copy one page a time").
 
-Tested on:
+[CAUSE]
+Unfortunately I'm not able to reproduce the bug with my usual debug
+kernel config.
+But thanks to the bisection result, I can take a deeper look into the
+offending commit.
 
-commit:         17a4e91a btrfs: test if we need to wait the writeback ..
-git tree:       https://github.com/adam900710/linux.git writeback_fix
-console output: https://syzkaller.appspot.com/x/log.txt?x=1501b9e8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa4954ad2c62b915
-dashboard link: https://syzkaller.appspot.com/bug?extid=aac7bff85be224de5156
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+One of the change is to use FGP_STABLE to wait for folio writeback.
+But unfortunately FGP_STABLE is not ensured to wait for writeback, it
+only calls folio_wait_stable(), which only calls folio_wait_writeback()
+if the address space has AS_STABLE_WRITES.
 
-Note: no patches were applied.
+Normally that flag is only set if the super block has
+SB_I_STABLE_WRITES, and that is normally set if the that block device
+has integrity checks or requires stable writes feature (normally has
+some kind of digest to check).
+
+Although I'd argue btrfs should set such flag due to its data checksum,
+for now we do not have that flag, meaning FGP_STABLE will not wait for
+any folio writeback to finish.
+
+This is going to cause races between buffered write and folio writeback,
+leading to various data corruption/checksum mismatch.
+
+[FIX]
+Instead of fully rely on FGP_STABLE, manually do the folio writeback
+wait, until we set the btrfs super block with SB_I_STABLE_WRITES
+manually.
+
+Reported-by: syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com
+Fixes: c87c299776e4 ("btrfs: make buffered write to copy one page a time")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index fbb753300071..8734f5fc681f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -911,6 +911,7 @@ static noinline int prepare_one_folio(struct inode *inode, struct folio **folio_
+ 			ret = PTR_ERR(folio);
+ 		return ret;
+ 	}
++	folio_wait_writeback(folio);
+ 	/* Only support page sized folio yet. */
+ 	ASSERT(folio_order(folio) == 0);
+ 	ret = set_folio_extent_mapped(folio);
+-- 
+2.47.1
+
 
