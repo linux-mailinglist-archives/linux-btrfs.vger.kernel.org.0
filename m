@@ -1,80 +1,79 @@
-Return-Path: <linux-btrfs+bounces-9980-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21E2A9DEEF0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 05:28:21 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9DB9DEEF8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 05:37:57 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9CBA163A7C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 04:28:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83E1CB21688
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2024 04:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8009113C81B;
-	Sat, 30 Nov 2024 04:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2B0137930;
+	Sat, 30 Nov 2024 04:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CYfmZo9p"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Olk4NC8H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74988132C38
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2024 04:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79923FC2
+	for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2024 04:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732940890; cv=none; b=H6OHAk+UuXUL1PkXm96j+nIOZdgTc6J52FZMUiDi1/7ciKJu3ncaC0AcSd7WVvAa8Xi5TjVkRFoFW3i8SZj+pKNUN3M21JaU5OQ67w+2uEdCyX36AamzphPQYNX1yMbmUy/5Rj7+gwzO3XP2ktWsaRaiba7aL2kw/miEA2vPsqc=
+	t=1732941467; cv=none; b=jS9q2iVCn7xgUpaZ6hTii7F6qM+4JgImVfBam21AbihdEGPJbNY1yOKb3m9oZqXi1Ric3BE9r5Y7TWu652c9BmZcZgevusdkhErsAbhExDaqz8yMf2UxfnQcXxITe1gffkZr/ilBSv0/W6Rfei7jmgVbhlMrSKrSDPKGPb+yXaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732940890; c=relaxed/simple;
-	bh=3fVPjAMLcPc8W9XHxCKejFdtJstDJyDr5I/dm5BmSG4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nogc+WmI0UghXGMTVwcM6zT+RfWATCQE0z7QMSXIumEs0ZhpMVrUKpED+y53xA1shodombloRvlpNlhOrvg36tJMCkl4M4TIPhUrDC01NYVIRSue41/xrws1ioHRV/MjTCixSF0VlgI/c6Jx20hTi6/w0fbPcitI3Y/sLZQtanU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CYfmZo9p; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1732941467; c=relaxed/simple;
+	bh=avRm1YsSbDQ3uNdqg4XIyNQjQzx+Wkd519gQbC+kuxE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mkQpk9AoL7OO9HaTsiqpgZ/SA8sQqEALySxEpPJvKiRUFLQ6YRwanKbDgdcKhDOdrKo+AKSLlEQfHSjuC4bENS6zYs3UGUetkTVWYyCY23tuxjNqKvdBVUEKuq8B7Uz48l7F+kL1zzDUTO+pkSAgge9jqCrID9inJY2x4VQY0aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Olk4NC8H; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-385de59c1a0so1173878f8f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 20:28:07 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-434aa222d96so28121995e9.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2024 20:37:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1732940886; x=1733545686; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1732941463; x=1733546263; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=59D7wKw+lCrKikwTGg+Ep/tt5Aq7umJy0reSeHNByL4=;
-        b=CYfmZo9pn7t2p0Du+sUkwzlE8cxodAvbflPB+PziTqhEVWAk5GSYSlGTNyNwHfy8bt
-         oaRLxUR6xOOjPPjndw/TefADj5RaxYJsVIKK0QLYOAltcOW/2eGoqZgLBHyuzDSGWSP9
-         dy2GV9JnZDLxsGzKmpseSKg9lH2jRTvMXljUWF+aZeqmQzzH18LAxX/FG2MoABIg2ymT
-         8i4rVFrfjWgZnq/sNxlFQtxb3RgYMw2t2Yddne0W1NBR2jjE6TqsU9loZ6S6QCz5LmZ4
-         6sL8GONVSLwVGa5mL/Me3Co35t18Yxm+bVi7VqaP1TM0EWcRKazWH3LREfQRh/8PmW7U
-         ALbw==
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=a1WSwHkqHUyOi2IoL+DAQ0pEGLCRVT+XMDuYnMpQK5k=;
+        b=Olk4NC8HJYGe+Q4NchMubfmoZL5rgUBsKWe4za2ZTNy91usT5oCyTPxPRO9TsUJC4G
+         6cRoEcmoNxHWcEVskiYYkzPRDWonIiAMBCl81nzIxSWnK6WZ5K09fIv8oxTIk5u4mZDD
+         s97Ey8U1RlVN7EQsn8/uPxTMgiLxE2Pth/A5iHXJHM0wxYG3eeBtfhmX4pNdSQD4KzLU
+         EvXXvACsO8cOCaC0NIHj7ZHhCcdsYsb75fpusyaRKa8tQ0DPCkCZ5V3KGuuW52Shyd/Q
+         5fpI9gV5Xmt9qiWSJ6QZw6wTfD47nA3h7aHJxrXQ1sqhLNuTd84rbct+sjZ+sGnAznYV
+         x3TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732940886; x=1733545686;
+        d=1e100.net; s=20230601; t=1732941463; x=1733546263;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=59D7wKw+lCrKikwTGg+Ep/tt5Aq7umJy0reSeHNByL4=;
-        b=Xhhv+kJuy8wKq91YlDpju+lFKQyaKUhoJ07XejrEFFrnUSpxq5O/i6gFReldxSLRsS
-         6sp3nfLjsPLj/ehsiDgq88lu64sBL7HHegw9gbIYZBkJCEDJa7w9HZT9xtyjDV4yHCsO
-         EiGemDgn4poNzzuUddd+tlO7W1Mh/0rWOvbxDBCZMQ60c/dL+CsJMj0ZkUaThuOraiJK
-         zJcp6DEnRJsY5wPdwHYNNFpZqONiDqso1MPn7Kbm5vtoOvMXQcr2b4kK+SxjZFFav0lV
-         PXQmkAmZ7ybAlCc/Qepok9QUnfE9nHNh2emrFwmFiuUzoUeyBa+PTy+zGO6KGUiqEPEa
-         nfdA==
-X-Forwarded-Encrypted: i=1; AJvYcCXDR3p2RXipfYZulpFeJKFsWjKjxiHLImapi3nTUAjwGgSHdsXtjiyCDD4AbR/KuaRZiM1O6db3ObDdeQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/FbNZVWGC8bXf9Bp3igMnqcV4t8JEOHZkgbF8ATnjE8s138YA
-	g8X0kqwHxf76SVlEnQXiw4nodgh45awfYpbgLoYZRFZFsI7XqKMIi35AiXr7J+M=
-X-Gm-Gg: ASbGncswpkFbaIvjLjFEkF+GZaX/j3X4pELOvdDBI5Wv/r+i24Cqm5Cu9l57Xk41/WS
-	g6jRwY9EkTL/Y8lqnjpUwrxMaJ0G/sHufvF6Bga50C12gHlh4KHY5yeT1JDF5QXlYsDVJ/Wpvb1
-	h8pXsFq1rLM4JgTKQtiO9/CbVusTQMuBbyhFrxNsg7poaBCDgUNraAcsiOpiRcitP9wqmMn6QFl
-	QXZtjvKOzMCKexqA/VWT84KnlQwITts017DOzY5ZoZR+MhJUr4ZErGQY2+KFgcS32HgslcJcMW8
-	qA==
-X-Google-Smtp-Source: AGHT+IFIR4lZurAZoQSAFf9RPCbGkRc4iM4JBekXOV1R5tl1fM/SR9MYYfnBI8F2iWQTnPk9eayFBw==
-X-Received: by 2002:a05:6000:1448:b0:382:41ad:d8f0 with SMTP id ffacd0b85a97d-385c6ec0e2emr12419437f8f.34.1732940885462;
-        Fri, 29 Nov 2024 20:28:05 -0800 (PST)
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a1WSwHkqHUyOi2IoL+DAQ0pEGLCRVT+XMDuYnMpQK5k=;
+        b=pjIEX/kjbglw8oqxQgjBm5d8KVYf17dPHex8DpRCKK+7xwEU1kEdk1z2izGVnL9xVj
+         RoV7ZEFe/lIYVwY0Sbnx3ETmYpgtHXoaN2DMx6ufP4Ba3yAij7SFAzADJrv3bs8lThUR
+         Vnqal+2cZn4vefq5rFP3WRoyQk/kh7m2UGu0tX/zm+4Yh52FUUmEE1kGwlf8dik6g5RR
+         h4Q4oToEzJ2tAv2baPNYbHUhBXVUuneDNckLjholgFU+HGU4o+g+ZceAOZGrxrFHq4EJ
+         dgiBJLjq8qrXwOPvdAAB0eroYh9EhOvuhpn3IpAVjqsFe04gjklbKRhTLdzEyZk1DYrD
+         Bj1Q==
+X-Gm-Message-State: AOJu0YwZT08XjMCbbv/o1a7WN8rbHcsj2d4FbprIPa+pUhjwuHdyNvBE
+	w+6M68KGXM00NNumupmjn9c9WWqFgUypAJiSoG4RSPdZnS8gTf+yZQZvXiLcZJk=
+X-Gm-Gg: ASbGnctOfA0SeDt1c4VC8ysbdfNMLDLhh1ZxBMg3OPl/Jkk23q+h1g29C4jU//t14JD
+	L7wkiq5NxkPpea74Cs7go1XLa867Yt9iiRrdUHj48qizLRMAOj4SNswr6BJeGsBN0QpXiWSh1qJ
+	0iI+bXSLxMUMLPGligWIBbdl5bkwzuvxWvD1K3E3e61QTkwWhIswniCv8CMD/zWLWF5/qSwc5WV
+	wxvLfEQM3ZtTvCFMOvzIAymrZ8hxH+1c5vzfEJpjs66PUiEpxgPSBGXReTIcSEOXFwNfYo6/MXM
+	3A==
+X-Google-Smtp-Source: AGHT+IFIFnS2IIJTS8EpnAWbTCc26yxI7XMfQx/E7MI2oKGRndfgdmEp6XPIUBjCJQwJL1eAXGfT7Q==
+X-Received: by 2002:a05:600c:4e8a:b0:431:562a:54be with SMTP id 5b1f17b1804b1-434a9dc36c1mr153933135e9.9.1732941462136;
+        Fri, 29 Nov 2024 20:37:42 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215478976e3sm17340845ad.58.2024.11.29.20.28.01
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254176fe28sm4331148b3a.72.2024.11.29.20.37.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Nov 2024 20:28:04 -0800 (PST)
-Message-ID: <15a3a0ec-78fa-4992-a98f-6b82b5a387a5@suse.com>
-Date: Sat, 30 Nov 2024 14:57:59 +1030
+        Fri, 29 Nov 2024 20:37:41 -0800 (PST)
+Message-ID: <f409d283-88c0-45d7-b8df-e4d1ec227117@suse.com>
+Date: Sat, 30 Nov 2024 15:07:37 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,13 +81,16 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [btrfs?] kernel BUG in __folio_start_writeback
-To: syzbot <syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
- josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
-References: <674a6f87.050a0220.253251.00d5.GAE@google.com>
+Subject: Re: corrupt leaf, invalid data ref objectid value, read time tree
+ block corruption detected Inbox
+To: Nicholas D Steeves <sten@debian.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Brett Dikeman <brett.dikeman@gmail.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <CAFiC_bz7QpCE_bf0VdhV1x4NvQbgnxPDrtD=XOupPKA=N7-yZA@mail.gmail.com>
+ <1748c8ff-30a6-4583-bdbb-b3513bc3d860@gmx.com>
+ <CAFiC_bzov3zete3VabFQQMQ3rUS-TdHikNqRMUW_xggFmrtoNw@mail.gmail.com>
+ <cfc9177b-ab53-40c2-b627-0045e9348938@gmx.com>
+ <87h67pmspi.fsf@digitalmercury.freeddns.org>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -115,64 +117,114 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <674a6f87.050a0220.253251.00d5.GAE@google.com>
+In-Reply-To: <87h67pmspi.fsf@digitalmercury.freeddns.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/11/30 12:21, syzbot 写道:
-> Hello,
+在 2024/11/30 11:41, Nicholas D Steeves 写道:
+> Qu Wenruo <quwenruo.btrfs@gmx.com> writes:
 > 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> BUG: MAX_LOCKDEP_KEYS too low!
+>> 在 2024/11/27 09:39, Brett Dikeman 写道:
+>>> On Tue, Nov 26, 2024 at 4:30 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>>
+>>>> Inode cache is what you need to clear.
+>>>
+>>> Brilliant! Thank you, Qu. It did mount cleanly. Shame Debian's
+>>> toolchain is so out-of-date. I pinged the maintainer asking if they
+>>> could pull 6.11.
+>>>
+>>> Is there anything I could have done that would have caused the
+>>> corrupted inode cache?
+>>
+>> It's not corrupted, but us deprecating that feature quite some time ago.
+>> And then a recently enhanced sanity check just treat such long
+>> deprecated feature as an error, thus rejecting those tree blocks.
+>>
+>>>
+>>> 'btrfs check' thought the second drive was busy after unmounting, but
+>>> a reboot cured that.
+>>>
+>>> check found the following; Is the fix for this to clear the free space cache?
+>>
+>> I'd recommend to go v2 cache directly.
+>>
+>> You may not want to hear, but we're going to deprecate v1 cache too.
+>>
+>> V2 cache has way better crash handling, I have not yet seen a corrupted
+>> v2 cache yet.
 > 
-> BUG: MAX_LOCKDEP_KEYS too low!
+> Let's avoid a "btrfs is the only fs that ate my data" storm.  Would it
+> be sufficient to provide free space cache v2 migration instructions in
+> our release notes?
 
-Hi Syzbot guys,
+So far when we deprecate the v1 cache, it should require no user 
+interruption.
 
-Syzbot is great, but I'm wondering if it's possible to disable lockdep 
-for this particular test?
-Or just let it re-run the test again?
+We will silently delete v1 cache and rebuild v2 cache on the next rw 
+mount, at least that's my plan.
 
-If the test doesn't crash with my fix, but only lockdep warnings on 
-certain too low values, I'd call it fixed.
+Unlike the offending inode cache feature, v1 cache is a very common 
+feature, thus I believe we won't hit the same situation again, until v1 
+cache is fully deprecated for years if not decades.
 
-BTW, I'm not seeing where I can changed the MAX_LCKDEP_KEYS values in 
-the kernel...
+>  If not, would you be willing to write something?
+
+I believe the current man page is showing it good enough:
+
+   If v2 is enabled, and v1 space cache will be cleared (at the first
+   mount) and kernels without v2 support will only be able to mount the
+   filesystem in read-only mode.
+
+And since v2 cache is supported since 4.5, we have no need to bother any 
+compatibility problem either.
+
+> Alternatively, should this be automatic, and in-kernel?  Debian users
+> tend to have long-running installations and don't tend to reinstall.  I
+> think you'll agree we ought to get ahead of the thousands of users who
+> have v1 cache and who ran mkfs with btrfs-progs as early as 4.4 or 4.9.
+> 
+> Most users will migrate from a recent 6.1.x (close to kernel.org's)
+> directly to 6.12.x (what seems to be the most likely LTS).  Many have
+> also tracked the stable mainline or have recently upgraded to 6.11.
+> 
+> Beyond that, I'm not aware of any format chances (other than some new
+> experimental raid56 stuff), but it might also be nice to know if there's
+> a threshold where it would be better to reformat an "aged" filesystem.
+
+There is no recommendation to format an "aged" fs at all.
+
+All our new features (v2 cache, no_holes, block-group-tree, even new 
+checksums) have a way to migrate the existing fs to the new format.
+
+The only difference is, some will be done automatically by the kernel 
+(v2 cache), some needs to be done with unmounted fs and btrfstune tool 
+(bg tree, new checksums format).
+
+The offline migration is not ideal for end users, but at least that's 
+what we have for now.
+
+> 
+> 
+> Kind regards,
+> Nicholas
+> 
+> P.S. We'll fix the ancient btrfs-progs problem before the new year.  The
+> current issue is where "strong package ownership" processes slow things
+> down.
+
+I'd recommend to provide something like PPA repo for a newer/latest 
+btrfs-progs static build for end users who do not want to build 
+btrfs-progs by themselves, and still want a latest prog no matter the 
+Debian version.
+
+But the inode cache cleanup code is really an exception, where the 
+feature is so rare that we do not even have proper test coverage for it 
+at all.
+
+Until we hit the situation where inode cache cleanup is definitely needed...
 
 Thanks,
 Qu
-
-> turning off the locking correctness validator.
-> CPU: 1 UID: 0 PID: 11728 Comm: kworker/u8:10 Not tainted 6.12.0-rc7-syzkaller-00133-g17a4e91a431b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-> Workqueue: btrfs-cache btrfs_work_helper
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:94 [inline]
->   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
->   register_lock_class+0x827/0x980 kernel/locking/lockdep.c:1328
->   __lock_acquire+0xf3/0x2100 kernel/locking/lockdep.c:5077
->   lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
->   process_one_work kernel/workqueue.c:3204 [inline]
->   process_scheduled_works+0x950/0x1850 kernel/workqueue.c:3310
->   worker_thread+0x870/0xd30 kernel/workqueue.c:3391
->   kthread+0x2f0/0x390 kernel/kthread.c:389
->   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->   </TASK>
-> 
-> 
-> Tested on:
-> 
-> commit:         17a4e91a btrfs: test if we need to wait the writeback ..
-> git tree:       https://github.com/adam900710/linux.git writeback_fix
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12c5ad30580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fa4954ad2c62b915
-> dashboard link: https://syzkaller.appspot.com/bug?extid=aac7bff85be224de5156
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Note: no patches were applied.
-
 
