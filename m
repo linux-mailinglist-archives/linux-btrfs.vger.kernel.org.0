@@ -1,175 +1,176 @@
-Return-Path: <linux-btrfs+bounces-10008-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10009-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D549E042D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 14:59:35 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C0B79E0574
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 15:48:26 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03CEF167712
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 13:59:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 013E628A041
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 14:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F608202F95;
-	Mon,  2 Dec 2024 13:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E1C205E04;
+	Mon,  2 Dec 2024 14:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JV/19aWz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wvxVqZzv";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JV/19aWz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wvxVqZzv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isgVWt3g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8521F8AC5
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 13:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32770205AD6
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 14:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733147968; cv=none; b=EEl/N0NnrIGKWtV4IkxfqpEl93ls9lK+QxDG633XjdACc8yEKI/L75bub3lOdROzCIjfTsHbyT6NB1XfgGYfer8qmz9xYN0Lf2f2jkf4Zf1JSrUUiyJQLPTMY3IMWlL9pyoXX3DPpGpil+oP0H4y5KiwL1QtZ2Mc79pMePWaj4o=
+	t=1733150083; cv=none; b=oZ3ev8FiKhEPjXl4CtDilYl/ab+Nk5esTAByirB10oN04Js24yCrG6xm7lJ4qqE2YtiLvaQ4SLrrNlF9rhV29rf6NoeFTvZs+jf0POrxAmxxMmunTPileT8awrJo3ZpAmkPlK0jPbx8y6nC1rOR5K/2WxkLL/Xf/F8p4rxkPvfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733147968; c=relaxed/simple;
-	bh=G0gtfeDuRzaWs+Dol40OR4zZV92EGUD0B5RnEp1tCko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gMiqKUg1V9YiFp0Sn/jWR7DN6XgTRZFE5lDfq9Cc/i2Q9LSHE4D+f+mO8wA5788agY68aHWQCwVlBWdCfcm0E7z4mZ7EdFLJK4M+UPgL5Wadf+yDEu67BJJ8ZhM4wFTH/GrC4u64TOiSqNKGF0ESfjbOb8BqIAr5YHqFXJ9nAIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JV/19aWz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wvxVqZzv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JV/19aWz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wvxVqZzv; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2C7601F444;
-	Mon,  2 Dec 2024 13:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733147965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0BkgzYNYxQpPld+PO7MTw3f/5O7xgSxmea3rclKdaiQ=;
-	b=JV/19aWzZZK2hczwTFG/XvFTBpcW08BjmLlV/0wpgl4528yNzS0HcFXzowQgwr3zeLrQuj
-	bmTOIIcYA5FZv4xhndn+Yr2y2K6tOsuyT7QYLdU97LicUxCDFdP+N7NwPNj0jaEJdmd982
-	dW+VAXiSHS+K7IBjZkR/9OnOrdJdedU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733147965;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0BkgzYNYxQpPld+PO7MTw3f/5O7xgSxmea3rclKdaiQ=;
-	b=wvxVqZzvLttAe1vFOSwOtUBqYpmFrZJu7UZUF6Q4u7F/IdLOwtyAuX4Ee1xZ4hJ70IisYc
-	4nRVM9NQIHDWUmAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="JV/19aWz";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wvxVqZzv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733147965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0BkgzYNYxQpPld+PO7MTw3f/5O7xgSxmea3rclKdaiQ=;
-	b=JV/19aWzZZK2hczwTFG/XvFTBpcW08BjmLlV/0wpgl4528yNzS0HcFXzowQgwr3zeLrQuj
-	bmTOIIcYA5FZv4xhndn+Yr2y2K6tOsuyT7QYLdU97LicUxCDFdP+N7NwPNj0jaEJdmd982
-	dW+VAXiSHS+K7IBjZkR/9OnOrdJdedU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733147965;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0BkgzYNYxQpPld+PO7MTw3f/5O7xgSxmea3rclKdaiQ=;
-	b=wvxVqZzvLttAe1vFOSwOtUBqYpmFrZJu7UZUF6Q4u7F/IdLOwtyAuX4Ee1xZ4hJ70IisYc
-	4nRVM9NQIHDWUmAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D00B13A31;
-	Mon,  2 Dec 2024 13:59:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FAgIBj29TWdoFQAAD6G6ig
-	(envelope-from <chrubis@suse.cz>); Mon, 02 Dec 2024 13:59:25 +0000
-Date: Mon, 2 Dec 2024 14:59:39 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Zorro Lang <zlang@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH 1/3] ioctl_ficlone02.c: set all_filesystems to zero
-Message-ID: <Z029S0wgjrsv9qHL@yuki.lan>
-References: <20241201093606.68993-1-zlang@kernel.org>
- <20241201093606.68993-2-zlang@kernel.org>
- <Z02337yqxrfeZxIn@yuki.lan>
+	s=arc-20240116; t=1733150083; c=relaxed/simple;
+	bh=ZCIoFmADqXF65mEMJ0Q/FyEnL3BZUqVhFb5UZDw6lFU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aNKQBxXYVlWvWk2yH0OLBEhjAn9d2kokcGqXx8L5Q0MjacRJf9Kp7q20J5bnqU2h+jFx8GnvFYgCqD3gbXnQ46o0zQ/Hn76TNrjfKl+f9R0NY2PoBsY/3Et3qMaGQFEjAPId8SrLQwnDSXKWVoz9h5bdfL8wnhYUdC6qJpmmkvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isgVWt3g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCDA6C4CED1
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 14:34:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733150081;
+	bh=ZCIoFmADqXF65mEMJ0Q/FyEnL3BZUqVhFb5UZDw6lFU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=isgVWt3gQlZYD6NimNcvIvAQ+j6McpxG2LhMh+wKySxTA8kFw5cREcXy2TQY7hWJ0
+	 fI+SAgrgv0RzzRFBr50kel40q4QkwiK+n5UpYnH7xRk2Nge/qaUHuHhZZKyf+RiIUa
+	 ZjtmlOxzNWEKJusUMbAe1dY7wxz5WRDvhhTlv14QUtpfGQAXAlWaNBl3cyZBYK6aU9
+	 jUhrdUMIkUlQwJVCEBucuL00rGiTYaFyBdyR863nmzo8RjFJrqwc5OfSBAvFNxC4Af
+	 UTgLj2+nA2hm0ZDBxrA1xVrOVqD3mIgdMulPSv0FK5PFoEVtNZfCbuLsPASA9XMKNX
+	 7R+I5vl7UWjCA==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5d0c7c8cd6cso3886676a12.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2024 06:34:41 -0800 (PST)
+X-Gm-Message-State: AOJu0YwXWteBxQKUGviSADXvDnHUz200oCyjXBvTEbW9geHPNHV3ws9P
+	atKQZ5s+BsokjMCh+SJNzvOitb+llIyHydkxh9MZhg2TQMDuxT0lc8n+f3B8jhGnT6RxTFCaUKr
+	JbHznDyN3cp055vgd6anExYIcpq0=
+X-Google-Smtp-Source: AGHT+IHVxx0I6K8nR9SASmz9MCUcyu+sVYLVdQ4ZPRoT27+gKAgvyIa9EpHZthEoO7aC3vVNnrN9pLOqpjzy49/7pDw=
+X-Received: by 2002:a17:906:1da9:b0:aa5:3853:553b with SMTP id
+ a640c23a62f3a-aa5945fb07bmr1854500366b.20.1733150080212; Mon, 02 Dec 2024
+ 06:34:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z02337yqxrfeZxIn@yuki.lan>
-X-Rspamd-Queue-Id: 2C7601F444
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
-X-Spam-Flag: NO
+References: <7fae80d0a144312c09e4e40ff3491b6ce77ee4f5.1732952536.git.wqu@suse.com>
+In-Reply-To: <7fae80d0a144312c09e4e40ff3491b6ce77ee4f5.1732952536.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 2 Dec 2024 14:34:03 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H65joDrgUKMYhKnghjHUA1b3Woo8Uq-aKgp5DmnUAmMVA@mail.gmail.com>
+Message-ID: <CAL3q7H65joDrgUKMYhKnghjHUA1b3Woo8Uq-aKgp5DmnUAmMVA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: properly wait for writeback before buffered write
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, 
+	syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi!
-> The code to skip filesystems in the case of all filesystems is in the
-> run_tcase_per_fs() function:
-> 
-> static int run_tcases_per_fs(void)
-> {
->         int ret = 0;
->         unsigned int i;
->         const char *const *filesystems = tst_get_supported_fs_types(tst_test->skip_filesystems);
-> 
-> The skip_filesystems array is passed to the tst_get_supporte_fs_types()
-> function which filters out them.
+On Sat, Nov 30, 2024 at 7:43=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> Syzbot reported a crash where btrfs is call folio_start_writeback()
+> while the folio is already marked writeback:
+>
+> ------------[ cut here ]------------
+> kernel BUG at mm/page-writeback.c:3119!
+> Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> CPU: 0 UID: 0 PID: 12 Comm: kworker/u8:1 Not tainted 6.12.0-syzkaller-084=
+46-g228a1157fb9f #0
+> Workqueue: btrfs-delalloc btrfs_work_helper
+> RIP: 0010:__folio_start_writeback+0xc06/0x1050 mm/page-writeback.c:3119
+>  <TASK>
+>  process_one_folio fs/btrfs/extent_io.c:187 [inline]
+>  __process_folios_contig+0x31c/0x540 fs/btrfs/extent_io.c:216
+>  submit_one_async_extent fs/btrfs/inode.c:1229 [inline]
+>  submit_compressed_extents+0xdb3/0x16e0 fs/btrfs/inode.c:1632
+>  run_ordered_work fs/btrfs/async-thread.c:245 [inline]
+>  btrfs_work_helper+0x56b/0xc50 fs/btrfs/async-thread.c:324
+>  process_one_work kernel/workqueue.c:3229 [inline]
+>  process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+>  worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+>  kthread+0x2f0/0x390 kernel/kthread.c:389
+>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+> ---[ end trace 0000000000000000 ]---
+>
+> Furthermore syzbot bisected the cause to commit c87c299776e4
+> ("btrfs: make buffered write to copy one page a time").
+>
+> [CAUSE]
+> Unfortunately I'm not able to reproduce the bug with my usual debug
+> kernel config.
+> But thanks to the bisection result, I can take a deeper look into the
+> offending commit.
+>
+> One of the change is to use FGP_STABLE to wait for folio writeback.
 
-Perhaps you mean that the skiplist does not work with .all_filesystems
-_and_ the LTP_SINGLE_FS_TYPE environment variable?
+change -> changes
 
-I guess that we need:
+But I'm a bit confused.
+The commit that adds the use of GFP_STABLE is e820dbeb6ad1 ("btrfs:
+convert btrfs_buffered_write() to use folios"), but indirectly through
+the use of FGP_WRITEBEGIN.
 
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index bbbb8df19..49b1d7205 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -159,6 +159,10 @@ const char **tst_get_supported_fs_types(const char *const *skiplist)
+But you (and syzbot), say the offending commit is c87c299776e4
+("btrfs: make buffered write to copy one page a time").
 
-        if (only_fs) {
-                tst_res(TINFO, "WARNING: testing only %s", only_fs);
-+
-+               if (tst_fs_in_skiplist(only_fs, skiplist))
-+                       tst_brk(TCONF, "Requested filesystems is in test skiplist");
-+
-                if (tst_fs_is_supported(only_fs))
-                        fs_types[0] = only_fs;
-                return fs_types;
+> But unfortunately FGP_STABLE is not ensured to wait for writeback, it
+> only calls folio_wait_stable(), which only calls folio_wait_writeback()
+> if the address space has AS_STABLE_WRITES.
+>
+> Normally that flag is only set if the super block has
+> SB_I_STABLE_WRITES, and that is normally set if the that block device
+> has integrity checks or requires stable writes feature (normally has
+> some kind of digest to check).
+>
+> Although I'd argue btrfs should set such flag due to its data checksum,
 
+What about nocow writes?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The change looks good and sane, just confused about that part in the change=
+log.
+
+Thanks.
+
+> for now we do not have that flag, meaning FGP_STABLE will not wait for
+> any folio writeback to finish.
+>
+> This is going to cause races between buffered write and folio writeback,
+> leading to various data corruption/checksum mismatch.
+>
+> [FIX]
+> Instead of fully rely on FGP_STABLE, manually do the folio writeback
+> wait, until we set the btrfs super block with SB_I_STABLE_WRITES
+> manually.
+>
+> Reported-by: syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com
+> Fixes: c87c299776e4 ("btrfs: make buffered write to copy one page a time"=
+)
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/file.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index fbb753300071..8734f5fc681f 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -911,6 +911,7 @@ static noinline int prepare_one_folio(struct inode *i=
+node, struct folio **folio_
+>                         ret =3D PTR_ERR(folio);
+>                 return ret;
+>         }
+> +       folio_wait_writeback(folio);
+>         /* Only support page sized folio yet. */
+>         ASSERT(folio_order(folio) =3D=3D 0);
+>         ret =3D set_folio_extent_mapped(folio);
+> --
+> 2.47.1
+>
+>
 
