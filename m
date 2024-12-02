@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-10014-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10015-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76B8C9E0E18
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 22:48:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8660F9E0ECB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 23:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2F91282187
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 21:48:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB786B2A5F3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 21:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277351DF733;
-	Mon,  2 Dec 2024 21:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300921DF752;
+	Mon,  2 Dec 2024 21:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Xr0HCV/h";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Xr0HCV/h"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PZ6WePnY";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PZ6WePnY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BD53D97A
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 21:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9C1A50;
+	Mon,  2 Dec 2024 21:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733176101; cv=none; b=megTAhl7CQjUzdtGvxI/arHjorUN909ilOiBXUbuEx2qFXbx575jHaFf1jmZ7t5HRsTqchhrGn/m7EpbHeZWhn8n9ksSufsYazpQ434vQBH8voyG01eZFtL13OWf5SBwCkT1mluLa22nI0l3Uhsm/oFh+4LR2oDk7IufeCU6PqY=
+	t=1733176424; cv=none; b=i6Mm0orSYcxs6znRw7e22zy9izDB6YzLYRWSJXcyjp4KPz0RGyZ/mtmZ0W2V2i12e9MwfNAdyqpJ1i4HNjP2gRBQ86HAPSFZ1VWlumDr+W9EXydUWNzWjGHFows1gZQZu3zQ8OPXP9MCnda9NnLtFTcJt7UhQlpNNhPLaa12V2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733176101; c=relaxed/simple;
-	bh=+KBTiu34U5er1+txZD9GUefXUyGiYmIJCVfagKKY23g=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mYGwvQBgGBo/icFSzNxSsXh4wd5VXq9qw4o2qh5s6lW3x783u8azxytI0F1cwUjp7kfDvjuCycDiTrwqPQzMWofqorwywu4TybWMlmIOfh0jxiLlH+1/mMRo+5BDxxW9Vsltzc6JjJ1JWIo79EssGpkFc3QN1Oh5XI+WiZCjpSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Xr0HCV/h; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Xr0HCV/h; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1733176424; c=relaxed/simple;
+	bh=9Bxbq+hWFlvJQom4Q1CUIdNFgOmOTbjcjZKUwnPaxjE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NhMvsiwRanyiAaVpCXu8In93iFFaZxfZn2DOiPhZEPh+ZrPQvmRRYUy7kDVqk2aSvHs4JAO8SsW5ujAah1IF4JbOk33bIMKg/ruvCVf/rTSJZTkI5aivr4ClwxwTuL1C+QfC64+B5YBKMvhIIx8d89tieNU65cnlf1CG739BvKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PZ6WePnY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PZ6WePnY; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 705092115F
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 21:48:12 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D900A1F387;
+	Mon,  2 Dec 2024 21:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1733176092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1733176418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=kn5OTjhwaHH2MfXbaToYrGADONLht5Haky1C2vioLBA=;
-	b=Xr0HCV/h135a3kwps7yNpiz7u9XFzWtgfp8Y5i+m1Y8XlHgJy25Al9YhCHj8O4tN2WMJAX
-	xgmeM3PcXw7Butvz955O4202yjKlWRa8SBljqqIASVZPcX3H+lgugOGm6MLVIJu+nz4Zci
-	TZ7eNYrZ9JavqlBMSTzeSXpzVIZbWx0=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="Xr0HCV/h"
+	bh=amV8OltlfnR3goQjt+ipgijZxmT0hanBOhDXSQ3kEMI=;
+	b=PZ6WePnYPAVHYGXCBxIXiHXNDddjyFcEPh1WyOjEChFW86wOsnBm9OFP7weCUFilULBBn7
+	JfozwAMOj2fHK+t0Ks3ebktCgyEPi/H8Auu2MA+DCQgrXS4uQUDZlgo2FtemrYhFPV1LfA
+	PqcNf+pZSEyd4kWAztyO4hRotFRioZs=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1733176092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1733176418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=kn5OTjhwaHH2MfXbaToYrGADONLht5Haky1C2vioLBA=;
-	b=Xr0HCV/h135a3kwps7yNpiz7u9XFzWtgfp8Y5i+m1Y8XlHgJy25Al9YhCHj8O4tN2WMJAX
-	xgmeM3PcXw7Butvz955O4202yjKlWRa8SBljqqIASVZPcX3H+lgugOGm6MLVIJu+nz4Zci
-	TZ7eNYrZ9JavqlBMSTzeSXpzVIZbWx0=
+	bh=amV8OltlfnR3goQjt+ipgijZxmT0hanBOhDXSQ3kEMI=;
+	b=PZ6WePnYPAVHYGXCBxIXiHXNDddjyFcEPh1WyOjEChFW86wOsnBm9OFP7weCUFilULBBn7
+	JfozwAMOj2fHK+t0Ks3ebktCgyEPi/H8Auu2MA+DCQgrXS4uQUDZlgo2FtemrYhFPV1LfA
+	PqcNf+pZSEyd4kWAztyO4hRotFRioZs=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD8EA13A31
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 21:48:11 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB57B13A31;
+	Mon,  2 Dec 2024 21:53:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9H3tGxsrTmewHAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2024 21:48:11 +0000
+	id 9fYiJ2EsTmcMHgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 02 Dec 2024 21:53:37 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: properly wait for writeback before buffered write
-Date: Tue,  3 Dec 2024 08:17:53 +1030
-Message-ID: <3fa83d6d472d78beb5fd519d0290b73d02d53d15.1733176045.git.wqu@suse.com>
+Cc: stable@vger.kernel.org
+Subject: [PATCH] btrfs: do proper folio cleanup when run_delalloc_nocow() failed
+Date: Tue,  3 Dec 2024 08:23:20 +1030
+Message-ID: <4727cdf5b669acf42d93504f2c73434f330e4d59.1733176210.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -77,97 +77,135 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 705092115F
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-[BUG]
-Before commit e820dbeb6ad1 ("btrfs: convert btrfs_buffered_write() to
-use folios"), function prepare_one_folio() will always wait for folio
-writeback to finish before returning the folio.
+Just like cow_file_range(), from day 1 btrfs doesn't really clean the
+dirty flags, if it has an ordered extent created successfully.
 
-However commit e820dbeb6ad1 ("btrfs: convert btrfs_buffered_write() to
-use folios") changed to use FGP_STABLE to do the writeback wait, but
-FGP_STABLE is calling folio_wait_stable(), which only calls
-folio_wait_writeback() if the address space has AS_STABLE_WRITES, which
-is not set for btrfs inodes.
+Per error handling protocol (according to the iomap, and the btrfs
+handling if it failed at the beginning of the range), we should clear
+all dirty flags for the involved folios.
 
-This means we will not wait for folio writeback at all.
+Or the range of that folio will still be marked dirty, but has no
+EXTENT_DEALLLOC set inside the io tree.
 
-[CAUSE]
-The cause is FGP_STABLE is not wait for writeback unconditionally, but
-only for address spaces with AS_STABLE_WRITES, normally such flag is set
-when the super block has SB_I_STABLE_WRITES flag.
+Since the folio range is still dirty, it will still be the target for
+the next writeback, but since there is no EXTENT_DEALLLOC, no new
+ordered extent will be created for it.
 
-Such super block flag is set when the block device has hardware digest
-support or has internal checksum requirement.
+This means the writeback of that folio range will fall back to COW
+fixup, which is being marked deprecated and will trigger a crash.
 
-I'd argue btrfs should set such super block due to its default data
-checksum behavior, but it is not set yet, so this means FGP_STABLE flag
-will have no effect at all.
+Unlike the fix in cow_file_range(), which holds the folio and extent
+lock until error or a fully successfully run, here we have no such luxury
+as we can fallback to COW, and in that case the extent/folio range will
+be unlocked by cow_file_range().
 
-(For NODATACSUM inodes, we can skip the wait in theory but that should
-be an optimization in the future)
+So here we introduce a new helper, cleanup_dirty_folios(), to clear the
+dirty flags for the involved folios.
 
-This can lead to data checksum mismatch, as we can modify the folio
-meanwhile it's still under writeback, this will make the contents
-differ from the contents at submission and checksum calculation.
-
-[FIX]
-Instead of fully rely on FGP_STABLE, manually do the folio writeback
-wait, until we set the address space or super flag.
-
-Fixes: e820dbeb6ad1 ("btrfs: convert btrfs_buffered_write() to use folios")
+Cc: stable@vger.kernel.org
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-v2:
-- Update the commit message and fixes by tag
-  I was too focused on the syzbot report, not noticing it's a different
-  commit causing the regression.
-  Now removed the syzbot report part.
----
- fs/btrfs/file.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/inode.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index fbb753300071..8734f5fc681f 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -911,6 +911,7 @@ static noinline int prepare_one_folio(struct inode *inode, struct folio **folio_
- 			ret = PTR_ERR(folio);
- 		return ret;
- 	}
-+	folio_wait_writeback(folio);
- 	/* Only support page sized folio yet. */
- 	ASSERT(folio_order(folio) == 0);
- 	ret = set_folio_extent_mapped(folio);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index e8232ac7917f..19e1b78508bd 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1969,6 +1969,46 @@ static int can_nocow_file_extent(struct btrfs_path *path,
+ 	return ret < 0 ? ret : can_nocow;
+ }
+ 
++static void cleanup_dirty_folios(struct btrfs_inode *inode,
++				 struct folio *locked_folio,
++				 u64 start, u64 end, int error)
++{
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	struct address_space *mapping = inode->vfs_inode.i_mapping;
++	pgoff_t start_index = start >> PAGE_SHIFT;
++	pgoff_t end_index = end >> PAGE_SHIFT;
++	u32 len;
++
++	ASSERT(end + 1 - start < U32_MAX);
++	len = end + 1 - start;
++
++	/*
++	 * Handle the locked folio first.
++	 * btrfs_folio_clamp_*() helpers can handle range out of the folio case.
++	 */
++	btrfs_folio_clamp_clear_dirty(fs_info, locked_folio, start, len);
++	btrfs_folio_clamp_set_writeback(fs_info, locked_folio, start, len);
++	btrfs_folio_clamp_clear_writeback(fs_info, locked_folio, start, len);
++
++	for (pgoff_t index = start_index; index <= end_index; index++) {
++		struct folio *folio;
++
++		/* Already handled at the beginning. */
++		if (index == locked_folio->index)
++			continue;
++		folio = __filemap_get_folio(mapping, index, FGP_LOCK, GFP_NOFS);
++		/* Cache already dropped, no need to do any cleanup. */
++		if (IS_ERR(folio))
++			continue;
++		btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len);
++		btrfs_folio_clamp_set_writeback(fs_info, folio, start, len);
++		btrfs_folio_clamp_clear_writeback(fs_info, folio, start, len);
++		folio_unlock(folio);
++		folio_put(folio);
++	}
++	mapping_set_error(mapping, error);
++}
++
+ /*
+  * when nowcow writeback call back.  This checks for snapshots or COW copies
+  * of the extents that exist in the file, and COWs the file as required.
+@@ -2228,6 +2268,22 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	return 0;
+ 
+ error:
++	/*
++	 * We have some range with ordered extent created.
++	 *
++	 * Ordered extents and extent maps will be cleaned up by
++	 * btrfs_mark_ordered_io_finished() later, but we also need to cleanup
++	 * the dirty flags of folios.
++	 *
++	 * Or they can be written back again, but without any EXTENT_DELALLOC flag
++	 * in io tree.
++	 * This will force the writeback to go COW fixup, which is being deprecated.
++	 *
++	 * Also such left-over dirty flags do no follow the error handling protocol.
++	 */
++	if (cur_offset > start)
++		cleanup_dirty_folios(inode, locked_folio, start, cur_offset - 1, ret);
++
+ 	/*
+ 	 * If an error happened while a COW region is outstanding, cur_offset
+ 	 * needs to be reset to cow_start to ensure the COW region is unlocked
 -- 
 2.47.1
 
