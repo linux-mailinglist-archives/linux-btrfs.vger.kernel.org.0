@@ -1,115 +1,162 @@
-Return-Path: <linux-btrfs+bounces-10003-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6764F9E02FF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 14:15:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA159E039E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 14:36:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32A15B28E62
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 12:11:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43B93281082
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 13:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2401FF5EA;
-	Mon,  2 Dec 2024 12:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5B31FF5F4;
+	Mon,  2 Dec 2024 13:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RZ8YeOCB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GUUmWvSL";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tzwQcI8M";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nb1efb/x"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A664B1FECAE;
-	Mon,  2 Dec 2024 12:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D118B487A7
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2024 13:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733141049; cv=none; b=Kxv6CLE+1BEWQVoWQzkELn9iFZVZ1P2Pp5qwJ0hEPmkZgRydrS7KUGnCn3QgPXYK/X1I9g20y9DEdPpDY38A7HNxb5cNufLL5ZAxwvYKxCZCRBdegPa2rrrtOPs+k4AtwtBLtN1RDKnjnmYZtV4l3RoGBHxCgjDJFLNnnvCjoqw=
+	t=1733146583; cv=none; b=eEtRfJuNMWEPYeZqYoOSrmfy+89kDi/fKtEQgdtNTtP3rE/RAxfxpo6ZWA8J5eGZ99k40SbH8E87YdqGXJoOImtK2JGP/70xiBB0q/9sEvji/7+C0BrmriZxYDw7p//xLU3C+e6TytM43c23uaOFov0riCieIn2uqgOlMkAc5rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733141049; c=relaxed/simple;
-	bh=pM/OrLNxROYcJ7+l2eV3d9qX3VqSYGKWpHph9gbWwFs=;
+	s=arc-20240116; t=1733146583; c=relaxed/simple;
+	bh=IT0qEEvbg+a/TLPgzZ9kHKsScM7wtLA6TYGOLpgD4b8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQTzDyuyRkJ8AvvsKX3mO0K/6dqs6khUFcm/++tae3cf4vqd7O0EAFGDOVhvk7qv1ipz9ib0ihyEs6NTUOFCo8W1WawrL+nFeRCQVG8MFrQXXG20ZBd0204MyflgovmBpoDuqVnftBUSqZm8n+L3U7QhBrVPp4v315+NKeeSjLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 0D8351C00C4; Mon,  2 Dec 2024 13:04:05 +0100 (CET)
-Date: Mon, 2 Dec 2024 13:04:04 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
-	David Sterba <dsterba@suse.com>, clm@fb.com, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.19 2/2] btrfs: fix warning on PTR_ERR() against
- NULL device at btrfs_control_ioctl()
-Message-ID: <Z02iNPcVHpjPtHXR@duo.ucw.cz>
-References: <20241124124231.3337202-1-sashal@kernel.org>
- <20241124124231.3337202-2-sashal@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SPqhfIXLDCotFwe65/iVis4d4XYaltcwlF4MMlcdFZwkLda/IhlY56WyReTXwC/yCVCQ/IXOZSihefIN9bDLOaT2JuqQAHBhAVAeXk7YifPBXyQHXsPntktb42zJQPrKg10OOBK3cvHRfr5Va9MM9yY5rfjSpNfGt+kFrobuQuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RZ8YeOCB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GUUmWvSL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tzwQcI8M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nb1efb/x; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D21A421175;
+	Mon,  2 Dec 2024 13:36:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733146579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W2TdmFco01BeDwftSq3BLWXddYdaOwqRbhohesYHKds=;
+	b=RZ8YeOCBbgtGm6+cfhAl9MZFTAFI+iU4Xvv65JEZ/hdVqrFwkJK3Ci/fK4DCn/x1YAK7S5
+	TOfCxzUSOfooiMXD5TOJS0cODDvYczz6gU5sHJdtofzHcGYFFGT0WR9C9MpMdLsiyPVvKZ
+	u6VqpG20GlIf8EeodgeVi0uwJZ0eYNQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733146579;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W2TdmFco01BeDwftSq3BLWXddYdaOwqRbhohesYHKds=;
+	b=GUUmWvSLYCdj/As8FQkYIz0Txh7bGyI7t/8eKEeOtM5V6q4SwC/xGI442DyshuC5fyEDsJ
+	RpxshSWiZvN9McAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733146576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W2TdmFco01BeDwftSq3BLWXddYdaOwqRbhohesYHKds=;
+	b=tzwQcI8MyCz59DmBiZ0AlnZhbZAZOHHPzDM3bDLyZRzIxzE8+TSK7fI99Jwi56VG/xQdkn
+	loXRbbB+9j4hJLJLk1bBTWfaXuz8GZdNtiDjHT54ChS04v8eEHBjdLUWSnbSPBY6efQog1
+	lfx05xYqZK8ZczLirWls0spKDaTY1lU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733146576;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W2TdmFco01BeDwftSq3BLWXddYdaOwqRbhohesYHKds=;
+	b=Nb1efb/x5Iq0/+E/zxrJAmQ+i/9Y7RZprvL2fOdlHUSPOa04p/rqqw5wKpgd8lPZDTnWeM
+	ATSOjuSo6X/SdLCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0C9B139C2;
+	Mon,  2 Dec 2024 13:36:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HJQALdC3TWfUDQAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Mon, 02 Dec 2024 13:36:16 +0000
+Date: Mon, 2 Dec 2024 14:36:31 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Zorro Lang <zlang@kernel.org>
+Cc: ltp@lists.linux.it, linux-btrfs@vger.kernel.org
+Subject: Re: [LTP] [PATCH 1/3] ioctl_ficlone02.c: set all_filesystems to zero
+Message-ID: <Z02337yqxrfeZxIn@yuki.lan>
+References: <20241201093606.68993-1-zlang@kernel.org>
+ <20241201093606.68993-2-zlang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1UBKiVcZwAh2stw7"
-Content-Disposition: inline
-In-Reply-To: <20241124124231.3337202-2-sashal@kernel.org>
-
-
---1UBKiVcZwAh2stw7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20241201093606.68993-2-zlang@kernel.org>
+X-Spam-Score: -8.30
+X-Spamd-Result: default: False [-8.30 / 50.00];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
 Hi!
+> This test need to skip test known filesystems, but according to below
+> code logic (in lib/tst_test.c):
+> 
+>   if (!tst_test->all_filesystems && tst_test->skip_filesystems) {
+>         long fs_type = tst_fs_type(".");
+>         const char *fs_name = tst_fs_type_name(fs_type);
+> 
+>         if (tst_fs_in_skiplist(fs_name, tst_test->skip_filesystems)) {
+>             tst_brk(TCONF, "%s is not supported by the test",
+>             fs_name);
+>         }
+>
+>         tst_res(TINFO, "%s is supported by the test", fs_name);
+>   }
+> 
+> if all_filesystems is 1, the skip_filesystems doesn't work. So set
+> all_filesystems to 0.
 
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> [ Upstream commit 2342d6595b608eec94187a17dc112dd4c2a812fa ]
->=20
-> Smatch complains about calling PTR_ERR() against a NULL pointer:
->=20
->   fs/btrfs/super.c:2272 btrfs_control_ioctl() warn: passing zero to 'PTR_=
-ERR'
->=20
-> Fix this by calling PTR_ERR() against the device pointer only if it
-> contains an error.
+The code to skip filesystems in the case of all filesystems is in the
+run_tcase_per_fs() function:
 
-This patch was wrongly ported to 4.19. It is not needed there. Same
-test is already performed 2 lines above.
+static int run_tcases_per_fs(void)
+{
+        int ret = 0;
+        unsigned int i;
+        const char *const *filesystems = tst_get_supported_fs_types(tst_test->skip_filesystems);
 
-Please drop.
+The skip_filesystems array is passed to the tst_get_supporte_fs_types()
+function which filters out them.
 
-BR,
-								Pavel
-
-> +++ b/fs/btrfs/super.c
-> @@ -2283,7 +2283,10 @@ static long btrfs_control_ioctl(struct file *file,=
- unsigned int cmd,
->  					       &btrfs_root_fs_type);
->  		if (IS_ERR(device)) {
->  			mutex_unlock(&uuid_mutex);
-> -			ret =3D PTR_ERR(device);
-> +			if (IS_ERR(device))
-> +				ret =3D PTR_ERR(device);
-> +			else
-> +				ret =3D 0;
->  			break;
->  		}
->  		ret =3D !(device->fs_devices->num_devices =3D=3D
-
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---1UBKiVcZwAh2stw7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZ02iNAAKCRAw5/Bqldv6
-8lTgAKC3bd8uzGQArBotjP/A2zgfWt59IwCfULDTDPWvLesqYqqPZ/deicBdlwk=
-=2XmC
------END PGP SIGNATURE-----
-
---1UBKiVcZwAh2stw7--
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
