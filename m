@@ -1,211 +1,212 @@
-Return-Path: <linux-btrfs+bounces-9994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-9995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2673D9DF99B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 04:29:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EC19DF9A6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 04:36:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57D7FB229F9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 03:29:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3333D281313
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2024 03:36:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39751E378C;
-	Mon,  2 Dec 2024 03:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95611F8AEF;
+	Mon,  2 Dec 2024 03:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="M4EXkL/J";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="M4EXkL/J"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8iycQmx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861DA1E32A9;
-	Mon,  2 Dec 2024 03:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F3726AE4;
+	Mon,  2 Dec 2024 03:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733110139; cv=none; b=qc2u+A2eeP7L17KExdxk9Al1yCVBEtaOe8IXs3doIGR4vsCXUOa4qc6NvdDmzcuiuvMQ2dwhjoEQ8sridXfKDWIqX7xZugBwe4rtilM+1I/Wt1Jtq6ooDQJj1I4bIEkAOVExD6Wr+0ikbRgcbXK0BLxFatiu5jpOIVO2uXWUNa4=
+	t=1733110592; cv=none; b=PW8Sy1Et+iyBu/VRCzfLBVgz8h8nCCopDs/aMHlwXnrx8tMZ+fCeEDxwg92FWhecCWNQ4V/WIV4tvekM3j9lvB0yPeesVUmQZZ3XockTF7QgxtXH0upv559nomuhL9crY9LaFS41sY+o/txa+8Om9qEU9zTWPUMwp1EeLE1OuAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733110139; c=relaxed/simple;
-	bh=9Bxbq+hWFlvJQom4Q1CUIdNFgOmOTbjcjZKUwnPaxjE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rtdBxe56qppsEavvZySqdzW+UreYGG+16Jg0NHceberhSPim8z87bAv2tgb1JVtOkL7MIF4EcCtsot+gjlC06vX0O3gpSph94+UlbmxW4Y22s7VF5UP7T5++z3kuS194VO8IDwdK8mwJflb8BFsZiMiSbxdvyy1hi6JXsNp3Rmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=M4EXkL/J; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=M4EXkL/J; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0723921175;
-	Mon,  2 Dec 2024 03:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1733110129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=amV8OltlfnR3goQjt+ipgijZxmT0hanBOhDXSQ3kEMI=;
-	b=M4EXkL/JO1yD4hodsltssdWi8AQ6AQGUdFDM+3lJ4YwwrqgcWgA0BtFTQOmW3g80cD9aaW
-	+fdN0KCzaj+LDEI1QTCNGlNI3PsiTjD4ATUEiwd58KcDGeyh+uPkow3rEHzrXams09d5gc
-	fx5dvuWOyxaLT65bT6RWC8oW3xWcons=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1733110129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=amV8OltlfnR3goQjt+ipgijZxmT0hanBOhDXSQ3kEMI=;
-	b=M4EXkL/JO1yD4hodsltssdWi8AQ6AQGUdFDM+3lJ4YwwrqgcWgA0BtFTQOmW3g80cD9aaW
-	+fdN0KCzaj+LDEI1QTCNGlNI3PsiTjD4ATUEiwd58KcDGeyh+uPkow3rEHzrXams09d5gc
-	fx5dvuWOyxaLT65bT6RWC8oW3xWcons=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05BF4139D0;
-	Mon,  2 Dec 2024 03:28:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mkhDLm8pTWdgWwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 02 Dec 2024 03:28:47 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] btrfs: do proper folio cleanup when cow_file_range() failed
-Date: Mon,  2 Dec 2024 13:58:26 +1030
-Message-ID: <42ee9dff1e240427f4a4d827c83e81b5598fe765.1733109950.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1733110592; c=relaxed/simple;
+	bh=v5nSndO/4ZT5+voHPl/5rulmF50bumWwUnVkUlfXcpg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WxZu3LWfngWj3pf0mmyw6B/1083xq75IZGCbMoa2etpLdk5m3SeSc1WCEv6ZYxWpX9sMvsuAicGvVFWBrHxlridM3nDhJARxXqZFH2vEYyQR0YapIQaJF1VrO2vekvyNIHfS1X77gUfAvDtHYdHPgBqSM7zIHbHa4ts8kEev1TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W8iycQmx; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2eec9b3a1bbso321866a91.3;
+        Sun, 01 Dec 2024 19:36:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733110590; x=1733715390; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5kFHM/3yCu0aAVH5q7RWPOzshWMRnBnfX8Dn0iOsBNk=;
+        b=W8iycQmxzx3Q4DoPT/bD/+LbWl7lltUr+CjcpV1ziwrz7do7lR1H6GB5robOTN265D
+         CtZheZNT3NBURIz31VzH/N3c5zpi7G3hijMFr+MEuEOkkTJIUW7S6eA/LNu8To9rxIyt
+         qyaHhLSAEy4SjPkjL2OEkN+ZP2sUhfA/433z4ubLMEytmaXkrUSEzJ8CrAAkQJL/xhY+
+         VkauxFHXU0aqIwT/EYKgfWjOLpGO6oFbqSVHl2pNu8QTSSG47/ukfMr5zUHY5LhLWl7m
+         opz7FahTLa+1Db5i5eeDQv09ZQGQjLUIpmPNnOTqDUgz95QHbYs9B4KRqS/j7JhRxxGf
+         KnKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733110590; x=1733715390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5kFHM/3yCu0aAVH5q7RWPOzshWMRnBnfX8Dn0iOsBNk=;
+        b=Hppqu3eLDhLoiilKz4BRCHVz3IRyqpvSrWRP7PM9lk+pG3F575zF7Wok3cWrq//1Wh
+         VKn4VxBglYV/LtLcf9wM7LuaZpzOI1PmI+O3S3Cx04ti/iYFLIO9uigM3wLltc5J/GJz
+         CrPgjH/LdMb2peOJRd1t8o9V6nfXXm53g9folfkvbBSHSke4UyrxSOX1Vy1q8jesnG6t
+         4bA/OUSTHH06D0fE7+RVel83gjT/f0IR+/CrwkK8Hlf+ftpMYR5zKErQg99BLDOiY8hU
+         6a4kWtQCqPZQY7WehV9dwdiROnEFjbHp2MG+3zYXLX7PB66QA2K8ElahHarPy2WGjk9q
+         s9Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYi94irIwI8WuP0oqOYi3h0Q9EU2V+DtjQBr8GzXKOOz9QYC14bRtTwddMFXJkawaO3xx58OuaSYjQRrJi@vger.kernel.org, AJvYcCWKatxoEX5DTQaJWLDGfL33Mw5axCHmroW/U80CsNAj08rJ0ckpttcqHGMT5OdKaK4Kzzc9Wd4FfwMCDg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUeVWbDbbgu3j8kYTtchCWpklEhg2jl8pPi9jAijcABVZA5S6Z
+	eDFok3LbEalWE2eotEB31GCoda3MF0B+b09zzo7jp/IuactHzGaGD5EmDtFk1/xxjpeWEFvZNsk
+	MUBfk0t2b2zdQKx9yg3gAEoyVC/o=
+X-Gm-Gg: ASbGnctnlb0gB5GcOz5jxnIi854GKdpMdlTprM0eienIXP2I64r1kHvkW09G/D+EwYy
+	l7iaxM+0AHrvEvBBHp4l1HxEuEraMEOAL
+X-Google-Smtp-Source: AGHT+IFNYgbr+M7uilMzhsyRj1w6CrBheFEiKqIdb/5PvSDfBtq4U3UQI6Am3DoxbHNKqwO3IL1GdUe9UHTWZELa8J4=
+X-Received: by 2002:a17:90b:4fd0:b0:2ea:bb3a:8f11 with SMTP id
+ 98e67ed59e1d1-2ee097dd62bmr24080635a91.32.1733110590418; Sun, 01 Dec 2024
+ 19:36:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_DN_NONE(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <20241201112550.107383-1-zhenghaoran154@gmail.com>
+ <CAL3q7H4P9O-6jay6cPYLrrX85y1t52QRQ=_feifY_A0D7p_gLQ@mail.gmail.com> <CAKa5YKiedRVhJoORSa3t7cENo8sZ_Nxq4bHfiMvbDrh_ccvcTg@mail.gmail.com>
+In-Reply-To: <CAKa5YKiedRVhJoORSa3t7cENo8sZ_Nxq4bHfiMvbDrh_ccvcTg@mail.gmail.com>
+From: haoran zheng <zhenghaoran154@gmail.com>
+Date: Mon, 2 Dec 2024 11:36:19 +0800
+Message-ID: <CAKa5YKjmKA8hGJgp_Px1-EGifLY_N9gR13=i54PoDcb=dMjMeA@mail.gmail.com>
+Subject: Re: [PATCH] fs: Fix data race in btrfs_drop_extents
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	baijiaju1990@gmail.com, 21371365@buaa.edu.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Just like cow_file_range(), from day 1 btrfs doesn't really clean the
-dirty flags, if it has an ordered extent created successfully.
+I read the relevant code again and found that modify_tree is also used for
+judgment at line 331, but the judgment here may lead to the release of the
+path. Will this cause other problems such as unexpected path release?
+331: if (recow || !modify_tree) {
+332:     modify_tree =3D -1;
+333:     btrfs_release_path(path);
+334:     continue;
+335: }
 
-Per error handling protocol (according to the iomap, and the btrfs
-handling if it failed at the beginning of the range), we should clear
-all dirty flags for the involved folios.
-
-Or the range of that folio will still be marked dirty, but has no
-EXTENT_DEALLLOC set inside the io tree.
-
-Since the folio range is still dirty, it will still be the target for
-the next writeback, but since there is no EXTENT_DEALLLOC, no new
-ordered extent will be created for it.
-
-This means the writeback of that folio range will fall back to COW
-fixup, which is being marked deprecated and will trigger a crash.
-
-Unlike the fix in cow_file_range(), which holds the folio and extent
-lock until error or a fully successfully run, here we have no such luxury
-as we can fallback to COW, and in that case the extent/folio range will
-be unlocked by cow_file_range().
-
-So here we introduce a new helper, cleanup_dirty_folios(), to clear the
-dirty flags for the involved folios.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e8232ac7917f..19e1b78508bd 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1969,6 +1969,46 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	return ret < 0 ? ret : can_nocow;
- }
- 
-+static void cleanup_dirty_folios(struct btrfs_inode *inode,
-+				 struct folio *locked_folio,
-+				 u64 start, u64 end, int error)
-+{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct address_space *mapping = inode->vfs_inode.i_mapping;
-+	pgoff_t start_index = start >> PAGE_SHIFT;
-+	pgoff_t end_index = end >> PAGE_SHIFT;
-+	u32 len;
-+
-+	ASSERT(end + 1 - start < U32_MAX);
-+	len = end + 1 - start;
-+
-+	/*
-+	 * Handle the locked folio first.
-+	 * btrfs_folio_clamp_*() helpers can handle range out of the folio case.
-+	 */
-+	btrfs_folio_clamp_clear_dirty(fs_info, locked_folio, start, len);
-+	btrfs_folio_clamp_set_writeback(fs_info, locked_folio, start, len);
-+	btrfs_folio_clamp_clear_writeback(fs_info, locked_folio, start, len);
-+
-+	for (pgoff_t index = start_index; index <= end_index; index++) {
-+		struct folio *folio;
-+
-+		/* Already handled at the beginning. */
-+		if (index == locked_folio->index)
-+			continue;
-+		folio = __filemap_get_folio(mapping, index, FGP_LOCK, GFP_NOFS);
-+		/* Cache already dropped, no need to do any cleanup. */
-+		if (IS_ERR(folio))
-+			continue;
-+		btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len);
-+		btrfs_folio_clamp_set_writeback(fs_info, folio, start, len);
-+		btrfs_folio_clamp_clear_writeback(fs_info, folio, start, len);
-+		folio_unlock(folio);
-+		folio_put(folio);
-+	}
-+	mapping_set_error(mapping, error);
-+}
-+
- /*
-  * when nowcow writeback call back.  This checks for snapshots or COW copies
-  * of the extents that exist in the file, and COWs the file as required.
-@@ -2228,6 +2268,22 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 	return 0;
- 
- error:
-+	/*
-+	 * We have some range with ordered extent created.
-+	 *
-+	 * Ordered extents and extent maps will be cleaned up by
-+	 * btrfs_mark_ordered_io_finished() later, but we also need to cleanup
-+	 * the dirty flags of folios.
-+	 *
-+	 * Or they can be written back again, but without any EXTENT_DELALLOC flag
-+	 * in io tree.
-+	 * This will force the writeback to go COW fixup, which is being deprecated.
-+	 *
-+	 * Also such left-over dirty flags do no follow the error handling protocol.
-+	 */
-+	if (cur_offset > start)
-+		cleanup_dirty_folios(inode, locked_folio, start, cur_offset - 1, ret);
-+
- 	/*
- 	 * If an error happened while a COW region is outstanding, cur_offset
- 	 * needs to be reset to cow_start to ensure the COW region is unlocked
--- 
-2.47.1
-
+On Mon, Dec 2, 2024 at 11:13=E2=80=AFAM haoran zheng <zhenghaoran154@gmail.=
+com> wrote:
+>
+> Thanks for the explanation. I will fix the description and resubmit the p=
+atch.
+>
+> On Mon, Dec 2, 2024 at 1:39=E2=80=AFAM Filipe Manana <fdmanana@kernel.org=
+> wrote:
+>>
+>> On Sun, Dec 1, 2024 at 11:26=E2=80=AFAM Hao-ran Zheng <zhenghaoran154@gm=
+ail.com> wrote:
+>> >
+>> > A data race occurs when the function `insert_ordered_extent_file_exten=
+t()`
+>> > and the function `btrfs_inode_safe_disk_i_size_write()` are executed
+>> > concurrently. The function `insert_ordered_extent_file_extent()` is no=
+t
+>> > locked when reading inode->disk_i_size, causing
+>> > `btrfs_inode_safe_disk_i_size_write()`to cause data competition when
+>> > writing inode->disk_i_size, thus affecting the value of `modify_tree`,
+>> > leading to some unexpected results such as disk data being overwritten=
+.
+>>
+>> How can that cause "disk data being overwritten"?
+>> And the results are not unexpected at all.
+>>
+>> The value of modify_tree is irrelevant from a correctness point of view.
+>> It's used for an optimization to avoid taking write locks on the btree
+>> in case we're doing a write at or beyond eof.
+>>
+>> If we end up taking a write lock when it's not needed, everything's
+>> fine - we just may unnecessarily block concurrent readers that need to
+>> access the same btree path (leaf and parent node).
+>>
+>> If we don't take a write lock and we need it, we will later figure
+>> that out and switch to a write lock.
+>>
+>> > The specific call stack that appears during testing is as follows:
+>> >
+>> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DDATA_RACE=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>> >  btrfs_drop_extents+0x89a/0xa060 [btrfs]
+>> >  insert_reserved_file_extent+0xb54/0x2960 [btrfs]
+>> >  insert_ordered_extent_file_extent+0xff5/0x1760 [btrfs]
+>> >  btrfs_finish_one_ordered+0x1b85/0x36a0 [btrfs]
+>> >  btrfs_finish_ordered_io+0x37/0x60 [btrfs]
+>> >  finish_ordered_fn+0x3e/0x50 [btrfs]
+>> >  btrfs_work_helper+0x9c9/0x27a0 [btrfs]
+>> >  process_scheduled_works+0x716/0xf10
+>> >  worker_thread+0xb6a/0x1190
+>> >  kthread+0x292/0x330
+>> >  ret_from_fork+0x4d/0x80
+>> >  ret_from_fork_asm+0x1a/0x30
+>> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DOTHER_INFO=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>> >  btrfs_inode_safe_disk_i_size_write+0x4ec/0x600 [btrfs]
+>> >  btrfs_finish_one_ordered+0x24c7/0x36a0 [btrfs]
+>> >  btrfs_finish_ordered_io+0x37/0x60 [btrfs]
+>> >  finish_ordered_fn+0x3e/0x50 [btrfs]
+>> >  btrfs_work_helper+0x9c9/0x27a0 [btrfs]
+>> >  process_scheduled_works+0x716/0xf10
+>> >  worker_thread+0xb6a/0x1190
+>> >  kthread+0x292/0x330
+>> >  ret_from_fork+0x4d/0x80
+>> >  ret_from_fork_asm+0x1a/0x30
+>> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >
+>> > To address this issue, it is recommended to add locks when reading
+>> > inode->disk_i_size and setting the value of modify_tree to prevent
+>> > data inconsistency.
+>>
+>> Can also use data_race() here, as it's a harmless race.
+>>
+>> Also, please use a proper subject like for example:
+>>
+>> btrfs: fix data race when accessing the inode's disk_i_size at
+>> btrfs_drop_extents()
+>>
+>> Also please update the changelog with a proper analysis - saying it's
+>> a harmless race and why.
+>>
+>> Thanks.
+>>
+>> >
+>> > Signed-off-by: Hao-ran Zheng <zhenghaoran154@gmail.com>
+>> > ---
+>> >  fs/btrfs/file.c | 2 ++
+>> >  1 file changed, 2 insertions(+)
+>> >
+>> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+>> > index 4fb521d91b06..189708e6e91a 100644
+>> > --- a/fs/btrfs/file.c
+>> > +++ b/fs/btrfs/file.c
+>> > @@ -242,8 +242,10 @@ int btrfs_drop_extents(struct btrfs_trans_handle =
+*trans,
+>> >         if (args->drop_cache)
+>> >                 btrfs_drop_extent_map_range(inode, args->start, args->=
+end - 1, false);
+>> >
+>> > +       spin_lock(&inode->lock);
+>> >         if (args->start >=3D inode->disk_i_size && !args->replace_exte=
+nt)
+>> >                 modify_tree =3D 0;
+>> > +       spin_unlock(&inode->lock);
+>> >
+>> >         update_refs =3D (btrfs_root_id(root) !=3D BTRFS_TREE_LOG_OBJEC=
+TID);
+>> >         while (1) {
+>> > --
+>> > 2.34.1
+>> >
+>> >
 
