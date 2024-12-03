@@ -1,290 +1,144 @@
-Return-Path: <linux-btrfs+bounces-10029-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10031-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341799E18BF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 11:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8430C9E1A13
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 11:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF13416691C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 10:04:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48DCC1669BF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 10:57:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EC91DF74D;
-	Tue,  3 Dec 2024 10:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1B91E3768;
+	Tue,  3 Dec 2024 10:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Aj/bziej"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ulESmCAj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11B213D890
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 10:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BC71E32D8
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 10:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733220255; cv=none; b=CqirxPvxpJ697tP+MrzyyhFzYx6n/b0MSLup+6CkBfg2KLP0YoZqYyOYqIiLYHC09o2X5Vke9OjFOK40gYQ6ICG4HxoXrQK7RS06mwewZNPjdxw2r0E5Em1Nk/4tEKM06kD0qO74FIdaB2N8KWWVIyncNT4dmNRhpTz0Zs8Krmo=
+	t=1733223438; cv=none; b=Ky1A24F5buSw8sHUOZ0FBj0sFHVTcCEGoNllxti+CmYPGaVg0WJpDFeS977esuV9q3eN86O1fGuncl66nhk6eivEYJrFoQr1T7YoWJlpwVEcH4Ps7DO9lA3bW+4jro2jrrFx3fpPGyG36baCetCLwvZuVdTzcsDNfpCCydI423Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733220255; c=relaxed/simple;
-	bh=yuUMJ5E4yVdpwo9x6EnOJB/tmuyllSJ0/q59I9UJsxQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sr+opdPVZPQVypWPMmkf2HVD3/Nw9eswCKr47qRKKmzs4oEcnXQXS+Ox0FC4uyiELAL2sTSe7O8bmhjPCC+e9HcBlPF1QBXkLkLVNDa3uLIoc66Mo+q64vL1DMKgy0ToND3F7cfYmWj+sNcB8C17PpbeI4O58laOFKZv1Jk/8dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Aj/bziej; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1733220250; x=1733825050; i=quwenruo.btrfs@gmx.com;
-	bh=KU2QIzFC6n6elEKFmDiWms2mTClmmwAe+DL7cFVKHMo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Aj/bziejIM9urP2zy6O6LwLFaj3mxAJ72v7hS+gVIlBJdecWQvvueZCpDlvr8Jxb
-	 vc/R4Tj8ygNVcKvF6id54laMSb/rGtntL1iykHl44GVbEFgM36MAQ/ed/k7EigVIU
-	 D63Mqk8J+tb3XXr6MhTHpwx/blWBFSBQB5h3fn7C9VTKZamY0DGWkt7coXnGA6Eh+
-	 f2nid9aJQdz2Iw5hQtXiqinbzzs3EezIg2nFDv85u3RaeO4itarzK1XecF7ohvcjQ
-	 DLKtWbhcSa7QhpUFCH0APXv9Pf7xL6nd1KkE5CTBYdsOC1uRdLOt7/NgyST1zcWVz
-	 VGGd/iOOVSuMmN9YAQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNbp3-1t2ezS2cWJ-00Z0D1; Tue, 03
- Dec 2024 11:04:10 +0100
-Message-ID: <a2f8b6d2-7f11-4827-a061-ff2f822a5f08@gmx.com>
-Date: Tue, 3 Dec 2024 20:34:06 +1030
+	s=arc-20240116; t=1733223438; c=relaxed/simple;
+	bh=JQbvgshFsr6ud+nc+ET8xUHNuqQk/KCWCxEPb758Sjs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VhrVxBovRDrYecU3WD0P8BS9H54IzNmtz9SbU9yKdBm9oy36Wg3hMn5bfGqP+3/+i5AWlXt+Q0i8uHlWMh6/nbQ7k5nWj3a2ZT7Z9zSiJSCvlYbrgAcnLMmb4qYXtGuvZGNENR0njsxFoXfYv9GGJ/iEP9nvF4aFigrB7nx2VL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ulESmCAj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C81BC4CED9
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 10:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733223436;
+	bh=JQbvgshFsr6ud+nc+ET8xUHNuqQk/KCWCxEPb758Sjs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ulESmCAjhQ53POeLxwMUJQxYwvasf7X2J0LH5n5Cncm+I8QaUP05d7AWy9gOXJQ94
+	 4j7iIVoXgVsEYQGcY3PynsIefNndB7Rz2bPIj0j+mUpBc5UEqzl/ZVS7vcE9HZ3nyL
+	 lPYimBxEBWmRhNqj+vZ3vdBERxyl6ujtN4xriTA5z6wCU51GI0z4B8eiTuz0mB3+Ai
+	 PLS/MI/uN1kHYWDSMmdfOxJadyC/PXchFtxe1sFHc4aMAE1A4ksfSt8jC8DMRX9vv5
+	 id2gPAmjpaefsus3tDZOn1U7bXqhpB/0tL31uJ9f4uk+DgNeXVO+ULwZ/OLJ4fDLCZ
+	 WyUGM9GFr4PDQ==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a9e8522445dso762577666b.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Dec 2024 02:57:16 -0800 (PST)
+X-Gm-Message-State: AOJu0YwRp3wlQQpTP4iGCgOGj6AIaVGaY/JvZarDDuznVHFYzHvkLyhq
+	gaMo1StabzxAiAqIQQtzWgoMF3EjB4oJWxdDlJh82+gVEuyXlk/FJU1nOVsCpGRmo0xsYhBjLxE
+	qeuJk183EPGiwRX/TFopKSXtWo7E=
+X-Google-Smtp-Source: AGHT+IG0E5f2Q/GWAeleW7g/IRP41zC5LXwg8G2KvFO6TO+UGs8yWDaogf4+Enq3kjO3fnsP51SExHG/+KQ/2agCIjs=
+X-Received: by 2002:a17:906:23e9:b0:a9e:c881:80bd with SMTP id
+ a640c23a62f3a-aa5f7ecd26cmr117029466b.37.1733223435159; Tue, 03 Dec 2024
+ 02:57:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Balance failed with tree block error
-To: Neil Parton <njparton@gmail.com>
+References: <3fa83d6d472d78beb5fd519d0290b73d02d53d15.1733176045.git.wqu@suse.com>
+In-Reply-To: <3fa83d6d472d78beb5fd519d0290b73d02d53d15.1733176045.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 3 Dec 2024 10:56:38 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6M9QW-Bx7ohYtsesQwk811Fd6H_QqQXq20hyjEJduYOw@mail.gmail.com>
+Message-ID: <CAL3q7H6M9QW-Bx7ohYtsesQwk811Fd6H_QqQXq20hyjEJduYOw@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: properly wait for writeback before buffered write
+To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <CAAYHqBbMeLYXdhNondp8JwQCsp-n1cCvnAubS3f2FxD6PBOEsQ@mail.gmail.com>
- <8276d833-d4f2-42dd-8190-c98265896ee3@gmx.com>
- <CAAYHqBZMBmD2yT2C95KrGXNqYjkecEO3jQQ74X5iT+MKxWhpMA@mail.gmail.com>
- <ba4f665d-f7fe-438f-a7ba-dc92d16b9f68@gmx.com>
- <CAAYHqBZmXtW_Z1KBNzOODNHgC=hMVXUrS3HGvKsBy3cd=jW-mQ@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAAYHqBZmXtW_Z1KBNzOODNHgC=hMVXUrS3HGvKsBy3cd=jW-mQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2albJ8w7Racqe7HdzTxv+XZ72iWuB8kziAm6IrjI4JGCk5URLiC
- yBzHGMw9IejCQgcV413ozd5k+apIkmEOzB8O4D2Lgt4+9X56r4MQ/uCM/P67Z2GxWLKfHfg
- gmb5sWUF21VOSysbhK31ILQKUY8GK4VX8bASAihmdSs2b/4rctAEQ7Zch/8ujq0Ai/gKm5k
- KU5Qtl/X57FqMr5iF6jCQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2Vko0lfjiqk=;GUGthsIQaqKLdt+3CXqPlyzq2jI
- 5mh9Y5e18bhRxoaVTPXoxTVpZMVOW4U5L7ZbYLDvh0sOB3E1wSQ8+EVukCEDrPoQDvhHWSaGk
- 6OXQsq3g606S6NRaYR1VaMe+L3YCYx+mqCcWHWouB5Yx/43q9X0ASNLVyRDLUlT1Bj9ZEu2pH
- hms9y2lBvP8c3zQNQcXAkB5o55ZOIk6UcTdN0VxfbBxtk5oPEQRXSH1PzLQ24W6wEwV8mvGRS
- suk4C5/KQyQtakbJZ5js3Ey1rdODP3JcZI8C+Z+GHEFVMNjAJMZD/JdnBn/jSOxMdbEcbkf6I
- Q4Mjk6b8BwmoetEpnFrwv+C9oS1BT+pXQYaaDmsb4A1FHYSft67/cZ5c/N1vAiol3vkelt9W3
- Wm2Ou4oHLCMx7oOOxH9I6dwz9K5G8KdZIISI2wb+re1QKwQLXJ01AsuI2TvvMOB//w6Kz5gG5
- nHyimChgaF58Bzc73qdjCODztitq428p1oDu4wP38/DUoXxR7lRz3xLTrvUX6nFqBlWd0FGIu
- qYWVVZ1pDV0H26VxRRJgh/nkXP0gNbVPoxDOuRJQ/GjVyq5SnjiTsufV0ZAyJ/jQ7geTyDuPi
- 6Bwr4dpR7KvsYEQotwZq7Gf+7whDiuntd9RY750lQswdORIoVtTyU7aGBChxZEQk7zKU6x2eS
- WycwO40Uqo0VbuNmgxBI7RpQtMWF61+rry6SYrR58U63lbZaImNFxtvZC1TQ4vtF7GSVCB0PC
- gXVJaYIsdUP0Q64cTk6OKdAZDuFsxxPAbWMFc0fE6bVKsWE1N/K4RebJxdr8F8QNKelhkU2Ah
- pT/jyJfZkoLibhbc5YNRXG72NWmiyqdwMhSaJG4s6pjpXhsKj43TyZzR+xUkcdsKHqWNKXJoM
- 3G7ccC6RK1d04+sOF/Gt7ucm26B02+VQF9/Yub5fJvPqoi4T0JM2R9cYtSqcm7qrDR9AWd7TF
- GldqvXX97S+vWpdDxFIwPYZ+5mGPNWOor2SYJBr5NV6coseqLGoVSsfH06w/Uzu+fXuHcWm9M
- 5VkAfOjM9cjWQRVyWapAFb8ba3J9BQMl5ipDikenWYAJQ81Ot9oef8WwWWVhc0mKQHsyS3vpu
- Z459eJG6GcdpDDiiM4zvXOFxMBb6MB
 
-
-
-=E5=9C=A8 2024/12/3 20:15, Neil Parton =E5=86=99=E9=81=93:
-> OK I unmounted the filesystem and ran sudo btrfs check --readonly
-> /dev/sdd 1> stdout.txt 2> stderr.txt > check.txt (sdd appeared to be
-> the drive with issues from the dmesg logs).
+On Mon, Dec 2, 2024 at 9:48=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >
-> stderr and check outputs attached, stdout was blank
-
-It looks like the problem is more like a bitflip now.
-
-All the involved back tree backrefs have the same parent
-332886134538240, which matches the dmesg bytenr.
-
-If the fs is an old one, it may be some older corruption.
-
-Anyway, you should still be able to backup all the data (no special
-mount option needed even), after making sure your hardware memory is all
-fine.
-
-Then I'd recommend to reformat the fs after backing up needed data.
-
-Thanks,
-Qu
+> [BUG]
+> Before commit e820dbeb6ad1 ("btrfs: convert btrfs_buffered_write() to
+> use folios"), function prepare_one_folio() will always wait for folio
+> writeback to finish before returning the folio.
 >
-> Thanks
+> However commit e820dbeb6ad1 ("btrfs: convert btrfs_buffered_write() to
+> use folios") changed to use FGP_STABLE to do the writeback wait, but
+> FGP_STABLE is calling folio_wait_stable(), which only calls
+> folio_wait_writeback() if the address space has AS_STABLE_WRITES, which
+> is not set for btrfs inodes.
 >
-> Neil
+> This means we will not wait for folio writeback at all.
 >
-> On Tue, 3 Dec 2024 at 08:38, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->>
->>
->> =E5=9C=A8 2024/12/3 18:50, Neil Parton =E5=86=99=E9=81=93:
->>> OK I've output dmesg to a text file attached, glad you remembered my
->>> previous experience as I forgot to mention that!
->>
->> The tree block backref btrfs is searching for is 332886134538240.
->>
->> But there are only two tree block backref near that number:
->>
->> [16181.904739]  item 63 key (332886134521856 168 16384) itemoff 13019
->> itemsize 51
->> [16181.904740]          extent refs 1 gen 12802640 flags 2
->> [16181.904741]          tree block key (18446744073709551606 128
->> 334290896531456) level 0
->> [16181.904741]          ref#0: tree block backref root 7
->> [16181.904742]  item 64 key (332886134554624 168 16384) itemoff 12968
->> itemsize 51
->> [16181.904743]          extent refs 1 gen 12802640 flags 2
->> [16181.904744]          tree block key (18446744073709551606 128
->> 334290913148928) level 0
->> [16181.904745]          ref#0: tree block backref root 7
->>
->> So far it's very hard to judge if it's a memory bitflip.
->>
->> The bytenr 332886134538240 is 0x0x12ec217cc8000, meanwhile the target i=
-s
->> 0x12ec217ccc000.
->>
->> The diff is 0x4000, so it may be a bit flip.
->>
->> On the other hand, it may also be a case where it's really an extent
->> tree corruption that cause some backref missing for that 0x12ec217ccc00=
-0
->> bytenr.
->>
->> I do not have a good call just based on the dmesg.
->>
->> A full "btrfs check --readonly" output (including both stderr and
->> stdout) could help a lot.
->> And if your memtest exposed some error, then it's also very likely it's
->> a bitflip at runtime, and since such bitflip brings no obvious
->> corruption btrfs is unable to catch it and wrote it back to disk.
->>
->> Thanks,
->> Qu
->>
->>>
->>> Thanks
->>>
->>> Neil
->>>
->>> On Tue, 3 Dec 2024 at 08:16, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>>>
->>>>
->>>>
->>>> =E5=9C=A8 2024/12/3 18:41, Neil Parton =E5=86=99=E9=81=93:
->>>>> Arch Linux kernel 6.6.63-1-lts, btrfs-progs 6.12-1
->>>>>
->>>>> Yesterday I added a 5th drive to an existing raid 1 array (raid1c3
->>>>> metadata) and overnight it failed after a few percent complete.  btr=
-fs
->>>>> stats are all zero and there are no SMART errors on any of the 5
->>>>> drives.
->>>>>
->>>>> dmesg shows the following:
->>>>>
->>>>> $ sudo dmesg | grep btrfs
->>>>> [16181.905236] WARNING: CPU: 0 PID: 23336 at
->>>>> fs/btrfs/relocation.c:3286 add_data_references+0x4f8/0x550 [btrfs]
->>>>> [16181.905347]  spi_intel xhci_pci_renesas drm_display_helper video
->>>>> cec wmi btrfs blake2b_generic libcrc32c crc32c_generic crc32c_intel
->>>>> xor raid6_pq
->>>>> [16181.905354] CPU: 0 PID: 23336 Comm: btrfs Tainted: G     U
->>>>>       6.6.63-1-lts #1 1935f30fe99b63e43ea69e5a59d364f11de63a00
->>>>> [16181.905358] RIP: 0010:add_data_references+0x4f8/0x550 [btrfs]
->>>>> [16181.905431]  ? add_data_references+0x4f8/0x550 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905488]  ? add_data_references+0x4f8/0x550 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905551]  ? add_data_references+0x4f8/0x550 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905601]  ? add_data_references+0x4f8/0x550 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905654]  relocate_block_group+0x336/0x500 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905705]  btrfs_relocate_block_group+0x27c/0x440 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905755]  btrfs_relocate_chunk+0x3f/0x170 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905811]  btrfs_balance+0x942/0x1340 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>> [16181.905866]  btrfs_ioctl+0x2388/0x2640 [btrfs
->>>>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
->>>>>
->>>>> and
->>>>>
->>>>> $ sudo dmesg | grep BTRFS
->>>>> <deleted lots of repetitive lines for brevity>
->>>>> [16162.080878] BTRFS info (device sdd): relocating block group
->>>>> 338737521229824 flags data|raid1
->>>>> [16175.051355] BTRFS info (device sdd): found 5 extents, stage: move
->>>>> data extents
->>>>> [16180.023748] BTRFS info (device sdd): found 5 extents, stage: upda=
-te
->>>>> data pointers
->>>>> [16181.904523] BTRFS info (device sdd): leaf 328610877177856 gen
->>>>> 12982316 total ptrs 206 free space 627 owner 2
->>>>> [16181.905206] BTRFS error (device sdd): tree block extent item
->>>>> (332886134538240) is not found in extent tree
->>>>
->>>> There is a leaf dump, please paste the full dmesg, or we can not be s=
-ure
->>>> what the cause is.
->>>>
->>>> Although I guess it may be a memory bitflip, considering all the past
->>>> experience.
->>>>
->>>> So after pasting the full dmesg, you may also want to do a full memte=
-st
->>>> just in case.
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>>> [16183.091659] BTRFS info (device sdd): balance: ended with status: =
--22
->>>>>
->>>>> What course of action should I take so that the balance completes ne=
-xt time?
->>>>>
->>>>> Many thanks
->>>>>
->>>>> Neil
->>>>>
->>>>
->>
+> [CAUSE]
+> The cause is FGP_STABLE is not wait for writeback unconditionally, but
+> only for address spaces with AS_STABLE_WRITES, normally such flag is set
+> when the super block has SB_I_STABLE_WRITES flag.
+>
+> Such super block flag is set when the block device has hardware digest
+> support or has internal checksum requirement.
+>
+> I'd argue btrfs should set such super block due to its default data
+> checksum behavior, but it is not set yet, so this means FGP_STABLE flag
+> will have no effect at all.
+>
+> (For NODATACSUM inodes, we can skip the wait in theory but that should
+> be an optimization in the future)
+>
+> This can lead to data checksum mismatch, as we can modify the folio
+> meanwhile it's still under writeback, this will make the contents
+> differ from the contents at submission and checksum calculation.
+>
+> [FIX]
+> Instead of fully rely on FGP_STABLE, manually do the folio writeback
+> wait, until we set the address space or super flag.
+>
+> Fixes: e820dbeb6ad1 ("btrfs: convert btrfs_buffered_write() to use folios=
+")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, thanks for the update of the changelog.
+
+> ---
+> v2:
+> - Update the commit message and fixes by tag
+>   I was too focused on the syzbot report, not noticing it's a different
+>   commit causing the regression.
+>   Now removed the syzbot report part.
+> ---
+>  fs/btrfs/file.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index fbb753300071..8734f5fc681f 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -911,6 +911,7 @@ static noinline int prepare_one_folio(struct inode *i=
+node, struct folio **folio_
+>                         ret =3D PTR_ERR(folio);
+>                 return ret;
+>         }
+> +       folio_wait_writeback(folio);
+>         /* Only support page sized folio yet. */
+>         ASSERT(folio_order(folio) =3D=3D 0);
+>         ret =3D set_folio_extent_mapped(folio);
+> --
+> 2.47.1
+>
+>
 
