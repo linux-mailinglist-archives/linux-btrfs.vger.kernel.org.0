@@ -1,174 +1,279 @@
-Return-Path: <linux-btrfs+bounces-10027-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 344AD9E1850
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 10:54:23 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82BB9E1826
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 10:47:29 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EAA6B2F3B7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 09:24:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE999166B5E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 09:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF8F1DFE1E;
-	Tue,  3 Dec 2024 09:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9568C1E0B86;
+	Tue,  3 Dec 2024 09:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2p9/NT09";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GTsTuo6U";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2p9/NT09";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GTsTuo6U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhWooIO0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6AF1DF25E
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 09:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2742D1E04A2
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 09:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733217852; cv=none; b=gFT48Abyv3AdrViupeRLJinFU/Voa7D4O4fEmYv6LreZ2UYP49Oy8pbVcCbcl3dB+A2h8or6Bg08tih9/76zayBD7RBvDYYROD6ecaj3sskDnD2Zb/ULjLIc6d/6zKrsu2zJbuPGFf0U31Ox/b9NCiYnSpc/DJwMNX/6n5mW8fQ=
+	t=1733219136; cv=none; b=oiqIE+AlZ7yA2LXR/iYgD81A0ER5wRzpZVIZgaC6NiJXUQDY0BUzGVjTK7SgXqlZ1lC2RZFox5gbhWhhsDUPiZy5kTZKrKbJYZz8cYr/FAuM9ZbfziPpFgUbG/RK2COfb6eVTWiVp/w6E0ETS0Vf/uYCw1cUoSBUdxnmNa1zrr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733217852; c=relaxed/simple;
-	bh=LsUOsE5cU5WPMi+WxpJv6i/j7iLcOO6Y3o6SxbekqCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dFC33iqquSAstcr6B7kQLCrvB9oB+yuhIRigrFUEuD3hU8Xv2au/32pQafwqmgq94+vzs6b4/nDjSifuaVTg624hlgEq57Df4SMZQJSLhKTLlFBs2W0RwVZgBMnijwQhZN7Jl7EqxSUKG+PJO6Ef8VYaFd8m7eCGdYyLnYmU/Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2p9/NT09; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GTsTuo6U; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2p9/NT09; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GTsTuo6U; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6DCA31F45F;
-	Tue,  3 Dec 2024 09:24:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733217848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODsK/8mmTcDdB3hwFYtQGvmNRskwsRdn9jzW54JPVuo=;
-	b=2p9/NT09YykfX9/YePV9seGkjgFlPo/WyHQzxDqrFPvJclImALC5Ok/xbFbNeWOF+cGk/x
-	sl135vLcbN7OOoWgtiCuIk4LQA6ToZ8ycJXB+cpuo9mtA5QjZwLSKkIsjXzByduATNfVvd
-	na8jEXrrIPGrAQK1C2pSG3UGiNsliNg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733217848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODsK/8mmTcDdB3hwFYtQGvmNRskwsRdn9jzW54JPVuo=;
-	b=GTsTuo6Ul+ByiMToYFtsrYs3PlWwRrHKlfTUcjWodtFbxARM6b63yKchyC57KBYcwRG9TV
-	5RqUNvtrTBIhopBA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733217848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODsK/8mmTcDdB3hwFYtQGvmNRskwsRdn9jzW54JPVuo=;
-	b=2p9/NT09YykfX9/YePV9seGkjgFlPo/WyHQzxDqrFPvJclImALC5Ok/xbFbNeWOF+cGk/x
-	sl135vLcbN7OOoWgtiCuIk4LQA6ToZ8ycJXB+cpuo9mtA5QjZwLSKkIsjXzByduATNfVvd
-	na8jEXrrIPGrAQK1C2pSG3UGiNsliNg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733217848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODsK/8mmTcDdB3hwFYtQGvmNRskwsRdn9jzW54JPVuo=;
-	b=GTsTuo6Ul+ByiMToYFtsrYs3PlWwRrHKlfTUcjWodtFbxARM6b63yKchyC57KBYcwRG9TV
-	5RqUNvtrTBIhopBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4CFCD13A15;
-	Tue,  3 Dec 2024 09:24:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TmC7ETjOTmelTgAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Tue, 03 Dec 2024 09:24:08 +0000
-Date: Tue, 3 Dec 2024 10:24:06 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Cc: Zorro Lang <zlang@kernel.org>, ltp@lists.linux.it,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [LTP] [PATCH 1/3] ioctl_ficlone02.c: set all_filesystems to zero
-Message-ID: <20241203092406.GB414034@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20241201093606.68993-1-zlang@kernel.org>
- <20241201093606.68993-2-zlang@kernel.org>
- <Z02337yqxrfeZxIn@yuki.lan>
- <Z029S0wgjrsv9qHL@yuki.lan>
- <20241202144208.GB321427@pevik>
- <Z03RB9JDmBVORPlf@yuki.lan>
- <20241203045310.GA414034@pevik>
- <Z066Fj9VQVlTOMp_@rei.lan>
+	s=arc-20240116; t=1733219136; c=relaxed/simple;
+	bh=x9DJnM2tYgskLo1DFuY+0cTi/eLjG8AN+u2jRf1BhIE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=On5R1NxwQxNnOhci7nKDaH14yKyTeaXlOk0MaWiwBM/lKUlop2uGOjlBq+/fyif26r1pNekfh7RvUiEZ523MOFY2tU4bBZ9rSB5F2Vxz/+PfFXzK/ZlailhxsH8G4CA8ugNczhl08+krLvmo0gXbWQx9aIYt/+VlCr8F0Cj0Tik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bhWooIO0; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5f22ea6d72aso1539961eaf.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Dec 2024 01:45:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733219133; x=1733823933; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=P1bUr4Q1/z8EnYF79RrTSBJO6kLl9ICcNhuQacDIi7c=;
+        b=bhWooIO0uLjc2L7WdXQu8aQUppl3+HWEdNzvxihH6gsML+0CoiW8dSvxnje0sQO2bj
+         ODv0nn947r2jgE68DmHGEA+Q+toZWGk7qmLrlqDTkdb7IYsT4GJ2tGY92Yh/lz+eLm28
+         9600K59rYGA2ML+XdePcN/hWPv+ZBekhQeTfbfOECqWtdTJkfwYtxQVE4+SKpAUFcGgA
+         HcvFEET9SjuYf7QoxjgONLYFBn7YxdLHe9kT7HgALlgDDzrkLYAdUZMDcSonap/e0zwZ
+         E5g+Ucw9n+gHqw10OiVCeVtVgKSjVyaIDUS80g60DTBqD7WoL8fzxyhAvI0E4kZfxE6I
+         xSjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733219133; x=1733823933;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P1bUr4Q1/z8EnYF79RrTSBJO6kLl9ICcNhuQacDIi7c=;
+        b=BKnJ5gcBO8z1ZvmMdvAs7Xqbet5JoraifvzgMkoso/J0jhwdn7z7gdJd/ryJMRU5xc
+         kwQj6j2W6sYuke77eOJTtwdyk7bzt9qgH09vyMyh5JVy3MtLjex32ijsmzaADrpHr48V
+         e+5voJYI7gZpz71LEE1IppudqR/rjymZaAtjxFnr1zYbpYuhbfYiZGlCd/KVY02VOdJR
+         Pg1CijrhLvv98JrulFiw9nyhoJp8Ud5ZBIruagekcVo9n3B7mJ08eFLeXntNoLAZCkon
+         FFFffrnZRjVFOmix9FE+4Sd/K1VgqwFiQkwN+Tcq/oDOoqoJ4HpnquIP8w7wmf14pmsl
+         KEKA==
+X-Gm-Message-State: AOJu0YxH2NyZSbtUcn0wZBi9uSC3zW2mnIc8Ts5gulplQL7CFBm3irVB
+	c6Jfpr64n6WoeCn3MbtzbkRFW+CsL5/qtqFbVaeIbphuLtHBfd6AQFA9dVzrsZOTs1v6dN2Kv6h
+	Bm3PlKkbuhUqSpXj5SXX4kmf9DDzEvJLLkAA=
+X-Gm-Gg: ASbGncs4/BBO8l4c2tgsF1u7WP8y9md7I13XTL2EN8a+WPO4UiJ5u58RTHJQCufoxkF
+	ujw9ZebstETYqUMrWGg262unvANw8iUHjgONPpHYmqLNvAQjkJyT/2QJU0M4WEp4vKA==
+X-Google-Smtp-Source: AGHT+IEmhh2DKPLw1V35pHNIlK7f8j+jJ4dOICc2gPwqP2u2I2OZwfIn4sFUxTqK4Q8uI2IfcBC2RhWibd6MYMAefEM=
+X-Received: by 2002:a05:6820:1c9e:b0:5e1:c19d:3f4e with SMTP id
+ 006d021491bc7-5f25aebd6a4mr1311690eaf.8.1733219133122; Tue, 03 Dec 2024
+ 01:45:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z066Fj9VQVlTOMp_@rei.lan>
-X-Spam-Score: -3.50
-X-Spamd-Result: default: False [-3.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
-	REPLYTO_EQ_FROM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <CAAYHqBbMeLYXdhNondp8JwQCsp-n1cCvnAubS3f2FxD6PBOEsQ@mail.gmail.com>
+ <8276d833-d4f2-42dd-8190-c98265896ee3@gmx.com> <CAAYHqBZMBmD2yT2C95KrGXNqYjkecEO3jQQ74X5iT+MKxWhpMA@mail.gmail.com>
+ <ba4f665d-f7fe-438f-a7ba-dc92d16b9f68@gmx.com>
+In-Reply-To: <ba4f665d-f7fe-438f-a7ba-dc92d16b9f68@gmx.com>
+From: Neil Parton <njparton@gmail.com>
+Date: Tue, 3 Dec 2024 09:45:21 +0000
+Message-ID: <CAAYHqBZmXtW_Z1KBNzOODNHgC=hMVXUrS3HGvKsBy3cd=jW-mQ@mail.gmail.com>
+Subject: Re: Balance failed with tree block error
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000bf861806285a868f"
 
-> Hi!
-> > > > It's a nice feature to be able to force testing on filesystem even it's set to
-> > > > be skipped without need to manually enable the filesystem and recompile.
-> > > > (It helps testing with LTP compiled as a package without need to compile LTP.)
-> > > > Therefore I would avoid this.
+--000000000000bf861806285a868f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > > I guess that this should be another env variable e.g.
-> > > LTP_FORCE_SINGLE_FS_TYPE and it should print a big fat warning that it's
-> > > only for development purposes.
+OK I unmounted the filesystem and ran sudo btrfs check --readonly
+/dev/sdd 1> stdout.txt 2> stderr.txt > check.txt (sdd appeared to be
+the drive with issues from the dmesg logs).
 
-> > Well, LTP_SINGLE_FS_TYPE already has "Testing only"
+stderr and check outputs attached, stdout was blank
 
-> That was maybe how we intended it but we exposed the API and it seems
-> that there is a usecase for it so people are possibly using it.
+Thanks
 
-> > and that was the reason it just forced filesystem regardless "skip"
-> > setup. Sure, we can turn it into "normal" variable and introduce
-> > LTP_FORCE_SINGLE_FS_TYPE if it's needed.  But that would be an use
-> > case if anybody uses LTP really to test particular filesystem. And it
-> > would affect only .all_filesystem tests (e.g. user's responsibility
-> > would be to point TMPDIR to that particular system on non-
-> > .all_filesystem tests).
+Neil
 
-> There is a usecase we haven't figured out, when you want to test a
-> single filesystem, you do not want to waste time on the rest of the
-> filesystems and LTP_SINGlE_FS_TYPE nearly works for that usecase.
+On Tue, 3 Dec 2024 at 08:38, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2024/12/3 18:50, Neil Parton =E5=86=99=E9=81=93:
+> > OK I've output dmesg to a text file attached, glad you remembered my
+> > previous experience as I forgot to mention that!
+>
+> The tree block backref btrfs is searching for is 332886134538240.
+>
+> But there are only two tree block backref near that number:
+>
+> [16181.904739]  item 63 key (332886134521856 168 16384) itemoff 13019
+> itemsize 51
+> [16181.904740]          extent refs 1 gen 12802640 flags 2
+> [16181.904741]          tree block key (18446744073709551606 128
+> 334290896531456) level 0
+> [16181.904741]          ref#0: tree block backref root 7
+> [16181.904742]  item 64 key (332886134554624 168 16384) itemoff 12968
+> itemsize 51
+> [16181.904743]          extent refs 1 gen 12802640 flags 2
+> [16181.904744]          tree block key (18446744073709551606 128
+> 334290913148928) level 0
+> [16181.904745]          ref#0: tree block backref root 7
+>
+> So far it's very hard to judge if it's a memory bitflip.
+>
+> The bytenr 332886134538240 is 0x0x12ec217cc8000, meanwhile the target is
+> 0x12ec217ccc000.
+>
+> The diff is 0x4000, so it may be a bit flip.
+>
+> On the other hand, it may also be a case where it's really an extent
+> tree corruption that cause some backref missing for that 0x12ec217ccc000
+> bytenr.
+>
+> I do not have a good call just based on the dmesg.
+>
+> A full "btrfs check --readonly" output (including both stderr and
+> stdout) could help a lot.
+> And if your memtest exposed some error, then it's also very likely it's
+> a bitflip at runtime, and since such bitflip brings no obvious
+> corruption btrfs is unable to catch it and wrote it back to disk.
+>
+> Thanks,
+> Qu
+>
+> >
+> > Thanks
+> >
+> > Neil
+> >
+> > On Tue, 3 Dec 2024 at 08:16, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2024/12/3 18:41, Neil Parton =E5=86=99=E9=81=93:
+> >>> Arch Linux kernel 6.6.63-1-lts, btrfs-progs 6.12-1
+> >>>
+> >>> Yesterday I added a 5th drive to an existing raid 1 array (raid1c3
+> >>> metadata) and overnight it failed after a few percent complete.  btrf=
+s
+> >>> stats are all zero and there are no SMART errors on any of the 5
+> >>> drives.
+> >>>
+> >>> dmesg shows the following:
+> >>>
+> >>> $ sudo dmesg | grep btrfs
+> >>> [16181.905236] WARNING: CPU: 0 PID: 23336 at
+> >>> fs/btrfs/relocation.c:3286 add_data_references+0x4f8/0x550 [btrfs]
+> >>> [16181.905347]  spi_intel xhci_pci_renesas drm_display_helper video
+> >>> cec wmi btrfs blake2b_generic libcrc32c crc32c_generic crc32c_intel
+> >>> xor raid6_pq
+> >>> [16181.905354] CPU: 0 PID: 23336 Comm: btrfs Tainted: G     U
+> >>>      6.6.63-1-lts #1 1935f30fe99b63e43ea69e5a59d364f11de63a00
+> >>> [16181.905358] RIP: 0010:add_data_references+0x4f8/0x550 [btrfs]
+> >>> [16181.905431]  ? add_data_references+0x4f8/0x550 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905488]  ? add_data_references+0x4f8/0x550 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905551]  ? add_data_references+0x4f8/0x550 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905601]  ? add_data_references+0x4f8/0x550 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905654]  relocate_block_group+0x336/0x500 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905705]  btrfs_relocate_block_group+0x27c/0x440 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905755]  btrfs_relocate_chunk+0x3f/0x170 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905811]  btrfs_balance+0x942/0x1340 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>> [16181.905866]  btrfs_ioctl+0x2388/0x2640 [btrfs
+> >>> 4407e530e6d61f5f220d43222ab0d6fd9f22e635]
+> >>>
+> >>> and
+> >>>
+> >>> $ sudo dmesg | grep BTRFS
+> >>> <deleted lots of repetitive lines for brevity>
+> >>> [16162.080878] BTRFS info (device sdd): relocating block group
+> >>> 338737521229824 flags data|raid1
+> >>> [16175.051355] BTRFS info (device sdd): found 5 extents, stage: move
+> >>> data extents
+> >>> [16180.023748] BTRFS info (device sdd): found 5 extents, stage: updat=
+e
+> >>> data pointers
+> >>> [16181.904523] BTRFS info (device sdd): leaf 328610877177856 gen
+> >>> 12982316 total ptrs 206 free space 627 owner 2
+> >>> [16181.905206] BTRFS error (device sdd): tree block extent item
+> >>> (332886134538240) is not found in extent tree
+> >>
+> >> There is a leaf dump, please paste the full dmesg, or we can not be su=
+re
+> >> what the cause is.
+> >>
+> >> Although I guess it may be a memory bitflip, considering all the past
+> >> experience.
+> >>
+> >> So after pasting the full dmesg, you may also want to do a full memtes=
+t
+> >> just in case.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>> [16183.091659] BTRFS info (device sdd): balance: ended with status: -=
+22
+> >>>
+> >>> What course of action should I take so that the balance completes nex=
+t time?
+> >>>
+> >>> Many thanks
+> >>>
+> >>> Neil
+> >>>
+> >>
+>
 
-Yes, I understood this use case, this was probably the reason of this PR.
-I'd appreciate Zorro's confirmation we understood him properly (e.g. that
-somebody really needs this). I suppose you vote for this feature anyway
-and it's fairly simple, thus I can prepare it.
+--000000000000bf861806285a868f
+Content-Type: text/plain; charset="US-ASCII"; name="check.txt"
+Content-Disposition: attachment; filename="check.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m489vmjs0>
+X-Attachment-Id: f_m489vmjs0
 
-Kind regards,
-Petr
+T3BlbmluZyBmaWxlc3lzdGVtIHRvIGNoZWNrLi4uCkNoZWNraW5nIGZpbGVzeXN0ZW0gb24gL2Rl
+di9zZGQKVVVJRDogNzVjOWVmZWMtNjg2Ny00YzAyLWJlNWMtOGQxMDZiMzUyMjg2CmZvdW5kIDI0
+NTU1NDk5OTc4NzUyIGJ5dGVzIHVzZWQsIGVycm9yKHMpIGZvdW5kCnRvdGFsIGNzdW0gYnl0ZXM6
+IDIzOTI3OTQzMTkyCnRvdGFsIHRyZWUgYnl0ZXM6IDI1ODExNzMwNDMyCnRvdGFsIGZzIHRyZWUg
+Ynl0ZXM6IDY3MjMxNzQ0MAp0b3RhbCBleHRlbnQgdHJlZSBieXRlczogNDQ3ODU2NjQwCmJ0cmVl
+IHNwYWNlIHdhc3RlIGJ5dGVzOiA3OTI5MjMyMDAKZmlsZSBkYXRhIGJsb2NrcyBhbGxvY2F0ZWQ6
+IDEyOTI2Mjk5OTI5ODA0OAogcmVmZXJlbmNlZCAyNDI2NDUzMzIxMzE4NA==
+--000000000000bf861806285a868f
+Content-Type: text/plain; charset="US-ASCII"; name="stderr.txt"
+Content-Disposition: attachment; filename="stderr.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m489vmjx1>
+X-Attachment-Id: f_m489vmjx1
+
+WzEvOF0gY2hlY2tpbmcgbG9nIHNraXBwZWQgKG5vbmUgd3JpdHRlbikKWzIvOF0gY2hlY2tpbmcg
+cm9vdCBpdGVtcwpbMy84XSBjaGVja2luZyBleHRlbnRzCnJlZiBtaXNtYXRjaCBvbiBbMzE1ODc0
+MDM0NTgxNTA0IDgxNTgwMDMyXSBleHRlbnQgaXRlbSAxNTYsIGZvdW5kIDc4CmRhdGEgZXh0ZW50
+WzMxNTg3NDAzNDU4MTUwNCwgODE1ODAwMzJdIGJ5dGVuciBtaW1zbWF0Y2gsIGV4dGVudCBpdGVt
+IGJ5dGVuciAzMTU4NzQwMzQ1ODE1MDQgZmlsZSBpdGVtIGJ5dGVuciAwCmRhdGEgZXh0ZW50WzMx
+NTg3NDAzNDU4MTUwNCwgODE1ODAwMzJdIHJlZmVyZW5jZXIgY291bnQgbWlzbWF0Y2ggKHBhcmVu
+dCAzMzI4ODYxMzQ1MzgyNDApIHdhbnRlZCA3OCBoYXZlIDAKYmFja3BvaW50ZXIgbWlzbWF0Y2gg
+b24gWzMxNTg3NDAzNDU4MTUwNCA4MTU4MDAzMl0KcmVmIG1pc21hdGNoIG9uIFszMzg3Mzc3ODk2
+NjUyODAgMTM0MjE3NzI4XSBleHRlbnQgaXRlbSA5MSwgZm91bmQgMApkYXRhIGV4dGVudFszMzg3
+Mzc3ODk2NjUyODAsIDEzNDIxNzcyOF0gYnl0ZW5yIG1pbXNtYXRjaCwgZXh0ZW50IGl0ZW0gYnl0
+ZW5yIDMzODczNzc4OTY2NTI4MCBmaWxlIGl0ZW0gYnl0ZW5yIDAKZGF0YSBleHRlbnRbMzM4NzM3
+Nzg5NjY1MjgwLCAxMzQyMTc3MjhdIHJlZmVyZW5jZXIgY291bnQgbWlzbWF0Y2ggKHBhcmVudCAz
+MzI4ODYxMzQ1MzgyNDApIHdhbnRlZCA5MSBoYXZlIDAKYmFja3BvaW50ZXIgbWlzbWF0Y2ggb24g
+WzMzODczNzc4OTY2NTI4MCAxMzQyMTc3MjhdCm93bmVyIHJlZiBjaGVjayBmYWlsZWQgWzMzODcz
+Nzc4OTY2NTI4MCAxMzQyMTc3MjhdCkVSUk9SOiBlcnJvcnMgZm91bmQgaW4gZXh0ZW50IGFsbG9j
+YXRpb24gdHJlZSBvciBjaHVuayBhbGxvY2F0aW9uCls0LzhdIGNoZWNraW5nIGZyZWUgc3BhY2Ug
+dHJlZQpbNS84XSBjaGVja2luZyBmcyByb290cwpbNi84XSBjaGVja2luZyBvbmx5IGNzdW1zIGl0
+ZW1zICh3aXRob3V0IHZlcmlmeWluZyBkYXRhKQpbNy84XSBjaGVja2luZyByb290IHJlZnMKWzgv
+OF0gY2hlY2tpbmcgcXVvdGEgZ3JvdXBzIHNraXBwZWQgKG5vdCBlbmFibGVkIG9uIHRoaXMgRlMp
+--000000000000bf861806285a868f--
 
