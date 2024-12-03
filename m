@@ -1,259 +1,181 @@
-Return-Path: <linux-btrfs+bounces-10032-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB0879E1B99
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 13:03:12 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B26649E1C2C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 13:29:50 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B8B82833D6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 12:03:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3A616666B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2024 12:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A771E47DB;
-	Tue,  3 Dec 2024 12:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD701E5733;
+	Tue,  3 Dec 2024 12:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRB++u+s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tfID4RVd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BEE1E2306
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 12:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEBD61E5721;
+	Tue,  3 Dec 2024 12:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733227386; cv=none; b=toBHTOt+jDFnJFICLjnycWIX73kGAIaQaUSP0NS/beok+2jMaOLRcNhP9WwVBSQtcVkiKDJ+ZvRh8x6VzrSDYZElo8IIynct1UlPAAi0T7cm1whCKgBMNdpCQHXiX0mzF1vWYIY4Pitm6nPLThHP8mkQFii2rWHbKF56dTg74ig=
+	t=1733228972; cv=none; b=kM81GbWtNu+UtMgagwiVe+FofZSSB7dSOXXC3F0R2/FeIUujeVYgQlJPBTVkhb9SCIrUzwuTgiG9mC5PjGrGS3aVZCEBBosc1IiqjJ3IrRDS2cLw4um0rOdAvMhf62aQD1AeChTXLYa8g5cL2DDH1093HbjRFhF7IiNeQwXlAdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733227386; c=relaxed/simple;
-	bh=RW5XuV7wCMOV+XuV1fA/uzuIpBn3rgdMNjW6IHdA7MY=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=ZWhJVDv6Rru3lNT9InK5yeHrsE+fN7d1JmmGhkEhdg3eEI66zPbQW6xxhcYS5qmdxZrHkbWWo3pc06JuWAcwIjd3JQsuSGcGgJRYv2CJqvEfgazROhRtEM1gppCMWGiaQMr9GP6h9j6IHkac0Ffq+YLUaLvnzOWQkV+FmFRNmPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kRB++u+s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BF6DC4CECF
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Dec 2024 12:03:05 +0000 (UTC)
+	s=arc-20240116; t=1733228972; c=relaxed/simple;
+	bh=xaniAyyHBtuk84nS9xeOmnF1qLlks52yPULsv2NO2cU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a1wIKx4EPUFmtMnrpg0di7dZcAi3UmBga9tO7hJ/b2is15YYTsBMlfB4lWYFoEAxmtyQ7FG6Ynz5IUEY4KM1zyUuk0NM2BaGEEtHo+Ygx4w5c8u3TvCnBdywqYSZfEkl0re05owUiP46dvlE/4/DH/+uScS8/2OFonWNSAjXH4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tfID4RVd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F689C4CEDA;
+	Tue,  3 Dec 2024 12:29:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733227386;
-	bh=RW5XuV7wCMOV+XuV1fA/uzuIpBn3rgdMNjW6IHdA7MY=;
-	h=From:To:Subject:Date:From;
-	b=kRB++u+sXZrOIbRTvFf6/I6Bza4rc82yY+s4fXqLVmpgstegrea2bRxzYUGg72fbz
-	 Be8zjtcsu6d4L7mri5GaDWct2oi6hsP55aUeO8B0gMbICe6JJ+ffj36vuiiBUb/Q+3
-	 t80BH7/hg7WgEFrJvmw2da/Mk5rygZDtSU4LnBRxmA/oMobs4CNTJduqIMMupL1kWw
-	 cWtXJuNa3O6Nk+uFbxjcBbOGKO31rVIz6qxx6w7f8DF5mZoVleoFiLMFTR29pcHm/P
-	 yKzyLw5kIPmPGtZsLNvSpC3JglaPFwlV66LhQizhjT2AnoN1P/iHkR1mjjFd7ox7eM
-	 A5oipirZvU1Yg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount
-Date: Tue,  3 Dec 2024 12:03:02 +0000
-Message-Id: <b6a7ec3458c7a704fe34408a1243c6a13c08a313.1733227289.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=k20201202; t=1733228972;
+	bh=xaniAyyHBtuk84nS9xeOmnF1qLlks52yPULsv2NO2cU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tfID4RVdLNMxRkVd3kjhZWsTQv81Zrxzba4e4MBuhEx9R8ddbyInErc/AM1oPHW6S
+	 WJSTiok9cd2/f1tLNX6fVhKUtwBrgRdburJc52SYNMkdQd69icfb1I6jC5IbVUAF+3
+	 7ANXNaw1Z7bELaz7xWE4UWnNeF0TUB0xc7kzbhYdqoBzkpPTHDOOOIiixNToUDWfSw
+	 gmoIva+46aylEATlatDCQWfo9rYuxU2idBk7Znap/3ZELlrekh/NhDPK0bbuQEzrpC
+	 fBY/4lHDogvVh9VZgDhsdnutC7otx3CRCyN+kWYaLYJooubBZbLWIiChfi5JnbaRY5
+	 cuCwFZ87/TP4w==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aa55da18f89so824014266b.0;
+        Tue, 03 Dec 2024 04:29:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVphnVbo0u7t664OiyDJ6a2dwEoujhphTMlO+eteSwTLM59kbGrVU4Fv1JcZkD5BZnVDltTLRS5//9sS0sH@vger.kernel.org, AJvYcCW0urfUzNgGjOj0MWVskE47Lo+JqSRsUpvA1aNyXGbyHgSH8qQrvh4+uKMB7x6FE1SSYlix+8SkmgqR8A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgA5vbECkmbMy7WCc7l1SFnUjh3zkgnml0vAGeJyT4d5WjO5wX
+	WoV2IxlV2Gkd7UoltjjY9ozciUCpELUe4+07/Ce9ql0qlJS6u6wV5iEYrcjbZOHY8I68hkq7mTm
+	E70kWL/SutjKvjWcHLYhYlf/3vvI=
+X-Google-Smtp-Source: AGHT+IEb/6P1sWsBtg3cHoU4F7ZMyPOhUXLgCx3owvN0Yj/L6Xy64OuXer/JB50msAsAh8aZVJhiTxtR9/YwIC/hiXw=
+X-Received: by 2002:a17:907:762d:b0:aa5:29b8:15ce with SMTP id
+ a640c23a62f3a-aa5f7f3c495mr191513966b.56.1733228970733; Tue, 03 Dec 2024
+ 04:29:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAL3q7H5U_88NA2PmyMvtwv1aZ7k+V6v=eetp7Hs2HqDdfVjokw@mail.gmail.com>
+ <20241203075651.109899-1-zhenghaoran154@gmail.com>
+In-Reply-To: <20241203075651.109899-1-zhenghaoran154@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 3 Dec 2024 12:28:54 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4NZGq2QkNz8ZRR=_MqTB1z=+x7PF5to6P=Lgt-B_E4nA@mail.gmail.com>
+Message-ID: <CAL3q7H4NZGq2QkNz8ZRR=_MqTB1z=+x7PF5to6P=Lgt-B_E4nA@mail.gmail.com>
+Subject: Re: [PATCH v3] btrfs: fix data race when accessing the inode's
+ disk_i_size at btrfs_drop_extents()
+To: Hao-ran Zheng <zhenghaoran154@gmail.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	baijiaju1990@gmail.com, 21371365@buaa.edu.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Dec 3, 2024 at 7:59=E2=80=AFAM Hao-ran Zheng <zhenghaoran154@gmail.=
+com> wrote:
+>
+> A data race occurs when the function `insert_ordered_extent_file_extent()=
+`
+> and the function `btrfs_inode_safe_disk_i_size_write()` are executed
+> concurrently. The function `insert_ordered_extent_file_extent()` is not
+> locked when reading inode->disk_i_size, causing
+> `btrfs_inode_safe_disk_i_size_write()` to cause data competition when
+> writing inode->disk_i_size, thus affecting the value of `modify_tree`.
+>
+> The specific call stack that appears during testing is as follows:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DDATA_RACE=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+>  btrfs_drop_extents+0x89a/0xa060 [btrfs]
+>  insert_reserved_file_extent+0xb54/0x2960 [btrfs]
+>  insert_ordered_extent_file_extent+0xff5/0x1760 [btrfs]
+>  btrfs_finish_one_ordered+0x1b85/0x36a0 [btrfs]
+>  btrfs_finish_ordered_io+0x37/0x60 [btrfs]
+>  finish_ordered_fn+0x3e/0x50 [btrfs]
+>  btrfs_work_helper+0x9c9/0x27a0 [btrfs]
+>  process_scheduled_works+0x716/0xf10
+>  worker_thread+0xb6a/0x1190
+>  kthread+0x292/0x330
+>  ret_from_fork+0x4d/0x80
+>  ret_from_fork_asm+0x1a/0x30
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DOTHER_INFO=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+>  btrfs_inode_safe_disk_i_size_write+0x4ec/0x600 [btrfs]
+>  btrfs_finish_one_ordered+0x24c7/0x36a0 [btrfs]
+>  btrfs_finish_ordered_io+0x37/0x60 [btrfs]
+>  finish_ordered_fn+0x3e/0x50 [btrfs]
+>  btrfs_work_helper+0x9c9/0x27a0 [btrfs]
+>  process_scheduled_works+0x716/0xf10
+>  worker_thread+0xb6a/0x1190
+>  kthread+0x292/0x330
+>  ret_from_fork+0x4d/0x80
+>  ret_from_fork_asm+0x1a/0x30
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> The main purpose of the modify_tree variable is to optimize the
+> acquisition of read-write locks at or after the end of file (EOF).
+> When the value of modify_tree is modified due to concurrency, resulting
+> in unnecessary acquisition of write locks, the correctness of the
+> system will not be affected. When the system requires a write lock but
+> does not acquire the write lock because the value of modify_tree is
+> incorrect, the path will be subsequently released and the lock will
+> be reacquired to ensure the correctness of the system.
 
-During the unmount path, at close_ctree(), we first stop the cleaner
-kthread, using kthread_stop() which frees the associated task_struct, and
-then stop and destroy all the work queues. However after we stopped the
-cleaner we may still have a worker from the delalloc_workers queue running
-inode.c:submit_compressed_extents(), which calls btrfs_add_delayed_iput(),
-which in turn tries to wake up the cleaner kthread - which was already
-destroyed before, resulting in a use-after-free on the task_struct.
+Looks good, I'll slightly rephrase this on things like "modify_tree is
+modified due to concurrency" because what gets modified concurrently
+is inode->disk_i_size.
+I'll push it to the github btrfs for-next branch soon with this
+paragraph instead:
 
-Syzbot reported this with the following stack traces:
+"The main purpose of the check of the inode's disk_i_size is to avoid
+taking write locks on a btree path when we have a write at or beyond
+eof, since in these cases we don't expect to find extent items in the
+root to drop. However if we end up taking write locks due to a data
+race on disk_i_size, everything is still correct, we only add extra
+lock contention on the tree in case there's concurrency from other tasks.
+If the race causes us to not take write locks when we actually need them,
+then everything is functionally correct as well, since if we find out we
+have extent items to drop and we took read locks (modify_tree set to 0),
+we release the path and retry again with write locks."
 
-   ==================================================================
-   BUG: KASAN: slab-use-after-free in __lock_acquire+0x78/0x2100 kernel/locking/lockdep.c:5089
-   Read of size 8 at addr ffff8880259d2818 by task kworker/u8:3/52
+Thanks.
 
-   CPU: 1 UID: 0 PID: 52 Comm: kworker/u8:3 Not tainted 6.13.0-rc1-syzkaller-00002-gcdd30ebb1b9f #0
-   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-   Workqueue: btrfs-delalloc btrfs_work_helper
-   Call Trace:
-    <TASK>
-    __dump_stack lib/dump_stack.c:94 [inline]
-    dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
-    print_address_description mm/kasan/report.c:378 [inline]
-    print_report+0x169/0x550 mm/kasan/report.c:489
-    kasan_report+0x143/0x180 mm/kasan/report.c:602
-    __lock_acquire+0x78/0x2100 kernel/locking/lockdep.c:5089
-    lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-    _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-    class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:551 [inline]
-    try_to_wake_up+0xc2/0x1470 kernel/sched/core.c:4205
-    submit_compressed_extents+0xdf/0x16e0 fs/btrfs/inode.c:1615
-    run_ordered_work fs/btrfs/async-thread.c:288 [inline]
-    btrfs_work_helper+0x96f/0xc40 fs/btrfs/async-thread.c:324
-    process_one_work kernel/workqueue.c:3229 [inline]
-    process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
-    worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-    kthread+0x2f0/0x390 kernel/kthread.c:389
-    ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-    </TASK>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-   Allocated by task 2:
-    kasan_save_stack mm/kasan/common.c:47 [inline]
-    kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-    unpoison_slab_object mm/kasan/common.c:319 [inline]
-    __kasan_slab_alloc+0x66/0x80 mm/kasan/common.c:345
-    kasan_slab_alloc include/linux/kasan.h:250 [inline]
-    slab_post_alloc_hook mm/slub.c:4104 [inline]
-    slab_alloc_node mm/slub.c:4153 [inline]
-    kmem_cache_alloc_node_noprof+0x1d9/0x380 mm/slub.c:4205
-    alloc_task_struct_node kernel/fork.c:180 [inline]
-    dup_task_struct+0x57/0x8c0 kernel/fork.c:1113
-    copy_process+0x5d1/0x3d50 kernel/fork.c:2225
-    kernel_clone+0x223/0x870 kernel/fork.c:2807
-    kernel_thread+0x1bc/0x240 kernel/fork.c:2869
-    create_kthread kernel/kthread.c:412 [inline]
-    kthreadd+0x60d/0x810 kernel/kthread.c:767
-    ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-   Freed by task 24:
-    kasan_save_stack mm/kasan/common.c:47 [inline]
-    kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-    kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:582
-    poison_slab_object mm/kasan/common.c:247 [inline]
-    __kasan_slab_free+0x59/0x70 mm/kasan/common.c:264
-    kasan_slab_free include/linux/kasan.h:233 [inline]
-    slab_free_hook mm/slub.c:2338 [inline]
-    slab_free mm/slub.c:4598 [inline]
-    kmem_cache_free+0x195/0x410 mm/slub.c:4700
-    put_task_struct include/linux/sched/task.h:144 [inline]
-    delayed_put_task_struct+0x125/0x300 kernel/exit.c:227
-    rcu_do_batch kernel/rcu/tree.c:2567 [inline]
-    rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2823
-    handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:554
-    run_ksoftirqd+0xca/0x130 kernel/softirq.c:943
-    smpboot_thread_fn+0x544/0xa30 kernel/smpboot.c:164
-    kthread+0x2f0/0x390 kernel/kthread.c:389
-    ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-   Last potentially related work creation:
-    kasan_save_stack+0x3f/0x60 mm/kasan/common.c:47
-    __kasan_record_aux_stack+0xac/0xc0 mm/kasan/generic.c:544
-    __call_rcu_common kernel/rcu/tree.c:3086 [inline]
-    call_rcu+0x167/0xa70 kernel/rcu/tree.c:3190
-    context_switch kernel/sched/core.c:5372 [inline]
-    __schedule+0x1803/0x4be0 kernel/sched/core.c:6756
-    __schedule_loop kernel/sched/core.c:6833 [inline]
-    schedule+0x14b/0x320 kernel/sched/core.c:6848
-    schedule_timeout+0xb0/0x290 kernel/time/sleep_timeout.c:75
-    do_wait_for_common kernel/sched/completion.c:95 [inline]
-    __wait_for_common kernel/sched/completion.c:116 [inline]
-    wait_for_common kernel/sched/completion.c:127 [inline]
-    wait_for_completion+0x355/0x620 kernel/sched/completion.c:148
-    kthread_stop+0x19e/0x640 kernel/kthread.c:712
-    close_ctree+0x524/0xd60 fs/btrfs/disk-io.c:4328
-    generic_shutdown_super+0x139/0x2d0 fs/super.c:642
-    kill_anon_super+0x3b/0x70 fs/super.c:1237
-    btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2112
-    deactivate_locked_super+0xc4/0x130 fs/super.c:473
-    cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
-    task_work_run+0x24f/0x310 kernel/task_work.c:239
-    ptrace_notify+0x2d2/0x380 kernel/signal.c:2503
-    ptrace_report_syscall include/linux/ptrace.h:415 [inline]
-    ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
-    syscall_exit_work+0xc7/0x1d0 kernel/entry/common.c:173
-    syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
-    __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
-    syscall_exit_to_user_mode+0x24a/0x340 kernel/entry/common.c:218
-    do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-   The buggy address belongs to the object at ffff8880259d1e00
-    which belongs to the cache task_struct of size 7424
-   The buggy address is located 2584 bytes inside of
-    freed 7424-byte region [ffff8880259d1e00, ffff8880259d3b00)
-
-   The buggy address belongs to the physical page:
-   page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x259d0
-   head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-   memcg:ffff88802f4b56c1
-   flags: 0xfff00000000040(head|node=0|zone=1|lastcpupid=0x7ff)
-   page_type: f5(slab)
-   raw: 00fff00000000040 ffff88801bafe500 dead000000000100 dead000000000122
-   raw: 0000000000000000 0000000000040004 00000001f5000000 ffff88802f4b56c1
-   head: 00fff00000000040 ffff88801bafe500 dead000000000100 dead000000000122
-   head: 0000000000000000 0000000000040004 00000001f5000000 ffff88802f4b56c1
-   head: 00fff00000000003 ffffea0000967401 ffffffffffffffff 0000000000000000
-   head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
-   page dumped because: kasan: bad access detected
-   page_owner tracks the page as allocated
-   page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 12, tgid 12 (kworker/u8:1), ts 7328037942, free_ts 0
-    set_page_owner include/linux/page_owner.h:32 [inline]
-    post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1556
-    prep_new_page mm/page_alloc.c:1564 [inline]
-    get_page_from_freelist+0x3651/0x37a0 mm/page_alloc.c:3474
-    __alloc_pages_noprof+0x292/0x710 mm/page_alloc.c:4751
-    alloc_pages_mpol_noprof+0x3e8/0x680 mm/mempolicy.c:2265
-    alloc_slab_page+0x6a/0x140 mm/slub.c:2408
-    allocate_slab+0x5a/0x2f0 mm/slub.c:2574
-    new_slab mm/slub.c:2627 [inline]
-    ___slab_alloc+0xcd1/0x14b0 mm/slub.c:3815
-    __slab_alloc+0x58/0xa0 mm/slub.c:3905
-    __slab_alloc_node mm/slub.c:3980 [inline]
-    slab_alloc_node mm/slub.c:4141 [inline]
-    kmem_cache_alloc_node_noprof+0x269/0x380 mm/slub.c:4205
-    alloc_task_struct_node kernel/fork.c:180 [inline]
-    dup_task_struct+0x57/0x8c0 kernel/fork.c:1113
-    copy_process+0x5d1/0x3d50 kernel/fork.c:2225
-    kernel_clone+0x223/0x870 kernel/fork.c:2807
-    user_mode_thread+0x132/0x1a0 kernel/fork.c:2885
-    call_usermodehelper_exec_work+0x5c/0x230 kernel/umh.c:171
-    process_one_work kernel/workqueue.c:3229 [inline]
-    process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
-    worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-   page_owner free stack trace missing
-
-   Memory state around the buggy address:
-    ffff8880259d2700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-    ffff8880259d2780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-   >ffff8880259d2800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                               ^
-    ffff8880259d2880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-    ffff8880259d2900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-   ==================================================================
-
-Fix this by flushing the delalloc workers queue before stopping the
-cleaner kthread.
-
-Reported-by: syzbot+b7cf50a0c173770dcb14@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/674ed7e8.050a0220.48a03.0031.GAE@google.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 814320948645..eff0dd1ae62f 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4262,6 +4262,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	 * already the cleaner, but below we run all pending delayed iputs.
- 	 */
- 	btrfs_flush_workqueue(fs_info->fixup_workers);
-+	/*
-+	 * Similar case here, we have to wait for delalloc workers before we
-+	 * proceed below and stop the cleaner kthread, otherwise we trigger a
-+	 * use-after-tree on the cleaner kthread task_struct when a delalloc
-+	 * worker running submit_compressed_extents() adds a delayed iput, which
-+	 * does a wake up on the cleaner kthread, which was already freed below
-+	 * when we call kthread_stop().
-+	 */
-+	btrfs_flush_workqueue(fs_info->delalloc_workers);
- 
- 	/*
- 	 * After we parked the cleaner kthread, ordered extents may have
--- 
-2.45.2
-
+>
+> Since this data race does not affect the correctness of the function,
+> it is a harmless data race, and it is recommended to use `data_race`
+> to mark it.
+>
+> Signed-off-by: Hao-ran Zheng <zhenghaoran154@gmail.com>
+> ---
+> V2->V3: Added details on why this is a harmless data race
+> V1->V2: Modified patch description and format
+> ---
+>  fs/btrfs/file.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 4fb521d91b06..559c177456e6 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -242,7 +242,7 @@ int btrfs_drop_extents(struct btrfs_trans_handle *tra=
+ns,
+>         if (args->drop_cache)
+>                 btrfs_drop_extent_map_range(inode, args->start, args->end=
+ - 1, false);
+>
+> -       if (args->start >=3D inode->disk_i_size && !args->replace_extent)
+> +       if (data_race(args->start >=3D inode->disk_i_size) && !args->repl=
+ace_extent)
+>                 modify_tree =3D 0;
+>
+>         update_refs =3D (btrfs_root_id(root) !=3D BTRFS_TREE_LOG_OBJECTID=
+);
+> --
+> 2.34.1
+>
+>
 
