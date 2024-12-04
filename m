@@ -1,174 +1,199 @@
-Return-Path: <linux-btrfs+bounces-10047-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10048-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D3B9E319A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 03:50:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 425BE9E3207
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 04:22:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 886572869F7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 02:50:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED80028391A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 03:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E45644C94;
-	Wed,  4 Dec 2024 02:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2193414A4E9;
+	Wed,  4 Dec 2024 03:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="VKt/XJaC"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Qas8dnlU";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fM4gs6K7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D3F4A1A
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 02:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B969137923
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 03:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733280626; cv=none; b=uZxwFNNu2y4qau56LZfr+3X8+SnPw6tOomgpBPDdC5X+wniq55Cc8WV57MTJxWP1g1D1PFPEG4ZCzL1s0dhMqjDaYlp8vMqzYwGUWg7KOKVS63Bi/4oKGSN5lxK/qPppo53pFoZ2UdIa8gA4Z0Hi1iQeKxjrsaoR8VH0pNRNVtg=
+	t=1733282550; cv=none; b=KmQHUzXek1BQa/YWsL8YWuSfVY5zhI5T8y0dzNvMTFnlb0Cp9Iltc1w76jv9nX+rXx1I5VND5pOeVTiJ0gMVoRB+vqS1bojSJ5p03VAe8kPtK++oxIGjflhsLMUetWAYDhPf+ivMTsHXNPA0casvU3rS/Yq66mauJthdc6YVw7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733280626; c=relaxed/simple;
-	bh=csrrY3fdlnWx8yjBhKeUA5myuILws1emBlk0MfhSKEU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Bw53QRiWYqW7vkXr+fw9+2UxcwJK1RLHjyDr6vqI8vpTfI47CyFSADoc8V73tecP8rU+PDo0wjuQiGDlin3X6SLEDLdlc9UZfacYtTTPRx3vwhC59t8rRJSLANNW0HOBDXEEM47jZcTwiUfa4/ad+PM1RNvFqqqnNmvaKz13Kek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=VKt/XJaC; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1733280621; x=1733885421; i=quwenruo.btrfs@gmx.com;
-	bh=bEsnrC5O6rtamLDQyiY5nomfArSk7V/AgeAu/DamCko=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=VKt/XJaCMbq4f8aoOTRSZHDfeldo2gDydaNVv8uIP/gj93A54q/kGrRAxaj/RJyh
-	 Eou02OZByTDVz/rcXJb2J2/VHuyjEan50nYkZvnSPFxqfJsLGOIrqVr96YdNhQfz4
-	 I+RhpYKTHfvTy6FfDy8XygPC4z8Q55oEC2rbQ3eKQcLEfr18k/RFiTKMjKy2ZXuI9
-	 qzDElJesfgBIzBRZkq++MBd9zCBq7Oo3+1nF31EIhK/Ps9lhDZ5nexVJPddxE6EnF
-	 ODvbyKiUi/LiBPidb48m8IBCMOq4YPHJTpNMIi1i4iUNENHKau8cgzKyTGq/h+E5G
-	 a4L+l00b3yCH6nCPDQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXpK-1t9pkK3K8u-00Iotp; Wed, 04
- Dec 2024 03:50:21 +0100
-Message-ID: <f404a687-cd6b-4014-b2fc-0f070f551820@gmx.com>
-Date: Wed, 4 Dec 2024 13:20:18 +1030
+	s=arc-20240116; t=1733282550; c=relaxed/simple;
+	bh=5ooFB2sUYiAtz5d+8L11G2epscHGVGoFaDDRn4WA+Ck=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IfXCo0L7ErjBmf5qhhlG0IRdOGlQoXXYVNuDeYzwxworTpT5q3XxelJE9amrS0Ix7D4UftNkvSrpsLp/GLBJI6LVOl/Xh9eXawSCfIXocc0ReM5GLT9CBzIsxgIWWHjcy2jElYaLV5HIAdZuy0+2RDIzXpCRfXC+elzUPoDI6oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Qas8dnlU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fM4gs6K7; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0F0F2211CF;
+	Wed,  4 Dec 2024 03:22:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1733282544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wf66bTzGL73sKR0eihUqjGFStM9t3tcRbEof4c4NsD0=;
+	b=Qas8dnlUvIHntLbScgruR/FTYXiOVUpmaJEUQNeW+BD2Atop0+e/JDa7PKJsyLx8vlqMe4
+	xUzu/wBepS4HcKi6eBcV8sZj3XmWOdfoX4haaeoCMEcd8XDAXJj/g4WqaALIMLxIdO3fHM
+	eKYFHh6rHN05hc/YFb/v1Y3xpTW43eE=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1733282543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wf66bTzGL73sKR0eihUqjGFStM9t3tcRbEof4c4NsD0=;
+	b=fM4gs6K7FyRlSFPNxAA1Op2Ked0/9svaDp1MLbl822hloy6Ds2GFxDd4QY0dsFOQwexlmZ
+	afc3Yca3d8iKhyJiIdMojz+83HrZechET0WBjnDPAB4/emkeuFwu+lNXmGS3HJTWbJwAiF
+	i/vML8ONJC44nWdGDqRnn94EGxBafig=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0DB79139C2;
+	Wed,  4 Dec 2024 03:22:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id h2PvL+3KT2dyDQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 04 Dec 2024 03:22:21 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Frankie Fisher <frankie@terrorise.me.uk>
+Subject: [PATCH] btrfs: tree-checker: reject inline extent items with 0 ref count
+Date: Wed,  4 Dec 2024 13:52:00 +1030
+Message-ID: <839022e69496e80413ade9dc8287fb9ccaef9557.1733282486.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Errors found in extent allocation tree or chunk allocation
-To: Nicolas Gnyra <nicolas.gnyra@gmail.com>, linux-btrfs@vger.kernel.org
-References: <207033eb-6e59-45f1-9ec5-09e63eaa4c70@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <207033eb-6e59-45f1-9ec5-09e63eaa4c70@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EoME+SZmpSgudC7O2SCWa0VXT2d7/3Gf67wIN9a3rQfU19ppxNn
- wtITvUei/wqY4jHWPHm1A3XufozNWM3D2NkhwJahezS2kf86r1+YQF4mUuKk8zRf5AHlC1T
- YloP7UtKHHSqXUCZi70Y0rfKcs1tdAdtgKkns3LArOj4lxkjcZxK5B7jOxKU/ri3/L0DPzq
- XHYZ2M56eC+cTJZoITi1A==
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,terrorise.me.uk:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mvQe/DfWwKg=;TmHkKWgIklUoqAg+5NY8btQwp5e
- zqKLg0f7aNjHHUc1Q1sRZyddEFn1py1fhj+z/MotU5OX7uRPRzDvgk4F3/583Jxnw0Qma8Xrs
- U7JtKeUgCThgD1XCGDeVSL/AqTak+CUETznB5zE46ugdEqW15veDplGvn9/NGZX6GbFdcs7bO
- fWFjAaIG8rPd387+s8J0fAkjiii7Q5NOk78evr1scLlkjbbLpCZdxf/FVXPvEeZ17htrpxuK+
- oVco5/hAsJdpZFoJX6F2VSPxOXOP+qX4hTti5x83Ll3IeVEfeccxTFV15yeH06pM3W7V4USup
- YpR4LCHlBfqKNgLkIJRQBYRAO8kHsxkfkRULA3lTcAFq/nTojKtedUIVyfWafTo6ScpVGBxrF
- rY0/pldTXS0eZbT0qzQ093K9ivUqJ22MCKY2n5oZCj5TEMFZXUB6vv/TzIvrbLiYB0A9Ef3YK
- QqYRTLuTVLXE+SczOoeJPtZw9/skrcBm1omycAxg26F66+fBw1JjWIjRMGUWJu0CVh9oENFAn
- VV++U1KuJNTwsqg4ufdVDZmVkb1sfWkLFoVNWJ0u/NqBZU5DhN4Zi54OxFf3ts020PWahFstw
- fDcZ0KEGMJl6qZ0gv+7XirIysNnAf9oPJZSA1idFmacSzjmKu2CQUjNIXQMV89ihMKA7OShuO
- wOFzhjrYKZhkQnDvYPmJwzGcASFktv8KB29FWW58YSshWFhKbeY7ll6BbsNCHJa8bw+kPYj0X
- uPvgDijCI45xxmUA1ZmYj2he41QQtjdLpW3PdZRFtSS5KYRBIIyVVrnHmqQYXOu54LM1hLT0R
- i8S9yzfguBO6DoesKVK0j02Y84JujPuktUuUohR/vGtK+7Y5HdnZo9YqccRhO158p3jjp5Jh6
- +t/KE91ON5EvfhJWk82kssE4oJ7TZtzJz86sTVxao2RlkhK6LkauOGl+4wX7gVveNDbe8V7pB
- 2kafJ/of4s/gC8jNA7zptN30QzfusOiEvVBiIJKGqL5sSrx2uVEfOoM3pbziFQBRByCeYSl7h
- hZQIvIguMYde71tFrEKM33DbCmquZxFExknw5nABX+3lJf90XbWQ0M4WKW/1oLGK4D+7wt3BB
- HGlE3rcgIMd+VyDXdIV9BuKG9gOC6D
+X-Spam-Level: 
 
+[BUG]
+There is a bug report in the mailing list where btrfs_run_delayed_refs()
+failed to drop the ref count for logical 25870311358464 num_bytes
+2113536.
 
+The involved leaf dump looks like this:
 
-=E5=9C=A8 2024/12/4 10:32, Nicolas Gnyra =E5=86=99=E9=81=93:
-> Hi all,
->
-> I seem to have messed up my btrfs filesystem after adding a new (3rd)
-> drive and running `btrfs balance start -dconvert=3Draid5 -
-> mconvert=3Draid1c3 /path/to/mount`. It ran for a while and I thought it
-> had finished successfully but after a reboot it's stuck mounting as
-> read-only. I seemingly am able to mount it as read/write if I add `-o
-> skip_balance` but if I try to write to it, it locks up again. I managed
-> to run a scrub in this state but it found no errors.
->
-> Kernel logs: https://pastebin.com/Cs06sNnr (drives sdb, sdc, and sdd,
-> UUID dfa2779b-b7d1-4658-89f7-dabe494e67c8)
+  item 166 key (25870311358464 168 2113536) itemoff 10091 itemsize 50
+    extent refs 1 gen 84178 flags 1
+    ref#0: shared data backref parent 32399126528000 count 0 <<<
+    ref#1: shared data backref parent 31808973717504 count 1
 
-The dmesg shows the problem very straightforward:
+Notice the count number is 0.
 
-   item 166 key (25870311358464 168 2113536) itemoff 10091 itemsize 50
-     extent refs 1 gen 84178 flags 1
-     ref#0: shared data backref parent 32399126528000 count 0 <<<
-     ref#1: shared data backref parent 31808973717504 count 1
+[CAUSE]
+There is no concrete evidence yet, but considering 0 -> 1 is also a
+single bit flipped, it's possible that hardware memory bitflip is
+involved, causing the on-disk extent tree to be corrupted.
 
-Notice the count number, it should never be 0, as if one ref goes zero
-it should be removed from the extent item.
+[FIX]
+To prevent us reading such corrupted extent item, or writing such
+damaged extent item back to disk, enhance the handling of
+BTRFS_EXTENT_DATA_REF_KEY and BTRFS_SHARED_DATA_REF_KEY keys for both
+inlined and key items, to detect such 0 ref count and reject them.
 
-I believe the correct value should just be 1, and 0 -> 1 is also
-possibly an indicator of hardware runtime bitflip.
+Link: https://lore.kernel.org/linux-btrfs/7c69dd49-c346-4806-86e7-e6f863a66f48@app.fastmail.com/
+Reported-by: Frankie Fisher <frankie@terrorise.me.uk>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/tree-checker.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-This is a new corner case we have never seen, thus I'll send a new patch
-to handle such case in tree-checker.
-
-> `btrfs check`: https://pastebin.com/7SJZS3Yv
-> `btrfs check --repair` (ran after a discussion in Libera Chat, failed):
-> https://pastebin.com/BGLSx6GM
-
-In theory, btrfs should be able to repair this particular error,
-but the error message seems to indicate ENOSPC, meaning there is not
-enough space for metadata at least.
-
->
-> I'm currently running btrfs-progs v6.12 but the balance was originally
-> run on v5.10.1. Is there any way to recover from this or should I just
-> nuke the filesystem and restart from scratch? There's nothing super
-> important on there, it's just going to be annoying to restore from a
-> backup, and I thought it'd be interesting to try to figure out what
-> happened here.
-
-Recommended to run a full memtest before doing anything, just to verify
-if it's really a hardware bitflip.
-
-Thanks,
-Qu
-
->
-> Thanks!
->
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 148d8cefa40e..0b9891f416ec 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -1527,6 +1527,11 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 					   dref_offset, fs_info->sectorsize);
+ 				return -EUCLEAN;
+ 			}
++			if (unlikely(btrfs_extent_data_ref_count(leaf, dref) == 0)) {
++				extent_err(leaf, slot,
++			"invalidate data ref count, should have non-zero value");
++				return -EUCLEAN;
++			}
+ 			inline_refs += btrfs_extent_data_ref_count(leaf, dref);
+ 			break;
+ 		/* Contains parent bytenr and ref count */
+@@ -1539,6 +1544,11 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 					   inline_offset, fs_info->sectorsize);
+ 				return -EUCLEAN;
+ 			}
++			if (unlikely(btrfs_shared_data_ref_count(leaf, sref) == 0)) {
++				extent_err(leaf, slot,
++			"invalidate shared data ref count, should have non-zero value");
++				return -EUCLEAN;
++			}
+ 			inline_refs += btrfs_shared_data_ref_count(leaf, sref);
+ 			break;
+ 		case BTRFS_EXTENT_OWNER_REF_KEY:
+@@ -1611,8 +1621,18 @@ static int check_simple_keyed_refs(struct extent_buffer *leaf,
+ {
+ 	u32 expect_item_size = 0;
+ 
+-	if (key->type == BTRFS_SHARED_DATA_REF_KEY)
++	if (key->type == BTRFS_SHARED_DATA_REF_KEY) {
++		struct btrfs_shared_data_ref *sref;
++
++		sref = btrfs_item_ptr(leaf, slot, struct btrfs_shared_data_ref);
++		if (unlikely(btrfs_shared_data_ref_count(leaf, sref) == 0)) {
++			extent_err(leaf, slot,
++		"invalid shared data backref count, should have non-zero value");
++			return -EUCLEAN;
++		}
++
+ 		expect_item_size = sizeof(struct btrfs_shared_data_ref);
++	}
+ 
+ 	if (unlikely(btrfs_item_size(leaf, slot) != expect_item_size)) {
+ 		generic_err(leaf, slot,
+@@ -1689,6 +1709,11 @@ static int check_extent_data_ref(struct extent_buffer *leaf,
+ 				   offset, leaf->fs_info->sectorsize);
+ 			return -EUCLEAN;
+ 		}
++		if (unlikely(btrfs_extent_data_ref_count(leaf, dref) == 0)) {
++			extent_err(leaf, slot,
++	"invalidate extent data backref count, should have non-zero value");
++			return -EUCLEAN;
++		}
+ 	}
+ 	return 0;
+ }
+-- 
+2.47.1
 
 
