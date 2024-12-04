@@ -1,125 +1,101 @@
-Return-Path: <linux-btrfs+bounces-10054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 960B59E32B7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 05:44:04 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E444E9E32C4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 05:49:31 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3E6168426
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 04:44:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9AE7282749
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 04:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7C01714B3;
-	Wed,  4 Dec 2024 04:44:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2000617B50B;
+	Wed,  4 Dec 2024 04:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RW3oAQXl"
+	dkim=permerror (0-bit key) header.d=scoopta.email header.i=@scoopta.email header.b="vhFQIa+E"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx.scoopta.email (mx.scoopta.email [66.228.58.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A107383
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 04:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55B7155747
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 04:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.228.58.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733287439; cv=none; b=lWwI+4xuIcuHwULUkEv9LZyJcztOfT4/zarGOY/EGgaDxq6k6//TZPQFXDVvmS0RFOOW2H4ZW4aSYbA1VmXzSutkw1ZFvfK4opy47h7YmPYDAGrlwG5ok/fJmkWtZdb6n1238R+Tb/Ek7LNwyg2D6IIDYnarEQkU9HbvGoCVPI0=
+	t=1733287765; cv=none; b=mOGTYYLMxkXES7nkbCKio9Fuct87+o6oU8xpoO6W+DWTntAVrkn4E3DH8PI/c0gv5tHNgWD3jgL4e6b6W1lOpT/qLRqCwwFIkpri66jcgxgBSnkXznJTptVRok4CozyYM0AF8jdYpAxIVTt8eBD2zCZy9dc65XCG2PPolgaNBgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733287439; c=relaxed/simple;
-	bh=y1Na5bN9jjAgxzqVIpdUUvZC1pjX197hPagVkRg9FQA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fUFdGNpHdmyBotPq8tZ1FvGHigODJ0EXkLAt+t6Q6wC2T/18TpnyNdkS/x0+QTcEzkpD75bAAkAh7E4UbZscEgpNrK8mNWmzgh02ICMQRvMJTl5E0ziiKNH6c4f0OlylXdblbs4Wx/qadbVzI8IXu+mTdwr0FT6usqrgiS11Jk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RW3oAQXl; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4668d7d40f2so46396171cf.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Dec 2024 20:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733287437; x=1733892237; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=rY6IzEqTyUB6IUKJXLmp6eCmIXzS+g6bou3QqwxbVs4=;
-        b=RW3oAQXlJi+iwR7BoeYB9MqwhRymbMCleFN6wVBFNp5T6HtgBNzM3hLA53Dd8WYkgp
-         x0/qLCr6E0fYm0VfowwTzACXwzhvvlGPreYsGCGU0Pm8fY40xC62UuVBZk8A+eNeZ00G
-         gGdPT8avJUD2yOtBRPk1MjCgQ5CDdU3bokwjdF10FaVrMynLLayWlUWe0qq1u2KTUqcT
-         bQrPmqy2N7B5zJWACsk0qWvnbSuwMdpl08eQIu7C4qI8Q1BXvzgQb9HM7hWC30Fuixk4
-         CPDxDX5cWCmEzfTvX58ktFaGleY6XqcJ10GPbYgL6kmZ7xBsTF7m9ft/3pfeBlgDtrEB
-         wFkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733287437; x=1733892237;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rY6IzEqTyUB6IUKJXLmp6eCmIXzS+g6bou3QqwxbVs4=;
-        b=n6ePon2bGo24aLmELhT6w2T/5k8htJnrN6uUjmVqsXhIR9OUj9gCptKCMdY+IXhnHw
-         dgnTApVVjuJpe/MZQz7h7wzfhHnfmpcSexomTcnppC3hmoakbuORyt6SIoisqVRPBOPe
-         ShJU3jV9AbA8KVbuHU0rCa512R2qzH8g+xlpCVToOePW2mX3bX4zVsrzH/YJJupGttia
-         8lUGY4tpOGMJ9r+7hjT2/wLO/4SMpAgmIUjsvsLhKW+AjrMMAflY8GD3cYD/cVkur9/d
-         qjR9NcvJEjDq6EUyTfgO7dVV1LFk0UdQDVmtNdv8vM8YJ6RLJ43DXHaHbt7Fj2bgpJkW
-         C2nw==
-X-Forwarded-Encrypted: i=1; AJvYcCUsTr09GcA4CJ3ukhy+5FRO64CdXTP7Y4EKg5lVGbUzIA0xrQVBeYcaTH98p+1iczNX1M1Nwqzb1wOuIw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywtdw2gU1m/y/zbE0MadTTNA194CiS+a1qVywY66D8/zdMhbTtK
-	qRSg1Bj4rC3q5pgmY2TJ6l7/3kYvu6bV6OnLc9A1fEuAkK1y8vut
-X-Gm-Gg: ASbGncuIhA17WHeiVFwAUxxhvITAB1k4mqgKHaPUUK3zhxPAOZ0yX2q+8ZkjPOCWeK/
-	Xnuxw11Js63KByH4KwcBM7o7+/YlccysPNCdMmYQ2Tu0hQSL7LDvit1LTAkR5EB98eTg+DWdD1I
-	2KANX80RjPQNWPxnRVn7GU+54itoJcn3G+PrPBFM+9XSVn+EDAlcDa00m8Yy+DvRWnS+RSUfk0L
-	n/Moh0mhRScTKlcvcMMH6qjM1VilHXL6HslCwpo5jb7paM21Rmnli4PRaSx9GwseuXdq3DApxH/
-	FSFWTkJ2LWapyR8AiH0bgX0vmbVIlmlrI8X9
-X-Google-Smtp-Source: AGHT+IFujSct9M4gAkanKyW5N4zj9BpUn42CA+OjxINtJIUZmhR+O7jIZhVJOM1WoGdVllQCDYz7dg==
-X-Received: by 2002:ac8:5d07:0:b0:463:788e:7912 with SMTP id d75a77b69052e-4670c70dfd9mr88257551cf.56.1733287437204;
-        Tue, 03 Dec 2024 20:43:57 -0800 (PST)
-Received: from ?IPV6:2607:fea8:c1df:ffe5:49ff:c562:46ac:7af6? ([2607:fea8:c1df:ffe5:49ff:c562:46ac:7af6])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-466c42542b4sm69388191cf.89.2024.12.03.20.43.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Dec 2024 20:43:56 -0800 (PST)
-Message-ID: <78bb97cd-516a-4647-8866-2a67e9bcdbcd@gmail.com>
-Date: Tue, 3 Dec 2024 23:43:55 -0500
+	s=arc-20240116; t=1733287765; c=relaxed/simple;
+	bh=wjUHCSrXMrO15nla+tRrAASpqwnnAD06YXBQolbsbck=;
+	h=MIME-Version:Message-ID:Date:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rXPMWHe07w7o2/DLeVPdxAHDdBja9zFf3YkT99Eb3IRSNtPJZm6ndqpO6n3QEsU2MGtKwW8bQmVzAqShmMmAYR1trPLgUxkd0zSTUjXimvE5YqCZMP03iNNTkON++YxRn1OZuqWbmc55al42J8R91yYDSigihn9lG8iXnvSL8wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=scoopta.email; spf=pass smtp.mailfrom=scoopta.email; dkim=permerror (0-bit key) header.d=scoopta.email header.i=@scoopta.email header.b=vhFQIa+E; arc=none smtp.client-ip=66.228.58.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=scoopta.email
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scoopta.email
+DKIM-Signature: a=rsa-sha256; b=vhFQIa+EsHm9hJ1nMmcwU2b6tZub3j5Ol6r8phKpD92sNRRReB/YfFW8oLFVyS3InHzIcZFPhDtKWxjIX56FGS3J0jnSl11OJDEBl311cpKOfwVX7pbexbKcxJ9mnkbq/GQJpjFLkIJcTM0HMTn1j+wMacbx1u8rlmJqTNY9bJjcKBwTwCnFz53YTQolZ/uYYSumnS5jeQqXfmRvHBueTJwFYHwJKOFgt+qgrygF4R1XhTxjZNWHaKzNGIyKE1e4zgz0wIWO8PMCyEKQhYuN8dP1yxhxJN3nYfx9WTs3U3KAtO0Q7aaQJOXLJy0mS3mRteUluDFZwHq4KIpL2Zeu5Y4WFQxgG9ECWF966MqAXQQc69Ln1MPqVCnPxGPilJUMXip629GUay5zYtKx1WofD7xesWsTYgO4Opl8dc/IXCeHkfmymHUylnQ+oDwBlZmS/1SEaSNgHC5uG8FPoJ7UPqo44lrl6I1S+8HUUJeepZKHNhcnwLAtwEu7iq0jkQprJHFMR62ypoazmaRWYPsiMU9r9noZ6vlCGlOMYhUrUXqYHn9gmMi5TfWggUpkFQ4lr+wiK6qQoZg+VCHCPMY1hk4QheuA2o087+0bh1+wkBxbJCeuS3TsM/dfL0cPA7aUduD2Bf7Aqzq6btENelhZr8igjqi3L4qHRfVA7ac9P097mfX9eD7a3JV6hdd1j6+yvO1XDKRsN/MezK7MR343YpBOax/D2cSE7BcyFIqnWtVinqqajq5WF5RTpmILd2YOCxzkf7Zn3z/VtduJAExrPvhxlq5FlVVra7aTVMBu0K3qFN8Te0JA0rkKLhi9jsFRPd3XhwnXdPnvskcE+qvjGOXk90r+rvq6fDwjxvq8Jm8NPYB84ZXQH9cLCtr4H8N4bI3aai7IkX6cKHBC++tobD/WgBm0laR0DUnx0n50fJ0zimbUO1MZs0mX6T/fo6DhcsArYC
+ 2uxVSp4jT/JlN2uJiABbCpuZfynUWvCVAUjWieLqFgvLclK2rFCa3tM9G4K2zXkYXlE+Jtpv90MUjM1gVBh+Xqrvj1lLS9G91Hh1YGqTFxEX2aUqE5ZZuU4/qpWp5tbxSS/4jPAHVzfg1V3fjxBLr3Ga7qUsxJVfmDWQv2FxFVj105kMWLMdTL/AsBg0NUkqqui9l/0xF22f2gYzhDfzCKU2W+iIGW6DGUCcn2lgVQjXykkcjcsQJyAMAqNElFwWRquOHN98Yia8sEgIrMtAvXX9Xr/RVcoxB+JGRHkXVUnx0heAqqEtoJ3tYwJE9iMpu1sGZPHOute4/qMRvsobalbMN2vZEUVmt+YNuvo6PjVVTVB68eGz7VC8pJOxK4poU5okHfMzF33XyJvQ==; s=20190906; c=relaxed/relaxed; d=scoopta.email; v=1; bh=pE89bBeeJAzcmH4fOfBagdxYFCmkuhEmvemi8eT3dck=; h=Message-ID:Date:Subject:From:To:MIME-Version:Content-Type;
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-UserIsAuth: true
+Received: from me.scoopta.ninja (EHLO [IPV6:2602:2e1:80:111::f0c5:cafe]) ([2602:2e1:80:111:0:0:f0c5:cafe])
+          by scoopta.email (JAMES SMTP Server ) with ESMTPA ID 1411313729;
+          Tue, 03 Dec 2024 20:49:22 -0800 (PST)
+Message-ID: <e2215c24-62c5-405a-87f5-3b68b92524c1@scoopta.email>
+Date: Tue, 3 Dec 2024 20:49:21 -0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: Errors found in extent allocation tree or chunk allocation
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <207033eb-6e59-45f1-9ec5-09e63eaa4c70@gmail.com>
- <f404a687-cd6b-4014-b2fc-0f070f551820@gmx.com>
- <e9544172-ef74-4a65-b14f-8d3addb957d7@gmail.com>
- <3fc16982-4f69-4b78-95c7-35964d6fd1e0@gmx.com>
-Content-Language: fr
-From: Nicolas Gnyra <nicolas.gnyra@gmail.com>
-In-Reply-To: <3fc16982-4f69-4b78-95c7-35964d6fd1e0@gmx.com>
+Subject: Re: Using btrfs raid5/6
+To: Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <a98fb4d0-1d80-4ae0-a79b-2acadb7b9722@gmail.com>
+Content-Language: en-US
+From: Scoopta <mlist@scoopta.email>
+In-Reply-To: <a98fb4d0-1d80-4ae0-a79b-2acadb7b9722@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-[...]
->>>> I'm currently running btrfs-progs v6.12 but the balance was originally
->>>> run on v5.10.1. Is there any way to recover from this or should I just
->>>> nuke the filesystem and restart from scratch? There's nothing super
->>>> important on there, it's just going to be annoying to restore from a
->>>> backup, and I thought it'd be interesting to try to figure out what
->>>> happened here.
->>>
->>> Recommended to run a full memtest before doing anything, just to verify
->>> if it's really a hardware bitflip.
+Huh, for some reason I was under the impression it had a write hole too? 
+Not sure where I read that
+
+On 12/3/24 8:29 PM, Andrei Borzenkov wrote:
+> 04.12.2024 06:34, Scoopta wrote:
+>> I'm looking to deploy btfs raid5/6 and have read some of the previous
+>> posts here about doing so "successfully." I want to make sure I
+>> understand the limitations correctly. I'm looking to replace an md+ext4
+>> setup. The data on these drives is replaceable but obviously ideally I
+>> don't want to have to replace it.
 >>
->> I started Memtest86+ ~3.5 hours ago (it's on the 7th pass) based on a
->> recommendation when I asked in the IRC channel; no errors yet, but I'll
->> let it run overnight at least and let you know if it fails.
-> 
-> Just in case, have you tried memtester?
-> 
-> There used to be a AMD SFH driver bug that causes random memory corruption.
-> 
-> Tools like memtest86+ are doing its own EFI payload so that it will
-> detect problems caused by kernel drivers.
-> 
-> Anyway, 7 passes already look good enough to me.
-> 
-> Then the cause will be much harder to pin down.
-
-Oh alright! I haven't tried memtester - I'll give it a shot and get back 
-to you. Thanks again!
-
+>> 1) use space_cache=v2
+>>
+>> 2) don't use raid5/6 for metadata
+>>
+>> 3) run scrubs 1 drive at a time
+>>
+>> 4) don't expect to use the system in degraded mode
+>>
+>> 5) there are times where raid5 will make corruption permanent instead of
+>> fixing it - does this matter? As I understand it md+ext4 can't detect or
+>> fix corruption either so it's not a loss
+>>
+>> 6) the write hole exists - As I understand it md has that same problem
+>> anyway
+>>
+>
+> Linux MD can use either write cache or partial parity log to protect 
+> against write hole.
+>
+> https://docs.kernel.org/driver-api/md/index.html
+>
+>> Are there any other ways I could lose my data? Again the data IS
+>> replaceable, I'm just trying to understand if there are any major
+>> advantages to using md+btrfs or md+ext4 over btrfs raid5 if I don't care
+>> about downtime during degraded mode. Additionally the posts I'm looking
+>> at are from 2020, has any of the above changed since then?
+>>
+>> Thanks!
+>>
+>>
+>
 
