@@ -1,208 +1,128 @@
-Return-Path: <linux-btrfs+bounces-10059-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10060-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC1989E38C0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 12:27:00 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB6991686A1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 11:26:57 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F291B218D;
-	Wed,  4 Dec 2024 11:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rfW2exju"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D7589E3B6D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 14:39:07 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6FA1AC884
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 11:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D547285C19
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 13:39:06 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7EE1B983E;
+	Wed,  4 Dec 2024 13:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JvjZMTtc"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26601BC08B
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 13:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733311614; cv=none; b=DdOFMGgzEm9zNybkpaNwdHDK3BDzhHNlkWrDftHJx77eydhXBofvwObjgAwngxrlcingBouRdTzNPkrpP68q2CDZnmud4pKx5z15yCizNBt6fyVPINRLgd1+sW92EipZcpDZjWtyCOOSOFMNm8fwCuspsa7wIRPumlqKCTp+w3Q=
+	t=1733319541; cv=none; b=m8QukqSIxtPpVcNwCz+fuIkT0fQwT7RYN7/Xla9Tu7njMKlvthn2UZN/AXd/yA59reqZZ7eVPr7w6yOk8HB2oijR2i7LprO8Zt/TBjW/E7xSOyWoxlGVcqEiLE4Rv2EEtUFQjQGweURInoPswMWa2ppg7Jq6BfzK8rU1QtFiN0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733311614; c=relaxed/simple;
-	bh=BfNUHobOchlj2Nmu38ZW6gkT6bxOS7Mvbo6gwBLLfOE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MaSM1W77lBY1cPxv43nqhdOtiKzwxCWsyBxYJOxWEeil5ht7/Fosct8h9t3UnFaEvEIyYCGOsk6NTunVPb5erkdWRxL63w7kKsSW5hOoxxsP5cRSRyCvIYM56K0aQznFfpWFKGVKNslMGseSWkP4frQy+wtmvzRIY2LKrhnfFc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rfW2exju; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45059C4CEDF
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 11:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733311614;
-	bh=BfNUHobOchlj2Nmu38ZW6gkT6bxOS7Mvbo6gwBLLfOE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rfW2exjuTqXaJzsO7WZD92T6mJkyphsT7VUZOx0iqwXGmTATIMzTkk6j1/uK9p08L
-	 K7jHKWJLpz7z1VFcoCgT01Fu1bV3mVOiAVmHLG97TSz2z6bpfQKVHJfUT/YFshkkBq
-	 7cHtyOyL2IZcQBw5dQsCr5idw51i0+kaX7COvO7XcpPO7ovMMquhhdWlIHipNlxWfP
-	 MG+nQzjgwuSmJak4Kbgl5pb8AFuxVPPbeBTJJqIHqvkd38PjKpyN2Wq106RqMNhpNH
-	 FJQaeXLVc76izyRVVXatYYmEcY1lqOcu9SKSVYhQjo8qb3EgOPv5g8ZUxpPvOOY+dW
-	 7AXiQzPKOFi6Q==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-53e1c3dfbb0so881965e87.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2024 03:26:54 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx73uFYCBnrFNjPiuvJeoXYMhlZfFYQo0zeDeVnratvlszwqayL
-	i4dfEcCb2eQGtBZmqeR/EGhaYLGKqy3XEGtg6S6Ul2JteGrr/5WMuNWuO595XbrAgkMxIs2YETV
-	sbiKPFiqQOP2Spk/lJchPQkN1Y+o=
-X-Google-Smtp-Source: AGHT+IGPcXuPN8yAuQTOgp35BFzZ6nCe5aFtqi9Dius+PtPCJ/kfbJF5d+Iy8AVedc6mPudJoprMUUFFl901LGIs6w8=
-X-Received: by 2002:a05:6512:1249:b0:53d:e077:deed with SMTP id
- 2adb3069b0e04-53e12a344f0mr3599350e87.52.1733311611588; Wed, 04 Dec 2024
- 03:26:51 -0800 (PST)
+	s=arc-20240116; t=1733319541; c=relaxed/simple;
+	bh=cmIwOQ/FLxV6o0Lows7bGBtmBJ2Z2Yyj4qrOgPfNASA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=Vz96W6qTEFJpFY02X4FseGD5AIZmhy+lkau7RBOfmORp5EqQ6f3LpU1kTXUjh5c985uwkerB8hh1JJ28EhaUQm28Xem6X9qpiQTbnXiaAuZLxtgraJ2am3jcs4PRA/ck6Oc/QZTYVwAADY10Vg7JDAmbez/xtqNNbD2s7n2KVdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JvjZMTtc; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6d89dc50927so23444306d6.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2024 05:38:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733319538; x=1733924338; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hx92aOUTdzsO8QesLRdfJIy7w6XWFquv4i5XmmjjM3Y=;
+        b=JvjZMTtctB39Ra9vaNqY71P63Q2AoJCiSCDcWLVcjSszqQOVJ6V9CsZWM1/+uDPNus
+         OrojAZ4bVWH5aA74bZ2e9V18HwK/j9hCwqiHuaJnnh9qjtNcGvLAYefYnOmNhY91/dBc
+         dsKTLJkruxuFOgwevYggOP7e3IdB9kia7C2HXVaZPdcpXWyQTnO3IJeTIAUQxXsSnFri
+         7lCmk+Sr5T2RCfX/R2hmHJ4akSi/PTWgcDc2mnWyJZ00NBl8G+TwA4iTGNd6j4CcaEGG
+         t4+d9VehfkphL4iNbesOkzApNhjXHtkC+TfbSf0+FjQrtL9PLy/P3X4Y4dTVqSa7YaMV
+         JaZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733319538; x=1733924338;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hx92aOUTdzsO8QesLRdfJIy7w6XWFquv4i5XmmjjM3Y=;
+        b=IhCCdhXPum+tqwg8jXWEts6nxQd7bLSLQcG7KgccoZeZizRQg6AzjIv+IBey9kKKjY
+         C5KEPrVtzTLrnBU9pdx4D/PhTjRkNg1wDKeeNO014x/TXyM5mcDW5LmAB53l2vqrZ7oY
+         u0iW6tUMQmANauFykg3KmC49Qbvis270xVkJmaZy7VDYsjhNb48o+bjM6VFlfe0yzDdr
+         ONmG5p7XnbuknljYwU7rmpCIGOwdvBk9xKHvrD/d8g+7n7EBszGMo2R0M2YHh66o9nGA
+         NHT5yPXeMP0CENeciYKENoYMM9edLjiYEd2mmmJo0L65jMYmkI+6lnmuZcj5j9Ui7vLs
+         oiNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHUZ+0y+ZQrrtnbJCTEBuddTtxTEjOPp7Md3GAfp/ZqpHBIu2pEa9zviDWNNaXn/126Goirjaam75znA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZDU+v6j7v6kbThhS9sPL171Y20aE9oKwNbTecVGLNM9W1xwUt
+	LqqkctXlxRj5DRTTIGOtxyCic9OrlDNo60S/aG6rYV72SCkHkPXrFOnYoQ==
+X-Gm-Gg: ASbGncs4BDI9Ku9xbF01JT1pBk72xQEQ6LINo/6sEPL9s+sIs7XvSssCXujQKJCGlSP
+	it1oreFl6Qm+/SHVcEGe0uqMHfp7l3RYwi2psgP00Jm2klSjtjoX6xQvcWpo17MA/JWD9sgovAa
+	LRTL2Nwyo5IgtSykeCyc09h3XKuMMUbwjdyIV+E4VB8qd93VJJDnnT0bbPOnrt+SwB9OamWzX11
+	I0ueMd2qqo6jjpdQSgKnneT0+CJr79NN7dD9CENLg0corWfcKa1cxy+StWmTpodbXPox58hCoYA
+	JY25GaasQmEBnX6ahyHhxD8Sdg41i7KOD12w
+X-Google-Smtp-Source: AGHT+IEcUui9xm4ysmiVsxnWn7mWtrJgMLUjxjkV7sn4S9u+DQqTJgK3IoyCO4KydLETiaBu7XOyJw==
+X-Received: by 2002:ad4:5ba9:0:b0:6d8:850a:4d7d with SMTP id 6a1803df08f44-6d8b73318d1mr115388126d6.2.1733319538404;
+        Wed, 04 Dec 2024 05:38:58 -0800 (PST)
+Received: from ?IPV6:2607:fea8:c1df:ffe5:815c:167b:c62d:6e49? ([2607:fea8:c1df:ffe5:815c:167b:c62d:6e49])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d89b158778sm47234046d6.96.2024.12.04.05.38.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Dec 2024 05:38:57 -0800 (PST)
+Message-ID: <b3ab256f-5b51-46f3-aea3-98f931adf6a7@gmail.com>
+Date: Wed, 4 Dec 2024 08:38:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <839022e69496e80413ade9dc8287fb9ccaef9557.1733282486.git.wqu@suse.com>
-In-Reply-To: <839022e69496e80413ade9dc8287fb9ccaef9557.1733282486.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 4 Dec 2024 11:26:14 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7vujk4iSDm_Z_PKVKWQ+205DzNn+tMpXFfiy7YvbJCLw@mail.gmail.com>
-Message-ID: <CAL3q7H7vujk4iSDm_Z_PKVKWQ+205DzNn+tMpXFfiy7YvbJCLw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: tree-checker: reject inline extent items with 0
- ref count
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Frankie Fisher <frankie@terrorise.me.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Errors found in extent allocation tree or chunk allocation
+From: Nicolas Gnyra <nicolas.gnyra@gmail.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <207033eb-6e59-45f1-9ec5-09e63eaa4c70@gmail.com>
+ <f404a687-cd6b-4014-b2fc-0f070f551820@gmx.com>
+ <e9544172-ef74-4a65-b14f-8d3addb957d7@gmail.com>
+ <3fc16982-4f69-4b78-95c7-35964d6fd1e0@gmx.com>
+ <78bb97cd-516a-4647-8866-2a67e9bcdbcd@gmail.com>
+Content-Language: fr, en-CA
+In-Reply-To: <78bb97cd-516a-4647-8866-2a67e9bcdbcd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 4, 2024 at 3:56=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> There is a bug report in the mailing list where btrfs_run_delayed_refs()
-> failed to drop the ref count for logical 25870311358464 num_bytes
-> 2113536.
->
-> The involved leaf dump looks like this:
->
->   item 166 key (25870311358464 168 2113536) itemoff 10091 itemsize 50
->     extent refs 1 gen 84178 flags 1
->     ref#0: shared data backref parent 32399126528000 count 0 <<<
->     ref#1: shared data backref parent 31808973717504 count 1
->
-> Notice the count number is 0.
->
-> [CAUSE]
-> There is no concrete evidence yet, but considering 0 -> 1 is also a
-> single bit flipped, it's possible that hardware memory bitflip is
-> involved, causing the on-disk extent tree to be corrupted.
->
-> [FIX]
-> To prevent us reading such corrupted extent item, or writing such
-> damaged extent item back to disk, enhance the handling of
-> BTRFS_EXTENT_DATA_REF_KEY and BTRFS_SHARED_DATA_REF_KEY keys for both
-> inlined and key items, to detect such 0 ref count and reject them.
->
-> Link: https://lore.kernel.org/linux-btrfs/7c69dd49-c346-4806-86e7-e6f863a=
-66f48@app.fastmail.com/
-> Reported-by: Frankie Fisher <frankie@terrorise.me.uk>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/tree-checker.c | 27 ++++++++++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 148d8cefa40e..0b9891f416ec 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1527,6 +1527,11 @@ static int check_extent_item(struct extent_buffer =
-*leaf,
->                                            dref_offset, fs_info->sectorsi=
-ze);
->                                 return -EUCLEAN;
->                         }
-> +                       if (unlikely(btrfs_extent_data_ref_count(leaf, dr=
-ef) =3D=3D 0)) {
-> +                               extent_err(leaf, slot,
-> +                       "invalidate data ref count, should have non-zero =
-value");
+> [...]
+>>>>> I'm currently running btrfs-progs v6.12 but the balance was originally
+>>>>> run on v5.10.1. Is there any way to recover from this or should I just
+>>>>> nuke the filesystem and restart from scratch? There's nothing super
+>>>>> important on there, it's just going to be annoying to restore from a
+>>>>> backup, and I thought it'd be interesting to try to figure out what
+>>>>> happened here.
+>>>>
+>>>> Recommended to run a full memtest before doing anything, just to verify
+>>>> if it's really a hardware bitflip.
+>>>
+>>> I started Memtest86+ ~3.5 hours ago (it's on the 7th pass) based on a
+>>> recommendation when I asked in the IRC channel; no errors yet, but I'll
+>>> let it run overnight at least and let you know if it fails.
+>>
+>> Just in case, have you tried memtester?
+>>
+>> There used to be a AMD SFH driver bug that causes random memory 
+>> corruption.
+>>
+>> Tools like memtest86+ are doing its own EFI payload so that it will
+>> detect problems caused by kernel drivers.
+>>
+>> Anyway, 7 passes already look good enough to me.
+>>
+>> Then the cause will be much harder to pin down.
+> 
+> Oh alright! I haven't tried memtester - I'll give it a shot and get back 
+> to you. Thanks again!
 
-invalidate -> invalid
-
-> +                               return -EUCLEAN;
-> +                       }
->                         inline_refs +=3D btrfs_extent_data_ref_count(leaf=
-, dref);
->                         break;
->                 /* Contains parent bytenr and ref count */
-> @@ -1539,6 +1544,11 @@ static int check_extent_item(struct extent_buffer =
-*leaf,
->                                            inline_offset, fs_info->sector=
-size);
->                                 return -EUCLEAN;
->                         }
-> +                       if (unlikely(btrfs_shared_data_ref_count(leaf, sr=
-ef) =3D=3D 0)) {
-> +                               extent_err(leaf, slot,
-> +                       "invalidate shared data ref count, should have no=
-n-zero value");
-
-invalidate -> invalid
-
-> +                               return -EUCLEAN;
-> +                       }
->                         inline_refs +=3D btrfs_shared_data_ref_count(leaf=
-, sref);
->                         break;
->                 case BTRFS_EXTENT_OWNER_REF_KEY:
-> @@ -1611,8 +1621,18 @@ static int check_simple_keyed_refs(struct extent_b=
-uffer *leaf,
->  {
->         u32 expect_item_size =3D 0;
->
-> -       if (key->type =3D=3D BTRFS_SHARED_DATA_REF_KEY)
-> +       if (key->type =3D=3D BTRFS_SHARED_DATA_REF_KEY) {
-> +               struct btrfs_shared_data_ref *sref;
-> +
-> +               sref =3D btrfs_item_ptr(leaf, slot, struct btrfs_shared_d=
-ata_ref);
-> +               if (unlikely(btrfs_shared_data_ref_count(leaf, sref) =3D=
-=3D 0)) {
-> +                       extent_err(leaf, slot,
-> +               "invalid shared data backref count, should have non-zero =
-value");
-
-Here it's correct.
-
-> +                       return -EUCLEAN;
-> +               }
-> +
->                 expect_item_size =3D sizeof(struct btrfs_shared_data_ref)=
-;
-> +       }
->
->         if (unlikely(btrfs_item_size(leaf, slot) !=3D expect_item_size)) =
-{
->                 generic_err(leaf, slot,
-> @@ -1689,6 +1709,11 @@ static int check_extent_data_ref(struct extent_buf=
-fer *leaf,
->                                    offset, leaf->fs_info->sectorsize);
->                         return -EUCLEAN;
->                 }
-> +               if (unlikely(btrfs_extent_data_ref_count(leaf, dref) =3D=
-=3D 0)) {
-> +                       extent_err(leaf, slot,
-> +       "invalidate extent data backref count, should have non-zero value=
-");
-
-invalidate -> invalid
-
-With those small fixes:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> +                       return -EUCLEAN;
-> +               }
->         }
->         return 0;
->  }
-> --
-> 2.47.1
->
->
+I let memtester run overnight; it's now at loop 20 and still running.
 
