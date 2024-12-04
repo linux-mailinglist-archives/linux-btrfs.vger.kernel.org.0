@@ -1,79 +1,81 @@
-Return-Path: <linux-btrfs+bounces-10052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C5609E32AA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 05:29:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF029E32AF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 05:40:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C61B9285B0E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 04:29:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A18BB23FD1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2024 04:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72B0155A52;
-	Wed,  4 Dec 2024 04:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A451616C684;
+	Wed,  4 Dec 2024 04:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TyeF4TJm"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gb3+s/s1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D681219E4
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 04:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B7A38385
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2024 04:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733286582; cv=none; b=HgdbCu4bPHaQCO0K4ZgylUTBB+zc1S1jz+4Va9DRtg772FMPhwHcrkyQ3GNJ7zKrCiohe9gjxYG31CNSfoWzR3u8arOOQnrwD83NSOSkwvygtPGfI+zwexuWkAqKirV8wv70+EqDN2rOMKmJDxTu8tiXR/jWgN5Tp6NLB/Oaq9k=
+	t=1733287213; cv=none; b=ELhCEK//UR3NV6bt6TM70opXCsocAjGxcCg2RGmKeLvU6hPHXWL6AZIyV3Uy2jikDHx/LN/EPpG6bOR/KQhQ75OSazr/qnIvRBq4PjUd+f4WL3+1hU9DNiRUdOHPQfzffYXlBQJSPEz+KbFhU4vGf4zZsBHVWKM/Vv+17U3n1Is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733286582; c=relaxed/simple;
-	bh=qKSxXUgLYF5gTifT9wX/DmqTndFVVYVV5BtJwFPVlpM=;
+	s=arc-20240116; t=1733287213; c=relaxed/simple;
+	bh=x0cGoUmti/5/ki8WxvHkMg98Fvs4MFu+ilWQk3meKdw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eSXXi78n2oDcK8q7GYsYGxbfkUrlE5H8dLiuDehQekWyi/on28Fd4ODJaqzYR0Dm3PiQUKyfMHJqRyreY9415DrJVdMVxELGnt1Bsy04RvF1y9UifTlAm8YDsW25rqQoBBKkGOho8RgsXjt+E3XvYCWDXaUZMBFlozXvVCnIUhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TyeF4TJm; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-53de6b7da14so6197205e87.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Dec 2024 20:29:40 -0800 (PST)
+	 In-Reply-To:Content-Type; b=TEurtEWlMFOYj3YA1tvLdP0kFmsnaBnGMitsGiyBvPm/nZwsctowX0jLuB8641rMR5umfc/5ICMF4hPzip4u87BQq7/xrISKOK2eWUbZffogcd+2dWRwhFlO1LY71D6DfT1GrG8tSWgTVpaHhL4VcSIpRHaMDOZ6rfiBMV0wQcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gb3+s/s1; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-385eaecc213so207754f8f.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Dec 2024 20:40:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733286579; x=1733891379; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=n0LZE0VPwLaR9B7O40rz/WJ8B5CqZjtefyLc1Yluf30=;
-        b=TyeF4TJmittSB63YOGJ5BIc35j5bXpxwnIu/WMpat8rFjZtH0igW3wGHFCxEYwRWG8
-         tzS6AfD1j+bgQcbyf52MRGAx9EHsKGsm0lRBPZNE6m+lOu6AdGuqzEDiIgnO6I15qiyo
-         Ste8YVneQonOBZCdaBF5rNTQKu0sdKVg/tHj9Y1nU95mYKu68vnoNioIN9Twx3D/crnu
-         sglcMzi75pF6J99sTWeoT6R0WGIqfh8GV4aC7/4R0pAU28SPAtrMP7bP6jOdgAPUpdOq
-         U9n9z666Bt4GQ+REiStU1wqNsiNYklR7EA/WoJ5A0IQsy/jOLr70j2A5TUgFvNcyGXSF
-         EvjA==
+        d=suse.com; s=google; t=1733287210; x=1733892010; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=hCA6IjZOYItopTKJhZsjay8gBUdAKKF/WRv1v8xAxKA=;
+        b=gb3+s/s1sPfiYJa7nW3L2YaSidiPRVDYBAS0ZL9D9buF5JKth+8v7vyI0/ZJXA356I
+         X3euvwznEK5RUGuf0bRpdgu1mgW9akn7isZ5qnZbqsaMLkX9VQi74KL2VTJAVKlfCSgX
+         Vtmfr1KKsR0CgP0FIjNt7R03atb/3FZ/GKJP7E9q50J8niCDwVlV/VhkvE3uPlLWAniD
+         nNfbvAuG2lR6bu8OI+DP57XEHA6fJpeAROkeJUPEj87C89JnIIkLR6EbKns8JAR/VY+2
+         r5RvXmnMiMIdgBcMVl0vx0xWUYU6UUdzdLdXkhRYVNPmsa+vQCAToZK9U9sDlz5zVmiy
+         tIYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733286579; x=1733891379;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n0LZE0VPwLaR9B7O40rz/WJ8B5CqZjtefyLc1Yluf30=;
-        b=dEOMf/fDSODb+9YdEI6PX97MKCEaTDCKVUP/bhMV8NTvxdusQ2SXtr+TSAV3APSJx2
-         5fJupZzqkpV3OROPJ4BNfk0+M7CsSsc7Q5g65xDE85sWDc4ndetslKioKigtYmVOQrvx
-         FgFPB/zZZc0ixaQDc2aahBdWjFTXwctCYxmC28FLpwMKggmV6XsQIiIZbMYSdanSe04n
-         ts4C/s7FDg5Tq7LCY8WH/rtgjjeTXMnrXXYAtqUJakmQjXTAuXQO9X6OldNd2hShVzhf
-         xy6e6iD+g0Z8Ki2YR4KU0LEAVp1uYanvOOO3fcJpgJUEDoeYhbIVGu6wEI9krAq2KJvQ
-         srkA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdjTcxj9C6NcHgjtWC3cv/RwJdWPsIJPY13fNu3Q0qtGgPP13eftQ4ekZ36Xy/BCdnIkpGOTBzh/Awzg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAcUyEEj5t8nCK02C//lXJEmDih1aDWmPj/C0f6utU/aufM6mb
-	P3By/sgvXZJguxiH5LNRjWD2iwaEJboGa0Wff+kWgtBUVv+7jlP43FBHug==
-X-Gm-Gg: ASbGncu8nK1O0C9DYCsNEQPPsh1db/bifVXeElsn92lGkoSnfERbMH1MtVh5+0R8LkX
-	xLyzkox3krsXjjS8yBNFhAlix+8INuU8+FkXptNDSUMDUX1X+9uw9GNEiQFjSn4Gewz5hZsAWgn
-	LO7SUYwyMXbFpybX0xolClBVDBd+sIEld2queTHylh94EYCHcwneoxgxHlGX7JJdWDEFJIFM8/6
-	X+x6MXrlEFF/km0SJYfSRr6gf65CCVeHL8tLu96uTgLJWhqcVMVOMHueAjlzp+V+cCrd8qmZiWv
-	1cNW7NJpMdAiTI7A3j9xRQ==
-X-Google-Smtp-Source: AGHT+IE4agohEhc6VAMTs8WN0MNob+4afD8dTyyeEFgLnQdV3DSHZJkS+ong5saUEvtEHtt6+OvqoQ==
-X-Received: by 2002:ac2:495b:0:b0:53e:1c4f:ed07 with SMTP id 2adb3069b0e04-53e1c4fed0dmr384948e87.6.1733286578774;
-        Tue, 03 Dec 2024 20:29:38 -0800 (PST)
-Received: from ?IPV6:2a00:1370:8180:3d9b:1e04:1260:b51:786c? ([2a00:1370:8180:3d9b:1e04:1260:b51:786c])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53df649647dsm2064374e87.195.2024.12.03.20.29.37
+        d=1e100.net; s=20230601; t=1733287210; x=1733892010;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hCA6IjZOYItopTKJhZsjay8gBUdAKKF/WRv1v8xAxKA=;
+        b=moQ86+tBGufkBDp3K1N91iiAH1eJSiEVHd3UPE2gBEzDobh0+eNpLNI3DB3PVocv5G
+         YMe1bj1yO0tWTq/5ZYO3bUNr/9T7Gb3M01ba03qeVFCoJYfkNKcbS1E49WgeL26s59uy
+         kZ1TkFyYb22YyDTM7N4sPLjQe2xUzICZVGS+3z2ODKQ0btDLhf07LVmM4c3xXgaqWBf4
+         0iH0srZmWlvrHfeBuQxrry3LhSpSH5dcbEqNdLrx6V1wXNPc6PwXGAi7lbnET/oneVjU
+         1iXpe14EyGl8qYMmzB8lePpT5ktPigqqQsealkuRsS5LCjhO73Vc5VXO5kQYl3DiguB8
+         AiVA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdpac0I1u3PqznTJsCqgOMWCqevCxwyPnnBDt7DowdT/smnMN3tY3mc0NqI8OFTiwGL2l0oinRtqPCxA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyvVbXC7XdH83eJMdBtUmQOEytyG6ShfLKrDyO8RDHph68QMEhW
+	cifog1J+VB1bsRi+cZlwZmfpMGktAhMQMe8XznODVpNzvQlSe8A6YBZ1Egfn2IbVdzIj81+dRCU
+	l
+X-Gm-Gg: ASbGncuwzQt3iz03fJwf0+wLzOeCsjzP9CLDAXTkhzXk2SDcnsy0PySDLMwgFQUP40c
+	OtxD2oCS2YSCC+XXwhMayeMu41UMpoFSUUZAa5h/dsb7OAbWhGZc9cPFkLBAYdvJPvUbF6G9HA2
+	puFnnwGYU+HsOcrcpl/04tjdjlvzlekgPUN8DyA8q2JrRHycTY0pu7lkYYpiSmiLXHmXXpbYIDk
+	zTgQ8fQSjJcA2SItJQQ7vlw5kn6IGK9tlPvaKWdr0WfdIhbGGDde36J+L7KMnMvc0xy2wlUY7ln
+	Wg==
+X-Google-Smtp-Source: AGHT+IFrEa9XHRUANnjIlaj7yyYv1qshxjs2Sa2E6+319V/z6Z3wAFYhtw0oH3So0NqIKpmzDY82uw==
+X-Received: by 2002:a5d:6c6d:0:b0:385:e986:416f with SMTP id ffacd0b85a97d-385e986435amr9716185f8f.10.1733287209524;
+        Tue, 03 Dec 2024 20:40:09 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2157433ef73sm57006455ad.177.2024.12.03.20.40.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Dec 2024 20:29:38 -0800 (PST)
-Message-ID: <a98fb4d0-1d80-4ae0-a79b-2acadb7b9722@gmail.com>
-Date: Wed, 4 Dec 2024 07:29:36 +0300
+        Tue, 03 Dec 2024 20:40:09 -0800 (PST)
+Message-ID: <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
+Date: Wed, 4 Dec 2024 15:10:05 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,44 +86,95 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: Using btrfs raid5/6
 To: Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
 References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
-Content-Language: en-US, ru-RU
-From: Andrei Borzenkov <arvidjaar@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
 In-Reply-To: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-04.12.2024 06:34, Scoopta wrote:
-> I'm looking to deploy btfs raid5/6 and have read some of the previous
-> posts here about doing so "successfully." I want to make sure I
-> understand the limitations correctly. I'm looking to replace an md+ext4
-> setup. The data on these drives is replaceable but obviously ideally I
+
+
+在 2024/12/4 14:04, Scoopta 写道:
+> I'm looking to deploy btfs raid5/6 and have read some of the previous 
+> posts here about doing so "successfully." I want to make sure I 
+> understand the limitations correctly. I'm looking to replace an md+ext4 
+> setup. The data on these drives is replaceable but obviously ideally I 
 > don't want to have to replace it.
+
+0) Use kernel newer than 6.5 at least.
+
+That version introduced a more comprehensive check for any RAID56 RMW, 
+so that it will always verify the checksum and rebuild when necessary.
+
+This should mostly solve the write hole problem, and we even have some 
+test cases in the fstests already verifying the behavior.
+
 > 
 > 1) use space_cache=v2
 > 
 > 2) don't use raid5/6 for metadata
 > 
 > 3) run scrubs 1 drive at a time
+
+That's should also no longer be the case.
+
+Although it will waste some IO, but should not be that bad.
+
 > 
 > 4) don't expect to use the system in degraded mode
+
+You can still, thanks to the extra verification in 0).
+
+But after the missing device come back, always do a scrub on that 
+device, to be extra safe.
+
 > 
-> 5) there are times where raid5 will make corruption permanent instead of
-> fixing it - does this matter? As I understand it md+ext4 can't detect or
+> 5) there are times where raid5 will make corruption permanent instead of 
+> fixing it - does this matter? As I understand it md+ext4 can't detect or 
 > fix corruption either so it's not a loss
+
+With non-RAID56 metadata, and data checksum, it should not cause problem.
+
+But for no-data checksum/ no COW cases, it will cause permanent corruption.
+
 > 
-> 6) the write hole exists - As I understand it md has that same problem
+> 6) the write hole exists - As I understand it md has that same problem 
 > anyway
+
+The same as 5).
+
+Thanks,
+Qu
+
 > 
-
-Linux MD can use either write cache or partial parity log to protect 
-against write hole.
-
-https://docs.kernel.org/driver-api/md/index.html
-
-> Are there any other ways I could lose my data? Again the data IS
-> replaceable, I'm just trying to understand if there are any major
-> advantages to using md+btrfs or md+ext4 over btrfs raid5 if I don't care
-> about downtime during degraded mode. Additionally the posts I'm looking
+> Are there any other ways I could lose my data? Again the data IS 
+> replaceable, I'm just trying to understand if there are any major 
+> advantages to using md+btrfs or md+ext4 over btrfs raid5 if I don't care 
+> about downtime during degraded mode. Additionally the posts I'm looking 
 > at are from 2020, has any of the above changed since then?
 > 
 > Thanks!
