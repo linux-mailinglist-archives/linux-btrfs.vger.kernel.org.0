@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-10070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10069-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 492ED9E4EE4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 08:49:36 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631819E4EE3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 08:49:35 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28D2D1664AF
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E52172810FB
 	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 07:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410651C303E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230A51C243D;
 	Thu,  5 Dec 2024 07:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Wuphavap"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="WGGG/BKC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76DD51B4F3E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D831AB517
 	for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2024 07:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733384966; cv=none; b=oVKUeTZLubRy4Sb/orK5Ruh4QeKUVB5vcVetTmnZJT/LUEhO+u7GKh8RRCbGxddUd6nLjf4NwPrt50Fw+C/cOJgDR5z8ArweM4koYuZIEg2IFE2FjYoGA4HlgQlwLOeKclNb9Egt8Wg5FwOystejWjvo8bl/HdTTIpDWJISI6nM=
+	t=1733384966; cv=none; b=g6+NV1+NX6Mr2EZAOMzzBtULRyC94PGP74gvNBDCN+Zxj2GtQ0eCKStR5Kt0RZUv3bCr5IAX1DaL1n8GKpxNsRRi8ONYvFtQmIxn/GyT7SQ2bPb1Ic8TVIXYagb+EJLaYft2Kz0fa9OVNJKLiI1HOdFBH+O243qHVZOLJCoX7KQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1733384966; c=relaxed/simple;
-	bh=gtpFDF7OxtUFik/G4W4FeP4H7ISC29x/D3mxLbq+w1w=;
+	bh=0W3hrWB/Irav8nhuGzm/DQC/6Ab9jzUquKNv08/4ztk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gjx5YOYmReGJk7ob7WPDZsyczMG722sV3phmWUrkLtw/OFShUmiyiFH9WgWgJnHZU2TgStSvZ905Swd8C4q7phLBvYNY7ApKhale+r0vuB90S5a/6yoPUx9zmlnVt4Wy3q9CM/ABuy+JnBgKZj5eEnCX63a2ePB2mzOShyR4/tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Wuphavap; arc=none smtp.client-ip=68.232.143.124
+	 MIME-Version; b=DSO22eiSkdJ6YIC2qUN0jhpi562wfn+MXy8ncpfDCGqBQya2E2GMTk8OK9q5riYTc4jujuJK8JWL6q4sdBhoJXHxxm9JOn5PFixmSFi/FEJB72qprTrpGBlp/i5GxwldPe2tfOPK4kCV/aG/jAQNegONQtJK76rjmsF1klXBsok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=WGGG/BKC; arc=none smtp.client-ip=68.232.143.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,33 +36,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1733384964; x=1764920964;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gtpFDF7OxtUFik/G4W4FeP4H7ISC29x/D3mxLbq+w1w=;
-  b=Wuphavap197WVl1rfCkkyyiJPlwVaEcCYnTYpcQa/EKGr++hA90pNLbp
-   nz18L/z2ANQeONU7PdRz6uEXkj6/EUfOXmdCX/9Fp5UcUc1B3qwzSNgqe
-   1EPkbBVGPcCqDu9ib0DjHR0ISS8/OoxwsvK6rLkx2MRSVczsMX4r/B585
-   wQ3QKnFX4D8u0HbmJunbsdGBbBjklnq7szdmTbDTAU23mdzZZ3Ge3LhGf
-   Axbd/YpMkemjr9hy0bhYYvDyl7cnUqkwkU3MUbzwK70oGEZ4zUPbMtWRk
-   K99macYz34GhGwrcDtSMd5aSS8o16f7rbx07ZicHrAhSFmzbDBYhn5Hq/
-   g==;
-X-CSE-ConnectionGUID: mWlbXwBRSjWItWx5P+/zDg==
-X-CSE-MsgGUID: HUpFImBWT8OCyQwkrMhGZQ==
+  bh=0W3hrWB/Irav8nhuGzm/DQC/6Ab9jzUquKNv08/4ztk=;
+  b=WGGG/BKCWXjH2tYt+FVNzIsBaPY6/EUqDSdJrX3IezB4ydgWqg1H/bjZ
+   fa4JOW66COXsoZM1LdKLHCeBdEWOKHhMwV2CB8hG1lxnllPrfiB6aJBFC
+   I1CL8rl+Z2E0Gvfq1BttKlIAZtNwVLJXJu5fwDuILK8QXWabZkn0UDqNb
+   7YLFVCrq0+QFTL3VPMGgV8mQyEzwY/41rhBI4fnMCElh6UH4KGJ5zsPxd
+   ocWiksR0oLY/pybKZH9q6bAzNkH8+cPi55slrV32yhs73gzPRIpxm0bqe
+   aJT6r4nT0wcTlpN5s0Z2jd3CS8xVQMzgQ0Xkg45KBA4jQTHQ0+5IIyCtc
+   A==;
+X-CSE-ConnectionGUID: b73YNZ6DQpC6QHPkQkfqjA==
+X-CSE-MsgGUID: VwEMmshqTLKjnQVM7cWnfQ==
 X-IronPort-AV: E=Sophos;i="6.12,209,1728921600"; 
-   d="scan'208";a="33626113"
+   d="scan'208";a="33626117"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2024 15:49:21 +0800
-IronPort-SDR: 67514c5c_cvAOFmFyYmFbqX/GtG0VlPG96oSHHJyQXH6WenRqngwmRdn
- VWFxZ3WsKq2thLMOQpe6xJoKFSsDEuYyQzi+BRA==
+  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2024 15:49:22 +0800
+IronPort-SDR: 67514c5d_kd7HbZeenE6h44DccAEH0CdnGrjdJBd3KGS9IHK7wOVZvgI
+ MXime4eq3Dk8su7KYqqb5ZNgyAMNj147v4BEyuQ==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2024 22:46:52 -0800
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2024 22:46:53 -0800
 WDCIronportException: Internal
 Received: from naota-x1.dhcp.fujisawa.hgst.com (HELO naota-x1.ad.shared) ([10.89.81.175])
-  by uls-op-cesaip02.wdc.com with ESMTP; 04 Dec 2024 23:49:21 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 04 Dec 2024 23:49:22 -0800
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 07/11] btrfs: pass space_info for block group creation
-Date: Thu,  5 Dec 2024 16:48:23 +0900
-Message-ID: <127cf9ae217dd4ac2ce651317fccf6923dd765a9.1733384171.git.naohiro.aota@wdc.com>
+Subject: [PATCH 08/11] btrfs: introduce btrfs_space_info sub-group
+Date: Thu,  5 Dec 2024 16:48:24 +0900
+Message-ID: <ab8eb232d1acbf02af7352a2224a31b53ece01f5.1733384172.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1733384171.git.naohiro.aota@wdc.com>
 References: <cover.1733384171.git.naohiro.aota@wdc.com>
@@ -74,182 +74,163 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add btrfs_space_info parameter to btrfs_make_block_group(), its related
-functions and related struct. Passed space_info will have a new block group. If
-NULL is passed, it uses the default space_info.
+Current code assumes we have only one space_info for each block group type
+(DATA, METADATA, and SYSTEM). We sometime needs multiple space_info to
+manage special block groups.
 
-The parameter is used in a later commit and the behavior is unchanged now.
+One example is handling the data relocation block group for the zoned mode.
+That block group is dedicated for writing relocated data and we cannot
+allocate any regular extent from that block group, which is implemented in
+the zoned extent allocator. That block group still belongs to the normal
+data space_info. So, when all the normal data block groups are full and
+there are some free space in the dedicated block group, the space_info
+looks to have some free space, while it cannot allocate normal extent
+anymore. That results in a strange ENOSPC error. We need to have a
+space_info for the relocation data block group to represent the situation
+properly.
+
+This commit adds a basic infrastructure for having a "sub-group" of a
+space_info: creation and removing. A sub-group space_info belongs to one of
+the primary space_infos and has the same flags as its parent.
+
+Currently, the sub-group is only implemented for the relocation data
+space_info. In the future, we can also implement the space_info for
+the tree-log block group. Or, it could be useful to implement tiered
+storage for btrfs e.g, by implementing a sub-group space_info for block
+groups resides on a fast storage.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/block-group.c | 15 ++++++++-------
- fs/btrfs/block-group.h |  2 +-
- fs/btrfs/volumes.c     | 16 +++++++++++-----
- fs/btrfs/volumes.h     |  2 +-
- 4 files changed, 21 insertions(+), 14 deletions(-)
+ fs/btrfs/block-group.c |  6 ++++++
+ fs/btrfs/space-info.c  | 20 ++++++++++++++++++--
+ fs/btrfs/space-info.h  |  8 ++++++++
+ fs/btrfs/sysfs.c       | 16 +++++++++++++---
+ 4 files changed, 45 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index ad78c8f1d381..6787f7034b9e 100644
+index 6787f7034b9e..aa35b62e9773 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -2833,7 +2833,7 @@ static u64 calculate_global_root_id(const struct btrfs_fs_info *fs_info, u64 off
- }
+@@ -4506,6 +4506,12 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+ 					struct btrfs_space_info,
+ 					list);
  
- struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *trans,
--						 u64 type,
-+						 struct btrfs_space_info *space_info, u64 type,
- 						 u64 chunk_offset, u64 size)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
-@@ -2888,7 +2888,7 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
- 	 * assigned to our block group. We want our bg to be added to the rbtree
- 	 * with its ->space_info set.
- 	 */
--	cache->space_info = btrfs_find_space_info(fs_info, cache->flags);
-+	cache->space_info = space_info;
- 	ASSERT(cache->space_info);
++		for (int i = 0; i < BTRFS_SPACE_INFO_SUB_GROUP_MAX; i++) {
++			if (space_info->sub_group[i]) {
++				check_removing_space_info(space_info->sub_group[i]);
++				kfree(space_info->sub_group[i]);
++			}
++		}
+ 		check_removing_space_info(space_info);
+ 		list_del(&space_info->list);
+ 		btrfs_sysfs_remove_space_info(space_info);
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 1d0f0c9d8956..16beb25be4b0 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -249,6 +249,7 @@ static void init_space_info(struct btrfs_fs_info *info,
+ 	INIT_LIST_HEAD(&space_info->priority_tickets);
+ 	space_info->clamp = 1;
+ 	btrfs_update_space_info_chunk_size(space_info, calc_chunk_size(info, flags));
++	space_info->subgroup_id = SUB_GROUP_PRIMARY;
  
- 	ret = btrfs_add_block_group_cache(fs_info, cache);
-@@ -3873,7 +3873,8 @@ int btrfs_force_chunk_alloc(struct btrfs_trans_handle *trans, u64 type)
- 	return btrfs_chunk_alloc(trans, NULL, alloc_flags, CHUNK_ALLOC_FORCE);
- }
+ 	if (btrfs_is_zoned(info))
+ 		space_info->bg_reclaim_threshold = BTRFS_DEFAULT_ZONED_RECLAIM_THRESH;
+@@ -266,6 +267,20 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
  
--static struct btrfs_block_group *do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
-+static struct btrfs_block_group *do_chunk_alloc(struct btrfs_trans_handle *trans,
-+						struct btrfs_space_info *space_info, u64 flags)
- {
- 	struct btrfs_block_group *bg;
- 	int ret;
-@@ -3886,7 +3887,7 @@ static struct btrfs_block_group *do_chunk_alloc(struct btrfs_trans_handle *trans
- 	 */
- 	check_system_chunk(trans, flags);
+ 	init_space_info(info, space_info, flags);
  
--	bg = btrfs_create_chunk(trans, flags);
-+	bg = btrfs_create_chunk(trans, space_info, flags);
- 	if (IS_ERR(bg)) {
- 		ret = PTR_ERR(bg);
- 		goto out;
-@@ -3935,7 +3936,7 @@ static struct btrfs_block_group *do_chunk_alloc(struct btrfs_trans_handle *trans
- 		const u64 sys_flags = btrfs_system_alloc_profile(trans->fs_info);
- 		struct btrfs_block_group *sys_bg;
++	if (btrfs_is_zoned(info) && (flags & BTRFS_BLOCK_GROUP_DATA)) {
++		struct btrfs_space_info *reloc = kzalloc(sizeof(*reloc), GFP_NOFS);
++
++		if (!reloc)
++			return -ENOMEM;
++		init_space_info(info, reloc, flags);
++		space_info->sub_group[SUB_GROUP_DATA_RELOC] = reloc;
++		reloc->parent = space_info;
++		reloc->subgroup_id = SUB_GROUP_DATA_RELOC;
++
++		ret = btrfs_sysfs_add_space_info_type(info, reloc);
++		ASSERT(!ret);
++	}
++
+ 	ret = btrfs_sysfs_add_space_info_type(info, space_info);
+ 	if (ret)
+ 		return ret;
+@@ -561,8 +576,9 @@ static void __btrfs_dump_space_info(const struct btrfs_fs_info *fs_info,
+ 	lockdep_assert_held(&info->lock);
  
--		sys_bg = btrfs_create_chunk(trans, sys_flags);
-+		sys_bg = btrfs_create_chunk(trans, NULL, sys_flags);
- 		if (IS_ERR(sys_bg)) {
- 			ret = PTR_ERR(sys_bg);
- 			btrfs_abort_transaction(trans, ret);
-@@ -4185,7 +4186,7 @@ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans,
- 			force_metadata_allocation(fs_info);
- 	}
- 
--	ret_bg = do_chunk_alloc(trans, flags);
-+	ret_bg = do_chunk_alloc(trans, space_info, flags);
- 	trans->allocating_chunk = false;
- 
- 	if (IS_ERR(ret_bg)) {
-@@ -4268,7 +4269,7 @@ static void reserve_chunk_space(struct btrfs_trans_handle *trans,
- 		 * the paths we visit in the chunk tree (they were already COWed
- 		 * or created in the current transaction for example).
- 		 */
--		bg = btrfs_create_chunk(trans, flags);
-+		bg = btrfs_create_chunk(trans, NULL, flags);
- 		if (IS_ERR(bg)) {
- 			ret = PTR_ERR(bg);
- 		} else {
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index c01f3af726a1..cb9b0405172c 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -326,7 +326,7 @@ void btrfs_reclaim_bgs(struct btrfs_fs_info *fs_info);
- void btrfs_mark_bg_to_reclaim(struct btrfs_block_group *bg);
- int btrfs_read_block_groups(struct btrfs_fs_info *info);
- struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *trans,
--						 u64 type,
-+						 struct btrfs_space_info *space_info, u64 type,
- 						 u64 chunk_offset, u64 size);
- void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans);
- int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1cccaf9c2b0d..d1f3068377aa 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3403,7 +3403,7 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
- 		const u64 sys_flags = btrfs_system_alloc_profile(fs_info);
- 		struct btrfs_block_group *sys_bg;
- 
--		sys_bg = btrfs_create_chunk(trans, sys_flags);
-+		sys_bg = btrfs_create_chunk(trans, NULL, sys_flags);
- 		if (IS_ERR(sys_bg)) {
- 			ret = PTR_ERR(sys_bg);
- 			btrfs_abort_transaction(trans, ret);
-@@ -5202,6 +5202,8 @@ struct alloc_chunk_ctl {
- 	u64 stripe_size;
- 	u64 chunk_size;
- 	int ndevs;
-+	/* Space_info the block group is going to belong. */
-+	struct btrfs_space_info *space_info;
+ 	/* The free space could be negative in case of overcommit */
+-	btrfs_info(fs_info, "space_info %s has %lld free, is %sfull",
+-		   flag_str,
++	btrfs_info(fs_info,
++		   "space_info %s (sub-group id %d) has %lld free, is %sfull",
++		   flag_str, info->subgroup_id,
+ 		   (s64)(info->total_bytes - btrfs_space_info_used(info, true)),
+ 		   info->full ? "" : "not ");
+ 	btrfs_info(fs_info,
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index 7459b4eb99cd..64641885babd 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -98,8 +98,16 @@ enum btrfs_flush_state {
+ 	RESET_ZONES		= 12,
  };
  
- static void init_alloc_chunk_ctl_policy_regular(
-@@ -5603,7 +5605,7 @@ static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
- 		return ERR_PTR(ret);
- 	}
++enum btrfs_space_info_sub_group {
++	SUB_GROUP_DATA_RELOC = 0,
++	SUB_GROUP_PRIMARY = -1,
++};
++#define BTRFS_SPACE_INFO_SUB_GROUP_MAX 1
+ struct btrfs_space_info {
+ 	struct btrfs_fs_info *fs_info;
++	struct btrfs_space_info *parent;
++	struct btrfs_space_info *sub_group[BTRFS_SPACE_INFO_SUB_GROUP_MAX];
++	int subgroup_id;
+ 	spinlock_t lock;
  
--	block_group = btrfs_make_block_group(trans, type, start, ctl->chunk_size);
-+	block_group = btrfs_make_block_group(trans, ctl->space_info, type, start, ctl->chunk_size);
- 	if (IS_ERR(block_group)) {
- 		btrfs_remove_chunk_map(info, map);
- 		return block_group;
-@@ -5629,7 +5631,7 @@ static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
+ 	u64 total_bytes;	/* total bytes in the space,
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index fdcbf650ac31..041ffe5e9cc5 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1792,15 +1792,25 @@ void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info)
+ 	kobject_put(&space_info->kobj);
  }
  
- struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
--					    u64 type)
-+					     struct btrfs_space_info *space_info, u64 type)
+-static const char *alloc_name(u64 flags)
++static const char *alloc_name(struct btrfs_space_info *space_info)
  {
- 	struct btrfs_fs_info *info = trans->fs_info;
- 	struct btrfs_fs_devices *fs_devices = info->fs_devices;
-@@ -5657,8 +5659,12 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
- 		return ERR_PTR(-EINVAL);
- 	}
++	u64 flags = space_info->flags;
++
+ 	switch (flags) {
+ 	case BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_DATA:
+ 		return "mixed";
+ 	case BTRFS_BLOCK_GROUP_METADATA:
+ 		return "metadata";
+ 	case BTRFS_BLOCK_GROUP_DATA:
+-		return "data";
++		switch (space_info->subgroup_id) {
++		case SUB_GROUP_PRIMARY:
++			return "data";
++		case SUB_GROUP_DATA_RELOC:
++			return "data-reloc";
++		default:
++			WARN_ON_ONCE(1);
++			return "data (unknown sub-group)";
++		}
+ 	case BTRFS_BLOCK_GROUP_SYSTEM:
+ 		return "system";
+ 	default:
+@@ -1820,7 +1830,7 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
  
-+	if (!space_info)
-+		space_info = btrfs_find_space_info(info, type);
-+	ASSERT(space_info);
- 	ctl.start = find_next_chunk(info);
- 	ctl.type = type;
-+	ctl.space_info = space_info;
- 	init_alloc_chunk_ctl(fs_devices, &ctl);
- 
- 	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
-@@ -5826,12 +5832,12 @@ static noinline int init_first_rw_device(struct btrfs_trans_handle *trans)
- 	 */
- 
- 	alloc_profile = btrfs_metadata_alloc_profile(fs_info);
--	meta_bg = btrfs_create_chunk(trans, alloc_profile);
-+	meta_bg = btrfs_create_chunk(trans, NULL, alloc_profile);
- 	if (IS_ERR(meta_bg))
- 		return PTR_ERR(meta_bg);
- 
- 	alloc_profile = btrfs_system_alloc_profile(fs_info);
--	sys_bg = btrfs_create_chunk(trans, alloc_profile);
-+	sys_bg = btrfs_create_chunk(trans, NULL, alloc_profile);
- 	if (IS_ERR(sys_bg))
- 		return PTR_ERR(sys_bg);
- 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 3a416b1bc24c..2faee2d2e584 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -690,7 +690,7 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
- int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
- struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
--					    u64 type);
-+					     struct btrfs_space_info *space_info, u64 type);
- void btrfs_mapping_tree_free(struct btrfs_fs_info *fs_info);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       blk_mode_t flags, void *holder);
+ 	ret = kobject_init_and_add(&space_info->kobj, &space_info_ktype,
+ 				   fs_info->space_info_kobj, "%s",
+-				   alloc_name(space_info->flags));
++				   alloc_name(space_info));
+ 	if (ret) {
+ 		kobject_put(&space_info->kobj);
+ 		return ret;
 -- 
 2.47.1
 
