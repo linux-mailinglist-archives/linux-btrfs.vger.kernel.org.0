@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-10079-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10080-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699999E4EF1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 08:50:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABB69E4EF2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 08:50:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43199165198
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 07:50:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FDC51881BF5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 07:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2FFD1CBE94;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEA31CCB26;
 	Thu,  5 Dec 2024 07:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BLwtlqru"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="YBMTzkml"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793271C4A07
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4FE1C4A13
 	for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2024 07:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733385031; cv=none; b=eb60Du6gbzdPdnaRCNZFINZ3ygyjL3PxiAKfBl1dj11OJVw6jBdQGV7SVCYbU59HW3nSrpvhSnG4RExd4AgEnA3jESdeKOF7UtmfHULtk1eeSyqsKEAImlh3mS5cVvDUKohNScSFB+G+yaEJ8Svn8P2YEdMnldtnXnQbaIez8Kc=
+	t=1733385031; cv=none; b=IRs6qjO2R3pdcYCWKf21rEXFvfO1JjGQJX2BREOiJO+uRCqoeDWRVBGdTqeLQwUum+kOQ3wFHL6sKMAarbQtRgcVnF9hSYYElc5VKFYiYG0Ou4JMCM17fP5z4NEiyMke2swaEbjP/AynHcV4zldxSoY0GjhXn2ayG8C1wnNcRMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1733385031; c=relaxed/simple;
-	bh=lZ+yT6pwbh23dlNXWUiG5N2+oMNnGGtMCFbEkWjS5Nc=;
+	bh=VhoQsMWSlMKsnY+HDBm6j7DjgomzY8oFLNxDxXaiyN4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RRkjcqDF9rrAG7RBbIsxSumzTOS1uz4RkjamYcEa+f8UoacZT+JWF8Q2V8wasmh5Eg0AaHxmjsxkp/rEbzkT6Vd8RtcKPvok0Drj4NeiA1KQ9xAf1YlMfYlUZH/jOqhiyUfFmMB+I97J1/7JxdNqpaLcl4Pi7ohBDCpp3YyPBvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BLwtlqru; arc=none smtp.client-ip=68.232.143.124
+	 MIME-Version; b=DLCXxL7aE8f6Ux4/n0f8tZXMfxpCzptaI31cwMMuWTr8ACiCylZ37kSyaxQ9dZilAemzAraAQOjfa5VdNIj8u6ehjmM6qC6rtC7t98EuXMjr5yf9nITUdTZ2TxiTxD9GY4GRc5FA+w0HkbI7/qy7hm0K3jFurPX8oahxSV5UKv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=YBMTzkml; arc=none smtp.client-ip=68.232.143.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,33 +36,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1733385029; x=1764921029;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lZ+yT6pwbh23dlNXWUiG5N2+oMNnGGtMCFbEkWjS5Nc=;
-  b=BLwtlqrukwlTWo6367MsHC7g4umzKYIVa+8IaoD+kip7TyJygsG+wbjw
-   fgwbSZ8ojSwSjbSuGkDkYA87MIyisOGB/0lANWEmSH7SE9rzGdOMSsfoZ
-   zZTE/0CnO1ZcA5w0LAsJ4sRHIgpoenbTmgUVsJ4BSxKAO0sZjPydJoQqq
-   SA8Y/cZIiKgfKDx1AV68A9B4ZcmAGyKRswHImTDnwNBAKqcAEcdMamp6q
-   GtOBRJBg7u01scjJeyFhXy02NeY8n3M3lxzJMAaXXfB28qDEZUcEYICaw
-   DxdkpoS2n3iRlKWJO1+IWUDsZJt7eNsodKZUdnLO7SlJqIYZv+2LH4Brm
+  bh=VhoQsMWSlMKsnY+HDBm6j7DjgomzY8oFLNxDxXaiyN4=;
+  b=YBMTzkmlMKskNLKv002UqWl3VyoIEAnjSGJwmarlWJ19ZmLiS1XjY5XF
+   D/CDppArFfyOnBZSNmp1F2flKBMkM21j+Wv89eYNY6ypBUbeC5k3LzyN1
+   KhESAsZR1TyrjgMoMGnXwMA7h2bGtYBCIGz07GyEVkoJrzz5FmJaCb1Mx
+   hqqRosVTTV6LgREYUy32/S62VVYSM5u5OzjAQdA9mrg8AhqvKrzT/ydT7
+   vHVQsB8n3eSLEhImlept0HrFabLUCSKd5jDUTwxqGo0BKfwn2/VPv2pFh
+   MWjNZButa/zEUrezLR0zklRfzGRjD9+lfjerSOSu9Rnt8R4/VHvNtnTNx
    Q==;
-X-CSE-ConnectionGUID: lRBe0N3cQvKqebC+neTuaQ==
-X-CSE-MsgGUID: g9aKElVhSWqKVZy3LzG7Jg==
+X-CSE-ConnectionGUID: 9W8coqWGRXuQEuONhddNYg==
+X-CSE-MsgGUID: KdsZel5hQqaPy0RR7/u/Dg==
 X-IronPort-AV: E=Sophos;i="6.12,209,1728921600"; 
-   d="scan'208";a="33626111"
+   d="scan'208";a="33626112"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2024 15:49:19 +0800
-IronPort-SDR: 67514c5a_xgmzIVUvNaPkyC0XBGeNU3OwuiNjzjHXTdpc4McoJokYEEI
- 0KxWYaBMJGGU0kuk/d+B32of/xaq5L98QSPO9UA==
+  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2024 15:49:20 +0800
+IronPort-SDR: 67514c5b_qdirNMJa/HPXO+eO/cnOrfq8sW0bOObqcf3GF037uqyOeGg
+ TU9YVeT+4uIxF3GYpt6XFbC3Czz+IIFWhODnNVQ==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2024 22:46:50 -0800
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2024 22:46:51 -0800
 WDCIronportException: Internal
 Received: from naota-x1.dhcp.fujisawa.hgst.com (HELO naota-x1.ad.shared) ([10.89.81.175])
   by uls-op-cesaip02.wdc.com with ESMTP; 04 Dec 2024 23:49:20 -0800
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 05/11] btrfs: factor out check_removing_space_info()
-Date: Thu,  5 Dec 2024 16:48:21 +0900
-Message-ID: <f4f89b4574df77147cffb21e5f74fd033a8dffbf.1733384171.git.naohiro.aota@wdc.com>
+Subject: [PATCH 06/11] btrfs: introduce space_info argument to btrfs_chunk_alloc
+Date: Thu,  5 Dec 2024 16:48:22 +0900
+Message-ID: <57f3882377b6783592d3e13ca7c85ac19ac4f71c.1733384171.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1733384171.git.naohiro.aota@wdc.com>
 References: <cover.1733384171.git.naohiro.aota@wdc.com>
@@ -74,81 +74,134 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Factor out check_removing_space_info() from btrfs_free_block_groups(). It
-sanity checks a to-be-removed space_info. There is no functional change.
+Take an optional btrfs_space_info argument in btrfs_chunk_alloc(). If
+specified, btrfs_chunk_alloc() works on the space_info. If not, the default
+space_info is used as the same as before.
+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/block-group.c | 51 ++++++++++++++++++++++++------------------
- 1 file changed, 29 insertions(+), 22 deletions(-)
+ fs/btrfs/block-group.c | 19 ++++++++++++-------
+ fs/btrfs/block-group.h |  3 ++-
+ fs/btrfs/extent-tree.c |  2 +-
+ fs/btrfs/space-info.c  |  2 +-
+ fs/btrfs/transaction.c |  2 +-
+ 5 files changed, 17 insertions(+), 11 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 5be029734cfa..4b8071a8d795 100644
+index 4b8071a8d795..ad78c8f1d381 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -4371,6 +4371,34 @@ void btrfs_put_block_group_cache(struct btrfs_fs_info *info)
- 	}
+@@ -2985,7 +2985,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
+ 		 */
+ 		alloc_flags = btrfs_get_alloc_profile(fs_info, cache->flags);
+ 		if (alloc_flags != cache->flags) {
+-			ret = btrfs_chunk_alloc(trans, alloc_flags,
++			ret = btrfs_chunk_alloc(trans, NULL, alloc_flags,
+ 						CHUNK_ALLOC_FORCE);
+ 			/*
+ 			 * ENOSPC is allowed here, we may have enough space
+@@ -3014,7 +3014,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
+ 		goto unlock_out;
+ 
+ 	alloc_flags = btrfs_get_alloc_profile(fs_info, cache->space_info->flags);
+-	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
++	ret = btrfs_chunk_alloc(trans, NULL, alloc_flags, CHUNK_ALLOC_FORCE);
+ 	if (ret < 0)
+ 		goto out;
+ 	/*
+@@ -3870,7 +3870,7 @@ int btrfs_force_chunk_alloc(struct btrfs_trans_handle *trans, u64 type)
+ {
+ 	u64 alloc_flags = btrfs_get_alloc_profile(trans->fs_info, type);
+ 
+-	return btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
++	return btrfs_chunk_alloc(trans, NULL, alloc_flags, CHUNK_ALLOC_FORCE);
  }
  
-+static void check_removing_space_info(struct btrfs_space_info *space_info)
-+{
-+	struct btrfs_fs_info *info = space_info->fs_info;
-+
-+	/*
-+	 * Do not hide this behind enospc_debug, this is actually
-+	 * important and indicates a real bug if this happens.
-+	 */
-+	if (WARN_ON(space_info->bytes_pinned > 0 ||
-+		    space_info->bytes_may_use > 0))
-+		btrfs_dump_space_info(info, space_info, 0, 0);
-+
-+	/*
-+	 * If there was a failure to cleanup a log tree, very likely due
-+	 * to an IO failure on a writeback attempt of one or more of its
-+	 * extent buffers, we could not do proper (and cheap) unaccounting
-+	 * of their reserved space, so don't warn on bytes_reserved > 0 in
-+	 * that case.
-+	 */
-+	if (!(space_info->flags & BTRFS_BLOCK_GROUP_METADATA) ||
-+	    !BTRFS_FS_LOG_CLEANUP_ERROR(info)) {
-+		if (WARN_ON(space_info->bytes_reserved > 0))
-+			btrfs_dump_space_info(info, space_info, 0, 0);
-+	}
-+
-+	WARN_ON(space_info->reclaim_size > 0);
-+}
-+
- /*
-  * Must be called only after stopping all workers, since we could have block
-  * group caching kthreads running, and therefore they could race with us if we
-@@ -4472,28 +4500,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
- 					struct btrfs_space_info,
- 					list);
+ static struct btrfs_block_group *do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
+@@ -4073,12 +4073,15 @@ static struct btrfs_block_group *do_chunk_alloc(struct btrfs_trans_handle *trans
+  *    - return 0 if it doesn't need to allocate a new chunk,
+  *    - return 1 if it successfully allocates a chunk,
+  *    - return errors including -ENOSPC otherwise.
++ *
++ * @space_info can optionally be specified to make a new chunk belong to it. If
++ * it is NULL, it is set automatically.
+  */
+-int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
++int btrfs_chunk_alloc(struct btrfs_trans_handle *trans,
++		      struct btrfs_space_info *space_info, u64 flags,
+ 		      enum btrfs_chunk_alloc_enum force)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_space_info *space_info;
+ 	struct btrfs_block_group *ret_bg;
+ 	bool wait_for_alloc = false;
+ 	bool should_alloc = false;
+@@ -4117,8 +4120,10 @@ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
+ 	if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+ 		return -ENOSPC;
  
--		/*
--		 * Do not hide this behind enospc_debug, this is actually
--		 * important and indicates a real bug if this happens.
--		 */
--		if (WARN_ON(space_info->bytes_pinned > 0 ||
--			    space_info->bytes_may_use > 0))
--			btrfs_dump_space_info(info, space_info, 0, 0);
--
--		/*
--		 * If there was a failure to cleanup a log tree, very likely due
--		 * to an IO failure on a writeback attempt of one or more of its
--		 * extent buffers, we could not do proper (and cheap) unaccounting
--		 * of their reserved space, so don't warn on bytes_reserved > 0 in
--		 * that case.
--		 */
--		if (!(space_info->flags & BTRFS_BLOCK_GROUP_METADATA) ||
--		    !BTRFS_FS_LOG_CLEANUP_ERROR(info)) {
--			if (WARN_ON(space_info->bytes_reserved > 0))
--				btrfs_dump_space_info(info, space_info, 0, 0);
--		}
--
--		WARN_ON(space_info->reclaim_size > 0);
-+		check_removing_space_info(space_info);
- 		list_del(&space_info->list);
- 		btrfs_sysfs_remove_space_info(space_info);
+-	space_info = btrfs_find_space_info(fs_info, flags);
+-	ASSERT(space_info);
++	if (!space_info) {
++		space_info = btrfs_find_space_info(fs_info, flags);
++		ASSERT(space_info);
++	}
+ 
+ 	do {
+ 		spin_lock(&space_info->lock);
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 36937eeab9b8..c01f3af726a1 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -342,7 +342,8 @@ int btrfs_add_reserved_bytes(struct btrfs_block_group *cache,
+ 			     bool force_wrong_size_class);
+ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
+ 			       u64 num_bytes, int delalloc);
+-int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
++int btrfs_chunk_alloc(struct btrfs_trans_handle *trans,
++		      struct btrfs_space_info *space_info, u64 flags,
+ 		      enum btrfs_chunk_alloc_enum force);
+ int btrfs_force_chunk_alloc(struct btrfs_trans_handle *trans, u64 type);
+ void check_system_chunk(struct btrfs_trans_handle *trans, const u64 type);
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 2f9126528a01..334a1701ff33 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4118,7 +4118,7 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+ 				return ret;
+ 			}
+ 
+-			ret = btrfs_chunk_alloc(trans, ffe_ctl->flags,
++			ret = btrfs_chunk_alloc(trans, NULL, ffe_ctl->flags,
+ 						CHUNK_ALLOC_FORCE_FOR_EXTENT);
+ 
+ 			/* Do not bail out on ENOSPC since we can do more. */
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 1fb55655f49d..1d0f0c9d8956 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -817,7 +817,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
+ 			ret = PTR_ERR(trans);
+ 			break;
+ 		}
+-		ret = btrfs_chunk_alloc(trans,
++		ret = btrfs_chunk_alloc(trans, space_info,
+ 				btrfs_get_alloc_profile(fs_info, space_info->flags),
+ 				(state == ALLOC_CHUNK) ? CHUNK_ALLOC_NO_FORCE :
+ 					CHUNK_ALLOC_FORCE);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 15312013f2a3..e5852316f0b6 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -755,7 +755,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 	if (do_chunk_alloc && num_bytes) {
+ 		u64 flags = h->block_rsv->space_info->flags;
+ 
+-		btrfs_chunk_alloc(h, btrfs_get_alloc_profile(fs_info, flags),
++		btrfs_chunk_alloc(h, NULL, btrfs_get_alloc_profile(fs_info, flags),
+ 				  CHUNK_ALLOC_NO_FORCE);
  	}
+ 
 -- 
 2.47.1
 
