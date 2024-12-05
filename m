@@ -1,103 +1,151 @@
-Return-Path: <linux-btrfs+bounces-10072-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10081-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4553C9E4EE6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 08:49:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D37E29E5C41
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 17:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B8411665C2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 07:49:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCDFF1882C3D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 16:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF30E1C3F0E;
-	Thu,  5 Dec 2024 07:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174CB224B19;
+	Thu,  5 Dec 2024 16:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Reg1ER9k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jXTkbW9o"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F121B87F5
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2024 07:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D62E224AE7
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2024 16:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733384968; cv=none; b=aP/ElumvdzH5cD9JJT0xRlhzsMbaWa89B18J6Bl2qKL+Hb4GQCVvw2j/4YkOr9doVvoxCWNWFS3ZezQatENrUPAE526TwrhFoi0LNX92Fm4Gwy3Ak87ZuPbp0q8CBTKW+ii739yyky/QJjMKOvNN8375z0F8rB4nZWezPpZK7dk=
+	t=1733417595; cv=none; b=SDoB5Q/k4/Rs30fChqe8AiveuhziWhCZPN2VsQoDEaLLzWp1FTTlbeAkhgkJ27O+DeDVuZ7X5K6fKOUhJ71RcpPVlqFLskITpt38ATw2cg8RYDLwAcUqy0VwGu6fi2sqjbVP1r9BRyeqhHMQH6RR8nWJ2+0Op0otv4Pv0N1/7nE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733384968; c=relaxed/simple;
-	bh=3tBkqOd1pC4GxPWICfAVG4PrFEovkK9wiyAIFebpEh8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hJ+YRPsJVxW63yonBk8LNd0uFBg59nEu9U5O2YXR9Jpm7/TiW6mQbAdEQj3xslXv45gGf3JEDjSZif1LberEzHA6O0iFfGXx5bLXUZStlPLBGMsHaLTyjJluetU6F3SlCg9byxnBMBZ7pEvYJ8z92JU0QAECuWu+6ffp4sAHrpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Reg1ER9k; arc=none smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1733384966; x=1764920966;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3tBkqOd1pC4GxPWICfAVG4PrFEovkK9wiyAIFebpEh8=;
-  b=Reg1ER9kA1tD3B54+dPaM5UMQeyjxcjZfXWkOlBWIh9Vk5cOXCmmmBBU
-   8TnxPJdg7J/9fkqKSCCsq68h1nwRAqh6dS9iQFaxq/+HffIhv719io2bw
-   FE0UiKixtkckhCnVqSCfBRRLPolkWyet68AJFsf9PKG2lqwU/GcV43ngB
-   oHywG7eCb/SgUWFOGELt9hnwSUKv8Q96K2pkCGxzGPLZo93xt1OpFsMXR
-   a3mNWIQbNcVKbr04209P93GmauuZ34PYR6rIxLpd1BaLAEHFpDndUlVQQ
-   QHQJNLz3s8Ge3MsdFZWBivbtS/u2iu7ezsuLmv+qGUF+XaauzeL4n62YV
-   g==;
-X-CSE-ConnectionGUID: i0Gzz4ouSuC9WI09/PW7Qg==
-X-CSE-MsgGUID: d+aBypK9RK6KFKvKN25CIg==
-X-IronPort-AV: E=Sophos;i="6.12,209,1728921600"; 
-   d="scan'208";a="33626122"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2024 15:49:25 +0800
-IronPort-SDR: 67514c60_cTovsuVHf4oaMNDdXVY0UprsilgBsGgPo3oBsChCvAU5IgL
- 510Qgvh3hQXJOLEyAQt+nE/Gb6DulAFwaZVzXIQ==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2024 22:46:56 -0800
-WDCIronportException: Internal
-Received: from naota-x1.dhcp.fujisawa.hgst.com (HELO naota-x1.ad.shared) ([10.89.81.175])
-  by uls-op-cesaip02.wdc.com with ESMTP; 04 Dec 2024 23:49:25 -0800
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 11/11] btrfs: reclaim from data sub-space space_info
-Date: Thu,  5 Dec 2024 16:48:27 +0900
-Message-ID: <36e642488814dbff7719c77b1fbdca5a8066ffc6.1733384172.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <cover.1733384171.git.naohiro.aota@wdc.com>
-References: <cover.1733384171.git.naohiro.aota@wdc.com>
+	s=arc-20240116; t=1733417595; c=relaxed/simple;
+	bh=RtQleKJslflWW99PZt98xY6RlFPM3hPXONyuXrT2zUI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=D6mjqNDy6mGf4bVFHTfgRhP8bI7Ku4wErSdpY5Igzr6IloT5bYsUfLRn/mkP8br1J7FC7ftQv0efZoycNNq3PHCt3RvhQIqZSkOTdxBqXeYCCM+qq60zbb4b286YCAY0BiJ1x5L2SH4g7IpdZm8q2Hz45S1rHEixtDnqlo1MN0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jXTkbW9o; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-3001490ba93so13942121fa.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2024 08:53:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733417591; x=1734022391; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=bibSLRAtL+PQNbhsVirZdU2QJ5adyhqEgQw7JVe0XC8=;
+        b=jXTkbW9oJlemXdTjgetpW8nDMDwJo/1NebtMRLWsEN7E3um6CJHfMWkihX4sUPlGSF
+         6KDaywr0ffW6lCkH5KsvsqrY68WB8K8k6tr4KQUlQ9fy8zyAlTXZClRY5Kj6upzB8qXJ
+         8hAX7yvKeL8vMSqmnic24attAK/KWUBwzyKM5xW4oI6s5hnUkYuyH2iuNfhiouzSxl73
+         My0ajgzs8ASyxTZZiwuOk5Vel90jyCq2krUe3wr8mPYv2zYsnS8RNMZF3MJZ/f49JrhL
+         2u7okn5PjKxPF9wTKyUCtt9b3os01rysoYUV1zEpgKhbycoymryEAJn96y3/heY1kExV
+         T3rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733417591; x=1734022391;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bibSLRAtL+PQNbhsVirZdU2QJ5adyhqEgQw7JVe0XC8=;
+        b=uXaDj+nQpOwKnIaxu5WIvhKofE0NgsEoNOULXFasElUG27BvNoD8Q6N/qVUVjMLRfc
+         Cb7fLMxHuyKL8RXPLfnULw/IKZa3WEvg9O90Ekz3Iat2IA9giYeoAA7Hcvu0acXHGbR1
+         VgfXRvWN611kpXqv6vVRrWIP3DURrIUJKmMCeSNKumAqypHi32f0X7PMk43mfDMCjQHa
+         4DG44t/oWUZjgN9Zpg/JMMuSzXcWO6x4tz3EjlrxzeYm6Qy+bE9A/CDREFrmzfqOYjY7
+         b2mwr363cJb9YEhdJGjAaYQw+f1SUSYJvjnoVw1KaZVGbh/KaOpONqiQuEue2Ej08jvZ
+         Rqow==
+X-Forwarded-Encrypted: i=1; AJvYcCXt15xlV4x0hhdHxsAS1DdMXiqFr8sUINs8tn1y7c5706ufqOhNMwoThOo3D2DnlfKVek8/hgSEDowmCg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+rZKmSSuRTvqtCfRQGdNhglmrYBtNhYrIQ47HEe9nXrkqaKFS
+	+AQvz1tZpBh6PeoveO3pXkgIpTyTvbbHJJDgTn7uXf5p9m7t8xKm5eXEZg==
+X-Gm-Gg: ASbGncsq/CoPtAO8/32xARCRWx5qLrYtqyl0QCIdTcrd0Lq7GJvEhLp0HsnwLVcwHPB
+	qWfweD6BPU88CTM1dybEBl+RnyJHSSlZTUBUweXqU8/d3GbtZ5iD8jmBtt8j83FzZ5kN884CQ+o
+	wHrxPZL/KcxYGrwHpJx3qMWTDM80FAGQzTuiKucsMZWABGwY4D0ZvxU/Tqi2dgK6/3KK+YUsPc3
+	mM4mwe4tQ1yYgDaWD0DJ/29O8ENEzGgoOTEfKoSgqOfTHdv62AcKsZkq1IV1mmp/4JAewF0w3gs
+	SeB5mIbjPg75fkjnz+kH7w==
+X-Google-Smtp-Source: AGHT+IEcv8V/1iVi6ciVPWxF3CLV2JIpfEOGCztXGeFq3v5851k4azsez5NJgjB8OBWAXa8jRi6nPA==
+X-Received: by 2002:a2e:8e84:0:b0:300:18fc:8e55 with SMTP id 38308e7fff4ca-30018fc906cmr30001641fa.2.1733417591145;
+        Thu, 05 Dec 2024 08:53:11 -0800 (PST)
+Received: from ?IPV6:2a00:1370:8180:3d9b:5fef:e07:1971:d824? ([2a00:1370:8180:3d9b:5fef:e07:1971:d824])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30020d85923sm2516201fa.8.2024.12.05.08.53.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Dec 2024 08:53:10 -0800 (PST)
+Message-ID: <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
+Date: Thu, 5 Dec 2024 19:53:08 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Using btrfs raid5/6
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+ Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
+ <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com>
+ <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com>
+Content-Language: en-US, ru-RU
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Currently, we only have sub-space space_info for data. Modify
-btrfs_async_data_reclaim() to run the reclaim process on the sub-spaces as
-well.
+05.12.2024 01:34, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/12/5 05:47, Andrei Borzenkov 写道:
+>> 04.12.2024 07:40, Qu Wenruo wrote:
+>>>
+>>>
+>>> 在 2024/12/4 14:04, Scoopta 写道:
+>>>> I'm looking to deploy btfs raid5/6 and have read some of the previous
+>>>> posts here about doing so "successfully." I want to make sure I
+>>>> understand the limitations correctly. I'm looking to replace an md+ext4
+>>>> setup. The data on these drives is replaceable but obviously ideally I
+>>>> don't want to have to replace it.
+>>>
+>>> 0) Use kernel newer than 6.5 at least.
+>>>
+>>> That version introduced a more comprehensive check for any RAID56 RMW,
+>>> so that it will always verify the checksum and rebuild when necessary.
+>>>
+>>> This should mostly solve the write hole problem, and we even have some
+>>> test cases in the fstests already verifying the behavior.
+>>>
+>>
+>> Write hole happens when data can *NOT* be rebuilt because data is
+>> inconsistent between different strips of the same stripe. How btrfs
+>> solves this problem?
+> 
+> An example please.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/space-info.c | 3 +++
- 1 file changed, 3 insertions(+)
+You start with stripe
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index cfc59123b00c..ddb042845e86 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1422,6 +1422,9 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 	fs_info = container_of(work, struct btrfs_fs_info, async_data_reclaim_work);
- 	space_info = fs_info->data_sinfo;
- 	do_async_reclaim_data_space(space_info);
-+	for (int i = 0; i < BTRFS_SPACE_INFO_SUB_GROUP_MAX; i++)
-+		if (space_info->sub_group[i])
-+			do_async_reclaim_data_space(space_info->sub_group[i]);
- }
- 
- void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
--- 
-2.47.1
+A1,B1,C1,D1,P1
+
+You overwrite A1 with A2
+
+Before you can write P2, system crashes
+
+After reboot D goes missing, so you now have
+
+A2,B1,C1,miss,P1
+
+You cannot reconstruct "miss" because P1 does not match A2. You can 
+detect that it is corrupted using checksum, but not infer the correct data.
+
+MD solves it by either computing the extra parity or by buffering full 
+stripe before writing it out. In both cases it is something out of band.
+
+> 
+>>
+>> It probably can protect against data corruption (by verifying checksum),
+>> but how can it recover the correct content?
+>>
+> 
 
 
