@@ -1,275 +1,323 @@
-Return-Path: <linux-btrfs+bounces-10064-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10065-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 553CC9E4C82
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 03:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F16B9E4CF7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 05:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BE6C2867F1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 02:51:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8413287775
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2024 04:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6817E18BC1D;
-	Thu,  5 Dec 2024 02:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gsdX6V8r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301BA192B96;
+	Thu,  5 Dec 2024 04:03:31 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A46185955
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2024 02:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7A7224D7
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2024 04:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733367083; cv=none; b=pqhTBAhAC78U9esb4QwmYtNDYVE/qfEMRuSb0GVPV5fx/C1NCghlbWAmfZCgpUql7KR/fd8hsNS/QQBwCEHVo1FKRve8/fGj4z7TtM3BruAC/LzF/orEo32fnS6Vyf5tyheP22tYQcxP+h/sENVvj279w8EaEuwIrSXAg439SdE=
+	t=1733371410; cv=none; b=Mnx2gm2h/H6hdM2f0+tMl0HY4PTMRvlMj4tzkPeXIfe2gjor2UpVr+/3WjHFwKTlKu981K71v2w1CHqnoezbdBEET6GAiNolJFkolm9xx0KnF8WXIclooJ8ke6+A75EMyWgAH9ASixxLFj2iCnlIFqdF3UGP1Sj6nweLnS3J0Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733367083; c=relaxed/simple;
-	bh=C6QIeV4sx+z3ZpTwPXvgteXpZ2czYEC24/RTEClQnvY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=sqj6X9UPMsI7FD3i5RhAqSn0yWQ1I8m8xU5JBCMYiPXJ2f8hhuui+HhSIKSMRKMngnhC9SV6Qc2y4MZ+CaIb+XWXM7NertjqiKMLwqHWt3PMRaaWUSCLnmgHU5nFAz7XK87tgGpRYZVGeen8mtPFGO0HbLqta3CCAKQvLqOcnfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gsdX6V8r; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-385f06d0c8eso203878f8f.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2024 18:51:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1733367079; x=1733971879; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=V4vSeKosLeQm03elmc976Gn4TxLq2sgRQtGDwl9H/vM=;
-        b=gsdX6V8rGqSDBh4afADb3ikvY5G9GW5AKVtqnxKCpsB5GrV1oAxjqC/IiukKnawea+
-         RIS8VhxW0xR2IUDJKKWfM6lIuuDY67SXFr9qzPUTSrRZyE3yr4dYaaQFmnu94McR7m1m
-         /+3Sx5Anv7KZZmGcexnKZybq9dqUBZ8SKH9qJFcSP1vndMtn9pkGllwg+p4O28tXthn7
-         jX+yn/bljHFaw8xjzoHF1AXEj6hhHwWKc/9iixL2NoTj88vsgaM6TGZKLF6bnNQQwT6U
-         MsBMhr6UULyWfMKGxJBXRHBiPQ94SAHP3TDB2qWq69k7BB2H2om4A/fb1JfiaVF4kfFa
-         MY6Q==
+	s=arc-20240116; t=1733371410; c=relaxed/simple;
+	bh=B0UPE7YGd7Ngfk7Yvttlp5aIzUFGcYLfdxETEY4G5qU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mpY7yHSznmDDVvco4l/5wkvT8aypjeGnZgWyrh0tWN9IRPK5335+iP1kYeOwdvReci5hUfTJ7Ahavh+3zBUKBiEQQwyBrakFBN+xLH7zJfIDDG6uMywwsa44WEgslUHxwesFkCGkhyC2Sr9uPRV1gXGOIa3alBIUQMrj18IqSBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3a77a808c27so4923575ab.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2024 20:03:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733367079; x=1733971879;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V4vSeKosLeQm03elmc976Gn4TxLq2sgRQtGDwl9H/vM=;
-        b=jHcfsZYMA6u5Q7riiQbinRCKdlL2kkNo4ETFj3GSuHIXMYxURJw9c8xlHozBZ3nD73
-         NVvdBKYlz7TK2ISKXl23KCb6n+h1SUPw8P5bBQC9KtMfojiffpQpjLyN65JDzF/k0TNg
-         5aM7hKJz+M7af8rIsVKt+pF6DnSYWRRNdLhhfcrewNvsB5ywhisWYmo+SsWjWKfYcVWG
-         i15vbSkufc8HPmOCS93rvLCPDLpGgsOCJjXclujVtdS1sXEGSHSel9NGYg76i4zTMEo6
-         t5zBsGvWJ6HGfXsQekV36TdvtMtZH/bAh0xnbTmAyP/+e1QzpqcitwAbSGWfeM4Dk+fe
-         AhQg==
-X-Gm-Message-State: AOJu0YyyZQbWS/pGOVBx6Himm7lnBoqcHugGYYEqEY2HHMY+pfu2Gjn1
-	59OFk0GL7C3Ktbdw/iA+hQ3+ldBylhu9Tn93z7eTtdmh+URBSIztClB9fhUT5xpoOxY+E2oX85p
-	c
-X-Gm-Gg: ASbGncvTJX7BkdMGwS9gPlvIZGqUqWlncDvJwoS716XoVfZD0PQvaROBKSxDspxDt+Y
-	ShBq8MD3N4Wa6kW6+gqEU5MBI9rD6Msgjg34yA/tL6nKT2JsV4e+m/MwWkaiUqpOjQ4z2aXgwjP
-	i9Y6Rx+mjEGuBWq1Z6AGrtsumrrzWawHEmuIrNStMsyUhGdAAF/4on6bHboYYnHJM07RfuAwLIQ
-	faQoknO5GbSOqwMrOTJ85nW9jStSUZToG5KjzhbBAlkyQlOBLEuKd4+XwVDXPY7rD4jTG5Nhbf+
-	PQ==
-X-Google-Smtp-Source: AGHT+IEGzGbcGGnipQtp0Gqf+Qs+liOMGDndQRILLskdfgQLymoy2Wt4bUgXn31B6wdglMHM56lMmw==
-X-Received: by 2002:a05:6000:1866:b0:385:dc45:ea06 with SMTP id ffacd0b85a97d-385fd3e7b28mr8040302f8f.13.1733367079082;
-        Wed, 04 Dec 2024 18:51:19 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd157ad524sm261711a12.62.2024.12.04.18.51.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Dec 2024 18:51:18 -0800 (PST)
-Message-ID: <627a9d4b-a358-4e5b-a8e7-cfd6ba0298d6@suse.com>
-Date: Thu, 5 Dec 2024 13:21:14 +1030
+        d=1e100.net; s=20230601; t=1733371406; x=1733976206;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OmPMIvGUcaEEXWOl+xY0Ue7t7j0C3yIAMWikuEG04iQ=;
+        b=ZPFduCIODpJ2P6wuhisBrckpBKrXQtvlvFGZFUyAUokSWP9wYPrMNiZROX4nS8A8M8
+         twAmmNOgVK2q4IJ+5e8BmmtFf1R/13ScQDTIi2tOYNBlqdJz/YT4KmUXRZPUiyBT6GDY
+         Ax/6UtcPqvSSxNJtKZy7l2VZD30Dgxmqz1qwjyAaGl+ah5HGilXTK+woosrzK0aUUQhO
+         enDSoaSGTrOjHMdkUP2dwnxCPLI7cjsuV/E63CRoCJ0jEDn41eJDp38FVSY0QyMJqdKT
+         0DdhQjtSQWh/Ame98ScCQlTk2yNzDpjLgCdcuBu0ohu1beMfP0tqVXkKfDeK76OG2jOv
+         vFHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvqFRxR/pCgDV/FQhxtqzCy7DOknY6KuVhXDPcBm65mdBnKEjSi8Z4jRN2faWNvrEgaeeQOn9xbr1xRg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw9mMOScjCR2QcXdGvOytxkpqqbTX0tm/9Sul4SziA7rbPVyppG
+	IA65Tt5bJvJX4AO5+tOG3Kosdl//bzegoyqQN+51DeHJ40kIjqgD8phAPx75ONx+IEuj5XXXFuk
+	lGKUv83QF/6ftihh313TDf21ScCPgkSfz79V52O5ohadqYNFhKTRx7RI=
+X-Google-Smtp-Source: AGHT+IEHaBQ9uVYQVaRC9NA1c6zszP4aXA22I2iVLzc0Ijn+UzAEB3i1kiiODas+CHvIuip6LvsP5CmdDuldtIkcH3lLl9xqBsFh
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: do proper folio cleanup when
- run_delalloc_nocow() failed
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <3e5d5665ef36ee43e310be321073210785b89adc.1733273653.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <3e5d5665ef36ee43e310be321073210785b89adc.1733273653.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c24f:0:b0:3a7:c5ff:e5e2 with SMTP id
+ e9e14a558f8ab-3a7f99b1233mr119494585ab.0.1733371405925; Wed, 04 Dec 2024
+ 20:03:25 -0800 (PST)
+Date: Wed, 04 Dec 2024 20:03:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6751260d.050a0220.17bd51.0085.GAE@google.com>
+Subject: [syzbot] [btrfs?] possible deadlock in __btrfs_commit_inode_delayed_items
+From: syzbot <syzbot+71d80f05e434f9bfaaec@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f486c8aa16b8 Add linux-next specific files for 20241128
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=111705e8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e348a4873516af92
+dashboard link: https://syzkaller.appspot.com/bug?extid=71d80f05e434f9bfaaec
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/beb58ebb63cf/disk-f486c8aa.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b241b5609e64/vmlinux-f486c8aa.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c9d817f665f2/bzImage-f486c8aa.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+71d80f05e434f9bfaaec@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.12.0-next-20241128-syzkaller #0 Not tainted
+------------------------------------------------------
+kworker/u8:12/6861 is trying to acquire lock:
+ffff88803171b3b8 (btrfs-tree-01){++++}-{4:4}, at: btrfs_tree_read_lock_nested+0x2f/0x250 fs/btrfs/locking.c:146
+
+but task is already holding lock:
+ffff888071adc860 (&delayed_node->mutex){+.+.}-{4:4}, at: btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:830 [inline]
+ffff888071adc860 (&delayed_node->mutex){+.+.}-{4:4}, at: __btrfs_commit_inode_delayed_items+0x1c4/0x24a0 fs/btrfs/delayed-inode.c:1126
+
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-在 2024/12/4 13:05, Qu Wenruo 写道:
-> Just like cow_file_range(), from day 1 btrfs doesn't really clean the
-> dirty flags, if it has an ordered extent created successfully.
-> 
-> Per error handling protocol (according to the iomap, and the btrfs
-> handling if it failed at the beginning of the range), we should clear
-> all dirty flags for the involved folios.
-> 
-> Or the range of that folio will still be marked dirty, but has no
-> EXTENT_DEALLLOC set inside the io tree.
-> 
-> Since the folio range is still dirty, it will still be the target for
-> the next writeback, but since there is no EXTENT_DEALLLOC, no new
-> ordered extent will be created for it.
-> 
-> This means the writeback of that folio range will fall back to COW
-> fixup path. However the COW fixup path itself is being re-evaluated as
-> the newly introduced pin_user_pages_*() should prevent us hitting an
-> out-of-band dirty folios, and we're moving to deprecate such COW fixup
-> path.
-> 
-> We already have an experimental patch that will make fixup COW path to
-> crash, to verify there is no such out-of-band dirty folios anymore.
-> So here we need to avoid going COW fixup path, by doing proper folio
-> dirty flags cleanup.
-> 
-> Unlike the fix in cow_file_range(), which holds the folio and extent
-> lock until error or a fully successfully run, here we have no such luxury
-> as we can fallback to COW, and in that case the extent/folio range will
-> be unlocked by cow_file_range().
-> 
-> So here we introduce a new helper, cleanup_dirty_folios(), to clear the
-> dirty flags for the involved folios.
-> 
-> And since the final fallback_to_cow() call can also fail, and we rely on
-> @cur_offset to do the proper cleanup, here we remove the unnecessary and
-> incorrect @cur_offset assignment.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Fix the incorrect @cur_offset assignment to @end
->    The @end is not aligned to sector size, nor @cur_offset should be
->    updated before fallback_to_cow() succeeded.
-> 
-> - Add one extra ASSERT() to make sure the range is properly aligned
-> ---
->   fs/btrfs/inode.c | 59 +++++++++++++++++++++++++++++++++++++++++++++++-
->   1 file changed, 58 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index e8232ac7917f..92df6dfff2e4 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1969,6 +1969,48 @@ static int can_nocow_file_extent(struct btrfs_path *path,
->   	return ret < 0 ? ret : can_nocow;
->   }
->   
-> +static void cleanup_dirty_folios(struct btrfs_inode *inode,
-> +				 struct folio *locked_folio,
-> +				 u64 start, u64 end, int error)
-> +{
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> +	struct address_space *mapping = inode->vfs_inode.i_mapping;
-> +	pgoff_t start_index = start >> PAGE_SHIFT;
-> +	pgoff_t end_index = end >> PAGE_SHIFT;
-> +	u32 len;
-> +
-> +	ASSERT(end + 1 - start < U32_MAX);
-> +	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
-> +	       IS_ALIGNED(end + 1, fs_info->sectorsize));
-> +	len = end + 1 - start;
-> +
-> +	/*
-> +	 * Handle the locked folio first.
-> +	 * btrfs_folio_clamp_*() helpers can handle range out of the folio case.
-> +	 */
-> +	btrfs_folio_clamp_clear_dirty(fs_info, locked_folio, start, len);
-> +	btrfs_folio_clamp_set_writeback(fs_info, locked_folio, start, len);
-> +	btrfs_folio_clamp_clear_writeback(fs_info, locked_folio, start, len);
-> +
-> +	for (pgoff_t index = start_index; index <= end_index; index++) {
-> +		struct folio *folio;
-> +
-> +		/* Already handled at the beginning. */
-> +		if (index == locked_folio->index)
-> +			continue;
-> +		folio = __filemap_get_folio(mapping, index, FGP_LOCK, GFP_NOFS);
-> +		/* Cache already dropped, no need to do any cleanup. */
-> +		if (IS_ERR(folio))
-> +			continue;
-> +		btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len);
-> +		btrfs_folio_clamp_set_writeback(fs_info, folio, start, len);
-> +		btrfs_folio_clamp_clear_writeback(fs_info, folio, start, len);
-> +		folio_unlock(folio);
-> +		folio_put(folio);
-> +	}
-> +	mapping_set_error(mapping, error);
-> +}
-> +
->   /*
->    * when nowcow writeback call back.  This checks for snapshots or COW copies
->    * of the extents that exist in the file, and COWs the file as required.
-> @@ -2217,7 +2259,6 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
->   		cow_start = cur_offset;
->   
->   	if (cow_start != (u64)-1) {
-> -		cur_offset = end;
->   		ret = fallback_to_cow(inode, locked_folio, cow_start, end);
->   		cow_start = (u64)-1;
->   		if (ret)
-> @@ -2228,6 +2269,22 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
->   	return 0;
->   
->   error:
-> +	/*
-> +	 * We have some range with ordered extent created.
-> +	 *
-> +	 * Ordered extents and extent maps will be cleaned up by
-> +	 * btrfs_mark_ordered_io_finished() later, but we also need to cleanup
-> +	 * the dirty flags of folios.
-> +	 *
-> +	 * Or they can be written back again, but without any EXTENT_DELALLOC flag
-> +	 * in io tree.
-> +	 * This will force the writeback to go COW fixup, which is being deprecated.
-> +	 *
-> +	 * Also such left-over dirty flags do no follow the error handling protocol.
-> +	 */
-> +	if (cur_offset > start)
-> +		cleanup_dirty_folios(inode, locked_folio, start, cur_offset - 1, ret);
-> +
->   	/*
->   	 * If an error happened while a COW region is outstanding, cur_offset
->   	 * needs to be reset to cow_start to ensure the COW region is unlocked
+-> #4 (&delayed_node->mutex){+.+.}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+       __mutex_lock+0x1ac/0xee0 kernel/locking/mutex.c:735
+       __btrfs_release_delayed_node+0xa5/0xaf0 fs/btrfs/delayed-inode.c:268
+       btrfs_evict_inode+0x752/0x1080 fs/btrfs/inode.c:5374
+       evict+0x4e8/0x9a0 fs/inode.c:796
+       dispose_list fs/inode.c:845 [inline]
+       prune_icache_sb+0x239/0x2f0 fs/inode.c:1033
+       super_cache_scan+0x38c/0x4b0 fs/super.c:223
+       do_shrink_slab+0x72d/0x1160 mm/shrinker.c:437
+       shrink_slab_memcg mm/shrinker.c:550 [inline]
+       shrink_slab+0x878/0x14d0 mm/shrinker.c:628
+       shrink_one+0x43b/0x850 mm/vmscan.c:4836
+       shrink_many mm/vmscan.c:4897 [inline]
+       lru_gen_shrink_node mm/vmscan.c:4975 [inline]
+       shrink_node+0x37c5/0x3e50 mm/vmscan.c:5956
+       kswapd_shrink_node mm/vmscan.c:6785 [inline]
+       balance_pgdat mm/vmscan.c:6977 [inline]
+       kswapd+0x1ca9/0x36f0 mm/vmscan.c:7246
+       kthread+0x2f0/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-It turns out that, we can not directly use 
-extent_clear_unlock_delalloc() for the range [cur_offset, end].
+-> #3 (fs_reclaim){+.+.}-{0:0}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       __fs_reclaim_acquire mm/page_alloc.c:3887 [inline]
+       fs_reclaim_acquire+0x88/0x130 mm/page_alloc.c:3901
+       might_alloc include/linux/sched/mm.h:318 [inline]
+       slab_pre_alloc_hook mm/slub.c:4055 [inline]
+       slab_alloc_node mm/slub.c:4133 [inline]
+       __kmalloc_cache_noprof+0x41/0x390 mm/slub.c:4309
+       kmalloc_noprof include/linux/slab.h:901 [inline]
+       kzalloc_noprof include/linux/slab.h:1037 [inline]
+       kobject_uevent_env+0x28b/0x8e0 lib/kobject_uevent.c:540
+       loop_set_size drivers/block/loop.c:233 [inline]
+       loop_set_status+0x5f0/0x8f0 drivers/block/loop.c:1285
+       lo_ioctl+0xcbc/0x1f50
+       blkdev_ioctl+0x57d/0x6a0 block/ioctl.c:693
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:906 [inline]
+       __se_sys_ioctl+0xf5/0x170 fs/ioctl.c:892
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-The problem is @cur_offset can be updated to @cow_start, but the 
-fallback_to_cow() may have failed, and cow_file_range() will do the 
-proper cleanup by unlock all the folios.
+-> #2 (&q->q_usage_counter(io)#17){++++}-{0:0}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       bio_queue_enter block/blk.h:75 [inline]
+       blk_mq_submit_bio+0x1536/0x2390 block/blk-mq.c:3091
+       __submit_bio+0x2c6/0x560 block/blk-core.c:629
+       __submit_bio_noacct_mq block/blk-core.c:710 [inline]
+       submit_bio_noacct_nocheck+0x4d3/0xe30 block/blk-core.c:739
+       btrfs_submit_chunk fs/btrfs/bio.c:745 [inline]
+       btrfs_submit_bbio+0xf93/0x18e0 fs/btrfs/bio.c:773
+       read_extent_buffer_pages+0x65a/0x910 fs/btrfs/extent_io.c:3558
+       btrfs_read_extent_buffer+0xd9/0x770 fs/btrfs/disk-io.c:229
+       read_block_for_search+0x79e/0xbb0 fs/btrfs/ctree.c:1619
+       btrfs_search_slot+0x121b/0x3150 fs/btrfs/ctree.c:2236
+       btrfs_init_root_free_objectid+0x148/0x330 fs/btrfs/disk-io.c:4837
+       btrfs_init_fs_root fs/btrfs/disk-io.c:1137 [inline]
+       btrfs_get_root_ref+0x5d7/0xc30 fs/btrfs/disk-io.c:1364
+       btrfs_get_fs_root fs/btrfs/disk-io.c:1416 [inline]
+       open_ctree+0x2470/0x2a30 fs/btrfs/disk-io.c:3532
+       btrfs_fill_super fs/btrfs/super.c:972 [inline]
+       btrfs_get_tree_super fs/btrfs/super.c:1894 [inline]
+       btrfs_get_tree+0x1274/0x1a10 fs/btrfs/super.c:2105
+       vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+       fc_mount+0x1b/0xb0 fs/namespace.c:1231
+       btrfs_get_tree_subvol fs/btrfs/super.c:2068 [inline]
+       btrfs_get_tree+0x65b/0x1a10 fs/btrfs/super.c:2106
+       vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+       do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+       do_mount fs/namespace.c:3847 [inline]
+       __do_sys_mount fs/namespace.c:4057 [inline]
+       __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-In that case, we can hit VM_BUG_ON() with folio already unlocked.
+-> #1 (btrfs-tree-00){++++}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       down_read_nested+0xb5/0xa50 kernel/locking/rwsem.c:1649
+       btrfs_tree_read_lock_nested+0x2f/0x250 fs/btrfs/locking.c:146
+       btrfs_tree_read_lock fs/btrfs/locking.h:178 [inline]
+       read_block_for_search+0x718/0xbb0 fs/btrfs/ctree.c:1613
+       btrfs_search_slot+0x121b/0x3150 fs/btrfs/ctree.c:2236
+       btrfs_init_root_free_objectid+0x148/0x330 fs/btrfs/disk-io.c:4837
+       btrfs_init_fs_root fs/btrfs/disk-io.c:1137 [inline]
+       btrfs_get_root_ref+0x5d7/0xc30 fs/btrfs/disk-io.c:1364
+       btrfs_get_fs_root fs/btrfs/disk-io.c:1416 [inline]
+       open_ctree+0x2470/0x2a30 fs/btrfs/disk-io.c:3532
+       btrfs_fill_super fs/btrfs/super.c:972 [inline]
+       btrfs_get_tree_super fs/btrfs/super.c:1894 [inline]
+       btrfs_get_tree+0x1274/0x1a10 fs/btrfs/super.c:2105
+       vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+       fc_mount+0x1b/0xb0 fs/namespace.c:1231
+       btrfs_get_tree_subvol fs/btrfs/super.c:2068 [inline]
+       btrfs_get_tree+0x65b/0x1a10 fs/btrfs/super.c:2106
+       vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+       do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+       do_mount fs/namespace.c:3847 [inline]
+       __do_sys_mount fs/namespace.c:4057 [inline]
+       __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-This means we should skip the failed COW range during error handling, 
-making the error handling way more complex.
+-> #0 (btrfs-tree-01){++++}-{4:4}:
+       check_prev_add kernel/locking/lockdep.c:3161 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+       validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
+       __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       down_read_nested+0xb5/0xa50 kernel/locking/rwsem.c:1649
+       btrfs_tree_read_lock_nested+0x2f/0x250 fs/btrfs/locking.c:146
+       btrfs_tree_read_lock fs/btrfs/locking.h:178 [inline]
+       btrfs_read_lock_root_node+0x3f/0xd0 fs/btrfs/locking.c:267
+       btrfs_search_slot_get_root fs/btrfs/ctree.c:1790 [inline]
+       btrfs_search_slot+0x4f7/0x3150 fs/btrfs/ctree.c:2112
+       btrfs_insert_empty_items+0x9c/0x1a0 fs/btrfs/ctree.c:4350
+       btrfs_insert_delayed_item fs/btrfs/delayed-inode.c:758 [inline]
+       btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:836 [inline]
+       __btrfs_commit_inode_delayed_items+0xd5d/0x24a0 fs/btrfs/delayed-inode.c:1126
+       __btrfs_run_delayed_items+0x213/0x490 fs/btrfs/delayed-inode.c:1171
+       flush_space+0x24a/0xcf0 fs/btrfs/space-info.c:775
+       btrfs_async_reclaim_metadata_space+0x113/0x350 fs/btrfs/space-info.c:1105
+       process_one_work kernel/workqueue.c:3229 [inline]
+       process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
+       worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+       kthread+0x2f0/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-I'll need to find a better solution for this.
+other info that might help us debug this:
 
-Thanks,
-Qu
+Chain exists of:
+  btrfs-tree-01 --> fs_reclaim --> &delayed_node->mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&delayed_node->mutex);
+                               lock(fs_reclaim);
+                               lock(&delayed_node->mutex);
+  rlock(btrfs-tree-01);
+
+ *** DEADLOCK ***
+
+5 locks held by kworker/u8:12/6861:
+ #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
+ #0: ffff88801ac89148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
+ #1: ffffc9000369fd00 ((work_completion)(&fs_info->async_reclaim_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
+ #1: ffffc9000369fd00 ((work_completion)(&fs_info->async_reclaim_work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
+ #2: ffff888034ba2470 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0x405/0xda0 fs/btrfs/transaction.c:288
+ #3: ffff888034ba2498 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0x405/0xda0 fs/btrfs/transaction.c:288
+ #4: ffff888071adc860 (&delayed_node->mutex){+.+.}-{4:4}, at: btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:830 [inline]
+ #4: ffff888071adc860 (&delayed_node->mutex){+.+.}-{4:4}, at: __btrfs_commit_inode_delayed_items+0x1c4/0x24a0 fs/btrfs/delayed-inode.c:1126
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 6861 Comm: kworker/u8:12 Not tainted 6.12.0-next-20241128-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Workqueue: events_unbound btrfs_async_reclaim_metadata_space
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_circular_bug+0x13a/0x1b0 kernel/locking/lockdep.c:2074
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2206
+ check_prev_add kernel/locking/lockdep.c:3161 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+ validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
+ __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+ down_read_nested+0xb5/0xa50 kernel/locking/rwsem.c:1649
+ btrfs_tree_read_lock_nested+0x2f/0x250 fs/btrfs/locking.c:146
+ btrfs_tree_read_lock fs/btrfs/locking.h:178 [inline]
+ btrfs_read_lock_root_node+0x3f/0xd0 fs/btrfs/locking.c:267
+ btrfs_search_slot_get_root fs/btrfs/ctree.c:1790 [inline]
+ btrfs_search_slot+0x4f7/0x3150 fs/btrfs/ctree.c:2112
+ btrfs_insert_empty_items+0x9c/0x1a0 fs/btrfs/ctree.c:4350
+ btrfs_insert_delayed_item fs/btrfs/delayed-inode.c:758 [inline]
+ btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:836 [inline]
+ __btrfs_commit_inode_delayed_items+0xd5d/0x24a0 fs/btrfs/delayed-inode.c:1126
+ __btrfs_run_delayed_items+0x213/0x490 fs/btrfs/delayed-inode.c:1171
+ flush_space+0x24a/0xcf0 fs/btrfs/space-info.c:775
+ btrfs_async_reclaim_metadata_space+0x113/0x350 fs/btrfs/space-info.c:1105
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
