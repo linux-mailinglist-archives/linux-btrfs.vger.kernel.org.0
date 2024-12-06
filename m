@@ -1,119 +1,158 @@
-Return-Path: <linux-btrfs+bounces-10099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10100-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE9C9E77DB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 19:13:02 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1ACC9E790E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 20:37:08 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8134B284EF6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 18:13:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7E41883038
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 19:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D7F203D41;
-	Fri,  6 Dec 2024 18:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C490D216E3E;
+	Fri,  6 Dec 2024 19:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="Z71zglcv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DL/qjO2S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XAr9pCeR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DL/qjO2S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XAr9pCeR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB612206A5
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 18:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8FA206276;
+	Fri,  6 Dec 2024 19:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733508776; cv=none; b=nkFZr9craKLl5sxYluinICj0v9fGT+86g8O/PKnwWOdSoHaMK6AAZt8G7+lVYI+H518SEm5AYuTkRnOa9Yi9jQrcWITGlSganfzSojH86BOGcI/EgrehKX/xE092c5UxzQlGf60UkZt+UnQlwU7vwEe0BJ6DAkTGhmS38PalneY=
+	t=1733513740; cv=none; b=VPB627tRqHlgWc9YGvkCX0CvsBB7pFUxFnt0LOYdlWbLMD5fZc7Ute8zezlKcqhKT6QkrWulKHSn/OjqrnKe4l9OvaUp1Pc0HH7l6XPetCHPzOgwI+dGqGTPQeVW+F5nbSSrhcx+pVSgVdr1Cs7aDYSzR5bt7poXGViFTjRACcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733508776; c=relaxed/simple;
-	bh=0WsRMOGQzs86KELutDgcZQcMqvB6+nU25GWSkEu0N/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=baw9nFzeY/NVwaR6iOjiZG0cIAQne2iFf1YIhGPcs9A0/R6K8mYRfHnP2pRtTmFCpwQcjt3OAGds3dydfgsHYnN6X9VGYkDSM4+uEI/eFwiDU+hhIEoxbpbUzf0tdk9fJsEPFwGqSbumesYPg3Xkd39xufEfZ7c9NA4ptlABUCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=Z71zglcv; arc=none smtp.client-ip=213.209.10.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id JcmNtg9FMx4RAJcmNtYPiO; Fri, 06 Dec 2024 19:10:15 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1733508615; bh=RPThpADeVEhPwMtiOXldk8ympzPTGXdcp/zaYSJykzU=;
-	h=From;
-	b=Z71zglcvAP98ZicqNDpmt0aSakzsRd7jcrtmRNFmOMOYG+DzQxx0q6HSbvddWt29g
-	 0ETnkY5cJvUVi5bfKjljxj6TPVGyOThM+7VZOIh/rMK412FQuQ0ASXbSH4Yie9O+1S
-	 IsUGv1TAbviv6HrG4uHlul7BStoRUYV/l6+DLihoMl+EeG6nr5+c9rg/Gxg5k+V1fE
-	 dIMQHkj8j65azYO8gn1M29z0K8xIzmHvoeu3cb0MvTpd4Kk8vjP1OBCt9MelBxpJ7W
-	 68hQN7s9b69S9QXOhy+AOvhqPWoKUA9JCyDiJJhDbuXRTcxx5wKzkoAXFKvaICHwpJ
-	 StOK7suenKpGA==
-X-CNFS-Analysis: v=2.4 cv=Fcf8x4+6 c=1 sm=1 tr=0 ts=67533e07 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=j9opc7AhIdtwNly09wgA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-Message-ID: <d3173d91-278f-48bf-ab47-3541eab84245@libero.it>
-Date: Fri, 6 Dec 2024 19:10:14 +0100
+	s=arc-20240116; t=1733513740; c=relaxed/simple;
+	bh=CqzGnnq/QIuflGGemVxeISBbSrlJUijlW0rARKHNBss=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q04K87m7myl1K0SZ6qiDcTUq7299GPqyxyLb5WBffQwQbPqXKqD/1GhLUfVuKHQPDI/E43XzdDhI3Mje4jwI2IjStVibc1SD/+C16FQeyNaLMTHKW+X6aaLM4gB+/vmY4+m7JdgtobCjL2ebqd1qWZSd+yxB13BFvaXuIRyz6p0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DL/qjO2S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XAr9pCeR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DL/qjO2S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XAr9pCeR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 35F0F1F399;
+	Fri,  6 Dec 2024 19:35:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733513736;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=exmmLi8UGJyWMGML5RBWITlkaIgyT3hhP+clSDASaSE=;
+	b=DL/qjO2S9gKjT1fTjvCzFv1ZUD0I8m+jewY9EVEEafg8RDr3lqx1eDM1I6fyVtpkCwS/5z
+	i7lKgHqBArQowKKDvaeF6/tKrVsc1lUJYjKjlzy94rnJjr/hAbaRYSQ1Ss7HG6q7WVlujN
+	SmjGC+YF69QavjTESh5jGAQSHn3yN3E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733513736;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=exmmLi8UGJyWMGML5RBWITlkaIgyT3hhP+clSDASaSE=;
+	b=XAr9pCeR57LoEG5S9Qawp40609vJBMsXmy3SgBAXTouLFvK010zgE2a9HzobYK8yjjtuRF
+	zus1uqp6G8AlE4Aw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="DL/qjO2S";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=XAr9pCeR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733513736;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=exmmLi8UGJyWMGML5RBWITlkaIgyT3hhP+clSDASaSE=;
+	b=DL/qjO2S9gKjT1fTjvCzFv1ZUD0I8m+jewY9EVEEafg8RDr3lqx1eDM1I6fyVtpkCwS/5z
+	i7lKgHqBArQowKKDvaeF6/tKrVsc1lUJYjKjlzy94rnJjr/hAbaRYSQ1Ss7HG6q7WVlujN
+	SmjGC+YF69QavjTESh5jGAQSHn3yN3E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733513736;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=exmmLi8UGJyWMGML5RBWITlkaIgyT3hhP+clSDASaSE=;
+	b=XAr9pCeR57LoEG5S9Qawp40609vJBMsXmy3SgBAXTouLFvK010zgE2a9HzobYK8yjjtuRF
+	zus1uqp6G8AlE4Aw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10AAF13647;
+	Fri,  6 Dec 2024 19:35:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FLiEAwhSU2eNQAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 06 Dec 2024 19:35:36 +0000
+Date: Fri, 6 Dec 2024 20:35:34 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Boris Burkov <boris@bur.io>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH next] btrfs: selftests: prevent error pointer dereference
+ in merge_tests()
+Message-ID: <20241206193534.GK31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <85027056-1008-4beb-addb-0bde7ca1b0f0@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: Using btrfs raid5/6
-To: Qu Wenruo <wqu@suse.com>, Andrei Borzenkov <arvidjaar@gmail.com>,
- Qu Wenruo <quwenruo.btrfs@gmx.com>, Scoopta <mlist@scoopta.email>,
- linux-btrfs@vger.kernel.org
-References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
- <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
- <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com>
- <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com>
- <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
- <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com>
- <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com>
- <b5f70481-34a1-4d65-a607-a3151009964d@suse.com>
-Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <b5f70481-34a1-4d65-a607-a3151009964d@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfIrCqCobXAxM1NsPCASxGWy2txZ9eMP+QiNdkcBkTgNhM/oE5/JfFhAkkvzmW8GSmzt1sDj7TAX/ls8znG0Hh1DQe092mab9ytIRL9FQcqXnf6NjpKJ1
- B9N/DnMl9CpSkJyPJnNACw8TlD2F3RTvBavRW23cJ0KUCjXi1rRsj7ZSQmENI0nXIc8H8fNVqd5Qy9VZiiaNM8qCDqWIxxvRIN9ZXml+buJiRq/DdeQ35Ya/
- Q5Kp8b6KNf/oNpJMujf5djNFKQvYBFQMTAVJ5ZXfxHC8tWGNkSRNjLaeHvGBb+ixhUabYGdyjbwmRNRzSYSezA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85027056-1008-4beb-addb-0bde7ca1b0f0@stanley.mountain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 35F0F1F399
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,suse.cz:dkim,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-On 06/12/2024 05.16, Qu Wenruo wrote:
-> [...]
->  as case 1.0, even missing D1 is fine to recover.
->
->
-> So if you believe powerloss + missing device counts as a single device missing, and it doesn't break the tolerance of RAID5, then you can count this as a "write-hole".
->
-> But to me, this is not a single error, but two error (write failure + missing device), beyond the tolerance of RAID5.
+On Fri, Dec 06, 2024 at 03:26:14PM +0300, Dan Carpenter wrote:
+> Passing an error pointer to btrfs_unselect_ref_head() will cause an
+> Oops so change the error checking from a NULL check to a
+> !IS_ERR_OR_NULL(head) check.
+> 
+> The error pointer comes from btrfs_select_ref_head().  If we
+> successfully select the head, then we have to unselect it.  The select
+> function is called six times and five of them change the error pointers
+> to NULL, but one call was accidentally missed.
+> 
+> Fixes: fa3dda44871b ("btrfs: selftests: add delayed ref self test cases")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-The "powerloss" and a "device loss" can be considered two different failures only if these are independent.
-
-Only in this case the likelihood of the combination of these two events is the product of the likelihood of each event.
-
-However if these share a common root cause, these cannot be considered independent, and the likelihood of the event "power loss"+"device loos" is the likelihood of the root cause.
-
-The point is that a "device loss" may be a consequence of a power failure. In my experiences (as hobbyist) when a disk is disappeared is very frequent near a reboot. So the likelihood of a write hole is between the likelihood of a powerloss (single failure) and a power loss+disk loss (two failures).
-
-However, this is not the real problem. The real problem is that if a scrub is not performed after a power loss, the data and the parity may mismatch; or better, the likelihood of a data mismatch is low (because the data likely is UN-referenced), but the parity mismatch likelihood is a lot higher, because the parity mismatch is related to the stripe (at whole) that contain the data updated and not necessarily to only the data that it is updated. And this mismatch is not correct until a scrub.
-
-So the "write hole" happens even if the "power loss" and the "disk loss" events happen not at the same time. It is enough that a scrub (or a read) is not performed in the meantime. This to say that considering that the "power loss" and "disk failure" event likelihood as the product of the two likelihoods, is a bit optimistic. If a regular scrub is not performed, the likelihood of this combination is near to the lower likelihood of the two.
-
-This is not specific to BTRFS, however MD solved this issue performing a logging of a stripe update.
-
-A more general solution would be implementing a logging like what MD does. I think that you, Qu, did a prototype  something in the past. BTRFS is advantaged by the fact that it can skip this logging when a full stripe is written (if the full strip is not written is not even referenced). MD can't do that.
-
-
->
-> Thanks,
-> Qu
->
-BR
-
-Goffredo
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+Thanks, as the fixed patch is still in the development queue I've folded
+it there.
 
