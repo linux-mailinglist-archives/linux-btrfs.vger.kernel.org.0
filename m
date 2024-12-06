@@ -1,171 +1,164 @@
-Return-Path: <linux-btrfs+bounces-10104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF099E795E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 21:00:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C79BB9E7C74
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 00:30:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360D21883675
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 20:00:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBFD16A8E8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 23:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B161D6DBC;
-	Fri,  6 Dec 2024 20:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ttt28QrT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FIeaRntn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ttt28QrT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FIeaRntn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2631213E65;
+	Fri,  6 Dec 2024 23:30:35 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7754D145B07
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 20:00:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774A31FCD18
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 23:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733515202; cv=none; b=IlylSTDxhA4NxOAiBl/pSwkWK1ncEhW/pQgaFpO0ph/RAdtCHrNuueWUiw4Sk5lEGOH2/tZCc5l6xfbATN9ROzB7KgfSZirzeyzlxKRDsiz6ei0/ZzXt+Ni6qnYS6vh3WIHtygbOlC51B0QKc0U07tLgnOFc4YDmOHinLhDnMug=
+	t=1733527835; cv=none; b=mZ53TMJz12jOj37Ga0LHHJc80KdfNhi2nmPbR1ibJ//pAArmihWMhKoJACXvA/OpWxaconiQmuh4jOhUU75qWtn890ceTngOeOxxjQjJB3hNDIZZ/aR813N+Numue0HerZH9MvhhV/wo8r8GsPAgAjBK0r0tpCGYx6dOHT7Csoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733515202; c=relaxed/simple;
-	bh=EhyaL4pLTD1OVyzbnA8XHIBu3aJBGxeazKxYE/HiKEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sT2e0QLW/VGyy3tD4xRyp049oB7/FLfWsOY9G/FcjwcJGEv0hpcu/5RSRcL+jNAaBHyBGXME+Ds48oTvB2sdNJ+0hOhXjqU9deAKyTMwhswp+j3eWYzgNrTU0iT+GgWbilNBOuy6CWrPDWq08rMAzAIJPQfnxk2065vfYfpcHDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ttt28QrT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FIeaRntn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ttt28QrT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FIeaRntn; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9234121158;
-	Fri,  6 Dec 2024 19:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733515198;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hHsWBtkeedRsQIINpjrnWZGwWtpHuem9Kbgx1e0FT7U=;
-	b=ttt28QrTpOl5TZr23e6WADyon/8l9nYNfUQbXNDoxlUw8ri+ircyofaU3xW9qZ13lkKP7Q
-	qi3u9ZKM7lv6ot+om46JK8rRsYZXPH0TzxO3Z91xgJDkHo2FF4paLuc9SM4zdar05EnOAR
-	W3uVfD5RdFeEviuaozAGbiq1KZ571wk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733515198;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hHsWBtkeedRsQIINpjrnWZGwWtpHuem9Kbgx1e0FT7U=;
-	b=FIeaRntn2iX4E/3WACbKHHwEhp+4S5660i1cH3VppzclAYIWRsUzCSt4bqN47ERLgllBgs
-	4S2KywGtwGS+V/Cw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733515198;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hHsWBtkeedRsQIINpjrnWZGwWtpHuem9Kbgx1e0FT7U=;
-	b=ttt28QrTpOl5TZr23e6WADyon/8l9nYNfUQbXNDoxlUw8ri+ircyofaU3xW9qZ13lkKP7Q
-	qi3u9ZKM7lv6ot+om46JK8rRsYZXPH0TzxO3Z91xgJDkHo2FF4paLuc9SM4zdar05EnOAR
-	W3uVfD5RdFeEviuaozAGbiq1KZ571wk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733515198;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hHsWBtkeedRsQIINpjrnWZGwWtpHuem9Kbgx1e0FT7U=;
-	b=FIeaRntn2iX4E/3WACbKHHwEhp+4S5660i1cH3VppzclAYIWRsUzCSt4bqN47ERLgllBgs
-	4S2KywGtwGS+V/Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D4F813647;
-	Fri,  6 Dec 2024 19:59:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4vZTHr5XU2cZRwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 06 Dec 2024 19:59:58 +0000
-Date: Fri, 6 Dec 2024 20:59:49 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: open-code btrfs_copy_from_user()
-Message-ID: <20241206195949.GO31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <3fd6e78c94b60e15e11ee2d792ced71a367b764d.1730952267.git.wqu@suse.com>
+	s=arc-20240116; t=1733527835; c=relaxed/simple;
+	bh=bsMOdF9t+yZgl6nzP3eTKIJMsR1qdGjpAXoI3Rd5J3g=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=m6Pszy8zPnhuFkCLEzRGJOqWB47pfL6FA8BQK5AJQnX7j4s4leMbywsPnrhc4ZFgO6/ASyiC4PFt7DrOPFI5slzVlLHeXwYMjK1lqJoBeyWQa3Te4Lfb5xkHjO68BRLRxX5gbbl0rPkI7Bk5G5IuUC/7E0fbB2rQkemHcXb+JuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-84386a9b7e2so468718639f.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2024 15:30:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733527832; x=1734132632;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hp+viSbRlsRqNZfXm2mpqqZBCwoZAdp6M0GYeJNUQ6Q=;
+        b=Y4bdS550P73T3YVF8QIu9thhZv4b3ucugK7j2CKZOBhC1X8V29W8vXXr/KBkWHH6ze
+         O5PlH92zZRzhEBEPvRsLh31goHpJM2tHymdMNVQXKVAtSDCIj5jsdIYGyAFoNee4tHNq
+         bko/1JPABUXldZXrRlAzsCF53fSJmTW/2gCnqCdFLp7+vLu4vE9NPATEaQBDaM3QMuz1
+         olQgglcQTDSQ+nCf1THTxtmhf+c/Q4cyeAiw4DWGl9pOks6qTTx++MK9xsebouewgBFB
+         XRmEM5u96W7CubgdXESbgaQoPQQSwtAks/i3PSIu16EjgpeMMswytF4cu8tQc173ayQB
+         KWXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWebhNIJ6/UAlIFt/lvZHGVH+gKtBwfzxlRkHkIeJCXKDHR5aFJmj6YLzmULxhS3KGauyY0j0bTYous+g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHTfmFKXp786Cgt2wQWf7Cg5K4fjEuCA0+yMuYsW6w+igrvcUS
+	JRRMtcQgX+cKuY5ADzxWTHIrsv4jk/zq9P3ks/86fZJcvYgKkSGhtHATqXnpWaK4g0zvSHueBsC
+	wyaV95qAitHp4L59WVHztjDeWBArSS7cR3D0p1JRb8uBIFWqNJTeZnzE=
+X-Google-Smtp-Source: AGHT+IFrFvDjkqMKbkN9cLKLl5XUaN62rGYgzNt/vfJD41BP4lc52+5MlX2vBTMoIa4jqWsaHlfCGQWxMslJDrKFcANCxgDNDwcB
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3fd6e78c94b60e15e11ee2d792ced71a367b764d.1730952267.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.995];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Received: by 2002:a05:6e02:218a:b0:3a7:15aa:3fcc with SMTP id
+ e9e14a558f8ab-3a811d774abmr67770135ab.1.1733527832584; Fri, 06 Dec 2024
+ 15:30:32 -0800 (PST)
+Date: Fri, 06 Dec 2024 15:30:32 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67538918.050a0220.a30f1.014a.GAE@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_get_extent_inline_ref_type
+From: syzbot <syzbot+4983e68a6d77180bfe33@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Nov 07, 2024 at 02:35:07PM +1030, Qu Wenruo wrote:
-> The function btrfs_copy_from_user() handles the folio dirtying for
-> buffered write. The original design is to allow that function to handle
-> multiple folios, but since commit "btrfs: make buffered write to copy one
-> page a time" there is no need to support multiple folios.
+Hello,
 
-The patch has been merged and now has stable commit id
-c87c299776e4d75bcc5559203ae2c37dc0396d80
-> 
-> So here open-code btrfs_copy_from_user() to
-> copy_folio_from_iter_atomic() and flush_dcache_folio() calls.
-> 
-> The short-copy check and revert are still kept as-is.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+syzbot found the following issue on:
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+HEAD commit:    e70140ba0d2b Get rid of 'remove_new' relic from platform d..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=156a0330580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=91c852e3d1d7c1a6
+dashboard link: https://syzkaller.appspot.com/bug?extid=4983e68a6d77180bfe33
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-> ---
->  fs/btrfs/file.c | 64 +++++++++++++------------------------------------
->  1 file changed, 17 insertions(+), 47 deletions(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index fbb753300071..10d51c8dd360 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -37,52 +37,6 @@
->  #include "file.h"
->  #include "super.h"
->  
-> -/*
-> - * Helper to fault in page and copy.  This should go away and be replaced with
-> - * calls into generic code.
-> - */
-> -static noinline int btrfs_copy_from_user(loff_t pos, size_t write_bytes,
-> -					 struct folio *folio, struct iov_iter *i)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The function gets removed but there's one stray mention of its name at
-btrfs_dirty_folio() comment.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8a904c062768/disk-e70140ba.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e4c464adbbce/vmlinux-e70140ba.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7a1fb1b0c526/bzImage-e70140ba.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4983e68a6d77180bfe33@syzkaller.appspotmail.com
+
+assertion failed: btrfs_fs_incompat(fs_info, SIMPLE_QUOTA), in fs/btrfs/extent-tree.c:344
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent-tree.c:344!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 83 Comm: kworker/u8:5 Not tainted 6.13.0-rc1-syzkaller-00001-ge70140ba0d2b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Workqueue: events_unbound btrfs_async_reclaim_metadata_space
+RIP: 0010:btrfs_get_extent_inline_ref_type+0x42c/0x480 fs/btrfs/extent-tree.c:344
+Code: 4d fd 90 0f 0b e8 c4 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 00 b1 4a 8c 48 c7 c2 c0 ae 4a 8c b9 58 01 00 00 e8 15 e3 4d fd 90 <0f> 0b e8 9d 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 60 b1 4a 8c 48
+RSP: 0018:ffffc900015970c0 EFLAGS: 00010246
+RAX: 0000000000000059 RBX: 00000000000003c5 RCX: f7095654c42f1300
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff817f070c R09: 1ffff920002b2db4
+R10: dffffc0000000000 R11: fffff520002b2db5 R12: 00000000000000ac
+R13: ffff888029a91a40 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f653c3ff000 CR3: 000000002a19a000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lookup_inline_extent_backref+0x7ad/0x1a00 fs/btrfs/extent-tree.c:882
+ lookup_extent_backref fs/btrfs/extent-tree.c:1064 [inline]
+ __btrfs_free_extent+0x443/0x3a10 fs/btrfs/extent-tree.c:3095
+ btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2007 [inline]
+ __btrfs_run_delayed_refs+0x102a/0x4310 fs/btrfs/extent-tree.c:2077
+ btrfs_run_delayed_refs+0xe3/0x2c0 fs/btrfs/extent-tree.c:2189
+ flush_space+0x2f7/0xcf0
+ btrfs_async_reclaim_metadata_space+0x28e/0x350 fs/btrfs/space-info.c:1105
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_get_extent_inline_ref_type+0x42c/0x480 fs/btrfs/extent-tree.c:344
+Code: 4d fd 90 0f 0b e8 c4 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 00 b1 4a 8c 48 c7 c2 c0 ae 4a 8c b9 58 01 00 00 e8 15 e3 4d fd 90 <0f> 0b e8 9d 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 60 b1 4a 8c 48
+RSP: 0018:ffffc900015970c0 EFLAGS: 00010246
+RAX: 0000000000000059 RBX: 00000000000003c5 RCX: f7095654c42f1300
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff817f070c R09: 1ffff920002b2db4
+R10: dffffc0000000000 R11: fffff520002b2db5 R12: 00000000000000ac
+R13: ffff888029a91a40 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f653c3ff000 CR3: 000000002a19a000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
