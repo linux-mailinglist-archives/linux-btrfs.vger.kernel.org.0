@@ -1,204 +1,170 @@
-Return-Path: <linux-btrfs+bounces-10086-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10087-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E739E647E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 03:56:48 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699DA9E653A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 04:59:25 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95A8D284BBC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 02:56:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 217E118843F6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 03:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D02A16132F;
-	Fri,  6 Dec 2024 02:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74648192D9C;
+	Fri,  6 Dec 2024 03:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nNFsqbdK";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nNFsqbdK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0lF3l+O"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0BE1E522
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 02:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FB16FBF
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 03:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733453784; cv=none; b=cIUWMi5+q5XIPWkhMn/lx1WUwirKFu2cD1U48qWGEo7s5qTQfLsQtRkT3FmDLHTQMqEXDOkTTTSaxL2bhK6WIKXCOdcYDskmLWrTl8i+SKp+tGR6lvj2v/vG55hwGOB8jl/g/eP1lHB9lC38vxXNYZ+gsQ1iWzIbHiOoup0lnvM=
+	t=1733457557; cv=none; b=epFmAtHffFEVcOEttfJ5V2OBRPcWPpMbpM8LwofNOidCx+vgtWLHdfoCfGLScGVwEtBWn96XFkTcsB4VwjIhjBut/jlrvvZ7sTUjCRBnOqvuln2i8Mi5zEjJZ4PVYkG92+NK+Z73nF9o9XylYXkRExf4q5/PKSnPEdXC4WBGGFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733453784; c=relaxed/simple;
-	bh=7lktaC65xowsLrjK30hzCCZylKo+1lQ/oW7h4aS4XQI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DhD1CVATW3Ld5dx2F57Wsr6hbxhy/cxvFqQGOdiUvgq9dUpD6xvu7fjwEPrjTXn/Bwl1HE8MiMnqSk49Uv7j6q8mLnRHTJmt52oZOObZM2n30UgLfeca7AXXl8wXZPdNv3O/WV4Val2Ka2sjNHWf3ppUOTiTZs8j9iAPW8PCU7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nNFsqbdK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nNFsqbdK; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6AF4821185
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 02:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1733453780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=AAsGbWT9ihE51PXHuqZw6oR1k99pNT26ImSEqLfOAYM=;
-	b=nNFsqbdKGTQIYYPn4tLTUiB72qOstzradaQu4evzBF2HCxk3O6jZelNdB8WvhaOF9nsvtj
-	2tsjjsGo/bxGAZ+1XS60ftwPM48gT7pFJ3PcST83HCHEudGP4a1xdBHDgDdBpmlILP+4Cc
-	CEgcen+mXK8A/LcDDkiDFdwpEb1xgVA=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1733453780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=AAsGbWT9ihE51PXHuqZw6oR1k99pNT26ImSEqLfOAYM=;
-	b=nNFsqbdKGTQIYYPn4tLTUiB72qOstzradaQu4evzBF2HCxk3O6jZelNdB8WvhaOF9nsvtj
-	2tsjjsGo/bxGAZ+1XS60ftwPM48gT7pFJ3PcST83HCHEudGP4a1xdBHDgDdBpmlILP+4Cc
-	CEgcen+mXK8A/LcDDkiDFdwpEb1xgVA=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9508213647
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 02:56:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1pslFdNnUmdULAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2024 02:56:19 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix the error handling of submit_uncompressed_range()
-Date: Fri,  6 Dec 2024 13:26:01 +1030
-Message-ID: <38ccbae160bce77530cf86ab22c38982788476e2.1733453757.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1733457557; c=relaxed/simple;
+	bh=m6P8pyODp4Ua8M2J2TmNtJqMHZ7K9WGm34un42oZFIQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=RRvKVOXzuJcnqNqQ/S1daP9OFEf3MYOVSjU/NA0xJTP4svFUZ5W3HEIv73c1U3DzjUDOoC3jdCZy0KW4fIG4c6st2J+PLIkz2oz8nNvwsS+esUPae4MbTvoQguZWaPYPzIGJdFGKlBHkOttNxZ8lGASw9RnwnjDRxpVs4zlKHA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i0lF3l+O; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ffc80318c9so13923031fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2024 19:59:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733457554; x=1734062354; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=lCl1vWqDJufmyxV4V/+gCneIKEh1wDG7Pm4cvx4piW0=;
+        b=i0lF3l+OWUuLaayZVK7F33J/yBNxMmc0Krolx9Yxvsw2jjzzcS6I0vX79ktsqGIKHB
+         Etf2dz2EVJHTS/f65buShYCMKsW26TQm/BV1Ibr9rnptRyT9LwAT9fRb3fhDnyLyGQfw
+         tjduEpRvir+sWark0IWeG5Mag4T9wGb/LhyPz/hDmsr3dfkL7OOyohMFzXc7eLYybvnP
+         CxIO7DmkFdcD0CVEG0o3ouzyRRv25h3wInH5/Okjvx4BusrCqBnoOqgd4B00x55SmEmg
+         V9ooZ/0bJdYzUdnnCaNM69Qajhm3hjS6FcI9Zdp13yGis1DAorxrI6DG7GT1GzZ5ALKB
+         OGbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733457554; x=1734062354;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lCl1vWqDJufmyxV4V/+gCneIKEh1wDG7Pm4cvx4piW0=;
+        b=cYzuWGsM0Aj28BspWyIFtYr/jNnC2MicFXLAPfEfuDeofZTnGx4YWeJrXPRWcxji1v
+         iqkygYRlpHmntVEz5fR4rGmpcsOsRZ8GwG0UwoVofAEheGWKQWwjbR592eFngh+D2Mc5
+         iP/JZXHDOcS7McffPBJdyjmUkB7TjYomaKk51qLIGdFK7RXdQX0o/GReg4ZFCnVpYMpg
+         v138knXZC1BfG/fUtEXARtsvA4J96nn0C40j7/fx29QIJJgcJbKjK6vreyuhrQwrIi8j
+         O+ojUWCKvOCGy8E7zHaFr+sEdKbaXOlUPhb8tis2Az8K8TWJUDslTpHi+OjI5CcYWgSO
+         xapQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX55F6V13Z4uonngTyzdk2EiuZbWOiV7Jyf8ArABcN9rP5Wg3H2hN4tFwd75Cg9t8LFqWNrxcfZtR7y1g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAScMDCKfWxv0uoCBqrDfuUi7QEevL+GENpo+fkGjgEAhWxfF8
+	9Rru9fFd+B8rmxMHPr17DeKcwksgS/eZV0+T6VQOWlDeLIPRH5NcldpXDg==
+X-Gm-Gg: ASbGnctho6zLx5ArjEeBqmJ6DmFrR8C+dqg7NBfF8uTMS7oerOD7LAOpky6Muv/AdSN
+	JQ4OwmBkJH4dqaW7gsCU55HgwLDV5gZihoo1zXBm+aU9N+6EFQHsIFAREYZM+prTtuefU+WVDia
+	qapDKshjsxgYkjRTgu0wG8kLy2SkAR7KjvDfY2M/fPrzE+KLbfpDS5mwXzZuUsfMhxsFnWBCGC1
+	IfNAgTORCqWZ3XcbCNSMqxjte8MckQnXQcNGSQl7y9ZGcoRVA1U3rGz/kpzWJPVM66TOmYjOArQ
+	AFL/cZFuhbTz75V+bAQmYkTE
+X-Google-Smtp-Source: AGHT+IFOZ/znaC4Ah6MctPxJJjoflPgr6JMenVKEHmpnR+AgE18tEzHzJPAmpQ7QLIZlFWRdjj7VDw==
+X-Received: by 2002:a05:651c:506:b0:300:28b4:163 with SMTP id 38308e7fff4ca-3002f8c3a34mr3296281fa.9.1733457553691;
+        Thu, 05 Dec 2024 19:59:13 -0800 (PST)
+Received: from ?IPV6:2a00:1370:8180:3d9b:4da4:e5ff:50a2:b82d? ([2a00:1370:8180:3d9b:4da4:e5ff:50a2:b82d])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30020e6f079sm3639101fa.115.2024.12.05.19.59.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Dec 2024 19:59:13 -0800 (PST)
+Message-ID: <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com>
+Date: Fri, 6 Dec 2024 06:59:11 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Using btrfs raid5/6
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+ Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
+ <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com>
+ <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com>
+ <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
+ <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com>
+Content-Language: en-US, ru-RU
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
 
-[BUG]
-If btrfs failed to compress the range, or can not reserve a large enough
-data extent (e.g. too fragmented free space), btrfs will fall back to
-submit_uncompressed_range().
+05.12.2024 23:27, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/12/6 03:23, Andrei Borzenkov 写道:
+>> 05.12.2024 01:34, Qu Wenruo wrote:
+>>>
+>>>
+>>> 在 2024/12/5 05:47, Andrei Borzenkov 写道:
+>>>> 04.12.2024 07:40, Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> 在 2024/12/4 14:04, Scoopta 写道:
+>>>>>> I'm looking to deploy btfs raid5/6 and have read some of the previous
+>>>>>> posts here about doing so "successfully." I want to make sure I
+>>>>>> understand the limitations correctly. I'm looking to replace an
+>>>>>> md+ext4
+>>>>>> setup. The data on these drives is replaceable but obviously ideally I
+>>>>>> don't want to have to replace it.
+>>>>>
+>>>>> 0) Use kernel newer than 6.5 at least.
+>>>>>
+>>>>> That version introduced a more comprehensive check for any RAID56 RMW,
+>>>>> so that it will always verify the checksum and rebuild when necessary.
+>>>>>
+>>>>> This should mostly solve the write hole problem, and we even have some
+>>>>> test cases in the fstests already verifying the behavior.
+>>>>>
+>>>>
+>>>> Write hole happens when data can *NOT* be rebuilt because data is
+>>>> inconsistent between different strips of the same stripe. How btrfs
+>>>> solves this problem?
+>>>
+>>> An example please.
+>>
+>> You start with stripe
+>>
+>> A1,B1,C1,D1,P1
+>>
+>> You overwrite A1 with A2
+> 
+> This already falls into NOCOW case.
+> 
+> No guarantee for data consistency.
+> 
+> For COW cases, the new data are always written into unused slot, and
+> after crash we will only see the old data.
+> 
 
-But inside submit_uncompressed_range(), run_dealloc_cow() can also fail
-due to -ENOSPC or whatever other errors.
+Do you mean that btrfs only does full stripe write now? As I recall from 
+the previous discussions, btrfs is using fixed size stripes and it can 
+fill unused strips. Like
 
-In that case there are 3 bugs in the error handling:
+First write
 
-1) Double freeing for the same delalloc range
-   Which can lead to crash due to ordered extent double accounting
+A1,B1,...,...,P1
 
-2) Start/end writeback without updating the subpage writeback bitmap
+Second write
 
-3) Unlock the folio without clear the subpage lock bitmap
+A1,B1,C2,D2,P2
 
-Both bug 2) and 3) will crash the kernel if the btrfs block size is
-smaller than folio size, as writeback/lock update needs to clear the
-corresponding bitmap bits.
-Setting the folio locked/writeback again with existing bits will trigger
-the ASSERT()s inside subpage sanity checks.
+I.e. A1 and B1 do not change, but C2 and D2 are added.
 
-[CAUSE]
-Bug 1) happens in the following call chain:
+Now, if parity is not updated before crash and D gets lost we have
 
-  submit_uncompressed_range()
-  |- run_dealloc_cow()
-  |  |- cow_file_range()
-  |     |- btrfs_reserve_extent()
-  |        Failed with -ENOSPC or whatever error
-  |
-  |- btrfs_clean_up_ordered_extents()
-  |  |- btrfs_mark_ordered_io_finished()
-  |     Which cleans all the ordered extents in the async_extent range.
-  |
-  |- btrfs_mark_ordered_io_finished()
-     Which cleans the folio range.
+A1,B1,C2,miss,P1
 
-The finished ordered extents may not be immediately removed from the
-ordered io tree, as they are removed inside a work queue.
+with exactly the same problem.
 
-So the second btrfs_mark_ordered_io_finished() may find the finished but
-not-yet-removed ordered extents, and double free them.
-
-Furthermore, the second btrfs_mark_ordered_io_finished() is not subpage
-compatible, as it uses fixed folio_pos() with PAGE_SIZE, which can cover
-other ordered extents.
-
-Bug 2) and 3) are more straight forward, btrfs just calls folio_unlock(),
-folio_start_writeback() and folio_end_writeback(), other than the helpers
-which handle subpage cases.
-
-[FIX]
-For bug 1) since the first btrfs_clean_up_ordered_extents() call is
-handling the whole range, we should not do the second
-btrfs_mark_ordered_io_finished() call.
-
-For bug 2) we should not even call
-folio_start_writeback()/folio_end_writeback() anymore.
-As the error handling protocol, cow_file_range() should clear
-dirty flag and start/finish the writeback for the whole range passed in.
-
-For bug 3) just change the folio_unlock() to btrfs_folio_end_lock()
-helper.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9488eb9bb239..11c3ac84711f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1131,17 +1131,9 @@ static void submit_uncompressed_range(struct btrfs_inode *inode,
- 	if (ret < 0) {
- 		btrfs_cleanup_ordered_extents(inode, locked_folio,
- 					      start, end - start + 1);
--		if (locked_folio) {
--			const u64 page_start = folio_pos(locked_folio);
--
--			folio_start_writeback(locked_folio);
--			folio_end_writeback(locked_folio);
--			btrfs_mark_ordered_io_finished(inode, locked_folio,
--						       page_start, PAGE_SIZE,
--						       !ret);
--			mapping_set_error(locked_folio->mapping, ret);
--			folio_unlock(locked_folio);
--		}
-+		if (locked_folio)
-+			btrfs_folio_end_lock(inode->root->fs_info, locked_folio,
-+					     start, async_extent->ram_size);
- 	}
- }
- 
--- 
-2.47.1
-
+It has been discussed multiple times, that to fix it either btrfs has to 
+use variable stripe size (basically, always do full stripe write) or 
+some form of journal for pending updates.
 
