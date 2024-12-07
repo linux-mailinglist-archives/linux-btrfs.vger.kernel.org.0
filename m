@@ -1,56 +1,80 @@
-Return-Path: <linux-btrfs+bounces-10111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D2639E8203
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 21:48:30 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 912A49E8239
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 22:20:51 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58AEB281E42
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 20:48:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 501E91882E0F
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 21:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475DC155A21;
-	Sat,  7 Dec 2024 20:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0968A155A21;
+	Sat,  7 Dec 2024 21:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="YhfVVYBW"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kelx+22Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DD6014A0B9
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Dec 2024 20:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8ED140E2E
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Dec 2024 21:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733604504; cv=none; b=WRRREwQuvbplgRtHzJfDFXN87sKYRSUcNEs0HRW7xIoNuQ/sOfUv5Jbs3iPKyAUGgPg5RbiuWOW2Gk222oJoveCQ6hGEll3wPiR9xfLa/ER19e0Hdt/4gRMAdwLdgWx5mQ3AYOnJyAtbE2HaV19J0G50xN3ADIH5LrOYstLmuys=
+	t=1733606445; cv=none; b=oSurc3GRvteZUDkcFm/0KhP7GlxJxdIO6WYI9OasXKH+xSoOTLREvcIuK7CBfWOcqgcA6CM9c10xNCPPMIRixZDo02w6TG+4QJ9hjP5aWB2ZW/w3QZkaJTbl0w4XZJL2O3dYwWl99o4i6ldZ4WrRdQH2i5DWpA5ZTQ4Iipwlz5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733604504; c=relaxed/simple;
-	bh=xvv/mDbDOpYmcdBLIskdaUE+LmesYMYIpAC/kcRxU4Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ONQclM+Z3Ay2jhGP4eNLKPxvjbkF244rnO/o5PbCkr8bwm5mmJ/jIJpuT+MRo6GlmnSDd88J0g9/jOWWVQygRUj/HC4rD7D5CILqzbBL/hQ/NcD7/8QncVKCYeJkL1ZY0etXH9fuQr0cIpj+y+vWw8xeRFVfCID+3Zlm1fcwE30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=YhfVVYBW; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1733604495; x=1734209295; i=quwenruo.btrfs@gmx.com;
-	bh=xvv/mDbDOpYmcdBLIskdaUE+LmesYMYIpAC/kcRxU4Q=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=YhfVVYBWn7V2SjMIAnzCBUj3KcF2SijKtIp3aK17Z+XERAt122D8QGO1CZoce8t/
-	 o0xE023BdlRXeuFQD/kNNU8fNXFxBSgcqDXCH7ycXnS+ilpU1A7u4DtoZjQpRgzAy
-	 OojASYs8ZCuZ7ImTCjE3FsHutFu8AaKggsLoggTXqcKaI4DuU4pcXoHH3JUpW+QHI
-	 KA5DjdIgJ2752XNieDk7NlrdnO8BXgjopTB/ImQbbPMhj62QVCbQrsj4GWHIYt1qo
-	 D56FneFasWBKVn8h6WLbWzxv1s4kfEHAQn7uXPmGmqkh3usnnZc7KOVQNV1gJD2s/
-	 89H7u3Wune+deIqqJQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJE6F-1t5X8e1KKh-00Rgpq; Sat, 07
- Dec 2024 21:48:15 +0100
-Message-ID: <d6907ccb-70cd-4066-9bf7-2ead902f0974@gmx.com>
-Date: Sun, 8 Dec 2024 07:18:12 +1030
+	s=arc-20240116; t=1733606445; c=relaxed/simple;
+	bh=phaa6tPi6gomfyt6K9ayS6CqFIfkkgoclXweCyMubGw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=AMvouODeoaTF9jEh/jQoA07DVdpJxRFslNFRNzYgdbyM53Y7CemKKPYJIPlMgE1uZDEvqrKcF5itKpPtw0N1TiVjBb7+A1iWiYexl9AOAJHQc54MF+JmQRG9cvEW0CL/O2rgAWfqr7HIDHe83i8V93j5Wf3ypw19vNpanzq6PUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kelx+22Z; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a099ba95so32213055e9.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 07 Dec 2024 13:20:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1733606441; x=1734211241; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=UAH35AH5/obCtHy2CjHblCvQiQVtBXwAutV6LWoNmN8=;
+        b=Kelx+22ZLsJkDIHFyflZGkHn4tGG7x2g4q4JrQB99IaOsc/w7KQBLpZLDVyeG/qpmN
+         ct77d2dvluViErPa/D7Q0v8Y7ziweMBG6gO+Paat8tvQYRMvLXqth3cY26zXXlytv7N1
+         1dftBr97nU4QXc2jRcXr6pjsiBVP/OIi7t6+G3stmJHExHV0OqHkAqRcAbWkWf9MnbOg
+         GxKb80F/WW5+zzOcUhSsjiNvjZFooUO6PmExYFZg1iK5vwBU4/edpFHzoyGLEt3msHuw
+         F7B+H9AAYLLAE4r4hIzEVnje/Q4h8TmE8aIsmdKVTRzgwPFXDgCEEf72kfQxfGmYxBno
+         N3lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733606441; x=1734211241;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UAH35AH5/obCtHy2CjHblCvQiQVtBXwAutV6LWoNmN8=;
+        b=PYOvOXnGtvA6LXFsLOzlHnTRsQuBRkwnFqaLcFcX13IeLjrx3GBIR7ehewbHhIbhzn
+         c0vzRP0vQE7tGmWK04RLGs6GHYBGqgYoERLna9DxCsIOAwP4Ho8yySYKd1iOt1JsCVb4
+         ap9yJ7/LWEXw1xREGeIZGMII+kT+Pruix2cV9m9dr24fn9nYYDd47pR8RQzB/JkbV2C2
+         IW/wtG9Qn8aYoWKzh3r+Yo1BPv1QgNWTyg8vhdPFf9LFB1BCaVoBpGpU049o+2R1xE6u
+         by27wmKuFXZASyJPCNNcaSt4W91ZEChRSBEN3ZHkz0vR3DXhPMIT1+ZWy/iN0GdBxUNN
+         dVZw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGZN9WT63c0NlmAqWFeIOjhrE66PXbuGFmAWPW6MMQ+aLRiMQZDvMFZpeOX9ZnE4Zu1jIRIPXZzSg5jQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxeSXw3+ruG6LOOQyGgCzGgSoKcY884+fjxtVylqXifr6Yb770Q
+	ElcrcmHKoK0cui6fqmdy8oQ8dQhY7SvwbTX47HARxQ/G3dvN4MaPF2hmdGcW/VM=
+X-Gm-Gg: ASbGncvN4lC0V4Feux3LhNzSX+qjhWesO/ydJi7rcqcn1Mkfh6UNWAq/psFMkX6RCCC
+	dQcmzd6oAZbaGjpW+kK0BpdnYP+dXQYNj6RIlJKKPWABi36MVWvKa4PIM5ANi/tH/2uzMkWhfuW
+	BvkHzGEW9lVij7jC5PNXUWdr43iNuutbLAskKj7Z62T2fOAzigECefPb4KEwVIDuDZml615Pnyq
+	uGP+GopZ/WEVPhic/3M9gLzM7fcvnNdmDpz/2snuQbLuWaghKERz1p4xsezIE8K9DqrFotFoblI
+	AA==
+X-Google-Smtp-Source: AGHT+IHp8oOSBel7D2xRJ7239vmjkY0cNbiW8Iv2umBn77+NaJIwGWkPBYZJZLerBPWMgEK6CXVRsg==
+X-Received: by 2002:a05:600c:4712:b0:434:a746:9c82 with SMTP id 5b1f17b1804b1-434e29f0392mr44208655e9.5.1733606440676;
+        Sat, 07 Dec 2024 13:20:40 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef4600cf20sm5288441a91.43.2024.12.07.13.20.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Dec 2024 13:20:38 -0800 (PST)
+Message-ID: <7ee86cad-b8ed-4609-87e3-ab9a9e3bb98e@suse.com>
+Date: Sun, 8 Dec 2024 07:50:35 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,164 +82,117 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Using btrfs raid5/6
-To: Jonah Sabean <jonah@jse.io>, Qu Wenruo <wqu@suse.com>
-Cc: Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
-References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
- <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
- <CAFMvigdQPC_cV5td1j0e2CR=qPT=W0Lp=+n74_UrSzahayMJWA@mail.gmail.com>
+Subject: Re: Balance failed with tree block error
+To: Aldo Gutierrez <btrfs.spry594@slmail.me>, linux-btrfs@vger.kernel.org
+References: <173323215268.7.6782695832944219711.518128798@slmail.me>
+ <a78e6eab-88a6-4287-b5bc-ba5552cc8726@gmx.com>
+ <173358166800.7.9767075912845312020.523411723@slmail.me>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAFMvigdQPC_cV5td1j0e2CR=qPT=W0Lp=+n74_UrSzahayMJWA@mail.gmail.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <173358166800.7.9767075912845312020.523411723@slmail.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/Qf+ShplaFsdlqLwofjjsvQ/N33+R9nvx9tzL/iDCizOoH4ZWuN
- 6dTlxlamqL2uU+Bbfs/3dnMGWQIQt0A7QmctFO4q9u5ZpBiI2jJrE384Co9gri5Py1grmaN
- nr+P1SUiKwujnUzPho2JKetIrTS3MwMKTo/i5pt1wofsEkUSWIFbXVQlS4mGWXpEDLD7gxs
- zugPG3x6zi8+lYI4EGZug==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SFU2/vrJN6M=;O9Bqbm8gg+eOO6yNRMHON6xVwWg
- wzk7pK4SA1ACcUngQPdWLbVj/YkXJq41A3S4UmuN6vFrsjNUu0b6R8R/QCdfEiJpTrHyBa04u
- G3x0aK0yYQtLyep1AgWQO7s/9FFaOwdiTB1bf/N//OYi6tfH8hsjrTpEZ9q4W+OgpARtVDuY3
- dSuHcEXyL5t3XOZMY6iextrQKgvNDj2FVwBL+9D0H+6tIgOI0qWPuOCX7M+sksaAoe182UzLd
- xDHVq3DyIyASAD4eFEofpBjuwPYlc6SpSy5aYytifTcaqSosxznsyNvh+OT5RDPia4/Y0Ygki
- JXrr/ouEsLzux4REMJl+ccWFt5YYjHlRJsQ/JbMJaxlrd9WTfMmFglvLdSPmqlb/NWsOswl8e
- R5yiI6KdEgN9gBv1A/sYsjAJNkvXfA8VWvg7jO+8FDxg/9jvW+q4fsI0GcvO0xttGjmwL3cM0
- 31vtULS7vmV7WJcLJ/y3oVTUNeTt5tuuBqPs2Bi7zwEUWgGKGv+r+GwFNJHai6MgvUmhjtekw
- bmHm1LtaxZ/zBVTVSrJBhFaG/T296feb2bb01zQgMGOSJhxlitoRsUyfelBHkEWULo+b+Mi2O
- Gfb83c8wQnaORuoH8FkQ6yzHgP5GDgcI+vkoi9Ls2tYczWJ26cMAHjijFzr6Z/Ee2UyOOOVgV
- 9tIkli7yz0olLXif8EkqHHpt+R2bvlRJNR7HdzrxDycfmwUzD1cwYmk+ywtHtQzOuF/m8sME1
- R/rWTYd65+l3/50H+LukPykWcpdw8UG9+yBgRiDM3Yr0AjFX6jc7MsfYmaOHBKOIl8Lch0k6B
- WvUMMyvqQR0B0RGNkZ+045vpvoxLKND+rKp4Pj+vOyWSU5eO06TYfeK54h9irhSuheWRg36s5
- RMTgFohBSZzk6OhDI75+sOCYMx98s3c8Itxd4hYeujeENcEAUVWxMesfRxITrrH3EEjcqPMOM
- bCOkL6HAnuk4CRlSoFT3w/K2ZEBLdxgvLYzjsDEuv2y5x2QNVTwblLUGxF/N1Q5MGUWT7S5Ds
- T8WwgzSgj9Y0RxIyEMM6XwoPametZJ4DKHqzPGH5YQz2Jggv0h/kdJ8DGj0smsfitgNoKnbGx
- NdY9sojm+fBt9P/+JlT3o+baqQesbw
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2024/12/6 12:33, Jonah Sabean =E5=86=99=E9=81=93:
-> On Wed, Dec 4, 2024 at 12:40=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+在 2024/12/8 00:57, Aldo Gutierrez 写道:
+>> The numbers look a little possible for bitflip:
+>> hex(15648439500800) = 0xe3b6fad8000
+>> hex(15648439517184) = 0xe3b6fadc000
 >>
->>
->>
->> =E5=9C=A8 2024/12/4 14:04, Scoopta =E5=86=99=E9=81=93:
->>> I'm looking to deploy btfs raid5/6 and have read some of the previous
->>> posts here about doing so "successfully." I want to make sure I
->>> understand the limitations correctly. I'm looking to replace an md+ext=
-4
->>> setup. The data on these drives is replaceable but obviously ideally I
->>> don't want to have to replace it.
->>
->> 0) Use kernel newer than 6.5 at least.
->>
->> That version introduced a more comprehensive check for any RAID56 RMW,
->> so that it will always verify the checksum and rebuild when necessary.
->>
->> This should mostly solve the write hole problem, and we even have some
->> test cases in the fstests already verifying the behavior.
->>
->>>
->>> 1) use space_cache=3Dv2
->>>
->>> 2) don't use raid5/6 for metadata
->>>
->>> 3) run scrubs 1 drive at a time
->>
->> That's should also no longer be the case.
->>
->> Although it will waste some IO, but should not be that bad.
->
-> When was this fixed? Last I tested it took a month or more to complete
-> a scrub on an 8 disk raid5 system with 8tb disks mostly full at the
-> rate it was going. It was the only thing that kept me from using it.
+>> The same 0x8000 -> 0xc0000 just like Neil.
+> 
+> Isn't that suspicious? Why are the numbers so similar? Is it possible to flip the bit back?
 
-IIRC it's 6.6 for the scrub speed fix.
+I have no idea how this happened.
 
-Although it still doesn't fully address the extra read (twice of the
-data) nor the random read triggered by parity scrub from other devices.
+To flip the bit back, no btrfs-check --repair support so far.
 
-A root fix will need a completely new way to do the scrub (my previous
-scrub_fs attempt), but that interface will not handle other profiles
-well (can not skip large amount of unused space).
+This means one has to craft the tool from scratch, which is normally out 
+of reach for all non-developer users.
 
-So if your last attempt is using some recent kernel version or the
-latest LTS, then I guess the random read is still breaking the performance=
-.
+> 
+>> Did you ran full balance regularly before switching the kernel?
+>> If not, the corruption may already be there for some time, just the last
+>> balance chose to touch that block group and exposed the corruption.
+> 
+> I do a -dusage=50 a couple of times a month. This time I did 85.
+> Haven't run a full balance in ages as it takes a long time.
+> 
+>> Mind to run memtest first to make sure it's not some faulty hardware
+>> ruining the day?
+> 
+> I ran memtest 10 days ago and yesterday I ran memtester. 0 errors found.
+> 
+>> For your data, I believe most of them can be read out without problem,
+>> just write into the fs may trigger the fs to RO.
+>> Thus it's recommended to back up your data immediately. (After making
+>> sure your hardware memory is fine).
+> 
+> The issue happened 10 days ago and I have used the fs since
+> without any issues (have made copies). I had expected such an error to RO immediately.
+
+Do you have the fs mounted on other systems before?
+The corruption can happen in the past but not exposed.
+
+And the RO flip only happens if the write touches the exact extent (e.g. 
+removing the extent or adding new reflink to it).
+
+Thus it's not that simple to trigger, and the generation difference is 
+also not small, which means it not something happened recently.
+
+
+The extent leaf has generation 4919751, but the offending item has 
+generation 4893938, which means the offending one is created over 25K 
+commits before.
+
+So definitely not something immediate, but I'm not sure if 10 days are 
+enough to cause 25K commits either.
+
+> 
+> Within a week or so before this error I had run clear-ino-cache and changed to space-cache v2.
+
+After the clear-ino-cache, do you tried a "btrfs check --readonly"?
+If at that time btrfs check reports no error, that should be the last 
+known good status.
+
+> 
+> While going through the logs I found this happened about a month ago:
+> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): block group 12157169172480 has wrong amount of free space
+> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): failed to load free space cache for block group 12157169172480, rebuilding it now
+> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): block group 12178644008960 has wrong amount of free space
+> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): failed to load free space cache for block group 12178644008960, rebuilding it now
+
+These are fine to ignore.
 
 Thanks,
 Qu
-
->
->>
->>>
->>> 4) don't expect to use the system in degraded mode
->>
->> You can still, thanks to the extra verification in 0).
->>
->> But after the missing device come back, always do a scrub on that
->> device, to be extra safe.
->>
->>>
->>> 5) there are times where raid5 will make corruption permanent instead =
-of
->>> fixing it - does this matter? As I understand it md+ext4 can't detect =
-or
->>> fix corruption either so it's not a loss
->>
->> With non-RAID56 metadata, and data checksum, it should not cause proble=
-m.
->>
->> But for no-data checksum/ no COW cases, it will cause permanent corrupt=
-ion.
->>
->>>
->>> 6) the write hole exists - As I understand it md has that same problem
->>> anyway
->>
->> The same as 5).
->>
->> Thanks,
->> Qu
->>
->>>
->>> Are there any other ways I could lose my data? Again the data IS
->>> replaceable, I'm just trying to understand if there are any major
->>> advantages to using md+btrfs or md+ext4 over btrfs raid5 if I don't ca=
-re
->>> about downtime during degraded mode. Additionally the posts I'm lookin=
-g
->>> at are from 2020, has any of the above changed since then?
->>>
->>> Thanks!
->>>
->>>
->>
->>
->
+> 
+> 
+> 
 
 
