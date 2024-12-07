@@ -1,164 +1,263 @@
-Return-Path: <linux-btrfs+bounces-10105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C79BB9E7C74
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 00:30:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4C49E7EB8
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 08:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBFD16A8E8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2024 23:30:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04914188581D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 07:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2631213E65;
-	Fri,  6 Dec 2024 23:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AC713B7BC;
+	Sat,  7 Dec 2024 07:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tx+9256o"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774A31FCD18
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2024 23:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE40137775
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Dec 2024 07:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733527835; cv=none; b=mZ53TMJz12jOj37Ga0LHHJc80KdfNhi2nmPbR1ibJ//pAArmihWMhKoJACXvA/OpWxaconiQmuh4jOhUU75qWtn890ceTngOeOxxjQjJB3hNDIZZ/aR813N+Numue0HerZH9MvhhV/wo8r8GsPAgAjBK0r0tpCGYx6dOHT7Csoc=
+	t=1733557027; cv=none; b=nR7i7r5mTcwOv1PKUhu3rDjGF8ip0XHAJPX+y8O9cG8OvgYgknpttGAM3VhNvIon1O/mE1MdhhoyVjzvp+nHT73dJfFqCN3t65673NelWUtswXh51DlRj4O1mBnRI1yDKzbIQrYeKJxscAHgeYGDsrRMBpVDK/KH0YfSJypqIVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733527835; c=relaxed/simple;
-	bh=bsMOdF9t+yZgl6nzP3eTKIJMsR1qdGjpAXoI3Rd5J3g=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=m6Pszy8zPnhuFkCLEzRGJOqWB47pfL6FA8BQK5AJQnX7j4s4leMbywsPnrhc4ZFgO6/ASyiC4PFt7DrOPFI5slzVlLHeXwYMjK1lqJoBeyWQa3Te4Lfb5xkHjO68BRLRxX5gbbl0rPkI7Bk5G5IuUC/7E0fbB2rQkemHcXb+JuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-84386a9b7e2so468718639f.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2024 15:30:33 -0800 (PST)
+	s=arc-20240116; t=1733557027; c=relaxed/simple;
+	bh=uqv6UySy7SW8N/KBA2DRFPaJiTpryfOOTQDg1gcUavY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HdpBWx35njGmCFRbwxcLXDGRn2iUt53fqdDP3VnMxQ5kbro6Jp9tLTA0mFx658TJcN8+8JrLFZfhgT3psriCXLauCjxTWAEU6DNKMc6imEVRGIcrizcHw0VR1wxqFg0M64Qxsc6JIJJm70Xy8lsCqBCNIYOMIMjCN7lv6A26TO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tx+9256o; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ffd6b7d77aso34959151fa.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2024 23:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733557023; x=1734161823; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=XzfMxlAt5GNeeNCYaLumuVBfvOy6V2nfIHnriL3tfzo=;
+        b=Tx+9256oW9CIWOFbE7mSuo6V+d/dtZpUhUbSBI3/II9RAORDLJvZ5b+A8Fim42hik+
+         AxyPdE/epamPJDcyGQRJnPUR0qyEBsxYWbunys4F7on3hAmfONeArrbeAGm6xbkuZ3xV
+         iZPJHy6V2lkPVP2V8Judp600w6OSYkQcfu38baOl7aBTAy5vnPy6qEt/a8emkttjQ/pj
+         JsWLpbI2LodN8Ukh9uRWkToUJKZoO7JtypMrLDF402hkwj1Y8m9Cd/JKoGSZS9RL9XFl
+         b15mOz13Ix4Vz1AeJ9+dsiv4ip/nlFKc2wcX8Ai2j0QSgsEUpbkLtlcvPv+T2inVX5YX
+         w2Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733527832; x=1734132632;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hp+viSbRlsRqNZfXm2mpqqZBCwoZAdp6M0GYeJNUQ6Q=;
-        b=Y4bdS550P73T3YVF8QIu9thhZv4b3ucugK7j2CKZOBhC1X8V29W8vXXr/KBkWHH6ze
-         O5PlH92zZRzhEBEPvRsLh31goHpJM2tHymdMNVQXKVAtSDCIj5jsdIYGyAFoNee4tHNq
-         bko/1JPABUXldZXrRlAzsCF53fSJmTW/2gCnqCdFLp7+vLu4vE9NPATEaQBDaM3QMuz1
-         olQgglcQTDSQ+nCf1THTxtmhf+c/Q4cyeAiw4DWGl9pOks6qTTx++MK9xsebouewgBFB
-         XRmEM5u96W7CubgdXESbgaQoPQQSwtAks/i3PSIu16EjgpeMMswytF4cu8tQc173ayQB
-         KWXg==
-X-Forwarded-Encrypted: i=1; AJvYcCWebhNIJ6/UAlIFt/lvZHGVH+gKtBwfzxlRkHkIeJCXKDHR5aFJmj6YLzmULxhS3KGauyY0j0bTYous+g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHTfmFKXp786Cgt2wQWf7Cg5K4fjEuCA0+yMuYsW6w+igrvcUS
-	JRRMtcQgX+cKuY5ADzxWTHIrsv4jk/zq9P3ks/86fZJcvYgKkSGhtHATqXnpWaK4g0zvSHueBsC
-	wyaV95qAitHp4L59WVHztjDeWBArSS7cR3D0p1JRb8uBIFWqNJTeZnzE=
-X-Google-Smtp-Source: AGHT+IFrFvDjkqMKbkN9cLKLl5XUaN62rGYgzNt/vfJD41BP4lc52+5MlX2vBTMoIa4jqWsaHlfCGQWxMslJDrKFcANCxgDNDwcB
+        d=1e100.net; s=20230601; t=1733557023; x=1734161823;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XzfMxlAt5GNeeNCYaLumuVBfvOy6V2nfIHnriL3tfzo=;
+        b=UR+LbwzFKdlTzMFEtWP4jbWGZtLB4MIZOydYKtQWcCs1HOGMXbfs7gBI7auBhAdEp3
+         KLUPV3UjVzcPDVBnJql1TBD2gRaW7DFt903+PqILHN+OUMYHg+qmfK/6RhQOyPR3jdMZ
+         nU36xyypvgyVGq0ImNih1SbzIX1Y1t9QD4H+I1ryfxg3/pr7WaA09ety27SF9zG6mzEv
+         +NZy+HcFuStKRpaGwWy/IoMDR0PnK2pgeFMAeMJXyoZhV1ysS5Uc7k9fEdRJQSRS4ckI
+         fUg6WDdC0iJIYHg+mADLiCbY4aBICRZD1pEcjLsCcKrIsFHj2abRcmSC1eOL4Vbb0mM+
+         O44w==
+X-Forwarded-Encrypted: i=1; AJvYcCWJzcwOdV9Z8j6v+9kyhz8+vDL5JujUmP26zBts6Q2l+kDDYxa9d97lk7EUcq9IrQzyQ9C9OJzr97+o4A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCuuXuX+wMl7ZJsrJ+kG2TE0r/GrXyshvAebGChi5HeUNFjOf+
+	y1yyD6ussGdJj+QcZR3xMw3+ciM30r30k4wRYs/cnQcuVe++6B8Y
+X-Gm-Gg: ASbGncv7Fua9bDhVuCVUGHDUF9o+N52tdd4mibneVGJb/1M80GDZ5dM0xFMzrKfPNh7
+	0hISuPOtuBaXavlfP6iryjKbi4QQwwHj8kuvLFhhVLP3J9bjWYyxx0YkZc+K603X5rn7q7qZ94T
+	gxnOGIpX1wXpw/lrFTaibYY2PDAGvARzRSusZj1TH5B/RErAI8xHC2ltONCxwB5dldJPyc5Rb4U
+	MsoZYL/vBtp861mFFfmWB3/GO5aAf6jQd4Dnq6nQ8j0FF1nqOfyz36WID0zj3z2iLIweBPfI7lN
+	wTuIsyd7jlCm+GFK93kCcw==
+X-Google-Smtp-Source: AGHT+IGnIAjpzv3520S8Ddci74BnesW/dOx3fRn6CzQrG6GGgO9zHDCfqwlhp7kh+ubb4tY1pTM/PA==
+X-Received: by 2002:a2e:bcca:0:b0:300:17a3:7ae7 with SMTP id 38308e7fff4ca-3002fcc60e3mr34478861fa.36.1733557023142;
+        Fri, 06 Dec 2024 23:37:03 -0800 (PST)
+Received: from ?IPV6:2a00:1370:8180:3d9b:445:57d8:1303:9afe? ([2a00:1370:8180:3d9b:445:57d8:1303:9afe])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3012d36b3c6sm317661fa.85.2024.12.06.23.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Dec 2024 23:37:02 -0800 (PST)
+Message-ID: <9ae3c85e-6f0b-4e33-85eb-665b3292638e@gmail.com>
+Date: Sat, 7 Dec 2024 10:37:01 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218a:b0:3a7:15aa:3fcc with SMTP id
- e9e14a558f8ab-3a811d774abmr67770135ab.1.1733527832584; Fri, 06 Dec 2024
- 15:30:32 -0800 (PST)
-Date: Fri, 06 Dec 2024 15:30:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67538918.050a0220.a30f1.014a.GAE@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in btrfs_get_extent_inline_ref_type
-From: syzbot <syzbot+4983e68a6d77180bfe33@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Using btrfs raid5/6
+To: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
+ <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com>
+ <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com>
+ <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
+ <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com>
+ <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com>
+ <b5f70481-34a1-4d65-a607-a3151009964d@suse.com>
+Content-Language: en-US, ru-RU
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <b5f70481-34a1-4d65-a607-a3151009964d@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello,
+06.12.2024 07:16, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/12/6 14:29, Andrei Borzenkov 写道:
+>> 05.12.2024 23:27, Qu Wenruo wrote:
+>>>
+>>>
+>>> 在 2024/12/6 03:23, Andrei Borzenkov 写道:
+>>>> 05.12.2024 01:34, Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> 在 2024/12/5 05:47, Andrei Borzenkov 写道:
+>>>>>> 04.12.2024 07:40, Qu Wenruo wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> 在 2024/12/4 14:04, Scoopta 写道:
+>>>>>>>> I'm looking to deploy btfs raid5/6 and have read some of the
+>>>>>>>> previous
+>>>>>>>> posts here about doing so "successfully." I want to make sure I
+>>>>>>>> understand the limitations correctly. I'm looking to replace an
+>>>>>>>> md+ext4
+>>>>>>>> setup. The data on these drives is replaceable but obviously
+>>>>>>>> ideally I
+>>>>>>>> don't want to have to replace it.
+>>>>>>>
+>>>>>>> 0) Use kernel newer than 6.5 at least.
+>>>>>>>
+>>>>>>> That version introduced a more comprehensive check for any RAID56
+>>>>>>> RMW,
+>>>>>>> so that it will always verify the checksum and rebuild when
+>>>>>>> necessary.
+>>>>>>>
+>>>>>>> This should mostly solve the write hole problem, and we even have
+>>>>>>> some
+>>>>>>> test cases in the fstests already verifying the behavior.
+>>>>>>>
+>>>>>>
+>>>>>> Write hole happens when data can *NOT* be rebuilt because data is
+>>>>>> inconsistent between different strips of the same stripe. How btrfs
+>>>>>> solves this problem?
+>>>>>
+>>>>> An example please.
+>>>>
+>>>> You start with stripe
+>>>>
+>>>> A1,B1,C1,D1,P1
+>>>>
+>>>> You overwrite A1 with A2
+>>>
+>>> This already falls into NOCOW case.
+>>>
+>>> No guarantee for data consistency.
+>>>
+>>> For COW cases, the new data are always written into unused slot, and
+>>> after crash we will only see the old data.
+>>>
+>>
+>> Do you mean that btrfs only does full stripe write now? As I recall from
+>> the previous discussions, btrfs is using fixed size stripes and it can
+>> fill unused strips. Like
+>>
+>> First write
+>>
+>> A1,B1,...,...,P1
+>>
+>> Second write
+>>
+>> A1,B1,C2,D2,P2
+>>
+>> I.e. A1 and B1 do not change, but C2 and D2 are added.
+>>
+>> Now, if parity is not updated before crash and D gets lost we have
+> 
+> After crash, C2/D2 is not referenced by anyone.
+> So we won't need to read C2/D2/P2 because it's just unallocated space.
+> 
 
-syzbot found the following issue on:
+You do need to read C2/D2 to build parity and to reconstruct any missing 
+block. Parity no more matches C2/D2. Whether C2/D2 are actually 
+referenced by upper layers is irrelevant for RAID5/6.
 
-HEAD commit:    e70140ba0d2b Get rid of 'remove_new' relic from platform d..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=156a0330580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=91c852e3d1d7c1a6
-dashboard link: https://syzkaller.appspot.com/bug?extid=4983e68a6d77180bfe33
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> So still wrong example.
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It is the right example, you just prefer to ignore this problem.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8a904c062768/disk-e70140ba.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e4c464adbbce/vmlinux-e70140ba.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7a1fb1b0c526/bzImage-e70140ba.xz
+> Remember we should discuss on the RMW case, meanwhile your case doesn't
+> even involve RMW, just a full stripe write.
+> 
+>>
+>> A1,B1,C2,miss,P1
+>>
+>> with exactly the same problem.
+>>
+>> It has been discussed multiple times, that to fix it either btrfs has to
+>> use variable stripe size (basically, always do full stripe write) or
+>> some form of journal for pending updates.
+> 
+> If taking a correct example, it would be some like this:
+> 
+> Existing D1 data, unused D2 , P(D1+D2).
+> Write D2 and update P(D1+D2), then power loss.
+> 
+> Case 0): Power loss after all data and metadata reached disk
+> Nothing to bother, metadata already updated to see both D1 and D2,
+> everything is fine.
+> 
+> Case 1): Power loss before metadata reached disk
+> 
+> This means we will only see D1 as the old data, have no idea there is
+> any D2.
+> 
+> Case 1.0): both D2 and P(D1+D2) reached disk
+> Nothing to bother, again.
+> 
+> Case 1.1): D2 reached disk, P(D1+D2) doesn't
+> We still do not need to bother anything (if all devices are still
+> there), because D1 is still correct.
+> 
+> But if the device of D1 is missing, we can not recover D1, because D2
+> and P(D1+D2) is out of sync.
+> 
+> However I can argue this is not a simple corruption/power loss, it's two
+> problems (power loss + missing device), this should count as 2
+> missing/corrupted sectors in the same vertical stripe.
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4983e68a6d77180bfe33@syzkaller.appspotmail.com
+This is the very definition of the write hole. You are entitled to have 
+your opinion, but at least do not confuse others by claiming that btrfs 
+protects against write hole.
 
-assertion failed: btrfs_fs_incompat(fs_info, SIMPLE_QUOTA), in fs/btrfs/extent-tree.c:344
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/extent-tree.c:344!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 UID: 0 PID: 83 Comm: kworker/u8:5 Not tainted 6.13.0-rc1-syzkaller-00001-ge70140ba0d2b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: events_unbound btrfs_async_reclaim_metadata_space
-RIP: 0010:btrfs_get_extent_inline_ref_type+0x42c/0x480 fs/btrfs/extent-tree.c:344
-Code: 4d fd 90 0f 0b e8 c4 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 00 b1 4a 8c 48 c7 c2 c0 ae 4a 8c b9 58 01 00 00 e8 15 e3 4d fd 90 <0f> 0b e8 9d 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 60 b1 4a 8c 48
-RSP: 0018:ffffc900015970c0 EFLAGS: 00010246
-RAX: 0000000000000059 RBX: 00000000000003c5 RCX: f7095654c42f1300
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff817f070c R09: 1ffff920002b2db4
-R10: dffffc0000000000 R11: fffff520002b2db5 R12: 00000000000000ac
-R13: ffff888029a91a40 R14: dffffc0000000000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f653c3ff000 CR3: 000000002a19a000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lookup_inline_extent_backref+0x7ad/0x1a00 fs/btrfs/extent-tree.c:882
- lookup_extent_backref fs/btrfs/extent-tree.c:1064 [inline]
- __btrfs_free_extent+0x443/0x3a10 fs/btrfs/extent-tree.c:3095
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2007 [inline]
- __btrfs_run_delayed_refs+0x102a/0x4310 fs/btrfs/extent-tree.c:2077
- btrfs_run_delayed_refs+0xe3/0x2c0 fs/btrfs/extent-tree.c:2189
- flush_space+0x2f7/0xcf0
- btrfs_async_reclaim_metadata_space+0x28e/0x350 fs/btrfs/space-info.c:1105
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
- worker_thread+0x870/0xd30 kernel/workqueue.c:3391
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_get_extent_inline_ref_type+0x42c/0x480 fs/btrfs/extent-tree.c:344
-Code: 4d fd 90 0f 0b e8 c4 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 00 b1 4a 8c 48 c7 c2 c0 ae 4a 8c b9 58 01 00 00 e8 15 e3 4d fd 90 <0f> 0b e8 9d 52 e6 fd 48 c7 c7 a0 b0 4a 8c 48 c7 c6 60 b1 4a 8c 48
-RSP: 0018:ffffc900015970c0 EFLAGS: 00010246
-RAX: 0000000000000059 RBX: 00000000000003c5 RCX: f7095654c42f1300
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff817f070c R09: 1ffff920002b2db4
-R10: dffffc0000000000 R11: fffff520002b2db5 R12: 00000000000000ac
-R13: ffff888029a91a40 R14: dffffc0000000000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f653c3ff000 CR3: 000000002a19a000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+It need not be the whole device - it is enough to have a single 
+unreadable sector which happens more often (at least, with HDD).
 
+And as already mentioned it need not happen at the same (or close) time. 
+The data corruption may happen days and months after lost write. Sure, 
+you can still wave it off as a double fault - but if in case of failed 
+disk (or even unreadable sector) administrator at least gets notified in 
+logs, here it is absolutely silent without administrator even being 
+aware that this stripe is no more redundant and so administrator cannot 
+do anything to fix it.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> As least btrfs won't do any writeback to the same vertical stripe at all.
+> 
+> Case 1.2): P(D1+D2) reached disk, D2 doesn't
+> The same as case 1.1).
+> 
+> Case 1.3): Neither D2 nor P(D1+D2) reached disk
+> 
+> It's the same as case 1.0, even missing D1 is fine to recover.
+> 
+> 
+> So if you believe powerloss + missing device counts as a single device
+> missing, and it doesn't break the tolerance of RAID5, then you can count
+> this as a "write-hole".
+> 
+> But to me, this is not a single error, but two error (write failure +
+> missing device), beyond the tolerance of RAID5.
+> 
+> Thanks,
+> Qu
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
