@@ -1,283 +1,196 @@
-Return-Path: <linux-btrfs+bounces-10130-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10131-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E3E9E87C1
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 21:27:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69B2F9E8816
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 22:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7779328198F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 20:27:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22BD32807F5
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 21:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFFB189F3B;
-	Sun,  8 Dec 2024 20:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D883192B79;
+	Sun,  8 Dec 2024 21:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="itKwDSIA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nW4TU7EN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47217142903
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 20:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A28381AF
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 21:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733689617; cv=none; b=aIsU06YtGiOU1oyxUIt2mTcBGF5Vbg1BNCVptqv1UEnpPPWnCnNbA+gVKQQ095ITeg7/9cHQ9ayReb++fO8wijkbm57yEKow3K4YpVRmjccavqYpzdAK3qedGbBUg/ORI3RIydjzZB53nIeXwAFeNjqzDYUY3JiQvjX7avCZdfQ=
+	t=1733693142; cv=none; b=nekEC1eo9YkhFq6uzguGvo5i+HhZ80qZx1bPAR80jrZNX7KO9kuDSRsYRPpPyoL9rtKQQZjwyN9Ztl0fbT6VlvHK8eW2x1KaohafNtkfHKGE8KWBibsam0uZf0+89rswe3KoRqfByuenEmddiHvJXtUZZt9E5YRZOPbzNcZfSRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733689617; c=relaxed/simple;
-	bh=rKbTBZj28Il6g2Larv2BPrrZ1CvlkuAGHe+wrYllG5Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dySj53pFsd8E0zNpJy4Ett8ERc7wON7UWWIhIvkTdgxGeaGr6i4SWxVofSFikTXEklvJrCTvTjifJR5H5Gl5L1v/MitXZB/qzY7LwbsUYivGYLd4m7mLQ4Hb3nmw51sJzVxGDpYFfzB/sCLUfbKjggZP+26DP/ytkE29toE06ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=itKwDSIA; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1733689611; x=1734294411; i=quwenruo.btrfs@gmx.com;
-	bh=mgjjG5bNVs6v8qd6qZhdZvvmLBZGlv3033aX2ma8zrI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=itKwDSIA4IKahd68lpTf/QCO2caOCQ0e7Bn1RfR8rdLhMMSgGexxmWqO/dlEpAiJ
-	 kpe08i0f8Btj4E/sQtJnal1y7MYK6Ob4DyIEFDwMKTrvE0oicp7OP94orwHvduYZ0
-	 HR+Nfr7DFDIb0S3Nbu0xsqoKaOyjSzHVMdIpalJQRkXnwQg7MFYcmBIP1hqqfXboM
-	 uqFyU3X7G4Yn/FremUze9xRTjklfCD37ek5+Y6mQHyKNGjrDUSS05OpAfT1G7oDLy
-	 BP+xuKM5ylbbA6Ejp3Iq3bHIhozTy3aT+glmyiDVjFgkwp5SkhmjTOA4gCNfbPfTb
-	 AUH63u/2hOxZtUqeaA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mi2O1-1tpbx41D1d-00qLif; Sun, 08
- Dec 2024 21:26:51 +0100
-Message-ID: <c5ec9e5e-9113-490d-84c3-82ded6baa793@gmx.com>
-Date: Mon, 9 Dec 2024 06:56:48 +1030
+	s=arc-20240116; t=1733693142; c=relaxed/simple;
+	bh=4fBTm6GWRDi+y4fgfjyyRps5r2D+vUn0YfUD9cQy8Jk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ytvm1EKE5Pnivqi07JQwMrRVkG/YAw4AzXMyXbJJAzNSiczxIDsWluV/Lw8vxL2cpbSJ9dDCCFzAJ3BFMNKIB2NZGwDORZ3bAYwzanxImU+XOKEagpvt+vVOmaLXG9QnsWWVFdNimcqs6Kr0jQTdSLTEVYSiPJitBoMs/5OEGwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nW4TU7EN; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ffc81cee68so29749311fa.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Dec 2024 13:25:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733693139; x=1734297939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WIU7sBFP+kZocCd4cTzZbxuOsUq7OTHo5XHHSV/8oOY=;
+        b=nW4TU7ENDaVnTeE6/riy5GosYDGwX3EAUC3ruS0N8E5sm896U5ZzMaFHT7AitsTcCP
+         D1++pPLUkoG7XU+CrKIcR5bJTOQYzQXiPr5VhuuN56yULRT1eoVOMri4MrpXugHH26sT
+         JWhJIMCR4HuZpn77/Xq+6Z+hXyKxsamRnPZbaYfFQi5iNMzrDi/Xnrx8RbUo6uyDEOv1
+         5fwsdyaPmvlT2h8cJbUInaTSZ+EsDon/KhNtbcOk884tfkKAGhmdJ8JnYSGjqB8XIXFZ
+         E1h68sInsQLdYLhtD8vjIw2rx8BBp+v6BeIjrcroMaGhwpshY2qF0YiyikU8inNE1kgT
+         FvBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733693139; x=1734297939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WIU7sBFP+kZocCd4cTzZbxuOsUq7OTHo5XHHSV/8oOY=;
+        b=bvk9fI30iIo40ZAGZfGcrUYxw2+jxCBppBGiY2MRjOw4qgjyJ4ZPfEei5TM6l94JAb
+         YJwT0EvxYTIXB5jH0mRrG06sGwApt0rWjJQmw7+B2uFg8GPCLx2Rb6u7Zxlt8sf9fOzS
+         2S+mBgWnHmM/3SobDZYvijBtwqf7sJw0jnud6eUjlBbJEmh+ckXOf7Fd0vcFtG9nuDRa
+         yVIi7LzxqZsbL0Pvg4BOEdamgOfaEpXdFbzvIj5lY2y9LlgVZHbC+SAkQAWvmAw1Kura
+         qV6572Hum/VagAtiqPnuVv5AwkhkOuiCFq+wWU/xzib+TSLxiiOlm1zMIQiHFEhULmxQ
+         /Z5g==
+X-Gm-Message-State: AOJu0Yx/aLDMwv2IuFvXJT8CRycm4rK0bAwMMlzLAEu8glSe8zGi2XGv
+	eYe1SphEIJpXFMzHDESk3k8VxF0Ghdq1X1xLK7sfJydPd266QIvAzjGJ2ciJrgLxaajinfVdlxI
+	0mmQ8U0EC0Kz3RresRHWR2AXPUvbs2FlBW4c=
+X-Gm-Gg: ASbGnctRiVxvXxlpZLYIgB4QCyNml1kXGktFSA1f7fik4bJ88jLZ3vaVzwAmgBBW3mm
+	NFqj77wJUB+SOuwhH5XDhXp6z2JnCBraF
+X-Google-Smtp-Source: AGHT+IE6QNF4esNA/8jODj0v2UTopIcnnfQiAc1+UJSjHoJ/n2ivxHVLzIxDgToHnJsVhxcVzuFGoVJ8qjKpQictApI=
+X-Received: by 2002:a2e:bc27:0:b0:2fb:597e:28d9 with SMTP id
+ 38308e7fff4ca-3002f8e614bmr27589101fa.14.1733693138781; Sun, 08 Dec 2024
+ 13:25:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: clear space cache v1 fails with Unable to find block group for 0
-To: j4nn <j4nn.xda@gmail.com>, linux-btrfs@vger.kernel.org
 References: <CADhu7iD1LOT=93o1DhFYBeDHTKW9SuYdSmz8VXvsE4vf285tDg@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CADhu7iD1LOT=93o1DhFYBeDHTKW9SuYdSmz8VXvsE4vf285tDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <c5ec9e5e-9113-490d-84c3-82ded6baa793@gmx.com>
+In-Reply-To: <c5ec9e5e-9113-490d-84c3-82ded6baa793@gmx.com>
+From: j4nn <j4nn.xda@gmail.com>
+Date: Sun, 8 Dec 2024 22:25:27 +0100
+Message-ID: <CADhu7iBFDmRvBwWxxa4KszyZpyTq5JetB+a13jxGj4YBjaYWKQ@mail.gmail.com>
+Subject: Re: clear space cache v1 fails with Unable to find block group for 0
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6Uv/BYC5HT/YNI6tDq+Imb8oENcNdrKuUS+MpBAiLqGRniaZCYY
- GHF4YTwjXHIBWLdqC3RFgstujdeuMcTylRrBTi6+DB7/G6ry8CNIb6g0E79iSEe+0NswQoQ
- WwvmYIwoxwUCDuNV7mlGPogbXExsNbP6coHnRX6072HHgPg6j2tKCgNpy30CY3NfbO6VDS9
- gS8y5HaW7BL/7qUV8uW/w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8nGfkLZWcXI=;Pud2KAXdSeOxLmwxzKWEQXcyz3a
- E/P72CO3y+ezkW0lwTYyGt1PdZ7Dsu/XkODw6GFdnY97802A+grnafL5BQ9tMlzZ8ohRSs1s3
- B0mPOqCzVlywL2FqDrjyA/RUJT3oo2h5l4hH7IheMESkwu0TvHNfX4vDCHrUMu5C7p82L8gYH
- LZBV0JlbtRz3YKEKDoTcMx+4gWv36dS7TDNS/Et0m3iIgxgdq7eB5lMmBYv0sBB7xbSTiM/Ug
- 6vrxlfDvvON07yFfbMdxbGjiukFC0QEQZZL3tOOJuWBn0eDVIWeN5YbsT00MNUlDlhgZ4xLMF
- nm2EwhqBjhKk4jP9zbl0z1IlX9zc9kd8Mac3TCvVUO64NM1tG5gTeew5NewTiZ0V391ofc8qE
- MMsKpRqQgXq4otLFhR8xrhSaQvcyKD1e9Sgq5DcIuxQLAbGfY/h2a0nYMxfWHEn1n6xExUQB8
- K3yY2zuHUSKHG1dWIL+7ULXK6ZmTAMBvRk7+ma9HHQXehPqbCx4+VrQmVvLY2mon7eALVa2St
- xLg69mtVH6FF1pHKMK8XaMlH/kdciZXWZPScwNdhX1uSo0FBUtjQmWGeu6mtVkqzeuthIhRlZ
- 7tibDtuwF5qIu8YBLORPjbrzOXjLmnUMETRWFIiejUVBWBkY61TkKevrjPnraNWXE9rLW8GCv
- InsEErhsMe5HGG+WjAeiDV2ViIWjottLBJprWeOwrFrLZQD+tL8wE2KVbPA6u4tyUFC2juO0M
- Dv+Vygb6Rp5/TAASORwWEr69cG25mLWfVYv68Nq5xVQHX6e2s3YMJKr/DzhZZ7VhTNNIXT9tM
- LyUXwS3VCrtoQknxeTq1EXiRjWrMBo1kzINreeYQrZirHhtGk0fcj7GZKEvnzx0Rc40qPMA8u
- Z1Yf/UqEQNnLRT6+9jPwCWUdVm/wOUJpVKNE7LO1CgkklEmKy3r+iVVc/L5J8UenFxQ6Gm/rb
- 5hw4Kx/atbFjN1i9RJyHr0+FBAXn/q7B0B5qy9bV7nX0zKePK823lA6YsMRb0kcDlV6SkrhIo
- /HD6+12o3ouN6PY52IexUkpzHF+ZMwmId6By8qxrHccF0vlm4RUIMA3n0pGgdIoG6g8vvrZVk
- uMiAUD5TYgTrAeX1lQip9Y3NpGpOsC
+
+On Sun, 8 Dec 2024 at 21:26, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> =E5=9C=A8 2024/12/9 02:32, j4nn =E5=86=99=E9=81=93:
+> > gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdat=
+a
+> > Unable to find block group for 0
+> > Unable to find block group for 0
+> > Unable to find block group for 0
+>
+> This is a common indicator of -ENOSPC.
+>
+> But according to the fi df output, we should have quite a lot of
+> metadata space left.
+>
+> The only concern is the DUP metadata, which may cause the space
+> reservation code not to work in progs.
+>
+> Have you tried to convert the DUP metadata first?
+
+I am not sure how to do that.
+I see the "Multiple block group profiles detected" warning, assumed it
+is about metadata in RAID1 and DUP.
+But I am not sure how that got created or if it has any benefit or not.
+And what that DUP should be converted into?
+
+> And `btrfs fi usage` output please.
+
+gentoo ~ # btrfs fi usage /mnt/data
+Overall:
+   Device size:                  16.00TiB
+   Device allocated:             14.51TiB
+   Device unallocated:            1.48TiB
+   Device missing:                  0.00B
+   Device slack:                    0.00B
+   Used:                         14.18TiB
+   Free (estimated):            923.95GiB      (min: 923.95GiB)
+   Free (statfs, df):           918.95GiB
+   Data ratio:                       2.00
+   Metadata ratio:                   2.00
+   Global reserve:              512.00MiB      (used: 0.00B)
+   Multiple profiles:                 yes      (metadata)
+
+Data,RAID1: Size:7.19TiB, Used:7.03TiB (97.77%)
+  /dev/mapper/wdrb-bdata          7.19TiB
+  /dev/mapper/wdrc-cdata          7.19TiB
+
+Metadata,RAID1: Size:63.00GiB, Used:58.56GiB (92.95%)
+  /dev/mapper/wdrb-bdata         63.00GiB
+  /dev/mapper/wdrc-cdata         63.00GiB
+
+Metadata,DUP: Size:5.00GiB, Used:1.18GiB (23.60%)
+  /dev/mapper/wdrb-bdata         10.00GiB
+
+System,RAID1: Size:32.00MiB, Used:1.08MiB (3.37%)
+  /dev/mapper/wdrb-bdata         32.00MiB
+  /dev/mapper/wdrc-cdata         32.00MiB
+
+Unallocated:
+  /dev/mapper/wdrb-bdata        755.00GiB
+  /dev/mapper/wdrc-cdata        765.00GiB
+
+gentoo ~ # lvs
+ LV     VG     Attr       LSize    Pool Origin Data%  Meta%  Move Log
+Cpy%Sync Convert
+ bdata  wdrb   -wi-ao----    8.00t
+ cdata  wdrc   -wi-ao----    8.00t
+gentoo ~ # vgs
+ VG     #PV #LV #SN Attr   VSize    VFree
+ wdrb     1   1   0 wz--n-   <9.10t <1.10t
+ wdrc     1   3   0 wz--n-    9.09t     0
+gentoo ~ # pvs
+ PV         VG     Fmt  Attr PSize    PFree
+ /dev/sdb1  wdrc   lvm2 a--     9.09t     0
+ /dev/sdd1  wdrb   lvm2 a--    <9.10t <1.10t
 
 
+> > Tried some balance as found example posted, not really sure if that sho=
+uld help:
+> >
+> > gentoo ~ # btrfs balance start -dusage=3D10 /mnt/data
+> > Done, had to relocate 32 out of 7467 chunks
+>
+> The balance doesn't do much, the overall chunk layout is still the same.
+> >
+> > gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdat=
+a
+> > Unable to find block group for 0
+> > Unable to find block group for 0
+> > Unable to find block group for 0
+> > ERROR: failed to clear free space cache
+> > extent buffer leak: start 7995086045184 len 16384
+>
+> Migrating to v2 cache doesn't really need to manually clear the v1 cache.
+>
+> Just mounting with "space_cache=3Dv2" option will automatically purge the
+> v1 cache, just as explained in the man page:
+>
+>    If v2 is enabled, and v1 space cache will be cleared (at the first
+>    mount)
+>
+> If you want to dig deeper, the implementation is done in
+> btrfs_set_free_space_cache_v1_active() which calls
+> cleanup_free_space_cache_v1() if @active is false.
 
-=E5=9C=A8 2024/12/9 02:32, j4nn =E5=86=99=E9=81=93:
-> Hi,
->
-> I am trying to switch 8TB raid1 btrfs from space cache v1 to v2, but
-> the clear space cache v1 fails as following:
->
-> gentoo ~ # btrfs filesystem df /mnt/data
-> Data, RAID1: total=3D7.36TiB, used=3D7.00TiB
-> System, RAID1: total=3D64.00MiB, used=3D1.11MiB
-> Metadata, RAID1: total=3D63.00GiB, used=3D57.37GiB
-> Metadata, DUP: total=3D5.00GiB, used=3D1.18GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
-> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
-> WARNING:    Metadata: raid1, dup
-> gentoo ~ # umount /mnt/data
->
-> gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdata
-> Unable to find block group for 0
-> Unable to find block group for 0
-> Unable to find block group for 0
+Ok, I just followed a howto for the switch.
+Did not know it is ok just with the mount option.
+Should it be safe to try it if I get the errors with the "btrfs rescue
+clear-space-cache v1"?
 
-This is a common indicator of -ENOSPC.
-
-But according to the fi df output, we should have quite a lot of
-metadata space left.
-
-The only concern is the DUP metadata, which may cause the space
-reservation code not to work in progs.
-
-Have you tried to convert the DUP metadata first?
-
-And `btrfs fi usage` output please.
-
-> ERROR: failed to clear free space cache
-> extent buffer leak: start 9587384418304 len 16384
->
-> real    7m8.174s
-> user    0m6.883s
-> sys     0m9.322s
->
->
-> Here some info:
->
-> gentoo ~ # uname -a
-> Linux gentoo 6.12.3-gentoo-x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec  8
-> 00:12:56 CET 2024 x86_64 AMD Ryzen 9 5950X 16-Core Processor
-> AuthenticAMD GNU/Linux
-> gentoo ~ # btrfs --version
-> btrfs-progs v6.12
-> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=
-=3Dbuiltin
-> gentoo ~ # btrfs filesystem show /mnt/data
-> Label: 'rdata'  uuid: 1dfac20a-3f84-4149-aba0-f160ab633373
->         Total devices 2 FS bytes used 7.06TiB
->         devid    1 size 8.00TiB used 7.26TiB path /dev/mapper/wdrb-bdata
->         devid    2 size 8.00TiB used 7.25TiB path /dev/mapper/wdrc-cdata
-> gentoo ~ # dmesg | tail -n 6
-> [31008.980706] BTRFS info (device dm-0): first mount of filesystem
-> 1dfac20a-3f84-4149-aba0-f160ab633373
-> [31008.980726] BTRFS info (device dm-0): using crc32c (crc32c-intel)
-> checksum algorithm
-> [31008.980731] BTRFS info (device dm-0): disk space caching is enabled
-> [31008.980734] BTRFS warning (device dm-0): space cache v1 is being
-> deprecated and will be removed in a future release, please use -o
-> space_cache=3Dv2
-> [31009.994687] BTRFS info (device dm-0): bdev /dev/mapper/wdrb-bdata
-> errs: wr 8, rd 0, flush 0, corrupt 0, gen 0
-> [31009.994696] BTRFS info (device dm-0): bdev /dev/mapper/wdrc-cdata
-> errs: wr 7, rd 0, flush 0, corrupt 0, gen 0
->
-> Completed scrub (which corrected 4 errors), btrfs check completed
-> without errors:
->
-> gentoo ~ # btrfs scrub status /mnt/data
-> UUID:             1dfac20a-3f84-4149-aba0-f160ab633373
-> Scrub started:    Fri Dec  6 13:12:36 2024
-> Status:           finished
-> Duration:         16:11:22
-> Total to scrub:   14.92TiB
-> Rate:             268.35MiB/s
-> Error summary:    verify=3D4
->   Corrected:      4
->   Uncorrectable:  0
->   Unverified:     0
-> gentoo ~ # umount /mnt/data
->
-> gentoo ~ # time btrfs check -p /dev/mapper/wdrb-bdata
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/wdrb-bdata
-> UUID: 1dfac20a-3f84-4149-aba0-f160ab633373
-> [1/7] checking root items                      (0:06:57 elapsed,
-> 34253945 items checked)
-> [2/7] checking extents                         (0:23:08 elapsed,
-> 3999596 items checked)
-> [3/7] checking free space cache                (0:04:25 elapsed, 7868
-> items checked)
-> [4/7] checking fs roots                        (1:03:46 elapsed,
-> 3215533 items checked)
-> [5/7] checking csums (without verifying data)  (0:11:58 elapsed,
-> 15418322 items checked)
-> [6/7] checking root refs                       (0:00:00 elapsed, 52
-> items checked)
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 8199989936128 bytes used, no error found
-> total csum bytes: 7940889876
-> total tree bytes: 65528446976
-> total fs tree bytes: 52856799232
-> total extent tree bytes: 3578331136
-> btree space waste bytes: 10797983857
-> file data blocks allocated: 21632555483136
-> referenced 9547690319872
->
-> real    111m10.370s
-> user    10m28.442s
-> sys     6m44.888s
->
-> Tried some balance as found example posted, not really sure if that shou=
-ld help:
->
-> gentoo ~ # btrfs balance start -dusage=3D10 /mnt/data
-> Done, had to relocate 32 out of 7467 chunks
-
-The balance doesn't do much, the overall chunk layout is still the same.
->
-> gentoo ~ # btrfs filesystem df /mnt/data
-> Data, RAID1: total=3D7.19TiB, used=3D7.00TiB
-> System, RAID1: total=3D64.00MiB, used=3D1.08MiB
-> Metadata, RAID1: total=3D63.00GiB, used=3D57.36GiB
-> Metadata, DUP: total=3D5.00GiB, used=3D1.18GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
-> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
-> WARNING:    Metadata: raid1, dup
->
-> But it did not help:
->
-> gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdata
-> Unable to find block group for 0
-> Unable to find block group for 0
-> Unable to find block group for 0
-> ERROR: failed to clear free space cache
-> extent buffer leak: start 7995086045184 len 16384
->
-> real    6m58.515s
-> user    0m6.270s
-> sys     0m9.586s
-
-Migrating to v2 cache doesn't really need to manually clear the v1 cache.
-
-Just mounting with "space_cache=3Dv2" option will automatically purge the
-v1 cache, just as explained in the man page:
-
-   If v2 is enabled, and v1 space cache will be cleared (at the first
-   mount)
-
-If you want to dig deeper, the implementation is done in
-btrfs_set_free_space_cache_v1_active() which calls
-cleanup_free_space_cache_v1() if @active is false.
-
-Thanks,
-Qu
->
-> Any idea how to fix this?
-> Thanks.
->
-
+Thank you.
 
