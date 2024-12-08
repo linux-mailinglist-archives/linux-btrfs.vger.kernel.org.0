@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10129-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10130-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4E4F9E879E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 21:07:24 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 730271885815
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 20:07:24 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F3D8615A;
-	Sun,  8 Dec 2024 20:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RNRnhEV7"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E3E9E87C1
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 21:27:03 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414E6381AF
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 20:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7779328198F
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 20:27:02 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFFB189F3B;
+	Sun,  8 Dec 2024 20:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="itKwDSIA"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47217142903
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 20:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733688438; cv=none; b=LcNVf1u7cQ8Oqo/KUP1AeSVwy6Cc0ZGSZvy+X0yJ6ddeTU0nvYgsfv/ibzp6baCh9PI+40xqQTjQ9QWypsKLkbJEliyewdlTz6oksLoDHgpobljIi5dwt1mCyrTwcxojVPPLigkU4pwJRvPh02jZdS0wYhKUgt1XI9G40BGUVZI=
+	t=1733689617; cv=none; b=aIsU06YtGiOU1oyxUIt2mTcBGF5Vbg1BNCVptqv1UEnpPPWnCnNbA+gVKQQ095ITeg7/9cHQ9ayReb++fO8wijkbm57yEKow3K4YpVRmjccavqYpzdAK3qedGbBUg/ORI3RIydjzZB53nIeXwAFeNjqzDYUY3JiQvjX7avCZdfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733688438; c=relaxed/simple;
-	bh=nfkH/zTsAdy8Hi+j4MrZ7EeACej3flGn+AO4mwzA/EE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ViY7TTUNJNVL33Msj+NQAqxjqA0ZMXNwlU3E/x0Hm5JTN7cJyyPwpY015ID+XgXhuAcNKLKrEJSnyRN0IphamY+o/rLa2bKUZOTwS1V4zckUwqlRDHIamv/tJEhDMcAtSiuHeyKdvLpO7GXTzmPxX6+Cmyggd4A05eHKLF2zB0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RNRnhEV7; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1733689617; c=relaxed/simple;
+	bh=rKbTBZj28Il6g2Larv2BPrrZ1CvlkuAGHe+wrYllG5Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dySj53pFsd8E0zNpJy4Ett8ERc7wON7UWWIhIvkTdgxGeaGr6i4SWxVofSFikTXEklvJrCTvTjifJR5H5Gl5L1v/MitXZB/qzY7LwbsUYivGYLd4m7mLQ4Hb3nmw51sJzVxGDpYFfzB/sCLUfbKjggZP+26DP/ytkE29toE06ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=itKwDSIA; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1733688430; x=1734293230; i=quwenruo.btrfs@gmx.com;
-	bh=nfkH/zTsAdy8Hi+j4MrZ7EeACej3flGn+AO4mwzA/EE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1733689611; x=1734294411; i=quwenruo.btrfs@gmx.com;
+	bh=mgjjG5bNVs6v8qd6qZhdZvvmLBZGlv3033aX2ma8zrI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=RNRnhEV7fE5qe7LOwROJE3py8RTplpYARd0mjP0r2/1uyUjm4Aa1fyB18Q3lCJT2
-	 bo/PplkzYA152ntbiSnXtU6StSwVMOYsmfszg0/OI4goHjvNuZqVKiq5yX5eZ9Fv6
-	 XgIohnmVS6HhHOsp11gTmKdsbJY5abejBQhq9jUs/znZCuEz9gZDznLtvSu9Bf1iI
-	 Q9PC/ii24fwWUmrbH2L2stPYdObYmizULCJ1wjaM9dRnYHRJhQZcyTgvD9ZnhW29d
-	 ipHaBKPBsCouyE70cu+y1FB0MDqlcEHB/wodeNLHqMjNyZ2lGHRNQ7QL+mYnOr5DO
-	 ByCowEVkxdIC+IORMg==
+	b=itKwDSIA4IKahd68lpTf/QCO2caOCQ0e7Bn1RfR8rdLhMMSgGexxmWqO/dlEpAiJ
+	 kpe08i0f8Btj4E/sQtJnal1y7MYK6Ob4DyIEFDwMKTrvE0oicp7OP94orwHvduYZ0
+	 HR+Nfr7DFDIb0S3Nbu0xsqoKaOyjSzHVMdIpalJQRkXnwQg7MFYcmBIP1hqqfXboM
+	 uqFyU3X7G4Yn/FremUze9xRTjklfCD37ek5+Y6mQHyKNGjrDUSS05OpAfT1G7oDLy
+	 BP+xuKM5ylbbA6Ejp3Iq3bHIhozTy3aT+glmyiDVjFgkwp5SkhmjTOA4gCNfbPfTb
+	 AUH63u/2hOxZtUqeaA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiTt-1tCHz63Bkr-00IJbK; Sun, 08
- Dec 2024 21:07:10 +0100
-Message-ID: <0b9036d3-df7f-42d4-beb9-cdcf903e9f1b@gmx.com>
-Date: Mon, 9 Dec 2024 06:37:06 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mi2O1-1tpbx41D1d-00qLif; Sun, 08
+ Dec 2024 21:26:51 +0100
+Message-ID: <c5ec9e5e-9113-490d-84c3-82ded6baa793@gmx.com>
+Date: Mon, 9 Dec 2024 06:56:48 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,15 +58,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Using btrfs raid5/6
-To: Jonah Sabean <jonah@jse.io>
-Cc: Qu Wenruo <wqu@suse.com>, Scoopta <mlist@scoopta.email>,
- linux-btrfs@vger.kernel.org
-References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
- <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
- <CAFMvigdQPC_cV5td1j0e2CR=qPT=W0Lp=+n74_UrSzahayMJWA@mail.gmail.com>
- <d6907ccb-70cd-4066-9bf7-2ead902f0974@gmx.com>
- <CAFMvigdfVLrPJsYq0xyuye5-_pAL5ByHQDS-RZ5T6de8EZWspQ@mail.gmail.com>
+Subject: Re: clear space cache v1 fails with Unable to find block group for 0
+To: j4nn <j4nn.xda@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CADhu7iD1LOT=93o1DhFYBeDHTKW9SuYdSmz8VXvsE4vf285tDg@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -93,162 +87,197 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAFMvigdfVLrPJsYq0xyuye5-_pAL5ByHQDS-RZ5T6de8EZWspQ@mail.gmail.com>
+In-Reply-To: <CADhu7iD1LOT=93o1DhFYBeDHTKW9SuYdSmz8VXvsE4vf285tDg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0Ysq+jYzjpaghgaKm02x3rywf9eleWa29EyWM37/lbA36QTGXF+
- glVeq8NbiBBoJbxrOPl7lfrqhnFuzNTGDuHtgNAg1uFu0tmkw8TAOvJwN1eh1EBdL07OmxN
- mdSF5FjAPt+PyHWsAjdYOnb5Gw17N/8fczkHuX+3NdiEYLl6XqSbeXrXKtAZM9Sv7wDtdDR
- satK7aZcb/SizH6zx1L6w==
+X-Provags-ID: V03:K1:6Uv/BYC5HT/YNI6tDq+Imb8oENcNdrKuUS+MpBAiLqGRniaZCYY
+ GHF4YTwjXHIBWLdqC3RFgstujdeuMcTylRrBTi6+DB7/G6ry8CNIb6g0E79iSEe+0NswQoQ
+ WwvmYIwoxwUCDuNV7mlGPogbXExsNbP6coHnRX6072HHgPg6j2tKCgNpy30CY3NfbO6VDS9
+ gS8y5HaW7BL/7qUV8uW/w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:eQRLOfNFHfo=;sgbhMQ4sWZLQs+AeUffmkP03GcJ
- pP/uzuxo5DzVTebmXQzK5CmLgz/aBzg+00TbHNaXpk/SZg4duo2NvmclDuRggcLesoV+VwoJi
- WdnARBdn5GKTaYEm2kOyCHRYrK2XnimaJNeUAWVkmBTPZOYaPDi8S57Di8RXUmnZa+G4f1Eec
- 6H630o137+Ya0naTScDsuMYdCAwtMjQ9WyXqjJ9bgDXLcfSTzsALIKMcAfbqYyeca+dQjpR+x
- vEP0gZ1bFqj6tld1uITEu8jEGDkKDvZojWhOop1rS1Z4EG19tSAe9TeVweuo/R7c8ODcRnz9g
- vMLenNgkVzobuSEqlI9Z/y8Gab2IqVcNF5AvWMVy/zgOnZaufmouO7remdKaCiMV/RtPpYD1x
- aOf2IuHGg0225jAvx0hZcEtxqON4roTziGodzqLigdrb0W8eDp1ETzfiWuCYT0sG51RzUinAw
- ezwZDKfLptyCwxS/AiKztp63riRjpROPgSkjcgzus5PDWkjvJpzwsKZob76eNqU+Hm7HbhpdE
- 337cY10bWQxC9en1IHkw7uuVfLjRLGwIr+fichpRwenCZAgpHEvQYJOyfrpzaqkFV0xCbmYr/
- ksgxGhCwBKZ8w+h64oXoJiXHFPt9fCM4nw2L3/tzKwbn3BgqaFUBUcFrfU66Oi5CL+845ijmH
- ITKKQuKFJUhIowWWODNsQ//rjin/tE83nu+/ynkVYZKe5DeyhHb4aEwMOZOOJqe4fuzRYF2dy
- eT2sYyzR+jKH5mDyW80iafJibVHX2lmulk/LIpYjTqZj4JrXxy0LG4DObxSSIovhtEuhpwyrf
- PviFNTUDl33MGGteUknKDph/E6DuzJwy9sCK6kA4ahSSKhBGMwQGDA9f6IayoV/UW634jUbZN
- okjaVeVVpjnmpNEblXapf5SQcVTqU0SSmF/NeU8DPsAw28nEadPW5pdTOI+UwwNUG1Bn2d42q
- 6VGiPT4UwL6AbpEtqAhGeOjl4f7UA8TwLheayBC8pkvNe9l08Vu/Q0o9fmSpzxQKu+VSnCHGT
- ZmEF9fXna8TBeSxFvmyNUN1GSpaNDPrN/XBraAcyvtKQuw10VzZGCvjvpLqYhUqURFunBjOoT
- 64oU2ogfzMLZv0/kuEK1VULRdPpUXG
+UI-OutboundReport: notjunk:1;M01:P0:8nGfkLZWcXI=;Pud2KAXdSeOxLmwxzKWEQXcyz3a
+ E/P72CO3y+ezkW0lwTYyGt1PdZ7Dsu/XkODw6GFdnY97802A+grnafL5BQ9tMlzZ8ohRSs1s3
+ B0mPOqCzVlywL2FqDrjyA/RUJT3oo2h5l4hH7IheMESkwu0TvHNfX4vDCHrUMu5C7p82L8gYH
+ LZBV0JlbtRz3YKEKDoTcMx+4gWv36dS7TDNS/Et0m3iIgxgdq7eB5lMmBYv0sBB7xbSTiM/Ug
+ 6vrxlfDvvON07yFfbMdxbGjiukFC0QEQZZL3tOOJuWBn0eDVIWeN5YbsT00MNUlDlhgZ4xLMF
+ nm2EwhqBjhKk4jP9zbl0z1IlX9zc9kd8Mac3TCvVUO64NM1tG5gTeew5NewTiZ0V391ofc8qE
+ MMsKpRqQgXq4otLFhR8xrhSaQvcyKD1e9Sgq5DcIuxQLAbGfY/h2a0nYMxfWHEn1n6xExUQB8
+ K3yY2zuHUSKHG1dWIL+7ULXK6ZmTAMBvRk7+ma9HHQXehPqbCx4+VrQmVvLY2mon7eALVa2St
+ xLg69mtVH6FF1pHKMK8XaMlH/kdciZXWZPScwNdhX1uSo0FBUtjQmWGeu6mtVkqzeuthIhRlZ
+ 7tibDtuwF5qIu8YBLORPjbrzOXjLmnUMETRWFIiejUVBWBkY61TkKevrjPnraNWXE9rLW8GCv
+ InsEErhsMe5HGG+WjAeiDV2ViIWjottLBJprWeOwrFrLZQD+tL8wE2KVbPA6u4tyUFC2juO0M
+ Dv+Vygb6Rp5/TAASORwWEr69cG25mLWfVYv68Nq5xVQHX6e2s3YMJKr/DzhZZ7VhTNNIXT9tM
+ LyUXwS3VCrtoQknxeTq1EXiRjWrMBo1kzINreeYQrZirHhtGk0fcj7GZKEvnzx0Rc40qPMA8u
+ Z1Yf/UqEQNnLRT6+9jPwCWUdVm/wOUJpVKNE7LO1CgkklEmKy3r+iVVc/L5J8UenFxQ6Gm/rb
+ 5hw4Kx/atbFjN1i9RJyHr0+FBAXn/q7B0B5qy9bV7nX0zKePK823lA6YsMRb0kcDlV6SkrhIo
+ /HD6+12o3ouN6PY52IexUkpzHF+ZMwmId6By8qxrHccF0vlm4RUIMA3n0pGgdIoG6g8vvrZVk
+ uMiAUD5TYgTrAeX1lQip9Y3NpGpOsC
 
 
 
-=E5=9C=A8 2024/12/9 03:01, Jonah Sabean =E5=86=99=E9=81=93:
-> On Sat, Dec 7, 2024 at 4:48=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com=
-> wrote:
->>
->>
->>
->> =E5=9C=A8 2024/12/6 12:33, Jonah Sabean =E5=86=99=E9=81=93:
->>> On Wed, Dec 4, 2024 at 12:40=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote=
-:
->>>>
->>>>
->>>>
->>>> =E5=9C=A8 2024/12/4 14:04, Scoopta =E5=86=99=E9=81=93:
->>>>> I'm looking to deploy btfs raid5/6 and have read some of the previou=
-s
->>>>> posts here about doing so "successfully." I want to make sure I
->>>>> understand the limitations correctly. I'm looking to replace an md+e=
-xt4
->>>>> setup. The data on these drives is replaceable but obviously ideally=
- I
->>>>> don't want to have to replace it.
->>>>
->>>> 0) Use kernel newer than 6.5 at least.
->>>>
->>>> That version introduced a more comprehensive check for any RAID56 RMW=
-,
->>>> so that it will always verify the checksum and rebuild when necessary=
-.
->>>>
->>>> This should mostly solve the write hole problem, and we even have som=
-e
->>>> test cases in the fstests already verifying the behavior.
->>>>
->>>>>
->>>>> 1) use space_cache=3Dv2
->>>>>
->>>>> 2) don't use raid5/6 for metadata
->>>>>
->>>>> 3) run scrubs 1 drive at a time
->>>>
->>>> That's should also no longer be the case.
->>>>
->>>> Although it will waste some IO, but should not be that bad.
->>>
->>> When was this fixed? Last I tested it took a month or more to complete
->>> a scrub on an 8 disk raid5 system with 8tb disks mostly full at the
->>> rate it was going. It was the only thing that kept me from using it.
->>
->> IIRC it's 6.6 for the scrub speed fix.
->>
->> Although it still doesn't fully address the extra read (twice of the
->> data) nor the random read triggered by parity scrub from other devices.
->>
->> A root fix will need a completely new way to do the scrub (my previous
->> scrub_fs attempt), but that interface will not handle other profiles
->> well (can not skip large amount of unused space).
->>
->> So if your last attempt is using some recent kernel version or the
->> latest LTS, then I guess the random read is still breaking the performa=
-nce.
+=E5=9C=A8 2024/12/9 02:32, j4nn =E5=86=99=E9=81=93:
+> Hi,
 >
-> Thanks for the update! Will your scrub_fs be rebased for raid5/6 in
-> the near future? Would be nice to be rid of the 2x reads. I suspect
-> then raid6 results in 3x reads still then?
+> I am trying to switch 8TB raid1 btrfs from space cache v1 to v2, but
+> the clear space cache v1 fails as following:
+>
+> gentoo ~ # btrfs filesystem df /mnt/data
+> Data, RAID1: total=3D7.36TiB, used=3D7.00TiB
+> System, RAID1: total=3D64.00MiB, used=3D1.11MiB
+> Metadata, RAID1: total=3D63.00GiB, used=3D57.37GiB
+> Metadata, DUP: total=3D5.00GiB, used=3D1.18GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
+> WARNING:    Metadata: raid1, dup
+> gentoo ~ # umount /mnt/data
+>
+> gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdata
+> Unable to find block group for 0
+> Unable to find block group for 0
+> Unable to find block group for 0
 
-Yes, RAID6 it's 3x read.
+This is a common indicator of -ENOSPC.
 
-Unfortunately that feature is no longer under active development for a
-while.
+But according to the fi df output, we should have quite a lot of
+metadata space left.
 
-But I'll take some time to revive it in the near future.
+The only concern is the DUP metadata, which may cause the space
+reservation code not to work in progs.
+
+Have you tried to convert the DUP metadata first?
+
+And `btrfs fi usage` output please.
+
+> ERROR: failed to clear free space cache
+> extent buffer leak: start 9587384418304 len 16384
+>
+> real    7m8.174s
+> user    0m6.883s
+> sys     0m9.322s
+>
+>
+> Here some info:
+>
+> gentoo ~ # uname -a
+> Linux gentoo 6.12.3-gentoo-x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec  8
+> 00:12:56 CET 2024 x86_64 AMD Ryzen 9 5950X 16-Core Processor
+> AuthenticAMD GNU/Linux
+> gentoo ~ # btrfs --version
+> btrfs-progs v6.12
+> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=
+=3Dbuiltin
+> gentoo ~ # btrfs filesystem show /mnt/data
+> Label: 'rdata'  uuid: 1dfac20a-3f84-4149-aba0-f160ab633373
+>         Total devices 2 FS bytes used 7.06TiB
+>         devid    1 size 8.00TiB used 7.26TiB path /dev/mapper/wdrb-bdata
+>         devid    2 size 8.00TiB used 7.25TiB path /dev/mapper/wdrc-cdata
+> gentoo ~ # dmesg | tail -n 6
+> [31008.980706] BTRFS info (device dm-0): first mount of filesystem
+> 1dfac20a-3f84-4149-aba0-f160ab633373
+> [31008.980726] BTRFS info (device dm-0): using crc32c (crc32c-intel)
+> checksum algorithm
+> [31008.980731] BTRFS info (device dm-0): disk space caching is enabled
+> [31008.980734] BTRFS warning (device dm-0): space cache v1 is being
+> deprecated and will be removed in a future release, please use -o
+> space_cache=3Dv2
+> [31009.994687] BTRFS info (device dm-0): bdev /dev/mapper/wdrb-bdata
+> errs: wr 8, rd 0, flush 0, corrupt 0, gen 0
+> [31009.994696] BTRFS info (device dm-0): bdev /dev/mapper/wdrc-cdata
+> errs: wr 7, rd 0, flush 0, corrupt 0, gen 0
+>
+> Completed scrub (which corrected 4 errors), btrfs check completed
+> without errors:
+>
+> gentoo ~ # btrfs scrub status /mnt/data
+> UUID:             1dfac20a-3f84-4149-aba0-f160ab633373
+> Scrub started:    Fri Dec  6 13:12:36 2024
+> Status:           finished
+> Duration:         16:11:22
+> Total to scrub:   14.92TiB
+> Rate:             268.35MiB/s
+> Error summary:    verify=3D4
+>   Corrected:      4
+>   Uncorrectable:  0
+>   Unverified:     0
+> gentoo ~ # umount /mnt/data
+>
+> gentoo ~ # time btrfs check -p /dev/mapper/wdrb-bdata
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/wdrb-bdata
+> UUID: 1dfac20a-3f84-4149-aba0-f160ab633373
+> [1/7] checking root items                      (0:06:57 elapsed,
+> 34253945 items checked)
+> [2/7] checking extents                         (0:23:08 elapsed,
+> 3999596 items checked)
+> [3/7] checking free space cache                (0:04:25 elapsed, 7868
+> items checked)
+> [4/7] checking fs roots                        (1:03:46 elapsed,
+> 3215533 items checked)
+> [5/7] checking csums (without verifying data)  (0:11:58 elapsed,
+> 15418322 items checked)
+> [6/7] checking root refs                       (0:00:00 elapsed, 52
+> items checked)
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 8199989936128 bytes used, no error found
+> total csum bytes: 7940889876
+> total tree bytes: 65528446976
+> total fs tree bytes: 52856799232
+> total extent tree bytes: 3578331136
+> btree space waste bytes: 10797983857
+> file data blocks allocated: 21632555483136
+> referenced 9547690319872
+>
+> real    111m10.370s
+> user    10m28.442s
+> sys     6m44.888s
+>
+> Tried some balance as found example posted, not really sure if that shou=
+ld help:
+>
+> gentoo ~ # btrfs balance start -dusage=3D10 /mnt/data
+> Done, had to relocate 32 out of 7467 chunks
+
+The balance doesn't do much, the overall chunk layout is still the same.
+>
+> gentoo ~ # btrfs filesystem df /mnt/data
+> Data, RAID1: total=3D7.19TiB, used=3D7.00TiB
+> System, RAID1: total=3D64.00MiB, used=3D1.08MiB
+> Metadata, RAID1: total=3D63.00GiB, used=3D57.36GiB
+> Metadata, DUP: total=3D5.00GiB, used=3D1.18GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
+> WARNING:    Metadata: raid1, dup
+>
+> But it did not help:
+>
+> gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdata
+> Unable to find block group for 0
+> Unable to find block group for 0
+> Unable to find block group for 0
+> ERROR: failed to clear free space cache
+> extent buffer leak: start 7995086045184 len 16384
+>
+> real    6m58.515s
+> user    0m6.270s
+> sys     0m9.586s
+
+Migrating to v2 cache doesn't really need to manually clear the v1 cache.
+
+Just mounting with "space_cache=3Dv2" option will automatically purge the
+v1 cache, just as explained in the man page:
+
+   If v2 is enabled, and v1 space cache will be cleared (at the first
+   mount)
+
+If you want to dig deeper, the implementation is done in
+btrfs_set_free_space_cache_v1_active() which calls
+cleanup_free_space_cache_v1() if @active is false.
 
 Thanks,
 Qu
 >
+> Any idea how to fix this?
+> Thanks.
 >
->>
->> Thanks,
->> Qu
->>
->>>
->>>>
->>>>>
->>>>> 4) don't expect to use the system in degraded mode
->>>>
->>>> You can still, thanks to the extra verification in 0).
->>>>
->>>> But after the missing device come back, always do a scrub on that
->>>> device, to be extra safe.
->>>>
->>>>>
->>>>> 5) there are times where raid5 will make corruption permanent instea=
-d of
->>>>> fixing it - does this matter? As I understand it md+ext4 can't detec=
-t or
->>>>> fix corruption either so it's not a loss
->>>>
->>>> With non-RAID56 metadata, and data checksum, it should not cause prob=
-lem.
->>>>
->>>> But for no-data checksum/ no COW cases, it will cause permanent corru=
-ption.
->>>>
->>>>>
->>>>> 6) the write hole exists - As I understand it md has that same probl=
-em
->>>>> anyway
->>>>
->>>> The same as 5).
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>>>
->>>>> Are there any other ways I could lose my data? Again the data IS
->>>>> replaceable, I'm just trying to understand if there are any major
->>>>> advantages to using md+btrfs or md+ext4 over btrfs raid5 if I don't =
-care
->>>>> about downtime during degraded mode. Additionally the posts I'm look=
-ing
->>>>> at are from 2020, has any of the above changed since then?
->>>>>
->>>>> Thanks!
->>>>>
->>>>>
->>>>
->>>>
->>>
->>
 
 
