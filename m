@@ -1,209 +1,202 @@
-Return-Path: <linux-btrfs+bounces-10126-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10127-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FC319E8620
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 17:03:14 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1210C9E8673
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 17:31:49 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2F6C281724
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 16:03:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8CE31884CB7
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 16:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FCF156228;
-	Sun,  8 Dec 2024 16:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADDA15990C;
+	Sun,  8 Dec 2024 16:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RouW5uPB"
+	dkim=pass (2048-bit key) header.d=jse-io.20230601.gappssmtp.com header.i=@jse-io.20230601.gappssmtp.com header.b="dmZA4G1O"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f196.google.com (mail-lj1-f196.google.com [209.85.208.196])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28B313B2B6
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 16:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E647BB1D
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 16:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733673787; cv=none; b=bExLFnhKSjAbBfC0QS0lfYuNZpihS54Y5zcpLJsGDnGPfvDJ4zuyWDQdnh4EjTq+kp7zvgbpaDaPeYaVK8+Curw+SQP+KKViyjSjNqio0nZp2GEL1F4yU4CHeddes8kVJzV5yCC4y4GTBu91sijTL1edtNPCdkhhy1RJTuO47N0=
+	t=1733675501; cv=none; b=RwqNt11v2mUIYTA8ynpxgGDn16tbu9CAfjSLG0SP4ia6zh7FTIRLS6cvupWfj2N83jenf43vkVj65xczGq6y6nJrd+qoHBB+ZTg/acziAtumZObsITwRKxHlvCS26akIcMF8B2V5DtObNu57NBsd2AI9lmnusm6zmk/WpqKkfiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733673787; c=relaxed/simple;
-	bh=cgs7nuv8lWQpmn/VIhHzxQvaGGlNguDe/Im/buo0OHo=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=SeaHMLv6KpWUg/sw+QJFApN2BL/D9EAv6dHbKsWmVnSxe3hA0Dl6EQwTs2x5xoNpLJizLfo64lJgnIJcqCUxiH/Hn65eS7ZO24NKy0Hz+BFK3sCEn5rWA+nRq0Vbv8WPNEa3OsWqwKN/QK+Qrm7Xo2gEUTp3Pku2N3WFbSj7DsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RouW5uPB; arc=none smtp.client-ip=209.85.208.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f196.google.com with SMTP id 38308e7fff4ca-3004028c714so12505821fa.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Dec 2024 08:03:05 -0800 (PST)
+	s=arc-20240116; t=1733675501; c=relaxed/simple;
+	bh=/3IqBLF5+082VftQzBDe5np6ZHdM0hU8MhttezCt58Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hUTp/aOoW+4f+GQQHpxyfuyMb9fq2/kE/JPrpmkqgXEOxNUcGIDlaBz7+ZyryfkFrefvgJTv2GANcDpZ3rSIldRlHSL8w9TVCPWMC3DFhtawAzD4ghivJMqoxYpdq8ep+Cjvi8R5TGaSJ33EY3NfFThjiOpK5wAQ5zUh7Jsjr8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jse.io; spf=pass smtp.mailfrom=jse.io; dkim=pass (2048-bit key) header.d=jse-io.20230601.gappssmtp.com header.i=@jse-io.20230601.gappssmtp.com header.b=dmZA4G1O; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jse.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jse.io
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6eecc0fe3afso2813867b3.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Dec 2024 08:31:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733673784; x=1734278584; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=g2bju1TFzkb78paxzmhvnib4fF4bCeClML62fbpGDGA=;
-        b=RouW5uPBSjmR14rJnhv4YSNxbWEeFVSy2VlhPczAhjrl32weAit+ZJEBSIvyL3Wg4G
-         +E6ss0R3SdEDAAhwjiHv2FJwHuRb8/xyz5nJN7cA59LSEMSzgoPe+GOwI9V0a/DwDGFy
-         Cnq2/WoMKn32bc7jVNKvsGBWPkzyaVi9/u+TobZWG/geGlPxIJAQHK6D4+sX+V+Xqln6
-         a25k2l2Lv0Tj1CS1vmyDbONYYROF6zHXP62e2B4bLAvlSEVm0UPP0bQM9h+8aDkz8o7D
-         3p/lCBxQoVT7BXPaJrFZP1+Ki+FkoPWNq2HIdPWRvKz5dW6N16ihBmHeer8GYBDbrW3s
-         uS8A==
+        d=jse-io.20230601.gappssmtp.com; s=20230601; t=1733675498; x=1734280298; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/3IqBLF5+082VftQzBDe5np6ZHdM0hU8MhttezCt58Y=;
+        b=dmZA4G1Om0S4XCihg8aYdNjPnUZG2YH2QxslI8HyfQFtAG/Tr5xgd08IB+Npl3x9cf
+         xrIVm5P4VrlyHDh9Rb6WJ1Hbis/kpJc4F8X7cpTJNSWFGuf9G8pUeLYH7jUMK4ERo7BI
+         sihBugXaoxoqhbcRYmNteTnykDCplbozFVf4dt1pyoqi894dgv9e5B3o/XrOaoz/grmO
+         J4cmNzWGQ9jck8B+xpy9cHzPYi96lXAXeha5nJI61L9c4evi2nqsOENZ1i4t5zmvlnAZ
+         5zpOw5v7jDA6Wrkaf4EiMUjAN4yaWMX0VgZ5RxpxWthFOOGoQKJNGXuKvnyhmpGq9M2k
+         G1rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733673784; x=1734278584;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g2bju1TFzkb78paxzmhvnib4fF4bCeClML62fbpGDGA=;
-        b=eCbn7Nqpd2gMsj7QVKm+fZwYc9IYGNXl1dGspJtcJLOFczdTDHd4jb/hphZbmZQ/HH
-         cG5hMALEeVZC8honxnwj0eiK4hNU7EnAbJzwDCVRPvqkCCUkNIZdVikO0WeNKKKxK+oQ
-         3EejdEX/AEuxcLIZucjkUzeiUAYzehuJzspk1ae1NsCmhzZQKgBwe6rD+87LzTF6a13A
-         pK289D2K28qHlf0xFCP9EO7z+EPFajOiIgMyUBiHg8o4nWa3rur5SFiPb1+KbLmTWUzo
-         x4S82qXcXC2sAbTAPiZE5D60dEh8QmVJztZMunsKoe4TEQSoA5ZWi39cIIR3REyHG+ed
-         p8cw==
-X-Gm-Message-State: AOJu0YxtCvFHZG13+v7nfuRc+NrAFySiQ5IoNElqmhfaEfmKMbXpyJqb
-	4yA7GrHLcFZSRn/yE1HjNBjlf54h3PeQFFHoLog5G9KdbXnmC26hA6hGsaEAc34G62wr1dNy86j
-	xMV5xEwTzAtoiZUX9IINc81ohopDzLodPc5deJ2sz
-X-Gm-Gg: ASbGnctMayEMczd1wiH/5Wb1X5u2LL3M6o/3b4ZHJMJ2gCB4c1T5+B/aIGle0UAvgKz
-	sbSyEvnEZsLJswqsL24I2j+51v8YSEAoR
-X-Google-Smtp-Source: AGHT+IGl7fW9Xou5kJnzfHi3JuaZGmL66I/U0U0da7jGcCJd79xKhg+slsbHNwqdeU027B3ppBd7WrfPxgQNjRfEPPc=
-X-Received: by 2002:a2e:a10e:0:b0:300:1448:c526 with SMTP id
- 38308e7fff4ca-3002fc97665mr31843431fa.37.1733673783736; Sun, 08 Dec 2024
- 08:03:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733675498; x=1734280298;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/3IqBLF5+082VftQzBDe5np6ZHdM0hU8MhttezCt58Y=;
+        b=xHkog7VXgqjTQf4wqbo6hLY7flk8Zw/e8+2nJ2GPM9YbN72Ulkf4s3JzU3YLdL8RkQ
+         deOY3kTf0JpPOBu9KR9qRFF5M9aPwUgmItxIJNHoxhoen+neIWefDmShPPMERukRtLCv
+         R/BqGJuzqNXWl35Fib9oJhdpnSemcvThEt4FHhQAM2QvkJkjRGPlnOmmq53atPvKLRg3
+         ae+a33eEqN6i/733eDAHUt4TB3aQDV7QikFHLT+OWnDPSCseTOQubm5BvL13dA/Nwf2N
+         UKfzC3VoM4Mh4mo3XcvLBhRvMRB1OvSJxlbfQfNcQVb2Vm1qfNM7zEMIki36mXL6RK8g
+         8DDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqztwKKziOIydZ9bVQx4xq0cmjtES+Ij1+vRj6iiTwbEdAg88nDlQMpKgL5qow6WK084tZ82fOANmWnQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxi3LcdA4c4J9VdxjYGXRNYTAtOnWjb3EyunpLz1iMQzggIlD9j
+	OOJWLDGHob7mkWOw3YySgWJCAij/MSppUJu0F2wrrFfjV5n3YMlr52Frx6Yx2e9q3smw93IezWr
+	dyfukFIUDTIvByCgEaXZBlojBR6uI28/uweCPsgBPZdV04BOn
+X-Gm-Gg: ASbGncvPI5ihSl7dbCzGq7Z4deG8xHVA8va49HnfL85uARjJDH51T/wpARyRBA60jNL
+	g3qG2LPxufwDE9ew72G1uv6lhjFdgcQ==
+X-Google-Smtp-Source: AGHT+IH3HRUDPc/rSSkW12dS+YIWQ7oncA1ik1EzklMAuhI6+aj8k06O3fniuSNnOtUuGslv084lIIhwTPStQPhq/2A=
+X-Received: by 2002:a05:690c:2c8b:b0:6ee:b726:62cd with SMTP id
+ 00721157ae682-6efe3cc01efmr29763747b3.9.1733675498187; Sun, 08 Dec 2024
+ 08:31:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: j4nn <j4nn.xda@gmail.com>
-Date: Sun, 8 Dec 2024 17:02:51 +0100
-Message-ID: <CADhu7iD1LOT=93o1DhFYBeDHTKW9SuYdSmz8VXvsE4vf285tDg@mail.gmail.com>
-Subject: clear space cache v1 fails with Unable to find block group for 0
-To: linux-btrfs@vger.kernel.org
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com> <CAFMvigdQPC_cV5td1j0e2CR=qPT=W0Lp=+n74_UrSzahayMJWA@mail.gmail.com>
+ <d6907ccb-70cd-4066-9bf7-2ead902f0974@gmx.com>
+In-Reply-To: <d6907ccb-70cd-4066-9bf7-2ead902f0974@gmx.com>
+From: Jonah Sabean <jonah@jse.io>
+Date: Sun, 8 Dec 2024 12:31:02 -0400
+Message-ID: <CAFMvigdfVLrPJsYq0xyuye5-_pAL5ByHQDS-RZ5T6de8EZWspQ@mail.gmail.com>
+Subject: Re: Using btrfs raid5/6
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sat, Dec 7, 2024 at 4:48=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+>
+>
+>
+> =E5=9C=A8 2024/12/6 12:33, Jonah Sabean =E5=86=99=E9=81=93:
+> > On Wed, Dec 4, 2024 at 12:40=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2024/12/4 14:04, Scoopta =E5=86=99=E9=81=93:
+> >>> I'm looking to deploy btfs raid5/6 and have read some of the previous
+> >>> posts here about doing so "successfully." I want to make sure I
+> >>> understand the limitations correctly. I'm looking to replace an md+ex=
+t4
+> >>> setup. The data on these drives is replaceable but obviously ideally =
+I
+> >>> don't want to have to replace it.
+> >>
+> >> 0) Use kernel newer than 6.5 at least.
+> >>
+> >> That version introduced a more comprehensive check for any RAID56 RMW,
+> >> so that it will always verify the checksum and rebuild when necessary.
+> >>
+> >> This should mostly solve the write hole problem, and we even have some
+> >> test cases in the fstests already verifying the behavior.
+> >>
+> >>>
+> >>> 1) use space_cache=3Dv2
+> >>>
+> >>> 2) don't use raid5/6 for metadata
+> >>>
+> >>> 3) run scrubs 1 drive at a time
+> >>
+> >> That's should also no longer be the case.
+> >>
+> >> Although it will waste some IO, but should not be that bad.
+> >
+> > When was this fixed? Last I tested it took a month or more to complete
+> > a scrub on an 8 disk raid5 system with 8tb disks mostly full at the
+> > rate it was going. It was the only thing that kept me from using it.
+>
+> IIRC it's 6.6 for the scrub speed fix.
+>
+> Although it still doesn't fully address the extra read (twice of the
+> data) nor the random read triggered by parity scrub from other devices.
+>
+> A root fix will need a completely new way to do the scrub (my previous
+> scrub_fs attempt), but that interface will not handle other profiles
+> well (can not skip large amount of unused space).
+>
+> So if your last attempt is using some recent kernel version or the
+> latest LTS, then I guess the random read is still breaking the performanc=
+e.
 
-I am trying to switch 8TB raid1 btrfs from space cache v1 to v2, but
-the clear space cache v1 fails as following:
-
-gentoo ~ # btrfs filesystem df /mnt/data
-Data, RAID1: total=7.36TiB, used=7.00TiB
-System, RAID1: total=64.00MiB, used=1.11MiB
-Metadata, RAID1: total=63.00GiB, used=57.37GiB
-Metadata, DUP: total=5.00GiB, used=1.18GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
-WARNING:    Metadata: raid1, dup
-gentoo ~ # umount /mnt/data
-
-gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdata
-Unable to find block group for 0
-Unable to find block group for 0
-Unable to find block group for 0
-ERROR: failed to clear free space cache
-extent buffer leak: start 9587384418304 len 16384
-
-real    7m8.174s
-user    0m6.883s
-sys     0m9.322s
+Thanks for the update! Will your scrub_fs be rebased for raid5/6 in
+the near future? Would be nice to be rid of the 2x reads. I suspect
+then raid6 results in 3x reads still then?
 
 
-Here some info:
-
-gentoo ~ # uname -a
-Linux gentoo 6.12.3-gentoo-x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec  8
-00:12:56 CET 2024 x86_64 AMD Ryzen 9 5950X 16-Core Processor
-AuthenticAMD GNU/Linux
-gentoo ~ # btrfs --version
-btrfs-progs v6.12
--EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=builtin
-gentoo ~ # btrfs filesystem show /mnt/data
-Label: 'rdata'  uuid: 1dfac20a-3f84-4149-aba0-f160ab633373
-       Total devices 2 FS bytes used 7.06TiB
-       devid    1 size 8.00TiB used 7.26TiB path /dev/mapper/wdrb-bdata
-       devid    2 size 8.00TiB used 7.25TiB path /dev/mapper/wdrc-cdata
-gentoo ~ # dmesg | tail -n 6
-[31008.980706] BTRFS info (device dm-0): first mount of filesystem
-1dfac20a-3f84-4149-aba0-f160ab633373
-[31008.980726] BTRFS info (device dm-0): using crc32c (crc32c-intel)
-checksum algorithm
-[31008.980731] BTRFS info (device dm-0): disk space caching is enabled
-[31008.980734] BTRFS warning (device dm-0): space cache v1 is being
-deprecated and will be removed in a future release, please use -o
-space_cache=v2
-[31009.994687] BTRFS info (device dm-0): bdev /dev/mapper/wdrb-bdata
-errs: wr 8, rd 0, flush 0, corrupt 0, gen 0
-[31009.994696] BTRFS info (device dm-0): bdev /dev/mapper/wdrc-cdata
-errs: wr 7, rd 0, flush 0, corrupt 0, gen 0
-
-Completed scrub (which corrected 4 errors), btrfs check completed
-without errors:
-
-gentoo ~ # btrfs scrub status /mnt/data
-UUID:             1dfac20a-3f84-4149-aba0-f160ab633373
-Scrub started:    Fri Dec  6 13:12:36 2024
-Status:           finished
-Duration:         16:11:22
-Total to scrub:   14.92TiB
-Rate:             268.35MiB/s
-Error summary:    verify=4
- Corrected:      4
- Uncorrectable:  0
- Unverified:     0
-gentoo ~ # umount /mnt/data
-
-gentoo ~ # time btrfs check -p /dev/mapper/wdrb-bdata
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/wdrb-bdata
-UUID: 1dfac20a-3f84-4149-aba0-f160ab633373
-[1/7] checking root items                      (0:06:57 elapsed,
-34253945 items checked)
-[2/7] checking extents                         (0:23:08 elapsed,
-3999596 items checked)
-[3/7] checking free space cache                (0:04:25 elapsed, 7868
-items checked)
-[4/7] checking fs roots                        (1:03:46 elapsed,
-3215533 items checked)
-[5/7] checking csums (without verifying data)  (0:11:58 elapsed,
-15418322 items checked)
-[6/7] checking root refs                       (0:00:00 elapsed, 52
-items checked)
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 8199989936128 bytes used, no error found
-total csum bytes: 7940889876
-total tree bytes: 65528446976
-total fs tree bytes: 52856799232
-total extent tree bytes: 3578331136
-btree space waste bytes: 10797983857
-file data blocks allocated: 21632555483136
-referenced 9547690319872
-
-real    111m10.370s
-user    10m28.442s
-sys     6m44.888s
-
-Tried some balance as found example posted, not really sure if that should help:
-
-gentoo ~ # btrfs balance start -dusage=10 /mnt/data
-Done, had to relocate 32 out of 7467 chunks
-
-gentoo ~ # btrfs filesystem df /mnt/data
-Data, RAID1: total=7.19TiB, used=7.00TiB
-System, RAID1: total=64.00MiB, used=1.08MiB
-Metadata, RAID1: total=63.00GiB, used=57.36GiB
-Metadata, DUP: total=5.00GiB, used=1.18GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
-WARNING:    Metadata: raid1, dup
-
-But it did not help:
-
-gentoo ~ # time btrfs rescue clear-space-cache v1 /dev/mapper/wdrb-bdata
-Unable to find block group for 0
-Unable to find block group for 0
-Unable to find block group for 0
-ERROR: failed to clear free space cache
-extent buffer leak: start 7995086045184 len 16384
-
-real    6m58.515s
-user    0m6.270s
-sys     0m9.586s
-
-Any idea how to fix this?
-Thanks.
+>
+> Thanks,
+> Qu
+>
+> >
+> >>
+> >>>
+> >>> 4) don't expect to use the system in degraded mode
+> >>
+> >> You can still, thanks to the extra verification in 0).
+> >>
+> >> But after the missing device come back, always do a scrub on that
+> >> device, to be extra safe.
+> >>
+> >>>
+> >>> 5) there are times where raid5 will make corruption permanent instead=
+ of
+> >>> fixing it - does this matter? As I understand it md+ext4 can't detect=
+ or
+> >>> fix corruption either so it's not a loss
+> >>
+> >> With non-RAID56 metadata, and data checksum, it should not cause probl=
+em.
+> >>
+> >> But for no-data checksum/ no COW cases, it will cause permanent corrup=
+tion.
+> >>
+> >>>
+> >>> 6) the write hole exists - As I understand it md has that same proble=
+m
+> >>> anyway
+> >>
+> >> The same as 5).
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>> Are there any other ways I could lose my data? Again the data IS
+> >>> replaceable, I'm just trying to understand if there are any major
+> >>> advantages to using md+btrfs or md+ext4 over btrfs raid5 if I don't c=
+are
+> >>> about downtime during degraded mode. Additionally the posts I'm looki=
+ng
+> >>> at are from 2020, has any of the above changed since then?
+> >>>
+> >>> Thanks!
+> >>>
+> >>>
+> >>
+> >>
+> >
+>
 
