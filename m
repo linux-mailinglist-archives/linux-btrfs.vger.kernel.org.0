@@ -1,334 +1,530 @@
-Return-Path: <linux-btrfs+bounces-10124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10125-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 656CA9E8351
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 04:30:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8144E9E85E9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 16:26:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A6ED165AFD
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 03:30:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9BE0188506E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 15:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D7022F11;
-	Sun,  8 Dec 2024 03:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB84A153BFC;
+	Sun,  8 Dec 2024 15:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rE4L70Xy"
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="HhebDKCt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E4ABA4B;
-	Sun,  8 Dec 2024 03:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28071E4AE;
+	Sun,  8 Dec 2024 15:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733628640; cv=none; b=Lr5J6QWkISu7Y24eYAHNcYuRewKkjlHffEmzHdyQuLR6TBaQulI5YRknnbNgnZnZpKkHAS+CWWDdrEadhf2AOR2hk49nmF3LNtpMIBFdsRTqPYTA+cdSaoNFAOKLHQ5H9ayS/WHyyWCsG8Yawg3SD9ulC6cw8zB0OZGsLzrAJ4M=
+	t=1733671556; cv=none; b=q8vzGqMgt6N32RiYnXFGhX8kcOfhgpXsLBanPr0VUGJe4AgET7IiNhF/xmiCkm4coO2PjUp31mxyZM4AnxnhTosiePa8H6aYAiQ3AO/hFNKVgmDuwtuFerR1dYZFXA69BPozyoGk4LuL3f2XkUOdyRFjnWalqOF+S2FEp33H5PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733628640; c=relaxed/simple;
-	bh=BadLSRYtD5zwR9CRyQl1LtswiCY2ZLlLe1edxtR8doo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d5dE2RRr9CA2RqDbGr9KZRcU/+ec0Fyxqx5vuq4nAvt+okBklloCen2pxei6HzunXrDgxovwQYG4o9APcylco5bPbd5VGT92RmVtUYYiQmZHmKNbrRUM8W6X2Cr/8cZvGSCVNTfcB9aWMQ29OsebrgDp2y5TttpQXT3Tkp8YZG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rE4L70Xy; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1733628628; x=1734233428; i=quwenruo.btrfs@gmx.com;
-	bh=BadLSRYtD5zwR9CRyQl1LtswiCY2ZLlLe1edxtR8doo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=rE4L70Xytiuor2jKquEC7ZbRSAoGDIxqtVpdfVA6vttP1hxJOuEZ3tNsHkIL+8G3
-	 pPkArncJeyhSRo1wQWK8EMTQlR5TfeQl+2WSxsxwIg2EGvxDPjA9eikntEp1n/6WY
-	 280kkyrwxgM+RliNekBCAN5EszuVScYjEwdGPkqltw+G/+SphlTxtgMq7f0Tye7Ea
-	 nK33PRqTR7Wl2j1sbCVy7B4UWc5Jo7QO+wfhjpYPBkA06CJxtN2j0mTDsJPlBXzKS
-	 Z0yBkdALURfxikjcmufcezzVfahNa+ONrhOitw5vCTGyS7wIl5uMzbiNdT4Z65lWu
-	 cEK2J+iaNzjO4mAKOQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdebB-1ttBli1pqb-00aVHj; Sun, 08
- Dec 2024 04:30:27 +0100
-Message-ID: <2c9c0cfa-d84f-4568-aeed-6489f5ce1c20@gmx.com>
-Date: Sun, 8 Dec 2024 14:00:23 +1030
+	s=arc-20240116; t=1733671556; c=relaxed/simple;
+	bh=OaqbjMXhERe14Tf73UK6Z5TP5gtgvJIYzfb1MT8C7+Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rs33ZGUBmrBIm+OwQvvFK5Uu8plQxAkQRPMzFjpOvPc3Lq7shwbDNY4fly3XwBaQZeyfYHkEY5VdKRWdsqtVnugz+u7dArKN+XZztn2Sh9yjxONUvgnhcRRwEXA2dMX3Frk13bGLh40Ps6U17WCtaF6DQmvjvIWjrocX4+u+t/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=HhebDKCt; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1733671523; x=1734276323; i=spasswolf@web.de;
+	bh=HNBg1Ow9TOBMlbKpQkFYyPgiVIqI6OP/+OYbKwEqBZY=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=HhebDKCtLgMdttxjQ2SVKUKq1sxvudTCHrxTOlAB34Rf/76lxHngSQ+jPYXsa5Hc
+	 XFqXGe5ac/9zgZrmUEqSaXMZ2Y/+Sc91SUf6yE2oIt29OoAD+9YAXIlXHlK7dD+LI
+	 mZBL6YGS4U6LKkp+gb971Ql4gLP1qMOHnmpHH2zM3hBfVEgRQ0TBSvy9IwplSYD6K
+	 j4spT4i9zdFru3ta4z6lrPxRoeqfWojgbitGZBjjtIB6hBGX5uOKvySSUBpOnMpVb
+	 Gj5JlDg/pm+UzwJuhKAO65r4lfCmqg7vMkNGVvPKZKFlmEvwYf0Er11DSeHSo3Q3H
+	 JV5JdhzR1zWPBVTNwQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from localhost.localdomain ([84.119.92.193]) by smtp.web.de
+ (mrweb106 [213.165.67.124]) with ESMTPSA (Nemesis) id
+ 1MlbLM-1u2gJl2PLu-00ovH1; Sun, 08 Dec 2024 16:25:23 +0100
+From: Bert Karwatzki <spasswolf@web.de>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Bert Karwatzki <spasswolf@web.de>,
+	linux-kernel@vger.kernel.org,
+	Jan Kara <jack@suse.cz>,
+	kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org,
+	amir73il@gmail.com,
+	brauner@kernel.org,
+	torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk,
+	linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: commit 0790303ec869 leads to cpu stall without CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+Date: Sun,  8 Dec 2024 16:25:19 +0100
+Message-ID: <20241208152520.3559-1-spasswolf@web.de>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/327: add a test case to verify inline extent data
- read
-To: Anand Jain <anand.jain@oracle.com>, Zorro Lang <zlang@redhat.com>,
- Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-References: <20241115091926.101742-1-wqu@suse.com>
- <20241129030231.shgqx4ot4vbnht7w@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <2db76e13-443f-44fd-b3a2-3e1076606228@oracle.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <2db76e13-443f-44fd-b3a2-3e1076606228@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NSRjDsgacHKHQ/PAEegFobrebMwP4BASmNlnPxNAgUxSKxOr+1w
- 3m9KqEy7IbGDTsn5Oug8X3RbBtn9xKEmFmz7miAtQUmNS1RJiIwm/v0NzNFwL3oSZuBmKv4
- COP/5FLEOSJb5vTrj96BQ6brDU5VwzIYkOcvsHrQzeHvmNwanFyixr1iRsmUXlF2nRJAS1z
- FF/brlVsAcsubDX0RcG0A==
+X-Provags-ID: V03:K1:vrjAnARBzUs+W2Z3SxfLkmvhBcxuE7uVQECMTMOYI2ZKrKDBGwX
+ MJMvHCWO+yzfOOeMkbEulrDjoNk72RZlk2u0WMQ6o4C6X2g4/HIN1a9fdWnYxNCDQQyzijL
+ R6BlG9DgqsH3Xdxo69gw5Bk8jGvqBs7WoQ9jR77Kto65d2jlNbPz+0VH608i4sN7jRDVENg
+ EDJvNCGqBgIallciHmcsQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:f5JPKtw9ET0=;QjfnNvYCoaEgiWH0byN9oiKhp7W
- rYO6ThV+Rbeu43yMSstNhot0ZeQvFcna5FVzzc6rQj1qH6qMsQi9SyeyhgQv1L1g8fv0peRq4
- lDt3535ksa+8vCdpmbC9pRv19bwBkr8exKWDvb3sdtZyrK7Kb+ZcKMNosiQnfQnz7zkPop+Ti
- 8jp0DwIgwPQzUuA+wJ9uvrJzRzCNAiAe2jO/1Tj63/G6NvKQp3HZAQZrvSvCZLnqfIwaojK6P
- 8i02658IjNqj3+XTT2BYgNyR4rWwYBV1JBm5iWL4sGGi8MZZeQ8Oc7RZt2lG2MTYgMymvaMlN
- aNuQqqhfG1OZek7+3oLsUeDjXoAPD6dy94evuTpBTBNMLb4bfCYMhhk0S5W099sfxIEdr5EhR
- 5b8uEqSfqtCLpvuRDGO61KoAlYWRz2sQJxcCooEIC8u/dZWlaZe9X/hkzCA2khr3/6XQvuF1H
- lwHcWpZ6SkftePg6opaw0H4rce3HZXSQrM5XJxJS2i+y1HzigEv8WtrrtvL3YOhYNwX20oddt
- LOlggli3OCcJnYFRIB2z41WxExPRsF+K4wvEidNVXaiJToW6K/oPzlmGSLBLs2TRWFNbXA1pj
- Qh3mOalb47X+AsVetgNuqsH3mX+QHxEnR+kIXULMV956GTYq+depk674ncKyD+EYOh4hv67y2
- DYlp8a8F+H6bWKsKKeoB2pCwLNumnkUKWPTzTzIJUMtk8OhHxF0ht/2B7uoHJtAN5v+3cO/xy
- LYgqCuQFscpTSBQp69Dwg5MQ2UklPVWd8DskMYCuEs8s5foe5fs6z6hubJwZ8qqTTyZHUSKF3
- vs53PaYPTVbhcghk5DrZanW5bIy+WVJqyEhZvQtgrOZu98d11RL9fRN2GMNuRqHBpFukuP1nG
- JISPGhUoLZks8FXLPVk29/IQd+Ml6qF75dzvf1ykTRkJ6hWLibINnuYrS49dZKQWROC/dumkK
- 73C12GrMNXQqH0pHmQRLqRqetW4JAmMaoYS1E5crB5DE2NpSfJl4/7rQiVJXGTQKongi0X+cc
- nMNEsS+hl9mJFGH3FnTXUvm2D1P8avHdzDihxb8Tant9a+dCTxzNLbEQNysfDtNVma0eV3nUP
- rOStBXP9t/R52qwhsKGtxPF4Dm7CYZ
+UI-OutboundReport: notjunk:1;M01:P0:6Cx1JXlZS0E=;p6TVaIZ0Miu/+SBXrLbz0bIRuo0
+ fJjLXYJVCjMAWIqcGOUeN4SD62aFUsQ0xc66fcUCteXJKIrvNbdt68x7zLd6JGku19lfrnese
+ OvebMCaBSfQDkr0EoymVq63TW6LCTXYFkvSrlb48TmJPYWDXIFlQkX4va8+/6s4Ivzmof8rno
+ qON3yrXx/qu0XHjNB0yJiJ9AisQm/vu1V5SFHPOPLVxiw28P4aOZYT0PLnc2LUR30WL13Vqfd
+ /8XBikmEd/eeAAsTZuiuVYFjHxi9ac5x16zjoFkynS91ZjdHq++LxYSsHZahxACRxR9Ql6pfj
+ TetwF51cJyeZVv/9dSnkbnsm0kFrC9l6w7oqxzLRDycgcQvyxEFvAf2AmgebRt2MKgnjPi6F5
+ bFfL1GFu3y5uqrliitqFOuHt1fmkTsO5ZDZcS2GUVg3pkC6e5biGWSJ62cMgzdkz+YcCkjVOA
+ ugLmjXX5RFNuQ0vSXhWORKLJ3p4spTtlho7lnnI0grv19eSFbofBYH7PfXmiwz2vpJwXkC3bn
+ aWLSzQTvYx/tN6df6pe9y5apNfug6Y19hxRa5i9jkcS23x3SM6daTw3n1wo4PWYHA50PalXXn
+ a38gQkEivYMTPugiTTJOkha7RhHYmMaYEbqNE9a80WxjGXLXW2wq53tFKW+qVEJg5s7OV+ttS
+ vyBt99E28lckrn65geLokUKEZBt57iqOHXQVFEC8Qy7iKiXaM00mUwih3EHy2+TbHqg2kRXKU
+ FmZI9pgPupFrRg5Z9JJSw38i0Up1LxxXZB9KysICuQWM+W5FFwALfhB2OiJreVXpxNI042EAJ
+ qxN4ady/twL/6BK7LnPrVSQ/DEYHtWiQHQkGNqd9GJD8AY6ks+xOzC5uIJzKvawIxZFDD6GY8
+ 1WqgIQcHhO1RRAgL4kpRIK2cVF0ZXVInJiQ88F8eufusBi1KLLNbDvG83Sl8QK9OO420rbl88
+ XowbPUG47fTnASHqXxVdNjw4V2aSB2bAjjgqcVTCpVtAILAKRIzAVdmDoVjwLHHAhWkM0Barr
+ xkFphcMGJ8Qc9BToHTrmmleRyEnRfpdDFJVrYuM83FejlXQR3IYl5EWBTQyKkKcGXDAEn0qpP
+ t+8Dvl1VI=
+
+Since linux-next-20241206 booting my debian unstable system hangs before s=
+tarting gdm.
+After some time these messages appear in /var/log/kern.log:
+
+[    C2] rcu: INFO: rcu_preempt self-detected stall on CPU
+[    C2] rcu: 	2-....: (1 GPs behind) idle=3D1ba4/1/0x4000000000000000 sof=
+tirq=3D0/0 fqs=3D4621 rcuc=3D21006 jiffies(starved)
+[    C2] rcu: 	(t=3D21001 jiffies g=3D805 q=3D2596 ncpus=3D16)
+[    C2] CPU: 2 UID: 0 PID: 1318 Comm: ntpd Not tainted 6.13.0-rc1-next-20=
+241206-master #631
+[    C2] Hardware name: Micro-Star International Co., Ltd. Alpha 15 B5EEK/=
+MS-158L, BIOS E158LAMS.107 11/10/2021
+[    C2] RIP: 0010:filemap_fault+0x9b7/0xc90
+[    C2] Code: 2f 4d ec ff 41 8b 94 24 c8 00 00 00 e9 39 f9 ff ff 49 8b 17=
+ a8 08 0f 85 c2 f7 ff ff 45 84 d2 0f 85 a6 01 00 00 f0 41 80 37 01 <0f> 88=
+ 8c 01 00 00 4d 85 ed 0f 84 d4 00 00 00 49 81 ff 00 f0 ff ff
+[    C2] RSP: 0018:ffffb573c689fc10 EFLAGS: 00000202
+[    C2] RAX: 0000000000000000 RBX: ffff9ffec13fa918 RCX: 0000000000000000
+[    C2] RDX: 4000000000000021 RSI: ffff9ffec1716100 RDI: ffff9ffec13fa950
+[    C2] RBP: 0000000000000014 R08: 0000000000000020 R09: 0000000000000013
+[    C2] R10: 0000000000000001 R11: ffffebb6c901ff00 R12: 0000000000000000
+[    C2] R13: 0000000000000000 R14: ffffb573c689fd08 R15: ffffebb6c901ff00
+[    C2] FS:  00007f80bedee740(0000) GS:ffffa00cee480000(0000) knlGS:00000=
+00000000000
+[    C2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    C2] CR2: 00007f80bf14b020 CR3: 000000010506e000 CR4: 0000000000750ef0
+[    C2] PKRU: 55555554
+[    C2] Call Trace:
+[    C2]  <IRQ>
+[    C2]  ? rcu_dump_cpu_stacks+0x10d/0x140
+[    C2]  ? rcu_sched_clock_irq+0x337/0xb10
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? update_load_avg+0x77/0x6b0
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? update_process_times+0x7c/0xb0
+[    C2]  ? tick_nohz_handler+0x8a/0x140
+[    C2]  ? __pfx_tick_nohz_handler+0x10/0x10
+[    C2]  ? __hrtimer_run_queues+0x135/0x200
+[    C2]  ? hrtimer_interrupt+0xf5/0x210
+[    C2]  ? __sysvec_apic_timer_interrupt+0x4e/0x60
+[    C2]  ? sysvec_apic_timer_interrupt+0x64/0x80
+[    C2]  </IRQ>
+[    C2]  <TASK>
+[    C2]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
+[    C2]  ? filemap_fault+0x9b7/0xc90
+[    C2]  __do_fault+0x2c/0xb0
+[    C2]  do_fault+0x3a7/0x5e0
+[    C2]  __handle_mm_fault+0x24c/0x310
+[    C2]  handle_mm_fault+0x96/0x290
+[    C2]  __get_user_pages+0x2c3/0xf70
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? __set_cpus_allowed_ptr+0x4e/0xa0
+[    C2]  populate_vma_page_range+0x77/0xc0
+[    C2]  __mm_populate+0xa7/0x140
+[    C2]  __do_sys_mlockall+0x14b/0x170
+[    C2]  do_syscall_64+0x5f/0x1a0
+[    C2]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[    C2] RIP: 0033:0x7f80beff66f7
+[    C2] Code: 73 01 c3 48 8b 0d 29 a7 0d 00 f7 d8 64 89 01 48 83 c8 ff c3=
+ 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 97 00 00 00 0f 05 <48> 3d=
+ 01 f0 ff ff 73 01 c3 48 8b 0d f9 a6 0d 00 f7 d8 64 89 01 48
+[    C2] RSP: 002b:00007ffee81b1558 EFLAGS: 00000246 ORIG_RAX: 00000000000=
+00097
+[    C2] RAX: ffffffffffffffda RBX: 00007ffee81b1778 RCX: 00007f80beff66f7
+[    C2] RDX: 00007ffee81b1580 RSI: 0000000000000008 RDI: 0000000000000003
+[    C2] RBP: 0000000000000009 R08: 0000000000000000 R09: 0000000000000001
+[    C2] R10: 0000000000000000 R11: 0000000000000246 R12: 000055964d1337e0
+[    C2] R13: 000055964d1143b0 R14: 000055964d123b04 R15: 00000000ffffffff
+[    C2]  </TASK>
+[    C2] rcu: INFO: rcu_preempt self-detected stall on CPU
+[    C2] rcu: 	2-....: (1 GPs behind) idle=3D1ba4/1/0x4000000000000000 sof=
+tirq=3D0/0 fqs=3D18463 rcuc=3D84010 jiffies(starved)
+[    C2] rcu: 	(t=3D84005 jiffies g=3D805 q=3D2653 ncpus=3D16)
+[    C2] CPU: 2 UID: 0 PID: 1318 Comm: ntpd Not tainted 6.13.0-rc1-next-20=
+241206-master #631
+[    C2] Hardware name: Micro-Star International Co., Ltd. Alpha 15 B5EEK/=
+MS-158L, BIOS E158LAMS.107 11/10/2021
+[    C2] RIP: 0010:filemap_map_pages+0x1ce/0x510
+[    C2] Code: 89 44 24 20 c1 e3 08 e8 e0 b4 03 00 48 83 44 24 40 01 f0 ff=
+ 45 34 09 5c 24 70 48 8b 44 24 20 f0 80 75 00 01 0f 88 d4 01 00 00 <f0> ff=
+ 08 0f 84 be 01 00 00 48 8b 54 24 18 48 8b 74 24 48 48 8d 7c
+[    C2] RSP: 0018:ffffb573c689fbd8 EFLAGS: 00000202
+[    C2] RAX: ffffebb6c6122074 RBX: 000000000000001f RCX: 0000000000000010
+[    C2] RDX: 0000000184881025 RSI: 000055964d0c6000 RDI: ffff9ffe46ef1860
+[    C2] RBP: ffffebb6c6122040 R08: ffffb573c689fd68 R09: 000055964d0c6000
+[    C2] R10: 0000000000000000 R11: 00007f80bedfdfff R12: ffff9ffec1716100
+[    C2] R13: ffff9ffe46424630 R14: ffff9ffe44872280 R15: ffffb573c689fd08
+[    C2] FS:  00007f80bedee740(0000) GS:ffffa00cee480000(0000) knlGS:00000=
+00000000000
+[    C2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    C2] CR2: 00007f80bf14b020 CR3: 000000010506e000 CR4: 0000000000750ef0
+[    C2] PKRU: 55555554
+[    C2] Call Trace:
+[    C2]  <IRQ>
+[    C2]  ? rcu_dump_cpu_stacks+0x10d/0x140
+[    C2]  ? rcu_sched_clock_irq+0x337/0xb10
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? update_load_avg+0x77/0x6b0
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? update_process_times+0x7c/0xb0
+[    C2]  ? tick_nohz_handler+0x8a/0x140
+[    C2]  ? __pfx_tick_nohz_handler+0x10/0x10
+[    C2]  ? __hrtimer_run_queues+0x135/0x200
+[    C2]  ? hrtimer_interrupt+0xf5/0x210
+[    C2]  ? __sysvec_apic_timer_interrupt+0x4e/0x60
+[    C2]  ? sysvec_apic_timer_interrupt+0x64/0x80
+[    C2]  </IRQ>
+[    C2]  <TASK>
+[    C2]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
+[    C2]  ? filemap_map_pages+0x1ce/0x510
+[    C2]  ? filemap_map_pages+0xe6/0x510
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  ? filemap_fault+0x1af/0xc90
+[    C2]  do_fault+0x378/0x5e0
+[    C2]  __handle_mm_fault+0x24c/0x310
+[    C2]  handle_mm_fault+0x96/0x290
+[    C2]  __get_user_pages+0x2c3/0xf70
+[    C2]  ? srso_alias_return_thunk+0x5/0xfbef5
+[    C2]  populate_vma_page_range+0x77/0xc0
+[    C2]  __mm_populate+0xa7/0x140
+[    C2]  __do_sys_mlockall+0x14b/0x170
+[    C2]  do_syscall_64+0x5f/0x1a0
+[    C2]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[    C2] RIP: 0033:0x7f80beff66f7
+[    C2] Code: 73 01 c3 48 8b 0d 29 a7 0d 00 f7 d8 64 89 01 48 83 c8 ff c3=
+ 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 97 00 00 00 0f 05 <48> 3d=
+ 01 f0 ff ff 73 01 c3 48 8b 0d f9 a6 0d 00 f7 d8 64 89 01 48
+[    C2] RSP: 002b:00007ffee81b1558 EFLAGS: 00000246 ORIG_RAX: 00000000000=
+00097
+[    C2] RAX: ffffffffffffffda RBX: 00007ffee81b1778 RCX: 00007f80beff66f7
+[    C2] RDX: 00007ffee81b1580 RSI: 0000000000000008 RDI: 0000000000000003
+[    C2] RBP: 0000000000000009 R08: 0000000000000000 R09: 0000000000000001
+[    C2] R10: 0000000000000000 R11: 0000000000000246 R12: 000055964d1337e0
+[    C2] R13: 000055964d1143b0 R14: 000055964d123b04 R15: 00000000ffffffff
+[    C2]  </TASK>
+[  T165] INFO: task systemd:1 blocked for more than 61 seconds.
+[  T165]       Not tainted 6.13.0-rc1-next-20241206-master #631
+[  T165] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this =
+message.
+[  T165] task:systemd         state:D stack:0     pid:1     tgid:1     ppi=
+d:0      flags:0x00000002
+[  T165] Call Trace:
+[  T165]  <TASK>
+[  T165]  __schedule+0x29c/0x1190
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? rt_mutex_setprio+0x195/0x510
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  rt_mutex_schedule+0x1b/0x30
+[  T165]  rt_mutex_slowlock_block.constprop.0+0x3b/0x160
+[  T165]  __rt_mutex_slowlock_locked.constprop.0.isra.0+0xb3/0x130
+[  T165]  rt_mutex_slowlock.constprop.0+0x46/0xa0
+[  T165]  cgroup_kn_lock_live+0x42/0xc0
+[  T165]  cgroup_rmdir+0x12/0x40
+[  T165]  kernfs_iop_rmdir+0x4e/0x70
+[  T165]  vfs_rmdir+0x96/0x200
+[  T165]  do_rmdir+0x17b/0x190
+[  T165]  __x64_sys_rmdir+0x3a/0x70
+[  T165]  do_syscall_64+0x5f/0x1a0
+[  T165]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  T165] RIP: 0033:0x7f8c60bf1557
+[  T165] RSP: 002b:00007ffdbc907268 EFLAGS: 00000246 ORIG_RAX: 00000000000=
+00054
+[  T165] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8c60bf1557
+[  T165] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 00005603c85da320
+[  T165] RBP: 00007f8c6106b456 R08: 0000000000000000 R09: 0000000000000000
+[  T165] R10: 0000000000000007 R11: 0000000000000246 R12: 00005603c8498fb0
+[  T165] R13: 0000000000000001 R14: 0000000000000000 R15: 00005603c85da320
+[  T165]  </TASK>
+[  T165] INFO: task kworker/u64:3:149 blocked for more than 61 seconds.
+[  T165]       Not tainted 6.13.0-rc1-next-20241206-master #631
+[  T165] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this =
+message.
+[  T165] task:kworker/u64:3   state:D stack:0     pid:149   tgid:149   ppi=
+d:2      flags:0x00004000
+[  T165] Workqueue: events_unbound cfg80211_wiphy_work [cfg80211]
+[  T165] Call Trace:
+[  T165]  <TASK>
+[  T165]  __schedule+0x29c/0x1190
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? get_nohz_timer_target+0x21/0x140
+[  T165]  schedule+0x22/0xd0
+[  T165]  schedule_timeout+0xa9/0xe0
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? sched_clock_cpu+0xf/0x1d0
+[  T165]  __wait_for_common+0x91/0x190
+[  T165]  ? __pfx_schedule_timeout+0x10/0x10
+[  T165]  wait_for_completion_state+0x1c/0x40
+[  T165]  __wait_rcu_gp+0x179/0x180
+[  T165]  synchronize_rcu_normal.part.0+0x35/0x60
+[  T165]  ? __pfx_call_rcu_hurry+0x10/0x10
+[  T165]  ? __pfx_wakeme_after_rcu+0x10/0x10
+[  T165]  __ieee80211_scan_completed+0xa9/0x310 [mac80211]
+[  T165]  ieee80211_scan_work+0x111/0x540 [mac80211]
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  cfg80211_wiphy_work+0x9e/0xc0 [cfg80211]
+[  T165]  process_one_work+0x161/0x270
+[  T165]  worker_thread+0x30a/0x440
+[  T165]  ? __pfx_worker_thread+0x10/0x10
+[  T165]  kthread+0xcd/0x100
+[  T165]  ? __pfx_kthread+0x10/0x10
+[  T165]  ret_from_fork+0x2f/0x50
+[  T165]  ? __pfx_kthread+0x10/0x10
+[  T165]  ret_from_fork_asm+0x1a/0x30
+[  T165]  </TASK>
+[  T165] INFO: task kworker/7:2:388 blocked for more than 61 seconds.
+[  T165]       Not tainted 6.13.0-rc1-next-20241206-master #631
+[  T165] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this =
+message.
+[  T165] task:kworker/7:2     state:D stack:0     pid:388   tgid:388   ppi=
+d:2      flags:0x00004000
+[  T165] Workqueue: events do_free_init
+[  T165] Call Trace:
+[  T165]  <TASK>
+[  T165]  __schedule+0x29c/0x1190
+[  T165]  schedule+0x22/0xd0
+[  T165]  schedule_timeout+0xa9/0xe0
+[  T165]  ? __remove_hrtimer+0x34/0x90
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? sched_clock_cpu+0xf/0x1d0
+[  T165]  __wait_for_common+0x91/0x190
+[  T165]  ? __pfx_schedule_timeout+0x10/0x10
+[  T165]  wait_for_completion_state+0x1c/0x40
+[  T165]  __wait_rcu_gp+0x179/0x180
+[  T165]  synchronize_rcu_normal.part.0+0x35/0x60
+[  T165]  ? __pfx_call_rcu_hurry+0x10/0x10
+[  T165]  ? __pfx_wakeme_after_rcu+0x10/0x10
+[  T165]  do_free_init+0x14/0x50
+[  T165]  process_one_work+0x161/0x270
+[  T165]  worker_thread+0x30a/0x440
+[  T165]  ? __pfx_worker_thread+0x10/0x10
+[  T165]  kthread+0xcd/0x100
+[  T165]  ? __pfx_kthread+0x10/0x10
+[  T165]  ret_from_fork+0x2f/0x50
+[  T165]  ? __pfx_kthread+0x10/0x10
+[  T165]  ret_from_fork_asm+0x1a/0x30
+[  T165]  </TASK>
+[  T165] INFO: task wpa_supplicant:1027 blocked for more than 61 seconds.
+[  T165]       Not tainted 6.13.0-rc1-next-20241206-master #631
+[  T165] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this =
+message.
+[  T165] task:wpa_supplicant  state:D stack:0     pid:1027  tgid:1027  ppi=
+d:1      flags:0x00000002
+[  T165] Call Trace:
+[  T165]  <TASK>
+[  T165]  __schedule+0x29c/0x1190
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? rt_mutex_setprio+0x195/0x510
+[  T165]  rt_mutex_schedule+0x1b/0x30
+[  T165]  rt_mutex_slowlock_block.constprop.0+0x3b/0x160
+[  T165]  __rt_mutex_slowlock_locked.constprop.0.isra.0+0xb3/0x130
+[  T165]  rt_mutex_slowlock.constprop.0+0x46/0xa0
+[  T165]  nl80211_pre_doit+0xa2/0x260 [cfg80211]
+[  T165]  genl_family_rcv_msg_doit+0xcf/0x140
+[  T165]  genl_rcv_msg+0x188/0x290
+[  T165]  ? __pfx_nl80211_pre_doit+0x10/0x10 [cfg80211]
+[  T165]  ? __pfx_nl80211_abort_scan+0x10/0x10 [cfg80211]
+[  T165]  ? __pfx_nl80211_post_doit+0x10/0x10 [cfg80211]
+[  T165]  ? __pfx_genl_rcv_msg+0x10/0x10
+[  T165]  netlink_rcv_skb+0x4e/0x100
+[  T165]  genl_rcv+0x23/0x30
+[  T165]  netlink_unicast+0x249/0x3a0
+[  T165]  netlink_sendmsg+0x216/0x470
+[  T165]  __sock_sendmsg+0x78/0x80
+[  T165]  ____sys_sendmsg+0x23b/0x2e0
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? copy_msghdr_from_user+0xe6/0x170
+[  T165]  ___sys_sendmsg+0x7f/0xd0
+[  T165]  ? rt_spin_lock+0x37/0xb0
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? do_anonymous_page+0x418/0x5d0
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? netlink_setsockopt+0x262/0x420
+[  T165]  __sys_sendmsg+0x63/0xc0
+[  T165]  do_syscall_64+0x5f/0x1a0
+[  T165]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  T165] RIP: 0033:0x7fe32a392970
+[  T165] RSP: 002b:00007ffc292500f8 EFLAGS: 00000202 ORIG_RAX: 00000000000=
+0002e
+[  T165] RAX: ffffffffffffffda RBX: 000055ccd6337a00 RCX: 00007fe32a392970
+[  T165] RDX: 0000000000000000 RSI: 00007ffc29250130 RDI: 0000000000000006
+[  T165] RBP: 000055ccd63b3760 R08: 0000000000000004 R09: 0000000000000001
+[  T165] R10: 00007ffc29250214 R11: 0000000000000202 R12: 000055ccd6337ce0
+[  T165] R13: 00007ffc29250130 R14: 0000000000000000 R15: 00007ffc29250214
+[  T165]  </TASK>
+[  T165] INFO: task systemd:1293 blocked for more than 61 seconds.
+[  T165]       Not tainted 6.13.0-rc1-next-20241206-master #631
+[  T165] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this =
+message.
+[  T165] task:systemd         state:D stack:0     pid:1293  tgid:1293  ppi=
+d:1      flags:0x00004002
+[  T165] Call Trace:
+[  T165]  <TASK>
+[  T165]  __schedule+0x29c/0x1190
+[  T165]  schedule+0x22/0xd0
+[  T165]  schedule_timeout+0xa9/0xe0
+[  T165]  __wait_for_common+0x91/0x190
+[  T165]  ? __pfx_schedule_timeout+0x10/0x10
+[  T165]  wait_for_completion_state+0x1c/0x40
+[  T165]  __wait_rcu_gp+0x179/0x180
+[  T165]  synchronize_rcu_normal.part.0+0x35/0x60
+[  T165]  ? __pfx_call_rcu_hurry+0x10/0x10
+[  T165]  ? __pfx_wakeme_after_rcu+0x10/0x10
+[  T165]  rcu_sync_enter+0x54/0x110
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  T165]  percpu_down_write+0x16/0xd0
+[  T165]  cgroup_update_dfl_csses+0x242/0x290
+[  T165]  cgroup_subtree_control_write+0x3c5/0x410
+[  T165]  kernfs_fop_write_iter+0x139/0x1f0
+[  T165]  vfs_write+0x251/0x410
+[  T165]  ksys_write+0x65/0xe0
+[  T165]  do_syscall_64+0x5f/0x1a0
+[  T165]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  T165] RIP: 0033:0x7fbc77c27f90
+[  T165] RSP: 002b:00007ffdd1824288 EFLAGS: 00000202 ORIG_RAX: 00000000000=
+00001
+[  T165] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fbc77c27f90
+[  T165] RDX: 0000000000000005 RSI: 0000564aad4827d0 RDI: 0000000000000021
+[  T165] RBP: 0000564aad4827d0 R08: 00007fbc77d0bac0 R09: 0000000000000001
+[  T165] R10: 00007fbc77d0bb70 R11: 0000000000000202 R12: 0000000000000005
+[  T165] R13: 0000564aad4b85f0 R14: 00007fbc77d09ea0 R15: 00000000fffffff7
+[  T165]  </TASK>
+
+I bisected this between linux-6.13-rc1 and linux-20241206 and found this a=
+s
+offending commit:
+0790303ec869 ("fsnotify: generate pre-content permission event on page fau=
+lt")
+
+I also noticed that only a part of the commit causes the issue, and revert=
+ing
+that part solves it in linux-next-20241206:
+
+commit 6207000b72058b45bb03f0975fbbbcd9dae06238
+Author: Bert Karwatzki <spasswolf@web.de>
+Date:   Sun Dec 8 01:51:59 2024 +0100
+
+    mm: filemap: partially revert commit 790303ec869
+
+    Reverting this part of commit 790303ec869 is enough
+    to fix the issue.
+
+    Signed-off-by: Bert Karwatzki <spasswolf@web.de>
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 23e001f5cd0f..9bf2fc833f3c 100644
+=2D-- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3419,37 +3419,6 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 	 * or because readahead was otherwise unable to retrieve it.
+ 	 */
+ 	if (unlikely(!folio_test_uptodate(folio))) {
+-		/*
+-		 * If this is a precontent file we have can now emit an event to
+-		 * try and populate the folio.
+-		 */
+-		if (!(vmf->flags & FAULT_FLAG_TRIED) &&
+-		    unlikely(FMODE_FSNOTIFY_HSM(file->f_mode))) {
+-			loff_t pos =3D folio_pos(folio);
+-			size_t count =3D folio_size(folio);
+-
+-			/* We're NOWAIT, we have to retry. */
+-			if (vmf->flags & FAULT_FLAG_RETRY_NOWAIT) {
+-				folio_unlock(folio);
+-				goto out_retry;
+-			}
+-
+-			if (mapping_locked)
+-				filemap_invalidate_unlock_shared(mapping);
+-			mapping_locked =3D false;
+-
+-			folio_unlock(folio);
+-			fpin =3D maybe_unlock_mmap_for_io(vmf, fpin);
+-			if (!fpin)
+-				goto out_retry;
+-
+-			error =3D fsnotify_file_area_perm(fpin, MAY_ACCESS, &pos,
+-							count);
+-			if (error)
+-				ret =3D VM_FAULT_SIGBUS;
+-			goto out_retry;
+-		}
+-
+ 		/*
+ 		 * If the invalidate lock is not held, the folio was in cache
+ 		 * and uptodate and now it is not. Strange but possible since we
 
 
+Then I took a closer look at the function called in the problematic code a=
+nd noticed
+that fsnotify_file_area_perm(), is a NOOP when CONFIG_FANOTIFY_ACCESS_PERM=
+ISSIONS
+is not set (which was the case in my .config). This also explains why this=
+ was not
+found before, as distributional .config file have this option enabled.
+Setting the option to y solves the issue, too
 
-=E5=9C=A8 2024/12/8 13:43, Anand Jain =E5=86=99=E9=81=93:
-> On 29/11/24 08:32, Zorro Lang wrote:
->> On Fri, Nov 15, 2024 at 07:49:26PM +1030, Qu Wenruo wrote:
->>> [BUG]
->>> When developing sector size < page size handling for btrfs, I'm hittin=
-g
->>> a data corruption, which is only possible with the following out-of-tr=
-ee
->>> patches:
->>>
->>> =C2=A0=C2=A0 btrfs: allow inline data extents creation if sector size =
-< page size
->>> =C2=A0=C2=A0 btrfs: allow buffered write to skip full page if it's sec=
-tor aligned
->>>
->>> [CAUSE]
->>> Thankfully no upstream kernels are affected, even if some one is
->>> mounting a btrfs created by x86_64 with inlined data extents, they won=
-'t
->>> hit the corruption.
->>>
->>> The root cause is that when reading inline extents, we zero out the
->>> whole remaining range until folio end.
->>>
->>> This means such zeroing out can cover ranges that is dirtied but not y=
-et
->>> written back, thus lead to data corruption.
->>>
->>> This needs all the following conditions to be met:
->>>
->>> - Sector size < page size
->>> =C2=A0=C2=A0 So no x86_64 is affected. The most common users should be=
- Asahi
->>> Linux.
->>> =C2=A0=C2=A0 But they are safe due to the next two conditions.
->>>
->>> - Inline data extents are present
->>> =C2=A0=C2=A0 For sector size < page size cases, we do not allow creati=
-ng new
->>> inline
->>> =C2=A0=C2=A0 data extents but only reading it.
->>>
->>> =C2=A0=C2=A0 But even all above cases are met by using a x86_64 create=
-d btrfs with
->>> =C2=A0=C2=A0 inlined data extents, the next point will still save us.
->>>
->>> - Partial uptodate folios are allowed
->>> =C2=A0=C2=A0 This requires the out-of-tree patch "btrfs: allow buffere=
-d write
->>> to skip
->>> =C2=A0=C2=A0 full page if it's sector aligned", or buffered write will=
- read out
->>> the
->>> =C2=A0=C2=A0 whole folio before dirting any range.
->>>
->>> So end users are completely safe.
->>>
->>> [TEST CASE]
->>> The test case itself is pretty straightforward:
->>>
->>> - Buffered write [0, 4k)
->>> - Drop all page cache
->>> - Buffered write [8k, 12k)
->>> - Verify the file content
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>> For anyone who wants to verify the failure, please fetch the following
->>> branch, and reset to commit 4df35fbb829dfbcf64a914e5c8f652d9a3ad5227
->>> ("btrfs: allow inline data extents creation if sector size < page
->>> size").
->>>
->>> =C2=A0 https://github.com/adam900710/linux.git subpage
->>>
->>> The top commit e7338d321bdf48e3b503c40e8eca7d7592709c83
->>> ("btrfs: fix inline data extent reads which zero out the remaining
->>> part") is the fix.
->>> ---
->>> =C2=A0 tests/btrfs/327=C2=A0=C2=A0=C2=A0=C2=A0 | 58 ++++++++++++++++++=
-+++++++++++++++++++++++++++
->>> =C2=A0 tests/btrfs/327.out |=C2=A0 2 ++
->>> =C2=A0 2 files changed, 60 insertions(+)
->>> =C2=A0 create mode 100755 tests/btrfs/327
->>> =C2=A0 create mode 100644 tests/btrfs/327.out
->>>
->>> diff --git a/tests/btrfs/327 b/tests/btrfs/327
->>> new file mode 100755
->>> index 00000000..72269fc7
->>> --- /dev/null
->>> +++ b/tests/btrfs/327
->>> @@ -0,0 +1,58 @@
->>> +#! /bin/bash
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
->>> +#
->>> +# FS QA Test 327
->>> +#
->>> +# Make sure reading inlined extents doesn't cause any corruption.
->>> +#
->>> +# This is a preventive test case inspired by btrfs/149, which can cau=
-se
->>> +# data corruption when the following out-of-tree patches are applied
->>> and
->>> +# the sector size is smaller than page size:
->>> +#
->>> +#=C2=A0 btrfs: allow inline data extents creation if sector size < pa=
-ge size
->>> +#=C2=A0 btrfs: allow buffered write to skip full page if it's sector =
-aligned
->>> +#
->>> +# Thankfully no upstream kernel is affected.
->>> +
->>> +. ./common/preamble
->>> +_begin_fstest auto quick compress
->>> +
->>> +_require_scratch
->>> +
->>> +# We need 4K sector size support, especially this case can only be
->>> triggered
->>> +# with sector size < page size for now.
->>> +#
->>> +# We do not check the page size and not_run so far, as in the long
->>> term btrfs
->>> +# will support larger folios, then in that future 4K page size
->>> should be enough
->>> +# to trigger the bug.
->>> +_require_btrfs_support_sectorsize 4096
->>> +
->>> +_scratch_mkfs >>$seqres.full 2>&1
->>> +_scratch_mount "-o compress,max_inline=3D4095"
->
-> Also, can you please add a comment explaining why max_inline is set to
-> pagesize - 1?
+Another solution is to compile the problematic code conditionally:
 
-It's just to override any possible mount option from the test config.
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 23e001f5cd0f..94d4eff59e3c 100644
+=2D-- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3423,6 +3423,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 		 * If this is a precontent file we have can now emit an event to
+ 		 * try and populate the folio.
+ 		 */
++#ifdef CONFIG_FANOTIFY_ACCESS_PERM
+ 		if (!(vmf->flags & FAULT_FLAG_TRIED) &&
+ 		    unlikely(FMODE_FSNOTIFY_HSM(file->f_mode))) {
+ 			loff_t pos =3D folio_pos(folio);
+@@ -3449,6 +3450,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ 				ret =3D VM_FAULT_SIGBUS;
+ 			goto out_retry;
+ 		}
++#endif
 
-E.g. if one is running "-o max_inline=3D0" as custom mount option, the
-test case will not exercise the inline extent creation part.
+ 		/*
+ 		 * If the invalidate lock is not held, the folio was in cache
 
-There is no special reason to go 4095, just to ensure we can create
-inline extent so I use the max reasonable value.
 
-Thanks,
-Qu
->
-> Thanks, Anand
->
->
->>> +
->>> +# Create one inlined data extent, only when using compression we can
->>> +# create an inlined data extent up to sectorsize.
->>> +# And for sector size < page size cases, we need the out-of-tree patc=
-h
->>> +# "btrfs: allow inline data extents creation if sector size < page
->>> size" to
->>> +# create such extent.
->>> +xfs_io -f -c "pwrite 0 4k" "$SCRATCH_MNT/foobar" > /dev/null
->>
->> $XFS_IO_PROG
->>
->>> +
->>> +# Drop the cache, we need to read out the above inlined data extent.
->>> +echo 3 > /proc/sys/vm/drop_caches
->>> +
->>> +# Write into range [8k, 12k), with the out-of-tree patch "btrfs: allo=
-w
->>> +# buffered write to skip full page if it's sector aligned", such
->>> write will not
->>> +# trigger the read on the folio.
->>> +xfs_io -f -c "pwrite 8k 4k" "$SCRATCH_MNT/foobar" > /dev/null
->>
->> $XFS_IO_PROG
->>
->>> +
->>> +# Verify the checksum, for the affected devel branch, the read of
->>> inline extent
->>> +# will zero out all the remaining range of the folio, screwing up
->>> the content
->>> +# at [8K, 12k).
->>> +_md5_checksum "$SCRATCH_MNT/foobar"
->>> +
->>> +_scratch_unmount
->>
->> This's not needed if it's not a necessary test step.
->>
->> Others look good to me, if no more review points from btrfs list, I'll
->> merge
->> this patch with above changes.
->>
->> Reviewed-by: Zorro Lang <zlang@redhat.com>
->>
->>> +
->>> +# success, all done
->>> +status=3D0
->>> +exit
->>> diff --git a/tests/btrfs/327.out b/tests/btrfs/327.out
->>> new file mode 100644
->>> index 00000000..aebf8c72
->>> --- /dev/null
->>> +++ b/tests/btrfs/327.out
->>> @@ -0,0 +1,2 @@
->>> +QA output created by 327
->>> +277f3840b275c74d01e979ea9d75ac19
->>> --
->>> 2.46.0
->>>
->>>
->>
->
->
-
+Bert Karwatzki
 
