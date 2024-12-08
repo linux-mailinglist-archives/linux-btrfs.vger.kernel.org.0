@@ -1,222 +1,180 @@
-Return-Path: <linux-btrfs+bounces-10113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D65CE9E8257
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 22:45:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE119E8332
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 03:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B272B165533
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2024 21:45:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ECAB1884717
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2024 02:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B5C15535A;
-	Sat,  7 Dec 2024 21:45:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAEFE22097;
+	Sun,  8 Dec 2024 02:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RwjXyMuh"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AC4n2r33";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AC4n2r33"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8198153838
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Dec 2024 21:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AE017C69
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 02:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733607951; cv=none; b=XepsYr2ZM6DWb4BFIs4rTamz3YXH1matxTJlUZGth2TR3RksGZW9RtTeorSX/Hh5+VuNdBhDbFfQ6SRyCgwOHI+TAl/TpDwhTuKEXYT3zVxqtd+cAI7QKa89+CXFS2eDd4TpmzYvfQNhRqTz93IKtOAP0lpIdq2QOv7YbvW8b+Q=
+	t=1733626288; cv=none; b=VQ2QvzngF98XHf9lVHVqvz8dDJDUOS6EQ+TdtEDfKZ8U6ZBMdauWvJVWqNs6sdtpDIGSGwdUQ6+/WfqtHcjWMrHCQTdb/uVP9ZPKuZGHNwU2D9I2bZdkw+3JnZuJ1uLY3FX22HcmKLalE+jLG4IWpD/nZwMHHCg8L3Q7uU7/e+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733607951; c=relaxed/simple;
-	bh=GA9sqYKAkDE6mfzadHvHovEm+eXJSftWsEpwOIwp+WU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=KYVjLKRNQKZQCDT5YCeZIe2rtIRujp2C9zM2o+/bUf9Jh4/LiDrU3QZqWO5WHPS6Sc4rpZdNIZfUk1TVIsxxNJ2GzclO7LtC9lRO3/V7lxHsyfezZplb4IjFLdpP3rT8cHozHtf+x1JXmbpAbdhEpYW34iau4c2VGpZUhgkIZWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RwjXyMuh; arc=none smtp.client-ip=209.85.128.50
+	s=arc-20240116; t=1733626288; c=relaxed/simple;
+	bh=XTBLwuAP4uqw471tziAkpHAkF0fn06TITwFplxMvWXg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=TsJoIkuexglJF4trfZgTedet2Orqi/6MuDFLhbaafN9hF+F+X7ctageXgNBa1hm4cHSqzvNH3wgvBkpQ2Zcg+WcEBxI7NDkQj+/WUa7fSimku9MMZmCuKDwAdRq2+puUcZsVOqWdpTcl1T6tg7BlJ7Zw6qzHjUt/Pp8hLoUD+To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AC4n2r33; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AC4n2r33; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-434ab938e37so20535825e9.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 07 Dec 2024 13:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1733607947; x=1734212747; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cOfzH9vQDjPlreRn7G/7SvMfDY87waRePDgrp26Fnrc=;
-        b=RwjXyMuhqhDc6owHsouxOc9lUyU5yTKvdn2DGfHeaTSAQfTXibA4FDcaXiD9UO/hcO
-         LF3kmeip64vsOjO0J3NTOeYHrl4tnmDDLY2S/pJmpMXPkDRQavxLNZeIwS/NK0K0TGcS
-         ZdfAvrzViRiPipmzqS/rkEo82WkKfRYRlFfwKt2gYpN6TiC/t7IKiB+imyY3mOWXEJYp
-         HRDNFiyCa3cGhkcCnaXkVbVRLrn0Fym7y1dJRXmRBk7fiUcHsla0YvbduK4ynYYaMRUp
-         ZAwMxkUxs//uLxWs25dx535zi367LGyCFsGi8j8Dc6nFEwJgNKCsc7/5Jhb9ViI66wj7
-         j7pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733607947; x=1734212747;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cOfzH9vQDjPlreRn7G/7SvMfDY87waRePDgrp26Fnrc=;
-        b=V3t4eXWzo65YRD1sNiWGOOC6j/pze8DCDPlfWNY8vvzEi3RCpo2iq7aPaTE7OPpIEw
-         liT3WDVS9+qx6As1LAxyJaM60oMwQPXjj9SCSndsomXoAEcTO8j/P7OqYZJfVnKs7TKU
-         BLmELc3euIWOEq9/VApKR5ZOQW7280bVISWHviNcq+UkGuxxxSnkhA5TGyh45THWvtYk
-         QXamZHFYWfvC7PkhGH4rxatZnL8CcWDDV09M5Y3J2BZwfyhP2xNNBp8VZvHm7eAAlptq
-         V+wD/udfP9NLS0bgfJPaSS/FAEje3N6YgID+m2a3Y3xX3LGfP16qrv+tdbsK/QrY5RZo
-         Ojbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUuhs93JNto3980QoKq213U9UTPWyxBn+o12cBlcispzB35XLPTphSJuIMDSPDOVSGYHulcpdZNIGq5jw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywjrk7yCAAQivQScydYKImgPWyaGukMCfabh4zAVtBdMUq9sS9o
-	fBLp81AxiY4F+d8ljWTO90P9PGM2kThpYuLM1ofx6nWgC9GrKxCNjXqu6iw0xa1aWFPaxP1kmgq
-	4
-X-Gm-Gg: ASbGncvfT6ag7DPkQek1lakorGYxw20bB5ioj1TqfZdbm2ohTJeuQvpyoloH//xSZqy
-	4aj99PGB0X1/2ifIJx99TbFDB1FV4FVyZqsaGawh+6MXpqWsJyYNCZ0cYUztMsioweI4ZvJf7cf
-	Tu+uRABFyBupEu0m6V84JLqwBa867ISTWughqAQPQK4Vaz3GdADxqfJByphQpd6/4Yy/UFhThFe
-	A3c7cu5HFiDVYG2FHvDqZLmZ80UOArA2EBhUn04UV8q30cICSRoNXjHqrJ1ekwdAuwMyA3GaNRF
-	fg==
-X-Google-Smtp-Source: AGHT+IGCv52pMZ4OQEVxHXAMdQFsf77h3qvtWObk8fFQ2ly6lj5cqogyOk5C3xi7NK5EIe8tpm62Qg==
-X-Received: by 2002:a05:6000:1448:b0:385:f892:c8fe with SMTP id ffacd0b85a97d-3862b36af96mr5775951f8f.21.1733607946750;
-        Sat, 07 Dec 2024 13:45:46 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2162e53798asm13956175ad.60.2024.12.07.13.45.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Dec 2024 13:45:45 -0800 (PST)
-Message-ID: <8d64f2fd-1a20-4b96-aff7-75db96d5cbd4@suse.com>
-Date: Sun, 8 Dec 2024 08:15:41 +1030
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2FADB1F37E
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 02:51:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1733626284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=b0WVONDOpso0nPYZImN+/49k3xTqeH5omJMgjRtO4EQ=;
+	b=AC4n2r33iezt+KqRcoYDtMXec8RN7HKAJcpAdoNZvLAF1LsoPtyFj/fRebauCIsizc8fkW
+	Ek6edHAt995vAJgvSuuLMJkY38HTFVFs0y4Nad/K26cge/kpjZtzYYNro7HfohqD5cM3nX
+	5QkkeliIVePSVgif6KSckPK8h7am2v8=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=AC4n2r33
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1733626284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=b0WVONDOpso0nPYZImN+/49k3xTqeH5omJMgjRtO4EQ=;
+	b=AC4n2r33iezt+KqRcoYDtMXec8RN7HKAJcpAdoNZvLAF1LsoPtyFj/fRebauCIsizc8fkW
+	Ek6edHAt995vAJgvSuuLMJkY38HTFVFs0y4Nad/K26cge/kpjZtzYYNro7HfohqD5cM3nX
+	5QkkeliIVePSVgif6KSckPK8h7am2v8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67CA1133D1
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Dec 2024 02:51:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OPpRCqsJVWcXcQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sun, 08 Dec 2024 02:51:23 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/8] btrfs: error handling fixes
+Date: Sun,  8 Dec 2024 13:20:57 +1030
+Message-ID: <cover.1733624454.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Balance failed with tree block error
-From: Qu Wenruo <wqu@suse.com>
-To: Aldo Gutierrez <btrfs.spry594@slmail.me>, linux-btrfs@vger.kernel.org
-References: <173323215268.7.6782695832944219711.518128798@slmail.me>
- <a78e6eab-88a6-4287-b5bc-ba5552cc8726@gmx.com>
- <173358166800.7.9767075912845312020.523411723@slmail.me>
- <7ee86cad-b8ed-4609-87e3-ab9a9e3bb98e@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <7ee86cad-b8ed-4609-87e3-ab9a9e3bb98e@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 2FADB1F37E
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
+I believe there is a regression in the last 2 or 3 releases where
+metadata/data space reservation code is no longer working properly,
+result us to hit -ENOSPC during btrfs_run_delalloc_range().
 
+One of the most common situation to hit such problem is during
+generic/750, along with other long running generic tests.
 
-在 2024/12/8 07:50, Qu Wenruo 写道:
-> 
-> 
-> 在 2024/12/8 00:57, Aldo Gutierrez 写道:
->>> The numbers look a little possible for bitflip:
->>> hex(15648439500800) = 0xe3b6fad8000
->>> hex(15648439517184) = 0xe3b6fadc000
->>>
->>> The same 0x8000 -> 0xc0000 just like Neil.
->>
->> Isn't that suspicious? Why are the numbers so similar? Is it possible 
->> to flip the bit back?
-> 
-> I have no idea how this happened.
-> 
-> To flip the bit back, no btrfs-check --repair support so far.
+Although I should start bisecting the space reservation bug, but I can
+not help fixing the exposed bugs first.
 
-Forgot to mention, although btrfs-check can not fix bitflip errors, it 
-can fix the bad backref by deleting the invalid one and create new 
-correct ones.
+This exposed quite some long existing bugs, all in the error handling
+paths, that can lead to the following crashes
 
-If you have everything properly backed up, you can try "btrfs check 
---repair" on the fs to have a try.
+- Double ordered extent accounting
+  Triggers WARN_ON_OCE() inside can_finish_ordered_extent() then crash.
 
-Thanks,
-Qu
+  This bug is fixed by the first 3 patches.
 
-> 
-> This means one has to craft the tool from scratch, which is normally out 
-> of reach for all non-developer users.
-> 
->>
->>> Did you ran full balance regularly before switching the kernel?
->>> If not, the corruption may already be there for some time, just the last
->>> balance chose to touch that block group and exposed the corruption.
->>
->> I do a -dusage=50 a couple of times a month. This time I did 85.
->> Haven't run a full balance in ages as it takes a long time.
->>
->>> Mind to run memtest first to make sure it's not some faulty hardware
->>> ruining the day?
->>
->> I ran memtest 10 days ago and yesterday I ran memtester. 0 errors found.
->>
->>> For your data, I believe most of them can be read out without problem,
->>> just write into the fs may trigger the fs to RO.
->>> Thus it's recommended to back up your data immediately. (After making
->>> sure your hardware memory is fine).
->>
->> The issue happened 10 days ago and I have used the fs since
->> without any issues (have made copies). I had expected such an error to 
->> RO immediately.
-> 
-> Do you have the fs mounted on other systems before?
-> The corruption can happen in the past but not exposed.
-> 
-> And the RO flip only happens if the write touches the exact extent (e.g. 
-> removing the extent or adding new reflink to it).
-> 
-> Thus it's not that simple to trigger, and the generation difference is 
-> also not small, which means it not something happened recently.
-> 
-> 
-> The extent leaf has generation 4919751, but the offending item has 
-> generation 4893938, which means the offending one is created over 25K 
-> commits before.
-> 
-> So definitely not something immediate, but I'm not sure if 10 days are 
-> enough to cause 25K commits either.
-> 
->>
->> Within a week or so before this error I had run clear-ino-cache and 
->> changed to space-cache v2.
-> 
-> After the clear-ino-cache, do you tried a "btrfs check --readonly"?
-> If at that time btrfs check reports no error, that should be the last 
-> known good status.
-> 
->>
->> While going through the logs I found this happened about a month ago:
->> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): block group 
->> 12157169172480 has wrong amount of free space
->> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): failed to 
->> load free space cache for block group 12157169172480, rebuilding it now
->> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): block group 
->> 12178644008960 has wrong amount of free space
->> Nov 09 14:11:37 P14 kernel: BTRFS warning (device sdb4): failed to 
->> load free space cache for block group 12178644008960, rebuilding it now
-> 
-> These are fine to ignore.
-> 
-> Thanks,
-> Qu
->>
->>
->>
-> 
-> 
+- Subpage ASSERT() triggered, where subpage folio bitmap differs from
+  folio status
+  This happens most likey in submit_uncompressed_range(), where it
+  unlock the folio without updating the subpage bitmaps.
+
+  This bug is fixed by the 3rd patch.
+
+- WARN_ON() if out-of-tree patch "btrfs: reject out-of-band dirty folios
+  during writeback" applied
+  This is a more complex case, where error handling leaves some folios
+  dirty, but with EXTENT_DELALLOC flag cleared from extent io tree.
+
+  Such dirty folios are still possible to be written back later, but
+  since there is no EXTENT_DELALLOC flag, it will be treat as
+  out-of-band dirty flags and trigger COW fixup.
+
+  This bug is fixed by the 4th and 5th patch
+
+With so many existing bugs exposed, there is more than enough motivation
+to make btrfs_run_delalloc_range() (and its delalloc range functions)
+output extra error messages so that at least we know something is wrong.
+
+And those error messages have already helped a lot during my
+development.
+
+Patches 6~8 are here to enhance the error messages.
+
+With all these patches applied, at least fstests can finish reliably,
+otherwise it frequently crashes in generic tests that I was unable to
+finish even one full run since the space reservation regression.
+
+Qu Wenruo (8):
+  btrfs: fix double accounting race when btrfs_run_delalloc_range()
+    failed
+  btrfs: fix double accounting race when extent_writepage_io() failed
+  btrfs: fix the error handling of submit_uncompressed_range()
+  btrfs: do proper folio cleanup when cow_file_range() failed
+  btrfs: do proper folio cleanup when run_delalloc_nocow() failed
+  btrfs: subpage: fix the bitmap dump for the locked flags
+  btrfs: subpage: dump the involved bitmap when ASSERT() failed
+  btrfs: add extra error messages for delalloc range related errors
+
+ fs/btrfs/extent_io.c |  79 ++++++++++++++----
+ fs/btrfs/inode.c     | 188 +++++++++++++++++++++++++++++++------------
+ fs/btrfs/subpage.c   |  48 ++++++++---
+ 3 files changed, 234 insertions(+), 81 deletions(-)
+
+-- 
+2.47.1
 
 
