@@ -1,169 +1,163 @@
-Return-Path: <linux-btrfs+bounces-10163-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10164-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E920C9E94B2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 13:47:13 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA5BE164A42
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 12:47:10 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E623A221D9C;
-	Mon,  9 Dec 2024 12:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZscxaNTn"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C35919E954E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 13:59:58 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C96A217F46
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Dec 2024 12:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AA3C2820A7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 12:59:55 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158311B4224;
+	Mon,  9 Dec 2024 12:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="Kfoh5wVP"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C72922F3A5;
+	Mon,  9 Dec 2024 12:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733748428; cv=none; b=mY2vRMSEFAx5CT8iL7RYQVUi5pzCE+5AfqB6V0IoJHGG57djfTS6P+QWtOffW2YeXSnCNvexA46mZNTfUF9oliVX4Fb+NZRy9CQg2WMkpqlcb9HdEW5GLusiY1B1IPt5KL+QO6HECQYEzxsdb37t3xNfnZ/K3qSsmp/ShBaNBvc=
+	t=1733748889; cv=none; b=qpsHrz2jIdGMH3eR6iPVaWN7nOU5Q/v0KyB3XLtNk2x7bIQuUTSDI257Wo6wZ/AFg9uZZcEXmlh0+EHAQ6w7adbMrjFmelCTgEs3PLJVmbwKi4YSfmlfOrSL7Z4fyXyV2mLWduKgr5dK7cHKTXF3Ei8CJJC/GJzzm7rX9PtSQeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733748428; c=relaxed/simple;
-	bh=cNE0zYlFPByIb5G5SfSOVcwpwasEP3WE64Ss2J1Z6ZA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i/1KFVP6+bRcRJLh89ftuhAgrHc01y1XMNmzZe8a31/Zj1Vnc2Jhb8KFalHd5HBC3zJfvohkvBEn55L80ehQwbW7PRUI9lM4QfnKCQYgZ66nVPx/TkNlhvNac4KEQkxKjRvLkNgPNg1GZ5+sDFc/2l50ylpim3DB39gwbDSt+KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZscxaNTn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 880FFC4CEDE
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Dec 2024 12:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733748427;
-	bh=cNE0zYlFPByIb5G5SfSOVcwpwasEP3WE64Ss2J1Z6ZA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ZscxaNTnTJz8D79PFN1SOe2yrILqF2OcBcdpcucye7Bq1hd3GnxjOIks1cPTLNymj
-	 zUzGYWTI275734ZIMHWtqT+AEnpB1tgyPDDmd2fMvhSNrQfiQ6pJ1yEeQTvo50Uf3X
-	 7FYlfdqr5UCoGULwjfJcWiLN/Lbqp4P3Ht+fCDRMrUuyjDfIiM6FEBsVY1gqZU1UZJ
-	 cWGwBtbPELQ8mWwRqfKK+LnWgxK1K+AQEkMTPfp1KCnvABFhsQWmCpzZTi+/90fUVU
-	 rn4RKHq4df/i403kNtPuAAWND3/0QjBaSY/YU8/sSQVCAJCqC3Du1Yzkp8ZhTw85ZB
-	 26KLGiGO+DfqA==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aa543c4db92so14236966b.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Dec 2024 04:47:07 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw4VyeElRTHR8xf+9+eKEy6JqtV2Ni1GrMElydOhKLDAw85Rigz
-	opqS8MmXTwMaH0BDMbRrFeIg5b7M09mRQPXPQZRPFkMHGeX1AEDlPIGAP9pFr1ytyj5a8oW/jfu
-	HWF7bwtjNpYJ2cbmnBgEEA2driDs=
-X-Google-Smtp-Source: AGHT+IH0a/nm4HEdPn1dWk/wwoWd9kUgwXsbbFo/fyqQg7sQHghGg8t6LqWG3AxUE8s6tWyvvDAlnSiUcMwqaM2XMIA=
-X-Received: by 2002:a17:906:1db1:b0:aa6:6c08:dc79 with SMTP id
- a640c23a62f3a-aa69cd675f8mr19776066b.35.1733748426093; Mon, 09 Dec 2024
- 04:47:06 -0800 (PST)
+	s=arc-20240116; t=1733748889; c=relaxed/simple;
+	bh=mmp+z6vZClvYN4IUfa9MoRA7iDd0lamwTH4vyhOCrWo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hV5LYMl3ojPUuCX3U703vaSs/bSDpWTD7yAQ7ZDw+McZQYR8FIunLrLTGBy/En258EOWMsJA4Ak12QW/BFQfWBJF5+xiXQZ86gjfV/JZZnn7ISXKJDs6rZGwnRkdWsu2ZeM7rc2Zh6QJmrzWCRYCY5bk2DfM1+H65jOsSnTWd3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=Kfoh5wVP; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1733748839; x=1734353639; i=spasswolf@web.de;
+	bh=EAY4q6z526O4TaeuoHU1dkNEk9o9mZuPKG7V1nAVNJ4=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=Kfoh5wVPf2HaxSlR0zhNthgA+cnzi1FjvP6BIcRsvPWwGJj7bc+Ph941RUlpzWpz
+	 6VEdjAfZfGz/DW8K5nKy5prdnr0lXl67RUKmRvJ8Iq42zaaU/dfhvD8995JJ4tI0I
+	 GK6SEmpqL3U4R11XTanzSZZinupMTyE5jOERiUkUL4er/hQDFUWN2L6+lm29NZ9K/
+	 rfmLxRgqRztr1cvDVH6xFKN/TL6JsQGtMPezT62AqT/l/40nEbnYTN+BZYsLCLSdb
+	 uex60sWhoO1XbqLOCetgQFab4fKAVEALNpEWwkCuQ8nz4QGFXPuZt/dMbN3AdczdN
+	 XfoC+DGotGRiL+6itQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.0.101] ([84.119.92.193]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1N4N9I-1tj9A91Y5m-011Z1G; Mon, 09
+ Dec 2024 13:53:59 +0100
+Message-ID: <63df45984a1a7fe5998861abd3210b781662d7f9.camel@web.de>
+Subject: Re: commit 0790303ec869 leads to cpu stall without
+ CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+From: Bert Karwatzki <spasswolf@web.de>
+To: Jan Kara <jack@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org, 
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, amir73il@gmail.com, 
+	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
+ 	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mm@kvack.org, 	linux-ext4@vger.kernel.org, spasswolf@web.de
+Date: Mon, 09 Dec 2024 13:53:57 +0100
+In-Reply-To: <20241209122648.dpptugrol4p6ikmm@quack3>
+References: <20241208152520.3559-1-spasswolf@web.de>
+	 <20241209121104.j6zttbqod3sh3qhr@quack3>
+	 <20241209122648.dpptugrol4p6ikmm@quack3>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.54.2-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1733695544.git.beckerlee3@gmail.com> <5e023dcf8f086296da987f8ba2b43be0aca15b86.1733695544.git.beckerlee3@gmail.com>
-In-Reply-To: <5e023dcf8f086296da987f8ba2b43be0aca15b86.1733695544.git.beckerlee3@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 9 Dec 2024 12:46:29 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4VveC67u1FoP11vQKm=41thMZw3UwNr=PAiggurr6bsw@mail.gmail.com>
-Message-ID: <CAL3q7H4VveC67u1FoP11vQKm=41thMZw3UwNr=PAiggurr6bsw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: edits tree_insert() to use rb helpers
-To: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0PZnYBU0gg6jmMJSy7XFdM1bYFCaWir11pnGSd+0qH1foI/b0t1
+ GDeIAizz3oLKWi9wKNQxaEKI2kayoXbER7RErF9XDIK5irM8+Ya2jrAIr+FSHNTBXyjHO85
+ 0XI5NzerNjKfxkeDZbFkS3Gq4ooOZmbxFvqOyCoNgX8SykBXo3bDINc7zMw5R19vKSw8cI+
+ tWItanavbpwWrfHDmz6yA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:h6vS82zGca0=;9iPQBgOpwE7+yvBx1nowykpFDhs
+ sL3hd/ksImdUynxocZWcMTayMV+gWBm/4Di2lz+QErGwinZtBSN8NZ7RDi4LWmDy/GfJmTtVJ
+ 539P1Oo2A3Tp+WNTjsZN/a5eE7lVnLOpSpYO6kfPR4V0wNKw3hE7UpDnOe8tVhcNFNw+mTO1g
+ 2TKSg8eikeuGTeu6Ll4JehOdb0ugnJ8QN0jEE9HUjungrHfR7AaNDdmlLJR7vkmvmycSQZI4G
+ nz1hHEJYRhlASziFYxV+g2XaNVlpE7VvvTS6y2XG4IzRyFxVOeKGJCfvQ664eP4bdr+Ppt/7E
+ jguPYfsGn1rewvID6F/X2+bJ0lAQAySpa2F+yL/E3f0+LwrSxNPCDy7PKIZjTTvXN9EnQie6p
+ OEND5v0C9gYpHGlua25BSK3zATJv+9uHAY/w6JBhS7osoYf6uAyDjKsyevhVJiO3iV9Aehk/c
+ wK5uI4dXzhesyQIQyIdX1aaLQupY9NwpJP4K6xNHnNlPzchW1NDaeZDVo0RtRhU1XTg4as8lx
+ 20MseOhPoDHGKDsxuCWALftJtpBgRLzY2iHS+/QfM0t7CoDhgOW5GT0ImgguQ/MwDgFHCQtEX
+ /Z5zYbtDvC3y00wbcrI5uySwwFceiD0yn76grj9/jVSV5v99BtXizARSPaGtdeWXsgdkks40G
+ +r9plqbq4ojzNteeOexaI4M1BGPkux3wJObW5nigGk3Q1hnDIumQyL6rSFI1LruB4Ay8/9Yny
+ 1A7rVbNuVvmg4eM6FqHKC2aPzCel7sdE2duo4GEYlOuI4xZpQgcYPz9qzv6OQ1y7+TDRcdRsB
+ QIu5MzKP9xJG/I04DGrIOrjYWlMXUCcY42JvL5eZGOsBpqOVTISJvX+GQH6TgNvs0fCs84DUi
+ SzXQR0ArNPU0Jbe8PAh4NvIqXM6JDOMnEUYJjcb9+eMhi6sBfdD3itJGokQWi3LaZY6/eaHNT
+ tiK42jl5RgIpajRSdaZoEdwyQeF7AsBfBQPSByzT02Jk2/Ja45qiMe1i11FiNNioJ3wHjlz4m
+ +sNXoOK200618nsA8KvvgE0iCJH6/AAf6U6v6an9hzuVZwWA6IV9yOt60TXS6P9HGbxPKjXEE
+ 5u4TFy2YU=
 
-On Sun, Dec 8, 2024 at 10:39=E2=80=AFPM Roger L. Beckermeyer III
-<beckerlee3@gmail.com> wrote:
+Am Montag, dem 09.12.2024 um 13:26 +0100 schrieb Jan Kara:
+> On Mon 09-12-24 13:11:04, Jan Kara wrote:
+> > > Then I took a closer look at the function called in the problematic =
+code
+> > > and noticed that fsnotify_file_area_perm(), is a NOOP when
+> > > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is not set (which was the case in=
+ my
+> > > .config). This also explains why this was not found before, as
+> > > distributional .config file have this option enabled.  Setting the o=
+ption
+> > > to y solves the issue, too
+> >
+> > Well, I agree with you on all the points but the real question is, how=
+ come
+> > the test FMODE_FSNOTIFY_HSM(file->f_mode) was true on our kernel when =
+you
+> > clearly don't run HSM software, even more so with
+> > CONFIG_FANOTIFY_ACCESS_PERMISSIONS disabled. That's the real cause of =
+this
+> > problem. Something fishy is going on here... checking...
+> >
+> > Ah, because I've botched out file_set_fsnotify_mode() in case
+> > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is disabled. This should fix the
+> > problem:
+> >
+> > index 1a9ef8f6784d..778a88fcfddc 100644
+> > --- a/include/linux/fsnotify.h
+> > +++ b/include/linux/fsnotify.h
+> > @@ -215,6 +215,7 @@ static inline int fsnotify_open_perm(struct file *=
+file)
+> >  #else
+> >  static inline void file_set_fsnotify_mode(struct file *file)
+> >  {
+> > +       file->f_mode |=3D FMODE_NONOTIFY_PERM;
+> >  }
+> >
+> > I'm going to test this with CONFIG_FANOTIFY_ACCESS_PERMISSIONS disable=
+d and
+> > push out a fixed version. Thanks again for the report and analysis!
 >
-> Edits tree_insert() to use rb_find_add_cached(). Also adds a
-> comparison function for use in rb_find_add_cached() to compare.
->
-> Reviewed-by: Roger L. Beckermeyer III <beckerlee3@gmail.com>
-> Tested-by: Roger L. Beckermeyer III <beckerlee3@gmail.com>
-> Signed-off-by: Roger L. Beckermeyer III <beckerlee3@gmail.com>
-> ---
->  fs/btrfs/delayed-ref.c | 43 +++++++++++++++++++++---------------------
->  1 file changed, 21 insertions(+), 22 deletions(-)
->
-> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 30f7079fa28e..d77ac8d05b2a 100644
-> --- a/fs/btrfs/delayed-ref.c
-> +++ b/fs/btrfs/delayed-ref.c
-> @@ -317,34 +317,33 @@ static int comp_refs(struct btrfs_delayed_ref_node =
-*ref1,
->         return 0;
->  }
->
-> +static int comp_refs_node(struct rb_node *node, const struct rb_node *no=
-de2)
-> +{
-> +       struct btrfs_delayed_ref_node *ref1;
-> +       struct btrfs_delayed_ref_node *ref2;
-> +
-> +       ref1 =3D rb_entry(node, struct btrfs_delayed_ref_node, ref_node);
-> +       ref2 =3D rb_entry(node2, struct btrfs_delayed_ref_node, ref_node)=
-;
-> +
-> +       bool check_seq =3D true;
-> +       int ret;
-
-Please don't use this style of declaring variables in the middle of the cod=
-e.
-The style we use is to declare them at the top of a scope.
-
-> +
-> +       ret =3D comp_refs(ref1, ref2, check_seq);
-> +       return ret;
-
-For this just do:
-
-return comp_refs(ref1, ref2, check_seq);
-
-> +}
-> +
->  static struct btrfs_delayed_ref_node* tree_insert(struct rb_root_cached =
-*root,
->                 struct btrfs_delayed_ref_node *ins)
+> So this was not enough, What we need is:
+> index 1a9ef8f6784d..778a88fcfddc 100644
+> --- a/include/linux/fsnotify.h
+> +++ b/include/linux/fsnotify.h
+> @@ -215,6 +215,10 @@ static inline int fsnotify_open_perm(struct file *f=
+ile)
+>  #else
+>  static inline void file_set_fsnotify_mode(struct file *file)
 >  {
-> -       struct rb_node **p =3D &root->rb_root.rb_node;
->         struct rb_node *node =3D &ins->ref_node;
-> -       struct rb_node *parent_node =3D NULL;
-> +       struct rb_node *exist;
->         struct btrfs_delayed_ref_node *entry;
-> -       bool leftmost =3D true;
-> -
-> -       while (*p) {
-> -               int comp;
-> -
-> -               parent_node =3D *p;
-> -               entry =3D rb_entry(parent_node, struct btrfs_delayed_ref_=
-node,
-> -                                ref_node);
-> -               comp =3D comp_refs(ins, entry, true);
-> -               if (comp < 0) {
-> -                       p =3D &(*p)->rb_left;
-> -               } else if (comp > 0) {
-> -                       p =3D &(*p)->rb_right;
-> -                       leftmost =3D false;
-> -               } else {
-> -                       return entry;
-> -               }
-> -       }
->
-> -       rb_link_node(node, parent_node, p);
-> -       rb_insert_color_cached(node, root, leftmost);
-> +       exist =3D rb_find_add_cached(node, root, comp_refs_node);
-> +       if (exist !=3D NULL) {
-> +               entry =3D rb_entry(exist, struct btrfs_delayed_ref_node, =
-ref_node);
-> +               return entry;
-
-return rb_entry(exist, struct btrfs_delayed_ref_node, ref_node);
-
-Thanks.
-
-> +       }
->         return NULL;
+> +	/* Is it a file opened by fanotify? */
+> +	if (FMODE_FSNOTIFY_NONE(file->f_mode))
+> +		return;
+> +	file->f_mode |=3D FMODE_NONOTIFY_PERM;
 >  }
 >
-> --
-> 2.45.2
+> This passes testing for me so I've pushed it out and the next linux-next
+> build should have this fix.
 >
->
+> 								Honza
+
+I had "mixed success" with your first fix, out of 4 boots I got 2 hangs, b=
+ut the
+new version seems to work fine (4 boots, zero hangs).
+
+Bert Karwatzki
 
