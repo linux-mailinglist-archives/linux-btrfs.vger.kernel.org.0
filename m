@@ -1,401 +1,208 @@
-Return-Path: <linux-btrfs+bounces-10156-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F6939E90C4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 11:46:01 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C0A7164835
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 10:45:57 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB15121767D;
-	Mon,  9 Dec 2024 10:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pgTi4D4m"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2057.outbound.protection.outlook.com [40.107.102.57])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872AA9E9225
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 12:27:35 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D881DA23;
-	Mon,  9 Dec 2024 10:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733741146; cv=fail; b=UsTrLVmufKX0g99FYEpK4dBh0uS6MrYXKDhbvrjd18PZS7ylG+VnkAq16XNwQzzzVvg/B/9wSyXookyzDIp3I7N621Dl0NS4breAgNEuWrX7PSZ/PE8Tmt2+h5XjV8wcafWWus6ZFVX227SGvOJ1+dv6ulUPzGd8W/3ScMaei8Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733741146; c=relaxed/simple;
-	bh=oNhucx2A87Pi/GC8FWpSEtw9T4VXBfrK24r38I1cK18=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=QAStBHWKuyk1HIx7+orKErhpmbHX0l1mt+boir6pn+/tr3td/eFshLzBpPPfeB3Hr8eZSXweSnjQEYpZOgg+ax6y9ilKCGG0IhvR9wf3JPjneI5D+4+zVk4vspP6u6F1WIPKOog/NjiifJ3sEpVOcnTUu+GH5/vRnZ8tivtRlic=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pgTi4D4m; arc=fail smtp.client-ip=40.107.102.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=b5aMsVBz+ny84/yqlwdzOLo4ksOP82cJt1KTFMNhAlkeh/WkGuJJjL2bAtCsrtNrgQmkcVQVjlS97UeBPehzRFTAKLWi2NM54j89OMnegjijVKgKLoL2gEKLh6iz9s54fQpGA7VEmRT6zdXsIxRSh8IsM9atDLQcSLkOxfN4CF4UqVaDmw6Mbjao+MrzVbb+s6Em+gKDhXbgvppzgwihO2R774VYOAa8OGSseMWHqHW0JNMW7pBccs0o37Olog//QAQTLD0HVulUfGUrPckpbsD9CBFH9dxFSmHDvXsG3elebz7qE6qDFGzj7+z43VINpJDoPia4SHc0BUOIuBYMnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/YUO+VAK1Uh3niZMaADrsZNOPDOJkUA176z4pu6miXs=;
- b=JmFdZlY4bu0TVQI6UweuBlahJTEivYNpEBkeho0dxzsRWSdGKy4ELuy9EEjagoBHHmR/rBUlEB4f9QY00fGCd71MIAJRuW4Qudky9TTzOKaeJ+AHBtC53ZbDl8iiG9aYUftpMSJGn0AqN7itJNqYCm9Bgrw26ThH8BtwdPTAbbERBNyyCSRLYkvsPDgLGqP9T9kHiE03B9DtHYmTljpG2P7J4+IhDjIInB0gk6YFFB3CFVmHCiE0ZLr1jkxZgPNfv4Ep2VMXOshXR55BYe7p4+8ZQTbseO491UO4g1iVK3hZi8oC6SWCDpHLnVDnMBUY0l8rrlxRUkjGpsvIWY++qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/YUO+VAK1Uh3niZMaADrsZNOPDOJkUA176z4pu6miXs=;
- b=pgTi4D4mfHGVIDF2V3MTmjG2vGcalJ0Rz7ULHqKnArpFJs8Od2t4V8bslki5Mcp4d2JGBgI/CDl3L93IuXzn/+vcignVShZ/BGXd/yFXT3tdnwZS8F+Mb8G0ofKLAiuw3hhL2R60v84NJnsOSHwOPU2HPRyEb5l+2tKoXIK6qRA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from IA1PR12MB6460.namprd12.prod.outlook.com (2603:10b6:208:3a8::13)
- by PH0PR12MB8824.namprd12.prod.outlook.com (2603:10b6:510:26f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.16; Mon, 9 Dec
- 2024 10:45:42 +0000
-Received: from IA1PR12MB6460.namprd12.prod.outlook.com
- ([fe80::c819:8fc0:6563:aadf]) by IA1PR12MB6460.namprd12.prod.outlook.com
- ([fe80::c819:8fc0:6563:aadf%4]) with mapi id 15.20.8207.017; Mon, 9 Dec 2024
- 10:45:42 +0000
-Message-ID: <e9f65f75-7f0c-423f-9fd4-b29dd006852b@amd.com>
-Date: Mon, 9 Dec 2024 16:15:32 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
- on page fault
-To: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
- kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
- amir73il@gmail.com, brauner@kernel.org, torvalds@linux-foundation.org,
- viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org,
- Linux-Next Mailing List <linux-next@vger.kernel.org>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
- <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
-Content-Language: en-US
-From: "Aithal, Srikanth" <sraithal@amd.com>
-In-Reply-To: <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0043.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:22::18) To IA1PR12MB6460.namprd12.prod.outlook.com
- (2603:10b6:208:3a8::13)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 313202816A1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2024 11:27:34 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36A0D21A95F;
+	Mon,  9 Dec 2024 11:27:21 +0000 (UTC)
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06ACC21A949
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Dec 2024 11:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733743640; cv=none; b=V5W+Ky/3rywZsssfp1VkuInr8drEG/5YxPgLKU/G8oys0cmGkqzwiQd8soj89JsmXzMuF5uotjOMtUXXksPT62IHKvaBJpYAO1tGTNSK03lBScWK0G+oCMn4SK/9AcwKOHFjE4mlXzn5VLdibloU+l91xI3Do0r9LvMuSxiEYCU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733743640; c=relaxed/simple;
+	bh=LymESyap2Jr0IPdMbtWzAEqhhxWo56xbwD1jFWC+POU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VqsCL6UgXeYWtIGJrheywtxa6+/6lW7w2vGwXu845Dg5Up71uH9vrJ+JsrNhFVYkB5Z6liuqw9Og3KgXTz6vk43CAby7e4fmuTQLvzgpF1uswGIMuNx1Kpdbk3+V2kt7udrKDHXF8bHZis+H4IebLO0Crpwy9HP7LMHx+vE4vgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-841a4a82311so379231039f.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Dec 2024 03:27:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733743638; x=1734348438;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MosYc9NFJ7u0yHaCjqbNaiejO6U/Z7jIozFDMWSROLM=;
+        b=nbmE25RJn3sZQcE5CUs/k5seVaXx53GQyiwi9ImmwFUA76oHA2PD1HO7A0ET3c33to
+         KdGXSQHztSnwaFcVchg/PGcup8anZBnd4fHRDDGeTUElxCYKo8aQrk4asAjcl3s9Y+al
+         vQOEbrvIm26WmsXys2UbphrN4cF7yFh9Enucq1UQdO/3OZVJE0tJROGDoD/xHTv1aD4a
+         181LuPDtkUs82bUy7srolj0e8mJgebzNnnY9e42jX0PXESIB9rxNP2PfTVnVi3LuKDlU
+         n2/c8Y3tyas9baMrn313GmcHiGs0s3a1Zf25+h28yFJOdQXfUKXDh5S2SASWyCbpX2VS
+         M8DA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaQS+2EX0hjld+zpzMEcxytZakYCUwdDmAIlh2XuSNNqOhubsGQxu3zDfTy/hdqEAVTUnWg0/TDwFNhg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzntnJcQvxYHLIsiUIw9mGgEo+jcyaoXtDM6DmdsAM90Q8Frrop
+	x+HXI/DEwi/nkmqsJoxpqiufxqWNOI+vGXYKz6sjF7zAPXbDnQTbeRAGYi9jEVvTL9/2WP9YXGS
+	tHMeguOSB0KugsB133UnFIMC11jNoQhTwBJVIMOYQFRrv5/dBZZMXEQM=
+X-Google-Smtp-Source: AGHT+IGUbC7wd6Labx1X1YH9LvRur9QfRf/qLrD07R08fdzQCAKMGe6vr+4cmVTyB+SyxWUh9pIG7o/eYUVydnCNQ0wDvtAgG6RA
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6460:EE_|PH0PR12MB8824:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4ee9b1d-2f2e-4414-0b83-08dd183ea070
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?K2lMSmFLS2ZrUkRMY2lxOFFldTFiM2lwWkxieHV0R0I4ZzBZTzlCNitPTWlk?=
- =?utf-8?B?T3BXNTdETkFkb0h6YU9zOHlLZWhKMVBRMFpDdkcyaGgzZXZUcDNHVGV1UmlR?=
- =?utf-8?B?dkppcGlFdlhRUWw5ZUxQdlY3NlB1SmxrSXgwTU5aVlYvclQ5UStiUDc2dDBi?=
- =?utf-8?B?bzhvY01tZnQ4ZE1Kbkhid25sL09IU1pSVEdGNENySVRaL2srRHF1RDF0QzNT?=
- =?utf-8?B?STRxMzFIOW05Y3kzWGIzeXNRbTRkRjg0am84MnRPS2ZYVk12dmhNWDFQRDRF?=
- =?utf-8?B?MlpqQk5KcDYybXlsU0I3MjZPZzlzc0ZZbzIxWlJRWVNydnZDTmMvU0FaM0tP?=
- =?utf-8?B?TmtnM0VPRUd2bTcvMFl0b0drV3hQY2h2RVVPUm1nNWpmVW5vd1IybXVXaWFo?=
- =?utf-8?B?RHZ5QTJkNzZlR1RPazlNUmNjdjJWUU1YbjJNL293c2pZZEIzeE1aZlUzMTNV?=
- =?utf-8?B?blJYSlptR2Q3TkF6TVd3cDlZYUEweUcrTHM1bEJkdEdxUW9iSVF4YndvQmdo?=
- =?utf-8?B?SXFMOGplUTdDaUJBVzNQa2lKd2JEbitWL1Fad1B0K2lYais2M1BXd2NSbmlu?=
- =?utf-8?B?Q25VbS81aDVQejRBOVE0TWdjOFdzd1V1aEd0WkQvcmF4Q21kbnN3QTNpM3lL?=
- =?utf-8?B?eVpDWGN1SmZOTGpyQjYzY0ZhTGg2NWkxUGlnblpFZFNzVk5IZFAwS0xPSWMv?=
- =?utf-8?B?VDRJbFJGMm9mYTd1eTBHZlppYkNXWEdpS1N3ZTJGUHJ3dHhGMkk1U0RISnUy?=
- =?utf-8?B?WGgxMmRMTXZaN0ljSEg1WENQY0ZrR3d6M2d6VW1EU0YvQUdCbEJVVm5BTGh3?=
- =?utf-8?B?dEx3bFNJa1h5aWczY25YZGs4RG5zVXBFODJISlhjRXhJQjJJUkxGbVZBNzBz?=
- =?utf-8?B?R3BxRjBnYndQZ3ROVE5aMFFiVzNDRUh5WjFZcG0vZ1N3OGROZ0lnWC9EVm5X?=
- =?utf-8?B?bmFEYXFndHhvVXU3NlJPYjdMTFA4TlJibFlIVUF1MVU0S2s4c1N3bDFQODNL?=
- =?utf-8?B?SGFmNjhSV2F1dXk4L1hyT2l2NlZBbW9NQm1POFFYd3h6b2lrVGduQTdmVVRl?=
- =?utf-8?B?cEpycWxRSGNZaG1TZkN3TWdMYWxzUVljK3g0QXZEN2pXTk56WENEREdLajJz?=
- =?utf-8?B?QUY3cVIyUWFZUzhkZmpoZ3E4QkorWC9kNVRVM1E2NCt4UFdnZVdMNG5ST0tY?=
- =?utf-8?B?emNSUVNZUUxXaTRoMFhmMXRRcm1ncFRVSi9QNnpNNUx6OFQ4WkhzRlh5R05o?=
- =?utf-8?B?ekhXRHl5R2Y4Q29NQ29WNk9tTGRzR3ZtMENlS1VLY1pOaG5lcWdMbGRvTE5y?=
- =?utf-8?B?eFhaR01aNXdlNFFjTGN4RFVTcVdYL2hzanpWMFlMelcwdGM5T1NBQUxWZTNu?=
- =?utf-8?B?aUhXdzhCeFZzNHYvcGt1dWxjTDBsaTRrd2RGRUhhUnNDVnpXSHQxclllcUh2?=
- =?utf-8?B?OElJR1hMb25yV0tJY2IxZmdrMXUySGhEMmNKYWNObU9yV0JFNGw4SkZZNXFP?=
- =?utf-8?B?bWE2N0JvL3pnZ0JBMWpGS0YvRGVtQ1p5TXQrSXZvQTFNcEQ4ZnhnT0xqK05Y?=
- =?utf-8?B?bjgxN3A0Y0JEK3dqNERoYlZ4b2Y2c0UxZUxjbGdDWlZDTThXTWpXbEdIZVU2?=
- =?utf-8?B?SEJsUHcxcGlVVVl6ZVFFN09CYTk0dGt6bHhVYk5RbXBNNmk5T3NwRmwzc0dV?=
- =?utf-8?B?YzFwZENBcmRjallqSk5jZFdYNkpDelE1SEdsdWdvVnhhbVBEOXpYWXFLUGhp?=
- =?utf-8?B?Zm9PWlBYbWxWckw1WFgzZGZnRmNhbHQzZnppekNHQ2JKdVZEbXNOQ2JLZk9D?=
- =?utf-8?B?NWltcjFkWW1YYSt1UWRWalR6SGFRSjBwbXN0VDROQWF0SXNZdnJHVGxBWmE0?=
- =?utf-8?B?Qk5zTjJrWTZObXlsaVlRSDdHNjB1UGFwRHZWTG1SOFk0bHc9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6460.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aHd2Yml6YlQ1N2YydEdUZ2QwQmlTL2ZZcXRrbHlDejVRRmt0OXNXRWkyMzVZ?=
- =?utf-8?B?bFQrM2lvR2ZRQ2tyaVV5amROWmx3V3lleW0yMEo4MHpucmNTZk5iWmNDMkp5?=
- =?utf-8?B?NGpGQWJOYml1U0kyMzAvVVNhaWZ2RVpqREo5QU4zWVFJRStYZHVaL0liZmNa?=
- =?utf-8?B?d3ljRmo1QmhTdmVhNVVsOS9GTlp5N09rN3o2eXRTQndvRDduc1lINlZkVWdO?=
- =?utf-8?B?cHBsMU05d0M1UHlqLzNTcVJKczNCcjcwZm80dTc5a3F0eGE0dE1iWmxKV3Fp?=
- =?utf-8?B?eG1rQ2FIYTJKWmdNSHp4T2JVSWRLSHY2Z0ZWMVRWU29NeFRSaVpWYXNySGsy?=
- =?utf-8?B?YjJ4UzBMQzA5VWlPQ09Jb1dydEMrRFJSRFcvSEhXTzFING1uaWVmRzhpM1dL?=
- =?utf-8?B?NVlSOXZ3VG9CVUpOSThidXdnTUUwRWJKOUwzdnBRWHU2UGNwOXZVS0MrZjZ3?=
- =?utf-8?B?NUZhK2xBaUxobG0xQmJyUlhGTEJkNkdET0djU2FqR1F4cDFqVmFUVEtFcFRE?=
- =?utf-8?B?RENKSEVKVGg4U0R0MVZsK1hJNHZGREwwVmhrdkRWNExKNSthSzk3eXZFNmhX?=
- =?utf-8?B?U1I0S1RYZWFkQlpkclhrOGl5UWRPS0VLVFhVZGhXMEFmVjlQa3FxRzcwRlo2?=
- =?utf-8?B?WXJFbzM2bUdtL21VZVRmMTlIUWR0WnAxSlFoZ016Ym91cEdqeDMreDVGWkkr?=
- =?utf-8?B?NlpnWGpRZFcyUGFsdHI4SzUxc01yeWNpMFNiOWE2Qjd4RjZZaWJsbzg1Q1Vp?=
- =?utf-8?B?UWNNUUpSR0plOTdkOE5BTlVlSkF0QVY2Z0pzZUZTVm5Ga3dndlFPVnFLMnda?=
- =?utf-8?B?ak85ZXRXOG5oTE1RRXlWVFlFOWhUeFFUMlFNcU9RVmRVbk0yUkloSlJaV1NU?=
- =?utf-8?B?NGJuOUdJc2JpRG83bFR4RzlMNkU1dnRuOTBiU2JVMWQ0MmNGVEM0clJER01l?=
- =?utf-8?B?QkRlZDhDWko0UlI3UUxqQXZPOFZQNVJPY0g2OTZwcGdpUk42ODZ4Mzk4a2lr?=
- =?utf-8?B?ODk5anBhTkRNakNYTjZQM2RvazRBNTU5NTRFVTRlcHpEamlXYVBwcFNHSXN0?=
- =?utf-8?B?eGFCd05tQndBeE5PeVlTRUp6OU5vdzg5UjFjaExjYVhGNEFVUm1NOHFqRks5?=
- =?utf-8?B?N0VGTnFGZDJlbW1QaUFCQURudEprM2hmSTlHd3MvWHNvWENMVm5hOUZ0MDNV?=
- =?utf-8?B?L01aWnBMUDRVbFZmWUNvYkdZNWJOcmg4WXhnTDhVeUp6SE9Wems4UW9FaG1y?=
- =?utf-8?B?b0JQR1NsM0lxT0lKUkhpNTlua1E5bEdyaElCMEJPeTJqOVpYMlRNQXNHL1E5?=
- =?utf-8?B?NjVuc05Pb295MXBrNEVCZlpoRm0vaEtJWk01bGxkRXJPdjZheFR0UXpYLzFB?=
- =?utf-8?B?cHpXNE1JK002OEpHVXhJQnpBSWc3czhBdXlRRC95NWN1dnlhWGpyZmRXck9D?=
- =?utf-8?B?aUtybG1mbE13a1RJTnVlWTFMMXpJRDM3NTgybHMyb1NmUUVJZnRmMDhwUVEx?=
- =?utf-8?B?NUFIVm9jTU9oQ3hrM255SFlMaGZ6N1kyb1JhNU9MdlZUMVNvWFpUVXRPWGF6?=
- =?utf-8?B?RVRDd3dxaG1mZ2twRXRaSVJTNTN2blpzbnFRVW8yZ0tGVjhVS0kzc3ZHOXhl?=
- =?utf-8?B?eC9aSEVGMi92QzRhSHJTQUt1YSt2eWdoWFRYMWhVNHcyS0d6Q05JVWJkc3ZD?=
- =?utf-8?B?cE5vMWpWTVVYeTluNlRZbEFKMS82TnZaaCtNMzdsdVRycTVDd1BiM2dwYlBs?=
- =?utf-8?B?QW8yVmVqMDh4RFowN3M4anBwamxYZUNoWURtSWw2TUFiR1BXSVRBUFd5MWh0?=
- =?utf-8?B?ejZZQjZzdzZFOVh1UGZJVWdScitEOGdFL2Z0Uzh4RUxXY3dXUlIvN2YvbkFH?=
- =?utf-8?B?V1NuMHZHSFRRYkNBdXd2OXF2ejVHcFB5Z2J6Y0FrTjdmVE1tZlhwSUJ1SDVz?=
- =?utf-8?B?YTVIeVg3bzNSYlpDRzN6UG5UNGhqaFUva1FpNjl5TnJKbjBBaTZZdk9MWU92?=
- =?utf-8?B?SVMwc2dWTXV4VmJHMmtsK0ZMRjlUNXhlZTZOTWgyc0NsSVRwblNFMUxxZ0c5?=
- =?utf-8?B?VEhIT21FY1N5UXhWb0Q1RXB5U05qR2dYYW4wOXk3bDljSUJzM1A3bmlyeHQy?=
- =?utf-8?Q?igsD7GjUK6y/H5ZsT3+WWeDZV?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4ee9b1d-2f2e-4414-0b83-08dd183ea070
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6460.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2024 10:45:42.0390
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o712VDPP3Hsx1X+gbrj1NNifDIQ5VszfWboBUNKQU/0qwpI6OwuIIxyQbdIB6qP8w6UhTly1gNiFba0/mNZyoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8824
+X-Received: by 2002:a05:6602:3cc:b0:841:a73b:a978 with SMTP id
+ ca18e2360f4ac-844b519bf43mr18085439f.7.1733743638139; Mon, 09 Dec 2024
+ 03:27:18 -0800 (PST)
+Date: Mon, 09 Dec 2024 03:27:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6756d416.050a0220.2477f.0041.GAE@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in prelim_ref_insert
+From: syzbot <syzbot+af426748c95aef4f003e@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/8/2024 10:28 PM, Klara Modin wrote:
-> Hi,
-> 
-> On 2024-11-15 16:30, Josef Bacik wrote:
->> FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on page fault depending
->> on the faulting method.
->>
->> This pre-content event is meant to be used by hierarchical storage
->> managers that want to fill in the file content on first read access.
->>
->> Export a simple helper that file systems that have their own ->fault()
->> will use, and have a more complicated helper to be do fancy things with
->> in filemap_fault.
->>
-> 
-> This patch (0790303ec869d0fd658a548551972b51ced7390c in next-20241206) 
-> interacts poorly with some programs which hang and are stuck at 100 % 
-> sys cpu usage (examples of programs are logrotate and atop with root 
-> privileges).
-> 
-> I also retested the new version on Jan Kara's for_next branch and it 
-> behaves the same way.
+Hello,
 
- From linux-next20241206 onward we started hitting issues where KVM 
-guests running kernel > next20241206 on AMD platforms fails to shutdown, 
-hangs forever with below errors:
+syzbot found the following issue on:
 
-[  OK  ] Reached target Late Shutdown Services.
-[  OK  ] Finished System Power Off.
-[  OK  ] Reached target System Power Off.
-[  128.946271] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Connection refused
-[  198.945362] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  298.945402] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  378.945345] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  488.945402] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  558.945904] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  632.945409] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  738.945403] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-[  848.945342] systemd-journald[93]: Failed to send WATCHDOG=1 
-notification message: Transport endpoint is not connected
-..
-..
+HEAD commit:    5076001689e4 Merge tag 'loongarch-fixes-6.13-1' of git://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=129dade8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=50c7a61469ce77e7
+dashboard link: https://syzkaller.appspot.com/bug?extid=af426748c95aef4f003e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Bisecting the issue pointed to this patch.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-commit 0790303ec869d0fd658a548551972b51ced7390c
-Author: Josef Bacik <josef@toxicpanda.com>
-Date: Fri Nov 15 10:30:29 2024 -0500
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-50760016.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/76ef343a98c8/vmlinux-50760016.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e42b3235bcc3/bzImage-50760016.xz
 
-fsnotify: generate pre-content permission event on page fault
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+af426748c95aef4f003e@syzkaller.appspotmail.com
 
-Same issue exists with todays linux-next build as well.
+loop0: detected capacity change from 0 to 32768
+BTRFS: device fsid ed167579-eb65-4e76-9a50-61ac97e9b59d devid 1 transid 8 /dev/loop0 (7:0) scanned by syz.0.0 (5320)
+BTRFS info (device loop0): first mount of filesystem ed167579-eb65-4e76-9a50-61ac97e9b59d
+BTRFS info (device loop0): using sha256 (sha256-avx2) checksum algorithm
+BTRFS info (device loop0): rebuilding free space tree
+BTRFS info (device loop0): disabling free space tree
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+BTRFS info (device loop0): balance: start -d -m
+BTRFS info (device loop0): relocating block group 6881280 flags data|metadata
+BTRFS info (device loop0): relocating block group 5242880 flags data|metadata
+BTRFS info (device loop0): found 9 extents, stage: move data extents
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 0 UID: 0 PID: 5320 Comm: syz.0.0 Not tainted 6.13.0-rc1-syzkaller-00036-g5076001689e4 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:do_perf_trace_btrfs__prelim_ref include/trace/events/btrfs.h:1926 [inline]
+RIP: 0010:perf_trace_btrfs__prelim_ref+0x32d/0x7b0 include/trace/events/btrfs.h:1926
+Code: fd e9 b3 02 00 00 e8 02 c1 e7 fd ba 10 00 00 00 48 89 df 31 f6 e8 93 ab 52 fe 4c 89 64 24 08 49 8d 5e 18 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a4 a8 52 fe 4c 8b 23 49 8d 5d 18
+RSP: 0018:ffffc9000d3dee00 EFLAGS: 00010206
+RAX: 0000000000000003 RBX: 0000000000000018 RCX: ffffffff83b7b10d
+RDX: 0000000000000010 RSI: ffff888045b0b000 RDI: ffffe8ffffc47ba0
+RBP: ffffc9000d3def00 R08: 764e65eb797516ed R09: 9db5e997ac61509a
+R10: 764e65eb797516ed R11: 9db5e997ac61509a R12: ffff88801fc376e0
+R13: ffffe8ffffc47b98 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fef5110b6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055891b663b30 CR3: 00000000405ae000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ trace_btrfs_prelim_ref_insert include/trace/events/btrfs.h:1976 [inline]
+ prelim_ref_insert+0x1064/0x1250 fs/btrfs/backref.c:327
+ add_prelim_ref fs/btrfs/backref.c:414 [inline]
+ add_direct_ref fs/btrfs/backref.c:424 [inline]
+ add_inline_refs fs/btrfs/backref.c:1084 [inline]
+ find_parent_nodes+0x5fb2/0x7bd0 fs/btrfs/backref.c:1485
+ btrfs_find_all_leafs+0xca/0x2c0 fs/btrfs/backref.c:1709
+ add_data_references+0x275/0x1330 fs/btrfs/relocation.c:3412
+ relocate_block_group+0x6bb/0xd40 fs/btrfs/relocation.c:3669
+ btrfs_relocate_block_group+0x77d/0xd90 fs/btrfs/relocation.c:4081
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3494
+ __btrfs_balance+0x1b0f/0x26b0 fs/btrfs/volumes.c:4278
+ btrfs_balance+0xbdc/0x10c0 fs/btrfs/volumes.c:4655
+ btrfs_ioctl_balance+0x493/0x7c0 fs/btrfs/ioctl.c:3670
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:906 [inline]
+ __se_sys_ioctl+0xf5/0x170 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fef5037ff19
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fef5110b058 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fef50545fa0 RCX: 00007fef5037ff19
+RDX: 0000000020000180 RSI: 00000000c4009420 RDI: 0000000000000006
+RBP: 00007fef503f3986 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fef50545fa0 R15: 00007fff11d5d158
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:do_perf_trace_btrfs__prelim_ref include/trace/events/btrfs.h:1926 [inline]
+RIP: 0010:perf_trace_btrfs__prelim_ref+0x32d/0x7b0 include/trace/events/btrfs.h:1926
+Code: fd e9 b3 02 00 00 e8 02 c1 e7 fd ba 10 00 00 00 48 89 df 31 f6 e8 93 ab 52 fe 4c 89 64 24 08 49 8d 5e 18 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a4 a8 52 fe 4c 8b 23 49 8d 5d 18
+RSP: 0018:ffffc9000d3dee00 EFLAGS: 00010206
+RAX: 0000000000000003 RBX: 0000000000000018 RCX: ffffffff83b7b10d
+RDX: 0000000000000010 RSI: ffff888045b0b000 RDI: ffffe8ffffc47ba0
+RBP: ffffc9000d3def00 R08: 764e65eb797516ed R09: 9db5e997ac61509a
+R10: 764e65eb797516ed R11: 9db5e997ac61509a R12: ffff88801fc376e0
+R13: ffffe8ffffc47b98 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fef5110b6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055891b663b30 CR3: 00000000405ae000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	fd                   	std
+   1:	e9 b3 02 00 00       	jmp    0x2b9
+   6:	e8 02 c1 e7 fd       	call   0xfde7c10d
+   b:	ba 10 00 00 00       	mov    $0x10,%edx
+  10:	48 89 df             	mov    %rbx,%rdi
+  13:	31 f6                	xor    %esi,%esi
+  15:	e8 93 ab 52 fe       	call   0xfe52abad
+  1a:	4c 89 64 24 08       	mov    %r12,0x8(%rsp)
+  1f:	49 8d 5e 18          	lea    0x18(%r14),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 a4 a8 52 fe       	call   0xfe52a8dd
+  39:	4c 8b 23             	mov    (%rbx),%r12
+  3c:	49 8d 5d 18          	lea    0x18(%r13),%rbx
 
-Adding below configs in the guest_config fixes the shutdown hang issue:
 
-CONFIG_FANOTIFY=y
-CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Regards,
-Srikanth Aithal
-> 
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>  include/linux/mm.h |  1 +
->>  mm/filemap.c       | 78 ++++++++++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 79 insertions(+)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index 01c5e7a4489f..90155ef8599a 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -3406,6 +3406,7 @@ extern vm_fault_t filemap_fault(struct vm_fault 
->> *vmf);
->>  extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
->>          pgoff_t start_pgoff, pgoff_t end_pgoff);
->>  extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
->> +extern vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf);
->>
->>  extern unsigned long stack_guard_gap;
->>  /* Generic expand stack which grows the stack according to 
->> GROWS{UP,DOWN} */
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 68ea596f6905..0bf7d645dec5 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -47,6 +47,7 @@
->>  #include <linux/splice.h>
->>  #include <linux/rcupdate_wait.h>
->>  #include <linux/sched/mm.h>
->> +#include <linux/fsnotify.h>
->>  #include <asm/pgalloc.h>
->>  #include <asm/tlbflush.h>
->>  #include "internal.h"
->> @@ -3289,6 +3290,52 @@ static vm_fault_t 
->> filemap_fault_recheck_pte_none(struct vm_fault *vmf)
->>      return ret;
->>  }
->>
->> +/**
->> + * filemap_fsnotify_fault - maybe emit a pre-content event.
->> + * @vmf:    struct vm_fault containing details of the fault.
->> + * @folio:    the folio we're faulting in.
->> + *
->> + * If we have a pre-content watch on this file we will emit an event 
->> for this
->> + * range.  If we return anything the fault caller should return 
->> immediately, we
->> + * will return VM_FAULT_RETRY if we had to emit an event, which will 
->> trigger the
->> + * fault again and then the fault handler will run the second time 
->> through.
->> + *
->> + * This is meant to be called with the folio that we will be filling 
->> in to make
->> + * sure the event is emitted for the correct range.
->> + *
->> + * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
->> + */
->> +vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
-> 
-> The parameters mentioned above do not seem to match with the function.
-> 
->> +{
->> +    struct file *fpin = NULL;
->> +    int mask = (vmf->flags & FAULT_FLAG_WRITE) ? MAY_WRITE : MAY_ACCESS;
->> +    loff_t pos = vmf->pgoff >> PAGE_SHIFT;
->> +    size_t count = PAGE_SIZE;
->> +    vm_fault_t ret;
->> +
->> +    /*
->> +     * We already did this and now we're retrying with everything 
->> locked,
->> +     * don't emit the event and continue.
->> +     */
->> +    if (vmf->flags & FAULT_FLAG_TRIED)
->> +        return 0;
->> +
->> +    /* No watches, we're done. */
->> +    if (!fsnotify_file_has_pre_content_watches(vmf->vma->vm_file))
->> +        return 0;
->> +
->> +    fpin = maybe_unlock_mmap_for_io(vmf, fpin);
->> +    if (!fpin)
->> +        return VM_FAULT_SIGBUS;
->> +
->> +    ret = fsnotify_file_area_perm(fpin, mask, &pos, count);
->> +    fput(fpin);
->> +    if (ret)
->> +        return VM_FAULT_SIGBUS;
->> +    return VM_FAULT_RETRY;
->> +}
->> +EXPORT_SYMBOL_GPL(filemap_fsnotify_fault);
->> +
->>  /**
->>   * filemap_fault - read in file data for page fault handling
->>   * @vmf:    struct vm_fault containing details of the fault
-> 
-> 
-> 
->> @@ -3392,6 +3439,37 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>       * or because readahead was otherwise unable to retrieve it.
->>       */
->>      if (unlikely(!folio_test_uptodate(folio))) {
->> +        /*
->> +         * If this is a precontent file we have can now emit an event to
->> +         * try and populate the folio.
->> +         */
->> +        if (!(vmf->flags & FAULT_FLAG_TRIED) &&
->> +            fsnotify_file_has_pre_content_watches(file)) {
->> +            loff_t pos = folio_pos(folio);
->> +            size_t count = folio_size(folio);
->> +
->> +            /* We're NOWAIT, we have to retry. */
->> +            if (vmf->flags & FAULT_FLAG_RETRY_NOWAIT) {
->> +                folio_unlock(folio);
->> +                goto out_retry;
->> +            }
->> +
->> +            if (mapping_locked)
->> +                filemap_invalidate_unlock_shared(mapping);
->> +            mapping_locked = false;
->> +
->> +            folio_unlock(folio);
->> +            fpin = maybe_unlock_mmap_for_io(vmf, fpin);
-> 
-> When I look at it with GDB it seems to get here, but then always jumps 
-> to out_retry, which keeps happening when it reenters, and never seems to 
-> progress beyond from what I could tell.
-> 
-> For logrotate, strace stops at "mmap(NULL, 909, PROT_READ, MAP_PRIVATE| 
-> MAP_POPULATE, 3, 0".
-> For atop, strace stops at "mlockall(MCL_CURRENT|MCL_FUTURE".
-> 
-> If I remove this entire patch snippet everything seems to be normal.
-> 
->> +            if (!fpin)
->> +                goto out_retry;
->> +
->> +            error = fsnotify_file_area_perm(fpin, MAY_ACCESS, &pos,
->> +                            count);
->> +            if (error)
->> +                ret = VM_FAULT_SIGBUS;
->> +            goto out_retry;
->> +        }
->> +
->>          /*
->>           * If the invalidate lock is not held, the folio was in cache
->>           * and uptodate and now it is not. Strange but possible since we
-> 
-> Please let me know if there's anything else you need.
-> 
-> Regards,
-> Klara Modin
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
