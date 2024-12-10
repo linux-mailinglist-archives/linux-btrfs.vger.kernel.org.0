@@ -1,126 +1,106 @@
-Return-Path: <linux-btrfs+bounces-10193-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10194-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 751659EB4B8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 16:24:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15B529EB603
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 17:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1DBD1672F7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 15:24:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8298188477C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 16:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441361BBBC4;
-	Tue, 10 Dec 2024 15:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBE01BDABE;
+	Tue, 10 Dec 2024 16:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NMlDuz1B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W5kLzhfj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D851BAEDC
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2024 15:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8C218A94C;
+	Tue, 10 Dec 2024 16:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733844259; cv=none; b=K8fyrVxGz3UwGVU25Uphm3hl5fW88yFDZ9PcUmuoxwdd+5I9Km4G/M8HF9lP605GFK0OPbMpMLcVf6QcpAOblyoN8HnqYevwffH8+Y0vbbgrl516gfyoNrGLnYt0Pv2ogYTglz7ZomJeZiz4pchPXs9Ijgp6R/FMFPr6Ni/n0Oo=
+	t=1733847617; cv=none; b=bug95CS6QBdUK0Ew2oRnXcaGy8o8RofIDqUsi1aVntIvY6vmNpyNKtZwmBm9YQShlBR5jfJ8iPNYN5CeFnU5O3HyZZWEp+i0BxWCmwvA42JJg7+NbEn+0PbkWi3U5e9ytEs2tC534QQfACLN9Em1u1wLYZx/zJdi4ITVUyjY6g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733844259; c=relaxed/simple;
-	bh=EZOyRTye/qtazesR/0M9QoLyIGzIEIDNmWRBw0mqwAw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=peWzJBNKt8H2rOwbv3vlcmxxZzhKgbY5NgrSLCDUpPyLVnNbyCKjl290oW6CCjzzLA7EDzagIKUQl+Tjk/ZJ02jF33jn0hacgDR8l80N0Lx38V4Tj/V2GdRWUHAyrW7BsXuR44d9eMAV4E+e7LiT4gXt6HTdTAdxX1qNmKbAtSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NMlDuz1B; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7fd35b301bdso2327577a12.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2024 07:24:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733844256; x=1734449056; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UwO5gmRDzYGGKXk6c/aHBuO4NNqSNrWRiqrrCXjTO6I=;
-        b=NMlDuz1BW2XgT6mcsQ5HChBYWYw+1/xK9bWr6NqbZdbMKM8ezMIU/6XQBIV48EXfqe
-         +z1qhZq4MS/HMGK4ugd+4eiOsXxGk9aHqNta2aYHVlL2aKDgkpy5C8bsVbf7ReIGzgPJ
-         34MygAtjuOI0Jd5DXusW647AM0eRkEWa3DgytSiVCaRSMH8FJeRBw9AQRo2cV3qZCOF6
-         32mG+w1iOY3N0bJ4SQMN2NoyQKjG3Mj3IAWOVSdOR0wZ9BDk2hqV4u3iVNUGw+1Q5RUN
-         NLzTQ/+j7pMr63c1x1GUDA+/PXGCsb1jEAurdg9dZ3EfcKBbXBucgjViNr2I/W0ihZ4Q
-         IVFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733844256; x=1734449056;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UwO5gmRDzYGGKXk6c/aHBuO4NNqSNrWRiqrrCXjTO6I=;
-        b=AC8JNDzTQChPdhoTjBOG1CIxWikSoddH0yG3vk0zQCZWpeF6QaJ1ziLH8T9CbHK7hg
-         Lc9TE07w9SL4QYH6C3hllcGsDIgC0j5WbgRhbb6T9To7oD3PxzWx0dLBgRdeKc/GI6NY
-         G7Y+dlK1VlzU4CN5hA/dt1QUy9cdOHBdLVWBIb3/CNTDYl+twCWqVJZUvTv3GqMZSuu4
-         m+7xG7YL41s0cXQl+jxWm4hdRHLRRUFdEmQsDRdsU355TWNCiXOKwaoELWYS+faezNSs
-         BsACUm/0yBciIO77IIA38BizlbQ4jM3u/GSzkxMkta+kcyS9JLXcES2qGA8HTIt1J8yJ
-         i2tQ==
-X-Gm-Message-State: AOJu0YwV5j6gK5HtsNn92+wj/wdBGw/c3DPVu4H5n14xHv3gMAQGUrFc
-	nJonov6tOByDodeNPvk8MDN4sr/V5Ifx3sGJzM9w529B1Gi/mz8DmgIBifift0c=
-X-Gm-Gg: ASbGnctZyWO1VpPzs4lnb6UpMiFJRxTpzY0k4KphLTPMxqGmkrmWU6Vk0arWZbAC+3p
-	WNwkmXzEHIbLUgJeYH9BzI0bZ1swATZZJBFqcd9pODgdybNA+JmWdhsPiKC1CxlSlx5JmIzZP0S
-	IeNvPIy1uTsB60KCkMRIJjBimH1U1v8cX/dWUtbyBCU5Nz/Fyu8H8IniPzfbMiDpkY/pAbJ7df2
-	ieYD02RWpUD1Xe4hF6c5svJp4N4GjEvLFbWlY4W1rF4605O7Zw4WgS6avs=
-X-Google-Smtp-Source: AGHT+IHbRLfoDlpsqfQdoOdtUstA3UlBit6lhooZABoHVC/E2fyA14pxZVUC4M/62rlOeq31LLi3XA==
-X-Received: by 2002:a05:6a20:258e:b0:1e1:af9e:2779 with SMTP id adf61e73a8af0-1e1b1ac1bd5mr8361960637.22.1733844256448;
-        Tue, 10 Dec 2024 07:24:16 -0800 (PST)
-Received: from localhost ([38.207.141.200])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725eeeaf87csm3677099b3a.35.2024.12.10.07.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2024 07:24:16 -0800 (PST)
-From: Julian Sun <sunjunchao2870@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: dsterba@suse.com,
-	josef@toxicpanda.com,
-	Julian Sun <sunjunchao2870@gmail.com>
-Subject: [PATCH] btrfs-progs: Initialize del_slot to eliminate compilation warnings.
-Date: Tue, 10 Dec 2024 23:24:11 +0800
-Message-Id: <20241210152411.183742-1-sunjunchao2870@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1733847617; c=relaxed/simple;
+	bh=2FFDIyt9HQiwlBcQMtPHa2HROdninP3g8JMDVwboPe8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FJZTib8wTPrLNUtZ6tskNFTLijnZEAV8R/mr2ootAxU8YgE/mx39nnZ+OXJL6+Tvs6j7OlHtSufEu40kQ5tcQ/w0FGB9k08Zv1uTkoOV9jhgEPP2+ztWIoPhbfW8xp1Q/leIxxH5ubVfT02Q3sOnS6m1DJCg6t9fyh+z34g8pZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W5kLzhfj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 279E7C4CED6;
+	Tue, 10 Dec 2024 16:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733847617;
+	bh=2FFDIyt9HQiwlBcQMtPHa2HROdninP3g8JMDVwboPe8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W5kLzhfjyDJ5QKhrmpnJXdPFxNvUjcwziZHIsH1MVTM5JzHFkmxrAa7ZhtYWw+NMi
+	 W2jYvjKVn+WlgQENuhwckkyjOBrKKs6aFontpX3C29ev1ie5Pq5hD0YUkw+iLZZUSr
+	 ZNychqzElSM5Q1c2mw/rdzhXd5K2qNIVezcvo6CUGjPxN+JZhD8S8WPFLuEoKAR1BN
+	 bHe8KTpivqPnouQ3r/yskjq6nh69FvXrNyxgNtWo27I8U/XbhtPtQDyohaVP8rGaXi
+	 +w3C78qq9cO8xxMNPrmIL8wEYPHG0agJVwTUmj8JhsA4912cnnh7TDeNSEjuizlKOb
+	 U4fZvHzWfKXTg==
+Date: Tue, 10 Dec 2024 11:20:15 -0500
+From: Sasha Levin <sashal@kernel.org>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+	clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.12 09/19] btrfs: zlib: make the compression
+ path to handle sector size < page size
+Message-ID: <Z1hqP7E_H96rMscS@sashalap>
+References: <20241124123912.3335344-1-sashal@kernel.org>
+ <20241124123912.3335344-9-sashal@kernel.org>
+ <20241125152059.GY31418@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20241125152059.GY31418@suse.cz>
 
-When compiling btrfs-progs with gcc 12.2.0, there is a warning
-that a variable may be used uninitialized.
+On Mon, Nov 25, 2024 at 04:20:59PM +0100, David Sterba wrote:
+>On Sun, Nov 24, 2024 at 07:38:44AM -0500, Sasha Levin wrote:
+>> From: Qu Wenruo <wqu@suse.com>
+>>
+>> [ Upstream commit f6ebedb09bb276256e084196e2322562dc4aac10 ]
+>>
+>> Inside zlib_compress_folios(), each time we switch the input page cache,
+>> the @start is increased by PAGE_SIZE.
+>>
+>> But for the incoming compression support for sector size < page size
+>> (previously we support compression only when the range is fully page
+>> aligned), this is not going to handle the following case:
+>>
+>>     0          32K         64K          96K
+>>     |          |///////////||///////////|
+>>
+>> @start has the initial value 32K, indicating the start filepos of the
+>> to-be-compressed range.
+>>
+>> And when grabbing the first page as input, we always call "start +=
+>> PAGE_SIZE;".
+>>
+>> But since @start is starting at 32K, it will be increased by 64K,
+>> resulting it to be 96K for the next range, causing incorrect input range
+>> and corruption for the future subpage compression.
+>>
+>> Fix it by only increase @start by the input size.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>Please drop this patch from stable, it's preparatory work and has
+>otherwise no effect.
 
-In function ‘reset_balance’,
-    inlined from ‘reinit_extent_tree’ at check/main.c:9625:8,
-    inlined from ‘cmd_check’ at check/main.c:10712:10:
-check/main.c:9444:23: warning: ‘del_slot’ may be used uninitialized [-Wmaybe-uninitialized]
- 9444 |                 ret = btrfs_del_items(trans, root, &path, del_slot, del_nr);
-      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-check/main.c: In function ‘cmd_check’:
-check/main.c:9375:13: note: ‘del_slot’ was declared here
- 9375 |         int del_slot, del_nr = 0;
-      |             ^~~~~~~~
+Will do, thanks!
 
-Initialize it to 0 to eliminate this warning.
-
-Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
----
- check/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/check/main.c b/check/main.c
-index 6290c6d4..6e58af92 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9372,7 +9372,7 @@ static int reset_balance(struct btrfs_trans_handle *trans)
- 	struct btrfs_path path = { 0 };
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
--	int del_slot, del_nr = 0;
-+	int del_slot = 0, del_nr = 0;
- 	int ret;
- 	int found = 0;
- 
 -- 
-2.39.2
-
+Thanks,
+Sasha
 
