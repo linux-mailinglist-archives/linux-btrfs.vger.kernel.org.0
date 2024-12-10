@@ -1,174 +1,198 @@
-Return-Path: <linux-btrfs+bounces-10212-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8278B9EBF2C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 00:15:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D039EBF3C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 00:24:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6292D161136
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 23:15:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8446C1657E2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 23:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4ED91F1936;
-	Tue, 10 Dec 2024 23:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195891EE7DD;
+	Tue, 10 Dec 2024 23:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="fD/7mcye"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AhANjjWP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B2cJ2ppR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AhANjjWP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B2cJ2ppR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0C02451E6
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2024 23:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037CE86324
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2024 23:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733872531; cv=none; b=l3K1tmASkln5cvCJed7RZrNuN0gAfWqKwBcdqjWbeM3o2RQFKpNfjHvgmpdEMo5OYCRZUsQ/gZBgcRdFX4ar6n0A92XlhPXtHg2vvoRDqsr3AGlErLLo/R4xFUSBXqsGRfsQv342Dke1fw1vHJGOJX45oPCrVpNTL/x2sOGN2Rc=
+	t=1733873065; cv=none; b=ic7vcMCauZbAbJicLPdqpFLQnzv3q3CGDj1wbZ5wt4Tfs3xJDohViVgmOeuj5Rh9gJXpc3JdKbvQPALCt4vm0T5OA3NDX3XyOHs+4z4GfdR/P9GtvU7wNbTUzdNVV/Tq/oxJlv2urRsZmOJpJ8rTqxaWMPpbjO/km61KK5pY0tU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733872531; c=relaxed/simple;
-	bh=u4Il9+xxGicXDHqjmrzJsvT+nzVB5mzs4G3HfHr9Rd0=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=g2oRnKS1LR6bg6ws7OQVZGbqvVdWSKYNNLOpZ21hafcmMR2hqH2pdKtnHCssdPYT7mYxXOCEuYPAHhUzi0IX3q9yYi8qR60GnleVP/5n3jtvHq6ux7iOgJM/8mX8gGVOcFnzIOVvq3fhRk8Afa0hnQ3duI2q57ZXIvm59zRbDec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=fD/7mcye; arc=none smtp.client-ip=15.184.224.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1733872516;
-	bh=u4Il9+xxGicXDHqjmrzJsvT+nzVB5mzs4G3HfHr9Rd0=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject;
-	b=fD/7mcyeLncZ7wc2mktB0cVlHVh/nm82QCsVtaLzcNALtDwl/NcEFzCUT9OWn7ZpS
-	 oLrIcc4cjwVKSJfgJ45n/WyM02a39oRoXyd3QDL+ld5tSZqtEteAIVSFAdvf2vRCPx
-	 H3TZoxuuX06TpvcJMtOCLbQa4T6ZuSpCDqMY58wQ=
-X-QQ-mid: bizesmtp86t1733872515t7f9ezrv
-X-QQ-Originating-IP: isZrETbNWZaN1KFBH7mwR64awOXKYDO9fKxxfx56Taw=
-Received: from [192.168.0.108] ( [222.175.67.174])
-	by bizesmtp.qq.com (ESMTP) with SMTP id 0
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 07:15:13 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5262294328133391497
-Message-ID: <A7749CD52DC078B3+add53c37-c637-4676-ae77-90df2e3a0348@bupt.moe>
-Date: Wed, 11 Dec 2024 07:14:51 +0800
+	s=arc-20240116; t=1733873065; c=relaxed/simple;
+	bh=mLYoVpU18XoopvJYU3t8p+djQ8aqWsz5cdlRJZgdK4I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZNlmBn01GemGK+fbmcP5vRW4t78KOTzcWalO9I3gS5n+bhRgRMMHtmM81zP1QBnpOGelDaOjsgThp3ip0WKhWHMpCJEPSGth9c3MbVZ01auPwCwWvwzUutCqX9Joexr/5cp5sjgFD17JX5Voq7NS3TFbtnpk2knQ1jnq4XwWlWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AhANjjWP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B2cJ2ppR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AhANjjWP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B2cJ2ppR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AC07721119;
+	Tue, 10 Dec 2024 23:24:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733873060;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2fpR3n7WmSngUDbDwZMlawlLM3a5i4B3Cjn+5YJOH1c=;
+	b=AhANjjWPMyTLB/cbjKDVYoRT1OjfoJ+HBHSkJvx0eHsCAQVl1To9ZGVnDj3h+rsiF2qjK3
+	iZYZEoRa5kzYFBvUVTY86AGV2kAiL3lUJgqb3P5ewsSa2V53fW16E1L2IBfacAho7T5LNJ
+	/YA75/2AeoIgz7CflAsQmjtqz3YidaQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733873060;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2fpR3n7WmSngUDbDwZMlawlLM3a5i4B3Cjn+5YJOH1c=;
+	b=B2cJ2ppR02yxFqpcH3ceVkR5ZTaR9OK8vfUAvpNXCHVekQttH1UMaQhGdx+yF0m4P74gv7
+	CS73pHo6OSc2/mDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AhANjjWP;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=B2cJ2ppR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733873060;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2fpR3n7WmSngUDbDwZMlawlLM3a5i4B3Cjn+5YJOH1c=;
+	b=AhANjjWPMyTLB/cbjKDVYoRT1OjfoJ+HBHSkJvx0eHsCAQVl1To9ZGVnDj3h+rsiF2qjK3
+	iZYZEoRa5kzYFBvUVTY86AGV2kAiL3lUJgqb3P5ewsSa2V53fW16E1L2IBfacAho7T5LNJ
+	/YA75/2AeoIgz7CflAsQmjtqz3YidaQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733873060;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2fpR3n7WmSngUDbDwZMlawlLM3a5i4B3Cjn+5YJOH1c=;
+	b=B2cJ2ppR02yxFqpcH3ceVkR5ZTaR9OK8vfUAvpNXCHVekQttH1UMaQhGdx+yF0m4P74gv7
+	CS73pHo6OSc2/mDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90D93138D2;
+	Tue, 10 Dec 2024 23:24:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JlC+IqTNWGcqMAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 10 Dec 2024 23:24:20 +0000
+Date: Wed, 11 Dec 2024 00:24:11 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: Re: [PATCH 00/10] btrfs: backref cache cleanups
+Message-ID: <20241210232411.GP31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1727970062.git.josef@toxicpanda.com>
+ <20241206193854.GL31418@twin.jikos.cz>
+ <20241209140114.GB2840216@perftesting>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From: Yuwei Han <hrx@bupt.moe>
-Subject: [BUG?] extremely poor performance on zoned after bulk write
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------UP1sac9cPOVexMX2RXAk2I8q"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-QQ-XMAILINFO: MO50cSY1dexwL/fCD9+fQmTDmFBMpVuK0WJM1ZZWP+tY4FDd/DDrKFam
-	ty/suBCpDIIt5EG/NwrPZ3xclOYV3Fr1Id2wpkNf/Nk613bpBpmfwUCKlXAEwdGMMQBQnQp
-	LTdFGYPMoyE7jC+LXCcsSZE5ngFhoGLrZ4AxutF3yuSTDrAik8Vp60s18UmSU8F8HK8iIDQ
-	jODjrr8lzcY1nT8tOFB50iSY+J2SpDz5R/mBee6yb5N7V/pJ08iXJN0KxMOAybzajZxEJH4
-	AtA3BMFDUOAeufc4PgE0vsuKO5iehlPDMeApVKEbce6yCag3gAT8jYpcRqriRaaxUahEe8z
-	pq47G3k0vTG+tBsk5D4zjsvkFOBdKmjUyWfCg5DSzVllKf6uX7auj2kOF6iYOgnxf6+9HNW
-	uIMBCD2iLaB8iX5uZgvuv4sZNEmvpIoGmiRPUPrRfyR2mWafsTftqBBq6V1mbJu8/mnVREe
-	Hlv6vJipEforR5vKfEAmEDYmQrqFP8V8p5DsfGX6HL/vLcMTsbhR8monV7CRa/j/4QeVQPZ
-	22w/Q9Fzya2HEG3iK4xB80UtYIEyUiwBZIJFya/dRgNnnfXG3TevHbOY+7a/2DYgPGx/NMX
-	+Pe4t8vcKvd/NyzXfDoZ9c5qB2//XMBP63kQJfYGvA+TkTBPuHtmj/MkxqTkoZqpVPxpxXB
-	e9ntvRzGFeO5XK32PjV9JgPShAfnpb0YVwdNLyrp7V6XMG86o4rWW/l81np/OL63RzUXRng
-	RDXWd1NG0AGcoYBmyo76Vw8XM5ajqgm2k77RayIjLST5dDPxCMioahaAX73N+jHpVWrWE23
-	XPDPy8lVsNzMNy8WBdYNxpxA7Iu0CFLJ5B9/teEM92jiK19l3k8nmqnLh2NFjT9j0CaZSxu
-	99BFBPpuLKWsPYcnQ61bOdpZM0nj2VG5JmlgxT7zPyZPXiH25ITQ+9zXzM60GwC5pW6vGG0
-	LRhf3btXXQqgsmA==
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-X-QQ-RECHKSPAM: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241209140114.GB2840216@perftesting>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: AC07721119
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------UP1sac9cPOVexMX2RXAk2I8q
-Content-Type: multipart/mixed; boundary="------------0zO1iei9rGoSJJXylMSg8skx";
- protected-headers="v1"
-From: Yuwei Han <hrx@bupt.moe>
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Message-ID: <add53c37-c637-4676-ae77-90df2e3a0348@bupt.moe>
-Subject: [BUG?] extremely poor performance on zoned after bulk write
+On Mon, Dec 09, 2024 at 09:01:14AM -0500, Josef Bacik wrote:
+> On Fri, Dec 06, 2024 at 08:38:54PM +0100, David Sterba wrote:
+> > On Thu, Oct 03, 2024 at 11:43:02AM -0400, Josef Bacik wrote:
+> > > Hello,
+> > > 
+> > > This is the followup to the relocation fix that I sent out earlier.  This series
+> > > cleans up a lot of the complicated things that exist in backref cache because we
+> > > were keeping track of changes to the file system during relocation.  Now that we
+> > > do not do this we can simplify a lot of the code and make it easier to
+> > > understand.  I've tested this with the horror show of a relocation test I was
+> > > using to trigger the original problem.  I'm running fstests now via the CI, but
+> > > this seems solid.  Hopefully this makes the relocation code a bit easier to
+> > > understand.  Thanks,
+> > > 
+> > > Josef
+> > > 
+> > > Josef Bacik (10):
+> > >   btrfs: convert BUG_ON in btrfs_reloc_cow_block to proper error
+> > >     handling
+> > >   btrfs: remove the changed list for backref cache
+> > >   btrfs: add a comment for new_bytenr in bacref_cache_node
+> > >   btrfs: cleanup select_reloc_root
+> > >   btrfs: remove clone_backref_node
+> > >   btrfs: don't build backref tree for cowonly blocks
+> > >   btrfs: do not handle non-shareable roots in backref cache
+> > >   btrfs: simplify btrfs_backref_release_cache
+> > >   btrfs: remove the ->lowest and ->leaves members from backref cache
+> > >   btrfs: remove detached list from btrfs_backref_cache
+> > 
+> > The patches have been in misc-next as I've been expecting an update. We
+> > want the cleanups so I've applied the series to for-next. I've removed
+> > th ASSERT(0) callls, we need proper macros/functions in case you really
+> > want to see something fail during development. As the errors are EUCLEAN
+> > they'll bubble up eventually with some noisy message so I hope we're not
+> > losing much.
+> 
+> Sorry Dave, I let this one fall through the cracks, thanks for picking it up for
+> me.
+> 
+> As for replacing ASSERT(0) I agree this is a blunt tool.  Maybe we could have a
+> macro that we put around EUCLEAN, at least in these cases where it also
+> indicates we might have broken something?  Something like
+> 
+> #ifdef CONFIG_BTRFS_DEBUG
+> #define BTRRFS_EUCLEAN ({ WARN_ON(1); -EUCLEAN; })
+> #else
+> #define BTRFS_EUCLEAN -EUCLEAN
+> #endif
+> 
+> And then we can just use BTRFS_EUCLEAN to replace the ASSERT(0) calls.  Thanks,
 
---------------0zO1iei9rGoSJJXylMSg8skx
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-SGksDQpJIGhhdmUgYSB6b25lZCBidHJmcyBvbiBITS1TTVIgZHJpdmVzLiBJIGhhdmUgY29w
-aWVkIGEgYnVsayBvZiBmaWxlcyANCihhcm91bmQgM1RpQikgdG8gaXQgYW5kIHN0YXJ0ZWQg
-cmVjaGVjayAocWJpdHRvcnJlbnQpIG9uIHRoZW0gd2hpY2ggDQppbnRyb2R1Y2VkIGh1Z2Ug
-cmVhZCBvcGVyYXRpb24uIFdoZW4gaXQgd2FzIHJlYWRpbmcsIEkgZm91bmQgdGhhdCANCm1l
-dGFkYXRhIG9wZXJhdGlvbnMgKGxpa2UgbHMsY2hvd24pIGFyZSBleHRyZW1lbHkgc2xvdyBi
-dXQgY2FuIGJlIGZpbmlzaGVkLg0KZG1lc2cgc2hvd3MgdGhpczoNCg0KWy4uLl0NCls2MTQz
-NjcuMTIzMjgzXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RhKTogcmVjbGFpbWluZyBjaHVuayAz
-MTM3NTAwNDUzMjczNiANCndpdGggMSUgdXNlZCA5OCUgdW51c2FibGUNCls2MTQzNjcuMTMx
-OTg5XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RhKTogcmVsb2NhdGluZyBibG9jayBncm91cCAN
-CjMxMzc1MDA0NTMyNzM2IGZsYWdzIG1ldGFkYXRhfGR1cA0KWzYxNDM5My4wOTkwOTZdIEJU
-UkZTIGluZm8gKGRldmljZSBzZGEpOiBmb3VuZCAyODEgZXh0ZW50cywgc3RhZ2U6IG1vdmUg
-DQpkYXRhIGV4dGVudHMNCls2MTQzOTQuNzAyMTkyXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2Rh
-KTogcmVjbGFpbWluZyBjaHVuayAzMTM3NDczNjA5NzI4MCANCndpdGggMTIlIHVzZWQgODcl
-IHVudXNhYmxlDQpbNjE0Mzk0LjcxMDk2Ml0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYSk6IHJl
-bG9jYXRpbmcgYmxvY2sgZ3JvdXAgDQozMTM3NDczNjA5NzI4MCBmbGFncyBtZXRhZGF0YXxk
-dXANCls2MTQ0NTcuNzgzMDEwXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RhKTogZm91bmQgMjEw
-NCBleHRlbnRzLCBzdGFnZTogbW92ZSANCmRhdGEgZXh0ZW50cw0KWzYxNDQ3NS4zMTk1MTZd
-IEJUUkZTIGluZm8gKGRldmljZSBzZGEpOiByZWNsYWltaW5nIGNodW5rIDI2NTg4ODAwMzUy
-MjU2IA0Kd2l0aCAyMyUgdXNlZCA3NiUgdW51c2FibGUNCls2MTQ0NzUuMzI4Mjg4XSBCVFJG
-UyBpbmZvIChkZXZpY2Ugc2RhKTogcmVsb2NhdGluZyBibG9jayBncm91cCANCjI2NTg4ODAw
-MzUyMjU2IGZsYWdzIG1ldGFkYXRhfGR1cA0KWzYxNDU4Mi41MzgwNzRdIEJUUkZTIGluZm8g
-KGRldmljZSBzZGEpOiBmb3VuZCAzOTEwIGV4dGVudHMsIHN0YWdlOiBtb3ZlIA0KZGF0YSBl
-eHRlbnRzDQpbNjE0NTkyLjY0NjI2NV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYSk6IHJlY2xh
-aW1pbmcgY2h1bmsgMzEzNzI1ODg2MTM2MzIgDQp3aXRoIDIwJSB1c2VkIDc5JSB1bnVzYWJs
-ZQ0KWzYxNDU5Mi42NTUwNDVdIEJUUkZTIGluZm8gKGRldmljZSBzZGEpOiByZWxvY2F0aW5n
-IGJsb2NrIGdyb3VwIA0KMzEzNzI1ODg2MTM2MzIgZmxhZ3MgbWV0YWRhdGF8ZHVwDQpbNjE0
-OTIyLjA2ODU1NF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYSk6IGZvdW5kIDMzMTUgZXh0ZW50
-cywgc3RhZ2U6IG1vdmUgDQpkYXRhIGV4dGVudHMNCls2MTQ5NzIuMDY0NzMxXSBCVFJGUyBp
-bmZvIChkZXZpY2Ugc2RhKTogcmVjbGFpbWluZyBjaHVuayAzMTM3Njg4MzU4MDkyOCANCndp
-dGggMiUgdXNlZCA5NyUgdW51c2FibGUNCls2MTQ5NzIuMDczNDE4XSBCVFJGUyBpbmZvIChk
-ZXZpY2Ugc2RhKTogcmVsb2NhdGluZyBibG9jayBncm91cCANCjMxMzc2ODgzNTgwOTI4IGZs
-YWdzIG1ldGFkYXRhfGR1cA0KWzYxNTAwMC45NjU3OTldIEJUUkZTIGluZm8gKGRldmljZSBz
-ZGEpOiBmb3VuZCAzNjYgZXh0ZW50cywgc3RhZ2U6IG1vdmUgDQpkYXRhIGV4dGVudHMNCls2
-MTUwMDEuOTMxODc0XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RhKTogcmVjbGFpbWluZyBjaHVu
-ayAzMTM3Nzk1NzMyMjc1MiANCndpdGggMjElIHVzZWQgNzglIHVudXNhYmxlDQpbNjE1MDAx
-Ljk0MDY4Ml0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYSk6IHJlbG9jYXRpbmcgYmxvY2sgZ3Jv
-dXAgDQozMTM3Nzk1NzMyMjc1MiBmbGFncyBtZXRhZGF0YXxkdXANCls2MTUzMTguOTExMjE1
-XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RhKTogZm91bmQgMzQ3OSBleHRlbnRzLCBzdGFnZTog
-bW92ZSANCmRhdGEgZXh0ZW50cw0KWy4uLl0NCg0KYW5kIGxvdHMgb2YgdGhpcy4gYnV0IGl0
-IHNlZW1zIGFsd2F5cyBkb2luZyB0aGlzLg0KYnRyZnMgZmkgdXNhZ2UgL2RhdGExOg0KdmVy
-YWxsOg0KICAgICBEZXZpY2Ugc2l6ZToJCSAgMTIuNzNUaUINCiAgICAgRGV2aWNlIGFsbG9j
-YXRlZDoJCSAgMTEuMDVUaUINCiAgICAgRGV2aWNlIHVuYWxsb2NhdGVkOgkJICAgMS42OVRp
-Qg0KICAgICBEZXZpY2UgbWlzc2luZzoJCSAgICAgMC4wMEINCiAgICAgRGV2aWNlIHNsYWNr
-OgkJICAgICAwLjAwQg0KICAgICBEZXZpY2Ugem9uZSB1bnVzYWJsZToJIDEwOS45N0dpQg0K
-ICAgICBEZXZpY2Ugem9uZSBzaXplOgkJIDI1Ni4wME1pQg0KICAgICBVc2VkOgkJCSAgMTAu
-OTJUaUINCiAgICAgRnJlZSAoZXN0aW1hdGVkKToJCSAgIDEuNzhUaUIJKG1pbjogOTU3LjY0
-R2lCKQ0KICAgICBGcmVlIChzdGF0ZnMsIGRmKToJCSAgIDEuNzhUaUINCiAgICAgRGF0YSBy
-YXRpbzoJCQkgICAgICAxLjAwDQogICAgIE1ldGFkYXRhIHJhdGlvOgkJICAgICAgMi4wMA0K
-ICAgICBHbG9iYWwgcmVzZXJ2ZToJCSA1MTIuMDBNaUIJKHVzZWQ6IDgwLjAwS2lCKQ0KICAg
-ICBNdWx0aXBsZSBwcm9maWxlczoJCSAgICAgICAgbm8NCg0KRGF0YSxzaW5nbGU6IFNpemU6
-MTEuMDBUaUIsIFVzZWQ6MTAuOTFUaUIgKDk5LjE2JSkNCiAgICAvZGV2L3NkYQkgIDExLjAw
-VGlCDQoNCk1ldGFkYXRhLERVUDogU2l6ZToyMS43NUdpQiwgVXNlZDo1LjU4R2lCICgyNS42
-NSUpDQogICAgL2Rldi9zZGEJICA0My41MEdpQg0KDQpTeXN0ZW0sRFVQOiBTaXplOjI1Ni4w
-ME1pQiwgVXNlZDo0LjY3TWlCICgxLjgyJSkNCiAgICAvZGV2L3NkYQkgNTEyLjAwTWlCDQoN
-ClVuYWxsb2NhdGVkOg0KICAgIC9kZXYvc2RhCSAgIDEuNjlUaUINCg0KVXNlZCBtZXRhZGF0
-YSBpcyBhbHNvIGFyb3VuZCAyNSUgbm90IGluY3JlYXNpbmcuDQoNCmtlcm5lbCB2ZXJzaW9u
-IHN0cmluZzogTGludXggYW9zYzNhNiA2LjExLjEwLWFvc2MtbWFpbiAjMSBTTVAgDQpQUkVF
-TVBUX0RZTkFNSUMgU3VuIERlYyAgMSAxMToyNjozMiBVVEMgMjAyNCBsb29uZ2FyY2g2NCBH
-TlUvTGludXgNCg0K
-
---------------0zO1iei9rGoSJJXylMSg8skx--
-
---------------UP1sac9cPOVexMX2RXAk2I8q
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZ1jLbAAKCRBLkKfpYfpB
-UxnUAQDw5yv2BGzjY1JauI/007ZqLCNl4mw5SnopZP7i53c7rQEA31oYX4rSK6zP
-pctWIjqNZNuKibffD2Y3omzGFcfqwgw=
-=Qu5W
------END PGP SIGNATURE-----
-
---------------UP1sac9cPOVexMX2RXAk2I8q--
-
+Something like that, though I'd prefer a standalone macro and name it
+like WARN_DEBUG or WARN_EUCLEAN for this particular error, not to
+override an error code. We don't want to print a stack for each instance
+of EUCLEAN, this is meant to be selective for new code or something
+you'd really like to debug or know about once it happens.
 
