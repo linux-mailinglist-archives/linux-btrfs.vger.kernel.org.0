@@ -1,207 +1,232 @@
-Return-Path: <linux-btrfs+bounces-10188-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10189-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B57F29EA951
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 08:12:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1209EAA0E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 08:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE75216A607
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 07:12:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A7F81888A16
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 07:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD12A22CBE7;
-	Tue, 10 Dec 2024 07:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AB322B8D3;
+	Tue, 10 Dec 2024 07:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="IvdfleXX";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="ebPmDFYD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OLmBSj+S"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5357DA6C;
-	Tue, 10 Dec 2024 07:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733814718; cv=fail; b=CrLpxphbxBXYGwDyV0bF8zUtFi+Xbwf2dpeYhtNbrixMRKQwSFwVU5XaWrb0kbJIubm+oGZ15MvIEEDiY0Ezv9JhkKmnWlj8ocMQLu704peExJiZZZq0JVYto1PShop8+/Ao7439+tqYmZHkFYjBzZHFEBbJ8FeumICtcDqIeeg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733814718; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UwT5VO/g93aLlIJDH9PaJHdKe14z43sVbOVO2Y0etLnS1cYWvzHLGiZ+zBkmUCvy0XFr6ao+JzMD0PHuTAfLOxyeFZt3XWaAd31bDE5FjlsiiISq6jkNN6ojJSoCDrzIgbHVDO6yEiUr+TNu8uDPGL2ryQXTJ7A30q+eDzMiUpI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=IvdfleXX; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=ebPmDFYD; arc=fail smtp.client-ip=216.71.154.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1733814717; x=1765350717;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=IvdfleXX+RHUP2JSPIsCWNp38JsBHSa9tDkBMPRwG8yvD1MBCuxRCTai
-   ZXHPwHjt/tCIDbcmWHHE0wNZDKuTa4unQLPDbzopyEV9r9BsWZFGqCRFe
-   P8H5GVqzwRiIihM/I+Uj0PpxyxWrAHQOI7gT4sD2oBjs2K/e+XuzFE37J
-   QRm5fjgdsFD0IIpdAo9POoPgVSSqmVo8LsqcTcIFJ6KgsMyc8GdYZ7Xs2
-   S3dxuRzRu5z44b8SSY8w7k598Kskxijtz+LrhtoqwORPqh6ENCiod2mA8
-   ODydhHU8/cf1+RDMC9H4UZfTLMxpuJPMRJwjSPo2tXG2zAPHqQYhrr6nI
-   w==;
-X-CSE-ConnectionGUID: J2KjCnmWT7a6PpdlrV7JeQ==
-X-CSE-MsgGUID: 4DTYUDLRQRmvkcEuyx9dtw==
-X-IronPort-AV: E=Sophos;i="6.12,221,1728921600"; 
-   d="scan'208";a="32790250"
-Received: from mail-eastusazlp17010004.outbound.protection.outlook.com (HELO BL2PR02CU003.outbound.protection.outlook.com) ([40.93.11.4])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Dec 2024 15:10:48 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Y2tzzApAh4Kt8yIOgUSnRn43q/t9AQxAxUA3ZsRP45E6F7zvBz3fv8VFo5ra5pyAOvqXw/yKX5QXUZiLL5fXrVhpSaWAHUqdue6h3swvEOl7tmGgex6I6KCd89eDJt+Yc+QMF8wteYcacpfB0xi9FZBkmEShFDcenXWnHMDOBAFeijsusSLGUfuE5Gh26uY99bywSF4uHnI4OQF7p+/r1H68LXFdzWwzRRKGzLRVM6tMUtBTNhNvg2fabnFggFwpFTHAlrFfVJwQUCnEkOfWoWPQDWYrbibo5g6bvCFNrPYaryEaKPE4RsWbEgh4Fg1ciB8IUE/9IqqxIKrWZaaQFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=l+aFHPF39ovuOxt5WQK4uUmPnly2wB95DmO2HxJzRZacc3RBNSckJGC25yuSpzWGQYUWLpXmFONWmnX5WZ7ivMjc6XWodkf3WyHH3bOHZCr0Y7MiR0hNLQG5jApI1qMYWaib4g1Ds9CY2gbxzq094Isa7K65EMxFaf+pHv0k7l6Q+ZcKxmLMl3UmcjYLbAIu7kqEQQoWQ4ScOKn0jANW0G3EAUTxlc89PMqHHYscuVUqJPiHXp2kSbcrDZw+Y7IPUY1KK35CM5hdC95r0jBl+r7dd87B2fkcMIK4DeFLfHM6e+DIw9EfcSeCOSOD4mlWrGh5KXOmSemY8b9jPw1G7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72F9233123
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2024 07:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733817259; cv=none; b=qLcO6sW0Q+oW1jYv8NGJGuVIul59VHwKk5gbHHQhIRBR/SX/7KwejJhdt/5AQECqcvhcK7z1U2jPXEzZw4gjBC1C+b6QKrSM+J03KGL6ztgd0ye5k4HN/dyxaGZMTw0GD411YLfz0ucVU/Wrzjqk/P7lWHtwMsHXR3KuchGpuik=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733817259; c=relaxed/simple;
+	bh=ArwDI1PnLh7FfSmBa215DPlSVQmc2AL+MLPAQGqV2So=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JAE/AzzpYx+m7IaDX1Jb304eTNuQ4mVqD0v98u5fYOu1ffP5Qa4Y791MywgeLlo5EWi8OlSZbc70F0TD6jI+3ZlgVcQeXiJi43ywhjGVARMHZHavyp++rvpRW6bhuoSyftfg1EvSZGxh5TdD1pVG39DLOPGzWC9uXUok80OmEDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OLmBSj+S; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-434f4ccddbdso22494595e9.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Dec 2024 23:54:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=ebPmDFYDYM4MO0PTlzGmDctGxNFW/7c0aIykX5RWMSY5uepgmuZTVcdH5gpinuD8TSXpJu1cRh21ASYg9kSG8aYEOh/Yj5LlVN9HRvVj783vrTXLRpdQPmfBLH5TUhuUdav80YZr+SYnloz84nixfxsShz6rPlfFBPrCxyT3xzY=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by DM8PR04MB8102.namprd04.prod.outlook.com (2603:10b6:5:317::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Tue, 10 Dec
- 2024 07:10:45 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%6]) with mapi id 15.20.8230.010; Tue, 10 Dec 2024
- 07:10:45 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: hch <hch@lst.de>, Zorro Lang <zlang@kernel.org>
-CC: Naohiro Aota <Naohiro.Aota@wdc.com>, "fstests@vger.kernel.org"
-	<fstests@vger.kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] common: loop device work on zoned file systems
-Thread-Topic: [PATCH] common: loop device work on zoned file systems
-Thread-Index: AQHbStGd2sR5AKNeZ06UUGwAaj+XLbLfD54A
-Date: Tue, 10 Dec 2024 07:10:45 +0000
-Message-ID: <c2926f10-b410-4ff5-bd09-2e81bf5535a9@wdc.com>
-References: <20241210070314.1235636-1-hch@lst.de>
- <20241210070314.1235636-2-hch@lst.de>
-In-Reply-To: <20241210070314.1235636-2-hch@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM8PR04MB8102:EE_
-x-ms-office365-filtering-correlation-id: 59509e11-d507-451e-22ca-08dd18e9c436
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?Y29OWjFBajV5YjhxL05ENjJVWmtVUjlGZ08xTnNSUU9MQjBqWFdBTmRBTDZw?=
- =?utf-8?B?UzJqb1hCSS9yYXpHd2YwbjBFRWJUYS82TS9WT1hqSFExSjRXSkFmbFJQMzEy?=
- =?utf-8?B?bTR0MVl2SHo0Z2FDMXVZRUpKWStBRmlqalNWNlhvbVFvTysrVTZXN1BtRXo4?=
- =?utf-8?B?RTVJdURNRnUvZzVGL2o2YXpJTUowOXhIS3c3N0FEb3lDL0N2T2s5R2toTHM4?=
- =?utf-8?B?SEVsQmZUYmxkY3RETU1jcGVDNDliMWFkSzJ4dzhEdUdZNVNmd1JWbUR4ZG5S?=
- =?utf-8?B?NzJZeVJmUUVQQlhPQ0hHaTM4WUwzeGdNZS9neXpPb3RMSlNTSzkxZGU1TjN0?=
- =?utf-8?B?cWFxaWhvRnVGdXFvbjladjZkNzZpQ0ZmMTB0c1I4MGV0Z081blZSTmhXWGtP?=
- =?utf-8?B?RUJ4YWtMN2NRS3lVYWJMQzMvK2Fxc1pLSlZpWVVaNDR1WWNUNHNyVEx6am4r?=
- =?utf-8?B?NkxBZWh6a2VvamFRMmxQSUFSakFpbzRiSENITForeGpsaUszdDUzV3N4a2Ir?=
- =?utf-8?B?ajNOM3VpUjM0S1pDL2Z4bGFyZUZLbXA0OU5WdDhvY25ITldVaEl2UGs3YW8y?=
- =?utf-8?B?RFVFUVhLdFJCeS9KcVRhUnFSNEdiSUxDVTZVV2ZGSkFISXhTSGZWOFhLSEdI?=
- =?utf-8?B?R2lac3hNVndwVXJyamU3VDRPMEVpU1dKNUNUZk92YXJYcDFOTEdxeTJwZDJQ?=
- =?utf-8?B?ajErbEY0SmROYTFyY05KSS9CR3ZLeWFMMHlsbkdZemRoL1MyZmNzWXc0QzdX?=
- =?utf-8?B?Yzd1Y0JCdjlYOUkvaGI4UTJZZ0tkcFdnb0w4SkV4TUU2VkI3ZFRlQWRqSlRI?=
- =?utf-8?B?cllFcllOK0htK2ZSVWtqSVZLWFBiVzNTRk9VTmlrenBPVDViM05uNVdrdEND?=
- =?utf-8?B?OGhtSWVaS1JBSnFQTG9oOXRkUmUweXQ1ZWtORS9CTExFTWJ2YndPcng5MmF0?=
- =?utf-8?B?Mk1KSVF6d0NkWHV0MFpHall4RWhkZ1FnZVE0d1BydjhQaDVUWTlDczlLR3Az?=
- =?utf-8?B?K1NsVUtMY01MNmFlY2dYTERjeHI1RjBVNE40ZEI3cURMbjBEQWVNd215MGN3?=
- =?utf-8?B?andlV0V6N0dnU1pieFpEVWJ4M2YvWGNXT0RCSlVGbEhad2dGWWhSbjFFSmlB?=
- =?utf-8?B?V0M4MUh2NkJyUjYxSVUrUUNFaDl4cTJBS1N3OC9aTTg2dUh5MGROZ1ZXek5s?=
- =?utf-8?B?UkhRT2gwYnNUWWpNWVA4eWFMNGFQam9CakN3N0ZnZW5sYTFoTnYvYTBSMTJt?=
- =?utf-8?B?TzJYNE0xWnB0WWJuTHUvOTRmK0FYdUFoRWM5YmdqbFB5UVE3U0tkWE44YmRM?=
- =?utf-8?B?RjRkeGNFUCt5M05iQWg2dlVLcFZCbFg2cW41cWhRdGNaWGpxNnZSUHJhVDJo?=
- =?utf-8?B?SHpWRThSUDM3NzFYY2xpcG1pYXVVQWFTdXlXRzhNR2dSL3FEc2pjU3ZvLzYr?=
- =?utf-8?B?THJ5WFhwM29qQkZEbkprc2Z2QndyU2c1WUlzV3BCUndmRjJMT0haQ0ZXREg4?=
- =?utf-8?B?bFJlWVA0ZWErQmJXY3oyK3hRbng2WWh1NUFQNVJVN05SRXpsN2J1bGo2TkxW?=
- =?utf-8?B?enhqR2dHSFYydGxRQktjWUV3R1Q3QUtuVzB2YlVWZ1ZzZktaNkswNVYxOXBk?=
- =?utf-8?B?UmZHWERRWi9ZQlNDYTVMb096ZWhrZ1NhcURxRnI5RG9Hb1p5WnRJbm1Dc3E1?=
- =?utf-8?B?QUVqaTJ4RDlrV3JzMGZPTzNTajIyamIvZ0NjVlFGOU1lTThaMEZTSS8xUmt4?=
- =?utf-8?B?QlV1NEgxRi9acmYrdGNYcWJnbEhBTlBKekhxRkcweEo0ZUg2ZW9ad1oycEFQ?=
- =?utf-8?B?RC9xcUY5RzAybEZxczRZL0ZuRVdCQ2NaNnBhcnJ0RllicWFnbHY1dVZwdmxz?=
- =?utf-8?B?SThUZG5lSWxEUUs2UTBMakpBUnhhV1pnR2tVc0JSU2lHNXc9PQ==?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?L2lrdTZSSE9ON2laVTlVMzE0TXlIcm1LL05BRUlOdUIyYlNTVHUwcFN2QWE1?=
- =?utf-8?B?eGhjQXhTSTdXbG9EaFJGODNaN1N5NWNFNWNCYzJ0UXVJRlBtZVBXNTdKRnU4?=
- =?utf-8?B?cmthK2xkV1ZRRkVJSlk3M3JVMFlrcXgydndSSCt6YjlEL2xCN1JHV2V3WEtX?=
- =?utf-8?B?TVI3aFJEZU9KMFp5WWRTeHR6WFNPaEpxUXVBTHZUbHoreldzSmMyck1OeHNK?=
- =?utf-8?B?aUJEVy9mU0hNcXJJNHAzNzQwQ0NDU0pNd3kyUWZOeXVZU0JESXo4eUVtNGlp?=
- =?utf-8?B?Z1NGRThmNzJidVA2QmI4R2ZNRFJkZlFKWGJFWUlsc0xsR3MwWTZOa0J1Ni9W?=
- =?utf-8?B?WFE0aWRHNUViVE1Rc0ZFQkc2YmR0eDJvajFwY2hOOTJwTXBGcVM4Ulk1RTRB?=
- =?utf-8?B?R2IrbTVlZWhLa0N3SHpVUjM5QXNFenc3b2xwazYrMzRhQmJuTk5JOU1xK1I1?=
- =?utf-8?B?QkVaczhkd3FyellrZ0Z1RitxQ0w2Mk1QWXZubUR3VjRYM3VnNDF2M2hsTzJE?=
- =?utf-8?B?RHJmSmlNNWNXSzNZQ1NWNERoY00xOU0wd3hlYWdpMFJlb3EyWVFsb2FiR1Ft?=
- =?utf-8?B?Mi9QRlpEL2MwYWRwNDcwS3JvVzF5citEd20yR29aV3NwRklhckdVRzByZFQr?=
- =?utf-8?B?K1RoUk5pU21MVEIrRS9ka0RqbDgvUXI1TmZDNWFtT0hlNlYxNm50NitlNXlS?=
- =?utf-8?B?NnJqdVQwMmMzOFV1ck8vUWl6TGRRYis4S3J4aGd1MlB2d3lnYVd3VEZRVC9q?=
- =?utf-8?B?WDIxNC9zUzJZNlhTbTVwYVM5MGUwM1VrQTRWSjNhcXVJZUxkNUlnV2prQWR1?=
- =?utf-8?B?ampRS2h4Q3BTMUp6OWJYZkZHVlExVjd4bTlnQ3FUUFUySml2SHdBaU42ZTBz?=
- =?utf-8?B?SWh6TFltQ0kwVGNiQ3ozcXoyVlNPQ0t0emIrNFFVN1psWW0vWWxxazVzS1I2?=
- =?utf-8?B?cktlVU5MZVJGaVlUcDdIc2lZS0h4MlR2SGlFckpjS3dFL0o4VGN5TDJ5YzE1?=
- =?utf-8?B?dHg0THp6M3VtMUJHZ3VXTmNIWjcrTis2bHc0a21xM2M1UmpzRXYvUUpUbUlW?=
- =?utf-8?B?ZjlZT0xSYkMzd2YrbXJRNE50TUl0S09SZWhWOHpWRkcvMm9zMFZwMUZYV3dQ?=
- =?utf-8?B?ejk3MERqN1djYUhOVE1nSExHeVZzU3dMdWw3SGs2UGkyNWsrQjFXY2k0cXpO?=
- =?utf-8?B?S3M5QzIyRFB5ZENnY3UrLzlPRlRTUjUwekRacHc1QXRISEppcjIvTFppMzd2?=
- =?utf-8?B?dkFYdkpWZUw0aFNrNVJHcnJhZC9oTk13am85QzVwSENLTkIzWjVjUHlWRlh5?=
- =?utf-8?B?bUVqN3Y2QXEzaFJkbjFtN3ArSFlPRWxMRGRlWUxpWW9zSjJ5NDJCWTd0SVNJ?=
- =?utf-8?B?QmJOVUxMRVdCY2V1eXZsWmpPa1ZpNnhYUUpaZTZiNVptRDRuZGpuN2xDQVBl?=
- =?utf-8?B?Sjg1TEIycmNVa2FReDB3T2g2OVl2OVhEdGpWeUZ6NVMraEdWcWNHR3dEWVYx?=
- =?utf-8?B?WXhNSU93bjl4TjhHZWRjMU0wcDV1WVQ0TEVXMk5SVjJId2tBN3M5K1pNL0Z1?=
- =?utf-8?B?SnpkL0JENjN4WXpXTExtc2VNeCs3YXgvdHJKK1lHL1dEcjFUUk9DNHQySjlF?=
- =?utf-8?B?WUVYeDZOVUNMeVVZZDJza3B1YXY2Wks5eFNoc0t6Rm01QjZ5RVJwalJNTWRL?=
- =?utf-8?B?ekJvcTNCTG9hTUFRSDRQajFvVXpjbUtKb1Jjb0VrOFR6VVZlRnZscHF1RlBM?=
- =?utf-8?B?S2ZzWXVuakViV1Y2VTdhRklTMVo2MmZ2OEMxVE0zU2ZPODA5cGd5ako3a1Y4?=
- =?utf-8?B?aXFneEZkb1dOTklTSElmNjQraHAzNStEVEEzbnpqQ1pZdmN4bU15RFRXMENE?=
- =?utf-8?B?MGZtdFpGaEJQWklNdTI3aytBWjZCTEVBUCtTckZsamlxWDRQTWhqaXozVnFY?=
- =?utf-8?B?WkRtbDJWOEhsZGJPR1lzWlhnKzdoc2NJbmx5ZmlSOTFvYVFaQlA4aER3c3Ez?=
- =?utf-8?B?aVQraGZaWGFiZFRZQWovR3FSd0RLNmJVVjJqYndJb2pFdWFyWUpSMWFXT0ox?=
- =?utf-8?B?TUNmRUZYZ1ZJUFR2SklaNjFCbmtoMktSanR3TUNYdkI4K0tIWk9ubHlTVzgy?=
- =?utf-8?B?NlRaakFRcDdrUkV2cUhlaTFwd2s2c1B0WGN1SC9YYjNoeG50TGNpc21OYUVN?=
- =?utf-8?B?Umc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <99ECF7B746A3814287AB7EDA7646A919@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=suse.com; s=google; t=1733817254; x=1734422054; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=DM0M5MjUbE+KFRbGhO1ZWhKqlvt7SXRC7xp7ZBHzFYg=;
+        b=OLmBSj+ShKt6JtLlVxQd+owYtFOql8PET9nqGp3dkYIovtiGWQZHzqA0tru0SXDDeF
+         RzYqlDAdJpGC5SRWn//WkvLVxkDriEgVbZeNwYWRmObYwS3DEytiXliwLnUUrE6CBYwF
+         mX9t3CFuui+9rCzZlMJm7awT9exg4MYN97dcpY4a35gK10q82JuCob1jneUmsXROxQZo
+         UbzLLQCxjHAHdOYOqjkvdCoE+M7Qzbwf8UtpYjvvXp9jukN03i+RvOFvIyrR6MH9nSfm
+         3wGWpw+L7M+xsbXNy/wQ4ipyS2AssSXxUVLkRBDjcjG4MGIehmTqIofc2Sihefl+Frqp
+         KM3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733817254; x=1734422054;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DM0M5MjUbE+KFRbGhO1ZWhKqlvt7SXRC7xp7ZBHzFYg=;
+        b=TbAcgyNuf1QRV+YLLNDM6CYewrDrZhf+G9TmMOqpLuQ56XoJwUaxvBvKkpIsuXHh7Q
+         EGS/ATaGZKhNmzUYP5wkLQggdA4HZEoUNg8+0Gdvug+UAgqYRRhTDv0OBjS9WWjA9aRv
+         1cTxS9dNPUQlgrRBSniLTZT1JRkJqpcLGnLCcMVYNEFyPwnlVaGrWm2RKHY1YpayI9TQ
+         hQHMHUkqwQNS0k2GOd692oSy1s8KTSRujjZ1QEsXFS9aVAQDtDzeiDeK4yVFz624pDW8
+         yK8nSLVow9GWXRb/WC7APZtvb+21e1XPwA9OaqLxDiO5n8nLxB/z6d2MeBbH0XKLH4hB
+         Ptcg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUez+MP2WKF+HRm5txslWoNPyFb4R7OrdeIGgw1gPGujymhENj83/qUH+gD88Ml+5hGOOs75yYh4kc6w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzP0MtReyiafll397MTlEcTamKkgh4rzmsuEXBud+CW+b8lOw9n
+	HKXSxL3yDC7BNmrXzVLOfE9R1+k2ZEKqJNaapyMfZXiBWmFwEoSf8zOr4sMdb8BcsmturUNgF3E
+	v
+X-Gm-Gg: ASbGncuWCt/4Mo9kwAt7Ir9WWUym7dncGGwVn/amYxKAE23KdyzJZoOt1t4kXwWksK1
+	6fXymk1TD4BRbFIpOVpF0qr8giiNnJ3GkJ50dSys0wp3mFh5fnEjLT5u8YodoD0ySri3fwCGhfI
+	DmYrW533YYOcdRJ3T/unuIhXwE6uFnA0Tv2cvMoxC6UNcZsK7Vg8r9fb4qWJVTr938IzrwHKXk9
+	rx+ryFhzpN9els1a07vV5ZpEEl0iikp+Y1U+8nz/3erBpikj5z1t357bZzuBvYo0TDMSQJPC0b/
+	WresVw==
+X-Google-Smtp-Source: AGHT+IHuSkzcYGZhUYU4u9/X+MFaXzWSasicOlfN5m/Fxq5ATIfABiWjJnxkv91mfYluUrIjxJEVcA==
+X-Received: by 2002:a5d:6d84:0:b0:385:e3c1:50d5 with SMTP id ffacd0b85a97d-3862b3e6088mr13263878f8f.48.1733817253511;
+        Mon, 09 Dec 2024 23:54:13 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd4b961f1asm3272228a12.30.2024.12.09.23.54.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Dec 2024 23:54:12 -0800 (PST)
+Message-ID: <d737ead8-dccc-4a52-8166-08c5cc2c8dca@suse.com>
+Date: Tue, 10 Dec 2024 18:24:09 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	bYkxigdZZtg6iidegi+FRlE1LPRfjqlzuv12pKRDOZ5xgqH55+gibhz7sBjD6h2oOi6iLGQLHBADVzY63QXRCeWRjTnVBtJa6cZ5RiWquItfRq10QqInVjwrhV4Q6qzWsqZq2gamp2a8eUi+0w1pCNV1XNnhP21DPGq2CZohWJQkhWW1OhH4QHwi0wzwIXtpew6k3G1CurcLZ7STnwu1yqXC9PIh6pUQNOrurX1zPxtC+xsLoQ1SPGRTSJ7MizXXPykcGkoPC+VNGBJjop47ISUbuGsi+gY4IpxrYrVGZk5j4/tMCglGYDO4fMUDXI3OUIwgBZIBrrU12FEjCOUpS0zh6HO8bOehwID6CP6QpdRtUG6K8bNc4W2Gpl0RmXL003YCZ06SMV71dH09Wcg+CQtCLxXd/5k6IRq/DlEsdId+yl6V3IwozSD93KI8dslpFzf0M85tZzsjj9Dz5azs5wNDFFATiHxUs9qdVyhFHYbcHjH93s83MTtybwEL7oDBgSZt7uqWPz8zGuw0tQzaoO2kts382M4ldYw6S3w6yWpDlSR0o6jSuV6CF6g1PfcQCFo/cM7o91oYHFl+rZKrn2H6Xk7avgRjd5DfhBfL+boOPt6UMBcg4wVb7k1eKSba
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59509e11-d507-451e-22ca-08dd18e9c436
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2024 07:10:45.4531
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EKJpIdnW8qEfAdrSdckZ0VTJa3qPhRA3hTcfIs9P3hlV9R6Y2gprq2LT2Dhu4+HftV9NO4B923TudbZOYpFPj29QIzQMEqgJZ+ntGWbherc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB8102
+User-Agent: Mozilla Thunderbird
+Subject: Re: Safety of raid1 vs raid10
+To: Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+References: <a7f1781b-6ae8-4e71-ba00-6c1c11c4901d@scoopta.email>
+ <74c8536a-3108-4e6c-941a-5d7b9c697862@suse.com>
+ <67fe97da-be53-4dc3-8537-1a39ff49503c@scoopta.email>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <67fe97da-be53-4dc3-8537-1a39ff49503c@scoopta.email>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+
+
+在 2024/12/10 17:06, Scoopta 写道:
+> Yeah, that makes a lot of sense. Given what I know about btrfs it seemed 
+> very unlikely it would pair up drives consistently. This actually gives 
+> me an interesting side question. With raid1, which is not striped, is 
+> there any guarantee that a file will be placed contiguously on a given 
+> drive or is the only guarantee for chunks while files over 1GiB, and 
+> therefore occupying more than one chunk, could be spread across multiple 
+> drives so long as each chunk is mirrored?
+
+For a file, there is no guarantee at all that it will be placed on a 
+given drive.
+
+As you mentioned, a file can exist on multiple chunks, thus it can be 
+spread across different devices.
+
+And the guarantee is, as long as all the file extents are all on raid1 
+chunks, all of these file extents will have two copies on different devices.
+
+
+
+And to be more accurate, a file is consisted of zero or more file extents.
+The file extent size can vary, from the block size (usually 4K for 
+btrfs, and we normally call it sector size), to as large as 128M 
+(non-compressed extent) or 128K (compressed one).
+
+And the extent size is determined by various factors, from the free 
+space of the fs, to the write pattern (worst case like checker board 
+writes, 4K write then 4K hole, will definitely result 4K sized extents).
+
+So even for a file smaller than chunk size, it can have multiple file 
+extents on different chunks.
+
+Thus there isn't really any guarantee on how a file is stored where, due 
+to all the layers involved:
+
+   file -> file extents -> chunks
+
+
+And I forgot a corner case, inlined file extents, which is fully stored 
+inside a tree block, can have a different profile than the data profile 
+completely.
+
+That's why we have fiemap ioctl, to show the file extents layout (inside 
+btrfs logical address space), then only with the chunk layout (btrfs ins 
+dump-tree or btrfs-map-logical) info, one can really determine where the 
+data is.
+
+And if you want to dig this deep, welcome to the rabbit whole of how to 
+read a file on btrfs, and there is also a small project explaining the 
+whole process: https://github.com/adam900710/btrfs-fuse
+
+Thanks,
+Qu
+
+> 
+> On 12/9/24 8:36 PM, Qu Wenruo wrote:
+>>
+>>
+>> 在 2024/12/10 12:56, Scoopta 写道:
+>>> I've read online that btrfs raid10 is theoretically safer than raid1 
+>>> because raid10 groups drives together into mirrored pairs making the 
+>>> filesystem more likely to successfully survive a multi-drive failure 
+>>> event.
+>>
+>> It's only theoretically possible, but hardly possible in the real world.
+>>
+>>
+>> For one single RAID10 chunk, btrfs can tolerant as many as half of the 
+>> devices being missing, as long as each sub stripe (the RAID1 pair) has 
+>> one device standing.
+>>
+>> E.g. for chunk at bytenr X, we have 4 stripes:
+>>
+>>  stripe 0 devid 1 physical X1
+>>  stripe 1 devid 2 physical X2
+>>  stripe 2 devid 3 physical X3
+>>  stripe 3 devid 4 physical X4
+>>
+>> We can have either devid 1+3 or devid 2+4 missing, and btrfs is 
+>> totally fine with that chunk.
+>>
+>> But the real problem is, one btrfs has more than 3 chunks, and 
+>> normally one chunk is only 1GiB in size, so for a btrfs with 1TiB used 
+>> space, it will have at least 1024 chunks.
+>>
+>> Good luck all the chunks have the same stripe layout.
+>>
+>> If there is another chunk at bytenr Y, also 4 stripes but a different 
+>> layout:
+>>
+>>  stripe 0 devid 1 physical Y1
+>>  stripe 1 devid 3 physical Y2
+>>  stripe 2 devid 2 physical Y3
+>>  stripe 3 devid 4 physical Y4
+>>
+>> Then the devid 1+3 missing is fine for chunk X, but not for chunk Y.
+>>
+>> In really, the chunk layout is never ensured, and I just did the same 
+>> RAID10 assumption in my btrfs-fuse project, until it failed selftest 
+>> (missing two devices for a RAID10 btrfs) on a recent kernel, exactly 
+>> due to the device rotation.
+>>
+>> Thanks,
+>> Qu
+>>
+>>> I can't find any documentation that says this to be the case. Is it 
+>>> true that btrfs pairs drives together for raid10 but not raid1, if 
+>>> this is the case what's the reasoning for it?
+
 
