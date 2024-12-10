@@ -1,120 +1,227 @@
-Return-Path: <linux-btrfs+bounces-10190-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10191-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092039EAF98
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 12:17:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768B99EAFC1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 12:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42A82188C649
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 11:16:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A057B1886677
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2024 11:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC62223328;
-	Tue, 10 Dec 2024 11:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292A6210F49;
+	Tue, 10 Dec 2024 11:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmwZR4rj"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lxMiDObz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4b1A4urR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lxMiDObz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4b1A4urR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A837212D83;
-	Tue, 10 Dec 2024 11:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507D719F438;
+	Tue, 10 Dec 2024 11:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733829159; cv=none; b=u8wfxLHBzNoawo+z2ZHlINkDJ3tXU6rP2LgIa/3TR5exkrbssV5OYWZxEWx28/Mthld4cG0rg4bb8kZBMAzS59SHIeW9V6jdzCp8xj45fOsNvvqJBPUjyLfgggLajZcJkiP5vlFRqEqv54b/BDjx5X6WNE/m+T4qnOGwuIWXCXg=
+	t=1733829634; cv=none; b=gSHf1oZx3qy7m0KD1oCMYyDDkGBc1cgldn6jqBLhXv2CtjSZ7PP7OhSGAh9M1gPRlAMPRAnScbsll19xmSjWas3XekgryUdL9jpmd0OR5tZq+rIXwa7YG2IcV7Z5Cy3gEC+zY3d1do2PynsucjUDorDkTLHLNaZlTslQkmYjwgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733829159; c=relaxed/simple;
-	bh=O33GV8Sux0/WNmhXmS327Q7pStGSwoMuprQ/gPzNlpE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g5Mh3u444Hy8B3NF1OD7H+qUdHj6BozVL5Ib0XJwv2wPxEAJ/prTAebaEXOsoSxtmqof7yVLPciRoyiTkWvYOUHJlq3caBc0busR/5oA20hi50PxVcY4X8lq8V8Mw9l8luizmVUTorypBII6sc1vfT2q4hOjVvIIO/MvUbshfMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmwZR4rj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8A73C4CED6;
-	Tue, 10 Dec 2024 11:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733829158;
-	bh=O33GV8Sux0/WNmhXmS327Q7pStGSwoMuprQ/gPzNlpE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=AmwZR4rjcSN0F5zt4czwnZk3TR1G1IPp8cbcK2n6MR+akcq9WILmUtkoG1lgq2AGJ
-	 wKfOHK4VQ2KqzbfvCdqqDpgrMYZqV6rFJB5xnJrB+rrvE8AU6IiAbidBWnd8LnNiTA
-	 41CXjoiF2LwDb+bhcx1V1EOP9cvbSIqjgPyv1bFtvFR3qxMsDH+UMq7m9UfNNR34wx
-	 H5Heumqh4OPPX6GpJk/ILiZ2QxWgNtfKTNhLXScjUsBKBB3Fi3l5ZvDU4GngD+N+Ve
-	 pPsodjDOF43QUwsVcVnVPHCbu7RhuL+aiXMiQW0unsiWvE4wGM7XOEFjlK2852kA6e
-	 kKXTUB2qGfaWg==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5d3d143376dso5087073a12.3;
-        Tue, 10 Dec 2024 03:12:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWJiGcs58X8mLYjuaDFZ6pYakKXfaBrrSehPfGWaSJj4UpsU1gS4DJya06FM8f9yC49U6lItjI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3bHwJNrgWyYu20XiGsKCf0TF4TyrBfBMlavXumftLivXaZCTc
-	wqlLKEN2gfONrjRQt3HCEO4zgqq8DKYEHIQ6pL3OYttX7Kw42ZvYLohzlW/i9prqUHFrc+Q4q/W
-	HF2k2u1MX4yEkZ3bgK+HPGntCtu8=
-X-Google-Smtp-Source: AGHT+IHTarIEHvy+7SBUinFTvo8ADr9FaLU8/YqFdFfqVcpBvLOQaC4xD98d2KrEZ+DMSYy86QHh5dvwzHByv24xmKY=
-X-Received: by 2002:a17:906:308d:b0:aa6:7c36:342d with SMTP id
- a640c23a62f3a-aa69cd3734dmr415162066b.3.1733829157536; Tue, 10 Dec 2024
- 03:12:37 -0800 (PST)
+	s=arc-20240116; t=1733829634; c=relaxed/simple;
+	bh=+z/KsLFu7PrjAeAEdLbyHbcD2Zw1gv1HrEONZLUO/cU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HCSr8xiueUz/rxeToFNaB3p9gPzZjFDV/dzC4WTFlqHPFg4tiSyX6AX3lu/A51dvJH89XP8qduJlTOCegdLS0wk2MPWFZ9U7YyogweZ1hquYxci2oOap/BJ4ZbaakOL1mnQlRwpecg1j0KBKsYu5lD5ocJ86mLrDUMidcc3G9jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lxMiDObz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4b1A4urR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lxMiDObz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4b1A4urR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7CCE821169;
+	Tue, 10 Dec 2024 11:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733829630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qXIYdd1xilEItOpeyjB9DIhvgYLJ1k/6/oDli3Wzspc=;
+	b=lxMiDObz/akn552DWKSmNgmdCvP87NzFjjKc/sQJZaGV8bTE5FWKJ/mO25nsnkvFWi8pJH
+	xKL9QxDySFXJJbyGK67YRBUlbUeJL+jNRukK214YlXjYOPo1ZCD0WFMG9GMGKSYLari2z+
+	kXAHThlAE72rwR8jpF8sWSFl69Qhj7s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733829630;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qXIYdd1xilEItOpeyjB9DIhvgYLJ1k/6/oDli3Wzspc=;
+	b=4b1A4urRXXpm1KHmAbttwD3PnWozrLLeK2MhPrMFixz1XVtO1iYp9YMs9FFMVAKS47AzuW
+	g3h5DCHlj0dephAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733829630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qXIYdd1xilEItOpeyjB9DIhvgYLJ1k/6/oDli3Wzspc=;
+	b=lxMiDObz/akn552DWKSmNgmdCvP87NzFjjKc/sQJZaGV8bTE5FWKJ/mO25nsnkvFWi8pJH
+	xKL9QxDySFXJJbyGK67YRBUlbUeJL+jNRukK214YlXjYOPo1ZCD0WFMG9GMGKSYLari2z+
+	kXAHThlAE72rwR8jpF8sWSFl69Qhj7s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733829630;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qXIYdd1xilEItOpeyjB9DIhvgYLJ1k/6/oDli3Wzspc=;
+	b=4b1A4urRXXpm1KHmAbttwD3PnWozrLLeK2MhPrMFixz1XVtO1iYp9YMs9FFMVAKS47AzuW
+	g3h5DCHlj0dephAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F556138D2;
+	Tue, 10 Dec 2024 11:20:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PMAiG/4jWGfGVgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 10 Dec 2024 11:20:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3222CA0B0D; Tue, 10 Dec 2024 12:20:26 +0100 (CET)
+Date: Tue, 10 Dec 2024 12:20:26 +0100
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, Bert Karwatzki <spasswolf@web.de>,
+	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: commit 0790303ec869 leads to cpu stall without
+ CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+Message-ID: <20241210112026.7v74ig2rrmceam5o@quack3>
+References: <20241208152520.3559-1-spasswolf@web.de>
+ <20241209121104.j6zttbqod3sh3qhr@quack3>
+ <20241209122648.dpptugrol4p6ikmm@quack3>
+ <CAOQ4uxgVNGmLqURdO0wf3vo=K-a2C--ZLKFzXw-22PJdkBjEdA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <037d2532a0f9ef545cf20fee903fc22936ad1bdc.1733806379.git.wqu@suse.com>
-In-Reply-To: <037d2532a0f9ef545cf20fee903fc22936ad1bdc.1733806379.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 10 Dec 2024 11:12:00 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5ENE3L126i9uhh2qe_Op1mKeHds6HaQgnUL7F8KS3KAA@mail.gmail.com>
-Message-ID: <CAL3q7H5ENE3L126i9uhh2qe_Op1mKeHds6HaQgnUL7F8KS3KAA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: output the reason for open_ctree() failure
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, 
-	Christoph Anton Mitterer <calestyo@scientia.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgVNGmLqURdO0wf3vo=K-a2C--ZLKFzXw-22PJdkBjEdA@mail.gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,web.de];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,web.de,toxicpanda.com,vger.kernel.org,fb.com,kernel.org,linux-foundation.org,zeniv.linux.org.uk,kvack.org];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-On Tue, Dec 10, 2024 at 4:53=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> There is a recent ML report that mounting a large fs backed by hardware
-> RAID56 controller (with one device missing) took too much time, and
-> systemd seems to kill the mount attempt.
->
-> In that case, the only error message is:
->
->   BTRFS error (device sdj): open_ctree failed
->
-> There is no reason on why the failure happened, making it very hard to
-> understand the reason.
->
-> At least output the error number (in the particular case it should be
-> -EINTR) to provide some clue.
->
-> Link: https://lore.kernel.org/linux-btrfs/9b9c4d2810abcca2f9f76e32220ed9a=
-90febb235.camel@scientia.org/
-> Reported-by: Christoph Anton Mitterer <calestyo@scientia.org>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Mon 09-12-24 17:23:24, Amir Goldstein wrote:
+> On Mon, Dec 9, 2024 at 1:26 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Mon 09-12-24 13:11:04, Jan Kara wrote:
+> > > > Then I took a closer look at the function called in the problematic code
+> > > > and noticed that fsnotify_file_area_perm(), is a NOOP when
+> > > > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is not set (which was the case in my
+> > > > .config). This also explains why this was not found before, as
+> > > > distributional .config file have this option enabled.  Setting the option
+> > > > to y solves the issue, too
+> > >
+> > > Well, I agree with you on all the points but the real question is, how come
+> > > the test FMODE_FSNOTIFY_HSM(file->f_mode) was true on our kernel when you
+> > > clearly don't run HSM software, even more so with
+> > > CONFIG_FANOTIFY_ACCESS_PERMISSIONS disabled. That's the real cause of this
+> > > problem. Something fishy is going on here... checking...
+> > >
+> > > Ah, because I've botched out file_set_fsnotify_mode() in case
+> > > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is disabled. This should fix the
+> > > problem:
+> > >
+> > > index 1a9ef8f6784d..778a88fcfddc 100644
+> > > --- a/include/linux/fsnotify.h
+> > > +++ b/include/linux/fsnotify.h
+> > > @@ -215,6 +215,7 @@ static inline int fsnotify_open_perm(struct file *file)
+> > >  #else
+> > >  static inline void file_set_fsnotify_mode(struct file *file)
+> > >  {
+> > > +       file->f_mode |= FMODE_NONOTIFY_PERM;
+> > >  }
+> > >
+> > > I'm going to test this with CONFIG_FANOTIFY_ACCESS_PERMISSIONS disabled and
+> > > push out a fixed version. Thanks again for the report and analysis!
+> >
+> > So this was not enough, What we need is:
+> > index 1a9ef8f6784d..778a88fcfddc 100644
+> > --- a/include/linux/fsnotify.h
+> > +++ b/include/linux/fsnotify.h
+> > @@ -215,6 +215,10 @@ static inline int fsnotify_open_perm(struct file *file)
+> >  #else
+> >  static inline void file_set_fsnotify_mode(struct file *file)
+> >  {
+> > +       /* Is it a file opened by fanotify? */
+> > +       if (FMODE_FSNOTIFY_NONE(file->f_mode))
+> > +               return;
+> > +       file->f_mode |= FMODE_NONOTIFY_PERM;
+> >  }
+> >
+> > This passes testing for me so I've pushed it out and the next linux-next
+> > build should have this fix.
+> 
+> This fix is not obvious to the code reviewer (especially when that is
+> reviewer Linus...)
+> Perhaps it would be safer and less hidden to do:
+> 
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -211,11 +211,16 @@ typedef int (dio_iodone_t)(struct kiocb *iocb,
+> loff_t offset,
+> 
+>  #define FMODE_FSNOTIFY_NONE(mode) \
+>         ((mode & FMODE_FSNOTIFY_MASK) == FMODE_NONOTIFY)
+> +#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+>  #define FMODE_FSNOTIFY_PERM(mode) \
+>         ((mode & FMODE_FSNOTIFY_MASK) == 0 || \
+>          (mode & FMODE_FSNOTIFY_MASK) == (FMODE_NONOTIFY | FMODE_NONOTIFY_PERM))
+>  #define FMODE_FSNOTIFY_HSM(mode) \
+>         ((mode & FMODE_FSNOTIFY_MASK) == 0)
+> +#else
+> +#define FMODE_FSNOTIFY_PERM(mode)      0
+> +#define FMODE_FSNOTIFY_HSM(mode)       0
+> +#endif
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+I agree this is a nicer way to achieve the same. Updated, tested & pushed
+out.
 
-Looks good, thanks.
-
-> ---
->  fs/btrfs/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 7dfe5005129a..f6eaaf20229d 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -971,7 +971,7 @@ static int btrfs_fill_super(struct super_block *sb,
->
->         err =3D open_ctree(sb, fs_devices);
->         if (err) {
-> -               btrfs_err(fs_info, "open_ctree failed");
-> +               btrfs_err(fs_info, "open_ctree failed: %d", err);
->                 return err;
->         }
->
-> --
-> 2.47.1
->
->
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
