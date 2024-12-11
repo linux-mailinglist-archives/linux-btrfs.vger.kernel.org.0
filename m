@@ -1,162 +1,140 @@
-Return-Path: <linux-btrfs+bounces-10270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10271-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D0709ED919
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 22:54:40 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55DEE9ED96E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 23:17:29 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 421E6282D4C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 21:54:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 587A318878C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 22:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEBA1EC4CA;
-	Wed, 11 Dec 2024 21:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB951EC4D6;
+	Wed, 11 Dec 2024 22:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V3KZ4lA6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZwsfuX0Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486631D63CA
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 21:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A171A0726
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 22:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733954070; cv=none; b=mdNBhmYcORc0gpj+tMUi2nUG6+wJZb4So0PBnnRPKvUTAXPhy8P6A5SwTJ34fh8A7BB4TJ1KjZRh3AM5YCiIlhfuOyI1zp2j/8j63FY+la6k62hYHdzhxw7A3234hG2KmFJJQKaFn4YNbEZhmZg+YAirELxIRej8//XT8StPYgA=
+	t=1733955442; cv=none; b=CfhbYESaN4WPhrz3nmEKHXFhZnrnBUYS4akkbzgNiTanELBvfo1SyU3tcnl6ZBgEJ4I7+SrdPibYnSu6Tr/H36907ch77UQ2sy6iKx0OMhbj6yNKWvNHBKnYVYFfSk86yP1QoWZ57Ljw0yPy1XITuiOP1l6F5AOHRlZnbg9VYrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733954070; c=relaxed/simple;
-	bh=j8CwCNSeIN5lAqVYAqeaCq9x3xiAcbl0BkCxjpfNIBA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lbBMyh2WSudAu2tikXa9b4v9O/qgRU1eiNE1htyUMC4HYpMtWAwlJ43WJYIFfVr1pi2OR2KP3ppZAMvqJjss/6taCyOWlOkDQl0OkHIaQC3SxlhAW3T805GKZfLb5TW6uiISOR3VeRU1aQWDQFuiqfNkqgIYlzdegouMjFGLJZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V3KZ4lA6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF8DEC4CED3
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 21:54:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733954069;
-	bh=j8CwCNSeIN5lAqVYAqeaCq9x3xiAcbl0BkCxjpfNIBA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=V3KZ4lA6tzsB3Ou1YtDPA/51RdUDdju2AHDdUSJ6/DC9AmbhSDgLelbj65b0dur5Z
-	 guEwyyRrjLoi3wjQfnEflDpQtg6gbWQNKbfUvrFBkhq1LYIoG7viMRMeLxs+B/rVyw
-	 SYp6U8jl/zbl123L7DqZ0P/i2MTPpa837UvFbly9+gbpN1ENu/UP2GsBbo8ngm0ibk
-	 c7QCO5IVdySxyrJKVCVmDl4zTwmjTuWcjSvqPgqKIcP5iq9USE+IYhBQ/JsDc4O/SM
-	 nrW6dT33VM7jZex9b1T2Khq8SRFUg3Q0fxX4gc1jsCVFipP7bNAqAR2ihdBuM8mWAZ
-	 ZPYoG67hsZ2Cg==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa6c0dbce1fso78512066b.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 13:54:29 -0800 (PST)
-X-Gm-Message-State: AOJu0YzKRicFj2l9hZSZI78E3U5XCEEdwX3J5OwTYii0QVGX7pSA7zWY
-	Tvb84UN9N4jb7Sri3oB5Zibyx27lTe6eXBciJVowdDM3roHFhlhyUpuMAGZqT//HT9cm1KEjhO4
-	e3pN1I1xHMCnBb71auXtQWIHCkjQ=
-X-Google-Smtp-Source: AGHT+IE7AFjoSzpJ0ipuMrXiNf5cCCswfOLi8JC2LEE4zctXjoziC7p82ijx0XLdOF888gyoXHdUTBDjAwL/dr1JM60=
-X-Received: by 2002:a05:6402:3595:b0:5d0:c7a7:ac13 with SMTP id
- 4fb4d7f45d1cf-5d4331655d1mr10256935a12.34.1733954068345; Wed, 11 Dec 2024
- 13:54:28 -0800 (PST)
+	s=arc-20240116; t=1733955442; c=relaxed/simple;
+	bh=E5xbxd34Ap4a+5uIuZu8Xvnmg/2vPzv6AOe5ovtfTok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nXeT2YsYhD73CSPic8oka0s4dt/LNKLVQoX3z4727YXBmpWfn0Fv+fLOoWBuB6HVCioe1AMn4MPOZIKyZkqKBqJ8ZAN9kxPafQBQ9Bc8+JfqGqtz/SKfFhz64tT57U/MQ4fek9tdIFs32cZU42gibZ5t5XVN9VRTvKzkP8dFccE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZwsfuX0Z; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1733955440; x=1765491440;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=E5xbxd34Ap4a+5uIuZu8Xvnmg/2vPzv6AOe5ovtfTok=;
+  b=ZwsfuX0Zx1x/sMerkCWj2fz75n5Jcvx3Yg6EDDyUeA7seqCnPz1BiS8e
+   GaEJRot7ZM3ZjWtK7cW9wde5tIHDep1l13IlkXp+UwXyAMRFF+WSM6Ng/
+   fHOMn2zKQmIMRXS3tyfd6mmUxuBhL1xu0D+XdyiZ7JAjzaVnW0O/U/w4G
+   XtD7X1tVZz52pZmPfD/AMgXhm/hHr53GP1h5gWwO1eXSSEefVWEy3rdEk
+   /F52A3+IeTQncNp6qhwHBo+6VLUyhfSluY9HUsvnop4OQRjQVAxqF9JvJ
+   QnkXSoA9sb8wmvoHUaPJ0R2RKVtWMGIVYoUU3GwBMIF6C3I1Fj8SnZKNV
+   Q==;
+X-CSE-ConnectionGUID: FOQCQ2RSRwOODJsvujrvvQ==
+X-CSE-MsgGUID: NXpR2MqFTNK3wDk0hT+GzQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="38140540"
+X-IronPort-AV: E=Sophos;i="6.12,226,1728975600"; 
+   d="scan'208";a="38140540"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 14:17:19 -0800
+X-CSE-ConnectionGUID: AT3Hk9oUSrusHkEf1nvC6Q==
+X-CSE-MsgGUID: cUCNiLnYTqSryOfw+1Kqww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,226,1728975600"; 
+   d="scan'208";a="95731762"
+Received: from lkp-server01.sh.intel.com (HELO 82a3f569d0cb) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 11 Dec 2024 14:17:16 -0800
+Received: from kbuild by 82a3f569d0cb with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tLV18-00079F-1F;
+	Wed, 11 Dec 2024 22:17:14 +0000
+Date: Thu, 12 Dec 2024 06:17:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>,
+	linux-btrfs@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"Roger L. Beckermeyer III" <beckerlee3@gmail.com>
+Subject: Re: [PATCH] btrfs: edits tree_insert() to use rb helpers
+Message-ID: <202412120640.485KsaTz-lkp@intel.com>
+References: <5e023dcf8f086296da987f8ba2b43be0aca15b86.1733695544.git.beckerlee3@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8e502fc69ea68d1647707d947e0e4625f0dd1af0.1733934886.git.fdmanana@suse.com>
- <9d90c662-993b-4a36-80f3-154f81fb06a7@suse.com>
-In-Reply-To: <9d90c662-993b-4a36-80f3-154f81fb06a7@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 11 Dec 2024 21:53:51 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7PtVH=3g5Ov3GsmK8_ObHhL8atcO-2q3bEs7y6=SOGJA@mail.gmail.com>
-Message-ID: <CAL3q7H7PtVH=3g5Ov3GsmK8_ObHhL8atcO-2q3bEs7y6=SOGJA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix use-after-free when COWing tree bock and
- tracing is enabled
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e023dcf8f086296da987f8ba2b43be0aca15b86.1733695544.git.beckerlee3@gmail.com>
 
-On Wed, Dec 11, 2024 at 8:18=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> =E5=9C=A8 2024/12/12 03:11, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When a COWing a tree block, at btrfs_cow_block(), and we have the
-> > tracepoint trace_btrfs_cow_block() enabled and preemption is also enabl=
-ed
-> > (CONFIG_PREEMPT=3Dy), we can trigger a use-after-free in the COWed exte=
-nt
-> > buffer while inside the tracepoint code. This is because in some paths
-> > that call btrfs_cow_block(), such as btrfs_search_slot(), we are holdin=
-g
-> > the last reference on the extent buffer @buf so btrfs_force_cow_block()
-> > drops the last reference on the @buf extent buffer when it calls
-> > free_extent_buffer_stale(buf), which schedules the release of the exten=
-t
-> > buffer with RCU. This means that if we are on a kernel with preemption,
-> > the current task may be preempted before calling trace_btrfs_cow_block(=
-)
-> > and the extent buffer already released by the time trace_btrfs_cow_bloc=
-k()
-> > is called, resulting in a use-after-free.
-> >
-> > Fix this by grabbing an extra reference on the extent buffer before
-> > calling btrfs_force_cow_block() at btrfs_cow_block(), and then dropping
-> > it after calling the tracepoint.
-> >
-> > Reported-by: syzbot+8517da8635307182c8a5@syzkaller.appspotmail.com
-> > Link: https://lore.kernel.org/linux-btrfs/6759a9b9.050a0220.1ac542.000d=
-.GAE@google.com/
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
->
-> Thanks for pinning down the error.
->
-> Although considering there is really only one caller of
-> trace_btrfs_cow_block(), can we just move this only caller into
-> btrfs_force_cow_block() before freeing @buf?
+Hi Roger,
 
-That's actually simpler and more efficient, yes.
-Done in v2.
+kernel test robot noticed the following build errors:
 
-Thanks.
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on linus/master v6.13-rc2 next-20241211]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->
-> Thanks,
-> Qu
->
-> > ---
-> >   fs/btrfs/ctree.c | 11 +++++++++++
-> >   1 file changed, 11 insertions(+)
-> >
-> > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> > index 693dc27ffb89..3a28e77b6d72 100644
-> > --- a/fs/btrfs/ctree.c
-> > +++ b/fs/btrfs/ctree.c
-> > @@ -751,10 +751,21 @@ int btrfs_cow_block(struct btrfs_trans_handle *tr=
-ans,
-> >        * Also We don't care about the error, as it's handled internally=
-.
-> >        */
-> >       btrfs_qgroup_trace_subtree_after_cow(trans, root, buf);
-> > +     /*
-> > +      * When we are called from btrfs_search_slot() for example, we ar=
-e
-> > +      * not holding an extra reference on @buf so btrfs_force_cow_bloc=
-k()
-> > +      * does a free_extent_buffer_stale() on the last reference and sc=
-hedules
-> > +      * the extent buffer release with RCU, so we can trigger a
-> > +      * use-after-free in the trace_btrfs_cow_block() call below in ca=
-se
-> > +      * preemption is enabled (CONFIG_PREEMPT=3Dy). So grab an extra r=
-eference
-> > +      * to prevent that.
-> > +      */
-> > +     atomic_inc(&buf->refs);
-> >       ret =3D btrfs_force_cow_block(trans, root, buf, parent, parent_sl=
-ot,
-> >                                   cow_ret, search_start, 0, nest);
-> >
-> >       trace_btrfs_cow_block(root, buf, *cow_ret);
-> > +     free_extent_buffer_stale(buf);
-> >
-> >       return ret;
-> >   }
->
+url:    https://github.com/intel-lab-lkp/linux/commits/Roger-L-Beckermeyer-III/btrfs-edits-tree_insert-to-use-rb-helpers/20241209-104108
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/5e023dcf8f086296da987f8ba2b43be0aca15b86.1733695544.git.beckerlee3%40gmail.com
+patch subject: [PATCH] btrfs: edits tree_insert() to use rb helpers
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20241212/202412120640.485KsaTz-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241212/202412120640.485KsaTz-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412120640.485KsaTz-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> fs/btrfs/delayed-ref.c:342:10: error: call to undeclared function 'rb_find_add_cached'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+           exist = rb_find_add_cached(node, root, comp_refs_node);
+                   ^
+   fs/btrfs/delayed-ref.c:342:8: error: incompatible integer to pointer conversion assigning to 'struct rb_node *' from 'int' [-Wint-conversion]
+           exist = rb_find_add_cached(node, root, comp_refs_node);
+                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   2 errors generated.
+
+
+vim +/rb_find_add_cached +342 fs/btrfs/delayed-ref.c
+
+   334	
+   335	static struct btrfs_delayed_ref_node* tree_insert(struct rb_root_cached *root,
+   336			struct btrfs_delayed_ref_node *ins)
+   337	{
+   338		struct rb_node *node = &ins->ref_node;
+   339		struct rb_node *exist;
+   340		struct btrfs_delayed_ref_node *entry;
+   341	
+ > 342		exist = rb_find_add_cached(node, root, comp_refs_node);
+   343		if (exist != NULL) {
+   344			entry = rb_entry(exist, struct btrfs_delayed_ref_node, ref_node);
+   345			return entry;
+   346		}
+   347		return NULL;
+   348	}
+   349	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
