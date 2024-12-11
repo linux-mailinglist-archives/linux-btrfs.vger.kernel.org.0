@@ -1,127 +1,200 @@
-Return-Path: <linux-btrfs+bounces-10272-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10273-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A619EDA5D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 23:49:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C38E9EDAD7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 00:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81491884A50
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 22:49:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 076CF18874BD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 23:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9861F2376;
-	Wed, 11 Dec 2024 22:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6389B1F2384;
+	Wed, 11 Dec 2024 23:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="XeDbUT9s"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ANVFf47L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387931BC085
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 22:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5708632B
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 23:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733957367; cv=none; b=oO/14jnU4W5PQxd4XcbyFeBl89yPWT7fpxOD/t8sb4nt9aBdFZfnX6T0R2DRyeEvI9OuVEAkToI2NS/hKXop+ftywTemaU6t+ey7KOMzDDNeVw1fOOO+DaqFco4TJV23/2ILtOyldhiYt8Kzhg6YEOaTXXlA38R1PS3AeRtDggo=
+	t=1733958320; cv=none; b=e/+eHbm9WjJJkuPUuv3kwk+z7uusOaNZAGv2YUXvanQ0bbxLr1ZxJGGXO8Mqg8R1u+NqA/q6BpeU9dp4eDSS8MDkmCYTNNFhkZT9JMiV1Rb5cFzsDsF4/J1i6rgCJpX9w/vPXJXCSCXCA4CZX/4FdWbO0glNhex2ORLiM2q7/mA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733957367; c=relaxed/simple;
-	bh=hLgx/GHctPvBC5gT81L8mMes6QkXxyioquqWpo1tpa4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I/TeY+EEuwl1nHI0LMODu7TtSz9+MpaK3mIjHp1Zsx1B0dzhjK6Ji1JpM5CTH1L5xgEma58Sof7xw80rpet4USbMIwDGh9oE/ek2q1vgj6OlhtBtiY8BBydZDIbW/9fP7sSfCk/0oQXRTRFwyw+nKPPGNNXlJoxmFSwV35cPOEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=XeDbUT9s; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7273967f2f0so3437108b3a.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 14:49:25 -0800 (PST)
+	s=arc-20240116; t=1733958320; c=relaxed/simple;
+	bh=mL7MrRG+G/VCbMZnUvlbelBmJfflICTlm6aF/VJpVt0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=W8X2yKxu3FqynAK65nU3zhuX9otFahmTuWI8GBRH3Ko1kssdOtgEcR5AknQxo6Wr5+sYvjRzUrgqkn8W/w+UG0Km/l8e7j+ywd4JLf1OOYINmoH7Sh1cwIj/OwKUdCGlXXrchdpVreclufjfGZdn3pNFGsNJheYEtzLn6B/vJ04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ANVFf47L; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-385f07cd1a4so4781512f8f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1733957365; x=1734562165; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fXmXLf7sd5V5uMi56Lp8HUf5AZDRP/3EUrkbHYOtNjY=;
-        b=XeDbUT9sdZ7eJ5rTmaeTF82gnhBES+/JmhGjayz9pSRDDsOB/PH4iXE2Xv2LJB/uct
-         YMIJpFd1vA7OwAMjCLa+Tde36WIAk6voUpgozqajYguR5ksxzX5BpR47AZj3IlViIWql
-         XA17TbS0MC35dieelHwfpl35pIJs3pDkQsJTU7Y9B1r1SW6zSDZWj3hdyeHB+/P23tb4
-         yWqCGSoYTLjzzo4FM+o0C7K89Y5K+JCb3piR/ZPWGZwqXug8R423G5dtLPiWtjWd/Cye
-         uDYV0H2Kbym1Xk1UJ6GzGTp7s4EGRc4ZKITXBaq/bszsetK2liHMu9p9dPRW/IGdPdZr
-         3BGw==
+        d=suse.com; s=google; t=1733958316; x=1734563116; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=UI1iXQwwXzr9466ttwgQnal+5UWWLNqSznuxDGZWA3k=;
+        b=ANVFf47LgXQxPZuclxvmzOUU9XChrZXUwyPrhpqTZhY3BmVYxt3GDHo3H/ynPsZMoK
+         kbrg1eI2Ar0g2WhSpfMyI5qGNBdiPWDKt1TeJ4pcA5XRSHeUUYazZKzYQQfgwy5gvI5k
+         573rjuD5SJMqKkI8eILGTNqNdr3bTJVo1kj2ClF9iOiX6rTkx9i9ZTfCQdZ/SIwzy24O
+         zBjjhvE4+ItW9g/8ViCfZEQZ1qZ0/+kiMZqogRiSJADQ9KFDh9JtSucPceB9NOFz889u
+         fC2qCI1oArv26y12bZg8zasAGE86EV/Q7BtDJy2THfxQi8JhJTfbz7ICHkNkdn9wkxkY
+         uUCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733957365; x=1734562165;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fXmXLf7sd5V5uMi56Lp8HUf5AZDRP/3EUrkbHYOtNjY=;
-        b=e7GT7Y6O1Ldiqp5+MDens4nt2lXrD/tJUazSEfIzhOY1G2gI0gNqOSe8RO1f8Uhofr
-         XUKA5SPhdSKwYtIO5+dfeiWxz62+iFBZHocH0CygSIS31NHI7DqTdXzKkDpN2nxvMiOo
-         M+7ga+ngyF/U1q9wmpZw2rVYI4/sVBc9QhgQegCjFfKHwJgFyGRqa2cXoL446Y4NC6i4
-         Dt48zqJldbgwPzQDGUsl4NQVOUyHmE7P7Ej3rWtjTJmVlw5qAIbNLqrWtkFnXFeF6wsh
-         rQLHOf7NbbywSBHU0u5GF2CSvzlAV0vEDloTmbBXm7GrYXAVuo4lrLA5/2E7FmBh8lvo
-         H0pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKo+BHnv9su/Nxb4HjPTdddmVOpJU9QWVMkoN8Lde3eVKzmMn0J9hH0tE2xls1LpPePeyI/EGCEqEnGQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdqkK+ParbIGxNOCy2VJO5++3sGsXV5e3deJ0YeJnaUvWktU1F
-	ImBbB269UgLV04NduIrraFMtSi3MJtWHUmLivhKQ0WEyO+muGSnLGA+FXQmUcyk=
-X-Gm-Gg: ASbGncsKp7kviNSTk/4v9qJDNcQT9uRzUlptnJAbAFaJXCxU1af1FbpKs76SaqzLi4S
-	cgooO8e31jBPN1ik9mAJiHUI32J7P3rwDx5XF+4XD2t5lANJz7wSn4OShHtexkR/Md1UHY6U3Tp
-	ibJmpUP98a2vQdEzVPLSzoH41hWNNs8ERXg4xOU9R7Zh9izIKINJEJT6+bUiIn47G56rBCuxbed
-	Pcn/+fwM6ICzBWnd8AkQJrechJ3vJt4gDkbzbmczrAhfLmdjA9vEQHi349J8HmyZ415+mV93A5k
-	tO/OzW9qYiemPMnb9gSigB+2idTbQg==
-X-Google-Smtp-Source: AGHT+IHOEVAuUDLvH3fqF5/aEiPkx8MMVDQvX2O7ilQPH0RNIkQt4BmREe417EpJ8+GJSNy3blDmcg==
-X-Received: by 2002:a05:6a00:1790:b0:725:cfd0:dffa with SMTP id d2e1a72fcca58-728fa9c9addmr1645480b3a.5.1733957365450;
-        Wed, 11 Dec 2024 14:49:25 -0800 (PST)
-Received: from dread.disaster.area (pa49-195-9-235.pa.nsw.optusnet.com.au. [49.195.9.235])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725e3369c62sm7010447b3a.167.2024.12.11.14.49.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 14:49:24 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tLVWD-00000009ZUb-378O;
-	Thu, 12 Dec 2024 09:49:21 +1100
-Date: Thu, 12 Dec 2024 09:49:21 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Filipe Manana <fdmanana@kernel.org>, xfs <linux-xfs@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Bug when attempting to active swap file that used to be
- cloned/shared
-Message-ID: <Z1oW8SiW3sq2dVps@dread.disaster.area>
-References: <CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com>
- <20241211182456.GF6678@frogsfrogsfrogs>
+        d=1e100.net; s=20230601; t=1733958316; x=1734563116;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UI1iXQwwXzr9466ttwgQnal+5UWWLNqSznuxDGZWA3k=;
+        b=S3i3DRjgkOM3mHyiX3yAyZQvcVm8v5yunQyGRq98E2GBoKqDA3w4HQHcBmVc2G/2cM
+         XkaYIBMQyVQoBXse01OO6PqR2brf2FbnYaO1PdIM9bOO7wLaVDrqFwdS2mu8X06UF6MO
+         f1AiCzAetGQmuz86zS2Uj3WQKgJ26dld1vDybp9BDr8bQkt/ThoU6JWKb4Bq7H3GHfuL
+         5k09cC0ZmpejP6X/oN/WX0uSscUmUy7+l0SqWo+2Il8t0wZ5PPXGquLifAGH6QhHYqi1
+         6ThHTzS3eEakXe+usL3/Gm/5z+j3cSW1NPG1AM6PTpbkQPOmNWgz4u2Rw9XUIUDKchF1
+         tGoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWb3x2wSAn76pzEV4tZXfjddmho4Nl/G5JT00jdMhV4jx+yUbJv7AEg6bx3H+LQ+PzgWb6RyddxCK9/mA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkWo9x/OVqEKj8ZbQLU5oi7kj/BllBpXyTTJqi2w4pxSvhr0Mk
+	XdM+SmGSIUnIY+RFCcKhnHp/WYOuia0YNo1LDgKEs8umNa0IY8VcpK7iytmbhZOjJvurjUl7VI9
+	y
+X-Gm-Gg: ASbGncs4vn8Tnhv9Q4WWAL4unNJ6RCtE7dnQfxyu0NhWem3fTPHXHFiZRkyV8guP7Kf
+	jUjzuWawL1ObLd5/D5KoJEPqnfusfwwwnJGAQHAz+GwS67NhAvssG1ZQRkD/JjoEbZ3hQmXzBsQ
+	z+WB1I2lf69DdxQcDcC6KiLRp1wwRHd3I/liKWUzzkWCtMpO2o5bcq+qSYqzONSFW+zqPjoIOfk
+	8w+mxpJqU/UNcTeNxBAlBpJUd2YkiPhIUmRyIhOEfNEEPkwDG0nBP0hOBRT8ep6+r/hiS0Xg1OE
+	vrDlPw==
+X-Google-Smtp-Source: AGHT+IH+kVPvPmmoTYaXEHdGSvgU1DeJmeIH0CZ2n6X//TU0RP44jbpoezyhkF0PMW3aF5fXpL5o1g==
+X-Received: by 2002:a5d:6d8b:0:b0:386:45e9:fc8a with SMTP id ffacd0b85a97d-38787688349mr1036454f8f.5.1733958315457;
+        Wed, 11 Dec 2024 15:05:15 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725e4c2defasm7087732b3a.120.2024.12.11.15.05.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Dec 2024 15:05:14 -0800 (PST)
+Message-ID: <5448adb2-2368-4eb4-b7f4-9c36188529ad@suse.com>
+Date: Thu, 12 Dec 2024 09:35:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211182456.GF6678@frogsfrogsfrogs>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: fix use-after-free when COWing tree bock and
+ tracing is enabled
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <8e502fc69ea68d1647707d947e0e4625f0dd1af0.1733934886.git.fdmanana@suse.com>
+ <1b96eb7eb9ce220acc21b2ac2057a5a3eab1fb3b.1733953828.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <1b96eb7eb9ce220acc21b2ac2057a5a3eab1fb3b.1733953828.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 11, 2024 at 10:24:56AM -0800, Darrick J. Wong wrote:
-> On Wed, Dec 11, 2024 at 02:49:08PM +0000, Filipe Manana wrote:
-> > Hello,
-> > 
-> > While looking at a btrfs bug where we fail to active a swap file that
-> > used to have shared extents, I noticed xfs has the same bug, however
-> > the test fails intermittently, suggesting some sort of race.
+
+
+在 2024/12/12 08:23, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> I bet swapon is racing with inodegc unmapping the extents from the
-> previously rm'd files.
+> When a COWing a tree block, at btrfs_cow_block(), and we have the
+> tracepoint trace_btrfs_cow_block() enabled and preemption is also enabled
+> (CONFIG_PREEMPT=y), we can trigger a use-after-free in the COWed extent
+> buffer while inside the tracepoint code. This is because in some paths
+> that call btrfs_cow_block(), such as btrfs_search_slot(), we are holding
+> the last reference on the extent buffer @buf so btrfs_force_cow_block()
+> drops the last reference on the @buf extent buffer when it calls
+> free_extent_buffer_stale(buf), which schedules the release of the extent
+> buffer with RCU. This means that if we are on a kernel with preemption,
+> the current task may be preempted before calling trace_btrfs_cow_block()
+> and the extent buffer already released by the time trace_btrfs_cow_block()
+> is called, resulting in a use-after-free.
+> 
+> Fix this by moving the trace_btrfs_cow_block() from btrfs_cow_block() to
+> btrfs_force_cow_block() before the COWed extent buffer is freed.
+> This also has a side effect of invoking the tracepoint in the tree defrag
+> code, at defrag.c:btrfs_realloc_node(), since btrfs_force_cow_block() is
+> called there, but this is fine and it was actually missing there.
+> 
+> Reported-by: syzbot+8517da8635307182c8a5@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/linux-btrfs/6759a9b9.050a0220.1ac542.000d.GAE@google.com/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Almost certainly the case.  All sync does is stabilise the unlinked
-lists so recovery will see the unlinked inodes; it has no effect on
-expediting background inodegc, nor should it.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-> The fix for this is (probably?) to call
-> xfs_inodegc_flush from xfs_iomap_swapfile_activate... though that might
-> be involved, since iirc at that point we hold the swapfile's IOLOCK.
+Thanks for pinning down and fix the bug,
+Qu
 
-For this sort of artificial test, freeze and unfreeze to ensure that
-the background inodegc is drained before the swapon command is run.
-It's not clear to me that there is a real world use case where this
-is actually a problem, so for testing purposes a freeze before
-swapon seems like the right way to go here...
+> ---
+> 
+> V2: Instead of temporarily bumping the extent buffer's reference count
+>      to safely call the tracepoint, move the tracepoint call to
+>      btrfs_force_cow_block().
+> 
+>   fs/btrfs/ctree.c | 11 ++++-------
+>   1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 693dc27ffb89..185985a337b3 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -654,6 +654,8 @@ int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
+>   			goto error_unlock_cow;
+>   		}
+>   	}
+> +
+> +	trace_btrfs_cow_block(root, buf, cow);
+>   	if (unlock_orig)
+>   		btrfs_tree_unlock(buf);
+>   	free_extent_buffer_stale(buf);
+> @@ -710,7 +712,6 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
+>   {
+>   	struct btrfs_fs_info *fs_info = root->fs_info;
+>   	u64 search_start;
+> -	int ret;
+>   
+>   	if (unlikely(test_bit(BTRFS_ROOT_DELETING, &root->state))) {
+>   		btrfs_abort_transaction(trans, -EUCLEAN);
+> @@ -751,12 +752,8 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
+>   	 * Also We don't care about the error, as it's handled internally.
+>   	 */
+>   	btrfs_qgroup_trace_subtree_after_cow(trans, root, buf);
+> -	ret = btrfs_force_cow_block(trans, root, buf, parent, parent_slot,
+> -				    cow_ret, search_start, 0, nest);
+> -
+> -	trace_btrfs_cow_block(root, buf, *cow_ret);
+> -
+> -	return ret;
+> +	return btrfs_force_cow_block(trans, root, buf, parent, parent_slot,
+> +				     cow_ret, search_start, 0, nest);
+>   }
+>   ALLOW_ERROR_INJECTION(btrfs_cow_block, ERRNO);
+>   
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
 
