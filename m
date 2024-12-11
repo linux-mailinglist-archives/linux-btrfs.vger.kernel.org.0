@@ -1,69 +1,74 @@
-Return-Path: <linux-btrfs+bounces-10217-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10218-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BCF39EC35E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 04:36:23 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AC0E1677BF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 03:36:18 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCE220E010;
-	Wed, 11 Dec 2024 03:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="phYROc45"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FEF29EC3E8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 05:14:04 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2E76F073
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 03:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1A27282FEC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 04:14:02 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5671BCA0A;
+	Wed, 11 Dec 2024 04:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Nwz1p/Mi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Nwz1p/Mi"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D517A2451C0
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 04:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733888174; cv=none; b=E1kudNmGb63hwMgts6pE0K0qXL6SZ3vccMxTnsNNuIczpyz16VlybQrKEfjq9N40arpz9DP34iyU3ul5JNwehXdYSx11xlhPWhvWej3g0xILwEDjRZ8iYVArR6t1sx8NJYvazQhDkYUSAZPdqsk/LpDN2z/9kwwCEFDN+qvtf2Y=
+	t=1733890437; cv=none; b=DYnwRd2jI614F6U0GJfKRjP50WvlzZZ7T2nHqNltMNxpWHZ56r1GHHF/K6IW4rNS4W51rGVUCrY22/1QyIc1k8I9xZjBpD71hWYqykOwWi7UcDMVKdiGeiUDDI1xiHfXSuBOcR2HJw9qcg26XkJsDRgdRY3H4tPf4EHkwa71f2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733888174; c=relaxed/simple;
-	bh=TXffDh1vGC7MlYQfhCWHbPLTB8wYGwGhhLz9XoXxf7E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k47Da0bX50EnxuucggEYy9uZCsuy5lhTPQ756Utz+98SAhKOKzCvU8XDne9mSrqOxYdM8fiMfYWBd3ziok74kTaUGK2xTztLj5UyrBnWYCnNH/XXgpWZMoLcqBSY44L5GmgthenAkg/XSj5BGJTAilA9SIYF5SCBSWUKU17nws0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=phYROc45; arc=none smtp.client-ip=216.71.154.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1733888172; x=1765424172;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TXffDh1vGC7MlYQfhCWHbPLTB8wYGwGhhLz9XoXxf7E=;
-  b=phYROc45z3gf2lOFhD6jL0kgiBhzwbeZSm4S/tcBKm9i1DvVX0IoAh/2
-   qhkU5o4KZgO+lVm2xWzBsYMw121Hdgs7Z5hK7m/BsTUpuvqdCOGx+kXDv
-   pk2OYLF5pLS6r+ilM4fk8FOd9LXVvVfcIgHWaZUgx4YGqLIOkMhnvofb0
-   F8p/JdWQi1P93o2oYuvVmSXOXKbRAQtDMVPVpWqPMioUK+xZG0Y+htWq+
-   I/8Y5rMR4npj5p8he6BgsLmHtUI34nrMeh4CK4AOJjiEsZ4jnTGb+Dz25
-   jcAIeKp6qbLSvDFbkYaDi8+WE/+PWVoJupcDLldKl0da0j+0PZCa/rJ30
-   A==;
-X-CSE-ConnectionGUID: /yYVH9KdSESW7ch1ZTq1cg==
-X-CSE-MsgGUID: U8x+RDf0RWy0di3yWsYO9A==
-X-IronPort-AV: E=Sophos;i="6.12,224,1728921600"; 
-   d="scan'208";a="32874244"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Dec 2024 11:36:11 +0800
-IronPort-SDR: 6758f9ff_jJJdkt6zqAxP55koHgMKqFv7zh1X8HyhvAHMmyLUnz9Frri
- HD7KBWj0VVJ7kJMPU2cAWQcWhTXTLwSMPu5i0rw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 10 Dec 2024 18:33:35 -0800
-WDCIronportException: Internal
-Received: from 5cg21505s2.ad.shared (HELO naota-xeon..) ([10.224.102.244])
-  by uls-op-cesaip02.wdc.com with ESMTP; 10 Dec 2024 19:36:11 -0800
-From: Naohiro Aota <naohiro.aota@wdc.com>
+	s=arc-20240116; t=1733890437; c=relaxed/simple;
+	bh=yPtdSpdPYAxH2fOSycCUxC1shGblpceutAJG3FADwuU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PRzobvnmzJ8yK17LvlMDBz+SbwwbVtvTfwwcAFwNAbWlUX11ov76IgieGfCeU2SFeFkEryT/Jj3egYJ0eajnNjHWmivx1nO8crdA52lpO5XlHNMfdE3wpjxcbdq9Y4qRTL9sRExu8o5Fo8YcG51tAzxVvctzFKF9YWOnRxtEjso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Nwz1p/Mi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Nwz1p/Mi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C37871F38C
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 04:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1733890432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=1otlFq3yrIEscIStWqHa5Dvn7sbPCVzugMcjEOCSsCc=;
+	b=Nwz1p/MiIhyfVuPVP+l4OBBmPR7tkyp8ksfp25wWT6lou+B21GJYl65uFmoWiaSiZjIAjM
+	jZ6G94OFoy7koyHhaW+bTg9ogOOD1x/f2uyJNktjqn3eyOEOalEzcs0zmA5zWl1dQLLO54
+	PEz0mvqgIEtE9R6qP2WyaWS5+XNaSVo=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="Nwz1p/Mi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1733890432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=1otlFq3yrIEscIStWqHa5Dvn7sbPCVzugMcjEOCSsCc=;
+	b=Nwz1p/MiIhyfVuPVP+l4OBBmPR7tkyp8ksfp25wWT6lou+B21GJYl65uFmoWiaSiZjIAjM
+	jZ6G94OFoy7koyHhaW+bTg9ogOOD1x/f2uyJNktjqn3eyOEOalEzcs0zmA5zWl1dQLLO54
+	PEz0mvqgIEtE9R6qP2WyaWS5+XNaSVo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E89C71344A
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 04:13:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id D217KH8RWWc3dwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 04:13:51 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] btrfs: zoned: calculate max_zone_append_size properly on non-zoned setup
-Date: Wed, 11 Dec 2024 12:36:00 +0900
-Message-ID: <9c00c066e9529f1a6439c1c8895a8f0d010a07e5.1733887702.git.naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: enhance ordered extent double freeing detection
+Date: Wed, 11 Dec 2024 14:43:25 +1030
+Message-ID: <53b793f2e7a7788f89cda97de565cfc1577cbf75.1733890357.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -72,70 +77,224 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C37871F38C
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Since commit 559218d43ec9 ("block: pre-calculate max_zone_append_sectors"),
-queue_limits's max_zone_append_sectors is default to be 0 and it is only
-updated when there is a zoned device. So, we have
-lim->max_zone_append_sectors = 0 when there is no zoned device in the
-filesystem.
+With recent bugs exposed through run_delalloc_range() failure, the
+importance of detecting double accounting is obvious.
 
-That leads to fs_info->max_zone_append_size and fs_info->max_extent_size to
-be 0, which causes several errors. One example is the divide error as
-below. Running simple test as btrfs/001 on a non-zoned device with the
-zoned mode (zoned emulation) leads to this error because we have
-fs_info->max_extent_size = 0 in count_max_extents().
+Currently the way to detect such errors is to just check if we underflow
+the btrfs_ordered_extent::bytes_left member.
 
-   Oops: divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-   CPU: 21 UID: 0 PID: 2378822 Comm: dd Tainted: G        W          6.13.0-rc2-kts #1
-   Tainted: [W]=WARN
-   Hardware name: Supermicro SYS-520P-WTR/X12SPW-TF, BIOS 1.2 02/14/2022
-   RIP: 0010:btrfs_delalloc_reserve_metadata+0x161/0x790 [btrfs]
+That's fine but that only shows the length we're trying to decrease, not
+enough to show the problem.
 
-The block layer logic, having max_zone_append_sectors = 0 by stacking
-non-zoned devices, seems reasonable to me. So, let's deal with that in
-btrfs side by ignoring max_zone_append_sectors if it is non-zoned setup.
+Here we enhance the situation by:
 
-Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Fixes: 559218d43ec9 ("block: pre-calculate max_zone_append_sectors")
-CC: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+- Introduce btrfs_ordered_extent::finished_bitmap
+  This is a new bitmap to indicate which blocks are already finished.
+  This bitmap will be initialized at alloc_ordered_extent() and release
+  when the ordered extent is freed.
+
+- Detect any already finished block during can_finish_ordered_extent()
+  If double accounting detected, show the full range we're trying and the bitmap.
+
+- Make sure the bitmap is all set when the OE is finished
+
+- Show the full range we're finishing for the existing double accounting
+  detection
+  This is to enhance the code to work with the new run_delalloc_range()
+  error messages.
+
+This will have extra memory and runtime cost, now an ordered extent can
+have as large as 4K memory just for the finished_bitmap, and extra
+operations to detect such double accounting.
+
+Thus this double accounting detection is only enabled for
+CONFIG_BTRFS_DEBUG build for developers.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/zoned.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ fs/btrfs/misc.h         | 28 ++++++++++++++++++++++
+ fs/btrfs/ordered-data.c | 53 +++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/ordered-data.h |  9 +++++++
+ 3 files changed, 88 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index abea8f2f497e..12ad6fcc2513 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -741,12 +741,23 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
- 	 * we add the pages one by one to a bio, and cannot increase the
- 	 * metadata reservation even if it increases the number of extents, it
- 	 * is safe to stick with the limit.
-+	 *
-+	 * If there is no zoned device in the filesystem, we have
-+	 * max_zone_append_sectors = 0. That will cause
-+	 * fs_info->max_zone_append_size and fs_info->max_extent_size to be
-+	 * 0 in the following lines. Set the maximum value to avoid that.
+diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
+index 0d599fd847c9..438887a1ca32 100644
+--- a/fs/btrfs/misc.h
++++ b/fs/btrfs/misc.h
+@@ -163,4 +163,32 @@ static inline bool bitmap_test_range_all_zero(const unsigned long *addr,
+ 	return (found_set == start + nbits);
+ }
+ 
++/*
++ * Count how many bits are set in the bitmap.
++ *
++ * Similar to bitmap_weight() but accepts a subrange of the bitmap.
++ */
++static inline unsigned int bitmap_count_set(const unsigned long *addr,
++					    unsigned long start,
++					    unsigned long nbits)
++{
++	const unsigned long bitmap_nbits = start + nbits;
++	unsigned long cur = start;
++	unsigned long total_set = 0;
++
++	while (cur < bitmap_nbits) {
++		unsigned long found_zero;
++		unsigned long found_set;
++
++		found_zero = find_next_zero_bit(addr, bitmap_nbits, cur);
++		total_set += found_zero - cur;
++
++		cur = found_zero;
++		if (cur >= bitmap_nbits)
++			break;
++		found_set = find_next_bit(addr, bitmap_nbits, cur);
++		cur = found_set;
++	}
++	return total_set;
++}
+ #endif
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 30eceaf829a7..1b1f14aa13d5 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -194,6 +194,16 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+ 	INIT_LIST_HEAD(&entry->bioc_list);
+ 	init_completion(&entry->completion);
+ 
++	if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
++		struct btrfs_fs_info *fs_info = inode->root->fs_info;
++
++		entry->finished_bitmap = bitmap_zalloc(
++			num_bytes >> fs_info->sectorsize_bits, GFP_NOFS);
++		if (!entry->finished_bitmap) {
++			kmem_cache_free(btrfs_ordered_extent_cache, entry);
++			return ERR_PTR(-ENOMEM);
++		}
++	}
+ 	/*
+ 	 * We don't need the count_max_extents here, we can assume that all of
+ 	 * that work has been done at higher layers, so this is truly the
+@@ -356,13 +366,38 @@ static bool can_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+ 		btrfs_folio_clear_ordered(fs_info, folio, file_offset, len);
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
++		unsigned long start_bit;
++		unsigned long nbits;
++		unsigned long nr_set;
++
++		ASSERT(file_offset >= ordered->file_offset);
++		ASSERT(file_offset + len <= ordered->file_offset  + ordered->num_bytes);
++
++		start_bit = (file_offset - ordered->file_offset) >> fs_info->sectorsize_bits;
++		nbits = len >> fs_info->sectorsize_bits;
++
++		nr_set = bitmap_count_set(ordered->finished_bitmap, start_bit, nbits);
++		if (WARN_ON(nr_set)) {
++			btrfs_crit(fs_info,
++"double ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%llu range offset=%llu range len=%llu already finished len=%lu finish_bitmap=%*pbl",
++				   btrfs_root_id(inode->root), btrfs_ino(inode),
++				   ordered->file_offset, ordered->num_bytes,
++				   file_offset, len, nr_set << fs_info->sectorsize_bits,
++				   (int)(ordered->num_bytes >> fs_info->sectorsize_bits),
++				   ordered->finished_bitmap);
++		}
++		bitmap_set(ordered->finished_bitmap, start_bit, nbits);
++		len -= (nr_set << fs_info->sectorsize_bits);
++	}
++
+ 	/* Now we're fine to update the accounting. */
+ 	if (WARN_ON_ONCE(len > ordered->bytes_left)) {
+ 		btrfs_crit(fs_info,
+-"bad ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%llu to_dec=%llu left=%llu",
++"bad ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%llu range start=%llu range len=%llu left=%llu",
+ 			   btrfs_root_id(inode->root), btrfs_ino(inode),
+ 			   ordered->file_offset, ordered->num_bytes,
+-			   len, ordered->bytes_left);
++			   file_offset, len, ordered->bytes_left);
+ 		ordered->bytes_left = 0;
+ 	} else {
+ 		ordered->bytes_left -= len;
+@@ -379,6 +414,18 @@ static bool can_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+ 	 * the finish_func to be executed.
  	 */
--	fs_info->max_zone_append_size = ALIGN_DOWN(
--		min3((u64)lim->max_zone_append_sectors << SECTOR_SHIFT,
--		     (u64)lim->max_sectors << SECTOR_SHIFT,
--		     (u64)lim->max_segments << PAGE_SHIFT),
--		fs_info->sectorsize);
-+	if (lim->features & BLK_FEAT_ZONED)
-+		fs_info->max_zone_append_size = ALIGN_DOWN(
-+			min3((u64)lim->max_zone_append_sectors << SECTOR_SHIFT,
-+			     (u64)lim->max_sectors << SECTOR_SHIFT,
-+			     (u64)lim->max_segments << PAGE_SHIFT),
-+			fs_info->sectorsize);
-+	else
-+		fs_info->max_zone_append_size = ALIGN_DOWN(
-+			min((u64)lim->max_sectors << SECTOR_SHIFT,
-+			    (u64)lim->max_segments << PAGE_SHIFT),
-+			fs_info->sectorsize);
- 	fs_info->fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_ZONED;
- 	if (fs_info->max_zone_append_size < fs_info->max_extent_size)
- 		fs_info->max_extent_size = fs_info->max_zone_append_size;
+ 	set_bit(BTRFS_ORDERED_IO_DONE, &ordered->flags);
++	if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
++		if (WARN_ON(!bitmap_full(ordered->finished_bitmap,
++				 ordered->num_bytes >> fs_info->sectorsize_bits))) {
++			btrfs_crit(fs_info,
++"ordered extent finished bitmap desync, root=%llu ino=%llu OE offset=%llu OE len=%llu bytes_left=%llu bitmap=%*pbl",
++				btrfs_root_id(inode->root), btrfs_ino(inode),
++				ordered->file_offset, ordered->num_bytes,
++				ordered->bytes_left,
++				(int)(ordered->num_bytes >> fs_info->sectorsize_bits),
++				ordered->finished_bitmap);
++		}
++	}
+ 	cond_wake_up(&ordered->wait);
+ 	refcount_inc(&ordered->refs);
+ 	trace_btrfs_ordered_extent_mark_finished(inode, ordered);
+@@ -624,6 +671,8 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
+ 			list_del(&sum->list);
+ 			kvfree(sum);
+ 		}
++		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
++			bitmap_free(entry->finished_bitmap);
+ 		kmem_cache_free(btrfs_ordered_extent_cache, entry);
+ 	}
+ }
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index 4e152736d06c..f04a2f7a593a 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -154,6 +154,15 @@ struct btrfs_ordered_extent {
+ 	struct list_head work_list;
+ 
+ 	struct list_head bioc_list;
++
++#ifdef CONFIG_BTRFS_DEBUG
++	/*
++	 * Set if one block has finished.
++	 *
++	 * To catch double freeing with more accuracy.
++	 */
++	unsigned long *finished_bitmap;
++#endif
+ };
+ 
+ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent);
 -- 
 2.47.1
 
