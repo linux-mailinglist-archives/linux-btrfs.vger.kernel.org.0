@@ -1,164 +1,248 @@
-Return-Path: <linux-btrfs+bounces-10225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4AB39ECBC2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 13:08:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD89F9ECEFC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:49:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77B53285E2A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 12:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1383B28361D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 14:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925D12210E7;
-	Wed, 11 Dec 2024 12:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2210E19E7FA;
+	Wed, 11 Dec 2024 14:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lovTyUHw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mbid0TwV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lovTyUHw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mbid0TwV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZpgqfIak"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32975209660
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 12:08:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B36F246342;
+	Wed, 11 Dec 2024 14:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733918926; cv=none; b=LXfyuAY/5FpzydftHSi9DzUBqUwQghT0g8dagJCvriKErHDUJgGx8St+BEqvtA6tPvCli9noXqgJl/YKKPtfvsfsJZzR7Wl3yhe0JHAZQGqeIrxQz1oV7MdFAXasjrU9HN/a69uGdwi7Lr9LUAXvt7Ug72ZVPzo6TchkknmDAW4=
+	t=1733928587; cv=none; b=t1Z1pyVS4jF/iCWTv8F1rsxfwxZTmT07NXYvgQ0o054O8c52jOKAtVJ7LV0K95bQVhgkcn0Ity2Q/8/YcR52vmPNOF+Pf6w7A3FFNhW+F3xeXHrtY0lMr4harxkDvyzwon5nQ3KF0NBbp0TuaY07syhcZVrN1YnKPSXy+6cMhCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733918926; c=relaxed/simple;
-	bh=ZhrD5OtPEF6zm16mY0KaHgUFuRDvk9vNTTqQ0kYojco=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FmeJJdHdoQ7zyoI8Xvxxv5OfiJXzoF4sK1h9aJHOxMssFL8Da3ZIzjJ3EYY5ApuDK2LokvJRopOyjrQU+wkbcAam2PKvEKjLwZLWj+wU1OwaDrapyu5oabX/B8oTY6smBuogqgxqlDl+1d+Lo2C82VUZQ6+xSLZpRu9Zrkdfp9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lovTyUHw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mbid0TwV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lovTyUHw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mbid0TwV; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E0E61F6E6;
-	Wed, 11 Dec 2024 12:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733918923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SqNX3hmDuY8IGlrx++1ldT+5gpRYdx8mQ4jCJ38mzRg=;
-	b=lovTyUHw0ZP2dEeO3kZq9cBwYpXbMXnQGV8vhWmmuDJG2H208AH0JpxB7Q/5wzGIsRq8sg
-	dOr9Br/7P8idN9tH/y/Iweu5E4R+6tCAL2b7gBpRUJUPUp+27tGHXX6+8nzCtfswathjCp
-	wgnJwq6Wr35YY7eW8h/hYF7bY9KxK04=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733918923;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SqNX3hmDuY8IGlrx++1ldT+5gpRYdx8mQ4jCJ38mzRg=;
-	b=Mbid0TwViZtUi6nJMzzFy/bhi+UEzqgHEzfF5pDvaimSuLVTGdFAzEb7h624GNlyMojJ3e
-	bhqZNJqo1nLxs+BA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lovTyUHw;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Mbid0TwV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733918923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SqNX3hmDuY8IGlrx++1ldT+5gpRYdx8mQ4jCJ38mzRg=;
-	b=lovTyUHw0ZP2dEeO3kZq9cBwYpXbMXnQGV8vhWmmuDJG2H208AH0JpxB7Q/5wzGIsRq8sg
-	dOr9Br/7P8idN9tH/y/Iweu5E4R+6tCAL2b7gBpRUJUPUp+27tGHXX6+8nzCtfswathjCp
-	wgnJwq6Wr35YY7eW8h/hYF7bY9KxK04=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733918923;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SqNX3hmDuY8IGlrx++1ldT+5gpRYdx8mQ4jCJ38mzRg=;
-	b=Mbid0TwViZtUi6nJMzzFy/bhi+UEzqgHEzfF5pDvaimSuLVTGdFAzEb7h624GNlyMojJ3e
-	bhqZNJqo1nLxs+BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D5D11344A;
-	Wed, 11 Dec 2024 12:08:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OJSZDcuAWWc4fgAAD6G6ig
-	(envelope-from <chrubis@suse.cz>); Wed, 11 Dec 2024 12:08:43 +0000
-Date: Wed, 11 Dec 2024 13:08:59 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: Zorro Lang <zlang@kernel.org>, linux-btrfs@vger.kernel.org,
-	ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH 1/3] ioctl_ficlone02.c: set all_filesystems to zero
-Message-ID: <Z1mA2wzjW0hpQxUH@yuki.lan>
-References: <20241201093606.68993-1-zlang@kernel.org>
- <20241201093606.68993-2-zlang@kernel.org>
- <Z02337yqxrfeZxIn@yuki.lan>
- <Z029S0wgjrsv9qHL@yuki.lan>
- <20241202144208.GB321427@pevik>
- <20241209055309.54x5ngu3nikr3tce@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <20241209061416.GB180329@pevik>
+	s=arc-20240116; t=1733928587; c=relaxed/simple;
+	bh=Y1ekCgDWMrwvXc+PddAC99Ydjo/qpjMD/CP1ePuHi2c=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=QkLMQiC82XVd1WY2ibzFLkGQe/Ipllpc55QOXTgg6ryFxGI73QZMn7n0Wmyndo1+mx+V+y1DsWpWABJWtgGg6bwW+TqNOEHqJyXFKJXGSe3TznTZVx/ENbSLD+Qmep2FRIfIBfpizJT/76zYShFTMFmroA5GdFFlQg/hHwZwQwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZpgqfIak; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89CA8C4CED2;
+	Wed, 11 Dec 2024 14:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733928586;
+	bh=Y1ekCgDWMrwvXc+PddAC99Ydjo/qpjMD/CP1ePuHi2c=;
+	h=From:Date:Subject:To:Cc:From;
+	b=ZpgqfIak1353k+eSpVwOmwLWIz9wJXnjuofl5P7WQ13m1DFxE4ulGAUyA7vurryHJ
+	 qEOP69PEWrlmkBIGHALu0Ql+63Y5orLznSqKXggKVupOp2VCI7YBOCktDXarYacmVK
+	 JPFp0Bztz4PhC1/CHVrOGWIO6VZLLofV9yDjL5zf67Mh+upJEjn9kw8lR2BQ5SNvCs
+	 Wahaf4inV2QB21fiwxry4dXvHpx1hb8u5ldDReZUc8jMwRI1aol0Y1FmKEu8DDc2Jk
+	 ewfRrj0RCgOuLixWsGzvZBxkdiVoKHyG7f4OnUjFME4/L85RDBRk5roc65i3IeDQKF
+	 iwifmtsHg7V2w==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aa66ead88b3so745464966b.0;
+        Wed, 11 Dec 2024 06:49:46 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw8qnzuu+1zwP28xQtBteGu4NKPkbCLIs8GNoCnx0f9gMp48MfV
+	O1JF3JeSefm2TGBdIsx6r5eVbYb8ENn8156CtFnBT75qnvVfNi36kuzaklDmZ4ReKa52eOa53AG
+	yxp84t2igJy4gv3D84cRQ5ejFjRM=
+X-Google-Smtp-Source: AGHT+IHIF3yr3jU2f3fn3JqCzo9ZPiu/JNOFXlEfltvoSUxTcKUqE4ZET1VEEUsa5+OHvu2jpK3XcJomcvJBc/WK5HU=
+X-Received: by 2002:a17:906:2932:b0:aa6:8b4a:46a0 with SMTP id
+ a640c23a62f3a-aa6b13faabdmr319790266b.57.1733928584972; Wed, 11 Dec 2024
+ 06:49:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241209061416.GB180329@pevik>
-X-Rspamd-Queue-Id: 4E0E61F6E6
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
-X-Spam-Flag: NO
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 11 Dec 2024 14:49:08 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com>
+Message-ID: <CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com>
+Subject: Bug when attempting to active swap file that used to be cloned/shared
+To: xfs <linux-xfs@vger.kernel.org>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi!
-> Well, "Testing only" in the help (-h) was added there to suggest it's for
-> testing/debugging LTP, not a production testing. But newer mind, I'll implement
-> Cyril's suggestion, real usage justify it. + I'll add LTP_FORCE_SINGLE_FS_TYPE.
-> 
-> We could allow more filesystems, e.g.  instead of running LTP few times with
-> different LTP_SINGLE_FS_TYPE value: e.g.
-> 
-> for fs in ext4 xfs btrfs; do LTP_SINGLE_FS_TYPE=fs ioctl_ficlone02; done
-> 
-> we could introduce support for particular filesystems
-> LTP_FILESYSTEMS="ext4,xfs,btrfs" ioctl_ficlone02
+Hello,
 
-That is stil not equivalent if you run it with a whole LTP. We would
-have to run each test that uses device for all LTP_FILESYSTEMS, since
-many of the testcases does use device but does not use .all_filesystems.
+While looking at a btrfs bug where we fail to active a swap file that
+used to have shared extents, I noticed xfs has the same bug, however
+the test fails intermittently, suggesting some sort of race.
 
-So all in all I think that LTP_SINGLE_FS_TYPE is good enough solution.
+The test is this:
 
-Or we can try to rething the whole thing, but it's getting quite
-complicated with all the options we have.
+root 11:03:31 /home/fdmanana/scripts/btrfs-bugs > cat swap-all-tests.sh
+#!/bin/bash
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+DEV=/dev/sdi
+MNT=/mnt/sdi
+NUM_CLONES=50
+
+run_test()
+{
+    local sync_after_add_reflinks=$1
+    local sync_after_remove_reflinks=$2
+
+   # mkfs.btrfs -f $DEV > /dev/null
+   mkfs.xfs -f $DEV > /dev/null
+   mount $DEV $MNT
+
+   touch $MNT/foo
+   chmod 0600 $MNT/foo
+   # On btrfs the file must be NOCOW.
+   chattr +C $MNT/foo &> /dev/null
+   xfs_io -s -c "pwrite -b 1M 0 1M" $MNT/foo
+   mkswap $MNT/foo
+
+   for ((i = 1; i <= $NUM_CLONES; i++)); do
+       touch $MNT/foo_clone_$i
+       chmod 0600 $MNT/foo_clone_$i
+      # On btrfs the file must be NOCOW.
+      chattr +C $MNT/foo_clone_$i &> /dev/null
+      cp --reflink=always $MNT/foo $MNT/foo_clone_$i
+   done
+
+   if [ $sync_after_add_reflinks -ne 0 ]; then
+      # Flush delayed refs and commit current transaction.
+      sync -f $MNT
+   fi
+
+   # Remove the original file and all clones except the last.
+   rm -f $MNT/foo
+   for ((i = 1; i < $NUM_CLONES; i++)); do
+      rm -f $MNT/foo_clone_$i
+   done
+
+   if [ $sync_after_remove_reflinks -ne 0 ]; then
+      # Flush delayed refs and commit current transaction.
+      sync -f $MNT
+   fi
+
+   # Now use the last clone as a swap file. It should work since
+   # its extent are not shared anymore.
+   swapon $MNT/foo_clone_${NUM_CLONES}
+   swapoff $MNT/foo_clone_${NUM_CLONES}
+
+   umount $MNT
+}
+
+echo -e "\nTest without sync after creating and removing clones"
+run_test 0 0
+
+echo -e "\nTest with sync after creating clones"
+run_test 1 0
+
+echo -e "\nTest with sync after removing clones"
+run_test 0 1
+
+echo -e "\nTest with sync after creating and removing clones"
+run_test 1 1
+
+
+Running the test, it fails most of the time, but not always:
+
+root 11:04:25 /home/fdmanana/scripts/btrfs-bugs > ./swap-all-tests.sh
+
+Test without sync after creating and removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0013 sec (756.430 MiB/sec and 756.4297 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=5613cb28-3f3d-4530-a152-c98184e58e63
+
+Test with sync after creating clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0028 sec (354.862 MiB/sec and 354.8616 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=da7932b0-0428-4318-82b1-d7a536daa066
+
+Test with sync after removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0017 sec (586.510 MiB/sec and 586.5103 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=2ef8212c-64df-4bca-89fd-9ddadb7a824d
+
+Test with sync after creating and removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0014 sec (672.495 MiB/sec and 672.4950 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=0d7a0bf3-081b-4069-a346-81f1a10ebdda
+root 11:04:29 /home/fdmanana/scripts/btrfs-bugs >
+
+No failures above, great.
+
+Running it again:
+
+root 11:04:31 /home/fdmanana/scripts/btrfs-bugs > ./swap-all-tests.sh
+
+Test without sync after creating and removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0019 sec (513.611 MiB/sec and 513.6107 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=9dbafcff-1270-419a-9677-f30f8ea78b18
+swapon: /mnt/sdi/foo_clone_50: swapon failed: Invalid argument
+swapoff: /mnt/sdi/foo_clone_50: swapoff failed: Invalid argument
+
+Test with sync after creating clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0010 sec (969.932 MiB/sec and 969.9321 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=dae60c3d-524f-4be5-9d1c-4cfd6a968beb
+
+Test with sync after removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0018 sec (548.847 MiB/sec and 548.8474 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=9d99061e-5675-414d-9067-c591eb6e3528
+
+Test with sync after creating and removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0020 sec (488.520 MiB/sec and 488.5198 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=ff225f28-7e54-4045-8ba6-2c99df02eded
+root 11:04:34 /home/fdmanana/scripts/btrfs-bugs >
+
+Only the first sub-test failed.
+
+Running it once again:
+
+root 11:04:35 /home/fdmanana/scripts/btrfs-bugs > ./swap-all-tests.sh
+
+Test without sync after creating and removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0012 sec (803.859 MiB/sec and 803.8585 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=aeb8d730-f2c4-4adc-a59d-8047df74b75c
+
+Test with sync after creating clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0018 sec (550.055 MiB/sec and 550.0550 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=d5b7d7eb-327c-4df8-a63f-c8d556d3a083
+swapon: /mnt/sdi/foo_clone_50: swapon failed: Invalid argument
+swapoff: /mnt/sdi/foo_clone_50: swapoff failed: Invalid argument
+
+Test with sync after removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0017 sec (567.859 MiB/sec and 567.8592 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=22b26e8b-c1db-4e86-a39c-82df9b4f324c
+swapon: /mnt/sdi/foo_clone_50: swapon failed: Invalid argument
+swapoff: /mnt/sdi/foo_clone_50: swapoff failed: Invalid argument
+
+Test with sync after creating and removing clones
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0019 sec (514.139 MiB/sec and 514.1388 ops/sec)
+Setting up swapspace version 1, size = 1020 KiB (1044480 bytes)
+no label, UUID=1becd3ea-a6a5-4245-92b9-f4ef4ad23afd
+swapon: /mnt/sdi/foo_clone_50: swapon failed: Invalid argument
+swapoff: /mnt/sdi/foo_clone_50: swapoff failed: Invalid argument
+root 11:04:39 /home/fdmanana/scripts/btrfs-bugs >
+
+This time all sub-tests failed except the first one.
+
+So just to let you know, as I was integrating the test into a generic
+test case for fstests.
+
+Thanks.
 
