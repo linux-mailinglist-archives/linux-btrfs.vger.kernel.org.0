@@ -1,73 +1,73 @@
-Return-Path: <linux-btrfs+bounces-10256-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C01F09ED482
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 19:12:41 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1BB188B14F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 18:12:39 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6919A1FF1DA;
-	Wed, 11 Dec 2024 18:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jwz/RNcB"
-X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 241219ED483
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 19:12:44 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8D01DE4C8
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 18:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 021EB282DAB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 18:12:42 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4323B201258;
+	Wed, 11 Dec 2024 18:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DQ3it6UN"
+X-Original-To: linux-btrfs@vger.kernel.org
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D12246356
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 18:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733940753; cv=none; b=YgxAdhIVHpf6TJlJTT5Q21ReFJFKjNcFsNjaQTlJOeEbeydHL4P2VDQtYACL+SyH5JbQdifyBrCX7T5DchX1ZIaD0P6Gj3pnMKAJTXByw+GKGvGDKTdQfw7QlYA3VEtTPCQnDrvR5R3ROH1Smb+9j4+AfPnZNCDtk9xOvaIc1K8=
+	t=1733940758; cv=none; b=YvBev/05I+SIlfAWkPI2rKU33R9uzv9TseYtJK2YPwkL2zyMPoLkNDPKtq8f8nyMUc8Tx7WAOuUnVAsP9OIp7J5qHUXOBRcQyPf9xlqnO9+M46BUuANcDN7Ym/RzikW0haUUrx6KM/uI8cRl+CLD3Lzksu7eIgrdFFVQSzbnxMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733940753; c=relaxed/simple;
-	bh=qCUl+HN2BGab9PpzJyjZVSy4LfxlqjSrrz5EQa95vdI=;
+	s=arc-20240116; t=1733940758; c=relaxed/simple;
+	bh=XD+BA6M0sURn4DZ5siN73KCcaHXGq/t4AEVTAe03Dtw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KWWr2Sj3SDf4CZhldEDB7bchqLMLtOvoB52CMoT9sIfiRNP+O1rQNWVyB1mJJHHFUBef5QNhnCVvX9EkB4dVkvHJhAWf7TqbyFIQKH4+PeT1y9O4TsvXTJ3t3q/Ej/AjmFwaEN5jl4gggtP/gkZy4ok4Hp17omU6kRfSlg8xW7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jwz/RNcB; arc=none smtp.client-ip=198.175.65.10
+	 Content-Type:Content-Disposition:In-Reply-To; b=H8buAmzlzeXcoJ89tByW8XWqiBD5US3Lv+ILdkuM2n5yzpZNrafAG7Sou2JWjrLIs1nmJufLst/LWnRTdNswNXDQTq1T1P+pG5puif4Bp3wQsGK/sWnAkV9qVDZ4FDByps9nwCKWqqSbjMibMlkf8Kusc2eWQFgMyViXZjFQETg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DQ3it6UN; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733940751; x=1765476751;
+  t=1733940757; x=1765476757;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=qCUl+HN2BGab9PpzJyjZVSy4LfxlqjSrrz5EQa95vdI=;
-  b=Jwz/RNcBhzQTzXFV793kVZZw1svDiJ1hOwrfqJ3m5/Wn+1lBNOg0sCSh
-   Fvltw2Le3JvpOP579fBvuRNLUET2a/4kDYseKpRhd1/L+SOpsrkTxx+I5
-   NMnap7Ianora62Vy+5iA+XFgqXC7u96/f7IcVw/6rmldMBj4uc1hXxnRv
-   AEBL9aqWUNv36SNm5sdLtasSGdI9T/IrwsyMWtd5HoW5nrg/+XGLX2Fm8
-   G65GYUa1DNseLVi2VOHgoRnTREeyd3o93K2iy6ie3XBDVS9DL1v0G7usl
-   VNWBzr69Cn5KhO4/IGVATXWhh0ms1C/px/4xxLi8kpvnR3WYLr8ME9cpk
-   w==;
-X-CSE-ConnectionGUID: ot+8NZlrSJa7qMS0aS5X5Q==
-X-CSE-MsgGUID: r6JZKwjmQfWVLoWS7vaxyA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="51748720"
-X-IronPort-AV: E=Sophos;i="6.12,226,1728975600"; 
-   d="scan'208";a="51748720"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 10:12:30 -0800
-X-CSE-ConnectionGUID: a8Bhw/BFS+es0Fzp2JQyZw==
-X-CSE-MsgGUID: 53b4D2CfQTy4M4qpL1LlTA==
+  bh=XD+BA6M0sURn4DZ5siN73KCcaHXGq/t4AEVTAe03Dtw=;
+  b=DQ3it6UN0GGR+7bpfJloUpDG9YesPaVloHedmOpcpoGcGJ85YTgovDSt
+   0kMRjH7548vljim/rAAryUqUETkAMED7Pg9hKuMYxmVEKvYQVITocBjln
+   YbUXDDp3VHzI3pwOWGN7U/UVWghVuZxVN0i6ccXTxs2p9RCQGwYOYwixG
+   gHVY2zREu1v89uV3gNkR45lJ95UPyJ1uKgBkdekwvBSbePy0PbxEaDJ5H
+   Ff3vfScJacXrt0txldeswycxyfi2bBgST6LfwPp1tJQpcR8fV3B7gj12o
+   03qYk0a7TGRG7kvZzowt6lSEgBNO6gG9W/qs6MyV+3gqBi9Utptt+BHLi
+   A==;
+X-CSE-ConnectionGUID: qrdqDI7JSLygb8AIXjIgKw==
+X-CSE-MsgGUID: aeOY7wUoTiSXEpGEwuUH2g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11278"; a="45717084"
+X-IronPort-AV: E=Sophos;i="6.12,214,1728975600"; 
+   d="scan'208";a="45717084"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 10:12:30 -0800
+X-CSE-ConnectionGUID: 25BFb73hT1u3UocqRVJCTQ==
+X-CSE-MsgGUID: nOrnXZFDSMG6x9yyW2wcsA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="100849347"
+X-IronPort-AV: E=Sophos;i="6.12,226,1728975600"; 
+   d="scan'208";a="126726753"
 Received: from lkp-server01.sh.intel.com (HELO 82a3f569d0cb) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 11 Dec 2024 10:12:28 -0800
+  by orviesa002.jf.intel.com with ESMTP; 11 Dec 2024 10:12:29 -0800
 Received: from kbuild by 82a3f569d0cb with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1tLRCD-0006yD-2o;
+	id 1tLRCD-0006yF-2s;
 	Wed, 11 Dec 2024 18:12:25 +0000
-Date: Thu, 12 Dec 2024 02:11:55 +0800
+Date: Thu, 12 Dec 2024 02:12:24 +0800
 From: kernel test robot <lkp@intel.com>
 To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Cc: oe-kbuild-all@lists.linux.dev
 Subject: Re: [PATCH] btrfs: enhance ordered extent double freeing detection
-Message-ID: <202412120136.6OwbbtZf-lkp@intel.com>
+Message-ID: <202412120129.tEVBFsR6-lkp@intel.com>
 References: <53b793f2e7a7788f89cda97de565cfc1577cbf75.1733890357.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -93,68 +93,68 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-enhance-o
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
 patch link:    https://lore.kernel.org/r/53b793f2e7a7788f89cda97de565cfc1577cbf75.1733890357.git.wqu%40suse.com
 patch subject: [PATCH] btrfs: enhance ordered extent double freeing detection
-config: i386-buildonly-randconfig-003-20241211 (https://download.01.org/0day-ci/archive/20241212/202412120136.6OwbbtZf-lkp@intel.com/config)
-compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241212/202412120136.6OwbbtZf-lkp@intel.com/reproduce)
+config: i386-buildonly-randconfig-005-20241211 (https://download.01.org/0day-ci/archive/20241212/202412120129.tEVBFsR6-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241212/202412120129.tEVBFsR6-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202412120136.6OwbbtZf-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412120129.tEVBFsR6-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   In file included from fs/btrfs/ordered-data.c:7:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:8:
-   In file included from include/linux/cacheflush.h:5:
-   In file included from arch/x86/include/asm/cacheflush.h:5:
-   In file included from include/linux/mm.h:2223:
-   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> fs/btrfs/ordered-data.c:200:10: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+   fs/btrfs/ordered-data.c: In function 'alloc_ordered_extent':
+>> fs/btrfs/ordered-data.c:200:22: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      200 |                 entry->finished_bitmap = bitmap_zalloc(
-         |                 ~~~~~  ^
-   fs/btrfs/ordered-data.c:202:15: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+         |                      ^~
+   fs/btrfs/ordered-data.c:202:27: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      202 |                 if (!entry->finished_bitmap) {
-         |                      ~~~~~  ^
-   fs/btrfs/ordered-data.c:380:38: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+         |                           ^~
+   fs/btrfs/ordered-data.c: In function 'can_finish_ordered_extent':
+   fs/btrfs/ordered-data.c:380:50: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      380 |                 nr_set = bitmap_count_set(ordered->finished_bitmap, start_bit, nbits);
-         |                                           ~~~~~~~  ^
-   fs/btrfs/ordered-data.c:388:17: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+         |                                                  ^~
+   In file included from fs/btrfs/ordered-data.c:10:
+   fs/btrfs/ordered-data.c:388:43: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      388 |                                    ordered->finished_bitmap);
-         |                                    ~~~~~~~  ^
-   fs/btrfs/messages.h:44:41: note: expanded from macro 'btrfs_crit'
-      44 |         btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
-         |                                                ^~~~
-   fs/btrfs/messages.h:27:32: note: expanded from macro 'btrfs_printk'
-      27 |         _btrfs_printk(fs_info, fmt, ##args)
-         |                                       ^~~~
-   fs/btrfs/ordered-data.c:390:23: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+         |                                           ^~
+   fs/btrfs/messages.h:36:41: note: in definition of macro 'btrfs_printk'
+      36 |         btrfs_no_printk(fs_info, fmt, ##args)
+         |                                         ^~~~
+   fs/btrfs/ordered-data.c:382:25: note: in expansion of macro 'btrfs_crit'
+     382 |                         btrfs_crit(fs_info,
+         |                         ^~~~~~~~~~
+   fs/btrfs/ordered-data.c:390:35: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      390 |                 bitmap_set(ordered->finished_bitmap, start_bit, nbits);
-         |                            ~~~~~~~  ^
-   fs/btrfs/ordered-data.c:418:37: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+         |                                   ^~
+   In file included from arch/x86/include/asm/bug.h:99,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/linux/spinlock.h:60,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/slab.h:16,
+                    from fs/btrfs/ordered-data.c:6:
+   fs/btrfs/ordered-data.c:418:49: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      418 |                 if (WARN_ON(!bitmap_full(ordered->finished_bitmap,
-         |                                          ~~~~~~~  ^
-   include/asm-generic/bug.h:123:25: note: expanded from macro 'WARN_ON'
-     123 |         int __ret_warn_on = !!(condition);                              \
+         |                                                 ^~
+   include/asm-generic/bug.h:171:32: note: in definition of macro 'WARN_ON'
+     171 |         int __ret_warn_on = !!(condition);                              \
          |                                ^~~~~~~~~
-   fs/btrfs/ordered-data.c:426:14: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+   fs/btrfs/ordered-data.c:426:40: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      426 |                                 ordered->finished_bitmap);
-         |                                 ~~~~~~~  ^
-   fs/btrfs/messages.h:44:41: note: expanded from macro 'btrfs_crit'
-      44 |         btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
-         |                                                ^~~~
-   fs/btrfs/messages.h:27:32: note: expanded from macro 'btrfs_printk'
-      27 |         _btrfs_printk(fs_info, fmt, ##args)
-         |                                       ^~~~
-   fs/btrfs/ordered-data.c:675:23: error: no member named 'finished_bitmap' in 'struct btrfs_ordered_extent'
+         |                                        ^~
+   fs/btrfs/messages.h:36:41: note: in definition of macro 'btrfs_printk'
+      36 |         btrfs_no_printk(fs_info, fmt, ##args)
+         |                                         ^~~~
+   fs/btrfs/ordered-data.c:420:25: note: in expansion of macro 'btrfs_crit'
+     420 |                         btrfs_crit(fs_info,
+         |                         ^~~~~~~~~~
+   fs/btrfs/ordered-data.c: In function 'btrfs_put_ordered_extent':
+   fs/btrfs/ordered-data.c:675:42: error: 'struct btrfs_ordered_extent' has no member named 'finished_bitmap'
      675 |                         bitmap_free(entry->finished_bitmap);
-         |                                     ~~~~~  ^
-   1 warning and 8 errors generated.
+         |                                          ^~
 
 
 vim +200 fs/btrfs/ordered-data.c
