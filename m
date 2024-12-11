@@ -1,185 +1,112 @@
-Return-Path: <linux-btrfs+bounces-10253-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10254-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE8F9ED1C7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 17:30:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785F69ED24D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 17:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F95C1889847
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:30:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6056416690A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE971DE3C1;
-	Wed, 11 Dec 2024 16:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A191DDA3C;
+	Wed, 11 Dec 2024 16:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SfTs3FVh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E/WlTmkR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SfTs3FVh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E/WlTmkR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a/EDEYfv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE02C1DD88D;
-	Wed, 11 Dec 2024 16:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C33748A
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 16:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733934610; cv=none; b=fkca95WQNeHvtbce/Dp7qopHRXr+l4L7Z/xh2QKe8zUI7iux2zSYCjQC0vkJfHGFa+MtaATGYC7OFV1keYHBYytKFI40pmlThLXV5RZkb/hcH8auLTfa4mpOQ3j0YXvkyygWmvqhDTgCz/Hjq/Riw+QJY1W+Lu75l74NjiNMRuw=
+	t=1733935302; cv=none; b=YxeM22sEAy+ifSmaf8YHmfSITAbDQacbtnSI4K4wSQoXHPZ24/RvHLTm4CzxseHGSIt9m7dArR6wipLPTSs8bcSqSbf23Xq9oZc2DeNLFRa4zRzFpx4JWum8kJPqvBxlLyVQXfZ/M0Z/QtQEbYpM12nKZkZBVHDjbhJDcuTKEj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733934610; c=relaxed/simple;
-	bh=ugD1/9RfvopYK+t6OBJAj2qhfWD1ah5i/AWvmW/o8tk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YS1j4Di3PGRIHg3ZyPLnIS1hmWikzab0izFnTM5ndfCrAeFHkjh7i5n4N9Djk07FpxSbv5S5KD0E00qp0xxbowCZx6pDqVS03Yd4X8IGGDnrGBac8YC/Q7qZU1d4b/P86bNNuJi09yIP0eoMfeeDMkOh+W/G4oMW18IgYCrC5nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SfTs3FVh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E/WlTmkR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SfTs3FVh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E/WlTmkR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C30FA1F74B;
-	Wed, 11 Dec 2024 16:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733934606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
-	b=SfTs3FVh+l0sYUrKpZENXj63N+SojRDtvsiUbjl3KO1N9JmCEVfxE0YrbLrxyB8VT1/3FF
-	wxFI3FBtTdkzF8qY6kqhVA7ve+LKUFqSaETTtVUd4aG1l0jGEdmkjVUqUdg3geI6eS82yy
-	Yx9YEqI9WAiWqbPEw4Qndf1Om4l65ic=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733934606;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
-	b=E/WlTmkRIUkUF9Qq1A+G3/+Pekx2KQvgk/b/FSP2OL2X80rDqU2jF+m27J6+LP9IcUZBoO
-	WQokHPkDiqcsn6Dg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SfTs3FVh;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="E/WlTmkR"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733934606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
-	b=SfTs3FVh+l0sYUrKpZENXj63N+SojRDtvsiUbjl3KO1N9JmCEVfxE0YrbLrxyB8VT1/3FF
-	wxFI3FBtTdkzF8qY6kqhVA7ve+LKUFqSaETTtVUd4aG1l0jGEdmkjVUqUdg3geI6eS82yy
-	Yx9YEqI9WAiWqbPEw4Qndf1Om4l65ic=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733934606;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
-	b=E/WlTmkRIUkUF9Qq1A+G3/+Pekx2KQvgk/b/FSP2OL2X80rDqU2jF+m27J6+LP9IcUZBoO
-	WQokHPkDiqcsn6Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B41151344A;
-	Wed, 11 Dec 2024 16:30:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VQjwKw6+WWfKVwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 11 Dec 2024 16:30:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 60CDAA0894; Wed, 11 Dec 2024 17:30:06 +0100 (CET)
-Date: Wed, 11 Dec 2024 17:30:06 +0100
-From: Jan Kara <jack@suse.cz>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	amir73il@gmail.com, brauner@kernel.org,
-	torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
- on page fault
-Message-ID: <20241211163006.2r2mxe7vddzgk7ka@quack3>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
- <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
- <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
+	s=arc-20240116; t=1733935302; c=relaxed/simple;
+	bh=aldS5hYOgrLEq6CR3iKALSaxFpoZx82F7YOhg/rZn8I=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Gr4pLVa7WlW4EMiOZk2JtNwQsoh6eMbhDdoYQFt1+I5duDvhSeqYMvK3yqy980EAzb30GlsSYADxNCtto7h2k354/B2PIDAkUPKWHJX7vWfNz6KYOmrxWmVYCvv1ri07Hgdv2440qzSWD9WJWPCYs7EZoVUWC68VxF3Z1UDpiSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a/EDEYfv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96641C4CED2
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 16:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733935302;
+	bh=aldS5hYOgrLEq6CR3iKALSaxFpoZx82F7YOhg/rZn8I=;
+	h=From:To:Subject:Date:From;
+	b=a/EDEYfvsTi4xXn0qDiyYYmYxdCi6dBW+HZchjolMFyHCo3lenypqbrx/rwj79eA0
+	 aUHYkum9330DVA4wJqCVdhO1am2yezmouePN8V9WRtUokZEtJuypL5/PZGW4+Huiij
+	 Q/Awgg7KrZm/qZg88+yCu6xNULvwz6AJyOZzw41y+h5PCTO3mAjUOFCBOlCaRG7qWB
+	 YtDtNM41TkTJq5BgzAELDgiwN+vcjfDObMPWNhRfv7m7z42vuJDDwaAD6ON58uogQ4
+	 2JEm7e/hKd6Oyi5uV9JFH/IjUMqAJLwArs27l5DAa5JVH4Pr+Mb5YZ/e0yrFJEnLig
+	 eTTc1ojqHf/XA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix use-after-free when COWing tree bock and tracing is enabled
+Date: Wed, 11 Dec 2024 16:41:38 +0000
+Message-Id: <8e502fc69ea68d1647707d947e0e4625f0dd1af0.1733934886.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
-X-Rspamd-Queue-Id: C30FA1F74B
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	MISSING_XM_UA(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,toxicpanda.com,fb.com,vger.kernel.org,suse.cz,kernel.org,linux-foundation.org,zeniv.linux.org.uk,kvack.org];
-	RCVD_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
 
-On Tue 10-12-24 13:12:01, Randy Dunlap wrote:
-> On 12/8/24 8:58 AM, Klara Modin wrote:
-> >> +/**
-> >> + * filemap_fsnotify_fault - maybe emit a pre-content event.
-> >> + * @vmf:    struct vm_fault containing details of the fault.
-> >> + * @folio:    the folio we're faulting in.
-> >> + *
-> >> + * If we have a pre-content watch on this file we will emit an event for this
-> >> + * range.  If we return anything the fault caller should return immediately, we
-> >> + * will return VM_FAULT_RETRY if we had to emit an event, which will trigger the
-> >> + * fault again and then the fault handler will run the second time through.
-> >> + *
-> >> + * This is meant to be called with the folio that we will be filling in to make
-> >> + * sure the event is emitted for the correct range.
-> >> + *
-> >> + * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
-> >> + */
-> >> +vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
-> > 
-> > The parameters mentioned above do not seem to match with the function.
-> 
-> 
-> which causes a warning:
-> 
-> mm/filemap.c:3289: warning: Excess function parameter 'folio' description in 'filemap_fsnotify_fault'
+From: Filipe Manana <fdmanana@suse.com>
 
-Thanks, fixed up!
+When a COWing a tree block, at btrfs_cow_block(), and we have the
+tracepoint trace_btrfs_cow_block() enabled and preemption is also enabled
+(CONFIG_PREEMPT=y), we can trigger a use-after-free in the COWed extent
+buffer while inside the tracepoint code. This is because in some paths
+that call btrfs_cow_block(), such as btrfs_search_slot(), we are holding
+the last reference on the extent buffer @buf so btrfs_force_cow_block()
+drops the last reference on the @buf extent buffer when it calls
+free_extent_buffer_stale(buf), which schedules the release of the extent
+buffer with RCU. This means that if we are on a kernel with preemption,
+the current task may be preempted before calling trace_btrfs_cow_block()
+and the extent buffer already released by the time trace_btrfs_cow_block()
+is called, resulting in a use-after-free.
 
-								Honza
+Fix this by grabbing an extra reference on the extent buffer before
+calling btrfs_force_cow_block() at btrfs_cow_block(), and then dropping
+it after calling the tracepoint.
+
+Reported-by: syzbot+8517da8635307182c8a5@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/6759a9b9.050a0220.1ac542.000d.GAE@google.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ctree.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 693dc27ffb89..3a28e77b6d72 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -751,10 +751,21 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 	 * Also We don't care about the error, as it's handled internally.
+ 	 */
+ 	btrfs_qgroup_trace_subtree_after_cow(trans, root, buf);
++	/*
++	 * When we are called from btrfs_search_slot() for example, we are
++	 * not holding an extra reference on @buf so btrfs_force_cow_block()
++	 * does a free_extent_buffer_stale() on the last reference and schedules
++	 * the extent buffer release with RCU, so we can trigger a
++	 * use-after-free in the trace_btrfs_cow_block() call below in case
++	 * preemption is enabled (CONFIG_PREEMPT=y). So grab an extra reference
++	 * to prevent that.
++	 */
++	atomic_inc(&buf->refs);
+ 	ret = btrfs_force_cow_block(trans, root, buf, parent, parent_slot,
+ 				    cow_ret, search_start, 0, nest);
+ 
+ 	trace_btrfs_cow_block(root, buf, *cow_ret);
++	free_extent_buffer_stale(buf);
+ 
+ 	return ret;
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.45.2
+
 
