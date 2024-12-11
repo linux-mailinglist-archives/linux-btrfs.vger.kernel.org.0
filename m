@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-10248-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EABD9ECF56
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:06:05 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B36B9ECF53
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:05:51 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 755FC18811C3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:05:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23929281D86
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BAC11D61A2;
-	Wed, 11 Dec 2024 15:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F5D1D63CA;
+	Wed, 11 Dec 2024 15:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o9lKHsJk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4iNlLP1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AA11D5CC6
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A147B1A725C
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733929520; cv=none; b=Y5rHndEmNgNEnOP7wKhXRr5s28RjWKu00m0GVxJJW+y7Hh+Rcuh9R6GQOO5lTv4MygETR21Jjdj/VdoJMDYs69xhtW+u0SEu1hV0jOWBQ5ccoDTFfgq1zOjf3XypmtZnL/DuSAUY3X5snZPnINvG4mJbzOoUpFJuW1OmASV1N2Y=
+	t=1733929521; cv=none; b=nDysA3lo7PfEwFkIYG3L4NXNpaF22bA+CVFE2LV5nGcZ9iEFFIIt7DwHhDEW6HtsWuCcHepdka+Qf73m9LjXWskxZy01n2YHQhnWYbNzyWd1ZL6+HW+PbSS0VfwLSe+zyDzCwg7dkBJGY3BZad9wWxxNU8JfbDXdbwtM4yM9BD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733929520; c=relaxed/simple;
-	bh=Mnhn1ycT3BR2wHhbiKSpCZU+4nq13CqR7isYDP4qCbg=;
+	s=arc-20240116; t=1733929521; c=relaxed/simple;
+	bh=Vc2HYuXc5jCwXidfHBZdaXlbz2uKzzjm7GSQzu3eYA4=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VyrQxr9iXim4FsDcf8WkLVApOKoT4YVgAr1Os6z8CZVkYxiP4weWiSRwhwnipj6z5/PZJQjZu75RhwY98eqTZ0VIA89AjW7gyOhBgTgPZ5ddmohmTfseDUz8jgym3FW4xqc86NMokjF/T4AEJ0uZASxxw0O3D5SDSr72p7ef/zQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o9lKHsJk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E47C4CED4
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:19 +0000 (UTC)
+	 MIME-Version; b=YeOu0Cnf5Z60BiVa0jZYGaQYTZy6dqyfmYg0K3X8e2HknC7QyXh14qnrXg0P/qutwwO7eBdATCzc0SX2CqoWR6Hy5JaDVfY3GdFGTSOHEl5bcKbTH3bRFej3v0lbbrHc1NaBDoIrjwEuLNhF8PWhUV4KqqncKnhBljX7lsDYemw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4iNlLP1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E1D0C4CED7
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733929520;
-	bh=Mnhn1ycT3BR2wHhbiKSpCZU+4nq13CqR7isYDP4qCbg=;
+	s=k20201202; t=1733929521;
+	bh=Vc2HYuXc5jCwXidfHBZdaXlbz2uKzzjm7GSQzu3eYA4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=o9lKHsJk3t5ruK0Vt0KnNpseNU2BxvQvgUolkJaLw4wqmwjyzESJ0XKCvWj4Uxf6z
-	 YMLqh86MFbbKnTgbpX56VW27NE+OclTh5xHqpOwGrGbHWBEXQKLHNcP8YKPV8MZtrx
-	 /1264F2CPetUJJK6QHjMXn8xBPaUi0gkmO/SW15Bpm+nYqPH2YpjKfmjAsPcq70IMk
-	 wXj4P+1BoiRTFTZewO0iZ8A0eebBkofAmGXxNo3kj93l56YL/jYvjaLpDHWkQJyq5i
-	 5Kevj4YbrjnxF7Vmr0ZYD24i0uoHndsuFHtcjrCrum1rJlO0+ZfOEBzbN9STNFtSFb
-	 RShIrdqtfbWWw==
+	b=A4iNlLP1XF8rdaBGqPlAjQKuk3xO1ZGZfEEdCjANh8FyX6C00+8Hks9hNqDW5gELR
+	 WvzYK8SMnL+DAZxmgMIQ6Hu/dZnSP7/tyYL2YJWEspF49YFZGzjw4VOczZX2QpQmot
+	 tXAa6bhznHyiGViF9AzCzYZqtpSjR3uyQTjVKXObgoV4wunfuH+QdP2u8OdMXPDwiW
+	 sHlDztCXw1MkkE6F/9xZ4xDok5wtM7+P4V2cK7kUypZ7Y5xqlTLIC9EN2QldkJs07U
+	 JXvaeoqpLVuo/s/QT5xhSQQQWQew/Arq+4hCtKHft8PkvFaa2w8eWwEBkcIBRz2TEO
+	 gV+FnEh6mI4vw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 08/11] btrfs: simplify return logic at check_committed_ref()
-Date: Wed, 11 Dec 2024 15:05:05 +0000
-Message-Id: <81b8ad0b51003fe2d99e8ece25a7b5ba1dc1a644.1733929328.git.fdmanana@suse.com>
+Subject: [PATCH v2 09/11] btrfs: simplify arguments for btrfs_cross_ref_exist()
+Date: Wed, 11 Dec 2024 15:05:06 +0000
+Message-Id: <9e374da66e73917c33b27bff49ba1627c0fda3e0.1733929328.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1733929327.git.fdmanana@suse.com>
 References: <cover.1733929327.git.fdmanana@suse.com>
@@ -59,89 +59,121 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of setting the value to return in a local variable 'ret' and then
-jumping into a label named 'out' that does nothing but return that value,
-simplify everything by getting rid of the label and directly returning a
-value.
+Instead of passing a root and an objectid which matches an inode number,
+pass the inode instead, since the root is always the root associated to
+the inode and the objectid is the number of that inode.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent-tree.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+ fs/btrfs/extent-tree.c | 22 ++++++++++++----------
+ fs/btrfs/extent-tree.h |  3 +--
+ fs/btrfs/inode.c       |  3 +--
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 00e137c48a9b..51c49b2f4991 100644
+index 51c49b2f4991..af3893ad784b 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -2316,35 +2316,32 @@ static noinline int check_committed_ref(struct btrfs_root *root,
- 
- 	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 	if (ret == 0) {
- 		/*
- 		 * Key with offset -1 found, there would have to exist an extent
- 		 * item with such offset, but this is out of the valid range.
- 		 */
--		ret = -EUCLEAN;
--		goto out;
-+		return -EUCLEAN;
- 	}
- 
--	ret = -ENOENT;
- 	if (path->slots[0] == 0)
--		goto out;
-+		return -ENOENT;
- 
- 	path->slots[0]--;
- 	leaf = path->nodes[0];
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
- 
- 	if (key.objectid != bytenr || key.type != BTRFS_EXTENT_ITEM_KEY)
--		goto out;
-+		return -ENOENT;
- 
--	ret = 1;
- 	item_size = btrfs_item_size(leaf, path->slots[0]);
- 	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
- 	expected_size = sizeof(*ei) + btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY);
- 
- 	/* No inline refs; we need to bail before checking for owner ref. */
- 	if (item_size == sizeof(*ei))
--		goto out;
-+		return 1;
- 
- 	/* Check for an owner ref; skip over it to the real inline refs. */
- 	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
-@@ -2357,11 +2354,11 @@ static noinline int check_committed_ref(struct btrfs_root *root,
- 
- 	/* If extent item has more than 1 inline ref then it's shared */
- 	if (item_size != expected_size)
--		goto out;
-+		return 1;
- 
- 	/* If this extent has SHARED_DATA_REF then it's shared */
- 	if (type != BTRFS_EXTENT_DATA_REF_KEY)
--		goto out;
-+		return 1;
- 
- 	ref = (struct btrfs_extent_data_ref *)(&iref->offset);
- 	if (btrfs_extent_refs(leaf, ei) !=
-@@ -2369,11 +2366,9 @@ static noinline int check_committed_ref(struct btrfs_root *root,
- 	    btrfs_extent_data_ref_root(leaf, ref) != btrfs_root_id(root) ||
- 	    btrfs_extent_data_ref_objectid(leaf, ref) != objectid ||
- 	    btrfs_extent_data_ref_offset(leaf, ref) != offset)
--		goto out;
-+		return 1;
- 
--	ret = 0;
--out:
--	return ret;
-+	return 0;
+@@ -2206,10 +2206,11 @@ int btrfs_set_disk_extent_flags(struct btrfs_trans_handle *trans,
+ 	return ret;
  }
  
- int btrfs_cross_ref_exist(struct btrfs_root *root, u64 objectid, u64 offset,
+-static noinline int check_delayed_ref(struct btrfs_root *root,
++static noinline int check_delayed_ref(struct btrfs_inode *inode,
+ 				      struct btrfs_path *path,
+-				      u64 objectid, u64 offset, u64 bytenr)
++				      u64 offset, u64 bytenr)
+ {
++	struct btrfs_root *root = inode->root;
+ 	struct btrfs_delayed_ref_head *head;
+ 	struct btrfs_delayed_ref_node *ref;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+@@ -2283,7 +2284,7 @@ static noinline int check_delayed_ref(struct btrfs_root *root,
+ 		 * then we have a cross reference.
+ 		 */
+ 		if (ref->ref_root != btrfs_root_id(root) ||
+-		    ref_owner != objectid || ref_offset != offset) {
++		    ref_owner != btrfs_ino(inode) || ref_offset != offset) {
+ 			ret = 1;
+ 			break;
+ 		}
+@@ -2294,10 +2295,11 @@ static noinline int check_delayed_ref(struct btrfs_root *root,
+ 	return ret;
+ }
+ 
+-static noinline int check_committed_ref(struct btrfs_root *root,
++static noinline int check_committed_ref(struct btrfs_inode *inode,
+ 					struct btrfs_path *path,
+-					u64 objectid, u64 offset, u64 bytenr)
++					u64 offset, u64 bytenr)
+ {
++	struct btrfs_root *root = inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, bytenr);
+ 	struct extent_buffer *leaf;
+@@ -2364,29 +2366,29 @@ static noinline int check_committed_ref(struct btrfs_root *root,
+ 	if (btrfs_extent_refs(leaf, ei) !=
+ 	    btrfs_extent_data_ref_count(leaf, ref) ||
+ 	    btrfs_extent_data_ref_root(leaf, ref) != btrfs_root_id(root) ||
+-	    btrfs_extent_data_ref_objectid(leaf, ref) != objectid ||
++	    btrfs_extent_data_ref_objectid(leaf, ref) != btrfs_ino(inode) ||
+ 	    btrfs_extent_data_ref_offset(leaf, ref) != offset)
+ 		return 1;
+ 
+ 	return 0;
+ }
+ 
+-int btrfs_cross_ref_exist(struct btrfs_root *root, u64 objectid, u64 offset,
++int btrfs_cross_ref_exist(struct btrfs_inode *inode, u64 offset,
+ 			  u64 bytenr, struct btrfs_path *path)
+ {
+ 	int ret;
+ 
+ 	do {
+-		ret = check_committed_ref(root, path, objectid, offset, bytenr);
++		ret = check_committed_ref(inode, path, offset, bytenr);
+ 		if (ret && ret != -ENOENT)
+ 			goto out;
+ 
+-		ret = check_delayed_ref(root, path, objectid, offset, bytenr);
++		ret = check_delayed_ref(inode, path, offset, bytenr);
+ 	} while (ret == -EAGAIN && !path->nowait);
+ 
+ out:
+ 	btrfs_release_path(path);
+-	if (btrfs_is_data_reloc_root(root))
++	if (btrfs_is_data_reloc_root(inode->root))
+ 		WARN_ON(ret > 0);
+ 	return ret;
+ }
+diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
+index ee62035c4a71..46b8e19022df 100644
+--- a/fs/btrfs/extent-tree.h
++++ b/fs/btrfs/extent-tree.h
+@@ -116,8 +116,7 @@ int btrfs_pin_extent(struct btrfs_trans_handle *trans, u64 bytenr, u64 num,
+ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
+ 				    const struct extent_buffer *eb);
+ int btrfs_exclude_logged_extents(struct extent_buffer *eb);
+-int btrfs_cross_ref_exist(struct btrfs_root *root,
+-			  u64 objectid, u64 offset, u64 bytenr,
++int btrfs_cross_ref_exist(struct btrfs_inode *inode, u64 offset, u64 bytenr,
+ 			  struct btrfs_path *path);
+ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 					     struct btrfs_root *root,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0965a29cf4f7..8a173a24ac05 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1920,8 +1920,7 @@ static int can_nocow_file_extent(struct btrfs_path *path,
+ 	 */
+ 	btrfs_release_path(path);
+ 
+-	ret = btrfs_cross_ref_exist(root, btrfs_ino(inode),
+-				    key->offset - args->file_extent.offset,
++	ret = btrfs_cross_ref_exist(inode, key->offset - args->file_extent.offset,
+ 				    args->file_extent.disk_bytenr, path);
+ 	WARN_ON_ONCE(ret > 0 && is_freespace_inode);
+ 	if (ret != 0)
 -- 
 2.45.2
 
