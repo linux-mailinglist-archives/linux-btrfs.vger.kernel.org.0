@@ -1,54 +1,53 @@
-Return-Path: <linux-btrfs+bounces-10251-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10252-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505BF9ECF57
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:06:16 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B079ECF63
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:09:53 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A1F9188B006
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56643280EAD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370491D63F9;
-	Wed, 11 Dec 2024 15:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6631A4F22;
+	Wed, 11 Dec 2024 15:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nzq/bdtd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNLLy4ta"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F07F1AA1C4
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CD7139CFF;
+	Wed, 11 Dec 2024 15:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733929523; cv=none; b=rwA5KmYwVY+g9ZgpRts4tPq3oZqfcP1VsAH6HRuuu531MODY/Pgk/GFUM/uWL38hDSeWh0nuuQZRHY6T+sRBD9fUxrmDmoDLEbrPPcvBvVlKr31zd3iDUYzkHOpXKLq/Nfzwn1xTxOVkpxaj7eFqliUI3W9zjl0Hm4MMO2ACt8Y=
+	t=1733929786; cv=none; b=phP6Yx7EjfKv3R2KVBih3vL7ZKgtwhmYy8tw0wn2be3QhWizN55TeP/kJrJ7dJXXaUKPGNQE02bwtKCENUMFO72ob7qiFIOUiqkJOI0LLkds/Qnz3BnxjVYgqrjVmeWnjyAufdRk40mj6YBISFviB9+TgaPzE3hY2VRbrg3tx+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733929523; c=relaxed/simple;
-	bh=lyylCpMnPWd8cxqGJQy1DhvFdCfY03ZvFNciJeweZdE=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Aey7nLGEB1RV/QLxkm/Tfl10SEOpXCIoYpeiJJXPxZUxEDLNQmlAxiXEB9rQ1Yu9cqtoI8iJbHIwgwn4CMCqWbIQcHv/AZAsp0nPPr+1SJiCF6ifpahmQHEk/YQ2akIsbL0OmBF9Zybwd7+T6y5MhBuD06Q2W1gcdQvAEhh2JcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nzq/bdtd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE535C4CED7
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:22 +0000 (UTC)
+	s=arc-20240116; t=1733929786; c=relaxed/simple;
+	bh=kjA2mG+uXwOrZUDMpDD9AqWD7pS5Z2Fe8+gMPd5t6nM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kR0tCFHIh1vbT67IfMQz8njWifqW58AFMlecWZX3kFnw1zlnLuXMg22UCTB9G9yCpzYtSl1GDjWlbw7jVnsVVCyOi2YueO2/cIEA+EUX/1lQzTFjHE77fQyYMxO4XTsQJRrSai0rQnKuMalj/YxOqjHKzlgt00PK93sKp1+O7KE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNLLy4ta; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F16EC4CED2;
+	Wed, 11 Dec 2024 15:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733929523;
-	bh=lyylCpMnPWd8cxqGJQy1DhvFdCfY03ZvFNciJeweZdE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Nzq/bdtd8TPwzEZTtluQlKTDdu2rRi2Mp5ezG5imuVB5IGEDFOgc7ocS8Pjd7lEp4
-	 IEGRo4Do51h9A/A4Rm4JQqGUeekd0AuhEq4UHJK2n/+H7z5xuHKXkWXOrN+It1aafU
-	 S6HbNImxGX5Gtqa27zIsBk+qAHC6VhYzZDTuthlmgVjZYJbR1PsojZ1Cy7aDAwEUtC
-	 X1goWnVvl/VF5+1KiUvk+eCE8iUBTBDxtHcWGIgR2OEgR09kqhZChbhg4N5AkL1/et
-	 bYYGdMRYjBQzPnwVF0KDFx3xJ6GbqddRIYfTG+L+zBXzDSw0ZObTJsOFz+ip87xVR5
-	 UjnPxxq8yZ2Uw==
+	s=k20201202; t=1733929786;
+	bh=kjA2mG+uXwOrZUDMpDD9AqWD7pS5Z2Fe8+gMPd5t6nM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lNLLy4ta1PpkibHZp0v7+9OoEV3bjsRhyl8PFBqQWl3yo8svb0xNx+lKiRBErlJMU
+	 krxixTpswC9BeC19u+RC9e7O6qiHV1yeQF/i+f6tuIazTD83EX51KWhQ53zCh17FFZ
+	 PCTRWneTQwQqsr+NEF8IaEChAAqEgDNIrBzhWLoHWVugaUV77ThEWJRbpv2y7yiIDh
+	 xeU+RXCwmT5JT99JIckT+4MNyw0b8XYYSZ884ILZqO6ylAcnvowuH6qaaxXKfagTBp
+	 HElBSrHn2bx+CJr06JiKXrcVnPwikAXLu69ipAkCiPycuUHqB9zBIQ+EnJmrVYjgFx
+	 mp28q/JPNKogA==
 From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 11/11] btrfs: add assertions and comment about path expectations to btrfs_cross_ref_exist()
-Date: Wed, 11 Dec 2024 15:05:08 +0000
-Message-Id: <4d5d175428bb38d17fc2214f8f31f511298ba67f.1733929328.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1733929327.git.fdmanana@suse.com>
-References: <cover.1733929327.git.fdmanana@suse.com>
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: test swap activation on file that used to have clones
+Date: Wed, 11 Dec 2024 15:09:40 +0000
+Message-ID: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,77 +58,165 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We should always call check_delayed_ref() with a path having a locked leaf
-from the extent tree where either the extent item is located or where it
-should be located in case it doesn't exist yet (when there's a pending
-unflushed delayed ref to do it), as we need to lock any existing delayed
-ref head while holding such leaf locked in order to avoid races with
-flushing delayed references, which could make us think an extent is not
-shared when it really is.
+Test that we are able to activate a swap file on a file that used to have
+its extents shared multiple times.
 
-So add some assertions and a comment about such expectations to
-btrfs_cross_ref_exist(), which is the only caller of check_delayed_ref().
+This exercises a bug on btrfs' extent sharedness detection during swap
+file activation, which is fixed by the following patch:
+
+  "btrfs: fix swap file activation failure due to extents that used to be shared"
+
+The test also fails sporadically on xfs and the bug was already reported
+to the xfs mailing list:
+
+   https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent-tree.c | 25 +++++++++++++++++++++++++
- fs/btrfs/locking.h     |  5 +++++
- 2 files changed, 30 insertions(+)
+ tests/generic/368     | 101 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/368.out |  25 +++++++++++
+ 2 files changed, 126 insertions(+)
+ create mode 100755 tests/generic/368
+ create mode 100644 tests/generic/368.out
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index bd13059299e1..0f30f53f51b9 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2426,6 +2426,31 @@ int btrfs_cross_ref_exist(struct btrfs_inode *inode, u64 offset,
- 		if (ret && ret != -ENOENT)
- 			goto out;
- 
-+		/*
-+		 * The path must have a locked leaf from the extent tree where
-+		 * the extent item for our extent is located, in case it exists,
-+		 * or where it should be located in case it doesn't exist yet
-+		 * because it's new and its delayed ref was not yet flushed.
-+		 * We need to lock the delayed ref head at check_delayed_ref(),
-+		 * if one exists, while holding the leaf locked in order to not
-+		 * race with delayed ref flushing, missing references and
-+		 * incorrectly reporting that the extent is not shared.
-+		 */
-+		if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
-+			struct extent_buffer *leaf = path->nodes[0];
+diff --git a/tests/generic/368 b/tests/generic/368
+new file mode 100755
+index 00000000..b2bf2d2c
+--- /dev/null
++++ b/tests/generic/368
+@@ -0,0 +1,101 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 368
++#
++# Test that we are able to create and activate a swap file on a file that used
++# to have its extents shared multiple times.
++#
++. ./common/preamble
++_begin_fstest auto quick clone swap
 +
-+			ASSERT(leaf != NULL);
-+			btrfs_assert_tree_read_locked(leaf);
-+
-+			if (ret != -ENOENT) {
-+				struct btrfs_key key;
-+
-+				btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+				ASSERT(key.objectid == bytenr);
-+				ASSERT(key.type == BTRFS_EXTENT_ITEM_KEY);
-+			}
-+		}
-+
- 		ret = check_delayed_ref(inode, path, offset, bytenr);
- 	} while (ret == -EAGAIN && !path->nowait);
- 
-diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-index 35036b151bf5..c69e57ff804b 100644
---- a/fs/btrfs/locking.h
-+++ b/fs/btrfs/locking.h
-@@ -199,8 +199,13 @@ static inline void btrfs_assert_tree_write_locked(struct extent_buffer *eb)
- {
- 	lockdep_assert_held_write(&eb->lock);
- }
-+static inline void btrfs_assert_tree_read_locked(struct extent_buffer *eb)
++_cleanup()
 +{
-+	lockdep_assert_held_read(&eb->lock);
++	cd /
++	rm -r -f $tmp.*
++	test -n "$swap_file" && swapoff $swap_file &> /dev/null
 +}
- #else
- static inline void btrfs_assert_tree_write_locked(struct extent_buffer *eb) { }
-+static inline void btrfs_assert_tree_read_locked(struct extent_buffer *eb) { }
- #endif
- 
- void btrfs_unlock_up_safe(struct btrfs_path *path, int level);
++
++. ./common/reflink
++
++[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
++    "btrfs: fix swap file activation failure due to extents that used to be shared"
++
++_require_scratch_swapfile
++_require_scratch_reflink
++_require_cp_reflink
++
++run_test()
++{
++	local sync_after_add_reflinks=$1
++	local sync_after_remove_reflinks=$2
++	local first_swap_file="$SCRATCH_MNT/swap"
++	local swap_size=$(($(_get_page_size) * 32))
++	local num_clones=50
++	local swap_file="$SCRATCH_MNT/clone_${num_clones}"
++
++	_scratch_mkfs >> $seqres.full 2>&1 || _fail "failed to mkfs"
++	_scratch_mount
++
++	echo "Creating swap file..."
++	_format_swapfile $first_swap_file $swap_size >> $seqres.full
++
++	echo "Cloning swap file..."
++	# Create a large number of clones so that on btrfs we get external ref
++	# items in the extent tree and not just inline refs (33 is currently the
++	# treshold after which external refs are created).
++	for ((i = 1; i <= $num_clones; i++)); do
++		# Create the destination file and set +C (NOCOW) on it before
++		# copying into it with reflink. This is because when cp needs to
++		# create the destination file, it first copies/clones the data
++		# and then sets the +C attribute, and on btrfs we can't clone a
++		# NOCOW file into a COW file, both must be NOCOW or both COW.
++		touch $SCRATCH_MNT/clone_$i
++		# 0600 is required for swap files, do the same as _format_swapfile.
++		chmod 0600 $SCRATCH_MNT/clone_$i
++		$CHATTR_PROG +C $SCRATCH_MNT/clone_$i > /dev/null 2>&1
++		_cp_reflink $first_swap_file $SCRATCH_MNT/clone_$i
++	done
++
++	if [ $sync_after_add_reflinks -ne 0 ]; then
++		# Force a transaction commit on btrfs to flush all delayed
++		# references and commit the current transaction.
++		_scratch_sync
++	fi
++
++	echo "Deleting original file and all clones except the last..."
++	rm -f $first_swap_file
++	for ((i = 1; i < $num_clones; i++)); do
++		rm -f $SCRATCH_MNT/clone_$i
++	done
++
++	if [ $sync_after_remove_reflinks -ne 0 ]; then
++		# Force a transaction commit on btrfs to flush all delayed
++		# references and commit the current transaction.
++		_scratch_sync
++	fi
++
++	# Now use the last clone as a swap file.
++	echo "Activating swap file..."
++	_swapon_file $swap_file
++	swapoff $swap_file
++
++	_scratch_unmount
++}
++
++echo -e "\nTest without sync after creating and removing clones"
++run_test 0 0
++
++echo -e "\nTest with sync after creating clones"
++run_test 1 0
++
++echo -e "\nTest with sync after removing clones"
++run_test 0 1
++
++echo -e "\nTest with sync after creating and removing clones"
++run_test 1 1
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/368.out b/tests/generic/368.out
+new file mode 100644
+index 00000000..14a561e1
+--- /dev/null
++++ b/tests/generic/368.out
+@@ -0,0 +1,25 @@
++QA output created by 368
++
++Test without sync after creating and removing clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
++
++Test with sync after creating clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
++
++Test with sync after removing clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
++
++Test with sync after creating and removing clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
 -- 
 2.45.2
 
