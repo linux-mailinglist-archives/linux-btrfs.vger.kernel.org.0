@@ -1,223 +1,185 @@
-Return-Path: <linux-btrfs+bounces-10252-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10253-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B079ECF63
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:09:53 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FE8F9ED1C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 17:30:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56643280EAD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:09:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F95C1889847
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6631A4F22;
-	Wed, 11 Dec 2024 15:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE971DE3C1;
+	Wed, 11 Dec 2024 16:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNLLy4ta"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SfTs3FVh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E/WlTmkR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SfTs3FVh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E/WlTmkR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CD7139CFF;
-	Wed, 11 Dec 2024 15:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE02C1DD88D;
+	Wed, 11 Dec 2024 16:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733929786; cv=none; b=phP6Yx7EjfKv3R2KVBih3vL7ZKgtwhmYy8tw0wn2be3QhWizN55TeP/kJrJ7dJXXaUKPGNQE02bwtKCENUMFO72ob7qiFIOUiqkJOI0LLkds/Qnz3BnxjVYgqrjVmeWnjyAufdRk40mj6YBISFviB9+TgaPzE3hY2VRbrg3tx+4=
+	t=1733934610; cv=none; b=fkca95WQNeHvtbce/Dp7qopHRXr+l4L7Z/xh2QKe8zUI7iux2zSYCjQC0vkJfHGFa+MtaATGYC7OFV1keYHBYytKFI40pmlThLXV5RZkb/hcH8auLTfa4mpOQ3j0YXvkyygWmvqhDTgCz/Hjq/Riw+QJY1W+Lu75l74NjiNMRuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733929786; c=relaxed/simple;
-	bh=kjA2mG+uXwOrZUDMpDD9AqWD7pS5Z2Fe8+gMPd5t6nM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kR0tCFHIh1vbT67IfMQz8njWifqW58AFMlecWZX3kFnw1zlnLuXMg22UCTB9G9yCpzYtSl1GDjWlbw7jVnsVVCyOi2YueO2/cIEA+EUX/1lQzTFjHE77fQyYMxO4XTsQJRrSai0rQnKuMalj/YxOqjHKzlgt00PK93sKp1+O7KE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNLLy4ta; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F16EC4CED2;
-	Wed, 11 Dec 2024 15:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733929786;
-	bh=kjA2mG+uXwOrZUDMpDD9AqWD7pS5Z2Fe8+gMPd5t6nM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lNLLy4ta1PpkibHZp0v7+9OoEV3bjsRhyl8PFBqQWl3yo8svb0xNx+lKiRBErlJMU
-	 krxixTpswC9BeC19u+RC9e7O6qiHV1yeQF/i+f6tuIazTD83EX51KWhQ53zCh17FFZ
-	 PCTRWneTQwQqsr+NEF8IaEChAAqEgDNIrBzhWLoHWVugaUV77ThEWJRbpv2y7yiIDh
-	 xeU+RXCwmT5JT99JIckT+4MNyw0b8XYYSZ884ILZqO6ylAcnvowuH6qaaxXKfagTBp
-	 HElBSrHn2bx+CJr06JiKXrcVnPwikAXLu69ipAkCiPycuUHqB9zBIQ+EnJmrVYjgFx
-	 mp28q/JPNKogA==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: test swap activation on file that used to have clones
-Date: Wed, 11 Dec 2024 15:09:40 +0000
-Message-ID: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1733934610; c=relaxed/simple;
+	bh=ugD1/9RfvopYK+t6OBJAj2qhfWD1ah5i/AWvmW/o8tk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YS1j4Di3PGRIHg3ZyPLnIS1hmWikzab0izFnTM5ndfCrAeFHkjh7i5n4N9Djk07FpxSbv5S5KD0E00qp0xxbowCZx6pDqVS03Yd4X8IGGDnrGBac8YC/Q7qZU1d4b/P86bNNuJi09yIP0eoMfeeDMkOh+W/G4oMW18IgYCrC5nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SfTs3FVh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E/WlTmkR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SfTs3FVh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E/WlTmkR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C30FA1F74B;
+	Wed, 11 Dec 2024 16:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733934606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=SfTs3FVh+l0sYUrKpZENXj63N+SojRDtvsiUbjl3KO1N9JmCEVfxE0YrbLrxyB8VT1/3FF
+	wxFI3FBtTdkzF8qY6kqhVA7ve+LKUFqSaETTtVUd4aG1l0jGEdmkjVUqUdg3geI6eS82yy
+	Yx9YEqI9WAiWqbPEw4Qndf1Om4l65ic=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733934606;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=E/WlTmkRIUkUF9Qq1A+G3/+Pekx2KQvgk/b/FSP2OL2X80rDqU2jF+m27J6+LP9IcUZBoO
+	WQokHPkDiqcsn6Dg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SfTs3FVh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="E/WlTmkR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1733934606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=SfTs3FVh+l0sYUrKpZENXj63N+SojRDtvsiUbjl3KO1N9JmCEVfxE0YrbLrxyB8VT1/3FF
+	wxFI3FBtTdkzF8qY6kqhVA7ve+LKUFqSaETTtVUd4aG1l0jGEdmkjVUqUdg3geI6eS82yy
+	Yx9YEqI9WAiWqbPEw4Qndf1Om4l65ic=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1733934606;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=E/WlTmkRIUkUF9Qq1A+G3/+Pekx2KQvgk/b/FSP2OL2X80rDqU2jF+m27J6+LP9IcUZBoO
+	WQokHPkDiqcsn6Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B41151344A;
+	Wed, 11 Dec 2024 16:30:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VQjwKw6+WWfKVwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 11 Dec 2024 16:30:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 60CDAA0894; Wed, 11 Dec 2024 17:30:06 +0100 (CET)
+Date: Wed, 11 Dec 2024 17:30:06 +0100
+From: Jan Kara <jack@suse.cz>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org,
+	torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
+ on page fault
+Message-ID: <20241211163006.2r2mxe7vddzgk7ka@quack3>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
+ <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
+ <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
+X-Rspamd-Queue-Id: C30FA1F74B
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MISSING_XM_UA(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,toxicpanda.com,fb.com,vger.kernel.org,suse.cz,kernel.org,linux-foundation.org,zeniv.linux.org.uk,kvack.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue 10-12-24 13:12:01, Randy Dunlap wrote:
+> On 12/8/24 8:58 AM, Klara Modin wrote:
+> >> +/**
+> >> + * filemap_fsnotify_fault - maybe emit a pre-content event.
+> >> + * @vmf:    struct vm_fault containing details of the fault.
+> >> + * @folio:    the folio we're faulting in.
+> >> + *
+> >> + * If we have a pre-content watch on this file we will emit an event for this
+> >> + * range.  If we return anything the fault caller should return immediately, we
+> >> + * will return VM_FAULT_RETRY if we had to emit an event, which will trigger the
+> >> + * fault again and then the fault handler will run the second time through.
+> >> + *
+> >> + * This is meant to be called with the folio that we will be filling in to make
+> >> + * sure the event is emitted for the correct range.
+> >> + *
+> >> + * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
+> >> + */
+> >> +vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
+> > 
+> > The parameters mentioned above do not seem to match with the function.
+> 
+> 
+> which causes a warning:
+> 
+> mm/filemap.c:3289: warning: Excess function parameter 'folio' description in 'filemap_fsnotify_fault'
 
-Test that we are able to activate a swap file on a file that used to have
-its extents shared multiple times.
+Thanks, fixed up!
 
-This exercises a bug on btrfs' extent sharedness detection during swap
-file activation, which is fixed by the following patch:
-
-  "btrfs: fix swap file activation failure due to extents that used to be shared"
-
-The test also fails sporadically on xfs and the bug was already reported
-to the xfs mailing list:
-
-   https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/368     | 101 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/368.out |  25 +++++++++++
- 2 files changed, 126 insertions(+)
- create mode 100755 tests/generic/368
- create mode 100644 tests/generic/368.out
-
-diff --git a/tests/generic/368 b/tests/generic/368
-new file mode 100755
-index 00000000..b2bf2d2c
---- /dev/null
-+++ b/tests/generic/368
-@@ -0,0 +1,101 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 368
-+#
-+# Test that we are able to create and activate a swap file on a file that used
-+# to have its extents shared multiple times.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick clone swap
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -r -f $tmp.*
-+	test -n "$swap_file" && swapoff $swap_file &> /dev/null
-+}
-+
-+. ./common/reflink
-+
-+[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-+    "btrfs: fix swap file activation failure due to extents that used to be shared"
-+
-+_require_scratch_swapfile
-+_require_scratch_reflink
-+_require_cp_reflink
-+
-+run_test()
-+{
-+	local sync_after_add_reflinks=$1
-+	local sync_after_remove_reflinks=$2
-+	local first_swap_file="$SCRATCH_MNT/swap"
-+	local swap_size=$(($(_get_page_size) * 32))
-+	local num_clones=50
-+	local swap_file="$SCRATCH_MNT/clone_${num_clones}"
-+
-+	_scratch_mkfs >> $seqres.full 2>&1 || _fail "failed to mkfs"
-+	_scratch_mount
-+
-+	echo "Creating swap file..."
-+	_format_swapfile $first_swap_file $swap_size >> $seqres.full
-+
-+	echo "Cloning swap file..."
-+	# Create a large number of clones so that on btrfs we get external ref
-+	# items in the extent tree and not just inline refs (33 is currently the
-+	# treshold after which external refs are created).
-+	for ((i = 1; i <= $num_clones; i++)); do
-+		# Create the destination file and set +C (NOCOW) on it before
-+		# copying into it with reflink. This is because when cp needs to
-+		# create the destination file, it first copies/clones the data
-+		# and then sets the +C attribute, and on btrfs we can't clone a
-+		# NOCOW file into a COW file, both must be NOCOW or both COW.
-+		touch $SCRATCH_MNT/clone_$i
-+		# 0600 is required for swap files, do the same as _format_swapfile.
-+		chmod 0600 $SCRATCH_MNT/clone_$i
-+		$CHATTR_PROG +C $SCRATCH_MNT/clone_$i > /dev/null 2>&1
-+		_cp_reflink $first_swap_file $SCRATCH_MNT/clone_$i
-+	done
-+
-+	if [ $sync_after_add_reflinks -ne 0 ]; then
-+		# Force a transaction commit on btrfs to flush all delayed
-+		# references and commit the current transaction.
-+		_scratch_sync
-+	fi
-+
-+	echo "Deleting original file and all clones except the last..."
-+	rm -f $first_swap_file
-+	for ((i = 1; i < $num_clones; i++)); do
-+		rm -f $SCRATCH_MNT/clone_$i
-+	done
-+
-+	if [ $sync_after_remove_reflinks -ne 0 ]; then
-+		# Force a transaction commit on btrfs to flush all delayed
-+		# references and commit the current transaction.
-+		_scratch_sync
-+	fi
-+
-+	# Now use the last clone as a swap file.
-+	echo "Activating swap file..."
-+	_swapon_file $swap_file
-+	swapoff $swap_file
-+
-+	_scratch_unmount
-+}
-+
-+echo -e "\nTest without sync after creating and removing clones"
-+run_test 0 0
-+
-+echo -e "\nTest with sync after creating clones"
-+run_test 1 0
-+
-+echo -e "\nTest with sync after removing clones"
-+run_test 0 1
-+
-+echo -e "\nTest with sync after creating and removing clones"
-+run_test 1 1
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/368.out b/tests/generic/368.out
-new file mode 100644
-index 00000000..14a561e1
---- /dev/null
-+++ b/tests/generic/368.out
-@@ -0,0 +1,25 @@
-+QA output created by 368
-+
-+Test without sync after creating and removing clones
-+Creating swap file...
-+Cloning swap file...
-+Deleting original file and all clones except the last...
-+Activating swap file...
-+
-+Test with sync after creating clones
-+Creating swap file...
-+Cloning swap file...
-+Deleting original file and all clones except the last...
-+Activating swap file...
-+
-+Test with sync after removing clones
-+Creating swap file...
-+Cloning swap file...
-+Deleting original file and all clones except the last...
-+Activating swap file...
-+
-+Test with sync after creating and removing clones
-+Creating swap file...
-+Cloning swap file...
-+Deleting original file and all clones except the last...
-+Activating swap file...
+								Honza
 -- 
-2.45.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
