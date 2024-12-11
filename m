@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-10243-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10244-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D334D9ECF52
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:05:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F7F39ECF4D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 16:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C739C1886017
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75BB0169899
 	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2024 15:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CB91B6CE5;
-	Wed, 11 Dec 2024 15:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D661C1F27;
+	Wed, 11 Dec 2024 15:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t22nozlX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="clqktjK4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8A724634E
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728891B6D0D
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733929515; cv=none; b=JSNYQO0MwYn+HUY2RtaNvTeSCHAJqBfopJjFys8yVnBGb/F9/Vkx2+yykq4G4v27ezkJl8xjXa9ZVf2M9Y6nC9t9atatSZ4ACKndQvTgygvVtJl6eCy00QGt1jDhWcKxQS4uNTlXWD4XLc691FZveEZaGUoAJbjLEif0DC0E3DI=
+	t=1733929516; cv=none; b=tSoy2AdWX2XafBh3CB//x46wJQl/qzUrrT37phvP6qdVU+3VzGGdTmyP2IF1iZx/gRqIQhlZ8Ck6fRlShvpwvODo0GrLzVbX6YqMIM/5+yTGPvdsEmnm/DV7vTDkEasq6y2Niy2Ztt+L5KPIossTzopqQmLOH1oumOrBzTHrQE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733929515; c=relaxed/simple;
-	bh=/Elnbw3J8+WEUwhw4pS0ScYsHxiN1Bhr3UJd26ScI18=;
+	s=arc-20240116; t=1733929516; c=relaxed/simple;
+	bh=gcJlCl3eYEkScuFHlQMq13/7I4cWeKB5TpS20bMssO8=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GAPnUyZkEY673hGxZQpATO165TNsYOZloAY1m8twMWQaGm2FSZdcp2XjAoylGlSLvsIBR18l/lgojIyHMtPSNiap2qUC6n1Pk+KwdC/bisazWHzSwESluMTDvnB/aYOjeAy8odJgJE8pvpeRCzoUuWdLhDPBkKlhVLZiRrF2l3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t22nozlX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66508C4CED2
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:14 +0000 (UTC)
+	 MIME-Version; b=QsrEXKNxUAAo+UhkdV5BuEm4SE/Si20hD2CJo0s0kQE+eqVc0qo5v/rdfSEyaF7/+oX3hErq4J7IJ+ypzfwyruZLWepW9rvCuzwA/Gsn6A0CXgFfsDGM37RNh5CeSLL1i4unchJ18P2z1qxpKYfXjp01kYV5ydQT9nRYkCfzyM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=clqktjK4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DDFBC4CED7
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 15:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733929515;
-	bh=/Elnbw3J8+WEUwhw4pS0ScYsHxiN1Bhr3UJd26ScI18=;
+	s=k20201202; t=1733929516;
+	bh=gcJlCl3eYEkScuFHlQMq13/7I4cWeKB5TpS20bMssO8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=t22nozlXVWWET9Ejvsc4LK/1KgFRo7MaQWig3aHFCzo+KYU04gpaMXD2FxMW9Bajf
-	 nqsRyEdq8RdPXILb29prjOT5GDgHdZ3lW6xS74kYbxfXc0GPZ8A3Rc9b0d9ottMuuX
-	 AiRq8SeXHFw9HFeWHQRNDqr+KZhZhrlm2Izn6lRJkgmgjeOkxdPlMNKc2IoZS1oyfg
-	 zZRtbwpZNK2fPOKjjW9rVx4hiASzVYaxmkms4xezl4bhFFaNzliLWZ6HNioeUcxs5a
-	 ok9EbV1w4pe0nCdt5QEyTjMq30gxX7FoifQOY1XsxJAU6LsXZcNt1GPo3KbAGcN5K+
-	 eC6QOxo0lnLhQ==
+	b=clqktjK4Vm2tqJLP96O4Z/7Yx0vm+UV10X3mwQishiTPM4k2q6e2dXqNxurLEZNts
+	 rFp9ojXMBvBGM7oDDsSAU2r7HJs7nS9eToMdNRE2Yg0GLPHNtPM8Niks3vLuF8v5MD
+	 3cNKr9Ih5rplRcgS0CGrGny9ti2Ii3CmTg4vnZB9/nehR88mO1TpXsMyc6J3+9rmKY
+	 XbEs3FG6uBd5XwQjlGMPUACPI3hIaJeRi50l0UQEzBnaHD/ih2qkN9DjAeugUomCer
+	 K+IS9bkMplcwTzSNWZ7QJQs6hC2MCe5v1fivNPfGTT8DxUOGaKuDFnOXPRfUOmrTPM
+	 vPIXzR+Pq7+xQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 03/11] btrfs: allow swap activation to be interruptible
-Date: Wed, 11 Dec 2024 15:05:00 +0000
-Message-Id: <05685edc7747bda9a359a04cd66b07e11e889f91.1733929328.git.fdmanana@suse.com>
+Subject: [PATCH v2 04/11] btrfs: avoid monopolizing a core when activating a swap file
+Date: Wed, 11 Dec 2024 15:05:01 +0000
+Message-Id: <c37ea7a8de12e996091ba295b2f201fbe680c96c.1733929328.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1733929327.git.fdmanana@suse.com>
 References: <cover.1733929327.git.fdmanana@suse.com>
@@ -59,35 +59,26 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During swap activation we iterate over the extents of a file, then do
-several checks for each extent, some of which may take some significant
-time such as checking if an extent is shared. Since a file can have
-many thousands of extents, this can be a very slow operation and it's
-currently not interruptible. I had a bug during development of a previous
-patch that resulted in an infinite loop when iterating the extents, so
-a core was busy looping and I couldn't cancel the operation, which is very
-annoying and requires a reboot. So make the loop interruptible by checking
-for fatal signals at the end of each iteration and stopping immediately if
-there is one.
+During swap activation we iterate over the extents of a file and we can
+have many thounsands of them, so we can end up in a busy loop monopolizing
+a core. Avoid this by doing a voluntary reschedule after processing each
+extent.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/btrfs/inode.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7ddb8a01b60f..5edc151c640d 100644
+index 5edc151c640d..283199d11642 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -10073,6 +10073,11 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 			bsi.block_start = physical_block_start;
- 			bsi.block_len = len;
+@@ -10078,6 +10078,8 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
+ 			ret = -EINTR;
+ 			goto out;
  		}
 +
-+		if (fatal_signal_pending(current)) {
-+			ret = -EINTR;
-+			goto out;
-+		}
++		cond_resched();
  	}
  
  	if (bsi.block_len)
