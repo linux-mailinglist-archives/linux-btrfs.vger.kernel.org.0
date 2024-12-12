@@ -1,134 +1,111 @@
-Return-Path: <linux-btrfs+bounces-10315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA4489EE412
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 11:26:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D854D9EE721
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 13:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B145167030
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 10:26:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9945E1886DCE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 12:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CDFB21129A;
-	Thu, 12 Dec 2024 10:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aJ3SWmA4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BE7213E61;
+	Thu, 12 Dec 2024 12:54:50 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9250E2101AF
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Dec 2024 10:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A2C1714D7;
+	Thu, 12 Dec 2024 12:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733999194; cv=none; b=pB5N/VggJOznBe/onEEN/r/jNEn+Ou1/cRXX+y1rSwF7JTNhbMdRU0Eve2uuPbxRUR1k3mlV1WZCk18DPkdt9j1fiEyU6/A/0NZmn1FzSy3nCC3m+VzMkTe8sH8TugQ3O3k8C8KPF2Jim8IKby9wqTiFj34Wti98aSTOQ8zwyUs=
+	t=1734008090; cv=none; b=K+w7gUHU/Ae/IrOSMxvJyUOvSeehOjM5EgxC2vbNDNuKxvpKLhIleET4CCnun0OJoySOhHPdHdbhmf4/P8LYIZYZ/oIqpWNhcENxvAhQBJSh2Zo61w61ge0/lwZ1xRGLcGAKTeSUeY4Z+r6slE7RL3pT+6Iaf412nJ17u/+jlC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733999194; c=relaxed/simple;
-	bh=jVswUeBk2R+z9ZnLjLAPKeYEEMow4andpI80HQc9KSE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RstGm5Wwn33FS1IL+ev2OBdnUrQEXoRJ7L8xk81v6jSSeIIX04QXb6o+0rK8F5N9XhGupGEQCMY0lvO8cTPcKwylw1GbQzSu1MIKXeRwVljNRikgz7ygijk+e54GtUguQ3Rbnj+A0YcgMBzTdGbDiWGrKI/19vtU5JnI3qw8q2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aJ3SWmA4; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a9ec267b879so81967166b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Dec 2024 02:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1733999191; x=1734603991; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jVswUeBk2R+z9ZnLjLAPKeYEEMow4andpI80HQc9KSE=;
-        b=aJ3SWmA4KW0pFlp/GrBX1QWlBYRcizdNjbVpZAFJKMqJAiJBTiDaJz+GKBdgHj6Vf4
-         KncicSeLN7hlfaT1MLkduV6ReE67pcwtFiGl94lI6YZ4JaErQ4ChtRJyngzG9ZlrYg5o
-         k1bHb7mNiFI0yXovQbvQFCERNoo0LgdIEuqtdkeRwasrqs/IzETdeSYKIJSn+mE/rMXT
-         QgpWfMj1DHp8iuLwhZFtauMq1gLL6zMSz8kvc99kd8qzfBZ0CreupOb3epmLn6L1V1he
-         sjNY6aHjnUuYRiJMCbr1ttk5fmvV533cBpxJcOssgCth0Nr7e1RhrtCNKPoKmiWMJHrE
-         pZ6A==
+	s=arc-20240116; t=1734008090; c=relaxed/simple;
+	bh=cj3QOIiWTKzKxX5xV/DwC/gpQ+j9r5EIa2WuZCSQLfQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pwLC8WyWpDaqTmvT7aKIuQ6q7wvAtX681uNzA2r6b2ymMXdhlnG6ITaszxxse/jIyV/EIj6Nm7T1GJgl3Ni11iR0lcYEWrHRiQ6xfA7ZNQOhfyV85nmjrzPK7SXC48rteGeXSq9wFiHAHqj0kG9hFWMBv1MD1Ka7GwkKqzEAwP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5d4e2aa7ea9so1042896a12.2;
+        Thu, 12 Dec 2024 04:54:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733999191; x=1734603991;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jVswUeBk2R+z9ZnLjLAPKeYEEMow4andpI80HQc9KSE=;
-        b=mdwEj86XPw16YgSWd1BiNMicjk+0lj4WwvGtexfMlu4+qllivCJ5r3CKyv91SERb5S
-         PWJE/NBMjE92/CWz+qBj7QDb+7smaHccMbhrL0nv001RNcXCR2pkcaD+e00H+aYACOBc
-         9Ie08cNvymWoQcAUqeCZzJCKNlYr/PDlCvRPq7OI/8GT8EkxidBez6J1aHI8GDY/6vHc
-         J+dLUB70draDTLyScTAB0B4NQEoLpoN1kxo8urnO0PN2dlf87kR2/ZSME8O03EWTcrVG
-         CROmgSLzdGe5jZ5vDpv6wm0vnmYSN4Kbrh3INLjwK/xKXW91o7k9J1R2hjDoAy2GXgyK
-         dsQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWR22MQ7aT8ncBPcRGr2v2bXM7TakKWjPFpQQ8Wm/8rIsk2oLTm2Fwc2MRyEv12cpr+wMQkWGwka4cU2Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ+gDOrZrEEP89Gb9FJL1VqXDsHvkrVjcXl2kz2kWl13uFlxmo
-	IzfW/0+NjC8P7AsBVNP6eDEZDi4focOlCTmEZocsfl7o9zNjtpPgtEbZFIRTf2euTCzVYqCSlnW
-	V0Sp0/RuXGIzd9xJteNF08w8btvXnOsCE30d9SQ==
-X-Gm-Gg: ASbGncvoIz4S8RgEd8IG9Z9lAghflIb1x9skDzfST5BIHgS6Qclzbt81jACD+AVfodR
-	XLV4Jxqt1TzHYbZkqoFB3TFCpRAHANGK4P8hX
-X-Google-Smtp-Source: AGHT+IH5yAN/gbiLL76Dk6LGA9jPui58kjRG4i8N9veQAZCoYkURqjEfO9YzuGA80yAQIDSiR81lnOHnHecPK3+61BY=
-X-Received: by 2002:a17:907:9548:b0:aa6:7737:1991 with SMTP id
- a640c23a62f3a-aa6b10f5f65mr510217466b.2.1733999190969; Thu, 12 Dec 2024
- 02:26:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1734008087; x=1734612887;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5K3LXkF6vdSz2gq/Hqz8occjAgDdUQkiCLkkIuUs/Zc=;
+        b=UYWAi6vkmM1bB6jGF3dtGSVkxpx0GgTBNC413gVRkdfzmYBXxTNr3b/SwDRQnGNPL2
+         80brjuCGZyYZ1C9kCdPVR+BOdVUHR2oDAeg0Aev1Dr8c2fEz8H0Ofupcmdj638+ZlaW8
+         43rRsj6znRw8BBZ5BfPyu7pJW2SUEFv6ZRoc7m1XMFlInFeifJjysbeDO+ppbLe4uSUr
+         VOXyMkv9qclvnzgmKve4yesQMfZC2oWpScrJ9LnWuTMWjyW8QTyD9ochlc1zHEcDLdCD
+         GUC1zxuePi9Exz8CgUxncPHmT2BfmTtqziuroGNXbQPYjwYl2VtqZ5aNzIPEn/odTZLW
+         2liQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU61ddKMiFS6X1ejvj1fEGR4TJnlVJsvAxMDHbwNP81aWVjqGlu/BN4PmhA5yufh3DFF3WvujKjNZJpJEIW@vger.kernel.org, AJvYcCUGCaJAPsTml3xJNCjSA4QOOehca5ZCT2OJB023mfxdwMFJelI0nmyT6U5iSibT4IlomzAXW70wHzXZ7w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjGmr0Qn2YejXysdmTpSrPfQWgeUXB0oidl5U5IXqlWpy5W72x
+	CpFqHyOSaYOv2fGaXZV6m+pGlmdFwuNPzqzLZOkYbwFHNaHNU0QV
+X-Gm-Gg: ASbGnctCTZGb4kIGFXwTBARLigcmtI1rX/iIvDmS8p/9ycVsa0fCpdIAr9dkg/Q3cjm
+	pVGQp74qF9HleD0tzZPYGiEkb1hZ23126GHubydFPbR6DLlYrZhd8pAQ2yvr8xWu16UvaafbPd3
+	VYGqV1Ygxk3dgXzXq2tuENrvkw5vAhgmT7BO6nKAR6hS3hQ+KpsY+iN8YChn3nrVDUSAe6dr1gv
+	0H/Mx/pXDax47uSB9C2w7p2QKwh46r2++gnCKx4zfOfAOlzezGs1BSoNbT1SgwN19ycSluh4sPn
+	Lu7vX2c3GuQrb2KARgAIp6M0rKpmQHxHmn1xNIM=
+X-Google-Smtp-Source: AGHT+IETeg4T03CGls7OXkkjorlHltmXhLmucnnjRQ+laZwNFV0+5F68gUAsCmIKYG8BylO0Ov5SnA==
+X-Received: by 2002:a05:6402:50cd:b0:5d2:2768:4f10 with SMTP id 4fb4d7f45d1cf-5d63238c8a6mr165537a12.17.1734008086543;
+        Thu, 12 Dec 2024 04:54:46 -0800 (PST)
+Received: from nuc.fritz.box (p200300f6f7081700fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f708:1700:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d14c74c3d5sm10309638a12.52.2024.12.12.04.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Dec 2024 04:54:46 -0800 (PST)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: Johannes Thumshirn <jth@kernel.org>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johannes Thumshirn <johannes.thjumshirn@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/3] btrfs: reduce repeated calls to btrfs_need_stripe_tree_update()
+Date: Thu, 12 Dec 2024 13:54:25 +0100
+Message-ID: <20241212-btrfs_need_stripe_tree_update-cleanups-v1-0-d842b6d8d02b@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241212075303.2538880-1-neelx@suse.com> <ac4c4ae5-0890-4f47-8a85-3c4447feaa90@wdc.com>
- <CAPjX3FcAZM4dSbnMkTpJPNJMcPDxKbEMwbg3ScaTWVg+5JqfDg@mail.gmail.com>
- <133f4cb5-516d-4e11-b03a-d2007ff667ee@wdc.com> <CAPjX3FchmM24-Afv7ueeK-Z1zBYivfj4yKXhVq6bARiGjqQOwQ@mail.gmail.com>
- <9d5b4776-e3c8-449c-bb0d-c200a1f76603@wdc.com> <CAPjX3FdU1mOkRr+JVE+S4og4NvjFerZhHC_qupFBTgjn9=s8MA@mail.gmail.com>
- <a8047d3a-ab45-42f0-8c60-f00829e40518@wdc.com>
-In-Reply-To: <a8047d3a-ab45-42f0-8c60-f00829e40518@wdc.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Thu, 12 Dec 2024 11:26:20 +0100
-Message-ID: <CAPjX3Fexb19AcchSttsmm=JCcobBBCPXxF6_qkK=_yuqtgNRRg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix a race in encoded read
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Omar Sandoval <osandov@fb.com>, 
-	"stable@vger.kernel.org" <stable@vger.kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20241212-btrfs_need_stripe_tree_update-cleanups-166f5e7e894c
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=951; i=jth@kernel.org; h=from:subject:message-id; bh=cj3QOIiWTKzKxX5xV/DwC/gpQ+j9r5EIa2WuZCSQLfQ=; b=owGbwMvMwCV2ad4npfVdsu8YT6slMaRH3XnsenPCCSbJW382zTsZM+N7Rtqab03iW4zXv3229 afb7/fqPR2lLAxiXAyyYoosx0Nt90uYHmGfcui1GcwcViaQIQxcnAIwkU1bGP7wZsf8z+DxfKP3 lDnwc9b7DX4u8hlbRKMkz/1nkP3MMjOSkeHOkQpGteLtLwzWHd/Aben17texKXZSk53rFcs1rKa X/uQCAA==
+X-Developer-Key: i=jth@kernel.org; a=openpgp; fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 12, 2024 at 11:10=E2=80=AFAM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 12.12.24 10:35, Daniel Vacek wrote:
-> > On Thu, Dec 12, 2024 at 10:14=E2=80=AFAM Johannes Thumshirn
-> > <Johannes.Thumshirn@wdc.com> wrote:
-> >> It got recently force pushed, 34725028ec5500018f1cb5bfd55c669c7bbf1346
-> >> it is now, sorry.
-> >
-> > Yeah, this looks very similar and it should fix the bug as well. In
-> > fact the fix part looks exactly the same, I just also changed the
-> > slab/stack allocation while you changed the atomic/refcount. But these
-> > are unrelated, IIUC. I actually planned to split it into two patches
-> > but David told me it's not necessary and I should send it as it is.
-> >
-> > Just nitpicking about your patch, the subject says simplify while I
-> > don't really see any simplification.
-> > Also it does not mention the UAF bug leading to crashes it fixes,
-> > missing the Fixes: and CC: stable tags.
-> >
-> > What do we do now?
->
-> I think it's up to David if he want's to send the patch for this rc or
-> not. In my test environment the part that went upstream was sufficient
-> to fix the UAF, so this was the part that actually went to Linus first.
+When working on RST backed RAID56 I was looking for a way to plumb the "use
+RST or not" decision into the bio submission code and this way found that
+we can cache the return of btrfs_need_raid_stripe_tree_update() in the
+btrfs_io_context (and btrfs_io_stripe) so there's no need to do multiple
+lookups for the same I/O.
 
-But it (I assume you are referring to `05b36b04d74a`) does not really
-fix the UAF. I'm still able to get the same crashes even with this
-commit applied. That was actually where I originally started testing.
+Signed-off-by: Johannes Thumshirn <johannes.thjumshirn@wdc.com>
+---
+Johannes Thumshirn (3):
+      btrfs: cache stripe tree usage in io_geometry
+      btrfs: cache RAID stripe tree decission in btrfs_io_context
+      btrfs: pass btrfs_io_geometry to is_single_device_io
 
-> @Dave can you send '34725028ec55 ("btrfs: simplify waiting for encoded
-> read endios")' in the next PR? I can update the Fixes tag.
+ fs/btrfs/bio.c     |  3 +--
+ fs/btrfs/volumes.c | 17 ++++++++++-------
+ fs/btrfs/volumes.h |  2 ++
+ 3 files changed, 13 insertions(+), 9 deletions(-)
+---
+base-commit: f7e8118a1c33aff911c3ce414d3e832eaba6b36d
+change-id: 20241212-btrfs_need_stripe_tree_update-cleanups-166f5e7e894c
 
-The commit message definitely needs to be updated mentioning that this
-actually fixes the UAF which `05b36b04d74a` does not really address.
+Best regards,
+-- 
+Johannes Thumshirn <jth@kernel.org>
 
---nX
 
