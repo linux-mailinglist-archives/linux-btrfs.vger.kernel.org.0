@@ -1,76 +1,90 @@
-Return-Path: <linux-btrfs+bounces-10274-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10275-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DA49EDD00
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 02:19:26 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516BB9EDD88
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 03:20:12 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA122836CF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 01:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B946188A79A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2024 02:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B4A558BB;
-	Thu, 12 Dec 2024 01:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5A213B797;
+	Thu, 12 Dec 2024 02:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nqOfWzo4"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Lm5itotk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7904225A8
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Dec 2024 01:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E942A1CA
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Dec 2024 02:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733966360; cv=none; b=nDZ8MGsm8gmuw354oa3k0RetGM7T3jGVhp2mxIDBtUiM/pTTE9MkpUeK7auffUcXxm0bCZ1WEsCXg5KEoWn3ijbwX4z5zEv7lOnXsNiNRDhMZTFbt/bdOObgilczfnM3hNjnaMowWVr/qgKeSJqzSvET8ol0zbwtyXni+p7B098=
+	t=1733970002; cv=none; b=nqKmKZz6FqnKDsdKNF/rzkr9Ob+26EhUHZh1+PmKL+Tyg51aLjGo44NrbZ/zZfdbkgrICDuDE+wM5kdiXS64vhaR+duOO+HDtUXAmWOT4t8EhY+GT5Rlzjgzr282OXMiV1bJE7ylvUAw556m5pUhrECJrLmiLTQMYDu/kEO9tTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733966360; c=relaxed/simple;
-	bh=SUvPk8jDBgmSsgdUZODT3DlXcip3GbyUYCxyAPF398w=;
+	s=arc-20240116; t=1733970002; c=relaxed/simple;
+	bh=S0EDgkYsiyPmmDC12n66dsllmz9LMQdGdGrhoed4Sgg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=on7cz1Tk8wflv/+MT33xNc5NDoCPz0MTZWth8DMwwC1CUUmiypaggscFEJDn55AoQ/d9+iWDzDWDEAqenW3i6OqcIEpH0aDsM1p27KqHGL0CbfnvQc97oaTW7K4tAydSSzgfV/w0MyCcVnTWXBqkqPve2vVx1VzsMJ7Mx1wz+S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nqOfWzo4; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733966358; x=1765502358;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SUvPk8jDBgmSsgdUZODT3DlXcip3GbyUYCxyAPF398w=;
-  b=nqOfWzo4YDK4CfYymTwByH4qclcEYPZxpbPKuH64D4LbuvAZdoyCOKee
-   fQg29eojzldcGbjRHy8yx9FetsVD3L7tP7qxyq/Peog08VwC3P56L0AY0
-   HNrTabhbMVJjbxXxF5apFiI5LSXqQUoHaDqNlWHmpBz4mIdUE/9sgiGE1
-   gzQC1Brw3dbO9wWw/YISIjIzuzHmFcbpvFAUOQAPMPINPD9DjmFDHgCRY
-   3KMOXTzDqk6HIkpjrmJiyMp+KvLRR+MN4vv+5NrxqyqaafUQTSG/sRJ5p
-   FhperSeYHl6rpjycfek+w6AdxiYV8tanDSFoYx+XW6HTDvx9erNf8tmzM
-   g==;
-X-CSE-ConnectionGUID: 7zPBgL8UQMeVYpvxkNdGiQ==
-X-CSE-MsgGUID: b3RG8neISkSpJjgejbA+TA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="33699088"
-X-IronPort-AV: E=Sophos;i="6.12,227,1728975600"; 
-   d="scan'208";a="33699088"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 17:19:17 -0800
-X-CSE-ConnectionGUID: cy5apSg4RZiXMmeSfpBTHQ==
-X-CSE-MsgGUID: 9gWnfv01R7KwxltFpsjBkg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,227,1728975600"; 
-   d="scan'208";a="96451175"
-Received: from lkp-server01.sh.intel.com (HELO 82a3f569d0cb) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 11 Dec 2024 17:19:15 -0800
-Received: from kbuild by 82a3f569d0cb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tLXrF-0007Hh-2U;
-	Thu, 12 Dec 2024 01:19:13 +0000
-Date: Thu, 12 Dec 2024 09:18:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>,
-	linux-btrfs@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	"Roger L. Beckermeyer III" <beckerlee3@gmail.com>
-Subject: Re: [PATCH] btrfs: edit __btrfs_add_delayed_item() to use rb helper
-Message-ID: <202412120959.0utuK69J-lkp@intel.com>
-References: <9b85bdbc269d20886590f0a70de66c602d72aa9d.1733695544.git.beckerlee3@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EJk6JY0P2xKgsdopndZE3LDsB5IkFEpix1nykRSWZbFRtlQOdTHAGHMQWtBaiW89SWsT5RlobafSRqKa6cS0Q/IzlYL4XBBYeQ7o9oJFbbTD6Gw1WTbfuhd2z/Gynr8ooncEFcjRvYHFmiPTXwl1pXg1wuC3/mOG6vxvNpbwyXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Lm5itotk; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-723f37dd76cso98171b3a.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2024 18:20:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1733970000; x=1734574800; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cigsmpcKu5f2evl4ng/5xeFHMT7REAuLtPvFFFok+Xg=;
+        b=Lm5itotk5Aczd8Czaf73aeH29is/KbPPrmQ/x20Xl+FaAvz5XaHp5a2jQZzQpzo1yp
+         4B/cqYDndT4xjgZCV+cMH7ySgjJVtmyc6IEfAoLEwsf4EWnlnqRJA5Tu13hrXGOZN0k0
+         M8AQtcq3VEEbcbtPaFh3AbdgOh92g7eICpkIhLndGpGTnxcNGkcGmn25Y7CViXnS6q/x
+         TlgrNs93+jc0MHHQrPftC0qqfPNmxgE0eQ5KCCb6one9NltS6BLl6KG4dIhf+i9n33br
+         AexZfUkyNX0cU/kksmEqbUNUYAPd17PhchX1pyppreDOcwPrph9dLhnr9OxuFjRe2kPH
+         w50A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733970000; x=1734574800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cigsmpcKu5f2evl4ng/5xeFHMT7REAuLtPvFFFok+Xg=;
+        b=sC7sDd+3uYB8GsG4Qnx03LZUZjLnWKkrNaframLHkck5pZ6TRYY+t46+Ty9MVaURXC
+         Mj2c/UcYniIONx6Qisu2SR9FzLd3fAfB5EaU2GYI6z1gLQWaMNjnH0Aow3pdQW2yEjPK
+         uFRMI3Gbx+1P3ed1E9TaDhzYdEz9VH3L094LNq3OM2bmlT8l51Hi7fZSeFlaJS6ry+iu
+         Bc4dvD3KcxdLsrFc2j6YURkxsWpDVyw/aTnkLipEf0JDGRreV/Jo/nJUoMBW06YBLw4K
+         hT4KbAQHNYHHPq8iKQTP+DwhmqQyQQbSjnGWreUPa+9pNO0y1k3533QTfDDFWZt5kCPJ
+         +0Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1GN3l7Cj7FtQzV/+H6Qo21AY3bojv6brPQoPQEAmzHEh5aW6Vn2NZC+LmZtRDGUT0PdCs6Sjlo3EUkQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkfcOEfLtAuuAFwvPPftA/BKLwLORC7il3K2pQGuYTprrhF2fT
+	ziNr9W/aLOvrgdwX6dy9jcg45dnVz/xZR1svlylFsga9wew3Pt/4ht9xkXhHECvgymOlGMRAyX0
+	X
+X-Gm-Gg: ASbGncsrpbtYtulGm3CBkdltr6TY54Om/aZwMe6B0ZCEKz7Q94xQ1v5zXGXXamPAJmS
+	7MXrmrMYlGhA+7/9B+AIZitF9a4+uCHw5ORIuylOpUkVzkkqMQEVI1M8O88Eg057rf7FWKgXE//
+	ukaXBLJ/vn+FHyy5OaQuW6tLUEGIVYaLuD6SgyyLrtDZjNmUkMr2ZmDNOvp0uMjgKkJ5F5raYiY
+	uO9lmYVr53DdFigTH48WlZyIMFXV6pjwcIYMF4vmVuAEX8Hk7wQ3neIuGVsvOcOYqrjkAAeTZnW
+	6QgmNHzrNUFiGjem+bo=
+X-Google-Smtp-Source: AGHT+IHaQ1CKpfB1isgorB9dmqXH1ozYb2ocfno8yZsmgtYnel5ThZjLIus4e4VrpUynG5vcqq3MkA==
+X-Received: by 2002:a05:6a00:3cd5:b0:724:f86e:e3d9 with SMTP id d2e1a72fcca58-728faa09f09mr2546097b3a.14.1733969999643;
+        Wed, 11 Dec 2024 18:19:59 -0800 (PST)
+Received: from dread.disaster.area (pa49-195-9-235.pa.nsw.optusnet.com.au. [49.195.9.235])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd443135d7sm5819151a12.61.2024.12.11.18.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Dec 2024 18:19:59 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1tLYo0-00000009dBU-1NWQ;
+	Thu, 12 Dec 2024 13:19:56 +1100
+Date: Thu, 12 Dec 2024 13:19:56 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	dchinner@redhat.com, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] generic/590: fix test failure when running against fs
+ other than xfs
+Message-ID: <Z1pITJWBnXvj9DeB@dread.disaster.area>
+References: <bcb3d3adeb36c732e807d876b82219c3c1350e2e.1733914512.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,71 +93,72 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9b85bdbc269d20886590f0a70de66c602d72aa9d.1733695544.git.beckerlee3@gmail.com>
+In-Reply-To: <bcb3d3adeb36c732e807d876b82219c3c1350e2e.1733914512.git.fdmanana@suse.com>
 
-Hi Roger,
+On Wed, Dec 11, 2024 at 10:55:25AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> With commit ce79de11337e ("fstests: clean up loop device instantiation")
+> we started to always call _destroy_loop_device at the very end of the
+> test, but we only create a loop device if we are running against xfs,
+> so the call to _destroy_loop_device results in an error since no loop
+> device was setup.
+> 
+> For example running this test against btrfs or ext4 results in this
+> failure:
+> 
+>    $ ./check generic/590
+>    FSTYP         -- btrfs
+>    PLATFORM      -- Linux/x86_64 debian0 6.13.0-rc1-btrfs-next-181+ #1 SMP PREEMPT_DYNAMIC Tue Dec  3 13:03:23 WET 2024
+>    MKFS_OPTIONS  -- /dev/sdc
+>    MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+> 
+>    generic/590 29s ... [failed, exit status 1]- output mismatch (see /home/fdmanana/git/hub/xfstests/results//generic/590.out.bad)
+>       --- tests/generic/590.out	2020-06-10 19:29:03.858520038 +0100
+>       +++ /home/fdmanana/git/hub/xfstests/results//generic/590.out.bad	2024-12-11 10:48:43.946205346 +0000
+>        @@ -1,2 +1,5 @@
+>        QA output created by 590
+>       -Silence is golden
+>       +losetup: option requires an argument -- 'd'
+>       +Try 'losetup --help' for more information.
+>       +Cannot destroy loop device
+>       +(see /home/fdmanana/git/hub/xfstests/results//generic/590.full for details)
+>       ...
+>       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/590.out /home/fdmanana/git/hub/xfstests/results//generic/590.out.bad'  to see the entire diff)
+>    Ran: generic/590
+>    Failures: generic/590
+>    Failed 1 of 1 tests
+> 
+> Fix this by removing the call to _destroy_loop_device at the end of the
+> test, as it's unnecessary because we call it in the _cleanup function if
+> we have setup a loop device.
+> 
+> Fixes: ce79de11337e ("fstests: clean up loop device instantiation")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/generic/590 | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/tests/generic/590 b/tests/generic/590
+> index 04d86e78..1adeef4c 100755
+> --- a/tests/generic/590
+> +++ b/tests/generic/590
+> @@ -115,8 +115,6 @@ $XFS_IO_PROG -c "truncate 0" -c fsync "$SCRATCH_MNT/file"
+>  # We need to do this before the loop device gets torn down.
+>  _scratch_unmount
+>  _check_scratch_fs
+> -_destroy_loop_device $loop_dev
+> -unset loop_dev
+>  
+>  echo "Silence is golden"
+>  status=0
+> -- 
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on linus/master v6.13-rc2 next-20241211]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Looks fine.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Roger-L-Beckermeyer-III/btrfs-edit-__btrfs_add_delayed_item-to-use-rb-helper/20241209-104443
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/9b85bdbc269d20886590f0a70de66c602d72aa9d.1733695544.git.beckerlee3%40gmail.com
-patch subject: [PATCH] btrfs: edit __btrfs_add_delayed_item() to use rb helper
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20241212/202412120959.0utuK69J-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241212/202412120959.0utuK69J-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202412120959.0utuK69J-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> fs/btrfs/delayed-inode.c:392:10: error: call to undeclared function 'rb_find_add_cached'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-           exist = rb_find_add_cached(&ins->rb_node, root, btrfs_add_delayed_item_cmp);
-                   ^
-   fs/btrfs/delayed-inode.c:392:8: error: incompatible integer to pointer conversion assigning to 'struct rb_node *' from 'int' [-Wint-conversion]
-           exist = rb_find_add_cached(&ins->rb_node, root, btrfs_add_delayed_item_cmp);
-                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   2 errors generated.
-
-
-vim +/rb_find_add_cached +392 fs/btrfs/delayed-inode.c
-
-   380	
-   381	static int __btrfs_add_delayed_item(struct btrfs_delayed_node *delayed_node,
-   382					    struct btrfs_delayed_item *ins)
-   383	{
-   384		struct rb_root_cached *root;
-   385		struct rb_node *exist;
-   386	
-   387		if (ins->type == BTRFS_DELAYED_INSERTION_ITEM)
-   388			root = &delayed_node->ins_root;
-   389		else
-   390			root = &delayed_node->del_root;
-   391	
- > 392		exist = rb_find_add_cached(&ins->rb_node, root, btrfs_add_delayed_item_cmp);
-   393		if (exist != NULL)
-   394			return -EEXIST;
-   395	
-   396		if (ins->type == BTRFS_DELAYED_INSERTION_ITEM &&
-   397		    ins->index >= delayed_node->index_cnt)
-   398			delayed_node->index_cnt = ins->index + 1;
-   399	
-   400		delayed_node->count++;
-   401		atomic_inc(&delayed_node->root->fs_info->delayed_root->items);
-   402		return 0;
-   403	}
-   404	
-
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dave Chinner
+david@fromorbit.com
 
