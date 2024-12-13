@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10337-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10338-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0A89F055E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2024 08:19:33 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27EC09F0569
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2024 08:22:25 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDFF018855A6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2024 07:19:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3677282906
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2024 07:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED4E18E351;
-	Fri, 13 Dec 2024 07:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C3B18FC84;
+	Fri, 13 Dec 2024 07:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="udFYjn8M"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="r0cHOnhq"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12BC11372
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2024 07:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDB91552FC;
+	Fri, 13 Dec 2024 07:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734074365; cv=none; b=NG87RaaMfc6yFCKi3ob5qd8TVsMFBoiiWKX/Dlr/SvkAsyxSj2fxWM+lzPEX6oKJTdVCpXsfWX8WXBoNsA/kHf+MDwZy0BejzjTWoEr3o/PdH2H2F6jLgaOUKhtUtEMwyiK12uewf2huArrDjL66ZkLSteGnsV5My6j/GPX4aFQ=
+	t=1734074536; cv=none; b=C+OrtxfMYsrrhDd8TGm0gFzZ5ZCpa1KcVNIQp4pVhIQMgkXfqmAId369EJ8h9XP483zAW6z9KAQ++6QUmQ5PLG2tqPlgw+B7pp7+TW7Z24WScypetiY5T7YWDzSn5yZpNs9/icoyyt00OLXW2lE13yS6fwFELnbxjmy42J8s27M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734074365; c=relaxed/simple;
-	bh=qzLDJO5Ns3krDBSEfgEIPIQggVrymy/d0rMXwKGg5J0=;
+	s=arc-20240116; t=1734074536; c=relaxed/simple;
+	bh=mJ1OiMwN2pzdmUnGBHBHWTomtgZRAWVK2IZLrfQzgk8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a7GV8sQIXac3ueNuhyEg/nKTDeE1YpAIxD5l6IPIEaPuVYs1aSiE6VclFKbAC9mHLeXvOm1uV7y7610/nLBTRdsXU4Q2REwrh5r2z71Rk3/5CiruQhE147Pcgs06mseXuNN9eLupomvpBrczja7Qr95+AEQJYA31PPGyYafedQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=udFYjn8M; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=JRWvZom5XrZNsqb7Fr8ZFmzsZ/TWgooFpFCJlnnHBVewDOabcW0skclv6pst+vAJ7mBJKGIAmvYHxsrb1vXCWUSlQQBDl42PohGivfGhoasddeiQQ5zotqn4yoKEmadsYFfRbAaFTVIzcSH0pWjXKtORS+Oqw05DSfkYVDH6aCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=r0cHOnhq; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734074360; x=1734679160; i=quwenruo.btrfs@gmx.com;
-	bh=O4CCgRMbUZvfz61T79VSLdSiujHR/l4qNWBmKVmONRU=;
+	s=s31663417; t=1734074509; x=1734679309; i=quwenruo.btrfs@gmx.com;
+	bh=Hh2nJXKwAbSNc1ASwtm/H6f9Y0e51clqp0kjErAQ9Y0=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=udFYjn8MSVoUe6qwsCWm9nSnIrRc2LQY8xjMZJ3k3w3uj4XRxik4Ok1ArN7XQEN7
-	 FmPvS8dL+N5e24taXxAIGShUm71NpRD4rG2x/tAbVrjdoPKsVAB8g/F8li2WS2Ho4
-	 fqo+tNDdOZN8DNhlBGqs9AsBQ/r6LVu6GiLqsEENRdxgUVlObq2rqd5qUF5tYQGPH
-	 2MiEG9Xmj1+IVW2I7XmYtxQjgGuXX4JSOCdB5ePHRJ+b/78lvttXI8KfOn5buVCdq
-	 +Y9jBgz2tRkafU4v24Mu3y08gY+25NYI9I7R6TnKTTdmqtlbQ+Byy5IxE8LYkYJch
-	 9a/iPzsRFVqNInh1ng==
+	b=r0cHOnhqmAMWMO57h46MHSsbs+xnYrxIz/cHNhn8ePx5Z3tueRmRY8/uiZBS7/ux
+	 0Q/3mSk/Cs7UGid9Bj/7xJV8kAZdE5A/b46SE1Ibh27GCs3Ln/dAO046lrifMElJE
+	 d+c6teazsgOfo8YfB9AY7YvLw84r5AG4f7ok7YpkaoAp0fm21Uf9bAUOfURUqNmfT
+	 ZSwWmDtp0bMRERMB2/U58Q8WggXvkbRoba6v3USNqHFMhbDIhRSDnUwvMXhblDf9z
+	 TFMCb1kopgurYn6oNV6+dJsF+3OZ+hG3/WfJT4sqnoykSLTK8SKwoQKzfigLOeW/a
+	 oPy0UWPlz7EGKvjtuQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzuB-1tt7Jg1JDb-00cASS; Fri, 13
- Dec 2024 08:19:19 +0100
-Message-ID: <4ffe4e81-0fd0-475a-9ad5-2b20269349b1@gmx.com>
-Date: Fri, 13 Dec 2024 17:49:16 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO6C-1txFZ70h4K-00q7Gb; Fri, 13
+ Dec 2024 08:21:49 +0100
+Message-ID: <f4d62504-140b-4fde-9b52-65cf3a0ddd0a@gmx.com>
+Date: Fri, 13 Dec 2024 17:51:44 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] btrfs: update btrfs_add_block_group_cache() to use rb
- helpers
-To: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <cover.1734033142.git.beckerlee3@gmail.com>
- <e2bd469a65fc93477240ebe9dd53b2ae7d591f46.1734033142.git.beckerlee3@gmail.com>
+Subject: Re: [PATCH 1/6] rbtree: add rb_find_add_cached() to rbtree.h
+To: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>, dsterba@suse.cz,
+ peterz@infradead.org, oleg@redhat.com, mhiramat@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: josef@toxicpanda.com, linux-btrfs@vger.kernel.org, lkp@intel.com
+References: <cover.1733850317.git.beckerlee3@gmail.com>
+ <4768e17a808c754748ac9264b5de9e8f00f22380.1733850317.git.beckerlee3@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,113 +91,114 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <e2bd469a65fc93477240ebe9dd53b2ae7d591f46.1734033142.git.beckerlee3@gmail.com>
+In-Reply-To: <4768e17a808c754748ac9264b5de9e8f00f22380.1733850317.git.beckerlee3@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8jlU0zBlWXHQYxB9K79Jh3QWMjWjXWkXDyhQYq/qTD5W1s9hMNn
- AlyD0czQx+NcVcD7vBsFO2AtjY1O6ePJwv7O1ZnLTKIAAElyV3iOWbriFQsK4+bVdJqRJfm
- lLpfoI/bHqVCFvt8YRWPcvySQxS3O6RaHiamKtC38z5nw11Bsl1UrG00LGEjGUKPr/L95hX
- CZfHirLtmX8Siiccbu3yQ==
+X-Provags-ID: V03:K1:ttZsohH/6G1P1aG583141dt6XkSP4gzDXSAPJLI6xq5jZXwpsR9
+ K6N+3FVgsQEA/x/YmM2oMbJAb9Y2JDHdf/Qu6cYukhePrPumAE01EcAPmY0xjGIViTXWubD
+ IZIxjo4Yc8FlZzyYQzkX28gFG7pjbeZvuVwPHmMkWy+TTaY3pqdhzKavSPSDQ3Bp2qMNBL1
+ Er/IB1r5KtDWPKqaguRnA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7uZOOQSGKmc=;1HrXATTip98G4iaA70DrI/Qbrs+
- ZQYRXk9kpPpXEgMtIM/vEcs7yFACVosRUIvmLhAPy94+DalimuUOGWBxZhvXZHnECOCK1+wCW
- wkJf+3wcl7u9cVo6VZjHWZd0hgd5GbCiVGTuJdNj62LaNZy5JB42Uo/ZwBrKzi0n/fS/IJKJH
- QYIDN+7K7YNJfKEGIyTf0ueZ9yN7EGdvQzAX+vBmdAnRWh1E9l4ylq4YI5IaxoppeDAiOooYl
- Dw/P+DI+77Y0FfN1GStdUVr6CNHdmEWC38kgmiTBEvN/7z2hu+NLlFgEFhW/Ork666R8HpnAd
- i5TdbZkuKgE9RlSEl4lJpVpv3xtvX6hBnlJwWZ5vKQbfvfF3Vq9FO1up/acRGWpFXO/Cg+KN8
- rWexxJO/D4pW+70YzcDbDEfaKv0adi6HLh2Cxz5FaMs2rVlwj6IQBNZ+XDWOi55nfSg2t9E+v
- wPcYM91IkmD1lvmHARrjsTCpJWln45YMB14ZGKQc0yq2HQak14zVQvSXqibcibbk8EJhzmWFU
- Gflg2KNcBTL46dMPpRfTqSB/Z2Er5jlYYyQ44yqz1g0Cvt/IXri6OpuzHdR1kZ5qRZ75H7QJ6
- xcJwUVfc3DwIN5/NbtF4bMZ6+OVsp3422k0EAvV7cKYWezPZuxWAUzqhXNSwhsWVt5bn4fRcU
- vKvW9p2b0yl6OIGHxftvXUIhqfnAWojSQf98n9hTh4MJB2D9m4WTWp5pdffj22LbdhQCPCXdI
- HAAFHRr+wAJ7NMlVS49XTWeQcBAS0GBku20+7oslrbiWgcRtc+n+zpNucDc/7gx8p2WmEvehC
- Q808LZx1mGDTUWY0a2t5oP+prDN/F/X2+63xW7DuEGqv6LGRU7hl038bJ5NVweeFPJcfFmGEf
- ph9/XKHxKft90JqJRgPVxj/KxK1nyKvNYil0AOU36aipDDROpk/q3lNvuQBfaxOhvI7ENPuSJ
- 0FKzNSvmRy74oQlVuwKkPiJR3n5TBEm1Xh2qAoEmnPUNNdj7fuv132tOgmEbKgLbFlDq5ro5f
- tPL8bzf/rAGOw5X0FzzcT0TbCK65DXEySwcBC+eCGymQjymd7lYuIeYlU//pw2iiEpDIOl1sg
- F3odyzFSfjgzsCjcrRbwvOmKC2wADy
+UI-OutboundReport: notjunk:1;M01:P0:Ho966R3LCLg=;+2y20v8esE6GnCooNsoV7Qi6kUr
+ Nj84rqZx5J9yx8wwalIxril9a6E6OOW2amoTRMqPAgiSTDdFu4iviGcIf3LPyaFAnNuoD7CEg
+ vlcmudrb2NLSAQjsB1ujSqT740wOqAsxMcwDdzs2D6Oya+pJSryDmDjMDl7VeUwfiZTyPOZjj
+ X5GW2RfefRYt7g23bmtcVE0PG4Tr5nqMbxc39QGwA9mIN/3EfxAI6ftr4pJ42/ZpqCEiyKHZo
+ L12s5k7WaOzEnmp1AjYaNxeap+mdN4MDpj+5zpEmmh9xc6k2aJugzEUJ8HqIQ57X3uircA4VR
+ 8t47a/KuFuVc0zfKJAH6IYzqKQZZ92hqwZzAm5h40s7idgWIklDfCJ0/YJT6sTFimhjXJ5u8Y
+ w/fi2Bo02Zo2iJqZ9LclbZSfAY+cEUcyAuRJBhAaedNgaBDtNga6KcyokEFkZG5CaPJcJ5+iD
+ pGjuPnux7fTlyPqUWI2CBg/KzmAy79rNylADCZmJnF8jlPt/trmCxSRKDiZf9xoq2vpx/83kL
+ 8hC672ArgWaInBAnrUablcTqFtINwhhimCOcmyEoiGOE9Ms32lnLSYzPElhj0k9bs29AZfp5V
+ BeMH9Sy0yVegT8i9C3ggQY8e2ZYigYIO3y0+56cwCjg8MH0OwwvLaaSc0urukFrbl2+Y+o2F2
+ bcet02JoHIUKeMfh1T4L8x5+eQOa2pKIJL6pdJD/o5QmrN4hq9uJOTwis+WhvXSL92QTFPiyC
+ i1gBJ/51HZrGvUq5uzpNBMamkiIYtXU4EsfDxCa/zC6tfVxce28+bZkX47YKnwstH1IOZTHFH
+ /o0OcoviJaFRVKRxyCK1i3/kIvkKE9GJt9RAOHBWCPIE1wHzlR3SLQmedwDkyuPec9a5Qarr0
+ CklPIGxdg8KvNmh5TUgBZtJpaWduM3WTzmN9MW42f5t2hsVXDNY8Pk0nMeF3h38PGVcH9dy1L
+ hUPIfR9W8lTf7AQalaOQdD7uEH7FOkis9bh6AXZe/ppdBVEWtfQJJfzp3/tIdzHculxxNSQv4
+ Vr+s2XnOlRCNK5kK2TWXmHDNvm3FBApSmJDB4WGqyRU5ag4PypXQjInL2LcoGPm65zpkhXr0v
+ I0/teSJw2JqoWLRceQAyfE6V921Y0f
 
 
 
-=E5=9C=A8 2024/12/13 06:59, Roger L. Beckermeyer III =E5=86=99=E9=81=93:
-> update fs/btrfs/block-group.c to use rb_find_add_cached()
-> implement btrfs_bg_start_cmp() for use with rb_find_add_cached().
+=E5=9C=A8 2024/12/13 03:16, Roger L. Beckermeyer III =E5=86=99=E9=81=93:
+> Adds rb_find_add_cached() as a helper function for use with
+> red-black trees. Used in btrfs to reduce boilerplate code.
+
+I won't call it boilerplate code though, it's just to utilize the cached
+rb tree feature as an optimization.
+
+And since rbtree is a tree-wide infrastructure, you need to be more
+persuasive to add a new interface.
+
+Yes, btrfs is utilizing this cached rb tree, but since you're adding a
+new tree-wide interface, it will be much better to find another
+driver/subsystem that can benefit from the new interface.
+
 >
 > Suggested-by: Josef Bacik <josef@toxicpanda.com>
 > Signed-off-by: Roger L. Beckermeyer III <beckerlee3@gmail.com>
 > ---
->   fs/btrfs/block-group.c | 40 +++++++++++++++++-----------------------
->   1 file changed, 17 insertions(+), 23 deletions(-)
+>   include/linux/rbtree.h | 37 +++++++++++++++++++++++++++++++++++++
+>   1 file changed, 37 insertions(+)
 >
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 5be029734cfa..6001b78e9ea9 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -173,40 +173,34 @@ void btrfs_put_block_group(struct btrfs_block_grou=
-p *cache)
->   	}
+> diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
+> index 7c173aa64e1e..0d4444c0cfb3 100644
+> --- a/include/linux/rbtree.h
+> +++ b/include/linux/rbtree.h
+> @@ -210,6 +210,43 @@ rb_add(struct rb_node *node, struct rb_root *tree,
+>   	rb_insert_color(node, tree);
 >   }
 >
-> +static int btrfs_bg_start_cmp(struct rb_node *new, const struct rb_node=
- *exist)
+> +/**
+> + * rb_find_add_cached() - find equivalent @node in @tree, or add @node
+> + * @node: node to look-for / insert
+> + * @tree: tree to search / modify
+> + * @cmp: operator defining the node order
+> + *
+> + * Returns the rb_node matching @node, or NULL when no match is found a=
+nd @node
+> + * is inserted.
+> + */
+> +static __always_inline struct rb_node *
+> +rb_find_add_cached(struct rb_node *node, struct rb_root_cached *tree,
+> +	    int (*cmp)(struct rb_node *, const struct rb_node *))
+
+This function is almost the same as rb_add_cached(), the only difference
+is the extra handling for the cmp function returning 0.
+
+So I'm wondering if it's possible to enhance rb_add_cached(), or even
+refactor it so there can be a shared core function and rb_add_cached()
+and rb_find_add_cached() can reuse the same function.
+
+Thanks,
+Qu
+
 > +{
-> +	struct btrfs_block_group *cmp1 =3D rb_entry(new, struct btrfs_block_gr=
-oup, cache_node);
-> +	const struct btrfs_block_group *cmp2 =3D rb_entry(exist, struct btrfs_=
-block_group, cache_node);
+> +	bool leftmost =3D true;
+> +	struct rb_node **link =3D &tree->rb_root.rb_node;
+> +	struct rb_node *parent =3D NULL;
+> +	int c;
 > +
-> +	if (cmp1->start < cmp2->start)
-> +		return -1;
-> +	if (cmp1->start > cmp2->start)
-> +		return 1;
-> +	return 0;
+> +	while (*link) {
+> +		parent =3D *link;
+> +		c =3D cmp(node, parent);
+> +
+> +		if (c < 0) {
+> +			link =3D &parent->rb_left;
+> +		} else if (c > 0) {
+> +			link =3D &parent->rb_right;
+> +			leftmost =3D false;
+> +		} else {
+> +			return parent;
+> +		}
+> +	}
+> +
+> +	rb_link_node(node, parent, link);
+> +	rb_insert_color_cached(node, tree, leftmost);
+> +	return NULL;
 > +}
 > +
->   /*
->    * This adds the block group to the fs_info rb tree for the block grou=
-p cache
->    */
->   static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
->   				       struct btrfs_block_group *block_group)
->   {
-> -	struct rb_node **p;
-> -	struct rb_node *parent =3D NULL;
-> -	struct btrfs_block_group *cache;
-> -	bool leftmost =3D true;
-> +	struct rb_node *exist;
->
->   	ASSERT(block_group->length !=3D 0);
->
->   	write_lock(&info->block_group_cache_lock);
-> -	p =3D &info->block_group_cache_tree.rb_root.rb_node;
-> -
-> -	while (*p) {
-> -		parent =3D *p;
-> -		cache =3D rb_entry(parent, struct btrfs_block_group, cache_node);
-> -		if (block_group->start < cache->start) {
-> -			p =3D &(*p)->rb_left;
-> -		} else if (block_group->start > cache->start) {
-> -			p =3D &(*p)->rb_right;
-> -			leftmost =3D false;
-> -		} else {
-> -			write_unlock(&info->block_group_cache_lock);
-> -			return -EEXIST;
-> -		}
-> -	}
-> -
-> -	rb_link_node(&block_group->cache_node, parent, p);
-> -	rb_insert_color_cached(&block_group->cache_node,
-> -			       &info->block_group_cache_tree, leftmost);
->
-> +	exist =3D rb_find_add_cached(&block_group->cache_node,
-> +			&info->block_group_cache_tree, btrfs_bg_start_cmp);
-> +	if (exist !=3D NULL)
-> +		return -EEXIST;
-
-If we hit -EEXIST, the block_group_cache_lock is never unlocked.
-
->   	write_unlock(&info->block_group_cache_lock);
->
->   	return 0;
+>   /**
+>    * rb_find_add() - find equivalent @node in @tree, or add @node
+>    * @node: node to look-for / insert
 
 
