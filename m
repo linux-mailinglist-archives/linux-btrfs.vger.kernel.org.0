@@ -1,278 +1,183 @@
-Return-Path: <linux-btrfs+bounces-10371-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10372-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFC79F1C2C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 03:52:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B5F9F1FB5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 16:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1566B188D3F6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 02:52:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEC131635DD
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 15:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88FD218AE2;
-	Sat, 14 Dec 2024 02:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="shLb6zKu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D82199924;
+	Sat, 14 Dec 2024 15:27:26 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D5F10A1E
-	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 02:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB0519580F
+	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 15:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734144724; cv=none; b=Kq1w70gOiouFbQfQ0nnPJRiWpwGlfxvjaaQBt1AtjvmJwBV+9drt/lJiGRTmT6+VqvcSwJoExgPPl/lXsAgghVQXd//Sl9kEYsB0IjmQMFxouCwpboTMJXn8sKLlBj717Bir2F0mrO4JAzNrADUkmpMDhwJ/wOUjD75SO+EIkF4=
+	t=1734190046; cv=none; b=hNn6jti+8fK5upqld3AI+mrDtm321/Tjbw2Yg4sFjBz3RGZQxG+mM2ZTaVu7CyZ/yJ6/QuWAqFNttAdOo004r7cstD5ahUecbvM++SfdCWBX8uQ59qzGNeJqLxC71NC3nEe8Kj0I2dIqS/qch1ONvGTWrEnxyor08AlLveD8/CY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734144724; c=relaxed/simple;
-	bh=4C5cckJR6c/oKbeuT6mt1X9XUBjeM0C3gQvLChx3xAI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=q9NraS5E6szzSoaQCiwWScIwDH064T5fIwG/ztYknucp5cRxCzvFfeVDqusJ4U+RQhQC525fP6PhuKOff4xLW0jNsY6oH21LERFs3D61ziPXHuevlPJgaZFQwPvMQXbLZXGEzvnrn7CHv4MyMIxSRfQ8hygTkvqaMkSZzr0aQj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=shLb6zKu; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734144719; x=1734749519; i=quwenruo.btrfs@gmx.com;
-	bh=xheLfvj9VGmvW/+DyyX+9eerE/xjvE7iA7Ax8wPr6sM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=shLb6zKuxBdwnCloBAqr5zDHc7OE5ZtNFprGtXc/MvEAnEirqQdsNYig+YC7EtjQ
-	 XHenaj2dZXI3TOpJ1AkRy7H+erL2ps5MgLdDMlUH4uiGrQ/wlsspeidMOhU/207d4
-	 VIMOJCXR9pauDX5yz2v4GMpPE+xeb1pYi742vMWR3Es29tj4q8xHmG5vuwitza2m/
-	 1Tyh9L9NtzNMuQy3gGoQTPhaqfXEDXoWizBu/eOnyWbR1LzloZfA+tL7Ay0zVzIA9
-	 iLxZAJiAKpQJb+lF/KasVCgYIPY+/1qS47qVmxqOa6zcodez/lt/jCpIztnsmzmb1
-	 AfxctukKkchSzaea+A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mel3t-1tuX9923ld-00ZOkx; Sat, 14
- Dec 2024 03:51:58 +0100
-Message-ID: <56d3885e-5651-4fd4-af6d-89897f8bd240@gmx.com>
-Date: Sat, 14 Dec 2024 13:21:56 +1030
+	s=arc-20240116; t=1734190046; c=relaxed/simple;
+	bh=T8hGVdCjuGnEszO5pJUdPMr8VJwD+RqgbFW5CoqY5lU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=fovrLVZk2+j0J8ZzA5ZL2oL2asAIkVJ9zun10D+3rvEfseim1bMnrj0AofCPGUGoqrwy1nJRvpl5yFaSQNW8Av/MiT308ATjEZVddH8+6RlwelZ6u3c3fJSAHGnvECQUzozuqJT8/bsulcLht74DK60z5P+a9/J04O+p7xWcjck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ae31bb8ee3so50537225ab.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 07:27:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734190043; x=1734794843;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ycb5ZpUl4UbAv/nk5ghNoC0eQYnwnxw0wKOIOVyb+a8=;
+        b=iGpP+r024Xgby/JofXqylKdhPY1SOi1IwBJkxRsVm6bCPqwRwKDB2auDlbh/UShAK2
+         380Otdma8DIveLSnLGE6+mZhxB+k+BaPteV08Vtj2OMzbkxyYLmbY0pTm0BJFbJiUR6T
+         j8zyAjSvibTlNhk4if09eIdsSHVSZyke7IDTF5YRpI+6Rt6b/042TGwv6RDbsouppfx3
+         QojMGWWdOu/VG/ydQs5ZZj6LhJUGUeiBLHj5YMhtw0jI19L74ljlCCXXsTRmx7XrKJKI
+         xcS3YnWHVYYJtcZMtr71yOa5S+YJmOJV3qCckHb1Nt9A7jR07iQCOvUY1w2nFVD0JLNw
+         CU0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXTwyfHvxsvU9TgiijIN8jCZux69ZDhYXbJxHlwSklwjoWY4bQH95DdYB4FG1+nIIplJhF64JjUFbjC0w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsfGKwZBf/Wn/jyWZ4RtqcMHtGKUmHC6utJIkqSM63a2SB4Lhx
+	UXSt+a1m6wNoHmCP08IqH6Pb2eYOH5YhyMbfBcHyKJ6RyBhDDkz5Bbvmneu/7oElxVkZYNyMblv
+	6SoF4l5WYarVEVm4hkIElaagjSv8BKDUDDe9Lpt/Dj/EV9+lnd1VTFXE=
+X-Google-Smtp-Source: AGHT+IELiSkkq0oSatwQK2on/8SqXLLRzEsbHajvH4iAxJHZquN4OGO9Ds+WNxr0j4r5ESrZ4f8lUa77q1GjMopehJ3wGGjbrHgo
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dev extent physical offset [...] on devid 1 doesn't have
- corresponding chunk
-To: Ben Millwood <thebenmachine@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RddWzKBgBY2b2czimHZIeNUpYS88kPTgRpHx89WF///xl4NPF0H
- 4HPeAtOoWaibIipHeo9YUiKfiOoe3kyv5Tv4BJ4pllvRs5x7r+20OddJ0ICLs3xBkg+fWR1
- SyUHGSpFlCqsxkLqpCTvgBEAtKSyVAqmf/tPsNgtdeGyyF8SdAO3nsEqGShwZ55R3B02EUl
- 621KNFMh0n4SdKCOlCIGw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:m5Rxs4r3uqo=;LorgeUZu5TaVLG6adgq08Vx0k38
- ZpbLrLx6l19Moxz6dQVvBen1e+sEmK50ddulrzBSg6JPL3XrLoH8cWN6EqgQ59arYk2iethRL
- XhSOu843/ly2tUbV6ceE9yp6TtlcPdKssYKK+S037tbI1Wc0SazX+M/R6RWyRM1yzmYjTChBu
- rvBnaftQwMc+BWac/psslrAZSUWRWCUSxYlcMQ0aT3AoRTfWjYiiSPVllljnE+8kUOojv5dA9
- b7g2X6BHWwx2my+3VBnD+ihp0/hmyUpQ+zpfD2fNG1IcQWeWVeJQuqBXi0QrXB1skPD6PjdIV
- E7TXzJfTbvYOFTL2kBtmwAH2OayyOrJ7Y9ONoXKQuk2kQ/8w6/HEa61EAF8CIkHKY5NoShPcP
- 83tfz4mX9+NOGpOHYMnDLeCIHa4FloPMK59FtC35hIcSeIWsElwncWFJ9Z6DqM0qjOX+iXgyB
- Q5UWP0fVi/tNJD0HjW67KrpRXQXGv0R9ZhIky3JXdgPhmxvT/FhJL2/M/jHpI/+XXRiXaboST
- RshxcbgFMOP67Y/MqpBcWfInbISYhqHHrax5wOpthALpFcnfgP0YHDU15lMMimFF2DwIldQnd
- 9IlwOXCeAtCSYXM+N9USHIVz19kqTnCJAo3aR5iDDgqByQzI446iwouEE0TELVcpxPqYvzqHS
- GSzvaSHmaCL3BbuAQAnE/cV/Mhr6wyiqFaxIPkHPKOiNUWOJWVZInloUz8JAH4qzXaHmbf74J
- pGYBMBVlkLbCE9MhWuayqFNY2oUf2f8ywRbVttsBJkQZf8En/IuS8dXirMimM25UztM8mnJc+
- Jfo1hqem1VEGR2Y24puWTjOwUE3MiDUjB5G4+dk0bBwHA4ol3rHboow3LIaIEh7omQhb56SIb
- zXwjxKMjT53LpHhDYeC3lPowy8+XFE4yVbWXnUllp0HPXbEQLDD1tz5NxyR9ve+Ca9ngL2/uq
- RyFkjKGU8lbUtO3mFIkMEouuDbsHj+8JmF3Fz2o9+jDIdERDdmoSdSLuMg7U53CK/3Bej/Tn9
- MeJkQ94HrW4L0FuX4bZQeSOParLetZoXsD+xP8R6pCG6HPuRWDWZ3BJOloFieCmQUerXVmZ8b
- Re1FRWz4NW1JfqstLOxnJv2OzweaSw
+X-Received: by 2002:a05:6e02:1a84:b0:3a7:e147:812f with SMTP id
+ e9e14a558f8ab-3afee3c5b42mr84750215ab.12.1734190043636; Sat, 14 Dec 2024
+ 07:27:23 -0800 (PST)
+Date: Sat, 14 Dec 2024 07:27:23 -0800
+In-Reply-To: <6714a705.050a0220.1e4b4d.0035.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <675da3db.050a0220.37aaf.00cc.GAE@google.com>
+Subject: Re: [syzbot] [bcachefs?] general protection fault in put_pwq_unlocked (2)
+From: syzbot <syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com>
+To: cem@kernel.org, clm@fb.com, djwong@kernel.org, dsterba@suse.com, 
+	josef@toxicpanda.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    a446e965a188 Merge tag '6.13-rc2-smb3-client-fixes' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11108344580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7c9f223bfe8924e
+dashboard link: https://syzkaller.appspot.com/bug?extid=aa930d41d2f32904c5da
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15108344580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/44e300b681ee/disk-a446e965.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3a7c7a152318/vmlinux-a446e965.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/97df5473ab29/bzImage-a446e965.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/29ab3e8f6ac5/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com
+
+bcachefs (da441363-bb6a-4ab9-999b-c1f40db4fee2): shutdown complete
+Oops: general protection fault, probably for non-canonical address 0xf11008476f002002: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: maybe wild-memory-access in range [0x8880623b78010010-0x8880623b78010017]
+CPU: 1 UID: 0 PID: 6159 Comm: syz.1.34 Not tainted 6.13.0-rc2-syzkaller-00292-ga446e965a188 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/25/2024
+RIP: 0010:__lock_acquire+0x6a/0x2100 kernel/locking/lockdep.c:5089
+Code: b6 04 30 84 c0 0f 85 f8 16 00 00 45 31 f6 83 3d 1b d0 9d 0e 00 0f 84 c8 13 00 00 89 54 24 60 89 5c 24 38 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 88 95 88 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc900032b7010 EFLAGS: 00010803
+RAX: 11100c476f002002 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 8880623b78010017
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: dffffc0000000000 R11: fffffbfff203079f R12: ffff88802ea1da00
+R13: 0000000000000000 R14: 0000000000000000 R15: 8880623b78010017
+FS:  00007f150d2de6c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f82dd601000 CR3: 0000000060034000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
+ _raw_spin_lock_irq+0xd3/0x120 kernel/locking/spinlock.c:170
+ put_pwq_unlocked+0x42/0x190 kernel/workqueue.c:1662
+ destroy_workqueue+0x99d/0xc40 kernel/workqueue.c:5897
+ __bch2_fs_free fs/bcachefs/super.c:592 [inline]
+ bch2_fs_release+0x629/0x7d0 fs/bcachefs/super.c:611
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x22f/0x480 lib/kobject.c:737
+ bch2_fs_alloc fs/bcachefs/super.c:960 [inline]
+ bch2_fs_open+0x1ebe/0x2f80 fs/bcachefs/super.c:2065
+ bch2_fs_get_tree+0x738/0x1710 fs/bcachefs/fs.c:2157
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4057 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f150c5874ba
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f150d2dde68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f150d2ddef0 RCX: 00007f150c5874ba
+RDX: 0000000020000080 RSI: 0000000020000000 RDI: 00007f150d2ddeb0
+RBP: 0000000020000080 R08: 00007f150d2ddef0 R09: 0000000000800000
+R10: 0000000000800000 R11: 0000000000000246 R12: 0000000020000000
+R13: 00007f150d2ddeb0 R14: 000000000000595e R15: 0000000020000480
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__lock_acquire+0x6a/0x2100 kernel/locking/lockdep.c:5089
+Code: b6 04 30 84 c0 0f 85 f8 16 00 00 45 31 f6 83 3d 1b d0 9d 0e 00 0f 84 c8 13 00 00 89 54 24 60 89 5c 24 38 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 88 95 88 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc900032b7010 EFLAGS: 00010803
+RAX: 11100c476f002002 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 8880623b78010017
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: dffffc0000000000 R11: fffffbfff203079f R12: ffff88802ea1da00
+R13: 0000000000000000 R14: 0000000000000000 R15: 8880623b78010017
+FS:  00007f150d2de6c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f82dd601000 CR3: 0000000060034000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	b6 04                	mov    $0x4,%dh
+   2:	30 84 c0 0f 85 f8 16 	xor    %al,0x16f8850f(%rax,%rax,8)
+   9:	00 00                	add    %al,(%rax)
+   b:	45 31 f6             	xor    %r14d,%r14d
+   e:	83 3d 1b d0 9d 0e 00 	cmpl   $0x0,0xe9dd01b(%rip)        # 0xe9dd030
+  15:	0f 84 c8 13 00 00    	je     0x13e3
+  1b:	89 54 24 60          	mov    %edx,0x60(%rsp)
+  1f:	89 5c 24 38          	mov    %ebx,0x38(%rsp)
+  23:	4c 89 f8             	mov    %r15,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruction
+  2e:	74 12                	je     0x42
+  30:	4c 89 ff             	mov    %r15,%rdi
+  33:	e8 88 95 88 00       	call   0x8895c0
+  38:	48                   	rex.W
+  39:	be 00 00 00 00       	mov    $0x0,%esi
+  3e:	00 fc                	add    %bh,%ah
 
 
-
-=E5=9C=A8 2024/12/14 12:47, Ben Millwood =E5=86=99=E9=81=93:
-> Hi folks,
->
-> I encountered this error recently, and I can't find it anywhere on
-> Google except in the patches that first added the check, so I come to
-> you for guidance.
->
-> This is one of my removable USB drives, formatted btrfs and primarily
-> for the purpose of receiving snapshots from my laptop's root drive.
-> I'm running:
->
-> $ mount /dev/masterchef-vg/btrfs /mnt/masterchef/btrfs -o compress
-> mount: /mnt/masterchef/btrfs: mount(2) system call failed: Structure
-> needs cleaning.
->         dmesg(1) may have more information after failed mount system cal=
-l.
->
-> Here's what dmesg says:
->
-> [13570.361767] BTRFS info (device dm-4): first mount of filesystem
-> a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
-> [13570.361779] BTRFS info (device dm-4): using crc32c (crc32c-intel)
-> checksum algorithm
-> [13570.361783] BTRFS info (device dm-4): use zlib compression, level 3
-> [13570.361785] BTRFS info (device dm-4): disk space caching is enabled
-> [13570.374442] BTRFS error (device dm-4): dev extent physical offset
-> 1997265698816 on devid 1 doesn't have corresponding chunk
-> [13570.374448] BTRFS error (device dm-4): failed to verify dev extents
-> against chunks: -117
-> [13570.375329] BTRFS error (device dm-4): open_ctree failed
-
-The problem is exactly what it said, there is an dev-extent but no chunk
-item for it.
-
-I'm wondering if there a chunk without its dev extent.
-
->
-> This issue emerged around the time I was trying to mount this
-> filesystem from my Raspberry Pi for the first time, but now occurs on
-> both my own laptop and my rpi.
->
-> Here's my laptop's details:
->
-> $ uname -a
-> Linux noether 6.6.63 #1-NixOS SMP PREEMPT_DYNAMIC Fri Nov 22 14:38:37
-> UTC 2024 x86_64 GNU/Linux
->
-> $ btrfs --version
-> btrfs-progs v6.11
-> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=
-=3Dbuiltin
->
-> $ btrfs fi show
-> Label: 'noether-root'  uuid: b7ad9a05-8f7b-44af-8952-a7f717e897e0
->      Total devices 1 FS bytes used 319.96GiB
->      devid    1 size 390.62GiB used 390.62GiB path /dev/mapper/noether-l=
-v
->
-> Label: 'masterchef-btrfs'  uuid: a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
->      Total devices 1 FS bytes used 1.62TiB
->      devid    1 size 1.82TiB used 1.82TiB path /dev/mapper/masterchef--v=
-g-btrfs
->
-> and the rpi:
->
-> $ uname -a
-> Linux vigilance 6.6.62+rpt-rpi-2712 #1 SMP PREEMPT Debian
-> 1:6.6.62-1+rpt1 (2024-11-25) aarch64 GNU/Linux
->
-> $ btrfs --version
-> btrfs-progs v6.2
->
-> (btrfs fi show is the same for masterchef-btrfs)
->
-> In terms of possible events that could have caused this:
-> 1. I had some issues with the raspberry pi not being able to supply
-> enough power for 2 external disks, and for this and related reasons
-> it's possible the disk got disconnected without being unmounted
-> properly / the pi was uncleanly shut down a few times (though, I
-> expect I usually didn't actually write to the disk any of these
-> times...)
-> 2. When I try to mount on the raspberry pi, I see this in dmesg:
->
-> [ 5658.798634] BTRFS info (device dm-2): first mount of filesystem
-> a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
-> [ 5658.798653] BTRFS info (device dm-2): using crc32c (crc32c-generic)
-> checksum algorithm
-> [ 5658.798663] BTRFS info (device dm-2): use zlib compression, level 3
-> [ 5658.798666] BTRFS info (device dm-2): disk space caching is enabled
-> [ 5658.798669] BTRFS warning (device dm-2): v1 space cache is not
-> supported for page size 16384 with sectorsize 4096
-> [ 5658.798706] BTRFS error (device dm-2): open_ctree failed
->
-> so I went and looked up what the "v1 space cache" was, and ran this:
->
-> $ btrfs check --clear-space-cache v1 <device>
->
-> and then read some more -- oh, nowadays it's a btrfs rescue command
-> instead, so I ctrl-C'd the above and ran:
->
-> $ btrfs rescue clear-space-cache v1 <device>
->
-> which appeared to complete successfully.
->
-> (I suppose despite seeing this message on the pi, I must have run
-> these commands on my laptop, since my pi's btrfs-progs doesn't have
-> the rescue clear-space-cache command.)
->
-> Anyway, maybe ctrl-C-ing the btrfs check --clear-space-cache was wrong?
-
-It should not, if so then it's a bug in the code.
-
-Both kernel and btrfs-progs should go with metadata COW with transaction
-protection, so even something went wrong (power loss or Ctrl-C) we
-should only see the previous transaction, thus everything should be fine.
-
->
-> It's noticeable that the dmesg output, at least on the raspberry pi,
-> still mentions the v1 space cache message when trying to mount, unless
-> I pass the nospace_cache mount option, in which case I get the "failed
-> to verify dev extents" message. (I think I get the latter message in
-> either case on my laptop with the newer kernel + btrfs-progs).
->
-> A natural thing to do at this stage would be to run btrfs check, but
-> the non-lowmem version is always OOM-killed (on either device) while
-> checking extents, and the lowmem version has so far not had time to
-> complete (and I'm not convinced it will in a reasonable duration). I
-> could try to borrow a machine with more RAM, though I have no idea
-> whether I need 20% more RAM or 20x more. (The pi is 8G, the laptop is
-> 16G, the btrfs partition I'm checking is ~2T.)
-
-Then I'd say 32G may be enough, but lowmem should always work.
-
->
-> While I'm waiting for the lowmem check to progress, are there any
-> other useful recovery / diagnosis steps I could try?
-
-If you do not want to waste too long time on btrfs check, please dump
-the device tree and chunk tree:
-
-# btrfs ins dump-tree -t chunk <device>
-# btrfs ins dump-tree -t dev <device>
-
-That's all the info we need to cross-check the result.
-
-Although `btrfs check --readonly --mode=3Dlowmem` would be the best, as it
-will save me a lot of time to either manually verify the output or craft
-a script to do that.
-
-My current assumption is a bitflip at runtime, but no proof yet.
-
-Thanks,
-Qu
-
-> smartctl appears
-> not to work with this disk, so I can't easily say whether the disk is
-> or is not healthy.
->
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
