@@ -1,321 +1,138 @@
-Return-Path: <linux-btrfs+bounces-10376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10377-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76459F2076
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 19:49:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23049F209C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 20:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E8681679AC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 18:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE014167BB7
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 19:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512381B4F3F;
-	Sat, 14 Dec 2024 18:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jdWr81ix"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F0B1AB510;
+	Sat, 14 Dec 2024 19:18:14 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zebra.cherry.relay.mailchannels.net (zebra.cherry.relay.mailchannels.net [23.83.223.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BF31AF0C6
-	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 18:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734202077; cv=none; b=WOdikACU0ze9UP3wvTT1rZQHg0glOkpNy9dpZEi02M330ry4HptJ/vuMsymi+II2Yv9MC1Q9MVT7HGOiyH9/Ob3tfFVpPdZIXZUohV2Qn+MBSKeoE249OHkxLnYZ+LDehkJhYXxtBaifS8ak5I0XnchLe79Q5CQ1x3YJ1Z6uMqE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734202077; c=relaxed/simple;
-	bh=+IMaXtL2MgAIg31j8vIxlNZU+zeS7bCqefIG/2ob5EM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=IIfOsdkyBsalsvWv9WsteVY96OQp1+6n0GOcFONLjHCHcC9AVzEpQP3e+FZHPM5uJFikhdfN5xbkFvtZpXygsH+S5j+nn6DNRRAgOvlEzzBMcvMc1UgFeBjSRPQmv68u/UB1n0ZfRiusUEZ6HXDb5NZ0B2h45HzpgsXLEKhQcto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jdWr81ix; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-54021daa6cbso3252669e87.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 10:47:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734202073; x=1734806873; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=lznrpgNlzI6XFnh8Wb+UyVM5cwTF2tryejELq+hEnLM=;
-        b=jdWr81ixOVBfPG5sk4p0CpOEXfzlnMPPqKn/msT6ZNGsKyKp1/0e3CbQXtzVLi6SN7
-         XcJIuw/B84kjLu9k3NVQeaYMiNnkctE9J6/iI4P2m4n7VMv1yz5NcrnfRqqUOblPYEUW
-         RJGbqVYjwWj5cNiSyALHRegzQijXk6b1VMTp1Tct5AZvDescpIMOFt4XM2pKKtOtipsQ
-         xvjYCK0S+15FGPtPRnlIH30SiH9qMUYnG/ms+tvw2V69W9yQ56xlmGIN0/3mymG0qvTT
-         8isE8EO3zRQsBW6hsQRt3PHtglcIxXL75Z4J9cXxfnoidTU5jGIXVlsOm1m8XWJeyWM4
-         3XJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734202073; x=1734806873;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lznrpgNlzI6XFnh8Wb+UyVM5cwTF2tryejELq+hEnLM=;
-        b=upq5IW6vhNOqyXlzLa2L7ccYBjSE9jIi6I4iPjb/6BxxDuqSM4nEjVOWS1jGbFrUS/
-         s17LnlBSasNmj5M+vtA4QGCFq00Q2gNXpKip0KkZHQvWru1V+BsRYN43Webv7AV9DtMI
-         CUBfx0BHMPu3MFx0f/sxy8FS9TfmdmAnfLqpBAqEvc9PJC/GvblJ2dbkrIjkkWED3X4l
-         4+BcmKzWP+MPhdiqNOdJ7pIH9MgmIVXgEl35i7XHtWXVJT/Kq44IvWCoGDON5OzI9y7U
-         k9qwFn77pDhjO6czTcB52uOxyBkcGyIxHpJ5syeZ1+zmPUINVv6iglgOm7PkkAuw7BQo
-         3HNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXvTFDu+sPSilv7/7oOn3cjYp8TmowqELj3H6VRI3+mV8NMGJtKJt5kMVzFJ7nurugSZPnCrMchxoWFxw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEoCbsvIsW4NL79NAl3sBdlYh/pG9n2jpK1Ze2Z6b1tcyE+MSE
-	qTUfEuYZv1lf1KkjbU7GwIgz3bqKuE6mPOTjQP4EMFkRD69ND3G6qpPD6w==
-X-Gm-Gg: ASbGnctLuIOPXw8EGlj1xMDDK/P4LvZgJFqriLRjmBuHD7mfShUeoIjNbb9zMcfmgLP
-	q6XiBHHvMMWpJlpbFe3qWo/f0JEJyctjArpqp0rFfbLf7r7yJ66cinGJi/8vzD1uSPTs7FWFs/v
-	HL/aR05BdhTlPcthauYdlMTzcOS7YsfCmRA0wzj64J2jCRA2ndJfEp/L9aLhrdZzzlTfjItM5t1
-	DQ4jRYfFXD90eJEIPvJJTCcYbnLSUfcPdArllAbRW3mape2rKUszW+V/+UB4VpnbKWKpqovsg64
-	bqKEMqAM8D1yrQg7XHRoLUfH8WKZ
-X-Google-Smtp-Source: AGHT+IE+dWQG/forxPO7KvtlaVFNNS9/KYCKBhixd7F1aJAiF5WXSXvcBRYAQbt3KT3gOjxnzoZpQQ==
-X-Received: by 2002:a05:6512:2809:b0:53e:1ba2:ee19 with SMTP id 2adb3069b0e04-54090553ba6mr2096160e87.20.1734202072961;
-        Sat, 14 Dec 2024 10:47:52 -0800 (PST)
-Received: from ?IPV6:2a00:1370:8180:3d9b:22c9:a65:6ea2:7914? ([2a00:1370:8180:3d9b:22c9:a65:6ea2:7914])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54120b9f27fsm288525e87.3.2024.12.14.10.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Dec 2024 10:47:52 -0800 (PST)
-Message-ID: <8c923965-f47c-4b4c-b096-9ddc0f047385@gmail.com>
-Date: Sat, 14 Dec 2024 21:47:47 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E865F19A2B0
+	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 19:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.195
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734203894; cv=pass; b=s/RJLOqhR0QzmnXcxAuWqoeu7n/U3QoijRh1c3Jrzu2l0zMGl9hXc/AjVnEGCGuP9Y2WbYdWGU3rZ72OOcss0FBYzTyZSQGRUCB7RxSH3xe20sTZ/xNmrQWAHS5mvlwA9DIEITbjB7TP0md7lONtHuvuC1ZqF1HKTstw4XLSD34=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734203894; c=relaxed/simple;
+	bh=wDinYSR45g+0Q5md3fswWDCBqmnRyXEa4V7x+s+ZzyA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=QRQzxDQqo5STN/2kTy0D3ddkg0Gkw5ij/CU+Jp1Dn1rHWO4+jEH1ZeJLxeT+WQ0W/bRWV3+PfLfuAJZqYuoJyydK67YxIG71BSwMb/FXZRjtxXtsuzztRE4b7A4eUhABEXnN2vFy63G7zL8CHUVOYGNPjGOSeeh4ZL34aK7ErJc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.223.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id C22D823449;
+	Sat, 14 Dec 2024 19:09:18 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-9.trex.outbound.svc.cluster.local [100.98.194.21])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 1482B23477;
+	Sat, 14 Dec 2024 19:09:17 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1734203358; a=rsa-sha256;
+	cv=none;
+	b=yPE4Ooul8PZGQadZZKPX7u4BQgGJP+bgYJyD3M5VRyPLobznUjGEVt7/tqg4slr94uGiFN
+	dtQZlzDP4tWdNSLTIeQeObx5dLlunHYn3T92G6b+JMx+EScBBa8kfu6OYxHiRQkoAhK21p
+	+wRztqIsYJMnyNMcXuIuqvXNlaxPbzSnzlcSgJrsqxj9JZrs3UyWtQ5eI7B4Z63QIQnNDo
+	xTPM4JkMN2pxGdRcXzmGbnvD1gpq87i2W+jY2q/w5suqqKwCTJd8FvDxJnN6eSq1WkDAA+
+	+eIH02YhPZsiGX+OI4kRLNwnqVcI0x1hHk3rFDyjCUPWtEsYFisHaQ68FXPF/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1734203358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wDinYSR45g+0Q5md3fswWDCBqmnRyXEa4V7x+s+ZzyA=;
+	b=k+U2Ytf4mOR/nq7cWmIGhW3bPOoFyWwKORgiB9Hzwa2QRiBTvXqq41U5p8uX3BkfR67khI
+	ZSeeq/PQytT09PwhoIXM1yQEzxMBfcpqcMvjNOrIFs5VChNBpwVsJ+8gu6EZL+8K5PLylK
+	bt1nG8HWbZ6rW32Q5Xzrg6JmcdCkdU00eRPqFYEwjC3nhhg8i82i0MVRI3QKzuFFUYcnMr
+	L/KZytzsckahXgQu2R20u1QUuWHecZ85QuUQ6ZugjemoMPW1VfhyCdsB8bceX7eeWvn2Pn
+	OBUH7eNQjiDX4dAPWl0o0UVkad6jdcGEZ0IDtE/ALFtOcHXRgL/U3ZGmBbtMqQ==
+ARC-Authentication-Results: i=1;
+	rspamd-56b8c8586d-2jd8k;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Print-Glossy: 74256b2842358a94_1734203358697_400526812
+X-MC-Loop-Signature: 1734203358697:665059998
+X-MC-Ingress-Time: 1734203358696
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.98.194.21 (trex/7.0.2);
+	Sat, 14 Dec 2024 19:09:18 +0000
+Received: from p5090f2d3.dip0.t-ipconnect.de ([80.144.242.211]:60650 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98)
+	(envelope-from <calestyo@scientia.org>)
+	id 1tMXVv-0000000CyPB-1ktE;
+	Sat, 14 Dec 2024 19:09:16 +0000
+Message-ID: <1d51a2cca61c2202b5c7d51f9c5772d2e79c3ef6.camel@scientia.org>
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Date: Sat, 14 Dec 2024 20:09:15 +0100
+In-Reply-To: <156b27d5ea42ed4afa6d73dec8e2f479d346786d.camel@scientia.org>
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+		 <2d5838efc179a557b41c84e9ca9a608be6a159e8.camel@scientia.org>
+		 <9ce30564e238d1be0deafb8cab8968f800a8deaa.camel@scientia.org>
+		 <8a9b6743-37e6-4a71-9423-6ce5169959ac@gmx.com>
+		 <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
+		 <7acc8ea1-079d-42bb-8880-dbd9bbfa100b@libero.it>
+		 <fecad7ce2cea1ff125a842d8c53f1fbfe4f1d231.camel@scientia.org>
+		 <CAA91j0VNf9UQTYOn688eboGB_bw4YeKOXnKAt1uAYRZwYA3UPg@mail.gmail.com>
+		 <b47ed92f14edde7db5c1037a75b38652afa6c1c1.camel@scientia.org>
+		 <e6ef9ab3-06ab-4360-b205-3a7559b6b388@gmx.com>
+		 <979fd68a4a766f823366797eab1060e5c515a776.camel@scientia.org>
+		 <ba9556f9-4784-4bf8-8fa1-49b17df6d31e@gmx.com>
+		 <c085dabb449f8088156d906062db0b9fa0f7fe32.camel@scientia.org>
+		 <aa69e84f-d466-457d-9b29-47043c2aef53@suse.com>
+		 <bf5726d2a30996d06204b17d05daec9c77b7d769.camel@scientia.org>
+		 <57a0f910-a100-4f31-ad22-762e8c0ecb39@gmx.com>
+		 <513dfa2b00cf496e6f682508037616b6165fcc53.camel@scientia.org>
+		 <494daef3-c180-4529-befb-325a46a3eeeb@gmx.com>
+	 <156b27d5ea42ed4afa6d73dec8e2f479d346786d.camel@scientia.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.2-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 97% full system, dusage didn't help, musage strange
-To: Leszek Dubiel <leszek@dubiel.pl>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <0a837cc1-81d4-4c51-9097-1b996a64516e@dubiel.pl>
-Content-Language: en-US, ru-RU
-From: Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <0a837cc1-81d4-4c51-9097-1b996a64516e@dubiel.pl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-AuthUser: calestyo@scientia.org
 
-14.12.2024 20:55, Leszek Dubiel wrote:
-> 
-> 
-> My system is almost full:
-> 
-> 
-> root@zefir:~# df -h
-> 
-> Filesystem      Size  Used Avail Use% Mounted on
-> /dev/sdb2       8.2T  7.9T  256G  97% /
-> 
-> 
-> 
-> 
-> root@zefir:~# btrfs fi df /
-> 
-> Data, RAID1: total=8.08TiB, used=7.84TiB
-> System, RAID1: total=32.00MiB, used=1.47MiB
-> Metadata, RAID1: total=44.00GiB, used=36.26GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> 
-> 
-> I have 256 GB free space, but almost no unallocated space:
-> 
-> 
-> root@zefir:~# btrfs dev usa /
-> /dev/sdb2, ID: 1
->      Device size:             5.43TiB
->      Device slack:              0.00B
->      Data,RAID1:              5.38TiB
->      Metadata,RAID1:         31.00GiB
->      System,RAID1:           32.00MiB
->      Unallocated:            11.00GiB
-> 
-> /dev/sdc2, ID: 2
->      Device size:             5.43TiB
->      Device slack:              0.00B
->      Data,RAID1:              5.39TiB
->      Metadata,RAID1:         22.00GiB
->      Unallocated:            10.03GiB
-> 
-> /dev/sda3, ID: 3
->      Device size:             5.43TiB
->      Device slack:              0.00B
->      Data,RAID1:              5.38TiB
->      Metadata,RAID1:         35.00GiB
->      System,RAID1:           32.00MiB
->      Unallocated:            11.00GiB
-> 
-> 
-> 
+Hey Qu, et all.
 
-Show
+Is the issue behind this still being looked at?
 
-btrfs filesystem usage -T
+There used to be some patches out there, but I think they were never
+merged.
 
-> 
-> I've been running whole day
-> 
->             btrfs balance start -dusage=xxx,limit=8 /
-> 
-> with increasing numbers of xxx, until I reached dusage=90:
-> 
-> 
-> root@zefir:~# btrfs bala start -dusage=20,limit=8 /
-> Done, had to relocate 0 out of 8319 chunks
-> 
-> root@zefir:~# btrfs bala start -dusage=50,limit=8 /
-> Done, had to relocate 0 out of 8319 chunks
-> 
-> root@zefir:~# btrfs bala start -dusage=80,limit=8 /
-> Done, had to relocate 0 out of 8319 chunks
-> 
-> root@zefir:~# btrfs bala start -dusage=90,limit=8 /
-> 
-> 
-> 
-> 
-> 
-> I was running with -dusage=90 (90%) whole day, but
-> unallocated space didn't increase.
-> 
-> On logs i can see:
-> 
-> 2024-12-09T08:46:13.001188+01:00 zefir kernel: [431476.446252] BTRFS
-> info (device sda2): balance: start -dusage=90,limit=8
-> 2024-12-09T08:46:13.013180+01:00 zefir kernel: [431476.458060] BTRFS
-> info (device sda2): relocating block group 34750669520896 flags data|raid1
-> 2024-12-09T08:46:40.389168+01:00 zefir kernel: [431503.832191] BTRFS
-> info (device sda2): found 6 extents, stage: move data extents
-> 2024-12-09T08:46:44.193216+01:00 zefir kernel: [431507.636729] BTRFS
-> info (device sda2): found 6 extents, stage: update data pointers
-> 2024-12-09T08:46:47.113166+01:00 zefir kernel: [431510.558009] BTRFS
-> info (device sda2): relocating block group 34748522037248 flags data|raid1
-> 2024-12-09T08:47:22.241196+01:00 zefir kernel: [431545.684216] BTRFS
-> info (device sda2): found 11 extents, stage: move data extents
-> 2024-12-09T08:47:23.933198+01:00 zefir kernel: [431547.378516] BTRFS
-> info (device sda2): found 11 extents, stage: update data pointers
-> 2024-12-09T08:47:25.137176+01:00 zefir kernel: [431548.582508] BTRFS
-> info (device sda2): relocating block group 34731342168064 flags data|raid1
-> 2024-12-09T08:48:01.897151+01:00 zefir kernel: [431585.342544] BTRFS
-> info (device sda2): found 8 extents, stage: move data extents
-> 2024-12-09T08:48:07.949185+01:00 zefir kernel: [431591.393774] BTRFS
-> info (device sda2): found 8 extents, stage: update data pointers
-> 2024-12-09T08:48:10.169177+01:00 zefir kernel: [431593.614676] BTRFS
-> info (device sda2): relocating block group 34723825975296 flags data|raid1
-> 2024-12-09T08:48:33.781190+01:00 zefir kernel: [431617.225031] BTRFS
-> info (device sda2): found 10 extents, stage: move data extents
-> 2024-12-09T08:48:44.353165+01:00 zefir kernel: [431627.799342] BTRFS
-> info (device sda2): found 10 extents, stage: update data pointers
-> 2024-12-09T08:48:47.453174+01:00 zefir kernel: [431630.899246] BTRFS
-> info (device sda2): relocating block group 34721678491648 flags data|raid1
-> 
-> But unallocated space didn't increase.
-> 
-> 
 
-Why did you expect it to increase? To free space balance need to pack 
-more extents into less chunks. In your case chunks are near to full and 
-extents are relatively large, so chunks simply may not have enough free 
-space to accommodate more extents. You just move extents around.
+Still having quite massively (well only where I use Prometheus) the
+problem that on some filesystems where the application does that pre-
+allocation, a lot of space is wasted.
 
-> 
-> 
-> 
-> So I started to play with metadata optimization, that is with musage.
-> 
-> 
-> 
-> When I put limit=0, no blocks are reallocated.
-> When I put limit=1 or limit=2 always one block is reallocated.
-> When I put limit greater then no blocks are reallocated.
-> 
-> 
-> See the test:
-> 
-> root@zefir:~# for lim in 0 1 2 3 4 5 6; do echo "lim=$lim"; for f in
-> $(seq 5); do btrfs bala start -musage=30,limit=$lim /; done; done
-> lim=0
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> lim=1
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> lim=2
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> Done, had to relocate 1 out of 8318 chunks
-> lim=3
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> lim=4
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> lim=5
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> lim=6
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> Done, had to relocate 0 out of 8318 chunks
-> 
-> 
-> 
-> 
-> root@zefir:~# btrfs bala start -musage=30,limit=1 /
-> Done, had to relocate 1 out of 8318 chunks
-> 
-> root@zefir:~# dmesg -T | tail
-> [Sat Dec 14 18:50:00 2024] BTRFS info (device sdb2): balance: start
-> -musage=30,limit=6 -susage=30,limit=6
-> [Sat Dec 14 18:50:00 2024] BTRFS info (device sdb2): balance: ended with
-> status: 0
-> [Sat Dec 14 18:50:00 2024] BTRFS info (device sdb2): balance: start
-> -musage=30,limit=6 -susage=30,limit=6
-> [Sat Dec 14 18:50:00 2024] BTRFS info (device sdb2): balance: ended with
-> status: 0
-> [Sat Dec 14 18:50:00 2024] BTRFS info (device sdb2): balance: start
-> -musage=30,limit=6 -susage=30,limit=6
-> [Sat Dec 14 18:50:00 2024] BTRFS info (device sdb2): balance: ended with
-> status: 0
-> [Sat Dec 14 18:50:42 2024] BTRFS info (device sdb2): balance: start
-> -musage=30,limit=1 -susage=30,limit=1
-> [Sat Dec 14 18:50:42 2024] BTRFS info (device sdb2): relocating block
-> group 38091650760704 flags system|raid1
-> [Sat Dec 14 18:50:43 2024] BTRFS info (device sdb2): found 91 extents,
-> stage: move data extents
-> [Sat Dec 14 18:50:44 2024] BTRFS info (device sdb2): balance: ended with
-> status: 0
-> 
-> 
-> 
-> 
-> During those all operations level of Unallocated space is not increasing.
 
-Relocating one chunk simply moves extents from this chunk to another 
-location. It does not free any chunk. You can only get more unallocated 
-space when you are able to pack extents from two (or more) chunks into 
-one chunk. Which is only possible if chunks are filled to 50%.
+IIRC your patches tried to put that in defrag, but the downside with
+that is IMO that you have to defrag - and didn't that break up
+refcopied extents?
 
-> What should i do next?
-> 
-> 
 
-It looks like your filesystem is simply full. Do you have reasons to 
-believe that it is not true?
+Thanks,
+Chris.
 
