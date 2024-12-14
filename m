@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10379-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10380-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6232E9F20DD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 22:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1059F20EA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 22:14:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F429188785C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 21:01:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 064021886053
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 21:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585BE1B0F3D;
-	Sat, 14 Dec 2024 21:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F211B0F07;
+	Sat, 14 Dec 2024 21:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ViQqQ4UN"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PQsxKbHj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF15C78C6D
-	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 21:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CA578C6D
+	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 21:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734210043; cv=none; b=SZOx972xJOgjMIY2qq8gj2xIB3VxdGXdSJfqr3aozDrluTxoBBEslth61SyqdNmZyaC1m95qe/ukqhM4pNXBCXyH3wDAgC4/H11Z0jzwygxfTbpuxS6NWchvxAWrQd+8wEiP1G9kDqjPWUPgohZtRDTjESIth2LG5W9Pl/huObA=
+	t=1734210849; cv=none; b=IOw79kkjGVGbGzxJV4ft3piPiT63sps3TaNn893B+8/TO1xCo42/mPmpGKJwJzDZ8yK61GGoFJTouFrMvzkTsA0K0MmIwdG92UChPp/k9izw/ADynqDuR2js9gGAlHcpm9Vv1o2SuUKexFKlOVKkbSzn8j07oSg1DTdb6g+x7kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734210043; c=relaxed/simple;
-	bh=6epiXkwn9zoECA2cJNJbBiiGB9KKU08h7UApPw0oRV8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QvhqrblqjGG6YcK81rOixCVihMpuseu2lzJt7sGeJpOQcbv7rzkR0ZKPvop1czWcg+asUaKO5soVFM4JKE+6WYS/wOJ2d0cSeL1EBQ6NuiD89bPNVmBnvuRXcWmLKr8Gyv46aqSxpzOVPrDVW4SCWxlQohDqwK3NtNSSkHJ8Yf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ViQqQ4UN; arc=none smtp.client-ip=212.227.15.19
+	s=arc-20240116; t=1734210849; c=relaxed/simple;
+	bh=gIdw7B2ilmkBvi/4aYZfDpcdhkA14emCZQ6f6C5XC1w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HBcAql1BbAVJJ8NQzGhu+2W80Jx8nJOs4AAy8KS3pYLa1j3E+NnDmuP4Vu4bKxxavrrr2rZZmoKxmFIDszwC7xe4JfvifOjmmocqv1Cdcme/U3E5lOQOngQ0KcgMiL8y8pS7TPKk4hpUn5qVpUttznb3SILJqDRmKsLvlHY2als=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=PQsxKbHj; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734210038; x=1734814838; i=quwenruo.btrfs@gmx.com;
-	bh=dUw6SUSM2IjGYBDzKWAp/CH6v/7ONAHcESMlDKxN8eE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1734210844; x=1734815644; i=quwenruo.btrfs@gmx.com;
+	bh=LPiaO40FjydNTsPz4zaIhmK6P40tMG7wHfKqxdQ/Fzk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=ViQqQ4UNolcN49vbHyiW2fj4FARHXGKYBcgDH2t5qKrWfkVmHlLHUzxsREUI4Vph
-	 UYtlLRG/3Wx/OG5UbItAnvhGAEFx6E6TxSsQSKTmxYBk9Yo3VuacbKu2IzIQawUYc
-	 f3m4aradxsOCWp9SNI58lAIRWNv1jFojHJkVGoi3uiJy04t7e5t05jL8fPLnHF6uy
-	 3Ek13nRy9qwNWYfHrj9Za59ZAMnemB+/rp/RXeGtlg0E2a3cAzlUg/FSCwgwpq/eX
-	 q+8rkkXXQJkQ7XqLZiIdFd2tInI7/hZ4Wzoji6nT7ph1gZxPEnVy1q9xbJCH2xbK9
-	 zRY1veusGbDHaUGQhw==
+	b=PQsxKbHjatN9wU5QLZZ/+FOHy9xqSg9aHwImtZLOZqkSkRUvonkx8sID0oWADMfa
+	 qF3PbruzL+MqbK1bfPWbWIL6jr4fx6/HgfWJgQAPzWW4la2dKCDna2HXMG6i7c9On
+	 iY5JMZ0l2og1FX5JbDdilH6wfOkJXMBZpcZ8FUwnAahbNzfauvK2FCstt1Pz7BbhE
+	 4ckZZJcpHvr13ayTkSc8YkdZKt/HzGx1X7nSoqXxY5z13gCC5ye6AXwsvjH66Dr4d
+	 yb/jgVpNUScmXnvTmMg1OBsl07Bfp6H16eo5vZ4N2t711fgzHZQvMm5lrEfB5cvcQ
+	 XdT8YYS7Nsix7iA5yQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4QsO-1tmBGt2yCU-00rbqY; Sat, 14
- Dec 2024 22:00:38 +0100
-Message-ID: <d5372478-70f4-4a3c-bf9d-26366f955e5e@gmx.com>
-Date: Sun, 15 Dec 2024 07:30:34 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOREi-1sxk8o1mdq-00TvGz; Sat, 14
+ Dec 2024 22:14:04 +0100
+Message-ID: <8eb9e55e-7a61-4c1a-b5ab-acf35ba4396e@gmx.com>
+Date: Sun, 15 Dec 2024 07:44:01 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: dev extent physical offset [...] on devid 1 doesn't have
- corresponding chunk
-To: Ben Millwood <thebenmachine@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
- <56d3885e-5651-4fd4-af6d-89897f8bd240@gmx.com>
- <CAJhrHS1xgfrp=Wpk18xCBGUEi2tYxaqCxrMQG5UEGSUbR4G-_w@mail.gmail.com>
+Subject: Re: 97% full system, dusage didn't help, musage strange
+To: Leszek Dubiel <leszek@dubiel.pl>, Andrei Borzenkov <arvidjaar@gmail.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0a837cc1-81d4-4c51-9097-1b996a64516e@dubiel.pl>
+ <8c923965-f47c-4b4c-b096-9ddc0f047385@gmail.com>
+ <4144f14a-8742-4092-b558-d1a9de4d03e5@dubiel.pl>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,149 +90,147 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAJhrHS1xgfrp=Wpk18xCBGUEi2tYxaqCxrMQG5UEGSUbR4G-_w@mail.gmail.com>
+In-Reply-To: <4144f14a-8742-4092-b558-d1a9de4d03e5@dubiel.pl>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KyEeOUn6rVETudOBqHWgEJMQf1QMbA62mwh17IUADhFxl4Cp+cW
- YubE4VzWfghHpWwNn8DJc/x1RGOSq+sNyQI7up7JIpsbHPYDbWH4GZ77LRmKCO0/r7XAVW8
- 2vIZ+mdLJnptcLbp+1vxa8cDde/DTRYQ9X/6jI2bUVKyRjOnaa9veSDJOToV1o3pDSSdckw
- htwK5uDBdBeyeuiB/TLzg==
+X-Provags-ID: V03:K1:m4wmozyDlGv90Qpq+k8h+iZ6Xu7xHF1gMt2mkoV1S/Fm63yIVdg
+ GO1UMYA/S6eq2a6lVQlnpaeEnzmURrqzn1b/D/6yvJ7luNVdRSFyUpu1pqIuseXyx0y93Su
+ 2Uq5rbDbuNfCi7HMN0wKVhYsYCkF2M1h6cgf8d3+eOZv5KTpsFkJnTX1tp+mBCu4wN1CdDL
+ KhUvZPLc+JvZfVR/rVaqw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6Xk0BNK82W8=;XFaqDImycVo+g77FEtIW3dMxZk2
- 8B19Ad/D25bwcitqOhwiecZ7onZVhwjEKlUAk/QSvN5rY9BgMcGs5ZCn6F20uwum4sgaWHDFV
- UVwUsRFOpGdK057aDBu62oopzVxtKXvl5NTxiDJA7AuXJopP0P03mkg/48VpgfMwPpiIziOaq
- xv/m4kzz/PmwI5kxetiUpRrPYhsD1cYy0PSebbRnhBesTSg6KAEIDajlPPJ8QE70skfeXKPDb
- gcrGr2LyFpPj1mMnXUBIU0ATMgkI549L9qxKCsnO/y9/G/QMmxB70zf2Db2uu3eY78125or2h
- oRK88qqpcGNt0Pu9gEe4/y6GImCCrziRA6f70ZobkU5PLbCvZGz9x5bn73WzB7VQCSjc/tUBw
- rxc6qMCdhV1Q8+lrRCXoRkAuRnxIqBaA0gvZ10gl9qmIwNz042YmtIzlMOn/KL3S9hWzNQnbA
- BCRGluZs//UG/EYehnPUypkaBwaIeWscWq7qzt+6jbPTIs8VfUz6Oe+XtqxFADuEIEow0Tqwi
- yonZZnxGGbaq2jmatDW5PW4R2nqG9SMV2/O6ZA5rQFzhSSpntiwHE3JenCR0r11IKOUn9v8WG
- utgLl8y53RooLAp114XMxWv2heJ6Woi7wNvGOSeuFcWudgQTvEYFqMiOpPEWoQFW0Nerhd4cg
- 7cVdtNL8NLCnj0psRtJVw29UWvSqaBvqk/0WXttq15QS8Bc/IBGnRgc8pla8Z1EGnDGZhVsDV
- KPDDVVHz1qCJQ4BQC0wZX3mCSf9Iomb0FbsuTtY/GNu4urTwpSDqVRaOTe5+91H0H39VprZTW
- GBPgzLp3Qf5nySEMoYU7aWzXnF2Qw4yCVmG9rwSlTuB1q7e1qwBYSmYTs5J/rM9lN4Fx6SEZk
- c8eElkHwC4TxCZJDj4AOz0NKCiZc2SlZo5oyRhApqyX/4k/o95BeluodCb6Arc9doa5V8vkGu
- 8/8t/HH503xMCcTrUGKZwpdQXdiuGGd6HPXDgoOLCg/lyoaDmHmQT9+mjaar4bxuRiXTpPji5
- OHOuZKIHtaWLVeIT9rBhVDRMo6WOqtzUnghTf0wz+QdPq7sd+2+5SVjS5EC7XMxBS4DBLDmPp
- pLzZNRwP04dkjZ21TDZkXuEJVtJsUlmWdqj3CqTYipHgUmEdtarDtuv1P14qVLDSMXeUTLqe8
- =
+UI-OutboundReport: notjunk:1;M01:P0:WNmUdMNxlZg=;DVmdcvLc9Wm3qdhl2eC2JA/0veE
+ YjhRkNVbur+TthcsQQ4Rk9KmRyzPGQFAc6o8NazbUUkg4fTrw8R0hA3Uowa5Deh9NjJrS91sa
+ K8i2DyRDmJo2JxuGUnsBKtYhG/OaMTQVufkkZ78t1877EYL3xGfMA/3w90uCCKNLO6OyD0VsK
+ RwVNGrtDUYEWXMLA9AQdpyybAtJrFOkrhiDSv/+XpXtzE9RSA0d/G8IcJz2ZxL9cx5KjLbTTX
+ LEXbzLOUu4ANemQO/deNbyKTxtyJQGOwhvGvmhug73Hn1pcb42Re7fK4sgMmROBWp5jww6Lyp
+ SFP4E54VuJfIrfvYMWvSrS1Y/0JjD/4OxVbMsY0rC6PXpPhcXmA71z7QU02HvBtYGC8ZxmLfE
+ 4MCHO/u0wMh6wh6t4kd1pxuZq0AGv92fbCzKVAzt7VmC7EBsIanzz+idXthzo1Ipm4AgrS6eT
+ kSndHGjYdQKlqWAgMqSw2aTs8q3PRmd8Frs5YbrQ+G+hhkcQD069pR69gEpLFkPloETe8awg8
+ udmVofYpmha9O+5OCoZtHKrmhkDAy99Jv2dK8BrWNisaDNFAgP8+3aZ+fA4hqynP3PQwtNyui
+ cEEnoyvEWQGIJoadPFFqS+gInViaNhvNQ66ciqFfMl0b424/+XM/KvwFQw5lPS+jl3D/CO+w6
+ BDLlG+Xf8sUz4JxmG94hahcojT4Hwke+7WIv63aTUvMYsNpSz0fMdBTBA8vK3HjYGy0aBRH75
+ /11xgdq0ybU146ntk7y93voBcNGCseN8gTIbtt930uTF62jZOUc0E3qXsrC/7/x+3nqjpqxHW
+ M2TBPXq0DDBD5ETTY8H6MGiv2xCMHheUC1u6fHweW3e2ZQXoh+X2fEXkrujW4eS9NBdU2Cxa9
+ Rh1gLoIXymWjRv9INdRHQxDNWBNhxjW0rD/AgO/tItvEvRxVlPOsBpthMWcVebzuZ6j4dJ6Er
+ LiC0Y/KiFmlIIc8wUomEcMd2FQsylNmMKF2EhFDhvnl2ArZ4YwI7e6NzTg9cyHXcPzLenZWlP
+ EYPffQWyHJW3SIbNZEFeQEkqqu8BoR907Hs6DHmBlPAca6HPhnsADzl/AnBv1dtKZdd/+z6KQ
+ e1ltAFQTVSxSAk0qCRnFOe7kRUCP/Y
 
 
 
-=E5=9C=A8 2024/12/15 04:09, Ben Millwood =E5=86=99=E9=81=93:
-> On Sat, 14 Dec 2024 at 02:51, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->> Both kernel and btrfs-progs should go with metadata COW with transactio=
-n
->> protection, so even something went wrong (power loss or Ctrl-C) we
->> should only see the previous transaction, thus everything should be fin=
-e.
+=E5=9C=A8 2024/12/15 06:43, Leszek Dubiel =E5=86=99=E9=81=93:
+>>
+>>
+>> btrfs filesystem usage -T
+>>
 >
-> Thanks for the reassurance, that is what I'd hoped would be true :)
+> Overall:
+>  =C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 16.28TiB
+>  =C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 16.24TiB
+>  =C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 38.02GiB
+>  =C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+>  =C2=A0=C2=A0=C2=A0 Device slack:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+>  =C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 15.75TiB
+>  =C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 264.00GiB=C2=A0=C2=A0=C2=A0 (min: 264.00GiB)
+>  =C2=A0=C2=A0=C2=A0 Free (statfs, df):=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 257.98GiB
+>  =C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
+>  =C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
+>  =C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 512.00MiB=C2=A0=C2=A0=C2=A0 (used: 160.00KiB)
+>  =C2=A0=C2=A0=C2=A0 Multiple profiles:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
 >
->> =E5=9C=A8 2024/12/14 12:47, Ben Millwood =E5=86=99=E9=81=93:
->>> While I'm waiting for the lowmem check to progress, are there any
->>> other useful recovery / diagnosis steps I could try?
->>
->> If you do not want to waste too long time on btrfs check, please dump
->> the device tree and chunk tree:
->>
->> # btrfs ins dump-tree -t chunk <device>
->> # btrfs ins dump-tree -t dev <device>
->>
->> That's all the info we need to cross-check the result.
->>
->> Although `btrfs check --readonly --mode=3Dlowmem` would be the best, as=
- it
->> will save me a lot of time to either manually verify the output or craf=
-t
->> a script to do that.
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 Data=C2=A0=C2=A0=C2=A0 Metadata System
+> Id Path=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 RAID1=C2=A0=C2=A0 RAID1=C2=A0=C2=
+=A0=C2=A0 RAID1=C2=A0=C2=A0=C2=A0 Unallocated Total=C2=A0=C2=A0=C2=A0 Slac=
+k
+> -- --------- ------- -------- -------- ----------- -------- -----
+>  =C2=A01 /dev/sdb2 5.39TiB 28.00GiB 32.00MiB=C2=A0=C2=A0=C2=A0 13.00GiB=
+=C2=A0 5.43TiB=C2=A0=C2=A0=C2=A0=C2=A0 -
+>  =C2=A02 /dev/sdc2 5.39TiB 20.00GiB=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 -=C2=A0=C2=A0=C2=A0 13.03GiB=C2=A0 5.43TiB=C2=A0=C2=A0=C2=A0=C2=A0 =
+-
+>  =C2=A03 /dev/sda3 5.38TiB 34.00GiB 32.00MiB=C2=A0=C2=A0=C2=A0 12.00GiB=
+=C2=A0 5.43TiB=C2=A0=C2=A0=C2=A0=C2=A0 -
+> -- --------- ------- -------- -------- ----------- -------- -----
+>  =C2=A0=C2=A0 Total=C2=A0=C2=A0=C2=A0=C2=A0 8.08TiB 41.00GiB 32.00MiB=C2=
+=A0=C2=A0=C2=A0 38.02GiB 16.28TiB 0.00B
+>  =C2=A0=C2=A0 Used=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7.84TiB 37.67GiB=C2=A0 =
+1.47MiB
 >
-> Well, the check is still going:
 >
-> root@vigilance:~# btrfs check --progress --mode lowmem /dev/masterchef-v=
-g/btrfs
-> Opening filesystem to check...
-> Checking filesystem on /dev/masterchef-vg/btrfs
-> UUID: a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
-> [1/7] checking root items                      (0:46:43 elapsed,
-> 68928137 items checked)
-> [2/7] checking extents                         (14:31:49 elapsed,
-> 239591 items checked)
 >
-> I'll let it continue. In the meantime I'll e-mail you the trees you
-> asked for off-thread: they don't obviously look like they contain
-> private information, but I'd like to minimise the exposure anyway.
-> (Feel free to send them to other btrfs devs.)
-
-Those trees are completely anonymous, the only information that contains
-are:
-
-- How large your fs is
-- How many bytes and their ranges are allocated
-- The type of the allocated chunks
-
-So it should be very safe to share, unless you have some very
-confidential info hidden in the device size :)
-
-[...]
+>>>
+>>> But unallocated space didn't increase.
+>>>
+>>>
 >>
->> That's all the info we need to cross-check the result.
+>> Why did you expect it to increase? To free space balance need to pack
+>> more extents into less chunks. In your case chunks are near to full
+>> and extents are relatively large, so chunks simply may not have enough
+>> free space to accommodate more extents. You just move extents around.
 >>
->> Although `btrfs check --readonly --mode=3Dlowmem` would be the best, as=
- it
->> will save me a lot of time to either manually verify the output or craf=
-t
->> a script to do that.
+>
+> Ok. I didn't exactly know what chunks are compared to extents.
+>
+>
+>
+>
+>
+>> Relocating one chunk simply moves extents from this chunk to another
+>> location. It does not free any chunk. You can only get more
+>> unallocated space when you are able to pack extents from two (or more)
+>> chunks into one chunk. Which is only possible if chunks are filled to
+>> 50%.
 >>
->> My current assumption is a bitflip at runtime, but no proof yet.
+>
+> Thank you for explanation.
+>
+>
+>
+>
+>>> What should i do next?
+>>
+>> It looks like your filesystem is simply full. Do you have reasons to
+>> believe that it is not true?
+>
+>
+> It is backup server. It should be almost full.
+> I have a procedure that:
+>
+> =E2=80=94 removes old snapshots if free space is less then 250 GB
+> =E2=80=94 starts balancing if there is less then 8GB of unallocated spac=
+e on any
+> disk
+>
+>
+> It failed now =E2=80=94 there is 258 GB free, but balancing didn't help =
+to
+> restore unallocated space.
 
-Unfortunately it doesn't look like this.
+Because there isn't that much free space to reclaim in the first place.
 
-I scanned the last several dev-extents and chunks, it turns out that
-it's very possible `btrfs clear-space-cache` is causing something wrong:
+Your data and metadata chunks are already very highly utilized, you can
+increase the dusage/musage and retry, but they will only bring marginal
+gain if any.
 
-- The offending dev-extent have chunk_tree_uuid set
-   This is not the kernel behavior, but progs specific one.
-   This means there are two chunks allocated during
-   `btrfs-progs clear-space-cache`, but one is missing.
+The only way to go next is start deleting more
+snapshots/subvolumes/files/etc.
 
-- One of chunk allocated by btrfs-progs is totally fine
-   And it's still in the chunk tree
-
-- The other (the offending one) points to a chunk that's beyond
-   the last known chunk
-
-So I guess either:
-
-- The btrfs-progs has a bug in the chunk creation code
-   So that a chunk and its dev-extent are not created in the same
-   transaction, and Ctrl-C breaks it, causing an orphan dev-extent
-
-- The btrfs-progs has a bug in the chunk deletion code
-   Similar but in the empty chunk cleanup code.
-
-Anyway I'll need to dig deeper to fix the bug.
-
-Meanwhile I have created a branch for you to manually fix the bug:
-https://github.com/adam900710/btrfs-progs/tree/orphan_dev_extent_cleanup
-
-Since the lowmem is still running, you can prepare an environment to
-build btrfs-progs, so after the lowmem check finished, you can use that
-branch to delete the offending item by:
-
-# ./btrfs-corrupt-block -X <device>
+With more data/metadata space released, then try musage/dusage again
+which can free up some space.
 
 Thanks,
 Qu
-
->>
->> Thanks,
->> Qu
->>
->>> smartctl appears
->>> not to work with this disk, so I can't easily say whether the disk is
->>> or is not healthy.
->>>
->>
-
 
