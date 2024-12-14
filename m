@@ -1,149 +1,197 @@
-Return-Path: <linux-btrfs+bounces-10369-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10370-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E0AD9F19CA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 00:18:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22139F1C10
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 03:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2ABB1665CA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2024 23:18:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E599716280F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2024 02:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19AF1B395E;
-	Fri, 13 Dec 2024 23:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B138A1773A;
+	Sat, 14 Dec 2024 02:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CEWZI8AN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjJQZVJC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01B3194C7D
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2024 23:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC871C36
+	for <linux-btrfs@vger.kernel.org>; Sat, 14 Dec 2024 02:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734131873; cv=none; b=FVNqeoJCL8pt8wGwopwt9NO4VQUPgPU+JiVJ9Ji5Za+ntIJWH2yremSwu5blohK3UHwjOxNAQm4kSN0XKDxO7U7rkJ1MX/k9OHrN8qiAD95Ij+CWkbS3HmVqAINuD8tLDc1luODw8o5mT3CSe16zGv69e2zlLl0sosaxcmqTS4U=
+	t=1734142649; cv=none; b=IOhWKu1f/yAal0/rMjNuoBOKkN1MwuYECvNREq88s5s7gIUXnwK2K7SXA/wDFBZVRHjSafgUt/n0cKT1Et8vv+ElSAHwAQVViDFggZnyNrVdBCcoATTCOsSv7rTiI+nRlVc403TsIXBL+0TzkWp4dMlTRifnM+kscftFfpZWp6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734131873; c=relaxed/simple;
-	bh=1hmc+e7YJFKdUOIXjLPQeF248HYTRQQZogeVkN9ZCpU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=TffDwVgF1euLFDV8pOxNtIWw6NauHAoQ1isJGlvckRc2EQ5QVrXFyRDfnBufPGpWPFCupQ41rwzRAGpBjH+xuzsB3x7kneFznQocS4OUYqKVPlAWEPAbsCmvBG0pWxua4nABN+XAJBQdfkYfPHCDA1scOxZbNoHdw4Mgd8UdGcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CEWZI8AN; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3862df95f92so1215810f8f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2024 15:17:49 -0800 (PST)
+	s=arc-20240116; t=1734142649; c=relaxed/simple;
+	bh=V22PEQk3WtAPwJsDne0CVPwkN67lV6i92F4+du6pouY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=bHC4x01qvVin86fbYZ8R3nQ8jJUj//S2iPetf4mILAb6TqimfLA/DRq7MUurOSEYDabivVIwyUwMhqZyawFGqUJP///v2fma6AnVjvmc00EniyKA6odixki9P+OqkhLP+pdH2/XnEOQ1glhHVYUJoL6QCKRsm5G0k/oMes/vAZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjJQZVJC; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ef89dbd8eeso1560469a91.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2024 18:17:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734131868; x=1734736668; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3vsbZ6NSlgx/gFwWm9MKxIp8jwezyshWOjCn/ZupbCA=;
-        b=CEWZI8ANVRUN/b1MJilQS4GsPIyDXaJE06QbnRkI0MS2uA0NiTF7h1VERrDXoSXC9j
-         rxQ7K3BhXFyXkTfg/KOIp57r/5NRV5qqUtSuiIolvIrkXxsglCFQzYhY3rXd5ceEuZOz
-         YhXQnmhVPZmPnB5FvwaV9DrPeEbunu6kFv1UzeTXo+Djord01003li2oTefdUDVuP/HH
-         FgGdAIeyg/Vp9JZauvTwLThDk5eC+oUMqqzxqxFI7C5UuPcGQKavNjDG4cnmAul1Xy2i
-         4aZEvq2RhftxeM7/F+/PDgYhuv6Ah80RXh72qPOsm3Aeu+2wZzOU1QqxIidufCsUMwj9
-         7gBQ==
+        d=gmail.com; s=20230601; t=1734142647; x=1734747447; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Dv5IDNxnf17pbmW5KiHN1lMf6+syFR8TVGe9SbMBHEI=;
+        b=hjJQZVJCxRDNUJafzQjCln8206i96pjVNHCbSlidrMDiive3CEd6fhE5RCoukZlFIn
+         93Y1gY9umnXxFUWzIPYz8vX7Ux0/COvjXGEFCxrrBEa1UwWdFcCmAPZS6j1DJx5iKbME
+         pv/GRCcms3b9MpJtKzrFawBnEIVg3KHS6zyEXI6U92BBt8Kv+rlLECENHFNU7HhK7/8p
+         D0/AVRkGn4z7wbCh9DGFB6+rgtidRc7pVrm9TwDdFIshjEJGZE6zEXee39oBKUBQ0X+w
+         VnDWZTXk7RyYHZICT2NCCDua3SVVqbVQOo1wYuPu3hf/b1sd/IlxiJ37P/94+KBc9LwB
+         KBpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734131868; x=1734736668;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3vsbZ6NSlgx/gFwWm9MKxIp8jwezyshWOjCn/ZupbCA=;
-        b=O6t2KIV9Xt0imbw0STR0/1KvHFO7GvJnIJjGm+loz3OjTuq96xlg+q0fZgQpgoH8kj
-         H8JHPy+ohhXIcOvO7Yi2ASFEaH8tAzPODNBB9UPXfkbRhF77CHjaxoCV13RGyovaGrt4
-         Qmz+OhnYwygmN6HK2+csPSyrK11uabPF207d7vEaH2biNIom4MJVHcA7I6pQb+wbZIWj
-         scmNCQuQ/w7FZEetLlfQevYAXVjCIEzoZk2FmW3RVd5u0BC+RqS+sPNLhQpb7egBpf9g
-         UfCzoiULUirgN/w0lw1ZlYBMnIkCm8gjuVH8zr6MUUCYg/idN9brNo80wMrGWn7rJTHH
-         jgPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrAPoTw03O1UIUclcsuY3E1MPG6W26exVUTpO3hKER8SojO+95kXt+tKx7ZuGnPvhq8OmpHhJLyTN+fA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3ChrM5oIn0Kp9KqDKEyTFkYd+rIXLs65MYC5gpt3MOjUDwy65
-	TeYEHVK/02QjaPVy4ULw3fXQncttQ/cxQLlgV7RKyJ1UPxnElnVwqhxEs+q/ZdpWl1Kdir4BJsz
-	P
-X-Gm-Gg: ASbGncu6pvV+667RpWe3l01yiwZIhP/kOvgjtoEEfGxvLGsSuBpcJR4jx0UGRQ1R0gT
-	b8n8c/v8vo0NBmBO8gc7WmHc7aKf879hPV67SoDKu0ut+aeRfkIxexSwc+KVlGF7kjY3aLH1Hq7
-	lk2Vw7QAZYUty3mjwTvchCRrGC8IfRVdLy3L6CW1+FvZge6tqevf0QiewqiGhsBoXZkWWNOuc+u
-	PsJEmDQrzeDxCZPMmUp3Ad9yoS3lVg1VwFDrlrU7FrGJ6P0T5j3LqtbtFfLtJzgDyltvUOmKp9e
-	zO1/Tl40
-X-Google-Smtp-Source: AGHT+IFiCl/p3IYycES084OYXO+RLfxfIAwrjHRZBO02W+XePgxGB6wWfZJmSmoP1iB/qO5X5Jt9/g==
-X-Received: by 2002:a05:6000:4612:b0:385:e013:39ef with SMTP id ffacd0b85a97d-38880ac2570mr3110330f8f.6.1734131867743;
-        Fri, 13 Dec 2024 15:17:47 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1e50cd3sm2794295ad.137.2024.12.13.15.17.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Dec 2024 15:17:47 -0800 (PST)
-Message-ID: <032a4fcd-e24a-43b2-8ddd-da43558e23da@suse.com>
-Date: Sat, 14 Dec 2024 09:47:43 +1030
+        d=1e100.net; s=20230601; t=1734142647; x=1734747447;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Dv5IDNxnf17pbmW5KiHN1lMf6+syFR8TVGe9SbMBHEI=;
+        b=jLeOlEUMiiywnUSaCuH7oeGaCG6Drm1E2lbXk7XlLMCfAA+fplShLxxzPAERbvnpkl
+         Z5+Bz20ddxyrFyP30LRNeTkeuCaeJd3A1Oq0gDnDMRZ4AEHz/qfLyYphpyLOJ2oUMH/n
+         db8O+RlKHogA0+wKb84WlQIPn2bXZjM/mCZO3YQ7ihrj6F3qcV8HyZe8UcgkGbNWu+Bt
+         jde+5PvzXC1QkkcHYk9pHpinbs5c93jO5YKGSmrPsi31gf5m7SxGTFTrybrx+gHI9W7X
+         v6Dyb5Oo7Z7l7GyrfqnYrWXyUu/dL9xzKw/Ry4nFeEZ9DzGf5D0+8onjKWcKKSxjEXzN
+         VHHA==
+X-Gm-Message-State: AOJu0YwPezIRyIlmHy9JFaK6kWd2UE1Xl+jVTy7sVtntM/QdUjI2GwgK
+	D6l8cwkAuvoFuIPcTYMvoQvLymA1d8WCBtpGIUgB55/3akH2w98w4l/fY6EXdJ8h90C3wYBs6jr
+	FF3/0qNdw2+lO9unkrUKp3y5Tx7DX12W9V6A=
+X-Gm-Gg: ASbGnct9LVZdQa4ehM1kzCcCI00v3jhu11opRuA5GBDCogIp/0tLENM2o+4kOpIz1Bf
+	qEfUROwNoyOFIbyfs910dAH+4bqSs3vqzjwePj7xL2mGrYh9E5gdAG1TInVHV0kGgqOjO
+X-Google-Smtp-Source: AGHT+IEkLn81MMrRqVZXUvf8+Ck68Rlbj+hj/KUc/IlV348XmZARDrxaMb1TRaKHn33IuH1ELhLUKuDdhGj64v87En0=
+X-Received: by 2002:a17:90b:1d51:b0:2ef:114d:7bf8 with SMTP id
+ 98e67ed59e1d1-2f28fa50ff0mr6775325a91.6.1734142647093; Fri, 13 Dec 2024
+ 18:17:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] fixes for btrfs_read_folio races
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <cover.1734131353.git.boris@bur.io>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1734131353.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Ben Millwood <thebenmachine@gmail.com>
+Date: Sat, 14 Dec 2024 02:17:15 +0000
+Message-ID: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
+Subject: dev extent physical offset [...] on devid 1 doesn't have
+ corresponding chunk
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi folks,
 
+I encountered this error recently, and I can't find it anywhere on
+Google except in the patches that first added the check, so I come to
+you for guidance.
 
-在 2024/12/14 09:43, Boris Burkov 写道:
-> We have a common pattern of getting a folio (locked) checking if it is
-> uptodate, then reading it with btrfs_read_folio if it is not.
-> 
-> btrfs_read_folio returns the folio unlocked, so we immediately lock it
-> again with folio_lock. However, in the time that it is unlocked, a
-> different thread can modify folio->mapping (like set it NULL with
-> an invalidate) so we must also check that folio->mapping is still what
-> we expect after folio_lock. Most users of btrfs_read_folio do it
-> correctly (retry on mismatched folio->mapping), and this series tidies
-> up a couple that were doing it wrong.
+This is one of my removable USB drives, formatted btrfs and primarily
+for the purpose of receiving snapshots from my laptop's root drive.
+I'm running:
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+$ mount /dev/masterchef-vg/btrfs /mnt/masterchef/btrfs -o compress
+mount: /mnt/masterchef/btrfs: mount(2) system call failed: Structure
+needs cleaning.
+       dmesg(1) may have more information after failed mount system call.
 
-Thanks,
-Qu
+Here's what dmesg says:
 
-> 
-> Boris Burkov (2):
->    btrfs: fix btrfs_read_folio race in relocation
->    btrfs: fix btrfs_read_folio race in send
-> 
->   fs/btrfs/relocation.c | 6 ++++++
->   fs/btrfs/send.c       | 6 ++++++
->   2 files changed, 12 insertions(+)
-> 
+[13570.361767] BTRFS info (device dm-4): first mount of filesystem
+a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
+[13570.361779] BTRFS info (device dm-4): using crc32c (crc32c-intel)
+checksum algorithm
+[13570.361783] BTRFS info (device dm-4): use zlib compression, level 3
+[13570.361785] BTRFS info (device dm-4): disk space caching is enabled
+[13570.374442] BTRFS error (device dm-4): dev extent physical offset
+1997265698816 on devid 1 doesn't have corresponding chunk
+[13570.374448] BTRFS error (device dm-4): failed to verify dev extents
+against chunks: -117
+[13570.375329] BTRFS error (device dm-4): open_ctree failed
 
+This issue emerged around the time I was trying to mount this
+filesystem from my Raspberry Pi for the first time, but now occurs on
+both my own laptop and my rpi.
+
+Here's my laptop's details:
+
+$ uname -a
+Linux noether 6.6.63 #1-NixOS SMP PREEMPT_DYNAMIC Fri Nov 22 14:38:37
+UTC 2024 x86_64 GNU/Linux
+
+$ btrfs --version
+btrfs-progs v6.11
+-EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=builtin
+
+$ btrfs fi show
+Label: 'noether-root'  uuid: b7ad9a05-8f7b-44af-8952-a7f717e897e0
+    Total devices 1 FS bytes used 319.96GiB
+    devid    1 size 390.62GiB used 390.62GiB path /dev/mapper/noether-lv
+
+Label: 'masterchef-btrfs'  uuid: a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
+    Total devices 1 FS bytes used 1.62TiB
+    devid    1 size 1.82TiB used 1.82TiB path /dev/mapper/masterchef--vg-btrfs
+
+and the rpi:
+
+$ uname -a
+Linux vigilance 6.6.62+rpt-rpi-2712 #1 SMP PREEMPT Debian
+1:6.6.62-1+rpt1 (2024-11-25) aarch64 GNU/Linux
+
+$ btrfs --version
+btrfs-progs v6.2
+
+(btrfs fi show is the same for masterchef-btrfs)
+
+In terms of possible events that could have caused this:
+1. I had some issues with the raspberry pi not being able to supply
+enough power for 2 external disks, and for this and related reasons
+it's possible the disk got disconnected without being unmounted
+properly / the pi was uncleanly shut down a few times (though, I
+expect I usually didn't actually write to the disk any of these
+times...)
+2. When I try to mount on the raspberry pi, I see this in dmesg:
+
+[ 5658.798634] BTRFS info (device dm-2): first mount of filesystem
+a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
+[ 5658.798653] BTRFS info (device dm-2): using crc32c (crc32c-generic)
+checksum algorithm
+[ 5658.798663] BTRFS info (device dm-2): use zlib compression, level 3
+[ 5658.798666] BTRFS info (device dm-2): disk space caching is enabled
+[ 5658.798669] BTRFS warning (device dm-2): v1 space cache is not
+supported for page size 16384 with sectorsize 4096
+[ 5658.798706] BTRFS error (device dm-2): open_ctree failed
+
+so I went and looked up what the "v1 space cache" was, and ran this:
+
+$ btrfs check --clear-space-cache v1 <device>
+
+and then read some more -- oh, nowadays it's a btrfs rescue command
+instead, so I ctrl-C'd the above and ran:
+
+$ btrfs rescue clear-space-cache v1 <device>
+
+which appeared to complete successfully.
+
+(I suppose despite seeing this message on the pi, I must have run
+these commands on my laptop, since my pi's btrfs-progs doesn't have
+the rescue clear-space-cache command.)
+
+Anyway, maybe ctrl-C-ing the btrfs check --clear-space-cache was wrong?
+
+It's noticeable that the dmesg output, at least on the raspberry pi,
+still mentions the v1 space cache message when trying to mount, unless
+I pass the nospace_cache mount option, in which case I get the "failed
+to verify dev extents" message. (I think I get the latter message in
+either case on my laptop with the newer kernel + btrfs-progs).
+
+A natural thing to do at this stage would be to run btrfs check, but
+the non-lowmem version is always OOM-killed (on either device) while
+checking extents, and the lowmem version has so far not had time to
+complete (and I'm not convinced it will in a reasonable duration). I
+could try to borrow a machine with more RAM, though I have no idea
+whether I need 20% more RAM or 20x more. (The pi is 8G, the laptop is
+16G, the btrfs partition I'm checking is ~2T.)
+
+While I'm waiting for the lowmem check to progress, are there any
+other useful recovery / diagnosis steps I could try? smartctl appears
+not to work with this disk, so I can't easily say whether the disk is
+or is not healthy.
 
