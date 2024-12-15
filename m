@@ -1,81 +1,81 @@
-Return-Path: <linux-btrfs+bounces-10386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10387-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A58B9F249E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 16:27:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7851C9F249F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 16:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07CAB1885F24
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 15:27:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 245BE164F39
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 15:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0A119259F;
-	Sun, 15 Dec 2024 15:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408E2192B66;
+	Sun, 15 Dec 2024 15:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e4Tyt3jD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T+qUg/KF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955C51922E9
-	for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2024 15:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1DB18C03E
+	for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2024 15:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734276459; cv=none; b=ueBMeFwtdm8OytFSmmflOPX6yFUZ+eZu5COiB6yMiAxfbFVM83iRZr10a6lshb9CXsEpNeaODGr8pHhWu/mnwCw5p3q7+usw//3j/f+IyFINRr9SvJrC5d5zbFtw29eyWdr9RhPW9XmMNA5gCGOArcaGIYaNq3WIh1VmRl0V/UM=
+	t=1734276460; cv=none; b=HmcFUMl4sSUfDU9MKjoMUZaRz/yq4gAUoG+BxRhjaBdHKFR5GMkZ9YnbvTZRankB9a6z/gLrCPVvCk8djOLPcEYx/Gqq7s518J0ONhPu+wvvgWJonRku5af0FEm6c1VfKW0gq4ZxHfKDPJ7HvPVWaD2nFKy58+iLHksiM9cklAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734276459; c=relaxed/simple;
-	bh=haN17d5VlCoDpqqbZzb7oe3Pqu488YHYg4n2f2UgjX4=;
+	s=arc-20240116; t=1734276460; c=relaxed/simple;
+	bh=TL2P4Opeqi3tnSxRhznIo0tgiQ9L/P8B4TFiPWtWnx0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jMtwMeBxH+L+7RddJ3HEGIpLAe59MmZKXtDTjj/iTPmWa+qTC5K+ghggZTY/FhtbKkWx/QyvFao9Cn8jNsh5ROuPpcnYDvSd8fhwsiFJ2xNbjrKGmqe0/6DWgslIBTGT9nBUTZ+IN3gpfX++UGHaKfnsd8sGHFFUxdSZRtnviqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e4Tyt3jD; arc=none smtp.client-ip=209.85.166.46
+	 MIME-Version; b=eQ7eLvAYKtJWkL0X0tONmzuo+s/45ZM1b7mKGTHFKovS3R/iEal0K/yJpPE88T8gzju7PEMncRkg6gekldd0X6kBETbudXm1PA/CrLQTOXGkVxViflFyEeNsrX9kFSCDc7rDGMsfN9429FcBlabobeoHOQUy7Y556IoKkG4LoCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T+qUg/KF; arc=none smtp.client-ip=209.85.166.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-844ce6d0716so259866139f.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2024 07:27:37 -0800 (PST)
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3a9cee9d741so28954335ab.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2024 07:27:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734276456; x=1734881256; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734276457; x=1734881257; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A6AGBEEbL3KEc1Z39BabQVoPtwwwqcya0HUExFb0a4o=;
-        b=e4Tyt3jDyDQjSoKUeoVLvSF4AIDRquU9cKdGLaSQS7dMcqedeYB49MA6sls4JcCauP
-         HCN7SIhcPnysjc/v8r6U1VJ1ppRG7gQ8ViH3SkndAj1d+i2FEZ+oZuClxWk9sP6Mc2Gj
-         zRljJ5flOGGcsGb6cJPsZskwCAWSwkf8S3IhnuNTWZ/bj9oCr5LRCmR7he8SaMXZr+qF
-         yKLcA1uZbpBosEI/MezWUznoHMTE1Hxx2A7mlmeTeS8koKFb52rKjiIanFhA3cGP+2i7
-         grdTwffcLBcbiDSWZ8Cirt1ohLUaQWas4rYrvNfi/OhQhdVxxLjnadnLxQrfdTE7ycOz
-         hTxQ==
+        bh=2hKZyhAXipAmnDzSZ6XL4Y/mK7U7fiGkYAKbiVZMpAI=;
+        b=T+qUg/KFBH8bbQhHCz3cEnbfd1Gcgghc5SWyzpQJnSoDG4eYGpSORqtz/7MWGXCFNX
+         id4KIT9tvpnr559Bafu7BgpIPL1CCbgeCkrFPH+5F7jQV64/ghILQEiPovQSYODL2VTx
+         Gz51x5Z8uPkB7KCfMcnfXS7d7UFUZXtJgqvLzhB7Wh54pcXJJEf/+MwBr6uE3oZJ/5Bl
+         m7wzixzwZvJ0LKFdT8CfyNMVMXtuVAOjqSPdkiq+lu398A1FRR8ShklmM2AjfbWEsM/5
+         zpMCqczqwpQRGiyF7mZFB+XzC/bguAUmZjNxPRSQXhgLo7jq7mpxpafWhEDJgisCaXwJ
+         QDXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734276456; x=1734881256;
+        d=1e100.net; s=20230601; t=1734276457; x=1734881257;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A6AGBEEbL3KEc1Z39BabQVoPtwwwqcya0HUExFb0a4o=;
-        b=alFNSF17wZktpqTvfeI661VGeeOY/iytswp4POnXiCUFKGYj2C7trf/y0p465BzknA
-         myfFlsZVPIfugj/nsaL8WO6Bg9pWJJ5e+NuuzxNQBief3pOsAqxJIx/XQcVlEplJmQeh
-         nBCiMjPSKSE4Q9cuHRo34QkgJnifAFQH9qLKe2yj+I2PfAIkqZDQL2HBW2ZWXbf0ueIk
-         RQIWkrptF/qhdR7gqL5qAjB5ywk29NP2Ny435na9XyD5kwjcTgcOtGWXeczEBOUXKCDV
-         3DeKQ+g9OkLm31kKxMzrf5THlVppQmk7fz16Dub9w+gctHgpP6AXVSDoTIB+4hiCRmYU
-         y5Mw==
-X-Gm-Message-State: AOJu0YzibduOnyApM99OPLGO5bY5wAPOF+Z3zjMDqptmg7AgFVhe/g1E
-	ifdYziYUC9LVhw35NaPS9V2pZHaAfTMe5HbJFzdWyxkowb3E9LzxdctbkQ==
-X-Gm-Gg: ASbGncsVJSU8qtgQaYR2B+qhFYCDoi/rzehL9ZVDNOCxZ0viPWg3fPw10HTrihDdQFT
-	RAxb4wU0Dr2G3VZDyql8BY8KG4+5AGaD01SXyawg0etLK7zNdmApb5p/Bpea5K4d2KLqPM6e+W9
-	A8dzdthWjdDHfy3MItWmFBP1eRSp2eoBp7aO7H2STVHEijv1IcumRlud9WgsLbzvdA9nsydUUru
-	hN2fvpYtCOXfKPvMvEzdy4RTcNobmRrhdbf84qAZ20q9QJnbn1vHRK+dWdBsaZtlw==
-X-Google-Smtp-Source: AGHT+IG4EzIDV83bFxfMqTokiE2rLV2ivH3xAGrNKdataL4fTNu4q8KlJySWgYw93ggAGABFxSqjhw==
-X-Received: by 2002:a05:6602:60cb:b0:844:c76a:354d with SMTP id ca18e2360f4ac-844e87b05a9mr1205381139f.2.1734276455961;
-        Sun, 15 Dec 2024 07:27:35 -0800 (PST)
+        bh=2hKZyhAXipAmnDzSZ6XL4Y/mK7U7fiGkYAKbiVZMpAI=;
+        b=udcT4r4OL5dR0BupjBc3z6dtTcFtAhp5JzyK2s6lIcee1AEgtzMOzCKDLHhkv6quer
+         uaH2cLVGno2ym+OX2Yt4+u5GEdMk1lolHcIo5l7R+rqEtKANJm4hOutDuXNaWLjSvUVl
+         MglZg09AiKYr/t6j1Q/5wlcaNtqX//DzefvUJw/td4ycyVa52GR8GwbGLhjjohft8k9A
+         QC2OjNYuOm3D6qnHUV/sQ/1o2PbTekmREXBH2YEqWd0vxbl1+OJqZzi59zkx6D5z2FzQ
+         LYhTFLkD/2QSZYOatv3BIIiJMhjcAgEn2tx6x0p4FuW7cZhiHLBEW1NVXFXVisO8IxXV
+         GhtA==
+X-Gm-Message-State: AOJu0YwUOwfdYlWwkIzbADBQ6F92kjweLMLYrt5eUy1voZ/wKds1x9s6
+	opXrd1d7Cnq/S2nwc/FcrVdZkCwisUJKlVw56uKzD+BbZdzC94k0vZ9Bhw==
+X-Gm-Gg: ASbGncviVTvsuCaYoYflWEvNGoEFbzsfuE9LTAY8fsT4w27tVJusOug71jlBvPagEpN
+	Q9uOPqJ1brNqT50xqkoZ6ABCfv2E2KiJH+F7Ko+DD3AIZbimd+TIpPrXBlrN/x6a5QsfFfer5dp
+	avG4AchnvzM2c/S4up9dseaPU8kZWeAfnVU7Qc0Q3vwgFCnv1nmThETXJ0loV6dkcE+HBatnHgG
+	tYRRd9iGFccq4mj0TxXesRjDZ/YbzQvVU/r/Hdkx0MJb0eeFrDzjTMMH9n5DP5egg==
+X-Google-Smtp-Source: AGHT+IEEVDg99A+0721vDLyfGAitoGJ+1Sise7icPOI2sQwrjtu45XNNlboEAremMvmVsYZY/14Uzg==
+X-Received: by 2002:a05:6e02:2169:b0:3a7:7d26:4ce4 with SMTP id e9e14a558f8ab-3afee2d0367mr94731505ab.9.1734276457458;
+        Sun, 15 Dec 2024 07:27:37 -0800 (PST)
 Received: from LeeDev.lee.dev ([2600:8804:1a84:2a00:be24:11ff:fe2b:2474])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4e5e37817e7sm773846173.114.2024.12.15.07.27.34
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4e5e37817e7sm773846173.114.2024.12.15.07.27.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Dec 2024 07:27:34 -0800 (PST)
+        Sun, 15 Dec 2024 07:27:36 -0800 (PST)
 From: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: "Roger L. Beckermeyer III" <beckerlee3@gmail.com>
-Subject: [PATCH v2 3/6] btrfs: update prelim_ref_insert() to use rb helpers
-Date: Sun, 15 Dec 2024 09:26:26 -0600
-Message-ID: <f230207a6603dfce4f95532032650bf21dce5be1.1734108739.git.beckerlee3@gmail.com>
+Subject: [PATCH v2 4/6] btrfs: update __btrfs_add_delayed_item() to use rb helper
+Date: Sun, 15 Dec 2024 09:26:27 -0600
+Message-ID: <7952094105650aa5a596cf5d6cc2a58520c14dee.1734108739.git.beckerlee3@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1734108739.git.beckerlee3@gmail.com>
 References: <cover.1734108739.git.beckerlee3@gmail.com>
@@ -87,114 +87,75 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-update prelim_ref_insert() to use rb_find_add_cached()
-adds prelim_ref_cmp for use with rb_find_add_cached()
+update __btrfs_add_delayed_item() to use rb_find_add_cached()
+add btrfs_delayed_item_cmp() to use with rb_find_add_cached()
 
 Signed-off-by: Roger L. Beckermeyer III <beckerlee3@gmail.com>
 ---
- fs/btrfs/backref.c | 71 +++++++++++++++++++++++-----------------------
- 1 file changed, 36 insertions(+), 35 deletions(-)
+ fs/btrfs/delayed-inode.c | 40 ++++++++++++++++------------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 6d9f39c1d89c..1326872f172e 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -250,6 +250,17 @@ static int prelim_ref_compare(const struct prelim_ref *ref1,
- 	return 0;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 508bdbae29a0..4bd02e566ab2 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -366,40 +366,32 @@ static struct btrfs_delayed_item *__btrfs_lookup_delayed_item(
+ 	return NULL;
  }
  
-+static int prelim_ref_cmp(struct rb_node *node, const struct rb_node *exist)
++static int btrfs_delayed_item_cmp(struct rb_node *rb_node, const struct rb_node *exist_node)
 +{
-+	int result;
-+	struct prelim_ref *ref1 = rb_entry(node, struct prelim_ref, rbnode);
-+	struct prelim_ref *ref2 = rb_entry(exist, struct prelim_ref, rbnode);
++	struct btrfs_delayed_item *item = rb_entry(rb_node, struct btrfs_delayed_item, rb_node);
++	const struct btrfs_delayed_item *exist = rb_entry(exist_node, struct btrfs_delayed_item, rb_node);
 +
-+	result = prelim_ref_compare(ref1, ref2);
-+
-+	return result;
++	if (item->index < exist->index)
++		return -1;
++	if (item->index > exist->index)
++		return 1;
++	return 0;
 +}
 +
- static void update_share_count(struct share_check *sc, int oldcount,
- 			       int newcount, const struct prelim_ref *newref)
+ static int __btrfs_add_delayed_item(struct btrfs_delayed_node *delayed_node,
+ 				    struct btrfs_delayed_item *ins)
  {
-@@ -281,52 +292,42 @@ static void prelim_ref_insert(const struct btrfs_fs_info *fs_info,
- 	struct rb_node **p;
- 	struct rb_node *parent = NULL;
- 	struct prelim_ref *ref;
--	int result;
+-	struct rb_node **p, *node;
+-	struct rb_node *parent_node = NULL;
+ 	struct rb_root_cached *root;
+-	struct btrfs_delayed_item *item;
 -	bool leftmost = true;
 +	struct rb_node *exist;
  
- 	root = &preftree->root;
- 	p = &root->rb_root.rb_node;
-+	parent = *p;
-+	ref = rb_entry(parent, struct prelim_ref, rbnode);
+ 	if (ins->type == BTRFS_DELAYED_INSERTION_ITEM)
+ 		root = &delayed_node->ins_root;
+ 	else
+ 		root = &delayed_node->del_root;
  
+-	p = &root->rb_root.rb_node;
+-	node = &ins->rb_node;
+-
 -	while (*p) {
--		parent = *p;
--		ref = rb_entry(parent, struct prelim_ref, rbnode);
--		result = prelim_ref_compare(ref, newref);
--		if (result < 0) {
--			p = &(*p)->rb_left;
--		} else if (result > 0) {
+-		parent_node = *p;
+-		item = rb_entry(parent_node, struct btrfs_delayed_item,
+-				 rb_node);
+-
+-		if (item->index < ins->index) {
 -			p = &(*p)->rb_right;
 -			leftmost = false;
+-		} else if (item->index > ins->index) {
+-			p = &(*p)->rb_left;
 -		} else {
--			/* Identical refs, merge them and free @newref */
--			struct extent_inode_elem *eie = ref->inode_list;
-+	exist = rb_find_add_cached(&newref->rbnode, root, prelim_ref_cmp);
-+	if (exist) {
-+		/* Identical refs, merge them and free @newref */
-+		struct extent_inode_elem *eie = ref->inode_list;
- 
--			while (eie && eie->next)
--				eie = eie->next;
-+		while (eie && eie->next)
-+			eie = eie->next;
- 
--			if (!eie)
--				ref->inode_list = newref->inode_list;
--			else
--				eie->next = newref->inode_list;
--			trace_btrfs_prelim_ref_merge(fs_info, ref, newref,
--						     preftree->count);
--			/*
--			 * A delayed ref can have newref->count < 0.
--			 * The ref->count is updated to follow any
--			 * BTRFS_[ADD|DROP]_DELAYED_REF actions.
--			 */
--			update_share_count(sc, ref->count,
--					   ref->count + newref->count, newref);
--			ref->count += newref->count;
--			free_pref(newref);
--			return;
+-			return -EEXIST;
 -		}
-+		if (!eie)
-+			ref->inode_list = newref->inode_list;
-+		else
-+			eie->next = newref->inode_list;
-+		trace_btrfs_prelim_ref_merge(fs_info, ref, newref,
-+							preftree->count);
-+		/*
-+		 * A delayed ref can have newref->count < 0.
-+		 * The ref->count is updated to follow any
-+		 * BTRFS_[ADD|DROP]_DELAYED_REF actions.
-+		 */
-+		update_share_count(sc, ref->count,
-+					ref->count + newref->count, newref);
-+		ref->count += newref->count;
-+		free_pref(newref);
-+		return;
- 	}
+-	}
+-
+-	rb_link_node(node, parent_node, p);
+-	rb_insert_color_cached(node, root, leftmost);
++	exist = rb_find_add_cached(&ins->rb_node, root, btrfs_delayed_item_cmp);
++	if (exist)
++		return -EEXIST;
  
- 	update_share_count(sc, 0, newref->count, newref);
- 	preftree->count++;
- 	trace_btrfs_prelim_ref_insert(fs_info, newref, NULL, preftree->count);
--	rb_link_node(&newref->rbnode, parent, p);
--	rb_insert_color_cached(&newref->rbnode, root, leftmost);
- }
- 
- /*
+ 	if (ins->type == BTRFS_DELAYED_INSERTION_ITEM &&
+ 	    ins->index >= delayed_node->index_cnt)
 -- 
 2.45.2
 
