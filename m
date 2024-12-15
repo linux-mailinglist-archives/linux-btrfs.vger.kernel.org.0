@@ -1,266 +1,454 @@
-Return-Path: <linux-btrfs+bounces-10381-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10382-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6CF9F2230
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 05:46:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 036C09F2281
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 08:50:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 867C21886B96
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 04:46:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 679411886B72
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2024 07:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32D5DDD2;
-	Sun, 15 Dec 2024 04:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fwUA9sCr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F7B49638;
+	Sun, 15 Dec 2024 07:50:00 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26CF9450
-	for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2024 04:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C60946426
+	for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2024 07:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=174.142.148.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734237975; cv=none; b=rDl9AU9TWY8mqbIunO7yIcw8RBNU7vaZquI6jbFkusREY9qwzBof7AubUNQOQkT5imJW5Mse7E2GLS8szOe09ylpqpLRgFjYbRfdheQCj9AIwJaH2/4kK7MbGlrnqhgE2tph1yOshmpAoQTyDwLFywy5Cdf1xmse9ueyCaXTBgk=
+	t=1734249000; cv=none; b=kDvpjDDkUwvZhXFMCwJ8615biQkuaAEC7vLrYGeXLzbPLA7bE5kQ+FrMGVB+Lcx8JkZfK2yt0OjLDWnOSOUSgw0nwct4eckFCi+ItqhV3aZ9GdStOtSWkfqy3SgFxWQdxLZj/ZgN3vvxGKUEbjOJvhmoLAH1rCjw6Hd5X1u8QkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734237975; c=relaxed/simple;
-	bh=zcsDCKDQ2Sa0RD5fGAbCpBnB/T0+j8V/zZiP7O6S5g4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KtX3CYZzfuUmto4B59A/wqU0f4aYmmr1MqM51LekqcYze/z5IwjKVDr//1r+x5AkNSh/bzGMhZJURsHOB4dEGykUFKziRbyqU7q7wFyPJ9FC/kOzrwbsu7paEzWDLAgAOLxXIv4JtshBBSRDgPO/X90Z1e1EESGA1ns3WKm633A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fwUA9sCr; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734237969; x=1734842769; i=quwenruo.btrfs@gmx.com;
-	bh=8GXhEQTFssSoJFXAYgChIyWnS/GmxIjwoUtwUtZbKXU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
-	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=fwUA9sCr3tAK1v6qoR4SnNFxDdCcjVcJ+0DU4rD7f/XQ70mg8LENPcrpJvqLlZyU
-	 Is0184l2cV8B2QYy1bzgoKro5G914/ODr9vMYwzOwqruY5Dq9a6OsjYlbaJY7WW7p
-	 YmYSP3BnGMm4WhLpfqH37fnAd2wb81TKSEJGbkFvWkOQJ8k7nFbevhGn8zPtAynZp
-	 4omxM7236Zx2Pz/k0tJcqFbnAbb2rmRfsygZ/+bCsOjwl029tEOE+v9QBAFucZegA
-	 YFT8IN2yuBfUkQGmVqbyMkapHJln+y/j8h8wEpCcc275z8oqgURQ6eUeN6G78uC2c
-	 kmOqG84OpgeFyrPRSA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvK4Z-1tecwT2l0L-011CBf; Sun, 15
- Dec 2024 05:46:09 +0100
-Message-ID: <2809427a-41f5-4b59-9d03-2c2012e16f76@gmx.com>
-Date: Sun, 15 Dec 2024 15:16:05 +1030
+	s=arc-20240116; t=1734249000; c=relaxed/simple;
+	bh=Y/b4mwLTVCBgwLi5E/+lchnc0M/TQgnb/ZZPkqf2V8s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rDy2OejHXf40kAf41rxe7utEoUPGeXQZcLxkU+GXESZzHT7h0qmx8q8ss30ThrG5ayGbOgIMKodzRug/OwL8b3p1rXdSofjf2FzxKAsx970dXHwaqWgPMZKafv3KCayJq1FL2ZIDuL2k9SHKv5B8u+hLNX9Br0sN3etsSpXZ9OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org; spf=pass smtp.mailfrom=drax.hungrycats.org; arc=none smtp.client-ip=174.142.148.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=drax.hungrycats.org
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+	id 60EB0113E00E; Sun, 15 Dec 2024 02:49:50 -0500 (EST)
+Date: Sun, 15 Dec 2024 02:49:50 -0500
+From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To: Goffredo Baroncelli <kreijack@inwind.it>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Andrei Borzenkov <arvidjaar@gmail.com>, Qu Wenruo <wqu@suse.com>,
+	Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+Subject: Re: Using btrfs raid5/6
+Message-ID: <Z16KHsma7foNV2ff@hungrycats.org>
+References: <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
+ <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com>
+ <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com>
+ <b5f70481-34a1-4d65-a607-a3151009964d@suse.com>
+ <9ae3c85e-6f0b-4e33-85eb-665b3292638e@gmail.com>
+ <cfa74363-b310-49f0-b4bf-07a98c1be972@gmx.com>
+ <Z1eonzLzseG2_vny@hungrycats.org>
+ <08082848-9633-4b3c-9d9d-6135efab8e2d@libero.it>
+ <Z1k-rlpwCqdynfWe@hungrycats.org>
+ <014edba0-5edc-4c71-9a6b-35a0227adb30@inwind.it>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dev extent physical offset [...] on devid 1 doesn't have
- corresponding chunk
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Ben Millwood <thebenmachine@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
- <56d3885e-5651-4fd4-af6d-89897f8bd240@gmx.com>
- <CAJhrHS1xgfrp=Wpk18xCBGUEi2tYxaqCxrMQG5UEGSUbR4G-_w@mail.gmail.com>
- <d5372478-70f4-4a3c-bf9d-26366f955e5e@gmx.com>
-Content-Language: en-US
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <d5372478-70f4-4a3c-bf9d-26366f955e5e@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PcxWDxdnnp0T7R4Zg+5bii5Wh8bYXfD+uquzjRnYhbxK70KECUp
- B3ng7T+uZRjn939p3iuSYwcbaIEajmNn64thrZ1mvgVPdwcCXKLIifqB38pRt7Oo+ZiWRKB
- mKj02ednUkHSywBPiGhrdJkY76/WlZVF7CaFNlHaOmZoYaev/5epaHhl+oy+mapy9nBxfOy
- lfCBc5RrmKfV9hc48J9DA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dQTz+hhqapg=;U/T3vSrbvZH1FapToTk1GSpLmMA
- Me8JZ0yasTpqletZl6Np0iVSQe0K8kjvhvaSQpEkyaP2JdHYHZc2kd8S4vtwRTj7E/U5OLYyg
- mR1nnVFs2XOFJbv59UXugE15OBCGvMWrWkx16tLI8Opw9KrRUWj8ZKFUlz2Zl6HaGTXFVOoK0
- Wh7Egel0aWl1JlEjjIf9w2TFUJQ5bLt515G3Ma5Lwg7praowMpiCcA9uv0H0MJ1hj3owyieme
- J4JrI/T+rILlJM56G0QtP8DORLGhTnDa5tG00AjOOrh4PbMk7VZAWu1iPNdRWhf8g2Ez+QMUN
- 0g6tRgQw8H01k5V+KZ2/d2jDB7ClJHWMDqqy3PeQ9YfUMeLx+RsCIwFoTBIS1edEA9t9M2kS1
- t7aJjCIvcZQWNXMuKw5krT946FDAB2xLa/qGT9GnhOtwW+GDOU9BsX9lnThC2enj7gk8mJZv4
- xQbAG7wYpcv52/xHDVvka26d0RTUhbX5pO01gFDWHDsInMIVK7W1cMkR9K2vxUgDBG2Tg5MO1
- toDOQBt/pUkpWPHty1B527ht5hHM0ymFIkJx4eIn3ggX/eHYFKW5ZXjMjTw0v5sZ+t8AhO578
- wr7QAGzMnWWdtsux2KX5SLtm9o8jEk0F5dY8pYmGwJYdsGTSTY1mPZh6A6Vb3D/0gsQoejPfQ
- hJqC8lxgrRa5WsKrLjnRzm4Ws4kzFTYgQUEVI3rzFfiQeDMwuQrDw4CPWgZ078pIwAODg0sor
- adwN0BFiI7Ksphm+yONHRIab+eUHyeSfavniGxPC/+tCY/72fkljMnJ6ygyDiUWcUOFURKF4R
- ONYfdD1hqHwRrareGO7Jeifd0BSfukk96tLeWKjCOZtX/YNC3QnBHld1aq6StRe4JA/l2h+NT
- 5yN+OMZEz0XCl+aMgmlubl0xVms8WqunTMqRdhrBt8yLEE8WpyiodaPydp9p1BjroXOjnvKZ4
- CSHwUEOGlQmUeKB7my+aKeMb8q95uofq+qRoVSxKqP1xfDDdv7EKj0Ac7Am2PKPUtdyPx/Fgv
- 20Tl6uTW268vHLPzW7sQ0Y5/lAKDEaSdY5FpyuFfkmNdvwOC7MN9KLoZ5hM1KgDT4pjKwt93T
- aOrdnHqUwSkD7iT49OK41h395KSVApyiYQ8nxkdX02eFhAdwpHJQ84Yu65Xs8EHU0R6DS1ztA
- =
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <014edba0-5edc-4c71-9a6b-35a0227adb30@inwind.it>
 
+On Wed, Dec 11, 2024 at 08:39:04PM +0100, Goffredo Baroncelli wrote:
+> On 11/12/2024 08.26, Zygo Blaxell wrote:
+> > On Tue, Dec 10, 2024 at 08:36:05PM +0100, Goffredo Baroncelli wrote:
+> > > On 10/12/2024 03.34, Zygo Blaxell wrote:
+> > > > On Sun, Dec 08, 2024 at 06:56:00AM +1030, Qu Wenruo wrote:
+> > > 
+> > > Hi Zygo,
+> > > 
+> > > thank for this excellent analisys
+> > > 
+> > > [...]
+> > > 
+> > > > There's several options to fix the write hole:
+> > > > 
+> > > > 1.  Modify btrfs so it behaves the way Qu thinks it does:  no allocations
+> > > > within a partially filled raid56 stripe, unless the stripe was empty
+> > > > at the beginning of the current transaction (i.e. multiple RMW writes
+> > > > are OK, as long as they all disappear in the same crash event).  This
+> > > > ensures a stripe is never written from two separate btrfs transactions,
+> > > > eliminating the write hole.  This option requires an allocator change,
+> > > > and some rework/optimization of how ordered extents are written out.
+> > > > It also requires more balances--space within partially filled stripes
+> > > > isn't usable until every data block within the stripe is freed, and
+> > > > balances do exactly that.
+> > > 
+> > > My impression  is that this solution would degenerate in a lot of
+> > > waste space, in case of small/frequent/sync writes.
+> > 
+> > "A lot" is relative.
+> > 
+> > If we first coalesce small writes, e.g. put a hook in delalloc or ordered
+> > extent handling that defers small writes until there are enough to fill a
+> > stripe, and only get to partial stripe writes during a commit or a fsync,
+> > then there far fewer of these then there are now.  This would be a big
+> > performance gain for btrfs raid5, without even considering the gains
+> > in robustness.
+> 
+> Are you considered the "write in the middle of a file case" ? In this case
+> the old data will be an hole in the stripe that will not filled until
+> a re - balance. My impression is that this approach for some workload will
+> degenerate badly with an high number of half empty stripe (more below)
 
+Oof, there are a number of misconceptions to unpack here...
 
-=E5=9C=A8 2024/12/15 07:30, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2024/12/15 04:09, Ben Millwood =E5=86=99=E9=81=93:
->> On Sat, 14 Dec 2024 at 02:51, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>> Both kernel and btrfs-progs should go with metadata COW with transacti=
-on
->>> protection, so even something went wrong (power loss or Ctrl-C) we
->>> should only see the previous transaction, thus everything should be
->>> fine.
->>
->> Thanks for the reassurance, that is what I'd hoped would be true :)
->>
->>> =E5=9C=A8 2024/12/14 12:47, Ben Millwood =E5=86=99=E9=81=93:
->>>> While I'm waiting for the lowmem check to progress, are there any
->>>> other useful recovery / diagnosis steps I could try?
->>>
->>> If you do not want to waste too long time on btrfs check, please dump
->>> the device tree and chunk tree:
->>>
->>> # btrfs ins dump-tree -t chunk <device>
->>> # btrfs ins dump-tree -t dev <device>
->>>
->>> That's all the info we need to cross-check the result.
->>>
->>> Although `btrfs check --readonly --mode=3Dlowmem` would be the best, a=
-s it
->>> will save me a lot of time to either manually verify the output or cra=
-ft
->>> a script to do that.
->>
->> Well, the check is still going:
->>
->> root@vigilance:~# btrfs check --progress --mode lowmem /dev/
->> masterchef-vg/btrfs
->> Opening filesystem to check...
->> Checking filesystem on /dev/masterchef-vg/btrfs
->> UUID: a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
->> [1/7] checking root items=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 (0:46:43 elapsed,
->> 68928137 items checked)
->> [2/7] checking extents=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 (14:31:49 elapsed,
->> 239591 items checked)
->>
->> I'll let it continue. In the meantime I'll e-mail you the trees you
->> asked for off-thread: they don't obviously look like they contain
->> private information, but I'd like to minimise the exposure anyway.
->> (Feel free to send them to other btrfs devs.)
->
-> Those trees are completely anonymous, the only information that contains
-> are:
->
-> - How large your fs is
-> - How many bytes and their ranges are allocated
-> - The type of the allocated chunks
->
-> So it should be very safe to share, unless you have some very
-> confidential info hidden in the device size :)
->
-> [...]
->>>
->>> That's all the info we need to cross-check the result.
->>>
->>> Although `btrfs check --readonly --mode=3Dlowmem` would be the best, a=
-s it
->>> will save me a lot of time to either manually verify the output or cra=
-ft
->>> a script to do that.
->>>
->>> My current assumption is a bitflip at runtime, but no proof yet.
->
-> Unfortunately it doesn't look like this.
->
-> I scanned the last several dev-extents and chunks, it turns out that
-> it's very possible `btrfs clear-space-cache` is causing something wrong:
->
-> - The offending dev-extent have chunk_tree_uuid set
->  =C2=A0 This is not the kernel behavior, but progs specific one.
->  =C2=A0 This means there are two chunks allocated during
->  =C2=A0 `btrfs-progs clear-space-cache`, but one is missing.
->
-> - One of chunk allocated by btrfs-progs is totally fine
->  =C2=A0 And it's still in the chunk tree
->
-> - The other (the offending one) points to a chunk that's beyond
->  =C2=A0 the last known chunk
->
-> So I guess either:
->
-> - The btrfs-progs has a bug in the chunk creation code
->  =C2=A0 So that a chunk and its dev-extent are not created in the same
->  =C2=A0 transaction, and Ctrl-C breaks it, causing an orphan dev-extent
->
-> - The btrfs-progs has a bug in the chunk deletion code
->  =C2=A0 Similar but in the empty chunk cleanup code.
->
-> Anyway I'll need to dig deeper to fix the bug.
+Write to the middle of a file does not leave a hole in the stripe.
+It doesn't free the overwritten extent at all, until the last reference
+to the last block is removed--and then the entire extent is freed,
+which would empty the stripe.  This is extent bookending, which can
+waste a lot of space on btrfs, e.g.
 
-Unfortunately I failed to find why the chunk is removed but free dev
-extent is left.
+	# compsize vm-raw.bin
+	Processed 1 file, 1097037 regular extents (1196454 refs), 0 inline.
+	Type       Perc     Disk Usage   Uncompressed Referenced
+	TOTAL       97%       31G          32G          25G
+	none       100%       31G          31G          23G
+	zlib        56%      2.0M         3.5M         1.0M
+	zstd        32%      442M         1.3G         1.1G
 
-Both kernel and progs are doing the proper chunk removal inside one
-transaction to remove both the chunk item and dev-extent item, from the
-very beginning.
+That's about 25% of the space waiting to be freed by an as-yet-unwritten
+garbage collection tool, the extent tree v2 filesystem on-disk format
+change, or as a side-effect of `btrfs fi defrag`.  I don't care about
+1% of the space when I'm already overprovisioning by 25% on btrfs compared
+to other filesystems.
 
-The same is for the chunk allocation part.
+If the extent is longer than the raid stripe, then the raid stripe
+simply remains on disk, complete with csums that can participate in
+error detection and correction.
 
-So unless there is something totally wrong, I didn't see why progs or
-kernel can cause such mismatch.
+If the extent is shorter than the stripe, then there is a hole left
+behind; however, this is the case _now_ on btrfs.  The extent allocator
+will try to align allocated extents on 64K boundaries, and will not fill
+in any hole smaller than 64K until there are no holes larger than 64K
+left in the filesystem (in other words, the allocator will prefer to
+allocate a new block group before filling in the smaller holes).
 
-Do you still remember if there is any error message for the
-clear-space-cache interruption and the next RW mount of it?
+This second allocation pass is _slow_ on large filesystems.  Like,
+"your disks will crumble to dust before you fill a large filesystem
+past 99.5%, because btrfs gets exponentially slower toward the end,
+and the filesystem will take thousands of years to fill in the last 0.1%
+on a big array" slow.
 
-Thanks,
-Qu
->
-> Meanwhile I have created a branch for you to manually fix the bug:
-> https://github.com/adam900710/btrfs-progs/tree/orphan_dev_extent_cleanup
->
-> Since the lowmem is still running, you can prepare an environment to
-> build btrfs-progs, so after the lowmem check finished, you can use that
-> branch to delete the offending item by:
->
-> # ./btrfs-corrupt-block -X <device>
->
-> Thanks,
-> Qu
->
->>>
->>> Thanks,
->>> Qu
->>>
->>>> smartctl appears
->>>> not to work with this disk, so I can't easily say whether the disk is
->>>> or is not healthy.
->>>>
->>>
->
->
+This is one of the more frustrating aspects of the current situation:
+if the allocator simply didn't do the second pass, it 1) would not hang
+as it gets too close to full, but could promptly return ENOSPC instead,
+and 2) would not have the raid5 write hole today if the cluster size
+and alignment was reliably aligned with the stripe size.
 
+> [..]
+> > 
+> > In the real world this may not be a problem.  On my RAID5 arrays, all
+> > extents smaller than a RAID stripe combined represent only 1-3% percent
+> > of the total space.  Part of this is self-selection: if I have a workload
+> > that hammers the filesystem with 4K fsyncs, I'm not going to run it on
+> > top of raid5 in the stack because the random write performance will suck.
+> > I'll move that thing to a raid1 filesystem, and use raid5 for bulk data
+> > storage.  On my raid1 filesystems, small extents are 10-15% of the space.
+> 
+> 1-3% ? In effect I expected a lot more. Do you perform regular balances ?
+
+More misconceptions:  balances do not change existing extent lengths.
+Balance defragments larger free spaces, but does not fill in
+sub-cluster-sized free space holes (indeed, it makes _more_ of them
+because the allocator's clustering parameters used during balance are
+different from the parameters used for normal writes).
+
+The 1-3% is simple math:  if 90% of the filesystem's extents are 32K
+long, and 10% of the extents are 32M long, then 1% of the filesystem
+blocks are in 32K extents (smaller than a 9-drive-wide raid5 stripe),
+and 99.9% of the rest of the blocks are in extents much larger than any
+raid5 stripe.  Real filesystems have a wider variety of extent sizes,
+but they end up with similar averages.
+
+Some btrfs raid1 filesystems end up with higher percentages of small
+writes (I have one with 11% small extents); however, with those higher
+percentages come severe performance issues on btrfs.  Performance would
+get _much_ worse on raid5 because so many writes go through RMW.
+
+> > There are probably half a dozen ways to fix this problem, if it is
+> > a problem.  Other filesystems degenerate to raid1 in this case, so they
+> > can lose a lot of space this way.  The existing btrfs allocator doesn't
+> > completely fill block groups even without raid5, and requires balance to
+> > get the space back (unless you're willing to burn CPU all day running
+> > the allocator's search algorithm).  Nobody is currently running OLTP
+> > workloads on btrfs raid5 because of the risk they'll explode from the
+> > write hole.
+> 
+> The hard part of a filesystem is to not suck for *any workload* even at the
+> cost to not be the best for *all workloads*.
+
+I don't disagree with that.  Why did you think I did?
+
+> > Off the top of my head.
+> > 
+> > We only ever need one partially filled stripe, so we can keep it in
+> > memory and add blocks to it as we get more data to write.  For the first
+> > short fsync in a transaction, write a new partially filled stripe to a
+> > new location (this is a full write, no RMW, but some of the data blocks
+> > are empty so they'll be zero-filled) and save the data's location in
+> > the log tree (except for the full write, this is what btrfs does now).
+> > 
+> > For the next short fsync, write a stripe which contains the first
+> > and second fsync's data, and save the new location of both blocks in
+> > the log tree (since there are only a few of these, they can also be
+> > kept in kernel memory).
+> > 
+> > For the third short fsync, write a stripe which contains first, second,
+> > and third fsync's data, and save the new location of all 3 blocks in the
+> > log tree.  During transaction commit, write out only the last stripe's
+> > location in the metadata (the first two stripes remain free space).
+> > During log replay after a crash, replay all the add/delete operations up
+> > to the last completed fsync.  There's never a RMW write here, so nothing
+> > ever gets lost in a write hole.  There's never an overwrite of data in
+> > any form, which is better than most journalling writeback schemes where
+> > overwrites are mandatory.
+> 
+> If I understood correctly, to write 3 short data+fsync, you write 1+2+3=6
+> fsync data: 2 times the data and 3 fsync. This is the same cost of a journal.
+
+I write 1 unit of data for each of 3 fsyncs, so 1 write per fsync (the
+unit is always a full stripe, it just has fewer zero blocks in later
+fsyncs because more of the empty blocks are filled in).  These writes are
+always to the final location of the data (the same approach used by the
+btrfs log tree) so there are no further read or write operations as there
+would be with a journal.  The stripes that are replaced by fsyncs during
+the same tree update become free space at the end of the transaction
+(again with no additional writes, same as the current log tree).
+
+For a filesystem with metadata on SSD, the journal adds data block writes
+to the SSD side.  Writing the full stripe goes directly to the HDD side,
+without any head movement on spinning drives.
+
+> > I think we can also hack up balance so that it only relocates extents
+> > that begin or end in partially filled/partially empty raid56 stripes,
+> > with some additional heuristics like "don't move a 60M extent to get 4K
+> > free space."  That would be much faster than moving around all data that
+> > already occupies full stripes.
+> > 
+> > > > 2.  Add a stripe journal.  Requires on-disk format change to add the
+> > > > journal, and recovery code at startup to replay it.  It's the industry
+> > > > standard way to fix the write hole in a traditional raid5 implementation,
+> > > > so it's the first idea everyone proposes.  It's also quite slow if you
+> > > > don't have dedicated purpose-built hardware for the journal.  It's the
+> > > > only option for closing the write hole on nodatacow files.
+> > > 
+> > > I am not sure about the "quite slow" part.
+> > 
+> > "Journal" means writing the same data to two different locations.
+> > That's always slower than writing once to a single location, after all
+> > other optimizations have been done.
+> 
+> Why you say write only once ? In the example above, you write the data
+> two times.
+
+One data write per fsync, one block per disk:
+
+First write:   [ data1 zero  zero zero parity ]
+
+Second write:  [ data1 data2 zero zero parity ]
+
+The log tree records the first write in the first fsync.  In the second
+fsync, the log tree atomically deletes the metadata pointers to data1 in
+the first write and replaces them with pointers to data1 in the second
+write, then adds pointers to data2.  The committed tree records only
+the metadata pointing to both data blocks in the second write.  The first
+write becomes free space at the end of thte transaction.
+
+If there are two more blocks written with fsync, we write a new stripe:
+
+Third write:  [ data1 data2 data3 data4 parity ]
+
+At this point we can throw away the partially filled stripe that we've
+been keeping in memory, because there are no more empty blocks to fill in.
+We leave the log tree items on disk to be replayed after a crash, and
+incorporate the final block locations into the metadata tree on commit.
+
+(Note:  in reality, the parity block would be moving around from stripe
+to stripe.  I left that detail out for clarity).
+
+> > bcachefs (grossly oversimplified) writes a raid1 journal, then batches
+> > up and replays the writes as raid5 in the background.  That's great if
+> > you have long periods of idle IO bandwidth, but it can suck a lot if
+> > the background thread doesn't keep up.  It's functionally the same as
+> > using balance to reclaim space on btrfs.
+> 
+> My understanding is that, more or less all the proposed solution try to
+> reduce the number of RMW cycles putting the data in a journal/log/raid1 bg.
+
+Another misconception:  journalling in raid5 does not change the number
+of RMW cycles.  Journalling provides a mechanism to _restart_ RMW cycles
+that are interrupted.
+
+RMW cycles are difficult to repair if you don't have a complete copy of
+the data before and after the update.  If there are csum errors detected
+after using a partial parity log block, that combinatorially expands the
+number of possible corrections (OK, for raid5 we go from 1 to 2, but for
+raid6 we multiply the number of combinations by N).  With crc32c csums,
+you can run into false positives when recovering blocks because crc32(A
+^ corruption) = crc32(A) ^ crc32(corruption).  If you're journalling
+full block stripes to avoid that complexity, then you might as well
+do it the way the log tree does:  write a full stripe in free space,
+and point the metadata tree to it for recovery.
+
+> Then the data is move in a raid5/6 bg. The main difference is how big is this
+> journal. Depending by this size, a "balance" is required more or less frequently.
+
+You might be thinking of something like the approach bcachefs used here:
+write updates to something raid1, then have a background process copy
+that data to raid5 stripes.  That can cause problems where the filesystem
+ends up being forced to stop allowing more writes because it has fallen
+too far behind.
+
+Balances can be run at any time to reclaim free space on a CMR drive.
+When using this scheme, the balance must be run to keep the journal from
+filling up the filesystem with metadata.  On a filesystem with continuous
+write load, it will eventually force writes to stop because there's no
+metadata space left.  It would behave like a SMR drive in that respect.
+
+> The current btrfs design, is based on the fact that the raid profile is managed at
+> the block-group level, and it is completely independent by the btree/extents
+> managements. This scaled very well with the different raid model until the raid
+> parity based. This because the COW model (needed to maintain the sync between the
+> checksum and the data) is not enough to maintain the sync between the parity and the data.
+
+This is a correct statement of the cause of the raid5 write hole on btrfs.
+
+> Time to time I thought a variable stripe length, where the parity is stored
+> inside the extent at fixed offset, where this offset depend by the number
+> of disk and the height of the stripe.
+
+This is the ZFS approach.  bcachefs rejected this approach because it causes
+short fsyncs to degenerate to raid1, i.e. they take up more space because
+the ratio of data to parity shrinks from N:1 to 1:1.
+
+I'm not particularly bothered by that ratio change (apart from anything
+else, it's the fastest option for continuous small-write fsync-heavy
+workloads on very fast SSDs).  What bothers me about this is that we
+effectively need a new encoding method, i.e. the parity blocks have to
+be represented in the extent tree, and reading and writing them will
+be like compressed files.  That means inserting and debugging a new
+compression-like layer to run on top of raid5 data block groups (can't
+do this for metadata block groups without undoing skinny-metadata and
+all the changes to metadata behavior that implies).
+
+I want btrfs raid5 write hole fixed *today*, not 5-10 years from now
+when a new encoding type finally gets debugged enough to be usable.
+
+> Having the parity inside the extents would solve this part of the problem, until you need
+> to update in the middle a file. In this case the thing became very complex until
+> the point that it is easier to write a full stripe.
+
+Another misconception here:  btrfs already has proven mechanisms in
+place to handle similar cases.
+
+Recall that btrfs extents are immutable.  There is no update in the
+middle of a file.  btrfs writes the new data to a new extent, then makes
+the middle of the file point to the new extent.
+
+> > > In the journal only the "small" write should go. The "bigger" write
+> > > should go directly in the "fully empty" stripe (where it is not needed
+> > > a RMW cycle).
+> > 
+> > Yes, the best first step is to remove as many RMW operations as possible
+> > in the upper layers of the filesystem.  If we don't have RMW, we don't
+> > need to journal or do anything else with it.  We also don't have the
+> > severe performance hit that unnecessary RMW does, either.
+> > 
+> > > So a typical transaction  would be composed by:
+> > > 
+> > > - update the "partial empty" stripes with a RMW cycle with the data
+> > > that were stored in the journal in the *previous* transaction
+> > > 
+> > > - updated the journal with the new "small" write
+> > 
+> > A naive design of the journal implementation would store PPL blocks
+> > in metadata, as this is more efficient than storing entire stripes or
+> > copies of data.  Metadata is necessarily non-parity raid, both to avoid
+> > the write hole and for performance reasons, so it can redundantly store
+> > PPL information.
+> > 
+> > Error handling with PPL might be challenging:  what happens if we need
+> > to correct a corrupt stripe while updating it?
+> 
+> I think the same thing that happens when you do a standard RMW cycle with a corruption:
+> pause the transaction: read the full stripe and the data checksum, try all the
+> possible combination between data and parity until you get good data, rewrite the stripe
+> (passing by a journal !); resume the transaction.
+
+All of which is terrible:  while under memory pressure, in the middle
+of doing some writes, we stop the world to do a read, because we didn't
+completely eliminate RMW in btrfs.
+
+That's an unforced error.  Let's not do that.
+
+> > But maybe journalling full stripe writes is a better match for btrfs.
+> > To do a PPL update, the PPL has to be committed first, which would mean it
+> > has to be written out _before_ the transaction that modifies the target
+> > raid5 stripe.  That would mean the updated stripe has to be written
+> > during a later transaction than the one that updated it, so it needs to
+> > be stored somewhere until that can happen.  Given those requirements,
+> > it might be better to simply write out the whole new stripe to a free
+> > stripe in a raid5 data block group, and write a log tree item to copy
+> > that stripe to the destination location.  That starts to sound a lot
+> > like option 1 with the fix above...why overwrite, when you can put data
+> > in the log tree and commit it from there without moving it?
+> > 
+> > In mdadm-land, PPL burns 30-40% of write performance.  We can assume that
+> > will be higher on btrfs.
+> 
+> My suspects is that this happens because md is not in the position to relocate
+> data to fill a stripe. BTRFS can join different writes and put together in a
+> stripe. And if this happens BTRFS can bypass the journal because no RMW cycle is
+> needed. So I expected BTRFS would performs better.
+
+Well...OK, you're right.  It wouldn't be 30-40% of all write performance.
+Only nodatacow files and short fsyncs would be subject to the slowdown.
+
+> > For me, if the tradeoff is losing 1.5% of a 100 TB filesystem for
+> > unreclaimed free space vs. a 30% performance hit on all writes with
+> > journalling, I'll just delete one day's worth of snapshots to make that
+> > space available, and never consider journalling again.
+> > 
+> > Journalling isn't so great for nodatacow either:  the whole point of
+> > nodatacow is to reduce overhead comparable to plain xfs/ext4 on mdadm,
+> > and journalling puts that overhead back in.  I'd expect to see users in
+> > both camps, those who want btrfs to emulate ext4 on mdadm raid5 without
+> > PPL, and those who want btrfs to emulate ext4 on mdadm raid5 with PPL.
+> > So that would add two more options to either mount flags or inode flags.
+> > 
+> > > - pass-through the "big write" directly to the "fully empty" stripes
+> > > 
+> > > - commit the transaction (w/journal)
+> > > 
+> > > 
+> > > The key point is that the allocator should know if a stripe is fully
+> > > empty or is partially empty. A classic block-based raid doesn't have
+> > > this information. BTRFS has this information.
+> > > 
+> > > 
+> > > 
+> > > BR
+> > > 
+> > > G.Baroncelli
+> > > 
+> > > -- 
+> > > gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> > > Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> > > 
+> > > 
+> 
+> 
+> -- 
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
