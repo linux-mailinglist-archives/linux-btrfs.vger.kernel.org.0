@@ -1,98 +1,98 @@
-Return-Path: <linux-btrfs+bounces-10428-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10429-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D7A9F38C4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2024 19:20:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26D249F38AD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2024 19:17:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16F1418853F7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2024 18:15:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9A4316EC95
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2024 18:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FA42080C1;
-	Mon, 16 Dec 2024 18:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE082208970;
+	Mon, 16 Dec 2024 18:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fcPEIF3T";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="xAG8fxrb"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="g3tU2FNm";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="TM9XwTcd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836DA207651
-	for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2024 18:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F327207669
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2024 18:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734372877; cv=fail; b=VuX/PzRTVSgpOXU1sNTgn6R+I7YP/uHzrHzIJF753vtLMNnGf2HxRdSOXZh4Z6V7EPWbsDHmkWvwq56PD6TZiD95DWw3gJptew8jsNtdJEqcFE2foTqS2nMI3agu0OUhaDU15S5bhwKsyX0YVjvD+61GJrH1doCJJdmcDFLZMrI=
+	t=1734372881; cv=fail; b=agVD/URC+9Li3WHLIsMsdqXBJpeXlmYPj4FZukUGVhKnq5Zv78ikm6sqBy4AgZ042BymE2jDpz4hVFdIqO9NXvmknAdCLbfTO97dO5BsCQJXv3f6ekJdYoWm7Q/2k3W+VdB+ume+3fC4pjKQg+mhRx/drS6fedTJ0dJtph09mdA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734372877; c=relaxed/simple;
-	bh=4rDYMkl5elHHPniqdzXbZjlTLtoVuqwA5zt0LySk2z8=;
+	s=arc-20240116; t=1734372881; c=relaxed/simple;
+	bh=8vgfFShkER6knPnhAas0XZX9pVV+P7Rar21OrcpqY1g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gOvTUBi4KHalkdVCrX7vkzj/UAjz05KNMDZ5NX3GwBj+e7byiLUr67NuTQrgm+Ee19HfWMBkUadAsKBuQc0fLldWRLN3Ec7ENiE3eMGwgtnMVZfTxvib6FEu3mxV8KiZkMVWyRt5b/S26ER/TzHHP6E+WxQwfQDrupva3FnWoxo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=fcPEIF3T; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=xAG8fxrb; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=cKZE9XrkxTqGzGovj32ARtAkL9qVx+ZSuBe63Ov6QYryDNdxn9fjciBRkGBzYgYzLUmn5VByEL4vXv02ILMHiKbBwsQ/Dguy5+il3pRAOSixZXf66oy6FoWGzRtuRZ2yr1kiOKM86rlJnaKqm7aSIMcj15SKcCrKfHYhxLDLIUw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=g3tU2FNm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=TM9XwTcd; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BGHQtYA015434;
-	Mon, 16 Dec 2024 18:14:26 GMT
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BGHQjLr010956;
+	Mon, 16 Dec 2024 18:14:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=jYj64u+dgtu7QMYvM/n2JuUdjPwcI21a14QeObnaXZQ=; b=
-	fcPEIF3TVziN3STBE8n9DU2bcNQh893HZ+ZcB7jHalBONLx7OOmtqOjRRVGMqb3d
-	8EG485wremE7H9N+wGfnql0dIwh0h/w7HoNLLu4OxEMWEOdfxwo2sFDgkAd+TNIg
-	886DakDT8hAkSbl1kDG5wFZH7biZ4Hk7wC3MJxLWdUxUMcuBexVEpVRQrDNJQjIv
-	6jzDvWgwM3VFWpbM5AgItoU4+JXbergVtsKES0UKz9gQ8V9anoo9mncIMX/gTze6
-	ofyGrGWbRfX+LEXVvTUZ0oltzUxCKvEwsZRRkZpkOTXhkbSiA9ZARc1GCDgQgUVb
-	HyoZ+zWWwbPfo23IJdJHAQ==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43h1w9bxck-1
+	corp-2023-11-20; bh=x8+ucNLNelxAC10lgEUUfWVe8+nwNo4COFZdA+b69Yw=; b=
+	g3tU2FNm4/gcLrqtkKBEoqwMj4KVRB3JLOYkj88HURj3wuViQFhJWGECqyIbOCaD
+	D06In6CR6nZjh0FTxSsVk2fUtqIMFG+CN8hfoqMUSE3SI9qw+Sb0oFkZWG5mCFTq
+	0NvKbZCdPfeHvrW26NpFv/11GZKDnMp7bKU49Ygx8cgWdYJ5RKzEeDSpr6wZmQST
+	dGc7lnTU2K2Xmyq6XrA1W5/AopCQb+Bx8+UvcxfFv9+M9ErZLfoBsdY2jadH5UfF
+	y8GiORGHktpxUx1BCZhID8q6kxBCt3wSll15x1ZGX1DWn5k16DB1GP8qbpDWBy44
+	mv3evrPKXcc+vyV7nLwMDw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43h2jt403e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Dec 2024 18:14:25 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4BGHIotZ000776;
-	Mon, 16 Dec 2024 18:14:25 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43h0f7m3mt-1
+	Mon, 16 Dec 2024 18:14:29 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4BGHP9C8011058;
+	Mon, 16 Dec 2024 18:14:29 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43h0f7b8et-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Dec 2024 18:14:25 +0000
+	Mon, 16 Dec 2024 18:14:29 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DtgLtB96PMyVCgVGwncA+/rhAcG/W0RvID6smLmphXsDrFxzuxdsCpWllfBfdqF+wMDmLdbAe/XVrTWjmDyAmVMYVNSryRR3IVi6MpwBh66ChAnPIoPVwvR9wOJfRcQ2kKLKLUi6VADywnSoZFmoNX2QD0KQexCs9fL1y8RgXJJ4R1wMRmWGbT6caQg1HLIDJoG9TIcgosS65zjLNZFq7B+9sGlNVm0xMmagKIsveMTQzKC4baOYRUc+cu1Fcv3seFeHqyOLgiGOi23D4rSBRnpiR0ZWsISuRLV4DQ9KLnnzPToSYP561gTHDT/nf3XDuFqpf+e206BvNdJ19exTgA==
+ b=gdLd5cj7FIFP4DqKKS4u9DWIlqfmFY/3FKGxEq3KzYZfGOZ+6Max6/Vs7cW6R6pvUcdCmI8Ca4SP8aBVMRCwdXrWnMHNLqEK/3s9sGUjnqKeJPpdBPgTkdWNnJfKbVBWDdL5esCUog4KPQOsf/ay293r5n8QquaFvSJhT1DgYjqR/p5bJY9GPTV6C9eNAz24kv6d9krooadnwEOvNt/GEvA+B4u8f5p/fUBg+hoVP3QzQ+Vl7gZtYv46UNlZnBsdEljW2goh9peHYQHMZjlMCSC45mtJSo8uFlGGH0h3jBFw4INLVpFXSUcpdMl+xzXqszZp+Mu2cMwFO7LiPag7Yg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jYj64u+dgtu7QMYvM/n2JuUdjPwcI21a14QeObnaXZQ=;
- b=TMPtdhrxOry3dMpd9oy+UsRy8vBDIdUbPcbI31ArzCGKP8/vl6vqn8fmnZCMcirtZSHXhfiWMlquTE0F0JW3hPsrreMhDQg4wKJUSayx+xVfUuucVmNExdhbKktWppQugSmO0KnFr4uN5WTT1nL+lkFPMJsmH00RR2Teeitd4hNsCeODnOQLFdYhs8N1RMhB4Bv5IO2CLcNW5yrOApEpFCJWwelnuB4NLJc8XWCB24LPqzHA+AhaSlXqR/IqNcZ5U58o0EfbqGwILsXhNGy72IF6DStO4DRuDNOgTuqeFP/Y0EIMWym/023dQjnEGbo/3oYfE7D5EXWGFeByFQb+6Q==
+ bh=x8+ucNLNelxAC10lgEUUfWVe8+nwNo4COFZdA+b69Yw=;
+ b=gJpfqraGa/zIx1+yZ2UZNB4rrtZl3bHvmZm6KxR6oLj/G9nK1gUn0dd3Dq0oDAfurdBrg4xiYBEYgqrO/uBtukXbnIiAhmim8h1VOHY/VLEf0aR0nFy2bB3bCe3Z3QHkYylLiVqMmNpZ/L+fRxvxR0ZvVfDH0wQH6JEbrB9AEEQMpVZ40SzsRN0T44P8sFnVP7K7Uolz5rMV1LEtnsit+AGGyEE8frpZ7EmZL40RMgcYPIUTyCg8kBZpnZL01uibPaHOSePNW99CQ6vNKtNJZEBj8xvJ7Cm3Ld1B9+aeBj+ZAgvxyHkqrygabcdadDU/F/XUReJ0Epr/isjeg0hwbw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jYj64u+dgtu7QMYvM/n2JuUdjPwcI21a14QeObnaXZQ=;
- b=xAG8fxrbbHuvDXyx24EbrHvdTl5IDIYqNAqE0LHDPsaY5G2MJNtDdqvjgr1nfh/qOBpvzaM5fiMNB1ZDiNRne3wykk3zswhzQlDF1b7yRioYr10hvhSoAeYpdu0bsL1yz0KN6HxrKc92uuDvkZU3AZAzf3eawwZdY2GxbYmxILQ=
+ bh=x8+ucNLNelxAC10lgEUUfWVe8+nwNo4COFZdA+b69Yw=;
+ b=TM9XwTcdFSZJ+b8KEn6VKu53ECIwtW8PEEaddFRdVLTreAUxbm6Yg2+4DxndtnGmQD7RcLLkf0Mx6i47eGE1GFMCeai5UB9HcZwtdyeM0cQA0rRUhpLWoDyo31lCRMTnM8tufE8l3JhlAv84i1LjyiSHDb2TIHreqkizCjH7n38=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by DM4PR10MB8220.namprd10.prod.outlook.com (2603:10b6:8:1cc::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.20; Mon, 16 Dec
- 2024 18:14:23 +0000
+ 2024 18:14:27 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65%2]) with mapi id 15.20.8251.015; Mon, 16 Dec 2024
- 18:14:23 +0000
+ 18:14:27 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
 Cc: dsterba@suse.com, wqu@suse.com, hrx@bupt.moe, waxhead@dirtcellar.net
-Subject: [PATCH v4 6/9] btrfs: add RAID1 preferred read device
-Date: Tue, 17 Dec 2024 02:13:14 +0800
-Message-ID: <dee9a6d8815751f9ca69cc4e233df63565003d04.1734370093.git.anand.jain@oracle.com>
+Subject: [PATCH v4 7/9] btrfs: expose experimental mode in module information
+Date: Tue, 17 Dec 2024 02:13:15 +0800
+Message-ID: <d96c13e43373179f936f7eee3786c29727b8b0c6.1734370093.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1734370092.git.anand.jain@oracle.com>
 References: <cover.1734370092.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MAXPR01CA0101.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::19) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: MAXPR01CA0110.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:5d::28) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -102,229 +102,114 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DM4PR10MB8220:EE_
-X-MS-Office365-Filtering-Correlation-Id: 560362c2-e277-4060-d4a7-08dd1dfd77b2
+X-MS-Office365-Filtering-Correlation-Id: 2e5cd3c6-93e2-4c3b-f652-08dd1dfd7a6b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?SRr+u2ADvtVggD+Hg1hYaHjAhdxe23jK9VHZ/2d/xVmVp/3KYbk1Kyoj4oJ3?=
- =?us-ascii?Q?iDuBR3pAMreaKUVV+8eOX6TPT/TKKgABfcypqSNPWaQKVC4uBLIDEnz2j/LR?=
- =?us-ascii?Q?Ig429K/D57kGBdoO/8fSIEyPOcVT7GIWbolDDZry9hb3KJN/kKCs6+dgc2FC?=
- =?us-ascii?Q?nEt3ijoaAN+pPZ0bbbOg3hm9fWXxCD7qkcqCkVqnCanqIBrzSwfSyau+sZfB?=
- =?us-ascii?Q?REunV90LOznyhWPkxlu7qR4K5C629UUtnpgnfBYqrD+1CcR82scZMCRmxhnc?=
- =?us-ascii?Q?HhkZ5ibxVJAOBdLkULDmR8oFLDWZob029xlRRxB+cxvkVtyOe82aqthNTDYS?=
- =?us-ascii?Q?IM4qYihxey9Tb2FXFeRARQMUOYCd+C/0FXdyfgDculI8mM+BFe/9HhmtApyi?=
- =?us-ascii?Q?x8Nj5id//h5ZeX9Ycf1lDozPEGGs31xF7ChUBgCa12Edo3KXhdt9eAN2BfqO?=
- =?us-ascii?Q?nT6tv6fBusfOUwwqo3zAX713Jw71sYpDn3dPogClDrSO9DDEsJW16EUmr/Zm?=
- =?us-ascii?Q?hCuGu9ET6dfNmaINK7tm3M3skvldERM5FeKYm+pMJZeX4dIORapTbNMgiWfV?=
- =?us-ascii?Q?I8+8i5BwuMGvNSaaEdEgqR7r170NOicxRJ0zuv1+lA2X/PfH5w6gFHk5WdaM?=
- =?us-ascii?Q?mUJV2NRLaouRMGbf86Q3XhA5QbDKQ3ewa7y6eghwA4xhutMpqRhrlHZEvoeZ?=
- =?us-ascii?Q?2TvtTHLQvRgL2MSKRxqIUOtMLSk0nskln0JEz/MWxjup260pdiLDN1caL5+u?=
- =?us-ascii?Q?EVRoPhWs8G58I/ObgjijnBJXgmewYas84oRvfSTLkTDyyP4VpNHSWGoMXv6W?=
- =?us-ascii?Q?Lx0KBfS3rL2Pjf2sjMOYZxPUbIr5UA8kXymc4qlWa8wWP2uQ92Z8RGNNxrtB?=
- =?us-ascii?Q?lT8N+g6+w+E4t9t/mhyBl25SH5PbtPTAn7JudMn+iT6QsFlhXeh7V2nEAgp8?=
- =?us-ascii?Q?CA9B+h/mH8nY2yZ815TzQV9tRqz9tRMmwaXi+1W6XEBUcsf2C8MFMRU80VkH?=
- =?us-ascii?Q?8p5ExkweBs/sJXhcx+3HGN12xRLz34Isen3CqRSAly621ExI1Xal/znBTQ4P?=
- =?us-ascii?Q?wAOGZ2zqFaO1hLG2FRvD7/EIEqxTJK6EzZZA/wZZmGx93pI3rsGaeKPVc6Ri?=
- =?us-ascii?Q?h6kYHW9CeCbcXLLITm5k20mLvWC4oNwGNvNT7y+1vfZJHLYwqlsSHONm9vn9?=
- =?us-ascii?Q?VTfMci96SRdzpKieNg3F5TKm8S+aqmynIuxiDaciCqTYzdseHwmZvBlYzdzB?=
- =?us-ascii?Q?0Xu+JwexDXiNDMWRo2inZlHdv+isnlfPZVfeLTt86vIMPBmEJm9gfXH0h+E+?=
- =?us-ascii?Q?1pl6taCj06tRxm34c264LPOYOnaIRSStaFfHuRvC06+eTF016dwXT+Y67ZZ5?=
- =?us-ascii?Q?mwDmuN6T+O3Uc7zkaXflLnKe7+eA?=
+	=?us-ascii?Q?yHzFny0ZAvvvifOQTPJU8oVEv4HgR0PTDUvtUXoxeGZ5yc8rBT8zvODUpB0P?=
+ =?us-ascii?Q?y3hpexkktudM8veXmXudEJg2+sOYLS/vSmrpiAZj/KETW+wD2Ywnu7qA7i1Y?=
+ =?us-ascii?Q?78gvKU0DaYHwzBkSectEaqP2/MizxwmTOlluj/DsL/r7Hxbzqx6EGJt3cGux?=
+ =?us-ascii?Q?of1/Z+aSkzspQd01UJFbDyecf9KnN4m+2gypb65kxUempzf3A5sCcmPvfWW2?=
+ =?us-ascii?Q?3p0XgNdDyNczqjYbdFFmbl+0YroVGCBzzKq6LKKdRbcWcJO6QNTKW34/mQMZ?=
+ =?us-ascii?Q?+bezqsudIAzlsL+dtz+f+qy4HtaUYXtDP+OKpjDfjJjMue+BQ31+H1wkqaKb?=
+ =?us-ascii?Q?6UVJoA1ioMuikicB9yCTI6fTLumQIB37gEt5FU/1EyoW3Qs/c8XXckFk0Lrv?=
+ =?us-ascii?Q?Qt3NABUXqzv3Ztpy2PQI+tgI0LhRnuIq+xS2YIbUjSZIrzOolIrEudC/PYsY?=
+ =?us-ascii?Q?6Vj+2ecFnVGo9iiZ2R476e1MXmXlnasbwUOO5BaJqcBK1Shgv8ux4Ye1mJLc?=
+ =?us-ascii?Q?g7yPveVYFlhDgllxwNJiwUEuhBv2KJ7WrQ9ScxF16Wj48sSsnIF7lvPxJbY2?=
+ =?us-ascii?Q?e9uk+r6ZXdhfzcFUb6coxWIAx5zgk5rmTPf4Yvw2bw2K5H3ti+pnM/jtmVLq?=
+ =?us-ascii?Q?z8TA3cReyIoSvOVukyvxwRZclqdBp/0PS+QIfGGz8H3lTtgoCcF2TOweyJop?=
+ =?us-ascii?Q?rf8ncmwTRdY2CCBqLv5O7ZZ8M+/s/26Hxlyt+08u9MXxrENz3oyYUE2BPJjy?=
+ =?us-ascii?Q?zEF25e0IeVlU9Y+YojpaNOISkjOP51+wPPSWRYwqcr3N09baK2/TIcvmEc0j?=
+ =?us-ascii?Q?ut75rmyoXYOmx3Ar9AZPLwoUBl6InZXKKOsZ8OuMLYfV+DpdJAaq2hOEC3nc?=
+ =?us-ascii?Q?+UI0nWX8brSbm0NfjE3t/uCn8pa8PXGbX7iuORVaoKcKd2qC9CZoxmtArCX+?=
+ =?us-ascii?Q?1oq1rtZsTayUdA8JECpP2sZCb1RRZ5LmUwXPS4E0EkrECr8xj9dEbPF+dANa?=
+ =?us-ascii?Q?pjrnGgNTKPabxHYdWCcuEsoQhVdGG8XN6SGwCVvU2AF81ojKKsS/goZytJ+D?=
+ =?us-ascii?Q?GmeoccfHMQnkax22QFsaPJgpOaObhP5pmXumDFP71S4XQTSiZOZn+Il7xlKX?=
+ =?us-ascii?Q?gV3qmTdrCOFMG4mqdAgdak3Od7yfI6Z4PVU3FKjCuTKvF4H82nchGR/irSQV?=
+ =?us-ascii?Q?WU2AxYM+ODHWiiwZ5YkOYG3Y1XloMqPBNVlltg1UmM5sHqYiXJJFTB+yrIaT?=
+ =?us-ascii?Q?DAneziSB5XYkh9jNbSvMTFJ/rRsWXdy8qTwFxQsgXqixtGqNIhdTopC2ZSvE?=
+ =?us-ascii?Q?zLljGaKvkMZPMjXW4oj1NXVjK1gBOGY+P5xeiuReefxu5XzeWYZCrU65soO8?=
+ =?us-ascii?Q?T1SbYE72pSaxk8AHrBLZqKKu++nk?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?o3A+m7oTbxCqRZByWFqrrn34i+LmzCkUQbJsq+CleOtZegb+L0GpvFJZlsSR?=
- =?us-ascii?Q?tz18bFAF6eW0/52d+yRr4F2Vrr8hgTV7RPtFbD1+w8gidhLWBMJY68nIva1J?=
- =?us-ascii?Q?M3IPjqDjuFOF6tjpYmohoZrdDkp0Cw4SwYQYGHjx04eRlUokMnb/jdCuqZg4?=
- =?us-ascii?Q?RRxDTpk1UMxozFvSlbVKmpG4wxnMW3VVtgYT/i4EjhzQx0Qk5dHXUYuZf2Qa?=
- =?us-ascii?Q?D3xT9lBd2+qzqbkoG/VTU76houpdIcE7pUAQ6xFCNHEAm5lCQt6lxlOA4X0i?=
- =?us-ascii?Q?pEuDyaWoIbUsOm5we+jzAoXAb3Yg/qkDp3UfXlw9NBf9b9j8uRz3u+LE0ATY?=
- =?us-ascii?Q?nKEeFV6dastRK8q2ApFVQfZBlsxUgJn1zmEe3cDQNFKzgXaixJRlBGcjGQ03?=
- =?us-ascii?Q?mzFpY64bHk1ishZs6Dc1LrAHMcRucqe1j4A/6LELRoMZZUueec1VGJ9oljTp?=
- =?us-ascii?Q?MEk4yifb4OMaej6rAhfLhz4ibQE4Z98WryFXKpWkS7BMqtEytSWVxYvGvKrO?=
- =?us-ascii?Q?OE9NollxPnuHRs+xOuEHEq+EgG4ZRLKpbmoMzReKVyK89htecdPyiyJQElHH?=
- =?us-ascii?Q?P6YXODZnXGIUZg0jgovZ5RqKfKYov6KYmCMk8S8jbJ4sTOyuVSK51pGqXs4H?=
- =?us-ascii?Q?p3eFToCIYwSCWIsBPycMN9bmd6jQDXMZ5bdLjDYrG/3IyxxiEQIEkvBkJjNa?=
- =?us-ascii?Q?Ke1fVODxCdvfeh8nuJlMuCc7COEvH+jTWPPgI///Pryx+cgD3e/CSMdKoD3H?=
- =?us-ascii?Q?6Zgx6GGjB8voNss2Nt1MQFe4m1nCOmVzlcMug0VttZkuDsAoHOVCpWkRrPO/?=
- =?us-ascii?Q?BTjlcFfM1YLedR684cH+j0BUlENhz5sCS2umOWmgOMH8NXim0CynAYJa3uNx?=
- =?us-ascii?Q?/uwppaUthc60Oih9X15GLuxChbVcafINlpUYXt6J4t3wqHZCJ0TrIdfedIrk?=
- =?us-ascii?Q?cSCcbwlkQxhyKcsp/kDkV4D9YZRyAfNAZMDRlPycAUxGevObkIRLIVig5sar?=
- =?us-ascii?Q?L9YBMfJnWMrx5jOskh12paFy8sLih50e7QwlTcnHzxqNc4EkmjnKVrfjGJLv?=
- =?us-ascii?Q?D6xmLjQ49ugNe5avlf+SQFCVrYbXolQe2tcy6Jg/MLe5MXPgDWDdR5wVD0tF?=
- =?us-ascii?Q?TXLEuyeWG1pQZhqcOfyTsh5d08QAe3S1wzsNVBnhsDCbub873zOWW+PtROOo?=
- =?us-ascii?Q?xCustYlouZQpoR//aYamywYTByWx/75BnlqN/hmEuYmlvU9uSJW1D7hMNIVT?=
- =?us-ascii?Q?iNoU6NFE6EqrWMFxd8NjPUHH1VAmFikMscnDpnlWgkAQUnevTbUAGggMoKBO?=
- =?us-ascii?Q?YbwUieoH7x1DolSjcAC+a4W23rkf1YqSbMCF06jyoODcHz3HSGeaPxLICZpr?=
- =?us-ascii?Q?WqOb23g/UZclE9oZSJAsbsPFj1syTb8N/DZ3Z9tVo84oxNxqT3Txp2S6W8vG?=
- =?us-ascii?Q?mQigyjkNajlDLW9M7zbvLq/gJcT5JEulTAe7LzUl+A5nJf5OmgS7LVyl+ppt?=
- =?us-ascii?Q?+gUMPfvcstaFYtye3swfHg/OLgADZntNOLRxqZiUfmk1bPciFzYIptlrYjdZ?=
- =?us-ascii?Q?t8NT1n7qS1P2hXy5gYvYFCVIybcu+s7v6wwiKyPz?=
+	=?us-ascii?Q?nnBF/INf98MmtaINOOCPGedsvhxRO1VImhxE+NmgExLRJKR9IWbld1eD793M?=
+ =?us-ascii?Q?JP3xwPEg2+xlD9zVv5TQ4boxeYZqCdEHF0n7rbPUnzDto5o+UNffc0QHrBPt?=
+ =?us-ascii?Q?6R4Snya2YNgsZQD6xFK7rEEo04w9/CNFlM+vXlwNYa99jKvnL7CE14WtaUAf?=
+ =?us-ascii?Q?W+ELtZWU+h0CP/9eKVkvp/PYLctepGmX/LPPjK8aMxMN+A3S0BxTbwYYUJFW?=
+ =?us-ascii?Q?wQdUhpFr831OBnbxeU7UmYjrGDVV71xV2Z+7MOJzaSWdGwTnAsW1lacSUIet?=
+ =?us-ascii?Q?FQr4AU4TmPNmVqMc6zm26PJzYqNI/c6YlVBXdYwOM3mpUahgHtHSqWIj7Tz8?=
+ =?us-ascii?Q?4GcjaKJs8tQSFDBdzJ4eHnTb51+01/QU9OQHBLAgsr37o3qGYtt9x3wkKGoI?=
+ =?us-ascii?Q?y/m1LCLkT/n371/LN+mFxWqaiCROpUCjH06Cysgud1BFG/ZkU03yivZtBGxq?=
+ =?us-ascii?Q?bLAd6mR7cEDY7Jl6Kl9NtEQ00fRLnCfR8XNgEFiarfh85/dM2FhVAHYt7kUM?=
+ =?us-ascii?Q?/KLHQLUUPiiQYnYIDeIfp9KAivGdmwaNbXhVrx3LQAEX+qyKfjsgeZCtkUqM?=
+ =?us-ascii?Q?McdAv9gtlnRpeO7fKpU804VulielErey5iX4yE30QDyV0RMWpe7QWcbF9zN/?=
+ =?us-ascii?Q?fRI/dRzAKGlOtYSI6d2lj6I6Kgrc8r/CtX8zD0rSmqRiFysW3R8xltB2Emq5?=
+ =?us-ascii?Q?Tr/Tfp9RD785WXVuAilZgrwy6In2AIHDzYH+DUpIMC5SqFuWLMa2BFyvqWpf?=
+ =?us-ascii?Q?fT/181h1IVowCKQOz+Zc5kVVN1uU/pfcS3b3gNwQEALU5clIZDQrn1Ck/+Oj?=
+ =?us-ascii?Q?ag58IVTQCn+XHsg+Wp2hm9Ps0qQ/Aksx2rKj8AiGoQ7149ZkIqPcWA1VnYzk?=
+ =?us-ascii?Q?BPqxQKh9C7F3BPKcS98CKN7hPbE3pVl2kW5l30tLkz7CtQlHQxm4BxcoGxIj?=
+ =?us-ascii?Q?wvef7AuGCnwrFj+fv5fuFr76+I/+kuRNWnDHlf2g6gWO5RAKC4hc5PwBms/x?=
+ =?us-ascii?Q?BvOf63OO2jC82SmaE/A65ROKw/9curqYA67MxFBbd5KPHI3HEh3eFkIhJvLz?=
+ =?us-ascii?Q?g3SEuV9lXZtBe1o3XAj2r5/ZyTOoHqpp/vfPKEYnWiTCHOdHKDQw+e+1wGUE?=
+ =?us-ascii?Q?iJOYT3VaM3qp+6xKOX+z9ULyAaxwS0vZxTaNS8ZY3YvYm9+waFf1F6bmdC09?=
+ =?us-ascii?Q?C/OwZw7/Ij9ZF+OgHb/YRjv6ZTzn3YHobVGTc+Yw7zO9EGgpuqkYOf6ppr+z?=
+ =?us-ascii?Q?SCqWQAVlwDXfEZ0BzR64sTdgYS9hZgvXJaZBxvGZwjkF8PXzGeTvgxLz61lX?=
+ =?us-ascii?Q?5xOmkS50Ec73Js654/hBXcNvrTzStxv6iCxZonUMzesiTKDauDzMh+oEcFsZ?=
+ =?us-ascii?Q?IwOxrlM7mRG/gCneKg9tL/CVfiNJt5crwDbGlALPI2SbL7taGBkryiQ/fyFZ?=
+ =?us-ascii?Q?XL8X3Qi7d6kGoU5r+TrnXJc9La/cpbIoZ9drZdFTtqPkCsF3EkwZ6TvIhJKz?=
+ =?us-ascii?Q?yO8Etcfh21UrA1ca+GdueHFWTvmx7mt8XlI7CKjua1p4CTxH69+l1++WUZjX?=
+ =?us-ascii?Q?G/fxGBnE0LVOTniHIDthFCFqEovMHfCjy0Mnxkib?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	qtLpypM1qelJsxRSg11VqDpKxurhur3KI9Y+kVHXRl/JDIaC9cnU3P0AjURKi3tmt2fEm2VfjdW9HYyZitHQufIou1kk+I5+vt3FKF//NGgBGBdIfKH0GoWDTK5IWMu8MinZnKPXcCDiCWbjmmmxw+gbFJQVOTWpoxRybSfr/5woopgkH7Q85ohkaaElrffJZzVyJfGuOyAyF9O/5bMoITIzkquYwz7Ecnv/ul4ijd9iZbcSc3q6XGTAKz/J8DH5y6eTdgeUNEcVk90Oin0t7oCgNAJYW3anlbVp6nBOxKrBN0MdNR0rrwwAlmqROJJ/3cfLWH26BIISr3nM8xuqHBnxVI15lWQcibU6vTLYBcyeHokxUnsUdF/UOhHPAx7JiWu7nbsl5Q0+xzln62pVL1xb4MmvCOJHxzd+KU69t0RL1sGkf6WR8rQfdan1hga18o3FWTjwN5B/K3FJD/OGlIpGqm5ZBAlaV8S5qvHtrTbx7NFbv1HRm485+QvYCCEq/VLsJ5c8V08ZImSFd9/N5BUO06pHWIfaPDPmUp0xqURMn4CHlTjKm/YuKR3C8z+jA0xSS6hGon6kFnTHGwM0bC/f1fqG63FpkXtYhUTx+Rg=
+	twj+x+cbqNN/YuHK7wMgzH//Rd7sZwu5Xsf7ERz1IPyj6lj3K+I+r3j21fnreqhNLL4yXasUjuMVfoeZwayIaqjtynENFxUyWTxVFkvbcjUHRgIwmLgbsiv99BQ0SylDZ5M2AMGKvSB+TZ0XbeiIsgX9FDviDCpnpKO/N3Mcuqe2ZW0xdq0UX9jaod/8cj4my5r/5pRyIkgnMAMCbTKFntvsnlDlhYYGNIw8VnWj+KWT3PuYq1bRvW+adhcOoRYaodknvKqQ8dfbLTwcvE9U4n+9IWCbQaBK7T3misJZegQlRvjWMCnaBVFWuwfTxTQz+rItRSPm8gSATaavgfNrJwuQLyLFP7ovwSzcixu1MCBkx+OKjAK2KXcx+SLeQlYsL9LbdOwWk30K+QgXRoWiaR+uhQNAPoSLmpSyWCyIbg5neRT/NoyPUo50+QzYcNkEl0zjN0wuK1ulgZ1qnzY4YFw7P2wT/yz/6h4+M6nbQt64OHy0GMp9z4yRMQhHWaMXE5khU0iIc00bQ9DRdvgt9BZkZHR4wDkf/iTqbEyPhtpkWq6fg1mU191IFDpYGdmAwjOAHtVQ4Bnd+wCLS7zciCQgxPGrgeBxBCPUian+lNw=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 560362c2-e277-4060-d4a7-08dd1dfd77b2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e5cd3c6-93e2-4c3b-f652-08dd1dfd7a6b
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2024 18:14:23.1873
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2024 18:14:27.5241
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5j3bv3sVv7LFY96lOgs6rwPpBOL79EC4HgKLnfBfgrU2rP9lb6+5wrtKWs9PYITNzjnkFuMVFX/Mc8pUAvMxTQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8YtlduAWpUwui00K5cX9pOsJ+LEz0iCgF5OmXd0fs1esCyYG30uTCYMO8ASUWmvI0ajkIoMvibHPvhrcmN834Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB8220
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2024-12-16_08,2024-12-16_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
  definitions=main-2412160152
-X-Proofpoint-GUID: j9I6ydFRlskSXD0jw3I3TK7EZLRwpgFq
-X-Proofpoint-ORIG-GUID: j9I6ydFRlskSXD0jw3I3TK7EZLRwpgFq
+X-Proofpoint-GUID: 2FU46wfsV-9UOeuA7OKZaaiiiDGxpJWr
+X-Proofpoint-ORIG-GUID: 2FU46wfsV-9UOeuA7OKZaaiiiDGxpJWr
 
-When there's stale data on a mirrored device, this feature lets you choose
-which device to read from. Mainly used for testing.
+Commit c9c49e8f157e ("btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from
+CONFIG_BTRFS_DEBUG") introduces a way to enable or disable experimental
+features, print its status during module load, like so:
 
-echo "devid:<devid-value>" > /sys/fs/btrfs/<UUID>/read_policy
+   Btrfs loaded, experimental=on, debug=on, assert=on, zoned=yes, fsverity=yes
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/sysfs.c   | 33 ++++++++++++++++++++++++++++++++-
- fs/btrfs/volumes.c | 21 +++++++++++++++++++++
- fs/btrfs/volumes.h |  5 +++++
- 3 files changed, 58 insertions(+), 1 deletion(-)
+ fs/btrfs/super.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index b0e1fb787ce6..b4b24a16a50c 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1309,6 +1309,7 @@ static const char *btrfs_read_policy_name[] = {
- 	"pid",
- #ifdef CONFIG_BTRFS_EXPERIMENTAL
- 	"round-robin",
-+	"devid",
- #endif
- };
- 
-@@ -1368,8 +1369,11 @@ static ssize_t btrfs_read_policy_show(struct kobject *kobj,
- 		if (i == BTRFS_READ_POLICY_RR)
- 			ret += sysfs_emit_at(buf, ret, ":%d",
- 					     fs_devices->rr_min_contiguous_read);
--#endif
- 
-+		if (i == BTRFS_READ_POLICY_DEVID)
-+			ret += sysfs_emit_at(buf, ret, ":%llu",
-+							fs_devices->read_devid);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 3381389ab93a..fb6a009c72ae 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2457,6 +2457,9 @@ static __cold void btrfs_interface_exit(void)
+ static int __init btrfs_print_mod_info(void)
+ {
+ 	static const char options[] = ""
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++			", experimental=on"
 +#endif
- 		if (i == policy)
- 			ret += sysfs_emit_at(buf, ret, "]");
- 	}
-@@ -1421,6 +1425,33 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
- 
- 		return len;
- 	}
-+
-+	if (index == BTRFS_READ_POLICY_DEVID) {
-+
-+		if (value != -1) {
-+			BTRFS_DEV_LOOKUP_ARGS(args);
-+
-+			/* Validate input devid */
-+			args.devid = value;
-+			if (btrfs_find_device(fs_devices, &args) == NULL)
-+				return -EINVAL;
-+		} else {
-+			/* Set default devid to the devid of the latest device */
-+			value = fs_devices->latest_dev->devid;
-+		}
-+
-+		if (index != READ_ONCE(fs_devices->read_policy) ||
-+		    (value != READ_ONCE(fs_devices->read_devid))) {
-+			WRITE_ONCE(fs_devices->read_policy, index);
-+			WRITE_ONCE(fs_devices->read_devid, value);
-+
-+			btrfs_info(fs_devices->fs_info, "read policy set to '%s:%llu'",
-+				   btrfs_read_policy_name[index], value);
-+
-+		}
-+
-+		return len;
-+	}
- #endif
- 	if (index != READ_ONCE(fs_devices->read_policy)) {
- 		WRITE_ONCE(fs_devices->read_policy, index);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 77c3b66d56a0..ee2dd7e461b3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1330,6 +1330,7 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
- 	fs_devices->read_policy = BTRFS_READ_POLICY_PID;
- #ifdef CONFIG_BTRFS_EXPERIMENTAL
- 	fs_devices->rr_min_contiguous_read = BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ;
-+	fs_devices->read_devid = latest_dev->devid;
- #endif
- 
- 	return 0;
-@@ -5963,6 +5964,23 @@ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
- }
- 
- #ifdef CONFIG_BTRFS_EXPERIMENTAL
-+static int btrfs_read_preferred(struct btrfs_chunk_map *map, int first,
-+				int num_stripe)
-+{
-+	int last = first + num_stripe;
-+	int stripe_index;
-+
-+	for (stripe_index = first; stripe_index < last; stripe_index++) {
-+		struct btrfs_device *device = map->stripes[stripe_index].dev;
-+
-+		if (device->devid == READ_ONCE(device->fs_devices->read_devid))
-+			return stripe_index;
-+	}
-+
-+	/* If no read-preferred device, use first stripe */
-+	return first;
-+}
-+
- struct stripe_mirror {
- 	u64 devid;
- 	int num;
-@@ -6060,6 +6078,9 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 	case BTRFS_READ_POLICY_RR:
- 		preferred_mirror = btrfs_read_rr(map, first, num_stripes);
- 		break;
-+	case BTRFS_READ_POLICY_DEVID:
-+		preferred_mirror = btrfs_read_preferred(map, first, num_stripes);
-+		break;
- #endif
- 	}
- 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index b7b130ce0b10..62812f4231dd 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -308,6 +308,8 @@ enum btrfs_read_policy {
- #ifdef CONFIG_BTRFS_EXPERIMENTAL
- 	/* Balancing raid1 reads across all striped devices (round-robin) */
- 	BTRFS_READ_POLICY_RR,
-+	/* Read from the specific device */
-+	BTRFS_READ_POLICY_DEVID,
- #endif
- 	BTRFS_NR_READ_POLICY,
- };
-@@ -442,6 +444,9 @@ struct btrfs_fs_devices {
- 	/* Min contiguous reads before switching to next device. */
- 	int rr_min_contiguous_read;
- 
-+	/* Device to be used for reading in case of RAID1. */
-+	u64 read_devid;
-+
- 	/* Checksum mode - offload it or do it synchronously. */
- 	enum btrfs_offload_csum_mode offload_csum_mode;
+ #ifdef CONFIG_BTRFS_DEBUG
+ 			", debug=on"
  #endif
 -- 
 2.47.0
