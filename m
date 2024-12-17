@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10444-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D1BC9F3EC4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 01:26:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3109F9F3ECD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 01:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04A1C1883797
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 00:26:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6EB71888C8B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 00:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B36C2FD;
-	Tue, 17 Dec 2024 00:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A628A933;
+	Tue, 17 Dec 2024 00:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JAbfRvyh"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ByZx2Ed+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3557A28F5
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 00:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E428647
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 00:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734395176; cv=none; b=cWlSpcv/lm446Nd/y8W6Hal/EWpuQ+2+PmExs6grmPk+FEODWAjWn/gia0/qUtp51usdtqrWtJ1ak04sKsgCtiusv6Dmw+u0zJEjeLo3PfcoIZ5uuATWg94CtSNfv410NtQIye7dkT4yD5o5KKV0dkeMIRToeQ3TXGNi/9nw3u4=
+	t=1734395517; cv=none; b=sFZl/jXme7Np2Y/U7QunmeGMwulCz0lHiXXYZn4HlboclDYBB+h6meLZXcpT5d1KhrmilI8RTSxN7zYN0Ys8UgfzEoYV62AAQZAMCNk081QRxw1G1uaJKxDhsBIB4AwRlTgIijKDQGdAoCPylDSMgPPPFf5B865mQlUFuY41vQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734395176; c=relaxed/simple;
-	bh=WaD/KngJn4iYwoQjPzTTms6WX81wfps5jS3HFIvpcOM=;
+	s=arc-20240116; t=1734395517; c=relaxed/simple;
+	bh=NLWDTom+oxaw3oDcidJqcmIYnqJ0GOuhoaoUIksni4g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dSBs8BD76Tg49NRx46MBVIwP+jgH0seGp5s1PlfUwN7GTK/RZ3exYmSDTSq4/S/Wo8oP8WcKhUxsIlE0zldfhaDQzOUEHJnOcRwFIllX2poPH4b3VYCvjg86WZmG+AOyV6/+4p1Vc6O1lnpnL45ooC1kUX5K6PUwEAQESu5Hgl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JAbfRvyh; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=W3gAQ9NqOh9w/mYOvKbgLxCkoexNJzKgbRj8aa8EIYSDW0dCoFnFZ1A3bbgtblHgoJRPi/2ZBRdxvsKPJ4IedTsS+GerIXNuDBcma/f7A89lW3tKjRRpPKOm6TF+OogIv7U3QfeqU74AdRAbC/ahKUZBzAlxTkdGfHZS3iWYDSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ByZx2Ed+; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734395167; x=1734999967; i=quwenruo.btrfs@gmx.com;
-	bh=788wfRTkW25upRD0TjLO4V/WgSr4ogKey4ATy55pXSc=;
+	s=s31663417; t=1734395509; x=1735000309; i=quwenruo.btrfs@gmx.com;
+	bh=W19w6PcF6uqgSF60moImClqF3+udm0iRvWPbJp3XmkU=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=JAbfRvyhLtRpf/EEp/iR76jG/RrvSbcnGOZim1xjJoPn1i9FDq7sv1XfCytW6GkY
-	 fQMmJzGo1IuPnv3I2d8t7bPM25QSrjEdZ4lPFbCLGJcd91byAwVUsbgCWySVq78bL
-	 DKBLAmD8YIa3INh7gbkSeot9TXkG9QgDsOUC140cSkzb/78UMdJRr8CC9hG08wzDt
-	 +O1T9GYpzdQy8LJepliJhqMeh94RaLOPQSYLive+5eIHGngGAuZK0ANl0b5sw9mo1
-	 yXqh6PRl1rUzIFNAxjOWwWpTBpN1hnKJxlZd1VX2yuVEqpFgSYiQT0xqmTHH6QR5W
-	 fQIDcbg7lrUtWjOclQ==
+	b=ByZx2Ed+lIel0U5wpCGoehCtnYKq2iGzGXxPrw9flhADvjxRBGLtBFREYAp2ki4m
+	 KHkz6UNjUTePsYYauVHV+rYhe2MfJdfKD3X5S+SS7Ob104JEfblDM/efHJeSzYcSz
+	 tHUp3lM+fC8po/egqbPI/PoDgQuG1XcMN4XWJYlg5b8z2/hb1NCZ0iQcNhB7kL7he
+	 fnnmqQI9lSE9A14W2eDnafmK8pcVJovxKRLadebmficu6QoPiY6ILGT03ly5jjRm8
+	 v8dbdSkzPxlbzgc3UwHf5kdA/EwZQfx2wG5I8zKYA5kxuNWbWDnhEb9DP3h8yaev1
+	 iEgZTX4fM6apddGjeQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH5a-1tzi1z03Uy-00kMpz; Tue, 17
- Dec 2024 01:26:07 +0100
-Message-ID: <36af89a5-f7e8-4a9f-a7ff-880a84d2fc6d@gmx.com>
-Date: Tue, 17 Dec 2024 10:56:04 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mv31W-1tejrQ3p0C-014cVb; Tue, 17
+ Dec 2024 01:31:49 +0100
+Message-ID: <785dadec-8352-46d2-864d-3df93d979db1@gmx.com>
+Date: Tue, 17 Dec 2024 11:01:46 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] btrfs: move csum related functions from ctree.c into
+Subject: Re: [PATCH 4/9] btrfs: move btrfs_is_empty_uuid() from ioctl.c into
  fs.c
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1734368270.git.fdmanana@suse.com>
- <ca35ce34f64fc203266a7336390d82745d82ed5f.1734368270.git.fdmanana@suse.com>
+ <7aef21820a6bad0e41699f18660038546adbbc9c.1734368270.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,249 +89,144 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <ca35ce34f64fc203266a7336390d82745d82ed5f.1734368270.git.fdmanana@suse.com>
+In-Reply-To: <7aef21820a6bad0e41699f18660038546adbbc9c.1734368270.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iYEqCQnHrZ2Jx4s51g/YvFML7ewfwto+okYcSrUSBzd2ccZ4Wlg
- RiQovadMF7CC8ME5e8eKYKrmUxNX0jf4hvbGne5nPu5jm3c3I3n/goG5y1pRjyEJAjOm686
- phM8NKcAA4mfErcrKgt9W4C0eJW+BmueeIjeWp1Hf2RYvauDECKwqkvS82ooc+LAOwK6EP9
- o9GbSM0x4ovLi5hR0wp2g==
+X-Provags-ID: V03:K1:l+kfYKxBxq1aa5u6hliiBKNBYVdgHJ8y5IKellQr/VwBKvNM2JQ
+ XJ5NFhL3S9RV59VzS79L3XrGHBsjc/77qJLgKt7dVkRqdqZ5SKXWfbPmSBua0vBQVK79baS
+ sIMLprMZQHfiZAX7THNnEyl8NhxRy0vZpnqtxkl5hLiR390NR4XRDLvXsN8pyZNymCCAaIl
+ BfYigv3/CSn5Qe5PCOwsw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Hs21PfuJUa4=;rTVn62JIjOQOYxk6Qyowf4eTm7O
- lZ3YCp/ZTuJ+FG1XiRPSjvmS4oM4vf/gu9fRQS5vpNGgJXyQTOsO3vX11PwMfDMOUmg4bU3n1
- AYe4fBFo8nJ7PiSaSymloWNn7NddxqD54AVo+8tvAe7a2PO0F1DyqC96w39lrKbK1VFpOkgod
- iaEdJ/yYT7u0ZciGwlVyrn2SMPQT46Zaz8UM9Z5BDJJwV9VQ5uD7eUVbGAqNMr/tSmbrZnfw4
- /LelxJaLg9UFCnQN35G0YyN5VjwSQu4JV2+lOOIKFwT93XzRKnR0PxplNWNe1NOWPZuPsbMB4
- 5jPK5nmEP+s26Cs+yF6Tq5AunKqI9xKytoxIUBb5LiNmo7/iRnDkv/bmtEeZLWHQ3PBBz/2ky
- 1tZmJ5gzXTeyn4NOFym0ewbDs9tuyWZ+wVjUzQ6O+jXTNkfQnJdl+TWEsEYSeKQncmX79Z2rr
- /1pbBo3QgNIcpNBenHybdMrLo5/TsE4vfwtAngTHKI5jaDc1RTDLpH67GBpX0Tj1lBN34FYdf
- +FUGiaH7/5TMN/K8DIt1LjFU6puVCPB6XKo7McnkNng5HmRoXCFCDZSG1xHgJtdZyyv5YVwrj
- jRA+Jl7gOVfFX0lq/uUT+/96L/GFSJe+r1ypSOJdx8SJzAS6Xclq+u332VnX/ull4UEtjLzCi
- GgU/WVMwY9u97dVbWzH/fmOL1KRBsNtDR8hu84e5kvHLr0Z8U+EVNTkE/5dE+gg4cENHrm8Me
- J+cw3LKiI6mXy9aUnS3ZE+qlsC0s/GiI1L04OAT2GxvyiflDf0vM/1DGoi4QsG969LSA/mZZY
- 4Ay9HmXd8jC7O1ku6/qHgCWiPi9gjzsqDDtTZvVnZs6QsCR+qHHtWY6+ZGAm36hbaUclFk+IK
- /Y8OmqULjtm2CdbTaxh2ABXVziF5UjOGYD7Bqt33VkXs7gfheLne4wdvUR6/1z1zbsMy8eESM
- wbgP7UkG9dl8kLpYl9lA/3FQhqemOmSy0bJ7YEIBEQ2/51qGzThhXp2kOGMWabljSO/6rmdGm
- u8FcWc4+DfOJTDRwMfXnRaihsfOx9VBwkpTjs/gMP971jZYEUdZZccCYJVETPeZ/6WI7iGCqC
- te5IsaVpjTeyduJ/KnsqNjRAQrfDKi
+UI-OutboundReport: notjunk:1;M01:P0:2IEq4UbsWMI=;Xv8REsaCbnOnvOr4+qHClEOByZ/
+ JPIrTcpip+X6R9wbWyNMCE1fJ1LVJBCxpJUs61oqxp+vTnRn3SUGT1QN6mBs3FdOvnMJb3+01
+ SZKI29sGoEbIIyDQtrCjH5zwO+s5QRjfp4Y+1MT3xEQkk2FSYofQQIo54IiHqo7yA5WPTkWXV
+ ca/80m0AsCitUTkQaFFZBmWjvzZztYEXpThmLqgxFVCbxWreCbDYO9uZGWkorzI387XN5skWp
+ dzZbjhxeFprKETeQWX1QNLxTiPIjhgkCkuPq+xCOPzToSJTDXewzkDf7MqlteGqGRYh+hfykZ
+ VoMKAf4iTLlcqW5vw6vl0HGPQXSs4NwbyvoLewf1FP1Q7143M/dE28xvFRFXnMA4VJue0SxYI
+ zo2OCbR5FedQ4Xmsq/l/8awOoy+ZqhsXN+vOKJavxlSi7O46tUEPtisuRl1ezOZRI0llLdw9W
+ i7y6qyZhtyODMAovlZbhFsIseUqMmSFeRAmvZKyYbqMOG/3TLU2aob0qfm+g/oIcHzuMBf9Go
+ OqQQxdx3rRDDqvM4RPn19QDepagOOoyoR5H+UjJjSziIPwCCFki2PcFubIZyAHfCdOGGv0dUV
+ mRgEWpYAzroYCueIhMaisXNTjin4d1GtX3duMdkCcdDYi58crscboSSyjamU1T5QRE2zMNCqS
+ pluejl/e3mWm4gTxocB94LrfYX3DkTWJk75ax82bX6fpnmFwGradNG0SEavtJ9YX8vI1GJlLy
+ iprnEnGLFhCzrP5Zh8x2w1GBDjdcmcr1+3lAfSvXRBhvW/gUUhNeXHV/PCaPLbfTcXZZn62dw
+ a6Gd7BOaiSI9sJBoCX5BXyTNNPHoqJN+0hpK2mm5/xoCeYywo4UXi+BwzjLEexpdR++2tEqgw
+ x5G9SRKdQ4lze6KQaM8kbhO9bNpEPEQaZyLX9wXQvmtqYuAbZ1A3iy/qQ6j6zMAgLg2YaPfRv
+ 4QGZefRCGWtTtg1daf46wtrHc6hHuM0SEOyhNRxvU4TQxiWnrsqxIqRGOKQIbd8gYyTern0ZP
+ SbRa0HwQznRGQHpw9lDFNpvqIon5Ua9c7n1XqZtvJN1W3PSZikdB2OdNCs2G9duY1Qg68Kxgt
+ kcKYF/30l0lUI/9xx28NZo1Fa28Yf2
 
 
 
 =E5=9C=A8 2024/12/17 03:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The ctree module is about the implementation of the btree data structure
-> and not a place holder for generic filesystem things like the csum
-> algorithm details. Move the functions related to the csum algorithm
-> details away from ctree.c and into fs.c, which is a far better place for
-> them. Also fix missing punctuation in comments and change one multiline
-> comment to a single line comment since everything fits in under 80
-> characters.
+> It's a generic helper not specific to ioctls and used in several places,
+> so move it out from ioctl.c and into fs.c. While at it change its return
+> type from int to bool and declare the loop variable in the loop itself.
 >
-> For some reason this also sligthly reduces the module's size.
+> This also slightly reduces the module's size.
 >
 > Before this change:
 >
 >    $ size fs/btrfs/btrfs.ko
 >       text	   data	    bss	    dec	    hex	filename
->    1782126	 161045	  16920	1960091	 1de89b	fs/btrfs/btrfs.ko
+>    1781492	 161037	  16920	1959449	 1de619	fs/btrfs/btrfs.ko
 >
 > After this change:
 >
 >    $ size fs/btrfs/btrfs.ko
 >       text	   data	    bss	    dec	    hex	filename
->    1782094	 161045	  16920	1960059	 1de87b	fs/btrfs/btrfs.ko
+>    1781340	 161037	  16920	1959297	 1de581	fs/btrfs/btrfs.ko
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
->   fs/btrfs/ctree.c | 51 ------------------------------------------------
->   fs/btrfs/ctree.h |  6 ------
->   fs/btrfs/fs.c    | 49 ++++++++++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/fs.h    |  6 ++++++
->   4 files changed, 55 insertions(+), 57 deletions(-)
+>   fs/btrfs/fs.c    |  9 +++++++++
+>   fs/btrfs/fs.h    |  2 ++
+>   fs/btrfs/ioctl.c | 11 -----------
+>   fs/btrfs/ioctl.h |  1 -
+>   4 files changed, 11 insertions(+), 12 deletions(-)
 >
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 99a58ede387e..c93f52a30a16 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -37,19 +37,6 @@ static int push_node_left(struct btrfs_trans_handle *=
-trans,
->   static int balance_node_right(struct btrfs_trans_handle *trans,
->   			      struct extent_buffer *dst_buf,
->   			      struct extent_buffer *src_buf);
-> -
-> -static const struct btrfs_csums {
-> -	u16		size;
-> -	const char	name[10];
-> -	const char	driver[12];
-> -} btrfs_csums[] =3D {
-> -	[BTRFS_CSUM_TYPE_CRC32] =3D { .size =3D 4, .name =3D "crc32c" },
-> -	[BTRFS_CSUM_TYPE_XXHASH] =3D { .size =3D 8, .name =3D "xxhash64" },
-> -	[BTRFS_CSUM_TYPE_SHA256] =3D { .size =3D 32, .name =3D "sha256" },
-> -	[BTRFS_CSUM_TYPE_BLAKE2] =3D { .size =3D 32, .name =3D "blake2b",
-> -				     .driver =3D "blake2b-256" },
-> -};
-> -
->   /*
->    * The leaf data grows from end-to-front in the node.  this returns th=
-e address
->    * of the start of the last item, which is the stop of the leaf data s=
-tack.
-> @@ -148,44 +135,6 @@ static inline void copy_leaf_items(const struct ext=
-ent_buffer *dst,
->   			      nr_items * sizeof(struct btrfs_item));
->   }
->
-> -/* This exists for btrfs-progs usages. */
-> -u16 btrfs_csum_type_size(u16 type)
-> -{
-> -	return btrfs_csums[type].size;
-> -}
-> -
-> -int btrfs_super_csum_size(const struct btrfs_super_block *s)
-> -{
-> -	u16 t =3D btrfs_super_csum_type(s);
-> -	/*
-> -	 * csum type is validated at mount time
-> -	 */
-> -	return btrfs_csum_type_size(t);
-> -}
-> -
-> -const char *btrfs_super_csum_name(u16 csum_type)
-> -{
-> -	/* csum type is validated at mount time */
-> -	return btrfs_csums[csum_type].name;
-> -}
-> -
-> -/*
-> - * Return driver name if defined, otherwise the name that's also a vali=
-d driver
-> - * name
-> - */
-> -const char *btrfs_super_csum_driver(u16 csum_type)
-> -{
-> -	/* csum type is validated at mount time */
-> -	return btrfs_csums[csum_type].driver[0] ?
-> -		btrfs_csums[csum_type].driver :
-> -		btrfs_csums[csum_type].name;
-> -}
-> -
-> -size_t __attribute_const__ btrfs_get_num_csums(void)
-> -{
-> -	return ARRAY_SIZE(btrfs_csums);
-> -}
-> -
->   struct btrfs_path *btrfs_alloc_path(void)
->   {
->   	might_sleep();
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 2c341956a01c..a1bab0b3f193 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -756,12 +756,6 @@ static inline bool btrfs_is_data_reloc_root(const s=
-truct btrfs_root *root)
->   	return root->root_key.objectid =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTID;
->   }
->
-> -u16 btrfs_csum_type_size(u16 type);
-> -int btrfs_super_csum_size(const struct btrfs_super_block *s);
-> -const char *btrfs_super_csum_name(u16 csum_type);
-> -const char *btrfs_super_csum_driver(u16 csum_type);
-> -size_t __attribute_const__ btrfs_get_num_csums(void);
-> -
->   /*
->    * We use folio flag owner_2 to indicate there is an ordered extent wi=
-th
->    * unfinished IO.
 > diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
-> index 31c1648bc0b4..3756a3b9c9da 100644
+> index 09cfb43580cb..06a863252a85 100644
 > --- a/fs/btrfs/fs.c
 > +++ b/fs/btrfs/fs.c
-> @@ -5,6 +5,55 @@
->   #include "fs.h"
->   #include "accessors.h"
+> @@ -55,6 +55,15 @@ size_t __attribute_const__ btrfs_get_num_csums(void)
+>   	return ARRAY_SIZE(btrfs_csums);
+>   }
 >
-> +static const struct btrfs_csums {
-> +	u16		size;
-> +	const char	name[10];
-> +	const char	driver[12];
-> +} btrfs_csums[] =3D {
-> +	[BTRFS_CSUM_TYPE_CRC32] =3D { .size =3D 4, .name =3D "crc32c" },
-> +	[BTRFS_CSUM_TYPE_XXHASH] =3D { .size =3D 8, .name =3D "xxhash64" },
-> +	[BTRFS_CSUM_TYPE_SHA256] =3D { .size =3D 32, .name =3D "sha256" },
-> +	[BTRFS_CSUM_TYPE_BLAKE2] =3D { .size =3D 32, .name =3D "blake2b",
-> +				     .driver =3D "blake2b-256" },
-> +};
-> +
-> +/* This exists for btrfs-progs usages. */
-> +u16 btrfs_csum_type_size(u16 type)
+> +bool __pure btrfs_is_empty_uuid(const u8 *uuid)
 > +{
-> +	return btrfs_csums[type].size;
-> +}
-> +
-> +int btrfs_super_csum_size(const struct btrfs_super_block *s)
-> +{
-> +	u16 t =3D btrfs_super_csum_type(s);
-> +
-> +	/* csum type is validated at mount time. */
-> +	return btrfs_csum_type_size(t);
-> +}
-> +
-> +const char *btrfs_super_csum_name(u16 csum_type)
-> +{
-> +	/* csum type is validated at mount time. */
-> +	return btrfs_csums[csum_type].name;
-> +}
-> +
-> +/*
-> + * Return driver name if defined, otherwise the name that's also a vali=
-d driver
-> + * name.
-> + */
-> +const char *btrfs_super_csum_driver(u16 csum_type)
-> +{
-> +	/* csum type is validated at mount time */
-> +	return btrfs_csums[csum_type].driver[0] ?
-> +		btrfs_csums[csum_type].driver :
-> +		btrfs_csums[csum_type].name;
-> +}
-> +
-> +size_t __attribute_const__ btrfs_get_num_csums(void)
-> +{
-> +	return ARRAY_SIZE(btrfs_csums);
-> +}
-> +
+> +	for (int i =3D 0; i < BTRFS_UUID_SIZE; i++) {
+> +		if (uuid[i] !=3D 0)
+> +			return false;
+> +	}
 
-I'm wondering if those simple functions can be converted to inline.
+Since we're here, would it be possible to go with
+mem_is_zero()/memchr_inv() which contains some extra optimization.
 
-Although btrfs_csums[] array has to be put inside fs.c, those functions
-seems be fine defined as inline ones inside the header.
+And if we go calling mem_is_zero()/memchr_inv(), can we change this to
+an inline?
 
 Otherwise looks good to me.
 
 Thanks,
 Qu
->   void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->   			     const char *name)
->   {
+> +	return true;
+> +}
+> +
+>   /*
+>    * Start exclusive operation @type, return true on success.
+>    */
 > diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 79a1a3d6f04d..b05f2af97140 100644
+> index b05f2af97140..15c26c6f4d6e 100644
 > --- a/fs/btrfs/fs.h
 > +++ b/fs/btrfs/fs.h
-> @@ -982,6 +982,12 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_=
-info,
+> @@ -988,6 +988,8 @@ const char *btrfs_super_csum_name(u16 csum_type);
+>   const char *btrfs_super_csum_driver(u16 csum_type);
+>   size_t __attribute_const__ btrfs_get_num_csums(void);
 >
->   int btrfs_check_ioctl_vol_args_path(const struct btrfs_ioctl_vol_args =
-*vol_args);
->
-> +u16 btrfs_csum_type_size(u16 type);
-> +int btrfs_super_csum_size(const struct btrfs_super_block *s);
-> +const char *btrfs_super_csum_name(u16 csum_type);
-> +const char *btrfs_super_csum_driver(u16 csum_type);
-> +size_t __attribute_const__ btrfs_get_num_csums(void);
+> +bool __pure btrfs_is_empty_uuid(const u8 *uuid);
 > +
 >   /* Compatibility and incompatibility defines */
 >   void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
 >   			     const char *name);
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 0ede6a5524c2..7872de140489 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -471,17 +471,6 @@ static noinline int btrfs_ioctl_fitrim(struct btrfs=
+_fs_info *fs_info,
+>   	return ret;
+>   }
+>
+> -int __pure btrfs_is_empty_uuid(const u8 *uuid)
+> -{
+> -	int i;
+> -
+> -	for (i =3D 0; i < BTRFS_UUID_SIZE; i++) {
+> -		if (uuid[i])
+> -			return 0;
+> -	}
+> -	return 1;
+> -}
+> -
+>   /*
+>    * Calculate the number of transaction items to reserve for creating a=
+ subvolume
+>    * or snapshot, not including the inode, directory entries, or parent =
+directory.
+> diff --git a/fs/btrfs/ioctl.h b/fs/btrfs/ioctl.h
+> index 2b760c8778f8..ce915fcda43b 100644
+> --- a/fs/btrfs/ioctl.h
+> +++ b/fs/btrfs/ioctl.h
+> @@ -19,7 +19,6 @@ int btrfs_fileattr_set(struct mnt_idmap *idmap,
+>   		       struct dentry *dentry, struct fileattr *fa);
+>   int btrfs_ioctl_get_supported_features(void __user *arg);
+>   void btrfs_sync_inode_flags_to_i_flags(struct inode *inode);
+> -int __pure btrfs_is_empty_uuid(const u8 *uuid);
+>   void btrfs_update_ioctl_balance_args(struct btrfs_fs_info *fs_info,
+>   				     struct btrfs_ioctl_balance_args *bargs);
+>   int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags=
+);
 
 
