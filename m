@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10460-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10461-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 650DB9F4590
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 08:57:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D2F9F4596
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 08:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9299616C7BE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 07:57:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83691188D945
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 07:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DC51D63D9;
-	Tue, 17 Dec 2024 07:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CE11D934D;
+	Tue, 17 Dec 2024 07:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HTbqDamM"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JekDdSIl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97359A29
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0AB1D5CFD
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734422237; cv=none; b=UnjMJ1J390y3NsFNRYn4z3JI2HyIbY5YDuQtTs/ESPu5rfcOxQPwCaausQjFve7fmbpqgZsBGwzbzc8FUDx6VP5Uc0KuQc1R4eRA5Umxz5ZEaGrBF6jNC3kNDlk1UkcW1zVmAqrjUQV+Pd0wkjUlfUmRoZP4dzJ6kBWMGsPSS6I=
+	t=1734422290; cv=none; b=l0LmyqTK5BK1KMg2lbun/WoOtPGmwyBF75Mf/mHHKWzi1USxVMBE0ovRjTTQg39QQWbQRvCMkOypXI2wAmXctQhJn0EbzTApk6nxijq1fmMhZCebg3NF5jjHX6hNGXenTi+MEoBODNgQHvJhxgyzKc9QApdyrkfDsFyFUtQQDRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734422237; c=relaxed/simple;
-	bh=sWbvi+MRtRX1F8yn0PK5gs+eI2z7rl8lDc2dHT9rrZ0=;
+	s=arc-20240116; t=1734422290; c=relaxed/simple;
+	bh=zjYFBeGI81TvwSczSswEx2d4FS7UT7vkjnjWbwM8MU8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YQKjxN7jNT+bPUPA+Lf2qdXkflRxoMuiyOP7SOTcydH/C43GGALLq1CyyAzeV11CQftzFzXfPEgO6J2y8GQ8iISboD5H0qGqSqMPaPiqzFvqZrh8dkiz8vMNyQSy1SXsNrCBLhhFMcoQgnVo7q3TR6Jai6eYzrpAGJ86XeGzaLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HTbqDamM; arc=none smtp.client-ip=209.85.221.43
+	 In-Reply-To:Content-Type; b=ElW116qSxu7Or2iKHkpa2HqaLPSdYGAr46t3XlTz3ULqpd/r7YyCbaw4azIHQng46IO7iD5Al7q0Y6XfncxPsK7UI3umalIPqo65DwXCXFKtXlfSuN6fZd8pD0Z4C8E+KEJOW3d1cpVjIBHW9Iep7PHPcMOIOFfGLyrYMwZselQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JekDdSIl; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3863c36a731so3546841f8f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2024 23:57:15 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-385dece873cso2249035f8f.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2024 23:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734422234; x=1735027034; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1734422285; x=1735027085; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=TPgeOsepUL8NaDFFwx9ywxpWtq67Qj3d28D247T6wjg=;
-        b=HTbqDamMRVHgVzMYt85DnyUkr0pfsFife3iASdb2bnl4wse/Uk5I7P5yZ9zZAjd7cZ
-         oRSMmJ1q1DUxXwSqmkgmjH2Mcqe21XO+PsRPUKvMZZ8G60k/uwNpmixLQknRI8L8gHta
-         jJASMYyQF7zUOYXw+rUydwMP8vEmgZDosiIvDnrMbdFaZxX/hbkqMmjGvsNTU0zDDCqw
-         ImDpgY6XWWE+fHh58CCh4DCofZMi6+UkPowxmnlsgTjF/QoddhpjPAtqsXu3KxrJ9fP3
-         rORTdwW/VbJxDlTDZPldCLKYl0EWD19xBQEOte3sblycbumVi+5m3+EAtfx4/dBg4EqF
-         9LYg==
+        bh=WrjFjP+rzv/6lfs/A3ErR2BE8L5FI8AZ1uVimKRsvHU=;
+        b=JekDdSIlxV0JoH8G3OZ+MGHqJTw55PXSj7FUJuFDGGDXZ95E/I73aPxH+p8JZ/HGNo
+         bEs9N1wbsofS5ammz1+VIFFzv+mRKfg/Xm36nCigfVTWk74kKJC+QaS/SquKPmfPeMMD
+         Zdg80pnwfAKkn8pnoU6rxC0SJaG9KrfS7CFoaLqVzZk+5Us2emlYis++fcv9Dfv1u9ED
+         F3QtSOX0l2G0eg5DFeu2h80DGm2H19KoXYgz8oUhfN4LR66Q6GJKLtKtOnlaxu/IjNk1
+         aZZ+iHJiqbzjwEXfpxi5zzQVd/g7oxxcj+Qd7hQMatHMIVap7m08fU5TgL8fSTnkHhwH
+         sFRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734422234; x=1735027034;
+        d=1e100.net; s=20230601; t=1734422285; x=1735027085;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TPgeOsepUL8NaDFFwx9ywxpWtq67Qj3d28D247T6wjg=;
-        b=M+3cEI8XlXZcAvr2fZn8rw8tfDJLFiS7P+AGQpTaX60nG7abi4zzDaSiTVIqZ52nqu
-         XUKd1+mNdaqN6BgLHs/eUXngPczpvZqApnpm4ml5c57pudM7oQgCoIS5lfBmLsJznGR5
-         q207+JxInwlGN3HjUqlPPdkxrmdKXM42S4GvqDe1OSPbNITUkVRuqB04z/w57SHrqpZm
-         RQh9VN2I0l0XcfS2LxR8dFA2dfWMJAwq99dlGd5l1fO7hCdhbrxvRsKfF2t1m64KfttT
-         10HoMkv1H73oFFuKZ5yX8S+ktFeUJ0zlYQIPalC8cgYlzvG4HWXJhfk/1yavn9PebOMw
-         BgVQ==
-X-Gm-Message-State: AOJu0YwDQ3J/P9UCkjFioN6K3FYAghQGWA6Hc00nB3G/ehXE5je3sw3t
-	LHECW0sy1Znk3ePJbGrl+gLUw6Qs6LeW8WjafeBGixrVTayCM/lBrvfJKetuVXI=
-X-Gm-Gg: ASbGncvvUwV5cXUolJYHQKd14nuktrxtTOCDolO/h5H6iuZDQxp12dIt5IIQdFil7oo
-	QZaI3O6365j3r8dDKg2wi7oPWE6eILx7GVV6lHhnrbMETwenDH64dcRYLtxapTxPEXqDcmwqugW
-	BIg7JZfn5NEQBWS4x3bKDlDcsEcPoDFe+oMnM6iytnHraIEMj6p5ZnhXqmaNfaee6+ZRtYZJa3U
-	n0QWe11i9hfrBFwd4JCa7VB3K1WvBszCIsNw2vBK+pUr8dUvDV5HIecfnunEe/3MSD4PFl5MusU
-	g4VaYl3P
-X-Google-Smtp-Source: AGHT+IH5pP8/M924hmvMrlYhjcMGfu6RkLF9VaxaKL0S7iN+FPzgLEN+3MwZDa1oCbQR3sJ3+mRw2g==
-X-Received: by 2002:a05:6000:470b:b0:385:df6d:6fc7 with SMTP id ffacd0b85a97d-38880ada7e1mr11566149f8f.25.1734422233624;
-        Mon, 16 Dec 2024 23:57:13 -0800 (PST)
+        bh=WrjFjP+rzv/6lfs/A3ErR2BE8L5FI8AZ1uVimKRsvHU=;
+        b=jcyUSsyLpGi5aAcnUDaLaXd9dlCtTEtn7SF4U7BuukAFj7FCq/6TxtloG4Jse8NZSN
+         CsP1Be/G/4/Ly4z5+3fH+AS6nNpfQz/hzeCciXeKCIXmRNS053IMTQvmXvrEFvcLDEjf
+         wvGEsv2DuQwQep9Na4zxCfBgnm3GndiJI6jmYALstDUENKU+Nl8k/IfGLQzQA3uAxmil
+         QDXBzGkNXC8SmIf/Z2cYDUvCJc1YeKkJSBMDxZ7yvXkhZS/8de7Q+JRjqhze70SONmCH
+         TSHGitmFNucYxWkzzUSASM+KB0fZOIjzg8zFYcC7CZpauwRPa2FaErCm4xRzakKTDh7w
+         +/UA==
+X-Gm-Message-State: AOJu0YzSQ7LOxHtJqo64tqaNsQGjnkl4R9MaYjEdCx5GSaXXSPKfZv+i
+	CfNg+NBT3XS4VLFel4ZyFPBTk04D5OcP/84pwCXSeQP0Iv0MjxU3US8Au0/ZoXY=
+X-Gm-Gg: ASbGncsuBMrBRV/Awt0+KK75xZPhlxCmjzf4kzFPo+dxh/zhTiLjS/+Wrn9erDxWlH8
+	TP0pwaoM6pwfQMwDVNy0iZP78RywO+5QjbNPizrkei8t+hJ1Qe+SvqJwRLNPkomu+sdbichhtjh
+	7iadlC5+Aaj4vR5JUwmiGAum8umWGihybBxidFuM0O2hQkOg4xG+f6gznXEUfWa2VNRoB3/3t6k
+	DTW9Uiw5xtBPmKnD+HLoOSA8WxBAxk5c9ZXbHVCHm9Uoi5Sw7IfViwKsnBxhvyrJTMPcJpk0JFj
+	Gz5f2lO2
+X-Google-Smtp-Source: AGHT+IFqIyYn7Rdka62RpyLZvJ8mxvgAbCLpcmlatdkxdyBjhlq7GFwKME8kk/gse/nmNraNloN0zg==
+X-Received: by 2002:a05:6000:186e:b0:385:e429:e59e with SMTP id ffacd0b85a97d-388da5b5c32mr2035964f8f.52.1734422285042;
+        Mon, 16 Dec 2024 23:58:05 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1e500b8sm52660245ad.123.2024.12.16.23.57.10
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72918bc05a1sm6051809b3a.173.2024.12.16.23.58.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Dec 2024 23:57:13 -0800 (PST)
-Message-ID: <3dc2706f-d0ed-4190-b385-8bce19d7d6c3@suse.com>
-Date: Tue, 17 Dec 2024 18:27:08 +1030
+        Mon, 16 Dec 2024 23:58:04 -0800 (PST)
+Message-ID: <788dc543-9394-4e8b-9780-b1d08c86afec@suse.com>
+Date: Tue, 17 Dec 2024 18:28:00 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,12 +81,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/146: fix failure due to missing test number
+Subject: Re: [PATCH] generic/442: fix failure due to missing test number
  argument for fsync-err
 To: fdmanana@kernel.org, fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org, dchinner@redhat.com,
  Filipe Manana <fdmanana@suse.com>
-References: <5200182586d153054cbfc2549dea4b862c65e9fc.1733852046.git.fdmanana@suse.com>
+References: <407b633354417bbadeb3e665246f5c5f8000e1e6.1733852293.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -113,39 +113,38 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <5200182586d153054cbfc2549dea4b862c65e9fc.1733852046.git.fdmanana@suse.com>
+In-Reply-To: <407b633354417bbadeb3e665246f5c5f8000e1e6.1733852293.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/12/11 04:04, fdmanana@kernel.org 写道:
+在 2024/12/11 04:08, fdmanana@kernel.org 写道:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
 > After commit 88c0291d297c ("fstests: per-test dmerror instances") the
 > script src/dmerror now has an extra argument, corresponding to a test's
-> sequence number, but btrfs/146 isn't passing that argument so the test
+> sequence number, but generic/442 isn't passing that argument so the test
 > fails like this:
 > 
->    $ ./check btrfs/146
+>    $ ./check generic/442
 >    FSTYP         -- btrfs
 >    PLATFORM      -- Linux/x86_64 debian0 6.13.0-rc1-btrfs-next-181+ #1 SMP PREEMPT_DYNAMIC Tue Dec  3 13:03:23 WET 2024
 >    MKFS_OPTIONS  -- /dev/sdc
 >    MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
 > 
->    btrfs/146 3s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/146.out.bad)
->        --- tests/btrfs/146.out	2020-06-10 19:29:03.818519162 +0100
->        +++ /home/fdmanana/git/hub/xfstests/results//btrfs/146.out.bad	2024-12-10 17:19:40.363498130 +0000
->        @@ -1,3 +1,4 @@
->         QA output created by 146
->         Format and mount
+>    generic/442 4s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//generic/442.out.bad)
+>        --- tests/generic/442.out	2020-06-10 19:29:03.850519863 +0100
+>        +++ /home/fdmanana/git/hub/xfstests/results//generic/442.out.bad	2024-12-10 17:35:59.746597468 +0000
+>        @@ -1,2 +1,3 @@
+>         QA output created by 442
 >        -Test passed!
 >        +Usage: /home/fdmanana/git/hub/xfstests/src/dmerror {load_error_table|load_working_table}
 >        +system: program exited: 1
 >        ...
->        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/146.out /home/fdmanana/git/hub/xfstests/results//btrfs/146.out.bad'  to see the entire diff)
->    Ran: btrfs/146
->    Failures: btrfs/146
+>        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/442.out /home/fdmanana/git/hub/xfstests/results//generic/442.out.bad'  to see the entire diff)
+>    Ran: generic/442
+>    Failures: generic/442
 >    Failed 1 of 1 tests
 > 
 > Fix this by passing the test's sequence number as an argument.
@@ -155,23 +154,26 @@ Content-Transfer-Encoding: 8bit
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+BTW, generic/441 has one debug seqres.full output containing the old 
+command, which is desynced from the real command.
+
 Thanks,
 Qu
 
 > ---
->   tests/btrfs/146 | 2 +-
+>   tests/generic/442 | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/tests/btrfs/146 b/tests/btrfs/146
-> index d6d2829a..c1243757 100755
-> --- a/tests/btrfs/146
-> +++ b/tests/btrfs/146
-> @@ -57,7 +57,7 @@ _require_fs_space $SCRATCH_MNT $write_kb
->   testfile=$SCRATCH_MNT/fsync-err-test
+> diff --git a/tests/generic/442 b/tests/generic/442
+> index c1182b5a..ac1b094a 100755
+> --- a/tests/generic/442
+> +++ b/tests/generic/442
+> @@ -29,7 +29,7 @@ _require_test_program dmerror
 >   
->   SCRATCH_DEV=$old_SCRATCH_DEV
-> -$here/src/fsync-err -b $(($write_kb * 1024)) -d $here/src/dmerror $testfile
-> +$here/src/fsync-err -b $(($write_kb * 1024)) -d "$here/src/dmerror $seq" $testfile
+>   _dmerror_init
+>   
+> -$here/src/fsync-err -d $here/src/dmerror $DMERROR_DEV
+> +$here/src/fsync-err -d "$here/src/dmerror $seq" $DMERROR_DEV
 >   
 >   # success, all done
 >   _dmerror_load_working_table
