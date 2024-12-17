@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10510-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10511-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB8BE9F5815
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 21:49:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C6B69F5827
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 21:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72D2C167B97
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 20:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98955188F21D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 20:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911651F9ABF;
-	Tue, 17 Dec 2024 20:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50ED71F9EC1;
+	Tue, 17 Dec 2024 20:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RR8XWiiI"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="faGQ6mLM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496061EE7CB
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 20:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2976D150994
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 20:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734468571; cv=none; b=DUrOXvfAwt/8sZ7Giavb5Jrfa6XohhF7MLFhqXa/CUsZWfMfp6s77gCAa0eGyEkCetD2Q1FVsEf7WfwqEwdKFCd1CiRIdq9TiKf+47cRlHH/5uF5UvWMJGgCPW4X+M3CGC74+M3RpP2/qfPg2fnlTcF8U7uIhLO9zbjhg0igDdg=
+	t=1734468635; cv=none; b=eJtHIkQpasjiTX0/Tjq27DDVKKgaDCEuO4g+I2QxPXqZR4SLV5IGyQtMUvio6cjpAM5hL4no2J6JgjIS83WPAZSeoZ51CivqbKZstJiGQWFWeWN6aPdOVv5KkpcGKYqQwneynNzXvH65yNl4m31WzUNj4jRUX4YIGqJ5C1yU8XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734468571; c=relaxed/simple;
-	bh=WDjI3B8HGEcoDvfuzWmm9RtKr7vPsUkhZKRB1foXBYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e3DV1TVTMMQZtAc3UOUagfrN5DEIjZTRUKW1MXTQ4TP3awQu8G3a1fd/HszWDSd3OgL/60FMpzHqWLiSutqDkIyHjUj21gWEoN9/QBDFUPYmsTChRb03Clz0XnEiGmMbcq6buafIF3Mty3SX44AvsVq3rGLJXYqcNUWQ/bMTybk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RR8XWiiI; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1734468635; c=relaxed/simple;
+	bh=Ws88+xOlN7edNxSoVXzwkPzdQeedr3nySCSpiFhmEbs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Igcki4Qn5kXM1VTDH/1EEIC4JUbQ370A4lhZDzTgsoF50DsVpH4CO1blYukCRlTE8sff2wXxF1dlkathKp7uLhZUA47LufvLCdWuSrLLDrdcm2Zc/5vnyuLzyIScb50OP4HBDwqvYQyuzjMfW0x/SfOm7g5zpeiyPfJORXhdtgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=faGQ6mLM; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734468562; x=1735073362; i=quwenruo.btrfs@gmx.com;
-	bh=MUurAzUeu9hkLu/AaFhXMrsozGNOeZHJxnT5mItkZ1M=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1734468627; x=1735073427; i=quwenruo.btrfs@gmx.com;
+	bh=xEOc1bCZ9sZwzTfvULozT5FpP+6wq9jV7iPnNLlkg3o=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=RR8XWiiIgV7IpXhzmrvfUOGluKJGsMYq8zW9xQBsx85ZP1ctCMRF/LwbgGKjaHAL
-	 2DGqlGNiu+Mr0YQtSmAmKh+RAdB8Dnad6iz4ySZ1vtVwyoZby+kTFsyhw69/uDFaU
-	 gOE5kOOPpF/BZvlRZJLvnQ1GlLBeJl9ei3nuTtYBSKKS3VPAAdq1rcIQuG6/YFzWH
-	 fa3M5VdeGpBUGm/fpcNFZRqfGIJkIUduYkLWK1cMNZznTRNKp50mq35/4MEbebmeW
-	 fNUp7iYySKoWv6UGsTycmMcdnE2RzpbBvQ+yR0FdbA1ydFpl+v10Z/InE9PCsPvzl
-	 TV5ZztN18BbMjjXLFA==
+	b=faGQ6mLM+tlgVNxLXiAoyu85QkZdKQeDg9wy7a1tE2C3FrjpkUfqRexErVjw/Wi2
+	 ppKCLtCJ1aCuh3oCkcKaqktjt8zInuxtXUJNwa6Ct7Quc3cUanaYgRKs/gkXIeYCo
+	 5lCMdnZSuCzrWjRfkPLituD6AXYwtLCwz5m71mj8VatNTvFdTiGFrF4rg1vzDTanI
+	 cePlrK1HP91LrUQwJ9I3GxmDZu9B2IVAtE9a7QhdDXNqBdsKCZ3K9N0/wKpfVL4ua
+	 nyLCfIHFhX8FZvA+sqHXhro9n9jZwF+aygqp8IHr5r9tEqF0sRyKg0GYkxL6fIL/2
+	 dlGyZPuWj9wi/wupSQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwwdf-1tlwPy1GAt-015910; Tue, 17
- Dec 2024 21:49:22 +0100
-Message-ID: <d2af3a37-8486-4c95-b38e-7671466127f6@gmx.com>
-Date: Wed, 18 Dec 2024 07:19:18 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mj8mb-1u1x5D23Er-00dpDr; Tue, 17
+ Dec 2024 21:50:27 +0100
+Message-ID: <f2b86a12-510a-484f-9e2b-48f91ef2e000@gmx.com>
+Date: Wed, 18 Dec 2024 07:20:24 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,15 +58,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] reduce boilerplate code within btrfs
-To: Lee Beckermeyer <beckerlee3@gmail.com>,
- Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1734108739.git.beckerlee3@gmail.com>
- <5b02e350-8c28-42b2-8ccf-8ce76b4ca683@gmx.com>
- <62871028-9f70-48d2-9d46-3ae1f6a57505@gmx.com>
- <CAL3q7H733CPhUgtRuj_KCskSik1qXNbK7kdqyQb5XWvSJ4ARUw@mail.gmail.com>
- <CAMNkDpChHpDFPi4JT08zhbygXSPHV-sbLz=fgW9Fe5ajp9s_tA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: use uuid_is_null() to verify if an uuid is empty
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <60c0e07d871249ed86b53087c75a1013233da355.1734437595.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -93,232 +87,96 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAMNkDpChHpDFPi4JT08zhbygXSPHV-sbLz=fgW9Fe5ajp9s_tA@mail.gmail.com>
+In-Reply-To: <60c0e07d871249ed86b53087c75a1013233da355.1734437595.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:L7xYJydlYUucV0WMfX1rWsqC2Iy9i0sGeKjlivHNKaGc7//Ro0o
- A2mtMvLEUa1xnFOutj7468OQy06spkScfDhWzWAPZvHQl+57k1cU+lsl1qdDdct0d+I608K
- kqx6HNGcDthInNlSJwnAjKdQVgIMYbsjbtWdrRjTSZjmhuMp5Yej+FmRXSVfGop030ZxOVm
- BNiq2lIoPCqvoSmQ2prqA==
+X-Provags-ID: V03:K1:xEILstUMt+fi36DapK5Y2M4yfLRv/dUV1fHSAkYffjmGmyRmLm/
+ YS8C96/h6YQR4STrb1Go+s+gTn+OL8r5iwwVc6LgZcfJ6evWTGUUZi6ocklZQRhPRqyGJBK
+ BCn6bc4YZh+XDkcP9+6TqTGC/0r5tov34CYeEcs5p85mR/PZYIYJYCYHciWC897WANtIoCp
+ wuSJtJmBOfgW9bk0PlDYw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:NMDRa43kg1Q=;hbmVcS0H/cIrvi0cPNqxukhfQwB
- rAVHyUUeYxPr5K/RtQMrjiEVAB50viJzFEfdtyIdzkufNCGt1Y1vr6disP6I6+gaVbt1DlwBP
- BhvUOA3aG2qpLvyAzTGUnusbyv8GWRu4KjM2CZLSl7I0ojhdJIRND4IoNA8DWHP6hvPL/fVT+
- fOyCL/ewWKfnGLSXkYXeRCRvgqWdYP9vOqSn3hH9wNnCAufIpT/UEjYVPk6FE8V97tiy2xplF
- 7zVQyNUcWNT9+vl/ZrPibPwcJxbEkE1JF+x0WAVA+7OdAyD6aD1StR4EulVOAP2Yd7lwwPYOV
- Gzc3mk+32DeFu6j0gUdFempW8Awf7UWBJuAv1h7cLR8qzqAQ3ykKZtA0p0wfdTrqTQIH3MJrU
- jwpDnc4u6mI/IQLj8kNo3nXzZSOOQKL/c3OlkCMD78dJ5sADQlr9su4j7XuIP2UmHCUmr6jMu
- yqjISk0g1rMWB4DzY8hwxXFYvEk4N2D/dSAMmf77eA8tqBGmUht4RBS0imtIM8KsOFNZHi1d3
- RwfSoJ8lr4NGmdaiQ5yAEIRzYKw335aVDpC4wOthKyGdZbrSTB4BM+KQAcEsmTQ1z5ZCNrG0M
- WJxWkejgH8d/SKVdNKVZR2WiwQtNc3/ohhf3gvs8J5TJNOYcR/4+PuHVFo96r3orodN9+Qb88
- j8etfa+7ixNfIF9qSKlQSxRuEQ5B/2dBiZARcp7VPtI3EQiXqsFtW4hvNDH0Q/XpF+Zr26nWe
- 7p1fjXUOdqOcnJoko/6LubAXprsC9sUI2VQckj87rnG8y3q/vW+Xa2D5VTAypexZmqMvTOBXP
- KtJCOPlGBSOwLEa3NUTL12+QBPBgcFaLkxZUlYEbLzriMVrBHKRoBZ4EvBhbHhu8xD5/RnNDC
- UdlxPmjH4OXP0igPwuDQgefXF0zx5ovtFOa6dlDY4eXwB0VFhhmODUbkqmN1L9ARSFWvwbUmG
- pnkQiG5hfAK9lXXwE2/+TjzlIvxUPaGSqBGLxDFgNyjWZhwoFunfs128XgMsCPfG6A7dRPgNO
- 9UTDHmZMcPWbuTcYu34WbykxOt8RHTXP883ymkbH3c+LXazNGY4YgyJTo79A1BGV/gCA464dj
- m0DDClznahxpdnv/5Njr/o487L3WYV
+UI-OutboundReport: notjunk:1;M01:P0:xo2o/+xvQMc=;ZlMEPXmG7Nd+K+1cZo6etSmB/Oj
+ 9rcWh0fcLR7fXO3qyUodH1BQYxtnf0+ztSdddjRmX5mjE0RmTVgEr4ZUHIz+aNxTYNBQLS6Ww
+ kZ3z95R2kN0AFLQQiGPccRbNURc2pa5unESojNQI24Lvps7Dn7q+8xhgmwMpeWvS6E9WRj/bP
+ ZSpMCEAgY6gSN1BK9qkmKodam8e9IPa6EbjdlFWMEtcbE1O/7G2Zihh7NGowvPppWYX2Jjdbs
+ 6jkbsfMv/Xetl6Z5bHabD+mGosWB7tekJsFiGusa4XBSutvBZ2HwWiUMgkxCv6eM+pxhuNyK/
+ sY/uKgzhHuztJmVdZ1YQHdhw8PNivk7rnB+/MHn+fs7w2MXjhlhO8z/61lAFvu6KWF5HpY1Ld
+ KPPaHDKmTk9ISY2zKVCadPCeOk1S/joqfFHVXM90DLqFb6Ltc4KqhZJOajwQti+u1ZPAAlMWb
+ fnc6L/L8GhFlL7yFcNYz3Ii2ZlRtH9kSwwVkGBgJs+hW6oP8XLNLV1f7PyEoqtM7mgOnOAa9C
+ eQmxyqUQpY8wlKSps7uVGzQMDHzGJRMep5jDYmKye3B3iqVIHDQfna2bA4HQ3o0wL9WsqPDqM
+ RZJdGfPbrfUk3HvXij+EqjXcmKWbtl3/P27EwyQzBpLfFL9+Ie5oLBBt0BaP8KLXSIsWetxoy
+ O7Pbql+WXOrgQNw1JO+GqNA7aN1EzqhkpSPaOQ4v94lTrcX+pty/UDLTPC8CNHccrRmW0WvLK
+ 1U5dxodvgD4sNXB11mZfiCf6cbou5G7EcZ7IuClmsw7Wi6TUYgukvl4m6ChRPXE8DJCbxsInB
+ 8i+6RG1TwL57V7pV5QilE4lbkA0L/urfGjkfKCPtKItOV03eM697PGgwm1veN2f/zsMFVxMPk
+ L4e786ThgeEHmkPvirsZTu0TmGfTiPr+ZFFOgJphpCz6/BahiwmWz7D6FU0uttJPDRaguS+Mt
+ VJ7WQCLp5O08V0o8JWIUw+dM85qoHdqX425utaoWjq0mtFTYhjPFWlR89CWRUOxkQt4RCnH57
+ SlYWax2Q1Uo6uAGWbVoW/RnkU7mETQNSt7ovppg4p3fbNwUWJqHuDrIHH7zCxbr1zNvwLnX2W
+ nr/8SQI/MWAZk0mmz3GT8oYU7d8QZf
 
 
 
-=E5=9C=A8 2024/12/18 07:06, Lee Beckermeyer =E5=86=99=E9=81=93:
-> On Tue, Dec 17, 2024 at 9:09=E2=80=AFAM Filipe Manana <fdmanana@kernel.o=
-rg> wrote:
->>
->> On Mon, Dec 16, 2024 at 10:07=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.=
-com> wrote:
->>>
->>>
->>>
->>> =E5=9C=A8 2024/12/17 07:50, Qu Wenruo =E5=86=99=E9=81=93:
->>>>
->>>>
->>>> =E5=9C=A8 2024/12/16 01:56, Roger L. Beckermeyer III =E5=86=99=E9=81=
-=93:
->>>>> The goal of this patch series is to reduce boilerplate code
->>>>> within btrfs. To accomplish this rb_find_add_cached() was added
->>>>> to linux/include/rbtree.h. Any replaceable functions were then
->>>>> replaced within btrfs.
->>>>
->>>> Since Peter has acknowledged the change in rbtree, the remaining part
->>>> looks fine to me.
->>>>
->>>> The mentioned error handling bug will be fixed when I merge the serie=
-s.
->>>>
->>>> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>>
->>> Well, during merge I found some extra things that you can improve in t=
-he
->>> future.
->>
->> One more thing to improve in the future:
->>
->> - Run fstests and check that that are no tests failing after the change=
-s.
->>
->> There's at least 1 test case failing after this patchset.
->> The patch "btrfs: update prelim_ref_insert() to use rb helpers" breaks
->> btrfs/287:
->>
->> $ ./check btrfs/287
->> FSTYP         -- btrfs
->> PLATFORM      -- Linux/x86_64 debian0 6.13.0-rc2-btrfs-next-182+ #2
->> SMP PREEMPT_DYNAMIC Tue Dec 17 11:02:25 WET 2024
->> MKFS_OPTIONS  -- /dev/sdc
->> MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
->>
->> btrfs/287 1s ... - output mismatch (see
->> /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad)
->>      --- tests/btrfs/287.out 2024-10-30 07:42:47.901514035 +0000
->>      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad
->> 2024-12-17 15:00:35.341110069 +0000
->>      @@ -8,82 +8,82 @@
->>       linked 8388608/8388608 bytes at offset 16777216
->>       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>       resolve first extent:
->>      -inode 257 offset 16777216 root 5
->>      -inode 257 offset 8388608 root 5
->>       inode 257 offset 0 root 5
->>      +inode 257 offset 8388608 root 5
->>      ...
->>      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/287.out
->> /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad'  to see
->> the entire diff)
->>
->> HINT: You _MAY_ be missing kernel fix:
->>        0cad8f14d70c btrfs: fix backref walking not returning all inode =
-refs
->>
->> Ran: btrfs/287
->> Failures: btrfs/287
->> Failed 1 of 1 tests
->>
->> So please fix the patch (or patches) and resend the updated version onc=
-e fixed.
->> Meanwhile it should be dropped from for-next.
->>
->> Thanks.
->>
-> Found the problem, it's in prelim_ref_cmp in fs/btrfs/backref.c, if
-> you invert the comparison between the parent and node it passes the
-> test. e.g. prelim_ref_compare(ref2, ref1); instead of
-> prelim_ref_compare(ref1, ref2);
+=E5=9C=A8 2024/12/17 22:44, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> I can dig into it but I've got a couple of other things in the queue
-> right now so it might be a little bit. prelim_ref_cmp() could do with
-> a logic rework as well as prelim_ref_compare() is only used in 2
-> places within backref.c. It's just outside the scope of this patch
-> series so I didn't dig too deep into it.
-
-It's not the parameter order, it's the problem related to the parent/ref
-usage.
-
-Previously during the insert we update the parent/ref pointer during the
-search, but it's no longer the case, thus the whole if (exist) {} branch
-is wrong.
-
->>
->>>
->>> - The length of each code line
->>>     Although we no longer have the older strict 80 chars length limit,
->>>     check_patch.pl will still warn about lines over 100 chars.
->>>     Several patches triggered this.
->>>
->>>     So please use check_patch.pl or just use btrfs workflow instead.
->>>
-> yee, I haven't built a really good workflow for kernel submissions yet.
->>> - The incorrect drop of const prefix in the last patch
->>>     Since the comparison function accepts one regular node and one con=
-st
->>>     node, the last patch drops the second const prefix, mostly due to
->>>     the factg that comp_refs() doesn't have const prefix at all for bo=
-th
->>>     parameters.
->>>
->>>     The proper fix is to add const prefixes for involved functions, no=
-t
->>>     dropping the existing const prefixes.
->>>
-> Okay, however, what do const keywords do that would require this
-> habit? There's also a place in backref.c where I didn't implement
-> const keywords.
->>>     I have also make all internal structure inside those helpers to be
->>>     const.
->>>     (Personally speaking I also want to check if the less() and cmp() =
-can
->>>      be converted to accept both parameters as const in the future)
->>>
->>> - Upper case for the first letter of a sentence
->>>     I'm not good at English either, but at least for the commit messag=
-e,
->>>     the first letter of a sentence should be in upper case.
-> Gotcha, I can work on rewording those descriptions, just didn't seem
-> very important compared to validating everything works properly.
->>>
->>> - Minor code style problems
->>>     IIRC others have already address the problem like:
->>>
->>>          int result;
->>>
->>>          result =3D some_function();
->>>          return result;
->>>
->>>     Which can be done by a simple "return some_function();".
-> Where was this? I probably missed one when I went through these, sorry.
+> At btrfs_is_empty_uuid() we have our custom code to check if an uuid is
+> empty, however there a kernel uuid library that has a function named
+> uuid_is_null() which does the same and probably more efficient.
 >
-> Just to summarize, would you like me to resend the patch series with
-> the below changes?
-> - updated prelim_ref_compare to eliminate comparison error
-> - rescanned with scripts/checkpatch.pl
-> - whatever needs to be done with consts.
+> So change btrfs_is_empty_uuid() to use uuid_is_null(), which is almost
+> a directy replacement, it just wraps the necessary casting since our
+> uuid types are u8 arrays while the uuid kernel library uses the uuid_t
+> type, which is just a typedef of an u8 array of 16 elements as well.
+>
+> Also since the function is now to trivial, make it a static inline
+> function in fs.h.
+>
+> Suggested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I'll handle the error fix.
-
-Since I have already changed the series a lot, your update will get all
-the existing modification lost.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
+> ---
+>   fs/btrfs/fs.c | 9 ---------
+>   fs/btrfs/fs.h | 5 ++++-
+>   2 files changed, 4 insertions(+), 10 deletions(-)
 >
-> Thanks for your time!
-> Lee
->>>
->>> Thanks,
->>> Qu
->>>
->>>>
->>>> Thanks,
->>>> Qu
->>>>>
->>>>> changelog:
->>>>> updated if() statements to utilize newer error checking
->>>>> resolved lock error on 0002
->>>>> edited title of patches to utilize update instead of edit
->>>>> added Acked-by from Peter Zijlstra to 0001
->>>>> eliminated extra variables throughout the patch series
->>>>>
->>>>> Roger L. Beckermeyer III (6):
->>>>>     rbtree: add rb_find_add_cached() to rbtree.h
->>>>>     btrfs: update btrfs_add_block_group_cache() to use rb helper
->>>>>     btrfs: update prelim_ref_insert() to use rb helpers
->>>>>     btrfs: update __btrfs_add_delayed_item() to use rb helper
->>>>>     btrfs: update btrfs_add_chunk_map() to use rb helpers
->>>>>     btrfs: update tree_insert() to use rb helpers
->>>>>
->>>>>    fs/btrfs/backref.c       | 71 ++++++++++++++++++++---------------=
------
->>>>>    fs/btrfs/block-group.c   | 41 ++++++++++-------------
->>>>>    fs/btrfs/delayed-inode.c | 40 +++++++++-------------
->>>>>    fs/btrfs/delayed-ref.c   | 39 +++++++++-------------
->>>>>    fs/btrfs/volumes.c       | 39 ++++++++++------------
->>>>>    include/linux/rbtree.h   | 37 +++++++++++++++++++++
->>>>>    6 files changed, 141 insertions(+), 126 deletions(-)
->>>>>
->>>>
->>>>
->>>
->>>
+> diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
+> index 06a863252a85..09cfb43580cb 100644
+> --- a/fs/btrfs/fs.c
+> +++ b/fs/btrfs/fs.c
+> @@ -55,15 +55,6 @@ size_t __attribute_const__ btrfs_get_num_csums(void)
+>   	return ARRAY_SIZE(btrfs_csums);
+>   }
+>
+> -bool __pure btrfs_is_empty_uuid(const u8 *uuid)
+> -{
+> -	for (int i =3D 0; i < BTRFS_UUID_SIZE; i++) {
+> -		if (uuid[i] !=3D 0)
+> -			return false;
+> -	}
+> -	return true;
+> -}
+> -
+>   /*
+>    * Start exclusive operation @type, return true on success.
+>    */
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 1113646374f3..58e6b4b953f1 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -996,7 +996,10 @@ const char *btrfs_super_csum_name(u16 csum_type);
+>   const char *btrfs_super_csum_driver(u16 csum_type);
+>   size_t __attribute_const__ btrfs_get_num_csums(void);
+>
+> -bool __pure btrfs_is_empty_uuid(const u8 *uuid);
+> +static inline bool btrfs_is_empty_uuid(const u8 *uuid)
+> +{
+> +	return uuid_is_null((const uuid_t *)uuid);
+> +}
+>
+>   /* Compatibility and incompatibility defines */
+>   void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
 
 
