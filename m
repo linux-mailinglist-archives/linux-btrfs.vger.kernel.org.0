@@ -1,137 +1,337 @@
-Return-Path: <linux-btrfs+bounces-10442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389759F3EBC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 01:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D1BC9F3EC4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 01:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0034188A532
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 00:22:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04A1C1883797
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 00:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F31F9FE;
-	Tue, 17 Dec 2024 00:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B36C2FD;
+	Tue, 17 Dec 2024 00:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ZUtbvR7P"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JAbfRvyh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B204C9F
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 00:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3557A28F5
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 00:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734394934; cv=none; b=oYGRz9ZAqFtBe0ifOpkp8g4x1zlHWEV2Mdce17OlSpSeQUF22umCU+27gfinHllGO2dDpyBbtQIRZAB7lOAAony3WVOq2AY3chHHNTUxzmVUBeMsCFOT8d9r3xpxVNA+q22gm6FK8WstpU8THTPWBnnrzl7ub7NvYTVDq9Jkjpk=
+	t=1734395176; cv=none; b=cWlSpcv/lm446Nd/y8W6Hal/EWpuQ+2+PmExs6grmPk+FEODWAjWn/gia0/qUtp51usdtqrWtJ1ak04sKsgCtiusv6Dmw+u0zJEjeLo3PfcoIZ5uuATWg94CtSNfv410NtQIye7dkT4yD5o5KKV0dkeMIRToeQ3TXGNi/9nw3u4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734394934; c=relaxed/simple;
-	bh=mZ7KBxRiNIDejZVpUVQ6nlPgNNXf0zptNyEy5l+UnBM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rMXeGWibxakngw1+6N8bNAAf0gE9ujhUh4tJ8EqqbvTb+2vm12c2LdmSdBM6C1gSSYawA2DWZP9NXzkpZpH5eO8a29RqY5WH+qPaZiCZ/gNdtKG/eD+92oPxD0dqKESZNd7lGxEB+luCNjG7SVBKu83qE/eT78yhiEdvOqIY2i8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=ZUtbvR7P; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e387ad7abdaso3588577276.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2024 16:22:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1734394931; x=1734999731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=71UboNKp8PBgSM3OXXE6el32SNwss2VOEFU3BrAALk0=;
-        b=ZUtbvR7POJzs9AMT/ZxyccuYJWBODImPREZFWPi03Z5mV9bDqC6NUA5V/OPUvk+W6t
-         VpAaVnfBDy7rgwHdBoCnK0jjZKH5tRdClFIsdessEWfEgVb7cnDyhbnGU4gTYBf465Mr
-         eKoEQU77hFpzBLRElM9+AKvusZM25SkBpIMLI4Rw+Y+HgjdodPrpxpxb2r2+m/FdjoBp
-         SN7q4j87wN8UmWasJn5aWMrx+TVYKxNX6T4h0TPH09/aLsSvo4LsyOUv1ViF2Zb++/le
-         JJG/adDh1hMN8rauQle9yCgrMHO5yZcTcIcay/gMbn9AMRmWVxTGLRC4zDdrY5zfpFZx
-         +k5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734394931; x=1734999731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=71UboNKp8PBgSM3OXXE6el32SNwss2VOEFU3BrAALk0=;
-        b=i2tjsUvp967nloUGGohIJEnJ/Hn8GoSxttFbBPbiP6y4y+g4Kff486YuOrVIKJM2Zq
-         QQX8mTlgZSKcfbzvpbCUwCVYNsrXbj4IMGR1ylvHKYT3h3SDlXiAw+t5+YJFOhpfL2UV
-         JatZIckW8nAmo5ie+uKTn+VwYXTziRhWm9jZ+u/NFpusHU3kRzPRmBmLoHIRJju+fpRk
-         ETRHTXGojwQjDJLaGNUqAUdFA6WGwK/BoOlS+C64sxmVomGHbejXTPmUEyvYUiZMtQcI
-         LK/zBr1hOmE/0jcXJrW+O5Me1U4D+S6EXHAmXOwVCb9KGGti3FBB60aZxh7y2vYXFQsz
-         4Jcg==
-X-Forwarded-Encrypted: i=1; AJvYcCVREG0iFzm/zQg6UT+lNNtsu9IDTzHeSNRHKZR5jOon55DSrtD/KMuWTAz20FWyF5zkVbfE5fqNX30CRA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywor7BIFpsRg8MOGqqewOAiLhh5VajLphcNHZEhK6Fmowxbv4pN
-	2/3NyMB7uPbfrqI5hWNMjnk2kgvYSn1fT+BLhJ39VF0Rw26FcO1MT3RXiIDx1+OKHNeXvzvrjPp
-	pPS+/ty2+wZi3ZI3cYijOi9SwOFqqEbFw22ts
-X-Gm-Gg: ASbGnctZHG/7+DdzaSwxUOWD6waMNrdq188ECtwUt0JGpOgdFwHUX2hitP/ANgSlid/
-	w3dq5Qywb3dKnuEPpA+s+MIE/TrQpp+C3NXZ8
-X-Google-Smtp-Source: AGHT+IHf0wZhbh7sOURNOzivfR+3asRXLLCmwV8fbsWRDWFE4TZAL8JlZRQzwQgdHYf9FYWmcVo2zFP8s+2cEpINRbE=
-X-Received: by 2002:a05:6902:2006:b0:e4d:89e9:6a7f with SMTP id
- 3f1490d57ef6-e4d89e96f63mr5429340276.50.1734394931644; Mon, 16 Dec 2024
- 16:22:11 -0800 (PST)
+	s=arc-20240116; t=1734395176; c=relaxed/simple;
+	bh=WaD/KngJn4iYwoQjPzTTms6WX81wfps5jS3HFIvpcOM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dSBs8BD76Tg49NRx46MBVIwP+jgH0seGp5s1PlfUwN7GTK/RZ3exYmSDTSq4/S/Wo8oP8WcKhUxsIlE0zldfhaDQzOUEHJnOcRwFIllX2poPH4b3VYCvjg86WZmG+AOyV6/+4p1Vc6O1lnpnL45ooC1kUX5K6PUwEAQESu5Hgl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JAbfRvyh; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1734395167; x=1734999967; i=quwenruo.btrfs@gmx.com;
+	bh=788wfRTkW25upRD0TjLO4V/WgSr4ogKey4ATy55pXSc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=JAbfRvyhLtRpf/EEp/iR76jG/RrvSbcnGOZim1xjJoPn1i9FDq7sv1XfCytW6GkY
+	 fQMmJzGo1IuPnv3I2d8t7bPM25QSrjEdZ4lPFbCLGJcd91byAwVUsbgCWySVq78bL
+	 DKBLAmD8YIa3INh7gbkSeot9TXkG9QgDsOUC140cSkzb/78UMdJRr8CC9hG08wzDt
+	 +O1T9GYpzdQy8LJepliJhqMeh94RaLOPQSYLive+5eIHGngGAuZK0ANl0b5sw9mo1
+	 yXqh6PRl1rUzIFNAxjOWwWpTBpN1hnKJxlZd1VX2yuVEqpFgSYiQT0xqmTHH6QR5W
+	 fQIDcbg7lrUtWjOclQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH5a-1tzi1z03Uy-00kMpz; Tue, 17
+ Dec 2024 01:26:07 +0100
+Message-ID: <36af89a5-f7e8-4a9f-a7ff-880a84d2fc6d@gmx.com>
+Date: Tue, 17 Dec 2024 10:56:04 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241216234308.1326841-1-song@kernel.org>
-In-Reply-To: <20241216234308.1326841-1-song@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 16 Dec 2024 19:22:01 -0500
-Message-ID: <CAHC9VhSu4gJYWgHqvt7a_C_rr3yaubDdvxtHdw0=3wPdP+QbbA@mail.gmail.com>
-Subject: Re: [RFC] lsm: fs: Use i_callback to free i_security in RCU callback
-To: Song Liu <song@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	willy@infradead.org, corbet@lwn.net, clm@fb.com, josef@toxicpanda.com, 
-	dsterba@suse.com, brauner@kernel.org, jack@suse.cz, cem@kernel.org, 
-	djwong@kernel.org, jmorris@namei.org, serge@hallyn.com, fdmanana@suse.com, 
-	johannes.thumshirn@wdc.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/9] btrfs: move csum related functions from ctree.c into
+ fs.c
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1734368270.git.fdmanana@suse.com>
+ <ca35ce34f64fc203266a7336390d82745d82ed5f.1734368270.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <ca35ce34f64fc203266a7336390d82745d82ed5f.1734368270.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:iYEqCQnHrZ2Jx4s51g/YvFML7ewfwto+okYcSrUSBzd2ccZ4Wlg
+ RiQovadMF7CC8ME5e8eKYKrmUxNX0jf4hvbGne5nPu5jm3c3I3n/goG5y1pRjyEJAjOm686
+ phM8NKcAA4mfErcrKgt9W4C0eJW+BmueeIjeWp1Hf2RYvauDECKwqkvS82ooc+LAOwK6EP9
+ o9GbSM0x4ovLi5hR0wp2g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Hs21PfuJUa4=;rTVn62JIjOQOYxk6Qyowf4eTm7O
+ lZ3YCp/ZTuJ+FG1XiRPSjvmS4oM4vf/gu9fRQS5vpNGgJXyQTOsO3vX11PwMfDMOUmg4bU3n1
+ AYe4fBFo8nJ7PiSaSymloWNn7NddxqD54AVo+8tvAe7a2PO0F1DyqC96w39lrKbK1VFpOkgod
+ iaEdJ/yYT7u0ZciGwlVyrn2SMPQT46Zaz8UM9Z5BDJJwV9VQ5uD7eUVbGAqNMr/tSmbrZnfw4
+ /LelxJaLg9UFCnQN35G0YyN5VjwSQu4JV2+lOOIKFwT93XzRKnR0PxplNWNe1NOWPZuPsbMB4
+ 5jPK5nmEP+s26Cs+yF6Tq5AunKqI9xKytoxIUBb5LiNmo7/iRnDkv/bmtEeZLWHQ3PBBz/2ky
+ 1tZmJ5gzXTeyn4NOFym0ewbDs9tuyWZ+wVjUzQ6O+jXTNkfQnJdl+TWEsEYSeKQncmX79Z2rr
+ /1pbBo3QgNIcpNBenHybdMrLo5/TsE4vfwtAngTHKI5jaDc1RTDLpH67GBpX0Tj1lBN34FYdf
+ +FUGiaH7/5TMN/K8DIt1LjFU6puVCPB6XKo7McnkNng5HmRoXCFCDZSG1xHgJtdZyyv5YVwrj
+ jRA+Jl7gOVfFX0lq/uUT+/96L/GFSJe+r1ypSOJdx8SJzAS6Xclq+u332VnX/ull4UEtjLzCi
+ GgU/WVMwY9u97dVbWzH/fmOL1KRBsNtDR8hu84e5kvHLr0Z8U+EVNTkE/5dE+gg4cENHrm8Me
+ J+cw3LKiI6mXy9aUnS3ZE+qlsC0s/GiI1L04OAT2GxvyiflDf0vM/1DGoi4QsG969LSA/mZZY
+ 4Ay9HmXd8jC7O1ku6/qHgCWiPi9gjzsqDDtTZvVnZs6QsCR+qHHtWY6+ZGAm36hbaUclFk+IK
+ /Y8OmqULjtm2CdbTaxh2ABXVziF5UjOGYD7Bqt33VkXs7gfheLne4wdvUR6/1z1zbsMy8eESM
+ wbgP7UkG9dl8kLpYl9lA/3FQhqemOmSy0bJ7YEIBEQ2/51qGzThhXp2kOGMWabljSO/6rmdGm
+ u8FcWc4+DfOJTDRwMfXnRaihsfOx9VBwkpTjs/gMP971jZYEUdZZccCYJVETPeZ/6WI7iGCqC
+ te5IsaVpjTeyduJ/KnsqNjRAQrfDKi
 
-On Mon, Dec 16, 2024 at 6:43=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+
+
+=E5=9C=A8 2024/12/17 03:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> inode->i_security needes to be freed from RCU callback. A rcu_head was
-> added to i_security to call the RCU callback. However, since struct inode
-> already has i_rcu, the extra rcu_head is wasteful. Specifically, when any
-> LSM uses i_security, a rcu_head (two pointers) is allocated for each
-> inode.
+> The ctree module is about the implementation of the btree data structure
+> and not a place holder for generic filesystem things like the csum
+> algorithm details. Move the functions related to the csum algorithm
+> details away from ctree.c and into fs.c, which is a far better place for
+> them. Also fix missing punctuation in comments and change one multiline
+> comment to a single line comment since everything fits in under 80
+> characters.
 >
-> Add security_inode_free_rcu() to i_callback to free i_security so that
-> a rcu_head is saved for each inode. Special care are needed for file
-> systems that provide a destroy_inode() callback, but not a free_inode()
-> callback. Specifically, the following logic are added to handle such
-> cases:
+> For some reason this also sligthly reduces the module's size.
 >
->  - XFS recycles inode after destroy_inode. The inodes are freed from
->    recycle logic. Let xfs_inode_free_callback() and xfs_inode_alloc()
->    call security_inode_free_rcu() before freeing the inode.
->  - Let pipe free inode from a RCU callback.
->  - Let btrfs-test free inode from a RCU callback.
-
-If I recall correctly, historically the vfs devs have pushed back on
-filesystem specific changes such as this, requiring LSM hooks to
-operate at the VFS layer unless there was absolutely no other choice.
-
-From a LSM perspective I'm also a little concerned that this approach
-is too reliant on individual filesystems doing the right thing with
-respect to LSM hooks which I worry will result in some ugly bugs in
-the future.
-
-> Signed-off-by: Song Liu <song@kernel.org>
+> Before this change:
+>
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1782126	 161045	  16920	1960091	 1de89b	fs/btrfs/btrfs.ko
+>
+> After this change:
+>
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1782094	 161045	  16920	1960059	 1de87b	fs/btrfs/btrfs.ko
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
->  Documentation/filesystems/vfs.rst |  8 ++++-
->  fs/btrfs/fs.h                     |  1 +
->  fs/btrfs/inode.c                  |  4 +++
->  fs/btrfs/tests/btrfs-tests.c      |  1 +
->  fs/inode.c                        |  2 ++
->  fs/pipe.c                         |  1 -
->  fs/xfs/xfs_icache.c               |  3 ++
->  include/linux/security.h          |  4 +++
->  security/security.c               | 49 +++++++++++++++++++------------
->  9 files changed, 53 insertions(+), 20 deletions(-)
+>   fs/btrfs/ctree.c | 51 ------------------------------------------------
+>   fs/btrfs/ctree.h |  6 ------
+>   fs/btrfs/fs.c    | 49 ++++++++++++++++++++++++++++++++++++++++++++++
+>   fs/btrfs/fs.h    |  6 ++++++
+>   4 files changed, 55 insertions(+), 57 deletions(-)
+>
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 99a58ede387e..c93f52a30a16 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -37,19 +37,6 @@ static int push_node_left(struct btrfs_trans_handle *=
+trans,
+>   static int balance_node_right(struct btrfs_trans_handle *trans,
+>   			      struct extent_buffer *dst_buf,
+>   			      struct extent_buffer *src_buf);
+> -
+> -static const struct btrfs_csums {
+> -	u16		size;
+> -	const char	name[10];
+> -	const char	driver[12];
+> -} btrfs_csums[] =3D {
+> -	[BTRFS_CSUM_TYPE_CRC32] =3D { .size =3D 4, .name =3D "crc32c" },
+> -	[BTRFS_CSUM_TYPE_XXHASH] =3D { .size =3D 8, .name =3D "xxhash64" },
+> -	[BTRFS_CSUM_TYPE_SHA256] =3D { .size =3D 32, .name =3D "sha256" },
+> -	[BTRFS_CSUM_TYPE_BLAKE2] =3D { .size =3D 32, .name =3D "blake2b",
+> -				     .driver =3D "blake2b-256" },
+> -};
+> -
+>   /*
+>    * The leaf data grows from end-to-front in the node.  this returns th=
+e address
+>    * of the start of the last item, which is the stop of the leaf data s=
+tack.
+> @@ -148,44 +135,6 @@ static inline void copy_leaf_items(const struct ext=
+ent_buffer *dst,
+>   			      nr_items * sizeof(struct btrfs_item));
+>   }
+>
+> -/* This exists for btrfs-progs usages. */
+> -u16 btrfs_csum_type_size(u16 type)
+> -{
+> -	return btrfs_csums[type].size;
+> -}
+> -
+> -int btrfs_super_csum_size(const struct btrfs_super_block *s)
+> -{
+> -	u16 t =3D btrfs_super_csum_type(s);
+> -	/*
+> -	 * csum type is validated at mount time
+> -	 */
+> -	return btrfs_csum_type_size(t);
+> -}
+> -
+> -const char *btrfs_super_csum_name(u16 csum_type)
+> -{
+> -	/* csum type is validated at mount time */
+> -	return btrfs_csums[csum_type].name;
+> -}
+> -
+> -/*
+> - * Return driver name if defined, otherwise the name that's also a vali=
+d driver
+> - * name
+> - */
+> -const char *btrfs_super_csum_driver(u16 csum_type)
+> -{
+> -	/* csum type is validated at mount time */
+> -	return btrfs_csums[csum_type].driver[0] ?
+> -		btrfs_csums[csum_type].driver :
+> -		btrfs_csums[csum_type].name;
+> -}
+> -
+> -size_t __attribute_const__ btrfs_get_num_csums(void)
+> -{
+> -	return ARRAY_SIZE(btrfs_csums);
+> -}
+> -
+>   struct btrfs_path *btrfs_alloc_path(void)
+>   {
+>   	might_sleep();
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 2c341956a01c..a1bab0b3f193 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -756,12 +756,6 @@ static inline bool btrfs_is_data_reloc_root(const s=
+truct btrfs_root *root)
+>   	return root->root_key.objectid =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTID;
+>   }
+>
+> -u16 btrfs_csum_type_size(u16 type);
+> -int btrfs_super_csum_size(const struct btrfs_super_block *s);
+> -const char *btrfs_super_csum_name(u16 csum_type);
+> -const char *btrfs_super_csum_driver(u16 csum_type);
+> -size_t __attribute_const__ btrfs_get_num_csums(void);
+> -
+>   /*
+>    * We use folio flag owner_2 to indicate there is an ordered extent wi=
+th
+>    * unfinished IO.
+> diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
+> index 31c1648bc0b4..3756a3b9c9da 100644
+> --- a/fs/btrfs/fs.c
+> +++ b/fs/btrfs/fs.c
+> @@ -5,6 +5,55 @@
+>   #include "fs.h"
+>   #include "accessors.h"
+>
+> +static const struct btrfs_csums {
+> +	u16		size;
+> +	const char	name[10];
+> +	const char	driver[12];
+> +} btrfs_csums[] =3D {
+> +	[BTRFS_CSUM_TYPE_CRC32] =3D { .size =3D 4, .name =3D "crc32c" },
+> +	[BTRFS_CSUM_TYPE_XXHASH] =3D { .size =3D 8, .name =3D "xxhash64" },
+> +	[BTRFS_CSUM_TYPE_SHA256] =3D { .size =3D 32, .name =3D "sha256" },
+> +	[BTRFS_CSUM_TYPE_BLAKE2] =3D { .size =3D 32, .name =3D "blake2b",
+> +				     .driver =3D "blake2b-256" },
+> +};
+> +
+> +/* This exists for btrfs-progs usages. */
+> +u16 btrfs_csum_type_size(u16 type)
+> +{
+> +	return btrfs_csums[type].size;
+> +}
+> +
+> +int btrfs_super_csum_size(const struct btrfs_super_block *s)
+> +{
+> +	u16 t =3D btrfs_super_csum_type(s);
+> +
+> +	/* csum type is validated at mount time. */
+> +	return btrfs_csum_type_size(t);
+> +}
+> +
+> +const char *btrfs_super_csum_name(u16 csum_type)
+> +{
+> +	/* csum type is validated at mount time. */
+> +	return btrfs_csums[csum_type].name;
+> +}
+> +
+> +/*
+> + * Return driver name if defined, otherwise the name that's also a vali=
+d driver
+> + * name.
+> + */
+> +const char *btrfs_super_csum_driver(u16 csum_type)
+> +{
+> +	/* csum type is validated at mount time */
+> +	return btrfs_csums[csum_type].driver[0] ?
+> +		btrfs_csums[csum_type].driver :
+> +		btrfs_csums[csum_type].name;
+> +}
+> +
+> +size_t __attribute_const__ btrfs_get_num_csums(void)
+> +{
+> +	return ARRAY_SIZE(btrfs_csums);
+> +}
+> +
 
---=20
-paul-moore.com
+I'm wondering if those simple functions can be converted to inline.
+
+Although btrfs_csums[] array has to be put inside fs.c, those functions
+seems be fine defined as inline ones inside the header.
+
+Otherwise looks good to me.
+
+Thanks,
+Qu
+>   void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
+>   			     const char *name)
+>   {
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 79a1a3d6f04d..b05f2af97140 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -982,6 +982,12 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_=
+info,
+>
+>   int btrfs_check_ioctl_vol_args_path(const struct btrfs_ioctl_vol_args =
+*vol_args);
+>
+> +u16 btrfs_csum_type_size(u16 type);
+> +int btrfs_super_csum_size(const struct btrfs_super_block *s);
+> +const char *btrfs_super_csum_name(u16 csum_type);
+> +const char *btrfs_super_csum_driver(u16 csum_type);
+> +size_t __attribute_const__ btrfs_get_num_csums(void);
+> +
+>   /* Compatibility and incompatibility defines */
+>   void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
+>   			     const char *name);
+
 
