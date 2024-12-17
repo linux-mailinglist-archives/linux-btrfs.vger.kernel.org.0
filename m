@@ -1,84 +1,129 @@
-Return-Path: <linux-btrfs+bounces-10484-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10485-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9706E9F4EBD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 16:04:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D1229F4EBE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 16:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FE3818873B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 14:59:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04C3D164818
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 15:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD2F1F75B5;
-	Tue, 17 Dec 2024 14:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B601F63E1;
+	Tue, 17 Dec 2024 15:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nvW4YfEb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from shin.romanrm.net (shin.romanrm.net [146.185.199.61])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68381F4735
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 14:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=146.185.199.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAFF1D63D1
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 15:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734447427; cv=none; b=rz3fWdpplS0FvP2U4NGuhK20Glz6lkpSq6LSDiqH/KHl4TNjPu4hcKMG3DUNbXdPcS1Xssic7UAKW3vRRaEtdST2utQ52mX8IXA/7Ix+MSwqMOlLGJJz6P4VtRR28HtEC5q7Wka8Cjoqhs+k5q2M5h4SG/sb/JVkp2US/+eujNQ=
+	t=1734447814; cv=none; b=cVTu8i4Rjl93tOFpIifzHSV+q9UxGvPJ1LEsOopHa0d0Oyxlul5VcFFtFrlW29VpIzmDfYf/yRr/vmZltGHM3O08IMD9eq0vP8Y3GeB0K2xVA8RwgMt1yvtDiJROUiFVe99XJ6vPoFB4K4tsBauqNF4sX4efcmlgqtTA9gwT0ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734447427; c=relaxed/simple;
-	bh=AATy07ehHuhlMsz82K4R03c+ylbtEDHChyAGuPYZZcw=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=kiESw/9xwT5gVUU9ZhofftV1FMlMyvwqq8HKp91cvOStIDthTbI1rfaQWpKMk7B1/vn6i754AMLESDEAF8HkQJHZLtpvkHnJG5CISRv4m5AW2mDiHcU4/qxOcN3PmDYhjpY8AnMVD7F2vThMZBLXS7VXrfPz/MhiY+xvOzPqUz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net; spf=pass smtp.mailfrom=romanrm.net; arc=none smtp.client-ip=146.185.199.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=romanrm.net
-Received: from nvm (umi.2.romanrm.net [IPv6:fd39:a37d:999f:7e35:7900:fcd:12a3:6181])
-	by shin.romanrm.net (Postfix) with SMTP id 80A803F43E
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 14:56:50 +0000 (UTC)
-Date: Tue, 17 Dec 2024 19:56:49 +0500
-From: Roman Mamedov <rm@romanrm.net>
-To: <linux-btrfs@vger.kernel.org>
-Subject: btrfs-progs: -q/--quiet not accepted for "btrfs subvolume"
- subcommands
-Message-ID: <20241217195649.143d2c94@nvm>
+	s=arc-20240116; t=1734447814; c=relaxed/simple;
+	bh=Hk+GSHY5U7xOeMX+LugvAVPkvSyvVxjAJ2RMTBh+rjA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BPy47oZWcrsN1lx2nfzqxZTcFuHc2fE6VYsox7uTCASI0erl0vhw0c+cKtFhmXWys6UU7rPTeJ0012RyuARi5kgUKWD75DAmW8c3fUEx36k8bG64/w0jzOzfHACnz6jSRGlIcfCvlY+DKnzVRtpxHmarca9/Bae1Dh8tqN6FDwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nvW4YfEb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6BEC4CED3
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 15:03:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734447814;
+	bh=Hk+GSHY5U7xOeMX+LugvAVPkvSyvVxjAJ2RMTBh+rjA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=nvW4YfEblWZ/mepVwmqRYIEvi0D3FdIEsxfA7osiKl03eAetxeE6r727cxy7H8nhn
+	 H9zPETPga7RqZHsT5+rWFyQPQB0KVDHTNRPVCFHx/VEGbDHSA2POMV7cNRxNPOHC9L
+	 fTgDg/0+caHTrnAFzZ35L/kdPcmG6RR+FyqNWv8sEtH+y50e2YybVYrNfrPoKn1LiK
+	 S15CjTbcJUaUqc+jEvKi4JNf7+5h/D+h8CfHelKApWNLK891HZgcRCMOHiRnDbnnZl
+	 ccxRXHL5Ng5arZciKMRWNbHJd2l/C+QGjbP9hQnGxiXdTE2ViMk2fnXMzwZRAgqWmj
+	 vJhccI3d0rrTg==
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aa6a92f863cso1087081066b.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:03:33 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxj6gjzHLpJujPHHDb1iPNdm+4sjV1TDts4N5KNjRaPKovgqypY
+	+1RxOM1+E9mENz3NirXHnyCqN4O1+bMdh7Zp2NMAvB19hdnum8xdZcTI4m1KztkwcTyEOtEXC+x
+	m+fqGHIuuNkMEbYVCSbqEE8J7z5U=
+X-Google-Smtp-Source: AGHT+IFl6D+QosYaDTIM5Ex1onRdpPJtby3wqXE71Ytch8rKytaJHtv46VDyTK725HdNtBizW1jE9swRmpZ4v9k+LJ8=
+X-Received: by 2002:a17:907:7710:b0:aa6:9461:a186 with SMTP id
+ a640c23a62f3a-aab77e7b483mr1445456266b.46.1734447812581; Tue, 17 Dec 2024
+ 07:03:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1733989299.git.jth@kernel.org> <e996ff4c30ef83f271f2495d700635287d5587d9.1733989299.git.jth@kernel.org>
+In-Reply-To: <e996ff4c30ef83f271f2495d700635287d5587d9.1733989299.git.jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 17 Dec 2024 15:02:55 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4L05uE1wVtrW21-bSJvtiQpwHk_aQ8OJy7JEa8zwVNmg@mail.gmail.com>
+Message-ID: <CAL3q7H4L05uE1wVtrW21-bSJvtiQpwHk_aQ8OJy7JEa8zwVNmg@mail.gmail.com>
+Subject: Re: [PATCH 04/14] btrfs: fix front delete range calculation for RAID
+ stripe extents
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, David Sterba <dsterba@suse.com>, 
+	Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Dec 12, 2024 at 8:06=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> When deleting the front of a RAID stripe-extent the delete code
+> miscalculates the size on how much to pad the remaining extent part in th=
+e
+> front.
+>
+> Fix the calculation so we're always having the sizes we expect.
+>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/raid-stripe-tree.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+> index d6f7d7d60e76..092e24e1de32 100644
+> --- a/fs/btrfs/raid-stripe-tree.c
+> +++ b/fs/btrfs/raid-stripe-tree.c
+> @@ -138,10 +138,13 @@ int btrfs_delete_raid_extent(struct btrfs_trans_han=
+dle *trans, u64 start, u64 le
+>                  * length to the new size and then re-insert the item.
+>                  */
+>                 if (found_end > end) {
+> -                       u64 diff =3D found_end - end;
+> +                       u64 diff_end =3D found_end - end;
+>
+>                         btrfs_partially_delete_raid_extent(trans, path, &=
+key,
+> -                                                          diff, diff);
+> +                                                          key.offset - l=
+ength,
+> +                                                          length);
+> +                       ASSERT(key.offset - diff_end =3D=3D length);
+> +                       length =3D 0;
+>                         break;
 
-# btrfs --version
-btrfs-progs v6.6.3
+What's the length =3D 0 for? We break out of the loop right after the
+assignment and don't use length anymore.
 
-# btrfs sub create --help
-usage: btrfs subvolume create [options] [<dest>/]<name> [[<dest2>/]<name2> ...]
+Otherwise it looks good:
 
-    Create subvolume(s)
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-    Create subvolume(s) at specified destination.  If <dest> is not given
-    subvolume <name> will be created in the current directory. Options apply
-    to all created subvolumes.
+Thanks.
 
-    -i <qgroupid>             add the newly created subvolume(s) to a qgroup. This option can be given multiple times.
-    -p|--parents              create any missing parent directories for each argument (like mkdir -p) 
-    
-    Global options:
-    -q|--quiet                print only errors 
-
-# btrfs sub create -q test
-btrfs subvolume create: invalid option 'q'
-Try 'btrfs subvolume create --help' for more information
-
-# btrfs sub create --quiet test
-btrfs subvolume create: unrecognized option '--quiet'
-Try 'btrfs subvolume create --help' for more information
-
-Same for "snapshot". Maybe also some or all others, did not check further.
-
-This is the case also on btrfs-progs versions 5.10 and 6.2.
-
--- 
-With respect,
-Roman
+>                 }
+>
+> --
+> 2.43.0
+>
+>
 
