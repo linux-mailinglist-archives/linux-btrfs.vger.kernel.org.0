@@ -1,113 +1,210 @@
-Return-Path: <linux-btrfs+bounces-10500-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10502-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187529F5519
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 18:54:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 674B89F559F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 19:08:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBC4516129C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:49:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D15FD18925BF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 18:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50AD11F8923;
-	Tue, 17 Dec 2024 17:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975071F8938;
+	Tue, 17 Dec 2024 18:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rFW/q8j4"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="aMTXKNeB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BEA1F868D;
-	Tue, 17 Dec 2024 17:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0814D1F8923
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 18:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734457342; cv=none; b=H4l/kcX8oRcZEz9/sk8nHD1LT2aYmwBr6k49wgjwV7GdjIScvbXLlvhXAoh5qjJhxx9LYlCvXGNfp+07Z0ZQqOakSaDT03a3MTMnrPSW1ECxMR8bXEbrIpfeQilNp8DrIRU37kp2onxBkt42FPFhU3lO9fjvnJM6imiD3iG9ihU=
+	t=1734458541; cv=none; b=Vg+Gw/o9KxB9/v8MJuQR81ibXgFb2IdUgUuBYhShKEsU0gGOZAZVsFIY5HMu2eYb+gT8/9qIzLoLHMcRagtIQ0MQk3/1Y8xYTqd7KJYE2p5ZTTNdaHEWFACon0ErD0xpcc0LHNxk7NXrV7IWwFXnIzEDuOGQ0epDGrE+eLb9q3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734457342; c=relaxed/simple;
-	bh=XLRCIIMlqlDK7J0Suq4Ni53xmoAUSya31QbffKzXrTE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bzfNK4Kuw2QwzFcU28rSfPHvZguYw4XUvDqUTuY4Egtz4R0/p9M9kHmAtdp2SXLQiaDvi/GhUGxIrneBVRjOzDCv1O1ZC0aM2Je4Wlv9FovEcGEVkI2X8z9tXILuiQbGokOjZ+g7oN2DBbihLJdn5XMO6w/ttCvcAEfB8hSR5Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rFW/q8j4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF046C4CED7;
-	Tue, 17 Dec 2024 17:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734457342;
-	bh=XLRCIIMlqlDK7J0Suq4Ni53xmoAUSya31QbffKzXrTE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rFW/q8j4/HuK4jEGwdBUz7JGJXkXQakG4HO2zJSs9T1Z9ymXGJuRqm6O/dEGk2pqM
-	 +64NX1mW+D5bN3wwO84kWx5pFE9ZkyPoYjyVKnBPXyv2oONDrgsRi3kcMFL4RbRxhQ
-	 9zthlELJlxQUF88awXaJfQIRjzQvyi+RFh8My7aL0ZhqRfwVMq7Qs2JwXcFWskkdjy
-	 aLD/pzkiSkUqfFFTOMc5dGO/KRY8esyeWbn7aITJCBpAfWp3E8qNiWdAuMzmbY0nNI
-	 3orWQDaIXLeSNeQeQGjITYvlCx0zM2WJxww14l+WzWvJqcYscG1hLyjmg4c0WT7x9c
-	 4NXHxN7kFQyTw==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aab9e281bc0so562525866b.3;
-        Tue, 17 Dec 2024 09:42:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWp6iu0n3qtyp9JFGrAoXOhjXfvMJNXe2mV0z90fC0xX2lhziraqHyZ7EJzTNzhxWDGaITdum1iqVjiSHg=@vger.kernel.org, AJvYcCXM8nrPlN7jJ3k3Olzh4tjotiMMTWetjd61qZqWfNFaySBbY7O0OBYsZN7JDs6MUOCAW9jcP5kD@vger.kernel.org
-X-Gm-Message-State: AOJu0YzufSaYpOhsdFwcGJYP9hgdLzy2UJB0xvmSmhS9tFUJlRzMmHWY
-	A1FSf/fZM6jo1o99NDNN7OUh2mFtGh08a0RNjhPAdrnbDfwvtnoduEzoZzaO/uXRxEgvOOqm3Z2
-	fEAR1ep8eY4doRl00Mijd+Rc3Zv8=
-X-Google-Smtp-Source: AGHT+IGWWTQS/2+nNv9RXWKaAPC/CRzy9pTUytxWKQCBBZ4JSkWcPGKHYwu2tnsSbY42R63BWh9Kycx7YIotBU1a1Ik=
-X-Received: by 2002:a17:907:c22:b0:aa6:85d0:1492 with SMTP id
- a640c23a62f3a-aab77e97095mr1503697466b.37.1734457340564; Tue, 17 Dec 2024
- 09:42:20 -0800 (PST)
+	s=arc-20240116; t=1734458541; c=relaxed/simple;
+	bh=5RiSR2jHkULy/C3STs8HBELX2lmfMW1FrSgnU1R1SZA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bj85TGy4Qik5ikkeWt3XuQL9WhjadNJRzf03ujrrz7wW4rjQj0FYAV65DlewaEh5t5JpcnIMI9K3IeJZ/akK8NomuEU7ZJY6gTqlR0jGDPcLEd11UMYVfiJtnMcot9xOBswVvEVxawqvIvBNxLhj0cwrZA9JxBq7np4rYehxIhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=aMTXKNeB; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BHGsL3j002666
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 10:02:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=facebook; bh=was9xGBUPcfpW0SgGblPpfG
+	xfTN/fhXSAAyToKVn42k=; b=aMTXKNeBqZh+fs9SCLXnn0WWN8lnfvkouym9skr
+	6oNQpxVMjs9mPZq2AeDH9FWQ2Q6pneo5bb+tG9KPJkd1EjxIuUERTobGIA/6UK64
+	nDTNJiGtNKIYNItKk/EZWiaxNyRxHBGDUfHG+xRfPc0bO3A+cok+vCxJUU6bUKSx
+	ouCE=
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43kaym1sdm-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 10:02:18 -0800 (PST)
+Received: from twshared53813.03.ash8.facebook.com (2620:10d:c0a8:1b::8e35) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Tue, 17 Dec 2024 18:02:17 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 471B79A4114C; Tue, 17 Dec 2024 18:02:12 +0000 (GMT)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>, <io-uring@vger.kernel.org>
+CC: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v3 1/4] io_uring/cmd: rename struct uring_cache to io_uring_cmd_data
+Date: Tue, 17 Dec 2024 18:01:59 +0000
+Message-ID: <20241217180210.4044318-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
- <Z2Ey4yQywOEYqEOI@infradead.org> <CAL3q7H4Age-k0ifGh+n4QwExC1vTgWGd3NROcX40vQXKRipBqw@mail.gmail.com>
- <20241217172223.GA6160@frogsfrogsfrogs>
-In-Reply-To: <20241217172223.GA6160@frogsfrogsfrogs>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 17 Dec 2024 17:41:43 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5s6sXBNZRQVNMydODJX8AokP4wozby4ohhHF-BoHwD6Q@mail.gmail.com>
-Message-ID: <CAL3q7H5s6sXBNZRQVNMydODJX8AokP4wozby4ohhHF-BoHwD6Q@mail.gmail.com>
-Subject: Re: [PATCH] generic: test swap activation on file that used to have clones
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: NAjwOlS_rEjfdQWc_hAvEWB6ayv2gMYQ
+X-Proofpoint-GUID: NAjwOlS_rEjfdQWc_hAvEWB6ayv2gMYQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On Tue, Dec 17, 2024 at 5:22=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Tue, Dec 17, 2024 at 08:26:33AM +0000, Filipe Manana wrote:
-> > On Tue, Dec 17, 2024 at 8:14=E2=80=AFAM Christoph Hellwig <hch@infradea=
-d.org> wrote:
-> > >
-> > > On Wed, Dec 11, 2024 at 03:09:40PM +0000, fdmanana@kernel.org wrote:
-> > > > The test also fails sporadically on xfs and the bug was already rep=
-orted
-> > > > to the xfs mailing list:
-> > > >
-> > > >    https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=3DxK=
-mqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
-> > > >
-> > >
-> > > This version still doesn't seem to have the fs freeze/unfreeze that D=
-arrick
-> > > asked for in that thread.
-> >
-> > I don't get it, what's the freeze/unfreeze for? Where should they be pl=
-aced?
-> > Is it some way to get around the bug on xfs?
->
-> freeze kicks the background inode gc thread so that the unlinked clones
-> actually get freed before the swapon call.  A less bighammer idea might
-> be to call XFS_IOC_FREE_EOFBLOCKS which also kicks the garbage
-> collectors.
+From: Jens Axboe <axboe@kernel.dk>
 
-No matter the technical details that make the bug not so easy to fix
-on xfs, adding calls to freeze/unfreeze, XFS_IOC_FREE_EOFBLOCKS, or
-whatever else, is just a way to hide the bug on xfs, isn't it?
-If the file has no more shared extents, swap activation should work.
+In preparation for making this more generically available for
+->uring_cmd() usage that needs stable command data, rename it and move
+it to io_uring/cmd.h instead.
 
-Thanks.
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ include/linux/io_uring/cmd.h |  4 ++++
+ io_uring/io_uring.c          |  2 +-
+ io_uring/opdef.c             |  3 ++-
+ io_uring/uring_cmd.c         | 10 +++++-----
+ io_uring/uring_cmd.h         |  4 ----
+ 5 files changed, 12 insertions(+), 11 deletions(-)
 
->
-> --D
+diff --git a/include/linux/io_uring/cmd.h b/include/linux/io_uring/cmd.h
+index 0d5448c0b86c..61f97a398e9d 100644
+--- a/include/linux/io_uring/cmd.h
++++ b/include/linux/io_uring/cmd.h
+@@ -18,6 +18,10 @@ struct io_uring_cmd {
+ 	u8		pdu[32]; /* available inline for free use */
+ };
+=20
++struct io_uring_cmd_data {
++	struct io_uring_sqe	sqes[2];
++};
++
+ static inline const void *io_uring_sqe_cmd(const struct io_uring_sqe *sq=
+e)
+ {
+ 	return sqe->cmd;
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 06ff41484e29..8bac014ed631 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -320,7 +320,7 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(s=
+truct io_uring_params *p)
+ 	ret |=3D io_alloc_cache_init(&ctx->rw_cache, IO_ALLOC_CACHE_MAX,
+ 			    sizeof(struct io_async_rw));
+ 	ret |=3D io_alloc_cache_init(&ctx->uring_cache, IO_ALLOC_CACHE_MAX,
+-			    sizeof(struct uring_cache));
++			    sizeof(struct io_uring_cmd_data));
+ 	spin_lock_init(&ctx->msg_lock);
+ 	ret |=3D io_alloc_cache_init(&ctx->msg_cache, IO_ALLOC_CACHE_MAX,
+ 			    sizeof(struct io_kiocb));
+diff --git a/io_uring/opdef.c b/io_uring/opdef.c
+index 3de75eca1c92..e8baef4e5146 100644
+--- a/io_uring/opdef.c
++++ b/io_uring/opdef.c
+@@ -7,6 +7,7 @@
+ #include <linux/fs.h>
+ #include <linux/file.h>
+ #include <linux/io_uring.h>
++#include <linux/io_uring/cmd.h>
+=20
+ #include "io_uring.h"
+ #include "opdef.h"
+@@ -414,7 +415,7 @@ const struct io_issue_def io_issue_defs[] =3D {
+ 		.plug			=3D 1,
+ 		.iopoll			=3D 1,
+ 		.iopoll_queue		=3D 1,
+-		.async_size		=3D 2 * sizeof(struct io_uring_sqe),
++		.async_size		=3D sizeof(struct io_uring_cmd_data),
+ 		.prep			=3D io_uring_cmd_prep,
+ 		.issue			=3D io_uring_cmd,
+ 	},
+diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+index af842e9b4eb9..629cb4266da6 100644
+--- a/io_uring/uring_cmd.c
++++ b/io_uring/uring_cmd.c
+@@ -16,10 +16,10 @@
+ #include "rsrc.h"
+ #include "uring_cmd.h"
+=20
+-static struct uring_cache *io_uring_async_get(struct io_kiocb *req)
++static struct io_uring_cmd_data *io_uring_async_get(struct io_kiocb *req=
+)
+ {
+ 	struct io_ring_ctx *ctx =3D req->ctx;
+-	struct uring_cache *cache;
++	struct io_uring_cmd_data *cache;
+=20
+ 	cache =3D io_alloc_cache_get(&ctx->uring_cache);
+ 	if (cache) {
+@@ -35,7 +35,7 @@ static struct uring_cache *io_uring_async_get(struct io=
+_kiocb *req)
+ static void io_req_uring_cleanup(struct io_kiocb *req, unsigned int issu=
+e_flags)
+ {
+ 	struct io_uring_cmd *ioucmd =3D io_kiocb_to_cmd(req, struct io_uring_cm=
+d);
+-	struct uring_cache *cache =3D req->async_data;
++	struct io_uring_cmd_data *cache =3D req->async_data;
+=20
+ 	if (issue_flags & IO_URING_F_UNLOCKED)
+ 		return;
+@@ -183,7 +183,7 @@ static int io_uring_cmd_prep_setup(struct io_kiocb *r=
+eq,
+ 				   const struct io_uring_sqe *sqe)
+ {
+ 	struct io_uring_cmd *ioucmd =3D io_kiocb_to_cmd(req, struct io_uring_cm=
+d);
+-	struct uring_cache *cache;
++	struct io_uring_cmd_data *cache;
+=20
+ 	cache =3D io_uring_async_get(req);
+ 	if (unlikely(!cache))
+@@ -260,7 +260,7 @@ int io_uring_cmd(struct io_kiocb *req, unsigned int i=
+ssue_flags)
+=20
+ 	ret =3D file->f_op->uring_cmd(ioucmd, issue_flags);
+ 	if (ret =3D=3D -EAGAIN) {
+-		struct uring_cache *cache =3D req->async_data;
++		struct io_uring_cmd_data *cache =3D req->async_data;
+=20
+ 		if (ioucmd->sqe !=3D (void *) cache)
+ 			memcpy(cache, ioucmd->sqe, uring_sqe_size(req->ctx));
+diff --git a/io_uring/uring_cmd.h b/io_uring/uring_cmd.h
+index 7dba0f1efc58..f6837ee0955b 100644
+--- a/io_uring/uring_cmd.h
++++ b/io_uring/uring_cmd.h
+@@ -1,9 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+=20
+-struct uring_cache {
+-	struct io_uring_sqe sqes[2];
+-};
+-
+ int io_uring_cmd(struct io_kiocb *req, unsigned int issue_flags);
+ int io_uring_cmd_prep(struct io_kiocb *req, const struct io_uring_sqe *s=
+qe);
+=20
+--=20
+2.45.2
+
 
