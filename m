@@ -1,283 +1,145 @@
-Return-Path: <linux-btrfs+bounces-10493-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10494-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A42C69F5151
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C62D9F5158
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:44:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD9F8163EE1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 16:44:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82817163F72
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 16:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0A71D2B11;
-	Tue, 17 Dec 2024 16:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAE91F75BC;
+	Tue, 17 Dec 2024 16:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y8Ubu6xc"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="bF78MDLf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED45142E77
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB4414900B
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734453843; cv=none; b=nrFXD1I+bTh0hZgSdOa7fRhUozqQcoZh1CmKe35JZ7nYnc0GRw+SekzFyANEFAnvUZJbx+Ob2w6vaouzguUiNaKk9wox2/FlHjVJi+kya+W/FMw5vodhqFgT3/0rHr2Qy6dEXChDV63aMtpBgxiR/VXt0VAfcG4JiU+8LUzdp0I=
+	t=1734453874; cv=none; b=PW5pDMuSLDw8pKzQqaXoaK1PCIlehgDoazeUs5vlrPuP7gwoxnbkIiGAMgV5LkIb/kQNYpFKgb0SJV4LRshNM1Fo4WcI/LHarGkfchT9uMj91xzEEiAi0CXSdU+VNPkOSo6JMCGX+O+Eeanss5wQXKz4piX/3hWWZj8E5kg9nkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734453843; c=relaxed/simple;
-	bh=za6KIJN1izyLayGEUrCKyb7hMme9SqHr9G1fPKEs+8w=;
+	s=arc-20240116; t=1734453874; c=relaxed/simple;
+	bh=IddbzDZ5HWjh54mxeeaNAxq+2x7hRqa/vsPy99xpzJk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gUph3EGlTY3x1OWoYLSYEpiur6PKBxwTDVo/GZdj/9ReHB5AuZGeHWca1KlkcfQzes35DI6o9a9ywkSUi1kcVRvCfWoRPP1eJHQAzhTaMw7sMLw99r6RnmkdGoWaDlx1V//Mw7DX+vhsXT9Wr4YhwidFTCwajfXhZWWjs7VEPaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y8Ubu6xc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E04C4CEDF
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:44:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734453842;
-	bh=za6KIJN1izyLayGEUrCKyb7hMme9SqHr9G1fPKEs+8w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Y8Ubu6xcjpdem2vlGb4ZafVTiwk/6d56c/W2iigOriAdO8wCbPl7moWtiRgDHyFUw
-	 VZyRp4gIZonwxvuo7WN/ylQkkziCKvej7MngSIKYXrUnpQQDYK6F09hio3yhkeBHl4
-	 Vrm9oYI+hHEewS33XQnVmvw3jifZhoPf1YxINxlyQPihllpxo9entUZpyOdAr3ZGD6
-	 2Y7Q41eGnKehlooGAmBbyGZel8eN6n8CFkS5hiT/hywzRHMDjhQYhQikxjzoTAwCQG
-	 joUroxGnutFb4bqTN2iOhuegG0pfZMXTsBEMxQFjbnaditQy6CMGDf5PxziLS+dXQS
-	 0TsRS8nQOoBWA==
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5d3bdccba49so9571307a12.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 08:44:02 -0800 (PST)
-X-Gm-Message-State: AOJu0YwymAfhj7wm3bSXtvoU1LKJbL7gXyl6HrfShr+RnISn64xVNTTC
-	Ru5XRsCzkGcEJzCThSnpcFYDf02lfGgZdAkiz1vMnSDNN9/XzciC6TAbF97Ev8H9dj2t5xL+Lte
-	Crp3JYQx+MwwNKPn4HawXscrIvjo=
-X-Google-Smtp-Source: AGHT+IGH8IRhXSxDQBeC2liPxH1SIxXOpm5uXF+OJ/9clJfkHt/Fwc8KZmF57+/T0w16INichUIFt9Reua+OraYOuk0=
-X-Received: by 2002:a17:906:30d0:b0:aa6:7cae:dba7 with SMTP id
- a640c23a62f3a-aabdaf8f365mr416225066b.4.1734453841138; Tue, 17 Dec 2024
- 08:44:01 -0800 (PST)
+	 To:Cc:Content-Type; b=rsRe9fSnfRH9+ndiZU/vevjWJ6c+8IpbvKqZRIyzQDk8HJPpsRToKzwF3hg5GDfSZUt04KNLbOJHq3xUmkS45dTUHa6A7P2O+UMBhcV/R4Ip4RydeRTGIk4TM9hkZxy07qFNZdrE06BbYlm7/cf/ZsL/WChwFDXr571GfHUSNWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=bF78MDLf; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e3989d27ba3so4054438276.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 08:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1734453872; x=1735058672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2RqZ1iTuiwe0w1Bq33bMFV9IQegQcbvuONqKrlBbjo=;
+        b=bF78MDLfSbxA5wMJtBKdDDLy90Z0PpC5W4LX9Y6mgvw/mEE5mqCMPNhO1lULrT1IAi
+         v8AkdgOtPFko9HOoG8rXNdYiONd+5SR7WqI57KROLC088cazPOV3IvYl4vPB2q0dYZpA
+         Y35WWrmxIR+7yrumUnmJYNjase+32G9AEa4zsLlGdDETmGDEAX2SPfdMPTC4VaofrqNL
+         hZeiWVFtEi4x/r5xlhmqiWVMlOSPI5pu8W4xqLx+mDC6iX8nSM8hn7p2Xuq4rR3TRV4B
+         /dlMyFl8I6pfeEeJiDbAzcaRKfSjfSKx0QH4/+J7HkztgCwe9CnJQo3omlSWM5VGq4FT
+         xCUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734453872; x=1735058672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g2RqZ1iTuiwe0w1Bq33bMFV9IQegQcbvuONqKrlBbjo=;
+        b=UAu0BcFNH3vzEjQR4OvuzJ9foK8Bgi9ekDgrlp4xeRzGd+C6IjzTOxzud94MiVdsoV
+         F5hyng8to0GRmLuS1bTkQXAftc6INEQDMyWoBLdi2xmPQL7PBRfYytB1KXlE5r9FZtfk
+         zSfS/HoXOPehvlM3g2qJSRrrifBnxOBT5RZz5EMHVoP+fEXOmMNGALLzI+YdqNm7S7Ef
+         RogJqA9fzlyc4GiRKUAAtCDsK3A03mkpFTvGH2GZD4ETz1QT0vr8ym1EhV02KldR7Zjm
+         7TdfWQ9gzIz9YGLM+EpIaZjD5UCJIeKXBU18Ywkpp5SF7KAEQ/fpZOwHcGYizKeBeXhV
+         OG7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWECA7FX5S3IVjGDhIUHwShib1MEvtpRGdjOwW3KGP+/s5QvZjtkDQwXtyRckSu0U8doWUnyn33WDCiMg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyS5rCZsGjW6na3bcBOmzxGtDHVScM99TzbNA3YoimSXKYksWww
+	Ucso9mF/ptks568i3gw+4CvjrlvN1R4K3+FFpavuLFlgLkkLpmrtlDNxCqYUgGDPAvXrapsY3HX
+	fLj5gKGT9B6lXRUXjXcgIKYSrJOrX+/HFA1Nq
+X-Gm-Gg: ASbGncsLXxfGy5mNtV82U3po/aYwnvClGD2n2DqG6jbmFpfK0skEHz2mYCKNgeMM7JK
+	hQaILEOE4RK9YUfYO/9izymMTKjCkqSkYxeYs
+X-Google-Smtp-Source: AGHT+IHzqcrxGq0lg+OZOnITp7xku/OCQjSoNpcPMUQryKBaUP5W83erdFqKWvmsUKKSg0Lo+y4IN41xlRpasiS2KwE=
+X-Received: by 2002:a05:6902:160b:b0:e38:7d0d:d7df with SMTP id
+ 3f1490d57ef6-e5300052ff3mr4121093276.50.1734453872299; Tue, 17 Dec 2024
+ 08:44:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1733989299.git.jth@kernel.org> <3f5da94fb0a98e09556468efdfff1cd7f71495c5.1733989299.git.jth@kernel.org>
-In-Reply-To: <3f5da94fb0a98e09556468efdfff1cd7f71495c5.1733989299.git.jth@kernel.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 17 Dec 2024 16:43:24 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4_7av1sg+8vU6G95WEAuwizMFxj4gqCPs6FPaXW0WHiA@mail.gmail.com>
-Message-ID: <CAL3q7H4_7av1sg+8vU6G95WEAuwizMFxj4gqCPs6FPaXW0WHiA@mail.gmail.com>
-Subject: Re: [PATCH 11/14] btrfs: selftests: test RAID stripe-tree deletion
- spanning two items
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, David Sterba <dsterba@suse.com>, 
-	Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>, 
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20241216234308.1326841-1-song@kernel.org> <CAHC9VhSu4gJYWgHqvt7a_C_rr3yaubDdvxtHdw0=3wPdP+QbbA@mail.gmail.com>
+ <CAPhsuW4e8xcmZj_qrONSsC8SDrtNaqjeFgPRo=NE9MDiApQkvw@mail.gmail.com>
+In-Reply-To: <CAPhsuW4e8xcmZj_qrONSsC8SDrtNaqjeFgPRo=NE9MDiApQkvw@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 17 Dec 2024 11:44:21 -0500
+Message-ID: <CAHC9VhQgS1n5RJxFmVxohng9UL_Wi6x_0MOaPAeiFTFsUxZd0A@mail.gmail.com>
+Subject: Re: [RFC] lsm: fs: Use i_callback to free i_security in RCU callback
+To: Song Liu <song@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	willy@infradead.org, corbet@lwn.net, clm@fb.com, josef@toxicpanda.com, 
+	dsterba@suse.com, brauner@kernel.org, jack@suse.cz, cem@kernel.org, 
+	djwong@kernel.org, jmorris@namei.org, serge@hallyn.com, fdmanana@suse.com, 
+	johannes.thumshirn@wdc.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 12, 2024 at 7:56=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
- wrote:
+On Mon, Dec 16, 2024 at 8:24=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+> On Mon, Dec 16, 2024 at 4:22=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
+wrote:
+> >
+> > On Mon, Dec 16, 2024 at 6:43=E2=80=AFPM Song Liu <song@kernel.org> wrot=
+e:
+> > >
+> > > inode->i_security needes to be freed from RCU callback. A rcu_head wa=
+s
+> > > added to i_security to call the RCU callback. However, since struct i=
+node
+> > > already has i_rcu, the extra rcu_head is wasteful. Specifically, when=
+ any
+> > > LSM uses i_security, a rcu_head (two pointers) is allocated for each
+> > > inode.
+> > >
+> > > Add security_inode_free_rcu() to i_callback to free i_security so tha=
+t
+> > > a rcu_head is saved for each inode. Special care are needed for file
+> > > systems that provide a destroy_inode() callback, but not a free_inode=
+()
+> > > callback. Specifically, the following logic are added to handle such
+> > > cases:
+> > >
+> > >  - XFS recycles inode after destroy_inode. The inodes are freed from
+> > >    recycle logic. Let xfs_inode_free_callback() and xfs_inode_alloc()
+> > >    call security_inode_free_rcu() before freeing the inode.
+> > >  - Let pipe free inode from a RCU callback.
+> > >  - Let btrfs-test free inode from a RCU callback.
+> >
+> > If I recall correctly, historically the vfs devs have pushed back on
+> > filesystem specific changes such as this, requiring LSM hooks to
+> > operate at the VFS layer unless there was absolutely no other choice.
+> >
+> > From a LSM perspective I'm also a little concerned that this approach
+> > is too reliant on individual filesystems doing the right thing with
+> > respect to LSM hooks which I worry will result in some ugly bugs in
+> > the future.
 >
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Add a selftest for RAID stripe-tree deletion with a delete range spanning
-> two items, so that we're punching a hole into two adjacent RAID stripe
-> extents truncating the first and "moving" the second to the right.
->
-> The following diagram illustrates the operation:
->
->  |--- RAID Stripe Extent ---||--- RAID Stripe Extent ---|
->  |-----  keep  -----|--- drop ---|-----  keep  ----|
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Totally agree with the concerns. However, given the savings is quite
+> significant (saving two pointers per inode), I think the it may justify
+> the extra effort to maintain the logic. Note that, some LSMs are
+> enabled in most systems and cannot be easily disabled, so I am
+> assuming most systems will see the savings.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+I suggest trying to find a solution that is not as fragile in the face
+of cross subsystem changes and ideally also limits the number of times
+the LSM calls must be made in individual filesystems.
 
-Looks good, thanks.
-
-> ---
->  fs/btrfs/tests/raid-stripe-tree-tests.c | 144 ++++++++++++++++++++++++
->  1 file changed, 144 insertions(+)
->
-> diff --git a/fs/btrfs/tests/raid-stripe-tree-tests.c b/fs/btrfs/tests/rai=
-d-stripe-tree-tests.c
-> index 12f3dbb23a64..a815fc5c4dd3 100644
-> --- a/fs/btrfs/tests/raid-stripe-tree-tests.c
-> +++ b/fs/btrfs/tests/raid-stripe-tree-tests.c
-> @@ -31,6 +31,149 @@ static struct btrfs_device *btrfs_device_by_devid(str=
-uct btrfs_fs_devices *fs_de
->         return NULL;
->  }
->
-> +/*
-> + * Test a 1M RST write that spans two adjecent RST items on disk and the=
-n
-> + * delete a portion starting in the first item and spanning into the sec=
-ond
-> + * item. This is similar to test_front_delete(), but spanning multiple i=
-tems.
-> + */
-> +static int test_front_delete_prev_item(struct btrfs_trans_handle *trans)
-> +{
-> +       struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> +       struct btrfs_io_context *bioc;
-> +       struct btrfs_io_stripe io_stripe =3D { 0 };
-> +       u64 map_type =3D RST_TEST_RAID1_TYPE;
-> +       u64 logical1 =3D SZ_1M;
-> +       u64 logical2 =3D SZ_2M;
-> +       u64 len =3D SZ_1M;
-> +       int ret;
-> +
-> +       bioc =3D alloc_btrfs_io_context(fs_info, logical1, RST_TEST_NUM_D=
-EVICES);
-> +       if (!bioc) {
-> +               test_std_err(TEST_ALLOC_IO_CONTEXT);
-> +               ret =3D -ENOMEM;
-> +               goto out;
-> +       }
-> +
-> +       io_stripe.dev =3D btrfs_device_by_devid(fs_info->fs_devices, 0);
-> +       bioc->map_type =3D map_type;
-> +       bioc->size =3D len;
-> +
-> +       /* insert RAID extent 1. */
-> +       for (int i =3D 0; i < RST_TEST_NUM_DEVICES; i++) {
-> +               struct btrfs_io_stripe *stripe =3D &bioc->stripes[i];
-> +
-> +               stripe->dev =3D btrfs_device_by_devid(fs_info->fs_devices=
-, i);
-> +               if (!stripe->dev) {
-> +                       test_err("cannot find device with devid %d", i);
-> +                       ret =3D -EINVAL;
-> +                       goto out;
-> +               }
-> +
-> +               stripe->physical =3D logical1 + i * SZ_1G;
-> +       }
-> +
-> +       ret =3D btrfs_insert_one_raid_extent(trans, bioc);
-> +       if (ret) {
-> +               test_err("inserting RAID extent failed: %d", ret);
-> +               goto out;
-> +       }
-> +
-> +       bioc->logical =3D logical2;
-> +       /* Insert RAID extent 2, directly adjacent to it. */
-> +       for (int i =3D 0; i < RST_TEST_NUM_DEVICES; i++) {
-> +               struct btrfs_io_stripe *stripe =3D &bioc->stripes[i];
-> +
-> +               stripe->dev =3D btrfs_device_by_devid(fs_info->fs_devices=
-, i);
-> +               if (!stripe->dev) {
-> +                       test_err("cannot find device with devid %d", i);
-> +                       ret =3D -EINVAL;
-> +                       goto out;
-> +               }
-> +
-> +               stripe->physical =3D logical2 + i * SZ_1G;
-> +       }
-> +
-> +       ret =3D btrfs_insert_one_raid_extent(trans, bioc);
-> +       if (ret) {
-> +               test_err("inserting RAID extent failed: %d", ret);
-> +               goto out;
-> +       }
-> +
-> +       ret =3D btrfs_delete_raid_extent(trans, logical1 + SZ_512K, SZ_1M=
-);
-> +       if (ret) {
-> +               test_err("deleting RAID extent [%llu, %llu] failed",
-> +                        logical1 + SZ_512K, (u64)SZ_1M);
-> +               goto out;
-> +       }
-> +
-> +       /* Verify item 1 is truncated to 512K. */
-> +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical1, &len, map=
-_type, 0,
-> +                                          &io_stripe);
-> +       if (ret) {
-> +               test_err("lookup of RAID extent [%llu, %llu] failed", log=
-ical1,
-> +                        logical1 + len);
-> +               goto out;
-> +       }
-> +
-> +       if (io_stripe.physical !=3D logical1) {
-> +               test_err("invalid physical address, expected %llu got %ll=
-u",
-> +                        logical1, io_stripe.physical);
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       if (len !=3D SZ_512K) {
-> +               test_err("invalid stripe length, expected %llu got %llu",
-> +                        (u64)SZ_512K, len);
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       /* Verify item 2's start is moved by 512K. */
-> +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical2 + SZ_512K,=
- &len,
-> +                                          map_type, 0, &io_stripe);
-> +       if (ret) {
-> +               test_err("lookup of RAID extent [%llu, %llu] failed",
-> +                        logical2 + SZ_512K, logical2 + len);
-> +               goto out;
-> +       }
-> +
-> +       if (io_stripe.physical !=3D logical2 + SZ_512K) {
-> +               test_err("invalid physical address, expected %llu got %ll=
-u",
-> +                        logical2 + SZ_512K, io_stripe.physical);
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       if (len !=3D SZ_512K) {
-> +               test_err("invalid stripe length, expected %llu got %llu",
-> +                        (u64)SZ_512K, len);
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       /* Verify there's a hole at [1M+512K, 2M+512K] */
-> +       len =3D SZ_1M;
-> +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical1 + SZ_512K,=
- &len,
-> +                                          map_type, 0, &io_stripe);
-> +       if (ret !=3D -ENODATA) {
-> +               test_err("lookup of RAID [%llu, %llu] succeeded, should f=
-ail",
-> +                        logical1 + SZ_512K, logical1 + SZ_512K + len);
-> +               goto out;
-> +       }
-> +
-> +       /* Clean up after us. */
-> +       ret =3D btrfs_delete_raid_extent(trans, logical1, SZ_512K);
-> +       if (ret)
-> +               goto out;
-> +
-> +       ret =3D btrfs_delete_raid_extent(trans, logical2 + SZ_512K, SZ_51=
-2K);
-> +
-> +out:
-> +       btrfs_put_bioc(bioc);
-> +       return ret;
-> +}
-> +
->  /*
->   * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and=
- then
->   * delete the 1st 32K, making the new start address 1M+32K.
-> @@ -468,6 +611,7 @@ static const test_func_t tests[] =3D {
->         test_create_update_delete,
->         test_tail_delete,
->         test_front_delete,
-> +       test_front_delete_prev_item,
->  };
->
->  static int run_test(test_func_t test, u32 sectorsize, u32 nodesize)
-> --
-> 2.43.0
->
->
+--=20
+paul-moore.com
 
