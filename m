@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-10495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710239F5161
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:50:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59BB09F5174
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6296B7A179B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 16:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42E86169F3A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 16:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D411F6676;
-	Tue, 17 Dec 2024 16:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B24A1F75A6;
+	Tue, 17 Dec 2024 16:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dIy1oOAN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdgugKGg"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5AB156F20
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822F814A0A3
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734454244; cv=none; b=Ff6WXs77PtL29H+77GCdLNbTW2RdXQ5TzHyPzwEcvfeSXzOxQNpNTbGOs+dhfZRPEmwBQsCpXki0o9jaFMaZXRLte+z8TfCfQoe7hkpKg17oxSws6JkCMVpHxc9t233EmJi3S8Ny2E5XiFm6lFO66KksxhfWa6JI+W8I9DS111w=
+	t=1734454567; cv=none; b=PE7XwQ/NNJY5BSgE4ImysxOcQj/TUm63UdnU5S78P/SYI+hA9Wh4UqoPfWHq1nIjGjk/3M3JKxYKGMu69OdF4Tk9EcSGrpg01H4lwSM56WzDD6BAKvc/bVqRrJtQAaa5JeE9+dxiIY8h865h0ZnFYF55+T2sgPFZ3YzT2GRFGiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734454244; c=relaxed/simple;
-	bh=AZNwxBJnfukBYsHU1LeWAZpt59iLSKms6hebZJdCbqA=;
+	s=arc-20240116; t=1734454567; c=relaxed/simple;
+	bh=vlG105bPhMGkxe/E4AMn32GreZoQkZ/0aqRCfkrLAbY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J0qHB1wOw7h5SdYvubxYkfg6J7vyRTt1fdbrR6BPtVJnsr7soRiFFys/89zZ5GK1dE02LaNXsw+MDVBycva3rmDmEFhJh4eE4k6QwzO7Zfn0wekf0xYHxaVILrN7po16jKXcz5rzxgQpGRt+R6zEsXJ4MGLGtcL6te9fStoY8MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dIy1oOAN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32769C4CED7
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:50:44 +0000 (UTC)
+	 To:Cc:Content-Type; b=NElLafG9ubDJ1xut/piIiR9JghCu3Ec1PksQWESuFstnOphnVDeKddKPNTnhMBRk1e/t4vCTshOaqXZnHd2ZmA7guix1q8qbQY0ILDRvPHWZM3OtwTfs74eyKEu7QuFQyzXssxoDsZuQHA23IyXSPZWW4d/PTHvo6XXy2+e6+qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZdgugKGg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08524C4CED3
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 16:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734454244;
-	bh=AZNwxBJnfukBYsHU1LeWAZpt59iLSKms6hebZJdCbqA=;
+	s=k20201202; t=1734454567;
+	bh=vlG105bPhMGkxe/E4AMn32GreZoQkZ/0aqRCfkrLAbY=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dIy1oOANKWDGXnTm0uCCoed/ULCEl242A6fLtRFch8W3UOs0r6xXyTuDHzfOnbPks
-	 VQIfI7+CMZFFyEDyCdadfGKqtdVaTTRvR0rx45t6lOhCZ8fTF+j3MfBgmZLDKMVp7S
-	 CmKXCAFxuOivn3KFn9wvjObzLPv08qvaXFqnfjqxU97rQuWzkpsajJWdxvejXnHFtA
-	 +ltar+rQjdh8sZMDc+L12zDcaoPbQf2bQM6RHEfewprz/y4ksLPQy9Qd91bBrlHftQ
-	 COzxrTRXZgsFLCLBvrK786kl2SfVt5FC7u+Psn0DrxOHovNVI0qbWnvcaZbKWTqMY/
-	 8MSD34ePqJC/g==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aabbb507998so463395766b.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 08:50:44 -0800 (PST)
-X-Gm-Message-State: AOJu0YwmSbH86iFZW4EMcZymhqxeURZzrRCgvW+Nln0nhA4m+IDu/lXe
-	5zk7ovObYHVK5VUCnxrQ5AAn8YvOHwgPvsMkgzKH6Qbxonicx5TcxZdDBEpOra3saNmat7E4oKP
-	MlboL2OuU8j/UaLzxwnRXW2WHjho=
-X-Google-Smtp-Source: AGHT+IH4f78aunILMZ1ssTMz1zWuohtFN971/DJODYjd6qLb/mbW0S1z7HEwcroG0ym6OukT/DaIOfQwrUZVTTKUUM8=
-X-Received: by 2002:a17:907:3f95:b0:aa6:8e72:e50b with SMTP id
- a640c23a62f3a-aabf1c92c14mr2916166b.56.1734454242760; Tue, 17 Dec 2024
- 08:50:42 -0800 (PST)
+	b=ZdgugKGgV3SlTcV8PIh+/CV+OaGN13/7beefq+EULuCjXB7+8b6YXEgd5uyQvNtwl
+	 f07tXvZ4FXTHU801iIeR3TKgU7H557+N9xAstz1y4XKbBCbZSN8I5DumapVFfxRgqK
+	 /Src1D/U+RjdDgQcG/wpwudjRXS+xnskObU8CBX4qHtQbtztGANJSYK4VgVGqsRf1o
+	 5tTCVe1fr5WeLvDv+9eVdZqg9bDTI9svjDCUUcuqURc2r0aO7+dgXj9p9MQaBEU4j9
+	 AKOtuF62xPpJIGWU6Nzv9kC0Hf45Bhd/f+WtG1xY/O/tVLYyvROKCW1L+gWBv7/WAK
+	 7yHv7ZO85X5WA==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5d3d0205bd5so7882380a12.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 08:56:06 -0800 (PST)
+X-Gm-Message-State: AOJu0YzA3VAau8a62xuB/2K716EvfwavK8X9wzQkl8DNJ5Se19W0t6qi
+	bEyhM+O7wVaVvI86CEy53aoZNG7UEZ4nhAW0bvj8y7dkBL5ZCrPa23vbqRja/dMbujC/iRwsHL7
+	01Fu712Ole+Jcxak5I1/0ZQfRvd8=
+X-Google-Smtp-Source: AGHT+IEVF0mt0by1RAFmz4RZ5nRteyIysm3QOPxq28W3uhLqcjZnaiy1cvblL2W+SB/ke3iYPfEJNJdpTWpnj0MezRI=
+X-Received: by 2002:a17:906:4c9:b0:aa6:89b9:e9c6 with SMTP id
+ a640c23a62f3a-aab77909e3emr1416457266b.21.1734454565606; Tue, 17 Dec 2024
+ 08:56:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1733989299.git.jth@kernel.org> <48a5cfb4c94de62c961f36d0a6ff9c9c24902116.1733989299.git.jth@kernel.org>
-In-Reply-To: <48a5cfb4c94de62c961f36d0a6ff9c9c24902116.1733989299.git.jth@kernel.org>
+References: <cover.1733989299.git.jth@kernel.org> <9ca5d0de8c4ebd1e6267f1fbae9238753d14cf50.1733989299.git.jth@kernel.org>
+In-Reply-To: <9ca5d0de8c4ebd1e6267f1fbae9238753d14cf50.1733989299.git.jth@kernel.org>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 17 Dec 2024 16:50:06 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H509-+tyaobkiMR04Bu89a+81BHGYqC0tkjev9p-jvbtw@mail.gmail.com>
-Message-ID: <CAL3q7H509-+tyaobkiMR04Bu89a+81BHGYqC0tkjev9p-jvbtw@mail.gmail.com>
-Subject: Re: [PATCH 12/14] btrfs: selftests: add selftest for punching holes
- into the RAID stripe extents
+Date: Tue, 17 Dec 2024 16:55:29 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5AerAb-7t+=LsOksynFp2RfpVcQRsSW+kX6AyFmUHfmw@mail.gmail.com>
+Message-ID: <CAL3q7H5AerAb-7t+=LsOksynFp2RfpVcQRsSW+kX6AyFmUHfmw@mail.gmail.com>
+Subject: Re: [PATCH 13/14] btrfs: selftests: add test for punching a hole into
+ 3 RAID stripe-extents
 To: Johannes Thumshirn <jth@kernel.org>
 Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
 	Damien Le Moal <dlemoal@kernel.org>, David Sterba <dsterba@suse.com>, 
@@ -72,48 +72,49 @@ Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 12, 2024 at 8:06=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
+On Thu, Dec 12, 2024 at 7:56=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
  wrote:
 >
 > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >
-> Add a selftest for punching a hole into a RAID stripe extent. The test
-> create an 1M extent and punches a 64k bytes long hole at offset of 32k fr=
-om
-> the start of the extent.
->
-> Afterwards it verifies the start and length of both resulting new extents
-> "left" and "right" as well as the absence of the hole.
->
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+Missing a change log.
+
 > ---
->  fs/btrfs/tests/raid-stripe-tree-tests.c | 133 ++++++++++++++++++++++++
->  1 file changed, 133 insertions(+)
+>  fs/btrfs/tests/raid-stripe-tree-tests.c | 183 ++++++++++++++++++++++++
+>  1 file changed, 183 insertions(+)
 >
 > diff --git a/fs/btrfs/tests/raid-stripe-tree-tests.c b/fs/btrfs/tests/rai=
 d-stripe-tree-tests.c
-> index a815fc5c4dd3..37b87ccb5858 100644
+> index 37b87ccb5858..8d74e95a8a75 100644
 > --- a/fs/btrfs/tests/raid-stripe-tree-tests.c
 > +++ b/fs/btrfs/tests/raid-stripe-tree-tests.c
-> @@ -31,6 +31,138 @@ static struct btrfs_device *btrfs_device_by_devid(str=
+> @@ -31,6 +31,188 @@ static struct btrfs_device *btrfs_device_by_devid(str=
 uct btrfs_fs_devices *fs_de
 >         return NULL;
 >  }
 >
-> +/* Test punching a hole into a single RAID stripe-extent. */
-> +static int test_punch_hole(struct btrfs_trans_handle *trans)
+> +/*
+> + * Test creating a range of three extents and then punch a hole in the m=
+iddle,
+> + * deleting all of the middle extents and partially deleting the "book e=
+nds"
+> + */
+> +static int test_punch_hole_3extents(struct btrfs_trans_handle *trans)
 > +{
 > +       struct btrfs_fs_info *fs_info =3D trans->fs_info;
 > +       struct btrfs_io_context *bioc;
 > +       struct btrfs_io_stripe io_stripe =3D { 0 };
 > +       u64 map_type =3D RST_TEST_RAID1_TYPE;
 > +       u64 logical1 =3D SZ_1M;
-> +       u64 hole_start =3D logical1 + SZ_32K;
-> +       u64 hole_len =3D SZ_64K;
-> +       u64 logical2 =3D hole_start + hole_len;
-> +       u64 len =3D SZ_1M;
-> +       u64 len1 =3D SZ_32K;
-> +       u64 len2 =3D len - len1 - hole_len;
+> +       u64 len1 =3D SZ_1M;
+> +       u64 logical2 =3D logical1 + len1;
+> +       u64 len2 =3D SZ_1M;
+> +       u64 logical3 =3D logical2 + len2;
+> +       u64 len3 =3D SZ_1M;
+> +       u64 hole_start =3D logical1 + SZ_256K;
+> +       u64 hole_len =3D SZ_2M;
 > +       int ret;
 > +
 > +       bioc =3D alloc_btrfs_io_context(fs_info, logical1, RST_TEST_NUM_D=
@@ -125,8 +126,23 @@ EVICES);
 > +       }
 > +
 > +       io_stripe.dev =3D btrfs_device_by_devid(fs_info->fs_devices, 0);
+> +
+> +       /* prepare for the test, 1st create 3 x 1M extents */
+
+Our preferred style is to capitalize the first word and end with punctuatio=
+n.
+Same goes for 2 other comments below.
+
+Other than that and the empty changelog, it looks good.
+
+So at least after adding a changelog:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
 > +       bioc->map_type =3D map_type;
-> +       bioc->size =3D len;
+> +       bioc->size =3D len1;
 > +
 > +       for (int i =3D 0; i < RST_TEST_NUM_DEVICES; i++) {
 > +               struct btrfs_io_stripe *stripe =3D &bioc->stripes[i];
@@ -148,31 +164,57 @@ EVICES);
 > +               goto out;
 > +       }
 > +
-> +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical1, &len, map=
-_type, 0,
-> +                                          &io_stripe);
+> +       bioc->logical =3D logical2;
+> +       bioc->size =3D len2;
+> +       for (int i =3D 0; i < RST_TEST_NUM_DEVICES; i++) {
+> +               struct btrfs_io_stripe *stripe =3D &bioc->stripes[i];
+> +
+> +               stripe->dev =3D btrfs_device_by_devid(fs_info->fs_devices=
+, i);
+> +               if (!stripe->dev) {
+> +                       test_err("cannot find device with devid %d", i);
+> +                       ret =3D -EINVAL;
+> +                       goto out;
+> +               }
+> +
+> +               stripe->physical =3D logical2 + i * SZ_1G;
+> +       }
+> +
+> +       ret =3D btrfs_insert_one_raid_extent(trans, bioc);
 > +       if (ret) {
-> +               test_err("lookup of RAID extent [%llu, %llu] failed", log=
-ical1,
-> +                        logical1 + len);
+> +               test_err("inserting RAID extent failed: %d", ret);
 > +               goto out;
 > +       }
 > +
-> +       if (io_stripe.physical !=3D logical1) {
-> +               test_err("invalid physical address, expected %llu got %ll=
-u",
-> +                        logical1, io_stripe.physical);
-> +               ret =3D -EINVAL;
+> +       bioc->logical =3D logical3;
+> +       bioc->size =3D len3;
+> +       for (int i =3D 0; i < RST_TEST_NUM_DEVICES; i++) {
+> +               struct btrfs_io_stripe *stripe =3D &bioc->stripes[i];
+> +
+> +               stripe->dev =3D btrfs_device_by_devid(fs_info->fs_devices=
+, i);
+> +               if (!stripe->dev) {
+> +                       test_err("cannot find device with devid %d", i);
+> +                       ret =3D -EINVAL;
+> +                       goto out;
+> +               }
+> +
+> +               stripe->physical =3D logical3 + i * SZ_1G;
+> +       }
+> +
+> +       ret =3D btrfs_insert_one_raid_extent(trans, bioc);
+> +       if (ret) {
+> +               test_err("inserting RAID extent failed: %d", ret);
 > +               goto out;
 > +       }
 > +
-> +       if (len !=3D SZ_1M) {
-> +               test_err("invalid stripe length, expected %llu got %llu",
-> +                        (u64)SZ_1M, len);
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
+> +       /*
+> +        * Delete a range starting at logical1 + 256K and 2M in length. E=
+xtent
+> +        * 1 is truncated to 256k length, extent 2 is completely dropped =
+and
+> +        * extent 3 is moved 256K to the right.
+> +        */
 > +       ret =3D btrfs_delete_raid_extent(trans, hole_start, hole_len);
 > +       if (ret) {
 > +               test_err("deleting RAID extent [%llu, %llu] failed",
@@ -180,6 +222,7 @@ u",
 > +               goto out;
 > +       }
 > +
+> +       /* get the first extent and check its size */
 > +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical1, &len1, ma=
 p_type,
 > +                                          0, &io_stripe);
@@ -197,70 +240,80 @@ lu",
 > +               goto out;
 > +       }
 > +
-> +       if (len1 !=3D SZ_32K) {
+> +       if (len1 !=3D SZ_256K) {
 > +               test_err("invalid stripe length, expected %llu, got %llu"=
 ,
-> +                        (u64)SZ_32K, len1);
+> +                        (u64)SZ_256K, len1);
 > +               ret =3D -EINVAL;
 > +               goto out;
 > +       }
 > +
+> +       /* get the second extent and check it's absent */
 > +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical2, &len2, ma=
 p_type,
 > +                                          0, &io_stripe);
-> +       if (ret) {
-> +               test_err("lookup of RAID extent [%llu, %llu] failed", log=
-ical2,
-> +                        logical2 + len2);
+> +       if (ret !=3D -ENODATA) {
+> +               test_err("lookup of RAID extent [%llu, %llu] succeeded sh=
+ould fail",
+> +                        logical2, logical2 + len2);
+> +               ret =3D -EINVAL;
 > +               goto out;
 > +       }
 > +
-> +       if (io_stripe.physical !=3D logical2) {
+> +       /* get the third extent and check its size */
+> +       logical3 +=3D SZ_256K;
+> +       ret =3D btrfs_get_raid_extent_offset(fs_info, logical3, &len3, ma=
+p_type,
+> +                                          0, &io_stripe);
+> +       if (ret) {
+> +               test_err("lookup of RAID extent [%llu, %llu] failed",
+> +                        logical3, logical3 + len3);
+> +               goto out;
+> +       }
+> +
+> +       if (io_stripe.physical !=3D logical3) {
 > +               test_err("invalid physical address, expected %llu, got %l=
 lu",
-> +                        logical2, io_stripe.physical);
+> +                        logical3 + SZ_256K, io_stripe.physical);
 > +               ret =3D -EINVAL;
 > +               goto out;
 > +       }
-
-Should we also check that len2 remains with a value of len - len1 - hole_le=
-n?
-
-Otherwise it looks fine, thanks.
-
 > +
-> +       /* Check for the absence of the hole. */
-> +       ret =3D btrfs_get_raid_extent_offset(fs_info, hole_start, &hole_l=
-en,
-> +                                          map_type, 0, &io_stripe);
-> +       if (ret !=3D -ENODATA) {
+> +       if (len3 !=3D SZ_1M - SZ_256K) {
+> +               test_err("invalid stripe length, expected %llu, got %llu"=
+,
+> +                        (u64)SZ_1M - SZ_256K, len3);
 > +               ret =3D -EINVAL;
-> +               test_err("lookup of RAID extent [%llu, %llu] succeeded, s=
-hould fail",
-> +                        hole_start, hole_start + SZ_64K);
 > +               goto out;
 > +       }
 > +
 > +       ret =3D btrfs_delete_raid_extent(trans, logical1, len1);
-> +       if (ret)
+> +       if (ret) {
+> +               test_err("deleting RAID extent [%llu, %llu] failed",
+> +                        logical1, logical1 + len1);
 > +               goto out;
+> +       }
 > +
-> +       ret =3D btrfs_delete_raid_extent(trans, logical2, len2);
+> +       ret =3D btrfs_delete_raid_extent(trans, logical3, len3);
+> +       if (ret) {
+> +               test_err("deleting RAID extent [%llu, %llu] failed",
+> +                        logical1, logical1 + len1);
+> +               goto out;
+> +       }
+> +
 > +out:
 > +       btrfs_put_bioc(bioc);
 > +       return ret;
 > +}
 > +
->  /*
->   * Test a 1M RST write that spans two adjecent RST items on disk and the=
-n
->   * delete a portion starting in the first item and spanning into the sec=
-ond
-> @@ -612,6 +744,7 @@ static const test_func_t tests[] =3D {
->         test_tail_delete,
+>  /* Test punching a hole into a single RAID stripe-extent. */
+>  static int test_punch_hole(struct btrfs_trans_handle *trans)
+>  {
+> @@ -745,6 +927,7 @@ static const test_func_t tests[] =3D {
 >         test_front_delete,
 >         test_front_delete_prev_item,
-> +       test_punch_hole,
+>         test_punch_hole,
+> +       test_punch_hole_3extents,
 >  };
 >
 >  static int run_test(test_func_t test, u32 sectorsize, u32 nodesize)
