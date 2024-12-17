@@ -1,88 +1,76 @@
-Return-Path: <linux-btrfs+bounces-10498-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10499-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8A89F5320
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 18:25:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266BE9F54DD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 18:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D7DD188E045
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:22:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1103174054
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 17:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8624C1F76A9;
-	Tue, 17 Dec 2024 17:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405871F8AE7;
+	Tue, 17 Dec 2024 17:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XSLy7o/6"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="e2OoKAAN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99ED14A4E7;
-	Tue, 17 Dec 2024 17:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFBF50276;
+	Tue, 17 Dec 2024 17:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734456144; cv=none; b=mHljrhMQ4Xa+7WiybmgRu65YaZm99S4WZ81cEaxRWV67AHZh5MQ9T0KZ+fWx62ibo5W2r73j0vYWVwyrgq+sOfsKx66XoyvXV8O/pNYDLS9l9eiJvyy8tBLyZnN8Qa9+/nRU9Dg2vAuXUM9/Di/ij93IdE0hBaMDLQqjbuEbE6s=
+	t=1734457099; cv=none; b=q1vH+/eLOrwkAQ2wzgkc4RTE0ZB0QW//Erivb0FyCVK5ItgYvkQTm3ZhyEjwl+6HZ/hf38OMbslrOA9FmoSFzHofGbzy5tLl/0KVz17mJd9BvBgUZMH6Sa3bGOeeMrnJwgPavRzHzoRobqYRt9oOuoqQs18R76Uitr5Eaw4Iwg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734456144; c=relaxed/simple;
-	bh=ZeaSJitOrxJAVSgZ4QpwxxQD+1/fBzOzJBF86aEIk/Y=;
+	s=arc-20240116; t=1734457099; c=relaxed/simple;
+	bh=RqLIxw+h5zWKsViM87nW2arJ/RJf3bT6BWU6QENOfzA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m1Fck5+uOLfJ+AeTb25GNvF/IcDA6T8Pit0Q4nBHy1N3Y7AnU5I6XMIq5yP+qv8JQTLTiV/L3keetlLVUl52bHvDUOFbUt3nRGPMUGNiHsRCaQh0whNE46yVUJ7rLCVUaX1zStdBBZIygfYvhm3GJ9DmFJQBFCkkSZSjfNPYro0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XSLy7o/6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73041C4CED3;
-	Tue, 17 Dec 2024 17:22:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734456144;
-	bh=ZeaSJitOrxJAVSgZ4QpwxxQD+1/fBzOzJBF86aEIk/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XSLy7o/6iI4ecchlCCGmu7HjonPTrujaWiP1Y+HOMXkrvR5J7tXsBoitQD4LI+dZS
-	 7Zd+C+FoVGLIumr0aBGLQQyVA57sRmua2gBPG6oujMeej3CKKDsK0et8cNGzv3B6ke
-	 xNHtbAlSeBmmfDoe0nYHxt+YOkYJQxrSGp4nmv9+gyeMtcqCpgCCMO3+ZstqTacGOw
-	 m4D9uKfUe9Y1v+WUiGCdiDGR5dYE8HYQRSbAU8MR+5Sa4FiglnP/mjSYFQzk0ZyA0i
-	 G/ztd4x/tFUkCnQoMheGKkNzB8mBMwbOyr1H4Dc43VLSUPwrYbhI4dG62y2Tp7ccEn
-	 8VQmjFlqAMdsg==
-Date: Tue, 17 Dec 2024 09:22:23 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: test swap activation on file that used to have
- clones
-Message-ID: <20241217172223.GA6160@frogsfrogsfrogs>
-References: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
- <Z2Ey4yQywOEYqEOI@infradead.org>
- <CAL3q7H4Age-k0ifGh+n4QwExC1vTgWGd3NROcX40vQXKRipBqw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=E/o8otP4OCDLWNfROPy0/mB1NtT18lh2ZTixBiZEfBF/G2AZRPMdwyl78fhK+HebfQHSFFC25rkTw+EnWNaszN8TB+EYNcOCuILAVXn6Xefa6Eud26ic7TmdqIKVQqNetSOCRNMC6+d7UfB63PO1RW1QEw4BgjTWO91a+YC8ncM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=e2OoKAAN; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=74iTgQa61eNzx/JtaTIBBgYsuHBgR7rqR7IEHxPvjDc=; b=e2OoKAANYzbM5rSDnwHgsVm69n
+	/9ty0MCz/9Cz+auCMj6veYJCteeLb5HSZx23vKZ/29i1uyR0bZ7ZkNCynFrEN48zECXqncEQ7icM+
+	bok36vLxNgtSlN5Dw7ydil52ab8iICczCFIY7E1IMv9JeGpKbraOeC1QxGj0O9SHYDU/APChRaisF
+	107JeIdJwc8OjQzkllZLveYOfS9FDFH4+OzOdVjC1IDig17S7a5YP87ch/+DsfTCUF7vNKNVxGmBQ
+	YO5ii5UpeWxrebjplxrxtqtgd29jgtzeF8XLedqaT2KcnW31KjbvO9tO7hUx9kpIXK7RQhFfUyOnm
+	Q0hY548w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tNbWJ-00000009FYb-1yC6;
+	Tue, 17 Dec 2024 17:38:07 +0000
+Date: Tue, 17 Dec 2024 17:38:07 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Song Liu <song@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+	willy@infradead.org, corbet@lwn.net, clm@fb.com,
+	josef@toxicpanda.com, dsterba@suse.com, brauner@kernel.org,
+	jack@suse.cz, cem@kernel.org, djwong@kernel.org,
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+	fdmanana@suse.com, johannes.thumshirn@wdc.com
+Subject: Re: [RFC] lsm: fs: Use i_callback to free i_security in RCU callback
+Message-ID: <20241217173807.GD1977892@ZenIV>
+References: <20241216234308.1326841-1-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H4Age-k0ifGh+n4QwExC1vTgWGd3NROcX40vQXKRipBqw@mail.gmail.com>
+In-Reply-To: <20241216234308.1326841-1-song@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, Dec 17, 2024 at 08:26:33AM +0000, Filipe Manana wrote:
-> On Tue, Dec 17, 2024 at 8:14 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Wed, Dec 11, 2024 at 03:09:40PM +0000, fdmanana@kernel.org wrote:
-> > > The test also fails sporadically on xfs and the bug was already reported
-> > > to the xfs mailing list:
-> > >
-> > >    https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
-> > >
-> >
-> > This version still doesn't seem to have the fs freeze/unfreeze that Darrick
-> > asked for in that thread.
-> 
-> I don't get it, what's the freeze/unfreeze for? Where should they be placed?
-> Is it some way to get around the bug on xfs?
+>  - Let pipe free inode from a RCU callback.
 
-freeze kicks the background inode gc thread so that the unlinked clones
-actually get freed before the swapon call.  A less bighammer idea might
-be to call XFS_IOC_FREE_EOFBLOCKS which also kicks the garbage
-collectors.
-
---D
+... which hurts the systems with LSM crap disabled.
+NAK.
 
