@@ -1,77 +1,95 @@
-Return-Path: <linux-btrfs+bounces-10465-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10466-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F239F45C5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 09:14:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E958C9F4608
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 09:27:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBFB7164BFB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 08:14:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A7841639F7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 08:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F771DAC92;
-	Tue, 17 Dec 2024 08:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA30E1DB92E;
+	Tue, 17 Dec 2024 08:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HLiRjPVs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h+AWah+R"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D9A1D63C4;
-	Tue, 17 Dec 2024 08:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78981DA113;
+	Tue, 17 Dec 2024 08:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734423268; cv=none; b=C9Zbz/6dSsBrX9KV+FylJ2Rq/nYGoVyQ54CSjuTFcmtpAXp9ZTsJNnRM02D9MfjjxYbEubK7/jlE76pt7zdpWiysBpvoRwihvvl19i2wlSGNtY6nlz5WxhxHXU6R1KRTbIDrSi71W1HuqDQuvB7ZKeQY6tkxHFEfYABcPhRWSLQ=
+	t=1734424031; cv=none; b=DG21H9YFDNbmorXpJ+3plEs6kFrlnyeWTWDKjkZgk6YaXFyNbnSwto7p82BsYT2qMU87onPj7cCkRtk1a9jVYjAYef8M2F0PhSX6Q2HxAUiyzsRHuHhV8a5c9DBp+sG0uZug0vCzdq0h1KOqyTU7LC3H7biusJyxPCGEav4mcu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734423268; c=relaxed/simple;
-	bh=1jzs4CCZnnPCBGDGkVIwc5KZKcCTy9vxY3xTwj1HoKo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KY7uDnDv/DEeNKbd6VXBeRYwp9XUGNrV/kRP2KG23OMG9LWNwcPJJunWyp6tIMdJmG6e4oo7m4m2VBYN3+SSQRPGIAPOx+zSGK5WCcw9CBAStdCRFMNPBxefoKhyQEXRTTMmXzPYjFWeFHSewHFVlyuScmzJ9VHAvYvXfJ9IfKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HLiRjPVs; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=p4y98tcSPeoLkykAKnvlDiZ1Lgbu2Ly9/9lzAx/jDgQ=; b=HLiRjPVs+VcW1Tc15HKSrp+e11
-	lIMSdKYFt3NyeKqg2n7ovF1HWmFUy3tfaVLg3kDqQ0h2YaLh7ljtI0TbEO6RLvu/x8P9nA691J9v8
-	uH3hlwQCGKjqzhtClqvBmkKe4T3uIpLIplFtCZjoMlhGuAe6ZiaBXr7l4cIcAf3iRHR5aYbMy1/N9
-	momEfYp5A/It61kCOTimw3K1h7Nbx4ERX6xH9l4tSoiyMDhjMXEG+MuxKOKX75lOHmc7KRWssIXUD
-	kz3EFECxr0nc2RMUcPPSNivmSaTwissxAL6hx2P9HQzS4Uaz1VMTdnZKDS3dFRvQ7rHYE/ShHKHd1
-	O1OPtp+g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNSip-0000000Cg4k-1lCj;
-	Tue, 17 Dec 2024 08:14:27 +0000
-Date: Tue, 17 Dec 2024 00:14:27 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: test swap activation on file that used to have
- clones
-Message-ID: <Z2Ey4yQywOEYqEOI@infradead.org>
-References: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
+	s=arc-20240116; t=1734424031; c=relaxed/simple;
+	bh=2ZkLz4bLPodpJotnMIlk7i2OXoqFAmVe7IAVUf27egk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QhgVvBZUBycf666SEfMZeSMHl6WgqYnMYGbm1Dn5HC3RKw7lDx70HNGk55TcHYRoIT8lvjTfueh/sQ6LHwPZjU9zRn75kLr48XIRWJsQ0Z5Iy6b9UCSDDd++UOO8wMAzPrfliB/VDrV11NDah0UYEgcWF/UaY4L5xxJ217dnvc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h+AWah+R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460CBC4CED3;
+	Tue, 17 Dec 2024 08:27:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734424031;
+	bh=2ZkLz4bLPodpJotnMIlk7i2OXoqFAmVe7IAVUf27egk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=h+AWah+RAfsVSHGN0KXxUeqAhu47oO4U2fCEMK71OH5zo+qHjiuAImQkLmYB1Tlv2
+	 HIO3MpyiTdvuIlybhkQJJJpjXRBQcgePEocpIvt6JpfxfwxbGCtLwkAUTlRJzX3nQG
+	 VmC5YvZVcNoD/Vh7M/8CUyI7SooZ9CziuR+LJqrq9BIwE7B+ZI36zL30pdUg3ILYNX
+	 GV4JYdqlFtGGMTaNZOY7LwdZq4ExrtQl9p4uSrAfczdeldmhkWzvZRHrZ2L8HX4ZiT
+	 mt75nZQYs4ofmoBJQDMbmA5GrH46xQfycQQEK48cPAMZ8/ZUW0IXJbfEqPLzSMxry8
+	 7VL4hGjrtaK2Q==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a9f1c590ecdso863973266b.1;
+        Tue, 17 Dec 2024 00:27:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUznGDkhfpEteMNo2aKZdSi0z5l7enPd/hYy1VxUmccyAxsmhem35F3JqUhHuQ2bdLnAppZ644nV4UcIA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzzKC9NIXAwWpXUdaDXLqrvFEfHOS878RVp6YEASeuUqJCALVhQ
+	/AXdpUeSMhj1XmpFEPd9Y8szls/lGh76pCBf2K1HTaHV1aGaEjSz0bpY87XC3wrrww974ZagwjH
+	/inkk39lmDPJKPeO83BrKS95m53w=
+X-Google-Smtp-Source: AGHT+IFcpvjP4UsIzG/pVkrpzRvc9YV+XbDxfVaSMoVSQC0KjpIyhJo2jXFBT61X+DW0c3j0sh0sU/LduQAGYnVaNLc=
+X-Received: by 2002:a17:907:3ea1:b0:aa6:a8da:7ba3 with SMTP id
+ a640c23a62f3a-aab779b04camr1637289166b.27.1734424029900; Tue, 17 Dec 2024
+ 00:27:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com>
+ <Z2Ey4yQywOEYqEOI@infradead.org>
+In-Reply-To: <Z2Ey4yQywOEYqEOI@infradead.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 17 Dec 2024 08:26:33 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4Age-k0ifGh+n4QwExC1vTgWGd3NROcX40vQXKRipBqw@mail.gmail.com>
+Message-ID: <CAL3q7H4Age-k0ifGh+n4QwExC1vTgWGd3NROcX40vQXKRipBqw@mail.gmail.com>
+Subject: Re: [PATCH] generic: test swap activation on file that used to have clones
+To: Christoph Hellwig <hch@infradead.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 11, 2024 at 03:09:40PM +0000, fdmanana@kernel.org wrote:
-> The test also fails sporadically on xfs and the bug was already reported
-> to the xfs mailing list:
-> 
->    https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
-> 
+On Tue, Dec 17, 2024 at 8:14=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
+g> wrote:
+>
+> On Wed, Dec 11, 2024 at 03:09:40PM +0000, fdmanana@kernel.org wrote:
+> > The test also fails sporadically on xfs and the bug was already reporte=
+d
+> > to the xfs mailing list:
+> >
+> >    https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=3DxKmqHb=
+80eRdisErD_x8rU4+0Q@mail.gmail.com/
+> >
+>
+> This version still doesn't seem to have the fs freeze/unfreeze that Darri=
+ck
+> asked for in that thread.
 
-This version still doesn't seem to have the fs freeze/unfreeze that Darrick
-asked for in that thread.
+I don't get it, what's the freeze/unfreeze for? Where should they be placed=
+?
+Is it some way to get around the bug on xfs?
 
+>
 
