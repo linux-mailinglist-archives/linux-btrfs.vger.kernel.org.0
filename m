@@ -1,152 +1,180 @@
-Return-Path: <linux-btrfs+bounces-10454-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10455-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2C09F44DB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 08:14:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC8E9F4521
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 08:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87DB3188C04F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 07:14:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 647E2167C91
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2024 07:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE74171092;
-	Tue, 17 Dec 2024 07:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0F416EC19;
+	Tue, 17 Dec 2024 07:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Bze3SqyH"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="e9dDG+gK";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="e9dDG+gK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE81B14F9FF;
-	Tue, 17 Dec 2024 07:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58E6179A7
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734419680; cv=none; b=JMpV18oabA5hPEtZUPtxjjK6nuiP9rurs/1CAzzGwLv+1dBtup3OaccgCjXPpLwgqAhvQggS/c/hiDErccT8nb8Ixx97sln+RqlQIYACJD+usCCVSCop8hsLrZ79U1MjXvmSEIViP/w0qi0tJpwlrcPdeTSmF8IdfuxDYcyskLM=
+	t=1734420679; cv=none; b=LRIryiBODCHY/eWbiW9CZTUDQwvfpHI0QUNFAYS/ZpAHvBsnL50c34jXeILSAd3Myc2qqMjm5UoXEQpxADTnvF6qEnPH7Ey3X9jZeWTaePSWaVrqMpT5t4r0J+PpTjsGIxv3ehnIuNSA78oYmws7eg//eQmk9wvhdmiNqwba2mU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734419680; c=relaxed/simple;
-	bh=5heYNE3l5ruQitAzAwJln7I88Ff3lWZuHm6TiRUFEZg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=twQr0so0VjhJDBxW8X1881l75/DuPPL6LbZKgNtqS5yMS9JhfeGCsSnpt1beN/u8dC5Stl3iFg8Dp7GomuyoAN6JDrSAto2vqRmXoKMtAstLtLJ903w3qgEgQh9Y+O5WnRKf1aj8RB6/fCMvn5WUulbagKDgzBfHrzNYQhH1SjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Bze3SqyH; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734419648; x=1735024448; i=quwenruo.btrfs@gmx.com;
-	bh=Q64u46a1YN8+NQU72Udb4GgvA1PW/nJkLN7NzTa3xaE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Bze3SqyHtoGS3zDYbavlEFQAY4B+6b6eojzJodKUcIJe4nBMY6+yZn64Edlh+0EK
-	 7WqFQAlJSPHeejMULm+EaP7H/np8pEaTYtlsFg/J97ySxE8fwkituMuLkzshMoJp4
-	 8VU+58s+nynK8BhDAM0b4+ylvpDoG77sUm5mfe11UH6p1ywEQaLFI1VxplQ/ovzxK
-	 WJYAfQPt7sR8gd4GqeBgVivKsUha3M0j3sH5UaPAd9tyY0D4O1B0/Oqw+3Pxr034a
-	 RJQfSKIj9SnYcaamiGoV7SHgwmAziCRKdxsi8/SBQvniGX4GwatJy5/g/7jlrJuaT
-	 oqXFP02pmDC2aMMQyg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzQgC-1tjfWZ2zrM-018A2V; Tue, 17
- Dec 2024 08:14:08 +0100
-Message-ID: <0199c644-dfd7-43ce-b02a-459461299fb7@gmx.com>
-Date: Tue, 17 Dec 2024 17:44:03 +1030
+	s=arc-20240116; t=1734420679; c=relaxed/simple;
+	bh=s3QpolYAVtYazZazTfhEc1tdPv7uCP1axb0HgI/agtU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rB3YYHeeVfkqQq6JIVJ1A1CJZ7WyrXeYGvUiIcW/qe0v0SrunkwHq2jXDt8s7womaORFC2sQ+eII/l1AWDFIEpWmIL4Hnc+UdSRN3fgmx9SIkUl1HCFhDRtTbZpF91iNp8Bbxgy51F9AFNNeEYT8TJk811DjfIIV1u8p/nYt0KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=e9dDG+gK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=e9dDG+gK; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 920E32111F
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:31:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1734420675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=SV9IfzNFeEqyTAdDvGrezufCMustiuJlOnvTWyp83Ag=;
+	b=e9dDG+gKcGd3zCPuKjSZzcCnh4NkN5Yzcbj7HbEch/EHr8niDLYLKyVbvQDzrYqpPKkgkd
+	YPOyCbuSv9B2VYaRbmg03yDjoX0NkIY+mZZfrGFTKLpKnDSAan1OHOhS31DgNJn9F5QhL1
+	nFE5cljvTgSjSfo9M7mYHk4LQGeM3EY=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=e9dDG+gK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1734420675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=SV9IfzNFeEqyTAdDvGrezufCMustiuJlOnvTWyp83Ag=;
+	b=e9dDG+gKcGd3zCPuKjSZzcCnh4NkN5Yzcbj7HbEch/EHr8niDLYLKyVbvQDzrYqpPKkgkd
+	YPOyCbuSv9B2VYaRbmg03yDjoX0NkIY+mZZfrGFTKLpKnDSAan1OHOhS31DgNJn9F5QhL1
+	nFE5cljvTgSjSfo9M7mYHk4LQGeM3EY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD44613A3C
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:31:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vyblGcIoYWczCgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2024 07:31:14 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: handle free space tree rebuild in multiple transactions
+Date: Tue, 17 Dec 2024 18:00:56 +1030
+Message-ID: <58dac27acbab72124549718201bec971491b5b1a.1734420572.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: don't include '<linux/rwlock_types.h>' directly
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- linux-kernel@vger.kernel.org
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20241217070542.2483-2-wsa+renesas@sang-engineering.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20241217070542.2483-2-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MyIk/yR8l9tIydM+GS+CJg/hWbgy6JCFHfhg3V6CKDNHt7Jp6rP
- e9eBCDIJXdTrjWfSsZb/3/I1F5L7irrNry20SdC+GKhTNs84wCD3Tn1VfthDuFKhPisqAhQ
- ywodw0wG7NEXA7iBGotgkEjPe9YgkvQTdQ1YADREagS7xhci5+n68cW9GJqiWVliYuyzCLr
- CP2rwOdwRSXIq47hWhVSQ==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 920E32111F
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:keEa814YlRI=;Bm/azDMbuufxEXSOOnA5pImw+q+
- 6BViNHqHHTFAMwFvae4SuK/lomzzkX1oNtb0zY7lfXP5OJfefa9YqLOxAFzLkyfuE5816F+Sg
- 8CgeY53oIa7re6DLNmBEvxiiZLoGSrGEzdG+aJ5q6CEVk2aFJpfOWShh8ajL8JBZy3W4ypSwj
- O+51Pm9Lbr5RszabldjMkM4tjfa9IxgyZDIEseE31viZCOn6PTenSDfcOKYB3XxrGx4Kvbe3O
- oFg2LxI+O7mlpD09vk330dDoqQiGNk3giiiSjX4xKcL5vkKQhBuoF9JfVeL3o9szsBY53oLfN
- 57W7fEvfHbVUMw8KXPuwOLlzQjqqPMlXV076sIo48HSvPXe6HBlk8vREUhRCBvPECdHyg4Uj2
- B3sXnLDMJS/n0IseyqKRWqn08IUPV1n93Uc88sLHLdGWllEV2mrWY/bUky55VwgeBoEh7Oaz1
- E9h4ZP0K1fU5Ix6BFjPQXrzZtdCmufLyK77zhNxwd+n6mEAr5glOQXqXuvO7AYCnPdmJX2Bsv
- sykZsDEw+o2Zq+VIdEbeL7i+N6GhsC06yvdpehiEUcNOzX4HsmOTeyMCRc6n0ljwJU4iF9Ww1
- 3PeiEBdtLHECUXwaKLo/btzKLpgIT0ri25PIvLSllV/680PxJGDBhdvNcfDP3E8L8dGlHd7kt
- jlzbLvYVwzmk8EmQN6alhKPWl8xC5qe6YQaEE9NPyZ/7QuZKhIJcBdtuGIWoF/dDaidrKiPhe
- luTenmKE0BDYkIo5mKhEuY1E1KAieGYm+BJNfkS63aEE+oD8QknzOW1E8wEclPmbc69Ss3/EQ
- /SPS4wxZV0sZDGPcuByYg4E+H6AMVQnQrRDxLYaIWJK35aw/mqnY62UPexwrzxk9Z1ZSfQgz0
- vprK3dltTmviu02k4zBkQbBcbkJ+CFYOQ5QgpgK9cUdWhcxXQ5Q5j/KAaXg9go7KC3+FBh942
- 8bX0PRIhaQct9vuq7Cem9Sr7UkRTmOXEvEC67DXt0YZqTbmixkWMFAaul4Oh28mwuMAHqGrUj
- 08MM57YctqE86WUGC+TxDRRFARcB7jNCYb+Nfts65VzcBV+5znlC0R5HCtYX01zfuyLcEmARH
- 4AgVvN+F/8EJQEEtAfBycLgopK5ene
+X-Spam-Level: 
 
+During free space tree rebuild, we're holding on transaction handler for
+the whole rebuild process.
 
+This will cause blocked task warning for btrfs-transaction kernel
+thread, as during the rebuild, btrfs-transaction kthread has to wait for
+the running transaction we're holding for free space tree rebuild.
 
-=E5=9C=A8 2024/12/17 17:35, Wolfram Sang =E5=86=99=E9=81=93:
-> The header clearly states that it does not want to be included directly,
-> only via '<linux/spinlock_types.h>'. Replace the include accordingly.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->   fs/btrfs/fs.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 79a1a3d6f04d..78e558652908 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -14,7 +14,7 @@
->   #include <linux/lockdep.h>
->   #include <linux/spinlock.h>
->   #include <linux/mutex.h>
-> -#include <linux/rwlock_types.h>
-> +#include <linux/spinlock_types.h>
+On a large enough btrfs, we have thousands of block groups to go
+through, thus it will definitely take over 120s and trigger the blocked
+task warning.
 
-I think we can just remove the *_type.h include header completely.
+Fix the problem by handling 32 block groups in one transaction, and end
+the transaction when we hit the 32 block groups threshold.
 
-For non-RT build, spinlock.h will include linux/rwlock.h, and
-spinlock_types.h unconditionally.
+This will allow the btrfs-transaction kthread to commit the transaction
+when needed.
 
-Thanks,
-Qu
->   #include <linux/rwsem.h>
->   #include <linux/semaphore.h>
->   #include <linux/list.h>
+And even if during the rebuild the system lost its power, we are still
+fine as we didn't set FREE_SPACE_TREE_VALID flag, thus on next RW mount
+we will still rebuild the tree, without utilizing the half built one.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/free-space-tree.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index 7ba50e133921..d8f334724092 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1312,6 +1312,8 @@ int btrfs_delete_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	return btrfs_commit_transaction(trans);
+ }
+ 
++/* How many block groups can be handled in one transaction. */
++#define FREE_SPACE_TREE_REBUILD_BATCH	(32)
+ int btrfs_rebuild_free_space_tree(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_trans_handle *trans;
+@@ -1322,6 +1324,7 @@ int btrfs_rebuild_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	};
+ 	struct btrfs_root *free_space_root = btrfs_global_root(fs_info, &key);
+ 	struct rb_node *node;
++	unsigned int handled = 0;
+ 	int ret;
+ 
+ 	trans = btrfs_start_transaction(free_space_root, 1);
+@@ -1350,6 +1353,15 @@ int btrfs_rebuild_free_space_tree(struct btrfs_fs_info *fs_info)
+ 			btrfs_end_transaction(trans);
+ 			return ret;
+ 		}
++		handled++;
++		handled %= FREE_SPACE_TREE_REBUILD_BATCH;
++		if (!handled) {
++			btrfs_end_transaction(trans);
++			trans = btrfs_start_transaction(free_space_root,
++					FREE_SPACE_TREE_REBUILD_BATCH);
++			if (IS_ERR(trans))
++				return PTR_ERR(trans);
++		}
+ 		node = rb_next(node);
+ 	}
+ 
+-- 
+2.47.1
 
 
