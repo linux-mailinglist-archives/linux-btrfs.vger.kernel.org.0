@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10537-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10538-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 494729F61FD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:43:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E11169F61F7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C901162986
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:42:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC1C67A2201
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81856199FC9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A1519A298;
 	Wed, 18 Dec 2024 09:42:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iwf2NtM1";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iwf2NtM1"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RAb8y8hE";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RAb8y8hE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4B21925A2
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FA919993B
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734514930; cv=none; b=RKGamwmAFqWSZoKKsO1HELmIZxZaqaZ1DRmCrCYTNBavfOD8x+Srt9f9HlOMbd7C1c1ZjVWGFjM90a/yrdDi3aPgOg8yDwPsLgc8z5onP96OwEiIt/tJxeo81t6w+YJF6J+YuX5nxdvwl3tnh6STtnupq8W1fZhELqsv0CA9TqU=
+	t=1734514931; cv=none; b=SaDUdfNLB4A4NSGhSNumVxgRoHOAN5XGCzJrCypWIAyZnIoyXeL3kZMPMmvI6ENJGi1z3ssufa+l2ul2ljvxBgUheqDN5ytNxnwL6tZtsMeABRVMLS04MhRN7FgnteQvVEHnqC8UzOw8mmZ5Gsso/5qfXpYmQTWIl5RNWLls5Zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734514930; c=relaxed/simple;
-	bh=iNgfqr7ro+drTgJewlDUo+hH+I//FOQM2NiYOVPCA0U=;
+	s=arc-20240116; t=1734514931; c=relaxed/simple;
+	bh=1NxYpO+JGDF24TkZnaWvjrR9wtbvzUfHZXTCOSoRV88=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q+nXamKUPck6m3L9paaFrB3swXnjE+f36FuSXCkP5HCTDnzIZj8P4SIz6sPN4pCWxTk7YloY2vNf8I2Qjt8JP/tvZ6XPntCOkeET5+kFnFJVj1nbpcWKbdh82wVSsCrpp7S9sCRJhZ7vWzXsCoiTw72oPjyPrqQV1ZS82CVO1WM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iwf2NtM1; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iwf2NtM1; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=MbM7OHTGfgAeEfg/tE4Bk7DChqMyjChfxHTv8YWUNqyJ+wtsyxFkdsoAqhgvF2+iNJ/ImGwrgvHhQFi7DnhwRBLTwntMep7vAgVrDmv63+7KLaiOELA8SSrnFa3+IAdPlBpCREMzTIxdy6YTofDkdLnzbqXwoKdgIDBpsIhxi1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RAb8y8hE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RAb8y8hE; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6FEAD1F449
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:05 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BFBA22115D
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E4rr3T75bgddpcPovBin2auT0frDieMuwHYA3BprM9Q=;
-	b=iwf2NtM1zBEu9DvEj/hHr2MnAkpHuK73StN/ujtbArvaec2mvTbwjBtwtuyES4Qnr0bJ9u
-	zaaipwr2MbIKdhe6dHxLvyyRyXq3OZBmW8XePp84AUz5NLSodoZsPM/qhYP83QGsZ1h6/g
-	+yMk92n54PEJfwdVQqOfUIrwu3qsNmU=
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=/bV9y//KnqW3t20XAkwBIB5aR19J+gazNpkeyIT+5dw=;
+	b=RAb8y8hE3mJQw0GXIwbPhabJbuA0FbKjsSfn27knAN+701LKfg6CLzW1DUpMCXCnMwf2l6
+	PgTbKhLgwOwT+knbMtNHtuLPtKSKLqzW5kBqJDKdcDU+fS6l8sC7u8iKTf7pNd2jnzBvlF
+	KitmDCbUAHFPcQ38Hg7TPPZHYchJuY8=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=RAb8y8hE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E4rr3T75bgddpcPovBin2auT0frDieMuwHYA3BprM9Q=;
-	b=iwf2NtM1zBEu9DvEj/hHr2MnAkpHuK73StN/ujtbArvaec2mvTbwjBtwtuyES4Qnr0bJ9u
-	zaaipwr2MbIKdhe6dHxLvyyRyXq3OZBmW8XePp84AUz5NLSodoZsPM/qhYP83QGsZ1h6/g
-	+yMk92n54PEJfwdVQqOfUIrwu3qsNmU=
+	bh=/bV9y//KnqW3t20XAkwBIB5aR19J+gazNpkeyIT+5dw=;
+	b=RAb8y8hE3mJQw0GXIwbPhabJbuA0FbKjsSfn27knAN+701LKfg6CLzW1DUpMCXCnMwf2l6
+	PgTbKhLgwOwT+knbMtNHtuLPtKSKLqzW5kBqJDKdcDU+fS6l8sC7u8iKTf7pNd2jnzBvlF
+	KitmDCbUAHFPcQ38Hg7TPPZHYchJuY8=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BB4E132EA
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:04 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED664132EA
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2M05FuyYYmdmSwAAD6G6ig
+	id 0CkiKu2YYmdmSwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:04 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:05 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/18] btrfs: migrate file.c to use block size terminology
-Date: Wed, 18 Dec 2024 20:11:25 +1030
-Message-ID: <24adf3d2c52a53370f628ce8b1c7440f4fb77d4e.1734514696.git.wqu@suse.com>
+Subject: [PATCH 10/18] btrfs: migrate inode.c and btrfs_inode.h to use block size terminology
+Date: Wed, 18 Dec 2024 20:11:26 +1030
+Message-ID: <aba68f14d64906b8d53927fadd9f8cda8b46ebf0.1734514696.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1734514696.git.wqu@suse.com>
 References: <cover.1734514696.git.wqu@suse.com>
@@ -84,463 +84,575 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Queue-Id: BFBA22115D
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
+	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-Straightforward rename from "sector" to "block".
+This affects the exported function btrfs_check_sector_csum(), thus also
+rename it to btrfs_check_block_csum().
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/file.c | 138 ++++++++++++++++++++++++------------------------
- 1 file changed, 69 insertions(+), 69 deletions(-)
+ fs/btrfs/btrfs_inode.h |   2 +-
+ fs/btrfs/inode.c       | 140 ++++++++++++++++++++---------------------
+ fs/btrfs/raid56.c      |   6 +-
+ fs/btrfs/scrub.c       |   2 +-
+ 4 files changed, 75 insertions(+), 75 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4775a17c4ee1..f34f6d99d039 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -44,8 +44,8 @@
- static void btrfs_drop_folio(struct btrfs_fs_info *fs_info, struct folio *folio,
- 			     u64 pos, u64 copied)
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index b2fa33911c28..8ae914aa759d 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -520,7 +520,7 @@ static inline void btrfs_assert_inode_locked(struct btrfs_inode *inode)
+ #define CSUM_FMT				"0x%*phN"
+ #define CSUM_FMT_VALUE(size, bytes)		size, bytes
+ 
+-int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
++int btrfs_check_block_csum(struct btrfs_fs_info *fs_info, struct page *page,
+ 			    u32 pgoff, u8 *csum, const u8 * const csum_expected);
+ bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
+ 			u32 bio_offset, struct bio_vec *bv);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 8a173a24ac05..6f70c88f6f07 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -185,7 +185,7 @@ static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 		btrfs_warn(fs_info,
+ "checksum error at logical %llu mirror %u root %llu inode %llu offset %llu length %u links %u (path: %s)",
+ 			   warn->logical, warn->mirror_num, root, inum, offset,
+-			   fs_info->sectorsize, nlink,
++			   fs_info->blocksize, nlink,
+ 			   (char *)(unsigned long)ipath->fspath->val[i]);
+ 	}
+ 
+@@ -495,7 +495,7 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
  {
--	u64 block_start = round_down(pos, fs_info->sectorsize);
--	u64 block_len = round_up(pos + copied, fs_info->sectorsize) - block_start;
-+	u64 block_start = round_down(pos, fs_info->blocksize);
-+	u64 block_len = round_up(pos + copied, fs_info->blocksize) - block_start;
- 
- 	ASSERT(block_len <= U32_MAX);
- 	/*
-@@ -85,9 +85,9 @@ int btrfs_dirty_folio(struct btrfs_inode *inode, struct folio *folio, loff_t pos
- 	if (noreserve)
- 		extra_bits |= EXTENT_NORESERVE;
- 
--	start_pos = round_down(pos, fs_info->sectorsize);
-+	start_pos = round_down(pos, fs_info->blocksize);
- 	num_bytes = round_up(write_bytes + pos - start_pos,
--			     fs_info->sectorsize);
-+			     fs_info->blocksize);
- 	ASSERT(num_bytes <= U32_MAX);
- 	ASSERT(folio_pos(folio) <= pos &&
- 	       folio_pos(folio) + folio_size(folio) >= pos + write_bytes);
-@@ -416,7 +416,7 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
- 			    extent_type == BTRFS_FILE_EXTENT_INLINE) {
- 				args->bytes_found += extent_end - key.offset;
- 				extent_end = ALIGN(extent_end,
--						   fs_info->sectorsize);
-+						   fs_info->blocksize);
- 			} else if (update_refs && disk_bytenr > 0) {
- 				struct btrfs_ref ref = {
- 					.action = BTRFS_DROP_DELAYED_REF,
-@@ -925,8 +925,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct folio *folio,
- 	u64 last_pos;
- 	int ret = 0;
- 
--	start_pos = round_down(pos, fs_info->sectorsize);
--	last_pos = round_up(pos + write_bytes, fs_info->sectorsize) - 1;
-+	start_pos = round_down(pos, fs_info->blocksize);
-+	last_pos = round_up(pos + write_bytes, fs_info->blocksize) - 1;
- 
- 	if (start_pos < inode->vfs_inode.i_size) {
- 		struct btrfs_ordered_extent *ordered;
-@@ -1007,9 +1007,9 @@ int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
- 	if (!btrfs_drew_try_write_lock(&root->snapshot_lock))
- 		return -EAGAIN;
- 
--	lockstart = round_down(pos, fs_info->sectorsize);
-+	lockstart = round_down(pos, fs_info->blocksize);
- 	lockend = round_up(pos + *write_bytes,
--			   fs_info->sectorsize) - 1;
-+			   fs_info->blocksize) - 1;
- 	num_bytes = lockend - lockstart + 1;
- 
- 	if (nowait) {
-@@ -1074,11 +1074,11 @@ int btrfs_write_check(struct kiocb *iocb, size_t count)
- 		inode_inc_iversion(inode);
- 	}
- 
--	start_pos = round_down(pos, fs_info->sectorsize);
-+	start_pos = round_down(pos, fs_info->blocksize);
- 	oldsize = i_size_read(inode);
- 	if (start_pos > oldsize) {
- 		/* Expand hole size to cover write data, preventing empty gap */
--		loff_t end_pos = round_up(pos + count, fs_info->sectorsize);
-+		loff_t end_pos = round_up(pos + count, fs_info->blocksize);
- 
- 		ret = btrfs_cont_expand(BTRFS_I(inode), oldsize, end_pos);
- 		if (ret)
-@@ -1125,12 +1125,12 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 	while (iov_iter_count(i) > 0) {
- 		struct extent_state *cached_state = NULL;
- 		size_t offset = offset_in_page(pos);
--		size_t sector_offset;
-+		size_t block_offset;
- 		size_t write_bytes = min(iov_iter_count(i), PAGE_SIZE - offset);
- 		size_t reserve_bytes;
- 		size_t copied;
--		size_t dirty_sectors;
--		size_t num_sectors;
-+		size_t dirty_blocks;
-+		size_t num_blocks;
- 		struct folio *folio = NULL;
- 		int extents_locked;
- 		bool force_page_uptodate = false;
-@@ -1145,7 +1145,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 		}
- 
- 		only_release_metadata = false;
--		sector_offset = pos & (fs_info->sectorsize - 1);
-+		block_offset = pos & (fs_info->blocksize - 1);
- 
- 		extent_changeset_release(data_reserved);
- 		ret = btrfs_check_data_free_space(BTRFS_I(inode),
-@@ -1175,8 +1175,8 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 			only_release_metadata = true;
- 		}
- 
--		reserve_bytes = round_up(write_bytes + sector_offset,
--					 fs_info->sectorsize);
-+		reserve_bytes = round_up(write_bytes + block_offset,
-+					 fs_info->blocksize);
- 		WARN_ON(reserve_bytes == 0);
- 		ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode),
- 						      reserve_bytes,
-@@ -1229,8 +1229,8 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 
- 		/*
- 		 * If we get a partial write, we can end up with partially
--		 * uptodate page. Although if sector size < page size we can
--		 * handle it, but if it's not sector aligned it can cause
-+		 * uptodate page. Although if block size < page size we can
-+		 * handle it, but if it's not block aligned it can cause
- 		 * a lot of complexity, so make sure they don't happen by
- 		 * forcing retry this copy.
- 		 */
-@@ -1241,35 +1241,35 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 			}
- 		}
- 
--		num_sectors = BTRFS_BYTES_TO_BLKS(fs_info, reserve_bytes);
--		dirty_sectors = round_up(copied + sector_offset,
--					fs_info->sectorsize);
--		dirty_sectors = BTRFS_BYTES_TO_BLKS(fs_info, dirty_sectors);
-+		num_blocks = BTRFS_BYTES_TO_BLKS(fs_info, reserve_bytes);
-+		dirty_blocks = round_up(copied + block_offset,
-+					fs_info->blocksize);
-+		dirty_blocks = BTRFS_BYTES_TO_BLKS(fs_info, dirty_blocks);
- 
- 		if (copied == 0) {
- 			force_page_uptodate = true;
--			dirty_sectors = 0;
-+			dirty_blocks = 0;
- 		} else {
- 			force_page_uptodate = false;
- 		}
- 
--		if (num_sectors > dirty_sectors) {
--			/* release everything except the sectors we dirtied */
--			release_bytes -= dirty_sectors << fs_info->sectorsize_bits;
-+		if (num_blocks > dirty_blocks) {
-+			/* release everything except the blocks we dirtied */
-+			release_bytes -= dirty_blocks << fs_info->blocksize_bits;
- 			if (only_release_metadata) {
- 				btrfs_delalloc_release_metadata(BTRFS_I(inode),
- 							release_bytes, true);
- 			} else {
- 				u64 release_start = round_up(pos + copied,
--							     fs_info->sectorsize);
-+							     fs_info->blocksize);
- 				btrfs_delalloc_release_space(BTRFS_I(inode),
- 						data_reserved, release_start,
- 						release_bytes, true);
- 			}
- 		}
- 
--		release_bytes = round_up(copied + sector_offset,
--					fs_info->sectorsize);
-+		release_bytes = round_up(copied + block_offset,
-+					fs_info->blocksize);
- 
- 		ret = btrfs_dirty_folio(BTRFS_I(inode), folio, pos, copied,
- 					&cached_state, only_release_metadata);
-@@ -1313,7 +1313,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 		} else {
- 			btrfs_delalloc_release_space(BTRFS_I(inode),
- 					data_reserved,
--					round_down(pos, fs_info->sectorsize),
-+					round_down(pos, fs_info->blocksize),
- 					release_bytes, true);
- 		}
- 	}
-@@ -1861,7 +1861,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	}
- 
- 	if (folio->index == ((size - 1) >> PAGE_SHIFT)) {
--		reserved_space = round_up(size - page_start, fs_info->sectorsize);
-+		reserved_space = round_up(size - page_start, fs_info->blocksize);
- 		if (reserved_space < PAGE_SIZE) {
- 			end = page_start + reserved_space - 1;
- 			btrfs_delalloc_release_space(BTRFS_I(inode),
-@@ -2081,8 +2081,8 @@ static int find_first_non_hole(struct btrfs_inode *inode, u64 *start, u64 *len)
- 	int ret = 0;
- 
- 	em = btrfs_get_extent(inode, NULL,
--			      round_down(*start, fs_info->sectorsize),
--			      round_up(*len, fs_info->sectorsize));
-+			      round_down(*start, fs_info->blocksize),
-+			      round_up(*len, fs_info->blocksize));
- 	if (IS_ERR(em))
- 		return PTR_ERR(em);
- 
-@@ -2245,7 +2245,7 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
  	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	u64 min_size = btrfs_calc_insert_metadata_size(fs_info, 1);
--	u64 ino_size = round_up(inode->vfs_inode.i_size, fs_info->sectorsize);
-+	u64 ino_size = round_up(inode->vfs_inode.i_size, fs_info->blocksize);
- 	struct btrfs_trans_handle *trans = NULL;
- 	struct btrfs_block_rsv *rsv;
- 	unsigned int rsv_count;
-@@ -2520,7 +2520,7 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 	if (ret)
- 		goto out_only_mutex;
+ 	struct extent_buffer *leaf;
+-	const u32 sectorsize = trans->fs_info->sectorsize;
++	const u32 blocksize = trans->fs_info->blocksize;
+ 	char *kaddr;
+ 	unsigned long ptr;
+ 	struct btrfs_file_extent_item *ei;
+@@ -504,18 +504,18 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
+ 	u64 i_size;
  
--	ino_size = round_up(inode->i_size, fs_info->sectorsize);
-+	ino_size = round_up(inode->i_size, fs_info->blocksize);
- 	ret = find_first_non_hole(BTRFS_I(inode), &offset, &len);
- 	if (ret < 0)
- 		goto out_only_mutex;
-@@ -2534,8 +2534,8 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 	if (ret)
- 		goto out_only_mutex;
- 
--	lockstart = round_up(offset, fs_info->sectorsize);
--	lockend = round_down(offset + len, fs_info->sectorsize) - 1;
-+	lockstart = round_up(offset, fs_info->blocksize);
-+	lockend = round_down(offset + len, fs_info->blocksize) - 1;
- 	same_block = (BTRFS_BYTES_TO_BLKS(fs_info, offset))
- 		== (BTRFS_BYTES_TO_BLKS(fs_info, offset + len - 1));
  	/*
-@@ -2546,7 +2546,7 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 	 * Only do this if we are in the same block and we aren't doing the
- 	 * entire block.
+-	 * The decompressed size must still be no larger than a sector.  Under
++	 * The decompressed size must still be no larger than a block.  Under
+ 	 * heavy race, we can have size == 0 passed in, but that shouldn't be a
+ 	 * big deal and we can continue the insertion.
  	 */
--	if (same_block && len < fs_info->sectorsize) {
-+	if (same_block && len < fs_info->blocksize) {
- 		if (offset < ino_size) {
- 			truncated_block = true;
- 			ret = btrfs_truncate_block(BTRFS_I(inode), offset, len,
-@@ -2735,12 +2735,12 @@ enum {
- static int btrfs_zero_range_check_range_boundary(struct btrfs_inode *inode,
- 						 u64 offset)
- {
--	const u64 sectorsize = inode->root->fs_info->sectorsize;
-+	const u64 blocksize = inode->root->fs_info->blocksize;
+-	ASSERT(size <= sectorsize);
++	ASSERT(size <= blocksize);
+ 
+ 	/*
+-	 * The compressed size also needs to be no larger than a sector.
++	 * The compressed size also needs to be no larger than a block.
+ 	 * That's also why we only need one page as the parameter.
+ 	 */
+ 	if (compressed_folio)
+-		ASSERT(compressed_size <= sectorsize);
++		ASSERT(compressed_size <= blocksize);
+ 	else
+ 		ASSERT(compressed_size == 0);
+ 
+@@ -568,11 +568,11 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
+ 	btrfs_release_path(path);
+ 
+ 	/*
+-	 * We align size to sectorsize for inline extents just for simplicity
++	 * We align size to blocksize for inline extents just for simplicity
+ 	 * sake.
+ 	 */
+ 	ret = btrfs_inode_set_file_extent_range(inode, 0,
+-					ALIGN(size, root->fs_info->sectorsize));
++					ALIGN(size, root->fs_info->blocksize));
+ 	if (ret)
+ 		goto fail;
+ 
+@@ -607,7 +607,7 @@ static bool can_cow_file_range_inline(struct btrfs_inode *inode,
+ 
+ 	/*
+ 	 * Due to the page size limit, for subpage we can only trigger the
+-	 * writeback for the dirty sectors of page, that means data writeback
++	 * writeback for the dirty blocks of page, that means data writeback
+ 	 * is doing more writeback than what we want.
+ 	 *
+ 	 * This is especially unexpected for some call sites like fallocate,
+@@ -615,11 +615,11 @@ static bool can_cow_file_range_inline(struct btrfs_inode *inode,
+ 	 * This means we can trigger inline extent even if we didn't want to.
+ 	 * So here we skip inline extent creation completely.
+ 	 */
+-	if (fs_info->sectorsize != PAGE_SIZE)
++	if (fs_info->blocksize != PAGE_SIZE)
+ 		return false;
+ 
+-	/* Inline extents are limited to sectorsize. */
+-	if (size > fs_info->sectorsize)
++	/* Inline extents are limited to blocksize. */
++	if (size > fs_info->blocksize)
+ 		return false;
+ 
+ 	/* We cannot exceed the maximum inline data size. */
+@@ -672,7 +672,7 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
+ 
+ 	drop_args.path = path;
+ 	drop_args.start = 0;
+-	drop_args.end = fs_info->sectorsize;
++	drop_args.end = fs_info->blocksize;
+ 	drop_args.drop_cache = true;
+ 	drop_args.replace_extent = true;
+ 	drop_args.extent_item_size = btrfs_file_extent_calc_inline_size(data_len);
+@@ -831,7 +831,7 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
+ 		return 0;
+ 	}
+ 	/*
+-	 * Only enable sector perfect compression for experimental builds.
++	 * Only enable block perfect compression for experimental builds.
+ 	 *
+ 	 * This is a big feature change for subpage cases, and can hit
+ 	 * different corner cases, so only limit this feature for
+@@ -839,7 +839,7 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
+ 	 *
+ 	 * ETA for moving this out of experimental builds is 6.15.
+ 	 */
+-	if (fs_info->sectorsize < PAGE_SIZE &&
++	if (fs_info->blocksize < PAGE_SIZE &&
+ 	    !IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL)) {
+ 		if (!PAGE_ALIGNED(start) ||
+ 		    !PAGE_ALIGNED(end + 1))
+@@ -912,7 +912,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 	struct btrfs_inode *inode = async_chunk->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct address_space *mapping = inode->vfs_inode.i_mapping;
+-	u64 blocksize = fs_info->sectorsize;
++	u64 blocksize = fs_info->blocksize;
+ 	u64 start = async_chunk->start;
+ 	u64 end = async_chunk->end;
+ 	u64 actual_end;
+@@ -1057,9 +1057,9 @@ static void compress_file_range(struct btrfs_work *work)
+ 	/*
+ 	 * One last check to make sure the compression is really a win, compare
+ 	 * the page count read with the blocks on disk, compression must free at
+-	 * least one sector.
++	 * least one block.
+ 	 */
+-	total_in = round_up(total_in, fs_info->sectorsize);
++	total_in = round_up(total_in, fs_info->blocksize);
+ 	if (total_compressed + blocksize > total_in)
+ 		goto mark_incompressible;
+ 
+@@ -1334,7 +1334,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	u64 num_bytes;
+ 	u64 cur_alloc_size = 0;
+ 	u64 min_alloc_size;
+-	u64 blocksize = fs_info->sectorsize;
++	u64 blocksize = fs_info->blocksize;
+ 	struct btrfs_key ins;
  	struct extent_map *em;
- 	int ret;
+ 	unsigned clear_bits;
+@@ -1386,7 +1386,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	if (btrfs_is_data_reloc_root(root))
+ 		min_alloc_size = num_bytes;
+ 	else
+-		min_alloc_size = fs_info->sectorsize;
++		min_alloc_size = fs_info->blocksize;
  
--	offset = round_down(offset, sectorsize);
--	em = btrfs_get_extent(inode, NULL, offset, sectorsize);
-+	offset = round_down(offset, blocksize);
-+	em = btrfs_get_extent(inode, NULL, offset, blocksize);
- 	if (IS_ERR(em))
- 		return PTR_ERR(em);
+ 	while (num_bytes > 0) {
+ 		struct btrfs_ordered_extent *ordered;
+@@ -2868,7 +2868,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 				       u64 qgroup_reserved)
+ {
+ 	struct btrfs_root *root = inode->root;
+-	const u64 sectorsize = root->fs_info->sectorsize;
++	const u64 blocksize = root->fs_info->blocksize;
+ 	struct btrfs_path *path;
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_key ins;
+@@ -2928,13 +2928,13 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	 * The remaining of the range will be processed when clearning the
+ 	 * EXTENT_DELALLOC_BIT bit through the ordered extent completion.
+ 	 */
+-	if (file_pos == 0 && !IS_ALIGNED(drop_args.bytes_found, sectorsize)) {
+-		u64 inline_size = round_down(drop_args.bytes_found, sectorsize);
++	if (file_pos == 0 && !IS_ALIGNED(drop_args.bytes_found, blocksize)) {
++		u64 inline_size = round_down(drop_args.bytes_found, blocksize);
  
-@@ -2765,9 +2765,9 @@ static int btrfs_zero_range(struct inode *inode,
+ 		inline_size = drop_args.bytes_found - inline_size;
+-		btrfs_update_inode_bytes(inode, sectorsize, inline_size);
++		btrfs_update_inode_bytes(inode, blocksize, inline_size);
+ 		drop_args.bytes_found -= inline_size;
+-		num_bytes -= sectorsize;
++		num_bytes -= blocksize;
+ 	}
+ 
+ 	if (update_inode_bytes)
+@@ -3267,21 +3267,21 @@ int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
+ }
+ 
+ /*
+- * Verify the checksum for a single sector without any extra action that depend
++ * Verify the checksum for a single block without any extra action that depend
+  * on the type of I/O.
+  */
+-int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
++int btrfs_check_block_csum(struct btrfs_fs_info *fs_info, struct page *page,
+ 			    u32 pgoff, u8 *csum, const u8 * const csum_expected)
+ {
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	char *kaddr;
+ 
+-	ASSERT(pgoff + fs_info->sectorsize <= PAGE_SIZE);
++	ASSERT(pgoff + fs_info->blocksize <= PAGE_SIZE);
+ 
+ 	shash->tfm = fs_info->csum_shash;
+ 
+ 	kaddr = kmap_local_page(page) + pgoff;
+-	crypto_shash_digest(shash, kaddr, fs_info->sectorsize, csum);
++	crypto_shash_digest(shash, kaddr, fs_info->blocksize, csum);
+ 	kunmap_local(kaddr);
+ 
+ 	if (memcmp(csum, csum_expected, fs_info->csum_size))
+@@ -3290,17 +3290,17 @@ int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
+ }
+ 
+ /*
+- * Verify the checksum of a single data sector.
++ * Verify the checksum of a single data block.
+  *
+  * @bbio:	btrfs_io_bio which contains the csum
+- * @dev:	device the sector is on
++ * @dev:	device the block is on
+  * @bio_offset:	offset to the beginning of the bio (in bytes)
+  * @bv:		bio_vec to check
+  *
+  * Check if the checksum on a data block is valid.  When a checksum mismatch is
+  * detected, report the error and fill the corrupted range with zero.
+  *
+- * Return %true if the sector is ok or had no checksum to start with, else %false.
++ * Return %true if the block is ok or had no checksum to start with, else %false.
+  */
+ bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
+ 			u32 bio_offset, struct bio_vec *bv)
+@@ -3312,7 +3312,7 @@ bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
+ 	u8 *csum_expected;
+ 	u8 csum[BTRFS_CSUM_SIZE];
+ 
+-	ASSERT(bv->bv_len == fs_info->sectorsize);
++	ASSERT(bv->bv_len == fs_info->blocksize);
+ 
+ 	if (!bbio->csum)
+ 		return true;
+@@ -3326,9 +3326,9 @@ bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
+ 		return true;
+ 	}
+ 
+-	csum_expected = bbio->csum + (bio_offset >> fs_info->sectorsize_bits) *
++	csum_expected = bbio->csum + (bio_offset >> fs_info->blocksize_bits) *
+ 				fs_info->csum_size;
+-	if (btrfs_check_sector_csum(fs_info, bv->bv_page, bv->bv_offset, csum,
++	if (btrfs_check_block_csum(fs_info, bv->bv_page, bv->bv_offset, csum,
+ 				    csum_expected))
+ 		goto zeroit;
+ 	return true;
+@@ -3848,7 +3848,7 @@ static int btrfs_read_locked_inode(struct inode *inode, struct btrfs_path *path)
+ 	i_gid_write(inode, btrfs_inode_gid(leaf, inode_item));
+ 	btrfs_i_size_write(BTRFS_I(inode), btrfs_inode_size(leaf, inode_item));
+ 	btrfs_inode_set_file_extent_range(BTRFS_I(inode), 0,
+-			round_up(i_size_read(inode), fs_info->sectorsize));
++			round_up(i_size_read(inode), fs_info->blocksize));
+ 
+ 	inode_set_atime(inode, btrfs_timespec_sec(leaf, &inode_item->atime),
+ 			btrfs_timespec_nsec(leaf, &inode_item->atime));
+@@ -4737,7 +4737,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
+ 	struct extent_state *cached_state = NULL;
  	struct extent_changeset *data_reserved = NULL;
- 	int ret;
- 	u64 alloc_hint = 0;
--	const u64 sectorsize = fs_info->sectorsize;
--	u64 alloc_start = round_down(offset, sectorsize);
--	u64 alloc_end = round_up(offset + len, sectorsize);
-+	const u64 blocksize = fs_info->blocksize;
-+	u64 alloc_start = round_down(offset, blocksize);
-+	u64 alloc_end = round_up(offset + len, blocksize);
- 	u64 bytes_to_reserve = 0;
- 	bool space_reserved = false;
+ 	bool only_release_metadata = false;
+-	u32 blocksize = fs_info->sectorsize;
++	u32 blocksize = fs_info->blocksize;
+ 	pgoff_t index = from >> PAGE_SHIFT;
+ 	unsigned offset = from & (blocksize - 1);
+ 	struct folio *folio;
+@@ -4931,8 +4931,8 @@ int btrfs_cont_expand(struct btrfs_inode *inode, loff_t oldsize, loff_t size)
+ 	struct extent_io_tree *io_tree = &inode->io_tree;
+ 	struct extent_map *em = NULL;
+ 	struct extent_state *cached_state = NULL;
+-	u64 hole_start = ALIGN(oldsize, fs_info->sectorsize);
+-	u64 block_end = ALIGN(size, fs_info->sectorsize);
++	u64 hole_start = ALIGN(oldsize, fs_info->blocksize);
++	u64 block_end = ALIGN(size, fs_info->blocksize);
+ 	u64 last_byte;
+ 	u64 cur_offset;
+ 	u64 hole_size;
+@@ -4961,7 +4961,7 @@ int btrfs_cont_expand(struct btrfs_inode *inode, loff_t oldsize, loff_t size)
+ 			break;
+ 		}
+ 		last_byte = min(extent_map_end(em), block_end);
+-		last_byte = ALIGN(last_byte, fs_info->sectorsize);
++		last_byte = ALIGN(last_byte, fs_info->blocksize);
+ 		hole_size = last_byte - cur_offset;
  
-@@ -2805,7 +2805,7 @@ static int btrfs_zero_range(struct inode *inode,
- 		 * only on the remaining part of the range.
+ 		if (!(em->flags & EXTENT_FLAG_PREALLOC)) {
+@@ -5067,7 +5067,7 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
+ 
+ 		if (btrfs_is_zoned(fs_info)) {
+ 			ret = btrfs_wait_ordered_range(BTRFS_I(inode),
+-					ALIGN(newsize, fs_info->sectorsize),
++					ALIGN(newsize, fs_info->blocksize),
+ 					(u64)-1);
+ 			if (ret)
+ 				return ret;
+@@ -6949,7 +6949,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 		 * Other members are not utilized for inline extents.
  		 */
- 		alloc_start = em_end;
--		ASSERT(IS_ALIGNED(alloc_start, sectorsize));
-+		ASSERT(IS_ALIGNED(alloc_start, blocksize));
- 		len = offset + len - alloc_start;
- 		offset = alloc_start;
- 		alloc_hint = extent_map_block_start(em) + em->len;
-@@ -2814,7 +2814,7 @@ static int btrfs_zero_range(struct inode *inode,
+ 		ASSERT(em->disk_bytenr == EXTENT_MAP_INLINE);
+-		ASSERT(em->len == fs_info->sectorsize);
++		ASSERT(em->len == fs_info->blocksize);
  
- 	if (BTRFS_BYTES_TO_BLKS(fs_info, offset) ==
- 	    BTRFS_BYTES_TO_BLKS(fs_info, offset + len - 1)) {
--		em = btrfs_get_extent(BTRFS_I(inode), NULL, alloc_start, sectorsize);
-+		em = btrfs_get_extent(BTRFS_I(inode), NULL, alloc_start, blocksize);
- 		if (IS_ERR(em)) {
- 			ret = PTR_ERR(em);
- 			goto out;
-@@ -2826,7 +2826,7 @@ static int btrfs_zero_range(struct inode *inode,
- 							   mode);
- 			goto out;
- 		}
--		if (len < sectorsize && em->disk_bytenr != EXTENT_MAP_HOLE) {
-+		if (len < blocksize && em->disk_bytenr != EXTENT_MAP_HOLE) {
- 			free_extent_map(em);
- 			ret = btrfs_truncate_block(BTRFS_I(inode), offset, len,
- 						   0);
-@@ -2837,13 +2837,13 @@ static int btrfs_zero_range(struct inode *inode,
- 			return ret;
- 		}
- 		free_extent_map(em);
--		alloc_start = round_down(offset, sectorsize);
--		alloc_end = alloc_start + sectorsize;
-+		alloc_start = round_down(offset, blocksize);
-+		alloc_end = alloc_start + blocksize;
- 		goto reserve_space;
+ 		ret = read_inline_extent(path, folio);
+ 		if (ret < 0)
+@@ -7095,7 +7095,7 @@ noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
+ 		u64 range_end;
+ 
+ 		range_end = round_up(offset + nocow_args.file_extent.num_bytes,
+-				     root->fs_info->sectorsize) - 1;
++				     root->fs_info->blocksize) - 1;
+ 		ret = test_range_bit_exists(io_tree, offset, range_end, EXTENT_DELALLOC);
+ 		if (ret) {
+ 			ret = -EAGAIN;
+@@ -7291,7 +7291,7 @@ static void btrfs_invalidate_folio(struct folio *folio, size_t offset,
+ 	/*
+ 	 * For subpage case, we have call sites like
+ 	 * btrfs_punch_hole_lock_range() which passes range not aligned to
+-	 * sectorsize.
++	 * blocksize.
+ 	 * If the range doesn't cover the full folio, we don't need to and
+ 	 * shouldn't clear page extent mapped, as folio->private can still
+ 	 * record subpage dirty bits for other part of the range.
+@@ -7440,7 +7440,7 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+ 	struct btrfs_block_rsv *rsv;
+ 	int ret;
+ 	struct btrfs_trans_handle *trans;
+-	u64 mask = fs_info->sectorsize - 1;
++	u64 mask = fs_info->blocksize - 1;
+ 	const u64 min_size = btrfs_calc_metadata_size(fs_info, 1);
+ 
+ 	if (!skip_writeback) {
+@@ -7513,7 +7513,7 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+ 	while (1) {
+ 		struct extent_state *cached_state = NULL;
+ 		const u64 new_size = inode->vfs_inode.i_size;
+-		const u64 lock_start = ALIGN_DOWN(new_size, fs_info->sectorsize);
++		const u64 lock_start = ALIGN_DOWN(new_size, fs_info->blocksize);
+ 
+ 		control.new_size = new_size;
+ 		lock_extent(&inode->io_tree, lock_start, (u64)-1, &cached_state);
+@@ -7523,7 +7523,7 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+ 		 * block of the extent just the way it is.
+ 		 */
+ 		btrfs_drop_extent_map_range(inode,
+-					    ALIGN(new_size, fs_info->sectorsize),
++					    ALIGN(new_size, fs_info->blocksize),
+ 					    (u64)-1, false);
+ 
+ 		ret = btrfs_truncate_inode_items(trans, root, &control);
+@@ -7829,7 +7829,7 @@ static int btrfs_getattr(struct mnt_idmap *idmap,
+ 	u64 delalloc_bytes;
+ 	u64 inode_bytes;
+ 	struct inode *inode = d_inode(path->dentry);
+-	u32 blocksize = btrfs_sb(inode->i_sb)->sectorsize;
++	u32 blocksize = btrfs_sb(inode->i_sb)->blocksize;
+ 	u32 bi_flags = BTRFS_I(inode)->flags;
+ 	u32 bi_ro_flags = BTRFS_I(inode)->ro_flags;
+ 
+@@ -8966,13 +8966,13 @@ int btrfs_encoded_io_compression_from_extent(struct btrfs_fs_info *fs_info,
+ 		return BTRFS_ENCODED_IO_COMPRESSION_ZLIB;
+ 	case BTRFS_COMPRESS_LZO:
+ 		/*
+-		 * The LZO format depends on the sector size. 64K is the maximum
+-		 * sector size that we support.
++		 * The LZO format depends on the block size. 64K is the maximum
++		 * block size that we support.
+ 		 */
+-		if (fs_info->sectorsize < SZ_4K || fs_info->sectorsize > SZ_64K)
++		if (fs_info->blocksize < SZ_4K || fs_info->blocksize > SZ_64K)
+ 			return -EINVAL;
+ 		return BTRFS_ENCODED_IO_COMPRESSION_LZO_4K +
+-		       (fs_info->sectorsize_bits - 12);
++		       (fs_info->blocksize_bits - 12);
+ 	case BTRFS_COMPRESS_ZSTD:
+ 		return BTRFS_ENCODED_IO_COMPRESSION_ZSTD;
+ 	default:
+@@ -9261,7 +9261,7 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
+ 		btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+ 		return 0;
  	}
+-	start = ALIGN_DOWN(iocb->ki_pos, fs_info->sectorsize);
++	start = ALIGN_DOWN(iocb->ki_pos, fs_info->blocksize);
+ 	/*
+ 	 * We don't know how long the extent containing iocb->ki_pos is, but if
+ 	 * it's compressed we know that it won't be longer than this.
+@@ -9374,7 +9374,7 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
+ 		count = start + *disk_io_size - iocb->ki_pos;
+ 		encoded->len = count;
+ 		encoded->unencoded_len = count;
+-		*disk_io_size = ALIGN(*disk_io_size, fs_info->sectorsize);
++		*disk_io_size = ALIGN(*disk_io_size, fs_info->blocksize);
+ 	}
+ 	free_extent_map(em);
+ 	em = NULL;
+@@ -9437,10 +9437,10 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+ 	case BTRFS_ENCODED_IO_COMPRESSION_LZO_16K:
+ 	case BTRFS_ENCODED_IO_COMPRESSION_LZO_32K:
+ 	case BTRFS_ENCODED_IO_COMPRESSION_LZO_64K:
+-		/* The sector size must match for LZO. */
++		/* The block size must match for LZO. */
+ 		if (encoded->compression -
+ 		    BTRFS_ENCODED_IO_COMPRESSION_LZO_4K + 12 !=
+-		    fs_info->sectorsize_bits)
++		    fs_info->blocksize_bits)
+ 			return -EINVAL;
+ 		compression = BTRFS_COMPRESS_LZO;
+ 		break;
+@@ -9473,41 +9473,41 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+ 	 * extents.
+ 	 *
+ 	 * Note that this is less strict than the current check we have that the
+-	 * compressed data must be at least one sector smaller than the
++	 * compressed data must be at least one block smaller than the
+ 	 * decompressed data. We only want to enforce the weaker requirement
+ 	 * from old kernels that it is at least one byte smaller.
+ 	 */
+ 	if (orig_count >= encoded->unencoded_len)
+ 		return -EINVAL;
  
--	alloc_start = round_up(offset, sectorsize);
--	alloc_end = round_down(offset + len, sectorsize);
-+	alloc_start = round_up(offset, blocksize);
-+	alloc_end = round_down(offset + len, blocksize);
+-	/* The extent must start on a sector boundary. */
++	/* The extent must start on a block boundary. */
+ 	start = iocb->ki_pos;
+-	if (!IS_ALIGNED(start, fs_info->sectorsize))
++	if (!IS_ALIGNED(start, fs_info->blocksize))
+ 		return -EINVAL;
  
  	/*
- 	 * For unaligned ranges, check the pages at the boundaries, they might
-@@ -2851,13 +2851,13 @@ static int btrfs_zero_range(struct inode *inode,
- 	 * they might map to a hole, in which case we need our allocation range
- 	 * to cover them.
+-	 * The extent must end on a sector boundary. However, we allow a write
++	 * The extent must end on a block boundary. However, we allow a write
+ 	 * which ends at or extends i_size to have an unaligned length; we round
+ 	 * up the extent size and set i_size to the unaligned end.
  	 */
--	if (!IS_ALIGNED(offset, sectorsize)) {
-+	if (!IS_ALIGNED(offset, blocksize)) {
- 		ret = btrfs_zero_range_check_range_boundary(BTRFS_I(inode),
- 							    offset);
- 		if (ret < 0)
- 			goto out;
- 		if (ret == RANGE_BOUNDARY_HOLE) {
--			alloc_start = round_down(offset, sectorsize);
-+			alloc_start = round_down(offset, blocksize);
- 			ret = 0;
- 		} else if (ret == RANGE_BOUNDARY_WRITTEN_EXTENT) {
- 			ret = btrfs_truncate_block(BTRFS_I(inode), offset, 0, 0);
-@@ -2868,13 +2868,13 @@ static int btrfs_zero_range(struct inode *inode,
- 		}
+ 	if (start + encoded->len < inode->vfs_inode.i_size &&
+-	    !IS_ALIGNED(start + encoded->len, fs_info->sectorsize))
++	    !IS_ALIGNED(start + encoded->len, fs_info->blocksize))
+ 		return -EINVAL;
+ 
+-	/* Finally, the offset in the unencoded data must be sector-aligned. */
+-	if (!IS_ALIGNED(encoded->unencoded_offset, fs_info->sectorsize))
++	/* Finally, the offset in the unencoded data must be block-aligned. */
++	if (!IS_ALIGNED(encoded->unencoded_offset, fs_info->blocksize))
+ 		return -EINVAL;
+ 
+-	num_bytes = ALIGN(encoded->len, fs_info->sectorsize);
+-	ram_bytes = ALIGN(encoded->unencoded_len, fs_info->sectorsize);
++	num_bytes = ALIGN(encoded->len, fs_info->blocksize);
++	ram_bytes = ALIGN(encoded->unencoded_len, fs_info->blocksize);
+ 	end = start + num_bytes - 1;
+ 
+ 	/*
+ 	 * If the extent cannot be inline, the compressed data on disk must be
+-	 * sector-aligned. For convenience, we extend it with zeroes if it
++	 * block-aligned. For convenience, we extend it with zeroes if it
+ 	 * isn't.
+ 	 */
+-	disk_num_bytes = ALIGN(orig_count, fs_info->sectorsize);
++	disk_num_bytes = ALIGN(orig_count, fs_info->blocksize);
+ 	nr_folios = DIV_ROUND_UP(disk_num_bytes, PAGE_SIZE);
+ 	folios = kvcalloc(nr_folios, sizeof(struct folio *), GFP_KERNEL_ACCOUNT);
+ 	if (!folios)
+@@ -9903,7 +9903,7 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
+ 	atomic_inc(&root->nr_swapfiles);
+ 	spin_unlock(&root->root_item_lock);
+ 
+-	isize = ALIGN_DOWN(inode->i_size, fs_info->sectorsize);
++	isize = ALIGN_DOWN(inode->i_size, fs_info->blocksize);
+ 
+ 	lock_extent(io_tree, 0, isize - 1, &cached_state);
+ 	while (prev_extent_end < isize) {
+@@ -10144,9 +10144,9 @@ void btrfs_update_inode_bytes(struct btrfs_inode *inode,
+  * Verify that there are no ordered extents for a given file range.
+  *
+  * @inode:   The target inode.
+- * @start:   Start offset of the file range, should be sector size aligned.
++ * @start:   Start offset of the file range, should be block size aligned.
+  * @end:     End offset (inclusive) of the file range, its value +1 should be
+- *           sector size aligned.
++ *           block size aligned.
+  *
+  * This should typically be used for cases where we locked an inode's VFS lock in
+  * exclusive mode, we have also locked the inode's i_mmap_lock in exclusive mode,
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index cdd373c27784..0c5b19c2d0db 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -1589,7 +1589,7 @@ static void verify_bio_data_sectors(struct btrfs_raid_bio *rbio,
+ 			if (!test_bit(total_sector_nr, rbio->csum_bitmap))
+ 				continue;
+ 
+-			ret = btrfs_check_sector_csum(fs_info, bvec->bv_page,
++			ret = btrfs_check_block_csum(fs_info, bvec->bv_page,
+ 				bv_offset, csum_buf, expected_csum);
+ 			if (ret < 0)
+ 				set_bit(total_sector_nr, rbio->error_bitmap);
+@@ -1814,8 +1814,8 @@ static int verify_one_sector(struct btrfs_raid_bio *rbio,
+ 	csum_expected = rbio->csum_buf +
+ 			(stripe_nr * rbio->stripe_nsectors + sector_nr) *
+ 			fs_info->csum_size;
+-	ret = btrfs_check_sector_csum(fs_info, sector->page, sector->pgoff,
+-				      csum_buf, csum_expected);
++	ret = btrfs_check_block_csum(fs_info, sector->page, sector->pgoff,
++				     csum_buf, csum_expected);
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 5cec0875a707..383f0859202d 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -737,7 +737,7 @@ static void scrub_verify_one_block(struct scrub_stripe *stripe, int block_nr)
+ 		return;
  	}
  
--	if (!IS_ALIGNED(offset + len, sectorsize)) {
-+	if (!IS_ALIGNED(offset + len, blocksize)) {
- 		ret = btrfs_zero_range_check_range_boundary(BTRFS_I(inode),
- 							    offset + len);
- 		if (ret < 0)
- 			goto out;
- 		if (ret == RANGE_BOUNDARY_HOLE) {
--			alloc_end = round_up(offset + len, sectorsize);
-+			alloc_end = round_up(offset + len, blocksize);
- 			ret = 0;
- 		} else if (ret == RANGE_BOUNDARY_WRITTEN_EXTENT) {
- 			ret = btrfs_truncate_block(BTRFS_I(inode), offset + len,
-@@ -2909,7 +2909,7 @@ static int btrfs_zero_range(struct inode *inode,
- 		}
- 		ret = btrfs_prealloc_file_range(inode, mode, alloc_start,
- 						alloc_end - alloc_start,
--						fs_info->sectorsize,
-+						fs_info->blocksize,
- 						offset + len, &alloc_hint);
- 		unlock_extent(&BTRFS_I(inode)->io_tree, lockstart, lockend,
- 			      &cached_state);
-@@ -2949,7 +2949,7 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	u64 data_space_reserved = 0;
- 	u64 qgroup_reserved = 0;
- 	struct extent_map *em;
--	int blocksize = BTRFS_I(inode)->root->fs_info->sectorsize;
-+	int blocksize = BTRFS_I(inode)->root->fs_info->blocksize;
- 	int ret;
- 
- 	/* Do not allow fallocate in ZONED mode */
-@@ -3158,7 +3158,7 @@ static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start, u64 end
- 
- 	if (delalloc_len > 0) {
- 		/*
--		 * If delalloc was found then *delalloc_start_ret has a sector size
-+		 * If delalloc was found then *delalloc_start_ret has a block size
- 		 * aligned value (rounded down).
- 		 */
- 		*delalloc_end_ret = *delalloc_start_ret + delalloc_len - 1;
-@@ -3235,13 +3235,13 @@ static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start, u64 end
-  *
-  * @inode:               The inode.
-  * @start:               The start offset of the range. It does not need to be
-- *                       sector size aligned.
-+ *                       block size aligned.
-  * @end:                 The end offset (inclusive value) of the search range.
-- *                       It does not need to be sector size aligned.
-+ *                       It does not need to be block size aligned.
-  * @cached_state:        Extent state record used for speeding up delalloc
-  *                       searches in the inode's io_tree. Can be NULL.
-  * @delalloc_start_ret:  Output argument, set to the start offset of the
-- *                       subrange found with delalloc (may not be sector size
-+ *                       subrange found with delalloc (may not be block size
-  *                       aligned).
-  * @delalloc_end_ret:    Output argument, set to he end offset (inclusive value)
-  *                       of the subrange found with delalloc.
-@@ -3254,7 +3254,7 @@ bool btrfs_find_delalloc_in_range(struct btrfs_inode *inode, u64 start, u64 end,
- 				  struct extent_state **cached_state,
- 				  u64 *delalloc_start_ret, u64 *delalloc_end_ret)
- {
--	u64 cur_offset = round_down(start, inode->root->fs_info->sectorsize);
-+	u64 cur_offset = round_down(start, inode->root->fs_info->blocksize);
- 	u64 prev_delalloc_end = 0;
- 	bool search_io_tree = true;
- 	bool ret = false;
-@@ -3298,14 +3298,14 @@ bool btrfs_find_delalloc_in_range(struct btrfs_inode *inode, u64 start, u64 end,
-  *
-  * @inode:      The inode.
-  * @whence:     Seek mode (SEEK_DATA or SEEK_HOLE).
-- * @start:      Start offset of the hole region. It does not need to be sector
-+ * @start:      Start offset of the hole region. It does not need to be block
-  *              size aligned.
-  * @end:        End offset (inclusive value) of the hole region. It does not
-- *              need to be sector size aligned.
-+ *              need to be block size aligned.
-  * @start_ret:  Return parameter, used to set the start of the subrange in the
-  *              hole that matches the search criteria (seek mode), if such
-  *              subrange is found (return value of the function is true).
-- *              The value returned here may not be sector size aligned.
-+ *              The value returned here may not be block size aligned.
-  *
-  * Returns true if a subrange matching the given seek mode is found, and if one
-  * is found, it updates @start_ret with the start of the subrange.
-@@ -3442,10 +3442,10 @@ static loff_t find_desired_extent(struct file *file, loff_t offset, int whence)
- 	 */
- 	start = max_t(loff_t, 0, offset);
- 
--	lockstart = round_down(start, fs_info->sectorsize);
--	lockend = round_up(i_size, fs_info->sectorsize);
-+	lockstart = round_down(start, fs_info->blocksize);
-+	lockend = round_up(i_size, fs_info->blocksize);
- 	if (lockend <= lockstart)
--		lockend = lockstart + fs_info->sectorsize;
-+		lockend = lockstart + fs_info->blocksize;
- 	lockend--;
- 
- 	path = btrfs_alloc_path();
+-	ret = btrfs_check_sector_csum(fs_info, page, pgoff, csum_buf, block->csum);
++	ret = btrfs_check_block_csum(fs_info, page, pgoff, csum_buf, block->csum);
+ 	if (ret < 0) {
+ 		set_bit(block_nr, &stripe->csum_error_bitmap);
+ 		set_bit(block_nr, &stripe->error_bitmap);
 -- 
 2.47.1
 
