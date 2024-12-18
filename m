@@ -1,197 +1,121 @@
-Return-Path: <linux-btrfs+bounces-10589-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10590-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D17F9F6EF3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 21:36:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFBBD9F6F04
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 21:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA571889E57
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 20:36:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CB1716BD04
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 20:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661911FC0EE;
-	Wed, 18 Dec 2024 20:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2544C1FC0E9;
+	Wed, 18 Dec 2024 20:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RJVlXYb7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kSHkXVYK";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LaSPg/jE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wzRBKFXH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CF3YK9yW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBABB154BF5
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 20:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C216F50F
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 20:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734554171; cv=none; b=smpLBqeDQaJVM+7qocc11E13DvOJTnhpA011dlEbwSZMtGyUzQPYBkjznLE7sDUdcYvfjMFESi5mvsvmUkXlHkPV4JXosd9G/uyd0RSMgMfTr7LCw8klIpDxS5Glq9adQEBE3wWJrCapZjpnLbSeBAfgVs8NTjVJR0bNiDFjxyE=
+	t=1734554772; cv=none; b=fyrKtvOkUay3Ha+R91l0UgfSHbzFuz+6aKkKgU+jz6Mj3ghftU4c0X3Ztd8slHbStX3iAtgKK2YFZUT769r3qZMdjSTgSsGvCNRWiHkO4n4//3dTAEbD1tBcIGqBMjIJCcWE1fQVYgZvhAhjEcPUpuNTtKpzFgZ0RTRy5eYafXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734554171; c=relaxed/simple;
-	bh=/UuGBEJqTaBcad+i1ye+p9c6LEFmqpUSsHbhfpMofn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FDamSVdhqv/cK5KmyZEMKEnje/8iP7AQgzzS2ZXnL6U1dTvL1MjZRpQrFXuuBtfV7EJbXIagNWkLUSj2kj4IsDNiRK/fdoYARLNrMdL0oYmNVIlx+nCH4RgpC5udC3J7SgyQmPT/4ktFJZLoHSWNmN+dYdU8Hs0s0OovQZi9iAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RJVlXYb7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kSHkXVYK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LaSPg/jE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wzRBKFXH; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 85D861F397;
-	Wed, 18 Dec 2024 20:36:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734554167;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=czpN6XBO7vmj/gerXXMs7+mydLCdEmFEt1B1dSHa/U8=;
-	b=RJVlXYb7WYyENnmLOlnSCCbaF7MzsuvO7o1rhQhPeJM/JtX6sTxb9xJjzYvL4qbv86jX8i
-	Enr/UnzVRbWee0Ce+zlGa04dPt24RSUdcIrxUXQjRhZzcs6esF0z4CAkSj/JnQqpM9eWr4
-	0x6/JGw1wDOvyTsLskUxA+/TIwUxgwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734554167;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=czpN6XBO7vmj/gerXXMs7+mydLCdEmFEt1B1dSHa/U8=;
-	b=kSHkXVYKja4gOAkDfEKwmEtLJAAHJ/3zqqvRFQrf4LVKGuw5KQLPiXgISoFOMEcui7W1Kf
-	DKhtsE/EmNwlU9Dw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="LaSPg/jE";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wzRBKFXH
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734554166;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=czpN6XBO7vmj/gerXXMs7+mydLCdEmFEt1B1dSHa/U8=;
-	b=LaSPg/jEMe8qwfKKNyepuu2b+cxT4bl48M+S3EJCj0G0c3NW6llxqbkiClgcxDZlTJZenc
-	YvU6iD+6m5vn5NOsH1gtShkaA09DcaNpenubB6BeAERfGbyBZHpPGpNQkvkZz1YsPjKnHx
-	lsMDdOs8QZNKyZN5+f8D093NImWcedI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734554166;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=czpN6XBO7vmj/gerXXMs7+mydLCdEmFEt1B1dSHa/U8=;
-	b=wzRBKFXHAlI0Q9IuEiNFOobMkm0U8Va2gPAfFCQirLZqB78jEEtRs1XvXpUDdxoVxlQi7c
-	AvPKKT4RygdqrACQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 57FA4137CF;
-	Wed, 18 Dec 2024 20:36:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wb/JFDYyY2e0EAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 18 Dec 2024 20:36:06 +0000
-Date: Wed, 18 Dec 2024 21:36:01 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/18] btrfs: migrate to "block size" to describe the
-Message-ID: <20241218203601.GI31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1734514696.git.wqu@suse.com>
- <20241218183155.GE31418@twin.jikos.cz>
- <73f9e7d0-9954-4507-a48a-2759cf3a2f2f@suse.com>
+	s=arc-20240116; t=1734554772; c=relaxed/simple;
+	bh=WGmtpwvpiTqASZcSc2+nr7tVFwLFLb6JCf31y/LIPls=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J5xWLRH7J0vUyCFiTkEsoLbVMSLx44q3vnQ7mvoufZ3CKLMC6JYKEBb0v1uo7c5d5263QKk3hV2a3NiBjbKhUPHLvy4AP6n3PxAQKiDwEwycUICU074yPIeeVNQB9GK/fWPpEif6gyS5EutAXeus+j/o+yip2H3cMJRMaz+rjMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CF3YK9yW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE77C4CED7
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 20:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734554771;
+	bh=WGmtpwvpiTqASZcSc2+nr7tVFwLFLb6JCf31y/LIPls=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CF3YK9yWb0HWUz2TcYQpktQnp1mCCyVSvLNVkmGxLrs6FKRapsLGpPveDKRcPyy9L
+	 tt9Bwgy8a6F99rDhx7xa8A1i5lJnwLERda3rJC2YsYEYYbPf/9gqk70WjwY4pkb+0m
+	 HitrEQT4PUEwoGxrk4YWC5EL76IrSbMPPtVIrbTynltZgHl2l9SUKkf93pxPu9RddO
+	 3mqMRmfTCJ1c4l+Ofqzha7EdMaoW7ie8Mw0oGsfNB20/NmeptbfnXkNvzlo+B6d9rp
+	 UWjoI7Oe3lm2DPEGDsl9ZHe+s3Cbj9idzoLYMdQT6v9fIm0HT3nH8SQ0DmegcUIXyX
+	 C3AC0qvIdMnBQ==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9a0ef5179dso10224066b.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 12:46:11 -0800 (PST)
+X-Gm-Message-State: AOJu0YzyMvd19mrE4lOU/9iY1orB1O1xFSJGfEFps2w4hW3byRwqHjWk
+	RGQY59sawASqVAjKm1WXAyNnV/ao3yFkn4Jwgq4kd/lk56t1a0hCwQmIWqi9FY0FoPj9lgH+HTx
+	IM2dB/BH5LkG2x0MPDnBa0qF/5tw=
+X-Google-Smtp-Source: AGHT+IGl5WlaJihNnm0l4lnYjO+4mExdfDdmU4S1ShUoeXoffnrYG+hFmj5iRbwBDnliHdHFFae2amv9jZQN2JQLfCc=
+X-Received: by 2002:a17:907:724f:b0:aa6:6276:fe5a with SMTP id
+ a640c23a62f3a-aabf4907ed0mr388465166b.43.1734554770269; Wed, 18 Dec 2024
+ 12:46:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <73f9e7d0-9954-4507-a48a-2759cf3a2f2f@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 85D861F397
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
+References: <cover.1734368270.git.fdmanana@suse.com> <ca35ce34f64fc203266a7336390d82745d82ed5f.1734368270.git.fdmanana@suse.com>
+ <20241218202117.GG31418@twin.jikos.cz>
+In-Reply-To: <20241218202117.GG31418@twin.jikos.cz>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 18 Dec 2024 20:45:33 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5ScfeKwWXndwWP6DjhxC5MvqTKxyikQMCcmEUyfF9Gpg@mail.gmail.com>
+Message-ID: <CAL3q7H5ScfeKwWXndwWP6DjhxC5MvqTKxyikQMCcmEUyfF9Gpg@mail.gmail.com>
+Subject: Re: [PATCH 2/9] btrfs: move csum related functions from ctree.c into fs.c
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 19, 2024 at 06:43:38AM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/12/19 05:01, David Sterba 写道:
-> > On Wed, Dec 18, 2024 at 08:11:16PM +1030, Qu Wenruo wrote:
-> >> [IMPEMENTATION]
-> >> To reduce the confusion, this patchset will do such a huge migration in
-> >> different steps:
-> > 
-> > With some many changes everywhere this is going to make backports even
-> > more tedious. I think it would be best to do the conversion gradually or
-> > selectively to code that does not change so often. As you've split it to
-> > files we can first pick a few obvious ones (like file-item.c) or gather
-> > stats from stable.git.
-> 
-> For the backports, we can put the btrfs_fs_info union to older kernels 
-> and call it a day without the remaining part.
-> 
-> So that both newer and older terminology can co-exist without any conflicts.
-> 
-> Although backport conflicts will still happen in the context.
+On Wed, Dec 18, 2024 at 8:21=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Mon, Dec 16, 2024 at 05:17:17PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > The ctree module is about the implementation of the btree data structur=
+e
+> > and not a place holder for generic filesystem things like the csum
+> > algorithm details. Move the functions related to the csum algorithm
+> > details away from ctree.c and into fs.c, which is a far better place fo=
+r
+> > them. Also fix missing punctuation in comments and change one multiline
+> > comment to a single line comment since everything fits in under 80
+> > characters.
+> >
+> > For some reason this also sligthly reduces the module's size.
+> >
+> > Before this change:
+> >
+> >   $ size fs/btrfs/btrfs.ko
+> >      text        data     bss     dec     hex filename
+> >   1782126      161045   16920 1960091  1de89b fs/btrfs/btrfs.ko
+> >
+> > After this change:
+> >
+> >   $ size fs/btrfs/btrfs.ko
+> >      text        data     bss     dec     hex filename
+> >   1782094      161045   16920 1960059  1de87b fs/btrfs/btrfs.ko
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  fs/btrfs/ctree.c | 51 ------------------------------------------------
+> >  fs/btrfs/ctree.h |  6 ------
+> >  fs/btrfs/fs.c    | 49 ++++++++++++++++++++++++++++++++++++++++++++++
+> >  fs/btrfs/fs.h    |  6 ++++++
+>
+> Can you please create a new file for checksums? Moving everything to
+> fs.c looks like we're going to have another ctree.c.
 
-This is what I'm concerned about. If patches don't apply cleanly they're
-rejected from the automated stable workflow and have to be handled
-manually.
+Is it really worth it? After this patchset fs.c is only 229 lines and
+the csum related functions are just a few and very short.
+My idea would be to do such a thing either when fs.c gets a lot larger
+or we get more csum functions (and/or they get larger).
 
-> > A quick and rough estimate for all 6.x.y releases counting file
-> > backports in the individual patches in the list below. This is period of
-> > 2 years, 104 weeks (roughly matching number of releases). So if there
-> > are 88 patches touching inode.c that's quite likely a conflict in every
-> > backport.
-> > 
-> > This should be also correlated agains number of 'sectorsize' per file,
-> > so it many not be that bad, for example in ioctl.c there are only 4
-> > occurences so that's fine. The point is we can't do the renames without
-> > some sensibility and respect to backports.
-> 
-> But at least, when a backport fails, we can easily fix the conflict.
-> It will always be sectorsize -> blocksize, either in the context or the 
-> modified lines.
+But sure, why not, I can do that on top or send a new version of this patch=
+.
 
-Easily yes, but multiply that by number of failed patches and number of
-stable trees to backport. This takes time and currently the upstream
-backports are best-effort only, not all patches that fail to apply get
-manually backported. Enough that there are CVEs of everything and we
-have to care about them at $job so I'm not going to create more problems
-with backports than we already have just to fix a naming inconvenience.
+Thanks.
 
