@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10528-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10529-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 406539F61F2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:42:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8899F61F0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5407D1621AF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:42:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DA601896127
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED33193079;
-	Wed, 18 Dec 2024 09:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA86198832;
+	Wed, 18 Dec 2024 09:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kgUYSfA/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kgUYSfA/"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="esSO1z5k";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="esSO1z5k"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6919D1917D9
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D401A1922F1
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734514919; cv=none; b=ckImjukyj7vpe+dLv88L6hNWqUwenNKATAzhLq2ebtp7imasByzE5qJmiGMawuM+TaM/w9WTmD8WSlYBifcfkC5wQhscdkNsHJq+jbTxVHJvEQp8sSGSg4Cqoq3XqgISTQroZoCUF7E8irXL3zspQLMJhRd9//2FJE8YeUk3hr4=
+	t=1734514920; cv=none; b=E+VvBX+WAb7a3OPVBiyzDO2QfjAejhkmpjGPUWwByJ1MV5uPY32w2qc6uJDUAcTRZfGbAQem8aw2EtVGhx4Xgux6bnyXlIlB4AMae3x6TZLSdf8OjuOVTF6RFuAU6DWzAtCyx3qv8QkKYFzpkZlIfNurhnjSBFzrCoHrijM1OYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734514919; c=relaxed/simple;
-	bh=vkG0nn1CstCwXRZgpm4Z9EHe2TPCY3iUnJKsDSg8hPg=;
+	s=arc-20240116; t=1734514920; c=relaxed/simple;
+	bh=v8sskZONzs+YtzI11VByAgxD/BGeVeDTGdlcqdfmDo0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LaTLvz3fxGzqUe615ciacbm8RvnhtOrIQv/iP1xhMO3L4KQjF2GbxjvgstDReEGYMKBBniyeV7FBV/NQhlbYaxYrCkItsX67gaD15DJcV2/G3mNrCLN6ydXE6gAZ9A5D1rynVtZuXpBuplNO2q/ubp7YLOwsu2qdUg8NZayXOOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kgUYSfA/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kgUYSfA/; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=MDUifMepl8xpy7ZmkF6CdrsyEITZG4W1jWyOolQ058kSGmW7YRSXrTmsSR8UZYcIDKkRrwaCRm3PmTKhsbm4FOxsXuyKO+yjHMy0L3ImVi/O1AxEjW0ZeSk3Y1LInbroCFgsRW/b7+CkrXyCwHDD3B56xW47NWFnvj4Bz/sOgNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=esSO1z5k; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=esSO1z5k; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F09E1F399
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:54 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DFF971F444
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bRpvH1sIcMBlT22vtr7fNqIp36ztQVUa4efCdaxTmio=;
-	b=kgUYSfA/BsXpW41XJt18w/0wtE5CuaFdEeqZ3RYdNgO4Bss61b9xi7itbBUJTpMRnuQVHJ
-	oBttLBzbF9oqGAtdyNiFyPNCW+3aC48nyMxgCx01ZiGKs1BCvT+NAQr+Skcr8l4x36uiZk
-	lDZ3DOaaRgDLVJQOTOfALWw3rImUdLI=
+	bh=6BLPtNQM6XZDk1qwPXErVmJI70DlJqW8wAOPD8dMGMw=;
+	b=esSO1z5kkrRanh6Z3X8Ash7hZ4N/Y8u6mtZGqghlh2sgsoPUZRR/MtGUa4BHJkpNx7G08z
+	TBo8tXF+YePb7LKXVXqW/EzIhjhRdghVe/Ac5LlhL8WwtmBG/p4BObivDzisUK2U8W1klh
+	BVjvHdIZc2LaRZlsNktxJ5EiQx3pSvk=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bRpvH1sIcMBlT22vtr7fNqIp36ztQVUa4efCdaxTmio=;
-	b=kgUYSfA/BsXpW41XJt18w/0wtE5CuaFdEeqZ3RYdNgO4Bss61b9xi7itbBUJTpMRnuQVHJ
-	oBttLBzbF9oqGAtdyNiFyPNCW+3aC48nyMxgCx01ZiGKs1BCvT+NAQr+Skcr8l4x36uiZk
-	lDZ3DOaaRgDLVJQOTOfALWw3rImUdLI=
+	bh=6BLPtNQM6XZDk1qwPXErVmJI70DlJqW8wAOPD8dMGMw=;
+	b=esSO1z5kkrRanh6Z3X8Ash7hZ4N/Y8u6mtZGqghlh2sgsoPUZRR/MtGUa4BHJkpNx7G08z
+	TBo8tXF+YePb7LKXVXqW/EzIhjhRdghVe/Ac5LlhL8WwtmBG/p4BObivDzisUK2U8W1klh
+	BVjvHdIZc2LaRZlsNktxJ5EiQx3pSvk=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B196E132EA
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D523132EA
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SICUG+GYYmdmSwAAD6G6ig
+	id SFEPL+KYYmdmSwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:53 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:54 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 01/18] btrfs: rename btrfs_fs_info::sectorsize to blocksize for disk-io.c
-Date: Wed, 18 Dec 2024 20:11:17 +1030
-Message-ID: <7d28eec4349d9b4ec5d7097e5194418a9cb16883.1734514696.git.wqu@suse.com>
+Subject: [PATCH 02/18] btrfs: migrate subpage.[ch] to use block size terminology
+Date: Wed, 18 Dec 2024 20:11:18 +1030
+Message-ID: <d9fb986bf7c705d766c203f58a4339a32fa8d6ea.1734514696.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1734514696.git.wqu@suse.com>
 References: <cover.1734514696.git.wqu@suse.com>
@@ -97,7 +97,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -109,312 +109,374 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 X-Spam-Score: -2.80
 X-Spam-Flag: NO
 
-All other file systems use the terminology "block size" for the minimum
-data block size, but due to historical reasons we use "sector size" for
-btrfs from day 1.
-
-Furthermore the kernel has its own sector size, fixed to 512 as the
-minimal supported block IO size.
-
-This can cause confusion when talking with other MM/FS people.
-
-So here we rename btrfs_fs_info::sectorsize to blocksize.
-But there are over 800 such usages across btrfs already, to make the
-transaction more smooth, for now @sectorsize and @blocksize are inside
-an anonymous union, so that both name can be utilized until we finish
-the full transaction.
+Straightforward rename from "sector" to "block".
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c | 82 +++++++++++++++++++++++-----------------------
- fs/btrfs/fs.h      | 25 +++++++++-----
- 2 files changed, 58 insertions(+), 49 deletions(-)
+ fs/btrfs/subpage.c | 92 +++++++++++++++++++++++-----------------------
+ fs/btrfs/subpage.h |  8 ++--
+ 2 files changed, 50 insertions(+), 50 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index eff0dd1ae62f..d3d2c9e2356a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -555,7 +555,7 @@ static bool btree_dirty_folio(struct address_space *mapping,
- 	int cur_bit = 0;
- 	u64 page_start = folio_pos(folio);
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 8c68059ac1b0..c37e24c11e21 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -7,7 +7,7 @@
+ #include "btrfs_inode.h"
  
--	if (fs_info->sectorsize == PAGE_SIZE) {
-+	if (fs_info->blocksize == PAGE_SIZE) {
- 		eb = folio_get_private(folio);
- 		BUG_ON(!eb);
- 		BUG_ON(!test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-@@ -579,7 +579,7 @@ static bool btree_dirty_folio(struct address_space *mapping,
- 			continue;
- 		}
- 		spin_unlock_irqrestore(&subpage->lock, flags);
--		cur = page_start + cur_bit * fs_info->sectorsize;
-+		cur = page_start + cur_bit * fs_info->blocksize;
+ /*
+- * Subpage (sectorsize < PAGE_SIZE) support overview:
++ * Subpage (blocksize < PAGE_SIZE) support overview:
+  *
+  * Limitations:
+  *
+@@ -51,7 +51,7 @@
+  *
+  * - Common
+  *   Both metadata and data will use a new structure, btrfs_subpage, to
+- *   record the status of each sector inside a page.  This provides the extra
++ *   record the status of each block inside a page.  This provides the extra
+  *   granularity needed.
+  *
+  * - Metadata
+@@ -67,13 +67,13 @@
+ #if PAGE_SIZE > SZ_4K
+ bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info, struct address_space *mapping)
+ {
+-	if (fs_info->sectorsize >= PAGE_SIZE)
++	if (fs_info->blocksize >= PAGE_SIZE)
+ 		return false;
  
- 		eb = find_extent_buffer(fs_info, cur);
- 		ASSERT(eb);
-@@ -588,7 +588,7 @@ static bool btree_dirty_folio(struct address_space *mapping,
- 		btrfs_assert_tree_write_locked(eb);
- 		free_extent_buffer(eb);
+ 	/*
+ 	 * Only data pages (either through DIO or compression) can have no
+ 	 * mapping. And if page->mapping->host is data inode, it's subpage.
+-	 * As we have ruled our sectorsize >= PAGE_SIZE case already.
++	 * As we have ruled our blocksize >= PAGE_SIZE case already.
+ 	 */
+ 	if (!mapping || !mapping->host || is_data_inode(BTRFS_I(mapping->host)))
+ 		return true;
+@@ -131,10 +131,10 @@ struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_subpage *ret;
+ 	unsigned int real_size;
  
--		cur_bit += (fs_info->nodesize >> fs_info->sectorsize_bits) - 1;
-+		cur_bit += (fs_info->nodesize >> fs_info->blocksize_bits) - 1;
- 	}
- 	return filemap_dirty_folio(mapping, folio);
- }
-@@ -738,7 +738,7 @@ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info)
- 	if (!root)
+-	ASSERT(fs_info->sectorsize < PAGE_SIZE);
++	ASSERT(fs_info->blocksize < PAGE_SIZE);
+ 
+ 	real_size = struct_size(ret, bitmaps,
+-			BITS_TO_LONGS(btrfs_bitmap_nr_max * fs_info->sectors_per_page));
++			BITS_TO_LONGS(btrfs_bitmap_nr_max * fs_info->blocks_per_page));
+ 	ret = kzalloc(real_size, GFP_NOFS);
+ 	if (!ret)
  		return ERR_PTR(-ENOMEM);
+@@ -198,8 +198,8 @@ static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
  
--	/* We don't use the stripesize in selftest, set it as sectorsize */
-+	/* We don't use the stripesize in selftest, set it as blocksize */
- 	root->alloc_bytenr = 0;
+ 	/* Basic checks */
+ 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+-	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+-	       IS_ALIGNED(len, fs_info->sectorsize));
++	ASSERT(IS_ALIGNED(start, fs_info->blocksize) &&
++	       IS_ALIGNED(len, fs_info->blocksize));
+ 	/*
+ 	 * The range check only works for mapped page, we can still have
+ 	 * unmapped page like dummy extent buffer pages.
+@@ -214,8 +214,8 @@ static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
+ 	unsigned int __start_bit;						\
+ 									\
+ 	btrfs_subpage_assert(fs_info, folio, start, len);		\
+-	__start_bit = offset_in_page(start) >> fs_info->sectorsize_bits; \
+-	__start_bit += fs_info->sectors_per_page * btrfs_bitmap_nr_##name; \
++	__start_bit = offset_in_page(start) >> fs_info->blocksize_bits; \
++	__start_bit += fs_info->blocks_per_page * btrfs_bitmap_nr_##name; \
+ 	__start_bit;							\
+ })
  
- 	return root;
-@@ -2341,7 +2341,7 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 			 const struct btrfs_super_block *sb, int mirror_num)
+@@ -242,7 +242,7 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
  {
- 	u64 nodesize = btrfs_super_nodesize(sb);
--	u64 sectorsize = btrfs_super_sectorsize(sb);
-+	u64 blocksize = btrfs_super_sectorsize(sb);
- 	int ret = 0;
- 	const bool ignore_flags = btrfs_test_opt(fs_info, IGNORESUPERFLAGS);
- 
-@@ -2378,31 +2378,31 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	}
- 
- 	/*
--	 * Check sectorsize and nodesize first, other check will need it.
--	 * Check all possible sectorsize(4K, 8K, 16K, 32K, 64K) here.
-+	 * Check blocksize and nodesize first, other check will need it.
-+	 * Check all possible blocksize(4K, 8K, 16K, 32K, 64K) here.
- 	 */
--	if (!is_power_of_2(sectorsize) || sectorsize < 4096 ||
--	    sectorsize > BTRFS_MAX_METADATA_BLOCKSIZE) {
--		btrfs_err(fs_info, "invalid sectorsize %llu", sectorsize);
-+	if (!is_power_of_2(blocksize) || blocksize < 4096 ||
-+	    blocksize > BTRFS_MAX_METADATA_BLOCKSIZE) {
-+		btrfs_err(fs_info, "invalid blocksize %llu", blocksize);
- 		ret = -EINVAL;
- 	}
- 
- 	/*
--	 * We only support at most two sectorsizes: 4K and PAGE_SIZE.
-+	 * We only support at most two blocksizes: 4K and PAGE_SIZE.
- 	 *
--	 * We can support 16K sectorsize with 64K page size without problem,
--	 * but such sectorsize/pagesize combination doesn't make much sense.
-+	 * We can support 16K blocksize with 64K page size without problem,
-+	 * but such blocksize/pagesize combination doesn't make much sense.
- 	 * 4K will be our future standard, PAGE_SIZE is supported from the very
- 	 * beginning.
- 	 */
--	if (sectorsize > PAGE_SIZE || (sectorsize != SZ_4K && sectorsize != PAGE_SIZE)) {
-+	if (blocksize > PAGE_SIZE || (blocksize != SZ_4K && blocksize != PAGE_SIZE)) {
- 		btrfs_err(fs_info,
--			"sectorsize %llu not yet supported for page size %lu",
--			sectorsize, PAGE_SIZE);
-+			"blocksize %llu not yet supported for page size %lu",
-+			blocksize, PAGE_SIZE);
- 		ret = -EINVAL;
- 	}
- 
--	if (!is_power_of_2(nodesize) || nodesize < sectorsize ||
-+	if (!is_power_of_2(nodesize) || nodesize < blocksize ||
- 	    nodesize > BTRFS_MAX_METADATA_BLOCKSIZE) {
- 		btrfs_err(fs_info, "invalid nodesize %llu", nodesize);
- 		ret = -EINVAL;
-@@ -2414,17 +2414,17 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	}
- 
- 	/* Root alignment check */
--	if (!IS_ALIGNED(btrfs_super_root(sb), sectorsize)) {
-+	if (!IS_ALIGNED(btrfs_super_root(sb), blocksize)) {
- 		btrfs_warn(fs_info, "tree_root block unaligned: %llu",
- 			   btrfs_super_root(sb));
- 		ret = -EINVAL;
- 	}
--	if (!IS_ALIGNED(btrfs_super_chunk_root(sb), sectorsize)) {
-+	if (!IS_ALIGNED(btrfs_super_chunk_root(sb), blocksize)) {
- 		btrfs_warn(fs_info, "chunk_root block unaligned: %llu",
- 			   btrfs_super_chunk_root(sb));
- 		ret = -EINVAL;
- 	}
--	if (!IS_ALIGNED(btrfs_super_log_root(sb), sectorsize)) {
-+	if (!IS_ALIGNED(btrfs_super_log_root(sb), blocksize)) {
- 		btrfs_warn(fs_info, "log_root block unaligned: %llu",
- 			   btrfs_super_log_root(sb));
- 		ret = -EINVAL;
-@@ -2819,8 +2819,8 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 
- 	/* Usable values until the real ones are cached from the superblock */
- 	fs_info->nodesize = 4096;
--	fs_info->sectorsize = 4096;
--	fs_info->sectorsize_bits = ilog2(4096);
-+	fs_info->blocksize = 4096;
-+	fs_info->blocksize_bits = ilog2(4096);
- 	fs_info->stripesize = 4096;
- 
- 	/* Default compress algorithm when user does -o compress */
-@@ -3123,10 +3123,10 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- 
- 	/* Runtime limitation for mixed block groups. */
- 	if ((incompat & BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS) &&
--	    (fs_info->sectorsize != fs_info->nodesize)) {
-+	    (fs_info->blocksize != fs_info->nodesize)) {
- 		btrfs_err(fs_info,
--"unequal nodesize/sectorsize (%u != %u) are not allowed for mixed block groups",
--			fs_info->nodesize, fs_info->sectorsize);
-+"unequal nodesize/blocksize (%u != %u) are not allowed for mixed block groups",
-+			fs_info->nodesize, fs_info->blocksize);
- 		return -EINVAL;
- 	}
- 
-@@ -3185,10 +3185,10 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- 	 * we're already defaulting to v2 cache, no need to bother v1 as it's
- 	 * going to be deprecated anyway.
- 	 */
--	if (fs_info->sectorsize < PAGE_SIZE && btrfs_test_opt(fs_info, SPACE_CACHE)) {
-+	if (fs_info->blocksize < PAGE_SIZE && btrfs_test_opt(fs_info, SPACE_CACHE)) {
- 		btrfs_warn(fs_info,
--	"v1 space cache is not supported for page size %lu with sectorsize %u",
--			   PAGE_SIZE, fs_info->sectorsize);
-+	"v1 space cache is not supported for page size %lu with blocksize %u",
-+			   PAGE_SIZE, fs_info->blocksize);
- 		return -EINVAL;
- 	}
- 
-@@ -3202,7 +3202,7 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- 
- int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices)
+ 	struct btrfs_subpage *subpage = folio_get_private(folio);
+ 	const int start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
+-	const int nbits = (len >> fs_info->sectorsize_bits);
++	const int nbits = (len >> fs_info->blocksize_bits);
+ 	unsigned long flags;
+ 	unsigned int cleared = 0;
+ 	int bit = start_bit;
+@@ -285,7 +285,7 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
+  *   We can simple unlock it.
+  *
+  * - folio locked with subpage range locked.
+- *   We go through the locked sectors inside the range and clear their locked
++ *   We go through the locked blocks inside the range and clear their locked
+  *   bitmap, reduce the writer lock number, and unlock the page if that's
+  *   the last locked range.
+  */
+@@ -323,7 +323,7 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
+ 				 struct folio *folio, unsigned long bitmap)
  {
--	u32 sectorsize;
-+	u32 blocksize;
- 	u32 nodesize;
- 	u32 stripesize;
- 	u64 generation;
-@@ -3310,15 +3310,15 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	struct btrfs_subpage *subpage = folio_get_private(folio);
+-	const int start_bit = fs_info->sectors_per_page * btrfs_bitmap_nr_locked;
++	const int start_bit = fs_info->blocks_per_page * btrfs_bitmap_nr_locked;
+ 	unsigned long flags;
+ 	bool last = false;
+ 	int cleared = 0;
+@@ -341,7 +341,7 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
+ 	}
  
- 	/* Set up fs_info before parsing mount options */
- 	nodesize = btrfs_super_nodesize(disk_super);
--	sectorsize = btrfs_super_sectorsize(disk_super);
--	stripesize = sectorsize;
-+	blocksize = btrfs_super_sectorsize(disk_super);
-+	stripesize = blocksize;
- 	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
--	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
-+	fs_info->delalloc_batch = blocksize * 512 * (1 + ilog2(nr_cpu_ids));
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	for_each_set_bit(bit, &bitmap, fs_info->sectors_per_page) {
++	for_each_set_bit(bit, &bitmap, fs_info->blocks_per_page) {
+ 		if (test_and_clear_bit(bit + start_bit, subpage->bitmaps))
+ 			cleared++;
+ 	}
+@@ -354,13 +354,13 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
  
- 	fs_info->nodesize = nodesize;
--	fs_info->sectorsize = sectorsize;
--	fs_info->sectorsize_bits = ilog2(sectorsize);
--	fs_info->sectors_per_page = (PAGE_SIZE >> fs_info->sectorsize_bits);
-+	fs_info->blocksize = blocksize;
-+	fs_info->blocksize_bits = ilog2(blocksize);
-+	fs_info->blocks_per_page = (PAGE_SIZE >> fs_info->blocksize_bits);
- 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
- 	fs_info->stripesize = stripesize;
+ #define subpage_test_bitmap_all_set(fs_info, subpage, name)		\
+ 	bitmap_test_range_all_set(subpage->bitmaps,			\
+-			fs_info->sectors_per_page * btrfs_bitmap_nr_##name, \
+-			fs_info->sectors_per_page)
++			fs_info->blocks_per_page * btrfs_bitmap_nr_##name, \
++			fs_info->blocks_per_page)
  
-@@ -3339,14 +3339,14 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ #define subpage_test_bitmap_all_zero(fs_info, subpage, name)		\
+ 	bitmap_test_range_all_zero(subpage->bitmaps,			\
+-			fs_info->sectors_per_page * btrfs_bitmap_nr_##name, \
+-			fs_info->sectors_per_page)
++			fs_info->blocks_per_page * btrfs_bitmap_nr_##name, \
++			fs_info->blocks_per_page)
  
- 	/*
- 	 * At this point our mount options are validated, if we set ->max_inline
--	 * to something non-standard make sure we truncate it to sectorsize.
-+	 * to something non-standard make sure we truncate it to blocksize.
- 	 */
--	fs_info->max_inline = min_t(u64, fs_info->max_inline, fs_info->sectorsize);
-+	fs_info->max_inline = min_t(u64, fs_info->max_inline, fs_info->blocksize);
+ void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
+ 				struct folio *folio, u64 start, u32 len)
+@@ -371,7 +371,7 @@ void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
  
--	if (sectorsize < PAGE_SIZE)
-+	if (blocksize < PAGE_SIZE)
- 		btrfs_warn(fs_info,
- 		"read-write for sector size %u with page size %lu is experimental",
--			   sectorsize, PAGE_SIZE);
-+			   blocksize, PAGE_SIZE);
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	if (subpage_test_bitmap_all_set(fs_info, subpage, uptodate))
+ 		folio_mark_uptodate(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+@@ -386,7 +386,7 @@ void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
  
- 	ret = btrfs_init_workqueues(fs_info);
- 	if (ret)
-@@ -3356,8 +3356,8 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
- 
- 	/* Update the values for the current filesystem. */
--	sb->s_blocksize = sectorsize;
--	sb->s_blocksize_bits = blksize_bits(sectorsize);
-+	sb->s_blocksize = blocksize;
-+	sb->s_blocksize_bits = blksize_bits(blocksize);
- 	memcpy(&sb->s_uuid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE);
- 
- 	mutex_lock(&fs_info->chunk_mutex);
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 58e6b4b953f1..9f8324ae3800 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -179,7 +179,7 @@ enum {
- 
- 	/*
- 	 * Indicate that we have found a tree block which is only aligned to
--	 * sectorsize, but not to nodesize.  This should be rare nowadays.
-+	 * blocksize, but not to nodesize.  This should be rare nowadays.
- 	 */
- 	BTRFS_FS_UNALIGNED_TREE_BLOCK,
- 
-@@ -707,7 +707,10 @@ struct btrfs_fs_info {
- 	 * running.
- 	 */
- 	refcount_t scrub_workers_refcnt;
--	u32 sectors_per_page;
-+	union {
-+		u32 sectors_per_page;
-+		u32 blocks_per_page;
-+	};
- 	struct workqueue_struct *scrub_workers;
- 
- 	struct btrfs_discard_ctl discard_ctl;
-@@ -762,7 +765,7 @@ struct btrfs_fs_info {
- 
- 	/* Extent buffer radix tree */
- 	spinlock_t buffer_lock;
--	/* Entries are eb->start / sectorsize */
-+	/* Entries are eb->start / blocksize */
- 	struct radix_tree_root buffer_radix;
- 
- 	/* Next backup root to be overwritten */
-@@ -794,9 +797,15 @@ struct btrfs_fs_info {
- 
- 	/* Cached block sizes */
- 	u32 nodesize;
--	u32 sectorsize;
--	/* ilog2 of sectorsize, use to avoid 64bit division */
--	u32 sectorsize_bits;
-+	union {
-+		u32 sectorsize;
-+		u32 blocksize;
-+	};
-+	/* ilog2 of blocksize, use to avoid 64bit division */
-+	union {
-+		u32 sectorsize_bits;
-+		u32 blocksize_bits;
-+	};
- 	u32 csum_size;
- 	u32 csums_per_leaf;
- 	u32 stripesize;
-@@ -931,7 +940,7 @@ static inline u64 btrfs_get_last_root_drop_gen(const struct btrfs_fs_info *fs_in
- static inline u64 btrfs_csum_bytes_to_leaves(
- 			const struct btrfs_fs_info *fs_info, u64 csum_bytes)
- {
--	const u64 num_csums = csum_bytes >> fs_info->sectorsize_bits;
-+	const u64 num_csums = csum_bytes >> fs_info->blocksize_bits;
- 
- 	return DIV_ROUND_UP_ULL(num_csums, fs_info->csums_per_leaf);
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	folio_clear_uptodate(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
  }
-@@ -959,7 +968,7 @@ static inline u64 btrfs_calc_metadata_size(const struct btrfs_fs_info *fs_info,
- #define BTRFS_MAX_EXTENT_ITEM_SIZE(r) ((BTRFS_LEAF_DATA_SIZE(r->fs_info) >> 4) - \
- 					sizeof(struct btrfs_item))
+@@ -400,7 +400,7 @@ void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
  
--#define BTRFS_BYTES_TO_BLKS(fs_info, bytes) ((bytes) >> (fs_info)->sectorsize_bits)
-+#define BTRFS_BYTES_TO_BLKS(fs_info, bytes) ((bytes) >> (fs_info)->blocksize_bits)
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ 	folio_mark_dirty(folio);
+ }
+@@ -425,7 +425,7 @@ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 	bool last = false;
  
- static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	if (subpage_test_bitmap_all_zero(fs_info, subpage, dirty))
+ 		last = true;
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+@@ -451,7 +451,7 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	if (!folio_test_writeback(folio))
+ 		folio_start_writeback(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+@@ -466,7 +466,7 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	if (subpage_test_bitmap_all_zero(fs_info, subpage, writeback)) {
+ 		ASSERT(folio_test_writeback(folio));
+ 		folio_end_writeback(folio);
+@@ -483,7 +483,7 @@ void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	folio_set_ordered(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
+@@ -497,7 +497,7 @@ void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	if (subpage_test_bitmap_all_zero(fs_info, subpage, ordered))
+ 		folio_clear_ordered(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+@@ -512,7 +512,7 @@ void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	if (subpage_test_bitmap_all_set(fs_info, subpage, checked))
+ 		folio_set_checked(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+@@ -527,7 +527,7 @@ void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+-	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->blocksize_bits);
+ 	folio_clear_checked(folio);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
+@@ -548,7 +548,7 @@ bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,	\
+ 									\
+ 	spin_lock_irqsave(&subpage->lock, flags);			\
+ 	ret = bitmap_test_range_all_set(subpage->bitmaps, start_bit,	\
+-				len >> fs_info->sectorsize_bits);	\
++				len >> fs_info->blocksize_bits);	\
+ 	spin_unlock_irqrestore(&subpage->lock, flags);			\
+ 	return ret;							\
+ }
+@@ -560,8 +560,8 @@ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(checked);
+ 
+ /*
+  * Note that, in selftests (extent-io-tests), we can have empty fs_info passed
+- * in.  We only test sectorsize == PAGE_SIZE cases so far, thus we can fall
+- * back to regular sectorsize branch.
++ * in.  We only test blocksize == PAGE_SIZE cases so far, thus we can fall
++ * back to regular blocksize branch.
+  */
+ #define IMPLEMENT_BTRFS_PAGE_OPS(name, folio_set_func,			\
+ 				 folio_clear_func, folio_test_func)	\
+@@ -656,7 +656,7 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	start_bit = subpage_calc_start_bit(fs_info, folio, dirty, start, len);
+-	nbits = len >> fs_info->sectorsize_bits;
++	nbits = len >> fs_info->blocksize_bits;
+ 	subpage = folio_get_private(folio);
+ 	ASSERT(subpage);
+ 	spin_lock_irqsave(&subpage->lock, flags);
+@@ -686,31 +686,31 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
+ 
+ 	subpage = folio_get_private(folio);
+ 	start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
+-	nbits = len >> fs_info->sectorsize_bits;
++	nbits = len >> fs_info->blocksize_bits;
+ 	spin_lock_irqsave(&subpage->lock, flags);
+ 	/* Target range should not yet be locked. */
+ 	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
+ 	bitmap_set(subpage->bitmaps, start_bit, nbits);
+ 	ret = atomic_add_return(nbits, &subpage->nr_locked);
+-	ASSERT(ret <= fs_info->sectors_per_page);
++	ASSERT(ret <= fs_info->blocks_per_page);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
+ 
+ #define GET_SUBPAGE_BITMAP(subpage, fs_info, name, dst)			\
+ {									\
+-	const int sectors_per_page = fs_info->sectors_per_page;		\
++	const int blocks_per_page = fs_info->blocks_per_page;		\
+ 									\
+-	ASSERT(sectors_per_page < BITS_PER_LONG);			\
++	ASSERT(blocks_per_page < BITS_PER_LONG);			\
+ 	*dst = bitmap_read(subpage->bitmaps,				\
+-			   sectors_per_page * btrfs_bitmap_nr_##name,	\
+-			   sectors_per_page);				\
++			   blocks_per_page * btrfs_bitmap_nr_##name,	\
++			   blocks_per_page);				\
+ }
+ 
+ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
+ 				      struct folio *folio, u64 start, u32 len)
  {
+ 	struct btrfs_subpage *subpage;
+-	const u32 sectors_per_page = fs_info->sectors_per_page;
++	const u32 blocks_per_page = fs_info->blocks_per_page;
+ 	unsigned long uptodate_bitmap;
+ 	unsigned long dirty_bitmap;
+ 	unsigned long writeback_bitmap;
+@@ -719,7 +719,7 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+-	ASSERT(sectors_per_page > 1);
++	ASSERT(blocks_per_page > 1);
+ 	subpage = folio_get_private(folio);
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+@@ -735,11 +735,11 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
+ 	btrfs_warn(fs_info,
+ "start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
+ 		    start, len, folio_pos(folio),
+-		    sectors_per_page, &uptodate_bitmap,
+-		    sectors_per_page, &dirty_bitmap,
+-		    sectors_per_page, &writeback_bitmap,
+-		    sectors_per_page, &ordered_bitmap,
+-		    sectors_per_page, &checked_bitmap);
++		    blocks_per_page, &uptodate_bitmap,
++		    blocks_per_page, &dirty_bitmap,
++		    blocks_per_page, &writeback_bitmap,
++		    blocks_per_page, &ordered_bitmap,
++		    blocks_per_page, &checked_bitmap);
+ }
+ 
+ void btrfs_get_subpage_dirty_bitmap(struct btrfs_fs_info *fs_info,
+@@ -750,7 +750,7 @@ void btrfs_get_subpage_dirty_bitmap(struct btrfs_fs_info *fs_info,
+ 	unsigned long flags;
+ 
+ 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+-	ASSERT(fs_info->sectors_per_page > 1);
++	ASSERT(fs_info->blocks_per_page > 1);
+ 	subpage = folio_get_private(folio);
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index 428fa9389fd4..c223cdfa6056 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -23,7 +23,7 @@ struct btrfs_fs_info;
+  * |			|		|
+  * v			v		v
+  * |u|u|u|u|........|u|u|d|d|.......|d|d|o|o|.......|o|o|
+- * |< sectors_per_page >|
++ * |<  blocks_per_page >|
+  *
+  * Unlike regular macro-like enums, here we do not go upper-case names, as
+  * these names will be utilized in various macros to define function names.
+@@ -39,7 +39,7 @@ enum {
+ };
+ 
+ /*
+- * Structure to trace status of each sector inside a page, attached to
++ * Structure to trace status of each block inside a page, attached to
+  * page::private for both data and metadata inodes.
+  */
+ struct btrfs_subpage {
+@@ -57,7 +57,7 @@ struct btrfs_subpage {
+ 		/*
+ 		 * Structures only used by data,
+ 		 *
+-		 * How many sectors inside the page is locked.
++		 * How many blocks inside the page is locked.
+ 		 */
+ 		atomic_t nr_locked;
+ 	};
+@@ -83,7 +83,7 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
+ 			 struct folio *folio, enum btrfs_subpage_type type);
+ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *folio);
+ 
+-/* Allocate additional data where page represents more than one sector */
++/* Allocate additional data where page represents more than one block */
+ struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
+ 					  enum btrfs_subpage_type type);
+ void btrfs_free_subpage(struct btrfs_subpage *subpage);
 -- 
 2.47.1
 
