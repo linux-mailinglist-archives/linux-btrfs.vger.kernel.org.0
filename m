@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-10572-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10573-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F969F6BEF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 18:08:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A00B69F6BF3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 18:08:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47F507A222C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 17:08:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FDC3171061
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 17:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AA01F8EF8;
-	Wed, 18 Dec 2024 17:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56821FBE88;
+	Wed, 18 Dec 2024 17:07:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAtENVPN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CgRl4au5"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31681FBCB0
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE431FA8E9
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:07:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734541628; cv=none; b=SwmmlZLaQ3h4vfJAC1FzIPoEhTw1HKzYaqQwBLCqezYHfGEIrr57X3iGXNDoNgkINJTo/lExXdh0LFu+wa6ceZks3oqDLiLACpneuzOSml9JFYSnvKwKg2ye8jCbehpStRSzjXk20OeuUgfLMcqg/Q3u6me1RVqgR14RCLxJIPI=
+	t=1734541629; cv=none; b=l72UnozKd2z0/lQINvDodNC7QXLimV3sriighB+5hurZ3V6u0ouUQ91kHImwe5vKC7ciMYyAdpujSYesJYnzPpgOzU81g/bmpmGePesmqm+aVZa48g1BY4a0gwVsmmNA6q3At8UFxiY0CKMJYPz0aO2tBp8+luu1qSC1cUH2o5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734541628; c=relaxed/simple;
-	bh=+/Jfnfa9pF0R8Q8+6kfAj1m+yM6g+Iiyo2D4CYIJib8=;
+	s=arc-20240116; t=1734541629; c=relaxed/simple;
+	bh=6Qw7uSRx7Qm4u6q/gEbPWjb6LcI+qospRa/zpff441Q=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g/evGOAOl6nCcTIr0MAI/PTVjnzZwKBHCF57j2w0InptIy60G50rAyxm0K2YVBLvQoo2zIxVd328iFR/cp9YbMQeSmEwImQpCJY1HGuylHUjqJCEBzeSTe5wz/A5JksWiaJjikYXEr1H1Nk1FK5x91b590RvshQqE+Awe3I471Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAtENVPN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8AAC4CED0
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:07:07 +0000 (UTC)
+	 MIME-Version; b=qYzpWnVSLpw6C0BY47QKtnitKkUJe9zsQ/yUrfLr7UKqU+1SOpMhsPgSWldhIhdB2G5fSNc/RvcIzrzqdzMGvjQlZceioNA8jNFsLNMkcuFWMrl5K9woUlpG7uwASiZKqQWDSHOPSMIUfgNtXPTJFeudB1F1KR2es/YB/VMdm/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CgRl4au5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54A66C4CECD
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734541627;
-	bh=+/Jfnfa9pF0R8Q8+6kfAj1m+yM6g+Iiyo2D4CYIJib8=;
+	s=k20201202; t=1734541628;
+	bh=6Qw7uSRx7Qm4u6q/gEbPWjb6LcI+qospRa/zpff441Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=tAtENVPNS+wJ41X2G2Ws1bqRHRUP+U/JFrYJh6w5ko1ezyBB5GDXqMNQBjl6SfAHz
-	 cTvmTXpiGndutpOH309ykPmFoaw8zEnn4pt+1b+6V1HuB7vU2IZvqbxjk14U43nCrR
-	 8+4TTjQZydg6nqHu4ZC+Iv/sO252lg4+D1ELFbNje06NF3e0ciCqZltiSY+BozTfIQ
-	 cWBP3J1OtV9Vz690U7epd2lDevlg6yepcB6rivfXmk7caxT1gnVvLsB+Ri3NibVJMI
-	 auZlen89/rezbavI/o9kU9DmK/ZGaS66n/4/dfRXmswgL6YI3hT43nRzqEADtz3OTq
-	 QdNoc4o928Fpw==
+	b=CgRl4au5M9IuKcKynEbchv4IYWiCwR43L4wIK2Rzw689n1jwUlUM9LS/MaCPc2KSq
+	 3yuOVCB8UFDl54Qf7MxivMeNf590LvS5U0OF/CHwYW3GX6n0bCosMtUBPeGij4PI+8
+	 vtbG8D5sJtK0p/yEJ9I4EVp/+QSjpG4r8GNa8sBRULNjTAU+9fJdIPyA22P0EhSS23
+	 fvHpBXzWBNAbj7tFuokgDnmAwJ0Xvw/aylTB95Plk35fpVfYls29Xnw90MypnsjnF2
+	 D+cgT47ZnqFP15+J6R9dHQo1k5NcyTgceqoze3I4r7KPWPJ0vWnSBaZaMdvQb/vFtt
+	 KXlOvOaL4GQow==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 16/20] btrfs: relocation: remove unnecessary calls to btrfs_mark_buffer_dirty()
-Date: Wed, 18 Dec 2024 17:06:43 +0000
-Message-Id: <e9e0b2e377aa364faefc7d4d0607ffe38881981e.1734527445.git.fdmanana@suse.com>
+Subject: [PATCH 17/20] btrfs: root-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
+Date: Wed, 18 Dec 2024 17:06:44 +0000
+Message-Id: <c57d814d24acb4a29df02fa7de10190d6ff1da35.1734527445.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1734527445.git.fdmanana@suse.com>
 References: <cover.1734527445.git.fdmanana@suse.com>
@@ -70,60 +70,29 @@ overhead and well as increase the module's text size, so remove them.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/relocation.c | 7 -------
- 1 file changed, 7 deletions(-)
+ fs/btrfs/root-tree.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index cdd9a7b15a11..d4100e58172f 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -856,7 +856,6 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
- 	u32 i;
- 	int ret = 0;
- 	int first = 1;
--	int dirty = 0;
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index 33962671a96c..e22e6b06927a 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -197,7 +197,6 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	btrfs_set_root_generation_v2(item, btrfs_root_generation(item));
  
- 	if (rc->stage != UPDATE_DATA_PTRS)
- 		return 0;
-@@ -936,7 +935,6 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
- 		}
- 
- 		btrfs_set_file_extent_disk_bytenr(leaf, fi, new_bytenr);
--		dirty = 1;
- 
- 		key.offset -= btrfs_file_extent_offset(leaf, fi);
- 		ref.action = BTRFS_ADD_DELAYED_REF;
-@@ -967,8 +965,6 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
- 			break;
- 		}
- 	}
--	if (dirty)
--		btrfs_mark_buffer_dirty(trans, leaf);
- 	if (inode)
- 		btrfs_add_delayed_iput(inode);
- 	return ret;
-@@ -1161,13 +1157,11 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
- 		 */
- 		btrfs_set_node_blockptr(parent, slot, new_bytenr);
- 		btrfs_set_node_ptr_generation(parent, slot, new_ptr_gen);
--		btrfs_mark_buffer_dirty(trans, parent);
- 
- 		btrfs_set_node_blockptr(path->nodes[level],
- 					path->slots[level], old_bytenr);
- 		btrfs_set_node_ptr_generation(path->nodes[level],
- 					      path->slots[level], old_ptr_gen);
--		btrfs_mark_buffer_dirty(trans, path->nodes[level]);
- 
- 		ref.action = BTRFS_ADD_DELAYED_REF;
- 		ref.bytenr = old_bytenr;
-@@ -3728,7 +3722,6 @@ static int __insert_orphan_inode(struct btrfs_trans_handle *trans,
- 	btrfs_set_inode_mode(leaf, item, S_IFREG | 0600);
- 	btrfs_set_inode_flags(leaf, item, BTRFS_INODE_NOCOMPRESS |
- 					  BTRFS_INODE_PREALLOC);
--	btrfs_mark_buffer_dirty(trans, leaf);
+ 	write_extent_buffer(l, item, ptr, sizeof(*item));
+-	btrfs_mark_buffer_dirty(trans, path->nodes[0]);
  out:
  	btrfs_free_path(path);
  	return ret;
+@@ -447,7 +446,6 @@ int btrfs_add_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+ 	btrfs_set_root_ref_name_len(leaf, ref, name->len);
+ 	ptr = (unsigned long)(ref + 1);
+ 	write_extent_buffer(leaf, name->name, ptr, name->len);
+-	btrfs_mark_buffer_dirty(trans, leaf);
+ 
+ 	if (key.type == BTRFS_ROOT_BACKREF_KEY) {
+ 		btrfs_release_path(path);
 -- 
 2.45.2
 
