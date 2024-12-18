@@ -1,258 +1,165 @@
-Return-Path: <linux-btrfs+bounces-10584-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10585-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B69AE9F6EC3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 21:13:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55BED9F6EC6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 21:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86DF61884BAC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 20:13:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 173867A2925
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 20:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B389B1FC0FF;
-	Wed, 18 Dec 2024 20:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E38211FC7F8;
+	Wed, 18 Dec 2024 20:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="c3qBfZTV"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cDytL1mR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DHhAh0O7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cDytL1mR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DHhAh0O7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D9A158520
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 20:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B392158520
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 20:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734552827; cv=none; b=LlPQZHLjYs9Hf5qW4772qz4zjGcLgQh4khUuXzKznuaUFPLp+rFonVE+4PI9y/ZVmOIWg3LoBFy6hdb4VKRoOXDCc5g9QZxhYX1xISLriKis66jkyzDiRcAVUixRb220HRLfLY++W0AnS+0fZwNvAfdANvOCvuIx4vDzRQI9+vA=
+	t=1734552886; cv=none; b=dO5ASj3B/9mts0xchnqZonMESBNWwgM9nFbGU/TAxBomHCFms/fFGUxEC3JGdLo865sqYo9eRO/nomDUnY95MA+DuHvrOCfnbByvpRFRSM3i3rhUmeB0AXAeEvUUKldr6ZvKXHl7PfrIpFFlthux8ZPl3HokrdB36V8cuvjTKe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734552827; c=relaxed/simple;
-	bh=18zlWux7TZ05eSDLQ/OcyNEbMZgVTMfbuAxEpqctPvo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rqxLU1bYmixhPkY9EoT4v+PmXUrEm3DRQScyFVZKlnKIC1F26YHi5qQJRMzANi32DIem9cCXI/EfqxTo7xknxB7cqLsOzqXZWNq+LLAnvxJ1ig5KPVBhhzyUcd0RAJDIDh8qN2R97mf8Jz5d5sfD3MjT0iOkyWokmYTUygWsYZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=c3qBfZTV; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-388cae9eb9fso43751f8f.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 12:13:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734552824; x=1735157624; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KlnERgTQTnp9GQRwEn36PTJNVywfM83QEB836WRSVRU=;
-        b=c3qBfZTVu7BkVJHM7t1OtimdEgqi5r/fTvkRJA2b1EX3DvDaplRCtDsLIx9c/mTbiD
-         SpKHH6ibmEsx63X6tZ/dNNxc0RQhiy4vbilZ1qFINyTt+Oj+3iOrqXa7+IEt86QZwLW/
-         /19Ih24cCzaaHrCPsSsONugbyQnu/LUgPMGZta1jit2tJLuwPaw81YyidCLRl/pifOwS
-         MytRmENyZsUA+G9b0ALiRYXiy8R35gYzzjyn9gJKW4FM0t7qJ97VDSg/fOAjPiT0Y8Or
-         qSOrpl504eDfeJmWWuOXbOU76LfVwjYTNC+4oO9CBu4aZ/SiU81ryB8eQhD2lHRC4Tbd
-         lSZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734552824; x=1735157624;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KlnERgTQTnp9GQRwEn36PTJNVywfM83QEB836WRSVRU=;
-        b=shE6T3kU40sQTNyT1MpOlN6xvk2JQAM/9yh0RCHNn0jvzG+38TMnBBwhB5DxN8A379
-         IumbOmXrnRBK0JbvVnJ7zC/6Ivp0Ne1bFFaXtWp/FTv/OqiF47nlv0oXy1qRg4h58NBT
-         F7TIKGi2zOVGFp63DzuHe6MJ7cUiqyy6QprMX8+xs1g8LSLOLxtOov3555nopMa318MV
-         vr7HRQVq+1YyADodPdJIVarQse7URGdMDcMSX8chHJcZg8LAK9QnlVm0YFbSczILe/QD
-         RWt0JYiuoCUU1iqeQ05Yi6/beBdpZLnW+3/Q/blZzliNCUmFXnRFRJKxpOkgF540dSma
-         qtRw==
-X-Gm-Message-State: AOJu0YwxrDDcEQ+8Eo9ooO3e2a7SB9GOwqzF5IV9gUPKGejbpGWVaF1j
-	NUze3rbenrR0G8Ctx0gWKYuaD9wZ06POzVgjwExWnkd5jsW6r6NZVkwHv4bRxeI=
-X-Gm-Gg: ASbGnctpxSucs08IdXwiHsp1i3WOaBAHzkHf3VMu6qSj43DGg4at3CF33VW3/inUdR9
-	tbFAKn/olqv0eYEDJAJL6wok8omJJ+uLxcJp/zHXYhuIsVdQx8tLqRoCRQM8bJLUltg4D5B6h73
-	Uf+2jqILnJbnyAF0MbHdxC8fCdNB0k7iVprOY83NEUm1c11thOFd+f6iRjb360dnqMZ3DoDovtB
-	cWGSV1Qdua1u0jnOjbFDr8BrkNH4seEBRbQ6BLj5yF4IhV7ZXG9FhJzlls7rTpYShocCrnxweCS
-	kbVPLIR4
-X-Google-Smtp-Source: AGHT+IGn5oJTe14YSPt5kcskFPh8BDJLZxAtjIF11JVDnWsknLrXWMn0ZiQM0dKyGeQsvkLXFCvCcA==
-X-Received: by 2002:a5d:64e9:0:b0:386:2bac:139 with SMTP id ffacd0b85a97d-38a19b4890fmr936699f8f.54.1734552823452;
-        Wed, 18 Dec 2024 12:13:43 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1dcc486sm79857475ad.67.2024.12.18.12.13.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Dec 2024 12:13:42 -0800 (PST)
-Message-ID: <73f9e7d0-9954-4507-a48a-2759cf3a2f2f@suse.com>
-Date: Thu, 19 Dec 2024 06:43:38 +1030
+	s=arc-20240116; t=1734552886; c=relaxed/simple;
+	bh=G17cGmdPl1sQd2zc+GTtr5kjCAPd5h1CerdiepbDE6o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nsj0lts0TEmZoGgq/d+66Dk107jOxtGEyqj60b+8I67LPcW6xIvti21Tn4F0C+xPWSk81o65Eq9DJNWtYT2tY07J+xoYoxksaoCIIMxJDJZYjtcm2EOqYHyDj5jrZWkfEhMJ+WO3POB5d9TJXOBLxKC+cINHvR0Ljtt7tanBNIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cDytL1mR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DHhAh0O7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cDytL1mR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DHhAh0O7; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 158A421164;
+	Wed, 18 Dec 2024 20:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734552882;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FSnlKzjScXtFVcbKhdGK18bPn2lMkuQMQbM+KlWPIik=;
+	b=cDytL1mRf2R5iFGdosWr0j1T5AVYnWpv1eDvEARxoEjcqdq5S9b29WMzDTRp8OvAm5WD/b
+	uyfJCDrPTEGSa9riDsC87MJAfA4hfhAgbYga0oSHEPtELnqcs/giEActC+PO4oxKw3FCXF
+	o9o+OmLXZ9/n4oezOLOTb6XGVCFRSds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734552882;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FSnlKzjScXtFVcbKhdGK18bPn2lMkuQMQbM+KlWPIik=;
+	b=DHhAh0O7dANtyGGU0x52tBgO8jukpVIChGYOGZKpIZ48cjuRaRtjq1fjyNLzm3GUoZw2Rm
+	5DBAcicjvj5WQBDw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cDytL1mR;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DHhAh0O7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734552882;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FSnlKzjScXtFVcbKhdGK18bPn2lMkuQMQbM+KlWPIik=;
+	b=cDytL1mRf2R5iFGdosWr0j1T5AVYnWpv1eDvEARxoEjcqdq5S9b29WMzDTRp8OvAm5WD/b
+	uyfJCDrPTEGSa9riDsC87MJAfA4hfhAgbYga0oSHEPtELnqcs/giEActC+PO4oxKw3FCXF
+	o9o+OmLXZ9/n4oezOLOTb6XGVCFRSds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734552882;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FSnlKzjScXtFVcbKhdGK18bPn2lMkuQMQbM+KlWPIik=;
+	b=DHhAh0O7dANtyGGU0x52tBgO8jukpVIChGYOGZKpIZ48cjuRaRtjq1fjyNLzm3GUoZw2Rm
+	5DBAcicjvj5WQBDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0789137CF;
+	Wed, 18 Dec 2024 20:14:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3a17OjEtY2f1CgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 18 Dec 2024 20:14:41 +0000
+Date: Wed, 18 Dec 2024 21:14:40 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/9] btrfs: move csum related functions from ctree.c into
+ fs.c
+Message-ID: <20241218201440.GF31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1734368270.git.fdmanana@suse.com>
+ <ca35ce34f64fc203266a7336390d82745d82ed5f.1734368270.git.fdmanana@suse.com>
+ <36af89a5-f7e8-4a9f-a7ff-880a84d2fc6d@gmx.com>
+ <CAL3q7H7pwip+TwR7tTS7cLHz0UWBzfAP9ZpcXN6OGT7O800i3Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/18] btrfs: migrate to "block size" to describe the
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1734514696.git.wqu@suse.com>
- <20241218183155.GE31418@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20241218183155.GE31418@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H7pwip+TwR7tTS7cLHz0UWBzfAP9ZpcXN6OGT7O800i3Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 158A421164
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	FREEMAIL_CC(0.00)[gmx.com,vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-
-
-在 2024/12/19 05:01, David Sterba 写道:
-> On Wed, Dec 18, 2024 at 08:11:16PM +1030, Qu Wenruo wrote:
->> [IMPEMENTATION]
->> To reduce the confusion, this patchset will do such a huge migration in
->> different steps:
+On Tue, Dec 17, 2024 at 08:55:21AM +0000, Filipe Manana wrote:
+> > I'm wondering if those simple functions can be converted to inline.
+> >
+> > Although btrfs_csums[] array has to be put inside fs.c, those functions
+> > seems be fine defined as inline ones inside the header.
 > 
-> With some many changes everywhere this is going to make backports even
-> more tedious. I think it would be best to do the conversion gradually or
-> selectively to code that does not change so often. As you've split it to
-> files we can first pick a few obvious ones (like file-item.c) or gather
-> stats from stable.git.
-
-For the backports, we can put the btrfs_fs_info union to older kernels 
-and call it a day without the remaining part.
-
-So that both newer and older terminology can co-exist without any conflicts.
-
-Although backport conflicts will still happen in the context.
-
+> Yes, the array being inside fs.c makes it hard to inline in the header.
 > 
-> A quick and rough estimate for all 6.x.y releases counting file
-> backports in the individual patches in the list below. This is period of
-> 2 years, 104 weeks (roughly matching number of releases). So if there
-> are 88 patches touching inode.c that's quite likely a conflict in every
-> backport.
-> 
-> This should be also correlated agains number of 'sectorsize' per file,
-> so it many not be that bad, for example in ioctl.c there are only 4
-> occurences so that's fine. The point is we can't do the renames without
-> some sensibility and respect to backports.
+> Keep in mind that this is a change just to move things around, the
+> goal is not to change the implementation or optimize anything.
+> Plus it's not like these functions are called in hot code paths where
+> saving a function call has any significant impact.
 
-But at least, when a backport fails, we can easily fix the conflict.
-It will always be sectorsize -> blocksize, either in the context or the 
-modified lines.
-
-Thanks,
-Qu
-> 
->       88 inode.c
->       62 disk-io.c
->       61 volumes.c
->       57 extent_io.c
->       57 block-group.c
->       56 ioctl.c
->       52 extent-tree.c
->       49 zoned.c
->       49 qgroup.c
->       37 send.c
->       36 super.c
->       33 ctree.c
->       30 transaction.c
->       29 file.c
->       28 tree-log.c
->       28 free-space-cache.c
->       26 scrub.c
->       24 ctree.h
->       22 relocation.c
->       19 delayed-inode.c
->       17 tree-checker.c
->       17 backref.c
->       15 space-info.c
->       14 extent_map.c
->       12 free-space-tree.c
->       12 disk-io.h
->       11 block-group.h
->       11 bio.c
->       10 ordered-data.c
->       10 block-rsv.c
->        9 ref-verify.c
->        9 file-item.c
->        9 btrfs_inode.h
->        8 include/uapi/linux/btrfs.h
->        8 fs.h
->        8 delayed-ref.c
->        8 delalloc-space.c
->        7 root-tree.c
->        7 print-tree.c
->        7 dir-item.c
->        7 dev-replace.c
->        7 block-rsv.h
->        6 sysfs.c
->        6 extent_io.h
->        6 defrag.c
->        6 compression.c
->        5 volumes.h
->        5 transaction.h
->        5 qgroup.h
->        5 export.c
->        4 zoned.h
->        4 space-info.h
->        4 reflink.c
->        4 inode-item.c
->        4 include/trace/events/btrfs.h
->        4 discard.c
->        4 delayed-ref.h
->        3 tree-log.h
->        3 tree-defrag.c
->        3 subpage.c
->        3 raid56.c
->        3 free-space-tree.h
->        3 extent-io-tree.c
->        3 extent-io-tests.c
->        3 backref.h
->        2 zlib.c
->        2 xattr.c
->        2 uuid-tree.c
->        2 tree-mod-log.c
->        2 tests/inode-tests.c
->        2 tests/extent-map-tests.c
->        2 tests/extent-buffer-tests.c
->        2 root-tree.h
->        2 relocation.h
->        2 rcu-string.h
->        2 qgroup-tests.c
->        2 lzo.c
->        2 locking.c
->        2 inode-item.h
->        2 free-space-cache.h
->        2 extent-tree.h
->        2 delayed-inode.h
->        1 tree-checker.h
->        1 tests/free-space-tree-tests.c
->        1 sysfs.h
->        1 props.c
->        1 ordered-data.h
->        1 messages.h
->        1 messages.c
->        1 include/uapi/linux/btrfs_tree.h
->        1 fs.c
->        1 file-item.h
->        1 extent_map.h
->        1 export.h
->        1 compression.h
->        1 btrfs-tests.c
->        1 btrfs.h
->        1 bio.h
-
+Yeah the checksum related functions are not on any hot path, usually
+called once or twice in a function. Exporting the btrfs_csum array to
+make a few functions inilne should have some measurable impact.
 
