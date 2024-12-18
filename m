@@ -1,51 +1,54 @@
-Return-Path: <linux-btrfs+bounces-10556-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10557-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FD679F6BE4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 18:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ADF69F6BE5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 18:07:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC30B16D2FE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 17:06:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4CC016D8B9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 17:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70031F8926;
-	Wed, 18 Dec 2024 17:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91ED41F8AE6;
+	Wed, 18 Dec 2024 17:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OW6pEL7R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QPqLLlwR"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EE614AD38
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2711F8918
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734541612; cv=none; b=qQnk+MApqueI43WuCSijxYbLefTcuaV4SpgoGdM2/yqg68yFz36TNepcutXO2Do31Lx17D4z+uH3mrQzhARy09CcCIeQGo8IYkty9SAeHuK8N7c6V3U9W5Zwa9swyn9jboEay0AWVk2FXMMdPYwjvowA9a+GMDme+TMuDMTWDMU=
+	t=1734541612; cv=none; b=kt2rmVdHtwNby1wI4ifb65RTT0Z8qt0nZvGCvRQigIfQTPvJuuEb98EKPPTAWbpZCBYIYCON5rZ2zyCef81AWLNNPvjNkSRQ9+bxMmwNvvPJxW0BzVH2HwRzMjLq9hp7/tem3AnkPF+Ud9i+gCU4KtD6Uy0nUQDPdcoXkMBuckc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734541612; c=relaxed/simple;
-	bh=QQp0Qzq98aa9lg2Qk1csbtXmZEMXcBbDgb/leOSH1fg=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Sebr2M1yDh3Ta0CrK+p6LoQ8dj5fiQY4drpxlfmQS2KUtt1IRpBEImo7D9sEhFuw89mWQNjIaIMHSINtplD7Lfi/hExzSLg4otIuEP45wmT1rwkJXSUKQlj+tYnVGS0z+5k2pPSmZQhQYYLUTjUtDEgBm1ikthq30VpuFwlsVWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OW6pEL7R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13CC9C4CECD
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:50 +0000 (UTC)
+	bh=pLEY2zhDOE2z8aq9wzl+/YcRQyIznjqVH+rfhB1bEOc=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YHIE8Lh+8vuq14EjwTTkIbmQ4pg7TTI9WcDHLNKUdFMT71I8ehwGHY+yxxnfPm+rAHyCjzqiXAmebCmZbiR0Gzpq+zSIBBT3EVnoyMcOpfniUpPiH6qbtujVzppUsx7PwOpRJ7uxY0NAGdTlg6O7Q/74GtR9nrJro07m2gNdy30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QPqLLlwR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18521C4CED7
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734541611;
-	bh=QQp0Qzq98aa9lg2Qk1csbtXmZEMXcBbDgb/leOSH1fg=;
-	h=From:To:Subject:Date:From;
-	b=OW6pEL7RRx3+MdpynQ48qsS2U+zIU5Q7amrWXZLpzDqWvMyhlZLEE8mK8frAkzJVo
-	 Z9YJpZ57ck/6j5qVIzQxoUoQ0P1eJntv790BprefsH5TU93/duXb/2VkKToqYM1jYp
-	 loCVkEVGj9YF9iNNJLpf+sEjahZYgVLSuE+2p7nOxdJ/tehTbXN9HInqPIHp8jynO+
-	 JekO1oEkgl06IW5nynPdF56KuI6Phj6wQfVPtK14OwFgFMrBQuF+d/7WawsurDOvAk
-	 vCrHfudfGBM12X0a/RTg88IuW9vrEwy7W8Hoa3Z5pGuq6IwOMF1Uo+5PqXK5sOizru
-	 c/+mb6XlT9VPg==
+	s=k20201202; t=1734541612;
+	bh=pLEY2zhDOE2z8aq9wzl+/YcRQyIznjqVH+rfhB1bEOc=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=QPqLLlwRZbj0Bg+KYQXJKWM1orkfx0KYE5DFVHDsBeJSuxE2y4K0LK8kRYGTpg6vq
+	 JSLMtsO4Sf7AS9a9TBHhxBJR2DaMKX6IA2bHJ2YwjYhkyvMpvW03jfBnpr67xaWTR0
+	 +Kl9huA9glOGtSFPQk5ULkn8gs8eGkySCpvPbMzgEWz2WKbpB/RBFDXOCKFnDCDQ7Q
+	 JVAExJv/+vtncM6ZOZMa40D66UilKsc7kNdxUxNZrsfNhtymrtmJwZodTIlldyuxUI
+	 0EGoIGjX0WYw7y3YtS52g4QFa47IFN8XghiixXhUPrPLNavOVVdRcaMjMjh74qqeM6
+	 7bAEuU1pkILIw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 00/20] btrfs: remove plenty of redundant btrfs_mark_buffer_dirty() calls
-Date: Wed, 18 Dec 2024 17:06:27 +0000
-Message-Id: <cover.1734527445.git.fdmanana@suse.com>
+Subject: [PATCH 01/20] btrfs: tree-log: remove unnecessary calls to btrfs_mark_buffer_dirty()
+Date: Wed, 18 Dec 2024 17:06:28 +0000
+Message-Id: <e798a14b8c173645d84c07286ff6abe21893a60d.1734527445.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1734527445.git.fdmanana@suse.com>
+References: <cover.1734527445.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,74 +59,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There's quite a lot of places calling btrfs_mark_buffer_dirty() when it
-is not necessary because we already have a path setup for writing, due
-to calls to btrfs_search_slot() with a 'cow' argument having a value of 1
-or anything that calls btrfs_search_slot() that way (and it's obvious
-from the context). These make the code more verbose, add some overhead
-and increase the module's text size unnecessarily. This patchset removes
-such unnecessary calls. Often people keep adding them because they copy
-the approach done from such places.
+We have several places explicitly calling btrfs_mark_buffer_dirty() but
+that is not necessarily since the target leaf came from a path that was
+obtained for a btree search function that modifies the btree, something
+like btrfs_insert_empty_item() or anything else that ends up calling
+btrfs_search_slot() with a value of 1 for its 'cow' argument.
 
-The changes are made on a per file basis to make it easier to review or
-bisect.
+These just make the code more verbose, confusing and add a little extra
+overhead and well as increase the module's text size, so remove them.
 
-Module size before this patchset:
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-  $ size fs/btrfs/btrfs.ko 
-     text	   data	    bss	    dec	    hex	filename
-  1781992	 161029	  16920	1959941	 1de805	fs/btrfs/btrfs.ko
-
-After this patchet:
-
-  $ size fs/btrfs/btrfs.ko 
-     text	   data	    bss	    dec	    hex	filename
-  1780646	 161021	  16920	1958587	 1de2bb	fs/btrfs/btrfs.ko
-
-Filipe Manana (20):
-  btrfs: tree-log: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: free-space-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: extent-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: block-group: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: delayed-inode: remove unnecessary call to btrfs_mark_buffer_dirty()
-  btrfs: dev-replace: remove unnecessary call to btrfs_mark_buffer_dirty()
-  btrfs: dir-item: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: file: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: file-item: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: free-space-cache: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: inode: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: inode-item: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: ioctl: remove unnecessary call to btrfs_mark_buffer_dirty()
-  btrfs: qgroup: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: raid-stripe-tree: remove unnecessary call to btrfs_mark_buffer_dirty()
-  btrfs: relocation: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: root-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: uuid-tree: remove unnecessary call to btrfs_mark_buffer_dirty()
-  btrfs: volumes: remove unnecessary calls to btrfs_mark_buffer_dirty()
-  btrfs: xattr: remove unnecessary call to btrfs_mark_buffer_dirty()
-
- fs/btrfs/block-group.c      |  2 --
- fs/btrfs/delayed-inode.c    |  1 -
- fs/btrfs/dev-replace.c      |  3 ---
- fs/btrfs/dir-item.c         |  2 --
- fs/btrfs/extent-tree.c      | 10 ----------
- fs/btrfs/file-item.c        |  3 ---
- fs/btrfs/file.c             | 11 -----------
- fs/btrfs/free-space-cache.c |  3 ---
- fs/btrfs/free-space-tree.c  |  5 -----
- fs/btrfs/inode-item.c       |  5 -----
- fs/btrfs/inode.c            |  5 -----
- fs/btrfs/ioctl.c            |  1 -
- fs/btrfs/qgroup.c           | 18 ------------------
- fs/btrfs/raid-stripe-tree.c |  1 -
- fs/btrfs/relocation.c       |  7 -------
- fs/btrfs/root-tree.c        |  2 --
- fs/btrfs/tree-log.c         |  4 ----
- fs/btrfs/uuid-tree.c        |  2 --
- fs/btrfs/volumes.c          | 12 +-----------
- fs/btrfs/xattr.c            |  1 -
- 20 files changed, 1 insertion(+), 97 deletions(-)
-
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index c8d6587688b3..955d1677e865 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -590,7 +590,6 @@ static int overwrite_item(struct btrfs_trans_handle *trans,
+ 		}
+ 	}
+ no_copy:
+-	btrfs_mark_buffer_dirty(trans, path->nodes[0]);
+ 	btrfs_release_path(path);
+ 	return 0;
+ }
+@@ -3588,7 +3587,6 @@ static noinline int insert_dir_log_key(struct btrfs_trans_handle *trans,
+ 		last_offset = max(last_offset, curr_end);
+ 	}
+ 	btrfs_set_dir_log_end(path->nodes[0], item, last_offset);
+-	btrfs_mark_buffer_dirty(trans, path->nodes[0]);
+ 	btrfs_release_path(path);
+ 	return 0;
+ }
+@@ -4566,7 +4564,6 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 		dst_index++;
+ 	}
+ 
+-	btrfs_mark_buffer_dirty(trans, dst_path->nodes[0]);
+ 	btrfs_release_path(dst_path);
+ out:
+ 	kfree(ins_data);
+@@ -4776,7 +4773,6 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 	write_extent_buffer(leaf, &fi,
+ 			    btrfs_item_ptr_offset(leaf, path->slots[0]),
+ 			    sizeof(fi));
+-	btrfs_mark_buffer_dirty(trans, leaf);
+ 
+ 	btrfs_release_path(path);
+ 
 -- 
 2.45.2
 
