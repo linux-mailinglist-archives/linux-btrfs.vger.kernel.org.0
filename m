@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10532-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 556809F61F4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F51B9F61F6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:42:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB4E1622D2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:42:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F215B167F45
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BF11991A8;
-	Wed, 18 Dec 2024 09:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B4315B13D;
+	Wed, 18 Dec 2024 09:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vc3mvNgk";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vc3mvNgk"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CCCZJkme";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CCCZJkme"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8991917D9
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC74198A1A
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734514924; cv=none; b=oySl5qNLD9AesAs2uKr0sUg9WzxI4FwtrJHZs76p3mEtpPl4dSVxvkaAYKf6Mo8vW8TCQ7MM+TMLL1V/KxZiiyG2SAP1XBzovM7wgOed3OY8Thcr1coOCj4OzbLcCIYpUg7kzUU4Tm2h1+g/IOahKEjfve4G0LARXQhyMD3Kylo=
+	t=1734514924; cv=none; b=agDQ0hJ8wbDmr7WhxNifUxJy73j85btYpvtcrq+845Xv6LMgu6273VULJtkHyNogWosEx1d8e8kURUqGer4BnIZWQYojyR0kFB9nXDODXpnJl5+rJW65t4ij2lyCWZTd9/mAuHgm8M2VmTYpNkJoOLaMiRDAfLff7PGF2HlDuzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734514924; c=relaxed/simple;
-	bh=cnWq3zO+4Smy12SKGE7gprfQZB+ueyCgBoYHYzTKxEI=;
+	bh=EezIwDv3OdlzXR9LEPCSp8YNz63o2mwvdyq+N+719WA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Dy13IogHNGcQ9LDxyBGVmf2YTj+2hCVuvmQd76DjTy/W2ioZJ3FBA02DOuNRiSfh2qQzgAM+0EoAH/R2B2L0jDEwJqNZ/mCCSbB/+4tPTFP79AYVMFmPMhtInXc2CiwbMXcuJqsO2r0eXB38TLgfbiqxGufCjRZAeS8TgoCE2g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vc3mvNgk; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vc3mvNgk; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=O1YioW5f/HVYkqLkThdUCxOcYRBmwQ8waLND+1AHuRJOhew7onoqrNyS2ozmkcYFswesKoveUVgkEgZ+x5Hg6py/FL7z7Dv11M3gc6DKO/lPzUiuaTgxBr85t3kyFLaLKtjqiEo/2M4O95f9qYeKu3VcB5Y08OnTRVGgpFnWAog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CCCZJkme; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CCCZJkme; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C46AF1F449
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:58 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 227BC2116B
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/2DxJPQuK4eN7+6+2W0fRa3cJMm2L6smP9Xfrao1CCc=;
-	b=Vc3mvNgknbDgUId/zJu+aYhexJx2Vf67cJvDE5vwEttfpRBmHATwTgT6G/x5DLsErEuPeT
-	n5/13P4Qau4rYZUaUe5S0T+An/Z2dBZaI2CpCulkueTTa9Xe3kHb/lLKhihjC5IJBH15Ep
-	GULR9a6LtW4oX/KfcfvhgMEZWlDMSzc=
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=dGP0ZiJzZJ86Fh8DCVZxVGmgc9zH4PLwu2Uq3CUc+qk=;
+	b=CCCZJkmeExgXrNYMRfTJ00/UEJDdBdVbEJsJotFSEZuWOrfn/g8ejaA8qp3SaIHPtpm0op
+	Fn9XomN1gE6K5n5plt0eAVIMzfcGVWyuqxQOCv0+ceEbtnAAzp2r0AavQZup/NSV5KWVlW
+	ow7Ql7koNEcSO6E92JWUEAUD6ZOrzJ4=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=CCCZJkme
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/2DxJPQuK4eN7+6+2W0fRa3cJMm2L6smP9Xfrao1CCc=;
-	b=Vc3mvNgknbDgUId/zJu+aYhexJx2Vf67cJvDE5vwEttfpRBmHATwTgT6G/x5DLsErEuPeT
-	n5/13P4Qau4rYZUaUe5S0T+An/Z2dBZaI2CpCulkueTTa9Xe3kHb/lLKhihjC5IJBH15Ep
-	GULR9a6LtW4oX/KfcfvhgMEZWlDMSzc=
+	bh=dGP0ZiJzZJ86Fh8DCVZxVGmgc9zH4PLwu2Uq3CUc+qk=;
+	b=CCCZJkmeExgXrNYMRfTJ00/UEJDdBdVbEJsJotFSEZuWOrfn/g8ejaA8qp3SaIHPtpm0op
+	Fn9XomN1gE6K5n5plt0eAVIMzfcGVWyuqxQOCv0+ceEbtnAAzp2r0AavQZup/NSV5KWVlW
+	ow7Ql7koNEcSO6E92JWUEAUD6ZOrzJ4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B0AB8132EA
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:57 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D59E132EA
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wL1IG+WYYmdmSwAAD6G6ig
+	id aFIVA+eYYmdmSwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:57 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:41:59 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 04/18] btrfs: migrate scrub.c to use block size terminology
-Date: Wed, 18 Dec 2024 20:11:20 +1030
-Message-ID: <101d3ec7127ae1c30ddc20b53d43d2a5c70a9abf.1734514696.git.wqu@suse.com>
+Subject: [PATCH 05/18] btrfs: migrate extent_io.[ch] to use block size terminology
+Date: Wed, 18 Dec 2024 20:11:21 +1030
+Message-ID: <eaa1da7b8ce3872268c97b092f5c51b516941e51.1734514696.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1734514696.git.wqu@suse.com>
 References: <cover.1734514696.git.wqu@suse.com>
@@ -84,1105 +84,535 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Queue-Id: 227BC2116B
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_NONE(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
+	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid]
-X-Spam-Score: -2.80
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-Mostly straightforward rename from "sector" to "block", except bio
-interfaces.
-
-Also rename the macro SCRUB_MAX_SECTORS_PER_BLOCK to
-SCRUB_MAX_BLOCKS_PER_TREE_BLOCK.
+Straightforward rename from "sector" to "block", except the bio
+interface.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 442 +++++++++++++++++++++++------------------------
- 1 file changed, 221 insertions(+), 221 deletions(-)
+ fs/btrfs/extent_io.c | 124 +++++++++++++++++++++----------------------
+ fs/btrfs/extent_io.h |  16 +++---
+ 2 files changed, 70 insertions(+), 70 deletions(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 204c928beaf9..5cec0875a707 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -60,25 +60,25 @@ struct scrub_ctx;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 9725ff7f274d..26e53c6c077c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -103,7 +103,7 @@ struct btrfs_bio_ctrl {
+ 	struct writeback_control *wbc;
  
- /*
-  * The following value times PAGE_SIZE needs to be large enough to match the
-- * largest node/leaf/sector size that shall be supported.
-+ * largest node/leaf/block size that shall be supported.
-  */
--#define SCRUB_MAX_SECTORS_PER_BLOCK	(BTRFS_MAX_METADATA_BLOCKSIZE / SZ_4K)
-+#define SCRUB_MAX_BLOCKS_PER_TREE_BLOCK	(BTRFS_MAX_METADATA_BLOCKSIZE / SZ_4K)
+ 	/*
+-	 * The sectors of the page which are going to be submitted by
++	 * The blocks of the page which are going to be submitted by
+ 	 * extent_writepage_io().
+ 	 * This is to avoid touching ranges covered by compression/inline.
+ 	 */
+@@ -457,7 +457,7 @@ static void end_bbio_data_write(struct btrfs_bio *bbio)
+ 	struct bio *bio = &bbio->bio;
+ 	int error = blk_status_to_errno(bio->bi_status);
+ 	struct folio_iter fi;
+-	const u32 sectorsize = fs_info->sectorsize;
++	const u32 blocksize = fs_info->blocksize;
  
--/* Represent one sector and its needed info to verify the content. */
--struct scrub_sector_verification {
-+/* Represent one block and its needed info to verify the content. */
-+struct scrub_block_verification {
- 	bool is_metadata;
+ 	ASSERT(!bio_flagged(bio, BIO_CLONED));
+ 	bio_for_each_folio_all(fi, bio) {
+@@ -468,12 +468,12 @@ static void end_bbio_data_write(struct btrfs_bio *bbio)
+ 		/* Only order 0 (single page) folios are allowed for data. */
+ 		ASSERT(folio_order(folio) == 0);
  
- 	union {
+-		/* Our read/write should always be sector aligned. */
+-		if (!IS_ALIGNED(fi.offset, sectorsize))
++		/* Our read/write should always be block aligned. */
++		if (!IS_ALIGNED(fi.offset, blocksize))
+ 			btrfs_err(fs_info,
+ 		"partial page write in btrfs with offset %zu and length %zu",
+ 				  fi.offset, fi.length);
+-		else if (!IS_ALIGNED(fi.length, sectorsize))
++		else if (!IS_ALIGNED(fi.length, blocksize))
+ 			btrfs_info(fs_info,
+ 		"incomplete page write with offset %zu and length %zu",
+ 				   fi.offset, fi.length);
+@@ -515,7 +515,7 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+ 	struct btrfs_fs_info *fs_info = bbio->fs_info;
+ 	struct bio *bio = &bbio->bio;
+ 	struct folio_iter fi;
+-	const u32 sectorsize = fs_info->sectorsize;
++	const u32 blocksize = fs_info->blocksize;
+ 
+ 	ASSERT(!bio_flagged(bio, BIO_CLONED));
+ 	bio_for_each_folio_all(fi, &bbio->bio) {
+@@ -534,17 +534,17 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+ 			bbio->mirror_num);
+ 
  		/*
- 		 * Csum pointer for data csum verification.  Should point to a
--		 * sector csum inside scrub_stripe::csums.
-+		 * block csum inside scrub_stripe::csums.
+-		 * We always issue full-sector reads, but if some block in a
++		 * We always issue full-block reads, but if some block in a
+ 		 * folio fails to read, blk_update_request() will advance
+ 		 * bv_offset and adjust bv_len to compensate.  Print a warning
+ 		 * for unaligned offsets, and an error if they don't add up to
+-		 * a full sector.
++		 * a full block.
+ 		 */
+-		if (!IS_ALIGNED(fi.offset, sectorsize))
++		if (!IS_ALIGNED(fi.offset, blocksize))
+ 			btrfs_err(fs_info,
+ 		"partial page read in btrfs with offset %zu and length %zu",
+ 				  fi.offset, fi.length);
+-		else if (!IS_ALIGNED(fi.offset + fi.length, sectorsize))
++		else if (!IS_ALIGNED(fi.offset + fi.length, blocksize))
+ 			btrfs_info(fs_info,
+ 		"incomplete page read with offset %zu and length %zu",
+ 				   fi.offset, fi.length);
+@@ -795,7 +795,7 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
+ 
+ 		/*
+ 		 * len_to_oe_boundary defaults to U32_MAX, which isn't folio or
+-		 * sector aligned.  alloc_new_bio() then sets it to the end of
++		 * block aligned.  alloc_new_bio() then sets it to the end of
+ 		 * our ordered extent for writes into zoned devices.
  		 *
--		 * NULL if this data sector has no csum.
-+		 * NULL if this data block has no csum.
- 		 */
- 		u8 *csum;
+ 		 * When len_to_oe_boundary is tracking an ordered extent, we
+@@ -955,7 +955,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 	int ret = 0;
+ 	size_t pg_offset = 0;
+ 	size_t iosize;
+-	size_t blocksize = fs_info->sectorsize;
++	size_t blocksize = fs_info->blocksize;
  
- 		/*
--		 * Extra info for metadata verification.  All sectors inside a
-+		 * Extra info for metadata verification.  All blocks inside a
- 		 * tree block share the same generation.
- 		 */
- 		u64 generation;
-@@ -110,7 +110,7 @@ struct scrub_stripe {
- 	struct btrfs_block_group *bg;
- 
- 	struct page *pages[SCRUB_STRIPE_PAGES];
--	struct scrub_sector_verification *sectors;
-+	struct scrub_block_verification *blocks;
- 
- 	struct btrfs_device *dev;
- 	u64 logical;
-@@ -118,8 +118,8 @@ struct scrub_stripe {
- 
- 	u16 mirror_num;
- 
--	/* Should be BTRFS_STRIPE_LEN / sectorsize. */
--	u16 nr_sectors;
-+	/* Should be BTRFS_STRIPE_LEN / blocksize. */
-+	u16 nr_blocks;
- 
- 	/*
- 	 * How many data/meta extents are in this stripe.  Only for scrub status
-@@ -138,8 +138,8 @@ struct scrub_stripe {
- 	 */
- 	unsigned long state;
- 
--	/* Indicate which sectors are covered by extent items. */
--	unsigned long extent_sector_bitmap;
-+	/* Indicate which blocks are covered by extent items. */
-+	unsigned long extent_block_bitmap;
- 
- 	/*
- 	 * The errors hit during the initial read of the stripe.
-@@ -238,9 +238,9 @@ static void release_scrub_stripe(struct scrub_stripe *stripe)
- 			__free_page(stripe->pages[i]);
- 		stripe->pages[i] = NULL;
- 	}
--	kfree(stripe->sectors);
-+	kfree(stripe->blocks);
- 	kfree(stripe->csums);
--	stripe->sectors = NULL;
-+	stripe->blocks = NULL;
- 	stripe->csums = NULL;
- 	stripe->sctx = NULL;
- 	stripe->state = 0;
-@@ -253,7 +253,7 @@ static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
- 
- 	memset(stripe, 0, sizeof(*stripe));
- 
--	stripe->nr_sectors = BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits;
-+	stripe->nr_blocks = BTRFS_STRIPE_LEN >> fs_info->blocksize_bits;
- 	stripe->state = 0;
- 
- 	init_waitqueue_head(&stripe->io_wait);
-@@ -265,13 +265,13 @@ static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
- 	if (ret < 0)
- 		goto error;
- 
--	stripe->sectors = kcalloc(stripe->nr_sectors,
--				  sizeof(struct scrub_sector_verification),
-+	stripe->blocks = kcalloc(stripe->nr_blocks,
-+				  sizeof(struct scrub_block_verification),
- 				  GFP_KERNEL);
--	if (!stripe->sectors)
-+	if (!stripe->blocks)
- 		goto error;
- 
--	stripe->csums = kcalloc(BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits,
-+	stripe->csums = kcalloc(BTRFS_STRIPE_LEN >> fs_info->blocksize_bits,
- 				fs_info->csum_size, GFP_KERNEL);
- 	if (!stripe->csums)
- 		goto error;
-@@ -456,7 +456,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
- 				  btrfs_dev_name(swarn->dev),
- 				  swarn->physical,
- 				  root, inum, offset,
--				  fs_info->sectorsize, nlink,
-+				  fs_info->blocksize, nlink,
- 				  (char *)(unsigned long)ipath->fspath->val[i]);
- 
- 	btrfs_put_root(local_root);
-@@ -579,29 +579,29 @@ static int fill_writer_pointer_gap(struct scrub_ctx *sctx, u64 physical)
- 	return ret;
- }
- 
--static struct page *scrub_stripe_get_page(struct scrub_stripe *stripe, int sector_nr)
-+static struct page *scrub_stripe_get_page(struct scrub_stripe *stripe, int block_nr)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
--	int page_index = (sector_nr << fs_info->sectorsize_bits) >> PAGE_SHIFT;
-+	int page_index = (block_nr << fs_info->blocksize_bits) >> PAGE_SHIFT;
- 
- 	return stripe->pages[page_index];
- }
- 
- static unsigned int scrub_stripe_get_page_offset(struct scrub_stripe *stripe,
--						 int sector_nr)
-+						 int block_nr)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 
--	return offset_in_page(sector_nr << fs_info->sectorsize_bits);
-+	return offset_in_page(block_nr << fs_info->blocksize_bits);
- }
- 
--static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
-+static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int block_nr)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
--	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
--	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
--	const struct page *first_page = scrub_stripe_get_page(stripe, sector_nr);
--	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, sector_nr);
-+	const u32 blocks_per_tree = fs_info->nodesize >> fs_info->blocksize_bits;
-+	const u64 logical = stripe->logical + (block_nr << fs_info->blocksize_bits);
-+	const struct page *first_page = scrub_stripe_get_page(stripe, block_nr);
-+	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, block_nr);
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	u8 on_disk_csum[BTRFS_CSUM_SIZE];
- 	u8 calculated_csum[BTRFS_CSUM_SIZE];
-@@ -616,8 +616,8 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
- 	memcpy(on_disk_csum, header->csum, fs_info->csum_size);
- 
- 	if (logical != btrfs_stack_header_bytenr(header)) {
--		bitmap_set(&stripe->csum_error_bitmap, sector_nr, sectors_per_tree);
--		bitmap_set(&stripe->error_bitmap, sector_nr, sectors_per_tree);
-+		bitmap_set(&stripe->csum_error_bitmap, block_nr, blocks_per_tree);
-+		bitmap_set(&stripe->error_bitmap, block_nr, blocks_per_tree);
- 		btrfs_warn_rl(fs_info,
- 		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
- 			      logical, stripe->mirror_num,
-@@ -626,8 +626,8 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
- 	}
- 	if (memcmp(header->fsid, fs_info->fs_devices->metadata_uuid,
- 		   BTRFS_FSID_SIZE) != 0) {
--		bitmap_set(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
--		bitmap_set(&stripe->error_bitmap, sector_nr, sectors_per_tree);
-+		bitmap_set(&stripe->meta_error_bitmap, block_nr, blocks_per_tree);
-+		bitmap_set(&stripe->error_bitmap, block_nr, blocks_per_tree);
- 		btrfs_warn_rl(fs_info,
- 		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
- 			      logical, stripe->mirror_num,
-@@ -636,8 +636,8 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
- 	}
- 	if (memcmp(header->chunk_tree_uuid, fs_info->chunk_tree_uuid,
- 		   BTRFS_UUID_SIZE) != 0) {
--		bitmap_set(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
--		bitmap_set(&stripe->error_bitmap, sector_nr, sectors_per_tree);
-+		bitmap_set(&stripe->meta_error_bitmap, block_nr, blocks_per_tree);
-+		bitmap_set(&stripe->error_bitmap, block_nr, blocks_per_tree);
- 		btrfs_warn_rl(fs_info,
- 		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
- 			      logical, stripe->mirror_num,
-@@ -649,20 +649,20 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
- 	shash->tfm = fs_info->csum_shash;
- 	crypto_shash_init(shash);
- 	crypto_shash_update(shash, page_address(first_page) + first_off +
--			    BTRFS_CSUM_SIZE, fs_info->sectorsize - BTRFS_CSUM_SIZE);
-+			    BTRFS_CSUM_SIZE, fs_info->blocksize - BTRFS_CSUM_SIZE);
- 
--	for (int i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
-+	for (int i = block_nr + 1; i < block_nr + blocks_per_tree; i++) {
- 		struct page *page = scrub_stripe_get_page(stripe, i);
- 		unsigned int page_off = scrub_stripe_get_page_offset(stripe, i);
- 
- 		crypto_shash_update(shash, page_address(page) + page_off,
--				    fs_info->sectorsize);
-+				    fs_info->blocksize);
- 	}
- 
- 	crypto_shash_final(shash, calculated_csum);
- 	if (memcmp(calculated_csum, on_disk_csum, fs_info->csum_size) != 0) {
--		bitmap_set(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
--		bitmap_set(&stripe->error_bitmap, sector_nr, sectors_per_tree);
-+		bitmap_set(&stripe->meta_error_bitmap, block_nr, blocks_per_tree);
-+		bitmap_set(&stripe->error_bitmap, block_nr, blocks_per_tree);
- 		btrfs_warn_rl(fs_info,
- 		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
- 			      logical, stripe->mirror_num,
-@@ -670,44 +670,44 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
- 			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
- 		return;
- 	}
--	if (stripe->sectors[sector_nr].generation !=
-+	if (stripe->blocks[block_nr].generation !=
- 	    btrfs_stack_header_generation(header)) {
--		bitmap_set(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
--		bitmap_set(&stripe->error_bitmap, sector_nr, sectors_per_tree);
-+		bitmap_set(&stripe->meta_error_bitmap, block_nr, blocks_per_tree);
-+		bitmap_set(&stripe->error_bitmap, block_nr, blocks_per_tree);
- 		btrfs_warn_rl(fs_info,
- 		"tree block %llu mirror %u has bad generation, has %llu want %llu",
- 			      logical, stripe->mirror_num,
- 			      btrfs_stack_header_generation(header),
--			      stripe->sectors[sector_nr].generation);
-+			      stripe->blocks[block_nr].generation);
- 		return;
- 	}
--	bitmap_clear(&stripe->error_bitmap, sector_nr, sectors_per_tree);
--	bitmap_clear(&stripe->csum_error_bitmap, sector_nr, sectors_per_tree);
--	bitmap_clear(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
-+	bitmap_clear(&stripe->error_bitmap, block_nr, blocks_per_tree);
-+	bitmap_clear(&stripe->csum_error_bitmap, block_nr, blocks_per_tree);
-+	bitmap_clear(&stripe->meta_error_bitmap, block_nr, blocks_per_tree);
- }
- 
--static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
-+static void scrub_verify_one_block(struct scrub_stripe *stripe, int block_nr)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
--	struct scrub_sector_verification *sector = &stripe->sectors[sector_nr];
--	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
--	struct page *page = scrub_stripe_get_page(stripe, sector_nr);
--	unsigned int pgoff = scrub_stripe_get_page_offset(stripe, sector_nr);
-+	struct scrub_block_verification *block = &stripe->blocks[block_nr];
-+	const u32 blocks_per_tree = fs_info->nodesize >> fs_info->blocksize_bits;
-+	struct page *page = scrub_stripe_get_page(stripe, block_nr);
-+	unsigned int pgoff = scrub_stripe_get_page_offset(stripe, block_nr);
- 	u8 csum_buf[BTRFS_CSUM_SIZE];
- 	int ret;
- 
--	ASSERT(sector_nr >= 0 && sector_nr < stripe->nr_sectors);
-+	ASSERT(block_nr >= 0 && block_nr < stripe->nr_blocks);
- 
--	/* Sector not utilized, skip it. */
--	if (!test_bit(sector_nr, &stripe->extent_sector_bitmap))
-+	/* Block not utilized, skip it. */
-+	if (!test_bit(block_nr, &stripe->extent_block_bitmap))
- 		return;
- 
- 	/* IO error, no need to check. */
--	if (test_bit(sector_nr, &stripe->io_error_bitmap))
-+	if (test_bit(block_nr, &stripe->io_error_bitmap))
- 		return;
- 
- 	/* Metadata, verify the full tree block. */
--	if (sector->is_metadata) {
-+	if (block->is_metadata) {
- 		/*
- 		 * Check if the tree block crosses the stripe boundary.  If
- 		 * crossed the boundary, we cannot verify it but only give a
-@@ -716,15 +716,15 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 		 * This can only happen on a very old filesystem where chunks
- 		 * are not ensured to be stripe aligned.
- 		 */
--		if (unlikely(sector_nr + sectors_per_tree > stripe->nr_sectors)) {
-+		if (unlikely(block_nr + blocks_per_tree > stripe->nr_blocks)) {
- 			btrfs_warn_rl(fs_info,
- 			"tree block at %llu crosses stripe boundary %llu",
- 				      stripe->logical +
--				      (sector_nr << fs_info->sectorsize_bits),
-+				      (block_nr << fs_info->blocksize_bits),
- 				      stripe->logical);
- 			return;
- 		}
--		scrub_verify_one_metadata(stripe, sector_nr);
-+		scrub_verify_one_metadata(stripe, block_nr);
- 		return;
- 	}
- 
-@@ -732,52 +732,52 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 	 * Data is easier, we just verify the data csum (if we have it).  For
- 	 * cases without csum, we have no other choice but to trust it.
- 	 */
--	if (!sector->csum) {
--		clear_bit(sector_nr, &stripe->error_bitmap);
-+	if (!block->csum) {
-+		clear_bit(block_nr, &stripe->error_bitmap);
- 		return;
- 	}
- 
--	ret = btrfs_check_sector_csum(fs_info, page, pgoff, csum_buf, sector->csum);
-+	ret = btrfs_check_sector_csum(fs_info, page, pgoff, csum_buf, block->csum);
+ 	ret = set_folio_extent_mapped(folio);
  	if (ret < 0) {
--		set_bit(sector_nr, &stripe->csum_error_bitmap);
--		set_bit(sector_nr, &stripe->error_bitmap);
-+		set_bit(block_nr, &stripe->csum_error_bitmap);
-+		set_bit(block_nr, &stripe->error_bitmap);
+@@ -978,7 +978,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 		bool force_bio_submit = false;
+ 		u64 disk_bytenr;
+ 
+-		ASSERT(IS_ALIGNED(cur, fs_info->sectorsize));
++		ASSERT(IS_ALIGNED(cur, fs_info->blocksize));
+ 		if (cur >= last_byte) {
+ 			iosize = folio_size(folio) - pg_offset;
+ 			folio_zero_range(folio, pg_offset, iosize);
+@@ -1111,8 +1111,8 @@ static void set_delalloc_bitmap(struct folio *folio, unsigned long *delalloc_bit
+ 	unsigned int nbits;
+ 
+ 	ASSERT(start >= folio_start && start + len <= folio_start + PAGE_SIZE);
+-	start_bit = (start - folio_start) >> fs_info->sectorsize_bits;
+-	nbits = len >> fs_info->sectorsize_bits;
++	start_bit = (start - folio_start) >> fs_info->blocksize_bits;
++	nbits = len >> fs_info->blocksize_bits;
+ 	ASSERT(bitmap_test_range_all_zero(delalloc_bitmap, start_bit, nbits));
+ 	bitmap_set(delalloc_bitmap, start_bit, nbits);
+ }
+@@ -1123,21 +1123,21 @@ static bool find_next_delalloc_bitmap(struct folio *folio,
+ {
+ 	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
+ 	const u64 folio_start = folio_pos(folio);
+-	const unsigned int bitmap_size = fs_info->sectors_per_page;
++	const unsigned int bitmap_size = fs_info->blocks_per_page;
+ 	unsigned int start_bit;
+ 	unsigned int first_zero;
+ 	unsigned int first_set;
+ 
+ 	ASSERT(start >= folio_start && start < folio_start + PAGE_SIZE);
+ 
+-	start_bit = (start - folio_start) >> fs_info->sectorsize_bits;
++	start_bit = (start - folio_start) >> fs_info->blocksize_bits;
+ 	first_set = find_next_bit(delalloc_bitmap, bitmap_size, start_bit);
+ 	if (first_set >= bitmap_size)
+ 		return false;
+ 
+-	*found_start = folio_start + (first_set << fs_info->sectorsize_bits);
++	*found_start = folio_start + (first_set << fs_info->blocksize_bits);
+ 	first_zero = find_next_zero_bit(delalloc_bitmap, bitmap_size, first_set);
+-	*found_len = (first_zero - first_set) << fs_info->sectorsize_bits;
++	*found_len = (first_zero - first_set) << fs_info->blocksize_bits;
+ 	return true;
+ }
+ 
+@@ -1175,16 +1175,16 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 
+ 	/* Save the dirty bitmap as our submission bitmap will be a subset of it. */
+ 	if (btrfs_is_subpage(fs_info, inode->vfs_inode.i_mapping)) {
+-		ASSERT(fs_info->sectors_per_page > 1);
++		ASSERT(fs_info->blocks_per_page > 1);
+ 		btrfs_get_subpage_dirty_bitmap(fs_info, folio, &bio_ctrl->submit_bitmap);
  	} else {
--		clear_bit(sector_nr, &stripe->csum_error_bitmap);
--		clear_bit(sector_nr, &stripe->error_bitmap);
-+		clear_bit(block_nr, &stripe->csum_error_bitmap);
-+		clear_bit(block_nr, &stripe->error_bitmap);
+ 		bio_ctrl->submit_bitmap = 1;
  	}
- }
  
--/* Verify specified sectors of a stripe. */
-+/* Verify specified blocks of a stripe. */
- static void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long bitmap)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
--	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
--	int sector_nr;
-+	const u32 blocks_per_tree = fs_info->nodesize >> fs_info->blocksize_bits;
-+	int block_nr;
+-	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, fs_info->sectors_per_page) {
+-		u64 start = page_start + (bit << fs_info->sectorsize_bits);
++	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, fs_info->blocks_per_page) {
++		u64 start = page_start + (bit << fs_info->blocksize_bits);
  
--	for_each_set_bit(sector_nr, &bitmap, stripe->nr_sectors) {
--		scrub_verify_one_sector(stripe, sector_nr);
--		if (stripe->sectors[sector_nr].is_metadata)
--			sector_nr += sectors_per_tree - 1;
-+	for_each_set_bit(block_nr, &bitmap, stripe->nr_blocks) {
-+		scrub_verify_one_block(stripe, block_nr);
-+		if (stripe->blocks[block_nr].is_metadata)
-+			block_nr += blocks_per_tree - 1;
+-		btrfs_folio_set_lock(fs_info, folio, start, fs_info->sectorsize);
++		btrfs_folio_set_lock(fs_info, folio, start, fs_info->blocksize);
  	}
- }
  
--static int calc_sector_number(struct scrub_stripe *stripe, struct bio_vec *first_bvec)
-+static int calc_block_number(struct scrub_stripe *stripe, struct bio_vec *first_bvec)
- {
- 	int i;
- 
--	for (i = 0; i < stripe->nr_sectors; i++) {
-+	for (i = 0; i < stripe->nr_blocks; i++) {
- 		if (scrub_stripe_get_page(stripe, i) == first_bvec->bv_page &&
- 		    scrub_stripe_get_page_offset(stripe, i) == first_bvec->bv_offset)
+ 	/* Lock all (subpage) delalloc ranges inside the folio first. */
+@@ -1227,7 +1227,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 		if (!found)
  			break;
- 	}
--	ASSERT(i < stripe->nr_sectors);
-+	ASSERT(i < stripe->nr_blocks);
- 	return i;
- }
- 
- /*
-  * Repair read is different to the regular read:
-  *
-- * - Only reads the failed sectors
-+ * - Only reads the failed blocks
-  * - May have extra blocksize limits
-  */
- static void scrub_repair_read_endio(struct btrfs_bio *bbio)
-@@ -785,23 +785,23 @@ static void scrub_repair_read_endio(struct btrfs_bio *bbio)
- 	struct scrub_stripe *stripe = bbio->private;
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct bio_vec *bvec;
--	int sector_nr = calc_sector_number(stripe, bio_first_bvec_all(&bbio->bio));
-+	int block_nr = calc_block_number(stripe, bio_first_bvec_all(&bbio->bio));
- 	u32 bio_size = 0;
- 	int i;
- 
--	ASSERT(sector_nr < stripe->nr_sectors);
-+	ASSERT(block_nr < stripe->nr_blocks);
- 
- 	bio_for_each_bvec_all(bvec, &bbio->bio, i)
- 		bio_size += bvec->bv_len;
- 
- 	if (bbio->bio.bi_status) {
--		bitmap_set(&stripe->io_error_bitmap, sector_nr,
--			   bio_size >> fs_info->sectorsize_bits);
--		bitmap_set(&stripe->error_bitmap, sector_nr,
--			   bio_size >> fs_info->sectorsize_bits);
-+		bitmap_set(&stripe->io_error_bitmap, block_nr,
-+			   bio_size >> fs_info->blocksize_bits);
-+		bitmap_set(&stripe->error_bitmap, block_nr,
-+			   bio_size >> fs_info->blocksize_bits);
- 	} else {
--		bitmap_clear(&stripe->io_error_bitmap, sector_nr,
--			     bio_size >> fs_info->sectorsize_bits);
-+		bitmap_clear(&stripe->io_error_bitmap, block_nr,
-+			     bio_size >> fs_info->blocksize_bits);
- 	}
- 	bio_put(&bbio->bio);
- 	if (atomic_dec_and_test(&stripe->pending_io))
-@@ -825,7 +825,7 @@ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
- 	ASSERT(stripe->mirror_num >= 1);
- 	ASSERT(atomic_read(&stripe->pending_io) == 0);
- 
--	for_each_set_bit(i, &old_error_bitmap, stripe->nr_sectors) {
-+	for_each_set_bit(i, &old_error_bitmap, stripe->nr_blocks) {
- 		struct page *page;
- 		int pgoff;
- 		int ret;
-@@ -833,7 +833,7 @@ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
- 		page = scrub_stripe_get_page(stripe, i);
- 		pgoff = scrub_stripe_get_page_offset(stripe, i);
- 
--		/* The current sector cannot be merged, submit the bio. */
-+		/* The current block cannot be merged, submit the bio. */
- 		if (bbio && ((i > 0 && !test_bit(i - 1, &stripe->error_bitmap)) ||
- 			     bbio->bio.bi_iter.bi_size >= blocksize)) {
- 			ASSERT(bbio->bio.bi_iter.bi_size);
-@@ -845,14 +845,14 @@ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
- 		}
- 
- 		if (!bbio) {
--			bbio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
-+			bbio = btrfs_bio_alloc(stripe->nr_blocks, REQ_OP_READ,
- 				fs_info, scrub_repair_read_endio, stripe);
- 			bbio->bio.bi_iter.bi_sector = (stripe->logical +
--				(i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
-+				(i << fs_info->blocksize_bits)) >> SECTOR_SHIFT;
- 		}
- 
--		ret = bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
--		ASSERT(ret == fs_info->sectorsize);
-+		ret = bio_add_page(&bbio->bio, page, fs_info->blocksize, pgoff);
-+		ASSERT(ret == fs_info->blocksize);
- 	}
- 	if (bbio) {
- 		ASSERT(bbio->bio.bi_iter.bi_size);
-@@ -871,11 +871,11 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_device *dev = NULL;
- 	u64 physical = 0;
--	int nr_data_sectors = 0;
--	int nr_meta_sectors = 0;
--	int nr_nodatacsum_sectors = 0;
--	int nr_repaired_sectors = 0;
--	int sector_nr;
-+	int nr_data_blocks = 0;
-+	int nr_meta_blocks = 0;
-+	int nr_nodatacsum_blocks = 0;
-+	int nr_repaired_blocks = 0;
-+	int block_nr;
- 
- 	if (test_bit(SCRUB_STRIPE_FLAG_NO_REPORT, &stripe->state))
- 		return;
-@@ -886,8 +886,8 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 	 * Although our scrub_stripe infrastructure is mostly based on btrfs_submit_bio()
- 	 * thus no need for dev/physical, error reporting still needs dev and physical.
- 	 */
--	if (!bitmap_empty(&stripe->init_error_bitmap, stripe->nr_sectors)) {
--		u64 mapped_len = fs_info->sectorsize;
-+	if (!bitmap_empty(&stripe->init_error_bitmap, stripe->nr_blocks)) {
-+		u64 mapped_len = fs_info->blocksize;
- 		struct btrfs_io_context *bioc = NULL;
- 		int stripe_index = stripe->mirror_num - 1;
- 		int ret;
-@@ -909,29 +909,29 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 	}
- 
- skip:
--	for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap, stripe->nr_sectors) {
-+	for_each_set_bit(block_nr, &stripe->extent_block_bitmap, stripe->nr_blocks) {
- 		bool repaired = false;
- 
--		if (stripe->sectors[sector_nr].is_metadata) {
--			nr_meta_sectors++;
-+		if (stripe->blocks[block_nr].is_metadata) {
-+			nr_meta_blocks++;
- 		} else {
--			nr_data_sectors++;
--			if (!stripe->sectors[sector_nr].csum)
--				nr_nodatacsum_sectors++;
-+			nr_data_blocks++;
-+			if (!stripe->blocks[block_nr].csum)
-+				nr_nodatacsum_blocks++;
- 		}
- 
--		if (test_bit(sector_nr, &stripe->init_error_bitmap) &&
--		    !test_bit(sector_nr, &stripe->error_bitmap)) {
--			nr_repaired_sectors++;
-+		if (test_bit(block_nr, &stripe->init_error_bitmap) &&
-+		    !test_bit(block_nr, &stripe->error_bitmap)) {
-+			nr_repaired_blocks++;
- 			repaired = true;
- 		}
- 
--		/* Good sector from the beginning, nothing need to be done. */
--		if (!test_bit(sector_nr, &stripe->init_error_bitmap))
-+		/* Good block from the beginning, nothing need to be done. */
-+		if (!test_bit(block_nr, &stripe->init_error_bitmap))
- 			continue;
- 
  		/*
--		 * Report error for the corrupted sectors.  If repaired, just
-+		 * Report error for the corrupted blocks.  If repaired, just
- 		 * output the message of repaired message.
+-		 * The subpage range covers the last sector, the delalloc range may
++		 * The subpage range covers the last block, the delalloc range may
+ 		 * end beyond the folio boundary, use the saved delalloc_end
+ 		 * instead.
  		 */
- 		if (repaired) {
-@@ -960,15 +960,15 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 					    stripe->logical, stripe->mirror_num);
+@@ -1260,9 +1260,9 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 		 */
+ 		if (ret > 0) {
+ 			unsigned int start_bit = (found_start - page_start) >>
+-						 fs_info->sectorsize_bits;
++						 fs_info->blocksize_bits;
+ 			unsigned int end_bit = (min(page_end + 1, found_start + found_len) -
+-						page_start) >> fs_info->sectorsize_bits;
++						page_start) >> fs_info->blocksize_bits;
+ 			bitmap_clear(&bio_ctrl->submit_bitmap, start_bit, end_bit - start_bit);
  		}
- 
--		if (test_bit(sector_nr, &stripe->io_error_bitmap))
-+		if (test_bit(block_nr, &stripe->io_error_bitmap))
- 			if (__ratelimit(&rs) && dev)
- 				scrub_print_common_warning("i/o error", dev, false,
- 						     stripe->logical, physical);
--		if (test_bit(sector_nr, &stripe->csum_error_bitmap))
-+		if (test_bit(block_nr, &stripe->csum_error_bitmap))
- 			if (__ratelimit(&rs) && dev)
- 				scrub_print_common_warning("checksum error", dev, false,
- 						     stripe->logical, physical);
--		if (test_bit(sector_nr, &stripe->meta_error_bitmap))
-+		if (test_bit(block_nr, &stripe->meta_error_bitmap))
- 			if (__ratelimit(&rs) && dev)
- 				scrub_print_common_warning("header error", dev, false,
- 						     stripe->logical, physical);
-@@ -977,30 +977,30 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 	spin_lock(&sctx->stat_lock);
- 	sctx->stat.data_extents_scrubbed += stripe->nr_data_extents;
- 	sctx->stat.tree_extents_scrubbed += stripe->nr_meta_extents;
--	sctx->stat.data_bytes_scrubbed += nr_data_sectors << fs_info->sectorsize_bits;
--	sctx->stat.tree_bytes_scrubbed += nr_meta_sectors << fs_info->sectorsize_bits;
--	sctx->stat.no_csum += nr_nodatacsum_sectors;
-+	sctx->stat.data_bytes_scrubbed += nr_data_blocks << fs_info->blocksize_bits;
-+	sctx->stat.tree_bytes_scrubbed += nr_meta_blocks << fs_info->blocksize_bits;
-+	sctx->stat.no_csum += nr_nodatacsum_blocks;
- 	sctx->stat.read_errors += stripe->init_nr_io_errors;
- 	sctx->stat.csum_errors += stripe->init_nr_csum_errors;
- 	sctx->stat.verify_errors += stripe->init_nr_meta_errors;
- 	sctx->stat.uncorrectable_errors +=
--		bitmap_weight(&stripe->error_bitmap, stripe->nr_sectors);
--	sctx->stat.corrected_errors += nr_repaired_sectors;
-+		bitmap_weight(&stripe->error_bitmap, stripe->nr_blocks);
-+	sctx->stat.corrected_errors += nr_repaired_blocks;
- 	spin_unlock(&sctx->stat_lock);
+ 		/*
+@@ -1292,7 +1292,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 	 * If all ranges are submitted asynchronously, we just need to account
+ 	 * for them here.
+ 	 */
+-	if (bitmap_empty(&bio_ctrl->submit_bitmap, fs_info->sectors_per_page)) {
++	if (bitmap_empty(&bio_ctrl->submit_bitmap, fs_info->blocks_per_page)) {
+ 		wbc->nr_to_write -= delalloc_to_write;
+ 		return 1;
+ 	}
+@@ -1310,12 +1310,12 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
  }
  
--static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *stripe,
--				unsigned long write_bitmap, bool dev_replace);
-+static void scrub_write_blocks(struct scrub_ctx *sctx, struct scrub_stripe *stripe,
-+			       unsigned long write_bitmap, bool dev_replace);
- 
  /*
-  * The main entrance for all read related scrub work, including:
+- * Return 0 if we have submitted or queued the sector for submission.
++ * Return 0 if we have submitted or queued the block for submission.
+  * Return <0 for critical errors.
   *
-  * - Wait for the initial read to finish
-- * - Verify and locate any bad sectors
-+ * - Verify and locate any bad blocks
-  * - Go through the remaining mirrors and try to read as large blocksize as
-  *   possible
-- * - Go through all mirrors (including the failed mirror) sector-by-sector
-- * - Submit writeback for repaired sectors
-+ * - Go through all mirrors (including the failed mirror) block-by-block
-+ * - Submit writeback for repaired blocks
-  *
-  * Writeback for dev-replace does not happen here, it needs extra
-  * synchronization for zoned devices.
-@@ -1019,17 +1019,17 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 	ASSERT(stripe->mirror_num > 0);
+  * Caller should make sure filepos < i_size and handle filepos >= i_size case.
+  */
+-static int submit_one_sector(struct btrfs_inode *inode,
++static int submit_one_block(struct btrfs_inode *inode,
+ 			     struct folio *folio,
+ 			     u64 filepos, struct btrfs_bio_ctrl *bio_ctrl,
+ 			     loff_t i_size)
+@@ -1326,22 +1326,22 @@ static int submit_one_sector(struct btrfs_inode *inode,
+ 	u64 disk_bytenr;
+ 	u64 extent_offset;
+ 	u64 em_end;
+-	const u32 sectorsize = fs_info->sectorsize;
++	const u32 blocksize = fs_info->blocksize;
  
- 	wait_scrub_stripe_io(stripe);
--	scrub_verify_one_stripe(stripe, stripe->extent_sector_bitmap);
-+	scrub_verify_one_stripe(stripe, stripe->extent_block_bitmap);
- 	/* Save the initial failed bitmap for later repair and report usage. */
- 	stripe->init_error_bitmap = stripe->error_bitmap;
- 	stripe->init_nr_io_errors = bitmap_weight(&stripe->io_error_bitmap,
--						  stripe->nr_sectors);
-+						  stripe->nr_blocks);
- 	stripe->init_nr_csum_errors = bitmap_weight(&stripe->csum_error_bitmap,
--						    stripe->nr_sectors);
-+						    stripe->nr_blocks);
- 	stripe->init_nr_meta_errors = bitmap_weight(&stripe->meta_error_bitmap,
--						    stripe->nr_sectors);
-+						    stripe->nr_blocks);
+-	ASSERT(IS_ALIGNED(filepos, sectorsize));
++	ASSERT(IS_ALIGNED(filepos, blocksize));
  
--	if (bitmap_empty(&stripe->init_error_bitmap, stripe->nr_sectors))
-+	if (bitmap_empty(&stripe->init_error_bitmap, stripe->nr_blocks))
- 		goto out;
+ 	/* @filepos >= i_size case should be handled by the caller. */
+ 	ASSERT(filepos < i_size);
  
+-	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
++	em = btrfs_get_extent(inode, NULL, filepos, blocksize);
+ 	if (IS_ERR(em))
+ 		return PTR_ERR(em);
+ 
+ 	extent_offset = filepos - em->start;
+ 	em_end = extent_map_end(em);
+ 	ASSERT(filepos <= em_end);
+-	ASSERT(IS_ALIGNED(em->start, sectorsize));
+-	ASSERT(IS_ALIGNED(em->len, sectorsize));
++	ASSERT(IS_ALIGNED(em->start, blocksize));
++	ASSERT(IS_ALIGNED(em->len, blocksize));
+ 
+ 	block_start = extent_map_block_start(em);
+ 	disk_bytenr = extent_map_block_start(em) + extent_offset;
+@@ -1359,18 +1359,18 @@ static int submit_one_sector(struct btrfs_inode *inode,
+ 	 * So clear subpage dirty bit here so next time we won't submit
+ 	 * a folio for a range already written to disk.
+ 	 */
+-	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
+-	btrfs_folio_set_writeback(fs_info, folio, filepos, sectorsize);
++	btrfs_folio_clear_dirty(fs_info, folio, filepos, blocksize);
++	btrfs_folio_set_writeback(fs_info, folio, filepos, blocksize);
  	/*
-@@ -1047,17 +1047,17 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 						BTRFS_STRIPE_LEN, false);
- 		wait_scrub_stripe_io(stripe);
- 		scrub_verify_one_stripe(stripe, old_error_bitmap);
--		if (bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
-+		if (bitmap_empty(&stripe->error_bitmap, stripe->nr_blocks))
- 			goto out;
+ 	 * Above call should set the whole folio with writeback flag, even
+-	 * just for a single subpage sector.
++	 * just for a single subpage block.
+ 	 * As long as the folio is properly locked and the range is correct,
+ 	 * we should always get the folio with writeback flag.
+ 	 */
+ 	ASSERT(folio_test_writeback(folio));
+ 
+ 	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
+-			    sectorsize, filepos - folio_pos(folio));
++			    blocksize, filepos - folio_pos(folio));
+ 	return 0;
+ }
+ 
+@@ -1407,15 +1407,15 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+ 		return 1;
  	}
  
- 	/*
- 	 * Last safety net, try re-checking all mirrors, including the failed
--	 * one, sector-by-sector.
-+	 * one, block-by-block.
- 	 *
--	 * As if one sector failed the drive's internal csum, the whole read
--	 * containing the offending sector would be marked as error.
--	 * Thus here we do sector-by-sector read.
-+	 * As if one block failed the drive's internal csum, the whole read
-+	 * containing the offending block would be marked as error.
-+	 * Thus here we do block-by-block read.
- 	 *
- 	 * This can be slow, thus we only try it as the last resort.
- 	 */
-@@ -1068,24 +1068,24 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 		const unsigned long old_error_bitmap = stripe->error_bitmap;
+-	for (cur = start; cur < start + len; cur += fs_info->sectorsize)
+-		set_bit((cur - folio_start) >> fs_info->sectorsize_bits, &range_bitmap);
++	for (cur = start; cur < start + len; cur += fs_info->blocksize)
++		set_bit((cur - folio_start) >> fs_info->blocksize_bits, &range_bitmap);
+ 	bitmap_and(&bio_ctrl->submit_bitmap, &bio_ctrl->submit_bitmap, &range_bitmap,
+-		   fs_info->sectors_per_page);
++		   fs_info->blocks_per_page);
  
- 		scrub_stripe_submit_repair_read(stripe, mirror,
--						fs_info->sectorsize, true);
-+						fs_info->blocksize, true);
- 		wait_scrub_stripe_io(stripe);
- 		scrub_verify_one_stripe(stripe, old_error_bitmap);
--		if (bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
-+		if (bitmap_empty(&stripe->error_bitmap, stripe->nr_blocks))
+ 	bio_ctrl->end_io_func = end_bbio_data_write;
+ 
+-	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, fs_info->sectors_per_page) {
+-		cur = folio_pos(folio) + (bit << fs_info->sectorsize_bits);
++	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, fs_info->blocks_per_page) {
++		cur = folio_pos(folio) + (bit << fs_info->blocksize_bits);
+ 
+ 		if (cur >= i_size) {
+ 			btrfs_mark_ordered_io_finished(inode, folio, cur,
+@@ -1425,21 +1425,21 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+ 			 * bother writing back.
+ 			 * But we still need to clear the dirty subpage bit, or
+ 			 * the next time the folio gets dirtied, we will try to
+-			 * writeback the sectors with subpage dirty bits,
++			 * writeback the blocks with subpage dirty bits,
+ 			 * causing writeback without ordered extent.
+ 			 */
+ 			btrfs_folio_clear_dirty(fs_info, folio, cur,
+ 						start + len - cur);
+ 			break;
+ 		}
+-		ret = submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
++		ret = submit_one_block(inode, folio, cur, bio_ctrl, i_size);
+ 		if (ret < 0)
  			goto out;
+ 		submitted_io = true;
  	}
  out:
  	/*
--	 * Submit the repaired sectors.  For zoned case, we cannot do repair
-+	 * Submit the repaired blocks.  For zoned case, we cannot do repair
- 	 * in-place, but queue the bg to be relocated.
- 	 */
- 	bitmap_andnot(&repaired, &stripe->init_error_bitmap, &stripe->error_bitmap,
--		      stripe->nr_sectors);
--	if (!sctx->readonly && !bitmap_empty(&repaired, stripe->nr_sectors)) {
-+		      stripe->nr_blocks);
-+	if (!sctx->readonly && !bitmap_empty(&repaired, stripe->nr_blocks)) {
- 		if (btrfs_is_zoned(fs_info)) {
- 			btrfs_repair_one_zone(fs_info, sctx->stripes[0].bg->start);
- 		} else {
--			scrub_write_sectors(sctx, stripe, repaired, false);
-+			scrub_write_blocks(sctx, stripe, repaired, false);
- 			wait_scrub_stripe_io(stripe);
- 		}
- 	}
-@@ -1099,21 +1099,21 @@ static void scrub_read_endio(struct btrfs_bio *bbio)
- {
- 	struct scrub_stripe *stripe = bbio->private;
- 	struct bio_vec *bvec;
--	int sector_nr = calc_sector_number(stripe, bio_first_bvec_all(&bbio->bio));
--	int num_sectors;
-+	int block_nr = calc_block_number(stripe, bio_first_bvec_all(&bbio->bio));
-+	int num_blocks;
- 	u32 bio_size = 0;
- 	int i;
+-	 * If we didn't submitted any sector (>= i_size), folio dirty get
++	 * If we didn't submitted any block (>= i_size), folio dirty get
+ 	 * cleared but PAGECACHE_TAG_DIRTY is not cleared (only cleared
+ 	 * by folio_start_writeback() if the folio is not dirty).
+ 	 *
+@@ -1658,7 +1658,7 @@ static struct extent_buffer *find_extent_buffer_nolock(
  
--	ASSERT(sector_nr < stripe->nr_sectors);
-+	ASSERT(block_nr < stripe->nr_blocks);
- 	bio_for_each_bvec_all(bvec, &bbio->bio, i)
- 		bio_size += bvec->bv_len;
--	num_sectors = bio_size >> stripe->bg->fs_info->sectorsize_bits;
-+	num_blocks = bio_size >> stripe->bg->fs_info->blocksize_bits;
+ 	rcu_read_lock();
+ 	eb = radix_tree_lookup(&fs_info->buffer_radix,
+-			       start >> fs_info->sectorsize_bits);
++			       start >> fs_info->blocksize_bits);
+ 	if (eb && atomic_inc_not_zero(&eb->refs)) {
+ 		rcu_read_unlock();
+ 		return eb;
+@@ -1794,10 +1794,10 @@ static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
+ 	int submitted = 0;
+ 	u64 folio_start = folio_pos(folio);
+ 	int bit_start = 0;
+-	int sectors_per_node = fs_info->nodesize >> fs_info->sectorsize_bits;
++	int blocks_per_node = fs_info->nodesize >> fs_info->blocksize_bits;
  
- 	if (bbio->bio.bi_status) {
--		bitmap_set(&stripe->io_error_bitmap, sector_nr, num_sectors);
--		bitmap_set(&stripe->error_bitmap, sector_nr, num_sectors);
-+		bitmap_set(&stripe->io_error_bitmap, block_nr, num_blocks);
-+		bitmap_set(&stripe->error_bitmap, block_nr, num_blocks);
- 	} else {
--		bitmap_clear(&stripe->io_error_bitmap, sector_nr, num_sectors);
-+		bitmap_clear(&stripe->io_error_bitmap, block_nr, num_blocks);
- 	}
- 	bio_put(&bbio->bio);
- 	if (atomic_dec_and_test(&stripe->pending_io)) {
-@@ -1128,7 +1128,7 @@ static void scrub_write_endio(struct btrfs_bio *bbio)
- 	struct scrub_stripe *stripe = bbio->private;
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct bio_vec *bvec;
--	int sector_nr = calc_sector_number(stripe, bio_first_bvec_all(&bbio->bio));
-+	int block_nr = calc_block_number(stripe, bio_first_bvec_all(&bbio->bio));
- 	u32 bio_size = 0;
- 	int i;
- 
-@@ -1139,8 +1139,8 @@ static void scrub_write_endio(struct btrfs_bio *bbio)
+ 	/* Lock and write each dirty extent buffers in the range */
+-	while (bit_start < fs_info->sectors_per_page) {
++	while (bit_start < fs_info->blocks_per_page) {
+ 		struct btrfs_subpage *subpage = folio_get_private(folio);
+ 		struct extent_buffer *eb;
  		unsigned long flags;
- 
- 		spin_lock_irqsave(&stripe->write_error_lock, flags);
--		bitmap_set(&stripe->write_error_bitmap, sector_nr,
--			   bio_size >> fs_info->sectorsize_bits);
-+		bitmap_set(&stripe->write_error_bitmap, block_nr,
-+			   bio_size >> fs_info->blocksize_bits);
- 		spin_unlock_irqrestore(&stripe->write_error_lock, flags);
- 	}
- 	bio_put(&bbio->bio);
-@@ -1173,13 +1173,13 @@ static void scrub_submit_write_bio(struct scrub_ctx *sctx,
- 	 * And also need to update the write pointer if write finished
- 	 * successfully.
- 	 */
--	if (!test_bit(bio_off >> fs_info->sectorsize_bits,
-+	if (!test_bit(bio_off >> fs_info->blocksize_bits,
- 		      &stripe->write_error_bitmap))
- 		sctx->write_pointer += bio_len;
- }
- 
- /*
-- * Submit the write bio(s) for the sectors specified by @write_bitmap.
-+ * Submit the write bio(s) for the blocks specified by @write_bitmap.
-  *
-  * Here we utilize btrfs_submit_repair_write(), which has some extra benefits:
-  *
-@@ -1191,35 +1191,35 @@ static void scrub_submit_write_bio(struct scrub_ctx *sctx,
-  *
-  * - Handle dev-replace and read-repair writeback differently
-  */
--static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *stripe,
-+static void scrub_write_blocks(struct scrub_ctx *sctx, struct scrub_stripe *stripe,
- 				unsigned long write_bitmap, bool dev_replace)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct btrfs_bio *bbio = NULL;
--	int sector_nr;
-+	int block_nr;
- 
--	for_each_set_bit(sector_nr, &write_bitmap, stripe->nr_sectors) {
--		struct page *page = scrub_stripe_get_page(stripe, sector_nr);
--		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, sector_nr);
-+	for_each_set_bit(block_nr, &write_bitmap, stripe->nr_blocks) {
-+		struct page *page = scrub_stripe_get_page(stripe, block_nr);
-+		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, block_nr);
- 		int ret;
- 
--		/* We should only writeback sectors covered by an extent. */
--		ASSERT(test_bit(sector_nr, &stripe->extent_sector_bitmap));
-+		/* We should only writeback blocks covered by an extent. */
-+		ASSERT(test_bit(block_nr, &stripe->extent_block_bitmap));
- 
--		/* Cannot merge with previous sector, submit the current one. */
--		if (bbio && sector_nr && !test_bit(sector_nr - 1, &write_bitmap)) {
-+		/* Cannot merge with previous block, submit the current one. */
-+		if (bbio && block_nr && !test_bit(block_nr - 1, &write_bitmap)) {
- 			scrub_submit_write_bio(sctx, stripe, bbio, dev_replace);
- 			bbio = NULL;
+@@ -1813,7 +1813,7 @@ static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
+ 			break;
  		}
- 		if (!bbio) {
--			bbio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_WRITE,
-+			bbio = btrfs_bio_alloc(stripe->nr_blocks, REQ_OP_WRITE,
- 					       fs_info, scrub_write_endio, stripe);
- 			bbio->bio.bi_iter.bi_sector = (stripe->logical +
--				(sector_nr << fs_info->sectorsize_bits)) >>
-+				(block_nr << fs_info->blocksize_bits)) >>
- 				SECTOR_SHIFT;
+ 		spin_lock_irqsave(&subpage->lock, flags);
+-		if (!test_bit(bit_start + btrfs_bitmap_nr_dirty * fs_info->sectors_per_page,
++		if (!test_bit(bit_start + btrfs_bitmap_nr_dirty * fs_info->blocks_per_page,
+ 			      subpage->bitmaps)) {
+ 			spin_unlock_irqrestore(&subpage->lock, flags);
+ 			spin_unlock(&folio->mapping->i_private_lock);
+@@ -1821,8 +1821,8 @@ static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
+ 			continue;
  		}
--		ret = bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
--		ASSERT(ret == fs_info->sectorsize);
-+		ret = bio_add_page(&bbio->bio, page, fs_info->blocksize, pgoff);
-+		ASSERT(ret == fs_info->blocksize);
- 	}
- 	if (bbio)
- 		scrub_submit_write_bio(sctx, stripe, bbio, dev_replace);
-@@ -1487,23 +1487,23 @@ static void fill_one_extent_info(struct btrfs_fs_info *fs_info,
- 	for (u64 cur_logical = max(stripe->logical, extent_start);
- 	     cur_logical < min(stripe->logical + BTRFS_STRIPE_LEN,
- 			       extent_start + extent_len);
--	     cur_logical += fs_info->sectorsize) {
--		const int nr_sector = (cur_logical - stripe->logical) >>
--				      fs_info->sectorsize_bits;
--		struct scrub_sector_verification *sector =
--						&stripe->sectors[nr_sector];
-+	     cur_logical += fs_info->blocksize) {
-+		const int nr_block = (cur_logical - stripe->logical) >>
-+				      fs_info->blocksize_bits;
-+		struct scrub_block_verification *block =
-+						&stripe->blocks[nr_block];
  
--		set_bit(nr_sector, &stripe->extent_sector_bitmap);
-+		set_bit(nr_block, &stripe->extent_block_bitmap);
- 		if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
--			sector->is_metadata = true;
--			sector->generation = extent_gen;
-+			block->is_metadata = true;
-+			block->generation = extent_gen;
- 		}
- 	}
- }
- 
- static void scrub_stripe_reset_bitmaps(struct scrub_stripe *stripe)
- {
--	stripe->extent_sector_bitmap = 0;
-+	stripe->extent_block_bitmap = 0;
- 	stripe->init_error_bitmap = 0;
- 	stripe->init_nr_io_errors = 0;
- 	stripe->init_nr_csum_errors = 0;
-@@ -1541,8 +1541,8 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 	u64 extent_gen;
- 	int ret;
- 
--	memset(stripe->sectors, 0, sizeof(struct scrub_sector_verification) *
--				   stripe->nr_sectors);
-+	memset(stripe->blocks, 0, sizeof(struct scrub_block_verification) *
-+				   stripe->nr_blocks);
- 	scrub_stripe_reset_bitmaps(stripe);
- 
- 	/* The range must be inside the bg. */
-@@ -1575,12 +1575,12 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 	stripe->mirror_num = mirror_num;
- 	stripe_end = stripe->logical + BTRFS_STRIPE_LEN - 1;
- 
--	/* Fill the first extent info into stripe->sectors[] array. */
-+	/* Fill the first extent info into stripe->blocks[] array. */
- 	fill_one_extent_info(fs_info, stripe, extent_start, extent_len,
- 			     extent_flags, extent_gen);
- 	cur_logical = extent_start + extent_len;
- 
--	/* Fill the extent info for the remaining sectors. */
-+	/* Fill the extent info for the remaining blocks. */
- 	while (cur_logical <= stripe_end) {
- 		ret = find_first_extent_item(extent_root, extent_path, cur_logical,
- 					     stripe_end - cur_logical + 1);
-@@ -1603,7 +1603,7 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 
- 	/* Now fill the data csum. */
- 	if (bg->flags & BTRFS_BLOCK_GROUP_DATA) {
--		int sector_nr;
-+		int block_nr;
- 		unsigned long csum_bitmap = 0;
- 
- 		/* Csum space should have already been allocated. */
-@@ -1611,9 +1611,9 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+-		start = folio_start + bit_start * fs_info->sectorsize;
+-		bit_start += sectors_per_node;
++		start = folio_start + bit_start * fs_info->blocksize;
++		bit_start += blocks_per_node;
  
  		/*
- 		 * Our csum bitmap should be large enough, as BTRFS_STRIPE_LEN
--		 * should contain at most 16 sectors.
-+		 * should contain at most 16 blocks.
+ 		 * Here we just want to grab the eb without touching extra
+@@ -2246,7 +2246,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+ 	int ret = 0;
+ 	struct address_space *mapping = inode->i_mapping;
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+-	const u32 sectorsize = fs_info->sectorsize;
++	const u32 blocksize = fs_info->blocksize;
+ 	loff_t i_size = i_size_read(inode);
+ 	u64 cur = start;
+ 	struct btrfs_bio_ctrl bio_ctrl = {
+@@ -2257,7 +2257,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+ 	if (wbc->no_cgroup_owner)
+ 		bio_ctrl.opf |= REQ_BTRFS_CGROUP_PUNT;
+ 
+-	ASSERT(IS_ALIGNED(start, sectorsize) && IS_ALIGNED(end + 1, sectorsize));
++	ASSERT(IS_ALIGNED(start, blocksize) && IS_ALIGNED(end + 1, blocksize));
+ 
+ 	while (cur <= end) {
+ 		u64 cur_end = min(round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1, end);
+@@ -2283,7 +2283,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+ 			ASSERT(folio_test_dirty(folio));
+ 
+ 		/*
+-		 * Set the submission bitmap to submit all sectors.
++		 * Set the submission bitmap to submit all blocks.
+ 		 * extent_writepage_io() will do the truncation correctly.
  		 */
--		ASSERT(BITS_PER_LONG >= BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits);
-+		ASSERT(BITS_PER_LONG >= (BTRFS_STRIPE_LEN >> fs_info->blocksize_bits));
+ 		bio_ctrl.submit_bitmap = (unsigned long)-1;
+@@ -2354,7 +2354,7 @@ int extent_invalidate_folio(struct extent_io_tree *tree,
+ 	struct extent_state *cached_state = NULL;
+ 	u64 start = folio_pos(folio);
+ 	u64 end = start + folio_size(folio) - 1;
+-	size_t blocksize = folio_to_fs_info(folio)->sectorsize;
++	size_t blocksize = folio_to_fs_info(folio)->blocksize;
  
- 		ret = btrfs_lookup_csums_bitmap(csum_root, csum_path,
- 						stripe->logical, stripe_end,
-@@ -1623,9 +1623,9 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 		if (ret > 0)
- 			ret = 0;
- 
--		for_each_set_bit(sector_nr, &csum_bitmap, stripe->nr_sectors) {
--			stripe->sectors[sector_nr].csum = stripe->csums +
--				sector_nr * fs_info->csum_size;
-+		for_each_set_bit(block_nr, &csum_bitmap, stripe->nr_blocks) {
-+			stripe->blocks[block_nr].csum = stripe->csums +
-+				block_nr * fs_info->csum_size;
- 		}
+ 	/* This function is only called for the btree inode */
+ 	ASSERT(tree->owner == IO_TREE_BTREE_INODE_IO);
+@@ -2810,7 +2810,7 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
  	}
- 	set_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state);
-@@ -1641,10 +1641,10 @@ static void scrub_reset_stripe(struct scrub_stripe *stripe)
- 	stripe->nr_data_extents = 0;
- 	stripe->state = 0;
+ 	spin_lock(&fs_info->buffer_lock);
+ 	ret = radix_tree_insert(&fs_info->buffer_radix,
+-				start >> fs_info->sectorsize_bits, eb);
++				start >> fs_info->blocksize_bits, eb);
+ 	spin_unlock(&fs_info->buffer_lock);
+ 	radix_tree_preload_end();
+ 	if (ret == -EEXIST) {
+@@ -2867,7 +2867,7 @@ static struct extent_buffer *grab_extent_buffer(
  
--	for (int i = 0; i < stripe->nr_sectors; i++) {
--		stripe->sectors[i].is_metadata = false;
--		stripe->sectors[i].csum = NULL;
--		stripe->sectors[i].generation = 0;
-+	for (int i = 0; i < stripe->nr_blocks; i++) {
-+		stripe->blocks[i].is_metadata = false;
-+		stripe->blocks[i].csum = NULL;
-+		stripe->blocks[i].generation = 0;
- 	}
- }
- 
-@@ -1656,29 +1656,29 @@ static u32 stripe_length(const struct scrub_stripe *stripe)
- 		   stripe->bg->start + stripe->bg->length - stripe->logical);
- }
- 
--static void scrub_submit_extent_sector_read(struct scrub_stripe *stripe)
-+static void scrub_submit_extent_block_read(struct scrub_stripe *stripe)
+ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
  {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct btrfs_bio *bbio = NULL;
--	unsigned int nr_sectors = stripe_length(stripe) >> fs_info->sectorsize_bits;
-+	unsigned int nr_blocks = stripe_length(stripe) >> fs_info->blocksize_bits;
- 	u64 stripe_len = BTRFS_STRIPE_LEN;
- 	int mirror = stripe->mirror_num;
- 	int i;
- 
- 	atomic_inc(&stripe->pending_io);
- 
--	for_each_set_bit(i, &stripe->extent_sector_bitmap, stripe->nr_sectors) {
-+	for_each_set_bit(i, &stripe->extent_block_bitmap, stripe->nr_blocks) {
- 		struct page *page = scrub_stripe_get_page(stripe, i);
- 		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, i);
- 
- 		/* We're beyond the chunk boundary, no need to read anymore. */
--		if (i >= nr_sectors)
-+		if (i >= nr_blocks)
- 			break;
- 
--		/* The current sector cannot be merged, submit the bio. */
-+		/* The current block cannot be merged, submit the bio. */
- 		if (bbio &&
- 		    ((i > 0 &&
--		      !test_bit(i - 1, &stripe->extent_sector_bitmap)) ||
-+		      !test_bit(i - 1, &stripe->extent_block_bitmap)) ||
- 		     bbio->bio.bi_iter.bi_size >= stripe_len)) {
- 			ASSERT(bbio->bio.bi_iter.bi_size);
- 			atomic_inc(&stripe->pending_io);
-@@ -1690,11 +1690,11 @@ static void scrub_submit_extent_sector_read(struct scrub_stripe *stripe)
- 			struct btrfs_io_stripe io_stripe = {};
- 			struct btrfs_io_context *bioc = NULL;
- 			const u64 logical = stripe->logical +
--					    (i << fs_info->sectorsize_bits);
-+					    (i << fs_info->blocksize_bits);
- 			int err;
- 
- 			io_stripe.rst_search_commit_root = true;
--			stripe_len = (nr_sectors - i) << fs_info->sectorsize_bits;
-+			stripe_len = (nr_blocks - i) << fs_info->blocksize_bits;
- 			/*
- 			 * For RST cases, we need to manually split the bbio to
- 			 * follow the RST boundary.
-@@ -1718,12 +1718,12 @@ static void scrub_submit_extent_sector_read(struct scrub_stripe *stripe)
- 				continue;
- 			}
- 
--			bbio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
-+			bbio = btrfs_bio_alloc(stripe->nr_blocks, REQ_OP_READ,
- 					       fs_info, scrub_read_endio, stripe);
- 			bbio->bio.bi_iter.bi_sector = logical >> SECTOR_SHIFT;
- 		}
- 
--		__bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
-+		__bio_add_page(&bbio->bio, page, fs_info->blocksize, pgoff);
+-	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
++	if (!IS_ALIGNED(start, fs_info->blocksize)) {
+ 		btrfs_err(fs_info, "bad tree block start %llu", start);
+ 		return -EINVAL;
  	}
+@@ -3128,7 +3128,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  
- 	if (bbio) {
-@@ -1744,7 +1744,7 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
+ 	spin_lock(&fs_info->buffer_lock);
+ 	ret = radix_tree_insert(&fs_info->buffer_radix,
+-				start >> fs_info->sectorsize_bits, eb);
++				start >> fs_info->blocksize_bits, eb);
+ 	spin_unlock(&fs_info->buffer_lock);
+ 	radix_tree_preload_end();
+ 	if (ret == -EEXIST) {
+@@ -3212,7 +3212,7 @@ static int release_extent_buffer(struct extent_buffer *eb)
+ 
+ 			spin_lock(&fs_info->buffer_lock);
+ 			radix_tree_delete(&fs_info->buffer_radix,
+-					  eb->start >> fs_info->sectorsize_bits);
++					  eb->start >> fs_info->blocksize_bits);
+ 			spin_unlock(&fs_info->buffer_lock);
+ 		} else {
+ 			spin_unlock(&eb->refs_lock);
+@@ -3714,7 +3714,7 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ /*
+  * Check that the extent buffer is uptodate.
+  *
+- * For regular sector size == PAGE_SIZE case, check if @page is uptodate.
++ * For regular block size == PAGE_SIZE case, check if @page is uptodate.
+  * For subpage case, check if the range covered by the eb has EXTENT_UPTODATE.
+  */
+ static void assert_eb_folio_uptodate(const struct extent_buffer *eb, int i)
+@@ -4126,7 +4126,7 @@ static struct extent_buffer *get_next_extent_buffer(
+ 		int i;
+ 
+ 		ret = radix_tree_gang_lookup(&fs_info->buffer_radix,
+-				(void **)gang, cur >> fs_info->sectorsize_bits,
++				(void **)gang, cur >> fs_info->blocksize_bits,
+ 				min_t(unsigned int, GANG_LOOKUP_SIZE,
+ 				      PAGE_SIZE / fs_info->nodesize));
+ 		if (ret == 0)
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 8a36117ed453..c0e70412851f 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -145,13 +145,13 @@ static inline unsigned long offset_in_eb_folio(const struct extent_buffer *eb,
+  * @eb:		target extent buffer
+  * @start:	offset inside the extent buffer
+  *
+- * Will handle both sectorsize == PAGE_SIZE and sectorsize < PAGE_SIZE cases.
++ * Will handle both blocksize == PAGE_SIZE and blocksize < PAGE_SIZE cases.
+  */
+ static inline size_t get_eb_offset_in_folio(const struct extent_buffer *eb,
+ 					    unsigned long offset)
  {
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_bio *bbio;
--	unsigned int nr_sectors = stripe_length(stripe) >> fs_info->sectorsize_bits;
-+	unsigned int nr_blocks = stripe_length(stripe) >> fs_info->blocksize_bits;
- 	int mirror = stripe->mirror_num;
- 
- 	ASSERT(stripe->bg);
-@@ -1752,7 +1752,7 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
- 
- 	if (btrfs_need_stripe_tree_update(fs_info, stripe->bg->flags)) {
--		scrub_submit_extent_sector_read(stripe);
-+		scrub_submit_extent_block_read(stripe);
- 		return;
- 	}
- 
-@@ -1761,14 +1761,14 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 
- 	bbio->bio.bi_iter.bi_sector = stripe->logical >> SECTOR_SHIFT;
- 	/* Read the whole range inside the chunk boundary. */
--	for (unsigned int cur = 0; cur < nr_sectors; cur++) {
-+	for (unsigned int cur = 0; cur < nr_blocks; cur++) {
- 		struct page *page = scrub_stripe_get_page(stripe, cur);
- 		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, cur);
- 		int ret;
- 
--		ret = bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
-+		ret = bio_add_page(&bbio->bio, page, fs_info->blocksize, pgoff);
- 		/* We should have allocated enough bio vectors. */
--		ASSERT(ret == fs_info->sectorsize);
-+		ASSERT(ret == fs_info->blocksize);
- 	}
- 	atomic_inc(&stripe->pending_io);
- 
-@@ -1792,14 +1792,14 @@ static bool stripe_has_metadata_error(struct scrub_stripe *stripe)
- {
- 	int i;
- 
--	for_each_set_bit(i, &stripe->error_bitmap, stripe->nr_sectors) {
--		if (stripe->sectors[i].is_metadata) {
-+	for_each_set_bit(i, &stripe->error_bitmap, stripe->nr_blocks) {
-+		if (stripe->blocks[i].is_metadata) {
- 			struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 
- 			btrfs_err(fs_info,
--			"stripe %llu has unrepaired metadata sector at %llu",
-+			"stripe %llu has unrepaired metadata block at %llu",
- 				  stripe->logical,
--				  stripe->logical + (i << fs_info->sectorsize_bits));
-+				  stripe->logical + (i << fs_info->blocksize_bits));
- 			return true;
- 		}
- 	}
-@@ -1873,9 +1873,9 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
- 
- 			ASSERT(stripe->dev == fs_info->dev_replace.srcdev);
- 
--			bitmap_andnot(&good, &stripe->extent_sector_bitmap,
--				      &stripe->error_bitmap, stripe->nr_sectors);
--			scrub_write_sectors(sctx, stripe, good, true);
-+			bitmap_andnot(&good, &stripe->extent_block_bitmap,
-+				      &stripe->error_bitmap, stripe->nr_blocks);
-+			scrub_write_blocks(sctx, stripe, good, true);
- 		}
- 	}
- 
-@@ -2008,7 +2008,7 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
- 	/* Check if all data stripes are empty. */
- 	for (int i = 0; i < data_stripes; i++) {
- 		stripe = &sctx->raid56_data_stripes[i];
--		if (!bitmap_empty(&stripe->extent_sector_bitmap, stripe->nr_sectors)) {
-+		if (!bitmap_empty(&stripe->extent_block_bitmap, stripe->nr_blocks)) {
- 			all_empty = false;
- 			break;
- 		}
-@@ -2048,17 +2048,17 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
- 		 * As we may hit an empty data stripe while it's missing.
- 		 */
- 		bitmap_and(&error, &stripe->error_bitmap,
--			   &stripe->extent_sector_bitmap, stripe->nr_sectors);
--		if (!bitmap_empty(&error, stripe->nr_sectors)) {
-+			   &stripe->extent_block_bitmap, stripe->nr_blocks);
-+		if (!bitmap_empty(&error, stripe->nr_blocks)) {
- 			btrfs_err(fs_info,
--"unrepaired sectors detected, full stripe %llu data stripe %u errors %*pbl",
--				  full_stripe_start, i, stripe->nr_sectors,
-+"unrepaired blocks detected, full stripe %llu data stripe %u errors %*pbl",
-+				  full_stripe_start, i, stripe->nr_blocks,
- 				  &error);
- 			ret = -EIO;
- 			goto out;
- 		}
- 		bitmap_or(&extent_bitmap, &extent_bitmap,
--			  &stripe->extent_sector_bitmap, stripe->nr_sectors);
-+			  &stripe->extent_block_bitmap, stripe->nr_blocks);
- 	}
- 
- 	/* Now we can check and regenerate the P/Q stripe. */
-@@ -2076,7 +2076,7 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
- 		goto out;
- 	}
- 	rbio = raid56_parity_alloc_scrub_rbio(bio, bioc, scrub_dev, &extent_bitmap,
--				BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits);
-+				BTRFS_STRIPE_LEN >> fs_info->blocksize_bits);
- 	btrfs_put_bioc(bioc);
- 	if (!rbio) {
- 		ret = -ENOMEM;
-@@ -2920,12 +2920,12 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	ASSERT(fs_info->nodesize <= BTRFS_STRIPE_LEN);
- 
  	/*
--	 * SCRUB_MAX_SECTORS_PER_BLOCK is calculated using the largest possible
--	 * value (max nodesize / min sectorsize), thus nodesize should always
-+	 * SCRUB_MAX_BLOCKS_PER_TREE_BLOCK is calculated using the largest possible
-+	 * value (max nodesize / min blocksize), thus nodesize should always
- 	 * be fine.
+-	 * 1) sectorsize == PAGE_SIZE and nodesize >= PAGE_SIZE case
++	 * 1) blocksize == PAGE_SIZE and nodesize >= PAGE_SIZE case
+ 	 *    1.1) One large folio covering the whole eb
+ 	 *	   The eb->start is aligned to folio size, thus adding it
+ 	 *	   won't cause any difference.
+@@ -159,7 +159,7 @@ static inline size_t get_eb_offset_in_folio(const struct extent_buffer *eb,
+ 	 *	   The eb->start is aligned to folio (page) size, thus
+ 	 *	   adding it won't cause any difference.
+ 	 *
+-	 * 2) sectorsize < PAGE_SIZE and nodesize < PAGE_SIZE case
++	 * 2) blocksize < PAGE_SIZE and nodesize < PAGE_SIZE case
+ 	 *    In this case there would only be one page sized folio, and there
+ 	 *    may be several different extent buffers in the page/folio.
+ 	 *    We need to add eb->start to properly access the offset inside
+@@ -172,7 +172,7 @@ static inline unsigned long get_eb_folio_index(const struct extent_buffer *eb,
+ 					       unsigned long offset)
+ {
+ 	/*
+-	 * 1) sectorsize == PAGE_SIZE and nodesize >= PAGE_SIZE case
++	 * 1) blocksize == PAGE_SIZE and nodesize >= PAGE_SIZE case
+ 	 *    1.1) One large folio covering the whole eb.
+ 	 *	   the folio_shift would be large enough to always make us
+ 	 *	   return 0 as index.
+@@ -180,7 +180,7 @@ static inline unsigned long get_eb_folio_index(const struct extent_buffer *eb,
+ 	 *         The folio_shift would be PAGE_SHIFT, giving us the correct
+ 	 *         index.
+ 	 *
+-	 * 2) sectorsize < PAGE_SIZE and nodesize < PAGE_SIZE case
++	 * 2) blocksize < PAGE_SIZE and nodesize < PAGE_SIZE case
+ 	 *    The folio would only be page sized, and always give us 0 as index.
  	 */
- 	ASSERT(fs_info->nodesize <=
--	       SCRUB_MAX_SECTORS_PER_BLOCK << fs_info->sectorsize_bits);
-+	       SCRUB_MAX_BLOCKS_PER_TREE_BLOCK << fs_info->blocksize_bits);
- 
- 	/* Allocate outside of device_list_mutex */
- 	sctx = scrub_setup_ctx(fs_info, is_dev_replace);
-@@ -2991,7 +2991,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	return offset >> eb->folio_shift;
+@@ -275,10 +275,10 @@ void btrfs_readahead_node_child(struct extent_buffer *node, int slot);
+ static inline int num_extent_pages(const struct extent_buffer *eb)
+ {
  	/*
- 	 * In order to avoid deadlock with reclaim when there is a transaction
- 	 * trying to pause scrub, make sure we use GFP_NOFS for all the
--	 * allocations done at btrfs_scrub_sectors() and scrub_sectors_for_parity()
-+	 * allocations done at btrfs_scrub_blocks() and scrub_blocks_for_parity()
- 	 * invoked by our callees. The pausing request is done when the
- 	 * transaction commit starts, and it blocks the transaction until scrub
- 	 * is paused (done at specific points at scrub_stripe() or right above
+-	 * For sectorsize == PAGE_SIZE case, since nodesize is always aligned to
+-	 * sectorsize, it's just eb->len >> PAGE_SHIFT.
++	 * For blocksize == PAGE_SIZE case, since nodesize is always aligned to
++	 * blocksize, it's just eb->len >> PAGE_SHIFT.
+ 	 *
+-	 * For sectorsize < PAGE_SIZE case, we could have nodesize < PAGE_SIZE,
++	 * For blocksize < PAGE_SIZE case, we could have nodesize < PAGE_SIZE,
+ 	 * thus have to ensure we get at least one page.
+ 	 */
+ 	return (eb->len >> PAGE_SHIFT) ?: 1;
 -- 
 2.47.1
 
