@@ -1,461 +1,420 @@
-Return-Path: <linux-btrfs+bounces-10553-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10554-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 132769F69E6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 16:20:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABB29F6A77
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 16:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AADD7A39C5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 15:20:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A225E1889C91
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 15:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE1876410;
-	Wed, 18 Dec 2024 15:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925F11F63DF;
+	Wed, 18 Dec 2024 15:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="j9kfAXY7";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="otwppbRE"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EdVSEo9D"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FB4481B3
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 15:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734535238; cv=fail; b=kb3X0NIuOi4CV81YLcP7RfqGHXyA/Dw7X+J8EXx0moh6GZHpzlFXLSzvhtU4Y8q+gDhuNbRMdZkKLKS2dzeORU9Sowt7EpCm+quSylseN1C2rNziRZWHUrnlhj3YdHj8BgBMeoKYJwBM3P+bbESD8WEylLtZV+V/jEjzGt7unTA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734535238; c=relaxed/simple;
-	bh=VSGgcNyn+UcYx4K+YT2S649gxYhMk8oeVtHIEq5Holk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=O2sJ6a4SfxfUpusl/tyAB04qVHXDVyPdQUH5KIZ0Zave8Wswi8Lt2wwzxUQWcyi+Q2BOwqe5tZ2+Y8hRkZQ67CLpUux4Q/wDWsR21U19TgSQQdCoB5yBjMh5jGeIwgyPXtukLJDPiCwybQRfEsKqHog4s9hYNfRQAkN8QQeim/I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=j9kfAXY7; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=otwppbRE; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BIEljXe004831;
-	Wed, 18 Dec 2024 15:20:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=XD+XWcMc9YtsdpQklrloLEpE4lAdOlf8h4AmVtxBdQ8=; b=
-	j9kfAXY7jkasVBYeJyftwLlRkm8/BwMMc4gufLpk0un27r9/fq0JX9LgKgKeVc9R
-	oVsX9rvgAaOtu0Fe3sYSNJjjVdlykwoiNScZDuLTln3zdd9Wx5KCeA6AEGa2GnUq
-	Exb0hxufT06Dj90eIKN8+9cc01lm8gF/5i5//Zqj/8WzRjaNvIWvX3MjXcJcvxgL
-	DZ57qrnAKU8PNwUxnAKl0+u9XH517hnR+GKxAzP9e+aEL/yLJwkjp84YYyanmMyS
-	o2X7H1lPJGdkFaVnwbYLRqa0O7C1IlUEYmPMbTUCiMCDYfgCEDuBvTCY29NXQoev
-	OaCvS+nVTvZko3owIk/wqw==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43h0ec8uxu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Dec 2024 15:20:19 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4BIEwux4018984;
-	Wed, 18 Dec 2024 15:20:18 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2170.outbound.protection.outlook.com [104.47.73.170])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 43h0fa6r2a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Dec 2024 15:20:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DI2/J/DPUXL1GG5qo1S8/J5CSgZ3lruQ2mKAHX2Kw6AvieB6XTXiaJCBRkm3nHTJk2I1Qa5TdQNg7KW8q40TzyhnwT8/NjCt0R5oC4vOFjrahH5dtGEKpnGVLmC6U8Oyob9vuFwILuRZ4fcdjTLI91cBq90UQCtdnM9KiydKroGMvzdnPCArDMX/LQ1k3HrNLxJ3I0RQmA+EG62guNulHzNfY+wCmbF2BH9w+KT73tS7egLvzXbNEq7WNveJOpL4XK0eIWuPfWqwzB6JkXGcbX3JjlmZhmur9qo/2LN3hSenzSduQszaWkWNfPpSJdE7Tt9AqVeDdNRwaVNhoDUIyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XD+XWcMc9YtsdpQklrloLEpE4lAdOlf8h4AmVtxBdQ8=;
- b=L4LY6kaVuWJI/GXymFim8iDpeRpMPvsX5swqsyyA8baK/oUdqQt1Mb2kz1IZLiW5SXLjSnUJPCTgrmWq9FMgL5wQjfmRLV4K58ASx0w63XfNdE/PXwbbTTXoxREJ1T7gnmd9O14hAVbucMMWd5iWqWKdkHWBj4JnXWNAjrhB0ddhPqf9NMTpL/6kz6lCcK1bwXfluK11eYilXiIi7yEtOgL4Gl68wfmE7srlPpExsYJNDMQuuLaCeq0DkvC2El0F4Uizb1mPKsuZsrLUykCAUx7PYJBP3Wym4ixcue63Kdk5PMu4xnsVEqCuYTHq/HNxyM2U7NJgbDAgaz1IavRprg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC7A1F0E32
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 15:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734537162; cv=none; b=hCE9s+CnUWzglbr3mlplhHBsar/z6mJJfTvwhlWVi0jI7pDMyV6Eb1ARrEhsiD7h0FiPKbyK73O6XcXplTD3a0Az7E3dDDbb0QuGj5qBYMA/pY+hl8scHlOVQQOq5GbCMEElqRUf+psji/oaR2siFznPLNFFixdr7Bz0LvGaSUs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734537162; c=relaxed/simple;
+	bh=1lAT8qp/+Rdh7825kEw7Lj3mMcsKCYIezxClX04lsMQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S1WhpTnLu9ZXMV3NF1RCIg93OonomVIcVNTulYYX7amQhSlXDCPhBbW2EprbajAe69Y7m9BLaOsGMyKPrugLGpTQVBNsPJQn3RT2O0ebbsmZ9JX0J8J1HsCdOyckrVN/5Ae7sDnUrX8wHVIXDgKc9VkNOPYWzp4MpnZ45FQ7zrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EdVSEo9D; arc=none smtp.client-ip=209.85.217.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-4b24bc0cc65so3804689137.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 07:52:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XD+XWcMc9YtsdpQklrloLEpE4lAdOlf8h4AmVtxBdQ8=;
- b=otwppbRElELSebGQ7jYnSAaFWzEzvAJjhoJXsh7e2nOboDEs45njyDLrO5ehipD2OKVLEKG56wPYarp62lsYs/uHVJttY+2s1l8LUutSaCCPfTWBb4OjtOodMtU6YgzY8Yz94LnExIjo17xBrnr3cH9+2nqDYXvR4XMl8XwoRMg=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB6309.namprd10.prod.outlook.com (2603:10b6:510:1b0::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.21; Wed, 18 Dec
- 2024 15:20:15 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%2]) with mapi id 15.20.8272.005; Wed, 18 Dec 2024
- 15:20:15 +0000
-Message-ID: <f74f3841-9a21-439e-975e-84df3e442386@oracle.com>
-Date: Wed, 18 Dec 2024 20:50:08 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/9] btrfs: introduce RAID1 round-robin read balancing
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>, WenRuo Qu <wqu@suse.com>,
-        "hrx@bupt.moe" <hrx@bupt.moe>,
-        "waxhead@dirtcellar.net" <waxhead@dirtcellar.net>
-References: <cover.1734370092.git.anand.jain@oracle.com>
- <90934f391bc1c9772f9e3a7902cf9d04f3b0d14a.1734370092.git.anand.jain@oracle.com>
- <amkllcfcvkuebolcjm772phammyqepfmb3agojgvfco7hznlhy@mmssvxw4yr5f>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <amkllcfcvkuebolcjm772phammyqepfmb3agojgvfco7hznlhy@mmssvxw4yr5f>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA0P287CA0011.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:d9::7) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=linaro.org; s=google; t=1734537158; x=1735141958; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zNNARdkolyQOxa2f90S1wGhpiBoUI31DNUhJvKXWUpM=;
+        b=EdVSEo9DPUQHUile62mX6+Huyqpnq8p5zTefjZ0Rom7J0Spfv0QlR9ztzx94Z9em5M
+         cHQp5Uen19afweFT8XqouodIgajLPuNneJCE9dkhnubeRA2bWw2TkBOHAxTBLAYpZ1jP
+         0QLd3tN/Z7CPHKfiqL6dahd8Epp4TKWQfkCZ7GAeNzKyg/MLYrHU6VFtQxygbFRM6KS4
+         g2SeGaB6Ti9buOyhxEiHLVm5r/Lf3wH+mCKmTqk7j6B9yDHgxouBV0lNzTE1Nt12Lc0L
+         CZJzJ99cXyQJfdK5m/auxR80R7Urtn/+nF7+qMvC9P6F4P3xxMWATQFPDMkL/zJaLSbu
+         ZoNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734537158; x=1735141958;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zNNARdkolyQOxa2f90S1wGhpiBoUI31DNUhJvKXWUpM=;
+        b=nfIRuQDXwo1kD/nOtzHUJBT591ZCUjHuFl17h/pm/3xNQbzNFzUJeDYnEZ+g0Tq1ii
+         EGzMLd58gZoQOZSRBCth748GhG6dVXgJRHC6uzRcCjJ0tPagMmuAI/UPgqDQE5SL7ZUx
+         mI0dehfPhwMASnNB9C5RLmRurqZvS5aB5ZptUWpPxRxjPWAiX97jqU8UOqabIH5x3xGK
+         y9b4PBOvJDKY2aYjP4mpxIvlfdC/t72SGpcA4JAKbIMfRUt5E2WR+IEH95EhWb25vd1W
+         h1QOyxntFMOUXl56x0zaLN3/I1cR1rOxS02acttOfE99j15QMRVsi3laPHjpxu5tNWnf
+         3KSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUPITVnXE5YXs+ojU+5jNgONy2iTJjWLor52lAIp6C61tAYZxvHFnUcFRnngZlpYeQ2r57huZlAVZXNPw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YysQ54HWvzjuHs4eUl4C+qU/bKljahtwy1EKxYwVHvpxdMojlBL
+	MHfrT98xDiDuB4ZoX3auifciIob+5nuzkDIp8NZhxjnBRyoYL2ciR/7T0sylTp/rECpwd4Ry51A
+	Po2Z5b1p4FXL03OHA758lYj1Yfq3ocaIF4OkbMg==
+X-Gm-Gg: ASbGncsMLcXS+yJb37hq5J4IzhzyMD9wyTnVKNaCJeYjzwursYigekeo/oqTta30Bi8
+	6BMi1gAvvgOI26hkaihYknHLAYhRmOsWlzjKMIyM=
+X-Google-Smtp-Source: AGHT+IHRQWOyHGUOnEgScUkvQ/qQDNmbj8Zd81eUKKGlkp4unG8aFtqlJFZiQzzeFmt0zeX235y2vXHn8B9eGSnaGIE=
+X-Received: by 2002:a05:6102:15a0:b0:4b2:ad82:133a with SMTP id
+ ada2fe7eead31-4b2ae8abef9mr2834868137.25.1734537158126; Wed, 18 Dec 2024
+ 07:52:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6309:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56b1d421-93d5-4b84-3568-08dd1f777918
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|10070799003|1800799024|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?YjhBb3FwR1hINytSWGpMT2pYQUYwalExR0xkUkNBaDJMSU9jZWhxb3ZUcWVy?=
- =?utf-8?B?MFEwK2dFKytxOW1XY1NEWXhnU2F4RzZ1UHE0Wk9FRTNOTjY2ZmNLd2tXd2x4?=
- =?utf-8?B?eXYrR05kT2JISWl2S21nYjZPTkpwME9FZXg3VWR6NllQSitmeHpaRUs2ZWNw?=
- =?utf-8?B?cjc2V09MNmlOMVpaTzVPajFEd2tqOUxBTnNuQXc4SHc1eExGS0lybDZmOTJV?=
- =?utf-8?B?UlBDMmdMdGk3TUkzUFNsbzJmU0xwY3k5OXNCWFVqRWY4TzNGR01wR1dRR0RL?=
- =?utf-8?B?QlQyU2ZMQy9vcW5ldHhHQVN6UndxWnoweHl6b0p0cHo0QlhRSHhUQm1YVmNT?=
- =?utf-8?B?Y3QwRnZWN2I5VFY2bGZuanNNL24zL2lSVy9yR1JWVVY4amFZOEZ0UzA0WXFV?=
- =?utf-8?B?T1B5eWl5Z3NlNUtOZkdWbll0eEhtSTRqaDR3UW01b2Z5Q3FWQWhWcUpDZyti?=
- =?utf-8?B?RzlmVFlqVEI0dVQ2b1VBK3p5YUkxc3VXbXhkVXp1MnhLR3c2c2ttSFN0cTBM?=
- =?utf-8?B?ZjhRN2FpZmZiSXhLdEYzSXR5OHBYajJkVkQ1a2w3NENZWURLN0pEZDVmU0lI?=
- =?utf-8?B?dmRHTkpBYmcxUHFvNkIraktKZUlJU3J3SzVqdXZvbTA3dmxOVVlVRmx5MGx2?=
- =?utf-8?B?NGN2THhtdlFKQ3dmQ2lTQnM2SHdCYlZOaW9MSUg1QVZ6ZjhMdVh5eUxQMGt3?=
- =?utf-8?B?dEg0VUhJdEhueC9CUGk2VjdTNWkxWHpOZHZtN2pGN045c2cySUZhOFl4MFE5?=
- =?utf-8?B?bGxzei9McmlQMFZhQnY5OGhqWUJEREYzdWh1YkNQSFMxUlhxTjZYVVpyQnBz?=
- =?utf-8?B?N1c3ODUrbWlPM0EwQnA4YUgvVU5lNEhSSVdrNHdDYlIrYkY1Mk9lb2REbHJY?=
- =?utf-8?B?NmZiRVRnQmwySVNwWTJOalJkRGd5R09TV3VmYzA2TG1YWEdNZHFpdHVhUVA0?=
- =?utf-8?B?STdzMTYzVnBIbGc3WXZwVkFlWld2dUEwVWl4VjNrSGVoZGx5UHpCVEE5SUl2?=
- =?utf-8?B?bG16NW1yUU1qODN1eXI4Njh2eGVsYXdJZnJJOVBRdFc0VFdEeW5JMHdRZFg3?=
- =?utf-8?B?cmJOdE5saDNxSjRmeGVnRHNlMXdYejFwOTBNZmcxb2d6Sk5GNmJRNEVETXFl?=
- =?utf-8?B?aEZ6aWlSWEM0NlJNZjM4RGRPQU51Nll2MHdtMFZoR1U2L3dYbkF0blI5Z1FZ?=
- =?utf-8?B?OGdYOUdrbXlGamRpVDkxNzM1QW53RmxtbkRHMTdxZ2Jvb2pNa2VoVENZRXAz?=
- =?utf-8?B?ZWgyRi95Tk50RmRLeVU5TytrQWt2VUJwWVovb1VUWnBjN2IwUVliNzlVQnd4?=
- =?utf-8?B?ak8vT3RMbnFQYTJwTWJKQUlTTmdUdldZaUdKcWNZMTUyd3ZVcnhhWi9sODVB?=
- =?utf-8?B?R1RsVWpyRjJtb0ZpNEVxQlB1RFNFMW9uWWFoTVc4UFc1ajZsaHZZTW90RlNs?=
- =?utf-8?B?L291ejBxZWF3OVluN1V2L3FZMGN4UTkvaGdSbWhqeG9uM0l1L0RaVFhRUVN6?=
- =?utf-8?B?dS80QnBhU2FFTFNNMTBhTEo5dXA3eVhTNkJ3bTBIb3dJZUxBb2hoMEE5N21u?=
- =?utf-8?B?UEZyek9Fd2t0NlVsQm1LL1loM0NsVmNnTlhoNHJTU1J6SUZUUzgyMjdIM3lt?=
- =?utf-8?B?NzdhTUg2bEpvQ3hNYzI2YVFwNEh6ZnU1d1czelVWejkyOGMySWZRdVVjMjk5?=
- =?utf-8?B?OEs3WnNDNGZSUlNvc0p2YUVYdWhQSDluMUVlN3dsRlZVcW0xanVOUDBXQlY5?=
- =?utf-8?B?amVwTnA0VVRSQ21pcm1TQmRNM1FwVHN3a0NUUkdhUjMveG9iU1BKaEdsVUQ2?=
- =?utf-8?B?Y2lqWmxRTHpVM0FSWDJSUUJVRlJac05VbnJ4Yjk3dGtROGJ6N1R1Y3drN0JC?=
- =?utf-8?Q?HHvzm0XgB6u17?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VEpOOHAyNGROQVRLUVFBK0RPeGY5ZzNJSmEydWQxeFl3aVMxY29EeTU5aGFP?=
- =?utf-8?B?dWhwbUdMaGt0TjhjTnFCU2RabGJyZ0pMN2FrTE5zM2R4M1JONmd2VFRJNlVh?=
- =?utf-8?B?cTdKK25rSWNsdkhrSWxZNjJyd0FZenNzTnBRTEJVNTFqZ3JvTnZiNERFVmdJ?=
- =?utf-8?B?VExmc2FRbGErdSs4djNVNjg2akhYODlFaFRUaW12clBKd0tjWEJ3R3VlVWlj?=
- =?utf-8?B?dXpxV0RrMk4zN29ZcEZXanV1WmtVZWZzMVordlZyS1greTROQi9BdFFRNXlH?=
- =?utf-8?B?OHJhM0c4Tm0vTHArYkFXa3Z1NXo2SDlMcm92ejFtTTJGODJWeXMxcXdWSkRV?=
- =?utf-8?B?aCtueEpRcThxNTM5dDZQWWs1UkJlUXU1ck9SSUVpNVRDZjAvcTZJQmVJYWpF?=
- =?utf-8?B?Mmozc1ZjTlQrS1JtZ1M5bU81ZFgwbWVPRkpLejdGOFVKU1BuM1VKdHRTMjdN?=
- =?utf-8?B?ekxQeEZhUHZKZ1ViNVp2dXJkT2JsdlJjbzd5akdsRVYrdUIxOVVmczBvK1pT?=
- =?utf-8?B?SWhHWHVZNmMrWEpFYnAxSXpTdUVvY2J3Qm03TkJSdnNrZDAxOVdUK2g2TG01?=
- =?utf-8?B?bDVYT2FjSmFFVitYRy9HSWR1V0VVVnk3SzRUaWo5UGM5bEQwdjhoUWtleHRa?=
- =?utf-8?B?YmRaWTB2VzRXa2dTbS84QVNBUytUa0lGbkZpcmluK3ZjVEhIbzVQR3JhR3lj?=
- =?utf-8?B?U1JwSWlBK0ZWeVF4Uk5sQ1AvbVV5Ry8rU0tuczU4SUdBaHo4TUE2TXlqc0NI?=
- =?utf-8?B?N3VLbGlMT3RKS1dFc0dGTmJSMi9OZWExTnJsL0FyTFl0VEs5S1E3Wng1YlhD?=
- =?utf-8?B?TVA3MGdlU1d1OWpKa0VqWmFpQTgzSldYTzVacmNUM1A0ZnlzOG16UnA0SW5G?=
- =?utf-8?B?S3RDSHkvWUc5OGsycml0Vk1hWGxhMXRrMUc5Qm9SanVUZlV0bDZTN21vYmJL?=
- =?utf-8?B?OGZWV2ZZT3JPTXBuVUFSdmxIazdqd21xQ0JUSXNrRjR1bWVhS29ZNnhIT2Vm?=
- =?utf-8?B?MXNQZlgzTkRJZHB0TTBCM1NmYjV1QVQzNGdqUEdldmNVdDVtNXVNR0dZRk1U?=
- =?utf-8?B?dVVJVHFkdGhSeUg0ZlVQNWtNZ2JZbVpMYlZBY2RHN1R3aUJDK2RLZDBRcmpp?=
- =?utf-8?B?aC9ZN0ltNmVmNlhuZXJ6a1VaOCtJUWprMmQwOWF6OFUrdFFJamhaelpnbkV6?=
- =?utf-8?B?ZmJqMG1icysxQmwxdGJSempqV3hRSTR4MDEzNXlYa3M5N1ZLM2dBUUs5Vk5o?=
- =?utf-8?B?bzhKdHZyUWR4aE1aWVNzVUtleTBXc1FBcW4velRxa2VwaDNiNUN2UmZ2Uk5O?=
- =?utf-8?B?N0lpUGFZR3ZFdE80VWVLd3hsUjRxWnNqVWZoRjVRNG96aTNObTJtdXN2b2No?=
- =?utf-8?B?Rm94Y3FPRnM5Q1NEL1RCcHNHQnhuTVEva3JJQkhHNFhXVXY1MlBUM0V4akRI?=
- =?utf-8?B?dGJoVVBJK0tEaVo5S0ExdXRMUU9RMW5iMWQ2K0p3bktZWHJaUTluR1JGcm5B?=
- =?utf-8?B?Y3JRQ2hoMUJXRFhCNGYxN3FOQVZXVHljdmxLMXRZbmRSdG8wRmNDWjViem44?=
- =?utf-8?B?ZW9SQk05eENUT3hDYWQ5cmllejhlU2J1QzlIcG9Wb0hTM2hKSW51MUxlTUFD?=
- =?utf-8?B?ZUhLQTM4aFBacHBhR3I3UkMvallOeU5NNUFRTkREY1lrbGxWVFZ2VVZia055?=
- =?utf-8?B?bGlQYmpFK3JrVCtUVWo0NzNSdkdqR1ZINURvU2puV0JFWHdtWWlYYTF1UElv?=
- =?utf-8?B?SHlCYXVZYWdHQ3BoV2lLNnBHdHREbTdKYzg0MzRsa01LaFo4a0xVYlNFOFNX?=
- =?utf-8?B?K1dwOGFDdTZtWWxodGppVmNPS1kzbVI2d2duRlhPSkZzTG9rdjVsVzFPelBJ?=
- =?utf-8?B?c2ZwOWhGS09GdnhQbFZLb3lFa2d1VGNLRGVSOTcvOXN2bTM4aWppV0JhUTIr?=
- =?utf-8?B?YXJWaVNQRHRrYmJqa1UzbTh6bjdFS2w2SjQ3bVg2aU5ZalVUUWxXSDNRY1NO?=
- =?utf-8?B?ekZVREFMbHNPd0g3d3owSHVEWTJmUkd3djN1Ym8rK0dWZU9XcS9tNmt4MDNq?=
- =?utf-8?B?VmVpelJzUTVDaGo4UmRWK09HTnBvSnFQOVFIRW1nenVIb3dWVjMzaDY3T09B?=
- =?utf-8?B?SVg4aTZmRkpxbURkV09ZeXJ6TjNpYmx2VkhjcDRnM0NuZlQvcCtMWWhRWXpZ?=
- =?utf-8?Q?uBAXzpBz5rGM7NxaAwaU0BUQrnnxWgd3Rx8IiOL9fXc3?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	stFMXFz1fD9I0EvavkRIrgzUehdt1akuTJU4UmG9L9RhdQ+TMySCuMFyga8PCoVUXUgrYPqsynMNvHQzqHZK/gfpIQbwOk6prYLc9urZEY49yqm5D6UhavrtbW3pEUqc+7UTlu0GqmojjwD6xVUDoNjtn2wq8vmou9bkD2zoXrcX+dM9ZcBwH+vcYD0A+gBNSp/Oxc2RyOiJ78nlh28fsG5YhdMUuEGMrRqW1AXzLB2H1LotHdajlE/waio6pObxPntCDCCd1rtrVAr/9wuim8DXIbZ/mdsOreoWd0veCcuptKBWoQ9NsDCqgQ+SGzVszREv2A4VMCWTWlR0EoVl38DW5FD25KLtg2HTE4eh66Sroe9BKbA2LBGYPfEPMmo1xEAnlDACfsPdtDpxqDRCorPe+O3uIbMjGJ5TMfCeJ7iTaYAS/e94n8u5h7DR0Xe1a6XUxo3l13R8war2Cdo4CgU32ozZgwdEhsQQIteFWj4wev09wbZBOxJrqr3B8BeX1tfhfRtxoWXxr+7PvUfttRpz2swBi7GV4nDHHsB18O5oTrQkBfm+Zg7i0LCT50mY/etxj0lWhpbghqicdG3vnS/6rnvYglCOQeLR+bOTVrM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56b1d421-93d5-4b84-3568-08dd1f777918
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2024 15:20:15.5203
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nI2UH2PKehGM/RN9VDy/H4X1c9nuG1zyuTl9ujqOZCnIFTo1MTH14iGna01gpOGJrPgOmZ+8IILvup2beqTYSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6309
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2024-12-18_05,2024-12-18_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- malwarescore=0 spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2411120000 definitions=main-2412180119
-X-Proofpoint-GUID: ik7okC3iPlJjQMNnzZ4MTDqX9q58zIUy
-X-Proofpoint-ORIG-GUID: ik7okC3iPlJjQMNnzZ4MTDqX9q58zIUy
+References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
+In-Reply-To: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 18 Dec 2024 21:22:26 +0530
+Message-ID: <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
+Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
+ with Linux next-20241210 and above
+To: qemu-devel@nongnu.org, open list <linux-kernel@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, linux-ext4 <linux-ext4@vger.kernel.org>, 
+	lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>, 
+	Linux btrfs <linux-btrfs@vger.kernel.org>
+Cc: =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>, 
+	Anders Roxell <anders.roxell@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+
+On Wed, 18 Dec 2024 at 17:33, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> The following kernel crash noticed on qemu-arm64 while running the
+> Linux next-20241210 tag (to next-20241218) kernel built with
+>  - CONFIG_ARM64_64K_PAGES=y
+>  - CONFIG_ARM64_16K_PAGES=y
+> and running LTP smoke tests.
+>
+> First seen on Linux next-20241210.
+>   Good: next-20241209
+>   Bad:  next-20241210 and next-20241218
+>
+> qemu-arm64: 9.1.2
+>
+> Anyone noticed this ?
+>
+
+Anders bisected this reported regression and found,
+# first bad commit:
+  [9c1d66793b6faa00106ae4c866359578bfc012d2]
+  btrfs: validate system chunk array at btrfs_validate_super()
 
 
+> Test log:
+> ---------
+> tst_test.c:1799: TINFO: === Testing on btrfs ===
+> tst_test.c:1158: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+> <6>[   71.880167] BTRFS: device fsid
+> d492b571-012c-40a9-b8e1-efc97408d3bc devid 1 transid 6 /dev/loop0
+> (7:0) scanned by chdir01 (476)
+> tst_test.c:1170: TINFO: Mounting /dev/loop0 to
+> /tmp/LTP_chdJeywxF/mntpoint fstyp=btrfs flags=0
+> <6>[   71.960245] BTRFS info (device loop0): first mount of filesystem
+> d492b571-012c-40a9-b8e1-efc97408d3bc
+> <6>[   71.970667] BTRFS info (device loop0): using crc32c
+> (crc32c-arm64) checksum algorithm
+> <2>[   71.993486] BTRFS critical (device loop0): corrupt superblock
+> syschunk array: chunk_start=22020096, invalid chunk sectorsize, have
+> 65536 expect 4096
+> <3>[   71.995802] BTRFS error (device loop0): superblock contains fatal errors
+> <3>[   72.014538] BTRFS error (device loop0): open_ctree failed: -22
+> tst_test.c:1170: TBROK: mount(/dev/loop0, mntpoint, btrfs, 0, (nil))
+> failed: EINVAL (22)
+>
+> Summary:
+> passed   48
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
+>
+> Duration: 7.002s
+>
+>
+> ===== symlink01 =====
+> command: symlink01
+> <12>[   72.494428] /usr/local/bin/kirk[253]: starting test symlink01 (symlink01)
+> symlink01    0  TINFO  :  Using /tmp/LTP_symmsYXet as tmpdir (tmpfs filesystem)
+> symlink01    1  TPASS  :  Creation of symbolic link file to no object file is ok
+> symlink01    2  TPASS  :  Creation of symbolic link file to no object file is ok
+> symlink01    3  TPASS  :  Creation of symbolic link file and object
+> file via symbolic link is ok
+> symlink01    4  TPASS  :  Creating an existing symbolic link file
+> error is caught
+> symlink01    5  TPASS  :  Creating a symbolic link which exceeds
+> maximum pathname error is caught
+>
+> Summary:
+> passed    5
+> failed    0
+> broken    0
+> skipped   0
+> warnings  0
+>
+> Duration: 0.052s
+>
+>
+> ===== stat04 =====
+> command: stat04
+> <12>[   72.966706] /usr/local/bin/kirk[253]: starting test stat04 (stat04)
+> tst_buffers.c:57: TINFO: Test is using guarded buffers
+> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_staEABwgV as tmpdir (tmpfs filesystem)
+> <6>[   73.447708] loop0: detected capacity change from 0 to 614400
+> tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+> tst_test.c:1860: TINFO: LTP version: 20240930
+> tst_test.c:1864: TINFO: Tested kernel: 6.13.0-rc3-next-20241218 #1 SMP
+> PREEMPT @1734498806 aarch64
+> tst_test.c:1703: TINFO: Timeout per run is 0h 05m 24s
+> stat04.c:60: TINFO: Formatting /dev/loop0 with ext2 opts='-b 4096' extra opts=''
+> mke2fs 1.47.1 (20-May-2024)
+> <3>[   73.859753] operation not supported error, dev loop0, sector
+> 614272 op 0x9:(WRITE_ZEROES) flags 0x10000800 phys_seg 0 prio class 0
+> stat04.c:61: TINFO: Mounting /dev/loop0 to /tmp/LTP_staEABwgV/mntpoint
+> fstyp=ext2 flags=0
+> <6>[   73.939263] EXT4-fs (loop0): mounting ext2 file system using the
+> ext4 subsystem
+> <1>[   73.946378] Unable to handle kernel paging request at virtual
+> address a8fff00000c0c224
+> <1>[   73.947878] Mem abort info:
+> <1>[   73.949153]   ESR = 0x0000000096000005
+> <1>[   73.959105]   EC = 0x25: DABT (current EL), IL = 32 bits
+> <1>[   73.960031]   SET = 0, FnV = 0
+> <1>[   73.960349]   EA = 0, S1PTW = 0
+> <1>[   73.960638]   FSC = 0x05: level 1 translation fault
+> <1>[   73.961005] Data abort info:
+> <1>[   73.961293]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+> <1>[   73.963739]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> <1>[   73.964980]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> <1>[   73.967132] [a8fff00000c0c224] address between user and kernel
+> address ranges
+> <0>[   73.968923] Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+> <4>[   73.970516] Modules linked in: btrfs blake2b_generic xor
+> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
+> sha512_arm64 fuse drm backlight ip_tables x_tables
+> <4>[   73.974237] CPU: 1 UID: 0 PID: 529 Comm: stat04 Not tainted
+> 6.13.0-rc3-next-20241218 #1
+> <4>[   73.975359] Hardware name: linux,dummy-virt (DT)
+> <4>[   73.977170] pstate: 62402009 (nZCv daif +PAN -UAO +TCO -DIT
+> -SSBS BTYPE=--)
+> <4>[ 73.978295] pc : __kmalloc_node_noprof (mm/slub.c:492
+> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
+> mm/slub.c:4293 mm/slub.c:4300)
+> <4>[ 73.980200] lr : alloc_cpumask_var_node (lib/cpumask.c:62 (discriminator 2))
+> <4>[   73.981466] sp : ffff80008258f950
+> <4>[   73.982228] x29: ffff80008258f970 x28: ffffa93389398000 x27:
+> 0000000000000001
+> <4>[   73.983875] x26: fffffc1fc0303080 x25: 00000000ffffffff x24:
+> a8fff00000c0c224
+> <4>[   73.985649] x23: 0000000000000cc0 x22: ffffa93387f51d0c x21:
+> 00000000ffffffff
+> <4>[   73.986188] x20: fff00000c0010400 x19: 0000000000000008 x18:
+> 0000000000000000
+> <4>[   73.988686] x17: fff056cd748b0000 x16: ffff800080020000 x15:
+> 0000000000000000
+> <4>[   73.990276] x14: 0000000000002a66 x13: 0000000000004000 x12:
+> 0000000000000001
+> <4>[   73.992401] x11: 0000000000000002 x10: 0000000000004001 x9 :
+> ffffa93387f51d0c
+> <4>[   73.993108] x8 : fff00000c2c99240 x7 : 0000000000000001 x6 :
+> 0000000000000001
+> <4>[   73.993886] x5 : fff00000c4879800 x4 : 0000000000000000 x3 :
+> 000000000033a401
+> <4>[   73.995550] x2 : 0000000000000000 x1 : a8fff00000c0c224 x0 :
+> fff00000c0010400
+> <4>[   73.997017] Call trace:
+> <4>[ 73.998266] __kmalloc_node_noprof+0x100/0x4a0 P
+> <4>[ 73.999716] alloc_cpumask_var_node (lib/cpumask.c:62 (discriminator 2))
+> <4>[ 74.000942] alloc_workqueue_attrs (kernel/workqueue.c:4624
+> (discriminator 1))
+> <4>[ 74.001327] apply_wqattrs_prepare (kernel/workqueue.c:5263)
+> <4>[ 74.003095] apply_workqueue_attrs_locked (kernel/workqueue.c:5351)
+> <4>[ 74.003855] alloc_workqueue (kernel/workqueue.c:5722
+> (discriminator 1) kernel/workqueue.c:5772 (discriminator 1))
+> <4>[ 74.005398] ext4_fill_super (fs/ext4/super.c:5484 fs/ext4/super.c:5722)
+> <4>[ 74.006132] get_tree_bdev_flags (fs/super.c:1636)
+> <4>[ 74.007624] get_tree_bdev (fs/super.c:1660)
+> <4>[ 74.008664] ext4_get_tree (fs/ext4/super.c:5755)
+> <4>[ 74.009423] vfs_get_tree (fs/super.c:1814)
+> <4>[ 74.009703] path_mount (fs/namespace.c:3556 fs/namespace.c:3883)
+> <4>[ 74.010608] __arm64_sys_mount (fs/namespace.c:3896
+> fs/namespace.c:4107 fs/namespace.c:4084 fs/namespace.c:4084)
+> <4>[ 74.011527] invoke_syscall.constprop.0
+> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
+> <4>[ 74.012798] do_el0_svc (include/linux/thread_info.h:135
+> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
+> arch/arm64/kernel/syscall.c:151 (discriminator 2))
+> <4>[ 74.014042] el0_svc (arch/arm64/include/asm/irqflags.h:82
+> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
+> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
+> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
+> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
+> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
+> <4>[ 74.014942] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:763)
+> <4>[ 74.015917] el0t_64_sync (arch/arm64/kernel/entry.S:600)
+> <0>[ 74.017042] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
+> All code
+> ========
+>    0: 12800019 mov w25, #0xffffffff            // #-1
+>    4: b9402a82 ldr w2, [x20, #40]
+>    8: aa1803e1 mov x1, x24
+>    c: aa1403e0 mov x0, x20
+>   10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
+>
+> Code starting with the faulting instruction
+> ===========================================
+>    0: f8626b1a ldr x26, [x24, x2]
+> <4>[   74.019014] ---[ end trace 0000000000000000 ]---
+> tst_test.c:1763: TBROK: Test killed by SIGSEGV!
+>
+> Summary:
+> passed   0
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
+> tst_device.c:269: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
+> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
+> Tainted kernel: ['kernel died recently, i.e. there was an OOPS or BUG'][0m
+> Restarting SUT: host
+>
+> ===== df01_sh =====
+> command: df01.sh
+> <12>[   76.370093] /usr/local/bin/kirk[253]: starting test df01_sh (df01.sh)
+> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
+> <1>[   76.603065] Unable to handle kernel paging request at virtual
+> address a8fff00000c0c224
+> <1>[   76.603922] Mem abort info:
+> <1>[   76.604197]   ESR = 0x0000000096000005
+> <1>[   76.604638]   EC = 0x25: DABT (current EL), IL = 32 bits
+> <1>[   76.605128]   SET = 0, FnV = 0
+> <1>[   76.606996]   EA = 0, S1PTW = 0
+> <1>[   76.607274]   FSC = 0x05: level 1 translation fault
+> <1>[   76.607611] Data abort info:
+> <1>[   76.607897]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+> <1>[   76.609765]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> <1>[   76.610958]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> <1>[   76.611652] [a8fff00000c0c224] address between user and kernel
+> address ranges
+> <0>[   76.612130] Internal error: Oops: 0000000096000005 [#2] PREEMPT SMP
+> <4>[   76.613305] Modules linked in: btrfs blake2b_generic xor
+> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
+> sha512_arm64 fuse drm backlight ip_tables x_tables
+> <4>[   76.617688] CPU: 1 UID: 0 PID: 553 Comm: df01.sh Tainted: G
+> D            6.13.0-rc3-next-20241218 #1
+> <4>[   76.620869] Tainted: [D]=DIE
+> <4>[   76.621184] Hardware name: linux,dummy-virt (DT)
+> <4>[   76.622671] pstate: 63402009 (nZCv daif +PAN -UAO +TCO +DIT
+> -SSBS BTYPE=--)
+> <4>[ 76.623693] pc : __kmalloc_node_noprof (mm/slub.c:492
+> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
+> mm/slub.c:4293 mm/slub.c:4300)
+> <4>[ 76.624180] lr : __vmalloc_node_range_noprof
+> (include/linux/slab.h:922 mm/vmalloc.c:3647 mm/vmalloc.c:3846)
+> <4>[   76.625290] sp : ffff80008258fa90
+> <4>[   76.626275] x29: ffff80008258fab0 x28: fff00000c2c98e80 x27:
+> fff00000c48fd100
+> <4>[   76.626966] x26: fffffc1fc0303080 x25: 00000000ffffffff x24:
+> a8fff00000c0c224
+> <4>[   76.627599] x23: 0000000000000dc0 x22: ffffa93386d87390 x21:
+> 00000000ffffffff
+> <4>[   76.628603] x20: fff00000c0010400 x19: 0000000000000008 x18:
+> 0000000000000000
+> <4>[   76.629618] x17: 0000000000000000 x16: ffff800082180000 x15:
+> ffff800080000000
+> <4>[   76.630999] x14: fff00000c00203f0 x13: 00000ffff8000821 x12:
+> 0000000000000000
+> <4>[   76.632089] x11: 0000000000000000 x10: 0000000000000000 x9 :
+> ffffa93386d87390
+> <4>[   76.634293] x8 : ffff80008258f908 x7 : fff00000c2c98e80 x6 :
+> 0000000000010000
+> <4>[   76.634816] x5 : ffffa93389379000 x4 : 0000000000000000 x3 :
+> 000000000033b801
+> <4>[   76.636355] x2 : 0000000000000000 x1 : a8fff00000c0c224 x0 :
+> fff00000c0010400
+> <4>[   76.638309] Call trace:
+> <4>[ 76.639031] __kmalloc_node_noprof+0x100/0x4a0 P
+> <4>[ 76.640890] __vmalloc_node_range_noprof (include/linux/slab.h:922
+> mm/vmalloc.c:3647 mm/vmalloc.c:3846)
+> <4>[ 76.641267] copy_process (kernel/fork.c:314 (discriminator 1)
+> kernel/fork.c:1061 (discriminator 1) kernel/fork.c:2176 (discriminator
+> 1))
+> <4>[ 76.641795] kernel_clone (kernel/fork.c:2758)
+> <4>[ 76.643003] __do_sys_clone (kernel/fork.c:2902)
+> <4>[ 76.644078] __arm64_sys_clone (kernel/fork.c:2869)
+> <4>[ 76.645306] invoke_syscall.constprop.0
+> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
+> <4>[ 76.646337] do_el0_svc (include/linux/thread_info.h:135
+> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
+> arch/arm64/kernel/syscall.c:151 (discriminator 2))
+> <4>[ 76.646974] el0_svc (arch/arm64/include/asm/irqflags.h:82
+> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
+> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
+> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
+> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
+> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
+> <4>[ 76.647709] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:763)
+> <4>[ 76.649032] el0t_64_sync (arch/arm64/kernel/entry.S:600)
+> <0>[ 76.649724] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
+>
+> <trim>
+>
+> All code
+> ========
+>    0: 12800019 mov w25, #0xffffffff            // #-1
+>    4: b9402a82 ldr w2, [x20, #40]
+>    8: aa1803e1 mov x1, x24
+>    c: aa1403e0 mov x0, x20
+>   10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
+>
+> Code starting with the faulting instruction
+> ===========================================
+>    0: f8626b1a ldr x26, [x24, x2]
+>  <4>[   79.647693] ---[ end trace 0000000000000000 ]---
+>  <0>[   79.649260] Kernel panic - not syncing: Attempted to kill init!
+> exitcode=0x0000000b
+>  <2>[   79.650229] SMP: stopping secondary CPUs
+>  <0>[   79.651558] Kernel Offset: 0x293306a00000 from 0xffff800080000000
+>  <0>[   79.652015] PHYS_OFFSET: 0x40000000
+>  <0>[   79.652461] CPU features: 0x000,000000d0,60bef2d8,cb7e7f3f
+>  <0>[   79.653039] Memory Limit: none
+>  <0>[   79.653854] ---[ end Kernel panic - not syncing: Attempted to
+> kill init! exitcode=0x0000000b ]---
+>
+>
+> Links:
+> -------
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241218/testrun/26396709/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/history/
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241212/testrun/26277241/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/log
+>  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2qNMDhPFtR8j185QSvZMn989u84
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGCw7MnMtUwzkD/
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241211/testrun/26266202/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/details/
+>
+>
+> metadata:
+> ----
+>   git describe: next-20241210..next-20241218
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   kernel config:
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGCw7MnMtUwzkD/config
+>   build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGCw7MnMtUwzkD/
+>   toolchain: gcc-13
+>   config: CONFIG_ARM64_64K_PAGES=y, CONFIG_ARM64_16K_PAGES=y
+>   arch: arm64
+>   qemu: qemu-arm64 version 9.1.2
+>
 
-On 18/12/24 11:23, Naohiro Aota wrote:
-> On Tue, Dec 17, 2024 at 02:13:13AM +0800, Anand Jain wrote:
->> This feature balances I/O across the striped devices when reading from
->> RAID1 blocks.
->>
->>     echo round-robin[:min_contiguous_read] > /sys/fs/btrfs/<uuid>/read_policy
->>
->> The min_contiguous_read parameter defines the minimum read size before
->> switching to the next mirrored device. This setting is optional, with a
->> default value of 256 KiB.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>   fs/btrfs/sysfs.c   | 44 +++++++++++++++++++++++++++-
->>   fs/btrfs/volumes.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++
->>   fs/btrfs/volumes.h | 11 +++++++
->>   3 files changed, 127 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
->> index 9c7bedf974d2..b0e1fb787ce6 100644
->> --- a/fs/btrfs/sysfs.c
->> +++ b/fs/btrfs/sysfs.c
->> @@ -1305,7 +1305,12 @@ static ssize_t btrfs_temp_fsid_show(struct kobject *kobj,
->>   }
->>   BTRFS_ATTR(, temp_fsid, btrfs_temp_fsid_show);
->>   
->> -static const char * const btrfs_read_policy_name[] = { "pid" };
->> +static const char *btrfs_read_policy_name[] = {
->> +	"pid",
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +	"round-robin",
->> +#endif
->> +};
->>   
->>   static int btrfs_read_policy_to_enum(const char *str, s64 *value)
->>   {
->> @@ -1359,6 +1364,12 @@ static ssize_t btrfs_read_policy_show(struct kobject *kobj,
->>   
->>   		ret += sysfs_emit_at(buf, ret, "%s", btrfs_read_policy_name[i]);
->>   
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +		if (i == BTRFS_READ_POLICY_RR)
->> +			ret += sysfs_emit_at(buf, ret, ":%d",
->> +					     fs_devices->rr_min_contiguous_read);
-> 
-> I guess we want READ_ONCE() here as well.
-> 
->> +#endif
->> +
->>   		if (i == policy)
->>   			ret += sysfs_emit_at(buf, ret, "]");
->>   	}
->> @@ -1380,6 +1391,37 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
->>   	if (index == -EINVAL)
->>   		return -EINVAL;
->>   
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +	if (index == BTRFS_READ_POLICY_RR) {
->> +		if (value != -1) {
->> +			u32 sectorsize = fs_devices->fs_info->sectorsize;
->> +
->> +			if (!IS_ALIGNED(value, sectorsize)) {
->> +				u64 temp_value = round_up(value, sectorsize);
->> +
->> +				btrfs_warn(fs_devices->fs_info,
->> +"read_policy: min contiguous read %lld should be multiples of the sectorsize %u, rounded to %llu",
->> +					  value, sectorsize, temp_value);
->> +				value = temp_value;
->> +			}
->> +		} else {
->> +			value = BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ;
->> +		}
->> +
->> +		if (index != READ_ONCE(fs_devices->read_policy) ||
->> +		    value != READ_ONCE(fs_devices->rr_min_contiguous_read)) {
->> +			WRITE_ONCE(fs_devices->read_policy, index);
->> +			WRITE_ONCE(fs_devices->rr_min_contiguous_read, value);
->> +			atomic_set(&fs_devices->total_reads, 0);
->> +
->> +			btrfs_info(fs_devices->fs_info, "read policy set to '%s:%lld'",
->> +				   btrfs_read_policy_name[index], value);
->> +
->> +		}
->> +
->> +		return len;
->> +	}
->> +#endif
->>   	if (index != READ_ONCE(fs_devices->read_policy)) {
->>   		WRITE_ONCE(fs_devices->read_policy, index);
->>   		btrfs_info(fs_devices->fs_info, "read policy set to '%s'",
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index fe5ceea2ba0b..77c3b66d56a0 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -1328,6 +1328,9 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
->>   	fs_devices->total_rw_bytes = 0;
->>   	fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_REGULAR;
->>   	fs_devices->read_policy = BTRFS_READ_POLICY_PID;
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +	fs_devices->rr_min_contiguous_read = BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ;
->> +#endif
->>   
->>   	return 0;
->>   }
->> @@ -5959,6 +5962,71 @@ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
->>   	return len;
->>   }
->>   
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +struct stripe_mirror {
->> +	u64 devid;
->> +	int num;
->> +};
->> +
->> +static int btrfs_cmp_devid(const void *a, const void *b)
->> +{
->> +	const struct stripe_mirror *s1 = (struct stripe_mirror *)a;
->> +	const struct stripe_mirror *s2 = (struct stripe_mirror *)b;
->> +
->> +	if (s1->devid < s2->devid)
->> +		return -1;
->> +	if (s1->devid > s2->devid)
->> +		return 1;
->> +	return 0;
->> +}
->> +
->> +/*
->> + * btrfs_read_rr.
->> + *
->> + * Select a stripe for reading using a round-robin algorithm:
->> + *
->> + *  1. Compute the read cycle as the total sectors read divided by the minimum
->> + *  sectors per device.
->> + *  2. Determine the stripe number for the current read by taking the modulus
->> + *  of the read cycle with the total number of stripes:
->> + *
->> + *      stripe index = (total sectors / min sectors per dev) % num stripes
->> + *
->> + * The calculated stripe index is then used to select the corresponding device
->> + * from the list of devices, which is ordered by devid.
->> + */
->> +static int btrfs_read_rr(struct btrfs_chunk_map *map, int first, int num_stripe)
->> +{
->> +	struct stripe_mirror stripes[BTRFS_RAID1_MAX_MIRRORS] = {0};
->> +	struct btrfs_fs_devices *fs_devices;
->> +	struct btrfs_device *device;
->> +	int read_cycle;
->> +	int index;
->> +	int ret_stripe;
->> +	int total_reads;
->> +	int reads_per_dev = 0;
->> +
->> +	device = map->stripes[first].dev;
->> +
->> +	fs_devices = device->fs_devices;
->> +	reads_per_dev = fs_devices->rr_min_contiguous_read >> SECTOR_SHIFT;
-> 
-> Want READ_ONCE() as well. Also, is it OK to divide it with (1 <<
-> SECTOR_SHIFT), which is not necessary equal to fs_info->sectorsize?
-> 
->> +	index = 0;
->> +	for (int i = first; i < first + num_stripe; i++) {
->> +		stripes[index].devid = map->stripes[i].dev->devid;
->> +		stripes[index].num = i;
->> +		index++;
->> +	}
->> +	sort(stripes, num_stripe, sizeof(struct stripe_mirror),
->> +	     btrfs_cmp_devid, NULL);
->> +
->> +	total_reads = atomic_inc_return(&fs_devices->total_reads);
->> +	read_cycle = total_reads / reads_per_dev;
->> +	ret_stripe = stripes[read_cycle % num_stripe].num;
-> 
-> I'm not sure the logic here. Since the code increments the total_reads
-> counter by 1, can we assume this function is invoked per
-> fs_info->sectorsize?
-> 
-
-You're right. To fix this, we need to track read I/O stat in
-`struct device` on our own. I avoided this earlier as the
-block layer already provides I/O stats (though they might
-be stale). Unless there is a better way. I'm trying.
-
-Thanks for your review.
--Anand
-
-
->> +
->> +	return ret_stripe;
->> +}
->> +#endif
->> +
->>   static int find_live_mirror(struct btrfs_fs_info *fs_info,
->>   			    struct btrfs_chunk_map *map, int first,
->>   			    int dev_replace_is_ongoing)
->> @@ -5988,6 +6056,11 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
->>   	case BTRFS_READ_POLICY_PID:
->>   		preferred_mirror = first + (current->pid % num_stripes);
->>   		break;
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +	case BTRFS_READ_POLICY_RR:
->> +		preferred_mirror = btrfs_read_rr(map, first, num_stripes);
->> +		break;
->> +#endif
->>   	}
->>   
->>   	if (dev_replace_is_ongoing &&
->> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
->> index 3a416b1bc24c..b7b130ce0b10 100644
->> --- a/fs/btrfs/volumes.h
->> +++ b/fs/btrfs/volumes.h
->> @@ -296,6 +296,8 @@ enum btrfs_chunk_allocation_policy {
->>   	BTRFS_CHUNK_ALLOC_ZONED,
->>   };
->>   
->> +#define BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ	(SZ_256K)
->> +#define BTRFS_RAID1_MAX_MIRRORS			(4)
->>   /*
->>    * Read policies for mirrored block group profiles, read picks the stripe based
->>    * on these policies.
->> @@ -303,6 +305,10 @@ enum btrfs_chunk_allocation_policy {
->>   enum btrfs_read_policy {
->>   	/* Use process PID to choose the stripe */
->>   	BTRFS_READ_POLICY_PID,
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +	/* Balancing raid1 reads across all striped devices (round-robin) */
->> +	BTRFS_READ_POLICY_RR,
->> +#endif
->>   	BTRFS_NR_READ_POLICY,
->>   };
->>   
->> @@ -431,6 +437,11 @@ struct btrfs_fs_devices {
->>   	enum btrfs_read_policy read_policy;
->>   
->>   #ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +	/* IO stat, read counter. */
->> +	atomic_t total_reads;
->> +	/* Min contiguous reads before switching to next device. */
->> +	int rr_min_contiguous_read;
->> +
->>   	/* Checksum mode - offload it or do it synchronously. */
->>   	enum btrfs_offload_csum_mode offload_csum_mode;
->>   #endif
->> -- 
->> 2.47.0
-
+--
+Linaro LKFT
+https://lkft.linaro.org
 
