@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-10560-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10561-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A13A9F6BE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 18:07:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A220B9F6BEB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 18:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A53E16D061
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 17:07:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D0B61883DAD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 17:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8D51FA148;
-	Wed, 18 Dec 2024 17:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBEF1FA16E;
+	Wed, 18 Dec 2024 17:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0Ex0yKr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SiX8zQYe"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1224F1F9A81
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A7E1F9F7D
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734541616; cv=none; b=inWrQZNbAdVzDIyaiCzsjcQ1Eyc9PKxgNDi3/CU9LT0vA7xPJC+N1yypaWYcOMiES6T/ZxyySnfoEYp23PW3W0ewbfsoqvTVFFLbCKMun7uDhYYxKAM6JZMqUyHEI8AwTsRDHzLldtXLBWlzu9k/zhoOq0vJQjmCjA6fWEQlMbk=
+	t=1734541616; cv=none; b=AYugoMvyz+s3ZLVwMGHjjBGod6HGfRocs+tefvrsqm7putZPnkpGVavJSWbcoTRxEEdYvw9ADMsLNNqNcHHev5aFulPanL6IDMR/K48ilGIBMd03ywXoB828ZXw44ARybTNS4qVZ+gUE5Dqb2pwhc9bBd/EItnAng1s8Zn/QxJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734541616; c=relaxed/simple;
-	bh=wTIXOAz/PmF8IOV+o/w1YajjrFqWLNaFZjO2r1ZAm/w=;
+	bh=5qm1uafcb4QTszeBGB306Iw56fpUr50UE+IuGt29ixs=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SVktkzUXcQptcwrqS6COjkJgFxSH8JmiQ8ucibKJp/++Xomy92yWL2hdA5N1qOIc4nMQKQlOTELBEtc5TLgapVQlUR9n0O+v8MUo4TsqQsekWoHzO46+I86OQfz1yuDcG9GI/it/elTyI1GBLA5DDf4VqZodRyfcxb+jhoNQTH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0Ex0yKr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE3CC4CECD
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:54 +0000 (UTC)
+	 MIME-Version; b=B8MywB0s3iZrR/z319pECxdRo40csM6qjDOBOvhZFmrIo+L5GWjDidv7dVC9LCI484+49XQIibDQddaLzZY1+egjalW5GYydOg9xMg2ix1VvKZmjjwQKmnU2fkeIT+81q+5E4VRTCi9EEt/kvceUhb3CP6l8+I0eEv/pwJrbBbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SiX8zQYe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2365FC4CEDD
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:06:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734541615;
-	bh=wTIXOAz/PmF8IOV+o/w1YajjrFqWLNaFZjO2r1ZAm/w=;
+	s=k20201202; t=1734541616;
+	bh=5qm1uafcb4QTszeBGB306Iw56fpUr50UE+IuGt29ixs=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=M0Ex0yKrJxWf5b7JU7litZMVprIv18yWxkLoNizSRhxAZyNlGTHCfFrLHyNt+iTP9
-	 uZXcUqQ/cnJ/z6IC7QZpkundUTBQg/a3P2tKuCQd0ncsqXmc7k8vTDjIOjqfDjV6pz
-	 P/R7DpSiCMsog3mN5dIFh6p6IKCTkh92Tloz+7x7Nrk6n3u9HCfsY2qGSgWvhOMP1w
-	 j4ySBpRkl7+m8sPXXG7Q4ZOPETziI1MQxn58I/2I5ky/xhGt+4JiP+x0AeephuwS25
-	 38FE3qU7ZrbOtxBQRecL2jDIxlQYhK2ESAgYRCdr0BP0dtOP3/d1CsiYmCZnG2Indv
-	 y6PaMcl+CdPcA==
+	b=SiX8zQYeAiO7fMaiVLwl/D1gE0XJl8dIEuRybhfywcdvNWjGAVZ+AXElANZbR1aE8
+	 J07jGsqqJTCEWsfdBZEaNicPaVkD8XyD3htyNnwuUIE5jCe7LNXpevI3gy/bWvtAMB
+	 09jY0YzJ514abD6K7fXoVAywyZCCkttg7O/0TNfNQqcBmwNhrg6Jm3LhoQnewffmQH
+	 l0N48wrHssdazUL8/NqrIwCPkASdjz/vl9BybbyHwXeCxZoReXG3CqhbsSwn78MUVj
+	 r714U0RQEZ8mYBNAL2j8xBCBlcLQVeN7hTo+KCmXLXVJW28q+GcRnT/PZ2ybFoKwoN
+	 bbuzTKkHAh12A==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 04/20] btrfs: block-group: remove unnecessary calls to btrfs_mark_buffer_dirty()
-Date: Wed, 18 Dec 2024 17:06:31 +0000
-Message-Id: <0bdee9a4eb6960c61544334ffe292cb544a0bfa3.1734527445.git.fdmanana@suse.com>
+Subject: [PATCH 05/20] btrfs: delayed-inode: remove unnecessary call to btrfs_mark_buffer_dirty()
+Date: Wed, 18 Dec 2024 17:06:32 +0000
+Message-Id: <ed9ca43b72f6a1579760f5c93727f03d42f62515.1734527445.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1734527445.git.fdmanana@suse.com>
 References: <cover.1734527445.git.fdmanana@suse.com>
@@ -59,40 +59,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We have several places explicitly calling btrfs_mark_buffer_dirty() but
-that is not necessarily since the target leaf came from a path that was
-obtained for a btree search function that modifies the btree, something
-like btrfs_insert_empty_item() or anything else that ends up calling
-btrfs_search_slot() with a value of 1 for its 'cow' argument.
+The call to btrfs_mark_buffer_dirty() at __btrfs_update_delayed_inode() is
+not necessary as we have a path setup for writing with btrfs_search_slot()
+having a 'cow' argument set to 1.
 
-These just make the code more verbose, confusing and add a little extra
-overhead and well as increase the module's text size, so remove them.
+This just makes the code more verbose, confusing and add a little extra
+overhead and well as increase the module's text size, so remove it.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/delayed-inode.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 5be029734cfa..8f91aa431074 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2670,7 +2670,6 @@ static int insert_dev_extent(struct btrfs_trans_handle *trans,
- 	btrfs_set_dev_extent_chunk_offset(leaf, extent, chunk_offset);
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 508bdbae29a0..02c1efd53904 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1038,7 +1038,6 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 				    struct btrfs_inode_item);
+ 	write_extent_buffer(leaf, &node->inode_item, (unsigned long)inode_item,
+ 			    sizeof(struct btrfs_inode_item));
+-	btrfs_mark_buffer_dirty(trans, leaf);
  
- 	btrfs_set_dev_extent_length(leaf, extent, num_bytes);
--	btrfs_mark_buffer_dirty(trans, leaf);
- out:
- 	btrfs_free_path(path);
- 	return ret;
-@@ -3120,7 +3119,6 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
- 						   cache->global_root_id);
- 	btrfs_set_stack_block_group_flags(&bgi, cache->flags);
- 	write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
--	btrfs_mark_buffer_dirty(trans, leaf);
- fail:
- 	btrfs_release_path(path);
- 	/*
+ 	if (!test_bit(BTRFS_DELAYED_NODE_DEL_IREF, &node->flags))
+ 		goto out;
 -- 
 2.45.2
 
