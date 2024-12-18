@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10546-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A183A9F6207
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F9D9F6208
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 10:44:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B096D168266
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:43:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70BB51691E7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2024 09:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA5E19D09C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E051A19CC3D;
 	Wed, 18 Dec 2024 09:42:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DWTmA0aE";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DWTmA0aE"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YWZ+htrn";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YWZ+htrn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A8119CC3D
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D18B19D072
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734514940; cv=none; b=gfqbuInZD673IqYJ6XBOCEQEfHHNqcWTb0I6Br7yehDkJFpKYuqNozywVekLhTbbEy9bPnSLBA/0BBN9QKC9UwoiQqsw8j7ox9harTpud0XZAwGOnrSf/z8bQPtNCGPfBalCst/BJ5FkygxC0mXm8DzuLLV0II8PJq4GL6D0yTM=
+	t=1734514941; cv=none; b=m3J5q7nvFqvUJzWKS3B42QOU0jLMBn4781+CIcFuxsPBOTRJlJ7lE1oY+pjOH8hon91PB8DXmqChmxJoO17zzrRZpSU+JJSW+EthC3b29T3K0bRA58LXPSR1oNkhHPPPtpaJ9PsKy3MTTQF22BRmKKHaTzFXeEcvlR4BrHbe4G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734514940; c=relaxed/simple;
-	bh=2bRYtWpYVMEDhJ5w0op9w1AI31z+hcs0P3Fq/PruFVE=;
+	s=arc-20240116; t=1734514941; c=relaxed/simple;
+	bh=Du+ounKbe1okLsJlZYl3tDHcVh3Sg9wT0MwoI9juol4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OS0nBWxxgwsEXqd5Q6NIV11KxkfBj0uxxXM6DFQeaRMd6/2dDSNuOhrcgULLZL+i3lA3bbupu9uJKHlKhBN4YULGAq828ICkPmvsDp6Vabzv5mm9mhsoiGN3G0/D9U3A4kr2pL1fhIEEbOayTV+kG9TdKw4nVvEHyXtPrxUE4u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DWTmA0aE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DWTmA0aE; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=lMhnp5h2p0i5oryzaJxJx8akg0esHZ84X7z/pZ2R51xBVpAUCQCAfgpIuZuIx+HGgcS/ipTw//VhTk4XQtIOAwydsvSN9GPKGFhD+t/twHC+YwpneCkGQZ72lS85o4adA/ZK9zvRNXIisVJeUAsWLFVdvHCzat7j8meNDZRfWZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YWZ+htrn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YWZ+htrn; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 145A02115F
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:16 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 64E971F444
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yvLlTMcqwB5VyTOe4ov2s4BVV1z0//ravBaqD0TF1U0=;
-	b=DWTmA0aE3ukmV9+RMofL00SCYqSPdPvKEWyBvtwTPrAso0ofe4xqf/eimZ0lYz3uhL5AyM
-	/YfICvkEpn8xY41m10XUW0RnUOxHO5BjR2Jz/y0psC5uJZzEzfMRLypZK3CZn9Ygj2meJC
-	AyJ8b9IGjANQ9KFTdKwH+JIoW2DBK0I=
-Authentication-Results: smtp-out1.suse.de;
+	bh=NlfEGzdIj9bj0xdehleaefrLv/FvPvCAxxJsVwuuO1M=;
+	b=YWZ+htrnDsd31qlKz2oZmDxn54vQKZzqzXcwl6vGCERzfNA8NPp2DbqchqXQIqZ5yUPQMO
+	IxGlwOkPYWAeWTRiR2xWFMUhLuSmXhJT7iygOi0+0mUWwGlmz/llX7PawFL7u/mOKtNCpY
+	sYD7pz2BToteORIA0pE/Gs3fQ15LPHw=
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734514936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1734514937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yvLlTMcqwB5VyTOe4ov2s4BVV1z0//ravBaqD0TF1U0=;
-	b=DWTmA0aE3ukmV9+RMofL00SCYqSPdPvKEWyBvtwTPrAso0ofe4xqf/eimZ0lYz3uhL5AyM
-	/YfICvkEpn8xY41m10XUW0RnUOxHO5BjR2Jz/y0psC5uJZzEzfMRLypZK3CZn9Ygj2meJC
-	AyJ8b9IGjANQ9KFTdKwH+JIoW2DBK0I=
+	bh=NlfEGzdIj9bj0xdehleaefrLv/FvPvCAxxJsVwuuO1M=;
+	b=YWZ+htrnDsd31qlKz2oZmDxn54vQKZzqzXcwl6vGCERzfNA8NPp2DbqchqXQIqZ5yUPQMO
+	IxGlwOkPYWAeWTRiR2xWFMUhLuSmXhJT7iygOi0+0mUWwGlmz/llX7PawFL7u/mOKtNCpY
+	sYD7pz2BToteORIA0pE/Gs3fQ15LPHw=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 41655132EA
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:15 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 91355132EA
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wE8sAPeYYmdmSwAAD6G6ig
+	id MK+oE/iYYmdmSwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:15 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 09:42:16 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 17/18] btrfs: migrate btrfs_super_block::sectorsize to blocksize
-Date: Wed, 18 Dec 2024 20:11:33 +1030
-Message-ID: <ab8cdd215939cf260ac831f367735faebab42abc.1734514696.git.wqu@suse.com>
+Subject: [PATCH 18/18] btrfs: migrate the ioctl interfaces to use block size terminology
+Date: Wed, 18 Dec 2024 20:11:34 +1030
+Message-ID: <bbf3aa03fb4b4089d00b945e34a6eb7cbf50e0a0.1734514696.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1734514696.git.wqu@suse.com>
 References: <cover.1734514696.git.wqu@suse.com>
@@ -109,88 +109,86 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 X-Spam-Score: -2.80
 X-Spam-Flag: NO
 
-This is the rename of the on-disk format btrfs_super_block, which also
-affects the accessors and a few callers.
+This rename really only affects btrfs_ioctl_fs_info_args structure, but
+since we're here, also update the comments in the ioctl header.
 
 To keep compatibility for old programs which may still access
-btrfs_super_block::sectorsize, use a union so @blocksize and @sectorsize
-can both access the same @blocksize value.
+btrfs_ioctl_fs_info_args::sectorsize, use a union so @blocksize and
+@sectorsize can both access the same @blocksize value.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/accessors.h            |  4 ++--
- fs/btrfs/disk-io.c              |  4 ++--
- include/uapi/linux/btrfs_tree.h | 13 +++++++++++--
- 3 files changed, 15 insertions(+), 6 deletions(-)
+ fs/btrfs/ioctl.c           |  2 +-
+ include/uapi/linux/btrfs.h | 21 +++++++++++++++------
+ 2 files changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index a796ec3fcb67..ecafbd6262cc 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -873,8 +873,8 @@ BTRFS_SETGET_STACK_FUNCS(super_total_bytes, struct btrfs_super_block,
- 			 total_bytes, 64);
- BTRFS_SETGET_STACK_FUNCS(super_bytes_used, struct btrfs_super_block,
- 			 bytes_used, 64);
--BTRFS_SETGET_STACK_FUNCS(super_sectorsize, struct btrfs_super_block,
--			 sectorsize, 32);
-+BTRFS_SETGET_STACK_FUNCS(super_blocksize, struct btrfs_super_block,
-+			 blocksize, 32);
- BTRFS_SETGET_STACK_FUNCS(super_nodesize, struct btrfs_super_block,
- 			 nodesize, 32);
- BTRFS_SETGET_STACK_FUNCS(super_stripesize, struct btrfs_super_block,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index d3d2c9e2356a..9e6a1ea507d7 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2341,7 +2341,7 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 			 const struct btrfs_super_block *sb, int mirror_num)
- {
- 	u64 nodesize = btrfs_super_nodesize(sb);
--	u64 blocksize = btrfs_super_sectorsize(sb);
-+	u64 blocksize = btrfs_super_blocksize(sb);
- 	int ret = 0;
- 	const bool ignore_flags = btrfs_test_opt(fs_info, IGNORESUPERFLAGS);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 888f7b97434c..bbaac3d8a36d 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2781,7 +2781,7 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
  
-@@ -3310,7 +3310,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	memcpy(&fi_args->fsid, fs_devices->fsid, sizeof(fi_args->fsid));
+ 	fi_args->nodesize = fs_info->nodesize;
+-	fi_args->sectorsize = fs_info->blocksize;
++	fi_args->blocksize = fs_info->blocksize;
+ 	fi_args->clone_alignment = fs_info->blocksize;
  
- 	/* Set up fs_info before parsing mount options */
- 	nodesize = btrfs_super_nodesize(disk_super);
--	blocksize = btrfs_super_sectorsize(disk_super);
-+	blocksize = btrfs_super_blocksize(disk_super);
- 	stripesize = blocksize;
- 	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
- 	fs_info->delalloc_batch = blocksize * 512 * (1 + ilog2(nr_cpu_ids));
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index fc29d273845d..3fbefe00be4c 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -272,7 +272,7 @@
-  * When a block group becomes very fragmented, we convert it to use bitmaps
-  * instead of extents. A free space bitmap is keyed on
-  * (start, FREE_SPACE_BITMAP, length); the corresponding item is a bitmap with
-- * (length / sectorsize) bits.
-+ * (length / blocksize) bits.
-  */
- #define BTRFS_FREE_SPACE_BITMAP_KEY 200
- 
-@@ -690,7 +690,16 @@ struct btrfs_super_block {
- 	__le64 bytes_used;
- 	__le64 root_dir_objectid;
- 	__le64 num_devices;
--	__le32 sectorsize;
-+	union {
+ 	if (flags_in & BTRFS_FS_INFO_FLAG_CSUM_INFO) {
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index d3b222d7af24..16ea8266b26d 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -278,7 +278,16 @@ struct btrfs_ioctl_fs_info_args {
+ 	__u64 num_devices;			/* out */
+ 	__u8 fsid[BTRFS_FSID_SIZE];		/* out */
+ 	__u32 nodesize;				/* out */
+-	__u32 sectorsize;			/* out */
++	union {					/* out */
 +		/*
 +		 * The minimum data block size.
 +		 *
-+		 * Used to be called "sectorsize", but not recommended now.
-+		 * Keep the old "sectorsize" just for old programs.
++		 * The old name "sectorsize" is no longer recommended,
++		 * only for compatibility usage.
 +		 */
-+		__le32 blocksize;
-+		__le32 sectorsize;
++		__u32 blocksize;
++		__u32 sectorsize;
 +	};
- 	__le32 nodesize;
- 	__le32 __unused_leafsize;
- 	__le32 stripesize;
+ 	__u32 clone_alignment;			/* out */
+ 	/* See BTRFS_FS_INFO_FLAG_* */
+ 	__u16 csum_type;			/* out */
+@@ -965,7 +974,7 @@ struct btrfs_ioctl_encoded_io_args {
+ 	/*
+ 	 * Offset in file.
+ 	 *
+-	 * For writes, must be aligned to the sector size of the filesystem.
++	 * For writes, must be aligned to the block size of the filesystem.
+ 	 */
+ 	__s64 offset;
+ 	/* Currently must be zero. */
+@@ -982,7 +991,7 @@ struct btrfs_ioctl_encoded_io_args {
+ 	 * Length of the data in the file.
+ 	 *
+ 	 * Must be less than or equal to unencoded_len - unencoded_offset. For
+-	 * writes, must be aligned to the sector size of the filesystem unless
++	 * writes, must be aligned to the block size of the filesystem unless
+ 	 * the data ends at or beyond the current end of the file.
+ 	 */
+ 	__u64 len;
+@@ -1033,10 +1042,10 @@ struct btrfs_ioctl_encoded_io_args {
+  */
+ #define BTRFS_ENCODED_IO_COMPRESSION_ZSTD 2
+ /*
+- * Data is compressed sector by sector (using the sector size indicated by the
++ * Data is compressed block by block (using the block size indicated by the
+  * name of the constant) with LZO1X and wrapped in the format documented in
+- * fs/btrfs/lzo.c. For writes, the compression sector size must match the
+- * filesystem sector size.
++ * fs/btrfs/lzo.c. For writes, the compression block size must match the
++ * filesystem block size.
+  */
+ #define BTRFS_ENCODED_IO_COMPRESSION_LZO_4K 3
+ #define BTRFS_ENCODED_IO_COMPRESSION_LZO_8K 4
 -- 
 2.47.1
 
