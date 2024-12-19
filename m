@@ -1,868 +1,167 @@
-Return-Path: <linux-btrfs+bounces-10608-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10609-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3499F9F7D6D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 15:57:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0D6D9F7DB9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 16:12:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A76116C7C1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 14:57:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F1CF18845C9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 15:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8531422540A;
-	Thu, 19 Dec 2024 14:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80480225784;
+	Thu, 19 Dec 2024 15:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="dKTcYPur"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NfwU175g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EC978F54
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 14:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337BB225788
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 15:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734620227; cv=none; b=c4NYMNPW3qwuOjh4JoyFpA47tFlrtXwmPTEc3ZvAm1J4/R1N7JIvHP2FaI60pLC6EKXmKD2zccaeC//u7WwKie2FRFYsA/9+VI7SA/Eyg+9I3aozzUxSh43pcQiaGVKD/2LtVuKINuE8GcGrSnm82RVjcqvkGDH4ckA5926f3mk=
+	t=1734621065; cv=none; b=SCVPz/QQe4N2T3Fa4B/LYTMOLslGu3wQl3qEDJacV8hANAIT6G+vm4ER2Py/aLsKlz8EXjb2XKwxFvymVY7GdDMX6grlzmHo3tvzm7P105uJGi3SHg9YEZTkpEUzaRSrml9Nop3rSkCobjWNHRlbtpuiemC4bQgcuQSTvN1EQP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734620227; c=relaxed/simple;
-	bh=ae74+hUzafgbuvxa3Fdr7Tpwli25tDVkgXR4GpEERcE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mcp4WdbYZaUoYd7J4HiUMba+xw3arHl+MW7qE+4UUBHiNVhuwrQFRzLVSBbMPVMM6eBTZSrNZ6HSMfjvLb9o0ZRR9d/3BK0PfJfRsxMr81lrpOdOinroPI/DAk0Od8mvxcZD4P/lRAPlw63yqgzKLhVm3DnEzXeubPuemJOkli8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=dKTcYPur; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BJAtjkj004268
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 06:57:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=facebook; bh=p
-	ek+n0EYIWeqGfv1pa9bherhVafK0EzVY7ErJil47Rs=; b=dKTcYPurzvkTq0ScX
-	dmMttgoFddQ3feUmYdtoTa1SsKsOAfLZmgk/4PNPrFlEMb4XizRB19yBV4/DweAL
-	k4tzz/YSv2QaclPXvcSAtSe2c8c+Hle7H8bljhPepuW7jtpVaGw1ng8HgoEwTenH
-	ncHAwgC0uBiMTwG/u/CbpiEDwA=
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43mj5ks82p-9
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 06:57:04 -0800 (PST)
-Received: from twshared40462.17.frc2.facebook.com (2620:10d:c0a8:fe::f072) by
- mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.14; Thu, 19 Dec 2024 14:56:51 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id E440B9B3481A; Thu, 19 Dec 2024 14:56:48 +0000 (GMT)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <fstests@vger.kernel.org>, <linux-btrfs@vger.kernel.org>
-CC: <neelx@suse.com>, <Johannes.Thumschirn@wdc.com>, <anand.jain@oracle.com>,
-        Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH v3 2/2] btrfs: add test for encoded reads
-Date: Thu, 19 Dec 2024 14:55:56 +0000
-Message-ID: <20241219145608.3925261-2-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241219145608.3925261-1-maharmstone@fb.com>
-References: <20241219145608.3925261-1-maharmstone@fb.com>
+	s=arc-20240116; t=1734621065; c=relaxed/simple;
+	bh=zxUwCM5sVQtWZUAPNomSOSSJKwXbR7V6Cjxc3p7Fj7Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m7JZwzC0FqEV48K5/V5CieOgQ1YYRPwIg0JUit6GcdCzYJjyRP7obXP6moWMMxdOZOHQ6O5hUBQyIpqn2abpzRPne9EB41XFn51Er76SKWpM879SEYZqMGXkVoVYi5n0w4G3grk6NiuCUjhi8sFv76FCtdi/ME/MXxrprtIAWUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NfwU175g; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa67333f7d2so152978166b.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 07:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1734621060; x=1735225860; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=a8c0Ewl7BQkquEtJaiXqSJPyhaxk2Iz2kiqNEhnfoII=;
+        b=NfwU175gEIgdOZJ93lMl60l1daXk25xWVwL+HEeLnt+w6hutwqe03oiaz8JV5DL/nL
+         jqs3JZfSCpNrryc00/Fio8GstOq1DSwJIyTCRD+XPiH2X3qVU7zWC1/VLKJpOdKYG8dQ
+         3K3KtGwHfvZLSJdRumCNGPkL5U3qSYPTpZgP/SGShbHKNHuWoXE5ZZGSkSmzmgK+j9IJ
+         bJwPnVuniggnV94qH01D3L7SxX2WmEvce8QfSLR6xtxvZ72MkgvZKBRUTMHEFRGEEHqO
+         OhWWQM4KfjUe3jfgfKMShrWFjLGDpRqOT4Sx6QwGRcDGPCCx0ZI0Qwmc4DL90WEjx41Y
+         /EQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734621060; x=1735225860;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a8c0Ewl7BQkquEtJaiXqSJPyhaxk2Iz2kiqNEhnfoII=;
+        b=g+oR3OIHVkyQ8wimYOS8c30CsMrnvGe14DLL1K9H6xvxU1xBjj4nPfF13vN2W6GZM/
+         cJ3OGAEehrsmz9GBrO3Nvv3aZQ0+CX83WXD50oLpBXMXIR+Y6scvceqfb/8stdwdKxXG
+         4sf1wLhkstZny3OnMSsxNnKQzxIFDqoPeyQs2XRZloY/PbDnx6MTgTh5TEK9fv4C2yb1
+         hDZ04UPhX1ef2vGh/cShUzZh0MJ1jqYg6o88AX1pjhGlvWZg1i8XBEaBjkwxS1/607sc
+         RgjIjqH1WdG+4KFqM91oxWokdD+ddfrj8f7Mj5sAwAheRMeWP8xrTiwdLhUY4M9DwO/C
+         TqoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXwv3uQWgE59F9f0DGtA+acEDBDt3sa0sjRHQFDwjjWeDWU4zrZ+eJVGcCm0XanKyBynN2ZFoyh0g+guA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGSk+PvbfgrilWKCOA4lvXACgO79T36Tz8HnXzoqyhRjZupBW1
+	EsDf/WfSK7nnoqk3Ze2HeWvwuEhRdFAoP7pwP5jX353lYiFvgZORiGbKKp0S4kU=
+X-Gm-Gg: ASbGncskSKp0zz4DJ1Cr4Ktxdg3UYZJ3ssUohEVL8y3TpJsRDNbCK04bpiRbFcYRdT5
+	YJjNJSXaEyKNNw1iuuChqAWOk01rxNzdTkaILvCi7G17IZ6AT8nW3TRJlnIT7ITTA6pgZhmZhD4
+	gyE4WtEG9iIBx1uEpCDArbXS5eVkFmFF4QbpXbTeCGsupPYQyZ0+ZisDcWJL5rTN3LQqbqqd0hG
+	D4eswZgTv8HZ9m+n7jMbJ+xtuU/NJ7TdKRR1Poj+4A9NbTsOnzXe1HnccEImA==
+X-Google-Smtp-Source: AGHT+IEpIUPQqVgupeRzlOrpnAifiL/wITich3F10TXkppCOZb1lR3IE5oC8DUkcXCbnI2ox83X/9w==
+X-Received: by 2002:a17:906:3092:b0:aa6:b5e0:8c59 with SMTP id a640c23a62f3a-aabf47f6a50mr576895266b.35.1734621060458;
+        Thu, 19 Dec 2024 07:11:00 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e8301bdsm74864266b.31.2024.12.19.07.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Dec 2024 07:10:59 -0800 (PST)
+Date: Thu, 19 Dec 2024 18:10:56 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, qemu-devel@nongnu.org,
+	open list <linux-kernel@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>,
+	Linux btrfs <linux-btrfs@vger.kernel.org>,
+	Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>, Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>
+Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
+ with Linux next-20241210 and above
+Message-ID: <a3406049-7ab5-45b9-80bf-46f73ef73a4f@stanley.mountain>
+References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
+ <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
+ <ac1e1168-d3af-43c5-9df7-4ef5a1dbd698@gmx.com>
+ <feecfdc2-4df6-47cf-8f96-5044858dc881@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: wejmfGgJtpjweOCzrOENLW71KWhgxWcD
-X-Proofpoint-GUID: wejmfGgJtpjweOCzrOENLW71KWhgxWcD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <feecfdc2-4df6-47cf-8f96-5044858dc881@gmx.com>
 
-Add btrfs/333 and its helper programs btrfs_encoded_read and
-btrfs_encoded_write, in order to test encoded reads.
+On Thu, Dec 19, 2024 at 10:44:12AM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/12/19 06:37, Qu Wenruo 写道:
+> > 
+> > 
+> > 在 2024/12/19 02:22, Naresh Kamboju 写道:
+> > > On Wed, 18 Dec 2024 at 17:33, Naresh Kamboju
+> > > <naresh.kamboju@linaro.org> wrote:
+> > > > 
+> > > > The following kernel crash noticed on qemu-arm64 while running the
+> > > > Linux next-20241210 tag (to next-20241218) kernel built with
+> > > >   - CONFIG_ARM64_64K_PAGES=y
+> > > >   - CONFIG_ARM64_16K_PAGES=y
+> > > > and running LTP smoke tests.
+> > > > 
+> > > > First seen on Linux next-20241210.
+> > > >    Good: next-20241209
+> > > >    Bad:  next-20241210 and next-20241218
+> > > > 
+> > > > qemu-arm64: 9.1.2
+> > > > 
+> > > > Anyone noticed this ?
+> > > > 
+> > > 
+> > > Anders bisected this reported regression and found,
+> > > # first bad commit:
+> > >    [9c1d66793b6faa00106ae4c866359578bfc012d2]
+> > >    btrfs: validate system chunk array at btrfs_validate_super()
+> > 
+> > Weird, I run daily fstests with 64K page sized aarch64 VM.
+> > 
+> > But never hit a crash on this.
+> > 
+> > And the original crash call trace only points back to ext4, not btrfs.
+> > 
 
-We use the BTRFS_IOC_ENCODED_WRITE ioctl to write random data into a
-compressed extent, then use the BTRFS_IOC_ENCODED_READ ioctl to check
-that it matches what we've written. If the new io_uring interface for
-encoded reads is supported, we also check that that matches the ioctl.
+Yeah.  But it's in the memory allocator so it looks like memory
+corruption.  After the ext4 crash then random other stuff starts
+crashing as well when it allocates memory.
 
-Note that what we write isn't valid compressed data, so any non-encoded
-reads on these files will fail.
+> > Mind to test it with KASAN enabled?
+> 
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
-This should now work on systems with old versions of liburing, and
-systems with old versions of the btrfs.h header.
+Anders is going to try that later and report back.
 
-I've also included Daniel Vacek's suggestions for reducing the amount of
-time spent doing dd.
+> Another thing is, how do you enable both 16K and 64K page size at the
+> same time?
+> 
+> The Kconfig should only select one page size IIRC.
 
- .gitignore                |   2 +
- m4/package_liburing.m4    |   2 +
- src/Makefile              |   3 +-
- src/btrfs_encoded_read.c  | 203 +++++++++++++++++++++++++++++++++
- src/btrfs_encoded_write.c | 234 ++++++++++++++++++++++++++++++++++++++
- tests/btrfs/333           | 220 +++++++++++++++++++++++++++++++++++
- tests/btrfs/333.out       |   2 +
- 7 files changed, 665 insertions(+), 1 deletion(-)
- create mode 100644 src/btrfs_encoded_read.c
- create mode 100644 src/btrfs_encoded_write.c
- create mode 100755 tests/btrfs/333
- create mode 100644 tests/btrfs/333.out
+Right.  We tested 4k, 16k and 64k.  4k pages worked.
 
-diff --git a/.gitignore b/.gitignore
-index f16173d9..efd47773 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -62,6 +62,8 @@ tags
- /src/attr_replace_test
- /src/attr-list-by-handle-cursor-test
- /src/bstat
-+/src/btrfs_encoded_read
-+/src/btrfs_encoded_write
- /src/bulkstat_null_ocount
- /src/bulkstat_unlink_test
- /src/bulkstat_unlink_test_modified
-diff --git a/m4/package_liburing.m4 b/m4/package_liburing.m4
-index 0553966d..7fbf4a5f 100644
---- a/m4/package_liburing.m4
-+++ b/m4/package_liburing.m4
-@@ -1,6 +1,8 @@
- AC_DEFUN([AC_PACKAGE_WANT_URING],
-   [ PKG_CHECK_MODULES([LIBURING], [liburing],
-     [ AC_DEFINE([HAVE_LIBURING], [1], [Use liburing])
-+      AC_DEFINE_UNQUOTED([LIBURING_MAJOR_VERSION], [`$PKG_CONFIG --modve=
-rsion liburing | cut -d. -f1`], [liburing major version])
-+      AC_DEFINE_UNQUOTED([LIBURING_MINOR_VERSION], [`$PKG_CONFIG --modve=
-rsion liburing | cut -d. -f2`], [liburing minor version])
-       have_uring=3Dtrue
-     ],
-     [ have_uring=3Dfalse ])
-diff --git a/src/Makefile b/src/Makefile
-index a0396332..b42b8147 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -34,7 +34,8 @@ LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize pre=
-allo_rw_pattern_reader \
- 	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
- 	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
- 	detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
--	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault min_dio_alignment
-+	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault min_dio_alignment =
-\
-+	btrfs_encoded_read btrfs_encoded_write
-=20
- EXTRA_EXECS =3D dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
- 	      btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-diff --git a/src/btrfs_encoded_read.c b/src/btrfs_encoded_read.c
-new file mode 100644
-index 00000000..2e4079b0
---- /dev/null
-+++ b/src/btrfs_encoded_read.c
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) Meta Platforms, Inc. and affiliates.
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <sys/uio.h>
-+#include <sys/ioctl.h>
-+#include <linux/btrfs.h>
-+#include "config.h"
-+
-+#ifdef HAVE_LIBURING
-+#include <liburing.h>
-+#endif
-+
-+/* IORING_OP_URING_CMD defined from liburing 2.2 onwards */
-+#if defined(HAVE_LIBURING) && (LIBURING_MAJOR_VERSION < 2 || (LIBURING_M=
-AJOR_VERSION =3D=3D 2 && LIBURING_MINOR_VERSION < 2))
-+#define IORING_OP_URING_CMD 46
-+#endif
-+
-+#ifndef BTRFS_IOC_ENCODED_READ
-+struct btrfs_ioctl_encoded_io_args {
-+	const struct iovec *iov;
-+	unsigned long iovcnt;
-+	__s64 offset;
-+	__u64 flags;
-+	__u64 len;
-+	__u64 unencoded_len;
-+	__u64 unencoded_offset;
-+	__u32 compression;
-+	__u32 encryption;
-+	__u8 reserved[64];
-+};
-+
-+#define BTRFS_IOC_ENCODED_READ _IOR(BTRFS_IOCTL_MAGIC, 64, struct btrfs_=
-ioctl_encoded_io_args)
-+#endif
-+
-+#define BTRFS_MAX_COMPRESSED 131072
-+#define QUEUE_DEPTH 1
-+
-+static int encoded_read_ioctl(const char *filename, long long offset)
-+{
-+	int ret, fd;
-+	char buf[BTRFS_MAX_COMPRESSED];
-+	struct iovec iov;
-+	struct btrfs_ioctl_encoded_io_args enc;
-+
-+	fd =3D open(filename, O_RDONLY);
-+	if (fd < 0) {
-+		fprintf(stderr, "open failed for %s\n", filename);
-+		return 1;
-+	}
-+
-+	iov.iov_base =3D buf;
-+	iov.iov_len =3D sizeof(buf);
-+
-+	enc.iov =3D &iov;
-+	enc.iovcnt =3D 1;
-+	enc.offset =3D offset;
-+	enc.flags =3D 0;
-+
-+	ret =3D ioctl(fd, BTRFS_IOC_ENCODED_READ, &enc);
-+
-+	if (ret < 0) {
-+		printf("%i\n", -errno);
-+		close(fd);
-+		return 0;
-+	}
-+
-+	close(fd);
-+
-+	printf("%i\n", ret);
-+	printf("%llu\n", enc.len);
-+	printf("%llu\n", enc.unencoded_len);
-+	printf("%llu\n", enc.unencoded_offset);
-+	printf("%u\n", enc.compression);
-+	printf("%u\n", enc.encryption);
-+
-+	fwrite(buf, ret, 1, stdout);
-+
-+	return 0;
-+}
-+
-+static int encoded_read_io_uring(const char *filename, long long offset)
-+{
-+#ifdef HAVE_LIBURING
-+	int ret, fd;
-+	char buf[BTRFS_MAX_COMPRESSED];
-+	struct iovec iov;
-+	struct btrfs_ioctl_encoded_io_args enc;
-+	struct io_uring ring;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+
-+	io_uring_queue_init(QUEUE_DEPTH, &ring, 0);
-+
-+	fd =3D open(filename, O_RDONLY);
-+	if (fd < 0) {
-+		fprintf(stderr, "open failed for %s\n", filename);
-+		ret =3D 1;
-+		goto out_uring;
-+	}
-+
-+	iov.iov_base =3D buf;
-+	iov.iov_len =3D sizeof(buf);
-+
-+	enc.iov =3D &iov;
-+	enc.iovcnt =3D 1;
-+	enc.offset =3D offset;
-+	enc.flags =3D 0;
-+
-+	sqe =3D io_uring_get_sqe(&ring);
-+	if (!sqe) {
-+		fprintf(stderr, "io_uring_get_sqe failed\n");
-+		ret =3D 1;
-+		goto out_close;
-+	}
-+
-+	io_uring_prep_rw(IORING_OP_URING_CMD, sqe, fd, &enc, sizeof(enc), 0);
-+
-+	/* sqe->cmd_op union'd to sqe->off from liburing 2.3 onwards */
-+#if (LIBURING_MAJOR_VERSION < 2 || (LIBURING_MAJOR_VERSION =3D=3D 2 && L=
-IBURING_MINOR_VERSION < 3))
-+	sqe->off =3D BTRFS_IOC_ENCODED_READ;
-+#else
-+	sqe->cmd_op =3D BTRFS_IOC_ENCODED_READ;
-+#endif
-+
-+	io_uring_submit(&ring);
-+
-+	ret =3D io_uring_wait_cqe(&ring, &cqe);
-+	if (ret < 0) {
-+		fprintf(stderr, "io_uring_wait_cqe returned %i\n", ret);
-+		ret =3D 1;
-+		goto out_close;
-+	}
-+
-+	io_uring_cqe_seen(&ring, cqe);
-+
-+	if (cqe->res < 0) {
-+		printf("%i\n", cqe->res);
-+		ret =3D 0;
-+		goto out_close;
-+	}
-+
-+	printf("%i\n", cqe->res);
-+	printf("%llu\n", enc.len);
-+	printf("%llu\n", enc.unencoded_len);
-+	printf("%llu\n", enc.unencoded_offset);
-+	printf("%u\n", enc.compression);
-+	printf("%u\n", enc.encryption);
-+
-+	fwrite(buf, cqe->res, 1, stdout);
-+
-+	ret =3D 0;
-+
-+out_close:
-+	close(fd);
-+
-+out_uring:
-+	io_uring_queue_exit(&ring);
-+
-+	return ret;
-+#else
-+	fprintf(stderr, "liburing not linked in\n");
-+	return 1;
-+#endif
-+}
-+
-+static void usage()
-+{
-+	fprintf(stderr, "Usage: btrfs_encoded_read ioctl|io_uring filename offs=
-et\n");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *filename;
-+	long long offset;
-+
-+	if (argc !=3D 4) {
-+		usage();
-+		return 1;
-+	}
-+
-+	filename =3D argv[2];
-+
-+	offset =3D atoll(argv[3]);
-+	if (offset =3D=3D 0 && errno !=3D 0) {
-+		usage();
-+		return 1;
-+	}
-+
-+	if (!strcmp(argv[1], "ioctl")) {
-+		return encoded_read_ioctl(filename, offset);
-+	} else if (!strcmp(argv[1], "io_uring")) {
-+		return encoded_read_io_uring(filename, offset);
-+	} else {
-+		usage();
-+		return 1;
-+	}
-+}
-diff --git a/src/btrfs_encoded_write.c b/src/btrfs_encoded_write.c
-new file mode 100644
-index 00000000..1b063fa1
---- /dev/null
-+++ b/src/btrfs_encoded_write.c
-@@ -0,0 +1,234 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) Meta Platforms, Inc. and affiliates.
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <sys/uio.h>
-+#include <sys/ioctl.h>
-+#include <linux/btrfs.h>
-+#include "config.h"
-+
-+#ifdef HAVE_LIBURING
-+#include <liburing.h>
-+#endif
-+
-+/* IORING_OP_URING_CMD defined from liburing 2.2 onwards */
-+#if defined(HAVE_LIBURING) && (LIBURING_MAJOR_VERSION < 2 || (LIBURING_M=
-AJOR_VERSION =3D=3D 2 && LIBURING_MINOR_VERSION < 2))
-+#define IORING_OP_URING_CMD 46
-+#endif
-+
-+#ifndef BTRFS_IOC_ENCODED_WRITE
-+struct btrfs_ioctl_encoded_io_args {
-+	const struct iovec *iov;
-+	unsigned long iovcnt;
-+	__s64 offset;
-+	__u64 flags;
-+	__u64 len;
-+	__u64 unencoded_len;
-+	__u64 unencoded_offset;
-+	__u32 compression;
-+	__u32 encryption;
-+	__u8 reserved[64];
-+};
-+
-+#define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, struct btrfs=
-_ioctl_encoded_io_args)
-+#endif
-+
-+#define BTRFS_MAX_COMPRESSED 131072
-+#define QUEUE_DEPTH 1
-+
-+static int encoded_write_ioctl(const char *filename, long long offset,
-+			       long long len, long long unencoded_len,
-+			       long long unencoded_offset, int compression,
-+			       char *buf, size_t size)
-+{
-+	int ret, fd;
-+	struct iovec iov;
-+	struct btrfs_ioctl_encoded_io_args enc;
-+
-+	fd =3D open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-+	if (fd < 0) {
-+		fprintf(stderr, "open failed for %s\n", filename);
-+		return 1;
-+	}
-+
-+	iov.iov_base =3D buf;
-+	iov.iov_len =3D size;
-+
-+	memset(&enc, 0, sizeof(enc));
-+	enc.iov =3D &iov;
-+	enc.iovcnt =3D 1;
-+	enc.offset =3D offset;
-+	enc.len =3D len;
-+	enc.unencoded_len =3D unencoded_len;
-+	enc.unencoded_offset =3D unencoded_offset;
-+	enc.compression =3D compression;
-+
-+	ret =3D ioctl(fd, BTRFS_IOC_ENCODED_WRITE, &enc);
-+
-+	if (ret < 0) {
-+		printf("%i\n", -errno);
-+		close(fd);
-+		return 0;
-+	}
-+
-+	printf("%i\n", ret);
-+
-+	close(fd);
-+
-+	return 0;
-+}
-+
-+static int encoded_write_io_uring(const char *filename, long long offset=
-,
-+				  long long len, long long unencoded_len,
-+				  long long unencoded_offset, int compression,
-+				  char *buf, size_t size)
-+{
-+#ifdef HAVE_LIBURING
-+	int ret, fd;
-+	struct iovec iov;
-+	struct btrfs_ioctl_encoded_io_args enc;
-+	struct io_uring ring;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+
-+	io_uring_queue_init(QUEUE_DEPTH, &ring, 0);
-+
-+	fd =3D open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-+	if (fd < 0) {
-+		fprintf(stderr, "open failed for %s\n", filename);
-+		ret =3D 1;
-+		goto out_uring;
-+	}
-+
-+	iov.iov_base =3D buf;
-+	iov.iov_len =3D size;
-+
-+	memset(&enc, 0, sizeof(enc));
-+	enc.iov =3D &iov;
-+	enc.iovcnt =3D 1;
-+	enc.offset =3D offset;
-+	enc.len =3D len;
-+	enc.unencoded_len =3D unencoded_len;
-+	enc.unencoded_offset =3D unencoded_offset;
-+	enc.compression =3D compression;
-+
-+	sqe =3D io_uring_get_sqe(&ring);
-+	if (!sqe) {
-+		fprintf(stderr, "io_uring_get_sqe failed\n");
-+		ret =3D 1;
-+		goto out_close;
-+	}
-+
-+	io_uring_prep_rw(IORING_OP_URING_CMD, sqe, fd, &enc, sizeof(enc), 0);
-+
-+	/* sqe->cmd_op union'd to sqe->off from liburing 2.3 onwards */
-+#if (LIBURING_MAJOR_VERSION < 2 || (LIBURING_MAJOR_VERSION =3D=3D 2 && L=
-IBURING_MINOR_VERSION < 3))
-+	sqe->off =3D BTRFS_IOC_ENCODED_WRITE;
-+#else
-+	sqe->cmd_op =3D BTRFS_IOC_ENCODED_WRITE;
-+#endif
-+
-+	io_uring_submit(&ring);
-+
-+	ret =3D io_uring_wait_cqe(&ring, &cqe);
-+	if (ret < 0) {
-+		fprintf(stderr, "io_uring_wait_cqe returned %i\n", ret);
-+		ret =3D 1;
-+		goto out_close;
-+	}
-+
-+	io_uring_cqe_seen(&ring, cqe);
-+
-+	if (cqe->res < 0) {
-+		printf("%i\n", cqe->res);
-+		ret =3D 0;
-+		goto out_close;
-+	}
-+
-+	printf("%i\n", cqe->res);
-+
-+	ret =3D 0;
-+
-+out_close:
-+	close(fd);
-+
-+out_uring:
-+	io_uring_queue_exit(&ring);
-+
-+	return ret;
-+#else
-+	fprintf(stderr, "liburing not linked in\n");
-+	return 1;
-+#endif
-+}
-+
-+static void usage()
-+{
-+	fprintf(stderr, "Usage: btrfs_encoded_write ioctl|io_uring filename off=
-set len unencoded_len unencoded_offset compression\n");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *filename;
-+	long long offset, len, unencoded_len, unencoded_offset;
-+	int compression;
-+	char buf[BTRFS_MAX_COMPRESSED];
-+	size_t size;
-+
-+	if (argc !=3D 8) {
-+		usage();
-+		return 1;
-+	}
-+
-+	filename =3D argv[2];
-+
-+	offset =3D atoll(argv[3]);
-+	if (offset =3D=3D 0 && errno !=3D 0) {
-+		usage();
-+		return 1;
-+	}
-+
-+	len =3D atoll(argv[4]);
-+	if (len =3D=3D 0 && errno !=3D 0) {
-+		usage();
-+		return 1;
-+	}
-+
-+	unencoded_len =3D atoll(argv[5]);
-+	if (unencoded_len =3D=3D 0 && errno !=3D 0) {
-+		usage();
-+		return 1;
-+	}
-+
-+	unencoded_offset =3D atoll(argv[6]);
-+	if (unencoded_offset =3D=3D 0 && errno !=3D 0) {
-+		usage();
-+		return 1;
-+	}
-+
-+	compression =3D atoi(argv[7]);
-+	if (compression =3D=3D 0 && errno !=3D 0) {
-+		usage();
-+		return 1;
-+	}
-+
-+	size =3D fread(buf, 1, BTRFS_MAX_COMPRESSED, stdin);
-+
-+	if (!strcmp(argv[1], "ioctl")) {
-+		return encoded_write_ioctl(filename, offset, len, unencoded_len,
-+					   unencoded_offset, compression, buf,
-+					   size);
-+	} else if (!strcmp(argv[1], "io_uring")) {
-+		return encoded_write_io_uring(filename, offset, len,
-+					      unencoded_len, unencoded_offset,
-+					      compression, buf, size);
-+	} else {
-+		usage();
-+		return 1;
-+	}
-+}
-diff --git a/tests/btrfs/333 b/tests/btrfs/333
-new file mode 100755
-index 00000000..d7fbb7c7
---- /dev/null
-+++ b/tests/btrfs/333
-@@ -0,0 +1,220 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-+#
-+# FS QA Test No. btrfs/333
-+#
-+# Test btrfs encoded reads
-+
-+. ./common/preamble
-+_begin_fstest auto quick compress rw
-+
-+. ./common/filter
-+. ./common/btrfs
-+
-+_supported_fs btrfs
-+
-+do_encoded_read() {
-+    local fn=3D$1
-+    local type=3D$2
-+    local exp_ret=3D$3
-+    local exp_len=3D$4
-+    local exp_unencoded_len=3D$5
-+    local exp_unencoded_offset=3D$6
-+    local exp_compression=3D$7
-+    local exp_md5=3D$8
-+
-+    local tmpfile=3D`mktemp`
-+
-+    echo "running btrfs_encoded_read $type $fn 0 > $tmpfile" >>$seqres.f=
-ull
-+    src/btrfs_encoded_read $type $fn 0 > $tmpfile
-+
-+    if [[ $? -ne 0 ]]; then
-+        echo "btrfs_encoded_read failed" >>$seqres.full
-+        rm $tmpfile
-+        return 1
-+    fi
-+
-+    exec {FD}< $tmpfile
-+
-+    read -u ${FD} ret
-+
-+    if [[ $ret =3D=3D -95 && $type -eq "io_uring" ]]; then
-+        echo "btrfs io_uring encoded read failed with -EOPNOTSUPP, skipp=
-ing" >>$seqres.full
-+        exec {FD}<&-
-+        return 1
-+    fi
-+
-+    if [[ $ret -lt 0 ]]; then
-+        if [[ $ret =3D=3D -1 ]]; then
-+            echo "btrfs encoded read failed with -EPERM; are you running=
- as root?" >>$seqres.full
-+        else
-+            echo "btrfs encoded read failed (errno $ret)" >>$seqres.full
-+        fi
-+        exec {FD}<&-
-+        return 1
-+    fi
-+
-+    local status=3D0
-+
-+    if [[ $ret -ne $exp_ret ]]; then
-+        echo "$fn: btrfs encoded read returned $ret, expected $exp_ret" =
->>$seqres.full
-+        status=3D1
-+    fi
-+
-+    read -u ${FD} len
-+    read -u ${FD} unencoded_len
-+    read -u ${FD} unencoded_offset
-+    read -u ${FD} compression
-+    read -u ${FD} encryption
-+
-+    local filesize=3D`stat -c%s $tmpfile`
-+    local datafile=3D`mktemp`
-+
-+    tail -c +$((1+$filesize-$ret)) $tmpfile > $datafile
-+
-+    exec {FD}<&-
-+    rm $tmpfile
-+
-+    local md5=3D`md5sum $datafile | cut -d ' ' -f 1`
-+    rm $datafile
-+
-+    if [[ $len -ne $exp_len ]]; then
-+        echo "$fn: btrfs encoded read had len of $len, expected $exp_len=
-" >>$seqres.full
-+        status=3D1
-+    fi
-+
-+    if [[ $unencoded_len -ne $exp_unencoded_len ]]; then
-+        echo "$fn: btrfs encoded read had unencoded_len of $unencoded_le=
-n, expected $exp_unencoded_len" >>$seqres.full
-+        status=3D1
-+    fi
-+
-+    if [[ $unencoded_offset -ne $exp_unencoded_offset ]]; then
-+        echo "$fn: btrfs encoded read had unencoded_offset of $unencoded=
-_offset, expected $exp_unencoded_offset" >>$seqres.full
-+        status=3D1
-+    fi
-+
-+    if [[ $compression -ne $exp_compression ]]; then
-+        echo "$fn: btrfs encoded read had compression of $compression, e=
-xpected $exp_compression" >>$seqres.full
-+        status=3D1
-+    fi
-+
-+    if [[ $encryption -ne 0 ]]; then
-+        echo "$fn: btrfs encoded read had encryption of $encryption, exp=
-ected 0" >>$seqres.full
-+        status=3D1
-+    fi
-+
-+    if [[ $md5 !=3D $exp_md5 ]]; then
-+        echo "$fn: data returned had hash of $md5, expected $exp_md5" >>=
-$seqres.full
-+        status=3D1
-+    fi
-+
-+    return $status
-+}
-+
-+do_encoded_write() {
-+    local fn=3D$1
-+    local exp_ret=3D$2
-+    local len=3D$3
-+    local unencoded_len=3D$4
-+    local unencoded_offset=3D$5
-+    local compression=3D$6
-+    local data_file=3D$7
-+
-+    local tmpfile=3D`mktemp`
-+
-+    echo "running btrfs_encoded_write ioctl $fn 0 $len $unencoded_len $u=
-nencoded_offset $compression < $data_file > $tmpfile" >>$seqres.full
-+    src/btrfs_encoded_write ioctl $fn 0 $len $unencoded_len $unencoded_o=
-ffset $compression < $data_file > $tmpfile
-+
-+    if [[ $? -ne 0 ]]; then
-+        echo "btrfs_encoded_write failed" >>$seqres.full
-+        rm $tmpfile
-+        return 1
-+    fi
-+
-+    exec {FD}< $tmpfile
-+
-+    read -u ${FD} ret
-+
-+    if [[ $ret -lt 0 ]]; then
-+        if [[ $ret =3D=3D -1 ]]; then
-+            echo "btrfs encoded write failed with -EPERM; are you runnin=
-g as root?" >>$seqres.full
-+        else
-+            echo "btrfs encoded write failed (errno $ret)" >>$seqres.ful=
-l
-+        fi
-+        exec {FD}<&-
-+        return 1
-+    fi
-+
-+    exec {FD}<&-
-+    rm $tmpfile
-+
-+    return 0
-+}
-+
-+test_file() {
-+    local size=3D$1
-+    local len=3D$2
-+    local unencoded_len=3D$3
-+    local unencoded_offset=3D$4
-+    local compression=3D$5
-+
-+    local tmpfile=3D`mktemp -p $SCRATCH_MNT`
-+    local randfile=3D`mktemp`
-+
-+    dd if=3D/dev/urandom of=3D$randfile bs=3D$size count=3D1 status=3Dno=
-ne
-+    local md5=3D`md5sum $randfile | cut -d ' ' -f 1`
-+
-+    do_encoded_write $tmpfile $size $len $unencoded_len $unencoded_offse=
-t \
-+        $compression $randfile || _fail "encoded write ioctl failed"
-+
-+    rm $randfile
-+
-+    do_encoded_read $tmpfile ioctl $size $len $unencoded_len \
-+        $unencoded_offset $compression $md5 || _fail "encoded read ioctl=
- failed"
-+    do_encoded_read $tmpfile io_uring $size $len $unencoded_len \
-+        $unencoded_offset $compression $md5 || _fail "encoded read io_ur=
-ing failed"
-+
-+    rm $tmpfile
-+}
-+
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-+sector_size=3D$(_scratch_btrfs_sectorsize)
-+
-+if [[ $sector_size -ne 4096 && $sector_size -ne 65536 ]]; then
-+    _notrun "sector size $sector_size not supported by this test"
-+fi
-+
-+_scratch_mount "-o max_inline=3D2048"
-+
-+if [[ $sector_size -eq 4096 ]]; then
-+    test_file 40960 97966 98304 0 1 # zlib
-+    test_file 40960 97966 98304 0 2 # zstd
-+    test_file 40960 97966 98304 0 3 # lzo 4k
-+    test_file 40960 97966 110592 4096 1 # bookended zlib
-+    test_file 40960 97966 110592 4096 2 # bookended zstd
-+    test_file 40960 97966 110592 4096 3 # bookended lzo 4k
-+elif [[ $sector_size -eq 65536 ]]; then
-+    test_file 65536 97966 131072 0 1 # zlib
-+    test_file 65536 97966 131072 0 2 # zstd
-+    test_file 65536 97966 131072 0 7 # lzo 64k
-+    # can't test bookended extents on 64k, as max is only 2 sectors long
-+fi
-+
-+# btrfs won't create inline files unless PAGE_SIZE =3D=3D sector size
-+if [[ "$(_get_page_size)" -eq $sector_size ]]; then
-+    test_file 892 1931 1931 0 1 # inline zlib
-+    test_file 892 1931 1931 0 2 # inline zstd
-+
-+    if [[ $sector_size -eq 4096 ]]; then
-+        test_file 892 1931 1931 0 3 # inline lzo 4k
-+    elif [[ $sector_size -eq 65536 ]]; then
-+        test_file 892 1931 1931 0 7 # inline lzo 64k
-+    fi
-+fi
-+
-+_scratch_unmount
-+
-+echo Silence is golden
-+status=3D0
-+exit
-diff --git a/tests/btrfs/333.out b/tests/btrfs/333.out
-new file mode 100644
-index 00000000..60a15898
---- /dev/null
-+++ b/tests/btrfs/333.out
-@@ -0,0 +1,2 @@
-+QA output created by 333
-+Silence is golden
---=20
-2.45.2
+> 
+> And for the bisection, does it focus on the test failure or the crash?
+> 
+
+The crash.
+
+regards,
+dan carpenter
 
 
