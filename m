@@ -1,56 +1,80 @@
-Return-Path: <linux-btrfs+bounces-10595-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10596-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE11B9F7145
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 01:15:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65C99F7191
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 02:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F0D418877A9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 00:14:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 259F0167E69
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 01:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D114C6C;
-	Thu, 19 Dec 2024 00:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000EA2EB10;
+	Thu, 19 Dec 2024 01:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="L4rXy5XF"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XMtufsE7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4922111;
-	Thu, 19 Dec 2024 00:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C599D79FD
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 01:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734567281; cv=none; b=kNVz5c1h+Hrdk6GT+ZV0lPBvbcHUT7dKJ1ztuWvL9aCoIFa51fooTt2AAdcIGw5rdAGadd9AM7et8260wiaSRNiY1/UzSFTmMv493nBxDT/j/Iiyc77im2tkfvhMcZcrnImPMw6K7vevDKt0n/TxRmZx5czsDlYgdhIuBz00jss=
+	t=1734570535; cv=none; b=hBCmrwCVCCuQK7tAJ9s1VLd+soiyxwhUg8o9wzO85m1DAxwRlMPHyKuN5/8vtRtxr9IILI6cxQsrTF5TZ/R8hkAJxE1BG0XUJdH3tqhy6h3/RJ+yINktY23tSF6r87P2y1yXH18Ng8TMWzXaZ5NtSlzlRqxOf3gVwWlwt24eokg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734567281; c=relaxed/simple;
-	bh=h6S25o0SG3gLgUs9UKXGIThIKIMebvLTP4yLOaVadJg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gR4pgVVsGzrF46hdn7lAaOHWSEX+uyEmf6BjZm/h9v6Qo3ebiJRlwVpVmCCZaB8cXldBhV81AGpvLxY974VIWpVTuPVlG7Z0K0mzQZwcOIODyAPmheIW2znYOLV0CYORn0wty+jZ2w6YGDxmzBw3BPg8KIZRp/lzPJGCJvMy5iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=L4rXy5XF; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734567262; x=1735172062; i=quwenruo.btrfs@gmx.com;
-	bh=h6S25o0SG3gLgUs9UKXGIThIKIMebvLTP4yLOaVadJg=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=L4rXy5XFI5hjndZaaiFL7w3Pkr29nwXy4BvoeKovKxHqRybOgVNM/YbVarf0aZWn
-	 7Hul7rQ44gmM6Lkw7ELl404+g8aTuHetrQrMnPrIJ1mfemOr5EKoYc3o6CY+BZBfG
-	 Fvq/Xu2ITpeWRkLQ1nw6GGpgxMElnw15jnkUcsKzHjZmYriCEN0EiKXrZprtFo7bz
-	 SGo9z3/bfj4hTw3BSsvxbZJavgcn08VoIsEDi++UYK9MNnptMZoKeFJeV+NPITx4r
-	 QGXmBqIotXTO0z2ImUEs0au7oVX78Kendwf9KF4LfNrgUyiaNcJIE2Q4p7mCOKw0E
-	 /Gz/fQb8oTLMWA7LsA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3se8-1tWtu11jc0-013rLl; Thu, 19
- Dec 2024 01:14:22 +0100
-Message-ID: <feecfdc2-4df6-47cf-8f96-5044858dc881@gmx.com>
-Date: Thu, 19 Dec 2024 10:44:12 +1030
+	s=arc-20240116; t=1734570535; c=relaxed/simple;
+	bh=4rhhQZcUW/pJ2mdN0RCagK7bMaXqwx+vPK5toJ0U6KE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=ROX2i6Tj+8Jr5IHOCszZmUBL3T/bvrsIkOZieVz3preKOnovon+0ZAq06FpZqCW0tui3tDoIT07qN82Je/J1K8Da6MkqtjvFhu3uO/+gZ19gTFaB3Dr+kK9bgF62Q5cBXgeQYPx5pDK1jueKCOfHUIkFnR7f8+eiscAm0Ye9izY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XMtufsE7; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-385df53e559so217580f8f.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 17:08:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1734570530; x=1735175330; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/rwtOYALS3/SuDuENhb66PY329lsBYaueUzxKaaRpXE=;
+        b=XMtufsE7DupmQFRcJFhpLHJgK9eFg8GohDBqGl+wGFbKACcdQIJ2T7PAJTaL1Yp1lQ
+         VHjGpZYHISGuJnwyAJpNMl7SZ9dNBh0vna5Kx4/Qj2RCO/M+Yy5kjfGIFUmtz7J8UeXK
+         qNhRo0LdDODTAKgW4gMr+PB+DyRn4Ir3Ggsh8Gug/qicz2GRmRiSFsqB6bGrilG32iO/
+         Yjx2rWUCNb7Dmfl9hQvuzORNvomDUnPvVIewkPVRl2XC1lPSHe6rIUrEe8RgVignmSmh
+         TJBjMVcl65P7qmad43uH1u9ST1q0BIvMNoZdQ8mhlrpLHeSQznYNmR4yEvBIz5x5PgWD
+         s0HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734570530; x=1735175330;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rwtOYALS3/SuDuENhb66PY329lsBYaueUzxKaaRpXE=;
+        b=WejEorzYmRAo1TxbyHkk5dbqfrbmUYJTfZlZr0HwobhB9S/Ec7Reo6TB+MECfKqTYI
+         2jy6VmI+LOKqTMluVzn2pgMnUMLXz581MqnjOQs8nALfgYBa6IGIgqg8guXgVFak1/UT
+         xRNbTt8hXVnLrBFKhMYosa0EjX9mzqK0YqZ9yqvaiVJxINlWQWQ1Uiou0zo8OGgHZl9K
+         DZ/19qK+j2VwqKV5z+F6IH2e+lpbVT65zVv4PdwJS4+oaFIq44WuEIwnTrCqMEikNJux
+         FEdyO8v1o/+rSVRRzO4Z4tGLWleGBTniFVtAu8qhG5b84QcjN6lKfBivx+mj+FPee1gk
+         UWaA==
+X-Gm-Message-State: AOJu0YzJG6IkcEDiv8r6epFk8/vLPRUolV9AUKeGOfECcYiwz7oLa9Qx
+	hir3z+Ck5grEb2lxrlqkwXUSRGl6jTK4kbAFD3I5nY+MGIgRd+QLksErq/LanvK7ikTQsJNi2sG
+	6
+X-Gm-Gg: ASbGncs4G2aCssJQnlTHQNwloiUIITM3hsuA4FmcfphYxJajaEwJ2cuJz3WQFLdX4pJ
+	Wlifq4INEo7T75eMq77tOzKq/6Gd0NNbf/s9M85KFm0q0fDCRi4TeRdN2Q3LK8iByy2AX2dc/1V
+	Q6zzz9mQLIhPUGAzVDAt9nsHaxl+oLreqmgk86mQ/+9u6Jga9PF2n2zU84lTniV1YOdLvFtwsnv
+	YjWugwyzfw+zdgTo8aeXy93sNm0bYNZx62OdTqnnE2+mAyr3Xj+v2dUcPlUPqhK6wX7aQq8GI7V
+	AQgElWIX
+X-Google-Smtp-Source: AGHT+IFRDGHVBlhvJ3KDmk+aQEMdU/ZhROpxIR7Ypa/EBvb1EJ0HH0csHx0yyIF7PvV3jT1crqurWQ==
+X-Received: by 2002:a05:6000:1a8e:b0:385:f996:1bb9 with SMTP id ffacd0b85a97d-388e4d57fcdmr4511322f8f.23.1734570529759;
+        Wed, 18 Dec 2024 17:08:49 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f2ee26fdfdsm2054908a91.52.2024.12.18.17.08.48
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Dec 2024 17:08:49 -0800 (PST)
+Message-ID: <a8f6432c-aa51-48a1-974b-e7ae952bd043@suse.com>
+Date: Thu, 19 Dec 2024 11:38:45 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,542 +82,403 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
- with Linux next-20241210 and above
-To: Naresh Kamboju <naresh.kamboju@linaro.org>, qemu-devel@nongnu.org,
- open list <linux-kernel@vger.kernel.org>,
- Linux Regressions <regressions@lists.linux.dev>,
- linux-ext4 <linux-ext4@vger.kernel.org>, lkft-triage@lists.linaro.org,
- linux-mm <linux-mm@kvack.org>, Linux btrfs <linux-btrfs@vger.kernel.org>
-Cc: =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
- Anders Roxell <anders.roxell@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- Dan Carpenter <dan.carpenter@linaro.org>, Qu Wenruo <wqu@suse.com>,
- David Sterba <dsterba@suse.com>
-References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
- <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
- <ac1e1168-d3af-43c5-9df7-4ef5a1dbd698@gmx.com>
+Subject: Re: [PATCH] btrfs: validate system chunk array at
+ btrfs_validate_super()
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <5d205dc4e1126be4c33b1eac62ba625075749469.1732080133.git.wqu@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <ac1e1168-d3af-43c5-9df7-4ef5a1dbd698@gmx.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <5d205dc4e1126be4c33b1eac62ba625075749469.1732080133.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+JbeeomNhzPg8OZb8M16BCzk9xOZoJH2uPFDDgAW4KWakGxhun1
- wPB7N3r7xe9QR1S6W4tGytMSw5Mm5p6RYZjXj020cIn6EtuAcHrnvQk9xWTfBmcNV5A2hIo
- 0408csR7XUIvhVdAiY4z6wZHcJWJT2G9raCm+eg50r4QZsOxEsRh5e0uUntdLxtiFZLOAjm
- 6VsIKNpH9/jKBufWn26Sg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:W6Yuc5pK2zY=;mV0vuKijF+Z7hN91CV8XMPnhOR7
- 1mswzh/6W1uldFAIdeXjk0npE5A6r0Nsk/RNekQG44ySQM72w11/XhlI7XNpeDnc802WungpR
- S2EiKwNxtJpYQNs4Mt7ORxzRAwjnH/c87W3ni8aufzE6BgLvUaQWnrZaRE/Ub7Zx6moXUdFFH
- wHqVWIOIVZ7bT6r5dFjpNP3m4JO8g0/Yk6/SQfzd4WlmVl9zQBB8TcwETBPLSiGygQF0XPU8m
- o6FAVpGYuJnsspTwwH1LXhuqn6xG1xW7BXn4V9PTxCHEsRbVByjXfok6Vjmze3eff6c65CvVz
- YzZtXmlMh1W/6qtnPbcg+y8WYfGHqUfTuGO1nvi9K14b+7J5T4433h9ScHtoCIR9gOoq6Vmpi
- NDIcaCaRK1iRFevDahAKh/6a1DqZkCkTVyIfsWAhsEkSXFy9zK1u1ZvG5HZxVM38a9ApcujsR
- WjLBb4IG6oelWYPAcz+FcXB0h3VMWJHBly4u0+8sW6WbcNXh7weR5KUqczbiybpphET1eN6e5
- ohWdvLV0iVxg+Bti0sPP7A5CPOziP0+rWw4AvDtGMyB6dYGomTGnLCg47GDgRYLrDqToDraBM
- krscW+F4HEPBOfr/M4lIEcqLX5vvoIo0sSbigtpQbLaQ+PR889JzmVP4KIGcI6Hwzl6cRvDVk
- IKBvAXJny74kx+0jZhyshmnF2rfPYmPWXzd4KEdj7ooFfLSvaBhQm+v6qFNnIaEKNAoBi/UH5
- sMHwIYvepA9Yli3GFP80iKQYbASEY/EchLacvwwSko9iqk0rxrkeO4119YbaghAl9YlL+qMkv
- 1hlYGRBSPfM8iWOy1yk5j9dRO0dp2U43X4jW8qwK7p66vGn4NdtWdZVMvyDIjOcK9Uqpky8MB
- qXhjqHoef4Zr0YR9muMfhTwVM4OiIgDOU2J/T18WFeiwLAUVCxLyz1IymG78wt3+vNO76mq+e
- f7yVLVIfh0nHx00cMIpjD9hm1pvLifPpZMueB2O61MOV2bN8KCCJSX/Ne4DF07Vtf/SfG7Sto
- 5dJ7uQJIQoTKHsuJmm1bNuLELX6Kqt/WkEZ8X5Do1bon6GfE/D/6ObrefqYtHnkNkkZudSttF
- uBjOW4bt8vLxoJ4lTLgIrYiNFV7RIt
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2024/12/19 06:37, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2024/12/19 02:22, Naresh Kamboju =E5=86=99=E9=81=93:
->> On Wed, 18 Dec 2024 at 17:33, Naresh Kamboju
->> <naresh.kamboju@linaro.org> wrote:
->>>
->>> The following kernel crash noticed on qemu-arm64 while running the
->>> Linux next-20241210 tag (to next-20241218) kernel built with
->>> =C2=A0 - CONFIG_ARM64_64K_PAGES=3Dy
->>> =C2=A0 - CONFIG_ARM64_16K_PAGES=3Dy
->>> and running LTP smoke tests.
->>>
->>> First seen on Linux next-20241210.
->>> =C2=A0=C2=A0 Good: next-20241209
->>> =C2=A0=C2=A0 Bad:=C2=A0 next-20241210 and next-20241218
->>>
->>> qemu-arm64: 9.1.2
->>>
->>> Anyone noticed this ?
->>>
->>
->> Anders bisected this reported regression and found,
->> # first bad commit:
->> =C2=A0=C2=A0 [9c1d66793b6faa00106ae4c866359578bfc012d2]
->> =C2=A0=C2=A0 btrfs: validate system chunk array at btrfs_validate_super=
-()
->
-> Weird, I run daily fstests with 64K page sized aarch64 VM.
->
-> But never hit a crash on this.
->
-> And the original crash call trace only points back to ext4, not btrfs.
->
-> Mind to test it with KASAN enabled?
+在 2024/11/20 15:52, Qu Wenruo 写道:
+> Currently btrfs_validate_super() only does a very basic check on the
+> array chunk size (not too large than the available space, but not too
+> small to contain no chunk).
+> 
+> The more comprehensive checks (the regular chunk checks and size check
+> inside the system chunk array) is all done inside
+> btrfs_read_sys_array().
+> 
+> It's not a big deal, but for the sake of concentrated verification, we
+> should validate the system chunk array at the time of super block
+> validation.
+> 
+> So this patch does the following modification:
+> 
+> - Introduce a helper btrfs_check_system_chunk_array()
+>    * Validate the disk key
+>    * Validate the size before we access the full chunk/stripe items.
+>    * Do the full chunk item validation
+> 
+> - Call btrfs_check_system_chunk_array() at btrfs_validate_super()
+> 
+> - Simplify the checks inside btrfs_read_sys_array()
+>    Now the checks will be converted to an ASSERT().
+> 
+> - Simplify the checks inside read_one_chunk()
+>    Now all chunk items inside system chunk array and chunk tree is
+>    verified, there is no need to verify it again inside read_one_chunk().
+> 
+> This change has the following advantages:
+> 
+> - More comprehensive checks at write time
+>    Although this also means extra memcpy() for the superblocks at write
+>    time, due to the limits that we need a dummy extent buffer to utilize
+>    all the extent buffer helpers.
+> 
+> - Slightly improved readablity when iterating the system chunk array
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/disk-io.c      | 21 +--------
+>   fs/btrfs/disk-io.h      |  2 +-
+>   fs/btrfs/tree-checker.c | 99 +++++++++++++++++++++++++++++++++++++++++
+>   fs/btrfs/tree-checker.h |  3 ++
+>   fs/btrfs/volumes.c      | 64 +++++++-------------------
+>   5 files changed, 121 insertions(+), 68 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 814320948645..5d02ee491ec2 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2337,7 +2337,7 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+>    * 		1, 2	2nd and 3rd backup copy
+>    * 	       -1	skip bytenr check
+>    */
+> -int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
+> +int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+>   			 const struct btrfs_super_block *sb, int mirror_num)
+>   {
+>   	u64 nodesize = btrfs_super_nodesize(sb);
+> @@ -2495,24 +2495,7 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
+>   		ret = -EINVAL;
+>   	}
+>   
+> -	/*
+> -	 * Obvious sys_chunk_array corruptions, it must hold at least one key
+> -	 * and one chunk
+> -	 */
+> -	if (btrfs_super_sys_array_size(sb) > BTRFS_SYSTEM_CHUNK_ARRAY_SIZE) {
+> -		btrfs_err(fs_info, "system chunk array too big %u > %u",
+> -			  btrfs_super_sys_array_size(sb),
+> -			  BTRFS_SYSTEM_CHUNK_ARRAY_SIZE);
+> -		ret = -EINVAL;
+> -	}
+> -	if (btrfs_super_sys_array_size(sb) < sizeof(struct btrfs_disk_key)
+> -			+ sizeof(struct btrfs_chunk)) {
+> -		btrfs_err(fs_info, "system chunk array too small %u < %zu",
+> -			  btrfs_super_sys_array_size(sb),
+> -			  sizeof(struct btrfs_disk_key)
+> -			  + sizeof(struct btrfs_chunk));
+> -		ret = -EINVAL;
+> -	}
+> +	ret = btrfs_check_system_chunk_array(fs_info, sb);
+>   
+>   	/*
+>   	 * The generation is a global counter, we'll trust it more than the others
+> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+> index a7051e2570c1..ff8f314f5ac8 100644
+> --- a/fs/btrfs/disk-io.h
+> +++ b/fs/btrfs/disk-io.h
+> @@ -54,7 +54,7 @@ int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+>   			   const struct btrfs_super_block *disk_sb);
+>   int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices);
+>   void __cold close_ctree(struct btrfs_fs_info *fs_info);
+> -int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
+> +int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+>   			 const struct btrfs_super_block *sb, int mirror_num);
+>   int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount);
+>   int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 148d8cefa40e..83e88bcb0475 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -973,6 +973,105 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
+>   	return 0;
+>   }
+>   
+> +int btrfs_check_system_chunk_array(struct btrfs_fs_info *fs_info,
+> +				   const struct btrfs_super_block *sb)
+> +{
+> +	struct extent_buffer *dummy;
+> +	u32 array_size;
+> +	u32 cur_offset = 0;
+> +	u32 len;
+> +	int ret = 0;
+> +
+> +	/*
+> +	 * We allocated a dummy extent, just to use extent buffer accessors.
+> +	 * There will be unused space after BTRFS_SUPER_INFO_SIZE, but
+> +	 * that's fine, we will not go beyond system chunk array anyway.
+> +	 */
+> +	dummy = alloc_dummy_extent_buffer(fs_info, BTRFS_SUPER_INFO_OFFSET);
+> +	if (!dummy)
+> +		return -ENOMEM;
+> +	set_extent_buffer_uptodate(dummy);
+> +	write_extent_buffer(dummy, sb, 0, BTRFS_SUPER_INFO_SIZE);
+> +
+> +	array_size = btrfs_super_sys_array_size(sb);
+> +	if (array_size > BTRFS_SYSTEM_CHUNK_ARRAY_SIZE) {
+> +		btrfs_crit(fs_info,
+> +			   "superblock syschunk too large, have %u expect <=%u",
+> +			   array_size, BTRFS_SYSTEM_CHUNK_ARRAY_SIZE);
+> +		ret = -EUCLEAN;
+> +		goto out;
+> +	}
+> +
+> +	while (cur_offset < array_size) {
+> +		struct btrfs_disk_key *disk_key;
+> +		struct btrfs_key key;
+> +		struct btrfs_chunk *chunk;
+> +		u32 num_stripes;
+> +		u64 type;
+> +
+> +		len = sizeof(*disk_key);
+> +		if (cur_offset + len > array_size)
+> +			goto out_short_read;
+> +		disk_key = (struct btrfs_disk_key *)(sb->sys_chunk_array + cur_offset);
+> +		btrfs_disk_key_to_cpu(&key, disk_key);
+> +		cur_offset += len;
+> +
+> +		if (key.type != BTRFS_CHUNK_ITEM_KEY) {
+> +			btrfs_crit(fs_info,
+> +			    "unexpected item type %u in sys_array at offset %u",
+> +				  (u32)key.type, cur_offset);
+> +			ret = -EUCLEAN;
+> +			goto out;
+> +		}
+> +		/*
+> +		 * At least one btrfs_chunk with one stripe must be present,
+> +		 * exact stripe count check comes afterwards
+> +		 */
+> +		len = btrfs_chunk_item_size(1);
+> +		if (cur_offset + len > array_size)
+> +			goto out_short_read;
+> +
+> +		chunk = (struct btrfs_chunk *)
+> +			(offsetof(struct btrfs_super_block, sys_chunk_array) +
+> +			 cur_offset);
+> +		num_stripes = btrfs_chunk_num_stripes(dummy, chunk);
+> +		if (!num_stripes) {
+> +			btrfs_crit(fs_info,
+> +			"invalid number of stripes %u in sys_array at offset %u",
+> +				  num_stripes, cur_offset);
+> +			ret = -EUCLEAN;
+> +			goto out;
+> +		}
+> +		type = btrfs_chunk_type(dummy, chunk);
+> +		if ((type & BTRFS_BLOCK_GROUP_SYSTEM) == 0) {
+> +			btrfs_err(fs_info,
+> +			"invalid chunk type %llu in sys_array at offset %u",
+> +				  type, cur_offset);
+> +			ret = -EUCLEAN;
+> +			goto out;
+> +		}
+> +
+> +		len = btrfs_chunk_item_size(num_stripes);
+> +		if (cur_offset + len > array_size)
+> +			goto out_short_read;
+> +
+> +		ret = btrfs_check_chunk_valid(dummy, chunk, key.offset);
 
-Another thing is, how do you enable both 16K and 64K page size at the
-same time?
+This btrfs_check_chunk_valid() call site is causing false alerts, as it 
+relies on fs_info->sectorsize (blocksize), which is not yet fully 
+initliazied at this timing.
 
-The Kconfig should only select one page size IIRC.
+So it will cause problems if the sector size of the system is not the 
+default 4096 value.
 
-And for the bisection, does it focus on the test failure or the crash?
-
-For the test failure it looks like some older btrfs-progs, causing
-invalid system chunk items, which got caught by the newer and more
-strict sanity checks.
-
-For the crash, unfortunately I'm not able to reproduce using fstests.
-Will try LTP soon.
+I'll fix it in the next update.
 
 Thanks,
 Qu
->
-> Thanks,
-> Qu
->>
->>
->>> Test log:
->>> ---------
->>> tst_test.c:1799: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
->>> tst_test.c:1158: TINFO: Formatting /dev/loop0 with btrfs opts=3D''
->>> extra opts=3D''
->>> <6>[=C2=A0=C2=A0 71.880167] BTRFS: device fsid
->>> d492b571-012c-40a9-b8e1-efc97408d3bc devid 1 transid 6 /dev/loop0
->>> (7:0) scanned by chdir01 (476)
->>> tst_test.c:1170: TINFO: Mounting /dev/loop0 to
->>> /tmp/LTP_chdJeywxF/mntpoint fstyp=3Dbtrfs flags=3D0
->>> <6>[=C2=A0=C2=A0 71.960245] BTRFS info (device loop0): first mount of =
-filesystem
->>> d492b571-012c-40a9-b8e1-efc97408d3bc
->>> <6>[=C2=A0=C2=A0 71.970667] BTRFS info (device loop0): using crc32c
->>> (crc32c-arm64) checksum algorithm
->>> <2>[=C2=A0=C2=A0 71.993486] BTRFS critical (device loop0): corrupt sup=
-erblock
->>> syschunk array: chunk_start=3D22020096, invalid chunk sectorsize, have
->>> 65536 expect 4096
->>> <3>[=C2=A0=C2=A0 71.995802] BTRFS error (device loop0): superblock con=
-tains
->>> fatal errors
->>> <3>[=C2=A0=C2=A0 72.014538] BTRFS error (device loop0): open_ctree fai=
-led: -22
->>> tst_test.c:1170: TBROK: mount(/dev/loop0, mntpoint, btrfs, 0, (nil))
->>> failed: EINVAL (22)
->>>
->>> Summary:
->>> passed=C2=A0=C2=A0 48
->>> failed=C2=A0=C2=A0 0
->>> broken=C2=A0=C2=A0 1
->>> skipped=C2=A0 0
->>> warnings 0
->>>
->>> Duration: 7.002s
->>>
->>>
->>> =3D=3D=3D=3D=3D symlink01 =3D=3D=3D=3D=3D
->>> command: symlink01
->>> <12>[=C2=A0=C2=A0 72.494428] /usr/local/bin/kirk[253]: starting test s=
-ymlink01
->>> (symlink01)
->>> symlink01=C2=A0=C2=A0=C2=A0 0=C2=A0 TINFO=C2=A0 :=C2=A0 Using /tmp/LTP=
-_symmsYXet as tmpdir (tmpfs
->>> filesystem)
->>> symlink01=C2=A0=C2=A0=C2=A0 1=C2=A0 TPASS=C2=A0 :=C2=A0 Creation of sy=
-mbolic link file to no object
->>> file is ok
->>> symlink01=C2=A0=C2=A0=C2=A0 2=C2=A0 TPASS=C2=A0 :=C2=A0 Creation of sy=
-mbolic link file to no object
->>> file is ok
->>> symlink01=C2=A0=C2=A0=C2=A0 3=C2=A0 TPASS=C2=A0 :=C2=A0 Creation of sy=
-mbolic link file and object
->>> file via symbolic link is ok
->>> symlink01=C2=A0=C2=A0=C2=A0 4=C2=A0 TPASS=C2=A0 :=C2=A0 Creating an ex=
-isting symbolic link file
->>> error is caught
->>> symlink01=C2=A0=C2=A0=C2=A0 5=C2=A0 TPASS=C2=A0 :=C2=A0 Creating a sym=
-bolic link which exceeds
->>> maximum pathname error is caught
->>>
->>> Summary:
->>> passed=C2=A0=C2=A0=C2=A0 5
->>> failed=C2=A0=C2=A0=C2=A0 0
->>> broken=C2=A0=C2=A0=C2=A0 0
->>> skipped=C2=A0=C2=A0 0
->>> warnings=C2=A0 0
->>>
->>> Duration: 0.052s
->>>
->>>
->>> =3D=3D=3D=3D=3D stat04 =3D=3D=3D=3D=3D
->>> command: stat04
->>> <12>[=C2=A0=C2=A0 72.966706] /usr/local/bin/kirk[253]: starting test s=
-tat04
->>> (stat04)
->>> tst_buffers.c:57: TINFO: Test is using guarded buffers
->>> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_staEABwgV as tmpdir (tmpfs
->>> filesystem)
->>> <6>[=C2=A0=C2=A0 73.447708] loop0: detected capacity change from 0 to =
-614400
->>> tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
->>> tst_test.c:1860: TINFO: LTP version: 20240930
->>> tst_test.c:1864: TINFO: Tested kernel: 6.13.0-rc3-next-20241218 #1 SMP
->>> PREEMPT @1734498806 aarch64
->>> tst_test.c:1703: TINFO: Timeout per run is 0h 05m 24s
->>> stat04.c:60: TINFO: Formatting /dev/loop0 with ext2 opts=3D'-b 4096'
->>> extra opts=3D''
->>> mke2fs 1.47.1 (20-May-2024)
->>> <3>[=C2=A0=C2=A0 73.859753] operation not supported error, dev loop0, =
-sector
->>> 614272 op 0x9:(WRITE_ZEROES) flags 0x10000800 phys_seg 0 prio class 0
->>> stat04.c:61: TINFO: Mounting /dev/loop0 to /tmp/LTP_staEABwgV/mntpoint
->>> fstyp=3Dext2 flags=3D0
->>> <6>[=C2=A0=C2=A0 73.939263] EXT4-fs (loop0): mounting ext2 file system=
- using the
->>> ext4 subsystem
->>> <1>[=C2=A0=C2=A0 73.946378] Unable to handle kernel paging request at =
-virtual
->>> address a8fff00000c0c224
->>> <1>[=C2=A0=C2=A0 73.947878] Mem abort info:
->>> <1>[=C2=A0=C2=A0 73.949153]=C2=A0=C2=A0 ESR =3D 0x0000000096000005
->>> <1>[=C2=A0=C2=A0 73.959105]=C2=A0=C2=A0 EC =3D 0x25: DABT (current EL)=
-, IL =3D 32 bits
->>> <1>[=C2=A0=C2=A0 73.960031]=C2=A0=C2=A0 SET =3D 0, FnV =3D 0
->>> <1>[=C2=A0=C2=A0 73.960349]=C2=A0=C2=A0 EA =3D 0, S1PTW =3D 0
->>> <1>[=C2=A0=C2=A0 73.960638]=C2=A0=C2=A0 FSC =3D 0x05: level 1 translat=
-ion fault
->>> <1>[=C2=A0=C2=A0 73.961005] Data abort info:
->>> <1>[=C2=A0=C2=A0 73.961293]=C2=A0=C2=A0 ISV =3D 0, ISS =3D 0x00000005,=
- ISS2 =3D 0x00000000
->>> <1>[=C2=A0=C2=A0 73.963739]=C2=A0=C2=A0 CM =3D 0, WnR =3D 0, TnD =3D 0=
-, TagAccess =3D 0
->>> <1>[=C2=A0=C2=A0 73.964980]=C2=A0=C2=A0 GCS =3D 0, Overlay =3D 0, Dirt=
-yBit =3D 0, Xs =3D 0
->>> <1>[=C2=A0=C2=A0 73.967132] [a8fff00000c0c224] address between user an=
-d kernel
->>> address ranges
->>> <0>[=C2=A0=C2=A0 73.968923] Internal error: Oops: 0000000096000005 [#1=
-] PREEMPT
->>> SMP
->>> <4>[=C2=A0=C2=A0 73.970516] Modules linked in: btrfs blake2b_generic x=
-or
->>> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
->>> sha512_arm64 fuse drm backlight ip_tables x_tables
->>> <4>[=C2=A0=C2=A0 73.974237] CPU: 1 UID: 0 PID: 529 Comm: stat04 Not ta=
-inted
->>> 6.13.0-rc3-next-20241218 #1
->>> <4>[=C2=A0=C2=A0 73.975359] Hardware name: linux,dummy-virt (DT)
->>> <4>[=C2=A0=C2=A0 73.977170] pstate: 62402009 (nZCv daif +PAN -UAO +TCO=
- -DIT
->>> -SSBS BTYPE=3D--)
->>> <4>[ 73.978295] pc : __kmalloc_node_noprof (mm/slub.c:492
->>> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
->>> mm/slub.c:4293 mm/slub.c:4300)
->>> <4>[ 73.980200] lr : alloc_cpumask_var_node (lib/cpumask.c:62
->>> (discriminator 2))
->>> <4>[=C2=A0=C2=A0 73.981466] sp : ffff80008258f950
->>> <4>[=C2=A0=C2=A0 73.982228] x29: ffff80008258f970 x28: ffffa9338939800=
-0 x27:
->>> 0000000000000001
->>> <4>[=C2=A0=C2=A0 73.983875] x26: fffffc1fc0303080 x25: 00000000fffffff=
-f x24:
->>> a8fff00000c0c224
->>> <4>[=C2=A0=C2=A0 73.985649] x23: 0000000000000cc0 x22: ffffa93387f51d0=
-c x21:
->>> 00000000ffffffff
->>> <4>[=C2=A0=C2=A0 73.986188] x20: fff00000c0010400 x19: 000000000000000=
-8 x18:
->>> 0000000000000000
->>> <4>[=C2=A0=C2=A0 73.988686] x17: fff056cd748b0000 x16: ffff80008002000=
-0 x15:
->>> 0000000000000000
->>> <4>[=C2=A0=C2=A0 73.990276] x14: 0000000000002a66 x13: 000000000000400=
-0 x12:
->>> 0000000000000001
->>> <4>[=C2=A0=C2=A0 73.992401] x11: 0000000000000002 x10: 000000000000400=
-1 x9 :
->>> ffffa93387f51d0c
->>> <4>[=C2=A0=C2=A0 73.993108] x8 : fff00000c2c99240 x7 : 000000000000000=
-1 x6 :
->>> 0000000000000001
->>> <4>[=C2=A0=C2=A0 73.993886] x5 : fff00000c4879800 x4 : 000000000000000=
-0 x3 :
->>> 000000000033a401
->>> <4>[=C2=A0=C2=A0 73.995550] x2 : 0000000000000000 x1 : a8fff00000c0c22=
-4 x0 :
->>> fff00000c0010400
->>> <4>[=C2=A0=C2=A0 73.997017] Call trace:
->>> <4>[ 73.998266] __kmalloc_node_noprof+0x100/0x4a0 P
->>> <4>[ 73.999716] alloc_cpumask_var_node (lib/cpumask.c:62
->>> (discriminator 2))
->>> <4>[ 74.000942] alloc_workqueue_attrs (kernel/workqueue.c:4624
->>> (discriminator 1))
->>> <4>[ 74.001327] apply_wqattrs_prepare (kernel/workqueue.c:5263)
->>> <4>[ 74.003095] apply_workqueue_attrs_locked (kernel/workqueue.c:5351)
->>> <4>[ 74.003855] alloc_workqueue (kernel/workqueue.c:5722
->>> (discriminator 1) kernel/workqueue.c:5772 (discriminator 1))
->>> <4>[ 74.005398] ext4_fill_super (fs/ext4/super.c:5484 fs/ext4/
->>> super.c:5722)
->>> <4>[ 74.006132] get_tree_bdev_flags (fs/super.c:1636)
->>> <4>[ 74.007624] get_tree_bdev (fs/super.c:1660)
->>> <4>[ 74.008664] ext4_get_tree (fs/ext4/super.c:5755)
->>> <4>[ 74.009423] vfs_get_tree (fs/super.c:1814)
->>> <4>[ 74.009703] path_mount (fs/namespace.c:3556 fs/namespace.c:3883)
->>> <4>[ 74.010608] __arm64_sys_mount (fs/namespace.c:3896
->>> fs/namespace.c:4107 fs/namespace.c:4084 fs/namespace.c:4084)
->>> <4>[ 74.011527] invoke_syscall.constprop.0
->>> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
->>> <4>[ 74.012798] do_el0_svc (include/linux/thread_info.h:135
->>> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
->>> arch/arm64/kernel/syscall.c:151 (discriminator 2))
->>> <4>[ 74.014042] el0_svc (arch/arm64/include/asm/irqflags.h:82
->>> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
->>> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
->>> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
->>> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
->>> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
->>> <4>[ 74.014942] el0t_64_sync_handler (arch/arm64/kernel/entry-
->>> common.c:763)
->>> <4>[ 74.015917] el0t_64_sync (arch/arm64/kernel/entry.S:600)
->>> <0>[ 74.017042] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
->>> All code
->>> =3D=3D=3D=3D=3D=3D=3D=3D
->>> =C2=A0=C2=A0=C2=A0 0: 12800019 mov w25, #0xffffffff=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // #-1
->>> =C2=A0=C2=A0=C2=A0 4: b9402a82 ldr w2, [x20, #40]
->>> =C2=A0=C2=A0=C2=A0 8: aa1803e1 mov x1, x24
->>> =C2=A0=C2=A0=C2=A0 c: aa1403e0 mov x0, x20
->>> =C2=A0=C2=A0 10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
->>>
->>> Code starting with the faulting instruction
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>> =C2=A0=C2=A0=C2=A0 0: f8626b1a ldr x26, [x24, x2]
->>> <4>[=C2=A0=C2=A0 74.019014] ---[ end trace 0000000000000000 ]---
->>> tst_test.c:1763: TBROK: Test killed by SIGSEGV!
->>>
->>> Summary:
->>> passed=C2=A0=C2=A0 0
->>> failed=C2=A0=C2=A0 0
->>> broken=C2=A0=C2=A0 1
->>> skipped=C2=A0 0
->>> warnings 0
->>> tst_device.c:269: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO
->>> for too long
->>> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
->>> Tainted kernel: ['kernel died recently, i.e. there was an OOPS or
->>> BUG'][0m
->>> Restarting SUT: host
->>>
->>> =3D=3D=3D=3D=3D df01_sh =3D=3D=3D=3D=3D
->>> command: df01.sh
->>> <12>[=C2=A0=C2=A0 76.370093] /usr/local/bin/kirk[253]: starting test d=
-f01_sh
->>> (df01.sh)
->>> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
->>> <1>[=C2=A0=C2=A0 76.603065] Unable to handle kernel paging request at =
-virtual
->>> address a8fff00000c0c224
->>> <1>[=C2=A0=C2=A0 76.603922] Mem abort info:
->>> <1>[=C2=A0=C2=A0 76.604197]=C2=A0=C2=A0 ESR =3D 0x0000000096000005
->>> <1>[=C2=A0=C2=A0 76.604638]=C2=A0=C2=A0 EC =3D 0x25: DABT (current EL)=
-, IL =3D 32 bits
->>> <1>[=C2=A0=C2=A0 76.605128]=C2=A0=C2=A0 SET =3D 0, FnV =3D 0
->>> <1>[=C2=A0=C2=A0 76.606996]=C2=A0=C2=A0 EA =3D 0, S1PTW =3D 0
->>> <1>[=C2=A0=C2=A0 76.607274]=C2=A0=C2=A0 FSC =3D 0x05: level 1 translat=
-ion fault
->>> <1>[=C2=A0=C2=A0 76.607611] Data abort info:
->>> <1>[=C2=A0=C2=A0 76.607897]=C2=A0=C2=A0 ISV =3D 0, ISS =3D 0x00000005,=
- ISS2 =3D 0x00000000
->>> <1>[=C2=A0=C2=A0 76.609765]=C2=A0=C2=A0 CM =3D 0, WnR =3D 0, TnD =3D 0=
-, TagAccess =3D 0
->>> <1>[=C2=A0=C2=A0 76.610958]=C2=A0=C2=A0 GCS =3D 0, Overlay =3D 0, Dirt=
-yBit =3D 0, Xs =3D 0
->>> <1>[=C2=A0=C2=A0 76.611652] [a8fff00000c0c224] address between user an=
-d kernel
->>> address ranges
->>> <0>[=C2=A0=C2=A0 76.612130] Internal error: Oops: 0000000096000005 [#2=
-] PREEMPT
->>> SMP
->>> <4>[=C2=A0=C2=A0 76.613305] Modules linked in: btrfs blake2b_generic x=
-or
->>> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
->>> sha512_arm64 fuse drm backlight ip_tables x_tables
->>> <4>[=C2=A0=C2=A0 76.617688] CPU: 1 UID: 0 PID: 553 Comm: df01.sh Taint=
-ed: G
->>> D=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.=
-13.0-rc3-next-20241218 #1
->>> <4>[=C2=A0=C2=A0 76.620869] Tainted: [D]=3DDIE
->>> <4>[=C2=A0=C2=A0 76.621184] Hardware name: linux,dummy-virt (DT)
->>> <4>[=C2=A0=C2=A0 76.622671] pstate: 63402009 (nZCv daif +PAN -UAO +TCO=
- +DIT
->>> -SSBS BTYPE=3D--)
->>> <4>[ 76.623693] pc : __kmalloc_node_noprof (mm/slub.c:492
->>> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
->>> mm/slub.c:4293 mm/slub.c:4300)
->>> <4>[ 76.624180] lr : __vmalloc_node_range_noprof
->>> (include/linux/slab.h:922 mm/vmalloc.c:3647 mm/vmalloc.c:3846)
->>> <4>[=C2=A0=C2=A0 76.625290] sp : ffff80008258fa90
->>> <4>[=C2=A0=C2=A0 76.626275] x29: ffff80008258fab0 x28: fff00000c2c98e8=
-0 x27:
->>> fff00000c48fd100
->>> <4>[=C2=A0=C2=A0 76.626966] x26: fffffc1fc0303080 x25: 00000000fffffff=
-f x24:
->>> a8fff00000c0c224
->>> <4>[=C2=A0=C2=A0 76.627599] x23: 0000000000000dc0 x22: ffffa93386d8739=
-0 x21:
->>> 00000000ffffffff
->>> <4>[=C2=A0=C2=A0 76.628603] x20: fff00000c0010400 x19: 000000000000000=
-8 x18:
->>> 0000000000000000
->>> <4>[=C2=A0=C2=A0 76.629618] x17: 0000000000000000 x16: ffff80008218000=
-0 x15:
->>> ffff800080000000
->>> <4>[=C2=A0=C2=A0 76.630999] x14: fff00000c00203f0 x13: 00000ffff800082=
-1 x12:
->>> 0000000000000000
->>> <4>[=C2=A0=C2=A0 76.632089] x11: 0000000000000000 x10: 000000000000000=
-0 x9 :
->>> ffffa93386d87390
->>> <4>[=C2=A0=C2=A0 76.634293] x8 : ffff80008258f908 x7 : fff00000c2c98e8=
-0 x6 :
->>> 0000000000010000
->>> <4>[=C2=A0=C2=A0 76.634816] x5 : ffffa93389379000 x4 : 000000000000000=
-0 x3 :
->>> 000000000033b801
->>> <4>[=C2=A0=C2=A0 76.636355] x2 : 0000000000000000 x1 : a8fff00000c0c22=
-4 x0 :
->>> fff00000c0010400
->>> <4>[=C2=A0=C2=A0 76.638309] Call trace:
->>> <4>[ 76.639031] __kmalloc_node_noprof+0x100/0x4a0 P
->>> <4>[ 76.640890] __vmalloc_node_range_noprof (include/linux/slab.h:922
->>> mm/vmalloc.c:3647 mm/vmalloc.c:3846)
->>> <4>[ 76.641267] copy_process (kernel/fork.c:314 (discriminator 1)
->>> kernel/fork.c:1061 (discriminator 1) kernel/fork.c:2176 (discriminator
->>> 1))
->>> <4>[ 76.641795] kernel_clone (kernel/fork.c:2758)
->>> <4>[ 76.643003] __do_sys_clone (kernel/fork.c:2902)
->>> <4>[ 76.644078] __arm64_sys_clone (kernel/fork.c:2869)
->>> <4>[ 76.645306] invoke_syscall.constprop.0
->>> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
->>> <4>[ 76.646337] do_el0_svc (include/linux/thread_info.h:135
->>> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
->>> arch/arm64/kernel/syscall.c:151 (discriminator 2))
->>> <4>[ 76.646974] el0_svc (arch/arm64/include/asm/irqflags.h:82
->>> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
->>> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
->>> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
->>> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
->>> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
->>> <4>[ 76.647709] el0t_64_sync_handler (arch/arm64/kernel/entry-
->>> common.c:763)
->>> <4>[ 76.649032] el0t_64_sync (arch/arm64/kernel/entry.S:600)
->>> <0>[ 76.649724] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
->>>
->>> <trim>
->>>
->>> All code
->>> =3D=3D=3D=3D=3D=3D=3D=3D
->>> =C2=A0=C2=A0=C2=A0 0: 12800019 mov w25, #0xffffffff=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // #-1
->>> =C2=A0=C2=A0=C2=A0 4: b9402a82 ldr w2, [x20, #40]
->>> =C2=A0=C2=A0=C2=A0 8: aa1803e1 mov x1, x24
->>> =C2=A0=C2=A0=C2=A0 c: aa1403e0 mov x0, x20
->>> =C2=A0=C2=A0 10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
->>>
->>> Code starting with the faulting instruction
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>> =C2=A0=C2=A0=C2=A0 0: f8626b1a ldr x26, [x24, x2]
->>> =C2=A0 <4>[=C2=A0=C2=A0 79.647693] ---[ end trace 0000000000000000 ]--=
--
->>> =C2=A0 <0>[=C2=A0=C2=A0 79.649260] Kernel panic - not syncing: Attempt=
-ed to kill init!
->>> exitcode=3D0x0000000b
->>> =C2=A0 <2>[=C2=A0=C2=A0 79.650229] SMP: stopping secondary CPUs
->>> =C2=A0 <0>[=C2=A0=C2=A0 79.651558] Kernel Offset: 0x293306a00000 from
->>> 0xffff800080000000
->>> =C2=A0 <0>[=C2=A0=C2=A0 79.652015] PHYS_OFFSET: 0x40000000
->>> =C2=A0 <0>[=C2=A0=C2=A0 79.652461] CPU features: 0x000,000000d0,60bef2=
-d8,cb7e7f3f
->>> =C2=A0 <0>[=C2=A0=C2=A0 79.653039] Memory Limit: none
->>> =C2=A0 <0>[=C2=A0=C2=A0 79.653854] ---[ end Kernel panic - not syncing=
-: Attempted to
->>> kill init! exitcode=3D0x0000000b ]---
->>>
->>>
->>> Links:
->>> -------
->>> =C2=A0 - https://qa-reports.linaro.org/lkft/linux-next-master/build/
->>> next-20241218/testrun/26396709/suite/log-parser-test/test/panic-
->>> multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/
->>> history/
->>> =C2=A0 - https://qa-reports.linaro.org/lkft/linux-next-master/build/
->>> next-20241212/testrun/26277241/suite/log-parser-test/test/panic-
->>> multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/log
->>> =C2=A0 - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/
->>> tests/2qNMDhPFtR8j185QSvZMn989u84
->>> =C2=A0 - https://storage.tuxsuite.com/public/linaro/lkft/
->>> builds/2qNMCQazNJteQLGCw7MnMtUwzkD/
->>> =C2=A0 - https://qa-reports.linaro.org/lkft/linux-next-master/build/
->>> next-20241211/testrun/26266202/suite/log-parser-test/test/panic-
->>> multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/
->>> details/
->>>
->>>
->>> metadata:
->>> ----
->>> =C2=A0=C2=A0 git describe: next-20241210..next-20241218
->>> =C2=A0=C2=A0 git repo: https://git.kernel.org/pub/scm/linux/kernel/git=
-/next/
->>> linux-next.git
->>> =C2=A0=C2=A0 kernel config:
->>> https://storage.tuxsuite.com/public/linaro/lkft/
->>> builds/2qNMCQazNJteQLGCw7MnMtUwzkD/config
->>> =C2=A0=C2=A0 build url: https://storage.tuxsuite.com/public/linaro/lkf=
-t/
->>> builds/2qNMCQazNJteQLGCw7MnMtUwzkD/
->>> =C2=A0=C2=A0 toolchain: gcc-13
->>> =C2=A0=C2=A0 config: CONFIG_ARM64_64K_PAGES=3Dy, CONFIG_ARM64_16K_PAGE=
-S=3Dy
->>> =C2=A0=C2=A0 arch: arm64
->>> =C2=A0=C2=A0 qemu: qemu-arm64 version 9.1.2
->>>
->>
->> --
->> Linaro LKFT
->> https://lkft.linaro.org
->>
->
->
+
+> +		if (ret)
+> +			goto out;
+> +		cur_offset += len;
+> +	}
+> +out:
+> +	free_extent_buffer_stale(dummy);
+> +	return ret;
+> +
+> +out_short_read:
+> +	btrfs_crit(fs_info,
+> +	"sys_array too short to read %u bytes at offset %u array size %u",
+> +		   len, cur_offset, array_size);
+> +	free_extent_buffer_stale(dummy);
+> +	return ret;
+> +}
+> +
+>   /*
+>    * Enhanced version of chunk item checker.
+>    *
+> diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+> index db67f96cbe4b..b1c85e4e1add 100644
+> --- a/fs/btrfs/tree-checker.h
+> +++ b/fs/btrfs/tree-checker.h
+> @@ -8,6 +8,7 @@
+>   
+>   #include <linux/types.h>
+>   #include <uapi/linux/btrfs_tree.h>
+> +#include "fs.h"
+>   
+>   struct extent_buffer;
+>   struct btrfs_chunk;
+> @@ -68,6 +69,8 @@ int btrfs_check_node(struct extent_buffer *node);
+>   
+>   int btrfs_check_chunk_valid(struct extent_buffer *leaf,
+>   			    struct btrfs_chunk *chunk, u64 logical);
+> +int btrfs_check_system_chunk_array(struct btrfs_fs_info *fs_info,
+> +				   const struct btrfs_super_block *sb);
+>   int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner);
+>   int btrfs_verify_level_key(struct extent_buffer *eb,
+>   			   const struct btrfs_tree_parent_check *check);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 1cccaf9c2b0d..c2863075ee86 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7002,16 +7002,6 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
+>   	warn_32bit_meta_chunk(fs_info, logical, length, type);
+>   #endif
+>   
+> -	/*
+> -	 * Only need to verify chunk item if we're reading from sys chunk array,
+> -	 * as chunk item in tree block is already verified by tree-checker.
+> -	 */
+> -	if (leaf->start == BTRFS_SUPER_INFO_OFFSET) {
+> -		ret = btrfs_check_chunk_valid(leaf, chunk, logical);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+>   	map = btrfs_find_chunk_map(fs_info, logical, 1);
+>   
+>   	/* already mapped? */
+> @@ -7274,11 +7264,9 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
+>   	u8 *array_ptr;
+>   	unsigned long sb_array_offset;
+>   	int ret = 0;
+> -	u32 num_stripes;
+>   	u32 array_size;
+>   	u32 len = 0;
+>   	u32 cur_offset;
+> -	u64 type;
+>   	struct btrfs_key key;
+>   
+>   	ASSERT(BTRFS_SUPER_INFO_SIZE <= fs_info->nodesize);
+> @@ -7301,10 +7289,17 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
+>   	cur_offset = 0;
+>   
+>   	while (cur_offset < array_size) {
+> +		u32 num_stripes;
+> +
+>   		disk_key = (struct btrfs_disk_key *)array_ptr;
+>   		len = sizeof(*disk_key);
+> -		if (cur_offset + len > array_size)
+> -			goto out_short_read;
+> +
+> +		/*
+> +		 * The super block should have passed
+> +		 * btrfs_check_system_chunk_array(), thus we only do
+> +		 * ASSERT() for those sanity checks.
+> +		 */
+> +		ASSERT(cur_offset + len <= array_size);
+>   
+>   		btrfs_disk_key_to_cpu(&key, disk_key);
+>   
+> @@ -7312,44 +7307,24 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
+>   		sb_array_offset += len;
+>   		cur_offset += len;
+>   
+> -		if (key.type != BTRFS_CHUNK_ITEM_KEY) {
+> -			btrfs_err(fs_info,
+> -			    "unexpected item type %u in sys_array at offset %u",
+> -				  (u32)key.type, cur_offset);
+> -			ret = -EIO;
+> -			break;
+> -		}
+> +		ASSERT(key.type == BTRFS_CHUNK_ITEM_KEY);
+>   
+>   		chunk = (struct btrfs_chunk *)sb_array_offset;
+>   		/*
+>   		 * At least one btrfs_chunk with one stripe must be present,
+>   		 * exact stripe count check comes afterwards
+>   		 */
+> -		len = btrfs_chunk_item_size(1);
+> -		if (cur_offset + len > array_size)
+> -			goto out_short_read;
+> +		ASSERT(cur_offset + btrfs_chunk_item_size(1) <= array_size);
+>   
+>   		num_stripes = btrfs_chunk_num_stripes(sb, chunk);
+> -		if (!num_stripes) {
+> -			btrfs_err(fs_info,
+> -			"invalid number of stripes %u in sys_array at offset %u",
+> -				  num_stripes, cur_offset);
+> -			ret = -EIO;
+> -			break;
+> -		}
+> +		/* Should have at least one stripe. */
+> +		ASSERT(num_stripes);
+>   
+> -		type = btrfs_chunk_type(sb, chunk);
+> -		if ((type & BTRFS_BLOCK_GROUP_SYSTEM) == 0) {
+> -			btrfs_err(fs_info,
+> -			"invalid chunk type %llu in sys_array at offset %u",
+> -				  type, cur_offset);
+> -			ret = -EIO;
+> -			break;
+> -		}
+> +		/* Only system chunks are allowed in system chunk array. */
+> +		ASSERT(btrfs_chunk_type(sb, chunk) & BTRFS_BLOCK_GROUP_SYSTEM);
+>   
+>   		len = btrfs_chunk_item_size(num_stripes);
+> -		if (cur_offset + len > array_size)
+> -			goto out_short_read;
+> +		ASSERT(cur_offset + len <= array_size);
+>   
+>   		ret = read_one_chunk(&key, sb, chunk);
+>   		if (ret)
+> @@ -7362,13 +7337,6 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
+>   	clear_extent_buffer_uptodate(sb);
+>   	free_extent_buffer_stale(sb);
+>   	return ret;
+> -
+> -out_short_read:
+> -	btrfs_err(fs_info, "sys_array too short to read %u bytes at offset %u",
+> -			len, cur_offset);
+> -	clear_extent_buffer_uptodate(sb);
+> -	free_extent_buffer_stale(sb);
+> -	return -EIO;
+>   }
+>   
+>   /*
 
 
