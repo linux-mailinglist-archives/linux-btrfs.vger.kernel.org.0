@@ -1,182 +1,114 @@
-Return-Path: <linux-btrfs+bounces-10600-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10601-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56F8D9F73BE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 05:39:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE4139F754F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 08:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CA96165BC3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 04:39:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A19307A179E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 07:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 422822163BD;
-	Thu, 19 Dec 2024 04:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539A221765F;
+	Thu, 19 Dec 2024 07:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F1ZJ5kYm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5188632A
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 04:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763AA216E0F
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 07:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734583168; cv=none; b=AWYj1UIBtxkc7Ldah9RXdaPaEohgl0YvykLMs7kkS96dpKtGt3mKgHlFSDCnJ6b3VdVh0G6J7BHIbG+9bXQqZVwIp3qzOkuTM9FuXbKEBkp7CNk4shNeU6ZLGB9RSBDadJTpUfxUH2Hg5gSCT4Sx4ZXlPZmUhi1oLxaWpRFLZNo=
+	t=1734592967; cv=none; b=QKKlhCvMkUarVPcO+aaQfec7bVH7TAqVimNn2p/nv0jb2sX7IiRE1PH18PfhyY0LqMqnUhgQAwb75sPxRu/KDwBFsQSXvcTMDXJ5vKBAsIqRJS8IGc3MlZXVAlbqRVPTSEH2cPt8LPxltOrDi1ae8OWMTh5RnRCA62SdhyRoH+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734583168; c=relaxed/simple;
-	bh=bTABqYDCcIxbulGqsstULU/50d0AagCvi2ivv7Y0Cl0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=TXQub6ThqLVJg9+2IAd9hsCvJtZiPkdzB5Z0/vTr7qoVS9qAANoalxK82JSgAPydTRD0qDQsWntjkHV4kKsRCVeMcsVqCDrY5/1lKVKl4nOm1wktx4dPHrz8ZUA0NxHBgeP+kI640crmjD6OxAbdeK/qhq9RAP8pqFm6jm8WJG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3a7d85ab308so3207015ab.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 20:39:26 -0800 (PST)
+	s=arc-20240116; t=1734592967; c=relaxed/simple;
+	bh=SMoxBIEDl51NElxgkIPUPugSoLyV/3grqovJxZgQFOw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=T1HlthhlM91RCx4RjEohSetKFK9gi8yp00C0XA/cRo5KHXXAvKiUxrKQxFNH+8TejVtiNwhEwPi322ur0l9smotuXu0lAC2mEC5evDawIRD5HyPazZ1ArH8VYBtXa6+tTyuB3AM+qfgMrszgfOJ7mY5k7xe6oDjnTkMLfB0TUgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F1ZJ5kYm; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6f277a1ecfdso3292157b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2024 23:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734592963; x=1735197763; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SMoxBIEDl51NElxgkIPUPugSoLyV/3grqovJxZgQFOw=;
+        b=F1ZJ5kYmLEWrsJT5GRyxjAYrELw0efOxk3eR6GK10iY8R42TuBlBXg90aiTji2/sGT
+         urMkJwpfbxzabmJfUVGxvPH+0Y6mToBkoupslpUbBTDZtwwtHnXEusU71X6Iag9E0e2W
+         KZ2MrvfKrNUjS8MQ8Xq5FgRPtzxpWbB6Cnzu1tQfO6Rw7CmonatnH3sWQcxcRUPu/1TE
+         n+vKYSTy3750tqcc5NHyAoOzWcuYggi11jUVQBJekNqQ0Bqop5rUrLKt3gfG3QqQn8vN
+         9sWrAbcr8OGMKeVBX0huds+MirvC2Bd5aMFKrUhMSkyZMUuGkm3yYEAE4R62XPZzmydk
+         VEQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734583166; x=1735187966;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EdFDWRMHgTOGVYxfZF/dtH18mgv8HOgeVr8Ds1MAEH0=;
-        b=stAYDE3EHRfeP+i52ywYtpL9d0fdHgOIdGJXuNCQdSBH+mHrX6meMCPREUNneoxtEY
-         3JS5g5So2B2C7Z00fpqYYQmr/eKYru/R4+wXF4AMu2sTWUecfxFzObc9NmecyaL87vCx
-         fLumzuoX1oSPLlf3x5fdAmBlEQ9wtEKMqrA21/xMDisCgB6uF0W5eksMCmXkQ+4lvvZb
-         +MEB0bOCLQKKF4Tgsk7B7E3/Lxfm4vHJOaVooKSlfj4xo8yPLwFx1qMUK6RBQcNSdaZD
-         zLnyomCD5ljDiRE25GLXotDIKq6szUeq/pOvgDTLnfWNAg38yrIvGYaQXRHUQ0ZHoJw6
-         SQPA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXOqtQ4qF7h2EVP2Oyk6csy9+vOFG6S+GT2myawfVJoIF0vgDF+B8OuLj9zhbvLodvGcCue+IDgMnUgA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1PTU+QUeihjXGQyw1ExhWd/d24AXJLEHgzXXeWv+x6inmRi43
-	o2CpQm+Hq3YtssbrljNvj02niq0mfbm3PzZEALxuHmQqVTBDZA1Z4ylDHoK+4wtig0kYh2Dn51G
-	8wSsLP4oG/YKbGcaz6dW7PxNGDt/umCh8VRNt2LZ0mUjBVEXCq9LPejw=
-X-Google-Smtp-Source: AGHT+IHUt4CChzG8GMsKEM2qJdjxmj9o7rlIXWHDrToydBZ1OcHzbEQxl61LWf+eYCt/SeYkYb1elvaXQoAl4xSw4UWPI2wM42u2
+        d=1e100.net; s=20230601; t=1734592963; x=1735197763;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SMoxBIEDl51NElxgkIPUPugSoLyV/3grqovJxZgQFOw=;
+        b=hB7HjZDaEGCBNWP8Hb50hNEzmOZDA010Z1VtNOnSXdT60Ds9BY6qeeep04E6LSY6+5
+         47yNrUJQFagdD7q/i/X+gKNBbxx76J+4yDGM9gOOdMc0kQx8LpmgEOnF2fQvWwUTU93r
+         OvXwLSOzb/0u6mfbusnNWbvbvppSQcuQvUymNCk8qiBgcjlfmEG3hhPtSL/Cil5VddtL
+         pKvbxeUv0TYRnuI9q7jG4SOXkiP1RpVyZ/1Zn0yydBx68Rn4s6RA1RIO5Ej5Sjo0z69V
+         Z2GFakyYiTHmwCV0mXdlhakdG1fimDDKKaOm137bpFl7aPr+mJrqoB55sDR2byXlsJ9t
+         PuUw==
+X-Gm-Message-State: AOJu0YwQ2iW+RhyPKtM9Svn6EfFl/rFvB+Mc+BZssNSETGXzRKFJubnG
+	8evwPvHYD5A/FcWngjVQaa8W1WJOWLkHrCI+Kym0pN6MIElYVxpIYZLrHTiKE2Jcp30kL5IGZMT
+	+lPZtdtUx3Uo38N52cNTw5Lm0bP/X2CHew5k=
+X-Gm-Gg: ASbGncthGdmxd0G4P+evtq6t1TraY6WAsBwgOo9lCEbN7dJYdBcZ68ZLJIJO0g5ht5/
+	M5vL06p9KOQO71154TOLycvqA4y7CQqtfEmhQfm3qeUmjJDKVFeWYOYU185UYNh7U2Bbeie0=
+X-Google-Smtp-Source: AGHT+IEZ7TsKawAntFXtkZEvQm5yx0GmaYkYfZ6HcrK8d/Ay3lBWNznjK/jvJn0dOkwuEH8Vsq6/KEqhOgW+/4JRK5w=
+X-Received: by 2002:a05:690c:25c5:b0:6ef:146a:aac3 with SMTP id
+ 00721157ae682-6f3e1b0e862mr23975507b3.1.1734592963358; Wed, 18 Dec 2024
+ 23:22:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3d47:b0:3a0:9c99:32d6 with SMTP id
- e9e14a558f8ab-3c015056945mr18379415ab.24.1734583166086; Wed, 18 Dec 2024
- 20:39:26 -0800 (PST)
-Date: Wed, 18 Dec 2024 20:39:26 -0800
-In-Reply-To: <6714a705.050a0220.1e4b4d.0035.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6763a37e.050a0220.15da49.0005.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] general protection fault in put_pwq_unlocked (2)
-From: syzbot <syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com>
-To: cem@kernel.org, clm@fb.com, djwong@kernel.org, dsterba@suse.com, 
-	josef@toxicpanda.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+From: Clemens Eisserer <linuxhippy@gmail.com>
+Date: Thu, 19 Dec 2024 08:22:32 +0100
+Message-ID: <CAFvQSYTmpGK3w_07RinTWXzgsnkLr5TA4me40mi-evYqgkBQZg@mail.gmail.com>
+Subject: btrfs check reports backpointer mismatch / owner ref check failed
+To: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot has found a reproducer for the following issue on:
+Hi,
 
-HEAD commit:    eabcdba3ad40 Merge tag 'for-6.13-rc3-tag' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15adb730580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1234f097ee657d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=aa930d41d2f32904c5da
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16dc4cf8580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12faef44580000
+I am using btrfs send/receive to keep two root-filesytems in sync so I
+can simply sync the rootfs of my laptops internal nvme disk to an
+external usb drive and boot from it when traveling, as well as syncing
+back. Thanks again to Andrei Borzenkov for the suggestions and help
+that made this possible:
+https://www.spinics.net/lists/linux-btrfs/msg142484.html
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7a4dff87674a/disk-eabcdba3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/266bc2b7ced3/vmlinux-eabcdba3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ee4bcd9be832/bzImage-eabcdba3.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/90ce8b925e79/mount_0.gz
+For a year now everything worked fine, I did scrubs from time to time
+and they always reported 0 errors.
+Recently I tried to give btrfs check a try and got many errors of the same kind.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aa930d41d2f32904c5da@syzkaller.appspotmail.com
+The first group of errors looks like:
+ref mismatch on [78987264 16384] extent item 1, found 0
+tree extent[78987264, 16384] parent 30588928 has no tree block found
+incorrect global backref count on 78987264 found 1 wanted 0
+backpointer mismatch on [78987264 16384]
+owner ref check failed [78987264 16384]
 
-Oops: general protection fault, probably for non-canonical address 0xf11024afb8802002: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: maybe wild-memory-access in range [0x8881457dc4010010-0x8881457dc4010017]
-CPU: 1 UID: 0 PID: 5817 Comm: syz-executor163 Not tainted 6.13.0-rc3-syzkaller-00073-geabcdba3ad40 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/25/2024
-RIP: 0010:__lock_acquire+0x6a/0x2100 kernel/locking/lockdep.c:5089
-Code: b6 04 30 84 c0 0f 85 f8 16 00 00 45 31 f6 83 3d cb ce 9d 0e 00 0f 84 c8 13 00 00 89 54 24 60 89 5c 24 38 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 38 93 88 00 48 be 00 00 00 00 00 fc
-RSP: 0018:ffffc90003a87950 EFLAGS: 00010803
-RAX: 111028afb8802002 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 8881457dc4010017
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
-R10: dffffc0000000000 R11: fffffbfff2030a27 R12: ffff888030045a00
-R13: 0000000000000000 R14: 0000000000000000 R15: 8881457dc4010017
-FS:  00005555749e8480(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f624dfff000 CR3: 000000007761c000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
- _raw_spin_lock_irq+0xd3/0x120 kernel/locking/spinlock.c:170
- put_pwq_unlocked+0x42/0x190 kernel/workqueue.c:1662
- destroy_workqueue+0x99d/0xc40 kernel/workqueue.c:5897
- __bch2_fs_free fs/bcachefs/super.c:596 [inline]
- bch2_fs_release+0x69d/0x7d0 fs/bcachefs/super.c:611
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x22f/0x480 lib/kobject.c:737
- deactivate_locked_super+0xc4/0x130 fs/super.c:473
- cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
- task_work_run+0x24f/0x310 kernel/task_work.c:239
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x13f/0x340 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f62555f9517
-Code: 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffe0e922dc8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f62555f9517
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffe0e922e80
-RBP: 00007ffe0e922e80 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000202 R12: 00007ffe0e923f40
-R13: 00005555749e97c0 R14: 00007ffe0e923f80 R15: 0000000000000008
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__lock_acquire+0x6a/0x2100 kernel/locking/lockdep.c:5089
-Code: b6 04 30 84 c0 0f 85 f8 16 00 00 45 31 f6 83 3d cb ce 9d 0e 00 0f 84 c8 13 00 00 89 54 24 60 89 5c 24 38 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ff e8 38 93 88 00 48 be 00 00 00 00 00 fc
-RSP: 0018:ffffc90003a87950 EFLAGS: 00010803
-RAX: 111028afb8802002 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 8881457dc4010017
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
-R10: dffffc0000000000 R11: fffffbfff2030a27 R12: ffff888030045a00
-R13: 0000000000000000 R14: 0000000000000000 R15: 8881457dc4010017
-FS:  00005555749e8480(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f624dfff000 CR3: 000000007761c000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	b6 04                	mov    $0x4,%dh
-   2:	30 84 c0 0f 85 f8 16 	xor    %al,0x16f8850f(%rax,%rax,8)
-   9:	00 00                	add    %al,(%rax)
-   b:	45 31 f6             	xor    %r14d,%r14d
-   e:	83 3d cb ce 9d 0e 00 	cmpl   $0x0,0xe9dcecb(%rip)        # 0xe9dcee0
-  15:	0f 84 c8 13 00 00    	je     0x13e3
-  1b:	89 54 24 60          	mov    %edx,0x60(%rsp)
-  1f:	89 5c 24 38          	mov    %ebx,0x38(%rsp)
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruction
-  2e:	74 12                	je     0x42
-  30:	4c 89 ff             	mov    %r15,%rdi
-  33:	e8 38 93 88 00       	call   0x889370
-  38:	48                   	rex.W
-  39:	be 00 00 00 00       	mov    $0x0,%esi
-  3e:	00 fc                	add    %bh,%ah
+the other "class" like this:
+ref mismatch on [389818982400 8192] extent item 1, found 0
+data extent[389818982400, 8192] bytenr mimsmatch, extent item bytenr
+389818982400 file item bytenr 0
+data extent[389818982400, 8192] referencer count mismatch (parent
+657195008) wanted 1 have 0
+backpointer mismatch on [389818982400 8192]
+owner ref check failed [389818982400 8192]
 
+Should I be worried? Those file systems have never given me any
+trouble, I was quite suprised to see all those errors when checking.
+Could this be some bug triggered by all those snapshotting? What kind
+of additional information would be helpful to pinpoint this?
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Thanks & best regards, Clemens
 
