@@ -1,153 +1,119 @@
-Return-Path: <linux-btrfs+bounces-10610-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10611-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E28D9F7E32
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 16:37:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F4549F7E42
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 16:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882BC188B203
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 15:37:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97E78165880
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2024 15:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F91D226170;
-	Thu, 19 Dec 2024 15:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B3B225A4C;
+	Thu, 19 Dec 2024 15:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eC1zI5hl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gUGFxISF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A24E270824
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 15:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4BD02AD16;
+	Thu, 19 Dec 2024 15:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734622658; cv=none; b=ATjB0TOEhrqShLb4Iq4GVS27vWS10saXPNeDDPqi+kvKqiohcKt/qgNPJwUtbY00KZK5aI/o8AmEM2ohEXo1O7/U+CCpr76kFs0YQiXl8NxJ8Lf8w78GIaGpmgBxIcZMzq509Gc7Addm5HBDFYhea4tonPZ8qmVd60gBAH2B3QU=
+	t=1734622837; cv=none; b=h8y2o2h0LqB6qt7VKLz9o0vNPZGFMIJTSnuxYs+OGyAOr6x7alWE1AbBTnWLUtKQ3iyx56Tjp36IY21S9Dh2jS+dAggiHxBey251SVfYfIpNKq/YUpOSBbKb9dceGWyz8CBLFgS5F84iVn5bZ8lK3vC5tfiRWDQFcTbS5Hsz0sY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734622658; c=relaxed/simple;
-	bh=p4HdxpZ+MrdAxtJhCL+kaFnR1t6S75QHdOZVDGbndeA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GoUM90VikbUp6RXL2kdkpg5aZSe2Gf0uvMGeF0fGfD/tHWIgOIIAn7PXKirlVFax1/rz1BBaB5F/AHJ02fmOQGieN8mW+M1HXYVh1WocR8fAbnDYVQoG0PqHA9b+cMfsGenw3UV3wjMpbRafRNBZFmrqrAocjED+tGZBzql7IOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eC1zI5hl; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aa6a618981eso159492766b.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2024 07:37:36 -0800 (PST)
+	s=arc-20240116; t=1734622837; c=relaxed/simple;
+	bh=/uAt920FD/Sk3BFpPCBkY1NCBDMZ0MMpVBpTRlmG2Zk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=klTRhaG3o/lFo6uBovolwSilG8Psea42cUs78m7ePZPfjIV6W5lPpyFYCSSFdbGf+umlit+ssmM65Uapj72dsqDfxbL8mvCoGgctCwaC5zkiFzD/Z3d+isyVgqaXQv20MjNA6lI8EKO0XEWoNOarEpW6WO0/VQKlbVbgX29Fgnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gUGFxISF; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-435f8f29f8aso7175215e9.2;
+        Thu, 19 Dec 2024 07:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1734622655; x=1735227455; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PUel+go/CfHo5w+Jm9alc/L9kT7jqDV+xMlQDoVR8Gw=;
-        b=eC1zI5hl8N7f8gBIN849Su5gDx2YdN18PVRcfee9dae6ZLon8L01Xnt7KOLePqepdG
-         N1KmsNnCYHJlUc+XvlQTNxMdwNscCGMViBrnhvgLdGCQIs7qBUXwmRO0fkr5iqpfoYcO
-         WkqsqTlKIGnOA4hYtucLVDDF2+zEqUlrCdLDohsiSO3uesSfE95bJi6Bz3ETIlYzJyLP
-         YfJDrfyUWC9t0mVQ7zZF2ZQBOfDSkMppsyhjY7yQHzUWn+3eZmh7yaD9m7lmD4dAEFg0
-         taMy+Xe4N6Y1DZZhzMuLoPlJla12TiSuRoJww6PBKJjbU5e5JmUVKBFC0MbW5HE81Gr4
-         nagg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734622655; x=1735227455;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1734622834; x=1735227634; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PUel+go/CfHo5w+Jm9alc/L9kT7jqDV+xMlQDoVR8Gw=;
-        b=ApwqVrTSAI6XIDk6yVPMxohE94n42mnc11VYyyywn8/fqJOhUK8VAZFn50hDihb3mc
-         ErgBchcw9J4gUkhElqJmS7JM2zK4cDJOhVjwlltUcAv8Qd0DDoioKrfCsrUxxgybiwSP
-         ViP0P9a2LQRvfm0P6RirR6FYeA4DD9nMKHdhXplB2uRjDbld4ca5/6bHXYA17veFbhBI
-         fIexbIbvtzdncoNwwhPnoVBZ/qUN4Rhxbq3beXDbEUbtqXt5aCn0kWOEpqff66CrGE8X
-         OChgZDGk7vxGZuCZT/ODwIsn/QImwny07FqFi0ms17qP8x/2kEYrjBvlCHt1Zxp12Wq2
-         3ivw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnuMoynBaP5w7rzeufpiKHkngTbryzxFJaDl6nzEJyzpp7UCJHU67DiNAYuxQIpGHUmzIgDOOiwqKXjw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzapIcaeSUu3GHZbN3QiIN33VdfJkHg5MtP5YmfaU3k3vSVTnd3
-	Ffm/3m2NEqL3GgUMpO5o74xv6J6RtsmMZLoMmQqWsq/YypW7Jw0Ur6rjEV08qNY=
-X-Gm-Gg: ASbGnctHJozuqIEY9Lg7R7ORth5BXMLN1e0p2MJl9aoxsyz5WHb630fQfJN1XcCvTYZ
-	AEsDyglaqP0i0MSic8kkgHEcPcg9yP/THd+gL6dNPmm3KxRqQaTPzOGpYUyBtStqnnvHWAI+Xzt
-	KygetNaRv65wUvSx3y3ipXDErVKpy5qhJno+Uok8IzBv+R0SsKAku+Ng7AXtFR5ll4jXUnu6GFK
-	iTXDiHn6N6Pwkt1l+fWS7DaLyCRWiSaZ0z2+LAjguaBu1K/KwfjmmahyfaXVA==
-X-Google-Smtp-Source: AGHT+IGOfjBlXmb85ooSC48O2PP6uDSwvgb94XqQqZFbgj/syi0wA374X0g0G+01L7MUNMWSd0nROw==
-X-Received: by 2002:a17:906:328a:b0:aa6:800a:1291 with SMTP id a640c23a62f3a-aabf470a0b4mr637938366b.7.1734622655089;
-        Thu, 19 Dec 2024 07:37:35 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0eae74e4sm76965466b.91.2024.12.19.07.37.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2024 07:37:34 -0800 (PST)
-Date: Thu, 19 Dec 2024 18:37:30 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, qemu-devel@nongnu.org,
-	open list <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	linux-ext4 <linux-ext4@vger.kernel.org>,
-	lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>,
-	Linux btrfs <linux-btrfs@vger.kernel.org>,
-	Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, Qu Wenruo <wqu@suse.com>,
-	David Sterba <dsterba@suse.com>
-Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
- with Linux next-20241210 and above
-Message-ID: <0c46224b-ed2b-4c8e-aa96-d8f657f59b9f@stanley.mountain>
-References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
- <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
- <ac1e1168-d3af-43c5-9df7-4ef5a1dbd698@gmx.com>
- <feecfdc2-4df6-47cf-8f96-5044858dc881@gmx.com>
- <a3406049-7ab5-45b9-80bf-46f73ef73a4f@stanley.mountain>
+        bh=9naOK8f9NiinQN07Rkhqr8ZvLVguhfUabo7lyYbETxY=;
+        b=gUGFxISFG7fTxsajX0Wh2K5H7UlNSjUoJr95+6/wxOoW1hVHzO6X0ZQhZHpTkZvCLx
+         dEdbzEuLSSfjpD9IGOOEwEQRgilq+8mDTzgFS1U+S84F5DMFVhzv+eTaPjzFibbaDwp7
+         V2v+XOlTGS4+7BmuZjzpOS8VQbZqOh/fLXi9bdlFnGlkpQaFPqIm2bnZNNGxSpOsaAut
+         ukxQgP0ajZ9/C7TacBrKgsGfo81ylR1SDODHXeMNfoV06yh5NOaLjA7oCFi4QYmdyL30
+         1rih/uP5bePXO8nhZ0rAHAXMqM9Zq/mPw+i3uftu95nILz5W80zmO2ayzadIbX2hq7j+
+         6V2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734622834; x=1735227634;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9naOK8f9NiinQN07Rkhqr8ZvLVguhfUabo7lyYbETxY=;
+        b=cyNChEQ7R28e5GdKcfc8Y9j4nx0s9hmEdBEtmLJLb8omeqZ2mJpcVtpasi9i8qvPOW
+         44pmdymQxKZ3FDqj3Rgu6vd1voR8mSvrQtFaE3hF4aypNIgMEaej0fy5Wc6/hRuLzUP5
+         FwV4oZytFFk2jets+yN5MoMV1OFwDndq3EeYTAqKYGQDCXMjSfKgiQ1HDZu2bRKnDhyo
+         gdbQVWQNn8T//dV9czLXPTNlnYn88n8DQ/HCygsmTogGPtfHvIaeV061GLPT29p08g0X
+         jlMwDsUTycLrFHYaXNxAWzuhdj8RGLSA/ZJj88t0SjCpWJrW5/2EigQhJe6YXgqPGT+c
+         4Hpg==
+X-Forwarded-Encrypted: i=1; AJvYcCVjhF3GXUYPRrl/ajZ9uHMufyeIteQnaZ8lu1zeU1KQvJbjeG+WvhUVs6dRcWYuP9e9kHVEuE5TOBHJhQ==@vger.kernel.org, AJvYcCWMC2gGAnzh00FgQ4iD4HK2O+Jray34MIpM/+chQ5t/Phf2wlUfYZsFpk6ZGTOrszTDQUjitbqQxKfwbdmz@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7gh/4mQa6pfZ/vM4JXI13SpIs6OqBTtJ/KQxL+JTbEPCyjOol
+	g1qMMgPP0ZAEFZsymi93bmoyZ9/jfGxEReFvui2AIrR/UuA/fuLa3KHwSLsG
+X-Gm-Gg: ASbGncsr1/hFibSLXsJz+7vLFbxErsFzvalmMqZdM+IEfGxMQiP2pk3N6s3sOZnDfpS
+	r4Zg+/bbqDo3pWPg1TLFAr+n6U3KT1aQJTWRVGsNb0B1m7jh6+pTRg3Ki2JmEpxQDJ0vCIADLOh
+	mI2uats9/EiEdqVPSkK6ZxzQpvBU+djdgDls2yPzOkmuLYjYEScGvuC0Y8BZwTTfsSstP582545
+	ApOx563LJg+N4ROjsNvLYvDD9kCbnLT5IbcYYF+NZQRGblhGoGoYphw7/4wdi7xrQ==
+X-Google-Smtp-Source: AGHT+IEqNvv1DuBi//V8wG7dJyQxM3vSL+HhY7G24jQJiByRvtCIhvNBIPTna0FvE1W2k4Q/t/d4BA==
+X-Received: by 2002:a05:600c:5126:b0:434:fdbc:5cf7 with SMTP id 5b1f17b1804b1-4366312eec4mr19081365e9.27.1734622833619;
+        Thu, 19 Dec 2024 07:40:33 -0800 (PST)
+Received: from [192.168.1.240] ([194.120.133.23])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-436611ea42esm21463575e9.9.2024.12.19.07.40.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Dec 2024 07:40:33 -0800 (PST)
+Message-ID: <cd8135e4-2de5-48d7-a7de-65afb201b3fe@gmail.com>
+Date: Thu, 19 Dec 2024 15:40:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a3406049-7ab5-45b9-80bf-46f73ef73a4f@stanley.mountain>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: "Colin King (gmail)" <colin.i.king@gmail.com>
+Subject: re: btrfs: add btrfs_read_policy_to_enum helper and refactor read,
+ policy store
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 19, 2024 at 06:10:56PM +0300, Dan Carpenter wrote:
-> > > Mind to test it with KASAN enabled?
-> > 
-> 
-> Anders is going to try that later and report back.
-> 
+Hi,
 
-Anders ran it and emailed me.  I was going to tell him to respond to
-the thread but I decided to steal the credit.  #GreatArtists
+Static analysis on linux-next today has found a potential buffer 
+overflow in fs/btrfs/sysfs.c in function btrfs_read_policy_to_enum()
 
- BTRFS info (device loop0): using crc32c (crc32c-arm64) checksum algorithm
- ==================================================================
- BUG: KASAN: slab-out-of-bounds in __bitmap_set+0xf8/0x100
- Read of size 8 at addr fff0000020e4a3c8 by task chdir01/479
- 
- CPU: 1 UID: 0 PID: 479 Comm: chdir01 Not tainted 6.13.0-rc3-next-20241218 #1
- Hardware name: linux,dummy-virt (DT)
- Call trace:
-  show_stack+0x20/0x38 (C)
-  dump_stack_lvl+0x8c/0xd0
-  print_report+0x118/0x5e0
-  kasan_report+0xb4/0x100
-  __asan_report_load8_noabort+0x20/0x30
-  __bitmap_set+0xf8/0x100
-  btrfs_subpage_set_uptodate+0xd8/0x1d0 [btrfs]
-  set_extent_buffer_uptodate+0x1ac/0x288 [btrfs]
-  __alloc_dummy_extent_buffer+0x2cc/0x488 [btrfs]
-  alloc_dummy_extent_buffer+0x4c/0x78 [btrfs]
-  btrfs_check_system_chunk_array+0x30/0x308 [btrfs]
-  btrfs_validate_super+0x7e8/0xd40 [btrfs]
-  open_ctree+0x958/0x3c98 [btrfs]
-  btrfs_get_tree+0xce4/0x13d8 [btrfs]
-  vfs_get_tree+0x7c/0x290
-  fc_mount+0x20/0xa8
-  btrfs_get_tree+0x72c/0x13d8 [btrfs]
-  vfs_get_tree+0x7c/0x290
-  path_mount+0x748/0x1518
-  __arm64_sys_mount+0x234/0x4f8
-  invoke_syscall.constprop.0+0x78/0x1f0
-  do_el0_svc+0xcc/0x1d8
-  el0_svc+0x38/0xa8
-  el0t_64_sync_handler+0x10c/0x138
-  el0t_64_sync+0x198/0x1a0
+The strcpy to string param has no length checks on str and hence if str 
+is longer than param a buffer overflow on the stack occurs. This can 
+potentially occur when a user writes a long string to the btrfs sysfs 
+file read_policy via btrfs_read_policy_store()
 
-Here are the full logs.
-https://people.linaro.org/~anders.roxell/next-20241218-issue-arm64-64k+kasan/
+int btrfs_read_policy_to_enum(const char *str, s64 *value)
+{
+         char param[32] = {'\0'};
+         char *__maybe_unused value_str;
+         int index;
+         bool found = false;
 
-regards,
-dan carpenter
+         if (!str || strlen(str) == 0)
+                 return 0;
+
+         strcpy(param, str);   /* issue here */
+
+	....
+}
+
+Colin
 
