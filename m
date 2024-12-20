@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-10623-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10624-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49DB9F97BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 18:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9AC9F9801
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 18:31:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6846188B68B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 17:14:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0809D189D6B0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 17:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EFA221448;
-	Fri, 20 Dec 2024 17:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609BA22C362;
+	Fri, 20 Dec 2024 17:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T+1QSDma"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QNs4Ab1+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B422210E0;
-	Fri, 20 Dec 2024 17:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FFB22C34F;
+	Fri, 20 Dec 2024 17:12:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734714714; cv=none; b=fFcweuMSDevj86+QX0e8JUyln6hJD9C6XRwlJU0jVvExy1vm9ZJ8uyC7bMga5nwqAnySgWPEy+HWQMIwnABUGs8p3KmHFiqgP54wCjdt6U3Ey11etuDbZqU7V6ZzqtssiUR1+qC4gxSp2+1GAq4SObv5kYhWRowhmXLfu7KBAH4=
+	t=1734714768; cv=none; b=MAo+IzUMtA/P+C+aK/NDEgJnAfgN1cDb7PdgcHVOoIsZdVCkTIe8fSQ1V/qcXUFaNybWmJZIgaRLeiJHlDLUAxK78Nl0SRTE7d65UzoF1ozBSHF4GN6pQ6EiLQSypEjkR2DWup/xBJYavXy0utxYsJ3FbidW5gkGTO3q8ofBmiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734714714; c=relaxed/simple;
-	bh=+jSYEXvIy/ZAI4HRnz1Q07LKvn+mjLC0U0L1ApZCLTs=;
+	s=arc-20240116; t=1734714768; c=relaxed/simple;
+	bh=QKfzi3KJDQ0eMleZ7168tcmTqsX7GpIeI7r72KfN2Xc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QJemNag5hybntO2lsu46sTeoMEqLX1BrFs8TvERohgHaQ7qjjjIctIc2ge8PF4zDZLKa8NphcoE0EL0YLqEJFVoN7QexPJgY4aaKtZDGTVMqUyzdfM/o7lZflcGnZCm8mJ2eNyCQB7dwLMkeP58bNl93ACpHZMXKGlMrvRDPQn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T+1QSDma; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BB1CC4CECD;
-	Fri, 20 Dec 2024 17:11:52 +0000 (UTC)
+	 MIME-Version; b=fMs72IGC85cYMOvL/FNKZj9lmGY6g5WqKA00B7NiN1RM+qddZXwidvuhcT0Z/QJjESvdiMoTtWpbvgtaxL/XLt2mheEFLKuVeDcHt0Z1YcyW2B3ftmc74H6oYqpahY4R94v5CGOaaA8TrkZ3TM/iJIfgmt9AUk5cmRQfOsS/XHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QNs4Ab1+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF184C4CECD;
+	Fri, 20 Dec 2024 17:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734714713;
-	bh=+jSYEXvIy/ZAI4HRnz1Q07LKvn+mjLC0U0L1ApZCLTs=;
+	s=k20201202; t=1734714768;
+	bh=QKfzi3KJDQ0eMleZ7168tcmTqsX7GpIeI7r72KfN2Xc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T+1QSDma+UTRXJTe9EQtxtMQU1mVcPj50dSY6NKH8X81CHZTKjbjgOX7x5TrwFQSn
-	 9JSBIkjN/Jso5N6OSSmDMERyrjRaFaPn88kMiNal1XRlWlfzmmbaDfpJXJYzQaNIgl
-	 097lMPpcVY+fcF7Ns1fEl8FBMbBmOPvxjrVK1NqMd0ctvCGGid6fzs7wNphGr6XQ5h
-	 G6W1fNsm03AAt+M54ECt4NEL2dstMiV7cD9Oyn6zK/qO/W/TZxsjwoj3fM2ls8HO1X
-	 qU8varcV4kAYQKiunnKsXOAv3LR/FGKknC9e5UI8SK2S6YyPRN+hUVkNyzrjoQKewk
-	 M5u6UPetHjTUw==
+	b=QNs4Ab1+W419ruW0cZQHCUcxEj9iuXk6/lPfdS8XEstoWlyeZLJ89shwtPFKX5FZQ
+	 pT4NstfJk2LoOZ+D2CT4Hwmp6GgpybGI7RNOtP1lqwW7HeF8Cg7Wb1yO8IaxuP2z+r
+	 iDKNEYBLLBqOy0Hvk/Ki+NVR4o8qGdp9o1UEw0Af7xFV5p3RMceZFVN0v3XzFxcniV
+	 eZnF6e+dRr0cYbkSY5bWy6AHQ98s+h371kDQLxUBI5XUl43o8Absb1/MmIPaLfejS9
+	 rPHPlQEbUTB0P+Wy84OA0as6tiRr7zMKfh4TYuQQc08Vrs8EbLnoaqQt+oIzny1tCN
+	 dRelMAymY0x2g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,12 +52,12 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 10/29] btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount
-Date: Fri, 20 Dec 2024 12:11:11 -0500
-Message-Id: <20241220171130.511389-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 04/16] btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount
+Date: Fri, 20 Dec 2024 12:12:28 -0500
+Message-Id: <20241220171240.511904-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241220171130.511389-1-sashal@kernel.org>
-References: <20241220171130.511389-1-sashal@kernel.org>
+In-Reply-To: <20241220171240.511904-1-sashal@kernel.org>
+References: <20241220171240.511904-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.6
+X-stable-base: Linux 6.6.67
 Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
@@ -254,10 +254,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 9 insertions(+)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 43b7b331b2da..563f106774e5 100644
+index 8ec411eb9c9b..967c6b5dd0a4 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -4264,6 +4264,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+@@ -4323,6 +4323,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
  	 * already the cleaner, but below we run all pending delayed iputs.
  	 */
  	btrfs_flush_workqueue(fs_info->fixup_workers);
