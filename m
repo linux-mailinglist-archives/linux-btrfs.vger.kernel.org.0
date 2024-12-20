@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-10626-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10627-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921E49F98B9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 18:54:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6419F987F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 18:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B92911899682
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 17:33:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2653189FC68
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 17:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516F2235C2B;
-	Fri, 20 Dec 2024 17:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D4A9237FCB;
+	Fri, 20 Dec 2024 17:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LDuDxqoN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tgNvr0ZA"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C582358B7;
-	Fri, 20 Dec 2024 17:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB74237A42;
+	Fri, 20 Dec 2024 17:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734714833; cv=none; b=N4DfmFWCHMa2thjCC5/NBJdiqdfJr1jp4L1W0xSz6fUIjq29l/b+3UA5Nlhh5OeERY5g2EN3GR6Pl/cE1Kd7JUJ7OMlFr4oRJmGyxmd69a1pn1zi9l2xlTM1ctSGXJFKt6LW/P/v2KUJ+aYcF/EPZO86Gr84BlyBEohTZawzrrg=
+	t=1734714851; cv=none; b=CUarfxv7dSJ6AB5CCPuPdfMMd4PHuy+xc3adkVAWKGMfRy0ZToUEN8RlrekLTPKhqa8cNkoqZyr1V33e9/ynokYqzUb/xbv+Q0k/E3OPES2u633P38IQ7yXY1JdLjMkc1M6N43i9XgVgCaRrU24W1lnBGBVg2ufd1P4YFwTlPmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734714833; c=relaxed/simple;
-	bh=tvXW8izDTQuBPyBd1sUsHPPq/+7b7KYLyoJO3hGub3Q=;
+	s=arc-20240116; t=1734714851; c=relaxed/simple;
+	bh=QEwS7tQv9euqtnpxznogkEg6PBSRvtGfP0Lyqv6U9oU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=L2j0ApVWFgw0mSj23dvpRXEbbNqPV+DOiWhSnWSnRLFwzqZFTHhddWrDgisfTxz/rJhwfAbyO8dq5Vuns480XXAiZSpZYBChl6KpyKY7v69QzXhNLDdmOpNnaTis8luNjerwDsSxglUceAWOiugzcMOv6mpMOsFTAGq0pAZjSgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LDuDxqoN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39283C4CED3;
-	Fri, 20 Dec 2024 17:13:52 +0000 (UTC)
+	 MIME-Version; b=dG+3eQs9rDsjsr5Sz1nWdeIP7sR9S84j9RaZlbcgfD5gwfyGQLMyMwusO2LuQFDMK/aK5r0LHphDNB8CnVxeT8y7+wg8ToPnPergIUUAtc4XHhjXJZjpWo/Rfx9W4+zc7tvpgjXYvdSNN0/uIfRCttAy5qPSPjLfPLtBvprKWjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tgNvr0ZA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B1BC4CEDC;
+	Fri, 20 Dec 2024 17:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734714833;
-	bh=tvXW8izDTQuBPyBd1sUsHPPq/+7b7KYLyoJO3hGub3Q=;
+	s=k20201202; t=1734714850;
+	bh=QEwS7tQv9euqtnpxznogkEg6PBSRvtGfP0Lyqv6U9oU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LDuDxqoNQr6wAiZCgrDxOn/gfpyiLXPCZl4saNxg6+eT1OTxh7wonobIAE5vHR8LE
-	 CpvXmI27aH+mwEBbWRDBiGeyRS5XD2IR1f/38PWWBtpMYtWA0k4Q+1sHTg+755ZaTf
-	 qBNbYqiHVknUmrUkpwT9xD5LMDvNk01jB8pOwF9jUubJGBZaPCb4nHjJokIYzN3vds
-	 4FLDm1ZP1U3qNbnigN1RdgBwyXZvdND03RWHtyJ+Dx1l6JB3CG/VEsl7xhcRuIF1/o
-	 PjbbOnfu5BDKM/Ldmxy+anV+mWivfdx2ilcrnAaclHYbbnXNPBxE6926r+HFRDgR6K
-	 YDgoxinE7RIXQ==
+	b=tgNvr0ZAMuGr4/qZkaprGHgPs2M3YZWuKri7WUi6LBOx3VqzLg+uAuIKMzwyeCc6I
+	 z1Ow4ctc51Ckl7KSQmOwOFmjqx5WdfKVyb+a9j5LXdsJqDPLwjPWe5vuw3ioUE1fJk
+	 uKBkXWY+NYPB8UaPoAnsVeA0bJb0QGFqOpUzwq2JM+SIQIxSdvmENIrpaQsWnWd1of
+	 Myez32ZIGHao035FgbC3SFPIp3KCRpBigDTzU7Ua06Mn63uQJVexYY9fXj+MmH3i9v
+	 CObWttl9yOdNeUAYfoqol6GV920pheQn7fm2R24/Cd+5KHasWUv0BUd4TrFTQ6HqeY
+	 JKygBpc+r30/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,12 +52,12 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 3/9] btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount
-Date: Fri, 20 Dec 2024 12:13:41 -0500
-Message-Id: <20241220171347.512287-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 2/7] btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount
+Date: Fri, 20 Dec 2024 12:14:01 -0500
+Message-Id: <20241220171406.512413-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241220171347.512287-1-sashal@kernel.org>
-References: <20241220171347.512287-1-sashal@kernel.org>
+In-Reply-To: <20241220171406.512413-1-sashal@kernel.org>
+References: <20241220171406.512413-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.175
+X-stable-base: Linux 5.10.232
 Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
@@ -254,10 +254,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 9 insertions(+)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 73796da9a194..9c2d6f96f46d 100644
+index 104c86784796..dd4fe6a1c607 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -4405,6 +4405,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+@@ -4141,6 +4141,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
  	 * already the cleaner, but below we run all pending delayed iputs.
  	 */
  	btrfs_flush_workqueue(fs_info->fixup_workers);
