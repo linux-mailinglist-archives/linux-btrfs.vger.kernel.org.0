@@ -1,279 +1,164 @@
-Return-Path: <linux-btrfs+bounces-10627-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6419F987F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 18:46:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3C89F9D0A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2024 00:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2653189FC68
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 17:36:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DEDA18914C3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2024 23:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D4A9237FCB;
-	Fri, 20 Dec 2024 17:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077D022686D;
+	Fri, 20 Dec 2024 23:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tgNvr0ZA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NL1cllvZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB74237A42;
-	Fri, 20 Dec 2024 17:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F3E1C0DD3
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2024 23:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734714851; cv=none; b=CUarfxv7dSJ6AB5CCPuPdfMMd4PHuy+xc3adkVAWKGMfRy0ZToUEN8RlrekLTPKhqa8cNkoqZyr1V33e9/ynokYqzUb/xbv+Q0k/E3OPES2u633P38IQ7yXY1JdLjMkc1M6N43i9XgVgCaRrU24W1lnBGBVg2ufd1P4YFwTlPmE=
+	t=1734736329; cv=none; b=K8GlnOZSCJdUbhrKJk31k/1RwW/oUv/wegQydRAEcEE+Is0Uk3eEQXloNhJ9rSKjecplAN9XrYrJSp7ThuSDhOLkisKvaoqSjVFcc6CmKdVVP0IE8SIPLu4ost7CVQaQI6mdpnccVyhiBPH+/EIDsHQkzVM7pjQ1hg2AvaKRW0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734714851; c=relaxed/simple;
-	bh=QEwS7tQv9euqtnpxznogkEg6PBSRvtGfP0Lyqv6U9oU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dG+3eQs9rDsjsr5Sz1nWdeIP7sR9S84j9RaZlbcgfD5gwfyGQLMyMwusO2LuQFDMK/aK5r0LHphDNB8CnVxeT8y7+wg8ToPnPergIUUAtc4XHhjXJZjpWo/Rfx9W4+zc7tvpgjXYvdSNN0/uIfRCttAy5qPSPjLfPLtBvprKWjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tgNvr0ZA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B1BC4CEDC;
-	Fri, 20 Dec 2024 17:14:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734714850;
-	bh=QEwS7tQv9euqtnpxznogkEg6PBSRvtGfP0Lyqv6U9oU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tgNvr0ZAMuGr4/qZkaprGHgPs2M3YZWuKri7WUi6LBOx3VqzLg+uAuIKMzwyeCc6I
-	 z1Ow4ctc51Ckl7KSQmOwOFmjqx5WdfKVyb+a9j5LXdsJqDPLwjPWe5vuw3ioUE1fJk
-	 uKBkXWY+NYPB8UaPoAnsVeA0bJb0QGFqOpUzwq2JM+SIQIxSdvmENIrpaQsWnWd1of
-	 Myez32ZIGHao035FgbC3SFPIp3KCRpBigDTzU7Ua06Mn63uQJVexYY9fXj+MmH3i9v
-	 CObWttl9yOdNeUAYfoqol6GV920pheQn7fm2R24/Cd+5KHasWUv0BUd4TrFTQ6HqeY
-	 JKygBpc+r30/Q==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	syzbot+b7cf50a0c173770dcb14@syzkaller.appspotmail.com,
-	Qu Wenruo <wqu@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/7] btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount
-Date: Fri, 20 Dec 2024 12:14:01 -0500
-Message-Id: <20241220171406.512413-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241220171406.512413-1-sashal@kernel.org>
-References: <20241220171406.512413-1-sashal@kernel.org>
+	s=arc-20240116; t=1734736329; c=relaxed/simple;
+	bh=qSa85hjglkiLadXwBg6OjJBdtjA7g4nM20UUSJEQXEg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z6G8BTLyH6S2w8yVP+tryOeDhWr2QNoUYux6DA8fTPr6f+ppFBrwxjirzN7O8S+U5THen508lFalfyhChyQbFsSjuAmt04L9rymtL2g69BuOIY7lALS56izCZpO88Gm64hAcN/xRR02/Vp93NvzjmEcSTTCOIJBLyDbeuu22R6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NL1cllvZ; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ee74291415so1836002a91.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2024 15:12:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734736327; x=1735341127; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HX6J+jHGIKgnxcalsW67Ld/gUMrYMM7HU2UOq5HKCSc=;
+        b=NL1cllvZaNnrmqvhSxjDpFGAbA6FGTS/IjDklLDSNsm1ttFyvYovT+107msGkQgrxZ
+         ayG3xeIrJ4RUhVFNJLdMxtzplrGqV81fXzcKZJz5WQqmc3i9IhILPhsSjt/ccmiPQeBS
+         ohc3vWxVcAwYL88tXC2OHEQYMhI1zYZKl3pKWkpl6nT597kWHPJF5ZQDw851S5Ef6+PG
+         hNVUDfYAEjVGUralFA2SS/fSup0ov1pt8mf/+2nq0baU++IO14mz/LwEoedtwYYw1a67
+         OsXdXUIp35peZrQSUJMzj28HhZ0dQZXoe/oCmox9lezND9XwJlyxfbw/webGUaUlB26O
+         RvRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734736327; x=1735341127;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HX6J+jHGIKgnxcalsW67Ld/gUMrYMM7HU2UOq5HKCSc=;
+        b=Kb7bxhPbZDUMqg9nfeGCPZdJccsI3hig4HpypXNnPzj/YG/OW4qIP2I365eWynVhVR
+         NGwtY84S0Q430vb4uS5jdgM+LaomRuJCgj2OZLn7Rbr1VM7qvVamAeshh6Tp3o3VMfCg
+         mxr5k1riql5mOrZVlxqDD6P6ZKblvPHomjnJpQF3zo5Al3wLbGq9CzZ96ZFXYw2EEC4I
+         4bL24xad4O02vMyoAQZ6ppaQANnLfc4aH48/dnj6MCYrCpu0CsrhzADGRm0MM2jODWCt
+         6gIyPncEzJjsh/1Q7w+EEaqpLTBah8LX2SqbAyP005vVDaok38pCvDyF1EdgZc8TTRp5
+         3tAw==
+X-Gm-Message-State: AOJu0YxIAO9EcNzOaEgcUzHa1RWAUdJBL2Eg4eSN2ZJZghDWWhGCpij/
+	hEgQmgYZKwBk6Tm00PBDPGJLq4Mg9ql4IIXn8i2TcWR5yf3OZ5Xd9KdBXJvoLJTe2+rf75hmrqW
+	uoElQaNAnajCJ8ug9Z+6YfY6QHjiGpOWW
+X-Gm-Gg: ASbGncuWsP+sxlhs/oNH3j8mH1t48kID+8B+YjtVBxn/X4IPybWSKqQ/we6eonTj3GU
+	VACSfQVJ9GboSNT7VB8Skx+qQNBxXcviXcLv+Sjg=
+X-Google-Smtp-Source: AGHT+IFsx/SzItc3XeD0BDmTS5jYX12S+g2qWHyOAg4tOUoXdKQzWUw6jkDW00qzILi9vDrRPiysEF99NbN7F+DoZok=
+X-Received: by 2002:a17:90b:134d:b0:2ea:4c4f:bd20 with SMTP id
+ 98e67ed59e1d1-2f452eed773mr6479976a91.32.1734736327070; Fri, 20 Dec 2024
+ 15:12:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.232
-Content-Transfer-Encoding: 8bit
+References: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
+ <56d3885e-5651-4fd4-af6d-89897f8bd240@gmx.com> <CAJhrHS1xgfrp=Wpk18xCBGUEi2tYxaqCxrMQG5UEGSUbR4G-_w@mail.gmail.com>
+ <d5372478-70f4-4a3c-bf9d-26366f955e5e@gmx.com> <2809427a-41f5-4b59-9d03-2c2012e16f76@gmx.com>
+In-Reply-To: <2809427a-41f5-4b59-9d03-2c2012e16f76@gmx.com>
+From: Ben Millwood <thebenmachine@gmail.com>
+Date: Fri, 20 Dec 2024 23:11:55 +0000
+Message-ID: <CAJhrHS3tE22AYSRjBLRC4vkdGaUxX-ibKoXt=K4RAvEbLq3_7Q@mail.gmail.com>
+Subject: Re: dev extent physical offset [...] on devid 1 doesn't have
+ corresponding chunk
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Filipe Manana <fdmanana@suse.com>
+Sorry for the delayed reply. I left this for a few days to see how the
+check would get along.
 
-[ Upstream commit f10bef73fb355e3fc85e63a50386798be68ff486 ]
+I think probably the terminal I was doing the check in was resized a
+bit, so the output got a little shuffled around, but it now looks like
+this:
 
-During the unmount path, at close_ctree(), we first stop the cleaner
-kthread, using kthread_stop() which frees the associated task_struct, and
-then stop and destroy all the work queues. However after we stopped the
-cleaner we may still have a worker from the delalloc_workers queue running
-inode.c:submit_compressed_extents(), which calls btrfs_add_delayed_iput(),
-which in turn tries to wake up the cleaner kthread - which was already
-destroyed before, resulting in a use-after-free on the task_struct.
+root@vigilance:~# btrfs check --progress --mode lowmem
+/dev/masterchef-vg/btrfs
+Opening filesystem to check...
+Checking filesystem on /dev/masterchef-vg/btrfs
+UUID: a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
+[1/7] checking root items                      (0:46:43 elapsed,
+68928137 items checked)
+[2/7] checking extents                         (14:49:23 elapsed,
+2419[2/7] checking extents                         (14:49:24 elapsed,
+2419[
+2/7] checking extents                         (14:49:25 elapsed,
+2419[2/7] checking extents                         (14:49:26 elapsed,
+2419[2
+ERROR: device extent[1, 1997265698816, 576716800] did not find the
+related chunkhecked)
+[2/7] checking extents                         (164:06:57 elapsed,
+34215503 items checked)
 
-Syzbot reported this with the following stack traces:
+so it looks like the check has noticed the same problem that the mount
+has, at least.
 
-  BUG: KASAN: slab-use-after-free in __lock_acquire+0x78/0x2100 kernel/locking/lockdep.c:5089
-  Read of size 8 at addr ffff8880259d2818 by task kworker/u8:3/52
+I don't actually understand all this terminology -- is the "items
+checked" number for checking extents counting towards the same total
+as the "root items" number? Or is there any other way of estimating
+how far it needs to count? (Obviously using that to estimate time
+remaining would be highly approximate, but hopefully I could still
+find out if it's measured in weeks or years).
 
-  CPU: 1 UID: 0 PID: 52 Comm: kworker/u8:3 Not tainted 6.13.0-rc1-syzkaller-00002-gcdd30ebb1b9f #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-  Workqueue: btrfs-delalloc btrfs_work_helper
-  Call Trace:
-   <TASK>
-   __dump_stack lib/dump_stack.c:94 [inline]
-   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
-   print_address_description mm/kasan/report.c:378 [inline]
-   print_report+0x169/0x550 mm/kasan/report.c:489
-   kasan_report+0x143/0x180 mm/kasan/report.c:602
-   __lock_acquire+0x78/0x2100 kernel/locking/lockdep.c:5089
-   lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-   _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-   class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:551 [inline]
-   try_to_wake_up+0xc2/0x1470 kernel/sched/core.c:4205
-   submit_compressed_extents+0xdf/0x16e0 fs/btrfs/inode.c:1615
-   run_ordered_work fs/btrfs/async-thread.c:288 [inline]
-   btrfs_work_helper+0x96f/0xc40 fs/btrfs/async-thread.c:324
-   process_one_work kernel/workqueue.c:3229 [inline]
-   process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
-   worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-   kthread+0x2f0/0x390 kernel/kthread.c:389
-   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-   </TASK>
+On Sun, 15 Dec 2024 at 04:46, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> Do you still remember if there is any error message for the
+> clear-space-cache interruption and the next RW mount of it?
 
-  Allocated by task 2:
-   kasan_save_stack mm/kasan/common.c:47 [inline]
-   kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-   unpoison_slab_object mm/kasan/common.c:319 [inline]
-   __kasan_slab_alloc+0x66/0x80 mm/kasan/common.c:345
-   kasan_slab_alloc include/linux/kasan.h:250 [inline]
-   slab_post_alloc_hook mm/slub.c:4104 [inline]
-   slab_alloc_node mm/slub.c:4153 [inline]
-   kmem_cache_alloc_node_noprof+0x1d9/0x380 mm/slub.c:4205
-   alloc_task_struct_node kernel/fork.c:180 [inline]
-   dup_task_struct+0x57/0x8c0 kernel/fork.c:1113
-   copy_process+0x5d1/0x3d50 kernel/fork.c:2225
-   kernel_clone+0x223/0x870 kernel/fork.c:2807
-   kernel_thread+0x1bc/0x240 kernel/fork.c:2869
-   create_kthread kernel/kthread.c:412 [inline]
-   kthreadd+0x60d/0x810 kernel/kthread.c:767
-   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+I can't say confidently at this stage, but I think there was no error
+at clear-space-cache interruption time. I think it's highly possible I
+could have missed an error at my next RW mount attempt, I was probably
+trying a lot of mounts and often only paying attention to the part of
+the error I thought I could debug. (there has been no next
+*successful* mount of this disk, RW or otherwise...)
 
-  Freed by task 24:
-   kasan_save_stack mm/kasan/common.c:47 [inline]
-   kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-   kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:582
-   poison_slab_object mm/kasan/common.c:247 [inline]
-   __kasan_slab_free+0x59/0x70 mm/kasan/common.c:264
-   kasan_slab_free include/linux/kasan.h:233 [inline]
-   slab_free_hook mm/slub.c:2338 [inline]
-   slab_free mm/slub.c:4598 [inline]
-   kmem_cache_free+0x195/0x410 mm/slub.c:4700
-   put_task_struct include/linux/sched/task.h:144 [inline]
-   delayed_put_task_struct+0x125/0x300 kernel/exit.c:227
-   rcu_do_batch kernel/rcu/tree.c:2567 [inline]
-   rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2823
-   handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:554
-   run_ksoftirqd+0xca/0x130 kernel/softirq.c:943
-   smpboot_thread_fn+0x544/0xa30 kernel/smpboot.c:164
-   kthread+0x2f0/0x390 kernel/kthread.c:389
-   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> Thanks,
+> Qu
+> >
+> > Meanwhile I have created a branch for you to manually fix the bug:
+> > https://github.com/adam900710/btrfs-progs/tree/orphan_dev_extent_cleanup
+> >
+> > Since the lowmem is still running, you can prepare an environment to
+> > build btrfs-progs, so after the lowmem check finished, you can use that
+> > branch to delete the offending item by:
+> >
+> > # ./btrfs-corrupt-block -X <device>
 
-  Last potentially related work creation:
-   kasan_save_stack+0x3f/0x60 mm/kasan/common.c:47
-   __kasan_record_aux_stack+0xac/0xc0 mm/kasan/generic.c:544
-   __call_rcu_common kernel/rcu/tree.c:3086 [inline]
-   call_rcu+0x167/0xa70 kernel/rcu/tree.c:3190
-   context_switch kernel/sched/core.c:5372 [inline]
-   __schedule+0x1803/0x4be0 kernel/sched/core.c:6756
-   __schedule_loop kernel/sched/core.c:6833 [inline]
-   schedule+0x14b/0x320 kernel/sched/core.c:6848
-   schedule_timeout+0xb0/0x290 kernel/time/sleep_timeout.c:75
-   do_wait_for_common kernel/sched/completion.c:95 [inline]
-   __wait_for_common kernel/sched/completion.c:116 [inline]
-   wait_for_common kernel/sched/completion.c:127 [inline]
-   wait_for_completion+0x355/0x620 kernel/sched/completion.c:148
-   kthread_stop+0x19e/0x640 kernel/kthread.c:712
-   close_ctree+0x524/0xd60 fs/btrfs/disk-io.c:4328
-   generic_shutdown_super+0x139/0x2d0 fs/super.c:642
-   kill_anon_super+0x3b/0x70 fs/super.c:1237
-   btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2112
-   deactivate_locked_super+0xc4/0x130 fs/super.c:473
-   cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1373
-   task_work_run+0x24f/0x310 kernel/task_work.c:239
-   ptrace_notify+0x2d2/0x380 kernel/signal.c:2503
-   ptrace_report_syscall include/linux/ptrace.h:415 [inline]
-   ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
-   syscall_exit_work+0xc7/0x1d0 kernel/entry/common.c:173
-   syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
-   __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
-   syscall_exit_to_user_mode+0x24a/0x340 kernel/entry/common.c:218
-   do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
-   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+(I have been able to build this but haven't run it yet, since I'm
+still waiting to see if the check says anything interesting)
 
-  The buggy address belongs to the object at ffff8880259d1e00
-   which belongs to the cache task_struct of size 7424
-  The buggy address is located 2584 bytes inside of
-   freed 7424-byte region [ffff8880259d1e00, ffff8880259d3b00)
 
-  The buggy address belongs to the physical page:
-  page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x259d0
-  head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-  memcg:ffff88802f4b56c1
-  flags: 0xfff00000000040(head|node=0|zone=1|lastcpupid=0x7ff)
-  page_type: f5(slab)
-  raw: 00fff00000000040 ffff88801bafe500 dead000000000100 dead000000000122
-  raw: 0000000000000000 0000000000040004 00000001f5000000 ffff88802f4b56c1
-  head: 00fff00000000040 ffff88801bafe500 dead000000000100 dead000000000122
-  head: 0000000000000000 0000000000040004 00000001f5000000 ffff88802f4b56c1
-  head: 00fff00000000003 ffffea0000967401 ffffffffffffffff 0000000000000000
-  head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
-  page dumped because: kasan: bad access detected
-  page_owner tracks the page as allocated
-  page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 12, tgid 12 (kworker/u8:1), ts 7328037942, free_ts 0
-   set_page_owner include/linux/page_owner.h:32 [inline]
-   post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1556
-   prep_new_page mm/page_alloc.c:1564 [inline]
-   get_page_from_freelist+0x3651/0x37a0 mm/page_alloc.c:3474
-   __alloc_pages_noprof+0x292/0x710 mm/page_alloc.c:4751
-   alloc_pages_mpol_noprof+0x3e8/0x680 mm/mempolicy.c:2265
-   alloc_slab_page+0x6a/0x140 mm/slub.c:2408
-   allocate_slab+0x5a/0x2f0 mm/slub.c:2574
-   new_slab mm/slub.c:2627 [inline]
-   ___slab_alloc+0xcd1/0x14b0 mm/slub.c:3815
-   __slab_alloc+0x58/0xa0 mm/slub.c:3905
-   __slab_alloc_node mm/slub.c:3980 [inline]
-   slab_alloc_node mm/slub.c:4141 [inline]
-   kmem_cache_alloc_node_noprof+0x269/0x380 mm/slub.c:4205
-   alloc_task_struct_node kernel/fork.c:180 [inline]
-   dup_task_struct+0x57/0x8c0 kernel/fork.c:1113
-   copy_process+0x5d1/0x3d50 kernel/fork.c:2225
-   kernel_clone+0x223/0x870 kernel/fork.c:2807
-   user_mode_thread+0x132/0x1a0 kernel/fork.c:2885
-   call_usermodehelper_exec_work+0x5c/0x230 kernel/umh.c:171
-   process_one_work kernel/workqueue.c:3229 [inline]
-   process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3310
-   worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-  page_owner free stack trace missing
-
-  Memory state around the buggy address:
-   ffff8880259d2700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-   ffff8880259d2780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  >ffff8880259d2800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                              ^
-   ffff8880259d2880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-   ffff8880259d2900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ==================================================================
-
-Fix this by flushing the delalloc workers queue before stopping the
-cleaner kthread.
-
-Reported-by: syzbot+b7cf50a0c173770dcb14@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/674ed7e8.050a0220.48a03.0031.GAE@google.com/
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/disk-io.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 104c86784796..dd4fe6a1c607 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4141,6 +4141,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	 * already the cleaner, but below we run all pending delayed iputs.
- 	 */
- 	btrfs_flush_workqueue(fs_info->fixup_workers);
-+	/*
-+	 * Similar case here, we have to wait for delalloc workers before we
-+	 * proceed below and stop the cleaner kthread, otherwise we trigger a
-+	 * use-after-tree on the cleaner kthread task_struct when a delalloc
-+	 * worker running submit_compressed_extents() adds a delayed iput, which
-+	 * does a wake up on the cleaner kthread, which was already freed below
-+	 * when we call kthread_stop().
-+	 */
-+	btrfs_flush_workqueue(fs_info->delalloc_workers);
- 
- 	/*
- 	 * After we parked the cleaner kthread, ordered extents may have
--- 
-2.39.5
-
+> > Thanks,
+> > Qu
+> >
+> >>>
+> >>> Thanks,
+> >>> Qu
+> >>>
+> >>>> smartctl appears
+> >>>> not to work with this disk, so I can't easily say whether the disk is
+> >>>> or is not healthy.
+> >>>>
+> >>>
+> >
+> >
+>
 
