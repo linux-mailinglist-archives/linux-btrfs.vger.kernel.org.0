@@ -1,661 +1,548 @@
-Return-Path: <linux-btrfs+bounces-10630-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10631-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2149F9E88
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2024 06:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8879FA209
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2024 19:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84A6188922F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2024 05:45:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9D9518889BF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2024 18:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C231E9B16;
-	Sat, 21 Dec 2024 05:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC06516EBE8;
+	Sat, 21 Dec 2024 18:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Dc/1tqO5";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PK0IDV2t"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b="TrFkgB+L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx.tnonline.net (mx.tnonline.net [135.181.111.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784F4370
-	for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 05:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9330D5BAF0
+	for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 18:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.181.111.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734759948; cv=none; b=DlWMbAbh6RgxQrqqzhSxAjHBCQj4NTyTzNi1VqAPU2ZowzW1JSkc9RcG29MSLgud/Gw6s+Y2exBA/GaQrSOLKZMSXRsdMDG3/5guf4x/75H5YIU4OBteX0/n0pkdmzkW4NlRWvODk+hB0qUDR4a/hxWa3vqWsv29raOXHT2jkt0=
+	t=1734807077; cv=none; b=YwPRTB1TAOWs7M/Qf+Q8sMJF0nbh0ISL/yysZRY2/9LxUnx/So4BxAXZydydtlACY9rW8YwKsLRCuqUS29GTm4Ihm16QJaG/XuYpWhxswYjA4YfaRgPWSHoSfbWNT+ogLa4Xnfc1VD9xq9NIsjjQiIcf1OD/D/wN/31MRf1AvgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734759948; c=relaxed/simple;
-	bh=J8/TUlIC17GC/qrystrSJbhYugaOTtpIPcloNo2A+hU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ajyTfFcSGQ9DJlUP4ydU3PMeAxU95vlEBO/VrDWPSn9FQnsqVp++sKRabR4ABF9VC1XHjen32u8jRe6umV0wONLxzoQSi85SlvFlZAX84KJOLiey0Z6bNen9uRARbxWwP2Lp3xzMb/8fSqQIgUsA/Dhz9PcsZs/iol88dph2F68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Dc/1tqO5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PK0IDV2t; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E80B21F7FA
-	for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 05:45:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734759938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=WJgF3T2D21ydRFDs4PAZ0r1fDg/vgcaGerMjPzXX1kk=;
-	b=Dc/1tqO5yTQ6vdyFeIIJwyRoPI4/z7K9pbYv9U9vGNYu5vQ6RRpwy2oUsSFCUWckTIhG7x
-	gam5398gj5nO2jT11EKTOjj/K7YilHshq4mkPzrLAS9FxrwxxnIkUl1y5XYBplK75X0ppL
-	+pTJTafdD0QEsHlNDqC8F0Rz1s2klZ4=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734759937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=WJgF3T2D21ydRFDs4PAZ0r1fDg/vgcaGerMjPzXX1kk=;
-	b=PK0IDV2tB36Fe4+lxKtqUU3W10L8CUVUOvNJu0/h07kGK0WWB0B48TJXdfDbagFdP9oXEw
-	JYSiAdh5PC+i04zg54WN+vIH65b8BJkAkJ/wWOpJE9+BXYhAZTiCg7UvXg1hSAWxMKP8OU
-	qSQ7rhxIlcjUhadx6d5gkhqamTfZKB0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2CDEB132EA
-	for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 05:45:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9oXaNwBWZmciJwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 05:45:36 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: validate system chunk array at btrfs_validate_super()
-Date: Sat, 21 Dec 2024 16:15:19 +1030
-Message-ID: <3c0c676a4618b0f8a933847afa9cb3410fe30628.1734755681.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1734807077; c=relaxed/simple;
+	bh=d616iCBMJGgQupp3KrPVd+bOs0laUDbHHvaN5CDr+Os=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=aZjyLW3APTvhsiiJjtFbZjb4ZwwwelflUNVg1BUqjOQ+pC9uR+i2858KKZMN6Xueof4r6Pf9KT0YqyEWCJZWnkfR55bQfPlCgdGu1A0LSxESx3bfELXguNFNdKQ2oFEgu7s+116Iz75KVweluHJzA+5hUVUMENca9pr1TWMeB+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net; spf=pass smtp.mailfrom=tnonline.net; dkim=pass (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b=TrFkgB+L; arc=none smtp.client-ip=135.181.111.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnonline.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=tnonline.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xlWYzKDmf94C884hYAuSlzvNIHZ8SZsON7px3UXBnX0=; t=1734807074; x=1736016674; 
+	b=TrFkgB+Lg1JRZxd8SyJJ4Wcj9p0tH3i+nJUOJWUBNEjzzxN8yQz0hSF0DUCfJRmvNx+zC4G1Mdn
+	QF+O79P977aGo7nvJFMQM79VYIHBnwhbdQpXVqAnsivevhOv2hTyAY5BswCyrc1m5lBSS9zKQvmq5
+	7xk3ICimgs/fSW12YmSPXBCxw7BnFq0fat92MGJeaZ3JJWe/nzWY+x7ofMPtP+UOtckSzev7sg5pj
+	EzSgbkwiyQVnVFhbhlm6ePSBBxTvb0QieywxPK+CGL26yt4ZGY2jqocQYs+E0Sjqy8xYfuhPPK7DB
+	Um8p6xuna3E6CP1lekxn/g6uy5TN4XoLaO4Q==;
+Received: from [2001:470:28:704::1] (port=47914 helo=tnonline.net)
+	by mx.tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98)
+	(envelope-from <forza@tnonline.net>)
+	id 1tP4HU-000000001MZ-00sH;
+	Sat, 21 Dec 2024 18:32:52 +0000
+Received: from [192.168.0.114] (port=33836)
+	by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.97.1)
+	(envelope-from <forza@tnonline.net>)
+	id 1tP4HS-00000000HjR-34L0;
+	Sat, 21 Dec 2024 19:32:50 +0100
+Date: Sat, 21 Dec 2024 19:32:50 +0100 (GMT+01:00)
+From: Forza <forza@tnonline.net>
+To: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Andrei Borzenkov <arvidjaar@gmail.com>, Qu Wenruo <wqu@suse.com>,
+	Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+Message-ID: <8d4d83e.80527959.193ea7e5d3e@tnonline.net>
+In-Reply-To: <Z1eonzLzseG2_vny@hungrycats.org>
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email> <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com> <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com> <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com> <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com> <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com> <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com> <b5f70481-34a1-4d65-a607-a3151009964d@suse.com> <9ae3c85e-6f0b-4e33-85eb-665b3292638e@gmail.com> <cfa74363-b310-49f0-b4bf-07a98c1be972@gmx.com> <Z1eonzLzseG2_vny@hungrycats.org>
+Subject: Re:  Proposal for RAID-PN (was Re: Using btrfs raid5/6)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_NONE(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: R2Mail2
+X-Spam-Score: -4.1 (----)
 
-Currently btrfs_validate_super() only does a very basic check on the
-array chunk size (not too large than the available space, but not too
-small to contain no chunk).
 
-The more comprehensive checks (the regular chunk checks and size check
-inside the system chunk array) is all done inside
-btrfs_read_sys_array().
 
-It's not a big deal, but it also means we do not do any validation on
-the system chunk array at super block writeback time either.
+---- From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org> -- Sent: 2024-12-1=
+0 - 03:34 ----
 
-So this patch does the following modification to concetrate the system
-chunk array check into btrfs_validate_super():
+> On Sun, Dec 08, 2024 at 06:56:00AM +1030, Qu Wenruo wrote:
+>> =E5=9C=A8 2024/12/7 18:07, Andrei Borzenkov =E5=86=99=E9=81=93:
+>> > 06.12.2024 07:16, Qu Wenruo wrote:
+>> > > =E5=9C=A8 2024/12/6 14:29, Andrei Borzenkov =E5=86=99=E9=81=93:
+>> > > > 05.12.2024 23:27, Qu Wenruo wrote:
+>> > > > > =E5=9C=A8 2024/12/6 03:23, Andrei Borzenkov =E5=86=99=E9=81=93:
+>> > > > > > 05.12.2024 01:34, Qu Wenruo wrote:
+>> > > > > > > =E5=9C=A8 2024/12/5 05:47, Andrei Borzenkov =E5=86=99=E9=81=
+=93:
+>> > > > > > > > 04.12.2024 07:40, Qu Wenruo wrote:
+>> > > > > > > > >=20
+>> > > > > > > > > =E5=9C=A8 2024/12/4 14:04, Scoopta =E5=86=99=E9=81=93:
+>> > > > > > > > > > I'm looking to deploy btfs raid5/6 and have read some =
+of the
+>> > > > > > > > > > previous
+>> > > > > > > > > > posts here about doing so "successfully." I want to ma=
+ke sure I
+>> > > > > > > > > > understand the limitations correctly. I'm looking to r=
+eplace an
+>> > > > > > > > > > md+ext4
+>> > > > > > > > > > setup. The data on these drives is replaceable but obv=
+iously
+>> > > > > > > > > > ideally I
+>> > > > > > > > > > don't want to have to replace it.
+>> > > > > > > > >=20
+>> > > > > > > > > 0) Use kernel newer than 6.5 at least.
+>> > > > > > > > >=20
+>> > > > > > > > > That version introduced a more comprehensive check for a=
+ny RAID56
+>> > > > > > > > > RMW,
+>> > > > > > > > > so that it will always verify the checksum and rebuild w=
+hen
+>> > > > > > > > > necessary.
+>> > > > > > > > >=20
+>> > > > > > > > > This should mostly solve the write hole problem, and we =
+even have
+>> > > > > > > > > some
+>> > > > > > > > > test cases in the fstests already verifying the behavior=
+.
+>> > > > > > > >=20
+>> > > > > > > > Write hole happens when data can *NOT* be rebuilt because =
+data is
+>> > > > > > > > inconsistent between different strips of the same stripe. =
+How btrfs
+>> > > > > > > > solves this problem?
+>> > > > > > >=20
+>> > > > > > > An example please.
+>> > > > > >=20
+>> > > > > > You start with stripe
+>> > > > > >=20
+>> > > > > > A1,B1,C1,D1,P1
+>> > > > > >=20
+>> > > > > > You overwrite A1 with A2
+>> > > > >=20
+>> > > > > This already falls into NOCOW case.
+>> > > > >=20
+>> > > > > No guarantee for data consistency.
+>> > > > >=20
+>> > > > > For COW cases, the new data are always written into unused slot,=
+ and
+>> > > > > after crash we will only see the old data.
+>> > > >=20
+>> > > > Do you mean that btrfs only does full stripe write now? As I recal=
+l from
+>> > > > the previous discussions, btrfs is using fixed size stripes and it=
+ can
+>> > > > fill unused strips. Like
+>> > > >=20
+>> > > > First write
+>> > > >=20
+>> > > > A1,B1,...,...,P1
+>> > > >=20
+>> > > > Second write
+>> > > >=20
+>> > > > A1,B1,C2,D2,P2
+>> > > >=20
+>> > > > I.e. A1 and B1 do not change, but C2 and D2 are added.
+>> > > >=20
+>> > > > Now, if parity is not updated before crash and D gets lost we have
+>> > >=20
+>> > > After crash, C2/D2 is not referenced by anyone.
+>> > > So we won't need to read C2/D2/P2 because it's just unallocated spac=
+e.
+>> >=20
+>> > You do need to read C2/D2 to build parity and to reconstruct any missi=
+ng
+>> > block. Parity no more matches C2/D2. Whether C2/D2 are actually
+>> > referenced by upper layers is irrelevant for RAID5/6.
+>>=20
+>> Nope, in that case whatever garbage is in C2/D2, btrfs just do not care.
+>>=20
+>> Just try it yourself.
+>>=20
+>> You can even mkfs without discarding the device, then btrfs has garbage
+>> for unwritten ranges.
+>>=20
+>> Then do btrfs care those unallocated space nor their parity?
+>> No.
+>>=20
+>> Btrfs only cares full stripe that has at least one block being referred.
+>>=20
+>> For vertical stripe that has no sector involved, btrfs treats it as
+>> nocsum, aka, as long as it can read it's fine. If it can not be read
+>> from the disk (missing dev etc), just use the rebuild data.
+>>=20
+>> Either way for unused sector it makes no difference.
+>=20
+> The assumption Qu made here is that btrfs never writes data blocks to the
+> same stripe from two or more different transactions, without freeing and
+> allocating the entire stripe in between.  If that assumption were true,
+> there would be no write hole in the current implementation.
+>=20
+> The reality is that btrfs does exactly the opposite, as in Andrei's secon=
+d
+> example.  This causes potential data loss of the first transaction's
+> data if the second transaction's write is aborted by a crash.  After the
+> first transaction, the parity and uninitialized data blocks can be used
+> to recover any data block in the first transaction.  When the second
+> transaction is aborted with some but not all of the blocks updated, the
+> parity will no longer be usable to reconstruct the data blocks from _any_
+> part of the stripe, including the first transaction's committed data.
+>=20
+> Technically, in this event, the second transaction's data is _also_
+> lost, but as Qu mentioned above, that data isn't part of a committed
+> transaction, so the damaged data won't appear in the filesystem after a
+> crash, corrupted or otherwise.
+>=20
+> The potential data loss does not become actual data loss until the stripe
+> goes into degraded mode, where the out-of-sync parity block is needed to
+> recover a missing or corrupt data block.  If the stripe was already in
+> degraded mode during the crash, data loss is immediate.
+>=20
+> If the drives are all healthy, the parity block can be recomputed
+> by a scrub, as long as the scrub is completed between a crash and a
+> drive failure.
+>=20
+> If drives are missing or corrupt and parity hasn't been properly updated,
+> then data block reconstruction cannot occur.  btrfs will reject the
+> reconstructed block when its csum doesn't match, resulting in an
+> uncorrectable error.
+>=20
+> There's several options to fix the write hole:
+>=20
+> 1.  Modify btrfs so it behaves the way Qu thinks it does:  no allocations
+> within a partially filled raid56 stripe, unless the stripe was empty
+> at the beginning of the current transaction (i.e. multiple RMW writes
+> are OK, as long as they all disappear in the same crash event).  This
+> ensures a stripe is never written from two separate btrfs transactions,
+> eliminating the write hole.  This option requires an allocator change,
+> and some rework/optimization of how ordered extents are written out.
+> It also requires more balances--space within partially filled stripes
+> isn't usable until every data block within the stripe is freed, and
+> balances do exactly that.
+>=20
+> 2.  Add a stripe journal.  Requires on-disk format change to add the
+> journal, and recovery code at startup to replay it.  It's the industry
+> standard way to fix the write hole in a traditional raid5 implementation,
+> so it's the first idea everyone proposes.  It's also quite slow if you
+> don't have dedicated purpose-built hardware for the journal.  It's the
+> only option for closing the write hole on nodatacow files.
+>=20
+> 3.  Add a generic remapping layer for all IO blocks to avoid requiring
+> RMW cycles.  This is the raid-stripe-tree feature, a brute-force approach
+> that makes RAID profiles possible on ZNS drives.  ZNS drives have similar
+> but much more strict write-ordering constraints than traditional raid56,
+> so if the raid stripe tree can do raid5 on ZNS, it should be able to
+> handle CMR easily ("efficiently" is a separate question).
+>=20
+> 4.  Replace the btrfs raid5 profile with something else, and deprecate
+> the raid5 profile.  I'd recommend not considering that option until
+> after someone delivers a complete, write-hole-free replacement profile,
+> ready for merging.  The existing raid5 is not _that_ hard to fix, we
+> already have 3 well-understood options, and one of them doesn't require
+> an on-disk format change.
+>=20
+>=20
+> Option 1 is probably the best one:  it doesn't require on-disk format
+> changes, only changes to the way kernels manage future writes.  Ideally,
+> the implementation includes an optimization to collect small extent write=
+s
+> and merge them into full-stripe writes, which will make those _much_
+> faster on raid56.  The current implementation does multiple unnecessary
+> RMW cycles when writing multiple separate data extents to the same
+> stripe, even when the extents are allocated within a single transaction
+> and collectively the extents fill the entire stripe.
+>=20
+> Option 1 won't fix nodatacow files, but that's only a problem if you
+> use nodatacow files.
+>=20
+> I suspect options 2 and 3 have so much overhead that they are far
+> slower than option 1, even counting the extra balances option 1 requires.
+> With option 1, the extra overhead is in a big batch you can run overnight=
+,
+> while options 2 and 3 impose continuous overhead on writes, and for
+> option 3, on reads as well.
+>=20
+>> > > So still wrong example.
+>> > >=20
+>> >=20
+>> > It is the right example, you just prefer to ignore this problem.
+>>=20
+>> Sure sure, whatever you believe.
+>>=20
+>> Or why not just read the code on how the current RAID56 works?
+>=20
+> The above is a summary of the state of raid56 when I last read the code
+> in depth (from circa v6.6), combined with direct experience from running
+> a small fleet of btrfs raid5 arrays and observing how they behave since
+> 2016, and review of the raid-stripe-tree design docs.
+>=20
+>> > > Remember we should discuss on the RMW case, meanwhile your case does=
+n't
+>> > > even involve RMW, just a full stripe write.
+>> > >=20
+>> > > >=20
+>> > > > A1,B1,C2,miss,P1
+>> > > >=20
+>> > > > with exactly the same problem.
+>> > > >=20
+>> > > > It has been discussed multiple times, that to fix it either btrfs =
+has to
+>> > > > use variable stripe size (basically, always do full stripe write) =
+or
+>> > > > some form of journal for pending updates.
+>> > >=20
+>> > > If taking a correct example, it would be some like this:
+>> > >=20
+>> > > Existing D1 data, unused D2 , P(D1+D2).
+>> > > Write D2 and update P(D1+D2), then power loss.
+>> > >=20
+>> > > Case 0): Power loss after all data and metadata reached disk
+>> > > Nothing to bother, metadata already updated to see both D1 and D2,
+>> > > everything is fine.
+>> > >=20
+>> > > Case 1): Power loss before metadata reached disk
+>> > >=20
+>> > > This means we will only see D1 as the old data, have no idea there i=
+s
+>> > > any D2.
+>> > >=20
+>> > > Case 1.0): both D2 and P(D1+D2) reached disk
+>> > > Nothing to bother, again.
+>> > >=20
+>> > > Case 1.1): D2 reached disk, P(D1+D2) doesn't
+>> > > We still do not need to bother anything (if all devices are still
+>> > > there), because D1 is still correct.
+>> > >=20
+>> > > But if the device of D1 is missing, we can not recover D1, because D=
+2
+>> > > and P(D1+D2) is out of sync.
+>> > >=20
+>> > > However I can argue this is not a simple corruption/power loss, it's=
+ two
+>> > > problems (power loss + missing device), this should count as 2
+>> > > missing/corrupted sectors in the same vertical stripe.
+>=20
+> A raid56 array must still tolerate power failures while it is degraded.
+> This is table stakes for a modern parity raid implementation.
+>=20
+> The raid56 write hole occurs when it is possible for an active stripe
+> to enter an unrecoverable state.  This is an implementation bug, not a
+> device failure.
+>=20
+> Leaving an inactive stripe in a corrupted state after a crash is OK.
+> Never modifying any active stripe, so they are never corrupted, is OK.
+> btrfs corrupts active stripes, which is not OK.
+>=20
+> Hopefully this is clear.
+>=20
+>> > This is the very definition of the write hole. You are entitled to hav=
+e
+>> > your opinion, but at least do not confuse others by claiming that btrf=
+s
+>> > protects against write hole.
+>> >=20
+>> > It need not be the whole device - it is enough to have a single
+>> > unreadable sector which happens more often (at least, with HDD).
+>> >=20
+>> > And as already mentioned it need not happen at the same (or close) tim=
+e.
+>> > The data corruption may happen days and months after lost write. Sure,
+>> > you can still wave it off as a double fault - but if in case of failed
+>> > disk (or even unreadable sector) administrator at least gets notified =
+in
+>> > logs, here it is absolutely silent without administrator even being
+>> > aware that this stripe is no more redundant and so administrator canno=
+t
+>> > do anything to fix it.
+>> >=20
+>> > > As least btrfs won't do any writeback to the same vertical stripe at=
+ all.
+>> > >=20
+>> > > Case 1.2): P(D1+D2) reached disk, D2 doesn't
+>> > > The same as case 1.1).
+>> > >=20
+>> > > Case 1.3): Neither D2 nor P(D1+D2) reached disk
+>> > >=20
+>> > > It's the same as case 1.0, even missing D1 is fine to recover.
+>> > >=20
+>> > >=20
+>> > > So if you believe powerloss + missing device counts as a single devi=
+ce
+>> > > missing, and it doesn't break the tolerance of RAID5, then you can c=
+ount
+>> > > this as a "write-hole".
+>> > >=20
+>> > > But to me, this is not a single error, but two error (write failure =
++
+>> > > missing device), beyond the tolerance of RAID5.
+>> > >=20
+>> > > Thanks,
+>> > > Qu
+>> >=20
+>>=20
+>>=20
+>=20
 
-- Make chunk_err() helper to accept stack chunk pointer
-  If @leaf parameter is NULL, then the @chunk pointer will be a pointer
-  to the chunk item, other than the offset inside the leaf.
 
-  And since @leaf can be NULL, add a new @fs_info parameter for that
-  case.
 
-- Make btrfs_chekc_chunk_valid() to handle stack chunk pointer
-  The same as chunk_err(), a new @fs_info parameter, and if @leaf is
-  NULL, then @chunk will be a pointer to a stack chunk.
 
-  If @chunk is NULL, then all needed btrfs_chunk members will be read
-  using the stack helper instead of the leaf helper.
-  This means we need to read out all the needed member at the beginning
-  of the function.
+Hi,
 
-  Furthermore, at super block read time, fs_info->sectorsize is not yet
-  initialized, we need one extra @sectorsize parameter to grab the
-  correct sectorsize.
+Thank you for the detailed explanations and suggestions regarding the write=
+ hole issues in Btrfs RAID5/6. I would like to contribute to this discussio=
+n by proposing an alternative implementation, which I call RAID-PN, an exte=
+nt-based parity scheme that avoids the write hole while addressing the shor=
+tcomings of the current RAID5/6 implementation.
 
-- Introduce a helper validate_sys_chunk_array()
-  * Validate the disk key
-  * Validate the size before we access the full chunk items.
-  * Do the full chunk item validation
 
-- Call validate_sys_chunk_array() at btrfs_validate_super()
+I hope this proposal provides a useful perspective on addressing the write =
+hole and improving RAID performance in Btrfs. I welcome feedback on its fea=
+sibility and implementation details.
 
-- Simplify the checks inside btrfs_read_sys_array()
-  Now the checks will be converted to an ASSERT().
 
-- Simplify the checks inside read_one_chunk()
-  Now all chunk items inside system chunk array and chunk tree is
-  verified, there is no need to verify it again inside read_one_chunk().
-
-This change has the following advantages:
-
-- More comprehensive checks at write time
-  And unlike the sys_chunk_array read routine, this time we do not need
-  to allocate a dummy extent buffer to do the check.
-  All the checks done here requires no new memory allocation.
-
-- Slightly improved readablity when iterating the system chunk array
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-- Use stack pointer to verify the chunk item
-  Thankfully the current chunk item verification doesn't involve stripe
-  verification, thus stack pointer is enough and we do not need to
-  allocate a dummy extent buffer nor memcpy() to do the verification
 
-  This also fixes a bug that at super block read time,
-  fs_info->sectorsize/sectorsize_bits are not initialized thus we can
-  have problems using that dummy extent buffer (bitmap set beyond its
-  range).
+Proposal: RAID-PN
 
-  That error can already be caught by btrfs/251, which explicitly
-  uses page size as sectorsize, and will cause mount failure since
-  the uninitialized default sectorsize is 4K, not matching the
-  chunk_sector_size.
+RAID-PN introduces a dynamic parity scheme that uses data sub-extents and p=
+arity extents rather than fixed-width stripes. It eliminates RMW cycles, en=
+sures atomic writes, and provides flexible redundancy levels comparable to =
+or exceeding RAID6 and RAID1c4.
+
+Design Overview
+
+1. Non-Striped Data and Parity:
+
+Data extents are divided into sub-extents based on the pool size. Parity ex=
+tents are calculated for the current data sub-extents and written atomicall=
+y in the same transaction.
+
+Each parity extent is independent and immutable, ensuring consistency.
+
+Example: A 6-device RAID-P3 setup allocates 3 data sub-extents and 3 parity=
+ extents. This configuration achieves 50% space efficiency while tolerating=
+ the same number of device failures as RAID1c4, which only achieves 25% eff=
+iciency on 6 devices.
+
+
+2. Avoidance of RMW:
+
+Parity is calculated only for the data sub-extents being written. No previo=
+usly written data extents or parity extents are read or modified, completel=
+y avoiding RMW cycles.
+
+
+3. Atomicity of Writes:
+
+Both data and parity extents are part of the same transaction. If a crash o=
+ccurs, uncommitted writes are rolled back, leaving only valid, consistent e=
+xtents on disk.
+
+
+4. Dynamic Allocation:
+
+RAID-PN eliminates partially filled stripes by dynamically allocating data =
+sub-extents. Parity extents are calculated only for the allocated sub-exten=
+ts. This avoids garbage collection and balancing operations required by fix=
+ed-stripe designs.
+
+
+5. Checksummed Parity:
+
+Parity extents are checksummed, allowing verification during scrubbing and =
+recovery.
+
+
+
+Addressing Btrfs RAID5/6 Issues
+
+1. Write Hole:
+
+RAID-PN ensures parity and data extents are written atomically and never up=
+dated across transactions, inherently avoiding the write hole issue.
+
+
+2. Degraded Mode Recovery:
+
+Checksummed parity extents ensure reliable recovery from missing or corrupt=
+ data, even in degraded mode.
+
+
+3. Scrubbing and Updates:
+
+Scrubbing validates parity extents against checksums. Inconsistent parity c=
+an be recomputed using data sub-extents without relying on crash-free state=
+s.
+
+
+4. Small Writes and Performance:
+
+For writes smaller than the pool size, RAID-PN is less space efficient due =
+to parity overhead (e.g., a 4 KiB write in RAID-P2 requires 1 data sub-exte=
+nt and 2 parity extents, totaling 12 KiB). However, random small I/O perfor=
+mance is likely better than RAID56 due to the absence of RMW cycles.
+
+
+
+Comparison to Proposed Fixes
+
+1. Allocator Changes (Option 1):
+
+RAID-PN achieves similar outcomes without requiring garbage collection or b=
+alancing operations to reclaim partially filled stripes.
+
+
+2. Stripe Journal (Option 2):
+
+RAID-PN avoids the need for a stripe journal by writing parity atomically a=
+longside data in a single transaction.
+
+
+3. RAID-Stripe-Tree (Option 3):
+
+RAID-PN avoids the complexity of a remapping layer, though extent allocator=
+ changes are required to handle sub-extents.
+
+
+4. Replacement Profile (Option 4):
+
+RAID-PN offers a new profile that supports multiple-device redundancy, avoi=
+ds RMW and journaling, and remains write-hole-free while adhering to Btrfs'=
+s CoW principles. I think it provides an interesting alternative, or comple=
+ment, to RAID56.
+
+
+
+Implementation Considerations
+
+RAID-PN requires changes to support sub-extents for data. Parity extents mu=
+st be tracked and linked to the corresponding data extents/sub-extents..
+
+
+NoCOW files remain problematic. We need to be able to generate parity data,=
+ which is similarly difficult to generating csum, making NoCOW files unprot=
+ected under RAID-PN.
+
+
+Random small I/O is likely to outperform RAID56 due to the lack of RMW cycl=
+es. Large sequential I/O should perform similarly to RAID56.
+
 ---
- fs/btrfs/disk-io.c      | 67 +++++++++++++++++++++++++++++
- fs/btrfs/tree-checker.c | 94 +++++++++++++++++++++++------------------
- fs/btrfs/tree-checker.h |  7 ++-
- fs/btrfs/volumes.c      | 74 ++++++--------------------------
- 4 files changed, 139 insertions(+), 103 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index eff0dd1ae62f..851f550a549b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2327,6 +2327,71 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
- 	return ret;
- }
- 
-+static int validate_sys_chunk_array(const struct btrfs_fs_info *fs_info,
-+				    const struct btrfs_super_block *sb)
-+{
-+	unsigned int cur = 0; /* Offset inside the sys chunk array */
-+	/*
-+	 * At sb read time, fs_info is not fully utilized. Thus we have
-+	 * to use super block sectorsize, which should have been validated.
-+	 */
-+	const u32 sectorsize = btrfs_super_sectorsize(sb);
-+	u32 sys_array_size = btrfs_super_sys_array_size(sb);
-+
-+	if (sys_array_size > BTRFS_SYSTEM_CHUNK_ARRAY_SIZE) {
-+		btrfs_err(fs_info, "system chunk array too big %u > %u",
-+			  sys_array_size, BTRFS_SYSTEM_CHUNK_ARRAY_SIZE);
-+		return -EUCLEAN;
-+	}
-+
-+	while (cur < sys_array_size) {
-+		struct btrfs_disk_key *disk_key;
-+		struct btrfs_chunk *chunk;
-+		struct btrfs_key key;
-+		u64 type;
-+		u16 num_stripes;
-+		u32 len;
-+		int ret;
-+
-+		disk_key = (struct btrfs_disk_key *)(sb->sys_chunk_array + cur);
-+		len = sizeof(*disk_key);
-+
-+		if (cur + len > sys_array_size)
-+			goto short_read;
-+		cur += len;
-+
-+		btrfs_disk_key_to_cpu(&key, disk_key);
-+		if (key.type != BTRFS_CHUNK_ITEM_KEY) {
-+			btrfs_err(fs_info,
-+			    "unexpected item type %u in sys_array at offset %u",
-+				  key.type, cur);
-+			return -EUCLEAN;
-+		}
-+		chunk = (struct btrfs_chunk *)(sb->sys_chunk_array + cur);
-+		num_stripes = btrfs_stack_chunk_num_stripes(chunk);
-+		if (cur + btrfs_chunk_item_size(num_stripes) > sys_array_size)
-+			goto short_read;
-+		type = btrfs_stack_chunk_type(chunk);
-+		if (!(type & BTRFS_BLOCK_GROUP_SYSTEM)) {
-+			btrfs_err(fs_info,
-+			"invalid chunk type %llu in sys_array at offset %u",
-+				  type, cur);
-+			return -EUCLEAN;
-+		}
-+		ret = btrfs_check_chunk_valid(fs_info, NULL, chunk, key.offset,
-+					      sectorsize);
-+		if (ret < 0)
-+			return ret;
-+		cur += btrfs_chunk_item_size(num_stripes);
-+	}
-+	return 0;
-+short_read:
-+	btrfs_err(fs_info,
-+	"super block sys chunk array short read, cur=%u sys_array_size=%u",
-+		  cur, sys_array_size);
-+	return -EUCLEAN;
-+}
-+
- /*
-  * Real super block validation
-  * NOTE: super csum type and incompat features will not be checked here.
-@@ -2495,6 +2560,8 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 		ret = -EINVAL;
- 	}
- 
-+	ret = validate_sys_chunk_array(fs_info, sb);
-+
- 	/*
- 	 * Obvious sys_chunk_array corruptions, it must hold at least one key
- 	 * and one chunk
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index dfeee033f31f..a9a009648143 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -764,22 +764,19 @@ static int check_block_group_item(struct extent_buffer *leaf,
- 	return 0;
- }
- 
--__printf(4, 5)
-+__printf(5, 6)
- __cold
--static void chunk_err(const struct extent_buffer *leaf,
-+static void chunk_err(const struct btrfs_fs_info *fs_info,
-+		      const struct extent_buffer *leaf,
- 		      const struct btrfs_chunk *chunk, u64 logical,
- 		      const char *fmt, ...)
- {
--	const struct btrfs_fs_info *fs_info = leaf->fs_info;
--	bool is_sb;
-+	bool is_sb = !leaf;
- 	struct va_format vaf;
- 	va_list args;
- 	int i;
- 	int slot = -1;
- 
--	/* Only superblock eb is able to have such small offset */
--	is_sb = (leaf->start == BTRFS_SUPER_INFO_OFFSET);
--
- 	if (!is_sb) {
- 		/*
- 		 * Get the slot number by iterating through all slots, this
-@@ -812,13 +809,17 @@ static void chunk_err(const struct extent_buffer *leaf,
- /*
-  * The common chunk check which could also work on super block sys chunk array.
-  *
-+ * If @leaf is NULL, then @chunk must be an on-stack chunk item.
-+ * (For superblock sys_chunk array, and fs_info->sectorsize is unreliable)
-+ *
-  * Return -EUCLEAN if anything is corrupted.
-  * Return 0 if everything is OK.
-  */
--int btrfs_check_chunk_valid(struct extent_buffer *leaf,
--			    struct btrfs_chunk *chunk, u64 logical)
-+int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
-+			    const struct extent_buffer *leaf,
-+			    const struct btrfs_chunk *chunk, u64 logical,
-+			    u32 sectorsize)
- {
--	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	u64 length;
- 	u64 chunk_end;
- 	u64 stripe_len;
-@@ -826,63 +827,73 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 	u16 sub_stripes;
- 	u64 type;
- 	u64 features;
-+	u32 chunk_sector_size;
- 	bool mixed = false;
- 	int raid_index;
- 	int nparity;
- 	int ncopies;
- 
--	length = btrfs_chunk_length(leaf, chunk);
--	stripe_len = btrfs_chunk_stripe_len(leaf, chunk);
--	num_stripes = btrfs_chunk_num_stripes(leaf, chunk);
--	sub_stripes = btrfs_chunk_sub_stripes(leaf, chunk);
--	type = btrfs_chunk_type(leaf, chunk);
-+	if (leaf) {
-+		length = btrfs_chunk_length(leaf, chunk);
-+		stripe_len = btrfs_chunk_stripe_len(leaf, chunk);
-+		num_stripes = btrfs_chunk_num_stripes(leaf, chunk);
-+		sub_stripes = btrfs_chunk_sub_stripes(leaf, chunk);
-+		type = btrfs_chunk_type(leaf, chunk);
-+		chunk_sector_size = btrfs_chunk_sector_size(leaf, chunk);
-+	} else {
-+		length = btrfs_stack_chunk_length(chunk);
-+		stripe_len = btrfs_stack_chunk_stripe_len(chunk);
-+		num_stripes = btrfs_stack_chunk_num_stripes(chunk);
-+		sub_stripes = btrfs_stack_chunk_sub_stripes(chunk);
-+		type = btrfs_stack_chunk_type(chunk);
-+		chunk_sector_size = btrfs_stack_chunk_sector_size(chunk);
-+	}
- 	raid_index = btrfs_bg_flags_to_raid_index(type);
- 	ncopies = btrfs_raid_array[raid_index].ncopies;
- 	nparity = btrfs_raid_array[raid_index].nparity;
- 
- 	if (unlikely(!num_stripes)) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk num_stripes, have %u", num_stripes);
- 		return -EUCLEAN;
- 	}
- 	if (unlikely(num_stripes < ncopies)) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk num_stripes < ncopies, have %u < %d",
- 			  num_stripes, ncopies);
- 		return -EUCLEAN;
- 	}
- 	if (unlikely(nparity && num_stripes == nparity)) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk num_stripes == nparity, have %u == %d",
- 			  num_stripes, nparity);
- 		return -EUCLEAN;
- 	}
--	if (unlikely(!IS_ALIGNED(logical, fs_info->sectorsize))) {
--		chunk_err(leaf, chunk, logical,
-+	if (unlikely(!IS_ALIGNED(logical, sectorsize))) {
-+		chunk_err(fs_info, leaf, chunk, logical,
- 		"invalid chunk logical, have %llu should aligned to %u",
--			  logical, fs_info->sectorsize);
-+			  logical, sectorsize);
- 		return -EUCLEAN;
- 	}
--	if (unlikely(btrfs_chunk_sector_size(leaf, chunk) != fs_info->sectorsize)) {
--		chunk_err(leaf, chunk, logical,
-+	if (unlikely(chunk_sector_size != sectorsize)) {
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk sectorsize, have %u expect %u",
--			  btrfs_chunk_sector_size(leaf, chunk),
--			  fs_info->sectorsize);
-+			  chunk_sector_size, sectorsize);
- 		return -EUCLEAN;
- 	}
--	if (unlikely(!length || !IS_ALIGNED(length, fs_info->sectorsize))) {
--		chunk_err(leaf, chunk, logical,
-+	if (unlikely(!length || !IS_ALIGNED(length, sectorsize))) {
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk length, have %llu", length);
- 		return -EUCLEAN;
- 	}
- 	if (unlikely(check_add_overflow(logical, length, &chunk_end))) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- "invalid chunk logical start and length, have logical start %llu length %llu",
- 			  logical, length);
- 		return -EUCLEAN;
- 	}
- 	if (unlikely(!is_power_of_2(stripe_len) || stripe_len != BTRFS_STRIPE_LEN)) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk stripe length: %llu",
- 			  stripe_len);
- 		return -EUCLEAN;
-@@ -896,30 +907,29 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 	 * Thus it should be a good way to catch obvious bitflips.
- 	 */
- 	if (unlikely(length >= btrfs_stripe_nr_to_offset(U32_MAX))) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "chunk length too large: have %llu limit %llu",
- 			  length, btrfs_stripe_nr_to_offset(U32_MAX));
- 		return -EUCLEAN;
- 	}
- 	if (unlikely(type & ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
- 			      BTRFS_BLOCK_GROUP_PROFILE_MASK))) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "unrecognized chunk type: 0x%llx",
- 			  ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
--			    BTRFS_BLOCK_GROUP_PROFILE_MASK) &
--			  btrfs_chunk_type(leaf, chunk));
-+			    BTRFS_BLOCK_GROUP_PROFILE_MASK) & type);
- 		return -EUCLEAN;
- 	}
- 
- 	if (unlikely(!has_single_bit_set(type & BTRFS_BLOCK_GROUP_PROFILE_MASK) &&
- 		     (type & BTRFS_BLOCK_GROUP_PROFILE_MASK) != 0)) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 		"invalid chunk profile flag: 0x%llx, expect 0 or 1 bit set",
- 			  type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
- 		return -EUCLEAN;
- 	}
- 	if (unlikely((type & BTRFS_BLOCK_GROUP_TYPE_MASK) == 0)) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 	"missing chunk type flag, have 0x%llx one bit must be set in 0x%llx",
- 			  type, BTRFS_BLOCK_GROUP_TYPE_MASK);
- 		return -EUCLEAN;
-@@ -928,7 +938,7 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 	if (unlikely((type & BTRFS_BLOCK_GROUP_SYSTEM) &&
- 		     (type & (BTRFS_BLOCK_GROUP_METADATA |
- 			      BTRFS_BLOCK_GROUP_DATA)))) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			  "system chunk with data or metadata type: 0x%llx",
- 			  type);
- 		return -EUCLEAN;
-@@ -941,7 +951,7 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 	if (!mixed) {
- 		if (unlikely((type & BTRFS_BLOCK_GROUP_METADATA) &&
- 			     (type & BTRFS_BLOCK_GROUP_DATA))) {
--			chunk_err(leaf, chunk, logical,
-+			chunk_err(fs_info, leaf, chunk, logical,
- 			"mixed chunk type in non-mixed mode: 0x%llx", type);
- 			return -EUCLEAN;
- 		}
-@@ -963,7 +973,7 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 		      num_stripes != btrfs_raid_array[BTRFS_RAID_DUP].dev_stripes) ||
- 		     ((type & BTRFS_BLOCK_GROUP_PROFILE_MASK) == 0 &&
- 		      num_stripes != btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes))) {
--		chunk_err(leaf, chunk, logical,
-+		chunk_err(fs_info, leaf, chunk, logical,
- 			"invalid num_stripes:sub_stripes %u:%u for profile %llu",
- 			num_stripes, sub_stripes,
- 			type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
-@@ -983,10 +993,11 @@ static int check_leaf_chunk_item(struct extent_buffer *leaf,
- 				 struct btrfs_chunk *chunk,
- 				 struct btrfs_key *key, int slot)
- {
-+	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	int num_stripes;
- 
- 	if (unlikely(btrfs_item_size(leaf, slot) < sizeof(struct btrfs_chunk))) {
--		chunk_err(leaf, chunk, key->offset,
-+		chunk_err(fs_info, leaf, chunk, key->offset,
- 			"invalid chunk item size: have %u expect [%zu, %u)",
- 			btrfs_item_size(leaf, slot),
- 			sizeof(struct btrfs_chunk),
-@@ -1001,14 +1012,15 @@ static int check_leaf_chunk_item(struct extent_buffer *leaf,
- 
- 	if (unlikely(btrfs_chunk_item_size(num_stripes) !=
- 		     btrfs_item_size(leaf, slot))) {
--		chunk_err(leaf, chunk, key->offset,
-+		chunk_err(fs_info, leaf, chunk, key->offset,
- 			"invalid chunk item size: have %u expect %lu",
- 			btrfs_item_size(leaf, slot),
- 			btrfs_chunk_item_size(num_stripes));
- 		return -EUCLEAN;
- 	}
- out:
--	return btrfs_check_chunk_valid(leaf, chunk, key->offset);
-+	return btrfs_check_chunk_valid(fs_info, leaf, chunk, key->offset,
-+				       fs_info->sectorsize);
- }
- 
- __printf(3, 4)
-diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
-index db67f96cbe4b..c391d3e4c876 100644
---- a/fs/btrfs/tree-checker.h
-+++ b/fs/btrfs/tree-checker.h
-@@ -8,6 +8,7 @@
- 
- #include <linux/types.h>
- #include <uapi/linux/btrfs_tree.h>
-+#include "fs.h"
- 
- struct extent_buffer;
- struct btrfs_chunk;
-@@ -66,8 +67,10 @@ enum btrfs_tree_block_status __btrfs_check_node(struct extent_buffer *node);
- int btrfs_check_leaf(struct extent_buffer *leaf);
- int btrfs_check_node(struct extent_buffer *node);
- 
--int btrfs_check_chunk_valid(struct extent_buffer *leaf,
--			    struct btrfs_chunk *chunk, u64 logical);
-+int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
-+			    const struct extent_buffer *leaf,
-+			    const struct btrfs_chunk *chunk, u64 logical,
-+			    u32 sectorsize);
- int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner);
- int btrfs_verify_level_key(struct extent_buffer *eb,
- 			   const struct btrfs_tree_parent_check *check);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index d32913c51d69..9b25fa67bc7d 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7003,16 +7003,6 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 	warn_32bit_meta_chunk(fs_info, logical, length, type);
- #endif
- 
--	/*
--	 * Only need to verify chunk item if we're reading from sys chunk array,
--	 * as chunk item in tree block is already verified by tree-checker.
--	 */
--	if (leaf->start == BTRFS_SUPER_INFO_OFFSET) {
--		ret = btrfs_check_chunk_valid(leaf, chunk, logical);
--		if (ret)
--			return ret;
--	}
--
- 	map = btrfs_find_chunk_map(fs_info, logical, 1);
- 
- 	/* already mapped? */
-@@ -7270,16 +7260,11 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_super_block *super_copy = fs_info->super_copy;
- 	struct extent_buffer *sb;
--	struct btrfs_disk_key *disk_key;
--	struct btrfs_chunk *chunk;
- 	u8 *array_ptr;
- 	unsigned long sb_array_offset;
- 	int ret = 0;
--	u32 num_stripes;
- 	u32 array_size;
--	u32 len = 0;
- 	u32 cur_offset;
--	u64 type;
- 	struct btrfs_key key;
- 
- 	ASSERT(BTRFS_SUPER_INFO_SIZE <= fs_info->nodesize);
-@@ -7302,10 +7287,16 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
- 	cur_offset = 0;
- 
- 	while (cur_offset < array_size) {
--		disk_key = (struct btrfs_disk_key *)array_ptr;
--		len = sizeof(*disk_key);
--		if (cur_offset + len > array_size)
--			goto out_short_read;
-+		struct btrfs_chunk *chunk;
-+		struct btrfs_disk_key *disk_key = (struct btrfs_disk_key *)array_ptr;
-+		u32 len = sizeof(*disk_key);
-+
-+		/*
-+		 * The sys_chunk_array is already verified at super block read
-+		 * time.
-+		 * Only do ASSERT()s for basic checks.
-+		 */
-+		ASSERT(cur_offset + len <= array_size);
- 
- 		btrfs_disk_key_to_cpu(&key, disk_key);
- 
-@@ -7313,44 +7304,14 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
- 		sb_array_offset += len;
- 		cur_offset += len;
- 
--		if (key.type != BTRFS_CHUNK_ITEM_KEY) {
--			btrfs_err(fs_info,
--			    "unexpected item type %u in sys_array at offset %u",
--				  (u32)key.type, cur_offset);
--			ret = -EIO;
--			break;
--		}
-+		ASSERT(key.type == BTRFS_CHUNK_ITEM_KEY);
- 
- 		chunk = (struct btrfs_chunk *)sb_array_offset;
--		/*
--		 * At least one btrfs_chunk with one stripe must be present,
--		 * exact stripe count check comes afterwards
--		 */
--		len = btrfs_chunk_item_size(1);
--		if (cur_offset + len > array_size)
--			goto out_short_read;
-+		ASSERT(btrfs_chunk_type(sb, chunk) & BTRFS_BLOCK_GROUP_SYSTEM);
- 
--		num_stripes = btrfs_chunk_num_stripes(sb, chunk);
--		if (!num_stripes) {
--			btrfs_err(fs_info,
--			"invalid number of stripes %u in sys_array at offset %u",
--				  num_stripes, cur_offset);
--			ret = -EIO;
--			break;
--		}
-+		len = btrfs_chunk_item_size(btrfs_chunk_num_stripes(sb, chunk));
- 
--		type = btrfs_chunk_type(sb, chunk);
--		if ((type & BTRFS_BLOCK_GROUP_SYSTEM) == 0) {
--			btrfs_err(fs_info,
--			"invalid chunk type %llu in sys_array at offset %u",
--				  type, cur_offset);
--			ret = -EIO;
--			break;
--		}
--
--		len = btrfs_chunk_item_size(num_stripes);
--		if (cur_offset + len > array_size)
--			goto out_short_read;
-+		ASSERT(cur_offset + len <= array_size);
- 
- 		ret = read_one_chunk(&key, sb, chunk);
- 		if (ret)
-@@ -7363,13 +7324,6 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
- 	clear_extent_buffer_uptodate(sb);
- 	free_extent_buffer_stale(sb);
- 	return ret;
--
--out_short_read:
--	btrfs_err(fs_info, "sys_array too short to read %u bytes at offset %u",
--			len, cur_offset);
--	clear_extent_buffer_uptodate(sb);
--	free_extent_buffer_stale(sb);
--	return -EIO;
- }
- 
- /*
--- 
-2.47.1
 
 
