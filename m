@@ -1,152 +1,240 @@
-Return-Path: <linux-btrfs+bounces-10633-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10634-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AFDC9FA354
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 03:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49CD29FA580
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 13:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A9B166E08
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 02:20:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 981751651B1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 12:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240F939FD9;
-	Sun, 22 Dec 2024 02:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E1B18A6D4;
+	Sun, 22 Dec 2024 12:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="CuIMC/dV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD922B9BF
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 02:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D90D63B9
+	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 12:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734834024; cv=none; b=hYRlYwcJERRe3Ggp+XnRg8HGRfQj/etmUYEYTukYVakidIIYOW2OZbLt1D1fZFvXiqyLkOymkY6zXGkEaPhbPk+9i8RzW75GXlFpxNj4xumpmtBWpLo33s9EIY5lkgVBPA4ZIE8sRE7BOG04ZjgGzcBYZ7N0+CXN63AyDGyV+3k=
+	t=1734868979; cv=none; b=lr3CozhEI+iaMOj6WPnbJB9oqm3thwAnjBjy4ggQ5Pn7xKQF4DMMe/Or1cvieH0O3mESMtlpkg558VHUze/GvXdgATpyw47khcTzNJWxh3KN9BBF4YYw03E4wGxHiGrJBd9QYN57gUEwlHJnsVdLrM7XsPPDuwk8/5uh/OO+Wsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734834024; c=relaxed/simple;
-	bh=r8k4bTdHigu/FqSak59kjLGqXq3rLhZNiDRVHRzRwTU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OGP8oeqMsFmP4BjQRt9BXV8I78yplT/ogdImYaoX6D0jvG2qwO0TyfW36msurMCBnzEMRo+I3YMe0ZtMTN3OenYzanAsrMP9bhv7su+p4yq0mdTjXm0GZOlPWAOQnhh25+uef0aqtNtceLlE03di9i/jIoVeOKsTo3b5lUs2iBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3a815ab079cso62623605ab.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 18:20:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734834022; x=1735438822;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cvkvbfEur0boQYWlGhvmhFQWmAba/EkpKp+2Tbwmi/8=;
-        b=P8cuyxTg0NVcOBmoqe3YKPlBTOpNHbECgiK0JZq/h4yr0IrnTW6DYaSPcxbi9LcBea
-         YCP+45EQ5WXKeixa4dJYbbDciJPdFsSVaaA3/Deemeh7ojiEZqPWBesP6HdHL38+MNh+
-         Z4SLYQHgR2b+fpE6yiBXYkWnFBSiZyVTcjkx6amHW3jjbY6CvwRByJFjwLEfERjSCS+Q
-         3VYbWuKY8xsZn0hSv5nt0h6Ds2APefO2K/bpOcZJqmcfNQgSOWIHn7WAY8bsrAjzrHsT
-         5pqYWx3oae/Occ0SIqfs3SNjoLyELr5OTNZyUBaAj+goW5suEpPLEykzEb1g52emPD93
-         7/BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVfRGlKNdjRTWEXQMYECi1XKUcDu+Zh4YxXeyI5UZZFGrw7EJblblkpWoXYEQ6hO8Oe1Z0LApzhbanrOw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzna6kXOMsSAFXU1f6y0SLLSoYwXfm8ZWeVP4Yycp2zGDWPA3wx
-	ciLu/EnExAWu1TyJhpX3qylX1tgDr4DXDkqzTCssVaSg12+pHAGMrk6xbLXKWZOcrDXTESPfV5u
-	bB1t5Q6rDN3Pz66TwF6Jvtb2ULNy2lBRyRgSJBDgKawEgNUMOl3jqinQ=
-X-Google-Smtp-Source: AGHT+IElj9QaBIIS5aVknYTyNkOzH8mI9EXqUkdmzQBlkmqCCKK/52sH/oF/KRLHJaBJfY7nB1hXB7LzwFQvXgkoovg9hJrx9eVK
+	s=arc-20240116; t=1734868979; c=relaxed/simple;
+	bh=SAuC83cSPN0Hy/ZgAv7GSzTZegxLjOJoNMMQApAW2Nw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RdkMwYdiff1shfs3TtkhxIGLaDJgFek/Vqq/WrsAS5QfGEw5NumOWWyIyKP4PjgbeKHvhcAHyGqQn7ziiJUMcEgnISvKHDAB2mS2U2hOa7qN+lp8pALwXViv9VD+oMfRdXsYT2AEbr7Vgk9YhQNWpXYiubMAWIogkYtLEzkb3yQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=CuIMC/dV; arc=none smtp.client-ip=213.209.10.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id PKd6tlyVMgetmPKd6t3p7g; Sun, 22 Dec 2024 13:00:18 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1734868818; bh=D1J14tLu6wfw769Oi7o/bs/U5iHMNbI80E0eiUg3+MM=;
+	h=From;
+	b=CuIMC/dVVCwnbpP2FGwcwtjavlrPc/JlGHvoWcWV9QCnPQUlsBQiR8QrjXlkeM0vx
+	 s4oE8o6geEfwua7HIlJ7PKW8lCh2tkJbuOMXSpV29NDVs+UqeHPzyukwzOiJ4UQJnI
+	 spDA6Aj1THGBQkdEdbKSs45+4acfHkbevdNkLCEpkfMScG4Zn3H3BDZNAHbIIcTLUT
+	 MNk2x5cb1CUqkzb/UJh2n8ZZieNIOscOSscvZG7WYvW9kYzHNMj5IabMi9QBZf2cfl
+	 3+anegPXlYqnkIVPeX9wvf1GY57Sx/JnUa+IzWnL0jwO1gnG9DyN2FyPrLnYfEkWtz
+	 hodYXI9V7B1EQ==
+X-CNFS-Analysis: v=2.4 cv=QPmjRRLL c=1 sm=1 tr=0 ts=6767ff52 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=cWKlxCslBCwoSmCUM3sA:9 a=QEXdDO2ut3YA:10
+Message-ID: <e2ca9ceb-4ead-4739-af8b-f37b1a902170@libero.it>
+Date: Sun, 22 Dec 2024 13:00:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c42:b0:3a7:87f2:b00e with SMTP id
- e9e14a558f8ab-3c2d533f04dmr73683025ab.19.1734834022242; Sat, 21 Dec 2024
- 18:20:22 -0800 (PST)
-Date: Sat, 21 Dec 2024 18:20:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67677766.050a0220.226966.0019.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_rename2
-From: syzbot <syzbot+882cfd52ad141a668d9a@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: Proposal for RAID-PN (was Re: Using btrfs raid5/6)
+To: Forza <forza@tnonline.net>, Zygo Blaxell
+ <ce3g8jdj@umail.furryterror.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Andrei Borzenkov <arvidjaar@gmail.com>, Qu Wenruo <wqu@suse.com>,
+ Scoopta <mlist@scoopta.email>, linux-btrfs@vger.kernel.org
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com>
+ <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com>
+ <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com>
+ <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
+ <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com>
+ <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com>
+ <b5f70481-34a1-4d65-a607-a3151009964d@suse.com>
+ <9ae3c85e-6f0b-4e33-85eb-665b3292638e@gmail.com>
+ <cfa74363-b310-49f0-b4bf-07a98c1be972@gmx.com>
+ <Z1eonzLzseG2_vny@hungrycats.org> <8d4d83e.80527959.193ea7e5d3e@tnonline.net>
+Content-Language: en-US
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <8d4d83e.80527959.193ea7e5d3e@tnonline.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBLmEEf0KoNrPTwUIwifRC6KWERyIMFvRYedx4UZJ4B6z5e8ov8/2Mrd7MwXgnmjXkicBwdNyRuKweE29EECHk5i7m4G+g1sFdoxQmPV01Xo/hFDME9a
+ HggGJg1A0XtVkRG87tBU/j8nq/U9uRP1EXEPw/5URlmvh8wsQzAzlAgu2atwu3uKKQuxYdV6b8bpDSczz3RvyG4VxMn01W8fJs0pPvrTO3n4dNqq78m5jdZU
+ Es+sPkoHQUc4zW4Qk1DnnMWd2oGBaA/L/uf5FqVcbaaITldSnwWxA9/tRkRYQClLMrjv9c7Ny0Uo2FIvxmBxZzL6wIiOxtQWsTt2zLfbcswAIegZcHf9kStH
+ 63xBO0FpK0Nji7iU3uoS40IlFYGrhjYAK7dnmHrESeT0QhcngNk=
 
-Hello,
+On 21/12/2024 19.32, Forza wrote:
+> 
+>
+> 
+> 
+> Hi,
+> 
+> Thank you for the detailed explanations and suggestions regarding the write hole issues in Btrfs RAID5/6. I would like to contribute to this discussion by proposing an alternative implementation, which I call RAID-PN, an extent-based parity scheme that avoids the write hole while addressing the shortcomings of the current RAID5/6 implementation.
+> 
+> 
+> I hope this proposal provides a useful perspective on addressing the write hole and improving RAID performance in Btrfs. I welcome feedback on its feasibility and implementation details.
+> 
+> 
+> ---
+> 
+> Proposal: RAID-PN
+> 
+> RAID-PN introduces a dynamic parity scheme that uses data sub-extents and parity extents rather than fixed-width stripes. It eliminates RMW cycles, ensures atomic writes, and provides flexible redundancy levels comparable to or exceeding RAID6 and RAID1c4.
+> 
+> Design Overview
+> 
+> 1. Non-Striped Data and Parity:
+> 
+> Data extents are divided into sub-extents based on the pool size. Parity extents are calculated for the current data sub-extents and written atomically in the same transaction.
+> 
+> Each parity extent is independent and immutable, ensuring consistency.
+> 
+> Example: A 6-device RAID-P3 setup allocates 3 data sub-extents and 3 parity extents. This configuration achieves 50% space efficiency while tolerating the same number of device failures as RAID1c4, which only achieves 25% efficiency on 6 devices.
+> 
+I see here few technical challenges:
 
-syzbot found the following issue on:
+1) I assume that each substripe is "device" specific. This means that the allocator should not find an empty space big enough to host the data, but  the allocator should find 6 empty spaces on different disks.
 
-HEAD commit:    59dbb9d81adf Merge tag 'xsa465+xsa466-6.13-tag' of git://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1755d730580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6a2b862bf4a5409f
-dashboard link: https://syzkaller.appspot.com/bug?extid=882cfd52ad141a668d9a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+2) the efficency depend by the data size. If the extent is a 1 sector size, the system should allocate: 1 sub-extent for data and 3 sub-extent for the parity.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-59dbb9d8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e0cc89779297/vmlinux-59dbb9d8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5e6c895062cb/bzImage-59dbb9d8.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+882cfd52ad141a668d9a@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -2)
-WARNING: CPU: 0 PID: 5321 at fs/btrfs/inode.c:8298 btrfs_rename fs/btrfs/inode.c:8298 [inline]
-WARNING: CPU: 0 PID: 5321 at fs/btrfs/inode.c:8298 btrfs_rename2+0x2ac6/0x2b90 fs/btrfs/inode.c:8377
-Modules linked in:
-CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc3-syzkaller-00026-g59dbb9d81adf #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:btrfs_rename fs/btrfs/inode.c:8298 [inline]
-RIP: 0010:btrfs_rename2+0x2ac6/0x2b90 fs/btrfs/inode.c:8377
-Code: ff ff 48 8d bc 24 d0 01 00 00 e8 75 81 46 fe e9 79 ec ff ff e8 eb 18 e0 fd 90 48 c7 c7 80 99 4b 8c 44 89 fe e8 9b bc a0 fd 90 <0f> 0b 90 90 e9 ee f9 ff ff e8 cc 18 e0 fd 90 48 c7 c7 80 99 4b 8c
-RSP: 0018:ffffc9000d447680 EFLAGS: 00010246
-RAX: b49777bc4d744c00 RBX: ffff888052f2c001 RCX: 0000000000100000
-RDX: ffffc9000eddb000 RSI: 000000000000186c RDI: 000000000000186d
-RBP: ffffc9000d447a90 R08: ffffffff81601a42 R09: fffffbfff1cfa210
-R10: dffffc0000000000 R11: fffffbfff1cfa210 R12: ffff8880448959a0
-R13: 1ffff11008912b34 R14: 0000000000000000 R15: 00000000fffffffe
-FS:  00007f28b26106c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f28b260ffe0 CR3: 000000003fe4c000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- vfs_rename+0xbdb/0xf00 fs/namei.c:5067
- do_renameat2+0xd94/0x13f0 fs/namei.c:5224
- __do_sys_rename fs/namei.c:5271 [inline]
- __se_sys_rename fs/namei.c:5269 [inline]
- __x64_sys_rename+0x82/0x90 fs/namei.c:5269
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f28b1785d29
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f28b2610038 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
-RAX: ffffffffffffffda RBX: 00007f28b1976080 RCX: 00007f28b1785d29
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000020000080
-RBP: 00007f28b1801a20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f28b1976080 R15: 00007ffcc9517458
- </TASK>
+3) the number of sub extent grows by factor equal to the number of disks
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 2. Avoidance of RMW:
+> 
+> Parity is calculated only for the data sub-extents being written. No previously written data extents or parity extents are read or modified, completely avoiding RMW cycles.
+> 
+> 
+> 3. Atomicity of Writes:
+> 
+> Both data and parity extents are part of the same transaction. If a crash occurs, uncommitted writes are rolled back, leaving only valid, consistent extents on disk.
+> 
+> 
+> 4. Dynamic Allocation:
+> 
+> RAID-PN eliminates partially filled stripes by dynamically allocating data sub-extents. Parity extents are calculated only for the allocated sub-extents. This avoids garbage collection and balancing operations required by fixed-stripe designs.
+> 
+> 
+> 5. Checksummed Parity:
+> 
+> Parity extents are checksummed, allowing verification during scrubbing and recovery.
+> 
+> 
+> 
+> Addressing Btrfs RAID5/6 Issues
+> 
+> 1. Write Hole:
+> 
+> RAID-PN ensures parity and data extents are written atomically and never updated across transactions, inherently avoiding the write hole issue.
+> 
+> 
+> 2. Degraded Mode Recovery:
+> 
+> Checksummed parity extents ensure reliable recovery from missing or corrupt data, even in degraded mode.
+> 
+> 
+> 3. Scrubbing and Updates:
+> 
+> Scrubbing validates parity extents against checksums. Inconsistent parity can be recomputed using data sub-extents without relying on crash-free states.
+> 
+> 
+> 4. Small Writes and Performance:
+> 
+> For writes smaller than the pool size, RAID-PN is less space efficient due to parity overhead (e.g., a 4 KiB write in RAID-P2 requires 1 data sub-extent and 2 parity extents, totaling 12 KiB). However, random small I/O performance is likely better than RAID56 due to the absence of RMW cycles.
+> 
+> 
+> 
+> Comparison to Proposed Fixes
+> 
+> 1. Allocator Changes (Option 1):
+> 
+> RAID-PN achieves similar outcomes without requiring garbage collection or balancing operations to reclaim partially filled stripes.
+> 
+> 
+> 2. Stripe Journal (Option 2):
+> 
+> RAID-PN avoids the need for a stripe journal by writing parity atomically alongside data in a single transaction.
+> 
+> 
+> 3. RAID-Stripe-Tree (Option 3):
+> 
+> RAID-PN avoids the complexity of a remapping layer, though extent allocator changes are required to handle sub-extents.
+> 
+> 
+> 4. Replacement Profile (Option 4):
+> 
+> RAID-PN offers a new profile that supports multiple-device redundancy, avoids RMW and journaling, and remains write-hole-free while adhering to Btrfs's CoW principles. I think it provides an interesting alternative, or complement, to RAID56.
+> 
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+5 - let me to add another possible implementation:
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+The parity is stored inside the extent, at fixed offset. Then the extent is written in a striped profile.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+1) map the disks like a striped (non raid) profile: the first block is the first block of the 1st disk, the second block is the 1st block of the 2nd disk... the n block is the 1st block of the n disk, the n+1 block is the 2nd block of the first disk...
 
-If you want to undo deduplication, reply with:
-#syz undup
+2) in the begin of the extent there are the parity blocks, and the parity blocks are at fixed offset (each n blocks); in the example below we assume 6 disks, and 3 parity
+
+     if we have to write 1 data block, the extent will contain
+		{P11, P21, P31,     D1}
+
+     if we have to write 2 data block, the extent will contain
+		{P112, P212, P312,  D1, D2}
+
+     if we have to write 6 data block, the extent will contain:
+		{P1135, P2135, P3135,  D1, D3, D5,
+                  P1246, P2246, P3246,  D2, D4, D6}
+
+     if we have to write 12 data block, the extent will contain
+		{P1159,  P2159,  P3159,   D1, D5, D9,
+                  P12610, P22610, P2610,   D2, D6, D10,
+                  P13711, P23711, P33711,  D3, D7, D11,
+                  P14812, P24812, P34812,  D4, D8, D12}
+
+In this way, the number of the extents remain low, and the allocator logic should be the same.
+
+Rewriting in the middle of an extent would be a mess, but as pointed out by Zygo, this doesn't happen.
+
+
+> Implementation Considerations
+> 
+> RAID-PN requires changes to support sub-extents for data. Parity extents must be tracked and linked to the corresponding data extents/sub-extents..
+> 
+> 
+> NoCOW files remain problematic. We need to be able to generate parity data, which is similarly difficult to generating csum, making NoCOW files unprotected under RAID-PN.
+> 
+> 
+> Random small I/O is likely to outperform RAID56 due to the lack of RMW cycles. Large sequential I/O should perform similarly to RAID56.
+> 
+> ---
+> 
+> 
+> 
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
