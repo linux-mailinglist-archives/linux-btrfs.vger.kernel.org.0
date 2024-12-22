@@ -1,209 +1,152 @@
-Return-Path: <linux-btrfs+bounces-10632-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10633-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831089FA303
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 01:11:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AFDC9FA354
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 03:20:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFE5316707A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 00:11:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A9B166E08
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2024 02:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0714802;
-	Sun, 22 Dec 2024 00:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="U8bWw8YP";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OH8D5XfG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240F939FD9;
+	Sun, 22 Dec 2024 02:20:25 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646D0184
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 00:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD922B9BF
+	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 02:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734826268; cv=none; b=YO2M6U0j5OyDSoVkzDdUkaOMmv4vRJd3MVDYPv+LPUhqw9BNiuQET9YfvIMqykjyUmxxzzZKVlf1Hn8COaCWqGa9FqP73Ve+D2qqpjq8Bpy6b4OaEZ/zQPhF1rVDT1uKtEIemU9M7o6ETkY92SMGIWeNvYY9s0ROlRJ1DluY1Jo=
+	t=1734834024; cv=none; b=hYRlYwcJERRe3Ggp+XnRg8HGRfQj/etmUYEYTukYVakidIIYOW2OZbLt1D1fZFvXiqyLkOymkY6zXGkEaPhbPk+9i8RzW75GXlFpxNj4xumpmtBWpLo33s9EIY5lkgVBPA4ZIE8sRE7BOG04ZjgGzcBYZ7N0+CXN63AyDGyV+3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734826268; c=relaxed/simple;
-	bh=/RGSYOqtFPCvmto6Dkl40GLQSCDAsA+WWwd/HKUpVGs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WdIrBZvHmhtUMW3pRhdfc6u0JJLdtAWR515sHZmQOoxHl9C4qPUmB0BY8pRzabixFwQC/j2dplEfqHTCthJsWHxpNzSdHW4MonjblODJCAvHF1WHELvA0Rt10NjqNndvQamaMOIqW6HHWXTEFSRy9Z67SRQEZlnYxjGY+6PxzkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=U8bWw8YP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OH8D5XfG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0DEBC22882
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 00:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734826256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=f4JaMD+LeYz1a+Bt14ki8L2vyNW8FT1YTHQovuP5H4s=;
-	b=U8bWw8YP4tCl3kqdCFNWoKB+wu19CI0hEkU+xtCkwmkgcGot/zg6zsjOqhY434xvoI+cNs
-	2/DaRdEUmACf1LHh6f8lqhxJDkvwnlIJ7Xc8aCMkL+dKvdtiksF0MDA89uI1adFgnRVmlo
-	ss9zcTzUc37Po9X5QdZCPEbuhO9fqCQ=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1734826255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=f4JaMD+LeYz1a+Bt14ki8L2vyNW8FT1YTHQovuP5H4s=;
-	b=OH8D5XfG0nziul9ODFzZLG8x2xqBo/fV3pC0zORnww9yq70ShWMXcah7Vo7a0MoAXg9Fgv
-	KjFZ4RD3i7pmRPJ9go7pR/2RSVCKH9sdJDjtK8BBeJs75rLugYa4gcQw9P8KSSEyXpGJoq
-	J7QSOVwtaRZdYWS+9IBOnrBy6QImKzI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A5E5134E4
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 00:10:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sQZIAw5ZZ2ecIAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 00:10:54 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: docs: extra notes about read-only scrub on read-write fs
-Date: Sun, 22 Dec 2024 10:40:32 +1030
-Message-ID: <077b7ef71095dfaf92e605c515e384033fdc0dd5.1734826227.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1734834024; c=relaxed/simple;
+	bh=r8k4bTdHigu/FqSak59kjLGqXq3rLhZNiDRVHRzRwTU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OGP8oeqMsFmP4BjQRt9BXV8I78yplT/ogdImYaoX6D0jvG2qwO0TyfW36msurMCBnzEMRo+I3YMe0ZtMTN3OenYzanAsrMP9bhv7su+p4yq0mdTjXm0GZOlPWAOQnhh25+uef0aqtNtceLlE03di9i/jIoVeOKsTo3b5lUs2iBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3a815ab079cso62623605ab.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2024 18:20:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734834022; x=1735438822;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cvkvbfEur0boQYWlGhvmhFQWmAba/EkpKp+2Tbwmi/8=;
+        b=P8cuyxTg0NVcOBmoqe3YKPlBTOpNHbECgiK0JZq/h4yr0IrnTW6DYaSPcxbi9LcBea
+         YCP+45EQ5WXKeixa4dJYbbDciJPdFsSVaaA3/Deemeh7ojiEZqPWBesP6HdHL38+MNh+
+         Z4SLYQHgR2b+fpE6yiBXYkWnFBSiZyVTcjkx6amHW3jjbY6CvwRByJFjwLEfERjSCS+Q
+         3VYbWuKY8xsZn0hSv5nt0h6Ds2APefO2K/bpOcZJqmcfNQgSOWIHn7WAY8bsrAjzrHsT
+         5pqYWx3oae/Occ0SIqfs3SNjoLyELr5OTNZyUBaAj+goW5suEpPLEykzEb1g52emPD93
+         7/BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfRGlKNdjRTWEXQMYECi1XKUcDu+Zh4YxXeyI5UZZFGrw7EJblblkpWoXYEQ6hO8Oe1Z0LApzhbanrOw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzna6kXOMsSAFXU1f6y0SLLSoYwXfm8ZWeVP4Yycp2zGDWPA3wx
+	ciLu/EnExAWu1TyJhpX3qylX1tgDr4DXDkqzTCssVaSg12+pHAGMrk6xbLXKWZOcrDXTESPfV5u
+	bB1t5Q6rDN3Pz66TwF6Jvtb2ULNy2lBRyRgSJBDgKawEgNUMOl3jqinQ=
+X-Google-Smtp-Source: AGHT+IElj9QaBIIS5aVknYTyNkOzH8mI9EXqUkdmzQBlkmqCCKK/52sH/oF/KRLHJaBJfY7nB1hXB7LzwFQvXgkoovg9hJrx9eVK
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Received: by 2002:a05:6e02:1c42:b0:3a7:87f2:b00e with SMTP id
+ e9e14a558f8ab-3c2d533f04dmr73683025ab.19.1734834022242; Sat, 21 Dec 2024
+ 18:20:22 -0800 (PST)
+Date: Sat, 21 Dec 2024 18:20:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67677766.050a0220.226966.0019.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_rename2
+From: syzbot <syzbot+882cfd52ad141a668d9a@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-[BUG]
-There is a bug report that read-only scrub on a read-write fs still
-causes writes into the fs, and that will be caught if there is a
-read-only block device among the storage stack.
+Hello,
 
-This will cause a kernel warning on failed transaction commit:
+syzbot found the following issue on:
 
- BTRFS info (device dm-3): first mount of filesystem e18f0c40-88de-413f-9d7e-dcc8136ad6dd
- BTRFS info (device dm-3): using crc32c (crc32c-intel) checksum algorithm
- BTRFS info (device dm-3): using free-space-tree
- BTRFS info (device dm-3): scrub: started on devid 1
- Trying to write to read-only block-device md127
- btrfs_dev_stat_inc_and_print: 362 callbacks suppressed
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 3, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 4, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 5, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 6, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 7, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 8, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 9, rd 0, flush 0, corrupt 0, gen 0
- BTRFS error (device dm-3): bdev /dev/mapper/data errs: wr 10, rd 0, flush 0, corrupt 0, gen 0
- BTRFS: error (device dm-3) in btrfs_commit_transaction:2523: errno=-5 IO failure (Error while writing out transaction)
- BTRFS info (device dm-3 state E): forced readonly
- BTRFS warning (device dm-3 state E): Skipping commit of aborted transaction.
- BTRFS error (device dm-3 state EA): Transaction aborted (error -5)
- BTRFS: error (device dm-3 state EA) in cleanup_transaction:2017: errno=-5 IO failure
- BTRFS warning (device dm-3 state EA): failed setting block group ro: -5
- BTRFS info (device dm-3 state EA): scrub: not finished on devid 1 with status: -5
+HEAD commit:    59dbb9d81adf Merge tag 'xsa465+xsa466-6.13-tag' of git://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1755d730580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6a2b862bf4a5409f
+dashboard link: https://syzkaller.appspot.com/bug?extid=882cfd52ad141a668d9a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-[CAUSE]
-The root cause is inside btrfs_inc_block_group_ro(), where we need to
-hold a transaction handle, to prevent the transaction to be committed,
-until we hold ro_block_group_mutex.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This will cause an empty transaction by itself, thus even if we can mark
-the block group read-only without any extra workload, we still need to
-commit the new and empty transaction.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-59dbb9d8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e0cc89779297/vmlinux-59dbb9d8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5e6c895062cb/bzImage-59dbb9d8.xz
 
-Unfortunately this means RO scrub on RW filesystem will always cause the
-fs to be updated.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+882cfd52ad141a668d9a@syzkaller.appspotmail.com
 
-[FIX]
-The best fix is to make btrfs to avoid empty commit transaction, but
-even with that done, read-only scrub on rw mount can still cause real
-metadata updates (e.g. allocate new chunks and update device error
-statistics).
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -2)
+WARNING: CPU: 0 PID: 5321 at fs/btrfs/inode.c:8298 btrfs_rename fs/btrfs/inode.c:8298 [inline]
+WARNING: CPU: 0 PID: 5321 at fs/btrfs/inode.c:8298 btrfs_rename2+0x2ac6/0x2b90 fs/btrfs/inode.c:8377
+Modules linked in:
+CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc3-syzkaller-00026-g59dbb9d81adf #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:btrfs_rename fs/btrfs/inode.c:8298 [inline]
+RIP: 0010:btrfs_rename2+0x2ac6/0x2b90 fs/btrfs/inode.c:8377
+Code: ff ff 48 8d bc 24 d0 01 00 00 e8 75 81 46 fe e9 79 ec ff ff e8 eb 18 e0 fd 90 48 c7 c7 80 99 4b 8c 44 89 fe e8 9b bc a0 fd 90 <0f> 0b 90 90 e9 ee f9 ff ff e8 cc 18 e0 fd 90 48 c7 c7 80 99 4b 8c
+RSP: 0018:ffffc9000d447680 EFLAGS: 00010246
+RAX: b49777bc4d744c00 RBX: ffff888052f2c001 RCX: 0000000000100000
+RDX: ffffc9000eddb000 RSI: 000000000000186c RDI: 000000000000186d
+RBP: ffffc9000d447a90 R08: ffffffff81601a42 R09: fffffbfff1cfa210
+R10: dffffc0000000000 R11: fffffbfff1cfa210 R12: ffff8880448959a0
+R13: 1ffff11008912b34 R14: 0000000000000000 R15: 00000000fffffffe
+FS:  00007f28b26106c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f28b260ffe0 CR3: 000000003fe4c000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ vfs_rename+0xbdb/0xf00 fs/namei.c:5067
+ do_renameat2+0xd94/0x13f0 fs/namei.c:5224
+ __do_sys_rename fs/namei.c:5271 [inline]
+ __se_sys_rename fs/namei.c:5269 [inline]
+ __x64_sys_rename+0x82/0x90 fs/namei.c:5269
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f28b1785d29
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f28b2610038 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007f28b1976080 RCX: 00007f28b1785d29
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000020000080
+RBP: 00007f28b1801a20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f28b1976080 R15: 00007ffcc9517458
+ </TASK>
 
-It will be very complex to make read-only scrub to be fully read-only
-on a read-write btrfs.
 
-Thankfully read-only scrub on read-write mount with read-only device in
-the storage stack is pretty rare, thus a documentation update should be
-enough.
-
-Issue: #934
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Documentation/btrfs-scrub.rst    |  6 ++++++
- Documentation/ch-scrub-intro.rst | 10 ++++++++++
- 2 files changed, 16 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/btrfs-scrub.rst b/Documentation/btrfs-scrub.rst
-index 86c39b20cbde..539b67924b39 100644
---- a/Documentation/btrfs-scrub.rst
-+++ b/Documentation/btrfs-scrub.rst
-@@ -89,6 +89,12 @@ start [-BdrRf] <path>|<device>
-         -r
-                 run in read-only mode, do not attempt to correct anything, can
-                 be run on a read-only filesystem
-+
-+		Note that a read-only scrub on a read-write filesystem can
-+		still cause write into the filesystem due to some internal
-+		limitations.
-+		Only a read-only scrub on a read-only fs can avoid writes from
-+		scrub.
-         -R
-                 raw print mode, print full data instead of summary
-         -f
-diff --git a/Documentation/ch-scrub-intro.rst b/Documentation/ch-scrub-intro.rst
-index 2276bc263223..58afb466eb12 100644
---- a/Documentation/ch-scrub-intro.rst
-+++ b/Documentation/ch-scrub-intro.rst
-@@ -46,6 +46,16 @@ read-write mounted filesystem.
-    used, with expert guidance, to rebuild certain corrupted filesystem structures
-    in the absence of any good replica.
- 
-+.. note::
-+   Read-only scrub on read-write filesystem will cause some write into the
-+   filesystem.
-+
-+   This is due to the design limitation to prevent race between marking block
-+   group read-only and writing back block group items.
-+
-+   To avoid any writes from scrub, one has to run read-only scrub on read-only
-+   filesystem.
-+
- The user is supposed to run it manually or via a periodic system service. The
- recommended period is a month but it could be less. The estimated device bandwidth
- utilization is about 80% on an idle filesystem.
--- 
-2.47.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
