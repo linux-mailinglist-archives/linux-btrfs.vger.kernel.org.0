@@ -1,80 +1,81 @@
-Return-Path: <linux-btrfs+bounces-10636-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10637-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7AC99FAA38
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 07:18:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2AF9FAB36
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 08:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EE707A1F22
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 06:18:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246D61885500
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 07:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FF7154C00;
-	Mon, 23 Dec 2024 06:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D74918BB8E;
+	Mon, 23 Dec 2024 07:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MOkbaHsI"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kr9Pa5Q3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A013987D
-	for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2024 06:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18278185B4C
+	for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2024 07:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734934701; cv=none; b=KiT70/sBuYcwomo11H2Eyi3S7mbRgMuxdkLZ4qqtxltoruiqhSc6E1UERQXKrONBv/isYUGPF/UUVUiXAAxbG2rk07ZRRwQ6AUrdKdlg3D1BGtBaaZnPWKORGrDZlJKWqAuEZBcvL3mJFtwYNGF84tNQmommB2SOgIV8dqZoR58=
+	t=1734939498; cv=none; b=mR3/820/GK7xj+UxmFznmUwp8TEma6pmpQYFyBU4sSqmhWSRKlrg0nENYqd1Z0gJHHdn76ShaWeG+TmDVhNYmHOESZm6/TGxqpaQYDHM5dz/kSww96a4DvMG7tO5KGofryaSzS8BJ/jIbDwE/HkyeTfwFQwubXGiu9QT1hG0Mhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734934701; c=relaxed/simple;
-	bh=3i/y9f+kYoD9dIym2UglW5wo7ByfA+NGjaSQh4hTNCc=;
+	s=arc-20240116; t=1734939498; c=relaxed/simple;
+	bh=CgoTPi41y8sKmKI2kIrccETckIN7GaTgNVnxnQoZwH4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PikoHTmBO2Wtt54SZyDjWIIL36p9JpLLwc2j2OdOPmYNCBFsCpKwiobOzpbjQXjWKDpUxbcwHt7+YwpUJZZXZ1/LVFQvRSK24h0tdTpx0FGgf2tRX1WbQktIajyYSsJqQnisvj8jH+iiYHYQJP7lrjwuMZLVXyCZ6uFJ57F7Dbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MOkbaHsI; arc=none smtp.client-ip=209.85.218.45
+	 In-Reply-To:Content-Type; b=GXl0bg2E/5bgz0xBDs3U+PBNNb+HOuHbWNAdXXIH+LOUazMv7f2Ku38xr6LAiJfMnoFdvqWnVD7M2YA8FdUyiLFDzyiCXa+VagZ5Iey0uD5KjV4TFD+pH5dJaNgUhBbsNAq9dnv4jkSiCRQBsjvwZ3IszAy1A8gYrdmA23ABYqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kr9Pa5Q3; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aab925654d9so703025466b.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 22:18:16 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aaec61d0f65so218589866b.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 23:38:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734934695; x=1735539495; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1734939494; x=1735544294; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6GCBlvQv0qHUtCeaVbmhOveDCjxRe0vrO4J8zhiw5To=;
-        b=MOkbaHsIhXdo8RaL25wvaLacCjVF2y+PrGYglRS0py86uD69nc2ZnPhApXxtITX11B
-         PYZMeNexqQKFQ5EhmV5cWiBPfx3XPU1BtZwTZ5UbYPlIGts+7TA3XB7T/7iUXgZemeiC
-         +JNJt/ZcvTPaO0WPlrA6S//CpAEjQdCsKvBSXBaWtAHgmF8ZnDeXNvf2SqHLCphNp8Qe
-         uga++DfsC/bKcOel94K+mmBqinV2j6KgiHPOX1qVd2im+zNYRdn0DNwWSkcmfl2kFGrZ
-         0JLtHotCzk5xgoGIJE51OQnVYHhm+gDD6OKJAUJjcB5fcj0ClYZqdLEJluSFtmzPmsyB
-         VxLQ==
+        bh=wiQHoU9L3MnsvWNqfQf/4dokOc7GnFdCJsgq+6FZckc=;
+        b=Kr9Pa5Q36Da83SRIn/Xxz5W2R/kE6D6N8JlrzcRKgzHs3U+2Y7r1iewx7NWQdpx5LN
+         hPaZNrEERI6Gkn8JSF3JQe5SPiNys+GMbfmkZIS35JL9fDLh5hoxnQ2rfR9oGwL3JJUU
+         Ln6XS5hbNNNt2U8OBnz4CDkWqj24o9mxg/ueiGHPVkmgL9MxehAIR/W6HpYPEXrkcoNV
+         5wPaqiAE/CK4hEBDBUypl084HZrpfgO5mIAnwH7tW/We6p7ZCkhCH89Q720LAQu6GTRF
+         1LBBufqJdhwNZ/pHCBlbYuJaEVQ4kCswn8sLFGf5yIXkvacA6EHPP8KBem/FFH46LsQp
+         meqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734934695; x=1735539495;
+        d=1e100.net; s=20230601; t=1734939494; x=1735544294;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6GCBlvQv0qHUtCeaVbmhOveDCjxRe0vrO4J8zhiw5To=;
-        b=tE35aUbmNZ+RJkZs1Yk9nQXn/XmL4D2h3PX3aQbEZAtk7P0ixc/r4yUQhx4lB8IDfH
-         unbwqb5JptiRASRB9TSB6WQXbcTVlQMtzcE++9ns/k+ww5GJySonPySuQV5Pb+hBxMHg
-         Qa8kKqtSfolLv67quDdfzuqSpdCL6ktYJQWlVUFNhVeYAXupOtkiy8VeJmKsgnMOKVkD
-         3BpDceygd0B6m/VFm6OM+dy8owoCcr3mtPEKb7dMrWEtMDjuolUztjss7VE9kjUfJuxh
-         LUsmKFS7aP5EzWMAibrZEerA3jN3X4PEaz3lsiNuRNlyhvWqK77IOI9nYQhgr/2Kz4CC
-         aydQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUT3c0tUdLHa5Miikb91tG+vIZ0bC5rWoe8ZX4wbA/nYoP6ZDPItenaVxd/Zd4wzItlY++STqH5XYf5g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHpo9VH6lP/XSf/B7krxlgi41gI1FJInTIJ9zVunZWcn4wNjeQ
-	Gfh/s+CyAa5HEix/IMeJMf7xg4YMHqCGR0M+2IlkK2pK5ZKclaSuJh7A9cVVvJM=
-X-Gm-Gg: ASbGncufn8lVVYrDpqdfhC1m5fnHyfMqVdkHcjaAw4UlBSP9MIcmQpgvjP9R4qZB8O3
-	9n8ak07MtekWGlVgauWgSCpSSwqkD5yVyBYgf+9q46d4CGdKrYmdwTBk35W/HsXwHvC+dzkAqW4
-	L7uuT7ZyZPsNhVTyxks4DqRO8zegZ+XxIsQzGu+rhom3WzOQt0HTjcgxXSdcIVEWD4wF5WiAbkP
-	9BN4Zluxktyr3rKQfLk+1GCt9ox08C16SBXXD08zT7E998O9BXxLQmqPkD9NLvq7C6M07nShNDd
-	Gjwm44ij
-X-Google-Smtp-Source: AGHT+IHxK4/pRzGzd02v1HAJxTGzopFl0n481OBi6wQCyM/MlVv2n4mH4XgZALw1AEtYyYMJqNhzJQ==
-X-Received: by 2002:a17:907:1c10:b0:aa6:ac9b:681f with SMTP id a640c23a62f3a-aac3355d85bmr1100497066b.43.1734934694601;
-        Sun, 22 Dec 2024 22:18:14 -0800 (PST)
+        bh=wiQHoU9L3MnsvWNqfQf/4dokOc7GnFdCJsgq+6FZckc=;
+        b=EjYhXkrRAANBxjKAPCUAlmcVIDe5lllad8MfVTngToN3mTcxXtHVH3zpQjkCsF+/SI
+         JXavtM8nTBJl38m+ldec+6uFrDb5uLIMULWWf8AR3fY+/8Ncy4/wyhDaIWyHjn2KMZ+3
+         OsXU5YhW//j9o3O/6uBRj8D2Jd22LNp6CsqFurt5hCa7i/1VfZILGAiKp0b8O3Xo6sJL
+         feFnD+GfLkWWyK7V3IKvTd4u50IdkbWkNDuTdfXqcSSj9Y0/vaa0LoACrizzBGVBLB2b
+         q4Vfu2PGab/2HIyxW16OXI8DIl1SzyAhPyvd/9YkxA7F9g03jEfJfu5LVNVx0QBzGU8W
+         teHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULjQaoLu01bYaCW5JcBP+GHav6mF57N0PYiAnG0OD477j7YnBjYeNcgLiPclfSVA+1r/5Zxh6igy1fwA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjOAhbFIxY89KOgbQ5Pmicnn4ARG/TdEqSt7uOFaRhFfGmgVqc
+	hzs7eDQ6Y25zTsj9aqFQ25flwhBP3eNWg4uZt+qktYMUmsIiw78cRZhTCItxRpcczKd9BA1BLBP
+	n
+X-Gm-Gg: ASbGncu5OSNewA6aJifohNxGIHvlmO13C03lN1Md9Yint8oBeIx/IFd4S42qgkP9AU/
+	qhUWvbqYs+g3YVt822iU5YNViURJBEBIvYrw6CcAhd6o34Wb8sgOyjbJGmMOMOi7N70Jd7EKgLv
+	yjqBr7dNhv2gk0oMrhtVKai5NykMbvu9JDZIgflwVoWcoS8A3/LRhglGT/9bO/u+Y3GQh7iM8DG
+	vBlXUFHaeMr4lKS45zhVSYd0QR3ADy6DJ4paB77xw3VXu/hcjBXh+RvoFbUV7zBA4quXW+CeyjF
+	ikRMIe5j
+X-Google-Smtp-Source: AGHT+IHArYhwjkS6hcZk7WksMhanRj8qk1kzc5NTtVYVbq21m8yHd/bpRrEiJGbVWvBDrp4BV4ZssA==
+X-Received: by 2002:a17:906:99cc:b0:aae:85a9:5b66 with SMTP id a640c23a62f3a-aae85a95d37mr585829666b.60.1734939493756;
+        Sun, 22 Dec 2024 23:38:13 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8162ddsm7098309b3a.17.2024.12.22.22.18.12
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8fb9b3sm7253945b3a.158.2024.12.22.23.38.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Dec 2024 22:18:14 -0800 (PST)
-Message-ID: <a60e17bd-621d-4663-a3dd-25b0730e7ee5@suse.com>
-Date: Mon, 23 Dec 2024 16:48:10 +1030
+        Sun, 22 Dec 2024 23:38:13 -0800 (PST)
+Message-ID: <b174a6ef-4a28-4852-82bd-6074c3ac2af5@suse.com>
+Date: Mon, 23 Dec 2024 18:08:09 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,8 +84,11 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: Use of --convert-to-block-group-tree makes fs unmountable
-To: Jeff Bahr <jeffrey.bahr@gmail.com>, linux-btrfs@vger.kernel.org
+To: Jeff Bahr <jeffrey.bahr@gmail.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <CAL4+Tgzk=MS1P93u6yq_m0aqbMyjXrwPiP-8nA5zp=fTu7Vr6w@mail.gmail.com>
+ <a60e17bd-621d-4663-a3dd-25b0730e7ee5@suse.com>
+ <CAL4+TgzD_YrC4jDCYH=-797ppqvrNMRFzxgFqJgUCJ26mKXuUQ@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -111,94 +115,155 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL4+Tgzk=MS1P93u6yq_m0aqbMyjXrwPiP-8nA5zp=fTu7Vr6w@mail.gmail.com>
+In-Reply-To: <CAL4+TgzD_YrC4jDCYH=-797ppqvrNMRFzxgFqJgUCJ26mKXuUQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/12/23 07:07, Jeff Bahr 写道:
-> Looking for suggestions on recovering a broken btrfs fs after
-> attempting to use --convert-to-block-group-tree. I was experiencing
-> slow mount times, 5-10 minutes on reboot. Docs suggesting converting
-> to block group tree. I performed the operation on an unmounted file
-> system. I tried rebooting to test boot times and was unable to mount
-> the file system normally after reboot. After a few recovery attempts I
-> was able to mount with 'mount -o rescue=all,ro'. I'm currently moving
-> all data to offsite backup incase of total loss of the fs.
+在 2024/12/23 17:46, Jeff Bahr 写道:
+> Qu, thanks for the response,
 > 
-> I get the following errors when attempting to mount
+> When doing the conversion I received no errors. As far as I can
+> remember this is the same and only error I've seen. I have not
+> attempted any repair other than `btrfs-check --readonly` which returns
+> the same set of errors.
 
-Is this the same error immediately after the conversion? Before any 
-repair attempt?
-And what attempt have you done after the failed first mount?
+OK, so it looks like it's really the conversion causing the problem.
 
-And I guess the conversion doesn't result any error message?
-
-Finally, have you ran btrfs-check before or after the conversion?
+BTW, did you try to mount the fs immediately after the conversion 
+without a reboot?
+I guess it just showed the same error?
 
 > 
-> [  159.345342] BTRFS info (device sdj): bdev /dev/sdb errs: wr 15660,
-> rd 8, flush 1, corrupt 0, gen 0
-
-This line shows a very bad history of the device,
-sdb have a lot of write errors, some read errors, and even one flush error.
-
-I'm not sure if it's even reliable. But it may not be a big deal since 
-your fs have RAID1C3, one unreliable device won't cause anything wrong.
-
-> [  159.364088] BTRFS error (device sdj): level verify failed on
-> logical 102652926951424 mirror 1 wanted 1 found 0
-> [  159.377694] BTRFS error (device sdj): level verify failed on
-> logical 102652926951424 mirror 2 wanted 1 found 0
-> [  159.382394] BTRFS error (device sdj): level verify failed on
-> logical 102652926951424 mirror 3 wanted 1 found 0
-
-This means a tree block of block group tree is not at where it supposed 
-to be.
-
-It looks like the metadata COW is completely broken (extent tree 
-corruption? space cache corruption?).
-
+> I agree /dev/sdb appears to be bad. However I don't recall seeing any
+> r/w errors recently as I just performed a full fs scrub last week with
+> no error on any disks. Smart stats indicate this drive may need to be
+> replaced due to age, although it reports no hard failures yet the
+> drive is quite old.
 > 
-> This can also be seen in the attached dmesg log.
-> 
-> I am looking for suggestions to possibly recover this file system to
-> avoid having to recreate the fs from backups.
+> Once my backup is complete I'm happy to try any repairs you could
+> suggest.  Should we consider drive replacement for sdb?
 
-Such tree level mismatch is pretty bad, so I'd recommend to backup the 
-data first. And may have to recreate the fs from backup eventually.
+Considering it's RAID1C3 and RAID6, no hurry to bother sdb until it 
+really gives up.
+
+For the attempted repair, I was going to recommend --init-extent-tree, 
+but find out that it doesn't really take block group tree feature into 
+consideration.
+
+So unfortunately you may have to recreate the fs, and this time using 
+the block-group-tree at mkfs time.
+
+Or if you're adventurous enough, go the regular mkfs (without bgt 
+feature), copy several TB's of data, unmount and retry the conversion to 
+see if you can reproduce the error.
+Appreciated that a lot if you can help pinning down the bug.
+
+
+Another thing is, you can take the following dump, right now (even when 
+doing the data backup):
+
+# btrfs ins dump-tree --hide-names -b 102652926951424 <device>
+
+I'm just a little curious what's the metadata that should be a block 
+group tree.
 
 Thanks,
 Qu
 
+
 > 
-> Host information:
+> Thanks,
+> Jeff
 > 
-> uname -a
->> Linux server 6.8.0-51-generic #52-Ubuntu SMP PREEMPT_DYNAMIC Thu Dec  5 13:09:44 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
-> 
-> btrfs --version
->> btrfs-progs v6.6.3
-> 
-> btrfs fi show
->> Label: 'new_btrfs'  uuid: 0ab9d35a-4d18-4a06-8881-e9cef44324a8
->          Total devices 10 FS bytes used 45.20TiB
->          devid    1 size 7.28TiB used 5.66TiB path /dev/sdj
->          devid    2 size 7.28TiB used 5.66TiB path /dev/sdk
->          devid    3 size 7.28TiB used 5.66TiB path /dev/sdb
->          devid    4 size 7.28TiB used 5.66TiB path /dev/sdp
->          devid    5 size 7.28TiB used 5.66TiB path /dev/sdr
->          devid    6 size 7.28TiB used 5.66TiB path /dev/sds
->          devid    7 size 7.28TiB used 5.66TiB path /dev/sdd
->          devid    8 size 7.28TiB used 5.66TiB path /dev/sdf
->          devid    9 size 7.28TiB used 5.66TiB path /dev/sdl
->          devid   10 size 7.28TiB used 5.66TiB path /dev/sdn
-> 
-> btrfs fi df
->> Data, RAID6: total=45.14TiB, used=45.14TiB
->     System, RAID1C3: total=32.00MiB, used=32.00MiB
->     Metadata, RAID1C3: total=60.00GiB, used=60.00GiB
->     GlobalReserve, single: total=512.00MiB, used=0.00B
+> On Sun, Dec 22, 2024 at 10:18 PM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>>
+>>
+>> 在 2024/12/23 07:07, Jeff Bahr 写道:
+>>> Looking for suggestions on recovering a broken btrfs fs after
+>>> attempting to use --convert-to-block-group-tree. I was experiencing
+>>> slow mount times, 5-10 minutes on reboot. Docs suggesting converting
+>>> to block group tree. I performed the operation on an unmounted file
+>>> system. I tried rebooting to test boot times and was unable to mount
+>>> the file system normally after reboot. After a few recovery attempts I
+>>> was able to mount with 'mount -o rescue=all,ro'. I'm currently moving
+>>> all data to offsite backup incase of total loss of the fs.
+>>>
+>>> I get the following errors when attempting to mount
+>>
+>> Is this the same error immediately after the conversion? Before any
+>> repair attempt?
+>> And what attempt have you done after the failed first mount?
+>>
+>> And I guess the conversion doesn't result any error message?
+>>
+>> Finally, have you ran btrfs-check before or after the conversion?
+>>
+>>>
+>>> [  159.345342] BTRFS info (device sdj): bdev /dev/sdb errs: wr 15660,
+>>> rd 8, flush 1, corrupt 0, gen 0
+>>
+>> This line shows a very bad history of the device,
+>> sdb have a lot of write errors, some read errors, and even one flush error.
+>>
+>> I'm not sure if it's even reliable. But it may not be a big deal since
+>> your fs have RAID1C3, one unreliable device won't cause anything wrong.
+>>
+>>> [  159.364088] BTRFS error (device sdj): level verify failed on
+>>> logical 102652926951424 mirror 1 wanted 1 found 0
+>>> [  159.377694] BTRFS error (device sdj): level verify failed on
+>>> logical 102652926951424 mirror 2 wanted 1 found 0
+>>> [  159.382394] BTRFS error (device sdj): level verify failed on
+>>> logical 102652926951424 mirror 3 wanted 1 found 0
+>>
+>> This means a tree block of block group tree is not at where it supposed
+>> to be.
+>>
+>> It looks like the metadata COW is completely broken (extent tree
+>> corruption? space cache corruption?).
+>>
+>>>
+>>> This can also be seen in the attached dmesg log.
+>>>
+>>> I am looking for suggestions to possibly recover this file system to
+>>> avoid having to recreate the fs from backups.
+>>
+>> Such tree level mismatch is pretty bad, so I'd recommend to backup the
+>> data first. And may have to recreate the fs from backup eventually.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> Host information:
+>>>
+>>> uname -a
+>>>> Linux server 6.8.0-51-generic #52-Ubuntu SMP PREEMPT_DYNAMIC Thu Dec  5 13:09:44 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+>>>
+>>> btrfs --version
+>>>> btrfs-progs v6.6.3
+>>>
+>>> btrfs fi show
+>>>> Label: 'new_btrfs'  uuid: 0ab9d35a-4d18-4a06-8881-e9cef44324a8
+>>>           Total devices 10 FS bytes used 45.20TiB
+>>>           devid    1 size 7.28TiB used 5.66TiB path /dev/sdj
+>>>           devid    2 size 7.28TiB used 5.66TiB path /dev/sdk
+>>>           devid    3 size 7.28TiB used 5.66TiB path /dev/sdb
+>>>           devid    4 size 7.28TiB used 5.66TiB path /dev/sdp
+>>>           devid    5 size 7.28TiB used 5.66TiB path /dev/sdr
+>>>           devid    6 size 7.28TiB used 5.66TiB path /dev/sds
+>>>           devid    7 size 7.28TiB used 5.66TiB path /dev/sdd
+>>>           devid    8 size 7.28TiB used 5.66TiB path /dev/sdf
+>>>           devid    9 size 7.28TiB used 5.66TiB path /dev/sdl
+>>>           devid   10 size 7.28TiB used 5.66TiB path /dev/sdn
+>>>
+>>> btrfs fi df
+>>>> Data, RAID6: total=45.14TiB, used=45.14TiB
+>>>      System, RAID1C3: total=32.00MiB, used=32.00MiB
+>>>      Metadata, RAID1C3: total=60.00GiB, used=60.00GiB
+>>>      GlobalReserve, single: total=512.00MiB, used=0.00B
+>>
 
 
