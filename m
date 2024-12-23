@@ -1,269 +1,224 @@
-Return-Path: <linux-btrfs+bounces-10637-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10638-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2AF9FAB36
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 08:38:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE5539FAB3F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 08:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246D61885500
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 07:38:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4143D161197
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Dec 2024 07:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D74918BB8E;
-	Mon, 23 Dec 2024 07:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D27118052;
+	Mon, 23 Dec 2024 07:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kr9Pa5Q3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MGNVq35c"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18278185B4C
-	for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2024 07:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB9A38385
+	for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2024 07:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734939498; cv=none; b=mR3/820/GK7xj+UxmFznmUwp8TEma6pmpQYFyBU4sSqmhWSRKlrg0nENYqd1Z0gJHHdn76ShaWeG+TmDVhNYmHOESZm6/TGxqpaQYDHM5dz/kSww96a4DvMG7tO5KGofryaSzS8BJ/jIbDwE/HkyeTfwFQwubXGiu9QT1hG0Mhk=
+	t=1734939755; cv=none; b=iPff4GtJv41rOdhpLfBSrWiOD5vLllatSKz8CO5wsuuG1Wzc19ngJxw6UXUSkPhYPC8MXArbgu4Cc0OVe8Lp/UOHEqHdOzDmAb6Jt9beyPcoFmKLy3wA3a+tx7hzkRd2t2DZnn76Jsz7ITkS+lFqjxArM+qvWXYSAKKSGZW7fkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734939498; c=relaxed/simple;
-	bh=CgoTPi41y8sKmKI2kIrccETckIN7GaTgNVnxnQoZwH4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GXl0bg2E/5bgz0xBDs3U+PBNNb+HOuHbWNAdXXIH+LOUazMv7f2Ku38xr6LAiJfMnoFdvqWnVD7M2YA8FdUyiLFDzyiCXa+VagZ5Iey0uD5KjV4TFD+pH5dJaNgUhBbsNAq9dnv4jkSiCRQBsjvwZ3IszAy1A8gYrdmA23ABYqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kr9Pa5Q3; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aaec61d0f65so218589866b.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 23:38:15 -0800 (PST)
+	s=arc-20240116; t=1734939755; c=relaxed/simple;
+	bh=vJ5f4dLrmkl+xDDvEqtQFtQ+uXgBErcF2xPJIuqtWzk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pcQE1OfXR7su30Glz8kv05budyTIR8+u+ftsiGmjCZ22jVLV90at6u1MYRHZycXxKiFmgx5ubKcB0OGaaX8PFUsOWj+mSiYv5IhaCYRvp5HtJfM6bLZDQLFg9wrW8gQDgv2YxhixfIFu4RqMOP2neb6lj2PgXe1zQMQ8Iia903E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MGNVq35c; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5401bd6cdb4so4390586e87.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Dec 2024 23:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734939494; x=1735544294; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wiQHoU9L3MnsvWNqfQf/4dokOc7GnFdCJsgq+6FZckc=;
-        b=Kr9Pa5Q36Da83SRIn/Xxz5W2R/kE6D6N8JlrzcRKgzHs3U+2Y7r1iewx7NWQdpx5LN
-         hPaZNrEERI6Gkn8JSF3JQe5SPiNys+GMbfmkZIS35JL9fDLh5hoxnQ2rfR9oGwL3JJUU
-         Ln6XS5hbNNNt2U8OBnz4CDkWqj24o9mxg/ueiGHPVkmgL9MxehAIR/W6HpYPEXrkcoNV
-         5wPaqiAE/CK4hEBDBUypl084HZrpfgO5mIAnwH7tW/We6p7ZCkhCH89Q720LAQu6GTRF
-         1LBBufqJdhwNZ/pHCBlbYuJaEVQ4kCswn8sLFGf5yIXkvacA6EHPP8KBem/FFH46LsQp
-         meqw==
+        d=gmail.com; s=20230601; t=1734939752; x=1735544552; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d+gOuMcSeZMvNtl/F0QglhyX3waqEL3E7dkjWME7fG4=;
+        b=MGNVq35czdMF2MAQ/K0oon1aXoR5Pp31TaFiPpVSHx3SXKGV+jkV2CqBq3iD1GJzTY
+         mOSZy10Gir/LZsFz8yUekbZdSqaqFgK5qoe0BVWDV5CnHYNBzUMzHLaPwQ+kZj1yV3kl
+         eNHerDmP5y4a8toTrOkm0iO3x9X642nEUQ7N29WePMdlnYUvx+K2QtX/QtkNskq0ZnRc
+         8gObY6dYPpot4+rM1Dp9wR7RKAhKd92dDvTQWOOIA0CdKmIVWS+11bfZ9sF3FEIuXCa9
+         NGsOayxx/OPmmVXEoaPmqkf38fcIILybPhh1gPfP53UuvL8Kn1AcBj0IyZd4AJuaJBsl
+         3q8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734939494; x=1735544294;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wiQHoU9L3MnsvWNqfQf/4dokOc7GnFdCJsgq+6FZckc=;
-        b=EjYhXkrRAANBxjKAPCUAlmcVIDe5lllad8MfVTngToN3mTcxXtHVH3zpQjkCsF+/SI
-         JXavtM8nTBJl38m+ldec+6uFrDb5uLIMULWWf8AR3fY+/8Ncy4/wyhDaIWyHjn2KMZ+3
-         OsXU5YhW//j9o3O/6uBRj8D2Jd22LNp6CsqFurt5hCa7i/1VfZILGAiKp0b8O3Xo6sJL
-         feFnD+GfLkWWyK7V3IKvTd4u50IdkbWkNDuTdfXqcSSj9Y0/vaa0LoACrizzBGVBLB2b
-         q4Vfu2PGab/2HIyxW16OXI8DIl1SzyAhPyvd/9YkxA7F9g03jEfJfu5LVNVx0QBzGU8W
-         teHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCULjQaoLu01bYaCW5JcBP+GHav6mF57N0PYiAnG0OD477j7YnBjYeNcgLiPclfSVA+1r/5Zxh6igy1fwA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjOAhbFIxY89KOgbQ5Pmicnn4ARG/TdEqSt7uOFaRhFfGmgVqc
-	hzs7eDQ6Y25zTsj9aqFQ25flwhBP3eNWg4uZt+qktYMUmsIiw78cRZhTCItxRpcczKd9BA1BLBP
-	n
-X-Gm-Gg: ASbGncu5OSNewA6aJifohNxGIHvlmO13C03lN1Md9Yint8oBeIx/IFd4S42qgkP9AU/
-	qhUWvbqYs+g3YVt822iU5YNViURJBEBIvYrw6CcAhd6o34Wb8sgOyjbJGmMOMOi7N70Jd7EKgLv
-	yjqBr7dNhv2gk0oMrhtVKai5NykMbvu9JDZIgflwVoWcoS8A3/LRhglGT/9bO/u+Y3GQh7iM8DG
-	vBlXUFHaeMr4lKS45zhVSYd0QR3ADy6DJ4paB77xw3VXu/hcjBXh+RvoFbUV7zBA4quXW+CeyjF
-	ikRMIe5j
-X-Google-Smtp-Source: AGHT+IHArYhwjkS6hcZk7WksMhanRj8qk1kzc5NTtVYVbq21m8yHd/bpRrEiJGbVWvBDrp4BV4ZssA==
-X-Received: by 2002:a17:906:99cc:b0:aae:85a9:5b66 with SMTP id a640c23a62f3a-aae85a95d37mr585829666b.60.1734939493756;
-        Sun, 22 Dec 2024 23:38:13 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8fb9b3sm7253945b3a.158.2024.12.22.23.38.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Dec 2024 23:38:13 -0800 (PST)
-Message-ID: <b174a6ef-4a28-4852-82bd-6074c3ac2af5@suse.com>
-Date: Mon, 23 Dec 2024 18:08:09 +1030
+        d=1e100.net; s=20230601; t=1734939752; x=1735544552;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d+gOuMcSeZMvNtl/F0QglhyX3waqEL3E7dkjWME7fG4=;
+        b=pNgnZzrH2UMIMcxevuCLYF1+WTC5IDkVSfaGjp6NcvlAhwJPiJ+UWs0gp9Ch3DrQSo
+         4lyfkprxeIBNiN9pGSkUlLw99HDnS41C12TedGkaeo++4RNPLtIa5Im8AbtxSRIoNubw
+         iquMZuxXK4rY4JXmv64aOo3HpTN4/UkgdQUDLsMCfqK07lFJLFJ+osKKb6PSypPR4Y1r
+         da7+MfB/tF5IOxtSglQbPphvhpfjTExseGF3+YbmdQr1QRtKDJeck/krWIc1cKvVgBXM
+         yFaI9mFa+zbkWv0As5VSM4SRaFBjweHElL0vyo/L/xiWOKIc3Lbs7dSCfIJFmCUSZb2E
+         Exug==
+X-Forwarded-Encrypted: i=1; AJvYcCXc7U4k8ErDAijEsB4UvL5JKm23J1Nr7uS82W7/chRjYlxYCmYsBFRvc58VqGCNnw3BEI1XEw2tooOfPQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMasumP1TVVJnhM3ABX0VOqVn+jXproum9UJ53pEQ3Ju9cRWH4
+	1G89ThGtlRHIMswJO7RL40cwDM1VgdJUf9+gR6PVY7xw5ALvkx6kT/8AE0Dk3qGf7Wfo44DM+Ge
+	cJVtgeX1jJnm3tSSaHkbAJ/w3V0M=
+X-Gm-Gg: ASbGncvZDayOkByhyb0C9rf6PdJk59ecJ/aeH8bxF+xzlT2NH/xDRI0gr0XJXkTkGSN
+	yM+NTIJLu1+z+IfVrE4bWh/XXdQm2NMF4dxTz7zY=
+X-Google-Smtp-Source: AGHT+IG8pOog6n+9OoO60mFvOkenorAhmfGxxIu1rvnaO1LynviH3iKljKGy9TTPHvajkdR/eKXOK8WKJxUSHMwwzWM=
+X-Received: by 2002:a05:6512:3f20:b0:542:2137:3a2c with SMTP id
+ 2adb3069b0e04-54229547780mr4454933e87.24.1734939751669; Sun, 22 Dec 2024
+ 23:42:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Use of --convert-to-block-group-tree makes fs unmountable
-To: Jeff Bahr <jeffrey.bahr@gmail.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAL4+Tgzk=MS1P93u6yq_m0aqbMyjXrwPiP-8nA5zp=fTu7Vr6w@mail.gmail.com>
- <a60e17bd-621d-4663-a3dd-25b0730e7ee5@suse.com>
- <CAL4+TgzD_YrC4jDCYH=-797ppqvrNMRFzxgFqJgUCJ26mKXuUQ@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL4+TgzD_YrC4jDCYH=-797ppqvrNMRFzxgFqJgUCJ26mKXuUQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <97b4f930-e1bd-43d0-ad00-d201119df33c@scoopta.email>
+ <45adaefb-b0fe-4925-bc83-6d1f5f65a6dc@suse.com> <24abfa4c-e56b-4364-a210-f5bfb7c0f40e@gmail.com>
+ <a5982710-0e14-4559-82f0-7914a11d1306@gmx.com> <d906fbb8-e268-4dbd-a33a-8ed583942580@gmail.com>
+ <48fa5494-33f0-4f2a-882d-ad4fd12c4a63@gmx.com> <93a52b5f-9a87-420e-b52e-81c6d441bcd7@gmail.com>
+ <b5f70481-34a1-4d65-a607-a3151009964d@suse.com> <9ae3c85e-6f0b-4e33-85eb-665b3292638e@gmail.com>
+ <cfa74363-b310-49f0-b4bf-07a98c1be972@gmx.com> <Z1eonzLzseG2_vny@hungrycats.org>
+ <8d4d83e.80527959.193ea7e5d3e@tnonline.net> <e2ca9ceb-4ead-4739-af8b-f37b1a902170@libero.it>
+In-Reply-To: <e2ca9ceb-4ead-4739-af8b-f37b1a902170@libero.it>
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+Date: Mon, 23 Dec 2024 10:42:20 +0300
+Message-ID: <CAA91j0VkpOLjRtSjTDLKoT6zwoKmTPZkOZqpkon040zyn=dNiw@mail.gmail.com>
+Subject: Re: Proposal for RAID-PN (was Re: Using btrfs raid5/6)
+To: kreijack@inwind.it
+Cc: Forza <forza@tnonline.net>, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, 
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, Scoopta <mlist@scoopta.email>, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, Dec 22, 2024 at 3:00=E2=80=AFPM Goffredo Baroncelli <kreijack@liber=
+o.it> wrote:
+>
+> On 21/12/2024 19.32, Forza wrote:
+> >
+> >
+> >
+> >
+> > Hi,
+> >
+> > Thank you for the detailed explanations and suggestions regarding the w=
+rite hole issues in Btrfs RAID5/6. I would like to contribute to this discu=
+ssion by proposing an alternative implementation, which I call RAID-PN, an =
+extent-based parity scheme that avoids the write hole while addressing the =
+shortcomings of the current RAID5/6 implementation.
+> >
+> >
+> > I hope this proposal provides a useful perspective on addressing the wr=
+ite hole and improving RAID performance in Btrfs. I welcome feedback on its=
+ feasibility and implementation details.
+> >
+> >
+> > ---
+> >
+> > Proposal: RAID-PN
+> >
+> > RAID-PN introduces a dynamic parity scheme that uses data sub-extents a=
+nd parity extents rather than fixed-width stripes. It eliminates RMW cycles=
+, ensures atomic writes, and provides flexible redundancy levels comparable=
+ to or exceeding RAID6 and RAID1c4.
+> >
+> > Design Overview
+> >
+> > 1. Non-Striped Data and Parity:
+> >
+> > Data extents are divided into sub-extents based on the pool size. Parit=
+y extents are calculated for the current data sub-extents and written atomi=
+cally in the same transaction.
+> >
+> > Each parity extent is independent and immutable, ensuring consistency.
+> >
+> > Example: A 6-device RAID-P3 setup allocates 3 data sub-extents and 3 pa=
+rity extents. This configuration achieves 50% space efficiency while tolera=
+ting the same number of device failures as RAID1c4, which only achieves 25%=
+ efficiency on 6 devices.
 
+Giving something a pretty name does not really explain how it works.
+Can you show an example layout?
 
-在 2024/12/23 17:46, Jeff Bahr 写道:
-> Qu, thanks for the response,
-> 
-> When doing the conversion I received no errors. As far as I can
-> remember this is the same and only error I've seen. I have not
-> attempted any repair other than `btrfs-check --readonly` which returns
-> the same set of errors.
+...
+>
+> 5 - let me to add another possible implementation:
+>
+> The parity is stored inside the extent, at fixed offset. Then the extent =
+is written in a striped profile.
+>
+> 1) map the disks like a striped (non raid) profile: the first block is th=
+e first block of the 1st disk, the second block is the 1st block of the 2nd=
+ disk... the n block is the 1st block of the n disk, the n+1 block is the 2=
+nd block of the first disk...
+>
+> 2) in the begin of the extent there are the parity blocks, and the parity=
+ blocks are at fixed offset (each n blocks); in the example below we assume=
+ 6 disks, and 3 parity
+>
+>      if we have to write 1 data block, the extent will contain
+>                 {P11, P21, P31,     D1}
+>
 
-OK, so it looks like it's really the conversion causing the problem.
+What happens with the holes? If they can be filled later, we are back
+on square one. If not, this is a partial stripe that was mentioned
+already.
 
-BTW, did you try to mount the fs immediately after the conversion 
-without a reboot?
-I guess it just showed the same error?
+The challenge with implementing partial stripes is tracking unused
+(and unusable) space efficiently. The most straightforward
+implementation - only use RAID stripe for one extent. Practically it
+means always allocating and freeing space in the units of RAID stripe.
+This should not require any on-disk format changes and minimal
+allocator changes but can waste space for small extents. Making RAID
+strip size smaller than 64K will improve space utilization at the cost
+of impacting sequential IO.
 
-> 
-> I agree /dev/sdb appears to be bad. However I don't recall seeing any
-> r/w errors recently as I just performed a full fs scrub last week with
-> no error on any disks. Smart stats indicate this drive may need to be
-> replaced due to age, although it reports no hard failures yet the
-> drive is quite old.
-> 
-> Once my backup is complete I'm happy to try any repairs you could
-> suggest.  Should we consider drive replacement for sdb?
+Packing multiple small extents in one stripe needs extra metadata to
+track still used stripe after some extents are deallocated.
 
-Considering it's RAID1C3 and RAID6, no hurry to bother sdb until it 
-really gives up.
-
-For the attempted repair, I was going to recommend --init-extent-tree, 
-but find out that it doesn't really take block group tree feature into 
-consideration.
-
-So unfortunately you may have to recreate the fs, and this time using 
-the block-group-tree at mkfs time.
-
-Or if you're adventurous enough, go the regular mkfs (without bgt 
-feature), copy several TB's of data, unmount and retry the conversion to 
-see if you can reproduce the error.
-Appreciated that a lot if you can help pinning down the bug.
-
-
-Another thing is, you can take the following dump, right now (even when 
-doing the data backup):
-
-# btrfs ins dump-tree --hide-names -b 102652926951424 <device>
-
-I'm just a little curious what's the metadata that should be a block 
-group tree.
-
-Thanks,
-Qu
-
-
-> 
-> Thanks,
-> Jeff
-> 
-> On Sun, Dec 22, 2024 at 10:18 PM Qu Wenruo <wqu@suse.com> wrote:
->>
->>
->>
->> 在 2024/12/23 07:07, Jeff Bahr 写道:
->>> Looking for suggestions on recovering a broken btrfs fs after
->>> attempting to use --convert-to-block-group-tree. I was experiencing
->>> slow mount times, 5-10 minutes on reboot. Docs suggesting converting
->>> to block group tree. I performed the operation on an unmounted file
->>> system. I tried rebooting to test boot times and was unable to mount
->>> the file system normally after reboot. After a few recovery attempts I
->>> was able to mount with 'mount -o rescue=all,ro'. I'm currently moving
->>> all data to offsite backup incase of total loss of the fs.
->>>
->>> I get the following errors when attempting to mount
->>
->> Is this the same error immediately after the conversion? Before any
->> repair attempt?
->> And what attempt have you done after the failed first mount?
->>
->> And I guess the conversion doesn't result any error message?
->>
->> Finally, have you ran btrfs-check before or after the conversion?
->>
->>>
->>> [  159.345342] BTRFS info (device sdj): bdev /dev/sdb errs: wr 15660,
->>> rd 8, flush 1, corrupt 0, gen 0
->>
->> This line shows a very bad history of the device,
->> sdb have a lot of write errors, some read errors, and even one flush error.
->>
->> I'm not sure if it's even reliable. But it may not be a big deal since
->> your fs have RAID1C3, one unreliable device won't cause anything wrong.
->>
->>> [  159.364088] BTRFS error (device sdj): level verify failed on
->>> logical 102652926951424 mirror 1 wanted 1 found 0
->>> [  159.377694] BTRFS error (device sdj): level verify failed on
->>> logical 102652926951424 mirror 2 wanted 1 found 0
->>> [  159.382394] BTRFS error (device sdj): level verify failed on
->>> logical 102652926951424 mirror 3 wanted 1 found 0
->>
->> This means a tree block of block group tree is not at where it supposed
->> to be.
->>
->> It looks like the metadata COW is completely broken (extent tree
->> corruption? space cache corruption?).
->>
->>>
->>> This can also be seen in the attached dmesg log.
->>>
->>> I am looking for suggestions to possibly recover this file system to
->>> avoid having to recreate the fs from backups.
->>
->> Such tree level mismatch is pretty bad, so I'd recommend to backup the
->> data first. And may have to recreate the fs from backup eventually.
->>
->> Thanks,
->> Qu
->>
->>>
->>> Host information:
->>>
->>> uname -a
->>>> Linux server 6.8.0-51-generic #52-Ubuntu SMP PREEMPT_DYNAMIC Thu Dec  5 13:09:44 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
->>>
->>> btrfs --version
->>>> btrfs-progs v6.6.3
->>>
->>> btrfs fi show
->>>> Label: 'new_btrfs'  uuid: 0ab9d35a-4d18-4a06-8881-e9cef44324a8
->>>           Total devices 10 FS bytes used 45.20TiB
->>>           devid    1 size 7.28TiB used 5.66TiB path /dev/sdj
->>>           devid    2 size 7.28TiB used 5.66TiB path /dev/sdk
->>>           devid    3 size 7.28TiB used 5.66TiB path /dev/sdb
->>>           devid    4 size 7.28TiB used 5.66TiB path /dev/sdp
->>>           devid    5 size 7.28TiB used 5.66TiB path /dev/sdr
->>>           devid    6 size 7.28TiB used 5.66TiB path /dev/sds
->>>           devid    7 size 7.28TiB used 5.66TiB path /dev/sdd
->>>           devid    8 size 7.28TiB used 5.66TiB path /dev/sdf
->>>           devid    9 size 7.28TiB used 5.66TiB path /dev/sdl
->>>           devid   10 size 7.28TiB used 5.66TiB path /dev/sdn
->>>
->>> btrfs fi df
->>>> Data, RAID6: total=45.14TiB, used=45.14TiB
->>>      System, RAID1C3: total=32.00MiB, used=32.00MiB
->>>      Metadata, RAID1C3: total=60.00GiB, used=60.00GiB
->>>      GlobalReserve, single: total=512.00MiB, used=0.00B
->>
-
+>      if we have to write 2 data block, the extent will contain
+>                 {P112, P212, P312,  D1, D2}
+>
+>      if we have to write 6 data block, the extent will contain:
+>                 {P1135, P2135, P3135,  D1, D3, D5,
+>                   P1246, P2246, P3246,  D2, D4, D6}
+>
+>      if we have to write 12 data block, the extent will contain
+>                 {P1159,  P2159,  P3159,   D1, D5, D9,
+>                   P12610, P22610, P2610,   D2, D6, D10,
+>                   P13711, P23711, P33711,  D3, D7, D11,
+>                   P14812, P24812, P34812,  D4, D8, D12}
+>
+> In this way, the number of the extents remain low, and the allocator logi=
+c should be the same.
+>
+> Rewriting in the middle of an extent would be a mess, but as pointed out =
+by Zygo, this doesn't happen.
+>
+>
+> > Implementation Considerations
+> >
+> > RAID-PN requires changes to support sub-extents for data. Parity extent=
+s must be tracked and linked to the corresponding data extents/sub-extents.=
+.
+> >
+> >
+> > NoCOW files remain problematic. We need to be able to generate parity d=
+ata, which is similarly difficult to generating csum, making NoCOW files un=
+protected under RAID-PN.
+> >
+> >
+> > Random small I/O is likely to outperform RAID56 due to the lack of RMW =
+cycles. Large sequential I/O should perform similarly to RAID56.
+> >
+> > ---
+> >
+> >
+> >
+>
+>
+> --
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
