@@ -1,126 +1,176 @@
-Return-Path: <linux-btrfs+bounces-10650-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10651-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F6B9FD907
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Dec 2024 06:32:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0468E9FDDDC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Dec 2024 08:41:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4BE9163184
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Dec 2024 05:32:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 192253A166C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Dec 2024 07:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CACC4207F;
-	Sat, 28 Dec 2024 05:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89EB3BBD8;
+	Sun, 29 Dec 2024 07:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="qyY/hPYM"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UkVbVeTe";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UkVbVeTe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA208101C8
-	for <linux-btrfs@vger.kernel.org>; Sat, 28 Dec 2024 05:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DBFE573;
+	Sun, 29 Dec 2024 07:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735363950; cv=none; b=KQQhF0wZ1P6cvJs2NUUbk2ZFE6t0s1S2DLZH+8FaFuNUsSHeWVXsr+Zd+e51L+0sBn5LjNeBXyWnAWCeYZNwTmpGhdoC4BLcLyGUPCOx5o/CYlyhmzxoELq00+s+C/XMxn2T6YqnoBQNoPJzIIptqJRA7gNxKmY99/hQht35j2U=
+	t=1735458054; cv=none; b=Q+egvglzgV4mBG6orqm0WA6Lk92VjNfYyrCV0IpkA7GdcOu8OLfcXgVpCE7vMLGMmrcxoHAfu4FLdJdp++tykHn8yuFRD9vJezyx2ODumboIoDcBkjvlSIwZzaR/46B5PbJz7PJalw2yWjeR0oEPzqpUAfmBrVEi8lTnI1qDamI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735363950; c=relaxed/simple;
-	bh=AddROLLf+lF+Hpoi0ymRG6lXX65NgQzLkp92Sn+zMxc=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=Erxp4IzGWQ76ttndv+DLVlVKuBBtYKwN9t934b1YNF7pBOrGOUdGlU1YpvADcHi6X0QicuEi5k28eUffzrippSbSp3yWNOaVN2b8T5WSQZTSQ4mREQOpPF/dizea6H0ZUGVlhHSiDnsWrmdoz6m0NIfNxRUjYHXvu/42PKENVys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=qyY/hPYM; arc=none smtp.client-ip=54.204.34.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1735363934;
-	bh=AddROLLf+lF+Hpoi0ymRG6lXX65NgQzLkp92Sn+zMxc=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject;
-	b=qyY/hPYM3t+/8aSRBH3TRnvgZeqfX+9pbJaEO2q+KgkOQ90PtG/edrwB2AXhSCPYo
-	 s+mADn4KymoZDhNO7RPfa8dk7jerHzkbRVfTIorlQYLB0mOn5+iP1o7Juz2sVDRlmg
-	 av5EtHej/94s88NMw8ZhDiv2AyAfUcqUT4MS67Og=
-X-QQ-mid: bizesmtp89t1735363933txvfbmg4
-X-QQ-Originating-IP: T73IjzO2uTf8n7CxzF1Qo44iYqWPSyx2lI2guuF4D2E=
-Received: from [192.168.0.108] ( [222.175.67.174])
-	by bizesmtp.qq.com (ESMTP) with SMTP id 0
-	for <linux-btrfs@vger.kernel.org>; Sat, 28 Dec 2024 13:32:12 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 7213832546719183613
-Message-ID: <94E509D5953F22B3+df796186-1d22-4701-94ba-0070860786c2@bupt.moe>
-Date: Sat, 28 Dec 2024 13:31:55 +0800
+	s=arc-20240116; t=1735458054; c=relaxed/simple;
+	bh=H3HdkkAaxWdRotQYVMAObkFH0TYfGfMcXz+4BiWnANY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N44jLyWwHMfDzqRZDAXqcKECSrKWUWiU7XbxZ1dNHUojl6aTCUaRINaxXzeYxTe7HaLFOPT92cL+BQkT7Zq0BCPA1SaDxazDw37U4UmxaGR6r/II3k4o55Z16qxmBbNyxw3YA4KDOubBZ/HBRP0l2vIvDco+y6g/5I1qJRrieDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UkVbVeTe; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UkVbVeTe; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 908301F44F;
+	Sun, 29 Dec 2024 07:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1735458044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=d5AmQpTFt2YljKNwh0IpogHSXNMU8beRcpkw6KcCpAg=;
+	b=UkVbVeTeBJBAi650YqEkHQfMrZ9vV+holQZTZDcMA2xTCoozTmZURuRc73Nh2pK2M3cgJS
+	iEP1Cap7Zsy6gYfQ/kMRQdHTwL5Q9BPW9quEnSt/LbmSSyPuybI/3Yu/ugsoj34AuY+wrt
+	h9nuOEptLkVVS7n34QLc3vJ0vSeaEfk=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=UkVbVeTe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1735458044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=d5AmQpTFt2YljKNwh0IpogHSXNMU8beRcpkw6KcCpAg=;
+	b=UkVbVeTeBJBAi650YqEkHQfMrZ9vV+holQZTZDcMA2xTCoozTmZURuRc73Nh2pK2M3cgJS
+	iEP1Cap7Zsy6gYfQ/kMRQdHTwL5Q9BPW9quEnSt/LbmSSyPuybI/3Yu/ugsoj34AuY+wrt
+	h9nuOEptLkVVS7n34QLc3vJ0vSeaEfk=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 85964139D0;
+	Sun, 29 Dec 2024 07:40:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PP9QIPz8cGf5NgAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Sun, 29 Dec 2024 07:40:44 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.13-rc5
+Date: Sun, 29 Dec 2024 08:40:38 +0100
+Message-ID: <cover.1735454878.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From: Yuwei Han <hrx@bupt.moe>
-Subject: can't mkfs on zoned device after adding and removing it from another
- volume.
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------ILnixLgHxpoqHFntFdNfTAJF"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-QQ-XMAILINFO: OBVPLYbCWbNvTEo6ZnmlYJ/WW+7gRtEgxUHZh0Vr6hJMxm/BMjQlPi33
-	htJr65IT+bWT+nWPVylvy5PrTM5bBIHTLqJp+WulFf+lgHQDT5EqSACp3NrVgxNPO9HzMy5
-	J5SZx0DGmKDIbI1qgKXDbmgjuN0VeHd6cywoQRkV8kCQrbBAUpR31vrAPQreD5/IpNgNMLm
-	WZ9gGTTuTonx3Q9UtxoHuy9l+sp2aus8MmTbqk19bGyVkCi7pcYEJtVIQ0WLsoOv93+OuMm
-	oSPd3ZRoYx4cwVlOjZyDbWZ/i1ZsJxpd/H2O8FQE4nlouvwjgTBhvj2o4xWMl3SjSuxfYYK
-	mobMI+DkFzLmHnVLEjoyM+LX+8ucPSoHnjwgdzZFfPLnv/kxWEENa1VK6Ap93ah34iR3DbK
-	3lbUupwW62Z/lTCacOThdrB3+5hgwMfYZ9RGWia/Std5HgeKP6q+LJCKH2GwC2raPLHP3Lw
-	JJuPaZzFLgGU7iDfIlq0q6AmEQpF6RyipzjOGiGvZUb9F3ukF47zilKFFSMNnc1yPiMMXqW
-	Fw7feRwNJSmnCytW4dKLtE6CmN4RKURzaWzmlGwOg/J58u+AcoYbK9EGjmF6gMsRKQZPgMO
-	7xW9EeiMhJqKkWPJBKpuqpPbqTlIkhMqg1+VnQ+XLS7yG+g8tSWFS3f4GPVB/rxRTrZCCor
-	UNeD6xtYPcRnzsTu6+LhcAuL06LdRvpbrTzsFqQyfEyhRUz2JyOVmiM0aR+316Ba5sM0O5/
-	BaGAagf7cIrwPRTu1+sJCU9IKA0PSH/QE/1l/X5CtwopRnlJiAuIwg+JKoYGHyqK9y2jDSJ
-	shX8aySIz9PJmEDhKpxpB3ZCWh50h2NRJLJIqv45ZYhtWSp/HO+W2xMdQzIJ7NBz3nhYEDk
-	9x5iVoJb/k2pYGk8pVAy1Ywr7C9wmmg271VMR09jnO4=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-X-QQ-RECHKSPAM: 0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 908301F44F
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------ILnixLgHxpoqHFntFdNfTAJF
-Content-Type: multipart/mixed; boundary="------------5SSVtM7vzIzz3beYUEPuMDJk";
- protected-headers="v1"
-From: Yuwei Han <hrx@bupt.moe>
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Message-ID: <df796186-1d22-4701-94ba-0070860786c2@bupt.moe>
-Subject: can't mkfs on zoned device after adding and removing it from another
- volume.
+Hi,
 
---------------5SSVtM7vzIzz3beYUEPuMDJk
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+a few more fixes that accumulated over the last two weeks, fixing some
+user reported problems. Please pull, thanks.
 
-SGksDQpSZWNlbnRseSBJIGhhdmUgZXhwZXJpZW5jZWQgRU5PU1BDIG9uIHpvbmVkIGRldmlj
-ZSAoV0RDIEhDNjIwKSB3aGVuIA0KZGVmcmFnaW5nLCBTbyBJIGFkZGVkIGFub3RoZXIgZGV2
-aWNlIGFuZCByZWJhbGFuY2VkIHRvIHNvbHZlIGl0LCB0aGVuIA0KcmVtb3ZlZCBpdCBmcm9t
-IHZvbHVtZS4NCkFmdGVyIHRoYXQgSSBmb3VuZCB0aGF0IEkgY2FuJ3QgbWtmcy5idHJmcyBv
-biB0aGlzIHNwYXJlIGRldmljZSwgc2F5aW5nIA0KaXQgaXMgbW91bnRlZC4NCg0KIyBta2Zz
-LmJ0cmZzIC1zIDRrIC1mIC9kZXYvc2RjDQpidHJmcy1wcm9ncyB2Ni4xMg0KU2VlIGh0dHBz
-Oi8vYnRyZnMucmVhZHRoZWRvY3MuaW8gZm9yIG1vcmUgaW5mb3JtYXRpb24uDQoNCkVSUk9S
-OiAvZGV2L3NkYyBpcyBtb3VudGVkDQoNCnVuYW1lIC1hOkxpbnV4IGFvc2MzYTYgNi4xMS4x
-MC1hb3NjLW1haW4gIzEgU01QIFBSRUVNUFRfRFlOQU1JQyBTdW4gRGVjIA0KMSAxMToyNjoz
-MiBVVEMgMjAyNCBsb29uZ2FyY2g2NCBHTlUvTGludXgNCg0KDQpIQU4gWXV3ZWkNCg==
+- swapfile fixes
+  - conditional reschedule in the activation loop
+  - fix race with memory mapped file when activating
+  - make activation loop interruptible
+  - rework and fix extent sharing checks
 
---------------5SSVtM7vzIzz3beYUEPuMDJk--
+- folio fixes
+  - in send, recheck folio mapping after unlock
+  - in relocation, recheck folio mapping after unlock
 
---------------ILnixLgHxpoqHFntFdNfTAJF
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+- fix waiting for encoded read io_uring requests
 
------BEGIN PGP SIGNATURE-----
+- fix transaction atomicity when enabling simple quotas
 
-iHUEARYIAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZ2+NSwAKCRBLkKfpYfpB
-U4U1AP9n3f9Z+09iOP/K2141PdZ7cAUJQmcRm4AsbhRU7m1U+AD+IcymSRH9T+NJ
-MyDBjLHUAKAR8FLweKk1o55tLQpL/w4=
-=5nqj
------END PGP SIGNATURE-----
+- move COW block trace point before the block gets freed
 
---------------ILnixLgHxpoqHFntFdNfTAJF--
+- print various sizes in sysfs with correct endianity
 
+----------------------------------------------------------------
+The following changes since commit f10bef73fb355e3fc85e63a50386798be68ff486:
+
+  btrfs: flush delalloc workers queue before stopping cleaner kthread during unmount (2024-12-06 15:04:18 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.13-rc4-tag
+
+for you to fetch changes up to fca432e73db2bec0fdbfbf6d98d3ebcd5388a977:
+
+  btrfs: sysfs: fix direct super block member reads (2024-12-23 22:06:44 +0100)
+
+----------------------------------------------------------------
+Boris Burkov (2):
+      btrfs: check folio mapping after unlock in relocate_one_folio()
+      btrfs: check folio mapping after unlock in put_file_data()
+
+Filipe Manana (5):
+      btrfs: fix use-after-free when COWing tree bock and tracing is enabled
+      btrfs: fix race with memory mapped writes when activating swap file
+      btrfs: fix swap file activation failure due to extents that used to be shared
+      btrfs: allow swap activation to be interruptible
+      btrfs: avoid monopolizing a core when activating a swap file
+
+Johannes Thumshirn (1):
+      btrfs: fix use-after-free waiting for encoded read endios
+
+Julian Sun (1):
+      btrfs: fix transaction atomicity bug when enabling simple quotas
+
+Qu Wenruo (1):
+      btrfs: sysfs: fix direct super block member reads
+
+ fs/btrfs/ctree.c      |  11 ++--
+ fs/btrfs/inode.c      | 154 +++++++++++++++++++++++++++++++++++---------------
+ fs/btrfs/qgroup.c     |   3 +-
+ fs/btrfs/relocation.c |   6 ++
+ fs/btrfs/send.c       |   6 ++
+ fs/btrfs/sysfs.c      |   6 +-
+ 6 files changed, 130 insertions(+), 56 deletions(-)
 
