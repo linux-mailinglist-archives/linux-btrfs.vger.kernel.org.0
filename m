@@ -1,209 +1,267 @@
-Return-Path: <linux-btrfs+bounces-10655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10656-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A9F9FE3DC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2024 09:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D7D9FE4D2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2024 10:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A36E3A1FA4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2024 08:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0783B3A1BFE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2024 09:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0311A0BCF;
-	Mon, 30 Dec 2024 08:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FD11A257D;
+	Mon, 30 Dec 2024 09:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dXUBTO93";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gonS63fO"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="VWCIbrjr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C4E25948E
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Dec 2024 08:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19C6146A69;
+	Mon, 30 Dec 2024 09:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735548376; cv=none; b=uF9JP4hwpg+gArE2fbh9fcvYpAgWWnaEw1xBJLIrZEB4L+mD2F5TJ4mtsvV9/hh5FZJOGbwTmwgsc5UX0zfulySZiNm4yxQW9lAgluqFTzEG3oyFej4obYWj7+GABENyMgpWlXEUwSAD/7s0I+zolm6/cwAz4vdY0KXTK6oDVg0=
+	t=1735550989; cv=none; b=eH7uEV0FhteGZVjUYxpkSieTbH5ApY1YRJ+MRxWoESj/6b88QFcInzYHxEcIzvjPX7fyRFdvhLfGnci7DfHDI0bXOuE3xTJBRVVicRfZGxAOPdMHz8BKSL6TohI+s78Pk65XXwP4RiqFO8puTdC9xiA0QUzIW29K7ozkfg+gPZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735548376; c=relaxed/simple;
-	bh=9RAV769x2Re/Djx1i1Xi/tP8RUYJbwf3yeKA3sGDY6k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LBrSnQJZUzF9rADzHGc6meQhz5bE9pVf2NlfNbMMljb8se4Ja/F4gwg5MbgW9nTm3qSbAduH8bvInJ05a+W190EJT0r11ekY/2dZoMaSQrOiypyFTWF6VDEGA6og4JpX/Eod1FO2OcIeh9pkYOdF2GrS7zks/mnWMUPGAGep6qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dXUBTO93; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gonS63fO; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D9DF621111;
-	Mon, 30 Dec 2024 08:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1735548372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zTDIwKp1KLoUGjtSibF+V1QJLjgVkKcD9qtiwj+rM2c=;
-	b=dXUBTO93CCd5D2nw7O9226/N0aQIieIT66fwrFlF7s0v8nL2fuDQUiPDKUZagUWejQMbzF
-	3/hjLZ7E3jN9xYKFH0Bxu2Ozbu1M1aYLECvBPMFtQYMsM+Vxe00OLI9idqztBu4G9mS20u
-	8NpcmSLFovroptMHf4Ct/9pZO0zahNY=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1735548371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zTDIwKp1KLoUGjtSibF+V1QJLjgVkKcD9qtiwj+rM2c=;
-	b=gonS63fO4v6DacNHxhq1hEWr5oMDNeODOBGvfAETqxCRm74jQipvjoIDEHdNikw9BmsvdE
-	st8EMAYCBs+sEC+62ivoJHlGTRK0sfJMkvwpGEN9TWUW34ACBhpbpY6ncPNtWimoB2eBEw
-	gnO8SQVAYBy2/U9yINak2ZdEbm5MSsw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6B3C13A30;
-	Mon, 30 Dec 2024 08:46:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gWw/JdJdcme2TgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 30 Dec 2024 08:46:10 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: David Duchesne <aether@disroot.org>
-Subject: [PATCH] btrfs: prefer to use "/dev/mapper/name" soft link instead of "/dev/dm-*"
-Date: Mon, 30 Dec 2024 19:15:53 +1030
-Message-ID: <30aefd8b4e8c1f0c5051630b106a1ff3570d28ed.1735537399.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1735550989; c=relaxed/simple;
+	bh=19mEbpuQpyiB+oR5kE48j404+kNhDCdhQK1doe7xZe0=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=plI6yA8H/LYsE5JBAykzL7Wx2Tao8r2cAG1FzI8Sii1nYdFCscA09wQnDAEM+EcZKJzj3Z1tyomCaBn7Ek626l6xRcZZ8Ev177J6R18NZfnOxXoio8HsHVwB+0BHBC3Tcd9pA6kCUlvQStq4C2RwJG1VL0F/j1bhKFmpHWOxpBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=VWCIbrjr; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1735550984; x=1736155784; i=quwenruo.btrfs@gmx.com;
+	bh=FpXYl3FWnUwOzJBz2i5WEeuq4SIbVKARfpXQOz3N+xY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=VWCIbrjrXdzMvjd1MqArOAqphk9ZjQCMQX93Nl+bO2zifdiBrgI6fBncYsTupQ10
+	 ioK9sKXKAbx2N5HwFEHASuukC1/ZnaX3eYA83PewyILGkGwcMjGuHVaPS0mqHLOVg
+	 5G/JMLiLFSG72rBqAKrJ0pbR3S+OkQKTwMfCPKwIJqH5ufIPZ2BsQExBrpWYgT/zF
+	 FEaBTyGbMWuLJFaMOUrLfmJNe4+dvljumWpv6bBbCrWaa1FtC9ZJWPAffEf6TtveT
+	 8TUW1YXqy/MfCCARGWPcud9sp7WHgttNgctsleJNgKgRyq6TsWlv414zNPqyZUxy8
+	 j9oSdYdW5FAf5Eitkw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mof57-1tqmTx1IMb-00ppuW; Mon, 30
+ Dec 2024 10:29:44 +0100
+Message-ID: <ec6784ed-8722-4695-980a-4400d4e7bd1a@gmx.com>
+Date: Mon, 30 Dec 2024 19:59:41 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
-X-Spam-Score: -3.30
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-fsdevel@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: mnt_list corruption triggered during btrfs/326
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SiqzN9WUKs1I9TS+Jh1M2NJuaJ6+vznjaFacWh1uXAwRnT9Zom5
+ K8dY2FvysJBlYgHMr2lGEOBMXmyA+gfB4hNpw1ijdcRvLg8aDGJkE5v/qtxoidLsU2ekUbO
+ UL8xHoKNs2lciGn++4j7uSumFge968D0QPKtCrXsnivFE4EZAZxfz8w0r1sKD9U2+Nn4Mt5
+ Knpn2c92RL6rLHHWVPKgA==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:NqSC/m5aazI=;SZsPhpbhvr9Vn/XS3Y1UYdtd4vt
+ Yoym7orRVnOa8ObmLRAYfpIQOYjWZyUqSYfabjTW1VPK+ZDYv33i6QGGq+TxAbaMj7SNjQgKO
+ 6Ps2obx2eYek5wbTLc93uBJQriMGjjuDq2kLOiVQPdeakhkaM0oKt73iH1bJjOSzBYVi2vmWV
+ HY438hvt1C2Eas6MYLREid6qr6kKhixn9jgBU6DLNoR/VzDPGL9wzbb1DI+O11qsrgGrBWVoi
+ Dz7Vf9tKWKo7Y/ftc8NaSn2lhILYfRkHqL9dOTsqFt3vbwFiu+kp73Y2209Kp+u5xnPSGDFrn
+ /LZM05JPweNFjhyO8r9lVbjTzGUSCkygRN/519rflF/FuOpFJVZugl37ToSksA9RRxDeTCF3U
+ 5IDjJ5MXBYZQnPlNQZPDcwAQYx1NA7bd3TIRcT0tM8gnuwN3xiEP1VutavEwY6QV+nUzQ+P7d
+ 8nA5l+AywN51UYQUDAKB+E1YoSzqjld9/TfEbPpFpUgjiq0k2JzSJI8Lsz01qIEYY01ws9X3S
+ j0wbGikn2Ix5PFh1r/LTNADXPPVfnU/oDzcuM5YMff048AaA9TlAczujdlh+YOJghxcgPdtNU
+ LjOpWlKqxdmJFz+QQCQJfdyaCyhwwUTIZ02i2BiyX08vjpfy3aJzCPjmHFQSoO/8pvUsu53nO
+ fq3WuQYQ+P9WHVhmagVVtj9RxwTC3+McIVi2jaOYUVDdQKfJNm4rXsDIrclCzpj2ReroBAnIU
+ p+RtrH6vJZVuco1k1TjB7HuCi+Qg3ZfUXxyQvgvn35wvfHkQpBonRwb2oi3bi5gLY6lWo3Xni
+ Guur0Y9+ynh7kL7cQBNLkY3FiJ38RzPW2OEZ9PJz//hVeqs4vENKQULMK3RP/wU7Ld7ICsd4g
+ vQcM+dxga3tE60XW0agiHfevfeC1AmqVtWPwYw9pJ757nmCCwZ8onCQkRYPnVz6oX8mEne0lf
+ QTwPp3OdHpc8b1fTnzn+6rrVJUjsJ0GSsS++RCBBf8DUjPySBXcv/QWbyVhU6WJeHIJz7sQ4Q
+ ZJqb5Pug02VzuDPc0l6NwR1Md3SRu7Ci+Xj5zlri6Jq4MRCznWDBSVO/dGHVt2Jb82zK7nPwc
+ VYltriaARZr6MR+3dyHwJYPYjdfFA2
+
+Hi,
+
+Although I know it's triggered from btrfs, but the mnt_list handling is
+out of btrfs' control, so I'm here asking for some help.
 
 [BUG]
-There is a gentoo bug report that upstream commit a5d74fa24752
-("btrfs: avoid unnecessary device path update for the same device") breaks
-6.6 LTS kernel behavior where previously lsblk can properly show multiple
-mount points of the same btrfs:
+With CONFIG_DEBUG_LIST and CONFIG_BUG_ON_DATA_CORRUPTION, and an
+upstream 6.13-rc kernel, which has commit 951a3f59d268 ("btrfs: fix
+mount failure due to remount races"), I can hit the following crash,
+with varied frequency (from 1/4 to hundreds runs no crash):
 
- With kernel 6.6.62:
- NAME         MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINTS
- sdb            8:16   0   9,1T  0 disk
- └─sdb1         8:17   0   9,1T  0 part
-   └─hdd2     254:6    0   9,1T  0 crypt /mnt/hdd2
-                                         /var/cache/distfiles
-                                         /var/cache/binpkgs
+[  303.356328] BTRFS: device fsid 6fd8eb6f-1ea5-40aa-9857-05c64efe6d43
+devid 1 transid 9 /dev/mapper/test-scratch1 (253:2) scanned by mount
+(358060)
+[  303.358614] BTRFS info (device dm-2): first mount of filesystem
+6fd8eb6f-1ea5-40aa-9857-05c64efe6d43
+[  303.359475] BTRFS info (device dm-2): using crc32c (crc32c-intel)
+checksum algorithm
+[  303.360134] BTRFS info (device dm-2): using free-space-tree
+[  313.264317] list_del corruption, ffff8fd48a7b2c90->prev is NULL
+[  313.264966] ------------[ cut here ]------------
+[  313.265402] kernel BUG at lib/list_debug.c:54!
+[  313.265847] Oops: invalid opcode: 0000 [#1] PREEMPT SMP
+[  313.266335] CPU: 4 UID: 0 PID: 370457 Comm: mount Kdump: loaded Not
+tainted 6.13.0-rc4-custom+ #8
+[  313.267252] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+Arch Linux 1.16.3-1-1 04/01/2014
+[  313.268147] RIP: 0010:__list_del_entry_valid_or_report.cold+0x6d/0x6f
+[  313.268777] Code: 05 77 a0 e8 4b 10 fd ff 0f 0b 48 89 fe 48 c7 c7 90
+05 77 a0 e8 3a 10 fd ff 0f 0b 48 89 fe 48 c7 c7 60 05 77 a0 e8 29 10 fd
+ff <0f> 0b 4c 89 ea be 01 00 00 00 4c 89 44 24 48 48 c7 c7 20 7c 2b a1
+[  313.270493] RSP: 0018:ffffa7620d2b3a38 EFLAGS: 00010246
+[  313.270960] RAX: 0000000000000033 RBX: ffff8fd48a7b2c00 RCX:
+0000000000000000
+[  313.271565] RDX: 0000000000000000 RSI: ffff8fd5f7c21900 RDI:
+ffff8fd5f7c21900
+[  313.272226] RBP: ffff8fd48a7b2c00 R08: 0000000000000000 R09:
+0000000000000000
+[  313.272895] R10: 74707572726f6320 R11: 6c65645f7473696c R12:
+ffffa7620d2b3a58
+[  313.273521] R13: ffff8fd48a7b2c00 R14: 0000000000000000 R15:
+ffff8fd48a7b2c90
+[  313.274138] FS:  00007f04740d4800(0000) GS:ffff8fd5f7c00000(0000)
+knlGS:0000000000000000
+[  313.274864] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  313.275392] CR2: 00007f0473ff6000 CR3: 000000011a8eb000 CR4:
+0000000000750ef0
+[  313.276084] PKRU: 55555554
+[  313.276327] Call Trace:
+[  313.276551]  <TASK>
+[  313.276752]  ? __die_body.cold+0x19/0x28
+[  313.277102]  ? die+0x2e/0x50
+[  313.277699]  ? do_trap+0xc6/0x110
+[  313.278033]  ? do_error_trap+0x6a/0x90
+[  313.278401]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+[  313.278941]  ? exc_invalid_op+0x50/0x60
+[  313.279308]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+[  313.279850]  ? asm_exc_invalid_op+0x1a/0x20
+[  313.280241]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+[  313.280777]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+[  313.281285]  umount_tree+0xed/0x3c0
+[  313.281589]  put_mnt_ns+0x51/0x90
+[  313.281886]  mount_subtree+0x92/0x130
+[  313.282205]  btrfs_get_tree+0x343/0x6b0 [btrfs]
+[  313.282785]  vfs_get_tree+0x23/0xc0
+[  313.283089]  vfs_cmd_create+0x59/0xd0
+[  313.283406]  __do_sys_fsconfig+0x4eb/0x6b0
+[  313.283764]  do_syscall_64+0x82/0x160
+[  313.284085]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+[  313.284598]  ? __fs_parse+0x68/0x1b0
+[  313.284929]  ? btrfs_parse_param+0x64/0x870 [btrfs]
+[  313.285381]  ? vfs_parse_fs_param_source+0x20/0x90
+[  313.285825]  ? __do_sys_fsconfig+0x1b8/0x6b0
+[  313.286215]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+[  313.286719]  ? syscall_exit_to_user_mode+0x10/0x200
+[  313.287151]  ? do_syscall_64+0x8e/0x160
+[  313.287498]  ? vfs_fstatat+0x75/0xa0
+[  313.287835]  ? __do_sys_newfstatat+0x56/0x90
+[  313.288240]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+[  313.288749]  ? syscall_exit_to_user_mode+0x10/0x200
+[  313.289188]  ? do_syscall_64+0x8e/0x160
+[  313.289544]  ? do_syscall_64+0x8e/0x160
+[  313.289892]  ? do_syscall_64+0x8e/0x160
+[  313.290253]  ? syscall_exit_to_user_mode+0x10/0x200
+[  313.290692]  ? do_syscall_64+0x8e/0x160
+[  313.291034]  ? exc_page_fault+0x7e/0x180
+[  313.291380]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+[  313.291845] RIP: 0033:0x7f04742a919e
+[  313.292182] Code: 73 01 c3 48 8b 0d 72 3c 0f 00 f7 d8 64 89 01 48 83
+c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 af 01 00 00 0f
+05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 42 3c 0f 00 f7 d8 64 89 01 48
+[  313.293830] RSP: 002b:00007ffc3df08df8 EFLAGS: 00000246 ORIG_RAX:
+00000000000001af
+[  313.294529] RAX: ffffffffffffffda RBX: 000056407e37aa00 RCX:
+00007f04742a919e
+[  313.295201] RDX: 0000000000000000 RSI: 0000000000000006 RDI:
+0000000000000003
+[  313.295864] RBP: 00007ffc3df08f40 R08: 0000000000000000 R09:
+0000000000000001
+[  313.296602] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007f0474423b00
+[  313.297416] R13: 0000000000000000 R14: 000056407e37cbe0 R15:
+00007f0474418561
+[  313.298242]  </TASK>
+[  313.298832] Modules linked in: nft_fib_inet nft_fib_ipv4 nft_fib_ipv6
+nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
+nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
+nf_tables binfmt_misc btrfs xor raid6_pq zstd_compress iTCO_wdt
+intel_pmc_bxt iTCO_vendor_support i2c_i801 i2c_smbus virtio_net joydev
+net_failover lpc_ich virtio_balloon failover loop dm_multipath nfnetlink
+vsock_loopback vmw_vsock_virtio_transport_common vsock zram
+crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+polyval_generic ghash_clmulni_intel virtio_console sha512_ssse3
+sha256_ssse3 bochs sha1_ssse3 virtio_blk serio_raw scsi_dh_rdac
+scsi_dh_emc scsi_dh_alua fuse qemu_fw_cfg
+[  313.304504] Dumping ftrace buffer:
+[  313.304876]    (ftrace buffer empty)
 
-But not with that upstream commit backported:
+[EARLY ANALYZE]
 
- With kernel 6.6.67:
- sdb            8:16   0   9,1T  0 disk
- └─sdb1         8:17   0   9,1T  0 part
-   └─hdd2     254:6    0   9,1T  0 crypt /mnt/hdd2
+The offending line is the list_move() call inside unmount_tree().
 
-[CAUSE]
-With that upstream patch backported to 6.6 LTS, the main change is in
-the mount info result:
+With crash core dump, the offending mnt_list is totally corrupted:
 
-Before:
- /dev/mapper/hdd2 /mnt/hdd2 btrfs rw,relatime,space_cache=v2,subvolid=382,subvol=/hdd2 0 0
- /dev/mapper/hdd2 /mnt/dump btrfs rw,relatime,space_cache=v2,subvolid=393,subvol=/dump 0 0
+crash> struct list_head ffff8fd48a7b2c90
+struct list_head {
+   next =3D 0x1,
+   prev =3D 0x0
+}
 
-After:
- /dev/dm-1 /mnt/hdd2 btrfs rw,relatime,space_cache=v2,subvolid=382,subvol=/hdd2 0 0
- /dev/dm-1 /mnt/dump btrfs rw,relatime,space_cache=v2,subvolid=393,subvol=/dump 0 0
+umount_tree() should be protected by @mount_lock seqlock, and
+@namespace_sem rwsem.
 
-I believe that change of mount device is causing problems for lsblk.
+I also checked other mnt_list users:
 
-And before that patch, even if udev registered "/dev/dm-1" to btrfs,
-later mount triggered a rescan and change the name back to
-"/dev/mapper/hdd2" thus older kernels will work as expected.
+- commit_tree()
+- do_umount()
+- copy_tree()
 
-But after that patch, if udev registered "/dev/dm-1", then mount
-triggered a rescan, but since btrfs detects both "/dev/dm-1" and
-"/dev/mapper/hdd2" are pointing to the same block device, btrfs refuses
-to do the rename, causing the less human readable "/dev/dm-1" to be
-there forever, and trigger the bug for lsblk.
+They all hold write @mount_lock at least.
 
-Fortunately for newer kernels, I guess due to the migration to fsconfig
-mount API, even if the end user explicitly mount the fs using
-"/dev/dm-1", the mount will resolve the path to "/dev/mapper/hdd2" link
-anyway.
+The only caller doesn't hold @mount_lock is iterate_mounts() but that's
+only called from audit, and I'm not sure if audit is even involved in
+this case.
 
-So for newer kernels it won't be a big deal but one extra safety net.
+So I ran out of ideas why this mnt_list can even happen.
 
-[FIX]
-Add an extra exception for is_same_device(), that if both paths are
-pointing to the same device, but the newer path begins with "/dev/mapper"
-and the older path is not, then still treat them as different devices,
-so that we can rename to use the more human readable device path.
+Even if it's some btrfs' abuse, all mnt_list users are properly
+protected thus it should not lead to such list corruption.
 
-Reported-by: David Duchesne <aether@disroot.org>
-Link: https://bugs.gentoo.org/947126
-Fixes: a5d74fa24752 ("btrfs: avoid unnecessary device path update for the same device")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Unfortunately I'm not yet 100% clear on why lsblk and libblkid failed to
-handle multiple mount points with "/dev/dm-*" path names (it can only
-show the first one).
+Any advice would be appreciated.
 
-But since it's a behavior change caused by the backport, at least we
-should allow the rename to align the older behavior.
----
- fs/btrfs/volumes.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c8b079ad1dfa..1d208968daf3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -832,8 +832,20 @@ static bool is_same_device(struct btrfs_device *device, const char *new_path)
- 	ret = kern_path(new_path, LOOKUP_FOLLOW, &new);
- 	if (ret)
- 		goto out;
--	if (path_equal(&old, &new))
--		is_same = true;
-+	if (path_equal(&old, &new)) {
-+		/*
-+		 * Special case for device mapper with its soft links.
-+		 *
-+		 * We can have the old path as "/dev/dm-3", but udev triggered
-+		 * rescan on the soft link "/dev/mapper/test".
-+		 * In that case we want to rename to that mapper link, to avoid
-+		 * a bug in libblkid where it can not handle multiple mount
-+		 * points if the device is "/dev/dm-3".
-+		 */
-+		if (!strncmp(old_path, "/dev/mapper/", strlen("/dev/mapper")) &&
-+		    strncmp(new_path, "/dev/mapper/", strlen("/dev/mapper")))
-+			is_same = true;
-+	}
- out:
- 	kfree(old_path);
- 	path_put(&old);
--- 
-2.47.1
-
+Thanks,
+Qu
 
