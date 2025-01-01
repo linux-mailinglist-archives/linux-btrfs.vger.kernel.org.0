@@ -1,99 +1,99 @@
-Return-Path: <linux-btrfs+bounces-10666-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92EAE9FF4B7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2025 19:10:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56D409FF4B9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2025 19:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91EC618823DE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2025 18:10:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14D763A27C2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2025 18:10:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30241E2852;
-	Wed,  1 Jan 2025 18:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20821E2611;
+	Wed,  1 Jan 2025 18:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="YWPeqdDF";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="kZDkANH3"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VwJj6n1W";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="isu7tMH1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4671E22E9
-	for <linux-btrfs@vger.kernel.org>; Wed,  1 Jan 2025 18:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C4591E32C5
+	for <linux-btrfs@vger.kernel.org>; Wed,  1 Jan 2025 18:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735755010; cv=fail; b=aU2i2bRqXnAR2EmM+2qJ0HYd9C38eIPfCL/XyC/KjRZEBDOtXE+xBJJfrBNHa+kAC2eVNHQBxjUu1oNjeRMNtSxHMG1ie3hX7CRxY5+m7oV6PvVxeggGnEXfyOSN8dzljHhiXmiidzl2Gp0HzG/ff2ynk06ICJ++EZcLnBTHs6E=
+	t=1735755014; cv=fail; b=f12Q6EZWX/VPtlcESxKdLiyf4C8xlAQkssKOAP81ogxaf18OXUgKAv5OwabpN3X6P6jWOzu832I2o4rIJgv2Nvapc07ghh6buckgI9yYtMPsDamQr4nfrFh3VkvzpqsiMsC3iojkMYmQruvfn5jnkAYXBpKuPF9jdHbxkK5ipzs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735755010; c=relaxed/simple;
-	bh=sgx9FCTgYUCNiS2mxBqetvI7WQrlGaYR6ddwxzWYR1Q=;
+	s=arc-20240116; t=1735755014; c=relaxed/simple;
+	bh=17UvpopZT7rH2KUF26JQpZrSn5fA/ddJoI/DMBrITyY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=E6BvfNg0LAWpKgPU3srD9JuTPYIu34UQL5X1b7SDYVL5b7KIAWHuwiLY2e6t8f8eG0KS/PNA7JKUPl5/i6OvQ84XE18eq+7Hb/zQMh5hvEYvFVVMY6OXO/Wz2B7civh7G/6+JlysJJF5qtuloRd8wl33p+/08g+0iiNH9J6DmfM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=YWPeqdDF; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=kZDkANH3; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=K0cONKfYqqnBtmZMpoJkqfdBonmuv3uvSTv0N+S7ebPkENw3X7kjZq3GTAgPf3ArHjxTRkoq5A1oF4t9zIjoKZH6MCt/SD49mmqy3x41KCokRco0nMDKJbvrVQn0Wl4ZUtoGCNHPkr0A1ef8PCnu1KQ5G4GfilOTInoCYoL0q8s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VwJj6n1W; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=isu7tMH1; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 501Fl6US013168;
-	Wed, 1 Jan 2025 18:09:58 GMT
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 501FlCfR027682;
+	Wed, 1 Jan 2025 18:10:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=mtH+kHj25iJURDTetmMUln2QzgW+K7iGiglDsQ0ZVpQ=; b=
-	YWPeqdDFpO+bVWxkktN4XhKexEjVLTmxHDGaIzFrF9Nb8mXTBCRLh2D4cazSyX4g
-	4y/7zMkXwxZFPV+/8+nbqe5tX393lchlQ6rqHLKhDpf92p6B7urcrQzhKqH2qOO/
-	awmDUoEbYExZTNtdcIguuqnH/lUg0PQF0nl2xQ9fSpnsvewtQP+jlw7zU209QQRG
-	hmi6y2V7l+5e0Lk7O41YfXs6ZE4Rbvk8GX66oUgld2guDMmd9xxJjVeDQXPFBUh3
-	+XDKRx105+XYWtYH0CsyQea4psXuWZG9DF554/vVzLU80SzZr0Px/smhkmR8ecy6
-	WD/BGneBAUHQ5Lsu63JAKw==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43t88a4g6s-1
+	corp-2023-11-20; bh=X/Zi4ZyndMHWVrsduqOwVKdneE9gkhj02tOtyRSR+iU=; b=
+	VwJj6n1WDqj+Itxf6s6k1YkxhO8hT47WmjgEArBbe+1/4DwWkLwHdw1xLU0m6016
+	AbuLwUzA8nXv2xg4Gz5xJpEQ9Uj+e9G8ley6iXfjb03uAyHfs9KUa3uvocalXFok
+	/Nnu2OHplfD/xHajXdsD6ivkPVuG04gwWxvd6DQE86r/xsrQtMGhlVzefG1WRXjN
+	TfHulyLDXMuOYCIyXl58+2ai0llh7pxRsp4OyV+cHCMrYRNwIg3WyK9Qf7a2/nCK
+	9tGKidSl29I0q2L5o1ROomkeOfbB+Wc7J+ZuMsPreEseFnFWp69nJoLZwIXP7RrC
+	WgTE7R4kR3hlz1GWQ5p/Cg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43t978md41-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 01 Jan 2025 18:09:58 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 501EGYf6009070;
-	Wed, 1 Jan 2025 18:09:57 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2041.outbound.protection.outlook.com [104.47.55.41])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43t7s861h1-1
+	Wed, 01 Jan 2025 18:10:03 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 501Ca4Lt008789;
+	Wed, 1 Jan 2025 18:10:02 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2040.outbound.protection.outlook.com [104.47.55.40])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43t7s7wvb1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 01 Jan 2025 18:09:57 +0000
+	Wed, 01 Jan 2025 18:10:02 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nxJfpZj586lUGA2ifpKTm3VjcrYx4jTeWIwRDc3i9VfEmwksuaot0aBy/VJ+14VaxZqSQSdfhm2LCFl6kxjbXksF8jhnDsYIldVcJPY7ivkBT28GOGv5xOf2jDK2NMfBPsLI7bLgEuRmamPjmBFmGtTx10sNx/2GCKfYp1AZPgoWuVtMx4LjMM4FODkukF04MzA91nUVjjBLNPD4OCyIzcPb3yTSxXJdCTYo1pxciA1PU2j0nLrYniuy+0Dux+LiPrxbhtcCfoPJrK1ynuHCE7aocBk7AdDznluTZZkmmhx2PEEx1arMN+IKefrcgPllu+dJ8C+FmtcIdyU43EcqCA==
+ b=xBNnFAvOzyEUnTAULzn0wchNWNdIw9ohZyIw0cqPegRPjf/qUkJsvBP9NX+04jc9sl4/qI8eOX9gwGtzg2kvOKE5kuxpREyg4UgbIo05Pv3QadNQnhNV3ozvemmGJ46wlxdnoOkD371pw3fH2ZCqjTlSlqhhex+GCtCfK62t44Yj2Oq0DmRk+IYbkpX4xix1mJjdPVytcnroW435cCIOERDiKnKujiz4M1/j64+9KlxPCvmcxEJWKjNcSsV11VGGqbmmd3m75x1OE4runbMcKbZT6dxEjeefzPAvQjbOxbuoy+e7uY+sa6Rnr3xYyXOFBjsOaHnJ0/GWUmVaqmK52w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mtH+kHj25iJURDTetmMUln2QzgW+K7iGiglDsQ0ZVpQ=;
- b=qzwvKn9H9+RsD6zOEvRxIoMi+ZV9jTsfjA9nRncWuHolf0EigW/HkBM0CKAYpVCtnJTSNh7BdI7+psIViZhWZqlL9CbxcsY8SSt2ZT2SgqTgYSv8f8L5p4tgQylf0aRHV6qkLWciqNXh8qmuENm18fpJ+Qwh+T9WFtVgKLkMu5+xFpM582FLqeYODjv1FLalSzl2xE/KPomcICBWBejq1DT6QJVV0wmUdruFHeCcFo1myyH7u/Ryds2vrT3V90vb0iNBcyuIJhcEIznqr/QETj0834GKpt+0ugr7aZFs0L37tC3Iz7iI6DZyHHbuJb7hdtYKI2yXhucQlB2DYDxShw==
+ bh=X/Zi4ZyndMHWVrsduqOwVKdneE9gkhj02tOtyRSR+iU=;
+ b=B0o50+Ht82xwCPGoMfbfVLrktG/huAqrZWy1z/W3gP6+lCmV9ZgM7tQzzp5hXPdPvquqf0SPliJ2Zj6LvVl+wB+D/UTUjtkfLDj1IZIjKeUQp90cZxxO/+ApKMnPPByoj3iud6Okm703lpfIhl8o7iJyCOLQp7IAn4q8M+irG0WhFudLmury0iGvG8Yw2eYTN9VAvOYAswVlKLybbPOMzDo5bNBmOOw5C5PSLY6CJAyTM0GOEY2GFtctQXz/l0mfKOgb8amrd4DmxNxE5laEXMfdM9YA/4geMbjrCRssHrSUR1qIaI3ErW2qo6qClocGkV+uYLr31nVvf30NRIL8Eg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mtH+kHj25iJURDTetmMUln2QzgW+K7iGiglDsQ0ZVpQ=;
- b=kZDkANH36okcNT995ibe1nT66s/heemM3A/kpg5gVgzzhhRPIjIC3aqN7jxBZGNVhigYY7lm1HB/RUASZSDV3UHE3obQAEOEd80BvyyF7b1VDc7Zqlb04MIEPuAi5pwfUdZz026jwSTwIIJYL4SlDDJ9wz3TpkXRq4m9SXQLEKM=
+ bh=X/Zi4ZyndMHWVrsduqOwVKdneE9gkhj02tOtyRSR+iU=;
+ b=isu7tMH1usfRMgxb73fzJ5l4anl0floFWB+HirmmVjyArZGdpUsaOGMz8DYuvsTRBhSnEbJas9RUkL0wRK+AoHaWuUZiWYaQ2odmeoAia+hEkjvtADivORNpvGjzSR2V4Izqn/j1xoPiJ0eWbFLt2XAsF1vMOiSPYj+Uu6CCwh4=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by SJ0PR10MB5549.namprd10.prod.outlook.com (2603:10b6:a03:3d8::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.12; Wed, 1 Jan
- 2025 18:09:52 +0000
+ 2025 18:09:56 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65%2]) with mapi id 15.20.8293.000; Wed, 1 Jan 2025
- 18:09:52 +0000
+ 18:09:56 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
 Cc: dsterba@suse.com, Naohiro.Aota@wdc.com, wqu@suse.com, hrx@bupt.moe,
         waxhead@dirtcellar.net
-Subject: [PATCH v5 05/10] btrfs: add read count tracking for filesystem stats
-Date: Thu,  2 Jan 2025 02:06:34 +0800
-Message-ID: <c4010cee5398e35a695def3ad97d4de6f136ae2c.1735748715.git.anand.jain@oracle.com>
+Subject: [PATCH v5 06/10] btrfs: introduce RAID1 round-robin read balancing
+Date: Thu,  2 Jan 2025 02:06:35 +0800
+Message-ID: <6f78674a41cfacc84a12f41d6ce8ec689a5c3382.1735748715.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1735748715.git.anand.jain@oracle.com>
 References: <cover.1735748715.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MA0PR01CA0052.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:ac::13) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: MA1P287CA0021.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::29) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -103,208 +103,312 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB5549:EE_
-X-MS-Office365-Filtering-Correlation-Id: b6a1ebcd-d3bb-41f6-375d-08dd2a8f7cb7
+X-MS-Office365-Filtering-Correlation-Id: 1762fb35-afee-4b80-63c7-08dd2a8f7f99
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?atimC+KnCJ25oBxJEjjH+L547zP0I/kSZc0lOhS8xAyeVDBG45/DnKa5fouf?=
- =?us-ascii?Q?lIvepCXWuTYyidU/Q7RGDzjLYVqJ46kPzmdDW+a0g416o494/q/WHFwpQbw/?=
- =?us-ascii?Q?tDtFd75m1KOAxyeMXNAIFucKvTV0uue9FBWv6qGJaLrEKRkZ8ww3NjzVHn6y?=
- =?us-ascii?Q?ANgzomNHnTnGh00fyIxBWKseyO6h3HYCBOY5e2oBBCCzaXYj3MLhmmiTEzJH?=
- =?us-ascii?Q?Gpz+mtrLPA9A+7+6b6KBMXXpODUNoVTJeIBEZH/Kd2v9+3t+0VS1wEJne/OE?=
- =?us-ascii?Q?0jFT8jQqE26TwuXbWsRFp3veT1gs6sME6dwWHx+J24JYgYqCf+uTzv2uHVhP?=
- =?us-ascii?Q?MpvELHWJEzl6p0ZNfdWA+tdKF2QGdfTFuiWJ6ZcvDleFAxwwT5/K1+MSk4Fo?=
- =?us-ascii?Q?4FUwZFxuG0iB0CLCcJBiyVLMKBxlTalrsXmK98Lm04e6Ipjq1eo0Houu+lAY?=
- =?us-ascii?Q?4liruPf/7e50tnqqVpfD0uMdnwwLUMZr6G/L9lnJgs9ZISyCRoNqRYUsNObf?=
- =?us-ascii?Q?E/bDe04EjVJ1+oY08HsSUMV2bkGo7Ii42SSiNhM2p70JAHRVUjEMgbNVCMtE?=
- =?us-ascii?Q?GkmQWbsqY7sYPBBB2GXd/vNQt5JWcCOJBeZCq3QhjZIamFPnQHrudeLTMiyi?=
- =?us-ascii?Q?v9pCPbDTaDdW0RwFCnO9Wd7EWSOituQK2K0ZaKuLwZqX0cacg5EqtaTN3oT/?=
- =?us-ascii?Q?t01EgBsOYfA5oZf01lF9ibGi01FmeUUx3KhTYCcL2D2MVL3Sh/WdCUPal91w?=
- =?us-ascii?Q?Yt7vNtOuIoKQS9t+3SgmhCnHW1xGhnuJq9hlZocID3rRZToy2/Mcj9RKdWBC?=
- =?us-ascii?Q?EHmCEFXW5MWuKF+mYGSfrtasAZuPSgiDAxcaG+ZS1MWhZha0t8FM9I942db/?=
- =?us-ascii?Q?JTRXLo+OkLqt9zZvZFrsJLsM7tMsv6C0aCF4ayQk7DWZ6zd+j0kdlyI1CeGe?=
- =?us-ascii?Q?Sh7z5My6JISDaUiMrY45z4EIasJ1A2j9kzJykZymWPmRkPmM+vkCk3dKGIxZ?=
- =?us-ascii?Q?s5KW2MAWtAC66SpaVV2jDOx5X+DLLKawfROhLC8tWfpzakBw1w0VINUCyNMO?=
- =?us-ascii?Q?nswMR/gJjgHswoiYC6oa7Wx6mBqWBiZoxt+CM/l6qVtkxBpxerieKBnzSLqP?=
- =?us-ascii?Q?92RG3eX2y9jTdYCuquHJPoFTUCfxOvEQJyWsSD5Fht14PcDAxeffYbabjdkZ?=
- =?us-ascii?Q?BLv2RIxVbDDWofIRjZVcqSacgOXxKd1hlA4TTQn/2IoLQSQCmjft175N57hC?=
- =?us-ascii?Q?JarK6YviwOFRsRO4h/LeFi+QOKyLvwKnubt0orD1Tox/so6+ln9E4jmDdo+T?=
- =?us-ascii?Q?fYR94xX6m525tBV2IYGMHJXco9wlQj+PuA8l++u1Veop1giorA9hFQDT1Wba?=
- =?us-ascii?Q?FRp35MR6dwze6NW1bUHdB/lPudFl?=
+	=?us-ascii?Q?AptX/N6x3jyQlAWnDkaG3K29IbAaOxL49iNbHlYjDSML1YkAf3SzMMpJ19LI?=
+ =?us-ascii?Q?iI2QIN/E4kUoOHeGQgOwFItNkZ+hiON8mTj90TKKI/ZsC8nS1pOrFOhBbwyk?=
+ =?us-ascii?Q?ILGIUIyCqpQBrEtQjzH2fLq4tua6eMPSrRj56O974jUfir5wOgL+bnI5ak3b?=
+ =?us-ascii?Q?Hmv9gDqGqfjU4CwRN0osONQ/WgyAMvTN3TrrffUOTZ9yNt1ARkhE3CLQmIqA?=
+ =?us-ascii?Q?uzv1s6qgPS4fLlsREcgrvQZY79mg8zcmIKALpiu3geEg8nXeY6ZBrFJRghHG?=
+ =?us-ascii?Q?jU1CVRoerKx7TiPwWwboEv5BAi/nPsmDik0eq1T2/lkbql2V6G3c3oW1Kga3?=
+ =?us-ascii?Q?aPzOjiLIFlq504wXWqXMzs+4Nq2LDOR4XjeiIc8YEUYQdl5COMX5DIqZTceY?=
+ =?us-ascii?Q?it6DDQqkML0kYwDEhsmCLfFC5VUx179SAiM8vD6FsKysAjX2pXnguV/heE5P?=
+ =?us-ascii?Q?Vvd8s8SvRnO/Nxn2e4aGC1lx3Bm/sbFYDKlMvxMUwx4y93KFBH/vJPHsgJn/?=
+ =?us-ascii?Q?9WdyXjN90z0GtIU17t4iCZTamJqacrWh7cw/gMMb+VWBaaUAfQpJQvgNCROw?=
+ =?us-ascii?Q?g/nu7YkaZEggRztlfajhqivXj4JtqKxlhvIODlNcgyVRqOdhDYCr81RG4CmK?=
+ =?us-ascii?Q?R6gxVoiHTowMNGSpyb1Ry9J1XFRslC8/AhL6nfXloFS9IiS+91nax6p3QIpc?=
+ =?us-ascii?Q?YWhr9BgJKVvpsEoYhQDMBsDJJAHMUZE48OEEFJLT2FtBqtLgICWIwdeZJ3i+?=
+ =?us-ascii?Q?2sqpsxiGYRahg1GLEK36morsMlj3btkU49H0+LcBjgqIHPyE4nRE46nu96bB?=
+ =?us-ascii?Q?Hx+K87WHvSgaLDREsAEfABp0Y7b9mw2Kxi09Ov/BQbMnH9q3YQRpLW3kTKoV?=
+ =?us-ascii?Q?KTAdak9H05Tz0hKzZZRyp4HjotaWr0htMOZNnQt1jBwy6tZ37YgIFrzV8nL6?=
+ =?us-ascii?Q?cRtRTcKc/HcjKo8bH4FkN0y7zxPDiwZPHeYipWotVZ9jjNUqDakn5Pgl0u6I?=
+ =?us-ascii?Q?RIQYicExR3/6MkRaRWnTG//9DjJmXKbOzAnX1zECpNzWi923vKUvf6yc9Nrc?=
+ =?us-ascii?Q?apFtB1AxGsTocYUWRJTvZIYGaoFDJ9oX0g1W3YQMnGHGMOOL4536LZOKU65S?=
+ =?us-ascii?Q?xVqee/WRVPCBkf53vNCqAeUrtRosGLvm1oCRMyZl6W/dgD0k5EZMGRiAVmV/?=
+ =?us-ascii?Q?mzldQaeHKrA5nZSV9whjXztTg8F9eFkzsnliEzMwZU7z41oQf15pvlZXcFzg?=
+ =?us-ascii?Q?1GnsQbcOdlbBLGnBl6xnx3Cvzpe7BzbGWVbqwXVtWgfciLxy8cg2iAM9UZD7?=
+ =?us-ascii?Q?Lvh00jKW3THDUt4pp0l+6R+oMfeX0OanMWGyMWWr4Y1xlhqbMCHObZEcS3jv?=
+ =?us-ascii?Q?0EKZNag1NLeKp7MiCEx5TxQ/HJnY?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ng4I7qrn3/MSllA7Qt0TwdQcpFcClAAp+cCKDf6evc/gqXZQgAe3wByvzHy/?=
- =?us-ascii?Q?V0dVeP/5ApZ1GauRYW60Sz2xr/VmWk9S8g+PYLkkUYzmWRygP/vbmbjlLuF+?=
- =?us-ascii?Q?dcHFqYer9+g9buc7rqPhqxqDtHE6YteKogdowJ673JpceL2baiDj1bqFDn8N?=
- =?us-ascii?Q?+PRVGI3WLAJqA6eulpsuFmUFPb7cq4Gtn17mhabA2JAnkYJjN1rvA2SEO2fC?=
- =?us-ascii?Q?QEPsPkRv2bk4OfLxsGvxp0eE2X/trRS4DswczMzgagVEt/S2KbEvtsNS3xnZ?=
- =?us-ascii?Q?0Bkx7UQ+NHJzcdDQV75F6seIhdTDqrqU6wXUz8OiFnUpvOoYDYidVagBW4PN?=
- =?us-ascii?Q?6XOLHQXOo/h8ly+VfK71w7LKO2cDPcSQCLO068+HD6/PmhD1Smu0YAGkkTbh?=
- =?us-ascii?Q?NgrmryD7jm1qgKT0Xfcc0mYtRH7UF2lMCuy8DkiiTG1IMSDz4xFmZ7lwBrSX?=
- =?us-ascii?Q?dGIYOrxdXt+thoLWjuqhGcMXHXKqxdDSa4ktvbJTdSUIEuRyDCyo3j19N+FH?=
- =?us-ascii?Q?+EVMB2cs6kh2x1CHasPRWK/+bzRLUbl56B1S2TwYNA85I2ZbKwP5YT5jro3F?=
- =?us-ascii?Q?d4AirwsYby+zudPBm5Kam26IxfP0BrlV5CMUqyA+kV8ftTlfyKtNozcpu8A9?=
- =?us-ascii?Q?0Mvr+BVfsVW4J2Ecyc+ID9sFHJVWwyWByGRB5CMNmnViIgT1jE9f8IZxuzDx?=
- =?us-ascii?Q?F65ABxkQMrr1BPVzdd5qmQklnPOHT11UkKfabovHPrnP7hfjYuNNhpcMXKti?=
- =?us-ascii?Q?/0wjePjm7oCTJi3W1cAnduTWBhF3aKObpSH42JSU6XLutQ8ig8+Y8J46b99E?=
- =?us-ascii?Q?h1EOefS+93PIXHAIsjDCB2RcaAb/WSkWIu32+g6yzNLi0aYMRlkxPgsieFnN?=
- =?us-ascii?Q?gMm848Jbo+5iKJExKt38sWCmoP4SQTXOjClldlGkmti1MBfOqsGRorZzn9oo?=
- =?us-ascii?Q?z2RApA+8zIGGDC+Vl4xc7uQOyiUs7my8q4bGCwDG6WYAiQUHMTjf4ZZVuVmm?=
- =?us-ascii?Q?dBqtlKpNpS4yAwxqUghE0mnpS/A2WpK8Xd8i6awQOIoobQxAod9bgi/FvxoN?=
- =?us-ascii?Q?kx9aUGWEjphIonR4/Bk4UiVTg2AM2XJL0ub1hXm7+kt2Gqv+AqfVGqWMU7Sl?=
- =?us-ascii?Q?GmrJ0SZrJG/MlxQ29qGQlp9Do0Nu0YLfZg6/zv9MX1+nCdrT5M3ELdCStNzG?=
- =?us-ascii?Q?/N5L4uus1NaTgsKxLdFTqXtVRof1jHBx0DzpyCdpd8aOgHUJKh/mnrYkAfv1?=
- =?us-ascii?Q?x9g/Xo6bGGYHRAhfy8iVJ2Rvno9qqqJQV2vuG+IRfq+xD55bvlz75EIWs0Iw?=
- =?us-ascii?Q?U6OrywIukwif0gkpsOpeyMhvefDjyKcGXCLk9BMPvRA8AYUR04U9oehb0FyS?=
- =?us-ascii?Q?qOBb7YSJIhsQYOJNVXyfZMs1WTOrEWdGCvUnzXpsdJyQuglh5cWp/ShnqlPQ?=
- =?us-ascii?Q?uhDZxtfy0T5t3nscoC5VAsnVppmd5omiGfnV18BmLs0RWQ+KxCSufMawEyS6?=
- =?us-ascii?Q?JKOjHtdFl4/Wc4Cke2CfDmnHlJzAWaiMtjRRmzeA1LrAbthgC91CLtvsZ04o?=
- =?us-ascii?Q?E+VfLONXehEBoCIA+OWDe1hjRnsX2/rsmL2nSmXn?=
+	=?us-ascii?Q?ZgnqEGEN4skqmlzm7o5KuRm+9FzAfNU1SEOpZy9sSqU3wYu2mUkP6Ijsg9ot?=
+ =?us-ascii?Q?jBJcFO/ogTmEBdyXfRta6xxeNjM+RixvRj5B0IHCggOGxgjbCnI5Yy4jOtPb?=
+ =?us-ascii?Q?zqld0hG+lLnzuSrgdq6qUYxXF1UQ6fujs5MSiXnvo8io8LXBT8flrxCCIb5v?=
+ =?us-ascii?Q?IHq2f/Cq91zWAK7qcNWKqL3GUcHJZXVtigtBIzwyD/SmvNZ6nna+w9X0tbse?=
+ =?us-ascii?Q?j1u585HBtretyt3F9CNKP0Q8fNlDmtePJkK9KkpVjAFKqy1aT3xnc5crbuWg?=
+ =?us-ascii?Q?1bwXvzs8LcWeflh8uoL8euuMRwnaIaWI0a9eK7s3PRk1Y1bZdSn0yhsAFC0d?=
+ =?us-ascii?Q?ctiIFocG8epmjsL3cDc0EY5xN4UYT3hreJrI786pb5/86+WXAalF6IdpS+go?=
+ =?us-ascii?Q?cRrUC+XQmWnF400JbB0b94/9fQub7loqHoX4Kk1iqHtvw1x1kWiYeVPWkV2q?=
+ =?us-ascii?Q?YPWVA2qQdwgoydZdJwr+3QUMxnsh1Upept0woq7wfSv/HEOcc0OzRNysOuo+?=
+ =?us-ascii?Q?cIN9lzPRbl4PMoC5FNuifOHsdVPpPOzBDj1EMyVigkegUHSLiuipc9WFaS1S?=
+ =?us-ascii?Q?kuOp0ThzD3CQH01VGVQ6AuD/ZxDL7G4P+Zk6UUfPNCXHVAXASf5FdSSJCD8s?=
+ =?us-ascii?Q?znJJ9TMJwVTCcx2kr+LMbiUxkkaHaq3xxNfewz5W3rA5lzuU3V36PIEjai1H?=
+ =?us-ascii?Q?fwN2Le1/0e9LoIe4fahSMizV9Fzo23VwbI6Kby7aPbipJXDMC5ubqQnIS3uq?=
+ =?us-ascii?Q?3E0VH0Xm48z6Au/fOhQnobONTqcdEl0kn6hzlUr+ndWXXJhvgBStkdkPR36D?=
+ =?us-ascii?Q?j3FFBWeY1YXaL5qQyJ4OIhCeNLzbNyedSZV4pdJzRyPcdO853I6yM2/Us8Na?=
+ =?us-ascii?Q?e1z2RSWfb93l5C+FSEFlJpbZwBY6v3UVrJFdoU/86vVLYD3u9EZgSGEANspc?=
+ =?us-ascii?Q?DtGQkFErK2CbD8Bm9i86db6xK35mvg6Y8NU87xB7DU3yiHw+FMOjvbg4CYdN?=
+ =?us-ascii?Q?ztEPRzkTIPpFGJd9dEd6iFLb6mmRqob/kqKQz7DTI/OPJLhxloMr2Pprb0hq?=
+ =?us-ascii?Q?czdHlEXZhQtuNK50yKneAvvfDrk00cgFXn6QVrn9HFmOkuSQ9nSZJk3PjeQo?=
+ =?us-ascii?Q?m1cz7cJt/UrSyvU2K/15xMSr9Bic3wLoC+cg5oQgmVjWK9D/uHHBNmiR3EmM?=
+ =?us-ascii?Q?+TVgcnyYBwHmL5hqjDLV72rUl5LrbmwlVZciA1mI4KT/pT1FdghK5RCFo4kI?=
+ =?us-ascii?Q?uhc71zRTSPWpWLdn2Y3oGUkIH7GYbgcJ0cYTrHlrpISi2U+mQ4L460eKWes0?=
+ =?us-ascii?Q?Uxf+G0d0orGWh762RCA7E6NK0KvZlsQINQ6k4u+Hhty4Be5fpQw6iLTKWmbF?=
+ =?us-ascii?Q?O7hb9xp5M6kHxD8GQ2C0D+fc99yu1nD1yuScUsOGA/EVzTp45vYYlUoX3sYt?=
+ =?us-ascii?Q?NtJ/e7SvSp1WlMesm9IUvqsg+MqTBlFcNoloXz1eVNq60j/fJNDKKz8YBKaN?=
+ =?us-ascii?Q?oyr/yVku2Yrqz31ye4PcHwlSnPY1147X1Ou/8YpkBHo+zc9ER+9btwsMBmzF?=
+ =?us-ascii?Q?4XxeVnC7/k7qcnqg/zde8ZMXzmvQD2FFaCtiOzG0?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	rqEai6QLPsIuNnQWCGMwapNR0HGcvvfJ07kLAxD7uLp3A4LuJyT3N75DnEh5mZcN5VW9HPMZhol2aHM++iuegW8bJIt0KAdKrAYsnLrqjfoQpYIVVb8SvOKx+EeEjDUgY95eM8zuAwFaLj7RCtY0r7QPycerWgrBKR02n6p9mk8n7QUXDIFjVjfHKsSgVnT6dm2bA3MHWx9lItqfB6OdydPXEl+1oul0SlOJFoiCs0qBJ/xzUPIU7Iaudz0XtPHogcjr2jcmFEuFvFEjj8p15WSj///qoW8lizyEl/Boewl9lScoYsvEKu7WS81RhmmKiskO/f4TnTr2o+htWK0sk+INi9BPtGmkRXBSoS9U3OC+PfuhOoePDD5sRUNuhCT3tkp2BjygIr1Ep4uqoLjcADS2XpVG2+s5W6gdKRSRjvhxpvafTvgir3tGLXyWzDShuIpJrkYkTTmYxCSZnEdmosp4TVyIzup65oXE5j+yXh86DUYe0YoZ2pSBChVvc3G39yMNZOlD0xUsHzAkn4iuHH1cdmh6MWmDu9uvOiDqlRQYpU4d/98hd1DepmYBwRlz9tl8/+D0rD8PeTanKSQfn24ypYqYMNC1Xx+xtm9oE7I=
+	ieuUO5R+H1Ypd/chnh6GkVUBntE4zo8Y5QjGbRazg/BJtKAQvkQRE7aNzmiKOLcl8wtVH5wd3Cj7dJADA6dgXMOhTAl1AAgXDprdHP/MsK4/RzDJLiPCi0JDVJ8n+2QjkGzuH0OnaLFXJM3J6UsNScVcZO3BEPceXcGLqz0m8cTPbwQfo6vB+0aGeSVkOm0ifrcWWyrtnUsFvZdPnR/3P8RD6IEM3HK3WzSQgwGXn8IQz2UDP/8fqDLQD1LYFhnXwrYsbzMhEqWvCSpciPhiuwx6AqvpSMSL/u3npJh0HkMQ3PI/WvjWijqYY6yLFPKtEy2xFuc/D6EpRclnpFTDVQyjEgovy87IQra1ZMmTD39At+QgoegrhrhiKW+Bdxsh5jLSyDYZ6H7dgzGsknEbcxCFJhhrJggWB1V+3x3lHORz5JOeKwIMGO/BmpkZhMiCc3QvOAVv9qSuWkfRYdHj5j3R5lSYxsISBKXtiX8Ubc1qMb6HJfbUhlbVL69ladzn5o35VqdgSA3L7di+g0PphjxYiL5wEYh4X3/qDC1Ez5GFPBYe4LogfIDMcekzux84q19BpdnIW5nIyjWb5W3nLGGphg7yGVO6Z1ldHvwRGN4=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6a1ebcd-d3bb-41f6-375d-08dd2a8f7cb7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1762fb35-afee-4b80-63c7-08dd2a8f7f99
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jan 2025 18:09:52.0632
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jan 2025 18:09:56.9005
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UU2/JnpNfKjaWl98veRMNgdCN/4ROBV9xLVVyGCh21PZSGwi8cQkuRex7xRd+F/JM0vz6K2eg+iGN2WqGwXffg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: ntFCCwZnmPG6eQJLtAAvZ0x/ZLIH9SzDAq+ZkBn9uv61GUC1RZ875kTwQ6fF+tJLR9FkSrUVLvepbArQuO9GpA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5549
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-01-01_08,2024-12-24_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 mlxscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
  definitions=main-2501010159
-X-Proofpoint-GUID: Suo5mVogahIxJ9okqg5aqRPvGx6LpcCa
-X-Proofpoint-ORIG-GUID: Suo5mVogahIxJ9okqg5aqRPvGx6LpcCa
+X-Proofpoint-ORIG-GUID: W5E7pDKrpBAJO0_9RpTB3VY-txvob2JP
+X-Proofpoint-GUID: W5E7pDKrpBAJO0_9RpTB3VY-txvob2JP
 
-Add fs_devices::read_cnt_blocks to track read blocks, initialize it in
-open_fs_devices() and clean it up in close_fs_devices().
-btrfs_submit_dev_bio() increments it for reads when stats tracking is
-enabled. Stats tracking is disabled by default and is enabled through
-fs_devices::fs_stats when required.
+This feature balances I/O across the striped devices when reading from
+RAID1 blocks.
 
-The code is not under the EXPERIMENTAL define, as stats can be expanded
-to include write counts and other performance counters, with the user
-interface independent of its internal use.
+   echo round-robin[:min_contiguous_read] > /sys/fs/btrfs/<uuid>/read_policy
 
-This is an in-memory-only feature, different to the dev error stats.
+The min_contiguous_read parameter defines the minimum read size before
+switching to the next mirrored device. This setting is optional, with a
+default value of 192KiB.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/bio.c     | 8 ++++++++
- fs/btrfs/disk-io.c | 3 +++
- fs/btrfs/volumes.c | 8 +++++++-
- fs/btrfs/volumes.h | 7 ++++++-
- 4 files changed, 24 insertions(+), 2 deletions(-)
+ fs/btrfs/sysfs.c   | 49 ++++++++++++++++++++++++++++++-
+ fs/btrfs/volumes.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h | 10 +++++++
+ 3 files changed, 130 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 1f216d07eff6..faefb18010fc 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -450,6 +450,14 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
- 		(unsigned long)dev->bdev->bd_dev, btrfs_dev_name(dev),
- 		dev->devid, bio->bi_iter.bi_size);
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index cf6e5322621f..70f89d1adfbc 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1305,7 +1305,12 @@ static ssize_t btrfs_temp_fsid_show(struct kobject *kobj,
+ }
+ BTRFS_ATTR(, temp_fsid, btrfs_temp_fsid_show);
  
-+	/*
-+	 * Track reads if tracking is enabled; ignore I/O operations before
-+	 * fully initialized.
-+	 */
-+	if (dev->fs_devices->fs_stats && bio_op(bio) == REQ_OP_READ && dev->fs_info)
-+		percpu_counter_add(&dev->fs_devices->read_cnt_blocks,
-+				   bio->bi_iter.bi_size >> dev->fs_info->sectorsize_bits);
+-static const char * const btrfs_read_policy_name[] = { "pid" };
++static const char *btrfs_read_policy_name[] = {
++	"pid",
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	"round-robin",
++#endif
++};
+ 
+ static int btrfs_read_policy_to_enum(const char *str, s64 *value)
+ {
+@@ -1347,6 +1352,12 @@ static ssize_t btrfs_read_policy_show(struct kobject *kobj,
+ 
+ 		ret += sysfs_emit_at(buf, ret, "%s", btrfs_read_policy_name[i]);
+ 
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++		if (i == BTRFS_READ_POLICY_RR)
++			ret += sysfs_emit_at(buf, ret, ":%d",
++				 READ_ONCE(fs_devices->rr_min_contiguous_read));
++#endif
 +
- 	if (bio->bi_opf & REQ_BTRFS_CGROUP_PUNT)
- 		blkcg_punt_bio_submit(bio);
- 	else
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ab45b02df957..79b859790e8c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3481,6 +3481,9 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_sysfs;
+ 		if (i == policy)
+ 			ret += sysfs_emit_at(buf, ret, "]");
  	}
+@@ -1368,6 +1379,42 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
+ 	if (index < 0)
+ 		return -EINVAL;
  
-+	/* Disable filesystem stats tracking unless required by a feature. */
-+	fs_devices->fs_stats = false;
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	/* If moving out of RR then disable fs_stats */
++	if (fs_devices->read_policy == BTRFS_READ_POLICY_RR &&
++	    index != BTRFS_READ_POLICY_RR)
++		fs_devices->fs_stats = false;
 +
- 	ret = btrfs_read_block_groups(fs_info);
- 	if (ret) {
- 		btrfs_err(fs_info, "failed to read block groups: %d", ret);
++	if (index == BTRFS_READ_POLICY_RR) {
++		if (value != -1) {
++			u32 sectorsize = fs_devices->fs_info->sectorsize;
++
++			if (!IS_ALIGNED(value, sectorsize)) {
++				u64 temp_value = round_up(value, sectorsize);
++
++				btrfs_warn(fs_devices->fs_info,
++"read_policy: min contiguous read %lld should be multiples of the sectorsize %u, rounded to %llu",
++					  value, sectorsize, temp_value);
++				value = temp_value;
++			}
++		} else {
++			value = BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ;
++		}
++
++		if (index != READ_ONCE(fs_devices->read_policy) ||
++		    value != READ_ONCE(fs_devices->rr_min_contiguous_read)) {
++			WRITE_ONCE(fs_devices->read_policy, index);
++			WRITE_ONCE(fs_devices->rr_min_contiguous_read, value);
++
++			btrfs_info(fs_devices->fs_info, "read policy set to '%s:%lld'",
++				   btrfs_read_policy_name[index], value);
++		}
++
++		fs_devices->fs_stats = true;
++
++		return len;
++	}
++#endif
+ 	if (index != READ_ONCE(fs_devices->read_policy)) {
+ 		WRITE_ONCE(fs_devices->read_policy, index);
+ 		btrfs_info(fs_devices->fs_info, "read policy set to '%s'",
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index fe5ceea2ba0b..1fa40bf6f708 100644
+index 1fa40bf6f708..ab2e970dd6bf 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -1254,6 +1254,7 @@ static void close_fs_devices(struct btrfs_fs_devices *fs_devices)
- 	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list)
- 		btrfs_close_one_device(device);
+@@ -1334,6 +1334,9 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+ 	fs_devices->total_rw_bytes = 0;
+ 	fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_REGULAR;
+ 	fs_devices->read_policy = BTRFS_READ_POLICY_PID;
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	fs_devices->rr_min_contiguous_read = BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ;
++#endif
  
-+	percpu_counter_destroy(&fs_devices->read_cnt_blocks);
- 	WARN_ON(fs_devices->open_devices);
- 	WARN_ON(fs_devices->rw_devices);
- 	fs_devices->opened = 0;
-@@ -1300,6 +1301,11 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
- 	struct btrfs_device *tmp_device;
- 	int ret = 0;
+ 	return 0;
+ }
+@@ -5965,6 +5968,70 @@ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
+ 	return len;
+ }
  
-+	/* Initialize the in-memory record of filesystem read count */
-+	ret = percpu_counter_init(&fs_devices->read_cnt_blocks, 0, GFP_KERNEL);
-+	if (ret)
-+		return ret;
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++struct stripe_mirror {
++	u64 devid;
++	int num;
++};
 +
- 	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
- 				 dev_list) {
- 		int ret2;
-@@ -7669,7 +7675,7 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
- 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
- 		ret = btrfs_device_init_dev_stats(device, path);
- 		if (ret)
--			goto out;
-+			return ret;
++static int btrfs_cmp_devid(const void *a, const void *b)
++{
++	const struct stripe_mirror *s1 = (struct stripe_mirror *)a;
++	const struct stripe_mirror *s2 = (struct stripe_mirror *)b;
++
++	if (s1->devid < s2->devid)
++		return -1;
++	if (s1->devid > s2->devid)
++		return 1;
++	return 0;
++}
++
++/*
++ * btrfs_read_rr.
++ *
++ * Select a stripe for reading using a round-robin algorithm:
++ *
++ *  1. Compute the read cycle as the total sectors read divided by the minimum
++ *  sectors per device.
++ *  2. Determine the stripe number for the current read by taking the modulus
++ *  of the read cycle with the total number of stripes:
++ *
++ *      stripe index = (total sectors / min sectors per dev) % num stripes
++ *
++ * The calculated stripe index is then used to select the corresponding device
++ * from the list of devices, which is ordered by devid.
++ */
++static int btrfs_read_rr(struct btrfs_chunk_map *map, int first, int num_stripe)
++{
++	struct stripe_mirror stripes[BTRFS_RAID1_MAX_MIRRORS] = {0};
++	struct btrfs_device *device  = map->stripes[first].dev;
++	struct btrfs_fs_devices *fs_devices = device->fs_devices;
++	int read_cycle;
++	int index;
++	int ret_stripe;
++	int total_reads;
++	int min_reads_per_dev;
++
++	total_reads = percpu_counter_sum(&fs_devices->read_cnt_blocks);
++	min_reads_per_dev = READ_ONCE(fs_devices->rr_min_contiguous_read) >>
++					   fs_devices->fs_info->sectorsize_bits;
++
++	index = 0;
++	for (int i = first; i < first + num_stripe; i++) {
++		stripes[index].devid = map->stripes[i].dev->devid;
++		stripes[index].num = i;
++		index++;
++	}
++	sort(stripes, num_stripe, sizeof(struct stripe_mirror),
++	     btrfs_cmp_devid, NULL);
++
++	read_cycle = total_reads / min_reads_per_dev;
++	ret_stripe = stripes[read_cycle % num_stripe].num;
++
++	return ret_stripe;
++}
++#endif
++
+ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_chunk_map *map, int first,
+ 			    int dev_replace_is_ongoing)
+@@ -5994,6 +6061,11 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+ 	case BTRFS_READ_POLICY_PID:
+ 		preferred_mirror = first + (current->pid % num_stripes);
+ 		break;
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	case BTRFS_READ_POLICY_RR:
++		preferred_mirror = btrfs_read_rr(map, first, num_stripes);
++		break;
++#endif
  	}
- 	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
- 		list_for_each_entry(device, &seed_devs->devices, dev_list) {
+ 
+ 	if (dev_replace_is_ongoing &&
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 3a416b1bc24c..45d0eb3429c6 100644
+index 45d0eb3429c6..5728b8717317 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -185,7 +185,7 @@ struct btrfs_device {
- 	 * enum btrfs_dev_stat_values in ioctl.h */
- 	int dev_stats_valid;
+@@ -296,6 +296,9 @@ enum btrfs_chunk_allocation_policy {
+ 	BTRFS_CHUNK_ALLOC_ZONED,
+ };
  
--	/* Counter to record the change of device stats */
-+	/* Counter to record of the change of device stats */
- 	atomic_t dev_stats_ccnt;
- 	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
++/* SZ_192K = 192 * 1024 = 196608 */
++#define BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ	(196608)
++#define BTRFS_RAID1_MAX_MIRRORS			(4)
+ /*
+  * Read policies for mirrored block group profiles, read picks the stripe based
+  * on these policies.
+@@ -303,6 +306,10 @@ enum btrfs_chunk_allocation_policy {
+ enum btrfs_read_policy {
+ 	/* Use process PID to choose the stripe */
+ 	BTRFS_READ_POLICY_PID,
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	/* Balancing raid1 reads across all striped devices (round-robin) */
++	BTRFS_READ_POLICY_RR,
++#endif
+ 	BTRFS_NR_READ_POLICY,
+ };
  
-@@ -417,6 +417,8 @@ struct btrfs_fs_devices {
- 	bool seeding;
- 	/* The mount needs to use a randomly generated fsid. */
- 	bool temp_fsid;
-+	/* Enable/disable the filesystem stats tracking */
-+	bool fs_stats;
- 
- 	struct btrfs_fs_info *fs_info;
- 	/* sysfs kobjects */
-@@ -427,6 +429,9 @@ struct btrfs_fs_devices {
- 
- 	enum btrfs_chunk_allocation_policy chunk_alloc_policy;
- 
-+	/* Tracks the number of blocks (sectors) read from the filesystem. */
-+	struct percpu_counter read_cnt_blocks;
-+
- 	/* Policy used to read the mirrored stripes. */
+@@ -436,6 +443,9 @@ struct btrfs_fs_devices {
  	enum btrfs_read_policy read_policy;
  
+ #ifdef CONFIG_BTRFS_EXPERIMENTAL
++	/* Min contiguous reads before switching to next device. */
++	int rr_min_contiguous_read;
++
+ 	/* Checksum mode - offload it or do it synchronously. */
+ 	enum btrfs_offload_csum_mode offload_csum_mode;
+ #endif
 -- 
 2.47.0
 
