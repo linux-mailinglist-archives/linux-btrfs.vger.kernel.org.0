@@ -1,61 +1,61 @@
-Return-Path: <linux-btrfs+bounces-10682-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10683-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97CC89FF703
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 09:40:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74F949FF739
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 10:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AC6C160471
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 08:40:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ADA2162029
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 09:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A39196DB1;
-	Thu,  2 Jan 2025 08:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39053199237;
+	Thu,  2 Jan 2025 09:05:20 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0633C6FBF;
-	Thu,  2 Jan 2025 08:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE18F1922F5;
+	Thu,  2 Jan 2025 09:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735807204; cv=none; b=SF8FkNkxauI+JtWhmTZoVuD+uqW1gyxqUTGnUiOE6pfmnHu/espjcYF0SRoELlzCdG/TP3tU/9JBk/BYB8Y2asuxwgc/mFMrBOKozmPR3T3cX5nbILsop3z26clIKpgpmZsGWFQCojz8YZLNVNuEoONFWpp7H5IJpNyAfhEaODg=
+	t=1735808719; cv=none; b=f77YWSdJmf4ZHSrn9v+CsbvnVpxFIrab/BFJNuH6StXEnITlCsm6wc4fz258FnkKLDYmR89IDbP/wR9dtJhdZLNFkEPwbT7H2EtNPFIbuIv0FcfityRLLde3oMTuVlIWqT66i3Q3A0ZAOe7KqCdLoZPYkRzlLekie38R1eTu26I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735807204; c=relaxed/simple;
-	bh=1hMp2YOGnuuI822MDH1xEbWu2lp0buAwF+uoz+fpm5o=;
+	s=arc-20240116; t=1735808719; c=relaxed/simple;
+	bh=lLkHW+Uz2woP6zj4gYzmVLkJBkWmUoR2PiBfWrInx2o=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BTaV7nmYoMxG9siFlca2PWaXZfk98InQS9iJK0tQreD03QawE5yW3CT3RwJftdEfvMlUah3I+d5iruDEFmiNAA+nL16mU/5FCYzDzd+HIRq4+cYD7AqCsuN2+Zal7rILZagLDDi9GjqaYBZqMU4PCPBZ3yZ26sjdxkVWJwq/vu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
+	 MIME-Version:Content-Type; b=R8IqJdGG2zlKEKXoAgRzQLYkaNVtvWdWYjsTCbWQt89KM5ssnA8Mmm+BM8B5jsoCdMDh2OvaDD8im3+8ZXzMPcWOaHBpSc+NY7D/9P93+5iE3Fm1sul6h3mvdGWO9wRKdeD+GF0ClRVviVArqVi7COLxr2cGDv7GkLRZPOEUG7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5027nUVL001332;
-	Thu, 2 Jan 2025 00:39:52 -0800
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5028g8xX027745;
+	Thu, 2 Jan 2025 09:05:07 GMT
 Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 43tdg7brcf-1
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 43t8a83vn2-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 02 Jan 2025 00:39:51 -0800 (PST)
+	Thu, 02 Jan 2025 09:05:06 +0000 (GMT)
 Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
  ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.43; Thu, 2 Jan 2025 00:39:51 -0800
+ 15.1.2507.43; Thu, 2 Jan 2025 01:05:05 -0800
 Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
  ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.43 via Frontend Transport; Thu, 2 Jan 2025 00:39:49 -0800
+ 15.1.2507.43 via Frontend Transport; Thu, 2 Jan 2025 01:05:03 -0800
 From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <quwenruo.btrfs@gmx.com>
+To: <lizhi.xu@windriver.com>
 CC: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
         <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lizhi.xu@windriver.com>,
+        <quwenruo.btrfs@gmx.com>,
         <syzbot+339e9dbe3a2ca419b85d@syzkaller.appspotmail.com>,
         <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH V3] btrfs: btrfs can not be mounted with corrupted extent root
-Date: Thu, 2 Jan 2025 16:39:48 +0800
-Message-ID: <20250102083948.181566-1-lizhi.xu@windriver.com>
+Subject: [PATCH V4] btrfs: Prevent the use of corrupt extent root
+Date: Thu, 2 Jan 2025 17:05:02 +0800
+Message-ID: <20250102090502.218613-1-lizhi.xu@windriver.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <de8702eb-b800-48bb-ab56-ce4f048c755c@gmx.com>
-References: <de8702eb-b800-48bb-ab56-ce4f048c755c@gmx.com>
+In-Reply-To: <20250102083948.181566-1-lizhi.xu@windriver.com>
+References: <20250102083948.181566-1-lizhi.xu@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,27 +64,28 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: L8msXMtDj7zdW_sUvgRVMFbOFkqk9Bu-
-X-Authority-Analysis: v=2.4 cv=AokU3P9P c=1 sm=1 tr=0 ts=677650d8 cx=c_pps a=/ZJR302f846pc/tyiSlYyQ==:117 a=/ZJR302f846pc/tyiSlYyQ==:17 a=VdSt8ZQiCzkA:10 a=edf1wS77AAAA:8 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8 a=sQrxKanbwnIRMVMjfjoA:9 a=DcSpbTIhAlouE1Uv7lRv:22
+X-Proofpoint-GUID: 4EyPpFLX9s-RlSVDh_DO9AHnCGfYcsR0
+X-Proofpoint-ORIG-GUID: 4EyPpFLX9s-RlSVDh_DO9AHnCGfYcsR0
+X-Authority-Analysis: v=2.4 cv=f8qyBPyM c=1 sm=1 tr=0 ts=677656c2 cx=c_pps a=/ZJR302f846pc/tyiSlYyQ==:117 a=/ZJR302f846pc/tyiSlYyQ==:17 a=VdSt8ZQiCzkA:10 a=edf1wS77AAAA:8 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8 a=FXPXl8PBpE8CVprqC9UA:9 a=DcSpbTIhAlouE1Uv7lRv:22
  a=cQPPKAXgyycSBL8etih5:22 a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-GUID: L8msXMtDj7zdW_sUvgRVMFbOFkqk9Bu-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-01-02_02,2024-12-24_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 classifier=spam authscore=0 adjust=0 reason=mlx
- scancount=1 engine=8.21.0-2411120000 definitions=main-2501020073
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ bulkscore=0 clxscore=1015 adultscore=0 phishscore=0 priorityscore=1501
+ suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ mlxscore=0 classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
+ engine=8.21.0-2411120000 definitions=main-2501020077
 
 syzbot reported a null-ptr-deref in find_first_extent_item. [1]
 
 The btrfs filesystem did not successfully initialize extent root to the
-global root tree when mounted(as the mount options contain ignorebadroots),
-which causes the failure to read the tree root, which in turn causes extent
-root to not be inserted into the global root tree.
+global root tree when mounted, since the mount options contain ignorebadroots,
+because commit 42437a6386ff, it can be mounted successfully, which causes
+the failure to read the tree root, which in turn causes exten root to not
+be inserted into the global root tree.
 
-To prevent this issue, if extent root is corrupt then exit the mount.
+Add a extent root check when scrub calls scrub_find_fill_first_stripe.
 
 [1]
 Unable to handle kernel paging request at virtual address dfff800000000041
@@ -142,34 +143,25 @@ Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
 ---
 V1 -> V2: exit mount when extent root is corrupt
 V2 -> V3: correct comments and Fixes tag
+V3 -> V4: check extent root before calling find_first_extent_item 
 
- fs/btrfs/disk-io.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/scrub.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index eff0dd1ae62f..beb236c7fe1c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2167,7 +2167,8 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
- 		found = true;
- 		root = read_tree_root_path(tree_root, path, &key);
- 		if (IS_ERR(root)) {
--			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS))
-+			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS) ||
-+			   objectid == BTRFS_EXTENT_TREE_OBJECTID)
- 				ret = PTR_ERR(root);
- 			break;
- 		}
-@@ -2188,7 +2189,8 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
- 		if (objectid == BTRFS_CSUM_TREE_OBJECTID)
- 			set_bit(BTRFS_FS_STATE_NO_DATA_CSUMS, &fs_info->fs_state);
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 204c928beaf9..560415fe1007 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1548,6 +1548,9 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+ 	/* The range must be inside the bg. */
+ 	ASSERT(logical_start >= bg->start && logical_end <= bg->start + bg->length);
  
--		if (!btrfs_test_opt(fs_info, IGNOREBADROOTS))
-+		if (!btrfs_test_opt(fs_info, IGNOREBADROOTS) ||
-+		   (ret && objectid == BTRFS_EXTENT_TREE_OBJECTID))
- 			ret = ret ? ret : -ENOENT;
- 		else
- 			ret = 0;
++	if (!extent_root)
++		return -ENOENT;
++
+ 	ret = find_first_extent_item(extent_root, extent_path, logical_start,
+ 				     logical_len);
+ 	/* Either error or not found. */
 -- 
 2.43.0
 
