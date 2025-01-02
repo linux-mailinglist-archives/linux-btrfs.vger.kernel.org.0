@@ -1,96 +1,154 @@
-Return-Path: <linux-btrfs+bounces-10685-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10686-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32BDB9FF79B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 10:45:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6DE9FF980
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 13:49:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DE7A3A2ABC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 09:45:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36517188371A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 12:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F8C1A08A6;
-	Thu,  2 Jan 2025 09:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFC3195B33;
+	Thu,  2 Jan 2025 12:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fg+YbBA/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2kMzVR6v";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fc+6Taqd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S8D0KJjl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A9119CC1C;
-	Thu,  2 Jan 2025 09:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C2B4431;
+	Thu,  2 Jan 2025 12:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735811146; cv=none; b=PQdPYfI1IwrAxH9Gcp11imjW+RE3P7JuaL/x/QxmTZAWb1z2P/ikWTLblOi6xOEeTKgoMxdPMJn6NtWDtzI5DUJk8QG5mdt6n5dA0Ozhg/NV8biZotMrghGDGwK29zRJpju3oouCdQSoUMv24STHrmU+xiRtGMo6o0syyXd7Grg=
+	t=1735822176; cv=none; b=QvipDpIm7rCsQRmklV6dvY3zc6Qshm7S5OcJ6hy9R0UZ9G38QGyR3EmlOXfVwskR0BEG/MiWwnodAsVAgwtOqjF9O3NGqJfNFYjmSfa0CHl/6M/fN5gR9Y7/ON/gcjU8wk1BZHPFbN1eUNLS2D+tqLnM4BP9dfgH9Xvc2yjfKEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735811146; c=relaxed/simple;
-	bh=85DdWgyvV/gDQ8tT264cpXCK6CwSZlxz34uIirTBmkk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CMm1Qbv3y+6/MAxXJMCM+R6xpURpKbis3lz+ei9Zc4pW/QEcJFLUcQJgShrOi8m2WXPa28zCR9tIl5tt5YYAgnpekyas0NzjzaR10BwqyborVuVw2no1xDPb8mXOs/2AV468XE3vav0mh3krCbaKY/QfAwYXo7xdjtehMZquirw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50295gea028257;
-	Thu, 2 Jan 2025 09:45:36 GMT
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 43t8a83wnm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 02 Jan 2025 09:45:36 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.43; Thu, 2 Jan 2025 01:45:34 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.43 via Frontend Transport; Thu, 2 Jan 2025 01:45:32 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <quwenruo.btrfs@gmx.com>
-CC: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
-        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lizhi.xu@windriver.com>,
-        <syzbot+339e9dbe3a2ca419b85d@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH V2] btrfs: btrfs can not be mounted with corrupted extent root
-Date: Thu, 2 Jan 2025 17:45:31 +0800
-Message-ID: <20250102094531.272226-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <de8702eb-b800-48bb-ab56-ce4f048c755c@gmx.com>
-References: <de8702eb-b800-48bb-ab56-ce4f048c755c@gmx.com>
+	s=arc-20240116; t=1735822176; c=relaxed/simple;
+	bh=4xB+S+Ix8VkXjliBTt0c5KipdJhwS0D9oUYYpIv7G+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e6S8hiRRv+6fuwDIHOTEQ9UqCLDOhJwACM6gZ8y8dusXkoeAo55zMZthgYWnGKhRPl8zH2jdgTWok+HUAMcQQhSfXVSuAx0DGYe0rutsSgxBAZdlbAwx2Sfh628c17/fqIkCkoyes+chhLBV/ZRQ+T133uI7kP7S51+xPb8c3J8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fg+YbBA/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2kMzVR6v; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fc+6Taqd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S8D0KJjl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C94591F38E;
+	Thu,  2 Jan 2025 12:49:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1735822173;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nt6Xdwy/EDCfqZQNdWknAlB6G5Cv74m0MD6CjXdI7Iw=;
+	b=fg+YbBA/ivlNpGF12J4j7yp2tzxhZ/wHOioJsrENPyy3lKct7N+/Vs1KtgDnDVPEpbpiqW
+	RzuOfpmgj+wQBF0baVP4eDVZKQaRrgtRjUVAGscuU+IvsbZy86eFHyshVX7o6qh4MzbRcL
+	T1Ey6Kt9njH7vQEXhS33oYmcYn65QTI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1735822173;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nt6Xdwy/EDCfqZQNdWknAlB6G5Cv74m0MD6CjXdI7Iw=;
+	b=2kMzVR6vYmzo8UvDDkx+JrG8OCGC2GInKHHA79Cwy7s1u96GOchu2QKdWCrYOoA/aMv6CF
+	7Q1nDEChTE0ytNBQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fc+6Taqd;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=S8D0KJjl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1735822172;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nt6Xdwy/EDCfqZQNdWknAlB6G5Cv74m0MD6CjXdI7Iw=;
+	b=fc+6TaqdRt8vlsK7kvXqdkW/3N1mde4mkCWLkbOOQG9RhBi0O9auCZrDq6GucxSjOE6YoQ
+	+tfezf4pNbkE7hA6XbNQSMfksOmwYdAg/8k7qkn1ACb9gWBXNseGkZj25ml2A0q96KiTvV
+	vg10vnJTvMEA+nuXyxoZ3sd/Bigq9Os=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1735822172;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nt6Xdwy/EDCfqZQNdWknAlB6G5Cv74m0MD6CjXdI7Iw=;
+	b=S8D0KJjlsqh+O5SkQVyISk2J1IpghA6yyHMl/SY/IOcrz0OPNph9JVl9TpDhJId+alY1C9
+	Ohmxf/+TMfTOQoCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3B2B13418;
+	Thu,  2 Jan 2025 12:49:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aXpXK1yLdmfHewAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 02 Jan 2025 12:49:32 +0000
+Date: Thu, 2 Jan 2025 13:49:27 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Btrfs fixes for 6.13-rc5
+Message-ID: <20250102124927.GO31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1735454878.git.dsterba@suse.com>
+ <CAHk-=wjkHJSqXS6RnJnbMiDM9Rk58oLWLr9T4qyUO3omX74-fg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: vJLlSvcpF6Od_O4MeFJynpacp4Ch7DPO
-X-Proofpoint-ORIG-GUID: vJLlSvcpF6Od_O4MeFJynpacp4Ch7DPO
-X-Authority-Analysis: v=2.4 cv=f8qyBPyM c=1 sm=1 tr=0 ts=67766040 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=VdSt8ZQiCzkA:10 a=ADZqV38ZqapEVVttSm4A:9 a=zZCYzV9kfG8A:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-02_03,2024-12-24_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- bulkscore=0 clxscore=1015 adultscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 impostorscore=0 mlxlogscore=698 lowpriorityscore=0
- mlxscore=0 classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
- engine=8.21.0-2411120000 definitions=main-2501020083
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjkHJSqXS6RnJnbMiDM9Rk58oLWLr9T4qyUO3omX74-fg@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: C94591F38E
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Thu, 2 Jan 2025 18:51:34 +1030, Qu Wenruo wrote:
-> > syzbot reported a null-ptr-deref in find_first_extent_item. [1]
+On Sun, Dec 29, 2024 at 09:41:08AM -0800, Linus Torvalds wrote:
+> On Sat, 28 Dec 2024 at 23:40, David Sterba <dsterba@suse.com> wrote:
 > >
-> > The btrfs filesystem did not successfully initialize extent root to the
-> > global root tree when mounted(as the mount options contain ignorebadroots),
-> > this is because extent buffer is not uptodate,
+> > - print various sizes in sysfs with correct endianity
 > 
-> The "not uptodate" is only the symptom, if you check the console output
-> carefully enough, it's because the extent tree root (and must be extent
-> tree root, any child node won't cause problem) is corrupted (csum mismatch).
+> "endianity"?
 > 
-[   35.752834][ T3330] BTRFS warning (device loop0): checksum verify failed on logical 5337088 mirror 1 wanted 0x324c5e2d0cac2dc8f61cbfdfc8cd69d9816061b1498b9e1bff0
-According to the above log, it is clear that the failure of btrfs_validate_extent_buffer()
-causes the extent buffer to be not uptodate, and it can be judged that extent root is corrupted.
+> More commonly called "endianness".
+> 
+> I left it around, but I really don't think that's a word.
 
-BR,
-Lizhi
+Right, it's not, it's close to the czech version. Feel free to fix such
+obvious mistakes.
 
