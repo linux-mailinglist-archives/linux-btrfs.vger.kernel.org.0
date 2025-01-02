@@ -1,203 +1,190 @@
-Return-Path: <linux-btrfs+bounces-10694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10695-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38B7E9FFD4B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 18:58:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A4E9FFE25
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 19:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01788162D2C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 17:58:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FE30188356C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 18:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630B313D297;
-	Thu,  2 Jan 2025 17:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5417A1891AB;
+	Thu,  2 Jan 2025 18:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hBEBO3ON"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="g27u6M75";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u15KpZUn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="g27u6M75";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u15KpZUn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D8870814
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2025 17:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A248F66
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2025 18:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735840719; cv=none; b=oTvypEeYZE+bpggse3ZPDULl5BBRKql2+8KBeT2wdrmRAg+OdKsaFyOPXjn1EpGUzLbhNj+VamI+51Oo3m6gimzuW86osVPqF84lC5fOvjBRwOKJQjNa8F6TozwZRn9Am384VO5AlPmdjkTrwcXgvBa1Xm/NIx5eW1F0xJNdtMs=
+	t=1735842573; cv=none; b=B1495bwNOzwVlzhiC0h1me/GJ9IqQiRXyIFSZSc50RJhOZRz/TwQ0AIHCXu+GaVKJCsmo4GvpZM6nLkIBYkG3xzzr8dTjvn8cc7pn73Ct8uuKTlzQdRsQjcSPTj6qVZjJKo5vGSmS+TcY7rA/YrbEfLp3sbqKCcQs+a2ElZqXdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735840719; c=relaxed/simple;
-	bh=7gV4ijYP+N0D/Q7GGbwpCK5JgjqkYt8YYHFkbzS5jVg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QLdH0aF+jzUNrowH/r5dfP4FckfGjLK1YAWxcuYDr5HjMzdBvQnxNFIJnGOJzDvX0QPS0JZ921lFToMnU6kNnxEkoP1ZDi01c1Tx7acb1ab1dDZDgY66wk3x6R9V/066Illkp29p5L79fWAS6+crYtO05MmyhAZsipfVOgl+PuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hBEBO3ON; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2f44353649aso12946116a91.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2025 09:58:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735840717; x=1736445517; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r42zW4foMWcebJ0RcIJUEwz7sOk8q/lj3bAfzgCtcLM=;
-        b=hBEBO3ONuN/+/Ud2UZPbzQXIRj5VvrHDTsLo4Z1k4Z06BGnOZBBxhi4EBEYhXSq2FC
-         JxSMUg3L6oMPMxWiAgYzzqGrPthoChZlDo00WAuL2HJXK8lsZoXzfEhiZnV+9Yklt53r
-         n88oWV+EMJ8lOAH5DnvI2uQBbAVerqTmg5A3WrqSKXvSG3apNXoh++eyFfWZ4zllvDrc
-         YDinAkcxZklYctCfxBiYLyLG9GNNLGsmtp6MjtEq8zMtwJ8G8IU14zohxK5kvFKDTixW
-         eTInHdpQ83iZHzWDwxJsOhOQBLMeY688Vbu0VGQTu/X5x8xZRSZUi8K9eqU3ojJwpD1w
-         rkrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735840717; x=1736445517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r42zW4foMWcebJ0RcIJUEwz7sOk8q/lj3bAfzgCtcLM=;
-        b=PuimUmnwcy0Db0G3RFAjLHtcxQz2f615a2xzCOKxzooY6X4X+a9yEMEfIH3jG+fScx
-         UZNEVQkgH4CiOwmg4IAn9W4h/h1M6Ah8CBDXynJl3zcarc/44yT8bG8flfuadKdWR8gk
-         runW+BAqBdLUUd2XB0Rct4eJCeLRXHR/11D2OvZFBM1ArjadpVOJIpad0GujfIqwkjy5
-         Q5l+8Wb9kxt1VorBOvadXn1Tcy7t/3wjcjcOeYqwqTKKbHkk6Vrim2UeCSxTVqsFkYP8
-         Zj8mYzhk5/6IjWItQr/X2lNqMQHTEB89dQNhL6BCv9U97VpZ9mB2m57zimJFaQP8ffJE
-         dbyQ==
-X-Gm-Message-State: AOJu0YwEZHaO23jtQTn+Qx4vlGLpuxnbNHKl43GsbAxMDKPlLZHIgMnC
-	GQLEdZfIuEbvSbCL1+fv3VvPieAEoP9OIKLEILfRXK9DkLSc8xqX2WX1QoLeopmkGAv8yQCfqfs
-	7yVi4hms3oGqWMgmyAorNIhp/LWWpmV3t
-X-Gm-Gg: ASbGncvn4lJ6+HDDn/yE58vEWBlSIS2+hc/t8gju9D9B7zW2JOt+p0bgSJQXobZ2eA+
-	yAI8OT1jTTUpFvA2rDNs5zeyrpw6sfpnzDJmVES+ZQXAcwueaUp4olWLMroVH+QPKGFLu
-X-Google-Smtp-Source: AGHT+IGWx6JWFOZNX/WQT2yBfINGOWQZMACjS0O9bUUkqKppPNJBQs/GG8dDilyB4rzyd8ub8XMIWjP0cFgQPrCpozo=
-X-Received: by 2002:a17:90b:2b8e:b0:2ee:3cc1:793b with SMTP id
- 98e67ed59e1d1-2f452ec6ed2mr58553050a91.26.1735840716896; Thu, 02 Jan 2025
- 09:58:36 -0800 (PST)
+	s=arc-20240116; t=1735842573; c=relaxed/simple;
+	bh=vzLZCLXaL8zx1on/hRu+S8C0MUv1dNOx/jx3pMH5J6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jBBFNI+NRvdbOyEYuQaRJhHg7uQZpyOX22Vzq7OryKtrjvCNIq1MRfQPLOdAl4VjyvgRk+9Myi/H9S2X5p07UKJjUr1QKBBoBg60+Cic6HjiBAui0ztMH+9o1EcY6W6VvQv0FczwQj4+po55u3azvxvBDGwUUAh52eA90WkmAxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=g27u6M75; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u15KpZUn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=g27u6M75; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u15KpZUn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 90C9421162;
+	Thu,  2 Jan 2025 18:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1735842569;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bJgt4Xwqu7hox/2qTpb3iFGRzXP6ljF7ZUI6UBL9gSU=;
+	b=g27u6M75Mc9SFHH7aDPI6158HBxYJV8C5yB1tuCrUCx7qSB2JsD0jdA6rIFzLYjToxvkoX
+	z8+voCHxgc2jsA8sMy9tJdqQpmMk14hSX5bvn8y3+jwp9VPB21nfz5VJWufhPY8L/MwrQ/
+	aokkKMYUTFKYjCG18Zr7indVlrOIe3I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1735842569;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bJgt4Xwqu7hox/2qTpb3iFGRzXP6ljF7ZUI6UBL9gSU=;
+	b=u15KpZUnJVHoGf/xtFW4Vwuim4EJ4Fon4nXxioL/QOVJu962T7Y70/xluKzD6pFQoAZ2hQ
+	aTrX+eHh9fW4tJCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=g27u6M75;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=u15KpZUn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1735842569;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bJgt4Xwqu7hox/2qTpb3iFGRzXP6ljF7ZUI6UBL9gSU=;
+	b=g27u6M75Mc9SFHH7aDPI6158HBxYJV8C5yB1tuCrUCx7qSB2JsD0jdA6rIFzLYjToxvkoX
+	z8+voCHxgc2jsA8sMy9tJdqQpmMk14hSX5bvn8y3+jwp9VPB21nfz5VJWufhPY8L/MwrQ/
+	aokkKMYUTFKYjCG18Zr7indVlrOIe3I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1735842569;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bJgt4Xwqu7hox/2qTpb3iFGRzXP6ljF7ZUI6UBL9gSU=;
+	b=u15KpZUnJVHoGf/xtFW4Vwuim4EJ4Fon4nXxioL/QOVJu962T7Y70/xluKzD6pFQoAZ2hQ
+	aTrX+eHh9fW4tJCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 79F6E13418;
+	Thu,  2 Jan 2025 18:29:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Lk6JHQnbdmdHSwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 02 Jan 2025 18:29:29 +0000
+Date: Thu, 2 Jan 2025 19:29:20 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, Naohiro.Aota@wdc.com,
+	wqu@suse.com, hrx@bupt.moe, waxhead@dirtcellar.net
+Subject: Re: [PATCH v5 04/10] btrfs: handle value associated with raid1
+ balancing parameter
+Message-ID: <20250102182920.GR31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1735748715.git.anand.jain@oracle.com>
+ <6a303a3da8116c3743fa9be605dde540d8a60f1a.1735748715.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJhrHS2b5fv7wmchdqkCy-jEWZ7hD_3YUgCO_oUCNaf9ossq6w@mail.gmail.com>
- <56d3885e-5651-4fd4-af6d-89897f8bd240@gmx.com> <CAJhrHS1xgfrp=Wpk18xCBGUEi2tYxaqCxrMQG5UEGSUbR4G-_w@mail.gmail.com>
- <d5372478-70f4-4a3c-bf9d-26366f955e5e@gmx.com> <2809427a-41f5-4b59-9d03-2c2012e16f76@gmx.com>
- <CAJhrHS3tE22AYSRjBLRC4vkdGaUxX-ibKoXt=K4RAvEbLq3_7Q@mail.gmail.com> <836179ee-60a7-446a-8cf1-54580cbdd5e0@gmx.com>
-In-Reply-To: <836179ee-60a7-446a-8cf1-54580cbdd5e0@gmx.com>
-From: Ben Millwood <thebenmachine@gmail.com>
-Date: Thu, 2 Jan 2025 17:58:25 +0000
-Message-ID: <CAJhrHS1B5nyFphU4kmp4KL_qqMKeh+B9GZ8E=ofeu-9rQwOh-A@mail.gmail.com>
-Subject: Re: dev extent physical offset [...] on devid 1 doesn't have
- corresponding chunk
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a303a3da8116c3743fa9be605dde540d8a60f1a.1735748715.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 90C9421162
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-About three weeks and 97 million items into checking extents, the rpi
-was accidentally shut down by something else I was doing, so I might
-as well just try the fix now.
+On Thu, Jan 02, 2025 at 02:06:33AM +0800, Anand Jain wrote:
+> This change enables specifying additional configuration values alongside
+> the raid1 balancing / read policy in a single input string.
+> 
+> Updated btrfs_read_policy_to_enum() to parse and handle a value associated
+> with the policy in the format `policy:value`, the value part if present is
+> converted 64-bit integer. Update btrfs_read_policy_store() to accommodate
+> the new parameter.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/sysfs.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 3b0325259c02..cf6e5322621f 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -1307,15 +1307,26 @@ BTRFS_ATTR(, temp_fsid, btrfs_temp_fsid_show);
+>  
+>  static const char * const btrfs_read_policy_name[] = { "pid" };
+>  
+> -static int btrfs_read_policy_to_enum(const char *str)
+> +static int btrfs_read_policy_to_enum(const char *str, s64 *value)
+>  {
+>  	char param[32] = {'\0'};
+> +	char *__maybe_unused value_str;
+>  
+>  	if (!str || strlen(str) == 0)
+>  		return 0;
+>  
+>  	strncpy(param, str, sizeof(param) - 1);
+>  
+> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
+> +	/* Separate value from input in policy:value format. */
+> +	if ((value_str = strchr(param, ':'))) {
+> +		*value_str = '\0';
+> +		value_str++;
+> +		if (value && kstrtou64(value_str, 10, value) != 0)
+> +			return -EINVAL;
 
-I tried to run your binary. It said:
-
-ben@vigilance:~/btrfs-progs $ sudo ./btrfs-corrupt-block -X
-/dev/masterchef-vg/btrfs
-ERROR: failed to find the offending dev extent item: No such file or direct=
-ory
-WARNING: reserved space leaked, flag=3D0x4 bytes_reserved=3D32768
-extent buffer leak: start 217866993664 len 16384
-extent buffer leak: start 217441599488 len 16384
-WARNING: dirty eb leak (aborted trans): start 217441599488 len 16384
-extent buffer leak: start 1789991600128 len 16384
-WARNING: dirty eb leak (aborted trans): start 1789991600128 len 16384
-
-(unsurprisingly no change in fs mount error message)
-
-On Fri, 20 Dec 2024 at 23:51, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> =E5=9C=A8 2024/12/21 09:41, Ben Millwood =E5=86=99=E9=81=93:
-> > Sorry for the delayed reply. I left this for a few days to see how the
-> > check would get along.
-> >
-> > I think probably the terminal I was doing the check in was resized a
-> > bit, so the output got a little shuffled around, but it now looks like
-> > this:
-> >
-> > root@vigilance:~# btrfs check --progress --mode lowmem
-> > /dev/masterchef-vg/btrfs
-> > Opening filesystem to check...
-> > Checking filesystem on /dev/masterchef-vg/btrfs
-> > UUID: a0ed3709-1490-4f2d-96b5-bb1fb22f0b45
-> > [1/7] checking root items                      (0:46:43 elapsed,
-> > 68928137 items checked)
-> > [2/7] checking extents                         (14:49:23 elapsed,
-> > 2419[2/7] checking extents                         (14:49:24 elapsed,
-> > 2419[
-> > 2/7] checking extents                         (14:49:25 elapsed,
-> > 2419[2/7] checking extents                         (14:49:26 elapsed,
-> > 2419[2
-> > ERROR: device extent[1, 1997265698816, 576716800] did not find the
-> > related chunkhecked)
-> > [2/7] checking extents                         (164:06:57 elapsed,
-> > 34215503 items checked)
-> >
-> > so it looks like the check has noticed the same problem that the mount
-> > has, at least.
-> >
-> > I don't actually understand all this terminology -- is the "items
-> > checked" number for checking extents counting towards the same total
-> > as the "root items" number? Or is there any other way of estimating
-> > how far it needs to count? (Obviously using that to estimate time
-> > remaining would be highly approximate, but hopefully I could still
-> > find out if it's measured in weeks or years).
-> >
-> > On Sun, 15 Dec 2024 at 04:46, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >> Do you still remember if there is any error message for the
-> >> clear-space-cache interruption and the next RW mount of it?
-> >
-> > I can't say confidently at this stage, but I think there was no error
-> > at clear-space-cache interruption time. I think it's highly possible I
-> > could have missed an error at my next RW mount attempt, I was probably
-> > trying a lot of mounts and often only paying attention to the part of
-> > the error I thought I could debug. (there has been no next
-> > *successful* mount of this disk, RW or otherwise...)
-> >
-> >> Thanks,
-> >> Qu
-> >>>
-> >>> Meanwhile I have created a branch for you to manually fix the bug:
-> >>> https://github.com/adam900710/btrfs-progs/tree/orphan_dev_extent_clea=
-nup
-> >>>
-> >>> Since the lowmem is still running, you can prepare an environment to
-> >>> build btrfs-progs, so after the lowmem check finished, you can use th=
-at
-> >>> branch to delete the offending item by:
-> >>>
-> >>> # ./btrfs-corrupt-block -X <device>
-> >
-> > (I have been able to build this but haven't run it yet, since I'm
-> > still waiting to see if the check says anything interesting)
->
-> Please go ahead. Weirdly this error is really a single orphan dev
-> extent, without any extra other problem.
->
-> Thus that command should fix it.
->
-> Thanks,
-> Qu
-> >
-> >
-> >>> Thanks,
-> >>> Qu
-> >>>
-> >>>>>
-> >>>>> Thanks,
-> >>>>> Qu
-> >>>>>
-> >>>>>> smartctl appears
-> >>>>>> not to work with this disk, so I can't easily say whether the disk=
- is
-> >>>>>> or is not healthy.
-> >>>>>>
-> >>>>>
-> >>>
-> >>>
-> >>
->
+I think I've mentioned that before, this lacks validation of the
+'value', there should be some lower and upper bound check. Minimum can
+be the sectorsize and maximum maybe 1G or 2G, so the u32 type is
+sufficient. The silent conversion from u64 to s64 should be avoided.
 
