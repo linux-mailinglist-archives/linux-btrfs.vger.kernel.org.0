@@ -1,205 +1,219 @@
-Return-Path: <linux-btrfs+bounces-10690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10691-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF199FFA53
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 15:19:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C73C9FFC00
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 17:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9924E18837B1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 14:19:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8EEE7A046F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2025 16:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2C31B395A;
-	Thu,  2 Jan 2025 14:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6585E156F5D;
+	Thu,  2 Jan 2025 16:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q32dAgHj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0g3wS91H";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q32dAgHj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0g3wS91H"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WbruUWxN";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="iPD9/F0k"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E571B3952
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2025 14:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735827574; cv=none; b=guReuvR6jemHCu0YVwBxx1k3PiFzqOKPaayYo0i+g92A5l+EV+vp3/uvjp16Fg7ZPs0T4YomkttUUraJS9uzXwdp3QuEOWq8vwFpzcrjm35jbJE5LpEh2wGzWWsx+2coBtMwp1jAAHyzkn5uzXILa8q1wkKosol85t+BHzZQXfw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735827574; c=relaxed/simple;
-	bh=RO46IGtk5YmKhgJ8v0vltm+7ynn5EY/MGwnbUXEKFuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q/bGeSqB5WB4PWnFrjv/PjAJyRE9M9XFUxZBkoKxU+hMJe06uyUb7VsupG3J1MJcghIPPPD7KJtxX5K+hI3r1z6QS2eFFrFS+I+pYw1JwLKQA6CwuEzFk2fT5zPyVTphzo3r4+nQV3YbeibQUACWTLBc74x9D78n96lrH1oOsJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q32dAgHj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0g3wS91H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q32dAgHj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0g3wS91H; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 80A641F787;
-	Thu,  2 Jan 2025 14:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1735827570;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RO5QmWYPrFHwQyKg9oXzVSxLx9AecvbRYLa1QJ2KDO4=;
-	b=q32dAgHj1z/uFL5sfSMugOcJ01NN1ufQULy5WN2c2rH8ok9pAaL0lHe9huT6ffwUKgliPR
-	FsoWPms8R3XLt8YN1c6X0xOPzMxPwPEDy6GxPa3liQ9TFMNwfB5TnSK/Ff8gpBJVFYldwU
-	JYd5dT22PAGaHATXfQ+0biuL2zzSWI4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1735827570;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RO5QmWYPrFHwQyKg9oXzVSxLx9AecvbRYLa1QJ2KDO4=;
-	b=0g3wS91H3WbAW0E6B9nvpZglDURgGpEMFeVcT+PRV3rvhD1PHtCUEVgzNvmgS0pcoMpoIq
-	ennw1JxHkyAhxbCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1735827570;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RO5QmWYPrFHwQyKg9oXzVSxLx9AecvbRYLa1QJ2KDO4=;
-	b=q32dAgHj1z/uFL5sfSMugOcJ01NN1ufQULy5WN2c2rH8ok9pAaL0lHe9huT6ffwUKgliPR
-	FsoWPms8R3XLt8YN1c6X0xOPzMxPwPEDy6GxPa3liQ9TFMNwfB5TnSK/Ff8gpBJVFYldwU
-	JYd5dT22PAGaHATXfQ+0biuL2zzSWI4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1735827570;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RO5QmWYPrFHwQyKg9oXzVSxLx9AecvbRYLa1QJ2KDO4=;
-	b=0g3wS91H3WbAW0E6B9nvpZglDURgGpEMFeVcT+PRV3rvhD1PHtCUEVgzNvmgS0pcoMpoIq
-	ennw1JxHkyAhxbCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 65A3313418;
-	Thu,  2 Jan 2025 14:19:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yhqTGHKgdme3EgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 02 Jan 2025 14:19:30 +0000
-Date: Thu, 2 Jan 2025 15:19:25 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 00/11] btrfs: zoned: split out data relocation space_info
-Message-ID: <20250102141925.GQ31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1733384171.git.naohiro.aota@wdc.com>
- <7c716895-1c7e-45d7-a3a3-e77e32535301@wdc.com>
- <hm5whah2es5oyjv4wdx7ucrnjaowe42kecs2ggadukakbwqjkv@x5lyewbjsb6p>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8088E1799B
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2025 16:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1735835947; cv=fail; b=gtAbt6XihzIWs9W+RkB1XzA5eN8LnyyrI2v5/yqrAJcrXEzb04K1pv/ozUNtWNAoyu+wGB431/AWaDBPiTCSpY13Af1C1sfhfwKlkYm/y6/Y1kOsBk43ubLz3jNOaVIlHNQUiYCvWngBQwacOd+rHRr+hJ5zIYSwNypJUWeQA6o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1735835947; c=relaxed/simple;
+	bh=6SA/kQSJzeEcVVELl2Ovx+nF+0YAHHgMrwjwN340y7U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=UScuznzOKQRIDaJyLBOvsHPWuzHQA3wvXkIHarZpCZ8kUAtu9I20WBHfCKDCoppcbcP9autcJB11UdwOGzuPqVYq1CgTr79G3xGIVNHjw0YyDIX4JYUpF5OfPjTcvlsi1+L2SCerdPubqg12wMDuioyq6tM9BT6eTEP0GrX5Yy8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=WbruUWxN; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=iPD9/F0k; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 502FtqrL016555;
+	Thu, 2 Jan 2025 16:38:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=0htsMubASx9jyK298IfKVtc2gl7fUK41q5k2sR06Rlo=; b=
+	WbruUWxNubcID79R+WvaJ8AiUFzjrlQpyQGVM/V9qyB0ulOvrGtzG96HJj7VreZ+
+	ptWejN5q3KZxYINDJVVAut1ikKDp0IPynS6518l3qM30xePpWPQvnbegMCwG/GNA
+	FkVBQtL4kRnQdGjIIlSE1pCKmPKrBoMUqGgQgvumXB22sutq47LzJ3UH3pZCHkw+
+	Jp0GopsnbqxCBlZxAyYJQI2qg9OGw+rEzxmUPeKVfNlNkzWXxMfvtDWBgrqs+k4X
+	bn3MTW3xoj0gOHkK04lu7vzSfbILo4MaOeGtfY9l8/NIVJY2j+Y4YLX4VjDQ+YOH
+	tDG014KXNGoDOXrf3NDv6A==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43t9vt5q46-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 02 Jan 2025 16:38:54 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 502G4vWx034172;
+	Thu, 2 Jan 2025 16:38:53 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 43t7s8h1bm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 02 Jan 2025 16:38:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RiDd2u3TI6iJkUS7dWtFycg6C5Q0N/KsLMbAvvaa81HcUTOuhuusU8vrBT5wKaJUad5nLsvmjiqagMA+0goG7gj356mFwxvHwsyOqZCSneEnoBa8f58yeCULkhVR9dKpAN7DFQgLrtt9aD19qxyqbkflIyg4uqoMTd3eGNpaX6gt2ORZQ5fbja57TlzYhNsZrOW7uM0JEnGdJqrc2YqA+aVW+2PnxfOGswDw1pi97zQCVrEY3R9qA4n8drFfHB//ueqPwcWplTZCiN2QvizOfCDmgzqhOTwJiHGDH3kyM5jLfMf07mgBRKFsNhRdUSJW3QC/Akthl2fOPYW5YQygLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0htsMubASx9jyK298IfKVtc2gl7fUK41q5k2sR06Rlo=;
+ b=sr7aJ0VgWNtE1oKAyTn3F2jxweThIOnS3j2bjH97U1He6sl1PSizdEK07uga/KbrXcvo5iu/gA4Ui1p4/d3poSZDQQtp0eutlj3V+AFPovRZu525wS2HRfWZK+hgOe7roVC+BSVEpUQhgVfgiq4pt39vbG8W1UIIuumLwUsj3AIBX/d1RLDzg4s4iJ6Xb9cM/WLsIrQSWAKy6W1jLCc6dYHCtNwOSmHTGs/G0pA7A1B+plS1fVUZcJ3ih7qS/yThpoOvW7mvi1GnrLrXZVHtN0IrWYs0diu8K9aGSyySdr4ncS33P/r2YshXPAMMyThxgHgtWw8aLXYt0toASCp5vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0htsMubASx9jyK298IfKVtc2gl7fUK41q5k2sR06Rlo=;
+ b=iPD9/F0k8ruUp2/g1UoZGk2naY18hsVrlUwJsMZYkONPvKsnOr1rpqvuzQpGMqv7mttFG9wxy8DJeir2mJhIZT75r4wR3RIPkWbBUl3Zfjm4Wnp1MVWUk9PJcDbL4hfZfNkxHtlKCA6Zn3wRv4qKAS/ay8OpdTZmYfZe17m7A8Q=
+Received: from SJ0PR10MB5694.namprd10.prod.outlook.com (2603:10b6:a03:3ed::15)
+ by IA1PR10MB5922.namprd10.prod.outlook.com (2603:10b6:208:3d6::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.13; Thu, 2 Jan
+ 2025 16:38:47 +0000
+Received: from SJ0PR10MB5694.namprd10.prod.outlook.com
+ ([fe80::a6fc:c6a3:7290:5d1d]) by SJ0PR10MB5694.namprd10.prod.outlook.com
+ ([fe80::a6fc:c6a3:7290:5d1d%4]) with mapi id 15.20.8314.011; Thu, 2 Jan 2025
+ 16:38:47 +0000
+From: Anand Jain <anand.jain@oracle.com>
+To: linux-btrfs@vger.kernel.org
+Cc: dsterba@suse.com, Naohiro.Aota@wdc.com, wqu@suse.com, hrx@bupt.moe,
+        waxhead@dirtcellar.net
+Subject: [PATCH 1/1] fixup: btrfs: add read count tracking for filesystem stats
+Date: Fri,  3 Jan 2025 00:37:47 +0800
+Message-ID: <abf8061ae205c71936f60a22fab66503371be3bf.1735834884.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.47.0
+In-Reply-To: <c4010cee5398e35a695def3ad97d4de6f136ae2c.1735748715.git.anand.jain@oracle.com>
+References: <c4010cee5398e35a695def3ad97d4de6f136ae2c.1735748715.git.anand.jain@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR01CA0050.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::21) To SJ0PR10MB5694.namprd10.prod.outlook.com
+ (2603:10b6:a03:3ed::15)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hm5whah2es5oyjv4wdx7ucrnjaowe42kecs2ggadukakbwqjkv@x5lyewbjsb6p>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5694:EE_|IA1PR10MB5922:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9557a5dc-881e-43ae-58fa-08dd2b4bed9f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Qx0cc/+yeFaNrqAWIQH69t4eAncYopoaXs015RE6X/YOss1Zu3E+HtCfFivx?=
+ =?us-ascii?Q?5oYur4YR8VEkdTHmbLUbp5YUfXqCr39rmOAw1/Jqye6WMsSnVEQQroEHD9H7?=
+ =?us-ascii?Q?3RS52NnQNIo+oCFs1Ea428GnskMRO9YplspslJjHuyh+3PXVvDcS68Y1LqHR?=
+ =?us-ascii?Q?or3oXFoRoTXojN6e5pgiBjds5r1GrcyE1ccNh8UM0+T25JXPIRKHsfx8qQCV?=
+ =?us-ascii?Q?wG+2jD9wuDg3EqywPTGYQftedY6PfwYieeIM0q2GzvZ/ubaDIUyx4VuqDmXo?=
+ =?us-ascii?Q?ukmE0MYBT7lgcpugBm1npxJY0G5xD6GKRTF6YQZ05HvksEw+FuFl4T28ArWV?=
+ =?us-ascii?Q?atNoxTAMTVuF6ZgvNf7ZTerESnmW5+yR+s6OIAKCu/NfZ0xFa9miL+qh1Bki?=
+ =?us-ascii?Q?OKHaFNiqC3IYRKJs6obyybGxgJDGHas9Af6lWMm2hS5oVyxHzpF/AccF9rYz?=
+ =?us-ascii?Q?QBIGlNVnctBsZyGMhM1YX1gYitDd/mfrheMoCNB+O0cVPJjbr3mE8AgDRx6m?=
+ =?us-ascii?Q?vyBF9KaHSelOH+VJ6w5qTsT3qJVzpJ7qLeX+3V/zFwp+dx+kEpplnqZ0LMpu?=
+ =?us-ascii?Q?hB+VxE6mHUM02bxTrBvt2p2Wp7sMLXhhuwupEKQ5S9RivmVsZroBh0rmarhR?=
+ =?us-ascii?Q?xCbl7GSa2HFdP2VktSKp5z93+PViOmAo30eUKbVJoHmVfZb1sjvoRdKQ/jhA?=
+ =?us-ascii?Q?dYVEkRncSfBWx9p5c7a8UgeOzM0tC7D2NQ0wipJey6A8nQcnnwqPQmNZ4RHY?=
+ =?us-ascii?Q?c5/Bwtx7O2PlFgEb9WkJlCMiH0w9riFtcBSUCCT/+DSjaLZ0kMTtj3MHKW31?=
+ =?us-ascii?Q?15FFLYV978Eatu6ORXT7B3Kdn2k6FgZXdBe255DmD1qU9A7vnfrz2WakGA+o?=
+ =?us-ascii?Q?ARsy1CkwSAo/laf4VbpWgZuSoF4+siFS7Jx3hzTP5NJDcfguwzNNFbL3CGVl?=
+ =?us-ascii?Q?pymTPdEV4tqb1jw2H9LrcOMz8QXowJNKeYpZbujAXQ67X7hcd5InidckfqiH?=
+ =?us-ascii?Q?6wvTtXAAoOABlZHgtDMiHNbIeRNgC6gV54UMIdaOXggbRj4pdfePgCw7fvmc?=
+ =?us-ascii?Q?APaSQEiDSMZdR6xXqCt5ElGo73JH4DkTDU3OR1ezl+UxJxSBnCvgWBBaxNks?=
+ =?us-ascii?Q?BTnDP3K1HH8ZMfmbDnc7zWte+6sAX9xrpHntHXdQHa39mDquMltl8mBhlY2D?=
+ =?us-ascii?Q?4MRsaQxPjO7l+2jehNw0L7JwACbLp0+wVURCEEv1SMKuRZn9tm5c6+3R41fM?=
+ =?us-ascii?Q?ROVjGRNJNorHpcr2TPF4Z66YZakZfiwDzDtgXd1LaIHL++XedsgQV9kSw1Ps?=
+ =?us-ascii?Q?e5Ij6ehhfN63R2TO9c9/OubzCYWlKK3RRhHDBVNy7oaj0m5vR6Nl3vaxVqKf?=
+ =?us-ascii?Q?fDxelFlcBtODq4Eyof1/KzGciPiw?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB5694.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?JhjGKk0NUf5pKt0AfFvs+l8uyoWn5r8BUsEOE1horu7DoD9edZ7d54fBNNsS?=
+ =?us-ascii?Q?kr3iNVLc9ZIVcu0cnq020AOB2EjFVVV4Kasol6Zb3F/n9qdPdGAVqwiPqfwf?=
+ =?us-ascii?Q?QRLu61ciMDbxVwXljYBcWUeYasXubOUVShqYrhjM5RvwR4P5DOa2zVTuFYX+?=
+ =?us-ascii?Q?2pYqc9lcluCRUxBRXkZ1Ve5egEOy6DUJg+bG2lwDtXGXGsVkIM0lEUEhYIkZ?=
+ =?us-ascii?Q?ChnnyaEF/685y9OUnTB6aKy+YfIP5hip36odcVh8f8V8xSS9Ysc8IoGRazHy?=
+ =?us-ascii?Q?44A2izHUBLArfIDw7xr8rW8eCO9Wi+qoEHEeZrdEdkH5+81ttHLHLxODutlD?=
+ =?us-ascii?Q?mehoEois9xb6ge8lkHy6eoUSIF1PuRPxeaMBZVv1MhcfUxvg+CEIAb3no6nH?=
+ =?us-ascii?Q?OPaid+b/ogKLJXsjD/b3zPG27WuOCrsymEEHq3nK6uGQ8Pl3FZQdVosokWs9?=
+ =?us-ascii?Q?ux52WBQnN165wu/Z7ifgeYzs/x3hDKbQ5vUKc0Jc7aioAY+mRjd1lnWbbCei?=
+ =?us-ascii?Q?4WbdND3VHa71ByE2Zrqo7Pd9x7J8gUpjaS6mXj6EWCYy5BXJPb8Mv0WISo88?=
+ =?us-ascii?Q?Kj2d/Zs/9EE2y5fGGEOZ8C3ddhBuLVETKy+9o5vJaQj1f0YDTNLpdTK4/luA?=
+ =?us-ascii?Q?Oi2odY6aZ14g/EHwVfrKvBHG7e7fVe0HMUPWf1zQ+yQuiletjyIJHWowUvV6?=
+ =?us-ascii?Q?GbGjwVeWVgEP8Q/ztISToVdxRbS3DDG+S8kt6ZpgoGhsMDiqw/4saU5RqyoJ?=
+ =?us-ascii?Q?7G+oQsvbCQrBxI6HnffR0Ds/6tnG4URJSobufNiB7rKjx+pC7AZ4BgEKXy40?=
+ =?us-ascii?Q?k08MzVsc2NqxAb/8D5nd0OZ6yhhMMZSHu48i7RIbGGLeNl4lKSCwjG/znVdN?=
+ =?us-ascii?Q?SkzDGAWh3e1xs4x6pTtjXd/EHskuKFSba1AAFAKIVJ8nzLLm37ouQxavpaTc?=
+ =?us-ascii?Q?jnPqvwbgLvCZ/nuRtvukXR0VUkA40xyAC9ycjBK+qH3B+8DdJMT4VwHNeZUt?=
+ =?us-ascii?Q?SFiylNa+/mbTlw/Sw8e2ZvFoQE+CBiPghkU8fE0nOd/ztHRJ2u149ONhDEsT?=
+ =?us-ascii?Q?3HknNqPqwBtZhrE3snpmNDYU5I0uW0+F4WBk2r52XHgxYwbeSKxRrSp6++bD?=
+ =?us-ascii?Q?AN2VbYdnmWyJWdLIS62uxkKOuEi42SGXVMVoCMoh+7taQqfD+pcOxSY0GF6S?=
+ =?us-ascii?Q?XJDQhlqe6whvLrRFyKge6ecgxElnP0XXw11Q+GpTdKO3LPSAdBGtxUhM94gE?=
+ =?us-ascii?Q?ZzqoxSZo0jzXYldMkT28vYVT8AyYVy838EmUZB6HNrlc6FWFHKs4SnYGR+K3?=
+ =?us-ascii?Q?bHCh4TddwRvxg28TmZEsc3iDFHvwuWir8oWvbLK2CBYqdYHCPRGLicYhuYjt?=
+ =?us-ascii?Q?imTrz8xkrZCXcx4XIroBIB756BzgmTmyVdmFqmQwZnlbUjYIkEmQJIqWFXZ+?=
+ =?us-ascii?Q?APRGXQ2SMkbZ1zY756W8OEC4fqsNy9vSByr+X5hB57CuEQLEoaLL39GbUXKC?=
+ =?us-ascii?Q?/yhZxz51UgAxRIxnOuYijiF/SYY3mWiOJ4Z8z3/c77q8FWdHS5RWxeNXxZZN?=
+ =?us-ascii?Q?Ql9/xTZiCty3CuqtR/41E4jlFw4/vfXRlQu/xgGF?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	9Lum7oiW8eZlVUUvLEa6BGCoW7Lvf1oA7QpOslp5mqBwPJXqPpl6G1By+GwjT2pDUdp+W8LfXxo/TiMxX9niykJbdEeybrMopBQr7qUOJbOgnD1vopKw6BhRHWBj3yh0xLDZ3ouqITRirp/eBjyj5u4lg13iAoeZBF/qIIcvpoP8Vyn+QghksFpkRVqKgCNHQBtO27HPGcveOnfqtLb6b7zLN4TnD1+/kkpQrTskjObOIM5npkALhkdkZPtAtxQN8REczBD86T2XBNr2OFB8cosYHj4Au+E6vk8BazLvtfbzahs2NXtUo23Sq4TivFFGDEANOdv94qvOeTKSG1zNgA8Bxw2UpFwJ2p7T/gR+WAz/RlFpodeu/umh8ONCSJ19TU+VCIv+xXgLJDJAhO136V7GcXYv1tP6nJNwyYjMD4ZDhxdKC8dv+9DnlzMz4btVuPFNunzTtfFKOtCl1fPBItOyBlBUttCmmp0ZWpqnAO9BYYAN28vpHWQOOc5ydIUcGgminMsuRipZGi83t4v+slMpDias9oUf8XZiUfeBkC4P8oY06lfHYXOSLw9+gnIKxcU956DqwHUklOtYl2jHcr4DGR339cVpkFUAJzuyDHQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9557a5dc-881e-43ae-58fa-08dd2b4bed9f
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB5694.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2025 16:38:46.9568
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ffsaqdng/7SCrXFd9CNh3nqCxccW8OA82rWuQUS0TSd1mgqO6DGq/phdKM8g6stCEZoa3Tg6JkQz13pAqc4wJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB5922
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-01-02_03,2025-01-02_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
+ definitions=main-2501020146
+X-Proofpoint-GUID: KA93IdOyB30argwo3gAW0Mt41mku5zgU
+X-Proofpoint-ORIG-GUID: KA93IdOyB30argwo3gAW0Mt41mku5zgU
 
-On Tue, Dec 10, 2024 at 05:40:30AM +0000, Naohiro Aota wrote:
-> On Sat, Dec 07, 2024 at 11:35:04AM +0000, Johannes Thumshirn wrote:
-> > On 05.12.24 08:50, Naohiro Aota wrote:
-> > > As discussed in [1], there is a longstanding early ENOSPC issue on the
-> > > zoned mode even with simple fio script. This is also causing blktests
-> > > zbd/009 to fail [2].
-> > > 
-> > > [1] https://lore.kernel.org/linux-btrfs/cover.1731571240.git.naohiro.aota@wdc.com/
-> > > [2] https://github.com/osandov/blktests/issues/150
-> > > 
-> > > This series is the second part to fix the ENOSPC issue. This series
-> > > introduces "space_info sub-space" and use it split a space_info for data
-> > > relocation block group.
-> > > 
-> > > Current code assumes we have only one space_info for each block group type
-> > > (DATA, METADATA, and SYSTEM). We sometime needs multiple space_info to
-> > > manage special block groups.
-> > > 
-> > > One example is handling the data relocation block group for the zoned mode.
-> > > That block group is dedicated for writing relocated data and we cannot
-> > > allocate any regular extent from that block group, which is implemented in
-> > > the zoned extent allocator. That block group still belongs to the normal
-> > > data space_info. So, when all the normal data block groups are full and
-> > > there are some free space in the dedicated block group, the space_info
-> > > looks to have some free space, while it cannot allocate normal extent
-> > > anymore. That results in a strange ENOSPC error. We need to have a
-> > > space_info for the relocation data block group to represent the situation
-> > > properly.
-> > 
-> > I like the idea and the patches, but I'm a bit concerned it diverges 
-> > zoned and non-zoned btrfs quite a bit in handling relocation. I'd be 
-> > interested what David and Josef think of it. If no one objects to have 
-> > these sub-space_infos zoned specific I'm all good with it as it fixes 
-> > real problems.
-> 
-> Hmm, for that point, we already do the relocation a bit different on zoned
-> vs non-zoned. On the zoned mode, the relocated data is always allocated
-> from a dedicated block group. This series just move that block group into
-> its own space_info (aka sub-space_info) to fix a space accounting issue.
-> 
-> I admit the concept of sub-space_info is new, so I'd like to hear David and
-> Josef's opinion on it.
+fs_devices::fs_stats is disabled by default during allocation. Explicitly
+disabling it in open_ctree() overrides this setting during device open.
+So we dont' have to disable it in the open_ctree().
 
-One thing that sounds ok is that it fixes real problems, even if it's
-just for the zoned mode, the exceptions for handling space already
-exist.
+This patch should be merged with in the ML.
+  btrfs: add read count tracking for filesystem stats
 
-Conceptually the sub groups also sound ok but this is a design thing and
-with reach to user space (e.g. exporting to sysfs or requiring more
-detailed 'btrfs fi df' and other utilities). Handling the reloc and
-potentially tree-log block groups more transparently sounds like a good
-idea. Reusing that for more fine grained space control like tiering
-sounds also ok.
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/disk-io.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> > Would it be useful to also do the same for regular btrfs? And while 
-> > we're at it, the treelog block-group for zoned mode could benefit form a 
-> > own space-info as well, couldn't it? To not run into premature ENOSPC on 
-> > frequent syncs, or is this unlikely to happen (I'm thinking out loud here).
-> 
-> On the regular mode, it can allocate space for relocation data from any
-> block group. So, it is not so useful to separate space_info for
-> that. However, it would be interesting to have a dedicated relocation data
-> block group as well on the regular mode, because it could reduce the
-> fragmentation of relocated data. This would be interesting topic to
-> explore.
-> 
-> Yes, adding treelog sub-space_info is useful too. Apparently, I sometime
-> see a test failure due to treelog space_info accounting mismatch. I didn't
-> implement that sub-space_info for now, because I'd like to know first that the
-> sub-space_info concept itself is the right way to go.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 79b859790e8c..ab45b02df957 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3481,9 +3481,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sysfs;
+ 	}
+ 
+-	/* Disable filesystem stats tracking unless required by a feature. */
+-	fs_devices->fs_stats = false;
+-
+ 	ret = btrfs_read_block_groups(fs_info);
+ 	if (ret) {
+ 		btrfs_err(fs_info, "failed to read block groups: %d", ret);
+-- 
+2.47.0
+
 
