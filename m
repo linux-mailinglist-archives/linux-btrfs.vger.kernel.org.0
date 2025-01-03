@@ -1,80 +1,48 @@
-Return-Path: <linux-btrfs+bounces-10717-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10718-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E34A00FD3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 22:26:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 398A4A01070
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 23:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17D6B16516F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 21:24:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBBD916413D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 22:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5895D1C07EA;
-	Fri,  3 Jan 2025 21:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hUAHRIiu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A69D1BDA91;
+	Fri,  3 Jan 2025 22:58:13 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from naboo.endor.pl (naboo.endor.pl [91.194.229.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A46191494
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 Jan 2025 21:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FE71B6CE4
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 Jan 2025 22:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.194.229.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735939464; cv=none; b=GpJyIqSr6l+oIse/+2/TBfN3+efwOLFPM3SXM+oCk+wn3nFWaxKUB+TWSByz6PSsBQBl6/4cio76LhdcqQIsodcBt5XHPA89Z+a5M/kxONojoJ1keawZQPvXPoKW5DRTouuTg74UU1k6E4cY+bZJtI6gRxPb75QmzoSdoiMxow4=
+	t=1735945092; cv=none; b=eeeuMJraWuZ9C4i3olr8d5c0ZGVaCbhxAlluwE/reIiBQ3hZycQOG3w9aqIXnRZO4czwj96GTLpTm93ubJdncFOcq+kVBb+92/lnyRGe3Zs2HO0qp0j01R+MMy2DeJDCo7HiJqVwNo5EUkJ7v5T8Uf8rzjQ7lEt3LMBUP7s+e+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735939464; c=relaxed/simple;
-	bh=XSQopwZQDVoEUbFxMXWcY8+qFpDPMO8rKnDrTHBEgKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UXANzKKTGEO2z/Rx01zZTFliFMAH8AgRb0voJFcZOtUuZtLnq6WPPdR4bPHW0kinZbaosD37o9RCnl0wIll2VIK6YzLtLyleEjYWeWgRYUYCriSE/Ujoo2B10CdlOF711WPpLKV2zjSO8Yy2mW6oC6F3o+IoyEOaKuBgqibGBPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hUAHRIiu; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa67f31a858so2242616166b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2025 13:24:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735939461; x=1736544261; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WjGkqdO3pX7pPOw1JYALCBxofh/XkX/eoH4E26Ta1o0=;
-        b=hUAHRIiuBsS8N3HK6mgxekf1KN2tpOGVAjvzlDXtGq6RWl7OMHdDrfHtm9ZZ2Fz7U8
-         ShHa2Kw3mLTva9z9KbcdFYmL+81zXuL28ckAkWIUzlK4SIMMWqkYalnYO2gQ+T7+btCG
-         glKBcjjHTqNbET5bzq/e6nB+wEEtSIZSqQqiYEfwD3tWcwNUgJ5wDPMSVj8Lqq8hw1QC
-         XXhzZQx+pxip5E8ifNz+qwo2JsQ9SOw9XZLDMQRkuTjrmF0OGKaTib8qolJhE5l7Tu9m
-         tPeGDUB3VeK1cJdjejc94jli+CGYhf04r1nz/AxYUYJ1XrmcEpCUhTbtXpCMLwsEP8iD
-         HLtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735939461; x=1736544261;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WjGkqdO3pX7pPOw1JYALCBxofh/XkX/eoH4E26Ta1o0=;
-        b=lmMVOG6e84a6TQ/e10AWn2jalYNBn+2xLowJFZQ7IiELMd7pbDcGOxWxH1pirNSeAP
-         ckXEKUb+J6i4FDBYqcsF43TCacT+GjDVoCZq8lVWqnO4///3AVQZc034lwYqVYvNnute
-         7f6bgtzkaJBu6Q756J+p9x3BQzJNDlrvTd0am4e9KRNaC5FZwDTVzetavBbf7cfp1RrK
-         dj3uqsutdr9ePWd2PAlLC2ouMB/bBSvlgvTEHQYaOYPuTT+af35b+HXq/oQeBUkl6FY9
-         pHclZrTh9Tu3wwk1jgwL/tmECPY/DMQ2ftQxPP06knY8FouGjbXj/wLjo5GXuAJST0XC
-         8Gtg==
-X-Forwarded-Encrypted: i=1; AJvYcCW0HPCJNrP2WlF+nUn14VvOIoWVKT7VU0manMWoCbLcbMM5eNjm/P8WMVAMB5NP7x2sNOxXhIjlK3uoSA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFXF+l3BEcj5CQO7zdKs18vDHCw9hbKi1g5fV1n6zrppsxmE6C
-	H/19bajp7RqRwtIdt3g2EVfEEPnslO7bEOQTNw9iK+8pt1DPXIjJ0NTWHBvl
-X-Gm-Gg: ASbGncv9S90hs2lMNkYSM+iqlI5Li+pgMLAaMV3TWibMRHd6EFXpgirAah4f41uqNeY
-	FBdPoJFFQj+BYCJex1DsGqo64ZJ4uKOZgwdyZNuOI1mTvDyyxjP+tVlYN+hZdj4tEd1zHhT0hzA
-	iV31Nd5RRBQeLPNBiajehBo0dgW4M6T8mbK1r9w9a76QPdr3mIeG27meGfbzWpZm87hVE5Co5Og
-	UKMKeWpKHmwhgEWCkiGKPjS5kwvurylX81w/16+XCEx7LvbInoe4rr08F+y/FxUhshd69o5RnFn
-	2Yr2IYwxPPlp80Yz04Ve6DDT+uURXpwF8/vpNDdqpDOO0kEXUqZCyT1yWY5OyaZ/nO5qRGLViAU
-	6OlmmjmQbibZoQjE=
-X-Google-Smtp-Source: AGHT+IE61QtnFKiiZ9QfhTrUU/jBzUnwNvUyqhZp+F7ktFTOZhk5prwbmVeGgCfXeeCQeI9jd2jYqQ==
-X-Received: by 2002:a17:907:6d01:b0:aaf:5c9:19f9 with SMTP id a640c23a62f3a-aaf05c91b72mr3494614266b.27.1735939460391;
-        Fri, 03 Jan 2025 13:24:20 -0800 (PST)
-Received: from ?IPV6:2a01:cb04:91:ab00:546e:9d21:e7f5:ca84? (2a01cb040091ab00546e9d21e7f5ca84.ipv6.abo.wanadoo.fr. [2a01:cb04:91:ab00:546e:9d21:e7f5:ca84])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e8301bdsm1929708166b.31.2025.01.03.13.24.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Jan 2025 13:24:19 -0800 (PST)
-Message-ID: <70008910-2c6f-4fcd-ba36-68ff16992504@gmail.com>
-Date: Fri, 3 Jan 2025 22:24:19 +0100
+	s=arc-20240116; t=1735945092; c=relaxed/simple;
+	bh=dfPUYR7dHf/APuMUMlSW8Z2OvHq1tTK/bkQlpuL6q1A=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=ijIliaZeR7GVTA3yElB9om7dkF5Jy/ukUnW7Qv2u+ZkO/pHCa9HvuL2Q+sfRuloGJHv62pG+b73Ea/ULzRXe5cP08jwJIy9tUMQgrzUOeB63IhlwVQQ2ZavNt8eN0ey0A2uV93q3+mkORPVtQUpoGcHFkyQBH6ozvQSHN4UhKvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubiel.pl; spf=pass smtp.mailfrom=dubiel.pl; arc=none smtp.client-ip=91.194.229.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubiel.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubiel.pl
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by naboo.endor.pl (Postfix) with ESMTP id 36B41C08E1A
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 Jan 2025 23:52:35 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from naboo.endor.pl ([91.194.229.15])
+	by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id sqN5FfBNqNZp for <linux-btrfs@vger.kernel.org>;
+	Fri,  3 Jan 2025 23:52:32 +0100 (CET)
+Received: from [192.168.55.34] (176.100.193.184.studiowik.net.pl [176.100.193.184])
+	(Authenticated sender: leszek@dubiel.pl)
+	by naboo.endor.pl (Postfix) with ESMTPSA id 4FC7DC08D9D
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 Jan 2025 23:52:32 +0100 (CET)
+Message-ID: <000bcef0-a86e-4832-90bb-9a4a47afad6d@dubiel.pl>
+Date: Fri, 3 Jan 2025 23:52:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,66 +50,300 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS errors following bad SATA connection
-To: Roman Mamedov <rm@romanrm.net>
-Cc: remi@georgianit.com, linux-btrfs@vger.kernel.org
-References: <9443ea9c-08dc-4d08-81a6-cb91940e791e@gmail.com>
- <76294f4a-9e29-4d57-aff3-3fc5ca3ebf27@gmail.com>
- <f70c5a74-08c3-4eb7-bbde-723aff840b3d@app.fastmail.com>
- <a0dbac20-475c-4e40-84a6-8f0e9159ec8f@gmail.com>
- <20250102183329.35047254@nvm>
- <5c4c4b31-af93-475c-a130-8faa5c61cac1@gmail.com>
- <02affeaa-aafa-4225-94f6-bee621a9a4b6@gmail.com>
- <20250103170900.7016c4c4@nvm>
- <032d71e6-954e-4fc6-bf43-18a6762d08b9@gmail.com>
- <20250103184549.78c383b0@nvm>
- <2ff268f4-8565-45e1-b752-3ca85c736841@gmail.com>
- <20250104020426.3899f4c8@nvm>
-Content-Language: en-US
-From: Victor Banon <banon.victor@gmail.com>
-In-Reply-To: <20250104020426.3899f4c8@nvm>
+From: Leszek Dubiel <leszek@dubiel.pl>
+Subject: Re: 97% full system, dusage didn't help, musage strange
+To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0a837cc1-81d4-4c51-9097-1b996a64516e@dubiel.pl>
+ <8c923965-f47c-4b4c-b096-9ddc0f047385@gmail.com>
+ <4144f14a-8742-4092-b558-d1a9de4d03e5@dubiel.pl>
+ <8eb9e55e-7a61-4c1a-b5ab-acf35ba4396e@gmx.com>
+ <ea8eb95c-e64a-4589-b302-23eb1fc6bd5c@dubiel.pl>
+ <a6a641f6-b0a1-4915-912a-638cc07eba88@suse.com>
+Content-Language: en-US, pl-PL
+In-Reply-To: <a6a641f6-b0a1-4915-912a-638cc07eba88@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 03/01/2025 22:04, Roman Mamedov wrote:
-> You mean a scan as suggested previously, trying to rename unreadable files to
-> "bad", or just a read-only pass too? It is probably way too broken after all,
-> so you might as well start planning backup+recreate.
-No, not read-only. I tried a few things, but for example when I tried to 
-delete the unreadable files (tweaked version of your command), the 
-filesystem became read-only.
-> Not sure what to make of it
 
-Oh well. Maybe I'll try again once to be sure and then move on to 
-recreating everything. Right now I can probably retrieve and store about 
-5 TB of data, so not all is lost.
 
-It just occurred to me that I might have a way to have enough space to 
-retrieve most of the un-backed up files. The 4th disk of the RAID was a 
-recent addition (that's probably when the SATA issues appeared), so I 
-have closer to 24 TB of data than 36 TB. So I'm thinking I may be able 
-to leverage up to 2 extra disks. Can I get your input on how dumb the 
-following ideas are:
 
-A. Delete some files then shrink the array (4x12TB RAID5 aka 36 usable 
-TB -> 3x12 TB RAID5 aka 24 usable TB). Remove 1 drive, use it for extra 
-storage.
 
-B. Degrade the array (4x12TB RAID5 aka 36 usable TB -> degraded 3x12 TB 
-RAID5 aka 36 usable TB). Remove 1 drive, use it for extra storage.
 
-C. Do both (4x12TB RAID5 aka 36 usable TB -> degraded 2x12 TB RAID5 aka 
-24 usable TB) . Remove 2 drives, use them for extra storage
 
-It doesn't seem smart to do any of this while the array is in this 
-precarious state, but I feel like I don't have a whole lot to lose by 
-trying this-- even if it fails catastrophically, the alternative is to 
-do nothing and reformat anyway. But I'd like to have some idea of what 
-to expect before I do that... Is it even possible to shrink or degrade 
-the array?
 
-> moving the containing directory away
-> somewhere and ignoring it for the time being
-> I believe you should be able to move or rename the directory
-Ah yes, that seems like it would have worked :) Didn't think of that.
+
+
+W dniu 16.12.2024 o 22:01, Qu Wenruo pisze:
+
+
+
+ > If you want to be extra safe, the best solution is to use tools that 
+can report the usage percentage of each block group.
+ >
+ > You need something procedure like this:
+ >
+ > start:
+ >     if (unallocated space >= 8GiB)
+ >         return;
+ > check_usage_percentage:
+ >     if (no block group has usage percentage < 30%) {
+ >         delete_files;
+ >         goto check_usage_percentage;
+ >     }
+ >     balance dusage=30
+ >     goto start;
+ >
+ > Although there are some concerns, firstly the tool, sorry I didn't 
+remember the name but there is an out-of-btrfs-progs tool can do exactly 
+that.
+
+In btrfs-progs package I didn't find any such tool.
+
+There is "btrfs maintenance" by kdave:
+
+                      https://github.com/kdave/btrfsmaintenance
+
+but it starts normal balance, it doesn't analize "block usage percentage".
+
+
+
+
+ >> How to improve?
+ >>
+ >> Tell the first procedure to keep 500GB free space? 800GB?
+ >
+ > Increasing the free space will definitely increase the chance of 
+reclaiming space using balance.
+ >
+ > But that's only increasing the chance, never to ensure that.
+ >
+ > As you can keep 800GiB free space, but since your fs have 8TiB data 
+space, for the worst case scenario where all space are freed evenly 
+among all chunks, it means each 1GiB chunk will only have around 100MiB 
+(10%) freed.
+ >
+ > That is not really going to chance the result of balance.
+ > But that's for the worst case scenario.
+
+
+I think I'm hitting the worst case scenario again and again.
+
+It looks as if my BTRFS system is always going towards that situation 
+where "all space are freed evenly among all chunks".
+
+
+
+
+
+I wrote a script that ensures:
+
+— at least 200 GB free disk space
+— at least 5% free disk space
+
+Then another script to balance btrfs when there is low "Unallocated space".
+
+
+
+
+It got stuck:
+
+# df -h ./sdc3/
+
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdc3       2.7T  2.5T  226G  92% /mnt/leszek/sdc3
+
+
+# btrfs filesystem usage ./sdc3 -T
+
+Overall:
+     Device size:           2.70TiB
+     Device allocated:           2.68TiB
+     Device unallocated:          19.45GiB
+     Device missing:             0.00B
+     Device slack:           3.50KiB
+     Used:               2.47TiB
+     Free (estimated):         225.94GiB    (min: 216.21GiB)
+     Free (statfs, df):         225.87GiB
+     Data ratio:                  1.00
+     Metadata ratio:              2.00
+     Global reserve:         512.00MiB    (used: 32.00KiB)
+     Multiple profiles:                no
+
+              Data    Metadata System
+Id Path      single  DUP      DUP       Unallocated Total   Slack
+-- --------- ------- -------- --------- ----------- ------- -------
+  1 /dev/sdc3 2.64TiB 36.00GiB  64.00MiB    19.45GiB 2.70TiB 3.50KiB
+-- --------- ------- -------- --------- ----------- ------- -------
+    Total     2.64TiB 18.00GiB  32.00MiB    19.45GiB 2.70TiB 3.50KiB
+    Used      2.44TiB 17.08GiB 432.00KiB
+
+
+
+
+
+I have tried different combinations of musage, dusage...
+
+
+
+btrfs balance start -dusage=30,limit=5 ./sdc3/
+
+btrfs balance start -dusage=50,limit=5 ./sdc3/
+
+btrfs balance start -dusage=90,limit=5 ./sdc3/
+
+btrfs balance start -dusage=99,limit=5 ./sdc3/
+
+[Fri Jan  3 23:06:57 2025] BTRFS info (device sdc3): balance: start 
+-dusage=99,limit=5
+[Fri Jan  3 23:06:57 2025] BTRFS info (device sdc3): relocating block 
+group 10938102710272 flags data
+[Fri Jan  3 23:07:20 2025] BTRFS info (device sdc3): found 10 extents, 
+stage: move data extents
+[Fri Jan  3 23:07:22 2025] BTRFS info (device sdc3): found 10 extents, 
+stage: update data pointers
+[Fri Jan  3 23:07:22 2025] BTRFS info (device sdc3): relocating block 
+group 10937028968448 flags data
+[Fri Jan  3 23:07:43 2025] BTRFS info (device sdc3): found 11 extents, 
+stage: move data extents
+[Fri Jan  3 23:07:44 2025] BTRFS info (device sdc3): found 11 extents, 
+stage: update data pointers
+[Fri Jan  3 23:07:45 2025] BTRFS info (device sdc3): relocating block 
+group 10935955226624 flags data
+[Fri Jan  3 23:08:04 2025] BTRFS info (device sdc3): found 9 extents, 
+stage: move data extents
+[Fri Jan  3 23:08:06 2025] BTRFS info (device sdc3): found 9 extents, 
+stage: update data pointers
+
+
+
+
+
+btrfs balance start -musage=30,limit=5 ./sdc3/
+
+btrfs balance start -musage=50,limit=5 ./sdc3/
+
+btrfs balance start -musage=90,limit=5 ./sdc3/
+
+btrfs balance start -musage=99,limit=5 ./sdc3/
+
+
+What is strange with "musage"?
+
+When I run with "musage" btrfs finds "24 extents" but for "system|dup".
+
+[Fri Jan  3 22:30:59 2025] BTRFS info (device sdc3): balance: start 
+-musage=30,limit=1 -susage=30,limit=1
+[Fri Jan  3 22:30:59 2025] BTRFS info (device sdc3): relocating block 
+group 10975113707520 flags system|dup
+[Fri Jan  3 22:31:02 2025] BTRFS info (device sdc3): found 24 extents, 
+stage: move data extents
+[Fri Jan  3 22:31:14 2025] BTRFS info (device sdc3): balance: ended with 
+status: 0
+[Fri Jan  3 22:31:20 2025] BTRFS info (device sdc3): balance: start 
+-dusage=50,limit=1
+[Fri Jan  3 22:31:20 2025] BTRFS info (device sdc3): relocating block 
+group 10975168233472 flags data
+[Fri Jan  3 22:31:20 2025] BTRFS info (device sdc3): balance: ended with 
+status: 0
+[Fri Jan  3 22:31:21 2025] BTRFS info (device sdc3): balance: start 
+-musage=50,limit=1 -susage=50,limit=1
+[Fri Jan  3 22:31:21 2025] BTRFS info (device sdc3): relocating block 
+group 10975159844864 flags system|dup
+[Fri Jan  3 22:31:26 2025] BTRFS info (device sdc3): found 24 extents, 
+stage: move data extents
+[Fri Jan  3 22:31:28 2025] BTRFS info (device sdc3): balance: ended with 
+status: 0
+
+
+
+Only sometimes there is "metadata|dup", and there is a huge (!!!) amount 
+of "found extents" — two thousand or four thousand:
+
+[Fri Jan  3 18:09:49 2025] BTRFS info (device sdc3): balance: start 
+-musage=90,limit=3 -susage=90,limit=3
+[Fri Jan  3 18:09:49 2025] BTRFS info (device sdc3): relocating block 
+group 10632086290432 flags metadata|dup
+[Fri Jan  3 18:11:48 2025] BTRFS info (device sdc3): found 21714 
+extents, stage: move data extents
+^^^
+[Fri Jan  3 18:11:52 2025] BTRFS info (device sdc3): relocating block 
+group 2695122386944 flags metadata|dup
+[Fri Jan  3 18:49:37 2025] BTRFS info (device sdc3): found 47432 
+extents, stage: move data extents
+[Fri Jan  3 18:51:06 2025] BTRFS info (device sdc3): balance: ended with 
+status: 0
+
+
+
+
+
+My command line is using only "musage":
+
+             btrfs balance start -musage=99,limit=1 ./sdc3/
+
+but it optimizes "system|dup" and "metadata|dup".
+
+[Fri Jan  3 21:52:55 2025] BTRFS info (device sdc3): balance: start 
+-musage=99,limit=1 -susage=99,limit=1
+[Fri Jan  3 21:52:55 2025] BTRFS info (device sdc3): relocating block 
+group 10945618903040 flags system|dup
+[Fri Jan  3 21:52:59 2025] BTRFS info (device sdc3): found 24 extents, 
+stage: move data extents
+[Fri Jan  3 21:53:00 2025] BTRFS info (device sdc3): relocating block 
+group 10939176452096 flags metadata|dup
+[Fri Jan  3 21:58:04 2025] BTRFS info (device sdc3): found 22488 
+extents, stage: move data extents
+[Fri Jan  3 21:59:02 2025] BTRFS info (device sdc3): balance: ended with 
+status: 0
+
+22488 found extents?
+
+
+
+
+With musage=30:
+
+[Fri Jan  3 22:54:35 2025] BTRFS info (device sdc3): balance: start 
+-musage=30,limit=1 -susage=30,limit=1
+[Fri Jan  3 22:54:35 2025] BTRFS info (device sdc3): relocating block 
+group 10977475100672 flags metadata|dup
+[Fri Jan  3 22:55:09 2025] BTRFS info (device sdc3): found 11710 
+extents, stage: move data extents
+[Fri Jan  3 22:55:11 2025] BTRFS info (device sdc3): relocating block 
+group 10975306645504 flags system|dup
+[Fri Jan  3 22:55:14 2025] BTRFS info (device sdc3): found 26 extents, 
+stage: move data extents
+[Fri Jan  3 22:55:18 2025] BTRFS info (device sdc3): balance: ended with 
+status: 0
+
+11710 found extents for musage=30?
+
+
+
+
+I know, that standard solution is to
+
+1. free space
+2. make balance
+
+
+
+But now I have 226GB free space, 92% disk occupied only, and only 19 Gb 
+of unallocated space.
+
+
+How to reclaim unallocated space from that 226 GB free space?
+
+
+
+
+
+
+
+
+
+
+
+
+
 
