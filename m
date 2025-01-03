@@ -1,62 +1,65 @@
-Return-Path: <linux-btrfs+bounces-10704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10708-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79189A00AFB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 16:02:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9C9A00B02
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 16:03:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD2D83A4224
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 15:02:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 644C0164218
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2025 15:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDB71FA8F5;
-	Fri,  3 Jan 2025 15:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C0B1FAC30;
+	Fri,  3 Jan 2025 15:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="dXEUXJzd"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="HA6k7VdW"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BB41B0F0A
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 Jan 2025 15:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DF81FAC5F
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 Jan 2025 15:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735916565; cv=none; b=Nb9LdkKv5kXBYlzVne7TGVbBE7JECy/sAhd6PvAmnWDX4fLftrGAOjDSS5qNvf9sF6/cjb8xUy4Eg3tAs7diXIBP7VgpAOZBv1rHnE6QbVc7CSPFbG7PWogS1GytTs4XkD9ThkdhA8Tg+yVMc5IiWR1KZxL6dnxq5xdciAD6sso=
+	t=1735916574; cv=none; b=ZYLMB92wqFNOdd7MwMwoOpBU647btZDDunMBSUtFzZDJs5nh0R23YqHcLOjpU92s7nqVODNhHSnKIdPUrSexcUzJmGNIU8CmVHmLXCw+CWOfqWey2mRQMcNqg2aDEfPD+tDSd2zKYp7gitzVdUcJs879cemLz7c+JKuJzz7dg2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735916565; c=relaxed/simple;
-	bh=GpZ8xC06ZbBsfoX/4KdSVipWPC8rkCodVOfd89bcyqM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jCrXCw6kwrpKqgwUMShImQyFEapK3uQZiTVECA5l6i/nE065VsRIkrX5d2Qeq0EcGHAJu0uMaEmJJvEwc8WvQSXCB+/ir2bS/gRXLuH1YsrFmmsHa+PbpIk6vUHizTvfCLjwWxn1Xf3gZZQvrLrEaJL3jv9VeRAs4ofISrPI2Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=dXEUXJzd; arc=none smtp.client-ip=67.231.145.42
+	s=arc-20240116; t=1735916574; c=relaxed/simple;
+	bh=rT++9iJ6ZQNB8q5DWeR2FUycNTru/sqFL0Cz2X7ZSvw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qE+m4GKSUY/M08lc8E/dxk6euf0UVbbz0IgoVu/bZVCovv+DRxhcH/1eQJ97haoUvy6Lrz97jINKfpj45enJ8Q1v/wqprq0pqNL/0HKFtXTRg95RBAW6sRQTf4qZGAiiou2KLpEmTLQyrk0DPmnBGLewbdZaNdI/xuGn2llg+Y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=HA6k7VdW; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 503F0cRV026329
-	for <linux-btrfs@vger.kernel.org>; Fri, 3 Jan 2025 07:02:43 -0800
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 503F0kUt009841
+	for <linux-btrfs@vger.kernel.org>; Fri, 3 Jan 2025 07:02:52 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=x/hxGO2bUBPF42nq9KPwLJl
-	bU6S5SlNSAPHgYjPD5Ck=; b=dXEUXJzdF9g68JILWAsrEEXtkNOpjWLTvvL0JDi
-	8U+RnBqH47DXHc6C80dJiMJAlu57OxmFX/LWG1NetWVvwmdKPCpaqvC92ccrISnf
-	td17eJHXiXzWGPCC5uL50tfxdYL9Hp2OZL8StsjqpqlxdJlYj+hWXTW8jNS6efeg
-	PtNY=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43xf8f8vcy-1
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=facebook; bh=p
+	rt3/yOItv2hOwJMePcR62drvYabi2Oe7HXQ5W1t2qA=; b=HA6k7VdWaQW02PXP+
+	ktKyrno6leOyjrEAjYYUS7/+EyXRx2D8WlxXzjzZaqD2JMbyybk01rX4rBkACutU
+	Ux+qzOwc/nxrCGT+jFzGAXdng8QofN0zj/gYoz3UB1/HerQxJ4YOj0y5NUfyysGB
+	0R3g1VGtqN68o7tTDgVunqLVUs=
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43xf01gxj7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2025 07:02:42 -0800 (PST)
-Received: from twshared3815.08.ash9.facebook.com (2620:10d:c085:208::7cb7) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+	for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2025 07:02:51 -0800 (PST)
+Received: from twshared3076.40.frc1.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.14; Fri, 3 Jan 2025 15:02:41 +0000
+ 15.2.1544.14; Fri, 3 Jan 2025 15:02:50 +0000
 Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 641A7A240681; Fri,  3 Jan 2025 15:02:34 +0000 (GMT)
+	id 68EABA240683; Fri,  3 Jan 2025 15:02:34 +0000 (GMT)
 From: Mark Harmstone <maharmstone@fb.com>
 To: <linux-btrfs@vger.kernel.org>, <io-uring@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH v4 0/4] btrfs: fix reading from userspace in btrfs_uring_encoded_read()
-Date: Fri, 3 Jan 2025 15:02:22 +0000
-Message-ID: <20250103150233.2340306-1-maharmstone@fb.com>
+CC: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 1/4] io_uring/cmd: rename struct uring_cache to io_uring_cmd_data
+Date: Fri, 3 Jan 2025 15:02:23 +0000
+Message-ID: <20250103150233.2340306-2-maharmstone@fb.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20250103150233.2340306-1-maharmstone@fb.com>
+References: <20250103150233.2340306-1-maharmstone@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -66,42 +69,144 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: QsO6OLwDDDbNTlBVPPbxcanu2LYZ788n
-X-Proofpoint-GUID: QsO6OLwDDDbNTlBVPPbxcanu2LYZ788n
+X-Proofpoint-GUID: Z15t62kyQFic8jDjyJyXga38_EYupZKJ
+X-Proofpoint-ORIG-GUID: Z15t62kyQFic8jDjyJyXga38_EYupZKJ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_02,2024-10-04_01,2024-09-30_01
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-Version 4 of mine and Jens' patches, to make sure that when our io_uring
-function gets called a second time, it doesn't accidentally read
-something from userspace that's gone out of scope or otherwise gotten
-corrupted.
+From: Jens Axboe <axboe@kernel.dk>
 
-I sent a version 3 on December 17, but it looks like that got forgotten
-about over Christmas (unsurprisingly). Version 4 fixes a problem that I
-noticed, namely that we weren't taking a copy of the iovs, which also
-necessitated creating a struct to store these things in. This does
-simplify things by removing the need for the kmemdup, however.
+In preparation for making this more generically available for
+->uring_cmd() usage that needs stable command data, rename it and move
+it to io_uring/cmd.h instead.
 
-I also have a patch for io_uring encoded writes ready to go, but it's
-waiting on some of the stuff introduced here.
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ include/linux/io_uring/cmd.h |  4 ++++
+ io_uring/io_uring.c          |  2 +-
+ io_uring/opdef.c             |  3 ++-
+ io_uring/uring_cmd.c         | 10 +++++-----
+ io_uring/uring_cmd.h         |  4 ----
+ 5 files changed, 12 insertions(+), 11 deletions(-)
 
-Jens Axboe (2):
-  io_uring/cmd: rename struct uring_cache to io_uring_cmd_data
-  io_uring/cmd: add per-op data to struct io_uring_cmd_data
-
-Mark Harmstone (2):
-  io_uring: add io_uring_cmd_get_async_data helper
-  btrfs: don't read from userspace twice in btrfs_uring_encoded_read()
-
- fs/btrfs/ioctl.c             | 125 +++++++++++++++++++----------------
- include/linux/io_uring/cmd.h |  10 +++
- io_uring/io_uring.c          |   2 +-
- io_uring/opdef.c             |   3 +-
- io_uring/uring_cmd.c         |  23 +++++--
- io_uring/uring_cmd.h         |   4 --
- 6 files changed, 97 insertions(+), 70 deletions(-)
-
+diff --git a/include/linux/io_uring/cmd.h b/include/linux/io_uring/cmd.h
+index 0d5448c0b86c..61f97a398e9d 100644
+--- a/include/linux/io_uring/cmd.h
++++ b/include/linux/io_uring/cmd.h
+@@ -18,6 +18,10 @@ struct io_uring_cmd {
+ 	u8		pdu[32]; /* available inline for free use */
+ };
+=20
++struct io_uring_cmd_data {
++	struct io_uring_sqe	sqes[2];
++};
++
+ static inline const void *io_uring_sqe_cmd(const struct io_uring_sqe *sq=
+e)
+ {
+ 	return sqe->cmd;
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index d3403c8216db..ff691f37462c 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -320,7 +320,7 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(s=
+truct io_uring_params *p)
+ 	ret |=3D io_alloc_cache_init(&ctx->rw_cache, IO_ALLOC_CACHE_MAX,
+ 			    sizeof(struct io_async_rw));
+ 	ret |=3D io_alloc_cache_init(&ctx->uring_cache, IO_ALLOC_CACHE_MAX,
+-			    sizeof(struct uring_cache));
++			    sizeof(struct io_uring_cmd_data));
+ 	spin_lock_init(&ctx->msg_lock);
+ 	ret |=3D io_alloc_cache_init(&ctx->msg_cache, IO_ALLOC_CACHE_MAX,
+ 			    sizeof(struct io_kiocb));
+diff --git a/io_uring/opdef.c b/io_uring/opdef.c
+index 3de75eca1c92..e8baef4e5146 100644
+--- a/io_uring/opdef.c
++++ b/io_uring/opdef.c
+@@ -7,6 +7,7 @@
+ #include <linux/fs.h>
+ #include <linux/file.h>
+ #include <linux/io_uring.h>
++#include <linux/io_uring/cmd.h>
+=20
+ #include "io_uring.h"
+ #include "opdef.h"
+@@ -414,7 +415,7 @@ const struct io_issue_def io_issue_defs[] =3D {
+ 		.plug			=3D 1,
+ 		.iopoll			=3D 1,
+ 		.iopoll_queue		=3D 1,
+-		.async_size		=3D 2 * sizeof(struct io_uring_sqe),
++		.async_size		=3D sizeof(struct io_uring_cmd_data),
+ 		.prep			=3D io_uring_cmd_prep,
+ 		.issue			=3D io_uring_cmd,
+ 	},
+diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+index af842e9b4eb9..629cb4266da6 100644
+--- a/io_uring/uring_cmd.c
++++ b/io_uring/uring_cmd.c
+@@ -16,10 +16,10 @@
+ #include "rsrc.h"
+ #include "uring_cmd.h"
+=20
+-static struct uring_cache *io_uring_async_get(struct io_kiocb *req)
++static struct io_uring_cmd_data *io_uring_async_get(struct io_kiocb *req=
+)
+ {
+ 	struct io_ring_ctx *ctx =3D req->ctx;
+-	struct uring_cache *cache;
++	struct io_uring_cmd_data *cache;
+=20
+ 	cache =3D io_alloc_cache_get(&ctx->uring_cache);
+ 	if (cache) {
+@@ -35,7 +35,7 @@ static struct uring_cache *io_uring_async_get(struct io=
+_kiocb *req)
+ static void io_req_uring_cleanup(struct io_kiocb *req, unsigned int issu=
+e_flags)
+ {
+ 	struct io_uring_cmd *ioucmd =3D io_kiocb_to_cmd(req, struct io_uring_cm=
+d);
+-	struct uring_cache *cache =3D req->async_data;
++	struct io_uring_cmd_data *cache =3D req->async_data;
+=20
+ 	if (issue_flags & IO_URING_F_UNLOCKED)
+ 		return;
+@@ -183,7 +183,7 @@ static int io_uring_cmd_prep_setup(struct io_kiocb *r=
+eq,
+ 				   const struct io_uring_sqe *sqe)
+ {
+ 	struct io_uring_cmd *ioucmd =3D io_kiocb_to_cmd(req, struct io_uring_cm=
+d);
+-	struct uring_cache *cache;
++	struct io_uring_cmd_data *cache;
+=20
+ 	cache =3D io_uring_async_get(req);
+ 	if (unlikely(!cache))
+@@ -260,7 +260,7 @@ int io_uring_cmd(struct io_kiocb *req, unsigned int i=
+ssue_flags)
+=20
+ 	ret =3D file->f_op->uring_cmd(ioucmd, issue_flags);
+ 	if (ret =3D=3D -EAGAIN) {
+-		struct uring_cache *cache =3D req->async_data;
++		struct io_uring_cmd_data *cache =3D req->async_data;
+=20
+ 		if (ioucmd->sqe !=3D (void *) cache)
+ 			memcpy(cache, ioucmd->sqe, uring_sqe_size(req->ctx));
+diff --git a/io_uring/uring_cmd.h b/io_uring/uring_cmd.h
+index 7dba0f1efc58..f6837ee0955b 100644
+--- a/io_uring/uring_cmd.h
++++ b/io_uring/uring_cmd.h
+@@ -1,9 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+=20
+-struct uring_cache {
+-	struct io_uring_sqe sqes[2];
+-};
+-
+ int io_uring_cmd(struct io_kiocb *req, unsigned int issue_flags);
+ int io_uring_cmd_prep(struct io_kiocb *req, const struct io_uring_sqe *s=
+qe);
+=20
 --=20
 2.45.2
 
