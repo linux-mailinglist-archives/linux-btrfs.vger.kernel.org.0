@@ -1,247 +1,340 @@
-Return-Path: <linux-btrfs+bounces-10721-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10722-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82A45A013FD
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2025 11:35:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B3CA01417
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2025 12:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41DE43A43A9
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2025 10:35:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8317A18845C2
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2025 11:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303D7192D8B;
-	Sat,  4 Jan 2025 10:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFB41B21B9;
+	Sat,  4 Jan 2025 11:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fbRmPDz6";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="vHyu3zr9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uN8xkk0n"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68CB189B8F
-	for <linux-btrfs@vger.kernel.org>; Sat,  4 Jan 2025 10:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735986932; cv=fail; b=igBppWcPEiRVi1vyOFKQyNWVlC1Hhz23UPi/rPT5iHXPml4WEkj91gEOw1QQDlq/pibTHyXLQaEjBKEocCilRRCSPx76iiAp+3x2V0Db75nUQuhcZwhKAi5osAsutaFEe3SRZbPJx87vafDgrXxXxSNtwcXd/ldUWiKON/2vKP8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735986932; c=relaxed/simple;
-	bh=r5QBifw8ixU3zsneP5OzFRIkruwop4YfJyYgwPYw7Vo=;
-	h=Message-ID:Date:Subject:To:References:Cc:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=JpJc8vqiHAyiFVARXvXQItGkOpr9KaYCG1o8dbMlSszrKunaMnZIVXsQo8G6bXmA8i/X8I9TbfXS5iDumspQxtJb+CBGNuLnbwpIXhXrvRb6AbxrC1+rLsV8ePNBeRBE/uFcfVCllwbJJtLLFmC3spskajr+cY3xBAwZhtuMSYU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=fbRmPDz6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=vHyu3zr9; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5049P1Y7027451;
-	Sat, 4 Jan 2025 10:35:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=lVT9n7gFVUViKp3CHvd3oAlQRgqPZBYt8ifjIa4WNGs=; b=
-	fbRmPDz6JFs4/nyMpbWkBkjfiYX+zoEyLwXTse0jeOvA1RpjJYlIuuFXOelZXYcF
-	Tmbq5uqhLTiygsGtf5bPo6EBA21z8Y1GX19gigXJdJHNoqgTR6vC1Ld5B5DY5Q8t
-	LW3o28hH4V9fzXZymog0LN4I3gQMnrm0mgV40UIpOioqGT6GOKB3S8SFWsZ1OoDL
-	f9vZMfjyQDahdhFJNOZp8YpSTuzeUCek0XPGauqtiVID0OhDc0dW8p+dxt4U8+UV
-	wENCcwd+/mLTYCSbW+QCqhxDyrmH51ZxxXfpFASlP2s/OdV4z7y3WzixdvDNgbCA
-	aIea+Nh8rLKVIOww1GjXMg==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43xus28fdf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 04 Jan 2025 10:35:21 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5046AsUN005424;
-	Sat, 4 Jan 2025 10:35:20 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43xue5rrfk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 04 Jan 2025 10:35:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dDsS6vQijuvYwIT+XhXW1RE2OYRaxOoG0twhSYmbJRQ2T6JHXE6CHD0Z1a5vHYrKzevXSoEvj6ZDQwS1UdbIT607LkYi/qcX05n8d8f5Eq1A39Io/nkk3I1obzh/28BchUCjfiyrd+YdXiSKbA7FRndTDh0xC8rvRVw0FTNH1lzPDgFaMdAj5Z4AeMrJHobBhtTUoTB7xX8SqMyQARxFxUjSd7j6/ZS5IUCMW2YF9S41c9E9ZSW60m7v5owQ+OAzkvH7y3Drkjg/gpje2WbVAzJkhpUYmNWCjyaqWy339YZw97w/lwI3w+pf2gICgSukDyaEBSrfbTHX2HWETm2WLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lVT9n7gFVUViKp3CHvd3oAlQRgqPZBYt8ifjIa4WNGs=;
- b=PFda+LE5kbBA8E9KqzPISnxig63Eq7i9vYnBVEPM6HVKrvuDRBhHrzcCauRw44YWkS3ZeT84/+GTfkg16Oitptigw8TNlz5e0zFv8oXzDM0VVy38utaLjtVyFMEOo7x+lYzuUW6qrlLrP5VUBU4Owjj5sSkp2mi9DaLW8BgiKdu/FD1IMBK3H4mthXiijzwgRVLyuyi4RmalBZyY1YPaYgvQN5HwVy6//n5J2Usf8CHkrr93PzA+wtC0qAN6p7Vj+5S6ikvhN9fraM8/Q3DW2Kgooyj9FM9aJp68wLDgy4Dt4HJjsNq5IBbuqkH3/vfm40M0XDGw2/NQLz++DNejMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lVT9n7gFVUViKp3CHvd3oAlQRgqPZBYt8ifjIa4WNGs=;
- b=vHyu3zr9KB3CJ3V6NGSDd2l81zFPfPdLylI/Yt6Pq2KssTupN7E/kGjzzpMziEcQg0LiVi7sD8ddEwc804btRA6pP27O7u94WPKmnZFC0GtDJ3Iv7jQgo6EbYj3fADyXt7kTlS3Eetgb31l0quwfv1TKVLZ4hNrMb8smLNXzArs=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB5745.namprd10.prod.outlook.com (2603:10b6:510:125::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.13; Sat, 4 Jan
- 2025 10:35:14 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%2]) with mapi id 15.20.8314.015; Sat, 4 Jan 2025
- 10:35:14 +0000
-Message-ID: <75ec1c40-afe5-4d26-b1bf-ebd4adb7e4f8@oracle.com>
-Date: Sat, 4 Jan 2025 16:05:08 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] btrfs-progs: btrfstune --remove-simple-quota
-To: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Boris Burkov <boris@bur.io>
-References: <cover.1720732480.git.boris@bur.io>
-Content-Language: en-US
-Cc: kernel-team@fb.com
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <cover.1720732480.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA0PR01CA0045.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:81::20) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFEBA932;
+	Sat,  4 Jan 2025 11:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1735990000; cv=none; b=p7vqf1mWFez3JutIiMnhyHPY2HGAAG5vZi61yXX1RlFaHJCEArj9h0zdgowOalnbeE+Ga/o30f257cPqPPEco7PTgV8HUBnGOJurvMkgN7Bg0kyBu+3KdNSbgQP4Q1czADJFLE8AHdhdqXzyQXsJxMSPQXsDBS5BDFuY0jMH/58=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1735990000; c=relaxed/simple;
+	bh=h2Amqj8Ampfziz2fjjEcSKqRyE7SKrsGvl+ubzxRBSg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CqxaOuSWdWipdy6EoXXH4McKIPMQUtpLrpkbf3pYIOu8oFqyEr623zjTtb9oLJBxwRIq3nJpwfgINO+VukXvw22Xvsjcr3huTL+NQGT63UaFx9Iicb8ky4BXbO0olp4MPo3e3V9ZFf3e0/rux1y7zvrlYrY5sltC0yFciOkLk9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uN8xkk0n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32574C4CED1;
+	Sat,  4 Jan 2025 11:26:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735989999;
+	bh=h2Amqj8Ampfziz2fjjEcSKqRyE7SKrsGvl+ubzxRBSg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uN8xkk0nC6hkuOv1Z1zCkjbla1voIeLLqlKJFW5prCpS77WDet4ldRbBewbemslHn
+	 Du+zIiBGI/G1bAtAmgwf3MGurUeZ6R+8HT1lzC93ohSOSJQNIaf1pqUmZSQmKZKekk
+	 BTHOGg9aZ5OlmSCusHbL1SdqxswHgeoJLO99UwiOaJjn4rIc89HRnQXyuEdxGmFsFM
+	 y/5rH6MfqShP+gXBTmD+bDUFFJFmd0o9qnJsI5tBfKU8VmLJ0iR3g3hY67lyZsRUkX
+	 kHLn0PEIi6SmMYKt45vF11Kictu2QEPrOS2UHdgFoDTk9CTgvlDphxuEnEemX2lfC4
+	 yAEG589m/0yKQ==
+Date: Sat, 4 Jan 2025 12:26:35 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-fsdevel@vger.kernel.org, 
+	linux-btrfs <linux-btrfs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: mnt_list corruption triggered during btrfs/326
+Message-ID: <20250104-gockel-zeitdokument-59fe0ff5b509@brauner>
+References: <ec6784ed-8722-4695-980a-4400d4e7bd1a@gmx.com>
+ <324cf712-7a7e-455b-b203-e221cb1ed542@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB5745:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5d2a4ae8-8297-4f45-7196-08dd2cab78dd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|10070799003|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?V2VGanZNZHdKblpORU9RNkZFdVVVOUNoTWtoT2FQcUpzczBmUVN2VnlrbXhF?=
- =?utf-8?B?LzZTUENHRndtUVRhcGFlSE52dm5BZnJGdlZnOHo2MUVQdzJnMHlXamJrd1lQ?=
- =?utf-8?B?Q05iUlVkVUdscFVQMEpRQTBaV0VSVEpZWW13UmxZaUNpYW1LNlpOWDhqd1Ra?=
- =?utf-8?B?OEN4M0RwaGRYK3BYK3oxY3FKbVFpYkVQMjk3QzNaZDA0NjJIejVmR013bXA4?=
- =?utf-8?B?OTFTMVkrVmZPWGhUbXBmVG5XRGsrMzIrcnlnQmFtRzZ2eUNWODdPNVJocUo2?=
- =?utf-8?B?WWFTc0ZLamhnU0xIM2RVeTg0U2owWlVWelYvbXlvRjRVL3RNQjFVWGl0SjBZ?=
- =?utf-8?B?S1psRkRTMlJIVmJMeGwzOEthWmtkc2xFOTE2b2xVb09vK1dtUmtXQjNjV2xt?=
- =?utf-8?B?U1RhM0Y1bXJMR1hLMnhXUmVzZktXSEZvLzVNVjNRZjF1OWF6dmplNGZ1TVFu?=
- =?utf-8?B?VWYxM2c1RFF1aWYxVXlvL1R4MDFrUWJxaVkvbTYyOS9ZdkpxWVF2WVAyREMv?=
- =?utf-8?B?UlIvZ2c2bWpyQUNGbWFmVjRKN1pFcFhoa1Z5Q3M3aTMwK3pGSGM2TE0wSXlJ?=
- =?utf-8?B?WlRHQkVIUEVvK1Y5VVUvdEFkWi9FSVA5clFDYXdxTVJqRU4rcXlhcGpLdjA2?=
- =?utf-8?B?OEcvZjcySXJZVEMzWUlqVnRGbnFGZGtyb0xOcElUZnpxQ2plUiszU0xoY0Nu?=
- =?utf-8?B?ZHFrQXRnYkhUdlJIVFVTSE5NemhUN0xDSy9ocXhGemdwQWtYYW5Za242bVJE?=
- =?utf-8?B?b1g3Mm5xdyt0TXhLYjBvS1RqR0FtUzlQSnM5Q0loNkFSWGVUZ21FNXl4YlU1?=
- =?utf-8?B?WmVCZUVjS2ZKNitEQzJMNXZTWUVDVnByaFpSbUoyT1prVFVQWUY4RXdhTVhz?=
- =?utf-8?B?Y0FhY0ZRS1dhYS9DTEZiRHlsWEJ0aFVBNE82WUNGVHBmZ2w1R0JoUXJid09X?=
- =?utf-8?B?aGp5QUpzRmRua0RnU3FXblRzZEFTbFZCRWJQTjFSbENsZjV5RUJET2dsRjM0?=
- =?utf-8?B?Si9KMzNCRUdlZVRYbVExUjQ0dm1wdFRhTzJHeVNIbEpqZFFTZllINEJPcmh6?=
- =?utf-8?B?QnF6UDNLaUtKYWZQUXMyUEFmSjVhMW81akVCNjQ1YjZhUjdoQkZIM1RPbXVD?=
- =?utf-8?B?L3pSNWhQTC96WEowMDVKVm1LeFROSmtxM0QyRGNnUXppenFUbkx6bWpxekNt?=
- =?utf-8?B?WkZSMkY5NkhCMUcyV3VYSFhrUDdZczdydnlYZEV5S3lCNVYzV0FTU3pmWFZT?=
- =?utf-8?B?WnRldjdRejY2cUs4aHI3VTNOaHNnUG1OUmsxWHhHS3paalY1eEpWQWNMTnds?=
- =?utf-8?B?a0Exdy9ialZJM2laSTgwMFU1bkg0dS85WnpIUXcwb1NjeThXTWtCV2U0aTI4?=
- =?utf-8?B?dDJXOW1Ed0tSUUQzQVhWYjA1b3N3U2kyNkttbzIyUWIvYml3K1pYQ0FPRC9s?=
- =?utf-8?B?WHhQMEY2QkVpRExjWWhRMXRBbEhsdW1rQlQxeTBjYTVHVmpWU2FpeHJUcDU5?=
- =?utf-8?B?R1FiS2hGazV4ZUorWDNyc0crcmgydFY2UDZyc2hVelc4THlKVzNLdHphd0pG?=
- =?utf-8?B?VStJTzZ3WG1EcGw1Z1FjZ0RWeFoydFNVQ0RPaEMzTDY4azlZbWpaSjB6N21H?=
- =?utf-8?B?d2VUamlzYkN2Zjlqc1hKWVEzMnNYRUZSa0JIZnRDTTV4MVM5bU05Q1Znd0VS?=
- =?utf-8?B?Mi80YjZWU3pXVUgwUFkxUVpLbWF4L0VOYmF4emhzT2tkb2FPSVQ4L2MrRWpa?=
- =?utf-8?B?RCszQXlRczNYaXZLdlBlTkswRytnZlIyOFlaZDdBdEpIQU1YZUtTcG1aRVA2?=
- =?utf-8?B?Tjl4bVNCQ3ZDTnYzaDBlMXFFR2RaWVpzc0swd0NXK21hVmlkb3VQVmhBaG5y?=
- =?utf-8?Q?MeNSiQ/rQ/hil?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WTd0WG5RUzA4a1JEUXlodStlOWR5di84dFVicE5EUFh1ZjYrSDYxZklXSmZm?=
- =?utf-8?B?aXcyU3FWWUgvbWJCM1BKUmk4YVJubEd3UXV2cXlBUTVNUWdFQ3laMHA2QVpr?=
- =?utf-8?B?bTJXM1loUHFnaFZ4RWh6TC9GT21JeER2WU04RUlwQ0hwNkdBNTNZZVdXQlFQ?=
- =?utf-8?B?QXFGWCtTQVdLeDlOSnNuU2pSTzJyT0RTd09neDY5YWZhNDlTSzBiQjliajEx?=
- =?utf-8?B?RVdIaU03a3M5anF1UGlncnllNXB2U1NVaEplSk0rK0hocUtTRUFzVEhuN01E?=
- =?utf-8?B?VHFqaUl5cmZ5aTVDV1BNS1BsOVZwUHdHbnFpTWNJN29ySlp1cXRvR2twdGtJ?=
- =?utf-8?B?ZFJrNFhzMkViSzEwRCtoeFFUQUN2SFFHQlFhTUlTQTdjdHJBdFVSeFZkUlVN?=
- =?utf-8?B?c2ZRY2lmRTAvc09qRzZxZFZzcW1rSitvVEJGVUs2LzFhcFBNeTZNYkJSZ2VI?=
- =?utf-8?B?S2lVNEhmVElJQUU5SjN0ajNIL3VzRzZuREdFTkVBNXRpMkI0TnVCTWVFNGh1?=
- =?utf-8?B?R0RwbW44cERuYXJYMjZINEtXWHdENDlycjNqU2UrVXRVbVYrLzFQUzMzM3hz?=
- =?utf-8?B?alhQTjdJU1ZLWmhLa2ZOMHBtb2tnL0c5TkdKL1VRTU5FbThZQUJGTk9PVzh6?=
- =?utf-8?B?UmVkMkcxNm9xUmR1VzJrQXdNSXR6ejFRay92ZW00bWxGb2tydXFsa1JtKzB0?=
- =?utf-8?B?YS9uK1UrUXJyTlRpSXdEOXlmL0k3aUhsdzVrazlwSUtjdC9zMzh3NmlIakcx?=
- =?utf-8?B?SUphUCs4SlZVSGp1NktiTTdtVTVwcjNucmhpUFlKYlFuSE4xS3JsQ0laWEgz?=
- =?utf-8?B?eFVBMzN1OVlWZTR0TVFGZjhsdDVSRzhEYy9uM2pWcjBieWVScURsQjdJSG53?=
- =?utf-8?B?SlYzYzQ0dUw2NDQzRVNiS0dUdFVLamhvQlVUTlo2aFR5YnY1Y2VCcGN3Ri9J?=
- =?utf-8?B?VitPNUsxa0NnYld3dXh6ZnFwNVJjNXhJZHV5bnBKeklEcHdFZW15eWs1VHM1?=
- =?utf-8?B?MzFkNm5vWmZwNE9aTFIzR2Z2UEhodkhQZFRiZC9FT29NQlk4Zi9kUEIyM0Nz?=
- =?utf-8?B?Witrd2UxR29DSHdCZERqY1NiU01RK0ZjVEdZRGRQZ2dGVy9zMXlEWnVQZk9v?=
- =?utf-8?B?RjRMd2ZWeFhHZjg2bWZ3ZkxRcXdCTGFQSFIzM1h6YWl2eEtNT2pISTNkRXJ4?=
- =?utf-8?B?YzJvUWg1SFlEeWpWZUxLd2ZJZ2tzOTBlRlk3eEhOVjRaQWtWQTdPSjJNM29y?=
- =?utf-8?B?OWJVL0g5Mk51RUxvTHpYemJlN1ZrWGtmOUFabDNTdHQzbUU5eGdteklOQ2Fh?=
- =?utf-8?B?MEZnQ3lMWHFLZENFbWVxZ1I5VklFZGJRY0kwMDd4VU5ua0gybHNuM1RGMGwx?=
- =?utf-8?B?TkZkbnZLemg4b3MybU5uMUwzYzc4STlyeU1ielozVk5qRGpyOWpTRXVCMEdq?=
- =?utf-8?B?WWxrMUVFOEkxK2V6THJFNFo5aGUyWENCVkR2TjhRbkNJUldsRFFFMUcySU1k?=
- =?utf-8?B?UE15VGllTWMrWGlwY0FKZHlPcUh4U1oxOWc3VkNUWUZrWDNHc2NvUVdhakkx?=
- =?utf-8?B?VEJKZDZhTURxbGs0dHZZbWJzenhELzVRUFNtZHhBcm1SOUJOMzhENk1HeStV?=
- =?utf-8?B?OG9BQTA4MmhDUlZCUmN6eVpMVVZ5dm90UHJxTUM1b2Jua0RZNGVSZHNiNEhI?=
- =?utf-8?B?T2crcWFhYjEyd2lwOGo4QWFWNU43MUZKejBIQ2dPNTZoNTBHckYrM1lLWG90?=
- =?utf-8?B?ZTF4TGdWTFUvUlM1bDZxTlp4K29RVG1LNHR6RGVwcS9TM2VRdFZVRk9UT25v?=
- =?utf-8?B?cXhkVWh4UEZBOWJZdU0zYWlVeFBWY2VYUWFOQytVc2ZEUlhVZEx3SWxlU1R0?=
- =?utf-8?B?WVhCRlo3ZjBsUUVaaVFJdE9MWllMRXVTVjdSZWdSSnJ1Rk5JTm92Y3JIbE8v?=
- =?utf-8?B?SEZHTThSRDJ0Z2swY3ZWNlUrOGZOZzNGaExlUC8wT3ZicEZFalhwdkRVT2ph?=
- =?utf-8?B?Nnp2L0ZZT2JMemkzcFJXT2xyemkweDdUQ2ROUGR4R1NPa2tiTWxOcklxRytz?=
- =?utf-8?B?TGpwVnVXLzVHSVA3T2pJRlpscUtCOGdsM01nQXQzNlBQYVFCUG1rRC96aWpK?=
- =?utf-8?B?dWlQaHIvNi9aSlhiNkJLOFZ1enh5ZXZQSnI5V3RSamxiL25vbC9NZVdVTlEw?=
- =?utf-8?Q?pDeCnxZsz7KIEak/7rX/dG0p3iHbErvZD58WsQIDJst7?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	MUnx1UBQnLHpHep0QZOlRxRKKz90AiIG3+5xzJdILrNrTMg+nAkbc7W0ekmoyKkek57unIsJZt8cHzJ3EA7FgwvwiTnVVCbbk4f3DOz+gK6Koow7VCVyMsaiP/DoWPCHPCCDpagkyfMW+Bh1Ro7ZIyNC95VeSVwOaZRakY68hA7K5OP3SFmzMRt/M3MRggq8NI9csxszgaHENBCVjidiYUJatS+kZTgpCt7A0meWPt1QjqwvEMJoVOm7fjq35hEXCdJHhxFTWMM3gZDnLBkHOfhZvGC4Pj9ygj3VwFgqfuPXWNvr8c/oxm3M7Caxpp3jjjc9ATu9snir5hK+wDNQ9KtQBc5ogTfwT96GUjosLYVIp56PVKg2RvzNlFp4SllSL8m8xhdwOcHjOgZANslMQ9ryEFZrSQrREcPS7Cs46Aj0QAIOZIf4ZZVevcVHK99cmJQ9gkY9gAdgh+8bK/1d2p0n3wtdW47lxrm0U/nCTfo2oHHObGWH08BAdoekySPTevYZmbRl2A6qDvJeTQJIzJv9SQVVnpjcRzcU9Iu1KXDtkYDkRt+E5EzQ2cJjdTGcYkJDP533K2IJoG47jEpHFa2/kL5hufIxP1SQkSDYJEM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d2a4ae8-8297-4f45-7196-08dd2cab78dd
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2025 10:35:14.0544
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3GHCj5bawjzFdZG+6ZLr87Ie8XyYGkGJFlfvDdOGLjB5GVNUKWxV/6ss1thVIl1J1lEAiEHLohwFGovS+PZpWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5745
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-02_03,2025-01-02_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
- definitions=main-2501040090
-X-Proofpoint-ORIG-GUID: AVeDdz5WMOxxU5dguAqASMGuyPiZ-KZo
-X-Proofpoint-GUID: AVeDdz5WMOxxU5dguAqASMGuyPiZ-KZo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <324cf712-7a7e-455b-b203-e221cb1ed542@gmx.com>
 
-
-btrfstune --help shows -q as the option to enable simple quota, which 
-does not work.
-
-David, has this set missed integration? OR Boris could push?
-
-The whole series looks good to me.
-
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-
-Thx.
-
-
-On 12/7/24 02:48, Boris Burkov wrote:
-> To be able to nuke simple quotas entirely if you decide you don't want
-> them (and especially the OWNER_REFs) in your filesystem after all.
+On Wed, Jan 01, 2025 at 07:05:10AM +1030, Qu Wenruo wrote:
 > 
-> If you run
-> btrfstune --remove-simple-quota <dev>
-> on an unmounted filesystem, it will be as if simple quotas never existed
-> on that filesystem.
 > 
-> Boris Burkov (3):
->    btrfs-progs: add a helper for clearing all the items in a tree
->    btrfs-progs: btrfstune: fix documentation for --enable-simple-quota
->    btrfs-progs: btrfstune: add ability to remove squotas
-> 
->   kernel-shared/disk-io.c                       |  39 +++++
->   kernel-shared/disk-io.h                       |   2 +
->   kernel-shared/free-space-tree.c               |  42 +----
->   .../065-btrfstune-simple-quota/test.sh        |  33 ++++
->   tune/main.c                                   |  18 +-
->   tune/quota.c                                  | 160 ++++++++++++++++++
->   tune/tune.h                                   |   1 +
->   7 files changed, 253 insertions(+), 42 deletions(-)
->   create mode 100755 tests/misc-tests/065-btrfstune-simple-quota/test.sh
-> 
+> 在 2024/12/30 19:59, Qu Wenruo 写道:
+> > Hi,
+> > 
+> > Although I know it's triggered from btrfs, but the mnt_list handling is
+> > out of btrfs' control, so I'm here asking for some help.
 
+Thanks for the report.
+
+> > 
+> > [BUG]
+> > With CONFIG_DEBUG_LIST and CONFIG_BUG_ON_DATA_CORRUPTION, and an
+> > upstream 6.13-rc kernel, which has commit 951a3f59d268 ("btrfs: fix
+> > mount failure due to remount races"), I can hit the following crash,
+> > with varied frequency (from 1/4 to hundreds runs no crash):
+> 
+> There is also another WARNING triggered, without btrfs callback involved
+> at all:
+> 
+> [  192.688671] ------------[ cut here ]------------
+> [  192.690016] WARNING: CPU: 3 PID: 59747 at fs/mount.h:150
+
+This would indicate that move_from_ns() was called on a mount that isn't
+attached to a mount namespace (anymore or never has).
+
+Here's it's particularly peculiar because it looks like the warning is
+caused by calling move_from_ns() when moving a mount from an anonymous
+mount namespace in attach_recursive_mnt().
+
+Can you please try and reproduce this with
+commit 211364bef4301838b2e1 ("fs: kill MNT_ONRB")
+from the vfs-6.14.mount branch in
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git ?
+
+> attach_recursive_mnt+0xc58/0x1260
+> [  192.692051] Modules linked in: nft_fib_inet nft_fib_ipv4 nft_fib_ipv6
+> nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
+> nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
+> nf_tables binfmt_misc btrfs xor raid6_pq zstd_compress iTCO_wdt
+> intel_pmc_bxt iTCO_vendor_support i2c_i801 i2c_smbus virtio_net
+> net_failover virtio_balloon lpc_ich failover joydev loop dm_multipath
+> nfnetlink vsock_loopback vmw_vsock_virtio_transport_common vsock zram
+> crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+> polyval_generic ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3
+> virtio_blk virtio_console bochs serio_raw scsi_dh_rdac scsi_dh_emc
+> scsi_dh_alua fuse qemu_fw_cfg
+> [  192.707547] CPU: 3 UID: 0 PID: 59747 Comm: mount Kdump: loaded Not
+> tainted 6.13.0-rc4-custom+ #9
+> [  192.709485] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> Arch Linux 1.16.3-1-1 04/01/2014
+> [  192.711601] RIP: 0010:attach_recursive_mnt+0xc58/0x1260
+> [  192.712725] Code: 85 c0 0f 85 79 ff ff ff 48 c7 c7 04 e7 00 8e 83 05
+> 9c 18 28 03 01 e8 97 1d c8 01 31 f6 48 89 ef e8 dd c1 fe ff e9 9c f5 ff
+> ff <0f> 0b e9 48 f8 ff ff 48 8b 44 24 10 48 8d 78 20 48 b8 00 00 00 00
+> [  192.716521] RSP: 0018:ffff888105cafb68 EFLAGS: 00010246
+> [  192.717621] RAX: 0000000000001020 RBX: ffff88811cc24030 RCX:
+> ffffffff8ca0e8e5
+> [  192.719078] RDX: ffff888105cafbf0 RSI: ffff888118db0800 RDI:
+> ffff88811cc240f0
+> [  192.720313] RBP: ffff88811cc24000 R08: ffff88810f21a840 R09:
+> ffffed1020b95f62
+> [  192.721028] R10: 0000000000000003 R11: ffff88810a56e558 R12:
+> ffff88811cc24000
+> [  192.721718] R13: dffffc0000000000 R14: ffff88810f21a840 R15:
+> ffff888105cafbf0
+> [  192.722426] FS:  00007fdf69887800(0000) GS:ffff888236f80000(0000)
+> knlGS:0000000000000000
+> [  192.723229] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  192.723849] CR2: 00007fdf697a9000 CR3: 000000010d925000 CR4:
+> 0000000000750ef0
+> [  192.724549] PKRU: 55555554
+> [  192.724860] Call Trace:
+> [  192.725101]  <TASK>
+> [  192.725311]  ? __warn.cold+0xb6/0x176
+> [  192.725672]  ? attach_recursive_mnt+0xc58/0x1260
+> [  192.726149]  ? report_bug+0x1f0/0x2a0
+> [  192.726520]  ? handle_bug+0x54/0x90
+> [  192.726895]  ? exc_invalid_op+0x17/0x40
+> [  192.727259]  ? asm_exc_invalid_op+0x1a/0x20
+> [  192.727664]  ? _raw_spin_lock+0x85/0xe0
+> [  192.728053]  ? attach_recursive_mnt+0xc58/0x1260
+> [  192.728501]  ? attach_recursive_mnt+0xb82/0x1260
+> [  192.728954]  ? _raw_spin_unlock+0xe/0x20
+> [  192.729330]  ? count_mounts+0x1e0/0x1e0
+> [  192.729703]  ? _raw_spin_lock+0x85/0xe0
+> [  192.730082]  ? _raw_write_lock_bh+0xe0/0xe0
+> [  192.730493]  do_move_mount+0x7a8/0x1a20
+> [  192.730871]  __do_sys_move_mount+0x7e2/0xcf0
+> [  192.731288]  ? syscall_exit_to_user_mode+0x10/0x200
+> [  192.731762]  ? do_syscall_64+0x8e/0x160
+> [  192.732180]  ? do_move_mount+0x1a20/0x1a20
+> [  192.732587]  do_syscall_64+0x82/0x160
+> [  192.732950]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+> [  192.733500]  ? syscall_exit_to_user_mode+0x10/0x200
+> [  192.733977]  ? do_syscall_64+0x8e/0x160
+> [  192.734374]  ? from_kuid_munged+0x86/0x100
+> [  192.734765]  ? from_kuid+0xc0/0xc0
+> [  192.735115]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+> [  192.735644]  ? syscall_exit_to_user_mode+0x10/0x200
+> [  192.736124]  ? do_syscall_64+0x8e/0x160
+> [  192.736487]  ? exc_page_fault+0x76/0xf0
+> [  192.736861]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> [  192.737352] RIP: 0033:0x7fdf69a5c3de
+> [  192.737725] Code: 73 01 c3 48 8b 0d 32 3a 0f 00 f7 d8 64 89 01 48 83
+> c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 ad 01 00 00 0f
+> 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 02 3a 0f 00 f7 d8 64 89 01 48
+> [  192.739455] RSP: 002b:00007ffd2b7c36d8 EFLAGS: 00000246 ORIG_RAX:
+> 00000000000001ad
+> [  192.740176] RAX: ffffffffffffffda RBX: 0000557ac60e9a00 RCX:
+> 00007fdf69a5c3de
+> [  192.740895] RDX: 00000000ffffff9c RSI: 00007fdf69bc9902 RDI:
+> 0000000000000004
+> [  192.741578] RBP: 00007ffd2b7c3700 R08: 0000000000000004 R09:
+> 0000000000000001
+> [  192.742247] R10: 0000557ac60e9e40 R11: 0000000000000246 R12:
+> 00007fdf69bd6b00
+> [  192.742911] R13: 0000557ac60e9e40 R14: 0000557ac60ebbe0 R15:
+> 0000000000000066
+> [  192.743573]  </TASK>
+> [  192.743803] ---[ end trace 0000000000000000 ]---
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> > [  303.356328] BTRFS: device fsid 6fd8eb6f-1ea5-40aa-9857-05c64efe6d43
+> > devid 1 transid 9 /dev/mapper/test-scratch1 (253:2) scanned by mount
+> > (358060)
+> > [  303.358614] BTRFS info (device dm-2): first mount of filesystem
+> > 6fd8eb6f-1ea5-40aa-9857-05c64efe6d43
+> > [  303.359475] BTRFS info (device dm-2): using crc32c (crc32c-intel)
+> > checksum algorithm
+> > [  303.360134] BTRFS info (device dm-2): using free-space-tree
+> > [  313.264317] list_del corruption, ffff8fd48a7b2c90->prev is NULL
+> > [  313.264966] ------------[ cut here ]------------
+> > [  313.265402] kernel BUG at lib/list_debug.c:54!
+> > [  313.265847] Oops: invalid opcode: 0000 [#1] PREEMPT SMP
+> > [  313.266335] CPU: 4 UID: 0 PID: 370457 Comm: mount Kdump: loaded Not
+> > tainted 6.13.0-rc4-custom+ #8
+> > [  313.267252] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > Arch Linux 1.16.3-1-1 04/01/2014
+> > [  313.268147] RIP: 0010:__list_del_entry_valid_or_report.cold+0x6d/0x6f
+> > [  313.268777] Code: 05 77 a0 e8 4b 10 fd ff 0f 0b 48 89 fe 48 c7 c7 90
+> > 05 77 a0 e8 3a 10 fd ff 0f 0b 48 89 fe 48 c7 c7 60 05 77 a0 e8 29 10 fd
+> > ff <0f> 0b 4c 89 ea be 01 00 00 00 4c 89 44 24 48 48 c7 c7 20 7c 2b a1
+> > [  313.270493] RSP: 0018:ffffa7620d2b3a38 EFLAGS: 00010246
+> > [  313.270960] RAX: 0000000000000033 RBX: ffff8fd48a7b2c00 RCX:
+> > 0000000000000000
+> > [  313.271565] RDX: 0000000000000000 RSI: ffff8fd5f7c21900 RDI:
+> > ffff8fd5f7c21900
+> > [  313.272226] RBP: ffff8fd48a7b2c00 R08: 0000000000000000 R09:
+> > 0000000000000000
+> > [  313.272895] R10: 74707572726f6320 R11: 6c65645f7473696c R12:
+> > ffffa7620d2b3a58
+> > [  313.273521] R13: ffff8fd48a7b2c00 R14: 0000000000000000 R15:
+> > ffff8fd48a7b2c90
+> > [  313.274138] FS:  00007f04740d4800(0000) GS:ffff8fd5f7c00000(0000)
+> > knlGS:0000000000000000
+> > [  313.274864] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  313.275392] CR2: 00007f0473ff6000 CR3: 000000011a8eb000 CR4:
+> > 0000000000750ef0
+> > [  313.276084] PKRU: 55555554
+> > [  313.276327] Call Trace:
+> > [  313.276551]  <TASK>
+> > [  313.276752]  ? __die_body.cold+0x19/0x28
+> > [  313.277102]  ? die+0x2e/0x50
+> > [  313.277699]  ? do_trap+0xc6/0x110
+> > [  313.278033]  ? do_error_trap+0x6a/0x90
+> > [  313.278401]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+> > [  313.278941]  ? exc_invalid_op+0x50/0x60
+> > [  313.279308]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+> > [  313.279850]  ? asm_exc_invalid_op+0x1a/0x20
+> > [  313.280241]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+> > [  313.280777]  ? __list_del_entry_valid_or_report.cold+0x6d/0x6f
+> > [  313.281285]  umount_tree+0xed/0x3c0
+> > [  313.281589]  put_mnt_ns+0x51/0x90
+> > [  313.281886]  mount_subtree+0x92/0x130
+> > [  313.282205]  btrfs_get_tree+0x343/0x6b0 [btrfs]
+> > [  313.282785]  vfs_get_tree+0x23/0xc0
+> > [  313.283089]  vfs_cmd_create+0x59/0xd0
+> > [  313.283406]  __do_sys_fsconfig+0x4eb/0x6b0
+> > [  313.283764]  do_syscall_64+0x82/0x160
+> > [  313.284085]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+> > [  313.284598]  ? __fs_parse+0x68/0x1b0
+> > [  313.284929]  ? btrfs_parse_param+0x64/0x870 [btrfs]
+> > [  313.285381]  ? vfs_parse_fs_param_source+0x20/0x90
+> > [  313.285825]  ? __do_sys_fsconfig+0x1b8/0x6b0
+> > [  313.286215]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+> > [  313.286719]  ? syscall_exit_to_user_mode+0x10/0x200
+> > [  313.287151]  ? do_syscall_64+0x8e/0x160
+> > [  313.287498]  ? vfs_fstatat+0x75/0xa0
+> > [  313.287835]  ? __do_sys_newfstatat+0x56/0x90
+> > [  313.288240]  ? syscall_exit_to_user_mode_prepare+0x15a/0x190
+> > [  313.288749]  ? syscall_exit_to_user_mode+0x10/0x200
+> > [  313.289188]  ? do_syscall_64+0x8e/0x160
+> > [  313.289544]  ? do_syscall_64+0x8e/0x160
+> > [  313.289892]  ? do_syscall_64+0x8e/0x160
+> > [  313.290253]  ? syscall_exit_to_user_mode+0x10/0x200
+> > [  313.290692]  ? do_syscall_64+0x8e/0x160
+> > [  313.291034]  ? exc_page_fault+0x7e/0x180
+> > [  313.291380]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> > [  313.291845] RIP: 0033:0x7f04742a919e
+> > [  313.292182] Code: 73 01 c3 48 8b 0d 72 3c 0f 00 f7 d8 64 89 01 48 83
+> > c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 af 01 00 00 0f
+> > 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 42 3c 0f 00 f7 d8 64 89 01 48
+> > [  313.293830] RSP: 002b:00007ffc3df08df8 EFLAGS: 00000246 ORIG_RAX:
+> > 00000000000001af
+> > [  313.294529] RAX: ffffffffffffffda RBX: 000056407e37aa00 RCX:
+> > 00007f04742a919e
+> > [  313.295201] RDX: 0000000000000000 RSI: 0000000000000006 RDI:
+> > 0000000000000003
+> > [  313.295864] RBP: 00007ffc3df08f40 R08: 0000000000000000 R09:
+> > 0000000000000001
+> > [  313.296602] R10: 0000000000000000 R11: 0000000000000246 R12:
+> > 00007f0474423b00
+> > [  313.297416] R13: 0000000000000000 R14: 000056407e37cbe0 R15:
+> > 00007f0474418561
+> > [  313.298242]  </TASK>
+> > [  313.298832] Modules linked in: nft_fib_inet nft_fib_ipv4 nft_fib_ipv6
+> > nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
+> > nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
+> > nf_tables binfmt_misc btrfs xor raid6_pq zstd_compress iTCO_wdt
+> > intel_pmc_bxt iTCO_vendor_support i2c_i801 i2c_smbus virtio_net joydev
+> > net_failover lpc_ich virtio_balloon failover loop dm_multipath nfnetlink
+> > vsock_loopback vmw_vsock_virtio_transport_common vsock zram
+> > crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+> > polyval_generic ghash_clmulni_intel virtio_console sha512_ssse3
+> > sha256_ssse3 bochs sha1_ssse3 virtio_blk serio_raw scsi_dh_rdac
+> > scsi_dh_emc scsi_dh_alua fuse qemu_fw_cfg
+> > [  313.304504] Dumping ftrace buffer:
+> > [  313.304876]    (ftrace buffer empty)
+> > 
+> > [EARLY ANALYZE]
+> > 
+> > The offending line is the list_move() call inside unmount_tree().
+> > 
+> > With crash core dump, the offending mnt_list is totally corrupted:
+> > 
+> > crash> struct list_head ffff8fd48a7b2c90
+> > struct list_head {
+> >    next = 0x1,
+> >    prev = 0x0
+> > }
+> > 
+> > umount_tree() should be protected by @mount_lock seqlock, and
+> > @namespace_sem rwsem.
+> > 
+> > I also checked other mnt_list users:
+> > 
+> > - commit_tree()
+> > - do_umount()
+> > - copy_tree()
+> > 
+> > They all hold write @mount_lock at least.
+> > 
+> > The only caller doesn't hold @mount_lock is iterate_mounts() but that's
+> > only called from audit, and I'm not sure if audit is even involved in
+> > this case.
+
+This is fine as audit creates a private copy of the mount tree it is
+interested in. The mount tree is not visible to other callers anymore.
+
+> > 
+> > So I ran out of ideas why this mnt_list can even happen.
+> > 
+> > Even if it's some btrfs' abuse, all mnt_list users are properly
+> > protected thus it should not lead to such list corruption.
+> > 
+> > Any advice would be appreciated.
+> > 
+> > Thanks,
+> > Qu
+> > 
+> 
 
