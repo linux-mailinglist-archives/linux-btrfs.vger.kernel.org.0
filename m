@@ -1,150 +1,156 @@
-Return-Path: <linux-btrfs+bounces-10726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10727-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFFAA01873
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2025 08:36:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1565EA01C71
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2025 00:18:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18C481883A74
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2025 07:36:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B38C1882CDA
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2025 23:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B66412FB1B;
-	Sun,  5 Jan 2025 07:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202041A8F99;
+	Sun,  5 Jan 2025 23:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="d6dcFAAo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C170A926
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 Jan 2025 07:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64623647
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 Jan 2025 23:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736062586; cv=none; b=kHyaAaeb/Nudw9zZPkEEzAGuYM1O6zvqndLaXmuMl4HcV7Ki+3phZIKMVwgAE7x2YIpChPGcXuoL5r/XEtTRShuh7MTVj7hqDoir22Ppl+Fyr+IjFlgYigQfhTqMWWmuI7KbmRfNK6nUnCTWwvZ0GdR51nW+GP677lawfLNXB58=
+	t=1736119084; cv=none; b=Dd1Wq0b/Gv7P49jT7aGObrczBpfDU72YKF2S2S7WbYGmTk9jpbyE1K2a28uLvYYbvuOYVVuVu8j2ezJd8deA//gOJhjAVx/z9DALGLQq0pSFFJpssDEu13plotPm1yGNe7So9A3XCf+yaQWy45L5VPw51iO8dTyLDmVZNJlfmhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736062586; c=relaxed/simple;
-	bh=NM1sdOj/44IUhyLQUanp1qm93wF6vp3UWsy1VBIJHIs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OAoldpnkF04bylHWuKpwfA+Cearc28seLKzUgleRzxdP/XZrhooFjXDd+th0rjiUgltuYYvoqR6K0FJ4cYyC0sg2l65uIQQy/bOhDVp+vNhh9WeT0bz8XZXqiA9LvBMYoPH5KvfMSgJL0t0ogJ7Lhbjr7x92/V2mXHSZzgmgtmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3a9c9b37244so269332515ab.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 04 Jan 2025 23:36:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736062584; x=1736667384;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LZNJj77yzyB7wqYPstMp6IwBnXZLPvNLGifmvsLZsRY=;
-        b=ETW27kAOgIkZbeJYtcOW2sNnypjqWeryaeSGOq6pX3OZEBhkRaygRBcSBPCpRHImRQ
-         7a/p/U7vK8oannQ0Eu87Adx7HHYxNrPx/Sqge54+ZSuc4letK6r+RukNAsaMrP+wpGGr
-         UHK6JGsHqOKIBf1y5G8CecUoFcyw//UeFELypyteG2mQQI91YPDexorot9IgYBgJmYjh
-         NFsVy0grgbbXUOVqzWEWOaCWuQanw1KsJmUL+04IDnxOd+dLx3fVy0LPyrbe8wrrDmSz
-         nOnxjZTABj6Tgeeg2iFKCQc9hSlOxcgtxB4A4I3gIgJ2CajQzLcV3F4VySIhRsA0hakj
-         vndw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3vF8ap8ySwK0XkccGqimdiT+c2eHSxKPdPArD7yeqKNxr+5URVJ7wywVURGvJlw0h8JXl16ILKzfVEQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxw+7Imx8waOito2idTbOHVr+EpFvVP0Ndm3ynKlmXfzqnEV0NA
-	9U2U+fJ1xZ4NIaj/RjhcVOeVSHRVbzUvfhwTI4AtLwsM6XsMkiI6qh9cji8Q/ARcGzc7L83sTsA
-	R+GuX/WDgD1/oN6O3t56+gmCnrf4Ol/YGiUGe2M08CCEnBRsinKNqSYU=
-X-Google-Smtp-Source: AGHT+IHoJwwgGE4DUtOOVDdUqXe7u9TjqkS2rHDERcxH0hQMaisIdwwf4wo/+GKilHyiCnh4s/pKjqG2yklKuaICHFUAFqwTyuH7
+	s=arc-20240116; t=1736119084; c=relaxed/simple;
+	bh=mUl3Nss9ij/fb4v+4c0Wvx5RAvcg0hdBB1Tz/eEJSzA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D08i6w+zcqjl/CLOJJFxyN0iF+MYqpFzjQWpc+fVNhhg5t0vizYEeOK1wOSeMEknDx+oOTErnNpYAA+AyfxyiKwKckzg0ZfmWYrs/vBrqZgo+xKdEmVA4ezlNsrqgO5nptbcNnV7ZUj5AJe8dH/C2sfcLhageIGSnYxM6qGE4DM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=d6dcFAAo; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1736119070; x=1736723870; i=quwenruo.btrfs@gmx.com;
+	bh=mUl3Nss9ij/fb4v+4c0Wvx5RAvcg0hdBB1Tz/eEJSzA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=d6dcFAAozdh+M8NnZFU2c4LO4c+Ok5ixGErclO1HGpPUjlbUaUmbTXyIeCixqRzR
+	 BR2iy0aDXjuNbbnc8UyKJ1Ev8f2lXitPfbWnY3KDdm8RenWzqicHIJMVkUJDFKoyd
+	 QvZ+CVcemSswLPapLfAVYOzQXc/pJUz3cetsaap9JlE0xiIC3B7yoOOycPmlILMlx
+	 BycUFiLCAJCzGaGAJYsn3Ja1giA61O4nspZ7tV7pqeS4/uPjmJtjAfnBj/XrNOYLI
+	 YwEK8zyE64yiv3pK92xbQ7/y+CktZZce7DzENdfSvBg+3lmyZdfxw8w0Pe/3zXUH1
+	 JiIdotFE0SYOQK9eKw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQvCv-1t8uHy2jyh-00NCoN; Mon, 06
+ Jan 2025 00:17:50 +0100
+Message-ID: <bad71f4e-fd17-4fd0-94de-4064efce70e1@gmx.com>
+Date: Mon, 6 Jan 2025 09:47:44 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:19c6:b0:3a7:956c:61a4 with SMTP id
- e9e14a558f8ab-3c2d2681c55mr466715095ab.10.1736062584289; Sat, 04 Jan 2025
- 23:36:24 -0800 (PST)
-Date: Sat, 04 Jan 2025 23:36:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <677a3678.050a0220.380ff0.000c.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_fileattr_set (2)
-From: syzbot <syzbot+f0fd5fc4b1df37b555c2@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs-progs: btrfstune --remove-simple-quota
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+ David Sterba <dsterba@suse.com>, Boris Burkov <boris@bur.io>
+Cc: kernel-team@fb.com
+References: <cover.1720732480.git.boris@bur.io>
+ <75ec1c40-afe5-4d26-b1bf-ebd4adb7e4f8@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <75ec1c40-afe5-4d26-b1bf-ebd4adb7e4f8@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:oe0E35fPfTIvi2w8pTCcEqWxWU0MM6OhPKifjX60We6TUvAouRq
+ urc0uoXW3szukzIlCPoWwSD+b6zltuyT4huOHdXcc4gyXpaZ8isbXBOtP/05kJWmVAEuPbf
+ ixKrvQPWhayuGXMuGYvXxQBs6pOCKXgvgEo/qprY3lZGHfsVnot/95beoQVLZ1qxrZGEvxU
+ A2C4V5I5ZzEpU4SKhpeqA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:i0BxDMW386I=;iC3R12T2kYojPk8zTY10YgxIlVi
+ MKieHSTH61ShjIlZUDScS6cLNhoAK28KpE31sYHTeRIfLAyOZHiexJFnFgfdm9Qa8+neSiQnZ
+ eZqhTi7xxAG1/4XxG6SPqlPTtCIGKucbD3BkNy1Y6C/iCSXAquJCJrbsJo43FD7VH2qNpN/b5
+ H5qDv5fsHcSJ/XpRuWH6gLR3ArN53Fa7WAAj630dD0s0XGGovU+wVBQikMfUkSVmPPoNtmoRh
+ K8cHxWkMJ533X2bk+4o2rcQ9wcmcmj+waH69uIXCr8gyGZgMxUvq1ATznGZgQTskzyvPuJsGw
+ hczE+1cnWT4UTH1UX/DSsuQjIgGt1np7TWnt1kOtQ/l9QVOMaaugaBmdaXc9xvn9cf4xD4MRD
+ EMV5U09pCZu5ZH+g8RzsSQgeca/eOgUw8BKirb5t4UatbNJWBjXBMCHHwSDMmOhGXk8hv4aA7
+ Hql8B4Ub34zi/xmC4xjI7L9Ap+3pkHjKFbH4TKs/tuurtMEZt8SQsvcOY80/8UPjpcWOVPI3l
+ adsYaz1Wqu3B6i47sTCBoeE92/z74Tq0OuuIjhzMEPzBV3DmBNyGUbbhEiDLK6kXfPXMo6wdx
+ ZTbhHxvZHPW9r4Kdn5UwNiFZzwPTkUHEEuM3RksNbosz7D6CH4x8VP49T8Ncn42/iC1sBefW8
+ ywrOE/Fgvi1pVnsDvNisNtzR0Y1bnhnnvvW5LxJJngLL2zWszwNCDSJonEHYbOMXkC+0yg1yK
+ dI1DxeyBLkalQ6njEdQxzNHE9qWjf6mHB2Y/S3oZWrZjzvLhYqo17xm3TyTLgyaVNsFsJobFz
+ cXjRuT+4T2mPr8K14bYgN3KfQV9iSsVeI6JRqE6uhGidLERW953AtnY7S0xSDM3wlHvEW8l2u
+ ogwpZ2xnJBw1qxNVM9Zs03hJ3lHBdQ0oiSeWJ6K5Sa/hVF1iwuNe0kJEpXcKQh//NAA7zRdww
+ fv+VSTRzM3cYQ0YNyXtN8BC4NqaOtVb6kn8U65Ul+tG1Ni1BGl/BQxTLTmYqTjn3mLV5/nM/j
+ tpWadkJPrjCCIqH8Ccz/tFq253gU+ykDvYg+2u+EpGDb5A8sgPZj7uPIzUdBGSJxfKgwd9QQU
+ oeisNWN7igb7LcsspAcqcSkUHfEiWw
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    ccb98ccef0e5 Merge tag 'platform-drivers-x86-v6.13-4' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14c2fac4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ba7cde9482d6bb6
-dashboard link: https://syzkaller.appspot.com/bug?extid=f0fd5fc4b1df37b555c2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5813aeeed683/disk-ccb98cce.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5f3cc0826092/vmlinux-ccb98cce.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2a0638b228fb/bzImage-ccb98cce.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f0fd5fc4b1df37b555c2@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -28)
-WARNING: CPU: 1 PID: 6116 at fs/btrfs/ioctl.c:382 btrfs_fileattr_set+0xae6/0xb60 fs/btrfs/ioctl.c:382
-Modules linked in:
-CPU: 1 UID: 0 PID: 6116 Comm: syz.1.14 Not tainted 6.13.0-rc5-syzkaller-00004-gccb98ccef0e5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:btrfs_fileattr_set+0xae6/0xb60 fs/btrfs/ioctl.c:382
-Code: 0f 8c d1 fc ff ff 48 8b 7c 24 10 e8 84 1a 3d fe e9 c2 fc ff ff e8 fa 3c d9 fd 90 48 c7 c7 c0 52 4c 8c 89 ee e8 6b e0 99 fd 90 <0f> 0b 90 90 e9 ca fd ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 84
-RSP: 0018:ffffc900052bf810 EFLAGS: 00010246
-RAX: 1c7144dfc1a76900 RBX: ffff888058517a68 RCX: 0000000000080000
-RDX: ffffc9000dc1c000 RSI: 0000000000003a01 RDI: 0000000000003a02
-RBP: 00000000ffffffe4 R08: ffffffff816019a2 R09: fffffbfff1cfa210
-R10: dffffc0000000000 R11: fffffbfff1cfa210 R12: 1ffff1100b0a2f59
-R13: ffff888027cbc001 R14: 0000000000000000 R15: ffff888058517ac8
-FS:  00007ff8aeef06c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff8aeeeff98 CR3: 000000007cbac000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- vfs_fileattr_set+0x8ff/0xd50 fs/ioctl.c:696
- ioctl_setflags fs/ioctl.c:728 [inline]
- do_vfs_ioctl+0x2083/0x2e40 fs/ioctl.c:869
- __do_sys_ioctl fs/ioctl.c:904 [inline]
- __se_sys_ioctl+0x80/0x170 fs/ioctl.c:892
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff8ae185d29
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff8aeef0038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ff8ae376080 RCX: 00007ff8ae185d29
-RDX: 00000000200004c0 RSI: 0000000040086602 RDI: 0000000000000003
-RBP: 00007ff8ae201b08 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000001 R14: 00007ff8ae376080 R15: 00007ffe81cfcfd8
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+U29ycnkgSSBmb3Jnb3QgdG8gbWVyZ2UgdGhlbSBmb3Igc28gbG9uZy4uDQoNCk5vdyBtZXJnZWQg
+aW50byBkZXZlbCBicmFuY2ggd2l0aCBhbGwgcmV2aWV3ZWQtYnkgdGFncywgYW5kIHNvbWUgc21h
+bGwgDQptb2RpZmljYXRpb25zOg0KDQotIFB1dCB0aGUgZG9jIGZpeCBmaXJzdA0KLSBBZGQgdGhl
+IG1pc3NpbmcgbWFuIHBhZ2UgZW50cnkgZm9yICItLWVuYWJsZS1zaW1wbGUtcXVvdGEiDQotIE1h
+a2UgcmVtb3ZlX2FsbF90cmVlX2l0ZW1zKCkgdG8gdXNlIGJ0cmZzX2NsZWFyX3RyZWUoKSBoZWxw
+ZXINCi0gQWRkIHRoZSBtaXNzaW5nIG1hbiBwYWdlIGVudHJ5IGZvciAiLS1yZW1vdmUtc2ltcGxl
+LXF1b3RhIg0KDQpUaGFua3MsDQpRdQ0KDQrlnKggMjAyNS8xLzQgMjE6MDUsIEFuYW5kIEphaW4g
+5YaZ6YGTOg0KPiANCj4gYnRyZnN0dW5lIC0taGVscCBzaG93cyAtcSBhcyB0aGUgb3B0aW9uIHRv
+IGVuYWJsZSBzaW1wbGUgcXVvdGEsIHdoaWNoIA0KPiBkb2VzIG5vdCB3b3JrLg0KPiANCj4gRGF2
+aWQsIGhhcyB0aGlzIHNldCBtaXNzZWQgaW50ZWdyYXRpb24/IE9SIEJvcmlzIGNvdWxkIHB1c2g/
+DQo+IA0KPiBUaGUgd2hvbGUgc2VyaWVzIGxvb2tzIGdvb2QgdG8gbWUuDQo+IA0KPiBSZXZpZXdl
+ZC1ieTogQW5hbmQgSmFpbiA8YW5hbmQuamFpbkBvcmFjbGUuY29tPg0KPiANCj4gVGh4Lg0KPiAN
+Cj4gDQo+IE9uIDEyLzcvMjQgMDI6NDgsIEJvcmlzIEJ1cmtvdiB3cm90ZToNCj4+IFRvIGJlIGFi
+bGUgdG8gbnVrZSBzaW1wbGUgcXVvdGFzIGVudGlyZWx5IGlmIHlvdSBkZWNpZGUgeW91IGRvbid0
+IHdhbnQNCj4+IHRoZW0gKGFuZCBlc3BlY2lhbGx5IHRoZSBPV05FUl9SRUZzKSBpbiB5b3VyIGZp
+bGVzeXN0ZW0gYWZ0ZXIgYWxsLg0KPj4NCj4+IElmIHlvdSBydW4NCj4+IGJ0cmZzdHVuZSAtLXJl
+bW92ZS1zaW1wbGUtcXVvdGEgPGRldj4NCj4+IG9uIGFuIHVubW91bnRlZCBmaWxlc3lzdGVtLCBp
+dCB3aWxsIGJlIGFzIGlmIHNpbXBsZSBxdW90YXMgbmV2ZXIgZXhpc3RlZA0KPj4gb24gdGhhdCBm
+aWxlc3lzdGVtLg0KPj4NCj4+IEJvcmlzIEJ1cmtvdiAoMyk6DQo+PiDCoMKgIGJ0cmZzLXByb2dz
+OiBhZGQgYSBoZWxwZXIgZm9yIGNsZWFyaW5nIGFsbCB0aGUgaXRlbXMgaW4gYSB0cmVlDQo+PiDC
+oMKgIGJ0cmZzLXByb2dzOiBidHJmc3R1bmU6IGZpeCBkb2N1bWVudGF0aW9uIGZvciAtLWVuYWJs
+ZS1zaW1wbGUtcXVvdGENCj4+IMKgwqAgYnRyZnMtcHJvZ3M6IGJ0cmZzdHVuZTogYWRkIGFiaWxp
+dHkgdG8gcmVtb3ZlIHNxdW90YXMNCj4+DQo+PiDCoCBrZXJuZWwtc2hhcmVkL2Rpc2staW8uY8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAzOSArKysrKw0K
+Pj4gwqAga2VybmVsLXNoYXJlZC9kaXNrLWlvLmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAyICsNCj4+IMKgIGtlcm5lbC1zaGFyZWQvZnJlZS1zcGFj
+ZS10cmVlLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCA0MiArLS0tLQ0KPj4gwqAg
+Li4uLzA2NS1idHJmc3R1bmUtc2ltcGxlLXF1b3RhL3Rlc3Quc2jCoMKgwqDCoMKgwqDCoCB8wqAg
+MzMgKysrKw0KPj4gwqAgdHVuZS9tYWluLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMTggKy0NCj4+IMKgIHR1
+bmUvcXVvdGEuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCB8IDE2MCArKysrKysrKysrKysrKysrKysNCj4+IMKgIHR1bmUv
+dHVuZS5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMSArDQo+PiDCoCA3IGZpbGVzIGNoYW5nZWQsIDI1MyBp
+bnNlcnRpb25zKCspLCA0MiBkZWxldGlvbnMoLSkNCj4+IMKgIGNyZWF0ZSBtb2RlIDEwMDc1NSB0
+ZXN0cy9taXNjLXRlc3RzLzA2NS1idHJmc3R1bmUtc2ltcGxlLXF1b3RhL3Rlc3Quc2gNCj4+DQo+
+IA0KPiANCg0K
 
