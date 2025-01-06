@@ -1,197 +1,166 @@
-Return-Path: <linux-btrfs+bounces-10750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3210DA02A65
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2025 16:33:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672EEA02BA0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2025 16:45:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F8C97A294C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2025 15:32:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D54673A7BCC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2025 15:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6B3155389;
-	Mon,  6 Jan 2025 15:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED051D934B;
+	Mon,  6 Jan 2025 15:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R/qRodYo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MctA8St/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R/qRodYo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MctA8St/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BDJN3KhQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2033146D40;
-	Mon,  6 Jan 2025 15:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C82155352
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 Jan 2025 15:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736177524; cv=none; b=Opt7VODiwyXm8joD1Cuj4qd7oYDR05A9RQQVt3wZ/O9mXc33W4naHaw1CrRwRcKBa0d1QtW8nX1/KMnF8xf/iTrH4QS0+pGOVXQoqccLmoTMbdnnp2TiSvVrrqesxi++a3a8ff4/SV1xWuKrF4/cnwngUKevV0cVukWNxhdu4vY=
+	t=1736178241; cv=none; b=CFU76y/n2a3FTWeGU2ZmSQVXFpM3tBQYI7X1LCg9J35JJ8jIWXlf8P4+kASdW/eNjeyzH1Ut21X0BeHUAToA3O/GSMVDtMlMs4MQXBzDXt6591NOHKwFQbaRhg9BI/+Skkk713YhlaXmsQMy2+KRnQATfNT1Qkocq0iFSbMIR/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736177524; c=relaxed/simple;
-	bh=/G9+Yb8kn7wg4YdU8kvnGne8UfvUBTpY7bX3MS8QRtY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QYjZKjkFbmRtBDL5yDWcDs8tUIa0rhDJX49gElABr4i3PiNE7HU7kY9GWE2M4XWjTDmPTphTJh6WVUf5w63TZ6fN12l8LTZQoO28fjJ/gc6JiCN/ET2MMSkIt1dtA/E9823EvzowfFgpoZlXqmGOUQAhT6qEApdylzL+fUSRUKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R/qRodYo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MctA8St/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R/qRodYo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MctA8St/; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7697D21162;
-	Mon,  6 Jan 2025 15:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736177513;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnxI4yj2ILtDGW6qI0p/lc3xOpDr/yT84ekSCr2K/NE=;
-	b=R/qRodYoJb9QAxhMNc7rcZ6Qo27eN4KhlsD8MetqlD8B313WYlXyuGxR0/NKgVOzF5Ikco
-	a2WkFN8XrxkDCKluYg1Y6/nBxXgbtwZzY+cuckbS/MNzcW4WkhzIDLhTCarQS8FSvAeycZ
-	EAGvvG2h4F2EjYK0/cnDsj6Qx9L4AP4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736177513;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnxI4yj2ILtDGW6qI0p/lc3xOpDr/yT84ekSCr2K/NE=;
-	b=MctA8St/CKaVLAjir/UI4Y6hpGnXxBrmpGQXruz4v/VKIlY33yraj1Hd3Ab8dXWFdDl9gO
-	+0SxgUNDvJbDOcBw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="R/qRodYo";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="MctA8St/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736177513;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnxI4yj2ILtDGW6qI0p/lc3xOpDr/yT84ekSCr2K/NE=;
-	b=R/qRodYoJb9QAxhMNc7rcZ6Qo27eN4KhlsD8MetqlD8B313WYlXyuGxR0/NKgVOzF5Ikco
-	a2WkFN8XrxkDCKluYg1Y6/nBxXgbtwZzY+cuckbS/MNzcW4WkhzIDLhTCarQS8FSvAeycZ
-	EAGvvG2h4F2EjYK0/cnDsj6Qx9L4AP4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736177513;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnxI4yj2ILtDGW6qI0p/lc3xOpDr/yT84ekSCr2K/NE=;
-	b=MctA8St/CKaVLAjir/UI4Y6hpGnXxBrmpGQXruz4v/VKIlY33yraj1Hd3Ab8dXWFdDl9gO
-	+0SxgUNDvJbDOcBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 464E3139AB;
-	Mon,  6 Jan 2025 15:31:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qfzyEGn3e2f9SgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 06 Jan 2025 15:31:53 +0000
-Date: Mon, 6 Jan 2025 16:31:48 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Mikhail Zaslonko <zaslonko@linux.ibm.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-	Qu Wenruo <wqu@suse.com>, Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Ilya Leoshkevich <iii@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: Fix avail_in bytes for s390 zlib HW
- compression path
-Message-ID: <20250106153148.GB31418@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20241218103251.3753503-1-zaslonko@linux.ibm.com>
+	s=arc-20240116; t=1736178241; c=relaxed/simple;
+	bh=wPGM5S5uz2nIaKFLaok7L8Qn+kQnyl0rVsgxEFYbw1s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RautcZ05PGp65IJDTU+XbBzx8DnTeuRFJRxTXNLe4jJOrUejI7omHlM2KVNa9vIKLgsph1NYW+gLtzf0OSO6bxzkABvG9fGiITr9rEXVJmFMLvPK6JPleZXTPQA4Bnt6U22+F5Efz4C0UNF89b54EpV9T3NwjbZC1BSiJqmRy3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BDJN3KhQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11DCFC4CEE2
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 Jan 2025 15:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736178241;
+	bh=wPGM5S5uz2nIaKFLaok7L8Qn+kQnyl0rVsgxEFYbw1s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BDJN3KhQaYn2FakecRYJKmriej2K2eNzmXrYKbMK7YpU3u94iJb+Pe/+1JYZ363J4
+	 K5QBlB5F2/sdXC2z51edm3fud2QBsfn8TfbhOKgcJTLQ9+8lUFjOrPIUty6xgvtX0Q
+	 EM292aUaGaxoXIqVj0OafJgkgFSjuVYE7CD4sO7U6kqaclycnDuQk8J8gTwB5TNNn3
+	 Mcr/6yEJsdzx32YC1UxPUB7m74/BTPwOQd6zG3UpVOM4dPJcLgetUxe+9PD1TSEPsk
+	 tHEtbe75usZBTJaLcjiU9jskz6JIuyH4LxpBoKouzcyRwjQAqrC1w8GgThUHzmpWf5
+	 xQyE0EuyoQnqQ==
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-aaeecbb7309so89439966b.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jan 2025 07:44:01 -0800 (PST)
+X-Gm-Message-State: AOJu0YxCdEwSF9aORn/PxmsmCiM9ps3xL3TQHjeKufNrf/xu/yAwoez9
+	F4wo9KZr47hlvhRgiOnbPKM19xChLNW+oPs+RtprI4QD/36pFu5x4hUTejA4HkIuB9oi/HJ44VW
+	79VSkoCleeuYQUcU6MnDgWjwUdnM=
+X-Google-Smtp-Source: AGHT+IGMkLu3VkF2hVdlwil6aif2j+iBQbk5+uV1NzLbh3qSUrSM0FAhP3M9tLdLkr1HvU7xjyNDaiMawafgYwOeJ5U=
+X-Received: by 2002:a17:907:944f:b0:aac:439:10ce with SMTP id
+ a640c23a62f3a-aac2ba3c11amr6518458266b.27.1736178239626; Mon, 06 Jan 2025
+ 07:43:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241218103251.3753503-1-zaslonko@linux.ibm.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 7697D21162
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto,suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <cover.1734527445.git.fdmanana@suse.com> <20241223200859.GN31418@twin.jikos.cz>
+ <CAL3q7H4vqj-u+NdkiRgc+PNjFbhkRgm_ECHGyGD=CjRgTLKOdw@mail.gmail.com> <20250106141924.GW31418@twin.jikos.cz>
+In-Reply-To: <20250106141924.GW31418@twin.jikos.cz>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 6 Jan 2025 15:43:23 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6H1RYSsxZkADxcAaf8XFRb8o_LA=dKiC+KVsfjJH20cw@mail.gmail.com>
+Message-ID: <CAL3q7H6H1RYSsxZkADxcAaf8XFRb8o_LA=dKiC+KVsfjJH20cw@mail.gmail.com>
+Subject: Re: [PATCH 00/20] btrfs: remove plenty of redundant
+ btrfs_mark_buffer_dirty() calls
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 18, 2024 at 11:32:51AM +0100, Mikhail Zaslonko wrote:
-> Since the input data length passed to zlib_compress_folios() can be
-> arbitrary, always setting strm.avail_in to a multiple of PAGE_SIZE may
-> cause read-in bytes to exceed the input range. Currently this triggers
-> an assert in btrfs_compress_folios() on the debug kernel (see below).
-> Fix strm.avail_in calculation for S390 hardware acceleration path.
-> 
->  assertion failed: *total_in <= orig_len, in fs/btrfs/compression.c:1041
->  ------------[ cut here ]------------
->  kernel BUG at fs/btrfs/compression.c:1041!
->  monitor event: 0040 ilc:2 [#1] PREEMPT SMP
->  CPU: 16 UID: 0 PID: 325 Comm: kworker/u273:3 Not tainted 6.13.0-20241204.rc1.git6.fae3b21430ca.300.fc41.s390x+debug #1
->  Hardware name: IBM 3931 A01 703 (z/VM 7.4.0)
->  Workqueue: btrfs-delalloc btrfs_work_helper
->  Krnl PSW : 0704d00180000000 0000021761df6538 (btrfs_compress_folios+0x198/0x1a0)
->             R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3
->  Krnl GPRS: 0000000080000000 0000000000000001 0000000000000047 0000000000000000
->             0000000000000006 ffffff01757bb000 000001976232fcc0 000000000000130c
->             000001976232fcd0 000001976232fcc8 00000118ff4a0e30 0000000000000001
->             00000111821ab400 0000011100000000 0000021761df6534 000001976232fb58
->  Krnl Code: 0000021761df6528: c020006f5ef4        larl    %r2,0000021762be2310
->             0000021761df652e: c0e5ffbd09d5        brasl   %r14,00000217615978d8
->            #0000021761df6534: af000000            mc      0,0
->            >0000021761df6538: 0707                bcr     0,%r7
->             0000021761df653a: 0707                bcr     0,%r7
->             0000021761df653c: 0707                bcr     0,%r7
->             0000021761df653e: 0707                bcr     0,%r7
->             0000021761df6540: c004004bb7ec        brcl    0,000002176276d518
->  Call Trace:
->   [<0000021761df6538>] btrfs_compress_folios+0x198/0x1a0
->  ([<0000021761df6534>] btrfs_compress_folios+0x194/0x1a0)
->   [<0000021761d97788>] compress_file_range+0x3b8/0x6d0
->   [<0000021761dcee7c>] btrfs_work_helper+0x10c/0x160
->   [<0000021761645760>] process_one_work+0x2b0/0x5d0
->   [<000002176164637e>] worker_thread+0x20e/0x3e0
->   [<000002176165221a>] kthread+0x15a/0x170
->   [<00000217615b859c>] __ret_from_fork+0x3c/0x60
->   [<00000217626e72d2>] ret_from_fork+0xa/0x38
->  INFO: lockdep is turned off.
->  Last Breaking-Event-Address:
->   [<0000021761597924>] _printk+0x4c/0x58
->  Kernel panic - not syncing: Fatal exception: panic_on_oops
-> 
-> Fixes: fd1e75d0105d ("btrfs: make compression path to be subpage compatible")
-> Signed-off-by: Mikhail Zaslonko <zaslonko@linux.ibm.com>
-> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+On Mon, Jan 6, 2025 at 2:19=E2=80=AFPM David Sterba <dsterba@suse.cz> wrote=
+:
+>
+> On Mon, Jan 06, 2025 at 10:54:05AM +0000, Filipe Manana wrote:
+> > On Mon, Dec 23, 2024 at 8:09=E2=80=AFPM David Sterba <dsterba@suse.cz> =
+wrote:
+> > >
+> > > On Wed, Dec 18, 2024 at 05:06:27PM +0000, fdmanana@kernel.org wrote:
+> > > > From: Filipe Manana <fdmanana@suse.com>
+> > > >
+> > > > There's quite a lot of places calling btrfs_mark_buffer_dirty() whe=
+n it
+> > > > is not necessary because we already have a path setup for writing, =
+due
+> > > > to calls to btrfs_search_slot() with a 'cow' argument having a valu=
+e of 1
+> > > > or anything that calls btrfs_search_slot() that way (and it's obvio=
+us
+> > > > from the context). These make the code more verbose, add some overh=
+ead
+> > > > and increase the module's text size unnecessarily. This patchset re=
+moves
+> > > > such unnecessary calls. Often people keep adding them because they =
+copy
+> > > > the approach done from such places.
+> > >
+> > > I've read the explict calls to btrfs_mark_buffer_dirty() as source-le=
+vel
+> > > marker of the section pairing btrfs_search_slot(). There are also som=
+e
+> > > assertions and eb state checks that were done in set_extent_buffer_di=
+rty(),
+> > > now we're losing them.
+> >
+> > No, we aren't losing the assertions.
+> > We've done them inside ctree.c, where we have already called
+> > btrfs_mark_buffer_dirty() (which calls set_extent_buffer_dirty()).
+>
+> What I mean that we would be doing the assertions again, after some
+> lines of code since the last call to btrfs_mark_buffer_dirty() from
+> ctree.c.
+>
+> > > While the code gets reduced and the calls may be redundant for some
+> > > reasons I think we should keep something at least to do the assertion=
+s,
+> > > or eventually optimize btrfs_mark_buffer_dirty() to be faster if the
+> > > path is set up by the search slot with cow=3D1.
+> >
+> > This isn't just about optimization.
+> > It's about simplifying usage of btree modification calls to users
+> > outside ctree.c and having cleaner APIs.
+> >
+> > In some places outside ctree.c we (unnecessarily) call
+> > btrfs_mark_buffer_dirty(), while for others we don't.
+> > Probably in the very early days it was needed for some reason, but
+> > that's not the case anymore and we call btrfs_mark_buffer_dirty()
+> > every time we COW or allocate a new block as part of a node/leaf split
+> > in ctree.c.
+> >
+> > Keeping these redundant calls is like saying we don't trust what
+> > ctree.c does. Marking a new extent buffer dirty is a clear
+> > responsibility of ctree.c.
+>
+> I would not interpret is as distrust in the ctree.c code but rather as
+> an additional verification like we do elsewhere. Schematically
+>
+> caller - start a new change in eb, call the API
+> ctree.c - create new eb
+> ctree.c - call btrfs_mark_buffer_dirty()
+> caller - do more changes, anything until the path is released etc
+> caller - (removed in the series) call btrfs_mark_buffer_dirty(), now
+>          performing transid assertion checks,
+>          in set_extent_buffer_dirty():
+>          - check_buffer_tree_ref()
+>          - a few WARN_ONs checking state bits
+>          - folio dirty bit checks
+>
+> From functional POV removing btrfs_mark_buffer_dirty() is ok, but we may
+> still want to add a simple helper that verifies similar things as
+> before. With assertions it happens that the checks are redundant.
 
-Added to for-next, thanks.
+Well yes, but this is still odd.
+
+The ctree.c call returned a path with a write locked leaf - so none of
+the checks should ever fail after the btrfs_mark_buffer_dirty() call
+made by ctree.c
+If we don't trust that, following that reasoning, it's the same as
+making every caller also assert that the leaf is write locked (and we
+don't do that).
+
+> But feel free to add the series to for-next. The additional verification
+> would need a separate pass, examine the code locations and pick the
+> right checks.
 
