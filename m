@@ -1,67 +1,67 @@
-Return-Path: <linux-btrfs+bounces-10764-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10768-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21DD3A03FB4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 13:48:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B2AA03FBE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 13:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AA03165E2C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 12:48:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44E9D3A6345
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 12:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7C31F0E59;
-	Tue,  7 Jan 2025 12:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACE71F237A;
+	Tue,  7 Jan 2025 12:47:58 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A64D1F03D0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B581F03FB;
 	Tue,  7 Jan 2025 12:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736254074; cv=none; b=A2906hJWvsIDzYcWpGiGSK7FOcaeCUKSmSfgu8C6bMj5jkMsDFZKzq8eZ4rd5yczlCIsFK8G3k7HVsPR6fxoDu9+EEK4zYP/4hjjSNr3K0fQMpXeUGrsL5Pbwr2GtxaWkg3o7skCuZUPI1JpYW0fp0gYy6s/vcI8deQZqMMllvA=
+	t=1736254076; cv=none; b=CsXSucb1a/joZIt5CwjrOVC8LVAVqI0fvol0t2SXObp6EnGUIMJqP0fwE3FA2HzxTycNsJnCUPTN0xF/TQTfYfgSKRvFzbPS+JbLSahYSiWQ4uLGgF1sWMW47woWQKuzCOXd8n8KVc6Od8lkvhD6cW0yw8D9PRougDs46rkbVtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736254074; c=relaxed/simple;
-	bh=GIKHDQhqZDJAYaFHZGrkBjKhlMrRaLC7syejF347pTk=;
+	s=arc-20240116; t=1736254076; c=relaxed/simple;
+	bh=vvq1v6mp8BvbKnZZYDSASKecH1BwwpK/VfSurMQRQaQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=b+MPGNPrXtYaGGhDlDCzcQt822wB+7h90bdCQfEQtgyLA7qJM9KC/WgZgTZ4ul3PpWPxWng1+abLzwES7GM4Hh8nKiLZ6DcdIQ47cxXhD0kevk7EES40cxUT8yAuABKD561OT0g0RDEV4q7sc8jP0tW7O1Do64kXTC/Ku5I2Auk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:To:Cc; b=EylVUtWhIEqUDvNI85OghLAnEvDo1twVQxatoMi2er3ktq54gwxAXUGiWFHTY5AVBGfztPWwnMwzc6Udz06nZXaFZdQmyaYD1wLIYQFNzKuKw3aWl0DIjpUmm6HsNGU1v2e4PR3Wqs6GJ7tcgO+32/UcuXr5dvPhwK6w6U1lHpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4361f796586so159470205e9.3;
-        Tue, 07 Jan 2025 04:47:51 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4361f65ca01so153874465e9.1;
+        Tue, 07 Jan 2025 04:47:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736254070; x=1736858870;
+        d=1e100.net; s=20230601; t=1736254071; x=1736858871;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FZ+41chn53AePcraYYwzRS0bJwF7+ChOsC22yjS6oeQ=;
-        b=T+Gba6HsHvwGY26kGDqYxeXH0zS9Y/scxxnkdfmGyhRyvjiRndXR8QPTgihBj8FcpA
-         KbvsJBL3WC0nSbpAozpO7Njyxd2ziyhAyMSDXke3Z69Yw2FNz1ysCrxfE5/i0xpoN0QH
-         T7pY6RtUGPHrP0H7eK3Hvj5tBkBUBdcMl0lCmT/Fbn3HQGLz4HqezXyKKAH1aBsrrFRp
-         dYqxMo5WeypZ7dkyjqmVvGqfOBW/v2zITIsSYxj71FE5E+vleOHlaeACVQfDrkHS5bsD
-         kj224wvQlcSjSMpJLUW3r/Z0Ky8TaN6niUrWnwTbdPt1l4oBEh4IBCA93862Fszxhh67
-         T4ew==
-X-Forwarded-Encrypted: i=1; AJvYcCVsYb6ksGbrpHFLkV6EdqL0V2hfLjNF13+TBIAz6Mv0Jv+lTzIBaJrpdxNjOgxj1/MinoiBVokm0TDJjWk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNcoYmcS+Y7Rw159nzBe60zlh8yqwaJ/2y1ZnwK+KUGHGyj7Ug
-	q0uMZsp/c1kxKJT7Lln/vxE4a0u91nlz8dMV5v9z+CCEkKhQg5OIK3/JGg==
-X-Gm-Gg: ASbGncv8lZ1pJN8sv+eHS2PSvpDmS+X61RQoYg0gjQfOWj8NtJRjv0G5zER7BD21nv/
-	YxR7qICxYbWwNhy+yCdTJ2ly0FXdtRZVNW5PotTAvyR/88QROWT0oF2WHw1zuc2I9RK/q/mvXIC
-	J7NG+YgC4k2tdfibjPFQEwdBJsp9BrjohN3jmxIyAJic/0gYjJFtoBYao0LKUNVdOoPgGz/8JDX
-	NWbwET9a5bnZnEpiI8HfIpnCxTj4kru8d50Xboc8zfpvXWG0jc344bVCiafy+YuCQWvd/898CQb
-	qCik//1M0s7gi8qXou2tOqoVYt3JwdQ98HlA
-X-Google-Smtp-Source: AGHT+IF6Pacu9vst++guSQ2z1yKyR2kDw8NVNA/GR542pTf8v9Xkg+gh1FI95hccbvz0fzGKBe/jgg==
-X-Received: by 2002:a05:600c:1388:b0:434:f131:1e71 with SMTP id 5b1f17b1804b1-4366854c07emr504368665e9.8.1736254070268;
-        Tue, 07 Jan 2025 04:47:50 -0800 (PST)
+        bh=iJ+34kt1gEseDje5K63RAt8/DsV4tsL9QDJbvq9xVwE=;
+        b=EOs6r4dem22x/WCugGZx5jjaIjSm+/Q4O4EfIGWw+7VRZFsNfl8wR9XKc3kb1+L171
+         TUoYpcqJickbmoNRkn6M5LYvSKmpiKccv4jmtxCQZGMOS7EQJUt2ds99JV9cFk1QPdTR
+         0n/PdVaM4j3wmxwc+BLA1VfBf87LgP7ILhItlmPiVJZ632R0zIFAeJOpgz20VopIo/UF
+         d2eTA5ARfRcJ8gSFF74Xuxk1T45KHSpjVjvTlVZBLC+2r/yNCIKuCaSeZL2GVyDMF2T6
+         af1eLTxjUX7WheLh0r0Wle1AITvrJ3R9Y0Hvt2GBXV0v5ZryxXXFK7F74vYkAUYuwJxi
+         XIyA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/NNzmtSEDPCIGxaSC+WZmXU7F1pfnUQljcZJmk+ubBgdF42fl4ETekvREMYAvIfOQKcdoxigJswId220=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDEjI889LsVwh8Icr3u1+PDjVvhcMjJPZOs+bFcwHzbDLtb8SF
+	kMBsIBD39Sl0s8Nes3C7pwBlnE1z3mgb7Az2J466pDzagVdrsVp1kd7MSg==
+X-Gm-Gg: ASbGncsoLloft+kV+WSCBfKGlIAEwkyCWr1qYAU88FJ70NU1ZLPyqJHsLqX++owrjOx
+	h149UihvLrDRek4GqmdMflUZr3WXx53ljONgZi60CbhjotcrxYqaWZ7LJOV284PdxINMqDY0JMv
+	+dAqLaJbhDTeMITaDCCq79gdvRwwVBJXoJdcjZzaopmXrMI41AAWaJubnEjgRgKAwaZZOfc+Kzx
+	TAn567cYmflhvlQzmkt5VRd77RULhb26LE2P6d7o/GPVVEijgavpmahydpAZLiobEi28HCRJ++z
+	/pSbrDQGniu3gDQ9xDgn1oeO0S0TdohLe0Yh
+X-Google-Smtp-Source: AGHT+IFipoVT5TS0n2tfz0gbCHD3ebuwGudJhTyHd4cQMOaj5fplF1z5j9viIYSSZYlRcUXfhUGzOg==
+X-Received: by 2002:a05:600c:35d2:b0:435:d22:9c9e with SMTP id 5b1f17b1804b1-43668646335mr528896695e9.19.1736254071122;
+        Tue, 07 Jan 2025 04:47:51 -0800 (PST)
 Received: from [127.0.0.1] (p200300f6f7218600fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f721:8600:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4366127c508sm596884845e9.33.2025.01.07.04.47.49
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4366127c508sm596884845e9.33.2025.01.07.04.47.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2025 04:47:49 -0800 (PST)
+        Tue, 07 Jan 2025 04:47:50 -0800 (PST)
 From: Johannes Thumshirn <jth@kernel.org>
-Date: Tue, 07 Jan 2025 13:47:33 +0100
-Subject: [PATCH v2 03/14] btrfs: fix search when deleting a RAID
- stripe-extent
+Date: Tue, 07 Jan 2025 13:47:34 +0100
+Subject: [PATCH v2 04/14] btrfs: fix front delete range calculation for
+ RAID stripe extents
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250107-rst-delete-fixes-v2-3-0c7b14c0aac2@kernel.org>
+Message-Id: <20250107-rst-delete-fixes-v2-4-0c7b14c0aac2@kernel.org>
 References: <20250107-rst-delete-fixes-v2-0-0c7b14c0aac2@kernel.org>
 In-Reply-To: <20250107-rst-delete-fixes-v2-0-0c7b14c0aac2@kernel.org>
 To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
@@ -79,43 +79,48 @@ Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
  Filipe Manana <fdmanana@suse.com>, 
  Johannes Thumshirn <johannes.thumshirn@wdc.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=904; i=jth@kernel.org;
- h=from:subject:message-id; bh=glA+R11vO1yQhVEHOgoPFPTfxl/IB6/5DfePvcXkVqM=;
- b=owGbwMvMwCV2ad4npfVdsu8YT6slMaTXKhVar/m+VEr/EqOAqezjL43nz8dbzC/jjC3eMfVRs
- qPh4rSJHaUsDGJcDLJiiizHQ233S5geYZ9y6LUZzBxWJpAhDFycAjAR4yZGhsk9Ou7nTlz44H5i
- w6rV946yMp4Q+MUWxS7rUv07/nGEWjkjw4v4pTtyms1YZ5/vzvR/N2uTnaKOw2wDP7/O5y3zfDs
- nMQEA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1158; i=jth@kernel.org;
+ h=from:subject:message-id; bh=VYTA66hDlZ5B7qrLFBNCdOMUx1quVhlOJvFShrWXqdM=;
+ b=owGbwMvMwCV2ad4npfVdsu8YT6slMaTXKhXeSf967FpZk6HZK6ap/xSNnNTWVSwVPrRn3ks7I
+ 45GHiGejlIWBjEuBlkxRZbjobb7JUyPsE859NoMZg4rE8gQBi5OAZjIdV1GhsdfL3c1/JVcsONi
+ gfuHxQUbtj8+sm5JiraU+Zvt09dtnqrL8N95kYpxEtvMje5sx8x2f+6On7S3h3350o/eyptZwvp
+ yM9gA
 X-Developer-Key: i=jth@kernel.org; a=openpgp;
  fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Only pick the previous slot, when btrfs_search_slot() returned '1'.
+When deleting the front of a RAID stripe-extent the delete code
+miscalculates the size on how much to pad the remaining extent part in the
+front.
+
+Fix the calculation so we're always having the sizes we expect.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/raid-stripe-tree.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/btrfs/raid-stripe-tree.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index 5c6224ed3eda53a11a41bffdf6c789fbd6d3a503..0c4d218a99d4aaea5da6c39624e20e77758a89d3 100644
+index 0c4d218a99d4aaea5da6c39624e20e77758a89d3..7fc6ef214f87d480df27023816dd800610d7dcf0 100644
 --- a/fs/btrfs/raid-stripe-tree.c
 +++ b/fs/btrfs/raid-stripe-tree.c
-@@ -89,8 +89,12 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
- 		if (ret < 0)
+@@ -140,10 +140,12 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
+ 		 * length to the new size and then re-insert the item.
+ 		 */
+ 		if (found_end > end) {
+-			u64 diff = found_end - end;
++			u64 diff_end = found_end - end;
+ 
+ 			btrfs_partially_delete_raid_extent(trans, path, &key,
+-							   diff, diff);
++							   key.offset - length,
++							   length);
++			ASSERT(key.offset - diff_end == length);
  			break;
+ 		}
  
--		if (path->slots[0] == btrfs_header_nritems(path->nodes[0]))
--			path->slots[0]--;
-+		if (ret == 1) {
-+			ret = 0;
-+			if (path->slots[0] ==
-+			    btrfs_header_nritems(path->nodes[0]))
-+				path->slots[0]--;
-+		}
- 
- 		leaf = path->nodes[0];
- 		slot = path->slots[0];
 
 -- 
 2.43.0
