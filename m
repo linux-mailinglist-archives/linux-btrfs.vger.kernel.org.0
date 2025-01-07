@@ -1,182 +1,263 @@
-Return-Path: <linux-btrfs+bounces-10759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10760-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E86A034FD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 03:17:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C297A039C1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 09:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5816716440A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 02:17:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB90164FA2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 08:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E543286321;
-	Tue,  7 Jan 2025 02:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36911E0E0A;
+	Tue,  7 Jan 2025 08:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="KzG//src"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EsVUjpZ1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B25C2594AC
-	for <linux-btrfs@vger.kernel.org>; Tue,  7 Jan 2025 02:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736216265; cv=none; b=EKZU40zPTrtgHtL1+lVWp69GhrYUeJ09mEmMLLcQAYFJ6qGrdwCXfopCKjDfZ/HBxOXoB9TNhOEpYHBMAuSgQoEQrCm774p8wQ+JtdKkK1pnxTvRrpoP/IRu66pJ3nTbUt5lt8KU6rRwXXWMQGMGYg32tVGExcDYWcL439TV1QQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736216265; c=relaxed/simple;
-	bh=h4KyeIx/1I2PTmM4mENZb7zjGTWH935/w25CwO7qc1w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IWjw/ZA4m5tewo5S3k6NgoQ+uemXFrTqQj6CwJibLwO05tSr/35AIHGGUvEzlHYKw/Dq7SQTZ1wryTHCiEBgHgkHJa7+3WdrQoCug8pPA5MjI8aCuMYBwNWCLWByTxO/xPOywN+kOqoe4M0JfOqFw/HDYDLJ8bBGzvFYRalrr6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=KzG//src; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3a9628d20f0so116008005ab.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jan 2025 18:17:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1736216261; x=1736821061; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=92MtV43/q/VStM5ltOEmavD/9Z5kJUjPvTOj5sLJlLM=;
-        b=KzG//srcpvVhKLpq2QL2q8RVCMQNGyEvPV9JU+QEaDN8z0/DJqKpdHPrbAnuLwV76T
-         KY+9x1pZIKB9u5aMF024MewPk3XZwGFUlBDah6mK+231qllKbk7VrhbMqalMnz5GFb49
-         VqTRjJ1V+WpQcTSMmY5ZRaU7CraJSwb4eho4zOL3X92cQe20+epwteUuHb+3Hk8YE0Ql
-         dH1dRQrj2J3j/swMy9bgg0qAYmq1SN+j2kzRGWDUEJ8kN103ohldZnR2C5+Rz3yfROfI
-         9UOrELe4FAZ5CnlZN+LOcvy0ql2sEiI+ujlfptQlq2biDV2UhUKhmC3bgU7RNR2G7+Fh
-         QOfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736216261; x=1736821061;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=92MtV43/q/VStM5ltOEmavD/9Z5kJUjPvTOj5sLJlLM=;
-        b=hjrY3nY/LhM1sOBHLu793n7gJVRwsKvD+jpTWY4WIqCCzQjbMuM6AZIkLkeeKjo4Y6
-         3+qGlEfQDgBCW7s3OIikr/kJH9/4w18hCUXs2aDhcIsaP8X/TaM7EElhhM9rVbGdn85W
-         JNobfrjtZE51g2drWtpQ5t9dhSJe1/dAvHtgJINxaYc6uqVdwRaFIZvkUmzqKSpeBusP
-         zHSh570dYnS2JGXLTPdQQ/igbVu+lBnloNoyA/eF2ThtkO0lAbFJMD5blYTENFdptUQ+
-         qW5/KuBT0oD2vdxQuomBxzzmBR3EsNgZ8rZExXetISzF28jCJe1hV8+h/M/as7jeK/UN
-         lXdA==
-X-Gm-Message-State: AOJu0YyyWMWVqCwNARohx3Wy3Q5rU14hfovKRnSt/Lp1c9O/ZYcTbER/
-	qirdqCosjGloaCzOuwKgllq8aJZn3znfMFhtKXwUjZ9nsTXlbawZs1FrocTIG1kSdzBQw4XrBZl
-	Y
-X-Gm-Gg: ASbGncuk/jbfCgjfF3wtkUBD1TU4YKt2FLO0C9oZQ80MFq8xaWoysxTCnpob6cfp0TX
-	VLjUzYUGYlxikfv33j31QwSVOEpWAgj/Azds5p76lSoQZ58RiSjlQeHNnAbX+gSaOzpNGy4mwR5
-	sK3FNjirhlhWXZCsNynNHVwVHlz/xLvpxBn6wXWs3L3BaTcsc3vjU26vTdPZqVgcvBMjfZe32t5
-	i5HHUDs95mhbohlsGiwcS31EBBERh49c4QzTc/1xsfc54pcEcD85w==
-X-Google-Smtp-Source: AGHT+IHmnGCUUshvzjHQeuqswxB8rbutUI8Kl2ImwYXkMiyxDAQKLnZTe6a08hQz567k4iiXro5NQw==
-X-Received: by 2002:a92:8748:0:b0:3cc:b7e4:6264 with SMTP id e9e14a558f8ab-3ccb7e464b3mr192134895ab.0.1736216261181;
-        Mon, 06 Jan 2025 18:17:41 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4e68c199afesm9760858173.94.2025.01.06.18.17.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jan 2025 18:17:40 -0800 (PST)
-Message-ID: <aa9a7b74-a9c6-4333-bb25-490655eadb45@kernel.dk>
-Date: Mon, 6 Jan 2025 19:17:39 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3141DF27C;
+	Tue,  7 Jan 2025 08:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736238399; cv=fail; b=nXwxpqkaGfZjKqcE5Dn/BQM3aHMyzS6LIKskmJ1o2ezz8+7PSznETjkXUddm+Rs/uACvVbgg02plZ5/QBcZ4aCDG3VWHmZJ+FdziBQyroqlu4hb3KErS6GuF0vh1SJVHK1TOUh/yKF2wFwP/4bbFLgBqr1tIyp6RtNunUSclMTU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736238399; c=relaxed/simple;
+	bh=A1/rnTTnv7GueqH00W0EKSBEnHg5l1S7mJ5JTR2VWFk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=gYWF5lMPp3gLDw7Jclyem2yeNIi7RyoogFttWV0V/Adwbg7l7v3mUGAWbYo0oTSay6Qc83L9sgsZ+Ld8DUFO9Uizcm/GhARUbddcJOTpszslZQ92h2TGpVKvs3LeOJmRscAsOgIpTSbpX9D+Oq94n4ylmSZZmnmXMb1aCXjR/Zs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EsVUjpZ1; arc=fail smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736238398; x=1767774398;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=A1/rnTTnv7GueqH00W0EKSBEnHg5l1S7mJ5JTR2VWFk=;
+  b=EsVUjpZ193AB0Kk/TQoM7i//vVOwi511nPXk0liJ/9pNeZMQm/HU1Vnz
+   2nHXZmBaQ0z8HjTbNSMs8r9BLZIn8MKiI7NDI5xVqtQH0JNxFwSuDoy/X
+   cfaGyV+AdMEpMf3iauR34/f20du6/8X+Py8Txy/vW41x7aFy+1CSZKMqS
+   7X4SDKv4/d+tIfItbuSWYRuD3G7SpocFcK303tYz/Yc4f4Kg7WbQ9Yxy0
+   E5BKqg6On1GNPbVhKvRYXFce4g1K/LeByUElu7EI9GLtsTb1h0cTxW3oc
+   QQbyOCx3m2+r67GUtHAR6lvB9vYkrVq8aQ5s5Yfs+zzORasy7tXIHfKdC
+   A==;
+X-CSE-ConnectionGUID: D/EJHNWJRtaHE00gq0AzwQ==
+X-CSE-MsgGUID: yqqVUGD0RaSvBIXUSPjFNQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11307"; a="24015910"
+X-IronPort-AV: E=Sophos;i="6.12,295,1728975600"; 
+   d="scan'208";a="24015910"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 00:26:30 -0800
+X-CSE-ConnectionGUID: fNqT7YDOR5+fIIYQDONtcw==
+X-CSE-MsgGUID: LUigxc4ZRtKRIyUxL/wfig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,295,1728975600"; 
+   d="scan'208";a="107568977"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Jan 2025 00:26:29 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Tue, 7 Jan 2025 00:26:28 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Tue, 7 Jan 2025 00:26:28 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.47) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 7 Jan 2025 00:26:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=M4vuvBOLlbL0MVkI5NAhGTNNHvegNpjG2/aDENavjXGCBQJ1qJTkZ0DL2D5tvBuap/M5ERz53lkYaLMPWDJfuvBuY0r/mskpcIB0vfQMbsqA4Nh9tFbQ+fkvDUgQm9VM0UXkyYyWt8BnPfwsBfY4HtdvtJDq4Ph7GK4QBKTYeVqkTSiolwqvknnb79zky6vhhn+OwG4zBbFhZa6fkQWipsCk5hbpqkxMi2X5cgXpoasKm1pIZEpqp+bR+95P5CjlbISodJxxyZ50CHF1VlzaITuYlxELzur/D1qC1BLtPYHsHBR0H7jYgy//c5TCOzCFmc8gsCRPkFWtLq7HUnjmjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lh5RC93HZCpSTpTlzZVs/zrzongq4GDtk9HDJ4swzK8=;
+ b=M/zKII/0xxbH/x2zzKNpIbFdPc0luJBJ8QWRDQr3MNVvGncNOYkOxx9c/k6/1YPvCuu/pBeC1OCfEn8+znucziKhVccuZ3IXHw6FGM+9hz74VC13rYEvnQfrkE0Jl4iXTAdM6nROAcZrEFtx/ea0LkKqBrWLa+wZCsBsbfZU/NR36nvfQi2mfmk5t0sfBySrjfdiOyYfnIc4v8+7JKvcCF2patH/UcEittSNj5XpQHsOFprCwPSG627B/meyDOWnrfX+G0IaZ58+ECTfIk3nCHT+0Y2uGS5X90N3OnL/fpTznYPMqzbNcodsydraGxSKdkmRLswUBN2cnWx+yxicPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by CY5PR11MB6092.namprd11.prod.outlook.com (2603:10b6:930:2c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.17; Tue, 7 Jan
+ 2025 08:26:16 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%3]) with mapi id 15.20.8335.010; Tue, 7 Jan 2025
+ 08:26:16 +0000
+Date: Tue, 7 Jan 2025 16:26:05 +0800
+From: Oliver Sang <oliver.sang@intel.com>
+To: Christoph Hellwig <hch@lst.de>
+CC: Niklas Cassel <cassel@kernel.org>, <oe-lkp@lists.linux.dev>,
+	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Jens Axboe
+	<axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+	<virtualization@lists.linux.dev>, <linux-nvme@lists.infradead.org>, "Damien
+ Le Moal" <dlemoal@kernel.org>, <linux-btrfs@vger.kernel.org>,
+	<linux-aio@kvack.org>, <oliver.sang@intel.com>
+Subject: Re: [linus:master] [block]  e70c301fae: stress-ng.aiol.ops_per_sec
+ 49.6% regression
+Message-ID: <Z3zlHVJ+eo8rf1O+@xsang-OptiPlex-9020>
+References: <202412122112.ca47bcec-lkp@intel.com>
+ <20241213143224.GA16111@lst.de>
+ <20241217045527.GA16091@lst.de>
+ <Z2EgW8/WNfzZ28mn@xsang-OptiPlex-9020>
+ <20241217065614.GA19113@lst.de>
+ <Z3ZhNYHKZPMpv8Cz@ryzen>
+ <20250103064925.GB27984@lst.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250103064925.GB27984@lst.de>
+X-ClientProxiedBy: SI2PR02CA0005.apcprd02.prod.outlook.com
+ (2603:1096:4:194::6) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] io_uring/cmd: add per-op data to struct
- io_uring_cmd_data
-To: lizetao <lizetao1@huawei.com>, Mark Harmstone <maharmstone@fb.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-References: <20250103150233.2340306-1-maharmstone@fb.com>
- <20250103150233.2340306-3-maharmstone@fb.com>
- <974022e6b52a4ae39f10ea4410dd8e25@huawei.com>
- <01b838d9-485f-47a5-9ee6-f2d79f71ae32@kernel.dk>
- <3e2e277ed6bf40ae87890b41133f5314@huawei.com>
-From: Jens Axboe <axboe@kernel.dk>
-Content-Language: en-US
-In-Reply-To: <3e2e277ed6bf40ae87890b41133f5314@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CY5PR11MB6092:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf1d7217-0099-462b-3527-08dd2ef4f448
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?gZR0pJvsaQxy9URrvQJt9+A0AjEnHztTwPXsfHRy8NWGqkNl//c3jgh55Z?=
+ =?iso-8859-1?Q?2K3c4755IEOokyt5W7KeeL54NZ6z7ckMVz5EJW9emJWaamtpav3b776KDO?=
+ =?iso-8859-1?Q?YNNMz2RMfu0asJ9gj1jL21t6rh52x/c7nyrB1zkEya+AXuugd+932iNmhp?=
+ =?iso-8859-1?Q?IDjoDyt4yBzhBgPro/6Dn1nQpLM6ddjI33jrj3Nfnso5xf4zq04V7wGEBE?=
+ =?iso-8859-1?Q?ETzwkI8w3pA5/xbqHaS9ZwglmeZYQr0zV+RqFCKguyO1wIfCbujEFrji/x?=
+ =?iso-8859-1?Q?3kBC+85nBgRkyusKcAeCIv15wwdZNcsoAPia72R+3w/flsb/LEC+9D0lRx?=
+ =?iso-8859-1?Q?AJQVSE4bVZ7Jw5NOhju7MzoczkYqjO0Ll9RzKQ8VUbWPc6bwfu6SmiH0Di?=
+ =?iso-8859-1?Q?RQMwwqUoDP20SBW2skDD4oGyeWwjl+/pEZFNE9veieL/SOJIOE5Z/IM0hM?=
+ =?iso-8859-1?Q?iyTpOu/j8UTFN7z5r3QMRWPENksSLJZd8jsxkq+YS7REISfb0vI/uayclp?=
+ =?iso-8859-1?Q?KvxbNqGRaYtpuH1h4NCOgxqjA07bUId6LOemF70HUFm+JVRnIFZAwp7shw?=
+ =?iso-8859-1?Q?LFp892KJp+TlWStx43Vo5cWs0lWi+Ly40oX6bKUghnXcILBAISfwby4OnB?=
+ =?iso-8859-1?Q?ryW3eUKPFYp/3EYC/8S0/EXSSKTGIoG9tp/Ry/gFceouK52PqXoszGOroS?=
+ =?iso-8859-1?Q?QgNFRNbRh85rZNv+IxOt/511fz5Sd8mvcI4OUfOWob/sTAscRiNEhPb85f?=
+ =?iso-8859-1?Q?wiWPzDmTVYOBbBKYzkEFJ48RsrBjMl1Qsh/BW8sJqAncFquR4cPvyNxtNO?=
+ =?iso-8859-1?Q?Jz9eYIiJzcqrlxtlS0UGA7tBTEOw+WZtFbttHcHGq15RFm4asnrzmzZrKx?=
+ =?iso-8859-1?Q?gNKGr1rG3KjQatH/7TCwgAaVAASjQpoxqvpgGVMinNM0lKcNwRRONeExP1?=
+ =?iso-8859-1?Q?MR9+WwevSGn0mEgtYVeJQ9a8g1xD+oFoGRvQ0sLwTjAD3IjhfLRFK6HEWD?=
+ =?iso-8859-1?Q?8ArarOqgHEMq1Pej4MmOqDciPvCGAv7INNObhKFkUSMcTinuyEGHRnUsUt?=
+ =?iso-8859-1?Q?ayQSTNa0UgEaH/SxE7uB04rHfhzF6WBKZhZm6+v0it6iGDqNZQqW+tLx7R?=
+ =?iso-8859-1?Q?v7SKGxF1vCOYr7nOf2c751cyONPDeUxpD5v5nzpaZLZzNUOQSIPV2ImQNV?=
+ =?iso-8859-1?Q?VldKRQI5y8GZxC7/KctasHdpXUoeUjnRex4qPPJW0A/sXXMFuSJkgsEjPT?=
+ =?iso-8859-1?Q?iOPcakx4nPFg+4YzjvpWQTAth+OwZKIPnP03+jYqtIu+LXBJFzfcHAatJU?=
+ =?iso-8859-1?Q?2FNUcROtJTyi7pfiASzCPNk5BGlsrvIk3bLVfSdBRp7PP7hMCdmxujDnnS?=
+ =?iso-8859-1?Q?GLhyqcKOdyDrJFRgdzOYVEsyTJALmgtFu1JGqGiB+IVAljIhjfklD8GCxu?=
+ =?iso-8859-1?Q?r91Edn7+hUpa+4Xu?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?gQHXfBS+Q74+zYNKpHwd8/RmWgToCBt5l7ZNmLsMccxpa4yxoDkckq+Dxl?=
+ =?iso-8859-1?Q?1kLEm8p1YDe0hwrEdvgtOqAKzBs2NcLDEYG/AhP3pjdKdoJVOKr6qv6FVD?=
+ =?iso-8859-1?Q?/+7U22xJzL9JwoIp65Pvpko0YODNJS9tntbHxYPaLLUH+upTxhDGR8vC1C?=
+ =?iso-8859-1?Q?QjgfaohsPVeFcvqly03IjSUIh00RqDZ5d/BT2IHj72yILorkHG/Qp8JpPz?=
+ =?iso-8859-1?Q?qQ9Aroye+c+YkHp5EkLpZ/79qZICT3WkkDTHrUbxzDmPHVvrIrkvDZK0QW?=
+ =?iso-8859-1?Q?+kIeZ8Rce3X836rL82sOKl1244NjB/ZtvihE94Eojn77BcDSsmvQI6qsN5?=
+ =?iso-8859-1?Q?nBITabiA+U9ucpLXMlDM4AWLlx5Tf3Iu1AvS1J44FXOwNpwaECN7YYGj70?=
+ =?iso-8859-1?Q?Rn5uAtMj1q3YQ+d6IxXZQN2VLu8CbAmdZ6EiNT2OWyAy6GV9gG0ATLpr3o?=
+ =?iso-8859-1?Q?U1uWBo0NuwmRva7uQAtV2dZELj8ZajeA/Zv8ZnFoizW7MWgEXvA0YMVtwo?=
+ =?iso-8859-1?Q?RIIR+4aBOnjXYwhSPE0BvjSyQNAh+54fTKzm3UT0BYOlJh0o8yBqNi/CXq?=
+ =?iso-8859-1?Q?nN4bzAtFGRNIhx2tEmIA+KNQ3v1/LsBrM+P+VrY1Xy2NsD3MvPc/QZdnHw?=
+ =?iso-8859-1?Q?hk9iyp2trSJUChsdY9Gz2LlFOX5Xh16SEkKCBOzsWlYzCX/YaLokeNy14g?=
+ =?iso-8859-1?Q?9L0rlyUdnBXkhbLrsqcJAgRY7vl51RzqWsIB5bcwxVofTsLufVaG9WyITG?=
+ =?iso-8859-1?Q?HMuk+eZaPiUgDRuJsf6xI9kWZAz+s/x67xxI9t3MKr9Cb4NnA67prMgMtz?=
+ =?iso-8859-1?Q?6esXR9uBYrns4LC4yQ+i5CJXSlcS0T8C8/Y3h8IzGcYlFNBVSrZjzGRwRD?=
+ =?iso-8859-1?Q?YqygmdrsV/yLwNNqtaO8i2gWht4P0Xm2LCmjx+FDRmddMtfTyQ75Wc9mi0?=
+ =?iso-8859-1?Q?BgP3YXuM8vUuykkAoi90s5LZpmq9hhjfPD5+Qh9Tv65yc9Rttom0iJQn4O?=
+ =?iso-8859-1?Q?W13bkALuBANQeMm94ciJiz6wIug7j3MTCWw7bBAEDOsruQHa1NMaqpsdHw?=
+ =?iso-8859-1?Q?aeXjbw1F8DhzC93uesywzzafemNs/2E1LU5CVbzOq8d7X8LE2MPD6b/sdI?=
+ =?iso-8859-1?Q?vOhpqHwiYKZSvLMdXxkLLyvBJSwwX3SKHNvg6/HfBlDu6J/MRLBxX+zGWP?=
+ =?iso-8859-1?Q?gV0bUwqKoY7qdBU8G6Q/mwvCo0WEC4u/dM3Om5xZSH9dKJyLbmkRfca7VK?=
+ =?iso-8859-1?Q?dmlqkbnTz0GrBeiqwnjbQ3kyI4Z4PZYSLrT8PZ+UUh1VkkXtb8c6L7AIRL?=
+ =?iso-8859-1?Q?fmQzQJ11fsWZ5wA4JXTB/8rWFdl6zFLWL3B6byzLC+F4ZvS3v5MTT51blJ?=
+ =?iso-8859-1?Q?XkG9Cc+kBgn9Sc9sNPnFU9tmN677Tq9bNDQGy+YwctCo8whSE03UDef3nT?=
+ =?iso-8859-1?Q?2L13jwxSyz5i2vadgmWt4K1oPQbvXc9CHKcfSUURHxGHZVQs0f5fwo8KFy?=
+ =?iso-8859-1?Q?/OayXY6V7BoQh9ckW7TflnL6Z2u6Vf0PegT2HvX4bwtQDma7vxCpuWoO4d?=
+ =?iso-8859-1?Q?3HWbMkXIlJxQEo94J6vbJP+ISC7ZrKYkgFTUlMNytxGwuMLAYG8S/39DZR?=
+ =?iso-8859-1?Q?Bky/hWP9TvTwyMERyiBYTD7CKK5rAI9SLnv90VBid5k40xVE3kTwI87A?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf1d7217-0099-462b-3527-08dd2ef4f448
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2025 08:26:16.5047
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8JsSGjEtp0RkqqSfFXJE423EzDon2Tr1jYtatVQxXNDBO9RdReD8w2G6OgVKellx52wc0L3c7TsV57sXEi91wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6092
+X-OriginatorOrg: intel.com
 
-On 1/6/25 7:04 PM, lizetao wrote:
-> Hi,
+hi, Christoph Hellwig,
+
+On Fri, Jan 03, 2025 at 07:49:25AM +0100, Christoph Hellwig wrote:
+> On Thu, Jan 02, 2025 at 10:49:41AM +0100, Niklas Cassel wrote:
+> > > > from below information, it seems an 'ahci' to me. but since I have limited
+> > > > knowledge about storage driver, maybe I'm wrong. if you want more information,
+> > > > please let us know. thanks a lot!
+> > > 
+> > > Yes, this looks like ahci.  Thanks a lot!
+> > 
+> > Did this ever get resolved?
+> > 
+> > I haven't seen a patch that seems to address this.
+> > 
+> > AHCI (ata_scsi_queuecmd()) only issues a single command, so if there is any
+> > reordering when issuing a batch of commands, my guess is that the problem
+> > also affects SCSI / the problem is in upper layers above AHCI, i.e. SCSI lib
+> > or block layer.
 > 
->> -----Original Message-----
->> From: Jens Axboe <axboe@kernel.dk>
->> Sent: Monday, January 6, 2025 10:46 PM
->> To: lizetao <lizetao1@huawei.com>; Mark Harmstone <maharmstone@fb.com>
->> Cc: linux-btrfs@vger.kernel.org; io-uring@vger.kernel.org
->> Subject: Re: [PATCH 2/4] io_uring/cmd: add per-op data to struct
->> io_uring_cmd_data
->>
->> On 1/6/25 5:47 AM, lizetao wrote:
->>> Hi,
->>>
->>>> -----Original Message-----
->>>> From: Mark Harmstone <maharmstone@fb.com>
->>>> Sent: Friday, January 3, 2025 11:02 PM
->>>> To: linux-btrfs@vger.kernel.org; io-uring@vger.kernel.org
->>>> Cc: Jens Axboe <axboe@kernel.dk>
->>>> Subject: [PATCH 2/4] io_uring/cmd: add per-op data to struct
->>>> io_uring_cmd_data
->>>>
->>>> From: Jens Axboe <axboe@kernel.dk>
->>>>
->>>> In case an op handler for ->uring_cmd() needs stable storage for user
->>>> data, it can allocate io_uring_cmd_data->op_data and use it for the
->>>> duration of the request. When the request gets cleaned up, uring_cmd
->>>> will free it automatically.
->>>>
->>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>> ---
->>>>  include/linux/io_uring/cmd.h |  1 +
->>>>  io_uring/uring_cmd.c         | 13 +++++++++++--
->>>>  2 files changed, 12 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/include/linux/io_uring/cmd.h
->>>> b/include/linux/io_uring/cmd.h index 61f97a398e9d..a65c7043078f
->>>> 100644
->>>> --- a/include/linux/io_uring/cmd.h
->>>> +++ b/include/linux/io_uring/cmd.h
->>>> @@ -20,6 +20,7 @@ struct io_uring_cmd {
->>>>
->>>>  struct io_uring_cmd_data {
->>>>  	struct io_uring_sqe	sqes[2];
->>>> +	void			*op_data;
->>>>  };
->>>>
->>>>  static inline const void *io_uring_sqe_cmd(const struct io_uring_sqe
->>>> *sqe) diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c index
->>>> 629cb4266da6..ce7726a04883 100644
->>>> --- a/io_uring/uring_cmd.c
->>>> +++ b/io_uring/uring_cmd.c
->>>> @@ -23,12 +23,16 @@ static struct io_uring_cmd_data
->>>> *io_uring_async_get(struct io_kiocb *req)
->>>>
->>>>  	cache = io_alloc_cache_get(&ctx->uring_cache);
->>>>  	if (cache) {
->>>> +		cache->op_data = NULL;
->>>
->>> Why is op_data set to NULL here? If you are worried about some
->>> omissions, would it be better to use WARN_ON to assert that op_data is
->>> a null pointer? This will also make it easier to analyze the cause of
->>> the problem.
->>
->> Clearing the per-op data is prudent when allocating getting this struct, to avoid
->> previous garbage. The alternative would be clearing it when it's freed, either
->> way is fine imho. A WARN_ON would not make sense, as it can validly be non-
->> NULL already.
+> I started looking into this before the holidays.  blktrace shows perfectly
+> sequential writes without any reordering using ahci, directly on the
+> block device or using xfs and btrfs when using dd.  I also started
+> looking into what the test does and got as far as checking out the
+> stress-ng source tree and looking at stress-aiol.c.  AFAICS the default
+> submission does simple reads and writes using increasing offsets.
+> So if the test result isn't a fluke either the aio code does some
+> weird reordering or btrfs does.
 > 
-> I still can't fully understand, the usage logic of op_data should be
-> as follows: When applying for and initializing the cache, op_data has
-> been set to NULL. In io_req_uring_cleanup, the op_data memory will be
-> released and set to NULL. So if the cache in uring_cache, its op_data
-> should be NULL? If it is non-NULL, is there a risk of memory leak if
-> it is directly set to null?
+> Oliver, did the test also show any interesting results on non-btrfs
+> setups?
+> 
 
-Ah forgot I did clear it for freeing. So yes, this NULL setting on the
-alloc side is redundant. But let's just leave it for now, once this gets
-merged with the alloc cache cleanups that are pending for 6.14, it'll go
-away anyway.
+I tried to run with ext4 fs [1] and xfs [2], seems not be able to get stable
+results (%stddev is too big, even bigger than %change). seems no value from
+both tests.
 
--- 
-Jens Axboe
+
+[1]
+=========================================================================================
+compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime:
+  gcc-12/performance/1HDD/ext4/x86_64-rhel-9.4/100%/debian-12-x86_64-20240206.cgz/lkp-icl-2sp8/aiol/stress-ng/60s
+
+a3396b99990d8b4e e70c301faece15b618e54b613b1
+---------------- ---------------------------
+         %stddev     %change         %stddev
+             \          |                \
+    142.01 ± 17%      -4.6%     135.55 ± 18%  stress-ng.aiol.async_I/O_events_completed_per_sec
+     14077 ± 14%      -3.3%      13617 ± 15%  stress-ng.aiol.ops
+    233.95 ± 14%      -3.4%     225.97 ± 15%  stress-ng.aiol.ops_per_sec
+
+
+[2]
+=========================================================================================
+compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime:
+  gcc-12/performance/1HDD/xfs/x86_64-rhel-9.4/100%/debian-12-x86_64-20240206.cgz/lkp-icl-2sp8/aiol/stress-ng/60s
+
+a3396b99990d8b4e e70c301faece15b618e54b613b1
+---------------- ---------------------------
+         %stddev     %change         %stddev
+             \          |                \
+     11.97 ± 21%     +18.5%      14.19 ± 44%  stress-ng.aiol.async_I/O_events_completed_per_sec
+      1498 ± 33%      +9.5%       1640 ± 49%  stress-ng.aiol.ops
+     23.45 ± 34%     +10.2%      25.85 ± 52%  stress-ng.aiol.ops_per_sec
 
