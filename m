@@ -1,127 +1,237 @@
-Return-Path: <linux-btrfs+bounces-10780-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10781-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96212A043B0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 16:04:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 378CEA043C8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 16:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E79E7A2197
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 15:04:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82CF188648E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 15:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D451F37A4;
-	Tue,  7 Jan 2025 15:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2071F37A2;
+	Tue,  7 Jan 2025 15:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BuK/brj0"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R4brElR6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1WavZUuE";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R4brElR6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1WavZUuE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E6E1F1909
-	for <linux-btrfs@vger.kernel.org>; Tue,  7 Jan 2025 15:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2393C1F2C48
+	for <linux-btrfs@vger.kernel.org>; Tue,  7 Jan 2025 15:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736262265; cv=none; b=QJGuAkKbZO01uLfRtC5htGW3y+VRcsOF6OmrJaAqSQTr0Zo+B0/L2PyXvHWowUy69EaHIZRkZ/gSd01AVKcaJbi1XSeH3yBF0oYqXC4yvj0/7jwYugCe0mZR+r2dVxRfq9BlMToVFaK6J3V2xVaNAF6Ik+OUvtjqjtDVvNjWmHo=
+	t=1736262624; cv=none; b=rcga+DZMagJYgZTbFu1Ma+Q/50VuviFqTlEBpUadU5y2VhM/k8dDs/MCaGSGPQoj2lgFlz1H0mrgmN0etX0dkaKwmc0hmNdWWmryGslxex6cws1q/s/RUB1ngHgy4Y0PhjMz3SPpi4nMPrclcZ4H17cnwgvGwUiwDeMPPLZ1YeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736262265; c=relaxed/simple;
-	bh=3zLSbbxbVmZkkCVuDfrtTMuFWiMDOzvUE9K2ecGKmls=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f6d/P79uuquaF/oQhbSFIO9fUWTf8YRa22ICzd8jrPo8J25mhptb9LXsXzDKYwXV2N+FivV171aSMQDll7S2bljDan3eo2HwraE5hqfhidUu8LOJd5oAg23hVvcF9foKS5mxIw2OYqfvvj+y6g+QvvC+nIYm2Eqiz4W9C5TXCyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BuK/brj0; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aaf60d85238so1053218666b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jan 2025 07:04:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1736262259; x=1736867059; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3zLSbbxbVmZkkCVuDfrtTMuFWiMDOzvUE9K2ecGKmls=;
-        b=BuK/brj0GCttSMvwkSmcGnbVwe+4PzvpCBCfjCzkINnAE7E6jxsJ5JLUlL5UgOtMwI
-         W9q+F6MYJjoeXFF42rFpgxNsVuNB6NdMVGzsFzWD3G7me3cFimjwi9SJsJp/u3PD77xv
-         ZnHndZBaCSiaRtusCFaO84bwMPIV90cM+d1KvbxtU3/h8Fe81DvhhRufJff1lwRM10Md
-         /7/EONXg80dXEM2cEozCHLgQe1YKMWQXTzLU2P7spbWDiHF7uhfa6YHWeGQgyrzlawBX
-         MWd7HMbmUteCdVxlRjH/6/SVxjgfqQ14Q6YtFXGOd3dl2uP3ZH+qjXW3SU3eSYQ1dxwJ
-         yiyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736262259; x=1736867059;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3zLSbbxbVmZkkCVuDfrtTMuFWiMDOzvUE9K2ecGKmls=;
-        b=fjp8msKq17OtEY5tgO2uN7c8DTpz1gIxNMPXPxdzgkLXuKrDA7NM0AQUwiAeRgYy7o
-         ka+iwukIDVBirMlpoUIIWdzK85feQl/tV7V44uosU6VPGXXHcy984E2V1LqCR6jIgdGj
-         aFTSikYPHK6eIE+OxeMLsEjdpFcjUDKFU1ye8+3iruaf19PrPQETAYzRKEM8VHkUVuBy
-         z3m85PTP1xgoYENW/KAdq6E4BsYmmD8UFRCdonqVV3WEJIrz6q6NEtKer0toE5uC7vsT
-         eUWO4AYGrql65RzYNRJ4G3W9u/Yr3hLsKghtOUZKQ+EmJTdki82ELSItU0faBLtCqeUn
-         tPAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV41mvKM+iayOdZaghmxNfK7Tz0nOz0CUi4SqPcYLqedzq/sFz0s9Rmir7rRybzaU5d1jpCBbQa+hgriA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHLPtaTEVe2t+tuQiaCdTvQ9S2vW8vkWLfYkY7NHujAQBUeZpd
-	COrP8T1gEmooB24ujmqdMbjDM47jzTMrWn6I2gS0nFUV8GLk87UYQudaR4UuUP/fFMMHILKl3Tg
-	MFCuSrmqyeW0uxCOMV9ql61+9YtBfd34/20dLQQ==
-X-Gm-Gg: ASbGnctJhHVZCDFb/BndPk7hCAi1iSYOODamNMeeeBDgtt/HdMnBynFQvLIijUyPRkK
-	Spd971q5BGozGoLof29BExCVXwaGuEYDVeEsSNTwBMjnezKBF4GGJC3oBUtnKfFOO2mFyWeU=
-X-Google-Smtp-Source: AGHT+IGmTCd5YHsFph8t/UWhoGaC2Q/1DgFp4D1LmOF+O85L7z0mW1Q+UNHB289bpUXaUg8KNqd8OFE/AuRY9NS0TR0=
-X-Received: by 2002:a17:907:86a5:b0:aa6:423c:850e with SMTP id
- a640c23a62f3a-aac334bc14amr5638224166b.27.1736262258818; Tue, 07 Jan 2025
- 07:04:18 -0800 (PST)
+	s=arc-20240116; t=1736262624; c=relaxed/simple;
+	bh=GfX2MDjcPKu9DWi5nvCGgbXdchZiyOI66V+KZ/9lvN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JYFU15G1iL8Ly8tEfhzJAHdyfFEXkuL1p4K7X9yatYYIMRK/X7s4ItKYsBZUSJnApXSwdbPNFwCtOQxBXTL8GfFp+9b0c3eoT8IBs2pxUc86kuYmrHyb1pcX0/qMP7mbeK0HGTXnpJttOUZN6tzNLevuZXug1QrG64UoaqrnXnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R4brElR6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1WavZUuE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R4brElR6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1WavZUuE; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 42D6421114;
+	Tue,  7 Jan 2025 15:10:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736262620;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
+	b=R4brElR6N4WCV7gOqp5IeVYV516ktEYthaoJLY0S7NdHT2efLEbvnVclphPZLpCieJCTzp
+	eI3+5V6AUgjD2tcBpzHNIP6LfPecbMsSHhp9Wc3zNH1VhcQVTf8heiL+JN/c7YK5TBsGCx
+	6EggLx/C+CI5dYBWdr0z+ltQc0MKInI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736262620;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
+	b=1WavZUuE9oTCSAizlptx85nSPeNUiY9WXS6brNmiNoR7YI9xeSjuwOyIzbCA+oLSMQAfdI
+	VfkilnwbOkAQ6jDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736262620;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
+	b=R4brElR6N4WCV7gOqp5IeVYV516ktEYthaoJLY0S7NdHT2efLEbvnVclphPZLpCieJCTzp
+	eI3+5V6AUgjD2tcBpzHNIP6LfPecbMsSHhp9Wc3zNH1VhcQVTf8heiL+JN/c7YK5TBsGCx
+	6EggLx/C+CI5dYBWdr0z+ltQc0MKInI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736262620;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
+	b=1WavZUuE9oTCSAizlptx85nSPeNUiY9WXS6brNmiNoR7YI9xeSjuwOyIzbCA+oLSMQAfdI
+	VfkilnwbOkAQ6jDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 235C213763;
+	Tue,  7 Jan 2025 15:10:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7dNmCNxDfWciRQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 07 Jan 2025 15:10:20 +0000
+Date: Tue, 7 Jan 2025 16:10:14 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] btrfs: error handling fixes
+Message-ID: <20250107151014.GF31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1733983488.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ec6784ed-8722-4695-980a-4400d4e7bd1a@gmx.com> <324cf712-7a7e-455b-b203-e221cb1ed542@gmx.com>
- <20250104-gockel-zeitdokument-59fe0ff5b509@brauner> <6f5f97bc-6333-4d07-9684-1f9bab9bd571@suse.com>
- <CAPjX3FcG5ATWuC1v7_W9szX=VNx-S2PnFSBEgeZ0BKFmPViKqQ@mail.gmail.com> <1d0788af-bbac-44e6-8954-af7810fbb101@suse.com>
-In-Reply-To: <1d0788af-bbac-44e6-8954-af7810fbb101@suse.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Tue, 7 Jan 2025 16:04:07 +0100
-Message-ID: <CAPjX3FcbhvB=qzeJjNkW+XdS3_Xrxn_K6e7vyzMqS0WLbXFgNg@mail.gmail.com>
-Subject: Re: mnt_list corruption triggered during btrfs/326
-To: Qu Wenruo <wqu@suse.com>
-Cc: Christian Brauner <brauner@kernel.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1733983488.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.995];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Mon, 6 Jan 2025 at 23:00, Qu Wenruo <wqu@suse.com> wrote:
-> =E5=9C=A8 2025/1/7 08:20, Daniel Vacek =E5=86=99=E9=81=93:
-> > On Sat, 4 Jan 2025 at 23:26, Qu Wenruo <wqu@suse.com> wrote:
-> >> =E5=9C=A8 2025/1/4 21:56, Christian Brauner =E5=86=99=E9=81=93:
-> >>> Can you please try and reproduce this with
-> >>> commit 211364bef4301838b2e1 ("fs: kill MNT_ONRB")
-> >>> from the vfs-6.14.mount branch in
-> >>> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git ?
-> >>>
-> >>
-> >> After the initial 1000 runs (with 951a3f59d268 ("btrfs: fix mount
-> >> failure due to remount races") cherry picked, or it won't pass that te=
-st
-> >> case), there is no crash nor warning so far.
-> >>
-> >> It's already the best run so far, but I'll keep it running for another
-> >> day or so just to be extra safe.
-> >>
-> >> So I guess the offending commit is 2eea9ce4310d ("mounts: keep list of
-> >> mounts in an rbtree")?
-> >
-> > This one was merged in v6.8 - why would it cause crashes only now?
->
-> Because in v6.8 btrfs also migrated to the new mount API, which caused
-> the ro/rw mount race which can fail the mount.
->
-> That's exactly why the test case is introduced.
->
-> Before the recent ro/rw mount fix, the test case won't go that far but
-> error out early so we don't have enough loops to trigger the bug.
+On Thu, Dec 12, 2024 at 04:43:54PM +1030, Qu Wenruo wrote:
+> [CHANGELOG]
+> v2:
+> - Fix the btrfs_cleanup_ordered_extents() call inside
+>   btrfs_run_delalloc_range()
+> 
+>   Since we no longer call btrfs_mark_ordered_io_finished() if
+>   btrfs_run_delalloc_range() failed, the existing
+>   btrfs_cleanup_ordered_extents() call with @locked_folio will cause the
+>   subpage range not to be properly cleaned up.
+> 
+>   This can lead to hanging ordered extents for subpage cases.
+> 
+> - Update the commit message of the first patch
+>   With more detailed analyse on how the double accounting happens.
+>   It's pretty complex and very lengthy, but is easier to understand (as
+>   least I hope so).
+> 
+>   The root cause is the btrfs_cleanup_ordered_extents()'s range split
+>   behavior, which is not subpage compatible and is cursed in the first
+>   place.
+> 
+>   So the fix is still the same, by removing the split OE handling
+>   completely.
+> 
+> - A new patch to cleanup the @locked_folio parameter of
+>   btrfs_cleanup_ordered_extents()
+> 
+> I believe there is a regression in the last 2 or 3 releases where
+> metadata/data space reservation code is no longer working properly,
+> result us to hit -ENOSPC during btrfs_run_delalloc_range().
+> 
+> One of the most common situation to hit such problem is during
+> generic/750, along with other long running generic tests.
+> 
+> Although I should start bisecting the space reservation bug, but I can
+> not help but fixing the exposed bugs first.
+> 
+> This exposed quite some long existing bugs, all in the error handling
+> paths, that can lead to the following crashes
+> 
+> - Double ordered extent accounting
+>   Triggers WARN_ON_OCE() inside can_finish_ordered_extent() then crash.
+> 
+>   This bug is fixed by the first 3 patches.
+>   The first patch is the most important one, since it's pretty easy to
+>   trigger in the real world, and very long existing.
+> 
+>   The second patch is just a precautious fix, not easy to happen in the
+>   real world.
+> 
+>   The third one is also possible in the real world, but only possible
+>   with the recently enabled subpage compression write support.
+> 
+> - Subpage ASSERT() triggered, where subpage folio bitmap differs from
+>   folio status
+>   This happens most likey in submit_uncompressed_range(), where it
+>   unlock the folio without updating the subpage bitmaps.
+> 
+>   This bug is fixed by the 3rd patch.
+> 
+> - WARN_ON() if out-of-tree patch "btrfs: reject out-of-band dirty folios
+>   during writeback" applied
+>   This is a more complex case, where error handling leaves some folios
+>   dirty, but with EXTENT_DELALLOC flag cleared from extent io tree.
+> 
+>   Such dirty folios are still possible to be written back later, but
+>   since there is no EXTENT_DELALLOC flag, it will be treat as
+>   out-of-band dirty flags and trigger COW fixup.
+> 
+>   This bug is fixed by the 4th and 5th patch
+> 
+> With so many existing bugs exposed, there is more than enough motivation
+> to make btrfs_run_delalloc_range() (and its delalloc range functions)
+> output extra error messages so that at least we know something is wrong.
+> 
+> And those error messages have already helped a lot during my
+> development.
+> 
+> Patches 6~8 are here to enhance the error messages.
+> 
+> And the final one is to cleanup the unnecessary @locked_folio parameter
+> of btrfs_cleanup_ordered_extents().
+> 
+> With all these patches applied, at least fstests can finish reliably,
+> otherwise it frequently crashes in generic tests that I was unable to
+> finish even one full run since the space reservation regression.
+> 
+> 
+> Qu Wenruo (9):
+>   btrfs: fix double accounting race when btrfs_run_delalloc_range()
+>     failed
+>   btrfs: fix double accounting race when extent_writepage_io() failed
+>   btrfs: fix the error handling of submit_uncompressed_range()
+>   btrfs: do proper folio cleanup when cow_file_range() failed
+>   btrfs: do proper folio cleanup when run_delalloc_nocow() failed
+>   btrfs: subpage: fix the bitmap dump for the locked flags
+>   btrfs: subpage: dump the involved bitmap when ASSERT() failed
+>   btrfs: add extra error messages for delalloc range related errors
+>   btrfs: remove the unused @locked_folio parameter from
+>     btrfs_cleanup_ordered_extents()
 
-So the bug has been there since v6.8, IIUC. In that case I think
-211364bef430 ("fs: kill MNT_ONRB") should add Fixes: 2eea9ce4310d
-("mounts: keep list of mounts in an rbtree") and CC stable?
-
---nX
+This is the last non-trivial outstanding patchset in the queue. It was
+in misc-next (and thus linux-next) so we have some testing coverage.
+Unless there are known issues or fixups we should move it to for-next.
 
