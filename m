@@ -1,99 +1,102 @@
-Return-Path: <linux-btrfs+bounces-10781-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10782-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378CEA043C8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 16:10:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA20A0441E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 16:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82CF188648E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 15:10:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97B7D164CF9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 15:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2071F37A2;
-	Tue,  7 Jan 2025 15:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0A61F2C4B;
+	Tue,  7 Jan 2025 15:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R4brElR6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1WavZUuE";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R4brElR6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1WavZUuE"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y3xOCa9o";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fkUvfvyJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hw2XaXUo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bzsjb1q9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2393C1F2C48
-	for <linux-btrfs@vger.kernel.org>; Tue,  7 Jan 2025 15:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2AC86321;
+	Tue,  7 Jan 2025 15:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736262624; cv=none; b=rcga+DZMagJYgZTbFu1Ma+Q/50VuviFqTlEBpUadU5y2VhM/k8dDs/MCaGSGPQoj2lgFlz1H0mrgmN0etX0dkaKwmc0hmNdWWmryGslxex6cws1q/s/RUB1ngHgy4Y0PhjMz3SPpi4nMPrclcZ4H17cnwgvGwUiwDeMPPLZ1YeA=
+	t=1736263249; cv=none; b=YAwqctE7zqWYKPa36uYgmwTaWikkaH4m19cH2E2LxlK7tcf+rSDY9mo/Y1MfJBN+q590/jPRJ6QevYTMQCoEcSSQzRbuaaoUfYBtkkXXzLmRV+ig3S8U39jyMAHo5VHxlEa6Vb/wZkEmfOQ4wp/CKRSZa3a88tw+yZzbV4E7bAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736262624; c=relaxed/simple;
-	bh=GfX2MDjcPKu9DWi5nvCGgbXdchZiyOI66V+KZ/9lvN4=;
+	s=arc-20240116; t=1736263249; c=relaxed/simple;
+	bh=TllIWPgHHbDO0Vi8ZkoqWkf1LoFBXJFp1swdjsWWgS0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JYFU15G1iL8Ly8tEfhzJAHdyfFEXkuL1p4K7X9yatYYIMRK/X7s4ItKYsBZUSJnApXSwdbPNFwCtOQxBXTL8GfFp+9b0c3eoT8IBs2pxUc86kuYmrHyb1pcX0/qMP7mbeK0HGTXnpJttOUZN6tzNLevuZXug1QrG64UoaqrnXnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R4brElR6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1WavZUuE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R4brElR6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1WavZUuE; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=FfqI/aJTMVaEFlBJqEKju51ExeM0I+7R5gY+snoirRcK7EKvoS1jIhXzCmKTxDxU82Y5DF2vazH5zonj6Mm9ZgfHm8+5MKhK9n3frThJs0i4XSjDTdy9/hWmgFJqr4dvreq7V4H70l4AZtKb3fUr3CbeIBTXyERPleuWULzWTmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y3xOCa9o; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fkUvfvyJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hw2XaXUo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bzsjb1q9; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 42D6421114;
-	Tue,  7 Jan 2025 15:10:20 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 05B851F385;
+	Tue,  7 Jan 2025 15:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736262620;
+	t=1736263246;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
-	b=R4brElR6N4WCV7gOqp5IeVYV516ktEYthaoJLY0S7NdHT2efLEbvnVclphPZLpCieJCTzp
-	eI3+5V6AUgjD2tcBpzHNIP6LfPecbMsSHhp9Wc3zNH1VhcQVTf8heiL+JN/c7YK5TBsGCx
-	6EggLx/C+CI5dYBWdr0z+ltQc0MKInI=
+	bh=WbVmmOqueNoNtJVw3Sa0y53Jr3H5fM+JOo9oY6wHO+k=;
+	b=Y3xOCa9orEqiVTIBvLBdYOV3bre7IglC0Tx2HNDK3Wmpwf7/fQ83tYnEzJy/2oCVG5qcWb
+	0byJCsJhuwNfKrp/UveovVYKT8e2uE2PoFmGz/qRW+nsOqc+iQvw43JAJAf7DDjPxRIQL3
+	ehTog6BDgJh8xIpYVouPBe/yuooZA6Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736262620;
+	s=susede2_ed25519; t=1736263246;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
-	b=1WavZUuE9oTCSAizlptx85nSPeNUiY9WXS6brNmiNoR7YI9xeSjuwOyIzbCA+oLSMQAfdI
-	VfkilnwbOkAQ6jDw==
-Authentication-Results: smtp-out1.suse.de;
+	bh=WbVmmOqueNoNtJVw3Sa0y53Jr3H5fM+JOo9oY6wHO+k=;
+	b=fkUvfvyJzxXYjAj093UWhAJFrVbydsobPao+J9uESVTobb9HkOYNjB+rSGvNFrejASYmG+
+	QeQykLNdugLIb/AA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736262620;
+	t=1736263245;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
-	b=R4brElR6N4WCV7gOqp5IeVYV516ktEYthaoJLY0S7NdHT2efLEbvnVclphPZLpCieJCTzp
-	eI3+5V6AUgjD2tcBpzHNIP6LfPecbMsSHhp9Wc3zNH1VhcQVTf8heiL+JN/c7YK5TBsGCx
-	6EggLx/C+CI5dYBWdr0z+ltQc0MKInI=
+	bh=WbVmmOqueNoNtJVw3Sa0y53Jr3H5fM+JOo9oY6wHO+k=;
+	b=Hw2XaXUoz9WLEdsbZZK5ThGWi+ijhwYnlx6y3Jmbr/ytf9Hc/WD+Wv+YRmONg2MIIWXzTE
+	L39wD63v5pSeSi48qAIZyI8+Qlk6pKPjrZiZupXe1f876QC9tjm+o7JNcfRzZWEwjmgWXg
+	2W5BcSiUHWqC/on8Uli5XKHRwfwolk0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736262620;
+	s=susede2_ed25519; t=1736263245;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EO21CEvqaQKkjGVLJgeKPM1vJ+5gMtaxrkSLAGEypKA=;
-	b=1WavZUuE9oTCSAizlptx85nSPeNUiY9WXS6brNmiNoR7YI9xeSjuwOyIzbCA+oLSMQAfdI
-	VfkilnwbOkAQ6jDw==
+	bh=WbVmmOqueNoNtJVw3Sa0y53Jr3H5fM+JOo9oY6wHO+k=;
+	b=bzsjb1q9XaNXN0NBoi7MGmeNxOZl7ejBnt7F3Sn86B7oZ6HheGj4etBFevt6kJufdsBqbH
+	eNa6AwjZvK7uL0BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 235C213763;
-	Tue,  7 Jan 2025 15:10:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D71A213A6A;
+	Tue,  7 Jan 2025 15:20:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7dNmCNxDfWciRQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 07 Jan 2025 15:10:20 +0000
-Date: Tue, 7 Jan 2025 16:10:14 +0100
+	id sGE+NExGfWeoSAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 07 Jan 2025 15:20:44 +0000
+Date: Tue, 7 Jan 2025 16:20:35 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] btrfs: error handling fixes
-Message-ID: <20250107151014.GF31418@twin.jikos.cz>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH v2 00/14] btrfs: more RST delete fixes
+Message-ID: <20250107152035.GG31418@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1733983488.git.wqu@suse.com>
+References: <20250107-rst-delete-fixes-v2-0-0c7b14c0aac2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,16 +105,16 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1733983488.git.wqu@suse.com>
+In-Reply-To: <20250107-rst-delete-fixes-v2-0-0c7b14c0aac2@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
+X-Spam-Level: 
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.995];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
@@ -123,115 +126,70 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 	FROM_HAS_DN(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,twin.jikos.cz:mid];
 	RCVD_COUNT_TWO(0.00)[2];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Thu, Dec 12, 2024 at 04:43:54PM +1030, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Fix the btrfs_cleanup_ordered_extents() call inside
->   btrfs_run_delalloc_range()
+On Tue, Jan 07, 2025 at 01:47:30PM +0100, Johannes Thumshirn wrote:
+> Here's another set of fixes for the delete path on RAID stripe-tree backed
+> filesystems.
 > 
->   Since we no longer call btrfs_mark_ordered_io_finished() if
->   btrfs_run_delalloc_range() failed, the existing
->   btrfs_cleanup_ordered_extents() call with @locked_folio will cause the
->   subpage range not to be properly cleaned up.
+> Josef's CI system started tripping over a bad key order due to the usage
+> of btrfs_set_item_key_safe() in btrfs_partially_delete_raid_extent() and
+> while investigating what is happening there I found more bugs and not
+> handled corner cases, which resulted in more fixes and test-cases.
 > 
->   This can lead to hanging ordered extents for subpage cases.
+> Unfortunately I couldn't fix the bad key order problem and had to resort
+> to re-creating the item in btrfs_partially_delete_raid_extent() and insert
+> the new one after deleting the old.
 > 
-> - Update the commit message of the first patch
->   With more detailed analyse on how the double accounting happens.
->   It's pretty complex and very lengthy, but is easier to understand (as
->   least I hope so).
+> Fstests btrfs/06* are extremely good in exhibiting these failures and
+> btrfs/060 has been extensively run while developing this series.
 > 
->   The root cause is the btrfs_cleanup_ordered_extents()'s range split
->   behavior, which is not subpage compatible and is cursed in the first
->   place.
+> A full CI run of v1 can be found here:
+> https://github.com/btrfs/linux/actions/runs/12291668397
 > 
->   So the fix is still the same, by removing the split OE handling
->   completely.
+> Changes to v1:
+> - Handle extent_map lookup failure in 1/14
+> - Don't use key.offset = -1 for initial search in 3/14
+> - Don't break before calling btrfs_previous_item if we're on slot 0 in
+>   6/14
+> - Remove btrfs_mark_buffer_dirty calls
+> - Remove line breaks at 80 chars if we're just a bit over
+> - Fix multiple issues on comment styling
 > 
-> - A new patch to cleanup the @locked_folio parameter of
->   btrfs_cleanup_ordered_extents()
+> Link to v1:
+> https://lore.kernel.org/linux-btrfs/cover.1733989299.git.jth@kernel.org
 > 
-> I believe there is a regression in the last 2 or 3 releases where
-> metadata/data space reservation code is no longer working properly,
-> result us to hit -ENOSPC during btrfs_run_delalloc_range().
+> Note:
+> I did not copy the implementation of btrfs_drop_extents() as I'd like to
+> have feedback on this variant first, before putting the time and energy in
+> a "completely new" implementation.
 > 
-> One of the most common situation to hit such problem is during
-> generic/750, along with other long running generic tests.
+> ---
+> Johannes Thumshirn (14):
+>       btrfs: don't try to delete RAID stripe-extents if we don't need to
+>       btrfs: assert RAID stripe-extent length is always greater than 0
+>       btrfs: fix search when deleting a RAID stripe-extent
+>       btrfs: fix front delete range calculation for RAID stripe extents
+>       btrfs: fix tail delete of RAID stripe-extents
+>       btrfs: fix deletion of a range spanning parts two RAID stripe extents
+>       btrfs: implement hole punching for RAID stripe extents
+>       btrfs: don't use btrfs_set_item_key_safe on RAID stripe-extents
+>       btrfs: selftests: check for correct return value of failed lookup
+>       btrfs: selftests: don't split RAID extents in half
+>       btrfs: selftests: test RAID stripe-tree deletion spanning two items
+>       btrfs: selftests: add selftest for punching holes into the RAID stripe extents
+>       btrfs: selftests: add test for punching a hole into 3 RAID stripe-extents
+>       btrfs: selftests: add a selftest for deleting two out of three extents
 > 
-> Although I should start bisecting the space reservation bug, but I can
-> not help but fixing the exposed bugs first.
-> 
-> This exposed quite some long existing bugs, all in the error handling
-> paths, that can lead to the following crashes
-> 
-> - Double ordered extent accounting
->   Triggers WARN_ON_OCE() inside can_finish_ordered_extent() then crash.
-> 
->   This bug is fixed by the first 3 patches.
->   The first patch is the most important one, since it's pretty easy to
->   trigger in the real world, and very long existing.
-> 
->   The second patch is just a precautious fix, not easy to happen in the
->   real world.
-> 
->   The third one is also possible in the real world, but only possible
->   with the recently enabled subpage compression write support.
-> 
-> - Subpage ASSERT() triggered, where subpage folio bitmap differs from
->   folio status
->   This happens most likey in submit_uncompressed_range(), where it
->   unlock the folio without updating the subpage bitmaps.
-> 
->   This bug is fixed by the 3rd patch.
-> 
-> - WARN_ON() if out-of-tree patch "btrfs: reject out-of-band dirty folios
->   during writeback" applied
->   This is a more complex case, where error handling leaves some folios
->   dirty, but with EXTENT_DELALLOC flag cleared from extent io tree.
-> 
->   Such dirty folios are still possible to be written back later, but
->   since there is no EXTENT_DELALLOC flag, it will be treat as
->   out-of-band dirty flags and trigger COW fixup.
-> 
->   This bug is fixed by the 4th and 5th patch
-> 
-> With so many existing bugs exposed, there is more than enough motivation
-> to make btrfs_run_delalloc_range() (and its delalloc range functions)
-> output extra error messages so that at least we know something is wrong.
-> 
-> And those error messages have already helped a lot during my
-> development.
-> 
-> Patches 6~8 are here to enhance the error messages.
-> 
-> And the final one is to cleanup the unnecessary @locked_folio parameter
-> of btrfs_cleanup_ordered_extents().
-> 
-> With all these patches applied, at least fstests can finish reliably,
-> otherwise it frequently crashes in generic tests that I was unable to
-> finish even one full run since the space reservation regression.
-> 
-> 
-> Qu Wenruo (9):
->   btrfs: fix double accounting race when btrfs_run_delalloc_range()
->     failed
->   btrfs: fix double accounting race when extent_writepage_io() failed
->   btrfs: fix the error handling of submit_uncompressed_range()
->   btrfs: do proper folio cleanup when cow_file_range() failed
->   btrfs: do proper folio cleanup when run_delalloc_nocow() failed
->   btrfs: subpage: fix the bitmap dump for the locked flags
->   btrfs: subpage: dump the involved bitmap when ASSERT() failed
->   btrfs: add extra error messages for delalloc range related errors
->   btrfs: remove the unused @locked_folio parameter from
->     btrfs_cleanup_ordered_extents()
+>  fs/btrfs/ctree.c                        |   1 +
+>  fs/btrfs/raid-stripe-tree.c             | 146 ++++++-
+>  fs/btrfs/tests/raid-stripe-tree-tests.c | 660 +++++++++++++++++++++++++++++++-
+>  3 files changed, 776 insertions(+), 31 deletions(-)
 
-This is the last non-trivial outstanding patchset in the queue. It was
-in misc-next (and thus linux-next) so we have some testing coverage.
-Unless there are known issues or fixups we should move it to for-next.
+As this is completely in RST I'm considering it safe for late merge
+(ideally by the end of this week before rc7 is out).
 
