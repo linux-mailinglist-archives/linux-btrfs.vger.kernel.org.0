@@ -1,248 +1,155 @@
-Return-Path: <linux-btrfs+bounces-10761-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10762-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A70CA039CA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 09:28:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7656CA03FA6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 13:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D4E018869AC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 08:28:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56497165ED7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2025 12:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459E21E0E0A;
-	Tue,  7 Jan 2025 08:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="beucoZdk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C671EF0B7;
+	Tue,  7 Jan 2025 12:47:52 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D46772594B5;
-	Tue,  7 Jan 2025 08:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736238510; cv=fail; b=XG3ihwM5k5/M+ElC0wKgsvXxpAeJwF9Apf4Ib+CrfXD1QJb9K/zzM5TmzYqkW/62n7ncM1pCqiPttkMHSVM5eAq/YjDn6YepIS4DH6lbNSWrhZqdGpVIK9Bc0lTXEf4dx9PkZYaAYMlYzAj2z/L/YG2vjxB6vEsKcVjUPUsgI6s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736238510; c=relaxed/simple;
-	bh=AUPkL6Z5du5J99VXLnvWWXSoMEd5GkBhr+y6eNIx8Ug=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=HOvbCG3d0YNdf+kxgWxTkaOZ6udUAgAQdW/Jas8AMYjlDf1TaOd3jHJjxGTH95OJtKD31cQRA+CxEuZMmWwOUXQUjmgb/SS3fqGb6OeFvVMEtIn3gYo+FlaB4QhZK8HXiaXwbYc/7k+MgP2s3tWZb2Yds1x4SDAeYy7HtUuC4Zs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=beucoZdk; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736238509; x=1767774509;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=AUPkL6Z5du5J99VXLnvWWXSoMEd5GkBhr+y6eNIx8Ug=;
-  b=beucoZdkKUT482MpJbr+Q6wAtbnzZDdlJ6a2JPE5z3N5VVJHBybHUZ9g
-   k0OhdRr/pHKSoU+3WZI4Is2bydMhKTIDM2Xhcpq18gfR+ml8PRmZN6tEI
-   aKJ2BnJvne/Z/dW4dimAce/xwS33qoG2LDeq2SdaD+yRyrWLVZJRvEI1c
-   7GU1rrAX26ea5rrqUwynmHerC6hyVGyMK+/5WDg0hvTAkLo5VmSlz+OCd
-   KVyEbBzjgqccT+pxh8ypOcXERSTFAgJEaCXoOqgembZ+RAnHb5IPQW/Jz
-   p1nMTIc6O9ak9HsrbFPe7O9AkHRyAntMY9GlsQ64Lh42AvcrgG7+6do1+
-   w==;
-X-CSE-ConnectionGUID: dhfzl/NMTAe7eBQ+dPVxCA==
-X-CSE-MsgGUID: gb5/LKV3R2CTXP5/QbEurQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11307"; a="58871032"
-X-IronPort-AV: E=Sophos;i="6.12,295,1728975600"; 
-   d="scan'208";a="58871032"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 00:28:27 -0800
-X-CSE-ConnectionGUID: mJBl2nYlR46rVQkQZy+hPw==
-X-CSE-MsgGUID: Vfntu2j+SoC1/GvAcD9fWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="107752641"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Jan 2025 00:28:27 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Tue, 7 Jan 2025 00:28:26 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Tue, 7 Jan 2025 00:28:26 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.45) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Tue, 7 Jan 2025 00:28:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KTrfM50tz35LFfLgDmyCWtBOHaJNOkTY11LyocMzdySkGV6sYUJuV9/O9H+1O4hmBnaKg8Zp7sbjlRz37Jeh8oitU26kGTJT0uUoNuzNNKXyEd86hulHQSb67buDMd//EdqFZNdxSwJ/cKpnH0Aj84+Gb4L37b8Xxm/TMH+rLjeX19oyK483A2E63dg1oVOX1YP5KUijhRG0HVGpJ1EOQ8iiUTE9Btrbltj1i8F4m4SFu2oTW2/GBGa/BSgLNIx3qiAMPLLaOdxL3S5V5PxTgzzCwX4iq7pqc3yZl71uhd57MT7RfQhxZhQ3zrP7R99itMUTarbgWTodtJpHD/9ImA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t0wUSzRciiqTAcp6VmyRi0QCmUK23k4wo6bjKitVfYM=;
- b=urUU+ywm7mnbf2d7B6wAWFPIPZAOkuLTFTmWJVaKGDmt19kqlMXANQ2vPhz6OUv38ISLlTM6gQtCef9Er4ht0MoJOacVhUpdqUzllmMcXe7yR6G4BFLpISGjz8Q+NViIMacLho8WGzp4YDmSwnOEdBLx4yZOU4PZFZsU6YLHbvIONfhcK+Y9xnhsAzq9KOeaJJhy/ksrPUdz+44AsKhzcW3AN5E0kBo7QMsflvZytLrlDC5MEiMWJPMvrCYWxL5QSHlzchnYN6Gz7u35ce8iPc/25fYkqvzKaUIRip6kfibhkTApXOvgs6lxaL2Onfqi+L1D+Mtzmo4jLn3+jTDuww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by CY5PR11MB6092.namprd11.prod.outlook.com (2603:10b6:930:2c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.17; Tue, 7 Jan
- 2025 08:27:56 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%3]) with mapi id 15.20.8335.010; Tue, 7 Jan 2025
- 08:27:55 +0000
-Date: Tue, 7 Jan 2025 16:27:44 +0800
-From: Oliver Sang <oliver.sang@intel.com>
-To: Niklas Cassel <cassel@kernel.org>
-CC: Christoph Hellwig <hch@lst.de>, <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-	<linux-kernel@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	<linux-block@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-nvme@lists.infradead.org>, Damien Le Moal <dlemoal@kernel.org>,
-	<linux-btrfs@vger.kernel.org>, <linux-aio@kvack.org>, <oliver.sang@intel.com>
-Subject: Re: [linus:master] [block]  e70c301fae: stress-ng.aiol.ops_per_sec
- 49.6% regression
-Message-ID: <Z3zlgBB3ZrGApew7@xsang-OptiPlex-9020>
-References: <202412122112.ca47bcec-lkp@intel.com>
- <20241213143224.GA16111@lst.de>
- <20241217045527.GA16091@lst.de>
- <Z2EgW8/WNfzZ28mn@xsang-OptiPlex-9020>
- <20241217065614.GA19113@lst.de>
- <Z3ZhNYHKZPMpv8Cz@ryzen>
- <20250103064925.GB27984@lst.de>
- <Z3epOlVGDBqj72xC@ryzen>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Z3epOlVGDBqj72xC@ryzen>
-X-ClientProxiedBy: SG2P153CA0051.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::20)
- To LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8528F28E37;
+	Tue,  7 Jan 2025 12:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736254071; cv=none; b=MeR0qfJT+6cXpIcS6LN/ZeXbugTCXg6XhTQHGirZh61nkrixty4vnSfoi2B5oxtF5LcjalR06pPXbJRFqAd0bUcK8rdK+rUYrFW+fDOAYXQwULijO0MFDq7gblZ0j8N0BJz7vUQVFWRPySmjJZJPdxSg7dDJ6hFcCJ6hHddDypY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736254071; c=relaxed/simple;
+	bh=83Wg5Gj+51lGeT9oK05tK0Zt5yPAtikvh6XcimiDyJ0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aTxjIknX6epauT66GhixrObgNtF2+DuxSNDhN/+GgMmtHKmKo63z61oLiwjbKC7BEs+DgfEOPfsaN9BbRVSrNs1m8xTDQwWQn6P+8Y1F0Ec9BGS75jl0HkYA5fYWaPJm7h/5NqMSgZKjgSi3zH1nYwf/E7wr32MmO8jwbZIKS3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-385de9f789cso11537280f8f.2;
+        Tue, 07 Jan 2025 04:47:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736254068; x=1736858868;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ipFTM9rmKG/xzZX38KpvyVXjfFk8dlE4j0tt/SzLg28=;
+        b=kTpWw1bjPqZKYW4q5zlI44ADCO0oMpKp/QDbegOd6Vzgax5Amy3DRHUeGEpB+5R+FD
+         y2kO3tLfWA5cBSBWWhayzifrnpbuQikRynyBDh6jpxqSKA0f5l+ZQvXQZb3YP9AAu9Aj
+         i6haiVffYvSDb9Qh63N2h2vl5ZjaKYB/zhfx2UrpDJKKDdkfzrcs9JS2odo7OYi3xWaf
+         bNiuku+EGONNHBS0/ZuFKtBFoaDxQQ0VKT3TofIxUnUQlTKq9Yg7uT24wvACD4gBJZjJ
+         dO9wUQYhZY0vKXDUcUvmET2QXUfHeubA21QztauhORVOSMLFqbrga5v9IgyOQ1n3j3PN
+         Cv/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUwhFDWzJ41EyaigNnKKbAanlc+PC7YsAd57fCV+2EVnc8KW5vA//F0ciLKjAGGbxxli6S1eLppCyRd3Bg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRJfChC6dN4ekI6L9s76QV4HjZ05h/DqwM6fTrV1Db7Uh9LHpR
+	mEQci6beTSMfJ7WmKLccUanI6vDMgZb2u90jWIFiM86MJTJQBZ16ir3O1g==
+X-Gm-Gg: ASbGncvBZZpN7w6dPCHQDxAOqOTcs236XH7NjU0HYS0kdsRLrSoSFIe5b1BcbDlp/f1
+	5gLaQv1lgZCieQknlO56FXxj3+kQz0spu+rWfSDT4iQsCWCMVyO8QMDGJZ3imJSOcmiqM9qhumj
+	2Qqhl2D+i40qdnMISiYnDqEb6O42d1fpkOiGArkHPIOK5/+oDl3LuTFbnJ3eMl/fTA+z/BFq6RT
+	eng1l0TGiqXu3BWCD6Zrw9sYen5barM/edSvjbCKzOCFqPAEazg1YJt0aFHXkWy5K6GMOFLDFs0
+	pUytgD1x6W+5AQudjRkfQmgut216CcbygM3k
+X-Google-Smtp-Source: AGHT+IHmC5RgSKdpjL3VzwFGVl4Q+RhA1Inal2ZCZnludx8DUXnvaZIiaP20PexE9+XC3xpf9m0/AQ==
+X-Received: by 2002:a5d:6da8:0:b0:385:edd1:2249 with SMTP id ffacd0b85a97d-38a224088d3mr50845633f8f.50.1736254067540;
+        Tue, 07 Jan 2025 04:47:47 -0800 (PST)
+Received: from [127.0.0.1] (p200300f6f7218600fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f721:8600:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4366127c508sm596884845e9.33.2025.01.07.04.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2025 04:47:47 -0800 (PST)
+From: Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH v2 00/14] btrfs: more RST delete fixes
+Date: Tue, 07 Jan 2025 13:47:30 +0100
+Message-Id: <20250107-rst-delete-fixes-v2-0-0c7b14c0aac2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CY5PR11MB6092:EE_
-X-MS-Office365-Filtering-Correlation-Id: 420b8d4c-3f2b-40fa-a825-08dd2ef52fae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?9Mf8u2UKGhRfmldAkO4GykQu42XU/3/rb9GA90SOCI/6cVbfaLSRS1Jnwh1R?=
- =?us-ascii?Q?0I2WDlk3c0GEyJDtVADjNnPJGHh5pVOBw9CVWLYimcxhyEgX0jGST3Y3iJ6q?=
- =?us-ascii?Q?cazrOHft/OFSSQoWyK9wqI8JtOYc7vL/H7BQeai8Bm6r9L2iJ/lkp2rRdBPB?=
- =?us-ascii?Q?oWb/w3YDVX7AjLc1G2oRC8m7PSknMp45nxVHG0ss2wnGmjgF/+G0npsvMzJ/?=
- =?us-ascii?Q?4TJNyRj+Zq5clfDrkv0wnjLthexO78Hd/6Jvsu4ktMjiYzVY8u7TVi+K7j0s?=
- =?us-ascii?Q?FuyAR0RZXK4E2OFrga6KZf+8zaHkXNTNKPxlkx5BG0Ih6RG5HiqBA5IyvpuI?=
- =?us-ascii?Q?41qOgbIg6sYa+a24/SKZa6eBNuxboQqWSMG1GpTAu1qq1sCfOy5RBabqkSna?=
- =?us-ascii?Q?jjsODjNY+hWEn1vmbLf7gTBZV4TWFa3hmTqkTRMZl55lZd9vVAh2nLNTZ2O+?=
- =?us-ascii?Q?+Tyh9QWzUFtf7sfLGgr7kU1SP8tCmohxVlnN7tIvrdx6TQPbIAjvEZHpOZKU?=
- =?us-ascii?Q?/spW+3yGAzfh9IXwEw65SOxp6I4sQiOQjIgWs89PyXkyG6eAwKY/lBxSWgSa?=
- =?us-ascii?Q?EBEhZ9VGiuwBGwSQ3u/6Q5fvnGfcWyK0xZJG/oAr7r5rc0qpOyDi0yboK1EU?=
- =?us-ascii?Q?OlCYhbvktd6iHglYHKubJhWuISIHutyMWbDSLwpSMwgO0btBLtrctvjKWSlA?=
- =?us-ascii?Q?Xr7wS0DUQge8cJ67CfkuKFGQG0PShYw1lWNcEYKhEg04t33DwmA5uPGn3PH2?=
- =?us-ascii?Q?oIVL+IG5v/9wDIEE5bEoBNK3583nQQIgtmraDinhKf0VPR5WuSUaJwyOcx5u?=
- =?us-ascii?Q?dXnjxj7+ZoTi1hFfqrYk8VE4UJzcJeJ+0Je+JpBmX0+OuZeQ2tYGnaIc1kM7?=
- =?us-ascii?Q?RHTYTYwQOJHXcopeelHp6FHyZ47j40eG/IbWwe4pbkXrVvvoNe36GhqQi3hQ?=
- =?us-ascii?Q?XzWKivv7GWQrZ4/y3GTdakHKrca127M2+fcL/eLgk+KCk4YPwVRiGKfsBPws?=
- =?us-ascii?Q?L3CONqH/orusIXDc+Q4xE4pxHdi6CUUeIxC+mII+py40HgTpouRZbOu3cArQ?=
- =?us-ascii?Q?RIbT8QdMbxT8Hj/oaBIsbYFq7IBsbmha/k5W0nT8adyoRosKsjrG2HZ/ORMY?=
- =?us-ascii?Q?SGzLmJeccRx2twlyXRNEy3NS7LH3aMjuNlCGKi9YfTP3whY5KoseVS9iqJ75?=
- =?us-ascii?Q?z+HJ5R06Ceb4IxRmvv4ta3z2EONoVgvqhVZ80+8Cd2kVqzn98ufbNcUSkdmN?=
- =?us-ascii?Q?2dj20yHGWeUfKXxPEZ1YxbwGry1WipwZ/gXLZZaC47wPNjXl7ddUVAX9zcSo?=
- =?us-ascii?Q?QB5ZzyF+mSbKeVtHVBOzT0XSBgJJL7b73KaoMYn985ivFO7OkiCjbogSO6sk?=
- =?us-ascii?Q?q/4QTxz0JsosRClv1QUdRcL45///?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aRiJa+ToqOqjFAfCzDKwXQQQpcVyZ6KsKkb/HbnDeJsWfph7Nx3qlafFbilw?=
- =?us-ascii?Q?dK9moWilnRlBSTPZFeqfa4ttuIyqKiyxJwXR4i2tws6vrrkYaHS/ij6aFeUO?=
- =?us-ascii?Q?m4p16P8ZlWMZ/b2wU2Ar2nKgokKxEXBfAHBQpNNAOeI4ZMM8l6nErwM3GyuS?=
- =?us-ascii?Q?nWitMn5wjh7wpPWItVdpe6RWlGy+D2Y1EvcuTQDNITSaMKMuU19qBuqlbiWt?=
- =?us-ascii?Q?mc5w0nhWeMwFIsa7//EWMQm1n+EKB/1sSqvhlKOgE4OGRxBzfM1g6z1WPn+3?=
- =?us-ascii?Q?RTRnQURhURYayeU0rvHUGFkU88UJa3+rXh3cZ85doXswgdLkS9bFVQlAOKl4?=
- =?us-ascii?Q?ucArDFqE74V56nPA0ZhcVQZ95nln8rBS+/SLuQV70HylZhSZSdytPm/ZWg60?=
- =?us-ascii?Q?QuFZKP+Nu2qp0mxNRNjDgOFuP49V/kl0+jSccBOt1hphmYsp0b+DLgA6azYM?=
- =?us-ascii?Q?Yyd6DPeYSdXM8JdLe9nL7cSvsCoo+THE+HEl8sIfV08UQ02gVtXXONGvvSVJ?=
- =?us-ascii?Q?sWqaCc2Giqdr6z/B106wSp/n5ya1xkO1of3DVgXnwW3vdXO9AaNE7lBcveIH?=
- =?us-ascii?Q?B79P01Ubf4bH11IH3OGS+WBw1JI2OScaCUSeK6A4Uy0teuZilC6b57xaS44i?=
- =?us-ascii?Q?/5jmlFobPiCVKQqPWcZs/+ywSWPtFuuKQktyWrFZ+8IOET0XuLTY2t07L7WU?=
- =?us-ascii?Q?mSTFukv8yX7Ww9AdjDDf+vcLUq2ZtghNQiq/NRmn3z22xc6D6W+UyEI1TnOO?=
- =?us-ascii?Q?+6ayWkxg1Dc7ruKyZbIAuLbBL3GYPq7rgI4NNAPmcZJ9NTCMS5KyLjUj+SU1?=
- =?us-ascii?Q?0ahhOXqNrwpiv485Hb/bj7mZ77xKxz4k0mJW8BEFJ0D0hvFPKHXtpUtJIDjj?=
- =?us-ascii?Q?LThYEtCIfxdnk83nc6TMmZh5SvmQ+IC9uKgitHka1pvY9TaWuaMfbm5cPhYP?=
- =?us-ascii?Q?SsP4N6Mifg0J16zDCBfOUICd84+T55lXGLAYEi/p/1YibaG3BTsptES7/9Dv?=
- =?us-ascii?Q?Hh2ONkV5qSQQQNm+Q0+cmps3vJwzdA+rP2QRoTCUQ4T7osIPw9Y0nrSJ4ZW9?=
- =?us-ascii?Q?psm6/6B+HTG6tKpb6vkOB3nEA7UN62A6DE/8MzuvTmIIYVc9dzK0ueo021lt?=
- =?us-ascii?Q?/3FMk2U5MW5s71lWN7EDBbySz3kXBiLDp4YqL2V1qVUunE/avYPvrZWiprBa?=
- =?us-ascii?Q?uqfaBiEGdIioUm/EcOL76BUSXTZdXYi15IpGCFa/cTM8K5/631DHQhm/1+yw?=
- =?us-ascii?Q?wnAKGUAdm23pimTg8sFqMyqKxIxtQO8QD3p0JMRpOY8lbs9OGyMgEj84XEqL?=
- =?us-ascii?Q?UixdDpJ5ekfQWCxey3mr1sjPj3kLWU99PQ0m1yo3Uwf3lVpL7yWZLw6mCqQi?=
- =?us-ascii?Q?QcE4+AAdkttJ5tZs/5nBz5bLR2cJ11hwGuYmhLL6wEepn5lWOsCeubmr+cqp?=
- =?us-ascii?Q?Uc0//9uBTFdUHSI1Z7OuuzkL2eKf7tRfFEZEEMYn09RVBnyNrQmFJnx1fDLh?=
- =?us-ascii?Q?HWj9D59S4xe8jua3ioo6AtlZs6XL+PI14xMxJb9NfHqu43mA+F/Vwamlqr/s?=
- =?us-ascii?Q?d8WFNW0a9R/lOfFUnGn7Sn7u4rUC++J/XtfDIjrIy8li/3R5zOwNC8/u7Obp?=
- =?us-ascii?Q?Yg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 420b8d4c-3f2b-40fa-a825-08dd2ef52fae
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2025 08:27:55.9264
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 31+3rDB74QdmysPjyw8DBi0pGbVvAfd/hc6GfM3E/K9gYYGbrpQy1Le02DnmhjVwtBI605yn+rC1DSqQ5jiYgw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6092
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGMifWcC/x3MwQqDMBCE4VeRPTdBV6ump75H6UF0omltUjZBC
+ uK7N3j8GP7ZKUIcIt2KnQSbiy74DL4UNC6Dn6HclE1cclNx1SuJSU1YkaCs+yEqy+3VlE1nW+4
+ oZ1/BOeTq8cy2Ej4qLYLhPBrDBtFVV9emN2yMnl3Sr7Tc3xCPVQeZ6Tj+pF5GAJgAAAA=
+X-Change-ID: 20241218-rst-delete-fixes-f2659047f627
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Filipe Manana <fdmanana@suse.com>, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2867; i=jth@kernel.org;
+ h=from:subject:message-id; bh=83Wg5Gj+51lGeT9oK05tK0Zt5yPAtikvh6XcimiDyJ0=;
+ b=owGbwMvMwCV2ad4npfVdsu8YT6slMaTXKhUclf1zdLPVqSa/Ko2d1S/+r1qb+mbn4lyLC2vz5
+ 1tN87UP6ShlYRDjYpAVU2Q5Hmq7X8L0CPuUQ6/NYOawMoEMYeDiFICJMAcy/A+UNlm7+PD+eRJC
+ qgGtzP2nn1bWbF4kIiB++9IkY4nf584zMkxjLXO9KX3j6o4EpZVWJxe7c2qbL9OztZ7epzjXL2+
+ xLA8A
+X-Developer-Key: i=jth@kernel.org; a=openpgp;
+ fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
 
-hi, Niklas,
+Here's another set of fixes for the delete path on RAID stripe-tree backed
+filesystems.
 
-On Fri, Jan 03, 2025 at 10:09:14AM +0100, Niklas Cassel wrote:
-> On Fri, Jan 03, 2025 at 07:49:25AM +0100, Christoph Hellwig wrote:
-> > On Thu, Jan 02, 2025 at 10:49:41AM +0100, Niklas Cassel wrote:
-> > > > > from below information, it seems an 'ahci' to me. but since I have limited
-> > > > > knowledge about storage driver, maybe I'm wrong. if you want more information,
-> > > > > please let us know. thanks a lot!
-> > > > 
-> > > > Yes, this looks like ahci.  Thanks a lot!
-> > > 
-> > > Did this ever get resolved?
-> > > 
-> > > I haven't seen a patch that seems to address this.
-> > > 
-> > > AHCI (ata_scsi_queuecmd()) only issues a single command, so if there is any
-> > > reordering when issuing a batch of commands, my guess is that the problem
-> > > also affects SCSI / the problem is in upper layers above AHCI, i.e. SCSI lib
-> > > or block layer.
-> > 
-> > I started looking into this before the holidays.  blktrace shows perfectly
-> > sequential writes without any reordering using ahci, directly on the
-> > block device or using xfs and btrfs when using dd.  I also started
-> > looking into what the test does and got as far as checking out the
-> > stress-ng source tree and looking at stress-aiol.c.  AFAICS the default
-> > submission does simple reads and writes using increasing offsets.
-> > So if the test result isn't a fluke either the aio code does some
-> > weird reordering or btrfs does.
-> > 
-> > Oliver, did the test also show any interesting results on non-btrfs
-> > setups?
-> > 
-> 
-> One thing that came to mind.
-> Some distros (e.g. Fedora and openSUSE) ship with an udev rule that sets
-> the I/O scheduler to BFQ for single-queue HDDs.
-> 
-> It could very well be the I/O scheduler that reorders.
-> 
-> Oliver, which I/O scheduler are you using?
-> $ cat /sys/block/sdb/queue/scheduler 
-> none mq-deadline kyber [bfq]
+Josef's CI system started tripping over a bad key order due to the usage
+of btrfs_set_item_key_safe() in btrfs_partially_delete_raid_extent() and
+while investigating what is happening there I found more bugs and not
+handled corner cases, which resulted in more fixes and test-cases.
 
-while our test running:
+Unfortunately I couldn't fix the bad key order problem and had to resort
+to re-creating the item in btrfs_partially_delete_raid_extent() and insert
+the new one after deleting the old.
 
-# cat /sys/block/sdb/queue/scheduler
-none [mq-deadline] kyber bfq
+Fstests btrfs/06* are extremely good in exhibiting these failures and
+btrfs/060 has been extensively run while developing this series.
 
-> 
-> 
-> Kind regards,
-> Niklas
+A full CI run of v1 can be found here:
+https://github.com/btrfs/linux/actions/runs/12291668397
+
+Changes to v1:
+- Handle extent_map lookup failure in 1/14
+- Don't use key.offset = -1 for initial search in 3/14
+- Don't break before calling btrfs_previous_item if we're on slot 0 in
+  6/14
+- Remove btrfs_mark_buffer_dirty calls
+- Remove line breaks at 80 chars if we're just a bit over
+- Fix multiple issues on comment styling
+
+Link to v1:
+https://lore.kernel.org/linux-btrfs/cover.1733989299.git.jth@kernel.org
+
+Note:
+I did not copy the implementation of btrfs_drop_extents() as I'd like to
+have feedback on this variant first, before putting the time and energy in
+a "completely new" implementation.
+
+---
+Johannes Thumshirn (14):
+      btrfs: don't try to delete RAID stripe-extents if we don't need to
+      btrfs: assert RAID stripe-extent length is always greater than 0
+      btrfs: fix search when deleting a RAID stripe-extent
+      btrfs: fix front delete range calculation for RAID stripe extents
+      btrfs: fix tail delete of RAID stripe-extents
+      btrfs: fix deletion of a range spanning parts two RAID stripe extents
+      btrfs: implement hole punching for RAID stripe extents
+      btrfs: don't use btrfs_set_item_key_safe on RAID stripe-extents
+      btrfs: selftests: check for correct return value of failed lookup
+      btrfs: selftests: don't split RAID extents in half
+      btrfs: selftests: test RAID stripe-tree deletion spanning two items
+      btrfs: selftests: add selftest for punching holes into the RAID stripe extents
+      btrfs: selftests: add test for punching a hole into 3 RAID stripe-extents
+      btrfs: selftests: add a selftest for deleting two out of three extents
+
+ fs/btrfs/ctree.c                        |   1 +
+ fs/btrfs/raid-stripe-tree.c             | 146 ++++++-
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 660 +++++++++++++++++++++++++++++++-
+ 3 files changed, 776 insertions(+), 31 deletions(-)
+---
+base-commit: 86e936bc54aa920fa4249f3fe96b4420964901f4
+change-id: 20241218-rst-delete-fixes-f2659047f627
+
+Best regards,
+-- 
+Johannes Thumshirn <jth@kernel.org>
+
 
