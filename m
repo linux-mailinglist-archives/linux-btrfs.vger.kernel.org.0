@@ -1,233 +1,407 @@
-Return-Path: <linux-btrfs+bounces-10800-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10801-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0338FA066C9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2025 22:02:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B9D5A06781
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2025 22:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 466253A19F0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2025 21:02:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53DA1167069
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2025 21:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D252036F3;
-	Wed,  8 Jan 2025 21:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17B820408A;
+	Wed,  8 Jan 2025 21:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ihZnCAJG";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="rQAF4w/w"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="atC7xzIl";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xqV5IqB+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCE21AA1EE
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 Jan 2025 21:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736370132; cv=fail; b=PGoHdL6TyoGduC9SL67TlFStQosJThP5M8nFZHgpmOLN1Fe+dcAx8YUnQzan6qgWRqQtK8VeSCdRbPKxIYKbNqhcrnotUw7AJ/r7CzpajMu0n8ovJIWgYzFPPqKHOkZb7NdZcgwbqSY3mpg2K6QRzv5+uLo3+soEIoJW7tqCcVs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736370132; c=relaxed/simple;
-	bh=ete0NtSChlwiqyjBqk8ohxJZrcvF7tk39ksdSaq1RGY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=F2yYCAbsqd7FYmnQvh5waW4L9N0d3cFR9KAmcp0fxPc1/jbpzASV/LM2XvMU34cVJZxbDGGihVrpwo/5jhLzrCcXPiI1OaUYDVKIKew+vjVjh4KDBhxBC4Leym5fsmKevk+lzmd6raca11GN5nGnbFCSA836iJbdStBrH4mCc9Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ihZnCAJG; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=rQAF4w/w; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 508IMrZO029521;
-	Wed, 8 Jan 2025 21:02:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=N8d3CzRXGNpBlymLfP09c4jGUhNtS8eb4vbJZrg9/Ho=; b=
-	ihZnCAJG7J0lZz1bNwaSfWu39g3lAXQHiBk472uQgyYCC4WRdktxKlcFxMg0/ws/
-	txLjt6E0mdpy9Kr85rtY7BY78Rw0MEJz1Ti1LCqPaaBDdFR8l5LWJqurr8oi4Urp
-	Fh29RvEyA4RpjRhtyPn3viCUKF7nqg4lfjfAvV4H1NZMqT6fGxi4bJ/0E0YDm5U9
-	urzvG2aSwhYiArr1tOZ/KEJ1zfnZhXvbUhwmNLGFL/HdstLkjvRedhSuVvEw24AC
-	PzbitKi0eqwML2aIJce6bRUSyflD76fRrkKaim70A338WpFTj77ojAryPTrZYxiu
-	jjDzQO+gFPsGEnmLmFY/Gw==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43xuk080pp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 08 Jan 2025 21:02:08 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 508JtVgZ002803;
-	Wed, 8 Jan 2025 21:02:08 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43xuea96c5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 08 Jan 2025 21:02:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pRicNN1IHRPsod4cndW5olKeknw6VguundfXb+gfnNIEAYFQUC+Qz9Tq5SIC2SNI3fM0nILkbJ2TEZ7KFleeNakwNuCKwivpJuZ0G+gV62z3ys+E+ajR98Og+Z5tuA99oZufP9Hu9dFBn1cxV6+d76ohjnR1usTqqDCL80Ddz9Ab0lcREAiRSg+n2MJVtd58E+WFjPQHPSTY9gbDzrQgiUrEndXccposMh1z77IPb16uSvKGZF0YAg3+BOM71U6DiYnhBnfW4ftHD0tdy2uHkA5K6eKOin2czZZav3DHNcKYZeM7pGp4PC3pXdodfWCDuBSn1KlKflFxLuuPGVijWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N8d3CzRXGNpBlymLfP09c4jGUhNtS8eb4vbJZrg9/Ho=;
- b=hGt8AgaS2D6wJXl4e1Mo0ho46sJxXQ/ERQFkzF1qMJFSaCzwA0iCjBoy1gRMpQPJNfIc47H/1WHzrgH4/mGBxp5jji0EYYh2wGRCct6BbRc26cx50xBuvUtBl+pHt4crAWnEKnOv90jwp5Iij/3r44793X3+7fVqfumaTatEYriHuVB209vhge9lkFAtJbk1VN0zMWbvcT9iUtbbgPqSY3haadAhck53ZTd5gkluzjgCOQ8O+9J5jXteu+mqmqSpuYIF5sphQ7j4iTE3axVj2fCINVcQLOqczS7357Vh4Q+i0d8HzpCfUlZXXLqeHLOx7VShatK5cFudshWzm8HILg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N8d3CzRXGNpBlymLfP09c4jGUhNtS8eb4vbJZrg9/Ho=;
- b=rQAF4w/wpojAkcRzEtRHiGFMwmnsipdL4u3IMCHYonsYHVFbypszVA7Hp+pTP2SogScwznGBGmsGM6t66BwJWTwfO92pmNYYTsHqeLk+x3pGgZksEIrjvd01W7OMvrxEjQUUZRuq6rqM3zXnix/Hk/SMLdegB2IawOLf9PSdko8=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by BY5PR10MB4131.namprd10.prod.outlook.com (2603:10b6:a03:206::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.11; Wed, 8 Jan
- 2025 21:02:06 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%2]) with mapi id 15.20.8335.010; Wed, 8 Jan 2025
- 21:02:05 +0000
-From: Anand Jain <anand.jain@oracle.com>
-To: linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: [PATCH 2/2] fixup: btrfs: introduce RAID1 round-robin read balancing
-Date: Thu,  9 Jan 2025 05:01:36 +0800
-Message-ID: <bfd1e231b875ad2b3a7d9b1749b9a02428dd7426.1736369474.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <cover.1736369474.git.anand.jain@oracle.com>
-References: <cover.1736369474.git.anand.jain@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MA0PR01CA0026.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:b8::14) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CC81F426E;
+	Wed,  8 Jan 2025 21:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736373125; cv=none; b=eBdWNQRvu7K40DlxY23HJCv3OlU4xJu5WITMqstAiJCxIb+lBuKIPbwwHDD9ERIM14mGVq37oDBg0ZT2P02U9O9zegVg9F6Kw05kHx232SJqWaHEqTJFkPdZZLwv6aQQi+zHfJn3hDvkZ+Y6VVF6RDKqqN/1Wj74hF28rvGjHR4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736373125; c=relaxed/simple;
+	bh=8JQcmp3gMKrtVTrfGoSvc2nQ+bjVdU48rxC6yUOKto8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ewW5wFu08UkIAHB+bw/ZimUjVHhP9ZVUBO+5znunUA4GzAOONNPXiiMve/X69HuUKfEHJHQnqEHzGr9TY84unItV+4qpsgGyA34Hpvx/Z4GWCHBL2jzNkoiKuCGAjgtxuoLLZe2LyKwMX7WIPAEOd3/gO+/nK04qYAz7NzBPYwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=atC7xzIl; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xqV5IqB+; arc=none smtp.client-ip=202.12.124.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfout.stl.internal (Postfix) with ESMTP id 597501140187;
+	Wed,  8 Jan 2025 16:52:01 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Wed, 08 Jan 2025 16:52:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1736373121; x=1736459521; bh=VUPDEEwYhG
+	CMmyLlChHZfHD+O/1htB9uQualJZ6WCUE=; b=atC7xzIlO6K7a5THp1yYZlTG9a
+	4EcUG2R/BmXuV82MKa2U2cAE6wXU7p+kWgHUPDHak6+F6e3ES5AxoEqTMZxBW3t+
+	eHT+lvqS66+Wsk5+AS5+Y3xQPzYPYqdoB7Lqm208ztIp1oERM0Jl2uKfho9SpNEo
+	U+ILmqsE0Z7gCf2QeQEvoGIuO1I78n9IHnNc+Mm0igeiHOt8YlvVLVu9qU5U/EIo
+	yCvsXtNhzFnfu7vJXsMprvBwMUqLJtQ8hrbLbkbc7dzBP96hBMVS7rtmh2RECDNb
+	4oViqVo4N5lIGVa/bav1TCXu/P5CA0YspN8tUvrGwcjbQtbPudzOg5FJycZQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1736373121; x=1736459521; bh=VUPDEEwYhGCMmyLlChHZfHD+O/1htB9uQua
+	lJZ6WCUE=; b=xqV5IqB+EQMytx+FZcA45hUprgfCHh0Y0hjW9IaEeSpHhol77tw
+	YwcLrs25fYGvU7w/R+EC/lSSyqq4B8hdWOHnc9YO6Hlndx42SPj++G3ezRAsFNBt
+	gHuBFcU4CfT1c3Nfm+0BlDyiPTvhuh/W1NKMN6BA9KyCi+7YRULDR49kqqI/2DWi
+	uLOl+41gtS7O/whdITvpN3BPBhUA+ruRm6E/i0sh3GjOjAoQ4Tpd/i/jM2gxL9JS
+	Jaqkxe4pzeZP/8NXDa+A1wM9q3Q/x1U/4AQjh4SpU8h1gzz8whSxsbNwPpymFcwY
+	9sQPz5idgioMC8l746lS8NbMYWyKBsE4mQQ==
+X-ME-Sender: <xms:gPN-Z_LvNAPZ3OlWejnrX4kRUzq7ai2elVPB6g1M8LxGaBYpvvlBbg>
+    <xme:gPN-ZzKyK0RlA8q8t8jhPu8D1HwAk9RwR5Gq7mLNWPynBZD4SVeZBUEm0X2msnfKk
+    ibwzah1qZrxGaz5wuM>
+X-ME-Received: <xmr:gPN-Z3sjLOLEl0HkfKj2FxAdLB4dQQCy3j5ncE2dMxZ9Xf900BP1dRd9D0HdoVmiWJ8KU7vQb7GiRy-nXnsFXkxjKqs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudeggedgudehfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
+    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
+    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeefpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhope
+    hlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    shhtrggslhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:gPN-Z4YJ85jwE_mVOxcnktrWScv5o-WFUZjlAD8qGSfH8c26PIExBg>
+    <xmx:gPN-Z2Y21bEedQG9LMKjeMiIf2E5CQvtAq6AH_eKvcKR0k84I-aHOg>
+    <xmx:gPN-Z8BplmGAIaZTzjGkBWYkBDERFudSodlKBnUWYCWXXVEfDEQx0w>
+    <xmx:gPN-Z0YYqx9msXBbeqQKmbAXjiBmzGcXagEp88Rcdw9K_njdPhYuLg>
+    <xmx:gfN-Z2FHem7Xgt7X900RJq8X1l9gjUo2NNwBCToxYVjMXeDKNRFbwL-E>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 8 Jan 2025 16:52:00 -0500 (EST)
+Date: Wed, 8 Jan 2025 13:52:33 -0800
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] btrfs: fix double accounting race when
+ btrfs_run_delalloc_range() failed
+Message-ID: <20250108215233.GA1456944@zen.localdomain>
+References: <cover.1733983488.git.wqu@suse.com>
+ <cc3ceda915ac4832fe8e706f3cb0fd2f5971efcc.1733983488.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BY5PR10MB4131:EE_
-X-MS-Office365-Filtering-Correlation-Id: 291a71bd-4271-419a-45b6-08dd3027b507
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?MwmCxdmQnOEF3kGZxHEGGXWpcwbgOKRxIMTogaofFiSAQMojsDqY9JOnryKB?=
- =?us-ascii?Q?BV3QL15x00hbZnqhSqrU/9aMH7TMZ3zsKuryE4PDS7qEz+fP/7BQvrGaHxFZ?=
- =?us-ascii?Q?HDC+F8oRr2rnrf4ID4Cufowueoe2XRfslb0h+6GNlis0MxRRxgt7TUFufija?=
- =?us-ascii?Q?T7N6fBzHYlKMbxCOqrWXTm5CStA8WisQLuWZHKFNT7NfabSMZW4CfrLoWUm1?=
- =?us-ascii?Q?SDfKyxSpc5SmK+RCx3ZPfteQ60zYhcXDtb2SRLLMbkFoM5D20xeRKCwcjIcj?=
- =?us-ascii?Q?tpfyCmfLM/6rSLMN/0nu7HpWBUWePlvAX1P1kI+X+QJBj2UCPkzMEn961LgQ?=
- =?us-ascii?Q?EqiP+FAgbGsH+Z2L6/Tb6u9sPjAQvtU9wBz7SRIeaMPHwoVafITUeLLaDJ5F?=
- =?us-ascii?Q?TZIiJdWnHR7M7BETm90VXiswn/fSM/ogWwlVrH/Q+IOKu6F1WhhJycaUMdyh?=
- =?us-ascii?Q?JcJqE5cllrxK3DrIi6y4mviy8eYOSP3WcI+6rfNTn9Q/UeRl7aVAt2f8YM2Y?=
- =?us-ascii?Q?FvrVZk3iEYRPKK907XnLBO/CvGtXf0oKHsnCT0kKTKlo7HXCerLGMEFoKtxE?=
- =?us-ascii?Q?Lv4Qw0ahGxrL05+et+ppnCi3XogVm+i5p5LyCfdu1ihz+BRf3vqGUqTedadP?=
- =?us-ascii?Q?+9mRRL39s9+bkYDRxX182BIEKK6/jcEOqgIidA/yOhEiKQXAujBHA51Lpkwv?=
- =?us-ascii?Q?93wxSJ/z176MTR2E+5B5P0tScYAD63Zc3B0gGGk9YnRWo7+PmKvE/kkmZeSJ?=
- =?us-ascii?Q?i+JMmlwlXlCoEOxZHppXU5eK30cfbQojZyLAk22HTASFcxTOX5freXQUh+i1?=
- =?us-ascii?Q?ej2QCTO4bYPy1gUe26sBj1tKCapbJFzZIlWdKVC3OYoJY8pMtMklbo5l/nnd?=
- =?us-ascii?Q?m852xqxlfpcgG2SDrYgsAop3vy3pWm4jepMp2sq+8h6AG4Ia2oi3GrJqUGID?=
- =?us-ascii?Q?TiHW+T4FROITDLhS1ZGtEItWieJ4me58K/DEDis5Q099Jt1cafC2US9iYbYX?=
- =?us-ascii?Q?Dd5hPuonONaNXcR9ibP7AOsgvRrnEEHYraW9Ota/jUCdf6oTUxtQZ3XERssf?=
- =?us-ascii?Q?ahenNIZ8goMRKreux6FuoiSzvzC/11X/uQx11lCP72RMNvqUFdUdFdkEbkyl?=
- =?us-ascii?Q?oCBt7KR/OCkz3xzbH5aKIq8QK42oHt1MvN3/a0ZEPvP+NHyOvKPTKzsCv8ZJ?=
- =?us-ascii?Q?j2biG3x7c/P85DFraT2S6qF8nAAE9w1eu4Cmc5Q18G0mOyJQyhysFEYM1bsN?=
- =?us-ascii?Q?LZlkQhqS8YelF+voaJSIL+on47DkeqiFIRZNcWJg9WdEDQvNPDNiD3lnVY/y?=
- =?us-ascii?Q?cVAPHjQGzJWh60tmntO3n+noGitbI17bHOW6dabfnsKJ7g=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ox/gPNSBf35k/7HwlCJ4tx1D/sSE7+2XiwjERSmFhkbWrZygGjSqyIkur3XT?=
- =?us-ascii?Q?pDXRcQnVf+56irsrr0U9o9kWp9YXSUjmJq3mJQU7jaS8lbvDTt/FSxGvxyEw?=
- =?us-ascii?Q?iL3BUn6/rWtfhlihQsUyDWWuVYnQUQ8YxPF6briqzAomdk0Vco2IzLFNnxkk?=
- =?us-ascii?Q?+XimjOyG3j7ks+mbK+N6c8gT8FlK8t/ftAKQxXYbyTpXwM6QyO4vjWfyTuhi?=
- =?us-ascii?Q?aQZSxWZvO/9KXQVfwhjaGl1ltZbg6NFkWm8oPh1hfv+M/7i9eay6VmrnqFwL?=
- =?us-ascii?Q?HI/X/+aDbUPP4gh4D5OMASqAe3L/1cqEVsvCl34xdeTkDrh1muLrZ4Fu/zso?=
- =?us-ascii?Q?tdNdG+JVJo11zmQM/1Am7czraDOHGpTvoUlvFuEy/tEyBTY0U1sjSfjlHydQ?=
- =?us-ascii?Q?lDeCneWgAIQG4YfGDTlLw9Nl0yQh4sAE6x6B+71N0pKmiBYjfcw3FoFELUkq?=
- =?us-ascii?Q?Wwu3zB3HU2xLCU+PsvJLTacCprlb2+kDCLEtmo2BlMmZYwYhMvHCXrdKZQf1?=
- =?us-ascii?Q?i7HrmHjmzalYpWUZ1z5HgTlLFgzGuzY+Hq2E2aUFoF6mu29HMVeNS+jcrSz+?=
- =?us-ascii?Q?3Vdh1mKR9qANhejAe28mvhwMb89rt6KOI6EjMVCurEHHYEuJTd4QN9/5xplA?=
- =?us-ascii?Q?+hHnCw81RXXf2ysRVmuJ42TVmuTU2w3LLZ2tr1SHodpAz/KUBZs1VVqSbdTI?=
- =?us-ascii?Q?AR4Vb7KWpkA5MIvStXPaIzoBpvfLA6mB/dkxHgnQVP+UeV6GzoNUj/U/TZr2?=
- =?us-ascii?Q?dFSymExwaCh3tUXDREG37gJNnu+F9155VBR1UhWQ24uADpVhMfEHNWWYvg/5?=
- =?us-ascii?Q?rp6Yu5f+IHMXCc4LK75Mh0B2S/UABvUCmBcboCx07Ie/TOmhlhLobi7WRuVr?=
- =?us-ascii?Q?G1kt3oyVHz0TOaoPAb54i/iUL+BAok9X2VXUTrt6R5yAyHE84T4NJQZkrowW?=
- =?us-ascii?Q?nhIPh6dvFJEhF7ysusk+7vEwqyvb7LYMPWAfGQiNe4m3M82mRyXoMcTdnSWL?=
- =?us-ascii?Q?3Gd2vULZwlIdCJJTNK5A3sLPPgk6PSn79bFHnSrVHChd37HVkPInTFRnwCPP?=
- =?us-ascii?Q?bsG6pTRaLJfyx1cDwymRlXJqBMRm4jpWas0ZccLoTusAoIVXHWNQf0jN5LQc?=
- =?us-ascii?Q?NE+HRkYDOyjkUNIrhokS37Y5d7Bh8giGKT3UMVYFopyBv4wsgbYN2YXpDfqI?=
- =?us-ascii?Q?YgXaNG3+0oPEM5HZ1AH2uG42IdSzHxUm2rt6dfjcGybJXliV+aD/Tvd+XZq9?=
- =?us-ascii?Q?9L2MWkNkdLOo4lUI0TXvTbmc81PiNEpTVg4aV6sB1BBMddmFOilzTxE2EW4f?=
- =?us-ascii?Q?I8lxV/gvHTC2BciDvuDyJfM3TjpJuW/cIRUmrqvF29c+Y8QADii9shBwdIaN?=
- =?us-ascii?Q?V96ekkfMGfw0JePJFzX2UZ+lkJ54xhgmzYriWp2cLEqIj116z0EAhDVPiBSR?=
- =?us-ascii?Q?QGclbSPkub9xlkb6MwqrnBkIetobRw/zQYV0VFdZmzCNX3C5NgASva+mxCus?=
- =?us-ascii?Q?8ZJReytLP7jfzs3W+vvJg8RqGW2ViNqknWAuxHCs5WPmobd1/GCScVhU+Orc?=
- =?us-ascii?Q?hMP/SWUKICSZiYXgKYB0NPNPvP1wVHUyqfv583Gq?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	dpE80ow3r/Ig0b+0VCUVQw54L8Urt4+kUqSs7oBaId13r0i8kY6p+KlPOzs7mdS4rhk6S+bYvymFlEOFUsRubW+0tr+CvZiODR5GaPOvKOPPO/eUL1pF43B8Uxz4ZvUDZ0MKU6F0u5HvtykzWuMWYZDMZG8UCeDG03fFJDnrdakLmjftEMmctSMD7WDJmu6sQlmplp19rQsYMtzCbB6wVLu2UAYFfXtKBdZ1Mci3SC8NOxXc/XGvUeCrskXbJAGq29knwWtEQXDGxrV+9q+7ex+miV0dMf9r/8MaoSir1sKAWN8wzZqq5+LCWgZCADtaVeIXfKxQGYdgv8Jhop8fi1SSYxQ/w3kEtr00mH9trtpHnPJvEius5tVLWDBR8MDxRle8ujtjUfd44TT1GEOlJ29JuKFHN9yvH2V59mvsfjQfdegreVO8JXQfufQwiQgj1Qva9SS5ofLOUSOjyniAqUczFOk9IMWHBZQnTh4RYVKhCvIDOr9o3Vn3GXc2GJjwuYsNII1hROi+pW1ja5X5YqTaJ5mWMoH1lTltfDjjPaX2omoyJRjpamWImMl4bBbRwdVHI+JHJLy4mgz0/O0QdvchsjHYsWf1FWppQianCJE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 291a71bd-4271-419a-45b6-08dd3027b507
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2025 21:02:05.8839
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5ETU1CefzxJiPHBdcvk//XCDPFw7JhXREVxi94caiKdyLaK67DxgV4hMXrpKil1onFXHl0bocyvaApZT/d/hGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4131
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-08_05,2025-01-08_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
- definitions=main-2501080171
-X-Proofpoint-ORIG-GUID: 9FAjIKZN_vOavIJ--CmkpD-mODhrAPJi
-X-Proofpoint-GUID: 9FAjIKZN_vOavIJ--CmkpD-mODhrAPJi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc3ceda915ac4832fe8e706f3cb0fd2f5971efcc.1733983488.git.wqu@suse.com>
 
-The member stats_read_blocks has been moved to fs_info, so update its
-usage accordingly in btrfs_read_rr().
+On Thu, Dec 12, 2024 at 04:43:55PM +1030, Qu Wenruo wrote:
+> [BUG]
+> When running btrfs with block size (4K) smaller than page size (64K,
+> aarch64), there is a very high chance to crash the kernel at
+> generic/750, with the following messages:
+> (before the call traces, there are 3 extra debug messages added)
+> 
+>  BTRFS warning (device dm-3): read-write for sector size 4096 with page size 65536 is experimental
+>  BTRFS info (device dm-3): checking UUID tree
+>  hrtimer: interrupt took 5451385 ns
+>  BTRFS error (device dm-3): cow_file_range failed, root=4957 inode=257 start=1605632 len=69632: -28
+>  BTRFS error (device dm-3): run_delalloc_nocow failed, root=4957 inode=257 start=1605632 len=69632: -28
+>  BTRFS error (device dm-3): failed to run delalloc range, root=4957 ino=257 folio=1572864 submit_bitmap=8-15 start=1605632 len=69632: -28
+>  ------------[ cut here ]------------
+>  WARNING: CPU: 2 PID: 3020984 at ordered-data.c:360 can_finish_ordered_extent+0x370/0x3b8 [btrfs]
+>  CPU: 2 UID: 0 PID: 3020984 Comm: kworker/u24:1 Tainted: G           OE      6.13.0-rc1-custom+ #89
+>  Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+>  Hardware name: QEMU KVM Virtual Machine, BIOS unknown 2/2/2022
+>  Workqueue: events_unbound btrfs_async_reclaim_data_space [btrfs]
+>  pc : can_finish_ordered_extent+0x370/0x3b8 [btrfs]
+>  lr : can_finish_ordered_extent+0x1ec/0x3b8 [btrfs]
+>  Call trace:
+>   can_finish_ordered_extent+0x370/0x3b8 [btrfs] (P)
+>   can_finish_ordered_extent+0x1ec/0x3b8 [btrfs] (L)
+>   btrfs_mark_ordered_io_finished+0x130/0x2b8 [btrfs]
+>   extent_writepage+0x10c/0x3b8 [btrfs]
+>   extent_write_cache_pages+0x21c/0x4e8 [btrfs]
+>   btrfs_writepages+0x94/0x160 [btrfs]
+>   do_writepages+0x74/0x190
+>   filemap_fdatawrite_wbc+0x74/0xa0
+>   start_delalloc_inodes+0x17c/0x3b0 [btrfs]
+>   btrfs_start_delalloc_roots+0x17c/0x288 [btrfs]
+>   shrink_delalloc+0x11c/0x280 [btrfs]
+>   flush_space+0x288/0x328 [btrfs]
+>   btrfs_async_reclaim_data_space+0x180/0x228 [btrfs]
+>   process_one_work+0x228/0x680
+>   worker_thread+0x1bc/0x360
+>   kthread+0x100/0x118
+>   ret_from_fork+0x10/0x20
+>  ---[ end trace 0000000000000000 ]---
+>  BTRFS critical (device dm-3): bad ordered extent accounting, root=4957 ino=257 OE offset=1605632 OE len=16384 to_dec=16384 left=0
+>  BTRFS critical (device dm-3): bad ordered extent accounting, root=4957 ino=257 OE offset=1622016 OE len=12288 to_dec=12288 left=0
+>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+>  BTRFS critical (device dm-3): bad ordered extent accounting, root=4957 ino=257 OE offset=1634304 OE len=8192 to_dec=4096 left=0
+>  CPU: 1 UID: 0 PID: 3286940 Comm: kworker/u24:3 Tainted: G        W  OE      6.13.0-rc1-custom+ #89
+>  Hardware name: QEMU KVM Virtual Machine, BIOS unknown 2/2/2022
+>  Workqueue:  btrfs_work_helper [btrfs] (btrfs-endio-write)
+>  pstate: 404000c5 (nZcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>  pc : process_one_work+0x110/0x680
+>  lr : worker_thread+0x1bc/0x360
+>  Call trace:
+>   process_one_work+0x110/0x680 (P)
+>   worker_thread+0x1bc/0x360 (L)
+>   worker_thread+0x1bc/0x360
+>   kthread+0x100/0x118
+>   ret_from_fork+0x10/0x20
+>  Code: f84086a1 f9000fe1 53041c21 b9003361 (f9400661)
+>  ---[ end trace 0000000000000000 ]---
+>  Kernel panic - not syncing: Oops: Fatal exception
+>  SMP: stopping secondary CPUs
+>  SMP: failed to stop secondary CPUs 2-3
+>  Dumping ftrace buffer:
+>     (ftrace buffer empty)
+>  Kernel Offset: 0x275bb9540000 from 0xffff800080000000
+>  PHYS_OFFSET: 0xffff8fbba0000000
+>  CPU features: 0x100,00000070,00801250,8201720b
+> 
+> [CAUSE]
+> The above warning is triggered immediately after the delalloc range
+> failure, this happens in the following sequence:
+> 
+> - Range [1568K, 1636K) is dirty
+> 
+>    1536K  1568K     1600K    1636K  1664K
+>    |      |/////////|////////|      |
+> 
+>   Where 1536K, 1600K and 1664K are page boundaries (64K page size)
+> 
+> - Enter extent_writepage() for page 1536K
+> 
+> - Enter run_delalloc_nocow() with locked page 1536K and range
+>   [1568K, 1636K)
+>   This is due to the inode has preallocated extents.
+> 
+> - Enter cow_file_range() with locked page 1536K and range
+>   [1568K, 1636K)
+> 
+> - btrfs_reserve_extent() only reserved two extents
+>   The main loop of cow_file_range() only reserved two data extents,
+> 
+>   Now we have:
+> 
+>    1536K  1568K        1600K    1636K  1664K
+>    |      |<-->|<--->|/|///////|      |
+>                1584K  1596K
+>   Range [1568K, 1596K) has ordered extent reserved.
+> 
+> - btrfs_reserve_extent() failed inside cow_file_range() for file offset
+>   1596K
+>   This is already a bug in our space reservation code, but for now let's
+>   focus on the error handling path.
+> 
+>   Now cow_file_range() returned -ENOSPC.
+> 
+> - btrfs_run_delalloc_range() do error cleanup <<< ROOT CAUSE
+>   Call btrfs_cleanup_ordered_extents() with locked folio 1536K and range
+>   [1568K, 1636K)
+> 
+>   Function btrfs_cleanup_ordered_extents() normally needs to skip the
+>   ranges inside the folio, as it will normally be cleaned up by
+>   extent_writepage().
+> 
+>   Such split error handling is already problematic in the first place.
+> 
+>   What's worse is the folio range skipping itself, which is not taking
+>   subpage cases into consideration at all, it will only skip the range
+>   if the page start >= the range start.
+>   In our case, the page start < the range start, since for subpage cases
+>   we can have delalloc ranges inside the folio but not covering the
+>   folio.
+> 
+>   So it doesn't skip the page range at all.
+>   This means all the ordered extents, both [1568K, 1584K) and
+>   [1584K, 1596K) will be marked as IOERR.
+> 
+>   And those two ordered extents have no more pending ios, it is marked
+>   finished, and *QUEUED* to be deleted from the io tree.
+> 
+> - extent_writepage() do error cleanup
+>   Call btrfs_mark_ordered_io_finished() for the range [1536K, 1600K).
+> 
+>   Although ranges [1568K, 1584K) and [1584K, 1596K) are finished, the
+>   deletion from io tree is async, it may or may not happen at this
+>   timing.
+> 
+>   If the ranges are not yet removed, we will do double cleaning on those
+>   ranges, triggers the above ordered extent warnings.
+> 
+> In theory there are other bugs, like the cleanup in extent_writepage()
+> can cause double accounting on ranges that are submitted async
+> (compression for example).
+> 
+> But that's much harder to trigger because normally we do not mix regular
+> and compression delalloc ranges.
+> 
+> [FIX]
+> The folio range split is already buggy and not subpage compatible, it's
+> introduced a long time ago where subpage support is not even considered.
+> 
+> So instead of splitting the ordered extents cleanup into the folio range
+> and out of folio range, do all the cleanup inside writepage_delalloc().
+> 
+> - Pass @NULL as locked_folio for btrfs_cleanup_ordered_extents() in
+>   btrfs_run_delalloc_range()
+> 
+> - Skip the btrfs_cleanup_ordered_extents() if writepage_delalloc()
+>   failed
+> 
+>   So all ordered extents are only cleaned up by
+>   btrfs_run_delalloc_range().
+> 
+> - Handle the ranges that already have ordered extents allocated
+>   If part of the folio already has ordered extent allocated, and
+>   btrfs_run_delalloc_range() failed, we also need to cleanup that range.
+> 
+> Now we have a concentrated error handling for ordered extents during
+> btrfs_run_delalloc_range().
 
-This is based on the `for-next` branch in the repo github.com/btrfs/linux.git.
+Great investigation and writeup, thanks!
 
-Fixes: ee37a901a9d2 btrfs: introduce RAID1 round-robin read balancing
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/volumes.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+The explanation and fix both make sense to me. I traced the change in
+error handling and I see how we are avoiding double ending the
+ordered_extent. So with that said, feel free to add:
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e0c64246f8f6..a594f66daedf 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6018,21 +6018,22 @@ static int btrfs_read_rr(const struct btrfs_chunk_map *map, int first, int num_s
- {
- 	struct stripe_mirror stripes[BTRFS_RAID1_MAX_MIRRORS] = { 0 };
- 	struct btrfs_device *device  = map->stripes[first].dev;
--	struct btrfs_fs_devices *fs_devices = device->fs_devices;
-+	struct btrfs_fs_info *fs_info = device->fs_devices->fs_info;
- 	unsigned int read_cycle;
- 	unsigned int total_reads;
- 	unsigned int min_reads_per_dev;
- 
--	total_reads = percpu_counter_sum(&fs_devices->stats_read_blocks);
--	min_reads_per_dev = READ_ONCE(fs_devices->rr_min_contig_read) >>
--			    fs_devices->fs_info->sectorsize_bits;
-+	total_reads = percpu_counter_sum(&fs_info->stats_read_blocks);
-+	min_reads_per_dev = READ_ONCE(fs_info->fs_devices->rr_min_contig_read) >>
-+						       fs_info->sectorsize_bits;
- 
- 	for (int index = 0, i = first; i < first + num_stripes; i++) {
- 		stripes[index].devid = map->stripes[i].dev->devid;
- 		stripes[index].num = i;
- 		index++;
- 	}
--	sort(stripes, num_stripes, sizeof(struct stripe_mirror), btrfs_cmp_devid, NULL);
-+	sort(stripes, num_stripes, sizeof(struct stripe_mirror),
-+	     btrfs_cmp_devid, NULL);
- 
- 	read_cycle = total_reads / min_reads_per_dev;
- 	return stripes[read_cycle % num_stripes].num;
--- 
-2.47.0
+However, I would like to request one thing, if I may.
+While this is all still relatively fresh in your mind, could you please
+document the intended behavior of the various functions (at least the
+ones you modify/reason about) with regards to:
+- cleanup state of the various objects involved like ordered_extents
+  and subpages (e.g., writepage_delalloc cleans up ordered extents, so
+  callers should not, etc.)
+- return values (e.g., when precisely does btrfs_run_delalloc_range
+  return >= 0 ?)
+- anything else you think would be helpful for reasoning about these
+  functions in an abstract way while you are at it.
 
+That request is obviously optional for landing these fixes, but I really
+think it would help if we went through the bother every time we
+deciphered one of these undocumented paths. A restatement of your best
+understanding of the behavior now will really pay off for the next
+person reading this code :)
+
+Thanks,
+Boris
+
+> 
+> Cc: stable@vger.kernel.org # 5.15+
+> Fixes: d1051d6ebf8e ("btrfs: Fix error handling in btrfs_cleanup_ordered_extents")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 37 ++++++++++++++++++++++++++++++++-----
+>  fs/btrfs/inode.c     |  2 +-
+>  2 files changed, 33 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 9725ff7f274d..417c710c55ca 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1167,6 +1167,12 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+>  	 * last delalloc end.
+>  	 */
+>  	u64 last_delalloc_end = 0;
+> +	/*
+> +	 * Save the last successfully ran delalloc range end (exclusive).
+> +	 * This is for error handling to avoid ranges with ordered extent created
+> +	 * but no IO will be submitted due to error.
+> +	 */
+
+nit: last_finished what? I feel this name or comment could use some
+extra work.
+
+> +	u64 last_finished = page_start;
+>  	u64 delalloc_start = page_start;
+>  	u64 delalloc_end = page_end;
+>  	u64 delalloc_to_write = 0;
+> @@ -1235,11 +1241,19 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+>  			found_len = last_delalloc_end + 1 - found_start;
+>  
+>  		if (ret >= 0) {
+> +			/*
+> +			 * Some delalloc range may be created by previous folios.
+> +			 * Thus we still need to clean those range up during error
+> +			 * handling.
+> +			 */
+> +			last_finished = found_start;
+>  			/* No errors hit so far, run the current delalloc range. */
+>  			ret = btrfs_run_delalloc_range(inode, folio,
+>  						       found_start,
+>  						       found_start + found_len - 1,
+>  						       wbc);
+> +			if (ret >= 0)
+> +				last_finished = found_start + found_len;
+>  		} else {
+>  			/*
+>  			 * We've hit an error during previous delalloc range,
+> @@ -1274,8 +1288,21 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+>  
+>  		delalloc_start = found_start + found_len;
+>  	}
+> -	if (ret < 0)
+> +	/*
+> +	 * It's possible we have some ordered extents created before we hit
+> +	 * an error, cleanup non-async successfully created delalloc ranges.
+> +	 */
+> +	if (unlikely(ret < 0)) {
+> +		unsigned int bitmap_size = min(
+> +			(last_finished - page_start) >> fs_info->sectorsize_bits,
+> +			fs_info->sectors_per_page);
+> +
+> +		for_each_set_bit(bit, &bio_ctrl->submit_bitmap, bitmap_size)
+> +			btrfs_mark_ordered_io_finished(inode, folio,
+> +				page_start + (bit << fs_info->sectorsize_bits),
+> +				fs_info->sectorsize, false);
+>  		return ret;
+> +	}
+>  out:
+>  	if (last_delalloc_end)
+>  		delalloc_end = last_delalloc_end;
+> @@ -1509,13 +1536,13 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+>  
+>  	bio_ctrl->wbc->nr_to_write--;
+>  
+> -done:
+> -	if (ret) {
+> +	if (ret)
+>  		btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
+>  					       page_start, PAGE_SIZE, !ret);
+> -		mapping_set_error(folio->mapping, ret);
+> -	}
+>  
+> +done:
+> +	if (ret < 0)
+> +		mapping_set_error(folio->mapping, ret);
+>  	/*
+>  	 * Only unlock ranges that are submitted. As there can be some async
+>  	 * submitted ranges inside the folio.
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index c4997200dbb2..d41bb47d59fb 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2305,7 +2305,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
+>  
+>  out:
+>  	if (ret < 0)
+> -		btrfs_cleanup_ordered_extents(inode, locked_folio, start,
+> +		btrfs_cleanup_ordered_extents(inode, NULL, start,
+>  					      end - start + 1);
+>  	return ret;
+>  }
+> -- 
+> 2.47.1
+> 
 
