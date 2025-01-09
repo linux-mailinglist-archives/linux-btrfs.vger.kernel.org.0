@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10810-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763A4A06BB9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 03:56:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C0D2A06C7C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 04:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59200161CF0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 02:56:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD37918870E9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 03:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4D51474A9;
-	Thu,  9 Jan 2025 02:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072631632E4;
+	Thu,  9 Jan 2025 03:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fkpiV3tK"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LQ58jHJg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF1D84FAD;
-	Thu,  9 Jan 2025 02:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3105715A848;
+	Thu,  9 Jan 2025 03:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736391373; cv=none; b=aKFuIzGqzSeIgiBM83LCFT0sveOPJn2GtYsv+ZcGcnwOwOb3W0rVy2ZxL4WLyeX1hSp4yejDWx4LxGiYKimr6Yt+lPf/lw9uKVsClXq7wsqmPN9a1Gw2Jrf5jZY1CGF3nQRC8vvvEQfMX4KU8S4V9/9CwRRG3gW+oFFHmc0kKtk=
+	t=1736394318; cv=none; b=NEcvLKEeLpifdLkPsktHkZ8jBB5xJbkXnpkpEZEdxTOVmF/FzlbxnGMgnCfnEU0yBej8CXHxGFrRfWlguZ6WORqG4SlX1Ppo6IshN9WF03x55HK0xEGdJTrG7gQOc7ghXLcZvyPIkuln5LuTxDtkjoQ8qvuKfGoe5mIZ50Z6D4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736391373; c=relaxed/simple;
-	bh=GUCSzEe/2Sg+7iHjW+lM7fa5gHrj0e61fal8NeRMaEE=;
+	s=arc-20240116; t=1736394318; c=relaxed/simple;
+	bh=y8DGOB4LM2ZR6Z/yaPdemZTIeq3ttIsHR6F/flatJvA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N9nCyt3muRs3cn7sceFXsB+1xOiL+2krkJ/MJ/ZEyJSDoQAsJRnrc+05hDIXXqvUmrwQKltdvPe2ZPoKauEs7DHYgQ1tGz2TnpKWLtyIFuDxGFIUXwjgYLDLFkhqGcUpbg4l3pdCQMcV7I2W2MFxaQrldBJZMMdDPR9e09OeLgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fkpiV3tK; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=lAmAHRYvKh2GsFlwHvng6IIo2YAGl87e60zYoi8QwNAt5og4oL8Bte8H64Ht9GeFyerp+WkhDbQxZPhoh97IOjuOF/wPPX5NODJ21SDR9LCHxy7xaVVKpGdef4rPEqZtuLsf4vKL4i2agobPIExFDbqGhtpScX4CJQSDyC9s+0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LQ58jHJg; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1736391367; x=1736996167; i=quwenruo.btrfs@gmx.com;
-	bh=4mdm1hSevhgHHxUZPtdAA17CQWuumekbSUrS+Z2Toi8=;
+	s=s31663417; t=1736394309; x=1736999109; i=quwenruo.btrfs@gmx.com;
+	bh=OQEDOZZuxdXebSwGZ+PCSqu9/qulW1yF7vf/tpLyAWE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=fkpiV3tKat/jqnb/bU2CDo6+bnq8LoaGvj/xeCO+KkIzHJVQAdkKXoYgOSBTCNJa
-	 nONjilzPKxNyuZOtMD7STKplJympSQLj+/2r3NKbNVNx2NvDN0qV+T3a0oY4Euz9d
-	 cVBO49lE+s4Yr4qUxylS1QJKrhWkSKZYLL3qrYzG+fn2RV6iHBdvEWj+qSZKYDAY0
-	 U5hV/G6y8Mm/Z60daMAtkbX1MPZ3JGnt/3t9OmzYmKKNY9ifDUdXXRUmQoC1YxJx+
-	 /55+RFU9y3p28zL9F7JZFFWaFCAScGJtD8c9zi6d5qcdY9d+DRBlyO+FIGuYQE2GG
-	 2K5bXEMxC5u1WutCnA==
+	b=LQ58jHJgCpXgxPjC9lyxjPnTqimc/qbgidVZhvtEwMGKNHGargkB5IWmR3sTovgT
+	 O++1CP4+Tua6yw7tvuRTaTcpC4M2i/fqijVMFEepUmno1hJf34CM5J/U6fpd0+ewS
+	 TrBB5M6HNgED8LReD2WHIz4lvHl0O3WcCeCSfDgyatDGyr8OQ7lCmOOqwX4xX3ZXC
+	 CL61aPLhE7sNXEsdjVuM9itPkJlA+m7CQOy5OQ/qjFaaa5M/B3/QzbmCL4ll1pWdc
+	 qKZgjiOTd2c249UwUPeiVgVsdboP1wmMmETvDHt9gVTM7nusM/z+/t/BV1tNeOHP4
+	 ZFIsrzEKeFUHeIy7Kw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBlxM-1tJaAt1SW4-007uY0; Thu, 09
- Jan 2025 03:56:07 +0100
-Message-ID: <bc2d3f57-b66a-4a95-bcdd-cf0e9ef7b691@gmx.com>
-Date: Thu, 9 Jan 2025 13:26:04 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdvmY-1u3PbX1Ft0-00o9YD; Thu, 09
+ Jan 2025 04:45:09 +0100
+Message-ID: <deea65a5-8870-4c33-9446-7d531b4b8451@gmx.com>
+Date: Thu, 9 Jan 2025 14:15:06 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -94,28 +94,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
 In-Reply-To: <20250108222458.GB1456944@zen.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:56GpRVFNgTSd/FsaIgnKHwyIzRUjqwov0MZVZSanGP0xw+9ZRUp
- aC56ZY3MWPwCAUKtVmAPNPx/IJgSWOwt/Ghv6y7QFBnBvI6kUZgvq6WeZRynZoMPRFBBILt
- Qq4XLLp57zQ2Gfyy+s0Q/2NlRJgljJCGnh3/dNuV/Y2qWKagA+aoFfhr/O0czLurchEJSU/
- KXpP5YKk8Sugk74NutlDA==
+X-Provags-ID: V03:K1:iDksX7qNpJkVImqjvzIxtOt4ImKJ66qZbz7HyW+4PctlDKOAKot
+ N4u7oa6tonc6vuK/AMjT7hLOdkbNIIYWWFR76pZJaO+snQk6zq2kS7OMzr4iS+B73sUz1qI
+ Q0tdGTqiWY117S90OZ3gHuhbFDsOJWYCO6MNEOhDdTlQATitLAL5KrIDjtugIscQGw0pDY8
+ IyMkzUA27Ej5HPr4VVl/A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ZjRR/rZuuI0=;os1aQqvETpiPAIgfU3GKyRx55r7
- A7j59l4WpQQzlh8wLWoO3RuRZ3fZ4TGlHZWr+GjvbMXOfhk9futa+JojnAz5gmeWEvS8RPMSV
- OMX207uy8WTM/QV5Pmp1vXyZ2E84lDbTBdgMWTvCjgPjhdGDs6yO6kSzCJNmTpRBZJE2/DYMI
- 7v1ML1ocp2ConIsapIMQChdTKFmkI680XCPE+E2CZhwRD4obcABW/X9iJaxcg5ItTT48J+K/Z
- jkSbXkZI6AxLT79+5pQ2We+qdNWLKr83WaKZ5+AKuCqsuk/Pk6XVZvF478Rkwp4gb+EnN7Ix/
- W+bb3x6WdaxeUJEYYT1LL4CRT1dO1CAT4F9/dVx+YYy8ywKSYYw6xx4ZA1pV+UKUPbOl/DP0p
- e59vWF79mvTjvOk9M+0S51u6lmsMc951UF5pe10xDpvZj3petYNM3p8hT30TWbFUokVNW0EaU
- u1AjIljLLAwoW3cTix7ZZprSOB9qF3LyKN0DWeRVz0GRSeeVod9f/qkQS534k+lMZ2C3nA4Vb
- gPMEY7UzzPtPIZGv/kT2fddsymGKs1e2g0G25c8yuGxpbvOl9h3EXOO+fe+iuJFe2LrrED6c+
- beYMeNfopEyDbDuCrR+3ltTax/nolDyE+RDlcDz+qgXItJ95lVFNpRFm0joFHFcM1AB92jTfW
- v7IzoihbymnIN1oYdyIE1+kRfcLmjTbx0dkz2Fo9d4WEkeoO1C47TbZ1MP+vIypjqTUxkhBUH
- EzOZO3Um+InIVGe1j+2xnr/8/gbjK/I2XFKMVDYujiG22cOuXU6J2SfeDk3XJYteQl3gc7Pqp
- ue/DWFYkfIHbuLN+VIRXiw5pjfeC0clCmbiiVGOSALzEsV16BSmdgxsOoWZJCrvDYc0pcWNqR
- 8iWzKz9UfnXpFQOvJikcsbfG6Kqv9NU/XFZjE4VrTiHfDhxdseGly0F2fQBGe2FIzBizOti4h
- NRzPQDJEtngKYzTYTqJj+jEYO2Iz57F5ttiZgaX4kTRudFABvcK8u89iQ/kihs2/7AggfLaVl
- wI3ChFpTHdDrdFKL8KXjaEfQV7dJlo8uzTO5wGuDe/tg5wVBP30MFw3Cklmd18sZGyxsxy/s+
- gDkumCP4KsLMWGEmvzFzfX32kPKvsS
+UI-OutboundReport: notjunk:1;M01:P0:YPIrflijl00=;w3d7aN2vfgFvZHdV0S+zpJmjDHk
+ LEYJ5Zg1auLuz3GdKUolwJn81LPuztgfIcS2I+LmK47PZr05QbhYPVcsq3ExOI5NZmUXuj82T
+ zM2AyoyRGmbIO9bXl8kdJAIdYqd1Pg72H8x9CnV3XhjTFb/nytO/zJz8ACmr1O+3IENiYhAfd
+ cGreAewx9Bz/RzVbySWK2nvlad90hg/gnJV4p/t99UhE24RXYDedj3o6hetvpAPd5uNP+EbXu
+ jiVWl4C7cOU4yNPhHR83GWDdWyVEdozLi6yURP2WwzGjgay+/xKnN/ameu1xRN2+DQzp0QPKr
+ wtLU+b00ydusK6Org1mwDgznZ7qfluP7OitlHjFGmfCTye2ggYx/ym0c7+oerkd/IfblS6cKt
+ dcxw8YWe+udRoOfxVfLiiIkZuqgM/VPlFyLnyQOT7YnW/plNmeLuvxgX/wvybl69QAFtRHyqZ
+ 1ngCb2WOOGvSEOzFRHRMzsxYQsuXkXz3tcsTTvf40mGm2LARhs7jUz+f75JcrzJSXyapefrdP
+ pEEgfbc/DUCwD84i+K3ZKAEJHzsIWjiLdAvvUjURj7rezXgcn07PdeWFU3fgN10GMmF530bEi
+ tHQmD4B5mXbrkmsqjyg9cI/ObLm2YWzBxIvefbTef1taskCvR5B8UhSmvp4/v5fCvny7M4QTB
+ GaAqRWKtjPyagZgZ2nMcHcXyWJxi+6C2KuQ0ZgOmd/ugqLEXXAxyQsAA9znRauAnUsKd0cFN4
+ k/sVg07MWw2BlEfNo6Flj2D5P469pG4pz8PPjD7J/EXgSLj75yEuRHMMP5uiP1G1qgw5AayH6
+ wfu3yuq3ok5veXtc7wu8Lp/12DmxQjLsnowulXcErLlQi8hIqCMENz6PcMF4YIylP+KPqLFpX
+ E0ZiOfdP926epQ2kh1fDv8jvSSvDv51kUQi8LTMgmDoegVO5r1wZAWAYzOIiOteRS7sKM6Qjo
+ kbw2vRIzLeXKATt6CQ93qal2e4TSFZ41pZqqx0g0zQRzYAAy7GMVmGpzUjxP1kuHZu/YE+mb8
+ Nk+ihYeUP5D02C9ss1BZVTfvIY0kyis1aAjUYD/qGOxj2ccvNrD168RqQ5q4MjFw6phChzaGd
+ Nk9IqL+j7A3CybqJesofdaoiaAMcH+
 
 
 
@@ -178,20 +178,6 @@ UI-OutboundReport: notjunk:1;M01:P0:ZjRR/rZuuI0=;os1aQqvETpiPAIgfU3GKyRx55r7
 > It relies on submit_one_sector being the only error path in
 > extent_writepage_io. Any future error in the loop would have to create a
 > shared "per sector" error handling goto in the loop I guess?
-
-In the long run I'm planning to make extent_writepage_io() to have no
-error path, by:
-
-- Remove cow fixup mechanism completely
-
-- Call extent_writepage_io() immediately after each delalloc range has
-   OE allocated
-   By this we will always have a valid extent map, thus no way to error
-   out.
-
-So at least the function extent_writepage_io() should not get more error
-paths, but only less.
-
 >
 > Not a hard "no", in the sense that I think the code is correct for now
 > (aside from my submit_one_bio question) but curious if we can give this
@@ -235,20 +221,6 @@ io(struct btrfs_inode *inode,
 > call submit_one_bio.
 >
 > What is the meaning of it?
-
-It to make sure we have submit the existing bio.
-
-This is a little overkilled, because we have one submit_write_bio() at
-immediately after extent_write_cache_pages() call.
-
-But that's exactly a pattern of delayed cleanup, also an easy bug prone
-(just like the OE cleanup I'm fixing), so I explicitly added a
-submission for it.
-
-I'll add extra comments explaining it.
-
-Thanks,
-Qu
 >
 >> +			/*
 >> +			 * Failed to grab the extent map which should be very rare.
@@ -282,6 +254,23 @@ o(struct btrfs_inode *inode,
 > should go into this logic (naming it seems kind of annoying) and then
 > setting it in both the error and submitted_io paths. I think that
 > reduces headache in thinking about boolean logic, slightly.
+
+Unfortunately I can not find a good alternative to this double boolean
+usages.
+
+I can go a single boolean, but it will be called something like
+@no_error_nor_submission.
+
+Which is the not only the worst naming, but also a hell of boolean
+operations for a single bool.
+
+So I'm afraid the @error and @submitted_io will still be better for this
+case.
+
+The other comments will be addressed properly.
+
+Thanks,
+Qu
 >
 >> -	if (!submitted_io) {
 >> +	if (!submitted_io && !error) {
