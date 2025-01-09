@@ -1,172 +1,314 @@
-Return-Path: <linux-btrfs+bounces-10876-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0693A07F61
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 18:54:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C156A07F77
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 19:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE630169945
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 17:54:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DB93A10CE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 18:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650AF194A60;
-	Thu,  9 Jan 2025 17:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C641946A2;
+	Thu,  9 Jan 2025 18:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O1D7lDuW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uJHfKmNd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O1D7lDuW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uJHfKmNd"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="oZCjvyzo";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WsoDe/JO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F92D19047F
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2025 17:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AB018787A;
+	Thu,  9 Jan 2025 18:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736445254; cv=none; b=dgJX3EwKJ8MiWPfYb4X4miHk3GqT2IjwC9wk4z2pjtBOncC9bE1K/lLYhNBbDmb/F/2qkpLbsH0fTr91ZS9bV1z3IrgCRYcGtqt1SeLQIA0Dj7FN5hvYizLkwarNeLS0jIxpUc5RCI27r3qwbyYO08KgxO/ANkVa3D6iTRW4hR0=
+	t=1736445957; cv=none; b=XO7UESCItRQikYwmOlPrRosWCu0jDJiyQBp91z+LLVWoORrvoGX9O7GULTM6uYMfBmEZiq7lj/RootXnQaPfOt3e2K/9vfTFHRish2Nm5kSoRLKC9uBvpixN8j+7pJQH5icSxy8jqJXzQBt3V5u7XH+iaMFcxV3ycnUz3KPLucg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736445254; c=relaxed/simple;
-	bh=JytGjsKm1DGiqXsTM8V/YLlxLFFf4I0y7FIR/esoF9w=;
+	s=arc-20240116; t=1736445957; c=relaxed/simple;
+	bh=ByhjISKepdce2A/sy1lzmh/brAH0DC4UESOCwje0Zoc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GIv19lEnmFiIhD40EOUGMrjyDSv2t86Lt+MtdLcB/nIKZIBo3twuJuV5csC66+dKeIf7GCRKMXBVLCnIXM2zAjjvpO8kjchHY7N8NqmbvMikIqyEvPM2Uh0HpvTV85V6CJFVOAOLJLARmShfOfMJNDZgzEOuyQiH+uUxsWxlIdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O1D7lDuW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uJHfKmNd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O1D7lDuW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uJHfKmNd; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6C5392115C;
-	Thu,  9 Jan 2025 17:54:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736445247;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooIcttySaAlk6Rsyg6kvLC6xlsqhqXD6kG+2wPN2Vzw=;
-	b=O1D7lDuWYAAk5nydxSpqJ0PYiTQ8h9mPo9IDc2xE9O3+AGvPOLOPAXOY7hnBGpJczSdgzq
-	McVpRRMcLImzQF84FxtySrjVRI1mr1bJDjiSbWNA9cm309zH1ADQtzfk+3b0chSSPULOmn
-	FQb8f1yOZ1y7hbFlICg5R84vmBF/sN4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736445247;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooIcttySaAlk6Rsyg6kvLC6xlsqhqXD6kG+2wPN2Vzw=;
-	b=uJHfKmNdjyeTMp6iimSlM/leBSeRMU9DSJWv/BjPWN57vfAPNr/sbEdFhe905S9hHbR2h7
-	Ge9WWmjeBTE4ZAAg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736445247;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooIcttySaAlk6Rsyg6kvLC6xlsqhqXD6kG+2wPN2Vzw=;
-	b=O1D7lDuWYAAk5nydxSpqJ0PYiTQ8h9mPo9IDc2xE9O3+AGvPOLOPAXOY7hnBGpJczSdgzq
-	McVpRRMcLImzQF84FxtySrjVRI1mr1bJDjiSbWNA9cm309zH1ADQtzfk+3b0chSSPULOmn
-	FQb8f1yOZ1y7hbFlICg5R84vmBF/sN4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736445247;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ooIcttySaAlk6Rsyg6kvLC6xlsqhqXD6kG+2wPN2Vzw=;
-	b=uJHfKmNdjyeTMp6iimSlM/leBSeRMU9DSJWv/BjPWN57vfAPNr/sbEdFhe905S9hHbR2h7
-	Ge9WWmjeBTE4ZAAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55A2713876;
-	Thu,  9 Jan 2025 17:54:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 3A2qFD8NgGfxHwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 09 Jan 2025 17:54:07 +0000
-Date: Thu, 9 Jan 2025 18:54:05 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Jing Xia <j.xia@samsung.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org, johannes.thumshirn@wdc.com
-Subject: Re: Re: Re: [PATCH] fs/btrfs: Pass write-hint for buffered IO
-Message-ID: <20250109175405.GH2097@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240920055208.29635-1-j.xia@samsung.com>
- <CGME20241115030334epcas5p3e8a335a111b09c1296ff7dc67b5413e7@epcas5p3.samsung.com>
- <20241115030512.3319144-1-j.xia@samsung.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZR3jxoFkEVGyAYlq7nC7+bDRVH/t1OXFEXxziby3DbJefOyc/18gdc02LsaTbCrCN4e55BHmKIA2hfG5Qp5rfXeQk++wKrlz6miWPb237OEXUMHNHy1zStOtK26s3kQHFy5UqqjvXpnGj/Bo/iw6qDuOajsmrDTuNgU/sjBTRtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=oZCjvyzo; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WsoDe/JO; arc=none smtp.client-ip=202.12.124.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id C124B254012C;
+	Thu,  9 Jan 2025 13:05:53 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Thu, 09 Jan 2025 13:05:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1736445953;
+	 x=1736532353; bh=Ad0gQtnGTFWpHuVDZchoARKLTa0nVhdE9DU4+Nw0jLI=; b=
+	oZCjvyzoCgDYlGZ7cl3ymXX34Ljw8I8JVvQgGR+2bHzdtCEFxIXZfnJWlKW9KpZO
+	/SUjWdhM/x3t0YuS0TEuMEyuGzJxaI0REG33SXUPgzcGeqKTLcVm0eFwRsfLy7JS
+	cIC1ztOQyfjNWyf/ng/4PXsbNoCx2KzTCzD1uC7AJcwZq/X0cK3kL69tJjrQ4DOU
+	BCQWneE58m6D3RddpUeV3jYVFYYUgWJEbfo+TF91SjvCJvEkAobmt216kt+K7HG6
+	muMhMr/184FcMvyO0Knkkf14iWbeX+fkU4dREPFvVM1RzR/LeB50AV+pOnkWaPdh
+	fQ8vDwqlVMSeLGMn4ePYZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1736445953; x=
+	1736532353; bh=Ad0gQtnGTFWpHuVDZchoARKLTa0nVhdE9DU4+Nw0jLI=; b=W
+	soDe/JO2DE26/B00qxZAx4vPiRpu0WOo8Bt+WUa5yCR+Ju4tMHqtOJQfGka1sWT1
+	/GpsOKlQBZvTQ7XRRuMthQvnMAFPpLoHUVww1h3VW9TRyDn02hLgoj+1qy+RCmXy
+	uS//+D0TaAhS6mji3w/n7xuapx2gUA9xEV17rC4w7M3H1XUzx1n3Lct13RlGpwso
+	V2Qq6nSb+LkkHcSTCxKm+idNFzZZFmfr98X8c+LvCkAMVKGhP5PMEuyN+kmUdOPJ
+	03ue7cjyWX4W8Ah6jsmK/N7FcuW3H/EcFtwHDbsT4oZjdiStAJ4uOWKbBS55rTCz
+	FWKoT0ibGQ3MSRVw//0Aw==
+X-ME-Sender: <xms:ARCAZx30bDZAYwIGJbEB6-8BIGYtEAv-ozGPd4Fp5K0SLOxUNsVjkw>
+    <xme:ARCAZ4EaaIii18z9ZrIt4TZsDu2sGwlDs97WrN38pSdiKXMudxGwawYYlYAFxEHN0
+    C_eYDIzOGkmF449hws>
+X-ME-Received: <xmr:ARCAZx6Hb-AkiYj6CBhkOKs_A3Hq81HxdBSNvyXmKu7NQX-QFvniFqJdQevxXjKoS_JL1sBHrn_wSmUTrPTro4L6LJ4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegiedguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddt
+    jeenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
+    enucggtffrrghtthgvrhhnpedulefhtdfhteduvdethfeftdeitdethedvtdekvdeltddv
+    veegtdeuuddtiedtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepgedpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtohepqhhufigvnhhruhhordgsthhrfhhssehgmhigrd
+    gtohhmpdhrtghpthhtohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhu
+    gidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsthgrsg
+    hlvgesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:ARCAZ-3nbJuqkSjHvSF7iJJ2cy00fQ__Cxh-ewglqv3W959xAn6LVw>
+    <xmx:ARCAZ0FyfZbrTBUpvijFvJonfwyc9LMpJMXuPDVfjZd0xXCVLQIGcg>
+    <xmx:ARCAZ_-n4vpWvpfrtbl9Fy1dZQtfboTISsiPMjimAhdUWzVNaX3aSA>
+    <xmx:ARCAZxkzIumdD-rYBt92hHO7vNmn88rlp-ATkvSMleqSSRuS2524-Q>
+    <xmx:ARCAZwiss4kM1JFtW64rIkOZa-R2SdjkXjgvAkiLGi7kuJZVMV6vHxo8>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Jan 2025 13:05:52 -0500 (EST)
+Date: Thu, 9 Jan 2025 10:06:24 -0800
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/9] btrfs: fix double accounting race when
+ extent_writepage_io() failed
+Message-ID: <20250109180624.GA1932498@zen.localdomain>
+References: <cover.1733983488.git.wqu@suse.com>
+ <51e0c5f464256c4a59a872077d560cb56b7509a2.1733983488.git.wqu@suse.com>
+ <20250108222458.GB1456944@zen.localdomain>
+ <deea65a5-8870-4c33-9446-7d531b4b8451@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241115030512.3319144-1-j.xia@samsung.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <deea65a5-8870-4c33-9446-7d531b4b8451@gmx.com>
 
-On Fri, Nov 15, 2024 at 11:05:12AM +0800, Jing Xia wrote:
-> > > On Tue, Sep 03, 2024 at 01:40:12PM +0800, j.xia wrote:
-> > > > Commit 449813515d3e ("block, fs: Restore the per-bio/request data
-> > > > lifetime fields") restored write-hint support in btrfs. But that is
-> > > > applicable only for direct IO. This patch supports passing
-> > > > write-hint for buffered IO from btrfs file system to block layer
-> > > > by filling bi_write_hint of struct bio in alloc_new_bio().
-> > > 
-> > > What's the status of the write hints? The commit chain is revert,
-> >   
-> >   "enum rw_hint" include/linux/rw_hint.h defines the status.
-> > 
-> > > removal and mentioning that NVMe does not make use of the write hint so
-> > > what hardware is using it?
-> > 
-> >   New NVMe Flexible Data Placement (FDP) SSD (TP4146) is able to 
-> >   use hint to place data in different streams. 
-> >   The related patch is
-> >   Link: https://lore.kernel.org/all/20240910150200.6589-6-joshi.k@samsung.com
-> > 
-> > > 
-> > > The patch is probably ok as it passes the information from inode to bio,
-> > > otherwise btrfs does not make any use of it, we have heuristics around
-> > > extent size, not the expected write lifetime expectancy.
-> > 
+On Thu, Jan 09, 2025 at 02:15:06PM +1030, Qu Wenruo wrote:
 > 
 > 
-> fcntl() interface can be used to set/get write life time hints.
-> Now the write hint can be passed from inode->i_write_hint to
-> bio->bi_write_hint for direct IO. This patch completes this
-> feature for buffered IO.
+> 在 2025/1/9 08:54, Boris Burkov 写道:
+> > On Thu, Dec 12, 2024 at 04:43:56PM +1030, Qu Wenruo wrote:
+> > > [BUG]
+> > > If submit_one_sector() failed inside extent_writepage_io() for sector
+> > > size < page size cases (e.g. 4K sector size and 64K page size), then
+> > > we can hit double ordered extent accounting error.
+> > > 
+> > > This should be very rare, as submit_one_sector() only fails when we
+> > > failed to grab the extent map, and such extent map should exist inside
+> > > the memory and have been pinned.
+> > > 
+> > > [CAUSE]
+> > > For example we have the following folio layout:
+> > > 
+> > >      0  4K          32K    48K   60K 64K
+> > >      |//|           |//////|     |///|
+> > > 
+> > > Where |///| is the dirty range we need to writeback. The 3 different
+> > > dirty ranges are submitted for regular COW.
+> > > 
+> > > Now we hit the following sequence:
+> > > 
+> > > - submit_one_sector() returned 0 for [0, 4K)
+> > > 
+> > > - submit_one_sector() returned 0 for [32K, 48K)
+> > > 
+> > > - submit_one_sector() returned error for [60K, 64K)
+> > > 
+> > > - btrfs_mark_ordered_io_finished() called for the whole folio
+> > >    This will mark the following ranges as finished:
+> > >    * [0, 4K)
+> > >    * [32K, 48K)
+> > >      Both ranges have their IO already submitted, this cleanup will
+> > >      lead to double accounting.
+> > > 
+> > >    * [60K, 64K)
+> > >      That's the correct cleanup.
+> > > 
+> > > The only good news is, this error is only theoretical, as the target
+> > > extent map is always pinned, thus we should directly grab it from
+> > > memory, other than reading it from the disk.
+> > > 
+> > > [FIX]
+> > > Instead of calling btrfs_mark_ordered_io_finished() for the whole folio
+> > > range, which can touch ranges we should not touch, instead
+> > > move the error handling inside extent_writepage_io().
+> > > 
+> > > So that we can cleanup exact sectors that are ought to be submitted but
+> > > failed.
+> > > 
+> > > This provide much more accurate cleanup, avoiding the double accounting.
+> > 
+> > Analysis and fix both make sense to me. However, this one feels a lot
+> > more fragile than the other one.
+> > 
+> > It relies on submit_one_sector being the only error path in
+> > extent_writepage_io. Any future error in the loop would have to create a
+> > shared "per sector" error handling goto in the loop I guess?
+> > 
+> > Not a hard "no", in the sense that I think the code is correct for now
+> > (aside from my submit_one_bio question) but curious if we can give this
+> > some more principled structure.
+> > 
+> > Thanks,
+> > Boris
+> > 
+> > > 
+> > > Cc: stable@vger.kernel.org # 5.15+
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > >   fs/btrfs/extent_io.c | 32 +++++++++++++++++++-------------
+> > >   1 file changed, 19 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > > index 417c710c55ca..b6a4f1765b4c 100644
+> > > --- a/fs/btrfs/extent_io.c
+> > > +++ b/fs/btrfs/extent_io.c
+> > > @@ -1418,6 +1418,7 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+> > >   	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> > >   	unsigned long range_bitmap = 0;
+> > >   	bool submitted_io = false;
+> > > +	bool error = false;
+> > >   	const u64 folio_start = folio_pos(folio);
+> > >   	u64 cur;
+> > >   	int bit;
+> > > @@ -1460,11 +1461,21 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+> > >   			break;
+> > >   		}
+> > >   		ret = submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
+> > > -		if (ret < 0)
+> > > -			goto out;
+> > > +		if (unlikely(ret < 0)) {
+> > > +			submit_one_bio(bio_ctrl);
+> > 
+> > This submit_one_bio is confusing to me. submit_one_sector failed and the
+> > subsequent comment says "there is no bio submitted" yet right here we
+> > call submit_one_bio.
+> > 
+> > What is the meaning of it?
+> > 
+> > > +			/*
+> > > +			 * Failed to grab the extent map which should be very rare.
+> > > +			 * Since there is no bio submitted to finish the ordered
+> > > +			 * extent, we have to manually finish this sector.
+> > > +			 */
+> > > +			btrfs_mark_ordered_io_finished(inode, folio, cur,
+> > > +					fs_info->sectorsize, false);
+> > > +			error = true;
+> > > +			continue;
+> > > +		}
+> > >   		submitted_io = true;
+> > >   	}
+> > > -out:
+> > > +
+> > >   	/*
+> > >   	 * If we didn't submitted any sector (>= i_size), folio dirty get
+> > >   	 * cleared but PAGECACHE_TAG_DIRTY is not cleared (only cleared
+> > > @@ -1472,8 +1483,11 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+> > >   	 *
+> > >   	 * Here we set writeback and clear for the range. If the full folio
+> > >   	 * is no longer dirty then we clear the PAGECACHE_TAG_DIRTY tag.
+> > > +	 *
+> > > +	 * If we hit any error, the corresponding sector will still be dirty
+> > > +	 * thus no need to clear PAGECACHE_TAG_DIRTY.
+> > >   	 */
+> > 
+> > submitted_io is only used for this bit of logic, so you could consider
+> > changing this logic by keeping a single variable for whether or not we
+> > should go into this logic (naming it seems kind of annoying) and then
+> > setting it in both the error and submitted_io paths. I think that
+> > reduces headache in thinking about boolean logic, slightly.
+> 
+> Unfortunately I can not find a good alternative to this double boolean
+> usages.
+> 
+> I can go a single boolean, but it will be called something like
+> @no_error_nor_submission.
+> 
+> Which is the not only the worst naming, but also a hell of boolean
+> operations for a single bool.
 
-FYI, I'm merging this to Btrfs for 6.14. I've talked to Johannes,
-there seems to be a use case for RocksDB at least that can set the
-temperatures and code-wise it's trivial change. The status of device
-support is still ongoing. Given the hint is only passed by the
-filesystem it's up to the application to use it properly.
+I think you could do something like:
+
+needs_reset_writeback = false;
+then set it to true in either case, whether you submit an io or hit an
+error.
+
+It's your call, though, I won't be upset if you leave it as is.
+
+> 
+> So I'm afraid the @error and @submitted_io will still be better for this
+> case.
+> 
+> The other comments will be addressed properly.
+> 
+> Thanks,
+> Qu
+> > 
+> > > -	if (!submitted_io) {
+> > > +	if (!submitted_io && !error) {
+> > >   		btrfs_folio_set_writeback(fs_info, folio, start, len);
+> > >   		btrfs_folio_clear_writeback(fs_info, folio, start, len);
+> > >   	}
+> > > @@ -1493,7 +1507,6 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+> > >   {
+> > >   	struct inode *inode = folio->mapping->host;
+> > >   	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+> > > -	const u64 page_start = folio_pos(folio);
+> > >   	int ret;
+> > >   	size_t pg_offset;
+> > >   	loff_t i_size = i_size_read(inode);
+> > > @@ -1536,10 +1549,6 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+> > > 
+> > >   	bio_ctrl->wbc->nr_to_write--;
+> > > 
+> > > -	if (ret)
+> > > -		btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
+> > > -					       page_start, PAGE_SIZE, !ret);
+> > > -
+> > >   done:
+> > >   	if (ret < 0)
+> > >   		mapping_set_error(folio->mapping, ret);
+> > > @@ -2319,11 +2328,8 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+> > >   		if (ret == 1)
+> > >   			goto next_page;
+> > > 
+> > > -		if (ret) {
+> > > -			btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
+> > > -						       cur, cur_len, !ret);
+> > > +		if (ret)
+> > >   			mapping_set_error(mapping, ret);
+> > > -		}
+> > >   		btrfs_folio_end_lock(fs_info, folio, cur, cur_len);
+> > >   		if (ret < 0)
+> > >   			found_error = true;
+> > > --
+> > > 2.47.1
+> > > 
+> > 
+> 
 
