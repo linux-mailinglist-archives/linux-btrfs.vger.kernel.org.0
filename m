@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10822-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10823-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC67A07317
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 11:28:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D9A6A0730B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 11:27:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DBAF3A97EB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 10:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881DF165EE2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 10:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05E4218ADA;
-	Thu,  9 Jan 2025 10:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29382218ABA;
+	Thu,  9 Jan 2025 10:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ujxbIChE";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ujxbIChE"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="J5C/am2r";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Gg/R9FXY"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F8D2165FB
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2025 10:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9B021661F
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2025 10:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736418258; cv=none; b=T4cpdqCjElBMp90pUab+asLiDAeV0NDnbKQaJvj/Pf1XgoFsUSVJ8gUjDaWPr+Q6XOdrs9DB/VjuroxjEbe+OPA7qxVxGmyIspUFYAvT06C+QN0gZstgq2bZb6Gf4P/sMS3hXJ3VIdezx7jVUovams5LaBB2BFQtpVENRjzm1x4=
+	t=1736418262; cv=none; b=gc2NLuxPAi/4frUQ/CtH4eu/2Z+XhjN8fB7Fjy0RKVrxFpkiwkEPr5fFEOM7ggXPI8uBqKuFQiYa7qc4qSfDwkhRUVvnXX7SsBkMFzAJ6zdxt4YV9jCw+fESUiAXsb6OZ0KYLe2v1g7HXFWs/Mt9RDp7PkRtAGnbff45GmwRNv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736418258; c=relaxed/simple;
-	bh=9U9wD9lRcp5CqwVKTxPQJY9n01Lm07SMSW3FkrD1CLA=;
+	s=arc-20240116; t=1736418262; c=relaxed/simple;
+	bh=2LutsFzyfDrXgUrpRLZtRrnZ4erTRJ55GCm+5BTTeos=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AoLfVIW0wkMetN6K1bAdmxLo4YkyCY89claXMCeP5fxsXCR+e/eXV2cGVPYWPMvF1j8km7DGUDpqa5YBC3Wf1prsJgMxl9QC0H2aeMjHUmzsKNnbjngOigxfLg22uODvbV5KIBrqFI9l3mOBDX872Q5oRKqIrV6Sof8iZqbXB+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ujxbIChE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ujxbIChE; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=bj3oR0VH+vqXwFT0fAah9j+9w11a/oQnK8RNG/OXnDoOKH03KRWBOTsbmg/YXA1Heu+Nq6nCLEgvpwC6quaTTM4KwZcRdiDqPYn0AYkur2m411O3U+OG3y22/hgUeLP+if+O7cGtl9yyYT4mDmvW59Du019PC3ygDGw4RufRvsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=J5C/am2r; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Gg/R9FXY; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7AE5A1F385;
-	Thu,  9 Jan 2025 10:24:15 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D38061F393;
+	Thu,  9 Jan 2025 10:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1736418255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1736418258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=P2Z1oUOSiahU46pbxR39GLsIfqyI99KLD78q5Sco5nE=;
-	b=ujxbIChEvTAhm4CvrWDxVN88iPsQGVFblwx8MP21Lxsr1te9oKGdBNzTsn0QJWYT4UqA2v
-	DUl2pcOYlv9FpQNA19SoS2iyx0+5OGt9biOCJFkxVARp3cVMGgrLUIjopupyz5MG6CchUu
-	gR5KT+Mnn6SwzsqKynJyyUaF6eMKOXA=
+	bh=JDW+wVkJ/SaTlvtgwEsyy0G19ZsGbuDK6uLyrIyWKXQ=;
+	b=J5C/am2rUhLjMDsNy+yXJFWq3hE2zyPSBsLVc6NQ7UTaKtXNVf3U3E+YhOhIP6t1kOOtmW
+	T+I1gazzkXyeASF85D60yqO8nYvngVIysuM0fu8BQxQ3gdmhX6jhhVgTRMeDmeUyR59bwN
+	+ZgHlVFu1bD7LUbvJjOAf4p/WZegblM=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1736418255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1736418257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=P2Z1oUOSiahU46pbxR39GLsIfqyI99KLD78q5Sco5nE=;
-	b=ujxbIChEvTAhm4CvrWDxVN88iPsQGVFblwx8MP21Lxsr1te9oKGdBNzTsn0QJWYT4UqA2v
-	DUl2pcOYlv9FpQNA19SoS2iyx0+5OGt9biOCJFkxVARp3cVMGgrLUIjopupyz5MG6CchUu
-	gR5KT+Mnn6SwzsqKynJyyUaF6eMKOXA=
+	bh=JDW+wVkJ/SaTlvtgwEsyy0G19ZsGbuDK6uLyrIyWKXQ=;
+	b=Gg/R9FXYRmxdSHn10jR+lSnfZWsw9TKUy/xtFJeSmVKpQdflTWVpHo2C4adKzfnhJVrd3p
+	g6vmWHuK4it/gC9ep6cgb6+q34PaxkHfzMzx/ZhFOjYmukei7mEXDARqI50vmW4fjAdu1F
+	Q7L6Iv+u+HAUH2SShoOFlRE62ZmQbEU=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 73DAC139AB;
-	Thu,  9 Jan 2025 10:24:15 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC23D139AB;
+	Thu,  9 Jan 2025 10:24:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 81dHHM+jf2cxEQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Thu, 09 Jan 2025 10:24:15 +0000
+	id i1fUMdGjf2c3EQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Thu, 09 Jan 2025 10:24:17 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 06/18] btrfs: rename __get_extent_map() and pass btrfs_inode
-Date: Thu,  9 Jan 2025 11:24:15 +0100
-Message-ID: <4e3082660246c416f1c71b639b1c295ec5b4098f.1736418116.git.dsterba@suse.com>
+Subject: [PATCH 07/18] btrfs: use btrfs_inode in extent_writepage()
+Date: Thu,  9 Jan 2025 11:24:17 +0100
+Message-ID: <0efccf0ac1b7252196ded5d591a4bcf910b18d20.1736418116.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1736418116.git.dsterba@suse.com>
 References: <cover.1736418116.git.dsterba@suse.com>
@@ -84,7 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -103,65 +103,68 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
 	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-The double underscore naming scheme does not apply here, there's only
-only get_extent_map(). As the definition is changed also pass the struct
-btrfs_inode.
+As extent_writepage() is internal helper we should use our inode type,
+so change it from struct inode.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_io.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ fs/btrfs/extent_io.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 39113772241b..f503735c302c 100644
+index f503735c302c..eca28c99bbc8 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -895,9 +895,9 @@ void clear_folio_extent_mapped(struct folio *folio)
- 	folio_detach_private(folio);
- }
- 
--static struct extent_map *__get_extent_map(struct inode *inode,
--					   struct folio *folio, u64 start,
--					   u64 len, struct extent_map **em_cached)
-+static struct extent_map *get_extent_map(struct btrfs_inode *inode,
-+					 struct folio *folio, u64 start,
-+					 u64 len, struct extent_map **em_cached)
+@@ -1457,15 +1457,15 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+  */
+ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl)
  {
- 	struct extent_map *em;
- 	struct extent_state *cached_state = NULL;
-@@ -916,14 +916,14 @@ static struct extent_map *__get_extent_map(struct inode *inode,
- 		*em_cached = NULL;
- 	}
+-	struct inode *inode = folio->mapping->host;
+-	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
++	struct btrfs_inode *inode = BTRFS_I(folio->mapping->host);
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	const u64 page_start = folio_pos(folio);
+ 	int ret;
+ 	size_t pg_offset;
+-	loff_t i_size = i_size_read(inode);
++	loff_t i_size = i_size_read(&inode->vfs_inode);
+ 	unsigned long end_index = i_size >> PAGE_SHIFT;
  
--	btrfs_lock_and_flush_ordered_range(BTRFS_I(inode), start, start + len - 1, &cached_state);
--	em = btrfs_get_extent(BTRFS_I(inode), folio, start, len);
-+	btrfs_lock_and_flush_ordered_range(inode, start, start + len - 1, &cached_state);
-+	em = btrfs_get_extent(inode, folio, start, len);
- 	if (!IS_ERR(em)) {
- 		BUG_ON(*em_cached);
- 		refcount_inc(&em->refs);
- 		*em_cached = em;
- 	}
--	unlock_extent(&BTRFS_I(inode)->io_tree, start, start + len - 1, &cached_state);
-+	unlock_extent(&inode->io_tree, start, start + len - 1, &cached_state);
+-	trace_extent_writepage(folio, inode, bio_ctrl->wbc);
++	trace_extent_writepage(folio, &inode->vfs_inode, bio_ctrl->wbc);
  
- 	return em;
- }
-@@ -979,8 +979,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 			end_folio_read(folio, true, cur, iosize);
- 			break;
- 		}
--		em = __get_extent_map(inode, folio, cur, end - cur + 1,
--				      em_cached);
-+		em = get_extent_map(BTRFS_I(inode), folio, cur, end - cur + 1, em_cached);
- 		if (IS_ERR(em)) {
- 			end_folio_read(folio, false, cur, end + 1 - cur);
- 			return PTR_ERR(em);
+ 	WARN_ON(!folio_test_locked(folio));
+ 
+@@ -1489,13 +1489,13 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+ 	if (ret < 0)
+ 		goto done;
+ 
+-	ret = writepage_delalloc(BTRFS_I(inode), folio, bio_ctrl);
++	ret = writepage_delalloc(inode, folio, bio_ctrl);
+ 	if (ret == 1)
+ 		return 0;
+ 	if (ret)
+ 		goto done;
+ 
+-	ret = extent_writepage_io(BTRFS_I(inode), folio, folio_pos(folio),
++	ret = extent_writepage_io(inode, folio, folio_pos(folio),
+ 				  PAGE_SIZE, bio_ctrl, i_size);
+ 	if (ret == 1)
+ 		return 0;
+@@ -1504,7 +1504,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+ 
+ done:
+ 	if (ret) {
+-		btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
++		btrfs_mark_ordered_io_finished(inode, folio,
+ 					       page_start, PAGE_SIZE, !ret);
+ 		mapping_set_error(folio->mapping, ret);
+ 	}
 -- 
 2.47.1
 
