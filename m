@@ -1,308 +1,241 @@
-Return-Path: <linux-btrfs+bounces-10884-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10885-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70505A083A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 00:46:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECC9A085F8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 04:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0D22166374
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2025 23:46:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1E931889FC8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 03:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E68E1A2C0B;
-	Thu,  9 Jan 2025 23:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C731E32CB;
+	Fri, 10 Jan 2025 03:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="luGYRE1l"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YpCjYSSY";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YpCjYSSY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD492054EB;
-	Thu,  9 Jan 2025 23:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6362F3E
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 03:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736466355; cv=none; b=NyEkD6Q3PQe7u3kLCXiElQsJMBP2gUTBLmjc3yWPqNYXwz9IP+2nHqUlJwuTPEAob7nvDkcYJP2L37wJhZrVHB8Mx1vC2h/Hu3taRlXXrwYET5x08Q38VvuK1U23gzWaYtnKeB7NTOL/vQCD42EMsYNtH50KcK2OyCleTwj6g+0=
+	t=1736479928; cv=none; b=IfV9rw71gn5GuZrDqi+1tYRyebJQ2cRMLStF22GiNHjU9lzOw5lV8Yd/KuRw7ybM5l6/wILhXGR+BDThF2AAL1HrAuyKP2y9Y8GfWvedrBvDgr525KVUfGm+O+fJVN4LxYmL48bOYs8zkZUiI83DoaFis4on9Tiq5M+hl/gXrAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736466355; c=relaxed/simple;
-	bh=yXYWaKztjNOG3RMN2LkLsqnfokDD2MLDGaQnBYQKfQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jyj8pWoC8WK8250mAoMwCYGNi5AfCHL0hB2R6E1vdjul9AVPu3Ftf1DUPMBygMB5Jhlt9apB4hlO8E6NQmK/rd9CovInaP5ZpKUWiAmxLRhwKW1NVIX3h+uZuFCLAfP7IZaTrQPHPUTwEMmtm6jydmOq7np+ygNjNGRHGLCjVmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=luGYRE1l; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1736466350; x=1737071150; i=quwenruo.btrfs@gmx.com;
-	bh=ECZplTzzuVEb/IEdOM7/c3D64DuteHuWfXR7zTh2IgY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=luGYRE1ltNLGZR1XSOKV8QpgOTZ4UqoGeK0g9sUOrU9yzZ4YpbbiVy0IUZUfBBif
-	 /rs68T5RqOTzaNVYwqFEWPgN+5X9DWLPeyubi2NigYq4/t4pMyHWIkZ2Oefvvj+QF
-	 nuP+yrhaqeUG0nIObHC/PmYmWfGFGmjhwoT/D6xrmYekUzELWAYMoUopwYdPfUnO7
-	 ep8BK6tGHw+MaMXb+ZvN4yuvbbRWSZkxpHictB4wyG3oe4Q6GpIXBa6TNKSNDWWV6
-	 Ff1MLQZGIHSHKA0ZVuhTuO1XWxta1KYjSo7Ky0dqQxARKIl4FU/AtLKc1M6ydX7mU
-	 J7b4XxKUHxR+x641Rg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbAci-1szAJB37Qu-00ohVA; Fri, 10
- Jan 2025 00:45:50 +0100
-Message-ID: <1cdcc76f-82e4-4072-bee6-0922f4b41511@gmx.com>
-Date: Fri, 10 Jan 2025 10:15:46 +1030
+	s=arc-20240116; t=1736479928; c=relaxed/simple;
+	bh=7T21Y2RnnSu8wN68Xpj8VCz4B3wLOdAllJs+AfNUz3w=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=g1PIZ1+oCLvZMil1JV05GT6sh08ZC2yN6jzuxe+jRHQUaGQ7xZmMSW3rEmE35dv+gfUfCYZuudjn9l8JhFdugza40i+ogEh2MYg6Nu0XA9DCAqIavNMpYJs7d1V6/X4bcBJvIOUPLA4EaS9yxTWjQ+3l00Hq+NXLyIFxfC/s0XU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YpCjYSSY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YpCjYSSY; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 508DC21169
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 03:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1736479924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=JWnXzON3f2ZYJ7+i4FIgI2YcRrcoOkPCGjCl2E1njiU=;
+	b=YpCjYSSYrf44Z4YNQZKvZuUtzrzlTg0So6ep2R7P5mcjM/bCFo/068nFxsUn2+Q3h+q+nD
+	3cfHvqfSWRQA5yZ4pkO0wipCCUzvlJdWmDvpg6bwZFi90JRrrMMTMGPYth/BjaOcrcLz0v
+	auWX0c68UUQYnGJ4WZvLmZIYCAZxPv4=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=YpCjYSSY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1736479924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=JWnXzON3f2ZYJ7+i4FIgI2YcRrcoOkPCGjCl2E1njiU=;
+	b=YpCjYSSYrf44Z4YNQZKvZuUtzrzlTg0So6ep2R7P5mcjM/bCFo/068nFxsUn2+Q3h+q+nD
+	3cfHvqfSWRQA5yZ4pkO0wipCCUzvlJdWmDvpg6bwZFi90JRrrMMTMGPYth/BjaOcrcLz0v
+	auWX0c68UUQYnGJ4WZvLmZIYCAZxPv4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D15E1397D
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 03:32:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hiBUD7OUgGe0NQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 03:32:03 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 00/10] btrfs: error handling fixes
+Date: Fri, 10 Jan 2025 14:01:31 +1030
+Message-ID: <cover.1736479224.git.wqu@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/9] btrfs: do proper folio cleanup when
- run_delalloc_nocow() failed
-To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-References: <cover.1733983488.git.wqu@suse.com>
- <d3a8799772abd1efd309a61f695a1774a742bfb9.1733983488.git.wqu@suse.com>
- <20250109232659.GB2153241@zen.localdomain>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250109232659.GB2153241@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YGh4KMJjo5nHQXJK/djfUuJa9+TqDlIISvlPVmMXwqsv2r8TTD5
- Zs3B2CmDod59fSyklCxSksAxcEm9EP5F9OazUvlg/ta3GCPQg5XPxvkI6bjxE6WaCkm1QZt
- FhTbUpxNC1BWaiP6HggCsz1LXkJ7AsuBMh9w7DzGVmpAs2fQ7JpGLvyZUKWC+FbXqJLLjuX
- +g9R/ek4O+18NacYpDlfQ==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 508DC21169
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9J5gBOLq1XQ=;UDo8SHfxYW1g0JuOyo9hTr7OAIq
- JKYC12hPRZtG05g7TP+8bh289ZjQ6RhshOXeEqtzJrpNLYAix1Y9iHZjJBgIt/ZhpqVfBLrby
- 7wArqUZQn0xPzi+qwqpT9jxOdq0wy6M+LkqzdPsNfSrmDIGBnMc74BZJNg6NwniDr+4V8Q9B7
- m5vsDLD850MIPsFYNWc8y5YvIXaaDlC3UcawG/cDQVQJKXWAg+aGptw0LseMrMuV0ykgfxH8G
- jfNHUJmGrBN3+l5NVTonz16aCfe9Y4HfNOndlofUIIKw2q2+xGW6tgYz9AmPQF4Q8EDfr/q/b
- Y3PKCD3nM0OazG0BE/YDUUuafn8kqAoROZIBg3HLoeYdEofelqMNZDTZ3hhrxBzwInwSze+8y
- a/kvmlPG3L2DvJ0xA+WkIYBFT2tZxhtaeTP53QPm60tw6uxqLwsogvEqSIUC+aLDiZ3RART8a
- Pabjj7ZROzpE0wo8LVuga9+Nbt5RQ+9B7+Y8+vKcHM2qQopfn2aX3xCq5iCVHkUYd7JqScW3y
- UY0DTM+vp9SKcZczUaK0g6BnU+GiwJzryf4CLio+PXDvuoDCbR5sL+ANF7nQjGP72AOw4EwDv
- lmqNXSd0FFiMuwHy80BQ3JM6MOefDW0806J2c1XlbmLHhecECs0rsyqEwhb1lwEQyJAV5sUIt
- DlYMjSMqff2J8Tb19zzLunmQvV9YjiwQ1U8TPYYZuJeRCiPaxLeQ+uASRi+yQJCEzpwsPXYro
- fx86no1p14PQA/G5whjUCbMOjYBvBNVy6AF/07vKSjuffQDdR2iK4I8/yfnKgWm9Avtv+oIaQ
- dt/+7fRKbq9AvO4RsVPDVfpKFnO21aivgCx/NUJYyoDDh/ch5lThNgGreepM4mdC3haVMgbVk
- m8a0SCsNvMnC4cjE6+8/gxS+QLeaHy7ZPJUz3aXf1s/lIa5WiJm7+hCV08R/rStfDzeahbhcE
- 0TkSL1ClKzKaT5uMTY/YudrQY3EuNRwjdHGd3KPNLBaclpcYOTmtq+Uyh6y4rTwasY+o89heR
- EmvFmI5pdOj/4O2zMmDhiyB/uxZ0/jOXZ2uem4GC+JeuXNlOfGpRkRog8bMq3AblA7l79jcR+
- 7xU2fnFYxlT/7SDNCMeByffr/kw/18
+X-Spam-Level: 
+
+[CHANGELOG]
+v3:
+- Add a new patch to move the ordered extent cleanup into
+  cow_file_range() and run_delalloc_nocow()
+
+- Update the comment of writepage_dealloc()
+  To give a more detailed view on what should be done for all the 3
+  return value patterns
+
+- Rename the variable @last_finished to @last_finished_delalloc_end
+  And enhance the comment of it.
+
+- Add a comment on why we want submit_one_bio() after
+  submit_one_sector() failed
+
+- Add a comment explaining what cleanup_dirty_folios() does
+
+- Update the ASCII graph to use @cur_offset other than @cur_start
+
+v2:
+- Fix the btrfs_cleanup_ordered_extents() call inside
+  btrfs_run_delalloc_range()
+
+  Since we no longer call btrfs_mark_ordered_io_finished() if
+  btrfs_run_delalloc_range() failed, the existing
+  btrfs_cleanup_ordered_extents() call with @locked_folio will cause the
+  subpage range not to be properly cleaned up.
+
+  This can lead to hanging ordered extents for subpage cases.
+
+- Update the commit message of the first patch
+  With more detailed analyse on how the double accounting happens.
+  It's pretty complex and very lengthy, but is easier to understand (as
+  least I hope so).
+
+  The root cause is the btrfs_cleanup_ordered_extents()'s range split
+  behavior, which is not subpage compatible and is cursed in the first
+  place.
+
+  So the fix is still the same, by removing the split OE handling
+  completely.
+
+- A new patch to cleanup the @locked_folio parameter of
+  btrfs_cleanup_ordered_extents()
+
+I believe there is a regression in the last 2 or 3 releases where
+metadata/data space reservation code is no longer working properly,
+result us to hit -ENOSPC during btrfs_run_delalloc_range().
+
+One of the most common situation to hit such problem is during
+generic/750, along with other long running generic tests.
+
+Although I should start bisecting the space reservation bug, but I can
+not help but fixing the exposed bugs first.
+
+This exposed quite some long existing bugs, all in the error handling
+paths, that can lead to the following crashes
+
+- Double ordered extent accounting
+  Triggers WARN_ON_OCE() inside can_finish_ordered_extent() then crash.
+
+  This bug is fixed by the first 3 patches.
+  The first patch is the most important one, since it's pretty easy to
+  trigger in the real world, and very long existing.
+
+  The second patch is just a precautious fix, not easy to happen in the
+  real world.
+
+  The third one is also possible in the real world, but only possible
+  with the recently enabled subpage compression write support.
+
+- Subpage ASSERT() triggered, where subpage folio bitmap differs from
+  folio status
+  This happens most likey in submit_uncompressed_range(), where it
+  unlock the folio without updating the subpage bitmaps.
+
+  This bug is fixed by the 3rd patch.
+
+- WARN_ON() if out-of-tree patch "btrfs: reject out-of-band dirty folios
+  during writeback" applied
+  This is a more complex case, where error handling leaves some folios
+  dirty, but with EXTENT_DELALLOC flag cleared from extent io tree.
+
+  Such dirty folios are still possible to be written back later, but
+  since there is no EXTENT_DELALLOC flag, it will be treat as
+  out-of-band dirty flags and trigger COW fixup.
+
+  This bug is fixed by the 4th and 5th patch
+
+With so many existing bugs exposed, there is more than enough motivation
+to make btrfs_run_delalloc_range() (and its delalloc range functions)
+output extra error messages so that at least we know something is wrong.
+
+And those error messages have already helped a lot during my
+development.
+
+Patches 6~8 are here to enhance the error messages.
+
+And the final one is to cleanup the unnecessary @locked_folio parameter
+of btrfs_cleanup_ordered_extents().
+
+With all these patches applied, at least fstests can finish reliably,
+otherwise it frequently crashes in generic tests that I was unable to
+finish even one full run since the space reservation regression.
 
 
+Qu Wenruo (10):
+  btrfs: fix double accounting race when btrfs_run_delalloc_range()
+    failed
+  btrfs: fix double accounting race when extent_writepage_io() failed
+  btrfs: fix the error handling of submit_uncompressed_range()
+  btrfs: do proper folio cleanup when cow_file_range() failed
+  btrfs: do proper folio cleanup when run_delalloc_nocow() failed
+  btrfs: subpage: fix the bitmap dump for the locked flags
+  btrfs: subpage: dump the involved bitmap when ASSERT() failed
+  btrfs: add extra error messages for delalloc range related errors
+  btrfs: remove the unused @locked_folio parameter from
+    btrfs_cleanup_ordered_extents()
+  btrfs: move ordered extent cleanup to where they are allocated
 
-=E5=9C=A8 2025/1/10 09:56, Boris Burkov =E5=86=99=E9=81=93:
-[...]
->
-> I like this function. Can you add a simple doc with pre and post
-> conditions please?
+ fs/btrfs/extent_io.c | 104 +++++++++++++----
+ fs/btrfs/inode.c     | 268 +++++++++++++++++++++++++------------------
+ fs/btrfs/subpage.c   |  48 +++++---
+ fs/btrfs/subpage.h   |  13 +++
+ 4 files changed, 290 insertions(+), 143 deletions(-)
 
-Sure, no problem.
-
-Would be something like this:
-
-/*
-  * To cleanup dirty folios when failed to run a delalloc range.
-  *
-  * When running a delalloc range, we may need to split into
-  * different extents (fragmentation or NOCOW limits), and if
-  * we hit error, previous successfully executed ranges also need
-  * to have their dirty flags cleared, with the address space marked
-  * as error.
-  */
->
->> +static void cleanup_dirty_folios(struct btrfs_inode *inode,
->> +				 struct folio *locked_folio,
->> +				 u64 start, u64 end, int error)
->> +{
->> +	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
->> +	struct address_space *mapping =3D inode->vfs_inode.i_mapping;
->> +	pgoff_t start_index =3D start >> PAGE_SHIFT;
->> +	pgoff_t end_index =3D end >> PAGE_SHIFT;
->> +	u32 len;
->> +
->> +	ASSERT(end + 1 - start < U32_MAX);
->> +	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
->> +	       IS_ALIGNED(end + 1, fs_info->sectorsize));
->> +	len =3D end + 1 - start;
->> +
->> +	/*
->> +	 * Handle the locked folio first.
->> +	 * btrfs_folio_clamp_*() helpers can handle range out of the folio ca=
-se.
->> +	 */
->> +	btrfs_folio_clamp_clear_dirty(fs_info, locked_folio, start, len);
->> +	btrfs_folio_clamp_set_writeback(fs_info, locked_folio, start, len);
->> +	btrfs_folio_clamp_clear_writeback(fs_info, locked_folio, start, len);
->
-> Could this clear dirty; set writeback; clear writeback sequence benefit
-> from a good name and a helper function too?
-
-Sure, what about btrfs_folio_clamp_finish_io()?
->
->> +
->> +	for (pgoff_t index =3D start_index; index <=3D end_index; index++) {
->> +		struct folio *folio;
->> +
->> +		/* Already handled at the beginning. */
->> +		if (index =3D=3D locked_folio->index)
->> +			continue;
->> +		folio =3D __filemap_get_folio(mapping, index, FGP_LOCK, GFP_NOFS);
->> +		/* Cache already dropped, no need to do any cleanup. */
->> +		if (IS_ERR(folio))
->> +			continue;
->> +		btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len);
->> +		btrfs_folio_clamp_set_writeback(fs_info, folio, start, len);
->> +		btrfs_folio_clamp_clear_writeback(fs_info, folio, start, len);
->> +		folio_unlock(folio);
->> +		folio_put(folio);
->> +	}
->> +	mapping_set_error(mapping, error);
->> +}
->> +
->>   /*
->>    * when nowcow writeback call back.  This checks for snapshots or COW=
- copies
->>    * of the extents that exist in the file, and COWs the file as requir=
-ed.
->> @@ -1976,6 +2018,11 @@ static noinline int run_delalloc_nocow(struct bt=
-rfs_inode *inode,
->>   	struct btrfs_root *root =3D inode->root;
->>   	struct btrfs_path *path;
->>   	u64 cow_start =3D (u64)-1;
->> +	/*
->> +	 * If not 0, represents the inclusive end of the last fallback_to_cow=
-()
->> +	 * range. Only for error handling.
->> +	 */
->> +	u64 cow_end =3D 0;
->>   	u64 cur_offset =3D start;
->>   	int ret;
->>   	bool check_prev =3D true;
->> @@ -2136,6 +2183,7 @@ static noinline int run_delalloc_nocow(struct btr=
-fs_inode *inode,
->>   					      found_key.offset - 1);
->>   			cow_start =3D (u64)-1;
->>   			if (ret) {
->> +				cow_end =3D found_key.offset - 1;
->>   				btrfs_dec_nocow_writers(nocow_bg);
->>   				goto error;
->>   			}
->> @@ -2209,11 +2257,12 @@ static noinline int run_delalloc_nocow(struct b=
-trfs_inode *inode,
->>   		cow_start =3D cur_offset;
->>
->>   	if (cow_start !=3D (u64)-1) {
->> -		cur_offset =3D end;
->>   		ret =3D fallback_to_cow(inode, locked_folio, cow_start, end);
->>   		cow_start =3D (u64)-1;
->> -		if (ret)
->> +		if (ret) {
->> +			cow_end =3D end;
->>   			goto error;
->> +		}
->>   	}
->>
->>   	btrfs_free_path(path);
->> @@ -2221,12 +2270,42 @@ static noinline int run_delalloc_nocow(struct b=
-trfs_inode *inode,
->>
->>   error:
->>   	/*
->> -	 * If an error happened while a COW region is outstanding, cur_offset
->> -	 * needs to be reset to cow_start to ensure the COW region is unlocke=
-d
->> -	 * as well.
->> +	 * There are several error cases:
->> +	 *
->> +	 * 1) Failed without falling back to COW
->> +	 *    start         cur_start              end
->> +	 *    |/////////////|                      |
->> +	 *
->> +	 *    For range [start, cur_start) the folios are already unlocked (e=
-xcept
->> +	 *    @locked_folio), EXTENT_DELALLOC already removed.
->> +	 *    Only need to clear the dirty flag as they will never be submitt=
-ed.
->> +	 *    Ordered extent and extent maps are handled by
->> +	 *    btrfs_mark_ordered_io_finished() inside run_delalloc_range().
->> +	 *
->> +	 * 2) Failed with error from fallback_to_cow()
->> +	 *    start         cur_start   cow_end    end
->> +	 *    |/////////////|-----------|          |
->> +	 *
->> +	 *    For range [start, cur_start) it's the same as case 1).
->> +	 *    But for range [cur_start, cow_end), the folios have dirty flag
->> +	 *    cleared and unlocked, EXTENT_DEALLLOC cleared.
->> +	 *    There may or may not be any ordered extents/extent maps allocat=
-ed.
->> +	 *
->> +	 *    We should not call extent_clear_unlock_delalloc() on range [cur=
-_start,
->> +	 *    cow_end), as the folios are already unlocked.
->> +	 *
->
-> I think it would be helpful to include cur_offset in your drawings.
-
-I noticed this when crafting a new patch too, there is no @cur_start at
-all, but only @cur_offset.
-
-Will fix it in the next update.
-
-Thanks again for the detailed review,
-Qu
-
->
->> +	 * So clear the folio dirty flags for [start, cur_offset) first.
->>   	 */
->> -	if (cow_start !=3D (u64)-1)
->> -		cur_offset =3D cow_start;
->> +	if (cur_offset > start)
->> +		cleanup_dirty_folios(inode, locked_folio, start, cur_offset - 1, ret=
-);
->> +
->> +	/*
->> +	 * If an error happened while a COW region is outstanding, cur_offset
->> +	 * needs to be reset to @cow_end + 1 to skip the COW range, as
->> +	 * cow_file_range() will do the proper cleanup at error.
->> +	 */
->> +	if (cow_end)
->> +		cur_offset =3D cow_end + 1;
->>
->>   	/*
->>   	 * We need to lock the extent here because we're clearing DELALLOC a=
-nd
->> --
->> 2.47.1
->>
->
+-- 
+2.47.1
 
 
