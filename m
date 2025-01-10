@@ -1,125 +1,160 @@
-Return-Path: <linux-btrfs+bounces-10911-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10912-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AD48A09C22
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 21:03:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C311A09EA3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2025 00:17:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CF237A37D2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 20:03:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734F43A97F6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 23:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F009206F1D;
-	Fri, 10 Jan 2025 20:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B45E21D590;
+	Fri, 10 Jan 2025 23:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Of4D9K5V"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fo2ow8aQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BEEBA50
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 20:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27C324B24E
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 23:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736539397; cv=none; b=EsjvjX1OkETBXZHsXBesxBo8EC0a8zeyiBpozymcWLonP8zwHbuBmVWne6hzj2EItnsTxNVw4wO+LM1LG544d6v+190wRlo0LX1S1NTaanC0q4L0NHh328xsJ7T7vHhX4LFCTNTkgDOr0Xr1KypOu1YQeK1VlfkSpyWahDQeFh4=
+	t=1736551046; cv=none; b=olHAEyPcRR0jeC8fstHIdMiBrto/FuIbfFw6KLbfFq3bu6ObMVayBMwfqxdqi0Un2qLiLPAjrT8lRzOso8aP01+MeLbZakEM8Hx9nlIPCmUWOF6F4ZUfff1nDoPC6S+q2n737epFjzAl+zCrXJJ6Ehha8gMVltgqZTCFuFTH+vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736539397; c=relaxed/simple;
-	bh=N2MmUOKLWGdhrMrCCoJXLZQdW7np5UzetarXaVdxzi4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SYk1uPn6ffvO4FLcbtce2hcK0ZPollSjyLc6NGBZ22HThIP+D2Gm5RuY4g9/bYHcMwlXQ3rt+X8YNwA3OwcMTrm3g6I7bDM9w3XVvUpYz4f9ejp9GM6dEoaSSjdQKcbmUGrertdJK9G80LN45zYEYwPnVApVNSsu79mEC28mMnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Of4D9K5V; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aa6b4cc7270so367189066b.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 12:03:15 -0800 (PST)
+	s=arc-20240116; t=1736551046; c=relaxed/simple;
+	bh=79frzVcnYJWgYuIq8k1fx/+A+iExtAIJ61slyiv50Qw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TVODXMKPdlowwHBT010WaANJaezCxQzPYMI0LMh2IiTzwIrjA3TxveA4elQiT/4ecNMDX7MxNeAPxaNkiU31Lv39dXoEhq9aBjBXT1SF1zodHAKBx+Se9MwGwzSnDxia+Z9GzDNH5TkuABdLWakKU1DgaX/+SyuVUvq88z3a2cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fo2ow8aQ; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaeecbb7309so469149066b.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 15:17:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736539394; x=1737144194; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nLnpQzMZe87Emzj/Px9oJmvp7hBPvlVzu8zEeh9PExw=;
-        b=Of4D9K5VAFk/N8nox1QCuOtduJu3dxo+VOlblRb9QRziw2kekEyKmfwwpP8a79QrdG
-         X5vesp10CA/qgxQtovU+3ElVnlmGxQ/dwCtQFx7C0dPOwzXQahKwbtfCLpN7QfdC2nFp
-         h1S/iBCCkeeidm6KHTfAWliALpEucoo34dVvHLGNa1gf4JUEMZSNkgS6lW0ynBaoOqi/
-         PswWeDUGyWB8wNTfkyBJUn1XKqa8+Z9p84Cl0kX3YOQicYl2UXvQ8CYxPN/NDIVMV5gN
-         IUb9g2JkM9adZxb1yXccLgTiwYHnBDfB4L3I58ae18h350aUZ9r+e5z7I64Tc5+IgEtT
-         eX1w==
+        d=suse.com; s=google; t=1736551042; x=1737155842; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=4RMevCDRpCeeHgAkncGk3rbcGkgqIY6BOdNMMJSCXHQ=;
+        b=fo2ow8aQf6J24L6HvZaPEQ+HLgefwSSbQH5HzjUyY7tCcWyfWKH5ndO49rtgJwsrpk
+         7+WBPM3xw2anpJ5fchVqcn1W/LQfTghhKHZZza9zmW+/LNXSkpR6UPv8AV8NHL0zvjqu
+         M4X6cO6ZoecyBTF4UBiOIdrRwsQjel6WBF0kS5CZABtKLSJyMbzSjYNRDLznsUocMU3s
+         uIw2KagN7d/YU7wr8/PUrSyRdj/jyKNzaIqhFoPxlDtezMWYTTEE7JZht4x/cozAjlHj
+         XNZVBuf9sQXTPAR6nqi1kN2IX+FXuTxKC6htgElgLan7G0ahGVyAj8up6IkNxHyA5jm/
+         SByQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736539394; x=1737144194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nLnpQzMZe87Emzj/Px9oJmvp7hBPvlVzu8zEeh9PExw=;
-        b=ezYiaOSkdz/rA/eqhM+rya/19VK9yCSCU4CCZYgg3Y1Pxay5DsS86goyR6ysrpmCgX
-         pEZBag8JMkc9CkYCfSLV1UIQrZHLuXShFamZ7jIHKIW3GS4ddmvjpr9yUxf52cyEVolN
-         7jqkdMvG0b8bX9i/ftzEtv0Po6eMKg+CihOQ++e9L5pMfLDb/3reNpmXCvGz9gWoKUA3
-         fD1AznaP2QAzod8fyJahQe1gx6jfpABVC/4mCUcsCkPjLE/x4h0WzozDRvTzqHATEHvo
-         G1xf/cHW/qp/VcAvgKCMkL3l3V9cOYNh/FW68dr3aYSJPgc9pw49AytCTeh3+7NFoHQg
-         sE8A==
-X-Gm-Message-State: AOJu0YzxvLoWwRQTIcNfSfH1HnX8OAv2foyXO/6VJjQ3T3t0IthbCcBD
-	TxiSDe8/HzfASa9TJwU8SQ3Zxj2OykxlGQbyqKEt2Ko10JB55kzgDtFbf5XBhcFvPYm9VclcRKi
-	doImR7OV0iqFfhunQyxSnjSznwlU=
-X-Gm-Gg: ASbGncs6hfHRZmWuR/mFjzGRFZs5knHkkPrXSwcDOTXKB3bSeKeMWhkEpS5pOPMciwG
-	/+jBgQwwW1by0yNCuvFlvvd1BztWxJdMLV/JcfSI=
-X-Google-Smtp-Source: AGHT+IGWURheHj6vLNxHviUJBVGd+sasUn+fp3Ldvh6RrcZY/eBUIVG4PJd4E82FHp/+0eE0FVoU8YEsnE01d8IyvI8=
-X-Received: by 2002:a05:6402:321a:b0:5d3:cff5:635e with SMTP id
- 4fb4d7f45d1cf-5d972e63d86mr26692236a12.26.1736539393820; Fri, 10 Jan 2025
- 12:03:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736551042; x=1737155842;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4RMevCDRpCeeHgAkncGk3rbcGkgqIY6BOdNMMJSCXHQ=;
+        b=d7dLnAiOXfXLWlp9mj7JdMeR9mDiHs+wnmKOdUsS3tuqjSDZ0ZDh8ZXZ8MJj0WelbI
+         VywvDc0xBlWzvWvzjvFkH9hvoTXM3gLYspxVrd8qmA5jIF2FnmJ8pVVwySMgEOW1BgPO
+         dwHvG0grR+3geUJvMTteywuZY7iisjA3bmhmPZ9W1TnQ5yS/XM+Suw1s+ufxFjnflj2B
+         XrLFwIpShqcKQryqf77TtSJFJbhj07mnFLnO/SEZlv+KbwbJxu2ibGyDngU/xmJc/gfE
+         aIh1IhnPDsUVpEGW7FKDHik2G0rZjUblGCuRpdeF6EcsK9vVYbMFkbSXUozNqDgAG170
+         LG8A==
+X-Gm-Message-State: AOJu0YwfwNrTAtDQhDGNJI8WvJFzAWUyjxaUMOyw+mAytUfe2BhG3KaS
+	L5CxTenkrcZo3+nn5/xIXcGlE3t/ek9YETsBYUs1AQXZvVN1uPLPJywoxr/KCYl6CVENokRPlDS
+	2
+X-Gm-Gg: ASbGncsbiB9ESh2ha+xVQ5i22xJBG/7bKVkluoTKyrJUzZx5ahmgKzSYUx5hfyDPkYq
+	PXlglZZpmJE1h5z1c8Br+B3d5hpSxULe/UKH/hTKVO3t8FMC0N0D50UyeaNbvuhsOCQGtQ+pKwD
+	5KFfCABvK/Bs/f2oCAKY+kNwUDVIsM9qUnqsDvdPvykgs9gGDunMWD88rWSgcRx/BEARq51EHPb
+	drXRcN7tnj2EuXT1kZVYGLdnmIT95mm8FqiSb8UTnv1XCmCwma8T+U+G2ReP1NOEIVnh0/Rpj6H
+	3Y4Rd7Ga
+X-Google-Smtp-Source: AGHT+IHjkXFkD+Lue3BHNaFCHJhBdyMAVD2tV1HTcrNjRaztVNA1Pk8GYhU43YV5+cgxITOEwGbYEw==
+X-Received: by 2002:a17:907:9805:b0:ab2:ea6d:8749 with SMTP id a640c23a62f3a-ab2ea6d8c80mr232030666b.8.1736551041919;
+        Fri, 10 Jan 2025 15:17:21 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d40680e5csm2090432b3a.143.2025.01.10.15.17.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jan 2025 15:17:21 -0800 (PST)
+Message-ID: <2d9824d6-7379-4bc4-8bb0-e61d56660ad2@suse.com>
+Date: Sat, 11 Jan 2025 09:47:16 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAOE4rSzjUzf66T0ZxuN-PJqjRuoXoC9-LBQqg4TJ+4Hvx4h9zQ@mail.gmail.com>
- <db84010a-f5c8-4ec5-b5ae-babb04421307@meta.com>
-In-Reply-To: <db84010a-f5c8-4ec5-b5ae-babb04421307@meta.com>
-From: =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date: Fri, 10 Jan 2025 22:03:01 +0200
-X-Gm-Features: AbW1kvavyRA4XkDXxahjEyX2qs-pY8ojUxyjl7RH75JbCR4UkKn6FTSQduAD_-o
-Message-ID: <CAOE4rSyH7XrYO1ACwOOxF=S1bKDYTK2jbVtz6w=+yFSo7rjeFQ@mail.gmail.com>
-Subject: Re: I created btrfs repair/data recovery tools
-To: Mark Harmstone <maharmstone@meta.com>
-Cc: BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 08/10] btrfs: add extra error messages for delalloc
+ range related errors
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
+References: <cover.1736479224.git.wqu@suse.com>
+ <ac9345c0d31fc1b669ccfe436e49883ed998ab07.1736479224.git.wqu@suse.com>
+ <20250110162058.GC12628@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250110162058.GC12628@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-piektd., 2025. g. 10. janv., plkst. 11:38 =E2=80=94 lietot=C4=81js Mark Har=
-mstone
-(<maharmstone@meta.com>) rakst=C4=ABja:
->
-> On 9/1/25 22:32, D=C4=81vis Mos=C4=81ns wrote:
-> > Because most of the time block checksum is correct but only content
-> > itself is corrupted,
-> > that means you can find earlier generation (unreferenced) block and
-> > try to guess/reconstruct corrupted block by copying data from the
-> > earlier generation block.
-> > And if checksum matches you know you got it right.
->
-> This is an interesting idea (though I think I'd be looking to replace
-> any hardware that had quite so many errors). Maybe look into translating
->   it into C, and getting it merged into btrfs-check?
-> I'm not sure if it would be quite as useful for SSDs and NVMe drives
-> though, as TRIM makes it far more likely that prior generations will be
-> inaccessible.
->
 
-This is orthogonal to replacing hardware. Even when doing that you
-still might want to recover data. Like in case of HBA card failure the
-disks itself are perfectly fine just with some non-persisted writes
-etc.
-I'm not sure if this would fit within btrfs-check as my understanding
-is that it's more for repairing filesystem to be usable again while
-this tool's idea is primary for data recovery. It's basically like
-forensic tool aiding in recovering as much information as possible.
-Also I don't think there's any other way to access earlier generations
-than scanning everything which can be quite time consuming.
-Essentially it would be a huge new feature that doesn't have that much
-overlap with current way.
-I don't remember if I ever encountered corruption issues with
-SSDs/NVMEs so I can't say how well it would work for those but we
-might learn about it when someone tries it out.
 
-D=C4=81vis
+在 2025/1/11 02:50, David Sterba 写道:
+> On Fri, Jan 10, 2025 at 02:01:39PM +1030, Qu Wenruo wrote:
+>> @@ -1561,6 +1570,13 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+>>   				  PAGE_SIZE, bio_ctrl, i_size);
+>>   	if (ret == 1)
+>>   		return 0;
+>> +	if (ret < 0)
+>> +		btrfs_err_rl(fs_info,
+>> +"failed to submit blocks, root=%lld inode=%llu folio=%llu submit_bitmap=%*pbl: %d",
+>> +			     BTRFS_I(inode)->root->root_key.objectid,
+>> +			     btrfs_ino(BTRFS_I(inode)),
+>> +			     folio_pos(folio), fs_info->sectors_per_page,
+>> +			     &bio_ctrl->submit_bitmap, ret);
+> 
+> I've merged my cleanup series, and there will be a minor conflict in
+> this hunk,
+> 
+> @@ -1565,8 +1565,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+>          if (ret < 0)
+>                  btrfs_err_rl(fs_info,
+>   "failed to submit blocks, root=%lld inode=%llu folio=%llu submit_bitmap=%*pbl: %d",
+> -                            BTRFS_I(inode)->root->root_key.objectid,
+> -                            btrfs_ino(BTRFS_I(inode)),
+> +                            inode->root->root_key.objectid, btrfs_ino(inode),
+>                               folio_pos(folio), fs_info->sectors_per_page,
+>                               &bio_ctrl->submit_bitmap, ret);
+
+Thanks for pointing this out.
+
+I'll resolve the conflict when merging, along with the usage of 
+btrfs_root_id() mentioned by Filipe.
+
+Thanks,
+Qu
+> ---
+
 
