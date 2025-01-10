@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10891-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10892-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB4E9A08602
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 04:32:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBA2DA08603
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 04:32:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B83D53A98FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 03:32:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AFB916A366
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2025 03:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6B1204F8B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE162063F5;
 	Fri, 10 Jan 2025 03:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TsrSLmUz";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TsrSLmUz"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HPqBgvCx";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HPqBgvCx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CD41C5F2C
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 03:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7EE2063E2
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2025 03:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736479938; cv=none; b=tHh01ij9wAGOzBeu8LZJEec7Bsq0Sa3vj3YHlHYbQkv1kgM6CJHQEDUIxzZiqW9jEjFbT/OLeyPrf1Y0YcaQf4q1h1lG4FtyQb4sNSlaJQXsSJ8b6AMNtEeXk2yjTkk1wMwIIooM+NoztcZFVdGFm8hqWl9Ac/LnlkSAjyHPkJ4=
+	t=1736479939; cv=none; b=bLqCm2J3amqEN0COnvtS3TDQR5Fx6WyLDa/Jpa7WnVFUMyAR4altpM8mLnHUcbS/Y8pNZNgzVbHyFjbX/+vlx5Ll6qQN9mcS/VJ6v6DK2J5NsqN7PdP1LFQDdAFgtTq5hTaqJZt5Hj91mMTkKmVH7tG1+/eXHKJEnbWe20JkCTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736479938; c=relaxed/simple;
-	bh=6agFnsobRlnVwpSFeAoOzd6IGlxX/D4y7eOTJvtEsbY=;
+	s=arc-20240116; t=1736479939; c=relaxed/simple;
+	bh=nNL73RvPLgZqfvfh7Wl7DFlkeey8tNc76PhHXsoCabc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iENzxz1HrEzhz9W++oqI0bJdEVvxwPhGmFjSo0nM6BCqyLlTaI/1bDzRb3N0LsvBe5v9VyG+vufUqld7XoFHVqqxjINbms7PJtj+mD9f7AYn9UDhFTh1yvQf8RVUlhdAaNlT0N/dHe7ICZn44smFlkAdlWdZHbPrBFuZNf60+PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TsrSLmUz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TsrSLmUz; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=HoDGkWaAJS9UwfHafyW+0PBqsWRkWRIuQgAY5XaVIvzQzzPtnY7wgQveBKikM+j+C1VzkSWW5UZ21NhbaUUWoWLZLWFlgB+QZmNkb3G+n509w4/q3DIdFjos3unhxFv9zfuxbRLTlsC1RqxSihg9ShFlITJlm9eMxpprX4AHIoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HPqBgvCx; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HPqBgvCx; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CFB5021169;
-	Fri, 10 Jan 2025 03:32:13 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4EED51F396;
+	Fri, 10 Jan 2025 03:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1736479933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1736479935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+Iy2vtV6OZfFyKoq5VOfmLy2D9dm/Oku+j/CG2QkyH8=;
-	b=TsrSLmUz5SH3Wd40zkXl+8piW3RDjtr+lpmJaR5kgX6nPcEw66YmLOh5IWERHKmhe03AQo
-	J5fj/A358krmk7UATGSsD/5uEJjkFRQWI4LZ+isvMEbL7/W4wxZy+HR3E/t+cpJnbS9StR
-	rIb8AaTy3gmrEPLydnpjpkVJJHl4HJQ=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=TsrSLmUz
+	bh=XCjDtq98fq3S1nuCp8MG3idm2cDvCL/0nnR7So17xQg=;
+	b=HPqBgvCxYzoC1JWb19wkgU1fpyX1kgbjxJvF9+wufgY8CCs8Jfl6uwHnFyvQgAEjEJONZ7
+	wgfFMIDl4Rvmc9M+cfWvwhFURcZuzMWYTaLlcWdyCA5wcrP8ARBWJViad44eG9p35Ej/zO
+	ONZjlK8k0IrbH8R5ZVfbqIqvCoorl38=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=HPqBgvCx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1736479933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1736479935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+Iy2vtV6OZfFyKoq5VOfmLy2D9dm/Oku+j/CG2QkyH8=;
-	b=TsrSLmUz5SH3Wd40zkXl+8piW3RDjtr+lpmJaR5kgX6nPcEw66YmLOh5IWERHKmhe03AQo
-	J5fj/A358krmk7UATGSsD/5uEJjkFRQWI4LZ+isvMEbL7/W4wxZy+HR3E/t+cpJnbS9StR
-	rIb8AaTy3gmrEPLydnpjpkVJJHl4HJQ=
+	bh=XCjDtq98fq3S1nuCp8MG3idm2cDvCL/0nnR7So17xQg=;
+	b=HPqBgvCxYzoC1JWb19wkgU1fpyX1kgbjxJvF9+wufgY8CCs8Jfl6uwHnFyvQgAEjEJONZ7
+	wgfFMIDl4Rvmc9M+cfWvwhFURcZuzMWYTaLlcWdyCA5wcrP8ARBWJViad44eG9p35Ej/zO
+	ONZjlK8k0IrbH8R5ZVfbqIqvCoorl38=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF27A1397D;
-	Fri, 10 Jan 2025 03:32:12 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DF291397D;
+	Fri, 10 Jan 2025 03:32:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AFX/I7yUgGe0NQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 10 Jan 2025 03:32:12 +0000
+	id OCt/BL6UgGe0NQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 10 Jan 2025 03:32:14 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Boris Burkov <boris@bur.io>
-Subject: [PATCH v3 06/10] btrfs: subpage: fix the bitmap dump for the locked flags
-Date: Fri, 10 Jan 2025 14:01:37 +1030
-Message-ID: <29c30c58cc3345d4e735c7e8c4aef8671915452b.1736479224.git.wqu@suse.com>
+Subject: [PATCH v3 07/10] btrfs: subpage: dump the involved bitmap when ASSERT() failed
+Date: Fri, 10 Jan 2025 14:01:38 +1030
+Message-ID: <46310abfaa8eb389355cf1c0b1eb79a22a1ba684.1736479224.git.wqu@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1736479224.git.wqu@suse.com>
 References: <cover.1736479224.git.wqu@suse.com>
@@ -84,7 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: CFB5021169
+X-Rspamd-Queue-Id: 4EED51F396
 X-Spam-Score: -3.01
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.01 / 50.00];
@@ -115,52 +115,96 @@ X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-We're dumping the locked bitmap into the @checked_bitmap variable,
-causing incorrect values during debug.
+For btrfs_folio_assert_not_dirty() and btrfs_folio_set_lock(), we call
+bitmap_test_range_all_zero() to ensure the involved range has not bit
+set.
 
-Thankfuklly even during my development I haven't hit a case where I need
-to dump the locked bitmap.
-But for the sake of consistency, fix it by dumpping the locked bitmap
-into @locked_bitmap variable for output.
+However with my recent enhanced delalloc range error handling, I'm
+hitting the ASSERT() inside btrfs_folio_set_lock(), and is wondering if
+it's some error handling not properly cleanup the locked bitmap but
+directly unlock the page.
 
-Fixes: 75258f20fb70 ("btrfs: subpage: dump extra subpage bitmaps for debug")
+So add some extra dumpping for the ASSERTs to dump the involved bitmap
+to help debug.
+
 Reviewed-by: Boris Burkov <boris@bur.io>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/subpage.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/subpage.c | 41 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 11 deletions(-)
 
 diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 8c68059ac1b0..03d7bfc042e2 100644
+index 03d7bfc042e2..d692bc34a3af 100644
 --- a/fs/btrfs/subpage.c
 +++ b/fs/btrfs/subpage.c
-@@ -716,6 +716,7 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
- 	unsigned long writeback_bitmap;
- 	unsigned long ordered_bitmap;
- 	unsigned long checked_bitmap;
-+	unsigned long locked_bitmap;
- 	unsigned long flags;
+@@ -635,6 +635,28 @@ IMPLEMENT_BTRFS_PAGE_OPS(ordered, folio_set_ordered, folio_clear_ordered,
+ IMPLEMENT_BTRFS_PAGE_OPS(checked, folio_set_checked, folio_clear_checked,
+ 			 folio_test_checked);
  
- 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
-@@ -728,15 +729,16 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
- 	GET_SUBPAGE_BITMAP(subpage, fs_info, writeback, &writeback_bitmap);
- 	GET_SUBPAGE_BITMAP(subpage, fs_info, ordered, &ordered_bitmap);
- 	GET_SUBPAGE_BITMAP(subpage, fs_info, checked, &checked_bitmap);
--	GET_SUBPAGE_BITMAP(subpage, fs_info, locked, &checked_bitmap);
-+	GET_SUBPAGE_BITMAP(subpage, fs_info, locked, &locked_bitmap);
++#define GET_SUBPAGE_BITMAP(subpage, fs_info, name, dst)			\
++{									\
++	const int sectors_per_page = fs_info->sectors_per_page;		\
++									\
++	ASSERT(sectors_per_page < BITS_PER_LONG);			\
++	*dst = bitmap_read(subpage->bitmaps,				\
++			   sectors_per_page * btrfs_bitmap_nr_##name,	\
++			   sectors_per_page);				\
++}
++
++#define subpage_dump_bitmap(fs_info, folio, name, start, len)		\
++{									\
++	struct btrfs_subpage *subpage = folio_get_private(folio);	\
++	unsigned long bitmap;						\
++									\
++	GET_SUBPAGE_BITMAP(subpage, fs_info, name, &bitmap);		\
++	btrfs_warn(fs_info,						\
++	"dumpping bitmap start=%llu len=%u folio=%llu" #name "_bitmap=%*pbl", \
++		   start, len, folio_pos(folio),			\
++		   fs_info->sectors_per_page, &bitmap);			\
++}
++
+ /*
+  * Make sure not only the page dirty bit is cleared, but also subpage dirty bit
+  * is cleared.
+@@ -660,6 +682,10 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 	subpage = folio_get_private(folio);
+ 	ASSERT(subpage);
+ 	spin_lock_irqsave(&subpage->lock, flags);
++	if (unlikely(!bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits))) {
++		subpage_dump_bitmap(fs_info, folio, dirty, start, len);
++		ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
++	}
+ 	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
  	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
+@@ -689,23 +715,16 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
+ 	nbits = len >> fs_info->sectorsize_bits;
+ 	spin_lock_irqsave(&subpage->lock, flags);
+ 	/* Target range should not yet be locked. */
+-	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
++	if (unlikely(!bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits))) {
++		subpage_dump_bitmap(fs_info, folio, locked, start, len);
++		ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
++	}
+ 	bitmap_set(subpage->bitmaps, start_bit, nbits);
+ 	ret = atomic_add_return(nbits, &subpage->nr_locked);
+ 	ASSERT(ret <= fs_info->sectors_per_page);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
  
- 	dump_page(folio_page(folio, 0), "btrfs subpage dump");
- 	btrfs_warn(fs_info,
--"start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
-+"start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl locked=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
- 		    start, len, folio_pos(folio),
- 		    sectors_per_page, &uptodate_bitmap,
- 		    sectors_per_page, &dirty_bitmap,
-+		    sectors_per_page, &locked_bitmap,
- 		    sectors_per_page, &writeback_bitmap,
- 		    sectors_per_page, &ordered_bitmap,
- 		    sectors_per_page, &checked_bitmap);
+-#define GET_SUBPAGE_BITMAP(subpage, fs_info, name, dst)			\
+-{									\
+-	const int sectors_per_page = fs_info->sectors_per_page;		\
+-									\
+-	ASSERT(sectors_per_page < BITS_PER_LONG);			\
+-	*dst = bitmap_read(subpage->bitmaps,				\
+-			   sectors_per_page * btrfs_bitmap_nr_##name,	\
+-			   sectors_per_page);				\
+-}
+-
+ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
+ 				      struct folio *folio, u64 start, u32 len)
+ {
 -- 
 2.47.1
 
