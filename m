@@ -1,293 +1,165 @@
-Return-Path: <linux-btrfs+bounces-10924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6277A0A2EC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2025 11:45:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB7CA0A493
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2025 17:08:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 814361889188
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2025 10:45:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E729D188AC85
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2025 16:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F25192D9E;
-	Sat, 11 Jan 2025 10:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="H0llK0+A";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="H0llK0+A"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7506B1B3932;
+	Sat, 11 Jan 2025 16:08:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9671922D8
-	for <linux-btrfs@vger.kernel.org>; Sat, 11 Jan 2025 10:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598C31B0F22
+	for <linux-btrfs@vger.kernel.org>; Sat, 11 Jan 2025 16:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736592266; cv=none; b=FedLZq0MF9TnO1YbAe7g+bWd2BjunV0c/YjMt+o7CUSSd/LqBEg1vUSEUhjQujdSkPf0ZLg9fRdetvTRDvdLkFD5PAq5lubqMNJ5NQWbCkTxLV9ZVQW9tyM6oc7jjnNEee0DCyOANOecmFPZDoxRHuB+M8dWaoUeKGU8yRr8FFc=
+	t=1736611703; cv=none; b=e/CqVaMHb1qqCTKJkaaw+R67v/YDXik1V1BB/fHP/Eq4XP00AEHqO2vgCN/hsF/2Alm8L5KbX35MTPNkgc7EPVU0kKPiZg1CmBE8Y7QEzz6+OeI/Eld1/XFHQzVWcx16Iz8X70QCQMDJfVrbkMu+USsQVPEN8wvAN7aLhGrTDE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736592266; c=relaxed/simple;
-	bh=9+SWLS/grGv5WlsCvryCdac8YSPBLkNgEdBjK974NRY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YypUUy9G2D5aJF0gQS/WkzmKe0Fjdqr3TqjlJIkkkyObyHcZqDOLz35e7+nv4i/yQ/9f+KFwsD+xbuQ1VEb12FncsNcfNNEuGHWk9VNygGQgi2r3nIbSoPsK0Pp0uNSui5416XNguIepiYh2q7S14IWtj/95M2rA5z5C2b5spYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=H0llK0+A; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=H0llK0+A; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 00BC821108
-	for <linux-btrfs@vger.kernel.org>; Sat, 11 Jan 2025 10:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1736592262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hmhz5cC9i1tPVpezDbt3kDxpuorF7qme+aPQ6bzgVuM=;
-	b=H0llK0+AA0SkZuYqf70Vg74jtpALR6kcut1U8YSldO1FTahRzlCU4l6ZH0ZzPYTcocfRSW
-	q6p676lQdnao2PIb/swfxxWy/xT9Jj7+Byat8jY7pJjGW7LUQmDpOsRZ8mPOpIyfFNyrty
-	dvgnHPMSmXB9OV70YTUPekg3EAqEJv4=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1736592262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hmhz5cC9i1tPVpezDbt3kDxpuorF7qme+aPQ6bzgVuM=;
-	b=H0llK0+AA0SkZuYqf70Vg74jtpALR6kcut1U8YSldO1FTahRzlCU4l6ZH0ZzPYTcocfRSW
-	q6p676lQdnao2PIb/swfxxWy/xT9Jj7+Byat8jY7pJjGW7LUQmDpOsRZ8mPOpIyfFNyrty
-	dvgnHPMSmXB9OV70YTUPekg3EAqEJv4=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3151D139AB
-	for <linux-btrfs@vger.kernel.org>; Sat, 11 Jan 2025 10:44:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wAsFOYRLgmdCLgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 11 Jan 2025 10:44:20 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 10/10] btrfs: move ordered extent cleanup to where they are allocated
-Date: Sat, 11 Jan 2025 21:13:44 +1030
-Message-ID: <9b55ff95921e88dd00413236390e7fd7561175de.1736591758.git.wqu@suse.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <cover.1736591758.git.wqu@suse.com>
-References: <cover.1736591758.git.wqu@suse.com>
+	s=arc-20240116; t=1736611703; c=relaxed/simple;
+	bh=HJvE5S90V6ZJadEJuEaBEMgIkd9Q+8zx2ASx6m41ri0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bgNESq7OydEs8ABoyKvgbbrLBuFpL+ShctT2mS/amOGLsGOojsPfK8NQpeuc3KHUQtqH6jy+uhWTQwBwogjpc2A3zRBfWap9pQ0LEodX7uJwZkrUM4m0CU++sXW6bQfLZASwAZg+evFB4PhUn3jIMmpWVN/O79BPE8hF2pAcBV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-844e7f9d37dso482570939f.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jan 2025 08:08:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736611700; x=1737216500;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/rXwui5ddJcXYwsQoDC/NmNH6xGVLAUt2oATQD5e19E=;
+        b=uRMCgBkSrR8aLHBGhycLNylq+6PjqNj1nF8ZCo7hR1Eh+f1DlzjKTBMlLRcXxVscBP
+         5bBZZBWoNhm4WTyF/UDT+74EcBsdur3qnX671Oh5GGgzhQVbM7TT3ciPpCKg0Om3OFfz
+         aGl6zDqs+G0SYoPXcx7Y1C2EI4rJn3hVcO3BANUed52Rs1SK5lQ+oxXn1XjnBpSXplw8
+         hUoh6d2UHpu9RNwt564C/KDF+SG7LMqSHVfsvGzJtjd/b4J2YncQ8aN5TPF9638NHY8X
+         MrQ9tHd9Az6gHCdZtpJ1phMPqmGNSJaZSEwn+7fMpIqGSwiS/zmwQ2eHRuOXx43bSwZg
+         iUHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBqhSd6oGTtkY3Sx5CrNGm2k0ZpIL6JlesR3iT7RcB9vKgvTA6fqe0qkrYQdn/5nt1F1a6ECMkdWlWbA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/6JvwuEpv/eGZolyG3JglOosIGR54Tlg8y5BjYuQwoq7chCk4
+	vUWE9VZfuplc6R3ASHEnnj+2meWnVc9GgzfTzcEsCVSeUoeZLvcn8glbeAyR7MQ0cdPLPnrlfbF
+	ROcADL+5nDAZCMBEjv/mbGE6x90DWrkVHxF3xnMx5x2EE6+GFxvmOU1s=
+X-Google-Smtp-Source: AGHT+IF5D3AL4CyM0y6sXjTKft6NcON2LEX/7kG6wtTx86cRxyutNNfhzxh3c9+iNcy9EJnNDfgCm8iKFI/DtfoVSa59Lv+z2fXd
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Received: by 2002:a05:6e02:20ee:b0:3a7:e103:3c46 with SMTP id
+ e9e14a558f8ab-3ce3a8ba404mr109589365ab.16.1736611700528; Sat, 11 Jan 2025
+ 08:08:20 -0800 (PST)
+Date: Sat, 11 Jan 2025 08:08:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67829774.050a0220.216c54.0022.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING: ODEBUG bug in open_fs_devices
+From: syzbot <syzbot+70e85051171b982ffd90@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The ordered extent cleanup is hard to grasp because it doesn't follow
-the common pattern that the cleanup happens where ordered extent get
-allocated.
+Hello,
 
-E.g. run_delalloc_nocow() and cow_file_range() allocate one or more
-ordered extents, but if any error is hit, the cleanup is done inside
-btrfs_run_delalloc_range().
+syzbot found the following issue on:
 
-To fix the existing delayed cleanup:
+HEAD commit:    7b4b9bf203da Add linux-next specific files for 20250107
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=105ef6f8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=63fa2c9d5e12faef
+dashboard link: https://syzkaller.appspot.com/bug?extid=70e85051171b982ffd90
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104ddedf980000
 
-- Update the comment on error handling
-  For @cow_start set case, @cur_offset can be assigned to either
-  @cow_start or @cow_end.
-  So for such case we can not trust @cur_offset but only @cow_start.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c179cc0c7a3c/disk-7b4b9bf2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fdea80f2ec16/vmlinux-7b4b9bf2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a277fcaff608/bzImage-7b4b9bf2.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3c7dbd714b28/mount_0.gz
 
-- Only reset @cow_start when fallback_to_cow() succeeded
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+70e85051171b982ffd90@syzkaller.appspotmail.com
 
-- Add Extra ASSERT() when @cow_start is still set at error path
+loop0: detected capacity change from 0 to 262144
+------------[ cut here ]------------
+ODEBUG: init active (active state 0) object: ffff88807e9bb1f8 object type: percpu_counter hint: 0x0
+WARNING: CPU: 0 PID: 6292 at lib/debugobjects.c:615 debug_print_object+0x17a/0x1f0 lib/debugobjects.c:612
+Modules linked in:
+CPU: 0 UID: 0 PID: 6292 Comm: syz.0.92 Not tainted 6.13.0-rc6-next-20250107-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+RIP: 0010:debug_print_object+0x17a/0x1f0 lib/debugobjects.c:612
+Code: e8 7b 14 39 fd 4c 8b 0b 48 c7 c7 00 0e 60 8c 48 8b 74 24 08 48 89 ea 44 89 e1 4d 89 f8 ff 34 24 e8 cb 7f 93 fc 48 83 c4 08 90 <0f> 0b 90 90 ff 05 b8 87 2e 0b 48 83 c4 10 5b 41 5c 41 5d 41 5e 41
+RSP: 0018:ffffc90002fa76b8 EFLAGS: 00010286
+RAX: cf4427ebace36800 RBX: ffffffff8c626760 RCX: ffff88807d66bc00
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffffff8c600f80 R08: ffffffff817ff732 R09: fffffbfff1cfa188
+R10: dffffc0000000000 R11: fffffbfff1cfa188 R12: 0000000000000000
+R13: ffffffff8c600e98 R14: dffffc0000000000 R15: ffff88807e9bb1f8
+FS:  00007fe1f73f56c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5800c0d000 CR3: 0000000032d7e000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __debug_object_init+0x2b9/0x470 lib/debugobjects.c:763
+ debug_percpu_counter_activate lib/percpu_counter.c:43 [inline]
+ __percpu_counter_init_many+0x1c2/0x390 lib/percpu_counter.c:214
+ open_fs_devices+0xb5/0x12b0 fs/btrfs/volumes.c:1307
+ btrfs_get_tree_super fs/btrfs/super.c:1857 [inline]
+ btrfs_get_tree+0x552/0x1a30 fs/btrfs/super.c:2093
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ fc_mount+0x1b/0xb0 fs/namespace.c:1271
+ btrfs_get_tree_subvol fs/btrfs/super.c:2051 [inline]
+ btrfs_get_tree+0x6b1/0x1a30 fs/btrfs/super.c:2094
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1814
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3560
+ do_mount fs/namespace.c:3900 [inline]
+ __do_sys_mount fs/namespace.c:4111 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4088
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fe1f65874ca
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe1f73f4e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fe1f73f4ef0 RCX: 00007fe1f65874ca
+RDX: 0000000020022240 RSI: 0000000020022280 RDI: 00007fe1f73f4eb0
+RBP: 0000000020022240 R08: 00007fe1f73f4ef0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020022280
+R13: 00007fe1f73f4eb0 R14: 0000000000022211 R15: 00000000200222c0
+ </TASK>
 
-- Rewind @cur_offset when @cow_start is set
-  When we fall back to COW, @cur_offset can be set to either @cow_start
-  or @cow_end.
-  We can not directly trust @cur_offset, or we will do double ordered
-  extent accounting on range which is already cleaned up
-  cow_file_range().
 
-- Move btrfs_cleanup_ordered_extents() into run_delalloc_nocow() and
-  cow_file_range()
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 58 +++++++++++++++++++++++++++++-------------------
- 1 file changed, 35 insertions(+), 23 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 130f0490b14f..70ef7f59b692 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1272,10 +1272,8 @@ u64 btrfs_get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
-  * - Else all pages except for @locked_folio are unlocked.
-  *
-  * When a failure happens in the second or later iteration of the
-- * while-loop, the ordered extents created in previous iterations are kept
-- * intact. So, the caller must clean them up by calling
-- * btrfs_cleanup_ordered_extents(). See btrfs_run_delalloc_range() for
-- * example.
-+ * while-loop, the ordered extents created in previous iterations are
-+ * cleaned up, leaving no ordered extent in the range.
-  */
- static noinline int cow_file_range(struct btrfs_inode *inode,
- 				   struct folio *locked_folio, u64 start,
-@@ -1488,9 +1486,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 
- 	/*
- 	 * For the range (1). We have already instantiated the ordered extents
--	 * for this region. They are cleaned up by
--	 * btrfs_cleanup_ordered_extents() in e.g,
--	 * btrfs_run_delalloc_range().
-+	 * for this region, and need to clean them up.
- 	 * EXTENT_DELALLOC_NEW | EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV
- 	 * are also handled by the cleanup function.
- 	 *
-@@ -1504,6 +1500,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 
- 		if (!locked_folio)
- 			mapping_set_error(inode->vfs_inode.i_mapping, ret);
-+
-+		btrfs_cleanup_ordered_extents(inode, orig_start, start - orig_start);
- 		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
- 					     locked_folio, NULL, clear_bits, page_ops);
- 	}
-@@ -1980,6 +1978,9 @@ static void cleanup_dirty_folios(struct btrfs_inode *inode,
-  *
-  * If no cow copies or snapshots exist, we write directly to the existing
-  * blocks on disk
-+ *
-+ * If an error is hit, any ordered extent created inside the range is
-+ * properly cleaned up.
-  */
- static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 				       struct folio *locked_folio,
-@@ -2152,12 +2153,12 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		if (cow_start != (u64)-1) {
- 			ret = fallback_to_cow(inode, locked_folio, cow_start,
- 					      found_key.offset - 1);
--			cow_start = (u64)-1;
- 			if (ret) {
- 				cow_end = found_key.offset - 1;
- 				btrfs_dec_nocow_writers(nocow_bg);
- 				goto error;
- 			}
-+			cow_start = (u64)-1;
- 		}
- 
- 		nocow_end = cur_offset + nocow_args.file_extent.num_bytes - 1;
-@@ -2229,11 +2230,11 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 
- 	if (cow_start != (u64)-1) {
- 		ret = fallback_to_cow(inode, locked_folio, cow_start, end);
--		cow_start = (u64)-1;
- 		if (ret) {
- 			cow_end = end;
- 			goto error;
- 		}
-+		cow_start = (u64)-1;
- 	}
- 
- 	btrfs_free_path(path);
-@@ -2249,25 +2250,40 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 	 *
- 	 *    For range [start, cur_offset) the folios are already unlocked (except
- 	 *    @locked_folio), EXTENT_DELALLOC already removed.
--	 *    Only need to clear the dirty flag as they will never be submitted.
--	 *    Ordered extent and extent maps are handled by
--	 *    btrfs_mark_ordered_io_finished() inside run_delalloc_range().
-+	 *    Need to finish the ordered extents and their extent maps, then
-+	 *    clear the dirty flag as they will never to submitted.
- 	 *
- 	 * 2) Failed with error from fallback_to_cow()
--	 *    start         cur_offset  cow_end    end
-+	 *    start         cow_start  cow_end    end
- 	 *    |/////////////|-----------|          |
- 	 *
--	 *    For range [start, cur_offset) it's the same as case 1).
--	 *    But for range [cur_offset, cow_end), the folios have dirty flag
-+	 *    Special note for this case, @cur_offset may be set to either
-+	 *    @cow_end or @cow_start.
-+	 *    So for such fallback_to_cow() case, we should not trust @cur_offset
-+	 *    but @cow_start.
-+	 *    For range [start, cow_start) it's the same as case 1).
-+	 *    But for range [cow_start, cow_end), the folios have dirty flag
- 	 *    cleared and unlocked, EXTENT_DEALLLOC cleared by cow_file_range().
- 	 *
- 	 *    Thus we should not call extent_clear_unlock_delalloc() on range
--	 *    [cur_offset, cow_end), as the folios are already unlocked.
-+	 *    [cow_start, cow_end), as the folios are already unlocked.
- 	 *
--	 * So clear the folio dirty flags for [start, cur_offset) first.
-+	 * So clear the folio dirty flags for [start, cur_offset) and finish
-+	 * involved ordered extents.
-+	 *
-+	 * There is a special handling for COW case, where we advanced cur_offset to
-+	 * the COW end already. For those cases we need to rewind the cur_offset to
-+	 * the real correct location.
- 	 */
--	if (cur_offset > start)
-+	if (cow_start != (u64)-1) {
-+		ASSERT(cow_end);
-+		ASSERT(cur_offset >= cow_start);
-+		cur_offset = cow_start;
-+	}
-+	if (cur_offset > start) {
-+		btrfs_cleanup_ordered_extents(inode, start, cur_offset - start);
- 		cleanup_dirty_folios(inode, locked_folio, start, cur_offset - 1, ret);
-+	}
- 
- 	/*
- 	 * If an error happened while a COW region is outstanding, cur_offset
-@@ -2332,7 +2348,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
- 
- 	if (should_nocow(inode, start, end)) {
- 		ret = run_delalloc_nocow(inode, locked_folio, start, end);
--		goto out;
-+		return ret;
- 	}
- 
- 	if (btrfs_inode_can_compress(inode) &&
-@@ -2346,10 +2362,6 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
- 	else
- 		ret = cow_file_range(inode, locked_folio, start, end, NULL,
- 				     false, false);
--
--out:
--	if (ret < 0)
--		btrfs_cleanup_ordered_extents(inode, start, end - start + 1);
- 	return ret;
- }
- 
--- 
-2.47.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
