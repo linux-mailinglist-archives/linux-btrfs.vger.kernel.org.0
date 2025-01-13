@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10958-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10959-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED12FA0C2CB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 21:54:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4B3A0C35A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 22:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBBF31888E3C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 20:54:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70B4C3A2721
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 21:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FA91CEEB4;
-	Mon, 13 Jan 2025 20:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E6A1D515D;
+	Mon, 13 Jan 2025 21:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JV0tH8aK"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gRy3r3En"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15411BD504
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 20:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917A01C5F0F
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 21:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736801662; cv=none; b=fGnzBpGV74ooV6lH1Z9TtO9K2hp2eNx/2OsJQjUfvnFe/fnwSWxcsXjo2g6dvWMcD7CPGUd0y6byqiB7vhZ9qQytmtiZnc38LAdkXkIwhPR6iMSSluYCk5R+sUa5bqgvkhr2VB5dddWzkvxAGoDaZ12Y3FztHNaHFAfDWWnpN48=
+	t=1736802760; cv=none; b=q2qib5vfBsDI62iSzlzvoiRQvP4RgI1TJTeSLhqo8MK0uykQ2Ly4yqCMQ+g+tm3Kkvg9l7dTJWKuSkFV1ltyA5SCHpeoPIVLXY5lMIYOtzO11lNY6WgBOan9XE8YixK4f4rMygk5psN//w7i8FMNo2aCgILYwTwBx6F4nJhliaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736801662; c=relaxed/simple;
-	bh=hwUPgcg2wGYnWIdbgS2jn2YZMs0p4dlcYFrx/fgK3hk=;
+	s=arc-20240116; t=1736802760; c=relaxed/simple;
+	bh=1S9qKu3DXa8n4xu7SArNLbHDZCsETSxOQ186CGe9YDw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=kE49p1IpN+an3BDl/QQPWqJV9toBJqyR8YbLTSNl6I5O3pjru3EZNudTye0Joqg8Jay+TK5bRZUqy2irgP6JQQjOtFWeVx9tjl2MLSrZD91qC6OQjSC6McoEP6+LkLdT1FMTQBS2qwucMXzBYDRzCoyFgsIJvpeM+ryhVWQwQLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JV0tH8aK; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=JDlZj8vMd/u2vY7xsxn22x52J/kSnrTGqGc6R5Qi/rhvC54cQRc/0DqhN3rjQgZJzWuRznn1wm4ctrdBhDBoF5C65L+Dmm4UX2UwRuWs4OR8rqvzRtGCJOBzmUVhpYAnFBRbt3tDBu3iDyk4vPdBZ1Ay7Nnt3DmTjWy4R6vLYSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gRy3r3En; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1736801657; x=1737406457; i=quwenruo.btrfs@gmx.com;
-	bh=ATeOeGsHDWSZQp4d9Nrh8VYj5VWGJXn5rEXcWy7zgic=;
+	s=s31663417; t=1736802751; x=1737407551; i=quwenruo.btrfs@gmx.com;
+	bh=the4ZmvSL3efr+y/z3nRgPLqT0NLnJJkuDQ2fhZ/OmM=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=JV0tH8aKMR1E2tzoFiV6/1c/WJ7kPxg8s80MUeZC4PQiWkn0+PhjIgjXqnUze7lN
-	 oc/GNfD5AAOePbNQ4YY262vAsJ6uJn6nvSzaTgYmFWyqY66QSOqA1BfsjFBY5KSG8
-	 WMde9Rb260pg3zuEUC/6a0Q+8uEIxN56OX15k9wogZ9CslFmszA+B9hlE0tl6aJFN
-	 9aqe4SeZ0ahn4Q5G+Ho+DqJGoLiWYuap4w1Ub06GjszEuaoCKH0uQ6iTIP9J5PRjw
-	 zbpHWlN9AnkVY5rKukXfdZ8mzK3qj4OvenlgcSe71nRd4/VfzaK1X1ugJqhYseg4M
-	 LEef04LFr60FblsPnQ==
+	b=gRy3r3EnuhPTQcsHHgS25hFdYXFT7yOVsUUJdg80U+klRA5CEjNWlZC5TsL551oL
+	 MqVbwrf9+KyV07CMWjkmS9e3ZHlodnb/9d5WahnsoNUxOrfbuO7m577Ey9NYLTffm
+	 wKsslamF177kxkc8Lj/54ds3AmuPVOhX73DPVBGEFImLMlBdmmIvIGkrbIrvUz/cs
+	 g+FZWw4hQnvA8a7GiD1BxJfN9Tai5SdtB75IoudehNNdIdWnwYjvOtifp32ukNEiC
+	 mh6OW3bGtGGx0cP2vBpCYApyVbJ/J3KiDNZDAUhz6Hc94/ywp+el1pwnHkoKRAU4B
+	 IyekA/L0HneN55Ht0w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fii-1tQrse2W64-00xPbt; Mon, 13
- Jan 2025 21:54:17 +0100
-Message-ID: <cd42beff-741d-4b9c-b78d-4244df06d0c3@gmx.com>
-Date: Tue, 14 Jan 2025 07:24:14 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFKKX-1tmd4Z1UiX-002iGT; Mon, 13
+ Jan 2025 22:12:30 +0100
+Message-ID: <ef836984-61a0-4a09-95d5-901d499aec4a@gmx.com>
+Date: Tue, 14 Jan 2025 07:42:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: write time tree block corruption detected, forced readonly
-To: Jared Van Bortel <jared.e.vb@gmail.com>, linux-btrfs@vger.kernel.org
-References: <fcc9c66cac45aee144755ee35714d2d358199d25.camel@gmail.com>
+Subject: Re: [PATCH] btrfs: fix assertion failure when splitting ordered
+ extent after transaction abort
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <efe1ae546864e0f22b4e29794115e3cedb602c30.1736782338.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,105 +88,241 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <fcc9c66cac45aee144755ee35714d2d358199d25.camel@gmail.com>
+In-Reply-To: <efe1ae546864e0f22b4e29794115e3cedb602c30.1736782338.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OrAfR6yEI/xzgImkjDmX7wnjCalrAYrEhKjKJRM/7LsyVV8+077
- r/aqXuF2DU7pFXNcY78bPgIbm+nPiB2TMIDmHDuAojWzJYJvF9007F1h+ncuxuJMUMyWUMp
- 3ZdmQ7nI81S7PiEnuMoUDVeLKYzY5HGBsJGZK/ayxapvp6OhKpp1RtaDOVY7iN3BVcOD1I0
- 1pUzmpYSrqvn2OcVr3qdA==
+X-Provags-ID: V03:K1:TkZv31rSK3bwUUCoz8bRZ6afpbBTFIN22QOBGwG0zDuJg6diTWI
+ iNUaRNlbKSRnIl67F5S1jNLXom29QOMWA3JUIEofOfmXvL/Y4sUAti762i6HZ9ImSQUewiE
+ QD1BnSgGt0nx8R6iQC1jvnnO/ddwBbvDocPvXUgA+tg39K2xHMDJqlzfhEw5T8RbWQq2J4h
+ HJ2UPAft89c5TjFzR2MVA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:roeusXV4Rtw=;p9QKR0Ls8e2MupCDX+bjNEi4Rz/
- z9QHZE+sjP1t+tRdibjyAyZ5q8bNW9y8yG3xZB8RhWOY2iUJbqzZ/k3iH/MSQdKtmB3WOrmV7
- In80SBvc3aqXauqpdJZ+g5sbpR3tbclJDKSjSLpncIQ1POnKMVUU63Ns+TDo01hA8Y7ZkDFea
- u0NbuK/437BNQYy1yd0u+XRH1rG8hOEfvebeiFBCpzvwBlr1fNCE0+e8PwNb9v3H+6EPNm26e
- cKvdyTTcPG9ANOFFLggZEGRgr8us6EhqGwqzssgRK2lvzz9Nn/MBvdRxzcITi09JQUFrqli7k
- uksCQy7RlmKBwC1t4ukMwAdny947aVlquUPje5+4Tw4JE7jFBS8dR0Nzzrz5pxGz974161bAg
- 3FXGMxKU50pc42moStE66rNwjtmAH1aL1XHyXHZhX8qWV8bnyMbcmSqCHZZxsO9LHz3zr0P/g
- sLfgfpEGDkIGrK7NUMX67OnFZ8iib28OTdMbYFDYvtonydXuQ0DaC37ylS1O1N0kem49vMmRg
- XuZzR+yE09jzBN6UazutFiiMkGGmy0vQf1Vkt07Zcc8rrIKV0BTU8rpyoO8BnPIsn4/fcPYuL
- 88eZJKA5eqbp6ly8LWHOVx7BjSj9RrAVkCD9bBaen1fF3Rm11gwX4MueZhDYbV5EAPCad0wZ3
- yP2GuirsCgt3yToAtIZ+mATowSuDqM2Pe4u4qxqNns1jvaAgiROhVQMtAcTkRxsYtJ0ylmXbH
- +Byv9RMoJMwAafFqRp2GzWRKVc0ql4sRR7Xbt9nSIULCTN8hBNVXt+yeYvOl3wDAy2sHaoSNk
- vB0NMjSSuiuhaNtliep8Jju7NR1G1N9qwN0DUMyaKSMlnm3CkPwl7Y4L7vuyFNrjGxl+MnD8H
- AUEfHDpbdHZxLIH977SZJs3yeDbLqpMwiojaei1+L/NEJ2dfbsIiCqP6EQBjjMoAxGeJESFA7
- kuQr+NgPb8BOqIOUwx9ztoMml/zJgEMz4FqetRXp1jwl7cDezk0rptSx97jlx/82jCqh3Vyx+
- afM121ruH25VIw1Ud8YVkcALZHh11edsdR6gmGle765HicsmmmwkTPJ39qKEt9ySCohuZ8sbM
- G1qkODxxWa3ZdNyEw4QH0XMmXeFwTx
+UI-OutboundReport: notjunk:1;M01:P0:tCWSyfPBXqI=;AGkj93NzcTkUfUOTurOYKWL4pwG
+ d8sJbkZnMujdJNrsotlbhw/QGl7/iB5YsIWLemdvIJwjxHAFopaxLe3zPPk6jwY6JMMXCV7EX
+ yCeqlqkF98IZybPLpTz+I2eRVhNEswQ/rJUCymhiuLeB8lKxvUH6+vj4UJdW3ikTRvhb3ioPU
+ 3HiZ+BbDUFmS66YjOkTQnK0AmxxoxudJIx3UNIZu9fCFSCcrJeBlRN3JjLgj5XjKoCHv7LHDQ
+ HrJGj55HU6qmGxW2JHEuBGmbeQBVA/iHXRT8WDQhRoarhq43uZgny6pcCDTRV1GxCzORZDGVA
+ bubdLjX8fPupX6zvlP/v5PPStbhmdrJBEv5wQDZLdcP8FVqGmMULQX1LRbAbhLawH1AglQKdq
+ LctvHhdggsnqg9Anvj6E40CuCcwZ+PqWjIlYpvC/YTDB5z/3kIOwft9P2WRrxeGpm+yudV36j
+ xDLJXtmvIItJVoFtVytuSGyRvSHNodLs5I/ktLYPRgjOIU/Aj60npFx/RYha2D0JeSkYcr2Ml
+ LplXkSNzUfZ0CTXgX8AfpedqArd9IF43JJrgE8qNTkaZj+YneVQFOy2Wj0tC3nTH2fmVVkWxV
+ MNCmqvrBztem6lAhemm17TM2ykKfPu0NGGHHLi0dn2eTtnwBOyCAl9cvpgP7ygOY923Ay84Wk
+ vAAwL7BP8lsJobtwaMIXQbdb3zSe2MLHcSBpKhedsOyHcyZLuiWH5CVhWioQ9GDSFTTODZOLm
+ pdBb9KhJHKTb9B7tBwxKKMK4y8saN+sl5yh9v5UCFIF8/olVbKABiV3Bmvva1LGn8OpNFtvd9
+ KRnndT6Eezro10bYeC/yukeue0svtYlw544QYLI97ax87E8DnnDsqqS2/YYmBH9IwP+8/eVa5
+ QuFjnYEJtsgSIpFk3/J51uvfa5Q4jWN4QB2k/3G+xNoY55UMsFQSPO8eSrXbV8R67O9Qc60G4
+ 8GxuqjMg2FEzlQD9j/5zZt4n4yiipT54groHgnNNo6Pkv+vMBWFsJSjuJp2tYa59qTpMCE6KK
+ /UCYXOAqnvWcnkOKu87B4r4pMFq9kLEJLPT5V2ATMR9pQwLXSTG9nnA/0hvmiuY/cA94k5vad
+ Zu8pkjGz0f9yZadU1/SRDLDHYfrkVL
 
 
 
-=E5=9C=A8 2025/1/14 07:00, Jared Van Bortel =E5=86=99=E9=81=93:
-> Hi all,
+=E5=9C=A8 2025/1/14 02:02, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> I am using Arch Linux with the latest linux-zen kernel (6.12.9-zen1-1-
-> zen). I saw the below error in dmesg today, and my filesystem went read-
-> only. I haven't rebooted the computer yet. This is my root filesystem.
-> What should by next steps be in order to get this computer up and
-> running again?
-
-In your particular case, it's a very strong indicator of bad hardware
-RAM (bitflip).
-
-Thankfully the corrupted metadata is rejected before writing to the
-disk, so your fs should still be fine.
-
-So your next step should be run memtest, either memtest86+ as UEFI
-payload (preferred), or memtester inside Linux (with minimal other
-program running).
-
-After fixing the bad hardware RAM, then I'd recommend to run a "btrfs
-check --readonly" to verify there is no other problem in the fs.
-Although tree-checker is doing a very good job, it's impossible to catch
-all bitflips.
-
+> If while we are doing a direct IO write a transaction abort happens, we
+> mark all existing ordered extents with the BTRFS_ORDERED_IOERR flag (don=
+e
+> at btrfs_destroy_ordered_extents()), and then after that if we enter
+> btrfs_split_ordered_extent() and the ordered extent has bytes left
+> (meaning we have a bio that doesn't cover the whole ordered extent, see
+> details at btrfs_extract_ordered_extent()), we will fail on the followin=
+g
+> assertion at btrfs_split_ordered_extent():
 >
-> Would it be OK to just reboot and attempt to use it again? Should I run
-> any particular commands to further check the integrity of the fs? Or
-> would it be best to attempt to rebuild the whole fs from backups?
+>     ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
 >
-> Not sure if it's relevant, but IIRC this filesystem was created by doing
-> a btrfs-send of each subvolume from my previous btrfs disaster (subject:
-> "system drive corruption, btrfs check failure") to a new set of SSDs.
-> Could that have caused an issue? Is it better to use rsync and lose
-> reflinks, birth times, etc. than to use btrfs-send to recover from a
-> corrupted fs?
+> because the BTRFS_ORDERED_IOERR flag is set and the definition of
+> BTRFS_ORDERED_TYPE_FLAGS is just the union of all flags that identify th=
+e
+> type of write (regular, nocow, prealloc, compressed, direct IO, encoded)=
+.
 >
-> Also, I have the usual question of whether this is most likely to be a
-> kernel bug, faulty hardware, or user error. And how I might be able to
-> identify which file(s) is/are corrupted based on the output.
-
-It looks more like hardware problem (unless there is some other kernel
-bug randomly flipping memory bits).
-
-No file is corrupted (at least for this incident). The bad metadata
-write is rejected by the kernel so no damage is done (by this incident).
-
+> Fix this by returning an error from btrfs_extract_ordered_extent() if we
+> find the BTRFS_ORDERED_IOERR flag in the ordered extent. The error will
+> be the error that resulted in the transaction abort or -EIO if no
+> transaction abort happened.
 >
-> Thanks,
-> Jared
-[...]
-> [  +0.000001] 	item 66 key (3148007481344 168 8192) itemoff 13022 itemsi=
-ze 53
-> [  +0.000001] 		extent refs 1 gen 380990 flags 1
-> [  +0.000001] 		ref#0: extent data backref root 260 objectid 68965 offse=
-t 407224320 count 513
+> This was recently reported by syzbot with the following trace:
+>
+>     FAULT_INJECTION: forcing a failure.
+>     name failslab, interval 1, probability 0, space 0, times 1
+>     CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc5-syzkall=
+er #0
+>     Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debi=
+an-1.16.3-2~bpo12+1 04/01/2014
+>     Call Trace:
+>      <TASK>
+>      __dump_stack lib/dump_stack.c:94 [inline]
+>      dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+>      fail_dump lib/fault-inject.c:53 [inline]
+>      should_fail_ex+0x3b0/0x4e0 lib/fault-inject.c:154
+>      should_failslab+0xac/0x100 mm/failslab.c:46
+>      slab_pre_alloc_hook mm/slub.c:4072 [inline]
+>      slab_alloc_node mm/slub.c:4148 [inline]
+>      __do_kmalloc_node mm/slub.c:4297 [inline]
+>      __kmalloc_noprof+0xdd/0x4c0 mm/slub.c:4310
+>      kmalloc_noprof include/linux/slab.h:905 [inline]
+>      kzalloc_noprof include/linux/slab.h:1037 [inline]
+>      btrfs_chunk_alloc_add_chunk_item+0x244/0x1100 fs/btrfs/volumes.c:57=
+42
+>      reserve_chunk_space+0x1ca/0x2c0 fs/btrfs/block-group.c:4292
+>      check_system_chunk fs/btrfs/block-group.c:4319 [inline]
+>      do_chunk_alloc fs/btrfs/block-group.c:3891 [inline]
+>      btrfs_chunk_alloc+0x77b/0xf80 fs/btrfs/block-group.c:4187
+>      find_free_extent_update_loop fs/btrfs/extent-tree.c:4166 [inline]
+>      find_free_extent+0x42d1/0x5810 fs/btrfs/extent-tree.c:4579
+>      btrfs_reserve_extent+0x422/0x810 fs/btrfs/extent-tree.c:4672
+>      btrfs_new_extent_direct fs/btrfs/direct-io.c:186 [inline]
+>      btrfs_get_blocks_direct_write+0x706/0xfa0 fs/btrfs/direct-io.c:321
+>      btrfs_dio_iomap_begin+0xbb7/0x1180 fs/btrfs/direct-io.c:525
+>      iomap_iter+0x697/0xf60 fs/iomap/iter.c:90
+>      __iomap_dio_rw+0xeb9/0x25b0 fs/iomap/direct-io.c:702
+>      btrfs_dio_write fs/btrfs/direct-io.c:775 [inline]
+>      btrfs_direct_write+0x610/0xa30 fs/btrfs/direct-io.c:880
+>      btrfs_do_write_iter+0x2a0/0x760 fs/btrfs/file.c:1397
+>      do_iter_readv_writev+0x600/0x880
+>      vfs_writev+0x376/0xba0 fs/read_write.c:1050
+>      do_pwritev fs/read_write.c:1146 [inline]
+>      __do_sys_pwritev2 fs/read_write.c:1204 [inline]
+>      __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
+>      do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>      do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>      entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>     RIP: 0033:0x7f1281f85d29
+>     Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48=
+ 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01=
+ f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+>     RSP: 002b:00007f12819fe038 EFLAGS: 00000246 ORIG_RAX: 00000000000001=
+48
+>     RAX: ffffffffffffffda RBX: 00007f1282176080 RCX: 00007f1281f85d29
+>     RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000005
+>     RBP: 00007f12819fe090 R08: 0000000000000000 R09: 0000000000000003
+>     R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000002
+>     R13: 0000000000000000 R14: 00007f1282176080 R15: 00007ffcb9e23328
+>      </TASK>
+>     BTRFS error (device loop0 state A): Transaction aborted (error -12)
+>     BTRFS: error (device loop0 state A) in btrfs_chunk_alloc_add_chunk_i=
+tem:5745: errno=3D-12 Out of memory
+>     BTRFS info (device loop0 state EA): forced readonly
+>     assertion failed: !(flags & ~BTRFS_ORDERED_TYPE_FLAGS), in fs/btrfs/=
+ordered-data.c:1234
+>     ------------[ cut here ]------------
+>     kernel BUG at fs/btrfs/ordered-data.c:1234!
+>     Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+>     CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc5-syzkall=
+er #0
+>     Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debi=
+an-1.16.3-2~bpo12+1 04/01/2014
+>     RIP: 0010:btrfs_split_ordered_extent+0xd8d/0xe20 fs/btrfs/ordered-da=
+ta.c:1234
+>     Code: 43 fd 90 0f 0b e8 43 c4 db fd 48 c7 c7 20 0c 4c 8c 48 c7 c6 80=
+ 0f 4c 8c 48 c7 c2 e0 0b 4c 8c b9 d2 04 00 00 e8 04 57 43 fd 90 <0f> 0b e8=
+ 1c c4 db fd eb 5b e8 15 c4 db fd 48 c7 c7 20 0c 4c 8c 48
+>     RSP: 0018:ffffc9000d1df2b8 EFLAGS: 00010246
+>     RAX: 0000000000000057 RBX: 000000000006a000 RCX: 9ce21886c4195300
+>     RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+>     RBP: 0000000000000091 R08: ffffffff817f0a3c R09: 1ffff92001a3bdf4
+>     R10: dffffc0000000000 R11: fffff52001a3bdf5 R12: 1ffff1100a45f401
+>     R13: ffff8880522fa018 R14: dffffc0000000000 R15: 000000000006a000
+>     FS:  00007f12819fe6c0(0000) GS:ffff88801fc00000(0000) knlGS:00000000=
+00000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: 0000557750bd7da8 CR3: 00000000400ea000 CR4: 0000000000352ef0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     Call Trace:
+>      <TASK>
+>      btrfs_extract_ordered_extent fs/btrfs/direct-io.c:702 [inline]
+>      btrfs_dio_submit_io+0x4be/0x6d0 fs/btrfs/direct-io.c:737
+>      iomap_dio_submit_bio fs/iomap/direct-io.c:85 [inline]
+>      iomap_dio_bio_iter+0x1022/0x1740 fs/iomap/direct-io.c:447
+>      __iomap_dio_rw+0x13b7/0x25b0 fs/iomap/direct-io.c:703
+>      btrfs_dio_write fs/btrfs/direct-io.c:775 [inline]
+>      btrfs_direct_write+0x610/0xa30 fs/btrfs/direct-io.c:880
+>      btrfs_do_write_iter+0x2a0/0x760 fs/btrfs/file.c:1397
+>      do_iter_readv_writev+0x600/0x880
+>      vfs_writev+0x376/0xba0 fs/read_write.c:1050
+>      do_pwritev fs/read_write.c:1146 [inline]
+>      __do_sys_pwritev2 fs/read_write.c:1204 [inline]
+>      __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
+>      do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>      do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>      entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>     RIP: 0033:0x7f1281f85d29
+>     Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48=
+ 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01=
+ f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+>     RSP: 002b:00007f12819fe038 EFLAGS: 00000246 ORIG_RAX: 00000000000001=
+48
+>     RAX: ffffffffffffffda RBX: 00007f1282176080 RCX: 00007f1281f85d29
+>     RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000005
+>     RBP: 00007f12819fe090 R08: 0000000000000000 R09: 0000000000000003
+>     R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000002
+>     R13: 0000000000000000 R14: 00007f1282176080 R15: 00007ffcb9e23328
+>      </TASK>
+>     Modules linked in:
+>     ---[ end trace 0000000000000000 ]---
+>     RIP: 0010:btrfs_split_ordered_extent+0xd8d/0xe20 fs/btrfs/ordered-da=
+ta.c:1234
+>     Code: 43 fd 90 0f 0b e8 43 c4 db fd 48 c7 c7 20 0c 4c 8c 48 c7 c6 80=
+ 0f 4c 8c 48 c7 c2 e0 0b 4c 8c b9 d2 04 00 00 e8 04 57 43 fd 90 <0f> 0b e8=
+ 1c c4 db fd eb 5b e8 15 c4 db fd 48 c7 c7 20 0c 4c 8c 48
+>     RSP: 0018:ffffc9000d1df2b8 EFLAGS: 00010246
+>     RAX: 0000000000000057 RBX: 000000000006a000 RCX: 9ce21886c4195300
+>     RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+>     RBP: 0000000000000091 R08: ffffffff817f0a3c R09: 1ffff92001a3bdf4
+>     R10: dffffc0000000000 R11: fffff52001a3bdf5 R12: 1ffff1100a45f401
+>     R13: ffff8880522fa018 R14: dffffc0000000000 R15: 000000000006a000
+>     FS:  00007f12819fe6c0(0000) GS:ffff88801fc00000(0000) knlGS:00000000=
+00000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: 0000557750bd7da8 CR3: 00000000400ea000 CR4: 0000000000352ef0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+> In this case the transaction abort was due to (an injected) memory
+> allocation failure when attempting to allocate a new chunk.
+>
+> Reported-by: syzbot+f60d8337a5c8e8d92a77@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/linux-btrfs/6777f2dd.050a0220.178762.0045.=
+GAE@google.com/
+> Fixes: 52b1fdca23ac ("btrfs: handle completed ordered extents in btrfs_s=
+plit_ordered_extent")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-This is the offending bad extent item.
-
-Firstly it shows the extent item should have only 1 ref ("extent refs 1").
-But the inlined one has ref count 513, completely beyond the expected 1 re=
-f.
-
-hex(513) =3D 0x201
-hex(1)   =3D 0x001
-
-Very obvious bitflip.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
-[...]
+> ---
+>   fs/btrfs/ordered-data.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
 >
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 30eceaf829a7..3cf95a801086 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -1229,6 +1229,18 @@ struct btrfs_ordered_extent *btrfs_split_ordered_=
+extent(
+>   	 */
+>   	if (WARN_ON_ONCE(len >=3D ordered->num_bytes))
+>   		return ERR_PTR(-EINVAL);
+> +	/*
+> +	 * If our ordered extent had an error there's no point in continuing.
+> +	 * The error may have come from a transaction abort done either by thi=
+s
+> +	 * task or some other concurrent task, and the transaction abort path
+> +	 * iterates over all existing ordered extents and sets the flag
+> +	 * BTRFS_ORDERED_IOERR on them.
+> +	 */
+> +	if (unlikely(flags & BTRFS_ORDERED_IOERR)) {
+> +		const int fs_error =3D BTRFS_FS_ERROR(fs_info);
+> +
+> +		return fs_error ? ERR_PTR(fs_error) : ERR_PTR(-EIO);
+> +	}
+>   	/* We cannot split partially completed ordered extents. */
+>   	if (ordered->bytes_left) {
+>   		ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
 
 
