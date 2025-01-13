@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-10957-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10958-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F04D2A0C2AB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 21:39:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED12FA0C2CB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 21:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07E4F1646AD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 20:39:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBBF31888E3C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 20:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CCAA1CEEAA;
-	Mon, 13 Jan 2025 20:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FA91CEEB4;
+	Mon, 13 Jan 2025 20:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sEcRreIW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JV0tH8aK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380431B422D
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 20:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15411BD504
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 20:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736800776; cv=none; b=XqepKKcGMA4AJ93ZWDdD2NC34CY3fcZ1MF4MnvZ9miHASYFepYiefOJtF8N0NA+js15Txn9sFQjH72ydpy6q7jWKOBV5fjoNDJNd4GY5tOTzrbhqpO1loKkoI6ICFWkYJdWcQ4NhjTi6UlE1xnD6Wa/pcJwki/kpKSicqJJf8c0=
+	t=1736801662; cv=none; b=fGnzBpGV74ooV6lH1Z9TtO9K2hp2eNx/2OsJQjUfvnFe/fnwSWxcsXjo2g6dvWMcD7CPGUd0y6byqiB7vhZ9qQytmtiZnc38LAdkXkIwhPR6iMSSluYCk5R+sUa5bqgvkhr2VB5dddWzkvxAGoDaZ12Y3FztHNaHFAfDWWnpN48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736800776; c=relaxed/simple;
-	bh=ICJQ6VPHWFIX0XO3qyBk3J73DeED4qwGHHylTAafr7U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A5IL/Fd8rqthvqe8MyaumJneARkZZTDlHiWGOB9WkDK4xiwUa0YggG8SVQp/aBvydyt6MlPr5meoIvtAV6HdgcCQc4D0s6RYmj5VOpJpQ3fStgjiPgXZGocxIB35g7OUks6Xd0SFlOKzgtsxPKaqMBkc+wlLp+J12fxHCJ/ngBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sEcRreIW; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1736801662; c=relaxed/simple;
+	bh=hwUPgcg2wGYnWIdbgS2jn2YZMs0p4dlcYFrx/fgK3hk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=kE49p1IpN+an3BDl/QQPWqJV9toBJqyR8YbLTSNl6I5O3pjru3EZNudTye0Joqg8Jay+TK5bRZUqy2irgP6JQQjOtFWeVx9tjl2MLSrZD91qC6OQjSC6McoEP6+LkLdT1FMTQBS2qwucMXzBYDRzCoyFgsIJvpeM+ryhVWQwQLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JV0tH8aK; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1736800771; x=1737405571; i=quwenruo.btrfs@gmx.com;
-	bh=T4nubM21fss5WYjq3/02kn29KC1jA0XYMx+rGKIjCBY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1736801657; x=1737406457; i=quwenruo.btrfs@gmx.com;
+	bh=ATeOeGsHDWSZQp4d9Nrh8VYj5VWGJXn5rEXcWy7zgic=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=sEcRreIWQ8REQqqtdliw4SGQfPgTM66GUmYiY6UWbko+qkIq01hMaIBj+fOKobN8
-	 KQtW0HxCbAX5U9Nv8VxSGFeEeuP0gTaQjHgSphRxNyNiGuOOgjViydDcoR47/RK6T
-	 FQg7ApAm9vLhUZX9C7ZdbFCzgxwm4Tkb+oZZCSVJ9pzmyiCowV7CAneHjvj7g4v2n
-	 Xkprbkx0EQPOERiWHotOXm7i/2WFqJtHBz5lP8FbM2PALg8xLMJp+VRUqH5ZJzdbg
-	 1YmZ9sDAYvCtt18xyGDCMqj+ELC8QWBvCLrnqv4dc4V6MIw+ykzlCYDsAYqBn8hmU
-	 9GE5gTSYg68vGO0qlg==
+	b=JV0tH8aKMR1E2tzoFiV6/1c/WJ7kPxg8s80MUeZC4PQiWkn0+PhjIgjXqnUze7lN
+	 oc/GNfD5AAOePbNQ4YY262vAsJ6uJn6nvSzaTgYmFWyqY66QSOqA1BfsjFBY5KSG8
+	 WMde9Rb260pg3zuEUC/6a0Q+8uEIxN56OX15k9wogZ9CslFmszA+B9hlE0tl6aJFN
+	 9aqe4SeZ0ahn4Q5G+Ho+DqJGoLiWYuap4w1Ub06GjszEuaoCKH0uQ6iTIP9J5PRjw
+	 zbpHWlN9AnkVY5rKukXfdZ8mzK3qj4OvenlgcSe71nRd4/VfzaK1X1ugJqhYseg4M
+	 LEef04LFr60FblsPnQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Daq-1te0nj09Si-0080ud; Mon, 13
- Jan 2025 21:39:31 +0100
-Message-ID: <3749cb72-a99f-4f4e-9682-e2cbf7604227@gmx.com>
-Date: Tue, 14 Jan 2025 07:09:28 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fii-1tQrse2W64-00xPbt; Mon, 13
+ Jan 2025 21:54:17 +0100
+Message-ID: <cd42beff-741d-4b9c-b78d-4244df06d0c3@gmx.com>
+Date: Tue, 14 Jan 2025 07:24:14 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: RAID1 two chunks of the same data on the same physical disk, one
- file keeps being corrupted
-To: ein <ein.net@gmail.com>
-Cc: Linux fs Btrfs <linux-btrfs@vger.kernel.org>
-References: <6ae187b3-7770-4b64-aa65-43fff3120213@gmail.com>
- <37cfd270-4b64-4415-8fee-fa732575d3a9@gmail.com>
- <a00a0c80-85fa-4484-9076-d4a2f50e177e@gmx.com>
- <501eb99a-dee6-4e84-93cb-ae49d48dcab6@gmail.com>
+Subject: Re: write time tree block corruption detected, forced readonly
+To: Jared Van Bortel <jared.e.vb@gmail.com>, linux-btrfs@vger.kernel.org
+References: <fcc9c66cac45aee144755ee35714d2d358199d25.camel@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,196 +87,105 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <501eb99a-dee6-4e84-93cb-ae49d48dcab6@gmail.com>
+In-Reply-To: <fcc9c66cac45aee144755ee35714d2d358199d25.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fxpc4IkFoLy5+rZ/lIg8LQX8K4lEKYF89jh+WCdWKIvo20Pjudf
- Wl1wcFknGo0Vz32LtaH3S67Js7LpJ1Xz1Kp190Ivr5jmgu8/LVBx3/WsxCmhNge/zM1VmEm
- oE7wOCMGuolq4Ru41e3LEU8iT/a1ATqxrmvV1LRVfSKxidVVpqwpXUHtQQ9R1b/+TCWHxCt
- 8PAkRywRtrU9O2wj1qJ9g==
+X-Provags-ID: V03:K1:OrAfR6yEI/xzgImkjDmX7wnjCalrAYrEhKjKJRM/7LsyVV8+077
+ r/aqXuF2DU7pFXNcY78bPgIbm+nPiB2TMIDmHDuAojWzJYJvF9007F1h+ncuxuJMUMyWUMp
+ 3ZdmQ7nI81S7PiEnuMoUDVeLKYzY5HGBsJGZK/ayxapvp6OhKpp1RtaDOVY7iN3BVcOD1I0
+ 1pUzmpYSrqvn2OcVr3qdA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:VcqeEu10W/Y=;fam4llcdK4ZHBPcgsVLj6gxBmfG
- +xTxo2zkhBjC1Av0JZVlDnRaNBk+JoZLO7z6Ks6Mrp8+9KvNfxlfk7FtGEMFpnd9ieQe5olxA
- +WwKmnyeV0lxbJwi+GK/fmlXEqUaLLTfu8wsZuPI4AdnR+E7nSMteDxnYeG2vlB/ksw1ABv2r
- fIVFkbEhXLel/YWQByW2tJYac2aVzDlFD9eygM/ezQIJykmYnFL6GiThmh8GC+RR2m1E/JHFv
- JhXZ+aeM1Zwz7F55hMLRjDtUdqZ/mGpsQm+lyHn94zbx0zH1UPPqTxiylkJD3B7rBaqA8SKNV
- BKHaPf2etCkb85MqB5yxJpGcfDju7LWUBnvytW3bJs0ZDqDX4mshwXFT8o1Cl7rYKCWmsE3SS
- +8RS+y8NGzsluxsiDjyOQP4zc5TsvfomSvBPWtk/X6LW+AM/6OMPkZfM1QqqISNwixK8d89MO
- mubIOyAcEFsuMeBMdASsHYeohT6t5o8b8/HnazwWVnkq94NCL4h6LCYDMEDVtImG/l7vlDQ2g
- gFC4NMd1/fQDRqgiSsPobWzYdFCllDnh9HxThrRDhy2x4/U4jNIUZB5PqolozmMeZQjfsVDGq
- NlxHKXiSDiqgFLOS1KP62Ld8qypZQdTVXaJzopBl5UNuT/CYi2DnEtrRSIwKmY0eD/tbwX5wF
- q292EkVpzubr8cFPNdZxv40fRzlR/TAUAoeGt8gLB6qVQHLRMIuUAg3OljxsQPLyL9sTLALhO
- z+ss3YDw8W6H/4l24F7gYOGIy9Ui97mJh6MpWjuhwjdznQyxb+s1ZO90URWzW7Y8cL3eYWLj0
- 8IsqLkWsEG8O4zZIcED61rrY9B29ZIbuZKW0hquogWRHYMDqDjiv0g5zOZ0/Ji+6LJsAY6xWk
- mMrA9+/ozZkfUgfmAtxcOHtEFRcfow8hBm6nZwjzQUgXe6uc6Ve5tZ2tOOCvfqHspMz6/Y7UR
- nSFwV6BRyP7+h5QwUjzItwg3LCUZ8c0qoUImeturqmaf98bjfm7zUPnWCG9BVWUiAyIpDl/Gc
- 793hEPE8LzhK9KmV8Nh48ZCfKnndG4HW6CoKHcVOXUpDK/HiCjyRgtNN3PHR+9lOqsoNtyuhc
- izaSNOc0na7fvXy7Hsl7IGMTk20EmE
+UI-OutboundReport: notjunk:1;M01:P0:roeusXV4Rtw=;p9QKR0Ls8e2MupCDX+bjNEi4Rz/
+ z9QHZE+sjP1t+tRdibjyAyZ5q8bNW9y8yG3xZB8RhWOY2iUJbqzZ/k3iH/MSQdKtmB3WOrmV7
+ In80SBvc3aqXauqpdJZ+g5sbpR3tbclJDKSjSLpncIQ1POnKMVUU63Ns+TDo01hA8Y7ZkDFea
+ u0NbuK/437BNQYy1yd0u+XRH1rG8hOEfvebeiFBCpzvwBlr1fNCE0+e8PwNb9v3H+6EPNm26e
+ cKvdyTTcPG9ANOFFLggZEGRgr8us6EhqGwqzssgRK2lvzz9Nn/MBvdRxzcITi09JQUFrqli7k
+ uksCQy7RlmKBwC1t4ukMwAdny947aVlquUPje5+4Tw4JE7jFBS8dR0Nzzrz5pxGz974161bAg
+ 3FXGMxKU50pc42moStE66rNwjtmAH1aL1XHyXHZhX8qWV8bnyMbcmSqCHZZxsO9LHz3zr0P/g
+ sLfgfpEGDkIGrK7NUMX67OnFZ8iib28OTdMbYFDYvtonydXuQ0DaC37ylS1O1N0kem49vMmRg
+ XuZzR+yE09jzBN6UazutFiiMkGGmy0vQf1Vkt07Zcc8rrIKV0BTU8rpyoO8BnPIsn4/fcPYuL
+ 88eZJKA5eqbp6ly8LWHOVx7BjSj9RrAVkCD9bBaen1fF3Rm11gwX4MueZhDYbV5EAPCad0wZ3
+ yP2GuirsCgt3yToAtIZ+mATowSuDqM2Pe4u4qxqNns1jvaAgiROhVQMtAcTkRxsYtJ0ylmXbH
+ +Byv9RMoJMwAafFqRp2GzWRKVc0ql4sRR7Xbt9nSIULCTN8hBNVXt+yeYvOl3wDAy2sHaoSNk
+ vB0NMjSSuiuhaNtliep8Jju7NR1G1N9qwN0DUMyaKSMlnm3CkPwl7Y4L7vuyFNrjGxl+MnD8H
+ AUEfHDpbdHZxLIH977SZJs3yeDbLqpMwiojaei1+L/NEJ2dfbsIiCqP6EQBjjMoAxGeJESFA7
+ kuQr+NgPb8BOqIOUwx9ztoMml/zJgEMz4FqetRXp1jwl7cDezk0rptSx97jlx/82jCqh3Vyx+
+ afM121ruH25VIw1Ud8YVkcALZHh11edsdR6gmGle765HicsmmmwkTPJ39qKEt9ySCohuZ8sbM
+ G1qkODxxWa3ZdNyEw4QH0XMmXeFwTx
 
 
 
-=E5=9C=A8 2025/1/14 02:24, ein =E5=86=99=E9=81=93:
-> On 29.07.2024 12:05, Qu Wenruo wrote:
->> On 10.06.2024 16:56, ein wrote:
->>>> [...]
->>>> I don't think that it's RAM related because,
->>>> - HW is new, RAM is good quality and I did mem. check couple months
->>>> ago,
->>>> - it affects only one file, I have other much busier VMs, that one
->>>> mostly stays idle,
->>>> - other OS operations seems to be working perfectly for months.
->>>
->>> [...]
->>>
->>> after spotting this:
->>> https://www.reddit.com/r/GlobalOffensive/comments/1eb00pg/
->>> intel_processors_are_causing_significant/
->>>
->>> I decided to move from:
->>> cpupower frequency-set -g performance
->>> to:
->>> cpupower frequency-set -g powersave
->>>
->>> I have got:
->>>
->>> ~# lscpu
->>> Architecture: =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0x86_64
->>> =C2=A0=C2=A0CPU op-mode(s): =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A032-bit, 64-bit
->>> =C2=A0=C2=A0Address sizes: =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A046 bits physical, 48 bits virtual
->>> =C2=A0=C2=A0Byte Order: =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0Little Endian
->>> CPU(s): =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A032
->>> =C2=A0=C2=A0On-line CPU(s) list: =C2=A0=C2=A0=C2=A00-31
->>> Vendor ID: =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0GenuineIntel
->>> =C2=A0=C2=A0BIOS Vendor ID: =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0Intel(R) Corporation
->>> =C2=A0=C2=A0Model name: =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A013th Gen Intel(R) Core(TM) i9-13900K
->>> =C2=A0=C2=A0=C2=A0=C2=A0BIOS Model name: =C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A013th Gen Intel(R) Core(TM) i9-13900K To Be
->>> Filled By O.E.M. CPU @ 5.3GHz
->>>
->>> One week without corruptions.
-> Hi Qu,=C2=A0 thank for the answer.
->> Normally we only suspect the hardware when we have enough evidence.
->> (e.g. proof of bitflip etc)
->> Even if the hardware is known to have problems.
-> I think I have those - proofs. (1)
->> In your case, I still do not believe it's hardware problem.
->>
->> > - it affects only one file, I have other much busier VMs, that one
->> mostly stays idle,
->>
->> Due to btrfs' datacsum behavior, it's very sensitive to page content
->> change during writeback.
->>
->> Normally this should not happen for buffered writes as btrfs has locked
->> the page cache.
->>
->> But for Direct IO it's still very possible that one process submitted a
->> direct IO, and when the IO was still under way, the user space changed
->> the contents of that page.
->>
->> In that case, btrfs csum is calculated using that old contents, but the
->> on-disk data is the new contents, causing the csum mismatch.
->>
->> So I'm wondering what's the workload inside the VM?
+=E5=9C=A8 2025/1/14 07:00, Jared Van Bortel =E5=86=99=E9=81=93:
+> Hi all,
 >
-> As far as I know in such configuration there's no writeback:
+> I am using Arch Linux with the latest linux-zen kernel (6.12.9-zen1-1-
+> zen). I saw the below error in dmesg today, and my filesystem went read-
+> only. I haven't rebooted the computer yet. This is my root filesystem.
+> What should by next steps be in order to get this computer up and
+> running again?
+
+In your particular case, it's a very strong indicator of bad hardware
+RAM (bitflip).
+
+Thankfully the corrupted metadata is rejected before writing to the
+disk, so your fs should still be fine.
+
+So your next step should be run memtest, either memtest86+ as UEFI
+payload (preferred), or memtester inside Linux (with minimal other
+program running).
+
+After fixing the bad hardware RAM, then I'd recommend to run a "btrfs
+check --readonly" to verify there is no other problem in the fs.
+Although tree-checker is doing a very good job, it's impossible to catch
+all bitflips.
+
 >
-> <disk type=3D"file" device=3D"disk">
->  =C2=A0 <driver name=3D"qemu" type=3D"qcow2" cache=3D"none" discard=3D"u=
-nmap"/>
+> Would it be OK to just reboot and attempt to use it again? Should I run
+> any particular commands to further check the integrity of the fs? Or
+> would it be best to attempt to rebuild the whole fs from backups?
+>
+> Not sure if it's relevant, but IIRC this filesystem was created by doing
+> a btrfs-send of each subvolume from my previous btrfs disaster (subject:
+> "system drive corruption, btrfs check failure") to a new set of SSDs.
+> Could that have caused an issue? Is it better to use rsync and lose
+> reflinks, birth times, etc. than to use btrfs-send to recover from a
+> corrupted fs?
+>
+> Also, I have the usual question of whether this is most likely to be a
+> kernel bug, faulty hardware, or user error. And how I might be able to
+> identify which file(s) is/are corrupted based on the output.
 
-cache=3D"none" means direct IO.
+It looks more like hardware problem (unless there is some other kernel
+bug randomly flipping memory bits).
 
-Exactly the problem I mentioned, direct IO with data changed during
-writeback.
+No file is corrupted (at least for this incident). The bad metadata
+write is rejected by the kernel so no damage is done (by this incident).
 
-You can change it to "cache=3Dwriteback" then it should resolve the false
-alert mismatch.
-(Or just simply change the disk image file to NODATASUM)
+>
+> Thanks,
+> Jared
+[...]
+> [  +0.000001] 	item 66 key (3148007481344 168 8192) itemoff 13022 itemsi=
+ze 53
+> [  +0.000001] 		extent refs 1 gen 380990 flags 1
+> [  +0.000001] 		ref#0: extent data backref root 260 objectid 68965 offse=
+t 407224320 count 513
+
+This is the offending bad extent item.
+
+Firstly it shows the extent item should have only 1 ref ("extent refs 1").
+But the inlined one has ref count 513, completely beyond the expected 1 re=
+f.
+
+hex(513) =3D 0x201
+hex(1)   =3D 0x001
+
+Very obvious bitflip.
 
 Thanks,
 Qu
 
->  =C2=A0 <source file=3D"/var/lib/libvirt/images-red-btrfs/dell.qcow2" in=
-dex=3D"2"/>
->  =C2=A0 <backingStore/>
->  =C2=A0 <target dev=3D"vda" bus=3D"virtio"/>
->  =C2=A0 <alias name=3D"virtio-disk0"/>
->  =C2=A0 <address type=3D"pci" domain=3D"0x0000" bus=3D"0x00" slot=3D"0x0=
-4"
-> function=3D"0x0"/>
-> </disk>
-> [...]
-> <controller type=3D"pci" index=3D"0" model=3D"pci-root">
->  =C2=A0 <alias name=3D"pci.0"/>
-> </controller>
->
-> This is mostly empty Win7 virtual machine with very small SQLite
-> database (100-500MiB) with some network monitoring tool.
->
-> (1)
-> It took almost a year, I spent hundredths of hours and thousands of $
-> chasing this issue:
-> - tired 4 different new SATA controllers, from cheap ASM106X series to,
-> DC grade HBA like LSI,
-> - multiple times replaced all SATA cables,
-> - replacing HDDs WD Red drives (mix of CMA/SMR) to WD Red SSDs SA500,
-> That part changed nothing. I experienced a lot of PCI-E link issues
-> like, disappearing SATA drives, disappearing NVME drives - sometimes
-> both of them, USB link problems etc.
-> But I don't think that link issues was related - the corruption happens
-> without them (indication of link reset in dmsg).
->
-> - RMA the CPU from i9-13900k to i9-14900k,
-> - try every available Intel CPU microcode update packaged as BIOS update
-> by mainboard vendor.
-> This part made the situation better, but I still could recreate
-> corruption errors. As times goes on when running in the "performance"
-> mode, the issues appeared often and were more severe. Every time
-> switching from performance mode to powersave (lower voltage) made the
-> CPU more stable.
->
-> The process of recreation looked as follows.
-> - shut the VM off,
-> - defrag the filesystem (btrfs filesystem defragment),
-> - turn the VM on,
-> - defrag/chkdsk on VM.
-> The errors appeared almost immediately. There was correlation how often
-> it happens.
-> If the VM image was very fragmented in btrfs, then the probability of
-> corruption was lower.
->
-> i9-14900k 3 month after RMA, started to have threading issues and
-> started to leave zombie processes in performance mode. Powersave mode
-> fixed it as well and it worked stable.
->
-> Finally, I replaced my mainboard (it was X13SAE-F) with Intel Z890 mobo
-> and the latest CPU generation leaving whole IO stack intact (same:
-> chassis, cables, controllers and disks).
-> I ran scrub, balance, this VM had one small 4096b unrecoverable error on
-> bluescreen memory dump file and everything works fine from couple of
-> days. I can't reproduce it with above method anymore.
-> I used ddrescue to reread everything I could from btrfs (this one file
-> used by mentioned VM) and just replaced the file after ddrescue was done=
-.
->
-> On Friday last week I asked Intel for refund.
->
-> I am positively surprised how much pain this btrfs filesystem (RAID10
-> for data and metadata) handled over last year. Great job devs, keep it u=
-p!
->
-> Sincerely,
-> e.
->
+[...]
 >
 
 
