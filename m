@@ -1,215 +1,241 @@
-Return-Path: <linux-btrfs+bounces-10938-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10939-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7405CA0BCAA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 16:54:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5C42A0BCAD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 16:56:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87DC3188652F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 15:54:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5678164690
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 15:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3291FBBC0;
-	Mon, 13 Jan 2025 15:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B70204583;
+	Mon, 13 Jan 2025 15:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bex/Vjjh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+1b0QmJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D17D240225
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 15:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BFD1420DD;
+	Mon, 13 Jan 2025 15:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736783682; cv=none; b=sF6yYDpNVyddRHU9HqY7KSBIMTXEt05ykgC7VVOZAZewXJnx746Uo/JCGdMnySUDait2PBc3NLUd7mpqCC74CGhdiZCBdvYhnQQ85Cs8kcBMKisW1+KaYESEPoXF4JrEWBw10x7hgGoSKbEkJPRuvX4RbJwA6z5pxmhoMefQVwM=
+	t=1736783772; cv=none; b=eD4s0r3DKGon61qGKlIehdtA6eFUiO18QxNK5WEeaohqdSKIt/fHTRxfFhll37/W5eVZM0hOVl3actKjwFoe2Si9WrM7mxEmVKHmlvxV2R/t7YEDxpv72UtxdlSEiXIOLSxe2q6sc7XoY+toP8yk0K27d8XzPWwjkXkTo9tqwIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736783682; c=relaxed/simple;
-	bh=cpCaQcmja0YUzjWAJsphpxLWAkZeol/GKBUriiTJxxI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=NNgM3CODGh3ULuXN3mGNGOA7jti6Nkm9NAITZNYs52kSuOiBfKnO8Ju8bct4FNNHF5MnlwjyRFPrfmsA2KmY1xhqX/DIbWX9FHOhHB3Um+SkZoOb4KFbSG7BpVRyhmlgPxezjZVcohReV0L15thIqYOLoBhFYBoexWHZNIcePs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bex/Vjjh; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aaec111762bso810040166b.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 07:54:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736783679; x=1737388479; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:cc:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ElHxHYF5NgHSmY97Ruv7689Wu5TnUl5D6BjXBBetJF0=;
-        b=Bex/VjjhrVKKmRBxVmCliYGWRaEGunZ5dOmiJvvOsqwA1j9xraakNZuR2cr0Zxmk0K
-         n5gqEDfA2v2eABQInAFRjCifg06/DRu/rIdv1L/HsR38IOQA2dJsoanPx5/rOJmdcGmc
-         umZJkBA7qpVnHGtwH23ByvnTtDHeWqTG6Kyn33QJ0YL+7asqDrCyEcznaDp4o9GAaHm4
-         sFAninkQjJDvfagEUmQzO3fQyFte7nyJDT0BC1bAzamVSWzmJNL/1bHcu0uDSaYCm3ta
-         dcV/NAbc65yQA3LPnZDE9phjrvrEMuOpLwq4BQd4tILXcb9Y4Nlako9LHBVJnUOpC5Jb
-         pqPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736783679; x=1737388479;
-        h=content-transfer-encoding:in-reply-to:cc:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ElHxHYF5NgHSmY97Ruv7689Wu5TnUl5D6BjXBBetJF0=;
-        b=ImgK2TjCHjU/0zZ1qf0ZMoIADusWE5v3v39yzNedD55gwc+MxMAMOKvbmdqRavOP09
-         dV/bCq6DwQJiUzHi3ckAcmJbWBFa8N1NFha+Nfd0VH4ExyGe7Z04Nu2x2WvXikNIzM93
-         BbvpCYjAf9GzeHkZd2UpGSIIDViqpb1UBaXZ7Kti+PiBs/dMEEyk1BeP7EJOrEDgQsFY
-         os76XUR9AzHPQ5O/YN86VkUj11YQn0Drh4XVgKaTpdewu0PyngnfgzTFqG5INTPjrFB7
-         xLsWD85G2d1lQh5naKELB1X/zDuS0dZszRo5vTLX3Sar3lPH/Fx/ZxewBaeDZtG/YiX/
-         TGjQ==
-X-Gm-Message-State: AOJu0YyygWbPeJscAFW5g7PUVlPjMJR1mwP06ACveNNKyBX7ezl69vD8
-	WGW/xt+NUyR/QxGWmfisqAgTMaT7Grelc/91RbIUjzZAoXROFB8cGZVRMA==
-X-Gm-Gg: ASbGncv1dithh59F30YrgqJMBeFyxJ/pxclt9VA6niLBZzo2IG8vQ1SaWm1TWLtbIa3
-	C3GbGvfVEDJWx1ItLyDbYvspda7fqkuuR2R1f57XZma29ufI5WqNpomByJVHzNWNNYyYWXfgr8L
-	IK+hQcFeW2bSIgVpJyWMQULrGoiERXaw8arf3wWEW/8NFQu+JLHWeuYx6L9jpXCWUllAIPFHid0
-	mGY8nHsEtU1Z0SfR2kX3hxVLfLLOIDT/6DSmwky72eiAU3Tgr4=
-X-Google-Smtp-Source: AGHT+IGI4QhSpJArnt6COQclYJX8lTy7rdxTikniuERmJ22IZ7BNUt4axJvGSyZA7wGWAmeRPsGnWA==
-X-Received: by 2002:a17:907:9997:b0:ab2:c0ba:519e with SMTP id a640c23a62f3a-ab2c0ba708fmr1824150566b.35.1736783678434;
-        Mon, 13 Jan 2025 07:54:38 -0800 (PST)
-Received: from [10.1.1.2] ([77.253.223.98])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c95b1bb6sm516008066b.159.2025.01.13.07.54.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jan 2025 07:54:35 -0800 (PST)
-Message-ID: <501eb99a-dee6-4e84-93cb-ae49d48dcab6@gmail.com>
-Date: Mon, 13 Jan 2025 16:54:31 +0100
+	s=arc-20240116; t=1736783772; c=relaxed/simple;
+	bh=2DyQJQtg2jTz+shuWvjjwZuE4kOwj/cguYbgJDjyRWk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=efa4TXsGdX3GQQhRUuvMLaks4GTRrf3NjQxAvQ8gG3TX3b+fomNwYTdaWvffDmUl3h1D/9lQ6+hTv1ePrvTuWwNVJnSqmgA4sGvvB5gLGYiFmMWaZ6yelQ4qN49PgKJ4PcH8nGBzudm4ewbI00erPZ2mntgf/8rGOgB1QDN6xr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+1b0QmJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95CF8C4CEE3;
+	Mon, 13 Jan 2025 15:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736783771;
+	bh=2DyQJQtg2jTz+shuWvjjwZuE4kOwj/cguYbgJDjyRWk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=g+1b0QmJXM6WW2jKwcy67te5aCHRMIbiegQMInjqHmkDioOnqxv2h9Z50NUZW1AIV
+	 t2n0CMbHDqeefJU9QgTAXcuvFhTc1AtLiUA6+Eq/3e+2/yPRD0l6psqPipwQg/iWxi
+	 01VpOz5RdFuAd7+hsTnfGHUSZnCG7q9ncvzklVz7lfhwD6BDeVUaJCzDMdRc4T5Cxe
+	 +eSkLusdQgDs9CJuD3qx6vEsIs4IU4Q8TRKz5Z9lWyfGbnK4Tbkp3vV7qj4XlWaLs5
+	 EKFJ+FNqn076VSv2Yc3fi/8eSO+xDFTilM/TE6dv07xxYHLj0LkNg02/crIZPg0rcv
+	 pdmUfApoJ2FpQ==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	zlang@redhat.com,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] generic: test swap activation on file that used to have clones
+Date: Mon, 13 Jan 2025 15:55:57 +0000
+Message-ID: <2c9ff99c2bcaec4412b0903e03949d5a3ad0d817.1736783467.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: RAID1 two chunks of the same data on the same physical disk, one
- file keeps being corrupted
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <6ae187b3-7770-4b64-aa65-43fff3120213@gmail.com>
- <37cfd270-4b64-4415-8fee-fa732575d3a9@gmail.com>
- <a00a0c80-85fa-4484-9076-d4a2f50e177e@gmx.com>
-Content-Language: en-US
-From: ein <ein.net@gmail.com>
-Cc: Linux fs Btrfs <linux-btrfs@vger.kernel.org>
-In-Reply-To: <a00a0c80-85fa-4484-9076-d4a2f50e177e@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 29.07.2024 12:05, Qu Wenruo wrote:
-> On 10.06.2024 16:56, ein wrote:
->>> [...]
->>> I don't think that it's RAM related because,
->>> - HW is new, RAM is good quality and I did mem. check couple months ago,
->>> - it affects only one file, I have other much busier VMs, that one
->>> mostly stays idle,
->>> - other OS operations seems to be working perfectly for months.
->>
->> [...]
->>
->> after spotting this:
->> https://www.reddit.com/r/GlobalOffensive/comments/1eb00pg/intel_processors_are_causing_significant/
->>
->> I decided to move from:
->> cpupower frequency-set -g performance
->> to:
->> cpupower frequency-set -g powersave
->>
->> I have got:
->>
->> ~# lscpu
->> Architecture:             x86_64
->>   CPU op-mode(s):         32-bit, 64-bit
->>   Address sizes:          46 bits physical, 48 bits virtual
->>   Byte Order:             Little Endian
->> CPU(s):                   32
->>   On-line CPU(s) list:    0-31
->> Vendor ID:                GenuineIntel
->>   BIOS Vendor ID:         Intel(R) Corporation
->>   Model name:             13th Gen Intel(R) Core(TM) i9-13900K
->>     BIOS Model name:      13th Gen Intel(R) Core(TM) i9-13900K To Be
->> Filled By O.E.M. CPU @ 5.3GHz
->>
->> One week without corruptions.
-Hi Qu,  thank for the answer.
-> Normally we only suspect the hardware when we have enough evidence.
-> (e.g. proof of bitflip etc)
-> Even if the hardware is known to have problems.
-I think I have those - proofs. (1)
-> In your case, I still do not believe it's hardware problem.
->
-> > - it affects only one file, I have other much busier VMs, that one
-> mostly stays idle,
->
-> Due to btrfs' datacsum behavior, it's very sensitive to page content
-> change during writeback.
->
-> Normally this should not happen for buffered writes as btrfs has locked
-> the page cache.
->
-> But for Direct IO it's still very possible that one process submitted a
-> direct IO, and when the IO was still under way, the user space changed
-> the contents of that page.
->
-> In that case, btrfs csum is calculated using that old contents, but the
-> on-disk data is the new contents, causing the csum mismatch.
->
-> So I'm wondering what's the workload inside the VM?
+From: Filipe Manana <fdmanana@suse.com>
 
-As far as I know in such configuration there's no writeback:
+Test that we are able to activate a swap file on a file that used to have
+its extents shared multiple times.
 
-<disk type="file" device="disk">
-   <driver name="qemu" type="qcow2" cache="none" discard="unmap"/>
-   <source file="/var/lib/libvirt/images-red-btrfs/dell.qcow2" index="2"/>
-   <backingStore/>
-   <target dev="vda" bus="virtio"/>
-   <alias name="virtio-disk0"/>
-   <address type="pci" domain="0x0000" bus="0x00" slot="0x04" function="0x0"/>
-</disk>
-[...]
-<controller type="pci" index="0" model="pci-root">
-   <alias name="pci.0"/>
-</controller>
+This exercises a bug on btrfs' extent sharedness detection during swap
+file activation, which is fixed by the following kernel commit:
 
-This is mostly empty Win7 virtual machine with very small SQLite database (100-500MiB) with some 
-network monitoring tool.
+  03018e5d8508 ("btrfs: fix swap file activation failure due to extents that used to be shared")
 
-(1)
-It took almost a year, I spent hundredths of hours and thousands of $ chasing this issue:
-- tired 4 different new SATA controllers, from cheap ASM106X series to, DC grade HBA like LSI,
-- multiple times replaced all SATA cables,
-- replacing HDDs WD Red drives (mix of CMA/SMR) to WD Red SSDs SA500,
-That part changed nothing. I experienced a lot of PCI-E link issues like, disappearing SATA drives, 
-disappearing NVME drives - sometimes both of them, USB link problems etc.
-But I don't think that link issues was related - the corruption happens without them (indication of 
-link reset in dmsg).
+The fails sporadically on XFS and the bug was already reported to the XFS
+mailing list:
 
-- RMA the CPU from i9-13900k to i9-14900k,
-- try every available Intel CPU microcode update packaged as BIOS update by mainboard vendor.
-This part made the situation better, but I still could recreate corruption errors. As times goes on 
-when running in the "performance" mode, the issues appeared often and were more severe. Every time 
-switching from performance mode to powersave (lower voltage) made the CPU more stable.
+   https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
 
-The process of recreation looked as follows.
-- shut the VM off,
-- defrag the filesystem (btrfs filesystem defragment),
-- turn the VM on,
-- defrag/chkdsk on VM.
-The errors appeared almost immediately. There was correlation how often it happens.
-If the VM image was very fragmented in btrfs, then the probability of corruption was lower.
+   https://lore.kernel.org/fstests/dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com/
 
-i9-14900k 3 month after RMA, started to have threading issues and started to leave zombie processes 
-in performance mode. Powersave mode fixed it as well and it worked stable.
+So for now skip the test on XFS and add comments with references to these
+threads.
 
-Finally, I replaced my mainboard (it was X13SAE-F) with Intel Z890 mobo and the latest CPU 
-generation leaving whole IO stack intact (same: chassis, cables, controllers and disks).
-I ran scrub, balance, this VM had one small 4096b unrecoverable error on bluescreen memory dump file 
-and everything works fine from couple of days. I can't reproduce it with above method anymore.
-I used ddrescue to reread everything I could from btrfs (this one file used by mentioned VM) and 
-just replaced the file after ddrescue was done.
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
 
-On Friday last week I asked Intel for refund.
+V2: Add git commit ID now that the btrfs fix landed in Linus' tree.
+    Skip the test on XFS and add a comment about it.
 
-I am positively surprised how much pain this btrfs filesystem (RAID10 for data and metadata) handled 
-over last year. Great job devs, keep it up!
+ tests/generic/370     | 109 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/370.out |  25 ++++++++++
+ 2 files changed, 134 insertions(+)
+ create mode 100755 tests/generic/370
+ create mode 100644 tests/generic/370.out
 
-Sincerely,
-e.
+diff --git a/tests/generic/370 b/tests/generic/370
+new file mode 100755
+index 00000000..67af7b6e
+--- /dev/null
++++ b/tests/generic/370
+@@ -0,0 +1,109 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2025 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 370
++#
++# Test that we are able to create and activate a swap file on a file that used
++# to have its extents shared multiple times.
++#
++. ./common/preamble
++_begin_fstest auto quick clone swap
++
++_cleanup()
++{
++	cd /
++	rm -r -f $tmp.*
++	test -n "$swap_file" && swapoff $swap_file &> /dev/null
++}
++
++. ./common/reflink
++
++[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit 03018e5d8508 \
++    "btrfs: fix swap file activation failure due to extents that used to be shared"
++
++# Skip XFS for now because this exposes an issue that is hard to fix.
++# See the following threads for details about it:
++#
++# https://lore.kernel.org/linux-xfs/CAL3q7H7cURmnkJfUUx44HM3q=xKmqHb80eRdisErD_x8rU4+0Q@mail.gmail.com/
++# https://lore.kernel.org/fstests/dca49a16a7aacdab831b8895bdecbbb52c0e609c.1733928765.git.fdmanana@suse.com/
++#
++_supported_fs ^xfs
++
++_require_scratch_swapfile
++_require_scratch_reflink
++_require_cp_reflink
++
++run_test()
++{
++	local sync_after_add_reflinks=$1
++	local sync_after_remove_reflinks=$2
++	local first_swap_file="$SCRATCH_MNT/swap"
++	local swap_size=$(($(_get_page_size) * 32))
++	local num_clones=50
++	local swap_file="$SCRATCH_MNT/clone_${num_clones}"
++
++	_scratch_mkfs >> $seqres.full 2>&1 || _fail "failed to mkfs"
++	_scratch_mount
++
++	echo "Creating swap file..."
++	_format_swapfile $first_swap_file $swap_size >> $seqres.full
++
++	echo "Cloning swap file..."
++	# Create a large number of clones so that on btrfs we get external ref
++	# items in the extent tree and not just inline refs (33 is currently the
++	# treshold after which external refs are created).
++	for ((i = 1; i <= $num_clones; i++)); do
++		# Create the destination file and set +C (NOCOW) on it before
++		# copying into it with reflink. This is because when cp needs to
++		# create the destination file, it first copies/clones the data
++		# and then sets the +C attribute, and on btrfs we can't clone a
++		# NOCOW file into a COW file, both must be NOCOW or both COW.
++		touch $SCRATCH_MNT/clone_$i
++		# 0600 is required for swap files, do the same as _format_swapfile.
++		chmod 0600 $SCRATCH_MNT/clone_$i
++		$CHATTR_PROG +C $SCRATCH_MNT/clone_$i > /dev/null 2>&1
++		_cp_reflink $first_swap_file $SCRATCH_MNT/clone_$i
++	done
++
++	if [ $sync_after_add_reflinks -ne 0 ]; then
++		# Force a transaction commit on btrfs to flush all delayed
++		# references and commit the current transaction.
++		_scratch_sync
++	fi
++
++	echo "Deleting original file and all clones except the last..."
++	rm -f $first_swap_file
++	for ((i = 1; i < $num_clones; i++)); do
++		rm -f $SCRATCH_MNT/clone_$i
++	done
++
++	if [ $sync_after_remove_reflinks -ne 0 ]; then
++		# Force a transaction commit on btrfs to flush all delayed
++		# references and commit the current transaction.
++		_scratch_sync
++	fi
++
++	# Now use the last clone as a swap file.
++	echo "Activating swap file..."
++	_swapon_file $swap_file
++	swapoff $swap_file
++
++	_scratch_unmount
++}
++
++echo -e "\nTest without sync after creating and removing clones"
++run_test 0 0
++
++echo -e "\nTest with sync after creating clones"
++run_test 1 0
++
++echo -e "\nTest with sync after removing clones"
++run_test 0 1
++
++echo -e "\nTest with sync after creating and removing clones"
++run_test 1 1
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/370.out b/tests/generic/370.out
+new file mode 100644
+index 00000000..36b2dc27
+--- /dev/null
++++ b/tests/generic/370.out
+@@ -0,0 +1,25 @@
++QA output created by 370
++
++Test without sync after creating and removing clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
++
++Test with sync after creating clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
++
++Test with sync after removing clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
++
++Test with sync after creating and removing clones
++Creating swap file...
++Cloning swap file...
++Deleting original file and all clones except the last...
++Activating swap file...
+-- 
+2.45.2
 
 
