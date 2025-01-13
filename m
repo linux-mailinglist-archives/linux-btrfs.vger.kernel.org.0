@@ -1,232 +1,215 @@
-Return-Path: <linux-btrfs+bounces-10937-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10938-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630B2A0BC14
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 16:33:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7405CA0BCAA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 16:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6603B1642AB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 15:32:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87DC3188652F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2025 15:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F18E1CAA80;
-	Mon, 13 Jan 2025 15:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3291FBBC0;
+	Mon, 13 Jan 2025 15:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i5IrAITM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bex/Vjjh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5521C5D4F
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 15:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D17D240225
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 15:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736782368; cv=none; b=Hsc6w4rGePyaA9Tb/OPVn2ljk84bcdW/8/dhjelv5MEnF5+/pUQLpB81EFnAs7kbVgg+DnEt/lfnroLmpkFR3yUOHLIK+Ny/0ng87LwGU6BKErQ3Mx2wb98ShXHCCtxIzzBGR2Dv6/FzcV7xTmUJ6fyeUkbkNuICi7KW98U36VI=
+	t=1736783682; cv=none; b=sF6yYDpNVyddRHU9HqY7KSBIMTXEt05ykgC7VVOZAZewXJnx746Uo/JCGdMnySUDait2PBc3NLUd7mpqCC74CGhdiZCBdvYhnQQ85Cs8kcBMKisW1+KaYESEPoXF4JrEWBw10x7hgGoSKbEkJPRuvX4RbJwA6z5pxmhoMefQVwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736782368; c=relaxed/simple;
-	bh=Keon+HfRMpAbY4M+CvKoccafZ0bMwfhrsLa+yqeTZVE=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=WWDjlKe0ijok332tHTlTQHYW6nl0ub94sJHpzmUmp/YqD3xvK0mHMFgHzOmLQlPqYwgtRevEywILOSVJf6AO1kVevxbIyIMkAxjkZGeYLUR1obrnF50USo02fjrtdVYBAF7xk3oei/SwZzMCsNGXefNzSJszNSdFycel3FvS7rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i5IrAITM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B3C2C4CEE2
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 15:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736782368;
-	bh=Keon+HfRMpAbY4M+CvKoccafZ0bMwfhrsLa+yqeTZVE=;
-	h=From:To:Subject:Date:From;
-	b=i5IrAITMbQ2aTfJGPGYjCeuf4m1maVEZz3R/18p+D7U6L+0RmEJZiDfiuuPJ4Znrg
-	 /wjy4Bbmu5aiPDpE3yYlPOp6vCQtvlLk1LjpYduOKLGp7rWW4WoeZSZlcFywUtBLIV
-	 HSB8DWvLi6QUWUJbgS9Y8yGJsUYJlrXC5pwh+dJ9DJ2zmklODieE6nZtvjW4DxWt2A
-	 mucKmps8w01QfS9dtzgdFI7AJ0/eeFU/rXk/Idxi+0rzgzzK/rtG7qVCpbHpMVrTpK
-	 ExPovnjHJgww5upV47WcRJZ/aLiwGUG8gTYj9HsZb8TbmnxyvYk08e8ktgemoJ4ymO
-	 5DDbqhG5BbZzA==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix assertion failure when splitting ordered extent after transaction abort
-Date: Mon, 13 Jan 2025 15:32:45 +0000
-Message-Id: <efe1ae546864e0f22b4e29794115e3cedb602c30.1736782338.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1736783682; c=relaxed/simple;
+	bh=cpCaQcmja0YUzjWAJsphpxLWAkZeol/GKBUriiTJxxI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=NNgM3CODGh3ULuXN3mGNGOA7jti6Nkm9NAITZNYs52kSuOiBfKnO8Ju8bct4FNNHF5MnlwjyRFPrfmsA2KmY1xhqX/DIbWX9FHOhHB3Um+SkZoOb4KFbSG7BpVRyhmlgPxezjZVcohReV0L15thIqYOLoBhFYBoexWHZNIcePs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bex/Vjjh; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aaec111762bso810040166b.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2025 07:54:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736783679; x=1737388479; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:cc:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ElHxHYF5NgHSmY97Ruv7689Wu5TnUl5D6BjXBBetJF0=;
+        b=Bex/VjjhrVKKmRBxVmCliYGWRaEGunZ5dOmiJvvOsqwA1j9xraakNZuR2cr0Zxmk0K
+         n5gqEDfA2v2eABQInAFRjCifg06/DRu/rIdv1L/HsR38IOQA2dJsoanPx5/rOJmdcGmc
+         umZJkBA7qpVnHGtwH23ByvnTtDHeWqTG6Kyn33QJ0YL+7asqDrCyEcznaDp4o9GAaHm4
+         sFAninkQjJDvfagEUmQzO3fQyFte7nyJDT0BC1bAzamVSWzmJNL/1bHcu0uDSaYCm3ta
+         dcV/NAbc65yQA3LPnZDE9phjrvrEMuOpLwq4BQd4tILXcb9Y4Nlako9LHBVJnUOpC5Jb
+         pqPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736783679; x=1737388479;
+        h=content-transfer-encoding:in-reply-to:cc:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ElHxHYF5NgHSmY97Ruv7689Wu5TnUl5D6BjXBBetJF0=;
+        b=ImgK2TjCHjU/0zZ1qf0ZMoIADusWE5v3v39yzNedD55gwc+MxMAMOKvbmdqRavOP09
+         dV/bCq6DwQJiUzHi3ckAcmJbWBFa8N1NFha+Nfd0VH4ExyGe7Z04Nu2x2WvXikNIzM93
+         BbvpCYjAf9GzeHkZd2UpGSIIDViqpb1UBaXZ7Kti+PiBs/dMEEyk1BeP7EJOrEDgQsFY
+         os76XUR9AzHPQ5O/YN86VkUj11YQn0Drh4XVgKaTpdewu0PyngnfgzTFqG5INTPjrFB7
+         xLsWD85G2d1lQh5naKELB1X/zDuS0dZszRo5vTLX3Sar3lPH/Fx/ZxewBaeDZtG/YiX/
+         TGjQ==
+X-Gm-Message-State: AOJu0YyygWbPeJscAFW5g7PUVlPjMJR1mwP06ACveNNKyBX7ezl69vD8
+	WGW/xt+NUyR/QxGWmfisqAgTMaT7Grelc/91RbIUjzZAoXROFB8cGZVRMA==
+X-Gm-Gg: ASbGncv1dithh59F30YrgqJMBeFyxJ/pxclt9VA6niLBZzo2IG8vQ1SaWm1TWLtbIa3
+	C3GbGvfVEDJWx1ItLyDbYvspda7fqkuuR2R1f57XZma29ufI5WqNpomByJVHzNWNNYyYWXfgr8L
+	IK+hQcFeW2bSIgVpJyWMQULrGoiERXaw8arf3wWEW/8NFQu+JLHWeuYx6L9jpXCWUllAIPFHid0
+	mGY8nHsEtU1Z0SfR2kX3hxVLfLLOIDT/6DSmwky72eiAU3Tgr4=
+X-Google-Smtp-Source: AGHT+IGI4QhSpJArnt6COQclYJX8lTy7rdxTikniuERmJ22IZ7BNUt4axJvGSyZA7wGWAmeRPsGnWA==
+X-Received: by 2002:a17:907:9997:b0:ab2:c0ba:519e with SMTP id a640c23a62f3a-ab2c0ba708fmr1824150566b.35.1736783678434;
+        Mon, 13 Jan 2025 07:54:38 -0800 (PST)
+Received: from [10.1.1.2] ([77.253.223.98])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c95b1bb6sm516008066b.159.2025.01.13.07.54.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jan 2025 07:54:35 -0800 (PST)
+Message-ID: <501eb99a-dee6-4e84-93cb-ae49d48dcab6@gmail.com>
+Date: Mon, 13 Jan 2025 16:54:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: RAID1 two chunks of the same data on the same physical disk, one
+ file keeps being corrupted
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+References: <6ae187b3-7770-4b64-aa65-43fff3120213@gmail.com>
+ <37cfd270-4b64-4415-8fee-fa732575d3a9@gmail.com>
+ <a00a0c80-85fa-4484-9076-d4a2f50e177e@gmx.com>
+Content-Language: en-US
+From: ein <ein.net@gmail.com>
+Cc: Linux fs Btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <a00a0c80-85fa-4484-9076-d4a2f50e177e@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+On 29.07.2024 12:05, Qu Wenruo wrote:
+> On 10.06.2024 16:56, ein wrote:
+>>> [...]
+>>> I don't think that it's RAM related because,
+>>> - HW is new, RAM is good quality and I did mem. check couple months ago,
+>>> - it affects only one file, I have other much busier VMs, that one
+>>> mostly stays idle,
+>>> - other OS operations seems to be working perfectly for months.
+>>
+>> [...]
+>>
+>> after spotting this:
+>> https://www.reddit.com/r/GlobalOffensive/comments/1eb00pg/intel_processors_are_causing_significant/
+>>
+>> I decided to move from:
+>> cpupower frequency-set -g performance
+>> to:
+>> cpupower frequency-set -g powersave
+>>
+>> I have got:
+>>
+>> ~# lscpu
+>> Architecture:             x86_64
+>>   CPU op-mode(s):         32-bit, 64-bit
+>>   Address sizes:          46 bits physical, 48 bits virtual
+>>   Byte Order:             Little Endian
+>> CPU(s):                   32
+>>   On-line CPU(s) list:    0-31
+>> Vendor ID:                GenuineIntel
+>>   BIOS Vendor ID:         Intel(R) Corporation
+>>   Model name:             13th Gen Intel(R) Core(TM) i9-13900K
+>>     BIOS Model name:      13th Gen Intel(R) Core(TM) i9-13900K To Be
+>> Filled By O.E.M. CPU @ 5.3GHz
+>>
+>> One week without corruptions.
+Hi Qu,  thank for the answer.
+> Normally we only suspect the hardware when we have enough evidence.
+> (e.g. proof of bitflip etc)
+> Even if the hardware is known to have problems.
+I think I have those - proofs. (1)
+> In your case, I still do not believe it's hardware problem.
+>
+> > - it affects only one file, I have other much busier VMs, that one
+> mostly stays idle,
+>
+> Due to btrfs' datacsum behavior, it's very sensitive to page content
+> change during writeback.
+>
+> Normally this should not happen for buffered writes as btrfs has locked
+> the page cache.
+>
+> But for Direct IO it's still very possible that one process submitted a
+> direct IO, and when the IO was still under way, the user space changed
+> the contents of that page.
+>
+> In that case, btrfs csum is calculated using that old contents, but the
+> on-disk data is the new contents, causing the csum mismatch.
+>
+> So I'm wondering what's the workload inside the VM?
 
-If while we are doing a direct IO write a transaction abort happens, we
-mark all existing ordered extents with the BTRFS_ORDERED_IOERR flag (done
-at btrfs_destroy_ordered_extents()), and then after that if we enter
-btrfs_split_ordered_extent() and the ordered extent has bytes left
-(meaning we have a bio that doesn't cover the whole ordered extent, see
-details at btrfs_extract_ordered_extent()), we will fail on the following
-assertion at btrfs_split_ordered_extent():
+As far as I know in such configuration there's no writeback:
 
-   ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
+<disk type="file" device="disk">
+   <driver name="qemu" type="qcow2" cache="none" discard="unmap"/>
+   <source file="/var/lib/libvirt/images-red-btrfs/dell.qcow2" index="2"/>
+   <backingStore/>
+   <target dev="vda" bus="virtio"/>
+   <alias name="virtio-disk0"/>
+   <address type="pci" domain="0x0000" bus="0x00" slot="0x04" function="0x0"/>
+</disk>
+[...]
+<controller type="pci" index="0" model="pci-root">
+   <alias name="pci.0"/>
+</controller>
 
-because the BTRFS_ORDERED_IOERR flag is set and the definition of
-BTRFS_ORDERED_TYPE_FLAGS is just the union of all flags that identify the
-type of write (regular, nocow, prealloc, compressed, direct IO, encoded).
+This is mostly empty Win7 virtual machine with very small SQLite database (100-500MiB) with some 
+network monitoring tool.
 
-Fix this by returning an error from btrfs_extract_ordered_extent() if we
-find the BTRFS_ORDERED_IOERR flag in the ordered extent. The error will
-be the error that resulted in the transaction abort or -EIO if no
-transaction abort happened.
+(1)
+It took almost a year, I spent hundredths of hours and thousands of $ chasing this issue:
+- tired 4 different new SATA controllers, from cheap ASM106X series to, DC grade HBA like LSI,
+- multiple times replaced all SATA cables,
+- replacing HDDs WD Red drives (mix of CMA/SMR) to WD Red SSDs SA500,
+That part changed nothing. I experienced a lot of PCI-E link issues like, disappearing SATA drives, 
+disappearing NVME drives - sometimes both of them, USB link problems etc.
+But I don't think that link issues was related - the corruption happens without them (indication of 
+link reset in dmsg).
 
-This was recently reported by syzbot with the following trace:
+- RMA the CPU from i9-13900k to i9-14900k,
+- try every available Intel CPU microcode update packaged as BIOS update by mainboard vendor.
+This part made the situation better, but I still could recreate corruption errors. As times goes on 
+when running in the "performance" mode, the issues appeared often and were more severe. Every time 
+switching from performance mode to powersave (lower voltage) made the CPU more stable.
 
-   FAULT_INJECTION: forcing a failure.
-   name failslab, interval 1, probability 0, space 0, times 1
-   CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc5-syzkaller #0
-   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-   Call Trace:
-    <TASK>
-    __dump_stack lib/dump_stack.c:94 [inline]
-    dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
-    fail_dump lib/fault-inject.c:53 [inline]
-    should_fail_ex+0x3b0/0x4e0 lib/fault-inject.c:154
-    should_failslab+0xac/0x100 mm/failslab.c:46
-    slab_pre_alloc_hook mm/slub.c:4072 [inline]
-    slab_alloc_node mm/slub.c:4148 [inline]
-    __do_kmalloc_node mm/slub.c:4297 [inline]
-    __kmalloc_noprof+0xdd/0x4c0 mm/slub.c:4310
-    kmalloc_noprof include/linux/slab.h:905 [inline]
-    kzalloc_noprof include/linux/slab.h:1037 [inline]
-    btrfs_chunk_alloc_add_chunk_item+0x244/0x1100 fs/btrfs/volumes.c:5742
-    reserve_chunk_space+0x1ca/0x2c0 fs/btrfs/block-group.c:4292
-    check_system_chunk fs/btrfs/block-group.c:4319 [inline]
-    do_chunk_alloc fs/btrfs/block-group.c:3891 [inline]
-    btrfs_chunk_alloc+0x77b/0xf80 fs/btrfs/block-group.c:4187
-    find_free_extent_update_loop fs/btrfs/extent-tree.c:4166 [inline]
-    find_free_extent+0x42d1/0x5810 fs/btrfs/extent-tree.c:4579
-    btrfs_reserve_extent+0x422/0x810 fs/btrfs/extent-tree.c:4672
-    btrfs_new_extent_direct fs/btrfs/direct-io.c:186 [inline]
-    btrfs_get_blocks_direct_write+0x706/0xfa0 fs/btrfs/direct-io.c:321
-    btrfs_dio_iomap_begin+0xbb7/0x1180 fs/btrfs/direct-io.c:525
-    iomap_iter+0x697/0xf60 fs/iomap/iter.c:90
-    __iomap_dio_rw+0xeb9/0x25b0 fs/iomap/direct-io.c:702
-    btrfs_dio_write fs/btrfs/direct-io.c:775 [inline]
-    btrfs_direct_write+0x610/0xa30 fs/btrfs/direct-io.c:880
-    btrfs_do_write_iter+0x2a0/0x760 fs/btrfs/file.c:1397
-    do_iter_readv_writev+0x600/0x880
-    vfs_writev+0x376/0xba0 fs/read_write.c:1050
-    do_pwritev fs/read_write.c:1146 [inline]
-    __do_sys_pwritev2 fs/read_write.c:1204 [inline]
-    __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
-    do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-    do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-   RIP: 0033:0x7f1281f85d29
-   Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-   RSP: 002b:00007f12819fe038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-   RAX: ffffffffffffffda RBX: 00007f1282176080 RCX: 00007f1281f85d29
-   RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000005
-   RBP: 00007f12819fe090 R08: 0000000000000000 R09: 0000000000000003
-   R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000002
-   R13: 0000000000000000 R14: 00007f1282176080 R15: 00007ffcb9e23328
-    </TASK>
-   BTRFS error (device loop0 state A): Transaction aborted (error -12)
-   BTRFS: error (device loop0 state A) in btrfs_chunk_alloc_add_chunk_item:5745: errno=-12 Out of memory
-   BTRFS info (device loop0 state EA): forced readonly
-   assertion failed: !(flags & ~BTRFS_ORDERED_TYPE_FLAGS), in fs/btrfs/ordered-data.c:1234
-   ------------[ cut here ]------------
-   kernel BUG at fs/btrfs/ordered-data.c:1234!
-   Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-   CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc5-syzkaller #0
-   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-   RIP: 0010:btrfs_split_ordered_extent+0xd8d/0xe20 fs/btrfs/ordered-data.c:1234
-   Code: 43 fd 90 0f 0b e8 43 c4 db fd 48 c7 c7 20 0c 4c 8c 48 c7 c6 80 0f 4c 8c 48 c7 c2 e0 0b 4c 8c b9 d2 04 00 00 e8 04 57 43 fd 90 <0f> 0b e8 1c c4 db fd eb 5b e8 15 c4 db fd 48 c7 c7 20 0c 4c 8c 48
-   RSP: 0018:ffffc9000d1df2b8 EFLAGS: 00010246
-   RAX: 0000000000000057 RBX: 000000000006a000 RCX: 9ce21886c4195300
-   RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-   RBP: 0000000000000091 R08: ffffffff817f0a3c R09: 1ffff92001a3bdf4
-   R10: dffffc0000000000 R11: fffff52001a3bdf5 R12: 1ffff1100a45f401
-   R13: ffff8880522fa018 R14: dffffc0000000000 R15: 000000000006a000
-   FS:  00007f12819fe6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: 0000557750bd7da8 CR3: 00000000400ea000 CR4: 0000000000352ef0
-   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-   Call Trace:
-    <TASK>
-    btrfs_extract_ordered_extent fs/btrfs/direct-io.c:702 [inline]
-    btrfs_dio_submit_io+0x4be/0x6d0 fs/btrfs/direct-io.c:737
-    iomap_dio_submit_bio fs/iomap/direct-io.c:85 [inline]
-    iomap_dio_bio_iter+0x1022/0x1740 fs/iomap/direct-io.c:447
-    __iomap_dio_rw+0x13b7/0x25b0 fs/iomap/direct-io.c:703
-    btrfs_dio_write fs/btrfs/direct-io.c:775 [inline]
-    btrfs_direct_write+0x610/0xa30 fs/btrfs/direct-io.c:880
-    btrfs_do_write_iter+0x2a0/0x760 fs/btrfs/file.c:1397
-    do_iter_readv_writev+0x600/0x880
-    vfs_writev+0x376/0xba0 fs/read_write.c:1050
-    do_pwritev fs/read_write.c:1146 [inline]
-    __do_sys_pwritev2 fs/read_write.c:1204 [inline]
-    __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
-    do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-    do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-   RIP: 0033:0x7f1281f85d29
-   Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-   RSP: 002b:00007f12819fe038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-   RAX: ffffffffffffffda RBX: 00007f1282176080 RCX: 00007f1281f85d29
-   RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000005
-   RBP: 00007f12819fe090 R08: 0000000000000000 R09: 0000000000000003
-   R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000002
-   R13: 0000000000000000 R14: 00007f1282176080 R15: 00007ffcb9e23328
-    </TASK>
-   Modules linked in:
-   ---[ end trace 0000000000000000 ]---
-   RIP: 0010:btrfs_split_ordered_extent+0xd8d/0xe20 fs/btrfs/ordered-data.c:1234
-   Code: 43 fd 90 0f 0b e8 43 c4 db fd 48 c7 c7 20 0c 4c 8c 48 c7 c6 80 0f 4c 8c 48 c7 c2 e0 0b 4c 8c b9 d2 04 00 00 e8 04 57 43 fd 90 <0f> 0b e8 1c c4 db fd eb 5b e8 15 c4 db fd 48 c7 c7 20 0c 4c 8c 48
-   RSP: 0018:ffffc9000d1df2b8 EFLAGS: 00010246
-   RAX: 0000000000000057 RBX: 000000000006a000 RCX: 9ce21886c4195300
-   RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-   RBP: 0000000000000091 R08: ffffffff817f0a3c R09: 1ffff92001a3bdf4
-   R10: dffffc0000000000 R11: fffff52001a3bdf5 R12: 1ffff1100a45f401
-   R13: ffff8880522fa018 R14: dffffc0000000000 R15: 000000000006a000
-   FS:  00007f12819fe6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: 0000557750bd7da8 CR3: 00000000400ea000 CR4: 0000000000352ef0
-   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The process of recreation looked as follows.
+- shut the VM off,
+- defrag the filesystem (btrfs filesystem defragment),
+- turn the VM on,
+- defrag/chkdsk on VM.
+The errors appeared almost immediately. There was correlation how often it happens.
+If the VM image was very fragmented in btrfs, then the probability of corruption was lower.
 
-In this case the transaction abort was due to (an injected) memory
-allocation failure when attempting to allocate a new chunk.
+i9-14900k 3 month after RMA, started to have threading issues and started to leave zombie processes 
+in performance mode. Powersave mode fixed it as well and it worked stable.
 
-Reported-by: syzbot+f60d8337a5c8e8d92a77@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/6777f2dd.050a0220.178762.0045.GAE@google.com/
-Fixes: 52b1fdca23ac ("btrfs: handle completed ordered extents in btrfs_split_ordered_extent")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ordered-data.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Finally, I replaced my mainboard (it was X13SAE-F) with Intel Z890 mobo and the latest CPU 
+generation leaving whole IO stack intact (same: chassis, cables, controllers and disks).
+I ran scrub, balance, this VM had one small 4096b unrecoverable error on bluescreen memory dump file 
+and everything works fine from couple of days. I can't reproduce it with above method anymore.
+I used ddrescue to reread everything I could from btrfs (this one file used by mentioned VM) and 
+just replaced the file after ddrescue was done.
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 30eceaf829a7..3cf95a801086 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -1229,6 +1229,18 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
- 	 */
- 	if (WARN_ON_ONCE(len >= ordered->num_bytes))
- 		return ERR_PTR(-EINVAL);
-+	/*
-+	 * If our ordered extent had an error there's no point in continuing.
-+	 * The error may have come from a transaction abort done either by this
-+	 * task or some other concurrent task, and the transaction abort path
-+	 * iterates over all existing ordered extents and sets the flag
-+	 * BTRFS_ORDERED_IOERR on them.
-+	 */
-+	if (unlikely(flags & BTRFS_ORDERED_IOERR)) {
-+		const int fs_error = BTRFS_FS_ERROR(fs_info);
-+
-+		return fs_error ? ERR_PTR(fs_error) : ERR_PTR(-EIO);
-+	}
- 	/* We cannot split partially completed ordered extents. */
- 	if (ordered->bytes_left) {
- 		ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
--- 
-2.45.2
+On Friday last week I asked Intel for refund.
+
+I am positively surprised how much pain this btrfs filesystem (RAID10 for data and metadata) handled 
+over last year. Great job devs, keep it up!
+
+Sincerely,
+e.
 
 
