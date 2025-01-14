@@ -1,329 +1,298 @@
-Return-Path: <linux-btrfs+bounces-10968-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10969-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C31AA10DC3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2025 18:29:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14148A11084
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2025 19:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7E416805E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2025 17:29:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CB011889198
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2025 18:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C5B1F8EFB;
-	Tue, 14 Jan 2025 17:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276D01FBC8A;
+	Tue, 14 Jan 2025 18:52:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b="Mrrma2M/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErEen2wJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0E81D3576
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2025 17:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE1518952C
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2025 18:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736875741; cv=none; b=OLqbKoPznBQ+v+zZatgFg15A5kSj5vjuD5MBPqaRZrmLBc1rd130R5LYBVyETfm1URuWPYJhtaU/HCOQiXZvXpUfHy9SZu6GVGtmuS3n4ZWosw2kDgSQPsyEpcOoBzc7oaWLKFdned+ThAv9P//nQRuC1AJZbB+QlaxZrG4gO9w=
+	t=1736880765; cv=none; b=jxj6vs44FZ9ayjRy8Sh5tbhB9VOjqu1j7DnISBiqZWSk3CSuZIlTVPQttTaevT6rzyHZFyOxP03adwY5so8NGxce7OON24QCyORMfdKFzfmn0sDGhWaHN1gpcaKW6IMtGcpJqP3s66i7nmPLbAhDc11Ab0aQvwj94VS5CKCy/wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736875741; c=relaxed/simple;
-	bh=md7czg+AxSgk44YtKS3q7W4Z+wYmhH8S/ZiInpQznsI=;
+	s=arc-20240116; t=1736880765; c=relaxed/simple;
+	bh=owdfZjr9XtM2M9TdPY7ZvHUGXGAOjra7984D5UIvzH8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SYV8cKgovra5l0/G4EXCj+8I5WIvKrDxYm84xz8HxaTRrhijbVpfAl2CbpLC/BiYkW4/rIUE3c1PckEhhXipos/2ccsGPLBl0FK+mtM736G+bgF/TB7AqUs1HztfVfIwclYWv7eR87BjoSZgWKS/mp9xtDKbdeoVbdtZQJ8o0Xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com; spf=pass smtp.mailfrom=zadarastorage.com; dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b=Mrrma2M/; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zadarastorage.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-29f87f1152cso2951506fac.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2025 09:28:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=zadara.com; s=google; t=1736875738; x=1737480538; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8UkVsY+XBnaH609JcciFT3FGa4AFrlvcmMf+pJ+zaS8=;
-        b=Mrrma2M/exHZlhQoU8gIdN5YN7rB8irapMndel0YpIwNysUc9lWlE7vhU7XHd5Y3Mh
-         zHs25qfBPkbYlDpvR4SIpUYx66l6rvQ5znTJGYyMm0oaXmfZP04+HRZhZBU9DZjqH/fI
-         oxt4OjvH4cPe/7oar4Tk/adVFite54D6e1P4GPptfNU56RVynlkUZLOm04o1lRV587oS
-         oAMr1hUv415Xo7K6cxBJCWAQqk74BR9CSP30tUZhzGyL6vqkoMcoIKlmSd0tVYSTaQoT
-         t8YZo0nTwVFIgwip3KkrFftWwVuU8/dqqOyQWl3Q4U/54nXd9fai9C8gnPHyzPj1aH8U
-         mx4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736875738; x=1737480538;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8UkVsY+XBnaH609JcciFT3FGa4AFrlvcmMf+pJ+zaS8=;
-        b=hHCBwwxZLqch9ojZvWXoULTO3dAMim80orDx+tX0xTM0Rs0baFMgwAy/kRoPbmNqhK
-         /+Dfa+J9Nep1de3viVgDIqvaMTzQWxi5YChKu36ZU7+4joI2mCldougfS7p0SxAaPNsh
-         j0T0vhNDrI42omuntwZEKrD6mKfW0IGrLPRW1ALDF0eVeSFEHax4/iIcLeMMq5rehphu
-         M/gfQ3VCFp+H1tZxy+/4UTKwrftHeccheyK3I9kN9AF9rn/W4GLvzt0MVtGZRmsa7UCt
-         whQbGsqzwtZrVgEt3QKRUpuSmdQfGKiaWNsIr7CFdf3/X5X/Vu/xP+MM9SU02BPZRPE0
-         JVzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWiRmM4NtygGGyjoygZHVFGD/q2QP3uW1dY+sQqpmPhmM/q5IMsnPqub4y2Z4zAU2Xz6N/MVEz+OZ4j3g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPh+03+e6tt2QG4WLdnB1M7ar29iWsD/Flnx1h/3FMfo6rnRpl
-	fLAj7qjXy/0WThfLT9c2L2qFY1VMK0FKxxLF1jw7j9BhoIGmFM/Jqmdc1xJu2eOUzbvkN4VbX1I
-	FMTgn67CT648Y13ya7bb1BzfYpHl/vFXgq27EL4dcaFR2edaTZww=
-X-Gm-Gg: ASbGncs8wVh0a+KkKPR5XsrtPEs7MvyoOmZnJslqlCEJbI8KGNNYiCObOi46kwwBzF9
-	u8MkM/AvFcXEC2K8lJYY3bqnQNC15zleLxdil
-X-Google-Smtp-Source: AGHT+IECf0oi/SeK76f+A4Sdp0HWdtJS2nPQVN8KBnvZXDgMatvDvvpRAMM8DQAaMYtM/TvYWxddXNOECKH1xjmGK5A=
-X-Received: by 2002:a05:6871:6503:b0:2a3:8331:717c with SMTP id
- 586e51a60fabf-2aa0669eb33mr15277604fac.10.1736875738543; Tue, 14 Jan 2025
- 09:28:58 -0800 (PST)
+	 To:Cc:Content-Type; b=fJ+HfRDOssoDzvxYOTwNYGYHbG9S0kEQ5lr+OhOGmMCh8lRglMnDoYRCFPg4q/AeGQ1Y7LMc+EUGgJCgZcpW5OqDucSWhr1iPSN7ol/e79FE/ZFDuhhgWve6QRQfH6wVUlW4IoOg8DSZWEagit5EqN/Nfu9DVLvNHHFFIM2aeFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErEen2wJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEAD0C4CEE3
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2025 18:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736880764;
+	bh=owdfZjr9XtM2M9TdPY7ZvHUGXGAOjra7984D5UIvzH8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ErEen2wJ5F4m60zsKvVuxQEzNT9yqMMgQsAPZTr6WWR/t04GgS2kFL08ezlo/OVBU
+	 9kvgUzrAoscvH92HhJ2pPs89DPEISr/01JTi/3FTOg23IIfghxW/t8IFfDHGvXkGtj
+	 iIOIVtz9RkJ5uGNfLyXFWacle3l1zTr90MwtbOtVbTvONvbo3KdKg8PRlHiVX5JK+m
+	 E44qi/Y7Kgp/VBFpIejjcyvjxQtQ+KW3c4euTDLyuFZJMMXUN6Nr4M8wbsV6uvcvN5
+	 dPJsLgc2PRN0o1j4cFLFGwp0pFStXiI2bGjTrM9vHcnlMP4ckVMPOc+hyQ2XPTAq89
+	 oR1jGsD/ay9Vw==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5d3f57582a2so138277a12.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2025 10:52:44 -0800 (PST)
+X-Gm-Message-State: AOJu0YwAHDBDnSPVjV+dLJMlXiB71huGuAzQ1tWfiAGEisKMzUBMvBzH
+	qguBykNS0bDuKxcMFN/43uev4Kyvv1yUOZinW0K87fNPJR++lbsiqUw1GMBbN31F2mDhkCEoHcV
+	UBJKrr4eeNFAyNoA9BBtaSL8fdxk=
+X-Google-Smtp-Source: AGHT+IFBDX70vySMr04oGu25IObk+mxYiSm2sec+ew++rD1vKbi56eesddS3ouiIVcHvBLrOpAqpk0OI57i5fKNBge0=
+X-Received: by 2002:a17:907:a088:b0:ab2:bd80:4519 with SMTP id
+ a640c23a62f3a-ab2c3c79997mr2089065666b.16.1736880763204; Tue, 14 Jan 2025
+ 10:52:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1603460665.git.josef@toxicpanda.com> <f31bb86619489274227cae2184283f96a3b7bf36.1603460665.git.josef@toxicpanda.com>
- <CAL3q7H54_ANFW6ZQoapzFb0i89zcAemjfxpgy6TsnYzLZdcNJg@mail.gmail.com>
-In-Reply-To: <CAL3q7H54_ANFW6ZQoapzFb0i89zcAemjfxpgy6TsnYzLZdcNJg@mail.gmail.com>
-From: Alex Lyakas <alex.lyakas@zadara.com>
-Date: Tue, 14 Jan 2025 19:28:47 +0200
-X-Gm-Features: AbW1kvb42l5ioyRET3XnAgGtnFqKytKpITWnAkrQ48mofuSGRJeU9h6Jx9tCeZ8
-Message-ID: <CAOcd+r3ergmQzA=LJmwiiDmq1kB_4KWkZ2Cds2RXr5o0j6y8Rg@mail.gmail.com>
-Subject: Re: [PATCH 2/8] btrfs: update last_byte_to_unpin in switch_commit_roots
-To: fdmanana@gmail.com
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <efe1ae546864e0f22b4e29794115e3cedb602c30.1736782338.git.fdmanana@suse.com>
+ <ef836984-61a0-4a09-95d5-901d499aec4a@gmx.com>
+In-Reply-To: <ef836984-61a0-4a09-95d5-901d499aec4a@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 14 Jan 2025 18:52:06 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7ctFOu-naGsfxREKuN7664fXUK=Rd_V_RFk70tXJhcFA@mail.gmail.com>
+X-Gm-Features: AbW1kvZFux42Jr-u3LGC3LyUa3ObE8oOEtxES0tWSTFzAm1pMSYsKBX90i64S7I
+Message-ID: <CAL3q7H7ctFOu-naGsfxREKuN7664fXUK=Rd_V_RFk70tXJhcFA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix assertion failure when splitting ordered
+ extent after transaction abort
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Josef, Filipe,
-
-
-On Wed, Nov 4, 2020 at 5:15=E2=80=AFPM Filipe Manana <fdmanana@gmail.com> w=
-rote:
+On Mon, Jan 13, 2025 at 9:12=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
 >
-> On Fri, Oct 23, 2020 at 5:12 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+>
+> =E5=9C=A8 2025/1/14 02:02, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> > From: Filipe Manana <fdmanana@suse.com>
 > >
-> > While writing an explanation for the need of the commit_root_sem for
-> > btrfs_prepare_extent_commit, I realized we have a slight hole that coul=
-d
-> > result in leaked space if we have to do the old style caching.  Conside=
-r
-> > the following scenario
+> > If while we are doing a direct IO write a transaction abort happens, we
+> > mark all existing ordered extents with the BTRFS_ORDERED_IOERR flag (do=
+ne
+> > at btrfs_destroy_ordered_extents()), and then after that if we enter
+> > btrfs_split_ordered_extent() and the ordered extent has bytes left
+> > (meaning we have a bio that doesn't cover the whole ordered extent, see
+> > details at btrfs_extract_ordered_extent()), we will fail on the followi=
+ng
+> > assertion at btrfs_split_ordered_extent():
 > >
-> >  commit root
-> >  +----+----+----+----+----+----+----+
-> >  |\\\\|    |\\\\|\\\\|    |\\\\|\\\\|
-> >  +----+----+----+----+----+----+----+
-> >  0    1    2    3    4    5    6    7
+> >     ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
 > >
-> >  new commit root
-> >  +----+----+----+----+----+----+----+
-> >  |    |    |    |\\\\|    |    |\\\\|
-> >  +----+----+----+----+----+----+----+
-> >  0    1    2    3    4    5    6    7
+> > because the BTRFS_ORDERED_IOERR flag is set and the definition of
+> > BTRFS_ORDERED_TYPE_FLAGS is just the union of all flags that identify t=
+he
+> > type of write (regular, nocow, prealloc, compressed, direct IO, encoded=
+).
 > >
-> > Prior to this patch, we run btrfs_prepare_extent_commit, which updates
-> > the last_byte_to_unpin, and then we subsequently run
-> > switch_commit_roots.  In this example lets assume that
-> > caching_ctl->progress =3D=3D 1 at btrfs_prepare_extent_commit() time, w=
-hich
-> > means that cache->last_byte_to_unpin =3D=3D 1.  Then we go and do the
-> > switch_commit_roots(), but in the meantime the caching thread has made
-> > some more progress, because we drop the commit_root_sem and re-acquired
-> > it.  Now caching_ctl->progress =3D=3D 3.  We swap out the commit root a=
-nd
-> > carry on to unpin.
->
-> Ok, to unpin at btrfs_finish_extent_commit().
->
-> So it took me a while to see the race:
->
-> 1) The caching thread was running using the old commit root when it
-> found the extent for [2, 3);
->
-> 2) Then it released the commit_root_sem because it was in the last
-> item of a leaf and the semaphore was contended, and set ->progress to
-> 3 (value of 'last'), as the last extent item in the current leaf was
-> for the extent for range [2, 3);
->
-> 3) Next time it gets the commit_root_sem, will start using the new
-> commit root and search for a key with offset 3, so it never finds the
-> hole for [2, 3).
->
-> So the caching thread never saw [2, 3) as free space in any of the
-> commit roots, and by the time finish_extent_commit() was called for
-> the range [0, 3), ->last_byte_to_unpin was 1, so it only returned the
-> subrange [0, 1) to the free space cache, skipping [2, 3).
->
-> >
-> > In the unpin code we have last_byte_to_unpin =3D=3D 1, so we unpin [0,1=
-),
-> > but do not unpin [2,3).
-> > However because caching_ctl->progress =3D=3D 3 we
-> > do not see the newly free'd section of [2,3), and thus do not add it to
-> > our free space cache.  This results in us missing a chunk of free space
-> > in memory.
->
-> In memory and on disk too, unless we have a power failure before
-> writing the free space cache to disk.
->
-> >
-> > Fix this by making sure the ->last_byte_to_unpin is set at the same tim=
+> > Fix this by returning an error from btrfs_extract_ordered_extent() if w=
 e
-> > that we swap the commit roots, this ensures that we will always be
-> > consistent.
+> > find the BTRFS_ORDERED_IOERR flag in the ordered extent. The error will
+> > be the error that resulted in the transaction abort or -EIO if no
+> > transaction abort happened.
 > >
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > This was recently reported by syzbot with the following trace:
+> >
+> >     FAULT_INJECTION: forcing a failure.
+> >     name failslab, interval 1, probability 0, space 0, times 1
+> >     CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc5-syzkal=
+ler #0
+> >     Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-deb=
+ian-1.16.3-2~bpo12+1 04/01/2014
+> >     Call Trace:
+> >      <TASK>
+> >      __dump_stack lib/dump_stack.c:94 [inline]
+> >      dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+> >      fail_dump lib/fault-inject.c:53 [inline]
+> >      should_fail_ex+0x3b0/0x4e0 lib/fault-inject.c:154
+> >      should_failslab+0xac/0x100 mm/failslab.c:46
+> >      slab_pre_alloc_hook mm/slub.c:4072 [inline]
+> >      slab_alloc_node mm/slub.c:4148 [inline]
+> >      __do_kmalloc_node mm/slub.c:4297 [inline]
+> >      __kmalloc_noprof+0xdd/0x4c0 mm/slub.c:4310
+> >      kmalloc_noprof include/linux/slab.h:905 [inline]
+> >      kzalloc_noprof include/linux/slab.h:1037 [inline]
+> >      btrfs_chunk_alloc_add_chunk_item+0x244/0x1100 fs/btrfs/volumes.c:5=
+742
+> >      reserve_chunk_space+0x1ca/0x2c0 fs/btrfs/block-group.c:4292
+> >      check_system_chunk fs/btrfs/block-group.c:4319 [inline]
+> >      do_chunk_alloc fs/btrfs/block-group.c:3891 [inline]
+> >      btrfs_chunk_alloc+0x77b/0xf80 fs/btrfs/block-group.c:4187
+> >      find_free_extent_update_loop fs/btrfs/extent-tree.c:4166 [inline]
+> >      find_free_extent+0x42d1/0x5810 fs/btrfs/extent-tree.c:4579
+> >      btrfs_reserve_extent+0x422/0x810 fs/btrfs/extent-tree.c:4672
+> >      btrfs_new_extent_direct fs/btrfs/direct-io.c:186 [inline]
+> >      btrfs_get_blocks_direct_write+0x706/0xfa0 fs/btrfs/direct-io.c:321
+> >      btrfs_dio_iomap_begin+0xbb7/0x1180 fs/btrfs/direct-io.c:525
+> >      iomap_iter+0x697/0xf60 fs/iomap/iter.c:90
+> >      __iomap_dio_rw+0xeb9/0x25b0 fs/iomap/direct-io.c:702
+> >      btrfs_dio_write fs/btrfs/direct-io.c:775 [inline]
+> >      btrfs_direct_write+0x610/0xa30 fs/btrfs/direct-io.c:880
+> >      btrfs_do_write_iter+0x2a0/0x760 fs/btrfs/file.c:1397
+> >      do_iter_readv_writev+0x600/0x880
+> >      vfs_writev+0x376/0xba0 fs/read_write.c:1050
+> >      do_pwritev fs/read_write.c:1146 [inline]
+> >      __do_sys_pwritev2 fs/read_write.c:1204 [inline]
+> >      __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
+> >      do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >      do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+> >      entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> >     RIP: 0033:0x7f1281f85d29
+> >     Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 4=
+8 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01=
+ f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> >     RSP: 002b:00007f12819fe038 EFLAGS: 00000246 ORIG_RAX: 0000000000000=
+148
+> >     RAX: ffffffffffffffda RBX: 00007f1282176080 RCX: 00007f1281f85d29
+> >     RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000005
+> >     RBP: 00007f12819fe090 R08: 0000000000000000 R09: 0000000000000003
+> >     R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000002
+> >     R13: 0000000000000000 R14: 00007f1282176080 R15: 00007ffcb9e23328
+> >      </TASK>
+> >     BTRFS error (device loop0 state A): Transaction aborted (error -12)
+> >     BTRFS: error (device loop0 state A) in btrfs_chunk_alloc_add_chunk_=
+item:5745: errno=3D-12 Out of memory
+> >     BTRFS info (device loop0 state EA): forced readonly
+> >     assertion failed: !(flags & ~BTRFS_ORDERED_TYPE_FLAGS), in fs/btrfs=
+/ordered-data.c:1234
+> >     ------------[ cut here ]------------
+> >     kernel BUG at fs/btrfs/ordered-data.c:1234!
+> >     Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> >     CPU: 0 UID: 0 PID: 5321 Comm: syz.0.0 Not tainted 6.13.0-rc5-syzkal=
+ler #0
+> >     Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-deb=
+ian-1.16.3-2~bpo12+1 04/01/2014
+> >     RIP: 0010:btrfs_split_ordered_extent+0xd8d/0xe20 fs/btrfs/ordered-d=
+ata.c:1234
+> >     Code: 43 fd 90 0f 0b e8 43 c4 db fd 48 c7 c7 20 0c 4c 8c 48 c7 c6 8=
+0 0f 4c 8c 48 c7 c2 e0 0b 4c 8c b9 d2 04 00 00 e8 04 57 43 fd 90 <0f> 0b e8=
+ 1c c4 db fd eb 5b e8 15 c4 db fd 48 c7 c7 20 0c 4c 8c 48
+> >     RSP: 0018:ffffc9000d1df2b8 EFLAGS: 00010246
+> >     RAX: 0000000000000057 RBX: 000000000006a000 RCX: 9ce21886c4195300
+> >     RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+> >     RBP: 0000000000000091 R08: ffffffff817f0a3c R09: 1ffff92001a3bdf4
+> >     R10: dffffc0000000000 R11: fffff52001a3bdf5 R12: 1ffff1100a45f401
+> >     R13: ffff8880522fa018 R14: dffffc0000000000 R15: 000000000006a000
+> >     FS:  00007f12819fe6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000=
+000000000
+> >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >     CR2: 0000557750bd7da8 CR3: 00000000400ea000 CR4: 0000000000352ef0
+> >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >     Call Trace:
+> >      <TASK>
+> >      btrfs_extract_ordered_extent fs/btrfs/direct-io.c:702 [inline]
+> >      btrfs_dio_submit_io+0x4be/0x6d0 fs/btrfs/direct-io.c:737
+> >      iomap_dio_submit_bio fs/iomap/direct-io.c:85 [inline]
+> >      iomap_dio_bio_iter+0x1022/0x1740 fs/iomap/direct-io.c:447
+> >      __iomap_dio_rw+0x13b7/0x25b0 fs/iomap/direct-io.c:703
+> >      btrfs_dio_write fs/btrfs/direct-io.c:775 [inline]
+> >      btrfs_direct_write+0x610/0xa30 fs/btrfs/direct-io.c:880
+> >      btrfs_do_write_iter+0x2a0/0x760 fs/btrfs/file.c:1397
+> >      do_iter_readv_writev+0x600/0x880
+> >      vfs_writev+0x376/0xba0 fs/read_write.c:1050
+> >      do_pwritev fs/read_write.c:1146 [inline]
+> >      __do_sys_pwritev2 fs/read_write.c:1204 [inline]
+> >      __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
+> >      do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >      do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+> >      entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> >     RIP: 0033:0x7f1281f85d29
+> >     Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 4=
+8 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01=
+ f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> >     RSP: 002b:00007f12819fe038 EFLAGS: 00000246 ORIG_RAX: 0000000000000=
+148
+> >     RAX: ffffffffffffffda RBX: 00007f1282176080 RCX: 00007f1281f85d29
+> >     RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000005
+> >     RBP: 00007f12819fe090 R08: 0000000000000000 R09: 0000000000000003
+> >     R10: 0000000000007000 R11: 0000000000000246 R12: 0000000000000002
+> >     R13: 0000000000000000 R14: 00007f1282176080 R15: 00007ffcb9e23328
+> >      </TASK>
+> >     Modules linked in:
+> >     ---[ end trace 0000000000000000 ]---
+> >     RIP: 0010:btrfs_split_ordered_extent+0xd8d/0xe20 fs/btrfs/ordered-d=
+ata.c:1234
+> >     Code: 43 fd 90 0f 0b e8 43 c4 db fd 48 c7 c7 20 0c 4c 8c 48 c7 c6 8=
+0 0f 4c 8c 48 c7 c2 e0 0b 4c 8c b9 d2 04 00 00 e8 04 57 43 fd 90 <0f> 0b e8=
+ 1c c4 db fd eb 5b e8 15 c4 db fd 48 c7 c7 20 0c 4c 8c 48
+> >     RSP: 0018:ffffc9000d1df2b8 EFLAGS: 00010246
+> >     RAX: 0000000000000057 RBX: 000000000006a000 RCX: 9ce21886c4195300
+> >     RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+> >     RBP: 0000000000000091 R08: ffffffff817f0a3c R09: 1ffff92001a3bdf4
+> >     R10: dffffc0000000000 R11: fffff52001a3bdf5 R12: 1ffff1100a45f401
+> >     R13: ffff8880522fa018 R14: dffffc0000000000 R15: 000000000006a000
+> >     FS:  00007f12819fe6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000=
+000000000
+> >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >     CR2: 0000557750bd7da8 CR3: 00000000400ea000 CR4: 0000000000352ef0
+> >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >
+> > In this case the transaction abort was due to (an injected) memory
+> > allocation failure when attempting to allocate a new chunk.
+> >
+> > Reported-by: syzbot+f60d8337a5c8e8d92a77@syzkaller.appspotmail.com
+> > Link: https://lore.kernel.org/linux-btrfs/6777f2dd.050a0220.178762.0045=
+.GAE@google.com/
+> > Fixes: 52b1fdca23ac ("btrfs: handle completed ordered extents in btrfs_=
+split_ordered_extent")
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 >
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 >
-> Looks good, thanks.
+> Thanks,
+> Qu
 >
 > > ---
-> >  fs/btrfs/ctree.h       |  1 -
-> >  fs/btrfs/extent-tree.c | 25 -------------------------
-> >  fs/btrfs/transaction.c | 41 +++++++++++++++++++++++++++++++++++++++--
-> >  3 files changed, 39 insertions(+), 28 deletions(-)
+> >   fs/btrfs/ordered-data.c | 12 ++++++++++++
+> >   1 file changed, 12 insertions(+)
 > >
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index 8a83bce3225c..41c76db65c8e 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -2592,7 +2592,6 @@ int btrfs_free_reserved_extent(struct btrfs_fs_in=
-fo *fs_info,
-> >                                u64 start, u64 len, int delalloc);
-> >  int btrfs_pin_reserved_extent(struct btrfs_trans_handle *trans, u64 st=
-art,
-> >                               u64 len);
-> > -void btrfs_prepare_extent_commit(struct btrfs_fs_info *fs_info);
-> >  int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans);
-> >  int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
-> >                          struct btrfs_ref *generic_ref);
-> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > index a98f484a2fc1..ee7bceace8b3 100644
-> > --- a/fs/btrfs/extent-tree.c
-> > +++ b/fs/btrfs/extent-tree.c
-> > @@ -2730,31 +2730,6 @@ btrfs_inc_block_group_reservations(struct btrfs_=
-block_group *bg)
-> >         atomic_inc(&bg->reservations);
-> >  }
-> >
-> > -void btrfs_prepare_extent_commit(struct btrfs_fs_info *fs_info)
-> > -{
-> > -       struct btrfs_caching_control *next;
-> > -       struct btrfs_caching_control *caching_ctl;
-> > -       struct btrfs_block_group *cache;
-> > -
-> > -       down_write(&fs_info->commit_root_sem);
-> > -
-> > -       list_for_each_entry_safe(caching_ctl, next,
-> > -                                &fs_info->caching_block_groups, list) =
-{
-> > -               cache =3D caching_ctl->block_group;
-> > -               if (btrfs_block_group_done(cache)) {
-> > -                       cache->last_byte_to_unpin =3D (u64)-1;
-> > -                       list_del_init(&caching_ctl->list);
-> > -                       btrfs_put_caching_control(caching_ctl);
-> > -               } else {
-> > -                       cache->last_byte_to_unpin =3D caching_ctl->prog=
-ress;
-> > -               }
-> > -       }
-> > -
-> > -       up_write(&fs_info->commit_root_sem);
-> > -
-> > -       btrfs_update_global_block_rsv(fs_info);
-But this call is also removed. Is this intentional? As it doesn't seem
-to be related to the current fix.
+> > diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> > index 30eceaf829a7..3cf95a801086 100644
+> > --- a/fs/btrfs/ordered-data.c
+> > +++ b/fs/btrfs/ordered-data.c
+> > @@ -1229,6 +1229,18 @@ struct btrfs_ordered_extent *btrfs_split_ordered=
+_extent(
+> >        */
+> >       if (WARN_ON_ONCE(len >=3D ordered->num_bytes))
+> >               return ERR_PTR(-EINVAL);
+> > +     /*
+> > +      * If our ordered extent had an error there's no point in continu=
+ing.
+> > +      * The error may have come from a transaction abort done either b=
+y this
+> > +      * task or some other concurrent task, and the transaction abort =
+path
+> > +      * iterates over all existing ordered extents and sets the flag
+> > +      * BTRFS_ORDERED_IOERR on them.
+> > +      */
+> > +     if (unlikely(flags & BTRFS_ORDERED_IOERR)) {
 
-Thanks,
-Alex.
+This should be:
 
+flags & (1U << BTRFS_ORDERED_IOERR)
 
-> > -}
-> > -
-> >  /*
-> >   * Returns the free cluster for the given space info and sets empty_cl=
-uster to
-> >   * what it should be based on the mount options.
-> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> > index 52ada47aff50..9ef6cba1eb59 100644
-> > --- a/fs/btrfs/transaction.c
-> > +++ b/fs/btrfs/transaction.c
-> > @@ -155,6 +155,7 @@ static noinline void switch_commit_roots(struct btr=
-fs_trans_handle *trans)
-> >         struct btrfs_transaction *cur_trans =3D trans->transaction;
-> >         struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> >         struct btrfs_root *root, *tmp;
-> > +       struct btrfs_caching_control *caching_ctl, *next;
-> >
-> >         down_write(&fs_info->commit_root_sem);
-> >         list_for_each_entry_safe(root, tmp, &cur_trans->switch_commits,
-> > @@ -180,6 +181,44 @@ static noinline void switch_commit_roots(struct bt=
-rfs_trans_handle *trans)
-> >                 spin_lock(&cur_trans->dropped_roots_lock);
-> >         }
-> >         spin_unlock(&cur_trans->dropped_roots_lock);
+I'll fix it up when committing to for-next, thanks.
+
+> > +             const int fs_error =3D BTRFS_FS_ERROR(fs_info);
 > > +
-> > +       /*
-> > +        * We have to update the last_byte_to_unpin under the commit_ro=
-ot_sem,
-> > +        * at the same time we swap out the commit roots.
-> > +        *
-> > +        * This is because we must have a real view of the last spot th=
-e caching
-> > +        * kthreads were while caching.  Consider the following views o=
-f the
-> > +        * extent tree for a block group
-> > +        *
-> > +        * commit root
-> > +        * +----+----+----+----+----+----+----+
-> > +        * |\\\\|    |\\\\|\\\\|    |\\\\|\\\\|
-> > +        * +----+----+----+----+----+----+----+
-> > +        * 0    1    2    3    4    5    6    7
-> > +        *
-> > +        * new commit root
-> > +        * +----+----+----+----+----+----+----+
-> > +        * |    |    |    |\\\\|    |    |\\\\|
-> > +        * +----+----+----+----+----+----+----+
-> > +        * 0    1    2    3    4    5    6    7
-> > +        *
-> > +        * If the cache_ctl->progress was at 3, then we are only allowe=
-d to
-> > +        * unpin [0,1) and [2,3], because the caching thread has alread=
-y
-> > +        * processed those extents.  We are not allowed to unpin [5,6),=
- because
-> > +        * the caching thread will re-start it's search from 3, and thu=
-s find
-> > +        * the hole from [4,6) to add to the free space cache.
-> > +        */
-> > +       list_for_each_entry_safe(caching_ctl, next,
-> > +                                &fs_info->caching_block_groups, list) =
-{
-> > +               struct btrfs_block_group *cache =3D caching_ctl->block_=
-group;
-> > +               if (btrfs_block_group_done(cache)) {
-> > +                       cache->last_byte_to_unpin =3D (u64)-1;
-> > +                       list_del_init(&caching_ctl->list);
-> > +                       btrfs_put_caching_control(caching_ctl);
-> > +               } else {
-> > +                       cache->last_byte_to_unpin =3D caching_ctl->prog=
-ress;
-> > +               }
-> > +       }
-> >         up_write(&fs_info->commit_root_sem);
-> >  }
-> >
-> > @@ -2293,8 +2332,6 @@ int btrfs_commit_transaction(struct btrfs_trans_h=
-andle *trans)
-> >                 goto unlock_tree_log;
-> >         }
-> >
-> > -       btrfs_prepare_extent_commit(fs_info);
-> > -
-> >         cur_trans =3D fs_info->running_transaction;
-> >
-> >         btrfs_set_root_node(&fs_info->tree_root->root_item,
-> > --
-> > 2.26.2
-> >
+> > +             return fs_error ? ERR_PTR(fs_error) : ERR_PTR(-EIO);
+> > +     }
+> >       /* We cannot split partially completed ordered extents. */
+> >       if (ordered->bytes_left) {
+> >               ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
 >
->
-> --
-> Filipe David Manana,
->
-> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
-re right.=E2=80=9D
 
