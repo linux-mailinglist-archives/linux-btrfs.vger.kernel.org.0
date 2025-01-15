@@ -1,149 +1,143 @@
-Return-Path: <linux-btrfs+bounces-10971-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10972-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6309BA11D7F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2025 10:24:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07ED5A122EB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2025 12:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E81B188C74D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2025 09:24:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 918D23AB729
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2025 11:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADF61EEA47;
-	Wed, 15 Jan 2025 09:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5107E241689;
+	Wed, 15 Jan 2025 11:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="d4D037sP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SK1UM+rf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07DBC248173;
-	Wed, 15 Jan 2025 09:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A741E98F2;
+	Wed, 15 Jan 2025 11:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736933031; cv=none; b=LubBUuuaY1CJAtV7NGPmP+THNc7HfsIEnj19El7ymLn4fBdWvXhWelkDeHBG7XzxLPB5Cz96w0SDco+Oepgo6pk/3xasX0T1TUJu2ou1gfya7LQVBnCtxlYTmYYNRFTv3bKQMA+F47HPTn/NHpbu/j6vS75DIBEW7rbBJFEGjjA=
+	t=1736941359; cv=none; b=t6HqSAZgv01Ey5lrALKlXPSyr+lyx5uYjDMqQdueZdq/yuTWx+ZIvYCJqOahM5hSsEIjMr5CK/isqAfb1YT9sbnexHOK3jeiWzeSINVF+jYSU2VSDzSpoqmdHpqjM54bn18CCvT6zrSRLT/gPISUP8UFRYxYsGnUzWZ2TqF0OWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736933031; c=relaxed/simple;
-	bh=Iwp5DlsntPpB2Ma/i8rcyqrt+6GKhYL4CrI7wbuPs5w=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=VkQ6MzKMZtuH5g6eDNDgGV5kI2fwpCJjZfxo2OKMtqnLPjFIBxqKFS6/TgT6NwHxKUGWI4/lLmpt8RmczoXVtnclQ/eDDFVqKmeP41jauI6rhEY8kf0epbpWkz/B6s7fkdyshrqEzr17j3E+aWKXiO+Xilkedk/asKC8jESqOlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=d4D037sP; arc=none smtp.client-ip=54.207.22.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1736932969;
-	bh=Iwp5DlsntPpB2Ma/i8rcyqrt+6GKhYL4CrI7wbuPs5w=;
-	h=Mime-Version:Subject:From:Date:Message-Id:To;
-	b=d4D037sPA+qhv38uwjV1O5gPKMMwRWa+LVsv53ukV5A9L3Dl0KvF/KQUOwpl3FrHA
-	 BtfKeUL/brudsY7w4YnFaJuwOLAcq5mh8131ooNy62y3rltRnh/ftF9xgdhzuAnRa5
-	 CvmDKlxdSuiMyMEzI0icqJVqnaklNYlNaj2umvAU=
-X-QQ-mid: bizesmtpsz7t1736932967t2qn5kq
-X-QQ-Originating-IP: ub0u27b1n0Ja8kBjIn2P5iAqxG7HGMYuzOqGtUyMBOU=
-Received: from smtpclient.apple ( [202.120.235.205])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 15 Jan 2025 17:22:45 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 14841633537363899611
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1736941359; c=relaxed/simple;
+	bh=pq/v0VSJ9VsZQn33S7S7wvNcGH+oudGNlgIaUU4DpJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M4yg66guxVSbb9RfULqrHZ245e/xlLmveEGvj0O6QKNtByWlbQ9wS5wYhIBcS7Y29YRamjtUNHgWSPMedb4+Hzc+5SsqTFo1MAEc3LwFBQvMv4Q0b93FLw/sYHTsOLjIPO6UBlgj7te9TNxPAhUqti8AX0pfyvJ1FkCb8Kxgqkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SK1UM+rf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 562EAC4CEE6;
+	Wed, 15 Jan 2025 11:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736941358;
+	bh=pq/v0VSJ9VsZQn33S7S7wvNcGH+oudGNlgIaUU4DpJU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SK1UM+rfoqKh/h3BU5ce3vIkS003NTSuW+v6diKDwjMb+JbyjOu6hOcQ4NbQfqUJN
+	 94c5rc6AwA+9T1Vy+2lvYgfbl+d62DXYW9tNBrP9p8znN6P96ewJ7Wyys4JPP3EJrd
+	 Tx92bEk2LuC3tN50gYqtCXmFbwoq8BA0L2jMNdx3E5n6Q9B3D6V7f6xpO7LGAanP4t
+	 rKrNSLjQcpmSGj3fQD9UCpBUoi7+cHw5KwxrVZ+S0noeNhLliYvjdIkBIKEdA89flU
+	 YJ9F9cJat63XgK20QD2vguEaHDAf6dEsfajhwp08RlohMxVkDV//k28maTUzgDi4o/
+	 HfCCCKF5ZhMpQ==
+Date: Wed, 15 Jan 2025 12:42:33 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: Christoph Hellwig <hch@lst.de>, oe-lkp@lists.linux.dev, lkp@intel.com,
+	linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-nvme@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
+	linux-btrfs@vger.kernel.org, linux-aio@kvack.org
+Subject: Re: [linus:master] [block]  e70c301fae: stress-ng.aiol.ops_per_sec
+ 49.6% regression
+Message-ID: <Z4efKYwbf2QYBx40@ryzen>
+References: <20241213143224.GA16111@lst.de>
+ <20241217045527.GA16091@lst.de>
+ <Z2EgW8/WNfzZ28mn@xsang-OptiPlex-9020>
+ <20241217065614.GA19113@lst.de>
+ <Z3ZhNYHKZPMpv8Cz@ryzen>
+ <20250103064925.GB27984@lst.de>
+ <Z3epOlVGDBqj72xC@ryzen>
+ <Z3zlgBB3ZrGApew7@xsang-OptiPlex-9020>
+ <Z35VVvuT0nl0iDfd@ryzen>
+ <Z4DD1Lgzvv66tS3w@xsang-OptiPlex-9020>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: Re: Bug: Potential Deadlock or Resource Contention in Btrfs Subsystem
-From: Kun Hu <huk23@m.fudan.edu.cn>
-In-Reply-To: <085e2f2d-a306-4a38-9943-1e306a8c11ea@gmx.com>
-Date: Wed, 15 Jan 2025 17:22:35 +0800
-Cc: josef@toxicpanda.com,
- anand.jain@oracle.com,
- nborisov@suse.com,
- dsterba@suse.com,
- "jjtan24@m.fudan.edu.cn" <jjtan24@m.fudan.edu.cn>,
- linux-kernel@vger.kernel.org,
- linux-btrfs@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BECC6BA3-8FBF-4975-B48D-31B2C975D944@m.fudan.edu.cn>
-References: <AA0E5191-E4D8-4FAA-AB60-B38D6F2D0E99@m.fudan.edu.cn>
- <085e2f2d-a306-4a38-9943-1e306a8c11ea@gmx.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: MZ4KZWW7YB31tEg0wL2SX3+Ch6+42yci3QbjmzihJhABPV34pJjSfAmp
-	hmSQ4BoTfTYkXjqbucVE91Wf0EQLOnZxqoIso2MhidUX1+6ev6T4YbEAkGmOtlcGhU2yGx2
-	BLEW/ErTwE3oLZjzqxZlgumrDX02P1WAqoPxHaxUW1In4MrhEBlzM7QJurseeh87EVEsHlC
-	d8Yur+U8CGE63G2oC1OoU5TLyMFA9sNGhxiSo583o9PtCpoxZ5Vy1RcRH3bapNMioatO2HO
-	1aARkkZeIUyWVD2aKIy9GGFWrcOHV7lBDJJYAk60Ypagc4vuTb80TSPVH1ystBYWt3QySs4
-	GiOCJbr1/vhsJhC/qTxacafSnf6GqUHL0WALRqVUfcQ3exQNIIE1odgQStNnnv8gY9W2wW8
-	LTl2PzenAvE3Q1mcQ9DImzrfAioFy4wmohShn8Vn83CckOLLxTH2b/2rI2b+aGq/mvSIfpR
-	OMHDfgn44wrIt8zm8w5sbjdNoNdl/kg77QRQiOpCZOSVxcM8aM/6cPxCZgWfaRCNwGmjCqY
-	ZzqZWfNQCEmxJRJ/93IDTBfrxkhALI0e5nnB28bejJ22DvhLTwHuzTeMLeTPIcQLAiF6n5f
-	UYTZYgJ52+UmNl7uy8SPcmstlStm7nOLeFEZxtOzYp8Vz/mKqzw4bkxLP9o1sYiLWKSv8d3
-	EmTbR1B5kTv85RfMZVlo+3v7b8iPtmjRaN0fIX1uGzbSZUsALn5BYdlZgQ0z+i/s1cypr7z
-	BpqM3/r4XM1wn3edPqnks300NEAHYTn2b4s6Y6wOXT4rFdoBlo8L3JxGN3njbQpKaMfGSWY
-	MnIyktBEzpI/yg0z1zM67xB5YD8W8hEnjNPeWPNefpANKe9LPsBZaMZxFgO38y41iqLFidS
-	pB3WIb7zEScpfHhxAKT/SZj0Qq4AgK2q838vEsUOMUZJRCSJF+X2SEnWzAOn5Ctw0eKKfZX
-	b7nIWoUnUGs+wDT9gHi2b4+SgufoT07e1rVs=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-X-QQ-RECHKSPAM: 0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z4DD1Lgzvv66tS3w@xsang-OptiPlex-9020>
+
+Hello Oliver,
+
+On Fri, Jan 10, 2025 at 02:53:08PM +0800, Oliver Sang wrote:
+> On Wed, Jan 08, 2025 at 11:39:28AM +0100, Niklas Cassel wrote:
+> > > > Oliver, which I/O scheduler are you using?
+> > > > $ cat /sys/block/sdb/queue/scheduler 
+> > > > none mq-deadline kyber [bfq]
+> > > 
+> > > while our test running:
+> > > 
+> > > # cat /sys/block/sdb/queue/scheduler
+> > > none [mq-deadline] kyber bfq
+> > 
+> > The stddev numbers you showed is all over the place, so are we certain
+> > if this is a regression caused by commit e70c301faece ("block:
+> > don't reorder requests in blk_add_rq_to_plug") ?
+> > 
+> > Do you know if the stddev has such big variation for this test even before
+> > the commit?
+> 
+> in order to address your concern, we rebuild kernels for e70c301fae and its
+> parent a3396b9999, also for v6.12-rc4. the config is still same as shared
+> in our original report:
+> https://download.01.org/0day-ci/archive/20241212/202412122112.ca47bcec-lkp@intel.com/config-6.12.0-rc4-00120-ge70c301faece
+
+Thank you for putting in the work to do some extra tests.
+
+(Doing performance regression testing is really important IMO,
+as without it you are essentially in the blind.
+Thank you guys for taking on the role of this important work!)
 
 
->=20
-> There is a recent report about btrfs' new mount API change lead to
-> mnt_list corruption:
->=20
-> =
-https://lore.kernel.org/linux-btrfs/ec6784ed-8722-4695-980a-4400d4e7bd1a@g=
-mx.com/
->=20
-> Which can be fixed by the latest VFS branch provided by Christian:
-> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git =
-vfs-6.14.mount
->=20
-> Considering the offending fc_mount() triggered by
-> btrfs_get_tree_subvol() is involved, mind to test if the above branch
-> fixes the bug?
+Looking at the extended number of iterations that you've in this email,
+it is quite clear that e70c301faece, at least with the workload provided
+by stress-ng + mq-deadline, introduced a regression:
 
-We are still reproducing this issue on the vfs mount - v6.14 branch =
-respectively, but I'm not sure if it's a significant issue. Looking at =
-the latest crash log it seems to be consistent with the originally =
-reported issue (BTRFS filesystem race operation causing deadlocks and =
-initialization function failures). Looking at the reproducer =
-perf_event_open and syz_mount_image are both using randomly crafted =
-parameters.=20
+       v6.12-rc4 a3396b99990d8b4e5797e7b16fd e70c301faece15b618e54b613b1
+---------------- --------------------------- ---------------------------
+         %stddev     %change         %stddev     %change         %stddev
+             \          |                \          |                \
+    187.64 ±  5%      -0.6%     186.48 ±  7%     -47.6%      98.29 ± 17%  stress-ng.aiol.ops_per_sec
 
-Specifically, perf_event_open entered the cpu=3D0x3ffffffffff parameter =
-resulting in frequent performance event monitoring initialization, and =
-the CPU number range defined by this parameter did not satisfy the valid =
-numbering range, which could trigger invalid accesses and resource =
-contention. In addition, the image data for syz_mount_image is randomly =
-generated, which may lead to parsing failure of block device metadata, =
-log playback errors, and block order anomalies.We give the link of the 3 =
-new issue logs : 1) on vfs mount - v6.14 branch, 2) on v6.13-rc7, 3) on =
-v6.13-rc7 merged with vfs mount - v6.14 branch
 
-1) Link: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0110_6.13rc6/41-BUG_%20soft=
-%20lockup%20in%20lo_ioct/crashlog0113_vfs-mount%20v6.14.txt
 
-2) Link: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0110_6.13rc6/41-BUG_%20soft=
-%20lockup%20in%20lo_ioct/crashlog0115_6.13rc7.txt
 
-3) Link: =
-https://github.com/pghk13/Kernel-Bug/blob/main/0110_6.13rc6/41-BUG_%20soft=
-%20lockup%20in%20lo_ioct/crashlog0115_6.13rc7_vfs-mount%20v6.14.txt
+Looking at your results from stress-ng + none scheduler:
 
-I=E2=80=99m not sure if the log is useful for you. If you have any =
-concerns, Please let me know. And If it=E2=80=99s not a important issue, =
-then please ignore it too!=20
+         %stddev     %change         %stddev     %change         %stddev
+             \          |                \          |                \
+    114.62 ± 19%      -1.9%     112.49 ± 17%     -32.4%      77.47 ± 21%  stress-ng.aiol.ops_per_sec
 
-=E2=80=94=E2=80=94=E2=80=94
-Thanks,
-Kun Hu=
+
+Which shows a change, but -32% rather than -47%, also seems to suggest a
+regression for the stress-ng workload.
+
+
+
+
+Looking closer at the raw number for stress-ng + none scheduler, in your
+other email, it seems clear that the raw values from the stress-ng workload
+can vary quite a lot. In the long run, I wonder if we perhaps can find a
+workload that has less variation. E.g. fio test for IOPS and fio test for
+throughout. But perhaps such workloads are already part of lkp-tests?
+
+
+Kind regards,
+Niklas
 
