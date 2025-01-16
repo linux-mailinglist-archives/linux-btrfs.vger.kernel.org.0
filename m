@@ -1,194 +1,277 @@
-Return-Path: <linux-btrfs+bounces-10986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7CC8A143A1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 21:52:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F28DA1449B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 23:40:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E631D188D7FC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 20:52:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C176418827C2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 22:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3312419FA;
-	Thu, 16 Jan 2025 20:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0B6236EA5;
+	Thu, 16 Jan 2025 22:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fj3mjlLK"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eE6hmEhL";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eE6hmEhL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA95146A6F
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 20:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B99E22F3B4
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737060738; cv=none; b=H2D5vbUxhmPphiWHAvnrG+pisXar2HIS1ySUmTIAfkazx47vk94ULjap1jCsU3G5HidnvbPwSjrjjpqo5WKdiSSAUwYx7DpPDnZSr3TAunJsoM1LGgHzUn7XJFl8iUSyqdXS2fHz+t+def9UXkmow5RlKpeXnqiq3w6PUlMxiuY=
+	t=1737067200; cv=none; b=NpExA4VusREfLG+g9K9s0jkFM1vIE8LHwNArOc16zLaIn5zdIIGN1omuHsRR3q7le7/EaQf3TwdjnBmlDEBPuWYJTX8Jf0MQClOJhcyP+R0gAAaqnERMfZhhYdrP22Ou8Knf8EGxfM9641MKJ3EdHmbMc9LC/AZJiUbbTzevWfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737060738; c=relaxed/simple;
-	bh=diRAHbsSy0WmI/uZcoIUxeHPpq5fc/XmNsy2dee3mTM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ghVV1zM8cvWMHdIqrudpdNKbAbS78bFor/f3AqFJrED/MbHGjPgFWKmTZ6n1WsR2/DV6xcS9NB2/QiZgjnM82jTa75+22uK0uqeC0kyxBEhRPRug2luaiOK63bGcRY3BgLFm2qP08EEwFjcNhE07ERLjF5yr0Ex+f9vM7CWlBnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fj3mjlLK; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1737060733; x=1737665533; i=quwenruo.btrfs@gmx.com;
-	bh=1GzdlSfnoj5sfhysBRfRBeDJP3sozKnAQ+TFfuTkcTQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=fj3mjlLKRp4sM+/LgimHur4qiYJCkj9LJeDgCewoWDVX/aFgv7fQQrPvMC0b3tDX
-	 jInr+5SmMlttCL5+zHnLyjzNuh7mVd7PhEErFxRiWrJffZ58J5LPf0tBP6YVNXoK/
-	 GQX5zkH3f+7Tf8TaBVoGDIWZvOmZRI3nfjbdUJ9rGYzWvib/QzgoO40OWHaxJ5zAR
-	 xaE/TLF+34r87jrY/2OaLtOqWiGR2DdVTqDr/bDILCNz+68qB9sM6QpYX1ywLDFPw
-	 ZgDoXXEc+OcA6rDCThdl9jRs4GCQpZ7tG3QRV6o3FopNiu30FNFevZElcKzZ1wFsr
-	 kp2qRKZ3BCaqO+4wnA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDnC-1tgl6Y2uYY-00BwTn; Thu, 16
- Jan 2025 21:52:13 +0100
-Message-ID: <46387df4-91d9-426d-8881-e0ae97bd86cf@gmx.com>
-Date: Fri, 17 Jan 2025 07:22:09 +1030
+	s=arc-20240116; t=1737067200; c=relaxed/simple;
+	bh=QVMj3p8PY473t7e58uil/ynfGDMwKfuC7LWNRzl0aJw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=KiJEPpxLlTNmx51FJIqCuV4A8L1Nc0ZQgqu2LZIspKD5DLdz3XS1u5Z7JtQ1kBmv+jNiFklbbUcODDBE4SYd3C3fqbkXNv945xxlO9fOc+4aInXm25xuhN1HC+yovzlRZ3gCWMy3FGjyR0mMRXVg7f/Lu/QNJWJ38s9PP0oabA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eE6hmEhL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eE6hmEhL; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E10D2117B
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737067196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0Yzl2mq+9AyF7uO2kUc3Uu8JczqJZe7kP87IoN/f6og=;
+	b=eE6hmEhLmYXEqF8nKqZxCCOGVplpqO+5gZaeqHUiMP0UHKrmgSVp4fN4O2YjGYmsMj4l/i
+	WCdk2Xxv3NMilPKsTy/dpnY+MyXZyBXf+uqZmXw6N/An6cbyZvxuc9xW+lVUj5NeiGos75
+	ALtarZJNu7XOoNm54Gp1jendRB/3qgw=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737067196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0Yzl2mq+9AyF7uO2kUc3Uu8JczqJZe7kP87IoN/f6og=;
+	b=eE6hmEhLmYXEqF8nKqZxCCOGVplpqO+5gZaeqHUiMP0UHKrmgSVp4fN4O2YjGYmsMj4l/i
+	WCdk2Xxv3NMilPKsTy/dpnY+MyXZyBXf+uqZmXw6N/An6cbyZvxuc9xW+lVUj5NeiGos75
+	ALtarZJNu7XOoNm54Gp1jendRB/3qgw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA03413332
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gazSHruKiWeYcgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:55 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] Revert "btrfs: canonicalize the device path before adding it"
+Date: Fri, 17 Jan 2025 09:09:34 +1030
+Message-ID: <65c879f1c79f2171e64335a4f2045a0e604a1950.1737067145.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: remove loopback device resolution
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <6094201431aa981c6e0d149b6d528bc4b7a5af91.1737020580.git.wqu@suse.com>
- <20250116114219.GC5777@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250116114219.GC5777@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:22XGGJEmOUDy4Cm8fQIIVgPDVCVcZuSuYf7z89irVueSU+Zel1d
- Lrxy9sCNUJGlG/4yHyYrFnRZrGSRqkdByTUGV4xnfy5kTELBS6E/GBGL6bndNHCXYdbqYAE
- cIQ4Bi9mE3U7/Y66tAPdAy+cSk/LIU5JDty2e/3ANthsdcXipjwsgYCUIJtOxWxAPChPUx6
- hRI8QBFSI18D8bdF92s5Q==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Crc3qUwcJH4=;QcszwlDlUsAt/Yd0V2caEnvgmZy
- 16PocTNasqcdcMT+7uO13WWEqiPfeu/pB3/uy0Ahu3YzTBixhp8t7BO/iw1fKHhu3cvKFjVHR
- 0JG5IBrtWUdarcMPGyvF4TCIHXPPy4ix6AHXHzf08VrwQ7qPxfFMfXa3jhFdq4C87dL5PUgkD
- Z3QRorBObE6CJ7WqiR48WRt8HcP+wivXnWzbRL+gC4egDXoXEgqN/0+JsRflB3RbIK3y73X06
- oXxbWWT/rPwnjekfX9Rzwch/rYH6HGRLJAfDRMA04NzQtcp5NXuDkeneiRA5v4BM3OUNQT79h
- A4obI+/ksqpxWxJzbW8VMt4JRpjGqhgWnzjmGHyZQN6QRYj03kn+IpXSq03wLAX/OGwsdcgSJ
- 6wCBdakzLrgZbTc3zb3M9sqjt3ogfjfyxR2m0VnHcrmYdB2StwDnSOjGkAI/SMUPjB6+bNH1z
- erZcpbkq4bxcBE9LZ/xrdblCmDVvW+e2ga6G8knYu0hA11HD/0V6bhst37EZrnCQCx8LFgYXI
- 990J4FYkeTL3Mixk+BMTk3aqSSB6AQOzsdP5TqVRMIcfcOWSCKV9pdIDioiFLcmXeorkAUXEN
- bLBpDvmStw207XF680q5dRMeVMZkVQ9pV2RZ8pKeFd9mgNPXcYMh6Wq+7clLMZfvMjXOf0Shm
- OSuzuogPkDIowrlHTC8Y0VdBC5MK4KeRRwU7wZu3iuk8puSunq+n53kbQixeQ9GLgbDBO82IW
- SBrq5T67z9M9OfELYxT13qbPKZ0RiHVSvnrjA1xumQvBvNeNDGT4YQ+8yX/t4vv1dMrCQbi9q
- MLbIqv95f9z/ueKg2c1IxhMkmBMfWIzUrPnQtFmd2ztlsoFMKS2Aa/KI/PDXzlHI5vCWp5plF
- 8NTE6/gqME/1CVHYh5b/UpdzdGfdeMuXmTZZiML/xVRIUycWItewUl5QpgDl0uI4fwUQKUwbv
- xaQB/fjKW5Tlu+yy7APKjZi8B3gORquXSUHG3IqbWzVRKka7j9ja2eoR7VF3MBOfVIKl9njUc
- gYABdlTW3O0NXXItVwfazhNC4JWGtG815hJoJWBIg40tvuBhwZqCGzjiBD9gDRiVTOKWMjNaH
- Y7jok7W0PPaUA++Yy2sZk8p0XXwmP8AmlCIi5/A7oJOA6dTKz9nVdG83nYGQ7MuPJhc4T8DIp
- qndzg2AXC+osU9fv5/vWUTCBRR3/Yl/VcG0cNp/IWuQ==
 
+This reverts commit 7e06de7c83a746e58d4701e013182af133395188.
 
+Commit 7e06de7c83a7 ("btrfs: canonicalize the device path before adding
+it") tries to make btrfs to use "/dev/mapper/*" name first, then any
+filename inside "/dev/" as the device path.
 
-=E5=9C=A8 2025/1/16 22:12, David Sterba =E5=86=99=E9=81=93:
-> On Thu, Jan 16, 2025 at 08:13:01PM +1030, Qu Wenruo wrote:
->> [BUG]
->> mkfs.btrfs has a built-in loopback device resolution, to avoid the same
->> file being added to the same fs, using loopback device and the file
->> itself.
->>
->> But it has one big bug:
->>
->> - It doesn't detect partition on loopback devices correctly
->>    The function is_loop_device() only utilize major number to detect a
->>    loopback device.
->>    But partitions on loopback devices doesn't use the same major number
->>    as the loopback device:
->>
->>    NAME            MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINTS
->>    loop0             7:0    0    5G  0 loop
->>    |-loop0p1       259:3    0  128M  0 part
->>    `-loop0p2       259:4    0  4.9G  0 part
->>
->>    Thus `/dev/loop0p1` will not be treated as a loopback device, thus i=
-t
->>    will not even resolve the source file.
->>
->>    And this can not even be fixed, as if we do extra "/dev/loop*" based
->>    file lookup, `/dev/loop0p1` and `/dev/loop0p2` will resolve to the
->>    same source file, and refuse to mkfs on two different partitions.
->>
->> [FIX]
->> The loopback file detection is the baby sitting that no one asks for.
->>
->> Just as I explained, it only brings new bugs, and we will never fix all
->> ways that an experienced user can come up with.
->> And I didn't see any other mkfs tool doing such baby sitting.
->>
->> So remove the loopback file resolution, just regular is_same_blk_file()
->> is good enough.
->
-> The loop device resolution had some bugs in the past and was added for a
-> reason that's not mentioned in the changelogs.
->
-> The commits have some details why it's done, they also mention that
-> partitioned devices are resolved so it's not that there's no support for
-> that.
->
-> 0cf3b78f404b01 ("btrfs-progs: Fix partitioned loop devices resolving")
-> abdb0ced0123d4 ("Btrfs-progs: fix resolving of loop devices")
+This is mostly fine when there is only the root namespace involved, but
+when multiple namespace are involved, things can easily go wrong for the
+d_path() usage.
 
-The problem of those two fixes are pretty simple, they just do not work
-in the first place.
+As d_path() returns a file path that is namespace dependent, the
+resulted string may not make any sense in another namespace.
 
-resolve_loop_device() is only triggered if is_loop_dev() returns >0 values=
-.
+Furthermore, the "/dev/" prefix checks itself is not reliable, one can
+still make a valid initramfs without devtmpfs, and fill all needed
+device nodes manually.
 
-But as I explained, resolve_loop_device() won't return >0 if a
-partitioned loopback device is passed.
+Overall the userspace has all its might to pass whatever device path for
+mount, and we are not going to win the war trying to cover every corner
+case.
 
+So just revert that commit, and do no extra d_path() based file path
+sanity check.
 
-So why those patches are introduced in the first place?
+Link: https://lore.kernel.org/linux-fsdevel/20250115185608.GA2223535@zen.localdomain/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
 
-Thanks,
-Qu
-> 09559bfe7bcd43 ("multidevice support for check_mounted")
->
-> and some fixup commits.
->
-> So before removing the code completely I'd like to see if there's a use
-> case that can be broken, but I don't have anything in particular.
-> There's only mkfs-tests/006-partitioned-loopdev that's quite simple and
-> does not try to do any tricks with symlinks or partitions on the
-> devices.
->
+Although most distros will mount devtmpfs on "/dev/", it may not be the
+case for containers.
+And d_path() result is always namespace dependent, it means the mount
+source shown in mount info is never ensured to make sense in another
+namespace anyway.
+
+I do not see a future that we can win the cat-and-mouse game, and the
+complexity of the file path sanity check will only grow and grow,
+eventually get out-of-control.
+
+Thus I recommend to cut the loss early.
+---
+ fs/btrfs/volumes.c | 87 +---------------------------------------------
+ 1 file changed, 1 insertion(+), 86 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a594f66daedf..e511743bbc08 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -733,78 +733,6 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb)
+ 	return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
+ }
+ 
+-/*
+- * We can have very weird soft links passed in.
+- * One example is "/proc/self/fd/<fd>", which can be a soft link to
+- * a block device.
+- *
+- * But it's never a good idea to use those weird names.
+- * Here we check if the path (not following symlinks) is a good one inside
+- * "/dev/".
+- */
+-static bool is_good_dev_path(const char *dev_path)
+-{
+-	struct path path = { .mnt = NULL, .dentry = NULL };
+-	char *path_buf = NULL;
+-	char *resolved_path;
+-	bool is_good = false;
+-	int ret;
+-
+-	if (!dev_path)
+-		goto out;
+-
+-	path_buf = kmalloc(PATH_MAX, GFP_KERNEL);
+-	if (!path_buf)
+-		goto out;
+-
+-	/*
+-	 * Do not follow soft link, just check if the original path is inside
+-	 * "/dev/".
+-	 */
+-	ret = kern_path(dev_path, 0, &path);
+-	if (ret)
+-		goto out;
+-	resolved_path = d_path(&path, path_buf, PATH_MAX);
+-	if (IS_ERR(resolved_path))
+-		goto out;
+-	if (strncmp(resolved_path, "/dev/", strlen("/dev/")))
+-		goto out;
+-	is_good = true;
+-out:
+-	kfree(path_buf);
+-	path_put(&path);
+-	return is_good;
+-}
+-
+-static int get_canonical_dev_path(const char *dev_path, char *canonical)
+-{
+-	struct path path = { .mnt = NULL, .dentry = NULL };
+-	char *path_buf = NULL;
+-	char *resolved_path;
+-	int ret;
+-
+-	if (!dev_path) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	path_buf = kmalloc(PATH_MAX, GFP_KERNEL);
+-	if (!path_buf) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	ret = kern_path(dev_path, LOOKUP_FOLLOW, &path);
+-	if (ret)
+-		goto out;
+-	resolved_path = d_path(&path, path_buf, PATH_MAX);
+-	ret = strscpy(canonical, resolved_path, PATH_MAX);
+-out:
+-	kfree(path_buf);
+-	path_put(&path);
+-	return ret;
+-}
+-
+ static bool is_same_device(struct btrfs_device *device, const char *new_path)
+ {
+ 	struct path old = { .mnt = NULL, .dentry = NULL };
+@@ -1509,23 +1437,12 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
+ 	bool new_device_added = false;
+ 	struct btrfs_device *device = NULL;
+ 	struct file *bdev_file;
+-	char *canonical_path = NULL;
+ 	u64 bytenr;
+ 	dev_t devt;
+ 	int ret;
+ 
+ 	lockdep_assert_held(&uuid_mutex);
+ 
+-	if (!is_good_dev_path(path)) {
+-		canonical_path = kmalloc(PATH_MAX, GFP_KERNEL);
+-		if (canonical_path) {
+-			ret = get_canonical_dev_path(path, canonical_path);
+-			if (ret < 0) {
+-				kfree(canonical_path);
+-				canonical_path = NULL;
+-			}
+-		}
+-	}
+ 	/*
+ 	 * Avoid an exclusive open here, as the systemd-udev may initiate the
+ 	 * device scan which may race with the user's mount or mkfs command,
+@@ -1570,8 +1487,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
+ 		goto free_disk_super;
+ 	}
+ 
+-	device = device_list_add(canonical_path ? : path, disk_super,
+-				 &new_device_added);
++	device = device_list_add(path, disk_super, &new_device_added);
+ 	if (!IS_ERR(device) && new_device_added)
+ 		btrfs_free_stale_devices(device->devt, device);
+ 
+@@ -1580,7 +1496,6 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
+ 
+ error_bdev_put:
+ 	fput(bdev_file);
+-	kfree(canonical_path);
+ 
+ 	return device;
+ }
+-- 
+2.48.0
 
 
