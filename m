@@ -1,351 +1,154 @@
-Return-Path: <linux-btrfs+bounces-10980-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC48EA136D8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 10:43:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABCEA1375B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 11:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 539EE3A7356
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 09:43:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F3AB188A619
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 10:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0316A1DAC97;
-	Thu, 16 Jan 2025 09:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EE31DDC1F;
+	Thu, 16 Jan 2025 10:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gUUvnQG2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gUUvnQG2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V+LUdMcW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28091198A29
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 09:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAEF1991CF;
+	Thu, 16 Jan 2025 10:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737020604; cv=none; b=cKbyV4KUUA8o2uiGopduMRBrVOx9nuXZxX+1e6JKs1o4itm+YAz1cSVahzpCGbAU7CHaaiGy0sGwUeSFqy3M4JJjVKuAlWR/zSo9Wx4oo2/Ds3qwgp/dzVJ5tGf1cP72d24crRq0NwkBTAfwVW1ahD/kxwskLfzzK5u0VpO1+pQ=
+	t=1737021883; cv=none; b=fjkGr22ETS2fRhudb7TlahR52/Og1P1woGwvGF70TO3Ftr+YqgKuPFrjbiyDFY1Gfvnc97bTlKpnA2BUntyUmHpY5FaVD9XHwVNF9fv+DIR6wRXjcD2WGNEFkbGhnw73Jh2l1CR2Q/lURNphSDlafp8mj41oaUU67fTeFGy7/7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737020604; c=relaxed/simple;
-	bh=9hqYj6ZilmClVrv+ZlswKj1Odh6vMip+qYI9Ce28FGM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=sWT2dL4HOdJ5wkw2rVl074qU+ESGBqhyvsaXWwPS6Qxco3OmGsguNu3JuY03qvdhoFF25Evs59ifEiZSKOKMc3wCjiOGSWx8JnOdfG3LjLSG1PQee3k6LMi3ZS8WlGccywELtfml+TdWAu7+YpA8a3tIN5oLXbmFcWUwtE4QYTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gUUvnQG2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gUUvnQG2; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1C2C31F7A3
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 09:43:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1737020600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=BUAHUMCyGbSXN9XNnGpVKHbmmXifi+d1aJ5jH084nkw=;
-	b=gUUvnQG2q7sG2IgUT2YPfFI3QvLwcFYo/e0W0ttOTKiWzs2e3vLYxO7BcK0jczp5z5yLdA
-	g/NtkyQ6e7XmKCqIZg6ntZ9ZPeIOfV87Lj6ifas0NXOTYEWixGiAtaOXfNGVqupsWtIfwJ
-	qnZprV9c6KtYyY212CoUDobt/iyDdJ8=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=gUUvnQG2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1737020600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=BUAHUMCyGbSXN9XNnGpVKHbmmXifi+d1aJ5jH084nkw=;
-	b=gUUvnQG2q7sG2IgUT2YPfFI3QvLwcFYo/e0W0ttOTKiWzs2e3vLYxO7BcK0jczp5z5yLdA
-	g/NtkyQ6e7XmKCqIZg6ntZ9ZPeIOfV87Lj6ifas0NXOTYEWixGiAtaOXfNGVqupsWtIfwJ
-	qnZprV9c6KtYyY212CoUDobt/iyDdJ8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5471913332
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 09:43:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZhaTBbfUiGfUawAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 09:43:19 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: remove loopback device resolution
-Date: Thu, 16 Jan 2025 20:13:01 +1030
-Message-ID: <6094201431aa981c6e0d149b6d528bc4b7a5af91.1737020580.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.0
+	s=arc-20240116; t=1737021883; c=relaxed/simple;
+	bh=umRE6v25xluhGP765JX3qQKm9iDvOyK2b54s+f7mP5w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aKpEu7mMRSQRuJ6WKG0IyUtGvZ7bddsqPCEhuGYuM+8dCIRRF1lNdQGX2+99L+Gg/eNpA5s943EWzCa29StZhb0zNeNS8/U3Eiani8IcuAgId+THsSI6rOLbylGs25wJaA4V6cl9umQFVxzkxEsOzbfhdPB/BfXk/smWPtF3V+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V+LUdMcW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B18E2C4CED6;
+	Thu, 16 Jan 2025 10:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737021882;
+	bh=umRE6v25xluhGP765JX3qQKm9iDvOyK2b54s+f7mP5w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V+LUdMcWSz6X0NwN2VNwxC18SbqevUZzZF8qtF5uuMwgUobfeARBDRExAA/Br6LLU
+	 4RsBrAC6sLgqV4uEtwS4uppHqkaEzEC95BuWO7NUpiHoE2oUkB551WKoQ9SyGe1XQ0
+	 SZKt8/9g0nHClUkYXBbbM0EdANZO63jSgVd4nQHIKPRujdjEeX4gneeDTnKMDqa5VH
+	 0WBDUV/bn4GRzPALGj2rB1j2hxX4yjdcjGBesXzU1cssKtpp01fQ0O/GSGIplAgcxg
+	 Xy6WqJUVqPMl0FzVExkqFy0HG96UvxihmvbWRrr3k5EbYsVv9eYI3hGgiVhV/5D3AE
+	 jFbIznUVIvk2g==
+Date: Thu, 16 Jan 2025 11:04:36 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: Christoph Hellwig <hch@lst.de>, oe-lkp@lists.linux.dev, lkp@intel.com,
+	linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-nvme@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
+	linux-btrfs@vger.kernel.org, linux-aio@kvack.org
+Subject: Re: [linus:master] [block]  e70c301fae: stress-ng.aiol.ops_per_sec
+ 49.6% regression
+Message-ID: <Z4jZtH2lhsZ3JTZ9@ryzen>
+References: <Z2EgW8/WNfzZ28mn@xsang-OptiPlex-9020>
+ <20241217065614.GA19113@lst.de>
+ <Z3ZhNYHKZPMpv8Cz@ryzen>
+ <20250103064925.GB27984@lst.de>
+ <Z3epOlVGDBqj72xC@ryzen>
+ <Z3zlgBB3ZrGApew7@xsang-OptiPlex-9020>
+ <Z35VVvuT0nl0iDfd@ryzen>
+ <Z4DD1Lgzvv66tS3w@xsang-OptiPlex-9020>
+ <Z4efKYwbf2QYBx40@ryzen>
+ <Z4ipFFdAppraxrmA@xsang-OptiPlex-9020>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1C2C31F7A3
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_ONE(0.00)[1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z4ipFFdAppraxrmA@xsang-OptiPlex-9020>
 
-[BUG]
-mkfs.btrfs has a built-in loopback device resolution, to avoid the same
-file being added to the same fs, using loopback device and the file
-itself.
+On Thu, Jan 16, 2025 at 02:37:08PM +0800, Oliver Sang wrote:
+> On Wed, Jan 15, 2025 at 12:42:33PM +0100, Niklas Cassel wrote:
+> > 
+> > Looking closer at the raw number for stress-ng + none scheduler, in your
+> > other email, it seems clear that the raw values from the stress-ng workload
+> > can vary quite a lot. In the long run, I wonder if we perhaps can find a
+> > workload that has less variation. E.g. fio test for IOPS and fio test for
+> > throughout. But perhaps such workloads are already part of lkp-tests?
+> 
+> yes, we have fio tests [1].
+> as in [2], we get it from https://github.com/axboe/fio
+> not sure if it's just the fio you mentioned?
 
-But it has one big bug:
+Yes, that's the one :)
 
-- It doesn't detect partition on loopback devices correctly
-  The function is_loop_device() only utilize major number to detect a
-  loopback device.
-  But partitions on loopback devices doesn't use the same major number
-  as the loopback device:
 
-  NAME            MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINTS
-  loop0             7:0    0    5G  0 loop
-  |-loop0p1       259:3    0  128M  0 part
-  `-loop0p2       259:4    0  4.9G  0 part
+> 
+> our framework is basically automatic. bot merged repo/branches it monitors
+> into so-called hourly kernel, then if found performance difference with base,
+> bisect will be triggered to capture which commit causes the change.
+> 
+> due to resource constraint, we cannot allot all testsuites (we have around 80)
+> to all platforms, and there are other various reasons which could cause us to
+> miss some performance differences.
+> 
+> if you have interests, could you help check those fio-basic-*.yaml files under
+> [3]? if you can spot out the correct case, we could do more tests to check
+> e70c301fae and its parent. thanks!
+> 
+> [1] https://github.com/intel/lkp-tests/tree/master/programs/fio
+> [2] https://github.com/intel/lkp-tests/blob/master/programs/fio/pkg/PKGBUILD
+> [3] https://github.com/intel/lkp-tests/tree/master/jobs
 
-  Thus `/dev/loop0p1` will not be treated as a loopback device, thus it
-  will not even resolve the source file.
+I'm probably not the best qualified person to review this, would be nice if e.g.
+Jens himself (or others block layer folks) could have a look at these.
 
-  And this can not even be fixed, as if we do extra "/dev/loop*" based
-  file lookup, `/dev/loop0p1` and `/dev/loop0p2` will resolve to the
-  same source file, and refuse to mkfs on two different partitions.
+What I can see is:
+https://github.com/intel/lkp-tests/blob/master/jobs/fio-basic-local-disk.yaml
 
-[FIX]
-The loopback file detection is the baby sitting that no one asks for.
+seems to do:
+    - randrw
 
-Just as I explained, it only brings new bugs, and we will never fix all
-ways that an experienced user can come up with.
-And I didn't see any other mkfs tool doing such baby sitting.
+but only on for SSDs, not HDDs, and only on ext4.
 
-So remove the loopback file resolution, just regular is_same_blk_file()
-is good enough.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- common/open-utils.c |   7 ++-
- common/path-utils.c | 127 +-------------------------------------------
- common/path-utils.h |   2 +-
- 3 files changed, 5 insertions(+), 131 deletions(-)
 
-diff --git a/common/open-utils.c b/common/open-utils.c
-index 8490be4af070..a292177691e7 100644
---- a/common/open-utils.c
-+++ b/common/open-utils.c
-@@ -36,8 +36,7 @@
- #include "common/open-utils.h"
- 
- /*
-- * Check if a file is used (directly or indirectly via a loop device) by a
-- * device in fs_devices
-+ * Check if a file is used  by a device in fs_devices
-  */
- static int blk_file_in_dev_list(struct btrfs_fs_devices* fs_devices,
- 		const char* file)
-@@ -46,7 +45,7 @@ static int blk_file_in_dev_list(struct btrfs_fs_devices* fs_devices,
- 	struct btrfs_device *device;
- 
- 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
--		if((ret = is_same_loop_file(device->name, file)))
-+		if((ret = is_same_blk_file(device->name, file)))
- 			return ret;
- 	}
- 
-@@ -94,7 +93,7 @@ int check_mounted_where(int fd, const char *file, char *where, int size,
- 			else if(!ret)
- 				continue;
- 
--			ret = is_same_loop_file(file, mnt->mnt_fsname);
-+			ret = is_same_blk_file(file, mnt->mnt_fsname);
- 		}
- 
- 		if(ret < 0)
-diff --git a/common/path-utils.c b/common/path-utils.c
-index 04861d1668cb..3030ddc47f0c 100644
---- a/common/path-utils.c
-+++ b/common/path-utils.c
-@@ -107,87 +107,11 @@ int path_exists(const char *path)
- 	return 1;
- }
- 
--/* checks if a device is a loop device */
--static int is_loop_device(const char *device)
--{
--	struct stat statbuf;
--
--	if(stat(device, &statbuf) < 0)
--		return -errno;
--
--	return (S_ISBLK(statbuf.st_mode) &&
--		MAJOR(statbuf.st_rdev) == LOOP_MAJOR);
--}
--
--/*
-- * Takes a loop device path (e.g. /dev/loop0) and returns
-- * the associated file (e.g. /images/my_btrfs.img) using
-- * loopdev API
-- */
--static int resolve_loop_device_with_loopdev(const char* loop_dev, char* loop_file)
--{
--	int fd;
--	int ret;
--	struct loop_info64 lo64;
--
--	fd = open(loop_dev, O_RDONLY | O_NONBLOCK);
--	if (fd < 0)
--		return -errno;
--	ret = ioctl(fd, LOOP_GET_STATUS64, &lo64);
--	if (ret < 0) {
--		ret = -errno;
--		goto out;
--	}
--
--	memcpy(loop_file, lo64.lo_file_name, sizeof(lo64.lo_file_name));
--	loop_file[sizeof(lo64.lo_file_name)] = 0;
--
--out:
--	close(fd);
--
--	return ret;
--}
--
--/*
-- * Takes a loop device path (e.g. /dev/loop0) and returns
-- * the associated file (e.g. /images/my_btrfs.img)
-- */
--static int resolve_loop_device(const char* loop_dev, char* loop_file,
--		int max_len)
--{
--	int ret;
--	FILE *f;
--	char fmt[20];
--	char p[PATH_MAX];
--	char real_loop_dev[PATH_MAX];
--
--	if (!realpath(loop_dev, real_loop_dev))
--		return -errno;
--	snprintf(p, PATH_MAX, "/sys/block/%s/loop/backing_file", strrchr(real_loop_dev, '/'));
--	if (!(f = fopen(p, "r"))) {
--		if (errno == ENOENT)
--			/*
--			 * It's possibly a partitioned loop device, which is
--			 * resolvable with loopdev API.
--			 */
--			return resolve_loop_device_with_loopdev(loop_dev, loop_file);
--		return -errno;
--	}
--
--	snprintf(fmt, 20, "%%%i[^\n]", max_len - 1);
--	ret = fscanf(f, fmt, loop_file);
--	fclose(f);
--	if (ret == EOF)
--		return -errno;
--
--	return 0;
--}
--
- /*
-  * Checks whether a and b are identical or device
-  * files associated with the same block device
-  */
--static int is_same_blk_file(const char* a, const char* b)
-+int is_same_blk_file(const char* a, const char* b)
- {
- 	struct stat st_buf_a, st_buf_b;
- 	char real_a[PATH_MAX];
-@@ -224,55 +148,6 @@ static int is_same_blk_file(const char* a, const char* b)
- 	return 0;
- }
- 
--/*
-- * Checks if a and b are identical or device files associated with the same
-- * block device or if one file is a loop device that uses the other file.
-- */
--int is_same_loop_file(const char *a, const char *b)
--{
--	char res_a[PATH_MAX];
--	char res_b[PATH_MAX];
--	const char* final_a = NULL;
--	const char* final_b = NULL;
--	int ret;
--
--	/* Resolve a if it is a loop device */
--	if ((ret = is_loop_device(a)) < 0) {
--		if (ret == -ENOENT)
--			return 0;
--		return ret;
--	} else if (ret) {
--		ret = resolve_loop_device(a, res_a, sizeof(res_a));
--		if (ret < 0) {
--			if (errno != EPERM)
--				return ret;
--		} else {
--			final_a = res_a;
--		}
--	} else {
--		final_a = a;
--	}
--
--	/* Resolve b if it is a loop device */
--	if ((ret = is_loop_device(b)) < 0) {
--		if (ret == -ENOENT)
--			return 0;
--		return ret;
--	} else if (ret) {
--		ret = resolve_loop_device(b, res_b, sizeof(res_b));
--		if (ret < 0) {
--			if (errno != EPERM)
--				return ret;
--		} else {
--			final_b = res_b;
--		}
--	} else {
--		final_b = b;
--	}
--
--	return is_same_blk_file(final_a, final_b);
--}
--
- /* Checks if a file exists and is a block or regular file*/
- int path_is_reg_or_block_device(const char *filename)
- {
-diff --git a/common/path-utils.h b/common/path-utils.h
-index 558fa21adfa1..6efcd81cf860 100644
---- a/common/path-utils.h
-+++ b/common/path-utils.h
-@@ -31,7 +31,7 @@ int path_is_a_mount_point(const char *file);
- int path_exists(const char *file);
- int path_is_reg_file(const char *path);
- int path_is_dir(const char *path);
--int is_same_loop_file(const char *a, const char *b);
-+int is_same_blk_file(const char* a, const char* b);
- int path_is_reg_or_block_device(const char *filename);
- int path_is_in_dir(const char *parent, const char *path);
- char *path_basename(char *path);
--- 
-2.48.0
+https://github.com/intel/lkp-tests/blob/master/jobs/fio-basic-1hdd-write.yaml
 
+does test ext4, btrfs, and xfs,
+but it does not do randrw.
+
+
+What are the thresholds for these tests counting as a regression?
+Are you comparing BW, or IOPS, or both?
+
+Looking at:
+https://github.com/intel/lkp-tests/blob/master/programs/fio/parse
+
+It seems to produce points for:
+bw_MBps
+iops
+total_ios
+clat_mean_ns
+clat_stddev
+slat_mean_us
+slat_stddev
+and more.
+
+So it does seem to compare BW, IOPS, total IOs, which is what I was looking
+for.
+
+Possibly even too much, as enabling too much logging will actually affect
+the results, since you need to write way more output to the logs.
+
+But again, Jens (and other block layer folks) are the experts.
+
+
+Kind regards,
+Niklas
 
