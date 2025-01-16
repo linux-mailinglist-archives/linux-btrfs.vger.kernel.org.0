@@ -1,186 +1,152 @@
-Return-Path: <linux-btrfs+bounces-10983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78F52A13950
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 12:42:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A399A13CF7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 15:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F399E3A4593
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 11:42:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9038518825A6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 14:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0483F1DE3DB;
-	Thu, 16 Jan 2025 11:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B74022A81F;
+	Thu, 16 Jan 2025 14:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KWjM4nU8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SwPCh7rr";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KWjM4nU8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SwPCh7rr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IACgl/lW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887DC1D86F6
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 11:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0499319ABD1
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 14:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737027750; cv=none; b=FW2WxQFiVCalXVcQSJFpAFJ9/MXNiVFXLck3HNcSySK8sAaCNRHdj0H0BDJnIUBlkoFs7J0vtAjlhtOfSZDpTcxGJW04VrcKmjIl1GPL/3ye9Cwmi/92JQS1VvnrY4E+RU/Mvy3K43WMWLpXuaER+27YBlxXua0OcfejAu+ZgBY=
+	t=1737039326; cv=none; b=HkC//kzyoutrE5skBccRwddB8p28uqEyK0QfwId8OKwQZMmerV2k6QoMkzEqSuBd6rEwZCjqqEcmHYNCUkymytySD/dHTY383BKulYSKVWWluyiGrwcy2IhEqqd+/akF15bUkyHQqTWImV5VOnw1erDm/3C/jJ2f34YxhQtf2wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737027750; c=relaxed/simple;
-	bh=jr4pxhqbwQ8EbQjVJtqRDUU+l/DJW+ZYDtJ95mu8ITs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X71q78yhSK2W1h5uVIM29iciwsJJmeZM168LQ0lN5WGJ+6jOfv2WQXhEojcipDJ+WdsmvyGo/0x93uDyJI9mGDezLNKHXHe8wB1e6YwOs6SXa4R4JB7VJLmY3FbG7QWibrQ/AVk/VOegf3lws0vAGuuOgjnaitFZne9wolXk47Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KWjM4nU8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SwPCh7rr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KWjM4nU8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SwPCh7rr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A17A4211D4;
-	Thu, 16 Jan 2025 11:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737027745;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D0lGDq5JK8H063uF07VPH9TojOMEeth3p31vm7MPPW0=;
-	b=KWjM4nU8VJfSwcQuJTuWRcf/ZY0R5D6gzYN/sUPncRO/Lg00cnvN+9L2bQoiDnRircWm+n
-	m9k8UN3gTk5hMbSo0IOkpWKq5cnAISPnjEUr19Xnm2bEAgdxlu76iug42ussSJT09VzHR/
-	5LYHaesLycN+C97MwEk7JAMpFGoQXLM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737027745;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D0lGDq5JK8H063uF07VPH9TojOMEeth3p31vm7MPPW0=;
-	b=SwPCh7rrnpNBG+P1sV2HGuucyAR8/YskSXrYFIKUt83t8JU0EKomdjKqd2ozIb9DYCdZhm
-	dtChY+6r/I1taaAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737027745;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D0lGDq5JK8H063uF07VPH9TojOMEeth3p31vm7MPPW0=;
-	b=KWjM4nU8VJfSwcQuJTuWRcf/ZY0R5D6gzYN/sUPncRO/Lg00cnvN+9L2bQoiDnRircWm+n
-	m9k8UN3gTk5hMbSo0IOkpWKq5cnAISPnjEUr19Xnm2bEAgdxlu76iug42ussSJT09VzHR/
-	5LYHaesLycN+C97MwEk7JAMpFGoQXLM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737027745;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D0lGDq5JK8H063uF07VPH9TojOMEeth3p31vm7MPPW0=;
-	b=SwPCh7rrnpNBG+P1sV2HGuucyAR8/YskSXrYFIKUt83t8JU0EKomdjKqd2ozIb9DYCdZhm
-	dtChY+6r/I1taaAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 87EED13332;
-	Thu, 16 Jan 2025 11:42:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8Wv5IKHwiGeZMwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 16 Jan 2025 11:42:25 +0000
-Date: Thu, 16 Jan 2025 12:42:19 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: remove loopback device resolution
-Message-ID: <20250116114219.GC5777@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <6094201431aa981c6e0d149b6d528bc4b7a5af91.1737020580.git.wqu@suse.com>
+	s=arc-20240116; t=1737039326; c=relaxed/simple;
+	bh=mCZKMq6IJGgI2QJgWZzdRqtpfpsSXI4IkAH98JfpnWs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CoJPG779CblHnoRU8QcVQ9ktKyy0lF0l+vBzdp+mG/zQfUwuwXj+89Ag96wJ1ZK9ZSVbg7qJ6CkIdJ11tMv6a7XsUHhKbTHBkIffI85SaWosH+mGok9mAfWu3VP+6hiIWk6fP4klm7nMXwal8FuLYbm0K7zkuhQOcQHwwJHrtDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IACgl/lW; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5d414b8af7bso1826875a12.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 06:55:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737039323; x=1737644123; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mCZKMq6IJGgI2QJgWZzdRqtpfpsSXI4IkAH98JfpnWs=;
+        b=IACgl/lWoFlgpv8CkA8p7dwz4DnWrLy0W5hltkqzLGijzZ9sA4yXX8cezMT+Fp3RF9
+         32tgyS+nVN7WKE5iJCFK2VkbrELwx6A+nfiV/upGjSIeYOt4U/Bm6RIFU0z8ovmDzuRg
+         vRvGjEb6YIgL1tR4w0v5d11NH5BSrb8yg9GoUX8jwmjiGFxNg2fiGvtCso3U86VmM/Mf
+         4UeyMNh8DvqRL10eWdPszaDMsNBuP/++2h5eTedsWDb1L+BB+cLsE59IyEMMdrQB5eIA
+         ss+V/WugEL6mxO5Q4WrVVaO3AGD/zgi+clfqcMaZBbHWaVCdGQvrywrv3WKCa6lM4Q0p
+         qVMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737039323; x=1737644123;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mCZKMq6IJGgI2QJgWZzdRqtpfpsSXI4IkAH98JfpnWs=;
+        b=JvbIpr+/RQuewSUD5Tn7h9KG2/xbWfJSgPpbx3CvapO/Y8C9NKfccRwDpETVKWSYrJ
+         IxJqhqRggVOSdj/hhwuqQFiwdUCKMWemkTn6HlMKP1E9t4+L5P24w3QlY0/3giDOC9ft
+         c7RNhX070RgSR5Ur0ADTnbwECI6JstzhtxbfeBLJDaQu1CQwe2eYG5fimksyx0q/kSX7
+         z8rBQmcthhDXhT2q54Zq2eXF1BKXjnF/QytDNBZwS+Cir7slZh7zRJvH4f2UQxJZV0UR
+         muI1ydlh+IbgzB4ShweavkcfFBL8gG2j6q8E+aIpZ8W9qazfylh/W6sFCmo/P7yp56/+
+         Tb1Q==
+X-Gm-Message-State: AOJu0Yw/FHOXeX+FH2rkc3h/4oG7OQzZ//2tKNjOI8UL4kt1IetSfRme
+	dEkhgcNfPMeGoKVYY+E+awQXMTxWIWS8k2elOnCfZVtGTuxRcg+EcdOwmw==
+X-Gm-Gg: ASbGncvEX0bgL9RDhxvIlc+UEKNGBKwNaYQaDddlASQnLT/+V4aPdDmE9K7AUt/Ll4+
+	pZK+KOrcgiKC2QCozNLlErnc1sy0L+vJjHDGGIpbBNwUlwj4Ng/J9cPb0noZCkxys9pvTloceD7
+	kcuub5D1F2310tf6GBMNuwvghWP5mcoOUFQU1gi5JOuU969gkyLsrRhQTDs9GwNBQqA8hsMus1M
+	RgjJir82JcikhUdOlIL9UQfk8cm7LQYQil+BUDn+N84S0YO3J0=
+X-Google-Smtp-Source: AGHT+IGnTNHlRKLFNYGlW2iQl8mVQHBtzQMVheKN9NgIEHGrxE0nkS4hMnGuW5LC0GjDd8lLfHPO3Q==
+X-Received: by 2002:a05:6402:2815:b0:5d3:d8bb:3c5c with SMTP id 4fb4d7f45d1cf-5d972e095dfmr29427370a12.12.1737039323182;
+        Thu, 16 Jan 2025 06:55:23 -0800 (PST)
+Received: from [10.1.1.2] ([77.253.223.98])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5db73eb5c4asm28956a12.59.2025.01.16.06.55.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2025 06:55:21 -0800 (PST)
+Message-ID: <bd5809c4-b88a-4c41-95c4-b1ad89bbb0b5@gmail.com>
+Date: Thu, 16 Jan 2025 15:55:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6094201431aa981c6e0d149b6d528bc4b7a5af91.1737020580.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: RAID1 two chunks of the same data on the same physical disk, one
+ file keeps being corrupted
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Linux fs Btrfs <linux-btrfs@vger.kernel.org>
+References: <6ae187b3-7770-4b64-aa65-43fff3120213@gmail.com>
+ <37cfd270-4b64-4415-8fee-fa732575d3a9@gmail.com>
+ <a00a0c80-85fa-4484-9076-d4a2f50e177e@gmx.com>
+ <501eb99a-dee6-4e84-93cb-ae49d48dcab6@gmail.com>
+ <3749cb72-a99f-4f4e-9682-e2cbf7604227@gmx.com>
+Content-Language: en-US
+From: ein <ein.net@gmail.com>
+In-Reply-To: <3749cb72-a99f-4f4e-9682-e2cbf7604227@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 16, 2025 at 08:13:01PM +1030, Qu Wenruo wrote:
-> [BUG]
-> mkfs.btrfs has a built-in loopback device resolution, to avoid the same
-> file being added to the same fs, using loopback device and the file
-> itself.
-> 
-> But it has one big bug:
-> 
-> - It doesn't detect partition on loopback devices correctly
->   The function is_loop_device() only utilize major number to detect a
->   loopback device.
->   But partitions on loopback devices doesn't use the same major number
->   as the loopback device:
-> 
->   NAME            MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINTS
->   loop0             7:0    0    5G  0 loop
->   |-loop0p1       259:3    0  128M  0 part
->   `-loop0p2       259:4    0  4.9G  0 part
-> 
->   Thus `/dev/loop0p1` will not be treated as a loopback device, thus it
->   will not even resolve the source file.
-> 
->   And this can not even be fixed, as if we do extra "/dev/loop*" based
->   file lookup, `/dev/loop0p1` and `/dev/loop0p2` will resolve to the
->   same source file, and refuse to mkfs on two different partitions.
-> 
-> [FIX]
-> The loopback file detection is the baby sitting that no one asks for.
-> 
-> Just as I explained, it only brings new bugs, and we will never fix all
-> ways that an experienced user can come up with.
-> And I didn't see any other mkfs tool doing such baby sitting.
-> 
-> So remove the loopback file resolution, just regular is_same_blk_file()
-> is good enough.
-
-The loop device resolution had some bugs in the past and was added for a
-reason that's not mentioned in the changelogs.
-
-The commits have some details why it's done, they also mention that
-partitioned devices are resolved so it's not that there's no support for
-that.
-
-0cf3b78f404b01 ("btrfs-progs: Fix partitioned loop devices resolving")
-abdb0ced0123d4 ("Btrfs-progs: fix resolving of loop devices")
-09559bfe7bcd43 ("multidevice support for check_mounted")
-
-and some fixup commits.
-
-So before removing the code completely I'd like to see if there's a use
-case that can be broken, but I don't have anything in particular.
-There's only mkfs-tests/006-partitioned-loopdev that's quite simple and
-does not try to do any tricks with symlinks or partitions on the
-devices.
+On 13.01.2025 21:39, Qu Wenruo wrote:
+> 在 2025/1/14 02:24, ein 写道:
+>> On 29.07.2024 12:05, Qu Wenruo wrote:
+>>> On 10.06.2024 16:56, ein wrote:
+>>> In your case, I still do not believe it's hardware problem.
+>>>
+>>> > - it affects only one file, I have other much busier VMs, that one
+>>> mostly stays idle,
+>>>
+>>> Due to btrfs' datacsum behavior, it's very sensitive to page content
+>>> change during writeback.
+>>>
+>>> Normally this should not happen for buffered writes as btrfs has locked
+>>> the page cache.
+>>>
+>>> But for Direct IO it's still very possible that one process submitted a
+>>> direct IO, and when the IO was still under way, the user space changed
+>>> the contents of that page.
+>>>
+>>> In that case, btrfs csum is calculated using that old contents, but the
+>>> on-disk data is the new contents, causing the csum mismatch.
+>>>
+>>> So I'm wondering what's the workload inside the VM?
+>>
+>> As far as I know in such configuration there's no writeback:
+>>
+>> <disk type="file" device="disk">
+>>    <driver name="qemu" type="qcow2" cache="none" discard="unmap"/>
+>
+> cache="none" means direct IO.
+>
+> Exactly the problem I mentioned, direct IO with data changed during
+> writeback.
+>
+> You can change it to "cache=writeback" then it should resolve the false
+> alert mismatch.
+> (Or just simply change the disk image file to NODATASUM)
+Hi Qu.
+You were right, those errors still happened.
+Switching to cache=writeback seemed to help for now.
+Thank you.
+>>    <source file="/var/lib/libvirt/images-red-btrfs/dell.qcow2" index="2"/>
+>>    <backingStore/>
+>>    <target dev="vda" bus="virtio"/>
+>>    <alias name="virtio-disk0"/>
+>>    <address type="pci" domain="0x0000" bus="0x00" slot="0x04"
+>> function="0x0"/>
+>> </disk>
+>> [...]
+>> <controller type="pci" index="0" model="pci-root">
+>>    <alias name="pci.0"/>
+>> </controller>
+>>
+>> This is mostly empty Win7 virtual machine with very small SQLite
+>> database (100-500MiB) with some network monitoring tool.
 
