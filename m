@@ -1,53 +1,79 @@
-Return-Path: <linux-btrfs+bounces-10995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10996-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91C8A151FA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2025 15:39:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E04A152F7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2025 16:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B42673A4D03
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2025 14:39:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BD0F1889996
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2025 15:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD4315B0EF;
-	Fri, 17 Jan 2025 14:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A556195FE5;
+	Fri, 17 Jan 2025 15:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="RrujaDmg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gUP41Z0r"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4875158851
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2025 14:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B62814F9D6
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2025 15:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737124785; cv=none; b=sRjpAuKD2r+UZH7MYgBsA08Tgkb8cGwLV9g8dGXg2Jz9LCitHwJyGMgIfFjtSkFMer7VV7XuZkKm2G84jRI9KsieywhRh69kKcMvHVxoReWUBHl26ah996vDv+xHvCtDG/qmczzApsOS5bKxaUc90/bMyTCXE8RuWT7MwRCHPqM=
+	t=1737128498; cv=none; b=UTClUTNmVUpGU08kFebzaS0tUa5QkZi9Sh8FW6uzEDwPJHBHtm+y6rrDDsCn/q38VfvdQ1/ZUXG0tkp2R3+53onH+bMVDJSfafJMnoQW1gpGBWrQiDi80vdL7quSbDmWbymX3iTO/Qpa4cUfIkQtYkh4qpQwHV69erCSj00RqLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737124785; c=relaxed/simple;
-	bh=51gUouye4bxwUO9pG/yTvhpAKnnmBvYFprvPQ2p/ghs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cTW7MDXHGD3Sf4K90madHkOSipeFY/hm/wpxwgJrxAvlC6O3zMs5VjMRgupcDw+Fm0EYzkXXB8Ws31Lu7UiZ1yFLhTv0dOX7WKgGrtPWJvWfZxn8dx6gNZFzdI8NpEfSbce2olY2qEGTNLkQaQv/GfvOpxkyLSHg7oq//+FeNzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=RrujaDmg; arc=none smtp.client-ip=54.204.34.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1737124772;
-	bh=GYoDrBNlnGB2is/3PjTCRZ/Q3tZDx+neU+nUb/6vhXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=RrujaDmgLmb3fTgdU30Lp2Y0kpK5Tdaty1gY233sxi4zu8bFurn4Y5I3/RMp027sp
-	 kCmuzp7vxzR4XX77PjOnNo95oFHUMA6lF77vI6BtOdB5Kwt59YawJfD2V2vHOPE6Wh
-	 DKa41moJmmk8g+QQtz7UFNOvOI4tPRdhiDMMpr8Y=
-X-QQ-mid: bizesmtpip2t1737124768t97fy58
-X-QQ-Originating-IP: s7W7P3w15dkox5rbrxeL/OQOvOlM/khDAlbVJGfM7Gs=
-Received: from [IPV6:2408:8214:5911:e450:e964: ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 17 Jan 2025 22:39:27 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4019357109963109228
-Message-ID: <27DE2B3D274B13F2+405657e4-cd87-4cd2-8f7b-1d2bf0e117fd@bupt.moe>
-Date: Fri, 17 Jan 2025 22:39:26 +0800
+	s=arc-20240116; t=1737128498; c=relaxed/simple;
+	bh=7AgyMQ4BjvqJI6/QhVvB0NuBxpU4KoJprCqCq1jAQ5o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dvVr5eRqGNNXAp2BSVhSLAHGIPDa8HPFWDiI4fsUwdODcg7bnssldpguOeapnjjfwytLngd2I4TOS4XcohqiF/nYs7lqUv31VWHp8pRbcxd+BzuFQoM4PwX0pHjYnV8RFN7eej/8Jqxzd+fy3QgL1irGEwpiX3SYX0i7pvwkra0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gUP41Z0r; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e53537d8feeso3419043276.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2025 07:41:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737128495; x=1737733295; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=7AgyMQ4BjvqJI6/QhVvB0NuBxpU4KoJprCqCq1jAQ5o=;
+        b=gUP41Z0rUIB0cCPbYSH6GQKfdvDpXU6I+Lq5tTbLnfGwPTF2nk7psTkk7da8PxGZ//
+         f3PifpBYVfOecBffaL9IZ0N8rkXuzP/gbBTtiSZb44LnbBN06IRoR7jDzAyRlsUsnQ43
+         SIVZk5d1oevr555/34FvrZ0j/ZueZP7/qSGRF9H88FDEgpxiZaUlM+3QrUIsMa9ay8pB
+         xHBt1lZjw+oulpCBvt/8InwtJlx4OaN4XAHZVhWIPzJtZYPmjYOsFMnBsGyeNzMGubRe
+         A1mhBD1yOMDnmAC+THCHKtflnpnCiwkUmbPqhLKHsAMjcDwuy8RXWnm4GQ853ajSLpb4
+         nDwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737128495; x=1737733295;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7AgyMQ4BjvqJI6/QhVvB0NuBxpU4KoJprCqCq1jAQ5o=;
+        b=m2r37dxq5VtvnL66XkItVWum4kG8PLvgN5W7wft4ZThciVRB2w75DO8T4tGZanynEu
+         BnnsNOncmvDt/DqaFMpVttlgccvBpmckTVlan+sbFd3QZP56w/RspbNbTPVep5+houBB
+         ueNtar/0iAG7DIlpf9CNa8SELYPTS/FSDB3ZljN/Es5acuSNn7vxYIqx5hO5HIEW8EwN
+         L62/BILTBPY73FWVcfirRi9+cWdCMZsJItOcZ3l1al15CgGrdigoAuaLovNeHaPc42LM
+         Voh7ufYU9SgN22VlxC6EmXeaLg4PRAogy626TsRmLoHvjNiuX3hUSRxZE/+xicERE4q9
+         yPfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWN8ipVfiXIsQ1JP+kxN+XG5DKTIe+AA3rGLB27BYh6ncpk3ERpHnULh8svbtKptuPDxCju8Zr+ERNkgA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyakI//GDNEhJeybKvZxHOhymcZKlwYdJ9v49mZqqBt/5/9Cb30
+	bw5X3SSCH//vrZ0RylpEFpOxCNu7djHNMo78uAC0CZE0miyhELSr
+X-Gm-Gg: ASbGncs+e//CE7q2FYxprabympv+dHLv4oM+a95UcwQ77hVGnn2tXDa+oXiJpZwDcnt
+	vdUI2Vh4Y8BzvCuStcoCgh5jo9fQp2IFRLb1GjErofEOMDhJ1HlXVEEuQzF3t7qIHM3qqKO7wxc
+	zahx0WqDpDMUhMOyMBiYorGeWeZMer6rvJEavXNAZVjycjMqSmHruX7eLd1NKV52U4qClb13oyJ
+	NAVw8ceZNYjkpNERNTrjgmR1BabvBTsnE4Y+dqQqL1uwn6O1nge//7ERO6wtC2o9KEfaRDjW+1q
+	6MjevubsiQ==
+X-Google-Smtp-Source: AGHT+IGSkXMxOQu2DYf/Uo4XK4KOSkbG+gA/dQA9kuGGxscvgdZnEqxkftud/BGrP0FLkPfZ5b6W1w==
+X-Received: by 2002:a05:6902:1a42:b0:e39:b02b:192d with SMTP id 3f1490d57ef6-e57b1076740mr2402421276.23.1737128495145;
+        Fri, 17 Jan 2025 07:41:35 -0800 (PST)
+Received: from ?IPV6:2600:6c56:7d00:582f::64e? ([2600:6c56:7d00:582f::64e])
+        by smtp.googlemail.com with ESMTPSA id 3f1490d57ef6-e57ab43a8a1sm463017276.41.2025.01.17.07.41.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Jan 2025 07:41:34 -0800 (PST)
+Message-ID: <b31f9d73-25d9-4ab7-bd19-44fdc30169e7@gmail.com>
+Date: Fri, 17 Jan 2025 09:41:34 -0600
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,187 +81,26 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] zoned device can't properly start full balance
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Cc: Naohiro Aota <Naohiro.Aota@wdc.com>
-References: <FC80D8E2329D01B2+8728a519-d248-4c20-95ad-91750de9fc88@bupt.moe>
- <e13a009b-f221-4c1a-824b-cbdf3fd3f82d@wdc.com>
+Subject: Re: Use of --convert-to-block-group-tree makes fs unmountable
+To: Jeff Bahr <jeffrey.bahr@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAL4+Tgzk=MS1P93u6yq_m0aqbMyjXrwPiP-8nA5zp=fTu7Vr6w@mail.gmail.com>
 Content-Language: en-US
-From: Yuwei Han <hrx@bupt.moe>
-In-Reply-To: <e13a009b-f221-4c1a-824b-cbdf3fd3f82d@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-QQ-XMAILINFO: MX+1SEN3H+wAzinKTe3KKF9YCd4GX35vok3q76fVK6beWyal6Eif8C1y
-	xJtZns2gjYwu51ckrtrx7WcprbMjASouVs0o3Wa2Sz/MpLztyLACFuFS7CTvNDAb3SPGEXp
-	yuiNjaF5Mw7SNMHjt7svEH6OvkyR1w4H3wjw3MexbvX9kMCryYwkPb4b1bMXZ7lkeCNW9pD
-	VoYtuHZHTHXzmlgsXqTCmwHuD6KhzACEfZ77xqolYMfo3x5l09OpXc9DCNHPU34QvNMg+ix
-	v7r/CnzzLB1OL6bKVhhVtHc6eGfrrZCKbf7ao9aiUVr5J4wAtyFSGG+8uEaazscjda1DtYz
-	2AZlrLuLA5aLLa+JAfbAAOVPc2OoUhoIq/pb7xMgZf90kEtPwVRuNQs2aupc2/34v2jfwri
-	z5zhmLefTCoP4/UDzTB2HYWzt2s3BLdkMrrtNO8B3T/XaTJZSyzUie2f6kNoRSXxsHkiv//
-	jt+vOxLsHvOKP5suM/LU/p3S8YHBVWe8XAnSyrl9Zr+/yTisaPTBBrqNFh35EWpJiZ4xsD3
-	86PhWEWv0H5xNsBcsueoCDKB/hKxynGSkJj4Imcq+9oBzlVPle8bmwiKDgwaGCH1Fgcq+Q+
-	KE20hdm82TrFO5OtSFZlblopOSX1YX0hRsj1rIO9NvR43oHoy8ar1vxIgOvENxNlRK9A9jJ
-	RmH1tbssgxPwzWHof2ZWNjSGl2TNOipu3Zo9SjlI7hpr4roWecJ31zoSBuQWvEEPJnpJR8x
-	+sJFFpfgW3bI8cJZbgPOecVN+vTy0aFrHJa49b76q21ShDiE02o63vwNKJLJYIp8jDgW/2J
-	WMh8HYDwuREeIBoTiXMc5JtAiRS4k8pqFLQY10UrCYW0g1RB9KeYIYVT8em+BxrImb1trtw
-	M0qxFSqxhWKw5rCLrGBvdYetI3kWJEr7LMHw8Hvu2+yZWqLkiMDfpzVP8Ijt1Y7hTdXdlxP
-	dFMrkJsDG1XSH2A==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-X-QQ-RECHKSPAM: 0
+From: Russell Haley <yumpusamongus@gmail.com>
+In-Reply-To: <CAL4+Tgzk=MS1P93u6yq_m0aqbMyjXrwPiP-8nA5zp=fTu7Vr6w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-在 2025/1/17 14:44, Johannes Thumshirn 写道:
-> On 17.01.25 03:00, Yuwei Han wrote:
->> [2261102.607764] BTRFS info (device sdb): relocating block group
->> 47851841257472 flags data
->> [2261103.503665] BTRFS error (device sdb): bdev /dev/sdb errs: wr 529,
->> rd 0, flush 0, corrupt 0, gen 0
->> [2261104.311094] BTRFS info (device sdb): balance: ended with status: -5
->>
->> uname -a:Linux aosc3a6 6.11.10-aosc-main #1 SMP PREEMPT_DYNAMIC Sun Dec
->> 1 11:26:32 UTC 2024 loongarch64 GNU/Linux
->>
->> Any suggestions?
-> 
-> The 529 write errors look very suspicious to me. Now we have to find out
-> if it's btrfs, the drive or something in between.
-> 
-> Can you send me the output of 'btrfs device stats /dev/sdb' and
-> 'smartctl -a /dev/sdb' as well as the full dmesg?
-smartctl -a /dev/sdb
-smartctl 7.3 2022-02-28 r5338 [loongarch64-linux-6.12.9-aosc-main] 
-(local build)
-Copyright (C) 2002-22, Bruce Allen, Christian Franke, www.smartmontools.org
+On 12/22/24 2:37 PM, Jeff Bahr wrote:
+> Looking for suggestions on recovering a broken btrfs fs after
+> attempting to use --convert-to-block-group-tree.
 
-=== START OF INFORMATION SECTION ===
-Device Model:     HSH721414ALN6M0
-Serial Number:    VFG51LKD
-LU WWN Device Id: 5 000cca 274c24bdb
-Firmware Version: T108
-User Capacity:    14,000,519,643,136 bytes [14.0 TB]
-Sector Size:      4096 bytes logical/physical
-Rotation Rate:    7200 rpm
-Form Factor:      3.5 inches
-Device is:        Not in smartctl database 7.3/5319
-ATA Version is:   ACS-2, ATA8-ACS T13/1699-D revision 4
-SATA Version is:  SATA 3.2, 6.0 Gb/s (current: 6.0 Gb/s)
-Local Time is:    Fri Jan 17 21:39:57 2025 CST
-SMART support is: Available - device has SMART capability.
-SMART support is: Enabled
+I had a similar experience ~2 years ago. It may be related.
 
-=== START OF READ SMART DATA SECTION ===
-SMART overall-health self-assessment test result: PASSED
+https://lore.kernel.org/linux-btrfs/eca4d15e-3ac7-4403-ba5b-a3148eb6b443@gmail.com/
 
-General SMART Values:
-Offline data collection status:  (0x82)	Offline data collection activity
-					was completed without error.
-					Auto Offline Data Collection: Enabled.
-Self-test execution status:      (   0)	The previous self-test routine 
-completed
-					without error or no self-test has ever
-					been run.
-Total time to complete Offline
-data collection: 		(  101) seconds.
-Offline data collection
-capabilities: 			 (0x5b) SMART execute Offline immediate.
-					Auto Offline data collection on/off support.
-					Suspend Offline collection upon new
-					command.
-					Offline surface scan supported.
-					Self-test supported.
-					No Conveyance Self-test supported.
-					Selective Self-test supported.
-SMART capabilities:            (0x0003)	Saves SMART data before entering
-					power-saving mode.
-					Supports SMART auto save timer.
-Error logging capability:        (0x01)	Error logging supported.
-					General Purpose Logging supported.
-Short self-test routine
-recommended polling time: 	 (   2) minutes.
-Extended self-test routine
-recommended polling time: 	 (1686) minutes.
-SCT capabilities: 	       (0x003d)	SCT Status supported.
-					SCT Error Recovery Control supported.
-					SCT Feature Control supported.
-					SCT Data Table supported.
+There's more detail in that thread than remains in my memory, so I doubt
+I can provide any assistance, alas.
 
-SMART Attributes Data Structure revision number: 16
-Vendor Specific SMART Attributes with Thresholds:
-ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE 
-UPDATED  WHEN_FAILED RAW_VALUE
-   1 Raw_Read_Error_Rate     0x000b   100   100   016    Pre-fail 
-Always       -       0
-   2 Throughput_Performance  0x0005   129   129   054    Pre-fail 
-Offline      -       124
-   3 Spin_Up_Time            0x0007   253   100   024    Pre-fail 
-Always       -       184 (Average 240)
-   4 Start_Stop_Count        0x0012   100   100   000    Old_age 
-Always       -       138
-   5 Reallocated_Sector_Ct   0x0033   100   100   005    Pre-fail 
-Always       -       0
-   7 Seek_Error_Rate         0x000b   100   100   067    Pre-fail 
-Always       -       0
-   8 Seek_Time_Performance   0x0005   140   136   020    Pre-fail 
-Offline      -       15
-   9 Power_On_Hours          0x0012   097   097   000    Old_age 
-Always       -       21130
-  10 Spin_Retry_Count        0x0013   100   100   060    Pre-fail 
-Always       -       0
-  12 Power_Cycle_Count       0x0032   100   100   000    Old_age 
-Always       -       138
-  22 Unknown_Attribute       0x0023   100   100   025    Pre-fail 
-Always       -       100
-192 Power-Off_Retract_Count 0x0032   097   097   000    Old_age   Always 
-       -       3790
-193 Load_Cycle_Count        0x0012   097   097   000    Old_age   Always 
-       -       3790
-194 Temperature_Celsius     0x0002   214   115   000    Old_age   Always 
-       -       28 (Min/Max 16/53)
-196 Reallocated_Event_Count 0x0032   100   100   000    Old_age   Always 
-       -       0
-197 Current_Pending_Sector  0x0022   100   100   000    Old_age   Always 
-       -       0
-198 Offline_Uncorrectable   0x0008   100   100   000    Old_age 
-Offline      -       0
-199 UDMA_CRC_Error_Count    0x000a   200   200   000    Old_age   Always 
-       -       0
-
-SMART Error Log Version: 1
-No Errors Logged
-
-SMART Self-test log structure revision number 1
-No self-tests have been logged.  [To run self-tests, use: smartctl -t]
-
-SMART Selective self-test log data structure revision number 1
-  SPAN  MIN_LBA  MAX_LBA  CURRENT_TEST_STATUS
-     1        0        0  Not_testing
-     2        0        0  Not_testing
-     3        0        0  Not_testing
-     4        0        0  Not_testing
-     5        0        0  Not_testing
-Selective self-test flags (0x0):
-   After scanning selected spans, do NOT read-scan remainder of disk.
-If Selective self-test is pending on power-up, resume after 0 minute delay.
-
-btrfs device stats /dev/sdb
-[/dev/sdb].write_io_errs    529
-[/dev/sdb].read_io_errs     0
-[/dev/sdb].flush_io_errs    0
-[/dev/sdb].corruption_errs  0
-[/dev/sdb].generation_errs  0
-
-the device is a zoned device with subpage enabled.
-
-lots of write io errors is due to I have tried balance before and didn't 
-noticed this error.
-my OS is updated, so the new uname is Linux aosc3a6 6.12.9-aosc-main #1 
-SMP PREEMPT_DYNAMIC Thu Jan 16 08:48:09 UTC 2025 loongarch64 GNU/Linux, 
-then I tried balance again, but it continued to report error.
-
-> 
-> Thanks,
-> 	Johannes
-
+Good luck,
+Russell
 
