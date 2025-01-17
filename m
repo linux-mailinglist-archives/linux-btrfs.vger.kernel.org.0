@@ -1,277 +1,109 @@
-Return-Path: <linux-btrfs+bounces-10987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-10988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F28DA1449B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 23:40:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FEDAA147D8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2025 03:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C176418827C2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2025 22:40:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB1D8168179
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2025 02:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0B6236EA5;
-	Thu, 16 Jan 2025 22:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548BC1E3DD1;
+	Fri, 17 Jan 2025 02:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eE6hmEhL";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eE6hmEhL"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="o+MDPDwy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B99E22F3B4
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A441E2843
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2025 02:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737067200; cv=none; b=NpExA4VusREfLG+g9K9s0jkFM1vIE8LHwNArOc16zLaIn5zdIIGN1omuHsRR3q7le7/EaQf3TwdjnBmlDEBPuWYJTX8Jf0MQClOJhcyP+R0gAAaqnERMfZhhYdrP22Ou8Knf8EGxfM9641MKJ3EdHmbMc9LC/AZJiUbbTzevWfc=
+	t=1737079231; cv=none; b=iKrHjzHHLWbAvJTfw0q9XDm5JRihIgs3DbaFM0uAvZJbgQdqVbrA3tHYbWzOJxW+EZ9NO/CZW7cUIMH7X7ugd9huC6grYq30C5sEqTbYNnueVWJg7mtWyfyq7ozyQqyeKubpV5UpvtzwkuFR8bs+mravWHNro8sGpSEWrcBGI+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737067200; c=relaxed/simple;
-	bh=QVMj3p8PY473t7e58uil/ynfGDMwKfuC7LWNRzl0aJw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=KiJEPpxLlTNmx51FJIqCuV4A8L1Nc0ZQgqu2LZIspKD5DLdz3XS1u5Z7JtQ1kBmv+jNiFklbbUcODDBE4SYd3C3fqbkXNv945xxlO9fOc+4aInXm25xuhN1HC+yovzlRZ3gCWMy3FGjyR0mMRXVg7f/Lu/QNJWJ38s9PP0oabA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eE6hmEhL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eE6hmEhL; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E10D2117B
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1737067196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=0Yzl2mq+9AyF7uO2kUc3Uu8JczqJZe7kP87IoN/f6og=;
-	b=eE6hmEhLmYXEqF8nKqZxCCOGVplpqO+5gZaeqHUiMP0UHKrmgSVp4fN4O2YjGYmsMj4l/i
-	WCdk2Xxv3NMilPKsTy/dpnY+MyXZyBXf+uqZmXw6N/An6cbyZvxuc9xW+lVUj5NeiGos75
-	ALtarZJNu7XOoNm54Gp1jendRB/3qgw=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1737067196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=0Yzl2mq+9AyF7uO2kUc3Uu8JczqJZe7kP87IoN/f6og=;
-	b=eE6hmEhLmYXEqF8nKqZxCCOGVplpqO+5gZaeqHUiMP0UHKrmgSVp4fN4O2YjGYmsMj4l/i
-	WCdk2Xxv3NMilPKsTy/dpnY+MyXZyBXf+uqZmXw6N/An6cbyZvxuc9xW+lVUj5NeiGos75
-	ALtarZJNu7XOoNm54Gp1jendRB/3qgw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA03413332
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gazSHruKiWeYcgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2025 22:39:55 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] Revert "btrfs: canonicalize the device path before adding it"
-Date: Fri, 17 Jan 2025 09:09:34 +1030
-Message-ID: <65c879f1c79f2171e64335a4f2045a0e604a1950.1737067145.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.0
+	s=arc-20240116; t=1737079231; c=relaxed/simple;
+	bh=P4mS3u/Ji+++U496uDgJKYFHWPi8pqXTvcH62T/IEFY=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=WVFARSPMKmQbh1UYNebJIbLCjvcTgsNbq9+ycdW0x10mzbsezCZYtvgGWVCPyPye1SU6onPHyAIv/cdIp4s3Sl28/ANmZf6CCGSnQgBeDoH5dDdfc8DWpwz4/hrSMEW0X0BYmtPLrtT0dhzb0VBgVKSidqN/kVZ5caHesmwSd6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=o+MDPDwy; arc=none smtp.client-ip=54.254.200.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1737079223;
+	bh=P4mS3u/Ji+++U496uDgJKYFHWPi8pqXTvcH62T/IEFY=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject;
+	b=o+MDPDwy3hw/2O92ehYnIMToa8RGx1xuObPtRw1v1DOyef9UBStxa7uPiHRBsWGBg
+	 PyiaVphTOrZK3ux4Mh7zoSGQvv//HW3EYBK2DyQDUuIyOA1Yx8W4ucpE4+t3Rueibl
+	 5fLWKqm9akJH+1w7ohcbed57EUP9Y3wwNvuGgBlM=
+X-QQ-mid: bizesmtpip2t1737079221twhqz31
+X-QQ-Originating-IP: k24mYZUIMVE1zbFyT9GBOa1SihnDxYBmGriOxuotxo4=
+Received: from [IPV6:2408:8214:5911:e450:e964: ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with SMTP id 0
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2025 10:00:20 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5013459786761016107
+Message-ID: <FC80D8E2329D01B2+8728a519-d248-4c20-95ad-91750de9fc88@bupt.moe>
+Date: Fri, 17 Jan 2025 10:00:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: Yuwei Han <hrx@bupt.moe>
+Subject: [BUG] zoned device can't properly start full balance
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-QQ-XMAILINFO: MXHIEC8P0R7heRGd1aoP1OZfw4fM9P88ELgv/FErtAY27/AdYNBAXBhN
+	gKrjSK7VAXzbI5ha+qblxu1fVf5PsPrTUhX1hpIrChF2nUhInwTmtU+LLQgVWSxuEi2Tf2J
+	KU0eiFz5GLIM6QzP0EtDmrezQSLR7AWmtucnk1yVlozhdnDasor9UnjnpV38jbfstaY1jLo
+	tge3nz6E8cEx9mQhGDh0U1K0YaKZm/6tCjG/M3xhPfFiirctwxL8tdF8a39vFQNmIqAHjKZ
+	fteMv4kv8t8z61jB01G5ap7ycJ0hh0uRL14JA6S3fZS7800g2YegeKhDi0h+xVbJCv91ihU
+	YsxjgirfUZcXLvUVqKsQQ4asYTUW/3KjnrMEOV2Pu2VPh3ruodKCGCdeHkruZezKoLKjaJY
+	kYc68mRRmMVs432p6k5J1b8zXY/cAgYvHCYKd3uxJUrg/EiTxFxzcFeCcLFiKlMct5ZCpaG
+	FDNVuATTbg3bV+iToHwRZQ11Vb/z6Et8n8HSVB5icv0F0r1c0iqnyScjZnfMRVJYv4LbU4S
+	k3H6KoQhzOJYjbqvim256V1ZfQw+ybZJlC3M5NmIiydqNaUVxeCDuvS/hjcZguHiDXLeZJT
+	KxjvVXZCTJBjbY+aqCgBtyQF3BJYFDSqJQK+eWWCyBFw9ePPLTzfYulMhfTwdF8fMgh9oG7
+	OeXgyoIiOnruCegfCwiQ6UsG9Lmz7IWmq6EbOVPwUw/E/S15SJ/i6yl1vC9Jb8V1mlcR9a1
+	1clafgzf2LMxUC9zTfzEEWGsfBL17eFpqz+Unj393xm4PgqPAt8aZEBO5yoATVC8X91mJtW
+	qc87Isqg2lTgSHRSuRu2aaRr0S/6SQFWY5E7eF8h7UAiuLDPyrHIWqtCPUqCFkXXe2TwB+E
+	hu/7wPibWPrB6XXPENYbp6xPrU60NE9uz1a0iUS+62QVHCQeKSdK86iDGiJeUSozCdlMjr3
+	Ldjk=
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+X-QQ-RECHKSPAM: 0
 
-This reverts commit 7e06de7c83a746e58d4701e013182af133395188.
-
-Commit 7e06de7c83a7 ("btrfs: canonicalize the device path before adding
-it") tries to make btrfs to use "/dev/mapper/*" name first, then any
-filename inside "/dev/" as the device path.
-
-This is mostly fine when there is only the root namespace involved, but
-when multiple namespace are involved, things can easily go wrong for the
-d_path() usage.
-
-As d_path() returns a file path that is namespace dependent, the
-resulted string may not make any sense in another namespace.
-
-Furthermore, the "/dev/" prefix checks itself is not reliable, one can
-still make a valid initramfs without devtmpfs, and fill all needed
-device nodes manually.
-
-Overall the userspace has all its might to pass whatever device path for
-mount, and we are not going to win the war trying to cover every corner
-case.
-
-So just revert that commit, and do no extra d_path() based file path
-sanity check.
-
-Link: https://lore.kernel.org/linux-fsdevel/20250115185608.GA2223535@zen.localdomain/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Reason for RFC:
-
-Although most distros will mount devtmpfs on "/dev/", it may not be the
-case for containers.
-And d_path() result is always namespace dependent, it means the mount
-source shown in mount info is never ensured to make sense in another
-namespace anyway.
-
-I do not see a future that we can win the cat-and-mouse game, and the
-complexity of the file path sanity check will only grow and grow,
-eventually get out-of-control.
-
-Thus I recommend to cut the loss early.
----
- fs/btrfs/volumes.c | 87 +---------------------------------------------
- 1 file changed, 1 insertion(+), 86 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a594f66daedf..e511743bbc08 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -733,78 +733,6 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb)
- 	return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
- }
- 
--/*
-- * We can have very weird soft links passed in.
-- * One example is "/proc/self/fd/<fd>", which can be a soft link to
-- * a block device.
-- *
-- * But it's never a good idea to use those weird names.
-- * Here we check if the path (not following symlinks) is a good one inside
-- * "/dev/".
-- */
--static bool is_good_dev_path(const char *dev_path)
--{
--	struct path path = { .mnt = NULL, .dentry = NULL };
--	char *path_buf = NULL;
--	char *resolved_path;
--	bool is_good = false;
--	int ret;
--
--	if (!dev_path)
--		goto out;
--
--	path_buf = kmalloc(PATH_MAX, GFP_KERNEL);
--	if (!path_buf)
--		goto out;
--
--	/*
--	 * Do not follow soft link, just check if the original path is inside
--	 * "/dev/".
--	 */
--	ret = kern_path(dev_path, 0, &path);
--	if (ret)
--		goto out;
--	resolved_path = d_path(&path, path_buf, PATH_MAX);
--	if (IS_ERR(resolved_path))
--		goto out;
--	if (strncmp(resolved_path, "/dev/", strlen("/dev/")))
--		goto out;
--	is_good = true;
--out:
--	kfree(path_buf);
--	path_put(&path);
--	return is_good;
--}
--
--static int get_canonical_dev_path(const char *dev_path, char *canonical)
--{
--	struct path path = { .mnt = NULL, .dentry = NULL };
--	char *path_buf = NULL;
--	char *resolved_path;
--	int ret;
--
--	if (!dev_path) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	path_buf = kmalloc(PATH_MAX, GFP_KERNEL);
--	if (!path_buf) {
--		ret = -ENOMEM;
--		goto out;
--	}
--
--	ret = kern_path(dev_path, LOOKUP_FOLLOW, &path);
--	if (ret)
--		goto out;
--	resolved_path = d_path(&path, path_buf, PATH_MAX);
--	ret = strscpy(canonical, resolved_path, PATH_MAX);
--out:
--	kfree(path_buf);
--	path_put(&path);
--	return ret;
--}
--
- static bool is_same_device(struct btrfs_device *device, const char *new_path)
- {
- 	struct path old = { .mnt = NULL, .dentry = NULL };
-@@ -1509,23 +1437,12 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 	bool new_device_added = false;
- 	struct btrfs_device *device = NULL;
- 	struct file *bdev_file;
--	char *canonical_path = NULL;
- 	u64 bytenr;
- 	dev_t devt;
- 	int ret;
- 
- 	lockdep_assert_held(&uuid_mutex);
- 
--	if (!is_good_dev_path(path)) {
--		canonical_path = kmalloc(PATH_MAX, GFP_KERNEL);
--		if (canonical_path) {
--			ret = get_canonical_dev_path(path, canonical_path);
--			if (ret < 0) {
--				kfree(canonical_path);
--				canonical_path = NULL;
--			}
--		}
--	}
- 	/*
- 	 * Avoid an exclusive open here, as the systemd-udev may initiate the
- 	 * device scan which may race with the user's mount or mkfs command,
-@@ -1570,8 +1487,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 		goto free_disk_super;
- 	}
- 
--	device = device_list_add(canonical_path ? : path, disk_super,
--				 &new_device_added);
-+	device = device_list_add(path, disk_super, &new_device_added);
- 	if (!IS_ERR(device) && new_device_added)
- 		btrfs_free_stale_devices(device->devt, device);
- 
-@@ -1580,7 +1496,6 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 
- error_bdev_put:
- 	fput(bdev_file);
--	kfree(canonical_path);
- 
- 	return device;
- }
--- 
-2.48.0
-
+SGksDQpJIGZvdW5kIHRoYXQgd2hlbiBJIGFtIHRyeWluZyB0byBmdWxsIHJlYmFsYW5jZSB6
+b25lZCB2b2x1bWUsIGl0IGZhaWxlZCANCmFuZCBkbWVzZyBpcyBhcyBmb2xsb3dzOg0KDQpb
+MjI2MDkyNi45NzYwMjddIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiBiYWxhbmNlOiBzdGFy
+dCAtZCAtbSAtcw0KWzIyNjA5MjcuMjAxNDE4XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTog
+cmVsb2NhdGluZyBibG9jayBncm91cCANCjQ3OTg3MTMyNzI3Mjk2IGZsYWdzIG1ldGFkYXRh
+fGR1cA0KWzIyNjA5MjguNDczNTU0XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogZm91bmQg
+MTAxMSBleHRlbnRzLCBzdGFnZTogDQptb3ZlIGRhdGEgZXh0ZW50cw0KWzIyNjA5MjguNTY3
+MTEyXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogcmVsb2NhdGluZyBibG9jayBncm91cCAN
+CjQ3OTg2ODY0MjkxODQwIGZsYWdzIG1ldGFkYXRhfGR1cA0KWzIyNjA5MjkuNTk3NDA2XSBC
+VFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogZm91bmQgODMyIGV4dGVudHMsIHN0YWdlOiBtb3Zl
+IA0KZGF0YSBleHRlbnRzDQpbMjI2MDkyOS43NTczNjddIEJUUkZTIGluZm8gKGRldmljZSBz
+ZGIpOiByZWxvY2F0aW5nIGJsb2NrIGdyb3VwIA0KNDc5ODY1OTU4NTYzODQgZmxhZ3MgbWV0
+YWRhdGF8ZHVwDQpbLi4uXQ0KWzIyNjEwOTguOTcyMTg4XSBCVFJGUyBpbmZvIChkZXZpY2Ug
+c2RiKTogcmVsb2NhdGluZyBibG9jayBncm91cCANCjQ3ODUyMTA5NjkyOTI4IGZsYWdzIGRh
+dGENClsyMjYxMTAxLjkzNjMxOV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYik6IGZvdW5kIDYx
+MSBleHRlbnRzLCBzdGFnZTogbW92ZSANCmRhdGEgZXh0ZW50cw0KWzIyNjExMDIuMjc2MTc4
+XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogZm91bmQgNjExIGV4dGVudHMsIHN0YWdlOiAN
+CnVwZGF0ZSBkYXRhIHBvaW50ZXJzDQpbMjI2MTEwMi42MDc3NjRdIEJUUkZTIGluZm8gKGRl
+dmljZSBzZGIpOiByZWxvY2F0aW5nIGJsb2NrIGdyb3VwIA0KNDc4NTE4NDEyNTc0NzIgZmxh
+Z3MgZGF0YQ0KWzIyNjExMDMuNTAzNjY1XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYik6IGJk
+ZXYgL2Rldi9zZGIgZXJyczogd3IgNTI5LCANCnJkIDAsIGZsdXNoIDAsIGNvcnJ1cHQgMCwg
+Z2VuIDANClsyMjYxMTA0LjMxMTA5NF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYik6IGJhbGFu
+Y2U6IGVuZGVkIHdpdGggc3RhdHVzOiAtNQ0KDQp1bmFtZSAtYTpMaW51eCBhb3NjM2E2IDYu
+MTEuMTAtYW9zYy1tYWluICMxIFNNUCBQUkVFTVBUX0RZTkFNSUMgU3VuIERlYyANCjEgMTE6
+MjY6MzIgVVRDIDIwMjQgbG9vbmdhcmNoNjQgR05VL0xpbnV4DQoNCkFueSBzdWdnZXN0aW9u
+cz8NCg0KSEFOIFl1d2VpDQo=
 
