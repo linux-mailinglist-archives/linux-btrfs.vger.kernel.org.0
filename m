@@ -1,140 +1,79 @@
-Return-Path: <linux-btrfs+bounces-11017-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11018-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562E6A1731E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 20:28:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C5FA174A6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 23:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5789C3A60B1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 19:28:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 949E77A4684
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 22:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369491EEA46;
-	Mon, 20 Jan 2025 19:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD871F1934;
+	Mon, 20 Jan 2025 22:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KqvLQ8y8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AuGY8nBV"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB7318E743
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2025 19:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B954689;
+	Mon, 20 Jan 2025 22:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737401289; cv=none; b=bTUF6i3hK78aD7NacHUzwnUtQCKKbLr6CIcgmgdQI4acpw0djFVKr6i/ejXTcrtC6J+olCVM206fNVDL5XtdKF8UH/4MVDEmAgCYxEOpQiltmaXFpN4yuGtxCWdoiCfzNjbNr9iL14D36x+fln9ihHTtUy7Sq9hs2NK2z/DPgV0=
+	t=1737412289; cv=none; b=OJn+56T19QL4GgDtPmxF1WHcreUa3TmQIiInt7kneyPbTFs1yGrUoyrVvfTQgFmfaCGvPHsyUH4u0rEUdJT3lbLpcbeO0E0MhWpr+BK1IhjOlIFlAMUPlOLUlH2+eaKZdaz2n59CYic4LDCMbGA+Kl0uo4sa7vuhSDGyVzvVbHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737401289; c=relaxed/simple;
-	bh=LcBBnpp/aZ3ck41ZwEuY6Qoq2oqJZ51Ai2KDhD5Ns3I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NvIebd8MdQc5ztmsAUizl53kLsE3JLLhS4XVQAHTHarPc3MCFHAP6QjNMsGVsuKfmYLbbhlwshh1076QMNNlxAn8Yi04S/kqRAi16l6ik2r6mtUB369i+UppFYwlFCn3+cldTA1OxYIUoWC4NxMrMvb0W8wJgHOzmfkTuHK9mQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KqvLQ8y8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E03C4CEDD
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2025 19:28:08 +0000 (UTC)
+	s=arc-20240116; t=1737412289; c=relaxed/simple;
+	bh=ogmxQq+142Z3KeidGjQ0mrrqh9d34grgwvLVC83/WDg=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=D6s19tB6Gl70Mb+cxrMM9GQjsfqeNKOXAsOeOgyNlEVE4mzua9Sf50ifK704/iX05NqNNX4DWXenNiJST4RFBWxKFHD3y6MKtgjBlqkg3dq7ekqAN+Mbj52YmSwX9QDTjg6O0SndZw1qakjB++V+UUcgbTz3sm7OtY2jIFQIOOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AuGY8nBV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D72C4CEDD;
+	Mon, 20 Jan 2025 22:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737401288;
-	bh=LcBBnpp/aZ3ck41ZwEuY6Qoq2oqJZ51Ai2KDhD5Ns3I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KqvLQ8y8LzVrin4A0hJU12CEZsM/AHM7oantmvHGBwAC7hYRNmyjOSF+XbeaDz6nY
-	 VYEEDMaOSYIYRPw/0zbQSJogPi5VLD4y6WbkGlLtmDAlfswv7omptJH1ecU7h9NtTO
-	 M3Qa55W0/P270SihO9hpBtPv8Hij6OeXb3rXEDOMmaXz1QjHyRmiqpfngttegwQYhg
-	 S4VZPqBqd6YVim7COhDwVdYRaqh9rBqYElkGLVtYfMme+qc0/NEc+78jE8rDfUEj1G
-	 K9ZOlejQ3Rl/mgqgfcrydZ6M4j9QXU73z6WckAcNHpK5SYluEtdX7GseY7rhjsaUOr
-	 0efD5jwOFHoog==
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aaec111762bso918492366b.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2025 11:28:08 -0800 (PST)
-X-Gm-Message-State: AOJu0YzQ3Ox6BVrdW+HWi96FirvJcGTE1wbUp8S7wCZGpJPcuUU898Ac
-	FRDD8Wg8ivTWjIbtqict65tAvVulBZ2+4qiCEDtH9MuCBCsjoX0KBpYeZgSu0gNhc2xuF1qCCmM
-	2X/G/Y8vhEX1Bu5Ootn4pE96lD+k=
-X-Google-Smtp-Source: AGHT+IGnJcDh75Bpdns8tazBCN4+lPnbz3VeeJYnCJ8uuRtDhBusROjAn/hMq0wx+YKa4XdLUPiNuaJ8+6FL11DbEsk=
-X-Received: by 2002:a17:907:3da5:b0:aae:b259:ef6c with SMTP id
- a640c23a62f3a-ab38ada039bmr1235066366b.0.1737401287388; Mon, 20 Jan 2025
- 11:28:07 -0800 (PST)
+	s=k20201202; t=1737412289;
+	bh=ogmxQq+142Z3KeidGjQ0mrrqh9d34grgwvLVC83/WDg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=AuGY8nBVfDy+VUw7noDSiWzW5aRQGooIihy7SUX4uWJKz6W8iL6zrNQQfGZVCbkRC
+	 1Z/Ldk7Cj1Ym9zP4cIAnSB5Dvq9WcVj8T8D7RqJlSXwstqg/w0yRiMeil6ysbQ+NUJ
+	 QweVamULtLpvpxTa0k9jfP70itDW/CowZSi5w/gKVsI3K/V7awzbC8aL/qHUmUugbp
+	 cTf8nBO7zdpbg62ppvR9trblA+zIfIQrxroxfQhZXn3f+UBJeXSedMgokecdP0ql8E
+	 5qkr3TqZi2j1T14LeZzwUU7SKGRAucL9pdEd3Ox7qBEwBYgz4PVIEKZpgA2ryKaX1b
+	 bTsyewlkvJ/zA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE279380AA62;
+	Mon, 20 Jan 2025 22:31:54 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs updates for 6.14
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1737393999.git.dsterba@suse.com>
+References: <cover.1737393999.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1737393999.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.14-tag
+X-PR-Tracked-Commit-Id: 9d0c23db26cb58c9fc6ee8817e8f9ebeb25776e5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0eb4aaa230d725fa9b1cd758c0f17abca5597af6
+Message-Id: <173741231320.3672095.5468599438237611953.pr-tracker-bot@kernel.org>
+Date: Mon, 20 Jan 2025 22:31:53 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <d538309bf9cbfb732b4f9c3bc174ccdcfe9ccafa.1737328208.git.wqu@suse.com>
-In-Reply-To: <d538309bf9cbfb732b4f9c3bc174ccdcfe9ccafa.1737328208.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 20 Jan 2025 19:27:30 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6oWBvr1GiQ4+wr_mwSDrg28PuwcmbLe=9iGiDEHLPvhw@mail.gmail.com>
-X-Gm-Features: AbW1kvbm0EoeH22wNqkN8NIviL-gZQjSdXhGMQdJQ14jf8Qw-CZeEynN_dWn21I
-Message-ID: <CAL3q7H6oWBvr1GiQ4+wr_mwSDrg28PuwcmbLe=9iGiDEHLPvhw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: do not output error message if a qgroup is already
- cleaned up
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, John Shand <jshand2013@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 19, 2025 at 11:11=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> There is a bug report that btrfs outputs the following error message:
->
->  BTRFS info (device nvme0n1p2): qgroup scan completed (inconsistency flag=
- cleared)
->  BTRFS warning (device nvme0n1p2): failed to cleanup qgroup 0/1179: -2
->
-> [CAUSE]
-> The error itself is pretty harmless, and the end user should ignore it.
->
-> When a subvolume is fully dropped, btrfs will call
-> btrfs_qgroup_cleanup_dropped_subvolume() to delete the qgroup.
->
-> However if a qgroup rescan happened before a subvolume fully dropped,
-> qgroup for that subvolume will not be re-created, as rescan will only
-> create new qgroup if there is a BTRFS_ROOT_REF_KEY found.
->
-> But before we drop a subvolume, the subvolume is unlinked thus there is n=
-o
-> BTRFS_ROOT_REF_KEY.
->
-> In that case, btrfs_remove_qgroup() will fail with -ENOENT and trigger
-> the above error message.
->
-> [FIX]
-> Just ignore -ENOENT error from btrfs_remove_qgroup() inside
-> btrfs_qgroup_cleanup_dropped_subvolume().
->
-> Reported-by: John Shand <jshand2013@gmail.com>
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1236056
-> Fixes: 839d6ea4f86d ("btrfs: automatically remove the subvolume qgroup")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The pull request you sent on Mon, 20 Jan 2025 18:41:27 +0100:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.14-tag
 
-Looks good, thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0eb4aaa230d725fa9b1cd758c0f17abca5597af6
 
-> ---
->  fs/btrfs/qgroup.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index b90fabe302e6..aaf16019d829 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1897,8 +1897,11 @@ int btrfs_qgroup_cleanup_dropped_subvolume(struct =
-btrfs_fs_info *fs_info, u64 su
->         /*
->          * It's squota and the subvolume still has numbers needed for fut=
-ure
->          * accounting, in this case we can not delete it.  Just skip it.
-> +        *
-> +        * Or the qgroup is already removed by a qgroup rescan. For both =
-cases we're
-> +        * safe to ignore them.
->          */
-> -       if (ret =3D=3D -EBUSY)
-> +       if (ret =3D=3D -EBUSY || ret =3D=3D -ENOENT)
->                 ret =3D 0;
->         return ret;
->  }
-> --
-> 2.48.0
->
->
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
