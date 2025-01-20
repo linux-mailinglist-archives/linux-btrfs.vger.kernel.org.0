@@ -1,333 +1,406 @@
-Return-Path: <linux-btrfs+bounces-11014-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11015-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05AC6A1710B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 18:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 691A2A17216
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 18:41:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FB0818871AB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 17:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E697618857CC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2025 17:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC2D1EC01E;
-	Mon, 20 Jan 2025 17:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812D91E9B29;
+	Mon, 20 Jan 2025 17:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeR3GYyU"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Qb2WRqNT";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Qb2WRqNT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3531EBFFA;
-	Mon, 20 Jan 2025 17:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0941A182BC;
+	Mon, 20 Jan 2025 17:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737393136; cv=none; b=CgpM2Z7boARlZDC/eUk3pNxbUorJwlNx2d9BMHi84LhvP0MkzbFRct+MjMA/J2MluncK+lS+E+MEX3vzphOJ+vDuJu3hkdLnFcW7837twkcttOLcauk1tGHTbMhwV814ovhX9gBc6ITZLEWER5jRUNyKywtUrqMOP6U2qBx9TuM=
+	t=1737394899; cv=none; b=SwNG1rHl3H8SVeKbaCn3nsZub1NUgBuhfr62zzN9v0kUCMouTFUneR5ETVqdN/OU7byDGhTAkj7OzG3wemv0QROW98mu7rvr7yZMPOqQFJtufxZH/vX+sHGdP8wHGS41i53nHVUlOBxgkgWvxO3FaukB3wXtYUVRAPK7ZfK2YSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737393136; c=relaxed/simple;
-	bh=trUHRfbesnrz3y660ZlbiMw21SQTkkalQOyCKt0C+qU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UpYFOgKCjX9B022MY+8dtoLFwjyWDvhPKd4g9wbw4VGzZ+b2wiFe2d0y/Ge9O+rH0DgSHhGT2azFWwIdcKA2Pt982VaBcFAG2MkADVeE830AdYNtWjyflHztzrYj6gohzP6hVW+YFFYKZa3rGuIqtAI3pjunLbdiy5kTfCW7m5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeR3GYyU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E10DBC4CEE3;
-	Mon, 20 Jan 2025 17:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737393134;
-	bh=trUHRfbesnrz3y660ZlbiMw21SQTkkalQOyCKt0C+qU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LeR3GYyUaucRe5IK0ga5Jc2kjdzmcQCYJWXgStn9n8QoI/vxwPjomrT9Hwb4SdLYn
-	 EoEjOo4gsYdTGZQJFYEYOP13/2AtArWq4aWscjigWPGCcmyBrjmC4GHb4vYpbM7i+w
-	 q+5q6ePd6lXY9FjE/wdg4GvhNa5s0YRCDru8NyJqJONH4IjR7rIQDysTTOJp2ill3W
-	 gUKtIzeLth8V9x/qd269AeK1aWtXxjac+n2/Vc+A3e37RZMp0QilmB9vUM4AN314bX
-	 4kltTxFWtS3zMMnb+dqCxPaOEpcZZKohXBjcgo4wO9gGhurKRarjAbhwxIQfyux2Mc
-	 tmpICWoTZfDqw==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aae81f4fdc4so949947966b.0;
-        Mon, 20 Jan 2025 09:12:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6fVg3M+BKsIIcKnw+P+/qTH+kTMKZQNZ9sp1K59/77UNbV8qyH2RHAnzgydNCsa3E+hFjR2WmqrxYsYql@vger.kernel.org, AJvYcCX0ON8GPu7s5Rqew5NMcH73jTRhM1MQbSYXmKjL+KkcCDRUWpAIFl0beq9ObUUNah0uaBzi0Mi93iDAKg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyat9bJUZjdjK1rXKBKnYa8ZW9PxsmbL1esZZ2ifuefTPGvyDuh
-	GplgwjMv+EVnj6S+11XymD4ZMefzI9KsXAsx3pP7TXeqcnJOAY5IvE5QU1eLA74MBpXVGJHbLo5
-	+EPQCsYjZmxDpAUqOPql3Uz8D2lw=
-X-Google-Smtp-Source: AGHT+IFzgnXp0gttI0Qj47A4C0kZ1zf34sJTJUxaZRQrZLNwlPb25ryRxsQnMsZKEkJDs3ybrzA2LqPjigeLjUf921M=
-X-Received: by 2002:a17:907:1c89:b0:aa6:ac9b:681f with SMTP id
- a640c23a62f3a-ab38b44d45amr1525001466b.43.1737393133356; Mon, 20 Jan 2025
- 09:12:13 -0800 (PST)
+	s=arc-20240116; t=1737394899; c=relaxed/simple;
+	bh=Yx3br7Kyf60akXuFPIf/O0519Y24QtB8JL02Zx8kRUQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pEbnaLsWR85EKnBI50bZlWG1qPoLr2pCNexhSP/DZfglahm9Vlmc4Fd2JpcRoNbtJooxbXEDZazDUkGizQQcBJYqozjx7ekcLFP1dN+jz7x3R5mKPfwt2ddBoiX9dys4q4KlOINc+MFM/2gzVX/RF1qy75nTcuFEHWVDPbDXY5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Qb2WRqNT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Qb2WRqNT; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 02D371F7BE;
+	Mon, 20 Jan 2025 17:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737394895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/slj1zj1/I4zfZl7hgFWcJpLFl0061uW3/MeNXXesSI=;
+	b=Qb2WRqNTxwwPPvSkv2n2E2GS0NE1DteDC8wCi3nnCVJeA9/eZFrK3heoZt4cphc+ZLRfw+
+	CoxcuqzaJT0yxwIGarx2J50zd2G2s1SHFtgm+osQMfjL2mHM2DbvDlFUTWUpb7NO2bPrE8
+	lQqcwiV8dv11kMF4Upc/8/yMpYX6PdE=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737394895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/slj1zj1/I4zfZl7hgFWcJpLFl0061uW3/MeNXXesSI=;
+	b=Qb2WRqNTxwwPPvSkv2n2E2GS0NE1DteDC8wCi3nnCVJeA9/eZFrK3heoZt4cphc+ZLRfw+
+	CoxcuqzaJT0yxwIGarx2J50zd2G2s1SHFtgm+osQMfjL2mHM2DbvDlFUTWUpb7NO2bPrE8
+	lQqcwiV8dv11kMF4Upc/8/yMpYX6PdE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFABF1393E;
+	Mon, 20 Jan 2025 17:41:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iDmCOs6KjmfidwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 20 Jan 2025 17:41:34 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 6.14
+Date: Mon, 20 Jan 2025 18:41:27 +0100
+Message-ID: <cover.1737393999.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <678e7da5.050a0220.303755.007c.GAE@google.com> <CACT4Y+ZFBdo7pT8L2AzM=vegZwjp-wNkVJZQf0Ta3vZqtExaSw@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZFBdo7pT8L2AzM=vegZwjp-wNkVJZQf0Ta3vZqtExaSw@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 20 Jan 2025 17:11:36 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6g4+3ixMXcNbmX91CUgHmei-JGM0BV-hP7C1cn-fghfg@mail.gmail.com>
-X-Gm-Features: AbW1kvbCneVvaw3RDM0WX3bC7u-z64jWBurGup8MVHxZPwim7rx8x-dljA522sE
-Message-ID: <CAL3q7H6g4+3ixMXcNbmX91CUgHmei-JGM0BV-hP7C1cn-fghfg@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in join_transaction
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: syzbot <syzbot+45212e9d87a98c3f5b42@syzkaller.appspotmail.com>, clm@fb.com, 
-	dsterba@suse.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Mon, Jan 20, 2025 at 4:52=E2=80=AFPM Dmitry Vyukov <dvyukov@google.com> =
-wrote:
->
-> On Mon, 20 Jan 2025 at 17:45, syzbot
-> <syzbot+45212e9d87a98c3f5b42@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    c45323b7560e Merge tag 'mm-hotfixes-stable-2025-01-13-0=
-0-0..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D17e45bc4580=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Daadf89e2f6d=
-b86cc
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D45212e9d87a98=
-c3f5b42
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > Downloadable assets:
-> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
-/7feb34a89c2a/non_bootable_disk-c45323b7.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/47ce0f260cc3/vmli=
-nux-c45323b7.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/da61c348c83e=
-/bzImage-c45323b7.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+45212e9d87a98c3f5b42@syzkaller.appspotmail.com
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > BUG: KASAN: slab-use-after-free in join_transaction+0xd9b/0xda0 fs/btrf=
-s/transaction.c:278
-> > Read of size 4 at addr ffff888011839024 by task kworker/u4:9/1128
-> >
-> > CPU: 0 UID: 0 PID: 1128 Comm: kworker/u4:9 Not tainted 6.13.0-rc7-syzka=
-ller-00019-gc45323b7560e #0
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-=
-1.16.3-2~bpo12+1 04/01/2014
-> > Workqueue: events_unbound btrfs_async_reclaim_data_space
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:94 [inline]
-> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
-> >  print_address_description mm/kasan/report.c:378 [inline]
-> >  print_report+0x169/0x550 mm/kasan/report.c:489
-> >  kasan_report+0x143/0x180 mm/kasan/report.c:602
-> >  join_transaction+0xd9b/0xda0 fs/btrfs/transaction.c:278
->
-> Should join_transaction() read cur_trans->aborted still under
-> fs_info->trans_lock?
+Hi,
 
-Yep, that's the problem.
-I'll send a patch to fix it, thanks!
+please pull the following updates to btrfs. There are some new features
+or feature previews, the reset the usual mix of core changes.  There's
+also one minor rb-tree API update.
 
->
-> static noinline int join_transaction(struct btrfs_fs_info *fs_info,
->                      unsigned int type)
-> {
->     spin_lock(&fs_info->trans_lock);
-> ...
->     cur_trans =3D fs_info->running_transaction;
->     if (cur_trans) {
->         if (TRANS_ABORTED(cur_trans)) {
->             spin_unlock(&fs_info->trans_lock);
->             return cur_trans->aborted;
->         }
->
->
-> >  start_transaction+0xaf8/0x1670 fs/btrfs/transaction.c:697
-> >  flush_space+0x448/0xcf0 fs/btrfs/space-info.c:803
-> >  btrfs_async_reclaim_data_space+0x159/0x510 fs/btrfs/space-info.c:1321
-> >  process_one_work kernel/workqueue.c:3236 [inline]
-> >  process_scheduled_works+0xa66/0x1840 kernel/workqueue.c:3317
-> >  worker_thread+0x870/0xd30 kernel/workqueue.c:3398
-> >  kthread+0x2f0/0x390 kernel/kthread.c:389
-> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> >  </TASK>
-> >
-> > Allocated by task 5315:
-> >  kasan_save_stack mm/kasan/common.c:47 [inline]
-> >  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-> >  poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
-> >  __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
-> >  kasan_kmalloc include/linux/kasan.h:260 [inline]
-> >  __kmalloc_cache_noprof+0x243/0x390 mm/slub.c:4329
-> >  kmalloc_noprof include/linux/slab.h:901 [inline]
-> >  join_transaction+0x144/0xda0 fs/btrfs/transaction.c:308
-> >  start_transaction+0xaf8/0x1670 fs/btrfs/transaction.c:697
-> >  btrfs_create_common+0x1b2/0x2e0 fs/btrfs/inode.c:6572
-> >  lookup_open fs/namei.c:3649 [inline]
-> >  open_last_lookups fs/namei.c:3748 [inline]
-> >  path_openat+0x1c03/0x3590 fs/namei.c:3984
-> >  do_filp_open+0x27f/0x4e0 fs/namei.c:4014
-> >  do_sys_openat2+0x13e/0x1d0 fs/open.c:1402
-> >  do_sys_open fs/open.c:1417 [inline]
-> >  __do_sys_creat fs/open.c:1495 [inline]
-> >  __se_sys_creat fs/open.c:1489 [inline]
-> >  __x64_sys_creat+0x123/0x170 fs/open.c:1489
-> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> >
-> > Freed by task 5336:
-> >  kasan_save_stack mm/kasan/common.c:47 [inline]
-> >  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-> >  kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:582
-> >  poison_slab_object mm/kasan/common.c:247 [inline]
-> >  __kasan_slab_free+0x59/0x70 mm/kasan/common.c:264
-> >  kasan_slab_free include/linux/kasan.h:233 [inline]
-> >  slab_free_hook mm/slub.c:2353 [inline]
-> >  slab_free mm/slub.c:4613 [inline]
-> >  kfree+0x196/0x430 mm/slub.c:4761
-> >  cleanup_transaction fs/btrfs/transaction.c:2063 [inline]
-> >  btrfs_commit_transaction+0x2c97/0x3720 fs/btrfs/transaction.c:2598
-> >  insert_balance_item+0x1284/0x20b0 fs/btrfs/volumes.c:3757
-> >  btrfs_balance+0x992/0x10c0 fs/btrfs/volumes.c:4633
-> >  btrfs_ioctl_balance+0x493/0x7c0 fs/btrfs/ioctl.c:3670
-> >  vfs_ioctl fs/ioctl.c:51 [inline]
-> >  __do_sys_ioctl fs/ioctl.c:906 [inline]
-> >  __se_sys_ioctl+0xf5/0x170 fs/ioctl.c:892
-> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> >
-> > The buggy address belongs to the object at ffff888011839000
-> >  which belongs to the cache kmalloc-2k of size 2048
-> > The buggy address is located 36 bytes inside of
-> >  freed 2048-byte region [ffff888011839000, ffff888011839800)
-> >
-> > The buggy address belongs to the physical page:
-> > page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11=
-838
-> > head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-> > flags: 0xfff00000000040(head|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-> > page_type: f5(slab)
-> > raw: 00fff00000000040 ffff88801ac42000 ffffea0000493400 dead00000000000=
-2
-> > raw: 0000000000000000 0000000000080008 00000001f5000000 000000000000000=
-0
-> > head: 00fff00000000040 ffff88801ac42000 ffffea0000493400 dead0000000000=
-02
-> > head: 0000000000000000 0000000000080008 00000001f5000000 00000000000000=
-00
-> > head: 00fff00000000003 ffffea0000460e01 ffffffffffffffff 00000000000000=
-00
-> > head: 0000000000000008 0000000000000000 00000000ffffffff 00000000000000=
-00
-> > page dumped because: kasan: bad access detected
-> > page_owner tracks the page as allocated
-> > page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c=
-0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC)=
-, pid 57, tgid 57 (kworker/0:2), ts 67248182943, free_ts 67229742023
-> >  set_page_owner include/linux/page_owner.h:32 [inline]
-> >  post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1558
-> >  prep_new_page mm/page_alloc.c:1566 [inline]
-> >  get_page_from_freelist+0x365c/0x37a0 mm/page_alloc.c:3476
-> >  __alloc_pages_noprof+0x292/0x710 mm/page_alloc.c:4753
-> >  alloc_pages_mpol_noprof+0x3e1/0x780 mm/mempolicy.c:2269
-> >  alloc_slab_page+0x6a/0x110 mm/slub.c:2423
-> >  allocate_slab+0x5a/0x2b0 mm/slub.c:2589
-> >  new_slab mm/slub.c:2642 [inline]
-> >  ___slab_alloc+0xc27/0x14a0 mm/slub.c:3830
-> >  __slab_alloc+0x58/0xa0 mm/slub.c:3920
-> >  __slab_alloc_node mm/slub.c:3995 [inline]
-> >  slab_alloc_node mm/slub.c:4156 [inline]
-> >  __do_kmalloc_node mm/slub.c:4297 [inline]
-> >  __kmalloc_node_track_caller_noprof+0x2e9/0x4c0 mm/slub.c:4317
-> >  kmalloc_reserve+0x111/0x2a0 net/core/skbuff.c:609
-> >  __alloc_skb+0x1f3/0x440 net/core/skbuff.c:678
-> >  alloc_skb include/linux/skbuff.h:1323 [inline]
-> >  alloc_skb_with_frags+0xc3/0x820 net/core/skbuff.c:6612
-> >  sock_alloc_send_pskb+0x91a/0xa60 net/core/sock.c:2884
-> >  sock_alloc_send_skb include/net/sock.h:1803 [inline]
-> >  mld_newpack+0x1c3/0xaf0 net/ipv6/mcast.c:1747
-> >  add_grhead net/ipv6/mcast.c:1850 [inline]
-> >  add_grec+0x1492/0x19a0 net/ipv6/mcast.c:1988
-> >  mld_send_cr net/ipv6/mcast.c:2114 [inline]
-> >  mld_ifc_work+0x691/0xd90 net/ipv6/mcast.c:2651
-> > page last free pid 5300 tgid 5300 stack trace:
-> >  reset_page_owner include/linux/page_owner.h:25 [inline]
-> >  free_pages_prepare mm/page_alloc.c:1127 [inline]
-> >  free_unref_page+0xd3f/0x1010 mm/page_alloc.c:2659
-> >  __slab_free+0x2c2/0x380 mm/slub.c:4524
-> >  qlink_free mm/kasan/quarantine.c:163 [inline]
-> >  qlist_free_all+0x9a/0x140 mm/kasan/quarantine.c:179
-> >  kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
-> >  __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:329
-> >  kasan_slab_alloc include/linux/kasan.h:250 [inline]
-> >  slab_post_alloc_hook mm/slub.c:4119 [inline]
-> >  slab_alloc_node mm/slub.c:4168 [inline]
-> >  __do_kmalloc_node mm/slub.c:4297 [inline]
-> >  __kmalloc_noprof+0x236/0x4c0 mm/slub.c:4310
-> >  kmalloc_noprof include/linux/slab.h:905 [inline]
-> >  kzalloc_noprof include/linux/slab.h:1037 [inline]
-> >  fib_create_info+0xc14/0x25b0 net/ipv4/fib_semantics.c:1435
-> >  fib_table_insert+0x1f6/0x1f20 net/ipv4/fib_trie.c:1231
-> >  fib_magic+0x3d8/0x620 net/ipv4/fib_frontend.c:1112
-> >  fib_add_ifaddr+0x40c/0x5e0 net/ipv4/fib_frontend.c:1156
-> >  fib_netdev_event+0x375/0x490 net/ipv4/fib_frontend.c:1494
-> >  notifier_call_chain+0x1a5/0x3f0 kernel/notifier.c:85
-> >  __dev_notify_flags+0x207/0x400
-> >  dev_change_flags+0xf0/0x1a0 net/core/dev.c:9045
-> >  do_setlink+0xc90/0x4210 net/core/rtnetlink.c:3109
-> >  rtnl_changelink net/core/rtnetlink.c:3723 [inline]
-> >  __rtnl_newlink net/core/rtnetlink.c:3875 [inline]
-> >  rtnl_newlink+0x1bb6/0x2210 net/core/rtnetlink.c:4012
-> >
-> > Memory state around the buggy address:
-> >  ffff888011838f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> >  ffff888011838f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> > >ffff888011839000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >                                ^
-> >  ffff888011839080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >  ffff888011839100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > If the report is already addressed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
-> >
-> > If you want to overwrite report's subsystems, reply with:
-> > #syz set subsystems: new-subsystem
-> > (See the list of subsystem names on the web dashboard)
-> >
-> > If the report is a duplicate of another one, reply with:
-> > #syz dup: exact-subject-of-another-report
-> >
-> > If you want to undo deduplication, reply with:
-> > #syz undup
-> >
-> > --
-> > You received this message because you are subscribed to the Google Grou=
-ps "syzkaller-bugs" group.
-> > To unsubscribe from this group and stop receiving emails from it, send =
-an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > To view this discussion visit https://groups.google.com/d/msgid/syzkall=
-er-bugs/678e7da5.050a0220.303755.007c.GAE%40google.com.
->
+Please pull, thanks.
+
+User visible changes, features:
+
+- rebuilding of the free space tree at mount time is done in more
+  transactions, fix potential hangs when the transaction thread is
+  blocked due to large amount of block groups
+
+- more read IO balancing strategies (experimental config), add two new
+  ways how to select a device for read if the profiles allow that (all RAID1*),
+  the current default selects the device by pid which is good on average
+  but less performant for single reader workloads
+
+  - select preferred device for all reads (namely for testing)
+  - round-robin, balance reads across devices relevant for the requested IO
+    range
+
+- add encoded write ioctl support to io_uring (read was added in 6.12), basis
+  for writing send stream using that instead of syscalls, non-blocking
+  mode is not yet implemented
+
+- support FS_IOC_READ_VERITY_METADATA, applications can use the metadata to do
+  their own verification
+
+- pass inode's i_write_hint to bios, for parity with other filesystems, ioctls
+  F_GET_RW_HINT/F_SET_RW_HINT
+
+Core:
+
+- in zoned mode: allow to directly reclaim a block group by simply resetting
+  it, then it can be reused and another block group does not need to be
+  allocated
+
+- super block validation now also does more comprehensive sys array validation,
+  adding it to the points where superblock is validated (post-read, pre-write)
+
+- subpage mode fixes
+  - fix double accounting of blocks due to some races
+  - improved or fixed error handling in a few cases (compression, delalloc)
+
+- raid stripe tree
+  - fix various cases with extent range splitting or deleting
+  - implement hole punching to extent range
+  - reduce number of stripe tree lookups during bio submission
+  - more self-tests
+
+- updated self-tests (delayed refs)
+
+- error handling improvements
+
+- cleanups, refactoring
+  - remove rest of backref caching infrastructure from relocation, not needed
+    anymore
+  - error message updates
+  - remove unnecessary calls when extent buffer was marked dirty
+  - unused parameter removal
+  - code moved to new files
+
+Other code changes: add rb_find_add_cached() to the rb-tree API
+
+----------------------------------------------------------------
+The following changes since commit 5bc55a333a2f7316b58edc7573e8e893f7acb532:
+
+  Linux 6.13-rc7 (2025-01-12 14:37:56 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.14-tag
+
+for you to fetch changes up to 9d0c23db26cb58c9fc6ee8817e8f9ebeb25776e5:
+
+  btrfs: selftests: add a selftest for deleting two out of three extents (2025-01-14 15:57:55 +0100)
+
+----------------------------------------------------------------
+Allison Karlitskaya (1):
+      btrfs: handle FS_IOC_READ_VERITY_METADATA ioctl
+
+Anand Jain (10):
+      btrfs: initialize fs_devices->fs_info earlier in btrfs_init_devices_late()
+      btrfs: sysfs: refactor output formatting in btrfs_read_policy_show()
+      btrfs: sysfs: add btrfs_read_policy_to_enum() helper and refactor read policy store
+      btrfs: sysfs: handle value associated with read balancing policy
+      btrfs: add tracking of read blocks for read policy
+      btrfs: introduce RAID1 round-robin read balancing
+      btrfs: add read policy to set a preferred device
+      btrfs: print status of experimental mode when loading module
+      btrfs: configure read policy via module parameter
+      btrfs: print read policy on module load
+
+Colin Ian King (1):
+      btrfs: send: remove redundant assignments to variable ret
+
+David Sterba (18):
+      btrfs: drop unused parameter fs_info to btrfs_delete_delayed_insertion_item()
+      btrfs: remove stray comment about SRCU
+      btrfs: use SECTOR_SIZE defines in btrfs_issue_discard()
+      btrfs: rename __unlock_for_delalloc() and drop underscores
+      btrfs: open code set_page_extent_mapped()
+      btrfs: rename __get_extent_map() and pass btrfs_inode
+      btrfs: use btrfs_inode in extent_writepage()
+      btrfs: make wait_on_extent_buffer_writeback() static inline
+      btrfs: drop one time used local variable in end_bbio_meta_write()
+      btrfs: open code __free_extent_buffer()
+      btrfs: rename btrfs_release_extent_buffer_pages() to mention folios
+      btrfs: switch grab_extent_buffer() to folios
+      btrfs: change return type to bool type of check_eb_alignment()
+      btrfs: unwrap folio locking helpers
+      btrfs: remove unused define WAIT_PAGE_LOCK for extent io
+      btrfs: split waiting from read_extent_buffer_pages(), drop parameter wait
+      btrfs: remove redundant variables from __process_folios_contig() and lock_delalloc_folios()
+      btrfs: async-thread: rename DFT_THRESHOLD to DEFAULT_THRESHOLD
+
+Filipe Manana (38):
+      btrfs: remove no longer needed strict argument from can_nocow_extent()
+      btrfs: remove the snapshot check from check_committed_ref()
+      btrfs: avoid redundant call to get inline ref type at check_committed_ref()
+      btrfs: simplify return logic at check_committed_ref()
+      btrfs: simplify arguments for btrfs_cross_ref_exist()
+      btrfs: add function comment for check_committed_ref()
+      btrfs: add assertions and comment about path expectations to btrfs_cross_ref_exist()
+      btrfs: move abort_should_print_stack() to transaction.h
+      btrfs: move csum related functions from ctree.c into fs.c
+      btrfs: move the exclusive operation functions into fs.c
+      btrfs: move btrfs_is_empty_uuid() from ioctl.c into fs.c
+      btrfs: move the folio ordered helpers from ctree.h into fs.h
+      btrfs: move BTRFS_BYTES_TO_BLKS() into fs.h
+      btrfs: move btrfs_alloc_write_mask() into fs.h
+      btrfs: move extent-tree function declarations out of ctree.h
+      btrfs: remove pointless comment from ctree.h
+      btrfs: use uuid_is_null() to verify if an uuid is empty
+      btrfs: uncollapse transaction aborts during renames
+      btrfs: tree-log: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: free-space-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: extent-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: block-group: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: delayed-inode: remove unnecessary call to btrfs_mark_buffer_dirty()
+      btrfs: dev-replace: remove unnecessary call to btrfs_mark_buffer_dirty()
+      btrfs: dir-item: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: file: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: file-item: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: free-space-cache: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: inode: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: inode-item: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: ioctl: remove unnecessary call to btrfs_mark_buffer_dirty()
+      btrfs: qgroup: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: raid-stripe-tree: remove unnecessary call to btrfs_mark_buffer_dirty()
+      btrfs: relocation: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: root-tree: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: uuid-tree: remove unnecessary call to btrfs_mark_buffer_dirty()
+      btrfs: volumes: remove unnecessary calls to btrfs_mark_buffer_dirty()
+      btrfs: xattr: remove unnecessary call to btrfs_mark_buffer_dirty()
+
+Hao-ran Zheng (1):
+      btrfs: fix data race when accessing the inode's disk_i_size at btrfs_drop_extents()
+
+Jing Xia (1):
+      btrfs: pass write-hint for buffered IO
+
+Johannes Thumshirn (19):
+      btrfs: don't BUG_ON() in btrfs_drop_extents()
+      btrfs: remove unused variable length in btrfs_insert_one_raid_extent()
+      btrfs: cache stripe tree usage in struct btrfs_io_geometry
+      btrfs: cache RAID stripe tree decision in btrfs_io_context
+      btrfs: pass btrfs_io_geometry to is_single_device_io
+      btrfs: selftests: correct RAID stripe-tree feature flag setting
+      btrfs: don't try to delete RAID stripe-extents if we don't need to
+      btrfs: assert RAID stripe-extent length is always greater than 0
+      btrfs: fix front delete range calculation for RAID stripe extents
+      btrfs: fix tail delete of RAID stripe-extents
+      btrfs: fix deletion of a range spanning parts two RAID stripe extents
+      btrfs: implement hole punching for RAID stripe extents
+      btrfs: don't use btrfs_set_item_key_safe on RAID stripe-extents
+      btrfs: selftests: check for correct return value of failed lookup
+      btrfs: selftests: don't split RAID extents in half
+      btrfs: selftests: test RAID stripe-tree deletion spanning two items
+      btrfs: selftests: add selftest for punching holes into the RAID stripe extents
+      btrfs: selftests: add test for punching a hole into 3 RAID stripe-extents
+      btrfs: selftests: add a selftest for deleting two out of three extents
+
+Josef Bacik (12):
+      btrfs: move select_delayed_ref() and export it
+      btrfs: selftests: add delayed ref self test cases
+      btrfs: convert BUG_ON in btrfs_reloc_cow_block() to proper error handling
+      btrfs: remove the changed list for backref cache
+      btrfs: add a comment for new_bytenr in backref_cache_node
+      btrfs: simplify loop in select_reloc_root()
+      btrfs: remove clone_backref_node() from relocation
+      btrfs: don't build backref tree for COW-only blocks
+      btrfs: do not handle non-shareable roots in backref cache
+      btrfs: simplify btrfs_backref_release_cache()
+      btrfs: remove the ->lowest and ->leaves members from struct btrfs_backref_node
+      btrfs: remove detached list from struct btrfs_backref_cache
+
+Mark Harmstone (1):
+      btrfs: add io_uring interface for encoded writes
+
+Naohiro Aota (3):
+      btrfs: factor out btrfs_return_free_space()
+      btrfs: drop fs_info argument from btrfs_update_space_info_*()
+      btrfs: zoned: reclaim unused zone by zone resetting
+
+Qu Wenruo (15):
+      btrfs: use PTR_ERR() instead of PTR_ERR_OR_ZERO() for btrfs_get_extent()
+      btrfs: improve the warning and error message for btrfs_remove_qgroup()
+      btrfs: open-code btrfs_copy_from_user()
+      btrfs: output the reason for open_ctree() failure
+      btrfs: handle free space tree rebuild in multiple transactions
+      btrfs: validate system chunk array at btrfs_validate_super()
+      btrfs: fix double accounting race when btrfs_run_delalloc_range() failed
+      btrfs: fix double accounting race when extent_writepage_io() failed
+      btrfs: fix error handling of submit_uncompressed_range()
+      btrfs: do proper folio cleanup when cow_file_range() failed
+      btrfs: do proper folio cleanup when run_delalloc_nocow() failed
+      btrfs: subpage: fix the bitmap dump of the locked flags
+      btrfs: subpage: dump the involved bitmap when ASSERT() failed
+      btrfs: add extra error messages for delalloc range related errors
+      btrfs: remove the unused locked_folio parameter from btrfs_cleanup_ordered_extents()
+
+Roger L. Beckermeyer III (6):
+      rbtree: add rb_find_add_cached() to rbtree.h
+      btrfs: update btrfs_add_block_group_cache() to use rb helper
+      btrfs: update prelim_ref_insert() to use rb helpers
+      btrfs: update __btrfs_add_delayed_item() to use rb helper
+      btrfs: update btrfs_add_chunk_map() to use rb helpers
+      btrfs: update tree_insert() to use rb helpers
+
+Wolfram Sang (1):
+      btrfs: don't include linux/rwlock_types.h directly
+
+ fs/btrfs/Makefile                       |    2 +-
+ fs/btrfs/async-thread.c                 |    6 +-
+ fs/btrfs/backref.c                      |  172 ++----
+ fs/btrfs/backref.h                      |   16 +-
+ fs/btrfs/bio.c                          |   11 +-
+ fs/btrfs/block-group.c                  |   64 +-
+ fs/btrfs/block-rsv.c                    |   10 +-
+ fs/btrfs/btrfs_inode.h                  |    2 +-
+ fs/btrfs/ctree.c                        |   68 +--
+ fs/btrfs/ctree.h                        |   29 -
+ fs/btrfs/delalloc-space.c               |    2 +-
+ fs/btrfs/delayed-inode.c                |   49 +-
+ fs/btrfs/delayed-ref.c                  |   89 ++-
+ fs/btrfs/delayed-ref.h                  |    1 +
+ fs/btrfs/dev-replace.c                  |    3 -
+ fs/btrfs/dir-item.c                     |    2 -
+ fs/btrfs/direct-io.c                    |    3 +-
+ fs/btrfs/disk-io.c                      |   75 ++-
+ fs/btrfs/disk-io.h                      |    3 -
+ fs/btrfs/extent-tree.c                  |  202 +++---
+ fs/btrfs/extent-tree.h                  |    7 +-
+ fs/btrfs/extent_io.c                    |  250 +++++---
+ fs/btrfs/extent_io.h                    |   16 +-
+ fs/btrfs/file-item.c                    |    3 -
+ fs/btrfs/file.c                         |  106 ++--
+ fs/btrfs/free-space-cache.c             |    7 +-
+ fs/btrfs/free-space-tree.c              |   11 +-
+ fs/btrfs/fs.c                           |  130 ++++
+ fs/btrfs/fs.h                           |   31 +-
+ fs/btrfs/inode-item.c                   |    5 -
+ fs/btrfs/inode.c                        |  325 ++++++----
+ fs/btrfs/ioctl.c                        |  222 ++++---
+ fs/btrfs/ioctl.h                        |    1 -
+ fs/btrfs/locking.h                      |    5 +
+ fs/btrfs/qgroup.c                       |   39 +-
+ fs/btrfs/raid-stripe-tree.c             |  146 ++++-
+ fs/btrfs/relocation.c                   |  369 +++++------
+ fs/btrfs/root-tree.c                    |    2 -
+ fs/btrfs/send.c                         |    3 +-
+ fs/btrfs/space-info.c                   |   69 ++-
+ fs/btrfs/space-info.h                   |   15 +-
+ fs/btrfs/subpage.c                      |   47 +-
+ fs/btrfs/subpage.h                      |   13 +
+ fs/btrfs/super.c                        |   20 +-
+ fs/btrfs/sysfs.c                        |  174 +++++-
+ fs/btrfs/sysfs.h                        |    6 +
+ fs/btrfs/tests/btrfs-tests.c            |   18 +
+ fs/btrfs/tests/btrfs-tests.h            |    6 +
+ fs/btrfs/tests/delayed-refs-tests.c     | 1015 +++++++++++++++++++++++++++++++
+ fs/btrfs/tests/raid-stripe-tree-tests.c |  661 +++++++++++++++++++-
+ fs/btrfs/transaction.c                  |    3 +-
+ fs/btrfs/transaction.h                  |   18 +-
+ fs/btrfs/tree-checker.c                 |   96 +--
+ fs/btrfs/tree-checker.h                 |    7 +-
+ fs/btrfs/tree-log.c                     |    4 -
+ fs/btrfs/uuid-tree.c                    |    2 -
+ fs/btrfs/volumes.c                      |  240 +++++---
+ fs/btrfs/volumes.h                      |   21 +
+ fs/btrfs/xattr.c                        |    1 -
+ fs/btrfs/zoned.c                        |  124 ++++
+ fs/btrfs/zoned.h                        |    7 +
+ include/linux/rbtree.h                  |   37 ++
+ include/trace/events/btrfs.h            |    3 +-
+ 63 files changed, 3751 insertions(+), 1343 deletions(-)
+ create mode 100644 fs/btrfs/tests/delayed-refs-tests.c
 
