@@ -1,58 +1,61 @@
-Return-Path: <linux-btrfs+bounces-11020-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11021-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F6BFA1770C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 06:41:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF431A1770E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 06:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3D9616A719
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FE637A1C98
 	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 05:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1EB186E2D;
-	Tue, 21 Jan 2025 05:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B821A23A0;
+	Tue, 21 Jan 2025 05:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WptGDNoI"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HaibMuDc"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EFE383
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2025 05:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD435186294
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2025 05:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737438061; cv=none; b=mxrnJ5r7kBbq/jw1wU/U8wzKl0dfIX4IrU+jbMLTiMDnJZhPHaSe4l0AHmOk9sqsoAQ5mYke8u1bzHLe1DCHOT3jC6WmG5jbijvIS/AEBeUavwGQ2fDl2xgTCe/KcQSFMoAhX//agTbd5+afk4TPoexEgU40eWJxxp4WwPvnq+E=
+	t=1737438065; cv=none; b=baP+2W68SNQa3asJm0hOQ3hk5PWKnTXaCZRHZjWYTNDzmRKNtyYkqVHZoM+/wnPlh639+9HZVuBorvAJp/T2/7tU06tdR+PFyVFOmVykbcHS0UpCOUq2qy3wH2OtvVWP0yFYztX4OA9sxnsr4syNFiUJ5Yrx2d6kY6J1kGDAyNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737438061; c=relaxed/simple;
-	bh=G4h7wsaf1vbHChA8TMND0v8wv3ioNYMZXIEaJNqfR0k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LvylSr96swqA90tpCAeMcLdo47JL6TrUZUPfdDPKLfPQk86Zm2+e0eoc6KwMiljxvbUSYBMPUjiaCX6c63X+Tmqq6r8ufTCKW8oF9aqnBB/nxgyqgNUzVpbsf2Sj3gdiaSu0RagwubAKcO+0qbI9FmowGN6L68+CaP82LD+WGc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WptGDNoI; arc=none smtp.client-ip=90.155.50.34
+	s=arc-20240116; t=1737438065; c=relaxed/simple;
+	bh=bVKzp9UGXAJvT4IXG0yNb/kHMgtC+yIt7QkWJ7W7tEo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NBO8fgEXhcRhEAWYIEgMSWrIys8fBwuP5358GIbPh1X/pvvVzaWNnjLPT5p9mXx221Ha2Pd8q9J87fuHxIMNE8w2T7ZaqchZPcdOiRLE6YNBgECcoorOFgliYrV/rY1iW248EtZe9rpTs45ELXn9OMMK7KHDIGU684+1ZFCKw/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HaibMuDc; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=hFKBKu9dBNcaqcVIBeJc6x5eex0H5M15e74DHK9fFQ4=; b=WptGDNoI3AEThfdNsTZJnVaFWG
-	T4aK+vXFO2S6KDmO6vxBBW52Bajd2+AIFCHS1hxu9JeJRaNfaYtTJpclGvO0IKe4LV2rWeVaLXb5a
-	wcj2xVdEeT+9Nr7uoKYBvPqaLnV065nq3XwqXSjIdZvF6hdKHZ537rE2uHNKSFIqvswDdXpUA4jpn
-	cgKgWg07axgzNWNWIC2gJOMPRkifDL55u8aGdojJO13Dscw/Ju9RIXi0BuhlReUZ4TanFqZdornqk
-	GgPYMNUobw0iPFIBFbqua5LBTW/qyeffguyVXecHhLbDoozAFYMpWBcusPC4mHXwYj2hfxIDFVT7G
-	+4viNq+g==;
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=dBiht7URlz1pwg21nXRwLAazt0Ui2d3L7bf5BCZRPHY=; b=HaibMuDcdDSyr1kr7bp8QigcCn
+	wZTXmAa2w8alTrmjMbEODXNUEXRBzXsxLIHHp5Uyz3OYaCbZYvOnkmVXRQhbnNgrlpqepPCxS6Gn6
+	MPLbDDJrruLRisaL6wzxb9A4MtyiabOnzFNN4zzbsLEdnDreqkf92APpAC7GWsyPjdhH4HJ2FfzF5
+	vp5dxT4XZywuh3+erKVsV6fe0SyJ07fVea+SCZqfaxx3Hnb260g+ISNrzcn2EHuBSwJcNIh+7xZvN
+	HiiTTpMAgAN1r9NmWOK8y6sWrDR6a9d2I88M0nsWjcTouNsvnxCtN2uQ7wg8aiN3sj9mh0HloM6OG
+	zJ34vr9g==;
 Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1ta70S-0000000GoqB-3zzO;
-	Tue, 21 Jan 2025 05:40:56 +0000
+	id 1ta70T-0000000GoqH-0Dy5;
+	Tue, 21 Jan 2025 05:40:57 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	David Sterba <dsterba@suse.com>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: Fix some folio-related comments
-Date: Tue, 21 Jan 2025 05:40:50 +0000
-Message-ID: <20250121054054.4008049-1-willy@infradead.org>
+Subject: [PATCH 2/3] btrfs: Fix two misuses of folio_shift()
+Date: Tue, 21 Jan 2025 05:40:51 +0000
+Message-ID: <20250121054054.4008049-2-willy@infradead.org>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250121054054.4008049-1-willy@infradead.org>
+References: <20250121054054.4008049-1-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -61,68 +64,56 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove references to the page lock and page->mapping.  Also
-btrfs folios can never be swizzled into swap.
+It is meaningless to shift a byte count by folio_shift().  The folio index
+is in units of PAGE_SIZE, not folio_size().  We can use folio_contains()
+to make this work for arbitrary-order folios, so remove the assertion
+that the folios are of order 0.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
  fs/btrfs/extent_io.c | 8 +++-----
- fs/btrfs/inode.c     | 2 +-
- fs/btrfs/subpage.c   | 2 +-
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d9f856358704..289ecb8ce217 100644
+index 289ecb8ce217..c9b0ee841501 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -2189,10 +2189,8 @@ static int extent_write_cache_pages(struct address_space *mapping,
- 			done_index = folio_next_index(folio);
+@@ -523,8 +523,6 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+ 		u64 end;
+ 		u32 len;
+ 
+-		/* For now only order 0 folios are supported for data. */
+-		ASSERT(folio_order(folio) == 0);
+ 		btrfs_debug(fs_info,
+ 			"%s: bi_sector=%llu, err=%d, mirror=%u",
+ 			__func__, bio->bi_iter.bi_sector, bio->bi_status,
+@@ -552,7 +550,6 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+ 
+ 		if (likely(uptodate)) {
+ 			loff_t i_size = i_size_read(inode);
+-			pgoff_t end_index = i_size >> folio_shift(folio);
+ 
  			/*
- 			 * At this point we hold neither the i_pages lock nor
--			 * the page lock: the page may be truncated or
--			 * invalidated (changing page->mapping to NULL),
--			 * or even swizzled back from swapper_space to
--			 * tmpfs file mapping
-+			 * the folio lock: the folio may be truncated or
-+			 * invalidated (changing folio->mapping to NULL)
+ 			 * Zero out the remaining part if this range straddles
+@@ -563,7 +560,8 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+ 			 *
+ 			 * NOTE: i_size is exclusive while end is inclusive.
  			 */
- 			if (!folio_trylock(folio)) {
- 				submit_write_bio(bio_ctrl, 0);
-@@ -3222,7 +3220,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+-			if (folio_index(folio) == end_index && i_size <= end) {
++			if (folio_contains(folio, i_size >> PAGE_SHIFT) &&
++			    i_size <= end) {
+ 				u32 zero_start = max(offset_in_folio(folio, i_size),
+ 						     offset_in_folio(folio, start));
+ 				u32 zero_len = offset_in_folio(folio, end) + 1 -
+@@ -956,7 +954,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 		return ret;
  	}
- 	/*
- 	 * Now all pages of that extent buffer is unmapped, set UNMAPPED flag,
--	 * so it can be cleaned up without utilizing page->mapping.
-+	 * so it can be cleaned up without utilizing folio->mapping.
- 	 */
- 	set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
  
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fe2c810335ff..e6ea4f172b50 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2891,7 +2891,7 @@ int btrfs_writepage_cow_fixup(struct folio *folio)
- 	 * We are already holding a reference to this inode from
- 	 * write_cache_pages.  We need to hold it because the space reservation
- 	 * takes place outside of the folio lock, and we can't trust
--	 * page->mapping outside of the folio lock.
-+	 * folio->mapping outside of the folio lock.
- 	 */
- 	ihold(inode);
- 	btrfs_folio_set_checked(fs_info, folio, folio_pos(folio), folio_size(folio));
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 722acf768396..6a8636c0ffed 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -72,7 +72,7 @@ bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info, struct address_space
+-	if (folio->index == last_byte >> folio_shift(folio)) {
++	if (folio_contains(folio, last_byte >> PAGE_SHIFT)) {
+ 		size_t zero_offset = offset_in_folio(folio, last_byte);
  
- 	/*
- 	 * Only data pages (either through DIO or compression) can have no
--	 * mapping. And if page->mapping->host is data inode, it's subpage.
-+	 * mapping. And if mapping->host is data inode, it's subpage.
- 	 * As we have ruled our sectorsize >= PAGE_SIZE case already.
- 	 */
- 	if (!mapping || !mapping->host || is_data_inode(BTRFS_I(mapping->host)))
+ 		if (zero_offset) {
 -- 
 2.45.2
 
