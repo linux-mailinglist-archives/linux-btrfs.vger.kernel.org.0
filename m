@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-11024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11025-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28180A1788B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 08:21:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E8F5A1788C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 08:22:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C9D7162A8B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 07:21:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6A411881C01
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2025 07:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C671ABED7;
-	Tue, 21 Jan 2025 07:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469AE1ABED7;
+	Tue, 21 Jan 2025 07:22:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="G7COix0Q"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="adVWZxPF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10931D554
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2025 07:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFC81D554
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2025 07:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737444110; cv=none; b=dFEFgPj1vFJw42EYP5p9ASY+2aXsjcSLprEGoVpOKgI+XHlYJqdfZWaq/qRabwjkPKL8/qN3o9h7V54LlEqVWA+72uKcMw+uzFqqdlgvtI2aqCzQeJ+oiZ0VJzd2LXEM2drreE8G+Razhq2QtwLH+1yriYMeE2lNEUmtEoZm9as=
+	t=1737444163; cv=none; b=beEoFM2NNrdIK+qio3tY60q7W8H7fuMs082qkTzvl4mwZVYF8L7ezYkqh8RAhDho8h15kiVx+0GGnJoKKDQyA/B3imj20YWKWZ+bHvW3ulgFZbGey225oJ75mADgX2U1+QNPiKNkPNH7Ilwq8a94nG1CTsfvluJ7ZKWa6rhwSqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737444110; c=relaxed/simple;
-	bh=Ym3r3yuaUCnzSnhZYqJ7bkfP5yh+qIe5Q6iCXVpbltw=;
+	s=arc-20240116; t=1737444163; c=relaxed/simple;
+	bh=bOi/ZuFJU3ugqIyO1Mtdi8KvVAbT5WL+ql7mH+sJltU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LfU8D+qBPLwEnqQVkdBUMQ37weTusbrZzByl5edrTEyH/ftvqtt9EJpZ4XH0J8Kgor9ZGVhbFRPLtoVFv81lwWll/QRqYGmznOAYmodRPRQGCST76mPdE6BYyUrbve9/aVsllPCjZTvw6q4OTGeW4pRRzyFeXW9UoPjGygzW0Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=G7COix0Q; arc=none smtp.client-ip=209.85.218.65
+	 In-Reply-To:Content-Type; b=hs1JxrUT4UFNT+4WsgO5DoCfWKk9rDlpeV6+dDQDc34mNjnvASNDPMkNZvI8Ppw3uDl8SpfFlnOMPpoLiaqlYYFNVlswvJBs9e0dIMXr527FMvaXy1q2Xhs2S+1hsxrJtA8BIBsuH3CnBSK4nq9/VU6IVDfSCv6Nf51xS0fJPiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=adVWZxPF; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ab633d9582aso180217966b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2025 23:21:47 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5d9f0a6adb4so10786165a12.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2025 23:22:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737444106; x=1738048906; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1737444159; x=1738048959; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=5hGOtoVXxda+b7n8MDjERF4yNiChXWj+HcztCfeXCb8=;
-        b=G7COix0Q6F8rfLehEGIkUZ3wKr22ooSPe9khOJbRH62nx38WXtq9G6LMNcuwTeoU4R
-         RrGYs31mAJhbJolf87ad6SgtQ3yiAe1VBBaBDCAE2Tyu3pTkvs2pFgNGJSVlp6E1iz9v
-         5NZpdsftFvaYoFU9ExLhiJQTQZr5hQI4S2NI10HgMvUk6sMD0AbLet3FN9x8cUwWVgRK
-         r2jxcN8iVCDfxn4Skooe6gAT5Kcy+mezZcNwKK5SVO2d6iBUmVnDEHa5VxREZnEGzguP
-         JFcseRCENkhDYHye4itWZYxVD4WX7PS71wbgsV+pcXgTt65W4EA20X8o32iGmKkC/hyI
-         mv+w==
+        bh=uffX3f3xP/ICG7mu24cqy/152sz9jqcLmBh+iN4ANnM=;
+        b=adVWZxPFd4DFGnTIgHYMJjWglmnAXVkVGb5ccvRNQgvMael55eulxVLi7ieDG50OvL
+         sz13gGZoqe6gcgODhR26hMGxS3btfcRdqWFCdQpV6UQBVOQNvCv02MriqJLz4to2g1Xn
+         f0T1NCHHZvtjj1JGjq3nItsgzgXAYYCpnetm6IdLumWmtbV0UrvHF/mcfsAUgELB40qS
+         Sin5oFSllSL/BC61qcvxjH09/dPKhz5t+ljT00gABGbKY3w5IzBE7TDMy0xNLfyoE7MT
+         rPtTQW49VdSg/jU28SiQmG45qOdrW89mNXzrkIR3f1SDUGjglwJUzzbXMORR7IUwlNPe
+         B+NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737444106; x=1738048906;
+        d=1e100.net; s=20230601; t=1737444160; x=1738048960;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5hGOtoVXxda+b7n8MDjERF4yNiChXWj+HcztCfeXCb8=;
-        b=qzs64gt2jhSBjtgOFFucNCOZNhWvUUEsC+e1o491Dsl2wBYMT2B0b9ozMd1oAd9G2b
-         z/zqdjWwjdpp65ifHuoWdhFgbnKeEclH3wpQqxKT4YeR6FxBR0qdbIqspi61c600DeXO
-         tvrVKtpNmXK4s135ViAwMs41MD4bs1FxHSN4c8CHGJCUf1R59jKk6gryBfHP8OO00NxU
-         LQOL6aV7Q9Iy+f0NDnIeJhjmVgC85R2/xjbpZNvMdS+kGaV5eIdckPKH9YDCLiJcxmBD
-         xCU798+aMRCQ/CWiNoOBFz+eGGtRaAVfoL6r9u7wAURR97XMHud8JYIfdj69hKXSgD71
-         glUw==
-X-Gm-Message-State: AOJu0Yz0Rqtg5OvPS/0fnj3nPCo38u77LnkL958cMytPYRX2yIoXzvAu
-	8X0aSvixiH9Gj64mNLitYRpX6TCVw88XOxd0/h9YmXnOwQKTf3/7/itAeSXHZJE=
-X-Gm-Gg: ASbGncv9TUEATRfcrvW69qdIvNJ7thuBXP3Bot7iehGgyHhg1+3eGUr8/zJQWIG0moW
-	/WYow6ns4EV7jeI/mbf1xSdAU0/sU1ELe9zSpArX4XO8vjTXrN4gMaSlc/HnvNQgp9tlR7JaQ+Y
-	Ji+0KAtCXFvKZwh0213ibShReJrB556YGTrFHLltQbUJe5r0vj2gGiTXDltMl8lR5Veuge/czbI
-	rF20gZVR8HWe63aCEsCHUz3YwWg30upc2ofJQfPD3tZvRuIW47PZ98z6VovRobi8bZz3bTqOjDK
-	pGErUQf4h0VuWkz2wilRFw==
-X-Google-Smtp-Source: AGHT+IEal+dwSfjfeduItJPCq8gTahgyQMxovLMkpf2yZb5R4XtwXxFk9exSoRd7o0+p5uk0Z8ujBg==
-X-Received: by 2002:a17:906:d555:b0:aa6:aa8e:c89c with SMTP id a640c23a62f3a-ab38b44d49emr1644312866b.39.1737444105679;
-        Mon, 20 Jan 2025 23:21:45 -0800 (PST)
+        bh=uffX3f3xP/ICG7mu24cqy/152sz9jqcLmBh+iN4ANnM=;
+        b=LnWIjfxjyMAAq8bDte0/AHJaU4QaVlMNyMCFisglm8U7gLmv7cFIU8HPBZTa2miR3J
+         EcAT92L7bkcmRj13qWiU13caRx7sM47FSH/HcOiysI+YDSvFIXThCvkmWv0/IdyEp66H
+         Jbq95MVB+Hw1yqyYE6vokp0VzSV9s8/Gx4leTt1EsR37Y/kv4kgJzpQfy5lQ5YgefpBz
+         eADMDVVm6tCToZ26bDGoWilRbjfR+bZ1FMcUG6FrdeI029Pb+oGRxuo/dWfRfO0w+Rhn
+         XV6/Uy+seN9xvGyyi8nyAod2I72r5u4umDqGSXzAfAzog/4XpQMHnfWOvl+Qvjh6KtHx
+         nRtQ==
+X-Gm-Message-State: AOJu0YyrRBD/OjM2UG24I3WbBpEG6REk/ckqnS0fYMwsmntLdj6ay/M+
+	2jcwvViQs8hiLu1+IvBbbvR6S6CbfaM/vYbxPev05g9mXDwp1eZhVnv29V7bejwElE2JolJB6hn
+	bVQU=
+X-Gm-Gg: ASbGnctGdShjyLvuMX1Sk8h5MJxoJxaWoxN2ZvmZB/EJaFNkZ9apRQymmlQthKA9Yq6
+	2Bd9NV9aL7Bn4puKBgATktoXOUcVfXkz9oOiYUPUXsXZ42btFs0o9dJJhndSK9I+SLPbyV0x+Pt
+	1C1yaGMXs0TZ+RQgsIEgIOavaho3VrJLl9bHTedcobA01hhMr8tSeLu3nAECxX50xSd6le6DRXk
+	vUNcKyqYfarlgHAeXrRfweNPUyJrHqynGkkZRuAbkPWDeoW8EI/Mbitaib18nST6AkbTdAHizLq
+	LXYWA6zC5TLkgYqgvL4FHg==
+X-Google-Smtp-Source: AGHT+IGyyFGlRY+u9/9NR3HsSThfMvfTcbx2ExdBOaz88jDfv/CFO0uynGVo1pz86T8F0GPX5CqWRg==
+X-Received: by 2002:a05:6402:35c2:b0:5d0:c098:69 with SMTP id 4fb4d7f45d1cf-5db7d300552mr14850923a12.16.1737444157814;
+        Mon, 20 Jan 2025 23:22:37 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2ceba56asm71110865ad.98.2025.01.20.23.21.42
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72dab815f1bsm8544325b3a.65.2025.01.20.23.22.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Jan 2025 23:21:45 -0800 (PST)
-Message-ID: <33fa9947-cead-4f38-a61a-39b053f37a03@suse.com>
-Date: Tue, 21 Jan 2025 17:51:40 +1030
+        Mon, 20 Jan 2025 23:22:37 -0800 (PST)
+Message-ID: <d335039b-2203-481c-a618-8c77768c91b9@suse.com>
+Date: Tue, 21 Jan 2025 17:52:33 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,13 +82,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: Fix two misuses of folio_shift()
+Subject: Re: [PATCH 3/3] btrfs: Convert io_ctl_prepare_pages() to work on
+ folios
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Chris Mason
  <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
  David Sterba <dsterba@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 References: <20250121054054.4008049-1-willy@infradead.org>
- <20250121054054.4008049-2-willy@infradead.org>
+ <20250121054054.4008049-3-willy@infradead.org>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -114,73 +116,82 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250121054054.4008049-2-willy@infradead.org>
+In-Reply-To: <20250121054054.4008049-3-willy@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 在 2025/1/21 16:10, Matthew Wilcox (Oracle) 写道:
-> It is meaningless to shift a byte count by folio_shift().  The folio index
-> is in units of PAGE_SIZE, not folio_size().  We can use folio_contains()
-> to make this work for arbitrary-order folios, so remove the assertion
-> that the folios are of order 0.
+> Retrieve folios instead of pages and work on them throughout.  Removes
+> a few calls to compound_head() and a reference to page->mapping.
 > 
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   fs/btrfs/extent_io.c | 8 +++-----
->   1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 289ecb8ce217..c9b0ee841501 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -523,8 +523,6 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
->   		u64 end;
->   		u32 len;
->   
-> -		/* For now only order 0 folios are supported for data. */
-> -		ASSERT(folio_order(folio) == 0);
 
-I'd prefer to keep this ASSERT(), as all the btrfs_folio_*() helpers can 
-only handle page sized folio for now.
-
->   		btrfs_debug(fs_info,
->   			"%s: bi_sector=%llu, err=%d, mirror=%u",
->   			__func__, bio->bi_iter.bi_sector, bio->bi_status,
-> @@ -552,7 +550,6 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
->   
->   		if (likely(uptodate)) {
->   			loff_t i_size = i_size_read(inode);
-> -			pgoff_t end_index = i_size >> folio_shift(folio);
->   
->   			/*
->   			 * Zero out the remaining part if this range straddles
-> @@ -563,7 +560,8 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
->   			 *
->   			 * NOTE: i_size is exclusive while end is inclusive.
->   			 */
-> -			if (folio_index(folio) == end_index && i_size <= end) {
-> +			if (folio_contains(folio, i_size >> PAGE_SHIFT) &&
-
-Although folio_contains() is already a pretty good improvement, can we 
-have a bytenr/i_sized based solution for fs usages?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> +			    i_size <= end) {
->   				u32 zero_start = max(offset_in_folio(folio, i_size),
->   						     offset_in_folio(folio, start));
->   				u32 zero_len = offset_in_folio(folio, end) + 1 -
-> @@ -956,7 +954,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
->   		return ret;
->   	}
+> ---
+>   fs/btrfs/free-space-cache.c | 25 +++++++++++++------------
+>   1 file changed, 13 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index d42b6f882f57..93b3b7c23d9b 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -447,7 +447,7 @@ static void io_ctl_drop_pages(struct btrfs_io_ctl *io_ctl)
 >   
-> -	if (folio->index == last_byte >> folio_shift(folio)) {
-> +	if (folio_contains(folio, last_byte >> PAGE_SHIFT)) {
->   		size_t zero_offset = offset_in_folio(folio, last_byte);
+>   static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, bool uptodate)
+>   {
+> -	struct page *page;
+> +	struct folio *folio;
+>   	struct inode *inode = io_ctl->inode;
+>   	gfp_t mask = btrfs_alloc_write_mask(inode->i_mapping);
+>   	int i;
+> @@ -455,31 +455,32 @@ static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, bool uptodate)
+>   	for (i = 0; i < io_ctl->num_pages; i++) {
+>   		int ret;
 >   
->   		if (zero_offset) {
+> -		page = find_or_create_page(inode->i_mapping, i, mask);
+> -		if (!page) {
+> +		folio = __filemap_get_folio(inode->i_mapping, i,
+> +				FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
+> +		if (IS_ERR(folio)) {
+>   			io_ctl_drop_pages(io_ctl);
+>   			return -ENOMEM;
+>   		}
+>   
+> -		ret = set_folio_extent_mapped(page_folio(page));
+> +		ret = set_folio_extent_mapped(folio);
+>   		if (ret < 0) {
+> -			unlock_page(page);
+> -			put_page(page);
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>   			io_ctl_drop_pages(io_ctl);
+>   			return ret;
+>   		}
+>   
+> -		io_ctl->pages[i] = page;
+> -		if (uptodate && !PageUptodate(page)) {
+> -			btrfs_read_folio(NULL, page_folio(page));
+> -			lock_page(page);
+> -			if (page->mapping != inode->i_mapping) {
+> +		io_ctl->pages[i] = &folio->page;
+> +		if (uptodate && !folio_test_uptodate(folio)) {
+> +			btrfs_read_folio(NULL, folio);
+> +			folio_lock(folio);
+> +			if (folio->mapping != inode->i_mapping) {
+>   				btrfs_err(BTRFS_I(inode)->root->fs_info,
+>   					  "free space cache page truncated");
+>   				io_ctl_drop_pages(io_ctl);
+>   				return -EIO;
+>   			}
+> -			if (!PageUptodate(page)) {
+> +			if (!folio_test_uptodate(folio)) {
+>   				btrfs_err(BTRFS_I(inode)->root->fs_info,
+>   					   "error reading free space cache");
+>   				io_ctl_drop_pages(io_ctl);
 
 
