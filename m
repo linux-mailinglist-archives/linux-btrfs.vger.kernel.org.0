@@ -1,231 +1,277 @@
-Return-Path: <linux-btrfs+bounces-11035-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11036-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A3D0A190B6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2025 12:35:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E982A19146
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2025 13:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 207413A4558
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2025 11:35:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 087FB1881CB2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2025 12:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FAC4211A10;
-	Wed, 22 Jan 2025 11:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DBD212B27;
+	Wed, 22 Jan 2025 12:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="maVa65Ww"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="CEsgMBwu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE18521171C
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 11:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737545745; cv=fail; b=rEasrnrZyu7b5ChBi80z6bqrHEePvgtG8ScOWB/JlPKwaVdfur5GEPQIc4qPB6SK6EKrlbnvkP+sx1k5JS7mTATEiQGvIJ/cRkELUsStNt0bIXCifXXgkHyYjovFWmGO49yS4OMXqKtlDx3xGl51tW1Jv/Iw+lyytbMK6NKHmQg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737545745; c=relaxed/simple;
-	bh=sV73F8dkbcWgyVmrLY+sRZs3fQjtwFnP4gy+SrVDoyY=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=QMoAwvXP7h6hCtXaUlYEi5z9dAeZ/JJJDZ6ZZmX91oY5KJwwwewibkwDaGzyjFsVch6awtmYaF2sxMFzCnRG7G7NdaThlZCSukwTuCuXyNJdkxehGQVhyUrSStTltNcAiEMQEk5iNP1i5ipbbKAYr2Z2IkMgIaDyH0tgQTWLelA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=maVa65Ww; arc=fail smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39DB1741D2
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 12:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737548713; cv=none; b=osujLSmzA3RHZ3Ubb83KRDioe1F6TE21pEG1uF/wZXHZ9NoUXI8qVTNiO5ySw6LvVopHlShpK3BSuYLX1MCtgv+sTuamHq6NpTdH55JTL9Sua4RFIlfFtPEaQyZKEwd76SMUe0BBUplsmUpU7+HmGquWDeXB6YzVawLSaATZWiM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737548713; c=relaxed/simple;
+	bh=lve1gMfmSe1o3//FsphE9GpV5vgRlXqavzltmywyZDg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=N3M993zvUtGblmYLT/P7GP4BMBRLxpSp0lqGo3Jnr8tP+BhwQmFjo3rjwreheLkv26Mv24DuiQPwBhIWCtyL46J6IbjuPodFCu3e6QHmKp0pfKQ88urnlL4F1Id/sJ8gYEf67nnHsKfRXLmo8lsEs9JCJ5rjZ6b9lIvNfC1CNS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=CEsgMBwu; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50MASPgM004915
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 03:35:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=
-	content-id:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	s2048-2021-q4; bh=sV73F8dkbcWgyVmrLY+sRZs3fQjtwFnP4gy+SrVDoyY=; b=
-	maVa65WwNNMFHxzcIyehWZ4gus+J0BFeVHQLc/BtRcZTND3ApiDGjvfi38Ldh5Qb
-	gNzaExxzQSRlNyh+6qHIYulL1RvMxbpFtc7NKYh3SCgei7IAXkMuOkkhEOrpjHqJ
-	GHwc89nqTB2v+sx24hCKcpkv7I8TrvRHPgylYVTnuGFXG8r351OdC8cNA7xxehl8
-	90XiReToBgmWNbvaEMHRmdyLG4SXIpn2l7idY8nppUaR4bBEQcFjm5g9d4UYoCWR
-	s/rBgNjYTiAl8IdlhmTryiU5vHsju39uyQT5W7QX+Zcg5ArGHRbIXj/iAfEz1Sbi
-	uJBZjt+sQbkrkj6XG77smw==
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 44axxu89d1-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 03:35:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qdNz1oflK9InjGgKjGBehHM8RP5hkLlV16SLRqM5s7KDssLsk4/x77fSzdoBiR95htCh0/wp8mKU61RZZdXAf6ko2XwZ2HpNGuZBvDJSRb7MBQIjnlrPGieHbek2YvZwy09dgfsuRUmEz/qcT3iqRurzq/+R7aTRzShntPvnDVuDlmA88DOyitcyZh54P1i3IoHcH/fHCCVI2Gg8TjDLw8t+pMLRm6Qt+bpJQmO0DT5rVXhtMzpVXrR1oMUuSjbmD1Ygtx84o1a+z9iNkYzUTcDc+0ynsvNjFevxPwn+Ego4x9t1cZNDNo1Arxnv1Yvi5v4dHYPVKtuUmBOY09ZXtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sV73F8dkbcWgyVmrLY+sRZs3fQjtwFnP4gy+SrVDoyY=;
- b=gjowKhvAO7Q7lnr/jV2C2raSZOVorKMFddb3lTtFV/q//TFLhQCwzaoQtECjKGFKqXX2CLM/MuhCsBTFctenx7My8nkyg7QkaKxxe+/jwG2Lt4ff5fnqioXkrKfKyzGDDIjZIYFhkN/VCVoW8G251ABWc1O/dAInnOfsAwpdo08SzbgWjrTSYi72dNy/s5iVQAtI7jy8chLnEaV1sy0n2C93FyosdQ1OwENmbL6lcA3B4AB3pCIifbQPACeQyB9gpEUwIy9LA9RgrLeoSO9IP1v4ytBRLP287p9jtGnkMKLk8uf5Dd+Sv+wwWMaieDCKulEum/SzCDl7my/hevlDrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
- by SN7PR15MB5706.namprd15.prod.outlook.com (2603:10b6:806:34c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.16; Wed, 22 Jan
- 2025 11:35:40 +0000
-Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
- ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
- ([fe80::bff4:aff5:7657:9fe8%5]) with mapi id 15.20.8377.009; Wed, 22 Jan 2025
- 11:35:40 +0000
-From: Mark Harmstone <maharmstone@meta.com>
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "neelx@suse.com" <neelx@suse.com>
-Subject: Re: [PATCH] btrfs: add io_stats to sysfs for dio fallbacks
-Thread-Topic: [PATCH] btrfs: add io_stats to sysfs for dio fallbacks
-Thread-Index: AQHbbDOYW1HaLbrXA0imAWnyJlpfc7MiafwAgABBIoA=
-Date: Wed, 22 Jan 2025 11:35:39 +0000
-Message-ID: <080dca03-dd09-488a-b98a-5a107dbb76a7@meta.com>
-References: <20250121183751.201556-1-maharmstone@fb.com>
- <CAPjX3FccHg8HUduLvOODAdj=SN3sNytOEx4TDhkKSJ+P_OVv7A@mail.gmail.com>
-In-Reply-To:
- <CAPjX3FccHg8HUduLvOODAdj=SN3sNytOEx4TDhkKSJ+P_OVv7A@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|SN7PR15MB5706:EE_
-x-ms-office365-filtering-correlation-id: 7f236c6c-4baf-423f-fa6a-08dd3ad8e5d3
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|366016|1800799024|10070799003|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?MnFpeUdobGZtZHZxSmx6N1UvR2pJcndZaEZVcmExVjVXbnlVelhDV2szRUt0?=
- =?utf-8?B?Yy9YV2lxYjByQUIveG1OdkJVN1k4OXNXQzBkVFdmeFphRUU1ZlBia2NkdjJP?=
- =?utf-8?B?emV4YU0wMGN2QkNJNGhYbllKMGxHS1MxOFdqUXMxL1hLaVJSbGhFMXhOZGhi?=
- =?utf-8?B?N2Zsek9VeEhBRjRDcnF2em43aVd0WkNGTFZGbVNEOG13VkthaTZ2ZzVTUE1x?=
- =?utf-8?B?ZmNYWEJaMTBzWko2aG9XeGJFdGxtV1gwQ0NOM0J6ZWxZREd0Qmk3QXA4dnpL?=
- =?utf-8?B?SmloZGhuOHVUT2JTRHNTYUxZU2M5WHR0RmZ0dDU5NVhRd2ZRQVk4QlE4Tzhl?=
- =?utf-8?B?K2J5ay9YYXoyT1ptSXI3RVlteGI3a0xDOTRydlpUdklIcE9tc0RMa3RUMWtX?=
- =?utf-8?B?d1dOanVlZHE4bXdJR3NDRy9qM2ZwR2d4ck5KK3dMYVZFWGY4eFhOcXZSSWht?=
- =?utf-8?B?aXRxdTE0QVNXb0k1Sm9lWnZXUlE0aTJIZ0RIMlE0ZXVkaHF4aW9jZUF0a04w?=
- =?utf-8?B?cGc1cnZQZmExUUpYTjJadjV5dXFDZU9pMmJRTVp3VXZaOXhQaUsyUGlNSnln?=
- =?utf-8?B?dXhtTjdqTVNrN0tTQ3AwY1pSeTEvZ05YUG1XYzBobmVuM09SRVN4RXNFYkRk?=
- =?utf-8?B?NlN0YTJTSWZSOUIvbmZ3UXhoa25DZXJMN2JJM1h3QlJyMS9ZTFlaSm5DMTlR?=
- =?utf-8?B?TjJQajBSL0R4YmFEcHh6RmtoN1o0VmZjQ21aQkZDcU9rZ1BMYmZqQllTS3JV?=
- =?utf-8?B?R1lTR3FjNVllZzR6RjRacWNtdFZRcXlwNmpKa2FCM2lkcjMyMEhGRm0wTlor?=
- =?utf-8?B?MmVZWlBxUi9KL2hHU0VJelB6QzVYNnFBdGE4WG14UnUxYi93MHNuR0wzclNi?=
- =?utf-8?B?V25nVTlGWng4TUJQNXB0MHNieEF3V0lINmt5UFFkZVgyUGE4NFdFZitCaXBu?=
- =?utf-8?B?VU1TUWF4SWZEbHYxbWtjektMeXVDTnlZZFZ5bW5FNEV6NHpabkxrS2lXbFdU?=
- =?utf-8?B?S0ZCTm1jZXJZWmFEVjFGMXRZVURLbWIwNzBnV21TOElrRi9mWnRxbUtIRzBD?=
- =?utf-8?B?TTlJNUJOMG1BbUgyeFVWcHgvSEloQ3pOYVF1c0xVbTFTL3hEYm1oTzY0WGJT?=
- =?utf-8?B?K2pXdVBIUlg1eU9kY3gvYU03d3hHMFJlbHFOTFpGNzJSYnNEWnZMNS9Qc3Z2?=
- =?utf-8?B?c00xR281aUtLWm80ZHFtNitlbVErRzBZRWttZnMzSTYvVEU1TDB1YjBFc3Fi?=
- =?utf-8?B?aXR4aWgvdDcxVzZjajN4RTJrS1NNaStoN2taaXNVNUlmU1N2dmRLbEVqSmRn?=
- =?utf-8?B?M2phTDVFSEZRN2ExSWh4STRPOFN0aW95N3Z2cGk0bW9DdHdUNk5idzVvU1BD?=
- =?utf-8?B?M2FnbXAzbTZqeWppdTVBclFwSWYvRE5wVjJSZGh0ZEQ4WjJMT2R0Y0hqK2px?=
- =?utf-8?B?T0Ryazc2YXdLVGk5cGZmNXliS0pUOHNNMnYwOVFHdE1WUWlGTVhjdHkxbjJq?=
- =?utf-8?B?K2I5K1lsYTQxRkFTbWVnZ1lUYWZCZ053MFJha1JxL2tYenhxbzdmamsvTW9R?=
- =?utf-8?B?NXliVFRJbmd3OHk3aVZYTmZ2RTl2ajQrRVZRTXRkaVZFVHN3bUVWRW9ZY1Bw?=
- =?utf-8?B?NUV2aVFzb2h0anhXdEZ3bzg0bFlCVEEyR3B0cjEwcGRYWWRVWE9vYmRsTHZk?=
- =?utf-8?B?YzdHZHNxQTd3R1N1ZEhOYllnbVVJYTJjTWdramFmRFNHQTNRbXFlS1dLRk1o?=
- =?utf-8?B?S0lLU3RpQUZRZUFTdHRQaU91WU9ad1p4ZkVORzFJSEhBWjZXa2RrbEJxK1lG?=
- =?utf-8?B?bUEzNXhWZ2lQNm96VTEybXBSMW1CenovT0dqVVl5cm4wQTkrWjR0Y0hqQ1hZ?=
- =?utf-8?B?eEg4K2NSTzhiWjFycFl3U0M2WlBBR0ZEa3plbm1pbHljaTZCamR5UTREb1ht?=
- =?utf-8?Q?OVoLr0nB279kRLBB31SgSykRkAgJRBwP?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(10070799003)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?SXFwUDdicTFWYUhFd0oybCtGZWZ5NXFUb2c3TXFDY05sZm9Gb1VXNDZsenlj?=
- =?utf-8?B?YnRXTlN3NjhwTXU2dTRPT1d5TE1iUDFHT3Y4OXozUWY1NUZZUTg3TklGWFYx?=
- =?utf-8?B?V1MrUkE4eWJ4SlFVcVpRZEVhME5UQ0RQREw3bXl5alFpRTllQWFlcmVybi9D?=
- =?utf-8?B?VExKQWlTeDFBWEdUUHB3dXdIb2pnamVkMUVuQVdpOU9SN0JjWHF5T2tNdWll?=
- =?utf-8?B?Y0pGQUZpbjJjTkZZU2NsRStvdjN0UXFabkp6RGJZNzFXSFVHZHhVdFJFMTJn?=
- =?utf-8?B?TUZBa3cxRTBzVThLV2RhUkh3bHNkaGsyTHFDVmZlVVcwdkhvM0lKSWFCZHNZ?=
- =?utf-8?B?Z2dHN0JNRFhaclAvT281dE5sQ1R3aFNFUWhEemRSV2hKNC9odlpnZVAyQkVy?=
- =?utf-8?B?TCtmODZxenFEYlhVQTlwLzB0RzBRUWg1aE1WVWpTbXM5Ly9Mdmxxdi85Y0pl?=
- =?utf-8?B?WDdkZ1lFWHdCNXo3TC9oWXhzcGlVd2VUUDZaQ3VpSXpqTzF3V1JEN3VidFpp?=
- =?utf-8?B?YWlxS1A0U0RVaFo1WHlGOEpvSmwvUnp3bTVjNmtrVTBkOHZyaXlNOFBKcmM4?=
- =?utf-8?B?N2tzdVJNMFVlZVYrWnlWVHFvcmxOY01OQXVnUHRla2ZSbk5zZkZGM2xUODlX?=
- =?utf-8?B?WTc2NENZbWVuR0JBSldaWGZqd3dOdHVBdHM5M1ZZL1cvN3BDRXJRSDUrenZk?=
- =?utf-8?B?ZE1wbHhRRUg0YndLVTJZalhpM2UzWXFSOWxadXhyekdaNUNJTVlKNjZKYkx6?=
- =?utf-8?B?c1FQSk5jeHNudDNRNTRkdHhlK2JpNnhra2MzUStFU1M5QTZKRnpPam42VGdK?=
- =?utf-8?B?YWZDa0tSUVdOMWtmYmpMZmQyN01BYTl5Uzhjc3FMaHNKa0N5M2pKRENoMWQv?=
- =?utf-8?B?Yzc4bVJJdlhES3drK1JNOE9MYnhIcUo3Slh2cDZNcWVQSFpHL3BTTXNOUzVT?=
- =?utf-8?B?YWEzKzdrVmgwTS9BODhEOVNPTS9ZazFZZTErdEVrZ2x1eFFLb2ZYOXZoV3VG?=
- =?utf-8?B?ZnlBNTl1eGNOZjNhRm9NSldtZm9sMlBMNDd6blZkY3l2cjgrcyt4dVM1alNW?=
- =?utf-8?B?SWY3K3luN0VaQXh5UXIrOCtrVWE1eEtlV1NlcHUxMkpzZEhCeXA1c2poK3Jh?=
- =?utf-8?B?SnNaMFlFdTBWdDd5RXBSWFZHVytmU1dleXNFdGFDN2xmdmNsUEZXK3FxNkFt?=
- =?utf-8?B?UXg1cjA5cXVqMjNLVlppY3NuMVZNTEhzeEx2ZGhyUGdzbk9sOVNtdm45bmdn?=
- =?utf-8?B?VUcybDdlRDRIRkpWUEVQS2xNMzlUTUtYbXpmYTNsbmpDdjkybzNObVRtNWhS?=
- =?utf-8?B?UUxzeldhQy9ETGo2VUNXQUZEMG9oRjJ4VHRtNkNQTUFzakhwZnp3WVB1aFhH?=
- =?utf-8?B?VnRWNGt0WFJKRDd0cEVjVEdiNTdVUGpJRkd6ZkRaNlFiZ3d5cXdPYzJpMXkw?=
- =?utf-8?B?OFlTd3lYM3kvUHJrU3E4d1FwV083R1ZGYktkVG1Ra08yeDdPaHJaV2xZYzlI?=
- =?utf-8?B?UmpaemNpdVBuUi9tYTB2WUxLakpyYVg4Y0g4Z00zZEQ5N04vY2lFZnkySEtU?=
- =?utf-8?B?QkhBbFpwU1llWW5aQy9tb1Y3cWJUcS9pbnZ4alVQdlFKalZIV0p1NjBWRTNu?=
- =?utf-8?B?U2FQNHNjTmVwTlg0cWZjNXllOGtTKy9tZytoSVRJcWYzNzAxQ3VJd1ZxQUQ3?=
- =?utf-8?B?YjBBdUY3ZkJhcjZxaXBmUkZpdkV3RUkxVkVjdU1CbExYZXRCQmd2SWs3SFBW?=
- =?utf-8?B?TGxseXZ4N0xXR0VHM2NiM052cVNsSWNncUlCYUNoLzI5RUZvUzcwOG4wVkFj?=
- =?utf-8?B?NDdaTHRoc0x2UEpiVXA5cEtxMTIxRmhDbkFtY1hkWHpreWpLa01QM0x0ZURs?=
- =?utf-8?B?V1JYWnpNU25VTlFYQ0tTSUdld1djUEE1SnhKbFVSS1Y5c3lydHFva25VWEJP?=
- =?utf-8?B?Y1RpbzNHMUVzK29KOWxqVzZlVmVPNW8vZCt4aGJTMkkyaEl5WGdtV3huUks2?=
- =?utf-8?B?bjFTVFAwelNLdUlBWlJzZUQ2VHUzeU51Y2R3MzRTS1dMV0pBSDJ4WktHaS8v?=
- =?utf-8?B?V25ZUGgyVkQrdGxyaTVIYmNLZ3MyamhxY1JHQ3lNSy9rWXhQdU5jQ0xKcytO?=
- =?utf-8?B?OTVyQ1YwK0djZUk1VStWbGN6bXBrM1hPU1FGL1lKUEk1UDFmYjZwYk92TzJa?=
- =?utf-8?Q?MN3Az6Ij4Fe1cNl5M5w1jTs=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7A2C3F01E1000948A5966C565B0A8E50@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50MAZYkA001091
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 04:25:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=facebook; bh=cTDN4SQLte6nvmLtVKk5hyy
+	7EGaX5YJzgRfT3nxAg18=; b=CEsgMBwuLUmcy6hkwQLy7y+SiIDXmjmkwvLdZEl
+	8Qp+wsXp3jQ8nM3WSmxUHCuKx/acJtJW4QfBNNo9hxtMQYHLTMeyIKrMcYu1QTax
+	umPsNYiPChUJojycQNGJdUDO59jjN+yfEMXdPacmgvmlE/diLj/u9f2k9Mg5YNbz
+	2hi4=
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 44ay240fg1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 04:25:09 -0800 (PST)
+Received: from twshared40462.17.frc2.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.14; Wed, 22 Jan 2025 12:25:08 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 3AB6FABB9B3E; Wed, 22 Jan 2025 12:25:02 +0000 (GMT)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH] btrfs: use atomic64_t for free_objectid
+Date: Wed, 22 Jan 2025 12:21:28 +0000
+Message-ID: <20250122122459.1148668-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f236c6c-4baf-423f-fa6a-08dd3ad8e5d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2025 11:35:39.9652
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QXFHMaiHkBwQYg288XaCr+hkL/d/K7qpG2ot3BtXToxyZ4GRt/Kq2qY9dfhBtL4W9MCNMDTI/0vDYc1hhFC4DA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB5706
-X-Proofpoint-ORIG-GUID: KtTB_9iKvQj5nN4knBeXJobvLZ-fdoNx
-X-Proofpoint-GUID: KtTB_9iKvQj5nN4knBeXJobvLZ-fdoNx
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: BlRhlT20z3z1YXe_y1WngfGr_M_vDKeg
+X-Proofpoint-ORIG-GUID: BlRhlT20z3z1YXe_y1WngfGr_M_vDKeg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-01-22_05,2025-01-22_02,2024-11-22_01
 
-VGhhbmtzIERhbmllbC4NCg0KT24gMjIvMS8yNSAwNzo0MiwgRGFuaWVsIFZhY2VrIHdyb3RlOg0K
-ID4gT24gVHVlLCAyMSBKYW4gMjAyNSBhdCAxOTozOCwgTWFyayBIYXJtc3RvbmUgPG1haGFybXN0
-b25lQGZiLmNvbT4gd3JvdGU6DQogPj4NCiA+PiBGb3IgT19ESVJFQ1QgcmVhZHMgYW5kIHdyaXRl
-cywgYm90aCB0aGUgYnVmZmVyIGFkZHJlc3MgYW5kIHRoZSBmaWxlIA0Kb2Zmc2V0DQogPj4gbmVl
-ZCB0byBiZSBhbGlnbmVkIHRvIHRoZSBibG9jayBzaXplLiBPdGhlcndpc2UsIGJ0cmZzIGZhbGxz
-IGJhY2sgdG8NCiA+PiBkb2luZyBidWZmZXJlZCBJL08sIHdoaWNoIGlzIHByb2JhYmx5IG5vdCB3
-aGF0IHlvdSB3YW50LiBJdCBhbHNvIGNyZWF0ZXMNCiA+PiBwb3J0YWJpbGl0eSBpc3N1ZXMsIGFz
-IG5vdCBhbGwgZmlsZXN5c3RlbXMgZG8gdGhpcy4NCiA+Pg0KID4+IEFkZCBhIG5ldyBzeXNmcyBl
-bnRyeSBpb19zdGF0cywgdG8gcmVjb3JkIGhvdyBtYW55IHRpbWVzIERJTyBmYWxscyBiYWNrDQog
-Pj4gdG8gZG9pbmcgYnVmZmVyZWQgSS9PLiBUaGUgaW50ZW50aW9uIGlzIHRoYXQgb25jZSB0aGlz
-IGlzIHJlY29yZGVkLCB3ZQ0KID4+IGNhbiBpbnZlc3RpZ2F0ZSB0aGUgcHJvZ3JhbXMgcnVubmlu
-ZyBvbiBhbnkgbWFjaGluZSB3aGVyZSB0aGlzIGlzbid0IDAuDQogPg0KID4gTm8gb25lIHdpbGwg
-dW5kZXJzdGFuZCB3aGF0IHRoZXNlIHN0YXRzIGFjdHVhbGx5IG1lYW4gdW5sZXNzIHRoaXMgaXMN
-CiA+IHdlbGwgZG9jdW1lbnRlZCBzb21ld2hlcmUuDQogPg0KID4gQW5kIHRoZSBtb3JlIHNvIHRo
-ZXNlIGFyZSBub3QgZ2VuZXJpYyBzdGF0cyBidXQgYnRyZnMgc3BlY2lmaWMuDQoNClRoYXQncyBm
-aW5lLCBJJ2xsIHNlbmQgYSBwYXRjaCB0byBEb2N1bWVudGF0aW9uL2NoLXN5c2ZzLnJzdCBpbiAN
-CmJ0cmZzLXByb2dzIG9uY2UgdGhpcyBpcyBpbi4gVGhhdCdzIHdoYXQgd2UgaGF2ZSBmb3IgY29t
-bWl0X3N0YXRzLg0KDQogPiBTbyBJJ20gd29uZGVyaW5nIHdoYXQgb3RoZXIgZmlsZXN5c3RlbXMg
-ZG8gaW4gc3VjaCBhIHNpdHVhdGlvbj8gRmFpbA0KID4gd2l0aCAtRUlOVkFMSUQ/IE9yIGlzc3Vl
-IGEgcmF0ZWxpbWl0ZWQgV0FSTklORz8NCg0KT19ESVJFQ1QgaXNuJ3QgcGFydCBvZiBQT1NJWCwg
-c28gdGhlcmUncyBubyBzdGFuZGFyZC4gRXh0NCBzZWVtcyB0byBkbyANCnNvbWV0aGluZyBzaW1p
-bGFyIHRvIGJ0cmZzLiBYRlMgaGFzIHhmc19maWxlX2Rpb193cml0ZV91bmFsaWduZWQoKSwgDQp3
-aGljaCBhcHBlYXJzIHRvIHNvbWVob3cgZG8gdW5hbGlnbmVkIERJTy4gQmNhY2hlZnMgZmFpbHMg
-d2l0aCAtRUlOVkFMLiANCk5vYm9keSBpc3N1ZXMgYSB3YXJuaW5nIGFzIGZhciBhcyBJIGNhbiBz
-ZWUuDQoNCiA+IExvZ2dpbmcgYSB3YXJuaW5nIGlzIGEgdmVyeSBnb29kIHN0YXJ0aW5nIHBvaW50
-IGZvciBhbiBpbnZlc3RpZ2F0aW9uDQogPiBvZiB0aGUgcnVubmluZyBwcm9ncmFtIG9uIGEgbWFj
-aGluZS4gRXZlbiBtb3JlLCB0aGUgd2FybmluZyBjYW4gcG9pbnQNCiA+IHlvdSBleGFjdGx5IHRv
-IHRoZSBvZmZlbmRpbmcgdGFzayB3aGljaCB0aGUgc3RhdHMgd29uJ3QgZG8gYXMgdGhleSBhcmUN
-CiA+IGFub255bW91cyBpbiBuYXR1cmUuDQoNCkJ1dCB0aGVuIHlvdSBnZXQgYSBjbG9zZWQtc291
-cmNlIHByb2dyYW0gdGhhdCBkb2VzIHVuYWxpZ25lZCBPX0RJUkVDVA0KSS9PLCBhbmQgbm93IHlv
-dSBoYXZlIGRtZXNnIHRlbGxpbmcgeW91IGFib3V0IGEgcHJvYmxlbSB5b3UgY2FuJ3QgZml4Lg0K
-DQpJIGJlbGlldmUgYnRyZnMnIERJTyBmYWxsYmFjayBpcyBtb3JlIG9yIGxlc3Mgd2hhdCBKZW5z
-JyBwcm9wb3NlZCANClJXRl9VTkNBQ0hFRCBwYXRjaGVzIGFsbG93IHlvdSB0byBkbyBpbnRlbnRp
-b25hbGx5LCBzbyBpdCdzIG5vdCB0aGF0IA0KdGhlcmUncyBub3QgYSBsZWdpdGltYXRlIHVzZSBj
-YXNlIGZvciBpdC4gSXQncyBqdXN0IHRoYXQgaXQncyBuZWFybHkgDQphbHdheXMgYSBwcm9ncmFt
-bWVyIG1pc3Rha2UuDQoNCk1hcmsNCg0K
+Currently btrfs_get_free_objectid() uses a mutex to protect
+free_objectid; I'm guessing this was because of the inode cache that we
+used to have. The inode cache is no more, so simplify things by
+replacing it with an atomic.
+
+There's no issues with ordering: free_objectid gets set to an initial
+value, then calls to btrfs_get_free_objectid() return a monotonically
+increasing value.
+
+This change means that btrfs_get_free_objectid() will no longer
+potentially sleep, which was a blocker for adding a non-blocking mode
+for inode and subvol creation.
+
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+---
+ fs/btrfs/ctree.h    |  4 +---
+ fs/btrfs/disk-io.c  | 43 ++++++++++++++++++-------------------------
+ fs/btrfs/qgroup.c   | 11 ++++++-----
+ fs/btrfs/tree-log.c |  3 ---
+ 4 files changed, 25 insertions(+), 36 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 1096a80a64e7..04175698525b 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -179,8 +179,6 @@ struct btrfs_root {
+ 	struct btrfs_fs_info *fs_info;
+ 	struct extent_io_tree dirty_log_pages;
+=20
+-	struct mutex objectid_mutex;
+-
+ 	spinlock_t accounting_lock;
+ 	struct btrfs_block_rsv *block_rsv;
+=20
+@@ -214,7 +212,7 @@ struct btrfs_root {
+=20
+ 	u64 last_trans;
+=20
+-	u64 free_objectid;
++	atomic64_t free_objectid;
+=20
+ 	struct btrfs_key defrag_progress;
+ 	struct btrfs_key defrag_max;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f09db62e61a1..0543d9c3f8c0 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -659,7 +659,7 @@ static void __setup_root(struct btrfs_root *root, str=
+uct btrfs_fs_info *fs_info,
+ 	RB_CLEAR_NODE(&root->rb_node);
+=20
+ 	btrfs_set_root_last_trans(root, 0);
+-	root->free_objectid =3D 0;
++	atomic64_set(&root->free_objectid, 0);
+ 	root->nr_delalloc_inodes =3D 0;
+ 	root->nr_ordered_extents =3D 0;
+ 	xa_init(&root->inodes);
+@@ -678,7 +678,6 @@ static void __setup_root(struct btrfs_root *root, str=
+uct btrfs_fs_info *fs_info,
+ 	spin_lock_init(&root->ordered_extent_lock);
+ 	spin_lock_init(&root->accounting_lock);
+ 	spin_lock_init(&root->qgroup_meta_rsv_lock);
+-	mutex_init(&root->objectid_mutex);
+ 	mutex_init(&root->log_mutex);
+ 	mutex_init(&root->ordered_extent_mutex);
+ 	mutex_init(&root->delalloc_mutex);
+@@ -1133,16 +1132,12 @@ static int btrfs_init_fs_root(struct btrfs_root *=
+root, dev_t anon_dev)
+ 		}
+ 	}
+=20
+-	mutex_lock(&root->objectid_mutex);
+ 	ret =3D btrfs_init_root_free_objectid(root);
+-	if (ret) {
+-		mutex_unlock(&root->objectid_mutex);
++	if (ret)
+ 		goto fail;
+-	}
+=20
+-	ASSERT(root->free_objectid <=3D BTRFS_LAST_FREE_OBJECTID);
+-
+-	mutex_unlock(&root->objectid_mutex);
++	ASSERT((u64)atomic64_read(&root->free_objectid) <=3D
++		BTRFS_LAST_FREE_OBJECTID);
+=20
+ 	return 0;
+ fail:
+@@ -2730,8 +2725,9 @@ static int __cold init_tree_roots(struct btrfs_fs_i=
+nfo *fs_info)
+ 		}
+=20
+ 		/*
+-		 * No need to hold btrfs_root::objectid_mutex since the fs
+-		 * hasn't been fully initialised and we are the only user
++		 * No need to worry about atomic ordering of btrfs_root::free_objectid
++		 * since the fs hasn't been fully initialised and we are the
++		 * only user
+ 		 */
+ 		ret =3D btrfs_init_root_free_objectid(tree_root);
+ 		if (ret < 0) {
+@@ -2739,7 +2735,8 @@ static int __cold init_tree_roots(struct btrfs_fs_i=
+nfo *fs_info)
+ 			continue;
+ 		}
+=20
+-		ASSERT(tree_root->free_objectid <=3D BTRFS_LAST_FREE_OBJECTID);
++		ASSERT((u64)atomic64_read(&tree_root->free_objectid) <=3D
++			BTRFS_LAST_FREE_OBJECTID);
+=20
+ 		ret =3D btrfs_read_roots(fs_info);
+ 		if (ret < 0) {
+@@ -4931,10 +4928,11 @@ int btrfs_init_root_free_objectid(struct btrfs_ro=
+ot *root)
+ 		slot =3D path->slots[0] - 1;
+ 		l =3D path->nodes[0];
+ 		btrfs_item_key_to_cpu(l, &found_key, slot);
+-		root->free_objectid =3D max_t(u64, found_key.objectid + 1,
+-					    BTRFS_FIRST_FREE_OBJECTID);
++		atomic64_set(&root->free_objectid,
++			     max_t(u64, found_key.objectid + 1,
++				   BTRFS_FIRST_FREE_OBJECTID));
+ 	} else {
+-		root->free_objectid =3D BTRFS_FIRST_FREE_OBJECTID;
++		atomic64_set(&root->free_objectid, BTRFS_FIRST_FREE_OBJECTID);
+ 	}
+ 	ret =3D 0;
+ error:
+@@ -4944,20 +4942,15 @@ int btrfs_init_root_free_objectid(struct btrfs_ro=
+ot *root)
+=20
+ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid)
+ {
+-	int ret;
+-	mutex_lock(&root->objectid_mutex);
++	u64 val =3D atomic64_inc_return(&root->free_objectid) - 1;
+=20
+-	if (unlikely(root->free_objectid >=3D BTRFS_LAST_FREE_OBJECTID)) {
++	if (unlikely(val >=3D BTRFS_LAST_FREE_OBJECTID)) {
+ 		btrfs_warn(root->fs_info,
+ 			   "the objectid of root %llu reaches its highest value",
+ 			   btrfs_root_id(root));
+-		ret =3D -ENOSPC;
+-		goto out;
++		return -ENOSPC;
+ 	}
+=20
+-	*objectid =3D root->free_objectid++;
+-	ret =3D 0;
+-out:
+-	mutex_unlock(&root->objectid_mutex);
+-	return ret;
++	*objectid =3D val;
++	return 0;
+ }
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index aaf16019d829..b41e06d5d2fb 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -472,18 +472,19 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *=
+fs_info)
+ 			 *
+ 			 * Ensure that we skip any such subvol ids.
+ 			 *
+-			 * We don't need to lock because this is only called
+-			 * during mount before we start doing things like creating
+-			 * subvolumes.
++			 * We don't need to worry about atomic ordering because
++			 * this is only called during mount before we start
++			 * doing things like creating subvolumes.
+ 			 */
+ 			if (is_fstree(qgroup->qgroupid) &&
+-			    qgroup->qgroupid > tree_root->free_objectid)
++			    qgroup->qgroupid > (u64)atomic64_read(&tree_root->free_objectid))
+ 				/*
+ 				 * Don't need to check against BTRFS_LAST_FREE_OBJECTID,
+ 				 * as it will get checked on the next call to
+ 				 * btrfs_get_free_objectid.
+ 				 */
+-				tree_root->free_objectid =3D qgroup->qgroupid + 1;
++				atomic64_set(&tree_root->free_objectid,
++					     qgroup->qgroupid + 1);
+ 		}
+ 		ret =3D btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+ 		if (ret < 0)
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 955d1677e865..9d19528fee17 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -7325,9 +7325,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_=
+root_tree)
+ 			 * We have just replayed everything, and the highest
+ 			 * objectid of fs roots probably has changed in case
+ 			 * some inode_item's got replayed.
+-			 *
+-			 * root->objectid_mutex is not acquired as log replay
+-			 * could only happen during mount.
+ 			 */
+ 			ret =3D btrfs_init_root_free_objectid(root);
+ 			if (ret)
+--=20
+2.45.2
+
 
