@@ -1,95 +1,160 @@
-Return-Path: <linux-btrfs+bounces-11047-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11048-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D785FA19DD9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2025 06:06:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CC19A1ABEA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2025 22:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C539918879C7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2025 05:06:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF7D4168F50
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2025 21:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797D31C07C3;
-	Thu, 23 Jan 2025 05:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD0E1CAA7F;
+	Thu, 23 Jan 2025 21:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dCd+MD+B";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KGXAyhTA";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dCd+MD+B";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KGXAyhTA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4FB14831C
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2025 05:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0B116EC19;
+	Thu, 23 Jan 2025 21:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737608764; cv=none; b=kE+LY8NH6Uw8YBT8mSQMmlESHYIR1L5DyEhwB38Om4/sSK6l0pHtUJjeXWU5OCOlwevrngN/fKqBXvRk3zkRfA1n8CuHTICjHFtUqQWpiB9K8bPYH3/WB1v9+KZpnrumt0qhqClp3du3sfY/mN8JPXWdKfBJ0QKFpkd6DSxJwsQ=
+	t=1737667979; cv=none; b=R4DSqeobT5Tcg+TtxsoA1eRJNSBrlpcYd7odCTGSI0oOUgCSXPNVy8/jr3NxnGgTNLJPtKm71EUylwJnm+BXIMAvCMpKuBa6JveZrHE+uBFBBGJOgpBE1mdH/g9fsNdmF/o5ymU1wj7Wq0dqEzi2F3ETDca8Wvi5sEeE9iO4oNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737608764; c=relaxed/simple;
-	bh=9lat9TYPsdJJ9HzvHSrW5C1qF2mUhBzr4l2eyxOFupw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=W+HO3p64RPWz/sL3cCJJ7P5Dv81HRedzNplc+yw5sd/cnv07MDHJ4M3cCubNQeCD18CTHapnyuTHjZ1FbB3E3NQnNmsrqtJcaNt/HvAEga2cEkII0WDofOJqQNGwPooAv3AXwEepQ6s7d/3Uq+2VmtmGY9+EH7mS5Qj/OA/eeJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a814bfb77bso12135295ab.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2025 21:06:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737608761; x=1738213561;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YMokocpQordxOMBpFMkHNLKOmcns6LVUEf4+Cy6nqGA=;
-        b=re6+guoVT4t2PaO4BjIyLZ6jj58HKyhbPVarr5Tegb7m8mTYczW8fxcV8W4jiNB3yc
-         wCJ8uTSuzyNNSm6eeJXzZjACRr3weW/bPh0oBhS44WVvqO2e7+CR490dNQwrqCwIl+04
-         vW8NcQapRBR1SzgJtg9/TsOJUS5uqnsy46UxEDfo4GYl/2r8wiQQGnZmSAkgD4oXcx5F
-         jXB/rptvBIVekee4aNAGwTATWvFdKe5zBQhocxTmR04OwvbAwo2z3DhqWBf14+PllpXp
-         UhwONVqttxeC0vNPiXyKTOQhpt563RJTmGx7Ogl01EgbON0LdraToUYlULI+X87eSPpf
-         8xZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWruTWuJLqzNqRpbbuoN8GbiO7RaNA++dhXSxFD+VBVkhYqn/BP+3BWyE/oPtr9/Z7nlcTh+3n53es/PQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQW5BJioOx21ODqs0cbeAn4fAyM2FzNAJyqyOp5ToGrrdha37x
-	s+uz2Y81bgmlWAhgUY2gy8YMYKfTQLP9R9szHbGelJVA6OBWnwK9kp3D74/4GrcchkBOgqLnbrM
-	v5u5qgkmAK/T5NfdRKvuvJ0YRx9OuJiX0CxQSZ5EpUFPxpwWpINM8e20=
-X-Google-Smtp-Source: AGHT+IEtvNF5HgFqgR+tiC85tI4HMtMzC2e8hiosT6luwUOG8n/UR0GYVTcsXDmJq3dsnmv5bov8RMKr8uil7cpQqYlR+Lv19Sky
+	s=arc-20240116; t=1737667979; c=relaxed/simple;
+	bh=RCiYPV6+4Y00tmS+wnEkC7Dz0HinWScQvMtPGx8vZME=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fTB5DjGHviaRE+dmRIUXKeSK106g8HGjV/W60FNL45RVNPpeCPBzJtJ2ZZmUiNDtB5xcpkfUznfcZTc5hmIlUeZvwzDD9D/VzjYDcTotWpsTl/bcH8i3KotFGsJvKn9VwyWvAi/7GNUvC9lBPB7BPM7CkcSGpe5CBqgut4t8zY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dCd+MD+B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KGXAyhTA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dCd+MD+B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KGXAyhTA; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5974F21172;
+	Thu, 23 Jan 2025 21:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737667975;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M92FNcMmTO49klCoBey9cGZIZPfRPbVB5TcmGuLarCA=;
+	b=dCd+MD+B6fRNl6M2qZcRQnSWhkzCpfKmXUmdD1+6iKAcfMtU4K4ZQ9Hz/s9lWaXB4T0ed1
+	OKFvUgqdFOEkYTSqVdGls3Cn3JKfaJhi49dWhvPRwl89DtIlScXXeuMHcLrrITa8XlkcQD
+	G/b2O1Z5iXa4oEBlKGo8Liaz7Z3USCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737667975;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M92FNcMmTO49klCoBey9cGZIZPfRPbVB5TcmGuLarCA=;
+	b=KGXAyhTAGhrNcWgj6RYIk04AhAGVFYlKRhrZ8pDgD+i7FjM+lxlp4bd9tHSh5xcxPFFElg
+	xu1K8fqeie/yYUDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dCd+MD+B;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KGXAyhTA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737667975;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M92FNcMmTO49klCoBey9cGZIZPfRPbVB5TcmGuLarCA=;
+	b=dCd+MD+B6fRNl6M2qZcRQnSWhkzCpfKmXUmdD1+6iKAcfMtU4K4ZQ9Hz/s9lWaXB4T0ed1
+	OKFvUgqdFOEkYTSqVdGls3Cn3JKfaJhi49dWhvPRwl89DtIlScXXeuMHcLrrITa8XlkcQD
+	G/b2O1Z5iXa4oEBlKGo8Liaz7Z3USCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737667975;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M92FNcMmTO49klCoBey9cGZIZPfRPbVB5TcmGuLarCA=;
+	b=KGXAyhTAGhrNcWgj6RYIk04AhAGVFYlKRhrZ8pDgD+i7FjM+lxlp4bd9tHSh5xcxPFFElg
+	xu1K8fqeie/yYUDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E591136A1;
+	Thu, 23 Jan 2025 21:32:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ecvOCoe1kmd3IAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 23 Jan 2025 21:32:55 +0000
+Date: Thu, 23 Jan 2025 22:32:53 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: keep `priv` struct on stack for sync reads in
+ `btrfs_encoded_read_regular_fill_pages()`
+Message-ID: <20250123213253.GM5777@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250115152458.3000892-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:450b:b0:3a7:e1c3:11f5 with SMTP id
- e9e14a558f8ab-3cfbc16e8d6mr17441575ab.6.1737608761558; Wed, 22 Jan 2025
- 21:06:01 -0800 (PST)
-Date: Wed, 22 Jan 2025 21:06:01 -0800
-In-Reply-To: <67432dee.050a0220.1cc393.0041.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6791ce39.050a0220.194594.0020.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in __folio_start_writeback
-From: syzbot <syzbot+aac7bff85be224de5156@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com, 
-	fdmanana@kernel.org, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, nogikh@google.com, peterz@infradead.org, 
-	quwenruo.btrfs@gmx.com, syzkaller-bugs@googlegroups.com, willy@infradead.org, 
-	wqu@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250115152458.3000892-1-neelx@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 5974F21172
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:replyto];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Jan 15, 2025 at 04:24:58PM +0100, Daniel Vacek wrote:
+> Only allocate the `priv` struct from slab for asynchronous mode.
+> 
+> There's no need to allocate an object from slab in the synchronous mode. In
+> such a case stack can be happily used as it used to be before 68d3b27e05c7
+> ("btrfs: move priv off stack in btrfs_encoded_read_regular_fill_pages()")
+> which was a preparation for the async mode.
+> 
+> While at it, fix the comment to reflect the atomic => refcount change in
+> d29662695ed7 ("btrfs: fix use-after-free waiting for encoded read endios").
+> 
+> Signed-off-by: Daniel Vacek <neelx@suse.com>
+> ---
+> v2 reduces the patch only to functional changes as suggested by Johannes
+> and Dave.
 
-commit 66951e4860d3c688bfa550ea4a19635b57e00eca
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Mon Jan 13 12:50:11 2025 +0000
-
-    sched/fair: Fix update_cfs_group() vs DELAY_DEQUEUE
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11c129f8580000
-start commit:   228a1157fb9f Merge tag '6.13-rc-part1-SMB3-client-fixes' o..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=402159daa216c89d
-dashboard link: https://syzkaller.appspot.com/bug?extid=aac7bff85be224de5156
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13840778580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17840778580000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: sched/fair: Fix update_cfs_group() vs DELAY_DEQUEUE
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Added to for-next, thanks.
 
