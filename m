@@ -1,56 +1,81 @@
-Return-Path: <linux-btrfs+bounces-11053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D79D4A1B03B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 07:12:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5682BA1B08C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 07:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 776423AA55F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 06:12:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24FAC188B838
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 06:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B926C1D90BC;
-	Fri, 24 Jan 2025 06:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2571B1DA2F6;
+	Fri, 24 Jan 2025 06:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LVVSsweW"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AI0lT2Tw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBC31E495
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 06:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931301D63DF
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 06:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737699122; cv=none; b=f8/O19rzPP1eeT1x2H4iiqbNE5I1K1WtM8MTnzG9+4neoUyLagFtCmns1yw0y1Ko7g/oARMjdXJz6R02li5c668mqzv7xeNsm3EQ2HnICFFUd2rUzBuInEuMkORPSF+kOA56GIy8WkLkVbXiaRe2qri71ht+YKyUQYsHHZ8NJZs=
+	t=1737701866; cv=none; b=eCmFemCCwb6GnzQpPCz7kZEfsWiALFNya6yvkdmxMxeFOk8x04UX/6L1S2ratacELwxYhcveRdI/bedqEGodshmh88Z83Z8O8FyeefTZTFKSnKOo5/LdwDsxAVGaI+BC8kLDvsyAfKDJ0XqFXEnGhUTL6Hy1G2B4NC5q6Q/fzEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737699122; c=relaxed/simple;
-	bh=R2yx+EJ8SXOhURz/VrCpKWYzYF6DXlVwjLqjF5F2xUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nmrmKz/sAHcoewjMMkhlAqLJWN8ZfHK7QvKAiYvafya9Rndikb4NZ9+Yy7PpVO94JpgmxeXSY4CIepRhS7Zke+WS0VouvrumCnb05+x/l5HdilFf5f9prvug8aHZT5oAtANFAFZTqkRVHl5gHev8nDLEkSNeP/th6ibpJx0EhXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LVVSsweW; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1737699112; x=1738303912; i=quwenruo.btrfs@gmx.com;
-	bh=JfqobUuED/xbu2+xJQmX15uV1pXL7lbp3B7lK7RONxY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=LVVSsweWLMOB0y19U66ZfowlU4MhrcW4MkHFXh7OO//zXE2wnCM3MPEW5pkG4Yff
-	 3A5xuT2lIijd0pApKbmvPONBoW7Fl2mpSh4AIhQUVLsR2rKhgLwcrgTh0SMa76kOb
-	 f2nqytDqKZk6hWDfoLKEFdogTEwQzXfZ08Rfl00XbSMbx9pGOSJZ/97TDiSewEzWq
-	 L20X9n8wbRk9o6/8bn5qdmr37LKEAcC8rs6JVuTueFAzDtiU9B8n+GvG8RJ2jCuS/
-	 ue+g212e3UCNGhSuGmDInJuyOnhvJYhViseKTDT2JGzWgWYHVVWpt2o6/KNF//XFm
-	 3ZWh0Sn+dNb6yzNtoQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPXdC-1tnwNp26U6-00R8xr; Fri, 24
- Jan 2025 07:11:52 +0100
-Message-ID: <6206360a-545d-4842-b43d-1855f78d7da5@gmx.com>
-Date: Fri, 24 Jan 2025 16:41:46 +1030
+	s=arc-20240116; t=1737701866; c=relaxed/simple;
+	bh=PgcRxBEr+KrPV1JpgiAsh/2jn6AqAOoGwKIj3gZFXQ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=caqh+tZnJ89MenrCMDj++zOw+PtPKSYV9pubp/tz3pVYV/ZY+1uYk/WMFE3Otlxlq8r15PnYFfuXxGfHx7gXBn3QFx8u2/d1Ugy4lE2mWMD9LlPq+tZCnkDNWIv38qk6YcJG9fu/55jt9CJTvtLnsGvNeyfwonUY1uYVJfQUxK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AI0lT2Tw; arc=none smtp.client-ip=209.85.218.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-aa684b6d9c7so314482266b.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2025 22:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1737701862; x=1738306662; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=SubiPuTWupgqLLZV6rbyBfVK1lGJu2yxKy9+6k+f0VQ=;
+        b=AI0lT2TwI+dfh9uW/D+Ml0sC2QyA5aJGLyymlwUhro1nvTtJ9eNGDzP9Idq9mL9tZm
+         Pcqd7twTumDZ2JI4kojnyNr/9a5FxLANAz+OT3/UT+FVBazxID8kzDyNMFgi2VzE1bAU
+         BH5HCexSCKbb3scR9Bibdo2AM8ayA+VVVqjGRwqN9P2AQaW3Od7723yk5WqleH1MyPM2
+         UI89IIq9wE73/fgNKC0kQqw7NURk9Kkqz+s0IGgYQMgEHBP0UCzt1nN1pMJfq+mUxX3H
+         yu4Nr5TmTju7gyS4K15MfQhriwJ7jqjMJOpzfDt1+PyhN1NR8D9ftE430DSHQIp03HzC
+         OC/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737701862; x=1738306662;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SubiPuTWupgqLLZV6rbyBfVK1lGJu2yxKy9+6k+f0VQ=;
+        b=jPMq7Z0JPGvhfEPISTt7cdnwUkYz/OPDv0fXGngxgTSbdsAPHccbIlUjKSLanbrzVi
+         g5WLXyKDvzVjZrqEc68BaelzZWlOfC0CpIVhKRhmuEGcLCqVCbbsVUnfxuS9xL7ZnUcg
+         yCWQEUjobM7PHSBGmYMrcDF8/nBkitqUJVVOHt3S5EPkqcsWEjliP/0VBrZix9opw6yB
+         Jmx+AVQq9jIjUtkJBLsYGMdUhlS+z249RDGjasep55qJTaN22nIplYKKMgjwa1xc+mQs
+         e2T8DAdoKeI9a7PJBmgSViSfeFjjFe8hG40tNQBx+KlWBT8ZZxTTbRt5WO6PLmeX6CAU
+         p2CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX1tU0Kg7kr+8wph9lYJNB4faKbCeUp+i19JTp+chVY6MbI/0M2rmcSVQGG5Wbfg0hxgDmklFTXEasexg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSpIPZ8qaEFK0dQxFktOHkgX+GV6azCfUBRgP8nil4ygWO3EC9
+	yLzXK4lvbWhTsQdWEvYP9JuNG+lHzNmcIAWFhXsLuR4BkHIsLQkGtcgM2poduBnPbnGql5+bzX6
+	3ka+pdQ==
+X-Gm-Gg: ASbGnctTmUjfMgmFvbdmkT+yUnTTstJKSz4W6MKqGZw7glAYniutohmDkgDRxRgisLp
+	2fN2T8KBlGvC2OlL0LcYE3bfU0rbEuL2yOJdniqEjOV2ePNmH0rG/EeSQqLe+dSFjekxnxG0u0x
+	RgqoYM/PaLf6kCamIYiQriNzYnh4Ar2YjWn3WA09rC6TtOwsM6072sxjzN8E50Dbjn4kmyeXyb/
+	iboXfZh19TNbhrOzZcl3emQ4U1l5zNBSlckIhRAbSYe0z+fIFwBEdpKAYGRmdNHBWIM0zGBZ+Bo
+	eHMKXpCPC5h9zDeeHz7SS4X1KtMk3dPg
+X-Google-Smtp-Source: AGHT+IHdkXDf3rchSxQlPxkbr5AXpk+7Q+wQO51oC7bsf1Ine483AVRHxsoH8djEjmAvQGkVfxbGdg==
+X-Received: by 2002:a17:906:2cc4:b0:ab3:a3b4:f91c with SMTP id a640c23a62f3a-ab3a3b4f9b3mr2028644766b.34.1737701861366;
+        Thu, 23 Jan 2025 22:57:41 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffb194c0sm878320a91.43.2025.01.23.22.57.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2025 22:57:40 -0800 (PST)
+Message-ID: <d6142943-8db9-4569-8228-f0c09b65298f@suse.com>
+Date: Fri, 24 Jan 2025 17:27:36 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,100 +83,104 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: Fix two misuses of folio_shift()
-To: dsterba@suse.cz, Matthew Wilcox <willy@infradead.org>
-Cc: Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <20250121054054.4008049-1-willy@infradead.org>
- <20250121054054.4008049-2-willy@infradead.org>
- <33fa9947-cead-4f38-a61a-39b053f37a03@suse.com>
- <20250121161011.GG5777@suse.cz> <Z4_gmbY6_sTVAeIL@casper.infradead.org>
- <20250122152450.GJ5777@twin.jikos.cz>
+Subject: Re: Tree checker pre-write check finds corrupt leaf. drives now empty
+To: =?UTF-8?Q?T=C3=A9o_Adams?= <ta@hexagon.cx>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <rvOGZGZ2KKMe7x59is0hpo4PXWgjMZ9wuj4H3byWhiAZnJfWC2OHOQ4b7LYuvlBKVz9giNM_qjh9TZaq0Aa7mcqa9uNF6fxdEeqnbLQ_tP0=@hexagon.cx>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250122152450.GJ5777@twin.jikos.cz>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <rvOGZGZ2KKMe7x59is0hpo4PXWgjMZ9wuj4H3byWhiAZnJfWC2OHOQ4b7LYuvlBKVz9giNM_qjh9TZaq0Aa7mcqa9uNF6fxdEeqnbLQ_tP0=@hexagon.cx>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NeaoBslG5z+/fzEG/Egjs5r9ihHmws3/PC6rp4RxSk+EOH0+jXq
- sBOt0FuwtdGPesi65YEaYfAwc1bRgMAqXowsSGT7GtbicK0G16kdMe4PNQz3FCDezdVKMt8
- dYs5/s4XxS/orPy11sqGrVaPhC++cJRR8pWaLPgZ3wPPRhO6xWbePFz5WuyNq3+snv7cBDx
- V3NlnwNfiR/p/vKU4tPNA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:uOL/cdAXvmk=;6JiH0gmE30hRXDJJkt14+8tDB8S
- WFQ/9F3V+JH5Z66tzhlH/W87cG9ICEc/T4AQEEVsDTrbOsZdkOTX5YpGhQJZD1Mc6NXfSszZ5
- 3VR9qBEbqfXoWwZ8gOaF9ByuMgFpGFDDyixizt9VG/j4BnXAbOsEnTak7jylXSS4CslpZbJrY
- qvC5rn5DYS6relvuDRQMix8RgLPIJJRgq3mtAjEmfLAqGO+Dutk+JfbZ9sRrCLamxlFhnEJKn
- 7Ii8cDGPcSWEVqTRLAoEoOOjHxrGRvwXEhLo77f8dYuBOMUVxPb08Wy+LnxUlVkseGprFZvJ6
- dxieI8EQgKjUUKa492FBpgCUOfSAh2vimHEf+dis/EmqyKkr2z+8JS5UaMcS8OFmao5gWdHoF
- yBD6Exv+nh7Ok6YPSuqasbnpMuvQH/5ilGry836w1hVdaPbydm1iUNXN/AvUtF+StWURSXNcq
- WhfquwyLNAzZ9ng5jIhMSg+Fg+ZEt9hEuIDziF7Xj+4oVhbIBMF/9U8efbT3mHGQgNxwrbg9D
- MUbvrMQSfPjDJw+N1a0yOGva8uNoch4aheHjVFTCf06Fx1H4uk+qpRaDArG64u/IG7Ytwtp2t
- 5OIPEbUg76UKqbyzLyUjZH41L7cS4YZAseJaY+Pu0qB2k2z/GNQSG7dx2TEBQLcr7GgC5qTRg
- iWDH2Ep1YFSs80+Rt02mnwS8SxIqUY7F7+XKz8kOP9RA1h5m2K2eMToh+wu2HOAY7RrtkS0sC
- p+bcphV4/Kb8oOiJzlgBaAIl6h6I5Uk6xwLznUJ9yvq3VYkUtTXZvNERVHzOMdPU/w1n8nGsk
- evf8qMh6JhPDkrXMVxg+z7o98faQZNigq41NOAkKUED7kaJJx6k0stjlkpzAx5wEGfntQfn0f
- vYXCw9aPbvzpiC4vtI4qwv7ezgABKOihgveMR74udNwVS9kiFDhcM40TBtq9LTNMM9Sh404jK
- F2jB0YpoeqDDEEMbj0j+bqOOPBe9gPwjHIccNGZGQSXUGvR/qonGXCvPwltAfXfm4O8JdH4NW
- vBHITsQeUySwYfeGAiT0yCRa0v/W6ZZOP6pWqSnZoaPglHtj/RNBf8XbGIeIIVnppjKcviIqA
- c7p7mH9Mdh26hPV9w0u6V1WhqstNxDLp4S4RzdXbyPK6oduiQr9Q9paxsb6dLm8kLirAMbKj/
- UQPgfsj5xer8kX5/Hew5VYm7uJAgKSsTyg+q3a5uh+w==
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/1/23 01:54, David Sterba =E5=86=99=E9=81=93:
-> On Tue, Jan 21, 2025 at 05:59:53PM +0000, Matthew Wilcox wrote:
->>>>> +			if (folio_contains(folio, i_size >> PAGE_SHIFT) &&
->>>>
->>>> Although folio_contains() is already a pretty good improvement, can w=
-e
->>>> have a bytenr/i_sized based solution for fs usages?
->>>
->>> Good point, something like folio_contains_offset() that does the corre=
-ct
->>> shifts.
->>
->> I'd call it folio_contains_pos(), but I'm not sure there's a lot of
->> users.  We've got a lot of filesystems converted now, and btrfs is the
->> first one to want something like that.  I've had a look through iomap
->> and some other filesystems, and I can't see anywhere else that would us=
-e
->> folio_contains_pos().
->
-> Ok then, we can live with that, but please keep it in mind for future
-> folio API updates. Thanks.
->
-Then the whole series looks good to me.
+在 2025/1/24 12:56, Téo Adams 写道:
+> Hello,
+> 
+> I just read on your https://btrfs.readthedocs.io/en/latest/Tree-checker.html page that you'd benefit from reports of corruption caught by tree checker. Obviously it would be great if you have advice on how to recover from my current situation, or avoid it in the future but regardless I hope the data I can provide will be helpful too you.
+> 
+> For context, possibly too much, I am running NixOS on a system with 3 different drives, all of which use BTRFS.
+> Drive 1 (nvme) has two partitions: ESP for boot and a luks partition with 3 subvolumes that house /root, /nix (where the OS lives) and /home
+> Drive 2 (nvme) has a single luks partition and subvol used for storing large media. It is not used very often.
+> Drive 3 (ssd) has a single luks partition and subvol that houses my qemu vm images.
+> 
+> When the incident occurred I had a single VM running via libvirt and had the usual assortment of multiple terminals, neovim instances (all files being edited are on Drive 1), and browser windows. The only thing "using" Drive 3 was the libvirt and nothing was using Drive 2.
+> 
+> While attempting to write a neovim buffer I got an error about a database I don't recognize being read-only, my system began to stutter, and I noticed in a btop monitor that my RAM was pinned. While closing anything I didn't need and trying to save my work, my WM (hyprland/wayland) froze for about 20 seconds but recovered. from there the system was very unresponsive, I could change windows but couldn't kill anything. Eventually I had to reboot.
+> 
+> Later on I went to spin up the VM but it complained that the VM didn't exist. on further investigation I discovered that both Drive 2 and Drive 3 are completely empty. They are both unlocked (which is automated using a secondary unlock key used shortly after Drive 1 is unlocked), mounted, and I can cd into them but there is no content at all.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+If it's write time tree-checker as described by the title, please run a 
+memtest first, as that's the most common reason.
 
-And since the whole series is reviewed, should I merge this series into
-for-next now?
+I do not think the incident is directly linked to the lost of files.
+Unless the fs is already corrupted.
+
+Especially for drive 2, since you're not touching it frequently, it 
+needs a lot of work to delete those many files.
+
+The same for drive 3.
+
+Mind to check if the free/available space for drive 2/3?
+Are they really empty or it's still taking space?
+
+> 
+> I'm completely at a loss to how this may have happened.  The clue that led me to this email came from the following kernel message in logs that occurred around the same time.
+> 
+> 
+> Jan 22 19:03:10 ghost kernel: BTRFS critical (device dm-0): corrupt leaf: root=258 block=67236839424 slot=43, bad key order, prev (18446744073709551611 48 42564423) current (184467440737095>
+> Jan 22 19:03:10 ghost kernel: BTRFS info (device dm-0): leaf 67236839424 gen 313844 total ptrs 77 free space 11791 owner 258
+> Jan 22 19:03:10 ghost kernel:         item 0 key (42725548 108 0) itemoff 15251 itemsize 1032
+> Jan 22 19:03:10 ghost kernel:                 inline extent data size 1011
+> Jan 22 19:03:10 ghost kernel:         item 1 key (42725554 1 0) itemoff 15091 itemsize 160
+> Jan 22 19:03:10 ghost kernel:                 inode generation 313844 size 23509 mode 100600
+> Jan 22 19:03:10 ghost kernel:         item 2 key (42725554 12 75511) itemoff 15041 itemsize 50
+> Jan 22 19:03:10 ghost kernel:         item 3 key (42725554 108 0) itemoff 14988 itemsize 53
+> Jan 22 19:03:10 ghost kernel:                 extent data disk bytenr 5280100352 nr 8192
+> Jan 22 19:03:10 ghost kernel:                 extent data offset 0 nr 24576 ram 24576
+
+Full dmesg please.
+
+The important leaf dump is long, and the digest is definitely not enough 
+for us to figure out what's going wrong.
 
 Thanks,
 Qu
+> 
+> 
+> Fortunately I do have backups of most of the content that is missing from the drives.
+> If there's any additional info I can provide, please let me know.|
+> 
+> Kind regards,
+> Teo
+> 
+> 
+> 
+> Sent with Proton Mail secure email.
+
 
