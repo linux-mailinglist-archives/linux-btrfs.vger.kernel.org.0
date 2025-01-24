@@ -1,191 +1,234 @@
-Return-Path: <linux-btrfs+bounces-11060-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11061-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E818A1B8A1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 16:14:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89645A1BC89
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 19:59:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E6C716ABB9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 15:14:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB6717A540A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 18:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5277D1531EF;
-	Fri, 24 Jan 2025 15:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA982248B6;
+	Fri, 24 Jan 2025 18:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="X1DYkPv4"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="t0L333oI";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="n54yh332"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508C512F399
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 15:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACD5146A9B
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 18:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737731636; cv=none; b=G+MpDk1UnjvU9eVnRCNkMFDcCb98t6sZFjq7j9BN7vB7rHuK97+V/pgql38GN/3GarOLCUcwetaIf38Qf5VHcyNlnZ54K5F+cc+gR5Qx73YH30sD+QRCIxCybqxKSvgDU37+9VBHjQfaIgmsh4dQ4tRLyGoYwpaUPAloGGHOr9Q=
+	t=1737745146; cv=none; b=ANYsegpLFuJvVuovJO5HjaCRdAeB/sRvDj5CeVOo8YeumJ2+eY5bsUTKx2iKJV2bm0xytqIlDolB8ZPJqaRXDVISCf3kcKEauRXqmK5k2yw3vUtNcOCnCya0/EFUP5sE5QBXOEQT8SWKvZWt4i6E8jZEB392J7I1p9m1hntTKUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737731636; c=relaxed/simple;
-	bh=4JrijojVhLctKE3ampJI97KI16jZGkQwPoBu/3SZszw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pjgf0Zo8BI1COHRUX/kXhcNb5GwCqUEvf71a2WrQAIzLtqeMq8f3PCIHIbmtvhZFb4gSCWTOAlfYD+NAl4meNBmzZmc1m2vynqzvhcvFtd0m1zsQMitG6dvJfAIkM4U8f/9pz3ZPcVcQqiKrL0upClwXiVBTTp1XHYeFyHg7GSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=X1DYkPv4; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aaee2c5ee6eso453265266b.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 07:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737731632; x=1738336432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LieE3WDn9p2LzcTw9dOfUq/eJdzziO2uIes678NDYqo=;
-        b=X1DYkPv4750R3BdWCcbfPigVekbQG1xpOPRERiGsd86BYvytMytlrPHFjoZSjzbsSp
-         vHzAUh7vgrH7wkXOb5PmxBrx0Gs0BmZA+04V4Ra6kExYmIB6x2Z9R5GphK66/Qs1+glF
-         BJNjpJgFDc8NrJBLA9JNCljR66prUbJuHv0wW98JLd4yLoentLZvQV+q8gtJvaRTzHHc
-         rZHYMpRfPGWl/dP3iRki9bMLd1ko+cTw9cN3vjXCnqcy5vb92w5wnAyjfjUbUo3VxFJ6
-         67hm1f88Yx3im57OZl2iLNXY/N2WHCmwhaTJKjAKTQrgGryfj37fz0ofbhHISoRGaey4
-         uRMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737731632; x=1738336432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LieE3WDn9p2LzcTw9dOfUq/eJdzziO2uIes678NDYqo=;
-        b=M644A4r/1WvU/zm4ToKRpnsTn0vHjiCOoKpc6Jzc31auMTZg9KZ+AjnkBUBZywTZDz
-         EvTjS1nmP+qwBQsiy3Sgm+0Czx28oQf8uakj5/J+6Mpr9gBm4v+ONtGWOAd0d9HEOgTV
-         wk223vZD3vzDKrTIj0E5p/S70exxZykBZVHOY454SRNIKWNQIKo6jcNH73WwK7L6HknL
-         CYtRsmB+L6bCTNUs2MqqLlinweeQiI4GoBfV84cl8DOC61FmGhCxtsv0SiONo/R77oa2
-         iJBFJqdYv9l71tIhd5ohhYCkNRIy+SR2nTwClbsdzP3TCNiMp4K0fSDvkXijtsUj7rOm
-         MnhA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0X7Go55BZFn51QdjIbYY0aQ+qdg7OcFDuB2/1jiN0J5jvHIXxU/mtotUyMFm45pxICfOlwwfJFECCWA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6IU4Le8lNNBH9xJJ12EyUb+3NEhwtKirBTTfTLuwH1+ve2OwV
-	qY5YCKZfnDje2YuMXLb8A+xu9hAcnCNp0ymYR6/f5T7fED+1pua9fF0uaXGtS6dKVs/0TVFnySq
-	99bfTmTLu6cYuwmaOJ9dEQ5sv8ZTnTqwPu04sPg==
-X-Gm-Gg: ASbGncvqbaasoHu4QuaQs7bb5D56GSFYeop7CpnB83Q9dLNFM1Ry9GsukO9YrpLiRy0
-	WulD6K+0Qll+eRBL7uv059DmM8MR/UQZ7lKXL8NXtKYTujEHn1Q1Toc41FQgL
-X-Google-Smtp-Source: AGHT+IE0NHd1HwpfAtfMtJxk3o68ITvgXZMX879N8ntmdGZaPJ3p/0IHZH5xtlez6/3PBel4sNT549W/HOoMdbxnxTY=
-X-Received: by 2002:a17:907:6ea6:b0:aab:740f:e467 with SMTP id
- a640c23a62f3a-ab38b0b941bmr3095149066b.8.1737731632495; Fri, 24 Jan 2025
- 07:13:52 -0800 (PST)
+	s=arc-20240116; t=1737745146; c=relaxed/simple;
+	bh=1ounYxmS5N7j9tuGsvMXlu/9s7FWQT+o45tsMF2NsE0=;
+	h=MIME-Version:Date:From:To:Message-Id:Subject:Content-Type; b=jL4Nrh3Q2BToIbQDfB6L23uNBWgcJs/NqNhVa2wwZ+xck9MYjDI3+l5g1hXMWQFAkEZj1mHF6oo4Igb2BrsG5mMUBtMEVqJQfhwhtxo0AehNBHNHSUFqTHhY3Bco14ALO6oAkT4FemDmrO7drF6PvvatvOPAcRBCj3ChVtkahYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=t0L333oI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=n54yh332; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id DBF8913802FB
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 13:59:02 -0500 (EST)
+Received: from phl-imap-12 ([10.202.2.86])
+  by phl-compute-03.internal (MEProxy); Fri, 24 Jan 2025 13:59:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to; s=fm3; t=
+	1737745142; x=1737831542; bh=d2RMlwpit4qtJ872VpHj02N5e0xdWbB9dBH
+	GIJt9H0o=; b=t0L333oIsC5xpxM5Z3a5TBctY5Op5aKZ7xXUK4p4oby/i0SW6Nk
+	T55lGV4Qf5jf15Tqps+d4vqfEsDkfKC7x16kHzOPz53slv/ByNWMUdXL/XWDHQms
+	Mm6QaOUgqEXnuJbcG7kRqHFvQtO1e0g3fh6g33LF2O7TDOm3iRtuPpdl5qkaTRCZ
+	X1iBDpUuj1uVz517lgekRD0fJ5JE4BmAmSd2bPOUo2OUvaZQdB6R0sk+ZN9qbhqv
+	pM7P2Qm6waA7SyOvwhWRpfElhA9SZk5vsKcoKavvDSHAfwn7gEfIXN6YylWd/4SX
+	c/ux1b/l6CeA+HpIloSGOB8+duV3SMr686g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1737745142; x=1737831542; bh=d2RMlwpit4qtJ872VpHj02N5e0xdWbB9dBH
+	GIJt9H0o=; b=n54yh332JjiA95KsCoQ0wv6pfUYdQCodkGjblSCFmGo1h+Ii+ns
+	TO7O5OpojF6mdaYg8j4cpGRnDP47fQVD7VM5LjWodP0/3SEbc7eBAg40PbIKuQU4
+	jERWUsTZ9IdeR0NOy/I2nHDc+Qm0+aTWAGHbGQzfmcyhLg0JBEAL8HDpksXCGCwp
+	TMkQmYMwkBffjWYpBFAlfkEFIQJEJp7aT5M98PP4uqE0wK2OMPI5fzB6tZlDpeWH
+	qKuoZkozDOXrDDcs8LeLWoyhzGMkhHzUMEAQS1WSRHicXg4QkxxEVqk6IDcVE9H5
+	UJZPP82ldOxJynCxjKRgw2YCVV01DM8ftmQ==
+X-ME-Sender: <xms:9uKTZ0GTm-D1t3f7fmEimRB-3UXA1v9tO4uiPJbgDDv4NGlDxMiAAA>
+    <xme:9uKTZ9U0bM683f1ieYwvOeyurrd7Yq8RzP0Vii1pm3jBxSvoS7_Asisz8t9HjzmHZ
+    6hMrRPqys7Gnj7Cbn8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudejgedghedvlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvkffutgfgsehtqhertdertddtnecu
+    hfhrohhmpedfvehhrhhishcuofhurhhphhihfdcuoegthhhrihhssegtohhlohhrrhgvmh
+    gvughivghsrdgtohhmqeenucggtffrrghtthgvrhhnpeekgfejhffgkefhleelueegueef
+    keeihfevfeekkeevuedvffejleefgfffiedvveenucffohhmrghinheprhgvughhrghtrd
+    gtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    tghhrhhishestgholhhorhhrvghmvgguihgvshdrtghomhdpnhgspghrtghpthhtohepud
+    dpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhg
+    vghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:9uKTZ-I0Rn1uG3YCadSkCZ8gzqSxiCqyRzPiN3m92NJQY1n7KPdjzw>
+    <xmx:9uKTZ2H8omtgnSf0rDSoURyNtN_jGVzUzXN8blvQY_jugky-WpKX0w>
+    <xmx:9uKTZ6Vf1EaM-54PEqBX6BpiSVQaay5mvejzDpD12u2jzYDLfWVjsw>
+    <xmx:9uKTZ5OTXbk5T1FWumD5LAVJBfmbQvOUrATDWuqVxgsuAXimo35wNg>
+    <xmx:9uKTZzdM3Osa0YUScGEONXN5NLS9YC26nAYQ_1VLoyGCsZdfswJ_3AH->
+Feedback-ID: i07814636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 92A8C1C20066; Fri, 24 Jan 2025 13:59:02 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122122459.1148668-1-maharmstone@fb.com> <CAL3q7H4tB3Cb-djYhh_bGB-BRJ7EahjUZec2qfbhH7QHP2iSUw@mail.gmail.com>
- <CAPjX3Fd+-510YrvpxR1GcK2F+XKDVknxes2sj=Eat1Un1zvEkQ@mail.gmail.com>
- <20250123215955.GN5777@twin.jikos.cz> <CAPjX3Ffb2sz9aiWoyx73Bp7cFSDu3+d5WM-9PWW9UBRaHp0yzg@mail.gmail.com>
- <CAL3q7H7+UZcXPefg-_8R=eZj42P2UkV2=yE1dSv8BQZagEOhyQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H7+UZcXPefg-_8R=eZj42P2UkV2=yE1dSv8BQZagEOhyQ@mail.gmail.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 24 Jan 2025 16:13:40 +0100
-X-Gm-Features: AWEUYZnfGNi1Rk3ndvYY-mdLVFGoS1TdxF_aBu-qUWnYP4-03hbexSQWtxZZadY
-Message-ID: <CAPjX3FciZUpMvHe55=Gg2ZhacZ=BiySitNEc9P5vvz0-5nchBA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: use atomic64_t for free_objectid
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: dsterba@suse.cz, Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 24 Jan 2025 11:58:41 -0700
+From: "Chris Murphy" <chris@colorremedies.com>
+To: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <5f6d6f11-a693-4192-ae20-7591c44c6332@app.fastmail.com>
+Subject: kernel 6.12.8, hard lockup, refcount_t: addition on 0; use-after-free
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 24 Jan 2025 at 13:26, Filipe Manana <fdmanana@kernel.org> wrote:
->
-> On Fri, Jan 24, 2025 at 8:22=E2=80=AFAM Daniel Vacek <neelx@suse.com> wro=
-te:
-> >
-> > On Thu, 23 Jan 2025 at 23:00, David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Wed, Jan 22, 2025 at 02:51:10PM +0100, Daniel Vacek wrote:
-> > > > On Wed, 22 Jan 2025 at 13:40, Filipe Manana <fdmanana@kernel.org> w=
-rote:
-> > > > > > -       if (unlikely(root->free_objectid >=3D BTRFS_LAST_FREE_O=
-BJECTID)) {
-> > > > > > +       if (unlikely(val >=3D BTRFS_LAST_FREE_OBJECTID)) {
-> > > > > >                 btrfs_warn(root->fs_info,
-> > > > > >                            "the objectid of root %llu reaches i=
-ts highest value",
-> > > > > >                            btrfs_root_id(root));
-> > > > > > -               ret =3D -ENOSPC;
-> > > > > > -               goto out;
-> > > > > > +               return -ENOSPC;
-> > > > > >         }
-> > > > > >
-> > > > > > -       *objectid =3D root->free_objectid++;
-> > > > > > -       ret =3D 0;
-> > > > >
-> > > > > So this gives different semantics now.
-> > > > >
-> > > > > Before we increment free_objectid only if it's less than
-> > > > > BTRFS_LAST_FREE_OBJECTID, so once we reach that value we can't as=
-sign
-> > > > > more object IDs and must return -ENOSPC.
-> > > > >
-> > > > > But now we always increment and then do the check, so after some =
-calls
-> > > > > to btrfs_get_free_objectid() we wrap around the counter due to
-> > > > > overflow and eventually allow reusing already assigned object IDs=
-.
-> > > > >
-> > > > > I'm afraid the lock is still needed because of that. To make it m=
-ore
-> > > > > lightweight maybe switch the mutex to a spinlock.
-> > > >
-> > > > How about this?
-> > > >
-> > > > ```
-> > > > retry:  val =3D atomic64_read(&root->free_objectid);
-> > > >         ....;
-> > > >         if (atomic64_cmpxchg(&root->free_objectid, val, val+1) !=3D=
- val)
-> > > >                 goto retry;
-> > > >         *objectid =3D val;
-> > > >         return 0;
-> > > > ```
-> > >
-> > > Doesn't this waste some ids when there are many concurrent requests?
-> >
-> > Quite the opposite, it's meant to prevent that. That's why I suggested
-> > it as the original patch was wasting them and that's what Filipe
-> > pointed out.
->
-> Not wasting, but allowing the counter to wrap around and return
-> already in use object IDs, far more serious than wasting.
-> And besides that, the counter wrap-around would allow the return of
-> invalid object IDs, in the range from 0 to BTRFS_FIRST_FREE_OBJECTID
-> (256).
 
-Oh, sorry about the confusion. Those three dots ... were meant as a
-placeholder for the original -ENOSPC condition. Again, keeping the
-original logic without any changes other than getting rid of the lock.
+Downstream bug report contains full dmesg attached.
+https://bugzilla.redhat.com/show_bug.cgi?id=3D2341993
 
-> >
-> > It will only retry precisely when more concurrent requests race here.
-> > And thanks to cmpxchg only one of them wins and increments. The others
-> > retry in another iteration of the loop.
-> >
-> > I think this way no lock is needed and the previous behavior is preserv=
-ed.
->
-> That looks fine to me. But under heavy concurrency, there's the
-> potential to loop too much, so I would at least add a cond_resched()
-> call before doing the goto.
+This is a one time event so far. Manifests as a sluggish system, increas=
+ingly non-responsive.
 
-Possibly.
+top reports 100% CPU for each flush-btrfs-1 and btrfs_discard.
 
-> With the mutex there's the advantage of not looping and wasting CPU if
-> such high concurrency happens, tasks will be blocked and yield the cpu
-> for other tasks.
+And then total lockup, including the mouse pointer - system became unres=
+ponsive to the user but systemd-journald must still have been flushing t=
+o disk because I have entries through to the time power was forced off.
 
-Right. My understanding was that if this function is heavily
-contended, the mutex would be a major bottleneck. Which you would be
-likely aware of. Otherwise this is just a protection against rare
-races. Anyways, `cond_resched()` should not hurt even if not strictly
-needed. Better safe than sorry.
+dmesg excerpt
 
-> Any improvements in performance could also be measured easily with
-> fs_mark, which will heavily hit this code path.
-> I would prefer if the patch adds fs_mark numbers (or from any other
-> test) in the changelogs.
->
-> Thanks.
+[31602.276050] kernel: wlp0s20f3: Limiting TX power to 27 (30 - 3) dBm a=
+s advertised by f8:a0:97:6e:c7:e8
+[36853.462029] kernel: ------------[ cut here ]------------
+[36853.462228] kernel: refcount_t: addition on 0; use-after-free.
+[36853.462255] kernel: WARNING: CPU: 1 PID: 36554 at lib/refcount.c:25 r=
+efcount_warn_saturate+0xe5/0x110
+[36853.462278] kernel: Modules linked in: f2fs crc32_generic lz4hc_compr=
+ess lz4_compress nls_utf8 hfsplus uas usb_storage uinput rfcomm snd_seq_=
+dummy snd_hrtimer nf_conntrack_netbios_ns nf_conntrack_broadcast nft_fib=
+_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 n=
+f_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_def=
+rag_ipv6 nf_defrag_ipv4 ip_set nf_tables sunrpc qrtr bnep zstd snd_soc_s=
+kl_hda_dsp snd_soc_intel_sof_board_helpers snd_sof_probes snd_soc_intel_=
+hda_dsp_common snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_ge=
+neric snd_hda_scodec_component snd_soc_dmic snd_sof_pci_intel_cnl snd_so=
+f_intel_hda_generic soundwire_intel soundwire_cadence snd_sof_intel_hda_=
+common snd_soc_hdac_hda snd_sof_intel_hda_mlink snd_sof_intel_hda snd_so=
+f_pci snd_sof_xtensa_dsp snd_sof binfmt_misc snd_sof_utils snd_soc_acpi_=
+intel_match soundwire_generic_allocation snd_soc_acpi soundwire_bus vfat=
+ fat snd_soc_avs snd_soc_hda_codec snd_hda_ext_core snd_soc_core intel_u=
+ncore_frequency snd_compress
+[36853.462389] kernel:  intel_uncore_frequency_common iwlmvm ac97_bus in=
+tel_pmc_core_pltdrv intel_pmc_core snd_pcm_dmaengine intel_vsec pmt_tele=
+metry snd_hda_intel pmt_class intel_tcc_cooling snd_intel_dspcfg snd_int=
+el_sdw_acpi x86_pkg_temp_thermal snd_hda_codec uvcvideo intel_powerclamp=
+ mac80211 btusb snd_hda_core btrtl coretemp uvc spi_nor btintel kvm_inte=
+l snd_hwdep videobuf2_vmalloc videobuf2_memops processor_thermal_device_=
+pci_legacy videobuf2_v4l2 processor_thermal_device snd_ctl_led libarc4 m=
+ei_pxp btbcm mtd snd_seq processor_thermal_wt_hint mei_wdt kvm videobuf2=
+_common mei_hdcp iTCO_wdt snd_seq_device processor_thermal_rfim intel_pm=
+c_bxt intel_rapl_msr iTCO_vendor_support iwlwifi snd_pcm videodev thinkp=
+ad_acpi processor_thermal_rapl think_lmi btmtk rapl mei_me intel_rapl_co=
+mmon spi_intel_pci intel_cstate intel_uncore bluetooth mc thunderbolt cf=
+g80211 firmware_attributes_class intel_wmi_thunderbolt wmi_bmof sparse_k=
+eymap e1000e snd_timer mei processor_thermal_wt_req platform_profile i2c=
+_i801 idma64 i2c_smbus spi_intel
+[36853.462460] kernel:  processor_thermal_power_floor rfkill processor_t=
+hermal_mbox intel_pch_thermal intel_soc_dts_iosf snd int3403_thermal sou=
+ndcore int340x_thermal_zone int3400_thermal acpi_thermal_rel acpi_tad ac=
+pi_pad joydev loop nfnetlink dm_crypt i915 crct10dif_pclmul crc32_pclmul=
+ crc32c_intel nvme hid_multitouch polyval_clmulni polyval_generic ghash_=
+clmulni_intel i2c_hid_acpi sha512_ssse3 sha256_ssse3 nvme_core sha1_ssse=
+3 i2c_algo_bit drm_buddy i2c_hid ttm nvme_auth drm_display_helper ucsi_a=
+cpi typec_ucsi video typec cec pinctrl_cannonlake wmi serio_raw fuse
+[36853.462525] kernel: CPU: 1 UID: 0 PID: 36554 Comm: kworker/u32:4 Not =
+tainted 6.12.8-200.fc41.x86_64 #1
+[36853.462548] kernel: Hardware name: LENOVO 20QDS3E200/20QDS3E200, BIOS=
+ N2HET77W (1.60 ) 02/06/2024
+[36853.462568] kernel: Workqueue: writeback wb_workfn (flush-btrfs-1)
+[36853.462589] kernel: RIP: 0010:refcount_warn_saturate+0xe5/0x110
+[36853.462610] kernel: Code: 7e 81 ff 0f 0b c3 cc cc cc cc 80 3d 85 8d 3=
+1 02 00 0f 85 5e ff ff ff 48 c7 c7 d8 d9 ea 8e c6 05 71 8d 31 02 01 e8 e=
+b 7d 81 ff <0f> 0b c3 cc cc cc cc 48 c7 c7 30 da ea 8e c6 05 55 8d 31 02=
+ 01 e8
+[36853.462632] kernel: RSP: 0018:ffffb0321039f460 EFLAGS: 00010282
+[36853.462653] kernel: RAX: 0000000000000000 RBX: ffff95be09399400 RCX: =
+0000000000000027
+[36853.462674] kernel: RDX: ffff95c16e6a1908 RSI: 0000000000000001 RDI: =
+ffff95c16e6a1900
+[36853.462694] kernel: RBP: ffff95be09200000 R08: 0000000000000000 R09: =
+0000000000000000
+[36853.462714] kernel: R10: 206e6f206e6f6974 R11: 612d657375203b30 R12: =
+ffffb0321039f528
+[36853.462739] kernel: R13: 0000000000000000 R14: 0000000000000001 R15: =
+ffff95be11737400
+[36853.462761] kernel: FS:  0000000000000000(0000) GS:ffff95c16e680000(0=
+000) knlGS:0000000000000000
+[36853.462782] kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[36853.462804] kernel: CR2: 00007efc89f67000 CR3: 000000013c82a003 CR4: =
+00000000003726f0
+[36853.462825] kernel: DR0: 0000000000000000 DR1: 0000000000000000 DR2: =
+0000000000000000
+[36853.462846] kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: =
+0000000000000400
+[36853.462866] kernel: Call Trace:
+[36853.462891] kernel:  <TASK>
+[36853.462913] kernel:  ? refcount_warn_saturate+0xe5/0x110
+[36853.462936] kernel:  ? __warn.cold+0x93/0xfa
+[36853.462958] kernel:  ? refcount_warn_saturate+0xe5/0x110
+[36853.462976] kernel:  ? report_bug+0xff/0x140
+[36853.463010] kernel:  ? handle_bug+0x58/0x90
+[36853.463038] kernel:  ? exc_invalid_op+0x17/0x70
+[36853.463061] kernel:  ? asm_exc_invalid_op+0x1a/0x20
+[36853.463082] kernel:  ? refcount_warn_saturate+0xe5/0x110
+[36853.463096] kernel:  find_free_extent+0x26a/0x16c0
+[36853.463116] kernel:  ? ttwu_queue_wakelist+0x119/0x1a0
+[36853.463137] kernel:  btrfs_reserve_extent+0x12e/0x290
+[36853.463159] kernel:  cow_file_range+0x185/0x7a0
+[36853.463181] kernel:  ? merge_next_state+0x1a/0x90
+[36853.463200] kernel:  btrfs_run_delalloc_range+0x112/0x440
+[36853.463222] kernel:  ? find_lock_delalloc_range+0x178/0x230
+[36853.463244] kernel:  writepage_delalloc+0x1d1/0x3a0
+[36853.463266] kernel:  extent_write_cache_pages+0x24a/0x6d0
+[36853.463290] kernel:  btrfs_writepages+0x76/0x130
+[36853.463312] kernel:  do_writepages+0x7e/0x280
+[36853.463332] kernel:  ? sched_balance_find_src_group+0x51/0x580
+[36853.463353] kernel:  __writeback_single_inode+0x41/0x340
+[36853.463373] kernel:  writeback_sb_inodes+0x21d/0x4e0
+[36853.463394] kernel:  __writeback_inodes_wb+0x4c/0xf0
+[36853.463415] kernel:  wb_writeback+0x193/0x310
+[36853.463435] kernel:  wb_workfn+0x2af/0x450
+[36853.463459] kernel:  process_one_work+0x176/0x330
+[36853.463478] kernel:  worker_thread+0x252/0x390
+[36853.463496] kernel:  ? __pfx_worker_thread+0x10/0x10
+[36853.463514] kernel:  kthread+0xcf/0x100
+[36853.463537] kernel:  ? __pfx_kthread+0x10/0x10
+[36853.463558] kernel:  ret_from_fork+0x31/0x50
+[36853.463578] kernel:  ? __pfx_kthread+0x10/0x10
+[36853.463595] kernel:  ret_from_fork_asm+0x1a/0x30
+[36853.463615] kernel:  </TASK>
+[36853.463634] kernel: ---[ end trace 0000000000000000 ]---
+[36853.463651] kernel: ------------[ cut here ]------------
+[36853.463669] kernel: refcount_t: underflow; use-after-free.
+[36853.463689] kernel: WARNING: CPU: 1 PID: 36554 at lib/refcount.c:28 r=
+efcount_warn_saturate+0xbe/0x110
+
+
+
+--
+Chris Murphy
 
