@@ -1,186 +1,259 @@
-Return-Path: <linux-btrfs+bounces-11054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5682BA1B08C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 07:57:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87CEAA1B0B1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 08:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24FAC188B838
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 06:57:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 554891887445
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2025 07:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2571B1DA2F6;
-	Fri, 24 Jan 2025 06:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18F91DB121;
+	Fri, 24 Jan 2025 07:09:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AI0lT2Tw"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jJq2/SHj";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Dj17kDsQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931301D63DF
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 06:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E9C33998
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2025 07:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737701866; cv=none; b=eCmFemCCwb6GnzQpPCz7kZEfsWiALFNya6yvkdmxMxeFOk8x04UX/6L1S2ratacELwxYhcveRdI/bedqEGodshmh88Z83Z8O8FyeefTZTFKSnKOo5/LdwDsxAVGaI+BC8kLDvsyAfKDJ0XqFXEnGhUTL6Hy1G2B4NC5q6Q/fzEs=
+	t=1737702564; cv=none; b=achbOtBdpoW9v2svDDodVwpD9ClpfycQlO8y7V0/2ntTUwYiEYiRllCviHqX05N+Iu+h51xAX1zp76MZMCBzgE8YOXvZdXcBjmGKv2zDxtvx9SNFo7unJDIbJuZfkzQydNuVfQmG/HUr25buCb/77LcFra2Brz3OlNufkYKKjy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737701866; c=relaxed/simple;
-	bh=PgcRxBEr+KrPV1JpgiAsh/2jn6AqAOoGwKIj3gZFXQ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=caqh+tZnJ89MenrCMDj++zOw+PtPKSYV9pubp/tz3pVYV/ZY+1uYk/WMFE3Otlxlq8r15PnYFfuXxGfHx7gXBn3QFx8u2/d1Ugy4lE2mWMD9LlPq+tZCnkDNWIv38qk6YcJG9fu/55jt9CJTvtLnsGvNeyfwonUY1uYVJfQUxK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AI0lT2Tw; arc=none smtp.client-ip=209.85.218.67
+	s=arc-20240116; t=1737702564; c=relaxed/simple;
+	bh=zF6ALYLz0N569QsXqBoZ3Z/LEOQbBckGFe47rIC313M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S6+gzHpVKhz1kYmekwtmGnVe9mwKM/rQebjDaCnmVKbsJ/w+enQUob6TPKlKcSh6Vi7JTeKKPF26Hp2nfdj6di9vtkQxO00YkLTQKz3SMfLkwhxaYK9mQLdXJfCRGuNvAjtlIL9cfaCitO5Txq5jQoKK/SZFrNorXticvhnHSf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jJq2/SHj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Dj17kDsQ; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-aa684b6d9c7so314482266b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2025 22:57:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737701862; x=1738306662; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SubiPuTWupgqLLZV6rbyBfVK1lGJu2yxKy9+6k+f0VQ=;
-        b=AI0lT2TwI+dfh9uW/D+Ml0sC2QyA5aJGLyymlwUhro1nvTtJ9eNGDzP9Idq9mL9tZm
-         Pcqd7twTumDZ2JI4kojnyNr/9a5FxLANAz+OT3/UT+FVBazxID8kzDyNMFgi2VzE1bAU
-         BH5HCexSCKbb3scR9Bibdo2AM8ayA+VVVqjGRwqN9P2AQaW3Od7723yk5WqleH1MyPM2
-         UI89IIq9wE73/fgNKC0kQqw7NURk9Kkqz+s0IGgYQMgEHBP0UCzt1nN1pMJfq+mUxX3H
-         yu4Nr5TmTju7gyS4K15MfQhriwJ7jqjMJOpzfDt1+PyhN1NR8D9ftE430DSHQIp03HzC
-         OC/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737701862; x=1738306662;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SubiPuTWupgqLLZV6rbyBfVK1lGJu2yxKy9+6k+f0VQ=;
-        b=jPMq7Z0JPGvhfEPISTt7cdnwUkYz/OPDv0fXGngxgTSbdsAPHccbIlUjKSLanbrzVi
-         g5WLXyKDvzVjZrqEc68BaelzZWlOfC0CpIVhKRhmuEGcLCqVCbbsVUnfxuS9xL7ZnUcg
-         yCWQEUjobM7PHSBGmYMrcDF8/nBkitqUJVVOHt3S5EPkqcsWEjliP/0VBrZix9opw6yB
-         Jmx+AVQq9jIjUtkJBLsYGMdUhlS+z249RDGjasep55qJTaN22nIplYKKMgjwa1xc+mQs
-         e2T8DAdoKeI9a7PJBmgSViSfeFjjFe8hG40tNQBx+KlWBT8ZZxTTbRt5WO6PLmeX6CAU
-         p2CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX1tU0Kg7kr+8wph9lYJNB4faKbCeUp+i19JTp+chVY6MbI/0M2rmcSVQGG5Wbfg0hxgDmklFTXEasexg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSpIPZ8qaEFK0dQxFktOHkgX+GV6azCfUBRgP8nil4ygWO3EC9
-	yLzXK4lvbWhTsQdWEvYP9JuNG+lHzNmcIAWFhXsLuR4BkHIsLQkGtcgM2poduBnPbnGql5+bzX6
-	3ka+pdQ==
-X-Gm-Gg: ASbGnctTmUjfMgmFvbdmkT+yUnTTstJKSz4W6MKqGZw7glAYniutohmDkgDRxRgisLp
-	2fN2T8KBlGvC2OlL0LcYE3bfU0rbEuL2yOJdniqEjOV2ePNmH0rG/EeSQqLe+dSFjekxnxG0u0x
-	RgqoYM/PaLf6kCamIYiQriNzYnh4Ar2YjWn3WA09rC6TtOwsM6072sxjzN8E50Dbjn4kmyeXyb/
-	iboXfZh19TNbhrOzZcl3emQ4U1l5zNBSlckIhRAbSYe0z+fIFwBEdpKAYGRmdNHBWIM0zGBZ+Bo
-	eHMKXpCPC5h9zDeeHz7SS4X1KtMk3dPg
-X-Google-Smtp-Source: AGHT+IHdkXDf3rchSxQlPxkbr5AXpk+7Q+wQO51oC7bsf1Ine483AVRHxsoH8djEjmAvQGkVfxbGdg==
-X-Received: by 2002:a17:906:2cc4:b0:ab3:a3b4:f91c with SMTP id a640c23a62f3a-ab3a3b4f9b3mr2028644766b.34.1737701861366;
-        Thu, 23 Jan 2025 22:57:41 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffb194c0sm878320a91.43.2025.01.23.22.57.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Jan 2025 22:57:40 -0800 (PST)
-Message-ID: <d6142943-8db9-4569-8228-f0c09b65298f@suse.com>
-Date: Fri, 24 Jan 2025 17:27:36 +1030
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F14A41F38C;
+	Fri, 24 Jan 2025 07:00:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737702022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=TcS4uUNoOXXJl1L1o7v6uBLjpJMqvEjb+m5s9jMnlNY=;
+	b=jJq2/SHjpgjJP0OomrFHO2oczE5x1bspCWrKDPpbHOIl+uZFOjOis4+uK8jmJooAwfZexB
+	SGo4kTEOUs7RQ07KdVX9YKspmX+ub68XmCvInRvOVamY358ZiAR77y56yaYpAIhI0BDfY6
+	IIpRQRyKqcZv9CBEEoYl9fP4Tnu9pyA=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737702020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=TcS4uUNoOXXJl1L1o7v6uBLjpJMqvEjb+m5s9jMnlNY=;
+	b=Dj17kDsQQ2m0I+DVwQ6u5NCxD8SirSPbluHU+L2VfoqYKcAXy7s1f/y6XW6g2W3Tw83V0s
+	UpMK/vRpN5L+ym0Mp+ULogskSCxFp0Rc5snGZTGYBQXykWWzx481UTUpPhGOT1NMwV0bg1
+	OzKQCo5qd5JlqAu4lG0c8AWPRsGThlc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF936139CB;
+	Fri, 24 Jan 2025 07:00:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QlTWK4M6k2dTbQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 24 Jan 2025 07:00:19 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+Subject: [PATCH] btrfs: zlib: refactor S390x HW acceleration buffer preparation
+Date: Fri, 24 Jan 2025 17:29:58 +1030
+Message-ID: <bee6ac5945df3db876a553dbf6d0dd546f145aa7.1737701962.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Tree checker pre-write check finds corrupt leaf. drives now empty
-To: =?UTF-8?Q?T=C3=A9o_Adams?= <ta@hexagon.cx>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <rvOGZGZ2KKMe7x59is0hpo4PXWgjMZ9wuj4H3byWhiAZnJfWC2OHOQ4b7LYuvlBKVz9giNM_qjh9TZaq0Aa7mcqa9uNF6fxdEeqnbLQ_tP0=@hexagon.cx>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <rvOGZGZ2KKMe7x59is0hpo4PXWgjMZ9wuj4H3byWhiAZnJfWC2OHOQ4b7LYuvlBKVz9giNM_qjh9TZaq0Aa7mcqa9uNF6fxdEeqnbLQ_tP0=@hexagon.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+Currently for s390x HW zlib compression, to get the best performance we
+need a buffer size which is larger than a page.
 
+This means we need to copy multiple pages into workspace->buf, then use
+that buffer as zlib compression input.
 
-在 2025/1/24 12:56, Téo Adams 写道:
-> Hello,
-> 
-> I just read on your https://btrfs.readthedocs.io/en/latest/Tree-checker.html page that you'd benefit from reports of corruption caught by tree checker. Obviously it would be great if you have advice on how to recover from my current situation, or avoid it in the future but regardless I hope the data I can provide will be helpful too you.
-> 
-> For context, possibly too much, I am running NixOS on a system with 3 different drives, all of which use BTRFS.
-> Drive 1 (nvme) has two partitions: ESP for boot and a luks partition with 3 subvolumes that house /root, /nix (where the OS lives) and /home
-> Drive 2 (nvme) has a single luks partition and subvol used for storing large media. It is not used very often.
-> Drive 3 (ssd) has a single luks partition and subvol that houses my qemu vm images.
-> 
-> When the incident occurred I had a single VM running via libvirt and had the usual assortment of multiple terminals, neovim instances (all files being edited are on Drive 1), and browser windows. The only thing "using" Drive 3 was the libvirt and nothing was using Drive 2.
-> 
-> While attempting to write a neovim buffer I got an error about a database I don't recognize being read-only, my system began to stutter, and I noticed in a btop monitor that my RAM was pinned. While closing anything I didn't need and trying to save my work, my WM (hyprland/wayland) froze for about 20 seconds but recovered. from there the system was very unresponsive, I could change windows but couldn't kill anything. Eventually I had to reboot.
-> 
-> Later on I went to spin up the VM but it complained that the VM didn't exist. on further investigation I discovered that both Drive 2 and Drive 3 are completely empty. They are both unlocked (which is automated using a secondary unlock key used shortly after Drive 1 is unlocked), mounted, and I can cd into them but there is no content at all.
+Currently it's hardcoded using page sized folio, and all the handling
+are deep inside a loop.
 
-If it's write time tree-checker as described by the title, please run a 
-memtest first, as that's the most common reason.
+Refactor the code by:
 
-I do not think the incident is directly linked to the lost of files.
-Unless the fs is already corrupted.
+- Introduce a dedicated helper to do the buffer copy
+  The new helper will be called copy_data_into_buffer().
 
-Especially for drive 2, since you're not touching it frequently, it 
-needs a lot of work to delete those many files.
+- Add extra ASSERT()s
+  * Make sure we only go into the function for hardware acceleration
+  * Make sure we still get page sized folio
 
-The same for drive 3.
+- Prepare for future larger folios
+  This means we will rely on the folio size, other than PAGE_SIZE to do
+  the copy.
 
-Mind to check if the free/available space for drive 2/3?
-Are they really empty or it's still taking space?
+- Handle the folio mapping and unmapping inside the helper function
+  For S390x hardware acceleration case, it never utilize the @data_in
+  pointer, thus we can do folio mapping/unmapping all inside the function.
 
-> 
-> I'm completely at a loss to how this may have happened.  The clue that led me to this email came from the following kernel message in logs that occurred around the same time.
-> 
-> 
-> Jan 22 19:03:10 ghost kernel: BTRFS critical (device dm-0): corrupt leaf: root=258 block=67236839424 slot=43, bad key order, prev (18446744073709551611 48 42564423) current (184467440737095>
-> Jan 22 19:03:10 ghost kernel: BTRFS info (device dm-0): leaf 67236839424 gen 313844 total ptrs 77 free space 11791 owner 258
-> Jan 22 19:03:10 ghost kernel:         item 0 key (42725548 108 0) itemoff 15251 itemsize 1032
-> Jan 22 19:03:10 ghost kernel:                 inline extent data size 1011
-> Jan 22 19:03:10 ghost kernel:         item 1 key (42725554 1 0) itemoff 15091 itemsize 160
-> Jan 22 19:03:10 ghost kernel:                 inode generation 313844 size 23509 mode 100600
-> Jan 22 19:03:10 ghost kernel:         item 2 key (42725554 12 75511) itemoff 15041 itemsize 50
-> Jan 22 19:03:10 ghost kernel:         item 3 key (42725554 108 0) itemoff 14988 itemsize 53
-> Jan 22 19:03:10 ghost kernel:                 extent data disk bytenr 5280100352 nr 8192
-> Jan 22 19:03:10 ghost kernel:                 extent data offset 0 nr 24576 ram 24576
+Cc: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Hi Mikhail,
 
-Full dmesg please.
+Mind to give this patch a test on S390x? As I do not have easy access to
+such system.
 
-The important leaf dump is long, and the digest is definitely not enough 
-for us to figure out what's going wrong.
+And I hope I won't need to bother you again when we enable larger folios
+for btrfs in the near future.
 
 Thanks,
 Qu
-> 
-> 
-> Fortunately I do have backups of most of the content that is missing from the drives.
-> If there's any additional info I can provide, please let me know.|
-> 
-> Kind regards,
-> Teo
-> 
-> 
-> 
-> Sent with Proton Mail secure email.
+---
+ fs/btrfs/zlib.c | 82 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 54 insertions(+), 28 deletions(-)
+
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index c9e92c6941ec..7d81d9a0b3a0 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -94,6 +94,47 @@ struct list_head *zlib_alloc_workspace(unsigned int level)
+ 	return ERR_PTR(-ENOMEM);
+ }
+ 
++/*
++ * Helper for S390x with hardware zlib compression support.
++ *
++ * That hardware acceleration requires a buffer size larger than a single page
++ * to get ideal performance, thus we need to do the memory copy other than
++ * use the page cache directly as input buffer.
++ */
++static int copy_data_into_buffer(struct address_space *mapping,
++				 struct workspace *workspace, u64 filepos,
++				 unsigned long length)
++{
++	u64 cur = filepos;
++
++	/* It's only for hardware accelerated zlib code. */
++	ASSERT(zlib_deflate_dfltcc_enabled());
++
++	while (cur < filepos + length) {
++		struct folio *folio;
++		void *data_in;
++		unsigned int offset;
++		unsigned long copy_length;
++		int ret;
++
++		ret = btrfs_compress_filemap_get_folio(mapping, cur, &folio);
++		if (ret < 0)
++			return ret;
++		/* No larger folio support yet. */
++		ASSERT(!folio_test_large(folio));
++
++		offset = offset_in_folio(folio, cur);
++		copy_length = min(folio_size(folio) - offset,
++				  filepos + length - cur);
++
++		data_in = kmap_local_folio(folio, offset);
++		memcpy(workspace->buf + cur - filepos, data_in, copy_length);
++		kunmap_local(data_in);
++		cur += copy_length;
++	}
++	return 0;
++}
++
+ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
+ 			 u64 start, struct folio **folios, unsigned long *out_folios,
+ 			 unsigned long *total_in, unsigned long *total_out)
+@@ -105,8 +146,6 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
+ 	int nr_folios = 0;
+ 	struct folio *in_folio = NULL;
+ 	struct folio *out_folio = NULL;
+-	unsigned long bytes_left;
+-	unsigned int in_buf_folios;
+ 	unsigned long len = *total_out;
+ 	unsigned long nr_dest_folios = *out_folios;
+ 	const unsigned long max_out = nr_dest_folios * PAGE_SIZE;
+@@ -150,34 +189,21 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
+ 		 * the workspace buffer if required.
+ 		 */
+ 		if (workspace->strm.avail_in == 0) {
+-			bytes_left = len - workspace->strm.total_in;
+-			in_buf_folios = min(DIV_ROUND_UP(bytes_left, PAGE_SIZE),
+-					    workspace->buf_size / PAGE_SIZE);
+-			if (in_buf_folios > 1) {
+-				int i;
++			unsigned long bytes_left = len - workspace->strm.total_in;
++			unsigned int copy_length = min(bytes_left, workspace->buf_size);
+ 
+-				/* S390 hardware acceleration path, not subpage. */
+-				ASSERT(!btrfs_is_subpage(
+-						inode_to_fs_info(mapping->host),
+-						mapping));
+-				for (i = 0; i < in_buf_folios; i++) {
+-					if (data_in) {
+-						kunmap_local(data_in);
+-						folio_put(in_folio);
+-						data_in = NULL;
+-					}
+-					ret = btrfs_compress_filemap_get_folio(mapping,
+-							start, &in_folio);
+-					if (ret < 0)
+-						goto out;
+-					data_in = kmap_local_folio(in_folio, 0);
+-					copy_page(workspace->buf + i * PAGE_SIZE,
+-						  data_in);
+-					start += PAGE_SIZE;
+-				}
++			/*
++			 * This can only happen when hardware zlib compression is
++			 * enabled.
++			 */
++			if (copy_length > PAGE_SIZE) {
++				ret = copy_data_into_buffer(mapping, workspace,
++							    start, copy_length);
++				if (ret < 0)
++					goto out;
++				start += copy_length;
+ 				workspace->strm.next_in = workspace->buf;
+-				workspace->strm.avail_in = min(bytes_left,
+-							       in_buf_folios << PAGE_SHIFT);
++				workspace->strm.avail_in = copy_length;
+ 			} else {
+ 				unsigned int pg_off;
+ 				unsigned int cur_len;
+-- 
+2.48.1
 
 
