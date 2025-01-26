@@ -1,46 +1,45 @@
-Return-Path: <linux-btrfs+bounces-11074-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11075-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECE4A1C8E9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 15:54:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83690A1C8F3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 15:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3290E1887A9D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 14:54:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09974166811
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 14:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240241A8413;
-	Sun, 26 Jan 2025 14:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5404C1A9B34;
+	Sun, 26 Jan 2025 14:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lk46kAhP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lwwT1yTu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F6E1A83E2;
-	Sun, 26 Jan 2025 14:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4551A83E2;
+	Sun, 26 Jan 2025 14:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737902970; cv=none; b=uDHOFJlahNE7XwZfA33UiyhdBXWTGyYqWARIxPkX8qIBYZuMMyBOorW1OcH9L5XbP1o/4h5QkHI9Me5ovWZ972BFLpIlOw9DoVeoXVmx8deYvEOOB8C2jO2f1cebn1utymCsqApa1ZYtwJFb+s3+hDjqnZkWz0WV3R/hrT4+dgc=
+	t=1737902973; cv=none; b=Do9KcpmFYH3Zbd076bBkIK3TViNhRd5J7bD+28cjxiekGqIzq8LltMuqR6uhkSioRif1HgV96+/Q/4/Cu2JLsKqr9iCtvwuxqXFy8k+HXw6W2jn3FTquuNEnZ8bGg4fbZYm61d6IRCM6uLHwmUhAHFkaM7MsGRKVybrnujVxkbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737902970; c=relaxed/simple;
-	bh=Br7vYgj+FCtFGn8supBZOAlkZj4HJKpL0VOJ+GZSKrs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KbqJ8tOZjUoFad48ZyWxiCJy0AI4WqAQ3fIcCwFVP5O41qkLNNQd0JOgBDMZTvcc8wkHzfqfAQJRKoEgbcupGnG3eBVvYpEtZhCi4JtM6X/Q8d88vL+IvOhd6s++1cRrtrjjByqB5MbW1K/byyLWgCyd+S0bsOHYANWoYuNpMfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lk46kAhP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34450C4CEE3;
-	Sun, 26 Jan 2025 14:49:29 +0000 (UTC)
+	s=arc-20240116; t=1737902973; c=relaxed/simple;
+	bh=xCbmDYscuIAXcyPTul2ZheG0PoZTHFWxyNkVLY8wGy8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mk00thLIKFJTZ0S5Z0dv+wnCdKg6TSyK63pGFs1klaB+m37ROedw11zW4NuWOsZbH4b01ddZ/bxatvYG7PEX7qI6OmAun5bAXnbaFENkqUrsP4Nq7/SD9LOQrr3PWLdB+EPF0nOYimj+lGOaOPNcfMdsbjstQjNKbbJoWM5l8wQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lwwT1yTu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2304C4CEE5;
+	Sun, 26 Jan 2025 14:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737902970;
-	bh=Br7vYgj+FCtFGn8supBZOAlkZj4HJKpL0VOJ+GZSKrs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lk46kAhP+NqLbJNzO6on5SmXDTDUcuS1+N3QYRqcICbOqxHxRn7mtuFSFnnyALk27
-	 8YQRe8hNAW8pNG/s8sBXrOwhZcZtxnY3KBXFTRAXcS0N3n4wPd5ri6o7odbBpTCt7Y
-	 Laqm88i2lndiGu1BNN9V97x6vF2LrKRzxG76R9YQSB/ybOo0Z9EUVLsSI8Q1ulfvCa
-	 ORB7blEmXX/Ts9x5hW9XEOKwhd9r5TUiEJTO/bHHVbTNpMsIiEEY4+3zsIv/+TbVpU
-	 OwLnZOgVmERqlnmipbLVqc+dV6fia4hN+CPE7Q9tAyjTVAb0e4km/+wymx0bZ4Gchw
-	 mu8InKodmWu7g==
+	s=k20201202; t=1737902973;
+	bh=xCbmDYscuIAXcyPTul2ZheG0PoZTHFWxyNkVLY8wGy8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lwwT1yTuRmvdtHF8seBlMkMNSh841hA2EdvQj9nlNxt8FIZ6ioyf+issGUmG8QCbh
+	 wlply3GgL3Ruc1FRd4mQ1/pmLBPsGBKHnb4UuTq3NLn2ccAPlUp+4hCG2vP8rloaWS
+	 ULApdjN81rf6BO2wh8N+9P00GSR0QBozh4nLhyzEoQYrrwkBjVA3JsXaUDO7BQ4IFC
+	 gDIahZggNDGqs5V+53LheuovEa/GDHcWuoJU4PkLS9ZDn+rZDORkvjGufW9RINGgR6
+	 azMDNPj3T5q78IxCuMuOaocrlNm/ZtaOGfKoUm/g3eyaETp8NI/ChzYZwyC9gDiPoj
+	 QSSBhYROHjR7g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +49,10 @@ Cc: Josef Bacik <josef@toxicpanda.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 2/2] btrfs: convert BUG_ON in btrfs_reloc_cow_block() to proper error handling
-Date: Sun, 26 Jan 2025 09:49:26 -0500
-Message-Id: <20250126144926.925617-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10] btrfs: convert BUG_ON in btrfs_reloc_cow_block() to proper error handling
+Date: Sun, 26 Jan 2025 09:49:30 -0500
+Message-Id: <20250126144930.925655-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250126144926.925617-1-sashal@kernel.org>
-References: <20250126144926.925617-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,7 +61,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.177
+X-stable-base: Linux 5.10.233
 Content-Transfer-Encoding: 8bit
 
 From: Josef Bacik <josef@toxicpanda.com>
@@ -85,10 +82,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 87f302a413f9a..887ae4a9c50c3 100644
+index 98e3b3749ec12..5b921e6ed94e2 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -4414,8 +4414,18 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
+@@ -3976,8 +3976,18 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
  		WARN_ON(!first_cow && level == 0);
  
  		node = rc->backref_cache.path[level];
