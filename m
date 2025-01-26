@@ -1,61 +1,62 @@
-Return-Path: <linux-btrfs+bounces-11070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02F91A1C8BB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 15:53:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFAFA1C8C3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 15:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 794C67A32D6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 14:52:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32FF5188596E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 14:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4B019F471;
-	Sun, 26 Jan 2025 14:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FD01A23B6;
+	Sun, 26 Jan 2025 14:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WeodXVyO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YbGBdMuJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6935919F416;
-	Sun, 26 Jan 2025 14:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C851A238F;
+	Sun, 26 Jan 2025 14:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737902958; cv=none; b=f28IJRNLINZuDyhYRYreN5BH4gGRzF08XGPPDc3avKIqEQWz52oHcfCae5fjsQoMs79sVCf6seAm9vmHdVjSusLPnLU2c2Pwy+oY8OjUWPD1mMuVjwD2wx8XU+Xqwj1MQuOPCdRHRTqWKZ4GJhs+/u8neRd/gb2UivTvnfT+nWM=
+	t=1737902964; cv=none; b=e/ekcBm/dBSdRZx+o4sKyvSQcbKFZdvpHwbu4+QASJoePXizSAk/7H4yu0KxXejhMJxKbD0fmwarzntvJ68SmG6+idv0KoXqxUrjrX74G4c3CczjpPhb5SzoY3t9QSqYcIJ+RpSzii0U0a5NrOSGEhzQUeiYpb9RuC+rPX9jWQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737902958; c=relaxed/simple;
-	bh=Q4MUxk/WytrKjrTDXy5MsH1TXPIi7kytcdrOYgRBfFk=;
+	s=arc-20240116; t=1737902964; c=relaxed/simple;
+	bh=cHulVVLclM+jPBmZ3LMLj/fbXNhiWpDHCMX1PMLeXMo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Flfrj+OEU4KTWKiAlY/w5mSIwZTFxqilMZQEmcGseUB7bLDq6qNoE93Enjetwuy+skwH8Gc0bUYTZvfWOdR0s+g0FzX2ij0O4Ek/Hsmg5ZSo/WvOVdWr8iKLaNyqy7VCjs63YG+ttu0hMFt7agOSH1+1M4e9gSDl4mzrgv8WLSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WeodXVyO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E900BC4CED3;
-	Sun, 26 Jan 2025 14:49:15 +0000 (UTC)
+	 MIME-Version; b=lyFTTs1QyE+LJl0rAkIDNp3NRd5d0EKP4Lx7MBFxEj5eRskGJ9irPGCP/WRbsUJX8uqDPJj3ElI0t49oDaHzh+TVRbBxR4KFiXVark9JqBHMsLxhEgbVU6eGG3i6PdsLMuZNhjh/2Hp+4DLUch+VjycFP87GKG3mWJcrniHBmpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YbGBdMuJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63888C4CED3;
+	Sun, 26 Jan 2025 14:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737902956;
-	bh=Q4MUxk/WytrKjrTDXy5MsH1TXPIi7kytcdrOYgRBfFk=;
+	s=k20201202; t=1737902964;
+	bh=cHulVVLclM+jPBmZ3LMLj/fbXNhiWpDHCMX1PMLeXMo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WeodXVyOBDmKor5U+pe8cEcGVAEcc6eFM67wyOBGOa1UQ7LI7MlL6XSuwUv/EzfxE
-	 m2co3RDsZ1Hvo8VNltJuF4gjzGfVOY0Ni7WI1H0sYknQzMWStTZWImNMkgHo39T8O7
-	 PIoNnwMpGa+F/Jx+Se+9/HOQs1LOhvppJrae1M1noTEgcK/oPmG/caKIV1by62M7DY
-	 VYrp6beOkaFcxkJpdzfX9K4To63IaDT0xZ5bccES0SuxQ9g/5zSR5npHrAlLaKS1Jt
-	 Fs6t+dwXdcSJKi9ef0ROglSWqoD/zENJxFseZ6QuDL4BNPDTwgvJ3aJjhs9s16bRpm
-	 muscmfGyOTmNg==
+	b=YbGBdMuJybFduKA/y72bSyNqcVvg2ihxPa5Nb65oem5rBFi157xbL0abKwal/gmtg
+	 0wkGwnIOlxMd293hoHLuwqW6jFgaW+oNnLvebiAGpd0j0dOKvKJaYYBCYEkKcjy0SP
+	 Y56NinWgPf3W2Yf7PS6Y06sblfA2QrgQ0Xkc5ir3yZTw1KSwTxpIQVQZCdaSg9GkqF
+	 QSGzbkDD+fXjHHksvkx7WFppM4/KAQf/ZG//mRY4zcXpY3J8auCoofi5LTvK6/ljlq
+	 M2npx62cvXQY8888N3a9gWxPIYqBMOWxXSJsNsOQEVCFwg9e6yTl0hKoMwOiUnIDwX
+	 boZqDMnzcEWVA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	Boris Burkov <boris@bur.io>,
+Cc: Hao-ran Zheng <zhenghaoran154@gmail.com>,
+	Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
+	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 5/5] btrfs: convert BUG_ON in btrfs_reloc_cow_block() to proper error handling
-Date: Sun, 26 Jan 2025 09:49:06 -0500
-Message-Id: <20250126144906.925468-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 3/4] btrfs: fix data race when accessing the inode's disk_i_size at btrfs_drop_extents()
+Date: Sun, 26 Jan 2025 09:49:16 -0500
+Message-Id: <20250126144918.925549-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250126144906.925468-1-sashal@kernel.org>
-References: <20250126144906.925468-1-sashal@kernel.org>
+In-Reply-To: <20250126144918.925549-1-sashal@kernel.org>
+References: <20250126144918.925549-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,51 +65,85 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.74
+X-stable-base: Linux 6.1.127
 Content-Transfer-Encoding: 8bit
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Hao-ran Zheng <zhenghaoran154@gmail.com>
 
-[ Upstream commit 6a4730b325aaa48f7a5d5ba97aff0a955e2d9cec ]
+[ Upstream commit 5324c4e10e9c2ce307a037e904c0d9671d7137d9 ]
 
-This BUG_ON is meant to catch backref cache problems, but these can
-arise from either bugs in the backref cache or corruption in the extent
-tree.  Fix it to be a proper error.
+A data race occurs when the function `insert_ordered_extent_file_extent()`
+and the function `btrfs_inode_safe_disk_i_size_write()` are executed
+concurrently. The function `insert_ordered_extent_file_extent()` is not
+locked when reading inode->disk_i_size, causing
+`btrfs_inode_safe_disk_i_size_write()` to cause data competition when
+writing inode->disk_i_size, thus affecting the value of `modify_tree`.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+The specific call stack that appears during testing is as follows:
+
+  ============DATA_RACE============
+   btrfs_drop_extents+0x89a/0xa060 [btrfs]
+   insert_reserved_file_extent+0xb54/0x2960 [btrfs]
+   insert_ordered_extent_file_extent+0xff5/0x1760 [btrfs]
+   btrfs_finish_one_ordered+0x1b85/0x36a0 [btrfs]
+   btrfs_finish_ordered_io+0x37/0x60 [btrfs]
+   finish_ordered_fn+0x3e/0x50 [btrfs]
+   btrfs_work_helper+0x9c9/0x27a0 [btrfs]
+   process_scheduled_works+0x716/0xf10
+   worker_thread+0xb6a/0x1190
+   kthread+0x292/0x330
+   ret_from_fork+0x4d/0x80
+   ret_from_fork_asm+0x1a/0x30
+  ============OTHER_INFO============
+   btrfs_inode_safe_disk_i_size_write+0x4ec/0x600 [btrfs]
+   btrfs_finish_one_ordered+0x24c7/0x36a0 [btrfs]
+   btrfs_finish_ordered_io+0x37/0x60 [btrfs]
+   finish_ordered_fn+0x3e/0x50 [btrfs]
+   btrfs_work_helper+0x9c9/0x27a0 [btrfs]
+   process_scheduled_works+0x716/0xf10
+   worker_thread+0xb6a/0x1190
+   kthread+0x292/0x330
+   ret_from_fork+0x4d/0x80
+   ret_from_fork_asm+0x1a/0x30
+  =================================
+
+The main purpose of the check of the inode's disk_i_size is to avoid
+taking write locks on a btree path when we have a write at or beyond
+EOF, since in these cases we don't expect to find extent items in the
+root to drop. However if we end up taking write locks due to a data
+race on disk_i_size, everything is still correct, we only add extra
+lock contention on the tree in case there's concurrency from other tasks.
+If the race causes us to not take write locks when we actually need them,
+then everything is functionally correct as well, since if we find out we
+have extent items to drop and we took read locks (modify_tree set to 0),
+we release the path and retry again with write locks.
+
+Since this data race does not affect the correctness of the function,
+it is a harmless data race, use data_race() to check inode->disk_i_size.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Hao-ran Zheng <zhenghaoran154@gmail.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ fs/btrfs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 299eac696eb42..537e184b4b1df 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4378,8 +4378,18 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
- 		WARN_ON(!first_cow && level == 0);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index c8231677c79ef..bdb0f7c70752d 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -234,7 +234,7 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 	if (args->drop_cache)
+ 		btrfs_drop_extent_map_range(inode, args->start, args->end - 1, false);
  
- 		node = rc->backref_cache.path[level];
--		BUG_ON(node->bytenr != buf->start &&
--		       node->new_bytenr != buf->start);
-+
-+		/*
-+		 * If node->bytenr != buf->start and node->new_bytenr !=
-+		 * buf->start then we've got the wrong backref node for what we
-+		 * expected to see here and the cache is incorrect.
-+		 */
-+		if (unlikely(node->bytenr != buf->start && node->new_bytenr != buf->start)) {
-+			btrfs_err(fs_info,
-+"bytenr %llu was found but our backref cache was expecting %llu or %llu",
-+				  buf->start, node->bytenr, node->new_bytenr);
-+			return -EUCLEAN;
-+		}
+-	if (args->start >= inode->disk_i_size && !args->replace_extent)
++	if (data_race(args->start >= inode->disk_i_size) && !args->replace_extent)
+ 		modify_tree = 0;
  
- 		btrfs_backref_drop_node_buffer(node);
- 		atomic_inc(&cow->refs);
+ 	update_refs = (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID);
 -- 
 2.39.5
 
