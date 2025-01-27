@@ -1,112 +1,156 @@
-Return-Path: <linux-btrfs+bounces-11076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A1EFA1C8FE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 15:55:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 135EEA1D277
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2025 09:38:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D3A6166674
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2025 14:54:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 703201624D6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2025 08:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553F3183CD9;
-	Sun, 26 Jan 2025 14:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E9C1FC7F5;
+	Mon, 27 Jan 2025 08:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TReILKhi"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EG6J8ych";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZCcli9JO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 461F71AAA10;
-	Sun, 26 Jan 2025 14:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389678C11
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2025 08:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737902976; cv=none; b=gmIGY9ohmLWRFGO7zTYIjiKN8/MlxOuKIKcaxiGineHnUWl/2FyDBtVV0D8LzqH8xGHwEHCVtX1/pSb7whAhBRYN17Y97hnLhQ3TVg2GBa9QffH7EXeYqvGLjWSMR2yJZe6U9D9WQcWz3pNkaEWGv3uup3cLxrOsgvEJrEip8as=
+	t=1737967091; cv=none; b=tJK7ztYQY1xhWdmhbYavur+JtNYMaoDOjJOckW5xSCufQM/iiUayrfEzgBAw62VEDpqF+wuf/FG0avWMj2Stgjg7yT+hNEMTTeVQtW4bRpVPKUv6LYPrJGY+/TnJ+4lQX/XvovkBFh6p02jJrjRhxS6jAXK/jVRn611F/B7S898=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737902976; c=relaxed/simple;
-	bh=ymdRAv+MkBFBUHahHjbRKVaIhnFI9LiYBcxnFb6W+28=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eTU1ayUCaFWajv6qjLia4FHiULMi7OLq8ELQOOH2HdvGVE0sluHUerLKf1GXrUDqUrJgyjmU99O4h1GEoEaaO/ejH+TO39cARPtQD6M0HBjjKtnu5a43F7qs54uxuXlJCuZ21PWh6Zt8vTjQeKgW1yGfBHdggT3b5hp1kjq0KiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TReILKhi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B971EC4CED3;
-	Sun, 26 Jan 2025 14:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737902975;
-	bh=ymdRAv+MkBFBUHahHjbRKVaIhnFI9LiYBcxnFb6W+28=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TReILKhiIcVpBZURFp39AJB1Nd4Qp6F6hjPx019BOKu2HVX9lI+D4KaDPMbUl/wvk
-	 ke70xrBYDvgJBp8KOoaoJVZ+wyKpjmuf1ug7N52asfAu7HgjXjFP3n9gojtqBO1VZA
-	 dJ2uwJnhXHwtyVS1wtcTyRTGtkZX5qsbw6LwLmc3dwd+2+H6PK1W0O6Ub4o3bj/LOb
-	 mAwUG92Ady+Qp1k1Z16tbOgAxx3L51Tjv+/6xmP7yUCTTunwKPe/Cbx4AtzR7yVQ4T
-	 Gwup8bkUXypM7BuNxIFWZeqkpw33zbTpL5id8rVvse2YRG3QPMk/Ua+W4TMvR9YSyi
-	 efz3UxVl6Exqw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4] btrfs: convert BUG_ON in btrfs_reloc_cow_block() to proper error handling
-Date: Sun, 26 Jan 2025 09:49:33 -0500
-Message-Id: <20250126144933.925681-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1737967091; c=relaxed/simple;
+	bh=sD2j4fysTJu7J9KBpWOA9ESwcWAs/yP+R8YOFnV1WmY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=tX6Lusu5LZqhZLayXAOva2CMm5SxKo99BKeEEEYcyGI09N5zESb50rki2D0E9ufzadASzsDsnRhO+qhruN0QY+c7CvTEQYhn5nG/FExmUm3A2pyZUp4HnPN/5T4cqJ+5X6YV3/I1czLDhj8xnasvLIQt/KYo6DuGu17KnFnZx+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EG6J8ych; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZCcli9JO; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E34121F445
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2025 08:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737967087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wzt0nKbOija+Zzt4+YhCz/2jnZLzIF3TdEZpeFbdFtk=;
+	b=EG6J8ych87U+4n1juberhjCNJxURM22CO8npOvPeKphKcuR++V32j21aNUdTfoTfuAiSkD
+	pSGaSYlt3GN/JI2c3sQKDFNCJOvH1UiD7+53BIC3qaIvSKF7Ut30R5OwswhC/jfHytTUE1
+	jQXWlE8MxfoNdDmeNj4xJTJtCxOPFMU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1737967085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wzt0nKbOija+Zzt4+YhCz/2jnZLzIF3TdEZpeFbdFtk=;
+	b=ZCcli9JOblx+QUuDdiXNesMfxYYwSaMf2Pd5eLwmo0LVSIrCswbb232khI0+zdI+Ew6zvD
+	LTjqWFE/1DRuhq/pBCgm8fureyjffeJSCxtR0SM7jF7D2dCAaWb3vEse8+78ZiCC9jKQCD
+	99MyRjL2cqLzts73aU8cBhQ9CyXOKdo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5A3413715
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2025 08:38:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 13xCH+xFl2cCEQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2025 08:38:04 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove duplicated metadata folio flag update in end_bbio_meta_read()
+Date: Mon, 27 Jan 2025 19:07:38 +1030
+Message-ID: <06ecb80cf50feba2a430f5c819376cddd8a9cca9.1737967048.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.289
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-From: Josef Bacik <josef@toxicpanda.com>
+In that function we call set_extent_buffer_uptodate() or
+clear_extent_buffer_uptodate(), which will already update the uptodate
+flag for all the involved extent buffer folios.
 
-[ Upstream commit 6a4730b325aaa48f7a5d5ba97aff0a955e2d9cec ]
+Thus there is no need to update the folio uptodate flags again.
 
-This BUG_ON is meant to catch backref cache problems, but these can
-arise from either bugs in the backref cache or corruption in the extent
-tree.  Fix it to be a proper error.
+Just remove the open-coded part.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/relocation.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 89ad7e12c08bb..062154c6a65f6 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4789,8 +4789,18 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
- 		WARN_ON(!first_cow && level == 0);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 5a885da5e35a..1c50d6db454c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3493,10 +3493,7 @@ static void clear_extent_buffer_reading(struct extent_buffer *eb)
+ static void end_bbio_meta_read(struct btrfs_bio *bbio)
+ {
+ 	struct extent_buffer *eb = bbio->private;
+-	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	bool uptodate = !bbio->bio.bi_status;
+-	struct folio_iter fi;
+-	u32 bio_offset = 0;
  
- 		node = rc->backref_cache.path[level];
--		BUG_ON(node->bytenr != buf->start &&
--		       node->new_bytenr != buf->start);
-+
-+		/*
-+		 * If node->bytenr != buf->start and node->new_bytenr !=
-+		 * buf->start then we've got the wrong backref node for what we
-+		 * expected to see here and the cache is incorrect.
-+		 */
-+		if (unlikely(node->bytenr != buf->start && node->new_bytenr != buf->start)) {
-+			btrfs_err(fs_info,
-+"bytenr %llu was found but our backref cache was expecting %llu or %llu",
-+				  buf->start, node->bytenr, node->new_bytenr);
-+			return -EUCLEAN;
-+		}
+ 	/*
+ 	 * If the extent buffer is marked UPTODATE before the read operation
+@@ -3518,19 +3515,6 @@ static void end_bbio_meta_read(struct btrfs_bio *bbio)
+ 		set_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
+ 	}
  
- 		drop_node_buffer(node);
- 		extent_buffer_get(cow);
+-	bio_for_each_folio_all(fi, &bbio->bio) {
+-		struct folio *folio = fi.folio;
+-		u64 start = eb->start + bio_offset;
+-		u32 len = fi.length;
+-
+-		if (uptodate)
+-			btrfs_folio_set_uptodate(fs_info, folio, start, len);
+-		else
+-			btrfs_folio_clear_uptodate(fs_info, folio, start, len);
+-
+-		bio_offset += len;
+-	}
+-
+ 	clear_extent_buffer_reading(eb);
+ 	free_extent_buffer(eb);
+ 
 -- 
-2.39.5
+2.48.1
 
 
