@@ -1,174 +1,188 @@
-Return-Path: <linux-btrfs+bounces-11118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BFE3A2124D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 20:32:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06B0BA21371
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 22:03:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF130166DF1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:32:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FD1C1889B7E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 21:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BBB1E261F;
-	Tue, 28 Jan 2025 19:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287671F1505;
+	Tue, 28 Jan 2025 21:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SRwyMrI+"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="lugd+JEl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C43822619;
-	Tue, 28 Jan 2025 19:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9855255887;
+	Tue, 28 Jan 2025 21:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738092723; cv=none; b=t1j0ZM2BeEMznhY7OuU8HzO+5/AcDvBYxQi9VJmumPQArqPWWPjguTLdfjrLbuGKDpri/8PlPS2FxzJVKXBdqcKSxjFxYCfVZMth72420vbZBf9j4SDb4nkm42zuNhkmWKukrjpLX74YKO+TnGUKEBzfj5FshovVaL7fLwt6oKI=
+	t=1738098164; cv=none; b=BMNRC8H3iK95KZ6QQRmoVEJ2idqDjZpsW+HpUwRdqvZQZgH2z3q4pIcaO6OCWJ1aKTFphRfWpvjHkffyQchjzSyfXh91IkJYdT6KrHfys0JenNEvJdCk/q1gm3lBGphUPo1+7ywTy0GVCheIeNkiMJrveaVK80B/HBKcZ+6VFak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738092723; c=relaxed/simple;
-	bh=owNZ34z8H8gKLRBDKBwfWe18qn3L1v88nfMIg3Pz1LA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F+1mbOu409DkUkwa54WvMV2nnJ3DWqeV1Kb2eUZR8tcELqKjgR68KAjSbAoZ9guTAUxpRAyK8W4U6sKdhkparHld2MMCPX4l/m+UyS6oop2Py02723cqUHhzngsyYFOIFYsJnbCleALlpNvRXZUl2SoZyWTUkpv9ooiCj5IxJaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SRwyMrI+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5F73C4CED3;
-	Tue, 28 Jan 2025 19:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738092722;
-	bh=owNZ34z8H8gKLRBDKBwfWe18qn3L1v88nfMIg3Pz1LA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SRwyMrI+7rEDcHW7IuHVGV+Beu/rz3fr4xRZE/2FNaxy/8w04xmtMB+5l/7OjtE7X
-	 g/ih+kr8TPIvY/SUMmDSRxJ9agHUzYETwZBr5Vr1MKa3PL3qv7X/YMDfOsOf9s2Vo5
-	 w0pVGeJ25CkC8SD9eHiydelX+MwSAm4rpeoVmHUek+yQ4hSnEZyQONnAeLKb6DUyIW
-	 UK07D+tXIeIjeZTqlhU59S2JZeZJV301qEk91VI6n4APgSoo/WoePKctqgMT4vkHwk
-	 x3yl5NU9mWz8XPDeJzaWsXZh8d3H0HM6TZ2FVo8Y+2ItMnE82HdktnkogYjBpDnvic
-	 uPKV+NxOKmHOw==
-Date: Tue, 28 Jan 2025 11:32:02 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Yaron Avizrat <yaron.avizrat@intel.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Nicolas Palix <nicolas.palix@imag.fr>,
-	James Smart <james.smart@broadcom.com>,
-	Dick Kennedy <dick.kennedy@broadcom.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Dongsheng Yang <dongsheng.yang@easystack.cn>,
-	Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>, Keith Busch <kbusch@kernel.org>,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Frank Li <Frank.Li@nxp.com>, Mark Brown <broonie@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	cocci@inria.fr, linux-kernel@vger.kernel.org,
-	linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-spi@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org,
-	ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 09/16] xfs: convert timeouts to secs_to_jiffies()
-Message-ID: <20250128193202.GR1611770@frogsfrogsfrogs>
-References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
- <20250128-converge-secs-to-jiffies-part-two-v1-9-9a6ecf0b2308@linux.microsoft.com>
+	s=arc-20240116; t=1738098164; c=relaxed/simple;
+	bh=mfMB/kOJwWCWBi7AtFus1i5A8KKc2SzYD9VfPPB6/Bk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=fuYgz03dOehmWdW6aKYsAV8FxZ6PcsyruP+zj9JmsWnoLrjv9cc1NTWMmbrEkxHxIRCQ11YROer0V6iPt87GlJIXijEfWShyEyXoG2kKD5VcGhYYOH1s/rRBx/a6XznfPyQESmNKgZ8V6Lt3XzbMz1opliLSw/IWZLV2l1DLE5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=lugd+JEl; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1738098159; x=1738702959; i=markus.elfring@web.de;
+	bh=3umHLMGrcLo5C0gV5DfFSpcRm6HAQK73Bd3Y1mC2uB4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=lugd+JElfIBEVWJEly/xpiC37xATW6N6QL/mFXzaImqmdRiGu9El4suaNDc5SBIJ
+	 f7yuPAtB4XVuylj3u7G5BczelJ5/emDxHQ30PDVNcC9rtRKBhqRseJy6OASoL+Iq9
+	 ArcQ3FyUW9yd6zl6HvZ2Xlf0WV4HKCmnClbV719vvUnC+rm0ypbfdtPwsGGbVAZnj
+	 WkCAfzZcvm0TYZkxsVNFrodDO6tQZu6OcvhdWzOTgMDymVvgzqDR+mTdyiZV8tA4+
+	 QU/te2bbCzVTLcIj2amNj5TwWzdApX4spmArstqfs3lmriJ7U+3XkJ3feVPqxmnLX
+	 mxBXcCqystTm/wZ5ww==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.70.40]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mi4z5-1szA8E0tNZ-00bwwr; Tue, 28
+ Jan 2025 22:02:39 +0100
+Message-ID: <565fb1db-3618-4636-8820-1ca77dad07a2@web.de>
+Date: Tue, 28 Jan 2025 22:02:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-9-9a6ecf0b2308@linux.microsoft.com>
+User-Agent: Mozilla Thunderbird
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, cocci@inria.fr
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
+ imx@lists.linux.dev, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, Carlos Maiolino <cem@kernel.org>,
+ Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
+ Damien Le Moal <dlemoal@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
+ David Sterba <dsterba@suse.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>,
+ Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ James Smart <james.smart@broadcom.com>, Jaroslav Kysela <perex@perex.cz>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+ Josef Bacik <josef@toxicpanda.com>, Julia Lawall <Julia.Lawall@inria.fr>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Ilya Dryomov <idryomov@gmail.com>,
+ Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>,
+ Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nicolas Palix <nicolas.palix@imag.fr>, Niklas Cassel <cassel@kernel.org>,
+ Oded Gabbay <ogabbay@kernel.org>, Ricardo Ribalda <ribalda@google.com>,
+ Sagi Grimberg <sagi@grimberg.me>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Sebastian Reichel <sre@kernel.org>,
+ Selvin Xavier <selvin.xavier@broadcom.com>, Shawn Guo <shawnguo@kernel.org>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, Takashi Iwai <tiwai@suse.com>,
+ Victor Gambier <victor.gambier@inria.fr>, Xiubo Li <xiubli@redhat.com>,
+ Yaron Avizrat <yaron.avizrat@intel.com>
+References: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
+Subject: Re: [PATCH 01/16] coccinelle: misc: secs_to_jiffies: Patch
+ expressions too
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:iHXXXI1GgZe21qv8LaB36WZ2Vsbh+30ctHdeuhjL58pow7ObI/n
+ WkL1BRfcGc3xPTE7WTH/8blOzYTn9sr9kmiu0JlwbK+4b714M1NEuSxTjO0wec15e2/vSDy
+ uDaoXgXEnc15+k7LwhSrDlieAakHXlujaBdoTKMERuZeGqcF/lr7wB/BevoNLo+FU7wzIqQ
+ aOajvgo+YHQHBAbcH9fBg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:rl1+EWWMtaU=;EqS9WTtqlVexMZSa5Jv6osEpxMn
+ hvF5ExxFi69MshCqN0iCQJ9CsPgR4dRizBjf15Nun4PB2G1xVTkt8gPKouGwCsVTv8Wm+WqU2
+ TfM0O0GAReZpmFXq82LdrG2sTl+5GS7MW/XeczWoOvfmlQZGUTxAeiabHe982tQ5sjQ7pvBjj
+ b6JYk30LAwHaptKVJlAyYDTQrNqQmKm1fInHh1R0BqLWD7yAbmIhzOgsGDyapCyRzZ/6L58Kd
+ qMLJCmj8kp6OcGrtC6qyfn6vENJ3sKXUzDCjeFjZsblLj6AZqVFqPaGkr3WDBvgVlzknwCsuL
+ dTDBwwDzhXWZDpsnaBHnS8iI6b9y60B0/WwOzfqaZ2vol6lFD69SHUFtYn0ZgHvwiCZm9xktA
+ JWX2pS3My9yJ+hVoYQ8Roh/du8QDa/Pm1AN3y4siXvV4Vd2p4r7avPuVYF89xPfhqeOiCUyim
+ 74txrmxIhNJtDI2TJ2SHQYS2r1gUY8+ioCwT2SsVmzxEdV795ccbiiKzw3KT1teQ1CRIhkeZF
+ k+me759e21qqFhzCA+W+kKa3oNrQvnrx3MFGbr/WoIwLxlyqLG25aVhqwuWvn7yyDaFQ60QKw
+ tMPxLX6+iV8IWzhIUyb4CtEkcgWiVVNm59osGitJw6HZJgsmDNDR4zs4DWL+Q5VGOpmwSVC0x
+ Q+nvkt0/jEV6wgWG8uEad4c+rNAUrw9rtdYU5HViYfJzdE2v/knRfZBUzOkgi6O5iMZtJ3Lxi
+ rKMYnBh+OfDHRaOKzTHuD/jxsBh2wri3J7QnuWvzCczLpsppJHq+CGdZvNevnxIcUGmYGqYZs
+ K5WU8xokNX6ip+Z6iQRZjHliRbfF3LPa1bz58C8lLJ8UJMr2uicwiVhyCmJXfhfnTsF1UEjV3
+ 2Bjsxn/TOrbOtdszIeVMV7ChLFk0OwufgZxaGxw/3gOyHaPOUZ3Mz/eBUr3BiSQtFPFl4bvd4
+ GwFqEoazTKVX6f87q5CL/ThpkFTHi+muon/dhBj6NFEXz0Vk7JlO2YBAbv+PnanDfW0BCvaKH
+ DuZIBZebVIcC++l0MdC0iSdO+kNr3TXnRpRd2Pyhqn0qD+C8W+jzV6x520UF9whVDkCQlAjr8
+ R1OTygelS4A8CdLcvmF1P6DSPVs1dfnOMm4gzJp4/NcmbxhgSRgtg23Df90/CTB3FnVaeTOWC
+ m6owGzbKvieq3OLAkE+SPXE4/jRQF+NmzzaRCayhBpQ==
 
-On Tue, Jan 28, 2025 at 06:21:54PM +0000, Easwar Hariharan wrote:
-> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
-> secs_to_jiffies().  As the value here is a multiple of 1000, use
-> secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplication.
-> 
-> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
-> the following Coccinelle rules:
-> 
-> @depends on patch@
-> expression E;
-> @@
-> 
-> -msecs_to_jiffies
-> +secs_to_jiffies
-> (E
-> - * \( 1000 \| MSEC_PER_SEC \)
-> )
-> 
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+> Teach the script to suggest conversions for timeout patterns where the
+> arguments to msecs_to_jiffies() are expressions as well.
 
-Looks good to me,
-Acked-by: "Darrick J. Wong" <djwong@kernel.org>
+I propose to take another look at implementation details for such a script=
+ variant
+according to the semantic patch language.
 
---D
 
-> ---
->  fs/xfs/xfs_icache.c | 2 +-
->  fs/xfs/xfs_sysfs.c  | 7 +++----
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> index 7b6c026d01a1fc020a41a678964cdbf7a8113323..7a1feb8dc21f6f71d04f88de866e5a95925e0c54 100644
-> --- a/fs/xfs/xfs_icache.c
-> +++ b/fs/xfs/xfs_icache.c
-> @@ -230,7 +230,7 @@ xfs_blockgc_queue(
->  	rcu_read_lock();
->  	if (radix_tree_tagged(&pag->pag_ici_root, XFS_ICI_BLOCKGC_TAG))
->  		queue_delayed_work(mp->m_blockgc_wq, &pag->pag_blockgc_work,
-> -				   msecs_to_jiffies(xfs_blockgc_secs * 1000));
-> +				   secs_to_jiffies(xfs_blockgc_secs));
->  	rcu_read_unlock();
->  }
->  
-> diff --git a/fs/xfs/xfs_sysfs.c b/fs/xfs/xfs_sysfs.c
-> index 60cb5318fdae3cc246236fd988b4749df57f8bfc..eed0f28afe97ead762a9539e45f292db7d0d0c4a 100644
-> --- a/fs/xfs/xfs_sysfs.c
-> +++ b/fs/xfs/xfs_sysfs.c
-> @@ -568,8 +568,8 @@ retry_timeout_seconds_store(
->  	if (val == -1)
->  		cfg->retry_timeout = XFS_ERR_RETRY_FOREVER;
->  	else {
-> -		cfg->retry_timeout = msecs_to_jiffies(val * MSEC_PER_SEC);
-> -		ASSERT(msecs_to_jiffies(val * MSEC_PER_SEC) < LONG_MAX);
-> +		cfg->retry_timeout = secs_to_jiffies(val);
-> +		ASSERT(secs_to_jiffies(val) < LONG_MAX);
->  	}
->  	return count;
->  }
-> @@ -686,8 +686,7 @@ xfs_error_sysfs_init_class(
->  		if (init[i].retry_timeout == XFS_ERR_RETRY_FOREVER)
->  			cfg->retry_timeout = XFS_ERR_RETRY_FOREVER;
->  		else
-> -			cfg->retry_timeout = msecs_to_jiffies(
-> -					init[i].retry_timeout * MSEC_PER_SEC);
-> +			cfg->retry_timeout = secs_to_jiffies(init[i].retry_timeout);
->  	}
->  	return 0;
->  
-> 
-> -- 
-> 2.43.0
-> 
-> 
+=E2=80=A6
+> +++ b/scripts/coccinelle/misc/secs_to_jiffies.cocci
+> @@ -11,12 +11,22 @@
+>
+>  virtual patch
+=E2=80=A6
+> -@depends on patch@ constant C; @@
+> +@depends on patch@
+> +expression E;
+> +@@
+>
+> -- msecs_to_jiffies(C * MSEC_PER_SEC)
+> -+ secs_to_jiffies(C)
+> +-msecs_to_jiffies
+> ++secs_to_jiffies
+> + (E
+> +- * \( 1000 \| MSEC_PER_SEC \)
+> + )
+
+1. I do not see a need to keep an SmPL rule for the handling of constants
+   (or literals) after the suggested extension for expressions.
+
+2. I find it nice that you indicate an attempt to make the shown SmPL code
+   a bit more succinct.
+   Unfortunately, further constraints should be taken better into account
+   for the current handling of isomorphisms (and corresponding SmPL disjun=
+ctions).
+   Thus I would find an SmPL rule (like the following) more appropriate.
+
+@adjustment@
+expression e;
+@@
+-msecs_to_jiffies
++secs_to_jiffies
+ (
+(
+-e * 1000
+|
+-e * MSEC_PER_SEC
+)
++e
+ )
+
+
+3. It seems that you would like to support only a single operation mode so=
+ far.
+   This system aspect can trigger further software development challenges.
+
+
+Regards,
+Markus
 
