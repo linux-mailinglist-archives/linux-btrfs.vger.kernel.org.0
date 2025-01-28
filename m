@@ -1,48 +1,49 @@
-Return-Path: <linux-btrfs+bounces-11108-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11109-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C6AA2115C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:27:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12995A21161
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:28:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96F191660AF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:26:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635B11887D83
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170B91F2C57;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E59F1F9F7E;
 	Tue, 28 Jan 2025 18:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="bCWdmC5s"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nOvIreoP"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A84E1F1520;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93A71F3FEC;
 	Tue, 28 Jan 2025 18:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738088523; cv=none; b=NL5fd4Uqe+htyN5+ZZ35wMrSDFj6lVwvdCz5MRSKcndCkYhQF8sYmyb5o9cdbv2mLm9qcxGxBVlhc2RUnzu9iRa6pbbFVQLFy9GI1QWDN1io+vvU1jrx4BBNImkE17mRDpvXsZtJqiAnogXLmCL6JBzxgxTTejOZyJVzgiXaQXg=
+	t=1738088524; cv=none; b=KapF/PqITv5g4lx6nqO7+lw7vDuNmjgc4ADf+wTv+sx21R1VoPCIB7/A+TYzh673BAglBw5ypFiguyaUe6ddFzA8kyVc79/+e32xwu5kpVT9zNkiVHdia6C8ZweWR40NnCNhttL4kIlzzY8IfFCI4+jrZiQ3wrplH0fZQOOEf4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738088523; c=relaxed/simple;
-	bh=OLA3A56uD0O5H9QiRTUKVuZZklZoijvOUfZpIkvjlIU=;
+	s=arc-20240116; t=1738088524; c=relaxed/simple;
+	bh=OsYTfsOCztno0rw4bH8H93fzXxdgLqs3edOsOwLU26w=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BIXkyK24lyRrqkysp7RxuOk26knqdhxRvcWC/8FmVHMIwBZJQ/c5EoW6NhuJATaU8D46J+XqESMs0GbcakJL6c27upXs8t5ryRvQYXsVME7C0994ui2t6l/hCKocZMXr319pPxUawwp3/ldfGQ3SjNz3jJC/cDpuZPCkSx87Wxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=bCWdmC5s; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=cyFKetNO0CIluwYw5acIyHKC0ScraxvZAc2ybNV28g3hPqCi2ow0bCWCDr0G6t68Km3kYk8J+ErmcdooqAT8PbwJp+mIUOBe5FgAuptee5rucP4r8VIuWQQNqkH9ne1t5k/CXHB7Ge3Zqd2Vtx5rzNkipNl+gRIp6qIcfkSBQG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nOvIreoP; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
-	by linux.microsoft.com (Postfix) with ESMTPSA id B64E5203717F;
+	by linux.microsoft.com (Postfix) with ESMTPSA id DB2792037180;
 	Tue, 28 Jan 2025 10:21:58 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B64E5203717F
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DB2792037180
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1738088518;
-	bh=u7OiaBq0jFk7FcA2dC+mPjTQmMAI3oiqK6Ljbdu99Zo=;
+	bh=++CcFDhMGmgcKwzaiNwx3lMiN5jr5twzkm9Lzfmspqc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=bCWdmC5sK+KGAbHIQs99+gR3I9KkUGPk8kFlcCfGOtNz5+PxpeUtS30nO0JF6Kkrh
-	 4YdwJAnsnMu3a7zDoviG7hWlukFPfHmJucfdR4tFHFcqEK2OJWxup5PGk5ZafTVcpE
-	 UzK+XoLAiEFwEnVWfbUT/XAsd53WZnxAQJy+FV1o=
+	b=nOvIreoPo3EtPXnqT78hdGSPjS+BJfm76bfob6LjYY8fpAzAx+SSWBMemjjxO+8RL
+	 gtA/N4PvBwCgX5MwsErpmvFLEJEFEicnjVAtYs/DImfDKgiY3inNNwt6TIW4w8Mj2E
+	 eLHR2MK1+CS1Dd52E6DvRE+gXgt4inmHotPghBSw=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Tue, 28 Jan 2025 18:21:54 +0000
-Subject: [PATCH 09/16] xfs: convert timeouts to secs_to_jiffies()
+Date: Tue, 28 Jan 2025 18:21:55 +0000
+Subject: [PATCH 10/16] power: supply: da9030: convert timeouts to
+ secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -51,7 +52,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-9-9a6ecf0b2308@linux.microsoft.com>
+Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-10-9a6ecf0b2308@linux.microsoft.com>
 References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -112,48 +113,23 @@ expression E;
 
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- fs/xfs/xfs_icache.c | 2 +-
- fs/xfs/xfs_sysfs.c  | 7 +++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/power/supply/da9030_battery.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index 7b6c026d01a1fc020a41a678964cdbf7a8113323..7a1feb8dc21f6f71d04f88de866e5a95925e0c54 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -230,7 +230,7 @@ xfs_blockgc_queue(
- 	rcu_read_lock();
- 	if (radix_tree_tagged(&pag->pag_ici_root, XFS_ICI_BLOCKGC_TAG))
- 		queue_delayed_work(mp->m_blockgc_wq, &pag->pag_blockgc_work,
--				   msecs_to_jiffies(xfs_blockgc_secs * 1000));
-+				   secs_to_jiffies(xfs_blockgc_secs));
- 	rcu_read_unlock();
- }
+diff --git a/drivers/power/supply/da9030_battery.c b/drivers/power/supply/da9030_battery.c
+index ac2e319e95179039279dacaed1744136f679fbac..d25279c260308b6c82acb2aabf44f3749f71b703 100644
+--- a/drivers/power/supply/da9030_battery.c
++++ b/drivers/power/supply/da9030_battery.c
+@@ -502,8 +502,7 @@ static int da9030_battery_probe(struct platform_device *pdev)
  
-diff --git a/fs/xfs/xfs_sysfs.c b/fs/xfs/xfs_sysfs.c
-index 60cb5318fdae3cc246236fd988b4749df57f8bfc..eed0f28afe97ead762a9539e45f292db7d0d0c4a 100644
---- a/fs/xfs/xfs_sysfs.c
-+++ b/fs/xfs/xfs_sysfs.c
-@@ -568,8 +568,8 @@ retry_timeout_seconds_store(
- 	if (val == -1)
- 		cfg->retry_timeout = XFS_ERR_RETRY_FOREVER;
- 	else {
--		cfg->retry_timeout = msecs_to_jiffies(val * MSEC_PER_SEC);
--		ASSERT(msecs_to_jiffies(val * MSEC_PER_SEC) < LONG_MAX);
-+		cfg->retry_timeout = secs_to_jiffies(val);
-+		ASSERT(secs_to_jiffies(val) < LONG_MAX);
- 	}
- 	return count;
- }
-@@ -686,8 +686,7 @@ xfs_error_sysfs_init_class(
- 		if (init[i].retry_timeout == XFS_ERR_RETRY_FOREVER)
- 			cfg->retry_timeout = XFS_ERR_RETRY_FOREVER;
- 		else
--			cfg->retry_timeout = msecs_to_jiffies(
--					init[i].retry_timeout * MSEC_PER_SEC);
-+			cfg->retry_timeout = secs_to_jiffies(init[i].retry_timeout);
- 	}
- 	return 0;
+ 	/* 10 seconds between monitor runs unless platform defines other
+ 	   interval */
+-	charger->interval = msecs_to_jiffies(
+-		(pdata->batmon_interval ? : 10) * 1000);
++	charger->interval = secs_to_jiffies(pdata->batmon_interval ? : 10);
  
+ 	charger->charge_milliamp = pdata->charge_milliamp;
+ 	charger->charge_millivolt = pdata->charge_millivolt;
 
 -- 
 2.43.0
