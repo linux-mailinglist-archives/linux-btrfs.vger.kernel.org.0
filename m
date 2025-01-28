@@ -1,49 +1,48 @@
-Return-Path: <linux-btrfs+bounces-11101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40595A21102
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:23:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A74CA21109
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 411983A63E0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:23:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4A7F3A7078
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BF31F55FE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4911F668E;
 	Tue, 28 Jan 2025 18:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="FaJCMhXq"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qifPuciL"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33CC1DE8AB;
-	Tue, 28 Jan 2025 18:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634081DE8AD;
+	Tue, 28 Jan 2025 18:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738088520; cv=none; b=h+x2cbP7LOiTUqitwVDGDCX0DTT8KxNA3KBw9zeeRHZkrye8Le7G634X25sMv07GSO4jOZLF395AcwsMuET8gBIBxVPsn/Dd/JhQtTjePXSdLlo3+2QOm2UtSbqgHFdA9WN2cwk8MHUHjC5AN+3shz41JanU2bVxcMb01F49Ntk=
+	t=1738088521; cv=none; b=cI0fPtQQcaVT6i6og9CHCNecQ5eZ2HX/aZlnBX0VnRIb+I33tCMEDXRqHH7GjnHTL1/XsdClNJgComFHaW+w7V3i1uU/ZE2orInR4CoyxAu5Bjgcb9f1bi4BFD0WJ4+oH18YrHF6O+enb3hvRVEM7TjpI2Gq7oqlQzOD7NzSnB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738088520; c=relaxed/simple;
-	bh=68Gbg2fhfS8FvSFYnoSmzDDd5lhuvGiyxTI1Zb29nr0=;
+	s=arc-20240116; t=1738088521; c=relaxed/simple;
+	bh=G16h0yxHDNl3YiJLDUgcJDZI/QKtvBTKJxJPm17mVaE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FVYM1gmPxwQYzzbT0B3jPl7kdBH0ngMMtV/6OK3y7pvtSuNcyHzc6PS3oT4CDoftJ8Wi+vPsm6LePGGeEUjHFElbj5heMs5DIlcION36+C9NjJHsflsH8aecoGbkmefYhB8YZhAbZHMkIrA7wIhFzMWkzEPVoHspyVwToGHY+tM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=FaJCMhXq; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=P+ugDxX7bWqiAyyTOnP4He60p05mLKrhHnY7JPxm8MTeJRhKixRAhv6+/C/K7SoBbNWTK1cWtzSRV3IW7JgH5gHQAiP9M1fYErLTjpwXSE733RSoDrrn9+fAgngHNRjnG0IlIe2AkwB9v1vebs7y8jcn5QCa6QfjLtx14/QFnzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qifPuciL; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
-	by linux.microsoft.com (Postfix) with ESMTPSA id C988B2037179;
+	by linux.microsoft.com (Postfix) with ESMTPSA id EE39B203717A;
 	Tue, 28 Jan 2025 10:21:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C988B2037179
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EE39B203717A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1738088517;
-	bh=NnK20PmZCF3Ily6Bk4PfjyKx9tsw9Ltz3kRT5x7zGKM=;
+	s=default; t=1738088518;
+	bh=/EWqXlZOyaOm4g59VS89I2uqnGTUPl37w71b9X7s02o=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=FaJCMhXqnOBKCZK58/aDFyxpugTwuUI0zorVbM17ln8zh2Kidcw4dLV6kvgQrvjgC
-	 0NTPud50z5k1yBSbcBf+9ThgyXzP902+ENnzRWcvFd3c3gCBEPcZA9Zr7F3/Xti+Lp
-	 3eGcpMelp4xFNnrE38aQ+AoRxDphqgUTWgfcQdRE=
+	b=qifPuciLp6zYrAFWIRB9lwfoiORDq5Znn6Y1MZg447mRd521rUeXZX4ssO4a3zPi0
+	 yIeJx+BuhYKeboGXzAtI2rktLS4vmUes2TtMU1tgSIC4k2CZaQfPx4pU+CBe+A2DVU
+	 iFfDndGnNrrUEfvChktnE0Qma+AmmL/g2NBtRY68=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Tue, 28 Jan 2025 18:21:48 +0000
-Subject: [PATCH 03/16] accel/habanalabs: convert timeouts to
- secs_to_jiffies()
+Date: Tue, 28 Jan 2025 18:21:49 +0000
+Subject: [PATCH 04/16] ALSA: ac97: convert timeouts to secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-3-9a6ecf0b2308@linux.microsoft.com>
+Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-4-9a6ecf0b2308@linux.microsoft.com>
 References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -107,70 +106,29 @@ expression E;
 
 -msecs_to_jiffies
 +secs_to_jiffies
- (E
+(E
 - * \( 1000 \| MSEC_PER_SEC \)
- )
+)
 
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- drivers/accel/habanalabs/common/command_submission.c | 2 +-
- drivers/accel/habanalabs/common/debugfs.c            | 2 +-
- drivers/accel/habanalabs/common/device.c             | 2 +-
- drivers/accel/habanalabs/common/habanalabs_drv.c     | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/ac97/ac97_codec.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/accel/habanalabs/common/command_submission.c b/drivers/accel/habanalabs/common/command_submission.c
-index 59823e3c3bf7a4fafc0b112fd7b4b2209149973c..dee487724918554c24c3e78df4e8715dd1c73acd 100644
---- a/drivers/accel/habanalabs/common/command_submission.c
-+++ b/drivers/accel/habanalabs/common/command_submission.c
-@@ -2586,7 +2586,7 @@ int hl_cs_ioctl(struct drm_device *ddev, void *data, struct drm_file *file_priv)
- 		cs_seq = args->in.seq;
- 
- 	timeout = flags & HL_CS_FLAGS_CUSTOM_TIMEOUT
--			? msecs_to_jiffies(args->in.timeout * 1000)
-+			? secs_to_jiffies(args->in.timeout)
- 			: hpriv->hdev->timeout_jiffies;
- 
- 	switch (cs_type) {
-diff --git a/drivers/accel/habanalabs/common/debugfs.c b/drivers/accel/habanalabs/common/debugfs.c
-index ca7677293a55822f703a3a1cbf947c4c44fdc569..4b391807e5f2e2a2570a38b9dfdf6be4299dbfb6 100644
---- a/drivers/accel/habanalabs/common/debugfs.c
-+++ b/drivers/accel/habanalabs/common/debugfs.c
-@@ -1403,7 +1403,7 @@ static ssize_t hl_timeout_locked_write(struct file *f, const char __user *buf,
- 		return rc;
- 
- 	if (value)
--		hdev->timeout_jiffies = msecs_to_jiffies(value * 1000);
-+		hdev->timeout_jiffies = secs_to_jiffies(value);
- 	else
- 		hdev->timeout_jiffies = MAX_SCHEDULE_TIMEOUT;
- 
-diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/habanalabs/common/device.c
-index 30277ae410d4b742ffb7bddc35498564ff96fe62..68eebed3b050f72f81e55b86da869b56b4cdeadf 100644
---- a/drivers/accel/habanalabs/common/device.c
-+++ b/drivers/accel/habanalabs/common/device.c
-@@ -2091,7 +2091,7 @@ int hl_device_cond_reset(struct hl_device *hdev, u32 flags, u64 event_mask)
- 	dev_dbg(hdev->dev, "Device is going to be hard-reset in %u sec unless being released\n",
- 		hdev->device_release_watchdog_timeout_sec);
- 	schedule_delayed_work(&hdev->device_release_watchdog_work.reset_work,
--				msecs_to_jiffies(hdev->device_release_watchdog_timeout_sec * 1000));
-+				secs_to_jiffies(hdev->device_release_watchdog_timeout_sec));
- 	hdev->reset_info.watchdog_active = 1;
- out:
- 	spin_unlock(&hdev->reset_info.lock);
-diff --git a/drivers/accel/habanalabs/common/habanalabs_drv.c b/drivers/accel/habanalabs/common/habanalabs_drv.c
-index 596c52e8aa266bf48e2be45e719adb202604577b..0035748f3228246da235f227b2cf3939d64af350 100644
---- a/drivers/accel/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/accel/habanalabs/common/habanalabs_drv.c
-@@ -386,7 +386,7 @@ static int fixup_device_params(struct hl_device *hdev)
- 	hdev->fw_comms_poll_interval_usec = HL_FW_STATUS_POLL_INTERVAL_USEC;
- 
- 	if (tmp_timeout)
--		hdev->timeout_jiffies = msecs_to_jiffies(tmp_timeout * MSEC_PER_SEC);
-+		hdev->timeout_jiffies = secs_to_jiffies(tmp_timeout);
- 	else
- 		hdev->timeout_jiffies = MAX_SCHEDULE_TIMEOUT;
- 
+diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+index 6e710dce5c6068ec20c2da751b6f5372ad1df211..88ac37739b7653f69af430dd0163f5ab4ddf0d0c 100644
+--- a/sound/pci/ac97/ac97_codec.c
++++ b/sound/pci/ac97/ac97_codec.c
+@@ -2461,8 +2461,7 @@ int snd_ac97_update_power(struct snd_ac97 *ac97, int reg, int powerup)
+ 		 * (for avoiding loud click noises for many (OSS) apps
+ 		 *  that open/close frequently)
+ 		 */
+-		schedule_delayed_work(&ac97->power_work,
+-				      msecs_to_jiffies(power_save * 1000));
++		schedule_delayed_work(&ac97->power_work, secs_to_jiffies(power_save));
+ 	else {
+ 		cancel_delayed_work(&ac97->power_work);
+ 		update_power_regs(ac97);
 
 -- 
 2.43.0
