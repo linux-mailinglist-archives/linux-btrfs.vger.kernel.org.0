@@ -1,49 +1,48 @@
-Return-Path: <linux-btrfs+bounces-11109-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12995A21161
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F74BA21167
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635B11887D83
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:27:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF518188B013
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E59F1F9F7E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB8C1FA24D;
 	Tue, 28 Jan 2025 18:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nOvIreoP"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cKEYru15"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93A71F3FEC;
-	Tue, 28 Jan 2025 18:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8181DED68;
+	Tue, 28 Jan 2025 18:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738088524; cv=none; b=KapF/PqITv5g4lx6nqO7+lw7vDuNmjgc4ADf+wTv+sx21R1VoPCIB7/A+TYzh673BAglBw5ypFiguyaUe6ddFzA8kyVc79/+e32xwu5kpVT9zNkiVHdia6C8ZweWR40NnCNhttL4kIlzzY8IfFCI4+jrZiQ3wrplH0fZQOOEf4E=
+	t=1738088524; cv=none; b=bzw+tJYxZRdeyTDRI4qUljdFloHJ3xe+yQlQp42hGe+ChnV2i8N1TWacF7mGEBwnQOqfF5pdm38AjzLtW9OQtzp524V26JoQYb6n2TIhp7fSu0MaoczcscmThyeIWnEIp2h1IhxN1aJD9d3J0Vih3MGkWb2QIO0u0cjJueZWrXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1738088524; c=relaxed/simple;
-	bh=OsYTfsOCztno0rw4bH8H93fzXxdgLqs3edOsOwLU26w=;
+	bh=hA3Q3K9glBf7uUWiSoreFmdKqoQ37oa0nFKbyW6Ranw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=cyFKetNO0CIluwYw5acIyHKC0ScraxvZAc2ybNV28g3hPqCi2ow0bCWCDr0G6t68Km3kYk8J+ErmcdooqAT8PbwJp+mIUOBe5FgAuptee5rucP4r8VIuWQQNqkH9ne1t5k/CXHB7Ge3Zqd2Vtx5rzNkipNl+gRIp6qIcfkSBQG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nOvIreoP; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=eibcRrF9o/IrbOGQW66LSifdZeA2bq7bOuXSlJ7SewEOHleqmGMPAdJKwpbqytQr/BEEnWvsvVHk+mz4YoMUESkheGkweFwtbsh6ORCnACnbJrrKM1KBMfPgV3LUEyIsW7D54jS8fnHv89ioEwLViJgbkhKRN4ZmvDVO/9H559M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cKEYru15; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
-	by linux.microsoft.com (Postfix) with ESMTPSA id DB2792037180;
-	Tue, 28 Jan 2025 10:21:58 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DB2792037180
+	by linux.microsoft.com (Postfix) with ESMTPSA id 0FF192037181;
+	Tue, 28 Jan 2025 10:21:59 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0FF192037181
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1738088518;
-	bh=++CcFDhMGmgcKwzaiNwx3lMiN5jr5twzkm9Lzfmspqc=;
+	s=default; t=1738088519;
+	bh=mkn/3Lgtg54GNzaXlgwnQtoAqu7SMhloWS9nR/qJKuY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=nOvIreoPo3EtPXnqT78hdGSPjS+BJfm76bfob6LjYY8fpAzAx+SSWBMemjjxO+8RL
-	 gtA/N4PvBwCgX5MwsErpmvFLEJEFEicnjVAtYs/DImfDKgiY3inNNwt6TIW4w8Mj2E
-	 eLHR2MK1+CS1Dd52E6DvRE+gXgt4inmHotPghBSw=
+	b=cKEYru15Mtf5Q/kd1hSFKWBC52Cu5K/BLR2OJkWAzj2ZRqT7jwKiudaaP1oxpVDD2
+	 Ch28OEl3D9iSWgJG7LiMGUZuZZPQ0TT3G25/suv+aMV6FU+12BnnbXEYRDXYc7j3CK
+	 B5oP9zQfweGdZD0+cB+LjlH0pntkjNINNMAcz/8U=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Tue, 28 Jan 2025 18:21:55 +0000
-Subject: [PATCH 10/16] power: supply: da9030: convert timeouts to
- secs_to_jiffies()
+Date: Tue, 28 Jan 2025 18:21:56 +0000
+Subject: [PATCH 11/16] nvme: convert timeouts to secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-10-9a6ecf0b2308@linux.microsoft.com>
+Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-11-9a6ecf0b2308@linux.microsoft.com>
 References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -113,23 +112,27 @@ expression E;
 
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- drivers/power/supply/da9030_battery.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/nvme/host/core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/power/supply/da9030_battery.c b/drivers/power/supply/da9030_battery.c
-index ac2e319e95179039279dacaed1744136f679fbac..d25279c260308b6c82acb2aabf44f3749f71b703 100644
---- a/drivers/power/supply/da9030_battery.c
-+++ b/drivers/power/supply/da9030_battery.c
-@@ -502,8 +502,7 @@ static int da9030_battery_probe(struct platform_device *pdev)
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 76b615d4d5b91e163e5a6e7baf451c959a2c3cab..87498215ede4bcaf48660b89c901075dfcfaf041 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -4459,11 +4459,9 @@ static void nvme_fw_act_work(struct work_struct *work)
+ 	nvme_auth_stop(ctrl);
  
- 	/* 10 seconds between monitor runs unless platform defines other
- 	   interval */
--	charger->interval = msecs_to_jiffies(
--		(pdata->batmon_interval ? : 10) * 1000);
-+	charger->interval = secs_to_jiffies(pdata->batmon_interval ? : 10);
+ 	if (ctrl->mtfa)
+-		fw_act_timeout = jiffies +
+-				msecs_to_jiffies(ctrl->mtfa * 100);
++		fw_act_timeout = jiffies + msecs_to_jiffies(ctrl->mtfa * 100);
+ 	else
+-		fw_act_timeout = jiffies +
+-				msecs_to_jiffies(admin_timeout * 1000);
++		fw_act_timeout = jiffies + secs_to_jiffies(admin_timeout);
  
- 	charger->charge_milliamp = pdata->charge_milliamp;
- 	charger->charge_millivolt = pdata->charge_millivolt;
+ 	nvme_quiesce_io_queues(ctrl);
+ 	while (nvme_ctrl_pp_status(ctrl)) {
 
 -- 
 2.43.0
