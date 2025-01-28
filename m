@@ -1,48 +1,94 @@
-Return-Path: <linux-btrfs+bounces-11116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11117-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 260B8A21194
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:32:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B34B3A2123D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 20:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC5CE166019
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:31:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76CCB3A6AA1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64001F1514;
-	Tue, 28 Jan 2025 18:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955DD1E22FA;
+	Tue, 28 Jan 2025 19:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P4RylrDT"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="X7DzgIEI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gjs0esMU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y688SLY7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9Rahx42h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54411E98E1;
-	Tue, 28 Jan 2025 18:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C60E1DED68;
+	Tue, 28 Jan 2025 19:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738088939; cv=none; b=qlQAkE6X9m9Az8JBV0nYF6s5P0EXDE5cT4MGNjuGlx92YD2sNwJgwbTMj6X4WHBA9dS/kNY77oEsxS56cM5ip2HSq4UzbkxEnTgleVQ4tl6HlbdsfQODiA1R1Y2ZrkV5dRD0ADikfaHTsuKf5vRyqsSEPCExcnwhqhsFnwvlgOw=
+	t=1738092507; cv=none; b=l7YZFMKcCjRQvQY81vFJoelnz2e/BEBGbUvtBWEtUaaFD2soJvX2zhoJBVtXtGwivNIxXdrgRS3ii8HygqJsZso31H6WkPfxp+YrpS3JGIvOluSNWDwUSwIxC8MdbtUN+D7aMpC7+N7UtY2FTKjnroXZc2bKPth1PskBr6pHfYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738088939; c=relaxed/simple;
-	bh=5vKlyluoIwL5MLSNFaVfQU6gpPWlLBGUfC043Y4ZA48=;
+	s=arc-20240116; t=1738092507; c=relaxed/simple;
+	bh=n5k+kdOWFCqZ0uk5hOxAOpLLJkFFgvcFWETQFqM2RQo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NoayFJrl+P6f3X4ia2AV3WfZ3dxf2JoPPbNFDv/4cDheYfYQ7+Ath8/w7rcAGpEUtYtPhwj9HIULB1ogiztTTR2X/OcaOMcoL8O0WhcE0hjer3gxQXuUi24E4xp9ZHFLnM6x0N2No4epZUAzrR9387H29BlUNRTVTFvK8AFyABs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P4RylrDT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 831A6C4CEE4;
-	Tue, 28 Jan 2025 18:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738088938;
-	bh=5vKlyluoIwL5MLSNFaVfQU6gpPWlLBGUfC043Y4ZA48=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P4RylrDTIX8Uy8PaKXepTKmo9JbD2s1TqRqjVjk79EX6UIO6eP0djQtJJK88za5Fk
-	 JwkXSxGvgFzlp0bbaHNaHN00HXwLVEDwoROTo5wDfRfsMG/11EZ/60VjHn4wEmzqLa
-	 kcHBrGV05EUJahj0VGnWlSX1miKbeH9kIAO+dxoNow3QgUmwhY5pXRiW1OXApD28B+
-	 xQIEadslx9mpHUs2SEA3p3YZ8dPP9LWiKFJVTR9KJ/66eUffexnSqE6XYU8c9mp7pG
-	 pv+Gt1KZVlb4zPDYIUoffAngd1LNkOTrkLP3jy3oC+qPbj05QBwYJ5EYU4eU5MsroI
-	 zPBbqI0b5RbTw==
-Date: Tue, 28 Jan 2025 11:28:52 -0700
-From: Keith Busch <kbusch@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UUu4eFR40zzSH2EXMOHiwYtJd/SzYn73s+RjzRZ/7+P6AwQam/46t/382j8Dpp7XbJyuFgrx/+aqAUdPd7HtzZKBw/a3V2bUcXQzEGSuYR8aBubgYv8NfhIAD17UD2adLGzFMNQHxk0KX6TiJJXRmqM1GmvqLpmiwE86SIaQVSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=X7DzgIEI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gjs0esMU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y688SLY7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9Rahx42h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 31F44210F8;
+	Tue, 28 Jan 2025 19:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738092497;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cu5AW9e6LIlMe18vHX/cu2btQmvEuNdVbxSGH23BpgQ=;
+	b=X7DzgIEIos5paB261Thz8Qi51sOVFwb5dSUTRRMycQLt/5T7754KjcgbjT+EPwV5fdLaaa
+	cvSOk6TY2qEeLsUeC5G5KNg4CQMIkX2ooAejwo/XceW1/fc11wYZyhlGSl7Q8n+cEjO9OJ
+	Ii8fxytnZFdNjyQYJ4iJxYMOiaYZluU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738092497;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cu5AW9e6LIlMe18vHX/cu2btQmvEuNdVbxSGH23BpgQ=;
+	b=gjs0esMUPchB4K4RtIem58fDt+M6QJS4Mh5QJBMLR40KmpfdO9OR+d1oMn3UBKFmkmzEEt
+	+M/96OKGcvLSGHBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=y688SLY7;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9Rahx42h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738092496;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cu5AW9e6LIlMe18vHX/cu2btQmvEuNdVbxSGH23BpgQ=;
+	b=y688SLY7/DL5p8EccbkUszio2tZbA94boT4rwz+ACMq588fgH+Vf8EqkXANQNYWiQFG7DT
+	anyf2Nx63Z/9IvWw9iThlkRnAXfe4qWQrFOQ8ghtd0mhYInrapGCBP4qDwcTlbxOa+r+Gv
+	qtAW+mLbxCjg/w5prt5Mp5mE0k5zC1A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738092496;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cu5AW9e6LIlMe18vHX/cu2btQmvEuNdVbxSGH23BpgQ=;
+	b=9Rahx42hI6P64ZFl8I0lTTg8Zv21R573Kl+t/8z5GIP+ELkdKbRYFovpEy1CA3oSmAZSUq
+	/XJL5V34JZcxoYCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4BB313625;
+	Tue, 28 Jan 2025 19:28:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MMhrK88vmWf/FgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 28 Jan 2025 19:28:15 +0000
+Date: Tue, 28 Jan 2025 20:28:14 +0100
+From: David Sterba <dsterba@suse.cz>
 To: Easwar Hariharan <eahariha@linux.microsoft.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Yaron Avizrat <yaron.avizrat@intel.com>,
@@ -51,7 +97,7 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Nicolas Palix <nicolas.palix@imag.fr>,
 	James Smart <james.smart@broadcom.com>,
 	Dick Kennedy <dick.kennedy@broadcom.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
@@ -61,9 +107,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Damien Le Moal <dlemoal@kernel.org>,
 	Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>,
 	"Darrick J. Wong" <djwong@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>, Frank Li <Frank.Li@nxp.com>,
-	Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Frank Li <Frank.Li@nxp.com>, Mark Brown <broonie@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sascha Hauer <s.hauer@pengutronix.de>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
 	Fabio Estevam <festevam@gmail.com>,
@@ -84,10 +131,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-arm-kernel@lists.infradead.org,
 	platform-driver-x86@vger.kernel.org,
 	ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 11/16] nvme: convert timeouts to secs_to_jiffies()
-Message-ID: <Z5kh5BYrYaDArkkU@kbusch-mbp>
+Subject: Re: [PATCH 05/16] btrfs: convert timeouts to secs_to_jiffies()
+Message-ID: <20250128192814.GZ5777@suse.cz>
+Reply-To: dsterba@suse.cz
 References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
- <20250128-converge-secs-to-jiffies-part-two-v1-11-9a6ecf0b2308@linux.microsoft.com>
+ <20250128-converge-secs-to-jiffies-part-two-v1-5-9a6ecf0b2308@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -96,9 +144,48 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-11-9a6ecf0b2308@linux.microsoft.com>
+In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-5-9a6ecf0b2308@linux.microsoft.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 31F44210F8
+X-Spam-Score: -2.71
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,intel.com,kernel.org,inria.fr,imag.fr,broadcom.com,HansenPartnership.com,oracle.com,perex.cz,suse.com,fb.com,toxicpanda.com,gmail.com,easystack.cn,kernel.dk,redhat.com,lst.de,grimberg.me,nxp.com,pengutronix.de,amd.com,linux.intel.com,hmh.eng.br,ziepe.ca,vger.kernel.org,lists.freedesktop.org,lists.infradead.org,lists.linux.dev,lists.sourceforge.net];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLqrxpk6su4nbqht4p3tfcj1xc)];
+	RCPT_COUNT_GT_50(0.00)[59];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:mid,suse.cz:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Jan 28, 2025 at 06:21:56PM +0000, Easwar Hariharan wrote:
+On Tue, Jan 28, 2025 at 06:21:50PM +0000, Easwar Hariharan wrote:
 > Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
 > secs_to_jiffies().  As the value here is a multiple of 1000, use
 > secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplication.
@@ -117,30 +204,6 @@ On Tue, Jan 28, 2025 at 06:21:56PM +0000, Easwar Hariharan wrote:
 > )
 > 
 > Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->  drivers/nvme/host/core.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 76b615d4d5b91e163e5a6e7baf451c959a2c3cab..87498215ede4bcaf48660b89c901075dfcfaf041 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -4459,11 +4459,9 @@ static void nvme_fw_act_work(struct work_struct *work)
->  	nvme_auth_stop(ctrl);
->  
->  	if (ctrl->mtfa)
-> -		fw_act_timeout = jiffies +
-> -				msecs_to_jiffies(ctrl->mtfa * 100);
-> +		fw_act_timeout = jiffies + msecs_to_jiffies(ctrl->mtfa * 100);
->  	else
-> -		fw_act_timeout = jiffies +
-> -				msecs_to_jiffies(admin_timeout * 1000);
-> +		fw_act_timeout = jiffies + secs_to_jiffies(admin_timeout);
->  
->  	nvme_quiesce_io_queues(ctrl);
->  	while (nvme_ctrl_pp_status(ctrl)) {
-> 
-> -- 
 
-Acked-by: Keith Busch <kbusch@kernel.org>
+Acked-by: David Sterba <dsterba@suse.com>
 
