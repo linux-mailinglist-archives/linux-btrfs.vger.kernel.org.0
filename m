@@ -1,48 +1,48 @@
-Return-Path: <linux-btrfs+bounces-11103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A74CA21109
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FA9A2114F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 19:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4A7F3A7078
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:24:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4A573A9ACE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2025 18:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4911F668E;
-	Tue, 28 Jan 2025 18:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C3F1F9A9C;
+	Tue, 28 Jan 2025 18:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qifPuciL"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="LxxdIayM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634081DE8AD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CE71DEFE3;
 	Tue, 28 Jan 2025 18:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738088521; cv=none; b=cI0fPtQQcaVT6i6og9CHCNecQ5eZ2HX/aZlnBX0VnRIb+I33tCMEDXRqHH7GjnHTL1/XsdClNJgComFHaW+w7V3i1uU/ZE2orInR4CoyxAu5Bjgcb9f1bi4BFD0WJ4+oH18YrHF6O+enb3hvRVEM7TjpI2Gq7oqlQzOD7NzSnB0=
+	t=1738088522; cv=none; b=s2TWS+uOeiL2SZpzW/GicEfcAAV2w3yvcMhUWsL1ci2iU8MkQKNwkpJVvOSqFeWFlABRoiix8qbTpWs5o/3ahn6wAzbvHVNp7WDh4WOVw0207hL4+/C6Nijzn0YSqjwXGyYjgxv92/XRLoEJfQcukto5C5s6qJz0fHS794gfaro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738088521; c=relaxed/simple;
-	bh=G16h0yxHDNl3YiJLDUgcJDZI/QKtvBTKJxJPm17mVaE=;
+	s=arc-20240116; t=1738088522; c=relaxed/simple;
+	bh=UsUwkjA8cNb2PcchDqY2QvKjXirKtHPuHHZCi+z/zFw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=P+ugDxX7bWqiAyyTOnP4He60p05mLKrhHnY7JPxm8MTeJRhKixRAhv6+/C/K7SoBbNWTK1cWtzSRV3IW7JgH5gHQAiP9M1fYErLTjpwXSE733RSoDrrn9+fAgngHNRjnG0IlIe2AkwB9v1vebs7y8jcn5QCa6QfjLtx14/QFnzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qifPuciL; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=czXQ+lIKwIgcZ4cGFTQqIqrNc+SHhpJN20+bFqvR+0Dq9TtWDufSFmJ3fcT59o+MpaDBplriZo4sV02KhCbx8YvDgifV45OQ7eqWAFK5nUfi8yWtVS6C60YXrdKiCfXNIEAhpt+S1J/L8UM51Do2JU1obA+gxjcXWIaTCAxmFUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=LxxdIayM; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
-	by linux.microsoft.com (Postfix) with ESMTPSA id EE39B203717A;
-	Tue, 28 Jan 2025 10:21:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EE39B203717A
+	by linux.microsoft.com (Postfix) with ESMTPSA id 1D482203717B;
+	Tue, 28 Jan 2025 10:21:58 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1D482203717B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1738088518;
-	bh=/EWqXlZOyaOm4g59VS89I2uqnGTUPl37w71b9X7s02o=;
+	bh=CFb4XrnDSERyLmvQoVXwUxR+JwVzCZvuuqJLbnh8AHY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qifPuciLp6zYrAFWIRB9lwfoiORDq5Znn6Y1MZg447mRd521rUeXZX4ssO4a3zPi0
-	 yIeJx+BuhYKeboGXzAtI2rktLS4vmUes2TtMU1tgSIC4k2CZaQfPx4pU+CBe+A2DVU
-	 iFfDndGnNrrUEfvChktnE0Qma+AmmL/g2NBtRY68=
+	b=LxxdIayMSyUMAUeZUUnUyY3SQxVmwYY5Yyy03OWU22J18lbSyq7bmmWrhs+09j8qK
+	 AdDxUAv3Opt8Wt6axGPYWRpk6/ENme+ZBSlX8IppgdX/yiYG+JdoRJjp8kHw8DUyuj
+	 x3rFLX3PefulMBej9H+RgFZR+bApgqLL7hw3/Tgc=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Tue, 28 Jan 2025 18:21:49 +0000
-Subject: [PATCH 04/16] ALSA: ac97: convert timeouts to secs_to_jiffies()
+Date: Tue, 28 Jan 2025 18:21:50 +0000
+Subject: [PATCH 05/16] btrfs: convert timeouts to secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-4-9a6ecf0b2308@linux.microsoft.com>
+Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-5-9a6ecf0b2308@linux.microsoft.com>
 References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -112,23 +112,34 @@ expression E;
 
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- sound/pci/ac97/ac97_codec.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/disk-io.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-index 6e710dce5c6068ec20c2da751b6f5372ad1df211..88ac37739b7653f69af430dd0163f5ab4ddf0d0c 100644
---- a/sound/pci/ac97/ac97_codec.c
-+++ b/sound/pci/ac97/ac97_codec.c
-@@ -2461,8 +2461,7 @@ int snd_ac97_update_power(struct snd_ac97 *ac97, int reg, int powerup)
- 		 * (for avoiding loud click noises for many (OSS) apps
- 		 *  that open/close frequently)
- 		 */
--		schedule_delayed_work(&ac97->power_work,
--				      msecs_to_jiffies(power_save * 1000));
-+		schedule_delayed_work(&ac97->power_work, secs_to_jiffies(power_save));
- 	else {
- 		cancel_delayed_work(&ac97->power_work);
- 		update_power_regs(ac97);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f09db62e61a1b0e2b8b319f9605883fe0c86cf9d..ed2772d2791997b1e1d15e71d01d818b325f5173 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1568,7 +1568,7 @@ static int transaction_kthread(void *arg)
+ 
+ 	do {
+ 		cannot_commit = false;
+-		delay = msecs_to_jiffies(fs_info->commit_interval * 1000);
++		delay = secs_to_jiffies(fs_info->commit_interval);
+ 		mutex_lock(&fs_info->transaction_kthread_mutex);
+ 
+ 		spin_lock(&fs_info->trans_lock);
+@@ -1583,9 +1583,9 @@ static int transaction_kthread(void *arg)
+ 		    cur->state < TRANS_STATE_COMMIT_PREP &&
+ 		    delta < fs_info->commit_interval) {
+ 			spin_unlock(&fs_info->trans_lock);
+-			delay -= msecs_to_jiffies((delta - 1) * 1000);
++			delay -= secs_to_jiffies(delta - 1);
+ 			delay = min(delay,
+-				    msecs_to_jiffies(fs_info->commit_interval * 1000));
++				    secs_to_jiffies(fs_info->commit_interval));
+ 			goto sleep;
+ 		}
+ 		transid = cur->transid;
 
 -- 
 2.43.0
