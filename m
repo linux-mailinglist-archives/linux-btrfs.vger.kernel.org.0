@@ -1,281 +1,199 @@
-Return-Path: <linux-btrfs+bounces-11133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E54D6A21845
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 08:38:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6EA9A21A12
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 10:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17DA23A34B9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 07:38:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 171D77A2B9B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 09:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCFE19DF64;
-	Wed, 29 Jan 2025 07:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F891B0401;
+	Wed, 29 Jan 2025 09:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jQmmEZBt";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jQmmEZBt"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ibsOXJKP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893D919D89B
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2025 07:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7A81917F9;
+	Wed, 29 Jan 2025 09:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738136284; cv=none; b=ijZXt86AFOqdwGE8Z3xAhz7b2pJ4uoowkRHXIl98muhW1nbVZQcwhVVQk1ulCJSfv/eh5bg2HjNR/3RwBTSe0xaENRoQoJu0JZvmSkGVJFcI9Ky9FGM4Kg8wZ/g4DOu1GjUGrsqgR97CUnuKaHnW/vnx70bhN4nweI1d+jlCGu0=
+	t=1738143644; cv=none; b=Td7qm/3cZgwYjyMxLmZLmUO1zmIEGtxTN4ff9gVizbxnP/0VVz1ZyhefltpY+h5rdA2OQnhyHCVuUl2lFmxOqai7fe0Lc5GyF3cGrt6hifGySFdT5mnubViTT2WW++nEoaJEDCLUs/rVx8D8gJnfclVfVRPgP9oRitqyJsDb1Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738136284; c=relaxed/simple;
-	bh=wxGnX0pBbhUC4HEtaOuzFYcFQfAdQ8MtTL3Q/hUHCpk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D0jAoSa0Y/pGKyPZhbKn9b+afX1INjra+d5jbFD/SxwDdHeuH/hCkRzPXdSOezpfsh8FWjxDSV9bNQzgCtg9PeogrBpQllmQPUyYhCJAZ1GuKOgjaJ6lOSY1VxMQMiQEV4H1BLWFk/BfGpUuxoxpY1+bFI5yOpcBEL7N+6abH9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jQmmEZBt; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jQmmEZBt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9D805210F4
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2025 07:38:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738136280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=huA8GT8xk2UM+TzUn1a8TpkMRP4g9r0FNiMiYrym1Q4=;
-	b=jQmmEZBtNgIqrqknc+2QkmeLVId4i0NN5ftiRpPYuPsuzpGsAaVz0jYeRIczlEXEncJhUF
-	Ma/4jLXmbJxnsJVP4HML0dgizbGD+k5GgbeCHikFgjMGJpGGJEHN1q5W/0mZ6PTN0VTJy3
-	fzkkW+OsyQegT3+0GyMLkE9IMriaNVo=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=jQmmEZBt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738136280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=huA8GT8xk2UM+TzUn1a8TpkMRP4g9r0FNiMiYrym1Q4=;
-	b=jQmmEZBtNgIqrqknc+2QkmeLVId4i0NN5ftiRpPYuPsuzpGsAaVz0jYeRIczlEXEncJhUF
-	Ma/4jLXmbJxnsJVP4HML0dgizbGD+k5GgbeCHikFgjMGJpGGJEHN1q5W/0mZ6PTN0VTJy3
-	fzkkW+OsyQegT3+0GyMLkE9IMriaNVo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEA0E137DB
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2025 07:37:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YMmKHtfamWdBKgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2025 07:37:59 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 8/8] btrfs: require strict data/metadata split for subpage check
-Date: Wed, 29 Jan 2025 18:07:23 +1030
-Message-ID: <3c7f2bdcb4c930258036349db3ff7e3028291f9a.1738127135.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1738127135.git.wqu@suse.com>
-References: <cover.1738127135.git.wqu@suse.com>
+	s=arc-20240116; t=1738143644; c=relaxed/simple;
+	bh=f6YZi+aj3vtvGBm2x62fa1lw4+jY/LfPDrFJLCES+DY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qoMJCS+7sm0r3KwmP6/B8SishjWvXuQrJTfabMFowKWvxai/SNKa9e0kI69UqTAgPCetmcB55cd85FIz0UA5fNHXLv9e7Msr17x3wMvZgEgExTxVRmcOqqaDvJQzDcFX/iuoHckWXV+rry4BpimOE2B0Zsg3J7ZTJNbHIY7yMUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ibsOXJKP; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1738143622; x=1738748422; i=markus.elfring@web.de;
+	bh=RmUlpFblDQ0X0FrPNxA6WyeicYW3HpJ3EyGlM0jP5z0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=ibsOXJKPJKhZo8FqJFepmaYQoSFoyR2qxzl8lohWNNUQx+2NF2ManFbNjUNGq/F2
+	 gbw8iml79L7rvtKd56Ir7+yYHXrAe1EUIefoTtrBNrmtFI2yM2WYsLj1b568yC1rb
+	 SKGUWYn0X41jPRogXjuGLSd6Gt6171dGmUJ2Fp3bc0pBO92HArHd48fDFFdCCxzPK
+	 pf78m0ogusJQNS3QQ3zn1K/mM4iA6yn4B0KggTtABnb9cI7MMqnv247Vl4f+VntcE
+	 +DVoabadzyBcjKoDGRsAmxtyEkjkG+dxMfHbTqq28F/8W87L00uXvdFhKdqm9Gctj
+	 xUEgsrypLeLKtXHbAg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.93.19]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MG994-1tgKE62NvY-00Fdf6; Wed, 29
+ Jan 2025 10:40:22 +0100
+Message-ID: <9ca0337d-e378-4de5-99be-1dfa1d4f8cff@web.de>
+Date: Wed, 29 Jan 2025 10:40:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9D805210F4
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [01/16] coccinelle: misc: secs_to_jiffies: Patch expressions too
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, cocci@inria.fr
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
+ imx@lists.linux.dev, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, Carlos Maiolino <cem@kernel.org>,
+ Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
+ Damien Le Moal <dlemoal@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
+ David Sterba <dsterba@suse.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>,
+ Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ James Smart <james.smart@broadcom.com>, Jaroslav Kysela <perex@perex.cz>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+ Josef Bacik <josef@toxicpanda.com>, Julia Lawall <Julia.Lawall@inria.fr>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Ilya Dryomov <idryomov@gmail.com>,
+ Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>,
+ Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nicolas Palix <nicolas.palix@imag.fr>, Niklas Cassel <cassel@kernel.org>,
+ Oded Gabbay <ogabbay@kernel.org>, Ricardo Ribalda <ribalda@google.com>,
+ Sagi Grimberg <sagi@grimberg.me>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Sebastian Reichel <sre@kernel.org>,
+ Selvin Xavier <selvin.xavier@broadcom.com>, Shawn Guo <shawnguo@kernel.org>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, Takashi Iwai <tiwai@suse.com>,
+ Victor Gambier <victor.gambier@inria.fr>, Xiubo Li <xiubli@redhat.com>,
+ Yaron Avizrat <yaron.avizrat@intel.com>
+References: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
+ <565fb1db-3618-4636-8820-1ca77dad07a2@web.de>
+ <2402812d-b818-4d1b-9653-767c9cd89dda@linux.microsoft.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <2402812d-b818-4d1b-9653-767c9cd89dda@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VVUayMb32w7y67C7tTjgB5AAr0xhckczX0N8TokrIpC9jN6eUE9
+ EFsN7wRaBX0tQgtAxOLriEuyy3B/8avbPqaD1zz3GlxmzANwcYY0B13b3+dGcse9e29fR2B
+ x1FDILYMT0Hm6Op4dZPmgiuO2ynGivSf8q+hlfpEEa8MIXRg6GY1vfPop11AepKnCCaop1O
+ +p76d5j2Efo5XT3k24tTg==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:tcxCLGC+RCc=;ey0yBxZW/tRSJQW6qo2D+Q6kDrW
+ B7ti/3QUhXC8WrcBjNzI4u6z+d1rV4adoqTUoUSMt/DqJcKI/DlrivOEoz806s/5+Kn56DDqL
+ LU9xtxxU9vsLyCTP7I8gL7dl6Qx1gz/cso735SydkffMPYwAsbCaRqy9WGoFqBlIQ9QCxafc3
+ W4RbDo3aQwMCu9VcGvB6j+H5tbohMyIwgg8IKKOqedJ1nboWwMgz4OIZ7EST+13jVvGHzPDUP
+ RMgEYGdAiBMWyxIajIWHh0tiMSE3p1A+yPFCKxzA51+Jsl4lqfDwp6i6xfZI0wLLB4pLlY9o9
+ 4q4fn10BcFNZy38f62U9iuLflyBSQy3IDj2SnmtLJbJzYINTq3rTIPHq21PIW76G8fDbFN0aG
+ 3ac6gqwYlxfQhltWeUu6Jf+r0y/8ZDSvg6BenYTc1SAFAqZHEM4upcrvZQorHyWClmJeL4R1d
+ pwRYkmLBgkDzN9R/bb0jfrgkgXUIzdRpQYEu62HTHwYHvlMnYXeCcivCQRHgqKox7R6hNuIrn
+ rxTrTFacoaE+vqTHL959kdf+7baowrszBGfdV4G67c90sFgZ24V7UDmogT/jAdPtbbKWpCJ3F
+ kMrOyabr3gWq6SX50hyVFHIUca6hdwNAbHNQqpbFNzCXjeuhFqIkBldPkgoHIWodZqGhWHxbJ
+ rh9yga8+A7Xz90bS7If3X8UB0JOiOJoqee5k8VuGqGUor7M8/IYAWxEzk0sfRhZN5x9gzYIwj
+ z5v+Opf6qMCYFMEpDc5oZNLzukYChx6b04HyYvuAIbzbqHM64L8pCx9PjiofRQqAAUENSsyVK
+ wSLOByWJNd0hj3dnFK4MWKIc72WDX2na+gBRF+CITUiUaTapl8UB+IMJ1+mNkz1dW85FtBpIj
+ tD/0moj9gcbkIb1LR6m5OI0uHLkCOXIBTrIfx3IHv6b13SsYXuqGkV/RzTBhQpQUsnir3VJIj
+ cVkG88L1qB1XMwvpL5WZaIlaVUahCedhQsFB49sgDWhVH58n5+/Z9aWfVKo9SGwG1/1EYyVhs
+ xdj7mKATCRxJL8YFYbK1K5zFB2c5chXeAOrRuI6GfbxLg4Jr5TwIV+gUIoOLkM9oBMdE3PZmY
+ FmuKpySVCwL9uRLQ0lYfPXIDXqcQix+7IQpKOnC7/mKJSccV7o1cXqpz0osAScgdxIeUIW7Oo
+ TT3dPmTAxqyMA5HLb2IdqDbNqBt78hG7Vp0fBYOvquK98imV2V34SSApTC+PTRD9nO5SEk1WD
+ M5c0DPUlZtR3e/lmnDioWB77iUkT5JV0a7FRF40QmlHGvbSs8vfTQg9ZFgjUq8jYaGVb32YjP
+ AEhromp4VpaoN9T5CJol8F+orrIemlZIcgjTh9W5NmdUN4pRCbHOUfJ/tbXwdPtCw5lPPfB1R
+ 5kdsgtTCg2hWVnV9uMjqAZCd/Sr1UngGlxpd0=
 
-Since we have btrfs_meta_is_subpage(), we should make btrfs_is_subpage()
-to be data inode specific.
+>> =E2=80=A6
+>>> +++ b/scripts/coccinelle/misc/secs_to_jiffies.cocci
+>>> @@ -11,12 +11,22 @@
+>>>
+>>>  virtual patch
+>> =E2=80=A6
+>>> -@depends on patch@ constant C; @@
+>>> +@depends on patch@
+>>> +expression E;
+>>> +@@
+>>>
+>>> -- msecs_to_jiffies(C * MSEC_PER_SEC)
+>>> -+ secs_to_jiffies(C)
+>>> +-msecs_to_jiffies
+>>> ++secs_to_jiffies
+>>> + (E
+>>> +- * \( 1000 \| MSEC_PER_SEC \)
+>>> + )
+>>
+>> 1. I do not see a need to keep an SmPL rule for the handling of constan=
+ts
+>>    (or literals) after the suggested extension for expressions.
+>
+> Can you explain why? Would the expression rule also address the cases
+> where it's a constant or literal?
 
-This change involves:
+Probably, yes.
 
-- Simplify btrfs_is_subpage()
-  Now we only need to do a very simple sectorsize check against
-  PAGE_SIZE.
-  And since the function is pretty simple now, just make it an inline
-  function.
 
-- Add an extra ASSERT() to make sure btrfs_is_subpage() is only called
-  on data inode mapping
+>> 2. I find it nice that you indicate an attempt to make the shown SmPL c=
+ode
+>>    a bit more succinct.
+>>    Unfortunately, further constraints should be taken better into accou=
+nt
+>>    for the current handling of isomorphisms (and corresponding SmPL dis=
+junctions).
+>>    Thus I would find an SmPL rule (like the following) more appropriate=
+.
+>>
+>
+> Sorry, I couldn't follow your sentence construction or reasoning here.
+> I don't see how my patch is deficient, or different from your suggestion
+> below, especially given that it follows your feedback from part 1:
+> https://lore.kernel.org/all/9088f9a2-c4ab-4098-a255-25120df5c497@web.de/
 
-- Migrate btree_csum_one_bio() to use btrfs_meta_folio_*() helpers
-- Migrate alloc_extent_buffer() to use btrfs_meta_folio_*() helpers
-- Migrate end_bbio_meta_write() to use btrfs_meta_folio_*() helpers
-  Or we will trigger the ASSERT() due to calling btrfs_folio_*() on
-  metadata folios.
+I tend also to present possibilities for succinct SmPL code.
+Unfortunately, software dependencies can trigger corresponding target conf=
+licts.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c   |  4 ++--
- fs/btrfs/extent_io.c | 11 ++++-------
- fs/btrfs/subpage.c   | 24 ------------------------
- fs/btrfs/subpage.h   | 11 ++++++++++-
- 4 files changed, 16 insertions(+), 34 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index d55e28282809..8c31ba1b061e 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -284,8 +284,8 @@ blk_status_t btree_csum_one_bio(struct btrfs_bio *bbio)
- 
- 	if (WARN_ON_ONCE(found_start != eb->start))
- 		return BLK_STS_IOERR;
--	if (WARN_ON(!btrfs_folio_test_uptodate(fs_info, eb->folios[0],
--					       eb->start, eb->len)))
-+	if (WARN_ON(!btrfs_meta_folio_test_uptodate(fs_info, eb->folios[0],
-+						    eb->start, eb->len)))
- 		return BLK_STS_IOERR;
- 
- 	ASSERT(memcmp_extent_buffer(eb, fs_info->fs_devices->metadata_uuid,
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index b810508555fd..ac79886d33d6 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1720,18 +1720,15 @@ static void end_bbio_meta_write(struct btrfs_bio *bbio)
- 	struct extent_buffer *eb = bbio->private;
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	struct folio_iter fi;
--	u32 bio_offset = 0;
- 
- 	if (bbio->bio.bi_status != BLK_STS_OK)
- 		set_btree_ioerr(eb);
- 
- 	bio_for_each_folio_all(fi, &bbio->bio) {
--		u64 start = eb->start + bio_offset;
- 		struct folio *folio = fi.folio;
--		u32 len = fi.length;
- 
--		btrfs_folio_clear_writeback(fs_info, folio, start, len);
--		bio_offset += len;
-+		btrfs_meta_folio_clear_writeback(fs_info, folio,
-+						 eb->start, eb->len);
- 	}
- 
- 	clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
-@@ -3118,7 +3115,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * and free the allocated page.
- 		 */
- 		folio = eb->folios[i];
--		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
-+		WARN_ON(btrfs_meta_folio_test_dirty(fs_info, folio, eb->start, eb->len));
- 
- 		/*
- 		 * Check if the current page is physically contiguous with previous eb
-@@ -3129,7 +3126,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		if (i && folio_page(eb->folios[i - 1], 0) + 1 != folio_page(folio, 0))
- 			page_contig = false;
- 
--		if (!btrfs_folio_test_uptodate(fs_info, folio, eb->start, eb->len))
-+		if (!btrfs_meta_folio_test_uptodate(fs_info, folio, eb->start, eb->len))
- 			uptodate = 0;
- 
- 		/*
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index aab6d8accf44..843259a68c34 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -64,30 +64,6 @@
-  *   This means a slightly higher tree locking latency.
-  */
- 
--#if PAGE_SIZE > SZ_4K
--bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info, struct address_space *mapping)
--{
--	if (fs_info->sectorsize >= PAGE_SIZE)
--		return false;
--
--	/*
--	 * Only data pages (either through DIO or compression) can have no
--	 * mapping. And if page->mapping->host is data inode, it's subpage.
--	 * As we have ruled our sectorsize >= PAGE_SIZE case already.
--	 */
--	if (!mapping || !mapping->host || is_data_inode(BTRFS_I(mapping->host)))
--		return true;
--
--	/*
--	 * Now the only remaining case is metadata, which we only go subpage
--	 * routine if nodesize < PAGE_SIZE.
--	 */
--	if (fs_info->nodesize < PAGE_SIZE)
--		return true;
--	return false;
--}
--#endif
--
- int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
- 			 struct folio *folio, enum btrfs_subpage_type type)
- {
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 0c68c45d3f62..623ff5d98fc1 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -6,6 +6,7 @@
- #include <linux/spinlock.h>
- #include <linux/atomic.h>
- #include <linux/sizes.h>
-+#include "btrfs_inode.h"
- #include "fs.h"
- 
- struct address_space;
-@@ -83,7 +84,13 @@ static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *fs_info)
- {
- 	return fs_info->nodesize < PAGE_SIZE;
- }
--bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info, struct address_space *mapping);
-+static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
-+				    struct address_space *mapping)
-+{
-+	if (mapping && mapping->host)
-+		ASSERT(is_data_inode(BTRFS_I(mapping->host)));
-+	return fs_info->sectorsize < PAGE_SIZE;
-+}
- #else
- static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *fs_info)
- {
-@@ -92,6 +99,8 @@ static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *fs_info)
- static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
- 				    struct address_space *mapping)
- {
-+	if (mapping && mapping->host)
-+		ASSERT(is_data_inode(BTRFS_I(mapping->host)));
- 	return false;
- }
- #endif
--- 
-2.48.1
+> Can you point out specifically what SmPL isomorphisms or disjunctions
+> are broken with the patch in its current state?
+
+Please take another look at related information sources.
+Would you like to achieve any benefits from commutativity (for multiplicat=
+ions)?
+https://gitlab.inria.fr/coccinelle/coccinelle/-/blob/bd08cad3f802229dc629a=
+13eefef2018c620e905/standard.iso#L241
+https://github.com/coccinelle/coccinelle/blob/cca22217d1b4316224e80a18d0b0=
+8dd351234497/standard.iso#L241
+
+
+Regards,
+Markus
 
 
