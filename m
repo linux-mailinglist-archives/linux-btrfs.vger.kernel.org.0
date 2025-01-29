@@ -1,80 +1,119 @@
-Return-Path: <linux-btrfs+bounces-11157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11158-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D60A2238D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 19:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A909A223B0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 19:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28784188323E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 18:03:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B353D1887967
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 18:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAADB1E0DD0;
-	Wed, 29 Jan 2025 18:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD26E1E25FF;
+	Wed, 29 Jan 2025 18:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PBYvsP4a"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aAf9IIr/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52348F4A;
-	Wed, 29 Jan 2025 18:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620F61DE2DF;
+	Wed, 29 Jan 2025 18:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738173819; cv=none; b=iJVDO8APsuKLRz9+zaz//9kEWHPjQdR4yJvg01/T/jA0MMJroemlp+ZpvwjnG57D7OAnUPPG35gZ/26zPzk6eflBNjE8ZPVEw3Th+2Nw4nOj9CvKsNaNMy3bcnkoQe+Xc9Lvz0GNZWU9BPdjQnx+YhFLYKBMBgTWF0gQSQjZu9I=
+	t=1738174481; cv=none; b=jPrJqsHa5qkfCuM2ysIpBmWpw0sqkajgsg6rK9Zj5csipyTNvkkEYVQVGK5b9eKCOW03rlztihYANQx8Zy58u0pJxPVZS7rHokqNG7r+WPSfXVfyketJgmP72xcZk+hz5Ecyc+nmzOQHAjeqGTMIaTbqFdw0azUsuH65kNgfLkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738173819; c=relaxed/simple;
-	bh=fGp2xaP4mmstBrpG7VZNDHnMwJnBSocGcTWYaJO1KJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fE+fqQOUmQYLDKQZgdExf9Aj4BZo1lpBn4xctMmKpTRwAlFFuS9K2863pi4IimDPkI0iKB6NNahg8K7TwV8wSyusPkPB7MCSNB1/w/Q5khKbC+85HKXJ4UX9HQUx9CzlgJkUN4lcZlau/cjUbpgLm5hdUl2kUpCC6In9XPrxf0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PBYvsP4a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0551C4CED1;
-	Wed, 29 Jan 2025 18:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738173819;
-	bh=fGp2xaP4mmstBrpG7VZNDHnMwJnBSocGcTWYaJO1KJw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PBYvsP4apvQaGb4Xg2vfMDOZ/XPXBr88G4C3rEeQPOCRI2VJyLHGyKwb2+5bxXMs2
-	 Pewr2CSX167/UwDcMOdO+KWEJr5vE9K5EMZqAA4MbQdpjlM1uaYki+4FfGOl9eoVrF
-	 4OCmJmeOXJS6SEzOaWaWZbVhZfwPjRfk6szaisl22/zS8UE/CrFr+SRvuZNoVvp+40
-	 ewAm3ooOnzzk4D085+rD7eonV1dMxrAo2ZrbTbKBNdXVWTxrLJcQ9wjYMUiS0f0XbP
-	 nlvDAJBOToR8bs6R6FY5sBi5OHnp/GJCUKu2YIRV/vWfITPsaDpp9DYXDRtTfaF5pB
-	 3kTKJ1Hjq1HAg==
-Date: Wed, 29 Jan 2025 11:03:36 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Kanchan Joshi <joshi.k@samsung.com>, josef@toxicpanda.com,
-	dsterba@suse.com, clm@fb.com, axboe@kernel.dk,
-	linux-btrfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-block@vger.kernel.org, gost.dev@samsung.com
-Subject: Re: [RFC 0/3] Btrfs checksum offload
-Message-ID: <Z5pteC56jYBRDupP@kbusch-mbp>
-References: <CGME20250129141039epcas5p11feb1be4124c0db3c5223325924183a3@epcas5p1.samsung.com>
- <20250129140207.22718-1-joshi.k@samsung.com>
- <Z5pJGHAR7AWCC0T4@kbusch-mbp>
- <20250129154025.GA7047@lst.de>
+	s=arc-20240116; t=1738174481; c=relaxed/simple;
+	bh=RUlBLbu2dRvKVCN3bBJhGTTBjAhlfapqs+U8UGJ1e6Q=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eeVWYFe65Fih8wiNU2SrsWRG+lGtixKgeCxE7Aa589yUcLoUrLF24jZYw73KPDQgdj9llHEGEkDKNwVbVwSA9OSmd3euNib7bfdL5e5K5deoo4mBm8IuyQd/hr6kcc6TtaasMZqjcjUCcCiZtB3g7Gc2U0NrGT1Wmh3YuYbWXlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aAf9IIr/; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.65.98.224] (unknown [20.236.10.163])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 28F3F2066C1F;
+	Wed, 29 Jan 2025 10:14:38 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 28F3F2066C1F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1738174479;
+	bh=tZu7Aqdcq4BHW7QoklKujtbGCaxot/XApiLegvlW9Cg=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=aAf9IIr/I90cgqgEBczLilZ7bdtCYRLZiEJHEhBdKJpSoOCumeMDEGeLf0xioaxnU
+	 Cxs0rQCB+cTOuTBJEpsGVDSTUnsyW+Sqnpdni5YRWUzescyOcAANxe89dy6cL7UnK5
+	 9o+lRZL0v3hO8jHtI+YxGsr5kQTHif7tO+OZbuMk=
+Message-ID: <670dbe5b-cf5b-4994-9a47-53b0b52a4b20@linux.microsoft.com>
+Date: Wed, 29 Jan 2025 10:14:40 -0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250129154025.GA7047@lst.de>
+User-Agent: Mozilla Thunderbird
+Cc: eahariha@linux.microsoft.com, Andrew Morton <akpm@linux-foundation.org>,
+ Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>,
+ James Smart <james.smart@broadcom.com>,
+ Dick Kennedy <dick.kennedy@broadcom.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>,
+ Xiubo Li <xiubli@redhat.com>, Damien Le Moal <dlemoal@kernel.org>,
+ Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>,
+ "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+ Frank Li <Frank.Li@nxp.com>, Mark Brown <broonie@kernel.org>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ cocci@inria.fr, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-nvme@lists.infradead.org, linux-spi@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
+ linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 09/16] xfs: convert timeouts to secs_to_jiffies()
+To: Christoph Hellwig <hch@lst.de>
+References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
+ <20250128-converge-secs-to-jiffies-part-two-v1-9-9a6ecf0b2308@linux.microsoft.com>
+ <20250129052108.GB28513@lst.de>
+ <3e4a8a44-483b-457a-b193-4119e4adfa85@linux.microsoft.com>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <3e4a8a44-483b-457a-b193-4119e4adfa85@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 29, 2025 at 04:40:25PM +0100, Christoph Hellwig wrote:
-> > 
-> > Another potential benefit: if the device does the checksum, then I think
-> > btrfs could avoid the stable page writeback overhead and let the
-> > contents be changable all the way until it goes out on the wire.
+On 1/29/2025 9:12 AM, Easwar Hariharan wrote:
+> On 1/28/2025 9:21 PM, Christoph Hellwig wrote:
+>> On Tue, Jan 28, 2025 at 06:21:54PM +0000, Easwar Hariharan wrote:
+>>>  		else
+>>> -			cfg->retry_timeout = msecs_to_jiffies(
+>>> -					init[i].retry_timeout * MSEC_PER_SEC);
+>>> +			cfg->retry_timeout = secs_to_jiffies(init[i].retry_timeout);
+>>
+>> This messes up the formatting by introducing an overly long line.
+>>
+>> Otherwise the change looks fine.
 > 
-> If the device generates the checksum (aka DIF insert) that problem goes
-> away.  But we also lose integrity protection over the wire, which would
-> be unfortunate.
+> I'll fix this in v2. Thanks for the review!
+> 
+> - Easwar (he/him)
 
-If the "wire" is only PCIe, I don't see why it matters. What kind of
-wire corruption gets undetected by the protocol's encoding and LCRC that
-would get caught by the host's CRC payload?
+Andrew seems to have fixed it up in his copy, so I'll skip this change
+in v2. Thanks Andrew!
+
+- Easwar
 
