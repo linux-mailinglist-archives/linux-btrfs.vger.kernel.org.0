@@ -1,282 +1,229 @@
-Return-Path: <linux-btrfs+bounces-11164-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11165-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D58A225A8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 22:27:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04621A2265F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 23:47:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3D4C1671E9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 21:27:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D9247A10AE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2025 22:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4BB1E3DDB;
-	Wed, 29 Jan 2025 21:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09221F78E4;
+	Wed, 29 Jan 2025 22:43:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q1meaguR"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uXCLJCd2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ja2SkTb0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uXCLJCd2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ja2SkTb0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190371E32D6
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2025 21:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8844E1F7088;
+	Wed, 29 Jan 2025 22:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738186054; cv=none; b=AkNsrnhe8NwV9+9RM1CKzbxDlzrcJO/FNmV/Em49W1s1L0jZ2KitxJ3toPC7xgbv1VdzEozs9OdiqY8HOFxfSUnWUuvlisqS+juKwkRmQrLCoP9WgVo4yAB9+cKgZiJ1nGwg+obZcYpV3gZtQ5KVeS4kg+Q4f3qNtyIshp2QqZI=
+	t=1738190580; cv=none; b=Av4k/nQo7ieO8kYZFxtXoTztTJ6SXFXnRPMQGS+m/+I+kufLJuUqeS88R8jFP8sr6s2bL2stpYSfLefS7tPCydgYB1J0OmJf1bagfnYqPdpQNFTJUalJjDk1BinlNtD6mbaR8G5k72bM3ezKgWvRKPteuLsMPl+d1ihN/Pw6D20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738186054; c=relaxed/simple;
-	bh=NOeAsmdu+ehoyUG3XZhaAO1+WsXk2NPyfTIfuDm1vi8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cDy76nF4HuKOspx6GJkSPQO5RRwNGbF7R/lMC401oF6+POXZlQxur3lB/Rx3F+p3/NF4GIgeF75mKsn3kvpkBw7JbNgmVFg4wtb4lcBVxWMENF5xGU3ga3SrZYSwPEIDhjKOPRG8+IeTt6UKukKLmL4I8Y3tvWDzSNqkvTQdgVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q1meaguR; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaec111762bso38707066b.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2025 13:27:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1738186049; x=1738790849; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=BxlHwbfSGEjrkkVnaAj0TZ6ec/J3+GptfegL4fCvQFY=;
-        b=Q1meaguRioGWxkL4YcOsh9U4jNgdPzQkY7543ETWK15oOY5tXo1S59Lu6tSS3YwNg+
-         JYa5KqdO/tnVhexLzTrQ6Zxn+dojb9aN2f6pnZ0mPAX/td8OX/VNPzB28SzuYrzogefa
-         I1FIFkVEvUQj9jPwkjgm8dCqxzCcanWjg85VICoMjavbh+VkKzv9xmy3IVzDnsDWZnMJ
-         vTfsxlgDUu71vYpOcNwjaFHWgGI9OdNPdsXVupEClhPr8wnM8X6+NI1aPKBPHXqu7P/D
-         nei6INQvac6y/keN8cSRuknyCSyV/Rbw4RvQBnu71obSGiK7UIIb/dYWoBNMt6KbS5KT
-         VHVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738186049; x=1738790849;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BxlHwbfSGEjrkkVnaAj0TZ6ec/J3+GptfegL4fCvQFY=;
-        b=c2D6qv5qoC5rkbsOElnMxpOOPtJtdVyJ/Jtkt7bnmTtIvjpKfeNHz9sYvt0fIcCIRs
-         S/0DrJCRtckTGEzQIzx0gheAbmk8fPx1yZEKTYGWoMStyDHUgEHPBFBAsw9tcokVMFB5
-         yvTt5dabedogtPLiXOSMaX+RYTTS7gWmrmwrmYaWIbQEAWh4d/o6vaPGZfIRRweGqEbg
-         G4ljrOAP+eGOMXzAJKTM1YLaIVcxi63Vf4OCG4OUSezwm7yIhyy5BScdrM7OV08v936R
-         Iv7tn688Sv5SPsak35MQO64s99AW3CB3A9cfdsDut+aTQSIH6RKW7Dj+e5gtyIzD4gIQ
-         arSA==
-X-Gm-Message-State: AOJu0YwfP8IjOUfP7rdKb95uObZL8M01YekVUCNdLdVBGQY5+4XvM/Hb
-	7/LmE/HQDWmgnkiE6jiD3kPzo58ZIK+gBCkfMJPjghaxCcID//wh0I00nDspovg=
-X-Gm-Gg: ASbGnctkPkwH64lVadydsz2ZZbntoixRpt5DMsSHFHJmW0PXMP6mI4LzvCYWw/a7Thy
-	//0V8BUyPcWtnx+pADwHbsDE0FvrLMBHEVjrAka3RyIK0LQXclDrFSYo6O1YhxYEDM+/lw2dIS9
-	9AsFpg4fDiaFY7ablFb8yJTeKe9BYqz9Wn0Lt562PAUaC+RXHt0N+JWOv0jiUftTLVyNq6Dw9rO
-	8yoBgEE7nKd7mHQHW9mZIjd1cCitD8hf3acVIiT9BUyZ7nCweD2TzfbD/n1uyp5Oj4Cp34h0Iap
-	oslILva/yzAx+yk1J3X7x2hci9tg2EGuVRNKG7nb9uA=
-X-Google-Smtp-Source: AGHT+IEpIWE2AAWpA2ZWCGob7gY0bijDoMnVMcEuI+RD3B3UsRx0bqmo4fQhG7Xj0B3HeC2e+ytIQA==
-X-Received: by 2002:a17:907:1188:b0:ab6:d452:2315 with SMTP id a640c23a62f3a-ab6d45223e6mr300711766b.14.1738186049172;
-        Wed, 29 Jan 2025 13:27:29 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de331efafsm445825ad.217.2025.01.29.13.27.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jan 2025 13:27:28 -0800 (PST)
-Message-ID: <1660f35a-3cee-4a67-a4fc-c26b7b2dbd24@suse.com>
-Date: Thu, 30 Jan 2025 07:57:22 +1030
+	s=arc-20240116; t=1738190580; c=relaxed/simple;
+	bh=9k7CpatZHQAtGF81mFp/ZuhDK/xk0udCWxYysKgOlZw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P+r0u6Llqu1uI8ICcKbwyoBIr5BZDA4MhW+9DZopSrDRrrEebZ9+J/AGygmqAEjEb8A0reo+cS0FH21DLzSbFxE9NsDQyGIkA9WU+zqWCl65TIwDnR04GieMyMGBSirrDnr6qYAwW6HgBk1+x09AVnAhCUoRFJhUm7mrP9Mt6Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uXCLJCd2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ja2SkTb0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uXCLJCd2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ja2SkTb0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6323E21102;
+	Wed, 29 Jan 2025 22:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738190575;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BpouNam46v7SyDt/FAxA0nTyQYCCapr77+W+KP2OBu4=;
+	b=uXCLJCd2lZ01i9zJbB1BmYpqx3oeCwW6DGyWYaMKvsSAMHUPnm3dr/4/UkbXzxAKq9zWPe
+	fbsCOSZFUJKO/AtosvFkGsA32kQ0DrNOLuc6vHC1G3rQH6QhLCyUyiZZPk2MTZ3OTjnLVK
+	kb3OxohAa3BsboaeKBxmp6b3Lv0Ou4A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738190575;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BpouNam46v7SyDt/FAxA0nTyQYCCapr77+W+KP2OBu4=;
+	b=ja2SkTb0c0QHxie+6O/GeHmgy0qytujCd5BOnvsfIkGaNa7maANdA0X+0RLHfEhM3BIp5/
+	2+pUDu53PEjHj+CQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738190575;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BpouNam46v7SyDt/FAxA0nTyQYCCapr77+W+KP2OBu4=;
+	b=uXCLJCd2lZ01i9zJbB1BmYpqx3oeCwW6DGyWYaMKvsSAMHUPnm3dr/4/UkbXzxAKq9zWPe
+	fbsCOSZFUJKO/AtosvFkGsA32kQ0DrNOLuc6vHC1G3rQH6QhLCyUyiZZPk2MTZ3OTjnLVK
+	kb3OxohAa3BsboaeKBxmp6b3Lv0Ou4A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738190575;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BpouNam46v7SyDt/FAxA0nTyQYCCapr77+W+KP2OBu4=;
+	b=ja2SkTb0c0QHxie+6O/GeHmgy0qytujCd5BOnvsfIkGaNa7maANdA0X+0RLHfEhM3BIp5/
+	2+pUDu53PEjHj+CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35620132FD;
+	Wed, 29 Jan 2025 22:42:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id U8rGDO+ummcdFgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 29 Jan 2025 22:42:55 +0000
+Date: Wed, 29 Jan 2025 23:42:54 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: dsterba@suse.cz, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs/zstd: enable negative compression levels mount
+ option
+Message-ID: <20250129224253.GF5777@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250124075558.530088-1-neelx@suse.com>
+ <20250127180250.GQ5777@twin.jikos.cz>
+ <CAPjX3FdaxfzULnRjN7TqyS9uK_ZJSk2PRzLgQCLVGBrR0yKLGw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 3/3] btrfs: add checksum offload
-To: Kanchan Joshi <joshi.k@samsung.com>, josef@toxicpanda.com,
- dsterba@suse.com, clm@fb.com, axboe@kernel.dk, kbusch@kernel.org, hch@lst.de
-Cc: linux-btrfs@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-block@vger.kernel.org, gost.dev@samsung.com
-References: <20250129140207.22718-1-joshi.k@samsung.com>
- <CGME20250129141044epcas5p422461bd3630814884c91fc0f4207edde@epcas5p4.samsung.com>
- <20250129140207.22718-4-joshi.k@samsung.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250129140207.22718-4-joshi.k@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPjX3FdaxfzULnRjN7TqyS9uK_ZJSk2PRzLgQCLVGBrR0yKLGw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-
-
-在 2025/1/30 00:32, Kanchan Joshi 写道:
-> Add new mount option 'datsum_offload'.
+On Tue, Jan 28, 2025 at 09:46:02AM +0100, Daniel Vacek wrote:
+> > > ==============================================================+===============================================
+> > > level -15     0m0,261s        0m0,329s        141M    100%  | 0m2,511s        0m2,794s        598M    40%  |
+> > > level -14     0m0,145s        0m0,291s        141M    100%  | 0m1,829s        0m2,443s        581M    39%  |
+> > > level -13     0m0,141s        0m0,289s        141M    100%  | 0m1,832s        0m2,347s        566M    38%  |
+> > > level -12     0m0,140s        0m0,291s        141M    100%  | 0m1,879s        0m2,246s        548M    37%  |
+> > > level -11     0m0,133s        0m0,271s        141M    100%  | 0m1,789s        0m2,257s        530M    35%  |
+> >
+> > I found an old mail asking ZSTD people which realtime levels are
+> > meaningful, the -10 was mentioned as a good cut-off. The numbers above
+> > confirm that although this is on a small sample.
 > 
-> When passed
-> - Data checksumming at the FS level is disabled.
-> - Data checksumming at the device level is enabled. This is done by
-> setting REQ_INTEGRITY_OFFLOAD flag for data I/O if the underlying device is
-> capable.
-> 
-> Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
+> The limit is really arbitrary. We may as well not even set one and
+> leave it to the user. It's not like we allocate additional memory or
+> any other resources.
 
+Yes, it is arbitrary, the criteria is what are the practical benefits of
+keeping the levels, what is the trade off compression/speed. It does not
+matter much if the realtime level is ultra fast when it is not able to
+reduce the size, given the constraints.
 
-Just as mentioned by Christoph, the change on csum tree is an on-disk 
-format change, which requires extra incompat flags.
-I believe that's fine because this is only a prototype.
+I agree that we should leave it up to user but I'd say it may be unclear
+which level select. The level number is translated to some internal
+compression logic so even very high numbers are allowed.
 
-But my concern is, this lack of csum tree has the following problems:
+The testing file I've used is output of 'find -ls', so mostly textual
+data, high level of redundancy.
 
-- Require all devices in the btrfs has the same capacity
-   E.g. you can no longer add a devices without REQ_INTEGRITY_OFFLOAD
-   capability.
-   This can be a very big problem, especially if one just wants to
-   migrate the fs to another device.
+Generated by a series of "zstd -b$i --fast=$i zstd-test"
 
-- Less versatile compared to nodatacsum flags/mount option
-   For NODATACSUM flag it can be set on a per-inode basis, but the new
-   no-datacsum flag is bound to hardware storage.
+-1#zstd-test         :   6126812 ->   1017901 (x6.019), 1055.7 MB/s, 2826.0 MB/s
+-2#zstd-test         :   6126812 ->   1065645 (x5.749), 1143.0 MB/s, 3005.8 MB/s
+-3#zstd-test         :   6126812 ->   1128314 (x5.430), 1204.2 MB/s, 3153.6 MB/s
+-4#zstd-test         :   6126812 ->   1210669 (x5.061), 1220.5 MB/s, 3172.8 MB/s
+-5#zstd-test         :   6126812 ->   1280004 (x4.787), 1242.7 MB/s, 3221.3 MB/s
+-6#zstd-test         :   6126812 ->   1371974 (x4.466), 1259.8 MB/s  3277.1 MB/s
+-7#zstd-test         :   6126812 ->   1440333 (x4.254), 1304.4 MB/s, 3293.0 MB/s
+-8#zstd-test         :   6126812 ->   1496071 (x4.095), 1356.9 MB/s, 3391.2 MB/s
+-9#zstd-test         :   6126812 ->   1566788 (x3.910), 1452.9 MB/s, 3613.6 MB/s
+-10#std-test         :   6126812 ->   1613304 (x3.798), 1497.1 MB/s, 3738.7 MB/s
 
-And finally my question on why to remove btrfs datacsum.
+-11#std-test         :   6126812 ->   1685217 (x3.636), 1541.4 MB/s, 3829.2 MB/s
+-12#std-test         :   6126812 ->   1766056 (x3.469), 1556.0 MB/s, 3875.6 MB/s
+-13#std-test         :   6126812 ->   1826338 (x3.355), 1563.3 MB/s, 3886.6 MB/s
+-14#std-test         :   6126812 ->   1899464 (x3.226), 1623.8 MB/s, 3963.5 MB/s
+-15#std-test         :   6126812 ->   1989219 (x3.080), 1641.9 MB/s, 3901.3 MB/s
+-16#std-test         :   6126812 ->   2057101 (x2.978), 1646.0 MB/s, 3781.2 MB/s
+-17#std-test         :   6126812 ->   2101038 (x2.916), 1639.9 MB/s, 3809.8 MB/s
+-18#std-test         :   6126812 ->   2151170 (x2.848), 1667.4 MB/s, 3887.3 MB/s
+-19#std-test         :   6126812 ->   2185255 (x2.804), 1675.8 MB/s, 3932.5 MB/s
+-20#std-test         :   6126812 ->   2228180 (x2.750), 1655.2 MB/s, 3983.3 MB/s
 
-I understand the device's own checksum is super fast and efficient, but 
-that doesn't mean different checksum at different layers are exclusive.
+-21#std-test         :   6126812 ->   2275855 (x2.692), 1748.4 MB/s, 4188.4 MB/s
+-22#std-test         :   6126812 ->   2324370 (x2.636), 1758.7 MB/s, 4245.0 MB/s
+-23#std-test         :   6126812 ->   2373789 (x2.581), 1810.8 MB/s, 4345.4 MB/s
+-24#std-test         :   6126812 ->   2423045 (x2.529), 1856.4 MB/s, 4326.7 MB/s
+-25#std-test         :   6126812 ->   2470722 (x2.480), 1860.7 MB/s, 4425.6 MB/s
+-26#std-test         :   6126812 ->   2519621 (x2.432), 1872.8 MB/s, 4447.8 MB/s
+-27#std-test         :   6126812 ->   2571890 (x2.382), 1865.0 MB/s, 4432.7 MB/s
+-28#std-test         :   6126812 ->   2630088 (x2.330), 1892.7 MB/s, 4480.3 MB/s
+-29#std-test         :   6126812 ->   2678598 (x2.287), 1892.3 MB/s, 4458.1 MB/s
+-30#std-test         :   6126812 ->   2730233 (x2.244), 1886.9 MB/s, 4415.0 MB/s
 
-Yes, it cause some extra workload, but since it's handled by hardware 
-there is no obvious penalty.
+-100#td-test         :   6126812 ->   3878531 (x1.580), 2546.7 MB/s, 7076.8 MB/s
+-101#td-test         :   6126812 ->   3873153 (x1.582), 2549.6 MB/s, 7053.4 MB/s
+-102#td-test         :   6126812 ->   3878200 (x1.580), 2572.9 MB/s  7173.3 MB/s
+-103#td-test         :   6126812 ->   3900441 (x1.571), 2581.2 MB/s  7164.9 MB/s
+-104#td-test         :   6126812 ->   3902470 (x1.570), 2559.0 MB/s, 7133.3 MB/s
+-105#td-test         :   6126812 ->   3912874 (x1.566), 2596.4 MB/s, 7150.9 MB/s
+-106#td-test         :   6126812 ->   3917867 (x1.564), 2553.8 MB/s, 7260.1 MB/s
+-107#td-test         :   6126812 ->   3930050 (x1.559), 2599.6 MB/s, 7284.5 MB/s
+-108#td-test         :   6126812 ->   3946701 (x1.552), 2622.5 MB/s, 7288.1 MB/s
+-109#td-test         :   6126812 ->   3954437 (x1.549), 2605.8 MB/s, 7334.4 MB/s
+-110#td-test         :   6126812 ->   3955273 (x1.549), 2601.0 MB/s, 7389.1 MB/s
 
-On the other hand, it is adding one extra layer of protection, upon the 
-existing btrfs' checksum.
+-1000#d-test         :   6126812 ->   5982024 (x1.024), 9253.0 MB/s, 22210.0 MB/s
+-1001#d-test         :   6126812 ->   5986021 (x1.024), 9120.1 MB/s, 23034.3 MB/s
+-1002#d-test         :   6126812 ->   5984005 (x1.024), 9086.7 MB/s, 22827.0 MB/s
+-1003#d-test         :   6126812 ->   5978004 (x1.025), 9199.4 MB/s, 21718.3 MB/s
+-1004#d-test         :   6126812 ->   5977133 (x1.025), 9120.3 MB/s, 21995.3 MB/s
+-1005#d-test         :   6126812 ->   5979294 (x1.025), 9231.6 MB/s, 22204.5 MB/s
+-1006#d-test         :   6126812 ->   5981595 (x1.024), 9175.6 MB/s, 21794.4 MB/s
+-1007#d-test         :   6126812 ->   5989283 (x1.023), 9298.9 MB/s, 24239.1 MB/s
+-1008#d-test         :   6126812 ->   5986954 (x1.023), 9242.1 MB/s, 23809.4 MB/s
+-1009#d-test         :   6126812 ->   5988383 (x1.023), 9199.3 MB/s, 24322.1 MB/s
+-1010#d-test         :   6126812 ->   5985304 (x1.024), 9221.2 MB/s, 23711.9 MB/s
 
-Thus if the end user is fully trusting the hardware's protection, then 
-they can just use nodatasum mount option and call it a day.
-The benefit you shown is really just the benefit from "nodatasum" 
-behavior, and that's more or less expected due to the COW overhead.
+Up to -15 it's 3x improvement which translates to about 33% of the
+original size. And this is only for rough estimate, kernel compression
+could be slightly worse due to slightly different parameters.
 
-So I really prefer to let the end user to choose what they want.
-
-If they want to fully rely on the hardware's internal checksum, then 
-configure the block device to do it, and create a btrfs with nodatasum.
-
-If they want both btrfs and the hardware checksum, just do the usual way.
-
-Thanks,
-Qu
-
-> ---
->   fs/btrfs/bio.c   | 12 ++++++++++++
->   fs/btrfs/fs.h    |  1 +
->   fs/btrfs/super.c |  9 +++++++++
->   3 files changed, 22 insertions(+)
-> 
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 7ea6f0b43b95..811d89c64991 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -5,6 +5,7 @@
->    */
->   
->   #include <linux/bio.h>
-> +#include <linux/blk-integrity.h>
->   #include "bio.h"
->   #include "ctree.h"
->   #include "volumes.h"
-> @@ -424,6 +425,15 @@ static void btrfs_clone_write_end_io(struct bio *bio)
->   	bio_put(bio);
->   }
->   
-> +static void btrfs_prep_csum_offload_hw(struct btrfs_device *dev, struct bio *bio)
-> +{
-> +	struct blk_integrity *bi = blk_get_integrity(bio->bi_bdev->bd_disk);
-> +
-> +	if (btrfs_test_opt(dev->fs_info, DATASUM_OFFLOAD) &&
-> +	    bi && bi->offload_type != BLK_INTEGRITY_OFFLOAD_NONE)
-> +		bio->bi_opf |= REQ_INTEGRITY_OFFLOAD;
-> +}
-> +
->   static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
->   {
->   	if (!dev || !dev->bdev ||
-> @@ -435,6 +445,8 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
->   	}
->   
->   	bio_set_dev(bio, dev->bdev);
-> +	if (!(bio->bi_opf & REQ_META))
-> +		btrfs_prep_csum_offload_hw(dev, bio);
->   
->   	/*
->   	 * For zone append writing, bi_sector must point the beginning of the
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 79a1a3d6f04d..88e493967100 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -228,6 +228,7 @@ enum {
->   	BTRFS_MOUNT_NOSPACECACHE		= (1ULL << 30),
->   	BTRFS_MOUNT_IGNOREMETACSUMS		= (1ULL << 31),
->   	BTRFS_MOUNT_IGNORESUPERFLAGS		= (1ULL << 32),
-> +	BTRFS_MOUNT_DATASUM_OFFLOAD		= (1ULL << 33),
->   };
->   
->   /*
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 7dfe5005129a..d0d5b35c2df9 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -121,6 +121,7 @@ enum {
->   	Opt_treelog,
->   	Opt_user_subvol_rm_allowed,
->   	Opt_norecovery,
-> +	Opt_datasum_offload,
->   
->   	/* Rescue options */
->   	Opt_rescue,
-> @@ -223,6 +224,7 @@ static const struct fs_parameter_spec btrfs_fs_parameters[] = {
->   	fsparam_string("compress-force", Opt_compress_force_type),
->   	fsparam_flag_no("datacow", Opt_datacow),
->   	fsparam_flag_no("datasum", Opt_datasum),
-> +	fsparam_flag_no("datasum_offload", Opt_datasum_offload),
->   	fsparam_flag("degraded", Opt_degraded),
->   	fsparam_string("device", Opt_device),
->   	fsparam_flag_no("discard", Opt_discard),
-> @@ -323,6 +325,10 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
->   			btrfs_clear_opt(ctx->mount_opt, NODATASUM);
->   		}
->   		break;
-> +	case Opt_datasum_offload:
-> +		btrfs_set_opt(ctx->mount_opt, NODATASUM);
-> +		btrfs_set_opt(ctx->mount_opt, DATASUM_OFFLOAD);
-> +		break;
->   	case Opt_datacow:
->   		if (result.negated) {
->   			btrfs_clear_opt(ctx->mount_opt, COMPRESS);
-> @@ -1057,6 +1063,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
->   		seq_puts(seq, ",degraded");
->   	if (btrfs_test_opt(info, NODATASUM))
->   		seq_puts(seq, ",nodatasum");
-> +	if (btrfs_test_opt(info, DATASUM_OFFLOAD))
-> +		seq_puts(seq, ",datasum_offload");
->   	if (btrfs_test_opt(info, NODATACOW))
->   		seq_puts(seq, ",nodatacow");
->   	if (btrfs_test_opt(info, NOBARRIER))
-> @@ -1434,6 +1442,7 @@ static void btrfs_emit_options(struct btrfs_fs_info *info,
->   	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
->   	btrfs_info_if_set(info, old, DEGRADED, "allowing degraded mounts");
->   	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
-> +	btrfs_info_if_set(info, old, DATASUM_OFFLOAD, "setting datasum offload to the device");
->   	btrfs_info_if_set(info, old, SSD, "enabling ssd optimizations");
->   	btrfs_info_if_set(info, old, SSD_SPREAD, "using spread ssd allocation scheme");
->   	btrfs_info_if_set(info, old, NOBARRIER, "turning off barriers");
-
+We can let it to -15, so it's same number as the upper limit.
 
