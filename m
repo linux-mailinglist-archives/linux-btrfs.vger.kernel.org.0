@@ -1,245 +1,550 @@
-Return-Path: <linux-btrfs+bounces-11182-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11183-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDAB0A23179
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 17:05:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6323AA23383
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 18:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87FB11633D9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 16:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B54541882097
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 17:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A209D1EE03C;
-	Thu, 30 Jan 2025 16:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7F81F03F9;
+	Thu, 30 Jan 2025 17:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mm8ukA87"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GhkJFnw9";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GhkJFnw9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B531E8837;
-	Thu, 30 Jan 2025 16:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0471EF0B2;
+	Thu, 30 Jan 2025 17:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738253091; cv=none; b=PPHIxHtVFp6n3V93Y0t6auG5dqTL6ehUkHbD8yVWQIw+XoS0uQufiHhxXpPFkowbYLhIV0YwNSdfJywvqAYZwS/KH/8GicjRjqpWqVyWOysVDOA7B5HlicNF84ahbJL8FKhJCiCUIiQllpPdFHxPHDm0Ng7SrGSAlvWSVAIfBAk=
+	t=1738259929; cv=none; b=d2s++KdrCK1t+NcomhWEz1hh2mycW0JqZuC11yooQkM0KhZtrgtLBMn949tvnG3bl0XyhTbnH+y4VBrJk0V2Hbr6ZBSp18tDOnBq8PVpCGrsilvii4i2jmk5kBxrkPckdsJtGQ4MOHbL3p924m5L7W9kvArAZ4AIRtNBKbB5Xvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738253091; c=relaxed/simple;
-	bh=4ZRTirV/qMXGv1lhHQu9Z2RIqCSCgFSwedbKpogvN08=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Se7ys2vVeEGpf7L+lO3hxMkSBq9DOyahCFIQv8IIWuukH/jePsKKQ09u/C5MwF1nqcRqGgbVCvX0N7XJNxxvCdLFeVXu57sQbOU4xOJhohs7G348xbpeneYVVlCtPYCB5H7W1GcPbKnJoUN5si7GwxdF3oB1m8zHYXRT8YJEdFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mm8ukA87; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738253090; x=1769789090;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4ZRTirV/qMXGv1lhHQu9Z2RIqCSCgFSwedbKpogvN08=;
-  b=mm8ukA87Yc9p/oRcSNkT8uEQmAmZKONiuEffNztQPbaqWZjDO/tkG/0o
-   LnYAyOuUP4AomQcJVGNKRwIP9MZLUWC5o623i5g3BtR+ZQdHOEbsahEP1
-   jSvXflKgNFg4m0Zc2ccPALg16KvbQ2xxlQx6NQjE4x5fHOoEyckDSsEE6
-   5fGU8IJJe7vxpYBCK5MNQyoTJJRIknN/4y7jF6nUbHa3ftdZxgJwBidXO
-   9fHhqlpGhDDdWTjIUqi2baw0h/fxhcCqm9KOtgyJ5tBI5deT0qnn2LxSC
-   pQTo2uCvlHdhp6Xii2b6wcEqZJsCWYIetVKBSRuh7+MWhaYFRDLQayVFS
-   A==;
-X-CSE-ConnectionGUID: UagTAG2ERnKWf1HOrwL2QA==
-X-CSE-MsgGUID: Or29WqiVTyuYcSTb3T1jmg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11331"; a="41636911"
-X-IronPort-AV: E=Sophos;i="6.13,245,1732608000"; 
-   d="scan'208";a="41636911"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2025 08:04:49 -0800
-X-CSE-ConnectionGUID: UwYGh57xR/yTBqzQLoyWlA==
-X-CSE-MsgGUID: RzBbKHHaRvSoK3Av6eDkLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,245,1732608000"; 
-   d="scan'208";a="109965833"
-Received: from inaky-mobl1.amr.corp.intel.com (HELO [10.125.108.230]) ([10.125.108.230])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2025 08:04:48 -0800
-Message-ID: <f35aa9a2-edac-4ada-b10b-8a560460d358@intel.com>
-Date: Thu, 30 Jan 2025 08:04:49 -0800
+	s=arc-20240116; t=1738259929; c=relaxed/simple;
+	bh=x14OqpE1zUV0FW5C6wfH018KHRe3gqvczGLmVUHgL4E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EXE1i+Rn8VHwqYCSO/O273Wznjs5hvB0zqL90v+6RbyzXP7BZBh6qaK2gMCKam9NmUtLR11MiLLBK1TDz1b0toBxv6NJZnE1goKAkIQTOTYEPxZo2QnuxP/ife6pIV6rnJ3mSKQzO6TlCQk2E6gkhHSnQ7gIzkXxSCjoKg6Apf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GhkJFnw9; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GhkJFnw9; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9F7A72116C;
+	Thu, 30 Jan 2025 17:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1738259924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=BrW7ND7sWqkTqzEv8QrJoAmLbaULMAiebr5dDvuQdNo=;
+	b=GhkJFnw92lMvx9okXXl0uGe+VjPMfC+4QTS3AKqaD2so/G8Es/6Tk4iXGECGOleAgBDqDi
+	ZnVYOPPz+4/dfG0VAfnVMr9UYe5yRkDutKI74lUnaex/ITVbJEC4I8lsF5nyLXzn7hYOBg
+	5NlQQENafWqImIDyhpu+DGorSjw5DG8=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=GhkJFnw9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1738259924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=BrW7ND7sWqkTqzEv8QrJoAmLbaULMAiebr5dDvuQdNo=;
+	b=GhkJFnw92lMvx9okXXl0uGe+VjPMfC+4QTS3AKqaD2so/G8Es/6Tk4iXGECGOleAgBDqDi
+	ZnVYOPPz+4/dfG0VAfnVMr9UYe5yRkDutKI74lUnaex/ITVbJEC4I8lsF5nyLXzn7hYOBg
+	5NlQQENafWqImIDyhpu+DGorSjw5DG8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8350E1366F;
+	Thu, 30 Jan 2025 17:58:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gl6FH9S9m2eaMAAAD6G6ig
+	(envelope-from <neelx@suse.com>); Thu, 30 Jan 2025 17:58:44 +0000
+From: Daniel Vacek <neelx@suse.com>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Nick Terrell <terrelln@fb.com>
+Cc: Daniel Vacek <neelx@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] btrfs: zstd: enable negative compression levels mount option
+Date: Thu, 30 Jan 2025 18:58:19 +0100
+Message-ID: <20250130175821.1792279-1-neelx@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] Move prefaulting into write slow paths
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Dave Hansen <dave.hansen@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>, Ted Ts'o <tytso@mit.edu>,
- Christian Brauner <brauner@kernel.org>, "Darrick J. Wong"
- <djwong@kernel.org>, Matthew Wilcox <willy@infradead.org>,
- Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
- almaz.alexandrovich@paragon-software.com, ntfs3@lists.linux.dev,
- miklos@szeredi.hu, linux-bcachefs@vger.kernel.org, clm@fb.com,
- josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
- dhowells@redhat.com, jlayton@kernel.org, netfs@lists.linux.dev
-References: <20250129181749.C229F6F3@davehans-spike.ostc.intel.com>
- <qpeao3ezywdn5ojpcvchaza7gd6qeb57kvvgbxt2j4qsk4qoey@vrf4oy2icixd>
-From: Dave Hansen <dave.hansen@intel.com>
-Content-Language: en-US
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <qpeao3ezywdn5ojpcvchaza7gd6qeb57kvvgbxt2j4qsk4qoey@vrf4oy2icixd>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 9F7A72116C
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-On 1/29/25 23:44, Kent Overstreet wrote:
-> On Wed, Jan 29, 2025 at 10:17:49AM -0800, Dave Hansen wrote:
->> tl;dr: The VFS and several filesystems have some suspect prefaulting
->> code. It is unnecessarily slow for the common case where a write's
->> source buffer is resident and does not need to be faulted in.
->>
->> Move these "prefaulting" operations to slow paths where they ensure
->> forward progress but they do not slow down the fast paths. This
->> optimizes the fast path to touch userspace once instead of twice.
->>
->> Also update somewhat dubious comments about the need for prefaulting.
->>
->> This has been very lightly tested. I have not tested any of the fs/
->> code explicitly.
-> 
-> Q: what is preventing us from posting code to the list that's been
-> properly tested?
-> 
-> I just got another bcachefs patch series that blew up immediately when I
-> threw it at my CI.
-> 
-> This is getting _utterly ridiculous_.
+This patch allows using the fast modes (negative compression levels) of zstd
+as a mount option.
 
-In this case, I started with a single patch for generic code that I knew
-I could test. In fact, I even had the 9-year-old binary sitting on my
-test box.
+As per the results, the compression ratio is lower:
 
-Dave Chinner suggested that I take the generic pattern go look a _bit_
-more widely in the tree for a similar pattern. That search paid off, I
-think. But I ended up touching corners of the tree I don't know well and
-don't have test cases for.
+for level in {-15..-1} 1 2 3; \
+do printf "level %3d\n" $level; \
+  mount -o compress=zstd:$level /dev/sdb /mnt/test/; \
+  grep sdb /proc/mounts; \
+  cp -r /usr/bin       /mnt/test/; sync; compsize /mnt/test/bin; \
+  cp -r /usr/share/doc /mnt/test/; sync; compsize /mnt/test/doc; \
+  cp    enwik9         /mnt/test/; sync; compsize /mnt/test/enwik9; \
+  cp    linux-6.13.tar /mnt/test/; sync; compsize /mnt/test/linux-6.13.tar; \
+  rm -r /mnt/test/{bin,doc,enwik9,linux-6.13.tar}; \
+  umount /mnt/test/; \
+done |& tee results | \
+awk '/^level/{print}/^TOTAL/{print$3"\t"$2"  |"}' | paste - - - - -
 
-> I built multiuser test infrastructure with a nice dashboard that anyone
-> can use, and the only response I've gotten from the old guard is Ted
-> jumping in every time I talk about it to say "no, we just don't want to
-> rewrite our stuff on _your_ stuff!". Real helpful, that.
+		266M	bin  |	45M	doc  |	953M	wiki |	1.4G	source
+=============================+===============+===============+===============+
+level -15	180M	67%  |	30M	68%  |	694M	72%  |	598M	40%  |
+level -14	180M	67%  |	30M	67%  |	683M	71%  |	581M	39%  |
+level -13	177M	66%  |	29M	66%  |	671M	70%  |	566M	38%  |
+level -12	174M	65%  |	29M	65%  |	658M	69%  |	548M	37%  |
+level -11	174M	65%  |	28M	64%  |	645M	67%  |	530M	35%  |
+level -10	171M	64%  |	28M	62%  |	631M	66%  |	512M	34%  |
+level  -9	165M	62%  |	27M	61%  |	615M	64%  |	493M	33%  |
+level  -8	161M	60%  |	27M	59%  |	598M	62%  |	475M	32%  |
+level  -7	155M	58%  |	26M	58%  |	582M	61%  |	457M	30%  |
+level  -6	151M	56%  |	25M	56%  |	565M	59%  |	437M	29%  |
+level  -5	145M	54%  |	24M	55%  |	545M	57%  |	417M	28%  |
+level  -4	139M	52%  |	23M	52%  |	520M	54%  |	391M	26%  |
+level  -3	135M	50%  |	22M	50%  |	495M	51%  |	369M	24%  |
+level  -2	127M	47%  |	22M	48%  |	470M	49%  |	349M	23%  |
+level  -1	120M	45%  |	21M	47%  |	452M	47%  |	332M	22%  |
+level   1	110M	41%  |	17M	39%  |	362M	38%  |	290M	19%  |
+level   2	106M	40%  |	17M	38%  |	349M	36%  |	288M	19%  |
+level   3	104M	39%  |	16M	37%  |	340M	35%  |	276M	18%  |
 
-Sounds pretty cool! Is this something that I could have and should have
-used to test the bcachefs patch?  I see some trees in here:
+Signed-off-by: Daniel Vacek <neelx@suse.com>
+---
+Changes in v4:
+ * Fix a bug with workspace lru_list.
+ * Keep the levels down to -15 as agreed.
 
-	https://evilpiepirate.org/~testdashboard/ci
+Changes in v3:
+ * Correct the accidentally replaced string in `clip_level()` function.
 
-But I'm not sure how to submit patches to it. Do you need to add users
-manually? I wonder, though, how we could make it easier to find. I
-didn't see anything Documentation/filesystems/bcachefs/ about this.
+Changes in v2:
+ * Set the minimal level to -10 and add a `clip_level()` helper as suggested
+   by Dave.
+ * Add more filetypes to comparison in commit message.
+   The enwik9 test corpus is a dump of wikipedia site as used by various
+   benchmarks.
 
->>  1. Deadlock avoidance if the source and target are the same
->>     folios.
->>  2. To check the user address that copy_folio_from_iter_atomic()
->>     will touch because atomic user copies do not check the address.
->>  3. "Optimization"
->>
->> I'm not sure any of these are actually valid reasons.
->>
->> The "atomic" user copy functions disable page fault handling because
->> page faults are not very atomic. This makes them naturally resistant
->> to deadlocking in page fault handling. They take the page fault
->> itself but short-circuit any handling.
-> 
-> #1 is emphatically valid: the deadlock avoidance is in _both_ using
-> _atomic when we have locks held, and doing the actual faulting with
-> locks dropped... either alone would be a buggy incomplete solution.
+---
+ fs/btrfs/compression.c | 18 +++++++--------
+ fs/btrfs/compression.h | 25 +++++++-------------
+ fs/btrfs/fs.h          |  2 +-
+ fs/btrfs/inode.c       |  2 +-
+ fs/btrfs/super.c       |  2 +-
+ fs/btrfs/zlib.c        |  1 +
+ fs/btrfs/zstd.c        | 52 ++++++++++++++++++++++++------------------
+ 7 files changed, 50 insertions(+), 52 deletions(-)
 
-I was (badly) attempting to separate out the two different problems:
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 0c4d486c3048d..6d073e69af4e3 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -740,7 +740,7 @@ static const struct btrfs_compress_op * const btrfs_compress_op[] = {
+ 	&btrfs_zstd_compress,
+ };
+ 
+-static struct list_head *alloc_workspace(int type, unsigned int level)
++static struct list_head *alloc_workspace(int type, int level)
+ {
+ 	switch (type) {
+ 	case BTRFS_COMPRESS_NONE: return alloc_heuristic_ws();
+@@ -818,7 +818,7 @@ static void btrfs_cleanup_workspace_manager(int type)
+  * Preallocation makes a forward progress guarantees and we do not return
+  * errors.
+  */
+-struct list_head *btrfs_get_workspace(int type, unsigned int level)
++struct list_head *btrfs_get_workspace(int type, int level)
+ {
+ 	struct workspace_manager *wsm;
+ 	struct list_head *workspace;
+@@ -968,14 +968,14 @@ static void put_workspace(int type, struct list_head *ws)
+  * Adjust @level according to the limits of the compression algorithm or
+  * fallback to default
+  */
+-static unsigned int btrfs_compress_set_level(int type, unsigned level)
++static int btrfs_compress_set_level(unsigned int type, int level)
+ {
+ 	const struct btrfs_compress_op *ops = btrfs_compress_op[type];
+ 
+ 	if (level == 0)
+ 		level = ops->default_level;
+ 	else
+-		level = min(level, ops->max_level);
++		level = min(max(level, ops->min_level), ops->max_level);
+ 
+ 	return level;
+ }
+@@ -1023,12 +1023,10 @@ int btrfs_compress_filemap_get_folio(struct address_space *mapping, u64 start,
+  * @total_out is an in/out parameter, must be set to the input length and will
+  * be also used to return the total number of compressed bytes
+  */
+-int btrfs_compress_folios(unsigned int type_level, struct address_space *mapping,
++int btrfs_compress_folios(unsigned int type, int level, struct address_space *mapping,
+ 			 u64 start, struct folio **folios, unsigned long *out_folios,
+ 			 unsigned long *total_in, unsigned long *total_out)
+ {
+-	int type = btrfs_compress_type(type_level);
+-	int level = btrfs_compress_level(type_level);
+ 	const unsigned long orig_len = *total_out;
+ 	struct list_head *workspace;
+ 	int ret;
+@@ -1592,16 +1590,16 @@ int btrfs_compress_heuristic(struct btrfs_inode *inode, u64 start, u64 end)
+  * Convert the compression suffix (eg. after "zlib" starting with ":") to
+  * level, unrecognized string will set the default level
+  */
+-unsigned int btrfs_compress_str2level(unsigned int type, const char *str)
++int btrfs_compress_str2level(unsigned int type, const char *str)
+ {
+-	unsigned int level = 0;
++	int level = 0;
+ 	int ret;
+ 
+ 	if (!type)
+ 		return 0;
+ 
+ 	if (str[0] == ':') {
+-		ret = kstrtouint(str + 1, 10, &level);
++		ret = kstrtoint(str + 1, 10, &level);
+ 		if (ret)
+ 			level = 0;
+ 	}
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 954034086d0d4..933178f03d8f8 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -72,16 +72,6 @@ struct compressed_bio {
+ 	struct btrfs_bio bbio;
+ };
+ 
+-static inline unsigned int btrfs_compress_type(unsigned int type_level)
+-{
+-	return (type_level & 0xF);
+-}
+-
+-static inline unsigned int btrfs_compress_level(unsigned int type_level)
+-{
+-	return ((type_level & 0xF0) >> 4);
+-}
+-
+ /* @range_end must be exclusive. */
+ static inline u32 btrfs_calc_input_length(u64 range_end, u64 cur)
+ {
+@@ -93,7 +83,7 @@ static inline u32 btrfs_calc_input_length(u64 range_end, u64 cur)
+ int __init btrfs_init_compress(void);
+ void __cold btrfs_exit_compress(void);
+ 
+-int btrfs_compress_folios(unsigned int type_level, struct address_space *mapping,
++int btrfs_compress_folios(unsigned int type, int level, struct address_space *mapping,
+ 			  u64 start, struct folio **folios, unsigned long *out_folios,
+ 			 unsigned long *total_in, unsigned long *total_out);
+ int btrfs_decompress(int type, const u8 *data_in, struct folio *dest_folio,
+@@ -107,7 +97,7 @@ void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
+ 				   bool writeback);
+ void btrfs_submit_compressed_read(struct btrfs_bio *bbio);
+ 
+-unsigned int btrfs_compress_str2level(unsigned int type, const char *str);
++int btrfs_compress_str2level(unsigned int type, const char *str);
+ 
+ struct folio *btrfs_alloc_compr_folio(void);
+ void btrfs_free_compr_folio(struct folio *folio);
+@@ -131,14 +121,15 @@ struct workspace_manager {
+ 	wait_queue_head_t ws_wait;
+ };
+ 
+-struct list_head *btrfs_get_workspace(int type, unsigned int level);
++struct list_head *btrfs_get_workspace(int type, int level);
+ void btrfs_put_workspace(int type, struct list_head *ws);
+ 
+ struct btrfs_compress_op {
+ 	struct workspace_manager *workspace_manager;
+ 	/* Maximum level supported by the compression algorithm */
+-	unsigned int max_level;
+-	unsigned int default_level;
++	int min_level;
++	int max_level;
++	int default_level;
+ };
+ 
+ /* The heuristic workspaces are managed via the 0th workspace manager */
+@@ -187,9 +178,9 @@ int zstd_decompress(struct list_head *ws, const u8 *data_in,
+ 		size_t destlen);
+ void zstd_init_workspace_manager(void);
+ void zstd_cleanup_workspace_manager(void);
+-struct list_head *zstd_alloc_workspace(unsigned int level);
++struct list_head *zstd_alloc_workspace(int level);
+ void zstd_free_workspace(struct list_head *ws);
+-struct list_head *zstd_get_workspace(unsigned int level);
++struct list_head *zstd_get_workspace(int level);
+ void zstd_put_workspace(struct list_head *ws);
+ 
+ #endif
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 79a1a3d6f04d1..be6d5a24bd4e6 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -486,7 +486,7 @@ struct btrfs_fs_info {
+ 	unsigned long long mount_opt;
+ 
+ 	unsigned long compress_type:4;
+-	unsigned int compress_level;
++	int compress_level;
+ 	u32 commit_interval;
+ 	/*
+ 	 * It is a suggestive number, the read side is safe even it gets a
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 27b2fe7f735d5..fa04b027d53ac 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1013,7 +1013,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 		compress_type = inode->prop_compress;
+ 
+ 	/* Compression level is applied here. */
+-	ret = btrfs_compress_folios(compress_type | (fs_info->compress_level << 4),
++	ret = btrfs_compress_folios(compress_type, fs_info->compress_level,
+ 				    mapping, start, folios, &nr_folios, &total_in,
+ 				    &total_compressed);
+ 	if (ret)
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 7dfe5005129a1..cebbb0890c37e 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -84,7 +84,7 @@ struct btrfs_fs_context {
+ 	u32 thread_pool_size;
+ 	unsigned long long mount_opt;
+ 	unsigned long compress_type:4;
+-	unsigned int compress_level;
++	int compress_level;
+ 	refcount_t refs;
+ };
+ 
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index c9e92c6941ec4..047d30d20ff16 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -463,6 +463,7 @@ int zlib_decompress(struct list_head *ws, const u8 *data_in,
+ 
+ const struct btrfs_compress_op btrfs_zlib_compress = {
+ 	.workspace_manager	= &wsm,
++	.min_level		= 1,
+ 	.max_level		= 9,
+ 	.default_level		= BTRFS_ZLIB_DEFAULT_LEVEL,
+ };
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 5232b56d58925..a7bfbf8bea7d0 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -26,11 +26,12 @@
+ #define ZSTD_BTRFS_MAX_WINDOWLOG 17
+ #define ZSTD_BTRFS_MAX_INPUT (1 << ZSTD_BTRFS_MAX_WINDOWLOG)
+ #define ZSTD_BTRFS_DEFAULT_LEVEL 3
++#define ZSTD_BTRFS_MIN_LEVEL -15
+ #define ZSTD_BTRFS_MAX_LEVEL 15
+ /* 307s to avoid pathologically clashing with transaction commit */
+ #define ZSTD_BTRFS_RECLAIM_JIFFIES (307 * HZ)
+ 
+-static zstd_parameters zstd_get_btrfs_parameters(unsigned int level,
++static zstd_parameters zstd_get_btrfs_parameters(int level,
+ 						 size_t src_len)
+ {
+ 	zstd_parameters params = zstd_get_params(level, src_len);
+@@ -45,8 +46,8 @@ struct workspace {
+ 	void *mem;
+ 	size_t size;
+ 	char *buf;
+-	unsigned int level;
+-	unsigned int req_level;
++	int level;
++	int req_level;
+ 	unsigned long last_used; /* jiffies */
+ 	struct list_head list;
+ 	struct list_head lru_list;
+@@ -93,8 +94,10 @@ static inline struct workspace *list_to_workspace(struct list_head *list)
+ 	return container_of(list, struct workspace, list);
+ }
+ 
+-void zstd_free_workspace(struct list_head *ws);
+-struct list_head *zstd_alloc_workspace(unsigned int level);
++static inline int clip_level(int level)
++{
++	return max(0, level - 1);
++}
+ 
+ /*
+  * Timer callback to free unused workspaces.
+@@ -123,7 +126,7 @@ static void zstd_reclaim_timer_fn(struct timer_list *timer)
+ 	list_for_each_prev_safe(pos, next, &wsm.lru_list) {
+ 		struct workspace *victim = container_of(pos, struct workspace,
+ 							lru_list);
+-		unsigned int level;
++		int level;
+ 
+ 		if (time_after(victim->last_used, reclaim_threshold))
+ 			break;
+@@ -137,8 +140,8 @@ static void zstd_reclaim_timer_fn(struct timer_list *timer)
+ 		list_del(&victim->list);
+ 		zstd_free_workspace(&victim->list);
+ 
+-		if (list_empty(&wsm.idle_ws[level - 1]))
+-			clear_bit(level - 1, &wsm.active_map);
++		if (list_empty(&wsm.idle_ws[level]))
++			clear_bit(level, &wsm.active_map);
+ 
+ 	}
+ 
+@@ -160,9 +163,11 @@ static void zstd_reclaim_timer_fn(struct timer_list *timer)
+ static void zstd_calc_ws_mem_sizes(void)
+ {
+ 	size_t max_size = 0;
+-	unsigned int level;
++	int level;
+ 
+-	for (level = 1; level <= ZSTD_BTRFS_MAX_LEVEL; level++) {
++	for (level = ZSTD_BTRFS_MIN_LEVEL; level <= ZSTD_BTRFS_MAX_LEVEL; level++) {
++		if (level == 0)
++			continue;
+ 		zstd_parameters params =
+ 			zstd_get_btrfs_parameters(level, ZSTD_BTRFS_MAX_INPUT);
+ 		size_t level_size =
+@@ -171,7 +176,8 @@ static void zstd_calc_ws_mem_sizes(void)
+ 			      zstd_dstream_workspace_bound(ZSTD_BTRFS_MAX_INPUT));
+ 
+ 		max_size = max_t(size_t, max_size, level_size);
+-		zstd_ws_mem_sizes[level - 1] = max_size;
++		/* Use level 1 workspace size for all the fast mode negative levels. */
++		zstd_ws_mem_sizes[clip_level(level)] = max_size;
+ 	}
+ }
+ 
+@@ -233,11 +239,11 @@ void zstd_cleanup_workspace_manager(void)
+  * offer the opportunity to reclaim the workspace in favor of allocating an
+  * appropriately sized one in the future.
+  */
+-static struct list_head *zstd_find_workspace(unsigned int level)
++static struct list_head *zstd_find_workspace(int level)
+ {
+ 	struct list_head *ws;
+ 	struct workspace *workspace;
+-	int i = level - 1;
++	int i = clip_level(level);
+ 
+ 	spin_lock_bh(&wsm.lock);
+ 	for_each_set_bit_from(i, &wsm.active_map, ZSTD_BTRFS_MAX_LEVEL) {
+@@ -247,7 +253,7 @@ static struct list_head *zstd_find_workspace(unsigned int level)
+ 			list_del_init(ws);
+ 			/* keep its place if it's a lower level using this */
+ 			workspace->req_level = level;
+-			if (level == workspace->level)
++			if (clip_level(level) == workspace->level)
+ 				list_del(&workspace->lru_list);
+ 			if (list_empty(&wsm.idle_ws[i]))
+ 				clear_bit(i, &wsm.active_map);
+@@ -270,7 +276,7 @@ static struct list_head *zstd_find_workspace(unsigned int level)
+  * attempt to allocate a new workspace.  If we fail to allocate one due to
+  * memory pressure, go to sleep waiting for the max level workspace to free up.
+  */
+-struct list_head *zstd_get_workspace(unsigned int level)
++struct list_head *zstd_get_workspace(int level)
+ {
+ 	struct list_head *ws;
+ 	unsigned int nofs_flag;
+@@ -319,7 +325,7 @@ void zstd_put_workspace(struct list_head *ws)
+ 	spin_lock_bh(&wsm.lock);
+ 
+ 	/* A node is only taken off the lru if we are the corresponding level */
+-	if (workspace->req_level == workspace->level) {
++	if (clip_level(workspace->req_level) == workspace->level) {
+ 		/* Hide a max level workspace from reclaim */
+ 		if (list_empty(&wsm.idle_ws[ZSTD_BTRFS_MAX_LEVEL - 1])) {
+ 			INIT_LIST_HEAD(&workspace->lru_list);
+@@ -332,13 +338,13 @@ void zstd_put_workspace(struct list_head *ws)
+ 		}
+ 	}
+ 
+-	set_bit(workspace->level - 1, &wsm.active_map);
+-	list_add(&workspace->list, &wsm.idle_ws[workspace->level - 1]);
++	set_bit(workspace->level, &wsm.active_map);
++	list_add(&workspace->list, &wsm.idle_ws[workspace->level]);
+ 	workspace->req_level = 0;
+ 
+ 	spin_unlock_bh(&wsm.lock);
+ 
+-	if (workspace->level == ZSTD_BTRFS_MAX_LEVEL)
++	if (workspace->level == clip_level(ZSTD_BTRFS_MAX_LEVEL))
+ 		cond_wake_up(&wsm.wait);
+ }
+ 
+@@ -351,7 +357,7 @@ void zstd_free_workspace(struct list_head *ws)
+ 	kfree(workspace);
+ }
+ 
+-struct list_head *zstd_alloc_workspace(unsigned int level)
++struct list_head *zstd_alloc_workspace(int level)
+ {
+ 	struct workspace *workspace;
+ 
+@@ -359,8 +365,9 @@ struct list_head *zstd_alloc_workspace(unsigned int level)
+ 	if (!workspace)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	workspace->size = zstd_ws_mem_sizes[level - 1];
+-	workspace->level = level;
++	/* Use level 1 workspace size for all the fast mode negative levels. */
++	workspace->size = zstd_ws_mem_sizes[clip_level(level)];
++	workspace->level = clip_level(level);
+ 	workspace->req_level = level;
+ 	workspace->last_used = jiffies;
+ 	workspace->mem = kvmalloc(workspace->size, GFP_KERNEL | __GFP_NOWARN);
+@@ -717,6 +724,7 @@ int zstd_decompress(struct list_head *ws, const u8 *data_in,
+ const struct btrfs_compress_op btrfs_zstd_compress = {
+ 	/* ZSTD uses own workspace manager */
+ 	.workspace_manager = NULL,
++	.min_level	= ZSTD_BTRFS_MIN_LEVEL,
+ 	.max_level	= ZSTD_BTRFS_MAX_LEVEL,
+ 	.default_level	= ZSTD_BTRFS_DEFAULT_LEVEL,
+ };
+-- 
+2.47.2
 
-	1. Doing lock_page() twice, which I was mostly calling the
-	   "deadlock"
-	2. Retrying the copy_folio_from_iter_atomic() forever which I
-	   was calling the "livelock"
-
-Disabling page faults fixes #1.
-Doing faulting outside the locks somewhere fixes #2.
-
-So when I was talking about "Deadlock avoidance" in the cover letter, I
-was trying to focus on the double lock_page() problem.
-
-> This needs to be reflected and fully described in the comments, since
-> it's subtle and a lot of people don't fully grok what's going on.
-
-Any suggestions for fully describing the situation? I tried to sprinkle
-comments liberally but I'm also painfully aware that I'm not doing a
-perfect job of talking about the fs code.
-
-> I'm fairly certain we have ioctl code where this is mishandled and thus
-> buggy, because it takes some fairly particular testing for lockdep to
-> spot it.
-
-Yeah, I wouldn't be surprised. It was having a little chuckle thinking
-about how many engineers have discovered and fixed this problem
-independently over the years in all the file system code in all the OSes.
-
->> copy_folio_from_iter_atomic() also *does* have user address checking.
->> I get a little lost in the iov_iter code, but it does know when it's
->> dealing with userspace versus kernel addresses and does seem to know
->> when to do things like copy_from_user_iter() (which does access_ok())
->> versus memcpy_from_iter().[1]
->>
->> The "optimization" is for the case where 'source' is not faulted in.
->> It can avoid the cost of a "failed" page fault (it will fail to be
->> handled because of the atomic copy) and then needing to drop locks and
->> repeat the fault.
-> 
-> I do agree on moving it to the slowpath - I think we can expect the case
-> where the process's immediate workingset is faulted out while it's
-> running to be vanishingly small.
-
-Great! I'm glad we're on the same page there.
-
-For bcachefs specifically, how should we move forward? If you're happy
-with the concept, would you prefer that I do some manual bcachefs
-testing? Or leave a branch sitting there for a week and pray the robots
-test it?
 
