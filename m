@@ -1,194 +1,213 @@
-Return-Path: <linux-btrfs+bounces-11176-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A161A22C26
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 12:03:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B69A22C91
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 12:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CCCF1625A5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 11:03:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16D551887E96
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 11:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2ABB1DE88E;
-	Thu, 30 Jan 2025 11:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099751D9329;
+	Thu, 30 Jan 2025 11:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="EbrlbQSA"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BCUAEC4f"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CD41BBBEB;
-	Thu, 30 Jan 2025 11:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A960A1AB507
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 11:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738234974; cv=none; b=ZeUiHC77fuy5nYFZgD2XnveM+mKQy/yCKL+HBduwG1kBfny3xbFV6rk9cKOdfbqIKQ+56o7EZc+bc42DgnU3+WJrNI8UtYKPLGWJwYnjyh5bE0WX92Ya6bYNOoQ7VRjpMGJCviPce7j3t13o1/jJjgVQNsXf6VGl96XX5xaZuGY=
+	t=1738236915; cv=none; b=uT8g8rdPkp/9k2Q7VXSeOWWKMtDb0U/Lfw1mB8By5m4wRgUROhwVmf2RBSM0OwFVlgdLrlJkUrj+3n9OOfLlUpS3GTVoRz9hSxDEQT3hr/4vqnTzqiz5HlFAFWntfDHtuyw62c3tixSezR5qDzrVFaWYdgIc5oXRDgTNQIP1B+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738234974; c=relaxed/simple;
-	bh=+t4JrvrPiLsj7bfb840h38pFA44a5hm5mtWmRSYdCpU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=bR9un1CPdwQMvRHOQ9+Dffxe0SW8y6ttVU0BOlVjrd4n0l7DJOC+s+7voBwTmqlgsQ+opwzVkRiVDWwFa7LtDUCOg6PDuHAxaQKMu1lbsb6EuSpKadqbRNBYac9dK7gh+ky9RR7L/8e8Ynv9x0CdpqrZQucUxlk7AmxV2vU9ols=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=EbrlbQSA; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1738234870; x=1738839670; i=markus.elfring@web.de;
-	bh=+t4JrvrPiLsj7bfb840h38pFA44a5hm5mtWmRSYdCpU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=EbrlbQSAj+f38PA8703tTZaMiR4ayuD9Qrvyd9QGYqJH7YthbOq//pBZda9lk8L/
-	 8Z/bzqm9AcXAMhwbS7RdUkARLZ8bEvd0EdUhD+FRE9AbkWXJxoHLcoT2yUZDnoAru
-	 AEpVtrhhTX6gwbMUeKZ3owYdgRazmCSF+8S1sKEY3QoZ9646CKqHg5lS86sDrdRD4
-	 GAbkiHBdMvF1FSVgBio0MksJCA2Iu2Q6DHWn+Yg3/3vqeK/pNqvYcFMKTRC3o8uWh
-	 KgSWCXjJhP+JBxslKqGd0a2lz6i0DAbUIk83mJ6VEQvNIYUmrFpRTTuGrXGp53KWW
-	 cqA7/eN/08snJD7Q9w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.70.40]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MIya8-1tsDzY10Di-00Lbns; Thu, 30
- Jan 2025 12:01:10 +0100
-Message-ID: <e06cb7f5-7aa3-464c-a8a1-2c7b9b6a29eb@web.de>
-Date: Thu, 30 Jan 2025 12:01:03 +0100
+	s=arc-20240116; t=1738236915; c=relaxed/simple;
+	bh=tfFzam/jFHYUMtqdYvfXLZVWweNPmyH3aL2diHIO4gI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JmpRYRE5eiP3Kz9UTMeVj7QfWZ9TAaGr6mQXJ2jh8fXaBMkK3XmZcC+YDtULt4avTs3JiO38W0nmzf9R19mm3/GSjqilXbe/Ek+/iAegQtpN3T+3jPuUH3rqNMks3jsViLo5Ue1XwSYUC4J+SpqbpcbWcI1fU+LLHn8J/HO9A7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BCUAEC4f; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aa684b6d9c7so125181466b.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 03:35:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1738236911; x=1738841711; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oj8CG5rIrQjMoI52OerRkeINWPFKjjVRRbwBs7xuT7g=;
+        b=BCUAEC4fkqmgNj4U4fh8QdObHZUm9A3NtGK524wc5krlEfYMnBZh2+6tfl9OFtMj4q
+         nbux0lHiR1xfsGkeY9ntOPlR1+5x9Uid+QlJrJ8u0185PQVlt6D7S8V85uHCYSPv+akv
+         Y6aUX8hGtDwTMUm4lg4YbhIn816cngWjA8cs0gr//js+iaSScw5XurMaq8ehxqfPL1hQ
+         JVZiwumhnRTj3Chl0MEcxZ12f9BGQ0+S1oS2PqPGH4MZfF89CCJpqDNcD3qRkcKZu9IE
+         E/1wX+/h3C0DiUxaLGgHHiUqEKvoWzVrsMCVz2ap3N5KKWQFH6swvMRITkrIYAmPveaV
+         mrcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738236911; x=1738841711;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Oj8CG5rIrQjMoI52OerRkeINWPFKjjVRRbwBs7xuT7g=;
+        b=LyVWuSTrf5LLKojNZ70Yl8U2ablZDtkuAa6AUATvoNDssSrYJTPc0vZgUj6IqJz4VP
+         WPVNTTZ/izbX4FJf17cZ1Vqq99NfL8FxIObriYY++oZ7RI+JYd7bKHApIJZHI3J8F0Hd
+         4xuYYSdl4DOeuZ3BOP5vYd7Aoc9Q80mv5Fp9oxwyA1nrADVJzV6cAVF2+LlboXbAJJ8/
+         gHTbEOJyyJF7FBrzT1MTPLBMvenYTZB5oqGfsbCM1zqAPowLkCjdVtGJD4667AcoC4f0
+         kRwUk8uLpuSv32WMhQ7GV4m1li5RYf7JYYNMMc32EpuCJkwJvWL1xGa5ipVo8p4aXBhu
+         qGwA==
+X-Forwarded-Encrypted: i=1; AJvYcCW8AG92YMFG/0cEZinTFrXydyjdJ1UCeatrTVjWMuLavYVVshh8YfE5kV/lG7ep+KlmcjN4v7mUAVsSdg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywkrsy/CoN5fBfVjrDi3A1LHa2khAFyTnO7t06gOj9b8EGKVMke
+	CxmQjW2WY0hqaK/StSvgQptWigKTWvzJfON/FMqGmQnEEMxRStgf1byQJB4C0QihMNwI/31CRt5
+	0P50fGwQJmwKY3Q/7nePHzwHwG7I0cqkokjyEQA==
+X-Gm-Gg: ASbGncs3aZsuJIiK3hlxqC2JfQkud6EOx040NYbfR0kAsdMT69V0j61v3XcHlSvb+xl
+	x2iWx4Ozm51UKNfLFKkv7kbFGP/QxbhuvBAlc/vGtWJmKgwZPkyGWRcP1hIAggPW8ETzIRh8=
+X-Google-Smtp-Source: AGHT+IH0O1ZzRQISyJvJgvPxDJFFbDWDZc422/AabXBzyyIns9UbuheqfG6GtYppKbT+UTZavC795zq3NJ1cwICslsA=
+X-Received: by 2002:a17:906:5785:b0:ab6:d575:953c with SMTP id
+ a640c23a62f3a-ab6d5759623mr498310066b.47.1738236910779; Thu, 30 Jan 2025
+ 03:35:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: cocci@inria.fr, kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, dri-devel@lists.freedesktop.org,
- ibm-acpi-devel@lists.sourceforge.net, imx@lists.linux.dev,
- kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>, Carlos Maiolino <cem@kernel.org>,
- Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
- Damien Le Moal <dlemoal@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
- David Sterba <dsterba@suse.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
- Dongsheng Yang <dongsheng.yang@easystack.cn>,
- Easwar Hariharan <eahariha@linux.microsoft.com>,
- Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- James Smart <james.smart@broadcom.com>, Jaroslav Kysela <perex@perex.cz>,
- Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
- Josef Bacik <josef@toxicpanda.com>, Julia Lawall <Julia.Lawall@inria.fr>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Ilya Dryomov <idryomov@gmail.com>,
- Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>,
- Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Mark Brown <broonie@kernel.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Nicolas Palix <nicolas.palix@imag.fr>, Niklas Cassel <cassel@kernel.org>,
- Oded Gabbay <ogabbay@kernel.org>, Ricardo Ribalda <ribalda@google.com>,
- Sagi Grimberg <sagi@grimberg.me>, Sascha Hauer <s.hauer@pengutronix.de>,
- Sebastian Reichel <sre@kernel.org>,
- Selvin Xavier <selvin.xavier@broadcom.com>, Shawn Guo <shawnguo@kernel.org>,
- Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, Takashi Iwai <tiwai@suse.com>,
- Victor Gambier <victor.gambier@inria.fr>, Xiubo Li <xiubli@redhat.com>,
- Yaron Avizrat <yaron.avizrat@intel.com>
-References: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
-Subject: Re: [PATCH 01/16] coccinelle: misc: secs_to_jiffies: Patch
- expressions too
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:MEBO0GsSQ1SMY/zsPX1U6svBkJN6BjoZlGAGaEjdoAIc7rC0MTJ
- jMCDSnzW+JUiBx0jWaw4axa0ASi7RKu+znCfMa+5DA/GZz89brkDkAWXkPNY1Ii+WKoCg2M
- 6p6JIXEbQugmQdBp3V5wVA0hm/aJde6kKUDnCeJpidqtVh0kGmNtl+sNaqnuL+ZhzFG6g5Z
- yt9wjcSDL8KRKPEOFFBUw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:PCsLlrQ8lfw=;SoOTgoPi1u3ddphFfFnJ4K80Ey1
- LhQV5NN3S1upZ+kQWRf5X13xSqfZszqJAWQG1OpVuCmo6tpVtGTWgh7ad8U9WwKa6cxbghVrt
- NekQpjR/Dsev5s67AnEX8ThdDcbbfKvRw5T8fgaGslTYv3XceDxH2g+ZINh1g5Zl1a5Kb7tUy
- iHsXRJsmGMh72moAwMl2T0JX0Ldu9mm36L7zjNeIOX0Xh1EcbDwPTnBvWT5Jmf/TZjjTD915z
- wkMwvyKEhqv+ILIT2NmQNRENiOP1N2A5cNBwL7S6RvzS4B2b6TETCM6HSXEgzk4eBq/cjFYJ7
- Ta/beBAeX/x1vlhieJ7zCgVJ/DjpXSnLIakxsKLFsTqznw+ifPF4fJli2HnMVo9sGRnRMWTrl
- qkRACaZwBVl2ReKWA6Ylw6VqlTKMT2hF2oCiSA6SNHSwnqWCdtkKT3MwrASEpsgRd1t3m2qrg
- dzBxkwY3Iqvyla51ZhZ4KeRRsMYftkVOD06V/LWAUsGh3adVyfNfo1rFkiXbs8oaQXw9Ja6tZ
- RzPDki+nrGeKxCzQaenUyiA48SLrGJ61YEiLCyUiil3FCYQCPBx6oGNf2hTXlPwkPSrMnvfyk
- yvQjlFy7DS+9l6YMcPoT4oJhRV5HGFbKwznZ3oL4+T60BN/ekmSzbtefb+GOhIG+4+ywk54uP
- mTXT8J21gH5qaPIaPiannqZ/nmjWeakTcPkk/rVwdP3tmwDxSgnRKkzPj2UadACH+VKlM8JrQ
- lfxiv25g7Br2uvZqXG/3Mkq5j8BPnzef0ZEvV00FZ4lN2l35qROKiS4KNw+Oa2MExwmkZF8N0
- Me4UosI1FbMOonU2tpnvT5R9FbJv2h1tIMF/XYUdA7G6V3mY01f2O3g0W60Gd1Z/onfWiWTsC
- vsuTuJ7TZfE6AwrUs1WQ/Wi8E1So2MZdkmeUagRZY0DoLytG1bmL84SvJIdb8h4sdAVK3EONn
- 3chVYtWWI+cM+cz3Whj1giWzBTzyQOpKjx+HZcaRA80KQWJ5iUExiJkz11n/ptAWXabZtwVr1
- IIfHoUKeT2WT8pACVlj4x3gvqIClbPKbcGWhs4epE3uD2mR9gqFM8fCUfkHNngYTCZq6z5Did
- d50IILddgQEvH7rjWs9K2n3wFTct4+ajCi45dnopg2wTz/Oma2Lt3tO8Qenl6l70EogpyLyCN
- iMoxPpi5Wclpw/Kc+5YCXrWUIzzUatEenh+mkeiB0/g==
+References: <20250122122459.1148668-1-maharmstone@fb.com> <CAL3q7H4tB3Cb-djYhh_bGB-BRJ7EahjUZec2qfbhH7QHP2iSUw@mail.gmail.com>
+ <CAPjX3Fd+-510YrvpxR1GcK2F+XKDVknxes2sj=Eat1Un1zvEkQ@mail.gmail.com>
+ <20250123215955.GN5777@twin.jikos.cz> <CAPjX3Ffb2sz9aiWoyx73Bp7cFSDu3+d5WM-9PWW9UBRaHp0yzg@mail.gmail.com>
+ <CAL3q7H7+UZcXPefg-_8R=eZj42P2UkV2=yE1dSv8BQZagEOhyQ@mail.gmail.com>
+ <962f5499-d730-4e30-8956-7cac25a6b119@meta.com> <20250127201717.GT5777@twin.jikos.cz>
+ <20250129225822.GA216421@zen.localdomain>
+In-Reply-To: <20250129225822.GA216421@zen.localdomain>
+From: Daniel Vacek <neelx@suse.com>
+Date: Thu, 30 Jan 2025 12:34:59 +0100
+X-Gm-Features: AWEUYZmyVquTGjiCagfNgWfkkNfgGXEMCZGRfTR6WHf16TQq7QasqFpviM1GpeQ
+Message-ID: <CAPjX3FfG9fpYWn-A8DROS9Kk3RTRj2RU+MP00gg7dCk=TF36Og@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: use atomic64_t for free_objectid
+To: Boris Burkov <boris@bur.io>
+Cc: David Sterba <dsterba@suse.cz>, Mark Harmstone <maharmstone@meta.com>, 
+	Filipe Manana <fdmanana@kernel.org>, 
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-> Teach the script to suggest conversions for timeout patterns where the
-> arguments to msecs_to_jiffies() are expressions as well.
+On Wed, 29 Jan 2025 at 23:57, Boris Burkov <boris@bur.io> wrote:
+>
+> On Mon, Jan 27, 2025 at 09:17:17PM +0100, David Sterba wrote:
+> > On Mon, Jan 27, 2025 at 05:42:28PM +0000, Mark Harmstone wrote:
+> > > On 24/1/25 12:25, Filipe Manana wrote:
+> > > >>
+> > > >> It will only retry precisely when more concurrent requests race here.
+> > > >> And thanks to cmpxchg only one of them wins and increments. The others
+> > > >> retry in another iteration of the loop.
+> > > >>
+> > > >> I think this way no lock is needed and the previous behavior is preserved.
+> > > >
+> > > > That looks fine to me. But under heavy concurrency, there's the
+> > > > potential to loop too much, so I would at least add a cond_resched()
+> > > > call before doing the goto.
+> > > > With the mutex there's the advantage of not looping and wasting CPU if
+> > > > such high concurrency happens, tasks will be blocked and yield the cpu
+> > > > for other tasks.
+> > >
+> > > And then we have the problem of the function potentially sleeping, which
+> > > was one of the things I'm trying to avoid.
+> > >
+> > > I still think an atomic is the correct choice here:
+> > >
+> > > * Skipped integers aren't a problem, as there's no reliance on the
+> > > numbers being contiguous.
+> > > * The overflow check is wasted cycles, and should never have been there
+> > > in the first place.
+> >
+> > We do many checks that almost never happen but declare the range of the
+> > expected values and can catch eventual bugs caused by the "impossible"
+> > reasons like memory bitflips or consequences of other errors that only
+> > show up due to such checks. I would not cosider one condition wasted
+> > cycles in this case, unless we really are optimizing a hot path and
+> > counting the cycles.
+> >
+>
+> Could you explain a bit more what you view the philosophy on "impossible"
+> inputs to be? In this case, we are *not* safe from full on memory
+> corruption, as some other thread might doodle on our free_objectid after
+> we do the check. It helps with a bad write for inode metadata, but in
+> that case, we still have the following on our side:
+>
+> 1. we have multiple redundant inode items, so fsck/tree checker can
+> notice an inconsistency when we see an item with a random massive
+> objectid out of order. I haven't re-read it to see if it does, but it
+> seems easy enough to implement if not.
+>
+> 2. a single bit flip, even of the MSB, still doesn't put us THAT close
+> to the end of the range and Mark's argument about 2^64 being a big
+> number still presents a reasonable, if not bulletproof, defense.
+>
+> I generally support correctness trumping performance, but suppose the
+> existing code was the atomic and we got a patch to do the inc under a
+> mutex, justified by the possible bug. Would we be excited by that patch,
+> or would we say it's not a real bug?
+>
+> I was thinking some more about it, and was wondering if we could get
+> away with setting the max objectid to something smaller than -256 s.t.
+> we felt safe with some trivial algorithm like "atomic_inc with dec on
+> failure", which would obviously not fly with a buffer of only 256.
 
-Does anything hinder to benefit any more from a source code analysis approach
-(like the following by the extended means of the semantic patch language)?
+You mean at least NR_CPUS, right? That would imply wrapping into
+`preempt_disable()` section.
+But yeah, that could be another possible solution here.
+The pros would be a single pass (no loop) and hence no
+`cond_resched()` needed even.
+For the cons, there are multiple `root->free_objectid <=
+BTRFS_LAST_FREE_OBJECTID` asserts and other uses of the const macro
+which would need to be reviewed and considered.
 
+> Another option is aborting the fs when we get an obviously impossibly
+> large inode. In that case, the disaster scenario of overflowing into a
+> dupe is averted, and it will never happen except in the case of
+> corruption, so it's not a worse UX than ENOSPC. Presumably, we can ensure
+> that we can't commit the transaction once a thread hits this error, so
+> no one should be able to write an item with an overflowed inode number.
+>
+> Those slightly rambly ideas aside, I also support Daniel's solution. I
+> would worry about doing it without cond_resched as we don't really know
+> how much we currently rely on the queueing behavior of mutex.
 
-// SPDX-License-Identifier: GPL-2.0
-/// Simplify statements by using a known wrapper macro.
-/// Replace selected msecs_to_jiffies() calls by secs_to_jiffies().
-//
-// Keywords: wrapper macro conversion secs seconds jiffies
-// Confidence: High
-// Options: --no-includes --include-headers
+Let me emphasize once again, I still have this feeling that if this
+mutex was contended, we would notoriously know about it as being a
+major throughput bottleneck. Whereby 'we' I mean you guys as I don't
+have much experience with regards to this one yet.
 
-virtual context, patch, report, org
+But then again, if this mutex is rather a protection against unlikely
+races than against likely expected contention, then the overhead
+should already be minimal anyways in most cases and Mark's patch would
+make little to no difference really. More like just covering the
+unlikely edge cases (which could still be a good thing).
+So I'm wondering, is there actually any performance gain with Mark's
+patch to begin with? Or is the aim to cover and address the edge cases
+where CPUs (or rather tasks) may be racing and one/some are forced to
+sleep?
+The commit message tries to sell the non-blocking mode for new
+inodes/subvol's. That sounds fair as it is, but again, little
+experience from my side here.
 
-@depends on context@
-expression e;
-@@
-*msecs_to_jiffies
- (
-(e * 1000
-|e * MSEC_PER_SEC
-)
- )
+> > > Even if we were to grab a new integer a billion
+> > > times a second, it would take 584 years to wrap around.
+> >
+> > Good to know, but I would not use that as an argument.  This may hold if
+> > you predict based on contemporary hardware. New technologies can bring
+> > an order of magnitude improvement, eg. like NVMe brought compared to SSD
+> > technology.
+>
+> I eagerly look forward to my 40GHz processor :)
 
-@depends on patch@
-expression e;
-@@
--msecs_to_jiffies
-+secs_to_jiffies
- (
-(
--e * 1000
-|
--e * MSEC_PER_SEC
-)
-+e
- )
+You never know about unexpected break-throughs. So fingers crossed.
+Though I'd be surprised.
 
-@x depends on org || report@
-expression e;
-position p;
-@@
- msecs_to_jiffies@p
- (
-(e * 1000
-|e * MSEC_PER_SEC
-)
- )
-
-@script:python depends on org@
-p << x.p;
-@@
-coccilib.org.print_todo(p[0], "WARNING: opportunity for secs_to_jiffies()")
-
-@script:python depends on report@
-p << x.p;
-@@
-coccilib.report.print_report(p[0], "WARNING: opportunity for secs_to_jiffies()")
-
-
-Regards,
-Markus
+But maybe a question for (not just) Dave:
+Can you imagine (or do you know already) any workload which would rely
+on creating FS objects as lightning-fast as possible?
+The size of the storage would have to be enormous to hold that many
+files so that the BTRFS_LAST_FREE_OBJECTID limit could be reached or
+the files would have to be ephemeral (but in that case tmpfs sounds
+like a better fit anyways).
 
