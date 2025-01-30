@@ -1,185 +1,155 @@
-Return-Path: <linux-btrfs+bounces-11186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EDC1A2355D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 21:50:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7ED7A2356A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 21:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A3033A639F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 20:50:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E15C7A0F7B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 20:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1832D1B3943;
-	Thu, 30 Jan 2025 20:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E1F1EF09C;
+	Thu, 30 Jan 2025 20:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="12ItyyZ/"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Z/QgEHRY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F121196DB1
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 20:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC661AF0C3
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 20:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738270218; cv=none; b=YlQaSde357tlFfp1YOAh2Quv2DZMY4FWGgADo58jF1hNdSqDMYXLGK2n5TRRXAtjITA1X6L7ykcpEsVeNfPkZYdrp9gDMH7QiPxxe7ZONxe93WySyOZlwkBeKZRzia6gWbmPL9d12kSS8ymHpUbcUEmiDlMDbbxiqOsqgjst3XE=
+	t=1738270520; cv=none; b=fyCW+raUWPXZd5TAmSYVTuGWRI+7E9J4drBX5o6iemlgGMKD/aDKFV0nN1vx2pn3W6O2Mog6XzyL+nLUZB+XdklNq6L31JRvsuqLzrElEgcJ79N3R3N1AkKP4Lsa3ZajxTaOF+sW5fr+dOd7J2mT7YJVGuvqO731eqM0DY72IdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738270218; c=relaxed/simple;
-	bh=2VY/ViKDRyU6YXw9y0djerweNLV8XCRrM+62Sknx4BY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QspPAJsty9sjE6Vflw0TK5k48QzO1AmL5mOSEdK4V+55BWPFVCiROrDEKOZBFPXlbVcjf0bqrin6roVeBUO1F7+jRCssFGW/KdWZxPdAznCxaEnS6cIsjF36MiQAPE6dluSptVs+49MzLxjggFdWOGtO93f9lISNyADjm78Hvfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=12ItyyZ/; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-218c8aca5f1so11126545ad.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 12:50:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1738270215; x=1738875015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MNrCGgEqijIM4yxxbVALPZNjpU5BZk2lZn82e6B/5BU=;
-        b=12ItyyZ/oYSea8Sju8WUpHuBtNUdBqNhw7Pz5PYQNXMd303ggBnWIReLMGSRCS+8rp
-         /q7A4JTTdNPzn/EBuLotD2IQ8ugNxM6X0sXm4W0u6aNje5C2BRVl80xTxrJAfTYqyYkA
-         i2cWgc/GkK7+VVL+vQ0oYG5ezvv45wFKyoFgaFX+JC0EieAqthzqFJW4wvL0sMgwTDKe
-         9vn2Xbg62AuX58nybw/gr/HmPmJcoKUVjOpKf6166RfVWGTy3MGZ4asaysNBe7RDLJ7Q
-         aBrYoDc8PCXBVExCbrkI72dtTY/YCldXnpnAHH74T2lsTnmer/cp2SnN8w3cF4lIPxUB
-         yUTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738270215; x=1738875015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MNrCGgEqijIM4yxxbVALPZNjpU5BZk2lZn82e6B/5BU=;
-        b=MtDOQicWm5Ca0wqv9ZC8VhUXMZCOSnPpQcFmfZecesupDZ+MGjmfPP2jckZwbFrv8t
-         pGuthF1jnnjcBuyLXWDscENBuDr951VEf2jUCarIXV8d1PQLsXSkAjZwP1dkQEhNIuyX
-         Ci3DMdUe+DxtRxxCqpA2T+A5mlClgVYkGYdjaROAcvYjoNBWc6Xio8EkMsQ9MO1bVQsI
-         U2PStW1plf21LdF2Kuh8lSz4Fc1XDOQqmTlHLbvRicFg4OHrg95l4UJ+RwBgvvw9BNn4
-         VZur+b4veQsuYNqURDC4++e2/hQMozz2ich7F14KYOw6B/zWLuNZPYJNq/GafgZkW4Lz
-         pqLw==
-X-Forwarded-Encrypted: i=1; AJvYcCVtphIEZL7yQBzizv+ikXT9DW43lC2BqlDrbbNZr0nADn99B0XC9p6wOJkbsCs7S6o9NAeT/C9bAVdiZQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6Q69wVZoFzGN1HH22T1ApSrzxnVDauAc88xxuP/RDBCVkdU+2
-	w0wuAWv9bKCtzrQBTzZqYFXxcJ6RpLVGjmSfALH4Yjjopgj1sa6BN3LRM6oLMtQ=
-X-Gm-Gg: ASbGncuS0DnFnrUS4X+BJ/oN2KIo4zJRUSNxBL5lW31zgDXmTMfvi3cTc/jJeHqfe79
-	QN5PnVn3bjzQHvOrNmvPLInUl4OcDtDf/7aM8TGVN1ZDIpP5pPetL8128d1GlpJtPkWdifmR8c7
-	aBcbw1IwmfdP/dguyxMslFHp7ko9mapXaelpD3FAlZ9IU4ExAPkdkz6f92NWcLeDDWocKlDQj3m
-	Z07oqhNCPWxk9KLZwryYAGT+I2SEHW8djQSWEmUTtn7YuxIJrKOarhuSP9dmsDZwJntB8rTHQP2
-	o+ChCMkjo5tto0riMx4oxrytUKy35rh7stEN3jpla/OZ3GXQRE5nhR5dV22nWHOoXxI=
-X-Google-Smtp-Source: AGHT+IHlfN1d22f6+db2vxdMJ7Z6v0jZYOuGsJSMpHBga2xHmYbZJRPruJUl67tofc6roF4x92wOjA==
-X-Received: by 2002:a17:902:c941:b0:216:25a2:2ebe with SMTP id d9443c01a7336-21dd7c65844mr123458885ad.19.1738270214822;
-        Thu, 30 Jan 2025 12:50:14 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de31ee1efsm18190795ad.28.2025.01.30.12.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 12:50:14 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tdbUJ-0000000CZ0f-3T99;
-	Fri, 31 Jan 2025 07:50:11 +1100
-Date: Fri, 31 Jan 2025 07:50:11 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] fstests: btrfs: testcase for sysfs policy syntax
- verification
-Message-ID: <Z5vmAzAEtzK_EuXO@dread.disaster.area>
-References: <cover.1738161075.git.anand.jain@oracle.com>
- <3aecf19197d07ff18ed1c0dda9e63fcaa49b69d1.1738161075.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1738270520; c=relaxed/simple;
+	bh=yCNNbRSSd10H6H+M/w+BUM61fa8e7VcSsh0AwJdXo8w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QxxkTxM+EqH3COTRkw68YLdVf5Tu6Drc3LT9vxtj4fbW6OVmEtTcy5udLBWQf3qQ8ApWUrzjQC57XArJf6+FFp1BBSn07bp3DNmvvjYzYVoo/gFqu1vWC1l45Pk5HsEwNypJ8gXxNaGtXfR/jx94uB0JKIc5PHKjj4OpwYuS4EM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Z/QgEHRY; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1738270514; x=1738875314; i=quwenruo.btrfs@gmx.com;
+	bh=yCNNbRSSd10H6H+M/w+BUM61fa8e7VcSsh0AwJdXo8w=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Z/QgEHRYjC5soQOVU5O/x2V+ZhJMm3v5eSPUYt2+WVoICckxLGZgHhO8GUI4DzDB
+	 ZFBE1qKTWLNWVgtP6QAQMO1T0wYRBgDZqQ+ua02bemmJLbwNbLeWPmrG4HgYDkYtQ
+	 m0PzJSCw9C+JkKcdwVauEhAHYM2I9c67FGNqK3Jg1R8WOBEkmfoeTa6egu/mGifYO
+	 xeUG9KMd3U8o9Yz/pxdW0jGLOWc7Z0zFxmKLefFBOYXSqkLd1z65f/Xuqli0ZRFEN
+	 M6MqFjm06SqebKQQjuZXLx0HgiIRIO8ShNg3Y3dmkWFVtt/OIXZiMSvwcnu6k90Of
+	 621ZtCsm9PCgWtEEbQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4axq-1te9GW18as-00F6S5; Thu, 30
+ Jan 2025 21:55:14 +0100
+Message-ID: <04248af3-125f-4914-86a0-834db4c7f4e6@gmx.com>
+Date: Fri, 31 Jan 2025 07:25:11 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3aecf19197d07ff18ed1c0dda9e63fcaa49b69d1.1738161075.git.anand.jain@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Bacik's recommendations on parallel FS modification?
+To: Han-Wen Nienhuys <hanwen@engflow.com>, linux-btrfs@vger.kernel.org
+References: <CAOjC7oMrMRy4jemm+910qwPHSTVM2evWSDi3xi9sh5+n=Qf4Qw@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <CAOjC7oMrMRy4jemm+910qwPHSTVM2evWSDi3xi9sh5+n=Qf4Qw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RqzjkNKSDWGcRRfzcWoOK5ccF0LZ+PKYfJYS99aJyM7LNzD5r1z
+ 8ys9NU1SyQzMN45qI8P2s+Pv6bGRt0m/Rccm0a2PNUEvyoA91JK6DT9l41s84YMj32+BgCF
+ o/cN/9/1BFfXRRB91cH5JkblSAQcFbh+w7A61c/Qr88yi4ahNAY2fGHM+5KfacROP6KknOs
+ 5BFzic1tU4TCJaP5nehvA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:H/wp3cIfAtA=;n0YWfjJGTEtgiv+NdyUHMVqvPAu
+ IwB8CTXYCFPEZFe31dsxNaaG33UakxpSe4L9kxT+o1BqZlblaQs0FDJynpZjG1lqN48uv0nn0
+ Es1tRK3KhhPPuOsLYigxxDr6Oi6fYxKzjt701ZvpykGaO9UT2VG181RBA9eiM8S2EuKEN3hrj
+ DVDORT+KPQtkoZOjETqIhRNOMFe5J6jApOLS2jncX4VqRYwCTKq4oImGj5zQ0Aqjpe2gd0aKc
+ 2cl5YZ+uSQpk9PcgLuAxo6BW3WpZ0i9YnwANKZA4HuFLtglF9mqRI9Wqdrs2SO3uq6BFFIB/7
+ QTdLZUzGFAZReg06J9QmcJA4282ru8MqCpzkEBLk87d3sYjGNabb2X6lnDxbqBCu7HaKYFO0X
+ hVkXZ5ckg2uBuALNDvKzhTheYxvEkGRFYaFYu69Dv4uDBOluXE1fi16gquoCNRRFTkntXbL1G
+ JpeisrYqSOPRiVRmoLkopeJPauaX3IYxnkGzvIBf3FCYNBv6f6tNzlE2aOnvwp/eDLIOyV/XE
+ 3MBmoMv6fSijnC11MHNPUQfqe5vquoUAXCmZ2GPoWP0K9E83apzU2Wp0dyWPrn1NLAwjS+b1o
+ SEGRHMh37y8ia+2j7S/hbmftm9QVzQDjxlLEHU8+mCxJ0LnJ6pJYmdZ+drStnowSX+XMWbSKf
+ Hs41YGyy0dqL7H27rFEw+PEvl34JsQlYoTIbizcX6Fe3fB1ad+HIGDyH/RkhpvIPoQN2d7tWC
+ U1j0kNkBFIbrHwMejPkAGIDaz69PGI6SYsa82rM2RRCQraIraAOjW3c4bSdOwMPNo7TX9e4xu
+ 6zNOt+dHqKZrRDRZpIwFBTxsCP4IAbkCRhgpiVfgKFR/P2yZ4R0Cl+3Hk/YYZeO26/ZbcRXbk
+ YXhfGskZMPwMHUTNkVtTaPnyIEL7L5vkKmtFO00lvqEfRQeT4Bkh/BGfVc8UyotKHrD6Cq2dd
+ WNyQBxFi0h65NsInZlEdSFJ2IMUjTd1fxVzQA8dOVZsB+tjJvqxLdObESs+X8eyqtSRTITY1Z
+ j6mrU9xhzsvocraSQ98dufOkCxWzy0E8wGX4u1k5Ox5QNYYcbiaNh1GaGQyKfeeWkJbJJCIg1
+ 8w9mKMuFMhFlPjDSbFFIf7DAQ+BR8EHgm3mukEOGIS/dCctOvbuT8VIugGVTyD0g92D7NvNZA
+ LgwdwCLV71uvMIMaESMhtIJBtPBxRfjcJgBZziTAVtyR7zLEcX1eF2K/OlSOKOhMObk+yaUQ0
+ TYDK07Rl82i3TAvFAOwZMZ/xCyY4M93Wft23hK3PHo0H3xFeahzOf/HhyVbl+i0MoJWnHoGko
+ LSTorQwRyfP6/Ynbx4+9ncKqA==
 
-On Wed, Jan 29, 2025 at 11:19:54PM +0800, Anand Jain wrote:
-> Checks if the sysfs attribute sanitizes arguments and verifies
-> input syntax.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  tests/btrfs/329     | 92 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/329.out |  2 +
->  2 files changed, 94 insertions(+)
->  create mode 100755 tests/btrfs/329
->  create mode 100644 tests/btrfs/329.out
-> 
-> diff --git a/tests/btrfs/329 b/tests/btrfs/329
-> new file mode 100755
-> index 000000000000..9f63ab951eac
-> --- /dev/null
-> +++ b/tests/btrfs/329
-> @@ -0,0 +1,92 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 329
-> +#
-> +# Verify sysfs knob input syntax.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick
-> +
-> +. ./common/filter
-> +
-> +# Modify as appropriate.
-> +_require_scratch
-> +_require_fs_sysfs read_policy
-> +
-> +_scratch_mkfs > /dev/null 2>&1 || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +set_sysfs_policy()
-> +{
-> +	local attr=$1
-> +	shift
-> +	local policy=$@
-> +
-> +	_set_fs_sysfs_attr $SCRATCH_DEV $attr ${policy}
-> +	_get_fs_sysfs_attr $SCRATCH_DEV $attr | grep -q "[${policy}]"
-> +	if [[ $? != 0 ]]; then
-> +		echo "Setting sysfs $attr $policy failed"
-> +	fi
-> +}
-> +
-> +set_sysfs_policy_must_fail()
-> +{
-> +	local attr=$1
-> +	shift
-> +	local policy=$@
-> +
-> +	_set_fs_sysfs_attr $SCRATCH_DEV $attr ${policy} | _filter_sysfs_error \
-> +			| _expect_error_invalid_argument | tee -a $seqres.full
 
-This "catch an exact error or output a different error then use
-golden image match failure on secondary error to mark the test as
-failed" semantic is .... overly complex.
 
-The output on failure of _filter_sysfs_error will be "Invalid
-input". If there's some other failure or it succeeds, the output
-will indicate the failure that occurred (i.e. missing line means no
-error, different error will output directly by the filter). The
-golden image matching will still fail the test.
+=E5=9C=A8 2025/1/31 00:21, Han-Wen Nienhuys =E5=86=99=E9=81=93:
+> Hi there,
+>
+> at $DAYJOB, we are considering whether to use XFS or BTRFS for an
+> application that needs reflink functionality. I was reading up on
+> BTRFS, and came across this bit on Josef Bacik's blog,
+>
+> "For heavy applications that modify the file system in a
+> multi-threaded way we=E2=80=99ll often advise making subvolumes for the
+> directories that are being modified."
+>
+> (https://josefbacik.github.io/kernel/btrfs/extent-tree-v2/2021/11/10/btr=
+fs-global-roots.html)
+>
+> Is this advice still relevant, and is there any documentation that
+> explains best practices in more detail?
 
-IOWs, _expect_error_invalid_argument and the output to seqres.full
-can go away if the test.out file has a matching error for each
-call to set_sysfs_policy_must_fail(). i.e it looks like:
+Still true.
 
-QA output created by 329
-Invalid input
-Invalid input
-Invalid input
-Invalid input
-Invalid input
-Invalid input
-.....
-Invalid input
+A subvolume is can be considered as a separate fs, it has its own inode
+space.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thus different subvolumes do not need to race for the same tree blocks,
+and will have a much better concurrency.
+
+Thanks,
+Qu
+>
+> I looked over the docs at https://btrfs.readthedocs.io/ but couldn't
+> find anything of the sort.
+>
+> thanks!
+>
+
 
