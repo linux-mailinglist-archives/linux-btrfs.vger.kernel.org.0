@@ -1,155 +1,187 @@
-Return-Path: <linux-btrfs+bounces-11187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11188-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7ED7A2356A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 21:55:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ED8FA236D7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 22:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E15C7A0F7B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 20:54:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB5A11887210
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 21:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E1F1EF09C;
-	Thu, 30 Jan 2025 20:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8A81F37C1;
+	Thu, 30 Jan 2025 21:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Z/QgEHRY"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="a0pwewO4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC661AF0C3
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 20:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB45D1F1921
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 21:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738270520; cv=none; b=fyCW+raUWPXZd5TAmSYVTuGWRI+7E9J4drBX5o6iemlgGMKD/aDKFV0nN1vx2pn3W6O2Mog6XzyL+nLUZB+XdklNq6L31JRvsuqLzrElEgcJ79N3R3N1AkKP4Lsa3ZajxTaOF+sW5fr+dOd7J2mT7YJVGuvqO731eqM0DY72IdA=
+	t=1738272996; cv=none; b=Vk/MQ/Sp7c1C4BpTQLzAfGFLN6GU+JOK6Q26qAVwA/QEeH4ypBPqwHHTZQKp2KdkmeVTANVIkoE9KBunOj9Cp0QaUZwck+a5Rq5sgkrkP3kLxfCBm0+X+EcoiQWBoew8GITHZ9j9CzGuUy+mFA5w+a4opvqZ7zdvJ44g2hIA+hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738270520; c=relaxed/simple;
-	bh=yCNNbRSSd10H6H+M/w+BUM61fa8e7VcSsh0AwJdXo8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=QxxkTxM+EqH3COTRkw68YLdVf5Tu6Drc3LT9vxtj4fbW6OVmEtTcy5udLBWQf3qQ8ApWUrzjQC57XArJf6+FFp1BBSn07bp3DNmvvjYzYVoo/gFqu1vWC1l45Pk5HsEwNypJ8gXxNaGtXfR/jx94uB0JKIc5PHKjj4OpwYuS4EM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Z/QgEHRY; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1738270514; x=1738875314; i=quwenruo.btrfs@gmx.com;
-	bh=yCNNbRSSd10H6H+M/w+BUM61fa8e7VcSsh0AwJdXo8w=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Z/QgEHRYjC5soQOVU5O/x2V+ZhJMm3v5eSPUYt2+WVoICckxLGZgHhO8GUI4DzDB
-	 ZFBE1qKTWLNWVgtP6QAQMO1T0wYRBgDZqQ+ua02bemmJLbwNbLeWPmrG4HgYDkYtQ
-	 m0PzJSCw9C+JkKcdwVauEhAHYM2I9c67FGNqK3Jg1R8WOBEkmfoeTa6egu/mGifYO
-	 xeUG9KMd3U8o9Yz/pxdW0jGLOWc7Z0zFxmKLefFBOYXSqkLd1z65f/Xuqli0ZRFEN
-	 M6MqFjm06SqebKQQjuZXLx0HgiIRIO8ShNg3Y3dmkWFVtt/OIXZiMSvwcnu6k90Of
-	 621ZtCsm9PCgWtEEbQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4axq-1te9GW18as-00F6S5; Thu, 30
- Jan 2025 21:55:14 +0100
-Message-ID: <04248af3-125f-4914-86a0-834db4c7f4e6@gmx.com>
-Date: Fri, 31 Jan 2025 07:25:11 +1030
+	s=arc-20240116; t=1738272996; c=relaxed/simple;
+	bh=3ZdxPvAfcmQNlIJmdWCIqX/gQrdKdUCtNB+7Kj0py+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QVc8P+X7KWn7SRrGo2Tx9k3G8SLLEr1viCnXXmsItP1indqXiKE+amwfvhDii2LBk6Tel8jtu0OHH4rec0Tvua5UeHExxr33KqdOsSKcFfBiyduTqixw+JiUPSMYHeeHJyovqnkym77Zlxgdnd341ipkqb6Hnp1FB2tTY3Boxt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=a0pwewO4; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2164b1f05caso23386285ad.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 13:36:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1738272994; x=1738877794; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s9ijuiEZzKjbqvpEPNvRB635Y5i4hqTbnqe3HTPqnhM=;
+        b=a0pwewO442LqYNdI0M0/AHEK+rM+WRAV5DM9N8vGOdL8A/whDNHeJP9h05BvnnXpw/
+         TUVG0B2mrVxtyHgNujs6JM6QngBXsRjAFkCd/4w44HRjZS/Io7MPPvJJBLZzFVrVxFWc
+         Q9Xx1V37rmqjImPzshcE5JMfdfUexRSCpw6GHG1lEEZojLBZyKG4YXvdEieKCpEeTfz+
+         ZNJ4wyuW27brg5aUeFdcwbEBQu6ePm4SjPoMq4GxiwqWpliCnPwSnxk3r3/4cfYYR5jX
+         +TSYuxNHHn0XdKbuGMHB44ZZx2IIj/Gg/5BRATzrAC6APNzHWXJwu6tv2ap/QRtM3UY9
+         tcpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738272994; x=1738877794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s9ijuiEZzKjbqvpEPNvRB635Y5i4hqTbnqe3HTPqnhM=;
+        b=vYfNrr3VrG6p3DlUIOXN91TJzhjyGG3xXYmDFAYpRavPxl/uEhUb6CXv2k7uw0GuM1
+         1UNX7fOTflvcpbivaXEfqyzrWYRB2uNVCS7nN/Q7NNi0BsT/RItEr5JJeEpWagf/752M
+         5aGHLlqS14DSxAhT+nOPiUl15uvjjSsINxLQf9ck2Rq500fT2id9tWWU9oep89C3PAHD
+         POkJp+EQAaE0/5Di9892mYi8Xw+z8SZ1Xd2aa1j4Za4Z+9OVKoVTpYGn578zMPQYQrSX
+         YNJmq41I1a+tu7qQKUbLzY7pEBSoLgdQ4Gi+8UC08smMKSNMu5r9L/5US+28ThSfdQJ5
+         GOCw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0L7If39d1geHVI/N/YjsNPML21YE4nu6wxizLYUq3uEc58m8VJ1NGDqvvskchlTtpbLVcL/M+SChLVA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+q4Pvvihmko8b+CgPyB0txDW+GhghEhqv2oSrbgSP8bJSfyV9
+	9KIqYnf03eZ6lY/i61zLTSodXbYs2bauvczdsiO5Aa7YbbK/pzbaa0FBChya07o=
+X-Gm-Gg: ASbGncvX+EsajxoIvZqv+khpBErQoDffh/mu4cZIinlZchVif+8OJNRaRiyNVUt41ka
+	r4YuAlA1+jZEMsLm5MM/gtbvg1XYJyFwmMmvGSg/YhOH13yksP4cVq12XWx1rqAMPK1oAYHCD5x
+	CmWkvBWvkldW0SpClJFYj3z8LUHYAX1uOZsOfM4fTtXKUytINCqMyJDehrnKp0KmKoYdJj4PA6y
+	syI8kDIxeM+Y2ZJh3/DuNwn5LzEqa//eMEH7Er/hk9eX4Rv2DkKX2pc04v5aXE6sBwFAl3sksE3
+	LwjnvBKn3/QNW95wutyDt7UxwoCQmHMlC75Q7oUvzNjlVt2fN5r05hH3H/oMSZ9ZPsQ=
+X-Google-Smtp-Source: AGHT+IFi7KP/uFWpdWAegIG7HhkzsEsibzJqO2iNuwK1YAkhLz6wsiYT3eWBWRTxK1zOZlc8uBTEzg==
+X-Received: by 2002:a05:6a21:4598:b0:1e1:e2d8:fd1d with SMTP id adf61e73a8af0-1ed7a6b1784mr14087254637.33.1738272994219;
+        Thu, 30 Jan 2025 13:36:34 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe6a1cbc8sm1991253b3a.177.2025.01.30.13.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 13:36:33 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1tdcD8-0000000CZwg-00Ha;
+	Fri, 31 Jan 2025 08:36:30 +1100
+Date: Fri, 31 Jan 2025 08:36:29 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Ted Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+	almaz.alexandrovich@paragon-software.com, ntfs3@lists.linux.dev,
+	miklos@szeredi.hu, linux-bcachefs@vger.kernel.org, clm@fb.com,
+	josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	dhowells@redhat.com, jlayton@kernel.org, netfs@lists.linux.dev
+Subject: Re: [PATCH 0/7] Move prefaulting into write slow paths
+Message-ID: <Z5vw3SBNkD-CTuVE@dread.disaster.area>
+References: <20250129181749.C229F6F3@davehans-spike.ostc.intel.com>
+ <qpeao3ezywdn5ojpcvchaza7gd6qeb57kvvgbxt2j4qsk4qoey@vrf4oy2icixd>
+ <f35aa9a2-edac-4ada-b10b-8a560460d358@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Bacik's recommendations on parallel FS modification?
-To: Han-Wen Nienhuys <hanwen@engflow.com>, linux-btrfs@vger.kernel.org
-References: <CAOjC7oMrMRy4jemm+910qwPHSTVM2evWSDi3xi9sh5+n=Qf4Qw@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAOjC7oMrMRy4jemm+910qwPHSTVM2evWSDi3xi9sh5+n=Qf4Qw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RqzjkNKSDWGcRRfzcWoOK5ccF0LZ+PKYfJYS99aJyM7LNzD5r1z
- 8ys9NU1SyQzMN45qI8P2s+Pv6bGRt0m/Rccm0a2PNUEvyoA91JK6DT9l41s84YMj32+BgCF
- o/cN/9/1BFfXRRB91cH5JkblSAQcFbh+w7A61c/Qr88yi4ahNAY2fGHM+5KfacROP6KknOs
- 5BFzic1tU4TCJaP5nehvA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:H/wp3cIfAtA=;n0YWfjJGTEtgiv+NdyUHMVqvPAu
- IwB8CTXYCFPEZFe31dsxNaaG33UakxpSe4L9kxT+o1BqZlblaQs0FDJynpZjG1lqN48uv0nn0
- Es1tRK3KhhPPuOsLYigxxDr6Oi6fYxKzjt701ZvpykGaO9UT2VG181RBA9eiM8S2EuKEN3hrj
- DVDORT+KPQtkoZOjETqIhRNOMFe5J6jApOLS2jncX4VqRYwCTKq4oImGj5zQ0Aqjpe2gd0aKc
- 2cl5YZ+uSQpk9PcgLuAxo6BW3WpZ0i9YnwANKZA4HuFLtglF9mqRI9Wqdrs2SO3uq6BFFIB/7
- QTdLZUzGFAZReg06J9QmcJA4282ru8MqCpzkEBLk87d3sYjGNabb2X6lnDxbqBCu7HaKYFO0X
- hVkXZ5ckg2uBuALNDvKzhTheYxvEkGRFYaFYu69Dv4uDBOluXE1fi16gquoCNRRFTkntXbL1G
- JpeisrYqSOPRiVRmoLkopeJPauaX3IYxnkGzvIBf3FCYNBv6f6tNzlE2aOnvwp/eDLIOyV/XE
- 3MBmoMv6fSijnC11MHNPUQfqe5vquoUAXCmZ2GPoWP0K9E83apzU2Wp0dyWPrn1NLAwjS+b1o
- SEGRHMh37y8ia+2j7S/hbmftm9QVzQDjxlLEHU8+mCxJ0LnJ6pJYmdZ+drStnowSX+XMWbSKf
- Hs41YGyy0dqL7H27rFEw+PEvl34JsQlYoTIbizcX6Fe3fB1ad+HIGDyH/RkhpvIPoQN2d7tWC
- U1j0kNkBFIbrHwMejPkAGIDaz69PGI6SYsa82rM2RRCQraIraAOjW3c4bSdOwMPNo7TX9e4xu
- 6zNOt+dHqKZrRDRZpIwFBTxsCP4IAbkCRhgpiVfgKFR/P2yZ4R0Cl+3Hk/YYZeO26/ZbcRXbk
- YXhfGskZMPwMHUTNkVtTaPnyIEL7L5vkKmtFO00lvqEfRQeT4Bkh/BGfVc8UyotKHrD6Cq2dd
- WNyQBxFi0h65NsInZlEdSFJ2IMUjTd1fxVzQA8dOVZsB+tjJvqxLdObESs+X8eyqtSRTITY1Z
- j6mrU9xhzsvocraSQ98dufOkCxWzy0E8wGX4u1k5Ox5QNYYcbiaNh1GaGQyKfeeWkJbJJCIg1
- 8w9mKMuFMhFlPjDSbFFIf7DAQ+BR8EHgm3mukEOGIS/dCctOvbuT8VIugGVTyD0g92D7NvNZA
- LgwdwCLV71uvMIMaESMhtIJBtPBxRfjcJgBZziTAVtyR7zLEcX1eF2K/OlSOKOhMObk+yaUQ0
- TYDK07Rl82i3TAvFAOwZMZ/xCyY4M93Wft23hK3PHo0H3xFeahzOf/HhyVbl+i0MoJWnHoGko
- LSTorQwRyfP6/Ynbx4+9ncKqA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f35aa9a2-edac-4ada-b10b-8a560460d358@intel.com>
 
+On Thu, Jan 30, 2025 at 08:04:49AM -0800, Dave Hansen wrote:
+> On 1/29/25 23:44, Kent Overstreet wrote:
+> > On Wed, Jan 29, 2025 at 10:17:49AM -0800, Dave Hansen wrote:
+> >> tl;dr: The VFS and several filesystems have some suspect prefaulting
+> >> code. It is unnecessarily slow for the common case where a write's
+> >> source buffer is resident and does not need to be faulted in.
+> >>
+> >> Move these "prefaulting" operations to slow paths where they ensure
+> >> forward progress but they do not slow down the fast paths. This
+> >> optimizes the fast path to touch userspace once instead of twice.
+> >>
+> >> Also update somewhat dubious comments about the need for prefaulting.
+> >>
+> >> This has been very lightly tested. I have not tested any of the fs/
+> >> code explicitly.
+> > 
+> > Q: what is preventing us from posting code to the list that's been
+> > properly tested?
+> > 
+> > I just got another bcachefs patch series that blew up immediately when I
+> > threw it at my CI.
+> > 
+> > This is getting _utterly ridiculous_.
 
+That's a bit of an over-reaction, Kent.
 
-=E5=9C=A8 2025/1/31 00:21, Han-Wen Nienhuys =E5=86=99=E9=81=93:
-> Hi there,
->
-> at $DAYJOB, we are considering whether to use XFS or BTRFS for an
-> application that needs reflink functionality. I was reading up on
-> BTRFS, and came across this bit on Josef Bacik's blog,
->
-> "For heavy applications that modify the file system in a
-> multi-threaded way we=E2=80=99ll often advise making subvolumes for the
-> directories that are being modified."
->
-> (https://josefbacik.github.io/kernel/btrfs/extent-tree-v2/2021/11/10/btr=
-fs-global-roots.html)
->
-> Is this advice still relevant, and is there any documentation that
-> explains best practices in more detail?
+IMO, the developers and/or maintainers of each filesystem have some
+responsibility to test changes like this themselves as part of their
+review process.
 
-Still true.
+That's what you have just done, Kent. Good work!
 
-A subvolume is can be considered as a separate fs, it has its own inode
-space.
+However, it is not OK to rant about how the proposed change failed
+because it was not exhaustively tested on every filesytem before it
+was posted.
 
-Thus different subvolumes do not need to race for the same tree blocks,
-and will have a much better concurrency.
+I agree with Dave - it is difficult for someone to test widepsread
+changes in code outside their specific expertise. In many cases, the
+test infrastructure just doesn't exist or, if it does, requires
+specialised knowledge and tools to run.
 
-Thanks,
-Qu
->
-> I looked over the docs at https://btrfs.readthedocs.io/ but couldn't
-> find anything of the sort.
->
-> thanks!
->
+In such cases, we have to acknowledge that best effort testing is
+about as good as we can do without overly burdening the author of
+such a change. In these cases, it is best left to the maintainer of
+that subsystem to exhaustively test the change to their
+subsystem....
 
+Indeed, this is the whole point of extensive post-merge integration
+testing (e.g. the testing that gets run on linux-next -every day-).
+It reduces the burden on individuals proposing changes created by
+requiring exhaustive testing before review by amortising the cost of
+that exhaustive testing over many peer reviewed changes....
+
+> In this case, I started with a single patch for generic code that I knew
+> I could test. In fact, I even had the 9-year-old binary sitting on my
+> test box.
+> 
+> Dave Chinner suggested that I take the generic pattern go look a _bit_
+> more widely in the tree for a similar pattern. That search paid off, I
+> think. But I ended up touching corners of the tree I don't know well and
+> don't have test cases for.
+
+Many thanks for doing the search, identifying all the places
+where this pattern existed and trying to address them, Dave. 
+
+> For bcachefs specifically, how should we move forward? If you're happy
+> with the concept, would you prefer that I do some manual bcachefs
+> testing? Or leave a branch sitting there for a week and pray the robots
+> test it?
+
+The public automated test robots are horribly unreliable with their
+coverage of proposed changes. Hence my comment above about the
+subsystem maintainers bearing some responsibility to test the code
+as part of their review process....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
