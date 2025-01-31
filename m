@@ -1,97 +1,59 @@
-Return-Path: <linux-btrfs+bounces-11188-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11189-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED8FA236D7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 22:37:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CDCDA2385F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2025 01:57:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB5A11887210
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2025 21:37:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 838A518880DC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2025 00:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8A81F37C1;
-	Thu, 30 Jan 2025 21:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F00F25761;
+	Fri, 31 Jan 2025 00:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="a0pwewO4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J7bvUW8n"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB45D1F1921
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 21:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FDC1BF24
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2025 00:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738272996; cv=none; b=Vk/MQ/Sp7c1C4BpTQLzAfGFLN6GU+JOK6Q26qAVwA/QEeH4ypBPqwHHTZQKp2KdkmeVTANVIkoE9KBunOj9Cp0QaUZwck+a5Rq5sgkrkP3kLxfCBm0+X+EcoiQWBoew8GITHZ9j9CzGuUy+mFA5w+a4opvqZ7zdvJ44g2hIA+hU=
+	t=1738285006; cv=none; b=DjWiUQwtLDiMPuhcuSoGXRNuOwCjscyguMqJ26r7bgn43tJz7mhUehQgPKNPe+QrsUQxfWLiSLQDz/aeexlyfrcntJ4F+fuy1W9gkAYoeD36IDQB5bw/Ni4irdDnAClGPD2bhjSMrl/klHawIF9jdtZts+FEwOet+zSaYgH1eoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738272996; c=relaxed/simple;
-	bh=3ZdxPvAfcmQNlIJmdWCIqX/gQrdKdUCtNB+7Kj0py+c=;
+	s=arc-20240116; t=1738285006; c=relaxed/simple;
+	bh=DmlkNGIwBq2BHFfe9dTN8ulaWDFYJ9ajgeQxzc4gLcI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QVc8P+X7KWn7SRrGo2Tx9k3G8SLLEr1viCnXXmsItP1indqXiKE+amwfvhDii2LBk6Tel8jtu0OHH4rec0Tvua5UeHExxr33KqdOsSKcFfBiyduTqixw+JiUPSMYHeeHJyovqnkym77Zlxgdnd341ipkqb6Hnp1FB2tTY3Boxt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=a0pwewO4; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2164b1f05caso23386285ad.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2025 13:36:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1738272994; x=1738877794; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9ijuiEZzKjbqvpEPNvRB635Y5i4hqTbnqe3HTPqnhM=;
-        b=a0pwewO442LqYNdI0M0/AHEK+rM+WRAV5DM9N8vGOdL8A/whDNHeJP9h05BvnnXpw/
-         TUVG0B2mrVxtyHgNujs6JM6QngBXsRjAFkCd/4w44HRjZS/Io7MPPvJJBLZzFVrVxFWc
-         Q9Xx1V37rmqjImPzshcE5JMfdfUexRSCpw6GHG1lEEZojLBZyKG4YXvdEieKCpEeTfz+
-         ZNJ4wyuW27brg5aUeFdcwbEBQu6ePm4SjPoMq4GxiwqWpliCnPwSnxk3r3/4cfYYR5jX
-         +TSYuxNHHn0XdKbuGMHB44ZZx2IIj/Gg/5BRATzrAC6APNzHWXJwu6tv2ap/QRtM3UY9
-         tcpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738272994; x=1738877794;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s9ijuiEZzKjbqvpEPNvRB635Y5i4hqTbnqe3HTPqnhM=;
-        b=vYfNrr3VrG6p3DlUIOXN91TJzhjyGG3xXYmDFAYpRavPxl/uEhUb6CXv2k7uw0GuM1
-         1UNX7fOTflvcpbivaXEfqyzrWYRB2uNVCS7nN/Q7NNi0BsT/RItEr5JJeEpWagf/752M
-         5aGHLlqS14DSxAhT+nOPiUl15uvjjSsINxLQf9ck2Rq500fT2id9tWWU9oep89C3PAHD
-         POkJp+EQAaE0/5Di9892mYi8Xw+z8SZ1Xd2aa1j4Za4Z+9OVKoVTpYGn578zMPQYQrSX
-         YNJmq41I1a+tu7qQKUbLzY7pEBSoLgdQ4Gi+8UC08smMKSNMu5r9L/5US+28ThSfdQJ5
-         GOCw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0L7If39d1geHVI/N/YjsNPML21YE4nu6wxizLYUq3uEc58m8VJ1NGDqvvskchlTtpbLVcL/M+SChLVA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+q4Pvvihmko8b+CgPyB0txDW+GhghEhqv2oSrbgSP8bJSfyV9
-	9KIqYnf03eZ6lY/i61zLTSodXbYs2bauvczdsiO5Aa7YbbK/pzbaa0FBChya07o=
-X-Gm-Gg: ASbGncvX+EsajxoIvZqv+khpBErQoDffh/mu4cZIinlZchVif+8OJNRaRiyNVUt41ka
-	r4YuAlA1+jZEMsLm5MM/gtbvg1XYJyFwmMmvGSg/YhOH13yksP4cVq12XWx1rqAMPK1oAYHCD5x
-	CmWkvBWvkldW0SpClJFYj3z8LUHYAX1uOZsOfM4fTtXKUytINCqMyJDehrnKp0KmKoYdJj4PA6y
-	syI8kDIxeM+Y2ZJh3/DuNwn5LzEqa//eMEH7Er/hk9eX4Rv2DkKX2pc04v5aXE6sBwFAl3sksE3
-	LwjnvBKn3/QNW95wutyDt7UxwoCQmHMlC75Q7oUvzNjlVt2fN5r05hH3H/oMSZ9ZPsQ=
-X-Google-Smtp-Source: AGHT+IFi7KP/uFWpdWAegIG7HhkzsEsibzJqO2iNuwK1YAkhLz6wsiYT3eWBWRTxK1zOZlc8uBTEzg==
-X-Received: by 2002:a05:6a21:4598:b0:1e1:e2d8:fd1d with SMTP id adf61e73a8af0-1ed7a6b1784mr14087254637.33.1738272994219;
-        Thu, 30 Jan 2025 13:36:34 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe6a1cbc8sm1991253b3a.177.2025.01.30.13.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 13:36:33 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tdcD8-0000000CZwg-00Ha;
-	Fri, 31 Jan 2025 08:36:30 +1100
-Date: Fri, 31 Jan 2025 08:36:29 +1100
-From: Dave Chinner <david@fromorbit.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pDoeDX2UzUkEc/KNZQX+XD5FgU4FpwpZ3OINhPDVvK7MdWg5XJOwJDJTcUmeKDCKS1QFkSF7OVdF+k3XcYoA2P4vvRNjjoRgAtQsOMyTC/7+PLvwj/xnpUhcg8F08Ihd1Z8sXrn0GZLio3UnwUP4+/60CVnffx+TwV8oCiJfZRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J7bvUW8n; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 30 Jan 2025 19:56:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738284992;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=avPaJpVH7Pab5E/nLZyJe7cNB2w6WY4JGgMxsQQZoLo=;
+	b=J7bvUW8n2NgMEXZfxwPtNK23tPZ8+mIgYT4W3XuWAuPzEMMTvfECV0iGcuG4YXwhhthKs2
+	91dHafAdZJe4aUK/OlNIGFIJv1yRInCsiwlx4Jnepv0D1RIs5nXKJoYN7IDfKPCpQNzr9j
+	RLaQ35L+7VIjl210A9SG64wpAI7tdJ0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
 To: Dave Hansen <dave.hansen@intel.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Ted Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-	almaz.alexandrovich@paragon-software.com, ntfs3@lists.linux.dev,
-	miklos@szeredi.hu, linux-bcachefs@vger.kernel.org, clm@fb.com,
-	josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-	dhowells@redhat.com, jlayton@kernel.org, netfs@lists.linux.dev
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Ted Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, 
+	almaz.alexandrovich@paragon-software.com, ntfs3@lists.linux.dev, miklos@szeredi.hu, 
+	linux-bcachefs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	linux-btrfs@vger.kernel.org, dhowells@redhat.com, jlayton@kernel.org, netfs@lists.linux.dev
 Subject: Re: [PATCH 0/7] Move prefaulting into write slow paths
-Message-ID: <Z5vw3SBNkD-CTuVE@dread.disaster.area>
+Message-ID: <t7rjw6a462k5sm2tdviyd7sq6n44uxb3haai566m4hm7dvvlpi@btt3blanouck>
 References: <20250129181749.C229F6F3@davehans-spike.ostc.intel.com>
  <qpeao3ezywdn5ojpcvchaza7gd6qeb57kvvgbxt2j4qsk4qoey@vrf4oy2icixd>
  <f35aa9a2-edac-4ada-b10b-8a560460d358@intel.com>
@@ -104,6 +66,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <f35aa9a2-edac-4ada-b10b-8a560460d358@intel.com>
+X-Migadu-Flow: FLOW_OUT
 
 On Thu, Jan 30, 2025 at 08:04:49AM -0800, Dave Hansen wrote:
 > On 1/29/25 23:44, Kent Overstreet wrote:
@@ -128,36 +91,7 @@ On Thu, Jan 30, 2025 at 08:04:49AM -0800, Dave Hansen wrote:
 > > threw it at my CI.
 > > 
 > > This is getting _utterly ridiculous_.
-
-That's a bit of an over-reaction, Kent.
-
-IMO, the developers and/or maintainers of each filesystem have some
-responsibility to test changes like this themselves as part of their
-review process.
-
-That's what you have just done, Kent. Good work!
-
-However, it is not OK to rant about how the proposed change failed
-because it was not exhaustively tested on every filesytem before it
-was posted.
-
-I agree with Dave - it is difficult for someone to test widepsread
-changes in code outside their specific expertise. In many cases, the
-test infrastructure just doesn't exist or, if it does, requires
-specialised knowledge and tools to run.
-
-In such cases, we have to acknowledge that best effort testing is
-about as good as we can do without overly burdening the author of
-such a change. In these cases, it is best left to the maintainer of
-that subsystem to exhaustively test the change to their
-subsystem....
-
-Indeed, this is the whole point of extensive post-merge integration
-testing (e.g. the testing that gets run on linux-next -every day-).
-It reduces the burden on individuals proposing changes created by
-requiring exhaustive testing before review by amortising the cost of
-that exhaustive testing over many peer reviewed changes....
-
+> 
 > In this case, I started with a single patch for generic code that I knew
 > I could test. In fact, I even had the 9-year-old binary sitting on my
 > test box.
@@ -167,21 +101,119 @@ that exhaustive testing over many peer reviewed changes....
 > think. But I ended up touching corners of the tree I don't know well and
 > don't have test cases for.
 
-Many thanks for doing the search, identifying all the places
-where this pattern existed and trying to address them, Dave. 
+That's all well and good, but the testing thing is really coming to a
+head. I have enough on my plate without back-and-forth 
 
+> > I built multiuser test infrastructure with a nice dashboard that anyone
+> > can use, and the only response I've gotten from the old guard is Ted
+> > jumping in every time I talk about it to say "no, we just don't want to
+> > rewrite our stuff on _your_ stuff!". Real helpful, that.
+> 
+> Sounds pretty cool! Is this something that I could have and should have
+> used to test the bcachefs patch?  I see some trees in here:
+> 
+> 	https://evilpiepirate.org/~testdashboard/ci
+> 
+> But I'm not sure how to submit patches to it. Do you need to add users
+> manually? I wonder, though, how we could make it easier to find. I
+> didn't see anything Documentation/filesystems/bcachefs/ about this.
+
+Yes, I give out user accounts and that gives you a config file you can
+edit to specify branches to test and tests to run; it then automatically
+watches those branch(es).
+
+Here's the thing though, the servers cost real money. I give out
+accounts to community members (and people working on bcachefs are using
+it and it's working wel), but if you've got a big tech company email
+address you (or your managers) will have to be pitching in. Not
+subsidizing you guys :)
+
+> 
+> >>  1. Deadlock avoidance if the source and target are the same
+> >>     folios.
+> >>  2. To check the user address that copy_folio_from_iter_atomic()
+> >>     will touch because atomic user copies do not check the address.
+> >>  3. "Optimization"
+> >>
+> >> I'm not sure any of these are actually valid reasons.
+> >>
+> >> The "atomic" user copy functions disable page fault handling because
+> >> page faults are not very atomic. This makes them naturally resistant
+> >> to deadlocking in page fault handling. They take the page fault
+> >> itself but short-circuit any handling.
+> > 
+> > #1 is emphatically valid: the deadlock avoidance is in _both_ using
+> > _atomic when we have locks held, and doing the actual faulting with
+> > locks dropped... either alone would be a buggy incomplete solution.
+> 
+> I was (badly) attempting to separate out the two different problems:
+> 
+> 	1. Doing lock_page() twice, which I was mostly calling the
+> 	   "deadlock"
+> 	2. Retrying the copy_folio_from_iter_atomic() forever which I
+> 	   was calling the "livelock"
+> 
+> Disabling page faults fixes #1.
+> Doing faulting outside the locks somewhere fixes #2.
+> 
+> So when I was talking about "Deadlock avoidance" in the cover letter, I
+> was trying to focus on the double lock_page() problem.
+> 
+> > This needs to be reflected and fully described in the comments, since
+> > it's subtle and a lot of people don't fully grok what's going on.
+> 
+> Any suggestions for fully describing the situation? I tried to sprinkle
+> comments liberally but I'm also painfully aware that I'm not doing a
+> perfect job of talking about the fs code.
+
+The critical thing to cover is the fact that mmap means that page faults
+can recurse into arbitrary filesystem code, thus blowing a hole in all
+our carefully crafted lock ordering if we allow that while holding
+locks - you didn't mention that at all.
+
+> > I'm fairly certain we have ioctl code where this is mishandled and thus
+> > buggy, because it takes some fairly particular testing for lockdep to
+> > spot it.
+> 
+> Yeah, I wouldn't be surprised. It was having a little chuckle thinking
+> about how many engineers have discovered and fixed this problem
+> independently over the years in all the file system code in all the OSes.
+
+Oh, this is the easy one - mmap and dio is where it really gets into
+"stories we tell young engineers to keep them awake at night".
+
+> 
+> >> copy_folio_from_iter_atomic() also *does* have user address checking.
+> >> I get a little lost in the iov_iter code, but it does know when it's
+> >> dealing with userspace versus kernel addresses and does seem to know
+> >> when to do things like copy_from_user_iter() (which does access_ok())
+> >> versus memcpy_from_iter().[1]
+> >>
+> >> The "optimization" is for the case where 'source' is not faulted in.
+> >> It can avoid the cost of a "failed" page fault (it will fail to be
+> >> handled because of the atomic copy) and then needing to drop locks and
+> >> repeat the fault.
+> > 
+> > I do agree on moving it to the slowpath - I think we can expect the case
+> > where the process's immediate workingset is faulted out while it's
+> > running to be vanishingly small.
+> 
+> Great! I'm glad we're on the same page there.
+> 
 > For bcachefs specifically, how should we move forward? If you're happy
 > with the concept, would you prefer that I do some manual bcachefs
 > testing? Or leave a branch sitting there for a week and pray the robots
 > test it?
 
-The public automated test robots are horribly unreliable with their
-coverage of proposed changes. Hence my comment above about the
-subsystem maintainers bearing some responsibility to test the code
-as part of their review process....
+No to the sit and pray. If I see one more "testing? that's something
+other people do" conversation I'll blow another gasket.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+xfstests supports bcachefs, and if you need a really easy way to run it
+locally on all the various filesystems, I have a solution for that:
+
+https://evilpiepirate.org/git/ktest.git/
+
+If you want access to my CI that runs all that in parallel across 120
+VMs with the nice dashboard - shoot me an email and I'll outline server
+costs and we can work something out.
 
