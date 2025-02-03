@@ -1,161 +1,248 @@
-Return-Path: <linux-btrfs+bounces-11236-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11237-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E463A25809
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 12:24:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E78BA259A1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 13:42:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10D81660DD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 11:24:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C631D1887353
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 12:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1D4202F68;
-	Mon,  3 Feb 2025 11:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D47E204C26;
+	Mon,  3 Feb 2025 12:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NAjCFwx7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IwoVcn/E";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qz20zXWG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w9Dk0qYu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out198-152.us.a.mail.aliyun.com (out198-152.us.a.mail.aliyun.com [47.90.198.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD459202C2A
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 11:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.198.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9FCB288B1;
+	Mon,  3 Feb 2025 12:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738581842; cv=none; b=laYegQUY+tGFSTIYIOhB8rEyqWL9RTsHp0rEwpZDNu6titEd7kBJjw/3ISoitR8L2DxMmo03LMCi0QMOo5QCpe0hL6dd5t85X3llTfvh3PeKP5VKpvl3mWlgFWXQAgW08oxbbuNe0wo1FRKq0b/2PvOue+CDxnFwaBcX8w+3tTY=
+	t=1738586517; cv=none; b=YiOVriaTW5z0jTs1vuRt23R0vrA4PobD1QdfGgLHBmhuP2fAH3gKGaEAb01U4G8rizNUs4sxU+0FcFuyoBVS83ooMBDCBxEwp8yZJN3Fe0EQ9ki/+2ATn/dspAgWxlj4pfslHUbU2BgAsNr1uTPLZtu5segEnKQa1VtxrJ5IsBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738581842; c=relaxed/simple;
-	bh=bPOwkb4CVR/pYjUeCmRhESNZ24fDKmk24H69FU712e8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:Message-Id:
-	 MIME-Version:Content-Type; b=eTci670jYba3RDjjh3YXWPVO65y/o04EhBYddMF9yNwOfXi9Nqh+QkLhEQUyLuBQ0QOCwURch1CN8qfH7t/8LRqBl4pZaVjGqXypzq3mcJsz3skbsPe+fQ28w8QAXUP80nJNbtro1ToXGLay584qeiVJeGkmLGEV8nNduh2Ej6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=47.90.198.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.bFntz5h_1738578158 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Mon, 03 Feb 2025 18:22:38 +0800
-Date: Mon, 03 Feb 2025 18:22:39 +0800
-From: Wang Yugui <wangyugui@e16-tech.com>
-To: Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH] btrfs: always fallback to buffered IO if the inode requires checksum
-Cc: linux-btrfs@vger.kernel.org,
- "hch@infradead.org" <hch@infradead.org>
-In-Reply-To: <78091f2b21b9d45678ca54e5a7d117adb69c0deb.1738574832.git.wqu@suse.com>
-References: <78091f2b21b9d45678ca54e5a7d117adb69c0deb.1738574832.git.wqu@suse.com>
-Message-Id: <20250203182238.E5E7.409509F4@e16-tech.com>
+	s=arc-20240116; t=1738586517; c=relaxed/simple;
+	bh=V6Yamc+lCnqaifwCprEs2WCPVpEwMY6/zN8f4bDoo2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uCJleXs8db9e9x1FCirGDOB5kyURx1vb7KFSMnO3ycQoLAkWxi9GPZL2f62ZlgLQU5T3wzcajZB2RKspeYCDB3iupBCDYXwZAvG866PslAb7HtcXZInRFtlETDADx5upcamo+4rinIWyhyFy9gEs6NRVxJhTGX0C45foAS+WvtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NAjCFwx7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IwoVcn/E; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qz20zXWG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w9Dk0qYu; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8CE3D21164;
+	Mon,  3 Feb 2025 12:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738586509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LJWjAyc38HgmMq7RG5PMlvFu0+nk7azvrMUFHWZiO7E=;
+	b=NAjCFwx77MhrjumkrQSkgqr644JSzmfBTwNJz+HfFhQzApp/0kXZ7w+dyXIDXe5TqgoA3n
+	Ir+14AAQ0j09IfzBwbrUgzuv5/Qg0Vc/Fr36ttXNgyAU6MxOhdeBoO9oibmK5kxUPs2x5P
+	PilwBNXj+BVnKS2cX+2C31fWfNElH3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738586509;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LJWjAyc38HgmMq7RG5PMlvFu0+nk7azvrMUFHWZiO7E=;
+	b=IwoVcn/ENnXitQ/oz5HqHn7NhLsERCl+5oGrOyOSiwk7Zc43g66hTmRUE/ADIMSD9L3pSv
+	o6Zc7MM/ERGL7WBw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Qz20zXWG;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=w9Dk0qYu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738586505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LJWjAyc38HgmMq7RG5PMlvFu0+nk7azvrMUFHWZiO7E=;
+	b=Qz20zXWG/jrWaw6ARmvtRiISjA3T7XBikeog7A91unNXyPHqCR/+lUQ+Wgv74cm08ZjSH8
+	fFe2lTQWyj+AtDILBrIxUEHbJojee5UDowgSsKVC/7FXOwYqjNy7nER/HYzw5ZSk9Bnh/q
+	gtKupnjRIAwMdlDN0Won2MwMY+vvOfU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738586505;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LJWjAyc38HgmMq7RG5PMlvFu0+nk7azvrMUFHWZiO7E=;
+	b=w9Dk0qYuqnOaeeXtGnx9wC58jQXmqaDZ37q9PG1Qk0nZzLJJMQVptS1CzAOgndg1zOCywT
+	LHcIPAEppTyK2iDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A32F13795;
+	Mon,  3 Feb 2025 12:41:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VnvJHYm5oGclIAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 03 Feb 2025 12:41:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 211EBA28E5; Mon,  3 Feb 2025 13:41:45 +0100 (CET)
+Date: Mon, 3 Feb 2025 13:41:45 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Xu <peterx@redhat.com>, 
+	Alex Williamson <alex.williamson@redhat.com>, Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, 
+	linux-fsdevel@vger.kernel.org, jack@suse.cz, viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [REGRESSION] Re: [PATCH v8 15/19] mm: don't allow huge faults
+ for files with pre content watches
+Message-ID: <l5apiabdjosyy4gfuenr4oqdfio3zdiajzxoekdgtsohzpn3mj@dcmvayncbye4>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <9035b82cff08a3801cef3d06bbf2778b2e5a4dba.1731684329.git.josef@toxicpanda.com>
+ <20250131121703.1e4d00a7.alex.williamson@redhat.com>
+ <CAHk-=wjMPZ7htPTzxtF52-ZPShfFOQ4R-pHVxLO+pfOW5avC4Q@mail.gmail.com>
+ <Z512mt1hmX5Jg7iH@x1.local>
+ <20250201-legehennen-klopfen-2ab140dc0422@brauner>
+ <CAHk-=wi2pThSVY=zhO=ZKxViBj5QCRX-=AS2+rVknQgJnHXDFg@mail.gmail.com>
+ <CAOQ4uxjVTir-mmx05zh231BpEN1XbXpooscZyfNUYmVj32-d3w@mail.gmail.com>
+ <20250202-abbauen-meerrettich-912513202ce4@brauner>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.08 [en]
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250202-abbauen-meerrettich-912513202ce4@brauner>
+X-Rspamd-Queue-Id: 8CE3D21164
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MISSING_XM_UA(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,redhat.com,toxicpanda.com,fb.com,vger.kernel.org,suse.cz,zeniv.linux.org.uk,kvack.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-Hi,
+On Sun 02-02-25 11:04:02, Christian Brauner wrote:
+> On Sun, Feb 02, 2025 at 08:46:21AM +0100, Amir Goldstein wrote:
+> > On Sun, Feb 2, 2025 at 1:58 AM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Sat, 1 Feb 2025 at 06:38, Christian Brauner <brauner@kernel.org> wrote:
+> > > >
+> > > > Ok, but those "device fds" aren't really device fds in the sense that
+> > > > they are character fds. They are regular files afaict from:
+> > > >
+> > > > vfio_device_open_file(struct vfio_device *device)
+> > > >
+> > > > (Well, it's actually worse as anon_inode_getfile() files don't have any
+> > > > mode at all but that's beside the point.)?
+> > > >
+> > > > In any case, I think you're right that such files would (accidently?)
+> > > > qualify for content watches afaict. So at least that should probably get
+> > > > FMODE_NONOTIFY.
+> > >
+> > > Hmm. Can we just make all anon_inodes do that? I don't think you can
+> > > sanely have pre-content watches on anon-inodes, since you can't really
+> > > have access to them to _set_ the content watch from outside anyway..
+> > >
+> > > In fact, maybe do it in alloc_file_pseudo()?
+> > >
+> > 
+> > The problem is that we cannot set FMODE_NONOTIFY -
+> > we tried that once but it regressed some workloads watching
+> > write on pipe fd or something.
+> 
+> Ok, that might be true. But I would assume that most users of
+> alloc_file_pseudo() or the anonymous inode infrastructure will not care
+> about fanotify events. I would not go for a separate helper. It'd be
+> nice to keep the number of file allocation functions low.
+> 
+> I'd rather have the subsystems that want it explicitly opt-in to
+> fanotify watches, i.e., remove FMODE_NONOTIFY. Because right now we have
+> broken fanotify support for e.g., nsfs already. So make the subsystems
+> think about whether they actually want to support it.
 
-> [BUG]
-> It is a long known bug that VM image on btrfs can lead to data csum
-> mismatch, if the qemu is using direct-io for the image (this is commonly
-> known as cache mode none).
-> 
-> [CAUSE]
-> Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
-> fs is allowed to dirty/modify the folio even the folio is under
-> writeback (as long as the address space doesn't have AS_STABLE_WRITES
-> flag inherited from the block device).
-> 
-> This is a valid optimization to improve the concurrency, and since these
-> filesystems have no extra checksum on data, the content change is not a
-> problem at all.
-> 
-> But the final write into the image file is handled by btrfs, which need
-> the content not to be modified during writeback, or the checksum will
-> not match the data (checksum is calculated before submitting the bio).
-> 
-> So EXT4/XFS/NTRFS believes they can modify the folio under writeback,
-> but btrfs requires no modification, this leads to the false csum
-> mismatch.
-> 
-> This is only a controlled example, there are even cases where
-> multi-thread programs can submit a direct IO write, then another thread
-> modifies the direct IO buffer for whatever reason.
-> 
-> For such cases, btrfs has no sane way to detect such cases and leads to
-> false data csum mismatch.
-> 
-> [FIX]
-> I have considered the following ideas to solve the problem:
-> 
-> - Make direct IO to always skip data checksum
->   This not only requires a new incompatible flag, as it breaks the
->   current per-inode NODATASUM flag.
->   But also requires extra handling for no csum found cases.
-> 
->   And this also reduces our checksum protection.
-> 
-> - Let hardware to handle all the checksum
->   AKA, just nodatasum mount option.
->   That requires trust for hardware (which is not that trustful in a lot
->   of cases), and it's not generic at all.
-> 
-> - Always fallback to buffered IO if the inode requires checksum
->   This is suggested by Christoph, and is the solution utilized by this
->   patch.
-> 
->   The cost is obvious, the extra buffer copying into page cache, thus it
->   reduce the performance.
->   But at least it's still user configurable, if the end user still wants
->   the zero-copy performance, just set NODATASUM flag for the inode
->   (which is a common practice for VM images on btrfs).
-> 
->   Since we can not trust user space programs to keep the buffer
->   consistent during direct IO, we have no choice but always falling
->   back to buffered IO.
->   At least by this, we avoid the more deadly false data checksum
->   mismatch error.
+Agreed, that would be a saner default.
 
-Could we mark the page for direct write to READ-only
-when ! BTRFS_INODE_NODATASUM?
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2025/02/03
-
-
-
-> Suggested-by: hch@infradead.org <hch@infradead.org>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/direct-io.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> I would disqualify all anonymous inodes and see what actually does
+> break. I naively suspect that almost no one uses anonymous inodes +
+> fanotify. I'd be very surprised.
 > 
-> diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
-> index c99ceabcd792..d64cda76cc92 100644
-> --- a/fs/btrfs/direct-io.c
-> +++ b/fs/btrfs/direct-io.c
-> @@ -444,6 +444,19 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
->  			goto err;
->  	}
->  
-> +	/*
-> +	 * For direct IO, we have no control on the folio passed in, thus the content
-> +	 * can change halfway after we calculated the data checksum.
-> +	 *
-> +	 * To be extra safe and avoid false data checksum mismatch, if the inode still
-> +	 * requires data checksum, we just fall back to buffered IO by returning
-> +	 * -ENOTBLK, and iomap will do the fallback.
-> +	 */
-> +	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
-> +		ret = -ENOTBLK;
-> +		goto err;
-> +	}
-> +
->  	/*
->  	 * If this errors out it's because we couldn't invalidate pagecache for
->  	 * this range and we need to fallback to buffered IO, or we are doing a
-> -- 
-> 2.48.1
+> I'm currently traveling (see you later btw) but from a very cursory
+> reading I would naively suspect the following:
 > 
+> // Suspects for FMODE_NONOTIFY
+> drivers/dma-buf/dma-buf.c:      file = alloc_file_pseudo(inode, dma_buf_mnt, "dmabuf",
+> drivers/misc/cxl/api.c: file = alloc_file_pseudo(inode, cxl_vfs_mount, name,
+> drivers/scsi/cxlflash/ocxl_hw.c:        file = alloc_file_pseudo(inode, ocxlflash_vfs_mount, name,
+> fs/anon_inodes.c:       file = alloc_file_pseudo(inode, anon_inode_mnt, name,
+> fs/hugetlbfs/inode.c:           file = alloc_file_pseudo(inode, mnt, name, O_RDWR,
+> kernel/bpf/token.c:     file = alloc_file_pseudo(inode, path.mnt, BPF_TOKEN_INODE_NAME, O_RDWR, &bpf_token_fops);
+> mm/secretmem.c: file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
+> block/bdev.c:   bdev_file = alloc_file_pseudo_noaccount(BD_INODE(bdev),
+> drivers/tty/pty.c: static int ptmx_open(struct inode *inode, struct file *filp)
+> 
+> // Suspects for ~FMODE_NONOTIFY
+> fs/aio.c:       file = alloc_file_pseudo(inode, aio_mnt, "[aio]",
 
+This is just a helper file for managing aio context so I don't think any
+notification makes sense there (events are not well defined). So I'd say
+FMODE_NONOTIFY here as well.
 
+> fs/pipe.c:      f = alloc_file_pseudo(inode, pipe_mnt, "",
+> mm/shmem.c:             res = alloc_file_pseudo(inode, mnt, name, O_RDWR,
+
+This is actually used for stuff like IPC SEM where notification doesn't
+make sense. It's also used when mmapping /dev/zero but that struct file
+isn't easily accessible to userspace so overall I'd say this should be
+FMODE_NONOTIFY as well.
+
+> // Unsure:
+> fs/nfs/nfs4file.c:      filep = alloc_file_pseudo(r_ino, ss_mnt, read_name, O_RDONLY,
+
+AFAICS this struct file is for copy offload and doesn't leave the kernel.
+Hence FMODE_NONOTIFY should be fine.
+
+> net/socket.c:   file = alloc_file_pseudo(SOCK_INODE(sock), sock_mnt, dname,
+
+In this case I think we need to be careful. It's a similar case as pipes so
+probably we should use ~FMODE_NONOTIFY here from pure caution.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
