@@ -1,75 +1,75 @@
-Return-Path: <linux-btrfs+bounces-11239-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11240-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43087A25AD6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 14:25:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8DFA25ADB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 14:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21DF9164DF4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 13:25:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D4C0164E29
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 13:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79105204F92;
-	Mon,  3 Feb 2025 13:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55286204F9F;
+	Mon,  3 Feb 2025 13:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nQhV/Tyt"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="tuq1iIzY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C90204F94
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 13:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7287205501
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 13:27:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738589147; cv=none; b=IPH/e3vYEtdJqt3QJMM7QxwIbeV7TenNVCJ97JRyAUOtzI/FRrm5q9irLOfzmfl5KONFu8KEExy5nFCDrv2UFczbDXZzhX5VZDfpHAlg10fw1eybQun73bxHWWE+J4Ht2O/g4IadCoRYiEci/pak6pi10+nqUtKpPBXpIu4UtjM=
+	t=1738589242; cv=none; b=QmBpkKL2YIisv5MnbVjUGzX76ViW45TX3eE8eltsohRCeN4I5p9iUqkL14zzkJngBoA29X2VS/XFjU4Qri7M1dqQBEODVGThU/rYFukInzb6dWrUxNucWwqZVfCsJHak/tERG0SECGzDbxp8zrQxuA1LPekREw/89IbbNcT7iPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738589147; c=relaxed/simple;
-	bh=ETpYkKSW0ujAn/A4oFQI6Dw67ynCvWSY7+JPEvd/y50=;
+	s=arc-20240116; t=1738589242; c=relaxed/simple;
+	bh=LN7G7tj7ziwXYWVmbHqdWrd5F4xkNX4yYkpEgeDsj1c=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=kE1xt++rM+qiBr7HyRzfc303FxyhXOdqdYE729zFLcnn0CdwzWfMm93xqWIhp6+eG/+y9EBF3+bt6uBKv5s/YdM2bFfTYDald9jQJBn3d9iMv4DZSBOUb6yEZN2n8Z3DQjVTkn6oM6urL3X6zOpeXnI0+vTrGYPtDZwOm3Tyl2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=nQhV/Tyt; arc=none smtp.client-ip=203.254.224.25
+	 Content-Type:References; b=fJQINHmm2rsFdeFzmkD3bHRWEmTCc049XBsu5vuun++dc8SAzhEJh0LN+vJqxGBlTY6z3cz8dUjMwZcbt2q9IxNIaDX+mRPW4iMVlHBDvGtSr3AVU3u9MvWfraTN3fSuZ/MY80nGtIxcKNbqS0XSyY10Pux4E+42n/hC47+defQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=tuq1iIzY; arc=none smtp.client-ip=203.254.224.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
 Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20250203132543epoutp02c470503df1707b67e7b0bade826cc971~gtZ1aHdlW1766517665epoutp02k
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 13:25:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20250203132543epoutp02c470503df1707b67e7b0bade826cc971~gtZ1aHdlW1766517665epoutp02k
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20250203132718epoutp03e16ebee3ddc0a8d58c2dc78f27bf7930~gtbOF1MnY2124321243epoutp03T
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 13:27:18 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20250203132718epoutp03e16ebee3ddc0a8d58c2dc78f27bf7930~gtbOF1MnY2124321243epoutp03T
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1738589143;
-	bh=cKUs4xdryHhIOGmxZcYZeIyaLRtkU1L2K7XqPjbU5BA=;
+	s=mail20170921; t=1738589238;
+	bh=7qRQVpC595G5pF4zWhHkaT239k+7+Iqrs0Hw5ybb7b8=;
 	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=nQhV/TytyvuC5A/LphJhm0N/7ZAh4Gp/Mf/Ckdr87OQZCpYhSgsP93EmfOh4rxBNj
-	 dBNeDhXqwbLQPtVqijMQZHDnbzvSwXjd7+qZPW7KVE41nbrtmG//0BgdYxcaPGoKXv
-	 34zcsBR3zEsnfcZasK5wdiREaZdhnpwgp/BzajNE=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20250203132542epcas5p20fde6de67377981fca39c87b40e08034~gtZ0k3eiO2942229422epcas5p2f;
-	Mon,  3 Feb 2025 13:25:42 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.179]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4YmnLY21Dlz4x9Ps; Mon,  3 Feb
-	2025 13:25:41 +0000 (GMT)
+	b=tuq1iIzYFn92F1kUzsAVpqGM1Dw3TO1guw2a/o27AbDS+ruIiClTIcLl+KA4Hzk0D
+	 tmt5TpHARe2HWyomER0QTMDaAdR1QpNIEqScOkUwzuVXP+1jNwhzbqZR3gZWNa9lXd
+	 rU8MIBm5lcd7Y/3jeXAW0V36FLHLGiR6QD7R2JA0=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20250203132718epcas5p10bbd54d4c74a90f6b24582b2631401a1~gtbNsnEIj2389723897epcas5p1N;
+	Mon,  3 Feb 2025 13:27:18 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.181]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4YmnNN3YSdz4x9Pq; Mon,  3 Feb
+	2025 13:27:16 +0000 (GMT)
 Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	16.2C.19710.5D3C0A76; Mon,  3 Feb 2025 22:25:41 +0900 (KST)
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	00.CB.19933.434C0A76; Mon,  3 Feb 2025 22:27:16 +0900 (KST)
 Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-	20250203132540epcas5p3108da1d357572d2569b2daacd0ff6e2a~gtZy4g1Pi1092310923epcas5p3F;
-	Mon,  3 Feb 2025 13:25:40 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20250203132715epcas5p29dbf773b56a348fec46b65dfaafd5a2f~gtbLckemg1482914829epcas5p2_;
+	Mon,  3 Feb 2025 13:27:15 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
 	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20250203132540epsmtrp2b1eeefe62fc3ef763968c793c75ca427~gtZy3wHA83232732327epsmtrp2F;
-	Mon,  3 Feb 2025 13:25:40 +0000 (GMT)
-X-AuditID: b6c32a44-36bdd70000004cfe-47-67a0c3d56e41
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	11.48.23488.4D3C0A76; Mon,  3 Feb 2025 22:25:40 +0900 (KST)
+	20250203132715epsmtrp282d9f63bd9406aed23744e3a0a1cb382~gtbLb6SzK3251132511epsmtrp29;
+	Mon,  3 Feb 2025 13:27:15 +0000 (GMT)
+X-AuditID: b6c32a4a-c1fda70000004ddd-18-67a0c43432df
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	89.76.18729.334C0A76; Mon,  3 Feb 2025 22:27:15 +0900 (KST)
 Received: from [107.122.11.51] (unknown [107.122.11.51]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20250203132539epsmtip1589e5dc6851fa5ef8adba0afe090ee70~gtZxL5cA52891528915epsmtip1K;
-	Mon,  3 Feb 2025 13:25:38 +0000 (GMT)
-Message-ID: <8e548c8f-7a05-4e82-aed7-6044a0d247c9@samsung.com>
-Date: Mon, 3 Feb 2025 18:55:38 +0530
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20250203132714epsmtip20bd1b67654ac22c879b34fd5f4e1ab7d~gtbJ1wywv0712307123epsmtip2Z;
+	Mon,  3 Feb 2025 13:27:14 +0000 (GMT)
+Message-ID: <cfe11af2-44c5-43a7-9114-72471a615de7@samsung.com>
+Date: Mon, 3 Feb 2025 18:57:13 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,90 +77,91 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] Btrfs checksum offload
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, "josef@toxicpanda.com"
-	<josef@toxicpanda.com>, "dsterba@suse.com" <dsterba@suse.com>, "clm@fb.com"
-	<clm@fb.com>, "axboe@kernel.dk" <axboe@kernel.dk>, "kbusch@kernel.org"
-	<kbusch@kernel.org>, hch <hch@lst.de>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [LSF/MM/BPF TOPIC] File system checksum offload
+To: Qu Wenruo <wqu@suse.com>, Johannes Thumshirn
+	<Johannes.Thumshirn@wdc.com>, "hch@infradead.org" <hch@infradead.org>
+Cc: Theodore Ts'o <tytso@mit.edu>, "lsf-pc@lists.linux-foundation.org"
+	<lsf-pc@lists.linux-foundation.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-nvme@lists.infradead.org"
+	<linux-nvme@lists.infradead.org>, "linux-block@vger.kernel.org"
+	<linux-block@vger.kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>
 Content-Language: en-US
 From: Kanchan Joshi <joshi.k@samsung.com>
-In-Reply-To: <73ba28f4-0588-4ca8-b64f-2a6dd593606b@wdc.com>
+In-Reply-To: <eaec853d-eda6-4ee9-abb6-e2fa32f54f5c@suse.com>
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmhu7VwwvSDdbs5LRYfbefzWJS/wx2
-	iws/Gpksbh7YyWSxcvVRJou/XfeYLP48NLSYdOgao8XeW9oWlx6vYLeYv+wpuwO3x8Tmd+we
-	l8+Wemxa1cnmsXlJvcfumw1sHn1bVjF6rN9ylcVjwuaNrB6fN8l5tB/oZgrgisq2yUhNTEkt
-	UkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAG6V0mhLDGnFCgUkFhc
-	rKRvZ1OUX1qSqpCRX1xiq5RakJJTYFKgV5yYW1yal66Xl1piZWhgYGQKVJiQnTH38ByWginc
-	Fc9W9LE2MH7n6GLk4JAQMJG4s8Wxi5GLQ0hgN6NES+MfdgjnE6PEvcUfmboYOYGcb4wS56+A
-	2SANa9dfgorvZZRY0SUF0fCWUWJ2fzs7SIJXwE5i0poH7CAbWARUJL4+MoEIC0qcnPmEBcQW
-	FZCXuH9rBlAJO4ewgK7EjmiQKSICXUwSh9csZwVxmAW+MEr8eH6EFaSeWUBc4taT+UwgI9kE
-	NCUuTC4FCXMKWEs0f1zPDFEiL7H97RxmkF4JgTMcEnOv32CBuNlF4szsGWwQtrDEq+Nb2CFs
-	KYnP7/ZCxbMlHjx6AFVfI7Fjcx8rhG0v0fDnBivIXmagvet36UPs4pPo/f2ECRKGvBIdbUIQ
-	1YoS9yY9heoUl3g4YwmU7SHxYsIxNkioLWaSaDjuPoFRYRZSoMxC8uQsJN/MQli8gJFlFaNk
-	akFxbnpqsmmBYV5qOTyuk/NzNzGCU7KWyw7GG/P/6R1iZOJgPMQowcGsJMJ7evuCdCHelMTK
-	qtSi/Pii0pzU4kOMpsDImcgsJZqcD8wKeSXxhiaWBiZmZmYmlsZmhkrivM07W9KFBNITS1Kz
-	U1MLUotg+pg4OKUamG4xcIXt29n5z41hpf6ZR+tOFjNlHL/zhUPT3/dI9FdL1p6tqZetX1ZX
-	rLry02/C3bqHPFXTNbK2zEr/qXb6wP8rnj2hockq8wT61ym8rlhymE3IyJcrr/HvmZPv175V
-	EnPZ/a5UMPPvEe4NbglG+5S8NZ/aZC61TPnyQKtlxuwXF47ZsfPuDZ4ppLHK3PPcz+j5Wzu2
-	6GicmnVfzsdVaNV2CZcnjxUqWT97vv7vqSe3ub2190v1BsGmmPMm/P9PqahxT5oVp1LbmDF1
-	9xORk4kdj2alTv9VGjPtY1S6F8s7yfVqCW6dMxL/VXjoL178uC1W5N/5N17BM5XK82+apHnG
-	pi64arLA5XShonRavxJLcUaioRZzUXEiAGm48rJSBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsWy7bCSnO6VwwvSDc63G1isvtvPZjGpfwa7
-	xYUfjUwWNw/sZLJYufook8XfrntMFn8eGlpMOnSN0WLvLW2LS49XsFvMX/aU3YHbY2LzO3aP
-	y2dLPTat6mTz2Lyk3mP3zQY2j74tqxg91m+5yuIxYfNGVo/Pm+Q82g90MwVwRXHZpKTmZJal
-	FunbJXBlzD08h6VgCnfFsxV9rA2M3zm6GDk5JARMJNauv8TUxcjFISSwm1Hi9aa/7BAJcYnm
-	az+gbGGJlf+es0MUvWaUuHbxOBtIglfATmLSmgdACQ4OFgEVia+PTCDCghInZz5hAbFFBeQl
-	7t+aAVTCziEsoCuxIxpkiohAD5PEufO7GEEcZoEvjBI7r11lhJi/mEni8auvYIuZgY649WQ+
-	E8h8NgFNiQuTS0HCnALWEs0f1zNDlJhJdG3tYoSw5SW2v53DPIFRaBaSM2YhmTQLScssJC0L
-	GFlWMUqmFhTnpucmGxYY5qWW6xUn5haX5qXrJefnbmIEx6GWxg7Gd9+a9A8xMnEwHmKU4GBW
-	EuE9vX1BuhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHelYYR6UIC6YklqdmpqQWpRTBZJg5OqQYm
-	vW6BY8z+tb/mbOP8LKukXeW6zFJOJyVx+dIz6g1/AjU5dW27Oeyt2Z+c2L78oou07ce5683a
-	+bQ32ez11ygp+zx18T4l5u673UvUtneeC/tb/uink7D7et7i/OkSMtoFOScnPvhqlfxujWt7
-	+y8G0fsnFT72SZ14LSAqUPs9g/Oi0luuX4f3HpjxRiZm1b7K80dmburM+WJ9PyLW1+uWKb+i
-	wy2J6ld3F8w1/bb4hL/qvMx9+SwTxQ1/pq4U+7UqeO7ESwurtq8rsJS8OtNTs26Tv0jEvIlL
-	FPdtm336zd3NkQl//zhMlRbauS5kknBnM0ftyenPW90XeLj9Ltt3U8OmykhPpfb6Pr/IOU+F
-	lViKMxINtZiLihMBam5g6TIDAAA=
-X-CMS-MailID: 20250203132540epcas5p3108da1d357572d2569b2daacd0ff6e2a
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGJsWRmVeSWpSXmKPExsWy7bCmhq7JkQXpBl8OiVucnrCIyeJv1z0m
+	iz8PDS323tK2uPR4BbvFnr0nWSzmL3vKbrHv9V5mi9aen+wWa9Z9ZHfg8ti8Qstj85J6j8k3
+	ljN6NJ05yuyxfstVFo8JmzeyenzeJOfRfqCbKYAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON45
+	3tTMwFDX0NLCXEkhLzE31VbJxSdA1y0zB+hAJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmt
+	UmpBSk6BSYFecWJucWleul5eaomVoYGBkSlQYUJ2xvXrW9gK9rFXHHyxiL2BsZmti5GTQ0LA
+	RGL3zfNANheHkMBuRomLa1axQzifGCUWXpwNlfnGKNF7bypcS2/Dc2aIxF5GiXlTDkJVvWWU
+	eLLiChNIFa+AncTdpp8sIDaLgIrEtR9zWCHighInZz4Bi4sKyEvcvzWDHcQWFrCR6N51CGyD
+	iECFRPfOl6wgQ5kFFjJL3J22DyzBLCAucevJfKAFHBxsApoSFyaXgoQ5gXoX773LAlEiL7H9
+	7Ryw6yQEtnBIXPx6nBnibBeJyTd3skLYwhKvjm9hh7ClJD6/2wv1WrbEg0cPWCDsGokdm/ug
+	6u0lGv7cYAXZywy0d/0ufYhdfBK9v5+AnSMhwCvR0SYEUa0ocW/SU6hOcYmHM5ZA2R4Sl1Zt
+	ZoKE1RxmiQNnlrJOYFSYhRQss5B8OQvJO7MQNi9gZFnFKJlaUJybnlpsWmCUl1oOj/Hk/NxN
+	jOAErOW1g/Hhgw96hxiZOBgPMUpwMCuJ8J7eviBdiDclsbIqtSg/vqg0J7X4EKMpMH4mMkuJ
+	JucDc0BeSbyhiaWBiZmZmYmlsZmhkjhv886WdCGB9MSS1OzU1ILUIpg+Jg5OqQam2dlPl9jb
+	nQ3yitCcp8NWG/ivbNmXPtGo25/PfpoeuOaQipvV3YcCudW7kp/Uh4fMvLojXPj2idRyz9OM
+	rSo8Ot8EFmyp133DnuJ0ry6r0yp58t2NgluMLjJejTWZ6sdkfeS6jyW3qJjxN5aVe6dsXHNA
+	Kz+2Mf1ftTrXFm5l4RMMK084Szi5tLkVy7yTTEgI3dhbLJ0nH2Wq37Z5x1+/rnt5n3zvH141
+	J/3y8xdTJavbZIJmzP3vdb3RkqPjkcNl4Zu8xbUnrrMXy2k685wv8baNOvnTeoplH1/I75dH
+	405win+P+vrZX/ropLorF70y1uxvCuJrEnh5T0XA9PDk/D08C4+zqpsevs/GrKHEUpyRaKjF
+	XFScCAA+OxaZSQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsWy7bCSvK7xkQXpBttmGFmcnrCIyeJv1z0m
+	iz8PDS323tK2uPR4BbvFnr0nWSzmL3vKbrHv9V5mi9aen+wWa9Z9ZHfg8ti8Qstj85J6j8k3
+	ljN6NJ05yuyxfstVFo8JmzeyenzeJOfRfqCbKYAjissmJTUnsyy1SN8ugSvj+vUtbAX72CsO
+	vljE3sDYzNbFyMkhIWAi0dvwnLmLkYtDSGA3o8SV5cvZIRLiEs3XfkDZwhIr/z1nhyh6zSix
+	qa2LFSTBK2AncbfpJwuIzSKgInHtxxyouKDEyZlPwOKiAvIS92/NABskLGAj0b3rENhmEYEK
+	ifuPHrCBDGUWWMws8fvJQ1aIDXOYJbZ1/GYEqWIGOuPWk/lMXYwcHGwCmhIXJpeChDmBBi3e
+	e5cFosRMomtrF1S5vMT2t3OYJzAKzUJyxywkk2YhaZmFpGUBI8sqRsnUguLc9NxiwwLDvNRy
+	veLE3OLSvHS95PzcTYzgaNPS3MG4fdUHvUOMTByMhxglOJiVRHhPb1+QLsSbklhZlVqUH19U
+	mpNafIhRmoNFSZxX/EVvipBAemJJanZqakFqEUyWiYNTqoGpin+rudS78zOmLnJRWS6TtGpq
+	BPvsyLcfH03slU15pLmUf/KbSXJpfyeY7b1nYbtOiKew+PvJTI91hWavY/fOC3Sbc8Oh+PnX
+	GOkPfB9PhwdHLis7uFGOv3iK7y/bzkPLKuWLU6S2z+0pNu3inmp7UHDf/8sKy1pe5+7bsmPX
+	8uKyzvnl/7tVCs+t2bhx67bwk8vlrUsl327KL6yRvxz4JSDq6JJ4RuGFhTr3b+2LP/RFx8oy
+	+MzJrqniOzdHNV45tS/FqvfxscR/p2uyTFiXmXTwz/lwQpbhWtUP64zYYzE9LJIh98y4gyRk
+	P8fyy9YdtpF9w+mY7M/+I3mq0qVpu8+eCWJNeTnBbee6bSa2SizFGYmGWsxFxYkARSa90CUD
+	AAA=
+X-CMS-MailID: 20250203132715epcas5p29dbf773b56a348fec46b65dfaafd5a2f
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20250129141039epcas5p11feb1be4124c0db3c5223325924183a3
-References: <CGME20250129141039epcas5p11feb1be4124c0db3c5223325924183a3@epcas5p1.samsung.com>
-	<20250129140207.22718-1-joshi.k@samsung.com>
-	<299a886d-c065-4b75-b0be-625710f7348c@wdc.com>
-	<572e0418-de26-47ec-b536-b63291acff52@samsung.com>
-	<73ba28f4-0588-4ca8-b64f-2a6dd593606b@wdc.com>
+X-CMS-RootMailID: 20250130092400epcas5p1a3a9d899583e9502ed45fe500ae8a824
+References: <CGME20250130092400epcas5p1a3a9d899583e9502ed45fe500ae8a824@epcas5p1.samsung.com>
+	<20250130091545.66573-1-joshi.k@samsung.com>
+	<20250130142857.GB401886@mit.edu>
+	<97f402bc-4029-48d4-bd03-80af5b799d04@samsung.com>
+	<b8790a76-fd4e-49b6-bc08-44e5c3bf348a@wdc.com>
+	<Z6B2oq_aAaeL9rBE@infradead.org>
+	<bb516f19-a6b3-4c6b-89f9-928d46b66e2a@wdc.com>
+	<eaec853d-eda6-4ee9-abb6-e2fa32f54f5c@suse.com>
 
-On 1/31/2025 3:59 PM, Johannes Thumshirn wrote:
->> I tested the series for read, but only the success cases. In this case
->> checksum generation/verification happens only within the device. It was
->> slightly tricky to inject an error and I skipped that.
->>
->> Since separate checksum I/Os are omitted, this is about handling the
->> error condition in data read I/O path itself. I have not yet checked if
->> repair code triggers when Btrfs is working with existing 'nodatasum'
->> mount option. But I get your point that this needs to be handled.
->>
-> So this as of now disables one of the most useful features of the FS,
-> repairing bad data. The whole "story" for the RAID code in the FS is
-> build around this assumption, that we can repair bad data, unlike say MD
-> RAID.
+On 2/3/2025 1:46 PM, Qu Wenruo wrote:
+>> ell for the WAF part, it'll save us 32 Bytes per FS sector (typically
+>> 4k) in the btrfs case, that's ~0.8% of the space.
+> 
+> You forgot the csum tree COW part.
+> 
+> Updating csum tree is pretty COW heavy and that's going to cause quite 
+> some wearing.
+> 
+> Thus although I do not think the RFC patch makes much sense compared to 
+> just existing NODATASUM mount option, I'm interesting in the hardware 
+> csum handling.
 
-Does repairing-bad-data work when Btrfs is mounted with NODATASUM?
-If not, should not the proposed option be seen as an upgrade over that?
+But, patches do exactly that i.e., hardware cusm support. And posted 
+numbers [*] are also when hardware is checksumming the data blocks.
 
-You might be knowing, but I do not know how does Btrfs currently decide 
-to apply NODATSUM! With these patches it becomes possible to know if 
-checksum-offload is supported by the underlying hardware. And that makes 
-it possible to apply NODATASUM in an informed manner.
+NODATASUM forgoes the data cums at Btrfs level, but its scope of 
+control/influence ends there, as it knows nothing about what happens 
+underneath.
+Proposed option (DATASUM_OFFLOAD) ensures that the [only] hardware 
+checksums the data blocks.
 
-I have not reduced anything, but added an opt-in for deployments that 
-may have a different definition of what is useful. Not all planets are 
-Mars. The cost of checksum tree will be different (say on QLC vs SLC).
+[*] 
+https://lore.kernel.org/linux-block/20250129140207.22718-1-joshi.k@samsung.com/
 
