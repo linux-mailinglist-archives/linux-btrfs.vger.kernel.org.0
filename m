@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-11216-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11217-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD5FA2518D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 04:08:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D72A251D9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 05:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C2871883CDE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 03:08:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 399A01624D6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2025 04:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E3C2AD0F;
-	Mon,  3 Feb 2025 03:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16BF70809;
+	Mon,  3 Feb 2025 04:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KmUVXJqU";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KmUVXJqU"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C4nwAU6N";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C4nwAU6N"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5312C13B
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 03:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B352F46
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2025 04:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738552111; cv=none; b=cf904lwOpf/yjSnGRYH9ANHKbrHtyfgbAyxHdQz14PHLXuSqAf8kEGV9yQmR2Stzu2DJQ8Sk3K3fSTIsBsBycJfWFvszdge+gvAUldFeYE1LuP8FOZQUonIolqAZcw76kldoDTjtv7iLr73LcYiPipwWVxNS++J/Eiujs19h7qU=
+	t=1738556230; cv=none; b=L43B0MrvAGVKx3rXYTghxWSH52oylyFfGrDJjGRt1yQL+S0CI0qVLdWbP7XHihR+0OxwbcVlD6xATweezr9R5MkYgMd7sibR6Hoeo1Lb5x6fMu6tG4sdAU9txX1rU7M5Bm54KlsODoDBFhFQALh+TDPNCEDdHGN9/KJaVaaav44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738552111; c=relaxed/simple;
-	bh=OxhL8Pfi6yJOqVC2Mr8x4CmrR99RokLIffGyVdR+SQo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hjsfJPUXvgwzvT+rMgK1qVksWhZtu9fqDvoEC0b+CT5kGgl0Y5LA8O6Ku47xu4cq6F1vVCTeG3OBTeS6hdimAZYfP7mrD9jxTH4xbD36N5iCUdCvaFOZ/DZTrXZBedj/BnSXz+zYRkQPnW6NaFnVistxPTBP7ciWPXY87AaeHxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KmUVXJqU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KmUVXJqU; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1738556230; c=relaxed/simple;
+	bh=zoIqXafYgP7uiuN4ojlFkPDnNWtP/lA90LUn+EscDk4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=riotBK7F5Fd/XsaP9e0KdR34tWtbflemjIApFKT0U54s6xp0JguWmhClR3qQuuuZIktXYXw876DzuycehOx83vLFOXFbt7vKTYMnQv7Ia6XDXAL8rBOIEwLVXS/+G6VBYNbf7xfWAELSlkGBANPeg4vvV8qX0T5MZr3lSfzdk2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C4nwAU6N; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C4nwAU6N; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1540E2115B;
-	Mon,  3 Feb 2025 03:08:21 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0F1D01F37C;
+	Mon,  3 Feb 2025 04:17:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738552101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1738556221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=14AMpYJAt8c0YQTIc9lx6dbWLLYdKP+ygFDKVaEyT5Q=;
-	b=KmUVXJqU1VIjTaWBIMK1PK+Z/lJAoAdjY7nmPywD335y2DHEgZVycEwF23gKOvD4ORKNiP
-	AmvwEa4JnDP+KqxwzE76V70GIJDyhaeCiiVgQd9IQoIZ/sXiEuhNcWsjGtJMCLYKpxqmIR
-	8u80YZoTEL/zAPXnVYM5sagdUPRZsBs=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=KmUVXJqU
+	bh=PsixfuiQ8YqDRxJPUlZBGk6EaIQNB9aWVUGhRoE7ntE=;
+	b=C4nwAU6NnOU4eNgsjuZeD11E2BcDEY8deSHjTubNRdjdXcTSUo05ugHsn6FnNVk2yqg96e
+	s4YWdhSTE+xUpjiWV3D34LfBXBA15xD2wnuBAn9Oxb02wHJSy4A9mxMkUsX6pv3YUHD2Md
+	uS53ialm52U83R0GVrVWmS/pNCNZpCA=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=C4nwAU6N
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738552101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1738556221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=14AMpYJAt8c0YQTIc9lx6dbWLLYdKP+ygFDKVaEyT5Q=;
-	b=KmUVXJqU1VIjTaWBIMK1PK+Z/lJAoAdjY7nmPywD335y2DHEgZVycEwF23gKOvD4ORKNiP
-	AmvwEa4JnDP+KqxwzE76V70GIJDyhaeCiiVgQd9IQoIZ/sXiEuhNcWsjGtJMCLYKpxqmIR
-	8u80YZoTEL/zAPXnVYM5sagdUPRZsBs=
+	bh=PsixfuiQ8YqDRxJPUlZBGk6EaIQNB9aWVUGhRoE7ntE=;
+	b=C4nwAU6NnOU4eNgsjuZeD11E2BcDEY8deSHjTubNRdjdXcTSUo05ugHsn6FnNVk2yqg96e
+	s4YWdhSTE+xUpjiWV3D34LfBXBA15xD2wnuBAn9Oxb02wHJSy4A9mxMkUsX6pv3YUHD2Md
+	uS53ialm52U83R0GVrVWmS/pNCNZpCA=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 131D113795;
-	Mon,  3 Feb 2025 03:08:19 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BEE813674;
+	Mon,  3 Feb 2025 04:16:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0uSLMSMzoGdCdQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 03 Feb 2025 03:08:19 +0000
+	id RhKjLztDoGcUBwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 03 Feb 2025 04:16:59 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Jeff Siddall <news@siddall.name>
-Subject: [PATCH] btrfs-progs: doc: add a warning when converting to a profile with lower duplication
-Date: Mon,  3 Feb 2025 13:38:02 +1030
-Message-ID: <8a6796cc4018b38376c228dbdb5a4fafc174e08b.1738552010.git.wqu@suse.com>
+Subject: [PATCH] btrfs-progs: balance: add extra delay if converting with a missing device
+Date: Mon,  3 Feb 2025 14:46:42 +1030
+Message-ID: <c5f42e2e31ffc95f93e62eef7d51a01bfbc9471f.1738556153.git.wqu@suse.com>
 X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -77,9 +77,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1540E2115B
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 0F1D01F37C
+X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -89,43 +88,39 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
-X-Spam-Level: 
 
 [BUG]
-There is a bug report that, a running btrfs with one of its device
-deleted using sysfs ('/sys/block/<dev>/device/delete'), btrfs will still
-read write on that device.
+There is a reproducer that can trigger btrfs to flips RO:
 
-Normally it's fine as long as all chunks can tolerate that removed
-device (e.g. all RAID1).
+ # mkfs.btrfs -f -mraid1 -draid1 /dev/sdd /dev/sde
+ # mount /dev/sdd /mnt/btrfs
+ # echo 1 > /sys/block/sde/device/delete
+ # btrfs balance start -mconvert=dup -dconvert=single /mnt/btrfs
+ ERROR: error during balancing '.': Input/output error
+ There may be more info in syslog - try dmesg | tail
 
-But the problem is when one is trying to lower the duplication by
-converting to a less-safe profile:
+Then btrfs will flip read-only with the following errors:
 
-  # mkfs.btrfs -f -m raid1 -d raid1 /dev/sdd /dev/sde
-  # mount /dev/sdd /mnt
-  # echo 1 > /sys/block/sde/device/delete
-  # btrfs balance start --force -mdup -dsingle /mnt
-
-This will lead to the fs mounted RO, with the following error messages:
-
- sd 6:0:0:0: [sde] Synchronizing SCSI cache
- ata7.00: Entering standby power mode
  btrfs: attempt to access beyond end of device
  sde: rw=6145, sector=21696, nr_sectors = 32 limit=0
  btrfs: attempt to access beyond end of device
@@ -157,34 +152,25 @@ This will lead to the fs mounted RO, with the following error messages:
  BTRFS info (device sdd state EA): balance: ended with status: -5
 
 [CAUSE]
-Btrfs doesn't have any runtime device error handling, it fully rely on
-the extra copy provided.
+The root cause is that, deleting devices using sysfs interface normally
+will trigger the shutdown callback for the fs.
 
-For the sysfs block device removal, normally there is a device shutdown
-callback to the running fs, but unfortunately btrfs doesn't support this
-callback either.
+But btrfs doesn't handle that callback at all, thus it can not really
+know that device is no longer avaialble, thus btrfs will still try to do
+usual read/write on that device.
 
-Thus even with that device removed, btrfs will still access that
-removed device (both read and write, even if they will all fail).
+This is fine if the user do nothing, as RAID1 can handle it properly.
 
-Normally for a full RAID1 btrfs, it will still be fine reading/write the
-fs as usual.
-And the proper action is to replace the removed/missing/failing device
-with a newer one using `btrfs device replace`.
+But if we try to convert to SINGLE/DUP, btrfs will still use that device
+to allocate new data/metadata chunks.
+And if a new metadata chunk is allocated to the removed device, all the
+write will be lost, and trigger the super block write/barrier errors
+above.
 
-But when doing the convert, btrfs will allocate new metadata chunks on
-to the removed device (which will lose all writes).
-
-And since the new metadata profile is DUP, which can not handle any
-missing device of that metadata chunk, finally it triggers the final
-protection at transaction commit time, and flips the fs RO, before it
-causing any real data loss.
-
-[DOC ENHANCEMENT]
-Add a warning to the `convert` filter about the dangerous doing convert
-to a less-safe profile when there is a known failing/removed device.
-
-And mention the proper way to handle such failing/missing device.
+[USER SPACE ENHANCEMENT]
+For now, add extra missing devices check at btrfs-balance command.
+If there is a missing devices, `btrfs balance` will add a 10 seconds
+delay and warn the possible dangerous.
 
 The root fix is to introduce a failing/removed device detection for
 btrfs, but that will be a pretty big feature and will take quite some
@@ -194,40 +180,122 @@ Reported-by: Jeff Siddall <news@siddall.name>
 Link: https://lore.kernel.org/linux-btrfs/2cb1d81e-12a8-4fb1-b3fc-e7e83d31e059@siddall.name/
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Documentation/ch-balance-filters.rst | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ cmds/balance.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
-diff --git a/Documentation/ch-balance-filters.rst b/Documentation/ch-balance-filters.rst
-index 81a0ca8f0345..d1ef6fa17e3c 100644
---- a/Documentation/ch-balance-filters.rst
-+++ b/Documentation/ch-balance-filters.rst
-@@ -79,10 +79,24 @@ convert=<profile>
-                 Starting with kernel 4.5, the ``data`` chunks can be converted to/from the
-                 ``DUP`` profile on a single device.
-
--        .. note::
-                 Starting with kernel 4.6, all profiles can be converted to/from ``DUP`` on
-                 multi-device filesystems.
-
-+	.. warning::
-+		Btrfs doesn't detect bad/missing devices at runtime, thus if
-+		there is a known failing device, or a device is deleted by
-+		``/sys/block/<dev>/device/delete`` sysfs interface, btrfs will still
-+		access and try to write into that failing/removed device.
+diff --git a/cmds/balance.c b/cmds/balance.c
+index 4c73273dfdc3..5c17fbc1acb5 100644
+--- a/cmds/balance.c
++++ b/cmds/balance.c
+@@ -376,6 +376,45 @@ static const char * const cmd_balance_start_usage[] = {
+ 	NULL
+ };
+ 
++/*
++ * Return 0 if no missing device found for the fs at @mnt.
++ * Return >0 if there is any missing device for the fs at @mnt.
++ * Return <0 if we hit other errors during the check.
++ */
++static int check_missing_devices(const char *mnt)
++{
++	struct btrfs_ioctl_fs_info_args fs_info_arg;
++	struct btrfs_ioctl_dev_info_args *dev_info_args = NULL;
++	bool found_missing = false;
++	int ret;
 +
-+		In such case, one should not convert to a profile with lower
-+		duplication (e.g. from ``RAID1`` to ``SINGLE``), as btrfs can
-+		create new chunks on that failing/removed device, and cause
-+		various problems.
++	ret = get_fs_info(mnt, &fs_info_arg, &dev_info_args);
++	if (ret < 0)
++		return ret;
 +
-+		And the proper action is to use ``btrfs replace`` or
-+		``btrfs device remove`` to handle the failing/missing
-+		device first. Then convert with all devices working correctly.
++	for (int i = 0; i < fs_info_arg.num_devices; i++) {
++		struct btrfs_ioctl_dev_info_args *cur_dev_info;
++		int fd;
 +
- limit=<number>, limit=<range>
-         Process only given number of chunks, after all filters are applied. This can be
-         used to specifically target a chunk in connection with other filters (``drange``,
---
++		cur_dev_info = (struct btrfs_ioctl_dev_info_args *)&dev_info_args[i];
++
++		/*
++		 * Kernel will report the device path even if we can no
++		 * longer access it anymore. So we have to manually check it.
++		 */
++		fd = open((char *)cur_dev_info->path, O_RDONLY);
++		if (fd < 0) {
++			found_missing = true;
++			break;
++		}
++		close(fd);
++	}
++	free(dev_info_args);
++	if (found_missing)
++		return 1;
++	return 0;
++}
++
+ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 			     int argc, char **argv)
+ {
+@@ -387,6 +426,7 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 	bool enqueue = false;
+ 	unsigned start_flags = 0;
+ 	bool raid56_warned = false;
++	bool convert_warned  = false;
+ 	int i;
+ 
+ 	memset(&args, 0, sizeof(args));
+@@ -481,6 +521,53 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 		args.flags |= BTRFS_BALANCE_TYPE_MASK;
+ 	}
+ 
++	/*
++	 * If we are using convert, and there is a missing/failed device at
++	 * runtime (e.g. mounted then remove a device using sysfs interface),
++	 * btrfs has no way to avoid using that failing/removed device.
++	 *
++	 * In that case converting the profile is very dangerous, e.g.
++	 * converting RAID1 to SINGLE/DUP, and new SINGLE/DUP chunks can
++	 * be allocated to that failing/removed device, and cause the
++	 * fs to flip RO due to failed metadata writes.
++	 *
++	 * Meanwhile the fs may work completely fine due to the extra
++	 * duplication (e.g. all RAID1 profiles).
++	 *
++	 * So here warn if one is trying to convert with missing devices.
++	 */
++	for (i = 0; ptrs[i]; i++) {
++		int delay = 10;
++		int ret;
++
++		if (!(ptrs[i]->flags & BTRFS_BALANCE_ARGS_CONVERT) || convert_warned)
++			continue;
++
++		ret = check_missing_devices(argv[optind]);
++		if (ret < 0) {
++			errno = -ret;
++			warning("skipping missing devices check due to failure: %m");
++			break;
++		}
++		if (ret == 0)
++			continue;
++		convert_warned = true;
++		printf("WARNING:\n\n");
++		printf("\tConversion with missing device(s) can be dangerous.\n");
++		printf("\tPlease use `btrfs replace` or `btrfs device remove` instead.\n");
++		if (force) {
++			printf("\tSafety timeout skipped due to --force\n\n");
++			continue;
++		}
++		printf("\tThe operation will continue in %d seconds.\n", delay);
++		printf("\tUse Ctrl-C to stop.\n");
++		while (delay) {
++			printf("%2d", delay--);
++			fflush(stdout);
++			sleep(1);
++		}
++	}
++
+ 	/* drange makes sense only when devid is set */
+ 	for (i = 0; ptrs[i]; i++) {
+ 		if ((ptrs[i]->flags & BTRFS_BALANCE_ARGS_DRANGE) &&
+-- 
 2.48.1
 
 
