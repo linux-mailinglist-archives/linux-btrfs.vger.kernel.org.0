@@ -1,47 +1,73 @@
-Return-Path: <linux-btrfs+bounces-11262-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11263-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3620BA26B3A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 06:12:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C799A26B3F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 06:17:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73EDB3A53D9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 05:12:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 112F4166FAA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 05:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81AEE1AA782;
-	Tue,  4 Feb 2025 05:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F2A1DED52;
+	Tue,  4 Feb 2025 05:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R5QTgmaF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768B712D758;
-	Tue,  4 Feb 2025 05:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1449018EAD;
+	Tue,  4 Feb 2025 05:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738645937; cv=none; b=MfcRXdJWF6+lLLKfN9a5XHm9p0+ozXjfToTOKWad0ij6N2wCk72fux7vy057Xb73WuEAYaMkUCOqM6ajJZ5WO1RaDNp/lVo7odKLLrLKJYAKdwko2GyMDdmdNARLMMhzHCdTIWqHlmFExnHPKhrSZ31O1RMP9g2LJzpZnQOXoog=
+	t=1738646215; cv=none; b=hmvLurxb0Ym29JFGtcd+Y0hE+fn7ik9ubBeQtd+ydQq8m1USISnw8Z8Vc1n/K1mDEBn8tAdlI73dKtTuFfDRX4uftHFwC8DSxl7+OSaEhGs50f3WUahSnaadUJTMbfyuFCMJUQm/Ze9i1a4tmwY1dp8RfF+8MlT/jTDAkvUTBhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738645937; c=relaxed/simple;
-	bh=1L+Z81WayhZk/cFtAsdZO0aI4Qela1jUgmtsvzY7Bjk=;
+	s=arc-20240116; t=1738646215; c=relaxed/simple;
+	bh=y3SIq+5cNHBMYlPZJHqv8AIPsncNJ7FZ4n5K0nCxZtc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NvxLJluIIDTS8ARvp8KRahBXlspJQCLav1B4ksPzFFECRMQr32UakZ7GJ3BBUUDR/I0nWiE3dB6nPU5mthR2eUCp9//HlQKPVDsW470cpUZHfY3KlskIW9rqf4bpNglwD/oCYn4tZsNJRIGrqNFnvsTFyiUOFBIJxUqxkn1UlbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 6583668AFE; Tue,  4 Feb 2025 06:12:08 +0100 (CET)
-Date: Tue, 4 Feb 2025 06:12:08 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Christoph Hellwig <hch@lst.de>, Kanchan Joshi <joshi.k@samsung.com>,
-	josef@toxicpanda.com, dsterba@suse.com, clm@fb.com, axboe@kernel.dk,
-	kbusch@kernel.org, linux-btrfs@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-	gost.dev@samsung.com
-Subject: Re: [RFC 0/3] Btrfs checksum offload
-Message-ID: <20250204051208.GG28103@lst.de>
-References: <CGME20250129141039epcas5p11feb1be4124c0db3c5223325924183a3@epcas5p1.samsung.com> <20250129140207.22718-1-joshi.k@samsung.com> <yq134h0p1m5.fsf@ca-mkp.ca.oracle.com> <20250131074424.GA16182@lst.de> <yq17c66kfxs.fsf@ca-mkp.ca.oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CuYAnetZ/bBOgPyFe3ibECQ3b+A298GvEY8UhVhDDhUOYF3qLSM+WjIPdEsiFamTzPf+Y+YfvOypMRGy81rruB0vnT3pBaRpNZF068IaiHWSXbLzs2AzQSzno9xEL8PAij4g1Ke8HDgKHBSixJo8E+rjp/UsQk9N/DGJVZrAbsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R5QTgmaF; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=PmeBjIffRL0zJ/a26qdx0jVpYYzHUWrXmf4N6s0YxoI=; b=R5QTgmaFwsOME8RxXRUqufs/1r
+	eoSrFIUdMTP7O2PueADyXds61eV/Zlq3A+btbQEEHv4utvniqvoGXf/23yV5CQ4aBUUMvTXIDfigi
+	Ajyd+G96JhhWOFx4Os66TW7pFAq6bDQsZQBDmL9Un/0XBACIMn2zgUL4P6S+a9ve7JipIzf59cgyy
+	3xNAw0SfUGThYa+6fH1BaGonhaEramVy4OLfeq5QhdG2B//VwZMLMZhKHyUi+YA9dijWwyn4SLauY
+	1EkFORChX47n7XUMmeCePgnYFNj4yyRgyHfLJ5GU2Jrqeiim+8Jsi97xqV0ls7lHVfHk+e0Kq/4BC
+	YIypNtGA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tfBIl-0000000HGYs-3eYO;
+	Tue, 04 Feb 2025 05:16:47 +0000
+Date: Mon, 3 Feb 2025 21:16:47 -0800
+From: "hch@infradead.org" <hch@infradead.org>
+To: Kanchan Joshi <joshi.k@samsung.com>
+Cc: Qu Wenruo <wqu@suse.com>,
+	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+	"hch@infradead.org" <hch@infradead.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>
+Subject: Re: [LSF/MM/BPF TOPIC] File system checksum offload
+Message-ID: <Z6GivxxFWFZhN7jD@infradead.org>
+References: <CGME20250130092400epcas5p1a3a9d899583e9502ed45fe500ae8a824@epcas5p1.samsung.com>
+ <20250130091545.66573-1-joshi.k@samsung.com>
+ <20250130142857.GB401886@mit.edu>
+ <97f402bc-4029-48d4-bd03-80af5b799d04@samsung.com>
+ <b8790a76-fd4e-49b6-bc08-44e5c3bf348a@wdc.com>
+ <Z6B2oq_aAaeL9rBE@infradead.org>
+ <bb516f19-a6b3-4c6b-89f9-928d46b66e2a@wdc.com>
+ <eaec853d-eda6-4ee9-abb6-e2fa32f54f5c@suse.com>
+ <cfe11af2-44c5-43a7-9114-72471a615de7@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,31 +76,32 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yq17c66kfxs.fsf@ca-mkp.ca.oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <cfe11af2-44c5-43a7-9114-72471a615de7@samsung.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Feb 03, 2025 at 02:31:13PM -0500, Martin K. Petersen wrote:
-> > I never could come up with a good use of the app_tag for file systems,
-> > so not wasting space for that is actually a good thing.
-> 
-> I wish we could just do 4 bytes of CRC32C + 4 bytes of ref tag. I think
-> that would be a reasonable compromise between space and utility.
+On Mon, Feb 03, 2025 at 06:57:13PM +0530, Kanchan Joshi wrote:
+> But, patches do exactly that i.e., hardware cusm support. And posted 
+> numbers [*] are also when hardware is checksumming the data blocks.
 
-Agreed.
+I'm still not sure why you think the series implements hardware
+csum support.
 
-> But we
-> can't do that because of the app tag escape. We're essentially wasting 2
-> bytes per block to store a single bit flag.
+The buf mode is just a duplicate implementation of the block layer
+automatic PI.  The no buf means PRACT which let's the device auto
+generate and strip PI.  Especially the latter one (which is the
+one that was benchmarked) literally provides no additional protection
+over what the device would already do.  It's the "trust me, bro" of
+data integrity :)  Which to be fair will work pretty well as devices
+that support PI are the creme de la creme of storage devices and
+will have very good internal data protection internally.  But the
+point of data checksums is to not trust the storage device and
+not trust layers between the checksum generation and the storage
+device.
 
-Well, what do we actually need the app tag escape for except for
-historical precedence?  In NVMe the app tag escape is an option for
-deallocated blocks, but it's only one of the options, there other beeing
-a synthetic guard/ref tag with the expected value.
+IFF using PRACT is an acceptable level of protection just running
+NODATASUM and disabling PI generation/verification in the block
+layer using the current sysfs attributes (or an in-kernel interface
+for that) to force the driver to set PRACT will do exactly the same
+thing.
 
-> In general I think 4096+16 is a reasonable format going forward. With
-> either CRC32C or CRC64 plus full LBA as ref tag.
-
-That would also work fine.  NVMe supports 4byte crc32c + 2 byte app tag +
-12 byte guard tag / storage tag and 8-byte crc64 + 2 byte app tag + 6
-byte guard / storage tag, although Linux only supports the latter so far.
 
