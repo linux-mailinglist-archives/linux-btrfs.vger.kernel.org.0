@@ -1,141 +1,238 @@
-Return-Path: <linux-btrfs+bounces-11265-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11266-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E931A26C61
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 08:05:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBA35A26D37
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 09:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3AAA7A42B6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 07:04:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BAC81886B24
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 08:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05365203710;
-	Tue,  4 Feb 2025 07:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F0B2066F0;
+	Tue,  4 Feb 2025 08:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b="Dqf8Dj7G"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Bkaa4UP/";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Bkaa4UP/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from zero.acitia.com (zero.acitia.com [69.164.212.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24DE4CB5B
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 07:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.164.212.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D81F86358
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738652694; cv=none; b=hqAZj9XE7ASOTJ0usemPbSvYN6gl9ua4Z4jGB0bvS1Z6nFQETe6BmGS1PLp2aktUJ703p8+Je89JnrTHx0bCHGpOLwIz6w/V753Y+zO5EpT51Fw6vBuulve6Chl4mAvj5c4DRLnul+7mC1sQOZiMfDDhi5YPjpnFDsdY0qrqCpg=
+	t=1738657446; cv=none; b=nvBwb+IJqQb1+qYH42b/2RmZtJhwihfaCIl0wiGl1tJNSmq3KXzWRqTg2PNXbfFx/sjs0v8OHlYArqVLeH7Jjbyqu5IlgOrtoIi+hH7utbrA7u5a7dDAEkarinePMQzRxg18E2fIo6GsMX/MXzudkeRhiZRt5WN5H3RtjJSz9VA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738652694; c=relaxed/simple;
-	bh=GjDdQHZFLxrezM1gtvmJ4coA9Goo8i2ObY5aQlmIdls=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fEzW+r0WsdYWK5Dbcuw73tYFj3pw5ptpOwpgdkN1os8X2sH8C0q/4xfrhSp3BxUlbwSbVI2As2rOHt9eL23OA5RSLa4NHD6Mnc1kWjrTzqFvTxyM1TPCHqysRJBkf7UOWgOsJqI5xgbj9+uUngGAUrS5DnbpmnPhW8Oe/pSGfB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com; spf=pass smtp.mailfrom=zetafleet.com; dkim=pass (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b=Dqf8Dj7G; arc=none smtp.client-ip=69.164.212.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zetafleet.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=zetafleet.com; s=20190620; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=cYoDFMVcnPXwdFuDtZs9iMkVTWfULRwGBytb3DMfYBU=; b=Dqf8Dj7GFccrNR9HZUWDjd+S/b
-	BrOcREFAeiY/iN3iBoup1Csiiz2nzfQx0mt0OORgFn03vlqw/ftxmabS6OvUhJ7eOx+CeuV1MBPGi
-	O9SlYLFix2Qv5ZxS2dibNybBcT2v/b1/TmzUhvw8Y+NgQ/31wpXgzlFNdGIvT+TovB640pF0rTk+u
-	nBHQyxepflDYpIJ9v5z0EbNp550BisrFQ/al/d9uXFUVlX6QDXximkqbV1fJIhnMOiRLTfagXZZQ5
-	g+0n8OnAjlgZ+US62Iqxnv8Gr34l+vcYDcwPMBpRyOG9164y1KgB1OwW8ss6Xrbxx9oV8PzoY8CDp
-	4HGAlRVQ==;
-Received: from authenticated by zero.acitia.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	(envelope-from <linux-btrfs-ml@zetafleet.com>)
-	id 1tfCzF-0002PJ-NV
-	for linux-btrfs@vger.kernel.org; Tue, 04 Feb 2025 07:04:46 +0000
-Message-ID: <683e37e3-c90e-4865-8704-9d6905c04560@zetafleet.com>
-Date: Tue, 4 Feb 2025 01:04:44 -0600
+	s=arc-20240116; t=1738657446; c=relaxed/simple;
+	bh=0vL4Ymzg5GwfuC2DDfLn+4m+5cGL5fVFKy/rTt3evqU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Na/EJ0hJEWQMhJN3sx1U9RBAiJzEhWdDr0KqX3eilkquZGr+Sk1zMAreIJ0KhbFU/6X+vSael5+5zHNN8ARhemKBoBJ38pJrcB2F88OR2ya8JvJmLPUcfTfF7U8i2U4FY+p7qzBQ2jmi1fVNraXEcX4cXp1z3hJ2pEw8Tw6VDe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Bkaa4UP/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Bkaa4UP/; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 890D721109
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1738657442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=P4Cr1/ka8jvOl58sTcHDUifD5MfO/JezbsLHkUVSkLc=;
+	b=Bkaa4UP/PZt9n86oStJ/+EVbfa3kpBgaJQY4AWTa/zfeuz4Sw6eo4SG8CuK4xhu/t3Smeu
+	2ozg9J/vv+dydZ3m5LfVQP1V5roTmdeGAnvAFyjh2DdaHU0CIgpJwtKMeTnN45f9p0oxWt
+	ndTV5MIM5rBNJT4IPd+/A8mQkZaGaYg=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="Bkaa4UP/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1738657442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=P4Cr1/ka8jvOl58sTcHDUifD5MfO/JezbsLHkUVSkLc=;
+	b=Bkaa4UP/PZt9n86oStJ/+EVbfa3kpBgaJQY4AWTa/zfeuz4Sw6eo4SG8CuK4xhu/t3Smeu
+	2ozg9J/vv+dydZ3m5LfVQP1V5roTmdeGAnvAFyjh2DdaHU0CIgpJwtKMeTnN45f9p0oxWt
+	ndTV5MIM5rBNJT4IPd+/A8mQkZaGaYg=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4B7113795
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:24:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sO+CIaHOoWdFagAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2025 08:24:01 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: scrub: add the new -t option to set the limit at runtime
+Date: Tue,  4 Feb 2025 18:53:44 +1030
+Message-ID: <af7ddf3a70eac6363fa09bd8f26a44afdf34010d.1738657422.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Converting RAID1 to single fails if RAID1 is missing device
-To: linux-btrfs@vger.kernel.org
-References: <2cb1d81e-12a8-4fb1-b3fc-e7e83d31e059@siddall.name>
- <d300d923-ed8c-4671-9694-6850d8c9b572@gmx.com>
- <92dbe939-46a6-4142-b6be-3ef69fffce1b@gmail.com>
- <23f97ef3-5d4e-411e-abb3-9725d7f92238@gmx.com>
- <ef9dfa64-63f8-47ad-9857-d40aecb20546@zetafleet.com>
- <48bf3e3c-52a5-4fec-b399-93ababfa025d@gmx.com>
-Content-Language: en-GB
-From: Colin S <linux-btrfs-ml@zetafleet.com>
-In-Reply-To: <48bf3e3c-52a5-4fec-b399-93ababfa025d@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.9
-X-Spam-Report: No, score=-1.9 required=5.0 tests=BAYES_00=-1.9,NO_RELAYS=-0.001 autolearn=ham autolearn_force=no version=3.4.2
+X-Rspamd-Queue-Id: 890D721109
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 03/02/2025 00:13, Qu Wenruo wrote:
->
->
-> 在 2025/2/3 15:52, Colin S 写道:
->> On 02/02/2025 20:32, Qu Wenruo wrote:
->>>
->>> But I think the ultimate solution is to make btrfs to properly detect
->>> and support device shut down request.
->>
->> Yes. How many years and how many more users need to have this problem
->> before it’s given some priority?
->
-> Complaining is so easy that some one doesn't even know what's going
-> wrong can do.
+I know there is already `btrfs scrub limit` command to set the limit,
+but a lot of users are not aware of that command.
 
-Please understand that I am acting in good faith to try to make btrfs 
-better. I do not want to complain, I want to solve this problem. I sent 
-ideas to the list that I thought were sound several times and didn’t see 
-any btrfs developer respond at all. Did I miss a reply? If so, I 
-apologise for the missed connection on my end, and will look to the 
-archive for such a message if you tell me so. Otherwise, I’d like it if 
-you could answer my question, please, so I can understand what is 
-missing to give this priority?
+Thus adding a new option `-t <throughput_limit>` to `btrfs scrub start`.
 
-I don’t think this specific case where btrfs doesn’t notice the device 
-has gone away because it doesn’t implement a callback can be separated 
-from the larger problem because implementing that callback correctly 
-(i.e. with no data loss, corruption, or risk of split-brain) depends on 
-btrfs tracking writes better than it does now. If this seems confusing 
-or wrong, let me know so I can try to understand and say more.
+This has some extra behavior compared to `btrfs scrub limit`:
 
->>
->>> Although that would also introduce new complexity, e.g. what if the
->>> missing devices show up again after missing several writes?
->>
->> Since I see you wrote a patch in 2022 to add write-intent bitmap for
->> raid5/6, don’t you already understand the answer is a write-intent
->> bitmap? Further, did you not see any of the several messages I have sent
->> to the mailing list talking about exactly this in the last year? I am
->> genuinely confused.
->>
->
->
-> It's completely a different bug.
->
-> It doesn't even have RAID56 involved.
+- Only set the value for the involved scrub device(s)
+  If it's a full fs scrub, it will be the same as
+  `btrfs scrub limit -a -l <value>`.
+  If it's a single device, it will bt the same as
+  `btrfs scrub limit -d <devid> -l <value>`.
 
-Are you saying this because the abandoned implementation relied on 
-raid5/6 stripes? A write-intent bitmap, as a general concept, doesn’t 
-require parity as far as I know, so I don’t understand this statement 
-right now.
+- Automatically reset the limit after scrub is finished
 
-> And write-intent bitmap is not the solution at all. It doesn't support
-> things like zoned device support (which is now part of the core btrfs
-> functionality).
+- It only needs one single command line to set the limit
 
-How so?
+Issue: #943
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+RFC:
+I'm not sure if this is really needed since we already have `btrfs scrub
+limit`.
+Involved tools like btrfs-maintenance scripts should have such support,
+but to my surprise, David introduced the `btrfs scrub limit` but not
+adding any support to btrfs-maintenance.
+---
+ Documentation/btrfs-scrub.rst |  9 ++++++++-
+ cmds/scrub.c                  | 23 ++++++++++++++++++++++-
+ 2 files changed, 30 insertions(+), 2 deletions(-)
 
-> Knowing what you don't know is important.
+diff --git a/Documentation/btrfs-scrub.rst b/Documentation/btrfs-scrub.rst
+index be106a551ade..de097bf79177 100644
+--- a/Documentation/btrfs-scrub.rst
++++ b/Documentation/btrfs-scrub.rst
+@@ -69,7 +69,7 @@ resume [-BdqrR] <path>|<device>
+ 
+ .. _man-scrub-start:
+ 
+-start [-BdrRf] <path>|<device>
++start [-BdrRft] <path>|<device>
+         Start a scrub on all devices of the mounted filesystem identified by
+         *path* or on a single *device*. If a scrub is already running, the new
+         one will not start. A device of an unmounted filesystem cannot be
+@@ -96,6 +96,13 @@ start [-BdrRf] <path>|<device>
+                 can avoid writes from scrub.
+         -R
+                 raw print mode, print full data instead of summary
++	-t <throughput_limit>
++		set the scrub throughput limit for each device, acts the same as
++		``btrfs scrub limit -a -l <throughput_limit>``.
++
++		The value is bytes per second, and accept the usual KMGT prefixes.
++		After the scrub is finished, the throughput limit will be reset to
++		zero (aka, no limit).
+         -f
+                 force starting new scrub even if a scrub is already running,
+                 this can useful when scrub status file is damaged and reports a
+diff --git a/cmds/scrub.c b/cmds/scrub.c
+index b2cdc924df97..bcdbac5fa40d 100644
+--- a/cmds/scrub.c
++++ b/cmds/scrub.c
+@@ -1265,11 +1265,12 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
+ 	struct scrub_progress_cycle spc;
+ 	pthread_mutex_t spc_write_mutex = PTHREAD_MUTEX_INITIALIZER;
+ 	void *terr;
++	u64 throughput = 0;
+ 	u64 devid;
+ 	bool force = false;
+ 	bool nothing_to_resume = false;
+ 
+-	while ((c = getopt(argc, argv, "BdqrRc:n:f")) != -1) {
++	while ((c = getopt(argc, argv, "BdqrRc:n:ft")) != -1) {
+ 		switch (c) {
+ 		case 'B':
+ 			do_background = false;
+@@ -1291,6 +1292,9 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
+ 		case 'c':
+ 			ioprio_class = (int)strtol(optarg, NULL, 10);
+ 			break;
++		case 't':
++			throughput = arg_strtou64_with_suffix(optarg);
++			break;
+ 		case 'n':
+ 			ioprio_classdata = (int)strtol(optarg, NULL, 10);
+ 			break;
+@@ -1389,6 +1393,12 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
+ 
+ 	for (i = 0; i < fi_args.num_devices; ++i) {
+ 		devid = di_args[i].devid;
++		ret = write_scrub_device_limit(fdmnt, devid, throughput);
++		if (ret < 0) {
++			errno = -ret;
++			warning("failed to set scrub throughput limit on devid %llu: %m",
++				devid);
++		}
+ 		ret = pthread_mutex_init(&sp[i].progress_mutex, NULL);
+ 		if (ret) {
+ 			errno = ret;
+@@ -1568,6 +1578,16 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
+ 
+ 	err = 0;
+ 	for (i = 0; i < fi_args.num_devices; ++i) {
++		/* We have set the limit, now reset it to 0. */
++		if (throughput) {
++			ret = write_scrub_device_limit(fdmnt, di_args[i].devid, 0);
++			if (ret < 0) {
++				errno = -ret;
++				warning("failed to reset scrub throughput limit on devid %llu: %m",
++					di_args[i].devid);
++			}
++		}
++
+ 		if (sp[i].skip)
+ 			continue;
+ 		devid = di_args[i].devid;
+@@ -1713,6 +1733,7 @@ static const char * const cmd_scrub_start_usage[] = {
+ 	OPTLINE("-c", "set ioprio class (see ionice(1) manpage)"),
+ 	OPTLINE("-n", "set ioprio classdata (see ionice(1) manpage)"),
+ 	OPTLINE("-f", "force starting new scrub even if a scrub is already running this is useful when scrub stats record file is damaged"),
++	OPTLINE("-t", "set the throughput limit for each device"),
+ 	OPTLINE("-q", "deprecated, alias for global -q option"),
+ 	HELPINFO_INSERT_GLOBALS,
+ 	HELPINFO_INSERT_QUIET,
+-- 
+2.48.1
 
-I agree. Knowing what I don’t know is the explicit reason I gave in the 
-past about why I wouldn’t even attempt to implement and send any patch 
-on my own. I don’t mind being wrong since it means I get to learn, but I 
-can’t learn a thing from a browbeating.
-
-Best,
 
