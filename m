@@ -1,179 +1,216 @@
-Return-Path: <linux-btrfs+bounces-11260-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11261-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA268A26867
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 01:18:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8B5A26A9F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 04:31:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8032B3A52B5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 00:18:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B9A9167E92
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 03:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35DC522A;
-	Tue,  4 Feb 2025 00:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2343156F3C;
+	Tue,  4 Feb 2025 03:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="NWFHMimZ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="R9lx+p5U";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="R9lx+p5U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EA715D1
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 00:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A954D3597D
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 03:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738628299; cv=none; b=GsTkyGehxuCeyyB/p4AgjoLxy7imI6rLEADzrrwupCXBGMVRrzWuCasStpeTOrJa8K6xNDum1So+A/VSrfeJzNm1NfZwMowBqXEplz/+0fY8tyruIQTzsOfW0fI8w/w5DlTzSwYMyBKicrwN574OWmuu6ep6hjIZUWaaYuZ20no=
+	t=1738639855; cv=none; b=r6U4QtNNhzaXdM0iEHltvCsutuFgAwjs/oTeuojsLF1w6eADN6VZbWVbR7cAgv+LI6Y0663LK5A8apni/ypYDcBV700PaC7ZtNMEOrDFafAspDgOLBdzLS1ZRlsF0cVROV5Qe/ewin5OiguTCBf6OwDqxDxXxPMskY2gW3DfyYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738628299; c=relaxed/simple;
-	bh=uf/l+xMJ9YRbL1jdaCfVKdtXOcxwr3B6I1EgNNU9Xgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HSg3yFMN8t7V/i0jCirk92LlK/0IkrbP0l1AY9lkdvXofPnOGJyQE82mW84g9Kj0W1qQK4axUGaG6c5ANvCNRxDfR2WmhCVpRc3KpvpaJv1HHLNYZbfHJvDNOpH6vnE4WON9WhYpnpseHtzE/Mw5ZqNcx02asntIhgbMrVOa6og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=NWFHMimZ; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2ee8aa26415so8661161a91.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2025 16:18:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1738628297; x=1739233097; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6X9atRSkJkKWBJM8CFyQZwoAER5Co5yAjBOTSx/RzFw=;
-        b=NWFHMimZTDdLmLoCgqitl0M5P5teAktOddavv2hEfRABPDRcSgppDDr3zVaDqu8JjU
-         xIcj9dEY3BHZIlDWrOYo4qWzJoq+HxhVyFLt0AoYDgPeGtT52wifuEELGkFqtSsudq6B
-         ChM3b6tzkksnJVet/7JG6iSZJXtMQR/44TfcFRbKxHF2XS2F9eK2WRTLRKGI1N8rzjkt
-         1BBewrx+1m+DfxOPxGVnYoCDqDecxoiWnALC9uE3hQFRuaW+Chynr+tkiAoDczc0UrA5
-         3fj4jo7YrnX5O6FtMvxS55V8HBSiLSjtl702JN2kXbqP4oFEbUq6cFNme8PfaJxDQx/Y
-         JoCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738628297; x=1739233097;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6X9atRSkJkKWBJM8CFyQZwoAER5Co5yAjBOTSx/RzFw=;
-        b=u93qGddqaU6S81ZBZMOsq/SY3AagpMFl0/Nr/OV2EtMEHrY4KFtR/xDfKV6P2H9p71
-         Fmf36RGwauN0H85BkYeo92ZjolIK1Xbo+V0GL5EQ7TRS+rGvVcjsaNU+VfnHNC9RBzX5
-         QXhXKe/j1ruyiBTDDTQyNlPeAzRg8FlOA8Qk2XgKRb1Tl0k6gjPDofgWLZC8wfL0zrtr
-         nePy7StgZ+FwX8mI2eMyDHGB/0Z9NXUXGEfYI8GpK7+ZKGU7582GKg5YfD9KgmNbX9kv
-         7BA8bkIc0qT7TFhGTXEGoYlhGaRU71zY13oCp7zttCC8iDdDtCEWZMNB++5LE5sdVZDu
-         mauA==
-X-Forwarded-Encrypted: i=1; AJvYcCVPC3YNR1EbP0vZgztZMEhI7fhvZpPgxuQolS0TIUBavP+ggyanhAuy7ONYNNGObIhJVOkvDp1/M/Z/DQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSmIGhH/FfVITJX4ekHtW0Ml92MmkJZB2/5guQ8P20lP1khPec
-	ttZEuaH0V9iOvEEzlafY8xkZVn2PdV/dhXrnZXIzfHOkA3nh4Wu/TNSZGqFGdPE=
-X-Gm-Gg: ASbGnct3HBUzz0EK4jz414lpT5KkqRYIC1rLH8m8iN06zNqE8IQJuJ+9pGqGGsgd6cq
-	FhHY8W8Y2ZA9liT+q0BMTjHTNx8o+GYMvoDFPjuFWtCwrz3shmXY3kM6vjr0ydnKNkL1s415VP8
-	Fzk+wxbLqj+mjMmS0uLgTWNq2Q0hy6cURl/taX9wA8zLXbTjh3oyXVUWpT1W2y8hFgQ0U+Errul
-	smzjVAMFCfh4V8S9NHkrAL5yi+IPxr2pjZQD7sZhUEtT6ktlwHLgD7MTYDFownoNRcJBi7td+mb
-	pEdTxBckteKS3pjRXTwnbQA/WZ2ajqwT/hEewkGb+EQH2o013qcp2dxQ
-X-Google-Smtp-Source: AGHT+IEEalDio6MM16W2X5IjA5CbTEYUFgEE2csx1/WknusP+dBXoM+rieXb1+m6juuDR24cVkCWMg==
-X-Received: by 2002:a17:90b:5688:b0:2ea:5054:6c49 with SMTP id 98e67ed59e1d1-2f83aa8279dmr43885832a91.0.1738628297065;
-        Mon, 03 Feb 2025 16:18:17 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de31f7890sm82797835ad.90.2025.02.03.16.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2025 16:18:16 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tf6dp-0000000EIf0-39Pk;
-	Tue, 04 Feb 2025 11:18:13 +1100
-Date: Tue, 4 Feb 2025 11:18:13 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] fstests: btrfs: testcase for sysfs policy syntax
- verification
-Message-ID: <Z6FcxffA-v4-01lI@dread.disaster.area>
-References: <cover.1738161075.git.anand.jain@oracle.com>
- <3aecf19197d07ff18ed1c0dda9e63fcaa49b69d1.1738161075.git.anand.jain@oracle.com>
- <Z5vmAzAEtzK_EuXO@dread.disaster.area>
- <fa76f7ed-06e3-4f16-a762-fa444226bcdf@oracle.com>
+	s=arc-20240116; t=1738639855; c=relaxed/simple;
+	bh=CrkbDQfZzxbpluxB065CQ2GJBfGAFTQtR7RkvAqoGEw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e6AanjGrYm7hFGnhBaQHecAg1ol5CNNkttDp5tM22OQmHaalgfecQfvrnJ8PJqLkPLfesV2FCrEp+5wEvfxpiO3zrBIq49rnHWNeJ2B7uRzJ42LhUigLjW5ZIrpgS45S+aPWUTynIbpXJXCg6kgxlKrWxPjDP6DHew+1yKShBN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=R9lx+p5U; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=R9lx+p5U; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0391C21119;
+	Tue,  4 Feb 2025 03:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1738639846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=rR0K/FS+eralNZElqXyjFijGHwnPvb6RiZfeqdWK/Yc=;
+	b=R9lx+p5Uawh1u9mIBa5Pbqzd1xFh4UpRduw4MTt5xSIHYSJPovsW0Q7IKV90gUY289itTi
+	aUPfySRsBfBuqAzCjXS35czkGo9nfX7tgN2P8LAwGmN82e97kyvlHtuCHFTw3vDZXy1KW0
+	bA4q8Pa4vPAk+wFZYniE3Hv+B7Vvt0Y=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=R9lx+p5U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1738639846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=rR0K/FS+eralNZElqXyjFijGHwnPvb6RiZfeqdWK/Yc=;
+	b=R9lx+p5Uawh1u9mIBa5Pbqzd1xFh4UpRduw4MTt5xSIHYSJPovsW0Q7IKV90gUY289itTi
+	aUPfySRsBfBuqAzCjXS35czkGo9nfX7tgN2P8LAwGmN82e97kyvlHtuCHFTw3vDZXy1KW0
+	bA4q8Pa4vPAk+wFZYniE3Hv+B7Vvt0Y=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F31FF136AD;
+	Tue,  4 Feb 2025 03:30:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0Z1TLOSJoWcxGwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 04 Feb 2025 03:30:44 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: "hch@infradead.org" <hch@infradead.org>
+Subject: [PATCH v2] btrfs: always fallback to buffered write if the inode requires checksum
+Date: Tue,  4 Feb 2025 14:00:23 +1030
+Message-ID: <e9b8716e2d613cac27e59ceb141f973540f40eef.1738639778.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa76f7ed-06e3-4f16-a762-fa444226bcdf@oracle.com>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 0391C21119
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Fri, Jan 31, 2025 at 02:43:03PM +0800, Anand Jain wrote:
-> 
-> > > +set_sysfs_policy_must_fail()
-> > > +{
-> > > +	local attr=$1
-> > > +	shift
-> > > +	local policy=$@
-> > > +
-> > > +	_set_fs_sysfs_attr $SCRATCH_DEV $attr ${policy} | _filter_sysfs_error \
-> > > +			| _expect_error_invalid_argument | tee -a $seqres.full
-> > 
-> > This "catch an exact error or output a different error then use
-> > golden image match failure on secondary error to mark the test as
-> > failed" semantic is .... overly complex.
-> > 
-> > The output on failure of _filter_sysfs_error will be "Invalid
-> > input". If there's some other failure or it succeeds, the output
-> > will indicate the failure that occurred (i.e. missing line means no
-> > error, different error will output directly by the filter). The
-> > golden image matching will still fail the test.
-> > 
-> > IOWs, _expect_error_invalid_argument and the output to seqres.full
-> > can go away if the test.out file has a matching error for each
-> > call to set_sysfs_policy_must_fail(). i.e it looks like:
-> > 
-> > QA output created by 329
-> > Invalid input
-> > Invalid input
-> > Invalid input
-> > Invalid input
-> > Invalid input
-> > Invalid input
-> > .....
-> > Invalid input
-> 
-> Thanks for the review.
-> 
-> This test case verifies the sysfs interface syntax in general.
-> Relying on golden output can cause false negatives on older
-> kernels lacking support for newer sysfs policies.
-> Creating individual test cases for each sysfs interface is
-> unnecessary overhead.
-> 
-> With this approach, when needed, we use:
-> 
-> if _has_fs_sysfs_attr $dev <sysfs-interface>; then
->     verify_sysfs_syntax <sysfs-interface> <value>
-> fi
+[BUG]
+It is a long known bug that VM image on btrfs can lead to data csum
+mismatch, if the qemu is using direct-io for the image (this is commonly
+known as cache mode none).
 
-One test instance per sysfs attribute, please.
+[CAUSE]
+Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
+fs is allowed to dirty/modify the folio even the folio is under
+writeback (as long as the address space doesn't have AS_STABLE_WRITES
+flag inherited from the block device).
 
-i.e. move verify_sysfs_syntax() gets moved to common/ somewhere,
-then the test for any given sysfs attr is a simple 10 liner with a
-fixed golden output.
+This is a valid optimization to improve the concurrency, and since these
+filesystems have no extra checksum on data, the content change is not a
+problem at all.
 
-We can then do the same sort of input testing for sysfs attrs that
-belong to other filesystems, too, not just a handful of btrfs
-specific ones this test touches. I'd much prefer such tests are
-largely generic like so:
+But the final write into the image file is handled by btrfs, which need
+the content not to be modified during writeback, or the checksum will
+not match the data (checksum is calculated before submitting the bio).
 
-....
-_require_fs_sysfs_attr $TEST_DEV <sysfs-attr>
-_verify_sysfs_syntax $TEST_DEV <sysfs-attr>
-exit
+So EXT4/XFS/NTRFS believes they can modify the folio under writeback,
+but btrfs requires no modification, this leads to the false csum
+mismatch.
 
-If the sysfs-attr doesn't exist, then the test is _not_run and
-this emits a log file note that can be captured. If it does exist
-and doesn't behave correctly, the test then fails.
+This is only a controlled example, there are even cases where
+multi-thread programs can submit a direct IO write, then another thread
+modifies the direct IO buffer for whatever reason.
 
-Note that things like "test not run because sysfs attr does not
-exist" notes in the log files can be important for QE
-people trying to track whether backports for older/stable kernels
-work correctly. The proposed test is completely silent on whether
-any specific sysfs attr was tested or not, and that's not really
-helpful in identifying whether something works correctly or not...
+For such cases, btrfs has no sane way to detect such cases and leads to
+false data csum mismatch.
 
--Dave.
+[FIX]
+I have considered the following ideas to solve the problem:
+
+- Make direct IO to always skip data checksum
+  This not only requires a new incompatible flag, as it breaks the
+  current per-inode NODATASUM flag.
+  But also requires extra handling for no csum found cases.
+
+  And this also reduces our checksum protection.
+
+- Let hardware to handle all the checksum
+  AKA, just nodatasum mount option.
+  That requires trust for hardware (which is not that trustful in a lot
+  of cases), and it's not generic at all.
+
+- Always fallback to buffered write if the inode requires checksum
+  This is suggested by Christoph, and is the solution utilized by this
+  patch.
+
+  The cost is obvious, the extra buffer copying into page cache, thus it
+  reduce the performance.
+  But at least it's still user configurable, if the end user still wants
+  the zero-copy performance, just set NODATASUM flag for the inode
+  (which is a common practice for VM images on btrfs).
+
+  Since we can not trust user space programs to keep the buffer
+  consistent during direct IO, we have no choice but always falling
+  back to buffered IO.
+  At least by this, we avoid the more deadly false data checksum
+  mismatch error.
+
+Suggested-by: hch@infradead.org <hch@infradead.org>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Move the checksum check just after check_direct_IO()
+  So that we don't need the extra ENOTBLK error code trick to fallback
+  to buffered IO.
+
+- Slightly improve the comment
+  Adds that only direct write is affected, and why buffered write is
+  fine.
+---
+ fs/btrfs/direct-io.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index c99ceabcd792..0de4397130be 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -855,6 +855,21 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+ 		goto buffered;
+ 	}
++	/*
++	 * For direct IO write, we have no control on the folios passed in,
++	 * thus the content can change halfway after we calculated the data
++	 * checksum, and result data checksum mismatch and unable to read
++	 * the data out anymore.
++	 *
++	 * To be extra safe and avoid false data checksum mismatch, if the
++	 * inode requires data checksum, just fallback to buffered IO.
++	 * For buffered IO we have full control of page cache and can ensure
++	 * no one is modifying the content during writeback.
++	 */
++	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
++		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
++		goto buffered;
++	}
+ 
+ 	/*
+ 	 * The iov_iter can be mapped to the same file range we are writing to.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.48.1
+
 
