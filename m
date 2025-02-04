@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-11263-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11264-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C799A26B3F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 06:17:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8DCA26B84
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 06:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 112F4166FAA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 05:17:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85B9C188733A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 05:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F2A1DED52;
-	Tue,  4 Feb 2025 05:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484931FF7A5;
+	Tue,  4 Feb 2025 05:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R5QTgmaF"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Xw/ixOPl"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1449018EAD;
-	Tue,  4 Feb 2025 05:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E83D158558;
+	Tue,  4 Feb 2025 05:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738646215; cv=none; b=hmvLurxb0Ym29JFGtcd+Y0hE+fn7ik9ubBeQtd+ydQq8m1USISnw8Z8Vc1n/K1mDEBn8tAdlI73dKtTuFfDRX4uftHFwC8DSxl7+OSaEhGs50f3WUahSnaadUJTMbfyuFCMJUQm/Ze9i1a4tmwY1dp8RfF+8MlT/jTDAkvUTBhY=
+	t=1738648086; cv=none; b=iC/2g2Mxw/pbidTsVvHTYtV4dtQhvY5eslCV2zoSEPW98rfVrqdRpfaUuJ0Ua8YMPMiHIokQJqotmF4NtFAspZqERdDhxtauCjRVIk3D9UNYeYWMER8w5eX2jrj7TlJEOcflIAdtJTj6pqzUv+XuLZFfLgZ84RQTYxuRpFS9Bvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738646215; c=relaxed/simple;
-	bh=y3SIq+5cNHBMYlPZJHqv8AIPsncNJ7FZ4n5K0nCxZtc=;
+	s=arc-20240116; t=1738648086; c=relaxed/simple;
+	bh=1qcJuEWlYhdOVNQk8D1T49twEcTNrzd2Jl5XU96g98A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CuYAnetZ/bBOgPyFe3ibECQ3b+A298GvEY8UhVhDDhUOYF3qLSM+WjIPdEsiFamTzPf+Y+YfvOypMRGy81rruB0vnT3pBaRpNZF068IaiHWSXbLzs2AzQSzno9xEL8PAij4g1Ke8HDgKHBSixJo8E+rjp/UsQk9N/DGJVZrAbsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R5QTgmaF; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=KgpE1Nv9tlGIJ604NTH+Qu/ZtqXqgacCZAMyVi24tV8ODJU/K/f4idwkzGj+HHSDPA73Jad4IxmxjYJ0dC/nHRvSX7nL3NYugf6GcfuGH1JBoqebJYL7ZI5obxS4+zVbQ4h9GAyzHPeOV6N86JIfXQ/Q8+0UgEyCxns+MM7hi/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Xw/ixOPl; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=PmeBjIffRL0zJ/a26qdx0jVpYYzHUWrXmf4N6s0YxoI=; b=R5QTgmaFwsOME8RxXRUqufs/1r
-	eoSrFIUdMTP7O2PueADyXds61eV/Zlq3A+btbQEEHv4utvniqvoGXf/23yV5CQ4aBUUMvTXIDfigi
-	Ajyd+G96JhhWOFx4Os66TW7pFAq6bDQsZQBDmL9Un/0XBACIMn2zgUL4P6S+a9ve7JipIzf59cgyy
-	3xNAw0SfUGThYa+6fH1BaGonhaEramVy4OLfeq5QhdG2B//VwZMLMZhKHyUi+YA9dijWwyn4SLauY
-	1EkFORChX47n7XUMmeCePgnYFNj4yyRgyHfLJ5GU2Jrqeiim+8Jsi97xqV0ls7lHVfHk+e0Kq/4BC
-	YIypNtGA==;
+	bh=1qcJuEWlYhdOVNQk8D1T49twEcTNrzd2Jl5XU96g98A=; b=Xw/ixOPlobdnt3U6vUyjEZkQJt
+	uB6vzgMYbhM93Del2iz9itiE0LMLj+uL8WnERPmkxihAROo5jXEhPPWrlSU+BucZgUn+2MXm41Npo
+	e19QKU7xCx8t8OHvLKRtRtIwdryNUtCMSM5VQKsaiQHra3Ou7u7tBcXxkOZo+CKctkQvuoFChzTNt
+	mkEuEE5FEM4ZqSCljuNIxb0YWfrOj9PKNF74ulFB5y/ouJt4uA9Z03B6T2pSiU8MfaRZaxh6qt34f
+	pw11Kge9pSYv/p+HLU4zw9DUZVPlJ4Xn3qSHSsN6tspCRQqsN1PTa/fYEIFko4SGRd6QDQbq/6a9A
+	1uEg5syA==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfBIl-0000000HGYs-3eYO;
-	Tue, 04 Feb 2025 05:16:47 +0000
-Date: Mon, 3 Feb 2025 21:16:47 -0800
+	id 1tfBn0-0000000HIqd-3H2A;
+	Tue, 04 Feb 2025 05:48:02 +0000
+Date: Mon, 3 Feb 2025 21:48:02 -0800
 From: "hch@infradead.org" <hch@infradead.org>
-To: Kanchan Joshi <joshi.k@samsung.com>
-Cc: Qu Wenruo <wqu@suse.com>,
+To: Qu Wenruo <wqu@suse.com>
+Cc: Kanchan Joshi <joshi.k@samsung.com>,
 	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
 	"hch@infradead.org" <hch@infradead.org>,
 	Theodore Ts'o <tytso@mit.edu>,
@@ -58,7 +58,7 @@ Cc: Qu Wenruo <wqu@suse.com>,
 	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
 	"josef@toxicpanda.com" <josef@toxicpanda.com>
 Subject: Re: [LSF/MM/BPF TOPIC] File system checksum offload
-Message-ID: <Z6GivxxFWFZhN7jD@infradead.org>
+Message-ID: <Z6GqEt9IrFHxGz_Y@infradead.org>
 References: <CGME20250130092400epcas5p1a3a9d899583e9502ed45fe500ae8a824@epcas5p1.samsung.com>
  <20250130091545.66573-1-joshi.k@samsung.com>
  <20250130142857.GB401886@mit.edu>
@@ -68,6 +68,7 @@ References: <CGME20250130092400epcas5p1a3a9d899583e9502ed45fe500ae8a824@epcas5p1
  <bb516f19-a6b3-4c6b-89f9-928d46b66e2a@wdc.com>
  <eaec853d-eda6-4ee9-abb6-e2fa32f54f5c@suse.com>
  <cfe11af2-44c5-43a7-9114-72471a615de7@samsung.com>
+ <df9c2b85-612d-4ca3-ad3f-5c2e2467b83f@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -76,32 +77,22 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cfe11af2-44c5-43a7-9114-72471a615de7@samsung.com>
+In-Reply-To: <df9c2b85-612d-4ca3-ad3f-5c2e2467b83f@suse.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Feb 03, 2025 at 06:57:13PM +0530, Kanchan Joshi wrote:
-> But, patches do exactly that i.e., hardware cusm support. And posted 
-> numbers [*] are also when hardware is checksumming the data blocks.
+On Tue, Feb 04, 2025 at 09:47:20AM +1030, Qu Wenruo wrote:
+> Btrfs already has the way to disable its data checksum. It's the end users'
+> choice to determine if they want to trust the hardware.
 
-I'm still not sure why you think the series implements hardware
-csum support.
+Yes.
 
-The buf mode is just a duplicate implementation of the block layer
-automatic PI.  The no buf means PRACT which let's the device auto
-generate and strip PI.  Especially the latter one (which is the
-one that was benchmarked) literally provides no additional protection
-over what the device would already do.  It's the "trust me, bro" of
-data integrity :)  Which to be fair will work pretty well as devices
-that support PI are the creme de la creme of storage devices and
-will have very good internal data protection internally.  But the
-point of data checksums is to not trust the storage device and
-not trust layers between the checksum generation and the storage
-device.
+> The only thing that btrfs may want to interact with this hardware csum is
+> metadata.
+> Doing the double checksum may waste extra writes, thus disabling either the
+> metadata csum or the hardware one looks more reasonable.
 
-IFF using PRACT is an acceptable level of protection just running
-NODATASUM and disabling PI generation/verification in the block
-layer using the current sysfs attributes (or an in-kernel interface
-for that) to force the driver to set PRACT will do exactly the same
-thing.
+Note that the most common (and often only supported) PI checksum
+algorithm is significantly less strong than the default btrfs checksum
+algorithm.
 
 
