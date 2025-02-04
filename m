@@ -1,238 +1,261 @@
-Return-Path: <linux-btrfs+bounces-11266-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11267-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBA35A26D37
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 09:24:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD17A26D92
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 09:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BAC81886B24
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 08:24:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EED5C3A2343
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 08:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F0B2066F0;
-	Tue,  4 Feb 2025 08:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DF0207640;
+	Tue,  4 Feb 2025 08:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Bkaa4UP/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Bkaa4UP/"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b="YroPBt9I"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D81F86358
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E88613D8A4
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738657446; cv=none; b=nvBwb+IJqQb1+qYH42b/2RmZtJhwihfaCIl0wiGl1tJNSmq3KXzWRqTg2PNXbfFx/sjs0v8OHlYArqVLeH7Jjbyqu5IlgOrtoIi+hH7utbrA7u5a7dDAEkarinePMQzRxg18E2fIo6GsMX/MXzudkeRhiZRt5WN5H3RtjJSz9VA=
+	t=1738658871; cv=none; b=KzOqeBwQDlVmqYS04l11BfXjdJU+nYvtEgTS2zUdksavy59M7dnSZ4C09RNZ1diJzPSqxq8WvHg+L/RgORUF1GgK4AR3Hbhcx6l2uz1AceBF7g0GDN1Z2TDslxfYZ2RpSd6Z1Hjp2dojfhxdN4NDNJqiQUdGaiu2pIsYkBpQUQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738657446; c=relaxed/simple;
-	bh=0vL4Ymzg5GwfuC2DDfLn+4m+5cGL5fVFKy/rTt3evqU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Na/EJ0hJEWQMhJN3sx1U9RBAiJzEhWdDr0KqX3eilkquZGr+Sk1zMAreIJ0KhbFU/6X+vSael5+5zHNN8ARhemKBoBJ38pJrcB2F88OR2ya8JvJmLPUcfTfF7U8i2U4FY+p7qzBQ2jmi1fVNraXEcX4cXp1z3hJ2pEw8Tw6VDe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Bkaa4UP/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Bkaa4UP/; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 890D721109
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:24:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738657442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=P4Cr1/ka8jvOl58sTcHDUifD5MfO/JezbsLHkUVSkLc=;
-	b=Bkaa4UP/PZt9n86oStJ/+EVbfa3kpBgaJQY4AWTa/zfeuz4Sw6eo4SG8CuK4xhu/t3Smeu
-	2ozg9J/vv+dydZ3m5LfVQP1V5roTmdeGAnvAFyjh2DdaHU0CIgpJwtKMeTnN45f9p0oxWt
-	ndTV5MIM5rBNJT4IPd+/A8mQkZaGaYg=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="Bkaa4UP/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738657442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=P4Cr1/ka8jvOl58sTcHDUifD5MfO/JezbsLHkUVSkLc=;
-	b=Bkaa4UP/PZt9n86oStJ/+EVbfa3kpBgaJQY4AWTa/zfeuz4Sw6eo4SG8CuK4xhu/t3Smeu
-	2ozg9J/vv+dydZ3m5LfVQP1V5roTmdeGAnvAFyjh2DdaHU0CIgpJwtKMeTnN45f9p0oxWt
-	ndTV5MIM5rBNJT4IPd+/A8mQkZaGaYg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4B7113795
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 08:24:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sO+CIaHOoWdFagAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2025 08:24:01 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1738658871; c=relaxed/simple;
+	bh=4u0PFRk89WQWPBg6JipRPlFaaO85hcMi0fs3Mfv8B3Q=;
+	h=Message-ID:Subject:From:To:Content-Type:Date:MIME-Version; b=Hr6DPaXSlkq+kdX6jNGP1CNH5aLF2ahd/hdQoKIF13o15bHq+up9URW/DamDcC7coVIHqHrPVuWgyUY1mSIxbZBvVaHVNdopgWxsPQQ/J2SzOmY4+inIa6bcgmj5icrhA358ndg9hvy6+xGjPbYPMaTtyAo6Prs1HxUJGIFM1HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b=YroPBt9I; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1738658866; x=1739263666; i=massimo.b@gmx.net;
+	bh=qxaAxk9EJx16PWpk4D5Yh7cf32RaXVE9D1hzZE7l3vg=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Content-Type:
+	 Content-Transfer-Encoding:Date:MIME-Version:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=YroPBt9I5JWqfkQnhy1DknF2h/pI2pK5QSiBs92YI+xCT5jaNgatdTEpHCKoBvkq
+	 7Z78CRQIAhwytZIMPJUk2vERqtANc7G21UBwQwHPFP1++w5Uiwk7U2QTjnqzOlKyR
+	 d4bSTxfRfQ1MsbYv3yMLd96+AE0ahuchLSyPdfZ2ntyATqiRG0vYOQopySvFZ+c02
+	 jRFDpq6i4HdybJfCUErvJm7Zw3vga3O3Uf/9AA0L6kwrM7dZ8L82oqgf5l5kWzXaz
+	 FUsaSakEGnbXyYFMImVXYDCW3PmQjssU8n4a+ytTd3WYI1e6exu2D9YEb6rrzLjtf
+	 kpK46/yvs85uoLis2w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from gmb ([176.1.11.187]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MkHMP-1sz4LT0YH3-00lSsY; Tue, 04
+ Feb 2025 09:47:46 +0100
+Message-ID: <aff8355c64d68b4995cca0a132d35af527e160b3.camel@gmx.net>
+Subject: Infinite --repair super bytes used mismatches actual used
+From: "Massimo B." <massimo.b@gmx.net>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: scrub: add the new -t option to set the limit at runtime
-Date: Tue,  4 Feb 2025 18:53:44 +1030
-Message-ID: <af7ddf3a70eac6363fa09bd8f26a44afdf34010d.1738657422.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
+Face:
+ iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 04 Feb 2025 09:42:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 890D721109
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+User-Agent: Evolution 3.52.4 
+X-Provags-ID: V03:K1:tEmX7LYhJCWYl2qoWFQauzf6grkGgPXn3GL8szZK7HZfuczcTuN
+ gQ2e8zjP+DPgOCp1lUt+GUJZxqqmMPJ+H3xSUpNcfKDmrF5t8MfrppQ2iDmk2+D+sy0sRFn
+ SBxAwTKdmqsDf2hlYFe9+3xQOSQBkYK18+JgHnj79o/n7WRFYIeVRV9i9ILSf87ubmihh9s
+ GapoSaPl531RLYP1Ne3AQ==
 X-Spam-Flag: NO
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:SzOrio+FGgc=;yR7Yl0sj0wJUrR28/ZBqHBBWwak
+ 0om/yjZMoKf/1fOC9QJChBaoJeelDypDInk8j8Be5BaCg69fV9JEpwgZS8vfGFhbJxiA0iyX0
+ 0s6Zyyji24it5jPAe+DSPQ26fvlAtAZDTbNXuK+8asWkAL4pNDixS3yoKUg1qxZt4ZRo6/EEX
+ 60ASe0fy3gX3JhTqEBRT2kRW5iX863zsVJ4IhldW2P1mufxZ+9NKL8X2gL7ViCLNaTcNzdiAe
+ eOva924GXAt/B9lb/Fo1Hsdaw9EKeTEUvpB6qOKTcIbTDoYs124IlX1sTF5xEEg0UQwxqecVX
+ MZQBftBs8vWcGvAaYP4eivGYthy1U89Ui13pqDf7QE9P7Tu+eXXt8rw9jtGajhH8PrR3u1Ncx
+ Eu8QcaFJFHOE5d48/v30EubrtCl3iRKkVDTaKQp1N5J4MZ+p4hAiPHxEz3fIZpGGyzTYit949
+ 7SQ5a4TEOlmCyyLW5+m4kEXY0jd/eCHhnq3eF1GlSMVw+ryB4lG6DngnJoSvNAwRM/ehE5M7J
+ xxtUZVhxGMusteR+1oj+H0niaoOlOaZXmlvOrm+WMMYmO433wKove3oAfS2bDX13mob/v21Gl
+ 4YQBU/e9A2Z91IKgBgzvEdqti5xISWndCYLUpAYI1J6QwOX/hK157NmFN9DDjxQon220VJZ+V
+ //YowtCMJ/GvOiUqef31rYK2ft7579qyZNypgt4Ypr1x6eYvLRd2vPq7YIUYpBZlTRzN178TZ
+ IxnFy6fFxKCo7chIfksM6a4qSoKR410PD82tsZKEfiW8q15rTpERVblPyd+2GNKSoNFg9LLLg
+ AdT6S05N/toCuRwspSX8M5pAkhLXLwp+rOeeJxNCpbLNjnHbb9gEpunoJJHUYFT2Sku1/A5wK
+ JgsLSRzlsqFfG+fKQVCis8DHGOLLv5YD3hkdVXnGsSB193N4woPvxgAIaAEc0EBoV6cNlw5yi
+ NifKtjtnX4Q93IH/U/dM01BYFi5RfObMYNam+QFDPyieW9hmogzEvOg+drdsAqDg3DWhOD7ES
+ 7fnZf6Q6TU5C9OX19DGOZ/7rNohBymRB/WXJXCU5xF7AexmLrU5HrjzjoJAFBBEOicE88OnnS
+ ffMFkKmuKAfSkMULavy9HRNeG0VW9Q/azoHsaG99Oa6/sL19ywDDIAQSwh2p9kSV2ZoLe8p2n
+ gsp+Hb3bBPcpxksCfkZaFbvv5xSTrlOVmyFG+AkC4ETbrV/pU4ceZAvtC6eHig1epc05b7Sf+
+ tBPOEkREEZJ/WFXiIwlVEzJx5UhvfeJo2XwDxV68o+1mEOIfSDzRU7s0K2z+mMpPnbuj0klgt
+ q5hb2YTEVZiEQDPOWZAxjgOPgv+aA981e4UK3dEN0jVmwPkTvTHwkA8ZYDRNer5sPkB8ax150
+ RSP9FbOZN3rppEsw==
 
-I know there is already `btrfs scrub limit` command to set the limit,
-but a lot of users are not aware of that command.
+Hi,
 
-Thus adding a new option `-t <throughput_limit>` to `btrfs scrub start`.
+coming from
+https://github.com/Zygo/bees/issues/298
+https://github.com/knorrie/python-btrfs/issues/51
 
-This has some extra behavior compared to `btrfs scrub limit`:
+Balancing failed like this:
 
-- Only set the value for the involved scrub device(s)
-  If it's a full fs scrub, it will be the same as
-  `btrfs scrub limit -a -l <value>`.
-  If it's a single device, it will bt the same as
-  `btrfs scrub limit -d <devid> -l <value>`.
+# btrfs-balance-least-used -u 80 /mnt/local/data/
+Loading block group objects with used_pct <=3D 80 ... found 62
+Balance block group vaddr 1303708893184 used_pct 1 ... duration 17 sec tota=
+l 655
+Balance block group vaddr 555222040576 used_pct 32 ...Error during balancin=
+g, there may be more info in dmesg: ENOENT, state none
 
-- Automatically reset the limit after scrub is finished
+In the syslog (grep BTRFS) I can't find much but this:
 
-- It only needs one single command line to set the limit
+[kernel] BTRFS info (device dm-2): balance: start -dvrange=3D1303708893184.=
+.1303708893185
+[kernel] BTRFS info (device dm-2): relocating block group 1303708893184 fla=
+gs data
+[kernel] BTRFS info (device dm-2): found 1 extents, stage: move data extent=
+s
+[kernel] BTRFS info (device dm-2): found 1 extents, stage: update data poin=
+ters
+[kernel] BTRFS info (device dm-2): balance: ended with status: 0
+[kernel] BTRFS info (device dm-2): balance: start -dvrange=3D555222040576..=
+555222040577
+[kernel] BTRFS info (device dm-2): relocating block group 555222040576 flag=
+s data
+[kernel] BTRFS info (device dm-2): found 6650 extents, stage: move data ext=
+ents
+[kernel] BTRFS info (device dm-2): balance: ended with status: -2
 
-Issue: #943
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-RFC:
-I'm not sure if this is really needed since we already have `btrfs scrub
-limit`.
-Involved tools like btrfs-maintenance scripts should have such support,
-but to my surprise, David introduced the `btrfs scrub limit` but not
-adding any support to btrfs-maintenance.
----
- Documentation/btrfs-scrub.rst |  9 ++++++++-
- cmds/scrub.c                  | 23 ++++++++++++++++++++++-
- 2 files changed, 30 insertions(+), 2 deletions(-)
+Trying a usual balance it also fails after a while:
 
-diff --git a/Documentation/btrfs-scrub.rst b/Documentation/btrfs-scrub.rst
-index be106a551ade..de097bf79177 100644
---- a/Documentation/btrfs-scrub.rst
-+++ b/Documentation/btrfs-scrub.rst
-@@ -69,7 +69,7 @@ resume [-BdqrR] <path>|<device>
- 
- .. _man-scrub-start:
- 
--start [-BdrRf] <path>|<device>
-+start [-BdrRft] <path>|<device>
-         Start a scrub on all devices of the mounted filesystem identified by
-         *path* or on a single *device*. If a scrub is already running, the new
-         one will not start. A device of an unmounted filesystem cannot be
-@@ -96,6 +96,13 @@ start [-BdrRf] <path>|<device>
-                 can avoid writes from scrub.
-         -R
-                 raw print mode, print full data instead of summary
-+	-t <throughput_limit>
-+		set the scrub throughput limit for each device, acts the same as
-+		``btrfs scrub limit -a -l <throughput_limit>``.
-+
-+		The value is bytes per second, and accept the usual KMGT prefixes.
-+		After the scrub is finished, the throughput limit will be reset to
-+		zero (aka, no limit).
-         -f
-                 force starting new scrub even if a scrub is already running,
-                 this can useful when scrub status file is damaged and reports a
-diff --git a/cmds/scrub.c b/cmds/scrub.c
-index b2cdc924df97..bcdbac5fa40d 100644
---- a/cmds/scrub.c
-+++ b/cmds/scrub.c
-@@ -1265,11 +1265,12 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 	struct scrub_progress_cycle spc;
- 	pthread_mutex_t spc_write_mutex = PTHREAD_MUTEX_INITIALIZER;
- 	void *terr;
-+	u64 throughput = 0;
- 	u64 devid;
- 	bool force = false;
- 	bool nothing_to_resume = false;
- 
--	while ((c = getopt(argc, argv, "BdqrRc:n:f")) != -1) {
-+	while ((c = getopt(argc, argv, "BdqrRc:n:ft")) != -1) {
- 		switch (c) {
- 		case 'B':
- 			do_background = false;
-@@ -1291,6 +1292,9 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 		case 'c':
- 			ioprio_class = (int)strtol(optarg, NULL, 10);
- 			break;
-+		case 't':
-+			throughput = arg_strtou64_with_suffix(optarg);
-+			break;
- 		case 'n':
- 			ioprio_classdata = (int)strtol(optarg, NULL, 10);
- 			break;
-@@ -1389,6 +1393,12 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 
- 	for (i = 0; i < fi_args.num_devices; ++i) {
- 		devid = di_args[i].devid;
-+		ret = write_scrub_device_limit(fdmnt, devid, throughput);
-+		if (ret < 0) {
-+			errno = -ret;
-+			warning("failed to set scrub throughput limit on devid %llu: %m",
-+				devid);
-+		}
- 		ret = pthread_mutex_init(&sp[i].progress_mutex, NULL);
- 		if (ret) {
- 			errno = ret;
-@@ -1568,6 +1578,16 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 
- 	err = 0;
- 	for (i = 0; i < fi_args.num_devices; ++i) {
-+		/* We have set the limit, now reset it to 0. */
-+		if (throughput) {
-+			ret = write_scrub_device_limit(fdmnt, di_args[i].devid, 0);
-+			if (ret < 0) {
-+				errno = -ret;
-+				warning("failed to reset scrub throughput limit on devid %llu: %m",
-+					di_args[i].devid);
-+			}
-+		}
-+
- 		if (sp[i].skip)
- 			continue;
- 		devid = di_args[i].devid;
-@@ -1713,6 +1733,7 @@ static const char * const cmd_scrub_start_usage[] = {
- 	OPTLINE("-c", "set ioprio class (see ionice(1) manpage)"),
- 	OPTLINE("-n", "set ioprio classdata (see ionice(1) manpage)"),
- 	OPTLINE("-f", "force starting new scrub even if a scrub is already running this is useful when scrub stats record file is damaged"),
-+	OPTLINE("-t", "set the throughput limit for each device"),
- 	OPTLINE("-q", "deprecated, alias for global -q option"),
- 	HELPINFO_INSERT_GLOBALS,
- 	HELPINFO_INSERT_QUIET,
--- 
-2.48.1
+# btrfs balance start -dusage=3D80 /mnt/local/data/
+ERROR: error during balancing '/mnt/local/data/': No such file or directory
 
+Kernel: 6.6.30-gentoo
+
+Then I started a  btrfs check --repair  it was doing a lot of work but fina=
+lly
+did not finish after days and repeating this:
+
+super bytes used 631386423296 mismatches actual used 631386390528
+
+I stopped the --repair. balance and btrfs-balance-least-used are still fail=
+ing.
+I started bees again on the device, but after a while it failed and remount=
+ed
+ro:
+
+Jan 27 14:07:41 [kernel] BTRFS info (device dm-0: state M): force zstd comp=
+ression, level 3
+Jan 27 14:07:41 [kernel] BTRFS info (device dm-0: state M): turning off asy=
+nc discard
+Jan 27 14:08:57 [kernel] BTRFS info (device dm-2): first mount of filesyste=
+m 1d888e4b-11c1-4729-8887-cd88ebfda91d
+Jan 27 14:08:57 [kernel] BTRFS info (device dm-2): using crc32c (crc32c-int=
+el) checksum algorithm
+Jan 27 14:08:57 [kernel] BTRFS info (device dm-2): force zstd compression, =
+level 15
+Jan 27 14:08:57 [kernel] BTRFS info (device dm-2): using free space tree
+Jan 27 14:09:06 [kernel] BTRFS info (device dm-2): checking UUID tree
+Jan 27 14:09:11 [kernel] BTRFS info (device dm-2): balance: start -dvrange=
+=3D1304782635008..1304782635009
+Jan 27 14:09:11 [kernel] BTRFS info (device dm-2): relocating block group 1=
+304782635008 flags data
+Jan 27 14:09:35 [kernel] BTRFS info (device dm-2): found 1 extents, stage: =
+move data extents
+Jan 27 14:09:36 [kernel] BTRFS info (device dm-2): found 1 extents, stage: =
+update data pointers
+Jan 27 14:09:37 [kernel] BTRFS info (device dm-2): balance: ended with stat=
+us: 0
+Jan 27 14:09:37 [kernel] BTRFS info (device dm-2): balance: start -dvrange=
+=3D555222040576..555222040577
+Jan 27 14:09:37 [kernel] BTRFS info (device dm-2): relocating block group 5=
+55222040576 flags data
+Jan 27 14:12:23 [kernel] BTRFS info (device dm-2): found 6650 extents, stag=
+e: move data extents
+Jan 27 14:14:50 [kernel] BTRFS error (device dm-2): incorrect extent count =
+for 213705031680; counted 4327, expected 1337
+Jan 27 14:14:50 [kernel] BTRFS error (device dm-2: state A): Transaction ab=
+orted (error -5)
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state A) in convert_fre=
+e_space_to_extents:471: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS info (device dm-2: state EA): forced readonl=
+y
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in add_to_fre=
+e_space_tree:1057: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in do_free_ex=
+tent_accounting:2870: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS error (device dm-2: state EA): failed to run=
+ delayed ref for logical 213930115072 num_bytes 16384 type 176 action 2 ref=
+_mod 1: -5
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in btrfs_run_=
+delayed_refs:2168: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS error (device dm-2: state EA): incorrect ext=
+ent count for 213705031680; counted 4429, expected 1439
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in convert_fr=
+ee_space_to_bitmaps:338: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in add_to_fre=
+e_space_tree:1057: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in do_free_ex=
+tent_accounting:2870: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS error (device dm-2: state EA): failed to run=
+ delayed ref for logical 213940502528 num_bytes 16384 type 176 action 2 ref=
+_mod 1: -5
+Jan 27 14:14:50 [kernel] BTRFS: error (device dm-2: state EA) in btrfs_run_=
+delayed_refs:2168: errno=3D-5 IO failure
+Jan 27 14:14:50 [kernel] BTRFS info (device dm-2: state EA): balance: ended=
+ with status: -30
+Jan 27 14:34:06 [kernel] BTRFS info (device dm-2: state EA): last unmount o=
+f filesystem 1d577e4b-27c1-4729-8787-cd20ebfda91d
+Jan 27 14:36:40 [kernel] BTRFS: device label local_data devid 1 transid 152=
+823 /dev/mapper/localdata_crypt scanned by mount (23504)
+Jan 27 14:36:40 [kernel] BTRFS info (device dm-2): first mount of filesyste=
+m 1d577e4b-27c1-4729-8787-cd20ebfda91d
+Jan 27 14:36:40 [kernel] BTRFS info (device dm-2): using crc32c (crc32c-int=
+el) checksum algorithm
+Jan 27 14:36:40 [kernel] BTRFS info (device dm-2): force zstd compression, =
+level 15
+Jan 27 14:36:40 [kernel] BTRFS info (device dm-2): using free space tree
+Jan 27 14:36:49 [kernel] BTRFS error (device dm-2): incorrect extent count =
+for 213705031680; counted 3633, expected 2758
+Jan 27 14:36:49 [kernel] BTRFS info (device dm-2): checking UUID tree
+Jan 27 14:37:11 [kernel] BTRFS info (device dm-2): balance: resume -dusage=
+=3D90,vrange=3D555222040576..555222040577
+Jan 27 14:37:11 [kernel] BTRFS info (device dm-2): relocating block group 5=
+55222040576 flags data
+Jan 27 14:43:09 [kernel] BTRFS info (device dm-2): found 6650 extents, stag=
+e: move data extents
+Jan 27 14:51:03 [kernel] BTRFS error (device dm-2): incorrect extent count =
+for 213705031680; counted 5706, expected 1337
+Jan 27 14:51:03 [kernel] BTRFS error (device dm-2: state A): Transaction ab=
+orted (error -5)
+Jan 27 14:51:03 [kernel] BTRFS: error (device dm-2: state A) in convert_fre=
+e_space_to_extents:471: errno=3D-5 IO failure
+Jan 27 14:51:03 [kernel] BTRFS info (device dm-2: state EA): forced readonl=
+y
+Jan 27 14:51:03 [kernel] BTRFS: error (device dm-2: state EA) in add_to_fre=
+e_space_tree:1057: errno=3D-5 IO failure
+Jan 27 14:51:03 [kernel] BTRFS: error (device dm-2: state EA) in do_free_ex=
+tent_accounting:2870: errno=3D-5 IO failure
+Jan 27 14:51:03 [kernel] BTRFS error (device dm-2: state EA): failed to run=
+ delayed ref for logical 213998551040 num_bytes 16384 type 176 action 2 ref=
+_mod 1: -5
+Jan 27 14:51:03 [kernel] BTRFS: error (device dm-2: state EA) in btrfs_run_=
+delayed_refs:2168: errno=3D-5 IO failure
+Jan 27 14:51:03 [kernel] BTRFS info (device dm-2: state EA): balance: ended=
+ with status: -30
+Jan 27 14:51:04 [kernel] BTRFS error (device dm-2: state EA): incorrect ext=
+ent count for 213705031680; counted 5808, expected 1439
+Jan 27 14:51:04 [kernel] BTRFS: error (device dm-2: state EA) in convert_fr=
+ee_space_to_bitmaps:338: errno=3D-5 IO failure
+Jan 27 14:51:04 [kernel] BTRFS: error (device dm-2: state EA) in add_to_fre=
+e_space_tree:1057: errno=3D-5 IO failure
+Jan 27 14:51:04 [kernel] BTRFS: error (device dm-2: state EA) in do_free_ex=
+tent_accounting:2870: errno=3D-5 IO failure
+Jan 27 14:51:04 [kernel] BTRFS error (device dm-2: state EA): failed to run=
+ delayed ref for logical 214012198912 num_bytes 16384 type 176 action 2 ref=
+_mod 1: -5
+Jan 27 14:51:04 [kernel] BTRFS: error (device dm-2: state EA) in btrfs_run_=
+delayed_refs:2168: errno=3D-5 IO failure
+
+Best regards,
+Massimo
 
