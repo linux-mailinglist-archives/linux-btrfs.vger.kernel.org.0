@@ -1,122 +1,204 @@
-Return-Path: <linux-btrfs+bounces-11269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FC1A26FB7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 12:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F6A1A2701E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 12:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2559E7A1CDF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 10:59:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A72747A528D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2025 11:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9E220B20E;
-	Tue,  4 Feb 2025 11:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E1320C02D;
+	Tue,  4 Feb 2025 11:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b="t5YozzXx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c1cV2zBT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E0A20B1F9
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 11:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3973E20127B
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 11:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738666814; cv=none; b=i1MRI6mSDSERweJ9t000CVuCb2bJ6/d+e5EO/0LTDbCkeqtWyDEKENxzObsduQbU61Y7jwSAcHG09O+aIjo3VH6YJpneU5yLLtr81h9x87brCW5iUnBpdt+Od43PwZYU2fQH68oVbdeIkNhTVXCdfey0kb9EH7ssol6OE6kPIGw=
+	t=1738667998; cv=none; b=DSB+2SXSGpN25muM0uqe7rbD30hF5eheJbLI3ET1dQyVZ2vEEqLABkmsimSBodbY0FEdrinaQguONDwZibwDbAwaVn0V4Hm/39rBn0umrmr/kpStwspoyARmrUbIMgEhIkqLAwwwO8P3SOzAyYna6KMW/H1wYmjxFph3fvHmj+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738666814; c=relaxed/simple;
-	bh=v5HoW2CzmtaDUWZZNq+HKnataL6hOnsol34heiueg44=;
-	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:MIME-Version; b=C70v4DYAdTcgMNKDDvNuPexyBJukIrZXDOwilarPs3Ct2mUEsyoKJB9Uh5RRAnFosmTJ8Wpa0UJdmctIN77W43dgC9suUXr6gacdn36qnTnaZpbKrgASv+E1BWopot5FUtNSBNR+DVRHd70Wq7vsF6pKC0G2mMRBpMKZp2IsqzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b=t5YozzXx; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1738666809; x=1739271609; i=massimo.b@gmx.net;
-	bh=v5HoW2CzmtaDUWZZNq+HKnataL6hOnsol34heiueg44=;
-	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:Date:
-	 MIME-Version:cc:content-transfer-encoding:content-type:date:from:
-	 message-id:mime-version:reply-to:subject:to;
-	b=t5YozzXxp68N5AzVxGepXV7GYCKOTYZiG15iu0NTXYW+GBnMc6RqT4EUDyqNecD4
-	 Tff1QtDj73hlJTQt9jjERQ8igJyhhiQAC1hdY/0LjLMTMStFG2D6mLOur+hwRcf3M
-	 U3sa/0zC46wa1Jr1vlWVrMTYHIcT4BrrbWePduBYCGh6ayrJbSXgEoCyTrhYmJzBZ
-	 gkTi3igwhAKjP+P7x/m3HHyMy2p0qE2vyjllphDLCzWgDsy8yioSinmhaUfFPFcJF
-	 FNaDKBm3ghKBpdWct1RWwFu5PLTIrDXeIZOOu6KFgf9ABByk6zpebZDdn8KDaNtuF
-	 9EF1D95gEIUNvk8P+A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from gmb ([176.1.11.187]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEV3I-1tdZYZ0YB8-002Gvn; Tue, 04
- Feb 2025 12:00:09 +0100
-Message-ID: <a9984709a2cb53366688e924a30037fa39b5c707.camel@gmx.net>
-Subject: Re: Infinite --repair super bytes used mismatches actual used
-From: "Massimo B." <massimo.b@gmx.net>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-In-Reply-To: <427384fb-0e23-4220-8a91-b94c3b99a6a9@gmx.com>
-References: <aff8355c64d68b4995cca0a132d35af527e160b3.camel@gmx.net>
-	 <427384fb-0e23-4220-8a91-b94c3b99a6a9@gmx.com>
-Face:
- iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 04 Feb 2025 11:55:08 +0100
+	s=arc-20240116; t=1738667998; c=relaxed/simple;
+	bh=0M2rk4PT0OPqmQ1f/64MoOThaW695axzIudv26ciORA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kaj/Mfp8WZWcDP4xg6mF71NXIbVIzaSKs6NmDs8SaAnhnprL9ijoPwz09j1E7s4QDoY7W0FrEu/+ubCaBTaiQA1pbtVsThWpd5cWppf00Z/UQh+jrEvXUT5ek7NMcpUjAErUUNof6SAc75nFVZgVhzV2jKzgiA+BzP8AOWX75IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c1cV2zBT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C39FC4CEE2
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2025 11:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738667997;
+	bh=0M2rk4PT0OPqmQ1f/64MoOThaW695axzIudv26ciORA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=c1cV2zBT1uNLvcJfWAvaMhVU11tloFuK/tplCdUq5PrP67XaRTCiGRxH5uxinbsWq
+	 NbAddU+PFuRkHWz6JUt0vpGBshxhmR1/7OBT/HTZquZLKUml4oqzrpRJkYjf4FQ+LA
+	 aJgTFkhIDbPhY3pUCOJxBuEwAd7AsrBKM/j8wWBYM/jOv51SKYoqTWeJsi8vB38sHm
+	 Nq4jN1gRRqVr8/f+oc8EsAAckv2flT+k51Ncen7eOzPtycvw0fB81O4lg4BStZeGI0
+	 jOgFaIGfjEAk92s4AH3rEaeUIh7S6+ThSISedYroApqJTq2IGhnJIBW/7R9fUvHRw0
+	 vp3zQDZMVKllQ==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aaee2c5ee6eso930423266b.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2025 03:19:57 -0800 (PST)
+X-Gm-Message-State: AOJu0YypIbVt9D/I88AbA7hR3Ths3FAyrLvJtU76xbg1FMa6SrvdboBv
+	ah9fnly0mSO+lB1cBMY+4aZD2Xahapmk+zPX9UoDbjLc+q/qSJNC0RlvgZCA1DjRkr7EzbiZ2Gc
+	MCVmHUzZu0KFFg1LkvXQezg+wtbQ=
+X-Google-Smtp-Source: AGHT+IGPI2donqIkfCphBC8TUKQocUnkmkOS3JJIKgTfU4ZhQUgpRmwQgmgopuqcmOgNax6+f3ds9tyVY25dJzML+qM=
+X-Received: by 2002:a17:907:94cd:b0:ab2:fefe:7156 with SMTP id
+ a640c23a62f3a-ab6cfdbc4f5mr3076885066b.43.1738667996093; Tue, 04 Feb 2025
+ 03:19:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Evolution 3.52.4 
-X-Provags-ID: V03:K1:5fwXD3/7XqZH+rCakfOhQOGrbhPkF8SYGMUSB7CU+tunbSkZPv/
- eGnUZQChf+Me+mSuqTx/Zt79nZsStAGKFi37aA2hMcNoyqcMB7nkcCuiLNXzXegC3HCsRd2
- om7dD2rzEy/JHGdZPxV+g6Wf3ehhsKR8LZNhT2VLXHCDZtGjfg7H8qdoZo2GXetFm5U24Z4
- UeAsPm2daz9a49UPkpYnQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:xY7pZG5Gp8c=;xTdM5aTLdA+nVFkVpLl6KlDJA8m
- ndOb7XfW0nPRLiPkM2T1GDOaZyI97M8/1ZFmADHBX8bE4f3/uZWZgNaWlkeil96+YPSBkneTu
- CwSxh8SMM1tEB6cYaDEX5uqvUoW1dLy4SDI6Y3ZbKQHxm4uw/H/D2ztorioUaBSGOzAdS7WFm
- ZPTWa6Lw0DujXHHP7FGUaXTV2yB2bFlkZQUZzs5mwilQtr9gy8/Y+4FvZ+4JVeUZNCDI7opnE
- MUqKSPK+oKJcHJ95U+YAESxju63Zt3rqE5ev9YwxRkeIjPMSzpe8lpvgz/x0gYsDG7A3eTNBl
- mqawR6289NksmREvwXSiytHw/cJ874Xp7hIuhZPA+6QM0eXc3/g8DyLhkANRj5tunhIAu69WA
- 9JSC9wThcu/0YRhmT2P+lH3ifb8RCkSPNdgoSc/g4b7fgEMn6e3/hCC3T/7IN9fF6PpTk7lVn
- hkOJukd6QLPGoG2frnR9H8aN5N452E0THx6FGdw8Vb7TusZ6GgJHYJbMGvrbn9VYOOwwTrvWp
- mlLgNA28KJGP0512k1rBZtkeAyIvcb8B6cxjsIEysY1Rr6lkNeCvM1U7KpaCdHp1W9YaE9zaY
- sIMob3wqq7+4uVAvPHhXCiDevgiTId+xVO8DfmlIJ+JeR0Ssbyjpuv8aaHBoAVcQR85URFs1r
- k7GIDlc1LQ/xyncTEjqx9rwgQqmVHx4JERVoB3aMHWPY+oj373WzfjPLRr4q7hK0ZkadIkDHv
- ZMVrs+z/9NTmjnun0reGPDM0hjei2Geg3/XiulTC+eeytguMu6dBHYakx2esSpyEwLqxGBO6Q
- myKkxXLhYgvy9DhU+fZ50QLrmjjML0k2hluX2+f4LBqVdzSUrElJ8cw7AbT/A7NssqU5QTJCy
- IRdnQVHa+66VMkvIGeanvDzw2aH4p1kxW4j33HupM9c/GEPg4yHPXYGjc46poeGT0/9TT9oea
- SI4k8Tv97wPoEKCjINAcRVrdhf38YfKUuYNUSYHzu4A+a08dl9TCpuaBubMkIxhIjSXQdGJeK
- WVGhr6jfUIxwmA7ohNu6FEV+UWaNTSgs9UM7iNcTM/JiXJkpbid9VVvlFXGrb+Klxtn2vH3Li
- PtE8sWuEyBIHNemTFyemnJwnrrLcpxyRgTWCWWQBmizvQXfF7EAgkS3iVIh0y7FBWWUlDlfOO
- 6kTAVGDlsF5VhZqG3yBQbnuAE6hcqT6XXwvHO/Kt9OO5/31Y/w482KrXWf0auana7IechELhS
- 2ZILCr4EacHcaAGS4DXtLII+pDtNAOumyjGKKQi86adLMvDyN2taT9CMG5kXwnFH65IOZBTuq
- T0b3dmbjHKscTUYeA0Zqqanq49a5N933lcoefaq3O7rFlA=
+References: <e9b8716e2d613cac27e59ceb141f973540f40eef.1738639778.git.wqu@suse.com>
+In-Reply-To: <e9b8716e2d613cac27e59ceb141f973540f40eef.1738639778.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 4 Feb 2025 11:19:19 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7eJG2pRDQnvsfob7ifOiHSU_W0QNfzXyO=V99c5ugXQQ@mail.gmail.com>
+X-Gm-Features: AWEUYZnXnhGYnV-pFdcc0dQ6r7sJLnyUEQ53Uyo55B3oLqEKyImiFakgudLivK8
+Message-ID: <CAL3q7H7eJG2pRDQnvsfob7ifOiHSU_W0QNfzXyO=V99c5ugXQQ@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: always fallback to buffered write if the inode
+ requires checksum
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, "hch@infradead.org" <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-02-04 at 19:48 +1030, Qu Wenruo wrote:
+On Tue, Feb 4, 2025 at 3:31=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> It is a long known bug that VM image on btrfs can lead to data csum
+> mismatch, if the qemu is using direct-io for the image (this is commonly
+> known as cache mode none).
+>
+> [CAUSE]
+> Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
+> fs is allowed to dirty/modify the folio even the folio is under
+> writeback (as long as the address space doesn't have AS_STABLE_WRITES
+> flag inherited from the block device).
+>
+> This is a valid optimization to improve the concurrency, and since these
+> filesystems have no extra checksum on data, the content change is not a
+> problem at all.
+>
+> But the final write into the image file is handled by btrfs, which need
+> the content not to be modified during writeback, or the checksum will
+> not match the data (checksum is calculated before submitting the bio).
+>
+> So EXT4/XFS/NTRFS believes they can modify the folio under writeback,
+> but btrfs requires no modification, this leads to the false csum
+> mismatch.
+>
+> This is only a controlled example, there are even cases where
+> multi-thread programs can submit a direct IO write, then another thread
+> modifies the direct IO buffer for whatever reason.
+>
+> For such cases, btrfs has no sane way to detect such cases and leads to
+> false data csum mismatch.
+>
+> [FIX]
+> I have considered the following ideas to solve the problem:
+>
+> - Make direct IO to always skip data checksum
+>   This not only requires a new incompatible flag, as it breaks the
+>   current per-inode NODATASUM flag.
+>   But also requires extra handling for no csum found cases.
+>
+>   And this also reduces our checksum protection.
+>
+> - Let hardware to handle all the checksum
+>   AKA, just nodatasum mount option.
+>   That requires trust for hardware (which is not that trustful in a lot
+>   of cases), and it's not generic at all.
+>
+> - Always fallback to buffered write if the inode requires checksum
+>   This is suggested by Christoph, and is the solution utilized by this
+>   patch.
+>
+>   The cost is obvious, the extra buffer copying into page cache, thus it
+>   reduce the performance.
+>   But at least it's still user configurable, if the end user still wants
+>   the zero-copy performance, just set NODATASUM flag for the inode
+>   (which is a common practice for VM images on btrfs).
+>
+>   Since we can not trust user space programs to keep the buffer
+>   consistent during direct IO, we have no choice but always falling
+>   back to buffered IO.
+>   At least by this, we avoid the more deadly false data checksum
+>   mismatch error.
+>
+> Suggested-by: hch@infradead.org <hch@infradead.org>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Move the checksum check just after check_direct_IO()
+>   So that we don't need the extra ENOTBLK error code trick to fallback
+>   to buffered IO.
+>
+> - Slightly improve the comment
+>   Adds that only direct write is affected, and why buffered write is
+>   fine.
+> ---
+>  fs/btrfs/direct-io.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+> index c99ceabcd792..0de4397130be 100644
+> --- a/fs/btrfs/direct-io.c
+> +++ b/fs/btrfs/direct-io.c
+> @@ -855,6 +855,21 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struc=
+t iov_iter *from)
+>                 btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+>                 goto buffered;
+>         }
+> +       /*
+> +        * For direct IO write, we have no control on the folios passed i=
+n,
+> +        * thus the content can change halfway after we calculated the da=
+ta
+> +        * checksum, and result data checksum mismatch and unable to read
+> +        * the data out anymore.
 
-> > Balancing failed like this:
+I would phrase this differently to be more clear:
 
-> > # btrfs-balance-least-used -u 80 /mnt/local/data/
-> > Loading block group objects with used_pct <=3D 80 ... found 62
-> > Balance block group vaddr 1303708893184 used_pct 1 ... duration 17 sec =
-total 655
-> > Balance block group vaddr 555222040576 used_pct 32 ...Error during bala=
-ncing, there may be more info in dmesg: ENOENT, state none
+We can't control the folios being passed in, applications can write to
+them while a
+direct IO write is in progress. This means the content might change
+after we calculate the data
+checksum. Therefore we can end up storing a checksum that doesn't
+match the persisted data.
 
-> Can you provide the full dmesg, not just grepping btrfs for that failed
-> ENOENT balance?
+Otherwise it looks fine to me:
 
-I did the btrfs-balance-least-used again.
-After the btrfs-balance-least-used, new lines in dmesg don't contain anythi=
-ng
-about btrfs.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-> Do you have any "btrfs check --readonly" result before running --repair?
+Thanks.
 
-No, I have not. Does it help to show that now?
-
-~Massimo
-
+> +        *
+> +        * To be extra safe and avoid false data checksum mismatch, if th=
+e
+> +        * inode requires data checksum, just fallback to buffered IO.
+> +        * For buffered IO we have full control of page cache and can ens=
+ure
+> +        * no one is modifying the content during writeback.
+> +        */
+> +       if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
+> +               btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+> +               goto buffered;
+> +       }
+>
+>         /*
+>          * The iov_iter can be mapped to the same file range we are writi=
+ng to.
+> --
+> 2.48.1
+>
+>
 
