@@ -1,79 +1,206 @@
-Return-Path: <linux-btrfs+bounces-11296-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11297-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBB40A29600
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 17:16:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 996BFA29680
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 17:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E49B7A1BBD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 16:15:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0439D7A0686
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 16:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401171B3F3D;
-	Wed,  5 Feb 2025 16:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEF71DC185;
+	Wed,  5 Feb 2025 16:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pmRALNpM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JWcuMIXl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a+MNxdhA";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JWcuMIXl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a+MNxdhA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE8D1FC3;
-	Wed,  5 Feb 2025 16:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0087218A6BA;
+	Wed,  5 Feb 2025 16:40:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738772157; cv=none; b=nCIFHsZi/Lh8Wz/4oMlI2/1iclIKTjJvKFxTD2sgXa8XhD/HFZ11vWkeur0UhDr/F5ilVlxRa1R1iOeb51Hyw8YhSv+65iZOQjVyKnFFmFIF6fetyzma/LXrBc6esxJkeSkLVNY1xSW7jetj57Nv46seEGu5Q85pZmqQxWiZVEc=
+	t=1738773622; cv=none; b=pBtiHqYXSfYUxZPFy6mVWmcy/MynBfZBCzVudpFJr8L4VmBL1YNt/8BoNK8WDPFjntkqPbtzVTVPjfltgB0/ZBMXqhX3WkA9YXZQSm/YXLkmYwsDrwPkDGCuQxMxJZp9yLwChr/MkjyBzHRUDBFxEE77ghzknXRmXRcoXq1hh6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738772157; c=relaxed/simple;
-	bh=5PDkDDjqwkZnnwDy4OTJ//VqTHJy/9sIIT2t41JVVLk=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=XBz5R+4QpkKp0uu+pHdlNYJYLTO/s9sBDuMRk4QjRF0kSbLu//gjznalK55xaV56EHZYDJDs9R9J9dODme59dC6ieJJdvpEcNQ6f1gAgS7so1AAosvVSCjXZd7FGYsFmtzGMDJ2uBPLaJZm7ESHNDr2hwsh3TNE33dJyJyJm4Sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pmRALNpM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8ED0C4CED1;
-	Wed,  5 Feb 2025 16:15:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738772156;
-	bh=5PDkDDjqwkZnnwDy4OTJ//VqTHJy/9sIIT2t41JVVLk=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=pmRALNpMC5QyscLHcVyUtZ8Hr87HA5TB1XoKqA8EnbrfjZYJF6uUbw9YSkhQJ4Ehk
-	 hvfTV7D4wHjDodh2HtkSzTXLn5icpxo7suArfojGQzxRkGlacSmaP/BVBdBwAhvRju
-	 gV5K2tbEREt0pdg2DJmfJj657AttLQ5efzaNjk/iZFZlDxh7LMrRa38uMUfCaFMOsI
-	 KdFNuekCbn8QQ+N6JjD7vwuSWMxENOWxtNb2uLp3sVIfitlxcGTfEiDQX+mC8SLDC+
-	 HELyMlfqkJsl6zZdrg4bRp++Bz27Q24wkga2zfUt/pZ82LsRrkJSrpDHV9V75ZBYfs
-	 nO9GGpwf1dVRA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71106380AAD0;
-	Wed,  5 Feb 2025 16:16:25 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.14-rc2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1738764049.git.dsterba@suse.com>
-References: <cover.1738764049.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1738764049.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.14-rc1-tag
-X-PR-Tracked-Commit-Id: fdef89ce6fada462aef9cb90a140c93c8c209f0f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 92514ef226f511f2ca1fb1b8752966097518edc0
-Message-Id: <173877218393.819050.16702194158356012746.pr-tracker-bot@kernel.org>
-Date: Wed, 05 Feb 2025 16:16:23 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1738773622; c=relaxed/simple;
+	bh=fZs/OAmjFCT482JymNcEu3wCL57eRyj9F/vXr3lzllw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T00DP9jo96tcp+gjKAL85Y005iS40vPFG0KgbLxe9CeQj5oytkXKEAvPxtQoiWBHTiaGFI+FvVMBad0FNx0+pchuNE16XK46l+JsDdd/YHKiHaMbs477n6A9pjGzYMqg8ipuqVp6lGcxayg5s3z4MOgnaXZpN7mk4vRtSOjYin4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JWcuMIXl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a+MNxdhA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JWcuMIXl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a+MNxdhA; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 18E8E215D0;
+	Wed,  5 Feb 2025 16:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738773619;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=njiCdnx+9RlYGgbEMg4uPaVX/eisLEx30KxioVp5A64=;
+	b=JWcuMIXl5CDrmW/SqQQV6AQrNguGAYZ1qyzLuX0CJmwvJ33113koT/vOIrjr2xU4l8SNU7
+	nENmfWESKmLAYFd2EMkAcJre0tjR4DNHWCV0I59C/f8Jd0l/NY/LPSxGDP8/Xky8XUgjjn
+	8i7ryBtUay5XuG2GCuybRUpAQQRVjEE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738773619;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=njiCdnx+9RlYGgbEMg4uPaVX/eisLEx30KxioVp5A64=;
+	b=a+MNxdhAfufo7hnuR/NDOABzULdXY1/ckIxn1jXgkVvNOJ2VMETyLYP3wcDco9PRejpHlm
+	irWr4soBeoaRp9AQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JWcuMIXl;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=a+MNxdhA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1738773619;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=njiCdnx+9RlYGgbEMg4uPaVX/eisLEx30KxioVp5A64=;
+	b=JWcuMIXl5CDrmW/SqQQV6AQrNguGAYZ1qyzLuX0CJmwvJ33113koT/vOIrjr2xU4l8SNU7
+	nENmfWESKmLAYFd2EMkAcJre0tjR4DNHWCV0I59C/f8Jd0l/NY/LPSxGDP8/Xky8XUgjjn
+	8i7ryBtUay5XuG2GCuybRUpAQQRVjEE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1738773619;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=njiCdnx+9RlYGgbEMg4uPaVX/eisLEx30KxioVp5A64=;
+	b=a+MNxdhAfufo7hnuR/NDOABzULdXY1/ckIxn1jXgkVvNOJ2VMETyLYP3wcDco9PRejpHlm
+	irWr4soBeoaRp9AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E666313694;
+	Wed,  5 Feb 2025 16:40:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id V07UN3KUo2dqOgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 05 Feb 2025 16:40:18 +0000
+Date: Wed, 5 Feb 2025 17:40:12 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs/zstd: enable negative compression levels mount
+ option
+Message-ID: <20250205164012.GJ5777@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250124075558.530088-1-neelx@suse.com>
+ <20250127180250.GQ5777@twin.jikos.cz>
+ <CAPjX3FdaxfzULnRjN7TqyS9uK_ZJSk2PRzLgQCLVGBrR0yKLGw@mail.gmail.com>
+ <20250129224253.GF5777@twin.jikos.cz>
+ <CAPjX3FdJynRY91N-1aJ0wOrMJY+cKvSuhLDPGAuCybEvSzS0KA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPjX3FdJynRY91N-1aJ0wOrMJY+cKvSuhLDPGAuCybEvSzS0KA@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 18E8E215D0
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:replyto,suse.cz:dkim,suse.cz:mid];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-The pull request you sent on Wed,  5 Feb 2025 15:15:34 +0100:
+On Thu, Jan 30, 2025 at 10:13:36AM +0100, Daniel Vacek wrote:
+> On Wed, 29 Jan 2025 at 23:42, David Sterba <dsterba@suse.cz> wrote:
+> > Up to -15 it's 3x improvement which translates to about 33% of the
+> > original size. And this is only for rough estimate, kernel compression
+> > could be slightly worse due to slightly different parameters.
+> >
+> > We can let it to -15, so it's same number as the upper limit.
+> 
+> I was getting less favorable results with my testing which leads me to
+> the ultimate rhetorical question:
+> 
+> What do we know about the dataset users are possibly going to apply?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.14-rc1-tag
+This does not need to be a rhetorical question, this is what needs to be
+asked when adding a new feature or use case. We do not know exactly but
+in this case we can evaluate expected types of data regarding
+compressibility, run benchmarks and do some predictions.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/92514ef226f511f2ca1fb1b8752966097518edc0
+> And how do you want to assess the right cut-off having incomplete
+> information about the nature of the data?
 
-Thank you!
+Analyze typical use cases, suggest a solution, evaluate and either take
+it or repeat.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> Why doesn't zstd enforce any limit itself?
+
+That can be answered by ZSTD people, that the realtime level number
+translates to the internal parameters may be an outlier because the
+normal level are defined in a big table that specifically defines what
+each level should do so there's not predictable pattern.
+
+https://elixir.bootlin.com/linux/v6.13.1/source/lib/zstd/compress/clevels.h#L23
+
+> Is this even a matter (or responsibility) of the filesystem to force
+> some arbitrary limit here? Maybe yes?
+
+Yes and this is for practical reasons.
+
+> As mentioned before, personally I'd leave it to the users so that they
+> can freely choose whatever suits them the best. I don't see any
+> technical or maintenance issues opening this limit.
+
+As a user I see an unbounded number for relatime limit level and have no
+idea which one to use. So I go to the documentation and see that
+somebody evaluated the levels on various data sets with description of
+compressibility and says that levels -1 and -15 can give some reasonable
+results. I can also reevaluate it for my own data set or take some
+recommendation.
+
+What would IMHO look really strange is to see another 1000 levels
+allowed by the parameter but docuented as "no obvious benefit, only
+extra overhead".
+
+If somebody comes later with a concrete numbers that it would be good to
+have a few more levels allowed we can talk about it and adjust it again.
+
+The level is currently not stored anywhere but we will want that
+eventually for the properties so limiting the number is necessay anyway.
+So this is a technical and compatibility reason.
 
