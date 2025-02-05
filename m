@@ -1,326 +1,402 @@
-Return-Path: <linux-btrfs+bounces-11278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11279-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24DE9A28374
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 05:51:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF4F6A2838F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 06:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F57C7A2BE5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 04:50:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83DA51886543
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 05:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3AEA21519B;
-	Wed,  5 Feb 2025 04:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B9F2135A2;
+	Wed,  5 Feb 2025 05:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B5ZB2p1k"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="aTAk2MnL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FD025A647
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 04:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB792770B
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 05:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738731059; cv=none; b=Si7tldRvSULcxbKlwm1uNJZkyiY0Cq5fBsMHVSzPc0ROtG/2dVVnekVqY7lqtlTUHUVQuI5Jo332oxoKroZURLwZGea/8DSHz3Cb37GFBAwSARtPs9lukBy/StfNSVM/i6wMDk9AREJO1YoofSy2tRDTCLbXAnCxEOe1ovttHRc=
+	t=1738732522; cv=none; b=Wb8nGDeXkBJKVU8RPPwfehUH4HWu82VRTZyk5qTgIT7PWA62AOuosjzw1XfO8OSgN4ne9AIQEWZi/OA3SS/7f3V7jk6lNqwCGCQbRTsuudG1bq2uysgmF18rKnaSbASVmNzjrw7ZhjXCAac3CnWowTOXrzhQz/28hXtdj+6tRZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738731059; c=relaxed/simple;
-	bh=FWvXApcFcdjIYd+oJ+uB4FIF8WD0z32r7QFhmSjI2TE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=YZ8is/BwXa+6TxCxhLPliHQOpw18sl5QTeIUzLFjRl8Rl2quhKeQD9+hGX9qcqd3GxyrhnTIoITq38BeHlpWuufcRo3l96C57rjxOGjJxhNkZ9es/wd7RDFNj/FXH3xxq1Vm6fiwJu9IT2moaKEwvgDcBEp6kFRObt4zUddduM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B5ZB2p1k; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-216406238f9so14659735ad.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2025 20:50:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738731056; x=1739335856; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZFIx6B896enfLVnIPXT0b4ibpnAnUBo+UD8ROLHBz0=;
-        b=B5ZB2p1kU1/ILogFsk++F35kML9liwm8P3qX2CACvuwJpbMH0VOTFFFO+GXwVrSgA4
-         IiCggQIiwqXdIBhKL3/jfVU/sZkh20VYoZuPK4l4NitheFfWAm0vRFATqaqRhgwh+M1j
-         CtRh2HGdREUSCJf+QDIwmOeKRIRjV4Fi+MLB3OE3Wbytuld6Q2zjfq2T/P+WJuYDDLOJ
-         0oGLUBhWch+4ZoHSJjkM6OFyFWx0faw02InqWv7ec4NoOFiIHTloezoWurfrMjcNPNGd
-         oS9yOi+yEH7OyD7gvAHTbdMc7R+YqFEavzqkRLPcKkqyfe2Nh5v/SKZhj/pXbZcTjmJy
-         4rVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738731056; x=1739335856;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AZFIx6B896enfLVnIPXT0b4ibpnAnUBo+UD8ROLHBz0=;
-        b=CvVbNX4mPIkgNqYtw0WgxpXRzVtxUOumSbhZcFJnNgO5kHy2wnPfWhsrGeE0Yy+8xf
-         XprcJIKmvowvTSzmA62R+MSz4AMdfU0pr4uUX34Rnemu58jvDsrYoETuUizDurkIBjjq
-         YHLeEVq+ot4j5rxhYehwMbxV0PCEemc7SpZz8yj/GmAWDPwhHDvbbe2Tr/HJFLFjIbsk
-         rWyoV4Evdz1+lePGuFoJKtibSLj9f4cjcwHKdc5EHUvdULAGEPitzoSeiHIZ3nPpMEPI
-         LynlVyuKyk5PsnL6Wp9S6AXBQXhO/5XoPDCI3CEuzROqPynjXTn3StbsxP8xNpGuYJHA
-         q2DA==
-X-Gm-Message-State: AOJu0YxqVZNtW5eSdINdcqfSkyV/4+x/TuLO89ZdGEKj4anDBtpWT1pK
-	I782yuBqPZfz0xNedecLEya/PpO5RP9Y1SmT6lu9Ur6IMfZClGlU47zKlUj03w/vSboM/YbnqDW
-	Q39+XMeYRCLLeRwoxURIaWewGb8zem21H
-X-Gm-Gg: ASbGnctJk/nAIsTwjRYdlcBuP2sGVLffEso+E8rPdnPs0TedJgUF70O55V1j6niWdSm
-	5PA6L7FYvFghYnCMhwy9mtioGKUZtdKXyQXwEl4b+MYhyRv3teQTMhork4HBhw8wbc37x7iI=
-X-Google-Smtp-Source: AGHT+IHCexj0614w2gpC7h0eNs31WCKOy2k5cx+zx7Ikf+z30o/H2caP8fTHX143yVPGiKpvJZaOqaANa4m+KjZPe6k=
-X-Received: by 2002:a05:6a00:2906:b0:725:e499:5b9d with SMTP id
- d2e1a72fcca58-730351e9bbemr964092b3a.3.1738731055598; Tue, 04 Feb 2025
- 20:50:55 -0800 (PST)
+	s=arc-20240116; t=1738732522; c=relaxed/simple;
+	bh=+kaGz2KvopJNhabfthxa9NnkX+N1Be0sOkVfjbSuoGk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dNnsYT5swwQxiGND+ziUR8RKeEu6cMea8hBpncqn2Wwc2e/rVvliXrgst8lcnKZSufkbbQWchKDzcwEeJpVLhiN7cLq39fdQrnTz07p8+RFH9HFmr8DmqN/Quuw0Bmg1tLMvx/cmScdBGq1szwPk56q3xr/IFAk+gsCs/ne0aj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=aTAk2MnL; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1738732513; x=1739337313; i=quwenruo.btrfs@gmx.com;
+	bh=J7oHHH85O1IXccaff2zI6oZKE7imA7yeX4m1tlZoJ+M=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=aTAk2MnLRU+23Q7kXfj0Hj8MFkRmZ9nnneOQq7cDEEvErJAlbVCSRWOHSU4oFqHl
+	 VtYUd/d7uXRTr1MnD2Md9ggH5/KweJfnZeqWSuOUS03zCQkKiqMARaiFjHlMp87It
+	 eNYJ8usHN+9/nhC+pRcn42O3Am1jlSKUDL+a+Ow/6EQlimA6GlQoarRqZY7ExQTeS
+	 xYHk5rCW0BoZqJZ1Gt5Mp5Revi4mbjc0bok6OyljAggtPgBx15T7wTVI8/RFGh882
+	 +ulvu4AgDV4ml0zPlhZCo4NCE7chMn03zCirho5t4H7uP5gNU86NcOuXVaMOSFvCR
+	 3Snii4lpKCPD3RyhAA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MVvPD-1tpcLU0QSr-00UzMQ; Wed, 05
+ Feb 2025 06:15:13 +0100
+Message-ID: <a94fb3db-ac05-4fea-afda-df42cd9286b1@gmx.com>
+Date: Wed, 5 Feb 2025 15:45:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAAwmOLyY8=0_=Mddw5rPnRbxz_Lm6iVde9QVr-3SO3Qy2krP7g@mail.gmail.com>
-In-Reply-To: <CAAwmOLyY8=0_=Mddw5rPnRbxz_Lm6iVde9QVr-3SO3Qy2krP7g@mail.gmail.com>
-From: Eugen Konkov <konkove@gmail.com>
-Date: Tue, 4 Feb 2025 23:50:44 -0500
-X-Gm-Features: AWEUYZmldxAapW7ZTzjjLtTBUdeh3pye-yMFl8P3I2boFfUWeoRLDZ0DgCEKbP0
-Message-ID: <CAAwmOLzSqWbQuZBVBA63N0cqiOpqpmbq5pXDDHQE2wBgiuhVVA@mail.gmail.com>
-Subject: Re: Issue mounting device in degraded mode
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix stale page cache after race between readahead
+ and direct IO write
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <24617a89550bed4ef0e0db12d17187940de551b0.1738685146.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <24617a89550bed4ef0e0db12d17187940de551b0.1738685146.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:a+/spoRBm8O131Cd561wOAUi9wT+mhbFjh4ogWSY7hpAQ7sH+zW
+ RXTfChlNJb1rTNT3ImbgR0Ag4e6Nu/34hNf4xDW9Ep4l8g+HV0LLReGtSOkG4V8WP0MmsLa
+ pgm5DmnzDwpvTG+DloO1sr13s7y4FlDmKRXOeWz//lC46rkCydhegi2qLekpkInLd+tNFUe
+ 7IXyRNI8GPDChz5mecBDQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:qVtxXTHI6pY=;09I6xH5FhCHxgWf2o8n6k6utb7I
+ tP/ARh+FnSHWt5gZR6Qbxd0QgYlhnngtuy29mxrRGzF0JPCq2XvJiNwwW+0OlD79KEXnvuzwj
+ wUJKR+yUdaZ+vFUvjF2GgdRZsJOigjZOG/Pfkm9OgkQFdkdpQmyczMwORyApd5pL32qOWugQ5
+ Yj8Ryf/Cul2DdLU93f5wg49kU/GW/ufVMh22Hi5GKzWJhMTHiJgbWba88CyGqqFv79EpXrI1j
+ xD/JcFtbDMPc+ikK4fO54i7fjnFqmB6eFmRU5opoXa2WXKxvikxUupYdCnveZydZKfAIZAEGi
+ MxLQHI3mCSzN79NputBzig+XeSY9Xo0PFRXievif8MlUffeK6gKP6W5HgKLVgGqrZZgdJnkMk
+ UAHphJSt3WSBC/4nAkG9e+utbkTMmCfJPxxMLwm1XFTkyxARbXsLy2z/JdE6Wk5y7mjxwBFkv
+ lwFCnFLLLseVzkeo2adhV/vSReajaVsXssHNREKn7Xs+gXPuy5ulaS2zFR18T8efwWNu8QuDQ
+ NY7hdVMXEmp4n93J4CyvTvO/1qIA82Kk/cUvIzrgIn/zwqtRDJ6c5bu/fDdphZJrulTtFAb6z
+ 4/wBSUeFPIwbtL00G4pQ3DVg+Q5Qj1CZPEzFQ5KxtQdik1OS367/bzg7gONwM4h37f5/1EoDL
+ 40i9FGfQLM2FMaVq2g9BcKeYJwjkkZm9FJnVxpfj7VP2VnggmXOE1KOoelLsMDK9GYTPCAmup
+ iGAk1Bw+Y+s80V4Iet9UWhYMwudAxsYr4/woZ38mRsHKD92AbVOdjV95vgrcvcIIqxFowN1MN
+ NITq6eqwCJSBJyyzQVRyGMyFQv8M5l5z8Vu6koJwMZ6IZ7368GprtynV33xv71Ofvj/nXZond
+ UfWrXLnhPe32ruRsSHHF2Lq9CjekL7DT83NZzv+bLdL1Hjp7CRNXWYv3yHm5rQAAWSDSGpzp7
+ wdxJq+P8aKATLVqZ7fpE8+aAhcTwryMb2ws4ybBEL9mSJyq6NFDyvEGBnTWi0tqf5zNi5jOQ6
+ KsP1f6PZA72Osrd6YGSi7VnXI781yL8qyTQ/aq1vmI2JECMhANFNdcro6yZS6zaV6MgZvi/AK
+ 5D0eC/NYfefQ8OWYd5qTCSGa5V2pQ9BhwyGwwL3GAZ29iB4Fjh1pwncJ8Sye+vYSTb8hPFSo3
+ YcyR/EpOWuzlxYCSEmx0+odOdojJk/PLyCfVgy6HfO4M4gy7ImcjaNKBAOcygtSenD5Jama9c
+ rLBe66aW9XSc9AodOkHITYC3neUK6S7L3p57gAgpHpU6QYhlkb/TEQRr4yGgdbgORtAIPRpKh
+ ylDCO3xqf8ulrumhNDKZS7MWKqGKyokuQIKdcBFpzE1HOfzlqaxQyRolNFEyguEEInXrBMP0x
+ M87BSQb5s2QRuniu993lGHf3SeSHich4VHFEZEkH+/6Fiu2JYahpLFC0GT
 
-The info from dmesg:
-[20983.596051] BTRFS info (device loop10): dev_replace from <missing
-disk> (devid 2) to /dev/loop12 started
-[20983.613249] BTRFS warning (device loop10): failed setting block group ro=
-: -28
-[20983.615450] BTRFS error (device loop10): btrfs_scrub_dev(<missing
-disk>, 2, /dev/loop12) failed -28
 
-On Tue, Feb 4, 2025 at 11:48=E2=80=AFPM Eugen Konkov <konkove@gmail.com> wr=
-ote:
+
+=E5=9C=A8 2025/2/5 02:46, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> ```
-> [19989.390121] ------------[ cut here ]------------
-> [19989.390123] BTRFS: Transaction aborted (error -28)
-> [19989.390178] WARNING: CPU: 4 PID: 25509 at
-> fs/btrfs/extent-tree.c:3257 __btrfs_free_extent.isra.0+0xc21/0x11a0
-> [btrfs]
-> [19989.390269] Modules linked in: xfs jfs nls_ucs2_utils overlay
-> binfmt_misc snd_hda_codec_hdmi snd_sof_pci_intel_tgl
-> snd_sof_intel_hda_common soundwire_intel snd_sof_intel_hda_mlink
-> soundwire_cadence snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp
-> snd_sof intel_rapl_msr intel_rapl_common snd_sof_utils
-> snd_hda_codec_realtek intel_uncore_frequency snd_soc_hdac_hda
-> intel_uncore_frequency_common snd_hda_codec_generic snd_hda_ext_core
-> snd_soc_acpi_intel_match snd_soc_acpi soundwire_generic_allocation
-> soundwire_bus snd_soc_core snd_compress ac97_bus snd_pcm_dmaengine
-> x86_pkg_temp_thermal uvcvideo intel_powerclamp snd_hda_intel
-> videobuf2_vmalloc coretemp snd_intel_dspcfg uvc snd_intel_sdw_acpi
-> videobuf2_memops videobuf2_v4l2 snd_usb_audio snd_hda_codec kvm_intel
-> videodev snd_hda_core snd_usbmidi_lib 8821au(OE) snd_hwdep
-> videobuf2_common snd_ump mei_pxp mei_hdcp mc nls_iso8859_1
-> snd_seq_midi snd_pcm cfg80211 kvm input_leds joydev snd_seq_midi_event
-> irqbypass snd_rawmidi snd_seq rapl intel_cstate snd_seq_device
-> snd_timer
-> [19989.390309]  eeepc_wmi cmdlinepart snd spi_nor wmi_bmof mtd ee1004
-> soundcore mei_me mei intel_pmc_core intel_vsec pmt_telemetry acpi_tad
-> acpi_pad pmt_class mac_hid sch_fq_codel nfsd msr auth_rpcgss
-> parport_pc nfs_acl ppdev lockd lp grace parport efi_pstore sunrpc
-> ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456
-> async_raid6_recov async_memcpy async_pq async_xor async_tx xor
-> raid6_pq libcrc32c raid1 raid0 dm_mirror dm_region_hash dm_log
-> hid_logitech_hidpp hid_logitech_dj xe drm_gpuvm drm_exec hid_generic
-> gpu_sched drm_suballoc_helper usbhid drm_ttm_helper hid i915
-> crct10dif_pclmul crc32_pclmul nvme mfd_aaeon polyval_clmulni drm_buddy
-> asus_wmi i2c_algo_bit polyval_generic ledtrig_audio nvme_core
-> ghash_clmulni_intel ttm sparse_keymap sha256_ssse3 spi_intel_pci
-> platform_profile sha1_ssse3 drm_display_helper i2c_i801 spi_intel
-> intel_lpss_pci nvme_auth e1000e cec ahci intel_lpss i2c_smbus xhci_pci
-> libahci idma64 vmd xhci_pci_renesas rc_core video wmi
-> pinctrl_alderlake aesni_intel crypto_simd cryptd
-> [19989.390374] CPU: 4 PID: 25509 Comm: btrfs-balance Tainted: G
-> W  OE      6.8.0-51-generic #52~22.04.1-Ubuntu
-> [19989.390376] Hardware name: ASUS System Product Name/PRIME H610M-A
-> D4, BIOS 0412 09/29/2021
-> [19989.390378] RIP: 0010:__btrfs_free_extent.isra.0+0xc21/0x11a0 [btrfs]
-> [19989.390432] Code: 9d 60 ff ff ff 44 8b 85 7c ff ff ff ba fb 0c 00
-> 00 89 d9 e9 e7 f8 ff ff 8b b5 7c ff ff ff 48 c7 c7 18 8c 0b c1 e8 7f
-> 22 5e f0 <0f> 0b e9 4c f9 ff ff 8b bd 58 ff ff ff e8 bd d7 fe ff 84 c0
-> 0f 85
-> [19989.390434] RSP: 0018:ffffad3ea1f6b980 EFLAGS: 00010246
-> [19989.390436] RAX: 0000000000000000 RBX: 0000000001d44000 RCX: 000000000=
-0000000
-> [19989.390438] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000=
-0000000
-> [19989.390439] RBP: ffffad3ea1f6ba48 R08: 0000000000000000 R09: 000000000=
-0000000
-> [19989.390440] R10: 0000000000000000 R11: 0000000000000000 R12: fffffffff=
-ffffff7
-> [19989.390441] R13: 0000000000000001 R14: ffff9bd962d5b8f0 R15: ffff9bd94=
-7403540
-> [19989.390443] FS:  0000000000000000(0000) GS:ffff9bdaef600000(0000)
-> knlGS:0000000000000000
-> [19989.390444] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [19989.390446] CR2: 00007a0cf1b22c14 CR3: 00000003412da005 CR4: 000000000=
-0f70ef0
-> [19989.390447] PKRU: 55555554
-> [19989.390448] Call Trace:
-> [19989.390450]  <TASK>
-> [19989.390453]  ? show_regs+0x6d/0x80
-> [19989.390458]  ? __warn+0x89/0x160
-> [19989.390461]  ? __btrfs_free_extent.isra.0+0xc21/0x11a0 [btrfs]
-> [19989.390510]  ? report_bug+0x17e/0x1b0
-> [19989.390514]  ? handle_bug+0x46/0x90
-> [19989.390518]  ? exc_invalid_op+0x18/0x80
-> [19989.390521]  ? asm_exc_invalid_op+0x1b/0x20
-> [19989.390526]  ? __btrfs_free_extent.isra.0+0xc21/0x11a0 [btrfs]
-> [19989.390571]  run_delayed_tree_ref+0x92/0x200 [btrfs]
-> [19989.390616]  btrfs_run_delayed_refs_for_head+0x2db/0x530 [btrfs]
-> [19989.390654]  __btrfs_run_delayed_refs+0xf9/0x1a0 [btrfs]
-> [19989.390687]  btrfs_run_delayed_refs+0x84/0x130 [btrfs]
-> [19989.390723]  btrfs_commit_transaction+0x6a/0xbe0 [btrfs]
-> [19989.390768]  prepare_to_relocate+0x141/0x1d0 [btrfs]
-> [19989.390823]  relocate_block_group+0x6a/0x540 [btrfs]
-> [19989.390872]  ? btrfs_wait_ordered_roots+0x1f8/0x230 [btrfs]
-> [19989.390920]  ? btrfs_wait_nocow_writers+0x29/0xd0 [btrfs]
-> [19989.390965]  btrfs_relocate_block_group+0x28c/0x3e0 [btrfs]
-> [19989.391007]  btrfs_relocate_chunk+0x40/0x1b0 [btrfs]
-> [19989.391051]  __btrfs_balance+0x325/0x550 [btrfs]
-> [19989.391115]  btrfs_balance+0x52e/0x990 [btrfs]
-> [19989.391161]  ? __pfx_balance_kthread+0x10/0x10 [btrfs]
-> [19989.391201]  balance_kthread+0x74/0x120 [btrfs]
-> [19989.391239]  kthread+0xef/0x120
-> [19989.391243]  ? __pfx_kthread+0x10/0x10
-> [19989.391245]  ret_from_fork+0x44/0x70
-> [19989.391256]  ? __pfx_kthread+0x10/0x10
-> [19989.391260]  ret_from_fork_asm+0x1b/0x30
-> [19989.391265]  </TASK>
-> [19989.391267] ---[ end trace 0000000000000000 ]---
-> [19989.391270] BTRFS info (device loop10: state A): dumping space info:
-> [19989.391273] BTRFS info (device loop10: state A): space_info DATA
-> has 42926080 free, is full
-> [19989.391276] BTRFS info (device loop10: state A): space_info
-> total=3D462422016, used=3D419430400, pinned=3D0, reserved=3D0, may_use=3D=
-0,
-> readonly=3D65536 zone_unusable=3D0
-> [19989.391281] BTRFS info (device loop10: state A): space_info
-> METADATA has -11010048 free, is full
-> [19989.391283] BTRFS info (device loop10: state A): space_info
-> total=3D52428800, used=3D589824, pinned=3D0, reserved=3D16384,
-> may_use=3D11010048, readonly=3D51822592 zone_unusable=3D0
-> [19989.391287] BTRFS info (device loop10: state A): space_info SYSTEM
-> has 8372224 free, is not full
-> [19989.391289] BTRFS info (device loop10: state A): space_info
-> total=3D8388608, used=3D16384, pinned=3D0, reserved=3D0, may_use=3D0, rea=
-donly=3D0
-> zone_unusable=3D0
-> [19989.391292] BTRFS info (device loop10: state A): global_block_rsv:
-> size 5767168 reserved 5767168
-> [19989.391294] BTRFS info (device loop10: state A): trans_block_rsv:
-> size 0 reserved 0
-> [19989.391296] BTRFS info (device loop10: state A): chunk_block_rsv:
-> size 0 reserved 0
-> [19989.391299] BTRFS info (device loop10: state A): delayed_block_rsv:
-> size 0 reserved 0
-> [19989.391302] BTRFS info (device loop10: state A): delayed_refs_rsv:
-> size 1048576 reserved 1048576
-> [19989.391305] BTRFS: error (device loop10: state A) in
-> __btrfs_free_extent:3257: errno=3D-28 No space left
-> [19989.391310] BTRFS info (device loop10: state EA): forced readonly
-> [19989.391312] BTRFS error (device loop10: state EA): failed to run
-> delayed ref for logical 30687232 num_bytes 16384 type 176 action 2
-> ref_mod 1: -28
-> [19989.391318] BTRFS: error (device loop10: state EA) in
-> btrfs_run_delayed_refs:2261: errno=3D-28 No space left
-> [19989.391346] BTRFS info (device loop10: state EA): 2 enospc errors
-> during balance
-> [19989.391350] BTRFS info (device loop10: state EA): balance: ended
-> with status: -30
-> ```
+> After commit ac325fc2aad5 ("btrfs: do not hold the extent lock for entir=
+e
+> read") we can now trigger a race between a task doing a direct IO write
+> and readahead. When this race is triggered it results in tasks getting
+> stale data when they attempt do a buffered read (including the task that
+> did the direct IO write).
 >
-> The one of disks gone. I mounted btrfs in degraded mode and trying to
-> replace device
+> This race can be sporadically triggered with test case generic/418, fail=
+ing
+> like this:
 >
-> ```
-> kes@work /mnt $ sudo btrfs filesystem show  /mnt/raid_test
-> Label: none  uuid: 1829435a-a68c-464f-9e78-e9ad71ade889
-> Total devices 2 FS bytes used 400.58MiB
-> devid    1 size 500.00MiB used 479.00MiB path /dev/loop10
-> devid    2 size 500.00MiB used 479.00MiB path /dev/loop11
+>     $ ./check generic/418
+>     FSTYP         -- btrfs
+>     PLATFORM      -- Linux/x86_64 debian0 6.13.0-rc7-btrfs-next-185+ #17=
+ SMP PREEMPT_DYNAMIC Mon Feb  3 12:28:46 WET 2025
+>     MKFS_OPTIONS  -- /dev/sdc
+>     MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
 >
-> kes@work /mnt $ sudo umount /mnt/raid_test
-> kes@work /mnt $
-> kes@work /mnt $ sudo losetup -d /dev/loop10
-> sudo losetup -d /dev/loop11kes@work /mnt $
-> kes@work /mnt $ sudo losetup -d /dev/loop10
-> sudo losetup -d /dev/loop11
-> losetup: /dev/loop10: detach failed: No such device or address
-> kes@work /mnt $ sudo losetup -d /dev/loop10
-> sudo losetup -d /dev/loop11
-> losetup: /dev/loop10: detach failed: No such device or address
-> losetup: /dev/loop11: detach failed: No such device or address
-> kes@work /mnt $
-> kes@work /mnt $ sudo losetup -d /dev/loop10
-> sudo losetup -d /dev/loop11
-> losetup: /dev/loop10: detach failed: No such device or address
-> losetup: /dev/loop11: detach failed: No such device or address
-> kes@work /mnt $
-> kes@work /mnt $
-> kes@work /mnt $ losetup -a
-> /dev/loop2: [0042]:5036995 (/home/kes/work/projects/raid/disk3.img)
-> kes@work /mnt $ sudo losetup -a
-> /dev/loop2: [0042]:5036995 (/home/kes/work/projects/raid/disk3.img)
-> kes@work /mnt $
-> kes@work /mnt $ sudo losetup -a
-> /dev/loop2: [0042]:5036995 (/home/kes/work/projects/raid/disk3.img)
-> kes@work /mnt $ sudo losetup -d /dev/loop12
-> losetup: /dev/loop12: detach failed: No such device or address
-> kes@work /mnt $ sudo losetup -a
-> /dev/loop2: [0042]:5036995 (/home/kes/work/projects/raid/disk3.img)
-> kes@work /mnt $ sudo losetup -d /dev/loop1^C
-> kes@work /mnt $
-> kes@work /mnt $
-> kes@work /mnt $ sudo losetup /dev/loop10 disk1.img
-> losetup: disk1.img: failed to set up loop device: No such file or directo=
-ry
-> kes@work /mnt $
-> kes@work /mnt $
-> kes@work /mnt $
-> kes@work ~/work/projects/raid $ sudo losetup /dev/loop10 disk1.img
-> kes@work ~/work/projects/raid $
-> kes@work ~/work/projects/raid $
-> kes@work ~/work/projects/raid $ sudo mount /dev/loop10 /mnt/raid_test
-> mount: /mnt/raid_test: mount(2) system call failed: No such file or direc=
-tory.
-> kes@work ~/work/projects/raid $
-> kes@work ~/work/projects/raid $ sudo mount -o degraded /dev/loop10
-> /mnt/raid_test
-> kes@work ~/work/projects/raid $
-> kes@work ~/work/projects/raid $ mount | grep loop
-> /dev/loop10 on /mnt/raid_test type btrfs
-> (rw,relatime,degraded,ssd,discard=3Dasync,space_cache=3Dv2,subvolid=3D5,s=
-ubvol=3D/)
-> kes@work ~/work/projects/raid $ sudo btrfs filesystem show  /mnt/raid_tes=
+>     generic/418 14s ... - output mismatch (see /home/fdmanana/git/hub/xf=
+stests/results//generic/418.out.bad)
+>         --- tests/generic/418.out	2020-06-10 19:29:03.850519863 +0100
+>         +++ /home/fdmanana/git/hub/xfstests/results//generic/418.out.bad=
+	2025-02-03 15:42:36.974609476 +0000
+>         @@ -1,2 +1,5 @@
+>          QA output created by 418
+>         +cmpbuf: offset 0: Expected: 0x1, got 0x0
+>         +[6:0] FAIL - comparison failed, offset 24576
+>         +diotest -wp -b 4096 -n 8 -i 4 failed at loop 3
+>          Silence is golden
+>         ...
+>         (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/418.=
+out /home/fdmanana/git/hub/xfstests/results//generic/418.out.bad'  to see =
+the entire diff)
+>     Ran: generic/418
+>     Failures: generic/418
+>     Failed 1 of 1 tests
+>
+> The race happens like this:
+>
+> 1) A file has a prealloc extent for the range [16K, 28K);
+>
+> 2) Task A starts a direct IO write against file range [24K, 28K).
+>     At the start of the direct IO write it invalidates the page cache at
+>     __iomap_dio_rw() with kiocb_invalidate_pages() for the 4K page at fi=
+le
+>     offset 24K;
+>
+> 3) Task A enters btrfs_dio_iomap_begin() and locks the extent range
+>     [24K, 28K);
+>
+> 4) Task B starts a readahead for file range [16K, 28K), entering
+>     btrfs_readahead().
+>
+>     First it attempts to read the page at offset 16K by entering
+>     btrfs_do_readpage(), where it calls get_extent_map(), locks the rang=
+e
+>     [16K, 20K) and gets the extent map for the range [16K, 28K), caching
+>     it into the 'em_cached' variable declared in the local stack of
+>     btrfs_readahead(), and then unlocks the range [16K, 20K).
+>
+>     Since the extent map has the prealloc flag, at btrfs_do_readpage() w=
+e
+>     zero out the page's content and don't submit any bio to read the pag=
+e
+>     from the extent.
+>
+>     Then it attempts to read the page at offset 20K entering
+>     btrfs_do_readpage() where we reuse the previously cached extent map
+>     (decided by get_extent_map()) since it spans the page's range and
+>     it's still in the inode's extent map tree.
+>
+>     Just like for the previous page, we zero out the page's content sinc=
+e
+>     the extent map has the prealloc flag set.
+>
+>     Then it attempts to read the page at offset 24K entering
+>     btrfs_do_readpage() where we reuse the previously cached extent map
+>     (decided by get_extent_map()) since it spans the page's range and
+>     it's still in the inode's extent map tree.
+>
+>     Just like for the previous pages, we zero out the page's content sin=
+ce
+>     the extent map has the prealloc flag set. Note that we didn't lock t=
+he
+>     extent range [24K, 28K), so we didn't synchronize with the ongoig
+>     direct IO write being performed by task A;
+>
+> 5) Task A enters btrfs_create_dio_extent() and creates an ordered extent
+>     for the range [24K, 28K), with the flags BTRFS_ORDERED_DIRECT and
+>     BTRFS_ORDERED_PREALLOC set;
+>
+> 6) Task A unlocks the range [24K, 28K) at btrfs_dio_iomap_begin();
+>
+> 7) The ordered extent enters btrfs_finish_one_ordered() and locks the
+>     range [24K, 28K);
+>
+> 8) Task A enters fs/iomap/direct-io.c:iomap_dio_complete() and it tries
+>     to invalidate the page at offset 24K by calling
+>     kiocb_invalidate_post_direct_write(), resulting in a call chain that
+>     ends up at btrfs_release_folio().
+>
+>     The btrfs_release_folio() call ends up returning false because the r=
+ange
+>     for the page at file offset 24K is currently locked by the task doin=
+g
+>     the ordered extent completion in the previous step (7), so we have:
+>
+>     btrfs_release_folio() ->
+>        __btrfs_release_folio() ->
+>           try_release_extent_mapping() ->
+> 	     try_release_extent_state()
+>
+>     This last function checking that the range is locked and returning f=
+alse
+>     and propagating it up to btrfs_release_folio().
+>
+>     So this results in a failure to invalidate the page and
+>     kiocb_invalidate_post_direct_write() triggers this message logged in
+>     dmesg:
+>
+>       Page cache invalidation failure on direct I/O.  Possible data corr=
+uption due to collision with buffered I/O!
+>
+>     After this we leave the page cache with stale data for the file rang=
+e
+>     [24K, 28K), filled with zeroes instead of the data written by direct=
+ IO
+>     write (all bytes with a 0x01 value), so any task attempting to read =
+with
+>     buffered IO, including the task that did the direct IO write, will g=
+et
+>     all bytes in the range with a 0x00 value instead of the written data=
+.
+>
+> Fix this by locking the range, with btrfs_lock_and_flush_ordered_range()=
+,
+> at the two callers of btrfs_do_readpage() instead of doing it at
+> get_extent_map(), just like we did before commit ac325fc2aad5 ("btrfs: d=
+o
+> not hold the extent lock for entire read"), and unlocking the range afte=
+r
+> all the calls to btrfs_do_readpage(). This way we never reuse a cached
+> extent map without flushing any pending ordered extents from a concurren=
 t
-> Label: none  uuid: 1829435a-a68c-464f-9e78-e9ad71ade889
-> Total devices 2 FS bytes used 400.58MiB
-> devid    1 size 500.00MiB used 479.00MiB path /dev/loop10
-> *** Some devices missing
+> direct IO write.
 >
-> kes@work ~/work/projects/raid $ dd if=3D/dev/urandom of=3Dreplace.img
-> bs=3D1M count=3D500
-> 500+0 records in
-> 500+0 records out
-> 524288000 bytes (524 MB, 500 MiB) copied, 0,973095 s, 539 MB/s
-> kes@work ~/work/projects/raid $
-> kes@work ~/work/projects/raid $ sudo btrfs replace start -B 2
-> /dev/loop12 /mnt/raid_test/
-> ERROR: cannot check mount status of /dev/loop12: No such device or addres=
-s
-> kes@work ~/work/projects/raid $ sudo losetup /dev/loop12 replace.img
-> kes@work ~/work/projects/raid $
-> kes@work ~/work/projects/raid $ sudo btrfs replace start -B 2
-> /dev/loop12 /mnt/raid_test/
-> Performing full device TRIM /dev/loop12 (500.00MiB) ...
-> ERROR: ioctl(DEV_REPLACE_START) failed on "/mnt/raid_test/": No space
-> left on device
-> ```
+> Fixes: ac325fc2aad5 ("btrfs: do not hold the extent lock for entire read=
+")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/extent_io.c | 18 +++++++++++++++---
+>   1 file changed, 15 insertions(+), 3 deletions(-)
 >
-> I am not expecting: No space left on device, because I want to replace
-> the old device.
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 838ab2b6ed43..bdb9816bf125 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -898,7 +898,6 @@ static struct extent_map *get_extent_map(struct btrf=
+s_inode *inode,
+>   					 u64 len, struct extent_map **em_cached)
+>   {
+>   	struct extent_map *em;
+> -	struct extent_state *cached_state =3D NULL;
+>
+>   	ASSERT(em_cached);
+>
+> @@ -914,14 +913,12 @@ static struct extent_map *get_extent_map(struct bt=
+rfs_inode *inode,
+>   		*em_cached =3D NULL;
+>   	}
+>
+> -	btrfs_lock_and_flush_ordered_range(inode, start, start + len - 1, &cac=
+hed_state);
+>   	em =3D btrfs_get_extent(inode, folio, start, len);
+>   	if (!IS_ERR(em)) {
+>   		BUG_ON(*em_cached);
+>   		refcount_inc(&em->refs);
+>   		*em_cached =3D em;
+>   	}
+> -	unlock_extent(&inode->io_tree, start, start + len - 1, &cached_state);
+>
+>   	return em;
+>   }
+> @@ -1078,11 +1075,18 @@ static int btrfs_do_readpage(struct folio *folio=
+, struct extent_map **em_cached,
+>
+>   int btrfs_read_folio(struct file *file, struct folio *folio)
+>   {
+> +	struct btrfs_inode *inode =3D folio_to_inode(folio);
+> +	const u64 start =3D folio_pos(folio);
+> +	const u64 end =3D start + folio_size(folio) - 1;
+
+And great you're already taking larger data folio into consideration.
+
+> +	struct extent_state *cached_state =3D NULL;
+>   	struct btrfs_bio_ctrl bio_ctrl =3D { .opf =3D REQ_OP_READ };
+>   	struct extent_map *em_cached =3D NULL;
+>   	int ret;
+>
+> +	btrfs_lock_and_flush_ordered_range(inode, start, end, &cached_state);
+
+This change is going to conflict with the subpage + partial uptodate
+page optimization (which will also be the foundation for larger data folio=
+):
+https://lore.kernel.org/linux-btrfs/1d230d53e92c4f4a7ea4ce036f226b8daa16e5=
+ae.1736848277.git.wqu@suse.com/
+
+I'm fine to update the patch on my side after yours got merged.
+
+>   	ret =3D btrfs_do_readpage(folio, &em_cached, &bio_ctrl, NULL);
+> +	unlock_extent(&inode->io_tree, start, end, &cached_state);
+> +
+>   	free_extent_map(em_cached);
+>
+>   	/*
+> @@ -2377,12 +2381,20 @@ void btrfs_readahead(struct readahead_control *r=
+ac)
+>   {
+>   	struct btrfs_bio_ctrl bio_ctrl =3D { .opf =3D REQ_OP_READ | REQ_RAHEA=
+D };
+>   	struct folio *folio;
+> +	struct btrfs_inode *inode =3D BTRFS_I(rac->mapping->host);
+> +	const u64 start =3D readahead_pos(rac);
+> +	const u64 end =3D start + readahead_length(rac) - 1;
+> +	struct extent_state *cached_state =3D NULL;
+>   	struct extent_map *em_cached =3D NULL;
+>   	u64 prev_em_start =3D (u64)-1;
+>
+> +	btrfs_lock_and_flush_ordered_range(inode, start, end, &cached_state);
+> +
+
+I'm not confident enough about this lock, as it can cross several pages.
+
+E.g. if we have the following case, 4K page size 4K block size.
+
+         0       4K      8K      12K     16K
+         |       |///////|               |
+
+And range [4K, 8K) is uptodate, and it has been submitted for writeback,
+and finished writeback.
+But it still have ordered extent, not yet finished.
+
+Then we go into the following call chain:
+btrfs_lock_and_write_flush()
+|- btrfs_start_ordered_extent()
+    |- filemap_fdatawrite_range()
+
+Which will try to writeback the range [4K, 8K) again.
+But since the folio at [4K, 8K) is going to be passed to
+btrfs_do_readpage(), it should already have been locked.
+
+Thus the writeback will never be able to lock the folio, thus causing a
+deadlock.
+
+Or did I miss something specific to readahead so it will avoid readahead
+on already uptodate pages?
+
+
+And even if it will not cause the above deadlock, I'm not confident the
+mentioned subpage fix conflict can be proper fixed.
+In the subpage fix, I can only add a folio parameter to
+btrfs_lock_and_flush_ordered_range(), but in this case, we have multiple
+folios, how can we avoid the same subpage dead lock then?
+
+Thanks,
+Qu
+
+>   	while ((folio =3D readahead_folio(rac)) !=3D NULL)
+>   		btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
+>
+> +	unlock_extent(&inode->io_tree, start, end, &cached_state);
+> +
+>   	if (em_cached)
+>   		free_extent_map(em_cached);
+>   	submit_one_bio(&bio_ctrl);
+
 
