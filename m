@@ -1,79 +1,56 @@
-Return-Path: <linux-btrfs+bounces-11302-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11303-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0655FA29B90
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 22:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A4389A29B98
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 22:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE99166E90
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 21:00:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED7B167E1F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 21:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7EA214A6B;
-	Wed,  5 Feb 2025 21:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB11214A6D;
+	Wed,  5 Feb 2025 21:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PK/2Ov6T"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iwlejYzT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B221DAC81
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 21:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DCF1DAC81
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 21:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738789233; cv=none; b=Sn83Cn6RRL5zlXiIk0nDQukm6YH591uHutzghWWH1/WzZoLmHQ0az4GWL+l7OvC+kCocittqxHr0mp/4TKn18HGkDo3OKZH/LhJ3A9ADqgjlC59NxpNATSCp9oizARKK+rvO42kclV+Fq+Op315hjtHZMNlmfW9TKYw8sh9Am8c=
+	t=1738789543; cv=none; b=AUckqFxXuSP74h0Rfw8nlxvc59ydZUyjSRhOMyAdlAkbCsflZpviG/ETFeTexjZ/wMOIbaj2vFOxI11BcxwWHgDVPzUQYZL9/ZqEoCkhtslGXayJrBBLd4GbyqHn22qKWaOMRSB7vfo0xyiRo2EN2vdKhvEkyLg+HNZSvzc1zwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738789233; c=relaxed/simple;
-	bh=67kjp5zSNi03bREpIPKe0zbdnrzsT4hBDkE9OVJ+cc4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O5NtSDVUKIms9J8703Vx+E8tdM8I3LZgFtwTrb8rvetBrx8XeJ3JainRA5veRETE4sqQEGvXxxWXvK9VbbDplUTEojHNiEuSKTl5arZ2zg3KhzFYnBVZ78a19nlscpMG1+4oydXh4CDIkTF1zR3W0NrRmsH9RQpjISoDhrRih7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PK/2Ov6T; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-38db0c06e96so119335f8f.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Feb 2025 13:00:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1738789229; x=1739394029; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6RBXrEsC+iy5cf/12KrPllBO78Rv6/nCva0fGi12Vt8=;
-        b=PK/2Ov6TpSXsaLZuJ5uj6aegSOt8Dv9xUsno/TjIGxAh93Ss5paLxTJyzjjeNoFYyN
-         MXdXDv5fuCvYavpBHOHt4LwQNbbfCJJg+Ulr0Qq973DpbT9umUMOBneSGp9pZg3eClLS
-         XPzwNJKUU9jAQVQrXv6EICIT8EKfzqSqbwsBmcty5R9jRIkEe679bjkweBhqgHoy9+uw
-         pKNLCF0yKb3naF1f29lvLe5IK033bQDdJoFPaBDuVilUbpl0U50Lz1au0zZHON1r9+a8
-         vrG/Wt5z9vWkhM49prd/0vYOVikMA8tFlcfa1qAOV8qVltjJVKGFfQI33hazzshUa6qs
-         Mt1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738789229; x=1739394029;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6RBXrEsC+iy5cf/12KrPllBO78Rv6/nCva0fGi12Vt8=;
-        b=CUoSwZ7fT8lbLoPvKd0+UOUfHVYeggpDqOkeWzLiipF0EZrfjZmet+jt+sudrZ1o6y
-         AhIkKXHqy00x6Q5LMXvAcE4qYQspd42WJDPljUrskMPhaasKatVKEGn3UOAXfhtuzwZG
-         LZL8ipNEGXKm4EIjwo2YbE0WvgD5u9SgRNprEU30XDUCJlP7LlfaKxnVWNs519f7ZZ2h
-         4KPsg+Bxldh7izWKz6VFJXZwShsGsF18spmpWMXIUcFdt+VXIZR2EiOp+/R5NRVc3y9u
-         hmdewMxmvO6jmfGzJPWbzpw8HAnzAtYHoKMqAy/b61w0eJvumEEVAKb2ef+aM0zyxErd
-         p4JA==
-X-Gm-Message-State: AOJu0YzhBdc3knDhuOkdbQfLS0WFnomVjUxJ1Vg1kmf5TgJ9qMcZRidS
-	NZUzYHkzfmaDWNec5EeeSshYOt20tqkvcLMj5J/f1R0I5eZtLCTpdh3C2OSZJhA=
-X-Gm-Gg: ASbGncvkUzBDoNqAqtKoyJja5S0m+GbeUo7LsbVMTsGX9SctLipjrSOqqGem55U4ksx
-	OBExxWdJoeE1NkKLYVwuvXrF3f7RWvR/+JKx8mPFr0Kfr2Yyokqj2y/iCV+3ndf3fZDbClhNKQL
-	0sMZdQz1jMIJn/zFX6Xybl4XIWr2DpJCw/2Ztiyar1uSSfEYcWvtf0ffEXxJ4HcdtzoFEFHs7e7
-	hZ7l8/Oa7I1P4VNKrBv6MjeV/mikLqNFdfGIOtyzpgv+42D9dxGhCu2FQvyIz8lh49F+DjBftDV
-	LigG9F8nWth6aiVQI9M1EBX8Wdeb3F6S0rT2doG6+zU=
-X-Google-Smtp-Source: AGHT+IF2hAcDfiUHKy+mOdHenNsbiB/dvttWOu9dcmsSEEyVeH/rS5pPWUVjJPGqtsXoXnkao6OOQw==
-X-Received: by 2002:a05:6000:186e:b0:38d:b113:e9b with SMTP id ffacd0b85a97d-38db4869560mr2941692f8f.17.1738789228550;
-        Wed, 05 Feb 2025 13:00:28 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de32edd7esm118695575ad.144.2025.02.05.13.00.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Feb 2025 13:00:27 -0800 (PST)
-Message-ID: <59798af3-1567-4cf0-b881-d8983477548b@suse.com>
-Date: Thu, 6 Feb 2025 07:30:23 +1030
+	s=arc-20240116; t=1738789543; c=relaxed/simple;
+	bh=nceELc9heKtnszHQ63KXnanBGABZsxRjjxIos6DEUTM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Dg2S8vC8Qhma0eHlrUxej/CL/EsuJZtMheg7mZtP+LA1UyFcSdu4qt5QeLkGTYe5DwmMvScJIVN091uHP+QTBQGD74Hy0byIbpNGrjpOsSJ0k2JlsQ8JiTgLBg3/LmoEMEkC2tFUTuMKMKBiaArWZaLWD02eFNNSzGXlUE0rjUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iwlejYzT; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1738789534; x=1739394334; i=quwenruo.btrfs@gmx.com;
+	bh=3SQZuW2p+AUrF+BMKMsZhdZ7e/PNbBr7uINpXH4Tlss=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=iwlejYzT9+7DcWSS15n9G96KrzcUdOpP7b6ZGEo9CRsEX39QugHGl2bWKhZ1+duf
+	 XKGKQ7jarBg7Vs9WYp/LBejsf0igddKR4/igkmkQi9VuB7ELyhHx1xAPl5KEbqaL0
+	 4iQ4hfdI1piFFubK1z16xC1nSJBX/1AAqg3Q4aZGDkjgdJ++qnf4bONURQ15lBCM0
+	 fBi2vQ+K4KTPv4RzzpxN6cQG4ZXKqysfACvLXkxZCeXILjTOVh2xLLenCVNrSi0rF
+	 CKFWDZw/DrX6FFx1Jm99rs9kKH05TIMGO8gJQxiCOKcaXsXj25ZUx0cYL0bub3hXy
+	 YbS7gz4xGN1qAvVvhg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXQF-1txaig2kJ5-00WyrB; Wed, 05
+ Feb 2025 22:05:34 +0100
+Message-ID: <ba32a0f9-f699-46a1-8a8c-326bda01b356@gmx.com>
+Date: Thu, 6 Feb 2025 07:35:30 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,209 +58,183 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: always fallback to buffered write if the inode
- requires checksum
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, "hch@infradead.org" <hch@infradead.org>
-References: <e9b8716e2d613cac27e59ceb141f973540f40eef.1738639778.git.wqu@suse.com>
- <CAL3q7H7eJG2pRDQnvsfob7ifOiHSU_W0QNfzXyO=V99c5ugXQQ@mail.gmail.com>
- <CAL3q7H6oAtVcNpMkHKY3+4kH3GjHyxz9UxqWFHcwEoXMmzOajQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix hole expansion when writing at an offset
+ beyond eof
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <974b00afc2e703d5e0085fefbb46a1e495956ae1.1738778225.git.fdmanana@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL3q7H6oAtVcNpMkHKY3+4kH3GjHyxz9UxqWFHcwEoXMmzOajQ@mail.gmail.com>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <974b00afc2e703d5e0085fefbb46a1e495956ae1.1738778225.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:O/i1qbpyHmOeyxCy2FOlQiY8YUCwTgUQ3T01kZpa3BivXZ+TdMH
+ Kq8mc/DuNJAd4xw9eBNLzPG8rcJ0HamcHVm/3+p+2NRguxXjfcFSwr6juNFatKCYv7tPLwl
+ 59wN/xE4ujcm0v04cPizkqGErhLyPBAmf4Mb0Jyx4gfAeyizvEGWzoqfFDqupN2wFXzUH7z
+ KZSbLys6J5hwd+AAP9qZg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:f6UjfHIPWYk=;Hyt6qGQxfH5EkoriOJMRY88yAe+
+ K2skgLKPjPpQyz4cRM9KgmBfAr1wi1Kvaaur0ZRFgtmZo9soi3rTQPPTc0Fq8sIS2E+5JLLFO
+ YzIFGZAPD/EN3IeDJlKMv6OlVccPN2/zKlZH2g0ZYUEs2ipKUvUzEUuCE7iI66of3oqJn+5B7
+ 5xeTuY9KLM8qrZwJc2N4JcYpco2mKKmCxAM53gcVNpvtOHWZeI2n0oBptRyNQXSdGhfNaOC2s
+ znylCS/Df2Dtd/+6+4jwTV1LoZLrbQX5Q44c+ofusPWOnutF3ltkf/8dQTKdruTjvcxAMbMRr
+ N6yEh19pQNCnGaowL0LLmLgGdbTJ+eiirJReXDb3xVk6H3UNN59a4BYIFUyz46rG5hQu1CAPG
+ ypjPRwf5W0MH2ApY+rsPu0nW1VAutw6fhyc8xu8ufE2RIjgJByrPFivNVe4k630YWjWScfx7F
+ 4sNrx7BF6USoxFtTNci0Fb4qMZK1ZZOSgsUBZIWvu73xvJz/vy/woJHmg92EXhuS39iq0CGYv
+ vkyrSEuLZYHTBoOG/DIfIb1OXjD7s9bYAP5ayE/NAvwHkfjccfkgKNr+Dnp4XvBJH/vfLa21z
+ RocdJrKZEkPlqTYIKjifdQfv71yV281nixYoRSa0GgPQ1wsylNNokPHHy0lU2o2L4QM5rhfPU
+ Fnwi/0SugFXxKShPNLbD9YvlM6ty43s29kGnNd5rOl1FcgVqmnIei9hNwBTI2UmnCaf1Rj87E
+ 1i9eHthtmEL6baJgefwEhia8M4roUcWfkoHZFqwmydNMtFRH13zILpqY+WMZnR5PZtK8rT9aC
+ umMY07sxp6uoUjCu7BBJtHaTOJSp5xEzZ1Je/kejNsYzAqVvzdwP5a6rHMq56QElWJFUuPcSA
+ D7CJoPY4LZNoo7B3MsydKRdneXR3dk+r+c9fvrIqxMPYAoGGSw7apKtnhb2MXWe4NmaG4x5Mo
+ ekzAPcWyM2EVT24dtvUwzP/AY0w0NDod7jX7IYD1sVf5RMUyVxxHNyCf9wFF5yiBOQGKqIFod
+ KIYzhgWZm07sjaeMbstOlmGZkxZZ0282SxB77l414x2aePPsvQqiOvVtiSEvCe6O+YHAXLqYG
+ Ij1TsTEoz9W+/pESSPStrLZqS6jcwYZIaSoe6cc0g46fHmTlDq6gCOKzniW9hNkTIu0HPy9T3
+ Xo/EjY5u4mjnlQQ9Sgf8Z+X0S+9d7TXoRwzNr/6oyLZG6vCfcO2RFh/LfFae3gCyRvRYL21IP
+ dzB51ltTA0Ad68dvu6FbQ8xujC9Gq9vN+0O+3ZcBNZV3vgZhdcbrpL3F5CpU+Fx3ZQFVsRbdM
+ kjLFP5lipEp/7ikdKsfuAGulZ2WurEtH7eHf3VL8aDJpOoksnNExyhtqYYGYfh6taC0Qx2sou
+ AeSFWyDCRvht5cYV+1rZZll+4ZajjI8vFormb85dt+3EXlRamE6FO3leWC
 
 
 
-在 2025/2/6 05:42, Filipe Manana 写道:
-> On Tue, Feb 4, 2025 at 11:19 AM Filipe Manana <fdmanana@kernel.org> wrote:
->>
->> On Tue, Feb 4, 2025 at 3:31 AM Qu Wenruo <wqu@suse.com> wrote:
->>>
->>> [BUG]
->>> It is a long known bug that VM image on btrfs can lead to data csum
->>> mismatch, if the qemu is using direct-io for the image (this is commonly
->>> known as cache mode none).
->>>
->>> [CAUSE]
->>> Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
->>> fs is allowed to dirty/modify the folio even the folio is under
->>> writeback (as long as the address space doesn't have AS_STABLE_WRITES
->>> flag inherited from the block device).
->>>
->>> This is a valid optimization to improve the concurrency, and since these
->>> filesystems have no extra checksum on data, the content change is not a
->>> problem at all.
->>>
->>> But the final write into the image file is handled by btrfs, which need
->>> the content not to be modified during writeback, or the checksum will
->>> not match the data (checksum is calculated before submitting the bio).
->>>
->>> So EXT4/XFS/NTRFS believes they can modify the folio under writeback,
->>> but btrfs requires no modification, this leads to the false csum
->>> mismatch.
->>>
->>> This is only a controlled example, there are even cases where
->>> multi-thread programs can submit a direct IO write, then another thread
->>> modifies the direct IO buffer for whatever reason.
->>>
->>> For such cases, btrfs has no sane way to detect such cases and leads to
->>> false data csum mismatch.
->>>
->>> [FIX]
->>> I have considered the following ideas to solve the problem:
->>>
->>> - Make direct IO to always skip data checksum
->>>    This not only requires a new incompatible flag, as it breaks the
->>>    current per-inode NODATASUM flag.
->>>    But also requires extra handling for no csum found cases.
->>>
->>>    And this also reduces our checksum protection.
->>>
->>> - Let hardware to handle all the checksum
->>>    AKA, just nodatasum mount option.
->>>    That requires trust for hardware (which is not that trustful in a lot
->>>    of cases), and it's not generic at all.
->>>
->>> - Always fallback to buffered write if the inode requires checksum
->>>    This is suggested by Christoph, and is the solution utilized by this
->>>    patch.
->>>
->>>    The cost is obvious, the extra buffer copying into page cache, thus it
->>>    reduce the performance.
->>>    But at least it's still user configurable, if the end user still wants
->>>    the zero-copy performance, just set NODATASUM flag for the inode
->>>    (which is a common practice for VM images on btrfs).
->>>
->>>    Since we can not trust user space programs to keep the buffer
->>>    consistent during direct IO, we have no choice but always falling
->>>    back to buffered IO.
->>>    At least by this, we avoid the more deadly false data checksum
->>>    mismatch error.
->>>
->>> Suggested-by: hch@infradead.org <hch@infradead.org>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>> Changelog:
->>> v2:
->>> - Move the checksum check just after check_direct_IO()
->>>    So that we don't need the extra ENOTBLK error code trick to fallback
->>>    to buffered IO.
->>>
->>> - Slightly improve the comment
->>>    Adds that only direct write is affected, and why buffered write is
->>>    fine.
->>> ---
->>>   fs/btrfs/direct-io.c | 15 +++++++++++++++
->>>   1 file changed, 15 insertions(+)
->>>
->>> diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
->>> index c99ceabcd792..0de4397130be 100644
->>> --- a/fs/btrfs/direct-io.c
->>> +++ b/fs/btrfs/direct-io.c
->>> @@ -855,6 +855,21 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
->>>                  btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
->>>                  goto buffered;
->>>          }
->>> +       /*
->>> +        * For direct IO write, we have no control on the folios passed in,
->>> +        * thus the content can change halfway after we calculated the data
->>> +        * checksum, and result data checksum mismatch and unable to read
->>> +        * the data out anymore.
->>
->> I would phrase this differently to be more clear:
->>
->> We can't control the folios being passed in, applications can write to
->> them while a
->> direct IO write is in progress. This means the content might change
->> after we calculate the data
->> checksum. Therefore we can end up storing a checksum that doesn't
->> match the persisted data.
->>
->> Otherwise it looks fine to me:
->>
->> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> 
-> Btw, did you actually run fstests with this?
-> 
-> At least one test is failing after this change:
-> 
-> btrfs/226 2s ... - output mismatch (see
-> /home/fdmanana/git/hub/xfstests/results//btrfs/226.out.bad)
->      --- tests/btrfs/226.out 2024-05-20 11:27:55.933394605 +0100
->      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/226.out.bad
-> 2025-02-05 19:09:33.990188790 +0000
->      @@ -39,14 +39,11 @@
->       Testing write against prealloc extent at eof
->       wrote 65536/65536 bytes at offset 0
->       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->      -wrote 65536/65536 bytes at offset 65536
->      -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->      +pwrite: Resource temporarily unavailable
+=E5=9C=A8 2025/2/6 04:30, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> At btrfs_write_check() if our file's i_size is not sector size aligned a=
+nd
+> we have a write that starts at an offset larger than the i_size that fal=
+ls
+> within the same page of the i_size, then we end up not zeroing the file
+> range [i_size, write_offset).
+>
+> The code is this:
+>
+>      start_pos =3D round_down(pos, fs_info->sectorsize);
+>      oldsize =3D i_size_read(inode);
+>      if (start_pos > oldsize) {
+>          /* Expand hole size to cover write data, preventing empty gap *=
+/
+>          loff_t end_pos =3D round_up(pos + count, fs_info->sectorsize);
+>
+>          ret =3D btrfs_cont_expand(BTRFS_I(inode), oldsize, end_pos);
+>          if (ret)
+>              return ret;
+>      }
+>
+> So if our file's i_size is 90269 bytes and a write at offset 90365 bytes
+> comes in, we get 'start_pos' set to 90112 bytes, which is less than the
+> i_size and therefore we don't zero out the range [90269, 90365) by
+> calling btrfs_cont_expand().
+>
+> This is an old bug introduced in commit 9036c10208e1 ("Btrfs: update hol=
+e
+> handling v2"), from 2008, and the buggy code got moved around over the
+> years.
+>
+> Fix this by discarding 'start_pos' and comparing against the write offse=
+t
+> ('pos') without any alignment.
+>
+> This bug was recently exposed by test case generic/363 which tests this
+> scenario by polluting ranges beyond eof with a mmap write and than verif=
+y
+> that after a file increases we get zeroes for the range which is suppose=
+d
+> to be a hole and not what we wrote with the previous mmaped write.
+>
+> We're only seeing this exposed now because generic/363 used to run only
+> on xfs until last Sunday's fstests update.
+>
+> The test was failing like this:
+>
+>     $ ./check generic/363
+>     FSTYP         -- btrfs
+>     PLATFORM      -- Linux/x86_64 debian0 6.13.0-rc7-btrfs-next-185+ #17=
+ SMP PREEMPT_DYNAMIC Mon Feb  3 12:28:46 WET 2025
+>     MKFS_OPTIONS  -- /dev/sdc
+>     MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+>
+>     generic/363 0s ... [failed, exit status 1]- output mismatch (see /ho=
+me/fdmanana/git/hub/xfstests/results//generic/363.out.bad)
+>         --- tests/generic/363.out	2025-02-05 15:31:14.013646509 +0000
+>         +++ /home/fdmanana/git/hub/xfstests/results//generic/363.out.bad=
+	2025-02-05 17:25:33.112630781 +0000
+>         @@ -1 +1,46 @@
+>          QA output created by 363
+>         +READ BAD DATA: offset =3D 0xdcad, size =3D 0xd921, fname =3D /h=
+ome/fdmanana/btrfs-tests/dev/junk
+>         +OFFSET      GOOD    BAD     RANGE
+>         +0x1609d     0x0000  0x3104  0x0
+>         +operation# (mod 256) for the bad data may be 4
+>         +0x1609e     0x0000  0x0472  0x1
+>         +operation# (mod 256) for the bad data may be 4
+>         ...
+>         (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/363.=
+out /home/fdmanana/git/hub/xfstests/results//generic/363.out.bad'  to see =
+the entire diff)
+>     Ran: generic/363
+>     Failures: generic/363
+>     Failed 1 of 1 tests
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-That's caused by NOWAIT flag, we rejects NOWAIT direct-io if it falls 
-back to buffered one.
-
-This should be fixed through the test case.
-
-Or do you mean that NOWAIT direct-IO is pretty common and this change is 
-going to break a lot of user space tools?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
->       File after write:
->      ...
->      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/226.out
-> /home/fdmanana/git/hub/xfstests/results//btrfs/226.out.bad'  to see
-> the entire diff)
-> 
-> 
-> 
->>
->> Thanks.
->>
->>> +        *
->>> +        * To be extra safe and avoid false data checksum mismatch, if the
->>> +        * inode requires data checksum, just fallback to buffered IO.
->>> +        * For buffered IO we have full control of page cache and can ensure
->>> +        * no one is modifying the content during writeback.
->>> +        */
->>> +       if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
->>> +               btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
->>> +               goto buffered;
->>> +       }
->>>
->>>          /*
->>>           * The iov_iter can be mapped to the same file range we are writing to.
->>> --
->>> 2.48.1
->>>
->>>
+> ---
+>   fs/btrfs/file.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 36f51c311bb1..ed3c0d6546c5 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1039,7 +1039,6 @@ int btrfs_write_check(struct kiocb *iocb, size_t c=
+ount)
+>   	loff_t pos =3D iocb->ki_pos;
+>   	int ret;
+>   	loff_t oldsize;
+> -	loff_t start_pos;
+>
+>   	/*
+>   	 * Quickly bail out on NOWAIT writes if we don't have the nodatacow o=
+r
+> @@ -1066,9 +1065,8 @@ int btrfs_write_check(struct kiocb *iocb, size_t c=
+ount)
+>   		inode_inc_iversion(inode);
+>   	}
+>
+> -	start_pos =3D round_down(pos, fs_info->sectorsize);
+>   	oldsize =3D i_size_read(inode);
+> -	if (start_pos > oldsize) {
+> +	if (pos > oldsize) {
+>   		/* Expand hole size to cover write data, preventing empty gap */
+>   		loff_t end_pos =3D round_up(pos + count, fs_info->sectorsize);
+>
 
 
