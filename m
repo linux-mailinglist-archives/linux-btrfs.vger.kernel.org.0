@@ -1,190 +1,238 @@
-Return-Path: <linux-btrfs+bounces-11300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11301-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFFC3A29892
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 19:17:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5C6A299EC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 20:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EFBF1675E9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 18:17:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E6C31889FF5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 19:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6AC1FCFD4;
-	Wed,  5 Feb 2025 18:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB65C21128F;
+	Wed,  5 Feb 2025 19:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iPXbQZhH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tT2MiVE9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H4rs0IHi";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eNmkrXZL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3SUN0QF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1381FCCF2;
-	Wed,  5 Feb 2025 18:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1856200109
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 19:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738779430; cv=none; b=G78LBdhZYV6etWUDK9uCY5F/ncT9CSIDdKg5MOvEL0IRDupBx45fyoQ5eUjjhkEjZNHMgc58owVli3H6R52IAtFsO4nVW1ojgCTfUsMDfuw1aqC0r5l8LurYMa3fJ5zCuARtPwaHcYGenOkyJ5kYRMaPjGnz47f7Cm45k3Ss1Jc=
+	t=1738782815; cv=none; b=SGdQbzwYYq6Y/p4m3k+H7od+c6Vm1Fg7DvyA9U0C7VKRdIqfl4y7qW6wCMH45SXsXSVd1qVkgCWsIUYbxqMJpIm17mLTxBgY1PHkzxxVOmm08IiRXswcWFYnp/C05yCLTIFaA/InN1u+lvTxjSYgppKv/ulPncyYhiSDl4x8DQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738779430; c=relaxed/simple;
-	bh=BkQR2waoTAZKgITUbNMtnjCqTXW/9yjFpf4WkmVnNU4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g82T5j1EgnAGNSCBDX9rXhcRxNChs5DDFWfpts7jh5OcCEY9H55Yck2TC+bz551+TVkpFG9MCISdfdGHsT5cH1pLhzEB3Sw0CQvoZm0iE/c4uTywQl7x2yqawpZETi6aKH2k/lT5t1bLDfTVgNzy7nHx/RaTC9ka1hl3TA4luUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iPXbQZhH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tT2MiVE9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H4rs0IHi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eNmkrXZL; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id ED37621133;
-	Wed,  5 Feb 2025 18:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1738779427;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8siezr1ai4ZQ0ls9ObxiOIGBjp5BylhpOfmEyMRYuSY=;
-	b=iPXbQZhH70vEQ4YmosOZqQlmm3Sf1qtPNhkOyPDdFl4u/jWVl5a9tJ9qYUMT99euBq0Wix
-	qCJYIHIs1WvCBBUCG444iajEhph78C72rnivmYxAm+BreI5Qz7IiyDfbO/WJUMF36kLYGn
-	ar0PFj+ceveqdS/3XDK5ruNIsi8VW2Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1738779427;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8siezr1ai4ZQ0ls9ObxiOIGBjp5BylhpOfmEyMRYuSY=;
-	b=tT2MiVE9qMkiMHHBHVH0g9B4xGW6knqVz0g9zoBGYV/iCK56k14VUrGy6PNaGhM8SQjXXm
-	Nb4FBOK2UxY7JLDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=H4rs0IHi;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=eNmkrXZL
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1738779426;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8siezr1ai4ZQ0ls9ObxiOIGBjp5BylhpOfmEyMRYuSY=;
-	b=H4rs0IHi97g8kH3sV7labgHBU6IXb0/UBgN000ZqmkvfRE2iI/rjpXO3firHqdmRi//f9b
-	rT1fRP4Tff9m18+tPoST/yGltQsjRECnW+NUaZyYu1MvcNXx+xz6orMi7sddL5khvFsn+G
-	jFKTHVX2ggWkmDX/EWW4vvbBEwX4uoQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1738779426;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8siezr1ai4ZQ0ls9ObxiOIGBjp5BylhpOfmEyMRYuSY=;
-	b=eNmkrXZL6ViAF95eHA2ssnMk9/rXF2fY1VO1Hg1Xs9BSflXkkEEzP/fqA3cLcZ5V7PXz2K
-	I/P7g0XrvHcZBaBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDBD913694;
-	Wed,  5 Feb 2025 18:17:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wK8dLSKro2d0VgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 05 Feb 2025 18:17:06 +0000
-Date: Wed, 5 Feb 2025 19:17:05 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] btrfs: zstd: enable negative compression levels mount
- option
-Message-ID: <20250205181705.GL5777@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250130175821.1792279-1-neelx@suse.com>
+	s=arc-20240116; t=1738782815; c=relaxed/simple;
+	bh=uHmKJjeh2u5wPF35CbGwRFwamUfPT9n/MMBPUmOuX3g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ouDuOIDrN6beeP9/vlOvmJltOR/ppbUydKHbU0qK72eaeiDWnhp5gDtoPRuJQEXFGqiAQCfafSI1eOy013X5KzFPzSbjnT7pbfEwHZpBMWTyxGact+2S/hyAmHWP9LLq1YvGrTSbfeDhudODmV4DcjI2OSpgsbCbzZ78PwqdH/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3SUN0QF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9810FC4CED1
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 19:13:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738782815;
+	bh=uHmKJjeh2u5wPF35CbGwRFwamUfPT9n/MMBPUmOuX3g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=X3SUN0QFLzVrtjOYpjua2+QGNumKI7u/iNtJYtZNTkK8V5+6Ikd51yeCkC7fg8d70
+	 xpmvO6XCf1tiNCY8lhQGMKn7ZO9iO4PlDoYqzoJHxLYRFLPkwlFMH77QcHtQHoDF7U
+	 1nY7jPpzGJnGOhNBjvhyZr82QwmC8O4youGcUeVaJZk62v8mZatViICWRRuhi1LvjI
+	 E1CIZKcXa2riIAEy6I7JQqmTM+nSrsW15KJkgd6MX/IVjJHHw1dYPxOpgeL9f5TqnB
+	 RfsXZ8h6g2fKJpvK3Z6Dkhv3cZGmNVlRbaQwF1571zbwSqHuCLNz4Vn7A06bUIzxRv
+	 IarvFRwTSPX3A==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ab7430e27b2so27386166b.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Feb 2025 11:13:35 -0800 (PST)
+X-Gm-Message-State: AOJu0YzC9Xzqv9Imj2CzTGPabiY55KmYaBMPojt7l2FbRc1WI33z8ltt
+	d4KD0cQWoNXKCxdb0QStnvHaZoYYtenJFMzLhEsHPxXoihApw9FGm/irZ81eGHB1NKWlnFYfvO1
+	uMmKqKm2E6sDH5uwIllEZp42YBdU=
+X-Google-Smtp-Source: AGHT+IHGbghGLKn+60XDRJt+LLDtFgrchG6aNMSBeeTewQXv1odZ0qO8VrckF5rxwlOtEOKmWL2qKG7+PsJKVpquYgo=
+X-Received: by 2002:a17:907:3f15:b0:ab6:b8dc:824f with SMTP id
+ a640c23a62f3a-ab75e2f116cmr397551066b.37.1738782814130; Wed, 05 Feb 2025
+ 11:13:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250130175821.1792279-1-neelx@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: ED37621133
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
+References: <e9b8716e2d613cac27e59ceb141f973540f40eef.1738639778.git.wqu@suse.com>
+ <CAL3q7H7eJG2pRDQnvsfob7ifOiHSU_W0QNfzXyO=V99c5ugXQQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H7eJG2pRDQnvsfob7ifOiHSU_W0QNfzXyO=V99c5ugXQQ@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 5 Feb 2025 19:12:53 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6oAtVcNpMkHKY3+4kH3GjHyxz9UxqWFHcwEoXMmzOajQ@mail.gmail.com>
+X-Gm-Features: AWEUYZkRxWIm_uzE3ZKcweM1lsOrjD1__jXkdMWqJAy-wjDni08S7pt0YKqSK4w
+Message-ID: <CAL3q7H6oAtVcNpMkHKY3+4kH3GjHyxz9UxqWFHcwEoXMmzOajQ@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: always fallback to buffered write if the inode
+ requires checksum
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, "hch@infradead.org" <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 30, 2025 at 06:58:19PM +0100, Daniel Vacek wrote:
-> This patch allows using the fast modes (negative compression levels) of zstd
-> as a mount option.
-> 
-> As per the results, the compression ratio is lower:
-> 
-> for level in {-15..-1} 1 2 3; \
-> do printf "level %3d\n" $level; \
->   mount -o compress=zstd:$level /dev/sdb /mnt/test/; \
->   grep sdb /proc/mounts; \
->   cp -r /usr/bin       /mnt/test/; sync; compsize /mnt/test/bin; \
->   cp -r /usr/share/doc /mnt/test/; sync; compsize /mnt/test/doc; \
->   cp    enwik9         /mnt/test/; sync; compsize /mnt/test/enwik9; \
->   cp    linux-6.13.tar /mnt/test/; sync; compsize /mnt/test/linux-6.13.tar; \
->   rm -r /mnt/test/{bin,doc,enwik9,linux-6.13.tar}; \
->   umount /mnt/test/; \
-> done |& tee results | \
-> awk '/^level/{print}/^TOTAL/{print$3"\t"$2"  |"}' | paste - - - - -
-> 
-> 		266M	bin  |	45M	doc  |	953M	wiki |	1.4G	source
-> =============================+===============+===============+===============+
-> level -15	180M	67%  |	30M	68%  |	694M	72%  |	598M	40%  |
-> level -14	180M	67%  |	30M	67%  |	683M	71%  |	581M	39%  |
-> level -13	177M	66%  |	29M	66%  |	671M	70%  |	566M	38%  |
-> level -12	174M	65%  |	29M	65%  |	658M	69%  |	548M	37%  |
-> level -11	174M	65%  |	28M	64%  |	645M	67%  |	530M	35%  |
-> level -10	171M	64%  |	28M	62%  |	631M	66%  |	512M	34%  |
-> level  -9	165M	62%  |	27M	61%  |	615M	64%  |	493M	33%  |
-> level  -8	161M	60%  |	27M	59%  |	598M	62%  |	475M	32%  |
-> level  -7	155M	58%  |	26M	58%  |	582M	61%  |	457M	30%  |
-> level  -6	151M	56%  |	25M	56%  |	565M	59%  |	437M	29%  |
-> level  -5	145M	54%  |	24M	55%  |	545M	57%  |	417M	28%  |
-> level  -4	139M	52%  |	23M	52%  |	520M	54%  |	391M	26%  |
-> level  -3	135M	50%  |	22M	50%  |	495M	51%  |	369M	24%  |
-> level  -2	127M	47%  |	22M	48%  |	470M	49%  |	349M	23%  |
-> level  -1	120M	45%  |	21M	47%  |	452M	47%  |	332M	22%  |
-> level   1	110M	41%  |	17M	39%  |	362M	38%  |	290M	19%  |
-> level   2	106M	40%  |	17M	38%  |	349M	36%  |	288M	19%  |
-> level   3	104M	39%  |	16M	37%  |	340M	35%  |	276M	18%  |
-> 
-> Signed-off-by: Daniel Vacek <neelx@suse.com>
-> ---
-> Changes in v4:
->  * Fix a bug with workspace lru_list.
->  * Keep the levels down to -15 as agreed.
+On Tue, Feb 4, 2025 at 11:19=E2=80=AFAM Filipe Manana <fdmanana@kernel.org>=
+ wrote:
+>
+> On Tue, Feb 4, 2025 at 3:31=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> > [BUG]
+> > It is a long known bug that VM image on btrfs can lead to data csum
+> > mismatch, if the qemu is using direct-io for the image (this is commonl=
+y
+> > known as cache mode none).
+> >
+> > [CAUSE]
+> > Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
+> > fs is allowed to dirty/modify the folio even the folio is under
+> > writeback (as long as the address space doesn't have AS_STABLE_WRITES
+> > flag inherited from the block device).
+> >
+> > This is a valid optimization to improve the concurrency, and since thes=
+e
+> > filesystems have no extra checksum on data, the content change is not a
+> > problem at all.
+> >
+> > But the final write into the image file is handled by btrfs, which need
+> > the content not to be modified during writeback, or the checksum will
+> > not match the data (checksum is calculated before submitting the bio).
+> >
+> > So EXT4/XFS/NTRFS believes they can modify the folio under writeback,
+> > but btrfs requires no modification, this leads to the false csum
+> > mismatch.
+> >
+> > This is only a controlled example, there are even cases where
+> > multi-thread programs can submit a direct IO write, then another thread
+> > modifies the direct IO buffer for whatever reason.
+> >
+> > For such cases, btrfs has no sane way to detect such cases and leads to
+> > false data csum mismatch.
+> >
+> > [FIX]
+> > I have considered the following ideas to solve the problem:
+> >
+> > - Make direct IO to always skip data checksum
+> >   This not only requires a new incompatible flag, as it breaks the
+> >   current per-inode NODATASUM flag.
+> >   But also requires extra handling for no csum found cases.
+> >
+> >   And this also reduces our checksum protection.
+> >
+> > - Let hardware to handle all the checksum
+> >   AKA, just nodatasum mount option.
+> >   That requires trust for hardware (which is not that trustful in a lot
+> >   of cases), and it's not generic at all.
+> >
+> > - Always fallback to buffered write if the inode requires checksum
+> >   This is suggested by Christoph, and is the solution utilized by this
+> >   patch.
+> >
+> >   The cost is obvious, the extra buffer copying into page cache, thus i=
+t
+> >   reduce the performance.
+> >   But at least it's still user configurable, if the end user still want=
+s
+> >   the zero-copy performance, just set NODATASUM flag for the inode
+> >   (which is a common practice for VM images on btrfs).
+> >
+> >   Since we can not trust user space programs to keep the buffer
+> >   consistent during direct IO, we have no choice but always falling
+> >   back to buffered IO.
+> >   At least by this, we avoid the more deadly false data checksum
+> >   mismatch error.
+> >
+> > Suggested-by: hch@infradead.org <hch@infradead.org>
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> > Changelog:
+> > v2:
+> > - Move the checksum check just after check_direct_IO()
+> >   So that we don't need the extra ENOTBLK error code trick to fallback
+> >   to buffered IO.
+> >
+> > - Slightly improve the comment
+> >   Adds that only direct write is affected, and why buffered write is
+> >   fine.
+> > ---
+> >  fs/btrfs/direct-io.c | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> >
+> > diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+> > index c99ceabcd792..0de4397130be 100644
+> > --- a/fs/btrfs/direct-io.c
+> > +++ b/fs/btrfs/direct-io.c
+> > @@ -855,6 +855,21 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, str=
+uct iov_iter *from)
+> >                 btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+> >                 goto buffered;
+> >         }
+> > +       /*
+> > +        * For direct IO write, we have no control on the folios passed=
+ in,
+> > +        * thus the content can change halfway after we calculated the =
+data
+> > +        * checksum, and result data checksum mismatch and unable to re=
+ad
+> > +        * the data out anymore.
+>
+> I would phrase this differently to be more clear:
+>
+> We can't control the folios being passed in, applications can write to
+> them while a
+> direct IO write is in progress. This means the content might change
+> after we calculate the data
+> checksum. Therefore we can end up storing a checksum that doesn't
+> match the persisted data.
+>
+> Otherwise it looks fine to me:
+>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks, I'll add the patch to for-next soon. The information about times
-is only a changelog update so this can be done later once we have it.
+Btw, did you actually run fstests with this?
+
+At least one test is failing after this change:
+
+btrfs/226 2s ... - output mismatch (see
+/home/fdmanana/git/hub/xfstests/results//btrfs/226.out.bad)
+    --- tests/btrfs/226.out 2024-05-20 11:27:55.933394605 +0100
+    +++ /home/fdmanana/git/hub/xfstests/results//btrfs/226.out.bad
+2025-02-05 19:09:33.990188790 +0000
+    @@ -39,14 +39,11 @@
+     Testing write against prealloc extent at eof
+     wrote 65536/65536 bytes at offset 0
+     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    -wrote 65536/65536 bytes at offset 65536
+    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    +pwrite: Resource temporarily unavailable
+     File after write:
+    ...
+    (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/226.out
+/home/fdmanana/git/hub/xfstests/results//btrfs/226.out.bad'  to see
+the entire diff)
+
+
+
+>
+> Thanks.
+>
+> > +        *
+> > +        * To be extra safe and avoid false data checksum mismatch, if =
+the
+> > +        * inode requires data checksum, just fallback to buffered IO.
+> > +        * For buffered IO we have full control of page cache and can e=
+nsure
+> > +        * no one is modifying the content during writeback.
+> > +        */
+> > +       if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
+> > +               btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+> > +               goto buffered;
+> > +       }
+> >
+> >         /*
+> >          * The iov_iter can be mapped to the same file range we are wri=
+ting to.
+> > --
+> > 2.48.1
+> >
+> >
 
