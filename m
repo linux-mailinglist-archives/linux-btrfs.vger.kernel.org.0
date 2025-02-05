@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-11303-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11304-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4389A29B98
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 22:05:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365E9A29B9B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 22:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED7B167E1F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 21:05:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A3871884717
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2025 21:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB11214A6D;
-	Wed,  5 Feb 2025 21:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C7B214A72;
+	Wed,  5 Feb 2025 21:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iwlejYzT"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="QjwoYsau"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DCF1DAC81
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 21:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBD0214809
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2025 21:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738789543; cv=none; b=AUckqFxXuSP74h0Rfw8nlxvc59ydZUyjSRhOMyAdlAkbCsflZpviG/ETFeTexjZ/wMOIbaj2vFOxI11BcxwWHgDVPzUQYZL9/ZqEoCkhtslGXayJrBBLd4GbyqHn22qKWaOMRSB7vfo0xyiRo2EN2vdKhvEkyLg+HNZSvzc1zwk=
+	t=1738789615; cv=none; b=L3PQwYAXaird923u+K9Z0M/p+5NuO/hvG/2Fv+f0N97MVySpfVIyVIIQYnP6TgHJx3iirK0wz7NAqNfQkM99sHXKBnNFG/Kq/o1ZRVREgdBrEkHfNhdtSrqGdr/k5CTdzdM+YX7AOcesKsT5aEizhDyYx5/UCqW8ydgKEyQ08ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738789543; c=relaxed/simple;
-	bh=nceELc9heKtnszHQ63KXnanBGABZsxRjjxIos6DEUTM=;
+	s=arc-20240116; t=1738789615; c=relaxed/simple;
+	bh=IMulULrKc+YPH2TWLA35642nxcJiP5zzYzdZZ+vwb9I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Dg2S8vC8Qhma0eHlrUxej/CL/EsuJZtMheg7mZtP+LA1UyFcSdu4qt5QeLkGTYe5DwmMvScJIVN091uHP+QTBQGD74Hy0byIbpNGrjpOsSJ0k2JlsQ8JiTgLBg3/LmoEMEkC2tFUTuMKMKBiaArWZaLWD02eFNNSzGXlUE0rjUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iwlejYzT; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=HUmXxJT3Wu0LGrweNWuxZ8QXefiThgGjq6EDfogBucuDzpp6mvfEDHIdH0tPKrwFnPzVkOWIBLcDUSgG676Sn7duzArg6/UQrPRT6wqY/bp1prXaLLiEKWjHVIg+5Ui1Z3h61T+IocXs/dr6qXoRfrnqOspoqikECG/MhxALb+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=QjwoYsau; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1738789534; x=1739394334; i=quwenruo.btrfs@gmx.com;
-	bh=3SQZuW2p+AUrF+BMKMsZhdZ7e/PNbBr7uINpXH4Tlss=;
+	s=s31663417; t=1738789607; x=1739394407; i=quwenruo.btrfs@gmx.com;
+	bh=Rzt325+q1TGd4ItEIzvcvBUUGb/TUYOTBJ8dL5BELYk=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=iwlejYzT9+7DcWSS15n9G96KrzcUdOpP7b6ZGEo9CRsEX39QugHGl2bWKhZ1+duf
-	 XKGKQ7jarBg7Vs9WYp/LBejsf0igddKR4/igkmkQi9VuB7ELyhHx1xAPl5KEbqaL0
-	 4iQ4hfdI1piFFubK1z16xC1nSJBX/1AAqg3Q4aZGDkjgdJ++qnf4bONURQ15lBCM0
-	 fBi2vQ+K4KTPv4RzzpxN6cQG4ZXKqysfACvLXkxZCeXILjTOVh2xLLenCVNrSi0rF
-	 CKFWDZw/DrX6FFx1Jm99rs9kKH05TIMGO8gJQxiCOKcaXsXj25ZUx0cYL0bub3hXy
-	 YbS7gz4xGN1qAvVvhg==
+	b=QjwoYsauoVo6lw4DcFCucPdZNbKu8Z2FsIjmnEiiFLT/pqZ4hdpfTqlG7pk+MtSM
+	 GvFYb2QQiE5yS/9iOgQkZM012wdt3eL+DhUTTrn8Ul+JP3tbbM3KYB9hvjDCmBwq4
+	 8MlmgUIO0bnwLSA77Ob3+MdNNZC483JU7eGsl2YDeI6uIVSv8JrmPT3co7rESvMAw
+	 x45j/2/fDP2ug6Qf7qsmUWEqv8M6O4mBOk23VU/KC+UWD5jvLTajHiP6Wb+fvPkkw
+	 znE92Qk7oLkV8wvjTMvKLmm8g2OUv1a5V8k9NkuujUEvuLcmHJBrGSJ7d+dCxSSKP
+	 YXPTVQ2CQu32vapAQw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXQF-1txaig2kJ5-00WyrB; Wed, 05
- Feb 2025 22:05:34 +0100
-Message-ID: <ba32a0f9-f699-46a1-8a8c-326bda01b356@gmx.com>
-Date: Thu, 6 Feb 2025 07:35:30 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxDou-1tUZHq2bcW-011tu4; Wed, 05
+ Feb 2025 22:06:47 +0100
+Message-ID: <63295388-5089-4f9b-a63d-aba8680202d7@gmx.com>
+Date: Thu, 6 Feb 2025 07:36:44 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix hole expansion when writing at an offset
- beyond eof
+Subject: Re: [PATCH] btrfs: avoid assigning twice to block_start at
+ btrfs_do_readpage()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <974b00afc2e703d5e0085fefbb46a1e495956ae1.1738778225.git.fdmanana@suse.com>
+References: <87182120501efa8c878a65196fd6225481cab7c1.1738755264.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,116 +88,45 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <974b00afc2e703d5e0085fefbb46a1e495956ae1.1738778225.git.fdmanana@suse.com>
+In-Reply-To: <87182120501efa8c878a65196fd6225481cab7c1.1738755264.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:O/i1qbpyHmOeyxCy2FOlQiY8YUCwTgUQ3T01kZpa3BivXZ+TdMH
- Kq8mc/DuNJAd4xw9eBNLzPG8rcJ0HamcHVm/3+p+2NRguxXjfcFSwr6juNFatKCYv7tPLwl
- 59wN/xE4ujcm0v04cPizkqGErhLyPBAmf4Mb0Jyx4gfAeyizvEGWzoqfFDqupN2wFXzUH7z
- KZSbLys6J5hwd+AAP9qZg==
+X-Provags-ID: V03:K1:Aye+xC7HoC/SeLtsI9lw9ZBObXosr3dxVkaDghvruL3QkNKgpwu
+ oDFHdXVEnRjSABi5USgc9oYWotEfYaZWvoeCdWnQ5LNpseLrwQ9w1YvgTlnhRI3LA7I8PDa
+ ZlyISGmI7vOaAxMCH34NyMY33H999CDORGfkHdTQgJbabzMy87y77zRC1NluUp5IR40Eemc
+ F1Fj/cDRQkFUlMSFipVRg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:f6UjfHIPWYk=;Hyt6qGQxfH5EkoriOJMRY88yAe+
- K2skgLKPjPpQyz4cRM9KgmBfAr1wi1Kvaaur0ZRFgtmZo9soi3rTQPPTc0Fq8sIS2E+5JLLFO
- YzIFGZAPD/EN3IeDJlKMv6OlVccPN2/zKlZH2g0ZYUEs2ipKUvUzEUuCE7iI66of3oqJn+5B7
- 5xeTuY9KLM8qrZwJc2N4JcYpco2mKKmCxAM53gcVNpvtOHWZeI2n0oBptRyNQXSdGhfNaOC2s
- znylCS/Df2Dtd/+6+4jwTV1LoZLrbQX5Q44c+ofusPWOnutF3ltkf/8dQTKdruTjvcxAMbMRr
- N6yEh19pQNCnGaowL0LLmLgGdbTJ+eiirJReXDb3xVk6H3UNN59a4BYIFUyz46rG5hQu1CAPG
- ypjPRwf5W0MH2ApY+rsPu0nW1VAutw6fhyc8xu8ufE2RIjgJByrPFivNVe4k630YWjWScfx7F
- 4sNrx7BF6USoxFtTNci0Fb4qMZK1ZZOSgsUBZIWvu73xvJz/vy/woJHmg92EXhuS39iq0CGYv
- vkyrSEuLZYHTBoOG/DIfIb1OXjD7s9bYAP5ayE/NAvwHkfjccfkgKNr+Dnp4XvBJH/vfLa21z
- RocdJrKZEkPlqTYIKjifdQfv71yV281nixYoRSa0GgPQ1wsylNNokPHHy0lU2o2L4QM5rhfPU
- Fnwi/0SugFXxKShPNLbD9YvlM6ty43s29kGnNd5rOl1FcgVqmnIei9hNwBTI2UmnCaf1Rj87E
- 1i9eHthtmEL6baJgefwEhia8M4roUcWfkoHZFqwmydNMtFRH13zILpqY+WMZnR5PZtK8rT9aC
- umMY07sxp6uoUjCu7BBJtHaTOJSp5xEzZ1Je/kejNsYzAqVvzdwP5a6rHMq56QElWJFUuPcSA
- D7CJoPY4LZNoo7B3MsydKRdneXR3dk+r+c9fvrIqxMPYAoGGSw7apKtnhb2MXWe4NmaG4x5Mo
- ekzAPcWyM2EVT24dtvUwzP/AY0w0NDod7jX7IYD1sVf5RMUyVxxHNyCf9wFF5yiBOQGKqIFod
- KIYzhgWZm07sjaeMbstOlmGZkxZZ0282SxB77l414x2aePPsvQqiOvVtiSEvCe6O+YHAXLqYG
- Ij1TsTEoz9W+/pESSPStrLZqS6jcwYZIaSoe6cc0g46fHmTlDq6gCOKzniW9hNkTIu0HPy9T3
- Xo/EjY5u4mjnlQQ9Sgf8Z+X0S+9d7TXoRwzNr/6oyLZG6vCfcO2RFh/LfFae3gCyRvRYL21IP
- dzB51ltTA0Ad68dvu6FbQ8xujC9Gq9vN+0O+3ZcBNZV3vgZhdcbrpL3F5CpU+Fx3ZQFVsRbdM
- kjLFP5lipEp/7ikdKsfuAGulZ2WurEtH7eHf3VL8aDJpOoksnNExyhtqYYGYfh6taC0Qx2sou
- AeSFWyDCRvht5cYV+1rZZll+4ZajjI8vFormb85dt+3EXlRamE6FO3leWC
+UI-OutboundReport: notjunk:1;M01:P0:J5FXa1fo10k=;ol+Uc7W8t4d6GouIcWfM5GBeRs8
+ iIY1KQqG3kgcb54Y4C9/nOcQdqCr5gtKKr0npmyd/KJNoerdIwQ99za1oR9KdTvctD8IxomxL
+ pvufue3ukYmqi7RoSjyFHp84mSM2oGlJcP4ISam3qRwXoxye+fYlMwHAj1oO+3ez91YgKW2Wl
+ 51U+80Z/ArISgNeNVsqFC8LAvqXFcZJd6wlakEplbw4kEhSYiFmjNN4yz+DDEf0ELLQ9kZwHL
+ K72uyCGEzS3m8U0/rLY9IzSJYUIxTURDMN4J8Tl6gfdrzR/Afyka3IJat5oz3G82t6cXHxuRW
+ fnFs8fYZgYyZsxkT9Yu2GpPhF/puVei6i0z6wb46NRb2nFhOAmdjlqmseNyc6EI1qGAr6ZSMJ
+ AcGcto1zIV3P4hX40kQbmBsdLYb4hQ3UYqo6l6ZXMVcBTjKhe6nir7wYkSaC3Hn3Hia/1gAs6
+ FJNK2siss22K9BC0KscCRQNbWrBH9ivXW+Jy+6XwwgxbBNmBqgSQjjliopFBWFDBtJAerE5id
+ PeYIpFJ7FCIaIxqWSo7IEJ27qfRMMhUWFQ4CnvZDzqJW9KlvHaq9A9zM7otpQyZF1mh8Jgdnb
+ JR16QKZeP2FrJjqHph0fkBcMPrE6FNPOHZHdpEUXBWfVC24eRBanBRRUWTEIGgXOf8aW3whCO
+ erGg4AJlK1beWHDbL8Ysk+h5ke0ARHBzdAZu4qm9Ckl2wvHBVtzqYcQ3JFsMXIJIGzXcUy515
+ 94ZUj0+zPsomi3LBhTfE+1Hal7L5V9ab4McrEn6RNqzMt/kQOscveo2TwEvfETz3psc12XQ6n
+ smCLmHS6WJjNLWCsGRgEM3/spo+F7LpOPn8gPgYJ43XrSQ5VU5PXcOuWwDFOVvKIzPLvraskL
+ aFKld7huyBNyb53/uwHMl3EnSkmGWHzVMhFPcFm9HFvQhf8KQLBJERIRJ14fy3Lt4TYBDwI8d
+ low6Nb4irC9udpi0vE+vnCmxXYgYnB+7fvLX0R1gvgt01JtJKX2aYgAePoe/Iv9tUeyDku+uE
+ 2+zTkHFEeTz8A/du2eQdsM6HQl2ZLcjt0Y1nsOOfkSPEmoK9ZMwSOCQEyh6Fkr4Uyx8o3mJ57
+ N9Wo87ne4m2UmMHCvi6qeoG8gPkKXFONd+w2Ocz5IHiubB5DnAz/fS9cr+3eUMD2io9GQU9Jo
+ 2IjurgP/ChIT8vGZouXdi8iKiJyZAo7+o2T5DTqh3Orh+U6OymfZKmcoZvY6mvS58xBkzTtBg
+ nQtGf41wApKit14tdhH4WiUedipxx847c/EJRFmn8hyhTf9ulDDygJHbbSURXb9Vj6YIVtc6o
+ Py9PzmyjHuqiN/GNtQq8SiZGw==
 
 
 
-=E5=9C=A8 2025/2/6 04:30, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2025/2/5 22:06, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> At btrfs_write_check() if our file's i_size is not sector size aligned a=
-nd
-> we have a write that starts at an offset larger than the i_size that fal=
-ls
-> within the same page of the i_size, then we end up not zeroing the file
-> range [i_size, write_offset).
->
-> The code is this:
->
->      start_pos =3D round_down(pos, fs_info->sectorsize);
->      oldsize =3D i_size_read(inode);
->      if (start_pos > oldsize) {
->          /* Expand hole size to cover write data, preventing empty gap *=
-/
->          loff_t end_pos =3D round_up(pos + count, fs_info->sectorsize);
->
->          ret =3D btrfs_cont_expand(BTRFS_I(inode), oldsize, end_pos);
->          if (ret)
->              return ret;
->      }
->
-> So if our file's i_size is 90269 bytes and a write at offset 90365 bytes
-> comes in, we get 'start_pos' set to 90112 bytes, which is less than the
-> i_size and therefore we don't zero out the range [90269, 90365) by
-> calling btrfs_cont_expand().
->
-> This is an old bug introduced in commit 9036c10208e1 ("Btrfs: update hol=
-e
-> handling v2"), from 2008, and the buggy code got moved around over the
-> years.
->
-> Fix this by discarding 'start_pos' and comparing against the write offse=
-t
-> ('pos') without any alignment.
->
-> This bug was recently exposed by test case generic/363 which tests this
-> scenario by polluting ranges beyond eof with a mmap write and than verif=
-y
-> that after a file increases we get zeroes for the range which is suppose=
-d
-> to be a hole and not what we wrote with the previous mmaped write.
->
-> We're only seeing this exposed now because generic/363 used to run only
-> on xfs until last Sunday's fstests update.
->
-> The test was failing like this:
->
->     $ ./check generic/363
->     FSTYP         -- btrfs
->     PLATFORM      -- Linux/x86_64 debian0 6.13.0-rc7-btrfs-next-185+ #17=
- SMP PREEMPT_DYNAMIC Mon Feb  3 12:28:46 WET 2025
->     MKFS_OPTIONS  -- /dev/sdc
->     MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
->
->     generic/363 0s ... [failed, exit status 1]- output mismatch (see /ho=
-me/fdmanana/git/hub/xfstests/results//generic/363.out.bad)
->         --- tests/generic/363.out	2025-02-05 15:31:14.013646509 +0000
->         +++ /home/fdmanana/git/hub/xfstests/results//generic/363.out.bad=
-	2025-02-05 17:25:33.112630781 +0000
->         @@ -1 +1,46 @@
->          QA output created by 363
->         +READ BAD DATA: offset =3D 0xdcad, size =3D 0xd921, fname =3D /h=
-ome/fdmanana/btrfs-tests/dev/junk
->         +OFFSET      GOOD    BAD     RANGE
->         +0x1609d     0x0000  0x3104  0x0
->         +operation# (mod 256) for the bad data may be 4
->         +0x1609e     0x0000  0x0472  0x1
->         +operation# (mod 256) for the bad data may be 4
->         ...
->         (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/363.=
-out /home/fdmanana/git/hub/xfstests/results//generic/363.out.bad'  to see =
-the entire diff)
->     Ran: generic/363
->     Failures: generic/363
->     Failed 1 of 1 tests
+> At btrfs_do_readpage() if we get an extent map for a prealloc extent we
+> end up assigning twice to the 'block_start' variable, first the value
+> returned by extent_map_block_start() and then EXTENT_MAP_HOLE. This is
+> pointless so make it more clear by using an if-else statement and doing
+> only one assignment.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -207,34 +136,26 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/file.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
+>   fs/btrfs/extent_io.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 36f51c311bb1..ed3c0d6546c5 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1039,7 +1039,6 @@ int btrfs_write_check(struct kiocb *iocb, size_t c=
-ount)
->   	loff_t pos =3D iocb->ki_pos;
->   	int ret;
->   	loff_t oldsize;
-> -	loff_t start_pos;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index bdb9816bf125..9e70d43e19cb 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -991,9 +991,11 @@ static int btrfs_do_readpage(struct folio *folio, s=
+truct extent_map **em_cached,
+>   			disk_bytenr =3D em->disk_bytenr;
+>   		else
+>   			disk_bytenr =3D extent_map_block_start(em) + extent_offset;
+> -		block_start =3D extent_map_block_start(em);
+> +
+>   		if (em->flags & EXTENT_FLAG_PREALLOC)
+>   			block_start =3D EXTENT_MAP_HOLE;
+> +		else
+> +			block_start =3D extent_map_block_start(em);
 >
->   	/*
->   	 * Quickly bail out on NOWAIT writes if we don't have the nodatacow o=
-r
-> @@ -1066,9 +1065,8 @@ int btrfs_write_check(struct kiocb *iocb, size_t c=
-ount)
->   		inode_inc_iversion(inode);
->   	}
->
-> -	start_pos =3D round_down(pos, fs_info->sectorsize);
->   	oldsize =3D i_size_read(inode);
-> -	if (start_pos > oldsize) {
-> +	if (pos > oldsize) {
->   		/* Expand hole size to cover write data, preventing empty gap */
->   		loff_t end_pos =3D round_up(pos + count, fs_info->sectorsize);
->
+>   		/*
+>   		 * If we have a file range that points to a compressed extent
 
 
