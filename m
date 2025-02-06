@@ -1,257 +1,170 @@
-Return-Path: <linux-btrfs+bounces-11315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A6C3A29FB6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2025 05:37:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27A96A2A821
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2025 13:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B52B8160F0A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2025 04:37:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 479273A758F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2025 12:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2126915B99E;
-	Thu,  6 Feb 2025 04:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82FD22D4C0;
+	Thu,  6 Feb 2025 12:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V8XHxiVm";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V8XHxiVm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I7NYv8c0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1D63B1A4
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Feb 2025 04:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033D918B477;
+	Thu,  6 Feb 2025 12:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738816643; cv=none; b=lLWFOb8Gpe5PCxqQdx9J8yTwhq+/cr+L9Mtsw3jgWksDsRaNFOrSTZvjuKOhJESb5LHFYfhekwt8hJL37GRhh8iAitUq8XuAn8sVnZmnFfOFSwSLwCV5UP14gV9Pb6qhKGnKHIcDu9XUWu4Ngxd3QDulQ3xUqnTzVsnx0gjJt0o=
+	t=1738843862; cv=none; b=gVfOZXxk3tALQiL5wGqjI9I4eL0HacIK4tZXcQ/kFgHZ6tsZMyot2k3XVNIRSPUxNOeJrfRK/wYUgzhtuCoC9n3EKbt10gSuO36GO6qW2LanIzypdUT/eFBJNDul3+uKhHqGI5giCeIQEcnGPJoSePg+BJAWU6I0DjBCjg+LONY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738816643; c=relaxed/simple;
-	bh=Ks4iDcFCjgzcQdSuMjVFv7x/Sl8+47UWMQ4zCI8DJdo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=FYH7aqP5cFiu3lQ++lhptog1nQN6Uq/VqF2wP3+JoDqFWUZkgPv0GYtCpBGKHMPD2jhhxQPJ1NiH+V8Pnm4MI6vJLIgKTFxdvRndQuaIwsnjLcShC5Aq6lgC4QDI3AXe1fajEyJ+aHzqVMDCovDeVHUZVEvQfnayBkx9ofooRSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V8XHxiVm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V8XHxiVm; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 27D251F381
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Feb 2025 04:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738816638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=jvdO0UuGpRl31A5AlF67VGBk8mEtvLnOXLfndfpvFnI=;
-	b=V8XHxiVm9ru3RPHyMF/7fX27Po+ftirLMBHIFNm9DeinyYRHOn+nratfgegurhDLkdUCit
-	fRShxa2HkO0KWYveEdb0GEq3b2B89KakaRGnhmjPI+R3a24KOZqqWXROD+xigRuyBaDpaE
-	hLCs8PMxPO9TxhfUmtsGg9QiTq73Gns=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1738816638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=jvdO0UuGpRl31A5AlF67VGBk8mEtvLnOXLfndfpvFnI=;
-	b=V8XHxiVm9ru3RPHyMF/7fX27Po+ftirLMBHIFNm9DeinyYRHOn+nratfgegurhDLkdUCit
-	fRShxa2HkO0KWYveEdb0GEq3b2B89KakaRGnhmjPI+R3a24KOZqqWXROD+xigRuyBaDpaE
-	hLCs8PMxPO9TxhfUmtsGg9QiTq73Gns=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FC2813694
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Feb 2025 04:37:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 33VHCH08pGfHdQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2025 04:37:17 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: scrub: add the new --limit option to set the throughput limit at runtime
-Date: Thu,  6 Feb 2025 15:06:59 +1030
-Message-ID: <5fd8e0787ea103687fe1a04e96ff8f127fb538f4.1738816581.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1738843862; c=relaxed/simple;
+	bh=IbxsU7tpdC6ikq+F4C7u0gptW5BWVg4D0JaJnBrpHXU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vFhoTRwty6pf/jffbpcEz7gxiUwR+egK9yMcZMx8Y6MevrBQ2B8faT87+E8dLgM23weJf+faRIDFWf/ITkr0uWKuSi5jl4n2bOLpEtDxdjlcNfdfbmZ/d4R+njiIFTCXiAOkQpBLNcBd/xE4pBy4Q5doyNrJLxi2DLsQkk773ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I7NYv8c0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77866C4CEDD;
+	Thu,  6 Feb 2025 12:11:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738843861;
+	bh=IbxsU7tpdC6ikq+F4C7u0gptW5BWVg4D0JaJnBrpHXU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=I7NYv8c0VE1VayjfiaRuEfhEYJKlNRw/hRSCNZvqwkAIY2oXtBCQW9RUPaMQ5c0bM
+	 aT+Rty71U+6arMsYAlh5FMNjYRlQiqUpo2hxDERKBxUbgPcK2zqXOdyGzcSkCgSUTI
+	 Iv4DuKZWP3nhnzvq7PqXCAd1iKAgALMaIenKD2u9eFr1YpBQK/Be5w516gFniChz0z
+	 AJ+vCrwORjQcnBsFxAVtRijjf/RzR7Yp7ZbpzMbwqoQzYZ0fVv5aTq2j7ayWbckJd3
+	 jbvnr9r1uqpqNVUKGWg/C/e+nOamt/kRl6wMAznlalF5oaraLDxJSLPqdKYXtX+/HP
+	 XVKzD3BI2u9XA==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ab2b29dfc65so143017166b.1;
+        Thu, 06 Feb 2025 04:11:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCViartBDlHrJSmizuOuE+FqdkDmBlaxTdPL6poBzabN272FAtHqcklCSG8Mkga/VgJQxY8PpKdU@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjJQ4WLcE7e+rgELYCWf0bcQlzl3UQNhu0FuIrBtrUt49K/ZYA
+	49B8+4h+87qKZHr2pUfMHjAOQPQ6psiVE6liNM/MGKYl5b7msPqjSaFkJjZdpp0tu9Goy80MvPR
+	HAOI3LCeHL8moxansKLqv0vUtDjI=
+X-Google-Smtp-Source: AGHT+IG/qJYGelCq5bd6btFL5ZniKOXMTSTfOdIVzQMuH4yPZQ6ZcQTFtVUk8M1DKAw2Y88E4HDfN86PUKPAHGvMEZc=
+X-Received: by 2002:a17:907:2ce3:b0:ab2:da92:d0bc with SMTP id
+ a640c23a62f3a-ab75e234984mr739032166b.3.1738843860036; Thu, 06 Feb 2025
+ 04:11:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <6b66d881e152296eab70acc19991d9a611aefde6.1738792721.git.wqu@suse.com>
+In-Reply-To: <6b66d881e152296eab70acc19991d9a611aefde6.1738792721.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 6 Feb 2025 12:10:22 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H74oD=fL9rRJVdQhONhyApOFDUFt=tcES_0=DcsQbiVGQ@mail.gmail.com>
+X-Gm-Features: AWEUYZkRpM_hTYE-tIeBrLrUgxjb_KIBkD-B7D-NQsTOAqgf2l6xbNG3-RMIfO4
+Message-ID: <CAL3q7H74oD=fL9rRJVdQhONhyApOFDUFt=tcES_0=DcsQbiVGQ@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs/226: use nodatasum mount option to prevent
+ false alerts
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a new option `--limit <throughput_limit>` to `btrfs scrub start`.
+On Wed, Feb 5, 2025 at 9:59=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> With recent kernel patch "btrfs: always fallback to buffered write if the
+> inode requires checksum", the test case btrfs/226 will fail with the
+> following error:
+>
+> FSTYP         -- btrfs
+> PLATFORM      -- Linux/x86_64 btrfs-vm 6.13.0-rc6-custom+ #209 SMP PREEMP=
+T_DYNAMIC Fri Jan 24 17:23:03 ACDT 2025
+> MKFS_OPTIONS  -- /dev/mapper/test-scratch1
+> MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+>
+> btrfs/226 1s ... - output mismatch (see /home/adam/xfstests/results//btrf=
+s/226.out.bad)
+>     --- tests/btrfs/226.out     2024-04-12 14:04:03.080000035 +0930
+>     +++ /home/adam/xfstests/results//btrfs/226.out.bad  2025-02-06 08:23:=
+42.564298585 +1030
+>     @@ -39,14 +39,11 @@
+>      Testing write against prealloc extent at eof
+>      wrote 65536/65536 bytes at offset 0
+>      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>     -wrote 65536/65536 bytes at offset 65536
+>     -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>     +pwrite: Resource temporarily unavailable
+>      File after write:
+>     ...
+>     (Run 'diff -u /home/adam/xfstests/tests/btrfs/226.out /home/adam/xfst=
+ests/results//btrfs/226.out.bad'  to see the entire diff)
+> Ran: btrfs/226
+> Failures: btrfs/226
+> Failed 1 of 1 tests
+>
+> [CAUSE]
+> That kernel patch makes btrfs to always fallback to buffered IO if the
+> target inode requires data checksum.
+>
+> This is to avoid more deadly problems of mismatched data checksum.
+>
+> But this also means, for inodes with data checksum, RWF_NOWAIT will
+> always fail, because we will wait writing back the page cache, thus
+> breaking the RWF_NOWAIT requirement.
+>
+> [FIX]
+> Update the test case to utilize nodatasum mount option, so that the
+> direct-IO will not fallback to buffered ones unconditionally.
+>
+> Reported-by: Filipe Manana <fdmanana@kernel.org>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/226 | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/tests/btrfs/226 b/tests/btrfs/226
+> index 70275d0aa2d8..359813c4f394 100755
+> --- a/tests/btrfs/226
+> +++ b/tests/btrfs/226
+> @@ -21,7 +21,12 @@ _require_xfs_io_command falloc -k
+>  _require_xfs_io_command fpunch
+>
+>  _scratch_mkfs >>$seqres.full 2>&1
+> -_scratch_mount
+> +
+> +# This test involves RWF_NOWAIT direct IOs, but for inodes with data che=
+cksum,
 
-This has some extra behavior differences compared to `btrfs scrub limit`:
+involves -> exercises
 
-- Only set the value for the involved scrub device(s)
-  If it's a full fs scrub, it will be the same as
-  `btrfs scrub limit -a -l <value>`.
-  If it's a single device, it will bt the same as
-  `btrfs scrub limit -d <devid> -l <value>`.
+> +# btrfs will fall back to buffered IO unconditionally to prevent data ch=
+ecksum
+> +# mimsatch, and that will break RWF_NOWAIT with -EAGAIN.
 
-- Automatically revert to the old limit after scrub is finished
+mimsatch -> mismatch
 
-- It only needs one single command line to set the limit
+> +# So here we have to go with nodatasum mount option.
 
-Issue: #943
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-RFC->v1:
-- Use longer option '--limit' instead
-- Update the docs and helper strings
-- Save and revert to the older limit values after scrub is finished
----
- Documentation/btrfs-scrub.rst | 13 ++++++++++++-
- cmds/scrub.c                  | 34 ++++++++++++++++++++++++++++++++--
- 2 files changed, 44 insertions(+), 3 deletions(-)
+The whole text could be shorter and clear:
 
-diff --git a/Documentation/btrfs-scrub.rst b/Documentation/btrfs-scrub.rst
-index be106a551ade..fe8dd97c5f7a 100644
---- a/Documentation/btrfs-scrub.rst
-+++ b/Documentation/btrfs-scrub.rst
-@@ -69,7 +69,7 @@ resume [-BdqrR] <path>|<device>
+# RWF_NOWAIT only works with direct IO, which requires an inode with
+nodatasum (otherwise it falls back to buffered IO).
 
- .. _man-scrub-start:
+Otherwise it looks fine, so:
 
--start [-BdrRf] <path>|<device>
-+start [options] <path>|<device>
-         Start a scrub on all devices of the mounted filesystem identified by
-         *path* or on a single *device*. If a scrub is already running, the new
-         one will not start. A device of an unmounted filesystem cannot be
-@@ -96,6 +96,17 @@ start [-BdrRf] <path>|<device>
-                 can avoid writes from scrub.
-         -R
-                 raw print mode, print full data instead of summary
-+	--limit <limit>
-+		set the scrub throughput limit for each device.
-+
-+		If the scrub is for the whole fs, it's the same as
-+		:command:`btrfs scrub limit -a -l <value>`.
-+		If the scrub is for a single device, it's the same as
-+		:command:`btrfs scrub limit -d <devid> -l <value>`.
-+
-+		The value is bytes per second, and accepts the usual KMGT prefixes.
-+		After the scrub is finished, the throughput limit will be reset to
-+		the old value of each device.
-         -f
-                 force starting new scrub even if a scrub is already running,
-                 this can useful when scrub status file is damaged and reports a
-diff --git a/cmds/scrub.c b/cmds/scrub.c
-index b2cdc924df97..23af1628099b 100644
---- a/cmds/scrub.c
-+++ b/cmds/scrub.c
-@@ -97,6 +97,7 @@ struct scrub_progress {
- 	pthread_mutex_t progress_mutex;
- 	int ioprio_class;
- 	int ioprio_classdata;
-+	u64 old_limit;
- 	u64 limit;
- };
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-@@ -1230,7 +1231,6 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 	int fdres = -1;
- 	int ret;
- 	pid_t pid;
--	int c;
- 	int i;
- 	int err = 0;
- 	int e_uncorrectable = 0;
-@@ -1265,11 +1265,22 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 	struct scrub_progress_cycle spc;
- 	pthread_mutex_t spc_write_mutex = PTHREAD_MUTEX_INITIALIZER;
- 	void *terr;
-+	u64 throughput_limit = 0;
- 	u64 devid;
- 	bool force = false;
- 	bool nothing_to_resume = false;
+Thanks.
 
--	while ((c = getopt(argc, argv, "BdqrRc:n:f")) != -1) {
-+	while (1) {
-+		int c;
-+		enum { GETOPT_VAL_LIMIT = GETOPT_VAL_FIRST };
-+		static const struct option long_options[] = {
-+			{"limit", required_argument, NULL, GETOPT_VAL_LIMIT},
-+			{ NULL, 0, NULL, 0 }
-+		};
-+
-+		c = getopt_long(argc, argv, "BdqrRc:n:f", long_options, NULL);
-+		if (c < 0)
-+			break;
- 		switch (c) {
- 		case 'B':
- 			do_background = false;
-@@ -1297,6 +1308,9 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 		case 'f':
- 			force = true;
- 			break;
-+		case GETOPT_VAL_LIMIT:
-+			throughput_limit = arg_strtou64_with_suffix(optarg);
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
-@@ -1389,6 +1403,13 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
-
- 	for (i = 0; i < fi_args.num_devices; ++i) {
- 		devid = di_args[i].devid;
-+		sp[i].old_limit = read_scrub_device_limit(fdmnt, devid);
-+		ret = write_scrub_device_limit(fdmnt, devid, throughput_limit);
-+		if (ret < 0) {
-+			errno = -ret;
-+			warning("failed to set scrub throughput limit on devid %llu: %m",
-+				devid);
-+		}
- 		ret = pthread_mutex_init(&sp[i].progress_mutex, NULL);
- 		if (ret) {
- 			errno = ret;
-@@ -1568,6 +1589,14 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
-
- 	err = 0;
- 	for (i = 0; i < fi_args.num_devices; ++i) {
-+		/* Revert to the older scrub limit. */
-+		ret = write_scrub_device_limit(fdmnt, di_args[i].devid, sp[i].old_limit);
-+		if (ret < 0) {
-+			errno = -ret;
-+			warning("failed to reset scrub throughput limit on devid %llu: %m",
-+				di_args[i].devid);
-+		}
-+
- 		if (sp[i].skip)
- 			continue;
- 		devid = di_args[i].devid;
-@@ -1713,6 +1742,7 @@ static const char * const cmd_scrub_start_usage[] = {
- 	OPTLINE("-c", "set ioprio class (see ionice(1) manpage)"),
- 	OPTLINE("-n", "set ioprio classdata (see ionice(1) manpage)"),
- 	OPTLINE("-f", "force starting new scrub even if a scrub is already running this is useful when scrub stats record file is damaged"),
-+	OPTLINE("--limit", "set the throughput limit for each device"),
- 	OPTLINE("-q", "deprecated, alias for global -q option"),
- 	HELPINFO_INSERT_GLOBALS,
- 	HELPINFO_INSERT_QUIET,
---
-2.48.1
-
+> +_scratch_mount -o nodatasum
+>
+>  # Test a write against COW file/extent - should fail with -EAGAIN. Disab=
+le the
+>  # NOCOW attribute of the file just in case MOUNT_OPTIONS has "-o nodatac=
+ow".
+> --
+> 2.48.1
+>
 
