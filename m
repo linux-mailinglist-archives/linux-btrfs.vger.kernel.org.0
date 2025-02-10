@@ -1,202 +1,182 @@
-Return-Path: <linux-btrfs+bounces-11366-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11367-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD78A2FAB3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2025 21:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 348C9A2FD2F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2025 23:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09CE81693D8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2025 20:37:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 670B9168AB6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2025 22:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E3426463F;
-	Mon, 10 Feb 2025 20:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D7D25334A;
+	Mon, 10 Feb 2025 22:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0Kr86sR"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TERmrjl9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VduTJSKC";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TERmrjl9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VduTJSKC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907EB26462E
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Feb 2025 20:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CA7250BEF
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Feb 2025 22:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739219345; cv=none; b=twlWPSI9vZK3OYJfAy28xh24CJ9A1loUvbGemQiQ4E8FeDeBOEcVqBSoVQbzw0mMKfHAX+HlLX+EtE9YGs+9k2QRiNMFZ3wIuXRWAl+8JluNDrFgfnUPh1T6zRpHp+BSa9n5tkq6yh4It10XhE//YAd//EqlUn7gJdJ5aZf9EEo=
+	t=1739226854; cv=none; b=Z+D4xlSjzUpmqdRfKrgMlizTOuvL8dowwyg/lflPVq+Lc+t+AfDzTnoYKCLP99y6hZel0eInolA2Ahza9Y8ppjOCKkQleQePgJ4WBT2KUHo2353ZOAAIVnOwHEsPhgz63KtVUrKrQ5tRW396nph07v/qgmHEjTXjQTWYMCGLqzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739219345; c=relaxed/simple;
-	bh=J4dLaaB3fBOp+JcrNEkDPEFUEixWE8jgJYMYPdDCPZc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B32QLPyHOgKQHw5wLlDPHbxHYQu7oyfj9wmnd/joioTcIGeamxb9IIUzSxftCChCWOS2g0Gk0Xhy1utKsBI3ww5UtUuLv0sqUWkHc+pogULUxPKyPvfSUKO/bJ2obeipf/ccnivf3EPGNsY3CygZHhSm1YVcrlF4UzYkXxhtEpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E0Kr86sR; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-439350f1a0bso13561065e9.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Feb 2025 12:29:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739219342; x=1739824142; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jrmX9BQQPb9OcmTZP+o9BiiaGylL3IKKZay8xnvoITE=;
-        b=E0Kr86sRy3KHOBioC4SGxFGJkcZReAxU5wqbxEE9Qj62+CJFiF+W6Jf4PKVZhQNpTI
-         zgTk7uJcRnvifcPBrKdvydnPp2CnPRmAJ0xzkFRhDEGMPHtJjNTnnQdixhnEOsoWEe2d
-         s8wjabQ8V+9yevCoWgI3ShY81W8tQOknKOAhOubcyGpk2va6narJGGUovYI0B79O1Dwm
-         pWa1u6DcZYif90KpcQaMA2bOP+1MGfDlQTGRtyfj6cmgNsguNHmssxL/9UnY1gJ13IpW
-         9vLUf6DVhDLhfdHIfZxSSKe9BOOAO9TyHne+ixH2qu1gUj19Al3ma/PF+G/DUH3QWz6b
-         UXFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739219342; x=1739824142;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jrmX9BQQPb9OcmTZP+o9BiiaGylL3IKKZay8xnvoITE=;
-        b=ZVkw3Fg1saVZqibOzpCkcEFe7uJNZSbMxwbMYg4v/D6NLaog2pmIXxHCovK8DJc1DZ
-         87WF7W8s1VSReY4jYq+oG06Y/sGQzmIFz81F6AOXxwHf9NAkK6VH6pX0qb5d72ZWsQxX
-         m8+PTZ7GwlUEuoBRl90p67m7o40WhNuqdPFyUuoluoRy2fUVDfL+lKb8iOvuNWN2SVgQ
-         mZGBGRDl1auNU1ff47a6THZqRYqd1yJOO6tNUrkYlgwVt24Pzwe6RmQMd7FDdRiw6VrU
-         QjpA1D4rurml2m0BP2ESAoRrmMB9RP65FEAWmfbMyRruNVlEqQ8KWrhuq55v928Rq3VJ
-         zqFw==
-X-Gm-Message-State: AOJu0Yx73T1qZnI0jebrBRwo6J9VhgwaZAEg7byl1KR5mF99Bfjx30/0
-	yThptpkyks1MTtaYvd3NX3wRznCNapmxZa8pXpjOxaJRwN19YazGFV0SBZ4+
-X-Gm-Gg: ASbGncvHA9zbvVQgxp12xhq3kuAVKirMyVzgI4GDqUaAXedYvUBEG9MzenisWQBRzLJ
-	FtK1Mii+fsKJKZJSDl8sdTKqAidTpsl9usK+hb2GZBmBi0nt9v62f4oSg0aEnoROxKMr9bEjhI8
-	FtOCZJeElsAOv3VxSUww+le0vshAlzBVBgd6aLuP8msjRK6yG5TmV9WDGeZ5e2xz2l4MWrr1YDE
-	IJymzWwYbp3oFTphtcsFsumtKwO090u6rTS/2BbBhxKHoRJCexOg1lcDf8OPGowS/o7L/cbexH7
-	x1h92POnNxxPMQ==
-X-Google-Smtp-Source: AGHT+IHyF0LR6R/2tpMXPW8nUgQXc7v2ZLZVn4JUQGOH5dx/JvIAGmdCybaQ6esknG4LE3GTcEj1kA==
-X-Received: by 2002:a05:600c:3ba4:b0:439:4c7f:e167 with SMTP id 5b1f17b1804b1-4394ceb0ef5mr6447465e9.1.1739219341500;
-        Mon, 10 Feb 2025 12:29:01 -0800 (PST)
-Received: from 192.168.1.3 ([82.78.241.163])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4390daf4438sm195079345e9.25.2025.02.10.12.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 12:29:00 -0800 (PST)
-From: Racz Zoltan <racz.zoli@gmail.com>
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org,
-	Racz Zoltan <racz.zoli@gmail.com>
-Subject: [PATCH] btrfs-progs: scrub status: add json output format for -d (per device scrub status) option
-Date: Mon, 10 Feb 2025 22:28:37 +0200
-Message-ID: <20250210202837.45565-1-racz.zoli@gmail.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1739226854; c=relaxed/simple;
+	bh=qFk0Ni+F6hL1lSgz138DfK2KwzPntnOS7XiwLg9wew4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gt8MdvB7s0S6tP+BjWvY/KSf3hR5MAno7lRRyIlf/GgM1MLgEUQtUvn0yDby623Hj4CE5r+QuAzfepJCOq5Vk3tU/j3yMIjCdSww+qV9Va92ry6mqMdkezUG7Pf88xkVrMo9qNh58gV94QNSRwUvwAuTSwSUj+xQ2xxIBDjffzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TERmrjl9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VduTJSKC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TERmrjl9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VduTJSKC; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0490121137;
+	Mon, 10 Feb 2025 22:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1739226850;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mwN0MODN5OZtnmq8YtZc7BAe2FTAhSRJZrl2+XvnjsM=;
+	b=TERmrjl9aWKILN+t4AnRUFyL7BDnxIImPI31LnmG13WfSMFOQZIvh//JDS3MhAw6Pss8D3
+	3HzEX551Y4ugazU6DA42kydvlPugPy+T11KSAe4QG/39fjgczppqpF2JGs/UjZvC8EZjM/
+	EEhoYv0q0IvbRXzU9gfXeOQhR9X1HSI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1739226850;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mwN0MODN5OZtnmq8YtZc7BAe2FTAhSRJZrl2+XvnjsM=;
+	b=VduTJSKCbXCOYXVGKnaDbpaBEW4MVs2ZXrc4mSK9DJOzNQH3EdKh4cYzt3dPvIhP2XF5Eo
+	J43jS3eahMhex7AQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1739226850;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mwN0MODN5OZtnmq8YtZc7BAe2FTAhSRJZrl2+XvnjsM=;
+	b=TERmrjl9aWKILN+t4AnRUFyL7BDnxIImPI31LnmG13WfSMFOQZIvh//JDS3MhAw6Pss8D3
+	3HzEX551Y4ugazU6DA42kydvlPugPy+T11KSAe4QG/39fjgczppqpF2JGs/UjZvC8EZjM/
+	EEhoYv0q0IvbRXzU9gfXeOQhR9X1HSI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1739226850;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mwN0MODN5OZtnmq8YtZc7BAe2FTAhSRJZrl2+XvnjsM=;
+	b=VduTJSKCbXCOYXVGKnaDbpaBEW4MVs2ZXrc4mSK9DJOzNQH3EdKh4cYzt3dPvIhP2XF5Eo
+	J43jS3eahMhex7AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D92C813707;
+	Mon, 10 Feb 2025 22:34:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rsiCNOF+qmeLNAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 10 Feb 2025 22:34:09 +0000
+Date: Mon, 10 Feb 2025 23:34:08 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Mark Harmstone <maharmstone@meta.com>
+Cc: Boris Burkov <boris@bur.io>, Daniel Vacek <neelx@suse.com>,
+	Filipe Manana <fdmanana@kernel.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: use atomic64_t for free_objectid
+Message-ID: <20250210223408.GS5777@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <CAPjX3Fd+-510YrvpxR1GcK2F+XKDVknxes2sj=Eat1Un1zvEkQ@mail.gmail.com>
+ <20250123215955.GN5777@twin.jikos.cz>
+ <CAPjX3Ffb2sz9aiWoyx73Bp7cFSDu3+d5WM-9PWW9UBRaHp0yzg@mail.gmail.com>
+ <CAL3q7H7+UZcXPefg-_8R=eZj42P2UkV2=yE1dSv8BQZagEOhyQ@mail.gmail.com>
+ <962f5499-d730-4e30-8956-7cac25a6b119@meta.com>
+ <20250127201717.GT5777@twin.jikos.cz>
+ <20250129225822.GA216421@zen.localdomain>
+ <CAPjX3FfG9fpYWn-A8DROS9Kk3RTRj2RU+MP00gg7dCk=TF36Og@mail.gmail.com>
+ <20250131193855.GA1197694@zen.localdomain>
+ <4a42d804-ab7b-4734-a99f-c80ae354e93b@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a42d804-ab7b-4734-a99f-c80ae354e93b@meta.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:mid];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_FIVE(0.00)[5]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
 
-This patch depends on the "[PATCH 0/2] btrfs-progs: scrub status: add json output format" patchset, 
-and extends it with json output format for the per device scrub status (-d) option too.
+On Wed, Feb 05, 2025 at 03:08:59PM +0000, Mark Harmstone wrote:
+> On 31/1/25 19:38, Boris Burkov wrote:
+> > My understanding is that the motivation is to enable non-blocking mode
+> > for io_uring operations, but I'll let Mark reply in detail.
+> 
+> That's right. io_uring operates in two passes: the first in non-blocking 
+> mode, then if it receives EAGAIN again in a work thread in blocking mode.
+> 
+> As part of my work to get btrfs receive to use io_uring, I want to add 
+> an io_uring interface for subvol creation. There's two things preventing 
+> a non-blocking version: this, and the fact we need a 
+> btrfs_try_start_transaction() (which should be relatively straightforward).
 
-When using the -d option the resulted json will have a slightly
-different format containing the "devices" -> "device" keys and the "device" key will further 
-contain the "info" and "scrub" subkeys. 
+> >>>>> Even if we were to grab a new integer a billion
+> >>>>> times a second, it would take 584 years to wrap around.
+> >>>>
+> >>>> Good to know, but I would not use that as an argument.  This may hold if
+> >>>> you predict based on contemporary hardware. New technologies can bring
+> >>>> an order of magnitude improvement, eg. like NVMe brought compared to SSD
+> >>>> technology.
+> >>>
+> >>> I eagerly look forward to my 40GHz processor :)
+> >>
+> >> You never know about unexpected break-throughs. So fingers crossed.
+> >> Though I'd be surprised.
+> 
+> More like 40THz, and somebody finding a way to increase the speed of 
+> light... There's four or five orders of magnitude to go before 64-bit 
+> wraparound would become a problem here.
 
-Example usage: 
-btrfs --format json scrub status / -d
+Thinking about the margins again, there is probably enough that we don't
+have to care. I'd still keep the upper limit check as for any random
+event like fuzzing, bitflips and such.
 
-json output:
-{
-  "__header": {
-    "version": "1"
-  },
-  "scrub-status": {
-    "uuid": "1a7d1bc4-c212-42bf-b05c-73bd313d3ecd",
-    "devices": [
-      "device": {
-        "dev": "/dev/nvme0n1p3",
-        "id": 1
-      }
-    ]
-  }
-}
-
-
----
- cmds/scrub.c | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/cmds/scrub.c b/cmds/scrub.c
-index 31b965fc..46a5ae77 100644
---- a/cmds/scrub.c
-+++ b/cmds/scrub.c
-@@ -128,6 +128,8 @@ struct format_ctx fctx;
- 
- static const struct rowspec scrub_status_rowspec[] = {
- 	{ .key = "uuid", .fmt = "%s", .out_json = "uuid"},
-+	{ .key = "dev", .fmt = "%s", .out_json = "dev"},
-+	{ .key = "id", .fmt = "%llu", .out_json = "id"},
- 	{ .key = "status", .fmt = "%s", .out_json = "status"},
- 	{ .key = "duration", .fmt = "%u:%s", .out_json = "duration"},
- 	{ .key = "started_at", .fmt = "%s", .out_json = "started-at"},
-@@ -402,8 +404,10 @@ static void _print_scrub_ss(struct scrub_stats *ss)
- 
- 	const bool json_output = (bconf.output_format == CMD_FORMAT_JSON);
- 
--	if ((!ss || !ss->t_start) && !json_output) {
--		pr_verbose(LOG_DEFAULT, "\tno stats available\n");
-+	if (!ss || !ss->t_start) {
-+		if (!json_output)
-+			pr_verbose(LOG_DEFAULT, "\tno stats available\n");
-+		
- 		return;
- 	}
- 
-@@ -455,10 +459,19 @@ static void print_scrub_dev(struct btrfs_ioctl_dev_info_args *di,
- 				struct btrfs_scrub_progress *p, int raw,
- 				const char *append, struct scrub_stats *ss,
- 				u64 limit)
--{
--	pr_verbose(LOG_DEFAULT, "\nScrub device %s (id %llu) %s\n", di->path, di->devid,
-+{	
-+	
-+	const bool json_output = (bconf.output_format == CMD_FORMAT_JSON);
-+
-+	if (json_output) {
-+		fmt_print_start_group(&fctx, "device", JSON_TYPE_MAP);
-+		fmt_print(&fctx, "dev", di->path);
-+		fmt_print(&fctx, "id", di->devid);
-+	} else 	
-+		pr_verbose(LOG_DEFAULT, "\nScrub device %s (id %llu) %s\n", di->path, di->devid,
- 	       append ? append : "");
- 
-+
- 	_print_scrub_ss(ss);
- 
- 	if (p) {
-@@ -481,6 +494,10 @@ static void print_scrub_dev(struct btrfs_ioctl_dev_info_args *di,
- 			print_scrub_summary(p, ss, di->bytes_used, limit);
- 		}
- 	}
-+
-+	if (json_output) 
-+		fmt_print_end_group(&fctx, "device");
-+
- }
- 
- /*
-@@ -2032,6 +2049,9 @@ static int cmd_scrub_status(const struct cmd_struct *cmd, int argc, char **argv)
- 		pr_verbose(LOG_DEFAULT, "UUID:             %s\n", fsid);
- 
- 	if (do_stats_per_dev) {
-+		if (json_output) 
-+			fmt_print_start_group(&fctx, "devices", JSON_TYPE_ARRAY);
-+
- 		for (i = 0; i < fi_args.num_devices; ++i) {
- 			u64 limit;
- 
-@@ -2049,6 +2069,10 @@ static int cmd_scrub_status(const struct cmd_struct *cmd, int argc, char **argv)
- 							"history" : "status",
- 					&last_scrub->stats, limit);
- 		}
-+
-+		if (json_output) 
-+			fmt_print_end_group(&fctx, "devices");
-+
- 	} else {
- 		u64 total_bytes_used = 0;
- 		struct btrfs_ioctl_space_info *sp = si_args->spaces;
--- 
-2.48.1
-
+The use case for nonblocking io_uring makes sense and justifies the
+optimization. As mentioned, there are other factors slowing down the
+inode creation and number allocation so it's "fingers crossed* safe.
 
