@@ -1,536 +1,110 @@
-Return-Path: <linux-btrfs+bounces-11380-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11381-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B016A316E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 21:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 84016A3194A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 00:06:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44C183A7844
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 20:49:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E963A48A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 23:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14653261596;
-	Tue, 11 Feb 2025 20:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D314268C6B;
+	Tue, 11 Feb 2025 23:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bU6RrDMN"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="aIHyzYnF";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sakCGqni"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448CC265608;
-	Tue, 11 Feb 2025 20:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6C627293D
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 23:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739306977; cv=none; b=LRtSygaRc1sJ6ooUbBG2KU9JeDF+h9Rwg0ybZk7Ntl/Uydpzc9SbyOYTLGsHYRq9nEtdQjK7FNm5rf406EIuzJxDq6rynAlZciqrE1L2V/xU4J/bZs95Q1DTKpmRTmHTFXph9XCqGGIBIk/LhIbqHFp++ZPVe9rbN1neLF274rc=
+	t=1739315211; cv=none; b=mDme2X9a42UewKllo5MptZc/pC7kHEqqN/hgUMx8hEMRK9X91KByGARGSUpOhgPXvTueyQDGTmhIFB8AsVTFqBwjn4thRN9bR0JzL7t5HCY8IMs3RlCrT5lWzyD1hF3IcHe91HGD1bzkU2ohjESHOYO1UctYOHlG4W2b5lapeNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739306977; c=relaxed/simple;
-	bh=h7kfgyUlHcPUoEOYIU5mJFUbjZNt00JHQMITn8Fb9nk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tX5oQhagY7pMVtyoMWa/DDlMMkxUcnxWPM8kymFqYuy8badaCC4d+T/Ft0vfKV1m+WbxVAZdIpvoKBcAhDj1GLb5nHBHa3J16RRnNEPTz4XQABuUY1z0lqoPjSHEdTvFDS1JqXrbIo8mhWXxDeR8ntlG2dD2RwN6dnw+c1wL6sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bU6RrDMN; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1739306972; x=1739911772; i=quwenruo.btrfs@gmx.com;
-	bh=RWJttEpFIvfIobMZz3jtos2MyiMINyuBEVbIyMnakJo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=bU6RrDMNjsegBJYYicm+Z+0NMdZgqVFGus9aghL6IKnyZ0jQufTFhGvGvpDjE9eF
-	 ET7cLVirw9MynGG4ejqayUcsW56okHNYtkMDps6Q3esg7tEQnG673O/WNNY6BPMW9
-	 1o4k8lQJpZNq/Io/ZoNLv1h4YTq80UKvvM8SO3lPGqlJeEQvoFaeTqKQtDcQToKWb
-	 qeaLlp3VyjcN1zVIJEWbLdkb2jMZeEbnG75PWfhElMMC0HWpV7FyO/vvohCz6D4mQ
-	 xUHnkUJnm50Fqf/HjRBvufwg7QNOYgYRMUKnYyy0eDO2JKK4/a6QLeJ3nUCT06l06
-	 WRn8GXlVF6wk6FT7/g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuUnA-1tPjWT2hLG-00xcUG; Tue, 11
- Feb 2025 21:49:32 +0100
-Message-ID: <7835dc1f-6445-4860-b167-1d16fe5de61e@gmx.com>
-Date: Wed, 12 Feb 2025 07:19:28 +1030
+	s=arc-20240116; t=1739315211; c=relaxed/simple;
+	bh=96Y+niokb54yPJBn/qxDO2H9SCplHG0DQg3wtRG+LXo=;
+	h=MIME-Version:Date:From:To:Message-Id:Subject:Content-Type; b=TzcMspyq4iF8BBP8vZd5HITmWv3Vilt1KrABqZh2EttkRpsGGK+6a8AnjtrhTEolrnIxeE1eQPghoSNt13+LpoWGwDnphFdK8hf6G6icBm5oBo4qR55VHZdqhCMs0QXduOvFaQs19Oy1Cgv0Z61cj9f8O1M+3+CfQSRZ3WCAyTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=aIHyzYnF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sakCGqni; arc=none smtp.client-ip=202.12.124.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.stl.internal (Postfix) with ESMTP id ACE6611400CC
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 18:06:47 -0500 (EST)
+Received: from phl-imap-12 ([10.202.2.86])
+  by phl-compute-03.internal (MEProxy); Tue, 11 Feb 2025 18:06:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to; s=fm1; t=
+	1739315207; x=1739401607; bh=96Y+niokb54yPJBn/qxDO2H9SCplHG0DQg3
+	wtRG+LXo=; b=aIHyzYnF6pOIxq7ADtx/c8V37i1lQ1Z176Gqbzowq6fm2L3pgXt
+	FXQZQIAjZQHGP0XYU/fWk68mXAbf6YYJwrAiOPqBcG2rUCY5+pADmD2uP+S23xty
+	Vx7K8oiSsUPNoa6N1RZwdkJLDxTgsS+R13RmN/zvpcOghAa+7YjOJwoCUaurXyqz
+	8yw6JdzZMmuABRbWsbfYH5l5XwgnzBWCOVU1ncaUcfR837Mz5rXF1HndCVkqfRuW
+	qwHROl+eCRSCbohjrMYXGyS1q9q6qrY3zt4ZCTnIjqhFHBJ5LLksN0nSliyHNOGA
+	ThlNMJi8U0eKNWvj7MjSaD15Y1WvcY/j4Sw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1739315207; x=1739401607; bh=96Y+niokb54yPJBn/qxDO2H9SCplHG0DQg3
+	wtRG+LXo=; b=sakCGqni5cJ57uMKMeLYpBUdOc/7vk1c5INkHj8EX5E4MUVo39L
+	ShNTNUQAeqMnK8Si7WyDLgm7V2ICsLpe5fz9z+8/hawi+f1/etmEu/Sr4HT0FRwF
+	3ToWJmxa6nMz3sKEDWzNQYa2R3gBuBZ/2XVR38nF/FlPP5xNG4nmsV12teTjY8yQ
+	41G8UDb1m3iS2k3cvEcO1rxdQvOp1hyVDwJ4wALXrE0yIuN5dfKq2t2TfyhhyMBI
+	wRihenFogb95V0Xw79tO4tv1DxdI64uFdCDRSUH3cRCTrqwjfR82Bq6HzzQigo4t
+	Mw/0lOKMafR7c69GPb/TPXSB7aoT2NBszVA==
+X-ME-Sender: <xms:B9irZ1vWWa-ytr679dyaqCQU0xdLgHl1yVqDcmJFzqTM2-aNRKkMqA>
+    <xme:B9irZ-cisC2mZgmmj6G4GcV5p_N85Nf4CdCe0Dep_FemOd9lhsAKAG-pGgmnQAZUB
+    LMJkAvs61teOAxWnoA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegvddvkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvkffutgfgsehtjeertdertddtnecu
+    hfhrohhmpedfvehhrhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmh
+    gvughivghsrdgtohhmqeenucggtffrrghtthgvrhhnpeevjeeltdefffegvdeggedtvedt
+    fefffeelffdtteffgeffjedttdejkeelvedutdenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghs
+    rdgtohhmpdhnsggprhgtphhtthhopedupdhmohguvgepshhmthhpohhuthdprhgtphhtth
+    hopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:B9irZ4y-rikGk1oNan6fABa_Fub8S2EHHdUo6VOpx5utgJ1PDes4iw>
+    <xmx:B9irZ8NVjBSCuu_WKwkhqLwMVf7_sDQuYaWwPjzeB74PmVIP1jX-Pw>
+    <xmx:B9irZ1961TqUPD1GBvV6KdeyDL_2CFHi38P8yhC3BWZvLLv0H7-woA>
+    <xmx:B9irZ8UQUYsiMwddUF97N1Pkf2kcoHl4eOaQC83G7TU1n03legM45g>
+    <xmx:B9irZyGhaI6nKb2-73JweSjKWumtMpCx17HimmJ6v1FWIXuLp8AVQZL8>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 33B341C20066; Tue, 11 Feb 2025 18:06:47 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fstests: add a generic test to verify direct IO writes
- with buffer contents change
-To: Daniel Vacek <neelx@suse.com>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
- Christoph Hellwig <hch@infradead.org>
-References: <d9c50aa0df6cde2cb39cb7c9f978dbc27dadb770.1739241217.git.wqu@suse.com>
- <CAPjX3FefNiRqkbamYrJ1ZQjihLxNxT48zC_Q6kja2e1oVmFvRg@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAPjX3FefNiRqkbamYrJ1ZQjihLxNxT48zC_Q6kja2e1oVmFvRg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ceT6Z8o2xB3EJ5IY+Qw7c5uLceO+94Mb5tNpuJT/5zYmmPqADe1
- FBEKfgmWbGdvswIJX6HYPYHD+EoN9urkMzl9+/PEeizpU0v5r9cD+fENIwobWnHCBnMMs1I
- LHfECj65XAA2Hof2ngaEmD9cwcoajDrK11dXMQ3gVAdDJhQIdHwVsua1S0dbQPpWuH8FFJ+
- Z+6qYRoOUjj/hLmm9qbKg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8rgIw2iD7gc=;EZx3QxfiTSAtupYRunXu84TvGnr
- ZYfN7eEZ3nIAtL583IRswKq0CmfrNC1tvQzoUh0N2GTMiDTN+zE6hq1heR0c+rh6XsVBxgdF9
- 8+P5RymrsphTA2Zd07xy0Wlq2UC01agmDvQCN6TD2Jqjjcq50mj4wXgcvgvo62/L/8LlyQONa
- 3kp9Vpn5/wYMJw8kPFzfdQnTd1ME0cdyQZ6mDbe/gG3ZlNRInkTcjDNoKHOYSwYYChUqZUoUc
- z2s9DzWRhsgFfZtG7VgDdNLYDb/4WHy8bntftIdicMunxDemGtji0YSanqD9xpTfojH4xOFjD
- GErqECFwvsiRNahKnxOgIQHqt0qOCY5iE8Ij920InG5SrziNZ1grjQAgP4NSXKfvAAd0IpexS
- tFCzjs818X6McGDq59ikonZO0kdVSVHk5zu7wlKuzKTiGSM4kJDbLOARGwguukon+GP0bLLT2
- 8j0fhyfbS9bIHevNEYqYI3imrGkozEmjeRyPniLl/xNOan9DeIcay+S27G2td9NkooYerTJDr
- Z2toGhz/veHK12cjXIPurjpHsQa3ew3SAxI7y2LtpIuviUgK9EPGb15mh6s0LStbjUb0wIUYJ
- vv0U1KXGy0A29TIgjVic6OZ1SgCG2w/Rku4Np2GMrC1lEtKjIKp0jRSq7flVUteUgYRAn/j1P
- gUIk9AALaY6AtwQH5psIVUqENcBLrcufSoDJQwQonFdIIBAN2Lkv4+yw8qe74mVHbLPQdUPuT
- Bdgi8WgxcxpCYc/8AzSjkp9K9ToN53MdflSWkY5sjsKe0E8jm30NJ80kBduqtDoo2BetIyKgJ
- AF1LPYkl4ZrOlKVawBDAj3lVbSHBhbmCSKV7iEg5fgEiGo4QWdRleVwnBUq94CgG33l8h4gBZ
- Opx9/k/CV7KW27hJ0X3w6RPnAfpKOPtejthUldNE4oSt5DgCWke4jO0qkcQX+uTMYxcpP/qMC
- yZbHJ/cMqjrxpXK+c2LUMZPZKGPL2iIsZgGAnYbH58nauVV0w3tNkvRbErmswumEvabSWswDV
- 7X5Uz3dJ8yqfLwFelXrjaF+6VUMLeCSWa56hS++JMh7uaRUILjxB03TzNgCjw6IerDBvWkgwG
- cFS+rjEZehwvzzb1tRDOh9Jpw65AJNXWFaAGySsXo9aXJx9aEbNGSvQhzpaWuD+tdWnUxZo12
- uDwMLZ8Zl49qXLjuVE9O2z3hwbjFkqKmaEDO7eUGw9220arjv/9/atPiKYITTsg6kkSi7A+ky
- jy/CQ+0vP+Uwh19LPIajD8rKBwssJXy2SoAvZUgTrltUMXPKtXiJvvyl0rjhJ/zDuDXXFGCUw
- WpKfKYfHESlnMNSjLK5ZRFxLsq4LFOErpjV4fmFPhmxlaYf0oq80xP1kyF+VKxc2RXMzw/E7u
- RhRw2H1hi2E02wg560TRl1izZwHrI6inEzICwAgjZxrsj7jAnnHdy9EdnU
+Date: Tue, 11 Feb 2025 16:06:26 -0700
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <238af852-4eee-42cf-bda2-0c50a7bc289a@app.fastmail.com>
+Subject: lazy free space tree creation, deprecation of space cache v1
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+Hi,
 
+Recent kernels warn about the deprecation of space cache v1, advising users to switch to v2. Many desktop users don't see this message and won't switch to v2 on their own.
 
-=E5=9C=A8 2025/2/11 22:00, Daniel Vacek =E5=86=99=E9=81=93:
-> On Tue, 11 Feb 2025 at 11:16, Qu Wenruo <wqu@suse.com> wrote:
->>
->> There is a long existing btrfs problem that if some one is modifying th=
-e
->> buffer of an on-going direct IO write, it has a very high chance causin=
-g
->> permanent data checksum mismatch.
->>
->> This is caused by the following factors:
->>
->> - Direct IO buffer is out of the control of filesystem
->>    Thus user space can modify the contents during writeback.
->>
->> - Btrfs generate its data checksum just before submitting the bio
->>    This means if the contents happens after the checksum is generated,
->>    the data written to disk will no longer match the checksum.
->>
->> Btrfs later fixes the problem by forcing the direct IO to fallback to
->> buffered IO (if the inode requires data checksum), so that btrfs can
->> have a consistent view of the buffer.
->
-> Would it be a bad idea if btrfs remapped the page read-only for the
-> duration of the writeback instead?
+I think the concern with silently and forcefully converting users from v1 to v2 automatically is the potentially long time it takes for large file systems? e.g. Zygo has reported days for some of his large file systems.
 
-If you mean the direct IO source buffer, I do not think MM people will
-be happy with that.
-
-The direct source memory can be any memory.
- From user space memory to mmaped page cache or whatever weird memory type=
-.
-
-> Eventual page fault could either
-> block until the writeback is finished (which may be an unwanted
-> behavior) or it could map another copy of the data. This would keep
-> the direct IO behavior for applications which do not change the data
-> after submitting the IO.
-
-HCH mentioned the similar idea, but to my limited understanding, it will
-be a huge infrastructure change and no one is really actively looking
-into this.
-(I bet we will see shared pages between different address space before
-this, and the shared pages idea is already stalled for years)
-
-And if even MM experts are not looking into this, I'm not sure if it's
-really a good idea.
-
->
-> Also, I'd maybe add a tracepoint or dynamic debug print (-once?) when
-> falling back to buffered IO.
-
-It is not bringing much benefit AFAIK.
-
-Tracepoints are for debug purposes and has almost zero overhead when not
-enabled, thus -once makes no sense.
-
-We have some existing OE related trace point that can help:
-
-- trace_btrfs_finish_ordered_extent()
-   Which contains the flag of the OE, if it's really a direct IO it will
-   have BTRFS_ORDERED_DIRECT flag.
-
-Although there are not enough events for things like direct IO itself,
-but it's really out of the realm of this fix.
-
-Feel free to enhance the trace events in another series.
+Since the free space tree can just be deleted and recreated again, is there a possibility of a lazy free space tree creation? Similar to ext4 lazy init (totally different structure and reasoning but high level, same idea - reduce the offline wait for initializing something).
 
 Thanks,
-Qu
 
->
->> This test case will verify the behavior by:
->>
->> - Create a helper program 'dio-writeback-race'
->>    Which does direct IO writes block-by-block, and the buffer is always
->>    initialized to all 0xff before write,
->>    Then starting two threads:
->>    - One to submit the direct IO
->>    - One to modify the buffer to 0x00
->>
->>    The program uses 4K as default block size, and 64MiB as the default
->>    file size.
->>    Which is more than enough to trigger tons of btrfs checksum errors
->>    on unpatched kernels.
->>
->> - New test case generic/761
->>    Which will:
->>
->>    * Use above program to create a 64MiB file
->>
->>    * Do buffered read on that file
->>      Since above program is doing direct IO, there is no page cache
->>      populated.
->>      And the buffered read will need to read out all data from the disk=
-,
->>      and if the filesystem supports data checksum, then the data checks=
-um
->>      will also be verified against the data.
->>
->> The test case passes on the following fses:
->> - ext4
->> - xfs
->> - btrfs with "nodatasum" mount option
->>    No data checksum to bother.
->>
->> - btrfs with default "datasum" mount option and the fix "btrfs: always
->>    fallback to buffered write if the inode requires checksum"
->>    This makes btrfs to fallback on buffered IO so the contents won't
->>    change during writeback of page cache.
->>
->> And fails on the following fses:
->>
->> - btrfs with default "datasum" mount option and without the fix
->>    Expected.
->>
->> Suggested-by: Christoph Hellwig <hch@infradead.org>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> v2:
->> - Fix the comment on the default block size of dio-writeback-race
->> - Use proper type for pthread_exit() of do_io() function
->> - Fix the error message when filesize is invalid
->> - Fix the error message when unknown option is parsed
->> - Catch the thread return value correctly for pthread_join() on IO thre=
-ad
->> - Always update @ret
->> - Return EXIT_SUCCESS/FAILURE based on @ret at error: tag
->> - Check the return value of pthread_join() correctly
->> - Remove unused cleanup override/include comments from the test case
->> - Add the missing fixed-by tag
->> ---
->>   .gitignore               |   1 +
->>   src/Makefile             |   3 +-
->>   src/dio-writeback-race.c | 148 ++++++++++++++++++++++++++++++++++++++=
-+
->>   tests/generic/761        |  41 +++++++++++
->>   tests/generic/761.out    |   2 +
->>   5 files changed, 194 insertions(+), 1 deletion(-)
->>   create mode 100644 src/dio-writeback-race.c
->>   create mode 100755 tests/generic/761
->>   create mode 100644 tests/generic/761.out
->>
->> diff --git a/.gitignore b/.gitignore
->> index efd477738e1e..7060f52cf6b8 100644
->> --- a/.gitignore
->> +++ b/.gitignore
->> @@ -210,6 +210,7 @@ tags
->>   /src/perf/*.pyc
->>   /src/fiemap-fault
->>   /src/min_dio_alignment
->> +/src/dio-writeback-race
->>
->>   # Symlinked files
->>   /tests/generic/035.out
->> diff --git a/src/Makefile b/src/Makefile
->> index 1417c383863e..6ac72b366257 100644
->> --- a/src/Makefile
->> +++ b/src/Makefile
->> @@ -20,7 +20,8 @@ TARGETS =3D dirstress fill fill2 getpagesize holes ls=
-tat64 \
->>          t_get_file_time t_create_short_dirs t_create_long_dirs t_enosp=
-c \
->>          t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocst=
-ale \
->>          t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewi=
-nddir-test \
->> -       readdir-while-renames dio-append-buf-fault dio-write-fsync-same=
--fd
->> +       readdir-while-renames dio-append-buf-fault dio-write-fsync-same=
--fd \
->> +       dio-writeback-race
->>
->>   LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize preallo_rw_patter=
-n_reader \
->>          preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest=
- \
->> diff --git a/src/dio-writeback-race.c b/src/dio-writeback-race.c
->> new file mode 100644
->> index 000000000000..f0a2f6de531b
->> --- /dev/null
->> +++ b/src/dio-writeback-race.c
->> @@ -0,0 +1,148 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * dio_writeback_race -- test direct IO writes with the contents of
->> + * the buffer changed during writeback.
->> + *
->> + * Copyright (C) 2025 SUSE Linux Products GmbH.
->> + */
->> +
->> +/*
->> + * dio_writeback_race
->> + *
->> + * Compile:
->> + *
->> + *   gcc -Wall -pthread -o dio_writeback_race dio_writeback_race.c
->> + *
->> + * Make sure filesystems with explicit data checksum can handle direct=
- IO
->> + * writes correctly, so that even the contents of the direct IO buffer=
- changes
->> + * during writeback, the fs should still work fine without data checks=
-um mismatch.
->> + * (Normally by falling back to buffer IO to keep the checksum and con=
-tents
->> + *  consistent)
->> + *
->> + * Usage:
->> + *
->> + *   dio_writeback_race [-b <buffersize>] [-s <filesize>] <filename>
->> + *
->> + * Where:
->> + *
->> + *   <filename> is the name of the test file to create, if the file ex=
-ists
->> + *   it will be overwritten.
->> + *
->> + *   <buffersize> is the buffer size for direct IO. Users are responsi=
-ble to
->> + *   probe the correct direct IO size and alignment requirement.
->> + *   If not specified, the default value will be 4096.
->> + *
->> + *   <filesize> is the total size of the test file. If not aligned to =
-<blocksize>
->> + *   the result file size will be rounded up to <blocksize>.
->> + *   If not specified, the default value will be 64MiB.
->> + */
->> +
->> +#include <fcntl.h>
->> +#include <stdlib.h>
->> +#include <stdio.h>
->> +#include <pthread.h>
->> +#include <unistd.h>
->> +#include <getopt.h>
->> +#include <string.h>
->> +#include <errno.h>
->> +#include <sys/stat.h>
->> +
->> +static int fd =3D -1;
->> +static void *buf =3D NULL;
->> +static unsigned long long filesize =3D 64 * 1024 * 1024;
->> +static int blocksize =3D 4096;
->> +
->> +const int orig_pattern =3D 0xff;
->> +const int modify_pattern =3D 0x00;
->> +
->> +static void *do_io(void *arg)
->> +{
->> +       ssize_t ret;
->> +
->> +       ret =3D write(fd, buf, blocksize);
->> +       pthread_exit((void *)ret);
->> +}
->> +
->> +static void *do_modify(void *arg)
->> +{
->> +       memset(buf, modify_pattern, blocksize);
->> +       pthread_exit(NULL);
->> +}
->> +
->> +int main (int argc, char *argv[])
->> +{
->> +       pthread_t io_thread;
->> +       pthread_t modify_thread;
->> +       unsigned long long filepos;
->> +       int opt;
->> +       int ret =3D -EINVAL;
->> +
->> +       while ((opt =3D getopt(argc, argv, "b:s:")) > 0) {
->> +               switch (opt) {
->> +               case 'b':
->> +                       blocksize =3D atoi(optarg);
->> +                       if (blocksize =3D=3D 0) {
->> +                               fprintf(stderr, "invalid blocksize '%s'=
-\n", optarg);
->> +                               goto error;
->> +                       }
->> +                       break;
->> +               case 's':
->> +                       filesize =3D atoll(optarg);
->> +                       if (filesize =3D=3D 0) {
->> +                               fprintf(stderr, "invalid filesize '%s'\=
-n", optarg);
->> +                               goto error;
->> +                       }
->> +                       break;
->> +               default:
->> +                       fprintf(stderr, "unknown option '%c'\n", opt);
->> +                       goto error;
->> +               }
->> +       }
->> +       if (optind >=3D argc) {
->> +               fprintf(stderr, "missing argument\n");
->> +               goto error;
->> +       }
->> +       ret =3D posix_memalign(&buf, blocksize, blocksize);
->> +       if (!buf) {
->> +               fprintf(stderr, "failed to allocate aligned memory\n");
->> +               exit(EXIT_FAILURE);
->> +       }
->> +       fd =3D open(argv[optind], O_DIRECT | O_WRONLY | O_CREAT);
->> +       if (fd < 0) {
->> +               fprintf(stderr, "failed to open file '%s': %m\n", argv[=
-2]);
->> +               goto error;
->> +       }
->> +
->> +       for (filepos =3D 0; filepos < filesize; filepos +=3D blocksize)=
- {
->> +               void *retval =3D NULL;
->> +
->> +               memset(buf, orig_pattern, blocksize);
->> +               pthread_create(&io_thread, NULL, do_io, NULL);
->> +               pthread_create(&modify_thread, NULL, do_modify, NULL);
->> +               ret =3D pthread_join(io_thread, &retval);
->> +               if (ret) {
->> +                       errno =3D ret;
->> +                       ret =3D -ret;
->> +                       fprintf(stderr, "failed to join io thread: %m\n=
-");
->> +                       goto error;
->> +               }
->> +               if ((ssize_t )retval < blocksize) {
->> +                       ret =3D -EIO;
->> +                       fprintf(stderr, "io thread failed\n");
->> +                       goto error;
->> +               }
->> +               ret =3D pthread_join(modify_thread, NULL);
->> +               if (ret) {
->> +                       errno =3D ret;
->> +                       ret =3D -ret;
->> +                       fprintf(stderr, "failed to join modify thread: =
-%m\n");
->> +                       goto error;
->> +               }
->> +       }
->> +error:
->> +       close(fd);
->> +       free(buf);
->> +       if (ret < 0)
->> +               return EXIT_FAILURE;
->> +       return EXIT_SUCCESS;
->> +}
->> diff --git a/tests/generic/761 b/tests/generic/761
->> new file mode 100755
->> index 000000000000..422b716d31b6
->> --- /dev/null
->> +++ b/tests/generic/761
->> @@ -0,0 +1,41 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2025 SUSE Linux Products GmbH. All Rights Reserved.
->> +#
->> +# FS QA Test 761
->> +#
->> +# Making sure direct IO (O_DIRECT) writes won't cause any data checksu=
-m mismatch,
->> +# even if the contents of the buffer changes during writeback.
->> +#
->> +# This is mostly for filesystems with data checksum support, which sho=
-uld fallback
->> +# to buffer IO to avoid inconsistency.
->> +# For filesystems without data checksum support, nothing needs to be b=
-othered.
->> +#
->> +
->> +. ./common/preamble
->> +_begin_fstest auto quick
->> +
->> +_require_scratch
->> +_require_odirect
->> +_require_test_program dio-writeback-race
->> +_fixed_by_kernel_commit XXXXXXXX \
->> +       "btrfs: always fallback to buffered write if the inode requires=
- checksum"
->> +
->> +_scratch_mkfs > $seqres.full 2>&1
->> +_scratch_mount
->> +
->> +blocksize=3D$(_get_block_size $SCRATCH_MNT)
->> +filesize=3D$(( 64 * 1024 * 1024))
->> +
->> +echo "blocksize=3D$blocksize filesize=3D$filesize" >> $seqres.full
->> +
->> +$here/src/dio-writeback-race -b $blocksize -s $filesize $SCRATCH_MNT/f=
-oobar
->> +
->> +# Read out the file, which should trigger checksum verification
->> +cat $SCRATCH_MNT/foobar > /dev/null
->> +
->> +echo "Silence is golden"
->> +
->> +# success, all done
->> +status=3D0
->> +exit
->> diff --git a/tests/generic/761.out b/tests/generic/761.out
->> new file mode 100644
->> index 000000000000..72ebba4cb426
->> --- /dev/null
->> +++ b/tests/generic/761.out
->> @@ -0,0 +1,2 @@
->> +QA output created by 761
->> +Silence is golden
->> --
->> 2.48.1
->>
->>
->
-
+--
+Chris Murphy
 
