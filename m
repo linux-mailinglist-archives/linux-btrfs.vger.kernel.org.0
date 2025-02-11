@@ -1,437 +1,167 @@
-Return-Path: <linux-btrfs+bounces-11375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84800A30D7A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 14:58:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E217A30DC5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 15:08:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA76B18894EB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 13:58:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 481CD3A69E7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 14:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6530D24C66E;
-	Tue, 11 Feb 2025 13:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D737624C69C;
+	Tue, 11 Feb 2025 14:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SYVYt0wQ";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MPOAZRl8"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qEERkML3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/UiUGwSd";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qEERkML3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/UiUGwSd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE4E24BD0E;
-	Tue, 11 Feb 2025 13:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED3924C67A;
+	Tue, 11 Feb 2025 14:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739282288; cv=none; b=tAsq4aWSTj8lA+C3mZwkzdH42hz1BQ26Y6e430HhHWSCmnoMnMQuvZUR94TVUibXt4uwDqyNCBQ/tHF6WBuBqsXoRa8sGfPUBv9CGiY8tL8b2lP7wRC+INQx7hYtKx0qY+65jv+eEDpC4ZnSWMHNO8w5FFFSgN/BVRkqLiuxvMU=
+	t=1739282900; cv=none; b=ciFGc325G/YqFwckKgvzZ2RnxJYVrfEet7QuMnJRZ10HpNQogx45jstjIYOHAMd9QRvKIs9brLGKSDI6CyF1MSgD2Douu6As68eFFIzWo4vv15KxDAHdscJxGmb8Kz7C5+gASiLsHzQvj9c6LOrEwfFVQHBh+EIrW5CoAlORfmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739282288; c=relaxed/simple;
-	bh=5vh03o356H9dTRbnpkWvlOd2PqnDz2ZzehE4KoAvbok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OYgeMQdq58MjyNV/u98Nx9XRmH+06RwoSfZsxwBGEOwjEAdEY4pSfprqmvO76yjoXjm/lQ4boFmptk4OJEiNgUOmEQ+bH5nURuWQZ7xx2pU7f8v6c2Ii3VXEZwijgp3rirUsKfLXXB2HI9Umy6enECPzSwz2w5VfOQV24BLkiCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SYVYt0wQ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MPOAZRl8; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1739282900; c=relaxed/simple;
+	bh=Vw/O5t5y+OGLBWHGVYCZ5Gb3SsKiP2ZpTgbaezjt3Ak=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nYq9ldp1Ur/4g2ySkcg9JG8xIHlr9wSnIWnq73ikmkYGZ3hVrQWpL2OCHP9epKggJAj4jYGMDwsq0L9i+jO1FeLOcQO+lukR6ZuS3K1OaViZJSDkp1qtLBKcwC+jalHBxbMEgr+BwEtXsyfNq7Mhx1bNI6iHJXWGHEWKAylg7qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qEERkML3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/UiUGwSd; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qEERkML3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/UiUGwSd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5690420C46;
-	Tue, 11 Feb 2025 02:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1739241252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=+MmS3BRy1sjLtEur1gCg/xMWkz/Gte/2s9wiq5CU0JY=;
-	b=SYVYt0wQ04SarBXZV4l1b3lBtiqtIQS9KMq96rM/r7JxJYpnv1S5X5kWOnPOys+n9+qVOZ
-	1wQjmsiR0Zy8L7QCilvbPuE0pKq/ulSjMlv18c6Orx5mT+d5IJr2kG3xez1TFhUtscpJ3e
-	qX1iIe+erLy78eW7+qXO24HZBpoMdoE=
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 32AFC5C441;
+	Tue, 11 Feb 2025 12:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1739276351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zDjjzWe4XOTVAHDSZ7T43SXMiq1qjV4KZKLIpGkFuIc=;
+	b=qEERkML3SbEW5FrU52Q6qSOsuZmMWDrY4NHm1gT6qw4U5EB9gR/NVViBaMAPB91wRtRZXM
+	kFlGqIzBFvzrT3Ww2/M4V+66VXV2SBnn9eDNjR9vDS5H0V0nOReemRGAeCqD8B5/DYrkM7
+	CkEwiqDt/bosma2/lXeZS9o/MCV5cf4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1739276351;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zDjjzWe4XOTVAHDSZ7T43SXMiq1qjV4KZKLIpGkFuIc=;
+	b=/UiUGwSdPyCnYA14RWvmUVkM8FCK0bLoegGSrod6wbYaCg0T78c1LEMBQZsiQ3QkKC98oH
+	MqDTsEXVwVOwWMAA==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=MPOAZRl8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1739241251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=+MmS3BRy1sjLtEur1gCg/xMWkz/Gte/2s9wiq5CU0JY=;
-	b=MPOAZRl8ZuYAUQt3frXvrWBqzY1JAQypuePxlds3+tj/C/zPNgk8nmwJVbGHqvu3xHQQqu
-	c5aM3RZJ/bZgy7PPrysldUb+DhNs9FeZWrehE2duyGDM3+wSXzF+895hB2S5XOtVVgUyGT
-	YfxXrlc1GVcOnCZX6wREVmgqSgbGe7o=
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1739276351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zDjjzWe4XOTVAHDSZ7T43SXMiq1qjV4KZKLIpGkFuIc=;
+	b=qEERkML3SbEW5FrU52Q6qSOsuZmMWDrY4NHm1gT6qw4U5EB9gR/NVViBaMAPB91wRtRZXM
+	kFlGqIzBFvzrT3Ww2/M4V+66VXV2SBnn9eDNjR9vDS5H0V0nOReemRGAeCqD8B5/DYrkM7
+	CkEwiqDt/bosma2/lXeZS9o/MCV5cf4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1739276351;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zDjjzWe4XOTVAHDSZ7T43SXMiq1qjV4KZKLIpGkFuIc=;
+	b=/UiUGwSdPyCnYA14RWvmUVkM8FCK0bLoegGSrod6wbYaCg0T78c1LEMBQZsiQ3QkKC98oH
+	MqDTsEXVwVOwWMAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BF7A13782;
-	Tue, 11 Feb 2025 02:34:09 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 601D513782;
+	Tue, 11 Feb 2025 12:19:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7hLhMyG3qmdjcgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 11 Feb 2025 02:34:09 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Cc: Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v2] fstests: add a generic test to verify direct IO writes with buffer contents change
-Date: Tue, 11 Feb 2025 13:03:48 +1030
-Message-ID: <d9c50aa0df6cde2cb39cb7c9f978dbc27dadb770.1739241217.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
+	id WHJFBj1Aq2fCHwAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Tue, 11 Feb 2025 12:19:09 +0000
+Date: Tue, 11 Feb 2025 23:19:02 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org, Christoph Hellwig
+ <hch@infradead.org>
+Subject: Re: [PATCH v2] fstests: add a generic test to verify direct IO
+ writes with buffer contents change
+Message-ID: <20250211231902.5e8c0694.ddiss@suse.de>
+In-Reply-To: <d9c50aa0df6cde2cb39cb7c9f978dbc27dadb770.1739241217.git.wqu@suse.com>
+References: <d9c50aa0df6cde2cb39cb7c9f978dbc27dadb770.1739241217.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5690420C46
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -3.30
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
 	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid,infradead.org:email];
-	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:email,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-There is a long existing btrfs problem that if some one is modifying the
-buffer of an on-going direct IO write, it has a very high chance causing
-permanent data checksum mismatch.
+On Tue, 11 Feb 2025 16:22:57 +1030, Qu Wenruo wrote:
 
-This is caused by the following factors:
+...
+> diff --git a/src/dio-writeback-race.c b/src/dio-writeback-race.c
+> new file mode 100644
+> index 000000000000..f0a2f6de531b
+> --- /dev/null
+> +++ b/src/dio-writeback-race.c
+> @@ -0,0 +1,148 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * dio_writeback_race -- test direct IO writes with the contents of
+> + * the buffer changed during writeback.
+> + *
+> + * Copyright (C) 2025 SUSE Linux Products GmbH.
+> + */
+> +
+> +/*
+> + * dio_writeback_race
+> + *
+> + * Compile:
+> + *
+> + *   gcc -Wall -pthread -o dio_writeback_race dio_writeback_race.c
 
-- Direct IO buffer is out of the control of filesystem
-  Thus user space can modify the contents during writeback.
+nit: hyphens instead of underscores: dio-writeback-race.c
 
-- Btrfs generate its data checksum just before submitting the bio
-  This means if the contents happens after the checksum is generated,
-  the data written to disk will no longer match the checksum.
+...
+> +	fd = open(argv[optind], O_DIRECT | O_WRONLY | O_CREAT);
+> +	if (fd < 0) {
+> +		fprintf(stderr, "failed to open file '%s': %m\n", argv[2]);
 
-Btrfs later fixes the problem by forcing the direct IO to fallback to
-buffered IO (if the inode requires data checksum), so that btrfs can
-have a consistent view of the buffer.
+argv[optind] instead of argv[2] in the error msg. With that fixed:
 
-This test case will verify the behavior by:
-
-- Create a helper program 'dio-writeback-race'
-  Which does direct IO writes block-by-block, and the buffer is always
-  initialized to all 0xff before write,
-  Then starting two threads:
-  - One to submit the direct IO
-  - One to modify the buffer to 0x00
-
-  The program uses 4K as default block size, and 64MiB as the default
-  file size.
-  Which is more than enough to trigger tons of btrfs checksum errors
-  on unpatched kernels.
-
-- New test case generic/761
-  Which will:
-
-  * Use above program to create a 64MiB file
-
-  * Do buffered read on that file
-    Since above program is doing direct IO, there is no page cache
-    populated.
-    And the buffered read will need to read out all data from the disk,
-    and if the filesystem supports data checksum, then the data checksum
-    will also be verified against the data.
-
-The test case passes on the following fses:
-- ext4
-- xfs
-- btrfs with "nodatasum" mount option
-  No data checksum to bother.
-
-- btrfs with default "datasum" mount option and the fix "btrfs: always
-  fallback to buffered write if the inode requires checksum"
-  This makes btrfs to fallback on buffered IO so the contents won't
-  change during writeback of page cache.
-
-And fails on the following fses:
-
-- btrfs with default "datasum" mount option and without the fix
-  Expected.
-
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Fix the comment on the default block size of dio-writeback-race
-- Use proper type for pthread_exit() of do_io() function
-- Fix the error message when filesize is invalid
-- Fix the error message when unknown option is parsed
-- Catch the thread return value correctly for pthread_join() on IO thread
-- Always update @ret
-- Return EXIT_SUCCESS/FAILURE based on @ret at error: tag
-- Check the return value of pthread_join() correctly
-- Remove unused cleanup override/include comments from the test case
-- Add the missing fixed-by tag
----
- .gitignore               |   1 +
- src/Makefile             |   3 +-
- src/dio-writeback-race.c | 148 +++++++++++++++++++++++++++++++++++++++
- tests/generic/761        |  41 +++++++++++
- tests/generic/761.out    |   2 +
- 5 files changed, 194 insertions(+), 1 deletion(-)
- create mode 100644 src/dio-writeback-race.c
- create mode 100755 tests/generic/761
- create mode 100644 tests/generic/761.out
-
-diff --git a/.gitignore b/.gitignore
-index efd477738e1e..7060f52cf6b8 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -210,6 +210,7 @@ tags
- /src/perf/*.pyc
- /src/fiemap-fault
- /src/min_dio_alignment
-+/src/dio-writeback-race
- 
- # Symlinked files
- /tests/generic/035.out
-diff --git a/src/Makefile b/src/Makefile
-index 1417c383863e..6ac72b366257 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -20,7 +20,8 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
- 	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
- 	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
- 	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-test \
--	readdir-while-renames dio-append-buf-fault dio-write-fsync-same-fd
-+	readdir-while-renames dio-append-buf-fault dio-write-fsync-same-fd \
-+	dio-writeback-race
- 
- LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
- 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-diff --git a/src/dio-writeback-race.c b/src/dio-writeback-race.c
-new file mode 100644
-index 000000000000..f0a2f6de531b
---- /dev/null
-+++ b/src/dio-writeback-race.c
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * dio_writeback_race -- test direct IO writes with the contents of
-+ * the buffer changed during writeback.
-+ *
-+ * Copyright (C) 2025 SUSE Linux Products GmbH.
-+ */
-+
-+/*
-+ * dio_writeback_race
-+ *
-+ * Compile:
-+ *
-+ *   gcc -Wall -pthread -o dio_writeback_race dio_writeback_race.c
-+ *
-+ * Make sure filesystems with explicit data checksum can handle direct IO
-+ * writes correctly, so that even the contents of the direct IO buffer changes
-+ * during writeback, the fs should still work fine without data checksum mismatch.
-+ * (Normally by falling back to buffer IO to keep the checksum and contents
-+ *  consistent)
-+ *
-+ * Usage:
-+ *
-+ *   dio_writeback_race [-b <buffersize>] [-s <filesize>] <filename>
-+ *
-+ * Where:
-+ *
-+ *   <filename> is the name of the test file to create, if the file exists
-+ *   it will be overwritten.
-+ *
-+ *   <buffersize> is the buffer size for direct IO. Users are responsible to
-+ *   probe the correct direct IO size and alignment requirement.
-+ *   If not specified, the default value will be 4096.
-+ *
-+ *   <filesize> is the total size of the test file. If not aligned to <blocksize>
-+ *   the result file size will be rounded up to <blocksize>.
-+ *   If not specified, the default value will be 64MiB.
-+ */
-+
-+#include <fcntl.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <pthread.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <sys/stat.h>
-+
-+static int fd = -1;
-+static void *buf = NULL;
-+static unsigned long long filesize = 64 * 1024 * 1024;
-+static int blocksize = 4096;
-+
-+const int orig_pattern = 0xff;
-+const int modify_pattern = 0x00;
-+
-+static void *do_io(void *arg)
-+{
-+	ssize_t ret;
-+
-+	ret = write(fd, buf, blocksize);
-+	pthread_exit((void *)ret);
-+}
-+
-+static void *do_modify(void *arg)
-+{
-+	memset(buf, modify_pattern, blocksize);
-+	pthread_exit(NULL);
-+}
-+
-+int main (int argc, char *argv[])
-+{
-+	pthread_t io_thread;
-+	pthread_t modify_thread;
-+	unsigned long long filepos;
-+	int opt;
-+	int ret = -EINVAL;
-+
-+	while ((opt = getopt(argc, argv, "b:s:")) > 0) {
-+		switch (opt) {
-+		case 'b':
-+			blocksize = atoi(optarg);
-+			if (blocksize == 0) {
-+				fprintf(stderr, "invalid blocksize '%s'\n", optarg);
-+				goto error;
-+			}
-+			break;
-+		case 's':
-+			filesize = atoll(optarg);
-+			if (filesize == 0) {
-+				fprintf(stderr, "invalid filesize '%s'\n", optarg);
-+				goto error;
-+			}
-+			break;
-+		default:
-+			fprintf(stderr, "unknown option '%c'\n", opt);
-+			goto error;
-+		}
-+	}
-+	if (optind >= argc) {
-+		fprintf(stderr, "missing argument\n");
-+		goto error;
-+	}
-+	ret = posix_memalign(&buf, blocksize, blocksize);
-+	if (!buf) {
-+		fprintf(stderr, "failed to allocate aligned memory\n");
-+		exit(EXIT_FAILURE);
-+	}
-+	fd = open(argv[optind], O_DIRECT | O_WRONLY | O_CREAT);
-+	if (fd < 0) {
-+		fprintf(stderr, "failed to open file '%s': %m\n", argv[2]);
-+		goto error;
-+	}
-+
-+	for (filepos = 0; filepos < filesize; filepos += blocksize) {
-+		void *retval = NULL;
-+
-+		memset(buf, orig_pattern, blocksize);
-+		pthread_create(&io_thread, NULL, do_io, NULL);
-+		pthread_create(&modify_thread, NULL, do_modify, NULL);
-+		ret = pthread_join(io_thread, &retval);
-+		if (ret) {
-+			errno = ret;
-+			ret = -ret;
-+			fprintf(stderr, "failed to join io thread: %m\n");
-+			goto error;
-+		}
-+		if ((ssize_t )retval < blocksize) {
-+			ret = -EIO;
-+			fprintf(stderr, "io thread failed\n");
-+			goto error;
-+		}
-+		ret = pthread_join(modify_thread, NULL);
-+		if (ret) {
-+			errno = ret;
-+			ret = -ret;
-+			fprintf(stderr, "failed to join modify thread: %m\n");
-+			goto error;
-+		}
-+	}
-+error:
-+	close(fd);
-+	free(buf);
-+	if (ret < 0)
-+		return EXIT_FAILURE;
-+	return EXIT_SUCCESS;
-+}
-diff --git a/tests/generic/761 b/tests/generic/761
-new file mode 100755
-index 000000000000..422b716d31b6
---- /dev/null
-+++ b/tests/generic/761
-@@ -0,0 +1,41 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 761
-+#
-+# Making sure direct IO (O_DIRECT) writes won't cause any data checksum mismatch,
-+# even if the contents of the buffer changes during writeback.
-+#
-+# This is mostly for filesystems with data checksum support, which should fallback
-+# to buffer IO to avoid inconsistency.
-+# For filesystems without data checksum support, nothing needs to be bothered.
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto quick
-+
-+_require_scratch
-+_require_odirect
-+_require_test_program dio-writeback-race
-+_fixed_by_kernel_commit XXXXXXXX \
-+	"btrfs: always fallback to buffered write if the inode requires checksum"
-+
-+_scratch_mkfs > $seqres.full 2>&1
-+_scratch_mount
-+
-+blocksize=$(_get_block_size $SCRATCH_MNT)
-+filesize=$(( 64 * 1024 * 1024))
-+
-+echo "blocksize=$blocksize filesize=$filesize" >> $seqres.full
-+
-+$here/src/dio-writeback-race -b $blocksize -s $filesize $SCRATCH_MNT/foobar
-+
-+# Read out the file, which should trigger checksum verification
-+cat $SCRATCH_MNT/foobar > /dev/null
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/761.out b/tests/generic/761.out
-new file mode 100644
-index 000000000000..72ebba4cb426
---- /dev/null
-+++ b/tests/generic/761.out
-@@ -0,0 +1,2 @@
-+QA output created by 761
-+Silence is golden
--- 
-2.48.1
-
+Reviewed-by: David Disseldorp <ddiss@suse.de>
 
