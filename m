@@ -1,110 +1,126 @@
-Return-Path: <linux-btrfs+bounces-11381-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11382-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84016A3194A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 00:06:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1E9A3198C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 00:29:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E963A48A3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 23:06:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CD7018886B0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 23:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D314268C6B;
-	Tue, 11 Feb 2025 23:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EAE9268FE6;
+	Tue, 11 Feb 2025 23:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="aIHyzYnF";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sakCGqni"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZoPDMAom"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6C627293D
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 23:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0E9267737
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 23:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739315211; cv=none; b=mDme2X9a42UewKllo5MptZc/pC7kHEqqN/hgUMx8hEMRK9X91KByGARGSUpOhgPXvTueyQDGTmhIFB8AsVTFqBwjn4thRN9bR0JzL7t5HCY8IMs3RlCrT5lWzyD1hF3IcHe91HGD1bzkU2ohjESHOYO1UctYOHlG4W2b5lapeNI=
+	t=1739316583; cv=none; b=mjOWaOtmyz4BppOLeUSpzgDlafcsEaaadxVYQsLZPRXAOxw+6pZJvyEDtgRPzPNocPuXDUTDrINc0OoTS4VVsoBxc5uxo/+8Vq1w2YZhjBSTGjpc8D+i4FLbE4VqVhuoTO/1w8xbjQNGELVSgETLwLhh1Yi5c8SvxeoXwXDGAsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739315211; c=relaxed/simple;
-	bh=96Y+niokb54yPJBn/qxDO2H9SCplHG0DQg3wtRG+LXo=;
-	h=MIME-Version:Date:From:To:Message-Id:Subject:Content-Type; b=TzcMspyq4iF8BBP8vZd5HITmWv3Vilt1KrABqZh2EttkRpsGGK+6a8AnjtrhTEolrnIxeE1eQPghoSNt13+LpoWGwDnphFdK8hf6G6icBm5oBo4qR55VHZdqhCMs0QXduOvFaQs19Oy1Cgv0Z61cj9f8O1M+3+CfQSRZ3WCAyTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=aIHyzYnF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sakCGqni; arc=none smtp.client-ip=202.12.124.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.stl.internal (Postfix) with ESMTP id ACE6611400CC
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 18:06:47 -0500 (EST)
-Received: from phl-imap-12 ([10.202.2.86])
-  by phl-compute-03.internal (MEProxy); Tue, 11 Feb 2025 18:06:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to; s=fm1; t=
-	1739315207; x=1739401607; bh=96Y+niokb54yPJBn/qxDO2H9SCplHG0DQg3
-	wtRG+LXo=; b=aIHyzYnF6pOIxq7ADtx/c8V37i1lQ1Z176Gqbzowq6fm2L3pgXt
-	FXQZQIAjZQHGP0XYU/fWk68mXAbf6YYJwrAiOPqBcG2rUCY5+pADmD2uP+S23xty
-	Vx7K8oiSsUPNoa6N1RZwdkJLDxTgsS+R13RmN/zvpcOghAa+7YjOJwoCUaurXyqz
-	8yw6JdzZMmuABRbWsbfYH5l5XwgnzBWCOVU1ncaUcfR837Mz5rXF1HndCVkqfRuW
-	qwHROl+eCRSCbohjrMYXGyS1q9q6qrY3zt4ZCTnIjqhFHBJ5LLksN0nSliyHNOGA
-	ThlNMJi8U0eKNWvj7MjSaD15Y1WvcY/j4Sw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1739315207; x=1739401607; bh=96Y+niokb54yPJBn/qxDO2H9SCplHG0DQg3
-	wtRG+LXo=; b=sakCGqni5cJ57uMKMeLYpBUdOc/7vk1c5INkHj8EX5E4MUVo39L
-	ShNTNUQAeqMnK8Si7WyDLgm7V2ICsLpe5fz9z+8/hawi+f1/etmEu/Sr4HT0FRwF
-	3ToWJmxa6nMz3sKEDWzNQYa2R3gBuBZ/2XVR38nF/FlPP5xNG4nmsV12teTjY8yQ
-	41G8UDb1m3iS2k3cvEcO1rxdQvOp1hyVDwJ4wALXrE0yIuN5dfKq2t2TfyhhyMBI
-	wRihenFogb95V0Xw79tO4tv1DxdI64uFdCDRSUH3cRCTrqwjfR82Bq6HzzQigo4t
-	Mw/0lOKMafR7c69GPb/TPXSB7aoT2NBszVA==
-X-ME-Sender: <xms:B9irZ1vWWa-ytr679dyaqCQU0xdLgHl1yVqDcmJFzqTM2-aNRKkMqA>
-    <xme:B9irZ-cisC2mZgmmj6G4GcV5p_N85Nf4CdCe0Dep_FemOd9lhsAKAG-pGgmnQAZUB
-    LMJkAvs61teOAxWnoA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegvddvkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvkffutgfgsehtjeertdertddtnecu
-    hfhrohhmpedfvehhrhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmh
-    gvughivghsrdgtohhmqeenucggtffrrghtthgvrhhnpeevjeeltdefffegvdeggedtvedt
-    fefffeelffdtteffgeffjedttdejkeelvedutdenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghs
-    rdgtohhmpdhnsggprhgtphhtthhopedupdhmohguvgepshhmthhpohhuthdprhgtphhtth
-    hopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:B9irZ4y-rikGk1oNan6fABa_Fub8S2EHHdUo6VOpx5utgJ1PDes4iw>
-    <xmx:B9irZ8NVjBSCuu_WKwkhqLwMVf7_sDQuYaWwPjzeB74PmVIP1jX-Pw>
-    <xmx:B9irZ1961TqUPD1GBvV6KdeyDL_2CFHi38P8yhC3BWZvLLv0H7-woA>
-    <xmx:B9irZ8UQUYsiMwddUF97N1Pkf2kcoHl4eOaQC83G7TU1n03legM45g>
-    <xmx:B9irZyGhaI6nKb2-73JweSjKWumtMpCx17HimmJ6v1FWIXuLp8AVQZL8>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 33B341C20066; Tue, 11 Feb 2025 18:06:47 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1739316583; c=relaxed/simple;
+	bh=45UlS66vDmUJhImpZsqIrh57LrPZz607hRkpJ2swtjM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EmLjIs2IakUFnCqrFkCuPlYXd9igkSIvhNmdJTFgIdCaFNONy+54tDXgmmNFA1BAlXEgSOAbZYQiRGf21+zsXi+seX7QzowlFNKRyK3w+/Yvy9hDyDDGF3Esb3Xu6uHsBda9Lt37fTzyIeUTBlqcvx8POQMAimp9acNUjt6U/rg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZoPDMAom; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ab7e3d0921bso191469666b.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 15:29:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739316579; x=1739921379; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OrCmgRFA7rBq4eEmhuNox1nzS27sbqFrwlhoSwUkCdU=;
+        b=ZoPDMAomsvYmLjLOwhlb5Fbrop/l0UzNl4gtNPC9gStBZKDXawqbxLmEiK9SX4o6W2
+         BMDa8vdbtopUQbanm9Q88rZLCh+NKAmWam2dNbloIYHUxLWnC9IuAqbFkQZVoiJWrIxG
+         E8I3BomnuriAhk363nfeQf6ncbnuCYonlf1NtDDsH4ygRmUq1I17hT7oq/7fhS+TRGeF
+         lQPWtAc5+xDgHEvvq7fzi1ffqcBjCcYll2V7LzY9aITTJNyupYaFekNdmvfUhoyAymhr
+         BYbLSpyftSLrUIKDz2P0RcgK7ZLGJAxsUrqtEcqTSGsZhAv5tTa/xsUoqqaWuaxyHghs
+         x2CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739316579; x=1739921379;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OrCmgRFA7rBq4eEmhuNox1nzS27sbqFrwlhoSwUkCdU=;
+        b=XnaG+sF44sURyogjCl8fXzJ50s3V7Ve4ELRV1Swnk6uV4XkKbWXd1InwS8EbtzTjPW
+         Li4FKWPJW+BdMi/fn9aEcJDMzIFFbT3ZhSVZb9QNvqpfyfMry0WzG2/XcLV8Bmr20WMe
+         NMPt42+CUmg0cOi6e2HnQPGg07NTBoQQDo0NqgRGLECVqMbu21I/1Fa5ASGAcrxAuE6g
+         o9ZjnS/Qpv41MPNJph5Mgs8VsekbLyLcvWXVbjzigNYV/00cfL8LFRbJ5HCnyM4Pettb
+         T+8KkhkvtwzVr4jlYdrb6jtRBCqs9eYFCEDaAnwPuygMBhs+wUrl+DynSLn9TAJciLbF
+         qpZw==
+X-Gm-Message-State: AOJu0YzpDxP+hIFbnsk46G4YsfFDAMNvjjCLiOnhtUXC2DSV4XEM2t69
+	Gw3w3bfz85jfsvqifU/a1N2m5btkP8sadqm61fIgHhs7B8NJANzNdGdv/A==
+X-Gm-Gg: ASbGnctsEBJNSDTrS+qU8os53ArirZvbE+AWWCnbPY0KTG1oK52cCx3fuolE+AKSoIb
+	2ESwO16HPaUAfEJ38HXXwY5V0yTVMb6p9mFFdBy8+txFx0xGzTfi/Fpwbb4jaYL3DTF4THzzdHz
+	diDYCjMdDcfiqNMF/qEruOGNKaU9/IGtrBzJwXNPLkmLKSpZjbFX/tL9jRazYbDvH/MCr0m/yRW
+	iF2U8DvzMB5l0fZ5/aXKIG0RxwhHfGa64zjK2O1TcGPArZiHTtTmSHgqiitELIdSOofd6wYX1Zo
+	wJ0RYt0iz6is
+X-Google-Smtp-Source: AGHT+IFi9CQTdNJbDO46ezi3GzVNkrdlqHiFez1NSFUAE6edQTe4RPHo7HvrAZfQbyXkXIf+NfDTlg==
+X-Received: by 2002:a17:907:3da9:b0:aae:8841:2bba with SMTP id a640c23a62f3a-ab7f339d095mr51566766b.22.1739316578398;
+        Tue, 11 Feb 2025 15:29:38 -0800 (PST)
+Received: from 192.168.1.3 ([82.78.85.163])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab78a9360a3sm1014252166b.63.2025.02.11.15.29.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 15:29:37 -0800 (PST)
+From: Racz Zoltan <racz.zoli@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Racz Zoltan <racz.zoli@gmail.com>
+Subject: [PATCH] btrfs-progs: add duration format to fmt_print
+Date: Wed, 12 Feb 2025 01:29:18 +0200
+Message-ID: <20250211232918.153958-1-racz.zoli@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 11 Feb 2025 16:06:26 -0700
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <238af852-4eee-42cf-bda2-0c50a7bc289a@app.fastmail.com>
-Subject: lazy free space tree creation, deprecation of space cache v1
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Added "duration" format in seconds to fmt_print which will convert the
+input to one of the following strings:
 
-Recent kernels warn about the deprecation of space cache v1, advising users to switch to v2. Many desktop users don't see this message and won't switch to v2 on their own.
+1. if number of seconds represents more than one day, the output will be 
+for example: "1 days, 01:30:00" (left the plural so parsing back the
+string is easier)
+2. if less then a day: "23:30:10"
 
-I think the concern with silently and forcefully converting users from v1 to v2 automatically is the potentially long time it takes for large file systems? e.g. Zygo has reported days for some of his large file systems.
+---
+ common/format-output.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Since the free space tree can just be deleted and recreated again, is there a possibility of a lazy free space tree creation? Similar to ext4 lazy init (totally different structure and reasoning but high level, same idea - reduce the offline wait for initializing something).
+diff --git a/common/format-output.c b/common/format-output.c
+index 3b333ed5..146f23a3 100644
+--- a/common/format-output.c
++++ b/common/format-output.c
+@@ -380,6 +380,19 @@ void fmt_print(struct format_ctx *fctx, const char* key, ...)
+ 		} else {
+ 			putchar('-');
+ 		}
++	} else if (strcmp(row->fmt, "duration") == 0) {
++		const u64 seconds = va_arg(args, u64);
++
++		unsigned int days = seconds / 86400;
++		unsigned int hours = (seconds % 86400) / 3600;
++		unsigned int minutes = (seconds % 3600) / 60;
++		unsigned int sec = seconds % 60;
++
++		if (days > 0) 
++			printf("%u days, %02u:%02u:%02u", days, hours, minutes, sec);
++		else 
++			printf("%02u:%02u:%02u", hours, minutes, sec);
++		
+ 	} else if (strcmp(row->fmt, "list") == 0) {
+ 	} else if (strcmp(row->fmt, "map") == 0) {
+ 	} else if (strcmp(row->fmt, "qgroupid") == 0) {
+-- 
+2.48.1
 
-Thanks,
-
---
-Chris Murphy
 
