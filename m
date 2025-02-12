@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-11404-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11405-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71CC0A32CB1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 18:03:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44555A32CB2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 18:03:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71D94167834
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 17:02:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A827168CA2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 17:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932C6257420;
-	Wed, 12 Feb 2025 17:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68319271838;
+	Wed, 12 Feb 2025 17:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgbAHsLw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TqFf51az"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F08212B31;
-	Wed, 12 Feb 2025 17:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EE5212B31;
+	Wed, 12 Feb 2025 17:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739379738; cv=none; b=L8O3Tko1LXPamyc8g0UNMe7FC5qIxBQ3ASJkrWlp7DSCS3VeX96QTDq2swPGEUgM5y0Pj9C8obKR3RhfVFrKku7WRUPqhYp0hy0ENPw36tKZOGc9+fe16oXDajKmgaRi3AEn/p1kvMBh1yHnSp50iPEq4BlkK/QxnhKMAEnAWzY=
+	t=1739379740; cv=none; b=Qm/UXMU1dZ8Ojc+atA8on+WIufCWdlWq60TJoSK043e8NnXAA/7y+2xw4htvDoZQXakSfSpivZy+d4laoN7hKLCeFyN2gQ9eVjSqSbsnYA7ahuAM+C3NWjma7bzytqu8dEUonDWxjV7djxA+gkT2vr+Bt3TcfkbLOTeTDslDosY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739379738; c=relaxed/simple;
-	bh=wQdIuWLdrKAF+/zcUz4/kR4beRBYI0ynkYZlPoZDmXI=;
+	s=arc-20240116; t=1739379740; c=relaxed/simple;
+	bh=Wpsh4Ts1egTSW7ONd78SFEbizpWPMd2HbdycK3gy2bQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CJL2wjIDuy5J7JkPaBBCHFpJ0MJKAjPS73xAqvg7STpo/jvc6AJScQNY8DhBWTKl5BLOwcwxhs89WuTtTr8IouSFTgD3uig+Rr/IEnPZjXhny28+jxxQxf2T1Zfkf9J4YCrXHBaQlFpOAxEKsHyDwqnrteCWYmVkIzWxhTFiDpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FgbAHsLw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8BC1C4AF0C;
-	Wed, 12 Feb 2025 17:02:17 +0000 (UTC)
+	 MIME-Version; b=KR8L6bovQdsGTiyBkWikjHgjAlljNLBcCzrmYVlIzjwyqYC1mTtr4pULzK0Y7FBFqy0r9gnt1DgZLr7/swvcOprr//NSCAP6QkqDrjTBPomgMFVXy5E3XGNL/8CV6JQ4rsy9zydsucC1iTNb1WPIss0c/T1Ytb0pah93i8uWWg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TqFf51az; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17612C4CEE4;
+	Wed, 12 Feb 2025 17:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739379738;
-	bh=wQdIuWLdrKAF+/zcUz4/kR4beRBYI0ynkYZlPoZDmXI=;
+	s=k20201202; t=1739379740;
+	bh=Wpsh4Ts1egTSW7ONd78SFEbizpWPMd2HbdycK3gy2bQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FgbAHsLw+9lK7Kx4av2++3cKoNlVHs9rPDUuOZNjgPILKfhPwLyTJaTHuqh2t37R3
-	 481ccU75K0vkwtUMNtxWCTklY/tET+4s1a/RZKqPv2QDxdg1NIBFRVztBS95yARkqO
-	 vz9H1HUMuiSgpJy4RZsJOko4hTQ9mNauGPnFgxdsV/sHgq1Cyh59dwvLpBu2aBY4Xa
-	 ogCgz94WxR+GRWsLuiE0IWICUAzioWlM9bJrL6ImBn6oUp07+5CvcldXOkEY/I8XzZ
-	 7cY5i3vZc2MEdnMajpmQZg4iNo/+M7cypEtjRbtPXUnj3O1QhPpAmIBGYl1/b5Nt0F
-	 e+B/pAaBNSQyg==
+	b=TqFf51azqHbXAVZ7ZkLAl9jLFOD8AL71efxg++FkP/S/VCkyAQFytQ2meMsPZXVYh
+	 u8kLBPfVXd3aNl+EozP4QYeJHzdc2e8ZWllfwJ4RE6xJeTh0bz6zJwNQbjv3p9qaSE
+	 xvDxd2JaBmt8Tzru8PsCaHxkHxlRImwruob9DXGYhY6cZBz4voZ96K8/xn1wshAnIz
+	 LsNBJgECLczOb491/OtgcyHS4tS5SnE74rZjtEVkCK8QKfliEmGsQOnn47zJaUeSR1
+	 VQmeClq33vgTMihSEnwR67GglpU1IKgNzfiOfwUqkhRlNvMhkOt1u52+Ltw0e3Wopu
+	 l9Am78oDpcM/g==
 From: fdmanana@kernel.org
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 2/8] btrfs/290: skip test if we are running with nodatacow mount option
-Date: Wed, 12 Feb 2025 17:01:50 +0000
-Message-ID: <a7694ebdfbe8fb9961f5fa43b6d1a153ffdec32a.1739379184.git.fdmanana@suse.com>
+Subject: [PATCH 3/8] common/btrfs: add a _require_btrfs_no_nodatasum helper
+Date: Wed, 12 Feb 2025 17:01:51 +0000
+Message-ID: <09d16bf76cfe7317f584c2bbaeacb2ee810dcd99.1739379184.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1739379182.git.fdmanana@suse.com>
 References: <cover.1739379182.git.fdmanana@suse.com>
@@ -61,48 +61,33 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We exercise corrupting an inline extent and inline extents can't be created
-with nodatacow, we get instead a regular file extent item and if we attempt
-to corrupt its disk_bytenr field with btrfs-corrupt-block we fail tree-checker
-validation at mount time resulting in failure to mount and the following in
-dmesg:
-
-[514127.759739] BTRFS critical (device sdc): corrupt leaf: root=5 \
-        block=30408704 slot=8 ino=257 file_offset=0, invalid disk_bytenr for \
-        file extent, have 7416089308958521981, should be aligned to 4096
-[514127.762715] BTRFS error (device sdc): read time tree block corruption \
-        detected on logical 30408704 mirror 1
-
-So add a _require_btrfs_no_nodatacow call to the test.
+Add a _require_btrfs_no_nodatasum helper to skip a test if the nodatasum
+mount option is give, as we do have several tests that fail, for several
+reasons, when that mount option is passed.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/290 | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ common/btrfs | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tests/btrfs/290 b/tests/btrfs/290
-index 1a5e267b..04563dfe 100755
---- a/tests/btrfs/290
-+++ b/tests/btrfs/290
-@@ -30,6 +30,18 @@ _require_xfs_io_command "pread"
- _require_xfs_io_command "pwrite"
- _require_btrfs_corrupt_block "value"
- _require_btrfs_corrupt_block "offset"
-+# We exercise corrupting an inline extent and inline extents can't be created
-+# with nodatacow, we get instead a regular file extent item and if we attempt
-+# to corrupt its disk_bytenr field with btrfs-corrupt-block we fail tree-checker
-+# validation at mount time resulting in failure to mount and the following in
-+# dmesg:
-+#
-+# [514127.759739] BTRFS critical (device sdc): corrupt leaf: root=5 \
-+#         block=30408704 slot=8 ino=257 file_offset=0, invalid disk_bytenr for \
-+#         file extent, have 7416089308958521981, should be aligned to 4096
-+# [514127.762715] BTRFS error (device sdc): read time tree block corruption \
-+#         detected on logical 30408704 mirror 1
-+_require_btrfs_no_nodatacow
- _disable_fsverity_signatures
+diff --git a/common/btrfs b/common/btrfs
+index 5d69ddd8..a3b9c12f 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -134,6 +134,13 @@ _require_btrfs_no_nodatacow()
+ 	fi
+ }
  
- get_ino() {
++_require_btrfs_no_nodatasum()
++{
++	if _normalize_mount_options "$MOUNT_OPTIONS" | grep -q "nodatasum"; then
++		_notrun "This test requires no nodatasum enabled"
++	fi
++}
++
+ _require_btrfs_free_space_tree()
+ {
+ 	_scratch_mkfs > /dev/null 2>&1
 -- 
 2.45.2
 
