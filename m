@@ -1,151 +1,140 @@
-Return-Path: <linux-btrfs+bounces-11384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8967DA319A6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 00:43:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6D82A31AE5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 01:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F5227A2EB7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2025 23:42:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20A411889B81
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 00:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35255268FEA;
-	Tue, 11 Feb 2025 23:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE7617996;
+	Wed, 12 Feb 2025 00:56:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BwDGmdrO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1DeNBEHi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BwDGmdrO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1DeNBEHi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHbK0pI7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764B8262D33
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 23:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42B7F9E6
+	for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2025 00:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739317389; cv=none; b=H3sNbuSsWT3n2LzVJ/uPwPfmIG4MgO1O/BgvvHVFRkWu3dQWUAP1EIu0msUzWxxs89pTlBoXFfN7wJSHM/q4e4XthxPcbbGkn2FD5rxjxCrGWCqW9yMH/Ddpm0rrJKGQQfiTX4k4Q4NC1aw/UdpHrKuwLl4IwChhS/iyV6A56Rk=
+	t=1739321814; cv=none; b=O84jb7PkY2eHvYIyNBKpDM/qEv/HLmWzC+t/R2MpilPcF4iM6zzGqZv4zVhIhp8uZIh0u3C1CskRlOGdjqT04NP9sbM+71XpugWnECMzaDQUNHKIVaQ7wMx47GXVfZCtgcpguzJZEfYE5l9UL1pgWr30AuCi78MQAGLuVnv3tNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739317389; c=relaxed/simple;
-	bh=ntOXicoUGJGgp5ZVm+mkG97ZpnKxQ3E9EGhfzZ2bQdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mf3zbFlbRS5fHQDuciK2eDbqXRxpNT29i6a1ZifJy9Fcev2zIDp5roFemQQKcgd48hG05BRir19FckhQ6EgAHZ5hCf8+8ULU5OU8zF5+F0AEdcVGCAWusH35r46h7kBgeEP4y/YjkzGUe39eQ4O1uDJo3ECNU5nydxYjMlbm9lI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BwDGmdrO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1DeNBEHi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BwDGmdrO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1DeNBEHi; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 593A81FF0F;
-	Tue, 11 Feb 2025 23:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739317385;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ntOXicoUGJGgp5ZVm+mkG97ZpnKxQ3E9EGhfzZ2bQdM=;
-	b=BwDGmdrO1zwfYVrdhImZ3vr41JgrmcayLvptBLIrca3Lr8u9eTbP7bDFNxfvMC1TBdM79E
-	Mo02gGRaeyJNyVrhJtyYLeoei5V6rtENnAmZcCQIojCANhg59wID6ScedxKS+0W6qY4lYe
-	qVJz+8trV0N8BO+Tq6DNpi+mDOziu0Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739317385;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ntOXicoUGJGgp5ZVm+mkG97ZpnKxQ3E9EGhfzZ2bQdM=;
-	b=1DeNBEHi+9dHhKgjyLb8fOTr9oTjKcWTDtmGmhbB0I16QPT69/OOVvjzHFlMClTLJvaiYA
-	sVyGqI5wF8ER6BCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739317385;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ntOXicoUGJGgp5ZVm+mkG97ZpnKxQ3E9EGhfzZ2bQdM=;
-	b=BwDGmdrO1zwfYVrdhImZ3vr41JgrmcayLvptBLIrca3Lr8u9eTbP7bDFNxfvMC1TBdM79E
-	Mo02gGRaeyJNyVrhJtyYLeoei5V6rtENnAmZcCQIojCANhg59wID6ScedxKS+0W6qY4lYe
-	qVJz+8trV0N8BO+Tq6DNpi+mDOziu0Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739317385;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ntOXicoUGJGgp5ZVm+mkG97ZpnKxQ3E9EGhfzZ2bQdM=;
-	b=1DeNBEHi+9dHhKgjyLb8fOTr9oTjKcWTDtmGmhbB0I16QPT69/OOVvjzHFlMClTLJvaiYA
-	sVyGqI5wF8ER6BCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4041713782;
-	Tue, 11 Feb 2025 23:43:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TU94D4ngq2e6eAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 11 Feb 2025 23:43:05 +0000
-Date: Wed, 12 Feb 2025 00:42:48 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Racz Zoli <racz.zoli@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] Removed redundant if/else statement
-Message-ID: <20250211234248.GW5777@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20250207023302.311829-1-racz.zoli@gmail.com>
- <20250207023302.311829-2-racz.zoli@gmail.com>
- <20250211191457.GU5777@suse.cz>
- <CANoGd8mhGau83LU-bWjyi-A2jnzZoAyhqzo3yuxnhC2sETpfWw@mail.gmail.com>
+	s=arc-20240116; t=1739321814; c=relaxed/simple;
+	bh=5U9Og8UFsFggvjvcbj9jc3G47DBJNRL3idsJBbN+eds=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KiE7D4CjmIYWsxEOCqq3qVAFc4i4FDBtbKQO1eR1kPFQ2MEwLrGe7/fOSqBgR0PCj3LeriMjCBvrb6PZDynlFJznUlwpnQlxTxMrNIrMA+ZxCMi0yy4su8Xth42Yjb6kMU3hUqShONvbI47ILP4DsZF24NxMdKwc9s3KdXuc1yE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHbK0pI7; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ab7d3bcf1ceso364397266b.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 16:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739321811; x=1739926611; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=waUrL+CrEt6jzNoNjVYrINAddgAj2aBlif7AlsGhR/Y=;
+        b=BHbK0pI7YbNSpuWv+1xPSPc6RW8MNggSq7C6FuELI615DLJPdWAkE1QUBBpdm+mQaJ
+         8yZ+JXP+FSBcxooL5VownTXtonQfrmBmkcal+KNX1bmB31QurfjGO4ohN1PGp3yWFCWD
+         wQPKQ6llLCY6y38FL8yEEJQADMVDM1KFrhFPB9I4buIzPMkSmHxsT0Ww0enGI16Hmt3W
+         gb5GEl2ukMRMYaTg829a4W6iFoJszt6hctEUCSl686HcT4iCAmDZ/xdwVFzpLTZtbPJS
+         SQqYMtxVTiK9gL74dg5LjthH2rdrI32TKAc/zqnuEEqt9DHuPsjePkLuis13NFR/EJeQ
+         HiyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739321811; x=1739926611;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=waUrL+CrEt6jzNoNjVYrINAddgAj2aBlif7AlsGhR/Y=;
+        b=o2afQbi2JGbL+IyslJPGRML36vk1FvZkZljBuNgjBpzNoLVfV1oVuNP9+9ZCKQ/IUc
+         RkUwxJ1TWvUsqtFm274dftl8Gi08kKhA27Knvoxd99oHrncRHLmumuGWwbaCMZGeZ77X
+         lFeAVUPNXqrR03fz/wp8ccmyJ92T3Vai5j3oYJtXEoeNwMb1rHAbENlpRbTK+IQjRFhS
+         r5Je8FkexFeh2I6KzUr+XqAXqr4X7bVsUixuCIGUzeGg/0HkCInQR5+silWWB8nF44AT
+         tC0gKeboHWWqhJZDptkJx4rKVs8701kRGdlezV6rYNKX5/nlX/XoZwle8hoCFOx3ruNe
+         ac5w==
+X-Gm-Message-State: AOJu0YwpfbN3JUXCFiDhgZ0sefEzT6PTioHx9iEOFgSa2X3FUk0WQr+b
+	6tuhHS/i57WWFWCh5gmgoSnH6zvsBL9uAwbavQI6olNIqXxre75P2TgQCg==
+X-Gm-Gg: ASbGncuQsUZDUqBbWHGElKSv59eBgpKKTZ3lOg3z/GiAveX6c8CIqLFz/EflwhWUvrK
+	H+7ux60IoGDQZiLm0GfXxeBpQwRpp5G3/Gs/jilSBNkxJbAw9OLYTO4dk+dVXAk5FXRZufyuAes
+	4hUX+/Xrr1xqmJC+BpZVOaSgmcXFibEseNg/bBubz60p6imnWMoOYQ6QiN+IZToaEQKPZ6I1Qw+
+	Lwvhzp5PxLZm+zXig2eZOBQWF4Q25ghm+Es7cbNTzKvDEgr7uXJTULNmpI9NUR3WGneupf9lbFx
+	UEKi9jF3sqiR
+X-Google-Smtp-Source: AGHT+IGfIkbejP6cmtmpFLRSEB0aQgT8laldDxkgLFhGvpp+5NplOskY0P9f6oIobpan0DnS5RS1XA==
+X-Received: by 2002:a17:907:7b86:b0:ab7:b424:dd14 with SMTP id a640c23a62f3a-ab7f3765a39mr89747266b.19.1739321810933;
+        Tue, 11 Feb 2025 16:56:50 -0800 (PST)
+Received: from 192.168.1.3 ([82.78.85.163])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab7b7f98188sm590617566b.76.2025.02.11.16.56.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 16:56:50 -0800 (PST)
+From: Racz Zoltan <racz.zoli@gmail.com>
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org,
+	Racz Zoltan <racz.zoli@gmail.com>
+Subject: [PATCH] btrfs-progs: change print format for btrfs_scrub_progress struct keys in print_scrub_full()
+Date: Wed, 12 Feb 2025 02:56:40 +0200
+Message-ID: <20250212005640.182760-1-racz.zoli@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANoGd8mhGau83LU-bWjyi-A2jnzZoAyhqzo3yuxnhC2sETpfWw@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-0.999];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:replyto]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 11, 2025 at 09:31:33PM +0200, Racz Zoli wrote:
-> I simplified that if/else block because looking at it it seemed the
-> only difference between the two was that in the if block
-> pretty_size_mode received UNITS_RAW and in else it received unit_mode.
-> Didn`t know about the underlying reason you mentioned.
-> But if the second patch containing the json output implementation is
-> ok, I can rewrite it so it uses the function as it was before my
-> commit.
+Since all members of struct btrfs_scrub_progress are u64, the correct
+format option for pr_verbose calls in print_scrub_full should be %llu (as
+dsterba suggested) not %lld.
 
-I have fixed the unit printing and found another bug. Please base your
-commit on current devel branch. The json patch won't apply cleanly but
-it's only in the rate printing part.
+---
+ cmds/scrub.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/cmds/scrub.c b/cmds/scrub.c
+index b1d2f731..508eafb7 100644
+--- a/cmds/scrub.c
++++ b/cmds/scrub.c
+@@ -126,21 +126,21 @@ struct scrub_fs_stat {
+ 
+ static void print_scrub_full(struct btrfs_scrub_progress *sp)
+ {
+-	pr_verbose(LOG_DEFAULT, "\tdata_extents_scrubbed: %lld\n", sp->data_extents_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\ttree_extents_scrubbed: %lld\n", sp->tree_extents_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\tdata_bytes_scrubbed: %lld\n", sp->data_bytes_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\ttree_bytes_scrubbed: %lld\n", sp->tree_bytes_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\tread_errors: %lld\n", sp->read_errors);
+-	pr_verbose(LOG_DEFAULT, "\tcsum_errors: %lld\n", sp->csum_errors);
+-	pr_verbose(LOG_DEFAULT, "\tverify_errors: %lld\n", sp->verify_errors);
+-	pr_verbose(LOG_DEFAULT, "\tno_csum: %lld\n", sp->no_csum);
+-	pr_verbose(LOG_DEFAULT, "\tcsum_discards: %lld\n", sp->csum_discards);
+-	pr_verbose(LOG_DEFAULT, "\tsuper_errors: %lld\n", sp->super_errors);
+-	pr_verbose(LOG_DEFAULT, "\tmalloc_errors: %lld\n", sp->malloc_errors);
+-	pr_verbose(LOG_DEFAULT, "\tuncorrectable_errors: %lld\n", sp->uncorrectable_errors);
+-	pr_verbose(LOG_DEFAULT, "\tunverified_errors: %lld\n", sp->unverified_errors);
+-	pr_verbose(LOG_DEFAULT, "\tcorrected_errors: %lld\n", sp->corrected_errors);
+-	pr_verbose(LOG_DEFAULT, "\tlast_physical: %lld\n", sp->last_physical);
++	pr_verbose(LOG_DEFAULT, "\tdata_extents_scrubbed: %llu\n", sp->data_extents_scrubbed);
++	pr_verbose(LOG_DEFAULT, "\ttree_extents_scrubbed: %llu\n", sp->tree_extents_scrubbed);
++	pr_verbose(LOG_DEFAULT, "\tdata_bytes_scrubbed: %llu\n", sp->data_bytes_scrubbed);
++	pr_verbose(LOG_DEFAULT, "\ttree_bytes_scrubbed: %llu\n", sp->tree_bytes_scrubbed);
++	pr_verbose(LOG_DEFAULT, "\tread_errors: %llu\n", sp->read_errors);
++	pr_verbose(LOG_DEFAULT, "\tcsum_errors: %llu\n", sp->csum_errors);
++	pr_verbose(LOG_DEFAULT, "\tverify_errors: %llu\n", sp->verify_errors);
++	pr_verbose(LOG_DEFAULT, "\tno_csum: %llu\n", sp->no_csum);
++	pr_verbose(LOG_DEFAULT, "\tcsum_discards: %llu\n", sp->csum_discards);
++	pr_verbose(LOG_DEFAULT, "\tsuper_errors: %llu\n", sp->super_errors);
++	pr_verbose(LOG_DEFAULT, "\tmalloc_errors: %llu\n", sp->malloc_errors);
++	pr_verbose(LOG_DEFAULT, "\tuncorrectable_errors: %llu\n", sp->uncorrectable_errors);
++	pr_verbose(LOG_DEFAULT, "\tunverified_errors: %llu\n", sp->unverified_errors);
++	pr_verbose(LOG_DEFAULT, "\tcorrected_errors: %llu\n", sp->corrected_errors);
++	pr_verbose(LOG_DEFAULT, "\tlast_physical: %llu\n", sp->last_physical);
+ }
+ 
+ #define PRINT_SCRUB_ERROR(test, desc) do {	\
+-- 
+2.48.1
+
 
