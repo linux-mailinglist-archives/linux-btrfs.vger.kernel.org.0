@@ -1,161 +1,316 @@
-Return-Path: <linux-btrfs+bounces-11398-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11399-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC547A31FB1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 08:15:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B318A325F4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 13:39:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D364188BA3E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 07:15:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A91B9168C94
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 12:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0507F201271;
-	Wed, 12 Feb 2025 07:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD2B20C49F;
+	Wed, 12 Feb 2025 12:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ig7U2MD4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QO4vA6hg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC68201264
-	for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2025 07:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDF41F866A;
+	Wed, 12 Feb 2025 12:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739344505; cv=none; b=eRxnkMtJjGhYatysSGeq81Qonz37Lpv2O9j48V1Q+V/ojdPawuOn8xSICg0LprwXREQtT8suZleuQyAkTQK5iq/OxkGwdwWAxTk3GwMiEkgTM/tKDkBVAX7k3a4Dz+kNoBpZfHhXILYFGKZOSDb0Ld7KAAXCPqnJEsPeDJLwvHg=
+	t=1739363946; cv=none; b=lKmAn7Fvh6pyAsx4AM3QqgqdF8PaoF6lNuTKJLKd2+//AXMZzR26N3QY/2xFUqSXJdUTAgD8AUTffdKFBy2362ae9nN8MZJAOwpRQ3SjJ8Le/fJP7JGUwmrbHSxpK+JpL4i8Dxp7+OMCSTZHuWTCkVXvsducTflhIKhfkw6Ydtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739344505; c=relaxed/simple;
-	bh=qZKFw1t6YAWJPRi7SkIYVohYUr4Ijw7LOE9uuK0PtA8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PWZmGzzpp1XRNivHiwpJWH62HPrhnxJM5rlVTzIrVGYCt+SOTWPrIvl/Q7K10E56xsIjeHDeZmTe/gzBP1hRUwPYMs1sVRLjDTf9k/WEhyLX85fGlNruvu3KrVm9FHD/0rlDbfGCEd+z372+UXmAppa6q8ckKqgKDmyg+/T1DxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ig7U2MD4; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1739344500; x=1739949300; i=quwenruo.btrfs@gmx.com;
-	bh=XottnKGhEcNqsz91YGyQ1hp7O8VR4ulGZrmwWHaEChw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ig7U2MD43QZ8fFvUpQHJ6QTXWJqevA/sMd44Ah1cXG/wIq8K8Z0kZVqQbAEr6d7Z
-	 5zFxwudmRSC5PwmPBamGgzF1h4Hgq9+W/IQ03ORiWM6E245z9Yhl0mNEFWytfvNVW
-	 ZbSOy9UHAIq6ebP6UZzd+mckX9S3Yzgfv48GXSQ4MavnTlclWz9NAwekWKGSg19ym
-	 Avwspj9VG+aSDJjH+hMib6aIqy5h9AQVyCEVn/r+8Qs3HHxkdCZZbCw6J7SK9wp9X
-	 ybZJEpO21tUQjQYASw3HQiEaQrfaXcRlLqnatFTg9SIfrB1F9mKRIk0gm+iP+9Ctm
-	 C7ygcPvtZTcrMDbcTw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MIdiZ-1tcwXx1Nn3-008tU4; Wed, 12
- Feb 2025 08:15:00 +0100
-Message-ID: <cac8d40a-b631-4c58-b8b8-70db3ab58443@gmx.com>
-Date: Wed, 12 Feb 2025 17:44:57 +1030
+	s=arc-20240116; t=1739363946; c=relaxed/simple;
+	bh=TMH03mVO1LgGQpSvz+fm9X8QqEKkfc2wd7NWu3F77pU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j99SigCg3UT27D9QUTosz+rh0m2RyVe+MqxiC0tAQFihVLa0Td6ycUYB8ZXp0gdWLWqZS5HC7HyXsHAokKtui/RzFRgBt8DPlX2qOLcS3RmVSbfwgv3C05IUFzwihtKSYBIjk+neIeGIx2HemWxLQcgUlyVuZ9gJI0EelH17Big=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QO4vA6hg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A37E1C4CEE6;
+	Wed, 12 Feb 2025 12:39:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739363945;
+	bh=TMH03mVO1LgGQpSvz+fm9X8QqEKkfc2wd7NWu3F77pU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QO4vA6hgVyQ2Og7oRqO1gnNT3MVwz1pMhDE+09c9hlCJBvRRNqYebfiJ6yaKP4e8c
+	 h1MpP9M2JErtqU1BYWjc5lakA7VTv//1e055QQfXaySVCbjHP0L3L07TEBUJg63Fx6
+	 GR2BFwB6osaz2jIDBVYrfCdCYh+7n44ywJf32V0cZ4pXrkFyUaWuFMT+GD0M3gpFNS
+	 zDQPhcQWZZdXMlrpeJl9eIa9jaEokuz7sOEh6XLFgeogu7U9uQwlozxpTQPVzNs29+
+	 rH4C2b6suE7gKU/s2Ng+iTu7LsCx8+hPQFnpkR4KbnOvyHPLEvGnfnvBBqZHjyE5Gf
+	 bacaNj5qF4tiw==
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5de4d3bbc76so9110004a12.3;
+        Wed, 12 Feb 2025 04:39:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU21PatjOJ8Z2quK8CBxDty0Qja/KyxhICR/ZjgGAv5S/5pk/idrc0uLiI3rGBqUAaazlq4prtn/1pNQw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn9pbsbWIsbOZ3simMe+NMbUD9wDaSIziUuBPDJdxvennkZQvN
+	X11VdpgtC5NtvMTAB0+kkblPJS+pW6y49k2BAglp6b7JUwbvlX2n1WfKWKtc95pl68eUUW3mySV
+	hZrWeCsxqPZAJS4WDfoScgp4EF9w=
+X-Google-Smtp-Source: AGHT+IEoMowSXjK8cIUTFa565FORpkSPMe6g6hsZFrILpO0R0tdSJf9fqM9k4Qy25y1fMvk6RovoF99A5uw1nSUT5A4=
+X-Received: by 2002:a17:907:3fa7:b0:ab7:f221:f7a0 with SMTP id
+ a640c23a62f3a-ab7f3473737mr251670266b.46.1739363944197; Wed, 12 Feb 2025
+ 04:39:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: Preserve first error in loop of
- check_extent_refs()
-To: tchou <tchou@synology.com>, linux-btrfs@vger.kernel.org
-References: <20250212064501.314097-1-tchou@synology.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250212064501.314097-1-tchou@synology.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <8c64ba21953b44b682c72b448bebe273dba64013.1738847088.git.fdmanana@suse.com>
+ <20250212015310.ifnjdxj53jbsy2qx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20250212015310.ifnjdxj53jbsy2qx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 12 Feb 2025 12:38:27 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6wzKJCBR0qbGsTEiCH1PV977+XLC+Atr4kMfhd5nXAVQ@mail.gmail.com>
+X-Gm-Features: AWEUYZn4NNHeEmExHPAWTPd8IXqnSPmfC3oVw_lpfHRMkwVUF-Fsz9haoM0rLcM
+Message-ID: <CAL3q7H6wzKJCBR0qbGsTEiCH1PV977+XLC+Atr4kMfhd5nXAVQ@mail.gmail.com>
+Subject: Re: [PATCH] generic: suggest fs specific fix only if the tested
+ filesystem matches
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DBNtmpFrw6nvGCDWN+UILFSwX/2YkqQ63QsNS48gwwj4Ld5nETZ
- MRqcHndKXpwJCRwr0+AArzLlU6f6j+O6GcR7Fey0E+mQ8l1wH4dgnMJF6mS1QPGt+pLwRTt
- 3CB4l6eL0xWw4eXKThMdrzSZN1xCnVJB3D+XXizfOWxaQxpA8mSgEjYBsCg7k4YOEbjNPbI
- EBkkT/477u+fJIDVnmmBQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:19JXstZLTeU=;YmstHW5j2/DgApKnUhC1AFJrGWO
- dvaNaR0gLhPzo5GERBR10TElR+LtUVh6XkeX2G4y1Wgyz/aukArk8WkvzBXP7u7s6m+rJ3oOl
- 9d3JnopMyIAWjCl3410/CRiGcfCR0wqjDYmy1HwDIOMFRwD9vRmHeIbi2oXtbySiQDBAZC/qW
- xe/gWhLHHXOIezfkYprYBBJSIP/Edbyuu9kk9UTtTf9MsHDw2ZJ1iEuNoSjL+KQmDUNXQdvTV
- TT96Qcy6S1XW0mp4Q3qbAX/w9DVn2ibvJOs8/cr3NN7Ttp7DTSY8+XjwazcnoabiHCDfMKPXi
- bIc3dsV58s4rTI4S+yD2ki88v1nn4O5H8arycq+V2/XxesA1JvPRMMQk48NTfQPFw4/ogYb9f
- PucD6h4tEoXBRfhVB2sSdc9BfcYr9kx07/sr28zzZGPIhTCG6ZdMztG+D8TkOek1nxC8Ps/4z
- ak7uES3jbH3PiBFTz5KYB4kSLkyTkKi4WFrf7Ig3m297FN2uZVoKmIwiguK7gthKiiNtofv6M
- qPPOG1zbMNKu6Hxisjoc2+a/6MbYWT14Rj58Wekcri02afAzM7BoqXsd/doxE3dRsXmqGt83Y
- 6rCr+42GNgORuw0kNa0NLsaOZsT1jVSRgTcaN4vswoAtYqQP9rRR5BJ/tizfPKkxVjgwXqOGq
- R9Ttlu9PC+AShjxS3ou3U2+5q6arYh3dy6WyG64Z/O0kmzSOx8OhSgzyO5tC++QEOawA6SQhE
- JE+nIt7Lq88hfaTgB2+kVRsl+RM/dgXdvjXEEiG4p1eVOvh61cNkXYBOM1Zm/qfG/pUgD9W6R
- H8EJ5oqcXe1thuDBqSt+Ya7sHi9+DU6QDu02UwwoorHTpQgbTyY0SuFQBMaeB/tI+lUVoYPX+
- pXilOTcXRMtHd7NHhJ6X0tdL9bxICr3csqhuvcfOf69D2sNqVh24GiFkBbom0FPWDP4Bia6PY
- JYk094byUt7wpY+hbTTiiaKBFwZhwTOiwhCrY4WYvC8zg1HnolSsbCc3vddLTFHqnD3C/fanW
- +P6IpphKtetzkLL6gKl1WXvau5C/BLdboMM5XoS2yHqvpRwe6fgunlyTCmCivAkeCxtQr/CWe
- xS1UtOaGYa8Nt/TPFvUAMP1IQB1/+Zer5Sl1CnI5ShjhdcjFepKFh7S27nZPSZlV2lFkrJnw1
- 4BHq1N17YjC7WLAcDBklnMccfn+1sqd0C0UQsK/sQhEHEu6VgS3Hrfdb4x59gsx8m6SDMKchA
- ziIKbsFXxjwQ2cwAUzh6JkuIWl3FcrNvOEzvayxKC4KciCitbNPhjNHJkGneJrLTcVTYmomKH
- qbn0TNEutMffA1mx1+ELRAo4o1QiNumRQ9ArvTFKo3QTjmzcq2TEQeT0kxw+8w9HOFSEDRP3B
- estD8057+F6OzJjSf0okhHJ7CbAuGFXJtYmannUeKtVP8asO1Pqs1WN3j1
 
-
-
-=E5=9C=A8 2025/2/12 17:15, tchou =E5=86=99=E9=81=93:
-> Previously, the `err` variable inside the loop was updated with
-> `cur_err` on every iteration, regardless of whether `cur_err` indicated
-> an error. This caused a bug where an earlier error could be overwritten
-> by a later successful iteration, losing the original failure.
+On Wed, Feb 12, 2025 at 1:53=E2=80=AFAM Zorro Lang <zlang@redhat.com> wrote=
+:
 >
-> This fix ensures that `err` retains the first encountered error and is
-> not reset by subsequent successful iterations.
-
-SoB line please, otherwise looks good to me.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-And if it's a case you hit in real world, mind to extract or craft a
-minimal image as a test case?
-
-Thanks,
-Qu
-> ---
->   check/main.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> On Thu, Feb 06, 2025 at 01:05:06PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > It's odd when a test fails on a filesystem and a specific fix is sugges=
+ted
+> > for another filesystem. Some generic tests are suggesting filesystem
+> > specific fixes without checking if the running filesystem matches, so
+> > update them.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  tests/generic/365 | 10 ++++++----
+> >  tests/generic/366 |  2 +-
+> >  tests/generic/367 |  2 +-
+> >  tests/generic/623 |  2 +-
+> >  tests/generic/631 |  2 +-
+> >  tests/generic/646 |  2 +-
+> >  tests/generic/649 |  2 +-
+> >  tests/generic/695 |  2 +-
+> >  tests/generic/700 |  4 ++--
+> >  tests/generic/701 |  2 +-
+> >  tests/generic/702 |  2 +-
+> >  tests/generic/704 |  4 +++-
+> >  tests/generic/707 |  4 ++--
+> >  13 files changed, 22 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/tests/generic/365 b/tests/generic/365
+> > index 1f6a618a..1bca848a 100755
+> > --- a/tests/generic/365
+> > +++ b/tests/generic/365
+> > @@ -9,10 +9,12 @@
+> >  . ./common/preamble
+> >  _begin_fstest auto rmap fsmap
+> >
+> > -_fixed_by_kernel_commit 68415b349f3f \
+> > -     "xfs: Fix the owner setting issue for rmap query in xfs fsmap"
+> > -_fixed_by_kernel_commit ca6448aed4f1 \
+> > -     "xfs: Fix missing interval for missing_owner in xfs fsmap"
+> > +if [ "$FSTYP" =3D "xfs" ]; then
+> > +     _fixed_by_kernel_commit 68415b349f3f \
+> > +             "xfs: Fix the owner setting issue for rmap query in xfs f=
+smap"
+> > +     _fixed_by_kernel_commit ca6448aed4f1 \
+> > +             "xfs: Fix missing interval for missing_owner in xfs fsmap=
+"
+> > +fi
+> >
+> >  . ./common/filter
+> >
+> > diff --git a/tests/generic/366 b/tests/generic/366
+> > index b322bcca..b2c2e607 100755
+> > --- a/tests/generic/366
+> > +++ b/tests/generic/366
+> > @@ -23,7 +23,7 @@ _require_scratch
+> >  _require_odirect 512 # see fio job1 config below
+> >  _require_aio
+> >
+> > -_fixed_by_kernel_commit xxxxxxxxxxxx \
+> > +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
+> >       "btrfs: avoid deadlock when reading a partial uptodate folio"
+> >
+> >  iterations=3D$((32 * LOAD_FACTOR))
+> > diff --git a/tests/generic/367 b/tests/generic/367
+> > index 7cf90695..ed371a02 100755
+> > --- a/tests/generic/367
+> > +++ b/tests/generic/367
+> > @@ -17,7 +17,7 @@
+> >
+> >  _begin_fstest ioctl quick
+> >
+> > -_fixed_by_kernel_commit 2a492ff66673 \
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit 2a492ff66673 \
+> >       "xfs: Check for delayed allocations before setting extsize"
+> >
+> >  _require_scratch_extsize
+> > diff --git a/tests/generic/623 b/tests/generic/623
+> > index 6487ccb8..9f41b5cc 100755
+> > --- a/tests/generic/623
+> > +++ b/tests/generic/623
+> > @@ -11,7 +11,7 @@ _begin_fstest auto quick shutdown
+> >
+> >  . ./common/filter
+> >
+> > -_fixed_by_kernel_commit e4826691cc7e \
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit e4826691cc7e \
+> >       "xfs: restore shutdown check in mapped write fault path"
+> >
+> >  _require_scratch_nocheck
+> > diff --git a/tests/generic/631 b/tests/generic/631
+> > index 8e2cf9c6..c38ab771 100755
+> > --- a/tests/generic/631
+> > +++ b/tests/generic/631
+> > @@ -41,7 +41,7 @@ _require_attrs trusted
+> >  _exclude_fs overlay
+> >  _require_extra_fs overlay
+> >
+> > -_fixed_by_kernel_commit 6da1b4b1ab36 \
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit 6da1b4b1ab36 \
+> >       "xfs: fix an ABBA deadlock in xfs_rename"
+> >
+> >  _scratch_mkfs >> $seqres.full
+> > diff --git a/tests/generic/646 b/tests/generic/646
+> > index dc73aeb3..b3b0ab0a 100755
+> > --- a/tests/generic/646
+> > +++ b/tests/generic/646
+> > @@ -14,7 +14,7 @@
+> >  . ./common/preamble
+> >  _begin_fstest auto quick recoveryloop shutdown
+> >
+> > -_fixed_by_kernel_commit 50d25484bebe \
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit 50d25484bebe \
+> >       "xfs: sync lazy sb accounting on quiesce of read-only mounts"
+> >
+> >  _require_scratch
+> > diff --git a/tests/generic/649 b/tests/generic/649
+> > index a33b13ea..58ef96a8 100755
+> > --- a/tests/generic/649
+> > +++ b/tests/generic/649
+> > @@ -31,7 +31,7 @@ _cleanup()
+> >
+> >
+> >  # Modify as appropriate.
+> > -_fixed_by_kernel_commit 72a048c1056a \
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit 72a048c1056a \
+> >       "xfs: only set IOMAP_F_SHARED when providing a srcmap to a write"
+> >
+> >  _require_cp_reflink
+> > diff --git a/tests/generic/695 b/tests/generic/695
+> > index df81fdb7..694f4245 100755
+> > --- a/tests/generic/695
+> > +++ b/tests/generic/695
+> > @@ -25,7 +25,7 @@ _cleanup()
+> >  . ./common/dmflakey
+> >  . ./common/punch
+> >
+> > -_fixed_by_kernel_commit e6e3dec6c3c288 \
+> > +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit e6e3dec6c3c288 \
+> >          "btrfs: update generation of hole file extent item when mergin=
+g holes"
+> >  _require_scratch
+> >  _require_dm_target flakey
+> > diff --git a/tests/generic/700 b/tests/generic/700
+> > index 052cfbd6..7f84df9d 100755
+> > --- a/tests/generic/700
+> > +++ b/tests/generic/700
+> > @@ -19,8 +19,8 @@ _require_scratch
+> >  _require_attrs
+> >  _require_renameat2 whiteout
+> >
+> > -_fixed_by_kernel_commit 70b589a37e1a \
+> > -     xfs: add selinux labels to whiteout inodes
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit 70b589a37e1a \
+> > +     "xfs: add selinux labels to whiteout inodes"
+> >
+> >  get_selinux_label()
+> >  {
+> > diff --git a/tests/generic/701 b/tests/generic/701
+> > index 527bba34..806cc65d 100755
+> > --- a/tests/generic/701
+> > +++ b/tests/generic/701
+> > @@ -22,7 +22,7 @@ _cleanup()
+> >       rm -r -f $tmp.* $junk_dir
+> >  }
+> >
+> > -_fixed_by_kernel_commit 92fba084b79e \
+> > +[ "$FSTYP" =3D "exfat" ] && _fixed_by_kernel_commit 92fba084b79e \
+> >       "exfat: fix i_blocks for files truncated over 4 GiB"
+> >
+> >  _require_test
+> > diff --git a/tests/generic/702 b/tests/generic/702
+> > index a506e07d..ae47eb27 100755
+> > --- a/tests/generic/702
+> > +++ b/tests/generic/702
+> > @@ -14,7 +14,7 @@ _begin_fstest auto quick clone fiemap
+> >  . ./common/filter
+> >  . ./common/reflink
+> >
+> > -_fixed_by_kernel_commit ac3c0d36a2a2f7 \
+> > +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit ac3c0d36a2a2f7 \
+> >       "btrfs: make fiemap more efficient and accurate reporting extent =
+sharedness"
+> >
+> >  _require_scratch_reflink
+> > diff --git a/tests/generic/704 b/tests/generic/704
+> > index f452f9e9..f2360c42 100755
+> > --- a/tests/generic/704
+> > +++ b/tests/generic/704
+> > @@ -21,7 +21,9 @@ _cleanup()
+> >  # Import common functions.
+> >  . ./common/scsi_debug
+> >
+> > -_fixed_by_kernel_commit 7c71ee78031c "xfs: allow logical-sector sized =
+O_DIRECT"
+> > +[ "$FSTYP" =3D "xfs" ] && _fixed_by_kernel_commit 7c71ee78031c \
+> > +     "xfs: allow logical-sector sized O_DIRECT"
+> > +
+> >  _require_scsi_debug
+> >  # If TEST_DEV is block device, make sure current fs is a localfs which=
+ can be
+> >  # written on scsi_debug device
+> > diff --git a/tests/generic/707 b/tests/generic/707
+> > index 3d8fac4b..23864038 100755
+> > --- a/tests/generic/707
+> > +++ b/tests/generic/707
+> > @@ -13,9 +13,9 @@ _begin_fstest auto
+> >
+> >  _require_scratch
+> >
+> > -_fixed_by_kernel_commit f950fd052913 \
+> > +[ "$FSTYP" =3D "udf" ] && _fixed_by_kernel_commit f950fd052913 \
+> >       "udf: Protect rename against modification of moved directory"
+> > -_fixed_by_kernel_commit 0813299c586b \
+> > +[ "$FSTYP" =3D "ext4" ] && _fixed_by_kernel_commit 0813299c586b \
 >
-> diff --git a/check/main.c b/check/main.c
-> index 6290c6d4..974ff685 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -8322,7 +8322,8 @@ static int check_extent_refs(struct btrfs_root *ro=
-ot,
->   			cur_err =3D 1;
->   		}
->   next:
-> -		err =3D cur_err;
-> +		if (cur_err)
-> +			err =3D cur_err;
->   		remove_cache_extent(extent_cache, cache);
->   		free_all_extent_backrefs(rec);
->   		if (!init_extent_tree && opt_check_repair && (!cur_err || fix))
+> I'm wondering if it's a "ext4 only" bug, or it might can be [[ "$FSTYP" =
+=3D~ ext[0-9]+ ]] ?
 
+Not sure either, but other generic test cases do that, so it's
+probably best to do it like that.
+Do you want a new patch version with that change or can you change it yours=
+elf?
+
+Thanks.
+
+> Others looks good to me.
+>
+> Thanks,
+> Zorro
+>
+> >       "ext4: Fix possible corruption when moving a directory"
+> >
+> >  _scratch_mkfs >>$seqres.full 2>&1
+> > --
+> > 2.45.2
+> >
+> >
+>
 
