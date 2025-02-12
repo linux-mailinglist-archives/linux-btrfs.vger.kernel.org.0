@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-11428-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11429-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED34A33370
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2025 00:35:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B21A33372
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2025 00:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02AC5163FB5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 23:35:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F5541619B1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 23:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96C1262179;
-	Wed, 12 Feb 2025 23:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1A025C6F0;
+	Wed, 12 Feb 2025 23:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5KbuPNu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g5P/9x07"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC0221324C;
-	Wed, 12 Feb 2025 23:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646C8209F47;
+	Wed, 12 Feb 2025 23:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739403316; cv=none; b=qoyWAOAXp7YC1cnYpMuigeieI1vno/g9gCnt50IonQVuCzMa8SC2C0guwDVDLW326pLFZHQt/nzS4eVlGr/5HCGcKn9gRwKtz3ZDlyGBkQYoBsMH708rBJGYPAUhesI78284yZK7jhFRfFvDx72bfXNRNqRCHi4NWAPbIKMXIQA=
+	t=1739403317; cv=none; b=kjp+sfHA/eBAgSDgtL2rrgBFoXprXdXX14Q0ZWhxYfCpQEXMciz1GrMYw9fGwCy6MAG8WdXecG/6T3orEW6GHbnH7XQGEcX6wKXnDkstbf9yEWI4OBwdJlNmUTEUVVHOhfPL50R+Rl5PUfuVRzWxHS8xIgdp9rdOo3HBu+4XMNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739403316; c=relaxed/simple;
-	bh=5cqsjQHVCF6lM0enUHHTi62zyBAIBPtNBz6VIlRFwrg=;
+	s=arc-20240116; t=1739403317; c=relaxed/simple;
+	bh=IwF9p8RpzpaOLJFPhdpibT8vTNIOotaahsRIavjp5e4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G1nw5h8325n2qcsZjUF8nWI2nC3wMNtYsgWZVLfvGSy/C8yd3XKo9kh/YNTs5ZOpNlyex9kGPDo/EIUXllx0eU4NEhgU7VpyspYDDcfbFKOq+GbtqP49SFnn2G/HqdTG9J4fd6g6GEUoXcE32C9dkbbXu9xuEvDhIqpuJLVBKUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U5KbuPNu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33066C4CEE5;
-	Wed, 12 Feb 2025 23:35:14 +0000 (UTC)
+	 MIME-Version; b=n2NuAyNfe8xlDztgE0KgOCd8rUFtRx2/Q+XWTbJb/hcE/UT6dkUuxFQn57gIjI6KqHwzRe6v9jvCqjmBJId12mMMrvY7pxWydtXfzPCNJfQiVzEQ0ZaGYnrkzug9l8+Qat2sM4wASx0/KInFc8EghRSicKBxrzHzBl5r8oNE8wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g5P/9x07; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3FE7C4CEDF;
+	Wed, 12 Feb 2025 23:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739403315;
-	bh=5cqsjQHVCF6lM0enUHHTi62zyBAIBPtNBz6VIlRFwrg=;
+	s=k20201202; t=1739403316;
+	bh=IwF9p8RpzpaOLJFPhdpibT8vTNIOotaahsRIavjp5e4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U5KbuPNu+4hyrdBlfHJZRkRPG0NIEU3RQ2Ro4pLjEmlaBDx5ng/lKiAxDqFn8xkog
-	 O6dCEWM+ZF0c+1cA+UQ8cfGpGQUKfZN5c6Qjtu5m0cqeCgNOR5UiDtUtHfzn9QBMM4
-	 12DZAuuhOOlPzr6ESua9He4m+wMZjTyYJdfY8KARFL9jntx4VloHJP1YOG33o40but
-	 6zgr/d6VAkFrAp0J3kayn9CbLgnaumI79eGQvDj9shohZFGwj0tiPQAhQ+yZV7DHWf
-	 loWI8zlbx8iDwahl76zCI/0r+LXfIBS8Hz3sTOEAXpiOIH5iwE4hu+QGqB7XPghgQW
-	 8+dndc//Rv6lg==
+	b=g5P/9x07r5fMuLMCD4ZSXzpOuyEovBMpcAo6hrLZwVVg9nfOHYx+mJMkS58TRly/r
+	 QO9S8ptr6l0uT76Cie5W0VIgAAP3ht+uvXOrthv58pXuQWBxZ6rsPasCWSRgOGhtBV
+	 8FeScT98beCbKSi1fpLnOG/yajKHIE/gHbcBcO1N/eUgqUrp9NaZXxGqMrVCGDND/e
+	 FNORpn5qwHEQNj3VCRqie28ExtTJydEMsAMfIERbeVxTsjQLwJwtlmbAfO7rV5AZf5
+	 VDWF7Z32oEdyVHU4uuoBACDu4veu1cLmMERRdDb+ilvIQuNKj0n2H75+SBRTB8zvnG
+	 NUgwwWuCQ26xw==
 From: fdmanana@kernel.org
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 1/8] btrfs: skip tests incompatible with compression when compression is enabled
-Date: Wed, 12 Feb 2025 23:34:59 +0000
-Message-ID: <700c5fba050de47dfece422a96a3b179567c1874.1739403114.git.fdmanana@suse.com>
+Subject: [PATCH v2 2/8] btrfs/290: skip test if we are running with nodatacow mount option
+Date: Wed, 12 Feb 2025 23:35:00 +0000
+Message-ID: <c237eac9f459e96ea4737fbf18bc96b733a0ab9f.1739403114.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1739403114.git.fdmanana@suse.com>
 References: <cover.1739403114.git.fdmanana@suse.com>
@@ -62,141 +62,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We have several tests that fail when compression is enabled (MOUNT_OPTIONS
-has "-o compress" or "-o compress-force"") because they expect a fixed
-extent size and they trigger corruption by writing directly to a device,
-therefore making them incompatible with compression.
+We exercise corrupting an inline extent and inline extents can't be created
+with nodatacow, we get instead a regular file extent item and if we attempt
+to corrupt its disk_bytenr field with btrfs-corrupt-block we fail tree-checker
+validation at mount time resulting in failure to mount and the following in
+dmesg:
 
-So add a _require_no_compress call to them.
+[514127.759739] BTRFS critical (device sdc): corrupt leaf: root=5 \
+        block=30408704 slot=8 ino=257 file_offset=0, invalid disk_bytenr for \
+        file extent, have 7416089308958521981, should be aligned to 4096
+[514127.762715] BTRFS error (device sdc): read time tree block corruption \
+        detected on logical 30408704 mirror 1
+
+So add a _require_btrfs_no_nodatacow call to the test.
 
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/215 | 4 ++++
- tests/btrfs/265 | 3 +++
- tests/btrfs/266 | 3 +++
- tests/btrfs/267 | 3 +++
- tests/btrfs/268 | 3 +++
- tests/btrfs/269 | 3 +++
- tests/btrfs/289 | 4 +++-
- tests/btrfs/297 | 4 ++++
- 8 files changed, 26 insertions(+), 1 deletion(-)
+ tests/btrfs/290 | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tests/btrfs/215 b/tests/btrfs/215
-index b63ebff6..2418cc90 100755
---- a/tests/btrfs/215
-+++ b/tests/btrfs/215
-@@ -25,6 +25,10 @@ _require_scratch
- _require_btrfs_no_nodatacow
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device $SCRATCH_DEV
-+# We need to ensure a fixed amount of written blocks to trigger a specific
-+# number of read errors and we corrupt by writing directly to the device, so
-+# skip if compression is enabled.
-+_require_no_compress
+diff --git a/tests/btrfs/290 b/tests/btrfs/290
+index 1a5e267b..04563dfe 100755
+--- a/tests/btrfs/290
++++ b/tests/btrfs/290
+@@ -30,6 +30,18 @@ _require_xfs_io_command "pread"
+ _require_xfs_io_command "pwrite"
+ _require_btrfs_corrupt_block "value"
+ _require_btrfs_corrupt_block "offset"
++# We exercise corrupting an inline extent and inline extents can't be created
++# with nodatacow, we get instead a regular file extent item and if we attempt
++# to corrupt its disk_bytenr field with btrfs-corrupt-block we fail tree-checker
++# validation at mount time resulting in failure to mount and the following in
++# dmesg:
++#
++# [514127.759739] BTRFS critical (device sdc): corrupt leaf: root=5 \
++#         block=30408704 slot=8 ino=257 file_offset=0, invalid disk_bytenr for \
++#         file extent, have 7416089308958521981, should be aligned to 4096
++# [514127.762715] BTRFS error (device sdc): read time tree block corruption \
++#         detected on logical 30408704 mirror 1
++_require_btrfs_no_nodatacow
+ _disable_fsverity_signatures
  
- _scratch_mkfs > /dev/null
- # disable freespace inode to ensure file is the first thing in the data
-diff --git a/tests/btrfs/265 b/tests/btrfs/265
-index 0fa55a7f..5640e714 100755
---- a/tests/btrfs/265
-+++ b/tests/btrfs/265
-@@ -20,6 +20,9 @@ _require_btrfs_no_nodatacow
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
- 
- _scratch_dev_pool_get 3
- # step 1, create a raid1 btrfs which contains one 128k file.
-diff --git a/tests/btrfs/266 b/tests/btrfs/266
-index 0788ba94..681cefda 100755
---- a/tests/btrfs/266
-+++ b/tests/btrfs/266
-@@ -21,6 +21,9 @@ _require_scratch_dev_pool 3
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
- 
- _scratch_dev_pool_get 3
- # step 1, create a raid1 btrfs which contains one 128k file.
-diff --git a/tests/btrfs/267 b/tests/btrfs/267
-index 151ccdae..ceba974d 100755
---- a/tests/btrfs/267
-+++ b/tests/btrfs/267
-@@ -21,6 +21,9 @@ _require_btrfs_no_nodatacow
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
- 
- _scratch_dev_pool_get 3
- # step 1, create a raid1 btrfs which contains one 128k file.
-diff --git a/tests/btrfs/268 b/tests/btrfs/268
-index dce5cb95..99e1ee4a 100755
---- a/tests/btrfs/268
-+++ b/tests/btrfs/268
-@@ -20,6 +20,9 @@ _require_btrfs_no_nodatacow
- _require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
- _require_scratch_dev_pool 2
- _scratch_dev_pool_get 2
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
- 
- echo "step 1......mkfs.btrfs"
- 
-diff --git a/tests/btrfs/269 b/tests/btrfs/269
-index 129a4a41..183aeb73 100755
---- a/tests/btrfs/269
-+++ b/tests/btrfs/269
-@@ -22,6 +22,9 @@ _require_odirect
- # No data checksums for NOCOW case, so can't detect corruption and repair data.
- _require_btrfs_no_nodatacow
- _require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
- _require_scratch_dev_pool 4
- _scratch_dev_pool_get 4
- 
-diff --git a/tests/btrfs/289 b/tests/btrfs/289
-index 86e91021..b340b97d 100755
---- a/tests/btrfs/289
-+++ b/tests/btrfs/289
-@@ -18,7 +18,9 @@ _require_btrfs_no_nodatacow
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
--
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
- # The errors reported would be in the unit of sector, thus the number
- # is dependent on the sectorsize.
- _require_btrfs_support_sectorsize 4096
-diff --git a/tests/btrfs/297 b/tests/btrfs/297
-index eb4f365e..1f3f7c08 100755
---- a/tests/btrfs/297
-+++ b/tests/btrfs/297
-@@ -14,6 +14,10 @@ _begin_fstest auto quick raid scrub
- _require_odirect
- _require_non_zoned_device "${SCRATCH_DEV}"
- _require_scratch_dev_pool 3
-+# We need to ensure a fixed extent size and we corrupt by writing directly to
-+# the device, so skip if compression is enabled.
-+_require_no_compress
-+
- _fixed_by_kernel_commit 486c737f7fdc \
- 	"btrfs: raid56: always verify the P/Q contents for scrub"
- 
+ get_ino() {
 -- 
 2.45.2
 
