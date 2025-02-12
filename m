@@ -1,402 +1,204 @@
-Return-Path: <linux-btrfs+bounces-11395-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11396-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE7AA31E85
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 07:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EADD9A31EA9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 07:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC00C1886438
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 06:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4929918849B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2025 06:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785381FBC99;
-	Wed, 12 Feb 2025 06:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DAB21F0E55;
+	Wed, 12 Feb 2025 06:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpxSmk2L"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YWUQHWei"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1BC2D600;
-	Wed, 12 Feb 2025 06:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97BE1DF751
+	for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2025 06:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739341018; cv=none; b=IDUxlLcn58XuEJu+wZDJPLxv6N1JhQZW21/jkWhkTB/56lV2Q63SXgoVvnzw9XbrsDSphjYtMFMtjcS9H6e+FNaebl/Abh8v/RpqSy7rstAPHL/Pim8I73NY7E7vc75LmlplzMdACgiTtYjtKv2iSjWkgqyeWnKDa8QC770g16k=
+	t=1739341386; cv=none; b=e5avAdbx1HRS6oqMt8Wk1LugXFOy884tKiVfpUIQhH7+mU/H7uin/glOnzNZxZ4wjeFFA2QR+VUMMS5nZhhbUnPyngQ/kbDxDcG5dYq9jPh2SpP3Di2KjSJudlGshD7KoixVjjddjvkHfgUsQaD3YsR2H1dgw++0pB5gPutbgxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739341018; c=relaxed/simple;
-	bh=Xm/hdUqapeKL1ejy+tlLRpUM/WPVbx2AaRZmhPGvqTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b8I+jg9GE4SfNZaGfnZwwsLTVxXx+WoFP+2hy0zLK8HMgMHJ7vNq+0ni6vXTwLFESZM5MKs5o9dJXT3BIqaj8lxj8CdRHrFCHxsZNnK6dcxv9ldCvBFTsdYBf+jfqc2122Rzst5HwRMivTAm9mI32iKeX+H2jMHNQ7OrmuySPfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpxSmk2L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67938C4CEDF;
-	Wed, 12 Feb 2025 06:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739341018;
-	bh=Xm/hdUqapeKL1ejy+tlLRpUM/WPVbx2AaRZmhPGvqTY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JpxSmk2LWgfQyJb2DyHpRtrPSuzVK4blJYIpQ2P8kKdvyS6DR+QBncwFdhMsVm4YE
-	 tR9EO+eAb9XlHGUjLir0ehiXq9/Nhxmk/iAuyLQzQbSUNR2TZx57dIT2qeNkVHB+n1
-	 4Z9oecwzWMpzd0hpITeByDK3NlS2vtR7MNN23PNWNLTp9ItzH1yvLK+NaX3kWskU+N
-	 hEdOQ+m69YbEhQrTJq53Cv38Kt2HsL72ytDuzt2Fn2B7tug3mjc0iiPp7g9VtHT4u3
-	 fPm7SKq41IW/T/Oin6GfuLLlq0khfU26iM7pjUfVFiwyYHDtFqpqIBTH7QhHVdYDZh
-	 tAVL+S/yPgoHw==
-Date: Tue, 11 Feb 2025 22:16:57 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>,
-	David Disseldorp <ddiss@suse.de>, Zorro Lang <zlang@redhat.com>
-Subject: Re: [PATCH v3] fstests: add a generic test to verify direct IO
- writes with buffer contents change
-Message-ID: <20250212061657.GX21799@frogsfrogsfrogs>
-References: <93410edfde1cb0405c133cca49a8291dcdb90e2e.1739329404.git.wqu@suse.com>
+	s=arc-20240116; t=1739341386; c=relaxed/simple;
+	bh=W0NpBZMTTWFSesZiZbSwN5iKUIg3upK6dxKS6wSnDx4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PZcVA+CT60gE43ipB5S6YUvokxyKI1EB2uQoRhK/OrUJDUJer0cYQJDOnwNJdR4dS4L1P6e6yrUemf2r0HqEPmTloVzMzF1FZURu/VfbP48iTENn64kONlQssEAqZaeBK7Uyw10bbXVQ1Fx8ZKiGajjbj4Tb6MvWZWmrHDNxFTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YWUQHWei; arc=none smtp.client-ip=209.85.128.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-4395a917f33so1056905e9.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2025 22:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1739341382; x=1739946182; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=5eZl+Lm+eNF5vV/lYzaAH8+uqzZkVXJRZUaZFAcWr+M=;
+        b=YWUQHWeiYRUzLNMppG5IIcoNClxg86aRhvWb+usd6+/ve5wdONTQMYqgJraYrsml2R
+         Yom1+d+FDb1kARyXCJSb4OCszfgaWLuK/JBEy4s8xNDMBblNKp1S1sDeX5EUWhlSlbwe
+         6mtvfymJvfl7xyZGou+uCTkKgYhmAp5f0zunQbmNFEzPBX6Mlu44kWgVI6NulBFe0f+s
+         vSn8D07I6pxKf5MmH+KRCf5y1mSbaGWuRALHVFVnUwu+M1ZnhgR3wIylD7oN9ly+AUFj
+         tbn8BFh/s91fHgm7R/iw+cwzgAyIQl/Bn5vJlQtPtld7kLQyDZFEEoyQyMQtTKE9T9Ix
+         0RKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739341382; x=1739946182;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5eZl+Lm+eNF5vV/lYzaAH8+uqzZkVXJRZUaZFAcWr+M=;
+        b=Lwdx63uUmxi+m7qrVMOPLcVlywYy4mBW9emLcRPguCHmIrMa8CR/zXzP4fYvB3JF+d
+         NrigCxgVnusy5f7IMs9j3wxbIxgvM57p+lHosvmXFROckWODhv3U20PZxy3hF0kToMjj
+         7+hJGzyJBwHjxhshRSxQZYf+UoMpCceqBMOjdkPsuvmw1nw7SmyPnQcp/oSOaoH1puto
+         /45m7rzt8pz+Itsn38hXf0PnlIhB+xmN1TvzOFBVB9pUZrunqDTDvvCDcCDjsRM5SoQ7
+         MfPp0ggPMUBWUoEdro8IfYfW3fvmO0LRs1iyi7u1XnXlr7ogJfMizAA8XvynOoE0Bfr0
+         n8dg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQCzyk9v6f0A+piATxxlkvQaBAqrm029S4l0y4TmKDmDLJvj/cov9jg1TismK8e0RlLleGvt3RynVhww==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMl++cfvAsoGFSKvLuWivyGYTFtlF+M+CG7X4vm2wJU7eEbTmd
+	mZI5m0I0QWjW1v70QckWV3QcLxEQsovP0kRGgH2/4V1rxV50ycQFM5aYQrRlo5U=
+X-Gm-Gg: ASbGncvZ+hbZzWWmUlSAbDTPnosYEhwpfos//h8XoLWcrPdKoGMy4jZCPkKdHr4+CfO
+	9BYnBdWh7AZRRO+viJrDwMCLcTRvne8SuShRHO63Mvx4E9zSkK5dkptbS/Uykh4PvyFoZYHRdaz
+	gTjb4in9x5XCSygqVJZ9seW5d30LHpnOWFRmmXvBuIb1Rg/THKgG8GbwfaegtUMlqv8hXyGwIt/
+	9w0zYPThvo9R7niVc534aahGXvqH+rBSyGEMeBu2elOm+QliNLk/Dx2V+AEPQ9179AvTi/FPHFt
+	+qEba0Fymml6WulzVaA197yBaON/HXaX+z56MwQUS74=
+X-Google-Smtp-Source: AGHT+IGvyDbwTuL65YPFFznO2ohKRnsCuHBRtsqpeHy0jfeaMB3HhKxjeUQ1Ff5of74r5fodNtMwLg==
+X-Received: by 2002:a05:6000:4009:b0:38d:db2c:26be with SMTP id ffacd0b85a97d-38de43a5c98mr4631504f8f.14.1739341381819;
+        Tue, 11 Feb 2025 22:23:01 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7322d4c2f56sm572302b3a.118.2025.02.11.22.22.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Feb 2025 22:23:01 -0800 (PST)
+Message-ID: <d9720346-bf14-440c-9a57-8e8c25864059@suse.com>
+Date: Wed, 12 Feb 2025 16:52:56 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93410edfde1cb0405c133cca49a8291dcdb90e2e.1739329404.git.wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [linux-next:master] [btrfs] 92a6e5b713: xfstests.btrfs.226.fail
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, David Sterba <dsterba@suse.com>,
+ "hch@infradead.org" <hch@infradead.org>, Filipe Manana <fdmanana@suse.com>,
+ linux-btrfs@vger.kernel.org
+References: <202502121035.e70df273-lkp@intel.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <202502121035.e70df273-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 12, 2025 at 01:34:06PM +1030, Qu Wenruo wrote:
-> There is a long existing btrfs problem that if some one is modifying the
-> buffer of an on-going direct IO write, it has a very high chance causing
-> permanent data checksum mismatch.
-> 
-> This is caused by the following factors:
-> 
-> - Direct IO buffer is out of the control of filesystem
->   Thus user space can modify the contents during writeback.
-> 
-> - Btrfs generate its data checksum just before submitting the bio
->   This means if the contents happens after the checksum is generated,
->   the data written to disk will no longer match the checksum.
-> 
-> Btrfs later fixes the problem by forcing the direct IO to fallback to
-> buffered IO (if the inode requires data checksum), so that btrfs can
-> have a consistent view of the buffer.
-> 
-> This test case will verify the behavior by:
-> 
-> - Create a helper program 'dio-writeback-race'
->   Which does direct IO writes block-by-block, and the buffer is always
->   initialized to all 0xff before write,
->   Then starting two threads:
->   - One to submit the direct IO
->   - One to modify the buffer to 0x00
-> 
->   The program uses 4K as default block size, and 64MiB as the default
->   file size.
->   Which is more than enough to trigger tons of btrfs checksum errors
->   on unpatched kernels.
-> 
-> - New test case generic/761
->   Which will:
-> 
->   * Use above program to create a 64MiB file
-> 
->   * Do buffered read on that file
->     Since above program is doing direct IO, there is no page cache
->     populated.
->     And the buffered read will need to read out all data from the disk,
->     and if the filesystem supports data checksum, then the data checksum
->     will also be verified against the data.
-> 
-> The test case passes on the following fses:
-> - ext4
-> - xfs
-> - btrfs with "nodatasum" mount option
->   No data checksum to bother.
-> 
-> - btrfs with default "datasum" mount option and the fix "btrfs: always
->   fallback to buffered write if the inode requires checksum"
->   This makes btrfs to fallback on buffered IO so the contents won't
->   change during writeback of page cache.
-> 
-> And fails on the following fses:
-> 
-> - btrfs with default "datasum" mount option and without the fix
->   Expected.
-> 
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Reviewed-by: David Disseldorp <ddiss@suse.de>
-> Reviewed-by: Zorro Lang <zlang@redhat.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Looks good to me,
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
---D
+在 2025/2/12 15:14, kernel test robot 写道:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "xfstests.btrfs.226.fail" on:
+> 
+> commit: 92a6e5b7138df60388f43065b22d0fd846ab8802 ("btrfs: always fallback to buffered write if the inode requires checksum")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+> [test failed on linux-next/master df5d6180169ae06a2eac57e33b077ad6f6252440]
 
-> ---
-> Changelog:
-> v2:
-> - Fix the comment on the default block size of dio-writeback-race
-> - Use proper type for pthread_exit() of do_io() function
-> - Fix the error message when filesize is invalid
-> - Fix the error message when unknown option is parsed
-> - Catch the thread return value correctly for pthread_join() on IO thread
-> - Always update @ret
-> - Return EXIT_SUCCESS/FAILURE based on @ret at error: tag
-> - Check the return value of pthread_join() correctly
-> - Remove unused cleanup override/include comments from the test case
-> - Add the missing fixed-by tag
+This is a known one, please update the test case, see this fstests patch:
+
+https://lore.kernel.org/linux-btrfs/6b66d881e152296eab70acc19991d9a611aefde6.1738792721.git.wqu@suse.com/
+
+
 > 
-> v3:
-> - Use hyphens for the program's name in the comments of dio-writeback-race.c
-> - Fix a missing argv[2] usage
-> - Use _get_file_block_size() to benefit from ocfs2/xfs special handling
-> ---
->  .gitignore               |   1 +
->  src/Makefile             |   3 +-
->  src/dio-writeback-race.c | 148 +++++++++++++++++++++++++++++++++++++++
->  tests/generic/761        |  41 +++++++++++
->  tests/generic/761.out    |   2 +
->  5 files changed, 194 insertions(+), 1 deletion(-)
->  create mode 100644 src/dio-writeback-race.c
->  create mode 100755 tests/generic/761
->  create mode 100644 tests/generic/761.out
+> in testcase: xfstests
+> version: xfstests-x86_64-8467552f-1_20241215
+> with following parameters:
 > 
-> diff --git a/.gitignore b/.gitignore
-> index efd477738e1e..7060f52cf6b8 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -210,6 +210,7 @@ tags
->  /src/perf/*.pyc
->  /src/fiemap-fault
->  /src/min_dio_alignment
-> +/src/dio-writeback-race
->  
->  # Symlinked files
->  /tests/generic/035.out
-> diff --git a/src/Makefile b/src/Makefile
-> index 1417c383863e..6ac72b366257 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -20,7 +20,8 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
->  	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
->  	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-test \
-> -	readdir-while-renames dio-append-buf-fault dio-write-fsync-same-fd
-> +	readdir-while-renames dio-append-buf-fault dio-write-fsync-same-fd \
-> +	dio-writeback-race
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/dio-writeback-race.c b/src/dio-writeback-race.c
-> new file mode 100644
-> index 000000000000..963ed207fc1b
-> --- /dev/null
-> +++ b/src/dio-writeback-race.c
-> @@ -0,0 +1,148 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * dio-writeback-race -- test direct IO writes with the contents of
-> + * the buffer changed during writeback.
-> + *
-> + * Copyright (C) 2025 SUSE Linux Products GmbH.
-> + */
-> +
-> +/*
-> + * dio-writeback-race
-> + *
-> + * Compile:
-> + *
-> + *   gcc -Wall -pthread -o dio-writeback-race dio-writeback-race.c
-> + *
-> + * Make sure filesystems with explicit data checksum can handle direct IO
-> + * writes correctly, so that even the contents of the direct IO buffer changes
-> + * during writeback, the fs should still work fine without data checksum mismatch.
-> + * (Normally by falling back to buffer IO to keep the checksum and contents
-> + *  consistent)
-> + *
-> + * Usage:
-> + *
-> + *   dio-writeback-race [-b <buffersize>] [-s <filesize>] <filename>
-> + *
-> + * Where:
-> + *
-> + *   <filename> is the name of the test file to create, if the file exists
-> + *   it will be overwritten.
-> + *
-> + *   <buffersize> is the buffer size for direct IO. Users are responsible to
-> + *   probe the correct direct IO size and alignment requirement.
-> + *   If not specified, the default value will be 4096.
-> + *
-> + *   <filesize> is the total size of the test file. If not aligned to <blocksize>
-> + *   the result file size will be rounded up to <blocksize>.
-> + *   If not specified, the default value will be 64MiB.
-> + */
-> +
-> +#include <fcntl.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <pthread.h>
-> +#include <unistd.h>
-> +#include <getopt.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <sys/stat.h>
-> +
-> +static int fd = -1;
-> +static void *buf = NULL;
-> +static unsigned long long filesize = 64 * 1024 * 1024;
-> +static int blocksize = 4096;
-> +
-> +const int orig_pattern = 0xff;
-> +const int modify_pattern = 0x00;
-> +
-> +static void *do_io(void *arg)
-> +{
-> +	ssize_t ret;
-> +
-> +	ret = write(fd, buf, blocksize);
-> +	pthread_exit((void *)ret);
-> +}
-> +
-> +static void *do_modify(void *arg)
-> +{
-> +	memset(buf, modify_pattern, blocksize);
-> +	pthread_exit(NULL);
-> +}
-> +
-> +int main (int argc, char *argv[])
-> +{
-> +	pthread_t io_thread;
-> +	pthread_t modify_thread;
-> +	unsigned long long filepos;
-> +	int opt;
-> +	int ret = -EINVAL;
-> +
-> +	while ((opt = getopt(argc, argv, "b:s:")) > 0) {
-> +		switch (opt) {
-> +		case 'b':
-> +			blocksize = atoi(optarg);
-> +			if (blocksize == 0) {
-> +				fprintf(stderr, "invalid blocksize '%s'\n", optarg);
-> +				goto error;
-> +			}
-> +			break;
-> +		case 's':
-> +			filesize = atoll(optarg);
-> +			if (filesize == 0) {
-> +				fprintf(stderr, "invalid filesize '%s'\n", optarg);
-> +				goto error;
-> +			}
-> +			break;
-> +		default:
-> +			fprintf(stderr, "unknown option '%c'\n", opt);
-> +			goto error;
-> +		}
-> +	}
-> +	if (optind >= argc) {
-> +		fprintf(stderr, "missing argument\n");
-> +		goto error;
-> +	}
-> +	ret = posix_memalign(&buf, blocksize, blocksize);
-> +	if (!buf) {
-> +		fprintf(stderr, "failed to allocate aligned memory\n");
-> +		exit(EXIT_FAILURE);
-> +	}
-> +	fd = open(argv[optind], O_DIRECT | O_WRONLY | O_CREAT);
-> +	if (fd < 0) {
-> +		fprintf(stderr, "failed to open file '%s': %m\n", argv[optind]);
-> +		goto error;
-> +	}
-> +
-> +	for (filepos = 0; filepos < filesize; filepos += blocksize) {
-> +		void *retval = NULL;
-> +
-> +		memset(buf, orig_pattern, blocksize);
-> +		pthread_create(&io_thread, NULL, do_io, NULL);
-> +		pthread_create(&modify_thread, NULL, do_modify, NULL);
-> +		ret = pthread_join(io_thread, &retval);
-> +		if (ret) {
-> +			errno = ret;
-> +			ret = -ret;
-> +			fprintf(stderr, "failed to join io thread: %m\n");
-> +			goto error;
-> +		}
-> +		if ((ssize_t )retval < blocksize) {
-> +			ret = -EIO;
-> +			fprintf(stderr, "io thread failed\n");
-> +			goto error;
-> +		}
-> +		ret = pthread_join(modify_thread, NULL);
-> +		if (ret) {
-> +			errno = ret;
-> +			ret = -ret;
-> +			fprintf(stderr, "failed to join modify thread: %m\n");
-> +			goto error;
-> +		}
-> +	}
-> +error:
-> +	close(fd);
-> +	free(buf);
-> +	if (ret < 0)
-> +		return EXIT_FAILURE;
-> +	return EXIT_SUCCESS;
-> +}
-> diff --git a/tests/generic/761 b/tests/generic/761
-> new file mode 100755
-> index 000000000000..9406a4b86f2e
-> --- /dev/null
-> +++ b/tests/generic/761
-> @@ -0,0 +1,41 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 761
-> +#
-> +# Making sure direct IO (O_DIRECT) writes won't cause any data checksum mismatch,
-> +# even if the contents of the buffer changes during writeback.
-> +#
-> +# This is mostly for filesystems with data checksum support, which should fallback
-> +# to buffer IO to avoid inconsistency.
-> +# For filesystems without data checksum support, nothing needs to be bothered.
-> +#
-> +
-> +. ./common/preamble
-> +_begin_fstest auto quick
-> +
-> +_require_scratch
-> +_require_odirect
-> +_require_test_program dio-writeback-race
-> +_fixed_by_kernel_commit XXXXXXXX \
-> +	"btrfs: always fallback to buffered write if the inode requires checksum"
-> +
-> +_scratch_mkfs > $seqres.full 2>&1
-> +_scratch_mount
-> +
-> +blocksize=$(_get_file_block_size $SCRATCH_MNT)
-> +filesize=$(( 64 * 1024 * 1024))
-> +
-> +echo "blocksize=$blocksize filesize=$filesize" >> $seqres.full
-> +
-> +$here/src/dio-writeback-race -b $blocksize -s $filesize $SCRATCH_MNT/foobar
-> +
-> +# Read out the file, which should trigger checksum verification
-> +cat $SCRATCH_MNT/foobar > /dev/null
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/761.out b/tests/generic/761.out
-> new file mode 100644
-> index 000000000000..72ebba4cb426
-> --- /dev/null
-> +++ b/tests/generic/761.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 761
-> +Silence is golden
-> -- 
-> 2.48.1
+> 	disk: 6HDD
+> 	fs: btrfs
+> 	test: btrfs-226
 > 
 > 
+> 
+> config: x86_64-rhel-9.4-func
+> compiler: gcc-12
+> test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz (Haswell) with 8G memory
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202502121035.e70df273-lkp@intel.com
+> 
+> 2025-02-11 13:28:35 export TEST_DIR=/fs/sdb1
+> 2025-02-11 13:28:35 export TEST_DEV=/dev/sdb1
+> 2025-02-11 13:28:35 export FSTYP=btrfs
+> 2025-02-11 13:28:35 export SCRATCH_MNT=/fs/scratch
+> 2025-02-11 13:28:35 mkdir /fs/scratch -p
+> 2025-02-11 13:28:35 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
+> 2025-02-11 13:28:35 echo btrfs/226
+> 2025-02-11 13:28:35 ./check btrfs/226
+> FSTYP         -- btrfs
+> PLATFORM      -- Linux/x86_64 lkp-hsw-d01 6.14.0-rc1-00040-g92a6e5b7138d #1 SMP PREEMPT_DYNAMIC Tue Feb 11 21:13:29 CST 2025
+> MKFS_OPTIONS  -- /dev/sdb2
+> MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
+> 
+> btrfs/226       - output mismatch (see /lkp/benchmarks/xfstests/results//btrfs/226.out.bad)
+>      --- tests/btrfs/226.out	2024-12-15 06:14:52.000000000 +0000
+>      +++ /lkp/benchmarks/xfstests/results//btrfs/226.out.bad	2025-02-11 13:28:41.437083025 +0000
+>      @@ -39,14 +39,11 @@
+>       Testing write against prealloc extent at eof
+>       wrote 65536/65536 bytes at offset 0
+>       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>      -wrote 65536/65536 bytes at offset 65536
+>      -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>      +pwrite: Resource temporarily unavailable
+>       File after write:
+>      ...
+>      (Run 'diff -u /lkp/benchmarks/xfstests/tests/btrfs/226.out /lkp/benchmarks/xfstests/results//btrfs/226.out.bad'  to see the entire diff)
+> Ran: btrfs/226
+> Failures: btrfs/226
+> Failed 1 of 1 tests
+> 
+> 
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20250212/202502121035.e70df273-lkp@intel.com
+> 
+> 
+> 
+
 
