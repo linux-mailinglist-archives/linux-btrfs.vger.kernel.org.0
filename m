@@ -1,192 +1,124 @@
-Return-Path: <linux-btrfs+bounces-11451-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11452-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE16A34E8A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2025 20:38:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E57A34EA8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2025 20:49:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AB9A3AB111
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2025 19:38:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9AF81881999
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2025 19:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8389D245B1B;
-	Thu, 13 Feb 2025 19:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BC2245B09;
+	Thu, 13 Feb 2025 19:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ryFoMO7E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XotlPYGq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JZ3f0A5F";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gjD5KLKN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="moVOXhtt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188CE1FFC59
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2025 19:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DD7245B10
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2025 19:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739475526; cv=none; b=M5yH8XeGzu+7FEfvc+s3ZcweGABoEL3ndTs4wvSCFIeeDwaD1Rq5vJM9qQvOlLE1w3OVndME9VL0L9B7nIUdycSajUtWdMR+vUXXmfV4kkPf12zafcgNqHqvqx+24Llx1/coG6KfD40ggyGN/GIsgiodma9/kJG1msueJ+iXrR4=
+	t=1739476177; cv=none; b=L99fHe1ruq6ILOSkne7TmXV/Uu9BLtGRV10+KM/ozKh2sx39MZm5yGg8YT6OVPzQ1UFN9SPFfiAAthNIFk/RmjGumW73hvKaQEVV/rMjzBu0olONfH3Hf5OfQz5H1ngXgQArqwG826fkqSjceCY+zvFRcfh4PUWCuKJFdvUYQOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739475526; c=relaxed/simple;
-	bh=R5R7AZGdY/pwRQTTcY6sUtN0cZ6OqfP2XEt3zl5DRSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E7Hv0YADptVAAYWmJnNPgUlNZNjq8nonT2q9lVEmxvMxigF5IQ7iacZrL3go9Iy9BoHzvt+Xt/quoicfC+iyF0oTFZEuYYp6FWH0KLBIUzRrzQFDxMGMBfPtuaLchZQOVsoYxRNFwxa2BAN9Uwhz2ZIE6tywis1m7S9uz1kfl6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ryFoMO7E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XotlPYGq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JZ3f0A5F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gjD5KLKN; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CD2AC1F8C2;
-	Thu, 13 Feb 2025 19:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739475523;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DVmkWRuj7YvH5H0lj9oo4Ke6IXoSpsxbRILhEqV1vIk=;
-	b=ryFoMO7EXllOidjW7HMMk4FgmgGFlBQOd2LQhaUDI54GJBp/hps8CF3UXanqxs5yUVHOOJ
-	IS4rs1fPBPpV4j/cm/v5G7insV0txT654rjQzBxs0SItHoFLj/42bWZA4N4z5eDxSsTUux
-	2hR0j6DlNfu8Ue7hi1izJ6UADHYokfY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739475523;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DVmkWRuj7YvH5H0lj9oo4Ke6IXoSpsxbRILhEqV1vIk=;
-	b=XotlPYGqBIPUHjU8oqXCkRsfkfHLtF7nHVTdQyY9dSjSNEY6qq4mYK+dGle3SLUgpyoVvJ
-	i0EQ2gQnJ50Q1cCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739475521;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DVmkWRuj7YvH5H0lj9oo4Ke6IXoSpsxbRILhEqV1vIk=;
-	b=JZ3f0A5FLdh0806oR77WvM9RP40jrqgAEQtz4oGO4pu3Hl2bMwtQ10fjukaxHKFwCUGWO6
-	gJEFnLHiE9eTyv6o4NiMycTeWRoRzLnrdTPNJ/859MaG/b1N3tcx3ljT0dBz6fuRIdBrVD
-	G5ZwNNasU8tUYFw98mKIPnu0ylzpty0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739475521;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DVmkWRuj7YvH5H0lj9oo4Ke6IXoSpsxbRILhEqV1vIk=;
-	b=gjD5KLKNMKjslqGmCI+g5T4EesAYBIVFLWZEqXpdvjVh4VBd6qkTk2lJ5b2eMJMJtbwUsD
-	CDqgbOn9PsjLVPDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A36D013874;
-	Thu, 13 Feb 2025 19:38:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 98ZFJ0FKrmeNUQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 13 Feb 2025 19:38:41 +0000
-Date: Thu, 13 Feb 2025 20:38:40 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@meta.com>
-Cc: Boris Burkov <boris@bur.io>, Daniel Vacek <neelx@suse.com>,
-	Filipe Manana <fdmanana@kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: use atomic64_t for free_objectid
-Message-ID: <20250213193840.GC5777@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <CAPjX3Ffb2sz9aiWoyx73Bp7cFSDu3+d5WM-9PWW9UBRaHp0yzg@mail.gmail.com>
- <CAL3q7H7+UZcXPefg-_8R=eZj42P2UkV2=yE1dSv8BQZagEOhyQ@mail.gmail.com>
- <962f5499-d730-4e30-8956-7cac25a6b119@meta.com>
- <20250127201717.GT5777@twin.jikos.cz>
- <20250129225822.GA216421@zen.localdomain>
- <CAPjX3FfG9fpYWn-A8DROS9Kk3RTRj2RU+MP00gg7dCk=TF36Og@mail.gmail.com>
- <20250131193855.GA1197694@zen.localdomain>
- <4a42d804-ab7b-4734-a99f-c80ae354e93b@meta.com>
- <20250210223408.GS5777@suse.cz>
- <62d31fb6-27c7-48ba-9e0e-c9155ff5fe6f@meta.com>
+	s=arc-20240116; t=1739476177; c=relaxed/simple;
+	bh=47O3+yxzMsfhplQIbh1eLMHLqfSWrMNmN2gLEUFYK54=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NlJtokritmONhbnNiCfJ5zY3CpH27jt+kGncnTC7Rc4G8sj+OyMKmEqLnckcbXoc8jgOH5CPaybGrt96GJeNQkQoK7tRAOcmzzYSLmkM8J73ggdWO7E9wt/Q0maAOQl8/NwSt5UygZC3IkK+GYGE0XdU7C/QFxE87az7btRQ6aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=moVOXhtt; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c07b15ad6bso62940885a.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2025 11:49:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739476174; x=1740080974; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i9Octag/yHpNXBsbSKnQfTjeblETCRsrOO+dCvmJAjk=;
+        b=moVOXhtt3ri4/AyH71atUZoMWHAE4Ta8g92ZyjMX4zDvCqA4kcu+Lbv+bwL0XP1RVD
+         8bvX4KpLRg7BKHv5P+7hLvJmP+plBcKgJaszKdFeB7UakbDNSMsDZV5XZIlgYw6m2cKJ
+         SHIUd9lSYM0yUDr2vVY6ccLsZe3ag7V4wcbp5IEY/ElRwAeEqdm70fxeAMU+HTojbHAA
+         y1Ch8Z5DASWeo3ScssOBBlZFI81NuPIm5vF5VN0bMpEwk58EbCkNJBF+guA9zTaKWmBl
+         mPYiuifMJkbQArrr54HcIE49Pdc9oI2qvxD8zPnr6FsVqpI92JbkUP9lxldDm5YBdMz1
+         ex2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739476174; x=1740080974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i9Octag/yHpNXBsbSKnQfTjeblETCRsrOO+dCvmJAjk=;
+        b=MMzLSlMAGyLw9OZbEhsJdVGAaB0TPNqTaJuBRB/1379MoSFdESIKG/y1GBotSnE8M1
+         4JP48pwkphJvnAs8NP8+m5WNYe1tUL+WMXnZEqsShr86v6RAfK37uuyIY9n8esIrLllz
+         mukNn4sW8KEt7e+g9B3YhYqkqAxsxTCVhi+3vEfV9ofc7R6KexwxG/U0AlAqLiNe7t5d
+         npADxyuNfJmXJvN/9hVa+qaxal8QOGx59640ipa+HuV+1ZlDbTYSOgDqdpeFzEFvNDAS
+         I5AWyzlqFLgfVUkBVMYaB2LTKzMnHBB436Z6YGRvcjj/3FfDCLE2XdSyoRWv8u61cowm
+         PzkA==
+X-Gm-Message-State: AOJu0YxkG+XeD+4Tb3yYdCort7KGvMt4KK3tsYD4XyXWJzSN/wMIB3Jm
+	YPL7h1WLVx1+pa/5eyRY7oF5TWNv53pybL/S4xzkFHTdd1ZnXj1TNpj8gzPB3skRungxaz9MzV3
+	LKvk87Bt2Ykc0sq3WFlQljC80YD6WqQVT
+X-Gm-Gg: ASbGncvLots4GRLBD6+jx3izok9PlmT7KwiQEDjvs5PyegtMLneppZ8q2b1caeLOviv
+	vR5D1T4b49uwgo6Z4bQ7c7SsNjT2b2HXX09W92wazp4yzAZF30J5ET4UHlXzAmfGRVAabKq8=
+X-Google-Smtp-Source: AGHT+IF7FxzeGRgONXiY8PFkHy50+Zq47dVC4Hy/B12Jn6q+tgvOu6yz0ytDNNZDvQybAabku28XktcPM9OROva8NZg=
+X-Received: by 2002:a05:620a:8289:b0:7c0:76b6:2ba with SMTP id
+ af79cd13be357-7c076b60434mr644237785a.2.1739476174653; Thu, 13 Feb 2025
+ 11:49:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62d31fb6-27c7-48ba-9e0e-c9155ff5fe6f@meta.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.981];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:replyto];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <20250207023302.311829-1-racz.zoli@gmail.com> <20250207023302.311829-2-racz.zoli@gmail.com>
+ <20250211191457.GU5777@suse.cz> <CANoGd8mhGau83LU-bWjyi-A2jnzZoAyhqzo3yuxnhC2sETpfWw@mail.gmail.com>
+ <20250211234248.GW5777@suse.cz>
+In-Reply-To: <20250211234248.GW5777@suse.cz>
+From: Racz Zoli <racz.zoli@gmail.com>
+Date: Thu, 13 Feb 2025 21:49:24 +0200
+X-Gm-Features: AWEUYZkmWCCwCvR8ey-JxwNuzpkDhPmTs9SKOlVqr7DIdK3WfmdiQLTYAdiodi8
+Message-ID: <CANoGd8nN+wJNtnbAo1TmE=biY2v3XtQiZASYQ+u+xMmrz2-KCw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Removed redundant if/else statement
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 13, 2025 at 05:47:00PM +0000, Mark Harmstone wrote:
-> On 10/2/25 22:34, David Sterba wrote:
-> > > 
-> > On Wed, Feb 05, 2025 at 03:08:59PM +0000, Mark Harmstone wrote:
-> >> On 31/1/25 19:38, Boris Burkov wrote:
-> >>> My understanding is that the motivation is to enable non-blocking mode
-> >>> for io_uring operations, but I'll let Mark reply in detail.
-> >>
-> >> That's right. io_uring operates in two passes: the first in non-blocking
-> >> mode, then if it receives EAGAIN again in a work thread in blocking mode.
-> >>
-> >> As part of my work to get btrfs receive to use io_uring, I want to add
-> >> an io_uring interface for subvol creation. There's two things preventing
-> >> a non-blocking version: this, and the fact we need a
-> >> btrfs_try_start_transaction() (which should be relatively straightforward).
-> > 
-> >>>>>>> Even if we were to grab a new integer a billion
-> >>>>>>> times a second, it would take 584 years to wrap around.
-> >>>>>>
-> >>>>>> Good to know, but I would not use that as an argument.  This may hold if
-> >>>>>> you predict based on contemporary hardware. New technologies can bring
-> >>>>>> an order of magnitude improvement, eg. like NVMe brought compared to SSD
-> >>>>>> technology.
-> >>>>>
-> >>>>> I eagerly look forward to my 40GHz processor :)
-> >>>>
-> >>>> You never know about unexpected break-throughs. So fingers crossed.
-> >>>> Though I'd be surprised.
-> >>
-> >> More like 40THz, and somebody finding a way to increase the speed of
-> >> light... There's four or five orders of magnitude to go before 64-bit
-> >> wraparound would become a problem here.
-> > 
-> > Thinking about the margins again, there is probably enough that we don't
-> > have to care. I'd still keep the upper limit check as for any random
-> > event like fuzzing, bitflips and such.
-> > 
-> > The use case for nonblocking io_uring makes sense and justifies the
-> > optimization. As mentioned, there are other factors slowing down the
-> > inode creation and number allocation so it's "fingers crossed* safe.
-> 
-> Thanks David. Am I okay to push this patch to for-next then?
+I looked over the changes you made and I was thinking, can`t we
+isolate the part which checks unit_mode, and then leave the block that
+prints rate and limit unique?
+Asking because this way when adding the json formatting option we
+wouldn't need to repeat the print logic after.
 
-Yes, but please send an updated version first, we need the reasoning for
-the choice and that it's still safe regarding amount of time to reach
-the maximum. Basically the objections and answers from this thread
-summarized.
+My suggestion would be something like this:
+
+unsigned int mode =3D UNITS_RAW;
+if (unit_mode !=3D UNITS_RAW)
+    mode =3D unit_mode & UNITS_BINARY ? UNITS_HUMAN_BINARY : UNITS_HUMAN_DE=
+CIMAL;
+...
+
+What do you think, should i create a commit on this, and continue with
+the json implementation?
+
+
+
+
+On Wed, Feb 12, 2025 at 1:43=E2=80=AFAM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Tue, Feb 11, 2025 at 09:31:33PM +0200, Racz Zoli wrote:
+> > I simplified that if/else block because looking at it it seemed the
+> > only difference between the two was that in the if block
+> > pretty_size_mode received UNITS_RAW and in else it received unit_mode.
+> > Didn`t know about the underlying reason you mentioned.
+> > But if the second patch containing the json output implementation is
+> > ok, I can rewrite it so it uses the function as it was before my
+> > commit.
+>
+> I have fixed the unit printing and found another bug. Please base your
+> commit on current devel branch. The json patch won't apply cleanly but
+> it's only in the rate printing part.
 
