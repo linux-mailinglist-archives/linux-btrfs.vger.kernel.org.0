@@ -1,83 +1,83 @@
-Return-Path: <linux-btrfs+bounces-11468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1215A36384
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2025 17:48:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C16EA3638C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2025 17:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E2563AEE00
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2025 16:47:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FC3C16764A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2025 16:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF851267B9A;
-	Fri, 14 Feb 2025 16:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68669267F6D;
+	Fri, 14 Feb 2025 16:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VmdXayxT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQwakCcX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D9F26773C
-	for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2025 16:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4A7267B93
+	for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2025 16:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739551639; cv=none; b=qF/Ra3jhknD0YBr5swbS3qJNkNYlB3KD87HdorfqdmwvWDwVuAp5ZBOUpepdCsljkJo5oTqHP6G8hazZRZ2bfQTqbpcsAcAKfqmUH7P7ghRsp1UtZs0ibHz8oWC/cO6ccnNrfXRr52mH9LAutp5+lsRNZg5mnUNtXA7/TIOWylQ=
+	t=1739551641; cv=none; b=BLGu3P3UOCQpQWZ5bLVHx7shJAJV7XGX/gFbOtRT1IT4lg5fg7+vjSvOunC8Ssyyp0W+tfFDN14M04lQ4/bparerY7KY0AOExS9/HdM9arW/CHZcKXh7azS9JfjIMG0YnUku6tgwjHEXHTMsKgxA/EZoMjXJzwRHngDa8s7iM5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739551639; c=relaxed/simple;
-	bh=FfU1709jXSdh8cXj6i1JL9YzG+JkuXKqq/1gZX5mFxs=;
+	s=arc-20240116; t=1739551641; c=relaxed/simple;
+	bh=h9VC7ia3NboQIqnCFyUNSDF36KFQNuPUm9JazifEehA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qUlCNR54l89ys2OYeFjdaP1GBO5wndSmhPspltOXKyomGEPBEunj++tWoqoujMP3Utt6rHjhlIg7S6o6JEUsPfaca7+ApiurMLkmwcXHJC9QYhR2ExeUscPKhxJl8AgQS9cU3adxOefTIIRa9WvI69Y4XmoddJMZ4MkJ0FAahVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VmdXayxT; arc=none smtp.client-ip=209.85.218.52
+	 MIME-Version; b=AEtzH825+yxvpKDjoXVx+WbaLNlFh+KCBusxwBGC+99QpTjzb73zIwRiv4VqejDnQMg/dRy0+cDNsdI9tXfpHtdjMT11M+ihcHG8vheu4PSYXdRyUV6ClGcDOBpFHl+vfjLpomreIWJPV86XSz13oQW3Ca3tEfOzoM4dOxzapBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQwakCcX; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ab7cc0c1a37so422245566b.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2025 08:47:16 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5dca468c5e4so4043560a12.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2025 08:47:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739551635; x=1740156435; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739551638; x=1740156438; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eAKfgHF3EWnefLOKEDxUvxYcMb7kjH4Hs3f4TlPDgIU=;
-        b=VmdXayxTe9C/l6yIrJiYb92+cXioN+9JsLbFtO+U2nLEIU7YOInWaqjUKcf2KlL5U1
-         AOd1dhvfKU0ajiLjW0OFwx4Val6Ew99OuUMokGGaTp3fuIfgMrV6kmkLrj03AwWax4qF
-         rHXj0blcXCX7rsTPTm3QOee8u/IWcXKOq6Ljh1ynWpFwlIIW91lxs9/QsO9/DsyDw+bj
-         62qKwJgY5fgiRbYgejuai7xX9ysDjv6D+PVczIJ1dRU85QqsDCUpq4t2VX04a7yxeAe/
-         NI9l85qp3sUBuitoMRruFWLp3x6gXBODUeX3fPMlTm2P/XvJnwKbCSU4lO6SLiGlEjBh
-         HV/A==
+        bh=6R+HK/X5VMpBmqx5xn03kG1XjHDGI5xpiTtfkHXYnXI=;
+        b=IQwakCcXOM4XNOyD24FcTaePjiUP1A3cgCFLAw6OU0EeCGoiISayCTWDLKTxLMfyIH
+         pB5AqZJjZaoiUC4wy0wWrkEKfVjPoW0aOOT8m7U2sKxJVByKwZVB/bdLkAzgbqSWPV2v
+         zjT6vE53IuecIaxYRHoI5Xn6JQhBa9pDfJ55xcfjjS7CIqX2sVuoebhf3qr/1TwBXJgh
+         BoWBVYgdYBoJpiDjadiFgjbGnigj6TXLnQ4FU4phbgzWjLHQvSS54XJBZMUx1csPefjE
+         LJXaL21FowQVJnSvXoz0HXKxvD22sZ0H66M6ImrgUaFJHsBQBVgNoRduB78cxeZPNITL
+         D48w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739551635; x=1740156435;
+        d=1e100.net; s=20230601; t=1739551638; x=1740156438;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eAKfgHF3EWnefLOKEDxUvxYcMb7kjH4Hs3f4TlPDgIU=;
-        b=oUG5OagP2SCktO3404E+IuENCpPr/wCRARrNI7GZarCPLfWsQWILCfKEeEHCu3vmZj
-         sZMDGAF6hAvJzH9Zl3AFbxk/GKIoLTKbo25GytTA9UtEZD5YmvMmJ6PrYnKGwr5XR20p
-         2N+CaMMsxZjUUGZKSxBA/KCGfQOmOYVv+gPEaUVV82medtlOtc0OjZO8IfBBoOlqL3Bf
-         EQ2MNp0w2bLuw1Df4GYEVVEfjDisw7aKjxB+V9sFXZ2CVUdTh1Zel5R0CjUAc0/4469E
-         FDflXMnfxymsVosK32M2ZrA9B803+SKpjdRgS0h1bIJb41O8te/lEbk8HDzySONMHdk+
-         AuMQ==
-X-Gm-Message-State: AOJu0YwJ3dqckfOarDiIf757mDyTfIlkfVyF0RUZeEC7073snNUU0atn
-	Fdl+TVWLY9jsT7U/d+w7gZ5Xsc7vsD5hh/+xLFr1W1pxCGGUyMeB
-X-Gm-Gg: ASbGncuMhIwBRnsAKAjwy6/9EajKx5yAoH0W4OJbdOK1Ze2nZYuz6ylyNJmoUpo7pg6
-	m4e1zxdpXIwo626dUy2yK7R5Rzy+zM3BhOChr8x/DsERoxshf1rKtNSAvMZlMN/JjsbSvx5eMYo
-	S9slUsAtZCmuWqwGclLQhT63Dae/osjpj7P63rlL2MqcaMv+R3xoRdTps/+17Nm66NEa6Cwf7jr
-	ChhnrsIYeaLjWKfdfDTWxnuljiKfA0qgKj+2kW039U2amcH0m4nDBvPqX03fObRE/LeIF6JJYLS
-	3/6sQhmSdqK9
-X-Google-Smtp-Source: AGHT+IHUMYZ7AywObXTWuIlCHSvsq5tpPSXcEY2HJWpNCmiVJO1zRxWx9ekodmIOZeeoC6fJmRPJRQ==
-X-Received: by 2002:a17:907:c282:b0:ab7:bcc0:9050 with SMTP id a640c23a62f3a-ab7f33da7c2mr1276849966b.27.1739551635147;
-        Fri, 14 Feb 2025 08:47:15 -0800 (PST)
+        bh=6R+HK/X5VMpBmqx5xn03kG1XjHDGI5xpiTtfkHXYnXI=;
+        b=OCuFFbnrRg1cB2vcg10YY5wmoJaM6OkRpJfI0wgfxwTHfsrYN+l9qXUGbz7spASiD9
+         LZ7gFaSV9D12EZiK5smsZZCa8W/ZOct+ygIFb3iA/COKLnTUUDKZVZ7h0v/+itkVc7UB
+         o/KicSb7pjEe0WK6BCVP9ElBZlIRRTi/Z5xlCvBrNl9a+R3BTF+btSVH5+sSFGi89F3/
+         xqptHPl1BA10WUVJZgxi2+wNuwez/2FpNDRTVRFxsYeMWIFO0md6qQxq1GdWsrQDqvkt
+         XaxO0u1w7GXy+chOWmhooED6VUBhEnVEg77LqHZxOTsVsE6JhMq5FH7vW+C8BwLLoj5N
+         Hi3g==
+X-Gm-Message-State: AOJu0YwW+hqr0tjRw0QcUJiRKMUc3uBQXFKYeyP2jGNVSrw+tL3vKbfr
+	0sy0CbwnMjT0f+bxnW66y8lXVQ20NGjwyoIl3hyjIeHBKYTMYlar
+X-Gm-Gg: ASbGncsOhvHIlOOliChIuvNDhfzz1hvg8qqCVN+y/VUO2bNx4zHjM0j8KItL0i5b14b
+	WpOad0j5HqGYJCebqGyOYhhEJenzSx8SlNEEtNC40ajjauJhCqY90jiuGQ1NEM1yghiF3iIcmEc
+	pkpmNcmjnMoYS66aWzIE3kReVORGFuQeBvswZRCKe4bSpyR6yzXBE4BDkpIu5LyXX0wGszj1jSE
+	wIVoXat34xYn+8R6iwX+ahi5dbiPOeJdQyqKt2MG+HQroL6A/z+aU8du74mUYAK2amJsJgdlPva
+	47LnF+uFm2iH
+X-Google-Smtp-Source: AGHT+IGbR4Z4vCYAxCsSC4dCaR0LKV8PWCkL+jCBxvkK0qgymmOGeo0pcCmMsojZN4hfVn+sYk/CjQ==
+X-Received: by 2002:a17:907:2d2b:b0:ab7:f096:61d8 with SMTP id a640c23a62f3a-aba4ebfb4e8mr828861266b.29.1739551637739;
+        Fri, 14 Feb 2025 08:47:17 -0800 (PST)
 Received: from 192.168.1.3 ([82.78.85.163])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aba533984f2sm375019266b.131.2025.02.14.08.47.14
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aba533984f2sm375019266b.131.2025.02.14.08.47.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 08:47:14 -0800 (PST)
+        Fri, 14 Feb 2025 08:47:17 -0800 (PST)
 From: Racz Zoltan <racz.zoli@gmail.com>
 To: dsterba@suse.cz
 Cc: linux-btrfs@vger.kernel.org,
 	Racz Zoltan <racz.zoli@gmail.com>
-Subject: [PATCH 1/6] btrfs-progs: Added rowspec struct and neccesary include file for json output format
-Date: Fri, 14 Feb 2025 18:47:04 +0200
-Message-ID: <20250214164709.51465-2-racz.zoli@gmail.com>
+Subject: [PATCH 2/6] btrfs-progs: Added json output format for print_scrub_full
+Date: Fri, 14 Feb 2025 18:47:05 +0200
+Message-ID: <20250214164709.51465-3-racz.zoli@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250214164709.51465-1-racz.zoli@gmail.com>
 References: <20250214164709.51465-1-racz.zoli@gmail.com>
@@ -90,63 +90,72 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 ---
- cmds/scrub.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ cmds/scrub.c | 52 +++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 37 insertions(+), 15 deletions(-)
 
 diff --git a/cmds/scrub.c b/cmds/scrub.c
-index f769188a..f049e1ed 100644
+index f049e1ed..caada704 100644
 --- a/cmds/scrub.c
 +++ b/cmds/scrub.c
-@@ -53,6 +53,7 @@
- #include "common/sysfs-utils.h"
- #include "common/string-table.h"
- #include "common/string-utils.h"
-+#include "common/format-output.h"
- #include "common/help.h"
- #include "cmds/commands.h"
+@@ -162,21 +162,43 @@ static const struct rowspec scrub_status_rowspec[] = {
  
-@@ -124,6 +125,41 @@ struct scrub_fs_stat {
- 	int i;
- };
- 
-+struct format_ctx fctx;
-+
-+static const struct rowspec scrub_status_rowspec[] = {
-+	{ .key = "uuid", .fmt = "%s", .out_json = "uuid"},
-+	{ .key = "dev", .fmt = "%s", .out_json = "dev"},
-+	{ .key = "id", .fmt = "%llu", .out_json = "id"},
-+	{ .key = "status", .fmt = "%s", .out_json = "status"},
-+	{ .key = "duration", .fmt = "duration", .out_json = "duration"},
-+	{ .key = "started-at", .fmt = "date-time", .out_json = "started-at"},
-+	{ .key = "resumed-at", .fmt = "date-time", .out_json = "resumed-at"},
-+	{ .key = "data-extents-scrubbed", .fmt = "%llu", .out_json = "data-extents-scrubbed"},
-+	{ .key = "tree-extents-scrubbed", .fmt = "%llu", .out_json = "tree-extents-scrubbed"},
-+	{ .key = "data-bytes-scrubbed", .fmt = "%llu", .out_json = "data-bytes-scrubbed"},
-+	{ .key = "tree-bytes-scrubbed", .fmt = "%llu", .out_json = "tree-bytes-scrubbed"},
-+	{ .key = "read-errors", .fmt = "%llu", .out_json = "read-errors"},
-+	{ .key = "csum-errors", .fmt = "%llu", .out_json = "csum-errors"},
-+	{ .key = "verify-errors", .fmt = "%llu", .out_json = "verify-errors"},
-+	{ .key = "no-csum", .fmt = "%llu", .out_json = "no-csum"},
-+	{ .key = "csum-discards", .fmt = "%llu", .out_json = "csum-discards"},
-+	{ .key = "super-errors", .fmt = "%llu", .out_json = "super-errors"},
-+	{ .key = "malloc-errors", .fmt = "%llu", .out_json = "malloc-errors"},
-+	{ .key = "uncorrectable-errors", .fmt = "%llu", .out_json = "uncorrectable-errors"},
-+	{ .key = "unverified-errors", .fmt = "%llu", .out_json = "unverified-errors"},
-+	{ .key = "corrected-errors", .fmt = "%llu", .out_json = "corrected-errors"},
-+	{ .key = "last-physical", .fmt = "%llu", .out_json = "last-physical"},
-+	{ .key = "time-left", .fmt = "duration", .out_json = "time-left"},
-+	{ .key = "eta", .fmt = "date-time", .out_json = "eta"},
-+	{ .key = "total-bytes-to-scrub", .fmt = "%llu", .out_json = "total-bytes-to-scrub"},
-+	{ .key = "bytes-scrubbed", .fmt = "%llu", .out_json = "bytes-scrubbed"},
-+	{ .key = "rate", .fmt = "%llu", .out_json = "rate"},
-+	{ .key = "limit", .fmt = "%llu", .out_json = "limit"},
-+
-+	ROWSPEC_END
-+};
-+
  static void print_scrub_full(struct btrfs_scrub_progress *sp)
  {
- 	pr_verbose(LOG_DEFAULT, "\tdata_extents_scrubbed: %llu\n", sp->data_extents_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\tdata_extents_scrubbed: %llu\n", sp->data_extents_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\ttree_extents_scrubbed: %llu\n", sp->tree_extents_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\tdata_bytes_scrubbed: %llu\n", sp->data_bytes_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\ttree_bytes_scrubbed: %llu\n", sp->tree_bytes_scrubbed);
+-	pr_verbose(LOG_DEFAULT, "\tread_errors: %llu\n", sp->read_errors);
+-	pr_verbose(LOG_DEFAULT, "\tcsum_errors: %llu\n", sp->csum_errors);
+-	pr_verbose(LOG_DEFAULT, "\tverify_errors: %llu\n", sp->verify_errors);
+-	pr_verbose(LOG_DEFAULT, "\tno_csum: %llu\n", sp->no_csum);
+-	pr_verbose(LOG_DEFAULT, "\tcsum_discards: %llu\n", sp->csum_discards);
+-	pr_verbose(LOG_DEFAULT, "\tsuper_errors: %llu\n", sp->super_errors);
+-	pr_verbose(LOG_DEFAULT, "\tmalloc_errors: %llu\n", sp->malloc_errors);
+-	pr_verbose(LOG_DEFAULT, "\tuncorrectable_errors: %llu\n", sp->uncorrectable_errors);
+-	pr_verbose(LOG_DEFAULT, "\tunverified_errors: %llu\n", sp->unverified_errors);
+-	pr_verbose(LOG_DEFAULT, "\tcorrected_errors: %llu\n", sp->corrected_errors);
+-	pr_verbose(LOG_DEFAULT, "\tlast_physical: %llu\n", sp->last_physical);
++	if (bconf.output_format == CMD_FORMAT_JSON) {
++		fmt_print_start_group(&fctx, "scrub", JSON_TYPE_MAP);
++
++		fmt_print(&fctx, "data-extents-scrubbed", sp->data_extents_scrubbed);
++		fmt_print(&fctx, "tree-extents-scrubbed", sp->tree_extents_scrubbed);
++		fmt_print(&fctx, "data-bytes-scrubbed", sp->data_bytes_scrubbed);
++		fmt_print(&fctx, "tree-bytes-scrubbed", sp->tree_bytes_scrubbed);
++		fmt_print(&fctx, "read-errors", sp->read_errors);
++		fmt_print(&fctx, "csum-errors", sp->csum_errors);
++		fmt_print(&fctx, "verify-errors", sp->verify_errors);
++		fmt_print(&fctx, "no-csum", sp->no_csum);
++		fmt_print(&fctx, "csum-discards", sp->csum_discards);
++		fmt_print(&fctx, "super-errors", sp->super_errors);
++		fmt_print(&fctx, "malloc-errors", sp->malloc_errors);
++		fmt_print(&fctx, "uncorrectable-errors", sp->uncorrectable_errors);
++		fmt_print(&fctx, "unverified-errors", sp->unverified_errors);
++		fmt_print(&fctx, "corrected-errors", sp->corrected_errors);
++		fmt_print(&fctx, "last-physical", sp->last_physical);
++
++		fmt_print_end_group(&fctx, "scrub");
++	} else {
++		pr_verbose(LOG_DEFAULT, "\tdata_extents_scrubbed: %llu\n", sp->data_extents_scrubbed);
++		pr_verbose(LOG_DEFAULT, "\ttree_extents_scrubbed: %llu\n", sp->tree_extents_scrubbed);
++		pr_verbose(LOG_DEFAULT, "\tdata_bytes_scrubbed: %llu\n", sp->data_bytes_scrubbed);
++		pr_verbose(LOG_DEFAULT, "\ttree_bytes_scrubbed: %llu\n", sp->tree_bytes_scrubbed);
++		pr_verbose(LOG_DEFAULT, "\tread_errors: %llu\n", sp->read_errors);
++		pr_verbose(LOG_DEFAULT, "\tcsum_errors: %llu\n", sp->csum_errors);
++		pr_verbose(LOG_DEFAULT, "\tverify_errors: %llu\n", sp->verify_errors);
++		pr_verbose(LOG_DEFAULT, "\tno_csum: %llu\n", sp->no_csum);
++		pr_verbose(LOG_DEFAULT, "\tcsum_discards: %llu\n", sp->csum_discards);
++		pr_verbose(LOG_DEFAULT, "\tsuper_errors: %llu\n", sp->super_errors);
++		pr_verbose(LOG_DEFAULT, "\tmalloc_errors: %llu\n", sp->malloc_errors);
++		pr_verbose(LOG_DEFAULT, "\tuncorrectable_errors: %llu\n", sp->uncorrectable_errors);
++		pr_verbose(LOG_DEFAULT, "\tunverified_errors: %llu\n", sp->unverified_errors);
++		pr_verbose(LOG_DEFAULT, "\tcorrected_errors: %llu\n", sp->corrected_errors);
++		pr_verbose(LOG_DEFAULT, "\tlast_physical: %llu\n", sp->last_physical);
++	}
+ }
+ 
+ #define PRINT_SCRUB_ERROR(test, desc) do {	\
 -- 
 2.48.1
 
