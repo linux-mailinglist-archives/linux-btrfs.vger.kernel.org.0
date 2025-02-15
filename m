@@ -1,165 +1,148 @@
-Return-Path: <linux-btrfs+bounces-11480-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E4EFA36CA5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Feb 2025 09:35:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9A6A36EDF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Feb 2025 15:43:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 369B518956DC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Feb 2025 08:35:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC5923AE64D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Feb 2025 14:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6865119884C;
-	Sat, 15 Feb 2025 08:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j+5NYLYR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j+5NYLYR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5BA1D89FA;
+	Sat, 15 Feb 2025 14:43:24 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CF218CBEC
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 08:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437CB1A2643
+	for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 14:43:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739608505; cv=none; b=EzQAH9eSq5lyvzqckwli6MhdOU/PpiD0NgwsUWrnnDGgTeSx1NM9FIuNhE0701aVRAVGIIl3h8Eu6xBl5BGzp8Lw57kUbb3foTmh9C85KmuDDbFtdA8ZbuZfQPcYHTEqPUF5h07F+gW1OJmE3vByZu8Hu8PrWw+W1QTrK+ktrIg=
+	t=1739630604; cv=none; b=HZPJUa+Zay131WFvrgPSBCZY6ya2BwrOlixm26w9q2zHUU+ok228XLl+f0SWSHIezp6IBB4L2hC0T24sYsEUEP49U3FeesAcH+8KJXeAN4ERK1hevNWAGHyf+ufjjusOtJhU4NtVboWnsJUTwXy9UvzVyFs609D8r5sp5HcYW5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739608505; c=relaxed/simple;
-	bh=bb9ug1KoKCCiRAmQB2PMDU4wFOf4YuBewWtZcEvx6Po=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UbnOgm4Qy0DLVJx9JP8MKNKUcyfcnZ1JknNH4B76A2obSwfges/nTfXCESsY68o1SMIEES3K8GmVaz16/n4iStP/jusyhxeHbSYjw0ZsZJ3rb3Cy1zmudG21rN2jHC76Qb+2WiX5R7zLnMseslzc3idNvfZT5UQN6rX9NZMB6RY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j+5NYLYR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j+5NYLYR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5F88B21177
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 08:34:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1739608486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dh7T41xY70/KZT+LF4z4bY/oAzhBLSSVywBEQL7OVAk=;
-	b=j+5NYLYRMKHx1lkmaAuvql+6PF2/A7XBE8GV1iWVE3uMi7NYiEI3fud0hWUsHiA+4Vka2p
-	hHWLXIsL22PnZSxUDxTiBWKh/2AsasmDR5UaXyWcBA8BJ1JAlPytQSD2ChSF+bRxAInYUY
-	88W7SnqeudyhABTIu/uX25qrjdC509o=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=j+5NYLYR
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1739608486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dh7T41xY70/KZT+LF4z4bY/oAzhBLSSVywBEQL7OVAk=;
-	b=j+5NYLYRMKHx1lkmaAuvql+6PF2/A7XBE8GV1iWVE3uMi7NYiEI3fud0hWUsHiA+4Vka2p
-	hHWLXIsL22PnZSxUDxTiBWKh/2AsasmDR5UaXyWcBA8BJ1JAlPytQSD2ChSF+bRxAInYUY
-	88W7SnqeudyhABTIu/uX25qrjdC509o=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 942BA136E6
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 08:34:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gDIBFaVRsGfNTQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 08:34:45 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs: remove the subpage related warning message
-Date: Sat, 15 Feb 2025 19:04:22 +1030
-Message-ID: <4d502549296f910f7af7d06a4442688c3da7d200.1739608189.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1739608189.git.wqu@suse.com>
-References: <cover.1739608189.git.wqu@suse.com>
+	s=arc-20240116; t=1739630604; c=relaxed/simple;
+	bh=lvHMn5W7kbzZ18maSKJjYz+xbIg8obFn4jC2QYchE0k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QePJd0RS8q0a2fL5bOxZYW/bBLgy8gjtkZaRbll7TShoX91Ix3oJOT03JJb59YCDuj1GQBA//QFkkoWlmbNd20OczZKMiR6ePpbDgIgXlH6SdIF+uP1EFQHiKiFM+bpusd5n1xO45E/XBkZ8nli3Ujn6qekEmo+g3e+1QmDa0J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5e04c044224so10230a12.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 06:43:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739630600; x=1740235400;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n4eailxb+R4gpm24VLzByyrHh+Aoqg2pDQwV9K00ZJU=;
+        b=B6pqmmiFMwTcMJ1bzfzvbb/P82pVRLbQmhTSuP5Aq2IFcbmfJ20/Ggn3PpNozGSv99
+         yKp3aUY9VMe2EsUXLpRI/bU+f5pOBTTYHGfFRToE0JrswePVg/r0phXJsi2xbHS0MeUc
+         9PWH9q7xTicBHhWWk+TcQypWgSLr0uiqOjmKLB/5Qe+Xvz44RdRrPOg6Kug+/IlV2Jvt
+         49ucotA3xSeb+se8Wxl4Y+Ubc8O/RDPYso1K4UTAElaKzxsUw+ZAgjSQrM8/FiOKPYkT
+         o4RA0HWZBdcgZQN6SVbyKgXe66P1yuLgwDF6I6vLowSHlamDeymEPLP7xEhIhQJEbMsz
+         6DoA==
+X-Gm-Message-State: AOJu0YyBxXtpG7OKJ44zOHfm3k9Q3HRK5yzX2zdyXZjR3533GX6CURvc
+	Tk3sIORPoqRT2Uc4sP2Bb6XVBnniim7k1vRq6fvReojvW39UVmg92msTeksYDAM=
+X-Gm-Gg: ASbGnctXPf+iYLOPwmi3UUQrySGZXpAFHqcg5U0hP0U9kIrSjSyghNo1IS6/zpuWAUb
+	k+CLm5CMczmivRlu0WDUYw9YJt2qzcKZVqv8RqRWZ5U2fGzjGDU3OflrHxRhEH23+6qemcYbddt
+	hx3saBv3DDJrMM9fGaIsj9fmQh1TSvwLuNDCdjyqURjvqHzKDYh97+1jZSISV38KaF0bb6pvAu1
+	ddVYUT4Kek7JKWKMi1s3t1CVno2RmyRf6jwNZeYx/wLhDpCB0yEypl9DtzB4HvQNdd3v1iG8GEz
+	sp6QKBCnKyrlhiz4rRA1hybtgUD6d9W61cta/PL9OzYOgg==
+X-Google-Smtp-Source: AGHT+IFnBdveFPrxRjP0gOWMzqE7woZyl2fQsnVSYlF5t5sMkMVLMvbeCkSe7nijth6uoEFF0Vyqgw==
+X-Received: by 2002:a05:6402:5210:b0:5de:be17:8 with SMTP id 4fb4d7f45d1cf-5e0361c7ebdmr2630312a12.23.1739630600097;
+        Sat, 15 Feb 2025 06:43:20 -0800 (PST)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5dece2721d9sm4655114a12.56.2025.02.15.06.43.19
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Feb 2025 06:43:19 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5e04c044224so10208a12.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2025 06:43:19 -0800 (PST)
+X-Received: by 2002:a17:907:7209:b0:ab7:bf2f:422e with SMTP id
+ a640c23a62f3a-abb70bacd75mr298910166b.27.1739630599515; Sat, 15 Feb 2025
+ 06:43:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5F88B21177
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <cover.1739608189.git.wqu@suse.com>
+In-Reply-To: <cover.1739608189.git.wqu@suse.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Sat, 15 Feb 2025 09:42:42 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je-49QL43Q9O6ObqGniBbo+YPJ9P70vW61DkEgK0Y_UV9w@mail.gmail.com>
+X-Gm-Features: AWEUYZnSMkTCrcKOEmTV-DqblpBJpvv4CRI0gdoY1toqXG46MJWScu5wGabXjXM
+Message-ID: <CAEg-Je-49QL43Q9O6ObqGniBbo+YPJ9P70vW61DkEgK0Y_UV9w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] btrfs: allow creating inline data extents for
+ sector size < page size case
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since the initial enablement of block size < page size support for
-btrfs in v5.15, we have hit several milestones for block size < page
-size (subpage) support:
+On Sat, Feb 15, 2025 at 3:34=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [CHANGELOG]
+> v2:
+> - Add the previous inline read fix into the series
+> - Add a patch to remove the subpage experimental warning message
+>   The main reason for the warning is the lack of some features, but it's
+>   no longer the case.
+>
+> For btrfs block size < page size (subpage), there used to a list of
+> features that are not supported:
+>
+> - RAID56
+>   Added in v5.19
+>
+> - Block perfect compressed write
+>   Added in v6.13, previously only page aligned range can go through
+>   compressed write path.
+>
+> - Inline data extent creation
+>
+> But now the only feature that is missing is only inline data extent
+> creation.
+>
+> And all technical problems are solved in v6.13, it's time for us to
+> allow subpage btrfs to create inline data extents.
+>
+> The first patch is to fix a bug that can only be triggered with recent
+> partial uptodate folio support.
+>
+> The second patch fixes a minor issue for qgroup accounting for inlined
+> data extents.
+>
+> The third path enables inline data extent creation for subpage btrfs.
+>
+> And finally remove the experimental warning message for subpage btrfs.
+>
+> Qu Wenruo (4):
+>   btrfs: fix inline data extent reads which zero out the remaining part
+>   btrfs: fix the qgroup data free range for inline data extents
+>   btrfs: allow inline data extents creation if sector size < page size
+>   btrfs: remove the subpage related warning message
+>
+>  fs/btrfs/disk-io.c |  5 -----
+>  fs/btrfs/inode.c   | 30 ++++++++++--------------------
+>  2 files changed, 10 insertions(+), 25 deletions(-)
+>
+> --
+> 2.48.1
+>
+>
 
-- RAID56 subpage support
-  In v5.19
+This is fantastic! :)
 
-- Refactored scrub support to support subpage better
-  In v6.4
+The series looks good to me, so...
 
-- Block perfect (previously require page aligned range) compressed write
-  In v6.13
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
-- Various error handling fixes involving subpage
-  In v6.14
 
-Finally the only missing feature is the pretty simple and harmless
-inlined data extent creation, just done in previous patches.
-
-Now btrfs has all of its features ready for both regular and subpage
-cases, there is no reason to output a warning about the experimental
-subpage support, and we can finally remove it now.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 8c31ba1b061e..1d64b3721e25 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3415,11 +3415,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	 */
- 	fs_info->max_inline = min_t(u64, fs_info->max_inline, fs_info->sectorsize);
- 
--	if (sectorsize < PAGE_SIZE)
--		btrfs_warn(fs_info,
--		"read-write for sector size %u with page size %lu is experimental",
--			   sectorsize, PAGE_SIZE);
--
- 	ret = btrfs_init_workqueues(fs_info);
- 	if (ret)
- 		goto fail_sb_buffer;
--- 
-2.48.1
-
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
