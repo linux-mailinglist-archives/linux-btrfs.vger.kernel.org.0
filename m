@@ -1,155 +1,157 @@
-Return-Path: <linux-btrfs+bounces-11512-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24298A38984
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 17:39:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E2FA38A2E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 18:00:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55D98167006
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 16:39:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2A0818944E8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 17:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB811225773;
-	Mon, 17 Feb 2025 16:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F94A226863;
+	Mon, 17 Feb 2025 17:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KjQE0xzd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MKOrAcig";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KjQE0xzd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MKOrAcig"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qaEJtnvU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6252A225771
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 16:38:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650D42248B7
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 17:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739810289; cv=none; b=qSwfnkIDQDZ1RKzIKuhXR1pSMqV3Nx3nEW4FytwAKhFCmDeKUVW0KdI2KM9orOF1yZ1ORVnWA7tvzjUOcFlGyxP1itcEUA1k6cRmz0sUuClPA2lLQzbXCld4eVmcfWRuZrhnRn7Qv+dDPP/cCIAzoglSbVn5UjmWHv9spjivyvg=
+	t=1739811640; cv=none; b=tYnQzYfBQaoPKXAdi8Dg9SxlO1ZKy1X9/fLY1Flpfk0GKlEw9pkxx1R3VDkheaiKVaNb42RzaaOvnGQkhjL8+aasr1nn1HLrK0Or3r43slPGYJ8OYcvmoK+FP9Z8v0LlbdbJrnkBRFSr1b0te+HiT5RuciOuaazti44Jpx2PB8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739810289; c=relaxed/simple;
-	bh=ON8Mz4JcIZGTaXFj/e5sTzYLhvfpnBjKEoQV5nvQ88g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pxmar8XguDSqzA67UNjaY6+kfps6juyuQV9HOoE6Ew9sKfZdWO3bdUKDYnnfuHn9ClKUEW9wbWvU/awO7tCj3CoWgl8HzAM/LS09lFfzeOPhkIPBIQDAScoRhkPE7nPM4NYFlCtXcON4g1NUjbzHsRB09EnvhfvhmgnZdNYKyoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KjQE0xzd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MKOrAcig; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KjQE0xzd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MKOrAcig; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F76D1F451;
-	Mon, 17 Feb 2025 16:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739810284;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OD3m8VqjvvAZwXlG+uiAwCrgAIkgOYNa2ONHeK/G/JM=;
-	b=KjQE0xzdSFWGU7w4dH502I009EvLEnjJgkoMgXheJxynUqLnC7OcvKLIQTbMXUJr0ecEKi
-	Vf87fMlZ3PBzBe+F2U89v36ekcglfoCs2rjCKB/0ekNeJwpMi062NpcTLZzY4YET9/w5xs
-	8wD4ZfApblZXRYV4pG1RORDJUWPtoso=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739810284;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OD3m8VqjvvAZwXlG+uiAwCrgAIkgOYNa2ONHeK/G/JM=;
-	b=MKOrAcig0tfHCCJc54GUnImB6FV5KlNqbyTdc6d+BB3BWNBO0gGCMBdn5jxnafmnLRPtdt
-	3BpfUY7ZIM4kR1BA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KjQE0xzd;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MKOrAcig
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739810284;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OD3m8VqjvvAZwXlG+uiAwCrgAIkgOYNa2ONHeK/G/JM=;
-	b=KjQE0xzdSFWGU7w4dH502I009EvLEnjJgkoMgXheJxynUqLnC7OcvKLIQTbMXUJr0ecEKi
-	Vf87fMlZ3PBzBe+F2U89v36ekcglfoCs2rjCKB/0ekNeJwpMi062NpcTLZzY4YET9/w5xs
-	8wD4ZfApblZXRYV4pG1RORDJUWPtoso=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739810284;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OD3m8VqjvvAZwXlG+uiAwCrgAIkgOYNa2ONHeK/G/JM=;
-	b=MKOrAcig0tfHCCJc54GUnImB6FV5KlNqbyTdc6d+BB3BWNBO0gGCMBdn5jxnafmnLRPtdt
-	3BpfUY7ZIM4kR1BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 203D71379D;
-	Mon, 17 Feb 2025 16:38:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nGSdB+xls2cEUQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 17 Feb 2025 16:38:04 +0000
-Date: Mon, 17 Feb 2025 17:37:58 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Racz Zoltan <racz.zoli@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: add duration format to fmt_print
-Message-ID: <20250217163758.GE5777@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250211232918.153958-1-racz.zoli@gmail.com>
+	s=arc-20240116; t=1739811640; c=relaxed/simple;
+	bh=9jPG1p/vyE7qseFMSGya/0N/h0GUJ9wVovOnzFqK+vo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jIyWKj8tre/3Vewl3bW7bM6dnYRgGXAv385ubCo5PjMUluhyurhH6BXysCF/X4IBqAbEtZxzdviol/5TQcDhoRTb99Wmv0CvWcyXBh8e46x5PBsKkUyu4q9JgVJJa64To8TjexXmAAY5bNuIc5dsdr7svLG0jwGcs6jCosx7gOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qaEJtnvU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46E02C4CEE4
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 17:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739811640;
+	bh=9jPG1p/vyE7qseFMSGya/0N/h0GUJ9wVovOnzFqK+vo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qaEJtnvUZ1ouHiMqOJK9y3zL6+0bxXipXlV94ft8kRwt3woD+K5N/eGV5HmW9KGfs
+	 V8ywjulVqxBbDCaBKcbDwQDDsIaWjZAXOlAbYx/BVzbtbs8Y8T4+EkjpqIpFaVYQVC
+	 vUG2J3ZPACGagsy58V0zUnb+/rvNC/HmEinG17nQDR9K5tY+G5olJJFVsY92Ta1Tdl
+	 /1mKsnrpb8JzuXF+dzXZHc4Ic0ss1WGTWIZIQumOYqsPHY80l1X1ApbUyXlysbAJWl
+	 tn0I5+LBKtRvVSVL2GNndW+B6xbJckGnvCssd0EkLYildtg6XTaRvn9OD5DjCMUInk
+	 S/VIQzWLD4iyA==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aaf3c3c104fso756341366b.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 09:00:40 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw53H2Ddgv50jRUkO/kuj0w/wG7wb4VgwNcGja3llGL/apaOlrv
+	rSCMONapFEu3rku09DBXnusnGsbWDtiffrRQrbVzOxI3Da5Ip+5KATJTnSs564zXZ6nA8yWoMzr
+	6ey1m4R84eyumT1h+wEmCA7lYvKE=
+X-Google-Smtp-Source: AGHT+IEujCJr6xzQjE6xa6iAV9C2lE533jxiKTkRQg66v1DCS+NqFG0QyLUeeJl8A0IF4iTKZpHOw+5ByMpzLWaPhuU=
+X-Received: by 2002:a17:907:7247:b0:ab7:c6f4:9522 with SMTP id
+ a640c23a62f3a-abb70921334mr1065900266b.9.1739811638834; Mon, 17 Feb 2025
+ 09:00:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250211232918.153958-1-racz.zoli@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 2F76D1F451
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <c34c50a035111a83b3cb5c735f9a86a7d47a66c7.1739785941.git.wqu@suse.com>
+In-Reply-To: <c34c50a035111a83b3cb5c735f9a86a7d47a66c7.1739785941.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 17 Feb 2025 17:00:02 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5EtidnOJen9d+tWu5Cu03U5SGhnB=Divp7DeTc=XbiyA@mail.gmail.com>
+X-Gm-Features: AWEUYZlI4dxWz4jFNOthHhJjC6tH3aq2xKGrqP0w2lWeKwZtmxwispSqpAGhrHs
+Message-ID: <CAL3q7H5EtidnOJen9d+tWu5Cu03U5SGhnB=Divp7DeTc=XbiyA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: output an error message if btrfs failed to find
+ the seed fsid
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 12, 2025 at 01:29:18AM +0200, Racz Zoltan wrote:
-> Added "duration" format in seconds to fmt_print which will convert the
-> input to one of the following strings:
-> 
-> 1. if number of seconds represents more than one day, the output will be 
-> for example: "1 days, 01:30:00" (left the plural so parsing back the
-> string is easier)
-> 2. if less then a day: "23:30:10"
+On Mon, Feb 17, 2025 at 9:52=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> If btrfs failed to locate the seed device for whatever reason, mounting
+> the sprouted device will fail without any meaning error message:
+>
+>  # mkfs.btrfs -f /dev/test/scratch1
+>  # btrfstune -S1 /dev/test/scratch1
+>  # mount /dev/test/scratch1 /mnt/btrfs
+>  # btrfs dev add -f /dev/test/scratch2 /mnt/btrfs
+>  # umount /mnt/btrfs
+>  # btrfs dev scan -u
+>  # btrfs mount /dev/test/scratch2 /mnt/btrfs
+>  mount: /mnt/btrfs: fsconfig system call failed: No such file or director=
+y.
+>        dmesg(1) may have more information after failed mount system call.
+>  # dmesg | tail -n6
+>  [ 1626.369520] BTRFS info (device dm-5): first mount of filesystem 64252=
+ded-5953-4868-b962-cea48f7ac4ea
+>  [ 1626.370348] BTRFS info (device dm-5): using crc32c (crc32c-generic) c=
+hecksum algorithm
+>  [ 1626.371099] BTRFS info (device dm-5): using free-space-tree
+>  [ 1626.373051] BTRFS error (device dm-5): failed to read chunk tree: -2
+>  [ 1626.373929] BTRFS error (device dm-5): open_ctree failed: -2
+>
+> [CAUSE]
+> The failure to mount is pretty straight forward, just unable to find the
+> seed device and its fsid, caused by `btrfs dev scan -u`.
+>
+> But the lack of any useful info is a problem.
+>
+> [FIX]
+> Just add an extra error message in open_seed_devices() to indicate the
+> error.
+>
+> Now the error message would look like this:
+>
+>  [ 1926.837729] BTRFS info (device dm-5): first mount of filesystem 64252=
+ded-5953-4868-b962-cea48f7ac4ea
+>  [ 1926.838829] BTRFS info (device dm-5): using crc32c (crc32c-generic) c=
+hecksum algorithm
+>  [ 1926.839563] BTRFS info (device dm-5): using free-space-tree
+>  [ 1926.840797] BTRFS error (device dm-5): failed to find fsid 1980efd3-6=
+16e-4815-bd5e-aa0d7c3586e3
+>  [ 1926.841632] BTRFS error (device dm-5): failed to read chunk tree: -2
+>  [ 1926.842563] BTRFS error (device dm-5): open_ctree failed: -2
+>
+> Link: https://github.com/kdave/btrfs-progs/issues/959
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/volumes.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 0a0776489055..7642fce50c12 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7200,8 +7200,10 @@ static struct btrfs_fs_devices *open_seed_devices(=
+struct btrfs_fs_info *fs_info,
+>
+>         fs_devices =3D find_fsid(fsid, NULL);
+>         if (!fs_devices) {
+> -               if (!btrfs_test_opt(fs_info, DEGRADED))
+> +               if (!btrfs_test_opt(fs_info, DEGRADED)) {
+> +                       btrfs_err(fs_info, "failed to find fsid %pU", fsi=
+d);
 
-Added to devel, thanks.
+Perhaps add here extra information to have more context like for example:
+
+"failed to find fsid %pU when attempting to open seed devices"
+
+So that it's more clear where the failure is happening.
+
+Thanks.
+
+>                         return ERR_PTR(-ENOENT);
+> +               }
+>
+>                 fs_devices =3D alloc_fs_devices(fsid);
+>                 if (IS_ERR(fs_devices))
+> --
+> 2.48.1
+>
+>
 
