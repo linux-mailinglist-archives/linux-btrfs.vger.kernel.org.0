@@ -1,293 +1,319 @@
-Return-Path: <linux-btrfs+bounces-11508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11509-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2388A37F9F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 11:15:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18FAA38329
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 13:41:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CE393AA858
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 10:15:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A33B21895903
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 12:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3263E217641;
-	Mon, 17 Feb 2025 10:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="FVCmEIyR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E4B21C173;
+	Mon, 17 Feb 2025 12:38:57 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from HK2PR02CU002.outbound.protection.outlook.com (mail-eastasiaazolkn19010011.outbound.protection.outlook.com [52.103.64.11])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F01216E1C
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 10:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.64.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739787309; cv=fail; b=FW9GSRlOibTYphiF4CboAf40XzV7l2lu3I6vy30mpyLrir7pyHkp18j9q5TCjBJU3mhRMM2tA6rStam709eaDyfg/OsHR9aRbXw/JxchPG4MgOKYCtE+L9oCv/MAf2KWytHf/Osszu1FK8rrGci1rjuI7myilEnpiH4ImjEEIeU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739787309; c=relaxed/simple;
-	bh=wRY4zjm009O6+UDsnTowxEAElDpFtDUNoPYaI0TjIPk=;
-	h=Message-ID:Date:To:From:Subject:Content-Type:MIME-Version; b=tsQKrj30ks77F4Q98C+EfB6FLZv8lAPfKMmdz3bG4UcxiDONoISenBYncCNP3fBNY/zrvNAlALFtVSzVP/1MVsUYUTnf6ZC9MpKhVkh8K3YMiqgOxOA6JTYsJgvzOfW630a+KUq2YCjEp9XZp5H7VG9GEa0v/XHoqEdb0JBdKRE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=FVCmEIyR; arc=fail smtp.client-ip=52.103.64.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yeu233rtuTsErKmcYLD1bb7iAerQwZUa9RRWaEc4nbRs0INn0JNMCTEqjgSYtluyWfKipRqEu2jpU3iD/FR2IF9815iVC7ZbwFn4queGsKbcMrhqlYDQVmr+R7OM81QmL8lOK5Y2nZvObTdFvhyB9/egyYcIO7NgY25Grq5k1kolpLOowhT2BJm7SmyD2/VN6UAt/+EFkPQbivnDLlpSxnY8R+LaCVTTOFdOosFP4QqcosU1nOSuKJOCETTcKd3+J6DrQA1VBKKxRe+wd5ZDx20LwPy7pU6yU85+R4qdT/ZWFBbr9EAf6rhtxwO1vmmh24wB6o2JmHZUWD/CVv9ntQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UnCUrCoZ3q+Jdf9dl74fJrrrB9YjpaCRF9qs5m///LE=;
- b=y4Cpw6oNCouP89ZKnPcGCjkdUaB1/qzSgnUYutIybiBCWk2ZhYd6rha5BU0LhPJ2fBGv4N+MNfV7YROYHRd2AHpHV4hLRnuRVJVmvkePq9+dF8MmSG0k8ldnp+Oty8V9HlhnpyVJ9SWOQ3VrEjGKEZg1zjW30S9WVD+6zAmE6dGpFNYgamLmVtVt34gtJBNg7s5nMFdJVi0CMBo4v8fAGk4xehPqerDEDU2Jtga+nbGA8ydxWci6QakYN2UdiYIloC7RDwLiMUeu9z3be52RN/Qy+rypIrzi5PojC1BPOnyMmOqUYD6qoeCuBBwFIwWVyeUvQOi3mzTIXPn/7ooBPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UnCUrCoZ3q+Jdf9dl74fJrrrB9YjpaCRF9qs5m///LE=;
- b=FVCmEIyRaG4SNGOV7OPgsEcqUfUHMhACChQA198DunllfF9xgqpgxX2iapdIXxiTtVsLq2te5tR66Qu+oLqOKqW8xdvkXZ+khVqRhcy3PJxLAU5HwzELTbz55ihdzNSkHHSzJW9a/+w2xdQgLGZ8BmW35fKiqneBFIjQzwLF8qcczgiPWm3IDw2C76L2/aAG4J090PT3bfmnTFBHl/iZqygjio9hlRa6KEA92okG+UdUErxpUDT8bDDqulgjawtaoc+1mUqaiMHAWO259OKNQF14MqpvKK8eE1zkrnEMvrEQnXxQQpsNS41Gi5TLpeAENtzcdR4djRx6cw17DG4FpA==
-Received: from SI2PR04MB5427.apcprd04.prod.outlook.com (2603:1096:4:16c::10)
- by TYZPR04MB6134.apcprd04.prod.outlook.com (2603:1096:400:25c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.17; Mon, 17 Feb
- 2025 10:15:04 +0000
-Received: from SI2PR04MB5427.apcprd04.prod.outlook.com
- ([fe80::8c1d:10bc:29f7:134]) by SI2PR04MB5427.apcprd04.prod.outlook.com
- ([fe80::8c1d:10bc:29f7:134%6]) with mapi id 15.20.8445.017; Mon, 17 Feb 2025
- 10:15:03 +0000
-Message-ID:
- <SI2PR04MB5427A718B9E5C8B329636667FAFB2@SI2PR04MB5427.apcprd04.prod.outlook.com>
-Date: Mon, 17 Feb 2025 20:14:58 +1000
-User-Agent: Mozilla Thunderbird
-To: linux-btrfs@vger.kernel.org
-Content-Language: en-AU
-From: Noj Unk <noj.unk@hotmail.com>
-Subject: can't delete file can't repair backpointer mismatch
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SY5P282CA0098.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:204::10) To SI2PR04MB5427.apcprd04.prod.outlook.com
- (2603:1096:4:16c::10)
-X-Microsoft-Original-Message-ID:
- <312598fa-a0d6-4490-b359-d64aaf6642a3@hotmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F627218E85;
+	Mon, 17 Feb 2025 12:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739795936; cv=none; b=pDYCS0ya6uVxa916Vo1XVaI+CMl2huP86jQRl+HlhPyOl7BQdMLjaSMTtO4FTPFQBH/7YxQez0nzrLJSX+KwcXx+mtA8+YKTPd2dPoW8s2k0HMhQeu84MVXTETIbLI1qLd9vuPVSRJ37RiIJ4bwy2WDPgnKS4i6XKRT/iNdfMC0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739795936; c=relaxed/simple;
+	bh=jtBh+0XSHsZRj0wRyLE3pJ+jqzyYvfhHbJnuhElAk/8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eKPc86+aSc3P9VLQRt5j2AlrcTTVJCifvm/7TCoYQxWuxutfT6EbYGfSfVVbseNpgRv+vLXwg+WicObMuSPZolpc7hiSRnHcFAMx1OXfSXVHpeyIY4ezmIdT1cPWq1rzdtbgP3qEb0b3fuM/t0QfuGPNTNS5PmFZ/g3IFmCePQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4YxMYZ2qlTz1wn6x;
+	Mon, 17 Feb 2025 20:34:58 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 505561A0188;
+	Mon, 17 Feb 2025 20:38:51 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 17 Feb 2025 20:38:50 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shameer
+ Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian
+	<kevin.tian@intel.com>, Alex Williamson <alex.williamson@redhat.com>, Chris
+ Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
+	<dsterba@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep
+ Dhavale <dhavale@google.com>, Carlos Maiolino <cem@kernel.org>, "Darrick J.
+ Wong" <djwong@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Trond Myklebust
+	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever
+	<chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
+	<neilb@suse.de>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
+CC: Yunsheng Lin <linyunsheng@huawei.com>, Luiz Capitulino
+	<luizcap@redhat.com>, Mel Gorman <mgorman@techsingularity.net>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+	<linux-erofs@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
+	<linux-mm@kvack.org>, <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
+Subject: [RFC] mm: alloc_pages_bulk: remove assumption of populating only NULL elements
+Date: Mon, 17 Feb 2025 20:31:23 +0800
+Message-ID: <20250217123127.3674033-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SI2PR04MB5427:EE_|TYZPR04MB6134:EE_
-X-MS-Office365-Filtering-Correlation-Id: d2d4be92-0a42-4f53-6c9a-08dd4f3bf0f8
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|7072599006|19110799003|8060799006|13031999003|461199028|5072599009|6090799003|15080799006|41001999003|12091999003|19111999003|440099028|3412199025|3430499032;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ZlBJdXlhMm0xcHh3cWlDdG9kdjNQd0V5eURmaVJiaG1VbGtJaGtxMU1LSDJt?=
- =?utf-8?B?MkJvdGRiQjQwTUwxRGJJUit5U1lXUHpWMCttNUF2anlrbE9VekxUYU5DSGZD?=
- =?utf-8?B?UTJldkFIZDRvZlJVQXlYTUdLOUpYeEtCb0ZMY0YyaEx6cWduZi9ZaGlJenRD?=
- =?utf-8?B?UHZSMTM2eFpoRXhhdHpHYW1sNGpuZjc3MllsS2p1NFZlZ2VXckhuMmNURitL?=
- =?utf-8?B?NHJ3NkJlMyttWGNLU1hkb0tlSE0waURUWDNpNlNiOTM5ZHlFUndTSGRwTStL?=
- =?utf-8?B?R0xVeEpveUQ0Zjk1T1BER0pLbHh6TGhhcnR0Ti9VUnplTUVSTmlUdXBhNUl1?=
- =?utf-8?B?QmpmZVJJdzBIS1AwYmFQRWY0YytxVW9LYTZrMVp1Rm1KZWU4NHh4UERVbzFp?=
- =?utf-8?B?eUJkRjRVRWp0U1ViTHJwVjNROHRJMzJBcVpnRUxtenhraFVWblFXdUovSzZt?=
- =?utf-8?B?ckphTkJJRjIyeHlxT3B0Z0h6VUovSjZEWGdwYmhVcWg4elZGaUFHenhBSlFw?=
- =?utf-8?B?Qkc5azAvbUw1WVY0QjY4dEJScmV4QWlsbllpL0RPajJLSGZ0SXpBNjRVVWd0?=
- =?utf-8?B?eFEzZ211TnluSkdVOTJlU2hjMzV1cm1oYVhkWm9NcktFdHVRaWhuTG5VMEFX?=
- =?utf-8?B?TG1tTTE3SXlIMkduOWV3UVhFcnlWY2R6OG5nRjdlSS9FMmZuNmswbzdyTkJG?=
- =?utf-8?B?clpaVVJQTStpV21EbjI5RmQ5WjErN1NTRlF6Y1dRUFNxZGt6OTU3UUFuNTBB?=
- =?utf-8?B?bzRGWmp1bGgxc1NrRFpsakJVT0RBQTZCREMwN055eW00NlNHdGVYamtHenp6?=
- =?utf-8?B?R0Zsd2I1RGVaVXZPcE41dVVuYUJXSEl2Z2xsdlk3aU1VNlN3aTFqeWN6azNm?=
- =?utf-8?B?bE1hMCtFUGpWWXRqdXViUkdUdG5HZDRyWFdCeUxaMU5veUFxc2FMbTZIb0h4?=
- =?utf-8?B?QU5FNHNHRmxWODF0bmpCTG9MS1JEN0ppOVZNbjZTeFkvNC9QcGozOHZ1a1Jv?=
- =?utf-8?B?N1JWTVg1OHVhczVMVkd6eW5RbVBUMWxQU1lwdWprYmdGc0dSQ3luUVpvTkN6?=
- =?utf-8?B?a0hIazRrSFBCdENOMlZKcDFYMVJHdCtQY2dFWlNST0VMMzR2YkJZdEJvLzdp?=
- =?utf-8?B?ZE1zOXVkWFc4VFg0dWFCNFVBUStvdnBlN2krR2FBREhVMS9OR0hqSWkwM21G?=
- =?utf-8?B?YkNuN1ZFdHFWT2lwdVBHbSsxc29WMllWTW5mYUlYZC9acllHclZhMDZVeEVh?=
- =?utf-8?B?MEplSWZMZXQ4RlR3ZUUyN3lNMFVlbTRnMzU2ZElXNWpIRDVqU0llVXBXdDgr?=
- =?utf-8?B?MUZSSk5rUjRwdTdqTFUxUFh6T2toVU53TklFa2l4eVBORCtQWXFGOWdUYWZ5?=
- =?utf-8?B?RTRNNUlKVExoZ0lZbm1MaThxVEpSbWs5ZmNtbUVIWjczZ0ZnanpNejJVeVlm?=
- =?utf-8?B?WitrWlN1dDdWK1pqdEd0dEMrU3FzaWk4cFIzYjdPZ042SlZhWGVLRzFLOTNX?=
- =?utf-8?B?NEdmcWxGOGVidzJjeTJPOU00NnpvVGtyS3kya2NnMmw5aWVZaURiMXE2M1ND?=
- =?utf-8?B?Y0dJaTZxMktUSktrRHdlSFk1aDVyMTgvUXVmNWx2QUJMS29tUlBUV2RxcjYv?=
- =?utf-8?Q?XFhaA+JdIuMyjtnwuowpP9rEO5jKD+yKwhDmkYG0FPyA=3D?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QTZLU0xSQ0RUZGpvUmV6U1lpZWhXRW8yUFRTWmNNWDFPZFFEL3B3YTdyZm02?=
- =?utf-8?B?b1JDZ3FmRUsrMldoRFA3bEJOMVY5S2JNVTVhcHBHVDVZTklpVWlFTUw0RDBk?=
- =?utf-8?B?dGYzZXFWM0czUkpjK0V2WUludHFvZjNRMVpyZUFwM0FoYjdsVkpsT0VRZElm?=
- =?utf-8?B?K1IvK1JvdkJMT3VZUUtBNThFNlNLQk1LdlYzMldoc1ZtTmMzTWZoREsycnNY?=
- =?utf-8?B?SjVPT3MzWTB2SU1SZVRNeU1ha0x6eUZJNTFvbUVUdDRZbTFHSkFDTk5TKzNO?=
- =?utf-8?B?cHptNnd0Zjc0S0tvUkYwd2x6TmM0cDhwUktDbnJGMFlrc0gwN0dpeU4xaUE4?=
- =?utf-8?B?K1FZSWQzYWNPZ2JqbDFISmlaellsUGJoV0J2Q28xM2RMRmN6bG9lcW9QQk1Z?=
- =?utf-8?B?N0ZleEtTdi9WS29DRUVrTFRnelVFR1psWkR0WUgzTUxvaHB0MTFnWmhLeTc3?=
- =?utf-8?B?dUFmdDhPNGZkdW82T25FalFhbHRIU0s4dVlmalB0VE5kMXRLY3VuZnF2K3Bq?=
- =?utf-8?B?MUt6WDhvYXJFQWRGZnd0ekdHTDZOWENJcWJwekxvNzhiMEJUSFRBQ1JEM2d1?=
- =?utf-8?B?clpudXZpQ3dCR0hiRXVhcTB6YzlFYVNhZ05NdmdtbXlIVEFhK3RLYmg5RGxh?=
- =?utf-8?B?bGswbmFNVTAxZVV5cWFwUVI2Y1oraWlwSUtrV3dCUVY5bEFUK0RhdXNLcUpx?=
- =?utf-8?B?bkp0NEJ1NmxuZVhNMmM0VVNLVEc3c2pEbG1CY3krckYxY3IwTkJHelBKQXox?=
- =?utf-8?B?VXhxK0NwODhQRlRLczZqcUNudXdnOGpVeUVTSG5JVEVITnZ1MzJSUVh6UGRw?=
- =?utf-8?B?QWhhaEVWZ05ubktpYmt0ZjlrZU5wdk52MHg3NXFSd2hEK0lubjFXOVhWZ1d0?=
- =?utf-8?B?UytxTXJFQWJlejRUMGVESy91Z2lmc1VzZGNnLzl1OXM1dk1FYkl5dzFVMy84?=
- =?utf-8?B?MGovQ2lzNVpWRWJRTmZqdWMwNFgwYkR4YzZUWDdyVVlDMmU4ejMvUW1DV2tS?=
- =?utf-8?B?cXBEayt3ZmxvcVJJbSsrVWxzaStuWkNKbDMxWm4rcXRmMXlwdkUyMUZGdm9H?=
- =?utf-8?B?VjB5WkN0STk3U1FlMjNjOFhwbXY3TmRoOXpocWkveTVwWmw1UUVaUjlGNGxy?=
- =?utf-8?B?bTgzd1YrZVhLN3dOei9uVU9XUVhVTzFZQW9qcHBIS1VRME5HY0R6eDFSeUpX?=
- =?utf-8?B?cE1ITHYzY2FOdVkrQ05XazFhMG9Jcm1Cd2lqbEFuc3dSNGZ5OWQ0QkQ4L3A5?=
- =?utf-8?B?Wk9CR2xjUXJBWmRTYkRtQjd3VG1mTk5PUisycFU4SVBERzNFL1RFc1dJTG1n?=
- =?utf-8?B?am1OemUxMzVnbkVTcnJxRldSRU9iM0d1ZmRBeW01WjZVN3NCdzFRcmVPTkZZ?=
- =?utf-8?B?R05HREhOdlpDQWx3dDZ1RGNQWURBeW1vNzRyZHl3b0cvcXJRTkZTQ3JLL1Q2?=
- =?utf-8?B?cFZKV1BQUXBnMmlzd1pEb1F2QzZmYWszc3lRQ3NZVzNEbllRclRGeEZBbkY3?=
- =?utf-8?B?dUlIR2RCcFBFVEZvTTdaVnJSK2FCZ0hkSW9JcGhJalBlbHF2TERyZHlBcEU4?=
- =?utf-8?B?bnVmYjBDd1ZiS1dhM1hNczdaZkFzTVhETWFVcXBpV0tmSzJpWmhab3hYYUpE?=
- =?utf-8?Q?jJqMVmrUbkQqEz90Y0MCak5aZkNuh8XNkEerJdIAuF/Q=3D?=
-X-OriginatorOrg: sct-15-20-7719-19-msonline-outlook-4bae0.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2d4be92-0a42-4f53-6c9a-08dd4f3bf0f8
-X-MS-Exchange-CrossTenant-AuthSource: SI2PR04MB5427.apcprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2025 10:15:03.4718
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB6134
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-I can't delete a redundant file on a dedicated subvolume.
-I just want to get rid of it but nothing works.
+As mentioned in [1], it seems odd to check NULL elements in
+the middle of page bulk allocating, and it seems caller can
+do a better job of bulk allocating pages into a whole array
+sequentially without checking NULL elements first before
+doing the page bulk allocation.
 
-I have check --repaired and it fails
-backpointer mismatch on [4611686114528817152 7913472]
-failed to repair damaged filesystem, aborting
+Remove the above checking also enable the caller to not
+zero the array before calling the page bulk allocating API,
+which has about 1~2 ns performance improvement for the test
+case of time_bench_page_pool03_slow() for page_pool in a
+x86 vm system, this reduces some performance impact of
+fixing the DMA API misuse problem in [2], performance
+improves from 87.886 ns to 86.429 ns.
 
-If I try to remove the file, it goes to ro fs which is a problem as this 
-is the boot/root fs
+1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
+2. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
+CC: Jesper Dangaard Brouer <hawk@kernel.org>
+CC: Luiz Capitulino <luizcap@redhat.com>
+CC: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ drivers/vfio/pci/virtio/migrate.c |  2 --
+ fs/btrfs/extent_io.c              |  8 +++++---
+ fs/erofs/zutil.c                  | 12 ++++++------
+ fs/xfs/xfs_buf.c                  |  9 +++++----
+ mm/page_alloc.c                   | 32 +++++--------------------------
+ net/core/page_pool.c              |  3 ---
+ net/sunrpc/svc_xprt.c             |  9 +++++----
+ 7 files changed, 26 insertions(+), 49 deletions(-)
 
-This is a boot disk so I need all the partitions intact
-
-So what's next?
-
-
-
-
-Linux pmhost 6.8.12-8-pve #1 SMP PREEMPT_DYNAMIC PMX 6.8.12-8 
-(2025-01-24T12:32Z) x86_64 GNU/Linux
-btrfs-progs v6.12
--EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED 
-CRYPTO=builtin
-Label: none  uuid: 5b4a836b-b294-403f-b8ca-e9b4ae74f9b0
-         Total devices 2 FS bytes used 707.40GiB
-         devid    1 size 1.82TiB used 772.03GiB path /dev/nvme2n1p3
-         devid    2 size 1.82TiB used 772.03GiB path /dev/nvme1n1p3
-
-btrfs fi df /
-Data, RAID1: total=769.00GiB, used=706.26GiB
-System, RAID1: total=32.00MiB, used=128.00KiB
-Metadata, RAID1: total=3.00GiB, used=1.14GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-
-dmesg | grep -i btrfs
-[    2.463481] Btrfs loaded, zoned=yes, fsverity=yes
-[    2.743677] BTRFS: device fsid 5b4a836b-b294-403f-b8ca-e9b4ae74f9b0 
-devid 2 transid 918882 /dev/nvme1n1p3 scanned by btrfs (364)
-[    2.743836] BTRFS: device fsid 5b4a836b-b294-403f-b8ca-e9b4ae74f9b0 
-devid 1 transid 918882 /dev/nvme2n1p3 scanned by btrfs (364)
-[    2.967362] BTRFS info (device nvme2n1p3): first mount of filesystem 
-5b4a836b-b294-403f-b8ca-e9b4ae74f9b0
-[    2.967373] BTRFS info (device nvme2n1p3): using crc32c 
-(crc32c-intel) checksum algorithm
-[    2.967378] BTRFS info (device nvme2n1p3): using free-space-tree
-[    3.292211] BTRFS info (device nvme2n1p3: state M): use lzo 
-compression, level 0
-
-
-btrfs check /dev/nvme2n1p3
-Opening filesystem to check...
-Checking filesystem on /dev/nvme2n1p3
-UUID: 5b4a836b-b294-403f-b8ca-e9b4ae74f9b0
-[1/8] checking log skipped (none written)
-[2/8] checking root items
-[3/8] checking extents
-ref mismatch on [4611686114528817152 7913472] extent item 0, found 1
-data extent[4611686114528817152, 7913472] referencer count mismatch 
-(root 257 owner 260 offset 6476423168) wanted 0 have 1
-backpointer mismatch on [4611686114528817152 7913472]
-ref mismatch on [4611686303539806208 16384] extent item 0, found 1
-data extent[4611686303539806208, 16384] referencer count mismatch (root 
-257 owner 260 offset 7891369984) wanted 0 have 1
-backpointer mismatch on [4611686303539806208 16384]
-ERROR: errors found in extent allocation tree or chunk allocation
-[4/8] checking free space tree
-there is no free space entry for 285112418304-285112434688
-cache appears valid but isn't 284605546496
-[5/8] checking fs roots
-[6/8] checking only csums items (without verifying data)
-[7/8] checking root refs
-[8/8] checking quota groups skipped (not enabled on this FS)
-found 189159010304 bytes used, error(s) found
-total csum bytes: 25894732
-total tree bytes: 589955072
-total fs tree bytes: 290979840
-total extent tree bytes: 257638400
-btree space waste bytes: 125718761
-file data blocks allocated: 965966151680
-  referenced 173047226368
-
-btrfs check --repair /dev/nvme2n1p3
-enabling repair mode
-WARNING:
-
-         Do not use --repair unless you are advised to do so by a developer
-         or an experienced user, and then only after having accepted that no
-         fsck can successfully repair all types of filesystem 
-corruption. E.g.
-         some software or hardware bugs can fatally damage a volume.
-         The operation will start in 10 seconds.
-         Use Ctrl-C to stop it.
-10 9 8 7 6 5 4 3 2 1
-Starting repair.
-Opening filesystem to check...
-Checking filesystem on /dev/nvme2n1p3
-UUID: 5b4a836b-b294-403f-b8ca-e9b4ae74f9b0
-[1/8] checking log skipped (none written)
-[2/8] checking root items
-Fixed 0 roots.
-[3/8] checking extents
-ref mismatch on [4611686114528817152 7913472] extent item 0, found 1
-data extent[4611686114528817152, 7913472] referencer count mismatch 
-(root 257 owner 260 offset 6476423168) wanted 0 have 1
-backpointer mismatch on [4611686114528817152 7913472]
-failed to repair damaged filesystem, aborting
-
-
-btrfs ins log -o $((0x1660245000)) /
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
-inode 260 subvol var/lib/pve/local-btrfs/images/101/broken/vm-101-disk-0 
-could not be accessed: not mounted
+diff --git a/drivers/vfio/pci/virtio/migrate.c b/drivers/vfio/pci/virtio/migrate.c
+index ba92bb4e9af9..9f003a237dec 100644
+--- a/drivers/vfio/pci/virtio/migrate.c
++++ b/drivers/vfio/pci/virtio/migrate.c
+@@ -91,8 +91,6 @@ static int virtiovf_add_migration_pages(struct virtiovf_data_buffer *buf,
+ 		if (ret)
+ 			goto err_append;
+ 		buf->allocated_length += filled * PAGE_SIZE;
+-		/* clean input for another bulk allocation */
+-		memset(page_list, 0, filled * sizeof(*page_list));
+ 		to_fill = min_t(unsigned int, to_alloc,
+ 				PAGE_SIZE / sizeof(*page_list));
+ 	} while (to_alloc > 0);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index b2fae67f8fa3..d0466d795cca 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -626,10 +626,12 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+ 	unsigned int allocated;
+ 
+ 	for (allocated = 0; allocated < nr_pages;) {
+-		unsigned int last = allocated;
++		unsigned int new_allocated;
+ 
+-		allocated = alloc_pages_bulk(gfp, nr_pages, page_array);
+-		if (unlikely(allocated == last)) {
++		new_allocated = alloc_pages_bulk(gfp, nr_pages - allocated,
++						 page_array + allocated);
++		allocated += new_allocated;
++		if (unlikely(!new_allocated)) {
+ 			/* No progress, fail and do cleanup. */
+ 			for (int i = 0; i < allocated; i++) {
+ 				__free_page(page_array[i]);
+diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
+index 55ff2ab5128e..1c50b5e27371 100644
+--- a/fs/erofs/zutil.c
++++ b/fs/erofs/zutil.c
+@@ -85,13 +85,13 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
+ 
+ 		for (j = 0; j < gbuf->nrpages; ++j)
+ 			tmp_pages[j] = gbuf->pages[j];
+-		do {
+-			last = j;
+-			j = alloc_pages_bulk(GFP_KERNEL, nrpages,
+-					     tmp_pages);
+-			if (last == j)
++
++		for (last = j; last < nrpages; last += j) {
++			j = alloc_pages_bulk(GFP_KERNEL, nrpages - last,
++					     tmp_pages + last);
++			if (!j)
+ 				goto out;
+-		} while (j != nrpages);
++		}
+ 
+ 		ptr = vmap(tmp_pages, nrpages, VM_MAP, PAGE_KERNEL);
+ 		if (!ptr)
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index 15bb790359f8..9e1ce0ab9c35 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -377,16 +377,17 @@ xfs_buf_alloc_pages(
+ 	 * least one extra page.
+ 	 */
+ 	for (;;) {
+-		long	last = filled;
++		long	alloc;
+ 
+-		filled = alloc_pages_bulk(gfp_mask, bp->b_page_count,
+-					  bp->b_pages);
++		alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - refill,
++					 bp->b_pages + refill);
++		refill += alloc;
+ 		if (filled == bp->b_page_count) {
+ 			XFS_STATS_INC(bp->b_mount, xb_page_found);
+ 			break;
+ 		}
+ 
+-		if (filled != last)
++		if (alloc)
+ 			continue;
+ 
+ 		if (flags & XBF_READ_AHEAD) {
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 579789600a3c..e0309532b6c4 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4541,9 +4541,6 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+  * This is a batched version of the page allocator that attempts to
+  * allocate nr_pages quickly. Pages are added to the page_array.
+  *
+- * Note that only NULL elements are populated with pages and nr_pages
+- * is the maximum number of pages that will be stored in the array.
+- *
+  * Returns the number of pages in the array.
+  */
+ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+@@ -4559,29 +4556,18 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+ 	struct alloc_context ac;
+ 	gfp_t alloc_gfp;
+ 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+-	int nr_populated = 0, nr_account = 0;
+-
+-	/*
+-	 * Skip populated array elements to determine if any pages need
+-	 * to be allocated before disabling IRQs.
+-	 */
+-	while (nr_populated < nr_pages && page_array[nr_populated])
+-		nr_populated++;
++	int nr_populated = 0;
+ 
+ 	/* No pages requested? */
+ 	if (unlikely(nr_pages <= 0))
+ 		goto out;
+ 
+-	/* Already populated array? */
+-	if (unlikely(nr_pages - nr_populated == 0))
+-		goto out;
+-
+ 	/* Bulk allocator does not support memcg accounting. */
+ 	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT))
+ 		goto failed;
+ 
+ 	/* Use the single page allocator for one page. */
+-	if (nr_pages - nr_populated == 1)
++	if (nr_pages == 1)
+ 		goto failed;
+ 
+ #ifdef CONFIG_PAGE_OWNER
+@@ -4653,24 +4639,16 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+ 	/* Attempt the batch allocation */
+ 	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
+ 	while (nr_populated < nr_pages) {
+-
+-		/* Skip existing pages */
+-		if (page_array[nr_populated]) {
+-			nr_populated++;
+-			continue;
+-		}
+-
+ 		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+ 								pcp, pcp_list);
+ 		if (unlikely(!page)) {
+ 			/* Try and allocate at least one page */
+-			if (!nr_account) {
++			if (!nr_populated) {
+ 				pcp_spin_unlock(pcp);
+ 				goto failed_irq;
+ 			}
+ 			break;
+ 		}
+-		nr_account++;
+ 
+ 		prep_new_page(page, 0, gfp, 0);
+ 		set_page_refcounted(page);
+@@ -4680,8 +4658,8 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+ 	pcp_spin_unlock(pcp);
+ 	pcp_trylock_finish(UP_flags);
+ 
+-	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+-	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_account);
++	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_populated);
++	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_populated);
+ 
+ out:
+ 	return nr_populated;
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index f5e908c9e7ad..ae9e8c78e4bb 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -536,9 +536,6 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
+ 	if (unlikely(pool->alloc.count > 0))
+ 		return pool->alloc.cache[--pool->alloc.count];
+ 
+-	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk */
+-	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
+-
+ 	nr_pages = alloc_pages_bulk_node(gfp, pool->p.nid, bulk,
+ 					 (struct page **)pool->alloc.cache);
+ 	if (unlikely(!nr_pages))
+diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+index ae25405d8bd2..6321a4d2f2be 100644
+--- a/net/sunrpc/svc_xprt.c
++++ b/net/sunrpc/svc_xprt.c
+@@ -663,9 +663,10 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
+ 		pages = RPCSVC_MAXPAGES;
+ 	}
+ 
+-	for (filled = 0; filled < pages; filled = ret) {
+-		ret = alloc_pages_bulk(GFP_KERNEL, pages, rqstp->rq_pages);
+-		if (ret > filled)
++	for (filled = 0; filled < pages; filled += ret) {
++		ret = alloc_pages_bulk(GFP_KERNEL, pages - filled,
++				       rqstp->rq_pages + filled);
++		if (ret)
+ 			/* Made progress, don't sleep yet */
+ 			continue;
+ 
+@@ -674,7 +675,7 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
+ 			set_current_state(TASK_RUNNING);
+ 			return false;
+ 		}
+-		trace_svc_alloc_arg_err(pages, ret);
++		trace_svc_alloc_arg_err(pages, filled);
+ 		memalloc_retry_wait(GFP_KERNEL);
+ 	}
+ 	rqstp->rq_page_end = &rqstp->rq_pages[pages];
+-- 
+2.33.0
 
 
