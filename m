@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-11501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11502-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42335A379CC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 03:38:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1F80A379CD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 03:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33F8C7A29E1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 02:37:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 172787A2D9D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2025 02:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B53F154C12;
-	Mon, 17 Feb 2025 02:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469471862BB;
+	Mon, 17 Feb 2025 02:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="D93cUbz1"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="afC+3QXg"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA3F15666D
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 02:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363ED1632D7
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2025 02:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739759879; cv=none; b=mSH0GloLbC/I3EkFcI155Y1t4Q2HXr64idZQCJEWU1c+0Yl9+ghoupZzVqvJSOzZxdPOZhgzeQkCGauH5lfUsdWEmKCeGahW6egmFoEIrZTkDrC9jhBLoTO1kYfKanyiUK7fNQajaQXTpmlr9QKeD58/D2f+1V6dezo+aOQ+5cU=
+	t=1739759880; cv=none; b=a15iOH6j/6PdKpttLf4bhqxEwN8B00lPZjizbc7RyjfpsQAlybajGsKy/gGGxFBGAHZZzBaJTAuNdJaEAaOzrCgd6Ngzcp62BN3MrWi3gdZfJlF//skYtru5sZ+DyqtyukvVWsYziwUrvnvnn5vU5G6AilPy8XX7k8xJT1IF8Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739759879; c=relaxed/simple;
-	bh=O27OusdYNhsgxH74Swmaccj4rSCsOhnr5NYlFVkGR8s=;
+	s=arc-20240116; t=1739759880; c=relaxed/simple;
+	bh=b+yGm9FvXIHtDZI9mURLWLDlVxw1yY58rwvu/aAEMpk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oe3f+feTX0anv5UFUXsQzgHrP4rME8/iftDEBassS5Eu3Z5FyLmur1jVa1AaXIGNALZYlB9i9tq/oNZWYsEUUOmsZujZ5KkKa4ZQlVa4ds3M4UZgfabVR90U96nD3AU8p2kirfxVzemcLQqOLpKWwaNGjB4FIKaKxtAbFt6ctA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=D93cUbz1; arc=none smtp.client-ip=68.232.141.245
+	 MIME-Version; b=jgSWC4Hnwde2rNypzap/zlxOmyfNQIea5EBSExcars/MiYmbidGipeGx0Haj9GPxcNe+PZic3Z87YBY4Rv/tmWst+6lo9uxKzMiXW4P6Eieetd5MdEdwg23v+zkwJDhcx8k7tXohrv7OYxjqTQezWehz0BToM6PBsSdpJ9a4eCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=afC+3QXg; arc=none smtp.client-ip=68.232.141.245
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1739759878; x=1771295878;
+  t=1739759879; x=1771295879;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=O27OusdYNhsgxH74Swmaccj4rSCsOhnr5NYlFVkGR8s=;
-  b=D93cUbz1G+9RWKh6N97ej3lRkgYe6NIaovejnG6p6WZ1/CvaYMY2/+Sv
-   o2E/75W4PcXaYSrfulESpLed/dHEJ0yLhbrIIK9zBqqq/ln3jgrg8B5zS
-   cUPnbF6EhsW8jfe5ZJxMvBeSfv8Ry/QUwxmKkLPYOrM2vadH5I0LzYOIR
-   1nZieinAQscqKIKdbAjuogG7zSET6hue6tSF0Sd3Jce4+INBxmmUM3eiW
-   Mu4mEMMYq5B4Q4jpagh5ijMnz8sGvd8dno/nTMhQPeXnE7PSOfztelmWu
-   xJ94TTcUgheH1/AEBQjga7pKszgO2NPRPyn6H9HGQVuqE6StYAOGqdnhx
-   Q==;
-X-CSE-ConnectionGUID: PMTVCDNqSD+XAMoDRH25QQ==
-X-CSE-MsgGUID: KByaIgELSouKsR71IO4gvA==
+  bh=b+yGm9FvXIHtDZI9mURLWLDlVxw1yY58rwvu/aAEMpk=;
+  b=afC+3QXgTuVMhR7+MUXsgBOTTWObe5bR2pAr0TxdY14moj6QsMd350mZ
+   zSLPdyGy0048NRVJ5puEK8CwnkAxhk3PFXAps5YzDpHmV1OzZRzfXSrUr
+   E7xfGoFtSQw5hMZA32MrEi7j8CXrBjcvUbOb+79Vjvnlh4JjPVpAOeuYW
+   baWxk0rsXz4mNsetzf5Td8+9c8BG1LFvS0/V/N+M+YfCTxxg3gQuRrrj9
+   TtoGApCmlF+tsnuEDP9k9MkYU/f+FgXIwP2R4oo5/DSh8iGn/HDWI+18K
+   OtCXo3gplxCjlDtoyi1zhr8mb29ALulxs4cHhBQaQndt3NJLo4+37RyhY
+   A==;
+X-CSE-ConnectionGUID: S8854YCrR3eBuuEpa5TVHA==
+X-CSE-MsgGUID: 9Z5zvQvoRMynatgeq6nCBg==
 X-IronPort-AV: E=Sophos;i="6.13,291,1732550400"; 
-   d="scan'208";a="39877184"
+   d="scan'208";a="39877186"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Feb 2025 10:37:55 +0800
-IronPort-SDR: 67b2934c_RkR+3/ylI/l09Unp0vmTJYIEDV9ZkI82xpY4f3pD6GkTJFF
- ghiXrntSA7mg+X+GElHVVqZZsw+u9e2Q/h49kjQ==
+  by ob1.hgst.iphmx.com with ESMTP; 17 Feb 2025 10:37:56 +0800
+IronPort-SDR: 67b2934c_YijFnOw3mgE9ougtYG7W216Tz918ub5+gvjdQ+kBi3Zxh6R
+ bgzwmP/B3MLs9qDfPmn4Itc2uOLPd93rywjGH3g==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Feb 2025 17:39:24 -0800
 WDCIronportException: Internal
 Received: from 5cg2075f7l.ad.shared (HELO naota-xeon..) ([10.224.109.184])
-  by uls-op-cesaip02.wdc.com with ESMTP; 16 Feb 2025 18:37:55 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 16 Feb 2025 18:37:56 -0800
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 10/12] btrfs-progs: zoned: implement RAID0 zone info loading
-Date: Mon, 17 Feb 2025 11:37:40 +0900
-Message-ID: <fe79f2b06ad39bcec83f78ed7217b421d87b0370.1739756953.git.naohiro.aota@wdc.com>
+Subject: [PATCH 11/12] btrfs-progs: implement RAID10 zone info loading
+Date: Mon, 17 Feb 2025 11:37:41 +0900
+Message-ID: <4e9ffca4b694c1e16a2b30b153e1de490058a601.1739756953.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1739756953.git.naohiro.aota@wdc.com>
 References: <cover.1739756953.git.naohiro.aota@wdc.com>
@@ -74,26 +74,26 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement it just like the kernel side.
+Just same as the kernel side.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- kernel-shared/zoned.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ kernel-shared/zoned.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-index e1cb57d938c5..66d76427d216 100644
+index 66d76427d216..484bade1d2ed 100644
 --- a/kernel-shared/zoned.c
 +++ b/kernel-shared/zoned.c
-@@ -1062,6 +1062,36 @@ static int btrfs_load_block_group_raid1(struct btrfs_fs_info *fs_info,
+@@ -1092,6 +1092,39 @@ static int btrfs_load_block_group_raid0(struct btrfs_fs_info *fs_info,
  	return 0;
  }
  
-+static int btrfs_load_block_group_raid0(struct btrfs_fs_info *fs_info,
-+					struct btrfs_block_group *bg,
-+					struct map_lookup *map,
-+					struct zone_info *zone_info,
-+					unsigned long *active)
++static int btrfs_load_block_group_raid10(struct btrfs_fs_info *fs_info,
++					 struct btrfs_block_group *bg,
++					 struct map_lookup *map,
++					 struct zone_info *zone_info,
++					 unsigned long *active)
 +{
 +	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
 +		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
@@ -112,8 +112,11 @@ index e1cb57d938c5..66d76427d216 100644
 +			if (test_bit(0, active))
 +				bg->zone_is_active = 1;
 +		}
-+		bg->zone_capacity += zone_info[i].capacity;
-+		bg->alloc_offset += zone_info[i].alloc_offset;
++
++		if ((i % map->sub_stripes) == 0) {
++			bg->zone_capacity += zone_info[i].capacity;
++			bg->alloc_offset += zone_info[i].alloc_offset;
++		}
 +	}
 +
 +	return 0;
@@ -122,12 +125,12 @@ index e1cb57d938c5..66d76427d216 100644
  int btrfs_load_block_group_zone_info(struct btrfs_fs_info *fs_info,
  				     struct btrfs_block_group *cache)
  {
-@@ -1158,6 +1188,9 @@ int btrfs_load_block_group_zone_info(struct btrfs_fs_info *fs_info,
- 	case BTRFS_BLOCK_GROUP_RAID1C4:
- 		ret = btrfs_load_block_group_raid1(fs_info, cache, map, zone_info, active);
+@@ -1191,6 +1224,9 @@ int btrfs_load_block_group_zone_info(struct btrfs_fs_info *fs_info,
+ 	case BTRFS_BLOCK_GROUP_RAID0:
+ 		ret = btrfs_load_block_group_raid0(fs_info, cache, map, zone_info, active);
  		break;
-+	case BTRFS_BLOCK_GROUP_RAID0:
-+		ret = btrfs_load_block_group_raid0(fs_info, cache, map, zone_info, active);
++	case BTRFS_BLOCK_GROUP_RAID10:
++		ret = btrfs_load_block_group_raid10(fs_info, cache, map, zone_info, active);
 +		break;
  	case BTRFS_BLOCK_GROUP_RAID5:
  	case BTRFS_BLOCK_GROUP_RAID6:
