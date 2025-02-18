@@ -1,94 +1,161 @@
-Return-Path: <linux-btrfs+bounces-11532-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11533-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14ADEA398C9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 11:28:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8215A399E2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 12:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04EDF3A85D4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 10:20:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84B073B301B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 11:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86BC233D99;
-	Tue, 18 Feb 2025 10:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3332723958C;
+	Tue, 18 Feb 2025 11:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCIvqsug"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J95lmcoS"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F5A22F140
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 10:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BF122E002
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 11:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739874013; cv=none; b=ni1jkeaO7jsRO48U8jNSMSduXHv/ilcwcsbitwPZGR2qT3KeytyUMxjEzwXN8ZJCU3QzDYeBWQ21ftJtHGLlUjN2VBIdh5mTikGRyMz1o074nI6535oNuU3Ye0SA0zkdBrPYkHjoWMmhmqDkKmT+cQpGte3a+77ZhnYMvQZXs7U=
+	t=1739876840; cv=none; b=d7XCgOrI9KSdFgnj/rYmlFvCouJWu6p1hQxT/Uo1LI3tNUFM4gGKOPfOsFXs0iL/dFEH2yO9eDBmIPgYDatZ9CXpp9MNptqFcRLIj7/IVTImeM8bIWYsPX1v9fC5Yo+k7Icc0LU62O1ALB2IIWHcl59hwXjDQRyryYLforci0+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739874013; c=relaxed/simple;
-	bh=oQij1NMNr4mtaXRJRBQM8SgEjryJxmb+5n4VtA3y1g4=;
+	s=arc-20240116; t=1739876840; c=relaxed/simple;
+	bh=n/hUTXMxwkKi3G/6eUuDjQOOuqAhrNhCbQSqkqsJYMs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Wde3njWD8I/2LG8ekgilH3nrvgbpJYdzH+kY03KcObMXyW9x6izFRQaQbrlgoY23pkAZ38t1UUH9O7NY3EGQ7K0E0QW7p58rmKCLeuYTvk5lEdVZ5iRxUaPZdnjsWaqDX2Yd1ZKJxqMrhWcMVZxY5mBu4BA52bW2MSWnhLN16+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCIvqsug; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE85DC4CEE8
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 10:20:12 +0000 (UTC)
+	 To:Cc:Content-Type; b=GCg5Uddu0VjdaB1FOhL3QLQoMne4XNRJJvIByYtGtJlKO4ifWus0i12WV1DemwpGyFojqdUv+sGJhvFRREjhsTmJfrS5Giv411Lh4vDpVzEFobcPywYw/pN14gYrGa7/fF9glifEHlnePbVXvpbwvieM0kShAe+JTjU6g78LzrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J95lmcoS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0188BC4AF09
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 11:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739874012;
-	bh=oQij1NMNr4mtaXRJRBQM8SgEjryJxmb+5n4VtA3y1g4=;
+	s=k20201202; t=1739876840;
+	bh=n/hUTXMxwkKi3G/6eUuDjQOOuqAhrNhCbQSqkqsJYMs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=nCIvqsug6xMfTc8Lfsj/eM7O9+BVP4SZfqitZjO38UD027UvYskTGevUlQyYL71BT
-	 a0BsaVeIsspYSl181H/opCmMELV4b9FhCehCTbHgANXAjAs7XZzIPWO95KiUdPv0Yw
-	 rJ1iDFZLAbetkiTGQTvkFugMoOoJp2sVKt4H/yaRVk8L9iQHAahY+LqQEakeno2gbs
-	 aYGqdyLO8EtOiswGWMrErK1CNnjP9j8t8DTlhhboTao0JSAXBcKqQ459bMneeNw1U5
-	 9kJpaB/XlFi/twXXLxONJ+X/HJNVhAWaqCJ8bELvK03EbiAnnop0hKxpp/fpq7Svd4
-	 Exnmq9J/94iww==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-abb97e15bcbso341400266b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 02:20:12 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw32ZQ0bqau0nazqmKUq2aonPWzH5mJMEqec3feo3I4eXLG+V8M
-	xBr4ZflKN7CV1tpwVDCoHqBYq+tA4MnIobGhh+F8D6sGQlPPzFG0q+4YU7Rxv15qHlFXxyRhZ87
-	obiSF48v+LytIDdK2OSIIL4tF6us=
-X-Google-Smtp-Source: AGHT+IGO5FzyDFVcUEaBHhtN4WD///tUj1wuFFayZHokLiyVmwbaGmtBGX2N7EogAqp/b481H7CWHHyoq5DVE2GKshg=
-X-Received: by 2002:a17:907:7b8b:b0:ab7:e41d:34b6 with SMTP id
- a640c23a62f3a-abb70dce45amr1267777066b.28.1739874011307; Tue, 18 Feb 2025
- 02:20:11 -0800 (PST)
+	b=J95lmcoSuLgh+6hP0QIUcx/RP2BlDXxlNPOmbwCZeEgM/gkfDn52A7Uta6JqVvAll
+	 AuK9kdGhdKhTcs4htmn+x+n/MAZER5aBuh54wiBdscNlvpn3Kng7eUnhQRArVQorgY
+	 vRUkY2ozxRrWluQUl+nob89I0U6YYIHUVt4jGtBjGfToc/Jylil80/SjrGSBmLghbP
+	 cPEsWo3c6ecnUTuGYzdCq58/LqFcmyoovIvV3BNNxUokZq1xFbdBO5jLMycX2VaZr2
+	 GFh1UFmKTPgiGkQdA6fywAKv8gWmGqHRovgkT24ntZ0R+NWqPZciIfAwFoE1uaBcwH
+	 zLNoFM1GAeG5Q==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aaf0f1adef8so1069236566b.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 03:07:19 -0800 (PST)
+X-Gm-Message-State: AOJu0YztpCzzWc/D58Y5n7wOsQT4c7c6IbV9w+Pr5UCmVpaAb/zbEW4y
+	g4LmXYjDdh5qXucygYnZuRnM7zXBxN/luJIMeL9lpPyqE//O+giUvxtdJSxCY3M/MoE86K1f+3T
+	JEmPFGpTSjpTK75Wzv0NS3aHSlcE=
+X-Google-Smtp-Source: AGHT+IGJAz30K3Z1O7VXivJzarJkhDdSXnO48DA+7ctqU9jTTQe/dghhWQllctiIqyW39fbq1Yzd+2xs5dVU3meENRY=
+X-Received: by 2002:a17:907:1b12:b0:ab7:a39:db4 with SMTP id
+ a640c23a62f3a-abb7115103fmr1418068466b.57.1739876838554; Tue, 18 Feb 2025
+ 03:07:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1739710434.git.fdmanana@suse.com> <663658b73e3cd9dd5e34e8eee34f4959f6ccb5ec.1739710434.git.fdmanana@suse.com>
- <3ce8e257-3822-48f1-9c09-f7e774475435@wdc.com>
-In-Reply-To: <3ce8e257-3822-48f1-9c09-f7e774475435@wdc.com>
+References: <82088d8a206ac6187b994a4f9f21876773cf036b.1739831055.git.wqu@suse.com>
+In-Reply-To: <82088d8a206ac6187b994a4f9f21876773cf036b.1739831055.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 18 Feb 2025 10:19:34 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6R=oknKFa9Xd6detM_kt5m9J2ynJ+do8BJMFMP2rKyzw@mail.gmail.com>
-X-Gm-Features: AWEUYZnp4LFU9Jd6S35-hLuHtzQTHs5hjPMFzADZRcz-_eHKktx0PAkF6ERVW0I
-Message-ID: <CAL3q7H6R=oknKFa9Xd6detM_kt5m9J2ynJ+do8BJMFMP2rKyzw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] btrfs: skip inodes without loaded extent maps when
- shrinking extent maps
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date: Tue, 18 Feb 2025 11:06:41 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4p4_knhgzZt1ze8B7Tb3yFdbp5E6QnkK9gjvMZh9XVPw@mail.gmail.com>
+X-Gm-Features: AWEUYZlQKIjgEmv6wdE-idfXxQG5D7HzBjgdGSaSwkpbmLrIohS9Z5M9wxB0zRY
+Message-ID: <CAL3q7H4p4_knhgzZt1ze8B7Tb3yFdbp5E6QnkK9gjvMZh9XVPw@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: output an error message if btrfs failed to find
+ the seed fsid
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 18, 2025 at 6:18=E2=80=AFAM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
+On Mon, Feb 17, 2025 at 10:26=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >
-> On 16.02.25 14:16, fdmanana@kernel.org wrote:
-> > +static struct btrfs_inode *find_first_inode(struct btrfs_root *root, u=
-64 min_ino)
+> [BUG]
+> If btrfs failed to locate the seed device for whatever reason, mounting
+> the sprouted device will fail without any meaningful error message:
 >
-> Can we call it something like find_first_inode_for_shrinker() or sth
-> like that?
+>  # mkfs.btrfs -f /dev/test/scratch1
+>  # btrfstune -S1 /dev/test/scratch1
+>  # mount /dev/test/scratch1 /mnt/btrfs
+>  # btrfs dev add -f /dev/test/scratch2 /mnt/btrfs
+>  # umount /mnt/btrfs
+>  # btrfs dev scan -u
+>  # btrfs mount /dev/test/scratch2 /mnt/btrfs
+>  mount: /mnt/btrfs: fsconfig system call failed: No such file or director=
+y.
+>        dmesg(1) may have more information after failed mount system call.
+>  # dmesg -t | tail -n6
+>  BTRFS info (device dm-5): first mount of filesystem 64252ded-5953-4868-b=
+962-cea48f7ac4ea
+>  BTRFS info (device dm-5): using crc32c (crc32c-generic) checksum algorit=
+hm
+>  BTRFS info (device dm-5): using free-space-tree
+>  BTRFS error (device dm-5): failed to read chunk tree: -2
+>  BTRFS error (device dm-5): open_ctree failed: -2
+>
+> [CAUSE]
+> The failure to mount is pretty straight forward, just unable to find the
+> seed device and its fsid, caused by `btrfs dev scan -u`.
+>
+> But the lack of any useful info is a problem.
+>
+> [FIX]
+> Just add an extra error message in open_seed_devices() to indicate the
+> error.
+>
+> Now the error message would look like this:
+>
+>  BTRFS info (device dm-4): first mount of filesystem 7769223d-4db1-4e4c-a=
+c29-0a96f53576ab
+>  BTRFS info (device dm-4): using crc32c (crc32c-generic) checksum algorit=
+hm
+>  BTRFS info (device dm-4): using free-space-tree
+>  BTRFS error (device dm-4): failed to find fsid e87c12e6-584b-4e98-8b88-9=
+62c33a619ff when attempting to open seed devices
+>  BTRFS error (device dm-4): failed to read chunk tree: -2
+>  BTRFS error (device dm-4): open_ctree failed: -2
+>
+> Link: https://github.com/kdave/btrfs-progs/issues/959
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Sure, I'll rename it to find_first_inode_to_shrink() at commit time then.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks.
+Looks good, thanks.
 
+> ---
+> Changelog:
+> v2:
+> - Enhance the error message to show a little more details
+> - Remove the dmesg timestamp from commit message
+> ---
+>  fs/btrfs/volumes.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> It is very similar to btrfs_find_first_inode() but not the similar
-> enough to be the subset of it and I find that quite confusing.
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 0a0776489055..fb22d4425cb0 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7200,8 +7200,12 @@ static struct btrfs_fs_devices *open_seed_devices(=
+struct btrfs_fs_info *fs_info,
 >
-> Otherwise
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>         fs_devices =3D find_fsid(fsid, NULL);
+>         if (!fs_devices) {
+> -               if (!btrfs_test_opt(fs_info, DEGRADED))
+> +               if (!btrfs_test_opt(fs_info, DEGRADED)) {
+> +                       btrfs_err(fs_info,
+> +               "failed to find fsid %pU when attempting to open seed dev=
+ices",
+> +                                 fsid);
+>                         return ERR_PTR(-ENOENT);
+> +               }
+>
+>                 fs_devices =3D alloc_fs_devices(fsid);
+>                 if (IS_ERR(fs_devices))
+> --
+> 2.48.1
+>
+>
 
