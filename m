@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-11538-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11539-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCA0A3A8E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 21:27:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5393CA3A94C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 21:38:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14F5C174DEE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 20:27:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7114A177F20
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 20:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1441DE4E7;
-	Tue, 18 Feb 2025 20:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C0B1FDE38;
+	Tue, 18 Feb 2025 20:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p2kGhfgr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lEnyFUQQ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D551DE4C4;
-	Tue, 18 Feb 2025 20:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C21E1FDA85;
+	Tue, 18 Feb 2025 20:26:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739910324; cv=none; b=TQ1DxJN8uXLAZKXkzKQeGRa0G6yyUmbxuoczur5nNasbLDJLnEyF51PIIsFTvrtKgAn/+ITq4j4qErJJmXsy6E5RZszCFvb4ZS4wkuLKh2uBq4kMEVd2LDR6n6QlHDiRbOo4pkrn7zmrAGxrSEyssgZKphaer7u0UcpXk5waiAU=
+	t=1739910409; cv=none; b=uBaCQSbJ474gD86MlgxkQvkUTiVp5ju46uGrEvOh7BIH+WxzCiSfWQdnyalA+LmsXcK3GbPlz1KMy85zewmgGwiguEeuLi9HhiiLSNesrqPaeUFsIFuVs7cEhFLax9aG7rYrSnex+FZYqsSvroBOwaRyBITRWMTDZJUPpqxS5r8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739910324; c=relaxed/simple;
-	bh=HROdbV+kk+u6RGloJduTxq5OXpiJcjPK977WpqtXzxs=;
+	s=arc-20240116; t=1739910409; c=relaxed/simple;
+	bh=OishFRVt1TzOKpDATJz9wcVUGZvqBcFcoFGVrn4aBXc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=juTkkR2GUp5E4oU95WOeJOyMDot2x3L5HhfkX/Lprk9Frc946Z+Vgml3i+tMlNFTpqw/wvEtkTMdFRAAxM2RL3kfGiuByQ1PtkxY2lUrzd0viSKfpDpQ8X61cinI7QRtJ5puhZNnPct6ASjfk8waN4SFzINsctvsHY8TAAG5R00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p2kGhfgr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF76C4CEE8;
-	Tue, 18 Feb 2025 20:25:22 +0000 (UTC)
+	 MIME-Version; b=jQTAUTdbBI3u/tmqk979lduPooRQdi3y1id9531My8NGQdYhchzI+li/+4J7jfV7zXfu+/g5LXyTAlKBnd0Za0IqBFLdO4F0EbxscIWsqYzJWNDsRHci3cVPCqR7Ux7uor7pgMErOUwrAXNejqcDOSwGMbYvcozmgAlclhOcjIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lEnyFUQQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28E2CC4CEED;
+	Tue, 18 Feb 2025 20:26:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910323;
-	bh=HROdbV+kk+u6RGloJduTxq5OXpiJcjPK977WpqtXzxs=;
+	s=k20201202; t=1739910409;
+	bh=OishFRVt1TzOKpDATJz9wcVUGZvqBcFcoFGVrn4aBXc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p2kGhfgrsxwej5tadK3dTVJkJAWVO7t4bIYs/A1+eYULmLRKbNNczhdqDGfcKgC6O
-	 dEyN9mEOBYsoZe+gvFYfipzwWc4dscFYYxx3UsamzaI2BZuxXC0/SrZ5Oyz5n3EPqZ
-	 x3klsEuuV+mJ8q5pOY9CZW+i+Ej4nxwfkBWitRz03ziiY0RdhR6QoCwd0BKcC+St/L
-	 htQWwn552aMkvxdsK4eVXxJCpHw/TZUKQqmh65+JN75iCQeSNlEqFJuqvoc55q8ZQs
-	 JpB3tzx4WGQdjhBlDlvOHoVoaXyEs25Y4SNYfajjtImabO2cZRrdkCoE3dOVyMP+9p
-	 LM/tzVrAIj00A==
+	b=lEnyFUQQW2uOmUWhga6mXa6OKvTTCnTE87yP4eDh9dFZOehcG5Iss4fU8LhBRmHop
+	 +Pb8HvtidsKIa5L8OvU9owQZZoQlMqiP8Ua77xLTLpxv9TIyJFAOn8aafJnVkPF91c
+	 gNtN7jDbGJa56re5vldcj0E0NASgpyFwfw/UdXGHXqnaMcF6dvOe0FlxL541IU8+pZ
+	 cnRdcgT1fbQIiJ0XTMFxeXd+PFLnYXIbXy6bZB9AM/coDCgdjafCSdWCmIq1NCfSPX
+	 Z87KJzBR99rn0a7vAKIkxLJf6/arPhNprlp/QZxls/0X++Bl4CdBpFk62nL4AMsheM
+	 fU38FerLF0EIw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.13 12/31] btrfs: fix two misuses of folio_shift()
-Date: Tue, 18 Feb 2025 15:24:32 -0500
-Message-Id: <20250218202455.3592096-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 12/31] btrfs: fix two misuses of folio_shift()
+Date: Tue, 18 Feb 2025 15:25:58 -0500
+Message-Id: <20250218202619.3592630-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250218202455.3592096-1-sashal@kernel.org>
-References: <20250218202455.3592096-1-sashal@kernel.org>
+In-Reply-To: <20250218202619.3592630-1-sashal@kernel.org>
+References: <20250218202619.3592630-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.13.3
+X-stable-base: Linux 6.12.15
 Content-Transfer-Encoding: 8bit
 
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
@@ -87,7 +87,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index b923d0cec61c7..a8e0076d44c72 100644
+index 42c9899d9241c..aa13a3bca715c 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
 @@ -526,8 +526,6 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
