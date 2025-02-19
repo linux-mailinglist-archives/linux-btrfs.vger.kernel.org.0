@@ -1,251 +1,101 @@
-Return-Path: <linux-btrfs+bounces-11564-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11565-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C301BA3BC9C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 12:20:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF044A3BD3F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 12:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B5FB7A4FAB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 11:19:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E14189C260
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 11:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA141DEFF7;
-	Wed, 19 Feb 2025 11:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAD51DF25E;
+	Wed, 19 Feb 2025 11:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fmu+Vdla"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76931A2C29;
-	Wed, 19 Feb 2025 11:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B691B85CC
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 11:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739964017; cv=none; b=SjRp+tjus/YljY2w3us9Z+beFFPokMLgjLJHXAJla2T/6Hszcmw7oTIOQM1KAkIoZ5ZR5C2ZvyrC5PdSR/VzBiIwarhA+5T/zSwlsaJY8iR6S94pErd0mvLYpwQWTSE3ukyefAiWN3H1+ZN06+ZmdZIvh29BPviJgaOdglWP1rk=
+	t=1739965411; cv=none; b=oVEWXhlz0g2SywPfDzFzfiFHScG35dcDPGG9sO1DYV5VD3NtAvMv7g28vEMjZbEvveRYjuVi7GzzoHZhiZyBIbQ//dkVj9jfNjG/LUklN4OC7nu5s8EZzddEf2M4csAKdYO08vLt744mGv80ql83zme6qmj3XPGIVjsqqKeZb6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739964017; c=relaxed/simple;
-	bh=21iMGn5nmMgxSUhNifIphPXQHgu7d4Uv/JM64va/VIs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=h03P3jDI85tkEjeyDEeMH4ti1+gir/Xp45EUV1LFayAIk9vwxTpwfr/R8XAoxPzElLjImwvq/rKY7XELruu3NQ3aLkKSp7KPCylqVntHjkOHggbRRRv1XSq1KefjWntls3WZj4V6c5TpAOYDca7GPTwnGk9jmmz4WzQRnanU31Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4YyYpr37n2z22kst;
-	Wed, 19 Feb 2025 19:20:36 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9333E140360;
-	Wed, 19 Feb 2025 19:20:05 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 19 Feb 2025 19:20:05 +0800
-Message-ID: <c9950a79-7bcb-41c2-a59e-af315dc6d7ff@huawei.com>
-Date: Wed, 19 Feb 2025 19:20:04 +0800
+	s=arc-20240116; t=1739965411; c=relaxed/simple;
+	bh=xkDNnegrFzuaKNJzU/iKev7RDXlQcgpQz6SBa1QTr4c=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=lX98RzTIWQpIfCYUs4oDDG6J5qjDibTMnR2TnpbPNcC9QobuuHag1x7at6mrrBIeZdnAsAErNLddeyp8KaFnRPfEzWTzt0N1UrpV25VPw1z4fXtsjjInZG8dGrbhV5A0ZM+xwuaCd99CsI9Ar6hTDyilMV7jQplUjVqUZ9J8ReA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fmu+Vdla; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF1AEC4CED1
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 11:43:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739965410;
+	bh=xkDNnegrFzuaKNJzU/iKev7RDXlQcgpQz6SBa1QTr4c=;
+	h=From:To:Subject:Date:From;
+	b=Fmu+VdlairKWVMcErpFEh/539zzDQkoK69XM1YB9AJKelikkjEoUT2bnNFArh/gAw
+	 KupgBwpWBzu11BNiaB/pfQTUopxP9O9ufGS6BmBZNGaLDSKvMUQNBHIBRQkFH+hnQK
+	 x0SSaAf8E//k7FXqF3Vi4nyFan/++50SGX3hkkPy33HWqE1QMF8QhUGu7K4qU33NcQ
+	 W00sGpIJ9lBw6F41c5+ORStJot8MIuT2CZGmDbhzGv/RTbGS+SuxrkuVwpdom1Dot8
+	 dNFOd6umUtm51tIh7l2T9KH73xRSW7cVCCDWFoMwlS/+eMBZrnrWrlFx8bDWI8rBpr
+	 C268NxgJhLDdA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/26] btrfs: avoid repeated path computations and allocations for send
+Date: Wed, 19 Feb 2025 11:43:00 +0000
+Message-Id: <cover.1739965104.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] mm: alloc_pages_bulk: remove assumption of populating only
- NULL elements
-To: Dave Chinner <david@fromorbit.com>
-CC: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shameer
- Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian
-	<kevin.tian@intel.com>, Alex Williamson <alex.williamson@redhat.com>, Chris
- Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
-	<dsterba@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep
- Dhavale <dhavale@google.com>, Carlos Maiolino <cem@kernel.org>, "Darrick J.
- Wong" <djwong@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Trond Myklebust
-	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever
-	<chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
-	<neilb@suse.de>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo
-	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Luiz Capitulino
-	<luizcap@redhat.com>, Mel Gorman <mgorman@techsingularity.net>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
-	<linux-erofs@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
-	<linux-mm@kvack.org>, <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
-References: <20250217123127.3674033-1-linyunsheng@huawei.com>
- <Z7Oqy2j4xew7FW9Z@dread.disaster.area>
- <cf270a65-c9fa-453a-b7a0-01708063f73e@huawei.com>
- <Z7T4NZAn4wD_DLTl@dread.disaster.area>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <Z7T4NZAn4wD_DLTl@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Transfer-Encoding: 8bit
 
-On 2025/2/19 5:14, Dave Chinner wrote:
-> On Tue, Feb 18, 2025 at 05:21:27PM +0800, Yunsheng Lin wrote:
->> On 2025/2/18 5:31, Dave Chinner wrote:
->>
->> ...
->>
->>> .....
->>>
->>>> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
->>>> index 15bb790359f8..9e1ce0ab9c35 100644
->>>> --- a/fs/xfs/xfs_buf.c
->>>> +++ b/fs/xfs/xfs_buf.c
->>>> @@ -377,16 +377,17 @@ xfs_buf_alloc_pages(
->>>>  	 * least one extra page.
->>>>  	 */
->>>>  	for (;;) {
->>>> -		long	last = filled;
->>>> +		long	alloc;
->>>>  
->>>> -		filled = alloc_pages_bulk(gfp_mask, bp->b_page_count,
->>>> -					  bp->b_pages);
->>>> +		alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - refill,
->>>> +					 bp->b_pages + refill);
->>>> +		refill += alloc;
->>>>  		if (filled == bp->b_page_count) {
->>>>  			XFS_STATS_INC(bp->b_mount, xb_page_found);
->>>>  			break;
->>>>  		}
->>>>  
->>>> -		if (filled != last)
->>>> +		if (alloc)
->>>>  			continue;
->>>
->>> You didn't even compile this code - refill is not defined
->>> anywhere.
->>>
->>> Even if it did complile, you clearly didn't test it. The logic is
->>> broken (what updates filled?) and will result in the first
->>> allocation attempt succeeding and then falling into an endless retry
->>> loop.
->>
->> Ah, the 'refill' is a typo, it should be 'filled' instead of 'refill'.
->> The below should fix the compile error:
->> --- a/fs/xfs/xfs_buf.c
->> +++ b/fs/xfs/xfs_buf.c
->> @@ -379,9 +379,9 @@ xfs_buf_alloc_pages(
->>         for (;;) {
->>                 long    alloc;
->>
->> -               alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - refill,
->> -                                        bp->b_pages + refill);
->> -               refill += alloc;
->> +               alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - filled,
->> +                                        bp->b_pages + filled);
->> +               filled += alloc;
->>                 if (filled == bp->b_page_count) {
->>                         XFS_STATS_INC(bp->b_mount, xb_page_found);
->>                         break;
->>
->>>
->>> i.e. you stepped on the API landmine of your own creation where
->>> it is impossible to tell the difference between alloc_pages_bulk()
->>> returning "memory allocation failed, you need to retry" and
->>> it returning "array is full, nothing more to allocate". Both these
->>> cases now return 0.
->>
->> As my understanding, alloc_pages_bulk() will not be called when
->> "array is full" as the above 'filled == bp->b_page_count' checking
->> has ensured that if the array is not passed in with holes in the
->> middle for xfs.
-> 
-> You miss the point entirely. Previously, alloc_pages_bulk() would
-> return a value that would tell us the array is full, even if we
-> call it with a full array to begin with.
-> 
-> Now it fails to tell us that the array is full, and we have to track
-> that precisely ourselves - it is impossible to tell the difference
-> between "array is full" and "allocation failed". Not being able to
-> determine from the allocation return value whether the array is
-> ready for use or whether another go-around to fill it is needed is a
-> very poor API choice, regardless of anything else.
-> 
-> You've already demonstrated this: tracking array usage in every
-> caller is error-prone and much harder to get right than just having
-> alloc_pages_bulk() do everything for us.
+From: Filipe Manana <fdmanana@suse.com>
 
-While I am agreed that it might be hard to track array usage in every
-caller to see if removing assumption of populating only NULL elements
-cause problem for them, I still think the page bulk alloc API before
-this patch have some space for improvement from performance and
-easy-to-use perspective as the most existing calllers of page bulk
-alloc API are trying to bulk allocate the page for the whole array
-sequentially.
+This eleminates repeated path allocations and computations for send when
+processing the current inode. The bulk of this is done in patches 24/26
+and 25/26, while the remainder are cleanups and simplifications, some of
+them to simplify the actual work related to avoiding the repeated path
+allocations and computations.
 
-> 
->>> The existing code returns nr_populated in both cases, so it doesn't
->>> matter why alloc_pages_bulk() returns with nr_populated != full, it
->>> is very clear that we still need to allocate more memory to fill it.
->>
->> I am not sure if the array will be passed in with holes in the
->> middle for the xfs fs as mentioned above, if not, it seems to be
->> a typical use case like the one in mempolicy.c as below:
->>
->> https://elixir.bootlin.com/linux/v6.14-rc1/source/mm/mempolicy.c#L2525
-> 
-> That's not "typical" usage. That is implementing "try alloc" fast
-> path that avoids memory reclaim with a slow path fallback to fill
-> the rest of the array when the fast path fails.
-> 
-> No other users of alloc_pages_bulk() is trying to do this.
+A test, and its result, is described in the change log of patch 25/26.
 
-What I meant by "typical" usage is the 'page_array + nr_allocated'
-trick that avoids the NULL checking when page bulk allocation API
-is used in mm/mempolicy.c, most of existing callers for page bulk
-allocation in other places seems likely to be changed to do the
-similar trick as this patch does.
+Filipe Manana (26):
+  btrfs: send: remove duplicated logic from fs_path_reset()
+  btrfs: send: make fs_path_len() inline and constify its argument
+  btrfs: send: always use fs_path_len() to determine a path's length
+  btrfs: send: simplify return logic from fs_path_prepare_for_add()
+  btrfs: send: simplify return logic from fs_path_add()
+  btrfs: send: implement fs_path_add_path() using fs_path_add()
+  btrfs: send: simplify return logic from fs_path_add_from_extent_buffer()
+  btrfs: send: return -ENAMETOOLONG when attempting a path that is too long
+  btrfs: send: simplify return logic from __get_cur_name_and_parent()
+  btrfs: send: simplify return logic from is_inode_existent()
+  btrfs: send: simplify return logic from get_cur_inode_state()
+  btrfs: send: factor out common logic when sending xattrs
+  btrfs: send: only use booleans variables at process_recorded_refs()
+  btrfs: send: add and use helper to rename current inode when processing refs
+  btrfs: send: simplify return logic from send_remove_xattr()
+  btrfs: send: simplify return logic from record_new_ref_if_needed()
+  btrfs: send: simplify return logic from record_deleted_ref_if_needed()
+  btrfs: send: simplify return logic from record_new_ref()
+  btrfs: send: simplify return logic from record_deleted_ref()
+  btrfs: send: simplify return logic from record_changed_ref()
+  btrfs: send: remove unnecessary return variable from process_new_xattr()
+  btrfs: send: simplify return logic from process_changed_xattr()
+  btrfs: send: simplify return logic from send_verity()
+  btrfs: send: keep the current inode's path cached
+  btrfs: send: avoid path allocation for the current inode when issuing commands
+  btrfs: send: simplify return logic from send_set_xattr()
 
-> 
-> Indeed, it looks somewhat pointless to do this here (i.e. premature
-> optimisation!), because the only caller of
-> alloc_pages_bulk_mempolicy_noprof() has it's own fallback slowpath
-> for when alloc_pages_bulk() can't fill the entire request.
-> 
->>> IOWs, you just demonstrated why the existing API is more desirable
->>> than a highly constrained, slightly faster API that requires callers
->>> to get every detail right. i.e. it's hard to get it wrong with the
->>> existing API, yet it's so easy to make mistakes with the proposed
->>> API that the patch proposing the change has serious bugs in it.
->>
->> IMHO, if the API is about refilling pages for the only NULL elements,
->> it seems better to add a API like refill_pages_bulk() for that, as
->> the current API seems to be prone to error of not initializing the
->> array to zero before calling alloc_pages_bulk().
-> 
-> How is requiring a well defined initial state for API parameters
-> "error prone"?  What code is failing to do the well known, defined
-> initialisation before calling alloc_pages_bulk()?
-> 
-> Allowing uninitialised structures in an API (i.e. unknown initial
-> conditions) means we cannot make assumptions about the structure
-> contents within the API implementation.  We cannot assume that all
-> variables are zero on the first use, nor can we assume that anything
-> that is zero has a valid state.
+ fs/btrfs/send.c | 485 +++++++++++++++++++++++-------------------------
+ 1 file changed, 232 insertions(+), 253 deletions(-)
 
-It seems the above is the main differenece we see from the API perspective,
-as I see the array as output parameter and you seems to treat the array as
-both input and output parameter?
+-- 
+2.45.2
 
-The kmem_cache_alloc_bulk() API related API seems to treat the array as
-output parameter too as this patch does, the difference from this patch
-is that if there is no enough memory, it will free the allocated memory
-and return 0 to the caller while this patch returns already allocated
-memory to its caller even when there is no enough memory.
-
-> 
-> Again, this is poor API design - structures passed to interfaces
-> -should- have a well defined initial state, either set by a *_init()
-> function or by defining the initial state to be all zeros (i.e. via
-> memset, kzalloc, etc).
-> 
-> Performance and speed is not an excuse for writing fragile, easy to
-> break code and APIs.
-> 
-> -Dave.
 
