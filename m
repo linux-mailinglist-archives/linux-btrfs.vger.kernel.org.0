@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-11559-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11560-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91FAA3B2EF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 08:59:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FCA7A3B2F0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 08:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246191886CD8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 07:59:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 781C43AB878
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 07:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D4D1C6FE3;
-	Wed, 19 Feb 2025 07:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22AC11C4A16;
+	Wed, 19 Feb 2025 07:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="VyMwiYlo"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="NgFjSzbC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBC51C54A5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1B31C5F0C
 	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 07:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739951906; cv=none; b=p9CJyYL5EW3MQnKlIxoak0RfyEmN9IPP190uJJq2lYqZ1mpwlHgJNWVNCuphPkIrIGuV7Aq9dwiED7eXA13jHoGAOoh8GmJHm4zT6pCJfXsrQyeZYztkbwj5onIod3KaXIUVqH/BSjqj2PzgtiHOAlTBfBjHEvfIJH4B7d9RhkA=
+	t=1739951907; cv=none; b=ua14SUjfvt6PbLFIVcASZMwTFpPYcN1Bpk4vCIaijfQS0BvuES3H+IX3JOEc1d/m0ih1nXM7k+MELiJZNvMkLh2fZLqmPtTxvj2NnDRVNe17v8PRpFa2NwqTQ7Pell7nnYvyy9+Bs4bhGzUDj/0uTPiNSSsrcajRRmIJRrvdPTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739951906; c=relaxed/simple;
-	bh=5u8ScMQqwj3zbKZ4tGZAkxHjJl4hMxRUyCQc4ft3HD0=;
+	s=arc-20240116; t=1739951907; c=relaxed/simple;
+	bh=rE7EPQMY/i12LbqPqDYzxx0lVd1FxSol+C69vuSJYjc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UhkY8UKMzul2AuxwpDhSRVRyuLqiso+1Q4+C2zODhthbQrmL0PMpknb8szVAAONEZzTC6bP0Olx9vUdlBhpgVwSA4n+gs5tSCXwATENTTvG/XzUygjvbqDMHYdlSA04EI0tFfrcmsuuIfu3msDhRY3WHEViH1i/k+VkLh1qK+3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=VyMwiYlo; arc=none smtp.client-ip=216.71.154.42
+	 MIME-Version; b=M3wWMyG+2NdOLxsuar1N3fj/dJZ8ckkI5znnELAaO19Nh51k0dtHuZ3OZJEbY1YXhqyLhsl1wAiV6I+8myLkpsuyWBQFVw+isQ8FFXNfkYtJFXNmrveSKnGquGka2JZws/9NcsPMOZd3Ue70/LLhPOgn7ogXxgzQ+uEfWyOJTr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=NgFjSzbC; arc=none smtp.client-ip=216.71.154.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,33 +36,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1739951905; x=1771487905;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5u8ScMQqwj3zbKZ4tGZAkxHjJl4hMxRUyCQc4ft3HD0=;
-  b=VyMwiYloTsT17F6FGIFJOKUJEZjzUzBgA1ISA/u1TsiVDDty8bDocGzx
-   EUYbaHlBwO3/eK9Z2NjJD8ZCcI9wsVM3wvrvRxixqIOfJhl/EM8La0Wrd
-   n31Xsc1j4QJCraIKo6HRKCQJxIOqlpX6bJePk0KQcSS5dw6c8xGy0+x/F
-   PCNhI90WjiiQ/gSD7+Vg1uo591QP9snBoQ/7FvuTI+tuEk5mk8XMyN/VV
-   W4kexzHwhEi9z5/aQFf/8TqdEdxU0d8Fzz0MyO6Ae0v3HDjI0CV5OXyKs
-   kLYa+iFXN00X2PN4dSE7avvn4rR1uHPFf9bzILUwH+gJCW9263EPmssNn
-   Q==;
-X-CSE-ConnectionGUID: x22sfK1pQuSwnViSYLAqlw==
-X-CSE-MsgGUID: 8GQJgHvRTCCZdWaztuP96Q==
+  bh=rE7EPQMY/i12LbqPqDYzxx0lVd1FxSol+C69vuSJYjc=;
+  b=NgFjSzbCq5eRQrUBHszZJr+eMoLwtEqFpGdTZDuf6uANVT3eiNMhq0aC
+   KnuBRRuxCGWXJehLcNIFlu6d2TZa01t9LlKpU0HstznuD/KHaUG8L7MFx
+   XFXzQ/pU+TYqmD/Wbu0scWxVz8++eVLC90EHCuN5oX0FwZMS94r28Pn22
+   NaMIv9izt6DB8KnBf70nx4ae2dRFHWBRDnSMrIDr6TLEEiF6YdPJRTRwr
+   gyIq3dPOJk8aNX+qVgLXONtKjTFuxemd3YcdH4QR3P1o5Q75os1kIZYrF
+   1Tk2dH7/X1XgJ9H9BmFt5Lu5XsTwEIG+7vLzum2SZLZkOwyUD+C62zyHN
+   w==;
+X-CSE-ConnectionGUID: lzBDQvMAQ5Cog49vfSxfhw==
+X-CSE-MsgGUID: Bl7m34hbTz6ZkwbaQmJ36w==
 X-IronPort-AV: E=Sophos;i="6.13,298,1732550400"; 
-   d="scan'208";a="38310818"
+   d="scan'208";a="38310820"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Feb 2025 15:58:12 +0800
-IronPort-SDR: 67b58159_nt2sGs7w/o4G+Q/A6CD6VHWLZMYqTkD5eMwofMvjoSkuwhC
- PNlyjwRUBfBLPQCzAHnHW7p7NiFrE+mLe8MGNUQ==
+  by ob1.hgst.iphmx.com with ESMTP; 19 Feb 2025 15:58:13 +0800
+IronPort-SDR: 67b5815a_+A7QIDmthqDlBj3jccA+Ax5ijk6JoQXaW8brAX0TBgH9kzi
+ zJhAxouZ2ZNkl82vwn0qR1XI/jtpnGaLAmJSvXw==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Feb 2025 22:59:37 -0800
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Feb 2025 22:59:38 -0800
 WDCIronportException: Internal
 Received: from 5cg20343qs.ad.shared (HELO naota-xeon..) ([10.224.109.7])
-  by uls-op-cesaip01.wdc.com with ESMTP; 18 Feb 2025 23:58:11 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 18 Feb 2025 23:58:12 -0800
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 11/12] btrfs-progs: implement RAID10 zone info loading
-Date: Wed, 19 Feb 2025 16:57:55 +0900
-Message-ID: <6c6dbc1e3396ac30723de8b74e40aa4fe9a59a1a.1739951758.git.naohiro.aota@wdc.com>
+Subject: [PATCH v2 12/12] btrfs-progs: zoned: fix alloc_offset calculation for partly conventional block groups
+Date: Wed, 19 Feb 2025 16:57:56 +0900
+Message-ID: <c6a9d1c664cf8595ac6a2a8acf458cf46c7cce8d.1739951758.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1739951758.git.naohiro.aota@wdc.com>
 References: <cover.1739951758.git.naohiro.aota@wdc.com>
@@ -74,68 +74,163 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Just same as the kernel side.
+When one of two zones composing a DUP block group is a conventional zone, we
+have the zone_info[i]->alloc_offset = WP_CONVENTIONAL. That will, of course,
+not match the write pointer of the other zone, and fails that block group.
+
+This commit solves that issue by properly recovering the emulated write pointer
+from the last allocated extent. The offset for the SINGLE, DUP, and RAID1 are
+straight-forward: it is same as the end of last allocated extent. The RAID0 and
+RAID10 are a bit tricky that we need to do the math of striping.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- kernel-shared/zoned.c | 37 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+ kernel-shared/zoned.c | 65 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 51 insertions(+), 14 deletions(-)
 
 diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-index 10e59b837efd..484bade1d2ed 100644
+index 484bade1d2ed..d96311af70b2 100644
 --- a/kernel-shared/zoned.c
 +++ b/kernel-shared/zoned.c
-@@ -1092,6 +1092,39 @@ static int btrfs_load_block_group_raid0(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
- 
-+static int btrfs_load_block_group_raid10(struct btrfs_fs_info *fs_info,
-+					 struct btrfs_block_group *bg,
-+					 struct map_lookup *map,
-+					 struct zone_info *zone_info,
-+					 unsigned long *active)
-+{
-+	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
-+		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
-+			  btrfs_bg_type_to_raid_name(map->type));
-+		return -EINVAL;
-+	}
-+
-+	for (int i = 0; i < map->num_stripes; i++) {
-+		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
-+		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-+			continue;
-+
-+		if (test_bit(0, active) != test_bit(i, active)) {
-+			return -EIO;
-+		} else {
-+			if (test_bit(0, active))
-+				bg->zone_is_active = 1;
-+		}
-+
-+		if ((i % map->sub_stripes) == 0) {
-+			bg->zone_capacity += zone_info[i].capacity;
-+			bg->alloc_offset += zone_info[i].alloc_offset;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- int btrfs_load_block_group_zone_info(struct btrfs_fs_info *fs_info,
- 				     struct btrfs_block_group *cache)
+@@ -981,7 +981,7 @@ static int btrfs_load_block_group_dup(struct btrfs_fs_info *fs_info,
+ 				      struct btrfs_block_group *bg,
+ 				      struct map_lookup *map,
+ 				      struct zone_info *zone_info,
+-				      unsigned long *active)
++				      unsigned long *active, u64 last_alloc)
  {
-@@ -1192,8 +1225,8 @@ int btrfs_load_block_group_zone_info(struct btrfs_fs_info *fs_info,
- 		ret = btrfs_load_block_group_raid0(fs_info, cache, map, zone_info, active);
+ 	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
+ 		btrfs_err(fs_info, "zoned: data DUP profile needs raid-stripe-tree");
+@@ -1002,6 +1002,12 @@ static int btrfs_load_block_group_dup(struct btrfs_fs_info *fs_info,
+ 			  zone_info[1].physical);
+ 		return -EIO;
+ 	}
++
++	if (zone_info[0].alloc_offset == WP_CONVENTIONAL)
++		zone_info[0].alloc_offset = last_alloc;
++	if (zone_info[1].alloc_offset == WP_CONVENTIONAL)
++		zone_info[1].alloc_offset = last_alloc;
++
+ 	if (zone_info[0].alloc_offset != zone_info[1].alloc_offset) {
+ 		btrfs_err(fs_info,
+ 			  "zoned: write pointer offset mismatch of zones in DUP profile");
+@@ -1022,7 +1028,7 @@ static int btrfs_load_block_group_raid1(struct btrfs_fs_info *fs_info,
+ 					struct btrfs_block_group *bg,
+ 					struct map_lookup *map,
+ 					struct zone_info *zone_info,
+-					unsigned long *active)
++					unsigned long *active, u64 last_alloc)
+ {
+ 	int i;
+ 
+@@ -1036,9 +1042,10 @@ static int btrfs_load_block_group_raid1(struct btrfs_fs_info *fs_info,
+ 	bg->zone_capacity = min_not_zero(zone_info[0].capacity, zone_info[1].capacity);
+ 
+ 	for (i = 0; i < map->num_stripes; i++) {
+-		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
+-		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
++		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+ 			continue;
++		if (zone_info[i].alloc_offset == WP_CONVENTIONAL)
++			zone_info[i].alloc_offset = last_alloc;
+ 
+ 		if (zone_info[0].alloc_offset != zone_info[i].alloc_offset) {
+ 			btrfs_err(fs_info,
+@@ -1066,7 +1073,7 @@ static int btrfs_load_block_group_raid0(struct btrfs_fs_info *fs_info,
+ 					struct btrfs_block_group *bg,
+ 					struct map_lookup *map,
+ 					struct zone_info *zone_info,
+-					unsigned long *active)
++					unsigned long *active, u64 last_alloc)
+ {
+ 	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
+ 		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
+@@ -1075,9 +1082,24 @@ static int btrfs_load_block_group_raid0(struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	for (int i = 0; i < map->num_stripes; i++) {
+-		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
+-		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
++		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+ 			continue;
++		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
++			u64 stripe_nr, full_stripe_nr;
++			u64 stripe_offset;
++			int stripe_index;
++
++			stripe_nr = last_alloc / map->stripe_len;
++			stripe_offset = stripe_nr * map->stripe_len;
++			full_stripe_nr = stripe_nr / map->num_stripes;
++			stripe_index = stripe_nr % map->num_stripes;
++
++			zone_info[i].alloc_offset = full_stripe_nr * map->stripe_len;
++			if (stripe_index > i)
++				zone_info[i].alloc_offset += map->stripe_len;
++			else if (stripe_index == i)
++				zone_info[i].alloc_offset += (last_alloc - stripe_offset);
++		}
+ 
+ 		if (test_bit(0, active) != test_bit(i, active)) {
+ 			return -EIO;
+@@ -1096,7 +1118,7 @@ static int btrfs_load_block_group_raid10(struct btrfs_fs_info *fs_info,
+ 					 struct btrfs_block_group *bg,
+ 					 struct map_lookup *map,
+ 					 struct zone_info *zone_info,
+-					 unsigned long *active)
++					 unsigned long *active, u64 last_alloc)
+ {
+ 	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
+ 		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
+@@ -1105,9 +1127,24 @@ static int btrfs_load_block_group_raid10(struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	for (int i = 0; i < map->num_stripes; i++) {
+-		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
+-		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
++		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+ 			continue;
++		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
++			u64 stripe_nr, full_stripe_nr;
++			u64 stripe_offset;
++			int stripe_index;
++
++			stripe_nr = last_alloc / map->stripe_len;
++			stripe_offset = stripe_nr * map->stripe_len;
++			full_stripe_nr = stripe_nr / (map->num_stripes / map->sub_stripes);
++			stripe_index = stripe_nr % (map->num_stripes / map->sub_stripes);
++
++			zone_info[i].alloc_offset = full_stripe_nr * map->stripe_len;
++			if (stripe_index > (i / map->sub_stripes))
++				zone_info[i].alloc_offset += map->stripe_len;
++			else if (stripe_index == (i / map->sub_stripes))
++				zone_info[i].alloc_offset += (last_alloc - stripe_offset);
++		}
+ 
+ 		if (test_bit(0, active) != test_bit(i, active)) {
+ 			return -EIO;
+@@ -1214,18 +1251,18 @@ int btrfs_load_block_group_zone_info(struct btrfs_fs_info *fs_info,
+ 		ret = btrfs_load_block_group_single(fs_info, cache, &zone_info[0], active);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_DUP:
+-		ret = btrfs_load_block_group_dup(fs_info, cache, map, zone_info, active);
++		ret = btrfs_load_block_group_dup(fs_info, cache, map, zone_info, active, last_alloc);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_RAID1:
+ 	case BTRFS_BLOCK_GROUP_RAID1C3:
+ 	case BTRFS_BLOCK_GROUP_RAID1C4:
+-		ret = btrfs_load_block_group_raid1(fs_info, cache, map, zone_info, active);
++		ret = btrfs_load_block_group_raid1(fs_info, cache, map, zone_info, active, last_alloc);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_RAID0:
+-		ret = btrfs_load_block_group_raid0(fs_info, cache, map, zone_info, active);
++		ret = btrfs_load_block_group_raid0(fs_info, cache, map, zone_info, active, last_alloc);
  		break;
  	case BTRFS_BLOCK_GROUP_RAID10:
--		/* Temporarily fails these case, until following commits. */
--		fallthrough;
-+		ret = btrfs_load_block_group_raid10(fs_info, cache, map, zone_info, active);
-+		break;
+-		ret = btrfs_load_block_group_raid10(fs_info, cache, map, zone_info, active);
++		ret = btrfs_load_block_group_raid10(fs_info, cache, map, zone_info, active, last_alloc);
+ 		break;
  	case BTRFS_BLOCK_GROUP_RAID5:
  	case BTRFS_BLOCK_GROUP_RAID6:
- 	default:
 -- 
 2.48.1
 
