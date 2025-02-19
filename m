@@ -1,254 +1,251 @@
-Return-Path: <linux-btrfs+bounces-11563-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11564-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF613A3BBD5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 11:46:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C301BA3BC9C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 12:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE3F4177EE2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 10:46:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B5FB7A4FAB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 11:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4C91DE2B5;
-	Wed, 19 Feb 2025 10:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SyO0BcR7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA141DEFF7;
+	Wed, 19 Feb 2025 11:20:17 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E427C1AE005;
-	Wed, 19 Feb 2025 10:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76931A2C29;
+	Wed, 19 Feb 2025 11:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739961956; cv=none; b=llROrZ3B/PIbvpxEV2tX7Kxiiyq3h4vL4e3wyZdhYpe5LpJkqog8NiG/BHUca1JbNVestzI3pMDMcUYbQcVDyRxcYpjRJTmKWhUxWh4UhiVZfVf3277uUH9glKCuw0vvPMf92BIYE/qtYD4NNZg9/XP+xbvjt9BK5SHNltJLQc8=
+	t=1739964017; cv=none; b=SjRp+tjus/YljY2w3us9Z+beFFPokMLgjLJHXAJla2T/6Hszcmw7oTIOQM1KAkIoZ5ZR5C2ZvyrC5PdSR/VzBiIwarhA+5T/zSwlsaJY8iR6S94pErd0mvLYpwQWTSE3ukyefAiWN3H1+ZN06+ZmdZIvh29BPviJgaOdglWP1rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739961956; c=relaxed/simple;
-	bh=Jb2w6lCVr4kC3BuNMQrLa4sMzhliyKZXAM3DhHRZLP0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uaIAjR/eF5Yw3Vub41HIgHu9Jdh7rTDBnbjpEFFIgx/ph4JfOXnVkjovBfbuhQpiETIFlCscrvv18Fe/8S//y35Rimqmh0o1NQFUIDaSpDTmslsEjWcejaHytf0WLeZxG7lFLx51wZga/35kn7vnWucigc4+wQXUcvR9ytwjHuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SyO0BcR7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72111C4CED1;
-	Wed, 19 Feb 2025 10:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739961955;
-	bh=Jb2w6lCVr4kC3BuNMQrLa4sMzhliyKZXAM3DhHRZLP0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SyO0BcR71Wlhv1qJ2kX4d9V80u/hlt2+TCFufbsDzNuFU9p9gl+P5tClNK+FumpaG
-	 Oc0hYnPp7IIwl9Yut+IGyQiXTkgZ7i4WZ96jGEeYbnTTxWigrqA8DhS03WdyH68Iw0
-	 1+DLrD/affwp6tCzLgskXhjCyT7RkKwNkuhtL+9gsL4HKGsT5eEV+BxI2FjEo38XhO
-	 i5nodqZ7kVFwCqCwXWjZzgxEQddgoCjLVVrnzit9LjRO5NGVVKbepHEztzROsoUGQU
-	 E5O270kQ684o0CqsFXE0iqWcSyELew3HTkrYp+a8tO8u48oAvU+BMelG4o2D98gZiL
-	 IWjYn9vUmRpwg==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aaee2c5ee6eso996521966b.1;
-        Wed, 19 Feb 2025 02:45:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUzdD9btvW5NSfsvtaNm+Lc1zXXLUxBUf6l2GsfbMskpVwUJpnTSEYhx1vsbQeGW90kojKSXBQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwayEgvV5Xg0f7pt6ebL/QoWm4wZQcNu8gQNS8oLR23/w9ocizN
-	mt+Iu7H7J3DNZu2kjouWL+uJKjV8wMjj4p6vPUoYaJarBffz6um+Ybu1RX/FCjUJgQpUzVuFc+H
-	Id11PqbanP4kVktAsF1JXp5zhVv8=
-X-Google-Smtp-Source: AGHT+IEXQ94joaJvX6v+PPzAewiGWlKIkb77xmxvP737pvRdetWv1xxoasLM0NrTnZu+qJXRJ6U/awCnqCTaogmJwr8=
-X-Received: by 2002:a17:907:7eaa:b0:ab3:76fb:96ab with SMTP id
- a640c23a62f3a-abbcd113d0fmr333069066b.57.1739961953971; Wed, 19 Feb 2025
- 02:45:53 -0800 (PST)
+	s=arc-20240116; t=1739964017; c=relaxed/simple;
+	bh=21iMGn5nmMgxSUhNifIphPXQHgu7d4Uv/JM64va/VIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=h03P3jDI85tkEjeyDEeMH4ti1+gir/Xp45EUV1LFayAIk9vwxTpwfr/R8XAoxPzElLjImwvq/rKY7XELruu3NQ3aLkKSp7KPCylqVntHjkOHggbRRRv1XSq1KefjWntls3WZj4V6c5TpAOYDca7GPTwnGk9jmmz4WzQRnanU31Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4YyYpr37n2z22kst;
+	Wed, 19 Feb 2025 19:20:36 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9333E140360;
+	Wed, 19 Feb 2025 19:20:05 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 19 Feb 2025 19:20:05 +0800
+Message-ID: <c9950a79-7bcb-41c2-a59e-af315dc6d7ff@huawei.com>
+Date: Wed, 19 Feb 2025 19:20:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a50ceebfe3155ab0f1f0018c28ef99bda264c039.1739920169.git.wqu@suse.com>
-In-Reply-To: <a50ceebfe3155ab0f1f0018c28ef99bda264c039.1739920169.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 19 Feb 2025 10:45:17 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6gcebdicis6tPd3uFAZfuLYZRtEYdGc_azPaMdwOkEGQ@mail.gmail.com>
-X-Gm-Features: AWEUYZngEr2on82UuKKihKxhcLYm1aqbWTpzBiXksYWAkZaAII9pceC5R_2OEkY
-Message-ID: <CAL3q7H6gcebdicis6tPd3uFAZfuLYZRtEYdGc_azPaMdwOkEGQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix data overwriting bug during buffered write
- when block size < page size
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] mm: alloc_pages_bulk: remove assumption of populating only
+ NULL elements
+To: Dave Chinner <david@fromorbit.com>
+CC: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shameer
+ Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian
+	<kevin.tian@intel.com>, Alex Williamson <alex.williamson@redhat.com>, Chris
+ Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
+	<dsterba@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep
+ Dhavale <dhavale@google.com>, Carlos Maiolino <cem@kernel.org>, "Darrick J.
+ Wong" <djwong@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Trond Myklebust
+	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever
+	<chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
+	<neilb@suse.de>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Luiz Capitulino
+	<luizcap@redhat.com>, Mel Gorman <mgorman@techsingularity.net>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+	<linux-erofs@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
+	<linux-mm@kvack.org>, <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
+References: <20250217123127.3674033-1-linyunsheng@huawei.com>
+ <Z7Oqy2j4xew7FW9Z@dread.disaster.area>
+ <cf270a65-c9fa-453a-b7a0-01708063f73e@huawei.com>
+ <Z7T4NZAn4wD_DLTl@dread.disaster.area>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <Z7T4NZAn4wD_DLTl@dread.disaster.area>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On Tue, Feb 18, 2025 at 11:10=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> When running generic/417 with a btrfs whose block size < page size
+On 2025/2/19 5:14, Dave Chinner wrote:
+> On Tue, Feb 18, 2025 at 05:21:27PM +0800, Yunsheng Lin wrote:
+>> On 2025/2/18 5:31, Dave Chinner wrote:
+>>
+>> ...
+>>
+>>> .....
+>>>
+>>>> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+>>>> index 15bb790359f8..9e1ce0ab9c35 100644
+>>>> --- a/fs/xfs/xfs_buf.c
+>>>> +++ b/fs/xfs/xfs_buf.c
+>>>> @@ -377,16 +377,17 @@ xfs_buf_alloc_pages(
+>>>>  	 * least one extra page.
+>>>>  	 */
+>>>>  	for (;;) {
+>>>> -		long	last = filled;
+>>>> +		long	alloc;
+>>>>  
+>>>> -		filled = alloc_pages_bulk(gfp_mask, bp->b_page_count,
+>>>> -					  bp->b_pages);
+>>>> +		alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - refill,
+>>>> +					 bp->b_pages + refill);
+>>>> +		refill += alloc;
+>>>>  		if (filled == bp->b_page_count) {
+>>>>  			XFS_STATS_INC(bp->b_mount, xb_page_found);
+>>>>  			break;
+>>>>  		}
+>>>>  
+>>>> -		if (filled != last)
+>>>> +		if (alloc)
+>>>>  			continue;
+>>>
+>>> You didn't even compile this code - refill is not defined
+>>> anywhere.
+>>>
+>>> Even if it did complile, you clearly didn't test it. The logic is
+>>> broken (what updates filled?) and will result in the first
+>>> allocation attempt succeeding and then falling into an endless retry
+>>> loop.
+>>
+>> Ah, the 'refill' is a typo, it should be 'filled' instead of 'refill'.
+>> The below should fix the compile error:
+>> --- a/fs/xfs/xfs_buf.c
+>> +++ b/fs/xfs/xfs_buf.c
+>> @@ -379,9 +379,9 @@ xfs_buf_alloc_pages(
+>>         for (;;) {
+>>                 long    alloc;
+>>
+>> -               alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - refill,
+>> -                                        bp->b_pages + refill);
+>> -               refill += alloc;
+>> +               alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - filled,
+>> +                                        bp->b_pages + filled);
+>> +               filled += alloc;
+>>                 if (filled == bp->b_page_count) {
+>>                         XFS_STATS_INC(bp->b_mount, xb_page_found);
+>>                         break;
+>>
+>>>
+>>> i.e. you stepped on the API landmine of your own creation where
+>>> it is impossible to tell the difference between alloc_pages_bulk()
+>>> returning "memory allocation failed, you need to retry" and
+>>> it returning "array is full, nothing more to allocate". Both these
+>>> cases now return 0.
+>>
+>> As my understanding, alloc_pages_bulk() will not be called when
+>> "array is full" as the above 'filled == bp->b_page_count' checking
+>> has ensured that if the array is not passed in with holes in the
+>> middle for xfs.
+> 
+> You miss the point entirely. Previously, alloc_pages_bulk() would
+> return a value that would tell us the array is full, even if we
+> call it with a full array to begin with.
+> 
+> Now it fails to tell us that the array is full, and we have to track
+> that precisely ourselves - it is impossible to tell the difference
+> between "array is full" and "allocation failed". Not being able to
+> determine from the allocation return value whether the array is
+> ready for use or whether another go-around to fill it is needed is a
+> very poor API choice, regardless of anything else.
+> 
+> You've already demonstrated this: tracking array usage in every
+> caller is error-prone and much harder to get right than just having
+> alloc_pages_bulk() do everything for us.
 
-generic/417 -> generic/418
+While I am agreed that it might be hard to track array usage in every
+caller to see if removing assumption of populating only NULL elements
+cause problem for them, I still think the page bulk alloc API before
+this patch have some space for improvement from performance and
+easy-to-use perspective as the most existing calllers of page bulk
+alloc API are trying to bulk allocate the page for the whole array
+sequentially.
 
-> (subpage cases), it always fails.
->
-> And the following minimal reproducer is more than enough to trigger it
-> reliably:
->
-> workload()
-> {
->         mkfs.btrfs -s 4k -f $dev > /dev/null
->         dmesg -C
->         mount $dev $mnt
->         $fsstree_dir/src/dio-invalidate-cache -r -b 4096 -n 3 -i 1 -f $mn=
-t/diotest
->         ret=3D$?
->         umount $mnt
->         stop_trace
->         if [ $ret -ne 0 ]; then
->                 fail
->         fi
-> }
->
-> for (( i =3D 0; i < 1024; i++)); do
->         echo "=3D=3D=3D $i/$runtime =3D=3D=3D"
->         workload
-> done
->
-> [CAUSE]
-> With extra trace printk added to the following functions:
-> - btrfs_buffered_write()
->   * Which folio is touched
->   * The file offset (start) where the buffered write is at
->   * How many bytes are copied
->   * The content of the write (the first 2 bytes)
->
-> - submit_one_sector()
->   * Which folio is touched
->   * The position inside the folio
->
-> - pagecache_isize_extended()
->   * The parameters of the function itself
->   * The parameters of the folio_zero_range()
->
-> Which are enough to show the problem:
->
->   22.158114: btrfs_buffered_write: folio pos=3D0 start=3D0 copied=3D4096 =
-content=3D0x0101
->   22.158161: submit_one_sector: r/i=3D5/257 folio=3D0 pos=3D0 content=3D0=
-x0101
->   22.158609: btrfs_buffered_write: folio pos=3D0 start=3D4096 copied=3D40=
-96 content=3D0x0101
->   22.158634: btrfs_buffered_write: folio pos=3D0 start=3D8192 copied=3D40=
-96 content=3D0x0101
->   22.158650: pagecache_isize_extended: folio=3D0 from=3D4096 to=3D8192 bs=
-ize=3D4096 zero off=3D4096 len=3D8192
->   22.158682: submit_one_sector: r/i=3D5/257 folio=3D0 pos=3D4096 content=
-=3D0x0000
->   22.158686: submit_one_sector: r/i=3D5/257 folio=3D0 pos=3D8192 content=
-=3D0x0101
->
-> The tool dio-invalidate-cache will start 3 threads, each doing a buffered
-> write with 0x01 at 4096 * i (i is 0, 1 ,2), do a fsync, then do a direct =
-read,
-> and compare the read buffer with the write buffer.
->
-> Note that all 3 btrfs_buffered_write() are writing the correct 0x01 into
-> the page cache.
->
-> But at submit_one_sector(), at file offset 4096, the content is zeroed
-> out, mostly by pagecache_isize_extended().
->
-> The race happens like this:
->  Thread A is writing into range [4K, 8K).
->  Thread B is writing into range [8K, 12k).
->
->                Thread A              |         Thread B
-> -------------------------------------+-----------------------------------=
--
-> btrfs_buffered_write()               | btrfs_buffered_write()
-> |- old_isize =3D 4K;                   | |- old_isize =3D 4096;
-> |- btrfs_inode_lock()                | |
-> |- write into folio range [4K, 8K)   | |
-> |- pagecache_isize_extended()        | |
-> |  extend isize from 4096 to 8192    | |
-> |  no folio_zero_range() called      | |
-> |- btrfs_inode_lock()                | |
->                                      | |- btrfs_inode_lock()
->                                      | |- write into folio range [8K, 12K=
-)
->                                      | |- pagecache_isize_extended()
->                                      | |  calling folio_zero_range(4K, 8K=
-)
->                                      | |  This is caused by the old_isize=
- is
->                                      | |  grabbed too early, without any
->                                      | |  inode lock.
->                                      | |- btrfs_inode_unlock()
->
-> The @old_isize is grabbed without inode lock, causing race between two
-> buffered write threads and making pagecache_isize_extended() to zero
-> range which is still containing cached data.
->
-> And this is only affecting subpage btrfs, because for regular blocksize
-> =3D=3D page size case, the function pagecache_isize_extended() will do
-> nothing if the block size >=3D page size.
->
-> [FIX]
-> Grab the old isize with inode lock hold.
+> 
+>>> The existing code returns nr_populated in both cases, so it doesn't
+>>> matter why alloc_pages_bulk() returns with nr_populated != full, it
+>>> is very clear that we still need to allocate more memory to fill it.
+>>
+>> I am not sure if the array will be passed in with holes in the
+>> middle for the xfs fs as mentioned above, if not, it seems to be
+>> a typical use case like the one in mempolicy.c as below:
+>>
+>> https://elixir.bootlin.com/linux/v6.14-rc1/source/mm/mempolicy.c#L2525
+> 
+> That's not "typical" usage. That is implementing "try alloc" fast
+> path that avoids memory reclaim with a slow path fallback to fill
+> the rest of the array when the fast path fails.
+> 
+> No other users of alloc_pages_bulk() is trying to do this.
 
-hold -> held
+What I meant by "typical" usage is the 'page_array + nr_allocated'
+trick that avoids the NULL checking when page bulk allocation API
+is used in mm/mempolicy.c, most of existing callers for page bulk
+allocation in other places seems likely to be changed to do the
+similar trick as this patch does.
 
-Or easier to understand:
+> 
+> Indeed, it looks somewhat pointless to do this here (i.e. premature
+> optimisation!), because the only caller of
+> alloc_pages_bulk_mempolicy_noprof() has it's own fallback slowpath
+> for when alloc_pages_bulk() can't fill the entire request.
+> 
+>>> IOWs, you just demonstrated why the existing API is more desirable
+>>> than a highly constrained, slightly faster API that requires callers
+>>> to get every detail right. i.e. it's hard to get it wrong with the
+>>> existing API, yet it's so easy to make mistakes with the proposed
+>>> API that the patch proposing the change has serious bugs in it.
+>>
+>> IMHO, if the API is about refilling pages for the only NULL elements,
+>> it seems better to add a API like refill_pages_bulk() for that, as
+>> the current API seems to be prone to error of not initializing the
+>> array to zero before calling alloc_pages_bulk().
+> 
+> How is requiring a well defined initial state for API parameters
+> "error prone"?  What code is failing to do the well known, defined
+> initialisation before calling alloc_pages_bulk()?
+> 
+> Allowing uninitialised structures in an API (i.e. unknown initial
+> conditions) means we cannot make assumptions about the structure
+> contents within the API implementation.  We cannot assume that all
+> variables are zero on the first use, nor can we assume that anything
+> that is zero has a valid state.
 
-Grab the old i_size while holding the inode lock.
+It seems the above is the main differenece we see from the API perspective,
+as I see the array as output parameter and you seems to treat the array as
+both input and output parameter?
 
-> This means each buffered write thread will have a stable view of the
-> old inode size, thus avoid the above race.
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The kmem_cache_alloc_bulk() API related API seems to treat the array as
+output parameter too as this patch does, the difference from this patch
+is that if there is no enough memory, it will free the allocated memory
+and return 0 to the caller while this patch returns already allocated
+memory to its caller even when there is no enough memory.
 
-Fixes: 5e8b9ef30392 ("btrfs: move pos increment and pagecache
-extension to btrfs_buffered_write")
-
-That is the commit that introduced the race, before it we were
-grabbing i_size and doing the pagecache_isize_extended() call while
-holding the inode lock.
-
-> ---
->  fs/btrfs/file.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index fd90855fe717..896dc03689d6 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1090,7 +1090,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, st=
-ruct iov_iter *i)
->         u64 lockend;
->         size_t num_written =3D 0;
->         ssize_t ret;
-> -       loff_t old_isize =3D i_size_read(inode);
-> +       loff_t old_isize;
->         unsigned int ilock_flags =3D 0;
->         const bool nowait =3D (iocb->ki_flags & IOCB_NOWAIT);
->         unsigned int bdp_flags =3D (nowait ? BDP_ASYNC : 0);
-> @@ -1103,6 +1103,13 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, s=
-truct iov_iter *i)
->         if (ret < 0)
->                 return ret;
->
-> +       /*
-> +        * We can only trust the isize with inode lock hold, or it can ra=
-ce with
-
-Same here, hold -> held
-
-With those things addressed:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> +        * other buffered writes and cause incorrect call of
-> +        * pagecache_isize_extended() to overwrite existing data.
-> +        */
-> +       old_isize =3D i_size_read(inode);
-> +
->         ret =3D generic_write_checks(iocb, i);
->         if (ret <=3D 0)
->                 goto out;
-> --
-> 2.48.1
->
->
+> 
+> Again, this is poor API design - structures passed to interfaces
+> -should- have a well defined initial state, either set by a *_init()
+> function or by defining the initial state to be all zeros (i.e. via
+> memset, kzalloc, etc).
+> 
+> Performance and speed is not an excuse for writing fragile, easy to
+> break code and APIs.
+> 
+> -Dave.
 
