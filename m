@@ -1,209 +1,319 @@
-Return-Path: <linux-btrfs+bounces-11547-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11548-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E833BA3B291
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 08:37:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A91CA3B2C8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 08:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62A5A17464D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 07:36:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DAA23AB303
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 07:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF511C1F29;
-	Wed, 19 Feb 2025 07:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D929F1C3BFC;
+	Wed, 19 Feb 2025 07:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="CFp4i4Qs";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="frUc7n+c"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dBDFgRkv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0FA1C1F13
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 07:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739950613; cv=fail; b=jOHclVYWIkgztdKQabY1BngjGLuM/4k4Mnv6WCxHveityHENtxILpnrzQ+i1UYHbDuhvtNoerCQiWf2cdISRgRbJJ3pxckMhiwCrgLWzq81lB6Od0fem6iRYMVXAcdUuOFQGsgFnlhwyvYIZvdZZNL6it6zvt4Uz5xp+OPnb72I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739950613; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=df1eU827eHq7kJ7KVy9Tr8lGcXZD5Ups1vkUJrVFvngVnT1qOjbKt4L7Nob+5lcrtgRJTB1e4ddqQaR13fEpA7Tbbbb/3mh1sjChISCZfJxdBvWAz+o4rlP/vpTuoNiJHkHae0y9SZPsrtqev4+2NsweNbc3H45JsLg7QUuupdw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=CFp4i4Qs; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=frUc7n+c; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1739950611; x=1771486611;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=CFp4i4QshG4/SQm1bVTAw+WWCwfM5h2dCb6DsjciQCjHB1LxkD4uR3ez
-   +hz7jc6YV9iIo9OItjUrwq5fnty8+uvhPelgAR/JcpSHVpb7hFUObCX7P
-   f5nitlF7zNNHOQJ52JQReKsbc5zG5S9RcXaiOmfk+KLCTknS2rK0rHXSZ
-   gQyPIY0dfve+UuwYgQ/HnqJPGnY3j+tvnnAQc/12pMI8yJucq4A921IJK
-   VWNd91jjNJPBlMhD2rbJJFd7pYFbam+wn4QgRXY8JxpyytnxPo7sH90HP
-   23Umy8tbEoyokDDdFeVYkPfatLiVcd8Sg6sWbEJz2bYNnsaDtb2H0NTGA
-   Q==;
-X-CSE-ConnectionGUID: Vu/toAPlRoul2Boa7+7GLQ==
-X-CSE-MsgGUID: 87aIfbSuSK+55VcV+i1bAA==
-X-IronPort-AV: E=Sophos;i="6.13,298,1732550400"; 
-   d="scan'208";a="40113947"
-Received: from mail-bl0pr05cu006.outbound1701.protection.outlook.com (HELO BL0PR05CU006.outbound.protection.outlook.com) ([40.93.2.10])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Feb 2025 15:36:45 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=fMRQji2uAANoBos2qcnTcECDlesTmHTprUey/kiwngiV7/rGvPU+PxN5eBEn7DOqZtuB3YPI0xZQbf8d/9VMZoFn+LNszUoFXK499M0q60GTi89pz0dmR0IVMHc/TDCmqGQH8z4EXuX/s+cnD94ZIDbZcmyrf/ep9kIcOiPNd0xcRTpljSUFU6xvPVZEZjw5i2NuI+YbOnBrz/V2Ol2X/GeFcUHXph52Lr7UUAZVAGpiQSSksFkrEhCCW8Jql9XMwSmLHYQ9pt5cetYXVQxzVQUIbFYQvysJ2dmwu0+V/25w1/+lv+SWBIfMNnqWtoWp+3Bcn9elAj9wEX87u1M+Ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=LSYBQQG70fZEtTfqwtqF7ngltJKmcm15GzyppWHqRerPSBjgvLgCclXrOWPLqfkZWif/f9QXwa1LvbQ0fuxo3F3h77ZRipnwa4sgDKn7T7fOKj4QHvLsI8DcCl6JPPzodx2hniWeuYlrqJw7yB4N/+Si6aw1ZPxoGbrJjB/eB074cphiJkQZTzVoXd2Y96e7AhY9xlm4Kz7WkkyXp+PzEyhfdDQjqlzwxONpgM+QFtGkeCA5098oBRZ5HNClf+2gStw7FpIwEkRCIgrv1CUiqUcFIuEEIwSEI3jEYBAW7spJydId9PHjY4deHbZ44wUKaHDZ/UiJARwFaFZn6X8Gkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6FF17A2E4
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 07:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739951241; cv=none; b=gsfy2XDOR4q1WvdpfwZaav/2zuAAHF6chNG/sgFkhc21lw8ppIMLDuZ/80vytivgJCfYCmF903/7s7G5GG+3TmJHiG/IspxPH7WkWzSEU1ssaKiTl4C828lIn877aHPmk1QMLZYek8CTZvUeLoI9Rp9TMr4ntBdQyRo4h8jQL9g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739951241; c=relaxed/simple;
+	bh=fT7kwX4eGXG+3sHNKABOBy/KX9YbT9dcpVfqnw8cQkw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VeUXrj7461t0kt/XwqbfB68NBaqAf9TDEwWxKmkNuFklffP9VFKQAuxMSNR/eXfLG1vcIOD+J+yg9MwC0pWTTBYgbR9tb4gzQr6eahLDYD7hdUoJkhdgpDEBwpUO6FHpq+S52axgqvsAfdqVEpZDamGBY0QFVEg412SarKhyVwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=fail smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dBDFgRkv; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5e02eba02e8so5905444a12.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 23:47:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=frUc7n+czoQW5KkO7FIpI3Y+g77W0EomlggSw2rXld1S2MEzFdSW1rMoWYmKlkNO/4fbCHmAu2gmD01oedRildwDWv18UXcFZjHYpnEq7QN+gE5wYhWEBA6iO1EXcVWvbX/QXrVH2+FnSj0JhlWnC4OLhQkvBba/2uxTrzIra1w=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BN8PR04MB6306.namprd04.prod.outlook.com (2603:10b6:408:d6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.14; Wed, 19 Feb
- 2025 07:36:44 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8466.015; Wed, 19 Feb 2025
- 07:36:43 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-CC: WenRuo Qu <wqu@suse.com>, Shinichiro Kawasaki
-	<shinichiro.kawasaki@wdc.com>
-Subject: Re: [PATCH] btrfs: zoned: fix extent unlock in cow_file_range()
-Thread-Topic: [PATCH] btrfs: zoned: fix extent unlock in cow_file_range()
-Thread-Index: AQHbgpxY+uIh1KWXg0qkS2TG9BwNSLNOPNKA
-Date: Wed, 19 Feb 2025 07:36:43 +0000
-Message-ID: <b9ea5f35-de8d-4b40-b122-da106aaba684@wdc.com>
-References:
- <baa48c5a32ae079b218613cbdae175f2387cd745.1739948529.git.naohiro.aota@wdc.com>
-In-Reply-To:
- <baa48c5a32ae079b218613cbdae175f2387cd745.1739948529.git.naohiro.aota@wdc.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BN8PR04MB6306:EE_
-x-ms-office365-filtering-correlation-id: 30446a60-53d9-4fc4-b98d-08dd50b8286a
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?K0dZUDNvdGxlLzBoeTIrdDY1NnZ4azJwcitUOXlWeEVvZVJ5WW90dGFQckdu?=
- =?utf-8?B?b0pjQ1NtOTlJOXMzci84dEUxQk4rTjlONndpNFpMbFFXdjd1OUFCelBKRUlk?=
- =?utf-8?B?SU8rV3lyY2JHMVlJQVMvVjBGV1h4MkZyK1hEMzBwMG9VMERkaDM1YXFHcGdE?=
- =?utf-8?B?a3ZHdUhXMERzZ3JMeVlqTjFGQzJ0c3BTQmR5MFRTOWJQcjNXSFlNNDZpVndu?=
- =?utf-8?B?V3JvWTFHK2dMYWEwTjVBTGxrRXFFMzFNSWE0K2VLSEx4N1h3RktzSzlVNEJN?=
- =?utf-8?B?dTZ3SXA5a0YyVllpRVlZWHhiVkhBVmNjT0Q1SXFnRVpXL24vb0pKbSs0ZnFY?=
- =?utf-8?B?b1ZaV090NmNpemJmSmFoRFU3ckRqdUpzT1dTUFExVnkweVp2eGluYzhWMjRZ?=
- =?utf-8?B?RitEZVlnUFhGZnpIU0hTUmpyL3FzUXN6VUxsbWd6ZnNNQ3pkM3crZnRnWXUw?=
- =?utf-8?B?WE9Hb0cyZHM3SjVZeThtODVFRmdOS2tHNjJScjA2ZENySmRYMGF5U1IvVzl5?=
- =?utf-8?B?UGxBUUhWTCtSc1ZkZFlwS2NVSzczY0JLZzVJSHMrZ2hjeGsvL0E3TWFVM09P?=
- =?utf-8?B?TUdaTE5UdEFQbFhkTDFuTHBkcXBjaGwrZnROU0ltMXE5Z3Y2RUkzYXdsUCsw?=
- =?utf-8?B?TE1RLy9TLzFvKzVZYjZsY0ZpajF0dTBteThqU05RaFVBdTRuNDRuVXRMZGhF?=
- =?utf-8?B?cTJVaElMbjgvVnZZTG9WVnprNDEvajE4Mm5hMWljdG5PT2thVkdMdXoyT0Vu?=
- =?utf-8?B?RlVxZGgzcFpGRktRQno0Qk5wM0pBRDE4bDl0eUNOYTRFQ3RKaUEwZWpkU2xC?=
- =?utf-8?B?cDRqWWhpMzNwdFRpMWNwSU04RHlHVnQ1SHk4cEhqR2NMWjJUekZ6MllJV0pT?=
- =?utf-8?B?TlVicGVBVWUrM05SVWpoNzl5VDg4cFJyVVRlZ3orWjg2bUpYanRENml4WU9P?=
- =?utf-8?B?QlVQMkNqd1hnMFZrWnRnYVRnQkJ5TVJqTXp3U1BQWDh5SGdFTUc1OGVKbkRs?=
- =?utf-8?B?cUNXMEJLNzNzbCtWbkFBYjgvRU84REh3amwzQzJHcytJclJkaVhiR3plNXlB?=
- =?utf-8?B?S1UyVDluWk4venRJL2pneWNyd25WK2pQY0VmVzgyVGMzSlZDalJOUEJSazNS?=
- =?utf-8?B?YVBEZUFSaWprUDJaaTNpL0luc0w5RllNRWM0R3VMQmdCYThzZmkzMlJodjlD?=
- =?utf-8?B?VjU4dlhWZjErMktUU2I4YlB0M1ZlUzRNNGk1YVBUUXNjNWVnMUg3TWRCM2dz?=
- =?utf-8?B?MDdGV012M3dVRzk2clJ3SzBVU3ZLWWZFY040TitPN0h2eDdsWlFuMG9CcW55?=
- =?utf-8?B?SG9Sai9VZGhPZEdlTllaTVh1d0NrNWt2c1Q0Q0EvV0JsdGNPNk1BSVJMUEYy?=
- =?utf-8?B?UU43eFB3OTkwN2JmYllMN29ZZjloanhUNjBYK2VKQ0I1Vmo0K25abkNxVSsv?=
- =?utf-8?B?TEN6QjMweXNEY2R0NFBOK0x4NlQ5TEM4elZWWHBFUjdhZHYwVk5uMmpHMWdh?=
- =?utf-8?B?a2xoaisxNVViaVREYWE4aFBKL2FkWGIzcGJpcStTTlZuOTJPM1ZwampjVzIx?=
- =?utf-8?B?YjkwUDFBQkpldmliRTYzMWRoNEx5VmxKU3JCZDJwZGpjNkd3Y2VQaEFuS1da?=
- =?utf-8?B?a1ZsUm5EcGw0amlFRzhSc2owcjM5ZmxyUWRURk9qUGhZY0EwNmQ5ak9lNWNU?=
- =?utf-8?B?QTlKMFJMT3ppNXZFMkhNVHRjSXNBS2tWRElqeE01MFZqU0hIMm1LRHZ5NFNh?=
- =?utf-8?B?d2JWK2lQYU4yMEZRY2VDQ2thd1N4MWJHMDhhMFpsTXc2WDJUZTNGNXJrMyto?=
- =?utf-8?B?RDhlTGRrem01aXpPcHdCbnhVbjJOMjBBdnBFVVRTWUtMdGhFL0xYK3VkSlRI?=
- =?utf-8?B?TmRUcHFIb0RBSGxac2tuUjhGaW1yWmZuaFowMHNYdkVTdW1CejFqNzZBbGk4?=
- =?utf-8?Q?A+VoYgJSQEB0Sb73zVjLB1q5owiu2NWQ?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?amtzWGlLcFBuRVNpRjlqT1RSd3krUDVUMHRLdUZtYytSSW9tNTdPYkhCOXBQ?=
- =?utf-8?B?QXpiSFNIUUc5bDU4VzdPQUdNUGdpTmdZRDlIWnQ3VjVpbHNHeTZYOVRyRVUx?=
- =?utf-8?B?aDZvazFtK0pkcDc5dmZnNGEybGRJRXRxR2QwVmhJRFkxSVRjTk4rSGJ5NWNZ?=
- =?utf-8?B?Mjh1b2VZT0hFK3BFUjN2WjBGang4WmZVQlNxU1BrbnZ4VHkvWk8zUmxwRnJJ?=
- =?utf-8?B?Mlc0YjdScEF3bC8yZ2gvVGRpVVFFTVc1UWsxOG5sSHV2TThhUXB2eTBJMlpV?=
- =?utf-8?B?cW50L01nT1V1bHY3cno4ZURVMGM1NWRHeGFocjl6NytHcjcxczZDaHpHTGhv?=
- =?utf-8?B?eGEzRGQrYzd4R3Y5SEwrZVFJdUsySyt4aU1NckttQTNrekJzWDhNODBoaDBn?=
- =?utf-8?B?VmY5ZDdTa2g0RkM2aVhxcy9PVlZMTENNa0RFZWNSQ08ramtwWmZCUGkySy84?=
- =?utf-8?B?ZmxyU09ZOEM1K0RtYmQ2UTVpK2lvYWt1Um5UWXZWOTVLQkRzcGQ2OUlienlu?=
- =?utf-8?B?VEo4a0pqOUdtRHJwdWJ3UXU4WnowV203ZG5MK0xqd0ZCYnMxTkNJR3ZZK1Y1?=
- =?utf-8?B?K3paLzRBdVRhQlppNWpnUW1HSmdsYW5rWFBjRmJrb0FJb25teWVZdEY5NnF1?=
- =?utf-8?B?ZGxyTGdHV0dvU2Z4dGtQZlVNV3FGVHB1aDJiQ3BuNmpxY3EvNWhVU0hVUERS?=
- =?utf-8?B?ZUFJditxNVhwZ2RJbDlXZzRFdzR3K3hQa2hselQydmZtQnVDcFBqNElMRFVI?=
- =?utf-8?B?b3I0Qk9hN1NhZTFqa0xJN2J5SjRGYmI5NHpqY2hpZE0wYVdObUlFVEhSd2Ix?=
- =?utf-8?B?OFhidUFkczNJQlRNUEhpQ3ZIaitFNEhZMGg1UGViMmR2eG04T0FVc0FOVDhI?=
- =?utf-8?B?YUM2UTRGM2JieDBGYjAwOG1YY1NtYTZDQUp4US9ZU1k1ZWx6d2JYZ2dhZEZD?=
- =?utf-8?B?SUgzS0xTRW83UmsxUnd5MmJweVZqeVdOeXovVTlBNDJwZWMyWTlabmxNYlBh?=
- =?utf-8?B?aU1hWWdhUVNqYjRMS0t4TVgvbmpQU2hobytaRmJtZlVQZ3J6US9yY2pWRWYw?=
- =?utf-8?B?SExZWFlUYUc4Nm1FMElFK3VZMVNtZVpFc3RQVnpHMGVUZ3pCakRiSXdickdq?=
- =?utf-8?B?WU94NXp6ZGt2aDJCenhtdytrZG5XSHhkeDh2ZCtLY3Nwa1J3bThyUzJMTGRr?=
- =?utf-8?B?WGM5MzdvY3g2Um9uYkFPNm5jaWpPUFhXZHFTUmxKQU9sYXJzQ0t1MUJHKzll?=
- =?utf-8?B?SW1BR3ZOVG1DbTVZRDIvZVR0dENuenlBQWxiYmVHVkcrbWx6cG01Z2tsWmFq?=
- =?utf-8?B?UE9ja2RWZERmNiswNmRPZkNwK1lzS1lmcDhVNnBaNFRYM0FjemJKQTBrYkE5?=
- =?utf-8?B?SDZsQXFYUkJwRWJBRmVDL0kyQm5aYnpuOEdNQWUyYUtadlVjb2JkYjJ1R2pN?=
- =?utf-8?B?YWdEQTk1M3pVeUU5NlB4OWJmeCtnSFBVZ3huMEhVODRIRU9xbU5TYW41NGg0?=
- =?utf-8?B?ekZCcCs0S28vOWlQQUY1RDNBS1QyUmVjSlhxVytBb3RDeUtlUGJEK0x5OW03?=
- =?utf-8?B?cGt2RTNFRjBXTmhSMTBxUXpXUU53NGFoN3JqTHhrVEtpcVdiTGU1SmVRUmp3?=
- =?utf-8?B?UitjVGhGOUM1a2dJRFhEYVB2QzVTUmp3c1o0ZytLNmlFeGd4VHR4eHdwaTZl?=
- =?utf-8?B?SnZIcHcydVAydnAvak9CTlVic0lLb3A4dlRIZGcyNGpVS01HTEFPOFpZYzhB?=
- =?utf-8?B?clNNOVBzUHQxby94UGdRNkhJc1VwVnlWOTZCRmFzazhPQlhzZzJZQTJyTURJ?=
- =?utf-8?B?OXlJVjZFNnUzcmFmT0U3OVVrcUQ0N2ZoWmc4TlU3SWR0Nkh1eFQwM0hJVVhJ?=
- =?utf-8?B?YzUva3lxTlhPVjh3dXJOU0Z0SUtCVEFNSDBwaWRKNXRPYUhwZkxyN0pjTUxB?=
- =?utf-8?B?YlRYd0d4VXFsUEE4Qzk5MU8vRUtjVndvbUNFcm1oWWpNMW4xN2pvMXJsSmsx?=
- =?utf-8?B?K21xSGdXZmtUVzY1SDUzWGJsRWU3NXNKTSswcEFZVzc2bUM3T3l0UnAyd1FP?=
- =?utf-8?B?RjEwWHBpTmovM1dvUkZRZWNEVmVueWM2Ym5obGV6Nm4yanBtSys2L0dDeDRU?=
- =?utf-8?B?VjQ4VHJkTER1ZDBMVEFkKzNQZjh0NW4rVHBXclR2NG1FVWU5cytOcWFIUzVm?=
- =?utf-8?B?UEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1652FB5131EE2643892E7913B94EFBD6@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=suse.com; s=google; t=1739951237; x=1740556037; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nWD0f94cZllFMbpjY4gBUBZLZNGtagHiQ/H3PnmJ9Rc=;
+        b=dBDFgRkv8zRXS8p1vGZS/+kQlpIHEcYDyMp2y06mYQjuSViYro6Yp9AyFTyL/h8X4J
+         DW3BsEFRCzO0r2u8napyn5uD7VBx0SQDntwNIPVBZLTq/CzNTMEiF8BSoiJA1jnDIiGV
+         B/V7na6LQ/zIO4yOF7bA98mTs6fEvKndxrvp3jvLDuI0mIUO1hPkeOBO/tGcfgs0fDiI
+         +S73b2woxkviPQM8W0mBIbqyDnLIA7gPZkFlDj0fU1UMZx0eVqdyVEoezRts4fR17SvN
+         kodWbpotWb5ZYOrOnzCMqDmOSaTmggC1zC21tl/PX29T5A3niCTNj5FpV4E3DJKOCy3h
+         Jt+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739951237; x=1740556037;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nWD0f94cZllFMbpjY4gBUBZLZNGtagHiQ/H3PnmJ9Rc=;
+        b=AsyxZeRyQdwTHL7G80bRb3nlUm+4a5yNmV6ODBsD1Yu+IeuIj2LSkwuWkIRzR4GF+t
+         fbW34nrEj73VDWC4NTaZH6qtl/Fsf4m7GJZcFhbth2ibonmO6Dif570VCMP0F7LqoV9i
+         oqt8UuFM+cPwjBgW9nAXpWTLnxjnmiJ9RoQnbTOfriES4SQccPfMEbCZ3IJShjZd767C
+         Yz6M3ONr2mJwDYOIyUPJW2jvWYXZdkwGXuxc4lUHccRSrYCgFHoJQhauflQ+kc6MJH/Y
+         81K4ZVv6lzhzqgmyq+tVuzyHuXGnmZauar+BEox5SiM34epCBHfVwW25DHdFJktVJqsy
+         r8sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdU6zAgI0QYIusRj2e5wfE1O79W5gH7DIlWqTYlwKf/Oh/b3iyBjdaILwvr/5HeGGwHVtyuoB5YhrtUg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzK7BAn7hKIm4uSs/gq6pl6zVTQuifkLsVxeviJNH8ChWBfGrm
+	HGDV7NJ0NQGawLRO3DB6tvDLdqxtbuXawiHJjBd0BMY1g6MaPAFNNXTICKACLMKJlQy1sRITJok
+	8cSqVpO4tgE+gfr3+ognn7o5IRh1NrL+pb/D7Iw==
+X-Gm-Gg: ASbGncufsfKpGFr9ed8USLOC0jRpHolJmTbnLUeqsgMRpyPL5hEhkRFYlA+rOQzSjD8
+	koMRE9OteE458WJCbtOsCLvbjMSmdx0JWEe0aXIilgs4uAQzNgIwCgrYRwyFLH4lHAvZTWUk=
+X-Google-Smtp-Source: AGHT+IFrtJ6niuoc1CE7e90rBaks4suqrJYB9tUhpBJRCnJrO54FeJLf7jhz5ZDNfBIv3dA2VbHBX/7kFwAEMYY+V9s=
+X-Received: by 2002:a17:907:7b88:b0:abb:514d:1f39 with SMTP id
+ a640c23a62f3a-abbcceba8cbmr211287366b.23.1739951237215; Tue, 18 Feb 2025
+ 23:47:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	wGJZK5ifqwJy5j43g0H9mcdTtJBEUu8HzYix8H3hkxjTB31nTIVuzbobU09u3dyWf+GiP9fDVSlvA1fsJqBEY3czRCNYxwnctrgYePELutZkZVR8e5P5AgZ58J6lK4quoJpULTP05R//L31m4Ej/ZMpRt2wIE7klqaMggIZgx4voFslV2lfT4V81Mjb1voctahTza3y58DDkXJF5Pqh9PX4IWN59jRHS0QJbcbtz2VqGE4lkkYMUXDG/BStG1U0OfbLnvg7zbNMDmn1WzJWVbXmwsIs/ChsqTjpBjPhZ2Ag966eTEOlGgsV/ukOlz/VJSilc6pmVOwclD4ekp57mp6lGJuyTVZ6+zMWue+EwOGNyZ+DzBUW1GH6JLn8qIgN+hhQ1cB2dPUSR7q703GjN3m2LT17i84KceKjtUS1OtSOl8TcPwM8s3l05QOZpRdY7QcZOQnuZhV9n8PDw8rnIiMQ51ZlFuB+xV9ZoSqKHkyOP8fK93HB2O8HgsnD7qtaFz4uqWeZwDbeilQ/j/sLXCjm6JNXu4t+JzTz3qGsd9DQak++PoQ0dcqKt8TuWt8Swi/yXthk+qLJpX2kE5FM/uvpUzqJrEDCrGqbBuLI6PxxM6daFihFMrf1nneEn93gS
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30446a60-53d9-4fc4-b98d-08dd50b8286a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2025 07:36:43.8663
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ffsQKMCLQw1Qnohr/qmE8y5+82/AS6vQlS/6FzkQj63froG2detbyyeqmX/Iu2eHXvEzmiWaeT0KD0rTU7o0ym5Ly7R73tb+e3A7AQG5LqY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR04MB6306
+References: <20250208073829.1176287-1-zhenghaoran154@gmail.com>
+ <CAL3q7H5JgQkFavwrjOsvxDt9mMjVUK_nPOha-WYU-muLW=Orug@mail.gmail.com>
+ <CAPjX3FeaL2+oRz81OEkLKjWwr1XuOOa3t-kgCrc51we-C-GVng@mail.gmail.com>
+ <CAL3q7H7iFQ0pS+TB8NNj5CDA=c1cmurSiGsuXDn61O6A5=mBSQ@mail.gmail.com>
+ <CAPjX3Feo9=hkptSxOMREKVckbvhfbmjHAWYBL2sBryDcVzp0NA@mail.gmail.com> <CAL3q7H7eSw0gg=JQwiEe9_pSEqcxugpgOWJDdv45UHrZbsFhzw@mail.gmail.com>
+In-Reply-To: <CAL3q7H7eSw0gg=JQwiEe9_pSEqcxugpgOWJDdv45UHrZbsFhzw@mail.gmail.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 19 Feb 2025 08:47:06 +0100
+X-Gm-Features: AWEUYZlTvJzF87Vsea8SJmvuWa0eZCZSt6aWltZ72LXqyTQxuc8bjJ5FznL8DP0
+Message-ID: <CAPjX3Fe2nACp=Zr5X+fzsB9GyOy2jfbew_KQWPib53oEzzZLVw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix data race when accessing the block_group's
+ used field
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Hao-ran Zheng <zhenghaoran154@gmail.com>, clm@fb.com, josef@toxicpanda.com, 
+	dsterba@suse.com, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	baijiaju1990@gmail.com, 21371365@buaa.edu.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Tue, 18 Feb 2025 at 17:29, Filipe Manana <fdmanana@kernel.org> wrote:
+>
+> On Tue, Feb 18, 2025 at 4:14=E2=80=AFPM Daniel Vacek <neelx@suse.com> wro=
+te:
+> >
+> > On Tue, 18 Feb 2025 at 11:19, Filipe Manana <fdmanana@kernel.org> wrote=
+:
+> > >
+> > > On Tue, Feb 18, 2025 at 8:08=E2=80=AFAM Daniel Vacek <neelx@suse.com>=
+ wrote:
+> > > >
+> > > > On Mon, 10 Feb 2025 at 12:11, Filipe Manana <fdmanana@kernel.org> w=
+rote:
+> > > > >
+> > > > > On Sat, Feb 8, 2025 at 7:38=E2=80=AFAM Hao-ran Zheng <zhenghaoran=
+154@gmail.com> wrote:
+> > > > > >
+> > > > > > A data race may occur when the function `btrfs_discard_queue_wo=
+rk()`
+> > > > > > and the function `btrfs_update_block_group()` is executed concu=
+rrently.
+> > > > > > Specifically, when the `btrfs_update_block_group()` function is=
+ executed
+> > > > > > to lines `cache->used =3D old_val;`, and `btrfs_discard_queue_w=
+ork()`
+> > > > > > is accessing `if(block_group->used =3D=3D 0)` will appear with =
+data race,
+> > > > > > which may cause block_group to be placed unexpectedly in discar=
+d_list or
+> > > > > > discard_unused_list. The specific function call stack is as fol=
+lows:
+> > > > > >
+> > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DDATA_RACE=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> > > > > >  btrfs_discard_queue_work+0x245/0x500 [btrfs]
+> > > > > >  __btrfs_add_free_space+0x3066/0x32f0 [btrfs]
+> > > > > >  btrfs_add_free_space+0x19a/0x200 [btrfs]
+> > > > > >  unpin_extent_range+0x847/0x2120 [btrfs]
+> > > > > >  btrfs_finish_extent_commit+0x9a3/0x1840 [btrfs]
+> > > > > >  btrfs_commit_transaction+0x5f65/0xc0f0 [btrfs]
+> > > > > >  transaction_kthread+0x764/0xc20 [btrfs]
+> > > > > >  kthread+0x292/0x330
+> > > > > >  ret_from_fork+0x4d/0x80
+> > > > > >  ret_from_fork_asm+0x1a/0x30
+> > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DOTHER_INFO=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> > > > > >  btrfs_update_block_group+0xa9d/0x2430 [btrfs]
+> > > > > >  __btrfs_free_extent+0x4f69/0x9920 [btrfs]
+> > > > > >  __btrfs_run_delayed_refs+0x290e/0xd7d0 [btrfs]
+> > > > > >  btrfs_run_delayed_refs+0x317/0x770 [btrfs]
+> > > > > >  flush_space+0x388/0x1440 [btrfs]
+> > > > > >  btrfs_preempt_reclaim_metadata_space+0xd65/0x14c0 [btrfs]
+> > > > > >  process_scheduled_works+0x716/0xf10
+> > > > > >  worker_thread+0xb6a/0x1190
+> > > > > >  kthread+0x292/0x330
+> > > > > >  ret_from_fork+0x4d/0x80
+> > > > > >  ret_from_fork_asm+0x1a/0x30
+> > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > >
+> > > > > > Although the `block_group->used` was checked again in the use o=
+f the
+> > > > > > `peek_discard_list` function, considering that `block_group->us=
+ed` is
+> > > > > > a 64-bit variable, we still think that the data race here is an
+> > > > > > unexpected behavior. It is recommended to add `READ_ONCE` and
+> > > > > > `WRITE_ONCE` to read and write.
+> > > > > >
+> > > > > > Signed-off-by: Hao-ran Zheng <zhenghaoran154@gmail.com>
+> > > > > > ---
+> > > > > >  fs/btrfs/block-group.c | 4 ++--
+> > > > > >  fs/btrfs/discard.c     | 2 +-
+> > > > > >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > > > > >
+> > > > > > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> > > > > > index c0a8f7d92acc..c681b97f6835 100644
+> > > > > > --- a/fs/btrfs/block-group.c
+> > > > > > +++ b/fs/btrfs/block-group.c
+> > > > > > @@ -3678,7 +3678,7 @@ int btrfs_update_block_group(struct btrfs=
+_trans_handle *trans,
+> > > > > >         old_val =3D cache->used;
+> > > > > >         if (alloc) {
+> > > > > >                 old_val +=3D num_bytes;
+> > > > > > -               cache->used =3D old_val;
+> > > > > > +               WRITE_ONCE(cache->used, old_val);
+> > > > > >                 cache->reserved -=3D num_bytes;
+> > > > > >                 cache->reclaim_mark =3D 0;
+> > > > > >                 space_info->bytes_reserved -=3D num_bytes;
+> > > > > > @@ -3690,7 +3690,7 @@ int btrfs_update_block_group(struct btrfs=
+_trans_handle *trans,
+> > > > > >                 spin_unlock(&space_info->lock);
+> > > > > >         } else {
+> > > > > >                 old_val -=3D num_bytes;
+> > > > > > -               cache->used =3D old_val;
+> > > > > > +               WRITE_ONCE(cache->used, old_val);
+> > > > > >                 cache->pinned +=3D num_bytes;
+> > > > > >                 btrfs_space_info_update_bytes_pinned(space_info=
+, num_bytes);
+> > > > > >                 space_info->bytes_used -=3D num_bytes;
+> > > > > > diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+> > > > > > index e815d165cccc..71c57b571d50 100644
+> > > > > > --- a/fs/btrfs/discard.c
+> > > > > > +++ b/fs/btrfs/discard.c
+> > > > > > @@ -363,7 +363,7 @@ void btrfs_discard_queue_work(struct btrfs_=
+discard_ctl *discard_ctl,
+> > > > > >         if (!block_group || !btrfs_test_opt(block_group->fs_inf=
+o, DISCARD_ASYNC))
+> > > > > >                 return;
+> > > > > >
+> > > > > > -       if (block_group->used =3D=3D 0)
+> > > > > > +       if (READ_ONCE(block_group->used) =3D=3D 0)
+> > > > >
+> > > > > There are at least 3 more places in discard.c where we access ->u=
+sed
+> > > > > without being under the protection of the block group's spinlock.
+> > > > > So let's fix this for all places and not just a single one...
+> > > > >
+> > > > > Also, this is quite ugly to spread READ_ONCE/WRITE_ONCE all over =
+the place.
+> > > > > What we typically do in btrfs is to add helpers that hide them, s=
+ee
+> > > > > block-rsv.h for example.
+> > > > >
+> > > > > Also, I don't think we need READ_ONCE/WRITE_ONCE.
+> > > > > We could use data_race(), though I think that could be subject to
+> > > > > load/store tearing, or just take the lock.
+> > > > > So adding a helper like this to block-group.h:
+> > > > >
+> > > > > static inline u64 btrfs_block_group_used(struct btrfs_block_group=
+ *bg)
+> > > > > {
+> > > > >    u64 ret;
+> > > > >
+> > > > >    spin_lock(&bg->lock);
+> > > > >    ret =3D bg->used;
+> > > > >    spin_unlock(&bg->lock);
+> > > > >
+> > > > >     return ret;
+> > > > > }
+> > > >
+> > > > Would memory barriers be sufficient here? Taking a lock just for
+> > > > reading one member seems excessive...
+> > >
+> > > Do you think there's heavy contention on this lock?
+> >
+> > This is not about contention. Spin lock should just never be used this
+> > way. Or any lock actually. The critical section only contains a single
+> > fetch operation which does not justify using a lock.
+> > Hence the only guarantee such lock usage provides are the implicit
+> > memory barriers (from which maybe only one of them is really needed
+> > depending on the context where this helper is going to be used).
+> >
+> > Simply put, the lock is degraded into a memory barrier this way. So
+> > why not just use the barriers in the first place if only ordering
+> > guarantees are required? It only makes sense.
+>
+> As said earlier, it's a lot easier to reason about lock() and unlock()
+> calls rather than spreading memory barriers in the write and read
+> sides.
+> Historically he had several mistakes with barriers, they're simply not
+> as straightforward to reason as locks.
+>
+> Plus spreading the barriers in the read and write sides makes the code
+> not so easy to read, not to mention in case of any new sites updating
+> the member, we'll have to not forget adding a barrier.
+>
+> It's just easier to reason and maintain.
+>
+>
+> >
+> > > Usually I prefer to go the simplest way, and using locks is a lot mor=
+e
+> > > straightforward and easier to understand than memory barriers.
+> >
+> > How so? Locks provide the same memory barriers implicitly.
+>
+> I'm not saying they don't.
+> I'm talking about easier code to read and maintain.
+>
+> >
+> > > Unless it's clear there's an observable performance penalty, keeping
+> > > it simple is better.
+> >
+> > Exactly. Here is where our opinions differ. For me 'simple' means
+> > without useless locking.
+> > I mean especially with locks they should only be used when absolutely
+> > necessary. In a sense of 'use the right tool for the job'. There are
+> > more lightweight tools possible in this context. Locks provide
+> > additional guarantees which are not needed here.
+> >
+> > On the other hand I understand that using a lock is a 'better safe
+> > than sorry' approach which should also work. Just keep in mind that
+> > spinlock may sleep on RT.
+>
+> It's not about a better safe than sorry, but easier to read, reason
+> and maintain.
+
+I see. Understood. I guess I'm just too micro-optimizing where it's
+not really needed and only adds complexity in a way.
+
+> >
+> > > data_race() may be ok here, at least for one of the unprotected
+> > > accesses it's fine, but would have to analyse the other 3 cases.
+> >
+> > That's exactly my thoughts. Maybe not even the barriers are needed
+> > after all. This needs to be checked on a per-case basis.
+> >
+> > > >
+> > > > > And then use btrfs_bock_group_used() everywhere in discard.c wher=
+e we
+> > > > > aren't holding a block group's lock.
+> > > > >
+> > > > > Thanks.
+> > > > >
+> > > > >
+> > > > > >                 add_to_discard_unused_list(discard_ctl, block_g=
+roup);
+> > > > > >         else
+> > > > > >                 add_to_discard_list(discard_ctl, block_group);
+> > > > > > --
+> > > > > > 2.34.1
+> > > > > >
+> > > > > >
+> > > > >
 
