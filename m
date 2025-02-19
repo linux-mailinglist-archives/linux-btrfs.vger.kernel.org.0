@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-11581-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7A0A3BD52
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 12:47:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B46A3BD4B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 12:46:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6216D3B0860
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 11:45:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 826DF173DD0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 11:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B88E1E0DE5;
-	Wed, 19 Feb 2025 11:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC241EB1AF;
+	Wed, 19 Feb 2025 11:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKpkjDRd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="foURemAt"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31C41EB19D
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 11:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3493A1DF27F
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 11:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739965426; cv=none; b=L8Ndy25EhNP5+TkwAgrJRaEqh4yOcE8BA2+5Dzd8yaM4zBv7/WN0MndrSGUiDt3Arb1OUM5TuiHqkuwNm1q4nR0GQ6XoJfJAWoq0eH5M+Vp1CRDHIHWGnr2XTSiGv2jiM+ORLTmLo9klUuMrCH+0Sw0wRCShfpbave6vV3XKOLE=
+	t=1739965428; cv=none; b=bsOz0J0WhYA+XTMuG9aO51luys86M4lFDvPkVdJpzMP29WfAmT1BPHaCWiKrhuCJc4nj0oefjst84gr66AX26W/0MpkJ4X6J8yY7FPsfdv0anMm/MwNJvm8AMTPm1P7lq8/0hFOkTRfMKfJ5PQ4n4NxZMqWP1fln6DScCUJoqu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739965426; c=relaxed/simple;
-	bh=THpErzxIZlA7QdlBQjpr5bQsJcE1FHd68W0QxJlpsYI=;
+	s=arc-20240116; t=1739965428; c=relaxed/simple;
+	bh=1JCUCDDhbrBpj9klUlZfnrC0vS8NJuYV+O9hY/74lBc=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LEDmKoxZYAzUOupvntQhdngkxKUwx/hdgWuc7eisS7yn270l3o2NPgINVEGsjJzkfRSLZGBBzHlPKOrtxsNZQjDx/3Lg2dnn7mrBD4AVo9M9yPDETAHWrRPoW10gB7AT4/vv+rTopABfYBUACLntfjPKR3AS6wm2c3Hpg/YaZsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKpkjDRd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2826BC4CED1
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 11:43:45 +0000 (UTC)
+	 MIME-Version; b=HKVOojgfLuTc3yHB+t0NOZC8peacXW2CHO88qIJ3Xg+rTTdyztFIMmeIN/pl+BQcHfUH748A3JqhOaNJ1w0JyV4C6YGdyKEcEGXjZjTf7/KOdqbP1WYERwdMJQhI39JOsX3kM+A94stZ0QtrezF4eNGURfR4MUCEGJgqMALmRHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=foURemAt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA7FC4CEE6
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 11:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739965426;
-	bh=THpErzxIZlA7QdlBQjpr5bQsJcE1FHd68W0QxJlpsYI=;
+	s=k20201202; t=1739965427;
+	bh=1JCUCDDhbrBpj9klUlZfnrC0vS8NJuYV+O9hY/74lBc=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=MKpkjDRdatSlOMcxFHnCQ6+KSFxFGLnsOXVhgguHw2czUiV5glYmqXUT/xp4qUqYV
-	 Z6uKWwJPvmOYDFFT1tSBxMNeWPmF6Ky+fs7QvSJe3iumBb06C6aMns8PtrxK8B1ZCX
-	 Rn8ux+Z7Ctg8w5p3Z1K51RL7k/ZakOVvrYHQZnK4COY4eHK2dozCqhPNSJzTpCjziO
-	 Jwn2nGYmtgr7sqxClWWvI5SCBsp1z7b42i567pEvWTtBqPksuaLWOgKRXmjyX1gG7I
-	 aH0Oi+M/Py3XRBEyRlY5V7bgdrO9WYMRnfPBH/A16m50edBJUmf1bkNQgpfDtf4Let
-	 7Qqyzs5YLuyEQ==
+	b=foURemAtUaXjtHZSudH4wdFVsljLGca+BZsiRI5UTyQa8jw/LJqM4hBt5h341yTY+
+	 FAivAuPW7Opkwmo8m5UIit6pJ/argrWe29l79284BMtcQ4Qpf+mOBMG/quPiqaS5xG
+	 Rz/IdcO8UgCKC7fJujj2tFM1PN9KPPR9/a0ZZppksD8z2EMDLI1ngrqeojO/pgSlwK
+	 S8NxSJQ4ux78f8ON08tQlMXnTlam/pL2eiwDfMZ7zs/cZbDEcfrKQOa0UievAZU3F3
+	 L790LJichsC1cdx61GO5mLj2BHWve+0uEsAPlbrSzBATX4s1uy1bGLRRs/FUfCiWeZ
+	 9jDxsuhx4yOuQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 16/26] btrfs: send: simplify return logic from record_new_ref_if_needed()
-Date: Wed, 19 Feb 2025 11:43:16 +0000
-Message-Id: <ea0914ce17d666a6cd0e55d09046d2bd92cea7ec.1739965104.git.fdmanana@suse.com>
+Subject: [PATCH 17/26] btrfs: send: simplify return logic from record_deleted_ref_if_needed()
+Date: Wed, 19 Feb 2025 11:43:17 +0000
+Message-Id: <ad6325433112c151e9f8d9eef01901b3c08f1007.1739965104.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1739965104.git.fdmanana@suse.com>
 References: <cover.1739965104.git.fdmanana@suse.com>
@@ -61,7 +61,7 @@ From: Filipe Manana <fdmanana@suse.com>
 
 There is no need to have an 'out' label and jump into it since there are
 no resource cleanups to perform (release locks, free memory, etc), so
- make this simpler by removing the label and goto and instead return
+make this simpler by removing the label and goto and instead return
 directly.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
@@ -70,30 +70,30 @@ Signed-off-by: Filipe Manana <fdmanana@suse.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 5fd3deaf14d6..96aa519e791a 100644
+index 96aa519e791a..b715557ec720 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -4683,7 +4683,7 @@ static int record_ref_in_tree(struct rb_root *root, struct list_head *refs,
+@@ -4712,7 +4712,7 @@ static int record_new_ref_if_needed(u64 dir, struct fs_path *name, void *ctx)
  
- static int record_new_ref_if_needed(u64 dir, struct fs_path *name, void *ctx)
+ static int record_deleted_ref_if_needed(u64 dir, struct fs_path *name, void *ctx)
  {
 -	int ret = 0;
 +	int ret;
  	struct send_ctx *sctx = ctx;
  	struct rb_node *node = NULL;
  	struct recorded_ref data;
-@@ -4692,7 +4692,7 @@ static int record_new_ref_if_needed(u64 dir, struct fs_path *name, void *ctx)
+@@ -4721,7 +4721,7 @@ static int record_deleted_ref_if_needed(u64 dir, struct fs_path *name, void *ctx
  
- 	ret = get_inode_gen(sctx->send_root, dir, &dir_gen);
+ 	ret = get_inode_gen(sctx->parent_root, dir, &dir_gen);
  	if (ret < 0)
 -		goto out;
 +		return ret;
  
  	data.dir = dir;
  	data.dir_gen = dir_gen;
-@@ -4706,7 +4706,7 @@ static int record_new_ref_if_needed(u64 dir, struct fs_path *name, void *ctx)
- 					 &sctx->new_refs, name, dir, dir_gen,
- 					 sctx);
+@@ -4735,7 +4735,7 @@ static int record_deleted_ref_if_needed(u64 dir, struct fs_path *name, void *ctx
+ 					 &sctx->deleted_refs, name, dir,
+ 					 dir_gen, sctx);
  	}
 -out:
 +
