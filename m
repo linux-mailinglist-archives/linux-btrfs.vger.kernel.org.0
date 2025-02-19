@@ -1,135 +1,197 @@
-Return-Path: <linux-btrfs+bounces-11544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F4EBA3B12C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 06:59:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32FB4A3B1ED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 08:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7F91645C9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 05:59:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7AE1894A3F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 07:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932DC1B87E4;
-	Wed, 19 Feb 2025 05:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1541BC077;
+	Wed, 19 Feb 2025 07:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H5Xh9phD"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="R12W/4Tv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251201B86CC
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 05:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D64286285
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 07:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739944736; cv=none; b=DL2TlOvmzkwAAXyqzLgeHB/sr5nlOt+i7bre+EpAboG+LPt2QcymToRVjbjoMS9RsOZHBblBr7AJE0cAkdkKlS5GiEkclfgRJKOfRWwvbMIKS7iuOjb5uPZlr0FgMf20txxgX8HiCDErd7RwMEeKYe29/VoqkwznaWP2Hfy01Sw=
+	t=1739948587; cv=none; b=avc9mDnwb5U9PistUBoiwLydOzzKXshY4elov40cfGeZSszVbyR3ttzFzTd+iuHFZljyzkYTJZsUYfeLacOVLmSBgtg4+77qx7ccqDQaCeE+LcXmAPugOMiLp2XrkTTaWizJzVGQCFcbpvny2bY4VMe4c/eCk2LHZifOtYS1I1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739944736; c=relaxed/simple;
-	bh=cmTtd+5HQcnkZ4IAP31qlBKVt321XEIeEr5PKO4u+a0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjH+06ioa9zfPljR/wlHB/GwS0nnqVKciIjbDvggtRjkuKSByX1Jd0lAi2ryJYPAVFOJjYJ2Wkb3GlSnTtVAOb103I/G1tryDX97gtSe2/9zDWicF96Nb5oImE7BUWbDZVx/OuZdXaByoJ2YlUfD+4BWDiA+NOAaSgoCTcPCIxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H5Xh9phD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739944733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YokxX3qQWk1mv/VDdALhwh1PAR6A9BWJ//OPV4oLrsc=;
-	b=H5Xh9phDQWyJwvBS7C1eRbdFmue8ADlAgiqS6qf7cSyGfTwYsFX1bQMRns9MUYwyxnB74E
-	fGrkvf5I2Q3jNeqsw4L0bxx8kAr7uHOTUxAga4reVA+ZVlaEJuMQ5+CbjbyrSgUIt4llCA
-	yx6/06Wdp5TRoifSO2izLsBUhWYEayw=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-131-omssydCeNjmL2IxmKZL9qg-1; Wed, 19 Feb 2025 00:58:52 -0500
-X-MC-Unique: omssydCeNjmL2IxmKZL9qg-1
-X-Mimecast-MFC-AGG-ID: omssydCeNjmL2IxmKZL9qg_1739944731
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2fc318bd470so9704441a91.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 21:58:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739944731; x=1740549531;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YokxX3qQWk1mv/VDdALhwh1PAR6A9BWJ//OPV4oLrsc=;
-        b=G7qdayNl1Oeye5RKPwR3VBiobVPo1JmDQ5RcMvGJylS604oIKTYXPsFQZCjt8yCj/2
-         8xZHxABzsR2/fpW3vrwYW5VyXZ6B2hFSOAJpaq1W+UCk96GBwdwOPxn9scErDW5SuzvW
-         uu1GYJFXFyNYUsjygl2pqF4F8aNHKKFUhAL10XW7vrvYqqwTBGdbgatIgZTFJRFSIqJr
-         s7h0LoBVw9kCFFf4vnex9kSSp7Htxqxe6OAg+hT2krYoPH+NIw9tUfgMe5B9fzWa8/oW
-         nonvAx3IeunCypj/IeFpGbR+xjR+yOv8njUjSK90rpmSUu2sF3ArT69SSpP2HdPMe/Im
-         rJIw==
-X-Forwarded-Encrypted: i=1; AJvYcCX2qbt9VwMGg5+3LsS9IDNC9J5ywGYgrqcjViGI61BwvftYCev13RHqMZZ06A1S2WUzOAByklygCBVdOA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWq7VK92h4l0omnie+MRbTpbichDzSMaOvlUeP2aqEhN6ZS94A
-	ZBDq9gUn8Lib4jmGiI2w4NN1hRsPo7R7XPBqRIYsy5WRYefrEtecLTY03mi/+YQjDCa42RQEtId
-	5joQT4lB5l1P0IgZ3fDj2KCUJkKTLaFrnGfEdTLKQ1nlTyIJ2Q/IuGwnKr8+7
-X-Gm-Gg: ASbGncu/Ii6ivakCxmwZPkX2XvR3jDQlja/N/cGOslNzZP0yzlk6A4ajE3TynuODHmn
-	gUQUu4xwy9VYtX/bJIwD+RB4jbu/iDCQLI6x7eB5SzxR33uhOtTW8dKkgg5w/gYEkLLtgMl9Cyl
-	LIpUodb9Z3GpYg0YZlvQ+ptP2Ucw1JRb9Oa9RVRpgJmxWdH7C7NcSdmWWJH5sRSlnePsH/e+ZNt
-	g4NLjfTOJNEniNIxrwBHqbDcGkT+N+dEnjzfBKNC2RUhTzpTj76yrpfy+m5+bhX1hlHC23cHdAp
-	0ArR100MGyDaFBrLKabz7wu4FRErHGRfRY5czBfmQEVo+A==
-X-Received: by 2002:a17:90b:224d:b0:2ee:accf:9685 with SMTP id 98e67ed59e1d1-2fc40d12d39mr25653844a91.4.1739944731246;
-        Tue, 18 Feb 2025 21:58:51 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEJPagFe3FnyteGo6t1av2DMGdt45X9cqSU9aHuSKb3hxn5htsk4qpMRj/P3IafC3sTkfQDnA==
-X-Received: by 2002:a17:90b:224d:b0:2ee:accf:9685 with SMTP id 98e67ed59e1d1-2fc40d12d39mr25653826a91.4.1739944730916;
-        Tue, 18 Feb 2025 21:58:50 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf9ab0233sm13387857a91.44.2025.02.18.21.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2025 21:58:50 -0800 (PST)
-Date: Wed, 19 Feb 2025 13:58:46 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: zlang@kernel.org, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs/226: fill in missing comments changes
-Message-ID: <20250219055846.r6amxpdxubjbtyhd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <e73cfe5310a8cee5f6c709d54b8c18ff52e39a0a.1739918100.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1739948587; c=relaxed/simple;
+	bh=+BNN4avmmHtfAZoJgaFc5EYptdLuuGs11fQMRwl7Rfw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M4JlmqScRjCehmLmCIjMYQ6h/JvaUwudh0MTu9yW4p3NMsfxxKbvIBKiBT/pJp7QZtPWJUEBTaxZXQYsKzMa/L9e2JnfWzXorrX6Ueo6Ba0J7kbckTn1xyaHT++TXpzMKEAi7wSpLsVGSe+mimi7D1pTSKBCD5HtxjeZBDEvG9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=R12W/4Tv; arc=none smtp.client-ip=216.71.154.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1739948585; x=1771484585;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+BNN4avmmHtfAZoJgaFc5EYptdLuuGs11fQMRwl7Rfw=;
+  b=R12W/4Tva4hyFnfeEOMRKyYNMQmANqh1U8lAVgDUpAElxn1mWKw1wk0i
+   OQcAew6DHLWywmRJphnrdwyvuHleKhKbUZxhHBrhP+YZ2KfU2BSQqzuMm
+   5I9nMp4rGxlMKStqrkiC3HxwtGkSgo6NsGv3Awig+qcv27vfuZZxY9tL7
+   5bSqNO4jWGYOl3PuiM0G3XIIez7GMNhOI6z61S/AVjJo6CGVy+t98QjbS
+   RQZJOc5nTX8u/lR1H6ZXbt84Q8UxKNDhkolD2JaxSAhgRyQ/dAkFh/Y7p
+   /3ElyvEd+DKW6ksuZ02T/QbrBenKevip7levW4AA19JU5N4+nst1zpk4d
+   w==;
+X-CSE-ConnectionGUID: MNljp3SgTtaTtfY4ErVidg==
+X-CSE-MsgGUID: sPZmT4caQl2gVCTCyzHeWg==
+X-IronPort-AV: E=Sophos;i="6.13,298,1732550400"; 
+   d="scan'208";a="38657556"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Feb 2025 15:03:04 +0800
+IronPort-SDR: 67b5746e_s+Fdf479ZcycsxN80YjkpxCLaGR9rEua8nosetHD+nN7hNb
+ 3/R7c3QdtzyVMW84cwxWpRiW9jDCCFYvYuOO/Fg==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Feb 2025 22:04:30 -0800
+WDCIronportException: Internal
+Received: from 5cg20343qs.ad.shared (HELO naota-xeon..) ([10.224.109.7])
+  by uls-op-cesaip01.wdc.com with ESMTP; 18 Feb 2025 23:03:04 -0800
+From: Naohiro Aota <naohiro.aota@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: wqu@suse.com,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: zoned: fix extent unlock in cow_file_range()
+Date: Wed, 19 Feb 2025 16:02:11 +0900
+Message-ID: <baa48c5a32ae079b218613cbdae175f2387cd745.1739948529.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e73cfe5310a8cee5f6c709d54b8c18ff52e39a0a.1739918100.git.anand.jain@oracle.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 19, 2025 at 06:35:44AM +0800, Anand Jain wrote:
-> From: Qu Wenruo <wqu@suse.com>
-> 
-> Update comments that were previously missed.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  tests/btrfs/226 | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tests/btrfs/226 b/tests/btrfs/226
-> index 359813c4f394..ce53b7d48c49 100755
-> --- a/tests/btrfs/226
-> +++ b/tests/btrfs/226
-> @@ -22,10 +22,8 @@ _require_xfs_io_command fpunch
->  
->  _scratch_mkfs >>$seqres.full 2>&1
->  
-> -# This test involves RWF_NOWAIT direct IOs, but for inodes with data checksum,
-> -# btrfs will fall back to buffered IO unconditionally to prevent data checksum
-> -# mimsatch, and that will break RWF_NOWAIT with -EAGAIN.
-> -# So here we have to go with nodatasum mount option.
-> +# RWF_NOWAIT works only with direct I/O and requires an inode with nodatasum
-> +# to avoid checksum mismatches. Otherwise, it falls back to buffered I/O.
+Running generic/751 on the btrfs for-next often results in hung like
+below. They are both stack by locking an extent. This suggests someone
+forget to unlock an extent.
 
-As a supplement patch, this is good to me.
+    INFO: task kworker/u128:1:12 blocked for more than 323 seconds.
+          Not tainted 6.13.0-BTRFS-ZNS+ #503
+    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+    task:kworker/u128:1  state:D stack:0     pid:12    tgid:12    ppid:2      flags:0x00004000
+    Workqueue: btrfs-fixup btrfs_work_helper [btrfs]
+    Call Trace:
+     <TASK>
+     __schedule+0x534/0xdd0
+     schedule+0x39/0x140
+     __lock_extent+0x31b/0x380 [btrfs]
+     ? __pfx_autoremove_wake_function+0x10/0x10
+     btrfs_writepage_fixup_worker+0xf1/0x3a0 [btrfs]
+     btrfs_work_helper+0xff/0x480 [btrfs]
+     ? lock_release+0x178/0x2c0
+     process_one_work+0x1ee/0x570
+     ? srso_return_thunk+0x5/0x5f
+     worker_thread+0x1d1/0x3b0
+     ? __pfx_worker_thread+0x10/0x10
+     kthread+0x10b/0x230
+     ? __pfx_kthread+0x10/0x10
+     ret_from_fork+0x30/0x50
+     ? __pfx_kthread+0x10/0x10
+     ret_from_fork_asm+0x1a/0x30
+     </TASK>
+    INFO: task kworker/u134:0:184 blocked for more than 323 seconds.
+          Not tainted 6.13.0-BTRFS-ZNS+ #503
+    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+    task:kworker/u134:0  state:D stack:0     pid:184   tgid:184   ppid:2      flags:0x00004000
+    Workqueue: writeback wb_workfn (flush-btrfs-4)
+    Call Trace:
+     <TASK>
+     __schedule+0x534/0xdd0
+     schedule+0x39/0x140
+     __lock_extent+0x31b/0x380 [btrfs]
+     ? __pfx_autoremove_wake_function+0x10/0x10
+     find_lock_delalloc_range+0xdb/0x260 [btrfs]
+     writepage_delalloc+0x12f/0x500 [btrfs]
+     ? srso_return_thunk+0x5/0x5f
+     extent_write_cache_pages+0x232/0x840 [btrfs]
+     btrfs_writepages+0x72/0x130 [btrfs]
+     do_writepages+0xe7/0x260
+     ? srso_return_thunk+0x5/0x5f
+     ? lock_acquire+0xd2/0x300
+     ? srso_return_thunk+0x5/0x5f
+     ? find_held_lock+0x2b/0x80
+     ? wbc_attach_and_unlock_inode.part.0+0x102/0x250
+     ? wbc_attach_and_unlock_inode.part.0+0x102/0x250
+     __writeback_single_inode+0x5c/0x4b0
+     writeback_sb_inodes+0x22d/0x550
+     __writeback_inodes_wb+0x4c/0xe0
+     wb_writeback+0x2f6/0x3f0
+     wb_workfn+0x32a/0x510
+     process_one_work+0x1ee/0x570
+     ? srso_return_thunk+0x5/0x5f
+     worker_thread+0x1d1/0x3b0
+     ? __pfx_worker_thread+0x10/0x10
+     kthread+0x10b/0x230
+     ? __pfx_kthread+0x10/0x10
+     ret_from_fork+0x30/0x50
+     ? __pfx_kthread+0x10/0x10
+     ret_from_fork_asm+0x1a/0x30
+     </TASK>
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+This happens because we have another success path for the zoned mode. When
+there is no active zone available, btrfs_reserve_extent() returns
+-EAGAIN. In this case, we have two reactions. (1) If the given range is
+never allocated, we can only wait for someone to finish a zone, so wait on
+BTRFS_FS_NEED_ZONE_FINISH bit and retry afterward. (2) Or, if some
+allocations are already done, we must bail out and let the caller to send
+IOs for the allocation. This is because these IOs may be necessary to
+finish a zone.
 
->  _scratch_mount -o nodatasum
->  
->  # Test a write against COW file/extent - should fail with -EAGAIN. Disable the
-> -- 
-> 2.47.0
-> 
-> 
+The commit 06f364284794 ("btrfs: do proper folio cleanup when
+cow_file_range() failed") moved the unlock code from the inside of the loop
+to the outside. So, previously, the allocated extents are unlocked just
+after the allocation and so before returning from the function. However,
+they are no longer unlocked on the case (2) above. That caused the hung
+issue.
+
+Fix the issue by modifying the 'end' to the end of the allocated
+range. Then, we can exit the loop and the same unlock code can properly
+handle the case.
+
+Reported-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+CC: stable@vger.kernel.org
+Fixes: 06f364284794 ("btrfs: do proper folio cleanup when cow_file_range() failed")
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ fs/btrfs/inode.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 1512eb94b6e5..f80db81fc853 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1378,8 +1378,14 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 				continue;
+ 			}
+ 			if (done_offset) {
+-				*done_offset = start - 1;
+-				return 0;
++				/*
++				 * Move @end to the end of the processed range,
++				 * and exit the loop to unlock the processed
++				 * extents.
++				 */
++				end = start - 1;
++				ret = 0;
++				break;
+ 			}
+ 			ret = -ENOSPC;
+ 		}
+-- 
+2.48.1
 
 
