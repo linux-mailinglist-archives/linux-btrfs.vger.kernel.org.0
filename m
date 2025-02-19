@@ -1,238 +1,135 @@
-Return-Path: <linux-btrfs+bounces-11543-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18ABBA3AC5A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 00:10:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F4EBA3B12C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 06:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D78B01734B5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2025 23:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7F91645C9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2025 05:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE201D958E;
-	Tue, 18 Feb 2025 23:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932DC1B87E4;
+	Wed, 19 Feb 2025 05:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JNXHXf9w";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JNXHXf9w"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H5Xh9phD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140AB1C7019
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 23:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251201B86CC
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2025 05:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739920203; cv=none; b=sHw1m91pmdpSR9I6hFa2jqvz4lXBZdEpvP5C7E5FVK1HfPIezyWSnzLhUMGWVTwsExy6ln7A3HbeSfBZUB/fLzBGsvHVEkUIDFNGbRKLCCJJ8Ess88eY7XB/+zKo1i9kpqwI0Hsoh+QaovzzBzzx7ZudLipfaRwm46X/RDPnpyQ=
+	t=1739944736; cv=none; b=DL2TlOvmzkwAAXyqzLgeHB/sr5nlOt+i7bre+EpAboG+LPt2QcymToRVjbjoMS9RsOZHBblBr7AJE0cAkdkKlS5GiEkclfgRJKOfRWwvbMIKS7iuOjb5uPZlr0FgMf20txxgX8HiCDErd7RwMEeKYe29/VoqkwznaWP2Hfy01Sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739920203; c=relaxed/simple;
-	bh=GL3tx27TtPq8IHf1JD7NtYfkhH95QBNh7SGtDYRS1/s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C2LkPOEPz9zhCEl5YzY4Eso+u4HRtInwpNMvC8aM0TBSl4aqxW6tdQ+smL9I11hE+aNo/tpd6Tybk+hPY6PKpWvD5W9jkPFJT+p1KSR0Am0c+wcsW13EqSrU5EMDikpPh0QU5jV0yOcmulLNN2Kq78u5HBqcRwYEGfclRxPUuGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=fail smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JNXHXf9w; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JNXHXf9w; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4131B2115C;
-	Tue, 18 Feb 2025 23:09:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1739920199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Pa0wXzXvzkt7HQcr67INpmUz0RDWeuswWEtvYrB0TTM=;
-	b=JNXHXf9wxogcoMnEY7QcjXIm/T4VRi0w7WnCamiuxl/Cw13qSZw5TXcfbAyyzCdt7QQqId
-	mKDmjm0RPGkgHYPNt7LtQGFYhv0rBs1f2639vg/TEh2FFSeSyof+jG7lXtkPSwfZri7SAf
-	CLuCgQaHht9NDjYR+LZfJSb3RMFfRgs=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1739920199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Pa0wXzXvzkt7HQcr67INpmUz0RDWeuswWEtvYrB0TTM=;
-	b=JNXHXf9wxogcoMnEY7QcjXIm/T4VRi0w7WnCamiuxl/Cw13qSZw5TXcfbAyyzCdt7QQqId
-	mKDmjm0RPGkgHYPNt7LtQGFYhv0rBs1f2639vg/TEh2FFSeSyof+jG7lXtkPSwfZri7SAf
-	CLuCgQaHht9NDjYR+LZfJSb3RMFfRgs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F8D513A1D;
-	Tue, 18 Feb 2025 23:09:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xOHlAEYTtWerfwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 18 Feb 2025 23:09:58 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] btrfs: fix data overwriting bug during buffered write when block size < page size
-Date: Wed, 19 Feb 2025 09:39:40 +1030
-Message-ID: <a50ceebfe3155ab0f1f0018c28ef99bda264c039.1739920169.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1739944736; c=relaxed/simple;
+	bh=cmTtd+5HQcnkZ4IAP31qlBKVt321XEIeEr5PKO4u+a0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjH+06ioa9zfPljR/wlHB/GwS0nnqVKciIjbDvggtRjkuKSByX1Jd0lAi2ryJYPAVFOJjYJ2Wkb3GlSnTtVAOb103I/G1tryDX97gtSe2/9zDWicF96Nb5oImE7BUWbDZVx/OuZdXaByoJ2YlUfD+4BWDiA+NOAaSgoCTcPCIxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H5Xh9phD; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739944733;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YokxX3qQWk1mv/VDdALhwh1PAR6A9BWJ//OPV4oLrsc=;
+	b=H5Xh9phDQWyJwvBS7C1eRbdFmue8ADlAgiqS6qf7cSyGfTwYsFX1bQMRns9MUYwyxnB74E
+	fGrkvf5I2Q3jNeqsw4L0bxx8kAr7uHOTUxAga4reVA+ZVlaEJuMQ5+CbjbyrSgUIt4llCA
+	yx6/06Wdp5TRoifSO2izLsBUhWYEayw=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-131-omssydCeNjmL2IxmKZL9qg-1; Wed, 19 Feb 2025 00:58:52 -0500
+X-MC-Unique: omssydCeNjmL2IxmKZL9qg-1
+X-Mimecast-MFC-AGG-ID: omssydCeNjmL2IxmKZL9qg_1739944731
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2fc318bd470so9704441a91.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2025 21:58:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739944731; x=1740549531;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YokxX3qQWk1mv/VDdALhwh1PAR6A9BWJ//OPV4oLrsc=;
+        b=G7qdayNl1Oeye5RKPwR3VBiobVPo1JmDQ5RcMvGJylS604oIKTYXPsFQZCjt8yCj/2
+         8xZHxABzsR2/fpW3vrwYW5VyXZ6B2hFSOAJpaq1W+UCk96GBwdwOPxn9scErDW5SuzvW
+         uu1GYJFXFyNYUsjygl2pqF4F8aNHKKFUhAL10XW7vrvYqqwTBGdbgatIgZTFJRFSIqJr
+         s7h0LoBVw9kCFFf4vnex9kSSp7Htxqxe6OAg+hT2krYoPH+NIw9tUfgMe5B9fzWa8/oW
+         nonvAx3IeunCypj/IeFpGbR+xjR+yOv8njUjSK90rpmSUu2sF3ArT69SSpP2HdPMe/Im
+         rJIw==
+X-Forwarded-Encrypted: i=1; AJvYcCX2qbt9VwMGg5+3LsS9IDNC9J5ywGYgrqcjViGI61BwvftYCev13RHqMZZ06A1S2WUzOAByklygCBVdOA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWq7VK92h4l0omnie+MRbTpbichDzSMaOvlUeP2aqEhN6ZS94A
+	ZBDq9gUn8Lib4jmGiI2w4NN1hRsPo7R7XPBqRIYsy5WRYefrEtecLTY03mi/+YQjDCa42RQEtId
+	5joQT4lB5l1P0IgZ3fDj2KCUJkKTLaFrnGfEdTLKQ1nlTyIJ2Q/IuGwnKr8+7
+X-Gm-Gg: ASbGncu/Ii6ivakCxmwZPkX2XvR3jDQlja/N/cGOslNzZP0yzlk6A4ajE3TynuODHmn
+	gUQUu4xwy9VYtX/bJIwD+RB4jbu/iDCQLI6x7eB5SzxR33uhOtTW8dKkgg5w/gYEkLLtgMl9Cyl
+	LIpUodb9Z3GpYg0YZlvQ+ptP2Ucw1JRb9Oa9RVRpgJmxWdH7C7NcSdmWWJH5sRSlnePsH/e+ZNt
+	g4NLjfTOJNEniNIxrwBHqbDcGkT+N+dEnjzfBKNC2RUhTzpTj76yrpfy+m5+bhX1hlHC23cHdAp
+	0ArR100MGyDaFBrLKabz7wu4FRErHGRfRY5czBfmQEVo+A==
+X-Received: by 2002:a17:90b:224d:b0:2ee:accf:9685 with SMTP id 98e67ed59e1d1-2fc40d12d39mr25653844a91.4.1739944731246;
+        Tue, 18 Feb 2025 21:58:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEJPagFe3FnyteGo6t1av2DMGdt45X9cqSU9aHuSKb3hxn5htsk4qpMRj/P3IafC3sTkfQDnA==
+X-Received: by 2002:a17:90b:224d:b0:2ee:accf:9685 with SMTP id 98e67ed59e1d1-2fc40d12d39mr25653826a91.4.1739944730916;
+        Tue, 18 Feb 2025 21:58:50 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf9ab0233sm13387857a91.44.2025.02.18.21.58.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Feb 2025 21:58:50 -0800 (PST)
+Date: Wed, 19 Feb 2025 13:58:46 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: zlang@kernel.org, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs/226: fill in missing comments changes
+Message-ID: <20250219055846.r6amxpdxubjbtyhd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <e73cfe5310a8cee5f6c709d54b8c18ff52e39a0a.1739918100.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e73cfe5310a8cee5f6c709d54b8c18ff52e39a0a.1739918100.git.anand.jain@oracle.com>
 
-[BUG]
-When running generic/417 with a btrfs whose block size < page size
-(subpage cases), it always fails.
+On Wed, Feb 19, 2025 at 06:35:44AM +0800, Anand Jain wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> Update comments that were previously missed.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  tests/btrfs/226 | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tests/btrfs/226 b/tests/btrfs/226
+> index 359813c4f394..ce53b7d48c49 100755
+> --- a/tests/btrfs/226
+> +++ b/tests/btrfs/226
+> @@ -22,10 +22,8 @@ _require_xfs_io_command fpunch
+>  
+>  _scratch_mkfs >>$seqres.full 2>&1
+>  
+> -# This test involves RWF_NOWAIT direct IOs, but for inodes with data checksum,
+> -# btrfs will fall back to buffered IO unconditionally to prevent data checksum
+> -# mimsatch, and that will break RWF_NOWAIT with -EAGAIN.
+> -# So here we have to go with nodatasum mount option.
+> +# RWF_NOWAIT works only with direct I/O and requires an inode with nodatasum
+> +# to avoid checksum mismatches. Otherwise, it falls back to buffered I/O.
 
-And the following minimal reproducer is more than enough to trigger it
-reliably:
+As a supplement patch, this is good to me.
 
-workload()
-{
-        mkfs.btrfs -s 4k -f $dev > /dev/null
-        dmesg -C
-        mount $dev $mnt
-        $fsstree_dir/src/dio-invalidate-cache -r -b 4096 -n 3 -i 1 -f $mnt/diotest
-        ret=$?
-        umount $mnt
-        stop_trace
-        if [ $ret -ne 0 ]; then
-                fail
-        fi
-}
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-for (( i = 0; i < 1024; i++)); do
-        echo "=== $i/$runtime ==="
-        workload
-done
-
-[CAUSE]
-With extra trace printk added to the following functions:
-- btrfs_buffered_write()
-  * Which folio is touched
-  * The file offset (start) where the buffered write is at
-  * How many bytes are copied
-  * The content of the write (the first 2 bytes)
-
-- submit_one_sector()
-  * Which folio is touched
-  * The position inside the folio
-
-- pagecache_isize_extended()
-  * The parameters of the function itself
-  * The parameters of the folio_zero_range()
-
-Which are enough to show the problem:
-
-  22.158114: btrfs_buffered_write: folio pos=0 start=0 copied=4096 content=0x0101
-  22.158161: submit_one_sector: r/i=5/257 folio=0 pos=0 content=0x0101
-  22.158609: btrfs_buffered_write: folio pos=0 start=4096 copied=4096 content=0x0101
-  22.158634: btrfs_buffered_write: folio pos=0 start=8192 copied=4096 content=0x0101
-  22.158650: pagecache_isize_extended: folio=0 from=4096 to=8192 bsize=4096 zero off=4096 len=8192
-  22.158682: submit_one_sector: r/i=5/257 folio=0 pos=4096 content=0x0000
-  22.158686: submit_one_sector: r/i=5/257 folio=0 pos=8192 content=0x0101
-
-The tool dio-invalidate-cache will start 3 threads, each doing a buffered
-write with 0x01 at 4096 * i (i is 0, 1 ,2), do a fsync, then do a direct read,
-and compare the read buffer with the write buffer.
-
-Note that all 3 btrfs_buffered_write() are writing the correct 0x01 into
-the page cache.
-
-But at submit_one_sector(), at file offset 4096, the content is zeroed
-out, mostly by pagecache_isize_extended().
-
-The race happens like this:
- Thread A is writing into range [4K, 8K).
- Thread B is writing into range [8K, 12k).
-
-               Thread A              |         Thread B
--------------------------------------+------------------------------------
-btrfs_buffered_write()               | btrfs_buffered_write()
-|- old_isize = 4K;                   | |- old_isize = 4096;
-|- btrfs_inode_lock()                | |
-|- write into folio range [4K, 8K)   | |
-|- pagecache_isize_extended()        | |
-|  extend isize from 4096 to 8192    | |
-|  no folio_zero_range() called      | |
-|- btrfs_inode_lock()                | |
-                                     | |- btrfs_inode_lock()
-				     | |- write into folio range [8K, 12K)
-				     | |- pagecache_isize_extended()
-				     | |  calling folio_zero_range(4K, 8K)
-				     | |  This is caused by the old_isize is
-				     | |  grabbed too early, without any
-				     | |  inode lock.
-				     | |- btrfs_inode_unlock()
-
-The @old_isize is grabbed without inode lock, causing race between two
-buffered write threads and making pagecache_isize_extended() to zero
-range which is still containing cached data.
-
-And this is only affecting subpage btrfs, because for regular blocksize
-== page size case, the function pagecache_isize_extended() will do
-nothing if the block size >= page size.
-
-[FIX]
-Grab the old isize with inode lock hold.
-This means each buffered write thread will have a stable view of the
-old inode size, thus avoid the above race.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/file.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index fd90855fe717..896dc03689d6 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1090,7 +1090,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 	u64 lockend;
- 	size_t num_written = 0;
- 	ssize_t ret;
--	loff_t old_isize = i_size_read(inode);
-+	loff_t old_isize;
- 	unsigned int ilock_flags = 0;
- 	const bool nowait = (iocb->ki_flags & IOCB_NOWAIT);
- 	unsigned int bdp_flags = (nowait ? BDP_ASYNC : 0);
-@@ -1103,6 +1103,13 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 	if (ret < 0)
- 		return ret;
- 
-+	/*
-+	 * We can only trust the isize with inode lock hold, or it can race with
-+	 * other buffered writes and cause incorrect call of
-+	 * pagecache_isize_extended() to overwrite existing data.
-+	 */
-+	old_isize = i_size_read(inode);
-+
- 	ret = generic_write_checks(iocb, i);
- 	if (ret <= 0)
- 		goto out;
--- 
-2.48.1
+>  _scratch_mount -o nodatasum
+>  
+>  # Test a write against COW file/extent - should fail with -EAGAIN. Disable the
+> -- 
+> 2.47.0
+> 
+> 
 
 
