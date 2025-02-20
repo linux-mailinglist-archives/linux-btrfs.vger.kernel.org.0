@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-11648-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11649-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D57A3D7BC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 12:06:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F20FAA3D7BE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 12:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8FC317E7C4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 11:05:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4C9E17E909
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 11:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1521F3FD1;
-	Thu, 20 Feb 2025 11:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52ED61F3FF5;
+	Thu, 20 Feb 2025 11:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hy8y5qmR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adpuROAK"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6771F3D54
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0F81F3FD3
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740049501; cv=none; b=qTX0q0PEx+QnQSNqV6X7+knS8UpWtnWr0mq4jaCfY7iB2Rla+JSJBAHERAIbLACakYI6QUH1mcPZSgPlvQrf5RnTm7aedgla9AyaJ2GoN/MFbEHnM39ZLqddj4IR7bfAen5JYdlSrKWE/xJ25pNzkS6ghAQJU9YDqJZRofio5YA=
+	t=1740049502; cv=none; b=gFbpcxIqQ6B1pDbJm8aobj4oNHMld2kv/Dow1WVCPBblWrW7DbBvqyndIf7maDNz2JXT1IBPFpZIZ4NhUxjm6dfeq+mWFkna5jIxxyOL9CrQkpU7xE7qnIfICmlWezShnHvdYRGYxv28R00UmSKiHzXcqr+BF6u9gx+kbjYDprg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740049501; c=relaxed/simple;
-	bh=9hxk+7ErPnp6CkqDnLiQhSsA+nXDmhR3kp3A7y4ud6c=;
+	s=arc-20240116; t=1740049502; c=relaxed/simple;
+	bh=rKG84Dm+qgA2a8K8nJHKowtWopfIOurS1J8H/BWnAXQ=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lfNjyB8jEtHY8m470NQSFbqqp+x731LBgB8YzRuEcdpqqM/BLkA0F3qwKdeHNIsCUQquHfzfQMN/v00fZhGgjk6+lq1i2D5dR1z/PKoW/zopcaXkIuuNdMYKWrtMgAEFFqL+tNwl0u0oPgET3wLHvgZuralwZ/9z3oK+FlUd624=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hy8y5qmR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662A0C4CEE3
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:00 +0000 (UTC)
+	 MIME-Version; b=UGXgpINsyGPORMLftkwQ1vAe9TGcN3Mc+1eTk6Khi3m2fATxw8PlAQSJB9DTtnE6wGS6ELLSEYCeZn0r0C++aFCyNhHVnB8XG0nMGvxnBVZrZcuzZwNSInSAHn7/nyCIfjbJyprOiPcl+NM3S5vyWF3qWtuYwv0HXr+nnnSAAfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adpuROAK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB3DC4CEE4
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740049501;
-	bh=9hxk+7ErPnp6CkqDnLiQhSsA+nXDmhR3kp3A7y4ud6c=;
+	s=k20201202; t=1740049502;
+	bh=rKG84Dm+qgA2a8K8nJHKowtWopfIOurS1J8H/BWnAXQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=hy8y5qmRUOK1P6c+hf0nix9aseLMS3YLBSBm9a+D82tvp8tOZ/DrKjKXHwEYpKRV4
-	 eq0DKMpEhm5ZztkKn0PM70vd06wEC/I9MDYLsJMislbo/SQ2MwJ70XdrGS8oBVmBCu
-	 KzuGCgZ1x8mV265x4ALTgaIJfkfcNpRAXlwpfTR6ZoG9SKQuwZ5hHal0HPuvGbi3tH
-	 sacJR9JVRL4f30H8b1bpjtipSqElBjz+omkcLmVeI23JCD8MJpLWzP2jdu/YC6Il+5
-	 ChaYgZwPcZbuOJFLX/FWFEccTKrU4oNENcJiNrVgSsgAF3fU5RmOvO4Ap+eUjwDxIR
-	 wY0lS0P9IWAcA==
+	b=adpuROAKSnCJ8WljcCtoxfH80EFLfSAUQxdkqQp3gA+VcZCBJz3nYL9VCcK2yNgRu
+	 GtWacV29vqVTLx7BKmBPZa/A0A9UPpPCBBkQPh2w3vWRu+TF3AlRYM6ev3+pRr119a
+	 l4G75rl879IoWsY1hPoshTzUt+2NrdBqCKHsoQkdezTBGTStmLwrl+DwBYNzn91enS
+	 9Vuq+HHDygxuz3ND7Opiw7YEhlZRRYmbwBLae0DwsMvNhZt+2c5I81OnLaWyOVfJzH
+	 ZRAHSv/cqM6QKSZaQL0s4nDIj9RmqRQIf2fTaWNt9YDM/nu3kyq3afOj8rPu2EUjrL
+	 84vinWrS7JZpQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 13/30] btrfs: send: only use booleans variables at process_recorded_refs()
-Date: Thu, 20 Feb 2025 11:04:26 +0000
-Message-Id: <11df18fd97e1723b2d0135b0912f64f739dc215d.1740049233.git.fdmanana@suse.com>
+Subject: [PATCH v2 14/30] btrfs: send: add and use helper to rename current inode when processing refs
+Date: Thu, 20 Feb 2025 11:04:27 +0000
+Message-Id: <0ad5ae9dee056f6b70b70e9175ba80cfab69c63c.1740049233.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1740049233.git.fdmanana@suse.com>
 References: <cover.1740049233.git.fdmanana@suse.com>
@@ -59,67 +59,67 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We have several local variables at process_recorded_refs() that are used
-as booleans, with some of them having a 'bool' type while two of them
-having an 'int' type. Change this to make them all use the 'bool' type
-which is more clear and to make everything more consistent.
+Extract the logic to rename the current inode at process_recorded_refs()
+into a helper function and use it, therefore removing duplicated logic
+and making it easier for an upcoming patch by avoiding yet more duplicated
+logic.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/btrfs/send.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 3aa2877f8c80..6e27a7d77b25 100644
+index 6e27a7d77b25..653e0b9a94ca 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -4147,9 +4147,9 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 	u64 ow_inode = 0;
- 	u64 ow_gen;
- 	u64 ow_mode;
--	int did_overwrite = 0;
--	int is_orphan = 0;
- 	u64 last_dir_ino_rm = 0;
-+	bool did_overwrite = false;
-+	bool is_orphan = false;
- 	bool can_rename = true;
- 	bool orphanized_dir = false;
- 	bool orphanized_ancestor = false;
-@@ -4191,14 +4191,14 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 		if (ret < 0)
- 			goto out;
- 		if (ret)
--			did_overwrite = 1;
-+			did_overwrite = true;
- 	}
- 	if (sctx->cur_inode_new || did_overwrite) {
- 		ret = gen_unique_name(sctx, sctx->cur_ino,
- 				sctx->cur_inode_gen, valid_path);
- 		if (ret < 0)
- 			goto out;
--		is_orphan = 1;
-+		is_orphan = true;
- 	} else {
- 		ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen,
- 				valid_path);
-@@ -4421,7 +4421,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 			ret = send_rename(sctx, valid_path, cur->full_path);
- 			if (ret < 0)
- 				goto out;
--			is_orphan = 0;
-+			is_orphan = false;
- 			ret = fs_path_copy(valid_path, cur->full_path);
- 			if (ret < 0)
- 				goto out;
-@@ -4482,7 +4482,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 					sctx->cur_inode_gen, valid_path);
- 			if (ret < 0)
- 				goto out;
--			is_orphan = 1;
-+			is_orphan = true;
- 		}
+@@ -4133,6 +4133,19 @@ static int refresh_ref_path(struct send_ctx *sctx, struct recorded_ref *ref)
+ 	return ret;
+ }
  
- 		list_for_each_entry(cur, &sctx->deleted_refs, list) {
++static int rename_current_inode(struct send_ctx *sctx,
++				struct fs_path *current_path,
++				struct fs_path *new_path)
++{
++	int ret;
++
++	ret = send_rename(sctx, current_path, new_path);
++	if (ret < 0)
++		return ret;
++
++	return fs_path_copy(current_path, new_path);
++}
++
+ /*
+  * This does all the move/link/unlink/rmdir magic.
+  */
+@@ -4418,13 +4431,10 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 		 * it depending on the inode mode.
+ 		 */
+ 		if (is_orphan && can_rename) {
+-			ret = send_rename(sctx, valid_path, cur->full_path);
++			ret = rename_current_inode(sctx, valid_path, cur->full_path);
+ 			if (ret < 0)
+ 				goto out;
+ 			is_orphan = false;
+-			ret = fs_path_copy(valid_path, cur->full_path);
+-			if (ret < 0)
+-				goto out;
+ 		} else if (can_rename) {
+ 			if (S_ISDIR(sctx->cur_inode_mode)) {
+ 				/*
+@@ -4432,10 +4442,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 				 * dirs, we always have one new and one deleted
+ 				 * ref. The deleted ref is ignored later.
+ 				 */
+-				ret = send_rename(sctx, valid_path,
+-						  cur->full_path);
+-				if (!ret)
+-					ret = fs_path_copy(valid_path,
++				ret = rename_current_inode(sctx, valid_path,
+ 							   cur->full_path);
+ 				if (ret < 0)
+ 					goto out;
 -- 
 2.45.2
 
