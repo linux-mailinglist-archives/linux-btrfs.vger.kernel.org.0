@@ -1,125 +1,165 @@
-Return-Path: <linux-btrfs+bounces-11605-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11606-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B14D9A3D20C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 08:21:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3FF4A3D4A4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 10:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C795189BC14
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 07:21:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F36013BD028
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 09:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDAF1E5B9F;
-	Thu, 20 Feb 2025 07:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794321F03F2;
+	Thu, 20 Feb 2025 09:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="OC/HkBxV"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LSGxZYYO";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZIgmswOj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A357F339A8;
-	Thu, 20 Feb 2025 07:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6781F03F3
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 09:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740036045; cv=none; b=ZIxacW2O6MAD9tQy8NcEjGO6zGkJLhoqIRlzZgu4W6W939M6Cp1jwcBX3VmyjOVLOPDNksw79IPZGaAgXaz8pUqHQ4Hwsnx8b0/g3XMmrfjRs0K82Ft794ejkBwNhf0NCZIx7/6qNOW14xBscrbLyyKp7nOrBcbh+rVFxY6tsdc=
+	t=1740043370; cv=none; b=FlAVss6HV7tvmr9dTN5hf2NWB9ELF8+apy8AkFdt3oYjX0N2K3ndWjImzajsubgjmdcjLEJ37yStX0q9++1C6PJMh3mYB077FTltR0tc3OyM/9hGoCVwCAEJd0Xc4JORKqj6/Hr2NgTLVs9qhT3TUuEv9Yz1po7iU66HGL7Aw70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740036045; c=relaxed/simple;
-	bh=6/f8W238BNZamCUmwGGc0unXgt1zsGiS4dRwpAbVjEM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GePJdTXTzRLBpbdBjhN9k48r3+yNH/1WCqVAfX1RQVQp+vdlCHaIGM8/yyncCOMgbUjV/iDUEs1fzYNBdrHOzhN5J431nYH2XojTIY9J5xE7+bi8l+2bVX4UHSk52OFwAKw8KpqbapQpZgAs/yuEc/4JCw4b6iwG8MUkipWYOow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=OC/HkBxV; arc=none smtp.client-ip=80.12.242.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([90.11.132.44])
-	by smtp.orange.fr with ESMTPA
-	id l0iotu6FD5obUl0istOkR1; Thu, 20 Feb 2025 08:11:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1740035510;
-	bh=OqTdwTr1/cWlHB1WJoanOZERiAU7KnG/HsvdWmyLIeI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=OC/HkBxVmMAMd7krYxc7PX+WAz01oESrabJBgQgtnL8RPFqj3JsQJHVeqCJECBq5P
-	 A7AK+SngG2sESDLv+oB/0WPkucICG0NtaicdoqpeVm3aM+D9ZM0QniMyL5V2b+3H8g
-	 tMPPGVvdOX4Owr5NqmJrdPexEKh3S/22nVXDq7Kr66PmHsgVs+ep9YvyxiQNLZxuqa
-	 3lyGU+kLmSY2ii+vccwOtteOXpwYYl7UG30KGhv1GeIK1IDNftWaHY63Jj0q766TVs
-	 I2+YoGpYO1vXC4AjH9W/ANEpQyp7Pk7v9ANYrtb73jXxwAXt4mjD3R7TwWG2l/VSDX
-	 hYaLfAaoPa+BQ==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
-X-ME-Date: Thu, 20 Feb 2025 08:11:50 +0100
-X-ME-IP: 90.11.132.44
-Message-ID: <4cbdb517-2d4b-4f73-9822-a9c4ec794b54@wanadoo.fr>
-Date: Thu, 20 Feb 2025 08:11:46 +0100
+	s=arc-20240116; t=1740043370; c=relaxed/simple;
+	bh=3lt/evaVM6NTkDEIJ/dNfOtubx+tJpzYAxg6r0E3+9o=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=n97X/I+0aJ0BTbDleVvLgxdh+3wS7/eg/L9g1eNBkyQKF4JBZkvPiVs0gqVr0+1znb34xMpIBg+hKZVWYLXilq7GsoN6Be+cTF3bkJ8aZIOd309kyVv6vhQ0nuXLngQrzF3weXm5sEwM5O71fgvzgKLk2lKjkk10Jn3Vu6+k1Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LSGxZYYO; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZIgmswOj; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F410D210EF
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 09:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1740043367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=kaaLka8lcdhLDfvMMYuSOReg9JlpuSYGUmP+FbhHp+w=;
+	b=LSGxZYYOBEEmEUZ9wDkE52BAkjw8g5ozq5UfMHvcBh1yyvedOgm2xxeQOOjuBovA4JPrrA
+	Pd3u9puYpe+uJ++8aLbOUsHidqATxmU7Fq2xH2YhK5k4+qFddJFI5GWfd5kEo4EIrbh5Ol
+	eZmdsU52UmJBiRTPSa0F8YMZzZxyUCc=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1740043365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=kaaLka8lcdhLDfvMMYuSOReg9JlpuSYGUmP+FbhHp+w=;
+	b=ZIgmswOj1eMLvopaL0XZWrACw7uhmOszIjQ5f4LDfSiyaqNii5kBM7h/jVg/LxJQ/mU/zt
+	GPRAcQ+W7kUit5Szfmz+LzshXAf+/eZGxDHKBoBxXRxlYOLqKPNaomrrXpqqXXYptn7S4S
+	uLrw8oZK1z65tcwVhfgCcUeWENkZpdk=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6E4913A69
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 09:22:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id quzfI2T0tmfBcgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 09:22:44 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/5] btrfs: prepare for larger folios support
+Date: Thu, 20 Feb 2025 19:52:21 +1030
+Message-ID: <cover.1740043233.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: zoned: Remove some code duplication
-To: Naohiro Aota <Naohiro.Aota@wdc.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <74072f83285f96aba98add7d24c9f944d22a721b.1739974151.git.christophe.jaillet@wanadoo.fr>
- <D7X1HAEVN3TO.Z7JG9SRUODCE@wdc.com>
-Content-Language: en-US, fr-FR
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <D7X1HAEVN3TO.Z7JG9SRUODCE@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Le 20/02/2025 à 06:55, Naohiro Aota a écrit :
-> On Wed Feb 19, 2025 at 11:10 PM JST, Christophe JAILLET wrote:
->> This code snippet is written twice in row, so remove one of them.
->>
->> This was apparently added by accident in commit efe28fcf2e47 ("btrfs:
->> handle unexpected parent block offset in btrfs_alloc_tree_block()")
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   fs/btrfs/zoned.c | 9 ---------
->>   1 file changed, 9 deletions(-)
->>
->> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
->> index b5b9d16664a8..6c4534316aad 100644
->> --- a/fs/btrfs/zoned.c
->> +++ b/fs/btrfs/zoned.c
->> @@ -1663,15 +1663,6 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
->>   	}
->>   
->>   out:
->> -	/* Reject non SINGLE data profiles without RST */
->> -	if ((map->type & BTRFS_BLOCK_GROUP_DATA) &&
->> -	    (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) &&
->> -	    !fs_info->stripe_root) {
->> -		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
->> -			  btrfs_bg_type_to_raid_name(map->type));
->> -		return -EINVAL;
->> -	}
->> -
->>   	/* Reject non SINGLE data profiles without RST. */
->>   	if ((map->type & BTRFS_BLOCK_GROUP_DATA) &&
->>   	    (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) &&
-> 
-> Thanks, but which repository/branch are you working with? I cannot
-> find the duplicated lines in btrfs/for-next, linus/master, nor
-> linux-stable. Also, the pointed commit seems wrong too.
+This means:
 
-Sorry for the lack of context.
+- Our subpage routine should check against the folio size other than
+  PAGE_SIZE
 
-This is based on linux-next. In my case -next-20250219
+- Make functions handling filemap folios to use folio_size() other than
+  PAGE_SIZE
 
-This can be seen at :
-  
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/fs/btrfs/zoned.c?id=efe28fcf2e47aa5142bff2c284ea7337b40901e8#n1666
+  The most common paths are:
+  * Buffered reads/writes
+  * Uncompressed folio writeback
+    Already handled pretty well
 
-The commit Id is the one given at :
-  
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/fs/btrfs/zoned.c?id=efe28fcf2e47aa5142bff2c284ea7337b40901e8
+  * Compressed read
+  * Compressed write
+    To take full advantage of larger folios, we should use folio_iter
+    other than bvec_iter.
+    This will be a dedicated patchset, and the existing bvec_iter can
+    still handle larger folios.
 
+  Internal usages can still use page sized folios, or even pages,
+  including:
+  * Encoded reads/writes
+  * Compressed folios
+  * RAID56 internal pages
+  * Scrub internal pages
 
-CJ
+This patchset will handle the above mentioned points by:
+
+- Prepare the subpage routine to handle larger folios
+  This will introduce a small overhead, as all checks are against folio
+  sizes, even on x86_64 we can no longer skip subpage completely.
+
+  This is done in the first patch.
+
+- Convert straightforward PAGE_SIZE users to use folio_size()
+  This is done in the remaining patches.
+
+Currently this patchset is not a exhaustive conversion, I'm pretty sure
+there are other complex situations which can cause problems.
+Those problems can only be exposed and fixed after switching on the
+experimental larger folios support later.
+
+Qu Wenruo (5):
+  btrfs: prepare subpage.c for larger folios support
+  btrfs: remove the PAGE_SIZE usage inside inline extent reads
+  btrfs: prepare btrfs_launcher_folio() for larger folios support
+  btrfs: prepare extent_io.c for future larger folio support
+  btrfs: prepare btrfs_page_mkwrite() for larger folios
+
+ fs/btrfs/extent_io.c | 50 +++++++++++++++++++++++++-------------------
+ fs/btrfs/file.c      | 19 +++++++++--------
+ fs/btrfs/inode.c     |  8 +++----
+ fs/btrfs/subpage.c   | 36 +++++++++++++++----------------
+ fs/btrfs/subpage.h   | 24 ++++++++-------------
+ 5 files changed, 69 insertions(+), 68 deletions(-)
+
+-- 
+2.48.1
+
 
