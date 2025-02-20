@@ -1,214 +1,333 @@
-Return-Path: <linux-btrfs+bounces-11674-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11675-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917E1A3E708
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 22:54:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026F1A3E729
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 23:00:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67DDD4214FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 21:54:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88EC019C18A5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 22:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C267F2139D4;
-	Thu, 20 Feb 2025 21:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7FC264631;
+	Thu, 20 Feb 2025 21:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cCh6J+Vk"
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="r2c9sB9S"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799F91EF0B6
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 21:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA68F264620
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 21:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740088454; cv=none; b=V4eD+waSEsu5tDJa4KOPkfuFsbYGUErFunATiXudd1s6BhrvukGL16DBZt7N+V90wp/uoY27+enNZI05JrIxATFwst4y7cYan0qkuo9zjv5VZP+5QAALGn5ub+ELdbNQUt2SqQ6wQW527gDEaBmvl1IfI7mF5bXHOZq2WmLMBB0=
+	t=1740088786; cv=none; b=M15y2aokzYr29RhwMt7xzBSQj/385ruSKS9Zs4iP/4oZ70YsDtMiYm09z9maXiXTsA9cVwCFFXRnOhM6FBGiEvCzdSy7VnmMBbR82gRtE5zsVQvcayTkf7yfuPlw5p1I+o3ZuMD9cdAqyJmSFJmLnGWZfpaMLcICePzI/7HHsSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740088454; c=relaxed/simple;
-	bh=+a9jnm6Bk3QearMH0dFHIyxkzdL2W1GEcseYUZ2Qfko=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V1lYVqD96k40pv7YoMCpeLRuhVrShqYdbhzxck+5VhZgNd36wX8C/O/BaMumebdbAc6hIYQ1I7NnAwsrc5bF+TWfMy4JjwzrFPC7UfSyERqumiNi7QD/pNRJwzo4ulesCKfHhwLF7AVMZou3Cs6lAsMhqsK2MHEcmmBm/v+2c6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cCh6J+Vk; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-38a25d4b9d4so791221f8f.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 13:54:10 -0800 (PST)
+	s=arc-20240116; t=1740088786; c=relaxed/simple;
+	bh=v/4DfAOcw5eVDTYHCQHmdHwkIJdbEeRnvOCqrWCkhvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LJkOn02GiNXlqEpww9Jv1UAs5KnsYVG9ftl02ggwtqo49k/Ju/BVDIb+3rTpFXGrL0HcNxnVcsqaQyrb8rDYruE9ASZQ3V9JsYKnuh3g4wpgKMcGxboBn/PI+yjgWy41DD279kjcw00fo5xu4d2g0w/gAHLLHXvUwSdMMvg2ISc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=r2c9sB9S; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2fa8c788c74so361972a91.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 13:59:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1740088449; x=1740693249; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIHdq6Gg8R4VPNIYbrs0yySk0RWRd/0wuGcsje5S6xI=;
-        b=cCh6J+Vklg8qkmsmlSZ5C6m/Pz5fhFXEV+xG9URS1dEoKLMVEM+C8kXv1F439wpitL
-         bXI0oMZN/zfV+0nonLvjjr/22a/EH2nVqWOTzzW3fEG+z5H9+ZSYXHEuV8cocU151Tf+
-         Ob3gJwAjeKuTPrs1fvpP0qiMvl0PgDg2X2lVuGYlCejkf4IcUuQ2qF79oq8koj49mgfb
-         cVFp70SdP9rwqlW5ETdcZqt1LLgfFxb1kQktHhhpOlU8k3HgLz7a6IlS7aeIBQSuiHJq
-         QG/BqLwuawlZmFvBjbyzGo9veWssSB560arnOQ5mfMLkYgLYaKI07uXtokdgQrozR6R+
-         L7Gg==
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1740088784; x=1740693584; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ImN4lCR7ZIbg1unpaXk1ouiQnvCbRSxh/bAjoNFaL9s=;
+        b=r2c9sB9SwezIQ0lNC4MW0Sf3eIDkKubrr9SeuXlVu0L2rtxZLwwgzZ7qa5aP+X9Q7S
+         CJ5/prAim5/A5x35KEqVKY5vjVyDxn7cIOYI82ucBUZTdA5HPyLZVI/oXBAKFxdP+THs
+         uP5RDhI6UbdI5eE/KIJU3KPUE3v95lqh27jUZKBhJhhb7sTDmlC6EeoE7bESvo3XMSMX
+         CoeyKSk6S0NEckA4BunEMcx3GD2w7lb3ZmblCzMJfMNZKMGMZ5wG29yYDzZnjEOOK+HV
+         E2ix/7Q3QKaxo03c+c9iguGlhAza9iMkWmlibX6n6joGunz4GFTwbcoJMTSQwi0ueYwl
+         TlaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740088449; x=1740693249;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zIHdq6Gg8R4VPNIYbrs0yySk0RWRd/0wuGcsje5S6xI=;
-        b=eTYhn+Zi36p15vwV+rTmVsVhSAARzTKxOVV0QCFSaTDxve15rXw2kriMxTME4mGqf8
-         tlG9MuFupTU9ioV0rJEZTRZwjwpDQzUIWBBYzykMZuvob5dDlPYvr4nn/5d7e1d1fTui
-         TbHYdWYju3SjOYlb1ZEu2KCgtJBvlVJPOoWqSjq4xUgu/Fdgz4t7sAwI8s056EvXQeT/
-         /T5ODnGF5P5zQkpXRARk3/VQS5UFV3+ySX/lqLE3Vwde4n/I7x/XuyJuwwpmiW8zsUnu
-         /rx8vxmJLiXmH1UfZfCVXx6vXws3BdTAnIiNERTyjjKf5UatWtXiU5VVEDXNySSBRZ4F
-         HDTA==
-X-Gm-Message-State: AOJu0Yyd7+ynp+WbkPDfAvOrC7sZ9vsbgFuvGvqmg3MSqjIT+r3QytUu
-	BzLm4JZLvT2KADbQiJNh9O+49o+Fn8RsBw13eDV2AYBiNUCcL7kJJNX7z3r5kHY=
-X-Gm-Gg: ASbGncsJcVWOWXzLc0oj2Z2XynuWMrPVe9OANsJv14GwGLpRXOnRrIQ5jaH+gCuQmzF
-	7SZpQemR0x9YI6XbGsO9CeW1u+66uVvNf13KxVE0dv7SN4iSIMxuSi4jDG+MfELEfmHOnganHkH
-	jnqIKX8jflR2S2oV/2TjJDHUL+lJNBz34LOCUt4HV+JH39NzJEUAZjP1OB/k36E/RMe0+TmjJFw
-	0y57klL4Wscay9DNrcO43pjBICIKr7QJ7bjo4EA8OsXWgUwclBH/ypcPXbAlva+nIHsCDJgbOoX
-	eoEtgz2l7kGnK0ngUIaCrbodbk8VtL50mmHWR0XxEAM=
-X-Google-Smtp-Source: AGHT+IHd7OnBz9rL9BHeHdo/Mst5qnn7f+9o3cI42rTtr4TWyhTPdb/DVjGuOAgYIUETIaWzH/B5QQ==
-X-Received: by 2002:a05:6000:402c:b0:38e:d4b3:9454 with SMTP id ffacd0b85a97d-38f6f0974aemr622712f8f.34.1740088448379;
-        Thu, 20 Feb 2025 13:54:08 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73414be6fa4sm2044499b3a.36.2025.02.20.13.54.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2025 13:54:07 -0800 (PST)
-Message-ID: <c0a4b4a0-268c-42f3-b117-b87b2fb12a03@suse.com>
-Date: Fri, 21 Feb 2025 08:24:03 +1030
+        d=1e100.net; s=20230601; t=1740088784; x=1740693584;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ImN4lCR7ZIbg1unpaXk1ouiQnvCbRSxh/bAjoNFaL9s=;
+        b=vkJr+4WlqMCMysJNW7H2iYjFve4RyWZPOSUmqcAzrmJTvIW+AJkTlLvrQFhb/6Au1N
+         T4skCeEbB0K7+IA2QrQyI4Lq73zX4pAFf+9Wem2Ndo7nGdT1dyDF44qfHjkeAkJBsib7
+         MOpgWswntF4fZvTKhD0SfSxq7ZY5JYsJIAamO/Q7pBVr1LjJ9L9oSc9JNcA91cH4msBe
+         /7rNJHMCzh3vfk0fq9t3lS42oPJEd5NGzz+8JhTdNpubGOpgvd3ewwyt5oWxwu7PG2le
+         bRPIzeU6+utbKPx3cVx5u2nC4pM1eTXTlY90lcOtE3Qs1KlvbJz7+rD7LdSSdJWOVLat
+         7wcQ==
+X-Gm-Message-State: AOJu0Yzo2MGMBnOWFK2xyxqH3NcYWbthl16DI+9Okecx+vEC3bxY6nkX
+	uB0zpfZ44snGrlymNZeXEtECwpvsilSRWYaoeQllLvKiIQj/1yChh9OkNzafp7M=
+X-Gm-Gg: ASbGnctDe5k1hkQEqKQFzeZlsgCQHXhUAnoGVsuMDBd/mxDRw/wIer5WN9tZEU0flET
+	94UebTg5stIHyePO2Tv7OKAURJ5QRUv6535BIdBf1eWHwzxbE3a2zhtBfA9/p1hvi84+PhMDiUQ
+	IO/pmyKvpMpxenvfW07HizM2TUXkv3ULQUfez1hPJWtoCIk2SDBtpV9CXm2fVx5jJsLlyh4cYd3
+	1BHVNDqiQN/QYMFmqTfM1YUw4d3bX4jDjs9z9oc+0n4PBlcR9XaWwv2DXz18X2CwB4beeMHhA==
+X-Google-Smtp-Source: AGHT+IFuHfnxTZY1vxbbJ5Et64rQq/usrbCq18b0D6Ibt9k5Wpl0PYnxcDK4+DWNoCJS2D31tGW+dQ==
+X-Received: by 2002:a05:6a00:88f:b0:726:380a:282f with SMTP id d2e1a72fcca58-73426c843ffmr349809b3a.2.1740088783905;
+        Thu, 20 Feb 2025 13:59:43 -0800 (PST)
+Received: from telecaster ([2620:10d:c090:400::5:905a])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73242546835sm14332466b3a.35.2025.02.20.13.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Feb 2025 13:59:43 -0800 (PST)
+Date: Thu, 20 Feb 2025 13:59:42 -0800
+From: Omar Sandoval <osandov@osandov.com>
+To: Alex Lyakas <alex.lyakas@zadara.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 2/2] btrfs: get rid of block group caching progress logic
+Message-ID: <Z7elzqQqFb_YUO_J@telecaster>
+References: <cover.1660690698.git.osandov@fb.com>
+ <1ac68be51384f9cc2433bb7979f4cda563e72976.1660690698.git.osandov@fb.com>
+ <CAOcd+r1BGKYVRZK5iDdK6N0sr7CuCxvmmBjzNDXhZrv2o4cRYA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fstests: btrfs/314: fix the failure when SELinux is
- enabled
-From: Qu Wenruo <wqu@suse.com>
-To: Daniel Vacek <neelx@suse.com>, fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>
-References: <20250220145723.1526907-1-neelx@suse.com>
- <d84d2d83-03ac-4741-9677-52c71e1fb36d@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <d84d2d83-03ac-4741-9677-52c71e1fb36d@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOcd+r1BGKYVRZK5iDdK6N0sr7CuCxvmmBjzNDXhZrv2o4cRYA@mail.gmail.com>
 
-
-
-在 2025/2/21 08:06, Qu Wenruo 写道:
+On Thu, Feb 20, 2025 at 09:26:47PM +0200, Alex Lyakas wrote:
+> Hi Omar,
 > 
-> 
-> 在 2025/2/21 01:27, Daniel Vacek 写道:
->> When SELinux is enabled this test fails unable to receive a file with
->> security label attribute:
->>
->>      --- tests/btrfs/314.out
->>      +++ results//btrfs/314.out.bad
->>      @@ -17,5 +17,6 @@
->>       At subvol TEST_DIR/314/tempfsid_mnt/snap1
->>       Receive SCRATCH_MNT
->>       At subvol snap1
->>      +ERROR: lsetxattr foo 
->> security.selinux=unconfined_u:object_r:unlabeled_t:s0 failed: 
->> Operation not supported
->>       Send:    42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/ 
->> tempfsid_mnt/foo
->>      -Recv:    42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/foo
->>      +Recv:    d41d8cd98f00b204e9800998ecf8427e  SCRATCH_MNT/snap1/foo
->>      ...
->>
->> Setting the security label file attribute fails due to the default mount
->> option implied by fstests:
->>
->> MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/sdb /mnt/ 
->> scratch
->>
->> See commit 3839d299 ("xfstests: mount xfs with a context when selinux 
->> is on")
->>
->> fstests by default mount test and scratch devices with forced SELinux
->> context to get rid of the additional file attributes when SELinux is
->> enabled. When a test mounts additional devices from the pool, it may need
->> to honor this option to keep on par. Otherwise failures may be expected.
->>
->> Moreover this test is perfectly fine labeling the files so let's just
->> disable the forced context for this one.
->>
->> Signed-off-by: Daniel Vacek <neelx@suse.com>
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> 
-> Thanks,
-> Qu
-> 
->> ---
->>   tests/btrfs/314 | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/tests/btrfs/314 b/tests/btrfs/314
->> index 76dccc41..cc1a2264 100755
->> --- a/tests/btrfs/314
->> +++ b/tests/btrfs/314
->> @@ -21,6 +21,10 @@ _cleanup()
->>   . ./common/filter.btrfs
->> +# Disable the forced SELinux context. We are fine testing the
->> +# security labels with this test when SELinux is enabled.
->> +SELINUX_MOUNT_OPTIONS=
+> On Wed, Aug 17, 2022 at 2:13 AM Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > struct btrfs_caching_ctl::progress and struct
+> > btrfs_block_group::last_byte_to_unpin were previously needed to ensure
+> > that unpin_extent_range() didn't return a range to the free space cache
+> > before the caching thread had a chance to cache that range. However, the
+> > previous commit made it so that we always synchronously cache the block
+> > group at the time that we pin the extent, so this machinery is no longer
+> > necessary.
+> >
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> > ---
+> >  fs/btrfs/block-group.c     | 13 ------------
+> >  fs/btrfs/block-group.h     |  2 --
+> >  fs/btrfs/extent-tree.c     |  9 ++-------
+> >  fs/btrfs/free-space-tree.c |  8 --------
+> >  fs/btrfs/transaction.c     | 41 --------------------------------------
+> >  fs/btrfs/zoned.c           |  1 -
+> >  6 files changed, 2 insertions(+), 72 deletions(-)
+> >
+> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> > index 1af6fc395a52..68992ad9ff2a 100644
+> > --- a/fs/btrfs/block-group.c
+> > +++ b/fs/btrfs/block-group.c
+> > @@ -593,8 +593,6 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+> >
+> >                         if (need_resched() ||
+> >                             rwsem_is_contended(&fs_info->commit_root_sem)) {
+> > -                               if (wakeup)
+> > -                                       caching_ctl->progress = last;
+> >                                 btrfs_release_path(path);
+> >                                 up_read(&fs_info->commit_root_sem);
+> >                                 mutex_unlock(&caching_ctl->mutex);
+> > @@ -618,9 +616,6 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+> >                         key.objectid = last;
+> >                         key.offset = 0;
+> >                         key.type = BTRFS_EXTENT_ITEM_KEY;
+> > -
+> > -                       if (wakeup)
+> > -                               caching_ctl->progress = last;
+> >                         btrfs_release_path(path);
+> >                         goto next;
+> >                 }
+> > @@ -655,7 +650,6 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+> >
+> >         total_found += add_new_free_space(block_group, last,
+> >                                 block_group->start + block_group->length);
+> > -       caching_ctl->progress = (u64)-1;
+> >
+> >  out:
+> >         btrfs_free_path(path);
+> > @@ -725,8 +719,6 @@ static noinline void caching_thread(struct btrfs_work *work)
+> >         }
+> >  #endif
+> >
+> > -       caching_ctl->progress = (u64)-1;
+> > -
+> >         up_read(&fs_info->commit_root_sem);
+> >         btrfs_free_excluded_extents(block_group);
+> >         mutex_unlock(&caching_ctl->mutex);
+> > @@ -755,7 +747,6 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait)
+> >         mutex_init(&caching_ctl->mutex);
+> >         init_waitqueue_head(&caching_ctl->wait);
+> >         caching_ctl->block_group = cache;
+> > -       caching_ctl->progress = cache->start;
+> >         refcount_set(&caching_ctl->count, 2);
+> >         btrfs_init_work(&caching_ctl->work, caching_thread, NULL, NULL);
+> >
+> > @@ -2076,11 +2067,9 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+> >                 /* Should not have any excluded extents. Just in case, though. */
+> >                 btrfs_free_excluded_extents(cache);
+> >         } else if (cache->length == cache->used) {
+> > -               cache->last_byte_to_unpin = (u64)-1;
+> >                 cache->cached = BTRFS_CACHE_FINISHED;
+> >                 btrfs_free_excluded_extents(cache);
+> >         } else if (cache->used == 0) {
+> > -               cache->last_byte_to_unpin = (u64)-1;
+> >                 cache->cached = BTRFS_CACHE_FINISHED;
+> >                 add_new_free_space(cache, cache->start,
+> >                                    cache->start + cache->length);
+> > @@ -2136,7 +2125,6 @@ static int fill_dummy_bgs(struct btrfs_fs_info *fs_info)
+> >                 /* Fill dummy cache as FULL */
+> >                 bg->length = em->len;
+> >                 bg->flags = map->type;
+> > -               bg->last_byte_to_unpin = (u64)-1;
+> >                 bg->cached = BTRFS_CACHE_FINISHED;
+> >                 bg->used = em->len;
+> >                 bg->flags = map->type;
+> > @@ -2482,7 +2470,6 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
+> >         set_free_space_tree_thresholds(cache);
+> >         cache->used = bytes_used;
+> >         cache->flags = type;
+> > -       cache->last_byte_to_unpin = (u64)-1;
+> >         cache->cached = BTRFS_CACHE_FINISHED;
+> >         cache->global_root_id = calculate_global_root_id(fs_info, cache->start);
+> >
+> > diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+> > index 9dba28bb1806..59a86e82a28e 100644
+> > --- a/fs/btrfs/block-group.h
+> > +++ b/fs/btrfs/block-group.h
+> > @@ -63,7 +63,6 @@ struct btrfs_caching_control {
+> >         wait_queue_head_t wait;
+> >         struct btrfs_work work;
+> >         struct btrfs_block_group *block_group;
+> > -       u64 progress;
+> >         refcount_t count;
+> >  };
+> >
+> > @@ -115,7 +114,6 @@ struct btrfs_block_group {
+> >         /* Cache tracking stuff */
+> >         int cached;
+> >         struct btrfs_caching_control *caching_ctl;
+> > -       u64 last_byte_to_unpin;
+> >
+> >         struct btrfs_space_info *space_info;
+> >
+> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> > index 86ac953c69ac..bcd0e72cded3 100644
+> > --- a/fs/btrfs/extent-tree.c
+> > +++ b/fs/btrfs/extent-tree.c
+> > @@ -2686,13 +2686,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+> >                 len = cache->start + cache->length - start;
+> >                 len = min(len, end + 1 - start);
+> >
+> > -               down_read(&fs_info->commit_root_sem);
+> > -               if (start < cache->last_byte_to_unpin && return_free_space) {
+> > -                       u64 add_len = min(len, cache->last_byte_to_unpin - start);
+> > -
+> > -                       btrfs_add_free_space(cache, start, add_len);
+> > -               }
+> > -               up_read(&fs_info->commit_root_sem);
+> > +               if (return_free_space)
+> > +                       btrfs_add_free_space(cache, start, len);
+> >
+> >                 start += len;
+> >                 total_unpinned += len;
+> > diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> > index 1bf89aa67216..367bcfcf68f5 100644
+> > --- a/fs/btrfs/free-space-tree.c
+> > +++ b/fs/btrfs/free-space-tree.c
+> > @@ -1453,8 +1453,6 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+> >                 ASSERT(key.type == BTRFS_FREE_SPACE_BITMAP_KEY);
+> >                 ASSERT(key.objectid < end && key.objectid + key.offset <= end);
+> >
+> > -               caching_ctl->progress = key.objectid;
+> > -
+> >                 offset = key.objectid;
+> >                 while (offset < key.objectid + key.offset) {
+> >                         bit = free_space_test_bit(block_group, path, offset);
+> > @@ -1490,8 +1488,6 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+> >                 goto out;
+> >         }
+> >
+> > -       caching_ctl->progress = (u64)-1;
+> > -
+> >         ret = 0;
+> >  out:
+> >         return ret;
+> > @@ -1531,8 +1527,6 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
+> >                 ASSERT(key.type == BTRFS_FREE_SPACE_EXTENT_KEY);
+> >                 ASSERT(key.objectid < end && key.objectid + key.offset <= end);
+> >
+> > -               caching_ctl->progress = key.objectid;
+> > -
+> >                 total_found += add_new_free_space(block_group, key.objectid,
+> >                                                   key.objectid + key.offset);
+> >                 if (total_found > CACHING_CTL_WAKE_UP) {
+> > @@ -1552,8 +1546,6 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
+> >                 goto out;
+> >         }
+> >
+> > -       caching_ctl->progress = (u64)-1;
+> > -
+> >         ret = 0;
+> >  out:
+> >         return ret;
+> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> > index 6e3b2cb6a04a..4c87bf2abc14 100644
+> > --- a/fs/btrfs/transaction.c
+> > +++ b/fs/btrfs/transaction.c
+> > @@ -161,7 +161,6 @@ static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
+> >         struct btrfs_transaction *cur_trans = trans->transaction;
+> >         struct btrfs_fs_info *fs_info = trans->fs_info;
+> >         struct btrfs_root *root, *tmp;
+> > -       struct btrfs_caching_control *caching_ctl, *next;
+> >
+> >         /*
+> >          * At this point no one can be using this transaction to modify any tree
+> > @@ -196,46 +195,6 @@ static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
+> >         }
+> >         spin_unlock(&cur_trans->dropped_roots_lock);
+> >
+> > -       /*
+> > -        * We have to update the last_byte_to_unpin under the commit_root_sem,
+> > -        * at the same time we swap out the commit roots.
+> > -        *
+> > -        * This is because we must have a real view of the last spot the caching
+> > -        * kthreads were while caching.  Consider the following views of the
+> > -        * extent tree for a block group
+> > -        *
+> > -        * commit root
+> > -        * +----+----+----+----+----+----+----+
+> > -        * |\\\\|    |\\\\|\\\\|    |\\\\|\\\\|
+> > -        * +----+----+----+----+----+----+----+
+> > -        * 0    1    2    3    4    5    6    7
+> > -        *
+> > -        * new commit root
+> > -        * +----+----+----+----+----+----+----+
+> > -        * |    |    |    |\\\\|    |    |\\\\|
+> > -        * +----+----+----+----+----+----+----+
+> > -        * 0    1    2    3    4    5    6    7
+> > -        *
+> > -        * If the cache_ctl->progress was at 3, then we are only allowed to
+> > -        * unpin [0,1) and [2,3], because the caching thread has already
+> > -        * processed those extents.  We are not allowed to unpin [5,6), because
+> > -        * the caching thread will re-start it's search from 3, and thus find
+> > -        * the hole from [4,6) to add to the free space cache.
+> > -        */
+> > -       write_lock(&fs_info->block_group_cache_lock);
+> > -       list_for_each_entry_safe(caching_ctl, next,
+> > -                                &fs_info->caching_block_groups, list) {
+> > -               struct btrfs_block_group *cache = caching_ctl->block_group;
+> > -
+> > -               if (btrfs_block_group_done(cache)) {
+> > -                       cache->last_byte_to_unpin = (u64)-1;
+> > -                       list_del_init(&caching_ctl->list);
+> > -                       btrfs_put_caching_control(caching_ctl);
+> Now the caching_ctl is not removed from fs_info->caching_block_groups,
+> and remains there until close_ctree(). So eventually it will be
+> removed, but for now just occupying memory. Is this intended?
 
-Wait for a minute, this means you're disabling SELINUX mount options 
-completely.
-
-I'm not sure if this is really needed.
->> +
->>   _require_scratch_dev_pool 2
->>   _require_btrfs_fs_feature temp_fsid
->> @@ -38,7 +42,7 @@ send_receive_tempfsid()
->>       # Use first 2 devices from the SCRATCH_DEV_POOL
->>       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
->>       _scratch_mount
->> -    _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
->> +    _mount ${SELINUX_MOUNT_OPTIONS} ${SCRATCH_DEV_NAME[1]} 
->> ${tempfsid_mnt}
-
-The problem of the old code is it doesn't have any SELinux related mount 
-option, thus later receive will fail to set SELinux context.
-
-But since you have already added SELINUX_MOUNT_OPTIONS, I think you do 
-not need to disable the SELINUX_MOUNT_OPTIONS.
-
-Have you tested with only this change, without resetting 
-SELINUX_MOUNT_OPTIONS?
+No, I don't think this was intentional.
 
 Thanks,
-Qu
->>       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | 
->> _filter_xfs_io
->>       _btrfs subvolume snapshot -r ${src} ${src}/snap1
-> 
-> 
-
+Omar
 
