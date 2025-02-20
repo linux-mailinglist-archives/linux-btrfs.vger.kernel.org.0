@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-11659-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11660-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD34FA3D7CB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 12:07:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D8B9A3D7CD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 12:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 954DE17D91E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 11:06:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A60CB17FD90
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2025 11:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D251F1534;
-	Thu, 20 Feb 2025 11:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A4D1F429C;
+	Thu, 20 Feb 2025 11:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/MU9iSY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+HWilIS"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606381F0E31
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675EA1F1913
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740049512; cv=none; b=PJPCvor9yHCPWEXGTc+rtb/W5iZdtgi/1VndkgvZV2Z1DCIZy7zHvPJwf4aNFefEXoaHy/eWaVLerNgx3B3sAdwIb6TDmDC4SUAzVsjWTXzSUsanRu/9GMC2xiFpkZhO9ReB5gskfU0ncm0aGEes+w1W8Q90MlZhAc//hnkB3Fo=
+	t=1740049513; cv=none; b=djKgj1UgcPxCZsPTIsEHyKpGMmqaJIjXGl0fqDYggtGh6OwmVCpPKYshlA+fmvRhVkxTZbpe9W8HI/8W2NbwsJjTqdAS673MioAhCJVoGSQenR6ZX/n4yb08U/c7AtiP30wiVdPAVA3jGDn7nJ5KRwoLDxrh4+GbAgtlfP+bnvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740049512; c=relaxed/simple;
-	bh=No1hRUoq8G5x+5o40hJzJRvS7EauTBPVtearmdchDHY=;
+	s=arc-20240116; t=1740049513; c=relaxed/simple;
+	bh=YRwbdZySKM3CEdobzlcWa7QWhdjG3B8FlMUrlCzFH6U=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n7ga6+bZtn0Bi/p9L5pWwZpBG0/3acOOe3VnfrlGmK5C8YKGONR3tZcOztmKYKFvIOyRnauyj2XkO3NnIXVyO26kmZfIdx6L7RKGG0GAWcEgPWmGmNwkZ6IlO+/olV01kuqEOoxFrmOaIRG5rwPI3wVnTfTh3AO4EsyNYZMgKn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/MU9iSY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B19B2C4CEE3
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:11 +0000 (UTC)
+	 MIME-Version; b=eRjWNPJnNownySbPa5nrSLKJMNdg6Xi4RGNb0mknMnZNIsZ5dXyAk5bTk9/SvUYLTBtivacqo8d72FQPu34l4Fl9j3uR/WNDsoSWkBP8qQpKpGZCKdhi/oQ0jGU21Qx9jho3zWADbTVIT+OuZQSReVKocYvmmYBAp0Jq7q95fQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+HWilIS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B75CEC4CEE3
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 11:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740049512;
-	bh=No1hRUoq8G5x+5o40hJzJRvS7EauTBPVtearmdchDHY=;
+	s=k20201202; t=1740049513;
+	bh=YRwbdZySKM3CEdobzlcWa7QWhdjG3B8FlMUrlCzFH6U=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=L/MU9iSYz3G+aizRyhjO7G5bfr5XXvlgHPRdfNFdLa6lkGG6VKrpcf37nOio3G5tU
-	 sFE0yqT+CzxgzaxmAFPNhoQTt1eg+HxUeaGQL0FLRWNFQpzGRtsLqCyzcPFsHgiC8E
-	 QQmeitTcycIq6KYxhRu5TH1Hipf2ooZkwodg8FWSLsffrsx8t/HKfCFtnkE9cBUO9t
-	 bIJlmttLhqJ6kuYNdXXbB6ah1FvMD2AyCWxp9ABPW8dzwWDQBjOeWgPfyV0w6IhaoN
-	 sXZRo3zkk5pvM30SmX1ESABktkz6FyJ24ZkMIK9Tcdx4j3ZdeAbOSLp+03rC32pWFR
-	 4L2JKQhroM9Zg==
+	b=m+HWilISCi1zKKMd6goABkMRLH8LyaUnjSQyta/sQ+FRFo8JPUXndcq/+NrNk0k+y
+	 Hdzt6/uUgZ6m8uBILmGTh31i0Sprixm53lvntkytBbRNFtDK/UlsCy4GgWxoVSxsJN
+	 KrHVruFEnfGtZmbUDeq9tlRJ6L+C7aIXln+aCfi0mZ7AJWb1Dh/TfcJdwi6t0MxWI5
+	 zfoo+iKfiyo1sr37EpqDqivIpEO+7QLKTWVUlvEHRma5jGgUqPsSDr1JqmUtJkJLaj
+	 t1IEYqeqCEjNwyLCaPU9zKRuLh/1baGkiELff4ovNqEHM4pc4iNoZ15b52VgX7MkAM
+	 tc0R32PU3sgLA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 24/30] btrfs: send: simplify return logic from send_rename()
-Date: Thu, 20 Feb 2025 11:04:37 +0000
-Message-Id: <406a37adace0bfb7a92fec821bafd1ba1e277536.1740049233.git.fdmanana@suse.com>
+Subject: [PATCH v2 25/30] btrfs: send: simplify return logic from send_link()
+Date: Thu, 20 Feb 2025 11:04:38 +0000
+Message-Id: <3f719e4e989a54bf8cf671d5227969a8e61fc0a1.1740049233.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1740049233.git.fdmanana@suse.com>
 References: <cover.1740049233.git.fdmanana@suse.com>
@@ -70,19 +70,19 @@ Signed-off-by: Filipe Manana <fdmanana@suse.com>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index f161e6a695bd..d5c151651d07 100644
+index d5c151651d07..bda229c7084b 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -809,7 +809,7 @@ static int send_rename(struct send_ctx *sctx,
+@@ -833,7 +833,7 @@ static int send_link(struct send_ctx *sctx,
  
- 	ret = begin_cmd(sctx, BTRFS_SEND_C_RENAME);
+ 	ret = begin_cmd(sctx, BTRFS_SEND_C_LINK);
  	if (ret < 0)
 -		goto out;
 +		return ret;
  
- 	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, from);
- 	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH_TO, to);
-@@ -817,7 +817,6 @@ static int send_rename(struct send_ctx *sctx,
+ 	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, path);
+ 	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH_LINK, lnk);
+@@ -841,7 +841,6 @@ static int send_link(struct send_ctx *sctx,
  	ret = send_cmd(sctx);
  
  tlv_put_failure:
