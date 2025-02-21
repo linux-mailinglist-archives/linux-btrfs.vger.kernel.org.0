@@ -1,209 +1,263 @@
-Return-Path: <linux-btrfs+bounces-11695-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11696-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43ED9A3F419
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 13:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA61DA3F467
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 13:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B2C19C05EE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 12:22:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C645B189F978
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 12:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5436E20A5F0;
-	Fri, 21 Feb 2025 12:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2702320AF8E;
+	Fri, 21 Feb 2025 12:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="QqadnaDL";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="cq+hEfCA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUwiOpda"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EC9209F2E
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 12:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740140545; cv=fail; b=ui2P89n+ptzIGKhlLgkwz9bPhvvQuxJn0fTRThe58hUprrmOizxShBCbUZIAX2kbObPgGXs540DFlubCCsXLkQKdr96TJ2Cy2ftYu/OeE/Aq5a+NcIvKE1QoSVXCmr7nsPJhpVs5vBKhSCe8bA2+Bq2Bd5TfRzF3jsQeoebcc1o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740140545; c=relaxed/simple;
-	bh=AbbPUrfgINLh7bAleO++y1l3OVnCo9WRDZFjmwUJAKQ=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=AEWk5MVjjyvtj+rtTMhHE7zp6xvIJTAuVtND52aZiTjDGpD7jv7Gkt57mHBoDqj2ByGW7xV+1xUkTr7z8tmYCtAobUvR9ZhpM95j5+GXFQeOrT+nv2RI/LYhWE5qUt4piH1NnU6z6yJNTp+ERgFBPYBVs+Qg7KjdW7sGkQvIQ4U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=QqadnaDL; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=cq+hEfCA; arc=fail smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1740140543; x=1771676543;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=AbbPUrfgINLh7bAleO++y1l3OVnCo9WRDZFjmwUJAKQ=;
-  b=QqadnaDLdtkyoozDkfRobTALTxf+K5R391GuAjmbHtLmHpfHoAv3lvK9
-   OfqGPiK172dW2C8nIGuw2GTTXnIWrSGPBf0skM8Gdm5vXG9XXorv5BuwN
-   NjOukzswZWNw5yYwhJ0xA5tKBrpCpsuFVz40oHmZUVi6dUR25SchcAzmI
-   hpu82YjuOrzJsdlK1TpNXU8gZEhcVU+vmAbFKRlbkrU9JEwG4MOJii9OJ
-   EmfqOkGrewn6BHlems6wkIkcKH+QF+Z9Zh/7apvky2m/rQgYLa2IJlRVH
-   x6G5NCMbW55Nqz429Re6Gb0aYeiBnT7nu5by3ML0DhF3LPb3y0J0JPBD9
-   Q==;
-X-CSE-ConnectionGUID: GmdSb/l0RFmovc6B9s+SYw==
-X-CSE-MsgGUID: a7LZU6qlRaqDjqalZG7S/A==
-X-IronPort-AV: E=Sophos;i="6.13,304,1732550400"; 
-   d="scan'208";a="39774832"
-Received: from mail-eastus2azlp17011029.outbound.protection.outlook.com (HELO BN8PR05CU002.outbound.protection.outlook.com) ([40.93.12.29])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Feb 2025 20:22:22 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=K+QnqDqXF/GyP+7D4fIUAeELARkysaAbFsfkNhiiHejYjpagpHugT2BSdLEK11hke8L7LaXzKXWl4VsF5rzFUSymujfwnPu6oH8zYB2tmYOiOWAppdgpv1ojivaK4gB4WUPLnST2gygUwbqbj+crm2xmN6KnDfs/z0IYk9Nioe9VCS4wrThRHe/2xu2rHldwjvAbNuFzXO6UoyDUGLgKXHH+nOGIwCMKW1HwlYfIMIueVz+bIjos+kWXuyyltx3S2C3TngUyVp4saknaf9Fh/haaWOpmIzwi/q9vQUojf/r0Fv+5rbUYJucGafAWcR84HIL8aCcSotejbJpW/e9AUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AbbPUrfgINLh7bAleO++y1l3OVnCo9WRDZFjmwUJAKQ=;
- b=dS9W05d316kH6mq/nYfBMSKRDwJoU68Md+1uXDnuGWjgfICxzxq9WTRJ8y0VLe9z+NMc6pV2eqYmN6dla3MjYUQwgmZmfjcm1q0RsSeixuPpar2m8VbLwQwQYxjKVDn4cNnZszGoAsjy21oT8M8C1fhhz3uwSUe2LLFu9V79PPmKpCzOOQsaBrBGjamJbvsYlpf2mgzyJb1OmQcd9RtlvNSP04JuJWMEn1ZeNpB0cBzg/CmJI7TvsgG7fHIlPnFMx0TEtwwveM29ib2iWmYwtq1B/THOTXIR5zrk4BkkLfqxiDOzUkovF0a/flxvHtYnxHZNYkaVfxe3ceqvkQXROA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AbbPUrfgINLh7bAleO++y1l3OVnCo9WRDZFjmwUJAKQ=;
- b=cq+hEfCA5dJyP/TmbZOFjOnq/CUI4Wj5JlspbNNv2wPN8EepBWk0TCv7yxEjrmxyF7INROSi9rPfpZJJUllnskWIYYBPeMmWVCq2sLzDfbXlUabTi5mcizhdharPPE3bdut45WR5MUGVkQACo9PJoCpUyTouVHydF7/Q+1vKHMQ=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB8228.namprd04.prod.outlook.com (2603:10b6:510:109::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.17; Fri, 21 Feb
- 2025 12:22:20 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8466.016; Fri, 21 Feb 2025
- 12:22:20 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: WenRuo Qu <wqu@suse.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 5/5] btrfs: prepare btrfs_page_mkwrite() for larger folios
-Thread-Topic: [PATCH 5/5] btrfs: prepare btrfs_page_mkwrite() for larger
- folios
-Thread-Index: AQHbg3meURWRNw2FpEirHl2LKntMzLNRr44A
-Date: Fri, 21 Feb 2025 12:22:20 +0000
-Message-ID: <0de029e8-2b62-4c1d-8951-0ce751f07920@wdc.com>
-References: <cover.1740043233.git.wqu@suse.com>
- <eaa6e7d82b2fae308072b81675d149a5598ec9e0.1740043233.git.wqu@suse.com>
-In-Reply-To:
- <eaa6e7d82b2fae308072b81675d149a5598ec9e0.1740043233.git.wqu@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH0PR04MB8228:EE_
-x-ms-office365-filtering-correlation-id: 141fdcd1-8a37-499a-5f3b-08dd52726382
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|10070799003|376014|1800799024|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?M0psOFdldnRDTExEajl1QkZUQi94S3JaQmlDemw2Z3A4dmpCOWtWbWhWajB0?=
- =?utf-8?B?NExPTWRrSm5hOWFYZGZ6YVRSR0VDRGdFWWd5bC92dmI3eVFBT3ExZCsxT1kx?=
- =?utf-8?B?US92M1ZaaGZCQ2R6b2hUMVlHUE9NUGdsSlpLdWFRYktQaWJhQys2VDdZcVZz?=
- =?utf-8?B?bkdNNnpXMXhPQlEyVEZmTVozVTFwZUNQb2oxbEp0SzNOTVZNSi9lQmh6Z0Vx?=
- =?utf-8?B?akIxVUdxZUZxR2t5WmMrak80Um9IbnlRZklGaVhFZEZOeVEyQWRiNk1vQ1dS?=
- =?utf-8?B?WSs3Z0E2OGtnOGI3eFlVbmZlZTI3RjFxTmwwNWxhcFprZVg0d1pPVC9IUmtT?=
- =?utf-8?B?NG1KeW5OWW5vUDc1ZkkzdXBqRTNDT2UvSGNpbjNiWG03ZDBaSEV3alFjeGNs?=
- =?utf-8?B?UnIzdVFwbXlKemVRY3Ewb2k1bk9MY0hVMWxKTXlQbE0vL29QbmJxY0ZvUURw?=
- =?utf-8?B?c0ZzZXA5YkdlL3FkTFNudU55ZEJnNE1oVndWM05uU21jSFV0eXNXNmdoT2tO?=
- =?utf-8?B?b3Fzc0Z0SS9MeW11YU45Z2RWWHM5NGcrTG9yQVhKamVzY2pYNUpJRHRzY2Vt?=
- =?utf-8?B?T1JTUmtWMnNaV1RLb1NaWEFBS0lpN000djhrc05VRGJBOUdkbmJhSFd1RHgw?=
- =?utf-8?B?RVZhSEU4bEF5RVQvWFREbWxweG10V204dFhkaU5tMWpPdm05K3pxU1BzbWNW?=
- =?utf-8?B?TXJmMCtkeW0ydE1kb1NGYzh4Z3ViZEgxeWNTb3N6TzdmNzdna1pPaXZIMEFw?=
- =?utf-8?B?TTZGS1ljMzMyQmZsNmVCMXNaZWpLQm9nUk8wT0ZaWmxEblpiSHNybkZHN2JN?=
- =?utf-8?B?NktURDNEalJLeFdsUjFLZ3JCTkVoYldqeUsrSThRbW9nYVFUTWk5Mng0RjJS?=
- =?utf-8?B?RUwrNmErazdMTDZxWXFRZGRmZ3F5MFpzTUhhOTJ1cG1yMkRxa21DeFh6MWk2?=
- =?utf-8?B?N2lTZmpDOHFNNXd1cmtGZGZBL3gwS2kwTnkzakEwR0p3eFNQSE9LaXRLcVMr?=
- =?utf-8?B?eWlVTWU3RTYraWxxaVR4TklzREZSZlI3NUJJNHRFU3BmcVJGU1hqUUdMMTYx?=
- =?utf-8?B?TS9aR205KzBZRFZWdUhrZldsVEg3a2NJakN0MWQvaXRuakRLVWUzd01KcVgy?=
- =?utf-8?B?Tm5qWm5LNC9jdHBUT2VXd250K010alpmOWdwTCtDeWFjbllQVmx5MlNzME5o?=
- =?utf-8?B?R0M5MEU4dlM0WXFSOWdMK25FTXdXZUYycEFPZTJMeVNuQ211NVFQV1Evc2xQ?=
- =?utf-8?B?TmJoZlNCZmJOUVk0OVlDMWxlZmE2TTBmb3dtbHJMVEFGeFp6MDBPdUppSXVx?=
- =?utf-8?B?NFg5bkdsS3dvWnBkOXR5clIrMEFUT3BRZlJ1akZLcDBoMmdtOUlLUndqcjBW?=
- =?utf-8?B?angyaEdNc09abUFJaHJFMkZUaDhCRUwzZno3UG4zVkYyY0NZQUdjaTFHVkpY?=
- =?utf-8?B?dzVBbWo5ZFJMZW9pYTVYdFJMNHd4STlLbW1PdEx1U1Jkcm42QkdERElDTG94?=
- =?utf-8?B?QTI3alZOWi9sM2FEWW80OU05TTVpNVowbGFCT0dndDNZVU4xUEErOXdVT0tF?=
- =?utf-8?B?eTBaZzhlNDlCY0o1WUowdjJyWHZYdytPUDRSa1NhNXBxMUJLR21Sb0hYeVh5?=
- =?utf-8?B?Z0tDZXFVbnl1WG02K0NOd0ZtVmpNakhBVFFQTkJPWFNvNTVVRk9reFpuMWls?=
- =?utf-8?B?aTRFakptZkdWeFpxempRUGhXZ1BkekNhL1hSZENVODIwSmZsZkx4Y1RxY1hZ?=
- =?utf-8?B?WE9sK1UwcjFnNUVDNWtQSzNyM0VLS2hTbmFIc1c2dWlsdWJmb2tNcURuNkl6?=
- =?utf-8?B?QXBBYTlWRERnU0xGd1F4d3RrZ05TOWFnejNOUStEQS9WRHlGWmpGQ1NhZUl2?=
- =?utf-8?B?cTkxMDBtQUNYc2lyN0VNMWVIeUxhMC9RcFlyTnBPV1B5d0ZmUG9LMFhqS3pQ?=
- =?utf-8?Q?uooZ+TMvOVVwaHkepVku0gPJ/AJdUFpe?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?dGJaTkd6a2tFYkZqS21zbS9aWS90a0k4azIyell4SXNURHY1ZlRsb2ErN0Ry?=
- =?utf-8?B?TVd5bStjVW55QU52K0IwaGFQMlMyR2h3UlRwVC8xbXFOY2c4MXM2NDFQbm9o?=
- =?utf-8?B?NTh5bHJBaUhHUTRpVmJycExDRGxpZG13OGcrZC81VEpTb2RST2dhNlpFRjVu?=
- =?utf-8?B?UDVtaEdhSWovVGN6TlgwTXRQOE5yTVFtblZ6N2pRREE5bGhKY1NaQitMWS9O?=
- =?utf-8?B?LzlCT1Q2ZERSMy95eTZpR0U4Q09CWHNwRG1STnNyZnlTUGdjSmFmY0VYS2Vu?=
- =?utf-8?B?WCttVVRKNFQxWTR0LzJHVVkvOWg1ZkwzRlRDVmJjY3d1NlQxY1Z4MUE0QlJI?=
- =?utf-8?B?SjBqRE9QSE43TnJRZWY5am5nc3IxNm0yRXF2SWRha1hua0FRUks0WmI2SnFk?=
- =?utf-8?B?WHlCbWJYU0lHQWJRVGVrMEE1MDhuOHhGRDFUOHd1NVBmZWFjbit1bG5WbUpF?=
- =?utf-8?B?NExrRlhCWXBJcTFRKy83RGNteDVHMzN4NmdkYk5oU1V2K0Z3UkhNY1B0ODRw?=
- =?utf-8?B?Q0N6dHRvOTEyTlZoa09BZUNqcDZ3a2JjWmpRckFzZG5XT0ZLemNUeXp5RlVI?=
- =?utf-8?B?QzhNQlNVZWFLcHI0a2gxQUh0Zk05K250TG1Sa1Q3VnZ0ZDZXQWNRMlFLYkNz?=
- =?utf-8?B?bFVJRFBGMFFZZHkvbTN5cnNTVUFBdnpJSk9oNXJHcVEvUU1oOWdCQmkvV0Vo?=
- =?utf-8?B?MGlTVnB2TVFNSXJoQnNQQ290Y0huYm5XSG9GbHU3YlVaYnIvelNVRjBmWHhK?=
- =?utf-8?B?QWs4a25uRzgyQmUxdkRGQjkvaGRRRTQzdmdqMXJodzFuZDBwSmhDaUdoZjJ5?=
- =?utf-8?B?dnNUNDBuUmQ4cUw5T3pGWFVUcmluME5ELzVvTzJBNGZpTFdPWU0zTlp3UTVs?=
- =?utf-8?B?Y2VyMVlSWmhOWVY5TkFYckJDVGFZS2ZaOFlPaWtaZ3hwTHljRy9QaXFhOVlV?=
- =?utf-8?B?M2pRVDhEbkRjWkpUcmhYK2RtQytrcEU3emFOUmlkbXQvcWFqczFNZFRiZTZn?=
- =?utf-8?B?aG4va1NrL0NDNVY3SGJaL2xhcU5oaTE5MXVNL2hiSi9DR0VtdmVZNjhGTHYx?=
- =?utf-8?B?MjQ3WkkyT05OTU9ZTktkczZNekdJS2VxaUw4eERwVnBSVjZ1cmZwa29iRFZR?=
- =?utf-8?B?OXlEcHFYalJVN1FyZ3dtVHJrTm05VWNCZ3NJQXIvOWlYUXVPOVVVenJOU1Fr?=
- =?utf-8?B?VHVFc1JHNitsZjZGNHJJNEJtYm1QYy9Pang2NytIbEs2OVc2TmdSV05nVmxk?=
- =?utf-8?B?U1IzdFJZamRNdXBOVW9MZXFTT1l0TWV4SUgrM1lVWm1kYlVTVjhwVlEzSHlT?=
- =?utf-8?B?R1lpd013Wnc1UVJFOVlkQnNMd1hEM3pieU5uZzZUTDlJM0hUTzJzVHRlOEJU?=
- =?utf-8?B?Uzl2aXJvTytEbEJyL1hDMGhVZFJEVU9FOExOMmhVQW5BV0tWd3JaVWQ1U05r?=
- =?utf-8?B?NzY2RC9ZYzVmZ3JLTVk4OWQydWtYSmJ4QnVlTWErcDhHcWRHV0V0TlBQNWhk?=
- =?utf-8?B?ZG1GdzgzWTdPSkZOeXROUUwvZDhXK2tqR3FSLzllZEpqb3lwU01hc3JoVlBl?=
- =?utf-8?B?OGVhcVdMbWgzNlZlNVExYXJkTmc3QUVRb1BISWpjUk94MTQrblJQSnpoZVlG?=
- =?utf-8?B?djlaakFmTHh0d2JZTFRCVnd5cFg4VGo3eGpZbi90bWsreXViblZKM01QMkps?=
- =?utf-8?B?K1g4R3pFQ3BxSFBDNDZPZjN4RmtTY2YxdFB0K3lDN1JCck9HMU4vS0x1WE9K?=
- =?utf-8?B?ajNIcUNaKzhkc2J2ejJCR3ZVeWhEeitFTC9vaVBWZGd0akNsWG1aVzg4UEtY?=
- =?utf-8?B?S2t1cXpRTjh4WTVtMnJoeTZsVnBwOWlPejRBbDNnS2ZOZEdvY2NVbW81dzAr?=
- =?utf-8?B?NlBKY1BheXRqZXZRZmFJVnpQdEVnR09zN3N2Mk9zdGxScHB4dUZjWGRFLzE3?=
- =?utf-8?B?ZStpNzIxc0J6c09pc2VrNmxYejkraEN3VTVrMDNGbTN1cThCS0M4TGk5N2lr?=
- =?utf-8?B?UU5mYTlhR21zL0I1VEJ3UVNpT01tbE1xR2FCN1g4YUV2RGJMa05XQ3RMaWdB?=
- =?utf-8?B?Yzd5Z1FuUitLUStFaU5vWWJwNFEwRTI3TXBKR3B0WFRjZDNIS2RTWHlhNis4?=
- =?utf-8?B?TGs3Y2lxQjh6M1BIakw3THVHeGh0NTBHSmJMSWhucDh4R2pxVFhmK3p1dHNs?=
- =?utf-8?B?OUxnM0gzZnlKam9mVllBWkpSK1hNTEp1OUZXTnRPRzJnVUdnM2pidktxSkZm?=
- =?utf-8?B?ZGZhYjdURFVlWmpqNjVnZWJ0bGJnPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1EB1224E73D7F247B1FD37A2CF78C84D@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687C42046A1
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 12:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740141159; cv=none; b=IwVb0fG1I4tbJoTe41ioSxwsy4/V0t3ySV1XCc54heW3wKS35zk5bo/M16U/ThahfBB+OqTAbesqVG2IChxzsuYIfQxhBB8VH4v6n/HGe74R6Y/ZBRDipbs74+QwbrPRbRYV3RidKrUv9IllAUghe+5EaBb5fVRMsFCnkapYTVU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740141159; c=relaxed/simple;
+	bh=JhHa34UOytFUEDD5WzJCMPg3qczyqxixlmpdjk4cr7o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eyA79awYC/3CUchdJnmKIcE0aGx0RGZVjYc87r1S+1/QytBR8lPP5WMHCXeQgZaHkQ0YW9vMgfqQkDm8rYI+qsVd/IAgaY7dYdy50zJFBXwE9vfgQl4fEFWjxB1KgeJFkhN5JR7Aad9BjB5uCx4UCIj0GJXMySOKNUL01+wRw6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rUwiOpda; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 996E1C4CEE8
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 12:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740141158;
+	bh=JhHa34UOytFUEDD5WzJCMPg3qczyqxixlmpdjk4cr7o=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=rUwiOpdauLkluGfSltOkQrLEpfPH5bCjRfG7DrJ5xZiDP9ebsiJJpmid5Co25JvnE
+	 iIfxzudmsEYl/janZFgb9ng4OwusEs3cqmGecCQxjwhN+KSSGWcIzytpjiY4WR+SDP
+	 l24Ay+Adrs/LCdAsUUkuw9A0phNsZdAoY7gThk979IBxpoRLrC17/PUka+zfasRG0v
+	 jgsmyjj4NSzlyAYlZezFHYCU1xT3JCruxjrXPasAvdk2RbxIC67JQOHPvHc5pMzh7o
+	 JhKuh34A+ahAuah9g0lxS2thr4VUCo3NUdPPxcE+6X2Y0gUTyzAE5K2V9j0E7vUGBw
+	 HCUn/ki6hHiaA==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-abb7a6ee2deso317817866b.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 04:32:38 -0800 (PST)
+X-Gm-Message-State: AOJu0YxiwamupNPToNBkCi79VVRK7RUoz1RIgSqtOz4oICLxnHgOx6E+
+	4+zH5n7nlmDKUopnxozS63Q6CwqlmI684+g4vzgkPl8HFzsyppZ3Z370mG6SugucbqCJrRMKJK3
+	g/movAZvKoV1JXcGhOA284WCTCuc=
+X-Google-Smtp-Source: AGHT+IGSX1lSotOTNHeZONh/pjxLcbjoJRY0ZAtUDnva59SyskvM5RByCwzaB2A2iGsqnXSuT75VijiEGidvdlk9/Fc=
+X-Received: by 2002:a17:907:8a91:b0:abb:9a1e:47cb with SMTP id
+ a640c23a62f3a-abc09e49525mr279234966b.55.1740141156869; Fri, 21 Feb 2025
+ 04:32:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	hNuG0hh1TZtuEGo3AxBso7Hn8UdeTlDu8kpE6s/H1hPTdgOumc8HbMzVZ1FZZPkLDtp6JIDlLMYRkXXDZ/S9tiNIGAxPU9m7rKMU11I1c6oypOLt62fjZoXYhDAbK6ZhvvID8F3ptwzQpm31umiQudrsm+Cjg+jJjrDiAFs/Z959syfRZXN2EuAbplDrdWps3kYY0dLtnM8LKm39M9uXw0jdgS+83mkwo86E1G6hakMEqfq93+iDxQR9V403o2vWoexBc3epivim9zb88lupXHDcgeEtn8QY1K+aPndLgb9zuEHlRfM8RPyNeK1h253gd7PErFzv/+S/vHUDMZVbomcudCZwpN+ovOIiKJ/abZ03GtD4enw5Xb3gbxO78bjKGMk2S/+KD2UfNogqC0W43Pvq8hfPzHZGqADoe8iRkWa2o12h2nDJZVI9leJVu8dcSRhVcAc55beXlBIl0pdz3iGvxPIjOR0jCyfaFUdt0c2W7TfygbV3RqOxCftkDBvq119tBl1tUkX87nwNA023I3acu6lzi8vATMYiFPuynFpUAiRagxKqYShU1c4m2KbD3JKtTuvI/tM+/lAF6oHB6sFoNaU+2Zizgguq8jTsI6PiTnUNbv+KlU2GeipaAYI8
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 141fdcd1-8a37-499a-5f3b-08dd52726382
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2025 12:22:20.5098
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z9JmAto/6uWpvStJPrz67yuG/EwntISdfGJRzB40g3bDQkppaOiWlllPboESI5BESGjw6pNV19IorhLn4Kd2jMmx75ZI+EASggIBN9V94So=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB8228
+References: <cover.1739608189.git.wqu@suse.com> <4e0368b2d4ab74e1a2cef76000ea75cb3198696a.1739608189.git.wqu@suse.com>
+In-Reply-To: <4e0368b2d4ab74e1a2cef76000ea75cb3198696a.1739608189.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 21 Feb 2025 12:32:00 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5yrvxK5QFeCmfU+_sMmxpFyfcL_W8CALcCPLjkbbJHLQ@mail.gmail.com>
+X-Gm-Features: AWEUYZnIaFpBzdPBIoZKpk9sBfsMRsW0G2iQKOFE7GfkW8DG4dOHyef7mqUwmt4
+Message-ID: <CAL3q7H5yrvxK5QFeCmfU+_sMmxpFyfcL_W8CALcCPLjkbbJHLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] btrfs: fix inline data extent reads which zero out
+ the remaining part
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-TG9va3MgZ29vZCB0byBtZSwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFu
-bmVzLnRodW1zaGlybkB3ZGMuY29tPg0KDQo=
+On Sat, Feb 15, 2025 at 8:34=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG in DEVEL BRANCH]
+> This bug itself can only be reproduced with the following out-of-tree
+> patches:
+>
+>   btrfs: allow inline data extents creation if sector size < page size
+
+At least this patch could be part of this patchset no? It seems related.
+It makes it harder to review with unmerged dependencies.
+
+>   btrfs: allow buffered write to skip full page if it's sector aligned
+>
+> With those out-of-tree patches, we can hit a data corruption:
+>
+>   # mkfs.btrfs -f -s 4k $dev
+>   # mount $dev $mnt -o compress=3Dzstd
+>   # xfs_io -f -c "pwrite 0 4k" $mnt/foobar
+>   # sync
+>   # echo 3 > /proc/sys/vm/drop_caches
+>   # xfs_io -f -c" pwrite 8k 4k" $mnt/foobar
+>   # md5sum $mnt/foobar
+>   65df683add4707de8200bad14745b9ec
+>
+> Meanwhile such workload should result a md5sum of
+>   277f3840b275c74d01e979ea9d75ac19
+
+So this is hard for us human beings to understand - we don't compute
+checksums in our heads.
+So something easier:
+
+# mkfs.btrfs -f -s 4k $dev
+# mount $dev $mnt -o compress=3Dzstd
+# xfs_io -f -c "pwrite -S 0xab 0 4k" $mnt/foobar
+# sync
+# echo 3 > /proc/sys/vm/drop_caches
+# xfs_io -f -c "pwrite -S 0xcd 8k 4k" $mnt/foobar
+# od -A d -t x1 $mnt/foobar
+
+Now display the result of od which is easy to understand and
+summarises repeated patterns.
+It should be obvious here that the expected pattern isn't observed,
+bytes range 0 to 4095 full of 0xab and 8192 to 12K full of 0xcd.
+
+See, a lot easier for anyone to understand rather than comparing checksums.
+
+
+>
+> [CAUSE]
+> The first buffered write into range [0, 4k) will result a compressed
+> inline extent (relies on the patch "btrfs: allow inline data extents
+> creation if sector size < page size" to create such inline extent):
+>
+>         item 6 key (257 EXTENT_DATA 0) itemoff 15823 itemsize 40
+>                 generation 9 type 0 (inline)
+>                 inline extent data size 19 ram_bytes 4096 compression 3 (=
+zstd)
+>
+> Then all page cache is dropped, and we do the new write into range
+> [8K, 12K)
+>
+> With the out-of-tree patch "btrfs: allow buffered write to skip full page=
+ if
+> it's sector aligned", such aligned write won't trigger the full folio
+> read, so we just dirtied range [8K, 12K), and range [0, 4K) is not
+> uptodate.
+
+And without that out-of-tree patch, do we have any problem?
+If that patch creates a problem then perhaps fix it before being
+merged or at least include it early in this patchset?
+
+See, at least for me it's confusing to have patches saying they fix a
+problem that happens when some other unmerged patch is applied.
+It raises the doubt if that other patch should be fixed instead and
+therefore making this one not needed, or at least if they should be in
+the same patchset.
+
+It's not clear here if this patch serves other purposes other than
+fixing that other out-of-tree patch.
+
+The patch itself looks fine, but all these references to other
+unmerged patches and that they cause problems, make it hard and
+confusing to review.
+Sorry, it's just hard to follow these patchsets that depend on other
+not yet merged patchsets :(
+
+Thanks.
+
+>
+> Then md5sum triggered the full folio read, causing us to read the
+> inlined data extent.
+>
+> Then inside function read_inline_extent() and uncomress_inline(), we zero
+> out all the remaining part of the folio, including the new dirtied range
+> [8K, 12K), leading to the corruption.
+>
+> [FIX]
+> Thankfully the bug is not yet reaching any end users.
+> For upstream kernel, the [8K, 12K) write itself will trigger the full
+> folio read before doing any write, thus everything is still fine.
+>
+> Furthermore, for the existing btrfs users with sector size < page size
+> (the most common one is Asahi Linux) with inline data extents created
+> from x86_64, they are still fine, because two factors are saving us:
+>
+> - Inline extents are always at offset 0
+>
+> - Folio read always follows the file offset order
+>
+> So we always read out the inline extent, zeroing the remaining folio
+> (which has no contents yet), then read the next sector, copying the
+> correct content to the zeroed out part.
+> No end users are affected thankfully.
+>
+> The fix is to make both read_inline_extent() and uncomress_inline() to
+> only zero out the sector, not the whole page.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/inode.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 2620c554917f..ea60123a28a2 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -6780,6 +6780,7 @@ static noinline int uncompress_inline(struct btrfs_=
+path *path,
+>  {
+>         int ret;
+>         struct extent_buffer *leaf =3D path->nodes[0];
+> +       const u32 sectorsize =3D leaf->fs_info->sectorsize;
+>         char *tmp;
+>         size_t max_size;
+>         unsigned long inline_size;
+> @@ -6808,17 +6809,19 @@ static noinline int uncompress_inline(struct btrf=
+s_path *path,
+>          * cover that region here.
+>          */
+>
+> -       if (max_size < PAGE_SIZE)
+> -               folio_zero_range(folio, max_size, PAGE_SIZE - max_size);
+> +       if (max_size < sectorsize)
+> +               folio_zero_range(folio, max_size, sectorsize - max_size);
+>         kfree(tmp);
+>         return ret;
+>  }
+>
+> -static int read_inline_extent(struct btrfs_path *path, struct folio *fol=
+io)
+> +static int read_inline_extent(struct btrfs_fs_info *fs_info,
+> +                             struct btrfs_path *path, struct folio *foli=
+o)
+>  {
+>         struct btrfs_file_extent_item *fi;
+>         void *kaddr;
+>         size_t copy_size;
+> +       const u32 sectorsize =3D fs_info->sectorsize;
+>
+>         if (!folio || folio_test_uptodate(folio))
+>                 return 0;
+> @@ -6836,8 +6839,8 @@ static int read_inline_extent(struct btrfs_path *pa=
+th, struct folio *folio)
+>         read_extent_buffer(path->nodes[0], kaddr,
+>                            btrfs_file_extent_inline_start(fi), copy_size)=
+;
+>         kunmap_local(kaddr);
+> -       if (copy_size < PAGE_SIZE)
+> -               folio_zero_range(folio, copy_size, PAGE_SIZE - copy_size)=
+;
+> +       if (copy_size < sectorsize)
+> +               folio_zero_range(folio, copy_size, sectorsize - copy_size=
+);
+>         return 0;
+>  }
+>
+> @@ -7012,7 +7015,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_in=
+ode *inode,
+>                 ASSERT(em->disk_bytenr =3D=3D EXTENT_MAP_INLINE);
+>                 ASSERT(em->len =3D=3D fs_info->sectorsize);
+>
+> -               ret =3D read_inline_extent(path, folio);
+> +               ret =3D read_inline_extent(fs_info, path, folio);
+>                 if (ret < 0)
+>                         goto out;
+>                 goto insert;
+> --
+> 2.48.1
+>
+>
 
