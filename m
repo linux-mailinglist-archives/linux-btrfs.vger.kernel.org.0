@@ -1,178 +1,167 @@
-Return-Path: <linux-btrfs+bounces-11700-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11701-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE54A3F7F3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 16:03:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99538A3FBA1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 17:41:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C0E168819
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 15:03:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 621FE3AB769
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 16:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1554320A5C3;
-	Fri, 21 Feb 2025 15:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VTtk1Uwn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8B41F152B;
+	Fri, 21 Feb 2025 16:28:27 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E2C74BED
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 15:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0B91E7C0A
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 16:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740150204; cv=none; b=c3JucUZR7hyHax1mqIg3ZA0snj+PfNQQWLvO0nlOxwZNtVunmOpMMRHUATGTS8iPAUlk58tW1BRQ6Jxsuhvn4bi/bPEMTko20cRRkmdDyhJkisoTMQQ9i7BqiKMLdu0PrgVbLNS5jBvQdNWl/xYQllaesNZvP+hJjMvuIR4cA9g=
+	t=1740155307; cv=none; b=lcJ8aRmJW+jCW48QNCY2VuqYYHNlokpakoBqSib4uzuBYcAlklKn5hRvEIYJKVf7qQGsUWWLqQmbhnganA2iG3592gkRMG00kULZ9NNTGyyXjGVfm7ca85Z0nRD6C36efYnelEpcCTCT4/5wO9aR2QDpVJrkNZAlpAMCwFVJU0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740150204; c=relaxed/simple;
-	bh=Mk+XQ8bti248KSlpnWb74h/SeuRdUh10vyv/7ine9RE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o+fryf+BCwHyZKRhygAroomk5J/6Rkl0LjxaFeAgzG08/c7H7tlWXXRLFSq3Rx9bw0A0UdPzrXrwNt4HgRT2TrJJz5EKWRdxJR30fhYIP9Fn5JzEbT1WWGnyoROyznkjjqp/jiqv2morlEgfQs3eIGI2nMTTSTpN2JKuk1OGN/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VTtk1Uwn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740150201;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9GCgOcalMjVvKv2fxVHDU+ht8NCCeGzsSfPCeNdFkpM=;
-	b=VTtk1Uwn7rMbhaLGFRY292aKErQYb3z6SAJ81XWDQsqHNz9sa9DVGUNZz1rztGMPiZtejV
-	grBKPvsUAffa/5Um6oWmukVRROTYGK6jmLD1PZD5Ykrrt3cazsBqVYvbQNNzxusUo1uEYF
-	dxczv/PG82FYmx3+04tUzCWwOfAIijs=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-GzDhyDNIMimHoUjX1D1kEg-1; Fri, 21 Feb 2025 10:03:20 -0500
-X-MC-Unique: GzDhyDNIMimHoUjX1D1kEg-1
-X-Mimecast-MFC-AGG-ID: GzDhyDNIMimHoUjX1D1kEg_1740150199
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2fc2fee4425so7455254a91.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 07:03:19 -0800 (PST)
+	s=arc-20240116; t=1740155307; c=relaxed/simple;
+	bh=IFyRaxnksTikEg16zT4m0PF1U2wjeedNFQ74L2w/DFk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=FP8I0xYka645aMSNCFUDAJVzOxEVH42rHMKEcePQIePNSPwFWuHlnt50G7W7nzBVPlAmC7rh0YOq8XuEXZeoSzizB9rPCpjiCMNbjLAnHqVU8PPEvKs/tTDdfyip3HCjWIw6BOXr2AWSyH7zErwkHhY9q1oyMZVmSl8nY4mlY3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d2a379bbf0so38530145ab.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 08:28:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740150199; x=1740754999;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9GCgOcalMjVvKv2fxVHDU+ht8NCCeGzsSfPCeNdFkpM=;
-        b=Azdv9ltYM2Tr9EPwvpptM46p4S33pkIyRTl4bk6wmqCt9xOhWRFCZizep7p2eEexrV
-         4YbcTvnQ0fgjSdyfIEeLUYuTcz//S3QYgdOWfC73AnwPPLEJoklSdP17nozxXrrGtlF8
-         Z6hB24NtFbQ9jgJr6BAN3J8gQmNT3baFJZKu8hDhnvTtCUwoLtU4TrnRU1H23rT1gclC
-         3/ye5axUC9RyR3Wzz1vQn64Qz4YRJLRI0cW3PfLNDHVuJ0rCY+SIt5lUJhP4rDwraBSj
-         ioaozFicwmHS/bG/0QW2rHXzsq5lrF1S4nD662BJmDvEg4UWdZ8MTEclS+eZfwCi1HJZ
-         4a/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVssvkQJ6W/4eOI/1SvVGiZzIUINReZQStXS3lLK/1spnQp8maSkE6WsOYqHLBv/0u24+UYMbmRY0LloA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5cwYjCCyZNUj0K8sv2bEIEEzSzAOYpTH1NBT1CtnSxd/CpFad
-	a2WhmOuJIxQtF8nZeRU3UmkPkGJWpxNpBqdDV2WPYpyQAwKm8kWnZFZyFEc5BP0W1uJDX+745tR
-	Z8LkNuOusAkDvm9dzLylcG8JV5m+o5SDUmeuiINW6gEgK8HHUK/eV0IynJMVs
-X-Gm-Gg: ASbGncsXTuL0/u+f+HK4ERoUO8DdwcApBLAJF81bxm2uyUeSUHqUyVeXNiCGiOgt6bU
-	WX4MWspPcVcyE3b56Bq6EyFMde2WM7dnN6h7StFvGXj0PCUFhKcVc1IQL6dr4B5NNSwHeT8Jz1w
-	JR07Kbgu1MLstPi48u6HgnwnSCShpP4yqEIWsN5KdMav74Fk9BXY1vwm6yXeT1tBTzlmPfZxuhB
-	fWaQw6oRstjCkdp41jVJJ0JavMmrnE+GU9cz0oiih7ieHFAXkWQwxZG+wT27T/+oVLcDXrzoX14
-	cO4b0SVzv4i9FZ/j0wziMZrs/4hg0On01KlwVgOiDh9Npgq+omk1xNZ0
-X-Received: by 2002:a17:90b:37c7:b0:2ee:edae:75e with SMTP id 98e67ed59e1d1-2fce78a97f2mr6041960a91.13.1740150198978;
-        Fri, 21 Feb 2025 07:03:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEsmpngk+FBsNVaalMiX2WwczN1LLAkFLI1XlFWh21qwo5zeGruJ6XQbycyJoiOYTa9L/YEJw==
-X-Received: by 2002:a17:90b:37c7:b0:2ee:edae:75e with SMTP id 98e67ed59e1d1-2fce78a97f2mr6041921a91.13.1740150198641;
-        Fri, 21 Feb 2025 07:03:18 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb10fb43sm1453975a91.35.2025.02.21.07.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2025 07:03:17 -0800 (PST)
-Date: Fri, 21 Feb 2025 23:03:11 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: zlang@kernel.org, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@kernel.org>
-Subject: Re: [PATCH] fstests: btrfs/226: fill in missing comments changes
-Message-ID: <20250221150311.eabczmxfxnvndkqk@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <e73cfe5310a8cee5f6c709d54b8c18ff52e39a0a.1739918100.git.anand.jain@oracle.com>
- <CAL3q7H4GgaQKTLzXzza4xKsoa22pG6MbOFYOuNhK-5J-ieZdRg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1740155304; x=1740760104;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P4FIgKAJ8qW9otoz+L0WcUkpV//3BW026ovT2i8giEs=;
+        b=k8KqQOaMvVClpB54zFSacnLTYMs0OKnnkKT/HQp7Bkgxpsq0M8C4ocwyMUi/Eix1Gx
+         pQo1nrECDvUy5I17kUjGBQ30m/hMCFrxPPlmSRzoNXPNI0iCp2dL94q/fFxRlOH6oaVS
+         aXHQZ9lG7UnxUKv88rAfclIGxQ0HuDWp1pupkfod6g4IW92AKqbbvh3E2S7GULbOmaS5
+         STfnWSbkOmeSqw1aHK7TzRbPI2NC0Bca4BIoPzqal9u4DICcn5OBWDKjqhd8Fpc1E8yx
+         Js7Cf2ioSkDk8aiFpejbdIQX/CtCefVt5cYsmdqIQLpBrYPH/3F8AF0mRKGD8yDjOY+7
+         AwNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVOnOWlL6q/IPsVOAh9NwLlz62O1mN3kL9Ey20t1kNz3Kbun0/NdA/hz0Z2c+G7YQ1swVf5mQMU9A3F2g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyL9hOHrEb/3jXpe8KU7+ND3Jc/b/NubRXHLefiOgjIIn8vPBe
+	H527+U32qSDNPdMP8vIcPNDQEyaJ82lSITrB2/4Z8fpb6Tot/qiQBV5NbhlkLDpjjEypx/m5lQM
+	WmgFCasbi7srg2UEL7OUUUVcpEytrapuFntflHgCWgU2dZ51eMpVB3vA=
+X-Google-Smtp-Source: AGHT+IFzSCoq9Rb6XF3wKptknxyMCMA8A3eEbLAggswhPSjJOQZlLSrz6TFBd2rW+kYqDSOrxuco9ku6mEMtMA2I/D1xVOEg86OK
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H4GgaQKTLzXzza4xKsoa22pG6MbOFYOuNhK-5J-ieZdRg@mail.gmail.com>
+X-Received: by 2002:a05:6e02:1526:b0:3d0:4a82:3f43 with SMTP id
+ e9e14a558f8ab-3d2cb43281cmr37014775ab.5.1740155304493; Fri, 21 Feb 2025
+ 08:28:24 -0800 (PST)
+Date: Fri, 21 Feb 2025 08:28:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67b8a9a8.050a0220.14d86d.057a.GAE@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_free_fs_info (2)
+From: syzbot <syzbot+bbbdd6d6efbfc5174561@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 21, 2025 at 12:04:32PM +0000, Filipe Manana wrote:
-> On Tue, Feb 18, 2025 at 10:36 PM Anand Jain <anand.jain@oracle.com> wrote:
-> >
-> > From: Qu Wenruo <wqu@suse.com>
-> >
-> > Update comments that were previously missed.
-> >
-> > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> > ---
-> >  tests/btrfs/226 | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tests/btrfs/226 b/tests/btrfs/226
-> > index 359813c4f394..ce53b7d48c49 100755
-> > --- a/tests/btrfs/226
-> > +++ b/tests/btrfs/226
-> > @@ -22,10 +22,8 @@ _require_xfs_io_command fpunch
-> >
-> >  _scratch_mkfs >>$seqres.full 2>&1
-> >
-> > -# This test involves RWF_NOWAIT direct IOs, but for inodes with data checksum,
-> > -# btrfs will fall back to buffered IO unconditionally to prevent data checksum
-> > -# mimsatch, and that will break RWF_NOWAIT with -EAGAIN.
-> > -# So here we have to go with nodatasum mount option.
-> > +# RWF_NOWAIT works only with direct I/O and requires an inode with nodatasum
-> > +# to avoid checksum mismatches. Otherwise, it falls back to buffered I/O.
-> 
-> Btw, this is different from what I suggested before here:
-> 
-> https://lore.kernel.org/fstests/68aa436b-4ddd-4ee7-ad5a-8eca55aae176@oracle.com/T/#mb2369802d2e33c9778c62fcb3c0ee47de28b773b
-> 
-> Which is:
-> 
-> # RWF_NOWAIT only works with direct IO, which requires an inode with
-> nodatasum (otherwise it falls back to buffered IO).
-> 
-> What is being added in this patch:
-> 
-> +# RWF_NOWAIT works only with direct I/O and requires an inode with nodatasum
-> +# to avoid checksum mismatches. Otherwise, it falls back to buffered I/O.
-> 
-> Is confusing because:
-> 
-> 1) It gives the suggestion RWF_NOWAIT requires nodatasum.
-> 
-> 2) The part that says "to avoid checksum mismatches", that's not
-> related to RWF_NOWAIT at all.
->     That's the reason why direct IO writes against inodes without
-> nodatasum fallback to buffered IO.
->     We don't have to explain that - this is not a test to exercise the
-> fallback after all, all we have to say
->     is that RWF_NOWAIT needs direct IO and direct IO can only be done
-> against inodes with nodatasum.
-> 
-> So you didn't pick my suggestion after all, you just added your own
-> rephrasing which IMO is confusing.
+Hello,
 
-Hi Anand, please talk with Filipe (or more btrfs folks) and make a final
-decision about how to write this comment. I'll drop this patch from
-patches-in-queue branch temporarily, until you reach a consensus :)
+syzbot found the following issue on:
 
-Thanks,
-Zorro
+HEAD commit:    0ad2507d5d93 Linux 6.14-rc3
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=179ae898580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6cc40dfe827ffb85
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbbdd6d6efbfc5174561
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-> 
-> 
-> 
-> >  _scratch_mount -o nodatasum
-> >
-> >  # Test a write against COW file/extent - should fail with -EAGAIN. Disable the
-> > --
-> > 2.47.0
-> >
-> >
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6bb4d4755dce/disk-0ad2507d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/57594e8f74d9/vmlinux-0ad2507d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a4f2442a20b1/bzImage-0ad2507d.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bbbdd6d6efbfc5174561@syzkaller.appspotmail.com
+
+assertion failed: percpu_counter_sum_positive(em_counter) == 0, in fs/btrfs/disk-io.c:1266
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/disk-io.c:1266!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 5826 Comm: syz-executor Not tainted 6.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+RIP: 0010:btrfs_free_fs_info+0x35c/0x360 fs/btrfs/disk-io.c:1266
+Code: e9 89 00 20 fe e8 74 f4 dc fd 48 c7 c7 80 2a 6c 8c 48 c7 c6 c0 30 6c 8c 48 c7 c2 00 2b 6c 8c b9 f2 04 00 00 e8 75 3e 42 fd 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f
+RSP: 0018:ffffc900041d7d50 EFLAGS: 00010246
+RAX: 000000000000005a RBX: 0000000000000004 RCX: 472f5d3ce77a5400
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: ffffffff81a1102c R09: 1ffff9200083af44
+R10: dffffc0000000000 R11: fffff5200083af45 R12: dffffc0000000000
+R13: 1ffff11005ec2bc3 R14: ffff88807e594000 R15: ffff88807e595150
+FS:  00005555839d1500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055acae0e8160 CR3: 000000005f838000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ deactivate_locked_super+0xc4/0x130 fs/super.c:473
+ cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1413
+ task_work_run+0x24f/0x310 kernel/task_work.c:227
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x13f/0x340 kernel/entry/common.c:218
+ do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fbb69b8e117
+Code: a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 a8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffca0e02598 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fbb69c0e08c RCX: 00007fbb69b8e117
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffca0e02650
+RBP: 00007ffca0e02650 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffca0e036e0
+R13: 00007fbb69c0e08c R14: 0000000000010d6a R15: 00007ffca0e03720
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_free_fs_info+0x35c/0x360 fs/btrfs/disk-io.c:1266
+Code: e9 89 00 20 fe e8 74 f4 dc fd 48 c7 c7 80 2a 6c 8c 48 c7 c6 c0 30 6c 8c 48 c7 c2 00 2b 6c 8c b9 f2 04 00 00 e8 75 3e 42 fd 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f
+RSP: 0018:ffffc900041d7d50 EFLAGS: 00010246
+RAX: 000000000000005a RBX: 0000000000000004 RCX: 472f5d3ce77a5400
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: ffffffff81a1102c R09: 1ffff9200083af44
+R10: dffffc0000000000 R11: fffff5200083af45 R12: dffffc0000000000
+R13: 1ffff11005ec2bc3 R14: ffff88807e594000 R15: ffff88807e595150
+FS:  00005555839d1500(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fae2d970220 CR3: 000000005f838000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
