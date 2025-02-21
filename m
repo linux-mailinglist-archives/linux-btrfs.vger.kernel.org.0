@@ -1,251 +1,319 @@
-Return-Path: <linux-btrfs+bounces-11689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26F2A3F310
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 12:37:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B245EA3F36F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 12:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B86147A3FD2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 11:36:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0039719C00B1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 11:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA14209678;
-	Fri, 21 Feb 2025 11:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E9820ADFE;
+	Fri, 21 Feb 2025 11:53:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="ifN1Q2pj";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="eVtJI5L3"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="grxI6YwT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABA320897B
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 11:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740137850; cv=fail; b=csgtIsjnd4jNpgTIHfr8S+xNO/fQ+6lLcns50Hf+gF7ytIARtcZihCWYfhbseMnPSG8UPwcHZ8Y1Br+VTQD7BYipzxsQoCoEladrrjIXlPc4RM7jLLTtZ2ziPBwF/ey76dz44zQcj4EK32YsMwUOtSXVnSYhHgFLBfmYFvA79xc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740137850; c=relaxed/simple;
-	bh=2C4O+sftVxJIOBWXSYncHDlJp5P+xrc2i++pve+yXAY=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ERl2Y7sZEusXcdY1KknVih0Q9B6STir0ElxChVON5FDESXFWKk9MtUA6cmeIIXrQhB2eCw/xJVzc3B2aVAwjXB/Y7hXl/JY9mbWBAV1Rql6hjaaLxunsvIB4npJBNfROC9haFl4HY6BIyJ9wV6EEhjLz/ECY4rwYiQfXLnR4Plk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=ifN1Q2pj; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=eVtJI5L3; arc=fail smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1740137849; x=1771673849;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=2C4O+sftVxJIOBWXSYncHDlJp5P+xrc2i++pve+yXAY=;
-  b=ifN1Q2pjlzmfuj8Frckw5R7C20JpA/uOI7QWT/Gv8fQX6vWuUDiwdAuO
-   wKNt6W1oSvH9zKnYkDHUAZ/JheW+QFWxrWv92MLR593CmqERK3fClOlES
-   yE8anFjh8zgDTyLseQmmMCHSmh1FzZsGcak2rgl54DpZdR626+JwIasr5
-   LA6syG1P87c2hb9fMYdZ7Zp9fW+o5L6etwMu0vAdmXlvuq5GOwotFY0OZ
-   3d8/AuVf0OKO177nVWLVbjRnbdOi2fSdAtW4zMZg8+3vLm8F7OEJsUA/l
-   /Cn5ey+LLwv2sxtMzGCKFCxp22grGskVtp8zyrLVCc7bQGkc0kAmeAKn2
-   Q==;
-X-CSE-ConnectionGUID: QA/JF316QxO1Z1w55VB9qA==
-X-CSE-MsgGUID: tkYnP8F7SKK/eHTJ+ww6LQ==
-X-IronPort-AV: E=Sophos;i="6.13,304,1732550400"; 
-   d="scan'208";a="39082153"
-Received: from mail-northcentralusazlp17010000.outbound.protection.outlook.com (HELO CH1PR05CU001.outbound.protection.outlook.com) ([40.93.20.0])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Feb 2025 19:37:22 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=x5Zo/5tzsaGC9GXYlK5zWWUKCuUBrIR2Ynwf+9IypalcgDJlX2Uy2BudpGmv2VbIctVN3ALII/VIlC8Y/uQ42XSEetL6LHbkboGDaACIM1vUGil9xxB2JDyMyb1NeXy175o7AFRqjtxqfnJ1o3Xc1r31T7thSVOtOJmYRhMrPxunZ5OOqXrCS7EeIU0FG+RyIMaRpiP6OmGeDq/NomQyy1OtaBY8EYOuwtAU8uq5ideI9IELlXbYPLFgAqYdRnb6PolyWpAu+EZM7+8IAB9RSwiUgDAcGhKoGIJouSv4y1zvuI8MY/F+QIdxC2QCKn0wsb3fMYJwBCGgJg2LdVW7fQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2C4O+sftVxJIOBWXSYncHDlJp5P+xrc2i++pve+yXAY=;
- b=D00c73riXgmgHoGTWj22RqAOXFA7/Jew7Bg3OitbLnlQaNpRvean3+8S7qKv37btpYdUyA4hSSm9hDx5LLS4bfcaDM0nEGlllDMZU9jCyibtYCgwxO9hyJvhzhAmixq30836v66k0MZKgr/UOfDQY5YO/0PLXR+wgnAM4AoUzQJaJSEWbHKTQhPM2sRPCPEmWqJTt4soEoeH9WlOCmtsPGHpyTsQ6PyXpE47GJ4e2FNH1a42K42mFkRtECGGaMhtXqJctAIwsbTQSQysJcHdGhMh2syR7wogOq+M43awxCm5dqg/KTsIoPI/oCzvUlsjo8nSHYSYTy/6wTOEWSiiAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4352320ADEC
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 11:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740138807; cv=none; b=XGDyI4cxMd7C+aPKexh/8DGzh3OOMz1lAU88i5JreB8SLH0mvMt/OFFj72FVKMgcIxEwz5uKOiczm94oKgFzFtKhqVPvFUy9MnDV6OLtKFx6m4pHeYijcd3ISWvgPBjXQt9Hkqtf4G2NUPYw6bjvAjsubOkLgBU9//TqxJi7RYY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740138807; c=relaxed/simple;
+	bh=TRoSBhXBDEA5b1z0U36Nw78wrO5SCdHSKDjVtDc/nZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f/H76SvOqd78ddaCuIurWb834I63quDFkSrHUM9FZf3q4fzouudfEUUWbvg6ZgBp89blibedoGnUJpHSvA3GNtGeZlLLMCYHMDRd4uVxSAXM7WnaQvi6biuBRe/i2vFnSI+HJhRVjApEwOBrCm1JlYjcLpt8Yho6coQxUZu4UcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=grxI6YwT; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aaee2c5ee6eso345118666b.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 03:53:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2C4O+sftVxJIOBWXSYncHDlJp5P+xrc2i++pve+yXAY=;
- b=eVtJI5L3RgeUnQVf/nI5KDl8fOMFm6MQ2TdFwLMn5jsPL1oaUCafUDGUo40mxN0ksTnZQykfphahZaLVNAgSWbA2IOtlwjgidjEYyV5SfkE1/t1QiV1t4sw5JRP7Fs3/e00mjllkFlhilnM9wEsN7OQiSR3WRuMVwujRktt1IRg=
-Received: from SA0PR04MB7418.namprd04.prod.outlook.com (2603:10b6:806:e7::18)
- by CH4PR04MB9261.namprd04.prod.outlook.com (2603:10b6:610:232::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.15; Fri, 21 Feb
- 2025 11:37:20 +0000
-Received: from SA0PR04MB7418.namprd04.prod.outlook.com
- ([fe80::17f4:5aba:f655:afe9]) by SA0PR04MB7418.namprd04.prod.outlook.com
- ([fe80::17f4:5aba:f655:afe9%6]) with mapi id 15.20.8466.016; Fri, 21 Feb 2025
- 11:37:19 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: WenRuo Qu <wqu@suse.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] btrfs: remove the PAGE_SIZE usage inside inline
- extent reads
-Thread-Topic: [PATCH 2/5] btrfs: remove the PAGE_SIZE usage inside inline
- extent reads
-Thread-Index: AQHbg3lY8ZUTVpXPm0eS5/FfTHe7XrNRovqA
-Date: Fri, 21 Feb 2025 11:37:19 +0000
-Message-ID: <66539ad5-c5af-459b-834c-ff0d80a463ee@wdc.com>
-References: <cover.1740043233.git.wqu@suse.com>
- <2e9629067938c31bb59c34655456909c4d00e183.1740043233.git.wqu@suse.com>
-In-Reply-To:
- <2e9629067938c31bb59c34655456909c4d00e183.1740043233.git.wqu@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA0PR04MB7418:EE_|CH4PR04MB9261:EE_
-x-ms-office365-filtering-correlation-id: 01a80bda-5c8d-43f1-a017-08dd526c19cb
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|10070799003|1800799024|366016|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?c0t5Q1Vsb0Y3VDZNaFJsdlM4ZjA2L2xvZlZIRWF4QUcvcmxzU2dWNVcwc0FI?=
- =?utf-8?B?YWRURWFZa2tiQ2pMeG9XVVM0L2VNNHBvY05hejFZQWdxTG1ZTUdvc2hBWW9U?=
- =?utf-8?B?NjVzMDhHR1VueXo3RVJ6VGpWSnhiQk5zYUxSREFZZEpFYkZobTBuQW9uMHo3?=
- =?utf-8?B?VnA0R0szUFdnOXBkaXY2Ulh1elNnbk82L2lRTERuelF3MU4xWXJIY1U5U2Vk?=
- =?utf-8?B?c0tMRTBGMmkrbVdJYUlGSVptelMwbWxSWnl5TUtUSVRoWlRWOHVzbE9YU2NP?=
- =?utf-8?B?dTgwdXhqTS9KUWd0NWFydmhyUzdFVjFqcEZuL0FZZEdZaDJOSUhRWVN1b0Rx?=
- =?utf-8?B?Z3NHK0xKcmQ4Q3FSNURZMEZXQ0RYbURqc1pCdWNKanNKZ0dRekZhcjhKeW1Z?=
- =?utf-8?B?bmJHdEpWOWpUR0JkRGxrUXFkNzdxN0FZcFh5U2RMZEVoMU5pQnJZOXFhb0Vz?=
- =?utf-8?B?N245b2hXN1FLWHprTUtHRWhMc0YzT21hQVhacUF6VDBMZXhwTWhkZEI1RExD?=
- =?utf-8?B?cjZLWmdvS2E2QjdGVXF3ZXM4cXVMSUVhTzA4YjBidHd5V213czNvbTlIdVI5?=
- =?utf-8?B?NktUcWdtd3ZOU1NPeitBYndQZUZkUkpuTEhIMUJ3d0x0Smp1WHhScVhYUzRy?=
- =?utf-8?B?YnlZcEZyTi9oSkx5TXZQM3JXbTliMnc0TG0vai9DTHA5dGYrUnYvUFNHcTJP?=
- =?utf-8?B?R1g0YXA1all5VW1SRHNIVzBkcUxra1hKbjV4bVFtTm1HY2NEZ0ZYTW1YOHBR?=
- =?utf-8?B?Z1ZNaVJrd2orcGJvZUEyaGFNOTE3RVZwT3psc1B1dkZseFJaK3NYRUhVaFUw?=
- =?utf-8?B?MEkwai9HalU3S3lESDFpdUFEN0RRV2ZqODdZZnVyUkpLK1Iyc1Y4RlI1andM?=
- =?utf-8?B?N05HUzJCMVBRdm4vN2owblcreEZMU2RqdGZzbDdRWXVWSWU1SjNUN01VaVo2?=
- =?utf-8?B?VzlUalBDelV4U1FDQzJXT29jOCtZcmpQZnBUMnhoTCt4UTN3TDBrb3Z5amdC?=
- =?utf-8?B?VEpxQ1pMYzRLeXVBblZRVGJrTm0yblF2NHRMWXhLTGtNbUVsU2lGbEh3bXpo?=
- =?utf-8?B?RzdOMmdTN0NlemRrS0sxUVhBMzlvRWtwQTJEd3BVTVJwV3Bkd3A2d09xM1FV?=
- =?utf-8?B?aWc2bFVqcVJuT0J0TTgxU0VCSDhIZXl1TzQ0UkhZZGZZL091d0NtbTBrTlho?=
- =?utf-8?B?bU50anlyODQ5ZFo0NXlKZFFIWXlxQXJFV3lidk5yM3FkT1JqU2IrTm4vQ3ZO?=
- =?utf-8?B?Mlg1S3ZpQjBCN1lRTDBjdnY2M3JMZGJsQWUwUERYTU02aXpkYyt1aFIvVEpw?=
- =?utf-8?B?bGhLSnR3SHhXeEIvSDM0Nm5QK0YyMUtydjZ5UXU5a3Q1VEZSQmFGcGlJOEZh?=
- =?utf-8?B?T3FaQU5YS052VmVVWXNsdXlUamVtRnB2cFlwTkcvT1dXZ1pha3QvZVkrblNm?=
- =?utf-8?B?aWh1d2w5bzgyWnllMnExSEpZVFp5di9JNFRGckhuTjlBZFUvYWU3clhBcktO?=
- =?utf-8?B?dVhVUUU2MTBsTjIzQi9ZQ0dteWtQVzMyNmt5NjZzbjVSRGl5M2xGYmpFVkx2?=
- =?utf-8?B?dVJMSjVES3RjaG4xSjFFYkM3RXA3ZjRBZ1U3dVdhdnBQUkVEWi9NTnpWcGdm?=
- =?utf-8?B?V0o3ZE9rQ3lnU2RMNkwxRjgrVmsxMGRTcFVEbCtkdUtOR2hvMTUrUm1WeUo4?=
- =?utf-8?B?T0lDdHhpVW1uMXg0cW9TVEZNRThOMVFQK2xudS9BYkhYRU1DcnQzUHVla3NX?=
- =?utf-8?B?V201VlluVmIrTWxQUjJTL080MzhIOHBLdWN1L2I1L09UUklmSXNjaHJLY0hh?=
- =?utf-8?B?N094dlhjcVUyWEFyeGYrWGQwckRjZGI5ZndxdTE1SlJFaVlKYTdQYVd3SE1a?=
- =?utf-8?B?bWNkTlpRWFdSeG1NODV1d1RxdGtNV1ByOWZjQlVkcmhYaW12eFRMTXprMkgw?=
- =?utf-8?Q?iNAwmtDuioxkGjuK7YxDMdXuWXK746ND?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR04MB7418.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?ZllDbzRjN0M0NDJyTEE5Ym5XZjk5dmxJNzhrOW15ZDMwRkloa0UreW1DOGZv?=
- =?utf-8?B?NnJLNUVUT01naWttL0U2Qk9VclBibTFMbVpsTDZWMTVIeXA1WEpXdFMxUlh1?=
- =?utf-8?B?VjZIMitDNVhmd3ZKTVRKN2RqUzJHclA2L1Y0Ym5OK1duaU9aNzg3cklKS1JY?=
- =?utf-8?B?azlDeEZwenFqZTVtcjJxdDR4SjhQRHczSWlzUVRMd1BCSHM2QlMvV290c2tP?=
- =?utf-8?B?RXliREFDVUhqNXF0NFFONkV3Sm5yOHdDbnFkRlE2c0RUQmJDZ2dGNVlOYmZw?=
- =?utf-8?B?UUZDNXA2czNHUEY0WnNyZWt3VTZjbmpNQk90bFZKY3JCVFI0NWhWdzNlVGZO?=
- =?utf-8?B?SHVTckZWRkpxRmN6LzZ6dXNtNkdaL0FPK3pUS2g3cjZmN1NkYWtDemFXWHMv?=
- =?utf-8?B?UmREMG1MUGRqb2xrZC9aV3JRWjBaSTdEN1Q5RTF0SjhHb1JZOTlaN2llT29a?=
- =?utf-8?B?cHZ4S2ZZTWFNRTk0cC8wNzZGdFBSYVJpUUJkb3daMVZpQ0xXWlNDWE51QVRL?=
- =?utf-8?B?YXJKbHlyL29jb1RVYjM0VDVmTzZGS25SQzZYa3ZaL0gxcFplTlFCNlZrMWx5?=
- =?utf-8?B?VWk4T1NBOFlSayt6TXozeXMxZk5meHNRUjNXNVhQZ2FNR2R3WURua3lyTGts?=
- =?utf-8?B?aVd6WlhIdzZ4N09IcDBVUkdYWm9EdUhrZ3NxSXR3Z0tjaWNUZVgwWWF1blFO?=
- =?utf-8?B?ZnlTSzBNbnZOdVBpendoMVFRaHZPbVZhTHpXVzd3cXpSNktYNG5pcnFlY2gw?=
- =?utf-8?B?dmZlTzhpZFlzZzVBQXRreFhJaVFXYng5dXdXbHIyWW93NUZwQVZURXZBOUx2?=
- =?utf-8?B?R0ZDcHJMKzFJRTNCTWVVRUZtcGx1VTBKZWFpa1lzU2dwak1ocVJPOEtHenNF?=
- =?utf-8?B?ZWpCQ1ZDRFJzZUxOTGNyU2ViZ0Q3bExJNkgvWjRjcTRHS3o5eVliRVgzZDBr?=
- =?utf-8?B?R3dJL2pyR2cwcmhnRUNsbXVMYmQwVG9Xb3RiUkdBRDE1andmMkdpYzM3ZUF3?=
- =?utf-8?B?b0FBMHVLYzhVY2dyS0t1c2xWd05ZY29ldTM3N0UwL2VKdmNKVlA4Nm85UXRJ?=
- =?utf-8?B?T011cnFsbE9lUUpsVEtXOHhEcmV1c0FnRmM2eUJuS0YxQ1U3dzJjMFk0YmVG?=
- =?utf-8?B?d3F3b29ielFtNktKMzRUYUIrQXROd0RSZ3JYMk94YVl5UHBXTHVOdnY5TkNF?=
- =?utf-8?B?MnFTbk1GbjUzWUl1eXhaTDgrd1N0YXdpcmp1bjRzVEdKcVdWVlUxUmNJdDg1?=
- =?utf-8?B?SEx5UmdVcCtTQ2xuK2ZDeGhadDJlblN6Mm1UMlNZQVM3RnZUUWdKNGczd2t4?=
- =?utf-8?B?cVJOT2xyMDN5WHgwL2pRbzhRQjU4R3pKdjlTNjhha0dVTzJQNTJIM00yV3No?=
- =?utf-8?B?UEZLRGlDZXJDa1VVTXRTZlQyVndIRS81OVFZMmFDUHVZcnNEeTNISGtiVXQ4?=
- =?utf-8?B?YXBiOGdTT0ZNRGg5Y3pPTVUzZFpaMWMwd3dQNkF2cFBHUHZpOEdvL056VDcv?=
- =?utf-8?B?bHUxUy9FWXJpbnRuUW05NEhWa0RSckc2NkdiQi9BdDVCSkNrSk1LczdkTmo3?=
- =?utf-8?B?eXlQajlnSGQzTzVsVks1Q3JaY1dQeW1UOTMyREg4T3J4RjFzZzBFWTZjNS92?=
- =?utf-8?B?dlA2bVQ2cmZWTnhNaU9zK0V6dGl6VWxjNGVuZFhGSERmU3NncW1idXR0RFJF?=
- =?utf-8?B?NTgxYmNkaVRIOEU3NVNkU004T25odkNPRHFDQXJTeFFFMTBZamFoUjBlYW1x?=
- =?utf-8?B?THZuNlF2VHVYWEZtNDRRYkNKb2pTTW82dmVDOVh2OGRGaFBHckJNN01tdG1W?=
- =?utf-8?B?QkJjSHRVeTJJbTUyTWZXNFE4NlZGc3Q5RmVEVDhCWW5QbEp4VlNCZnJXY0pW?=
- =?utf-8?B?eFdZRmVEbVN1bzVIN2ZBOUpXNmIxR1pYaXVLYkIyUXR5dXMvRGs1Sm9wdzZY?=
- =?utf-8?B?RDVLSzEzY1FuNkpRNThac3EremhPendXbGhzVDIzcEVWdUNvTzc2MEJTY3l5?=
- =?utf-8?B?eDE2WmdqL1g2ei9qcURyTGNLMk1kK29uKzVyRkthTFRHWnMwd3draVZ4TkI2?=
- =?utf-8?B?WnVHdEJxZmhEeFhFNDFWQS9YMWljSWZQdW5URkxxUnNyelhYMUx6R29ZVytq?=
- =?utf-8?B?QXJWTmtFdWovbDV4WEtrVUorOWsxUTBEbTVIMVFRa0c5OWJ1TElIT1FLSGZL?=
- =?utf-8?B?elQ3eHlaRStCZkRraC9WTGMxYWJvSlJKVEFQd0ZyZjNYTTFyWWF5VHpUcEpI?=
- =?utf-8?B?dlA5aDNsYjNlNk4wSUR4eVY0MHZnPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0DB200B6FCF4574191F6DCEC0517C75D@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=suse.com; s=google; t=1740138803; x=1740743603; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x+q1LwbTpGdeJRSKQY1Kxiac2D5amYXclDCWSkZ8cRE=;
+        b=grxI6YwTigD6pqgOFr1DbVf2/Bccg6aOj+iiECrMs4nKq8qA64eazdeYrc5pmAZgxx
+         jbl1+wlww9jpYW9NxrArplXaT+ODp6NpVg5jpuFby8FqG6TngpZ2dMxQVCG17BjN03w/
+         SMiHeEk+3sv93kwgrq26smhvKyuItxFZ6cfYB1UZSzg6o6YGnK10Vdarx8XrR6GZCDfI
+         T1czVOpMYw+X9L5LyLNOX8F1XACr0hU5YkHPjfxnY1nqLilKNvC+VV07HiKv9dyE2KrE
+         tmNpBiQVcIqqLYe/tzALYecSLSjipOFb3MI8b6vjiROogT9iSbul/gY3dsuZ2FPbDRI4
+         TftQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740138803; x=1740743603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x+q1LwbTpGdeJRSKQY1Kxiac2D5amYXclDCWSkZ8cRE=;
+        b=IwY7AjXACxQhmhR+RAPp8SNVufCPw3LDgx5FB+xEBo2dxCEO10+OMiuiwkmvNzjjoV
+         ixPu5+8UlgExxasODtkNacPeenAi8XxgAsIIBaAvR16YC5Fvl12tmJ78gSoS2ojraQSs
+         CC+jhR1NggGBghh3lwJ8DOH1/n4vYdNuNcdK87WrnS+gXC2lZy/JtPZGw9EOdEDA0CqI
+         qOUBbDQrsEf4Jt07K78qn1ptRVV2fUfkX0D0yFevqSsnD9CbqK+xRdHbnuAQN9SJIql2
+         f+/lwoB8Elvf7ps9QUE0wLCVFPln1Ldk+PbjcDJuYq9/fB1BF2+6D2IBuTz0CMAR/8rr
+         1Jtg==
+X-Forwarded-Encrypted: i=1; AJvYcCX6+5xyg7QXY2o8DMOSyN5WAGtWeI3VDpAzlOdW1i8HrpwzqP+OHvqKtyKjesOTPukIRtA4WuvKm/xjrw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLomQeTazSRgBhJT4gW+BEbTnDKLAQPNZCxusdnY2MYdoLcKW9
+	VdkygJRFlPbYIwQvZWOS3kNbuvIcMSaU1MBQ0/E/LP/M0ueYnAZuvodZgIJy8wuYrK5a0hNDydg
+	JhJNx5yhDMdoP9110hTsGHkpZ0rxGHSW/C6Nbztj+eofKH4rNOhA=
+X-Gm-Gg: ASbGnctPt1axekBKF/SxYBoaQWRj7goY6QnFhAKgMEvEMqKib4RHX5gI/GDOC7ugKGU
+	31TVtLc4WHnhrXedMbQLsHiTZizk8Goso1EwBF637N6ONX/yHj9Cc7S44sNUTjhtZynYbK6uKfH
+	HDcz1WyQ==
+X-Google-Smtp-Source: AGHT+IHgE9E509oYktt9+jmj1xQrumpWkttOq5ngUzsnDsIIGBGYR/h+zbWrhVLScwXoJo54x47wBh1OBKi584FVdyo=
+X-Received: by 2002:a17:907:7e90:b0:abb:c7d2:3a65 with SMTP id
+ a640c23a62f3a-abc09bf5267mr284852766b.39.1740138803334; Fri, 21 Feb 2025
+ 03:53:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	hn+nJ8u1zgcwyjNS++3XJEfikAeQ91B5Gwr4y0aXnWY9dc1KIxW+9CarK++N6s27e2tcj+iNuZEg7mPP44iFY2F9xwqMS3GcgGEfcb6EYY1hHWlI7MosC3tU5KdaCNtueBGvWrgA/Bxzj10h6FzKGHr8vft+7KdBAqhpX2nyXFj4ipMohIAz38KPBlvdXZbF3eiPcQXkXsudtv8pJRBdYv0S3VxLQwWzuBCnC4KhcuQ11U77gtkxav+l3Yj5hp+4KEYUoKbw3V5jJ5y7cH4LLoH9qlwkmirFich7vKmiudldWwYAwsqtl932GIAIZXHR+mL8O9xf9g1BGCmlHsTtsJ3iwKy8tykCGJbw0r5rxM/PPSiQk7rBwFuh6I7vhEO7L0ICEGzzxg5uty0BPPPze63EmQgix24bmF1Idb4QcvxMLEygavXYhvx3670TwZUASps3lcphPBezh0lGza8R11Se9gFOijo3j/isjbcmA4kwA+JqiC5q0UuDwo7GT+xRM3YOuBusQdzp6NiZnHjIhq4y1CEfsIvLInxkQc/Rjp8VdN1mnej2MdSWr+3UEUsun5GuS1yvBtKaQhsHlNyjqssiNDR9HodfGsra6dpmpjDVty6VsFBdxltmCjutwwDv
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR04MB7418.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01a80bda-5c8d-43f1-a017-08dd526c19cb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2025 11:37:19.9155
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5niLEKAyohQfKHbmAe2xiMR/b/P2hcXi4T21WvmqRMV/ZHJiARuU7DnHtZUnbYwuOGHk7H1OKoT/jXU1kXDJEoVBvieO2eVp1VphMVTr7A4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH4PR04MB9261
+References: <20250220145723.1526907-1-neelx@suse.com> <d84d2d83-03ac-4741-9677-52c71e1fb36d@suse.com>
+ <c0a4b4a0-268c-42f3-b117-b87b2fb12a03@suse.com> <CAPjX3Fem-=D8dxyR1MGTQVskkzdijmc7k82+f5_S_YyBJ_Orsg@mail.gmail.com>
+ <6bbfddea-f0ea-4825-a987-01be3ff18a23@suse.com> <CAPjX3Fc=E28A6zD4tJOT2bRZ-pnErVKzkYuzALt6soGLu=MRJQ@mail.gmail.com>
+ <a2ae2321-4934-4a10-8a44-2f7dc3bf48c3@suse.com> <CAPjX3Fes+PDEyi4_tFJyRHePVVuv_K+nUfShEeuagOANd6VqfQ@mail.gmail.com>
+ <61afcaa2-01ff-4d18-a8fa-804fe36464cb@gmx.com>
+In-Reply-To: <61afcaa2-01ff-4d18-a8fa-804fe36464cb@gmx.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Fri, 21 Feb 2025 12:53:12 +0100
+X-Gm-Features: AWEUYZlPGVrW65upd2CUI5XjyKL2nHFdUPNy53B73oX8rqeErufRB9VDjgzSOiQ
+Message-ID: <CAPjX3FcnofHyQzHvP_R0CWWML2EVC-PmPY9k90X+ddWWPFxhBw@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs/314: fix the failure when SELinux is enabled
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	Anand Jain <anand.jain@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gMjAuMDIuMjUgMTA6MjUsIFF1IFdlbnJ1byB3cm90ZToNCj4gVGhlIGlubGluZSBleHRlbnQg
-cmFtIHNpemUgc2hvdWxkIG5ldmVyIGV4Y2VlZCBidHJmcyBibG9jayBzaXplLCB0aGVyZQ0KPiBp
-cyBubyBuZWVkIHRvIGNsYW1wIHRoZSBzaXplIGFnYWluc3QgUEFHRV9TSVpFLg0KPiANCj4gU2ln
-bmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+IC0tLQ0KPiAgIGZzL2J0cmZz
-L2lub2RlLmMgfCA0ICsrLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAy
-IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2lub2RlLmMgYi9mcy9i
-dHJmcy9pbm9kZS5jDQo+IGluZGV4IDNhZjc0ZjNjNWQ3NS4uZDljYTkyZDFiOTI3IDEwMDY0NA0K
-PiAtLS0gYS9mcy9idHJmcy9pbm9kZS5jDQo+ICsrKyBiL2ZzL2J0cmZzL2lub2RlLmMNCj4gQEAg
-LTY3ODQsNyArNjc4NCw3IEBAIHN0YXRpYyBub2lubGluZSBpbnQgdW5jb21wcmVzc19pbmxpbmUo
-c3RydWN0IGJ0cmZzX3BhdGggKnBhdGgsDQo+ICAgDQo+ICAgCXJlYWRfZXh0ZW50X2J1ZmZlcihs
-ZWFmLCB0bXAsIHB0ciwgaW5saW5lX3NpemUpOw0KPiAgIA0KPiAtCW1heF9zaXplID0gbWluX3Qo
-dW5zaWduZWQgbG9uZywgUEFHRV9TSVpFLCBtYXhfc2l6ZSk7DQo+ICsJbWF4X3NpemUgPSBtaW5f
-dCh1bnNpZ25lZCBsb25nLCBzZWN0b3JzaXplLCBtYXhfc2l6ZSk7DQo+ICAgCXJldCA9IGJ0cmZz
-X2RlY29tcHJlc3MoY29tcHJlc3NfdHlwZSwgdG1wLCBmb2xpbywgMCwgaW5saW5lX3NpemUsDQo+
-ICAgCQkJICAgICAgIG1heF9zaXplKTsNCj4gICANCj4gQEAgLTY4MjAsNyArNjgyMCw3IEBAIHN0
-YXRpYyBpbnQgcmVhZF9pbmxpbmVfZXh0ZW50KHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZv
-LA0KPiAgIAlpZiAoYnRyZnNfZmlsZV9leHRlbnRfY29tcHJlc3Npb24ocGF0aC0+bm9kZXNbMF0s
-IGZpKSAhPSBCVFJGU19DT01QUkVTU19OT05FKQ0KPiAgIAkJcmV0dXJuIHVuY29tcHJlc3NfaW5s
-aW5lKHBhdGgsIGZvbGlvLCBmaSk7DQo+ICAgDQo+IC0JY29weV9zaXplID0gbWluX3QodTY0LCBQ
-QUdFX1NJWkUsDQo+ICsJY29weV9zaXplID0gbWluX3QodTY0LCBzZWN0b3JzaXplLA0KPiAgIAkJ
-CSAgYnRyZnNfZmlsZV9leHRlbnRfcmFtX2J5dGVzKHBhdGgtPm5vZGVzWzBdLCBmaSkpOw0KPiAg
-IAlrYWRkciA9IGttYXBfbG9jYWxfZm9saW8oZm9saW8sIDApOw0KPiAgIAlyZWFkX2V4dGVudF9i
-dWZmZXIocGF0aC0+bm9kZXNbMF0sIGthZGRyLA0KDQoNClRoYXQnbGwgbWFrZSBpdCBjb21waWxl
-Og0KDQpkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvaW5vZGUuYyBiL2ZzL2J0cmZzL2lub2RlLmMNCmlu
-ZGV4IGY5NGI4MGQ0NDMzZC4uZjY0ODY5ZmFkNDY2IDEwMDY0NA0KLS0tIGEvZnMvYnRyZnMvaW5v
-ZGUuYw0KKysrIGIvZnMvYnRyZnMvaW5vZGUuYw0KQEAgLTY3ODgsNiArNjc4OCw3IEBAIHN0YXRp
-YyBub2lubGluZSBpbnQgdW5jb21wcmVzc19pbmxpbmUoc3RydWN0IGJ0cmZzX3BhdGggKnBhdGgs
-DQogIHsNCiAgICAgICAgIGludCByZXQ7DQogICAgICAgICBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAq
-bGVhZiA9IHBhdGgtPm5vZGVzWzBdOw0KKyAgICAgICB1MzIgc2VjdG9yc2l6ZSA9IGxlYWYtPmZz
-X2luZm8tPnNlY3RvcnNpemU7DQogICAgICAgICBjaGFyICp0bXA7DQogICAgICAgICBzaXplX3Qg
-bWF4X3NpemU7DQogICAgICAgICB1bnNpZ25lZCBsb25nIGlubGluZV9zaXplOw0KQEAgLTY4MjUs
-NiArNjgyNiw3IEBAIHN0YXRpYyBub2lubGluZSBpbnQgdW5jb21wcmVzc19pbmxpbmUoc3RydWN0
-IGJ0cmZzX3BhdGggKnBhdGgsDQogIHN0YXRpYyBpbnQgcmVhZF9pbmxpbmVfZXh0ZW50KHN0cnVj
-dCBidHJmc19wYXRoICpwYXRoLCBzdHJ1Y3QgZm9saW8gKmZvbGlvKQ0KICB7DQogICAgICAgICBz
-dHJ1Y3QgYnRyZnNfZmlsZV9leHRlbnRfaXRlbSAqZmk7DQorICAgICAgIHUzMiBzZWN0b3JzaXpl
-Ow0KICAgICAgICAgdm9pZCAqa2FkZHI7DQogICAgICAgICBzaXplX3QgY29weV9zaXplOw0KDQpA
-QCAtNjgzMiw2ICs2ODM0LDcgQEAgc3RhdGljIGludCByZWFkX2lubGluZV9leHRlbnQoc3RydWN0
-IGJ0cmZzX3BhdGggKnBhdGgsIHN0cnVjdCBmb2xpbyAqZm9saW8pDQogICAgICAgICAgICAgICAg
-IHJldHVybiAwOw0KDQogICAgICAgICBBU1NFUlQoZm9saW9fcG9zKGZvbGlvKSA9PSAwKTsNCisg
-ICAgICAgc2VjdG9yc2l6ZSA9IGZvbGlvX3RvX2ZzX2luZm8oZm9saW8pLT5zZWN0b3JzaXplOw0K
-DQogICAgICAgICBmaSA9IGJ0cmZzX2l0ZW1fcHRyKHBhdGgtPm5vZGVzWzBdLCBwYXRoLT5zbG90
-c1swXSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGJ0cmZzX2ZpbGVfZXh0
-ZW50X2l0ZW0pOw0K
+On Fri, 21 Feb 2025 at 10:48, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/2/21 19:43, Daniel Vacek =E5=86=99=E9=81=93:
+> > On Fri, 21 Feb 2025 at 09:20, Qu Wenruo <wqu@suse.com> wrote:
+> [...]
+> >> Remember, user can provide their own mount options (including the
+> >> SELinux ones) through MOUNT_OPTIONS environmental variables.
+> >>
+> >> So you at least need a full reason why SElinux context must be disable
+> >> for this case.
+> >> And I see none.
+> >
+> > It does not need to be disabled. But it also does not have to be
+> > enabled for this test.
+>
+> Then good lucky if one day some QA guy finds out the send/receive
+> behavior has a SELINUX specific bug, and you need to explain to them why
+> it's a good idea to not test SELinux for this particular workload.
+>
+> Your mindset of "XX feature doesn't have to be tested" makes nosense for
+> a test suite.
+
+Huh, this is a huge misunderstanding.You still got it the other way
+around. I'm sorry if I was confusing you.
+I never said I'm against testing SELinux. Quite the opposite, to be
+honest. I did argue that testing the default system policy without
+overriding the context also works for this test, at least with my
+testing on the latest TW.
+SELinux is always tested. Just either with the default system policy
+or with the given forced context.
+
+> > At least not with the default policy on the latest Tumbleweed I was tes=
+ting on.
+> >
+> > But your mileage may vary, I guess.
+> >
+> >>>
+> >>> Or do you use such an option with any of your mounts? I doubt so.
+> >>>
+> >>> Check the mentioned commit 3839d299. fstests cripple SELinux by
+> >>> default. Which doesn't look good by itself.
+> >>
+> >> Do you really believe that commit is going crippling SELINUX?
+> >
+> > Well, in a way, yes.
+> >
+> > What it does is that it overrides the system's default policy. Which
+> > may make sense, as for example your system policy may deny some
+> > operations the tests do, eventually resulting in failed tests.
+> > Though as a side-effect it also prevents writing the security label
+> > file attribute by design with the mount option override. In such a
+> > case SELinux just returns with -EOPNOTSUPP.
+> >
+> > 3213         sbsec =3D selinux_superblock(inode->i_sb);
+> > 3214         if (!(sbsec->flags & SBLABEL_MNT))
+> > 3215                 return -EOPNOTSUPP;
+> > ...                  ^^^^^^^^^^^^^^^^^^^
+>
+> This only explains why your mount option fix is correct.
+
+Nope. This triggers precisely when the context is forced with the
+mount option. In that case setting the file attribute is not
+supported.
+
+> The send stream has SELinux attrs, that's because the original fs is
+> mounted with SELinux context (the regular _scratch_mount() helper added
+> SELinux context).
+
+Nope. Again, the other way around. The send stream has the
+`security.selinux` attribute precisely because the mount was missing
+the option and hence the file labels were used (and not refused). But
+the receive side fails as that mount actually did use the context
+mount option and so it was refusing setting the file label returning
+this -EOPNOTSUPP error.
+
+> But later we manually mounted a btrfs, not using _scratch_mount(), thus
+> the new mounted btrfs doesn't have SELinux context, thus unable to set
+> the SELinux attrs at receive side.
+
+This is just wrong.
+
+> It doesn't show why you need both the mount fix and overriding SELINUX
+> context at all.
+
+I'm saying you don't need both from the very beginning. Where did I say you=
+ do?
+
+> >
+> >> All it does are just:
+> >>
+> >> - Allow scratch mount filter to ripple off selinux context
+> >>     This is only to make certain golden output to skip the SElinux one=
+s.
+> >>
+> >> - Make sure scratch mount follows the SELINUX context
+> >>
+> >> Please explain why you believe that commit "cripples" the whole SELinu=
+x
+> >> thing.
+> >
+> > Well, maybe not cripples. It overrides the system policy.
+> >
+> > The SELinux is always tested, just with different options/configuration=
+.
+>
+> Not if you override the SELINUX context, then the test case will never
+> have SELinux tested.
+
+Wrong. SELinux is always tested. Either with the system-defined policy
+or the overridden context.
+
+> And you never know if someone in the future will find a bug in
+> send/receive with SElinux enabled.
+
+More likely you may find the test failing in the future as you'd be
+testing on a distribution which changed it's policy to forbid access
+to /mnt path. Or you configure fstests to mount somewhere else where
+it's forbidden by the default system policy.
+
+Again, SELinux is always tested. And it may just be easier for fstests
+to force the context to prevent test failures due to the system
+default policy. That's why I also said that I'm fine with dropping
+that hunk.
+
+> And I do not think your "combining two working fixes is fine" mindset
+> makes any sense either.
+
+One is a fix, one is a configuration. You change the configuration
+(ie, keep the default system policy, no forced context) and it works.
+You apply the fix and it works no matter what configuration.
+
+So the configuration does not really need to be changed, which I'm
+saying from the beginning. But I left it there as no biggie. Now,
+after the discussion with you, I agree that fstests may be better
+forcing the context explicitly instead of relying on the default
+system policy.
+
+> Every fix should have a reason, if you have different ways to fix a test
+> case, you need to evaluate the pros and cons.
+
+The pro was to test the real thing and not force override it. But that
+may not be a good idea for fstests.
+
+> Overriding SElinux means we will never test SElinux for this particular
+> workload, which is not a small trade-off.
+
+Wrong. Again, SELinux is always used and tested. Only the policy is
+overridden or the default one.
+
+> Fixing the mount command brings no obvious problem.
+>
+> So the choice should be obvious.
+>
+> But combining the two? You have all the cons (no more SElinux for this
+> test case), but not any new benefit.
+
+You're just confused by what the configuration changes. SELinux is still te=
+sted.
+
+> >
+> > Thinking about it again, I guess fstests are not supposed to test the
+> > SELinux policy and it's better to override it.
+>
+> It not your call.
+
+Agreed. The intention was to cover it as an additional bonus but in
+the end that may not be wanted. In the end I agree fstests may be
+better to force the given context and not be eventually broken by the
+default system policy. Eventhough it does not seem likely to happen at
+this point.
+
+> > SELinux should have
+> > it's own tests after all.
+>
+> Say it again loud to all the SElinux guys, and better CC them.
+
+What I meant is that for sure they have way more fundamental tests
+then checking the correctness of the applied policy. That's more a
+user/devops thing. That's what we're talking here about, whether to
+use one policy or the other. Not whether to use SELinux as it's
+enabled in both cases.
+
+> >
+> > That said, I'm fine with dropping the first hunk when merged.
+> >
+> > Thank you for the review, btw.
+> >
+> >>>
+> >>> At least I'd say it's good for diversity to have one test different.
+> >>> Diverse tests are prefered with testing, right?
+> >>
+> >> What diversity? You just ripped off the whole SELinux for this test
+> >> case, that's killing the diversity.
+> >>
+> >> Reasons please, and "just to make it pass" doesn't count.
+> >>
+> >>>
+> >>>> So please only fix the mount command (with the extra selinux mount
+> >>>> option), without overriding the existing SElinux config.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>>
+> >>>>> Anyways, this test is fine without forcing the default mount contex=
+t,
+> >>>>> which is more a bandaid for other fstests, IIUC. There's no need fo=
+r
+> >>>>> this option in this case, at least with my testing. Hence I disable=
+d
+> >>>>> it. Does it fail for you?
+> >>>>>
+> >>>>>> Thanks,
+> >>>>>> Qu
+> >>>>>>>>          $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo |
+> >>>>>>>> _filter_xfs_io
+> >>>>>>>>          _btrfs subvolume snapshot -r ${src} ${src}/snap1
+> >>>>>>>
+> >>>>>>>
+> >>>>>>
+> >>>>
+> >>
+> >
+>
 
