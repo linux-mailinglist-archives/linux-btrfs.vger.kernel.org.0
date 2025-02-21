@@ -1,177 +1,141 @@
-Return-Path: <linux-btrfs+bounces-11697-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11698-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA66A3F48B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 13:36:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1893A3F4BA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 13:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 109064225EE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 12:35:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D72E860D90
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 12:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C34720AF99;
-	Fri, 21 Feb 2025 12:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E9720A5D1;
+	Fri, 21 Feb 2025 12:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VjVyhDKo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8ClqXCR"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3BD2066E3
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 12:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603B61EE00E;
+	Fri, 21 Feb 2025 12:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740141303; cv=none; b=AClFycGIpSzWIfqBjrpG/qblxhKt4pM82FjpNHgWk4zos79AIDB7Yx61hMoa6fQpWDqB3F9GxqsS19DGyKtSSgZuM90itn9Y22sPEncRuP8i9iUs8hxQ/MK/3QthK9nJ4kc6dAao4lPZIvoftuez8b9KveSnaxsf7d5qDHCfN40=
+	t=1740142490; cv=none; b=KLMrHS0j4QQm1QxJUAolZ0RlCdQGfud2ffXS5tUPKBxAAU5PEW3Dh393r6jqzSEIsQu/lG69yxw2UjwGY89NLuX4PVr/0z8ziUVYkLWSBtw/m7bmbJipKkVjaH6PP+PCJAjcWu2cKD2Jjy5/2CSffgMH9CiSCkrGcrkmBGao3oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740141303; c=relaxed/simple;
-	bh=S6JiEK1AkGOZU5mzaqpeUNNTkAwMy5OQushDfzxO78M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jMrpoT8WsNffTiQpn/J3nlijF+4yRqD0v7i4fWaRX1PiRujmr7jjNKDCkOkmpJwGunf4pacM/RSuhE2ASRCwwaysetro1LGobjgRb3IyyYacYB+SL8H2OuqRR1ZOz3vKlAKbFR6IVMMFFl42Qy4xeRbUO3v+KKHJvRY+1LtuVEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VjVyhDKo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C78C4CED6
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 12:35:02 +0000 (UTC)
+	s=arc-20240116; t=1740142490; c=relaxed/simple;
+	bh=PcUS/83HjBOY6GsNbTD/RmobTvvq1zbmZ3d6BroLlO4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oYp0/VKe0K8FxF2ti9aQw7S0bZVJ9u3qiHbVDPZsbq6gFWmzszWizcCo2HCLk2LDzA9zT4kOgdVqHDV19n0tjdWDDBaVZHgKeZ7qNL9KWQgGFHgI9CUsf+1AW9VQnKMBOJHDqE4IzYLLILAaUQZb9vGSbYvGrLvCTYTmWIJ/6Ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o8ClqXCR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EABF9C4CED6;
+	Fri, 21 Feb 2025 12:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740141302;
-	bh=S6JiEK1AkGOZU5mzaqpeUNNTkAwMy5OQushDfzxO78M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VjVyhDKoIcoD4XY1o6rrGQ/Zsh2FxfNfdNkP2nakpbSaJZYFK8eApRNTyzPyDkFvO
-	 WSl+tjuakr/OTI5fw3phxmuEQS7JkNVyo3O/UpF60oreb2LgVztSDaGPSCjVNaXWsu
-	 G4Y0DFVEmbmU78AUKxzSGBB/onVYj1UYmma/EblBJgaZWMu2c/Xvm14gn/cOs9Iu2g
-	 ayUiHlB+q6rQ99IpiqDXg6NkC8kjVrjMw0Hv36Jep18hOtGk0eiKIjG6lYSp31Ed6o
-	 Q7+2fhH8GjFsPEndUEgfoYQFE1St/BYkDM1yzuHPaipUWj1pgbhjpFWtOI3X0+wupp
-	 a+aMLjxle2bvg==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-abba1b74586so311624666b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 04:35:02 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWTllksdqrR7DEl+NDtpfpuUCyi9/kE2Zg9l1AzX/y+S1CdIOQvBdms5hVPgHROdgRscDYovvXv1ZYekA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKFWZxKK6e1P4B/s3UeCqHrHncSUU/MfaJGOxbcnYr32hdYWO3
-	EdDcfiG02yeGDbEGXiHnjR2/SjimDpXdJccWT0dT5nPxylq0emuWBEbPq3z5bA12YZlfeW2tOzb
-	PgBFieIQfDGMVztO4V8NplakCeUU=
-X-Google-Smtp-Source: AGHT+IGgltIJ0xxEenI8MfB0KcX9fyjmYHMNhPDEmWu7oKmsCSmD54/sUG0EMuhn81cG0OMIB+YwhXXpLJyHXsbkUpY=
-X-Received: by 2002:a17:907:9446:b0:ab7:ed56:a780 with SMTP id
- a640c23a62f3a-abc09a97abbmr311198766b.27.1740141301300; Fri, 21 Feb 2025
- 04:35:01 -0800 (PST)
+	s=k20201202; t=1740142489;
+	bh=PcUS/83HjBOY6GsNbTD/RmobTvvq1zbmZ3d6BroLlO4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=o8ClqXCRizWDwkk5dSs7fH3VSYae0/vYTKg5sls0ZOeYNTBfq0m12z2Hw7CU28cCj
+	 HIG+AYNISbOfUUEc89Pd4PWzYasOze33GBnzwwZ+0E+r4U3Etts9h/ONT+X4plIfRp
+	 iQaTO3qgEfMewU4r6cAJY5CUAgFnNVyYpNn05i7i+AcPuLy/t3/X9s4GjuurEHtouC
+	 ZYZoFCk0sQuHPr10HqihBpyqwvhEJIMRmedza8Uh1jOcXfGxQ07sCvzIozGtxi4+rl
+	 mUwijXk44Q5AiKfntBgG0LT/dakflbjE60I+0LYDHS85l4lMyhVzsil/S/1dFHIcg2
+	 rhcY3Iq/6uXkw==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] fstests: add commit IDs for kernel patches that are already in Linus' tree
+Date: Fri, 21 Feb 2025 12:54:43 +0000
+Message-ID: <4ba5443a5789880423ce3b90406a12314626e349.1740142425.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1740043233.git.wqu@suse.com> <c9e1a407-6562-4564-a87a-e449d36b4b97@wdc.com>
-In-Reply-To: <c9e1a407-6562-4564-a87a-e449d36b4b97@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 21 Feb 2025 12:34:24 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4j7u=EJBAirbO0pCyf0kTfbAVe-9EkqtDMfxPm0e0yjg@mail.gmail.com>
-X-Gm-Features: AWEUYZnPhtuhzUh_kqFQB2GsNuPJNY6-hlWegsqAI1h3Kg9lY04HSd2HIJmL09c
-Message-ID: <CAL3q7H4j7u=EJBAirbO0pCyf0kTfbAVe-9EkqtDMfxPm0e0yjg@mail.gmail.com>
-Subject: Re: [PATCH 0/5] btrfs: prepare for larger folios support
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: WenRuo Qu <wqu@suse.com>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 21, 2025 at 11:23=E2=80=AFAM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 20.02.25 10:26, Qu Wenruo wrote:
-> > Qu Wenruo (5):
-> >    btrfs: prepare subpage.c for larger folios support
-> >    btrfs: remove the PAGE_SIZE usage inside inline extent reads
-> >    btrfs: prepare btrfs_launcher_folio() for larger folios support
-> >    btrfs: prepare extent_io.c for future larger folio support
-> >    btrfs: prepare btrfs_page_mkwrite() for larger folios
-> >
-> >   fs/btrfs/extent_io.c | 50 +++++++++++++++++++++++++------------------=
--
-> >   fs/btrfs/file.c      | 19 +++++++++--------
-> >   fs/btrfs/inode.c     |  8 +++----
-> >   fs/btrfs/subpage.c   | 36 +++++++++++++++----------------
-> >   fs/btrfs/subpage.h   | 24 ++++++++-------------
-> >   5 files changed, 69 insertions(+), 68 deletions(-)
-> >
->
-> Hi Qu,
-> What am I doing wrong?
->
-> Applying: btrfs: prepare subpage.c for larger folios support
-> Applying: btrfs: remove the PAGE_SIZE usage inside inline extent reads
-> In file included from ./include/linux/kernel.h:28,
->                   from ./include/linux/cpumask.h:11,
->                   from ./include/linux/smp.h:13,
->                   from ./include/linux/lockdep.h:14,
->                   from ./include/linux/spinlock.h:63,
->                   from ./include/linux/swait.h:7,
->                   from ./include/linux/completion.h:12,
->                   from ./include/linux/crypto.h:15,
->                   from ./include/crypto/hash.h:12,
->                   from fs/btrfs/inode.c:6:
-> fs/btrfs/inode.c: In function =E2=80=98uncompress_inline=E2=80=99:
-> fs/btrfs/inode.c:6807:41: error: =E2=80=98sectorsize=E2=80=99 undeclared =
-(first use in
-> this function); did you mean =E2=80=98sector_t=E2=80=99?
+From: Filipe Manana <fdmanana@suse.com>
 
-So this seems to depend on this patchset which introduces that variable:
+Update a few tests to refer to the commit IDs of patches that were already
+merged into Linus' tree.
 
-https://lore.kernel.org/linux-btrfs/cover.1739608189.git.wqu@suse.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/323   | 2 +-
+ tests/btrfs/326   | 2 +-
+ tests/btrfs/330   | 2 +-
+ tests/generic/562 | 2 +-
+ tests/xfs/273     | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-But that patset depends on other unmerged patches, so not easy to
-follow and review.
-I was just trying to review that patchset.
+diff --git a/tests/btrfs/323 b/tests/btrfs/323
+index b7421f6e..08ebf194 100755
+--- a/tests/btrfs/323
++++ b/tests/btrfs/323
+@@ -13,7 +13,7 @@ _begin_fstest auto quick seed remount volume
+ _require_command "$BTRFS_TUNE_PROG" btrfstune
+ _require_scratch_dev_pool 2
+ 
+-_fixed_by_kernel_commit XXXXXXXX \
++_fixed_by_kernel_commit 70958a949d85 \
+ 	"btrfs: do not clear read-only when adding sprout device"
+ 
+ _scratch_dev_pool_get 1
+diff --git a/tests/btrfs/326 b/tests/btrfs/326
+index 1fc4db06..7e6e7b77 100755
+--- a/tests/btrfs/326
++++ b/tests/btrfs/326
+@@ -15,7 +15,7 @@ _fixed_by_kernel_commit 951a3f59d268 \
+ 
+ # Another rare bug exposed by this test case where mnt_list list corruption or
+ # extra kernel warning on MNT_ONRB flag is triggered.
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
++_fixed_by_kernel_commit 344bac8f0d73 \
+ 	"fs: kill MNT_ONRB"
+ 
+ _cleanup()
+diff --git a/tests/btrfs/330 b/tests/btrfs/330
+index 92cc498f..3a311a5a 100755
+--- a/tests/btrfs/330
++++ b/tests/btrfs/330
+@@ -19,7 +19,7 @@ _cleanup()
+ 
+ $MOUNT_PROG -V | grep -q 'fd-based-mount'
+ if [ "$?" -eq 0 ]; then
+-	_fixed_by_kernel_commit xxxxxxxxxxxx \
++	_fixed_by_kernel_commit cda7163d4e3d \
+ 		"btrfs: fix per-subvolume RO/RW flags with new mount API"
+ fi
+ 
+diff --git a/tests/generic/562 b/tests/generic/562
+index 36bd0291..03a66ff2 100755
+--- a/tests/generic/562
++++ b/tests/generic/562
+@@ -16,7 +16,7 @@ _begin_fstest auto clone punch
+ . ./common/reflink
+ 
+ test "$FSTYP" = "xfs" && \
+-	_fixed_by_kernel_commit XXXXXXXXXX "xfs: don't drop errno values when we fail to ficlone the entire range"
++	_fixed_by_kernel_commit 7ce31f20a077 "xfs: don't drop errno values when we fail to ficlone the entire range"
+ 
+ _require_scratch_reflink
+ _require_test_program "punch-alternating"
+diff --git a/tests/xfs/273 b/tests/xfs/273
+index 9f11540a..7e743179 100755
+--- a/tests/xfs/273
++++ b/tests/xfs/273
+@@ -24,7 +24,7 @@ _require_scratch
+ _require_populate_commands
+ _require_xfs_io_command "fsmap"
+ 
+-_fixed_by_kernel_commit XXXXXXXXXXXXXX "xfs: fix off-by-one error in fsmap"
++_fixed_by_kernel_commit a440a28ddbdc "xfs: fix off-by-one error in fsmap"
+ 
+ rm -f "$seqres.full"
+ 
+-- 
+2.45.2
 
->   6807 |         max_size =3D min_t(unsigned long, sectorsize, max_size);
->        |                                         ^~~~~~~~~~
-> ./include/linux/minmax.h:86:23: note: in definition of macro
-> =E2=80=98__cmp_once_unique=E2=80=99
->     86 |         ({ type ux =3D (x); type uy =3D (y); __cmp(op, ux, uy); =
-})
->        |                       ^
-> ./include/linux/minmax.h:161:27: note: in expansion of macro =E2=80=98__c=
-mp_once=E2=80=99
->    161 | #define min_t(type, x, y) __cmp_once(min, type, x, y)
->        |                           ^~~~~~~~~~
-> fs/btrfs/inode.c:6807:20: note: in expansion of macro =E2=80=98min_t=E2=
-=80=99
->   6807 |         max_size =3D min_t(unsigned long, sectorsize, max_size);
->        |                    ^~~~~
-> fs/btrfs/inode.c:6807:41: note: each undeclared identifier is reported
-> only once for each function it appears in
->   6807 |         max_size =3D min_t(unsigned long, sectorsize, max_size);
->        |                                         ^~~~~~~~~~
-> ./include/linux/minmax.h:86:23: note: in definition of macro
-> =E2=80=98__cmp_once_unique=E2=80=99
->     86 |         ({ type ux =3D (x); type uy =3D (y); __cmp(op, ux, uy); =
-})
->        |                       ^
-> ./include/linux/minmax.h:161:27: note: in expansion of macro =E2=80=98__c=
-mp_once=E2=80=99
->    161 | #define min_t(type, x, y) __cmp_once(min, type, x, y)
->        |                           ^~~~~~~~~~
-> fs/btrfs/inode.c:6807:20: note: in expansion of macro =E2=80=98min_t=E2=
-=80=99
->   6807 |         max_size =3D min_t(unsigned long, sectorsize, max_size);
->        |                    ^~~~~
-> fs/btrfs/inode.c: In function =E2=80=98read_inline_extent=E2=80=99:
-> fs/btrfs/inode.c:6841:32: error: =E2=80=98sectorsize=E2=80=99 undeclared =
-(first use in
-> this function); did you mean =E2=80=98sector_t=E2=80=99?
->   6841 |         copy_size =3D min_t(u64, sectorsize,
->        |                                ^~~~~~~~~~
-> ./include/linux/minmax.h:86:23: note: in definition of macro
-> =E2=80=98__cmp_once_unique=E2=80=99
->     86 |         ({ type ux =3D (x); type uy =3D (y); __cmp(op, ux, uy); =
-})
->        |                       ^
-> ./include/linux/minmax.h:161:27: note: in expansion of macro =E2=80=98__c=
-mp_once=E2=80=99
->    161 | #define min_t(type, x, y) __cmp_once(min, type, x, y)
->        |                           ^~~~~~~~~~
-> fs/btrfs/inode.c:6841:21: note: in expansion of macro =E2=80=98min_t=E2=
-=80=99
->   6841 |         copy_size =3D min_t(u64, sectorsize,
->        |                     ^~~~~
-> make[4]: *** [scripts/Makefile.build:207: fs/btrfs/inode.o] Error 1
-> make[3]: *** [scripts/Makefile.build:465: fs/btrfs] Error 2
-> make[2]: *** [scripts/Makefile.build:465: fs] Error 2
-> make[1]: *** [/home/johannes/src/linux/Makefile:1989: .] Error 2
 
