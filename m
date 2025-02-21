@@ -1,200 +1,207 @@
-Return-Path: <linux-btrfs+bounces-11680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11681-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A353A3ECAD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 07:09:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910E2A3ED6E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 08:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C902319C1E4E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 06:10:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A5667ABB17
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 07:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491F71FC7C7;
-	Fri, 21 Feb 2025 06:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A461FF7D5;
+	Fri, 21 Feb 2025 07:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="azWIIEoA"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VAbuqSgI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4E71917E3
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 06:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D2C1FF7D3
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 07:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740118191; cv=none; b=j0/bywdnb3uobo6rg4NDJvZ9nVR0o2uOynB+rBZ6VWi4SkuXGrsnV7Qx3ODVNQG4ml9BDsydKiUQiow2wC//H4NhrUfk83NOc0nk7BEpp2pp0THOkipjmYopKpLIctzz1MDXp+GWS2rXwThgqbTaJJkCIuqWWtj6BZ7Kd5ts2Nc=
+	t=1740123635; cv=none; b=ae3R4Skq+dCNFzlk08GT6N6NYkFz/TVsTf7PLKAAyVzoMUsSRRKTdBpBhIBkiXm9s0K9ShUOZT1Rt5rzZyqFyLM7s9lQwLfp2E+T6eKf3gEX5LqFH4S7CbgCvsjlOisnmyhPJbfMQJMcniJCGnV5y5Na+4A3q5kb+fjP7DN/h4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740118191; c=relaxed/simple;
-	bh=n+5CPVi3CR7gH9gJgXpwP2lIPCsSM67YkkA9opZbwN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GhExsArsklJCa/I20DjApMq2+IQK3NwjVt7U0P+PrAMfUjvRtW3zMkLYCOFxiyacwq8muUIG3HE98n+wOozCxzf/BUhfAs41srzH987XvbfYHgyL8Rg3k61ivNHGcyFoBkFbiqWRUaaWuChtemds5fjpfKsKCEWD5FpiMBqpS3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=azWIIEoA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740118188;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Bd83C4IoFAPicUSG0hi+EK6ZkQL9kloXMZ5jqLx6uOo=;
-	b=azWIIEoAd6ENREpN18g8rwIV0dKkk9yE/h8ZnW0dEakAelg5mWzA7mg7n0DsV5B3q5N4Gt
-	tP9zxFxQnFonMOmqAZ6vp4JJFOGBLh/poTyRz2WyT8wYTWIoKrKUspS4JOPrRxHi4kPjW8
-	zWiOf2sF5JkAl8LjUE1Nzf3+teX8y04=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-v1fsplVUPw6If6YslSJgRg-1; Fri, 21 Feb 2025 01:09:47 -0500
-X-MC-Unique: v1fsplVUPw6If6YslSJgRg-1
-X-Mimecast-MFC-AGG-ID: v1fsplVUPw6If6YslSJgRg_1740118186
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2fc46431885so5601204a91.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 22:09:47 -0800 (PST)
+	s=arc-20240116; t=1740123635; c=relaxed/simple;
+	bh=F9em5c/IsvL/ssxaXMrUXlNqF9SlOYHQdrzjKHJTKs0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J3KLySAvx1Q2r3b7N3pGgycozzNG775VhYYjnL3pLjSl5BEqc+7taIF5gapAY9dApIWMatrx4HSKfL9KF4qYH+sIRjmKECc9Xes72zXM4rO2qY7kc7j2kCtZkAHKgsgRCm6X+C2CwwNvcAU9TGlUoeSlIa3f5YeIZXZwAg3gh4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VAbuqSgI; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-abb7520028bso250170066b.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 23:40:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1740123631; x=1740728431; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i7QIoMV8b3NHnIzXgAtJmy7Iy9kOWxAtm72suSqSJEQ=;
+        b=VAbuqSgIkSAWAriMNg7l70LmuAKTVzf6OhOmmkIGHdXO9zuAvDYP7yDuPZ+895x3X6
+         OfmOXLsyTIwh5g08IAB8fCt562RhBlTE8Bv5TchiGcem+Bc0MOFR5iF2g8VBTFgZCdYp
+         E/bUAOuu49HdTg3lyCLi1VU5FFjZEkKCROQEwwZyiCZ97hS/QR3HLJ5qHakR/ZBFCIQL
+         FAPpOhmKwU0FcTmsQyi8ACPAbnzjrCsZPVb9Gt9pMPmfrFWBF3Dv7kX7jPP8eoWUSxsC
+         /85qYhCHJoQirnCgVezduJEnKKEnqPSeEVXuL/dniFtzeSg2TcuSCUnOES7f/ijS+lnr
+         bLog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740118186; x=1740722986;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bd83C4IoFAPicUSG0hi+EK6ZkQL9kloXMZ5jqLx6uOo=;
-        b=QiIfyQT17aA5dLlxDmtOnkzaFLaVlXVWHkeXWHeHSOClPMQtzBLy8MEKQUFtVbCC7T
-         vz4NL5879W/xLiyBQ2IF/RY84z5WJ7w+UOPRSFa5uASf/0HgwPWEcx0w2S1/lPin/84N
-         9h3PptEAWQ1EJ8dc7fK/4yvXumfKs8Sjdf3EVYSGOeh5QjSs751DIFj2WKa7/CdHkkNT
-         WI5C4uHtMb5VYIBdFCDRXSYEMvZe0Oy6JRyRtGAMfQCRpc8mizAHimGwypHCCR4V1Me+
-         BU6nVxN9umaWwjNa+04m8CHirffP4znH//jMBOF+WOXdL9bPGXJMo2T3jA+ZKVcTqGVA
-         1PDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUt9c1O470pc35XFZ1PkvzRcLSRoOLslMwfe3K5lltPcRFtaEPUy6Z8IcsPLen5EfhPuVOC9T62ke0t+A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxm5ozRGXn9xP0/3fEqbk2HbkDXzZ5Bw08u0AZFIr8jnCnqQEqv
-	ZvAnE/iGugIhU76DGcwJfBjw3dtworxadQNeBxet12PdZs9K9oGwOGNbKZiKNh5X3+zxD6dOrsI
-	r/8qp2Rqrr17yig0Ao8gazX/PiemAGOzAulSJbbbHuq6s4HEoV6+ts3ozvt/y
-X-Gm-Gg: ASbGncsZ869qEhZWZLwk0IfzofsznL4ycuLXKloQEqXW4+8g4Njpafi99nvyM/ctq0l
-	/tEUyWpm9+btvk7fOYqKe85NIZJ0YFxc/7YQ6uJ7wi/AsGHRzwZSwAAPwJLfPv3L/jfpCHyIOUZ
-	ZbbafBiyqRGvpSkXhehtXbqUBx0GUpoy49Bb8fFOGUgFSZ2fn7tGKs28x47l/bCT1fIHtajEVPo
-	76PtAQwR6ZuVsJT/ocDUMXhcCDn+vKo/6mtNXisoeDMmO8hU6rmdyRumdXkYVuRVdge8GV/Y5DX
-	/vpyc+79NQxgEj8MWLPgex3ZuVJ7Cbg5cRGKdISx1Tm2oK76wNc95GZU
-X-Received: by 2002:a17:90b:4ac5:b0:2ee:f80c:6892 with SMTP id 98e67ed59e1d1-2fce868c624mr2513450a91.3.1740118186150;
-        Thu, 20 Feb 2025 22:09:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFlCxM88XnCWz5CtHp4Ei6DGMrpbqAWlS/AdMthkUikSvnop7fPK2linfOp4iu3kNKXuyhglA==
-X-Received: by 2002:a17:90b:4ac5:b0:2ee:f80c:6892 with SMTP id 98e67ed59e1d1-2fce868c624mr2513431a91.3.1740118185868;
-        Thu, 20 Feb 2025 22:09:45 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb04bedbsm480682a91.18.2025.02.20.22.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 22:09:45 -0800 (PST)
-Date: Fri, 21 Feb 2025 14:09:41 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: Filipe Manana <fdmanana@kernel.org>, fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-	"Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 1/2] btrfs/254: don't leave mount on test fs in case of
- failure/interruption
-Message-ID: <20250221060941.pyqwi4trggrvmbys@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1739989076.git.fdmanana@suse.com>
- <9aa6c8318d11b2fd1c2e208d85b2f83ea81ff88d.1739989076.git.fdmanana@suse.com>
- <d2d72753-5bf2-48cf-b2f0-cfe184ec75a7@oracle.com>
- <20250220170333.GV21799@frogsfrogsfrogs>
- <CAL3q7H6cH26jarU+YEogd5O5FuHi+YNtaWgmsV72NuXacPQU6w@mail.gmail.com>
- <bffa58e7-e34a-40ec-b0d9-368224dd22ab@oracle.com>
+        d=1e100.net; s=20230601; t=1740123631; x=1740728431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i7QIoMV8b3NHnIzXgAtJmy7Iy9kOWxAtm72suSqSJEQ=;
+        b=up5Et78nA5yJNJchk7tAQydVFHH3tmK/WkykbJ1vgQMIwN9QqgKdPN8NoydpbNZ5P8
+         fvEFXTc5c9EgXw+nMSBGY6X0jZR2hIpqvUx8hH/PjGZVXqg1zoS0kS4BCRioL7sDu+lA
+         iKVk37vpyFuTaw5T/MCLbeSdk3Hswsw+Zoar6eJWJZE7L1TcXjlVVa5AWMmlv7m8B95d
+         02kC9mF86V/kv4CrEKtbGGDumzlX53ktb6Q1Z+pkEEdExs07VaQyN+O9R6pXiX9DS6Rf
+         iX8ajJ3r/gbcSCbJH8EQxywNmJbNzZylWIVBFOAMQIHFnCjKAjHvTSvcKOPmA3w5nlfu
+         6Uxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWoBVB2A9u1cIYA0rbYg9YgDKU330/lA2HqU1PIrlFexE7Qkc/hVoYMI68OeFSV0zuRQY5sA7pU7gOyyQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKHpoY9eUlOC7OCJt6yQ4IqM20RB1cfFMBsgbcV7YPpIDg15Sc
+	NZlIMitVptPbvqzjnRoJp7jK+8bMQ+GSQsMp9di8CEVvYVvm9sZGvPy4BcvaGfUjpVqS3cMJJbg
+	PGd4lzW5hHrHEmLaWYoKidpAuF+WqssaH1TxyWg==
+X-Gm-Gg: ASbGncvBAKCOmSWNRX0ShC3iNOxeeZwaVJZrjXcGIVVWQkvY5tt3PxeZIFAVwIACYEZ
+	KYbyiB3z564Bg6tzh0sQhuDF2Ssv8jKPz+icwmuZxmtSy13xHGTbpqvdPl5dTC1DxnhBRBVLiFO
+	GbtJ8Qeg==
+X-Google-Smtp-Source: AGHT+IGm9DcsqUF63IzY6q9Hn7t6gmR/2o5qjG59Ne37mELgsvSM8qBY0qfDqk+Oa/+5w0XWUbgG9qsw9PwqF+vGyis=
+X-Received: by 2002:a17:906:30d4:b0:ab7:f2da:8122 with SMTP id
+ a640c23a62f3a-abc099f0b31mr202230166b.3.1740123630809; Thu, 20 Feb 2025
+ 23:40:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bffa58e7-e34a-40ec-b0d9-368224dd22ab@oracle.com>
+References: <20250220145723.1526907-1-neelx@suse.com> <d84d2d83-03ac-4741-9677-52c71e1fb36d@suse.com>
+ <c0a4b4a0-268c-42f3-b117-b87b2fb12a03@suse.com>
+In-Reply-To: <c0a4b4a0-268c-42f3-b117-b87b2fb12a03@suse.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Fri, 21 Feb 2025 08:40:20 +0100
+X-Gm-Features: AWEUYZl3NrlB6A71sAyFDuafK3zhb4lMN28XT0STNlQ6BlH5f-25mLE-domIWTs
+Message-ID: <CAPjX3Fem-=D8dxyR1MGTQVskkzdijmc7k82+f5_S_YyBJ_Orsg@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs/314: fix the failure when SELinux is enabled
+To: Qu Wenruo <wqu@suse.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	Anand Jain <anand.jain@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 21, 2025 at 09:48:10AM +0800, Anand Jain wrote:
-> On 21/2/25 02:22, Filipe Manana wrote:
-> > On Thu, Feb 20, 2025 at 5:03 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > 
-> > > On Thu, Feb 20, 2025 at 01:27:32PM +0800, Anand Jain wrote:
-> > > > On 20/2/25 02:19, fdmanana@kernel.org wrote:
-> > > > > From: Filipe Manana <fdmanana@suse.com>
-> > > > > 
-> > > > > If the test fails or is interrupted after mounting $scratch_dev3 inside
-> > > > > the test filesystem and before unmounting at test_add_device(), we leave
-> > > > > without being unable to unmount the test filesystem since it has a mount
-> > > > > inside it. This results in the need to manually unmount $scratch_dev3,
-> > > > > otherwise a subsequent run of fstests fails since the unmount of the
-> > > > > test device fails with -EBUSY.
-> > > > > 
-> > > > > Fix this by unmounting $scratch_dev3 ($seq_mnt) in the _cleanup()
-> > > > > function.
-> > > > > 
-> > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > > > ---
-> > > > >    tests/btrfs/254 | 1 +
-> > > > >    1 file changed, 1 insertion(+)
-> > > > > 
-> > > > > diff --git a/tests/btrfs/254 b/tests/btrfs/254
-> > > > > index d9c9eea9..6523389b 100755
-> > > > > --- a/tests/btrfs/254
-> > > > > +++ b/tests/btrfs/254
-> > > > > @@ -21,6 +21,7 @@ _cleanup()
-> > > > >    {
-> > > > >      cd /
-> > > > >      rm -f $tmp.*
-> > > > > +   $UMOUNT_PROG $seq_mnt > /dev/null 2>&1
-> > > 
-> > > This should use the _unmount helper that's in for-next.
-> > 
-> > Sure, it does the same, except that it redirects stdout and stderr to
-> > $seqres.full.
-> > 
-> > Some tests are still calling  $UMOUNT_PROG directly. And that's often
-> > what we want, so that if umount fails we get a mismatch with the
-> > golden output instead of ignoring the failure.
-> > But in this case it's fine.
-> > 
-> > Anand, since you've already merged this patch into your repo, can you
-> > please replace that line with the following?
-> > 
-> > _unmount $seq_mnt
-> > 
-> 
-> Applied.
-> Thanks.
-> 
-> Zorro,
-> 
-> Just checked, and it looks like you haven’t pulled in patches
-> from my for-next yet.
-> I went ahead and force-updated it to keep unnecessary noise
-> off the ML.
-> 
-> If you're pulling this weekend, there are three patches in
-> for-next ready to merge.
+On Thu, 20 Feb 2025 at 22:54, Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/2/21 08:06, Qu Wenruo =E5=86=99=E9=81=93:
+> >
+> >
+> > =E5=9C=A8 2025/2/21 01:27, Daniel Vacek =E5=86=99=E9=81=93:
+> >> When SELinux is enabled this test fails unable to receive a file with
+> >> security label attribute:
+> >>
+> >>      --- tests/btrfs/314.out
+> >>      +++ results//btrfs/314.out.bad
+> >>      @@ -17,5 +17,6 @@
+> >>       At subvol TEST_DIR/314/tempfsid_mnt/snap1
+> >>       Receive SCRATCH_MNT
+> >>       At subvol snap1
+> >>      +ERROR: lsetxattr foo
+> >> security.selinux=3Dunconfined_u:object_r:unlabeled_t:s0 failed:
+> >> Operation not supported
+> >>       Send:    42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/
+> >> tempfsid_mnt/foo
+> >>      -Recv:    42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/foo
+> >>      +Recv:    d41d8cd98f00b204e9800998ecf8427e  SCRATCH_MNT/snap1/foo
+> >>      ...
+> >>
+> >> Setting the security label file attribute fails due to the default mou=
+nt
+> >> option implied by fstests:
+> >>
+> >> MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/sdb /mn=
+t/
+> >> scratch
+> >>
+> >> See commit 3839d299 ("xfstests: mount xfs with a context when selinux
+> >> is on")
+> >>
+> >> fstests by default mount test and scratch devices with forced SELinux
+> >> context to get rid of the additional file attributes when SELinux is
+> >> enabled. When a test mounts additional devices from the pool, it may n=
+eed
+> >> to honor this option to keep on par. Otherwise failures may be expecte=
+d.
+> >>
+> >> Moreover this test is perfectly fine labeling the files so let's just
+> >> disable the forced context for this one.
+> >>
+> >> Signed-off-by: Daniel Vacek <neelx@suse.com>
+> >
+> > Reviewed-by: Qu Wenruo <wqu@suse.com>
+> >
+> > Thanks,
+> > Qu
+> >
+> >> ---
+> >>   tests/btrfs/314 | 6 +++++-
+> >>   1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/tests/btrfs/314 b/tests/btrfs/314
+> >> index 76dccc41..cc1a2264 100755
+> >> --- a/tests/btrfs/314
+> >> +++ b/tests/btrfs/314
+> >> @@ -21,6 +21,10 @@ _cleanup()
+> >>   . ./common/filter.btrfs
+> >> +# Disable the forced SELinux context. We are fine testing the
+> >> +# security labels with this test when SELinux is enabled.
+> >> +SELINUX_MOUNT_OPTIONS=3D
+>
+> Wait for a minute, this means you're disabling SELINUX mount options
+> completely.
+>
+> I'm not sure if this is really needed.
+> >> +
+> >>   _require_scratch_dev_pool 2
+> >>   _require_btrfs_fs_feature temp_fsid
+> >> @@ -38,7 +42,7 @@ send_receive_tempfsid()
+> >>       # Use first 2 devices from the SCRATCH_DEV_POOL
+> >>       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
+> >>       _scratch_mount
+> >> -    _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+> >> +    _mount ${SELINUX_MOUNT_OPTIONS} ${SCRATCH_DEV_NAME[1]}
+> >> ${tempfsid_mnt}
+>
+> The problem of the old code is it doesn't have any SELinux related mount
+> option, thus later receive will fail to set SELinux context.
+>
+> But since you have already added SELINUX_MOUNT_OPTIONS, I think you do
+> not need to disable the SELINUX_MOUNT_OPTIONS.
+>
+> Have you tested with only this change, without resetting
+> SELINUX_MOUNT_OPTIONS?
 
-Actually I've pulled, just haven't pushed :) Then I saw this conversation, so
-I'm going to reset and re-pull. The next release is nearly done, I'll pick
-up more simple patches with RVB today, then prepare to release it. Thanks!
+Yes, I tested both. Actually resetting this option was the first fix I
+came up with, that's why I kept it. This option breaks the test case
+when SELinux is enabled.
+But then I figured the other way around (using the option consistently
+with all the mounts) also works. So I added it for consistency.
+At that point, resetting the option is not really strictly needed
+anymore (as you correctly suspect).
 
-Thanks,
-Zorro
+So there are two possible solutions. Each one makes the testcase 314
+pass. But they can as well be combined.
 
-> 
-> ( https://github.com/asj/fstests.git for-next.)
-> 
-> 
-> Thanks!
-> Anand
-> 
-> > Thanks.
-> > 
-> > > 
-> > > --D
-> > > 
-> > > > >      rm -rf $seq_mnt > /dev/null 2>&1
-> > > > >      cleanup_dmdev
-> > > > >    }
-> > > > 
-> > > > 
-> > > > Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> > > > 
-> > > > 
-> > > > 
-> 
+Anyways, this test is fine without forcing the default mount context,
+which is more a bandaid for other fstests, IIUC. There's no need for
+this option in this case, at least with my testing. Hence I disabled
+it. Does it fail for you?
 
+> Thanks,
+> Qu
+> >>       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo |
+> >> _filter_xfs_io
+> >>       _btrfs subvolume snapshot -r ${src} ${src}/snap1
+> >
+> >
+>
 
