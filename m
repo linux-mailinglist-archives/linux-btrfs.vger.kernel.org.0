@@ -1,99 +1,99 @@
-Return-Path: <linux-btrfs+bounces-11679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6687EA3EC75
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 07:03:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A353A3ECAD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 07:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E5D1172B9F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 06:02:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C902319C1E4E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2025 06:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888701FBC93;
-	Fri, 21 Feb 2025 06:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491F71FC7C7;
+	Fri, 21 Feb 2025 06:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LUAp+NKD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="azWIIEoA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0461F7561
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 06:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4E71917E3
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2025 06:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740117773; cv=none; b=HRUXQeTkFVNf/mhkDK1s2S7ZqGeS48dopjMLkJOgN2PfgD5O8AQ68Zsek3f1Ywu8I8jzVBCPmoTHL0Gns2+fJP6lfM+ABKJdefZNyd6epawcpECgnMnfN7Zx9aeC82h+JpOThf0tB2esN7FeQ9JfH9P2vvxJK04Riqbp9r2ksa0=
+	t=1740118191; cv=none; b=j0/bywdnb3uobo6rg4NDJvZ9nVR0o2uOynB+rBZ6VWi4SkuXGrsnV7Qx3ODVNQG4ml9BDsydKiUQiow2wC//H4NhrUfk83NOc0nk7BEpp2pp0THOkipjmYopKpLIctzz1MDXp+GWS2rXwThgqbTaJJkCIuqWWtj6BZ7Kd5ts2Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740117773; c=relaxed/simple;
-	bh=naxkgafUE/uoKz1c65LlObiDAc87O5jI+9ZZKZQPH4w=;
+	s=arc-20240116; t=1740118191; c=relaxed/simple;
+	bh=n+5CPVi3CR7gH9gJgXpwP2lIPCsSM67YkkA9opZbwN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eR6IpwY/YBslUJ2D8PE8yWe4K/Ohr7GA8aEQEHyS4/+WUDFyFBJfdXj/LrSdqN+Y9Uao38obR+yvJXWZREMTv7E4sdhPl38gyrYNGCL+ETICTu0iXQwzNALTtukD1z6IrpJhO2BPAhSMVSBQOE1gesmIKtr4+sUnNPQZZD46No0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LUAp+NKD; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=GhExsArsklJCa/I20DjApMq2+IQK3NwjVt7U0P+PrAMfUjvRtW3zMkLYCOFxiyacwq8muUIG3HE98n+wOozCxzf/BUhfAs41srzH987XvbfYHgyL8Rg3k61ivNHGcyFoBkFbiqWRUaaWuChtemds5fjpfKsKCEWD5FpiMBqpS3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=azWIIEoA; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740117771;
+	s=mimecast20190719; t=1740118188;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=obxFJfu8iolYPLgoAFCeQGWsCqsjY31pMoZ5UMKcarQ=;
-	b=LUAp+NKDkf/vY7o7Ae2tjLMJc5V6nw1aVYK1/iwwBxB0t/iomymwnhklkOY0BR0Zr8fkW0
-	IB4/xkSAfzRKXNIhnq9JHNpvjvsDeUFV7TwdSDD7HoBAuZ+pJjZKKzmq3RcSDjOd1/Hyok
-	GH4P/qovdpQ+GWfUCmtd57bz4io08hE=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Bd83C4IoFAPicUSG0hi+EK6ZkQL9kloXMZ5jqLx6uOo=;
+	b=azWIIEoAd6ENREpN18g8rwIV0dKkk9yE/h8ZnW0dEakAelg5mWzA7mg7n0DsV5B3q5N4Gt
+	tP9zxFxQnFonMOmqAZ6vp4JJFOGBLh/poTyRz2WyT8wYTWIoKrKUspS4JOPrRxHi4kPjW8
+	zWiOf2sF5JkAl8LjUE1Nzf3+teX8y04=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-vRnVw-jXOamPtuLteRPo1Q-1; Fri, 21 Feb 2025 01:02:49 -0500
-X-MC-Unique: vRnVw-jXOamPtuLteRPo1Q-1
-X-Mimecast-MFC-AGG-ID: vRnVw-jXOamPtuLteRPo1Q_1740117768
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-22126a488d7so39819185ad.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 22:02:49 -0800 (PST)
+ us-mta-561-v1fsplVUPw6If6YslSJgRg-1; Fri, 21 Feb 2025 01:09:47 -0500
+X-MC-Unique: v1fsplVUPw6If6YslSJgRg-1
+X-Mimecast-MFC-AGG-ID: v1fsplVUPw6If6YslSJgRg_1740118186
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2fc46431885so5601204a91.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2025 22:09:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740117768; x=1740722568;
+        d=1e100.net; s=20230601; t=1740118186; x=1740722986;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=obxFJfu8iolYPLgoAFCeQGWsCqsjY31pMoZ5UMKcarQ=;
-        b=Q4ec1c+3Lq9Aenrfkr7mutNCt6nuiG46EiOTjzpgU/Z5PKUOTlO0sCj5DIrOXL4VjX
-         8HkYSO9w4q2QFX+kQbWbocNATdOy3nRI8g60vaDWtUv+BpBv5cZi6KjcmtkcQ3kUCXCY
-         wPVVl41ZrJ4VMLl/F0AOjyOD/2Yq1gxQF8AF0MyhfEEi2iGtbAeepTUnkG08VUC4akcR
-         hJ0216xDhp/YFKRvEApjrVoZf7wqes6uVMJCobUHI0YvIBK0Q+lQuQNpUoH4cmsI3CfF
-         U1uamEsQnw+wa7m8XJIOeeWy1PGTwyZoCLeW3qRWi1nJYUBfDtr1IWSQrhdv90YEHU7B
-         /67w==
-X-Forwarded-Encrypted: i=1; AJvYcCW1dcVgm5YYhQkkztG+5uYO10RuWQ2DVs9jJcersklC1gC1WToMCvW5ljbyFAFZgLaubGfqAc8YuJ6dig==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy29mr6kXCQyiBSaaxmnOotij6FLzfHVtEC/viwIPXXh9+ZKlGE
-	P3LLK1HbrKhZ0V6CCD4t0x7/JnxQkEdlsRioRaadijW8zknkH5/r5gebmd3TWNPyt9X+NUArkGA
-	JZAnWI6m6tbrFuoshGTqwEEo52GR4KeDeH+H+9kbqjNDbRxzlDvFrh86KcWNf
-X-Gm-Gg: ASbGncv9sJZk9hXS27fLC7P11Lr0E8FPYGW58kpAxekfBw9TPSqyPvelSJKiWiLmQip
-	gxcZZDqDIDKXUADdrRPxxaDRMRmozrNYlH3gtdZQxr/xnkhG65qeCy3F3uvSk+D07hJI1saoKb4
-	1j/mST62M2itJPnazI8DhuH8QakcnXf219qJuekN23ERkBThEDwaPK35coG1nuJdgvG3znJH/9b
-	8oKKY9tYEMvt4chuXBjVim4RGtDq7Nf0pjbQhj92M0lfpnfmp4OiLPhmBOZVEzsLph9ziPs/k3B
-	k3nIsMHOT3+Ve72zDQozzr77VBeixtC0oDNr02vBUs53Z/yNVC75Inm8
-X-Received: by 2002:a17:903:2286:b0:220:cd9f:a186 with SMTP id d9443c01a7336-2219fdc2dfcmr36260705ad.0.1740117768477;
-        Thu, 20 Feb 2025 22:02:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEYlbRZFFuOUDgIJ24tagzyso/dkqWf2mfOc8u3dr9nscIjeUfbiBUC8oyWfSN9pNrRVlMTbg==
-X-Received: by 2002:a17:903:2286:b0:220:cd9f:a186 with SMTP id d9443c01a7336-2219fdc2dfcmr36260425ad.0.1740117768109;
-        Thu, 20 Feb 2025 22:02:48 -0800 (PST)
+        bh=Bd83C4IoFAPicUSG0hi+EK6ZkQL9kloXMZ5jqLx6uOo=;
+        b=QiIfyQT17aA5dLlxDmtOnkzaFLaVlXVWHkeXWHeHSOClPMQtzBLy8MEKQUFtVbCC7T
+         vz4NL5879W/xLiyBQ2IF/RY84z5WJ7w+UOPRSFa5uASf/0HgwPWEcx0w2S1/lPin/84N
+         9h3PptEAWQ1EJ8dc7fK/4yvXumfKs8Sjdf3EVYSGOeh5QjSs751DIFj2WKa7/CdHkkNT
+         WI5C4uHtMb5VYIBdFCDRXSYEMvZe0Oy6JRyRtGAMfQCRpc8mizAHimGwypHCCR4V1Me+
+         BU6nVxN9umaWwjNa+04m8CHirffP4znH//jMBOF+WOXdL9bPGXJMo2T3jA+ZKVcTqGVA
+         1PDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUt9c1O470pc35XFZ1PkvzRcLSRoOLslMwfe3K5lltPcRFtaEPUy6Z8IcsPLen5EfhPuVOC9T62ke0t+A==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxm5ozRGXn9xP0/3fEqbk2HbkDXzZ5Bw08u0AZFIr8jnCnqQEqv
+	ZvAnE/iGugIhU76DGcwJfBjw3dtworxadQNeBxet12PdZs9K9oGwOGNbKZiKNh5X3+zxD6dOrsI
+	r/8qp2Rqrr17yig0Ao8gazX/PiemAGOzAulSJbbbHuq6s4HEoV6+ts3ozvt/y
+X-Gm-Gg: ASbGncsZ869qEhZWZLwk0IfzofsznL4ycuLXKloQEqXW4+8g4Njpafi99nvyM/ctq0l
+	/tEUyWpm9+btvk7fOYqKe85NIZJ0YFxc/7YQ6uJ7wi/AsGHRzwZSwAAPwJLfPv3L/jfpCHyIOUZ
+	ZbbafBiyqRGvpSkXhehtXbqUBx0GUpoy49Bb8fFOGUgFSZ2fn7tGKs28x47l/bCT1fIHtajEVPo
+	76PtAQwR6ZuVsJT/ocDUMXhcCDn+vKo/6mtNXisoeDMmO8hU6rmdyRumdXkYVuRVdge8GV/Y5DX
+	/vpyc+79NQxgEj8MWLPgex3ZuVJ7Cbg5cRGKdISx1Tm2oK76wNc95GZU
+X-Received: by 2002:a17:90b:4ac5:b0:2ee:f80c:6892 with SMTP id 98e67ed59e1d1-2fce868c624mr2513450a91.3.1740118186150;
+        Thu, 20 Feb 2025 22:09:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFlCxM88XnCWz5CtHp4Ei6DGMrpbqAWlS/AdMthkUikSvnop7fPK2linfOp4iu3kNKXuyhglA==
+X-Received: by 2002:a17:90b:4ac5:b0:2ee:f80c:6892 with SMTP id 98e67ed59e1d1-2fce868c624mr2513431a91.3.1740118185868;
+        Thu, 20 Feb 2025 22:09:45 -0800 (PST)
 Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-221822094adsm31120035ad.195.2025.02.20.22.02.46
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb04bedbsm480682a91.18.2025.02.20.22.09.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 22:02:47 -0800 (PST)
-Date: Fri, 21 Feb 2025 14:02:43 +0800
+        Thu, 20 Feb 2025 22:09:45 -0800 (PST)
+Date: Fri, 21 Feb 2025 14:09:41 +0800
 From: Zorro Lang <zlang@redhat.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Filipe Manana <fdmanana@kernel.org>, Anand Jain <anand.jain@oracle.com>,
-	fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: Filipe Manana <fdmanana@kernel.org>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+	"Darrick J. Wong" <djwong@kernel.org>
 Subject: Re: [PATCH 1/2] btrfs/254: don't leave mount on test fs in case of
  failure/interruption
-Message-ID: <20250221060243.4wgr4s64mz7qaxlf@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Message-ID: <20250221060941.pyqwi4trggrvmbys@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 References: <cover.1739989076.git.fdmanana@suse.com>
  <9aa6c8318d11b2fd1c2e208d85b2f83ea81ff88d.1739989076.git.fdmanana@suse.com>
  <d2d72753-5bf2-48cf-b2f0-cfe184ec75a7@oracle.com>
  <20250220170333.GV21799@frogsfrogsfrogs>
  <CAL3q7H6cH26jarU+YEogd5O5FuHi+YNtaWgmsV72NuXacPQU6w@mail.gmail.com>
- <20250221041819.GX21799@frogsfrogsfrogs>
+ <bffa58e7-e34a-40ec-b0d9-368224dd22ab@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,41 +103,41 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250221041819.GX21799@frogsfrogsfrogs>
+In-Reply-To: <bffa58e7-e34a-40ec-b0d9-368224dd22ab@oracle.com>
 
-On Thu, Feb 20, 2025 at 08:18:19PM -0800, Darrick J. Wong wrote:
-> On Thu, Feb 20, 2025 at 06:22:57PM +0000, Filipe Manana wrote:
+On Fri, Feb 21, 2025 at 09:48:10AM +0800, Anand Jain wrote:
+> On 21/2/25 02:22, Filipe Manana wrote:
 > > On Thu, Feb 20, 2025 at 5:03 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > >
+> > > 
 > > > On Thu, Feb 20, 2025 at 01:27:32PM +0800, Anand Jain wrote:
 > > > > On 20/2/25 02:19, fdmanana@kernel.org wrote:
 > > > > > From: Filipe Manana <fdmanana@suse.com>
-> > > > >
+> > > > > 
 > > > > > If the test fails or is interrupted after mounting $scratch_dev3 inside
 > > > > > the test filesystem and before unmounting at test_add_device(), we leave
 > > > > > without being unable to unmount the test filesystem since it has a mount
 > > > > > inside it. This results in the need to manually unmount $scratch_dev3,
 > > > > > otherwise a subsequent run of fstests fails since the unmount of the
 > > > > > test device fails with -EBUSY.
-> > > > >
+> > > > > 
 > > > > > Fix this by unmounting $scratch_dev3 ($seq_mnt) in the _cleanup()
 > > > > > function.
-> > > > >
+> > > > > 
 > > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > > > > > ---
-> > > > >   tests/btrfs/254 | 1 +
-> > > > >   1 file changed, 1 insertion(+)
-> > > > >
+> > > > >    tests/btrfs/254 | 1 +
+> > > > >    1 file changed, 1 insertion(+)
+> > > > > 
 > > > > > diff --git a/tests/btrfs/254 b/tests/btrfs/254
 > > > > > index d9c9eea9..6523389b 100755
 > > > > > --- a/tests/btrfs/254
 > > > > > +++ b/tests/btrfs/254
 > > > > > @@ -21,6 +21,7 @@ _cleanup()
-> > > > >   {
-> > > > >     cd /
-> > > > >     rm -f $tmp.*
+> > > > >    {
+> > > > >      cd /
+> > > > >      rm -f $tmp.*
 > > > > > +   $UMOUNT_PROG $seq_mnt > /dev/null 2>&1
-> > >
+> > > 
 > > > This should use the _unmount helper that's in for-next.
 > > 
 > > Sure, it does the same, except that it redirects stdout and stderr to
@@ -147,50 +147,54 @@ On Thu, Feb 20, 2025 at 08:18:19PM -0800, Darrick J. Wong wrote:
 > > what we want, so that if umount fails we get a mismatch with the
 > > golden output instead of ignoring the failure.
 > > But in this case it's fine.
-> 
-> <groan> You're right, I'd repressed that Chinner decided to introduce
-> _unmount so that he could improve logging of unmount failures but then
-> he only bothered converting tests/{generic,xfs} because he didn't give
-> a damn about anyone else.
-> 
-> Now fstests is stuck with a half finished conversion and no clarity
-> about whether the rest of the $UMOUNT_PROG invocations should be
-> converted to _umount or if those are somehow intentional.
-> 
-> Hey Zorro, do you have any opinion on this?  Should someone just finish
-> the $UMOUNT_PROG -> _unmount conversion next week?
-
-The release of this week will have your big randome-fixes. Next release will
-deal with your 10 PRs mainly :) So I'll deal with the "$UMOUNT_PROG ->
-_unmount conversion" after that. Anyway, we still can review the "conversion"
-patch at first.
-
-Thanks,
-Zorro
-
-> 
-> --D
-> 
+> > 
 > > Anand, since you've already merged this patch into your repo, can you
 > > please replace that line with the following?
 > > 
 > > _unmount $seq_mnt
 > > 
+> 
+> Applied.
+> Thanks.
+> 
+> Zorro,
+> 
+> Just checked, and it looks like you haven’t pulled in patches
+> from my for-next yet.
+> I went ahead and force-updated it to keep unnecessary noise
+> off the ML.
+> 
+> If you're pulling this weekend, there are three patches in
+> for-next ready to merge.
+
+Actually I've pulled, just haven't pushed :) Then I saw this conversation, so
+I'm going to reset and re-pull. The next release is nearly done, I'll pick
+up more simple patches with RVB today, then prepare to release it. Thanks!
+
+Thanks,
+Zorro
+
+> 
+> ( https://github.com/asj/fstests.git for-next.)
+> 
+> 
+> Thanks!
+> Anand
+> 
 > > Thanks.
 > > 
-> > >
+> > > 
 > > > --D
-> > >
-> > > > >     rm -rf $seq_mnt > /dev/null 2>&1
-> > > > >     cleanup_dmdev
-> > > > >   }
-> > > >
-> > > >
+> > > 
+> > > > >      rm -rf $seq_mnt > /dev/null 2>&1
+> > > > >      cleanup_dmdev
+> > > > >    }
+> > > > 
+> > > > 
 > > > > Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> > > >
-> > > >
-> > > >
-> > 
+> > > > 
+> > > > 
+> > > > 
 > 
 
 
