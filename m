@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-11710-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11711-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF85A40592
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 06:02:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87A7FA40593
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 06:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B303F19E23D1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 05:02:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB7FD19E240A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 05:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C411F1932;
-	Sat, 22 Feb 2025 05:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4481F1932;
+	Sat, 22 Feb 2025 05:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Zx6XJIyn"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LDnbGJyY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9011A18C0C
-	for <linux-btrfs@vger.kernel.org>; Sat, 22 Feb 2025 05:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F882C181
+	for <linux-btrfs@vger.kernel.org>; Sat, 22 Feb 2025 05:03:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740200564; cv=none; b=CalswEL7DRKukTf0C2HIziCRtJU3xRAJ01kT2Ov5zXoDpn5u90VXHLrGrPSAKfg1Czjf6VaONNfjYo0R3S3TKHng8vqH0Jw7417sXFb7QlCCJ4uK0YMPE3SGHBaNf1niYl09/IeMs+ruXfynZgThLzSAaMWxEeJmzS3uf2NExZE=
+	t=1740200602; cv=none; b=akBO8Amjbv7Bv6d0recHNAoLocUzBEMYsz+G6lloHy3rkwm4yXzsPRUEzrqmVufDmDLTq4c9NWmd5viC8apT6ptZztBm8W3V5ofTh1r9c6jIVya2TAN8x1XlKXOFJXVr3Mr5C10HGNuPG4aH+PA45hAIiyzcdWGqCy2LkyfG+9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740200564; c=relaxed/simple;
-	bh=Y08rzk3x7gM5r4MbDXsIMAc56mORPiLEJDlY3dBZoqg=;
+	s=arc-20240116; t=1740200602; c=relaxed/simple;
+	bh=nvWCXZWl51KV6Mf0cQYKUB+VTfW+k9BTLkmnSO3PRDI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=JgTfTOQ/oPlWQ2FxvnIfen/GEJr0a9KOIMm17vTAelJU04RHGlstEErQRcP5ASK41eMqg3glfuQx1Ba4gD0jebwx0EuZuDVAOKNp6diuYjMc+NmxLkVZ8F8qG+a1eOVsozIfWmaXn+qITwApUCKzimN+WlrxFcutWi/Vpvq71ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Zx6XJIyn; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=Lm3Wb2agVa09GulKOJHm3oS+13uJJlHe3pES87mwZzww7F2xVz/6/ovxHI+YGwvQzS3oqsCcHvDzsVDV4P+dJ7MJslW6O0Tod799sfCcj6KSBNM1lb6u/BobWTtG8MP2nOZg3c+LEG8BATCGfxtglFo3OhWmsZUQa8J1Kd3Qeo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LDnbGJyY; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1740200556; x=1740805356; i=quwenruo.btrfs@gmx.com;
-	bh=pQpAZDJXVkhIL0h8bUGliDUVPUib5Vk/4diDBISuBG4=;
+	s=s31663417; t=1740200589; x=1740805389; i=quwenruo.btrfs@gmx.com;
+	bh=nvWCXZWl51KV6Mf0cQYKUB+VTfW+k9BTLkmnSO3PRDI=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Zx6XJIynBTTQE91TgpHzkRC76wx8M1GoXkVdsSRLkavgi2JPkMpJsceXoIwoE0OY
-	 zTfrvu06Hp85Z6rUEXpG41LJMTiN+UWqn309H7+WattZO6WNxqHVTplzISRrEUCIC
-	 wpFF43lktzdiCjD/1JIiLP7jzEgdTWjiix3r4AcPBtuWtkWBThq9QWs7ewGK6VZDd
-	 4uAFXYR2ObBAf93T9XSqlOUzuquAATRkDOStKOpLAnxKDrYqHb6VTzjeRVkrsveaV
-	 vSIWHJasuyHknuHiSbGt1I93nvCD1TVzETneJXz8pXiFYWKar1XvGa9PUm/wXQ9zh
-	 gh73m9XkCYLvSzPgBw==
+	b=LDnbGJyYjnd7Lkx9NFjwxC1GAHm16zbyB/lm2A7SqPHv7Mlq/NbIuzgYET0fsd+y
+	 bzT6QrIuUuMQm/k/b+X5JGl+fCE2P0hAu8ZtATVftoiRs+P6ggrGe4Vpph8Kp/zZ3
+	 25vadPFCy26bIvdw1Npqb3mAEk7CNlzHSGfDl7MPulV5GKyWBqzF9gOyrRhAgiYa5
+	 oFgKd0IYi4rQRQf/udWLK6JBoJ3Ko/9HKsKLbHYGEqr17lcs2v1t1k38Gzl7LsyQp
+	 pSNqjG0YG/iCAMTd7j/SfUci+uoT+5FNDQSD9U++a24uhcQ2nZK9SK8FBq/YRnUbD
+	 qusjq0BUad1U98Eq8g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQMuX-1tyXgQ3e7N-00QvDK; Sat, 22
- Feb 2025 06:02:36 +0100
-Message-ID: <ca38a144-41c1-45ea-9769-4e0b22625810@gmx.com>
-Date: Sat, 22 Feb 2025 15:32:32 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLR1f-1u3VXD1Rr9-00Rs8X; Sat, 22
+ Feb 2025 06:03:08 +0100
+Message-ID: <decd6725-230b-4723-8919-9d5959f5ada0@gmx.com>
+Date: Sat, 22 Feb 2025 15:33:05 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] btrfs: prepare extent_io.c for future larger folio
- support
+Subject: Re: [PATCH 1/5] btrfs: prepare subpage.c for larger folios support
 To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, WenRuo Qu
  <wqu@suse.com>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <cover.1740043233.git.wqu@suse.com>
- <19dfc0e42dce6416b66df114513d18d93b830d17.1740043233.git.wqu@suse.com>
- <c68a0824-493c-4049-9050-6e270793c44f@wdc.com>
+ <1399d0f444eb0dfcc391c430193ccd8649ff2c90.1740043233.git.wqu@suse.com>
+ <152ee58c-0ebe-4e58-a0a1-94e8c9c51d6d@wdc.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,87 +90,63 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <c68a0824-493c-4049-9050-6e270793c44f@wdc.com>
+In-Reply-To: <152ee58c-0ebe-4e58-a0a1-94e8c9c51d6d@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7/gjbnt4tp7XrA9JZ9vCY3hWooWRQ31VaDcsxXBaUY4GcjoEWW+
- N+OF0XqNI5ydd0Orjo7/S1EJCWyEHDAufTHPIA2m2oNSCvXT/Q8iUWWHkMhgY78ydl/JkLh
- LXPgWT+DItMoJMaVvJhHLS4Q/01N5c4nEvaYo3u9hwP7+lChErVvkkjDGxkxhmaYfLbTPft
- Wmj7RqYfKYhY7gHF5+oTw==
+X-Provags-ID: V03:K1:pTJ7tqjPz8YLgZRu/TAAtsRP4ZoV9vl1hXSu0wqzhvM1i6hYZrB
+ 6FlHjtHALqCXuwKyT7gAeIPX9OFRYFdHMMauDZFSA/KsAf7HwDp3EmmTPMPm8uDxOyGr0pi
+ c2wjIZhCYLv8Lh9rpM9OChbxahpLIm0TDKavn3rMUYleLkW8WfNjpGFw/IUgyMyQBNv5esS
+ eu7TuHgOBE19fAdm0IRsg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:QKozk8O+FiU=;gK4ZUv17/WEo+xSogOg4UH3BOHU
- T7V+IeH5NX08Tss5n7mHWmiI7v7UnqmOjq8QWDZdvUAWJfclhdalh3AwXNtjzNo5i+02aqx+Q
- fJpkEPYO2CkIdw+BcoCVkSLRw6nrGVpEXFQVnEKr57I7HTwocF65xgXmq05kNkTmYgQybQdAK
- wBir0Dk3zTS60WIrY4v3LOcg02bWu15HrHKj6cI0x6m3Ub85H82B1A12Tl3BstsNv410YNkTK
- wuHcf7ABd2rAKanOmP9Tptzo2w10GvieWAYQlSuhWqH/yDiXDBqiQ6bnlsFI2GhgqE/Ydc1uP
- DLiVgkC6Vf6Lb9MYtrdPEqxU3sQt2KTyuhCSbS5KGfU7iNkDZ7nLWrIZ85GumQ+OjlpQEadb5
- RkzUBHwgMKBRuxFJgtjLcv526OsVdeNZhtCmrUyr3qfFhtIP2LNXm9V5TfilzWu2UVHB9gSj0
- FjQPzrZmomrMlJcybkFgDi6vsbIR1C6nQVdXWRnmcJAyV1hbIN0r/1dWkzb1QUhpuX/FoiUVA
- tTFddLUBXoCCIfu3T4COhKlluQFVwcRU1oWgoj6RRMj28+91NEZ9yX9oz/izqwPNKUXowDJdk
- r5MqLmtCQJdFRW4GuR33zMw8db0GZHHZ+ySXjM8VcgG20PEddeWjXztwibVT/VYQUgTPG8Sbi
- TciJdk4NBuvxnr7tbBjZMpaNQRfmrslFPsZPwx+6+VKtZX22/Ocwrdo2P1yVwHbP88O83aoc/
- nRudDsQR24+zuAtt+abLt/NoiYN9CPyYjI4aYufFCekvYnUGdh83ojPh+c7IOjCAdl/xZEe+8
- UgfdpYYnQlVR95Q4i+vo7bMd01hBveEPubxhcFMZACah9KtsRcTZfSJ7fqpFBg878z0kqi7VP
- jIilox0laVpf6nECHIGUZld8hCYe7UgRLtiuozSBgu7bnwTTSDxc4G1o9mgtLjfahaiix4Hzt
- N1SXerN2sztbEqIizted3IALEBUm3oeJxHR7Vlv+iJi/PFVZsa+cOKpxVMEF6rPnm6AFDN0c4
- 6MRj0E48cd9LIw03AOSReTvwLlczv8ltrzO7A8Ix24z4wcxnvLe8OWnpAM2OA+z3cd9O7eOBe
- wDK8upPe1P/uj4euitk6NdCIe99kkDmHQOllUMljw2Dns2wWpnmCiwz1OQASmVqqMF2s+B9z/
- /QKnW2lf3D6AH4fz2nhSw+sS17JM7zOdCmYSCIGUGrgZozVK6gfoPDSh+XigHowPYEfTDAmu8
- NnQEG0V2u6df7rUBmWk/HWS50o2A/Ee0XagtrbLKC8vy6HXdsQ+Osh1RrGu+ZwF+YnqnwmaMW
- qNy4RAHBAJtCMoErKm1Q+cjwrK6cE8HeNeUH0I9iPAUNKg/sTmpjHgdgDXQ9aVK5dQKSfUBPY
- 82QGcnHm1DmlLqUnRhljknsglhMp4D7t10+epgNOY5GncFmkGjquk+mDxt
+UI-OutboundReport: notjunk:1;M01:P0:F7rP+uPEyxM=;e8goB7cxjx4Bhdn+Nm5WVgiWl4q
+ iuR0sJP+Fd9lIBRoFpTQcyB4mncG+49orGMCrBDrNjLzZVZ238GdBx1drAUYov+kMtADiWbvU
+ dkMjVKCzirRL9yFQr5TUWOZ5jFM9MVHiPlX7tDaKzDvJeQcVLu9SbXi8mx7TLN83NiRo5+1HT
+ 2pT1jUp0jmDQ7PWW07hivLfbH2evvdUoE1A2qQuOvW9Na4Z1Y37+7kQ4WaMp8eXSyOyqnGvPE
+ m9mIfppG3moqgGwhuH1w4lCk8gmH9VuaQfx6G2SWZac1bkq2RLzaBDi09cHXwECILzuSQiep5
+ fBN0tvpKs+Gn1NwxiCBBv5u4OUa1cuXsJKkmgGAOSO5hcpTGjxxZ5+cGLfikpXWZMVfUeTnuL
+ baeIAauEi8XLfqhsUom4AksC0LuAkwWJrQ0DfT9AZIG1Gx81nNNVGfK42WX1BjYfusfZ8QVaK
+ /8H92VAplE5DASRBf1tNTEEZu9z+i9RPhSpKuJrtrDcuJoIEeh4z70P8aysUCQxRHxwEDN/aF
+ ZqnkVY4/qgAABDxv39lo5JPmg2JJ4uyQ+F6jkbeEVMwfR/3RkhpU0K2HzKdwWQ0Al0MQ8RXOK
+ lEbctEX6AMU+PBkNEn/SIwHXr0vgr8s4Ar+6a08w2+bBEahX+CsyR3mRKcR9L/kErkC4DCuJN
+ o9h+EG4WRpvCUJXXAQkkzqJIGKu0lsNPzj1W7SA/uXMMukM8nssyo0k9NLAVNOvrIf+gR/obH
+ eluW9+MwNqcbY7GKnQqbNIxnLQKTzgyiK0tcrKQzraI/+KKoPLSzVFBmDP4iwvv2QpskIDFRd
+ lK9J/Xnnrs++XWHjQNnbS6FhxRaeEbJxR3CGGb9hedhpP9JOVGR5e7vHqvkzX4C4+fWmZspuk
+ vpIfN4nEpvk0QXzspa5ulvhs7fQliK6EBAddTwQR4NDNzXMrQbm2kFUX+wr55MHf1LgfZhYye
+ qDTqhtH6/jO075O8KiYpB0NpMVd8HTAOp1DJtQd+QEJUl7tUldiUocFU+q0z2tyec7Vv9ISTP
+ wGms/hLrObQUrDaBi3HblzH9hRqkkIZUvICRZbFXgnTO9Iy4vayQjp9gny4CATOJU7RZdnucg
+ Y0YDCwrDWIaGd0Xh4YB0x8X/AVGw4ryTtnoSwZ1iLmtut1iC2w35nI7PTxxZPDEk5vk+G6CRW
+ zHtwhnNMJTviytKM4YpeWof6AtDMZneRcbKhZ6MNVH701GJCq+naR5FFn/YX+dB15MIkeamO/
+ EWFCUKPxcwjRuZ3OL+LrAsmQkvD9afU3M+o4oGjJdG4k6jrjZlyYvHyMKfIC7lI/GoQE6wv5k
+ ly8JDM49EE6/GhzoQnQIdq1obP8ITn067qzNhLupUyeUxhJ3KXsQdrAS4PeI35Gw/OgMgiIv3
+ 9Oq8K3PljvVL0rJ1/ufwc4rqiUX5H40HBaJVg=
 
 
 
-=E5=9C=A8 2025/2/21 22:42, Johannes Thumshirn =E5=86=99=E9=81=93:
+=E5=9C=A8 2025/2/21 22:36, Johannes Thumshirn =E5=86=99=E9=81=93:
 > On 20.02.25 10:24, Qu Wenruo wrote:
->> @@ -2468,8 +2468,8 @@ void extent_write_locked_range(struct inode *inod=
-e, const struct folio *locked_f
->>    	ASSERT(IS_ALIGNED(start, sectorsize) && IS_ALIGNED(end + 1, sectors=
-ize));
+>> For the future of larger folio support, even if block size =3D=3D page =
+size,
+>> we may still hit a larger folio and need to attach a subpage structure =
+to
+>> that larger folio.
 >>
->>    	while (cur <=3D end) {
->> -		u64 cur_end =3D min(round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1, end)=
-;
->> -		u32 cur_len =3D cur_end + 1 - cur;
->> +		u64 cur_end;
->> +		u32 cur_len;
->>    		struct folio *folio;
+>> In that case we can no longer assume we need to go subpage routine only
+>> when block size < page size, but take folio size into the consideration=
+.
 >>
->>    		folio =3D filemap_get_folio(mapping, cur >> PAGE_SHIFT);
->> @@ -2479,13 +2479,18 @@ void extent_write_locked_range(struct inode *in=
-ode, const struct folio *locked_f
->>    		 * code is just in case, but shouldn't actually be run.
->>    		 */
->>    		if (IS_ERR(folio)) {
->> +			cur_end =3D min(round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1, end);
->> +			cur_len =3D cur_end + 1 - cur;
+>> Prepare for such future by:
+>>
+>> - Use folio_size() instead of PAGE_SIZE
+>> - Make btrfs_alloc_subpage() to handle different folio sizes
+>> - Make btrfs_is_subpage() to do the check based on the folio
 >
-> Why is it still using PAGE_SIZE here?
+> I personally would split this patch in 3 doing the above. Or at least
+> split out the brtfs_is_subpage() part in another patch.
+>
 
-This is because we are at a failure path where there is no folio.
-
-But we still want to skip to the next slot (may or may not exist
-though), so we have to increase the bytenr by the minimal unit of
-filemap, which is still a page.
+Sure, and the next update will only be sent after all the dependency got
+merged into for-next branch.
 
 Thanks,
 Qu
-
->
->>    			btrfs_mark_ordered_io_finished(BTRFS_I(inode), NULL,
->>    						       cur, cur_len, false);
->>    			mapping_set_error(mapping, PTR_ERR(folio));
->> -			cur =3D cur_end + 1;
->> +			cur =3D cur_end;
->>    			continue;
->>    		}
->>
->> +		cur_end =3D min(folio_pos(folio) + folio_size(folio) - 1, end);
->> +		cur_len =3D cur_end + 1 - cur;
->> +
->>    		ASSERT(folio_test_locked(folio));
->>    		if (pages_dirty && folio !=3D locked_folio)
->>    			ASSERT(folio_test_dirty(folio));
-
 
