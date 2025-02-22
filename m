@@ -1,152 +1,202 @@
-Return-Path: <linux-btrfs+bounces-11711-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11712-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87A7FA40593
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 06:03:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 918A6A40668
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 09:38:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB7FD19E240A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 05:03:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F8BD1700C3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2025 08:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4481F1932;
-	Sat, 22 Feb 2025 05:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62D62063FE;
+	Sat, 22 Feb 2025 08:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LDnbGJyY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iuQKvqs7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F882C181
-	for <linux-btrfs@vger.kernel.org>; Sat, 22 Feb 2025 05:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62032063EE
+	for <linux-btrfs@vger.kernel.org>; Sat, 22 Feb 2025 08:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740200602; cv=none; b=akBO8Amjbv7Bv6d0recHNAoLocUzBEMYsz+G6lloHy3rkwm4yXzsPRUEzrqmVufDmDLTq4c9NWmd5viC8apT6ptZztBm8W3V5ofTh1r9c6jIVya2TAN8x1XlKXOFJXVr3Mr5C10HGNuPG4aH+PA45hAIiyzcdWGqCy2LkyfG+9E=
+	t=1740213484; cv=none; b=HT2akOi9iJ4zkMVS/PM+Y1oEYxCy3MYS9bwVpLnGh6o5A1fJyYB2MowNYMN33kX2VCT1OIGhUnuagf5tu1q7IljT2ZihkH4FPvWKqrqBDiS12U/MihzZ+l56G4yr3yYn+MUascaVYQWxCjzC/aJgCWSjueq57TL71Pi/cieIvB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740200602; c=relaxed/simple;
-	bh=nvWCXZWl51KV6Mf0cQYKUB+VTfW+k9BTLkmnSO3PRDI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Lm3Wb2agVa09GulKOJHm3oS+13uJJlHe3pES87mwZzww7F2xVz/6/ovxHI+YGwvQzS3oqsCcHvDzsVDV4P+dJ7MJslW6O0Tod799sfCcj6KSBNM1lb6u/BobWTtG8MP2nOZg3c+LEG8BATCGfxtglFo3OhWmsZUQa8J1Kd3Qeo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LDnbGJyY; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1740200589; x=1740805389; i=quwenruo.btrfs@gmx.com;
-	bh=nvWCXZWl51KV6Mf0cQYKUB+VTfW+k9BTLkmnSO3PRDI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=LDnbGJyYjnd7Lkx9NFjwxC1GAHm16zbyB/lm2A7SqPHv7Mlq/NbIuzgYET0fsd+y
-	 bzT6QrIuUuMQm/k/b+X5JGl+fCE2P0hAu8ZtATVftoiRs+P6ggrGe4Vpph8Kp/zZ3
-	 25vadPFCy26bIvdw1Npqb3mAEk7CNlzHSGfDl7MPulV5GKyWBqzF9gOyrRhAgiYa5
-	 oFgKd0IYi4rQRQf/udWLK6JBoJ3Ko/9HKsKLbHYGEqr17lcs2v1t1k38Gzl7LsyQp
-	 pSNqjG0YG/iCAMTd7j/SfUci+uoT+5FNDQSD9U++a24uhcQ2nZK9SK8FBq/YRnUbD
-	 qusjq0BUad1U98Eq8g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLR1f-1u3VXD1Rr9-00Rs8X; Sat, 22
- Feb 2025 06:03:08 +0100
-Message-ID: <decd6725-230b-4723-8919-9d5959f5ada0@gmx.com>
-Date: Sat, 22 Feb 2025 15:33:05 +1030
+	s=arc-20240116; t=1740213484; c=relaxed/simple;
+	bh=gKIikp1nkeutP68ypumD/wQtsQN6cnIA2YiRX2ZrJqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nbLwYM/SS9ErghvAlh/jQUDyUvfcIbLA3nHOxMpyFTmUBdAv3kYPq7Y8T1kBe008CMoJAT5yyKEloQG5nKRAPwQ8DIujrsu9IqKQQ4Snyy/J46hPkJ0O8Rz1iw9/TCdgPYSylxymROuDR0ige+c+RE+52J/KRF2kGfo9i9oPlZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iuQKvqs7; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740213480;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ywvo3iVMwT805pw8Dw72ePN9++qcn0USaUPpo0W9c9I=;
+	b=iuQKvqs7EsGKZQktNk7qJSEPOOmpfgdgBSef6dAahEjqYuy2c4JJdok7py7UngbkFjudFk
+	te12PmvsOrU3d2hSkiUfC/bkr9A7bmOTo2eSPA1RU8ruxL5JiFClSBTwazdf9Cd3auL7GH
+	KdrljiLWO9CLdEE9XdkQ3kDWdNFAtw4=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-ZboF7_JeOFmMXSW1T-2eSw-1; Sat, 22 Feb 2025 03:37:58 -0500
+X-MC-Unique: ZboF7_JeOFmMXSW1T-2eSw-1
+X-Mimecast-MFC-AGG-ID: ZboF7_JeOFmMXSW1T-2eSw_1740213478
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2fc46431885so9473103a91.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Feb 2025 00:37:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740213478; x=1740818278;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ywvo3iVMwT805pw8Dw72ePN9++qcn0USaUPpo0W9c9I=;
+        b=GzKxZFHP0ncKKqVOS/upWEqvPMEAo2ddV+9jP1rS3JCYdm0HtWyLsoOixUOkxv0PUz
+         8zDPlW3bUAtyQKenpZYnV1jZRZ+sfD/lQp3d5ZhuXgEZDCYcctea10yTtenQYY989F9q
+         itMN7B3otVDa8lRO89lRUAfNXs6H20AsGbsuxGju+EeO0mjNydgtln/zM8jqD+WG+Qc8
+         NhkpwbR5OR1ZEBvsCHvBwmy5+efl8L1eL8ahVmFxlAeV2hP+J0J8vnbWlLhOn5qQzyjO
+         i2XRfhUgbuAySyRM7zDpbMYxp+8D8j6/mmIIeL1yj0rylhvGlz3lt5Qhzy03OZbgVd+R
+         s1ng==
+X-Forwarded-Encrypted: i=1; AJvYcCVqdoOWkwXlmMyutaWYF2Vow5m658iQ4gFiWWSQzmIR8Udo+C7D8wDHpd4TA/ddDOhxYscW8Ku4EN6M2w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yza+ZbtARMNePgHQChbCdGIO3/Zobj42DSvSvLzwuKkMVItaJpO
+	kC5nKdRvIpwtNOs7t9FiklQ1lSRHER+mA76tnrqZCBsIZWYMJrEGgvpgt35Mv1rlvLSX+b1JKNa
+	zQSOIpnLRhkeoInvOKDe+N7us20ECpZcx8fAxcUZT97dfaosBGy8mPHh56PGv
+X-Gm-Gg: ASbGncvgbGfipt2HZ7lu0hHchcxGsWF6lBZeBGIe2vWYQ2JtmTH45L2T4d3hLCwKqtO
+	AiHpFO826npt9Mb0A+TLKo7DcVLhogLvWb9FBYdDSGPfQwcGPFpsdwuIpvpQvzkNJnQi/z3NufF
+	C2Llr3CFmPkUxSt0mcYiHCfspCK8ttRLItLCz+lcNYIL3qn8zIBqVPNIWrPcpbpuKyXDDCykjWM
+	CLmNqiRRQcLV+0umCvhl3VA2CHWkor/3Fl4+KaC64e4raF3NxNMvCRnV/1q4v6p9WMzTF6GdtTs
+	lzFaHMu9vKgqVpqbpfJqzH3xUzVndD6B0NEaUnWG7cA/pQCU/AJtjjTN
+X-Received: by 2002:a05:6a00:13a4:b0:730:8768:76d1 with SMTP id d2e1a72fcca58-73426d815ccmr10663210b3a.19.1740213477692;
+        Sat, 22 Feb 2025 00:37:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHIHnCmIVk5lXxDmvm0NE0c2IZpd4cv0ovJ3p6kbDJr3zaOF9kjL7wlqzpzzQLJkJwekp9+ZA==
+X-Received: by 2002:a05:6a00:13a4:b0:730:8768:76d1 with SMTP id d2e1a72fcca58-73426d815ccmr10663193b3a.19.1740213477400;
+        Sat, 22 Feb 2025 00:37:57 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73269fa358dsm13396189b3a.91.2025.02.22.00.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Feb 2025 00:37:57 -0800 (PST)
+Date: Sat, 22 Feb 2025 16:37:53 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Daniel Vacek <neelx@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs/314: fix the failure when SELinux is
+ enabled
+Message-ID: <20250222083753.wvdw2quokicxdqoz@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20250220145723.1526907-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] btrfs: prepare subpage.c for larger folios support
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, WenRuo Qu
- <wqu@suse.com>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1740043233.git.wqu@suse.com>
- <1399d0f444eb0dfcc391c430193ccd8649ff2c90.1740043233.git.wqu@suse.com>
- <152ee58c-0ebe-4e58-a0a1-94e8c9c51d6d@wdc.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <152ee58c-0ebe-4e58-a0a1-94e8c9c51d6d@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pTJ7tqjPz8YLgZRu/TAAtsRP4ZoV9vl1hXSu0wqzhvM1i6hYZrB
- 6FlHjtHALqCXuwKyT7gAeIPX9OFRYFdHMMauDZFSA/KsAf7HwDp3EmmTPMPm8uDxOyGr0pi
- c2wjIZhCYLv8Lh9rpM9OChbxahpLIm0TDKavn3rMUYleLkW8WfNjpGFw/IUgyMyQBNv5esS
- eu7TuHgOBE19fAdm0IRsg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:F7rP+uPEyxM=;e8goB7cxjx4Bhdn+Nm5WVgiWl4q
- iuR0sJP+Fd9lIBRoFpTQcyB4mncG+49orGMCrBDrNjLzZVZ238GdBx1drAUYov+kMtADiWbvU
- dkMjVKCzirRL9yFQr5TUWOZ5jFM9MVHiPlX7tDaKzDvJeQcVLu9SbXi8mx7TLN83NiRo5+1HT
- 2pT1jUp0jmDQ7PWW07hivLfbH2evvdUoE1A2qQuOvW9Na4Z1Y37+7kQ4WaMp8eXSyOyqnGvPE
- m9mIfppG3moqgGwhuH1w4lCk8gmH9VuaQfx6G2SWZac1bkq2RLzaBDi09cHXwECILzuSQiep5
- fBN0tvpKs+Gn1NwxiCBBv5u4OUa1cuXsJKkmgGAOSO5hcpTGjxxZ5+cGLfikpXWZMVfUeTnuL
- baeIAauEi8XLfqhsUom4AksC0LuAkwWJrQ0DfT9AZIG1Gx81nNNVGfK42WX1BjYfusfZ8QVaK
- /8H92VAplE5DASRBf1tNTEEZu9z+i9RPhSpKuJrtrDcuJoIEeh4z70P8aysUCQxRHxwEDN/aF
- ZqnkVY4/qgAABDxv39lo5JPmg2JJ4uyQ+F6jkbeEVMwfR/3RkhpU0K2HzKdwWQ0Al0MQ8RXOK
- lEbctEX6AMU+PBkNEn/SIwHXr0vgr8s4Ar+6a08w2+bBEahX+CsyR3mRKcR9L/kErkC4DCuJN
- o9h+EG4WRpvCUJXXAQkkzqJIGKu0lsNPzj1W7SA/uXMMukM8nssyo0k9NLAVNOvrIf+gR/obH
- eluW9+MwNqcbY7GKnQqbNIxnLQKTzgyiK0tcrKQzraI/+KKoPLSzVFBmDP4iwvv2QpskIDFRd
- lK9J/Xnnrs++XWHjQNnbS6FhxRaeEbJxR3CGGb9hedhpP9JOVGR5e7vHqvkzX4C4+fWmZspuk
- vpIfN4nEpvk0QXzspa5ulvhs7fQliK6EBAddTwQR4NDNzXMrQbm2kFUX+wr55MHf1LgfZhYye
- qDTqhtH6/jO075O8KiYpB0NpMVd8HTAOp1DJtQd+QEJUl7tUldiUocFU+q0z2tyec7Vv9ISTP
- wGms/hLrObQUrDaBi3HblzH9hRqkkIZUvICRZbFXgnTO9Iy4vayQjp9gny4CATOJU7RZdnucg
- Y0YDCwrDWIaGd0Xh4YB0x8X/AVGw4ryTtnoSwZ1iLmtut1iC2w35nI7PTxxZPDEk5vk+G6CRW
- zHtwhnNMJTviytKM4YpeWof6AtDMZneRcbKhZ6MNVH701GJCq+naR5FFn/YX+dB15MIkeamO/
- EWFCUKPxcwjRuZ3OL+LrAsmQkvD9afU3M+o4oGjJdG4k6jrjZlyYvHyMKfIC7lI/GoQE6wv5k
- ly8JDM49EE6/GhzoQnQIdq1obP8ITn067qzNhLupUyeUxhJ3KXsQdrAS4PeI35Gw/OgMgiIv3
- 9Oq8K3PljvVL0rJ1/ufwc4rqiUX5H40HBaJVg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250220145723.1526907-1-neelx@suse.com>
 
+On Thu, Feb 20, 2025 at 03:57:23PM +0100, Daniel Vacek wrote:
+> When SELinux is enabled this test fails unable to receive a file with
+> security label attribute:
+> 
+>     --- tests/btrfs/314.out
+>     +++ results//btrfs/314.out.bad
+>     @@ -17,5 +17,6 @@
+>      At subvol TEST_DIR/314/tempfsid_mnt/snap1
+>      Receive SCRATCH_MNT
+>      At subvol snap1
+>     +ERROR: lsetxattr foo security.selinux=unconfined_u:object_r:unlabeled_t:s0 failed: Operation not supported
+>      Send:	42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/foo
+>     -Recv:	42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/foo
+>     +Recv:	d41d8cd98f00b204e9800998ecf8427e  SCRATCH_MNT/snap1/foo
+>     ...
+> 
+> Setting the security label file attribute fails due to the default mount
+> option implied by fstests:
+> 
+> MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/sdb /mnt/scratch
+> 
+> See commit 3839d299 ("xfstests: mount xfs with a context when selinux is on")
+> 
+> fstests by default mount test and scratch devices with forced SELinux
+> context to get rid of the additional file attributes when SELinux is
+> enabled. When a test mounts additional devices from the pool, it may need
+> to honor this option to keep on par. Otherwise failures may be expected.
+> 
+> Moreover this test is perfectly fine labeling the files so let's just
+> disable the forced context for this one.
+> 
+> Signed-off-by: Daniel Vacek <neelx@suse.com>
+> ---
 
+Take it easy, Thanks for both of you would like to help fstests to get
+better :)
 
-=E5=9C=A8 2025/2/21 22:36, Johannes Thumshirn =E5=86=99=E9=81=93:
-> On 20.02.25 10:24, Qu Wenruo wrote:
->> For the future of larger folio support, even if block size =3D=3D page =
-size,
->> we may still hit a larger folio and need to attach a subpage structure =
-to
->> that larger folio.
->>
->> In that case we can no longer assume we need to go subpage routine only
->> when block size < page size, but take folio size into the consideration=
-.
->>
->> Prepare for such future by:
->>
->> - Use folio_size() instead of PAGE_SIZE
->> - Make btrfs_alloc_subpage() to handle different folio sizes
->> - Make btrfs_is_subpage() to do the check based on the folio
->
-> I personally would split this patch in 3 doing the above. Or at least
-> split out the brtfs_is_subpage() part in another patch.
->
+Firstly, SELINUX_MOUNT_OPTIONS isn't a parameter to enable or disable
+SELinux test. We just use it to avoid tons of ondisk selinux lables to
+mess up the testing. So mount with a specified SELINUX_MOUNT_OPTIONS
+to avoid new ondisk selinux labels always be created in each file's
+extended attributes field.
 
-Sure, and the next update will only be sent after all the dependency got
-merged into for-next branch.
+Secondly, I don't want to attend the argument :) Just for this patch review,
+I prefer just doing:
+
+          _scratch_mount
+  -       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+  +       _mount $SELINUX_MOUNT_OPTIONS ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+
+or if you concern MOUNT_OPTIONS and SELINUX_MOUNT_OPTIONS both, maybe:
+
+          _scratch_mount
+  -       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+  +       _mount $(_common_dev_mount_options) ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+
+That's enough to help "_scratch_mount" and later "_mount" use same
+SELINUX_MOUNT_OPTIONS, and fix the test failure you hit.
+
+About resetting "SELINUX_MOUNT_OPTIONS", I think btrfs/314 isn't a test case
+cares about SELinux labels on-disk or not. So how about don't touch it.
+
+If you'd like to talk about if xfstests cases should test with a specified
+SELINUX_MOUNT_OPTIONS mount option or not, you can send another patch to talk
+about 3839d299 ("xfstests: mount xfs with a context when selinux is on").
+
+Now let's fix this failure at first :)
 
 Thanks,
-Qu
+Zorro
+
+>  tests/btrfs/314 | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tests/btrfs/314 b/tests/btrfs/314
+> index 76dccc41..cc1a2264 100755
+> --- a/tests/btrfs/314
+> +++ b/tests/btrfs/314
+> @@ -21,6 +21,10 @@ _cleanup()
+>  
+>  . ./common/filter.btrfs
+>  
+> +# Disable the forced SELinux context. We are fine testing the
+> +# security labels with this test when SELinux is enabled.
+> +SELINUX_MOUNT_OPTIONS=
+> +
+>  _require_scratch_dev_pool 2
+>  _require_btrfs_fs_feature temp_fsid
+>  
+> @@ -38,7 +42,7 @@ send_receive_tempfsid()
+>  	# Use first 2 devices from the SCRATCH_DEV_POOL
+>  	mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
+>  	_scratch_mount
+> -	_mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+> +	_mount ${SELINUX_MOUNT_OPTIONS} ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+>  
+>  	$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | _filter_xfs_io
+>  	_btrfs subvolume snapshot -r ${src} ${src}/snap1
+> -- 
+> 2.48.1
+> 
+> 
+
 
