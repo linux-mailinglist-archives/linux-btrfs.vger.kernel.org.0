@@ -1,123 +1,174 @@
-Return-Path: <linux-btrfs+bounces-11736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11737-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC21A41A21
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 11:05:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A60CA41C22
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 12:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DC71784E4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 10:02:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B15017280D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 11:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B759D2528E5;
-	Mon, 24 Feb 2025 09:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FEC2586E5;
+	Mon, 24 Feb 2025 11:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mt7VpsZ5"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hUWX9m4r";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZfcGrq+h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33F724A055;
-	Mon, 24 Feb 2025 09:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50CA2586DC
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Feb 2025 11:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740391179; cv=none; b=cAprZK2UqoD+1BPejFidxX5I2FH5u/tiCjfOuP6pklcPhPzUDtlEzS3GZThGBXeBGefwmDFX3qrY2id/pIhAsQxm53mLZpi3PX+ntAV9Fy5mna852FDfe3xvA0H1bSdB/bdPieBPxo9pqaIN3Mt0br4SMVCV0PSfGkuev44or2I=
+	t=1740395430; cv=none; b=aHjCYLzKdvVopzcmMg75K5vCKY/pjqoQPaE+j1hkmv1L/xdLHQ1rNY5dALcmxwPX6HhFmfajvFDkefFPci8V7pJTmPx9A0XYszq50vtmtI4skWP8xUXfFSlKVaL9KYrxJ2KAhhk66ygBlsTkL25sfvsEDBwZa5EPqbG7UAsh43w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740391179; c=relaxed/simple;
-	bh=JD9u2n4cKf6e0QtZVKFcf81ujOiCIVUWgua9u8tSrsQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lQy6iA77gmatYXXSMYtpSuvNCd/rVzXhxhbUYVmsz2WIIwaqJ7M45F+/7TJZg20Zwc+DO9nOZTvLqbsDqWznxtWZvBeBXb1PyYwE48PAqgtg9DK9uO1YHgj49NkCJbdmG8k/sG3qKeT/ebyPnGa2V2gLio64CnX22/Fvtw1zaq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mt7VpsZ5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A77ACC4CED6;
-	Mon, 24 Feb 2025 09:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740391178;
-	bh=JD9u2n4cKf6e0QtZVKFcf81ujOiCIVUWgua9u8tSrsQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mt7VpsZ5j8y+PBbwYsYxpNA4RJWvvA86wI3pBKKsFN2p1OtYFIX/WL9KHHGPTlQLY
-	 52pWQBBd//obrDtblygqoNbJ9zWGZh+bW2P1aL6wyviMk2W91vb2d6eRo42mzF0cqy
-	 c7UPaq+v+OFLs4wE1I+yiRco7x+9KcA6Ocg9imKZEa0eYR4Cl+tkp951nM4+DzRDOF
-	 E2JuLn1T5gLz6S4AIzUSn0o1kHXJfT0dh70kthXcYxSFs+D0duQg5bLOXzpyEnFfGu
-	 i7WsqbU00Q9+o5EErsXfrjKIHtnyx0+zb3WyCHthc7BRF02j6tnTaDmM35BDGzSPae
-	 cJ2eHlShHxx9Q==
-Date: Mon, 24 Feb 2025 20:29:34 +1030
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH 5/8][next] btrfs: Avoid -Wflex-array-member-not-at-end
- warnings
-Message-ID: <3c3310a23caf3d78ae62c85c9476d5dfe4a1f871.1739957534.git.gustavoars@kernel.org>
-References: <cover.1739957534.git.gustavoars@kernel.org>
+	s=arc-20240116; t=1740395430; c=relaxed/simple;
+	bh=MaK+9dzpXTdCxrrK95zGX5tmuTWvq7qwlKJ8ygzvM4A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Pshez05Zb3T9UEuyfyuyyDgHWo+nlpMRUCWO2aAqCAeIBZmjlLqO03PvYH8cyu9aydGrhw4bqZ5syAGGkP2BUbiGP3OehCgNp98S+jm6Ra+jnMwmZVnf2eUR8vE8p8ZQab11pGBUi7dLPMPXG3DvQ9Z3YSIzWlRRHDJxoCb5axQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hUWX9m4r; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZfcGrq+h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EF07021172;
+	Mon, 24 Feb 2025 11:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1740395427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AGP9p6hHUA44YJUqa+3WngVSQTioIJGu8qESyCnqfZ0=;
+	b=hUWX9m4r8ThpWTlyc+xVTpx5fUGIEfGOeRryXffCwAa0WYiInt3g7TQHR71VFYu488n8A8
+	Cn/uKRKDOJnv0PL+vGUBYmfNfba1ShdPL98/Z6ao6OXcrIpdt1QTUaREtPPjS2DMmSYj9U
+	XYSOuIKlmVmpls3BR9/MnR9RTTbeHuY=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ZfcGrq+h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1740395426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AGP9p6hHUA44YJUqa+3WngVSQTioIJGu8qESyCnqfZ0=;
+	b=ZfcGrq+hUrp06GvcDc9bEN/7ahRDIPo/VZNVG+5sys5oGjjSffyE2J6XvMGVT2j9+RxEWx
+	KRWbyVLaosNNxo3Iu0DvdGSu17srYZ/kUWT5RGRNBx6f9qzJAck4oTiNShqbtWdb3lVJCJ
+	5uwdPyXkD/oZZsv7ixOk6lnwYHnpdkE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D960613332;
+	Mon, 24 Feb 2025 11:10:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hAtiNKJTvGeCBQAAD6G6ig
+	(envelope-from <neelx@suse.com>); Mon, 24 Feb 2025 11:10:26 +0000
+From: Daniel Vacek <neelx@suse.com>
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Anand Jain <anand.jain@oracle.com>,
+	Zorro Lang <zlang@redhat.com>,
+	Daniel Vacek <neelx@suse.com>
+Subject: [PATCH v2] fstests: btrfs/314: fix the failure when SELinux is enabled
+Date: Mon, 24 Feb 2025 12:10:14 +0100
+Message-ID: <20250224111014.2276072-1-neelx@suse.com>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250220145723.1526907-1-neelx@suse.com>
+References: <20250220145723.1526907-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1739957534.git.gustavoars@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: EF07021172
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
--Wflex-array-member-not-at-end was introduced in GCC-14, and we are
-getting ready to enable it, globally.
+When SELinux is enabled this test fails unable to receive a file with
+security label attribute:
 
-Change the type of the middle struct member currently causing trouble
-from `struct bio` to `struct bio_hdr`.
+    --- tests/btrfs/314.out
+    +++ results//btrfs/314.out.bad
+    @@ -17,5 +17,6 @@
+     At subvol TEST_DIR/314/tempfsid_mnt/snap1
+     Receive SCRATCH_MNT
+     At subvol snap1
+    +ERROR: lsetxattr foo security.selinux=unconfined_u:object_r:unlabeled_t:s0 failed: Operation not supported
+     Send:	42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/foo
+    -Recv:	42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/foo
+    +Recv:	d41d8cd98f00b204e9800998ecf8427e  SCRATCH_MNT/snap1/foo
+    ...
 
-We also use `container_of()` whenever we need to retrieve a pointer to
-the flexible structure `struct bio`, through which we can access the
-flexible-array member in it, if necessary.
+Setting the security label file attribute fails due to the default mount
+option implied by fstests:
 
-With these changes fix 32 of the following warnings:
+MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/sdb /mnt/scratch
 
-fs/btrfs/volumes.h:178:20: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+See commit 3839d299 ("xfstests: mount xfs with a context when selinux is on")
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+fstests by default mount test and scratch devices with forced SELinux
+context to get rid of the additional file attributes when SELinux is
+enabled. When a test mounts additional devices from the pool, it may need
+to honor this option to keep on par. Otherwise failures may be expected.
+
+Moreover this test is perfectly fine labeling the files so let's just
+disable the forced context for this one.
+
+Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
- fs/btrfs/disk-io.c | 4 ++--
- fs/btrfs/volumes.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ tests/btrfs/314 | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f09db62e61a1..2fbaaa9ab3e3 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3963,7 +3963,7 @@ static void btrfs_end_empty_barrier(struct bio *bio)
-  */
- static void write_dev_flush(struct btrfs_device *device)
- {
--	struct bio *bio = &device->flush_bio;
-+	struct bio *bio = container_of(&device->flush_bio, struct bio, __hdr);
+diff --git a/tests/btrfs/314 b/tests/btrfs/314
+index 76dccc41..29111ece 100755
+--- a/tests/btrfs/314
++++ b/tests/btrfs/314
+@@ -38,7 +38,7 @@ send_receive_tempfsid()
+ 	# Use first 2 devices from the SCRATCH_DEV_POOL
+ 	mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
+ 	_scratch_mount
+-	_mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
++	_mount $(_common_dev_mount_options) ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
  
- 	device->last_flush_error = BLK_STS_OK;
- 
-@@ -3982,7 +3982,7 @@ static void write_dev_flush(struct btrfs_device *device)
-  */
- static bool wait_dev_flush(struct btrfs_device *device)
- {
--	struct bio *bio = &device->flush_bio;
-+	struct bio *bio = container_of(&device->flush_bio, struct bio, __hdr);
- 
- 	if (!test_and_clear_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state))
- 		return false;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 120f65e21eeb..6eb55103b3d1 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -175,7 +175,7 @@ struct btrfs_device {
- 	u64 commit_bytes_used;
- 
- 	/* Bio used for flushing device barriers */
--	struct bio flush_bio;
-+	struct bio_hdr flush_bio;
- 	struct completion flush_wait;
- 
- 	/* per-device scrub information */
+ 	$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | _filter_xfs_io
+ 	_btrfs subvolume snapshot -r ${src} ${src}/snap1
 -- 
-2.43.0
+2.48.1
 
 
