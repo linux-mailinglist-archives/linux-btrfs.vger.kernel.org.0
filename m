@@ -1,183 +1,118 @@
-Return-Path: <linux-btrfs+bounces-11734-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11735-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85BECA4196F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 10:45:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B5BCA419A9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 10:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F994165EC7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 09:45:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43A06170897
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2025 09:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01612475D0;
-	Mon, 24 Feb 2025 09:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2747C24A075;
+	Mon, 24 Feb 2025 09:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zUhI3ofY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qQuuiImj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zUhI3ofY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qQuuiImj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u0usiYCP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62211241CA6
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Feb 2025 09:45:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B0423F439;
+	Mon, 24 Feb 2025 09:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740390316; cv=none; b=l+9e80zHr/AUd7XdZWPlq8RI+0MPWIdDj+AFmARe6AgB2U2BxMoI1ZXS4gdodpjYoMEr+9Epsgtm5ep4GoZR4iZKliBCC85XC5w9tZ6lG5sl8HJfjG4ngmn0emFsVXFGj4afKNyaeuFLvCFouTzADLlfmJaBISlNbd7MEDmxKUo=
+	t=1740390830; cv=none; b=FKo9mgqjY5DPjz/gh96jJuiBMyjiece+/hyoKr3LQZv69WTM64kqLLXsrATFFPGXFTA0tpmBof6z7dHfiaiS1DuZEzlh5++Y0W69UgzHcpukkZ9peNTFEN7giUq6kKlSg3e7AtrGkmQi9x7cfQTdPe2aVe0ni/2nPJhPFmjlIBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740390316; c=relaxed/simple;
-	bh=/y4a2t2D0Vi5lomJPcZZ9442t54hDvF7SExTVfrLLhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6Mqf9OMRgsyRv05NS0IKWHKFOaEmquDXRwUa+iCdt4RP8mwwnX19cfTY/y/7LTddC+QQ5lD3fVNPa7idUEizSWNUkVfJfFsEL9qRimP5QpOvayG8RzuxlZ4EZlwX+m1GsO887EBD+53LhhPSMk5+GEUDaaU7i49O/V/KmWfWWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zUhI3ofY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qQuuiImj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zUhI3ofY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qQuuiImj; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 65A8D1F385;
-	Mon, 24 Feb 2025 09:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1740390312;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yBLSS1gkJN060FTnQnccFnH/9i68QNBPjHnK3RxjUak=;
-	b=zUhI3ofYGISKLOqUBTksCS/SnsBs5FdUWUu9lDueZpSX6N4eu3qxJ/UbFYmldjd7rB26Nh
-	2UWXfNxfLQhhfBeTX835VJ837hRPAG1hMrxx0CxlunhNCKNnqpMmz7F5FH3Xg2TdTJERet
-	dj8WeOvireMhrX0Y8sIbU2j+BnWiFDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1740390312;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yBLSS1gkJN060FTnQnccFnH/9i68QNBPjHnK3RxjUak=;
-	b=qQuuiImjeepAYxUfzPrJissfvHFFycbxZOlxMcX439tvRooAKzev+NU6o41TByAy08gJQt
-	IHdBfDBBTxd9vMBw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zUhI3ofY;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qQuuiImj
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1740390312;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yBLSS1gkJN060FTnQnccFnH/9i68QNBPjHnK3RxjUak=;
-	b=zUhI3ofYGISKLOqUBTksCS/SnsBs5FdUWUu9lDueZpSX6N4eu3qxJ/UbFYmldjd7rB26Nh
-	2UWXfNxfLQhhfBeTX835VJ837hRPAG1hMrxx0CxlunhNCKNnqpMmz7F5FH3Xg2TdTJERet
-	dj8WeOvireMhrX0Y8sIbU2j+BnWiFDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1740390312;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yBLSS1gkJN060FTnQnccFnH/9i68QNBPjHnK3RxjUak=;
-	b=qQuuiImjeepAYxUfzPrJissfvHFFycbxZOlxMcX439tvRooAKzev+NU6o41TByAy08gJQt
-	IHdBfDBBTxd9vMBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 42C8B13707;
-	Mon, 24 Feb 2025 09:45:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id avoYEKg/vGeGagAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 24 Feb 2025 09:45:12 +0000
-Date: Mon, 24 Feb 2025 10:45:11 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Ma Ke <make24@iscas.ac.cn>, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, fdmanana@suse.com, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add a sanity check for btrfs root in
- btrfs_next_old_leaf()
-Message-ID: <20250224094511.GK5777@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250224075937.2959546-1-make24@iscas.ac.cn>
- <0d9f6477-04c2-486a-ae72-c39b6d235891@gmx.com>
+	s=arc-20240116; t=1740390830; c=relaxed/simple;
+	bh=g6VMlunQlRDJng03dDx4fAmN66ot/J1KNDpnUBk3Uyk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ulWgXpaoEulCWbVBF5Kty8v9E4VqgC7qZ4FSKPfInZenQ9negH3nbeiP1lXQq/1zmdIcBpvrPW8JTieXVHqbZbyElyOI9q1ZHTkFtcEr/8H5qE1jwNEZxE4B3eIdfRrIgFy/RqxlrfrJDCPOnI+VNwzXOJgikTcgeDhL4iq2pHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u0usiYCP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 349C1C4CED6;
+	Mon, 24 Feb 2025 09:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740390829;
+	bh=g6VMlunQlRDJng03dDx4fAmN66ot/J1KNDpnUBk3Uyk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=u0usiYCPpGjJz7W/r+tTDedwSQMO7Lzj2OGrQ7vpI1I6Ni/J58p4fjs01N0vVrCAy
+	 CupqoMmeyJpmyBT33Swem7HP4O4OA6qZfthw2HnsZgFr0H9T56aiYr5z8HSIvhJ3wo
+	 ILS61Ps7NSn2v37GJTsxM5FAS2tS1WmZhYCJYPxRjxaqBATn6A3KKZsis22HoJbvBC
+	 y5bUAgcJHr9xYjQfadxhzbrj9AfhEsQrt1QeJxY+PA7PsZYrl0y2GkNEOsO7eMJumX
+	 eTDcPsCHnH8iIhJ75t4YE7EeEjvUZNPoyVSCrYXZ1Xo9lYedRKjQFhXI8schHBm7m7
+	 B5W68rNG+/KDA==
+Date: Mon, 24 Feb 2025 20:23:38 +1030
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>, Carlos Maiolino <cem@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Chaitanya Kulkarni <kch@nvidia.com>, Coly Li <colyli@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-btrfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-bcache@vger.kernel.org
+Subject: [PATCH 0/8][next] Avoid a couple hundred
+ -Wflex-array-member-not-at-end warnings
+Message-ID: <cover.1739957534.git.gustavoars@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0d9f6477-04c2-486a-ae72-c39b6d235891@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 65A8D1F385
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmx.com];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
 
-On Mon, Feb 24, 2025 at 06:48:19PM +1030, Qu Wenruo wrote:
-> 在 2025/2/24 18:29, Ma Ke 写道:
-> > btrfs_next_old_leaf() doesn't check if the target root is NULL or not,
-> > resulting the null-ptr-deref. Add sanity check for btrfs root before
-> > using it in btrfs_next_old_leaf().
-> 
-> Please provide a real world call trace when this is triggered.
-> 
-> There is a prerequisite, the extent tree can only be NULL if
-> rescue=ibadroots is provided and the extent root is corrupted.
-> 
-> And "rescue=" mount options can only be specified for a fully read-only
-> fs (no internal log replay or any other thing to write even a bit into
-> the fs).
-> 
-> Previously read-only scrub can still be triggered on such fs, but
-> 6aecd91a5c5b ("btrfs: avoid NULL pointer dereference if no valid extent
-> tree") fixed that.
-> 
-> And if you hit such a case in real world, please provide the call trace
-> so that we know we're not missing some critical situations that extent
-> tree is accessed for read-only operations.
+This patch series aims to fix a couple hundred -Wflex-array-member-not-at-end
+warnings by creating a new tagged struct `struct bio_hdr` within flexible
+structure `struct bio`.
 
-Agreed, this needs a real way to trigger it. Some pointers do not have
-to be checked for NULL because it's guaranteed by some of the caller
-higher up in the call chain.
+This new tagged struct will be used to fix problematic declarations
+of middle-flex-arrays in composite structs, like these[1][2][3], for
+instance.
 
-Before we added the rescue options, the invariants were that the extent,
-checksum, fs_tree etc always exist when passed as pointers. The example
-fix 6aecd91a5c5b show it could be possible under some circumstances. So
-if a fix is needed btrfs_next_old_leaf() we also need to see how it
-could happen.
+[1] https://git.kernel.org/linus/a7e8997ae18c42d3
+[2] https://git.kernel.org/linus/c1ddb29709e675ea
+[3] https://git.kernel.org/linus/57be3d3562ca4aa6
+
+Gustavo A. R. Silva (8):
+  block: blk_types.h: Use struct_group_tagged() in flex struct bio
+  md/raid5-ppl: Avoid -Wflex-array-member-not-at-end warning
+  xfs: Avoid -Wflex-array-member-not-at-end warnings
+  erofs: Avoid -Wflex-array-member-not-at-end warnings
+  btrfs: Avoid -Wflex-array-member-not-at-end warnings
+  nvme: target: Avoid -Wflex-array-member-not-at-end warnings
+  md/raid5: Avoid -Wflex-array-member-not-at-end warnings
+  bcache: Avoid -Wflex-array-member-not-at-end warnings
+
+ drivers/md/bcache/bcache.h     |  4 +-
+ drivers/md/bcache/journal.c    | 10 ++--
+ drivers/md/bcache/journal.h    |  4 +-
+ drivers/md/bcache/super.c      |  8 ++--
+ drivers/md/raid5-ppl.c         |  8 ++--
+ drivers/md/raid5.c             | 10 ++--
+ drivers/md/raid5.h             |  2 +-
+ drivers/nvme/target/nvmet.h    |  4 +-
+ drivers/nvme/target/passthru.c |  2 +-
+ drivers/nvme/target/zns.c      |  2 +-
+ fs/btrfs/disk-io.c             |  4 +-
+ fs/btrfs/volumes.h             |  2 +-
+ fs/erofs/fileio.c              | 25 ++++++----
+ fs/erofs/fscache.c             | 13 +++---
+ fs/xfs/xfs_log.c               | 15 +++---
+ fs/xfs/xfs_log_priv.h          |  2 +-
+ include/linux/blk_types.h      | 84 ++++++++++++++++++----------------
+ 17 files changed, 107 insertions(+), 92 deletions(-)
+
+-- 
+2.43.0
+
 
