@@ -1,48 +1,48 @@
-Return-Path: <linux-btrfs+bounces-11808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80360A44D56
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 21:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA581A44D58
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 21:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F67D3B481C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 20:27:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 112393B4E2B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 20:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2272397B0;
-	Tue, 25 Feb 2025 20:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F7423A9AA;
+	Tue, 25 Feb 2025 20:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="G9tFph11"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Du6Fw81g"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F324E227BA9;
-	Tue, 25 Feb 2025 20:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8E3221733;
+	Tue, 25 Feb 2025 20:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740514649; cv=none; b=IIMaoZvygyMsO8y+6EaIy4EAAppCnKIanQY36txyYixOeANYF/Fd1CSD0gz4/HDKQjsYnvLvrg53IW9QmRcBnhrXNykE5HggBslir4uCibb+rHAHq3x+cZQsou8ieyDTt6vQuurwNLHvfmKDUMENuEU15D/EX6hOyVCL2IT6d/I=
+	t=1740514649; cv=none; b=gG2DkI++YbkdCAyzDlmdy0Y7aSgLL61Pji0i9iVXfKxgcWUPr6aYJtHT6zuqtKnv1CY/P0n4cSSnNOIjUuD1qJqeBl8ccPTT+LlHJ3NaqsRYkQhRYGdu1GKFGeP75JoQx720CtnXMQbv/FiQlQt1ERVhFeyBWVgLsvJ/yyvE8Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1740514649; c=relaxed/simple;
-	bh=ARNodVphMSmYDx+eWkaCgK8+RAgHwr265Z1HdvZRCSU=;
+	bh=qhLI3OtFbfHmMj7z1Bn39+DuvRHM3fli/+N6w1GqnCw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=N82LbKlKFl9DLiZF2UTOXdUdudpkoInhFTTvmpf3h5x9KBrFJEDTpPMJHbXPxHv1BNx7CtcHuIZy28fOBBPIoKYlMBjPC5MP/TNqNVRMCyElrRDviTkYXloEtlEjBgnMFuECpVm7A5dgmhiimloe6K1Fw72CXPNq+XYucSFxQzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=G9tFph11; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=JC2YuN0La186eau0EmfzXfaUdDcunabv8N9KamGHo/E+t+X79EQJ+zGv/QQTqbrSAohMgcL+ky3/bJsBAyZIFCAEAK5Kd8Zm5xLZyg/750ijJ/AoaYrfBoQlsE95zoTmGiooWTlSBq3eWUjcUbOjZ0ejFgr55gVCc+ElpbouyWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Du6Fw81g; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 2959A206ADE3;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 544A4206ADFB;
 	Tue, 25 Feb 2025 12:17:22 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2959A206ADE3
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 544A4206ADFB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1740514642;
-	bh=ho1p9T+EgqW5ri+TziTR9nEBpqCpp/MEy1wgOMQmOKY=;
+	bh=XNL3dldZNlw1Eq84meBUr//vKEng/ID/zFGHKMY53sg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=G9tFph11Fv4vR4hm6scJe7fKKxiuuiHwgM5dUJa9rcD0K6DazlUazY3gwz7F4CLY0
-	 n+x+Wn7TB7JHxrIDrlWf5FrXGMkHRBYm+gG42H30XGodgn7ZLnsU4+T9bbNcR1j28/
-	 i/uGrozSqAqsXekEKsNJKYeqEFawNklWw2krWhmI=
+	b=Du6Fw81gtR9lc6VxhG+uolWk6DNSsR0fD03V4uHvgstLN4C99mrYAdfHxBUoITNbw
+	 0dBuGVNQZXhzAmqB9swX2y81gcwwAgNvdFZl3mtEL75lM8WadHp0lYC+JXaZXEaD0T
+	 xEVN7fx6wsqh1SZPlLtM4UUNPYU6T4vw+KsVz5dg=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Tue, 25 Feb 2025 20:17:29 +0000
-Subject: [PATCH v3 15/16] platform/x86: thinkpad_acpi: convert timeouts to
+Date: Tue, 25 Feb 2025 20:17:30 +0000
+Subject: [PATCH v3 16/16] RDMA/bnxt_re: convert timeouts to
  secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -52,7 +52,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250225-converge-secs-to-jiffies-part-two-v3-15-a43967e36c88@linux.microsoft.com>
+Message-Id: <20250225-converge-secs-to-jiffies-part-two-v3-16-a43967e36c88@linux.microsoft.com>
 References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
 In-Reply-To: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -113,22 +113,22 @@ expression E;
 
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index ab1cade5ef231e9a9a520bc0cca82384c911a331..d269e791f7fbc2a8ccf96f28cb476beccb57c9a7 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -8512,7 +8512,7 @@ static void fan_watchdog_reset(void)
- 	if (fan_watchdog_maxinterval > 0 &&
- 	    tpacpi_lifecycle != TPACPI_LIFE_EXITING)
- 		mod_delayed_work(tpacpi_wq, &fan_watchdog_task,
--			msecs_to_jiffies(fan_watchdog_maxinterval * 1000));
-+			secs_to_jiffies(fan_watchdog_maxinterval));
- 	else
- 		cancel_delayed_work(&fan_watchdog_task);
- }
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 17e62f22683b14a3571188e25fe0df3cbf1d8360..b1a18c9cb7f6c248548bc38fcb98781a3030a1b6 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -160,7 +160,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+ 		wait_event_timeout(cmdq->waitq,
+ 				   !crsqe->is_in_used ||
+ 				   test_bit(ERR_DEVICE_DETACHED, &cmdq->flags),
+-				   msecs_to_jiffies(rcfw->max_timeout * 1000));
++				   secs_to_jiffies(rcfw->max_timeout));
+ 
+ 		if (!crsqe->is_in_used)
+ 			return 0;
 
 -- 
 2.43.0
