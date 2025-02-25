@@ -1,49 +1,48 @@
-Return-Path: <linux-btrfs+bounces-11796-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20499A44CCB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 21:25:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9273DA44CC9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 21:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D7A216F277
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 20:23:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39B583B440B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 20:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188872222DD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847E5223311;
 	Tue, 25 Feb 2025 20:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="e42hykos"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="NUya4tRa"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4896F21018A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6FA1A2C0E;
 	Tue, 25 Feb 2025 20:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740514643; cv=none; b=RXuYDc/UiVy1QAb4xsWcPMbT3lGLyotIlBshBD/yTECrXd7mC8PrClI9V2vhzgH1/428n2xwLMNB3PQPjztlMv3TPJbw7sahPB9nkhLUygwx8T2lf1icDdmXkfnWDqec0fjM+CjwnuPldsguK2TaJmX3M9BMtAo4+Uh1AwZWrEs=
+	t=1740514643; cv=none; b=Oc/WMax5YoJlGCe7uMBmIn1+pXTRBc292p1SlgVNZ9nj7emo+Mj3YQ6/urKjxNiGYRVaJAJxTz4JuCvqWXib6rXxNst9NsYqvbO7CXNp5YNwbgJ6McNqCRSC0t/CIFuscLPraOKXaIY25wW6tOE3FlOmOmYVksYwKnlRF8CQa5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1740514643; c=relaxed/simple;
-	bh=+cU0DWPo0vz8Qca/p+dXRSSwOpzzEEmi5GyLpCHivtU=;
+	bh=oohMgc+MnzzkoDt/ye5H74UpizAN/FAZZEy+OqzbjMU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=di8HOSYjWUv5J4Wda2XOAqxKKBInv9XLXl+tWxFrHX3NiZSMBMOX7Yff5ZeZcxsTDgCuQ8wMEQ+E9SH8bpCPldoAH927eQo61pbsrvib60HLnnwT2rJiB8Nh5aU53uS74RU4Y18c9qzvTvEd9ydQCM0/MiaWpa/i2zNTd7goVuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=e42hykos; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=FXOjJ13vLPr8sa2BfkqzrH5wMA6qQa1m2+DLHiRE3qaBuUVXTppIjH1Q7LA4FaLsyaXVv7KVMOdryVUwR8Z1ewW1MMgd3tgbCAQchRVW/AVSn/Qpev69ip8jF4sfy2zjDm9Nam+yowPgFGrFe34hX6KU+iWOK521JGS7iXEGSOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=NUya4tRa; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 1F342203CDFF;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 45AC820460A7;
 	Tue, 25 Feb 2025 12:17:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1F342203CDFF
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 45AC820460A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1740514640;
-	bh=KYPN268bDbdUIUQETKGlB40kZ2e2KCK68/xpxhMiE60=;
+	bh=VGzSq/vFDjX4bdM3inKgi/ZFFDhHhBOzDHEuBXOOojs=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=e42hykosxujhPhv78giqAldREjaCd3tOogFdPdzoqAYHeLsN/ZNksfZFwl/WtAZQB
-	 XiF+xYeoTrVtF5AAhyZwWPDpveaqk+oc2J+05Jy4aLPcUnA1GUi/8dla7xvl3N8/O7
-	 MmnJD7+9WUmiZmh++Xb1njp/a3RFDwYsLoo+1ke4=
+	b=NUya4tRaF9277cBwhYqQO7yzS8lMnqfHV5bhsseG/CtxWPz/gV8ztZR14fqeo6LgV
+	 741al7zU+/EmCxYJ5lbwC/kdZB/J4wUtoYc96e0caxkwVbHT9BUlIVjAK1s/XVAu/j
+	 GKc43d43v39nGwyqXko3AU4FfwpCRelgSKOuWoY0=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Tue, 25 Feb 2025 20:17:17 +0000
-Subject: [PATCH v3 03/16] accel/habanalabs: convert timeouts to
- secs_to_jiffies()
+Date: Tue, 25 Feb 2025 20:17:18 +0000
+Subject: [PATCH v3 04/16] ALSA: ac97: convert timeouts to secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250225-converge-secs-to-jiffies-part-two-v3-3-a43967e36c88@linux.microsoft.com>
+Message-Id: <20250225-converge-secs-to-jiffies-part-two-v3-4-a43967e36c88@linux.microsoft.com>
 References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
 In-Reply-To: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -91,7 +90,8 @@ Cc: cocci@inria.fr, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org, imx@lists.linux.dev, 
  linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
  ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org, 
- Easwar Hariharan <eahariha@linux.microsoft.com>
+ Easwar Hariharan <eahariha@linux.microsoft.com>, 
+ Takashi Iwai <tiwai@suse.de>
 X-Mailer: b4 0.14.2
 
 Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
@@ -107,70 +107,30 @@ expression E;
 
 -msecs_to_jiffies
 +secs_to_jiffies
- (E
+(E
 - * \( 1000 \| MSEC_PER_SEC \)
- )
+)
 
+Acked-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- drivers/accel/habanalabs/common/command_submission.c | 2 +-
- drivers/accel/habanalabs/common/debugfs.c            | 2 +-
- drivers/accel/habanalabs/common/device.c             | 2 +-
- drivers/accel/habanalabs/common/habanalabs_drv.c     | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/ac97/ac97_codec.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/accel/habanalabs/common/command_submission.c b/drivers/accel/habanalabs/common/command_submission.c
-index 59823e3c3bf7a4fafc0b112fd7b4b2209149973c..dee487724918554c24c3e78df4e8715dd1c73acd 100644
---- a/drivers/accel/habanalabs/common/command_submission.c
-+++ b/drivers/accel/habanalabs/common/command_submission.c
-@@ -2586,7 +2586,7 @@ int hl_cs_ioctl(struct drm_device *ddev, void *data, struct drm_file *file_priv)
- 		cs_seq = args->in.seq;
- 
- 	timeout = flags & HL_CS_FLAGS_CUSTOM_TIMEOUT
--			? msecs_to_jiffies(args->in.timeout * 1000)
-+			? secs_to_jiffies(args->in.timeout)
- 			: hpriv->hdev->timeout_jiffies;
- 
- 	switch (cs_type) {
-diff --git a/drivers/accel/habanalabs/common/debugfs.c b/drivers/accel/habanalabs/common/debugfs.c
-index ca7677293a55822f703a3a1cbf947c4c44fdc569..4b391807e5f2e2a2570a38b9dfdf6be4299dbfb6 100644
---- a/drivers/accel/habanalabs/common/debugfs.c
-+++ b/drivers/accel/habanalabs/common/debugfs.c
-@@ -1403,7 +1403,7 @@ static ssize_t hl_timeout_locked_write(struct file *f, const char __user *buf,
- 		return rc;
- 
- 	if (value)
--		hdev->timeout_jiffies = msecs_to_jiffies(value * 1000);
-+		hdev->timeout_jiffies = secs_to_jiffies(value);
- 	else
- 		hdev->timeout_jiffies = MAX_SCHEDULE_TIMEOUT;
- 
-diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/habanalabs/common/device.c
-index 30277ae410d4b742ffb7bddc35498564ff96fe62..68eebed3b050f72f81e55b86da869b56b4cdeadf 100644
---- a/drivers/accel/habanalabs/common/device.c
-+++ b/drivers/accel/habanalabs/common/device.c
-@@ -2091,7 +2091,7 @@ int hl_device_cond_reset(struct hl_device *hdev, u32 flags, u64 event_mask)
- 	dev_dbg(hdev->dev, "Device is going to be hard-reset in %u sec unless being released\n",
- 		hdev->device_release_watchdog_timeout_sec);
- 	schedule_delayed_work(&hdev->device_release_watchdog_work.reset_work,
--				msecs_to_jiffies(hdev->device_release_watchdog_timeout_sec * 1000));
-+				secs_to_jiffies(hdev->device_release_watchdog_timeout_sec));
- 	hdev->reset_info.watchdog_active = 1;
- out:
- 	spin_unlock(&hdev->reset_info.lock);
-diff --git a/drivers/accel/habanalabs/common/habanalabs_drv.c b/drivers/accel/habanalabs/common/habanalabs_drv.c
-index 596c52e8aa266bf48e2be45e719adb202604577b..0035748f3228246da235f227b2cf3939d64af350 100644
---- a/drivers/accel/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/accel/habanalabs/common/habanalabs_drv.c
-@@ -386,7 +386,7 @@ static int fixup_device_params(struct hl_device *hdev)
- 	hdev->fw_comms_poll_interval_usec = HL_FW_STATUS_POLL_INTERVAL_USEC;
- 
- 	if (tmp_timeout)
--		hdev->timeout_jiffies = msecs_to_jiffies(tmp_timeout * MSEC_PER_SEC);
-+		hdev->timeout_jiffies = secs_to_jiffies(tmp_timeout);
- 	else
- 		hdev->timeout_jiffies = MAX_SCHEDULE_TIMEOUT;
- 
+diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+index 6e710dce5c6068ec20c2da751b6f5372ad1df211..88ac37739b7653f69af430dd0163f5ab4ddf0d0c 100644
+--- a/sound/pci/ac97/ac97_codec.c
++++ b/sound/pci/ac97/ac97_codec.c
+@@ -2461,8 +2461,7 @@ int snd_ac97_update_power(struct snd_ac97 *ac97, int reg, int powerup)
+ 		 * (for avoiding loud click noises for many (OSS) apps
+ 		 *  that open/close frequently)
+ 		 */
+-		schedule_delayed_work(&ac97->power_work,
+-				      msecs_to_jiffies(power_save * 1000));
++		schedule_delayed_work(&ac97->power_work, secs_to_jiffies(power_save));
+ 	else {
+ 		cancel_delayed_work(&ac97->power_work);
+ 		update_power_regs(ac97);
 
 -- 
 2.43.0
