@@ -1,256 +1,307 @@
-Return-Path: <linux-btrfs+bounces-11749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC12BA431D0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 01:20:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F110DA43635
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 08:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 069831897FDF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 00:20:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE5D16CAAB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 07:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B604C83;
-	Tue, 25 Feb 2025 00:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2727A1DB15B;
+	Tue, 25 Feb 2025 07:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SXGLxi8b";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="RUvPt2mJ"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=merlins.org header.i=@merlins.org header.b="lQEdRQd4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB501C27;
-	Tue, 25 Feb 2025 00:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740442831; cv=fail; b=Eyc0vCv6BMLOyVWpQvtFOWYsUhoapyRXBQnzI3PKKSe+DNgQrCl100QuMoHp8n4cPiP1vLgho5lg48YQM5i3W+2k9Iu/EAta888dA/BtnxflCRcelY6o/knoRMfkO4sQmjKptn3WNaljB34wdl186VnDM8vzfJjqV6yrgrxFgF0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740442831; c=relaxed/simple;
-	bh=xHIkn9THDVpfvRtE13eGwSC4GgEJeldxxjZ2VnnKFs4=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=adCOvXX72qT5NK42tpxSemUhIiuFwNfFMMDRuULAsGy4CE/tHTUey5IuXXcIcoffwl6C90PMQ8viYEuowKUnyurQA/f3vhTOWiOE8loNChFdOSuVODmLB7G9JW6i5y2oRbOzShGiqQ/7X2rWA+vthDaTELa19gxxqLsvsK+16o4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SXGLxi8b; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=RUvPt2mJ; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51OMK3OS025137;
-	Tue, 25 Feb 2025 00:20:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=HooYHaE5xYCc6OyL4dKhIh84SiWa9CMH2ZlXapLV2ug=; b=
-	SXGLxi8bT7OAGQeBmzRjyKGKkZEnmQiELoGUVXIvCsDikroAo+MoNa3CWdKO1rF1
-	NcbDIDh9OeKdK6uQb8j6ImieGPOC1QvN2dwk98Dh2ZPS8fEU9mnolgyNOz5wF1tD
-	BcDwIMF2YojYKC70CgNMMkxNW/NVCxo4TQm7sbwgTZqU06LCEbDRVduCEWbyy8tC
-	SAadlEkZ71t4fHm68zB/HG4jlZ6TCOefr1d31jO3inPpA9AeA3NqEvqnwCsBHP8v
-	Y3wLPjOHDrYfOY3SZL8SbCL152BmnAbqTaNWAFts5od0BzHwROkaO+sgY0jGJi+7
-	Ci8pilYk3nyJQlTyDQWhRg==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44y50bkvsh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 25 Feb 2025 00:20:20 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 51ONqYhJ008174;
-	Tue, 25 Feb 2025 00:20:20 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2043.outbound.protection.outlook.com [104.47.70.43])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44y51eg130-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 25 Feb 2025 00:20:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DPzkM0tfpAJ6dZcU4IbHZmvz97iGmEz1IfS05BiHgQuYH7q/npCyAPMOLVdwmylgGU0dUzlh1oOH3wB98jlJZoY9fWYCAQMoPPn0cnbspNnkiYwXiIW70wpav100uZTUX+8IDlly79X1L0pn1IxcbRA9h+Q+legF3Ln97WATTtN0JHjnxVQox8onhf6uuLGpCdeNbzxHMgwif331Jm+qyYzsTJchznWzMf7FXQtcvWFdSQ9isFLV5IpVgRdMPNSqUaZABug0I3cMQVHnQvdOGR2CgtpIPepK1QelfICVyhfp7Et5U4WCHXNyhOS4lKcxkFY2KeJYzIND2sdVhIPrcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HooYHaE5xYCc6OyL4dKhIh84SiWa9CMH2ZlXapLV2ug=;
- b=OMWwlVTNsV47aw/hxQMOomjS4Y/qSqu/EMYHe/p8zgEGN6jPDgQqUfdQetyen59KFIH/eW1XwfFeixOfX48NfXXSVAimIi6kYFyEvr0zpuNiuMIdv0jh3rk8M0X9hcRz+0ll2M1qLt7PuS5e9yCf4YpqkU4wmntQN0zRC9JPbysZvYvX+h6NkuzpQuSEBzVTm2jeUKpCXtOSTFEkhB4CfLFBSn/YkoM091LUs+oFCBcc/GQZGytmZP5kyraryiyXBYf4bxr/rDXjCeZSMPdFEfUULIg4sKBJcCcu9xTAz6KdH9vE9jokbycTdWcBBHUqBb9WS6ndrhLleLbMOgNT1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HooYHaE5xYCc6OyL4dKhIh84SiWa9CMH2ZlXapLV2ug=;
- b=RUvPt2mJQ5S8RSJRCcqy9ojR7lpAtb/mgyDxZayEJFC99ENunbkVKHpdHdWmYcqenImXDUZPdffJsxaWLVqLaphcORcy62gwOPpTcaoRsd6WKqtDu6BBlbnVvwe9kJSlW3auPpaglRlpDLhFhchOvvi5aP/gW58IESerFiwlTbc=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by MN6PR10MB7468.namprd10.prod.outlook.com (2603:10b6:208:47b::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.19; Tue, 25 Feb
- 2025 00:20:16 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.8466.016; Tue, 25 Feb 2025
- 00:20:16 +0000
-Message-ID: <b297a34f-4c09-48bb-86a3-fea50c364ba8@oracle.com>
-Date: Tue, 25 Feb 2025 08:20:11 +0800
-User-Agent: Mozilla Thunderbird
-From: Anand Jain <anand.jain@oracle.com>
-Subject: Re: [PATCH v3 1/5] fstests: common/rc: set_fs_sysfs_attr: redirect
- errors to stdout
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, david@fromorbit.com
-References: <cover.1740395948.git.anand.jain@oracle.com>
- <e18babf503e66ce798c3df4353174afd4f771303.1740395948.git.anand.jain@oracle.com>
- <20250224181854.GB21799@frogsfrogsfrogs>
-Content-Language: en-US
-In-Reply-To: <20250224181854.GB21799@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0171.apcprd04.prod.outlook.com (2603:1096:4::33)
- To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D822571CD
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 07:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.81.13.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740468779; cv=none; b=MTMzyxVRC6LAd1Y2JzM84O+rOh3plfYS69jZxdazrbjySZ3R4k8A8YgMP8CgDKgkrcpRhYD0z2Vcl1msqRKAL3s+oPBefb+kciUGPxH/z2EMXG1i9plk+90QoXXz0rg+6gJpGerAUQ1AQI5fRRjzoTbtHCnjLZA5b1cnsNNhKCc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740468779; c=relaxed/simple;
+	bh=dG6yDhMAqsAmW9bmwPhUK7rRMnyIlCu6KcwiTxR19go=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HEGBZZtBFGcxWUVe1MAFIPNIx43SN9n7vcvrNbU9yMtqVilzy+LG0ieU+WEDqdekymJvCo8fHB4l0NWsjz4gZ0E9Ap9zrK4r5d/uxtOPa/Hym1bb1WBVslXSfxgADjjATl3e+2TmF11ZeR0m95plChL6XyO1b3ucwYCHmT7gt04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org; spf=pass smtp.mailfrom=merlins.org; dkim=fail (0-bit key) header.d=merlins.org header.i=@merlins.org header.b=lQEdRQd4 reason="key not found in DNS"; arc=none smtp.client-ip=209.81.13.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=merlins.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
+	; s=key; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=0G7B5jC6CBYK0FSgC3YGpv0ieeIZZ8j9d1q0Wis3kC0=; b=lQEdRQd4GW61ccI53D3XxcxQsZ
+	zkGNf6zMJBQQ5HphkD4K7iY6BarXISO+yEysIW3zesd4N04QuXN4LoQ7JVWubkoOXEBgdm0Vd3Dld
+	ekRyo7H/4ARbvF3hoP5riPsU2xbroYK8DOmUCvv6YvrpAG5A13kEk6ryVSmE95h0Not8TCnd3JuIY
+	q7hBX1fNC643OfrJlGQmZXepZ5z2mgSZd6yDfcWoNOcXuvf9FEhrqTmhFM4qVytr/mSryE4dNqGj6
+	WggXuPD9MNN+RP1RErAS3gdutbTbIdwh9zHPMD8lJ8Cf/9W1yumC8wNnI8WWY3fsKTAxBPkZnvJlp
+	GSY1jRSA==;
+Received: from lfbn-idf3-1-18-9.w81-249.abo.wanadoo.fr ([81.249.145.9]:52720 helo=merlin.svh.merlins.org)
+	by mail1.merlins.org with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+	id 1tmo4e-0003il-B4 by authid <merlins.org> with srv_auth_plain; Mon, 24 Feb 2025 23:32:51 -0800
+Received: from merlin by merlin.svh.merlins.org with local (Exim 4.96)
+	(envelope-from <marc@merlins.org>)
+	id 1tmpQu-007Jw4-16;
+	Mon, 24 Feb 2025 23:32:48 -0800
+Date: Mon, 24 Feb 2025 23:32:48 -0800
+From: Marc MERLIN <marc@merlins.org>
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc: To: Su Yue <Damenly_Su@gmx.com>, linux-btrfs@vger.kernel.org,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Chris Murphy <lists@colorremedies.com>,
+	Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+	Roman Mamedov <rm@romanrm.net>, Su Yue <suy.fnst@cn.fujitsu.com>;
+Subject: Re: BTRFS error (device dm-4): failed to run delayed ref for logical
+ 350223581184 num_bytes 16384 type 176 action 1 ref_mod 1: -117 (kernel
+ 6.11.2)
+Message-ID: <Z71yICVikAzKxisq@merlins.org>
+References: <Z6TsUwR7tyKJrZ7w@merlins.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|MN6PR10MB7468:EE_
-X-MS-Office365-Filtering-Correlation-Id: 06dffbc6-1fae-4746-d145-08dd55322d97
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cGdBTkVVbU5EY29rS1YwaTJDdUljZUU1THdLOVhtR0VIcm5pbGI0elVmdXJW?=
- =?utf-8?B?STdWVFdVb3dvL0tjZ1hkVWlHK2hFVXZqMUVKOUpSUVdnZlVxUjFLdWNvSWdJ?=
- =?utf-8?B?V0lXZzNJYnQxckVHWlJvS05xd1J5VmxTK0pCSlVYS0lwSFl0UkNSOGJwK0hm?=
- =?utf-8?B?MS95VnN0aEV6K3FKRXY3ZWNNRm56ckR1VndSTDlzc2dmMkZNdVVCeGhUZHlF?=
- =?utf-8?B?UWpCcDN3MVhQK0dPcEhDSlZkNHVnK1NEdDBaT09RZUIwVXJqNTVyMjQ2TGlN?=
- =?utf-8?B?eDloMlR2R0E2cnNjS1VwOEJFS1ptTTdkbVVQbitFZElielZLbW9ZQnBXUE5V?=
- =?utf-8?B?cHFnRmoxSmVOVjYwMHV1dm1zUHV4a1hDM3RPMDJLWEFBb09zaG5jdmJSWFBM?=
- =?utf-8?B?ZkV6NjlJdkV2WEZRclZTaGNCdWVuTHgyOHRrNjZMbUpsdlo0L1Q5ZUdOK2JH?=
- =?utf-8?B?elR0ZHYzSXN1UEJkb3Z3VUVEMnhwU0NBMzlYUFpkMEJoRElsM1RFc0o0VTJL?=
- =?utf-8?B?d3dNU1dQS09DNElzeW1ySkJiYS9hOEpjNjlYSm1yS2gvUFVyNitaWTBrZGlh?=
- =?utf-8?B?dmlNaE9TdG04NUkwRVZNUkNEbHRYTVZsZDVwRmV5RGh6OWF4d0Zma0tua2pP?=
- =?utf-8?B?YkxZOTczOFBoalNObS8vYkNoSzFHbmVaaExoQlBHKzdpUE9wL21JZXdPcjha?=
- =?utf-8?B?OWN5KzBlOXFEU041Vm5RTUpySng3TTJNOVVBdk8ydk4vQWFPZHZiRFQvQlpS?=
- =?utf-8?B?bE83M1ZaSkNqM2tiRG45YU1XWUErekszUzZJWXNSR3l5aWVIeXVNSWFpY01i?=
- =?utf-8?B?VjdGVnRkamErM0JoUndmK1FOMnMrMlh0ZmdPWWZGN3RvOFdsREdLTTVaZFVy?=
- =?utf-8?B?amUzY1kySERSSE9XRUJNd2xpeHVURzRTOStnNlpmMWZwejZ0VGw2SVlnc2ZO?=
- =?utf-8?B?MDVaMXdUZGt5SEdBYTZuWmgzMzFHRkh4MjloOVNnU1lrdVF0UFo5RFc1YVNZ?=
- =?utf-8?B?aUJOQ1EwaXZaUGpZOWR1NFJUUHRuaHlnZXVNTmlyMUQxUGVlbGpGang3eGRx?=
- =?utf-8?B?eWs2azV1T3pJaHVHd3p5R2N2RStSVTRpR3Vsa1pGUTFiTjhCdnZ5ZmJUMmtR?=
- =?utf-8?B?WnFZeXI3d2p4VGUzQ2hCcjZCQjgycVhvekRQV1E5YXlyR2VWZ3NWRG9hSlNK?=
- =?utf-8?B?UGxvd3dYaGlHMUV3Z2x1Z2I0d0ZXWjlreXNWZmVFVHlnMmJyblp6TXUxY3hh?=
- =?utf-8?B?OVZBTkh0SXVOZXV2cGx3aVZEMFRuQS9qVjhOMEo3dlVqTUE1Z09sYXhTSDRB?=
- =?utf-8?B?eXg0ZkpMejR0eTcvbDRPVzltNXlxbGQ3M3FBUCtsZkI0dHlNNjFxeUdiaERn?=
- =?utf-8?B?Q0Fad0ZTNnBjZGZrTkJKcWs4cnlsaDZEdDVxN2poeTlaM2NaeE5kemxxRTRt?=
- =?utf-8?B?dVJRMHExMnpyY1RnU1ZWTEM0eG12bEdBQ2JFY1ZJQnZlVHZsS3M4VVVoTTI4?=
- =?utf-8?B?L2kzTHRGRWRyWExMRlRhMFhmN0M3UWtpMitoU2hkWTEvVTEvSGszT25hcENK?=
- =?utf-8?B?VGIxcGV3cEpoVElRMWRockl2aHZZS3dKZ0s0SmVXKzMraGVzSFNBalpKS2lI?=
- =?utf-8?B?Y0ZEUytXUWpJRkRyQVNDLzRyd0FlUkVDblFzSUJEZzlvMjIzTmZObXRvbm1X?=
- =?utf-8?B?citLTGVhVDlxVElhU204Wk9zaUVTdm1mYWVKeER2c1NVM09nYzBWWWdXaFYw?=
- =?utf-8?B?NUZBVEF3cWZoQVJCanZ2ZFl6d0RGSzVsU3lKSVMwalFSaE5MR1ZFTCtuT055?=
- =?utf-8?B?MWJIUHMyMTlCaDVQTHN4TkNIUGVhcVVNbThhOWVwRzl4LzdUbHZGTUdXZFRJ?=
- =?utf-8?Q?OaLP8h0DbA5ks?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SDZTbThpK0ZFZ29JTW50SDNOZVQrdWZsb2lyd2dBZnpIV1ltejBLTXhUSlBB?=
- =?utf-8?B?OUxLYmQ2dTd0MGJ1eEZ4UG1oY1ZSQ2lzTk9xajhuZnNKL1YzM2JCR1JIdDVt?=
- =?utf-8?B?V2k1Z2FuQ2NxQWVhWGRmZEJvNjJlR2tHbm83Q3AvYURXRDRqZkl5OUdxdVMr?=
- =?utf-8?B?S2xJRTI4NXBjSHlIQjlYVGlJMGR1SkdKcDJjYUhINzcxR1ByNTRPSlJZMWxB?=
- =?utf-8?B?TzFKeEZyeWlrcmxZRnZaLzNPL2tYejF4UEQ2YSsxTUlubGY5azZTc3ZvZS9H?=
- =?utf-8?B?NWJ0OGxVUTM5MWhGQi8waWZYaXdVajJFZThmNjZJa2IxWE12M1ZNNnlVYm5C?=
- =?utf-8?B?dXhGdm5aUGhtWkIyTmNpcEh3ODlBcjI0dk80U0NMMmJiTXV3UVBJQjlBTUZj?=
- =?utf-8?B?cStvTmNnb0ZYYnZndVprMW41N1BJSWIvMUphN2kyd01kTG45L3REQVB6VVVu?=
- =?utf-8?B?ek9oMDVFZEVOa0lDYkRFTWE5UnhMMVJjMVhOZUpZUitpV3BDSEREV1FNZ3g2?=
- =?utf-8?B?SXc3RHh6NnBZZ0VkY21Cck1xTnJUUXk2R2tHUmtYRDdvWSsxbVRQcWJoa1Ro?=
- =?utf-8?B?bFN3ZHhnMG9hMHlYR0M0RnlGUldDaEpiamgvejhwVVNqWVBLWktkL0p4dmFV?=
- =?utf-8?B?YTVuNS8xcGZNN1F1aVF3U2k1NU1IS2JCb0oybW9Zc0Uza3JjdW9QbEQ1UzRJ?=
- =?utf-8?B?aVh6c2RnUkZNVHRDaWlyZTNteFVnYno0NXZVNTR2bjdKYW9GWk1iU04xdmFs?=
- =?utf-8?B?OUhjVU8zN2FmaTVsKzZleFByVmRFT1lEVUtnWW1wWGZ0WWdNZm9KWGJRT1I2?=
- =?utf-8?B?a2hDYitKMmZHWGhqWExUeXFnbzVzb1VWNWRtRlBoZStHWTUyb3JYUmlEMmgw?=
- =?utf-8?B?ekh0cmdtenhxVVpzMG1OYmlkYVoxN05zazFhc21yQ25sWHo4Z3hFMXJ1aG9P?=
- =?utf-8?B?Zm9Cc1U5V3BUWmpTTkplb2lzdW9UajNlbFNscmVkVDNQYmh1dE9ncjJyY1l2?=
- =?utf-8?B?Nzl4aVQ5WVBuTnU2WVRjUExsR2RrL0x1VFZvL3orbXdPWi9CeFU5aEhLQzg5?=
- =?utf-8?B?RzJtWVR0Q2VwREhtSHNFaGRhZzFRWkowR2pXUjR4eEZvaFBnbEFRcTByeGZM?=
- =?utf-8?B?ZE1WVmVua1RvMFcvRVU4UjRBcGx5a2NsM1Mvaiswb3lwbDI4ajZaMTFYeFc3?=
- =?utf-8?B?THAzWDFGelpRd0p5eGU2NUJ6Tlllc0JESVRxUzVWdmMyRVpGTnRET1NkWGVE?=
- =?utf-8?B?YlV6YkFUNW52cEh4V1M0WHgyUWZEUWJlLzY5RXphdzJ0Z0RBQVhJcnVnMW4z?=
- =?utf-8?B?bnFFRWhmL1dFNmw1TE9MRnY3aVpQTzRtNWJpY1hyUmw4WGd2SGZwcGcvVWpP?=
- =?utf-8?B?bkx4OVRTVFhPcWQ2TFJodC9QamhrNnptMkU0SDFJT0ROc3J0R3VER2Y1RzhC?=
- =?utf-8?B?d3JyVEpObTVicDRncitsZGtiTXZnWW94eDJ5cWlCaGdQTHB6dVcwRzdkYTYy?=
- =?utf-8?B?VlJua3N4U05sVGJ2dTBqUWJ0N3JDeWZkZzc1bFRUUG9xdzRWSXFsZVNXOVJC?=
- =?utf-8?B?R3pDL2RpTXRnMHpZZEFrbENqSTRvckpZYlhuVGRSc004TVZjeTlnTUc1WkNs?=
- =?utf-8?B?RFAyK29IdlJjUlh0UnV1Yll1NVFUS3FPanc4Y3VOYURTTlFaQTJrd0YvU3hk?=
- =?utf-8?B?SldyV2FkL3JGbFRXemRHWmRBWDk2RkwrZjlDdHgyRHMwTmg5c3cyTm1VL1VB?=
- =?utf-8?B?WGc0SkVYcnJ4K092Q0FaQUNodlJ5MVZqbmhxWTRQUDR1TTgySWRWOHpRQ1ll?=
- =?utf-8?B?NENEb1piN0FvajJZdmE0OXF1NjhmSW9oYTE2RzczT0hYandibmp5ZW0venM5?=
- =?utf-8?B?Wll0NEFuaDlTUVFZRlg5dUdFUzdBWW8wWFlXQ3JPWWFiQWVXbEkyTG4yR2Iw?=
- =?utf-8?B?amN3L1NWUjVCdjNoTjBvcTRvZ1JLeGFlYXlXbnFtVkZ4TDM4QWptNDh5RGxY?=
- =?utf-8?B?Ukl5dlUra0I3MFhhQTh6cGorODJ2UjJJd1J0R1l3RFdmdElRWXczMndBaE5J?=
- =?utf-8?B?dUZ6OW9heWdPYjVWWm9uVi9qR2NhdXU4MFBhQk42N0pnQWNTZ3VLbGVZNUlm?=
- =?utf-8?Q?vcM4O0te/+RqICpD5SfMRbLb2?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	gF/JfslYWv02j2tq3i/F4GrGPvgs0RM9quXlk23Oy3u+NMZJB4V92/xLznWCNUc6kZtDB0Rtaz2wRbqs8PBMmgzUVwztObcAai9giXjDdo9WOB910z+2YDfBlq7cgXDqDPmeO2Nw1uyMvO2+YW08kZd3dyXIBoI7YlRgzBpFhsGyQMhANDbusRIwBuzGzuPm/n+Ff9fiHPfkRXR3fVHUBSgupPFdVzWRMGA8BB8ACBjH96U33dkq3Ve+lEyHfTO0LFlTvrOJf64fCPkmtxzfxgpq4PRgMaE23pin7I61sFW/GB/OLd4dUO6N56YW4eJDFMBtORu95FleuaqEwTsLzlzYvQPd6zqBZC5jhVW9kMynJV0UqK4tv0Hr4AvEBtz/XMU8pQjw1GL/E8QNwhGUaucMqfTRApnCb14u/DY/ecBKoznFNdxBRHBjR3dgA1ud7D/eTLhmB4NMWf0R19Qx3g6NacIfSYcKmEeJmyiH32OXdxT/+h9YD67Hlp5RXFu+lfR49diSmDa8Z4+WkQXH6K2grXtcA48ig3fmx3nlfVNW2UzL5mFs5g8NIut2+tMUMcGUyMMSFjnt0mgngilipe6VsdwNbJwy7MPi2RkTW20=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06dffbc6-1fae-4746-d145-08dd55322d97
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2025 00:20:16.1994
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gzSOGWMN8AWyzSDxdrg2821zA6cBc58y0zD5fwJhll1P26ZwGlWmPfRMcMkMhFTiHh8yTlr/1BEtvn5a8o9tYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR10MB7468
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-24_11,2025-02-24_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 phishscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2502100000 definitions=main-2502250000
-X-Proofpoint-ORIG-GUID: 1ajIG2HEx8m5lxvs8540YzIv2X0Y9eQ0
-X-Proofpoint-GUID: 1ajIG2HEx8m5lxvs8540YzIv2X0Y9eQ0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Z6TsUwR7tyKJrZ7w@merlins.org>
+X-Sysadmin: BOFH
+X-URL: http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 81.249.145.9
+X-SA-Exim-Mail-From: marc@merlins.org
+
+Got no reply, but definitely an issue, so adding a few folks to Cc
+System has been working fine since then, but I have disabled nightly balance
+out of fear this will happen again.
+
+This is what I have nightly:
+# I'm told that proactively rebalancing metadata may not be a good idea.
+#btrfs balance start -musage=3D20 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
+# but a null rebalance should help corner cases:
+btrfs balance start -musage=3D0 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
+# After metadata, let's do data:
+btrfs balance start -dusage=3D0 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
+btrfs balance start -dusage=3D20 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
 
 
+Balance ended with btrfs_run_delayed_refs:2199: errno=3D-117 Filesystem cor=
+rupted
 
-On 2/25/25 02:18, Darrick J. Wong wrote:
-> On Mon, Feb 24, 2025 at 08:15:04PM +0800, Anand Jain wrote:
->> Redirect sysfs write errors to stdout as a preparatory patch to enable
->> testing of expected sysfs write failures. Also, log the executed
->> sysfs write command and its failure if any to seqres.full for better
->> debugging and traceability.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>   common/rc | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/common/rc b/common/rc
->> index cf6316a224ff..942e201649dd 100644
->> --- a/common/rc
->> +++ b/common/rc
->> @@ -5081,7 +5081,8 @@ _set_fs_sysfs_attr()
->>   
->>   	local dname=$(_fs_sysfs_dname $dev)
->>   
->> -	echo "$content" > /sys/fs/${FSTYP}/${dname}/${attr}
->> +	echo "echo "$content" 2>&1 > /sys/fs/${FSTYP}/${dname}/${attr}" >> $seqres.full
-> 
-> Did you mean to    ^ escape ^ these double-quotes?  Without it,
-> whitespace in $content might not be logged correctly.
-> 
+btrfs check says it's not
+sauron:~# btrfs check /dev/mapper/pool1
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/pool1
+UUID: 4542883b-d8bc-4d7f-8a2e-944dc355dc44
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 228820946944 bytes used, no error found
+total csum bytes: 219270232
+total tree bytes: 4539334656
+total fs tree bytes: 3719593984
+total extent tree bytes: 481935360
+btree space waste bytes: 1075469196
+file data blocks allocated: 15390875832320
+ referenced 290833076224
 
-Oh no! I remember fixing this. Looks like I messed it up during the rebase.
+Any ideas? this obviously caused downtime, but after the btrfs check saying=
+ I'm supposedly
+ok, I'm back up for now, hoping it won't happen again and hope is not a str=
+ategy :)
 
-I’ve fixed it locally and will wait before sending.
+Is it safe to run balance again? any idea why it failed?
 
-Thx.
+[1821331.015652] BTRFS info (device dm-4): balance: start -dusage=3D20
+[1821331.015805] BTRFS info (device dm-4): relocating block group 761212698=
+624 flags data
+[1821331.090338] BTRFS info (device dm-4): found 31 extents, stage: move da=
+ta extents
+[1821331.237707] BTRFS info (device dm-4): leaf 471333519360 gen 4808182 to=
+tal ptrs 168 free space 3533 owner 2
+[1821331.237716] 	item 0 key (350222417920 169 0) itemoff 16250 itemsize 33
+[1821331.237718] 		extent refs 1 gen 2907391 flags 2
+[1821331.237719] 		ref#0: tree block backref root 398
+(...(
+[1821331.238559] 	item 167 key (350225678336 169 0) itemoff 7733 itemsize 1=
+68
+[1821331.238560] 		extent refs 16 gen 4619087 flags 2
+[1821331.238561] 		ref#0: tree block backref root 398
+[1821331.238562] 		ref#1: shared block backref parent 737084112896
+[1821331.238563] 		ref#2: shared block backref parent 736609173504
+[1821331.238564] 		ref#3: shared block backref parent 471099588608
+[1821331.238565] 		ref#4: shared block backref parent 471017488384
+[1821331.238567] 		ref#5: shared block backref parent 470665625600
+[1821331.238568] 		ref#6: shared block backref parent 350806835200
+[1821331.238569] 		ref#7: shared block backref parent 350292066304
+[1821331.238570] 		ref#8: shared block backref parent 349856350208
+[1821331.238571] 		ref#9: shared block backref parent 153429573632
+[1821331.238572] 		ref#10: shared block backref parent 153014337536
+[1821331.238573] 		ref#11: shared block backref parent 152976048128
+[1821331.238575] 		ref#12: shared block backref parent 152753946624
+[1821331.238576] 		ref#13: shared block backref parent 152639225856
+[1821331.238577] 		ref#14: shared block backref parent 50782617600
+[1821331.238578] 		ref#15: shared block backref parent 394002432
+[1821331.238579] BTRFS critical (device dm-4): adding refs to an existing t=
+ree ref, bytenr 350223581184 num_bytes 16384 root_objectid 398 slot 51
+[1821331.238582] BTRFS error (device dm-4): failed to run delayed ref for l=
+ogical 350223581184 num_bytes 16384 type 176 action 1 ref_mod 1: -117
+[1821331.238584] ------------[ cut here ]------------
+[1821331.238585] BTRFS: Transaction aborted (error -117)
+[1821331.238593] WARNING: CPU: 1 PID: 2457672 at fs/btrfs/extent-tree.c:219=
+9 btrfs_run_delayed_refs+0x107/0x140
+[1821331.238599] Modules linked in: mmc_block exfat uinput rpcsec_gss_krb5 =
+nfsv4 dns_resolver nfs netfs sg uas usb_storage nf_conntrack_netlink xfrm_u=
+ser xfrm_algo xt_addrtype br_netfilter bridge stp llc xt_tcpudp xt_conntrac=
+k rfcomm snd_seq_dummy snd_hrtimer ccm overlay ipt_REJECT nf_reject_ipv4 xt=
+_MASQUERADE xt_LOG nf_log_syslog nft_compat nft_chain_nat nf_nat nf_conntra=
+ck nf_defrag_ipv6 nf_defrag_ipv4 cmac algif_hash algif_skcipher af_alg nf_t=
+ables bnep binfmt_misc uvcvideo videobuf2_vmalloc uvc videobuf2_memops btus=
+b videobuf2_v4l2 btrtl btbcm videodev btmtk btintel videobuf2_common mc blu=
+etooth nls_utf8 nls_cp437 vfat fat squashfs loop snd_hda_codec_hdmi iwlmvm =
+snd_hda_codec_realtek snd_hda_codec_generic snd_soc_dmic snd_hda_scodec_com=
+ponent mac80211 intel_uncore_frequency snd_sof_pci_intel_tgl intel_uncore_f=
+requency_common snd_sof_pci_intel_cnl intel_tcc_cooling snd_sof_intel_hda_g=
+eneric snd_sof_intel_hda_common x86_pkg_temp_thermal snd_sof_intel_hda inte=
+l_powerclamp libarc4 snd_sof_pci snd_sof_xtensa_dsp kvm_intel
+[1821331.238644]  snd_soc_hdac_hda iwlwifi kvm thinkpad_acpi snd_soc_acpi_i=
+ntel_match mei_hdcp mei_pxp snd_soc_acpi cfg80211 processor_thermal_device_=
+pci_legacy nvram tpm_crb processor_thermal_device rapl platform_profile pro=
+cessor_thermal_wt_hint processor_thermal_rfim snd_soc_avs processor_thermal=
+_rapl ucsi_acpi intel_rapl_common nvidiafb processor_thermal_wt_req intel_c=
+state think_lmi vgastate iTCO_wdt typec_ucsi snd_soc_hda_codec pcspkr proce=
+ssor_thermal_power_floor firmware_attributes_class wmi_bmof snd_hda_intel e=
+e1004 iTCO_vendor_support fb_ddc typec processor_thermal_mbox mei_me roles =
+intel_soc_dts_iosf int3403_thermal rfkill int340x_thermal_zone ac intel_pmc=
+_core intel_vsec tpm_tis tpm_tis_core int3400_thermal pmt_telemetry acpi_pa=
+d intel_hid acpi_thermal_rel sparse_keymap pmt_class acpi_tad input_leds ev=
+dev joydev serio_raw vboxdrv(OE) soundwire_intel soundwire_cadence snd_sof_=
+intel_hda_mlink soundwire_generic_allocation snd_sof_probes snd_sof snd_sof=
+_utils snd_intel_dspcfg snd_intel_sdw_acpi snd_soc_skl_hda_dsp
+[1821331.238682]  snd_soc_intel_hda_dsp_common snd_hda_codec snd_hwdep snd_=
+soc_hdac_hdmi snd_hda_ext_core snd_soc_core snd_compress snd_pcm_dmaengine =
+snd_hda_core snd_pcm_oss snd_mixer_oss snd_pcm snd_seq_midi snd_seq_midi_ev=
+ent snd_seq snd_timer snd_rawmidi snd_seq_device snd_ctl_led snd soundcore =
+ac97_bus configs coretemp msr fuse efi_pstore nfsd auth_rpcgss nfs_acl lock=
+d grace sunrpc nfnetlink ip_tables x_tables autofs4 essiv authenc dm_crypt =
+trusted asn1_encoder tee tpm rng_core libaescfb ecdh_generic dm_mod ecc rai=
+d456 async_raid6_recov async_memcpy async_pq async_xor async_tx sata_sil24 =
+r8169 realtek mdio_devres libphy mii hid_generic usbhid hid i915 crct10dif_=
+pclmul drm_buddy i2c_algo_bit rtsx_pci_sdmmc crc32_pclmul xhci_pci ttm mmc_=
+core crc32c_intel xhci_hcd polyval_clmulni drm_display_helper polyval_gener=
+ic usbcore cec i2c_i801 rc_core video ptp spi_intel_pci i2c_mux ghash_clmul=
+ni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 psmouse thunderbolt rtsx_pci =
+spi_intel i2c_smbus pps_core usb_common thermal hwmon battery
+[1821331.238731]  wmi aesni_intel crypto_simd cryptd [last unloaded: igc]
+[1821331.238737] CPU: 1 UID: 0 PID: 2457672 Comm: btrfs Tainted: G     U   =
+  OE      6.11.2-amd64-preempt-sysrq-20241007 #1 1a512c2db5f087f236d90ecfb3=
+0551fddcc51243
+[1821331.238740] Tainted: [U]=3DUSER, [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODU=
+LE
+[1821331.238742] Hardware name: LENOVO 20YU002JUS/20YU002JUS, BIOS N37ET49W=
+ (1.30 ) 11/15/2023
+[1821331.238743] RIP: 0010:btrfs_run_delayed_refs+0x107/0x140
+[1821331.238745] Code: 01 00 00 00 eb b6 e8 18 8e b7 00 31 db 89 d8 5b 5d 4=
+1 5c 41 5d 41 5e c3 cc cc cc cc 89 de 48 c7 c7 40 bb b7 86 e8 f9 0c 9f ff <=
+0f> 0b eb d0 66 66 2e 0f 1f 84 00 00 00 00 00 66 66 2e 0f 1f 84 00
+[1821331.238747] RSP: 0018:ffffaf1a6f167858 EFLAGS: 00010282
+[1821331.238749] RAX: 0000000000000000 RBX: 00000000ffffff8b RCX: 000000000=
+0000027
+[1821331.238750] RDX: ffff8fcf2f2a1848 RSI: 0000000000000001 RDI: ffff8fcf2=
+f2a1840
+[1821331.238752] RBP: ffff8fb06efb8150 R08: 0000000000000000 R09: 000000000=
+0000003
+[1821331.238753] R10: ffffaf1a6f1676f8 R11: ffff8fcfaf7d5028 R12: 000000000=
+0000000
+[1821331.238754] R13: ffff8fb146731358 R14: ffff8fb146731200 R15: 000000000=
+0000000
+[1821331.238755] FS:  00007fd91883d380(0000) GS:ffff8fcf2f280000(0000) knlG=
+S:0000000000000000
+[1821331.238756] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[1821331.238757] CR2: 00007e4901001000 CR3: 00000001c3cb6004 CR4: 000000000=
+0770ef0
+[1821331.238759] PKRU: 55555554
+[1821331.238760] Call Trace:
+[1821331.238762]  <TASK>
+[1821331.238765]  ? __warn+0x7c/0x140
+[1821331.238769]  ? btrfs_run_delayed_refs+0x107/0x140
+[1821331.238771]  ? report_bug+0x160/0x1c0
+[1821331.238774]  ? handle_bug+0x41/0x80
+[1821331.238777]  ? exc_invalid_op+0x15/0x100
+[1821331.238780]  ? asm_exc_invalid_op+0x16/0x40
+[1821331.238783]  ? btrfs_run_delayed_refs+0x107/0x140
+[1821331.238785]  ? btrfs_run_delayed_refs+0x107/0x140
+[1821331.238786]  btrfs_commit_transaction+0x69/0xe80
+[1821331.238790]  ? btrfs_update_reloc_root+0x12d/0x240
+[1821331.238793]  prepare_to_merge+0x4f0/0x600
+[1821331.238796]  relocate_block_group+0x113/0x500
+[1821331.238798]  btrfs_relocate_block_group+0x27a/0x440
+[1821331.238800]  btrfs_relocate_chunk+0x3b/0x180
+[1821331.238803]  btrfs_balance+0x8c1/0x1340
+[1821331.238805]  ? btrfs_ioctl+0x18db/0x26c0
+[1821331.238811]  btrfs_ioctl+0x2285/0x26c0
+[1821331.238813]  ? __mod_memcg_lruvec_state+0x91/0x140
+[1821331.238817]  ? vsnprintf+0x323/0x580
+[1821331.238819]  ? __slab_free+0x53/0x2c0
+[1821331.238822]  ? sysfs_emit+0x68/0xc0
+[1821331.238826]  __x64_sys_ioctl+0x90/0x100
+[1821331.238830]  do_syscall_64+0x69/0x140
+[1821331.238832]  ? __memcg_slab_free_hook+0xf3/0x140
+[1821331.238835]  ? __x64_sys_close+0x38/0x80
+[1821331.238838]  ? kmem_cache_free+0x336/0x400
+[1821331.238840]  ? do_syscall_64+0x75/0x140
+[1821331.238842]  ? ksys_read+0x63/0x100
+[1821331.238845]  ? __mod_memcg_lruvec_state+0x91/0x140
+[1821331.238848]  ? mod_objcg_state+0x19d/0x2c0
+[1821331.238850]  ? __memcg_slab_free_hook+0xf3/0x140
+[1821331.238852]  ? seq_release+0x24/0x40
+[1821331.238854]  ? __memcg_slab_free_hook+0xf3/0x140
+[1821331.238856]  ? __x64_sys_close+0x38/0x80
+[1821331.238858]  ? kmem_cache_free+0x336/0x400
+[1821331.238860]  ? clear_bhb_loop+0x45/0xc0
+[1821331.238862]  ? clear_bhb_loop+0x45/0xc0
+[1821331.238864]  ? clear_bhb_loop+0x45/0xc0
+[1821331.238866]  ? clear_bhb_loop+0x45/0xc0
+[1821331.238867]  ? clear_bhb_loop+0x45/0xc0
+[1821331.238869]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[1821331.238872] RIP: 0033:0x7fd9189564bb
+[1821331.238874] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 0=
+0 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <=
+89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
+[1821331.238876] RSP: 002b:00007ffd5896d7a0 EFLAGS: 00000246 ORIG_RAX: 0000=
+000000000010
+[1821331.238878] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fd91=
+89564bb
+[1821331.238879] RDX: 00007ffd5896d8a8 RSI: 00000000c4009420 RDI: 000000000=
+0000003
+[1821331.238880] RBP: 0000000000000000 R08: 0000000000000073 R09: 000000000=
+0000013
+[1821331.238881] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd5=
+896d8a8
+[1821331.238882] R13: 0000000000000000 R14: 00007ffd5896ee24 R15: 000000000=
+0000001
+[1821331.238884]  </TASK>
+[1821331.238885] ---[ end trace 0000000000000000 ]---
+[1821331.238886] BTRFS: error (device dm-4 state A) in btrfs_run_delayed_re=
+fs:2199: errno=3D-117 Filesystem corrupted
 
-
-> --D
-> 
->> +	echo "$content" 2>&1 > /sys/fs/${FSTYP}/${dname}/${attr} | tee -a $seqres.full
->>   }
->>   
->>   # Print the content of /sys/fs/$FSTYP/$DEV/$ATTR
->> -- 
->> 2.43.5
->>
->>
-
+--=20
+"A mouse is a device used to point at the xterm you want to type in" - A.S.=
+R.
+=20
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AA=
+F9D08
 
