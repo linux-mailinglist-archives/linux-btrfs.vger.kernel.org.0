@@ -1,70 +1,69 @@
-Return-Path: <linux-btrfs+bounces-11787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE393A44994
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 19:08:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24DFDA449F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 19:16:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E5EE189A5F2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 18:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79BB1866B86
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 18:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810A119D090;
-	Tue, 25 Feb 2025 18:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C891E19E804;
+	Tue, 25 Feb 2025 18:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CPlT9ZFF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GntMDpe6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C3CEEA9
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 18:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3511547F8
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 18:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740506635; cv=none; b=q9WFZI7HiMXna3Nu4dEk3B2CgBUd947tM0jtigKVFwiNc8lHFq9JWdwqbHTJnfZUX9nxl07ap4LSkT2iY6wGRuRp3/DymyhCJ3AMBjSGJWA3UxgKlzfs6BpwrtbXdxyMNtV7kIAq4YzzGVX97SdGSoMoZ5bURfOmo7ti4Qa/m6c=
+	t=1740507058; cv=none; b=b6EJrbh5RJAsO7wPcNRJS3hm/7IOy0WUNuu37d7UMFpi1e/4p/W1c8eLvVQXyzAFb3pzZuSraam5YsqR81UyDDgili2R9UHyukmo7aEX0Q76v7jwz3TeqouorDJ1/6arRS5iX3wvo32q4qbjf54StFQjes4q0nK5xuLPoIw27OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740506635; c=relaxed/simple;
-	bh=yrg/D9Y6gq43mD4DfnClM9Y7mUgc1Ayn4YHYGbD30Pg=;
+	s=arc-20240116; t=1740507058; c=relaxed/simple;
+	bh=XgA9a+QVdWC6mLf51VWck3+D8N8e7BP6vIsw97pRGNs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C8WBjSr/mfo0Qfq7/bkEPUTdz8AAHKEv2aQbL8vR3G8gfziCHnHbCu7ar13vMulAJHB5c0Q2qxDwnBqCgnm8vpqPQNR+yUrt8RfEYjm+YfW/6hmP3DLEI+iQqwsg5d2+5j0uHyOJcx4Q8bISmLpklt6pg2MvaP9ed7QftD3FSF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CPlT9ZFF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0AFC4CEDD
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 18:03:55 +0000 (UTC)
+	 To:Cc:Content-Type; b=nxBDT5XeFSi4Jjm4C+QLoJw+Rc9V0+37YPF9kg5+EStRNTYsfUYpjsF9HviQpUknufpyR3W6DQ3LCJ59G5AXbQIujhwgkFQueoDGj/4Kas8Be/rqK9wNnIOUmmx97XwSR6d9CDdZI+wS1lCKhRhcZG6piFhoJrE3cyi6ANM+nkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GntMDpe6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E11BDC4CEE2
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 18:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740506635;
-	bh=yrg/D9Y6gq43mD4DfnClM9Y7mUgc1Ayn4YHYGbD30Pg=;
+	s=k20201202; t=1740507057;
+	bh=XgA9a+QVdWC6mLf51VWck3+D8N8e7BP6vIsw97pRGNs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=CPlT9ZFFgMS+2RnC0MOeY3Ne7fNpAyUUtRngsuu1d1S7JzvCY5Cl3zZSlZ302Xp5o
-	 cApBPqDW2HnYpXJCCuOr8czR+FNlptISJvTabOIggca8E8GrlkDwIdZwpnphlqxQxs
-	 nnoifZUHJAg3TUw0x0ghOISrLGWFwjfaHByZCsCsfHKDT02aL1vxzSQqHDeMlAX53x
-	 Fea+Sg0xDW6Shs2BFaaV8E+JqErxIGHkQVpzrKjBTnwdLj+vfSPO7wSSs0etjNQNfS
-	 /O09SSdhlYvuynBMsew8opodYaturRMWXm3qYPqapEEKFBahiGC27NqFoHv5GuZiZO
-	 BD7GoZs1Xf4OQ==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-abec8b750ebso269231066b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 10:03:55 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx41eA3plTtzoBdr/F8QPKko+Hzmz8X3+VA3kZQxbTVy0Z/F74t
-	haM2mGO0ED0d7y5rOlBXJCTXX4gfdkqdED/ytV+mcJYo9S5ubtLW+SmSKt2vXOhS268+esB479d
-	hg9AoZGilFXdiJSW7PMrByFVuanw=
-X-Google-Smtp-Source: AGHT+IEuGNeyKJaJzdSEkAFzN6jwQnFIspKqB7nHpOrvIJbJnfxvg5YzjWvULcId5WorlDvJISU+Sk26BRUo5CeiynY=
-X-Received: by 2002:a17:906:3296:b0:abb:b1ae:173b with SMTP id
- a640c23a62f3a-abc0d994e4emr1642974166b.11.1740506633797; Tue, 25 Feb 2025
- 10:03:53 -0800 (PST)
+	b=GntMDpe6Nv8gOfJxfd9OXgC5vgmBNgYIrFNYqDztc5uDV0dIjtEMF+p9R75fP4V4v
+	 GbMR/kBjrwrB6D6N7rzMn4sVf6qljN7RpueZiZrfWDoy8GtLlF+xX9FIqo5yIeChZp
+	 S6U+PKfhXOpa0X3oj/rHbfI2wFhS4ZGE3c3iCeUqZ4fX4W6cIi5OseyZDXnkv5qxkL
+	 +ntL1ZBDk2Q5FM5n3MIUtAck3ZH0iolyGKsC6w98UGFkqNy0bQLaXHfJh+hhXlhkIa
+	 uwnDTNdwc+YlZPC4jt4OY6IJrHtjWVYjK6kM/uxHC0Dxcj35iZuo/sw+WB4IslYJ0u
+	 oLl+K0dXwwhHQ==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-abb9709b5b5so1082633266b.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 10:10:57 -0800 (PST)
+X-Gm-Message-State: AOJu0YyULWFK+ePkcrE6sbXzYNYm4/Q10TzlhJo7h8Gqf1TXRSwv3O5C
+	R+hurNcfh19B6XcZZGCEtp2xTlj6rfTJ12He/e+oxjBV2Bayr2Y0S8EdB8+IHb6MoLNa1g5zJdb
+	R8ndL3G6wDNwStE5evTJgGMVIu2M=
+X-Google-Smtp-Source: AGHT+IFhsVD9E8JLW7tyMNL4oReRQKnUmVEDrqsQ9OqRcIZGVrCmeWAjldqPl1B/ZBdIOVL7PfhRJ/+FoFNVytAl+xU=
+X-Received: by 2002:a17:906:328a:b0:abe:c3a8:7aa2 with SMTP id
+ a640c23a62f3a-abed106852amr346664066b.46.1740507056359; Tue, 25 Feb 2025
+ 10:10:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1740354271.git.wqu@suse.com> <592f1b35af2c203e4bb6dd6431b6bb0c880e81aa.1740354271.git.wqu@suse.com>
-In-Reply-To: <592f1b35af2c203e4bb6dd6431b6bb0c880e81aa.1740354271.git.wqu@suse.com>
+References: <cover.1740354271.git.wqu@suse.com> <7d10ddfc206a73909763f8a9addfef1e10e5fccf.1740354271.git.wqu@suse.com>
+In-Reply-To: <7d10ddfc206a73909763f8a9addfef1e10e5fccf.1740354271.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 25 Feb 2025 18:03:16 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5fJA_rr-xuRY2pJqdLa9fxiKKwoGHyrxe_Bp0d-fcQRg@mail.gmail.com>
-X-Gm-Features: AWEUYZlEcfvBryl-6vgYGGSI2UzF2ObG7s6XUUaY3P0Enyefsw521b5mJQ6jxmE
-Message-ID: <CAL3q7H5fJA_rr-xuRY2pJqdLa9fxiKKwoGHyrxe_Bp0d-fcQRg@mail.gmail.com>
-Subject: Re: [PATCH 6/7] btrfs: allow inline data extents creation if block
- size < page size
+Date: Tue, 25 Feb 2025 18:10:18 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5sT418ruX-s_V5F=5JiU6TthCq1O4K15Uc28oj0Xpv=Q@mail.gmail.com>
+X-Gm-Features: AWEUYZnGz5Yw1hOUKH86wTzfA5cbX7QNovr9fvnxgmOKgD_907uQXAHfpG1DcnA
+Message-ID: <CAL3q7H5sT418ruX-s_V5F=5JiU6TthCq1O4K15Uc28oj0Xpv=Q@mail.gmail.com>
+Subject: Re: [PATCH 7/7] btrfs: remove the subpage related warning message
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -72,69 +71,63 @@ Content-Transfer-Encoding: quoted-printable
 
 On Sun, Feb 23, 2025 at 11:47=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Previously inline data extents creation is disable if the block size
-> (previously called sector size) is smaller than the page size, for the
-> following reasons:
+> Since the initial enablement of block size < page size support for
+> btrfs in v5.15, we have hit several milestones for block size < page
+> size (subpage) support:
 >
-> - Possible mixed inline and regular data extents
->   However this is also the same if the block size matches the page size,
->   thus we do not treat mixed inline and regular extents as an error.
+> - RAID56 subpage support
+>   In v5.19
 >
->   And the chance to cause mixed inline and regular data extents are not
->   even increased, it has the same requirement (compressed inline data
->   extent covering the whole first block, followed by regular extents).
+> - Refactored scrub support to support subpage better
+>   In v6.4
 >
-> - Unable to handle async/inline delalloc range for block size < page
->   size cases
->   This is already fixed since commit 1d2fbb7f1f9e ("btrfs: allow
->   compression even if the range is not page aligned").
+> - Block perfect (previously requires page aligned ranges) compressed writ=
+e
+>   In v6.13
 >
->   This was the major technical blockage, but it's no longer a blockage
->   anymore.
+> - Various error handling fixes involving subpage
+>   In v6.14
 >
-> With the major technical blockage already removed, we can enable inline
-> data extents creation no matter the block size nor the page size,
-> allowing the btrfs to have the same capacity for all block sizes.
+> Finally the only missing feature is the pretty simple and harmless
+> inlined data extent creation, just done in previous patches.
+>
+> Now btrfs has all of its features ready for both regular and subpage
+> cases, there is no reason to output a warning about the experimental
+> subpage support, and we can finally remove it now.
 >
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+I don't have a machine to test block size < page size, but I trust you
+did all the testing besides being the expert on the code base for the
+feature, so:
 
-Looks good, thanks.
+Acked-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
 
 > ---
->  fs/btrfs/inode.c | 13 -------------
->  1 file changed, 13 deletions(-)
+>  fs/btrfs/disk-io.c | 5 -----
+>  1 file changed, 5 deletions(-)
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index e99cb5109967..a1ea93bad80e 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -566,19 +566,6 @@ static bool can_cow_file_range_inline(struct btrfs_i=
-node *inode,
->         if (offset !=3D 0)
->                 return false;
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index a799216aa264..c0b40dedceb5 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3414,11 +3414,6 @@ int __cold open_ctree(struct super_block *sb, stru=
+ct btrfs_fs_devices *fs_device
+>          */
+>         fs_info->max_inline =3D min_t(u64, fs_info->max_inline, fs_info->=
+sectorsize);
 >
-> -       /*
-> -        * Due to the page size limit, for subpage we can only trigger th=
-e
-> -        * writeback for the dirty sectors of page, that means data write=
-back
-> -        * is doing more writeback than what we want.
-> -        *
-> -        * This is especially unexpected for some call sites like falloca=
-te,
-> -        * where we only increase i_size after everything is done.
-> -        * This means we can trigger inline extent even if we didn't want=
- to.
-> -        * So here we skip inline extent creation completely.
-> -        */
-> -       if (fs_info->sectorsize !=3D PAGE_SIZE)
-> -               return false;
+> -       if (sectorsize < PAGE_SIZE)
+> -               btrfs_warn(fs_info,
+> -               "read-write for sector size %u with page size %lu is expe=
+rimental",
+> -                          sectorsize, PAGE_SIZE);
 > -
->         /* Inline extents are limited to sectorsize. */
->         if (size > fs_info->sectorsize)
->                 return false;
+>         ret =3D btrfs_init_workqueues(fs_info);
+>         if (ret)
+>                 goto fail_sb_buffer;
 > --
 > 2.48.1
 >
