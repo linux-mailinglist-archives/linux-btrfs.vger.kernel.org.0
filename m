@@ -1,80 +1,55 @@
-Return-Path: <linux-btrfs+bounces-11817-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11818-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 236A3A44EB9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 22:24:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76194A44ED2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 22:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA2D53A9AB6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 21:22:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCC7017791A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 21:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A425E20E6FB;
-	Tue, 25 Feb 2025 21:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE43D21324E;
+	Tue, 25 Feb 2025 21:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WuVRlsDd"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="siYU52+w"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.smtpout.orange.fr (smtp-71.smtpout.orange.fr [80.12.242.71])
+	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A7A1A23BD
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 21:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F4320D513;
+	Tue, 25 Feb 2025 21:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740518552; cv=none; b=IXBKER2omWkchNOMPJC0PWmkfYHXmYTZLIP6zCuTyBV4mzsCCZD2rleOdEsJbXiK3+i/FSxyTKh5emLcWvjpEiyNX6wC5u2mVwtWpFByJAq8PvMzXxhT5xP0ZTL2TTAJ2lq40/OzNLhhg78hyd3rt2R1YKOtuYD2iEjgbjU9dww=
+	t=1740518769; cv=none; b=K2XBLsaMFGr69Gd50SMpcToi3ovwV74tYkqFZAg6Jxv6k49cndqDdvcuvXlnFpbfzOdDzGWEp+GNNd9N2iHXB0d8msDq6Ll46lE6jp36YgykWKnnprBSaADuoa1HJy08bq/7Xx+d7Y8cKpiG5TOYC6r+sxh7hu70yB0C8WE4fZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740518552; c=relaxed/simple;
-	bh=Xtnq3RhDI1F0mjpN2gEvr8f5Yewsi+xjtiZxWthnvNA=;
+	s=arc-20240116; t=1740518769; c=relaxed/simple;
+	bh=pyuUKKIK/oqDwIAa4v1WeQ0xbo398GEv1psrnk7fMjY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g3sm1foFotWSI5YmyUbe4v17i4KXFEwlEZ7+JGIrA6/ZQvX8K3VrdQQGpDTt6409+uD85E+U7WvMxZ64oMmoWvMAc0aD0YLD0HUFbVxUdPVZZ+vILmoX9BHsHT392s0070qN6t4rRmniGN8XsV50WV65CwQggZylpRK8y8tLzd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WuVRlsDd; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-390cf7458f5so1049717f8f.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 13:22:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1740518548; x=1741123348; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=O+TAAzGVnDWDFtlFc6W2oZXUMNHkoRIXgVMUB+sYZ44=;
-        b=WuVRlsDdDHW9/9DYpUB+jCcW3te6ln/6Lzv4xkbE8cwwHkT2XPDuqvjRW8X/nEUmqf
-         Amk3KwA0hXk41TtoH/ewCea+XJ+ty+tiUKZW/xMquxxWWVRjYyjH4WKeCpLeO2Rdd+5H
-         iyGhClxUc6A2g+CekSyB/faNLRtvPD74JmjtQnQkMLEME1Ugi7LeCBnND3sRdJM9UiBn
-         5yCiHseawgYhmLjEDIFfkwNQz+Tm64TopRZ0c0Aq1V+ObrHPVRze18rsLBPetA+I3ZAd
-         cpHSfupEdywGQR66uRgv/inXqbsayKgRq1KGVmITw1SIe666+w8RK6rkORwMuGsdxUlH
-         aLNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740518548; x=1741123348;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O+TAAzGVnDWDFtlFc6W2oZXUMNHkoRIXgVMUB+sYZ44=;
-        b=cMuz2pyCMsv08TWgqaYKTLtSAF/jBMwPW/Vx29ntxk1S5icNjHhQk9BO/J4Jru4AIj
-         Gv9DpBTRSzf19tRvVPyd0SZpAG3nuW7o+1CZvUdD28FbP/FQyf7qKEtc987bzWWgPsFH
-         2BsAIfs9oS23vbUFBRhGAXEmg+eSGZyyGAeFnLPtBw4rLPOn0AGJxox1DoSCdB3JpT22
-         X13H5N2mOLobWFcw6JT7qCgESsF07ybWj/vGQ6u+5SUekat+ipKZMl0rd0dWRVSYmqUC
-         uzA2PoT+8yamIDJ1FL0pYjHJOnrzVL49kKCkBh8+BfDbLTUhy2HhuCBsvJUy7T40DlzI
-         ESfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXeQthYhOUvDo9K5XFJ98eAAJc1nGj9nmNACcFxl53Z7+SIFkMHKVKdgDLoQg/KYuC9Vll8PK+hmMEJsw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMFAJJuoJOWOtyOQORa+pwPeFi8RKsNiKiW9T+7WrsNba/p33k
-	9qLWXhx0L0MAUoOqvslCHihSpjZAVLO8dGWY5KZ+HcbcbYnpLbtkmYkyf7gfMYw=
-X-Gm-Gg: ASbGncuMHbxL8Y/j2Mmw62wkMm230cC0WFPWFjGP3OsYLQ1BzLWwCPNL6BjQGfls1ET
-	Qxk/g0g46MZfaoYDq1eB5VzSveC7VyGu5eVXPkKOXwT8cNWnsGD3ehenX0sF78W93/sVhdsV4+K
-	0DIsDw9uQB6PPwAnpzHbwPEwDTlmyfEkRmasq//3l5WTBUVYv1+6S+6EefJydl03wOaTOb4AEMo
-	ajBRET5UVuxPWS/jBhZTcYUVhx+gzs3ifrhm73BjPrS6wgFVHDcDtGZsgj1dBLSYRECiScRl68f
-	AeHDIBp2OSkG/OixdyHChW5a5udlVzjvc5Ng7Pa0UvI9h+x/zZ4Rsg==
-X-Google-Smtp-Source: AGHT+IE75e9DPZfshqgcyz53q9QKQceztLXtBTDV3gXXaoLOI+hnMjNK3s6gZgjyBeOFutornyMF3w==
-X-Received: by 2002:a05:6000:1549:b0:38d:df29:e14f with SMTP id ffacd0b85a97d-390cc631b46mr5227528f8f.43.1740518548098;
-        Tue, 25 Feb 2025 13:22:28 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7347a7f7de2sm2065200b3a.106.2025.02.25.13.22.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Feb 2025 13:22:27 -0800 (PST)
-Message-ID: <1cfc2f43-8ea4-4c39-b543-1f54ba9b284e@suse.com>
-Date: Wed, 26 Feb 2025 07:52:21 +1030
+	 In-Reply-To:Content-Type; b=CSYtzlNPG/uxjKGROYZKov/fs5BZippQgLF/3+StNMqQgXF4DpRPRup1aaWoPmeNPfqb9HR/q9f4Ca7HqBu6skGE+hBoovEY6VahB7ttC7RmbFFYg09DUON/+aYLY+FegjFMuvI8YbuTfNrLG5vXjqW8XSXTXZlMbFR/x4f+jcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=siYU52+w; arc=none smtp.client-ip=80.12.242.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.37] ([90.11.132.44])
+	by smtp.orange.fr with ESMTPA
+	id n2R0tkeFQ4iG7n2R3t60Fm; Tue, 25 Feb 2025 22:25:57 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1740518758;
+	bh=CDOnVbuHRa5TlckniZ+QbcxrKwAHtppPzAjAscxNHSY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=siYU52+wZ9L1fww+iQDN9rtYX6/aPczL9atUE2l26+nq1Ri8dh3TYGdKOZSOl8FUk
+	 XrbU+P2TpuXPZmylEcNVhm7IGsserFCZYBNjOT562ZUYjLqKjMa1SJH893MOHidh6R
+	 OQATR7VDki3fiHZfHEF2JqtwL04PZvB0Oj0pypFUs2f2NaghtKWNKg5zY+oKMy9gx3
+	 hJDV0lXDGXzAw1PjH65vHLOKoP3lFuSvJzAbZkaII3cDH1jfDHrdCDL8+lHftSY/+S
+	 CY90Fz3FaFYxcLZzbR4khlsrjLfgaLUxO0uOmAn+6ltyDhAKQJ99yzzK2ZVeFXSo2U
+	 OrHC+r+ja1CFQ==
+X-ME-Helo: [192.168.1.37]
+X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
+X-ME-Date: Tue, 25 Feb 2025 22:25:58 +0100
+X-ME-IP: 90.11.132.44
+Message-ID: <44dd2b5b-d91c-4daf-ab75-ed4030180028@wanadoo.fr>
+Date: Tue, 25 Feb 2025 22:25:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,97 +57,157 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: use min_t() for mismatched type comparison
-To: Arnd Bergmann <arnd@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>,
- Anand Jain <anand.jain@oracle.com>, Filipe Manana <fdmanana@suse.com>,
- Li Zetao <lizetao1@huawei.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250225194416.3076650-1-arnd@kernel.org>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250225194416.3076650-1-arnd@kernel.org>
+Subject: Re: [PATCH v3 07/16] libceph: convert timeouts to secs_to_jiffies()
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: Frank.Li@nxp.com, James.Bottomley@HansenPartnership.com,
+ Julia.Lawall@inria.fr, Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org,
+ axboe@kernel.dk, broonie@kernel.org, cassel@kernel.org, cem@kernel.org,
+ ceph-devel@vger.kernel.org, clm@fb.com, cocci@inria.fr,
+ dick.kennedy@broadcom.com, djwong@kernel.org, dlemoal@kernel.org,
+ dongsheng.yang@easystack.cn, dri-devel@lists.freedesktop.org,
+ dsterba@suse.com, festevam@gmail.com, hch@lst.de, hdegoede@redhat.com,
+ hmh@hmh.eng.br, ibm-acpi-devel@lists.sourceforge.net, idryomov@gmail.com,
+ ilpo.jarvinen@linux.intel.com, imx@lists.linux.dev,
+ james.smart@broadcom.com, jgg@ziepe.ca, josef@toxicpanda.com,
+ kalesh-anakkur.purayil@broadcom.com, kbusch@kernel.org,
+ kernel@pengutronix.de, leon@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ martin.petersen@oracle.com, nicolas.palix@imag.fr, ogabbay@kernel.org,
+ perex@perex.cz, platform-driver-x86@vger.kernel.org, s.hauer@pengutronix.de,
+ sagi@grimberg.me, selvin.xavier@broadcom.com, shawnguo@kernel.org,
+ sre@kernel.org, tiwai@suse.com, xiubli@redhat.com, yaron.avizrat@intel.com
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+ <20250225-converge-secs-to-jiffies-part-two-v3-7-a43967e36c88@linux.microsoft.com>
+Content-Language: en-US, fr-FR
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20250225-converge-secs-to-jiffies-part-two-v3-7-a43967e36c88@linux.microsoft.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-
-
-在 2025/2/26 06:14, Arnd Bergmann 写道:
-> From: Arnd Bergmann <arnd@arndb.de>
+Le 25/02/2025 à 21:17, Easwar Hariharan a écrit :
+> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
+> secs_to_jiffies().  As the value here is a multiple of 1000, use
+> secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplication
 > 
-> loff_t is a signed type, so using min() to compare it against a u64
-> causes a compiler warning:
+> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
+> the following Coccinelle rules:
 > 
-> fs/btrfs/extent_io.c:2497:13: error: call to '__compiletime_assert_728' declared with 'error' attribute: min(folio_pos(folio) + folio_size(folio) - 1, end) signedness error
->   2497 |                 cur_end = min(folio_pos(folio) + folio_size(folio) - 1, end);
->        |                           ^
+> @depends on patch@ expression E; @@
 > 
-> Use min_t() instead.
+> -msecs_to_jiffies(E * 1000)
+> +secs_to_jiffies(E)
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202502211908.aCcQQyEY-lkp@intel.com/
-> Fixes: aba063bf9336 ("btrfs: prepare extent_io.c for future larger folio support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> @depends on patch@ expression E; @@
+> 
+> -msecs_to_jiffies(E * MSEC_PER_SEC)
+> +secs_to_jiffies(E)
+> 
+> While here, remove the no-longer necessary checks for range since there's
+> no multiplication involved.
 
-Thanks a lot, those fixes will be merged into the next version.
+No sure it is correct.
 
-For now the series is only for test purposes as there is a backlog of 
-subpage block size related patches pending.
+Same comment as on patch 06/16, available at [1].
 
-Thanks,
-Qu
+CJ
 
+[1]: 
+https://lore.kernel.org/linux-kernel/e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr/
+
+> 
+> Acked-by: Ilya Dryomov <idryomov@gmail.com>
+> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 > ---
->   fs/btrfs/extent_io.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   include/linux/ceph/libceph.h | 12 ++++++------
+>   net/ceph/ceph_common.c       | 18 ++++++------------
+>   net/ceph/osd_client.c        |  3 +--
+>   3 files changed, 13 insertions(+), 20 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index f0a1da40d641..7dc996e7e249 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2485,7 +2485,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
->   		 * code is just in case, but shouldn't actually be run.
->   		 */
->   		if (IS_ERR(folio)) {
-> -			cur_end = min(round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1, end);
-> +			cur_end = min_t(u64, round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1, end);
->   			cur_len = cur_end + 1 - cur;
->   			btrfs_mark_ordered_io_finished(BTRFS_I(inode), NULL,
->   						       cur, cur_len, false);
-> @@ -2494,7 +2494,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
->   			continue;
->   		}
+> diff --git a/include/linux/ceph/libceph.h b/include/linux/ceph/libceph.h
+> index 733e7f93db66a7a29a4a8eba97e9ebf2c49da1f9..5f57128ef0c7d018341c15cc59288aa47edec646 100644
+> --- a/include/linux/ceph/libceph.h
+> +++ b/include/linux/ceph/libceph.h
+> @@ -72,15 +72,15 @@ struct ceph_options {
+>   /*
+>    * defaults
+>    */
+> -#define CEPH_MOUNT_TIMEOUT_DEFAULT	msecs_to_jiffies(60 * 1000)
+> -#define CEPH_OSD_KEEPALIVE_DEFAULT	msecs_to_jiffies(5 * 1000)
+> -#define CEPH_OSD_IDLE_TTL_DEFAULT	msecs_to_jiffies(60 * 1000)
+> +#define CEPH_MOUNT_TIMEOUT_DEFAULT	secs_to_jiffies(60)
+> +#define CEPH_OSD_KEEPALIVE_DEFAULT	secs_to_jiffies(5)
+> +#define CEPH_OSD_IDLE_TTL_DEFAULT	secs_to_jiffies(60)
+>   #define CEPH_OSD_REQUEST_TIMEOUT_DEFAULT 0  /* no timeout */
+>   #define CEPH_READ_FROM_REPLICA_DEFAULT	0  /* read from primary */
 >   
-> -		cur_end = min(folio_pos(folio) + folio_size(folio) - 1, end);
-> +		cur_end = min_t(u64, folio_pos(folio) + folio_size(folio) - 1, end);
->   		cur_len = cur_end + 1 - cur;
+> -#define CEPH_MONC_HUNT_INTERVAL		msecs_to_jiffies(3 * 1000)
+> -#define CEPH_MONC_PING_INTERVAL		msecs_to_jiffies(10 * 1000)
+> -#define CEPH_MONC_PING_TIMEOUT		msecs_to_jiffies(30 * 1000)
+> +#define CEPH_MONC_HUNT_INTERVAL		secs_to_jiffies(3)
+> +#define CEPH_MONC_PING_INTERVAL		secs_to_jiffies(10)
+> +#define CEPH_MONC_PING_TIMEOUT		secs_to_jiffies(30)
+>   #define CEPH_MONC_HUNT_BACKOFF		2
+>   #define CEPH_MONC_HUNT_MAX_MULT		10
 >   
->   		ASSERT(folio_test_locked(folio));
+> diff --git a/net/ceph/ceph_common.c b/net/ceph/ceph_common.c
+> index 4c6441536d55b6323f4b9d93b5d4837cd4ec880c..c2a2c3bcc4e91a628c99bd1cef1211d54389efa2 100644
+> --- a/net/ceph/ceph_common.c
+> +++ b/net/ceph/ceph_common.c
+> @@ -527,29 +527,23 @@ int ceph_parse_param(struct fs_parameter *param, struct ceph_options *opt,
+>   
+>   	case Opt_osdkeepalivetimeout:
+>   		/* 0 isn't well defined right now, reject it */
+> -		if (result.uint_32 < 1 || result.uint_32 > INT_MAX / 1000)
+> +		if (result.uint_32 < 1)
+>   			goto out_of_range;
+> -		opt->osd_keepalive_timeout =
+> -		    msecs_to_jiffies(result.uint_32 * 1000);
+> +		opt->osd_keepalive_timeout = secs_to_jiffies(result.uint_32);
+>   		break;
+>   	case Opt_osd_idle_ttl:
+>   		/* 0 isn't well defined right now, reject it */
+> -		if (result.uint_32 < 1 || result.uint_32 > INT_MAX / 1000)
+> +		if (result.uint_32 < 1)
+>   			goto out_of_range;
+> -		opt->osd_idle_ttl = msecs_to_jiffies(result.uint_32 * 1000);
+> +		opt->osd_idle_ttl = secs_to_jiffies(result.uint_32);
+>   		break;
+>   	case Opt_mount_timeout:
+>   		/* 0 is "wait forever" (i.e. infinite timeout) */
+> -		if (result.uint_32 > INT_MAX / 1000)
+> -			goto out_of_range;
+> -		opt->mount_timeout = msecs_to_jiffies(result.uint_32 * 1000);
+> +		opt->mount_timeout = secs_to_jiffies(result.uint_32);
+>   		break;
+>   	case Opt_osd_request_timeout:
+>   		/* 0 is "wait forever" (i.e. infinite timeout) */
+> -		if (result.uint_32 > INT_MAX / 1000)
+> -			goto out_of_range;
+> -		opt->osd_request_timeout =
+> -		    msecs_to_jiffies(result.uint_32 * 1000);
+> +		opt->osd_request_timeout = secs_to_jiffies(result.uint_32);
+>   		break;
+>   
+>   	case Opt_share:
+> diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
+> index b24afec241382b60d775dd12a6561fa23a7eca45..ba61a48b4388c2eceb5b7a299906e7f90191dd5d 100644
+> --- a/net/ceph/osd_client.c
+> +++ b/net/ceph/osd_client.c
+> @@ -4989,8 +4989,7 @@ int ceph_osdc_notify(struct ceph_osd_client *osdc,
+>   	linger_submit(lreq);
+>   	ret = linger_reg_commit_wait(lreq);
+>   	if (!ret)
+> -		ret = linger_notify_finish_wait(lreq,
+> -				 msecs_to_jiffies(2 * timeout * MSEC_PER_SEC));
+> +		ret = linger_notify_finish_wait(lreq, secs_to_jiffies(2 * timeout));
+>   	else
+>   		dout("lreq %p failed to initiate notify %d\n", lreq, ret);
+>   
+> 
 
 
