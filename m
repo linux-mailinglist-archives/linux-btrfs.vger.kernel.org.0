@@ -1,307 +1,350 @@
-Return-Path: <linux-btrfs+bounces-11750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F110DA43635
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 08:33:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F390A43701
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 09:10:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE5D16CAAB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 07:33:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D9733B99E1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 08:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2727A1DB15B;
-	Tue, 25 Feb 2025 07:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E732580F4;
+	Tue, 25 Feb 2025 08:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=merlins.org header.i=@merlins.org header.b="lQEdRQd4"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cT0IrRxZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D822571CD
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 07:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.81.13.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A7D4A1A
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 08:08:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740468779; cv=none; b=MTMzyxVRC6LAd1Y2JzM84O+rOh3plfYS69jZxdazrbjySZ3R4k8A8YgMP8CgDKgkrcpRhYD0z2Vcl1msqRKAL3s+oPBefb+kciUGPxH/z2EMXG1i9plk+90QoXXz0rg+6gJpGerAUQ1AQI5fRRjzoTbtHCnjLZA5b1cnsNNhKCc=
+	t=1740470907; cv=none; b=pMxBn8j6qW6A2MFtzSJ1YY+Uk3ttK7bUV9RDglh8qd5bhnwIjtk3Lz8oyhddJBvBwQWuGEhkbpy13j+qudMjxfuaWKHeER9HLpFac48c2Fk0oBsYJ27DTKEHOqwHsrMJ5q78pCmYr0/i6Wn3O5F2Pb2+3b69IpbT8YtzHGxYFEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740468779; c=relaxed/simple;
-	bh=dG6yDhMAqsAmW9bmwPhUK7rRMnyIlCu6KcwiTxR19go=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HEGBZZtBFGcxWUVe1MAFIPNIx43SN9n7vcvrNbU9yMtqVilzy+LG0ieU+WEDqdekymJvCo8fHB4l0NWsjz4gZ0E9Ap9zrK4r5d/uxtOPa/Hym1bb1WBVslXSfxgADjjATl3e+2TmF11ZeR0m95plChL6XyO1b3ucwYCHmT7gt04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org; spf=pass smtp.mailfrom=merlins.org; dkim=fail (0-bit key) header.d=merlins.org header.i=@merlins.org header.b=lQEdRQd4 reason="key not found in DNS"; arc=none smtp.client-ip=209.81.13.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=merlins.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
-	; s=key; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=0G7B5jC6CBYK0FSgC3YGpv0ieeIZZ8j9d1q0Wis3kC0=; b=lQEdRQd4GW61ccI53D3XxcxQsZ
-	zkGNf6zMJBQQ5HphkD4K7iY6BarXISO+yEysIW3zesd4N04QuXN4LoQ7JVWubkoOXEBgdm0Vd3Dld
-	ekRyo7H/4ARbvF3hoP5riPsU2xbroYK8DOmUCvv6YvrpAG5A13kEk6ryVSmE95h0Not8TCnd3JuIY
-	q7hBX1fNC643OfrJlGQmZXepZ5z2mgSZd6yDfcWoNOcXuvf9FEhrqTmhFM4qVytr/mSryE4dNqGj6
-	WggXuPD9MNN+RP1RErAS3gdutbTbIdwh9zHPMD8lJ8Cf/9W1yumC8wNnI8WWY3fsKTAxBPkZnvJlp
-	GSY1jRSA==;
-Received: from lfbn-idf3-1-18-9.w81-249.abo.wanadoo.fr ([81.249.145.9]:52720 helo=merlin.svh.merlins.org)
-	by mail1.merlins.org with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-	id 1tmo4e-0003il-B4 by authid <merlins.org> with srv_auth_plain; Mon, 24 Feb 2025 23:32:51 -0800
-Received: from merlin by merlin.svh.merlins.org with local (Exim 4.96)
-	(envelope-from <marc@merlins.org>)
-	id 1tmpQu-007Jw4-16;
-	Mon, 24 Feb 2025 23:32:48 -0800
-Date: Mon, 24 Feb 2025 23:32:48 -0800
-From: Marc MERLIN <marc@merlins.org>
-To: linux-btrfs <linux-btrfs@vger.kernel.org>
-Cc: To: Su Yue <Damenly_Su@gmx.com>, linux-btrfs@vger.kernel.org,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Chris Murphy <lists@colorremedies.com>,
-	Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-	Roman Mamedov <rm@romanrm.net>, Su Yue <suy.fnst@cn.fujitsu.com>;
-Subject: Re: BTRFS error (device dm-4): failed to run delayed ref for logical
- 350223581184 num_bytes 16384 type 176 action 1 ref_mod 1: -117 (kernel
- 6.11.2)
-Message-ID: <Z71yICVikAzKxisq@merlins.org>
-References: <Z6TsUwR7tyKJrZ7w@merlins.org>
+	s=arc-20240116; t=1740470907; c=relaxed/simple;
+	bh=6PbGB+lYF/TMoCnFP5/yWYPGy4fLkWRTrbNMyIG3ak8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KOP/uPLVLKX9TCtOeDYl8kvOchE0FLsvRfOTOtGqPMMrdNIdrjDL1q6OohfMx0aZJl1wSR2AuHq+C+H/XhE0EiIeXhsXgh8Bf/Q4oWq/9XgcohrtAniTyjFFK/F3boRB3gdC4LM8akawZbesUyrTMbVIrLh6L4MBEMbn2LjApEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cT0IrRxZ; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1740470870; x=1741075670; i=quwenruo.btrfs@gmx.com;
+	bh=6PbGB+lYF/TMoCnFP5/yWYPGy4fLkWRTrbNMyIG3ak8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=cT0IrRxZLJbntNUJpqblRmdRa0S1o5poJNLz9uVBQZhsDkYCCfVoQ7wAKTQtn9UI
+	 Av70Ie5M9bsQFs1JDkFetj+WJJdQ8v7y2F9fWfK86X4WyGNSieiogTkoETcElSmG1
+	 CKn08P+WHcnINaichrQPKKR5gyoiNZMuMlQx63EprFt9PB6GWpco72/8Qil3AT4be
+	 XXdM9ofBzSG5TiIUzB+fRGTMSK0Sz21TtpUX8Q02DCGrlCTUaMPxM4DCknREddItR
+	 UbWdOv5Ui8FV2Z17gh59xPtSBJHKa8Rkks1M5XNiNUOFWrALS7fer/iPltQoT1i0c
+	 Ui5y4UOELl8XqPyhng==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0XCw-1tPnLV0dwi-00uqsr; Tue, 25
+ Feb 2025 09:07:49 +0100
+Message-ID: <018d16aa-24b2-43ae-826c-7f717e0d05ee@gmx.com>
+Date: Tue, 25 Feb 2025 18:37:40 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Z6TsUwR7tyKJrZ7w@merlins.org>
-X-Sysadmin: BOFH
-X-URL: http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 81.249.145.9
-X-SA-Exim-Mail-From: marc@merlins.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: BTRFS error (device dm-4): failed to run delayed ref for logical
+ 350223581184 num_bytes 16384 type 176 action 1 ref_mod 1: -117 (kernel
+ 6.11.2)
+To: Marc MERLIN <marc@merlins.org>, linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc: Su Yue <Damenly_Su@gmx.com>, Josef Bacik <josef@toxicpanda.com>,
+ Chris Murphy <lists@colorremedies.com>,
+ Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, Roman Mamedov
+ <rm@romanrm.net>, Su Yue <suy.fnst@cn.fujitsu.com>
+References: <Z6TsUwR7tyKJrZ7w@merlins.org> <Z71yICVikAzKxisq@merlins.org>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <Z71yICVikAzKxisq@merlins.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:sa7rypuhe8ZqatXMIcB8q0n087k7e6WuFp62rObP+TbwLZHMkyl
+ SI5LxX3yJu8RDrwf81dHxNcRrI6/2B49o5bq1rp4uv1TPEYYqh701By029qWD4MO1oXiMgB
+ 1bShIat7Jz2CHvgYzJdqQGQmT4EV90b3zvUfYNGJTxs8yNWmUV3ko2uC0Y8B9miJZk0sf5w
+ ZLQ/gfombdisETUGwO36Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:k4s9vTuM0Qk=;mQaob+N0lal/Yz5uPGjyGtS57Cs
+ ENWMmo+YSh/a1lS85cIu/6Skqy6h8N1nPVD/Gi2XW8Wg0Dfb/H6xG+lNv/97PPjol+5QP6mjo
+ zvEIpu3LWradH29whEysjdcEuN5egpb0HJtgTWNJnQ7IuKz3uOTaCPcYSMoe1WPjvBB2h4p2p
+ sSuI79+8ynWOOZZD5N0qYTKIkyWMd9X35oHIVuBYzBfS+3AY+sz+B1fKracn6Q3hZXY63B+I6
+ zKlTFztjJg6O0axsCovgXlvGmsbB5nbqOvR97O8KmruUpMFSAb23tog9IZQjFxJo0KezNLkH4
+ tyVOWOXlU3hDMpyR1WxrZS9NlUtNvzu5USOsu6V4tNwr4qH7c0FOGINRh7sIB39pFfM1uPZpM
+ pX7lkIGfOweb7C76+pZi4sCiVtvEVHYReR/PNRgNwhNtx0BMJIH7oYI9ZrApQlhLrONeZ9p4a
+ Ah2k7Vv13QC2SqZOGqkRzfwVaFC5yJZD4TcY1XURF8UY2ZpNWy3AzO8l3DR9kMZ24tY1W4qvk
+ siZMOFmOLV+r8gEOJtuhCN93mxFqYI0yKgqqdd2IbPIYwfTPRhmvjzlLob0xSKym0zg6Afrp5
+ 6gCDFK405zYxBAh0jUcC8uhAOyS0gEeh+j+Wa3+KvyTYI4x3JUtmXx1b6bm4ryEllofWWZDIv
+ 9jpj2C6fDh6J7Jct4+2WLkfZUEscML74fNoht2Sxxykltk5xTOqFODMUrbZ4Z+OLn6dBcSJJW
+ GIE6YDl0Egj7ZpdXi4oSvTueuHERjPhFlRQo1P8aYpvZrC/jg8Sq/zxhAe+AXCBlDGJZM7Wcy
+ G5dTNuIY0xubjHnPBlsYMhHy8XkiekdMz8KJ+r98z5xG6g+YPxaiid1JVP+/JA4webShgkd5K
+ MVb7Y/xSu3cWeuTQAuusJIiKgyzMDXq+PYhXTnolXB8n8TICFzZXQZ1FKNZeruXrwuWXkL/K9
+ ZgGpk9UncuBIFKGZ4RkKIhwJhLsweo2kGBw9NTTsHbqRJVPJObIJyI1RtzTQg93u4DFUtvrPg
+ fBrjQ/7rgwsweLLkN3CLDeGmUZctZ450ELy256Bn0mSbcU1mk2AxMj7j0m62c4Axr1XrsFyht
+ w3idXevv2loZMWL89Ne8uhAUTsRaIeI1YcWuAo/pCoNNO5bts7KWImupdoEAppIGPJR+VKsMw
+ 7Ec/NrtAjakZveGPWaYr2oQ8/OPUSGgSrBX/jiPGLZ2VC+XryCKkL3CMuHvcYnVHhUkNfTG11
+ f7Qk7exiASjIM0f/LOmVJkkvMdG6ibWPac9XUwOs6xRpeZ6zZWa3L1sxNzOpWe5lNuzH1LMvJ
+ AC6vakJGml5utZCF0BH6M9DnToD5ZVjajOd3dZw0tkZl7U8jZQw233DBollCU8Ep90us4TeR8
+ WcvWJoOdy0k529r3lkDPlbxqkMD3yeG8+o+KsU01/z9qA/JSt6p1x+Aaby
 
-Got no reply, but definitely an issue, so adding a few folks to Cc
-System has been working fine since then, but I have disabled nightly balance
-out of fear this will happen again.
+DQoNCuWcqCAyMDI1LzIvMjUgMTg6MDIsIE1hcmMgTUVSTElOIOWGmemBkzoNCj4gR290IG5v
+IHJlcGx5LCBidXQgZGVmaW5pdGVseSBhbiBpc3N1ZSwgc28gYWRkaW5nIGEgZmV3IGZvbGtz
+IHRvIENjDQo+IFN5c3RlbSBoYXMgYmVlbiB3b3JraW5nIGZpbmUgc2luY2UgdGhlbiwgYnV0
+IEkgaGF2ZSBkaXNhYmxlZCBuaWdodGx5IGJhbGFuY2UNCj4gb3V0IG9mIGZlYXIgdGhpcyB3
+aWxsIGhhcHBlbiBhZ2Fpbi4NCj4gDQo+IFRoaXMgaXMgd2hhdCBJIGhhdmUgbmlnaHRseToN
+Cj4gIyBJJ20gdG9sZCB0aGF0IHByb2FjdGl2ZWx5IHJlYmFsYW5jaW5nIG1ldGFkYXRhIG1h
+eSBub3QgYmUgYSBnb29kIGlkZWEuDQo+ICNidHJmcyBiYWxhbmNlIHN0YXJ0IC1tdXNhZ2U9
+MjAgLXYgJG1vdW50cG9pbnQgMj4mMSB8IGdyZXAgLUV2ICIkRklMVEVSIg0KPiAjIGJ1dCBh
+IG51bGwgcmViYWxhbmNlIHNob3VsZCBoZWxwIGNvcm5lciBjYXNlczoNCj4gYnRyZnMgYmFs
+YW5jZSBzdGFydCAtbXVzYWdlPTAgLXYgJG1vdW50cG9pbnQgMj4mMSB8IGdyZXAgLUV2ICIk
+RklMVEVSIg0KPiAjIEFmdGVyIG1ldGFkYXRhLCBsZXQncyBkbyBkYXRhOg0KPiBidHJmcyBi
+YWxhbmNlIHN0YXJ0IC1kdXNhZ2U9MCAtdiAkbW91bnRwb2ludCAyPiYxIHwgZ3JlcCAtRXYg
+IiRGSUxURVIiDQo+IGJ0cmZzIGJhbGFuY2Ugc3RhcnQgLWR1c2FnZT0yMCAtdiAkbW91bnRw
+b2ludCAyPiYxIHwgZ3JlcCAtRXYgIiRGSUxURVIiDQo+IA0KPiANCj4gQmFsYW5jZSBlbmRl
+ZCB3aXRoIGJ0cmZzX3J1bl9kZWxheWVkX3JlZnM6MjE5OTogZXJybm89LTExNyBGaWxlc3lz
+dGVtIGNvcnJ1cHRlZA0KPiANCj4gYnRyZnMgY2hlY2sgc2F5cyBpdCdzIG5vdA0KPiBzYXVy
+b246fiMgYnRyZnMgY2hlY2sgL2Rldi9tYXBwZXIvcG9vbDENCj4gT3BlbmluZyBmaWxlc3lz
+dGVtIHRvIGNoZWNrLi4uDQo+IENoZWNraW5nIGZpbGVzeXN0ZW0gb24gL2Rldi9tYXBwZXIv
+cG9vbDENCj4gVVVJRDogNDU0Mjg4M2ItZDhiYy00ZDdmLThhMmUtOTQ0ZGMzNTVkYzQ0DQo+
+IFsxLzddIGNoZWNraW5nIHJvb3QgaXRlbXMNCj4gWzIvN10gY2hlY2tpbmcgZXh0ZW50cw0K
+PiBbMy83XSBjaGVja2luZyBmcmVlIHNwYWNlIHRyZWUNCj4gWzQvN10gY2hlY2tpbmcgZnMg
+cm9vdHMNCj4gWzUvN10gY2hlY2tpbmcgb25seSBjc3VtcyBpdGVtcyAod2l0aG91dCB2ZXJp
+ZnlpbmcgZGF0YSkNCj4gWzYvN10gY2hlY2tpbmcgcm9vdCByZWZzDQo+IFs3LzddIGNoZWNr
+aW5nIHF1b3RhIGdyb3VwcyBza2lwcGVkIChub3QgZW5hYmxlZCBvbiB0aGlzIEZTKQ0KPiBm
+b3VuZCAyMjg4MjA5NDY5NDQgYnl0ZXMgdXNlZCwgbm8gZXJyb3IgZm91bmQNCj4gdG90YWwg
+Y3N1bSBieXRlczogMjE5MjcwMjMyDQo+IHRvdGFsIHRyZWUgYnl0ZXM6IDQ1MzkzMzQ2NTYN
+Cj4gdG90YWwgZnMgdHJlZSBieXRlczogMzcxOTU5Mzk4NA0KPiB0b3RhbCBleHRlbnQgdHJl
+ZSBieXRlczogNDgxOTM1MzYwDQo+IGJ0cmVlIHNwYWNlIHdhc3RlIGJ5dGVzOiAxMDc1NDY5
+MTk2DQo+IGZpbGUgZGF0YSBibG9ja3MgYWxsb2NhdGVkOiAxNTM5MDg3NTgzMjMyMA0KPiAg
+IHJlZmVyZW5jZWQgMjkwODMzMDc2MjI0DQo+IA0KPiBBbnkgaWRlYXM/IHRoaXMgb2J2aW91
+c2x5IGNhdXNlZCBkb3dudGltZSwgYnV0IGFmdGVyIHRoZSBidHJmcyBjaGVjayBzYXlpbmcg
+SSdtIHN1cHBvc2VkbHkNCj4gb2ssIEknbSBiYWNrIHVwIGZvciBub3csIGhvcGluZyBpdCB3
+b24ndCBoYXBwZW4gYWdhaW4gYW5kIGhvcGUgaXMgbm90IGEgc3RyYXRlZ3kgOikNCj4gDQo+
+IElzIGl0IHNhZmUgdG8gcnVuIGJhbGFuY2UgYWdhaW4/IGFueSBpZGVhIHdoeSBpdCBmYWls
+ZWQ/DQo+IA0KPiBbMTgyMTMzMS4wMTU2NTJdIEJUUkZTIGluZm8gKGRldmljZSBkbS00KTog
+YmFsYW5jZTogc3RhcnQgLWR1c2FnZT0yMA0KPiBbMTgyMTMzMS4wMTU4MDVdIEJUUkZTIGlu
+Zm8gKGRldmljZSBkbS00KTogcmVsb2NhdGluZyBibG9jayBncm91cCA3NjEyMTI2OTg2MjQg
+ZmxhZ3MgZGF0YQ0KPiBbMTgyMTMzMS4wOTAzMzhdIEJUUkZTIGluZm8gKGRldmljZSBkbS00
+KTogZm91bmQgMzEgZXh0ZW50cywgc3RhZ2U6IG1vdmUgZGF0YSBleHRlbnRzDQo+IFsxODIx
+MzMxLjIzNzcwN10gQlRSRlMgaW5mbyAoZGV2aWNlIGRtLTQpOiBsZWFmIDQ3MTMzMzUxOTM2
+MCBnZW4gNDgwODE4MiB0b3RhbCBwdHJzIDE2OCBmcmVlIHNwYWNlIDM1MzMgb3duZXIgMg0K
+PiBbMTgyMTMzMS4yMzc3MTZdIAlpdGVtIDAga2V5ICgzNTAyMjI0MTc5MjAgMTY5IDApIGl0
+ZW1vZmYgMTYyNTAgaXRlbXNpemUgMzMNCj4gWzE4MjEzMzEuMjM3NzE4XSAJCWV4dGVudCBy
+ZWZzIDEgZ2VuIDI5MDczOTEgZmxhZ3MgMg0KPiBbMTgyMTMzMS4yMzc3MTldIAkJcmVmIzA6
+IHRyZWUgYmxvY2sgYmFja3JlZiByb290IDM5OA0KPiAoLi4uKA0KDQpGdWxsIGRtZXNnIHBs
+ZWFzZS4NCg0KVGhlIGRldGFpbGVkIGV4dGVudCB0cmVlIGxlYWYgaXMgd2hhdCB3ZSByZWFs
+bHkgbmVlZC4NCg0KVGhhbmtzLA0KUXUNCg0KPiBbMTgyMTMzMS4yMzg1NTldIAlpdGVtIDE2
+NyBrZXkgKDM1MDIyNTY3ODMzNiAxNjkgMCkgaXRlbW9mZiA3NzMzIGl0ZW1zaXplIDE2OA0K
+PiBbMTgyMTMzMS4yMzg1NjBdIAkJZXh0ZW50IHJlZnMgMTYgZ2VuIDQ2MTkwODcgZmxhZ3Mg
+Mg0KPiBbMTgyMTMzMS4yMzg1NjFdIAkJcmVmIzA6IHRyZWUgYmxvY2sgYmFja3JlZiByb290
+IDM5OA0KPiBbMTgyMTMzMS4yMzg1NjJdIAkJcmVmIzE6IHNoYXJlZCBibG9jayBiYWNrcmVm
+IHBhcmVudCA3MzcwODQxMTI4OTYNCj4gWzE4MjEzMzEuMjM4NTYzXSAJCXJlZiMyOiBzaGFy
+ZWQgYmxvY2sgYmFja3JlZiBwYXJlbnQgNzM2NjA5MTczNTA0DQo+IFsxODIxMzMxLjIzODU2
+NF0gCQlyZWYjMzogc2hhcmVkIGJsb2NrIGJhY2tyZWYgcGFyZW50IDQ3MTA5OTU4ODYwOA0K
+PiBbMTgyMTMzMS4yMzg1NjVdIAkJcmVmIzQ6IHNoYXJlZCBibG9jayBiYWNrcmVmIHBhcmVu
+dCA0NzEwMTc0ODgzODQNCj4gWzE4MjEzMzEuMjM4NTY3XSAJCXJlZiM1OiBzaGFyZWQgYmxv
+Y2sgYmFja3JlZiBwYXJlbnQgNDcwNjY1NjI1NjAwDQo+IFsxODIxMzMxLjIzODU2OF0gCQly
+ZWYjNjogc2hhcmVkIGJsb2NrIGJhY2tyZWYgcGFyZW50IDM1MDgwNjgzNTIwMA0KPiBbMTgy
+MTMzMS4yMzg1NjldIAkJcmVmIzc6IHNoYXJlZCBibG9jayBiYWNrcmVmIHBhcmVudCAzNTAy
+OTIwNjYzMDQNCj4gWzE4MjEzMzEuMjM4NTcwXSAJCXJlZiM4OiBzaGFyZWQgYmxvY2sgYmFj
+a3JlZiBwYXJlbnQgMzQ5ODU2MzUwMjA4DQo+IFsxODIxMzMxLjIzODU3MV0gCQlyZWYjOTog
+c2hhcmVkIGJsb2NrIGJhY2tyZWYgcGFyZW50IDE1MzQyOTU3MzYzMg0KPiBbMTgyMTMzMS4y
+Mzg1NzJdIAkJcmVmIzEwOiBzaGFyZWQgYmxvY2sgYmFja3JlZiBwYXJlbnQgMTUzMDE0MzM3
+NTM2DQo+IFsxODIxMzMxLjIzODU3M10gCQlyZWYjMTE6IHNoYXJlZCBibG9jayBiYWNrcmVm
+IHBhcmVudCAxNTI5NzYwNDgxMjgNCj4gWzE4MjEzMzEuMjM4NTc1XSAJCXJlZiMxMjogc2hh
+cmVkIGJsb2NrIGJhY2tyZWYgcGFyZW50IDE1Mjc1Mzk0NjYyNA0KPiBbMTgyMTMzMS4yMzg1
+NzZdIAkJcmVmIzEzOiBzaGFyZWQgYmxvY2sgYmFja3JlZiBwYXJlbnQgMTUyNjM5MjI1ODU2
+DQo+IFsxODIxMzMxLjIzODU3N10gCQlyZWYjMTQ6IHNoYXJlZCBibG9jayBiYWNrcmVmIHBh
+cmVudCA1MDc4MjYxNzYwMA0KPiBbMTgyMTMzMS4yMzg1NzhdIAkJcmVmIzE1OiBzaGFyZWQg
+YmxvY2sgYmFja3JlZiBwYXJlbnQgMzk0MDAyNDMyDQo+IFsxODIxMzMxLjIzODU3OV0gQlRS
+RlMgY3JpdGljYWwgKGRldmljZSBkbS00KTogYWRkaW5nIHJlZnMgdG8gYW4gZXhpc3Rpbmcg
+dHJlZSByZWYsIGJ5dGVuciAzNTAyMjM1ODExODQgbnVtX2J5dGVzIDE2Mzg0IHJvb3Rfb2Jq
+ZWN0aWQgMzk4IHNsb3QgNTENCj4gWzE4MjEzMzEuMjM4NTgyXSBCVFJGUyBlcnJvciAoZGV2
+aWNlIGRtLTQpOiBmYWlsZWQgdG8gcnVuIGRlbGF5ZWQgcmVmIGZvciBsb2dpY2FsIDM1MDIy
+MzU4MTE4NCBudW1fYnl0ZXMgMTYzODQgdHlwZSAxNzYgYWN0aW9uIDEgcmVmX21vZCAxOiAt
+MTE3DQo+IFsxODIxMzMxLjIzODU4NF0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0t
+LS0tLS0tDQo+IFsxODIxMzMxLjIzODU4NV0gQlRSRlM6IFRyYW5zYWN0aW9uIGFib3J0ZWQg
+KGVycm9yIC0xMTcpDQo+IFsxODIxMzMxLjIzODU5M10gV0FSTklORzogQ1BVOiAxIFBJRDog
+MjQ1NzY3MiBhdCBmcy9idHJmcy9leHRlbnQtdHJlZS5jOjIxOTkgYnRyZnNfcnVuX2RlbGF5
+ZWRfcmVmcysweDEwNy8weDE0MA0KPiBbMTgyMTMzMS4yMzg1OTldIE1vZHVsZXMgbGlua2Vk
+IGluOiBtbWNfYmxvY2sgZXhmYXQgdWlucHV0IHJwY3NlY19nc3Nfa3JiNSBuZnN2NCBkbnNf
+cmVzb2x2ZXIgbmZzIG5ldGZzIHNnIHVhcyB1c2Jfc3RvcmFnZSBuZl9jb25udHJhY2tfbmV0
+bGluayB4ZnJtX3VzZXIgeGZybV9hbGdvIHh0X2FkZHJ0eXBlIGJyX25ldGZpbHRlciBicmlk
+Z2Ugc3RwIGxsYyB4dF90Y3B1ZHAgeHRfY29ubnRyYWNrIHJmY29tbSBzbmRfc2VxX2R1bW15
+IHNuZF9ocnRpbWVyIGNjbSBvdmVybGF5IGlwdF9SRUpFQ1QgbmZfcmVqZWN0X2lwdjQgeHRf
+TUFTUVVFUkFERSB4dF9MT0cgbmZfbG9nX3N5c2xvZyBuZnRfY29tcGF0IG5mdF9jaGFpbl9u
+YXQgbmZfbmF0IG5mX2Nvbm50cmFjayBuZl9kZWZyYWdfaXB2NiBuZl9kZWZyYWdfaXB2NCBj
+bWFjIGFsZ2lmX2hhc2ggYWxnaWZfc2tjaXBoZXIgYWZfYWxnIG5mX3RhYmxlcyBibmVwIGJp
+bmZtdF9taXNjIHV2Y3ZpZGVvIHZpZGVvYnVmMl92bWFsbG9jIHV2YyB2aWRlb2J1ZjJfbWVt
+b3BzIGJ0dXNiIHZpZGVvYnVmMl92NGwyIGJ0cnRsIGJ0YmNtIHZpZGVvZGV2IGJ0bXRrIGJ0
+aW50ZWwgdmlkZW9idWYyX2NvbW1vbiBtYyBibHVldG9vdGggbmxzX3V0ZjggbmxzX2NwNDM3
+IHZmYXQgZmF0IHNxdWFzaGZzIGxvb3Agc25kX2hkYV9jb2RlY19oZG1pIGl3bG12bSBzbmRf
+aGRhX2NvZGVjX3JlYWx0ZWsgc25kX2hkYV9jb2RlY19nZW5lcmljIHNuZF9zb2NfZG1pYyBz
+bmRfaGRhX3Njb2RlY19jb21wb25lbnQgbWFjODAyMTEgaW50ZWxfdW5jb3JlX2ZyZXF1ZW5j
+eSBzbmRfc29mX3BjaV9pbnRlbF90Z2wgaW50ZWxfdW5jb3JlX2ZyZXF1ZW5jeV9jb21tb24g
+c25kX3NvZl9wY2lfaW50ZWxfY25sIGludGVsX3RjY19jb29saW5nIHNuZF9zb2ZfaW50ZWxf
+aGRhX2dlbmVyaWMgc25kX3NvZl9pbnRlbF9oZGFfY29tbW9uIHg4Nl9wa2dfdGVtcF90aGVy
+bWFsIHNuZF9zb2ZfaW50ZWxfaGRhIGludGVsX3Bvd2VyY2xhbXAgbGliYXJjNCBzbmRfc29m
+X3BjaSBzbmRfc29mX3h0ZW5zYV9kc3Aga3ZtX2ludGVsDQo+IFsxODIxMzMxLjIzODY0NF0g
+IHNuZF9zb2NfaGRhY19oZGEgaXdsd2lmaSBrdm0gdGhpbmtwYWRfYWNwaSBzbmRfc29jX2Fj
+cGlfaW50ZWxfbWF0Y2ggbWVpX2hkY3AgbWVpX3B4cCBzbmRfc29jX2FjcGkgY2ZnODAyMTEg
+cHJvY2Vzc29yX3RoZXJtYWxfZGV2aWNlX3BjaV9sZWdhY3kgbnZyYW0gdHBtX2NyYiBwcm9j
+ZXNzb3JfdGhlcm1hbF9kZXZpY2UgcmFwbCBwbGF0Zm9ybV9wcm9maWxlIHByb2Nlc3Nvcl90
+aGVybWFsX3d0X2hpbnQgcHJvY2Vzc29yX3RoZXJtYWxfcmZpbSBzbmRfc29jX2F2cyBwcm9j
+ZXNzb3JfdGhlcm1hbF9yYXBsIHVjc2lfYWNwaSBpbnRlbF9yYXBsX2NvbW1vbiBudmlkaWFm
+YiBwcm9jZXNzb3JfdGhlcm1hbF93dF9yZXEgaW50ZWxfY3N0YXRlIHRoaW5rX2xtaSB2Z2Fz
+dGF0ZSBpVENPX3dkdCB0eXBlY191Y3NpIHNuZF9zb2NfaGRhX2NvZGVjIHBjc3BrciBwcm9j
+ZXNzb3JfdGhlcm1hbF9wb3dlcl9mbG9vciBmaXJtd2FyZV9hdHRyaWJ1dGVzX2NsYXNzIHdt
+aV9ibW9mIHNuZF9oZGFfaW50ZWwgZWUxMDA0IGlUQ09fdmVuZG9yX3N1cHBvcnQgZmJfZGRj
+IHR5cGVjIHByb2Nlc3Nvcl90aGVybWFsX21ib3ggbWVpX21lIHJvbGVzIGludGVsX3NvY19k
+dHNfaW9zZiBpbnQzNDAzX3RoZXJtYWwgcmZraWxsIGludDM0MHhfdGhlcm1hbF96b25lIGFj
+IGludGVsX3BtY19jb3JlIGludGVsX3ZzZWMgdHBtX3RpcyB0cG1fdGlzX2NvcmUgaW50MzQw
+MF90aGVybWFsIHBtdF90ZWxlbWV0cnkgYWNwaV9wYWQgaW50ZWxfaGlkIGFjcGlfdGhlcm1h
+bF9yZWwgc3BhcnNlX2tleW1hcCBwbXRfY2xhc3MgYWNwaV90YWQgaW5wdXRfbGVkcyBldmRl
+diBqb3lkZXYgc2VyaW9fcmF3IHZib3hkcnYoT0UpIHNvdW5kd2lyZV9pbnRlbCBzb3VuZHdp
+cmVfY2FkZW5jZSBzbmRfc29mX2ludGVsX2hkYV9tbGluayBzb3VuZHdpcmVfZ2VuZXJpY19h
+bGxvY2F0aW9uIHNuZF9zb2ZfcHJvYmVzIHNuZF9zb2Ygc25kX3NvZl91dGlscyBzbmRfaW50
+ZWxfZHNwY2ZnIHNuZF9pbnRlbF9zZHdfYWNwaSBzbmRfc29jX3NrbF9oZGFfZHNwDQo+IFsx
+ODIxMzMxLjIzODY4Ml0gIHNuZF9zb2NfaW50ZWxfaGRhX2RzcF9jb21tb24gc25kX2hkYV9j
+b2RlYyBzbmRfaHdkZXAgc25kX3NvY19oZGFjX2hkbWkgc25kX2hkYV9leHRfY29yZSBzbmRf
+c29jX2NvcmUgc25kX2NvbXByZXNzIHNuZF9wY21fZG1hZW5naW5lIHNuZF9oZGFfY29yZSBz
+bmRfcGNtX29zcyBzbmRfbWl4ZXJfb3NzIHNuZF9wY20gc25kX3NlcV9taWRpIHNuZF9zZXFf
+bWlkaV9ldmVudCBzbmRfc2VxIHNuZF90aW1lciBzbmRfcmF3bWlkaSBzbmRfc2VxX2Rldmlj
+ZSBzbmRfY3RsX2xlZCBzbmQgc291bmRjb3JlIGFjOTdfYnVzIGNvbmZpZ3MgY29yZXRlbXAg
+bXNyIGZ1c2UgZWZpX3BzdG9yZSBuZnNkIGF1dGhfcnBjZ3NzIG5mc19hY2wgbG9ja2QgZ3Jh
+Y2Ugc3VucnBjIG5mbmV0bGluayBpcF90YWJsZXMgeF90YWJsZXMgYXV0b2ZzNCBlc3NpdiBh
+dXRoZW5jIGRtX2NyeXB0IHRydXN0ZWQgYXNuMV9lbmNvZGVyIHRlZSB0cG0gcm5nX2NvcmUg
+bGliYWVzY2ZiIGVjZGhfZ2VuZXJpYyBkbV9tb2QgZWNjIHJhaWQ0NTYgYXN5bmNfcmFpZDZf
+cmVjb3YgYXN5bmNfbWVtY3B5IGFzeW5jX3BxIGFzeW5jX3hvciBhc3luY190eCBzYXRhX3Np
+bDI0IHI4MTY5IHJlYWx0ZWsgbWRpb19kZXZyZXMgbGlicGh5IG1paSBoaWRfZ2VuZXJpYyB1
+c2JoaWQgaGlkIGk5MTUgY3JjdDEwZGlmX3BjbG11bCBkcm1fYnVkZHkgaTJjX2FsZ29fYml0
+IHJ0c3hfcGNpX3NkbW1jIGNyYzMyX3BjbG11bCB4aGNpX3BjaSB0dG0gbW1jX2NvcmUgY3Jj
+MzJjX2ludGVsIHhoY2lfaGNkIHBvbHl2YWxfY2xtdWxuaSBkcm1fZGlzcGxheV9oZWxwZXIg
+cG9seXZhbF9nZW5lcmljIHVzYmNvcmUgY2VjIGkyY19pODAxIHJjX2NvcmUgdmlkZW8gcHRw
+IHNwaV9pbnRlbF9wY2kgaTJjX211eCBnaGFzaF9jbG11bG5pX2ludGVsIHNoYTUxMl9zc3Nl
+MyBzaGEyNTZfc3NzZTMgc2hhMV9zc3NlMyBwc21vdXNlIHRodW5kZXJib2x0IHJ0c3hfcGNp
+IHNwaV9pbnRlbCBpMmNfc21idXMgcHBzX2NvcmUgdXNiX2NvbW1vbiB0aGVybWFsIGh3bW9u
+IGJhdHRlcnkNCj4gWzE4MjEzMzEuMjM4NzMxXSAgd21pIGFlc25pX2ludGVsIGNyeXB0b19z
+aW1kIGNyeXB0ZCBbbGFzdCB1bmxvYWRlZDogaWdjXQ0KPiBbMTgyMTMzMS4yMzg3MzddIENQ
+VTogMSBVSUQ6IDAgUElEOiAyNDU3NjcyIENvbW06IGJ0cmZzIFRhaW50ZWQ6IEcgICAgIFUg
+ICAgIE9FICAgICAgNi4xMS4yLWFtZDY0LXByZWVtcHQtc3lzcnEtMjAyNDEwMDcgIzEgMWE1
+MTJjMmRiNWYwODdmMjM2ZDkwZWNmYjMwNTUxZmRkY2M1MTI0Mw0KPiBbMTgyMTMzMS4yMzg3
+NDBdIFRhaW50ZWQ6IFtVXT1VU0VSLCBbT109T09UX01PRFVMRSwgW0VdPVVOU0lHTkVEX01P
+RFVMRQ0KPiBbMTgyMTMzMS4yMzg3NDJdIEhhcmR3YXJlIG5hbWU6IExFTk9WTyAyMFlVMDAy
+SlVTLzIwWVUwMDJKVVMsIEJJT1MgTjM3RVQ0OVcgKDEuMzAgKSAxMS8xNS8yMDIzDQo+IFsx
+ODIxMzMxLjIzODc0M10gUklQOiAwMDEwOmJ0cmZzX3J1bl9kZWxheWVkX3JlZnMrMHgxMDcv
+MHgxNDANCj4gWzE4MjEzMzEuMjM4NzQ1XSBDb2RlOiAwMSAwMCAwMCAwMCBlYiBiNiBlOCAx
+OCA4ZSBiNyAwMCAzMSBkYiA4OSBkOCA1YiA1ZCA0MSA1YyA0MSA1ZCA0MSA1ZSBjMyBjYyBj
+YyBjYyBjYyA4OSBkZSA0OCBjNyBjNyA0MCBiYiBiNyA4NiBlOCBmOSAwYyA5ZiBmZiA8MGY+
+IDBiIGViIGQwIDY2IDY2IDJlIDBmIDFmIDg0IDAwIDAwIDAwIDAwIDAwIDY2IDY2IDJlIDBm
+IDFmIDg0IDAwDQo+IFsxODIxMzMxLjIzODc0N10gUlNQOiAwMDE4OmZmZmZhZjFhNmYxNjc4
+NTggRUZMQUdTOiAwMDAxMDI4Mg0KPiBbMTgyMTMzMS4yMzg3NDldIFJBWDogMDAwMDAwMDAw
+MDAwMDAwMCBSQlg6IDAwMDAwMDAwZmZmZmZmOGIgUkNYOiAwMDAwMDAwMDAwMDAwMDI3DQo+
+IFsxODIxMzMxLjIzODc1MF0gUkRYOiBmZmZmOGZjZjJmMmExODQ4IFJTSTogMDAwMDAwMDAw
+MDAwMDAwMSBSREk6IGZmZmY4ZmNmMmYyYTE4NDANCj4gWzE4MjEzMzEuMjM4NzUyXSBSQlA6
+IGZmZmY4ZmIwNmVmYjgxNTAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAwMDAw
+MDAwMDAwMw0KPiBbMTgyMTMzMS4yMzg3NTNdIFIxMDogZmZmZmFmMWE2ZjE2NzZmOCBSMTE6
+IGZmZmY4ZmNmYWY3ZDUwMjggUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsxODIxMzMxLjIz
+ODc1NF0gUjEzOiBmZmZmOGZiMTQ2NzMxMzU4IFIxNDogZmZmZjhmYjE0NjczMTIwMCBSMTU6
+IDAwMDAwMDAwMDAwMDAwMDANCj4gWzE4MjEzMzEuMjM4NzU1XSBGUzogIDAwMDA3ZmQ5MTg4
+M2QzODAoMDAwMCkgR1M6ZmZmZjhmY2YyZjI4MDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAw
+MDAwMDAwDQo+IFsxODIxMzMxLjIzODc1Nl0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAw
+IENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBbMTgyMTMzMS4yMzg3NTddIENSMjogMDAwMDdl
+NDkwMTAwMTAwMCBDUjM6IDAwMDAwMDAxYzNjYjYwMDQgQ1I0OiAwMDAwMDAwMDAwNzcwZWYw
+DQo+IFsxODIxMzMxLjIzODc1OV0gUEtSVTogNTU1NTU1NTQNCj4gWzE4MjEzMzEuMjM4NzYw
+XSBDYWxsIFRyYWNlOg0KPiBbMTgyMTMzMS4yMzg3NjJdICA8VEFTSz4NCj4gWzE4MjEzMzEu
+MjM4NzY1XSAgPyBfX3dhcm4rMHg3Yy8weDE0MA0KPiBbMTgyMTMzMS4yMzg3NjldICA/IGJ0
+cmZzX3J1bl9kZWxheWVkX3JlZnMrMHgxMDcvMHgxNDANCj4gWzE4MjEzMzEuMjM4NzcxXSAg
+PyByZXBvcnRfYnVnKzB4MTYwLzB4MWMwDQo+IFsxODIxMzMxLjIzODc3NF0gID8gaGFuZGxl
+X2J1ZysweDQxLzB4ODANCj4gWzE4MjEzMzEuMjM4Nzc3XSAgPyBleGNfaW52YWxpZF9vcCsw
+eDE1LzB4MTAwDQo+IFsxODIxMzMxLjIzODc4MF0gID8gYXNtX2V4Y19pbnZhbGlkX29wKzB4
+MTYvMHg0MA0KPiBbMTgyMTMzMS4yMzg3ODNdICA/IGJ0cmZzX3J1bl9kZWxheWVkX3JlZnMr
+MHgxMDcvMHgxNDANCj4gWzE4MjEzMzEuMjM4Nzg1XSAgPyBidHJmc19ydW5fZGVsYXllZF9y
+ZWZzKzB4MTA3LzB4MTQwDQo+IFsxODIxMzMxLjIzODc4Nl0gIGJ0cmZzX2NvbW1pdF90cmFu
+c2FjdGlvbisweDY5LzB4ZTgwDQo+IFsxODIxMzMxLjIzODc5MF0gID8gYnRyZnNfdXBkYXRl
+X3JlbG9jX3Jvb3QrMHgxMmQvMHgyNDANCj4gWzE4MjEzMzEuMjM4NzkzXSAgcHJlcGFyZV90
+b19tZXJnZSsweDRmMC8weDYwMA0KPiBbMTgyMTMzMS4yMzg3OTZdICByZWxvY2F0ZV9ibG9j
+a19ncm91cCsweDExMy8weDUwMA0KPiBbMTgyMTMzMS4yMzg3OThdICBidHJmc19yZWxvY2F0
+ZV9ibG9ja19ncm91cCsweDI3YS8weDQ0MA0KPiBbMTgyMTMzMS4yMzg4MDBdICBidHJmc19y
+ZWxvY2F0ZV9jaHVuaysweDNiLzB4MTgwDQo+IFsxODIxMzMxLjIzODgwM10gIGJ0cmZzX2Jh
+bGFuY2UrMHg4YzEvMHgxMzQwDQo+IFsxODIxMzMxLjIzODgwNV0gID8gYnRyZnNfaW9jdGwr
+MHgxOGRiLzB4MjZjMA0KPiBbMTgyMTMzMS4yMzg4MTFdICBidHJmc19pb2N0bCsweDIyODUv
+MHgyNmMwDQo+IFsxODIxMzMxLjIzODgxM10gID8gX19tb2RfbWVtY2dfbHJ1dmVjX3N0YXRl
+KzB4OTEvMHgxNDANCj4gWzE4MjEzMzEuMjM4ODE3XSAgPyB2c25wcmludGYrMHgzMjMvMHg1
+ODANCj4gWzE4MjEzMzEuMjM4ODE5XSAgPyBfX3NsYWJfZnJlZSsweDUzLzB4MmMwDQo+IFsx
+ODIxMzMxLjIzODgyMl0gID8gc3lzZnNfZW1pdCsweDY4LzB4YzANCj4gWzE4MjEzMzEuMjM4
+ODI2XSAgX194NjRfc3lzX2lvY3RsKzB4OTAvMHgxMDANCj4gWzE4MjEzMzEuMjM4ODMwXSAg
+ZG9fc3lzY2FsbF82NCsweDY5LzB4MTQwDQo+IFsxODIxMzMxLjIzODgzMl0gID8gX19tZW1j
+Z19zbGFiX2ZyZWVfaG9vaysweGYzLzB4MTQwDQo+IFsxODIxMzMxLjIzODgzNV0gID8gX194
+NjRfc3lzX2Nsb3NlKzB4MzgvMHg4MA0KPiBbMTgyMTMzMS4yMzg4MzhdICA/IGttZW1fY2Fj
+aGVfZnJlZSsweDMzNi8weDQwMA0KPiBbMTgyMTMzMS4yMzg4NDBdICA/IGRvX3N5c2NhbGxf
+NjQrMHg3NS8weDE0MA0KPiBbMTgyMTMzMS4yMzg4NDJdICA/IGtzeXNfcmVhZCsweDYzLzB4
+MTAwDQo+IFsxODIxMzMxLjIzODg0NV0gID8gX19tb2RfbWVtY2dfbHJ1dmVjX3N0YXRlKzB4
+OTEvMHgxNDANCj4gWzE4MjEzMzEuMjM4ODQ4XSAgPyBtb2Rfb2JqY2dfc3RhdGUrMHgxOWQv
+MHgyYzANCj4gWzE4MjEzMzEuMjM4ODUwXSAgPyBfX21lbWNnX3NsYWJfZnJlZV9ob29rKzB4
+ZjMvMHgxNDANCj4gWzE4MjEzMzEuMjM4ODUyXSAgPyBzZXFfcmVsZWFzZSsweDI0LzB4NDAN
+Cj4gWzE4MjEzMzEuMjM4ODU0XSAgPyBfX21lbWNnX3NsYWJfZnJlZV9ob29rKzB4ZjMvMHgx
+NDANCj4gWzE4MjEzMzEuMjM4ODU2XSAgPyBfX3g2NF9zeXNfY2xvc2UrMHgzOC8weDgwDQo+
+IFsxODIxMzMxLjIzODg1OF0gID8ga21lbV9jYWNoZV9mcmVlKzB4MzM2LzB4NDAwDQo+IFsx
+ODIxMzMxLjIzODg2MF0gID8gY2xlYXJfYmhiX2xvb3ArMHg0NS8weGMwDQo+IFsxODIxMzMx
+LjIzODg2Ml0gID8gY2xlYXJfYmhiX2xvb3ArMHg0NS8weGMwDQo+IFsxODIxMzMxLjIzODg2
+NF0gID8gY2xlYXJfYmhiX2xvb3ArMHg0NS8weGMwDQo+IFsxODIxMzMxLjIzODg2Nl0gID8g
+Y2xlYXJfYmhiX2xvb3ArMHg0NS8weGMwDQo+IFsxODIxMzMxLjIzODg2N10gID8gY2xlYXJf
+YmhiX2xvb3ArMHg0NS8weGMwDQo+IFsxODIxMzMxLjIzODg2OV0gIGVudHJ5X1NZU0NBTExf
+NjRfYWZ0ZXJfaHdmcmFtZSsweDc2LzB4N2UNCj4gWzE4MjEzMzEuMjM4ODcyXSBSSVA6IDAw
+MzM6MHg3ZmQ5MTg5NTY0YmINCj4gWzE4MjEzMzEuMjM4ODc0XSBDb2RlOiAwMCA0OCA4OSA0
+NCAyNCAxOCAzMSBjMCA0OCA4ZCA0NCAyNCA2MCBjNyAwNCAyNCAxMCAwMCAwMCAwMCA0OCA4
+OSA0NCAyNCAwOCA0OCA4ZCA0NCAyNCAyMCA0OCA4OSA0NCAyNCAxMCBiOCAxMCAwMCAwMCAw
+MCAwZiAwNSA8ODk+IGMyIDNkIDAwIGYwIGZmIGZmIDc3IDFjIDQ4IDhiIDQ0IDI0IDE4IDY0
+IDQ4IDJiIDA0IDI1IDI4IDAwIDAwDQo+IFsxODIxMzMxLjIzODg3Nl0gUlNQOiAwMDJiOjAw
+MDA3ZmZkNTg5NmQ3YTAgRUZMQUdTOiAwMDAwMDI0NiBPUklHX1JBWDogMDAwMDAwMDAwMDAw
+MDAxMA0KPiBbMTgyMTMzMS4yMzg4NzhdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAw
+MDAwMDAwMDAwMDAwMDMgUkNYOiAwMDAwN2ZkOTE4OTU2NGJiDQo+IFsxODIxMzMxLjIzODg3
+OV0gUkRYOiAwMDAwN2ZmZDU4OTZkOGE4IFJTSTogMDAwMDAwMDBjNDAwOTQyMCBSREk6IDAw
+MDAwMDAwMDAwMDAwMDMNCj4gWzE4MjEzMzEuMjM4ODgwXSBSQlA6IDAwMDAwMDAwMDAwMDAw
+MDAgUjA4OiAwMDAwMDAwMDAwMDAwMDczIFIwOTogMDAwMDAwMDAwMDAwMDAxMw0KPiBbMTgy
+MTMzMS4yMzg4ODFdIFIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAy
+NDYgUjEyOiAwMDAwN2ZmZDU4OTZkOGE4DQo+IFsxODIxMzMxLjIzODg4Ml0gUjEzOiAwMDAw
+MDAwMDAwMDAwMDAwIFIxNDogMDAwMDdmZmQ1ODk2ZWUyNCBSMTU6IDAwMDAwMDAwMDAwMDAw
+MDENCj4gWzE4MjEzMzEuMjM4ODg0XSAgPC9UQVNLPg0KPiBbMTgyMTMzMS4yMzg4ODVdIC0t
+LVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQ0KPiBbMTgyMTMzMS4yMzg4ODZd
+IEJUUkZTOiBlcnJvciAoZGV2aWNlIGRtLTQgc3RhdGUgQSkgaW4gYnRyZnNfcnVuX2RlbGF5
+ZWRfcmVmczoyMTk5OiBlcnJubz0tMTE3IEZpbGVzeXN0ZW0gY29ycnVwdGVkDQo+IA0KDQo=
 
-This is what I have nightly:
-# I'm told that proactively rebalancing metadata may not be a good idea.
-#btrfs balance start -musage=3D20 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
-# but a null rebalance should help corner cases:
-btrfs balance start -musage=3D0 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
-# After metadata, let's do data:
-btrfs balance start -dusage=3D0 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
-btrfs balance start -dusage=3D20 -v $mountpoint 2>&1 | grep -Ev "$FILTER"
-
-
-Balance ended with btrfs_run_delayed_refs:2199: errno=3D-117 Filesystem cor=
-rupted
-
-btrfs check says it's not
-sauron:~# btrfs check /dev/mapper/pool1
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/pool1
-UUID: 4542883b-d8bc-4d7f-8a2e-944dc355dc44
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space tree
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 228820946944 bytes used, no error found
-total csum bytes: 219270232
-total tree bytes: 4539334656
-total fs tree bytes: 3719593984
-total extent tree bytes: 481935360
-btree space waste bytes: 1075469196
-file data blocks allocated: 15390875832320
- referenced 290833076224
-
-Any ideas? this obviously caused downtime, but after the btrfs check saying=
- I'm supposedly
-ok, I'm back up for now, hoping it won't happen again and hope is not a str=
-ategy :)
-
-Is it safe to run balance again? any idea why it failed?
-
-[1821331.015652] BTRFS info (device dm-4): balance: start -dusage=3D20
-[1821331.015805] BTRFS info (device dm-4): relocating block group 761212698=
-624 flags data
-[1821331.090338] BTRFS info (device dm-4): found 31 extents, stage: move da=
-ta extents
-[1821331.237707] BTRFS info (device dm-4): leaf 471333519360 gen 4808182 to=
-tal ptrs 168 free space 3533 owner 2
-[1821331.237716] 	item 0 key (350222417920 169 0) itemoff 16250 itemsize 33
-[1821331.237718] 		extent refs 1 gen 2907391 flags 2
-[1821331.237719] 		ref#0: tree block backref root 398
-(...(
-[1821331.238559] 	item 167 key (350225678336 169 0) itemoff 7733 itemsize 1=
-68
-[1821331.238560] 		extent refs 16 gen 4619087 flags 2
-[1821331.238561] 		ref#0: tree block backref root 398
-[1821331.238562] 		ref#1: shared block backref parent 737084112896
-[1821331.238563] 		ref#2: shared block backref parent 736609173504
-[1821331.238564] 		ref#3: shared block backref parent 471099588608
-[1821331.238565] 		ref#4: shared block backref parent 471017488384
-[1821331.238567] 		ref#5: shared block backref parent 470665625600
-[1821331.238568] 		ref#6: shared block backref parent 350806835200
-[1821331.238569] 		ref#7: shared block backref parent 350292066304
-[1821331.238570] 		ref#8: shared block backref parent 349856350208
-[1821331.238571] 		ref#9: shared block backref parent 153429573632
-[1821331.238572] 		ref#10: shared block backref parent 153014337536
-[1821331.238573] 		ref#11: shared block backref parent 152976048128
-[1821331.238575] 		ref#12: shared block backref parent 152753946624
-[1821331.238576] 		ref#13: shared block backref parent 152639225856
-[1821331.238577] 		ref#14: shared block backref parent 50782617600
-[1821331.238578] 		ref#15: shared block backref parent 394002432
-[1821331.238579] BTRFS critical (device dm-4): adding refs to an existing t=
-ree ref, bytenr 350223581184 num_bytes 16384 root_objectid 398 slot 51
-[1821331.238582] BTRFS error (device dm-4): failed to run delayed ref for l=
-ogical 350223581184 num_bytes 16384 type 176 action 1 ref_mod 1: -117
-[1821331.238584] ------------[ cut here ]------------
-[1821331.238585] BTRFS: Transaction aborted (error -117)
-[1821331.238593] WARNING: CPU: 1 PID: 2457672 at fs/btrfs/extent-tree.c:219=
-9 btrfs_run_delayed_refs+0x107/0x140
-[1821331.238599] Modules linked in: mmc_block exfat uinput rpcsec_gss_krb5 =
-nfsv4 dns_resolver nfs netfs sg uas usb_storage nf_conntrack_netlink xfrm_u=
-ser xfrm_algo xt_addrtype br_netfilter bridge stp llc xt_tcpudp xt_conntrac=
-k rfcomm snd_seq_dummy snd_hrtimer ccm overlay ipt_REJECT nf_reject_ipv4 xt=
-_MASQUERADE xt_LOG nf_log_syslog nft_compat nft_chain_nat nf_nat nf_conntra=
-ck nf_defrag_ipv6 nf_defrag_ipv4 cmac algif_hash algif_skcipher af_alg nf_t=
-ables bnep binfmt_misc uvcvideo videobuf2_vmalloc uvc videobuf2_memops btus=
-b videobuf2_v4l2 btrtl btbcm videodev btmtk btintel videobuf2_common mc blu=
-etooth nls_utf8 nls_cp437 vfat fat squashfs loop snd_hda_codec_hdmi iwlmvm =
-snd_hda_codec_realtek snd_hda_codec_generic snd_soc_dmic snd_hda_scodec_com=
-ponent mac80211 intel_uncore_frequency snd_sof_pci_intel_tgl intel_uncore_f=
-requency_common snd_sof_pci_intel_cnl intel_tcc_cooling snd_sof_intel_hda_g=
-eneric snd_sof_intel_hda_common x86_pkg_temp_thermal snd_sof_intel_hda inte=
-l_powerclamp libarc4 snd_sof_pci snd_sof_xtensa_dsp kvm_intel
-[1821331.238644]  snd_soc_hdac_hda iwlwifi kvm thinkpad_acpi snd_soc_acpi_i=
-ntel_match mei_hdcp mei_pxp snd_soc_acpi cfg80211 processor_thermal_device_=
-pci_legacy nvram tpm_crb processor_thermal_device rapl platform_profile pro=
-cessor_thermal_wt_hint processor_thermal_rfim snd_soc_avs processor_thermal=
-_rapl ucsi_acpi intel_rapl_common nvidiafb processor_thermal_wt_req intel_c=
-state think_lmi vgastate iTCO_wdt typec_ucsi snd_soc_hda_codec pcspkr proce=
-ssor_thermal_power_floor firmware_attributes_class wmi_bmof snd_hda_intel e=
-e1004 iTCO_vendor_support fb_ddc typec processor_thermal_mbox mei_me roles =
-intel_soc_dts_iosf int3403_thermal rfkill int340x_thermal_zone ac intel_pmc=
-_core intel_vsec tpm_tis tpm_tis_core int3400_thermal pmt_telemetry acpi_pa=
-d intel_hid acpi_thermal_rel sparse_keymap pmt_class acpi_tad input_leds ev=
-dev joydev serio_raw vboxdrv(OE) soundwire_intel soundwire_cadence snd_sof_=
-intel_hda_mlink soundwire_generic_allocation snd_sof_probes snd_sof snd_sof=
-_utils snd_intel_dspcfg snd_intel_sdw_acpi snd_soc_skl_hda_dsp
-[1821331.238682]  snd_soc_intel_hda_dsp_common snd_hda_codec snd_hwdep snd_=
-soc_hdac_hdmi snd_hda_ext_core snd_soc_core snd_compress snd_pcm_dmaengine =
-snd_hda_core snd_pcm_oss snd_mixer_oss snd_pcm snd_seq_midi snd_seq_midi_ev=
-ent snd_seq snd_timer snd_rawmidi snd_seq_device snd_ctl_led snd soundcore =
-ac97_bus configs coretemp msr fuse efi_pstore nfsd auth_rpcgss nfs_acl lock=
-d grace sunrpc nfnetlink ip_tables x_tables autofs4 essiv authenc dm_crypt =
-trusted asn1_encoder tee tpm rng_core libaescfb ecdh_generic dm_mod ecc rai=
-d456 async_raid6_recov async_memcpy async_pq async_xor async_tx sata_sil24 =
-r8169 realtek mdio_devres libphy mii hid_generic usbhid hid i915 crct10dif_=
-pclmul drm_buddy i2c_algo_bit rtsx_pci_sdmmc crc32_pclmul xhci_pci ttm mmc_=
-core crc32c_intel xhci_hcd polyval_clmulni drm_display_helper polyval_gener=
-ic usbcore cec i2c_i801 rc_core video ptp spi_intel_pci i2c_mux ghash_clmul=
-ni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 psmouse thunderbolt rtsx_pci =
-spi_intel i2c_smbus pps_core usb_common thermal hwmon battery
-[1821331.238731]  wmi aesni_intel crypto_simd cryptd [last unloaded: igc]
-[1821331.238737] CPU: 1 UID: 0 PID: 2457672 Comm: btrfs Tainted: G     U   =
-  OE      6.11.2-amd64-preempt-sysrq-20241007 #1 1a512c2db5f087f236d90ecfb3=
-0551fddcc51243
-[1821331.238740] Tainted: [U]=3DUSER, [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODU=
-LE
-[1821331.238742] Hardware name: LENOVO 20YU002JUS/20YU002JUS, BIOS N37ET49W=
- (1.30 ) 11/15/2023
-[1821331.238743] RIP: 0010:btrfs_run_delayed_refs+0x107/0x140
-[1821331.238745] Code: 01 00 00 00 eb b6 e8 18 8e b7 00 31 db 89 d8 5b 5d 4=
-1 5c 41 5d 41 5e c3 cc cc cc cc 89 de 48 c7 c7 40 bb b7 86 e8 f9 0c 9f ff <=
-0f> 0b eb d0 66 66 2e 0f 1f 84 00 00 00 00 00 66 66 2e 0f 1f 84 00
-[1821331.238747] RSP: 0018:ffffaf1a6f167858 EFLAGS: 00010282
-[1821331.238749] RAX: 0000000000000000 RBX: 00000000ffffff8b RCX: 000000000=
-0000027
-[1821331.238750] RDX: ffff8fcf2f2a1848 RSI: 0000000000000001 RDI: ffff8fcf2=
-f2a1840
-[1821331.238752] RBP: ffff8fb06efb8150 R08: 0000000000000000 R09: 000000000=
-0000003
-[1821331.238753] R10: ffffaf1a6f1676f8 R11: ffff8fcfaf7d5028 R12: 000000000=
-0000000
-[1821331.238754] R13: ffff8fb146731358 R14: ffff8fb146731200 R15: 000000000=
-0000000
-[1821331.238755] FS:  00007fd91883d380(0000) GS:ffff8fcf2f280000(0000) knlG=
-S:0000000000000000
-[1821331.238756] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[1821331.238757] CR2: 00007e4901001000 CR3: 00000001c3cb6004 CR4: 000000000=
-0770ef0
-[1821331.238759] PKRU: 55555554
-[1821331.238760] Call Trace:
-[1821331.238762]  <TASK>
-[1821331.238765]  ? __warn+0x7c/0x140
-[1821331.238769]  ? btrfs_run_delayed_refs+0x107/0x140
-[1821331.238771]  ? report_bug+0x160/0x1c0
-[1821331.238774]  ? handle_bug+0x41/0x80
-[1821331.238777]  ? exc_invalid_op+0x15/0x100
-[1821331.238780]  ? asm_exc_invalid_op+0x16/0x40
-[1821331.238783]  ? btrfs_run_delayed_refs+0x107/0x140
-[1821331.238785]  ? btrfs_run_delayed_refs+0x107/0x140
-[1821331.238786]  btrfs_commit_transaction+0x69/0xe80
-[1821331.238790]  ? btrfs_update_reloc_root+0x12d/0x240
-[1821331.238793]  prepare_to_merge+0x4f0/0x600
-[1821331.238796]  relocate_block_group+0x113/0x500
-[1821331.238798]  btrfs_relocate_block_group+0x27a/0x440
-[1821331.238800]  btrfs_relocate_chunk+0x3b/0x180
-[1821331.238803]  btrfs_balance+0x8c1/0x1340
-[1821331.238805]  ? btrfs_ioctl+0x18db/0x26c0
-[1821331.238811]  btrfs_ioctl+0x2285/0x26c0
-[1821331.238813]  ? __mod_memcg_lruvec_state+0x91/0x140
-[1821331.238817]  ? vsnprintf+0x323/0x580
-[1821331.238819]  ? __slab_free+0x53/0x2c0
-[1821331.238822]  ? sysfs_emit+0x68/0xc0
-[1821331.238826]  __x64_sys_ioctl+0x90/0x100
-[1821331.238830]  do_syscall_64+0x69/0x140
-[1821331.238832]  ? __memcg_slab_free_hook+0xf3/0x140
-[1821331.238835]  ? __x64_sys_close+0x38/0x80
-[1821331.238838]  ? kmem_cache_free+0x336/0x400
-[1821331.238840]  ? do_syscall_64+0x75/0x140
-[1821331.238842]  ? ksys_read+0x63/0x100
-[1821331.238845]  ? __mod_memcg_lruvec_state+0x91/0x140
-[1821331.238848]  ? mod_objcg_state+0x19d/0x2c0
-[1821331.238850]  ? __memcg_slab_free_hook+0xf3/0x140
-[1821331.238852]  ? seq_release+0x24/0x40
-[1821331.238854]  ? __memcg_slab_free_hook+0xf3/0x140
-[1821331.238856]  ? __x64_sys_close+0x38/0x80
-[1821331.238858]  ? kmem_cache_free+0x336/0x400
-[1821331.238860]  ? clear_bhb_loop+0x45/0xc0
-[1821331.238862]  ? clear_bhb_loop+0x45/0xc0
-[1821331.238864]  ? clear_bhb_loop+0x45/0xc0
-[1821331.238866]  ? clear_bhb_loop+0x45/0xc0
-[1821331.238867]  ? clear_bhb_loop+0x45/0xc0
-[1821331.238869]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[1821331.238872] RIP: 0033:0x7fd9189564bb
-[1821331.238874] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 0=
-0 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <=
-89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
-[1821331.238876] RSP: 002b:00007ffd5896d7a0 EFLAGS: 00000246 ORIG_RAX: 0000=
-000000000010
-[1821331.238878] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fd91=
-89564bb
-[1821331.238879] RDX: 00007ffd5896d8a8 RSI: 00000000c4009420 RDI: 000000000=
-0000003
-[1821331.238880] RBP: 0000000000000000 R08: 0000000000000073 R09: 000000000=
-0000013
-[1821331.238881] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd5=
-896d8a8
-[1821331.238882] R13: 0000000000000000 R14: 00007ffd5896ee24 R15: 000000000=
-0000001
-[1821331.238884]  </TASK>
-[1821331.238885] ---[ end trace 0000000000000000 ]---
-[1821331.238886] BTRFS: error (device dm-4 state A) in btrfs_run_delayed_re=
-fs:2199: errno=3D-117 Filesystem corrupted
-
---=20
-"A mouse is a device used to point at the xterm you want to type in" - A.S.=
-R.
-=20
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AA=
-F9D08
 
