@@ -1,82 +1,98 @@
-Return-Path: <linux-btrfs+bounces-11758-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11757-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69850A43986
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 10:32:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2274A4398D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 10:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D32E216F063
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 09:32:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 055F8188CE72
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2025 09:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07AE25A2CD;
-	Tue, 25 Feb 2025 09:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3BA26159F;
+	Tue, 25 Feb 2025 09:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qtzOxqD9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from nt.romanrm.net (nt.romanrm.net [185.213.174.59])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E53B25A2D4
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 09:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.213.174.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338CA261592
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 09:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740475923; cv=none; b=umCup4mv1ogWNz43lF29fZ4GTTCMQzzD7TmhbVcVEcrO9CNjXRM76p7GDLYVKCWOrVIlUNfhFeIyd9JgeqGinM/ZuwtFEL2bciCcaYtIN+fT83wBqZVVRpLsZMYSSyp/fZNN+DXpi3O52QPGiqkC2100vzS914IE/+SyI6FhhpE=
+	t=1740475866; cv=none; b=dxzXENpUI7KeMmrpS7D+eGZfvUddGl3cZVRDW4DsbftqLYnOI13C95A1EQSPDoGIWO7RQYu71CR9IO3hIC4j/2rG0QEBJN91MiOm3XmdA3lW3blEfBDXrLpG31yJUc+tXi8eAJ9OKP7kiXr2z0Iz4uUV//gldlPaEwiE+zSsoaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740475923; c=relaxed/simple;
-	bh=H3RwkjgI0zxL3/7qSi0N8hz10o3o+4kKzNlA4BV2FBI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lrs6NM4IX2APN0OtKwkirwJJbemIsg3+VRn+BmwobRUQcQHi0n5Z0k+ClCerzUrRRMwjtFPQc+O8I5eVso0BajRbvrMiyRphlhly81t/W+gvOQLxYD/Qnk//+J2Jeh6f6nbBk2miUdcYu9BxtnXX6O4Mjkiyv0UKE26O+3o3yn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net; spf=pass smtp.mailfrom=romanrm.net; arc=none smtp.client-ip=185.213.174.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=romanrm.net
-Received: from nvm (umi.2.romanrm.net [IPv6:fd39:a37d:999f:7e35:7900:fcd:12a3:6181])
-	by nt.romanrm.net (Postfix) with SMTP id 99F2A43416;
-	Tue, 25 Feb 2025 09:25:05 +0000 (UTC)
-Date: Tue, 25 Feb 2025 14:25:05 +0500
-From: Roman Mamedov <rm@romanrm.net>
-To: Marc MERLIN <marc@merlins.org>
-Cc: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>, Josef Bacik
- <josef@toxicpanda.com>, Chris Murphy <lists@colorremedies.com>, Zygo
- Blaxell <ce3g8jdj@umail.furryterror.org>, Su Yue <suy.fnst@cn.fujitsu.com>
-Subject: Re: BTRFS error (device dm-4): failed to run delayed ref for
- logical 350223581184 num_bytes 16384 type 176 action 1 ref_mod 1: -117
- (kernel 6.11.2)
-Message-ID: <20250225142505.276af40f@nvm>
-In-Reply-To: <Z72LAZDq8IegQoua@merlins.org>
-References: <Z6TsUwR7tyKJrZ7w@merlins.org>
-	<Z71yICVikAzKxisq@merlins.org>
-	<018d16aa-24b2-43ae-826c-7f717e0d05ee@gmx.com>
-	<Z71_TednCt9KzR45@merlins.org>
-	<d973b4b7-0d98-4310-bb7e-50f87c374762@suse.com>
-	<Z72LAZDq8IegQoua@merlins.org>
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1740475866; c=relaxed/simple;
+	bh=gwp2fuJXCL/bjNIarZEPkgmjBf8NLWIelOI9giPWV8s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=muGkWH+3yq1CQHK9NeJ3Y99Eq8ffClhJDrZ8EuZGauaq0A10+H/mqGvX41k03pshr+Pb73LxQ2o0wnWiSVD9W09OdGn+TfGU/4euU7bEfr43lTDq+Xv3RUQ+LVuzGqD0GvxX54Y/9r5yo+kBKRPQadk245fBzzea3A38e7mG2EU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qtzOxqD9; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740475861;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=isPQgwurSdwU4T9ma6rP9Qtz5aT2veuB9Ji0NyBAn4o=;
+	b=qtzOxqD9Ri5jjb902pbFYhzZ6EzVrV12wtzG47jsrGdYj7Sg2QCW9dKlkagI5EIv5pRgIL
+	0g/P6xRW1qyAchXbFS0h7FAm1hB6JpPmn0JKgQfczdufF5Wi8ps59ZhbGhrCUjhudYqvCe
+	xpdRdnUOV+AyDBIb+ndHJknC6QocUWk=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-hardening@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: Replace deprecated strncpy() with strscpy_pad()
+Date: Tue, 25 Feb 2025 10:29:49 +0100
+Message-ID: <20250225092949.287300-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 25 Feb 2025 01:18:57 -0800
-Marc MERLIN <marc@merlins.org> wrote:
+strncpy() is deprecated for NUL-terminated destination buffers. Use
+strscpy_pad() instead and don't zero-initialize the param array.
 
-> I do not have the system with me right now and I think memtest cannot be
-> run from inside linux, correct?
-> If so, I can do this when I get home and can reboot the system.
-> 
-> Or is there a version I can run from inside linux?
+Compile-tested only.
 
-There is memtester: https://pyropus.ca./software/memtester/
-But it can't test 100% of the RAM, only the free userspace area that it can
-allocate. You should close down most apps and then give it (as a parameter) as
-high amount as possible, without it getting killed by OOM. It could catch very
-obvious faults, and it is a good "something to do" for now :) but for the
-complete rigorous test you'll need the baremetal memtest86+.
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ fs/btrfs/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 53b846d99ece..b941fb37776d 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1330,13 +1330,13 @@ MODULE_PARM_DESC(read_policy,
+ 
+ int btrfs_read_policy_to_enum(const char *str, s64 *value_ret)
+ {
+-	char param[32] = { 0 };
++	char param[32];
+ 	char __maybe_unused *value_str;
+ 
+ 	if (!str || strlen(str) == 0)
+ 		return 0;
+ 
+-	strncpy(param, str, sizeof(param) - 1);
++	strscpy_pad(param, str);
+ 
+ #ifdef CONFIG_BTRFS_EXPERIMENTAL
+ 	/* Separate value from input in policy:value format. */
 -- 
-With respect,
-Roman
+2.48.1
+
 
