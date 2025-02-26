@@ -1,123 +1,134 @@
-Return-Path: <linux-btrfs+bounces-11883-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11884-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A373A46C99
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 21:39:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A575A46DA2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 22:39:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 081F93AEBF6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 20:39:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278DD3B0584
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 21:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDAB2561D6;
-	Wed, 26 Feb 2025 20:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D662264A99;
+	Wed, 26 Feb 2025 21:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fV8iNAC7"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="1U/sbtIk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1552827561C;
-	Wed, 26 Feb 2025 20:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A3626157F
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 21:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740602334; cv=none; b=WQ4PmwmEnNIRTGDpcRIBQXd7wchdvHqpnXQJKsJBoFIxAJuz1qAd8tFYa0SJakHfdyIaBacXEo4G19eyT/sUjw0vSn3xf0Ypxg4beIUkVACZQZ4JS9mwNVpth8ciyTcMJOE1FLjneSPooaYdXb7clMXOYtPFJNpbm5PLFpV4PsQ=
+	t=1740605871; cv=none; b=emiCJQMl+pAknlWh+x7R2SrzPQJIo0kU2f4f4Mfw+NIExkbSUSWSolyDV1XxYBfZVi9/XWfDifo1l/Z6SBhfRTLnZYegWisWJVs+wnaKX1iZa/3IVJYYx0StbZ4fB/EteJYyTFpwNntzvYQq12Ta1jFxG/ppbOy7Fizsa7c1AdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740602334; c=relaxed/simple;
-	bh=7XYXLxmDs/g+GFsdMP00ShC9As4ZJdRFjOnafekKWK4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=WgKiS3Iqan7ZZIsHFJI/HVGDUAWTs2KgNl4AJzVxc3fZwliMwyIOG7gEG8w8heSViu3Y9XlnSJztXB/IxcrsFZXY/wksy8RcAFA36vzq5g9lu+IKYEJMD1c6HhC9jI4k1cAeQvtMlv02GxEdrcPpMcsEba8BjgbzgzzGB3qyAv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=fV8iNAC7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6862C4CED6;
-	Wed, 26 Feb 2025 20:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1740602333;
-	bh=7XYXLxmDs/g+GFsdMP00ShC9As4ZJdRFjOnafekKWK4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fV8iNAC7l4sOXlbbBPxr62ebH5w2CCdPAcSqIvutoYztu5oPQJIO+VleFuSaNJwgu
-	 4XgUTLEITbZ/EXzbMYjOUaYvhSzh8lkiZR+OX0Og6mdEO8tbUqzELkCgiiGXTD8w+8
-	 VA5I1aWrxf8HjtmXFunV8nM5CekAUj0+LkOLORow=
-Date: Wed, 26 Feb 2025 12:38:51 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Easwar Hariharan <eahariha@linux.microsoft.com>, Yaron Avizrat
- <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>, Julia Lawall
- <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, James Smart
- <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Ilya
- Dryomov <idryomov@gmail.com>, Dongsheng Yang <dongsheng.yang@easystack.cn>,
- Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>, Damien Le Moal
- <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Carlos Maiolino
- <cem@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel
- <sre@kernel.org>, Keith Busch <kbusch@kernel.org>, Christoph Hellwig
- <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Frank Li
- <Frank.Li@nxp.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Shyam Sundar S K
- <Shyam-sundar.S-k@amd.com>, Hans de Goede <hdegoede@redhat.com>, Ilpo
- =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Henrique de
- Moraes Holschuh <hmh@hmh.eng.br>, Selvin Xavier
- <selvin.xavier@broadcom.com>, Kalesh AP
- <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon
- Romanovsky <leon@kernel.org>, cocci@inria.fr, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-spi@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
- ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org, Takashi
- Iwai <tiwai@suse.de>, Carlos Maiolino <cmaiolino@redhat.com>
-Subject: Re: [PATCH v3 00/16] Converge on using secs_to_jiffies() part two
-Message-Id: <20250226123851.a50e727d0a1bfe639ece4a72@linux-foundation.org>
-In-Reply-To: <79b24031-5776-4eb3-960b-32b0530647fb@sirena.org.uk>
-References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
-	<79b24031-5776-4eb3-960b-32b0530647fb@sirena.org.uk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1740605871; c=relaxed/simple;
+	bh=V5RHRNqTw4lI5IbZCuyA3x7FDKEYN2piwqVBrAEGwds=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tp2vpQSdQFdDhBT1/CeHZVNShvO+AFXhb5L/wJSwqrx1MVkgmgK+30LsGAbNN3/0gCSqg2cBpWY1QfUlZwqLECVy2MYdG6VaYWxSLxxLkVV3Be5HtO0CrpPBep78q/JnmZ003KAU6Qnp/9oZg0NabmveLWulK3Im8CSUGlQyCz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=1U/sbtIk; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2234bec7192so5640635ad.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 13:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1740605869; x=1741210669; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MCUcEwmj1Jh7k+9CxWzzM/Zd6boDO4ys9mXEZIczeCM=;
+        b=1U/sbtIkP5VJ0FGtf2ilFnh4zraIcwAbPbGodSh++OG9fN18+cMVt2fwsLBsSuvbtv
+         VYqEWPl3i+RBpkdbGCWwjINf7nO2HzOdn5rGLDeZmIDfUspdFgt4QiRajLKEs0WDigMO
+         IXdpiO5eWXcNMFJIDEOUdg82PDQV7ggyarGDD9246JuiuvGjjqk0XeNSCzShA84AH3DP
+         urkmSan5xNkrdTs91Bo+Vurz/5C2UqLQPE+aL9mN5h+3TYwDWaes/CxmtJ2WfB2G/tdi
+         T5FY5ETUQNNg3hNZbz0K+ojJjxx74kBxOKVP1sbme6RZGSUOob2STwKX7mk9YGyuZrSu
+         Df/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740605869; x=1741210669;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MCUcEwmj1Jh7k+9CxWzzM/Zd6boDO4ys9mXEZIczeCM=;
+        b=NrMaJGC0RRGDNmVosPCyg42mumeQsQlFSS9ZT7EMJ3Zu5ypd6QaZ68KjjljDcN9/Pp
+         omWBY9cW1jEiXrK6lYKgcekKZe3174bS7BrN48gV5K/ovRW6xabbNDdHH+nwGNd2Fx+S
+         1sMbo0F56yRkvQmWO1GaHWdKunFxkA/kFxa2Pot9NrsM8PYH7w/9hTb4jAAMWjpiDzP+
+         bt++FAQpE1LhmgGvxIPf1D/mLgUAf/gOWALAWW7v4Tb7D54q34QrfjwnGZQ2n7NP8xCu
+         HZSe9sS/wqcFRyv8ZPU5a3ECaKWFNzd54kpwBrpjw0sN8Qfs3JSgFJB910lLVUy4C0u4
+         xlrA==
+X-Forwarded-Encrypted: i=1; AJvYcCXSc/cXprDagfPNBZmaK/wb4cwQtxf403dwd+Hu1So+ud4Mzfn4CPrhg8UyBBiCz3rBbvY2TEw89E+lkg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUbdUcWkgq/CeAThFGZoOitJQHlg47o9gavRMD3NL7XpGZ1Zon
+	j+FXyAqAdWuyoY4n2KDcTFWNUHntfVpYUoxypLYg9fvk/8krBe2EjtBASAY7lls=
+X-Gm-Gg: ASbGncsaed/T7gtwMxsiDPk+DClFeMXtqhfeDmmggDTsh7x/9SwN9KgOOdDpONR0hXi
+	DFMCozHy/lYXJk9ep0D6iJleHViUAEwMV33Gh8Jh4pCz6p7lPa5OFeikEU51XRDn6Eeqp56vmHc
+	n842EIyYXdlAC0Fs/6EFLxMPjeIWyjK8qYtzRdddf3zKEDXAB+c9e9NOKebPt6wkuSM0yyaJ33A
+	MwpwqmcY/yb99jCdObzMfN/b86UAMkkMSQazietji/Q9HlpUWrx42ciZQMDAh7Nj0N0omW++/hA
+	TU3k57V3lUxKnfsF2dzsxhqw+Kivm6froWawoFuFNbVDg3yU//11I/gN0oXJOZaeDOF2Gx0CNm/
+	61Q==
+X-Google-Smtp-Source: AGHT+IHNqRpXCuSGBS+Xg8ISiTxFsZCpyrUty1AnGDojZW1XuESCjdL+Ctc0rMGpJj7o3PpbI9dUdA==
+X-Received: by 2002:a05:6a00:21cb:b0:730:7771:39c6 with SMTP id d2e1a72fcca58-7348bdb3e0bmr8947565b3a.8.1740605869526;
+        Wed, 26 Feb 2025 13:37:49 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-89-135.pa.vic.optusnet.com.au. [49.186.89.135])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe2ad91sm24930b3a.13.2025.02.26.13.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Feb 2025 13:37:48 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.98)
+	(envelope-from <david@fromorbit.com>)
+	id 1tnP6A-00000006MMg-1KKF;
+	Thu, 27 Feb 2025 08:37:46 +1100
+Date: Thu, 27 Feb 2025 08:37:46 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, Zorro Lang <zlang@redhat.com>,
+	Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: finish UMOUNT_PROG to _unmount conversion
+Message-ID: <Z7-JqucPHv2E6ncE@dread.disaster.area>
+References: <cover.1739989076.git.fdmanana@suse.com>
+ <9aa6c8318d11b2fd1c2e208d85b2f83ea81ff88d.1739989076.git.fdmanana@suse.com>
+ <d2d72753-5bf2-48cf-b2f0-cfe184ec75a7@oracle.com>
+ <20250220170333.GV21799@frogsfrogsfrogs>
+ <CAL3q7H6cH26jarU+YEogd5O5FuHi+YNtaWgmsV72NuXacPQU6w@mail.gmail.com>
+ <20250221041819.GX21799@frogsfrogsfrogs>
+ <Z75B38rmY9TPsftf@dread.disaster.area>
+ <CAL3q7H41a=gzDtQDX8L4ep5PhD4ZpuSCUiNGzx5eK2h_N6bQXQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H41a=gzDtQDX8L4ep5PhD4ZpuSCUiNGzx5eK2h_N6bQXQ@mail.gmail.com>
 
-On Wed, 26 Feb 2025 11:29:53 +0000 Mark Brown <broonie@kernel.org> wrote:
-
-> On Tue, Feb 25, 2025 at 08:17:14PM +0000, Easwar Hariharan wrote:
-> > This is the second series (part 1*) that converts users of msecs_to_jiffies() that
-> > either use the multiply pattern of either of:
-> > - msecs_to_jiffies(N*1000) or
-> > - msecs_to_jiffies(N*MSEC_PER_SEC)
-> > 
-> > where N is a constant or an expression, to avoid the multiplication.
+On Wed, Feb 26, 2025 at 10:37:20AM +0000, Filipe Manana wrote:
+> On Tue, Feb 25, 2025 at 10:19 PM Dave Chinner <david@fromorbit.com> wrote:
+> > diff --git a/tests/btrfs/029 b/tests/btrfs/029
+> > index c37ad63fb..1f8201af3 100755
+> > --- a/tests/btrfs/029
+> > +++ b/tests/btrfs/029
+> > @@ -74,7 +74,7 @@ cp --reflink=always $orig_file $copy_file >> $seqres.full 2>&1 || echo "cp refli
+> >  md5sum $orig_file | _filter_testdir_and_scratch
+> >  md5sum $copy_file | _filter_testdir_and_scratch
+> >
+> > -$UMOUNT_PROG $reflink_test_dir
+> > +_unmount $reflink_test_dir
 > 
-> Please don't combine patches for multiple subsystems into a single
-> series if there's no dependencies between them, it just creates
-> confusion about how things get merged, problems for tooling and makes
-> everything more noisy.  It's best to split things up per subsystem in
-> that case.
+> This isn't equivalent to directly calling UMOUNT_PROG since the
+> _unmount helper always redirects stdout and stderr to $seqres.full.
 
-I asked for this.  I'll merge everything, spend a few weeks gathering
-up maintainer acks.  Anything which a subsystem maintainer merges will
-be reported by Stephen and I'll drop that particular patch.
+Please update your tree to the latest for-next. _unmount does,
+indeed, return stdout/stderr to the caller, and so as the commit
+message says, it is a drop-in replacement for UMOUNT_PROG.
 
-This way, nothing gets lost.  I take this approach often and it works.
+I wouldn't have sent the patch in this form if that hadn't been
+fixed.
 
-If these were sent as a bunch of individual patches then it would be up
-to the sender to keep track of what has been merged and what hasn't. 
-That person will be resending some stragglers many times.  Until they
-give up and some patches get permanently lost.
-
-Scale all that across many senders and the whole process becomes costly
-and unreliable.  Whereas centralizing it on akpm is more efficient,
-more reliable, more scalable, lower latency and less frustrating for
-senders.
-
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
