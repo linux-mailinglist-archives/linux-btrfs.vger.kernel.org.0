@@ -1,172 +1,330 @@
-Return-Path: <linux-btrfs+bounces-11871-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11872-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D66A45C0F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 11:43:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3412A45CB1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 12:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A65091888B70
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 10:43:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5F197ABCF1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 11:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF29B24E00F;
-	Wed, 26 Feb 2025 10:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2B5213E84;
+	Wed, 26 Feb 2025 11:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwU4Z541"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAA424DFED
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 10:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5CF212D8D
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 11:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740566604; cv=none; b=VPitM0luJIC7yLhrk4vMFxKTbAdy4EmNSlTlHaVFmpNrnOKqCGSbOlpS6TmORw/METTnhlmr4IFMFUez29hR/ieY8o1YlBi3QAQhM6pC47SEdEk33McBkO6g/dpm9I8D7LvWz9SAFR3vwTNyZs2eA8H0qEawmULk/OGv/NAygQQ=
+	t=1740568066; cv=none; b=qS2xsq39j4PF7x8CepMTy9iRUloydwR2BJ9FC9qldXpRtuxFHrCJOvKx5WivICxz/YRkDqbyqrJlQvYe7uqB5tyasfP3nCPeSdp1uezCGsn27Mdz3/hp1iYXoU47GleDhsdcw7wleJTsBiF4PPu2/4bjy061VKlESlEI1Un80tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740566604; c=relaxed/simple;
-	bh=/1D2hWZ33Wvm8tZchRpvwsmFkPCAijJoSs7d8EyqLjg=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NFwZNwhAaZYTt3hUbr6J8FlIYXzbKeoTkqunknrmhYSTs0Jup74Ux8W+WVcw5HkoGzV18GHtT4uyvw5ifiiag54CYexPu00WyBOP058EYbbOl60REnAfmB8+ty/wlxkh4hJu09wSwnYvHfYHkwYoY+ub+PfAHcLYkq6zbMcUTCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d3d9be92f5so143305ab.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 02:43:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740566602; x=1741171402;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CLamul0Qy1bSNuPWUSE2AWn8j3h3sPf3L6/qyPeSfR8=;
-        b=g9pmDWFg5PwHnd8G5j4F7eq/YgRbsmckqV7GZW/+CZmNeKmdEjZhsoJ83gVHC+5oIP
-         E+hJfWWcP6faVUWVOcXIm6tPHnY2ky5d32S2O7K1ml1oYFm4sLHVghMdRkw7eD0xwmbT
-         fesAwa+0VFqbpYxA3f5vNY2iWhJNHathH96YgpLV6Iu7ObRJr4Zl+RUnaInzX+GIh5xw
-         Q9eLEb2gHN/7kKC5Gr+mqzwO5sOhJKizChHuuJvLZkFdkMqu9NKWx5EtOMOd7bCaS06A
-         BJCslzLodhQq+sysadejthojvKEU9XRISbEaoonOgGt/vQ5f7Bnl4o12j+C4ReebBryj
-         XblQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWvcyM4rjh8e6URJGj34npSdtm/DdE5li+QHV0sIqo6HSc1eOUw1WxOjkB0FhwaOnhl89U3pSAv1UgWmg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2XsVtLXKQfrqbj7315o7yDJlxAGvDe67b6vpL3ryldg1vXNch
-	WvcTMgZhiDLiARuaagTgJ51qW250nF/ALaQAjrpAEBYXkLXaxyDAiXvixl5a2bdNZ1o2wjvRQYr
-	djHqQsN1Vj22BgrykBFvjxjb7tk6ZWZNzRQgUsgq2t4do+YH9v0Bz5OE=
-X-Google-Smtp-Source: AGHT+IEozNnp1RtmNrcxO3YpCynOBqGVr75Ha2A7UsRZoGZ85WoOwK1VOHFxodkoYYhmcdFTIg3Tv6nG2Vgy81FdzccUMzmPTSz9
+	s=arc-20240116; t=1740568066; c=relaxed/simple;
+	bh=UstKWAFkGN5uJB1wqyvzRGHsQMRCqd2ehKu7va3/Nq4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cf0KJmv2ZU9Uh6kyIB+/8I666H8dIOli13h34o3aEc88x96tcPU6iYwCIUUXgXiFcusao9TzNvvDMjO16ma1wv5Cvk/D5etaTtC4J6EKQtDqrD0m7JY1rxQYjp5c78EbIs0GVCXOBsM6fQA2y9a6htXG9R4my/pj6Rs/ddObMNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwU4Z541; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE97C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 11:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740568065;
+	bh=UstKWAFkGN5uJB1wqyvzRGHsQMRCqd2ehKu7va3/Nq4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NwU4Z5412M2tG5VX2F3UJ8KsChHl/D2i6gaFNXoVOH1avNOrFKZQSYA9Eh6zL+eh+
+	 8z0PssC9+l3f1U9loGhqJdGy8fKNImQkcYsgbceqYSE1oy1RPZvqhHnesaLKIG2Q9q
+	 YvnZDBKccghcdfGsJp+by4YLgP9KhGCMoS/Y3jSSWBQZjsqOTsEYAQx9hzPb8SCPX7
+	 nwQc1O6i33SkThv0teflBMIN61+4HIkJKAznOV1m8G12dfEDhlQq0gbW1wZC6GkLdS
+	 kASMvEeI1iexoOsZEziJYxSmEQLNtf8/vRUT7kBOmeOeZxVFJzGAXCiZtO/Wos5VNb
+	 JAkFjHivPPOEg==
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-38f378498c9so6543894f8f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 03:07:45 -0800 (PST)
+X-Gm-Message-State: AOJu0YyIavFacez7GaOKFPnOgGyYAJPXkr4l3EkWbhSa/iuw+4PTid/W
+	dOMt58XUBm4gYqjTqj+d+WQENx4ERzCvAJk7DumDSOONvUBqtZQhe6kSjyGVKf5o/vBzatG1NlP
+	1otTiHTrvZNBLRGXzo7yfVLDUCMg=
+X-Google-Smtp-Source: AGHT+IEoaUeoxLSzRSyx1t0ukSYbB5UN9pr8yqltLfLPK9JYfqcRgJWeH8YBwxgu+foXk2XO8bktvHd479H4INXQIAk=
+X-Received: by 2002:a05:6000:18a2:b0:38c:2745:2df3 with SMTP id
+ ffacd0b85a97d-390cc631b3bmr6491295f8f.37.1740568064339; Wed, 26 Feb 2025
+ 03:07:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cb4e:0:b0:3d1:84ad:165e with SMTP id
- e9e14a558f8ab-3d2c020ccabmr203896295ab.7.1740566601966; Wed, 26 Feb 2025
- 02:43:21 -0800 (PST)
-Date: Wed, 26 Feb 2025 02:43:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67bef049.050a0220.38b081.00ef.GAE@google.com>
-Subject: [syzbot] [mm?] [ext4?] WARNING in get_dump_page
-From: syzbot <syzbot+0b544778e9923a3de766@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, akpm@linux-foundation.org, cem@kernel.org, 
-	clm@fb.com, djwong@kernel.org, dsterba@suse.com, jack@suse.cz, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <cover.1740354271.git.wqu@suse.com> <f8b476f39691d46b592cf264914b3837f59dcd77.1740354271.git.wqu@suse.com>
+ <CAL3q7H4BCqEtwSOykWqYxjgqqiPZKqQ9K_VjAt08Vs9CAcj7yQ@mail.gmail.com> <e8b84e01-a56d-427e-b188-6c2539a0093b@suse.com>
+In-Reply-To: <e8b84e01-a56d-427e-b188-6c2539a0093b@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 26 Feb 2025 11:07:07 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4x49K1fYHFJn+3iBupN1uqvSGCHHOw2CNX9D0b7AgmUg@mail.gmail.com>
+X-Gm-Features: AQ5f1Johmdddlc4B0Y0HovWcBgJwW78AE0iDkf095JHjpsKe5GAH20C5IzOL77w
+Message-ID: <CAL3q7H4x49K1fYHFJn+3iBupN1uqvSGCHHOw2CNX9D0b7AgmUg@mail.gmail.com>
+Subject: Re: [PATCH 3/7] btrfs: introduce a read path dedicated extent lock helper
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Feb 25, 2025 at 9:12=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/2/26 03:35, Filipe Manana =E5=86=99=E9=81=93:
+> > On Sun, Feb 23, 2025 at 11:47=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote=
+:
+> >>
+> >> Currently we're using btrfs_lock_and_flush_ordered_range() for both
+> >> btrfs_read_folio() and btrfs_readahead(), but it has one critical
+> >> problem for future subpage enhancements:
+> >>
+> >> - It will call btrfs_start_ordered_extent() to writeback the involved
+> >>    folios
+> >>
+> >>    But remember we're calling btrfs_lock_and_flush_ordered_range() at
+> >>    read paths, meaning the folio is already locked by read path.
+> >>
+> >>    If we really trigger writeback, this will lead to a deadlock and
+> >>    writeback can not hold the folio lock.
+> >>
+> >>    Such dead lock is prevented by the fact that btrfs always keeps a
+> >>    dirty folio also uptodate, by either dirtying all blocks of the fol=
+io,
+> >>    or read the folio before dirtying.
+> >>
+> >>    But it's not the common behavior, as XFS/EXT4 both allow the folio =
+to
+> >>    be dirty but not uptodate, by allowing buffered write to dirty a fu=
+ll
+> >>    block without reading the full folio.
+> >
+> > Ok, but what happens in other filesystems doesn't affect us.
+> > Or did you forget to mention that some other subsequent patch or planne=
+d changes
+> > will introduce that behaviour?
+> >
+> > If so, it would be best to say that, otherwise that paragraph isn't rel=
+evant.
+>
+> Got it, will add the mention of the incoming feature of partial uptodate
+> folio support.
+>
+> But still, all the work done here is mostly to pass generic/563, which I
+> have to say the EXT4/XFS behavior is still a pretty good optimizatioin.
+>
+> I'll change the paraph to focus on the incoming optimization.
+>
+> >
+> >>
+> >> Instead of blindly calling btrfs_start_ordered_extent(), introduce a
+> >> newer helper, which is smarter in the following ways:
+> >>
+> >> - Only wait and flush the ordered extent if
+> >>    * The folio doesn't even have private set
+> >>    * Part of the blocks of the ordered extent is not uptodate
+> >
+> > is -> are
+> >
+> >>
+> >>    This can happen by:
+> >>    * Folio writeback finished, then get invalidated. But OE not yet
+> >>      finished
+> >
+> > Ok, this one I understand.
+> >
+> >>    * Direct IO
+> >
+> > This one I don't because direct IO doesn't use the page cache.
+> > Can you elaborate here and explain why it can happen with direct IO?
+>
+> Direct IO always drops the cache first, so the folio in the direct IO
+> range should have no private attached just like it was invalidated.
 
-syzbot found the following issue on:
+Ok, I was under the impression you were implying direct IO could cause
+deadlock, but what you mean is the scenarios where private is not set.
+So all is good.
 
-HEAD commit:    d082ecbc71e9 Linux 6.14-rc4
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=107eec98580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5b4c41bdaeea1964
-dashboard link: https://syzkaller.appspot.com/bug?extid=0b544778e9923a3de766
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176626e4580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147eec98580000
+Thanks.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1e5dabe499e7/disk-d082ecbc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1e0f27be469a/vmlinux-d082ecbc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7e058c08d6c9/bzImage-d082ecbc.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/24600c6adfb8/mount_0.gz
-  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=16397fdf980000)
-
-The issue was bisected to:
-
-commit 5121711eb8dbcbed70b1db429a4665f413844164
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Fri Nov 15 15:30:32 2024 +0000
-
-    fs: enable pre-content events on supported file systems
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10ae1db0580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12ae1db0580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ae1db0580000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0b544778e9923a3de766@syzkaller.appspotmail.com
-Fixes: 5121711eb8db ("fs: enable pre-content events on supported file systems")
-
-WARNING: CPU: 0 PID: 5840 at mm/gup.c:1856 __get_user_pages_locked mm/gup.c:1856 [inline]
-WARNING: CPU: 0 PID: 5840 at mm/gup.c:1856 get_dump_page+0x242/0x2f0 mm/gup.c:2275
-Modules linked in:
-CPU: 0 UID: 0 PID: 5840 Comm: syz-executor267 Not tainted 6.14.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-RIP: 0010:__get_user_pages_locked mm/gup.c:1856 [inline]
-RIP: 0010:get_dump_page+0x242/0x2f0 mm/gup.c:2275
-Code: 00 00 00 48 3b 8c 24 80 00 00 00 0f 85 a3 00 00 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d e9 1f 37 03 ff e8 0f b4 b4 ff 90 <0f> 0b 90 eb ae 44 89 c9 80 e1 07 80 c1 03 38 c1 0f 8c db fe ff ff
-RSP: 0018:ffffc900032c7180 EFLAGS: 00010293
-RAX: ffffffff820d09f1 RBX: 0000000000000000 RCX: ffff8880346f0000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc900032c7250 R08: ffffffff820d0968 R09: 1ffffd4000399126
-R10: dffffc0000000000 R11: fffff94000399127 R12: 1ffff92000658e38
-R13: dffffc0000000000 R14: 1ffff92000658e34 R15: 0000000000000000
-FS:  0000555587160380(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff9150b8f8 CR3: 0000000075dae000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- dump_user_range+0x14d/0x970 fs/coredump.c:943
- elf_core_dump+0x4054/0x4a80 fs/binfmt_elf.c:2129
- do_coredump+0x232c/0x32c0 fs/coredump.c:758
- get_signal+0x13e5/0x1720 kernel/signal.c:3021
- arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- irqentry_exit_to_user_mode+0x7e/0x250 kernel/entry/common.c:231
- exc_page_fault+0x590/0x8b0 arch/x86/mm/fault.c:1541
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0033:0x7ff653b312d1
-Code: c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 48 3d 01 f0 ff ff 73 01 <c3> 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
-RSP: 002b:00000000fffffe10 EFLAGS: 00010217
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00007ff653b312c9
-RDX: 0000000000000000 RSI: 00000000fffffe10 RDI: 0000000000000000
-RBP: 00007fff9150b940 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000000f4240
-R13: 00007ff653b7f9dc R14: 00007ff653b7a0e2 R15: 00007fff9150b930
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> And direct IO doesn't wait for the OE to finish, we will have the same
+> case just like the previous case.
+>
+> >
+> >>
+> >>    We have to wait for the ordered extent, as it may contain
+> >>    to-be-inserted data checksum.
+> >>    Without waiting, our read can fail due to the missing csum.
+> >>
+> >>    But either way, the OE should not need any extra flush inside the
+> >>    locked folio range.
+> >>
+> >> - Skip the ordered extent completely if
+> >>    * All the blocks are dirty
+> >>      This happens when OE creation is caused by previous folio.
+> >
+> > "OE creation is caused by previous folio" - what does this mean?
+> > You mean by a write that happened before the read?
+>
+> I mean the following case, 16K page size 4K block size:
+>
+>
+>     0      8K     16K    24K     32K
+>     |/////////////|//////|       |
+>
+> The writeback for folio 0 started, which ran delalloc range for [0,
+> 24K), thus we have an OE at [0, 24K).
+>
+> But at the same time, since range [24K, 32K) is not uptodate, a read can
+> be triggered on folio 16K.
+>
+> >
+> >
+> >>      The writeback will never happen (we're holding the folio lock for
+> >>      read), nor will the OE finish.
+> >>
+> >>      Thus we must skip the range.
+> >>
+> >>    * All the blocks are uptodate
+> >>      This happens when the writeback finished, but OE not yet finished=
+.
+> >>
+> >>      Since the blocks are already uptodate, we can skip the OE range.
+> >>
+> >> The newer helper, lock_extents_for_read() will do a loop for the targe=
+t
+> >> range by:
+> >>
+> >> 1) Lock the full range
+> >>
+> >> 2) If there is no ordered extent in the remaining range, exit
+> >>
+> >> 3) If there is an ordered extent that we can skip
+> >>     Skip to the end of the OE, and continue checking
+> >>     We do not trigger writeback nor wait for the OE.
+> >>
+> >> 4) If there is an ordered extent that we can not skip
+> >>     Unlock the whole extent range and start the ordered extent.
+> >>
+> >> And also update btrfs_start_ordered_extent() to add two more parameter=
+s:
+> >> @nowriteback_start and @nowriteback_len, to prevent triggering flush f=
+or
+> >> a certain range.
+> >>
+> >> This will allow us to handle the following case properly in the future=
+:
+> >>
+> >>   16K page size, 4K btrfs block size:
+> >>
+> >>   16K           20K             24K              28K            32K
+> >>   |/////////////////////////////|                |              |
+> >>   |<----------- OE 2----------->|                |<--- OE 1 --->|
+> >>
+> >>   The folio has been written back before, thus we have an OE at
+> >>   [28K, 32K).
+> >>   Although the OE 1 finished its IO, the OE is not yet removed from IO
+> >>   tree.
+> >>   Later the folio got invalidated, but OE still exists.
+> >
+> > This last sentence to be less confusing: "The folio got invalited
+> > after writeback completed and before the ordered extent finished."
+> >
+> >>
+> >>   And [16K, 24K) range is dirty and uptodate, caused by a block aligne=
+d
+> >>   buffered write (and future enhancements allowing btrfs to skip full
+> >>   folio read for such case).
+> >>
+> >>   Furthermore, OE 2 is created covering range [16K, 24K) by the writeb=
+ack
+> >>   of previous folio.
+> >
+> > What previous folio? There's no other one in the example.
+> > Do you mean there's a folio for range [0, 16K) and running delalloc
+> > resulted in the creation of an OE for the range [0, 24K)? So that OE 2
+> > doesn't really start at 16K but at 0 instead?
+>
+> Yep, exactly.
+>
+> [...]
+> > Normally the parameter list/description comes before describing the
+> > return values.
+> >
+> >> + */
+> >> +static bool can_skip_one_ordered_range(struct btrfs_inode *binode,
+> >
+> > Why binode and not just inode? There's no vfs inode in the function to
+> > make any confusion.
+>
+> OK, will go the regular inode naming.
+>
+> >
+> >
+> >> +                                      struct btrfs_ordered_extent *or=
+dered,
+> >> +                                      u64 cur, u64 *next_ret)
+> >> +{
+> >> +       const struct btrfs_fs_info *fs_info =3D binode->root->fs_info;
+> >> +       struct folio *folio;
+> >> +       const u32 blocksize =3D fs_info->sectorsize;
+> >> +       u64 range_len;
+> >> +       bool ret;
+> >> +
+> >> +       folio =3D filemap_get_folio(binode->vfs_inode.i_mapping,
+> >> +                                 cur >> PAGE_SHIFT);
+> >> +
+> >> +       /*
+> >> +        * We should have locked the folio(s) for range [start, end], =
+thus
+> >> +        * there must be a folio and it must be locked.
+> >> +        */
+> >> +       ASSERT(!IS_ERR(folio));
+> >> +       ASSERT(folio_test_locked(folio));
+> >> +
+> >> +       /*
+> >> +        * We several cases for the folio and OE combination:
+> >> +        *
+> >> +        * 0) Folio has no private flag
+> >
+> > Why does the numbering start from 0? It's not code and it's not
+> > related to array indexes or offsets :)
+>
+> Because I forgot the folio to-be-read may not even be managed by btrfs,
+> and hit ASSERT()s related to that.
+> Thus I think the private flag should be an important prerequisite, and
+> give it 0.
+>
+> But you're right, in fact it's very common and should not be treated
+> specially.
+>
+> >
+> >> +        *    The OE has all its IO done but not yet finished, and fol=
+io got
+> >> +        *    invalidated. Or direct IO.
+> >
+> > Ok so I still don't understand the direct IO case, because direct IO
+> > doesn't use the page cache.
+> > Just like the change log, some explanation here would be desired.
+> >
+> >> +        *
+> >> +        * Have to wait for the OE to finish, as it may contain the
+> >> +        * to-be-inserted data checksum.
+> >> +        * Without the data checksum inserted into csum tree, read
+> >> +        * will just fail with missing csum.
+> >
+> > Well we don't need to wait if it's a NOCOW / NODATASUM write.
+>
+> That is also a valid optimization, I can enhance the check to skip
+> NODATASUM OEs.
+>
+> Thanks a lot for reviewing the core mechanism of the patchset.
+>
+> Thanks,
+> Qu
+>
 
