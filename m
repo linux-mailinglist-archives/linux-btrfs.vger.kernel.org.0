@@ -1,56 +1,48 @@
-Return-Path: <linux-btrfs+bounces-11823-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11824-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC375A45123
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 01:04:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C187FA452A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 03:03:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46B0C189A3A2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 00:04:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAFE717EDC4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 02:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6609E23BB;
-	Wed, 26 Feb 2025 00:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3AAB217734;
+	Wed, 26 Feb 2025 02:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RTCIcVQm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lbvJaOgP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AA0382
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 00:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC38F204C0E;
+	Wed, 26 Feb 2025 02:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740528253; cv=none; b=NyQBjQLi822XDV+wgXJklW6Z94KUiwANf/4QtfUQk+kspEI7VhDbXaOhEdskYha5lBsyJ7+WlN383BtEfB7AvPX6Izztv31FMMlcfa6QPLAsO17wsuWC2GbvtbbmGGahmUSy9rO4AH94TlaL8W3+cLuAA244e2krDC8owNxhpoI=
+	t=1740535254; cv=none; b=Ac8bv3WFnuTt+qAefCTBDyBEwesrrFTkPJOTWpIOXzgnqq5uXZV7HOpStZ/d5oSdU6Ko3OG+QvUCKs1qNIaVpOtUcopO98p9hj1wG4phE5Tt4JXyGDZ3H1wifqNWdOzupzXRHzQz84e8V1LeWMFECPND2zwue/QWRe8ldZ9FppY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740528253; c=relaxed/simple;
-	bh=7og2M1gEDUtHUckpdP1jd5z3sB8K6WmW6Y6pwicub6Y=;
+	s=arc-20240116; t=1740535254; c=relaxed/simple;
+	bh=QOAgMMGKbnJ6hZHvx6ZJYTRK+iZXq18TAlHT3acDveU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dLiRO6CWcZsoW5hPZK/5e0CG4T2lJ7HNhxGgOZ8/gXg+oQVxQ51YM+B75UXcocBnJEBjEidTO0QZ/M/SnU/vEV9KMaeJ9zDTDMtCPBzyn+/uQ+GXlM7k3D0lMbykQpqqkb1j6ddd83gBOObByQeN9Xxo9f+UFfLEkMFV+zK4Ct8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RTCIcVQm; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1740528245; x=1741133045; i=quwenruo.btrfs@gmx.com;
-	bh=XRhciFiAToDSl+SFLRS1vBmFGFvR1RE/0b1jhm0YPpk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=RTCIcVQmnK9d1rS6EOxivOBu5ORPv+PU2WLiS1DUmsYm8mLpfnhsd441uMNC0OWP
-	 FXZKzrEOIa7fNigpJCtLVJT9/HGyfBeTI2mGdkaKpu65ZFYTL3rn04Z+0mercc8h6
-	 wXFyiA3vTtZMsSXJDBhiJyYqotRQOPn82YQrWb+bRDOyAS+ivPp0IBQ6OTV48IiLI
-	 KoRqriXtmPVPdHJc9pdpji+kS/NSM/c2HHaCaaTVR9tzV2OVPW6esIz2k8qwaIdBT
-	 gYnx/BfkyZ3jy95Z/TlrIOCAxvQT/wCgFqCxrxOffMHvGFycH+Ergi7GfNmrcZ+GE
-	 vIufsc2oUeupMJmUgw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3lY1-1tmnn40OF1-006tge; Wed, 26
- Feb 2025 01:04:05 +0100
-Message-ID: <41726b65-3b69-4aa3-a3e8-257d2bd3680b@gmx.com>
-Date: Wed, 26 Feb 2025 10:34:01 +1030
+	 In-Reply-To:Content-Type; b=GfO2ZztXI0yR4SOtWmiMQuv2Miry7HPEoSwkKM5fHVWBj3q2p3eBEVkJZHQlOM7vs2hrEG273wOgSP80vhC0d7LYHKkdMLPOuR9lJVurP96SLc/GCyV1MaG9WKzlgij04TdeSDC9fSAyRDkE7VaZgT86tR+k5I1zbftL+L9n/bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lbvJaOgP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76A4C4CEDD;
+	Wed, 26 Feb 2025 02:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740535253;
+	bh=QOAgMMGKbnJ6hZHvx6ZJYTRK+iZXq18TAlHT3acDveU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lbvJaOgPkZbnkOP5hNZv3kt8F37sM5wVNdz5pQoKBOvWJpcWyMv2mVC7qw0zww0FC
+	 tw0rFBZp3tLMdImqLCpGhcY34tv8uho+Lu2q/YVztsAQwyT0nOq0d2HlE+yumDi+2G
+	 NnGD4V7HBDpFdEYrgDp0+8hLWBlWldNGcN9+JQ1uf7k8Z8tTkCxsl34NLWQ8Vawbdb
+	 K9795FHlijgsdEKshsQNQoxr3/DEjO/bi0eHV3p1/sO3PbUu61pZGpWQwOCIptZowS
+	 rIy49xymFJKzj4FXwPSz54+5ZyqnT56OBQv1abO0kJMDp0bQ7XnwlRxW3/2snteMgS
+	 vdipJDYHPyQ2Q==
+Message-ID: <2632bed9-4e4a-494a-bb89-d5aac64f854e@kernel.org>
+Date: Wed, 26 Feb 2025 11:00:37 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,145 +50,86 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] btrfs: introduce a read path dedicated extent lock
- helper
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
- Linux Memory Management List <linux-mm@kvack.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1739328504.git.wqu@suse.com>
- <1b6921a745547f352f5b7e266ef28e864f2ce056.1739328504.git.wqu@suse.com>
- <20250225130018.GO5777@twin.jikos.cz>
+Subject: Re: [PATCH v3 08/16] ata: libata-zpodd: convert timeouts to
+ secs_to_jiffies()
+To: Easwar Hariharan <eahariha@linux.microsoft.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay
+ <ogabbay@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>,
+ Nicolas Palix <nicolas.palix@imag.fr>, James Smart
+ <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>,
+ Xiubo Li <xiubli@redhat.com>, Niklas Cassel <cassel@kernel.org>,
+ Carlos Maiolino <cem@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
+ Sebastian Reichel <sre@kernel.org>, Keith Busch <kbusch@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+ Frank Li <Frank.Li@nxp.com>, Mark Brown <broonie@kernel.org>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ cocci@inria.fr, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-nvme@lists.infradead.org, linux-spi@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
+ linux-rdma@vger.kernel.org
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+ <20250225-converge-secs-to-jiffies-part-two-v3-8-a43967e36c88@linux.microsoft.com>
+ <ff51bcfc-10c8-4461-9f82-ea1d5ed784f8@linux.microsoft.com>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250225130018.GO5777@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4QXS2jfV/V9mli/krZhcuf9UKQ3+R7exFd94Xrico5Ugk0AuiKg
- n13ek5Kna1x2I7TTunqgabeBGQFx74VqzpF0iIP6Cmx0key6ltA6xNTMioWXlWuJ6ur+xfk
- vng6K/+BRvAy/sTx7Hvhfw8S+qAPnm6p/LMHfQK6EXaVUiX/fxrxvP1bYt7Vh97LusSIb13
- bgnIqyjpBAmTo55iL2eLQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OH8T+oxFBsE=;9MOPRkSd2Jpy/JeqOc5WsdZfCfl
- j5ejgoXcmzjcC0trvQIUqoi3rz5clXN+/J5orG4vISGPTyr2CBjQ4SmssF1WL6q5op8d21U4B
- /xb4P8y8bIy/1NukGgmS9dFbi/SOabOqM9KBGEuWohYq5Mm/hTRa4obFQ1dg3XOXG3k8EZS6c
- 0aMTg/ExQ7Lo/Z/Kq3O9gJ/wGHuwbt88f4U3eUNa6hxUav7oIdL4L4+Yz5jK28CFX6UjQdMiI
- tTnLTn/A4VGbaFi1fBOGIhXOi8Qs1m8/E1e4WKgZbyHiJPIWDtcjOERUhmQlS1lJc9mJJ+WkD
- J+pRu877ZOj74sJX8hCR6fFJX2dXxv76ZvOJ7A3sVc4PT23ZGDRev6MNuUnVGy8hUC4OPyrFE
- nc1XK2ncnKetsMq9Iu7mrOrO3atJcTWiZqEroaYTk8YSoOpmgIJLAAhbt35hPlCrbySGuqb38
- I3tCA7cowo2+W2CsN3IAhmc4031EapSJ1yJLF5uTOMr1WcJV7AAhBFPsctw79y/34fyxZJMZp
- o6wCAaB1efuE7Opdm0rnYEMIwhYVceEjN4vsJ9BhyFM34un09pul8BDXe7vhmCJM8eNVJyn4l
- 5H/I2xKHN4HNag9oqT/tSA9P13iVweqh7T+pQe/sf2OkbtWR1JHvTu+9HpfiIMCdyUIXdt4w4
- E/3mVo2TV0A64IVg2cfVgBYUTmNK9ZbAFRJZEzQS0hAD4WRSQoPIap8lImWpvG/9q2C84ULNx
- DWmTvyhjNtLUfFY5Wr+40FhfkgXBFuA+sqa5ERKqD8aPkdg7aGCJEBwkA0kwi4qXwb5S6Yb18
- fuAGJx61vZFo2GojILQC/zSlx6HGFWUWx+6pXrBqs7M31DpSuBKyjvNDto/R0z2P9n/xNSJg7
- +pndpSwY0Os2Y+KTalUVcCK9w/r/cWkPEYQGQkHN4aPwhbs/tWqp96PL4Bjl1dKgCczhlT8hT
- LJyZjSmyKg0+czRU5wHxYTbhIETCJkZ6WGLGUjuK9zzNqX3ALr6yObJ56T56S4quLQ3aVH1Up
- ovcYgF6ZsgDXHFtLpdOCDxe5ObrscujpspTR/c993DnTDGqdxUSrDFT96UEuNUKOZ9JqjmkVJ
- v8dZHZe1cJS+nXFfU+/D6i0AzALTOpvQc19gxSCmIYXO6UAW2C7cjVXCsSXMj12Dy5ye6CSIJ
- eRkFi4GTMbduDsQfApwgbVNv2Yj9cQhGOMjhEt+F3PaNCnZ5qDxfSLbBYEsmMHSAc/ezfQUPW
- dCWY+W7cWlyc/dSIML4Nmj6p5VMzcZZ9IXeOpifbQw2PtKr0c6XMRXzd4eMyyWKjHD/VKYgJT
- qQc7+jy7DPTIXqDb7BcBanvh2EJYa3YvmsOpLNnZvA0G4ri/h83kNAE7VEjrHFoChsXlh7f/2
- Z/YveMV3cuBcF3t+/s1lGrgApIzQrcRKkz+eXWZjpL0fTsIsko+Ek/Cqmu
+Organization: Western Digital Research
+In-Reply-To: <ff51bcfc-10c8-4461-9f82-ea1d5ed784f8@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 2/26/25 5:24 AM, Easwar Hariharan wrote:
+> On 2/25/2025 12:17 PM, Easwar Hariharan wrote:
+>> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
+>> secs_to_jiffies().  As the value here is a multiple of 1000, use
+>> secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplication
+>>
+>> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
+>> the following Coccinelle rules:
+>>
+>> @depends on patch@
+>> expression E;
+>> @@
+>>
+>> -msecs_to_jiffies
+>> +secs_to_jiffies
+>> (E
+>> - * \( 1000 \| MSEC_PER_SEC \)
+>> )
+>>
+>> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+>> ---
+> 
+> This was meant to carry Damien's ack once the subject line was fixed[1], but I fixed
+> the subject line and missed adding the ack in. Damien, would you like to ack again?
+
+Looks like Andrew already applied the patch, which is fine.
+But nevertheless:
+
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
 
 
-
-=E5=9C=A8 2025/2/25 23:30, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Feb 12, 2025 at 01:22:45PM +1030, Qu Wenruo wrote:
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
-[...]
->> +	folio =3D filemap_get_folio(binode->vfs_inode.i_mapping,
->> +				  cur >> PAGE_SHIFT);
->
-> Should this be folio_shift?
-
-This is the biggest trap!
-
-The filemap_* helpers are always using page index, no matter the folio siz=
-e.
-
-The filemap can be considered as a super large array of folio pointers.
-(Implenmented by xarray)
-
-For the current folio size =3D=3D page size case, it's straight forward, i=
-f
-there is a pointer then there is a cached folio for that index.
-
-For larger folios, the overall idea is not changed, just we can have a
-larger folio covering multiple slots, no longer one folio one slot.
-
-So when doing the search we should always use PAGE_SHIFT.
-
-And that why I hope the MM guys can provide a fileoff based
-filemap_get_folio_by_fileoff().
-
-CC MM guys, will a dedicated helper reduce such confusion?
-Or it's just making the currently very simple filemap_*() helpers too
-complex?
-
-Thanks,
-Qu
-
-[...]
->> +again:
->> +	lock_extent(&binode->io_tree, start, end, cached_state);
->> +	cur_pos =3D start;
->> +	while (cur_pos < end) {
->> +		ordered =3D btrfs_lookup_ordered_range(binode, cur_pos,
->> +						     end - cur_pos + 1);
->> +		/*
->> +		 * No ordered extents in the range, and we hold the
->> +		 * extent lock, no one can modify the extent maps
->> +		 * in the range, we're safe to return.
->> +		 */
->> +		if (!ordered)
->> +			break;
->> +
->> +		/* Check if we can skip waiting for the whole OE. */
->> +		if (can_skip_ordered_extent(binode, ordered, start, end)) {
->> +			cur_pos =3D min(ordered->file_offset + ordered->num_bytes,
->> +				      end + 1);
->> +			btrfs_put_ordered_extent(ordered);
->> +			continue;
->> +		}
->> +
->> +		/* Now wait for the OE to finish. */
->> +		unlock_extent(&binode->io_tree, start, end,
->> +			      cached_state);
->> +		btrfs_start_ordered_extent(ordered, start, end + 1 - start);
->> +		btrfs_put_ordered_extent(ordered);
->> +		/* We have unlocked the whole range, restart from the beginning. */
->> +		goto again;
->
-> This is a bit wild, goto at the end of a while loop but I don't see a
-> cleaner way without making complicated in another way.
-
-I have fixed this in the one submitted the mail list, by introducing
-another layer of while loop (in another function).
-
-Thanks,
-Qu
+-- 
+Damien Le Moal
+Western Digital Research
 
