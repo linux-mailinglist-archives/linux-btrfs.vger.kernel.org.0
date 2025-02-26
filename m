@@ -1,241 +1,258 @@
-Return-Path: <linux-btrfs+bounces-11833-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11834-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AECDA45452
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 05:11:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34DFFA456A7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 08:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 281D1189906C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 04:11:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 428BD3A2705
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 07:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D58C20AF8E;
-	Wed, 26 Feb 2025 04:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5680033997;
+	Wed, 26 Feb 2025 07:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="W2MUVCeK";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="M+/D/O2e"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DPnzDNfL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBF6266B6C
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 04:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98BA268FCC
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 07:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740543053; cv=none; b=vAyX/6diHSuiWYZVbScd26+ajTSWlpNyq13e3ayfxsMHzxDbaNgN/w/qBxrwI8zbRDCT6nhk4T6gdwcfPBoBu4OJIyhklIqnT4jng7wLrKy8BF4DCFiJdK8AWpt47y0L6JBdSTDGIx8Xoy3XunbDoTlT5MyWYvyVrlbDizOPNIY=
+	t=1740554943; cv=none; b=aXoseMm6iYor6OK5QGptn0WSPm4fCZCAKHusFJEizTV+JRyY0kEiP4pn32cR/EdwzkWNNryqY5fq4ZXhAaB3zIi6IvQGwZfN1uL/uUIDOHuYA4FEOUBumbhOEYLriwqzaPck/cXHTKcZeMBriXCQuZGl7uJlV6aRjDMSHohQn/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740543053; c=relaxed/simple;
-	bh=s3/JU27zjV+7frws4hdIX9efskI0iXkfsG2wYoCVaXc=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gPJLyI3/hGCQJR3g5DCyX72cUj1zsybZBgZQEVgduhwmIP3mQ3shFOzlv7I76VqaPKVjFtP6Xdeg/kth4XXICZoRLM7q45TR9Gq2eUBgAtoWWLdINle5PGMEemctTWRMwDNst1H/HrAsSQE6gKUudJHg7egoVh7tzITogz35zGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=W2MUVCeK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=M+/D/O2e; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1740554943; c=relaxed/simple;
+	bh=6zbN5jOaaksOEj+lbfcyYF58FVbBR2uEiZ1U9Xm0Q7A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MKtw7E30jVvebcV3AEZTQS9lWypdu075VOwLJLeMjV+8LCnebNupyuaGEegmr6xBE1po0MkQB8BAcsOUgvSOqdEPRvuIpjnH+dHqf6jfFO8cJE2ZScq6L3cf9y8rkroxBoHb1ZROyfw/sGKvZLKc8ldgy/FVnOY+Q+CNtAUpSPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DPnzDNfL; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9012221195
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 04:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1740543046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/jj9HRI+jOIEZx365uuzCdaFPwh7Jd9VdBiZfbn0W6I=;
-	b=W2MUVCeK4gnEUtvAvq7V47HU6OlPdBS0uc3agJZra4NhKaTkQZs3XVtujR9qz2R/15xLgF
-	bUyNFkArNY05dYwNa81L2JZ7HFzHR9svG1b684juVjo/YYAbobZAf9pp/ma79Ta3xV80Rf
-	3AqH+ab674Eiz1qXIdxdOWWEBgZT550=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="M+/D/O2e"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1740543045; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/jj9HRI+jOIEZx365uuzCdaFPwh7Jd9VdBiZfbn0W6I=;
-	b=M+/D/O2eDaepYwiI/eXUqroRbsxZq9G/zX+wFeNPD64SpMzsHZbAdtIWarbbdaA0qE6/fs
-	rXF1rV8zXHTaf5NnzZZFbpbK5WiCSRqC29o3bql+dnWlskk0+XoqY2pfRmDDPTkBhUp32l
-	DJI+pxWWDF/XBbBJFiH/an4SYdHvhmI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3FC41377F
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 04:10:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YFCnIESUvmcgfQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 04:10:44 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: allow debug builds to accept 2K block size
-Date: Wed, 26 Feb 2025 14:40:22 +1030
-Message-ID: <b89134d1353accb08c92c472814a39caeb44bc1e.1740542375.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1740542375.git.wqu@suse.com>
-References: <cover.1740542375.git.wqu@suse.com>
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5ded51d31f1so11633206a12.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2025 23:29:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1740554939; x=1741159739; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jy5UzyKzocsSx5cSXomfjfFL//CTemBkcuebkephmC0=;
+        b=DPnzDNfLR7XZTTtbDw+DuW1lx1StRSsipS09fizN5cRrJGW7tcTHqO5NSG7xYdoHX2
+         o6tzx9bfAow0wJAO8wvFqoZHbs4mPyUkYNJ6p4x4X2XVpneFKc09+/l/Yb7I0rXWNvZf
+         59PADbwRVs1Z2Ld7EANg+3GvujiSVL9sTJFNAfRUgh+fg6qGE9wORi/b9D6BsDA1wVBw
+         nERAEUIHLAgGAaFUFnLURjg/tr13IDXYc82dy/A6pzvk+xS3FFlJBWRs/jLhn1DVfYvd
+         oBGL2zkNNM7XMhVb58ZA7Zr8kDt7ripM7lDqQoP5adxc4THLPzMH4Ps/LDy2jBnSEDqQ
+         ZvWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740554939; x=1741159739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jy5UzyKzocsSx5cSXomfjfFL//CTemBkcuebkephmC0=;
+        b=Nh7CJpBndQkY/5ttoxof+dzv1KMVmeb5H4W+k+9NpgYGkebTcTWmyWpKxbGuSZj/z6
+         ADsuGgKVk4leHmK1z5humF1L+XiO3swUChaVfAoSawmC3XwX181h+CzVY9bU4l53RTON
+         rVpPv7nVlmAGO3x84g4qK5lHJBMWnIiez1nDpV77Wf68tnDdVHsD3koQfSlBOvQ9rPle
+         aWpmIU092IBkQBCqSCdb7rITR3/y1+lCU3xXydrzo3xta1mNgs4u/p9Y9mK6yZPm3YIJ
+         es1J83EfO99mi+76mqx6YRYOGybBf8XTzLer1CyqgxngQLuYa87nkND/mwynSIb9vrro
+         FvHA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7/I53ROg2LEOt4dHB1dTb7rGTB9TxRZU9hQjplA3fd20uNYb+IcKFU7NTroHWI1l/1HyITaxi9xwSjw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDLQp0hL70i/tFwfP3fp72vBWZClm55JQ7rxCmmpWJkkEAT/Us
+	7lvllTT0rhADP39k0Emln9yyqnP8FeADaWR3PRsIYxc/tog9q3oeigjKC4l9xOvYGprw+aEzw5x
+	AbPTV3jl8vDd3EVaau2ZeMu7thao5Vxyv+gSfkA==
+X-Gm-Gg: ASbGnculwH6IBSDWjlsEzNh0Nt09o/nlVqVPTrBSFp/VAWB9CAlXgr8XR/br7TlSY/+
+	OpEMqORj3q+dpFnGDlx2jeyPPwMzTgzN0GEFWRu45JOClhFk5OWtuqT0Lf7lckwB6A1vy2qQnRo
+	ne2+D3fQ==
+X-Google-Smtp-Source: AGHT+IFYP8Tba+z3P6zhrfLVohTtXs/BwRHQBKKRVXu59ZSzqEPbWtjoPmnK2n59Ee5Tugvqu0RIdPnu12lt6iEjWaU=
+X-Received: by 2002:a17:906:18b1:b0:ab6:ed8a:601f with SMTP id
+ a640c23a62f3a-abeeed1123amr202024966b.12.1740554939189; Tue, 25 Feb 2025
+ 23:28:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9012221195
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_ONE(0.00)[1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+ <20250225-converge-secs-to-jiffies-part-two-v3-6-a43967e36c88@linux.microsoft.com>
+ <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
+In-Reply-To: <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 26 Feb 2025 08:28:48 +0100
+X-Gm-Features: AQ5f1JpekOKemtGu2BHsnbGs6fr563e7jHjxxRB5HZ2bESNce9YNZRbPCIKk9Cc
+Message-ID: <CAPjX3Fcr+BoMRgZGbqqgpF+w-sHU+SqGT8QJ3QCp8uvJbnaFsQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/16] rbd: convert timeouts to secs_to_jiffies()
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Easwar Hariharan <eahariha@linux.microsoft.com>, Frank.Li@nxp.com, 
+	James.Bottomley@hansenpartnership.com, Julia.Lawall@inria.fr, 
+	Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org, axboe@kernel.dk, 
+	broonie@kernel.org, cassel@kernel.org, cem@kernel.org, 
+	ceph-devel@vger.kernel.org, clm@fb.com, cocci@inria.fr, 
+	dick.kennedy@broadcom.com, djwong@kernel.org, dlemoal@kernel.org, 
+	dongsheng.yang@easystack.cn, dri-devel@lists.freedesktop.org, 
+	dsterba@suse.com, festevam@gmail.com, hch@lst.de, hdegoede@redhat.com, 
+	hmh@hmh.eng.br, ibm-acpi-devel@lists.sourceforge.net, idryomov@gmail.com, 
+	ilpo.jarvinen@linux.intel.com, imx@lists.linux.dev, james.smart@broadcom.com, 
+	jgg@ziepe.ca, josef@toxicpanda.com, kalesh-anakkur.purayil@broadcom.com, 
+	kbusch@kernel.org, kernel@pengutronix.de, leon@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-ide@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, 
+	linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	martin.petersen@oracle.com, nicolas.palix@imag.fr, ogabbay@kernel.org, 
+	perex@perex.cz, platform-driver-x86@vger.kernel.org, s.hauer@pengutronix.de, 
+	sagi@grimberg.me, selvin.xavier@broadcom.com, shawnguo@kernel.org, 
+	sre@kernel.org, tiwai@suse.com, xiubli@redhat.com, yaron.avizrat@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently we only support two block sizes, 4K and PAGE_SIZE.
+On Tue, 25 Feb 2025 at 22:10, Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> Le 25/02/2025 =C3=A0 21:17, Easwar Hariharan a =C3=A9crit :
+> > Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
+> > secs_to_jiffies().  As the value here is a multiple of 1000, use
+> > secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplica=
+tion
+> >
+> > This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci w=
+ith
+> > the following Coccinelle rules:
+> >
+> > @depends on patch@ expression E; @@
+> >
+> > -msecs_to_jiffies(E * 1000)
+> > +secs_to_jiffies(E)
+> >
+> > @depends on patch@ expression E; @@
+> >
+> > -msecs_to_jiffies(E * MSEC_PER_SEC)
+> > +secs_to_jiffies(E)
+> >
+> > While here, remove the no-longer necessary check for range since there'=
+s
+> > no multiplication involved.
+>
+> I'm not sure this is correct.
+> Now you multiply by HZ and things can still overflow.
 
-This means on the most common architecture x86_64, we have no way to
-test subpage block size.
-And that's exactly I have an aarch64 machine dedicated for subpage
-tests.
+This does not deal with any additional multiplications. If there is an
+overflow, it was already there before to begin with, IMO.
 
-But this is still a hurdle for a lot of btrfs developers, and to improve
-the test coverage mostly on x86_64, here we enable debug builds to
-accept 2K block size.
+> Hoping I got casting right:
 
-This involves:
+Maybe not exactly? See below...
 
-- Introduce a dedicated minimal block size macro
-  BTRFS_MIN_BLOCKSIZE, which depends on if CONFIG_BTRFS_DEBUG is set.
-  If so it's 2K, otherwise it's 4K as usual.
+> #define MSEC_PER_SEC    1000L
+> #define HZ 100
+>
+>
+> #define secs_to_jiffies(_secs) (unsigned long)((_secs) * HZ)
+>
+> static inline unsigned long _msecs_to_jiffies(const unsigned int m)
+> {
+>         return (m + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ);
+> }
+>
+> int main() {
+>
+>         int n =3D INT_MAX - 5;
+>
+>         printf("res  =3D %ld\n", secs_to_jiffies(n));
+>         printf("res  =3D %ld\n", _msecs_to_jiffies(1000 * n));
 
-- Allow 4K, PAGE_SIZE and BTRFS_MIN_BLOCKSIZE as block size
+I think the format should actually be %lu giving the below results:
 
-- Update subpage block size checks to be based on BTRFS_MIN_BLOCKSIZE
+res  =3D 18446744073709551016
+res  =3D 429496130
 
-- Export the new supported blocksize through sysfs interfaces
+Which is still wrong nonetheless. But here, *both* results are wrong
+as the expected output should be 214748364200 which you'll get with
+the correct helper/macro.
 
-As most of the subpage support is already pretty mature, there is no
-extra work needed to support the extra 2K block size.
+But note another thing, the 1000 * (INT_MAX - 5) already overflows
+even before calling _msecs_to_jiffies(). See?
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 12 +++++++++---
- fs/btrfs/fs.h      | 12 ++++++++++++
- fs/btrfs/subpage.h |  2 +-
- fs/btrfs/sysfs.c   |  3 ++-
- 4 files changed, 24 insertions(+), 5 deletions(-)
+Now, you'll get that mentioned correct result with:
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index c0b40dedceb5..6a8368421fbc 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2446,21 +2446,27 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	 * Check sectorsize and nodesize first, other check will need it.
- 	 * Check all possible sectorsize(4K, 8K, 16K, 32K, 64K) here.
- 	 */
--	if (!is_power_of_2(sectorsize) || sectorsize < 4096 ||
-+	if (!is_power_of_2(sectorsize) || sectorsize < BTRFS_MIN_BLOCKSIZE ||
- 	    sectorsize > BTRFS_MAX_METADATA_BLOCKSIZE) {
- 		btrfs_err(fs_info, "invalid sectorsize %llu", sectorsize);
- 		ret = -EINVAL;
- 	}
- 
- 	/*
--	 * We only support at most two sectorsizes: 4K and PAGE_SIZE.
-+	 * We only support at most 3 sectorsizes: 4K, PAGE_SIZE, MIN_BLOCKSIZE.
-+	 *
-+	 * For 4K page sized systems with non-debug builds, all 3 matches (4K).
-+	 * For 4K page sized systems with debug builds, there are two block sizes
-+	 * supported. (4K and 2K)
- 	 *
- 	 * We can support 16K sectorsize with 64K page size without problem,
- 	 * but such sectorsize/pagesize combination doesn't make much sense.
- 	 * 4K will be our future standard, PAGE_SIZE is supported from the very
- 	 * beginning.
- 	 */
--	if (sectorsize > PAGE_SIZE || (sectorsize != SZ_4K && sectorsize != PAGE_SIZE)) {
-+	if (sectorsize > PAGE_SIZE || (sectorsize != SZ_4K &&
-+				       sectorsize != PAGE_SIZE &&
-+				       sectorsize != BTRFS_MIN_BLOCKSIZE)) {
- 		btrfs_err(fs_info,
- 			"sectorsize %llu not yet supported for page size %lu",
- 			sectorsize, PAGE_SIZE);
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 8e8ac7db1355..b8c2e59ffc43 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -47,6 +47,18 @@ struct btrfs_subpage_info;
- struct btrfs_stripe_hash_table;
- struct btrfs_space_info;
- 
-+/*
-+ * Minimal data and metadata block size.
-+ *
-+ * Normally it's 4K, but for testing subpage block size on 4K page systems,
-+ * we allow DEBUG builds to accept 2K page size.
-+ */
-+#ifdef CONFIG_BTRFS_DEBUG
-+#define BTRFS_MIN_BLOCKSIZE	(SZ_2K)
-+#else
-+#define BTRFS_MIN_BLOCKSIZE	(SZ_4K)
-+#endif
-+
- #define BTRFS_MAX_EXTENT_SIZE SZ_128M
- 
- #define BTRFS_OLDEST_GENERATION	0ULL
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index f8d1efa1a227..5327093cf466 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -70,7 +70,7 @@ enum btrfs_subpage_type {
- 	BTRFS_SUBPAGE_DATA,
- };
- 
--#if PAGE_SIZE > SZ_4K
-+#if PAGE_SIZE > BTRFS_MIN_BLOCKSIZE
- /*
-  * Subpage support for metadata is more complex, as we can have dummy extent
-  * buffers, where folios have no mapping to determine the owning inode.
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 53b846d99ece..4be612cab10f 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -411,7 +411,8 @@ static ssize_t supported_sectorsizes_show(struct kobject *kobj,
- {
- 	ssize_t ret = 0;
- 
--	/* An artificial limit to only support 4K and PAGE_SIZE */
-+	if (BTRFS_MIN_BLOCKSIZE != SZ_4K && BTRFS_MIN_BLOCKSIZE != PAGE_SIZE)
-+		ret += sysfs_emit_at(buf, ret, "%u ", BTRFS_MIN_BLOCKSIZE);
- 	if (PAGE_SIZE > SZ_4K)
- 		ret += sysfs_emit_at(buf, ret, "%u ", SZ_4K);
- 	ret += sysfs_emit_at(buf, ret, "%lu\n", PAGE_SIZE);
--- 
-2.48.1
+#define secs_to_jiffies(_secs) ((unsigned long)(_secs) * HZ)
 
+Still, why unsigned? What if you wanted to convert -5 seconds to jiffies?
+
+>         return 0;
+> }
+>
+>
+> gives :
+>
+> res  =3D -600
+> res  =3D 429496130
+>
+> with msec, the previous code would catch the overflow, now it overflows
+> silently.
+
+What compiler options are you using? I'm not getting any warnings.
+
+> untested, but maybe:
+>         if (result.uint_32 > INT_MAX / HZ)
+>                 goto out_of_range;
+>
+> ?
+>
+> CJ
+>
+>
+> >
+> > Acked-by: Ilya Dryomov <idryomov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.or=
+g>
+> > Signed-off-by: Easwar Hariharan <eahariha-1pm0nblsJy7Jp67UH1NAhkEOCMrvL=
+tNR@public.gmane.org>
+> > ---
+> >   drivers/block/rbd.c | 8 +++-----
+> >   1 file changed, 3 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+> > index faafd7ff43d6ef53110ab3663cc7ac322214cc8c..41207133e21e9203192adf3=
+b92390818e8fa5a58 100644
+> > --- a/drivers/block/rbd.c
+> > +++ b/drivers/block/rbd.c
+> > @@ -108,7 +108,7 @@ static int atomic_dec_return_safe(atomic_t *v)
+> >   #define RBD_OBJ_PREFIX_LEN_MAX      64
+> >
+> >   #define RBD_NOTIFY_TIMEOUT  5       /* seconds */
+> > -#define RBD_RETRY_DELAY              msecs_to_jiffies(1000)
+> > +#define RBD_RETRY_DELAY              secs_to_jiffies(1)
+> >
+> >   /* Feature bits */
+> >
+> > @@ -4162,7 +4162,7 @@ static void rbd_acquire_lock(struct work_struct *=
+work)
+> >               dout("%s rbd_dev %p requeuing lock_dwork\n", __func__,
+> >                    rbd_dev);
+> >               mod_delayed_work(rbd_dev->task_wq, &rbd_dev->lock_dwork,
+> > -                 msecs_to_jiffies(2 * RBD_NOTIFY_TIMEOUT * MSEC_PER_SE=
+C));
+> > +                 secs_to_jiffies(2 * RBD_NOTIFY_TIMEOUT));
+> >       }
+> >   }
+> >
+> > @@ -6283,9 +6283,7 @@ static int rbd_parse_param(struct fs_parameter *p=
+aram,
+> >               break;
+> >       case Opt_lock_timeout:
+> >               /* 0 is "wait forever" (i.e. infinite timeout) */
+> > -             if (result.uint_32 > INT_MAX / 1000)
+> > -                     goto out_of_range;
+> > -             opt->lock_timeout =3D msecs_to_jiffies(result.uint_32 * 1=
+000);
+> > +             opt->lock_timeout =3D secs_to_jiffies(result.uint_32);
+> >               break;
+> >       case Opt_pool_ns:
+> >               kfree(pctx->spec->pool_ns);
+> >
+>
+>
 
