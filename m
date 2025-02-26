@@ -1,227 +1,146 @@
-Return-Path: <linux-btrfs+bounces-11835-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11836-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE433A457D5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 09:12:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC9A2A457D8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 09:13:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1BAD16BE59
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 08:12:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2EDD3A5F97
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2025 08:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD61226D08;
-	Wed, 26 Feb 2025 08:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45BE1224224;
+	Wed, 26 Feb 2025 08:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="eN5Aq4eo"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M52k0xCi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8iRN0KEK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M52k0xCi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8iRN0KEK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-65.smtpout.orange.fr [80.12.242.65])
-	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91EF1E1DF8;
-	Wed, 26 Feb 2025 08:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE551E1E0E
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2025 08:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740557496; cv=none; b=gQQwKZqBkZcBk/KDWg9OuaWXa6uejj8HSbP9sr1fBFpY87RPl04EIf3XYq0lKwXWQK2X4hEkxOewzCIAJlTN780ruVw8O33PoEQqbrHAfbnhLXHacKdHG+dBQEHazdgeVgGYNNVD//VIyhCJnwYlPsOBm6KpniG56wRtD72pAQg=
+	t=1740557513; cv=none; b=iVpsWc5+1ip1lToeQ2N8YnUqTxcPfaGFWgRFShxTuG3k8MtJj7Ff2p1uQIiGO3RCS4NOzZrEfthgHVtCiCf7ScLZXlzbQCWKPgK28CPVqY4wJQSKrJgfyp0CciDqD5PuKC/hqxtkO3rx3vHH5hD9o70QedrHb91MpJa4AbdT9Ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740557496; c=relaxed/simple;
-	bh=awSOf5Uptv5ylK84gNxEQtXQbjceSW4sC06B5EGXwTo=;
-	h=Message-ID:Date:MIME-Version:Subject:References:From:Cc:To:
-	 In-Reply-To:Content-Type; b=UARJ0LvEX9I2lRuv9JPsmI0Pz0FR1j2BbDtjUsvZI+zxm3JIxy1WmYxBA7xL8TK39G5ecAxv6W8vkoD2GvKWNnhtAXmxka+Y4lhm8r43OKbLlv2G8tAUao2Xkc4kqU0HI4KCuMdWKWTEEOI7VGf+JjGC7F1jRRPnVsUvtbGh4EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=eN5Aq4eo; arc=none smtp.client-ip=80.12.242.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([90.11.132.44])
-	by smtp.orange.fr with ESMTPA
-	id nCUZttGc7xgLFnCUctj4sa; Wed, 26 Feb 2025 09:10:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1740557422;
-	bh=ZqGB3dHEkHXDAW5t23ZRy/tk7CvQyYHBVX5yXFeysoI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To;
-	b=eN5Aq4eovmdL2fTfqQhqmyNlSDtRmJIyRo9BV90ujHdViAKnbjtHr7qbLtUGcLRlZ
-	 sm6a7gFroiFb3USkdQ363fe5J2nBAhWrC7vKq9Gr98LlhArejaCxQtmS/g1lQfI49r
-	 0aIAOKfoRo4tNDooG9At7xMG826jfO8nyaZlknhJmJI7Jeype1X6hRb1E9umLPEZG2
-	 XbWU654Orv/crOsdG/XuK2GvaB+YBDki8U4i31RNmbRUpE2c+df/ckkinYznub6VnQ
-	 yhVMeiNx7yCwm+qgQ83RKYb4GoAOEUYS84Jpg4YkW7VlX71dQkYv0MO6jlmI4MTa2U
-	 +sFJCwiWciqJQ==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
-X-ME-Date: Wed, 26 Feb 2025 09:10:22 +0100
-X-ME-IP: 90.11.132.44
-Message-ID: <7b8346a1-8a7d-4fcf-a026-119d77f2ca85@wanadoo.fr>
-Date: Wed, 26 Feb 2025 09:10:07 +0100
+	s=arc-20240116; t=1740557513; c=relaxed/simple;
+	bh=ngVPVzEoGTQofPb2IuC5RPQf+fnemEe3saOAh3C/qTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R0gBWrWgGqwdyA9bJ9G6NFZuhjdSCsHukciXKYnmT3tVKWmWJ7FJQaJ5WK1JDyO2JKU9REVer+bUGQWhuSSydEZhQWtwzMj7tGpQF7Amxblxah5i2A4U59u51rcrWA9pEL1CJ7apIDrnAuir0wNKuBd19qEraBdo1Ca1yzItFlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M52k0xCi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8iRN0KEK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M52k0xCi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8iRN0KEK; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B7A831F38A;
+	Wed, 26 Feb 2025 08:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740557508;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5oSK5a0wXtrsCNbcDCNVM2B7YuQM4YVWXEKgiWoGr4g=;
+	b=M52k0xCidBShUQAUieS3yPeEKYbp9SkWFdE1T3Y9LN5qr+qoYQf7ZkLHS+lGpskYFmX84o
+	rj9MORggsjWLOOWi/wz2wycGn+wJaTmZBjktZaO+KZUIC3AmoqtrO/rEulVAIrr84IJswA
+	fagXdOSFcorVbEFOJXuRji/5Ut1Z0Lk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740557508;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5oSK5a0wXtrsCNbcDCNVM2B7YuQM4YVWXEKgiWoGr4g=;
+	b=8iRN0KEKaA2TzYhRyiJviHM7S5ocd8Wgx3odRIDBHuMEw1X2YH9ID+lMEUobTzWCFcCrsV
+	lywwqivyW5oEyPCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740557508;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5oSK5a0wXtrsCNbcDCNVM2B7YuQM4YVWXEKgiWoGr4g=;
+	b=M52k0xCidBShUQAUieS3yPeEKYbp9SkWFdE1T3Y9LN5qr+qoYQf7ZkLHS+lGpskYFmX84o
+	rj9MORggsjWLOOWi/wz2wycGn+wJaTmZBjktZaO+KZUIC3AmoqtrO/rEulVAIrr84IJswA
+	fagXdOSFcorVbEFOJXuRji/5Ut1Z0Lk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740557508;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5oSK5a0wXtrsCNbcDCNVM2B7YuQM4YVWXEKgiWoGr4g=;
+	b=8iRN0KEKaA2TzYhRyiJviHM7S5ocd8Wgx3odRIDBHuMEw1X2YH9ID+lMEUobTzWCFcCrsV
+	lywwqivyW5oEyPCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8DD6F1377F;
+	Wed, 26 Feb 2025 08:11:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id O2tbIsTMvmf5QAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 26 Feb 2025 08:11:48 +0000
+Date: Wed, 26 Feb 2025 09:11:42 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-hardening@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: Replace deprecated strncpy() with strscpy()
+Message-ID: <20250226081142.GR5777@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250225192613.330409-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 06/16] rbd: convert timeouts to secs_to_jiffies()
-References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
- <20250225-converge-secs-to-jiffies-part-two-v3-6-a43967e36c88@linux.microsoft.com>
- <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
- <CAPjX3Fcr+BoMRgZGbqqgpF+w-sHU+SqGT8QJ3QCp8uvJbnaFsQ@mail.gmail.com>
-Content-Language: en-US, fr-FR
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Frank.Li@nxp.com, James.Bottomley@hansenpartnership.com,
- Julia.Lawall@inria.fr, Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org,
- axboe@kernel.dk, broonie@kernel.org, cassel@kernel.org, cem@kernel.org,
- ceph-devel@vger.kernel.org, christophe.jaillet@wanadoo.fr, clm@fb.com,
- cocci@inria.fr, dick.kennedy@broadcom.com, djwong@kernel.org,
- dlemoal@kernel.org, dongsheng.yang@easystack.cn,
- dri-devel@lists.freedesktop.org, dsterba@suse.com,
- eahariha@linux.microsoft.com, festevam@gmail.com, hch@lst.de,
- hdegoede@redhat.com, hmh@hmh.eng.br, ibm-acpi-devel@lists.sourceforge.net,
- idryomov@gmail.com, ilpo.jarvinen@linux.intel.com, imx@lists.linux.dev,
- james.smart@broadcom.com, jgg@ziepe.ca, josef@toxicpanda.com,
- kalesh-anakkur.purayil@broadcom.com, kbusch@kernel.org,
- kernel@pengutronix.de, leon@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
- martin.petersen@oracle.com, nicolas.palix@imag.fr, ogabbay@kernel.org,
- perex@perex.cz, platform-driver-x86@vger.kernel.org, s.hauer@pengutronix.de,
- sagi@grimberg.me, selvin.xavier@broadcom.com, shawnguo@kernel.org,
- sre@kernel.org, tiwai@suse.com, xiubli@redhat.com, yaron.avizrat@intel.com
-To: neelx@suse.com
-In-Reply-To: <CAPjX3Fcr+BoMRgZGbqqgpF+w-sHU+SqGT8QJ3QCp8uvJbnaFsQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250225192613.330409-2-thorsten.blum@linux.dev>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.996];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Le 26/02/2025 à 08:28, Daniel Vacek a écrit :
-> On Tue, 25 Feb 2025 at 22:10, Christophe JAILLET
-> <christophe.jaillet-39ZsbGIQGT5GWvitb5QawA@public.gmane.org> wrote:
->>
->> Le 25/02/2025 à 21:17, Easwar Hariharan a écrit :
->>> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
->>> secs_to_jiffies().  As the value here is a multiple of 1000, use
->>> secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplication
->>>
->>> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
->>> the following Coccinelle rules:
->>>
->>> @depends on patch@ expression E; @@
->>>
->>> -msecs_to_jiffies(E * 1000)
->>> +secs_to_jiffies(E)
->>>
->>> @depends on patch@ expression E; @@
->>>
->>> -msecs_to_jiffies(E * MSEC_PER_SEC)
->>> +secs_to_jiffies(E)
->>>
->>> While here, remove the no-longer necessary check for range since there's
->>> no multiplication involved.
->>
->> I'm not sure this is correct.
->> Now you multiply by HZ and things can still overflow.
+On Tue, Feb 25, 2025 at 08:26:14PM +0100, Thorsten Blum wrote:
+> strncpy() is deprecated for NUL-terminated destination buffers. Use
+> strscpy() instead and don't zero-initialize the param array.
 > 
-> This does not deal with any additional multiplications. If there is an
-> overflow, it was already there before to begin with, IMO.
+> Compile-tested only.
 > 
->> Hoping I got casting right:
-> 
-> Maybe not exactly? See below...
-> 
->> #define MSEC_PER_SEC    1000L
->> #define HZ 100
->>
->>
->> #define secs_to_jiffies(_secs) (unsigned long)((_secs) * HZ)
->>
->> static inline unsigned long _msecs_to_jiffies(const unsigned int m)
->> {
->>          return (m + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ);
->> }
->>
->> int main() {
->>
->>          int n = INT_MAX - 5;
->>
->>          printf("res  = %ld\n", secs_to_jiffies(n));
->>          printf("res  = %ld\n", _msecs_to_jiffies(1000 * n));
-> 
-> I think the format should actually be %lu giving the below results:
-> 
-> res  = 18446744073709551016
-> res  = 429496130
-> 
-> Which is still wrong nonetheless. But here, *both* results are wrong
-> as the expected output should be 214748364200 which you'll get with
-> the correct helper/macro.
-> 
-> But note another thing, the 1000 * (INT_MAX - 5) already overflows
-> even before calling _msecs_to_jiffies(). See?
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 
-Agreed and intentional in my test C code.
-
-That is the point.
-
-The "if (result.uint_32 > INT_MAX / 1000)" in the original code was 
-handling such values.
-
-> 
-> Now, you'll get that mentioned correct result with:
-> 
-> #define secs_to_jiffies(_secs) ((unsigned long)(_secs) * HZ)
-
-Not looked in details, but I think I would second on you on this, in 
-this specific example. Not sure if it would handle all possible uses of 
-secs_to_jiffies().
-
-But it is not how secs_to_jiffies() is defined up to now. See [1].
-
-[1]: 
-https://elixir.bootlin.com/linux/v6.14-rc4/source/include/linux/jiffies.h#L540
-
-> 
-> Still, why unsigned? What if you wanted to convert -5 seconds to jiffies?
-
-See commit bb2784d9ab495 which added the cast.
-
-> 
->>          return 0;
->> }
->>
->>
->> gives :
->>
->> res  = -600
->> res  = 429496130
->>
->> with msec, the previous code would catch the overflow, now it overflows
->> silently.
-> 
-> What compiler options are you using? I'm not getting any warnings.
-
-I mean, with:
-	if (result.uint_32 > INT_MAX / 1000)
-		goto out_of_range;
-the overflow would be handled *at runtime*.
-
-Without such a check, an unexpected value could be stored in 
-opt->lock_timeout.
-
-I think that a test is needed and with secs_to_jiffies(), I tentatively 
-proposed:
-	if (result.uint_32 > INT_MAX / HZ)
-		goto out_of_range;
-
-CJ
-
-> 
->> untested, but maybe:
->>          if (result.uint_32 > INT_MAX / HZ)
->>                  goto out_of_range;
->>
->> ?
->>
->> CJ
->>
-
-...
+Added to for-next, thanks.
 
