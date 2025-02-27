@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-11886-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11888-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9DC7A47591
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2025 06:56:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB93A4758D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2025 06:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B5031888395
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 374EF170629
 	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2025 05:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EE3215183;
-	Thu, 27 Feb 2025 05:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59696215183;
+	Thu, 27 Feb 2025 05:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="scAg6+cq";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="scAg6+cq"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NCDI+h+X";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NCDI+h+X"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD151C5D6E
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2025 05:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8381EB5F2
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2025 05:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740635711; cv=none; b=OgTOt90aT56JJeTLdh1pFH67ZzyMyNLFSvwlp114+y7K+eIpUiDm4/iHdFDbaraWk5ZDXC5kY/gGKLcs15fVoRlFfZIs9NQ5L1z4DuLwEdbU6ffBVS+aSqKY3rDIhE7GzrA1Va03zgjAuUyCZaHENNXShOY3DeeUTUGsNjjBmzc=
+	t=1740635717; cv=none; b=axx5GD6b7h+i4LaOe5aEC0T3p0OTEYd/zVXt5EIadU8BPHsI4bmmm1Hy6ZQO4U0n4mc9wJLKWLWCfJlfcW50KsbrBTPFq3mMSUVgWfQfuhaS+5yF2JwX6Ga3Tj48UaAcrd9bSB1t8GDWNsWo1tzU7L8WAnFcyEdEHmV0bkNPzQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740635711; c=relaxed/simple;
-	bh=/04BNbArBbapAXCCktBtlwQ4Kh5BK7ZEGHU5cKZhsqc=;
+	s=arc-20240116; t=1740635717; c=relaxed/simple;
+	bh=fVjyhviJxkdrJBzCSmMukavoH5zEdmQUKdWMAER1LZo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lwdukFDS5Bg+FLtlbQ4jsU7S5p7KFs8Irm9YpQlu+nuxqQqH9MiRNzghNBIwsj6XaklgAb8uRwN8mKJSpTEx+mBGEseC9yUFSzpfBF4DC2zKMId4ZOvrChwkFuaaEUO6vs8kBbpwy3qNE+uaqxC1BNcdOD4MBtXYEN9mDgJBHS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=scAg6+cq; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=scAg6+cq; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=TJiWf5Xs8yklpWTdKjz0fxQykorkVn0FXkRdcOEur7HtaoHNvZrNYo6J/FMLpGezsQO/8T3vPkaq7eqMHV2a6ggapp+r+dO0qDtyKtuhDS2UKvDGpRkeNIKCrLxBacsV2f41gAmIgNpDEkQqMJSpE2Jkf+K3MMhNgeHzfDTOC8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NCDI+h+X; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NCDI+h+X; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C9E7F211A1;
-	Thu, 27 Feb 2025 05:55:06 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 54EDF1F38F;
+	Thu, 27 Feb 2025 05:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1740635706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1740635708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e9VXx+8Z0Gr4C5gvS+pAsmKOliEMdagUu53c2fSkmO4=;
-	b=scAg6+cqFCfj9gIz43IohoiYNCQ+gqi2hEP5nOA9RWX1bu3PWoGHcqTmYWs49Rz+U8og2Y
-	kERCatRIhQt2sNZX8MGDwGxX5nDdQ4RHOvaH6ppbJ7du3I4u8+ieasfuccFoTObhetiZFG
-	+p4vWd3z2X9QmJgTuWh+HYRtDR3u9fA=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=scAg6+cq
+	bh=F9QIe7BBpCfyu3f39k3PTijSvbPVGTjj30e9JDFZYsY=;
+	b=NCDI+h+X3SO41+jjYgiGTVdvkoTY7HY1I125nUNHB1rdAyxYm9MGN5sEb8MN53wf4A8xLY
+	cJYk5J/WMWrdEYtwuB6w1XdfSGHfjsbe6PX2uNjuCLovDENcd4f0kPCFSKek02awHPGMp/
+	Lgyp39voIxrlFtb14C6lXHtl9fd78+c=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1740635706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1740635708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e9VXx+8Z0Gr4C5gvS+pAsmKOliEMdagUu53c2fSkmO4=;
-	b=scAg6+cqFCfj9gIz43IohoiYNCQ+gqi2hEP5nOA9RWX1bu3PWoGHcqTmYWs49Rz+U8og2Y
-	kERCatRIhQt2sNZX8MGDwGxX5nDdQ4RHOvaH6ppbJ7du3I4u8+ieasfuccFoTObhetiZFG
-	+p4vWd3z2X9QmJgTuWh+HYRtDR3u9fA=
+	bh=F9QIe7BBpCfyu3f39k3PTijSvbPVGTjj30e9JDFZYsY=;
+	b=NCDI+h+X3SO41+jjYgiGTVdvkoTY7HY1I125nUNHB1rdAyxYm9MGN5sEb8MN53wf4A8xLY
+	cJYk5J/WMWrdEYtwuB6w1XdfSGHfjsbe6PX2uNjuCLovDENcd4f0kPCFSKek02awHPGMp/
+	Lgyp39voIxrlFtb14C6lXHtl9fd78+c=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9BC81376A;
-	Thu, 27 Feb 2025 05:55:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4963E1376A;
+	Thu, 27 Feb 2025 05:55:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8FuqIjn+v2ebUgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 27 Feb 2025 05:55:05 +0000
+	id kLRJAzv+v2ebUgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 27 Feb 2025 05:55:07 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2 1/8] btrfs: prevent inline data extents read from touching blocks beyond its range
-Date: Thu, 27 Feb 2025 16:24:39 +1030
-Message-ID: <da8a69b82144d6de4ca8c1ee99c33d2290480b78.1740635497.git.wqu@suse.com>
+Cc: stable@vger.kernel.org
+Subject: [PATCH v2 2/8] btrfs: subpage: do not hold subpage spin lock when clearing folio writeback
+Date: Thu, 27 Feb 2025 16:24:40 +1030
+Message-ID: <5d724635289a10a39164b767bdbee81e9e82e7d7.1740635497.git.wqu@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1740635497.git.wqu@suse.com>
 References: <cover.1740635497.git.wqu@suse.com>
@@ -84,142 +84,114 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C9E7F211A1
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-Currently reading an inline data extent will zero out all the remaining
-range in the page.
+[BUG]
+When testing subpage block size btrfs (block size < page size), I hit
+the following spin lock hang on x86_64, with the experimental 2K block
+size support:
 
-This is not yet causing problems even for block size < page size
-(subpage) cases because:
+  <TASK>
+  _raw_spin_lock_irq+0x2f/0x40
+  wait_subpage_spinlock+0x69/0x80 [btrfs]
+  btrfs_release_folio+0x46/0x70 [btrfs]
+  folio_unmap_invalidate+0xcb/0x250
+  folio_end_writeback+0x127/0x1b0
+  btrfs_subpage_clear_writeback+0xef/0x140 [btrfs]
+  end_bbio_data_write+0x13a/0x3c0 [btrfs]
+  btrfs_bio_end_io+0x6f/0xc0 [btrfs]
+  process_one_work+0x156/0x310
+  worker_thread+0x252/0x390
+  ? __pfx_worker_thread+0x10/0x10
+  kthread+0xef/0x250
+  ? finish_task_switch.isra.0+0x8a/0x250
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork+0x34/0x50
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork_asm+0x1a/0x30
+  </TASK>
 
-1) An inline data extent always starts at file offset 0
-   Meaning at page read, we always read the inline extent first, before
-   any other blocks in the page. Then later blocks are properly read out
-   and re-fill the zeroed out ranges.
+[CAUSE]
+It's a self deadlock with the following sequence:
 
-2) Currently btrfs will read out the whole page if a buffered write is
-   not page aligned
-   So a page is either fully uptodate at buffered write time (covers the
-   whole page), or we will read out the whole page first.
-   Meaning there is nothing to lose for such an inline extent read.
+ btrfs_subpage_clear_writeback()
+ |- spin_lock_irqsave(&subpage->lock);
+ |- folio_end_writeback()
+    |- folio_end_dropbehind_write()
+       |- folio_unmap_invalidate()
+          |- btrfs_release_folio()
+             |- wait_subpage_spinlock()
+                |- spin_lock_irq(&subpage->lock);
+                   !! DEADLOCK !!
 
-But it's still not ideal:
+We're trying to acquire the same spin lock already held by ourselves.
 
-- We're zeroing out the page twice
-  One done by read_inline_extent()/uncompress_inline(), one done by
-  btrfs_do_readpage() for ranges beyond i_size.
+[FIX]
+Move the folio_end_writeback() call out of the spin lock critical
+section.
 
-- We're touching blocks that doesn't belong to the inline extent
-  In the incoming patches, we can have a partial uptodate folio, that
-  some dirty blocks can exist while the page is not fully uptodate:
+And since we no longer have all the bitmap operation and the writeback
+flag clearing happening inside the critical section, we must do extra
+checks to make sure only the last one clearing the writeback bitmap can
+clear the folio writeback flag.
 
-  The page size is 16K and block size is 4K:
-
-  0         4K        8K        12K        16K
-  |         |         |/////////|          |
-
-  And range [8K, 12K) is dirtied by a buffered write, the remaining
-  blocks are not uptodate.
-
-  If range [0, 4K) contains an inline data extent, and we try to read
-  the whole page, the current behavior will overwrite range [8K, 12K)
-  with zero and cause data loss.
-
-So to make the behavior more consistent and in preparation for future
-changes, limit the inline data extents read to only zero out the range
-inside the first block, not the whole page.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 3470da3b7d87 ("btrfs: subpage: introduce helpers for writeback status")
+Cc: stable@vger.kernel.org # 5.15+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/btrfs/subpage.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c432ccfba56e..f06b1c78c399 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6788,6 +6788,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- {
- 	int ret;
- 	struct extent_buffer *leaf = path->nodes[0];
-+	const u32 sectorsize = leaf->fs_info->sectorsize;
- 	char *tmp;
- 	size_t max_size;
- 	unsigned long inline_size;
-@@ -6804,7 +6805,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index ebb40f506921..bedb5fac579b 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -466,15 +466,21 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_subpage *subpage = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							writeback, start, len);
++	bool was_writeback;
++	bool last = false;
+ 	unsigned long flags;
  
- 	read_extent_buffer(leaf, tmp, ptr, inline_size);
- 
--	max_size = min_t(unsigned long, PAGE_SIZE, max_size);
-+	max_size = min_t(unsigned long, sectorsize, max_size);
- 	ret = btrfs_decompress(compress_type, tmp, folio, 0, inline_size,
- 			       max_size);
- 
-@@ -6816,14 +6817,15 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- 	 * cover that region here.
- 	 */
- 
--	if (max_size < PAGE_SIZE)
--		folio_zero_range(folio, max_size, PAGE_SIZE - max_size);
-+	if (max_size < sectorsize)
-+		folio_zero_range(folio, max_size, sectorsize - max_size);
- 	kfree(tmp);
- 	return ret;
+ 	spin_lock_irqsave(&subpage->lock, flags);
++	was_writeback = !subpage_test_bitmap_all_zero(fs_info, folio, writeback);
+ 	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+-	if (subpage_test_bitmap_all_zero(fs_info, folio, writeback)) {
++	if (subpage_test_bitmap_all_zero(fs_info, folio, writeback) &&
++	    was_writeback) {
+ 		ASSERT(folio_test_writeback(folio));
+-		folio_end_writeback(folio);
++		last = true;
+ 	}
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
++	if (last)
++		folio_end_writeback(folio);
  }
  
- static int read_inline_extent(struct btrfs_path *path, struct folio *folio)
- {
-+	const u32 sectorsize = path->nodes[0]->fs_info->sectorsize;
- 	struct btrfs_file_extent_item *fi;
- 	void *kaddr;
- 	size_t copy_size;
-@@ -6838,14 +6840,14 @@ static int read_inline_extent(struct btrfs_path *path, struct folio *folio)
- 	if (btrfs_file_extent_compression(path->nodes[0], fi) != BTRFS_COMPRESS_NONE)
- 		return uncompress_inline(path, folio, fi);
- 
--	copy_size = min_t(u64, PAGE_SIZE,
-+	copy_size = min_t(u64, sectorsize,
- 			  btrfs_file_extent_ram_bytes(path->nodes[0], fi));
- 	kaddr = kmap_local_folio(folio, 0);
- 	read_extent_buffer(path->nodes[0], kaddr,
- 			   btrfs_file_extent_inline_start(fi), copy_size);
- 	kunmap_local(kaddr);
--	if (copy_size < PAGE_SIZE)
--		folio_zero_range(folio, copy_size, PAGE_SIZE - copy_size);
-+	if (copy_size < sectorsize)
-+		folio_zero_range(folio, copy_size, sectorsize - copy_size);
- 	return 0;
- }
- 
+ void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
 -- 
 2.48.1
 
