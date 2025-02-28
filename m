@@ -1,221 +1,150 @@
-Return-Path: <linux-btrfs+bounces-11948-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11949-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9757AA49EC0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 17:28:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E6F1A49ED7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 17:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CB811898F31
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 16:28:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB4B3A6580
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 16:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE0027291F;
-	Fri, 28 Feb 2025 16:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D80326A0DB;
+	Fri, 28 Feb 2025 16:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sR2205aj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gDWsjS3J"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0759D26A0DB;
-	Fri, 28 Feb 2025 16:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCE433E7
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 16:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740760084; cv=none; b=mAYXT381M6GKyGdtJucmvHcAytW+I23GRdg0RVYKjsLZBjW9aZIwVPidkTYKxZsu/4g18tO/ytwwzCZLuFQpgBKNK9Mzn9LQB1SfjASFBngFWsC3OGcZ3Uhq/HxGu3ZTcwwqoP2H5l9rvtj/R2c4RRqKoZ21O+alT8v6d61e5RY=
+	t=1740760322; cv=none; b=JXskhtXkcUQZol+sPUTEO+b1yWzvPvP6pD1U0OHnKv9QPPs/Nw4n+1ckoQCYv1L/FaihgtzHOJrV1ZX4OSGCDKM+GZSkPvfxztOYpMaXei61aOQfWpDNr3F0mHsTUzPX677e/JSZhn2JukFmcLQPMC0o1VIxwHv7MQM3OTt1gaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740760084; c=relaxed/simple;
-	bh=vb+8B1B33mARj/OQc1AFoSwj4mPJXOHuGLQvA5qeByA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kjQ7oAZ0ZqdBPMjXY2XSLoY7MJMA8V+4bE/mozzeKYng7wDCRZI86GTmsE64CF87nxh6/dNDQWO1R5IMLWFLWeYDOUg+RHRmazW5ULd5syGRyDtQHHsSFeKCnG56gNUueAday0dPtRT/V7YhXrykvHMkesCJevZ68UYcB9ecqm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sR2205aj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BC9EC4CED6;
-	Fri, 28 Feb 2025 16:28:02 +0000 (UTC)
+	s=arc-20240116; t=1740760322; c=relaxed/simple;
+	bh=83psnPfK7QK+IeUITFjEyOjxlpHZwWnZFncXU+/AzfQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T2vJAPj7+b2RFFJv0yWRMSpQVqN3/zAYZ94PPu8p1sTsWlnH0/WaxljrSpVA6TZBaV5dekBebk+2kV3LophKEaPWZVnH+vFDCa3ZQC9mOBEoDKQ0QgmBhouLFhpDuGQmbmF63WRceLNsdDE6kPRDQMvpr9VPacyeipTq/iUs0xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gDWsjS3J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42E45C4CED6
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 16:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740760083;
-	bh=vb+8B1B33mARj/OQc1AFoSwj4mPJXOHuGLQvA5qeByA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=sR2205ajhr2GvHTMH4LVmejs6OzvKxTRsnbtc+FWyH8W2edAm+E8H+0vV1LgQZgBg
-	 +43anvf22MO9AqOLXdGmsDQLOQOr8+pjGHy5WQ6jVtEHQ66FefaasdE6ssSAdJOUFE
-	 409U/X6xpxzsbkKHHQ7OVBjnJW/A/diQyGjFIDe+IE227poRrS1CwaPvjQaAjNXbpo
-	 5K5q1kAQKXj5DX3IPdD82eAzyFDZWrPafzDMoGdJz7O7b5Oul6lSHmp9o/eFixKoNg
-	 ry1bVqbLOkrK9ipsALXvfFZA94un6c9tM8ZpnTS+ACxRX1vYnijELcuEL0tdKTOuP0
-	 erbIk8UheFJDQ==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	Glass Su <glass.su@suse.com>
-Subject: [PATCH] btrfs/080: fix sporadic failures starting with kernel 6.13
-Date: Fri, 28 Feb 2025 16:27:55 +0000
-Message-ID: <d48dd538e99048e73973c6b32a75a6ff340e8c47.1740759907.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=k20201202; t=1740760322;
+	bh=83psnPfK7QK+IeUITFjEyOjxlpHZwWnZFncXU+/AzfQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=gDWsjS3JN9z9P72z3lEKDHtF2+92hutD6D0+gJ0GEF5fGgZkl2BVPes9q2Bsm/ZN6
+	 UrJu04a5HYRPN70jcYbshbt5ckbJbVUlFNRljtbFPbvAt8/WpPcDGoqniHcQrTgpkc
+	 PvvKV8kyGQGGJOB/dXmCt5EdxvvYsjkSrkRGsX1fTB0s6MVCeoW1k+6Je/ZfomnP/I
+	 vpq3o3JJZyKz9r4+Y9lstx4sHYOzOZe+2txgb39OHgz2kDaZLO22h8EPh2Pkw7+5fq
+	 XvnpJdvKOaEGFPjfQdvLTfiBZ3bLUww7tGqzWEGUC7E4zBkwNOKHOMt4qdDUoZjaEX
+	 TaGsXFulBGamw==
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4398c8c8b2cso24877185e9.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 08:32:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWpC3egz6D/E8jaJPCUxfmKqKIEBbMgMYP1Ml/RhV2/muuT91ZhXeHuhXgVT4TdU4eT8VXscSKm52oYtA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6MxOxoicua1hPQ0kIbW5emBNLhT2I4ryn2mHqZJEolXYUbx6k
+	Z02/yoma7Rf8E1CJ6ThwqmaGIl1KSngqwL0ceRHN5qn7v/4evFNLWljcg6LxQjJpKUsd7gh1ANN
+	DHbllXjIoalJ3dR4cYVlo0huvMTo=
+X-Google-Smtp-Source: AGHT+IGsAMNgV9rvlf/8ftN4UuiW0eaVE/zQM/wiO7dd8N/O0ob3wsZaV9le2WIZuexRCDYKeIBLer1zMeoy+qwYjJY=
+X-Received: by 2002:a5d:60c2:0:b0:38f:3245:21fc with SMTP id
+ ffacd0b85a97d-390eca257e4mr3603430f8f.50.1740760320774; Fri, 28 Feb 2025
+ 08:32:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <30FD234D-58FC-4F3C-A947-47A5B6972C01@suse.com> <db20af73-0b5d-4327-9393-929173d4f91d@gmx.com>
+In-Reply-To: <db20af73-0b5d-4327-9393-929173d4f91d@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 28 Feb 2025 16:31:23 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6hRoFn=Cg7qggTY_-p4JBG=+AGfX8azd8Vu+gsVQJD-A@mail.gmail.com>
+X-Gm-Features: AQ5f1JoPk5ag0oj8DdB5S2lwWwIlmI2GGq8hL0gYBfrBu0wePHYq5um781kTh1I
+Message-ID: <CAL3q7H6hRoFn=Cg7qggTY_-p4JBG=+AGfX8azd8Vu+gsVQJD-A@mail.gmail.com>
+Subject: Re: [BUG report] fstests/btrfs/080 fails
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Glass Su <glass.su@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Feb 14, 2025 at 5:27=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> =E5=9C=A8 2025/2/14 15:41, Glass Su =E5=86=99=E9=81=93:
+> >
+> > Hi
+> >
+> > Recently I found btrfs/080 fails like:
+> >
+> > btrfs/080 124s ... [failed, exit status 1]- output mismatch (see /root/=
+xfstests-dev/results//btrfs/080.out.bad)
+> >      --- tests/btrfs/080.out     2024-08-29 09:10:14.933333334 +0800
+> >      +++ /root/xfstests-dev/results//btrfs/080.out.bad   2025-02-14 12:=
+53:24.667572260 +0800
+> >      @@ -1,2 +1,3 @@
+> >       QA output created by 080
+> >      -Silence is golden
+> >      +Unexpected digest for file /mnt/scratch/12_52_59_984815662_snap/f=
+oobar_39
+> >      +(see /root/xfstests-dev/results//btrfs/080.full for details)
+> >      ...
+> >      (Run 'diff -u /root/xfstests-dev/tests/btrfs/080.out /root/xfstest=
+s-dev/results//btrfs/080.out.bad'  to see the entire diff)
+> > Ran: btrfs/080
+> > Failures: btrfs/080
+> > Failed 1 of 1 tests
+> >
+> > It can be reproduced once in about 20 times on v6.13, misc-next(HEAD: 1=
+c08f86eeadab89e8f6ad8559df54633afb7a3ba)
+> > in my VM with 32 cores.
+> >
+> > Configs and log are attached.
+>
+> I checked your kernel config, it looks like it has a config that is
+> known to cause problems:
+>
+> - CONFIG_PT_RECLAIM=3Dy
+>
+> I'm unable to reproduce the bug locally, with 64 runs.
+> But that's with CONFIG_PT_RECLAIM=3Dn, as I use that config to workaround
+> the bug.
+>
+> Mind to test with either that config disabled, or apply this hotfix and
+> retry?
+>
+> https://lore.kernel.org/linux-mm/20250211072625.89188-1-zhengqi.arch@byte=
+dance.com/
 
-Since kernel 6.13, namely since commit c87c299776e4 ("btrfs: make buffered
-write to copy one page a time"), the test can sporadically fail with an
-unexpected digests for files in snapshots. This is because after that
-commit the pages for a buffered write are prepared and dirtied one by one,
-and no longer in batches up to 512 pages (on x86_64), so a snapshot that
-is created in the middle of a buffered write can result in a version of
-the file where only a part of a buffered write got caught, for example if
-a snapshot is created while doing the 32K write for file range [0, 32K),
-we can end up a file in the snapshot where only the first 8K (2 pages) of
-the write are visible, since the remaining 24K were not yet processed by
-the write task. Before that kernel commit, this didn't happen since we
-processed all the pages in a single batch and while holding the whole
-range locked in the inode's io tree.
+Nop, that's totally unrelated.
 
-This is easy to observe by adding an "od -A d -t x1" call to the test
-before the _fail statement when we get an unexpected file digest:
+I've been getting the failure too, very sporadically, even before
+for-next was based on 6.14-rc1/2.
+The problem is due to a behaviour that changed in the buffered write
+path (you did that change).
 
-  $ ./check btrfs/080
-  FSTYP         -- btrfs
-  PLATFORM      -- Linux/x86_64 debian0 6.14.0-rc4-btrfs-next-188+ #1 SMP PREEMPT_DYNAMIC Wed Feb 26 17:38:41 WET 2025
-  MKFS_OPTIONS  -- /dev/sdc
-  MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+I've just sent an update to the test to make it work on 6.13+:
 
-  btrfs/080 32s ... [failed, exit status 1]- output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/080.out.bad)
-      --- tests/btrfs/080.out	2020-06-10 19:29:03.814519074 +0100
-      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/080.out.bad	2025-02-27 17:12:08.410696958 +0000
-      @@ -1,2 +1,6 @@
-       QA output created by 080
-      -Silence is golden
-      +0000000 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
-      +*
-      +0008192
-      +Unexpected digest for file /home/fdmanana/btrfs-tests/scratch_1/17_11_56_146646257_snap/foobar_50
-      +(see /home/fdmanana/git/hub/xfstests/results//btrfs/080.full for details)
-      ...
-      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/080.out /home/fdmanana/git/hub/xfstests/results//btrfs/080.out.bad'  to see the entire diff)
-  Ran: btrfs/080
-  Failures: btrfs/080
-  Failed 1 of 1 tests
+https://lore.kernel.org/linux-btrfs/d48dd538e99048e73973c6b32a75a6ff340e8c4=
+7.1740759907.git.fdmanana@suse.com/
 
-The files are created like this while snapshots are created in parallel:
+Thanks.
 
-    run_check $XFS_IO_PROG -f \
-        -c "pwrite -S 0xaa -b 32K 0 32K" \
-        -c "fsync" \
-        -c "pwrite -S 0xbb -b 32770 16K 32770" \
-        -c "truncate 90123" \
-        $SCRATCH_MNT/$name
-
-So with the kernel behaviour before 6.13 we expected the snapshot to
-contain any of the following versions of the file:
-
-1) Empty file;
-
-2) 32K file reflecting only the first buffered write;
-
-3) A file with a size of 49154 bytes reflecting both buffered writes;
-
-4) A file with a size of 90123 bytes, reflecting the truncate operation
-   and both buffered writes.
-
-So now the test can fail since kernel 6.13 due to snapshots catching
-partial writes.
-
-However the goal of the test when I wrote it was to verify that if the
-snapshot version of a file gets the truncated size, then the buffered
-writes are visible in the file, since they happened before the truncate
-operation - that is, we can't get a file with a size of 90123 bytes that
-doesn't have the range [0, 16K) full of bytes with a value of 0xaa and
-the range [16K, 49154) full of bytes with the 0xbb value.
-
-So update the test to the new kernel behaviour by verifying only that if
-the file has the size we truncated to, then it has all the data we wrote
-previously with the buffered writes.
-
-Reported-by: Glass Su <glass.su@suse.com>
-Link: https://lore.kernel.org/linux-btrfs/30FD234D-58FC-4F3C-A947-47A5B6972C01@suse.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/080 | 42 +++++++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 19 deletions(-)
-
-diff --git a/tests/btrfs/080 b/tests/btrfs/080
-index ea9d09b0..aa97d3f6 100755
---- a/tests/btrfs/080
-+++ b/tests/btrfs/080
-@@ -32,6 +32,8 @@ _cleanup()
- 
- _require_scratch_nocheck
- 
-+truncate_offset=90123
-+
- create_snapshot()
- {
- 	local ts=`date +'%H_%M_%S_%N'`
-@@ -48,7 +50,7 @@ create_file()
- 		-c "pwrite -S 0xaa -b 32K 0 32K" \
- 		-c "fsync" \
- 		-c "pwrite -S 0xbb -b 32770 16K 32770" \
--		-c "truncate 90123" \
-+		-c "truncate $truncate_offset" \
- 		$SCRATCH_MNT/$name
- }
- 
-@@ -81,6 +83,12 @@ _scratch_mkfs "$mkfs_options" >>$seqres.full 2>&1
- 
- _scratch_mount
- 
-+# Create a file while no snapshotting is in progress so that we get the expected
-+# digest for every file in a snapshot that caught the truncate operation (which
-+# sets the file's size to $truncate_offset).
-+create_file "gold_file"
-+expected_digest=`_md5_checksum "$SCRATCH_MNT/gold_file"`
-+
- # Run some background load in order to make the issue easier to trigger.
- # Specially needed when testing with non-debug kernels and there isn't
- # any other significant load on the test machine other than this test.
-@@ -103,24 +111,20 @@ for ((i = 0; i < $num_procs; i++)); do
- done
- 
- for f in $(find $SCRATCH_MNT -type f -name 'foobar_*'); do
--	digest=`md5sum $f | cut -d ' ' -f 1`
--	case $digest in
--	"d41d8cd98f00b204e9800998ecf8427e")
--		# ok, empty file
--		;;
--	"c28418534a020122aca59fd3ff9581b5")
--		# ok, only first write captured
--		;;
--	"cd0032da89254cdc498fda396e6a9b54")
--		# ok, only 2 first writes captured
--		;;
--	"a1963f914baf4d2579d643425f4e54bc")
--		# ok, the 2 writes and the truncate were captured
--		;;
--	*)
--		# not ok, truncate captured but not one or both writes
--		_fail "Unexpected digest for file $f"
--	esac
-+	file_size=$(stat -c%s "$f")
-+	# We want to verify that if the file has the size set by the truncate
-+	# operation, then both delalloc writes were flushed, and every version
-+	# of the file in each snapshot has its range [0, 16K) full of bytes with
-+	# a value of 0xaa and the range [16K, 49154) is full of bytes with a
-+	# value of 0xbb.
-+	if [ "$file_size" -eq "$truncate_offset" ]; then
-+		digest=`_md5_checksum "$f"`
-+		if [ "$digest" != "$expected_digest" ]; then
-+			echo -e "Unexpected content for file $f:\n"
-+			_hexdump "$f"
-+			_fail "Bad file content"
-+		fi
-+	fi
- done
- 
- # Check the filesystem for inconsistencies.
--- 
-2.45.2
-
+>
+> Thanks,
+> Qu
+> >
+> >
+> > =E2=80=94
+> > Su
+> >
+> >
+> >
+> >
+>
+>
 
