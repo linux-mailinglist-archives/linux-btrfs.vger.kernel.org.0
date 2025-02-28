@@ -1,173 +1,169 @@
-Return-Path: <linux-btrfs+bounces-11922-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11923-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E17A7A48F03
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 04:14:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD90CA490D8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 06:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13E767A6E90
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 03:13:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8341F18934E8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 05:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7187B186E20;
-	Fri, 28 Feb 2025 03:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98A71BD9C7;
+	Fri, 28 Feb 2025 05:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NpleTaP6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IwAeBPde"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B47717A2F4
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 03:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758181BCA0C
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 05:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740712452; cv=none; b=gra3ZaBqz6kxROOmGkPf2J8Z6yT3CW+UjRVNhZ+WZ1CUDsl1N4K1iBB1ZLNfT9T/pDKxgODkUwYoelGSp9n+PewW3eVMnh4UH1ygYkNME4I1t7KA6l/Teln++GiyVsGSpFgsoalOkiVXbFHP4JvcBV4054eidBQwb3rLoFQnWgU=
+	t=1740720058; cv=none; b=VeDt3pJZP6q5JyzacKjfi+QIxJWx0PGuxWzNR88DSvCVU3YYuUP4ajrjDME0Zd+KGrBRatMvcJSnyXTH1/8RMWAfanCNg5tOeVxpp83uElll/DSqfZdNUtARmht1UDdXaqW8fNzim44kEOGAb6UA4n9FU4tcoyqXthUQglPipgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740712452; c=relaxed/simple;
-	bh=eD470XKbeh7KNkOcNoRBKiQQagTdCOmKgeVFB993z0Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AT5SPF3BuYlhBC+4otnm/ecFcWMYM0tk4zXYPO8EY8J+2bMxnbUQ3BToe4I9KKVyK3BDiPlt1iQHMK3/MdwjWtfvp0ALPQoqoH1CfanGvWC4gCh3VqqCAvinU+0GP/TOaj3J873IQsPKyn8WFHi65xk8aPRd2V1UG7mK2YdUYSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NpleTaP6; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5e0813bd105so2634964a12.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2025 19:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1740712449; x=1741317249; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=tR2g3guQwpCRvu1AaEaFllIlS67y2E/ubnMQcHpihPw=;
-        b=NpleTaP6nlI/nG/K9Sq6XmmNfK2pOkJXiltU8hIs4HaqcSiexjwsWWkqZrJ8cMhkb8
-         yJ+Xh8OUVVP2LPa+hosSHul2hjAw0nM/DItlz3yZzMfN0KdM4Y4EXvoTaOp2fDx8HRA9
-         mleA7OqFwHYgKVNEImuI1toqh31eq0BRbctADseyGeCuGYsFfgmRuVs7jF9SpMzUOW2o
-         DkZVN7x8KAzVZnLRRYIJZcjf+rWyxUhQlI1CVFUY7DGkhcohqlriIKnSWvGkj3UXXjVT
-         OseuhN9kG6alaQcQMlnvodp76FLFPigvtKtlC9MorvTauqGb9tUU/SC2h8JeJR8YbRPN
-         GwCQ==
+	s=arc-20240116; t=1740720058; c=relaxed/simple;
+	bh=YnCr11+jofyTBBjvZ98dwiUUtYT5Blv0XwzpDzEIzl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yi9rftX/jhw3CDLvt7UR3ouH/9J9zt+hTDDH0JuYtlTwXYniFoFVUvZYSpdO/o+nnw3HnXw8RRqSkAk0Fwr3b9Pvvvkxhs70mCjO0L1shD+eQPkOh2P5gfn5hhf1GDjT0dMssrL88eUqurEIKqTk43fa1O02MCdtuZEhAUjmY7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IwAeBPde; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740720055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RyVg1vM93p2mte050nuhN+tNCQv5kBGlJi1Ovg0GaHs=;
+	b=IwAeBPdeFKRdhdye4HXGmAyRNpXzDfBF1bwL9Oft8ALA1lXMJ/Q6ksdM6taOZMX1A/EUQ9
+	zyf6PO65JfcfnKcWpCP5t7+OPjOqvdGn7ZX2du3gqgi2UVYWbgsztLoiKe6H5gJBCZU6DN
+	IeOIXLV1bbzXx+U5SjWp5WyFFNgTo/A=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-58-yk2Yyf2WP4Gcv6cobsRhwA-1; Fri, 28 Feb 2025 00:20:52 -0500
+X-MC-Unique: yk2Yyf2WP4Gcv6cobsRhwA-1
+X-Mimecast-MFC-AGG-ID: yk2Yyf2WP4Gcv6cobsRhwA_1740720051
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-220ee2e7746so33376255ad.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2025 21:20:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740712449; x=1741317249;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1740720051; x=1741324851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tR2g3guQwpCRvu1AaEaFllIlS67y2E/ubnMQcHpihPw=;
-        b=ZPdO2S6A6rl5DKHz+5KQvQdp9pWspDIOGOy8k0b1aES4VkzfxGxYLl5q9DgaR5bnDf
-         5Ru3gEW0d8FGJkzC2cMDAlaK1vMW1Y6fn++MiZ02usP7jIhP28bzITFl7FUFV3/FtxJU
-         OguV6Dt6lybcsPAfxFAwM3mUQdJIGI05ANiF7iecIDJGdBBgYHy79HWz5KxHBFhvoqbQ
-         ScHMnRNj7zor9p3H6lpFZV0ynEsPWKp5GP8WXwHC8Z51o2c6MnbbLzTYQNVSa+zIMPch
-         dd9CHarqKg3xZlnKxotL7RF2PnfExKiKrMc0sAlODcy1WYVicJ+WG6lLjJQUDNJk4lLO
-         hUUQ==
-X-Gm-Message-State: AOJu0Yz8rz8qDDNoloyU9JxS/qvaUHCeTjGZcahLu9GXJJxmUhvuIdbR
-	5kajzXx5aEU/hXnJx1dvxbPMgPWQCVpdIYSqZof9lG95Qd0s1M9tyhhAZ28F0TY=
-X-Gm-Gg: ASbGncu1dtX2CPY+A8NBPhDJSh8IcaLOuvE2oM843BTKTSVYTvRRc6LHOkAL6l8na4F
-	xdn19KdakfoMh881uYPnHOdYgaAumnthYOhFh22kWdERDqGpWbjOO8hFp7sPCKW6e92nR6+VvRt
-	S7nzok0F0LH+TTh/GmyhCbJtlzRR9+qsEf64d+m0jb3/shCcuNt74r4YJyXbNCkvbuVYKhcF5Bb
-	C+fq0QVwQSVZryb5o7B9MNiU/VMATjl/brL4YnvnakQYGBR/R4lo8u92/a0L3uJgMJEHfO/u1QV
-	nsO5GtHlWWPQ4FYu5cbV/kQZo0ZV8dIS+kdWztYD68vVfFukFTlXbA==
-X-Google-Smtp-Source: AGHT+IE2CGKolcx/FW0LwaAPbdHe4OOBwcI/beoE8cctktng+gm9JJPhQzjvltfIw5Y6FIXuxi1EsA==
-X-Received: by 2002:a05:6402:42cb:b0:5e4:bf03:e907 with SMTP id 4fb4d7f45d1cf-5e4d6afa36emr1059728a12.19.1740712448459;
-        Thu, 27 Feb 2025 19:14:08 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-734a00249c3sm2570461b3a.85.2025.02.27.19.14.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 19:14:07 -0800 (PST)
-Message-ID: <ffd5ebe0-541c-4d21-b7dd-f0bbe29c8200@suse.com>
-Date: Fri, 28 Feb 2025 13:44:04 +1030
+        bh=RyVg1vM93p2mte050nuhN+tNCQv5kBGlJi1Ovg0GaHs=;
+        b=AH/WuxeSpb52bVycUj2Q29fryfxX0lwonq7eV2u+TKxll52ZsZcn1IAj30z955VGW0
+         0qg5w4906svnz9Rgr1IznBGb5HsmHOdMU9iieXCwNaivYEq1JRsx1FqRm29s55y679op
+         Zzz96Ree8IQRptInPU86yRh3mMVIui/pJ0XSTXIf9KPkRyCSki+5tjH+krbzL9P0plfm
+         uQQRx6MIMiZ8Q07D+UYYzfw0OPYWsxnfKyLM1KdU0XkKA3ZyxUGomEovsecQD8Ao9g3O
+         E4bimSBjhL/0+pZXqDXXN2NZjTYZTtO+gIn6f8F1v+PN5XbFtk56SEnq6NYmEm4cKTxC
+         K/sg==
+X-Forwarded-Encrypted: i=1; AJvYcCXpKW6rDCQA6O3SHF4wAgvA2vAIVJFzpjeLCUVKKv7DTlaVCVGVi8Aj7Vf9fprRXTC5DzqtmkSUyHBN4Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlNojkv3NlvxjBgmS01sKBA/qFOn8ToR19mUB/+Kj+2jMyZYCD
+	LUs+tJG18iUu75+3iNUqCMX5wC8pq7mR2ikh+xr8tYUGJ0yuDir0dJS0aPsvDTwMJj55vYW/XRY
+	tdta6d91iBgdXTelsnvBvryaxbPeRe6JCzNOohy9i7kJEoqDlEiAr1DQ9ZsqX
+X-Gm-Gg: ASbGnct1UIhr0AF2empxOsArOs2ohkiai7oduLsBy7icduvDcUljsIPboIGhUDbfYDU
+	3yuXj/zF3ckRbQHN2OTeXIzK9ZnN/5ZPjOV4lR8ckDqI8w/kg9CEh0gEBPU0sklIMdHzvcKwkLB
+	nNextg4X4BG8t+YGOVkacwmKqeyZFOsejsOEdgUVQRSuzimwzOZaDjak+0D1GhVhiCtPEulU/B0
+	TbwAap3RcSNe4fq15IriE0sgc7i12u1Agtc22nhArAZFJ3z7MQre6Tf8GJ3PrKOXuyZk3kPAfd2
+	2H+9glXRRHyio1/Ff9zIR6gmzjPA/UH0syPZ0fURjLCmRf0iVa161QP8
+X-Received: by 2002:a17:903:198e:b0:21f:988d:5758 with SMTP id d9443c01a7336-2236924e748mr31732595ad.35.1740720051105;
+        Thu, 27 Feb 2025 21:20:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHzy49UASObmQ7/nUvx+TWKzEu6dRH9MJ0+SeFJeR4O2daveYepfu9fVUCfCPpIG4lr218RQg==
+X-Received: by 2002:a17:903:198e:b0:21f:988d:5758 with SMTP id d9443c01a7336-2236924e748mr31731725ad.35.1740720049534;
+        Thu, 27 Feb 2025 21:20:49 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223504c5c20sm24914935ad.146.2025.02.27.21.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2025 21:20:49 -0800 (PST)
+Date: Fri, 28 Feb 2025 13:20:45 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs/254: fix test failure due to already unmounted
+ scratch device
+Message-ID: <20250228052045.usxjsezp5jgadlxq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <b470cdee538aab91177f8295fb8886ae79f680db.1740662683.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/8] btrfs: make subpage handling be feature full
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1740635497.git.wqu@suse.com>
- <20250227111603.GB5777@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250227111603.GB5777@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b470cdee538aab91177f8295fb8886ae79f680db.1740662683.git.fdmanana@suse.com>
 
-
-
-在 2025/2/27 21:46, David Sterba 写道:
-> On Thu, Feb 27, 2025 at 04:24:38PM +1030, Qu Wenruo wrote:
->> [CHANGLOG]
->> v2:
->> - Add a new bug fix which is exposed by recent 2K block size tests on
->>    x86_64
->>    It's a self deadlock where the folio_end_writeback() is called with
->>    subpage lock hold, and folio_end_writeback() will eventually call
->>    btrfs_release_folio() and try to lock the same spin lock.
->>
->> Since the introduction of btrfs subapge support in v5.15, there are
->> quite some limitations:
->>
->> - No RAID56 support
->>    Added in v5.19.
->>
->> - No memory efficient scrub support
->>    Added in v6.4.
->>
->> - No block perfect compressed write support
->>    Previously btrfs requires the dirty range to be fully page aligned, or
->>    it will skip compression completely.
->>
->>    Added in v6.13.
->>
->> - Various subpage related error handling fixes
->>    Added in v6.14.
->>
->> - No support to create inline data extent
->> - No partial uptodate page support
->>    This is a long existing optimization supported by EXT4/XFS and
->>    is required to pass generic/563 with subpage block size.
->>
->> The last two are addressed in this patchset.
+On Thu, Feb 27, 2025 at 01:25:18PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> That's great, thank you very much. I think not all patches have a
-> reviewed-by tag but I'd like to get it to for-next very soon.  The next
-> is rc5 and we should have all features in. This also means the 2K
-> nodesize block so we can give it more testing.
+> If there are no failures in the middle of test while the 3rd scratch
+> device is mounted (at $seq_mnt), the unmount call in the _cleanup
+> function will result in a test failure since the unmount already
+> happened, making the test fail:
+> 
+>   $ ./check btrfs/254
+>   FSTYP         -- btrfs
+>   PLATFORM      -- Linux/x86_64 debian0 6.14.0-rc4-btrfs-next-188+ #1 SMP PREEMPT_DYNAMIC Wed Feb 26 17:38:41 WET 2025
+>   MKFS_OPTIONS  -- /dev/sdc
+>   MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+> 
+>   btrfs/254 2s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/254.out.bad)
+>       --- tests/btrfs/254.out	2024-10-07 12:36:15.532225987 +0100
+>       +++ /home/fdmanana/git/hub/xfstests/results//btrfs/254.out.bad	2025-02-27 12:53:30.848728429 +0000
+>       @@ -3,3 +3,4 @@
+>        	Total devices <NUM> FS bytes used <SIZE>
+>        	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+>        	*** Some devices missing
+>       +umount: /home/fdmanana/btrfs-tests/dev/254.mnt: not mounted.
+>       ...
+>       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/254.out /home/fdmanana/git/hub/xfstests/results//btrfs/254.out.bad'  to see the entire diff)
+> 
+>   HINT: You _MAY_ be missing kernel fix:
+>         770c79fb6550 btrfs: harden identification of a stale device
+> 
+>   Ran: btrfs/254
+>   Failures: btrfs/254
+>   Failed 1 of 1 tests
+> 
+> This is a recent regression because the _unmount function used to redirect
+> stdout and stderr to $seqres.full, but not anymore since the recent commit
+> identified in the Fixes tag below. So redirect stdout and stderr of the
+> call to _unmount in the _cleanup function to /dev/null.
+> 
+> Fixes: f43da58ef936 ("unmount: resume logging of stdout and stderr for filtering")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/btrfs/254 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tests/btrfs/254 b/tests/btrfs/254
+> index 33fdf059..e1b4fb01 100755
+> --- a/tests/btrfs/254
+> +++ b/tests/btrfs/254
+> @@ -21,7 +21,7 @@ _cleanup()
+>  {
+>  	cd /
+>  	rm -f $tmp.*
+> -	_unmount $seq_mnt
 
-Now pushed to for-next, with all patches reviewed (or acked) by Filipe.
+Oh this change was merged with the _unmount update together...
 
-Great thanks to Filipe for the review!
+> +	_unmount $seq_mnt > /dev/null 2>&1
 
-For the 2K one, since it's just two small patches I'm also fine pushing 
-them now.
-Just do not forget that we need progs patches, and a dozen of known 
-failures from fstests, and I'm not yet able to address them all any time 
-soon.
+Sure, makes sense to me.
 
-Thanks,
-Qu
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+>  	rm -rf $seq_mnt > /dev/null 2>&1
+>  	cleanup_dmdev
+>  }
+> -- 
+> 2.45.2
+> 
+> 
+
 
