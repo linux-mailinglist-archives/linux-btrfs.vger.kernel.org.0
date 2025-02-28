@@ -1,73 +1,72 @@
-Return-Path: <linux-btrfs+bounces-11932-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11933-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21AEAA49226
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 08:27:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4577A49228
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 08:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40F383AC483
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 07:27:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D69D16C4B8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2025 07:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC841C84C3;
-	Fri, 28 Feb 2025 07:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268921C84C3;
+	Fri, 28 Feb 2025 07:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UWrvOQqE"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="W89eSf8I"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47FC91C700F
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 07:27:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F1E276D12
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 07:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740727637; cv=none; b=qPjDNLprgy9aH43erEqcbvQlskxHV9m6HZy1RKcwRoeWDvpLJSAnYUvD/qHpBsIgkMNUPxQTf4tSCKZ0FOMrLui4GivqsCvJELtQwNC3amY31682ovRUVTj+T9Sy45bi5AiOyD4UAjMZievsc7WWYJfisi55Y2vvZbCYkRRsvlA=
+	t=1740727713; cv=none; b=QBiXYQ5XI22/ub/r0uZ/qDMg7l5Dc3ui2MxnFXcHVT3OaCPmWiwZ2GrQpZ+dncdxpF3asaWoOpd+GMKAs+S4UmeN7N4ix/9LPQAlLvmOlbF2yvnioDwb3oCKS8sKRO0imngP7jHgASAi22z09/2p5ZLFuqB1m2kXc3g4v4BsCjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740727637; c=relaxed/simple;
-	bh=OXaRp4idgcRdJx0qDoj8i90oCscA5SqQ9u7Mn4MPzwY=;
+	s=arc-20240116; t=1740727713; c=relaxed/simple;
+	bh=7abQWjdZSz+3vZBvjS/3JrRHHIKg4Dq6sGMnwvYWcKg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Wa95jXKYuIcwJFn7avjVI8o9Doc8MtEVdZhYtCZ01KDoA+qFC2ehDympBuhLzvcpNzC7m4fjulm+BCdwLgRaTqI7L2bhGeZeyN+86cq3tkZ8RHIrwGEtiZk68U6lTJKD4QFTSdnBPXiL6Hzcwxc6vzUk8+TP5P3925U+1R/fK7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UWrvOQqE; arc=none smtp.client-ip=209.85.208.46
+	 To:Cc:Content-Type; b=snIxrrpapDzmrznSwIji1nahmAVmM1DhAHO0olC3gl7FaIkr1d/RqXwOap3YrauqI66ZyPQa0vmIPT7jtYy9TRqVYhDTlkH6fenQV+HIO1XdeDUfIMhVr//jPTjFVDDny6GRncZxCrMG5nHbVIQ5RspLhvtD+C0ovNOB1ebOXkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=W89eSf8I; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5ded1395213so2809787a12.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2025 23:27:14 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-abb86beea8cso319490466b.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2025 23:28:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1740727633; x=1741332433; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XfdNaB0E7fgmIJmDaEv9xRcyfj8vJkDTlr4miGhmJ1s=;
-        b=UWrvOQqEJQOAboP8Df7TAyKhcxXrW4PFVYWt5k7HutjJFwm0kxyME1MUzLbSQnkDd3
-         XhOgjwkNV0qjw8oywFPL88Ikj+zCVW5yEiO6sUQcvvNFr8116D2E/jFP0DLysHfnec/q
-         AVCx90EHRYU3jGUVZ8CBeE8oUlqhvdWA/ruRI2MAbHVPglSTB646owrtrVcgqrHCrhB3
-         17743nHfhPs7uoyWR1G2w9rEA3uoPVaFMpiub/ZaQu/oX0NqnjmJ0CBA8tz/MXU2hFZx
-         b8kz6W1ICqicIkqycDW/V4jqUjeNi3l8CFiZanIpak9GeHYBfidm5hhVozrq0CDxgGjB
-         8TPQ==
+        d=suse.com; s=google; t=1740727710; x=1741332510; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7abQWjdZSz+3vZBvjS/3JrRHHIKg4Dq6sGMnwvYWcKg=;
+        b=W89eSf8I5OV52Kj8YfabcvbgIUUZsBfKOegCt/ue0Hdk4YRAewVRoLGUn/wZbXfX9i
+         7JCxzIRjPPJyHiYMIo85ZLdD6hJQRK6WijCNSnf3dU4GKVUeSAOVy73dL4/4Bh4su8pN
+         QGATkjB5TC3cGj60t1pu5D6a3KMlP+3ctCxStE51jPRjlN/nq0ADjlw0Oci9GsM3QdP3
+         wG8eFD5dORtCe6swbDX2R+MIruUbN+xtuLoFWuUjSJGDeM8ENRvWJ+32mO7yHdYxGNaV
+         60ZbEfQ4Om8RQMlVw8GnI3Ok9xsMTzlNq5V9GQkPcYbFbRq7Lw4yZZFUqz2Qy5v1MiIr
+         CUfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740727633; x=1741332433;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XfdNaB0E7fgmIJmDaEv9xRcyfj8vJkDTlr4miGhmJ1s=;
-        b=iUv9vHEdHUNVwUv5jj0hx6PZk/6wn3TksAEXhb+PmbkpHCJSknC+uhbct7MQCFaASv
-         nv6bDe5FeRw6y5JYTGfCDjpSLk5R0hjWhDPovkaopWMWhdubQ/IT2U+oUCDyJzKFv4z2
-         AuCk7o9AUPfDrMv8mUkZgcF/4pVwVw4EFgOqaiKDHIZpnAe6NF6phFEse+gj7aAvkzrL
-         ZkVpvJEKQuKebR5vFopnC2orXFhrnPSeVa9cxmrY/wU2Nm88nrBfGBCmHV6rs+YRx4Kz
-         rHkV/mukrWW3y6p5iwzALhCLkFkwROCfCRuWS72T5BSZ5C2wBwniEZpRC2EStXn3xaqO
-         +m/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVER7slqrQoXP1UeF9+Q1BBbzvDiJrFzMQDgOdCSM/UlJf7tJwAeXk32l70vLElViuzAKbrgMWYjo+hnw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeCDIPhKRbt/LUL0c/+XgNGuESZY3ndSHs/+LHM5tw36ZdHzAV
-	39pWMjRpErFeJ6attFEJ3O2K1/5DVOrJ9JiaJmbDPIbAWy6gHb+CcDfsnYrzI3ePIgyA/KDvnvl
-	Sh2FmyXjRzIuI+L/iL8C23lMXz7meH+07mv7Rqg==
-X-Gm-Gg: ASbGncuzIbiYfuXEVPzdbwtf5CXqwadOnptIN1PBxxsOkzfYDAeMjo2SDYK42XpALbA
-	kpu9YNRZMsbDB+Im/Kr3te+pfJDUl0h4gzLn6RxkQxzCo5ZOCevIVNGt3Hb/FBzWUs6BGYLf2XS
-	LIpppaRg==
-X-Google-Smtp-Source: AGHT+IEHZLuLqzLU6YdSbwrSc2pWAVvyIXo9LRUSqmihktMu9s8+x868QHVGvuWQwKCXqHeHI81dd93VpPypCBDhMZI=
-X-Received: by 2002:a17:906:f59d:b0:ab7:a5f2:ed22 with SMTP id
- a640c23a62f3a-abf25fa0374mr268651566b.1.1740727633443; Thu, 27 Feb 2025
- 23:27:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740727710; x=1741332510;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7abQWjdZSz+3vZBvjS/3JrRHHIKg4Dq6sGMnwvYWcKg=;
+        b=I4xc/3mwY2TSpnv2BL6K0oQLz9/cIcfsMZfcbQkZRrgYIJx3D309A+6ud7pcXo1iir
+         gu4Nc/WyDpICsljxtHyHjUAI2piDv23hrhhwLIb0n2Q5DDK3Hh0+b7hjLB4KFcd4yrP7
+         Uf3No48SpXba30ehFyOM90IKe8vaNfy/uD58/sjVaYVs/fFr/tkQFdnl0tLYVrxIBUcB
+         RCr2FQpudOdw6xmH1b0BradhTgvqMiTeT0x24TQLwYQorAmQPd1nc9iFm69G3ZG1Lsgz
+         wNrfkJNpHYyJJr6ReLCB9tRDRdGE8JixDordtv8mH2k6N2liAWn7QZ9rzfTNQMEIBRXT
+         KQwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVu+B25Uu/8AgxGQTYexDcC49P+7UANKDq5IhWbZdRbnnnBKMcuvnwFTEI7LyqTHufTzT7xixMGZZ1vQQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPiYBql5zcyUtaFT8EGYH3ozXboLUktH4Mc5UILs5k9aDkEBwe
+	tArc3qFdYLAi7wposp8hTi0FOgA525xt7x+W2j/7iQAnbyNIVoyQs2BjXkj7BtVYes/8USMTu6E
+	0XQ/OJO97BgrfSHs1QgpoUhZ8MbDvSNhCDJs7DdxMdluULVtM
+X-Gm-Gg: ASbGncuJdbLzQrmMRenJkbljOm1jxVcnoPcf1jRbZg5WDDMI2CVbnIwpyhTzzffU3Cx
+	ERWz+14+fhDtGgTdeNpSHsIIcp/yP8yjdO7lSMvuUTY+byWN1VqNfxX/8aZ1Yh/v2/GLGJvGT1U
+	pOhOBwaw==
+X-Google-Smtp-Source: AGHT+IH4R2kwv0u7uBbeTCbIGT9I7myGSTMV0EyCvRJQSjFWiBGZ9j7Eoim4HfepcT8u4R2D8OoUZRctTV9EXm3dlfA=
+X-Received: by 2002:a17:907:7287:b0:abb:b092:dae0 with SMTP id
+ a640c23a62f3a-abf25d94490mr232283366b.11.1740727710003; Thu, 27 Feb 2025
+ 23:28:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,106 +77,17 @@ References: <20250220145723.1526907-1-neelx@suse.com> <20250224111014.2276072-1-
  <CAPjX3FeKPR78zfUYGW+8Ytn-Yz+7i7k+1vmxjO6wjDcobqtocg@mail.gmail.com> <d618b303-4753-40cd-b02b-026437abdfa6@oracle.com>
 In-Reply-To: <d618b303-4753-40cd-b02b-026437abdfa6@oracle.com>
 From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 28 Feb 2025 08:27:02 +0100
-X-Gm-Features: AQ5f1JptISSwH9o8Im_GI3JkMuHyJ2I1tTf4FzdUl7ZNwowAMjXGr77skWSlxfo
-Message-ID: <CAPjX3FcY7uc5mP8z5VMDS0tfrVP87O0q6jQkXY3OAq9stWvfCg@mail.gmail.com>
+Date: Fri, 28 Feb 2025 08:28:19 +0100
+X-Gm-Features: AQ5f1JrQfI-ebfKEktHHPxhekjNj-rUhiE3xW1tYIfMsVeEO0SQ5XlrAmW_euo8
+Message-ID: <CAPjX3FfVUZ93n0fE+yNdJAQyxmf-SREz81cJifr15PYp26ABDA@mail.gmail.com>
 Subject: Re: [PATCH v2] fstests: btrfs/314: fix the failure when SELinux is enabled
 To: Anand Jain <anand.jain@oracle.com>
 Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
 	Zorro Lang <zlang@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
 On Fri, 28 Feb 2025 at 07:10, Anand Jain <anand.jain@oracle.com> wrote:
->
-> On 24/2/25 19:35, Daniel Vacek wrote:
-> > On Mon, 24 Feb 2025 at 12:10, Daniel Vacek <neelx@suse.com> wrote:
-> >>
-> >> When SELinux is enabled this test fails unable to receive a file with
-> >> security label attribute:
-> >>
-> >>      --- tests/btrfs/314.out
-> >>      +++ results//btrfs/314.out.bad
-> >>      @@ -17,5 +17,6 @@
-> >>       At subvol TEST_DIR/314/tempfsid_mnt/snap1
-> >>       Receive SCRATCH_MNT
-> >>       At subvol snap1
-> >>      +ERROR: lsetxattr foo security.selinux=3Dunconfined_u:object_r:un=
-labeled_t:s0 failed: Operation not supported
-> >>       Send:      42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfs=
-id_mnt/foo
-> >>      -Recv:      42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/f=
-oo
-> >>      +Recv:      d41d8cd98f00b204e9800998ecf8427e  SCRATCH_MNT/snap1/f=
-oo
-> >>      ...
-> >>
->
-> It=E2=80=99s actually good that the Btrfs receive failed because the send=
- had
-> an unlabeled security context=E2=80=94kind of a validation, even though i=
-t
-> wasn=E2=80=99t intentional. The fix here fits the objective of the test c=
-ase.
-
-It's the other way around. Send (missing the mount option) had the
-label (as expected) which was refused by the receive side due to the
-explicit context mount option. That's how SELinux is designed.
-
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
->
-> >> Setting the security label file attribute fails due to the default mou=
-nt
-> >> option implied by fstests:
-> >>
-> >> MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/sdb /mn=
-t/scratch
-> >>
-> >> See commit 3839d299 ("xfstests: mount xfs with a context when selinux =
-is on")
-> >>
-> >> fstests by default mount test and scratch devices with forced SELinux
-> >> context to get rid of the additional file attributes when SELinux is
-> >> enabled. When a test mounts additional devices from the pool, it may n=
-eed
-> >> to honor this option to keep on par. Otherwise failures may be expecte=
-d.
-> >>
-> >> Moreover this test is perfectly fine labeling the files so let's just
-> >> disable the forced context for this one.
-> >
-> > And of course I forgot to remove this sentence. Please, remove it if
-> > you decide to merge this fix.
->
 > Fixed the changelog and pushed it (for-next).
->
-> Thanks, Anand
->
->
->
-> >
-> >> Signed-off-by: Daniel Vacek <neelx@suse.com>
-> >> ---
-> >>   tests/btrfs/314 | 6 +++++-
-> >>   1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/tests/btrfs/314 b/tests/btrfs/314
-> >> index 76dccc41..29111ece 100755
-> >> --- a/tests/btrfs/314
-> >> +++ b/tests/btrfs/314
-> >> @@ -38,7 +38,7 @@ send_receive_tempfsid()
-> >>          # Use first 2 devices from the SCRATCH_DEV_POOL
-> >>          mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
-> >>          _scratch_mount
-> >> -       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
-> >> +       _mount $(_common_dev_mount_options) ${SCRATCH_DEV_NAME[1]} ${t=
-empfsid_mnt}
-> >>
-> >>          $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | _filter=
-_xfs_io
-> >>          _btrfs subvolume snapshot -r ${src} ${src}/snap1
-> >> --
-> >> 2.48.1
-> >>
->
+
+Thank you.
 
