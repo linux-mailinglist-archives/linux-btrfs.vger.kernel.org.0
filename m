@@ -1,134 +1,141 @@
-Return-Path: <linux-btrfs+bounces-11953-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB810A4A83D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Mar 2025 04:19:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B48C2A4AC41
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Mar 2025 15:35:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64B4F3BBD0A
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Mar 2025 03:19:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02554169F25
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Mar 2025 14:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC02189906;
-	Sat,  1 Mar 2025 03:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926E91E32D6;
+	Sat,  1 Mar 2025 14:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VPoXLNwV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nh+1wT1p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC7B1CD15
-	for <linux-btrfs@vger.kernel.org>; Sat,  1 Mar 2025 03:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0091ADFFE
+	for <linux-btrfs@vger.kernel.org>; Sat,  1 Mar 2025 14:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740799160; cv=none; b=CGWWqWGHoNvCmUqJQRBFNMxVFcXHvIyt97j2pL+sMQ9rkN75yg19qK6dNiGBtQSX6o/QdooyEj5uXcyAB6fWL0gKAr9tI9ZBqNiDWRuKBhZL65xoZim8sllWy+VcNKR4vWtCBJyLR0/2wh+/1BA+pQnf90X0uU36pCFBWK+cEYw=
+	t=1740839357; cv=none; b=V7aJ+E2mzTpDYln4LnOAiNfDGEBMy6t5P4FFLQf6G7NsLxCIgpz0uaasHn3MfHrXVKgg2zEvR5SzwQnakvnbMlhrtaajFhjVjSzUygZGEX6AQGLF23JGvPC+qK1/DA4oalbja81J1FX9LJYja6k1UWmOps+P4zsuES6jY347teg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740799160; c=relaxed/simple;
-	bh=4xekqjCpQLzAr0Q14XWMMP+38rJCpfpCTWiN3F2+oFs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:MIME-Version:
-	 Content-Type; b=HMcfWD3gleLIZHGepZVn5zGEFJd6xeRcMQBBAtuBWWdny0k37cpTRTOtzk9cDo1LwzaO5xKOrzuD5m/839QngXTwUKW19xqGkc03XZ49atMRldyRwPf9X3EC7nLozC6p5yqibnhh+hjyEGr+pjnRZtNvrnC5V7YEUxiapetZtRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VPoXLNwV; arc=none smtp.client-ip=209.85.216.65
+	s=arc-20240116; t=1740839357; c=relaxed/simple;
+	bh=/7+pX3/fbhLXHwFpgo6JPBCGykd1YFnHHDH7fi88ObU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=ZcAq3pqfdcxYNCKxl3y9nKqItEutLQ2laOEf3MIp4q5AIzUqAZek1Qbth6xC4PQ5nIfa0S9KPExxsQeECQZmzif1CvUp2kbV+v4V3gXMzrKkxWErLDMcnp/x2Cv73eCBtWyKCN1fIndwF6Sj00A2u32Er+QALwvPQhvJEYVcjzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nh+1wT1p; arc=none smtp.client-ip=209.85.219.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-2fc92215d15so681942a91.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2025 19:19:18 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e461015fbd4so2192130276.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 Mar 2025 06:29:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740799157; x=1741403957; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gb4D/4t7bX/6psyPB0fdCN+wO6mmkj2fRGyyrx/5bsw=;
-        b=VPoXLNwVY1EBsBdIryqdQYEMmxAfTCcKjo7EkDr23wrzt6cQlrILGZ4D7FjWjZ/mzz
-         N7XpRiDrUEIaqburEYbA6RfP2j5LumSsGynDSW6ZcGiHyGX3B8B5qy5TI0vs4IpbIY29
-         f5WfsVZE1utUE8QRLU+ipP7e08E9lR+mM8BZotzk4ZffJbKtHrGr1mLtFBr618daNVg+
-         VXuQ8C54OosG/NBlzfGYL29uRTPiPytXsEQuAw8d/avgrLDkpMjSYR7IfWIib8ItrTbD
-         PXDJ5pV4vYqjXEeZDg245hwhWxQDxtpcp9xOswvrpbI/Sxn2Vdf8x8nO2PxDJNpREorI
-         DENA==
+        d=gmail.com; s=20230601; t=1740839355; x=1741444155; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oY9fIXy5GkvGjfn4JPKcOxHA8yYmMlAcTK1bB0/O9Vk=;
+        b=nh+1wT1pzC0XzTMekgklmiptpvrDp0PKbal9PEFdDZ1NXj7B7J/QNgDCiXXPmno903
+         Kfvhr0pOaecX03Ae6UPfew3k9D2PjV8szgibg57nDpl731cZM7dvYcUfkYsHCVL/pTQ4
+         A1MwDeY2hRA38M40727p4fCfxkhrpNj6H/HiQeCfkt6kKcHf4HXa3rSdBXLIRTjaTP9u
+         ydfSoQOGTr4oepAUCb/EmRW12Ofg2nBz8xbaXbI3e1QNJHc+uAHgZWq9DQ9aXJctpKwE
+         6WI7496Q+wQFh2zB9t+M+jx8K3esb4FlG5OJ9TFDZfSfA4g6AvoFQDnvZHZVKDgz0veq
+         5n2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740799157; x=1741403957;
-        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gb4D/4t7bX/6psyPB0fdCN+wO6mmkj2fRGyyrx/5bsw=;
-        b=qXoSpd3gkhFTSzOHnYeRsqbA9mFX8Ph187YMzUZfX4OsnLOb2HnT3iWJdkgX2hss4O
-         jUZCxT1xfoUqLNEYggkURTwFGc7xbKuPCRgdzBqoPZVrYp41ISqeFrnfG5xtxVX9CdzL
-         BECEUApBf35rFhcQMkZOBoxM3HNUewvrLpdpE5fl6j0DvpZw46XnknmDAGgZ5cHWrdIc
-         X31eYJL9TRJHPvGCdU93e06gbQ04hY1M5955eTieABcYuNU3VzmbPsA3Qx+TWzeHOVT8
-         0rUNrG7IIC6+ixxsSxGd646hUNMihTragOytaYuQVUyJHLZcE8ZRnlF3RpDTaErYN5AX
-         C2ZQ==
-X-Gm-Message-State: AOJu0YyM9nkzxv8pEk61htPkSNMfdA30XGXLjMWJoPV6UK7fxfZxjB4c
-	2veeu87tVXQ9eac7VN757uEwrRf5VtYBRlhxvKQnjFwMYBFhkHEt
-X-Gm-Gg: ASbGncuGCCaAJ9dbeSxkxm6WKD1FYApnf4B+dlUcuA9Gsxw0s7bSDh5S9DyysL3rIZh
-	vv/k1xbTVSHLZW/zYtT96OjLLa4BdfMCoeGfAT/3a3QkQy1OIeeFW74uw6KMd2g2p4x2IJtNAww
-	zQwj12ZBN4rwxh41HozdBruZxGrSYFOl/6dMldhQRcFcSY8jcE8E6lzIWOLDSx5PQncl8yKiCta
-	dR+KVPgn6oB/xybeMpotHHG6AB6723Hzkl1CjNLJD4lBDcbIlx1Nc+o3KsQmfkrJx0DFkSJPeWo
-	t189ekMdfI4+wYy1hcNnTgI5teAUlYFNcjyz9uxWyfHv7PhPyMZLU84=
-X-Google-Smtp-Source: AGHT+IEYMsyoGhSaOmUP1b2CXUhVzYnmJJlLLg9kf0TbvOqXUN3g/CZYSwOsnfzyVOwZrNuAvel9Rg==
-X-Received: by 2002:a17:90b:1e0e:b0:2fe:a8f0:5265 with SMTP id 98e67ed59e1d1-2febab19f4emr3532748a91.2.1740799157518;
-        Fri, 28 Feb 2025 19:19:17 -0800 (PST)
-Received: from saltykitkat.localnet ([185.2.163.136])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fe825a98e7sm6714846a91.4.2025.02.28.19.19.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 19:19:17 -0800 (PST)
-From: Sun YangKai <sunk67188@gmail.com>
-To: dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/5] btrfs: add new ioctl CLEAR_FREE
-Date: Sat, 01 Mar 2025 11:19:13 +0800
-Message-ID: <8510159.T7Z3S40VBb@saltykitkat>
-In-Reply-To:
- <ecc43a72997ae7836c2d227b69924d364698e665.1740753608.git.dsterba@suse.com>
+        d=1e100.net; s=20230601; t=1740839355; x=1741444155;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oY9fIXy5GkvGjfn4JPKcOxHA8yYmMlAcTK1bB0/O9Vk=;
+        b=qzgjO8IvhT0qzXGwWcTKa46uA3Q7OSwO4E0RJzsksj9BdwK7O2Q5Tp9dOPZKVrUAIN
+         sjCkLlbo40EhExneiXwbE0eKmVKlek3OQB4S15M+R3DRNzds+ei9c2eK/UtQ2a3MwBnZ
+         NBFhcDRAwpAUtkxUAzoD2spzS4TKdomMOuvc8NBJr3NvUgs7EjlBAs/DDBO/Fjn20llk
+         NKFJ9KGR2xClnm3XIWEkL+fnYkfbuCnIqZAvaVlWI+6xO8aXwAlrYHhGu2hVpRV5s1a1
+         /MPMuwxql9bnWs8JGbN2SVkoSzTPqtPA6mRMlGWZkR3AIlJfiADMGbMcYPJM0BtherPb
+         GL7g==
+X-Gm-Message-State: AOJu0YwFIQc2JPgxOzyt6Hn2unKzHoy6bVFucLkLInCGJWo5DrBzh7z7
+	xYKgzjD52ypda1AIaGz6ad920G2p9I2ixKRWcuQQFUvyUKUXFPFivEGgewIofqduDYWB/D4d1oJ
+	nY5xikvwgT5XKMbqVzY8mbffMqiGWoqhf
+X-Gm-Gg: ASbGnctxZdP3BTDb0IuIjqVDSSNVg4mWQ6lFRaKLuZ0eBCGQ80zXP+RTXiY8Te5Xhrc
+	vBt5j3O1dN2/2QM7J9fh9VIW+lnd4HCjacmWttDRj0vA4mdDFQIIlGEzI9Xpp4MoFnAX84HFp9f
+	mI3uLVmQj45G/gXklTdnxvG3yX
+X-Google-Smtp-Source: AGHT+IGvvz3JhZowBj+3r0eITYK7qnKq/4zJsUX6WfkFEFSFHecno8XXQVsMWR6ggZZaZfEILyBn2UsHqj/nYm+2Y/Q=
+X-Received: by 2002:a05:690c:45c6:b0:6ef:92e0:a989 with SMTP id
+ 00721157ae682-6fd4a0c29edmr84296387b3.23.1740839355131; Sat, 01 Mar 2025
+ 06:29:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+From: pk <pkoroau@gmail.com>
+Date: Sat, 1 Mar 2025 15:29:03 +0100
+X-Gm-Features: AQ5f1Jqbt6nX-Fa5Uwbk9MyaFrQHBGd0MvVkeOZn7EHqumTZylWTTniPPE7IRvg
+Message-ID: <CAMNwjEKH6znTHE5hMc5er2dFs5ypw4Szx6TMDMb0H76yFq5DGQ@mail.gmail.com>
+Subject: btrfs 5.10.234 hangs at shutdown while unmounting
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-New to lkml, please correct me if I made any mistake :P
+Hi,
 
-> +static int btrfs_ioctl_clear_free(struct file *file, void __user *arg)
-> +{
-> +	struct btrfs_fs_info *fs_info;
-> +	struct btrfs_ioctl_clear_free_args args;
-> +	u64 total_bytes;
-> +	int ret;
-> +
-> +	if (!capable(CAP_SYS_ADMIN))
-> +		return -EPERM;
-> +
-> +	if (copy_from_user(&args, arg, sizeof(args)))
-> +		return -EFAULT;
-> +
-> +	if (args.type >= BTRFS_NR_CLEAR_OP_TYPES)
-> +		return -EOPNOTSUPP;
-> +
-> +	ret = mnt_want_write_file(file);
-> +	if (ret)
-> +		return ret;
-> +
-> +	fs_info = inode_to_fs_info(file_inode(file));
-> +	total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
-> +	if (args.start > total_bytes) {
-> +		ret = -EINVAL;
-> +		goto out_drop_write;
-> +	}
-> +
-> +	ret = btrfs_clear_free_space(fs_info, &args);
-> +	if (ret < 0)
-> +		goto out_drop_write;
-> +
-> +	if (copy_to_user(arg, &args, sizeof(args)))
-> +		ret = -EFAULT;
-> +
-> +out_drop_write:
-> +	mnt_drop_write_file(file);
-> +
-> +	return 0;
-previous stored return value int `ret` is not used here.
-> +}
+Since the latest Debian 11 kernel update from 5.10.226 to 5.10.234, the
+shutdown hangs while unmounting any of the attached btrfs filesystems, even if
+the file systems have not ben modified. task:umount and sd-sync have state D.
+
+Should I report on Bugzilla or here? I see there have been some recent
+locking-related backports in the btrfs code for 5.10.
+
+Call trace for task:umount
+
+    __schedule
+    schedule
+    rwsem_down_read_slowpath
+    __btrfs_tree_read_lock
+    __btrfs_read_lock_root_node
+    btrfs_search_slot
+    btrfs_lookup_file_extent
+    btrfs_get_extent
+    btrfs_do_readpage
+    extend_readahead
+    read_pages
+    page_cache_ra_unbounded
+    ? __load_free_space_cache
+    __load_free_space_cache
+    load_free_space_cache
+    btrfs_cache_block_group
+    ? add_wait_queue_exclusive
+    find_free_extent
+    btrfs_reserve_extent
+    btrfs_alloc_tree_block
+    alloc_tree_block_no_bg_flush
+    btrfs_force_cow_block
+    btrfs_cow_block
+    commit_cowonly_roots
+    ? btrfs_qgroup_account_extents
+    btrfs_commit_transaction
+    close_ctree
+    generic_shutdown_super
+    kill_anon_super
+    btrfs_kill_super
+    deactivate_locked_super
+    cleanup_mnt
+    task_work_run
+    exit_to_user_mode_prepare
+    syscall_exit_to_user_mode
+    entry_SYSCALL_64_after_hwframe
 
 
+Call trace for sd-sync
+
+    __schedule
+    schedule
+    rwsem_down_read_slowpath
+    ? __ia32_sys_tee
+    iterate_supers
+    ksys_sync
+    __do_sys_sync
+    do_syscall_64
+    entry_SYSCALL_64_after_hwframe
 
