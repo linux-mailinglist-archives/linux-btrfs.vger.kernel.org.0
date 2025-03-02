@@ -1,209 +1,153 @@
-Return-Path: <linux-btrfs+bounces-11956-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-11957-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DBE0A4B1A0
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Mar 2025 13:47:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA41A4B1A3
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Mar 2025 13:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69A2A18902EC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Mar 2025 12:47:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3350C3B0604
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Mar 2025 12:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A521E411D;
-	Sun,  2 Mar 2025 12:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C691E3DC8;
+	Sun,  2 Mar 2025 12:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivNnvpKg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ENxjrcGG"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A2A1C5F1E;
-	Sun,  2 Mar 2025 12:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4731DBB38
+	for <linux-btrfs@vger.kernel.org>; Sun,  2 Mar 2025 12:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740919652; cv=none; b=tWCQG8fQoSA0Qh+LX9LEl0i3h+v5Ws/KmopetCe+xYYNtJnToOhOAuYIAsGwqBuFr1azrbY8R99ZI1zEjyUkjMS6oN7CuuKK8M1VFSg577PMOQKZB1/GvD29Uxk+/75GOCdDLn8jKO5y8MqNNi2k3EEOKJsk/3maud0CWHVecH0=
+	t=1740919964; cv=none; b=U4QkDQxe5QSelHdK7ntAjpvImAj0vfbKLftmOVS7uqvv7zmX/aA9jqkWXBuTenWb3vOwoHF2cqZBMXt6XOsr8vwhsTR9xImci3/VzdxHi6m/9S2F1w8f0ZBeMrc/ydOln/ohKCHp50VSujy1B9034IgI+a7HvN1ojdUqxrd/Ku8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740919652; c=relaxed/simple;
-	bh=K4iEcyqSALl1hH+EtMfOApe8VcBESc/taK+y4iG0bgQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P97kRiUpQyffkaR7MkRMCYw+RXo83GqLOxilzU7JpfxJ0/dyUQmOLnut8RI8ilDF5K0Xi7y8kltmkkxS+JofEka6CrCalzS3rXZOptWY6Bk2sJCn3Ym0jDpiG4+oLzaQjhFrbD17OYjXdrNO+XD3r821fKGooBx3C2KXlhGtwMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivNnvpKg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42731C4CED6;
-	Sun,  2 Mar 2025 12:47:30 +0000 (UTC)
+	s=arc-20240116; t=1740919964; c=relaxed/simple;
+	bh=RjfYsCZT/AjwuuaaU/ShjyImT/Bcghmmvf8ITgZ3S9E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XYtJkas5yoR26gxqVi1Q8wx3UWk0UScCMPb+Dt3Aov7UvAj5bHQp1rBiwMWRVJigARJhg+9iUfbRl9gMFvp1rIgCcOHa0wYfqjKbMuT3YYg59qkpXUyMc77YxzqNWYGNPrTXN1LcrommcVAt/y4AmDmsTOQM38V6/5nKJ2Qxo+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ENxjrcGG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6C57C4CEE6
+	for <linux-btrfs@vger.kernel.org>; Sun,  2 Mar 2025 12:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740919651;
-	bh=K4iEcyqSALl1hH+EtMfOApe8VcBESc/taK+y4iG0bgQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ivNnvpKg/wvD17wYRjfqBr31MM/TO2aJ+xBDKGouD37rGJ3JRxEi1U5L+P/F/DJ8q
-	 YgDFzQFjQy+D5GxJmhodzH7bFZZgVuNkj4UpT6M61JrNV2+mNaFvf9+0shnd0Fod7f
-	 5C4ckzJK6b17BOKhz7spcuaGI3HN/dTbqmoO546lAHFZthNSJQiJjdPAPnBBxf0lvG
-	 t9GA9XzYHVT/gIThTCPaFUEzIssW/NOX7ay2eltRHjFxHLuSzcbHqeJOEVOz5KKSiA
-	 r9CrWZLqgueb5pFpbjDI6lfEd7at7C7jlKnAMBhp6bzTBIa8daCw7LwO7eUucn+M/v
-	 8+y6m2b1fv9Dw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Cc: pkoroau@gmail.com,
-	dsterba@suse.com,
-	stable@vger.kernel.org
-Subject: [PATCH for stable 5.10.x] btrfs: bring back the incorrectly removed extent buffer lock recursion support
-Date: Sun,  2 Mar 2025 12:47:27 +0000
-Message-Id: <10637efdde5420993dd0611e3d3d5d8de6937e3b.1740919455.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=k20201202; t=1740919963;
+	bh=RjfYsCZT/AjwuuaaU/ShjyImT/Bcghmmvf8ITgZ3S9E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ENxjrcGGXrVAiv/eI361KQTfVhFOtODfN8RxATZ7Mg6yXPRY4CKCXdRZWHSS/cKdN
+	 9zmOt1Cyy7jwwmI8tppDAqOBTjNB3BW4C9duGVm8PB1nEhyC9Pt/TGAxTTlX5uA75L
+	 DKlvaeM/D/S308cRKvgLUR3eq4JYrEMyyLhMKCtmgcRUI2zek2ZV+AQ/Brf7QteJg3
+	 I38u73MeG/osRRh74tqxg4n1XbHhB+wvyFltbzUb/wYwP0h0Mib5w3+rgAFjG+IhgR
+	 I4ZWyF07OQYdS5nz1l5ZKadOgYhiqiu2xksOG9/jvU+AnlTxmWj+749v9PSq63V8xx
+	 /D38Ge6y7immg==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-abf48293ad0so233878366b.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 02 Mar 2025 04:52:43 -0800 (PST)
+X-Gm-Message-State: AOJu0YwOLpfew1n9J7Nlz0Ut16gpa59M3WDsyEYMHg3EXagnifXmaHfQ
+	3Oa5yCEIjQNQ+31Zz6ye9rP6/iCRRqHcsSqUDow5tMErvFGJsjDCWT4m5vXgAzxigMBz4mY4TEF
+	ExC8rFPfHetaB5Hdg28D4W3LIyZU=
+X-Google-Smtp-Source: AGHT+IF1TzvMaks+3TU8GjAij1dd0rrUzhiAlGUxoLGWdz9TtGLcNzkjQWX6XuwR8/KFzOXqFEaOoZb9RIahpdchRBo=
+X-Received: by 2002:a17:907:7f91:b0:ab7:f2da:8122 with SMTP id
+ a640c23a62f3a-abf25d945dbmr1299379166b.3.1740919962342; Sun, 02 Mar 2025
+ 04:52:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAMNwjEKH6znTHE5hMc5er2dFs5ypw4Szx6TMDMb0H76yFq5DGQ@mail.gmail.com>
+In-Reply-To: <CAMNwjEKH6znTHE5hMc5er2dFs5ypw4Szx6TMDMb0H76yFq5DGQ@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Sun, 2 Mar 2025 12:52:05 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6A-Ud2hPwjosCjapuye+eDuUjv-bneE73_GO9eDBJvkg@mail.gmail.com>
+X-Gm-Features: AQ5f1JqidHBQimAkn7fCYYcbND-yCact4IG3ki3gYeN8-C7o-MWSV9QImPkaU58
+Message-ID: <CAL3q7H6A-Ud2hPwjosCjapuye+eDuUjv-bneE73_GO9eDBJvkg@mail.gmail.com>
+Subject: Re: btrfs 5.10.234 hangs at shutdown while unmounting
+To: pk <pkoroau@gmail.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Sat, Mar 1, 2025 at 2:35=E2=80=AFPM pk <pkoroau@gmail.com> wrote:
+>
+> Hi,
+>
+> Since the latest Debian 11 kernel update from 5.10.226 to 5.10.234, the
+> shutdown hangs while unmounting any of the attached btrfs filesystems, ev=
+en if
+> the file systems have not ben modified. task:umount and sd-sync have stat=
+e D.
+>
+> Should I report on Bugzilla or here? I see there have been some recent
+> locking-related backports in the btrfs code for 5.10.
 
-Commit 51b03b7473a0 ("btrfs: locking: remove the recursion handling code")
-from the 5.10.233 stable tree removed the support for extent buffer lock
-recursion, but we need that code because in 5.10.x we load the free space
-cache synchronously - while modifying the extent tree and holding a write
-lock on some extent buffer, we may need to load the free space cache,
-which requires acquiring read locks on the extent tree and therefore
-result in a deadlock in case we need to read lock an extent buffer we had
-write locked while modifying the extent tree.
+Reporting here is fine, and it's actually better because we don't look
+as much to bugzilla as we do look at the mailing list.
 
-Backporting that commit from Linus' tree is therefore wrong, and was done
-so in order to backport upstream commit 97e86631bccd ("btrfs: don't set
-lock_owner when locking extent buffer for reading"). However we should
-have instead had the commit adapted to the 5.10 stable tree instead.
+Yes, it's a bad backport that causes the deadlock, likely automated by
+the stable scripts.
 
-Note that the backport of that dependency is ok only for stable trees
-5.11+, because in those tree the space cache loading code is not
-synchronous anymore, so there is no need to have the lock recursion
-and indeed there are no users of the extent buffer lock recursion
-support. In other words, the backport is only valid for kernel releases
-that have the asynchrounous free space cache loading support, which
-was introduced in kernel 5.11 with commit e747853cae3a ("btrfs: load
-free space cache asynchronously").
+I've just sent a fix for it, see:
 
-This was causing deadlocks and reported by a user (see below Link tag).
+https://lore.kernel.org/linux-btrfs/10637efdde5420993dd0611e3d3d5d8de6937e3=
+b.1740919455.git.fdmanana@suse.com/
 
-So revert commit 51b03b7473a0 ("btrfs: locking: remove the recursion
-handling code") while not undoing what commit d5a30a6117ea ("btrfs: don't
-set lock_owner when locking extent buffer for reading") from the 5.10.x
-stable tree did.
+If you test it, please confirm it fixes things for you.
 
-Reported-by: pk <pkoroau@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CAMNwjEKH6znTHE5hMc5er2dFs5ypw4Szx6TMDMb0H76yFq5DGQ@mail.gmail.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/locking.c | 68 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 64 insertions(+), 4 deletions(-)
+Thanks.
 
-diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-index 3d177ef92ab6..24049d054263 100644
---- a/fs/btrfs/locking.c
-+++ b/fs/btrfs/locking.c
-@@ -25,18 +25,43 @@
-  * - reader/reader sharing
-  * - try-lock semantics for readers and writers
-  *
-- * The rwsem implementation does opportunistic spinning which reduces number of
-- * times the locking task needs to sleep.
-+ * Additionally we need one level nesting recursion, see below. The rwsem
-+ * implementation does opportunistic spinning which reduces number of times the
-+ * locking task needs to sleep.
-+ *
-+ *
-+ * Lock recursion
-+ * --------------
-+ *
-+ * A write operation on a tree might indirectly start a look up on the same
-+ * tree.  This can happen when btrfs_cow_block locks the tree and needs to
-+ * lookup free extents.
-+ *
-+ * btrfs_cow_block
-+ *   ..
-+ *   alloc_tree_block_no_bg_flush
-+ *     btrfs_alloc_tree_block
-+ *       btrfs_reserve_extent
-+ *         ..
-+ *         load_free_space_cache
-+ *           ..
-+ *           btrfs_lookup_file_extent
-+ *             btrfs_search_slot
-+ *
-  */
- 
- /*
-  * __btrfs_tree_read_lock - lock extent buffer for read
-  * @eb:		the eb to be locked
-  * @nest:	the nesting level to be used for lockdep
-- * @recurse:	unused
-+ * @recurse:	if this lock is able to be recursed
-  *
-  * This takes the read lock on the extent buffer, using the specified nesting
-  * level for lockdep purposes.
-+ *
-+ * If you specify recurse = true, then we will allow this to be taken if we
-+ * currently own the lock already.  This should only be used in specific
-+ * usecases, and the subsequent unlock will not change the state of the lock.
-  */
- void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest,
- 			    bool recurse)
-@@ -46,7 +71,31 @@ void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting ne
- 	if (trace_btrfs_tree_read_lock_enabled())
- 		start_ns = ktime_get_ns();
- 
-+	if (unlikely(recurse)) {
-+		/* First see if we can grab the lock outright */
-+		if (down_read_trylock(&eb->lock))
-+			goto out;
-+
-+		/*
-+		 * Ok still doesn't necessarily mean we are already holding the
-+		 * lock, check the owner.
-+		 */
-+		if (eb->lock_owner != current->pid) {
-+			down_read_nested(&eb->lock, nest);
-+			goto out;
-+		}
-+
-+		/*
-+		 * Ok we have actually recursed, but we should only be recursing
-+		 * once, so blow up if we're already recursed, otherwise set
-+		 * ->lock_recursed and carry on.
-+		 */
-+		BUG_ON(eb->lock_recursed);
-+		eb->lock_recursed = true;
-+		goto out;
-+	}
- 	down_read_nested(&eb->lock, nest);
-+out:
- 	trace_btrfs_tree_read_lock(eb, start_ns);
- }
- 
-@@ -85,11 +134,22 @@ int btrfs_try_tree_write_lock(struct extent_buffer *eb)
- }
- 
- /*
-- * Release read lock.
-+ * Release read lock.  If the read lock was recursed then the lock stays in the
-+ * original state that it was before it was recursively locked.
-  */
- void btrfs_tree_read_unlock(struct extent_buffer *eb)
- {
- 	trace_btrfs_tree_read_unlock(eb);
-+	/*
-+	 * if we're nested, we have the write lock.  No new locking
-+	 * is needed as long as we are the lock owner.
-+	 * The write unlock will do a barrier for us, and the lock_recursed
-+	 * field only matters to the lock owner.
-+	 */
-+	if (eb->lock_recursed && current->pid == eb->lock_owner) {
-+		eb->lock_recursed = false;
-+		return;
-+	}
- 	up_read(&eb->lock);
- }
- 
--- 
-2.45.2
-
+>
+> Call trace for task:umount
+>
+>     __schedule
+>     schedule
+>     rwsem_down_read_slowpath
+>     __btrfs_tree_read_lock
+>     __btrfs_read_lock_root_node
+>     btrfs_search_slot
+>     btrfs_lookup_file_extent
+>     btrfs_get_extent
+>     btrfs_do_readpage
+>     extend_readahead
+>     read_pages
+>     page_cache_ra_unbounded
+>     ? __load_free_space_cache
+>     __load_free_space_cache
+>     load_free_space_cache
+>     btrfs_cache_block_group
+>     ? add_wait_queue_exclusive
+>     find_free_extent
+>     btrfs_reserve_extent
+>     btrfs_alloc_tree_block
+>     alloc_tree_block_no_bg_flush
+>     btrfs_force_cow_block
+>     btrfs_cow_block
+>     commit_cowonly_roots
+>     ? btrfs_qgroup_account_extents
+>     btrfs_commit_transaction
+>     close_ctree
+>     generic_shutdown_super
+>     kill_anon_super
+>     btrfs_kill_super
+>     deactivate_locked_super
+>     cleanup_mnt
+>     task_work_run
+>     exit_to_user_mode_prepare
+>     syscall_exit_to_user_mode
+>     entry_SYSCALL_64_after_hwframe
+>
+>
+> Call trace for sd-sync
+>
+>     __schedule
+>     schedule
+>     rwsem_down_read_slowpath
+>     ? __ia32_sys_tee
+>     iterate_supers
+>     ksys_sync
+>     __do_sys_sync
+>     do_syscall_64
+>     entry_SYSCALL_64_after_hwframe
+>
 
