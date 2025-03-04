@@ -1,222 +1,253 @@
-Return-Path: <linux-btrfs+bounces-12000-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12001-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3A78A4DD89
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Mar 2025 13:10:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2470CA4E9A6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Mar 2025 18:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A033B1C7B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Mar 2025 12:09:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D3081897219
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Mar 2025 17:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A201920298A;
-	Tue,  4 Mar 2025 12:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7BC29CB5B;
+	Tue,  4 Mar 2025 17:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fBrecMJf";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fBrecMJf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB561FF601;
-	Tue,  4 Mar 2025 12:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E7429617E
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Mar 2025 17:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741090182; cv=none; b=RSoKzq8IZ6xkbm4EjSDHCHWPUikvMJed6hIlfg7F5wWMVrgdvlw//asHOkjdWkongHt6+Um56kBF0gZt/R2H8Fu03TU3/t1Wsb7tHtDHM/PDCldUDOy1O91t2uZREouPfsr4KTelxmsxZQ8JNrukQqLE8QLSVc0W9IerCXYpmbc=
+	t=1741108534; cv=none; b=I8FA6hf9lUILYK+Ji0fJNT17kf1HCg3EufpaiZAgPUVvnYKyeHY20elIuGlM7Kvpe0kWagj+JMy+NLc8jfSEoYkoSkBaxw4DC7l7lVQYea6ICKYgwVXMLrsM/AOnwfzKRYTSSP1LhY0ToVknR6MG7ZnReSTRRi/IFPChiSOIZmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741090182; c=relaxed/simple;
-	bh=4S8tqaK0XJCLIv/7Rv3hJVe8rj1mH8s+KkdKMp6uzeo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DaXZqM0wD0MrA8Ot0rtwhQJD1l3t48U+XdoRWzCJZd2X9Xux6zoGaUno/KUm39M88Xu/y2sNlX4ZXXSKUlMCUSKXd6C4qLPVELtoZ5XYRJjeUDkDf9qmRSBzCjgNW0EI9btFvx1GPYZL8vOjBrFtOeDDynft8NV7oVub34d4d8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Z6ZBX3494z2DkHc;
-	Tue,  4 Mar 2025 20:05:24 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id D7E721A016C;
-	Tue,  4 Mar 2025 20:09:35 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 4 Mar 2025 20:09:35 +0800
-Message-ID: <91fcdfca-3e7b-417c-ab26-7d5e37853431@huawei.com>
-Date: Tue, 4 Mar 2025 20:09:35 +0800
+	s=arc-20240116; t=1741108534; c=relaxed/simple;
+	bh=hW1SLqOd+1NDjRlqGdiw+vFxE/87tHWD+9J2QeAHR/8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ruwwh6CARPHyhi9RVHsSQ+xngj9ONE6BQY3Zq7l0x0zSsF7N/Ah3jV0pBsH56V2nbsd0hgRo8us0O7FXDQGcBSD0RFYc7Ez0TlGq64u1X765ZYGji4bveyb6CZPOmjvbqnkZLlKRDoSFGEWd12U6vVKMpKs9J796IJtKrVFXxkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fBrecMJf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fBrecMJf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4A00421199;
+	Tue,  4 Mar 2025 17:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1741108530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=C7Fyus2sr8XupmFfh56BYZJnTAQEk5IuQrN1D4yR20U=;
+	b=fBrecMJfUcs+WOPcKajrxHgF7swk90fhDiR8XdJRjH5+y+D3wAWBgzIIttZE2vPjc+Bjki
+	Xe0US0jpSdnoEfW0qEogLVRuW+/kD7DzS7DyPHh8zC5whjSJjcBBaCnUAq6thUBT9ERzBk
+	FzfihUBNe56JTxLO25MbYZ/mifpq1Dw=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1741108530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=C7Fyus2sr8XupmFfh56BYZJnTAQEk5IuQrN1D4yR20U=;
+	b=fBrecMJfUcs+WOPcKajrxHgF7swk90fhDiR8XdJRjH5+y+D3wAWBgzIIttZE2vPjc+Bjki
+	Xe0US0jpSdnoEfW0qEogLVRuW+/kD7DzS7DyPHh8zC5whjSJjcBBaCnUAq6thUBT9ERzBk
+	FzfihUBNe56JTxLO25MbYZ/mifpq1Dw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D05113967;
+	Tue,  4 Mar 2025 17:15:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Qq/eCTI1x2f6ZwAAD6G6ig
+	(envelope-from <neelx@suse.com>); Tue, 04 Mar 2025 17:15:30 +0000
+From: Daniel Vacek <neelx@suse.com>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: Daniel Vacek <neelx@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs/defrag: implement compression levels
+Date: Tue,  4 Mar 2025 18:14:00 +0100
+Message-ID: <20250304171403.571335-1-neelx@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: alloc_pages_bulk: remove assumption of populating
- only NULL elements
-To: Dave Chinner <david@fromorbit.com>
-CC: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shameer
- Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian
-	<kevin.tian@intel.com>, Alex Williamson <alex.williamson@redhat.com>, Chris
- Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
-	<dsterba@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep
- Dhavale <dhavale@google.com>, Carlos Maiolino <cem@kernel.org>, "Darrick J.
- Wong" <djwong@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Trond Myklebust
-	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever
-	<chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
-	<neilb@suse.de>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo
-	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Luiz Capitulino
-	<luizcap@redhat.com>, Mel Gorman <mgorman@techsingularity.net>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
-	<linux-erofs@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
-	<linux-mm@kvack.org>, <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
-References: <20250228094424.757465-1-linyunsheng@huawei.com>
- <Z8a3WSOrlY4n5_37@dread.disaster.area>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <Z8a3WSOrlY4n5_37@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 2025/3/4 16:18, Dave Chinner wrote:
+Signed-off-by: Daniel Vacek <neelx@suse.com>
+---
+ fs/btrfs/btrfs_inode.h     |  2 ++
+ fs/btrfs/defrag.c          | 22 +++++++++++++++++-----
+ fs/btrfs/fs.h              |  2 +-
+ fs/btrfs/inode.c           | 10 +++++++---
+ include/uapi/linux/btrfs.h | 10 +++++++++-
+ 5 files changed, 36 insertions(+), 10 deletions(-)
 
-...
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index aa1f55cd81b79..5ee9da0054a74 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -145,6 +145,7 @@ struct btrfs_inode {
+ 	 * different from prop_compress and takes precedence if set.
+ 	 */
+ 	u8 defrag_compress;
++	s8 defrag_compress_level;
+ 
+ 	/*
+ 	 * Lock for counters and all fields used to determine if the inode is in
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index 968dae9539482..03a0287a78ea0 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -1363,6 +1363,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 	u64 last_byte;
+ 	bool do_compress = (range->flags & BTRFS_DEFRAG_RANGE_COMPRESS);
+ 	int compress_type = BTRFS_COMPRESS_ZLIB;
++	int compress_level = 0;
+ 	int ret = 0;
+ 	u32 extent_thresh = range->extent_thresh;
+ 	pgoff_t start_index;
+@@ -1376,10 +1377,19 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 		return -EINVAL;
+ 
+ 	if (do_compress) {
+-		if (range->compress_type >= BTRFS_NR_COMPRESS_TYPES)
+-			return -EINVAL;
+-		if (range->compress_type)
+-			compress_type = range->compress_type;
++		if (range->flags & BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL) {
++			if (range->compress.type >= BTRFS_NR_COMPRESS_TYPES)
++				return -EINVAL;
++			if (range->compress.type) {
++				compress_type = range->compress.type;
++				compress_level= range->compress.level;
++			}
++		} else {
++			if (range->compress_type >= BTRFS_NR_COMPRESS_TYPES)
++				return -EINVAL;
++			if (range->compress_type)
++				compress_type = range->compress_type;
++		}
+ 	}
+ 
+ 	if (extent_thresh == 0)
+@@ -1430,8 +1440,10 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 			btrfs_inode_unlock(BTRFS_I(inode), 0);
+ 			break;
+ 		}
+-		if (do_compress)
++		if (do_compress) {
+ 			BTRFS_I(inode)->defrag_compress = compress_type;
++			BTRFS_I(inode)->defrag_compress_level = compress_level;
++		}
+ 		ret = defrag_one_cluster(BTRFS_I(inode), ra, cur,
+ 				cluster_end + 1 - cur, extent_thresh,
+ 				newer_than, do_compress, &sectors_defragged,
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index be6d5a24bd4e6..2dae7ffd37133 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -485,7 +485,7 @@ struct btrfs_fs_info {
+ 	u64 last_trans_log_full_commit;
+ 	unsigned long long mount_opt;
+ 
+-	unsigned long compress_type:4;
++	int compress_type;
+ 	int compress_level;
+ 	u32 commit_interval;
+ 	/*
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index fa04b027d53ac..156a9d4603391 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -925,6 +925,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 	unsigned int poff;
+ 	int i;
+ 	int compress_type = fs_info->compress_type;
++	int compress_level= fs_info->compress_level;
+ 
+ 	inode_should_defrag(inode, start, end, end - start + 1, SZ_16K);
+ 
+@@ -1007,13 +1008,15 @@ static void compress_file_range(struct btrfs_work *work)
+ 		goto cleanup_and_bail_uncompressed;
+ 	}
+ 
+-	if (inode->defrag_compress)
++	if (inode->defrag_compress) {
+ 		compress_type = inode->defrag_compress;
+-	else if (inode->prop_compress)
++		compress_level= inode->defrag_compress_level;
++	} else if (inode->prop_compress) {
+ 		compress_type = inode->prop_compress;
++	}
+ 
+ 	/* Compression level is applied here. */
+-	ret = btrfs_compress_folios(compress_type, fs_info->compress_level,
++	ret = btrfs_compress_folios(compress_type, compress_level,
+ 				    mapping, start, folios, &nr_folios, &total_in,
+ 				    &total_compressed);
+ 	if (ret)
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index d3b222d7af240..3540d33d6f50c 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -615,7 +615,9 @@ struct btrfs_ioctl_clone_range_args {
+  */
+ #define BTRFS_DEFRAG_RANGE_COMPRESS 1
+ #define BTRFS_DEFRAG_RANGE_START_IO 2
++#define BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL 4
+ #define BTRFS_DEFRAG_RANGE_FLAGS_SUPP	(BTRFS_DEFRAG_RANGE_COMPRESS |		\
++					 BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL |	\
+ 					 BTRFS_DEFRAG_RANGE_START_IO)
+ 
+ struct btrfs_ioctl_defrag_range_args {
+@@ -643,7 +645,13 @@ struct btrfs_ioctl_defrag_range_args {
+ 	 * for this defrag operation.  If unspecified, zlib will
+ 	 * be used
+ 	 */
+-	__u32 compress_type;
++	union {
++		__u32 compress_type;
++		struct {
++			__u8 type;
++			__s8 level;
++		} compress;
++	};
+ 
+ 	/* spare for later */
+ 	__u32 unused[4];
+-- 
+2.47.2
 
-> 
->>
->> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
->> 2. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
->> CC: Jesper Dangaard Brouer <hawk@kernel.org>
->> CC: Luiz Capitulino <luizcap@redhat.com>
->> CC: Mel Gorman <mgorman@techsingularity.net>
->> CC: Dave Chinner <david@fromorbit.com>
->> CC: Chuck Lever <chuck.lever@oracle.com>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> Acked-by: Jeff Layton <jlayton@kernel.org>
->> ---
->> V2:
->> 1. Drop RFC tag and rebased on latest linux-next.
->> 2. Fix a compile error for xfs.
-> 
-> And you still haven't tested the code changes to XFS, because
-> this patch is also broken.
-
-I tested XFS using the below cmd and testcase, testing seems
-to be working fine, or am I missing something obvious here
-as I am not realy familiar with fs subsystem yet:
-
-Step to setup the xfs:
-dd if=/dev/zero of=xfs_image bs=1M count=1024
-losetup -f xfs_image
-losetup -a
-./mkfs.xfs /dev/loop0
-mkdir xfs_test
-mount /dev/loop0 xfs_test/
-
-Test shell file:
-#!/bin/bash
-
-# Configuration parameters
-DIR="/home/xfs_test"              # Directory to perform file operations
-FILE_COUNT=100              # Maximum number of files to create in each loop
-MAX_FILE_SIZE=1024          # Maximum file size in KB
-MIN_FILE_SIZE=10            # Minimum file size in KB
-OPERATIONS=10               # Number of create/delete operations per loop
-TOTAL_RUNS=10000               # Total number of loops to run
-
-# Check if the directory exists
-if [ ! -d "$DIR" ]; then
-    echo "Directory $DIR does not exist. Please create the directory first!"
-    exit 1
-fi
-
-echo "Starting file system test on: $DIR"
-
-for ((run=1; run<=TOTAL_RUNS; run++)); do
-    echo "Run $run of $TOTAL_RUNS"
-
-    # Randomly create files
-    for ((i=1; i<=OPERATIONS; i++)); do
-        # Generate a random file size between MIN_FILE_SIZE and MAX_FILE_SIZE (in KB)
-        FILE_SIZE=$((RANDOM % (MAX_FILE_SIZE - MIN_FILE_SIZE + 1) + MIN_FILE_SIZE))
-        # Generate a unique file name using timestamp and random number
-        FILE_NAME="$DIR/file_$(date +%s)_$RANDOM"
-        # Create a file with random content
-        dd if=/dev/urandom of="$FILE_NAME" bs=1K count=$FILE_SIZE &>/dev/null
-        echo "Created file: $FILE_NAME, Size: $FILE_SIZE KB"
-    done
-
-    # Randomly delete files
-    for ((i=1; i<=OPERATIONS; i++)); do
-        # List all files in the directory
-        FILE_LIST=($(ls $DIR))
-        # Check if there are any files to delete
-        if [ ${#FILE_LIST[@]} -gt 0 ]; then
-            # Randomly select a file to delete
-            RANDOM_FILE=${FILE_LIST[$RANDOM % ${#FILE_LIST[@]}]}
-            rm -f "$DIR/$RANDOM_FILE"
-            echo "Deleted file: $DIR/$RANDOM_FILE"
-        fi
-    done
-
-    echo "Completed run $run"
-done
-
-echo "Test completed!"
-
-
-> 
->> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
->> index 5d560e9073f4..b4e95b2dd0f0 100644
->> --- a/fs/xfs/xfs_buf.c
->> +++ b/fs/xfs/xfs_buf.c
->> @@ -319,16 +319,17 @@ xfs_buf_alloc_pages(
->>  	 * least one extra page.
->>  	 */
->>  	for (;;) {
->> -		long	last = filled;
->> +		long	alloc;
->>  
->> -		filled = alloc_pages_bulk(gfp_mask, bp->b_page_count,
->> -					  bp->b_pages);
->> +		alloc = alloc_pages_bulk(gfp_mask, bp->b_page_count - filled,
->> +					 bp->b_pages + filled);
->> +		filled += alloc;
->>  		if (filled == bp->b_page_count) {
->>  			XFS_STATS_INC(bp->b_mount, xb_page_found);
->>  			break;
->>  		}
->>  
->> -		if (filled != last)
->> +		if (alloc)
->>  			continue;
-> 
-> alloc_pages_bulk() now returns the number of pages allocated in the
-> array. So if we ask for 4 pages, then get 2, filled is now 2. Then
-> we loop, ask for another 2 pages, get those two pages and it returns
-> 4. Now filled is 6, and we continue.
-
-It will be returning 2 instead of 4 for the second loop if I understand
-it correctly as 'bp->b_pages + filled' and 'bp->b_page_count - filled'
-is passing to alloc_pages_bulk() API now.
-
-> 
-> Now we ask alloc_pages_bulk() for -2 pages, which returns 4 pages...
-> 
-> Worse behaviour: second time around, no page allocation succeeds
-> so it returns 2 pages. Filled is now 4, which is the number of pages
-> we need, so we break out of the loop with only 2 pages allocated.
-> There's about to be kernel crashes occur.....
-> 
-> Once is a mistake, twice is compeltely unacceptable.  When XFS stops
-> using alloc_pages_bulk (probably 6.15) I won't care anymore. But
-> until then, please stop trying to change this code.
-> 
-> NACK.
-> 
-> -Dave.
 
