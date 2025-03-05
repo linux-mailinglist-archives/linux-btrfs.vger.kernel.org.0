@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-12033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12034-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57C51A50985
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 19:21:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E73B2A509A0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 19:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92401168896
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 18:21:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 292277AA1A9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 18:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F28253F3F;
-	Wed,  5 Mar 2025 18:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E229254852;
+	Wed,  5 Mar 2025 18:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WXRXpYVE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gk0U0+Zf"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B83251798
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 18:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CA8251798
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 18:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741198674; cv=none; b=im+goKXEjLzBMzJBQQSZH6eRsXsISVD6HYZ4k0LGW+nXvvwAOlJ2XIqlik5MX6GjidKCua5cej8YCX5KsNhMT9f8coXsHEYJwNbiGWa9z8K+uZjqYW3pNZkcDx3DySed1oFvT3qeHT9Z8R+kdEztgpyaxxfzwLNXA1A5umkcLRE=
+	t=1741198675; cv=none; b=c2EOnLc6c1S8QCITjS6rnQMCtuqg++UreBApVtBvZK9weVQJPSin5oMhYF/E0lGqNdo1PBe9xQGJCnKSCAjvf4zXMBXRP8lQQXO0xxDOoDJL7WyOvsXDN7xa8Kj1BaXtoqa+pVSIh50EbCS698lcmY+BHS1Vt7ugDVwWWShL2X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741198674; c=relaxed/simple;
-	bh=4yUYyjtMFFv8i5L5lrd/+MeXYumd48imf6bm7ZdCors=;
+	s=arc-20240116; t=1741198675; c=relaxed/simple;
+	bh=GnwABZja+u7FKNqckJXjm8zIcmtAQUN5PrFZUsArmo4=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fNdQ0fbB5LOwimr7VA8yuGIeVm1LV593d4Vq/i+qEpJVZ6iXnAFoR4aLKccQNxxzAGl6nGcceiG9tC/a6LNh9+7eNRjnnzegvwtC3u3idSg3/rjEmxYw1WE47m+gzpFhpUaZCzMPBRz5Gi54hiyEeJMi5TShyYEwhiRAgW5U5Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WXRXpYVE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87EDCC4CED1
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 18:17:53 +0000 (UTC)
+	 MIME-Version; b=V2Zaf36Ge/2a84NcM08oOx8/JTX7BaNtb+GL4aRTJyG+wr3/Mo76csHnS1ekOkK6b4vAO4eTFjDCt7BzW7LiywkMgqMszsVd+/wwWp5lXGeFAVlet2NsXs/5BzfSDHxLfynKNM8tFvI9VBZxJJZjeoYaBE02YKGUwBavXrG4q4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gk0U0+Zf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FA77C4CEE2
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 18:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741198674;
-	bh=4yUYyjtMFFv8i5L5lrd/+MeXYumd48imf6bm7ZdCors=;
+	s=k20201202; t=1741198675;
+	bh=GnwABZja+u7FKNqckJXjm8zIcmtAQUN5PrFZUsArmo4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=WXRXpYVEbJrMhs5me/3kH0C90tPJn+MVcyDIli/LToPMchG55tVH98qUVPVec9LQW
-	 lWX3HVXatSQGyMS6slSUgZc/k4bhcf6UUZ+kKRMunTVvSWczfNpGA6q4+TRYU6buY0
-	 f2DxmfSgN32bWawYMWjyxFJRW/ij+w/4pPBAe9TI44yrL1iVoWUKjgw4SJYA7WqxCN
-	 Dh7CHSHOZ11VKaZlLiHZSDiqcquPrScYa8R6/tEwHMNQsaDHLeeuHZefltwdWVGFsb
-	 gK6QK3Y+Tfisp3JYnkqim2uo1+KDflNHVfWpMcf7Fqm7J6FKIN6wCZM3rvCu6sbwf+
-	 V9X4JdQb3+K7Q==
+	b=gk0U0+ZfyHckx59lLG825GyNZV3nYsZh3UTpb3C7S+veUcsk6I0OIipARyI2JBhvE
+	 EYwK37rAcsO/yYrroCqmjc3KGnIywhxRjFJwplt9Kvubic6Mi5ePNDBNl1dIWpu5g3
+	 JP0/hHUGw8/AkKWK5foPZcxnjywCbVOIyzNZNCub9WR1+lrE3/0o+LESj8/rtHLY++
+	 S0I/+J+yLctFZjeS9OvgGDLVm2f/QTtSoWG8TpgUApkvj1t0XOMLPV2l4ZyFSoEvWJ
+	 dSFrms93/MHe11BTXhsb252LADVOhg+izr0GsV9KLbhyyPKTlq+DLKCocFzQlSPVf9
+	 GCjAMo6mIjy1Q==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/4] btrfs: fix unexpected delayed iputs at umount time and cleanups
-Date: Wed,  5 Mar 2025 18:17:46 +0000
-Message-Id: <cover.1741198394.git.fdmanana@suse.com>
+Subject: [PATCH v2 1/4] btrfs: fix non-empty delayed iputs list on unmount due to endio workers
+Date: Wed,  5 Mar 2025 18:17:47 +0000
+Message-Id: <e1cf2949e4b03fba268f923947543bbf4a7b6752.1741198394.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1741196484.git.fdmanana@suse.com>
-References: <cover.1741196484.git.fdmanana@suse.com>
+In-Reply-To: <cover.1741198394.git.fdmanana@suse.com>
+References: <cover.1741198394.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,24 +59,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Fix a couple races that can result in adding delayed iputs during umount after
-we no longer expect to find any, triggering an assertion failure. Plus a couple
-cleanups. Details in the change logs.
+At close_ctree() after we have ran delayed iputs either through explicitly
+calling btrfs_run_delayed_iputs() or later during the call to
+btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
+delayed iputs list is empty.
 
-V2: Removed the NULL checks for the workqueues in patches 1 and 2, as they
-    can never be NULL while at close_ctree() (they can only be NULL in error
-    paths from open_ctree()).
+Sometimes this assertion may fail because delayed iputs may have been
+added to the list after we last ran delayed iputs, and this happens due
+to workers in the endio_workers workqueue still running. These workers can
+do a final put on an ordered extent attached to a data bio, which results
+in adding a delayed iput. This is done at btrfs_bio_end_io() and its
+helper __btrfs_bio_end_io().
 
-Filipe Manana (4):
-  btrfs: fix non-empty delayed iputs list on unmount due to endio workers
-  btrfs: fix non-empty delayed iputs list on unmount due to compressed write workers
-  btrfs: move __btrfs_bio_end_io() code into its single caller
-  btrfs: move btrfs_cleanup_bio() code into its single caller
+Fix this by flushing the endio_workers workqueue before running delayed
+iputs at close_ctree().
 
- fs/btrfs/bio.c     | 36 ++++++++++++++----------------------
- fs/btrfs/disk-io.c | 21 +++++++++++++++++++++
- 2 files changed, 35 insertions(+), 22 deletions(-)
+David reported this when running generic/648.
 
+Reported-by: David Sterba <dsterba@suse.com>
+Fixes: ec63b84d4611 ("btrfs: add an ordered_extent pointer to struct btrfs_bio")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/disk-io.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index d96ea974ef73..b6194ae97361 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4340,6 +4340,15 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	 */
+ 	btrfs_flush_workqueue(fs_info->delalloc_workers);
+ 
++	/*
++	 * We can also have ordered extents getting their last reference dropped
++	 * from the endio_workers workqueue because for data bios we keep a
++	 * reference on an ordered extent which gets dropped when running
++	 * btrfs_bio_end_io() in that workqueue, and that final drop results in
++	 * adding a delayed iput for the inode.
++	 */
++	flush_workqueue(fs_info->endio_workers);
++
+ 	/*
+ 	 * After we parked the cleaner kthread, ordered extents may have
+ 	 * completed and created new delayed iputs. If one of the async reclaim
 -- 
 2.45.2
 
