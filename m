@@ -1,173 +1,174 @@
-Return-Path: <linux-btrfs+bounces-12041-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9CFA53E47
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 00:15:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE24A53E9A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 00:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56FC83A5D69
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 23:15:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C09207A2A7A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 23:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91DF207675;
-	Wed,  5 Mar 2025 23:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14965207DEE;
+	Wed,  5 Mar 2025 23:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwuH8Oca"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YjCN5sm0";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SeO+07Dw";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YjCN5sm0";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SeO+07Dw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177EB2E3365
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 23:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48CD1F76B5
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 23:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741216504; cv=none; b=iYKDx01AekIWaky3tQeJiyQcRp1ifxy0l6XwkPd9eiFlJ/yIP2kIupamaR9RzwMXE5WhKeeVbRjHTFFtCU/q44hPyKgLBEKrHCRPiklsINcaDewtd0uQAZTdjyDOFCP6/TqwHPZsirGN1AEUQV8PiFAnEED9cV87bk6g1dTRnDU=
+	t=1741218110; cv=none; b=dzGV23ocrqpl3+ZFLaB//z9pbZKiBJl7EuYqqQbtzOtVArqw7roA1oYA8rSqQ8OLzWmUe/nAJh3BGWYmDmmy7DThNycW3PTzqFgERgFL+3ltifRDLU71ekcz/7LP+SHdnPk5qk78xq1DqZ2CP/nJ1gwJNrOCLf21YDL3nQtkElU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741216504; c=relaxed/simple;
-	bh=I9qmnDpuTNvJpEq8eZiJpsgWdWVEHm2IyIAOTTN76zw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bhhmtGkT0urswFyMM3OofTWVuW8BLBWj9DBMMocVTVz0LbfHP//inn7Q27TAnxysF5+51myNQzWMiJdHST0l98+gGNMuZClDj7VHCs8PLzu5mPhzb44102A4geSU2rlW+BS+G7B2Fi20z/ZmrRguuA1cRFcbZP2nXYj1Cw8ZOP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwuH8Oca; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8658C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 23:15:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741216503;
-	bh=I9qmnDpuTNvJpEq8eZiJpsgWdWVEHm2IyIAOTTN76zw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NwuH8OcabZXxS9EGtZczrOXo/AJv9QQQO4ju01qS/eogqD7oQFBlSTAnIgcxd2ZY8
-	 pgdUdo3HZkOsw3roV7GyJvqzX2IPEaNbtnkMWJhWrGtaYSJwwiyoPPyZ+hxpoic13Z
-	 uekgkXH+bWyalyzuWMpzKQSlWhV5l6XIm1zocFqqaQAXQQQyC/j8IYqQDn7jYm58jI
-	 Zlns8q2oAbN/ALMggHAYiHrtx9xC9xp2rXkfPppbjdJdX10D2k++hN98dZF7x3OJt1
-	 vkbO15MIc/uPeCieCu0Dmp7kEzC/O9iP/5atzkPpbXzGRnnlBGSJhAPq9yrXPeexKT
-	 jt+8ePvU3Bnig==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aaec61d0f65so13484666b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Mar 2025 15:15:03 -0800 (PST)
-X-Gm-Message-State: AOJu0YxMJWhYJz0h1ArWM6/r9mVVxRYpCaj7FkaVsSAYQxp5uA3StvQU
-	Qyat0OaEkBJZkD3l970bBnQXVN4+Cy9Y3xfbdVO2ZVH4QBLxJ7DG6MmvuQYpQeh6EuqaprXx+o0
-	UEbkhdsGF78QRzOsLvxeWAZHTIko=
-X-Google-Smtp-Source: AGHT+IFbF+8D3DnZzPSJaljwyo5dsmUHrdkl6YXiN38whBRu8KXcnXDAM6lwdvIUBp/XBPrKMtfpGT0UmAEkKjxDpmE=
-X-Received: by 2002:a17:907:72ca:b0:ac1:fb00:2b38 with SMTP id
- a640c23a62f3a-ac20d92d67cmr554222966b.25.1741216502180; Wed, 05 Mar 2025
- 15:15:02 -0800 (PST)
+	s=arc-20240116; t=1741218110; c=relaxed/simple;
+	bh=79A9Xcxf22LN1wRxVN/wCq4MVv4De/k36OytnK/R+PU=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=aygVdK5QXbob8KaoIdybqtphyw2a8wqGccj2t9njJi7rzQcs8AOtv2kgFyebSqnPO7K1PIDvoxe0jH/Jc7k1wnzTooFTNC+jrR9za/z3xXh4QITfH3MIIcTBo/xcE3uEbEMCR/MfV+65Br4sj1V8psgtGdfS7wcwjl6aSAWbPD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YjCN5sm0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SeO+07Dw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YjCN5sm0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SeO+07Dw; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B7C171F385;
+	Wed,  5 Mar 2025 23:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1741218106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evnk/GxliDTjNMMgAFyfCNZGfvqVt47nI9LnubvMvxc=;
+	b=YjCN5sm09/Vik1hnIVgY/KAn9Bl+M9/Qo0xPTOFQNF8Y/8QdKDvee6BGLO7x9pn9iJ9kyi
+	n5vDga3YY2IqVkMq8j71+tXA/lQqxgbYINFt4chYC7lsJ2wAc09oTXOcOZ0cfwMxqE/8JT
+	f5K7ko5CR+elv4J6T28XRXDqa8DqvvY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1741218106;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evnk/GxliDTjNMMgAFyfCNZGfvqVt47nI9LnubvMvxc=;
+	b=SeO+07DwVmMuxGIdJ6uBjWre+ET8YmfEvWdD+64YO1xDmbJOxMvVwYwNFQ+y51t6511CM8
+	Xk9d1WRKq6le82BQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1741218106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evnk/GxliDTjNMMgAFyfCNZGfvqVt47nI9LnubvMvxc=;
+	b=YjCN5sm09/Vik1hnIVgY/KAn9Bl+M9/Qo0xPTOFQNF8Y/8QdKDvee6BGLO7x9pn9iJ9kyi
+	n5vDga3YY2IqVkMq8j71+tXA/lQqxgbYINFt4chYC7lsJ2wAc09oTXOcOZ0cfwMxqE/8JT
+	f5K7ko5CR+elv4J6T28XRXDqa8DqvvY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1741218106;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evnk/GxliDTjNMMgAFyfCNZGfvqVt47nI9LnubvMvxc=;
+	b=SeO+07DwVmMuxGIdJ6uBjWre+ET8YmfEvWdD+64YO1xDmbJOxMvVwYwNFQ+y51t6511CM8
+	Xk9d1WRKq6le82BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E44A013939;
+	Wed,  5 Mar 2025 23:41:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zc4kJSzhyGdbdAAAD6G6ig
+	(envelope-from <neilb@suse.de>); Wed, 05 Mar 2025 23:41:32 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1741198394.git.fdmanana@suse.com> <e1cf2949e4b03fba268f923947543bbf4a7b6752.1741198394.git.fdmanana@suse.com>
- <74baca21-ea92-46f1-a85a-d5834eeaa430@suse.com> <674580db-c8c9-4b8c-baf3-3071fa4a2d01@suse.com>
-In-Reply-To: <674580db-c8c9-4b8c-baf3-3071fa4a2d01@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 5 Mar 2025 23:14:24 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7WLOE9BjM6dC1TaSnomxTT41j9DNDB3=0mQWAcEA4JYQ@mail.gmail.com>
-X-Gm-Features: AQ5f1JobjqaSEBjUwlWQrXAyb8R1VHA0JIUJXmEfzmQD9XQNODovBCqOzAuEDEw
-Message-ID: <CAL3q7H7WLOE9BjM6dC1TaSnomxTT41j9DNDB3=0mQWAcEA4JYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] btrfs: fix non-empty delayed iputs list on unmount
- due to endio workers
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: "NeilBrown" <neilb@suse.de>
+To: "Yunsheng Lin" <linyunsheng@huawei.com>
+Cc: "Qu Wenruo" <wqu@suse.com>, "Yishai Hadas" <yishaih@nvidia.com>,
+ "Jason Gunthorpe" <jgg@ziepe.ca>,
+ "Shameer Kolothum" <shameerali.kolothum.thodi@huawei.com>,
+ "Kevin Tian" <kevin.tian@intel.com>,
+ "Alex Williamson" <alex.williamson@redhat.com>, "Chris Mason" <clm@fb.com>,
+ "Josef Bacik" <josef@toxicpanda.com>, "David Sterba" <dsterba@suse.com>,
+ "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
+ "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
+ "Sandeep Dhavale" <dhavale@google.com>, "Carlos Maiolino" <cem@kernel.org>,
+ "Darrick J. Wong" <djwong@kernel.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Jesper Dangaard Brouer" <hawk@kernel.org>,
+ "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+ "David S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Simon Horman" <horms@kernel.org>, "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
+ "Jeff Layton" <jlayton@kernel.org>, "Olga Kornievskaia" <okorniev@redhat.com>,
+ "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+ "Luiz Capitulino" <luizcap@redhat.com>,
+ "Mel Gorman" <mgorman@techsingularity.net>,
+ "Dave Chinner" <david@fromorbit.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-xfs@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
+ linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v2] mm: alloc_pages_bulk: remove assumption of populating
+ only NULL elements
+In-reply-to: <18c68e7a-88c9-49d1-8ff8-17c63bcc44f4@huawei.com>
+References: <>, <18c68e7a-88c9-49d1-8ff8-17c63bcc44f4@huawei.com>
+Date: Thu, 06 Mar 2025 10:41:24 +1100
+Message-id: <174121808436.33508.1242845473359255682@noble.neil.brown.name>
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[44];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.com,nvidia.com,ziepe.ca,huawei.com,intel.com,redhat.com,fb.com,toxicpanda.com,kernel.org,gmail.com,linux.alibaba.com,google.com,linux-foundation.org,linaro.org,davemloft.net,oracle.com,talpey.com,techsingularity.net,fromorbit.com,vger.kernel.org,lists.linux.dev,lists.ozlabs.org,kvack.org];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn),to_ip_from(RL4q5k5kyydt8nhc3xa4shdp4c)]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, Mar 5, 2025 at 10:50=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> =E5=9C=A8 2025/3/6 09:16, Qu Wenruo =E5=86=99=E9=81=93:
-> >
-> >
-> > =E5=9C=A8 2025/3/6 04:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> >> From: Filipe Manana <fdmanana@suse.com>
-> >>
-> >> At close_ctree() after we have ran delayed iputs either through
-> >> explicitly
-> >> calling btrfs_run_delayed_iputs() or later during the call to
-> >> btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
-> >> delayed iputs list is empty.
-> >>
-> >> Sometimes this assertion may fail because delayed iputs may have been
-> >> added to the list after we last ran delayed iputs, and this happens du=
-e
-> >> to workers in the endio_workers workqueue still running. These workers
-> >> can
-> >> do a final put on an ordered extent attached to a data bio, which resu=
-lts
-> >> in adding a delayed iput. This is done at btrfs_bio_end_io() and its
-> >> helper __btrfs_bio_end_io().
-> >
-> > But the endio_workers workqueue is only utilized by data READ
-> > operations, in function btrfs_end_io_wq(), which is called in
-> > btrfs_simple_end_io().
-> >
-> > Furthermore, for the endio_workers workqueue, for data inodes it only
-> > handles btrfs_check_read_bio(), which shouldn't generate ordered extent
-> > either.
-> >
-> > Did I miss something here?
->
-> Oh, I missed the recently disabled (for subpage) uncached io.
->
-> So I guess the real fixes tag should be that not-yet-upstreamed uncached
-> io patch.
+On Wed, 05 Mar 2025, Yunsheng Lin wrote:
+> 
+> For the existing btrfs and sunrpc case, I am agreed that there
+> might be valid use cases too, we just need to discuss how to
+> meet the requirements of different use cases using simpler, more
+> unified and effective APIs.
 
-Oh yes, I picked a wrong commit somehow.
+We don't need "more unified".
 
-Since the uncached stuff is not in Linus' tree, I'll remove the Fixes
-tag and just mention it happens for uncached IO added recently and the
-subject of the patch that introduced it.
+If there are genuinely two different use cases with clearly different
+needs - even if only slightly different - then it is acceptable to have
+two different interfaces.  Be sure to choose names which emphasise the
+differences.
 
-Thanks.
-
->
-> Thanks,
-> Qu
->
-> >
-> > Thanks,
-> > Qu
-> >
-> >>
-> >> Fix this by flushing the endio_workers workqueue before running delaye=
-d
-> >> iputs at close_ctree().
-> >>
-> >> David reported this when running generic/648.
-> >>
-> >> Reported-by: David Sterba <dsterba@suse.com>
-> >> Fixes: ec63b84d4611 ("btrfs: add an ordered_extent pointer to struct
-> >> btrfs_bio")
-> >> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >> ---
-> >>   fs/btrfs/disk-io.c | 9 +++++++++
-> >>   1 file changed, 9 insertions(+)
-> >>
-> >> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> >> index d96ea974ef73..b6194ae97361 100644
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -4340,6 +4340,15 @@ void __cold close_ctree(struct btrfs_fs_info
-> >> *fs_info)
-> >>        */
-> >>       btrfs_flush_workqueue(fs_info->delalloc_workers);
-> >> +    /*
-> >> +     * We can also have ordered extents getting their last reference
-> >> dropped
-> >> +     * from the endio_workers workqueue because for data bios we keep=
- a
-> >> +     * reference on an ordered extent which gets dropped when running
-> >> +     * btrfs_bio_end_io() in that workqueue, and that final drop
-> >> results in
-> >> +     * adding a delayed iput for the inode.
-> >> +     */
-> >> +    flush_workqueue(fs_info->endio_workers);
-> >> +
-> >>       /*
-> >>        * After we parked the cleaner kthread, ordered extents may have
-> >>        * completed and created new delayed iputs. If one of the async
-> >> reclaim
-> >
-> >
->
+Thanks,
+NeilBrown
 
