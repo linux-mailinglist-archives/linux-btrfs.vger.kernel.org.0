@@ -1,114 +1,220 @@
-Return-Path: <linux-btrfs+bounces-12024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12025-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 280AAA4FE0D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 12:54:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D75AA4FE7B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 13:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF50F188D716
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 11:54:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F36763A5A98
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 12:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152F324290B;
-	Wed,  5 Mar 2025 11:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQkPTaO2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B96245032;
+	Wed,  5 Mar 2025 12:18:08 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48BA5235BE4;
-	Wed,  5 Mar 2025 11:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF6124060E;
+	Wed,  5 Mar 2025 12:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741175637; cv=none; b=f3HjBbqoufF+v+CSGQFtmYvfT4i/KtB1DL5i/tST8nJM/9fvH66WEL0Yy1O5By+qOzpl1zUq84OUEcuO3cmZYUwuLynIkH8SfmfrWxN16mdF1x4FLCQDJdKWY8aCsuItIy66Mts5EXinFOMfNorhoe89MmmjbZ1ashaOnMLTzqw=
+	t=1741177087; cv=none; b=c1bs5X++ttFZ/kLWfx+WW214F97aNWDYjr+QABetDrvpk1KtUYchlnSv0sh/DHSEBCJjnc5vr7IcKS4RI8NFcYidjzAlS3RbV/9t2H08C6+eGHuUy19sFmhNT9XG5itRZz3xZNp/61+8SIjP+gPwWV70limnnuFFgSZqd1duxA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741175637; c=relaxed/simple;
-	bh=gArcLFfpKivakEz7CtL6CfPKFdqu7fmiUQZy/61/I7Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qnpxRXKnjZg/qFp/2gEsxJt0hoa16z5KRCO3BU+sj/BgpFIKGoezTCGY9NMd3VQJE6QMy9BB9eETmKxPcpZKvRgXhe99BGwoZt6YDNlh+4jPQvqzodp/ySh54GzxSGr+ulvD55PoUe17RSNO+x2pcLB/yTYhMATEC6GdJo02BKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQkPTaO2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34DFC4CEE7;
-	Wed,  5 Mar 2025 11:53:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741175636;
-	bh=gArcLFfpKivakEz7CtL6CfPKFdqu7fmiUQZy/61/I7Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=eQkPTaO2ybpDpyvxRBnZCwEJiDOUYN34PexWdJkR/ybt/YYmcnUm6M3vwVJ7jgQ1x
-	 R76lHi1X6N+ht923+ud27JAVo9KZ40fD60HCR4sO1zNoSZy6F7Kf51N6Sk9DlCNtme
-	 07kuzx6MGUxFagV6b5aENy5t2vz/ai++KdkjMoNTviNwNcnYradekUKb0FwdnmVzrr
-	 eFib51GlMZa6kZl0aOWSACyLUTAyUqg1+NOlKY74GwoqiAGzsZPm7PjJRcfzdofZqb
-	 uXnrZ4QQkAuO/0fYtG2g1jewDRyDGciHqg6ja3gZ3LKA7u+ibG+sndoiLKCvGP9FJH
-	 A8oXRr9av5CYQ==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5e4ebc78da5so10179316a12.2;
-        Wed, 05 Mar 2025 03:53:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUXDHp2Az+zyjraeAUu2cpZ887Iv11KnX5jmSNkRDdtz2EGnrmvp2tJ8xsSk7CKI/xo5XXd0Rmjx1nizaWm@vger.kernel.org, AJvYcCW4Vv6rX/bKK6941mdzh/NYIJqyPzaDlkXHm9cTt+MsGPaeaQUCVaGspojZ8/oEj6sqNjz8b3mCcBuOPg==@vger.kernel.org, AJvYcCX6+GsV9Ncpmzh253XDF/HjhFa09w/tWvgx0apxNxnGkW56RhOl7ufoYzWQPymYkjKYqHVJGNPG@vger.kernel.org
-X-Gm-Message-State: AOJu0YyW6d9t0kx9XI7p9+oHCQWlT57qM9rx3SfFMHYRUhg1BW1xuDaj
-	ohdJ5or1RtZ7uqxEGVeCyMTZIwR/mIATz3aZEZ+9+oNb+ZqcpNMOC8Zkd8eDpV4BtDcWU1r2srg
-	qWGb1I5MAHxHdy17T0YgAGMsiLNU=
-X-Google-Smtp-Source: AGHT+IEtu/EQCES06k/Bc8EPSEewrmkKqHE7wO1dQxTrgUo47y+6mmHiwOWvaRXnymriudN4xCZdwdaV6KPcNhmHTpk=
-X-Received: by 2002:a17:907:7da6:b0:abf:b2d5:9692 with SMTP id
- a640c23a62f3a-ac20d930712mr234821366b.29.1741175635065; Wed, 05 Mar 2025
- 03:53:55 -0800 (PST)
+	s=arc-20240116; t=1741177087; c=relaxed/simple;
+	bh=2l5BK6BIIKBvzAzekAB/HIgAAJ8CjsnHPnqO0JmxTPU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mneCjGiyBBkRT4YXOP7GgmqH1CyK2BOGPAozwoqv2Ev+bifhrZnymFbpeetyv9KzOjz8VZcz+ib70nf2IoiKSxC0IjY7Q5ynr/x6pwsL0RVPjmwip8dNttQxvfn9Q15AWHLpckiYpDZrUNlLhSJE0muGgUzdZq8Z5dxvs9kV2es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Z7BJz4R0yzwWy8;
+	Wed,  5 Mar 2025 20:13:07 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2AA2318009E;
+	Wed,  5 Mar 2025 20:18:02 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 5 Mar 2025 20:17:59 +0800
+Message-ID: <18c68e7a-88c9-49d1-8ff8-17c63bcc44f4@huawei.com>
+Date: Wed, 5 Mar 2025 20:17:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250303024233.3865292-1-haoxiang_li2024@163.com>
-In-Reply-To: <20250303024233.3865292-1-haoxiang_li2024@163.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 5 Mar 2025 11:53:17 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7btKGFi9iVrYgo0RoKrkW8uXBvmng0UekSLB-OhUp1WQ@mail.gmail.com>
-X-Gm-Features: AQ5f1JrhSNzMCD5RQ-nIUwOTJLLFTxwB7sNQ-rT-XLzQHwX1r7N5jhuhXra2eRo
-Message-ID: <CAL3q7H7btKGFi9iVrYgo0RoKrkW8uXBvmng0UekSLB-OhUp1WQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix a memory leak issue in read_one_chunk()
-To: Haoxiang Li <haoxiang_li2024@163.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, fdmanana@suse.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: alloc_pages_bulk: remove assumption of populating
+ only NULL elements
+To: Qu Wenruo <wqu@suse.com>, Yishai Hadas <yishaih@nvidia.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Shameer Kolothum
+	<shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>, Chris Mason <clm@fb.com>, Josef
+ Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Gao Xiang
+	<xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>,
+	Carlos Maiolino <cem@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+	<horms@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
+	<anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
+	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
+	<okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>
+CC: Luiz Capitulino <luizcap@redhat.com>, Mel Gorman
+	<mgorman@techsingularity.net>, Dave Chinner <david@fromorbit.com>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+	<linux-erofs@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
+	<linux-mm@kvack.org>, <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
+References: <20250228094424.757465-1-linyunsheng@huawei.com>
+ <6f4017dc-2b3d-4b1a-b819-423acb42d999@suse.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <6f4017dc-2b3d-4b1a-b819-423acb42d999@suse.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On Mon, Mar 3, 2025 at 2:43=E2=80=AFAM Haoxiang Li <haoxiang_li2024@163.com=
-> wrote:
->
-> Add btrfs_free_chunk_map() to free the memory allocated
-> by btrfs_alloc_chunk_map() if btrfs_add_chunk_map() fails.
->
-> Fixes: 7dc66abb5a47 ("btrfs: use a dedicated data structure for chunk map=
-s")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
+On 2025/3/4 17:17, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/2/28 20:14, Yunsheng Lin 写道:
+>> As mentioned in [1], it seems odd to check NULL elements in
+>> the middle of page bulk allocating, and it seems caller can
+>> do a better job of bulk allocating pages into a whole array
+>> sequentially without checking NULL elements first before
+>> doing the page bulk allocation for most of existing users.
+>>
+>> Through analyzing of bulk allocation API used in fs, it
+>> seems that the callers are depending on the assumption of
+>> populating only NULL elements in fs/btrfs/extent_io.c and
+>> net/sunrpc/svc_xprt.c while erofs and btrfs don't, see:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+I should have said 'while erofs and xfs don't depend on the
+assumption of populating only NULL elements'.
 
-Pushed into the github for-next branch, thanks.
+>> commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
+> 
+> If you want to change the btrfs part, please run full fstests with SCRATCH_DEV_POOL populated at least.
 
+The above is a helpful suggestion/comment to someone like me, who
+is not very familiar with fs yet, thanks for the suggestion.
 
+But I am not sure about some of the other comments below.
 
-> ---
->  fs/btrfs/volumes.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index fb22d4425cb0..3f8afbd1ebb5 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7155,6 +7155,7 @@ static int read_one_chunk(struct btrfs_key *key, st=
-ruct extent_buffer *leaf,
->                 btrfs_err(fs_info,
->                           "failed to add chunk map, start=3D%llu len=3D%l=
-lu: %d",
->                           map->start, map->chunk_len, ret);
-> +               btrfs_free_chunk_map(map);
->         }
->
->         return ret;
-> --
-> 2.25.1
->
->
+> 
+> [...]
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index f0a1da40d641..ef52cedd9873 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -623,13 +623,26 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+>>                  bool nofail)
+>>   {
+>>       const gfp_t gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
+>> -    unsigned int allocated;
+>> +    unsigned int allocated, ret;
+>>   -    for (allocated = 0; allocated < nr_pages;) {
+>> -        unsigned int last = allocated;
+>> +    /* Defragment page_array so pages can be bulk allocated into remaining
+>> +     * NULL elements sequentially.
+>> +     */
+>> +    for (allocated = 0, ret = 0; ret < nr_pages; ret++) {
+>> +        if (page_array[ret]) {
+> 
+> You just prove how bad the design is.
+> 
+
+Below is the reason you think the design is bad? If not, it would be
+good to be more specific about why it is a bad design.
+
+> All the callers have their page array members to initialized to NULL, or do not care and just want alloc_pages_bulk() to overwrite the uninitialized values.
+
+Actually there are two use cases here as mentioned in the commit log:
+1. Allocating an array of pages sequentially by providing an array as
+   output parameter.
+2. Refilling pages to NULL elements in an array by providing an array
+   as both input and output parameter.
+
+Most of users calling the bulk alloc API is allocating an array of pages
+sequentially except btrfs and sunrpc, the current page bulk alloc API
+implementation is not only doing the unnecessay NULL checking for most
+users, but also require most of its callers to pass all NULL array via
+memset, kzalloc, etc, which is also unnecessary overhead.
+
+That means there is some space for improvement from performance and
+easy-to-use perspective for most existing use cases here, this patch
+just change alloc_pages_bulk() API to treat the page_array as only
+the output parameter by mirroring kmem_cache_alloc_bulk() API.
+
+For the existing btrfs and sunrpc case, I am agreed that there
+might be valid use cases too, we just need to discuss how to
+meet the requirements of different use cases using simpler, more
+unified and effective APIs.
+
+> 
+> The best example here is btrfs_encoded_read_regular().
+> Now your code will just crash encoded read.
+
+It would be good to be more specific about the 'crash' here,
+as simple testing mentioned in below seems fine for btrfs fs
+too, but I will do more testing by running full fstests with
+SCRATCH_DEV_POOL populated after I learn how to use the fstests.
+
+https://lore.kernel.org/all/91fcdfca-3e7b-417c-ab26-7d5e37853431@huawei.com/
+
+> 
+> Read the context before doing stupid things.
+> 
+> I find it unacceptable that you just change the code, without any testing, nor even just check all the involved callers.
+
+What exactly is the above 'context' is referring to? If it is a good advice,
+I think I will take it seriously.
+
+May I suggest that it might be better to be more humble and discuss
+more before jumpping to conclusion here as it seems hard for one
+person to be familiar with all the subsystem in the kernel?
+
+> 
+>> +            page_array[allocated] = page_array[ret];
+>> +            if (ret != allocated)
+>> +                page_array[ret] = NULL;
+>> +
+>> +            allocated++;
+>> +        }
+>> +    }
+>>   -        allocated = alloc_pages_bulk(gfp, nr_pages, page_array);
+>> -        if (unlikely(allocated == last)) {
+>> +    while (allocated < nr_pages) {
+>> +        ret = alloc_pages_bulk(gfp, nr_pages - allocated,
+>> +                       page_array + allocated);
+> 
+> I see the new interface way worse than the existing one.
+> 
+> All btrfs usage only wants a simple retry-until-all-fulfilled behavior.
+
+As above, I am agreed that the above might be what btrfs usage want, so
+let's discuss how to meet the requirements of different use cases using
+simpler, more unified and effective API, like introducing a function like
+alloc_pages_refill_array() to meet the above requirement as mentioned in
+below?
+https://lore.kernel.org/all/74827bc7-ec6e-4e3a-9d19-61c4a9ba6b2c@huawei.com/
+
+> 
+> NACK for btrfs part, and I find you very unresponsible not even bother running any testsuit and just submit such a mess.
+> 
+> Just stop this, no one will ever take you serious anymore.
+> 
+> Thanks,
+> Qu
+> 
+> 
 
