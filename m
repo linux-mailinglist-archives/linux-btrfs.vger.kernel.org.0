@@ -1,157 +1,114 @@
-Return-Path: <linux-btrfs+bounces-12023-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99543A4FD0A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 12:01:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 280AAA4FE0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 12:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 322567A93BF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 11:00:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF50F188D716
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 11:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FAF22D4E5;
-	Wed,  5 Mar 2025 11:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152F324290B;
+	Wed,  5 Mar 2025 11:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W+RxEz40";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NrbpVajm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gQikiFSO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sC9mKC9u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQkPTaO2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C5C1F03C1
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 11:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48BA5235BE4;
+	Wed,  5 Mar 2025 11:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741172500; cv=none; b=fkX9mtWCItLMFKASYUAnjLRo48hjVrVdEi8sMGRHTGoQcJe/WZORGAFA1sUWzvLZ8Kh0S4cdYhGgdl/2TkuCrT44lBzl8dCX3Bq7yQz5GDrvfB6W3V1popsg6B+TOy4yi4PC/5kopmNxYEchD0/9tLGyIcsy+dpgD5n0TR5xJ6s=
+	t=1741175637; cv=none; b=f3HjBbqoufF+v+CSGQFtmYvfT4i/KtB1DL5i/tST8nJM/9fvH66WEL0Yy1O5By+qOzpl1zUq84OUEcuO3cmZYUwuLynIkH8SfmfrWxN16mdF1x4FLCQDJdKWY8aCsuItIy66Mts5EXinFOMfNorhoe89MmmjbZ1ashaOnMLTzqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741172500; c=relaxed/simple;
-	bh=+5aorUHf4c6pczQRzbQPr07mMhubR8pJi9zJIJvKeUw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=quRDSdcTszlvFVmyKPT0IE9UANIjV24eslVxDkP6VXMOp/yrsQq4u1wlJneOXMlf3uy88GA/4nW4yBNr5HaLVZIXyjvsB0KMwzaqqirOCbWraAmmT0JiaLJdfh10nFL8emoe/UwJ2TC6W0e7gnTOVRpXECXALfCGWZEklKnHWBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W+RxEz40; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NrbpVajm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gQikiFSO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sC9mKC9u; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CCDE91F74C;
-	Wed,  5 Mar 2025 11:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741172497;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3q0n44daYNjBKnLEQNOFRxmyYWExSunmeItJCRJjR8w=;
-	b=W+RxEz40lj93nfmndNkvmXcPO6VNjg/7IPeuDuNoL+4+TOSWRsAluv0ntG4FZHMp8TXLee
-	MXO70wFeZxRKuMNTKxLSX82St0Cet5yfB7vXptU5JWosxEn0UQXtcyN6bDTMc3kua6Ur5/
-	ZSA17tAuhq9XfAKSQh1AROsvmiqgCv4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741172497;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3q0n44daYNjBKnLEQNOFRxmyYWExSunmeItJCRJjR8w=;
-	b=NrbpVajm1jcKHgfLtdDTNLzLBHrO45DZe1hYj5WGmZeQfCU1GqP6uQ/xlNAX6L8KDplVYa
-	+bKRDnsRBZEUoGAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gQikiFSO;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sC9mKC9u
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741172496;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3q0n44daYNjBKnLEQNOFRxmyYWExSunmeItJCRJjR8w=;
-	b=gQikiFSOj/eOsZcZPgkcaQb5nOQ6/02TJXAFBBeilKBtjyNn/EtKxtejbpW4VlsJ/jFd0+
-	WZ8PqEWjB6hM0c7Xb7pjuxCCa9TmEetkVoSn4YdUWdxmGUZaCyJT7KDIjcbXWxX87D3aq5
-	8WPr8CButE8lntTPBPwRsrdfY8yHGS8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741172496;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3q0n44daYNjBKnLEQNOFRxmyYWExSunmeItJCRJjR8w=;
-	b=sC9mKC9u8ZffSzA+8t4784Um1knwjQZPYcIcCakIx+YNIJwgOzah/UFF9bhFEBj5SDDAm2
-	jJPTsi71w3otqtBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC98F13939;
-	Wed,  5 Mar 2025 11:01:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id K7bYLRAvyGeZCwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 05 Mar 2025 11:01:36 +0000
-Date: Wed, 5 Mar 2025 12:01:35 +0100
-From: David Sterba <dsterba@suse.cz>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Ioctl to clear unused space in various ways
-Message-ID: <20250305110135.GE5777@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1740753608.git.dsterba@suse.com>
+	s=arc-20240116; t=1741175637; c=relaxed/simple;
+	bh=gArcLFfpKivakEz7CtL6CfPKFdqu7fmiUQZy/61/I7Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qnpxRXKnjZg/qFp/2gEsxJt0hoa16z5KRCO3BU+sj/BgpFIKGoezTCGY9NMd3VQJE6QMy9BB9eETmKxPcpZKvRgXhe99BGwoZt6YDNlh+4jPQvqzodp/ySh54GzxSGr+ulvD55PoUe17RSNO+x2pcLB/yTYhMATEC6GdJo02BKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQkPTaO2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34DFC4CEE7;
+	Wed,  5 Mar 2025 11:53:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741175636;
+	bh=gArcLFfpKivakEz7CtL6CfPKFdqu7fmiUQZy/61/I7Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eQkPTaO2ybpDpyvxRBnZCwEJiDOUYN34PexWdJkR/ybt/YYmcnUm6M3vwVJ7jgQ1x
+	 R76lHi1X6N+ht923+ud27JAVo9KZ40fD60HCR4sO1zNoSZy6F7Kf51N6Sk9DlCNtme
+	 07kuzx6MGUxFagV6b5aENy5t2vz/ai++KdkjMoNTviNwNcnYradekUKb0FwdnmVzrr
+	 eFib51GlMZa6kZl0aOWSACyLUTAyUqg1+NOlKY74GwoqiAGzsZPm7PjJRcfzdofZqb
+	 uXnrZ4QQkAuO/0fYtG2g1jewDRyDGciHqg6ja3gZ3LKA7u+ibG+sndoiLKCvGP9FJH
+	 A8oXRr9av5CYQ==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5e4ebc78da5so10179316a12.2;
+        Wed, 05 Mar 2025 03:53:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUXDHp2Az+zyjraeAUu2cpZ887Iv11KnX5jmSNkRDdtz2EGnrmvp2tJ8xsSk7CKI/xo5XXd0Rmjx1nizaWm@vger.kernel.org, AJvYcCW4Vv6rX/bKK6941mdzh/NYIJqyPzaDlkXHm9cTt+MsGPaeaQUCVaGspojZ8/oEj6sqNjz8b3mCcBuOPg==@vger.kernel.org, AJvYcCX6+GsV9Ncpmzh253XDF/HjhFa09w/tWvgx0apxNxnGkW56RhOl7ufoYzWQPymYkjKYqHVJGNPG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyW6d9t0kx9XI7p9+oHCQWlT57qM9rx3SfFMHYRUhg1BW1xuDaj
+	ohdJ5or1RtZ7uqxEGVeCyMTZIwR/mIATz3aZEZ+9+oNb+ZqcpNMOC8Zkd8eDpV4BtDcWU1r2srg
+	qWGb1I5MAHxHdy17T0YgAGMsiLNU=
+X-Google-Smtp-Source: AGHT+IEtu/EQCES06k/Bc8EPSEewrmkKqHE7wO1dQxTrgUo47y+6mmHiwOWvaRXnymriudN4xCZdwdaV6KPcNhmHTpk=
+X-Received: by 2002:a17:907:7da6:b0:abf:b2d5:9692 with SMTP id
+ a640c23a62f3a-ac20d930712mr234821366b.29.1741175635065; Wed, 05 Mar 2025
+ 03:53:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1740753608.git.dsterba@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: CCDE91F74C
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <20250303024233.3865292-1-haoxiang_li2024@163.com>
+In-Reply-To: <20250303024233.3865292-1-haoxiang_li2024@163.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 5 Mar 2025 11:53:17 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7btKGFi9iVrYgo0RoKrkW8uXBvmng0UekSLB-OhUp1WQ@mail.gmail.com>
+X-Gm-Features: AQ5f1JrhSNzMCD5RQ-nIUwOTJLLFTxwB7sNQ-rT-XLzQHwX1r7N5jhuhXra2eRo
+Message-ID: <CAL3q7H7btKGFi9iVrYgo0RoKrkW8uXBvmng0UekSLB-OhUp1WQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix a memory leak issue in read_one_chunk()
+To: Haoxiang Li <haoxiang_li2024@163.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, fdmanana@suse.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 28, 2025 at 03:49:20PM +0100, David Sterba wrote:
-> Add ioctl that is similar to FITRIM and in addition to trim can do also
-> zeroing (either plain overwrite, or unmap the blocks if the device
-> supports it) and secure erase.
-> 
-> This can be used to zero the unused space in e.g. VM images (when run
-> from inside the guest, if fstrim is not supported) or free space on
-> thin-provisioned devices.
-> 
-> The secure erase is provided by blkdiscard command but I'm not aware of
-> equivalent that can be run on a filesystem, so this is for parity.
+On Mon, Mar 3, 2025 at 2:43=E2=80=AFAM Haoxiang Li <haoxiang_li2024@163.com=
+> wrote:
+>
+> Add btrfs_free_chunk_map() to free the memory allocated
+> by btrfs_alloc_chunk_map() if btrfs_add_chunk_map() fails.
+>
+> Fixes: 7dc66abb5a47 ("btrfs: use a dedicated data structure for chunk map=
+s")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
 
-For current implementation of TRIM we have the in-memory cache that
-tracks which chunks have been trimmed so it's not duplicating the IO.
-As the CLEAR code builds on tre trim code the cache would apply to any
-of the new modes, which is probably not what we want.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Pushed into the github for-next branch, thanks.
+
+
+
+> ---
+>  fs/btrfs/volumes.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index fb22d4425cb0..3f8afbd1ebb5 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7155,6 +7155,7 @@ static int read_one_chunk(struct btrfs_key *key, st=
+ruct extent_buffer *leaf,
+>                 btrfs_err(fs_info,
+>                           "failed to add chunk map, start=3D%llu len=3D%l=
+lu: %d",
+>                           map->start, map->chunk_len, ret);
+> +               btrfs_free_chunk_map(map);
+>         }
+>
+>         return ret;
+> --
+> 2.25.1
+>
+>
 
