@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-12039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12040-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41692A50F0E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 23:50:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7083A50F36
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 23:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B6BF3A15FE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 22:50:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00F8166DAF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 22:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EC92066F4;
-	Wed,  5 Mar 2025 22:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C811020897C;
+	Wed,  5 Mar 2025 22:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PoJr4MmO"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Pqv1hlSd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C381D8DEE
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 22:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CAF207643
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 22:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741215015; cv=none; b=fhtucIwq4ILctfcksGwAgUKvpbmwCdtjKXN9KyS9AAWD31OL5AKyFSPIhew7+QzuAlZEV5hA7Qtsun5KS9pvG+pLqc+2P84TALdxPorGEux1RxUjZKo81HlfKUhbmNwwfxjCopByrOoAcajPeRJ6x0wyr7838eYDwDcBtYT6/p0=
+	t=1741215297; cv=none; b=m+j0hTC1b2MZD9oln+QWRE71zhCniiFnV2B0q7dXTL+r/cr0jOlQBrmM1WjAB6W9qNveZh2k/g5EOEdCmENOb7OiWC3cB7NngMkjPUWvQ+PZwJBYXxhY6Su8cXrWFgPch4jCTfy5VhRwZ0rZ6ZgUrp2Eo6PuY2Z1Urr9Qcs9FV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741215015; c=relaxed/simple;
-	bh=yFjzSKBlAC/UCHCvJ1bloHll+WandR+miBPzhreQ5Aw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=XlgSg/NLyIb1uQOfHlFa4k5cc7pKCLR+1SOTtDnB1i7Y6XhVO/kmbihMqOzIoVoXkJOpA1zXZ5qAeR52RqIByIuHoSrEafoD1usiJDegQrmzsS14I/B+P+1xby/2T0CZhhe7225jFdHekaE3cr+4g3yqdmbKLEo42993/iJq9mI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PoJr4MmO; arc=none smtp.client-ip=209.85.208.49
+	s=arc-20240116; t=1741215297; c=relaxed/simple;
+	bh=3UX2uzd+n3tzjDgIu8jd7SuH3U+eXIMWg6qy480eSv4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Wu+RsOxucwuhu+TualFbgKIsOw5ISnKUioE+Ud4cbcPr+/B2LvfpcMfybiw+NtVCBdxVhqz4Ye8AEfTWi6jd51iFZIXMs+FKPUfznnNNeeDB4j1QUyLtPTNh/FZFrjyNXP0cqMdvQNuugcY06bkLwRmuv5n7tbTrqeomKaAyG+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Pqv1hlSd; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5dee07e51aaso13798870a12.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Mar 2025 14:50:12 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43bbb440520so44438515e9.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Mar 2025 14:54:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741215011; x=1741819811; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zifsEKhG7gIna6t8caGy7nZa1Z7SmyLIOtisvPOEduU=;
-        b=PoJr4MmO6S/prX5adVULDp2KxQSyOrnxGFdwVpRgxwQ5fJKHWNyB4DLyeyQXAK9KrQ
-         Z9hfXiZA1AVydANqaqXju7tjtgC6wJtNaZXNr+NQaliIP1rWH1u4fuegfu9omirqG033
-         JV9RLU4IoXdNCSnCvxCIr3oB4Y4/h38qYRaw6yEsSA3CXlLbn2NjN+b03lUkp+sbQlaA
-         Ilb84dZtSozprhYwN4b/K9oa7YD+jq2vKAPs7AY8YhR57A856ZxQhGlesE33y4YMk14k
-         H77+uYLRvUPcsAg1XKsBTLw5LdWPoizsIIJBqbBboycTQ6gTPYu+Wd601kOb9CByPwZn
-         QEig==
+        d=suse.com; s=google; t=1741215293; x=1741820093; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=VUCOuQwVPEcvDDzqV7AiHuj3+mscY3cn+etknefLZ88=;
+        b=Pqv1hlSdUWUQ3YJasPUu9YsvVjpeIktCer4jrrdviQbpfX8m7klRGZ3F0P30EimhmI
+         sRNyk/UgbXJngH3kkXt1B5sjuviLttnRiqVjX/Ch2rm57qh2dyIVxPonG1ys3MEydwSk
+         5U7nzdTOIKjAuHzpuuqtEo639nNGQDmqWtdvNiOBo7rWvugS9kaAkV41MN94wJAcxUfc
+         YFs9+50L4TUvs5uTn25Ko8Xz++K1uHphl6Ylq9tMqIuGjiy+diPJszj23xTb0plxeMHS
+         1ZlBYQHyruIXAOagK4ecOAHmpEa3tyr96xaJIjFlyl1wYAfn8eMzUK0jhVMWIF0EW6UA
+         8xww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741215011; x=1741819811;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zifsEKhG7gIna6t8caGy7nZa1Z7SmyLIOtisvPOEduU=;
-        b=mDeLdVfVp8GDgS9PSmLoiU+DJoYk01eHpjk1KBHi/k47fs2E9a33JgJZORLBTvpHha
-         OVg/Ejw1pC4nD8ML3aSf3+ovx6Fyk60u/D7hk671jbAyn0Zn80JZel/QD5EJdDUGe1EP
-         s2Oq1KWw8jWKKVNeHYbNFbozCwqNyrHepLQTaOyhStp4alWsADFQYVF14ZemBrGgAwXO
-         b76B16EneUmQBQZNjqt/nIjeMllY2+kc2GfID+vVaG9zEqKpT02DSM6kgZwl58UIL/7L
-         pyn4GCxOjVhVKb6FUUlkUb4+ySpd4wtPVpr73QveyqZjusMRbF4MkvXd3fYwVaKCCfUY
-         4oRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXpEpD5UmA/rRIMpiY73cHPjXKg/0eH2TLMkEoT20LRMMBvxLBNVEt56R6CJ2ijSZKDIfUOAx41EGSpfQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9oEJAXa0mHT9pyFu8UMqwXrX6TbaQ6wuW4paI/HmJ/00mVafS
-	1GgxoVN7g7AtfQ27RLig6eebh8wsqBx6BmY6ZEVCfIQ7whDUcXWveN4D7jVN5zCKwCKZsa4BV/u
-	1
-X-Gm-Gg: ASbGncuxcNOcPPQbU7tj/+trHLmyxsvJ5cyD7q7Ke5lgTWi/zVxlE9MNvGmHfpUnTr6
-	THtEWRN9LhssG9cQlrSwv+qIgYSxkDzshSdtasGZnzmrxcuCsy0RSBZ/roK4QlqRvDxP4Cd1u6j
-	b0/LhYoSZQqVEt1ZFfNI046gMWC2uCLvvB121XwyKJ4LpcxziSsbVajMBVaviXoid2KcRJbd+As
-	J0FNAz4g/dvD4ceQ0hBnlZN/kK5wK+N67aO9NIpYSlzaFGcsyYg18qpqV9ZxHLDqld9Aqlhu2qf
-	pgwjrm+H7zAPRlEFUUdefHAYJ2usok9qW7nh9Sl8PE6xpjMmydG2BGUmN9GVAoRZpBhywf+k
-X-Google-Smtp-Source: AGHT+IGEym6iUl35My4FdKGnsTKd0r8xUuxQG1CMg6UccEsD7Onf4tdT9dCQoXHBity4pOH/gBzCcg==
-X-Received: by 2002:a05:6402:1d55:b0:5e0:8920:c4c5 with SMTP id 4fb4d7f45d1cf-5e59f3d6494mr4750725a12.11.1741215010707;
-        Wed, 05 Mar 2025 14:50:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741215293; x=1741820093;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VUCOuQwVPEcvDDzqV7AiHuj3+mscY3cn+etknefLZ88=;
+        b=odwzrxotgkIm/1V6tiLhLvird5t2IlmULl9ZH8c2cZV6Ab1GrQiFVLkATrBxygUDK2
+         mKD94NeYz0ghkRLR8sfMmqinmaZ7rI44X5/Vr88+vq8BaFksPFK45Fe0kievdPSqAi9t
+         FQ7NEyx/qrrBK6pPAARAGcSBICt7ZVv3OfJj0ykto5dnOAifInokRRtqNHJ7kgvogGHe
+         B+V1u288OCgPbfZrscmiEJmXPtSk0C6fPZ7XfjkVc7QDockDa+gvH7DuvzjO00jNa2oy
+         DtwfuGNOSwezSb+flPXPRQ0tJ8QJLxpmTBCFLRNcMMph2zKJvutzLZQRq3M/lho+84fq
+         yUkw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmqW1DOkL9Iuja3KTD5hACPHLGtxM3Y1ajSetDyoe2R9fDNAmX789EPS1AazdOjclhfO0BkDcWUi1JBg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdkPQHyR53qSNHU3dWbxnOL9ymrpm8BPv8Zdmn4m1zyKrjFe4W
+	GGYdr3Kel7Ud54tuX8cckM3naQ7ouLlffNhUlo1OQ18ZmbFKmLF01UOON2x5+8g=
+X-Gm-Gg: ASbGncvOP8Rb6EmhpE2YzJw3QXYo75jXunm83UJIlUyX59i4H+fX6EHQJ6kYtkLvAit
+	aJIr45fGgtWiOr8uVv+iRYxnxj3vY+kZMW16EgEHupWohk4+Izl9zRwPS8zJ5UDeoES/3FjsBHG
+	DCzU8VZNyXdpfym9+EecQHmEP9SYl+PPOxWvrbBJxP8T5gkLnTvpQ5N8UnxQ/OIjbz3chPNR1uo
+	Z52Wc+34pKfuiHCHZt2Aouun8dUaed9z3yhJMnQVVqY3YG5MBVMY5Bb0JmYB0QYJjmc2xL4rbos
+	9/+GueOGAqfesi+wkO7YI+x92+/AeMpMAsu5e8L0DUBquvURKcPRGm789pBQ+3OHgmaKqoNy
+X-Google-Smtp-Source: AGHT+IEfosorFo+Y2VAbZ5qW8nZwI9EremrJoVoq5pJWahlf+toWBb41pgGiqBD9AuMkMfdLfOcTlQ==
+X-Received: by 2002:a05:6000:2a5:b0:391:11b:c7e9 with SMTP id ffacd0b85a97d-3911f757308mr4943185f8f.28.1741215292865;
+        Wed, 05 Mar 2025 14:54:52 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73641496007sm8365988b3a.10.2025.03.05.14.50.08
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223f5a4105csm17640425ad.249.2025.03.05.14.54.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Mar 2025 14:50:10 -0800 (PST)
-Message-ID: <674580db-c8c9-4b8c-baf3-3071fa4a2d01@suse.com>
-Date: Thu, 6 Mar 2025 09:20:07 +1030
+        Wed, 05 Mar 2025 14:54:52 -0800 (PST)
+Message-ID: <50b22e68-2980-4030-9c73-1aafdf2a838d@suse.com>
+Date: Thu, 6 Mar 2025 09:24:48 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,14 +82,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] btrfs: fix non-empty delayed iputs list on unmount
- due to endio workers
-From: Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH v2 0/4] btrfs: fix unexpected delayed iputs at umount time
+ and cleanups
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1741198394.git.fdmanana@suse.com>
- <e1cf2949e4b03fba268f923947543bbf4a7b6752.1741198394.git.fdmanana@suse.com>
- <74baca21-ea92-46f1-a85a-d5834eeaa430@suse.com>
+References: <cover.1741196484.git.fdmanana@suse.com>
+ <cover.1741198394.git.fdmanana@suse.com>
 Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -114,92 +113,46 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <74baca21-ea92-46f1-a85a-d5834eeaa430@suse.com>
+In-Reply-To: <cover.1741198394.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/3/6 09:16, Qu Wenruo 写道:
+在 2025/3/6 04:47, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
+> Fix a couple races that can result in adding delayed iputs during umount after
+> we no longer expect to find any, triggering an assertion failure. Plus a couple
+> cleanups. Details in the change logs.
 > 
-> 在 2025/3/6 04:47, fdmanana@kernel.org 写道:
->> From: Filipe Manana <fdmanana@suse.com>
->>
->> At close_ctree() after we have ran delayed iputs either through 
->> explicitly
->> calling btrfs_run_delayed_iputs() or later during the call to
->> btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
->> delayed iputs list is empty.
->>
->> Sometimes this assertion may fail because delayed iputs may have been
->> added to the list after we last ran delayed iputs, and this happens due
->> to workers in the endio_workers workqueue still running. These workers 
->> can
->> do a final put on an ordered extent attached to a data bio, which results
->> in adding a delayed iput. This is done at btrfs_bio_end_io() and its
->> helper __btrfs_bio_end_io().
-> 
-> But the endio_workers workqueue is only utilized by data READ 
-> operations, in function btrfs_end_io_wq(), which is called in 
-> btrfs_simple_end_io().
-> 
-> Furthermore, for the endio_workers workqueue, for data inodes it only 
-> handles btrfs_check_read_bio(), which shouldn't generate ordered extent 
-> either.
-> 
-> Did I miss something here?
+> V2: Removed the NULL checks for the workqueues in patches 1 and 2, as they
+>      can never be NULL while at close_ctree() (they can only be NULL in error
+>      paths from open_ctree()).
 
-Oh, I missed the recently disabled (for subpage) uncached io.
+Commented on the first patch that the fixed tag should be the uncached 
+io enablement.
+Since before that we only handle data read operations in endio_workers, 
+which should not get ordered extent involved at all.
 
-So I guess the real fixes tag should be that not-yet-upstreamed uncached 
-io patch.
+(Thankfully we get that feature disabled for now)
+
+Otherwise looks good to me.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
 > 
-> Thanks,
-> Qu
+> Filipe Manana (4):
+>    btrfs: fix non-empty delayed iputs list on unmount due to endio workers
+>    btrfs: fix non-empty delayed iputs list on unmount due to compressed write workers
+>    btrfs: move __btrfs_bio_end_io() code into its single caller
+>    btrfs: move btrfs_cleanup_bio() code into its single caller
 > 
->>
->> Fix this by flushing the endio_workers workqueue before running delayed
->> iputs at close_ctree().
->>
->> David reported this when running generic/648.
->>
->> Reported-by: David Sterba <dsterba@suse.com>
->> Fixes: ec63b84d4611 ("btrfs: add an ordered_extent pointer to struct 
->> btrfs_bio")
->> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->> ---
->>   fs/btrfs/disk-io.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index d96ea974ef73..b6194ae97361 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -4340,6 +4340,15 @@ void __cold close_ctree(struct btrfs_fs_info 
->> *fs_info)
->>        */
->>       btrfs_flush_workqueue(fs_info->delalloc_workers);
->> +    /*
->> +     * We can also have ordered extents getting their last reference 
->> dropped
->> +     * from the endio_workers workqueue because for data bios we keep a
->> +     * reference on an ordered extent which gets dropped when running
->> +     * btrfs_bio_end_io() in that workqueue, and that final drop 
->> results in
->> +     * adding a delayed iput for the inode.
->> +     */
->> +    flush_workqueue(fs_info->endio_workers);
->> +
->>       /*
->>        * After we parked the cleaner kthread, ordered extents may have
->>        * completed and created new delayed iputs. If one of the async 
->> reclaim
-> 
+>   fs/btrfs/bio.c     | 36 ++++++++++++++----------------------
+>   fs/btrfs/disk-io.c | 21 +++++++++++++++++++++
+>   2 files changed, 35 insertions(+), 22 deletions(-)
 > 
 
 
