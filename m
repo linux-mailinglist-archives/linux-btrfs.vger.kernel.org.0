@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-12030-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12031-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C346A506AD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 18:46:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D848A506B1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 18:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D9EB1891371
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 17:46:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98E343A7DFC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 17:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C082512E1;
-	Wed,  5 Mar 2025 17:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6ED250C0D;
+	Wed,  5 Mar 2025 17:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWw7hWaA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDYVQYa0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37686250C0D
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 17:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25FF2512D9
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 17:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741196758; cv=none; b=ZvXBkM4HAnoD8am/jHvvijxkiDMJUDvmdKgfqpvCcvuxlqocCK+aFE+lDhs9FKbOifCLJFtgrxRn9JwJQI28fb64bn1l7/12qnWJdH9elpN6s7dtLeyxwgo38FQ95ShlgNYxA0gnYKeKilCsZM3QMSIAp/BV1BLrbVTq59eiW64=
+	t=1741196758; cv=none; b=CoJA1/8flUjUZFSZgPTtHgNLc/3cdh//GQuB4XEhAWfaDVQenXeBZtmU+ZYqTtk1+LCzke2PVqHvG8F0k3gExucJ29ptiHLiTAUnnU3VWLNm1PUPnc45rhZ6e0VjBsiw1Pkbzv5OJjS4Va1OGVnr8n/21WSyd2FJSn9o59UvSiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1741196758; c=relaxed/simple;
-	bh=2UyXHbsP9U4V63YhVQ8jwT7pZp3V8BmgdW6TRlynpCg=;
+	bh=MgWOsgZqI5T8K169gZV9TDzeg88d/7NeM/BpQfmy4nw=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fvXeuaCv7mpM53eEJjBLFGEGZeE7XoLXB+wNGG+am5/ihJZqqjXHsJvDtPuof1haRf5ZlZSp1IFQPvKnrI+LwD+pVLwI3Gvjwx7FxxuMGXw/EQCU4Kt8Om2jQj3ouJzWf2x3BhoLy1haNGPf7Xr1d6QvIWwVWSaP5yYj7+ekBSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWw7hWaA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28970C4CED1
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 17:45:56 +0000 (UTC)
+	 MIME-Version; b=rtBtpGL7G0AKLjvWe+Kn3ZyWFhCQk3Xk7YGt75qai1TQnvDxRdD+LY9c4zaukuBbrCUdhHr34eEprimFfOQgssI2lCPSkqv7w9U2sd8f0fUxBnSgpwMh0DviowUpC/qRkWDJ9QE0aWGTE/DgsNf83BaqmBDxDQBdXUng1HVGUdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDYVQYa0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FD43C4CEED
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 17:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741196757;
-	bh=2UyXHbsP9U4V63YhVQ8jwT7pZp3V8BmgdW6TRlynpCg=;
+	s=k20201202; t=1741196758;
+	bh=MgWOsgZqI5T8K169gZV9TDzeg88d/7NeM/BpQfmy4nw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=MWw7hWaAh19U9iEasW40snB2XemXlh97gjo6UuIAdd1CHeASlvk+5jWmKy3iz2BhV
-	 FJRhgk1CECtI9y600wKC1beSe4O2u+UdfnysPTPD965PFD+gnWkM2tETGbSYKP3Vn+
-	 ZxtQXIgiuVGA2/moVzFtp58Va0w+1mJLa6ylp5Ky6ycFEymrvnty5kbNiOhELFb8/e
-	 cL3oyJI4Zt2DkIYsYUL3JxPMJu920fmBGH5kEdOAJHDM8IdKICQR9RAbD/qWGCiDHG
-	 ggpu1ndXTjdlgfMvGplztccb65b4Zy40sdeucc7s7seYHaenEg2Ai0WgHzuRPiq6Hk
-	 ECS4fF9FhFX+g==
+	b=YDYVQYa0fU8Pzl2786MpxXdfkMwiJBqgfEZ36DZSUY/ECAVFY5OqHn0ER+NyIvoHU
+	 SA4RS9/DnseAYp7k+cYpvfMfTrO2l9kNIoXcqJZ3dUG8N2+Juc4bInMzKuUmR2BwT6
+	 sPowIHw8EYnbmHSnw45AWEyYcd99eJ+6Pb1vdTWHBvEECPv4yyQBhlpLgryaBgo7ld
+	 4HXcd0m+BZap5Wbx/wIVrZc4wrC149qLDaI+Ny59BEVKLqPArjsfrAToGt5VsSJ/HS
+	 E30mDxVV3T25ejoYizBgkp1GKN1AmM/cL0Shsl/rAJ2PFdSQMWxn2bIo9aQozE/w0e
+	 HmxIm+rqhGhBg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/4] btrfs: fix non-empty delayed iputs list on unmount due to compressed write workers
-Date: Wed,  5 Mar 2025 17:45:48 +0000
-Message-Id: <3111c41408f2cb11096b9fe002a08fd09b8fb89c.1741196484.git.fdmanana@suse.com>
+Subject: [PATCH 3/4] btrfs: move __btrfs_bio_end_io() code into its single caller
+Date: Wed,  5 Mar 2025 17:45:49 +0000
+Message-Id: <427e1cc1519d2117c9cdedba51929e958340cdac.1741196484.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1741196484.git.fdmanana@suse.com>
 References: <cover.1741196484.git.fdmanana@suse.com>
@@ -59,76 +59,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At close_ctree() after we have ran delayed iputs either through explicitly
-calling btrfs_run_delayed_iputs() or later during the call to
-btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
-delayed iputs list is empty.
-
-When we have compressed writes this assertion may fail because delayed
-iputs may have been added to the list after we last ran delayed iputs.
-This happens like this:
-
-1) We have a compressed write bio executing;
-
-2) We enter close_ctree() and flush the fs_info->endio_write_workers
-   queue which is the queue used for running ordered extent completion;
-
-3) The compressed write bio finishes and enters
-   btrfs_finish_compressed_write_work(), where it calls
-   btrfs_finish_ordered_extent() which in turn calls
-   btrfs_queue_ordered_fn(), which queues a work item in the
-   fs_info->endio_write_workers queue that we have flushed before;
-
-4) At close_ctree() we proceed, run all existing delayed iputs and
-   call btrfs_commit_super() (which also runs delayed iputs), but before
-   we run the following assertion below:
-
-      ASSERT(list_empty(&fs_info->delayed_iputs))
-
-   A delayed iput is added by the step below...
-
-5) The ordered extent completion job queued in step 3 runs and results in
-   creating a delayed iput when dropping the last reference of the ordered
-   extent (a call to btrfs_put_ordered_extent() made from
-   btrfs_finish_one_ordered());
-
-6) At this point the delayed iputs list is not empty, so the assertion at
-   close_ctree() fails.
-
-Fix this by flushing the fs_info->compressed_write_workers queue at
-close_ctree() before flushing the fs_info->endio_write_workers queue,
-respecting the queue dependency as the later is responsible for the
-execution of ordered extent completion.
+The __btrfs_bio_end_io() helper is trivial and has a single caller, so
+there's no point in having a dedicated helper function. Further the double
+underscore prefix in the name is discouraged. So get rid of it and move
+its code into the caller (btrfs_bio_end_io()).
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ fs/btrfs/bio.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index df8e075e69a3..95277c05fefa 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4350,6 +4350,19 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	if (fs_info->endio_workers)
- 		flush_workqueue(fs_info->endio_workers);
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 2f32ee215c3f..07bbb0da2812 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -105,18 +105,6 @@ static void btrfs_cleanup_bio(struct btrfs_bio *bbio)
+ 	bio_put(&bbio->bio);
+ }
  
-+	/*
-+	 * When finishing a compressed write bio we schedule a work queue item
-+	 * to finish an ordered extent - btrfs_finish_compressed_write_work()
-+	 * calls btrfs_finish_ordered_extent() which in turns does a call to
-+	 * btrfs_queue_ordered_fn(), and that queues the ordered extent
-+	 * completion either in the endio_write_workers work queue or in the
-+	 * fs_info->endio_freespace_worker work queue. We flush those queues
-+	 * below, so before we flush them we must flush this queue for the
-+	 * workers of compressed writes.
-+	 */
-+	if (fs_info->compressed_write_workers)
-+		flush_workqueue(fs_info->compressed_write_workers);
+-static void __btrfs_bio_end_io(struct btrfs_bio *bbio)
+-{
+-	if (bbio_has_ordered_extent(bbio)) {
+-		struct btrfs_ordered_extent *ordered = bbio->ordered;
+-
+-		bbio->end_io(bbio);
+-		btrfs_put_ordered_extent(ordered);
+-	} else {
+-		bbio->end_io(bbio);
+-	}
+-}
+-
+ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ {
+ 	bbio->bio.bi_status = status;
+@@ -138,7 +126,15 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ 		/* Load split bio's error which might be set above. */
+ 		if (status == BLK_STS_OK)
+ 			bbio->bio.bi_status = READ_ONCE(bbio->status);
+-		__btrfs_bio_end_io(bbio);
 +
- 	/*
- 	 * After we parked the cleaner kthread, ordered extents may have
- 	 * completed and created new delayed iputs. If one of the async reclaim
++		if (bbio_has_ordered_extent(bbio)) {
++			struct btrfs_ordered_extent *ordered = bbio->ordered;
++
++			bbio->end_io(bbio);
++			btrfs_put_ordered_extent(ordered);
++		} else {
++			bbio->end_io(bbio);
++		}
+ 	}
+ }
+ 
 -- 
 2.45.2
 
