@@ -1,297 +1,296 @@
-Return-Path: <linux-btrfs+bounces-12019-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12020-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 643DEA4FC5F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 11:40:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0930AA4FC61
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 11:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A1C1895053
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 10:38:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C61D18964D9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 10:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E78B209F25;
-	Wed,  5 Mar 2025 10:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1376220A5D8;
+	Wed,  5 Mar 2025 10:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jSYiRK2p";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jSYiRK2p"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EaX3f/wG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dmxt4RQB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EaX3f/wG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dmxt4RQB"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D4E2066F6
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 10:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898191FBC84
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 10:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741170781; cv=none; b=AFbIkm+EPLjGYhXMCiz62UfPnnkjjmDAbusGwbg7F4I/L2pSm8qLALU+DqdqKovDxwQ+R3C5G1YE0h08J+NFEX6K6GmSpBlLxTo6azJCWDyZ0n8rrGTbtdh9DftdlGqUZjTLqcRWeMK9vQPJGefDKaa0fXXvtnvblrfT8uHMuM8=
+	t=1741170828; cv=none; b=J1StF9gTO5lH1Mf6Vuqr2zIZbhLqYZ8Zsp/gbmHdl/Q9emF1ViRVyjHms2eJO8qWMxspYgLTMU9UQEaLsAsVm2tXPPb6bkoECt+jVEL7I98rQg0CIJJDvZMVNE4qVt1cfXoIyZAdM1iFQ+bk/VabfJTk/id/5RFTryK03FgQbz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741170781; c=relaxed/simple;
-	bh=OcBfiFtEmuwPQex58NJW4jRnkP45vg2KP4vgvR1qYRM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qGlkfYKKVO5h0cvrJPH70Wd5ahTa3AFPUVtUKjLrhFiAiyowDrYUYw7aYfCuVphL2KAGOb7/PcljcNOa8iDWlKFE4bgXFjvz5lKubqyKPs4T6igYps4j8NvgC59fXFxshdT0x96eHW40WtU6gYH9cEOw+H3CQn1c7YQxGbUMmqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jSYiRK2p; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jSYiRK2p; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1741170828; c=relaxed/simple;
+	bh=LoRE8liFSY9fOvAwFQWObqcoL3J6DEWMvCaclwj6xdE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zv5cWUHwSt5kiqtGW6NR13tTJdgSHkI2C39/hC6T6bDml7EauI6rQOZP0glfxKrCj9OyEOk5e2u8WBQd9oIyzFaJi9OC389uYJNUXyxHq8/YCfjImTALqEKFBD3IcW/Pjl4fDLfzp+VoK6Ai4nt5cNhGaAA7xuO0axhfJTr7AJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EaX3f/wG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dmxt4RQB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EaX3f/wG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dmxt4RQB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B689621170;
-	Wed,  5 Mar 2025 10:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741170776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 964A7211A0;
+	Wed,  5 Mar 2025 10:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1741170824;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HMjPiq/fOLYpxw8Rc5BlOAt66Zz15s8Qdw1LiisGZns=;
-	b=jSYiRK2px6oh+HiyfgPsPIJOEvfoyo1RReryIoE+ej9tNvfWQsazBF0i1EDzW9jYCNsvpw
-	X8dtQkeiZd1pqBokQCAfCvRiCwMHmiA4eTWasJZTGIJ8zvg2AW6aheU6rM6vFGvNaUXJqi
-	0k8vEL+sbZFDY4qpRH8dLqth2HuKwS0=
+	bh=Ya4pu7jdLBlZ+qZRm8bkZRLN42Ptfc/Xkdjk3UBLqkE=;
+	b=EaX3f/wGpPSHjQi7WD0gg2/kZBR7Dkb6u+TkBBBU6ZdkdZRInCBMK8Fws+/0uXbFE1khNM
+	5Rw6xg/0ZlhPe6Xpj1iATkJYfoMNUeBrl5QcYoUx2BcyjHF3BPJpZSa+uD5ky6VDa9d7Sk
+	HZC6V2EOiEmxgfE968CTkQS78tAFgsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1741170824;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ya4pu7jdLBlZ+qZRm8bkZRLN42Ptfc/Xkdjk3UBLqkE=;
+	b=dmxt4RQBARQmSe2tf3kB7p+dT5LhdLUR0jQQRVFWROlJbSQePXKNiC6umkFC05KbHAIDny
+	SOOaRw2GxXAjRlAA==
 Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741170776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="EaX3f/wG";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dmxt4RQB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1741170824;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HMjPiq/fOLYpxw8Rc5BlOAt66Zz15s8Qdw1LiisGZns=;
-	b=jSYiRK2px6oh+HiyfgPsPIJOEvfoyo1RReryIoE+ej9tNvfWQsazBF0i1EDzW9jYCNsvpw
-	X8dtQkeiZd1pqBokQCAfCvRiCwMHmiA4eTWasJZTGIJ8zvg2AW6aheU6rM6vFGvNaUXJqi
-	0k8vEL+sbZFDY4qpRH8dLqth2HuKwS0=
+	bh=Ya4pu7jdLBlZ+qZRm8bkZRLN42Ptfc/Xkdjk3UBLqkE=;
+	b=EaX3f/wGpPSHjQi7WD0gg2/kZBR7Dkb6u+TkBBBU6ZdkdZRInCBMK8Fws+/0uXbFE1khNM
+	5Rw6xg/0ZlhPe6Xpj1iATkJYfoMNUeBrl5QcYoUx2BcyjHF3BPJpZSa+uD5ky6VDa9d7Sk
+	HZC6V2EOiEmxgfE968CTkQS78tAFgsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1741170824;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ya4pu7jdLBlZ+qZRm8bkZRLN42Ptfc/Xkdjk3UBLqkE=;
+	b=dmxt4RQBARQmSe2tf3kB7p+dT5LhdLUR0jQQRVFWROlJbSQePXKNiC6umkFC05KbHAIDny
+	SOOaRw2GxXAjRlAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A60B13939;
-	Wed,  5 Mar 2025 10:32:56 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 682CA13939;
+	Wed,  5 Mar 2025 10:33:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l9AWJVgoyGdtAgAAD6G6ig
-	(envelope-from <neelx@suse.com>); Wed, 05 Mar 2025 10:32:56 +0000
-From: Daniel Vacek <neelx@suse.com>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Nick Terrell <terrelln@fb.com>
-Cc: Daniel Vacek <neelx@suse.com>,
-	Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] btrfs/defrag: implement compression levels
-Date: Wed,  5 Mar 2025 11:32:34 +0100
-Message-ID: <20250305103235.719210-1-neelx@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250304171403.571335-1-neelx@suse.com>
-References: <20250304171403.571335-1-neelx@suse.com>
+	id /Io6GYgoyGe8AgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 05 Mar 2025 10:33:44 +0000
+Date: Wed, 5 Mar 2025 11:33:39 +0100
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.cz>
+Cc: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: use atomic64_t for free_objectid
+Message-ID: <20250305103339.GD5777@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250303182139.256498-1-maharmstone@fb.com>
+ <20250304095256.GX5777@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250304095256.GX5777@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	REPLY(-4.00)[];
+X-Spamd-Result: default: False [0.79 / 50.00];
+	REPLYTO_EQ_TO_ADDR(5.00)[];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.993];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
 	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
+	MX_GOOD(-0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_THREE(0.00)[3];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -6.80
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Score: 0.79
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 964A7211A0
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Spam-Flag: NO
 
-The zstd and zlib compression types support setting compression levels.
-Enhance the defrag interface to specify the levels as well.
+On Tue, Mar 04, 2025 at 10:52:56AM +0100, David Sterba wrote:
+> > -	ASSERT(root->free_objectid <= BTRFS_LAST_FREE_OBJECTID);
+> > -
+> > -	mutex_unlock(&root->objectid_mutex);
+> > +	ASSERT((u64)atomic64_read(&root->free_objectid) <=
+> > +		BTRFS_LAST_FREE_OBJECTID);
+> 
+> I'm not sure if this was mentioned in the previous discussion. This
+> assert will be always true, the atomic is signed 64 and cast to
+> unsigned. Under normal circumstances the atomic will not be negative so
+> it won't translate to a huge unsigned number by the cast.
+> 
+> What we need is an unsigned atomic type. The atomic64_t is a natural
+> choice and it probably has enough margin for the simple increment
+> allocation. But still I think we should make it a "u64".
+> 
+> The simplest implementation is to use spin lock around the updates,
+> seqlock_t is also possible but it effectively uses a spin lock too and
+> we don't need the read side protection.
+> 
+> Sorry, it's another change right before the code freeze so we may want
+> to postpone it to let us think it through. I'll prototype the idea and
+> do some tests, we can still target 6.15.
 
-Signed-off-by: Daniel Vacek <neelx@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
----
-v2: Fixed the commit message and added an explicit level range check.
-
- fs/btrfs/btrfs_inode.h     |  1 +
- fs/btrfs/compression.c     |  2 +-
- fs/btrfs/compression.h     |  1 +
- fs/btrfs/defrag.c          | 24 +++++++++++++++++++-----
- fs/btrfs/fs.h              |  2 +-
- fs/btrfs/inode.c           |  9 ++++++---
- include/uapi/linux/btrfs.h | 10 +++++++++-
- 7 files changed, 38 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index aa1f55cd81b79..238e4a08a52ae 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -145,6 +145,7 @@ struct btrfs_inode {
- 	 * different from prop_compress and takes precedence if set.
- 	 */
- 	u8 defrag_compress;
-+	s8 defrag_compress_level;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 075a06db43a1..2620403fd4c9 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -179,8 +179,6 @@ struct btrfs_root {
+ 	struct btrfs_fs_info *fs_info;
+ 	struct extent_io_tree dirty_log_pages;
  
- 	/*
- 	 * Lock for counters and all fields used to determine if the inode is in
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 6d073e69af4e3..7106d19ee7bac 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -968,7 +968,7 @@ static void put_workspace(int type, struct list_head *ws)
-  * Adjust @level according to the limits of the compression algorithm or
-  * fallback to default
-  */
--static int btrfs_compress_set_level(unsigned int type, int level)
-+int btrfs_compress_set_level(unsigned int type, int level)
- {
- 	const struct btrfs_compress_op *ops = btrfs_compress_op[type];
+-	struct mutex objectid_mutex;
+-
+ 	spinlock_t accounting_lock;
+ 	struct btrfs_block_rsv *block_rsv;
  
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 933178f03d8f8..125509605f847 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -83,6 +83,7 @@ static inline u32 btrfs_calc_input_length(u64 range_end, u64 cur)
- int __init btrfs_init_compress(void);
- void __cold btrfs_exit_compress(void);
+@@ -214,7 +212,9 @@ struct btrfs_root {
  
-+int btrfs_compress_set_level(unsigned int type, int level);
- int btrfs_compress_folios(unsigned int type, int level, struct address_space *mapping,
- 			  u64 start, struct folio **folios, unsigned long *out_folios,
- 			 unsigned long *total_in, unsigned long *total_out);
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 968dae9539482..3e9e2345a5683 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -1363,6 +1363,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 	u64 last_byte;
- 	bool do_compress = (range->flags & BTRFS_DEFRAG_RANGE_COMPRESS);
- 	int compress_type = BTRFS_COMPRESS_ZLIB;
-+	int compress_level = 0;
- 	int ret = 0;
- 	u32 extent_thresh = range->extent_thresh;
- 	pgoff_t start_index;
-@@ -1376,10 +1377,21 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 		return -EINVAL;
+ 	u64 last_trans;
  
- 	if (do_compress) {
--		if (range->compress_type >= BTRFS_NR_COMPRESS_TYPES)
--			return -EINVAL;
--		if (range->compress_type)
--			compress_type = range->compress_type;
-+		if (range->flags & BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL) {
-+			if (range->compress.type >= BTRFS_NR_COMPRESS_TYPES)
-+				return -EINVAL;
-+			if (range->compress.type) {
-+				compress_type = range->compress.type;
-+				compress_level= range->compress.level;
-+				compress_level= btrfs_compress_set_level(compress_type,
-+									 compress_level);
-+			}
-+		} else {
-+			if (range->compress_type >= BTRFS_NR_COMPRESS_TYPES)
-+				return -EINVAL;
-+			if (range->compress_type)
-+				compress_type = range->compress_type;
-+		}
- 	}
++	/* Locking is done only when incremented, read size relies on u64. */
+ 	u64 free_objectid;
++	spinlock_t objectid_lock;
  
- 	if (extent_thresh == 0)
-@@ -1430,8 +1442,10 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 			btrfs_inode_unlock(BTRFS_I(inode), 0);
- 			break;
+ 	struct btrfs_key defrag_progress;
+ 	struct btrfs_key defrag_max;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 0cb559448933..e5569cec0547 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -676,7 +676,7 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
+ 	spin_lock_init(&root->ordered_extent_lock);
+ 	spin_lock_init(&root->accounting_lock);
+ 	spin_lock_init(&root->qgroup_meta_rsv_lock);
+-	mutex_init(&root->objectid_mutex);
++	spin_lock_init(&root->objectid_lock);
+ 	mutex_init(&root->log_mutex);
+ 	mutex_init(&root->ordered_extent_mutex);
+ 	mutex_init(&root->delalloc_mutex);
+@@ -1132,17 +1132,12 @@ static int btrfs_init_fs_root(struct btrfs_root *root, dev_t anon_dev)
  		}
--		if (do_compress)
-+		if (do_compress) {
- 			BTRFS_I(inode)->defrag_compress = compress_type;
-+			BTRFS_I(inode)->defrag_compress_level = compress_level;
-+		}
- 		ret = defrag_one_cluster(BTRFS_I(inode), ra, cur,
- 				cluster_end + 1 - cur, extent_thresh,
- 				newer_than, do_compress, &sectors_defragged,
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index be6d5a24bd4e6..2dae7ffd37133 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -485,7 +485,7 @@ struct btrfs_fs_info {
- 	u64 last_trans_log_full_commit;
- 	unsigned long long mount_opt;
- 
--	unsigned long compress_type:4;
-+	int compress_type;
- 	int compress_level;
- 	u32 commit_interval;
- 	/*
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fa04b027d53ac..d26c005bf091a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -925,6 +925,7 @@ static void compress_file_range(struct btrfs_work *work)
- 	unsigned int poff;
- 	int i;
- 	int compress_type = fs_info->compress_type;
-+	int compress_level= fs_info->compress_level;
- 
- 	inode_should_defrag(inode, start, end, end - start + 1, SZ_16K);
- 
-@@ -1007,13 +1008,15 @@ static void compress_file_range(struct btrfs_work *work)
- 		goto cleanup_and_bail_uncompressed;
  	}
  
--	if (inode->defrag_compress)
-+	if (inode->defrag_compress) {
- 		compress_type = inode->defrag_compress;
--	else if (inode->prop_compress)
-+		compress_level= inode->defrag_compress_level;
-+	} else if (inode->prop_compress) {
- 		compress_type = inode->prop_compress;
-+	}
+-	mutex_lock(&root->objectid_mutex);
+ 	ret = btrfs_init_root_free_objectid(root);
+-	if (ret) {
+-		mutex_unlock(&root->objectid_mutex);
++	if (ret)
+ 		return ret;
+-	}
  
- 	/* Compression level is applied here. */
--	ret = btrfs_compress_folios(compress_type, fs_info->compress_level,
-+	ret = btrfs_compress_folios(compress_type, compress_level,
- 				    mapping, start, folios, &nr_folios, &total_in,
- 				    &total_compressed);
- 	if (ret)
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index d3b222d7af240..3540d33d6f50c 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -615,7 +615,9 @@ struct btrfs_ioctl_clone_range_args {
-  */
- #define BTRFS_DEFRAG_RANGE_COMPRESS 1
- #define BTRFS_DEFRAG_RANGE_START_IO 2
-+#define BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL 4
- #define BTRFS_DEFRAG_RANGE_FLAGS_SUPP	(BTRFS_DEFRAG_RANGE_COMPRESS |		\
-+					 BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL |	\
- 					 BTRFS_DEFRAG_RANGE_START_IO)
+ 	ASSERT(root->free_objectid <= BTRFS_LAST_FREE_OBJECTID);
  
- struct btrfs_ioctl_defrag_range_args {
-@@ -643,7 +645,13 @@ struct btrfs_ioctl_defrag_range_args {
- 	 * for this defrag operation.  If unspecified, zlib will
- 	 * be used
- 	 */
--	__u32 compress_type;
-+	union {
-+		__u32 compress_type;
-+		struct {
-+			__u8 type;
-+			__s8 level;
-+		} compress;
-+	};
+-	mutex_unlock(&root->objectid_mutex);
+-
+ 	return 0;
+ }
  
- 	/* spare for later */
- 	__u32 unused[4];
+@@ -2725,8 +2720,8 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+ 		}
+ 
+ 		/*
+-		 * No need to hold btrfs_root::objectid_mutex since the fs
+-		 * hasn't been fully initialised and we are the only user
++		 * No need to lock btrfs_root::free_objectid since the fs
++		 * hasn't been fully initialised and we are the only user.
+ 		 */
+ 		ret = btrfs_init_root_free_objectid(tree_root);
+ 		if (ret < 0) {
+@@ -4930,20 +4925,21 @@ int btrfs_init_root_free_objectid(struct btrfs_root *root)
+ 
+ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid)
+ {
+-	int ret;
+-	mutex_lock(&root->objectid_mutex);
++	u64 val;
+ 
+-	if (unlikely(root->free_objectid >= BTRFS_LAST_FREE_OBJECTID)) {
++	spin_lock(&root->objectid_lock);
++	val = root->free_objectid;
++	if (unlikely(val >= BTRFS_LAST_FREE_OBJECTID)) {
++		spin_unlock(&root->objectid_lock);
+ 		btrfs_warn(root->fs_info,
+ 			   "the objectid of root %llu reaches its highest value",
+ 			   btrfs_root_id(root));
+-		ret = -ENOSPC;
+-		goto out;
++		return -ENOSPC;
+ 	}
++	root->free_objectid = val + 1;
++	spin_unlock(&root->objectid_lock);
+ 
+-	*objectid = root->free_objectid++;
+-	ret = 0;
+-out:
+-	mutex_unlock(&root->objectid_mutex);
+-	return ret;
++	*objectid = val;
++
++	return 0;
+ }
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index d6fa36674270..1ce84bf59a09 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -472,9 +472,9 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 			 *
+ 			 * Ensure that we skip any such subvol ids.
+ 			 *
+-			 * We don't need to lock because this is only called
+-			 * during mount before we start doing things like creating
+-			 * subvolumes.
++			 * We don't need to worry about updates to free_objectid,
++			 * this is only called during mount before we start
++			 * doing things like creating subvolumes.
+ 			 */
+ 			if (is_fstree(qgroup->qgroupid) &&
+ 			    qgroup->qgroupid > tree_root->free_objectid)
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index fc5c761181eb..97e608b251fa 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -7325,9 +7325,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 			 * We have just replayed everything, and the highest
+ 			 * objectid of fs roots probably has changed in case
+ 			 * some inode_item's got replayed.
+-			 *
+-			 * root->objectid_mutex is not acquired as log replay
+-			 * could only happen during mount.
+ 			 */
+ 			ret = btrfs_init_root_free_objectid(root);
+ 			if (ret)
 -- 
-2.47.2
+2.47.1
 
 
