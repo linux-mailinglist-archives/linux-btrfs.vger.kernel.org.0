@@ -1,99 +1,83 @@
-Return-Path: <linux-btrfs+bounces-12026-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12027-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77790A50070
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 14:25:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9668A5031F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 16:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90A26188E9D4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 13:21:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD006163397
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Mar 2025 15:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D90E24886B;
-	Wed,  5 Mar 2025 13:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4852500C9;
+	Wed,  5 Mar 2025 15:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gzXfL+bB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QTjNadoB";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eYlQtNZp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mSCyBltT"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jf8Hzd7N"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3495248866
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 13:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5C024EAAE
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Mar 2025 15:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741180848; cv=none; b=Hoqz+O06QtLfdbKzQQo3yfm/tyIpgjPVGz6vYVKHOBEXcJZmjeRBS9vY1pLWmvhTe07YcoA8zwXCBMIWAHrEhBNr1Q3obePAk9y82lKNiRg/kOZgetx9a7bXGNLgY6m0Z3QxQFXYLtRZ6LUdyPgFEib1rpizknoNDX1oeNRzSXo=
+	t=1741186925; cv=none; b=mXjab2ztwER/PM2xgNDfFaPjZq4RbrFKPNOfcMxletPq/Td2MHIoC/bht0foudMZDb4HE6XYPfhVLGN7YEyhaJpSgsBkbvURHfbYZpgXq2jlA7U5Pf2DPXEpCzlteruQ3OWgPX1EWH+SKOgiZZ/eyZ+Gl0ona4NNKUu1oPKvXwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741180848; c=relaxed/simple;
-	bh=/M8OSFCrgGYgSJ5QfrxmnsCt5oEvGFWrbySRMPbNkQ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OD35F+G2Ul4gyKcwtP1Y9r41a6rlDX/z5jsfatqfGodGh/KMrjHLf1szqvzCeWRImo1oxjIClgfx1l9DZrJzpaQS9VSambv/6mlqcwcN3KUh0DqsGbHjpYNPn+JKwypVCew26LjvYsabB7Pe5FPXCG1u4f2Ij2HP00FE3PiZwGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gzXfL+bB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QTjNadoB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eYlQtNZp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mSCyBltT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CFC2321163;
-	Wed,  5 Mar 2025 13:20:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741180845;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTWeambnQ2jG4arLdzXuBLMZQWcr2Qu066hNkPyxQvo=;
-	b=gzXfL+bB+x6FK26SiuSnG9FKd8kph3mRQB8oK+105Jcpq5V7w51brTOPDLafqcX3WsvWtn
-	bxEzi8o/PRKmcqlyIKCd+2I531L4jWNfiUjbUL9hopui/vVgBmYoNnMwACd83Yiz4UuvuQ
-	ccMzEClmxyVjE1xcaq8qMJS4L2LlDSY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741180845;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTWeambnQ2jG4arLdzXuBLMZQWcr2Qu066hNkPyxQvo=;
-	b=QTjNadoBIKMOCrU+br7mPFR1K50AiIxVQuSFGVes64myHN/G4xxc8DUDhl1vctWv/Gzflj
-	fUV41Z52lkvBf/DA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741180844;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTWeambnQ2jG4arLdzXuBLMZQWcr2Qu066hNkPyxQvo=;
-	b=eYlQtNZp7xOgu0uIYG8zpNdcWyiHIztz5foUg/uDavICojGd7W29kusTnyLWLdmKur93aG
-	FNBGncQcbzRgaY4774PKvGZRLJ681JULKjNxqriGYlv7RrIWJ5FYq4v+jT/fqjOs4gr6i/
-	Fe8Y3PK5WhiJ5R+m7SuOLo8/psSL2mg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741180844;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTWeambnQ2jG4arLdzXuBLMZQWcr2Qu066hNkPyxQvo=;
-	b=mSCyBltThx/0Hq0GObFl6jSFqdecr2DR5J8MPQjKl/H4WTQ6kLS3M0PQwMK5XGx4kg1HNT
-	MaZ8Q9VmNgboSjBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A6FFB13939;
-	Wed,  5 Mar 2025 13:20:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yw9AKKxPyGcqOwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 05 Mar 2025 13:20:44 +0000
-Date: Wed, 5 Mar 2025 14:20:43 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] btrfs-progs: zoned: support zone capacity and
-Message-ID: <20250305132043.GF5777@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1739951758.git.naohiro.aota@wdc.com>
+	s=arc-20240116; t=1741186925; c=relaxed/simple;
+	bh=AZOTwFYWbPNw3YuwetCS180YuQ8bs6mW3Lff9LCM/Hw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hHOmitMsE71BrPVhQPF5TrjDHZQqtfUV2g2pjEQWY1xNr5fOWq7K8ZGxgKCm+Z426tqPpvGRdm/y+Y5u+yB/T9p7E3S/nuLwbbQ9yXFmpueZ7HKZURdKElmVZe64TuKlh72nXEo0EmzajcQGJtoTFR+eqFZ2jjZG5n1f64Jap54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jf8Hzd7N; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3911748893aso1544042f8f.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Mar 2025 07:02:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1741186922; x=1741791722; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=quIzHQCFH7E36KayRdIr1tq1n0GnpOtfG9r6i1uUzGM=;
+        b=jf8Hzd7N1UQieBqwMtFyPFlowLytWYKCN2izwlkXdGE/fFZxuPXH9ITKUWQY45qqPe
+         z/9QT+gf1DhrV9ICaotrstqCK6hsMLtJp9CkUySUv/SSPysceC7cMdNJ+TOiVZ8wpgh/
+         nnShK1NpTg1xrcC/LOlvUjFCWVbahnAjLuAunx6b0/WAHQSuLEItm47REGKmSjnA7Do+
+         LKBoYRqQqOkrKpeDxi6V7O6Ogq0oScNR3vf7Nmed2JidNd2eQZw0Rj/WX1Wh/N9/8DJv
+         /9QPytj0KcIFgGRqps8NcHd2fMxeZk8I9kT1GppGXhOP93wOlmhCkWjslcYhk3ROPylr
+         5rmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741186922; x=1741791722;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=quIzHQCFH7E36KayRdIr1tq1n0GnpOtfG9r6i1uUzGM=;
+        b=AuEm4q5zGWaGx7+QvNp1S3gtz1hcl+eGjHOhjDkq/1zv8nDFJhIZFycYE6TX2sZxvC
+         +4fcrKxExXPfl/1x+YlYjXBiO5HMDTOaVy1bR9vgu63bPs7BY4RKXw9T4rgLXenogUAW
+         vmfHC4Uy/iUnLJOM7eL4ei1MHLIrU8sgsDqbtMsGt55kYVen15Yrw1oVMvnLuP4PL6rR
+         T1RLqTPREha1KeY8YBnLxtkDrlVu/nqxelG8Vr7nU1n2z6I/+lPMiX6HdkY5/AcF9u8n
+         pY/xhO8uyXgFxcYJAf9SXysSNt+9XaGPKm6RiyNk9Lhyse/93tbnUVBmjdzYWenue5Po
+         54nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWj/xPY8xjvKjnRsTGGPrrlfQP3yZPG5xo0uFQTKn2dsKqXyIeYKp5s6xft7np/8otQhjT0WCIACpeDww==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4LbwIo4uSlV8oKq/Je1/9jryx3X5SpVS/TTUNlAA3ARnNSZKc
+	azeozh8E+kFNnH6LvGhHjD2Yb/FRqdn5o1jTLzccQc7SYawcVJewAxvT/3P+AAc=
+X-Gm-Gg: ASbGncvwDadUOSts4xtJ/e1+vGZPVBbTg75fvZkVamfQO0i9EV9gau6R0pa5zOZhWi3
+	4yx2KwkdCFQ1CsF3KlEqflHgh6sYpcScAMGgaIV1pHDMf/sEhnlb10Mw6GNrAx1tzysvEXO2r4D
+	6TOic26pCvjw3jgJ/9QXFPxqYmtCR+Xz0lhtavkw9TC1LbR9ahq2Bb1jiWLzDmOgUaJLWib2Bwf
+	TvDi74vMQXAcqKbm/aJVKFJbwW1+7TBc8HymrxTqvFJuVLF2SD4FxP1PG0D4fZZHVbM03AFiS1r
+	MbKmK1QASsIgg2SzWLr0lKKeDUiSoJstGDlTrxGJf9dEGPnKUw==
+X-Google-Smtp-Source: AGHT+IFepSDmvEhbE2UKLwqNcX3nTfRjGIucY9eQ6hTOqgtRykqc80R9HD8DtvfhRl/fMPeU5nq5wA==
+X-Received: by 2002:a05:6000:1fa6:b0:390:f6aa:4e80 with SMTP id ffacd0b85a97d-3911f7d238dmr2965078f8f.53.1741186921645;
+        Wed, 05 Mar 2025 07:02:01 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-43bd4352e29sm19571995e9.32.2025.03.05.07.02.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Mar 2025 07:02:01 -0800 (PST)
+Date: Wed, 5 Mar 2025 18:01:57 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] btrfs: return a literal instead of a variable
+Message-ID: <2b27721b-7ef9-482d-91bb-55a9fed2c0f7@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,106 +86,40 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1739951758.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Mailer: git-send-email haha only kidding
 
-On Wed, Feb 19, 2025 at 04:57:44PM +0900, Naohiro Aota wrote:
-> Running mkfs.btrfs on a null_blk device with the following setup fails
-> as below.
-> 
-> - zone size: 64MB
-> - zone capacity: 64MB
-> - number of conventional zones: 6
-> - storage size: 2048MB
-> 
->     + /home/naota/src/btrfs-progs/mkfs.btrfs -d single -m dup -f /dev/nullb0
->     btrfs-progs v6.10
->     See https://btrfs.readthedocs.io for more information.
-> 
->     zoned: /dev/nullb0: host-managed device detected, setting zoned feature
->     Resetting device zones /dev/nullb0 (32 zones) ...
->     NOTE: several default settings have changed in version 5.15, please make sure
->           this does not affect your deployments:
->           - DUP for metadata (-m dup)
->           - enabled no-holes (-O no-holes)
->           - enabled free-space-tree (-R free-space-tree)
-> 
->     bad tree block 268435456, bytenr mismatch, want=268435456, have=0
->     kernel-shared/disk-io.c:485: write_tree_block: BUG_ON `1` triggered, value 1
->     /home/naota/src/btrfs-progs/mkfs.btrfs(+0x290ca) [0x55603cf7e0ca]
->     /home/naota/src/btrfs-progs/mkfs.btrfs(write_tree_block+0xa7) [0x55603cf80417]
->     /home/naota/src/btrfs-progs/mkfs.btrfs(__commit_transaction+0xe8) [0x55603cf9b7d8]
->     /home/naota/src/btrfs-progs/mkfs.btrfs(btrfs_commit_transaction+0x176) [0x55603cf9ba66]
->     /home/naota/src/btrfs-progs/mkfs.btrfs(main+0x2831) [0x55603cf67291]
->     /usr/lib64/libc.so.6(+0x271ee) [0x7f5ab706f1ee]
->     /usr/lib64/libc.so.6(__libc_start_main+0x89) [0x7f5ab706f2a9]
->     /home/naota/src/btrfs-progs/mkfs.btrfs(_start+0x25) [0x55603cf6a135]
->     /home/naota/tmp/test-mkfs.sh: line 13: 821886 Aborted                 (core dumped)
-> 
-> The crash happens because btrfs-progs failed to set proper allocation
-> pointer when a DUP block group is created over a conventional zone and a
-> sequential write required zone. In that case, the write pointer is
-> recovered from the last allocated extent in the block group. That
-> functionality is not well implemented in btrfs-progs side.
-> 
-> Implementing that functionality is relatively trivial because we can
-> copy the code from the kernel side. However, the code is quite out of
-> sync between the kernel side and user space side. So, this series first
-> refactors btrfs_load_block_group_zone_info() to make it easy to
-> integrate the code from the kernel side.
-> 
-> The main part is the last patch, which fixes allocation pointer
-> calculation for all the profiles.
-> 
-> While at it, this series also adds support for zone capacity and zone
-> activeness. But, zone activeness support is currently limited. It does
-> not attempt to check the zone active limit on the extent allocation,
-> because mkfs.btrfs should work without hitting the limit.
-> 
-> - v2
->     - Temporarily fails some profiles while adding supports in the patch
->       series.
-> - v1: https://lore.kernel.org/linux-btrfs/cover.1739756953.git.naohiro.aota@wdc.com/
-> 
-> Naohiro Aota (12):
->   btrfs-progs: introduce min_not_zero()
->   btrfs-progs: zoned: introduce a zone_info struct in
->     btrfs_load_block_group_zone_info
->   btrfs-progs: zoned: support zone capacity
->   btrfs-progs: zoned: load zone activeness
->   btrfs-progs: zoned: activate block group on loading
->   btrfs-progs: factor out btrfs_load_zone_info()
->   btrfs-progs: zoned: factor out SINGLE zone info loading
->   btrfs-progs: zoned: implement DUP zone info loading
->   btrfs-progs: zoned: implement RAID1 zone info loading
->   btrfs-progs: zoned: implement RAID0 zone info loading
->   btrfs-progs: implement RAID10 zone info loading
->   btrfs-progs: zoned: fix alloc_offset calculation for partly
->     conventional block groups
+This is just a small clean up, it doesn't change how the code works.
+Originally this code had a goto so we needed to set "ret = 0;" but now
+it returns directly and so we can simplify it a bit by doing a
+"return 0;" and removing the assignment.
 
-Added to devel, thanks.
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ fs/btrfs/dev-replace.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 1a82e88ec5c1..53d7d85cb4be 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -103,7 +103,6 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+ 			"found replace target device without a valid replace item");
+ 			return -EUCLEAN;
+ 		}
+-		ret = 0;
+ 		dev_replace->replace_state =
+ 			BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED;
+ 		dev_replace->cont_reading_from_srcdev_mode =
+@@ -120,7 +119,7 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+ 		dev_replace->tgtdev = NULL;
+ 		dev_replace->is_valid = 0;
+ 		dev_replace->item_needs_writeback = 0;
+-		return ret;
++		return 0;
+ 	}
+ 	slot = path->slots[0];
+ 	eb = path->nodes[0];
+-- 
+2.47.2
+
 
