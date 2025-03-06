@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-12066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12067-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F973A55909
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 22:44:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112B8A55923
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 22:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43F2E3B2F5D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 21:44:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7162D18986FE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 21:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FB427604A;
-	Thu,  6 Mar 2025 21:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10D5276D2A;
+	Thu,  6 Mar 2025 21:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gfDW8n1P"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mfff/iLo"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B542770B
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Mar 2025 21:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D194226FD9A
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Mar 2025 21:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741297465; cv=none; b=Ks6gGFO1cbeJa4U0vJTw8DP0Ffr4c3QX8+VZsVlDxMQyDmA9LtpbzK3TZOM4Us/O/uP8yGNWhG8r0ex54+y2xWUVjaLPnRcLKhzqYmkvxPajjxyjtgOVc5qAaau9bq6QEBuLB+zionqqKZCqI5ovqOYBXPVJH4mj2Mh2GrgXpKg=
+	t=1741298025; cv=none; b=pIMpK8y+mDv4+/KZl5AHV/dW15wbxxc0qHYyVvHQ3gTOj5Fkip1OUVRv49ttUvG+tm2fWhwvjDVMbGLtDvmKJDwNSlwpRaaHi6ngtA9BO8fNCHqx2gDc77dgbKGDcu1FIBTzLwxDYF72UZ8apIRXFZfLHfvfpbi3ORnk5Df9XLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741297465; c=relaxed/simple;
-	bh=gWmrN86Ah5Llh+FxrsF8LxUtJcEPJCCyepKtkGNQLVo=;
+	s=arc-20240116; t=1741298025; c=relaxed/simple;
+	bh=+MFh4J8+cVxs/2El6cyAtZN77Snx0oqXhE2L/nSnQBM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=TiUHUpoPgJqUpAnH4er0iHUP802UWxtfXoPxDYXJHYX0UfnvOfooPRXefLUXp4HPNcKxYWb6+Q9F4rp2ejwwgphoyP7teiAxhnJVlxH6eXXY/8tF+KupCWrdVf6MzE/jgKFBNVomxnaZhN7+fubhftCJHefz9RA1X0rWVIB3sfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gfDW8n1P; arc=none smtp.client-ip=212.227.15.18
+	 In-Reply-To:Content-Type; b=l+MhR9d4S0xS3taNwaOlaEJFHRERavJTmAlhpu9eYDJyhznBmMkXD2B5sO/RO0/jjW+RReiDSiSVYGCo6+hHNkjOooCh1+ERML3q54kpq89HY9zQRzgFNqX3s5GG2EfWNMfJQ0iHxqSwLHMfI0gxTHSUBr5tTbhC90QNF2Ynu7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mfff/iLo; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1741297458; x=1741902258; i=quwenruo.btrfs@gmx.com;
-	bh=3LKHfSLQ5ruLMsQHeMr8wti39mqa1m2StX9z5iUb3FM=;
+	s=s31663417; t=1741298016; x=1741902816; i=quwenruo.btrfs@gmx.com;
+	bh=o7sLP+pUV7ai8GxJ+hw4klZrQ8PpCsulu7mrYdoDHoE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=gfDW8n1Pit37nyhsH3eYcWf4KCS2wx3KnAsS3BmHlnJ5iVKducWgJQIJeFuWifN4
-	 YpQx6R9cptBU+k8exXBpX3t3n8TdX7+fFe/R7/SQDPekfN+nm/RKBoe2vkiVByT/7
-	 CLnZalGlx6qcwgd0ggCm0iE6yDVF2yo37ZU6cOojU+bE9qWVdHxURMVD1jmxd1hhX
-	 /XgmrU/cZAzUo/L1pWyo8hOz5qk86uFwqPsHj4KgsNPx88BvFwfytnUE7N0ZpJTmw
-	 PNRXUZFIwjjyfAls60W91YOyfbvBQ0kmcdFOLYMwZsCB8jKfNHse+GdF22HJV+DSC
-	 BC0h6Z/ZRRvHADJQ1w==
+	b=mfff/iLoiZuWECbGmjyM4zmeWDhDNurU+5DAqMt8Ddk7HBkaurMqQr74mTPpBsU4
+	 jShmzXvVWlH6F/aTjXsrPnNuzoy786H6rWPcNFnyQhmAPoRluoNXCQjJBG49x6Q2h
+	 vmA8KwTiSyZBpismsXjicMpaoWH08qQLgs8UBqiZuxNjIYF81QFRyRxyfg5L/4euy
+	 neW9nCz3KAvqOKN5k4L9eFUgI5JSi7YcscDozhEsYMmTvXY9CQnDcgwZ7d0z8Hq4T
+	 mSGoaFEIovm35PCwXgoAcBPxB+f4IwKLK7lxGrfJaqb8bJwqQMKkRwNX1zsUFukoZ
+	 3GQu2/xOIA7XBXCqsg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDQiS-1tzgOs3YmM-00GYJL; Thu, 06
- Mar 2025 22:44:17 +0100
-Message-ID: <2495973a-48ca-4629-a82c-361d4670a309@gmx.com>
-Date: Fri, 7 Mar 2025 08:14:12 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFsZ3-1u297w3UOF-00247A; Thu, 06
+ Mar 2025 22:53:36 +0100
+Message-ID: <2c359b95-0181-42c5-a76e-3a9ed0ea31a1@gmx.com>
+Date: Fri, 7 Mar 2025 08:23:33 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: avoid unnecessary bio dereference at
- run_one_async_done()
+Subject: Re: [PATCH 0/2] btrfs: send: a couple trivial cleanups
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <f0e1ad9fd2ed3e76e041e3f19f493de3e9771057.1741278026.git.fdmanana@suse.com>
+References: <cover.1741283556.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,74 +87,56 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <f0e1ad9fd2ed3e76e041e3f19f493de3e9771057.1741278026.git.fdmanana@suse.com>
+In-Reply-To: <cover.1741283556.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oIkcj3wXBDHvspN3kIgQmQGP9HF/dZ5N69b/2wT6OHMrBKilIHd
- YKNxROJnTuZmvtrecgV8hObojf56vILCV1WDEcYDZIRbzUuf4XFtDmjHkQr55PEtlHwxHJr
- 2qZy9GHqWgQB6n9/7x2DHbjGUerjftda8u/k8uNx81FafSEqHZFcJ+53u9CgIgGL8/nPg3Y
- B8Ep2hruudmLH+87wFrSA==
+X-Provags-ID: V03:K1:0VySIYMf/G7pRu/ZmiN3RdskpeDBy5z+xeqCcbRvWaWss56mL2I
+ z41cr51u/op8v2F81w8ImlcA/80D1X4JvtS0yiDCl/48pN/g6B5tzOdxS4/LsKH7Hsh+/LR
+ AUFMy1wyc6Z99R/fZd0gtw+Ov8tdM/dkloQ3OzJjPWtgPwfsYRMxbc+aY5LP+9fKDh8UaKi
+ Hy7a619JrC/0aKln0i2jA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oyZv/aO9/kQ=;UrVs6YQXIr5TvTXpqRKySelO2cB
- 9e7LUDuoimVCY15FszkV7hqYiSmRd5E7bw6HZiY5EemnopP/d9T0tTmvHd/njppe4A1OAxcEM
- YOlfRt+Lsng48h5Y00Udat0TRryhJPpYqhkp4ZtFI7anbIz/+bfUPAPlHm+VtcCoP1tyHf8Ap
- SAnsd/Fblektt2IWUij088MvoMv16IwJocjSpzA01rO/rvDa9o8yJ8xIBfgCxbtCbbVPCVmW6
- RnWe3sDrJjIqfb2FLPsDERZvHorK3RE7Hv4Q65o9HA/e8EY9OkXeX1HKAvCeSxKLbSogjf60I
- k3pPCy2KFppBuAODsyrv+IEr9YqC6Kodw2hnV1AmtFrr2PUEuxwbbl9kwsoSi0iHHs40rZLwN
- KScBo0r6q5HJ0ll3xZtnxBvBnclLNSp6VLPJxCZJyojlpzU1skBmeyO/76qgjW2KBsGtXbJjU
- 1pEWGdJtTWDNV6yHxFDKDGsqs16YOSqA8NGFyTBDpUdqTTm7zPw5m2vb4jWFVEbSubtFaSzE4
- C0V6SD0R1yU5vBddMJURqRfsQsyfuDBo8g7zOAfVMsC0gxSNEupw10YkzxHoQXTyppst4IqqX
- LYR6wanK7Y7UJ3ewtIfVtGDdw5mum2ArQVvQZGz9eRdL4RUa2y7NoNG4Wm+VEicQiVrurM97J
- JeTQo0G9jOnScfVN6Gal+IIAbWH0y871VPVcxBtNOdEZYjM2ddMqZsolznVifi2IvkQyvlbM7
- jCVy2uyu130iKpy0Sei8A6JZpkDe2hMBXOxCJMgg04uAtxvkQpv6Nm/J7f1P3J5EtEWlqmSQS
- Xox3ogdm4o0CJ6Wa+OZMVN/nEg97VVywcNi8dPVEVAMp+aRLMQGURlovXMl3bTmXdVowip6f4
- Xppf0/tzne+japsVRmp5EgEZhT2EddojjPULDKwI2aJAxjhF/XqkC1jRsgT8ZUs+NXQyI4lEU
- OJQ0fGRDJ9VhYOtEQt0+/iBF6DyzE5K5A4VqIfOKofEjHoH9rOyD+03BYEqE+Px1v1LJHfQY8
- HAMQb2uDMbfNlu/CCUCiMleVFJjXVTjvFP0D/6nVEYluw2Ur7pTbMguBmUgG1gg8F17IaCz00
- OevfcBRj0GTUmUvhvCLsiflWtOiY6XftP8Vq46aeTmXkSX5KuY3a+xRvEYLez/yk235wmp0kA
- nrB0J4eZAE8YqqapsvTfCDWM9Kcs/2yQGWklu0OrkVpd4Re15Vayt+QTdpySAhm7urWAXgmxj
- CqNBItucxYrFxrAk2MxR/TumQghFLNzocLmtwv8DeBfQWN7u4OkGsr6X5xEr4lbtPaOtuKdCR
- fqSfBtI2pE1YkxkPc2jj2IWskP7wZjNUKaPpgBOrv4IVfrwGrQYsaLLpNrZv/LFdR2nc4NfZJ
- rIsIF8vRGVW+/gN8BA0QTSwJ8cV5Miv583VgGx7G1Wy/QVe3u9EY/WeiL+
+UI-OutboundReport: notjunk:1;M01:P0:PFwIoBqSXNg=;ZU8x4c4jkqe8VlMFRYMymiEzrYV
+ eAjCBF9yver1dfmCCaLpGhl+c31s7zsQM0Ia8YUtNS4zk41pW0f0wJyXHhustKcTY6V4kiY+z
+ GhYWgSvy+tFbW8d2D92O/B1n3iik3zEuaICgxJA373K687o4eduEZjtR2+x/mqMjnfBpfY9gG
+ maNOw+utjdTr+2kv5xnN67Qu5bxKSJos+iOk+lVYbG4NYRMekLLseKTpOQKpSqUJ+SNbxNOV0
+ o6924clURmSQefX9DzbNpnHYshukT0JSouZfSyQy9f+BdAR0YP2wfpYHhzFthmP8rXl1VF5JM
+ 4pnYR6cyVttBB2PhaPg5PYgRMbDqjLz+/3iNuIxbTRp9+q4gd7SiSw9UQMeqS43QoxQlUZuFU
+ vkSWL94G9ECbNXABk+uIDeqmaDekpgWfgxJj/AeI32LvcQRvc73U/khhRznFtX9INLb292qBn
+ WvPsHL/iE1T4ReEwQuLQRR3g4BJKwduv6qBHhKqXStmSoH9kNb9SfM/pARWpbu1Pi+E3ZzGat
+ NIWYoObZnzhsJvvUmBr9wrJyNhS9I5VoUGa5nQf7Dx/wJmQcFV8ye5976WKJ0r7dkdmHHEQyR
+ nQUwL35T+WhwMyeFSEQRuNKWgQvosxngKINSgHSlnAGceJ9UKIjm5HqwNywjoBiZ0QSCmklYM
+ 2TVKBZAUTMgxNVif5eadAgEeb2BCYRRF0dSH3XB411B8N0l9xgFIjqhfXGyBvE3HXF95pGQsM
+ ourCNGnqUfnBKAkLuo6bZCWw15o7k4b7tBVnUbCiM1d60EHi7HhuqTDBb3rzmFekxYcx7F3hg
+ QEOqcRofkjc9dpub6rpqnJBRpGqorh0ECKki69FO9NVImQ++rHRAOiZ7plDjZOsu+zaC1Tf0n
+ I47Zc0B5bbgokxQuHeKEoAYKrOaaXjOTfiO6M/4DuDwJrCZObZ0oIIjM+MYCLEhsyBQkxDVbQ
+ 93DVdRPAkKGa116Uyghq8X6/qwfc7EkT7Wn2UADTRfZGiXrOZqaVsbbcJCgTmJEpkWFYriNOm
+ aXn91U+1jpaB4BOAeUXYUyu7gCGHuntvYLVONtJ6N2dQkxg4vezGCbzPAcLVJde0Kyp3ekLr6
+ 0qAJiBfpl7HR1Q/0V2oUl0m8lytVpfppsxh87empYZqUL4kOOjjV0nP8HdVpHvtOE7Fi5ON1s
+ j7zYlHZmWB9heyzl2I5KeJtcCYoq8utzQ2ByLShfjiQJF+oD5zTdVNDTKwCG/kpJKz0IXhhVa
+ DDgqopUv248G5QsMAsYdYNa1yvREEFPvgoe+wT3iWb+s9t4rT6QvNRvDdVYTIWLbpPS/4IKKk
+ Kcw+fhTMJD6gf1UV5hD3y9wJVvu8rPTojFt9L16mq1N9ZK7vDhLwESEGPZVx6KudvFIN1c1nM
+ FziLV5AtsZvhngwoQzp3KqqOR3FIiutSiIkiuQDt40DmG7EoEV5QnGibTs
 
 
 
-=E5=9C=A8 2025/3/7 02:51, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2025/3/7 04:25, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> We have dereferenced the async_submit_bio structure and extracted the bi=
-o
-> pointer into a local variable, so there's no need to dereference it agai=
-n
-> when calling btrfs_bio_end_io(). Just use "bio->bi_status" instead of th=
-e
-> longer expression "async->bbio->bio.bi_status".
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Simple cleanups, reduce code, details in the change logs.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
-> ---
->   fs/btrfs/bio.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 375cae2fbcad..8c2eee1f1878 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -573,7 +573,7 @@ static void run_one_async_done(struct btrfs_work *wo=
-rk, bool do_free)
+> Filipe Manana (2):
+>    btrfs: send: remove unnecessary inode lookup at send_encoded_inline_e=
+xtent()
+>    btrfs: send: simplify return logic from send_encoded_extent()
 >
->   	/* If an error occurred we just want to clean up the bio and move on.=
- */
->   	if (bio->bi_status) {
-> -		btrfs_bio_end_io(async->bbio, async->bbio->bio.bi_status);
-> +		btrfs_bio_end_io(async->bbio, bio->bi_status);
->   		return;
->   	}
+>   fs/btrfs/send.c | 19 +++++--------------
+>   1 file changed, 5 insertions(+), 14 deletions(-)
 >
 
 
