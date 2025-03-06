@@ -1,131 +1,155 @@
-Return-Path: <linux-btrfs+bounces-12055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12056-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CD3A54FCE
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 16:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49FDAA54FF6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 17:01:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D2C916C70D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 15:57:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82E2F16FCB8
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Mar 2025 16:01:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5EE4210F56;
-	Thu,  6 Mar 2025 15:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3099C199FAF;
+	Thu,  6 Mar 2025 16:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZDiqMAY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tj9ZPafJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AD917BEBF
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Mar 2025 15:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775ADEC2
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Mar 2025 16:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741276642; cv=none; b=qk65j2xxQg4fTbXqJFttejWS5Wwa8ovJgelSSzv+Scbs6HjSy/SlAIqSAoH0WbAlippk9xDqGhEFz59taSS5e8JXzBQSNC9AhYIWd0sha60YIeu6k/HFdpopRnJ+73fzepb5nsG4VbboDrTrVl9DPgY/QFm52wEuyDQs8TlPwxc=
+	t=1741276860; cv=none; b=FDRLPoMh/LxH+f8EqoAeA+gpDPWKM/1Jp9eaXxN4wqPqaKCuYvxB3YJP/bPMwv/XigacUMvtQycyT45/22ezb9dnWW3YKToBPHkEscdatf7Vcm03jSsTGqnRW38QFdfsC/7ZHdqQ5rL6OX3ySPusxYNJBrAC+0O0XhCh9Cqyapc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741276642; c=relaxed/simple;
-	bh=+GhhfsY8YKg6og4pmlOZpBtjrzYetJ8Jk43ZGSGtXl4=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=kbSX23BZP8f5J5o9g+CJppo/0deu8m0rfNvIR5qNqHl7mCTnnFlDlze22ea9zSW306nAnoHTaaAM1SNZ8/jwRd2zEdpXlmWltJZsadzZcMt7JcN1kSZcUcRCAn/bHkFl7gggXND5kReInOExumf0Qdrj4Eof2QHXfKzaRSi5thI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZDiqMAY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64FA0C4CEE0
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Mar 2025 15:57:21 +0000 (UTC)
+	s=arc-20240116; t=1741276860; c=relaxed/simple;
+	bh=zpbXlFx24DBGuoPcvd49Ltfl0Na6TtHIR1RIlcG1sZ0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b7f9HPiVQbVVAZoCBOAKzq8slEnxKBrKCO0uWbr8O19Q1Euh5CtlSw8mUhLrejCfdH3ca8BBAeM/u5ua+lL4Ej7jAN7xtG67fkAxBeRs6jqk5Ub/dXxVV8rQRwJyP5UHQk69n63wrlfPthgcsTzN6LI1VeqQYQ6q5Wtr2G1MGNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tj9ZPafJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 001ABC4CEE0
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Mar 2025 16:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741276641;
-	bh=+GhhfsY8YKg6og4pmlOZpBtjrzYetJ8Jk43ZGSGtXl4=;
-	h=From:To:Subject:Date:From;
-	b=EZDiqMAYvtMCONc/OJrkq9na9kOLTA5rn38v4TAr7Sno0lFz4tCTN2WlZGAyWbmsi
-	 Vv3RZFE0QxDrhstiOiF5GA5Iycoh3ZyJrn6fIsezb4fl7rQRZmN5OqueBIqLTxk2sl
-	 BTGFI7cfJLwA7mUhBrqA9DcE4NJs4h3qyE4jslYDY1E5tBN6rym4AImTUKPYgI0rWQ
-	 zL0Fc5S7CKaJvIqcp8DfgMFzGX1sfm+WGuSbbjgAIrc2ta2zvJ6NbKcSR4OaRRZjVa
-	 FSadG/3HaJhRGsl7aI7yOfLEhQRR4YCrtgCJ5HYuYotvlghozIwBB6Y2Q+i1hrPFLX
-	 7jVeNPoKMRZXQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix non-empty delayed iputs list on unmount due to async workers
-Date: Thu,  6 Mar 2025 15:57:18 +0000
-Message-Id: <b07f13dbfadfdb5884b21b97bbf1316c45d06a32.1741272910.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=k20201202; t=1741276860;
+	bh=zpbXlFx24DBGuoPcvd49Ltfl0Na6TtHIR1RIlcG1sZ0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tj9ZPafJDUwx/nyqpNEaCAtThpBVPZH/7iCPfMQgIDQGhM5tsk+Q3UPwVWHL4LI59
+	 DHKdGGD+duf8GldsHBebXT+Z2yCXt1YJR6S9Hx6iyZWOoL2RhvoTCggm+h9mYDlH5o
+	 WsPsYSzalmaP6SY0HaTguRbGJRnoDlNjV/n6SGpHUN+QfSwWiIL6kk+o7Hir8AMMmg
+	 R6EbAGb+Q6ToQabl3+MFTDceQTsWwHx1Q1t2bSIbQtdDkqARJAARRnIci/181Qmt2+
+	 nxt1YYKSr7aehpqStshdjWKcqqrUTS+QGBcbkHnvXZd6ajrjP0jUIU1hwPqi/RuF/j
+	 DC0REgoRJ6zqQ==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5e549af4927so1439897a12.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Mar 2025 08:00:59 -0800 (PST)
+X-Gm-Message-State: AOJu0YylgmDG7807MEJk7Kf3FzXtwVlbqvrUqv+UJM0LlC9UdVgoy6nJ
+	3fJJxIg/slI6KSOwpEd1cy6TKFK1GW+4G4OfqSxKlliDT0E61+loZsI0Z8wfrxLznbHdy56ih3W
+	MnEVQyn/BD6M1eUwidnIxtdf0bkI=
+X-Google-Smtp-Source: AGHT+IGs2Z++HVs2Af3S3NxBEbcGJl42szeEU5rQLr1RrR9nb3YyTKJOmy+sTdK28VllnKWEYUh7xC8dXejTUyp2aRg=
+X-Received: by 2002:a17:907:3d86:b0:ac2:8a4:b9db with SMTP id
+ a640c23a62f3a-ac20d8bcab2mr680767166b.16.1741276858470; Thu, 06 Mar 2025
+ 08:00:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1741196484.git.fdmanana@suse.com> <cover.1741198394.git.fdmanana@suse.com>
+ <35989618-457a-47a6-acf6-7175d86eec08@gmx.com>
+In-Reply-To: <35989618-457a-47a6-acf6-7175d86eec08@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 6 Mar 2025 16:00:20 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H48z3E6KmyG6T1GZCi+_57FVNNP4iO-MshxQWN8ez-Ycg@mail.gmail.com>
+X-Gm-Features: AQ5f1Jr0D5CRlT47iE276jdPzUyuePFHynKbBdrTonPrG9nDgNckX41nPVfPDQY
+Message-ID: <CAL3q7H48z3E6KmyG6T1GZCi+_57FVNNP4iO-MshxQWN8ez-Ycg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] btrfs: fix unexpected delayed iputs at umount time
+ and cleanups
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Mar 6, 2025 at 10:09=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> =E5=9C=A8 2025/3/6 04:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Fix a couple races that can result in adding delayed iputs during umoun=
+t after
+> > we no longer expect to find any, triggering an assertion failure. Plus =
+a couple
+> > cleanups. Details in the change logs.
+> >
+> > V2: Removed the NULL checks for the workqueues in patches 1 and 2, as t=
+hey
+> >      can never be NULL while at close_ctree() (they can only be NULL in=
+ error
+> >      paths from open_ctree()).
+>
+> BTW, even with this series applied, I can still trigger the delayed iput
+> ASSERT():
+>
+> [ 5364.406135] BTRFS warning (device dm-10 state EA): direct IO failed
+> ino 259 op 0x0 offset 0x14800 len 18432 err no 10
+> [ 5364.406327] BTRFS warning (device dm-10 state EA): direct IO failed
+> ino 301 op 0x0 offset 0x112000 len 12288 err no 10
+> [ 5364.406443] BTRFS warning (device dm-10 state EA): direct IO failed
+> ino 284 op 0x0 offset 0x129000 len 40960 err no 10
+> [ 5364.408115] BTRFS warning (device dm-10 state EA): direct IO failed
+> ino 333 op 0x0 offset 0x43000 len 2048 err no 10
+> [ 5364.408350] BTRFS warning (device dm-10 state EA): direct IO failed
+> ino 7914 op 0x0 offset 0x34a000 len 43008 err no 10
+> [ 5364.636270] BTRFS info (device dm-10 state EA): last unmount of
+> filesystem 9c4c225e-d4c6-43d0-b8c9-4b3afb5cb3cc
+> [ 5364.639881] assertion failed: list_empty(&fs_info->delayed_iputs), in
+> fs/btrfs/disk-io.c:4419
+> [ 5364.641814] ------------[ cut here ]------------
+> [ 5364.642733] kernel BUG at fs/btrfs/disk-io.c:4419!
+> [ 5364.643712] Oops: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [ 5364.644880] CPU: 5 UID: 0 PID: 2672520 Comm: umount Tainted: G
+> W          6.14.0-rc5-custom+ #224
+> [ 5364.646787] Tainted: [W]=3DWARN
+>
+> I have hit this at least twice, on x86_64 with the new experimental 2K
+> block size.
+>
+> And this is the latest for-next, which does not have the uncached IO
+> patch at all.
+>
+> Since I do not have compression enable for the mount options, I believe
+> there is some extra causes.
 
-At close_ctree() after we have ran delayed iputs either explicitly through
-calling btrfs_run_delayed_iputs() or later during the call to
-btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
-delayed iputs list is empty.
+There is, in case of IO errors we can add delayed iputs from another queue,
+which makes sense since generic/648 exercises IO error simulation with dmer=
+ror,
+and your dmesg also shows IO errors. Patch here:
 
-We have (another) race where this assertion might fail because we have
-queued an async write into the fs_info->workers workqueue. Here's how it
-happens:
+https://lore.kernel.org/linux-btrfs/b07f13dbfadfdb5884b21b97bbf1316c45d06a3=
+2.1741272910.git.fdmanana@suse.com/
 
-1) We are submitting a data bio for an inode that is not the data
-   relocation inode, so we call btrfs_wq_submit_bio();
+Thanks.
 
-2) btrfs_wq_submit_bio() submits a work for the fs_info->workers queue
-   that will run run_one_async_done();
-
-3) We enter close_ctree(), flush several work queues except
-   fs_info->workers, explicitly run delayed iputs with a call to
-   btrfs_run_delayed_iputs() and then again shortly after by calling
-   btrfs_commit_super() or btrfs_error_commit_super(), which also run
-   delayed iputs;
-
-4) run_one_async_done() is executed in the work queue, and because there
-   was an IO error (bio->bi_status is not 0) it calls btrfs_bio_end_io(),
-   which drops the final reference on the associated ordered extent by
-   calling btrfs_put_ordered_extent() - and that adds a delayed iput for
-   the inode;
-
-5) At close_ctree() we find that after stopping the cleaner and
-   transaction kthreads the delayed iputs list is not empty, failing the
-   following assertion:
-
-      ASSERT(list_empty(&fs_info->delayed_iputs));
-
-Fix this by flushing the fs_info->workers workqueue before running delayed
-iputs at close_ctree().
-
-David reported this when running generic/648, which exercises IO error
-paths by using the DM error table.
-
-Reported-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b0f125d8efa0..984145147716 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4340,6 +4340,19 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	 */
- 	btrfs_flush_workqueue(fs_info->delalloc_workers);
- 
-+	/*
-+	 * We can have ordered extents getting their last reference dropped from
-+	 * the fs_info->workers queue because for async writes for data bios we
-+	 * queue a work for that queue, at btrfs_wq_submit_bio(), that runs
-+	 * run_one_async_done() which calls btrfs_bio_end_io() in case the bio
-+	 * has an error, and that later function can do the final
-+	 * btrfs_put_ordered_extent() on the ordered extent attached to the bio,
-+	 * which adds a delayed iput for the inode. So we must flush the queue
-+	 * so that we don't have delayed iputs after committing the current
-+	 * transaction below and stopping the cleaner and transaction kthreads.
-+	 */
-+	btrfs_flush_workqueue(fs_info->workers);
-+
- 	/*
- 	 * When finishing a compressed write bio we schedule a work queue item
- 	 * to finish an ordered extent - btrfs_finish_compressed_write_work()
--- 
-2.45.2
-
+>
+> Thanks,
+> Qu
+>
+> >
+> > Filipe Manana (4):
+> >    btrfs: fix non-empty delayed iputs list on unmount due to endio work=
+ers
+> >    btrfs: fix non-empty delayed iputs list on unmount due to compressed=
+ write workers
+> >    btrfs: move __btrfs_bio_end_io() code into its single caller
+> >    btrfs: move btrfs_cleanup_bio() code into its single caller
+> >
+> >   fs/btrfs/bio.c     | 36 ++++++++++++++----------------------
+> >   fs/btrfs/disk-io.c | 21 +++++++++++++++++++++
+> >   2 files changed, 35 insertions(+), 22 deletions(-)
+> >
+>
 
