@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-12074-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12075-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4896DA55BFF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 01:30:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3897A55C01
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 01:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C1FD3B9589
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 00:30:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8F05189E647
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 00:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B1E3B19A;
-	Fri,  7 Mar 2025 00:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED9F42A8B;
+	Fri,  7 Mar 2025 00:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="A+4GJd55";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xvNwesyW"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DA/GMYP2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="doo9EFRE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8162827701
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 00:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F7D35968
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 00:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741307300; cv=none; b=MIAN7TcwTt5Vrr+4MiamKioFcsN/s5wzzR5GwqqKg6cWtSJ2A9qzOL0iIgMi1BdFzCgCmJtsGiZVZRmJAM69S1mJQqYaIRPeU6Vgleh3zUlhpgqH4iVgGX9aXLPx7pIbXnI06KpF4PuBPz6UAcnazDsDUcI8GndYFlJ/BWddrv0=
+	t=1741307302; cv=none; b=IRsBTgFocbxZF75140WYDWIXb12/T5syf+h4h8X0/INVsTbYokCa0EWoTIgOo5AsH0uiADp2qlt94niNyZPNrYy2uGq90hPw1Tr+ByXikV6RP3StF0ke0jMALQTD9TVl+NnCRGmMQFYaJAmjtRRnkPPEkr4LEqxu3gRNHl8X0WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741307300; c=relaxed/simple;
-	bh=RCx7Enbup5l5Nsg4PjOog7yN62nKFfJ6kLkswDQSgSQ=;
+	s=arc-20240116; t=1741307302; c=relaxed/simple;
+	bh=5R61vsuKej5on6uPLXupeI9ZwCWM+66F87c6WqwldG0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nEtStGL5jFjA+jQJez5IEA7kds56sqJnUsF/MMXkF/ENUHBoxCe2VLCPLBTy+uOhR+GuSSdtHa0Len5GGK1sX+pQOgz72f5TXL2pnOwvD4HANbvIczrtxMAeCNnNBqz3n6DGtYpEX36xBK2OCf0B0TV+uGQqm1Z1SjMWnnmEWFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=A+4GJd55; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xvNwesyW; arc=none smtp.client-ip=103.168.172.149
+	 MIME-Version; b=b5/ULlHg5l53C97UAs5AeCAYJE0sllqT70/CxSA5PWFafMQjgSFIelhXUFXuu39PstdRTgLZ9hpoly3ta7pxZ0PvGOckUebIgrrI4KvI7id120cowMLVXNdzVZEeo+ANVqR6RFPmoRvSF6qIzNCABKrBLWu+eAa5o+v6Dk5xAWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DA/GMYP2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=doo9EFRE; arc=none smtp.client-ip=103.168.172.152
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
 Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfout.phl.internal (Postfix) with ESMTP id 7552C13826AA;
-	Thu,  6 Mar 2025 19:28:17 -0500 (EST)
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 2640E1140161;
+	Thu,  6 Mar 2025 19:28:19 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Thu, 06 Mar 2025 19:28:17 -0500
+  by phl-compute-09.internal (MEProxy); Thu, 06 Mar 2025 19:28:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1741307297; x=
-	1741393697; bh=czrxCCb2zq5m1SFHoFLIObpPSGpKFuIyKsF9YBmcy30=; b=A
-	+4GJd55prfkHbGGoqPRLVyXgFtmSTXk6JGqTuyFAnHCXDq9XFogpDrCTP1YIuQj6
-	pNSbG38jLe7bKBqPGJlMUjbCIhn1MZgwFBDMA/MwL2awHQJ1J8asOBQFkcsLp3NE
-	OqsxTabdWy7Ly7V/oA5NjoGxRKeFh5QK8UOqNPKiU8SPMijDGzhlVCInVzQq4VBI
-	KQHZjUY7Jc31KKf9qbSXOheqiXSSn4M8iS8XOhK+yXFpk0YlZdXhULc65uxEJ1G8
-	AQzcdYKfesy+O6jo02D5a76XNxaAHQd4uItx2nbAojZ7Hni3DTHvFlOW6P5Rt/Q2
-	TKOJgtfnzujjmg1SWVglw==
+	:reply-to:subject:subject:to:to; s=fm2; t=1741307299; x=
+	1741393699; bh=camFk/O0eOjGXJfsCsluThCunGrAlyNqHxROmfEIKxk=; b=D
+	A/GMYP2j+84iLiQkvoB0agfS/Z4bh0HXxtdOzyQ1+rH9wlOyGwKQC73JNYXyck65
+	S4PuimJp7w+wt8+iYjAUf3HBf0bOHB75cyuriBwyF3Wv2yYCtNFaclWPpSftmHPl
+	64b28poV0zAmUU7cR98qtst1Wq0mVPCo7ZU6/sD0jR5j2f9fO/aIDgUnul/swMmw
+	BGlQ0ZpPHkLWCa73zpj6TZv0VxFPrbx02zYrm4s8Cr9HTN7yqGb50l3tkJbQ9swK
+	YNHeYm4W+9u9dTj6OSg5VexpmzERBSFhD7mIhNbgmDMekm8z6hlm59K4dH/cLbXY
+	s4Vh7s/Kz2qNu3Q6Cz+dg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1741307297; x=1741393697; bh=czrxCCb2zq5m1SFHoFLIObpPSGpK
-	FuIyKsF9YBmcy30=; b=xvNwesyWlxT1fsZbrVkUGq0tu/E7L+SSxhPEskaPpCjd
-	Y81bw8bIrLfkZsxarQFbpV6BcXa1y0y5irlYZfksj8uGStzmRHffkwef+dCp9R6i
-	1SBVVMgVotS4rViQzRLuJl+yBVAv6eKtovh2pkf7fFCHL2UCRM333nXgo5FCzyNU
-	fS/vJsGb4MuMgQK9UaEM+jpjg2OiFrqe473Nwo79lrHfegyzoBgFQofkhAXbgXBW
-	5Ql8K9fnMamyIBMPku5FRu1q9LCWTgYOYCbIpeWJWqwcw4UnqbbEqXYNZVRcXQWo
-	E/DPsyMY4Dz4GEl3Gro1rSNn6ePoBLgBrUGjqbtu8w==
-X-ME-Sender: <xms:oT3KZ8DdClF0l4HZJFf361Z7n0V70wIkIDm4wwZ_OxEP3YLJ6lV-xg>
-    <xme:oT3KZ-gG0XnToSUyphsCVKMj2-SLvCaFRrSfrd0Gg7_UtjNQSAzsLK-due_UJwqBd
-    LL0zIYJmJ8PjsnYfBc>
-X-ME-Received: <xmr:oT3KZ_m4dC8G3tjNelG4RUp4pyaItcQsLMxRVBW_z4ECgqj8uTjhWrBRAi75rCRnP7ysJFyICp6cUhBVac6WSvXdki8>
+	fm1; t=1741307299; x=1741393699; bh=camFk/O0eOjGXJfsCsluThCunGrA
+	lyNqHxROmfEIKxk=; b=doo9EFREtx52/I3s26jhMHKrbSP1jijDKKAy7U+PIi8A
+	cgjMmAK5VgOPtBmIznD7vPLZXrEidE7P4S1blrdm9Pn16KWuDUBuFnH1Q2aZLfi6
+	3o2cp57kueXirtIiXj2InFc3vFsACTcqAX5Li+QbjHHmZwJiqrrhMKUkSfVVtGFz
+	fWWXycaG96Tqm/x+B1ZG/NReY7j8/n8o/IP4hbfzcdjXVMwADzJju8vptnY8viiK
+	+I6v8r8qv7RjH88UFxNzYdGYr6l0kgpDYLuBaQRM3njSkCm8rh59pWV171x/tENi
+	wH9iiQRaEB6VNmujdrgNP1heI04VMTdk8kqdgMSO9g==
+X-ME-Sender: <xms:oj3KZ8DthiN6_PeNzUS9mU8eIx-sHO3QUEBxZMc3w-318a7YJcHnxQ>
+    <xme:oj3KZ-jWA08M6qgoE3Fqke7BaLOKdwY639mv5FqYj_Ow-tQmNrT2AWNCSHvmb1GFB
+    y_j90AONXVuapYdnek>
+X-ME-Received: <xmr:oj3KZ_lI91xnPXwaQEdSZpZjHZxVi_wwlsbb6TXR-SrCrLCJLSpf9vilM0N6dlJOGeNpBRqR0aO7bdcAZfraR1YINgw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdelvddtucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
@@ -74,20 +74,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdelvddtucetufdote
     gspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhu
     gidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnh
     gvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:oT3KZyzkUcvaOToyFOlxau8zLpqARy4Q4gCup3nfQE6RlAQvItKYSA>
-    <xmx:oT3KZxRzseFyEZZzsbCnU3-bFBSCyhNpGGCYITqshxPT2zqhbczgUA>
-    <xmx:oT3KZ9aTSHXF_WZK1n94sAkPSL7Kb0sZdkCsz-f1QHz-J0wBotM-9w>
-    <xmx:oT3KZ6THnnQHV49IzCtoJii3J4Opx3LiiQYoby1HYtJJ7C3BBCldZQ>
-    <xmx:oT3KZ8dOCBnCmN77JucksPYAAxPdHpGfAX5zN4FJaOOBsmndANBfdA6J>
+X-ME-Proxy: <xmx:oz3KZyw0STlJ_YqsWqyeRNzexTuoU-Nv9aK84u-OlVY62M91ok43sw>
+    <xmx:oz3KZxSD3qVJxUf30g2OROdVVLGx60R2bLJH2HdmX-gYtcWU0-7P4w>
+    <xmx:oz3KZ9Zj2Dhy0CMITMWHARcAd5gj4yILzGSGSfTG5xnTfnjBrVZ-yw>
+    <xmx:oz3KZ6RXuq2bf378sQObCqSb0GGQutHtL56t4L3WsRbDrZqEQl_jSQ>
+    <xmx:oz3KZ8dex68p3daGSGx8adgI0_7F-1pqjWGZ7O_D7g0ayHqc8fg67vix>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 6 Mar 2025 19:28:16 -0500 (EST)
+ 6 Mar 2025 19:28:18 -0500 (EST)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 3/5] btrfs: make discard_workfn block_group ref explicit
-Date: Thu,  6 Mar 2025 16:29:03 -0800
-Message-ID: <ab8a6f9b2e3ce6ee7196a481233956ea9629b7b8.1741306938.git.boris@bur.io>
+Subject: [PATCH 4/5] btrfs: explicitly ref count block_group on new_bgs list
+Date: Thu,  6 Mar 2025 16:29:04 -0800
+Message-ID: <817581cbc85cfda4c2232fecbfdb6b615b7067ca.1741306938.git.boris@bur.io>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1741306938.git.boris@bur.io>
 References: <cover.1741306938.git.boris@bur.io>
@@ -99,97 +99,36 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, the async discard machinery owns a ref to the block_group
-when the block_group is queued on a discard list. However, to handle
-races with discard cancellation and the discard workfn, we have some
-cute logic to detect that the block_group is *currently* running in the
-workfn, to protect the workfn's usage amidst cancellation.
-
-As far as I can tell, this doesn't have any overt bugs (though
-finish_discard_pass and remove_from_discard_list racing can have a
-surprising outcome for the caller of remove_from_discard_list in that it
-is again added at the end)
-
-But it is needlessly complicated to rely on locking and the nullity of
-discard_ctl->block_group. Simplify this significantly by just taking a
-refcount while we are in the workfn and uncondtionally drop it in both
-the remove and workfn paths, regardless of if they race.
+All other users of the bg_list list_head inc the refcount when adding to
+a list and dec it when deleting from the list. Just for the sake of
+uniformity and to try to avoid refcounting bugs, do it for this list as
+well.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/discard.c | 34 ++++++++++++++++------------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+ fs/btrfs/block-group.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-index e815d165cccc..d6eef4bd9e9d 100644
---- a/fs/btrfs/discard.c
-+++ b/fs/btrfs/discard.c
-@@ -167,13 +167,7 @@ static bool remove_from_discard_list(struct btrfs_discard_ctl *discard_ctl,
- 	block_group->discard_eligible_time = 0;
- 	queued = !list_empty(&block_group->discard_list);
- 	list_del_init(&block_group->discard_list);
--	/*
--	 * If the block group is currently running in the discard workfn, we
--	 * don't want to deref it, since it's still being used by the workfn.
--	 * The workfn will notice this case and deref the block group when it is
--	 * finished.
--	 */
--	if (queued && !running)
-+	if (queued)
- 		btrfs_put_block_group(block_group);
- 
- 	spin_unlock(&discard_ctl->lock);
-@@ -260,9 +254,10 @@ static struct btrfs_block_group *peek_discard_list(
- 			block_group->discard_cursor = block_group->start;
- 			block_group->discard_state = BTRFS_DISCARD_EXTENTS;
- 		}
--		discard_ctl->block_group = block_group;
- 	}
- 	if (block_group) {
-+		btrfs_get_block_group(block_group);
-+		discard_ctl->block_group = block_group;
- 		*discard_state = block_group->discard_state;
- 		*discard_index = block_group->discard_index;
- 	}
-@@ -493,9 +488,20 @@ static void btrfs_discard_workfn(struct work_struct *work)
- 
- 	block_group = peek_discard_list(discard_ctl, &discard_state,
- 					&discard_index, now);
--	if (!block_group || !btrfs_run_discard_work(discard_ctl))
-+	if (!block_group)
- 		return;
-+	if (!btrfs_run_discard_work(discard_ctl)) {
-+		spin_lock(&discard_ctl->lock);
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 2db1497b58d9..e4071897c9a8 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2801,6 +2801,7 @@ void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
+ 		spin_lock(&fs_info->unused_bgs_lock);
+ 		list_del_init(&block_group->bg_list);
+ 		clear_bit(BLOCK_GROUP_FLAG_NEW, &block_group->runtime_flags);
 +		btrfs_put_block_group(block_group);
-+		discard_ctl->block_group = NULL;
-+		spin_unlock(&discard_ctl->lock);
-+		return;
-+	}
- 	if (now < block_group->discard_eligible_time) {
-+		spin_lock(&discard_ctl->lock);
-+		btrfs_put_block_group(block_group);
-+		discard_ctl->block_group = NULL;
-+		spin_unlock(&discard_ctl->lock);
- 		btrfs_discard_schedule_work(discard_ctl, false);
- 		return;
+ 		spin_unlock(&fs_info->unused_bgs_lock);
+ 
+ 		/*
+@@ -2939,6 +2940,7 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
  	}
-@@ -547,15 +553,7 @@ static void btrfs_discard_workfn(struct work_struct *work)
- 	spin_lock(&discard_ctl->lock);
- 	discard_ctl->prev_discard = trimmed;
- 	discard_ctl->prev_discard_time = now;
--	/*
--	 * If the block group was removed from the discard list while it was
--	 * running in this workfn, then we didn't deref it, since this function
--	 * still owned that reference. But we set the discard_ctl->block_group
--	 * back to NULL, so we can use that condition to know that now we need
--	 * to deref the block_group.
--	 */
--	if (discard_ctl->block_group == NULL)
--		btrfs_put_block_group(block_group);
-+	btrfs_put_block_group(block_group);
- 	discard_ctl->block_group = NULL;
- 	__btrfs_discard_schedule_work(discard_ctl, now, false);
- 	spin_unlock(&discard_ctl->lock);
+ #endif
+ 
++	btrfs_get_block_group(cache);
+ 	list_add_tail(&cache->bg_list, &trans->new_bgs);
+ 	btrfs_inc_delayed_refs_rsv_bg_inserts(fs_info);
+ 
 -- 
 2.48.1
 
