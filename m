@@ -1,71 +1,71 @@
-Return-Path: <linux-btrfs+bounces-12105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ABECA573AC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 22:37:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EA12A573CC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 22:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F17B83B0846
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 21:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 389B4170E35
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 21:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6F421C9EC;
-	Fri,  7 Mar 2025 21:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F41257452;
+	Fri,  7 Mar 2025 21:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="p4PzK7mV";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="7vdeCSxu"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="QunrMQcm";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="7P8f54QB"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C3F1AA1D9
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 21:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBDA1AA1D9
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 21:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741383415; cv=none; b=JTf6NZGMQ+KlCrrD1/t5B/zA3YrB9SM8Izq5odQtdln6JdWuk4EWxYCWeTnTqSmG8GOPcfokYIz+EQRlY0BbUsaU3f61jBYOsLPNBMSjL5ADF45KBTEHgvBaIn/kA9TGp53nCrNAlVXPYEMbjZNlqDO7Qd7aKF3NCIL1lS9f0os=
+	t=1741383590; cv=none; b=ZneNO/Z/DVWBeBSLewR6Dke3Xla/H+fGwOLsa2AtJ9oJaspyRauvYSSeSDLVG2AJO4it6g3+lfzbV+zbQ2MXqhH495CY9RpZbZLrCN299KXT6toptrXLRAJfYy2DL5VKmXil5LZkfpFXgKSZsjperTPutS2dljsGsrs+31yZ7/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741383415; c=relaxed/simple;
-	bh=lEaSoE9TBd9eJoWsVnhOIUAKFmRGbA50K2hfy+N+bRU=;
+	s=arc-20240116; t=1741383590; c=relaxed/simple;
+	bh=FOvF6icIufMmz9YD9rO0NwyJ1d801IfWOcw9g7mJSxI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jvbBxcdyLXHTJaPz0YwayoWHRdT8P4sZCJtUOzVW5wRn8kY9WDKa+eJ1QgJh0kh83Yk48X7Y0f9Ezp95RLEefa+8Uhhn6f74pZawsrAjrca9LxSHap2WKKorLQ4LBA+2EQXkhD/rQoPJiGxTexKqNq1DTruwDUsRNspiklx+iv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=p4PzK7mV; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=7vdeCSxu; arc=none smtp.client-ip=202.12.124.150
+	 Content-Type:Content-Disposition:In-Reply-To; b=SZjx/ldO2KvzAYRBxwMEBgaTKJuKRW61s5vtpfw71ZxBNagrDbrKBwd/yfBPZ0PizAZYOgbs6ywLqpJrnY0a9nFsUQNGRe5Uzgqsx1XUFjSAOzvDLfGVyecdnJC/TQAaouczP6gvxbck4AMW+CRfNPjTxguLv1ql6M0g4o6uwAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=QunrMQcm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=7P8f54QB; arc=none smtp.client-ip=202.12.124.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 45EE01140184;
-	Fri,  7 Mar 2025 16:36:52 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Fri, 07 Mar 2025 16:36:52 -0500
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.stl.internal (Postfix) with ESMTP id 9B5B21140195;
+	Fri,  7 Mar 2025 16:39:47 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Fri, 07 Mar 2025 16:39:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-transfer-encoding:content-type:content-type:date:date
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1741383412;
-	 x=1741469812; bh=+kD+TtYdMzETGJW3jlD6SigUPhfooj+rgTI3cKkugWY=; b=
-	p4PzK7mVktZHGSkTIrcGxY704Cl8WQeLJew4JYDNt0/TMTZGOqvbQuzdqd8/qR9f
-	WyF3IujFDnFWwY8ZBvGBFzBcynWPGKvoiDpgov5SH+AL9Wd6MfcusDu5wJMWUhz6
-	F1AX8VAEcDrRReZHJ6YZeVAYqVAoDhcKtt86x0udobE8JTo2eErpoJrA7F11gQ6n
-	2B9f0C8KtE56zEFdE99uaNdlItC/dKl+OgsC6Pn3+TEPo1QYtdnmVNopvhWURqj1
-	LRzTpRUdiRMPmVgoB0Go8Razr05FvHhdYN0Z1hMboTl2imfzpfs46ddF6mGd92rT
-	eT+ydT5pKXzEx2pbdZ910g==
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1741383587;
+	 x=1741469987; bh=no6DVR45LnkKAZfk68ah4Qg3THqJ7pP2CMs9sDSiiOU=; b=
+	QunrMQcm97+QLUy4Otb7sitJ+pz3HC25WVyKVxm+c7z6AC8F3SGoSuFm0h8rLEG9
+	McITITW2gvFsBBHQxl3pqSeuaLYklOGOz+TnhUCCoaes3n3izmJQQheN1bo6S1M6
+	NBzYD0EPB5rHTVQaovHmi7CZk7oUNd2g64+FN/9OPFodzAk2Qu4C8xFuGwQnMqRJ
+	m+92d5zhcQixNGIrDF5+lpNzfJH9q+g9qhafhnPPgjWwAkRcq1V/mEInLKAb1Lkf
+	ssjwaVDO38yp0vkgtx0LsY14yi/s0pzRR64qpxp70hIWJlSUVvu7nfRQzM9Q1Y+R
+	CAqFCIZRRtwwt4spaG5i/g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741383412; x=
-	1741469812; bh=+kD+TtYdMzETGJW3jlD6SigUPhfooj+rgTI3cKkugWY=; b=7
-	vdeCSxudwDTM4+IdE4kI9kD6LFmXMQQRWndEP2yzu95BHcoPrkso/3VC+dIark78
-	KFtWdD082jkJ+hsfF8FO2WsD2pJcFlnT+6cEA3KUo2Vd72BRTze4pSqoaa7eCHFS
-	GfIoT3E1R5aev/Xsk9ZL92Ajk+semXT7xktwUY6c6mXiAQfsA66YrqrrnuiQtL4H
-	2m4J0Yfj8JOtH8tB7+RylPjw73/uw0ICk4FbzYAviYc5XiMdI9KV6STqqmMq/flv
-	TltBoj7nf4WQlfcwa3flJRBUFG2/8SKduRyx7omXuWD6QOsSuDvYEtmFBwdNsOne
-	4nh6ROY7v2bfsRp+TI3DA==
-X-ME-Sender: <xms:82bLZ3LAltOewrEjHzbOSCSj4YjtFyuO_1P6zZrMjZ8tBDEpIOiogw>
-    <xme:82bLZ7J4JBWLyHmrNbGeEkJuGQOBIM3Zk3BVfZiJF5CVy9XRzZIYQv8T4Dal7ubTw
-    lOkK2NkcaJaf4ssKxk>
-X-ME-Received: <xmr:82bLZ_unb1xTZMPU_aQeTHfk2m4juK58KVlgILyuhvqDoAimkm2sBk4tir2_ma_xn0rKjD6INuJuGUm2xKYtp9h6H8o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddujeehucetufdoteggodetrf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741383587; x=
+	1741469987; bh=no6DVR45LnkKAZfk68ah4Qg3THqJ7pP2CMs9sDSiiOU=; b=7
+	P8f54QBCRSJz05fuhCGZ22KNbotgEt2u7yBifKn/RzC5lg9DzutVa2seh8MK4+dB
+	dG4Z4hA3d3zzp1k+crFJB4CEHhoTzDQoGx/iiSyQt3eSSNMEO1Akl1CcY0ceLUk6
+	G4hKnGuMkAPBTiBQfT1MgdJvQt4WNgcdwUQCRtM621pT05h1dDiS7HY3erORNO4p
+	++fGpKgbP1cGt7PdeDBg0/q03sJjO4+ae/KndnVeayxproJZuEUAETGEPyE2oO/S
+	y0qHLCNWxflS5aRMqzJIfW2GJmAAwdOVEvVBkbAP5uLEPz3S2EM/J4E+ZI0125/l
+	MsozzBKPsTTPflTY9fmzw==
+X-ME-Sender: <xms:o2fLZw19n2ic4wpjBgwLbaeb6IG7vev-2y8T6DQDuth2nPF6T-733A>
+    <xme:o2fLZ7EINKxkVG5BT5LrzgK-ZnzBNH9kY2oLX1K1hvzLtvPyfkbdrrzj5awJCd7i7
+    jDO2rcKYyaLphb39Tc>
+X-ME-Received: <xmr:o2fLZ44Rg4p8Xen8ZNr4ySHJv92GvWGx_99LTIs9zeLXuZ8wHcIigvlZFWpJyTlrxPTNJln92nJr4rTaScb8M3ngxdM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddujeeiucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
     gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddt
@@ -76,23 +76,24 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddujeehucetufdote
     vgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvghlrdhorh
     hgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhr
     ghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:82bLZwZ0vXa6KDO8p80YtkS-4Vu24GopiA9975z2BeT7hKYWvQEWWw>
-    <xmx:82bLZ-aOsyog1Km-wJe9USXD3Ub8CCJRLyqIjo8iH9iJh5xxPPqevw>
-    <xmx:82bLZ0AYxTFxi2FhOdB9Ma5V3ts-dB-TYfDDmw-QP51VAPhWJgF_Ag>
-    <xmx:82bLZ8ZkUpJNoWuzDzZycXTJ-64TrhvJ1CBr7sv6EYMic2yJw8UvCA>
-    <xmx:9GbLZ-FFYPv-4A3Px_0KRbP004I1kQoz-Y3ozp5nzTvIchRr5zSFlsVd>
+X-ME-Proxy: <xmx:o2fLZ515X1OrsYa41hBwjUuOFtGzFQQqstQzwHuyinBsTvU1tgChYQ>
+    <xmx:o2fLZzGa6cWyFTXzOjSiQbzC6trCpC2H_udpm1bh5ofYBjeT2APFXQ>
+    <xmx:o2fLZy9JEUnUklUD15_roRQjd_jSKkcANqmZtCqsWl1z9JMsX-mA-g>
+    <xmx:o2fLZ4n0DVDvfsJO9bNUI7zEPl0XdEAdEz41VKX04WeNV9pYiu009A>
+    <xmx:o2fLZ7AFItKYvaE7h7J-gKP7f19q7TgY8TftdkSz94ZRmn4YWav1QEYW>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Mar 2025 16:36:51 -0500 (EST)
-Date: Fri, 7 Mar 2025 13:37:45 -0800
+ 7 Mar 2025 16:39:46 -0500 (EST)
+Date: Fri, 7 Mar 2025 13:40:40 -0800
 From: Boris Burkov <boris@bur.io>
 To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/5] btrfs: fix bg->bg_list list_del refcount races
-Message-ID: <20250307213745.GB3554015@zen.localdomain>
+Subject: Re: [PATCH 4/5] btrfs: explicitly ref count block_group on new_bgs
+ list
+Message-ID: <20250307214040.GC3554015@zen.localdomain>
 References: <cover.1741306938.git.boris@bur.io>
- <8ba94e9758ff9d5278ed86fcff2acdd429d5deee.1741306938.git.boris@bur.io>
- <CAL3q7H49V0cbzx0sW__5AY0ZyXnPq15f6eNTa0kGJHvNZEbyOQ@mail.gmail.com>
+ <817581cbc85cfda4c2232fecbfdb6b615b7067ca.1741306938.git.boris@bur.io>
+ <CAL3q7H75p9GUAav64pvTZf4SVpQ=rbcVHAuo5zUEeAytkxXkYA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,132 +103,63 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H49V0cbzx0sW__5AY0ZyXnPq15f6eNTa0kGJHvNZEbyOQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H75p9GUAav64pvTZf4SVpQ=rbcVHAuo5zUEeAytkxXkYA@mail.gmail.com>
 
-On Fri, Mar 07, 2025 at 02:24:34PM +0000, Filipe Manana wrote:
+On Fri, Mar 07, 2025 at 02:37:28PM +0000, Filipe Manana wrote:
 > On Fri, Mar 7, 2025 at 12:31 AM Boris Burkov <boris@bur.io> wrote:
 > >
-> > If there is any chance at all of racing with mark_bg_unused, better safe
-> > than sorry.
-> >
-> > Otherwise we risk the following interleaving (bg_list refcount in parens)
-> >
-> > T1 (some random op)                         T2 (mark_bg_unused)
+> > All other users of the bg_list list_head inc the refcount when adding to
+> > a list and dec it when deleting from the list. Just for the sake of
+> > uniformity and to try to avoid refcounting bugs, do it for this list as
+> > well.
 > 
-> mark_bg_unused -> btrfs_mark_bg_unused
+> Please add a note that the reason why it's not ref counted is because
+> the list of new block groups belongs to a transaction handle, which is
+> local and therefore no other tasks can access it.
 > 
-> Please use complete names everywhere.
-> 
-> >                                         !list_empty(&bg->bg_list); (1)
-> > list_del_init(&bg->bg_list); (1)
-> >                                         list_move_tail (1)
-> > btrfs_put_block_group (0)
-> >                                         btrfs_delete_unused_bgs
-> >                                              bg = list_first_entry
-> >                                              list_del_init(&bg->bg_list);
-> >                                              btrfs_put_block_group(bg); (-1)
-> >
-> > Ultimately, this results in a broken ref count that hits zero one deref
-> > early and the real final deref underflows the refcount, resulting in a WARNING.
+
+Just to make sure, I understand you correctly: you'd like me to add this
+as a historical note to the commit message? Happy to do so if that's what
+you mean.
+
+Otherwise, I'm confused about your intent. If you are saying that it's
+better to not refcount it, then we can drop this patch, it's not a fix,
+just another "try to establish invariants" kinda thing.
+
 > >
 > > Signed-off-by: Boris Burkov <boris@bur.io>
 > > ---
-> >  fs/btrfs/extent-tree.c | 3 +++
-> >  fs/btrfs/transaction.c | 5 +++++
-> >  2 files changed, 8 insertions(+)
+> >  fs/btrfs/block-group.c | 2 ++
+> >  1 file changed, 2 insertions(+)
 > >
-> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > index 5de1a1293c93..80560065cc1b 100644
-> > --- a/fs/btrfs/extent-tree.c
-> > +++ b/fs/btrfs/extent-tree.c
-> > @@ -2868,7 +2868,10 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
-> >                                                    block_group->length,
-> >                                                    &trimmed);
-> >
-> > +               spin_lock(&fs_info->unused_bgs_lock);
+> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> > index 2db1497b58d9..e4071897c9a8 100644
+> > --- a/fs/btrfs/block-group.c
+> > +++ b/fs/btrfs/block-group.c
+> > @@ -2801,6 +2801,7 @@ void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
+> >                 spin_lock(&fs_info->unused_bgs_lock);
 > >                 list_del_init(&block_group->bg_list);
-> > +               spin_unlock(&fs_info->unused_bgs_lock);
-> 
-> This shouldn't need the lock, because block groups added to the
-> transaction->deleted_bgs list were made RO only before at
-> btrfs_delete_unused_bgs().
-> 
-
-My thinking is that it is a lot easier to reason about this if we also
-lock it when modifying the bg_list. That will insulate us against any
-possible bugs with different uses of bg_list attaching to various lists.
-
-When hunting for "broken refcount maybe" this time around, I had to dig
-through all of these and carefully analyze them.
-
-I agree with you that these are probably not strictly necessary in any
-way, which is partly why I made them a separate patch from the one I
-think is a bug. Perhaps I should retitle the patch to not use the terms
-"fix" and "race" and instead call it something like:
-"harden uses of bg_list against possible races" or something?
-
-> > +
-> >                 btrfs_unfreeze_block_group(block_group);
-> >                 btrfs_put_block_group(block_group);
+> >                 clear_bit(BLOCK_GROUP_FLAG_NEW, &block_group->runtime_flags);
+> > +               btrfs_put_block_group(block_group);
+> >                 spin_unlock(&fs_info->unused_bgs_lock);
 > >
-> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> > index db8fe291d010..c98a8efd1bea 100644
-> > --- a/fs/btrfs/transaction.c
-> > +++ b/fs/btrfs/transaction.c
-> > @@ -160,7 +160,9 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
-> >                         cache = list_first_entry(&transaction->deleted_bgs,
-> >                                                  struct btrfs_block_group,
-> >                                                  bg_list);
-> > +                       spin_lock(&transaction->fs_info->unused_bgs_lock);
-> >                         list_del_init(&cache->bg_list);
-> > +                       spin_unlock(&transaction->fs_info->unused_bgs_lock);
-> 
-> In the transaction abort path no else should be messing up with the list too.
-> 
-> >                         btrfs_unfreeze_block_group(cache);
-> >                         btrfs_put_block_group(cache);
-> >                 }
-> > @@ -2096,7 +2098,10 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
+> >                 /*
+> > @@ -2939,6 +2940,7 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
+> >         }
+> >  #endif
 > >
-> >         list_for_each_entry_safe(block_group, tmp, &trans->new_bgs, bg_list) {
-> >                 btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
-> > +              spin_lock(&fs_info->unused_bgs_lock);
-> >                 list_del_init(&block_group->bg_list);
-> > +              btrfs_put_block_group(block_group);
-> > +              spin_unlock(&fs_info->unused_bgs_lock);
+> > +       btrfs_get_block_group(cache);
+> >         list_add_tail(&cache->bg_list, &trans->new_bgs);
+> >         btrfs_inc_delayed_refs_rsv_bg_inserts(fs_info);
 > 
-> What's this new btrfs_put_block_group() for? I don't see a matching
-> ref count increase in the patch.
-> Or is this fixing a separate bug? Where's the matching ref count
-> increase in the codebase?
+> There's a missing btrfs_put_block_group() call at
+> btrfs_cleanup_pending_block_groups().
 
-Sloppy to include it here, sorry. I can pull it out separately if you
-like.
-
-The intention of this change is to simply be disciplined about
-maintaining the invariant that "bg is linked to a list via bg_list iff
-bg refcount is incremented". That way we can confidently assert that the
-list should be empty upon deletion, and catch more bugs, for example.
-
-It certainly matters the least on transaction abort, when the state is
-messed up anyway.
-
-> 
-> As before, we're in the transaction abort path, no one should be
-> messing with the list too.
-> 
-> I don't mind adding the locking just to be safe, but leaving a comment
-> to mention it shouldn't be needed and why there's concurrency expected
-> in these cases would be nice.
-
-I can definitely add a comment to the ones we expect don't care. (As
-well as the re-titling I suggested above)
+Good catch, thanks.
 
 > 
 > Thanks.
 > 
-> >         }
-> >  }
 > 
 > >
 > > --
