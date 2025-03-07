@@ -1,317 +1,226 @@
-Return-Path: <linux-btrfs+bounces-12102-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13E02A57347
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 22:03:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30135A57398
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 22:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5E4E1761E8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 21:03:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59DF216D357
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 21:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E0B2580C6;
-	Fri,  7 Mar 2025 21:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925162580C3;
+	Fri,  7 Mar 2025 21:27:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MicE/ni5";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8A54Cpgc";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MicE/ni5";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8A54Cpgc"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="k0WwbBBZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4419723FC41
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 21:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439081519A3
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 21:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741381394; cv=none; b=a2pJDCq5kzD9KMDMh9hljX4Lemgj5HqvYpoZUQdMNfwrhOfjHOFM/VdbRiPsD31DM+r8AL/5LBHiITh+4KbP3DpmfM/EqUwoQiYbuufRuuT0WCM9f932DwdqNVEM+Fw7HmWp4o/LVrtOjaZXj0bTJT3J4VFQO+eQlmyl5KVKiRg=
+	t=1741382859; cv=none; b=M5BXxB8c9hoFngTckRRsa3UzeqS4Z4r8c2ChejTSBy9sYXR+Uu/2nfPV8KlWt70fi43N6eXVHbd+/0o2OlsHZr1V8CW+NL09QWBYYK0Q6Fm8+uNSJZxcyTvQXD9exNTJ2oLVAkkuBgXyQI3fMqabb6YBpx8l+sEzhTWqAtUduSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741381394; c=relaxed/simple;
-	bh=oqF5Fy/OG+mHQNzvsFw14X6YzuVzrt7gLNJEskRPqcg=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=V/n1FYX3e9r4qDeu7BCiChaSndsz9w6A9SDlBWL4VgOPQDGfnOcide/dqKEC2IekgxPzxSxL9gRjcCwMeVy3OTYjCgx0KnsAzdXq3/YhSoSbC/kwHUObbDTdksaEkEC/eKDwvbR7mSNk0WaF0pD3L23p9lZffvlh+0v3XKdbWqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MicE/ni5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8A54Cpgc; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MicE/ni5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8A54Cpgc; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 423291F38C;
-	Fri,  7 Mar 2025 21:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1741381390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SeeNN8WijZM3sVfCjyeRNRQLGOYyO7I+SwMdGI2UCi0=;
-	b=MicE/ni5QVZNboYLfbQqJojSAmZSE4YbcSZ+jGSbBWfh8IQF829y2DeHc73Ukv/tF7wGKQ
-	oGtJck1+L37gBJVIBCHp6bvc5/VIZYUHIpstYW9yZYF5LloPATpYlmL3cj2QsRVqc+zlLk
-	pJWy0w2SRWEarT/ZVxSL/xPPfRRvb60=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1741381390;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SeeNN8WijZM3sVfCjyeRNRQLGOYyO7I+SwMdGI2UCi0=;
-	b=8A54CpgcbZFo2WBEOShK6vmH7gpvXhEUUupqa8xg1StwWAgAylSdVixz5SmsSlIRrg0Kzd
-	irQSLzmu3PpSKYDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1741381390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SeeNN8WijZM3sVfCjyeRNRQLGOYyO7I+SwMdGI2UCi0=;
-	b=MicE/ni5QVZNboYLfbQqJojSAmZSE4YbcSZ+jGSbBWfh8IQF829y2DeHc73Ukv/tF7wGKQ
-	oGtJck1+L37gBJVIBCHp6bvc5/VIZYUHIpstYW9yZYF5LloPATpYlmL3cj2QsRVqc+zlLk
-	pJWy0w2SRWEarT/ZVxSL/xPPfRRvb60=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1741381390;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SeeNN8WijZM3sVfCjyeRNRQLGOYyO7I+SwMdGI2UCi0=;
-	b=8A54CpgcbZFo2WBEOShK6vmH7gpvXhEUUupqa8xg1StwWAgAylSdVixz5SmsSlIRrg0Kzd
-	irQSLzmu3PpSKYDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 307A613939;
-	Fri,  7 Mar 2025 21:02:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oTgBNf9ey2doIAAAD6G6ig
-	(envelope-from <neilb@suse.de>); Fri, 07 Mar 2025 21:02:55 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1741382859; c=relaxed/simple;
+	bh=gtLvTo1hAuc4zIidhwwojQUQ2+AaAOgYtg08xAvavXY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LtTMDZI/3MMt6Vvwr+Bc1aUioYWuE+Bh8gaOqlrmE/ujps3/uFNGP4rfrX+3uwRH9EEZO7SiuHT/v7mgPdJx7wHXqYqnMMwtfhbKtX9L7Tz4J+zNQNzDeHmjDUlx60NUFyiY7GKhO+y9+pgK6RetLmCLfJjh+p7ognlmCrM/NDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=k0WwbBBZ; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1741382855; x=1741987655; i=quwenruo.btrfs@gmx.com;
+	bh=O2TWvktxMYGc03qHtNEYj/XiyTrjEtceC9FZxV36Mro=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=k0WwbBBZINFXeDpklgfBuXpVFwXg+xK65Z/rhXeXr5t2WW4biLYkJJoeB8B9MqN/
+	 ojWK4RVYOEUZIT/3wmn8XLhkwpUP2RpHMc34MQs7TAjK0JDGpl84ZbfbT9iGCwP3z
+	 c5/lhZBzF15m2QwjeoPapK/3+oW5JNRiNaZc9r2fChnL3WGQ9sjSRUOHswYvSzwzv
+	 y73ntGJbwfN1uyARWP+BGkhanIopKj1snJpjxjNPpIQazeeOAuTr7rKQXIgK2Tb9w
+	 t8eLgVXQqpjB52Gw3c4T37/HXGYreQwZENz/3ekAlsvQWdzd0iiBdAbWkso1rVQ5D
+	 7inZBRZtbYMhi1MVHQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9o21-1tvu1g1Ri9-008XXX; Fri, 07
+ Mar 2025 22:27:35 +0100
+Message-ID: <21fef21c-f843-4dde-bdbb-e8c3633222e1@gmx.com>
+Date: Sat, 8 Mar 2025 07:57:21 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Yunsheng Lin" <linyunsheng@huawei.com>
-Cc: "Qu Wenruo" <wqu@suse.com>, "Yishai Hadas" <yishaih@nvidia.com>,
- "Jason Gunthorpe" <jgg@ziepe.ca>,
- "Shameer Kolothum" <shameerali.kolothum.thodi@huawei.com>,
- "Kevin Tian" <kevin.tian@intel.com>,
- "Alex Williamson" <alex.williamson@redhat.com>, "Chris Mason" <clm@fb.com>,
- "Josef Bacik" <josef@toxicpanda.com>, "David Sterba" <dsterba@suse.com>,
- "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
- "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
- "Sandeep Dhavale" <dhavale@google.com>, "Carlos Maiolino" <cem@kernel.org>,
- "Darrick J. Wong" <djwong@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Jesper Dangaard Brouer" <hawk@kernel.org>,
- "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
- "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
- "Simon Horman" <horms@kernel.org>, "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
- "Jeff Layton" <jlayton@kernel.org>, "Olga Kornievskaia" <okorniev@redhat.com>,
- "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
- "Luiz Capitulino" <luizcap@redhat.com>,
- "Mel Gorman" <mgorman@techsingularity.net>,
- "Dave Chinner" <david@fromorbit.com>, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-xfs@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
- linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v2] mm: alloc_pages_bulk: remove assumption of populating
- only NULL elements
-In-reply-to: <180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com>
-References: <>, <180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com>
-Date: Sat, 08 Mar 2025 08:02:50 +1100
-Message-id: <174138137096.33508.11446632870562394754@noble.neil.brown.name>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[44];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.com,nvidia.com,ziepe.ca,huawei.com,intel.com,redhat.com,fb.com,toxicpanda.com,kernel.org,gmail.com,linux.alibaba.com,google.com,linux-foundation.org,linaro.org,davemloft.net,oracle.com,talpey.com,techsingularity.net,fromorbit.com,vger.kernel.org,lists.linux.dev,lists.ozlabs.org,kvack.org];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	R_RATELIMIT(0.00)[to_ip_from(RL4q5k5kyydt8nhc3xa4shdp4c),from(RLewrxuus8mos16izbn)]
-X-Spam-Score: -4.30
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] btrfs: add extra warning if delayed iput is added
+ when it's not allowed
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1741321288.git.wqu@suse.com>
+ <b74cc16979970a14aae45eba0c8ac792389ed473.1741321288.git.wqu@suse.com>
+ <CAL3q7H4OA=CPBw9ft+3F8onjuHafaAqJRQx7gXpSjLQ88eBHBw@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <CAL3q7H4OA=CPBw9ft+3F8onjuHafaAqJRQx7gXpSjLQ88eBHBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZXUDI49IHjQeYJZ0uTFSoxsa3uMK6yLHimC+pUEaLweqwNERtoY
+ opnh9UJM1JMFGEDR6pxXgx3Q3HPsVnrIaJ/ZJ81ZZ4LL/PpYNZdqNNgd+ohQYEfcYW1yxpt
+ Aqk8tc4lYS4Hc9Sx/sO//IbBwBR1UCsqtuXD1FLwawsnGClBMFsXdaf1Jbp6OVieN41OOub
+ eqd6YbId5EixPUsTft7ZQ==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ZOvXWNHr1y0=;anLRhJBnjGke6duBog4TrDhV2+/
+ eckcq+BSlMmyYbV0c96ooXwOBvMl32LFrsM31s/mi7/sTkD2iaADE/TEIXw27JwHtKCOmlK0I
+ 3pkSlLH/nFNB6VK5sproGVQyA9g66HtHiYr6WIjL/KylBhZXqr+xAfviDd4az7DXvNWyRkunM
+ o7EFHZZrwqdbB9U6XfAYl3KsMZ/XR0X+DXsw1NKBG73RNtlxDfdDfiK37lmsZe9ylgXLEgoNe
+ e931/fYKo5GFRh87lYqnf6b44fIWuNIQLM8r/YgL2OgLBCoqyQXjNVw6IOG5NuTRTUHxQoMmk
+ xhn4aKwqEZPQQkKTYAWr1zpnpNgDE/Z8pLjO66cuqpIMHYMqhldY6O0ngpTRb1C65IXTyW1X6
+ A2x6GdnUFBGY0GeOYa0YN1rGAK4gchMP8TTUop1cRCWyuL0FFU6ZPGPKyUxT1wOVNufN8+rUq
+ aQ6ETgkU/5IY3d2flRtYV35U7acHDSmPLOhHXufQJ5Awv30OCMW7bwQMmwNPoFO8/xrPDiwPN
+ npPp15q7STYRhfIFGu9kvjzaLrmT6AB6mDNY97Lqf6tVC4I04NasAzcStec5FRxrbatMRGXjt
+ xhjx7iloWGaFnf4x4kRpblq1s6Q2GCjI45DGrc9sxOuWzSMbgYJqgUE+j/hSlybFd9y4D7sIm
+ Pbm6pGCgS2zH5ZcYwfIYDFzoT/5bEb8dOWL0/JECd8JB9j2KrivTloPO8JzN4rX1mIRVUs0ba
+ SuFfHFqJ+SG7CqK69yZWcH2u75y6LXPJeqPJwHQCyC2hzaOhDTZYoKbRpb4E1+THB+9Muascb
+ dUBb9KhtA1Q8c5RqttrqC7IL+OMwjF718YTkNr3dYOCMY0s1cLEMGkCRNM5hudhxlZe+D474v
+ mdRsoSbVREyQ8e+pm8NI1/4ogJBh/IYZbsG8/c0C7wHaoTRbX5St8W4aa4kFq0rW0aOCINZNh
+ fm0KRm2FS+P7DxjclKZdydcXmn6nawmItLwTmzmll63KWufHILE1WdnFZXbiLqpzm+dxEcb2v
+ gtD6yb7kaF76czr1mVj9FAm7f9GcgXkc//m+45v28Nl8CRvQYLpXL0QjPTH+SAXFiRsolQXDB
+ ehPW45vNOhbR3P7ZMB8p92L/2f5sStq6FZt5o3YwrhrQoD9jSYXugNElBn1hFNGoQ29MLEAsQ
+ Ayp16shMdegGT56laQOIh6CLVYl/Ze8MIOoepGYzBWFPKi0EO2IVOWV3PxIRo4LS6uWLNIfMb
+ oZAlCyZY1iEXwaq9l8AonS+Xag8lS8TFBQ/77fMnalZEMPv7bLDNxQqemhnraCWko1LK/Zw8U
+ /j2Z+bLQNyABNfo5ry3cpwDiAtFth1Z0sHrWaSFCpoxeONfGsRQST0gEOWBWdHZpq1QH4fx1g
+ 0hCftGlU+X1Bo3hzkwiIACJLDcy7icqDn2w6SvbvGfb9HmBVmclHcQKYx2
 
-On Fri, 07 Mar 2025, Yunsheng Lin wrote:
-> On 2025/3/7 5:14, NeilBrown wrote:
-> > On Thu, 06 Mar 2025, Yunsheng Lin wrote:
-> >> On 2025/3/6 7:41, NeilBrown wrote:
-> >>> On Wed, 05 Mar 2025, Yunsheng Lin wrote:
-> >>>>
-> >>>> For the existing btrfs and sunrpc case, I am agreed that there
-> >>>> might be valid use cases too, we just need to discuss how to
-> >>>> meet the requirements of different use cases using simpler, more
-> >>>> unified and effective APIs.
-> >>>
-> >>> We don't need "more unified".
-> >>
-> >> What I meant about 'more unified' is how to avoid duplicated code as
-> >> much as possible for two different interfaces with similar=E2=80=8C func=
-tionality.
-> >>
-> >> The best way I tried to avoid duplicated code as much as possible is
-> >> to defragment the page_array before calling the alloc_pages_bulk()
-> >> for the use case of btrfs and sunrpc so that alloc_pages_bulk() can
-> >> be removed of the assumption populating only NULL elements, so that
-> >> the API is simpler and more efficient.
-> >>
-> >>>
-> >>> If there are genuinely two different use cases with clearly different
-> >>> needs - even if only slightly different - then it is acceptable to have
-> >>> two different interfaces.  Be sure to choose names which emphasise the
-> >>> differences.
-> >>
-> >> The best name I can come up with for the use case of btrfs and sunrpc
-> >> is something like alloc_pages_bulk_refill(), any better suggestion about
-> >> the naming?
-> >=20
-> > I think alloc_pages_bulk_refill() is a good name.
-> >=20
-> > So:
-> > - alloc_pages_bulk() would be given an uninitialised array of page
-> >   pointers and a required count and would return the number of pages
-> >   that were allocated
-> > - alloc_pages_bulk_refill() would be given an initialised array of page
-> >   pointers some of which might be NULL.  It would attempt to allocate
-> >   pages for the non-NULL pointers and return the total number of
->=20
-> You meant 'NULL pointers' instead of 'non-NULL pointers' above?
 
-Correct - thanks.
 
->=20
-> >   allocated pages in the array - just like the current
-> >   alloc_pages_bulk().
->=20
-> I guess 'the total number of allocated pages in the array ' include
-> the pages which are already in the array before calling the above
-> API?
+=E5=9C=A8 2025/3/7 22:15, Filipe Manana =E5=86=99=E9=81=93:
+> On Fri, Mar 7, 2025 at 4:27=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> Since I have triggered the ASSERT() on the delayed iput too many times,
+>> now is the time to add some extra debug warnings for delayed iput.
+>>
+>> After all btrfs_commit_super() calls, we should no longer allow any new
+>> delayed iput being added.
+>>
+>> So introduce a new BTRFS_FS_STATE_NO_DELAYED_IPUT for debug builds, set
+>> after above mentioned timing.
+>> And all btrfs_add_delayed_iput() will check that flag and give a
+>> WARN_ON_ONCE().
+>>
+>> I really hope this warning will never be triggered.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/disk-io.c | 3 +++
+>>   fs/btrfs/fs.h      | 4 ++++
+>>   fs/btrfs/inode.c   | 4 ++++
+>>   3 files changed, 11 insertions(+)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 320136a59db2..bb20c015b779 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -4417,6 +4417,9 @@ void __cold close_ctree(struct btrfs_fs_info *fs_=
+info)
+>>                  if (ret)
+>>                          btrfs_err(fs_info, "commit super ret %d", ret)=
+;
+>>          }
+>> +#ifdef CONFIG_BTRFS_DEBUG
+>> +       set_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->fs_state);
+>> +#endif
+>
+> We'll want this earlier, right after we call
+> btrfs_run_delayed_iputs(), so that we don't miss the case where for
+> example we are forgetting to flush some queue and then the delayed
+> iput is added after running iputs and before calling
+> btfs_commit_super(), or right after calling btrfs_commit_super() and
+> before setting the bit.
 
-Yes - just what the current function does.
-Though I don't know that we really need that detail.
-I think there are three interesting return values:
+I guess this means the call of btrfs_run_delayed_iputs() inside
+btrfs_commit_super() should also be removed in this case?
 
-- hard failure - don't bother trying again soon:   maybe -ENOMEM
-- success - all pages are allocated:  maybe 0 (or 1?)
-- partial success - at least one page allocated, ok to try again
-  immediately - maybe -EAGAIN (or 0).
+Thanks,
+Qu
 
->=20
-> I guess it is worth mentioning that the current alloc_pages_bulk()
-> may return different value with the same size of arrays, but with
-> different layout of the same number of NULL pointers.
-> For the same size of arrays with different layout for the NULL pointer
-> below('*' indicate NULL pointer), and suppose buddy allocator is only
-> able to allocate two pages:
-> 1. P**P*P: will return 4.
-> 2. P*PP**: will return 5.
+>
+>>
+>>          kthread_stop(fs_info->transaction_kthread);
+>>          kthread_stop(fs_info->cleaner_kthread);
+>> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+>> index b8c2e59ffc43..ee298dd0f568 100644
+>> --- a/fs/btrfs/fs.h
+>> +++ b/fs/btrfs/fs.h
+>> @@ -117,6 +117,10 @@ enum {
+>>          /* Indicates there was an error cleaning up a log tree. */
+>>          BTRFS_FS_STATE_LOG_CLEANUP_ERROR,
+>>
+>> +#ifdef CONFIG_BTRFS_DEBUG
+>> +       /* No more delayed iput can be queued. */
+>> +       BTRFS_FS_STATE_NO_DELAYED_IPUT,
+>> +#endif
+>>          BTRFS_FS_STATE_COUNT
+>>   };
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 8ac4858b70e7..d2bf81c08f13 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -3435,6 +3435,10 @@ void btrfs_add_delayed_iput(struct btrfs_inode *=
+inode)
+>>          if (atomic_add_unless(&inode->vfs_inode.i_count, -1, 1))
+>>                  return;
+>>
+>> +#ifdef CONFIG_BTRFS_DEBUG
+>> +       WARN_ON_ONCE(test_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info-=
+>fs_state));
+>> +#endif
+>> +
+>
+> I would get rid of the #ifdef CONFIG_BTRFS_DEBUG everywhere. It's very
+> cheap code, negligible.
+>
+> Thanks.
+>
+>
+>
+>>          atomic_inc(&fs_info->nr_delayed_iputs);
+>>          /*
+>>           * Need to be irq safe here because we can be called from eith=
+er an irq
+>> --
+>> 2.48.1
+>>
+>
 
-I guess the documentation for the function is wrong then.
-They lends weight to the suggestion that the current return value isn't
-ideal.
-
->=20
-> If the new API do the page defragmentation, then it will always return
-> the same value for different layout of the same number of NULL pointers.
-> I guess the new one is the more perfered behavior as it provides a more
-> defined semantic.
->=20
-> >=20
-> > sunrpc could usefully use both of these interfaces.
-> >=20
-> > alloc_pages_bulk() could be implemented by initialising the array and
-> > then calling alloc_pages_bulk_refill().  Or alloc_pages_bulk_refill()
-> > could be implemented by compacting the pages and then calling
-> > alloc_pages_bulk().
-> > If we could duplicate the code and have two similar but different
-> > functions.
-> >=20
-> > The documentation for _refill() should make it clear that the pages
-> > might get re-ordered.
->=20
-> Does 'the pages might get re-ordered' mean defragmenting the page_array?
-> If yes, it makes sense to make it clear.
-
-Correct.  Defragmentation is an option for implementing refill.  We
-shouldn't promise to do that, but we should define the API in such a way
-that it is allowed.
-
->=20
-> >=20
-> > Having looked at some of the callers I agree that the current interface
-> > is not ideal for many of them, and that providing a simpler interface
-> > would help.
->=20
-> +1
->=20
-> >=20
-> > Thanks,
-> > NeilBrown
->=20
-
-If I were do work on this (and I'm not, so you don't have to follow my
-ideas) I would separate the bulk_alloc into several inline functions and
-combine them into the different interfaces that you want.  This will
-result in duplicated object code without duplicated source code.  The
-object code should be optimal.
-
-The parts of the function are:
- - validity checks - fallback to single page allocation
- - select zone - fallback to single page allocation
- - allocate multiple pages in the zone and dispose of them
- - allocate a single page
-
-The "dispose of them" is one of
-  - add to a linked list
-  - add to end of array
-  - add to next hole in array
-
-These three could be inline functions that the "allocate multiple pages"
-and "allocate single page" functions call.  We can pass these as
-function arguments and the compile will inline them.
-I imagine these little function would take one page and return
-a bool indicating if any more are wanted.
-
-The three functions: alloc_bulk_array alloc_bulk_list
-alloc_bulk_refill_array would each look like:
-
-  validity checks: do we need to allocate anything?
-
-  if want more than one page &&
-     am allowed to do mulipage (e.g. not __GFP_ACCOUNT) &&
-     zone =3D choose_zone() {
-        alloc_multi_from_zone(zone, dispose_function)
-  }
-  if nothing allocated
-     alloc_single_page(dispose_function)
-
-Each would have a different dispose_function and the initial checks
-would be quite different, as would the return value.
-
-Thanks for working on this.
-
-NeilBrown
 
