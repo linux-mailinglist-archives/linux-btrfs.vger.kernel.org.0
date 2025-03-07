@@ -1,132 +1,200 @@
-Return-Path: <linux-btrfs+bounces-12094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12095-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8DA4A5693F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 14:45:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1023DA56A16
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 15:14:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E01471762FA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 13:45:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32DF01764CF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Mar 2025 14:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43AEC21ABA6;
-	Fri,  7 Mar 2025 13:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB8A21ADD6;
+	Fri,  7 Mar 2025 14:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GLbIF1kv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HWtqeeGP"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FAE21B1B4
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 13:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 066F32185BC
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 14:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741355077; cv=none; b=dwfb1LogRX25AXeKD6N76n1o7KTEE0Noqiy6OvITiRF+C5a1EiTakzEj5U4UjoQ9qiN5bmtiMnA606sYqBX2widc5Erb8f+FmX46RP1S34nN5X+VaIpp0lfGk8+Sz4ux4HvU4WU6LLDEfUr1bl90QZB1B6sHHO0+RHp40ZAX2ac=
+	t=1741356836; cv=none; b=io3GYjytZHgmuseklKHL9/nt4xiCUn/2qVevOyQK1BFs2zCjOUZhcpiROkz3NIEMH5oOE9/TDge3vEkqA07C5biJbHI1mydz0FvF4XtQbBS7edhvTyfPn+qHunZUD6tu/EzlAmoF6n8C2XEbd4W/JC2O4U+v43xB13AWJFLOxwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741355077; c=relaxed/simple;
-	bh=LoAgfdJOXsIgJ1udVQdQZKtcxY9XkWw1LNBzlFuTMVQ=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qyrtxN7hbD4qDZ9qJL0CDNaD4XQRGQH8z/lDNpBDRs74QQMhdR2WqLTrTdG1guHYcRI6m+8bNv8SIFmeAFf6Rsb4umwuuVWIo8Vj3X9drfF5/nu/l9S/qqCFhJMFXuvF+C9dCRLLw+C3ZLSpwBm/OuP3yMu8Xvn29a+Ee5XAD90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GLbIF1kv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1F9C4CEE5
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 13:44:36 +0000 (UTC)
+	s=arc-20240116; t=1741356836; c=relaxed/simple;
+	bh=ZGQ1b8NojolNGdZX27ppzne0wDRN+UzO4AADM2G7NaM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B3rVIf/89fVe/WpqUo/Ly6O1XUpLdEsOo/u7lMn4cjM9rOy5vz6okWQe5XxkbtDibYrTmQe0ZaQ2XEyJod/IGzxy5BaiOQRd6sf+Hd5gcS6GFFVtURAyJ5nM4JwhvB2EHUOW+VaTnCDHnR7eLJ/cKhiVZZk0ad0+UgCldaC4gKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HWtqeeGP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77A86C4CED1
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Mar 2025 14:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741355077;
-	bh=LoAgfdJOXsIgJ1udVQdQZKtcxY9XkWw1LNBzlFuTMVQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=GLbIF1kv4f/jYl0oE4aXWTZ/P+/giJ+FQMGCB0IoRcYh9ozrEWaWargl78JeCP94N
-	 l8rxcBeNJFCNTw6/ouMaEo0FHh5hCM4UPUQK2M4rQt1vlcA/5KaPrs5qNCIYucz1GM
-	 GU0yKDfjXS35E/nExiG9PBmFbJ+C4bLdfuBFEW62IygV6CXA6XDkgcLGdVLe7SuLcl
-	 JPi6fhV6IKiNiCq3GJlDdn3ptwR1+z4ORPvuJDdegx5lF7xZoUyrGjXZ1qmUxEv/Hl
-	 njiRHNjAjcAC4DDfoE9F2DOaZcqGhWlApdiyzhyVm/0Oda/RDA7zQaxMefhwLiwTPZ
-	 AIa7zfX7OeTyA==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 8/8] btrfs: remove unnecessary fs_info argument from btrfs_add_block_group_cache()
-Date: Fri,  7 Mar 2025 13:44:25 +0000
-Message-Id: <b27355b20643bcad9744f9985d1f25ceec0e4745.1741354480.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1741354476.git.fdmanana@suse.com>
-References: <cover.1741354476.git.fdmanana@suse.com>
+	s=k20201202; t=1741356835;
+	bh=ZGQ1b8NojolNGdZX27ppzne0wDRN+UzO4AADM2G7NaM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HWtqeeGPNb7BYUmDxk6uihBOzH7hSjPIkwZBmu4/7OWZNYYzSrQDAqaKqnvYv1OWC
+	 erio0fivp2QafWSRqcUt6xBZtGzdVkMiuOyZMyhFjnYldYtvOZYOw8XfmRpcoJrl2H
+	 GFRm16/E3i81AesQYnT6TkDMsQw1zRwppcXm605zilOdRt8AZ+D34tQV9lJD5rZSpu
+	 oKo+n10XU6RK0qlywviu0vp1OHkWW6YT3Qy4TCLcyzosSGKjhlEwNOT/iIg86mj1rX
+	 kkMlWAlXeNOI35Tz+u+ym41dmyAyl3f1LNfLKA1fYJM8pq+IAXmIJoaDIvqBV0gQ3H
+	 lpb7QT+K6QUxg==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-abf5e1a6cd3so350757066b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Mar 2025 06:13:55 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy0AM0zx3GwMQrxQqweOMXm/v1Uz5R9+QAfdeavDnjJfggtOKDj
+	iU8MkJKjGxCFuWt96MNM5yaTerj0ul/fzbw59XFA3EdXnuI9hrBH4hhvHtLXu88cI6+mFuQMXGs
+	ILsJkdBA8VnDK2pHJfRQMMVcqTvk=
+X-Google-Smtp-Source: AGHT+IGW2EGKD3q1Sz9veIdv5MQA35pA5eNLCXXfslALlQqxjG9XaMjL7QsTg/NsD+mAOgl4QMJbXcVIdRnpVWEzMfY=
+X-Received: by 2002:a17:906:dc90:b0:abf:59a3:df19 with SMTP id
+ a640c23a62f3a-ac25302feb2mr380843566b.57.1741356833973; Fri, 07 Mar 2025
+ 06:13:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1741306938.git.boris@bur.io> <f66e903dd583274967fcd45844e6444c4a49d98b.1741306938.git.boris@bur.io>
+In-Reply-To: <f66e903dd583274967fcd45844e6444c4a49d98b.1741306938.git.boris@bur.io>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 7 Mar 2025 14:13:15 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4ErZWCa2qC1UgXVCfahA1Qx=WdeEGJ8E3COCLuH-n=5A@mail.gmail.com>
+X-Gm-Features: AQ5f1JqCaa6TO3gJi0gWOX_yuZ_15n0Woz3D0KyAgB_K4s3SyK_o38BHNESjOh4
+Message-ID: <CAL3q7H4ErZWCa2qC1UgXVCfahA1Qx=WdeEGJ8E3COCLuH-n=5A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] btrfs: fix bg refcount race in btrfs_create_pending_block_groups
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Mar 7, 2025 at 12:31=E2=80=AFAM Boris Burkov <boris@bur.io> wrote:
+>
+> To avoid a race where mark_bg_unused spuriously "moved" the block_group
+> from one bg_list attachment to another without taking a ref, we mark a
+> new block group with the bit BLOCK_GROUP_FLAG_NEW.
+>
+> However, this fix is not quite complete. Since it does not use the
+> unused_bg_lock, it is possible for the following race to occur:
+>
+> create_pending_block_groups                     mark_bg_unused
 
-The fs_info can be taken from the given block group, so there is no need
-to pass it as an argument. Also rename the local variable from 'info' to
-'fs_info' which is more widely used, more clear and to be more consistent.
+mark_bg_unused -> btrfs_mark_bg_unused
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/block-group.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+>                                            if list_empty // false
+>         list_del_init
+>         clear_bit
+>                                            else if (test_bit) // true
+>                                                 list_move_tail
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 64f0268dcf02..4975aa5665ae 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -191,21 +191,21 @@ static int btrfs_bg_start_cmp(const struct rb_node *new,
- /*
-  * This adds the block group to the fs_info rb tree for the block group cache
-  */
--static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
--				       struct btrfs_block_group *block_group)
-+static int btrfs_add_block_group_cache(struct btrfs_block_group *block_group)
- {
-+	struct btrfs_fs_info *fs_info = block_group->fs_info;
- 	struct rb_node *exist;
- 	int ret = 0;
- 
- 	ASSERT(block_group->length != 0);
- 
--	write_lock(&info->block_group_cache_lock);
-+	write_lock(&fs_info->block_group_cache_lock);
- 
- 	exist = rb_find_add_cached(&block_group->cache_node,
--			&info->block_group_cache_tree, btrfs_bg_start_cmp);
-+			&fs_info->block_group_cache_tree, btrfs_bg_start_cmp);
- 	if (exist)
- 		ret = -EEXIST;
--	write_unlock(&info->block_group_cache_lock);
-+	write_unlock(&fs_info->block_group_cache_lock);
- 
- 	return ret;
- }
-@@ -2438,7 +2438,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 			goto error;
- 	}
- 
--	ret = btrfs_add_block_group_cache(info, cache);
-+	ret = btrfs_add_block_group_cache(cache);
- 	if (ret) {
- 		btrfs_remove_free_space_cache(cache);
- 		goto error;
-@@ -2487,7 +2487,7 @@ static int fill_dummy_bgs(struct btrfs_fs_info *fs_info)
- 		bg->cached = BTRFS_CACHE_FINISHED;
- 		bg->used = map->chunk_len;
- 		bg->flags = map->type;
--		ret = btrfs_add_block_group_cache(fs_info, bg);
-+		ret = btrfs_add_block_group_cache(bg);
- 		/*
- 		 * We may have some valid block group cache added already, in
- 		 * that case we skip to the next one.
-@@ -2914,7 +2914,7 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
- 	cache->space_info = btrfs_find_space_info(fs_info, cache->flags);
- 	ASSERT(cache->space_info);
- 
--	ret = btrfs_add_block_group_cache(fs_info, cache);
-+	ret = btrfs_add_block_group_cache(cache);
- 	if (ret) {
- 		btrfs_remove_free_space_cache(cache);
- 		btrfs_put_block_group(cache);
--- 
-2.45.2
+This should mention how that sequence is possible, i.e. on a higher level.
 
+For example the task that created the block group ended up not
+allocating extents from it,
+and other tasks allocated extents from it and deallocated so that the
+block group became empty
+and was added to the unused list before the task that created it
+finished btrfs_create_pending_block_groups().
+
+Or was it some other scenario?
+
+Thanks.
+
+>
+> And we get into the exact same broken ref count situation.
+> Those look something like:
+> [ 1272.943113] ------------[ cut here ]------------
+> [ 1272.943527] refcount_t: underflow; use-after-free.
+> [ 1272.943967] WARNING: CPU: 1 PID: 61 at lib/refcount.c:28 refcount_warn=
+_saturate+0xba/0x110
+> [ 1272.944731] Modules linked in: btrfs virtio_net xor zstd_compress raid=
+6_pq null_blk [last unloaded: btrfs]
+> [ 1272.945550] CPU: 1 UID: 0 PID: 61 Comm: kworker/u32:1 Kdump: loaded Ta=
+inted: G        W          6.14.0-rc5+ #108
+> [ 1272.946368] Tainted: [W]=3DWARN
+> [ 1272.946585] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S Arch Linux 1.16.3-1-1 04/01/2014
+> [ 1272.947273] Workqueue: btrfs_discard btrfs_discard_workfn [btrfs]
+> [ 1272.947788] RIP: 0010:refcount_warn_saturate+0xba/0x110
+> [ 1272.948180] Code: 01 01 e8 e9 c7 a9 ff 0f 0b c3 cc cc cc cc 80 3d 3f 4=
+a de 01 00 75 85 48 c7 c7 00 9b 9f 8f c6 05 2f 4a de 01 01 e8 c6 c7 a9 ff <=
+0f> 0b c3 cc cc cc cc 80 3d 1d 4a de 01 00 0f 85 5e ff ff ff 48 c7
+> [ 1272.949532] RSP: 0018:ffffbf1200247df0 EFLAGS: 00010282
+> [ 1272.949901] RAX: 0000000000000000 RBX: ffffa14b00e3f800 RCX: 000000000=
+0000000
+> [ 1272.950437] RDX: 0000000000000000 RSI: ffffbf1200247c78 RDI: 00000000f=
+fffdfff
+> [ 1272.950986] RBP: ffffa14b00dc2860 R08: 00000000ffffdfff R09: ffffffff9=
+0526268
+> [ 1272.951512] R10: ffffffff904762c0 R11: 0000000063666572 R12: ffffa14b0=
+0dc28c0
+> [ 1272.952024] R13: 0000000000000000 R14: ffffa14b00dc2868 R15: 000001285=
+dcd12c0
+> [ 1272.952850] FS:  0000000000000000(0000) GS:ffffa14d33c40000(0000) knlG=
+S:0000000000000000
+> [ 1272.953458] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1272.953931] CR2: 00007f838cbda000 CR3: 000000010104e000 CR4: 000000000=
+00006f0
+> [ 1272.954474] Call Trace:
+> [ 1272.954655]  <TASK>
+> [ 1272.954812]  ? refcount_warn_saturate+0xba/0x110
+> [ 1272.955173]  ? __warn.cold+0x93/0xd7
+> [ 1272.955487]  ? refcount_warn_saturate+0xba/0x110
+> [ 1272.955816]  ? report_bug+0xe7/0x120
+> [ 1272.956103]  ? handle_bug+0x53/0x90
+> [ 1272.956424]  ? exc_invalid_op+0x13/0x60
+> [ 1272.956700]  ? asm_exc_invalid_op+0x16/0x20
+> [ 1272.957011]  ? refcount_warn_saturate+0xba/0x110
+> [ 1272.957399]  btrfs_discard_cancel_work.cold+0x26/0x2b [btrfs]
+> [ 1272.957853]  btrfs_put_block_group.cold+0x5d/0x8e [btrfs]
+> [ 1272.958289]  btrfs_discard_workfn+0x194/0x380 [btrfs]
+> [ 1272.958729]  process_one_work+0x130/0x290
+> [ 1272.959026]  worker_thread+0x2ea/0x420
+> [ 1272.959335]  ? __pfx_worker_thread+0x10/0x10
+> [ 1272.959644]  kthread+0xd7/0x1c0
+> [ 1272.959872]  ? __pfx_kthread+0x10/0x10
+> [ 1272.960172]  ret_from_fork+0x30/0x50
+> [ 1272.960474]  ? __pfx_kthread+0x10/0x10
+> [ 1272.960745]  ret_from_fork_asm+0x1a/0x30
+> [ 1272.961035]  </TASK>
+> [ 1272.961238] ---[ end trace 0000000000000000 ]---
+>
+> Though we have seen them in the async discard workfn as well. It is
+> most likely to happen after a relocation finishes which cancels discard,
+> tears down the block group, etc.
+>
+> Fix this fully by taking the lock around the list_del_init + clear_bit
+> so that the two are done atomically.
+>
+> Fixes: 0657b20c5a76 ("btrfs: fix use-after-free of new block group that b=
+ecame unused")
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/block-group.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 64f0268dcf02..2db1497b58d9 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -2797,8 +2797,11 @@ void btrfs_create_pending_block_groups(struct btrf=
+s_trans_handle *trans)
+>                 /* Already aborted the transaction if it failed. */
+>  next:
+>                 btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
+> +
+> +               spin_lock(&fs_info->unused_bgs_lock);
+>                 list_del_init(&block_group->bg_list);
+>                 clear_bit(BLOCK_GROUP_FLAG_NEW, &block_group->runtime_fla=
+gs);
+> +               spin_unlock(&fs_info->unused_bgs_lock);
+>
+>                 /*
+>                  * If the block group is still unused, add it to the list=
+ of
+> --
+> 2.48.1
+>
+>
 
