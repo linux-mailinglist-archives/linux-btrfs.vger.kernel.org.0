@@ -1,200 +1,151 @@
-Return-Path: <linux-btrfs+bounces-12111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C84A57C86
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Mar 2025 18:49:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5506BA57DDC
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Mar 2025 20:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F374B3B064F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Mar 2025 17:49:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2599D16D699
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Mar 2025 19:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6258D1E9B0E;
-	Sat,  8 Mar 2025 17:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l0NzoyH3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C03A1FF1B4;
+	Sat,  8 Mar 2025 19:48:32 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C70BD528
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Mar 2025 17:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B8A1392
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Mar 2025 19:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741456161; cv=none; b=hlS+KIZObf3c19nXOnwsrvVW0MiVDBrq52SVIkrhTse/9btApfzZiZUmKAVtZvT/xhKTjJ3nWp2r2gFah5QtZdjXPWS9sEdImDcrZbDKbzFasBT4qUtQmdmX+6yVkuBNUtAeGFEAXqbyr6mxVmqCJOHSruQqGbo/eVMfsvh7Hi4=
+	t=1741463311; cv=none; b=GrqWRxjIuwAgFW/B9zYz7J4XOjUHN9wjEzBzXLn9s5G1fJ/E+ubiGFTuko4ABGLjs6u07OC8ElUeBEHSPznXI+SLM5kmBLB3L/nGOcI9uZdy+nRRBzLMdxaQ5bosxFKrRaVcXCjjN1496jok9/0e8xe5o+X5rjJD4JMlk18bKvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741456161; c=relaxed/simple;
-	bh=sp7v80xpaznIvmnItT1wH0F7vEXqhErdcmMSDkebixY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fYvmSenIJvcRqRAaU6L/anw86RlaCBJ5XyvwHWoneqpVtd+Bh96C3zDqAQ8u1/mUxLksSYYLF/emZkdfizgKBDsdolTablPbk9wGMtrx5W/rQ0zr5D+ZS/48tFBIdUgRzc6EUwIeHTUu0EOW4Wqp1zr7C0wuOEq1CS8bXMJ/YUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l0NzoyH3; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741456159; x=1772992159;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sp7v80xpaznIvmnItT1wH0F7vEXqhErdcmMSDkebixY=;
-  b=l0NzoyH3T50y6I4/N8ZMinIzZJy8E1/XNE8czA1VXSxJPvEECQKVKsLF
-   i830WfceIG1t2tPawrTNLbnXPH+RzW5AGrOhCZlFLWwoAk29xw4Q18lUa
-   aWahxeLNfeGLerYh9zq9En07syWlnZHcu6YOJwDEYlBSwORcPYrnGjplg
-   0KLvwMwAomkBWxrL5fmjQWn75wXFh3aCkzKCTkr2S9uZ03lVaMEI5X+ik
-   rMt8bvzuj2fTzZg7A85OXyZA6FZPRCpC0Ei2y3uKfmAH9kdRtWi+xsvpK
-   5pIO/B7tM8XfY61yAZKd/qPBmFw0LFvVOeFe8CjU7dnOt61cHeg4bGRbh
-   w==;
-X-CSE-ConnectionGUID: gkPdjpTQSICOL8mmird7Jw==
-X-CSE-MsgGUID: I/QKmr9rRUahR/O28GueYA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11367"; a="52699883"
-X-IronPort-AV: E=Sophos;i="6.14,232,1736841600"; 
-   d="scan'208";a="52699883"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2025 09:49:19 -0800
-X-CSE-ConnectionGUID: b5faxIkgT2CbQTiVKbDyrA==
-X-CSE-MsgGUID: qDLejKgIRJ2/xpEMe8+bnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,232,1736841600"; 
-   d="scan'208";a="120079533"
-Received: from lkp-server02.sh.intel.com (HELO a4747d147074) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 08 Mar 2025 09:49:17 -0800
-Received: from kbuild by a4747d147074 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tqyIV-00029W-2H;
-	Sat, 08 Mar 2025 17:49:15 +0000
-Date: Sun, 9 Mar 2025 01:48:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 4/8] btrfs: make btrfs_iget() return a btrfs inode instead
-Message-ID: <202503090344.SeJrOfHD-lkp@intel.com>
-References: <f6d2a09fb43742fb5be38f820908510e298f8d40.1741354479.git.fdmanana@suse.com>
+	s=arc-20240116; t=1741463311; c=relaxed/simple;
+	bh=/5WWxSf8LBpQx8K8lp+pJVwAGjgJTD/bO+VcFtfoito=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DMcUi4bAl3HhVhDBNkAHtisDxI1m14ZEuL/GiK01exV7Hi4BooC8d/Ane5m+wm/2IkjSIGUSDvHC8uD9vhJKN81iC9d/JcAZeafr3u6eTt9aJIq0M1w5J0lnsvD2GWoWbzB4+XXJjC7Vc3C2Z/I8zoqUVIX1ZXxTp3KU1xo7s4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d2a6102c1aso62997775ab.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 08 Mar 2025 11:48:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741463309; x=1742068109;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E0kUnKJ/Hbb5rDIh+tNr9gyaBINNXokpFjGp9x/PF8M=;
+        b=Kw4QOg6OAlLPMuyr5vDSXeVlHnb5nIp561THr/7S2hOGDzhwWekTYT1Lc5RlRcEJVM
+         eAc0GfHu8gyVUigIdFABC2OqAaLrDFzpok3ksobMAGqNQA3+h5/8NvdwEqZm2rOdyIaN
+         WtHdE2v3qRpL1+L6V8LnOgRCM0s4nsGgFjUO1gDgIcI0rZdg4Oe4yU3QL0cSrZRRN4ot
+         3qSocDtaWCifvKG/2/BOwDv2tbOAqlginr8aXXOARJXgXES64liP2mOg/bfuXjRjGCiW
+         QogPoUGzczYXBwhwZSnkqJbrQCgccORSMNe7ITwLIIphiColBwypmJ2NXVd+CAXG8cAU
+         uOIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVil1JNpzGlKkRRHs4K1BfdadnavN3yZuVTAegiJkE0gOVzc9YXm1iGir1/LSvKnEp8Hh9E3IX12v0b3g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+WkX1UDasIRsFztDGxFbJBvOPbpZ5GfbK9qxQvAVq65LFszb3
+	rgd5x2OUg9yQ4Eck6xWD/ofViR34zyySztgaH9ska3dPRvM1rsdcoDpj89Cz7MEFRgeQH59PJuQ
+	g/kmXHxXbDzeFWVD4M40i3qVIQKePqvq+15v7mwIYUViuuNRsDWKdlV8=
+X-Google-Smtp-Source: AGHT+IEqcZbX5J85DTBCue0PG8qnSzRG01E+SQFqUCUZBh1LtXPyygujlM2Y6neUvt2/k9DuW8z1Nk7meMsRREAOhWorl9BY6WwZ
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6d2a09fb43742fb5be38f820908510e298f8d40.1741354479.git.fdmanana@suse.com>
+X-Received: by 2002:a05:6e02:1c0e:b0:3d1:a75e:65f6 with SMTP id
+ e9e14a558f8ab-3d44195797bmr95723035ab.18.1741463309517; Sat, 08 Mar 2025
+ 11:48:29 -0800 (PST)
+Date: Sat, 08 Mar 2025 11:48:29 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67cc9f0d.050a0220.14db68.0046.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_create_new_inode (2)
+From: syzbot <syzbot+35244a1be5611b840ab2@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hello,
 
-kernel test robot noticed the following build errors:
+syzbot found the following issue on:
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on next-20250307]
-[cannot apply to linus/master v6.14-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+HEAD commit:    99fa936e8e4f Merge tag 'affs-6.14-rc5-tag' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1079b5a8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=523d3ff8e053340a
+dashboard link: https://syzkaller.appspot.com/bug?extid=35244a1be5611b840ab2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-url:    https://github.com/intel-lab-lkp/linux/commits/fdmanana-kernel-org/btrfs-return-a-btrfs_inode-from-btrfs_iget_logging/20250307-214724
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/f6d2a09fb43742fb5be38f820908510e298f8d40.1741354479.git.fdmanana%40suse.com
-patch subject: [PATCH 4/8] btrfs: make btrfs_iget() return a btrfs inode instead
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20250309/202503090344.SeJrOfHD-lkp@intel.com/config)
-compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250309/202503090344.SeJrOfHD-lkp@intel.com/reproduce)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202503090344.SeJrOfHD-lkp@intel.com/
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b40ecb8ed597/disk-99fa936e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/16348198506c/vmlinux-99fa936e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/65fc34c1d4d6/bzImage-99fa936e.xz
 
-All errors (new ones prefixed by >>):
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+35244a1be5611b840ab2@syzkaller.appspotmail.com
 
-   In file included from fs/btrfs/send.c:11:
-   In file included from include/linux/xattr.h:18:
-   In file included from include/linux/mm.h:2224:
-   include/linux/vmstat.h:504:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     504 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     505 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:511:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     511 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     512 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:524:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     524 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     525 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> fs/btrfs/send.c:5535:8: error: incompatible pointer types assigning to 'struct inode *' from 'struct btrfs_inode *' [-Werror,-Wincompatible-pointer-types]
-    5535 |         inode = btrfs_iget(sctx->cur_ino, root);
-         |               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   3 warnings and 1 error generated.
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 1 PID: 7341 at fs/btrfs/inode.c:6384 btrfs_create_new_inode+0x1c10/0x1fa0 fs/btrfs/inode.c:6384
+Modules linked in:
+CPU: 1 UID: 0 PID: 7341 Comm: syz.4.132 Not tainted 6.14.0-rc5-syzkaller-00013-g99fa936e8e4f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+RIP: 0010:btrfs_create_new_inode+0x1c10/0x1fa0 fs/btrfs/inode.c:6384
+Code: 49 8b 3e 48 c7 c6 a0 8c 6c 8c 44 89 e2 e8 78 ea 3e fd eb 1a e8 91 f3 d8 fd 90 48 c7 c7 40 8c 6c 8c 44 89 e6 e8 71 af 98 fd 90 <0f> 0b 90 90 4c 8b 7c 24 38 e9 43 f8 ff ff e8 6d f3 d8 fd eb 05 e8
+RSP: 0000:ffffc90005447a20 EFLAGS: 00010246
+RAX: b537982dfbea0300 RBX: 0000000000000000 RCX: ffff88807c24da00
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc90005447c50 R08: ffffffff81817d42 R09: 1ffff92000a88ee0
+R10: dffffc0000000000 R11: fffff52000a88ee1 R12: 00000000ffffffe4
+R13: 1ffff1100b55d70f R14: ffff88805aaeb878 R15: ffff888028651f20
+FS:  00007f7bffc1a6c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f664e111000 CR3: 0000000076f6e000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_create_common+0x1d4/0x2e0 fs/btrfs/inode.c:6615
+ vfs_mkdir+0x2f9/0x4f0 fs/namei.c:4313
+ do_mkdirat+0x264/0x3a0 fs/namei.c:4336
+ __do_sys_mkdirat fs/namei.c:4351 [inline]
+ __se_sys_mkdirat fs/namei.c:4349 [inline]
+ __x64_sys_mkdirat+0x87/0xa0 fs/namei.c:4349
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f7bfed8d169
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7bffc1a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007f7bfefa6080 RCX: 00007f7bfed8d169
+RDX: 0000000000000008 RSI: 0000400000000100 RDI: 0000000000000003
+RBP: 00007f7bfee0e2a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f7bfefa6080 R15: 00007ffe1988f628
+ </TASK>
 
 
-vim +5535 fs/btrfs/send.c
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-16e7549f045d33b Josef Bacik   2013-10-22  5519  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5520  static int send_encoded_inline_extent(struct send_ctx *sctx,
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5521  				      struct btrfs_path *path, u64 offset,
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5522  				      u64 len)
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5523  {
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5524  	struct btrfs_root *root = sctx->send_root;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5525  	struct btrfs_fs_info *fs_info = root->fs_info;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5526  	struct inode *inode;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5527  	struct fs_path *fspath;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5528  	struct extent_buffer *leaf = path->nodes[0];
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5529  	struct btrfs_key key;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5530  	struct btrfs_file_extent_item *ei;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5531  	u64 ram_bytes;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5532  	size_t inline_size;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5533  	int ret;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5534  
-d13240dd0a2d13b Filipe Manana 2024-06-13 @5535  	inode = btrfs_iget(sctx->cur_ino, root);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5536  	if (IS_ERR(inode))
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5537  		return PTR_ERR(inode);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5538  
-6054b503e2eafac Filipe Manana 2025-02-18  5539  	fspath = get_cur_inode_path(sctx);
-6054b503e2eafac Filipe Manana 2025-02-18  5540  	if (IS_ERR(fspath)) {
-6054b503e2eafac Filipe Manana 2025-02-18  5541  		ret = PTR_ERR(fspath);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5542  		goto out;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5543  	}
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5544  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5545  	ret = begin_cmd(sctx, BTRFS_SEND_C_ENCODED_WRITE);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5546  	if (ret < 0)
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5547  		goto out;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5548  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5549  	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5550  	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5551  	ram_bytes = btrfs_file_extent_ram_bytes(leaf, ei);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5552  	inline_size = btrfs_file_extent_inline_item_len(leaf, path->slots[0]);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5553  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5554  	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, fspath);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5555  	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5556  	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_FILE_LEN,
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5557  		    min(key.offset + ram_bytes - offset, len));
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5558  	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN, ram_bytes);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5559  	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET, offset - key.offset);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5560  	ret = btrfs_encoded_io_compression_from_extent(fs_info,
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5561  				btrfs_file_extent_compression(leaf, ei));
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5562  	if (ret < 0)
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5563  		goto out;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5564  	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5565  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5566  	ret = put_data_header(sctx, inline_size);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5567  	if (ret < 0)
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5568  		goto out;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5569  	read_extent_buffer(leaf, sctx->send_buf + sctx->send_size,
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5570  			   btrfs_file_extent_inline_start(ei), inline_size);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5571  	sctx->send_size += inline_size;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5572  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5573  	ret = send_cmd(sctx);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5574  
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5575  tlv_put_failure:
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5576  out:
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5577  	iput(inode);
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5578  	return ret;
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5579  }
-3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5580  
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
