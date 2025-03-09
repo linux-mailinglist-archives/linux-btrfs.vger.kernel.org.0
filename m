@@ -1,151 +1,110 @@
-Return-Path: <linux-btrfs+bounces-12112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5506BA57DDC
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Mar 2025 20:48:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD07A58165
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Mar 2025 08:58:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2599D16D699
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Mar 2025 19:48:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6F62188F154
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Mar 2025 07:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C03A1FF1B4;
-	Sat,  8 Mar 2025 19:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0C9189902;
+	Sun,  9 Mar 2025 07:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SxIqp1dR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from mail-pj1-f66.google.com (mail-pj1-f66.google.com [209.85.216.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B8A1392
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Mar 2025 19:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48A229A2
+	for <linux-btrfs@vger.kernel.org>; Sun,  9 Mar 2025 07:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741463311; cv=none; b=GrqWRxjIuwAgFW/B9zYz7J4XOjUHN9wjEzBzXLn9s5G1fJ/E+ubiGFTuko4ABGLjs6u07OC8ElUeBEHSPznXI+SLM5kmBLB3L/nGOcI9uZdy+nRRBzLMdxaQ5bosxFKrRaVcXCjjN1496jok9/0e8xe5o+X5rjJD4JMlk18bKvw=
+	t=1741507127; cv=none; b=MfH6uD8ufq/OBtuVg4lvWfcqVWdCvr5DKmy9jHwTM8S44/qWRrYcH5juXWxA8mwtklmKXRfs7EWBCAlMtLEy1aYYJGFUqW7C3qey+M6WuFhQ7JcPBy+K8o1LiIow7SkAPvW5CxM22D47RM3b920idLP+UYzuyDwRsgbA1HZIaHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741463311; c=relaxed/simple;
-	bh=/5WWxSf8LBpQx8K8lp+pJVwAGjgJTD/bO+VcFtfoito=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DMcUi4bAl3HhVhDBNkAHtisDxI1m14ZEuL/GiK01exV7Hi4BooC8d/Ane5m+wm/2IkjSIGUSDvHC8uD9vhJKN81iC9d/JcAZeafr3u6eTt9aJIq0M1w5J0lnsvD2GWoWbzB4+XXJjC7Vc3C2Z/I8zoqUVIX1ZXxTp3KU1xo7s4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d2a6102c1aso62997775ab.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 08 Mar 2025 11:48:30 -0800 (PST)
+	s=arc-20240116; t=1741507127; c=relaxed/simple;
+	bh=dSgvz0fQzI6iLmfZWMIhFkW+o7r/3kypGdDJoXJvE5I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YcX6Z0FlFnz7q4sxrdCsZPbMaPEDLlpSuYJ6gsJL1eCuG6zk1thWDkQLEsUA04f/mX58PVFBbnWeREZe9dHGhY6KO/gifRxLKdAXqmrgyf5/c5RTfQikqWBVfWkT3gD1NT7o/CVeM4hlww8EkJ2PxAvLSqVaQJemSCYFPJJlECg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SxIqp1dR; arc=none smtp.client-ip=209.85.216.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f66.google.com with SMTP id 98e67ed59e1d1-2ff62f9b6e4so903352a91.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 08 Mar 2025 23:58:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741507125; x=1742111925; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aJdTh+gX4hEkk9EWW3nDAjBwUw7Zfa31nL6OGFHHcr4=;
+        b=SxIqp1dRaI6c7wk5H1+k6nLeAIskCNMGWvXcT3I5KmuIUP8KxWu6xO+rpJOiFTGksV
+         Y7hyXgcpW2Njb9MskQRbE2CePijkzhRMsQnqPvzrwAuzI47dd8U4cSccEMeSs+XVixjY
+         nAJn/kb7hYXGVi0ZoYUFkiekSP9UaWugqlTsDvWFuI0GWBT1A8/WirGEe320t93fV5e1
+         j14rusugq0t3R0bG1EcWtpEKLBJp+0Vljz7vR4+jhF5B8E8Phpi8y4VWWIPHDU43jyIl
+         1xGr9zzw8nzcZ9L94tpVlrbSeuyAK9IS/PzGwop3xT3prbCPZ73ugHtlPhPpyaNnhKTl
+         aODA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741463309; x=1742068109;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E0kUnKJ/Hbb5rDIh+tNr9gyaBINNXokpFjGp9x/PF8M=;
-        b=Kw4QOg6OAlLPMuyr5vDSXeVlHnb5nIp561THr/7S2hOGDzhwWekTYT1Lc5RlRcEJVM
-         eAc0GfHu8gyVUigIdFABC2OqAaLrDFzpok3ksobMAGqNQA3+h5/8NvdwEqZm2rOdyIaN
-         WtHdE2v3qRpL1+L6V8LnOgRCM0s4nsGgFjUO1gDgIcI0rZdg4Oe4yU3QL0cSrZRRN4ot
-         3qSocDtaWCifvKG/2/BOwDv2tbOAqlginr8aXXOARJXgXES64liP2mOg/bfuXjRjGCiW
-         QogPoUGzczYXBwhwZSnkqJbrQCgccORSMNe7ITwLIIphiColBwypmJ2NXVd+CAXG8cAU
-         uOIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVil1JNpzGlKkRRHs4K1BfdadnavN3yZuVTAegiJkE0gOVzc9YXm1iGir1/LSvKnEp8Hh9E3IX12v0b3g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+WkX1UDasIRsFztDGxFbJBvOPbpZ5GfbK9qxQvAVq65LFszb3
-	rgd5x2OUg9yQ4Eck6xWD/ofViR34zyySztgaH9ska3dPRvM1rsdcoDpj89Cz7MEFRgeQH59PJuQ
-	g/kmXHxXbDzeFWVD4M40i3qVIQKePqvq+15v7mwIYUViuuNRsDWKdlV8=
-X-Google-Smtp-Source: AGHT+IEqcZbX5J85DTBCue0PG8qnSzRG01E+SQFqUCUZBh1LtXPyygujlM2Y6neUvt2/k9DuW8z1Nk7meMsRREAOhWorl9BY6WwZ
+        d=1e100.net; s=20230601; t=1741507125; x=1742111925;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aJdTh+gX4hEkk9EWW3nDAjBwUw7Zfa31nL6OGFHHcr4=;
+        b=QmeCCIR8zbKPhEUj3u+hOrkF9eCAnRO69Rno/o7vbwbcBFTTdJvyP6UUgD6Nevw9aX
+         SdjPyUzyA2HHTvGjGkmP3KxQyVDOT1DJn50GrrXnrcq+soDHxTS2hfQeze0n0al695WS
+         LHmV8EiLj2P7XBAFnYhe0pNWJ1/LnCQAv4NyK0eROkKjFKuATGIA1OhR6X42C9oSGTGi
+         ajLW+hqoujynL8MypVmYVFvGK02oM2ZeoBAw5SOy6gjUBgpYylWngov/ZWS413K8b21F
+         3ekDvqr/PCEeY6dO97wIAC+t+98Gh30WGFWMAgKIPTxFnYRxOJflJKQuzbOHp3ngWxgf
+         5HBw==
+X-Gm-Message-State: AOJu0YyCACZsP4g+5DsAydb4jqvK7haE9YLlUNd0v0+LXTfDwuXFK9Hg
+	pjsF7MzHJpsqRryOWnTZ3ngmZZHGHcSqjkBAIQ3pkfyfEmnOqkDsJS8T7q5txkZQ3w==
+X-Gm-Gg: ASbGnctC8ZJt+Sd0t0HBdNqtqKXPcMTnuXovXcf4oqp0IfIQYIUOhnNT8zavJQuyLlw
+	qAaWi3D/oEfWmKHjC8VZ27XtaW9CGTDsqhmOS0QL5VHOoHNY8S2o7mG4NMN7exWWIwI9an9vqxR
+	NlGVBcyJAPDkdDpwONNS/opukptEng3icRZtcMhQTqAPlx2cbxcEPWEW+NtcRAb13CGpeK9eOTf
+	hhAdpnlRA+8RBOSeDYCvq5Wmo9YCSBmVP23YtHcUA56jeNbmVNQsvq/LcRKuxlEs/QOKhPYTymC
+	mxsHSnk7VLbGIj5MgAgGjhvqzfVoQf5WTog2iESNVKv7kw==
+X-Google-Smtp-Source: AGHT+IEfdbfQN3XSSeZgcC1/fJHb/RW03ETawxUCnQG4i6fayV19noDcK/JlY4T5cS3jmRyXGBqyLA==
+X-Received: by 2002:a17:902:f684:b0:223:5696:44d6 with SMTP id d9443c01a7336-2254229d0aamr32544625ad.12.1741507124898;
+        Sat, 08 Mar 2025 23:58:44 -0800 (PST)
+Received: from SaltyKitkat.. ([2403:18c0:5:3e0:98c6:7dff:fe56:ac2b])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-224109dd627sm57045605ad.50.2025.03.08.23.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Mar 2025 23:58:44 -0800 (PST)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Sun YangKai <sunk67188@gmail.com>
+Subject: [PATCH 0/3] btrfs: random code cleanup
+Date: Sun,  9 Mar 2025 15:57:58 +0800
+Message-ID: <20250309075820.30999-1-sunk67188@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c0e:b0:3d1:a75e:65f6 with SMTP id
- e9e14a558f8ab-3d44195797bmr95723035ab.18.1741463309517; Sat, 08 Mar 2025
- 11:48:29 -0800 (PST)
-Date: Sat, 08 Mar 2025 11:48:29 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67cc9f0d.050a0220.14db68.0046.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_create_new_inode (2)
-From: syzbot <syzbot+35244a1be5611b840ab2@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+These patches are not intented to change any behavior of current code.
+Just trying to make the codes easier to read, and, maybe, perform better.
+I'm working on btrfs_search_forward(), trying to improve it and fix some
+misbehaviors. And I'll send some patches that will change the behavior of
+the code later.
 
-syzbot found the following issue on:
+I'm new to the maillist, trying to read the implements, and improve it from
+my perspective.
+If you have any feedback or questions, please let me know :)
 
-HEAD commit:    99fa936e8e4f Merge tag 'affs-6.14-rc5-tag' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1079b5a8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=523d3ff8e053340a
-dashboard link: https://syzkaller.appspot.com/bug?extid=35244a1be5611b840ab2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Sun YangKai (3):
+  btrfs: improve readability in search_ioctl()
+  btrfs: remove unnecessary 'found_key' local variable in
+    btrfs_search_forward()
+  btrfs: avoid redundant slot assignment in btrfs_search_forward()
 
-Unfortunately, I don't have any reproducer for this issue yet.
+ fs/btrfs/ctree.c | 12 +++++-------
+ fs/btrfs/ioctl.c | 15 +++++++--------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b40ecb8ed597/disk-99fa936e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/16348198506c/vmlinux-99fa936e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/65fc34c1d4d6/bzImage-99fa936e.xz
+-- 
+2.48.1
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+35244a1be5611b840ab2@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -28)
-WARNING: CPU: 1 PID: 7341 at fs/btrfs/inode.c:6384 btrfs_create_new_inode+0x1c10/0x1fa0 fs/btrfs/inode.c:6384
-Modules linked in:
-CPU: 1 UID: 0 PID: 7341 Comm: syz.4.132 Not tainted 6.14.0-rc5-syzkaller-00013-g99fa936e8e4f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-RIP: 0010:btrfs_create_new_inode+0x1c10/0x1fa0 fs/btrfs/inode.c:6384
-Code: 49 8b 3e 48 c7 c6 a0 8c 6c 8c 44 89 e2 e8 78 ea 3e fd eb 1a e8 91 f3 d8 fd 90 48 c7 c7 40 8c 6c 8c 44 89 e6 e8 71 af 98 fd 90 <0f> 0b 90 90 4c 8b 7c 24 38 e9 43 f8 ff ff e8 6d f3 d8 fd eb 05 e8
-RSP: 0000:ffffc90005447a20 EFLAGS: 00010246
-RAX: b537982dfbea0300 RBX: 0000000000000000 RCX: ffff88807c24da00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90005447c50 R08: ffffffff81817d42 R09: 1ffff92000a88ee0
-R10: dffffc0000000000 R11: fffff52000a88ee1 R12: 00000000ffffffe4
-R13: 1ffff1100b55d70f R14: ffff88805aaeb878 R15: ffff888028651f20
-FS:  00007f7bffc1a6c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f664e111000 CR3: 0000000076f6e000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_create_common+0x1d4/0x2e0 fs/btrfs/inode.c:6615
- vfs_mkdir+0x2f9/0x4f0 fs/namei.c:4313
- do_mkdirat+0x264/0x3a0 fs/namei.c:4336
- __do_sys_mkdirat fs/namei.c:4351 [inline]
- __se_sys_mkdirat fs/namei.c:4349 [inline]
- __x64_sys_mkdirat+0x87/0xa0 fs/namei.c:4349
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f7bfed8d169
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7bffc1a038 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
-RAX: ffffffffffffffda RBX: 00007f7bfefa6080 RCX: 00007f7bfed8d169
-RDX: 0000000000000008 RSI: 0000400000000100 RDI: 0000000000000003
-RBP: 00007f7bfee0e2a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000001 R14: 00007f7bfefa6080 R15: 00007ffe1988f628
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
