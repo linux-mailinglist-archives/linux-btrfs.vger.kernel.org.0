@@ -1,176 +1,138 @@
-Return-Path: <linux-btrfs+bounces-12142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1E0A59576
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 14:00:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3CDA59582
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 14:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6E7188DD5F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 13:00:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6516516698A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 13:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBED8229B0D;
-	Mon, 10 Mar 2025 13:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F35228CB0;
+	Mon, 10 Mar 2025 13:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="nA+4lbcZ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BkTT+UTi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8F722156E;
-	Mon, 10 Mar 2025 12:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728A470808;
+	Mon, 10 Mar 2025 13:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741611603; cv=none; b=GZMfzLBXh4miwoojilwe6fXieuBGWVe7I1yCt5tu+p71+HLJmjxO8tSMKahVJL6IjA/PUVyMy+W2/OJFwAq0XUFKpTmJAoquaanO9m0aXaNYZZlNSOApQF308qmqABwytG9J54nuYI4fUUxQdSG9V+eeVT4m1crzwlHHWEqhe8c=
+	t=1741611704; cv=none; b=Zb4NBPxLqwxreuyhm855uwhLN/8stpZaK1SwtEAOxsCyOXdij7vKShA7c+P/7LhlRuh/K9w7YAn5Dlre0ReqQauY8oc9KjWuqglnyEhnci8uFSKsu8lGMm9Y+sa92BsiPVEpDKuq2TEbHWoEBFLog3sWsFo3Kh200jzPDcY5k14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741611603; c=relaxed/simple;
-	bh=suy1czGkUxH4ApgxauOBKdQ6mOTZxtAJl10IVykKPl0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LmVFJ9cl8qTw8+wCxbQFrKrSOYxOxQGr0dQZAgWCpvIiSufOcC6GI3JIGYTBfUuWjzb0zR3XX+biYNb0Qd6q9VCzQy1DL6BkSAhkeR6C06D2UjsgeKGTAIr2Mmw+i+t5SfkozdcrKzPDBlletMQirSrOvKvjK7lt6Zt7JVdScMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=nA+4lbcZ; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1741611590; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=RBXViRbgYvu9SyQX3LTahN7Wc3wvAYaCUKId9eKui+E=;
-	b=nA+4lbcZa6zBlirYk6vuMbOh8gNs1V2LDvNYx4kgX1uAYEaQaaNzhNE/GlcLeLi8sMuIOklgWTrFeFxa/uwkjbZIG/C3JZQZY98oi5f50YbX1RNuX5XHIyJ5UobTAu2bf9kdGdFozGo5iLW3rClsz4DMUyGxVKE/63FG2AcLe8E=
-Received: from 30.74.129.235(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0WR3.NYS_1741611585 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 10 Mar 2025 20:59:46 +0800
-Message-ID: <316d62c1-0e56-4b11-aacf-86235fba808d@linux.alibaba.com>
-Date: Mon, 10 Mar 2025 20:59:45 +0800
+	s=arc-20240116; t=1741611704; c=relaxed/simple;
+	bh=cx5jg6nX41FB/+wMNez+RBf6N+I2hCOHCQWIPO57sdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hm1t4buBNiQCcZ3a9AcAomqyPcxbzTFj+L838pS1HPqltSyAgRp7uZX4Wt+ITOqZjp9okbLjsyFNUsN8Y+lqga8MbMVxg2mgIlDGugGMpsUQjAZa+k4SNoDduQRwd2vIndXFkD+Dw0nQ/IKDYMw5e7RT4sv/RTMRNPPn8tF8Lxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BkTT+UTi; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=P0Q5nncTlu8w0yyFGKHNI1d6KN3TELLcBWcGd04Z8eM=; b=BkTT+UTi0LpF5BtfBQLZeicRoV
+	kGofT2EB8HhWThCg//q5VoeE8QUBonw3zlqq7k9FUcuPh77vaORPsAnmtwW/no/L3+19tXy8UCXYw
+	TJdNFEYJUvzAtLNN5EiqNaHYIpTc33t61GUTm9NCCnslNYTlgm/xqNcpcLDQOieGhTIsFziIm6Sv4
+	vRwTw9kQ7Y9t7ESfM9B+FLd9lC4DgQJ7PU1gdXNV3yvy0cI3SZFHErQjz6/+oCx2sBSUHUL8dt0bj
+	rLKbX4958ZCVsYHnoKXly0Uaq/BMR454R/8HKlYrIzX1DxTDwd4EzWnhD5Wmdndz6SuXg2CMaqcWB
+	f//LyNRg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1trclC-00000004i1J-2OzM;
+	Mon, 10 Mar 2025 13:01:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 23CE03006C0; Mon, 10 Mar 2025 14:01:34 +0100 (CET)
+Date: Mon, 10 Mar 2025 14:01:34 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Chris Murphy <lists@colorremedies.com>
+Cc: Waiman Long <longman@redhat.com>,
+	=?utf-8?B?0JzQuNGF0LDQuNC7INCT0LDQstGA0LjQu9C+0LI=?= <mikhail.v.gavrilov@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>, David Sterba <dsterba@suse.cz>,
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Message-ID: <20250310130134.GS31462@noisy.programming.kicks-ass.net>
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz>
+ <CABXGCsN1rzCoYiB-vN5grzsMdvgm1qv2jnWn0enXq5R-wke8Eg@mail.gmail.com>
+ <20230125171517.GV11562@twin.jikos.cz>
+ <CABXGCsOD7jVGYkFFG-nM9BgNq_7c16yU08EBfaUc6+iNsX338g@mail.gmail.com>
+ <Y9K6m5USnON/19GT@boqun-archlinux>
+ <CABXGCsMD6nAPpF34c6oMK47kHUQqADQPUCWrxyY7WFiKi1qPNg@mail.gmail.com>
+ <a8992f62-06e6-b183-3ab5-8118343efb3f@redhat.com>
+ <7e48c1ec-c653-484e-88fb-69f3deb40b1d@app.fastmail.com>
+ <20250310090811.GQ16878@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: alloc_pages_bulk: remove assumption of populating
- only NULL elements
-To: Yunsheng Lin <linyunsheng@huawei.com>,
- Yunsheng Lin <yunshenglin0825@gmail.com>, Dave Chinner <david@fromorbit.com>
-Cc: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
- Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
- Sandeep Dhavale <dhavale@google.com>, Carlos Maiolino <cem@kernel.org>,
- "Darrick J. Wong" <djwong@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Trond Myklebust <trondmy@kernel.org>,
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
- Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>,
- Tom Talpey <tom@talpey.com>, Luiz Capitulino <luizcap@redhat.com>,
- Mel Gorman <mgorman@techsingularity.net>, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-xfs@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
- linux-nfs@vger.kernel.org
-References: <20250228094424.757465-1-linyunsheng@huawei.com>
- <Z8a3WSOrlY4n5_37@dread.disaster.area>
- <91fcdfca-3e7b-417c-ab26-7d5e37853431@huawei.com>
- <Z8vnKRJlP78DHEk6@dread.disaster.area>
- <cce03970-d66f-4344-b496-50ecf59483a6@gmail.com>
- <625983f8-7e52-4f6c-97bb-629596341181@linux.alibaba.com>
- <14170f7f-97d0-40b4-9b07-92e74168e030@huawei.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <14170f7f-97d0-40b4-9b07-92e74168e030@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250310090811.GQ16878@noisy.programming.kicks-ass.net>
+
+On Mon, Mar 10, 2025 at 10:08:11AM +0100, Peter Zijlstra wrote:
+> On Thu, Jan 26, 2023 at 10:37:56PM -0500, Chris Murphy wrote:
+> > 
+> > 
+> > On Thu, Jan 26, 2023, at 7:20 PM, Waiman Long wrote:
+> > > On 1/26/23 17:42, Mikhail Gavrilov wrote:
+> > >>> I'm not sure whether these options are better than just increasing the
+> > >>> number, maybe to unblock your ASAP, you can try make it 30 and make sure
+> > >>> you have large enough memory to test.
+> > >> About just to increase the LOCKDEP_CHAINS_BITS by 1. Where should this
+> > >> be done? In vanilla kernel on kernel.org? In a specific distribution?
+> > >> or the user must rebuild the kernel himself? Maybe increase
+> > >> LOCKDEP_CHAINS_BITS by 1 is most reliable solution, but it difficult
+> > >> to distribute to end users because the meaning of using packaged
+> > >> distributions is lost (user should change LOCKDEP_CHAINS_BITS in
+> > >> config and rebuild the kernel by yourself).
+> > >
+> > > Note that lockdep is typically only enabled in a debug kernel shipped by 
+> > > a distro because of the high performance overhead. The non-debug kernel 
+> > > doesn't have lockdep enabled. When LOCKDEP_CHAINS_BITS isn't big enough 
+> > > when testing on the debug kernel, you can file a ticket to the distro 
+> > > asking for an increase in CONFIG_LOCKDEP_CHAIN_BITS. Or you can build 
+> > > your own debug kernel with a bigger CONFIG_LOCKDEP_CHAIN_BITS.
+> > 
+> > Fedora bumped CONFIG_LOCKDEP_CHAINS_BITS=17 to 18 just 6 months ago for debug kernels.
+> > https://gitlab.com/cki-project/kernel-ark/-/merge_requests/1921
+> > 
+> > If 19 the recommended value I don't mind sending an MR for it. But if
+> > the idea is we're going to be back here talking about bumping it to 20
+> > in six months, I'd like to avoid that.
+> 
+> Please all, also look at the lockdep_chains output for these kernels
+> that need bumping this number and check if there's a particularly
+> 'silly' annotation.
+> 
+> Notably, things like giving each CPU their own lock class for a double
+> lock yields O(n^2) chains, while using a single class with 1 subclass
+> for the double nesting results in O(1) chains.
+> 
+> We've had some needlessly expensive annotations like this in the past,
+> and now with dyhamic classes this is even easier.
+> 
+> So before bumping the number, check if there's something btrfs related
+> that can be done better/different wrt annotations to reduce the number
+> of lock chains.
+
+So s_umount_key is having 40 instances; and I realize we have these per
+filesystem lock types for a reason, but 40, how does my measly test box
+end up with _40_ filesystems.
+
+Now, even though cross-filesystem locking isn't common (rebind/overlay
+etc?) this does mean most of the file system lock chains are times 40.
+
+I also have 80 instances of kn->active, and 31 x->wait.
 
 
-
-On 2025/3/10 20:31, Yunsheng Lin wrote:
-> On 2025/3/10 8:32, Gao Xiang wrote:
-> 
-> ...
-> 
->>>
->>> Also, it seems the fstests doesn't support erofs yet?
->>
->> erofs is an read-only filesystem, and almost all xfstests
->> cases is unsuitable for erofs since erofs needs to preset
->> dataset in advance for runtime testing and only
->> read-related interfaces are cared:
->>
->> You could check erofs-specfic test cases here:
->> https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git/log/?h=experimental-tests
->>
->> Also the stress test:
->> https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git/commit/?id=6fa861e282408f8df9ab1654b77b563444b17ea1
-> 
-> Thanks.
-> 
->>
->> BTW, I don't like your new interface either, I don't know
->> why you must insist on this work now that others are
->> already nak this.  Why do you insist on it so much?
-> 
-> If the idea was not making any sense to me and it was nack'ed
-> with clearer reasoning and without any supporting of the idea,
-> I would have stopped working on it.
-> 
-> The background I started working at is something like below
-> in the commit log:
-> "As mentioned in [1], it seems odd to check NULL elements in
-> the middle of page bulk allocating, and it seems caller can
-> do a better job of bulk allocating pages into a whole array
-> sequentially without checking NULL elements first before
-> doing the page bulk allocation for most of existing users."
-> 
-> "Remove assumption of populating only NULL elements and treat
-> page_array as output parameter like kmem_cache_alloc_bulk().
-> Remove the above assumption also enable the caller to not
-> zero the array before calling the page bulk allocating API,
-> which has about 1~2 ns performance improvement for the test
-> case of time_bench_page_pool03_slow() for page_pool in a
-> x86 vm system, this reduces some performance impact of
-> fixing the DMA API misuse problem in [2], performance
-> improves from 87.886 ns to 86.429 ns."
-> 
-> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
-> 2. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
-> 
-> There is no 'must' here, it is just me taking some of my
-> hoppy time and some of my work time trying to make the
-> alloc_pages_bulk API simpler and more efficient here, and I
-> also learnt a lot during that process.
-
-
-Here are my own premature thoughts just for reference:
-
-  - If you'd like to provide some performance gain, it would
-    be much better to get a better end-to-end case to show
-    your improvement is important and attractive to some
-    in-tree user (rather than show 1~2ns instruction-level
-    micro-benchmark margin, is it really important to some
-    end use case? At least, the new api is not important to
-    erofs since it may only impact our mount time by only
-    1~2ns, which is almost nothing, so I have no interest
-    to follow the whole thread) since it involves some api
-    behavior changes rather than some trivial cleanups.
-
-  - Your new api covers narrow cases compared to the existing
-    api, although all in-tree callers may be converted
-    properly, but it increases mental burden of all users.
-    And maybe complicate future potential users again which
-    really have to "check NULL elements in the middle of page
-    bulk allocating" again.
-
-To make it clearer, it's not nak from me. But I don't have
-any interest to follow your work due to "the real benefit vs
-behavior changes".
-
-Thanks,
-Gao Xiang
 
