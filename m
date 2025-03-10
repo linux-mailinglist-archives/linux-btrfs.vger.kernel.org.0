@@ -1,262 +1,311 @@
-Return-Path: <linux-btrfs+bounces-12135-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12136-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2FF0A591AC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 11:48:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093DDA592A3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 12:21:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0A8B3AE0E2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 10:48:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39B7116B9F3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 11:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F645229B29;
-	Mon, 10 Mar 2025 10:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E22221E097;
+	Mon, 10 Mar 2025 11:21:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rH+4GpSW"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KKBmAcFC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B14229B11
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 10:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89410192580;
+	Mon, 10 Mar 2025 11:21:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741603631; cv=none; b=GdOhCdECo0U1UpfO2sordXcozElnXHekGWyLiv8DfCQf7/yE6FRuvCFUkSEvbYvtytBPWlZBjgqDe1A+YzkF08cOGkLpN0zdUjRh1No604xJ0BDRVxszpAWIpCJ/V8Lyjvsf04G430QNScSZwImom6QDE2rIOqUNjo9UwtsHWpQ=
+	t=1741605686; cv=none; b=uLC1HwLu+jGT6ASB2Z+hRRJoCdHJHvfeZuXwDAwnNpxNKHw/TZ5UGW+d9f10f4d/DW9XlKW1A9I0/aZTVjkuzXgm8hcHAYVX2ue3H1IrAbwb5MmkxmKGJW10wcBYFUxOzQ2XUxxD65dLT5nAPicsOQwg0+iC0HgeTCeMkRubiFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741603631; c=relaxed/simple;
-	bh=Sc9/v3JuthVpaujL0gcxOlKafMze0NJxxDCqEp489d8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ep9IyCE7nom8dmNUiefW7Th7qdjhemVwciymEwrTU+eGlcrB0prjbU7v7MM1R9ICzQGODhBVgCr6zYcFguNEeJVdUGuafgrKgCyBW5TIjCIo6aX3Z6FfhsvppvHkFvlM4KPt+kwH6fOp261bVGrCdWzRwc8C7tuVODHE0YpZ3PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rH+4GpSW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 517C7C4CEF0
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 10:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741603630;
-	bh=Sc9/v3JuthVpaujL0gcxOlKafMze0NJxxDCqEp489d8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rH+4GpSWm70MDdz90J7WW3e4ZM9LjCnSU4zwgbT8SOFlddqVCH/3RCSdyos4/kzyP
-	 dFMWx1NJ4K7McNB9oaj90ertP74A5yQggnQhxCQO1xcO+ozMNrEAX29kJp3jGOK5ls
-	 NBsDiSZr9WR78oOYqfZ78WUGzKDBB2uLHo6aYzW0N9XZLsc3KhKJpz0g49pEdeHpmW
-	 /hX+tKQdtN4vR/t4WAYFEhht6Yox8doDzXITAl6HDpPT4JcTq1oHCRwuWh9LKt2sHv
-	 xr9N5cjFJCMWDe8FzlcYrLFZa+JJrb8athYeufmyntax2/ephCyCUJTwrnRhWRsVh6
-	 2p4kAzh2UgnfA==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-abbd96bef64so654879566b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 03:47:10 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyxLyTqLnwmurKR14JAegRS9j4S3juOyiX/oLTdRyBBp8upYJk0
-	qJibvRwPBpurlSzSI0G9WC1GH+uvAqf6lKrvtTORwQj0bBGJcYQwKd3CwlsgN6KUqb/oEor0Ven
-	XOCyhK0MPT4J1QlU6gkW85WC66P4=
-X-Google-Smtp-Source: AGHT+IE0Qz01VzgipkgxgkfoRbX692A0lttf+JeI1m/AaZEuHJKWtSe6j975Vn4wdPQ5YcuAZTwi8kxmz+yBkADcLL0=
-X-Received: by 2002:a17:907:1ca3:b0:ab7:b30:42ed with SMTP id
- a640c23a62f3a-ac2521295eamr1615213666b.0.1741603628863; Mon, 10 Mar 2025
- 03:47:08 -0700 (PDT)
+	s=arc-20240116; t=1741605686; c=relaxed/simple;
+	bh=v+cvV8TZEkE6O3ZZKhoW/Uc7tHVXvXIvFHQFcFDAq0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lOxA43ovbryKbfyLs7RtOdBtDfsYg2Z7Hfe9hWJWWOarlG+7Huw+uxOqwLwfCFz3SE8bswWbt69Puchg8FsnWqvUv3beSFi6uPalqlmJQz5/SayhNvH42HDlvjDVHracGHl70qu+6yI/l+H5JytQW9StDI+/GviTk8HGkIiyhi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KKBmAcFC; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gSxstmZW7u9wIdflkH/88t3AUpEgJazDXuWXCe/+pcY=; b=KKBmAcFC+19/DrFQnVn1qKCeLW
+	5tf09XumaqPl+xN6DsBkc2bMnv6anCfxInbYc0OA/TZLtLTtzFotQ+0eZlv/Pltno41Kwk3nKe/4Z
+	9U996QoIYRONIvtGMCwYbvWI6lJMkuQ/yKBhFXiiTG7gjgHp0sf0ds8K5o+9Ql+mGtzy9vQRZ3H9Y
+	cy9Ej9R7ekPmDjq5z58JRehXoAFWiaxJkxtowpDvcBjMUh2EBvLF68LIEWV7DkfSTJ9nN6NQlBwD2
+	Dz2H/N81uHxoZJRDt2mg/6KNT8VCeK2p6b2iOTefqP7QuUJ0yUjvYbHuum3Lp6MgAAEEjwpUOiN5o
+	gzldPpmQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1trbC3-00000004E8e-1mO8;
+	Mon, 10 Mar 2025 11:21:11 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2EBEC300269; Mon, 10 Mar 2025 12:21:10 +0100 (CET)
+Date: Mon, 10 Mar 2025 12:21:10 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, dsterba@suse.cz,
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+	Chris Murphy <lists@colorremedies.com>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Message-ID: <20250310112110.GR16878@noisy.programming.kicks-ass.net>
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz>
+ <CABXGCsN1rzCoYiB-vN5grzsMdvgm1qv2jnWn0enXq5R-wke8Eg@mail.gmail.com>
+ <20230125171517.GV11562@twin.jikos.cz>
+ <CABXGCsOD7jVGYkFFG-nM9BgNq_7c16yU08EBfaUc6+iNsX338g@mail.gmail.com>
+ <Y9K6m5USnON/19GT@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f6d2a09fb43742fb5be38f820908510e298f8d40.1741354479.git.fdmanana@suse.com>
- <202503090344.SeJrOfHD-lkp@intel.com>
-In-Reply-To: <202503090344.SeJrOfHD-lkp@intel.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 10 Mar 2025 10:46:32 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H649w5+hRzX_pRB=6kMVQFSfLL7=2dt16taiVzOUYOgzQ@mail.gmail.com>
-X-Gm-Features: AQ5f1JpH99uf8nj-3JsGIluLIezRqAJA4enqoTTq_8A9S1s8aybiFQFmOMw-9rg
-Message-ID: <CAL3q7H649w5+hRzX_pRB=6kMVQFSfLL7=2dt16taiVzOUYOgzQ@mail.gmail.com>
-Subject: Re: [PATCH 4/8] btrfs: make btrfs_iget() return a btrfs inode instead
-To: kernel test robot <lkp@intel.com>
-Cc: linux-btrfs@vger.kernel.org, llvm@lists.linux.dev, 
-	oe-kbuild-all@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9K6m5USnON/19GT@boqun-archlinux>
 
-On Sat, Mar 8, 2025 at 5:49=E2=80=AFPM kernel test robot <lkp@intel.com> wr=
-ote:
->
-> Hi,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on kdave/for-next]
-> [also build test ERROR on next-20250307]
-> [cannot apply to linus/master v6.14-rc5]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/fdmanana-kernel-or=
-g/btrfs-return-a-btrfs_inode-from-btrfs_iget_logging/20250307-214724
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git f=
-or-next
-> patch link:    https://lore.kernel.org/r/f6d2a09fb43742fb5be38f820908510e=
-298f8d40.1741354479.git.fdmanana%40suse.com
-> patch subject: [PATCH 4/8] btrfs: make btrfs_iget() return a btrfs inode =
-instead
-> config: s390-allmodconfig (https://download.01.org/0day-ci/archive/202503=
-09/202503090344.SeJrOfHD-lkp@intel.com/config)
-> compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd70=
-8029e0b2869e80abe31ddb175f7c35361f90)
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20250309/202503090344.SeJrOfHD-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202503090344.SeJrOfHD-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->    In file included from fs/btrfs/send.c:11:
->    In file included from include/linux/xattr.h:18:
->    In file included from include/linux/mm.h:2224:
->    include/linux/vmstat.h:504:43: warning: arithmetic between different e=
-numeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-=
-enum-conversion]
->      504 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
->          |                            ~~~~~~~~~~~~~~~~~~~~~ ^
->      505 |                            item];
->          |                            ~~~~
->    include/linux/vmstat.h:511:43: warning: arithmetic between different e=
-numeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-=
-enum-conversion]
->      511 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
->          |                            ~~~~~~~~~~~~~~~~~~~~~ ^
->      512 |                            NR_VM_NUMA_EVENT_ITEMS +
->          |                            ~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/vmstat.h:524:43: warning: arithmetic between different e=
-numeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-=
-enum-conversion]
->      524 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
->          |                            ~~~~~~~~~~~~~~~~~~~~~ ^
->      525 |                            NR_VM_NUMA_EVENT_ITEMS +
->          |                            ~~~~~~~~~~~~~~~~~~~~~~
-> >> fs/btrfs/send.c:5535:8: error: incompatible pointer types assigning to=
- 'struct inode *' from 'struct btrfs_inode *' [-Werror,-Wincompatible-point=
-er-types]
->     5535 |         inode =3D btrfs_iget(sctx->cur_ino, root);
->          |               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    3 warnings and 1 error generated.
+On Thu, Jan 26, 2023 at 09:38:35AM -0800, Boqun Feng wrote:
 
-You're testing against a branch that doesn't contain this dependency:
+> *	warn but not turn off the lockdep: the lock holding chain is
+> 	only a cache for what lock holding combination lockdep has ever
+> 	see, we also record the dependency in the graph. Without the
+> 	lock holding chain, lockdep can still work but just slower.
 
-https://lore.kernel.org/linux-btrfs/89867e61f94b9a9f3711f66c141e4d483a9cc6b=
-d.1741283556.git.fdmanana@suse.com/
+Quite a bit slower, but yeah you can give it a try.
 
-It's in the for-next branch of the github repo:
+> *	allow dynmaic memory allocation in lockdep: I think this might
+> 	be OK since we have lockdep_recursion to avoid lockdep code ->
+> 	mm code -> lockdep code -> mm code ... deadlock. But maybe I'm
+> 	missing something. And even we allow it, the use of memory
+> 	doesn't change, you will still need that amout of memory to
+> 	track lock holding chains.
 
-https://github.com/btrfs/linux/commits/for-next/
+I'm not sure what you're proposing, we cannot allocate from the
+__lock_acquire context, which is where you establish the new chain and
+find you're out of storage.
 
-but not yet in  any kernel.org repo.
+I suppose you're thinking about doing the above, skipping caching the
+chain and then trying a re-alloc asynchronously?
 
-Thanks.
+Anyway, even if we get that to work, we really should keep an eye out
+for silly patterns. Yes, the ever growing pool of locks means that per
+combinatorics we'll have more chains, we still should avoid silly.
 
->
->
-> vim +5535 fs/btrfs/send.c
->
-> 16e7549f045d33b Josef Bacik   2013-10-22  5519
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5520  static int send_encoded_i=
-nline_extent(struct send_ctx *sctx,
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5521                           =
-             struct btrfs_path *path, u64 offset,
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5522                           =
-             u64 len)
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5523  {
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5524          struct btrfs_root=
- *root =3D sctx->send_root;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5525          struct btrfs_fs_i=
-nfo *fs_info =3D root->fs_info;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5526          struct inode *ino=
-de;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5527          struct fs_path *f=
-spath;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5528          struct extent_buf=
-fer *leaf =3D path->nodes[0];
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5529          struct btrfs_key =
-key;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5530          struct btrfs_file=
-_extent_item *ei;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5531          u64 ram_bytes;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5532          size_t inline_siz=
-e;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5533          int ret;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5534
-> d13240dd0a2d13b Filipe Manana 2024-06-13 @5535          inode =3D btrfs_i=
-get(sctx->cur_ino, root);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5536          if (IS_ERR(inode)=
-)
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5537                  return PT=
-R_ERR(inode);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5538
-> 6054b503e2eafac Filipe Manana 2025-02-18  5539          fspath =3D get_cu=
-r_inode_path(sctx);
-> 6054b503e2eafac Filipe Manana 2025-02-18  5540          if (IS_ERR(fspath=
-)) {
-> 6054b503e2eafac Filipe Manana 2025-02-18  5541                  ret =3D P=
-TR_ERR(fspath);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5542                  goto out;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5543          }
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5544
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5545          ret =3D begin_cmd=
-(sctx, BTRFS_SEND_C_ENCODED_WRITE);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5546          if (ret < 0)
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5547                  goto out;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5548
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5549          btrfs_item_key_to=
-_cpu(leaf, &key, path->slots[0]);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5550          ei =3D btrfs_item=
-_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5551          ram_bytes =3D btr=
-fs_file_extent_ram_bytes(leaf, ei);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5552          inline_size =3D b=
-trfs_file_extent_inline_item_len(leaf, path->slots[0]);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5553
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5554          TLV_PUT_PATH(sctx=
-, BTRFS_SEND_A_PATH, fspath);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5555          TLV_PUT_U64(sctx,=
- BTRFS_SEND_A_FILE_OFFSET, offset);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5556          TLV_PUT_U64(sctx,=
- BTRFS_SEND_A_UNENCODED_FILE_LEN,
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5557                      min(k=
-ey.offset + ram_bytes - offset, len));
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5558          TLV_PUT_U64(sctx,=
- BTRFS_SEND_A_UNENCODED_LEN, ram_bytes);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5559          TLV_PUT_U64(sctx,=
- BTRFS_SEND_A_UNENCODED_OFFSET, offset - key.offset);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5560          ret =3D btrfs_enc=
-oded_io_compression_from_extent(fs_info,
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5561                           =
-       btrfs_file_extent_compression(leaf, ei));
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5562          if (ret < 0)
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5563                  goto out;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5564          TLV_PUT_U32(sctx,=
- BTRFS_SEND_A_COMPRESSION, ret);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5565
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5566          ret =3D put_data_=
-header(sctx, inline_size);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5567          if (ret < 0)
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5568                  goto out;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5569          read_extent_buffe=
-r(leaf, sctx->send_buf + sctx->send_size,
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5570                           =
-  btrfs_file_extent_inline_start(ei), inline_size);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5571          sctx->send_size +=
-=3D inline_size;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5572
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5573          ret =3D send_cmd(=
-sctx);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5574
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5575  tlv_put_failure:
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5576  out:
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5577          iput(inode);
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5578          return ret;
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5579  }
-> 3ea4dc5bf00c7d1 Omar Sandoval 2022-03-17  5580
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+
+Notably, looking at my lockdep_chains just now, I notice daft stuff
+like:
+
+irq_context: 0
+[ffffffff849642f0] &pmus_srcu
+
+irq_context: 0
+[ffffffff849642f0] &pmus_srcu
+[ffffffff849642f0] &pmus_srcu
+
+irq_context: 0
+[ffffffff849642f0] &pmus_srcu
+[ffffffff849642f0] &pmus_srcu
+[ffffffff832177a8] pmc_reserve_mutex
+
+irq_context: 0
+[ffffffff849642f0] &pmus_srcu
+[ffffffff849642f0] &pmus_srcu
+[ffffffff832177a8] pmc_reserve_mutex
+[ffffffff83320ac0] fs_reclaim
+
+irq_context: 0
+[ffffffff849642f0] &pmus_srcu
+[ffffffff849642f0] &pmus_srcu
+[ffffffff832177a8] pmc_reserve_mutex
+[ffffffff83320ac0] fs_reclaim
+[ffffffff833238c0] mmu_notifier_invalidate_range_start
+
+
+Similarly:
+
+irq_context: softirq
+[ffffffff84957a70] rcu_read_lock
+[ffffffff84957a70] rcu_read_lock
+[ffffffff849c0801] slock-AF_INET/1
+[ffffffff84957a70] rcu_read_lock
+[ffffffff84957a70] rcu_read_lock
+[ffffffff84957a60] rcu_read_lock_bh
+[ffffffff849c38e0] dev->qdisc_tx_busylock ?: &qdisc_tx_busylock
+[ffff888103bdf290] &sch->root_lock_key#3
+
+and:
+
+irq_context: 0
+[ffffffff83393d18] &inode->i_sb->s_type->i_mutex_dir_key
+[ffffffff84957a70] rcu_read_lock
+[ffffffff84957a70] rcu_read_lock
+[ffffffff84957a70] rcu_read_lock
+[ffffffff83ec00c0] &pool->lock
+[ffffffff83ebf240] &p->pi_lock
+[ffffffff83ec2a80] &rq->__lock
+[ffffffff849587b0] &____s->seqcount
+
+and:
+
+irq_context: 0
+[ffff888106344b38] (wq_completion)usb_hub_wq
+[ffffffff849b7700] (work_completion)(&hub->events)
+[ffffffff83ec6070] &dev->mutex
+[ffffffff83ec6070] &dev->mutex
+[ffffffff83ec6070] &dev->mutex
+[ffffffff83ec6070] &dev->mutex
+[ffffffff83438d68] dquirks_lock
+
+All get extra chains because of the arguably pointless duplication in
+held locks.
+
+
+
+Also, WTF is up with this lock name: :-)
+
+irq_context: softirq
+[ffffffff84965400] &(({ do { const void *__vpp_verify = (typeof((&vmstat_work) + 0))((void *)0); (void)__vpp_verify; } while (0); ({ unsigned long __ptr; __asm__ ("" : "=r"(__ptr) : "0"((typeof(*((&vmstat_work))) *)(( unsigned long)((&vmstat_work))))); (typeof((typeof(*((&vmstat_work))) *)(( unsigned long)((&vmstat_work))))) (__ptr + (((__per_cpu_offset[(cpu)])))); }); }))->timer
+
+
+
+It might make sense to collapse the rcu locks and count them at the
+first instance, instead of tracking them all on the held stack, hmm?
+
+Something a little like the below. I suppose the only problem here is
+that we might miss the wait_type check, although I suppose we muck stuff
+around a bit more.
+
+This isn't going to fix any big amount of resource usage; but all little
+bits help, right :-)
+
+---
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index 9f361d3ab9d9..a9849fea263b 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -81,6 +81,7 @@ struct lock_class_key {
+ 
+ extern struct lock_class_key __lockdep_no_validate__;
+ extern struct lock_class_key __lockdep_no_track__;
++extern struct lockdep_map    __lockdep_default_nest__;
+ 
+ struct lock_trace;
+ 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 48e5c03df1dd..2c6b3b0da4f1 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -334,12 +334,12 @@ extern struct lockdep_map rcu_callback_map;
+ 
+ static inline void rcu_lock_acquire(struct lockdep_map *map)
+ {
+-	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
++	lock_acquire(map, 0, 0, 2, 0, &__lockdep_default_nest__, _THIS_IP_);
+ }
+ 
+ static inline void rcu_try_lock_acquire(struct lockdep_map *map)
+ {
+-	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
++	lock_acquire(map, 0, 1, 2, 0, &__lockdep_default_nest__, _THIS_IP_);
+ }
+ 
+ static inline void rcu_lock_release(struct lockdep_map *map)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index d7ba46e74f58..bcfba95fe14d 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -161,7 +161,7 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+ /* Annotates a srcu_read_lock() */
+ static inline void srcu_lock_acquire(struct lockdep_map *map)
+ {
+-	lock_map_acquire_read(map);
++	lock_acquire(map, 0, 0, 2, 0, &__lockdep_default_nest__, _THIS_IP_);
+ }
+ 
+ /* Annotates a srcu_read_lock() */
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index b15757e63626..d0c5799763cd 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5003,6 +5003,9 @@ EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
+ struct lock_class_key __lockdep_no_track__;
+ EXPORT_SYMBOL_GPL(__lockdep_no_track__);
+ 
++struct lockdep_map __lockdep_default_nest__ = { .name = "__lockdep_default_nest__" };
++EXPORT_SYMBOL_GPL(__lockdep_default_nest__);
++
+ #ifdef CONFIG_PROVE_LOCKING
+ void lockdep_set_lock_cmp_fn(struct lockdep_map *lock, lock_cmp_fn cmp_fn,
+ 			     lock_print_fn print_fn)
+@@ -5067,6 +5070,9 @@ print_lock_nested_lock_not_held(struct task_struct *curr,
+ 
+ static int __lock_is_held(const struct lockdep_map *lock, int read);
+ 
++static struct held_lock *find_held_lock(struct task_struct *curr,
++					struct lockdep_map *lock,
++					unsigned int depth, int *idx);
+ /*
+  * This gets called for every mutex_lock*()/spin_lock*() operation.
+  * We maintain the dependency maps and validate the locking attempt:
+@@ -5099,6 +5105,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	if (!prove_locking || lock->key == &__lockdep_no_validate__) {
+ 		check = 0;
+ 		lockevent_inc(lockdep_nocheck);
++		nest_lock = &__lockdep_default_nest__;
+ 	}
+ 
+ 	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
+@@ -5138,10 +5145,16 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 
+ 	class_idx = class - lock_classes;
+ 
+-	if (depth && !sync) {
+-		/* we're holding locks and the new held lock is not a sync */
+-		hlock = curr->held_locks + depth - 1;
+-		if (hlock->class_idx == class_idx && nest_lock) {
++	if (nest_lock && depth && !sync) {
++		if (nest_lock == &__lockdep_default_nest__) {
++			hlock = find_held_lock(curr, lock, depth, NULL);
++		} else {
++			hlock = curr->held_locks + depth - 1;
++			if (hlock->class_idx != class_idx)
++				hlock = NULL;
++		}
++
++		if (hlock) {
+ 			if (!references)
+ 				references++;
+ 
+@@ -5222,7 +5235,9 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	}
+ 	chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
+ 
+-	if (nest_lock && !__lock_is_held(nest_lock, -1)) {
++	if (nest_lock &&
++	    nest_lock != &__lockdep_default_nest__ &&
++	    !__lock_is_held(nest_lock, -1)) {
+ 		print_lock_nested_lock_not_held(curr, hlock);
+ 		return 0;
+ 	}
+@@ -5366,7 +5381,8 @@ static struct held_lock *find_held_lock(struct task_struct *curr,
+ 	}
+ 
+ out:
+-	*idx = i;
++	if (idx)
++		*idx = i;
+ 	return ret;
+ }
+ 
 
