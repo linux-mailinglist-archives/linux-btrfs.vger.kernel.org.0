@@ -1,290 +1,459 @@
-Return-Path: <linux-btrfs+bounces-12145-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12147-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09BF9A59A4B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 16:47:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D184BA59B31
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 17:38:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A42B16BFFC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 15:47:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2077818857F1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 16:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DAE122A4F6;
-	Mon, 10 Mar 2025 15:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43252309A7;
+	Mon, 10 Mar 2025 16:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="YRrKQs2p";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="FFKK8lzH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ou1VHiwK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5EC1DFF0
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 15:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741621639; cv=fail; b=urSecwo8vL8ZeNIET0UTE1OQzEZwIFi1eZT6GsV3sHL7Ub0oIJWf2DUiieatzA1YmYYdWBLzBSiISzl3GJAwkM0ou9PfOLJBTYD5p+GNZumx8geoIJcGMlktMxIhESkH09leapSZ3N8vOy08yaNctcnJBW5nrQ0GrKSeerN3A+k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741621639; c=relaxed/simple;
-	bh=IU6T+6Pg/sx0GQ0mkBvlibUhNKTYzskklO/Te7DZrlU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=sH6o6loSqz+NBaYP+tpIJOTasAE6u4SbxKTJgpplaAd1abkn01shA2DyQQYwOJJ5UTkGdDtsttrwCgg995qDtCp6LanCDzmK1wwfpxIYEMr98XJflunkITfY3Dic9qW9JvyxMsu5DlPQCiY+TIacsf12nTiepzIrZeGxnaYwKsY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=YRrKQs2p; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=FFKK8lzH; arc=fail smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1741621637; x=1773157637;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=IU6T+6Pg/sx0GQ0mkBvlibUhNKTYzskklO/Te7DZrlU=;
-  b=YRrKQs2pIS7PLJnl0zFJVaqQFyk1WYNpu6KTCfbLrOnB9vFWaIj7tDqt
-   fq/2LCUjTAvBXsRnX6jiMrtYcLKJnJQ5j1gDWWAljUMAP4A1BuARJ5SUn
-   /sIoZ5xeJC0YY3rXkswTNPjEtdjsWOn38UqoFwoWsbML2Ey7EPaRjrqkE
-   E5QT1x4ht2PCReSWC65Zg0hz6nHFUwt8qNlbnv2RjTHcmkOzTK+eSwCbm
-   kAEpfTsyyNBDKVn2OsPRcsVc76p/ItDmnMrJMzm9n3bSe9knc6A3CWYdc
-   sUSQlt0cOOfhUz1oITwMT9yNgARiPAAaVp8IryztP+AaDlF6Jflu47oYa
-   w==;
-X-CSE-ConnectionGUID: RPe030q3SRyrjTB+mvWOuA==
-X-CSE-MsgGUID: KAQGId+CTWiDRcVO6tpHiQ==
-X-IronPort-AV: E=Sophos;i="6.14,236,1736784000"; 
-   d="scan'208";a="46991532"
-Received: from mail-northcentralusazlp17013059.outbound.protection.outlook.com (HELO CH4PR04CU002.outbound.protection.outlook.com) ([40.93.20.59])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Mar 2025 23:47:16 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=tGnxWVQg+I/eAu8vyvRxSqh9JiLzGYJglE6T4weRt/vc7QWWN3iRHQBLaLVr8P9LbLB8ertufI2wZoZiWE/YSkiDdRmi3A+tZyFa+DWUsQZeZKSP0b7ldbwNU1G9Qmu+uQ6ZLHMJsx7Gfn9KUCdyERW9thh74ZM11f+CdGA37rIUafo9bOK0959QTnLAeViUq5S66U1fam5mr9stLCqkM9KpAdlQXuNtlqSV0ysxJ0z86xTfIxHy70gPaBV/+v2o/9w5WBESRkQ9UII8BwjGh6Wn2y8pF5jP+j+LMK38roMQ3SFrxHamulpWxCXvZTjzNBVmJW2nhyzDshOqoL+qrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IU6T+6Pg/sx0GQ0mkBvlibUhNKTYzskklO/Te7DZrlU=;
- b=PRPxSS3ljJMj6m6IEcW19WeVSWk5DWSEbECWcZGB8Xe5ig725pWqxboXEetoZ/Og/YUm9DJK4tV5lqLLr3AYfBytA8TfBG7nhh0q9Qe5sE44+BI7w0H+qGZF/oNBfgWHLhqw+bE+QaBW9YR/IHa3w53h8eL29DFj61s8QUQPLQVY3CDsWgkyaBPVXalJ9kzBQaAgxYmkCJpWan6/zq8MFbitkWpwqFQXauUNCOAoorEajLYRxzNKXg9vVxQy0/Z4g9B8mUOrmjJiG/zSHduzKhXayuTKOfPcSX3MJJ0MT599q6e/fte/WvvS9hMMSKHkG28nS/6jmQi7GA7XfY40Ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4FB17A31A;
+	Mon, 10 Mar 2025 16:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741624720; cv=none; b=fe9mmQAxcACgZcycNZrXYOCVJoxj2fWcEkwsERPM+aGjfrPla8TmFltAz2v3uAb020fOTfZ9sFazhDKQr72O7CrN7jSwv5JuwBfKGRrWti6VaKVO92O4CGFtsYW8JTTSTxYkVjWhplL86v2oFFyRK65IuoLR6+6l/J7QZhV7Kec=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741624720; c=relaxed/simple;
+	bh=84V7Rax7KD7zLRWucgSj72E4erxtMkfRCkOadE0DKqc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QI916YDwu7eRo8r2UKR+cALuYMysaLxLpgTKoNAj5U+KyKUcIP5fS9tAROnIprVDlKo2npNH/upUea5JN86nO+U/MLF9LrBCOyHSYBJvmFFNLcK/bcZOr+mLCkdkBbbBkHQ0sotBRGeYjBt0FC0iotF7PeVKRVeMvLqdBxVuQJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ou1VHiwK; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7c3d3147b81so486765685a.1;
+        Mon, 10 Mar 2025 09:38:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IU6T+6Pg/sx0GQ0mkBvlibUhNKTYzskklO/Te7DZrlU=;
- b=FFKK8lzH/x5jM5A7ntPbh6td3i0SFZB2kYAC0rJJBpOMvY6YFBjCaMBwtKUrgS8jf0HHDCxLR694pOcNS3+1oPKo0hQjf5G7ZgK2KvD5RgP8oypaEvD7pOwR+V1q89griRpW7FlSgAKMg6ar9qTZeblbd+bDh15cpMaAK9SiKto=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7623.namprd04.prod.outlook.com (2603:10b6:510:51::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.26; Mon, 10 Mar
- 2025 15:47:13 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8511.026; Mon, 10 Mar 2025
- 15:47:13 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: =?utf-8?B?6KW/5pyo6YeO576w5Z+6?= <yanqiyu01@gmail.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC: Naohiro Aota <Naohiro.Aota@wdc.com>, WenRuo Qu <wqu@suse.com>
-Subject: Re: [bug report] NULL pointer dereference after a balance error on
- zoned device
-Thread-Topic: [bug report] NULL pointer dereference after a balance error on
- zoned device
-Thread-Index: AQHbkWcHHm5kGZj2pUWXjQyYDI5QKLNshJIA
-Date: Mon, 10 Mar 2025 15:47:12 +0000
-Message-ID: <7addae55-e0a4-40c4-b4b5-279d4eb91fd4@wdc.com>
-References:
- <CAB_b4sBhDe3tscz=duVyhc9hNE+gu=B8CrgLO152uMyanR8BEA@mail.gmail.com>
-In-Reply-To:
- <CAB_b4sBhDe3tscz=duVyhc9hNE+gu=B8CrgLO152uMyanR8BEA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH0PR04MB7623:EE_
-x-ms-office365-filtering-correlation-id: b19b1fd9-3009-4c04-ae15-08dd5fead3a2
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|10070799003|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?QUk4dXJKQU9mMGlCeGhMTzFNNXZYQlY3bUFNbW82QlBLa01KanVpZFlwSkZK?=
- =?utf-8?B?b0JsRzBoOU5WOWZoYTZoTlhNdGIyRnQ1NHFoc1lsVGRoWVhkMmpjY3VLdkdu?=
- =?utf-8?B?akVWMXJlQ2RUMnpLdmNub1VUcmppYXVpSmw1RkM5T2pOK2hINWNZTVdSc29B?=
- =?utf-8?B?bGk2Z1h2K0grelRsMFYrRmo4VVU4cGc4eU40Tm16YzFjMFZJRmlyN0w0Q3hj?=
- =?utf-8?B?OFpia2p4ekJ2czFUUlhsL3VWc0RGbSsxbW5LNFJuYWYvY01TRUdrSUluQUVo?=
- =?utf-8?B?b1Y0aDFWSXc0ZUNvWU4rdm94MEdueGZ4OC9nSzB6UFZUY3JTalVhK2xCaTFi?=
- =?utf-8?B?NmFsVVkrOHFSaGRqaDUydFRpUHpienlWY1dYQnVnQ0Z5YU9pTGRWSllVTXNr?=
- =?utf-8?B?dk9BbHU2bDRodG5JSmhHNlpsQ0RlaDBqNHVrSWZMVDd4bnlaUUR0d1dveVlT?=
- =?utf-8?B?OUxkeDRBazgxTTBSM3QrMEdFRVdZdS9LMVBGaFQ4UFFLQUFTSWFuRitwMVUw?=
- =?utf-8?B?Zy8wTnhBTjBEejIyc09iT0Rycm50NWszbU1hQlloTXBybVNxYTk5VGp5Mjdy?=
- =?utf-8?B?K3JYN0JuOWMzdm1FU2ZGcERqMUV1YnVIV1IvNVV1YUFQai9wSTdOS2VFN3Nx?=
- =?utf-8?B?N2syeGJtVGRWcDQ1R091c1NrWUxoRFkwUGFMNWYycGpLZ2pzdnIwclJDcHNO?=
- =?utf-8?B?TlpNTFh0dWUxOU1pd1RKMHNSRDNWVklYR1B3c0N6d0dudUVZNkZERWhBU3Bt?=
- =?utf-8?B?UEpvL1pmOW5KOUdRYmpKQjk1eTdpeG9xZUdxRWdyU21mVXB5NmRUd3JSd0cv?=
- =?utf-8?B?eW1LUXFiL0VjWk9DMm1mdU0yTmJadkxNMWh6SVdZWlIrYk5pT2ViUmJuOFND?=
- =?utf-8?B?UXpCSFNRUHNNUllOclZraEhrbCtwYVViNXZTSU9jTHNzNlF3WDV1ZHk0aEly?=
- =?utf-8?B?aVE3Skt5bEhNMldscm1BRTUwaTFjcTl4OG5lZ3NuWG41Zkt2YVRpeTVxUE1i?=
- =?utf-8?B?ZUpWNFgxanZRRGNDZFVoa0sxZ01rR09NY1YxM3JaZVJkSlRiT3pwOHh5alll?=
- =?utf-8?B?UWJkaVQvWHhnUGRzM0FIcEVqTlY5K3h4ZDFjdWhDZ1M4enZsbkFtUW04ekpP?=
- =?utf-8?B?Rk5SWEsycWExdnhLVmh5c0NRTHJKMlRpZ3RRUWZSemJxVG5jTUZ0WmM1KzVW?=
- =?utf-8?B?THVzVFZyMW5LWExkWlNmUEI5RUhlUzYvQUNxejh3U0xEQjBJRTRlWWIyZXpt?=
- =?utf-8?B?Mkh1MFhQNHQ2eU5vQWtaMCtWZGNFdjhQT1B3NURCeEpwMVA0OTNrVTBldmsx?=
- =?utf-8?B?TWI2RW5YTDdTYlBMZzFnSUZiQU9Ud3k5Yk9rWk9aNkt5RGJTVWxyRHM2aGU4?=
- =?utf-8?B?U1E3TWQ2TUFOWk1pWUVVemZXdUhsYjhOSGd4ZXdGU2h0UmR1UWozbXVDak1u?=
- =?utf-8?B?UlNiVngwYjBQSWRqUVE4RWdBTmplbEMydis0Ty85YmhYWlRWckY0VEM1Wmoz?=
- =?utf-8?B?KzUwcDd5V294NmYyQkhqSEtTT0g1SlZYZDc3UXlmK1JtTHZvVEZ5R3RQdjNX?=
- =?utf-8?B?cXlYNkN6MEp1ajR1c29TMDdVRkIvai9Udy9iSUQxaTB5TkNRbHlLQXFMTUpR?=
- =?utf-8?B?MWFBTUZ2RThXOXlDbE03MkNHci9XOWxFQkJoTElGSVJSbXdoTU1NVjBLeGVo?=
- =?utf-8?B?dlVoc2FGV2lRaW0yTkRabnRIaWc1MWVEeitGaHorT3VGSHc0aFF1Q25TQjBE?=
- =?utf-8?B?bnZiVEpXcVh6NXlPVXM1Ym11TjV5OWVIbkM0VjA3MDFXbjNYSGxNOTc2a3Nn?=
- =?utf-8?B?cUR5OEIzaWc0N0lEdmJ1VnFZYUQvSjdvbjdUeUFnQjl5R2tzL2R5eDZIdVhQ?=
- =?utf-8?Q?PCL+/zCRw4FeN?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(10070799003)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?V1M1eUNzMjB1NS90aURXTktsQzZ0N0ZHRVlMSS9FOWFlY0J6am5ucjlXMXJn?=
- =?utf-8?B?bndOTzFUV0IzSFZRMWVZanV1MHIvWWZsM3A0Y3I4WjljYnJIdFNTelZlNGNv?=
- =?utf-8?B?R2Vwb0g5ZlBhUzhZMU5KRnY5SFFyc0tFenV2Zkc0RG9FRStja3JxTjZRblZI?=
- =?utf-8?B?MnVBMUN2Qm5YeWRhTFhHZ3JCUkJadURBbmhPbGNLZ3Q0ZXZCNkFrcXZ6QlFQ?=
- =?utf-8?B?Z0lYa0R2d1Q3ejZiNDBObUEwYzRuK3JqVWo2WUUraW90U09UYmhUVERNU20x?=
- =?utf-8?B?Ri96N2JOdlYxZWttaXZhM29KdUdWZnk5eGUxWHFoT3VRU0NmUng2SStMTzZ2?=
- =?utf-8?B?Wllpa3g0aTBma3lPd2JWZmFMTGRWck8rNjg2Rk5uVVZPRjE4TUYyS21GTmJF?=
- =?utf-8?B?L3Jqb29xalgzVWo0M1Q2WFl5THoxZVBnUjZkUE42a2hZQWFQV0RVcWZiYU8y?=
- =?utf-8?B?ZU4xUWt6V0UzZkVTMFA1Nml5RVNCU2xscXArc3pEaVZ5dVRua1JzL2xFendW?=
- =?utf-8?B?TDIvcHJTN2YvZzNJZVFmdXZDeE1aakJFSC9YYXROdTFTN2Znb1AvV0FMV1gv?=
- =?utf-8?B?b3N4MnFoc2N5QUxCb1RJWThGZGFucWs0Z0hhM0NaMG1UQmY3QUVKUHhXYW9S?=
- =?utf-8?B?NlU5SzJYMlFGY0NLWkY4Z2UzN3ZPNS9jSTc5NHM5WFFRVTFDSGJWTU1VU1Nl?=
- =?utf-8?B?UjU4cWdONTN2WTlIS3NwOUlWVE90T1grcy9aTDE4U2RzNllGdnlqUG9zeHdV?=
- =?utf-8?B?SWkwOWpvUHFpa2dVOUpZZ3RrUEdYcDVtcGo2SGJjNWViVThoR1ZVV2RxeFVB?=
- =?utf-8?B?RTJHZFIva3FtU1hGUmNxV21MbndYVnA4amZRNHl3UmxpYXY0YVQ1WGdWM0RX?=
- =?utf-8?B?VGt0MUg2cXVycXFKYlJwWURlamcwWWhhZEtTMnd1d0tiM2czdWxGNGg1ZDIx?=
- =?utf-8?B?d0FPenR2Z1l5b1hEZk5EZEVJOGtzNXV3bUhhRy9wQlNRbDdLbHMyVERVR2d1?=
- =?utf-8?B?aENPMlora0dTNkI1V0hSWmxmUXg1UjRlK2ZHVU1WZkFKUGR4NGlLa01nRm1H?=
- =?utf-8?B?Q2lhVVkzQnZ5UXQzZFUzem5leHdWMitoeGJOcmoxNU9IUUxpQ25rYmdIc2dR?=
- =?utf-8?B?RUw2UG5hd1FETGFqaWdhMU0wYXlRaEk3dXd0RkVCSGVGdmU0UG92bENBT2tz?=
- =?utf-8?B?eXBscCthSUtrRG5qUXNtN1lJcFVMSjVLQjBDNjhUdXJWT3ZydzdodEJxbURM?=
- =?utf-8?B?U3E1ck5qckxaOG1qdXcwMHpvSTR5QTZBRnQxbmphSTZxRllwWGRTR3AvU1JL?=
- =?utf-8?B?WFN6UlkwRHVqdGl0dEJzZUt0MzluUTZiNUcwdmp1bzNQaGFuU1hENXRyMXF6?=
- =?utf-8?B?VXdzNXJ3Qm1CYnJPb0R2Yk02dTF3SnFjUzNDUE5PYVU3b2hhdTV3ZEpzNjRB?=
- =?utf-8?B?WVBKUVJmWG1JU0k1QWpEMVBtSlFnVE02T1lqVnY5U3Mwc21TK0FVNU9pSXRU?=
- =?utf-8?B?cmxjeVNnUm9uMHVYRHFkc0ltbm1rMm1GcHhaTHNqZkl6eE90V1J2M0pxSUJ1?=
- =?utf-8?B?UlcwdCt1dWdyRlFHWWpZWlJnL2NlTEgvNzB2NDhVNlExZ3l6ZG43YmVLZ3Vu?=
- =?utf-8?B?dGxUVWVSZG1wU2pxbHF2TEFFRGVVQU9aY25oWjcxVVR2VUdBVkdXZFgwWHk3?=
- =?utf-8?B?c1BuRFcyaGJLcEl3TCtqQ3hWTmVqR3ZmbmY5NTh1cFFFajcyb0ZrN1BXeklD?=
- =?utf-8?B?bDYzaUJqZGJYQXc5Rk9SYnpBd2xZcmd6TVVDbGpvaDZoSWR6V3Q3STF5Q2NK?=
- =?utf-8?B?S1A3MGNWTzhCWUNVa1dhSUFEelpqY0RTc0dJeW1acWpwNytmRnVLSFFNUVNl?=
- =?utf-8?B?Y2RCTmV0NFhZRHppSVVkNDRhWkd3bCtwb1dQUVVwZHRuTytNU3ZBSllXVVpX?=
- =?utf-8?B?cWlqQzRtZDMzR2txRVpiLzRwSW1SOHY2UjljZFpqVCtYeXB3WFovak9GaDJs?=
- =?utf-8?B?YXo3TWYwM2EwZm9QMmNkNDJaREtJd3R3bVNNRXdDQXYzd0VsNUN6QkZsK1By?=
- =?utf-8?B?RXNCVWdkYy95T0VodFVwQmw2OUZ3TEExdTJiakpMTWZqQ1JSckhPcEJJNm9l?=
- =?utf-8?B?NkVwYUtIWDRSdFhWYnFKaDJzSEQ1eWZYV21QWnRjdC9nMkVzMDB0cWJ4MnVO?=
- =?utf-8?B?S051VUs4Ly9YaFdOazVqbENBRk50VkNSei85T2xFRTVXUVllWlNjR29scVF4?=
- =?utf-8?B?dnRkM01JZDFOUmtrRTBNM3lGL3RBPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F9909A48FACF10468C701F4A04B11AAF@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1741624717; x=1742229517; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SVHqdz5vY0IjdSBVVIdoq6OZCdZ9dysiy6csm1hvdto=;
+        b=Ou1VHiwKt8NfkbNcjJQl2qbZp5QPWxbBQc1/nXQus74UxJUatYsH8LUzJMBgnXuKbL
+         ADyEM5eQoEEgoRukkJ3CJoXm3h79Lqz7pSLNqhn6zWvykK63veuheQuk+rYn39EqERbT
+         6YbeJY67MdortR4mEyWg4LKiJGimoGdn1i5G8T8NUvGR350chACpxKwXp3U6E82PKlBR
+         icvWhiDWnzenkzbsN3MW4PMku/i0WpyXI+Z0BRwAByvr4GuJhJSo+EvQ682sC1WsR1G2
+         62nV3Q6AquUtX0aiRSQl6zYPif6Z7Qh6u54ZWPOrOTS+MF4wuXAAlg5S+WolKiP5A0o7
+         qPEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741624717; x=1742229517;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SVHqdz5vY0IjdSBVVIdoq6OZCdZ9dysiy6csm1hvdto=;
+        b=vajIBqxgVDvD7m6xBOYu8SKH05V8bkVYxs7vpN35P1VqRIqxbWNHhlfjws+qdPljYy
+         ckPyIKTfJjh0gmXrwaSMHXxuJKPwPSeIkBmdgD/EKE7Fr8xSdhhkMHPjiBJxzKc/5mgY
+         GZkeye2alGYnvJurd7uvoNwSlId4rNVX3zSu2toIU79PK7b6KOMnFS9fDoPncF1PMMDD
+         BQJlzGN1IJSpUQPlOCEUzLi9xj8ZQBNWMyeSBtRM3Ndf0sR3S/OYV1MDJCsgr5R+Kr8w
+         WHn4POQmZq5HgrX61qk1VwdOTQP8rniEHiMcnkOErYBehUkPOeFwkqdaeIS++Hfo+yqK
+         /cUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUN14OAx+WLouVfakwuiLT1lbLHCjNJqy1Y3sRaGdsFUgyKXhhbjm5UezxluBwQE5xEAbteWySRN5osmA==@vger.kernel.org, AJvYcCXtondm2Bc8nzzeIqHsa3yMdsStUDpF5c0LgCrnYiJpdCIXoU8WVxJ85acMRjBgCk8DSKvA/DHH32Z32g29@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0wIm5eolfGQEOseVlGsqYRABjLd1WfTGvX7hUOBdlsI6bNtqw
+	PF/JcwXWEGZSJKv7hVPUf/Oroe2O2h4Ri6PZff4QDdPmZa5BIetq
+X-Gm-Gg: ASbGncvgqWpIqo1q513a+o7SNAVPdkChnniUx/PaHbGwU5neOGfJKvZxZZdE5pW79fq
+	Oyg3YmrKZLbUvmZb/0YLTuETtbWySloCcFKyPe5ByWLMsD7eHg1mrocXVUTHZaCMKNOL8IqTAwu
+	aBkRIWMKeFw/DClmca7aJOJYBhWWtQitxRoZnAAF9XkE2cRhKeMjgyWnoElMjUHT1uld7wmBn+n
+	j9OGqbrDv2r6lRO3wsbn8olqUvAAL1xKhBSz3Ifu3BmRLYWsZ0OHEXqVNRIc1IOS27PC7eGloTC
+	J0RPs+gUNilWNC2uLu7V9V921Q8+8PVStxqH0C/UUJx4HkAVTfz9QLkg9Q5BE+aW7jiX0fGXS4I
+	X6qSvRSFCgwJKfCF7AGxli7ny0/phRccRQgFhMWuQjsMD5A==
+X-Google-Smtp-Source: AGHT+IGXe8tC8nN8RI+2O31wq20/RnaefKV0xuySK8AGX3ZZow6Dx5M2VPT3gbv7YMx/KtTQvU5vZA==
+X-Received: by 2002:a05:620a:4893:b0:7c5:3c0a:ab7e with SMTP id af79cd13be357-7c55e83a849mr82377785a.5.1741624716806;
+        Mon, 10 Mar 2025 09:38:36 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3e5500015sm697598885a.85.2025.03.10.09.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Mar 2025 09:38:36 -0700 (PDT)
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfauth.phl.internal (Postfix) with ESMTP id CDA14120006B;
+	Mon, 10 Mar 2025 12:38:35 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Mon, 10 Mar 2025 12:38:35 -0400
+X-ME-Sender: <xms:ixXPZwchdr-mbn9XCpPWWZVvi7f9tzwqtiCAbOVxgZT6LWnksbLn5A>
+    <xme:ixXPZyN2YnMMZFJwVTteB3k6AVMPk9h3NVcCYCtVBI8CT5SmiCLZM26PIwlkOOe5W
+    -E-P47I03aFw9N-tg>
+X-ME-Received: <xmr:ixXPZxgXtNA5RPh2MXwRqZMTFONSE5RwJhh5Pa8NgFEHOj1-xJbPcYpdPg8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduudelkeehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrih
+    hlrdgtohhmqeenucggtffrrghtthgvrhhnpeehudfgudffffetuedtvdehueevledvhfel
+    leeivedtgeeuhfegueevieduffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgr
+    lhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppe
+    hgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepuddupdhm
+    ohguvgepshhmthhpohhuthdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrug
+    drohhrghdprhgtphhtthhopehmihhkhhgrihhlrdhvrdhgrghvrhhilhhovhesghhmrghi
+    lhdrtghomhdprhgtphhtthhopegushhtvghrsggrsehsuhhsvgdrtgiipdhrtghpthhtoh
+    eplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthho
+    pehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtth
+    hopehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhrtghpthhtohepmhhi
+    nhhgohesrhgvughhrghtrdgtohhmpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehlohhnghhmrghnsehrvgguhhgrthdrtghomh
+X-ME-Proxy: <xmx:ixXPZ1_RcAiih4Nc1Gqj2sWZ9gZ-p3MF2mifyyguyDzZFqbf5oy1dQ>
+    <xmx:ixXPZ8tD_JWigCMsKv7xREVDJn8cBsh_yviydqZPqVsHc1FI3yLt8Q>
+    <xmx:ixXPZ8HbW4sqtosIdEqVx52j9GfkjoWgRW3FtGUPLbI9YhZU7PX0nA>
+    <xmx:ixXPZ7OIFURt1R9gTMGvB7Dbb1uS0GNT7gogvI0Da8-Y7_1G1c6wsA>
+    <xmx:ixXPZxPTsJ3hrRz0_BGpndmD8DsNUgzvRVqPS817W79AcQD5WsL_c65K>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 10 Mar 2025 12:38:35 -0400 (EDT)
+Date: Mon, 10 Mar 2025 09:37:15 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, dsterba@suse.cz,
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+	Chris Murphy <lists@colorremedies.com>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Message-ID: <Z88VOz5seTv_eSLp@boqun-archlinux>
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz>
+ <CABXGCsN1rzCoYiB-vN5grzsMdvgm1qv2jnWn0enXq5R-wke8Eg@mail.gmail.com>
+ <20230125171517.GV11562@twin.jikos.cz>
+ <CABXGCsOD7jVGYkFFG-nM9BgNq_7c16yU08EBfaUc6+iNsX338g@mail.gmail.com>
+ <Y9K6m5USnON/19GT@boqun-archlinux>
+ <20250310112110.GR16878@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	LBNE3FbB4J55Ar364b3jiEVmkHDEwGUuy2O7MAwCRb8dZDqGSbvkU1xbB8CRyfXw+N3pa5lDHu3bj4vSb3przm3FpWRzqW3M/ZqGH+FW86kEG8F4J3+6jGheyOmqppOZsJ39ZrLo63ing1eSJfomDELTtp9Bv5I6fAxdi0kl7X0ydQX5q8Z1rVq1+Rk//JW7B3GVN9FeDu3EUsFBMjACdKzIAmhxcRALLzDrU1/KUvGddOQiacaGlEYxVfkNiIAUg66kYmhyaZfnY/Fu1vJZt+70+2+1MMuj3YdruBAxAsiOpR7CwuH9SEedq00ZtT52qdpDntBnSU0aIwTbXChuv5uV/TGQYFidX4Q+J6z7xjpkzQc0jgoOHQ888ITGRhqJjEJZ/MtaL2kf+eIFu9j2lV+4SifsZDssGqiodkPVuwwl5hCffNLT9oB6jj352ugAaXZwb8cAUZ9AEqt7MMlYCUI/v0lXhHpgvKNx9+NeJQqbDSTqECU0NIZahblxlNes29of4pEbf779zCKadt9fTcGRAQKPP4HPQn90xDRZWnuR+xz8wbWYCjg+UfeIgJqL9KcpxiW4yyqMEAtAlrLZarNg0hELl5j9aSxFBSLT/8PdiyISUluoXLwzHuaaHfLG
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b19b1fd9-3009-4c04-ae15-08dd5fead3a2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2025 15:47:12.9930
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: J+/2SWHP+t7GBd8mx5ecrlo91JSjqlW02n3VmHwoAeC/HclAB5eKeBrfetj022P3olyGas4A6DaXUmpDf19mUnoRgJVKfrsYmqamVD+SkAQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7623
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250310112110.GR16878@noisy.programming.kicks-ass.net>
 
-T24gMTAuMDMuMjUgMDM6NDksIOilv+acqOmHjue+sOWfuiB3cm90ZToNCj4gSGkgYWxsLA0KPiAN
-Cj4gSSBlbmNvdW50ZXJlZCBhIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSB3aGlsZSBhdHRlbXB0
-aW5nIHRvIGJhbGFuY2UgYQ0KPiBCdHJmcyB2b2x1bWUgdXNpbmcgdGhlIGZvbGxvd2luZyBjb21t
-YW5kOg0KPiANCj4gICAgICBzdWRvIGJ0cmZzIGJhbGFuY2Ugc3RhcnQgLW1jb252ZXJ0PXJhaWQx
-IC9tZWRpYS9jb2xkDQoNCg0KT0sgSSBuZWVkIHNvbWUgaGVscCByZXByb2R1Y2luZyB0aGlzIGJ1
-ZyByZXBvcnQuIE15IGN1cnJlbnQgcmVwcm9kdWNlciBpczoNCg0KbWtmcyAtdCBidHJmcyAvZGV2
-L252bWUwbjENCm1vdW50IC9kZXYvbnZtZTBuMSAvbW50DQpkZCBpZj0vZGV2L3VyYW5kb20gb2Y9
-L21udC9kYXRhIGJzPTRrIGNvdW50PTMyMDAwDQpidHJmcyBkZXZpY2UgYWRkIC9kZXYvbnZtZTFu
-MSAvbW50DQpidHJmcyBiYWxhbmNlIHN0YXJ0IC1tY29udmVydD1yYWlkMSAvbW50Lw0KDQphbmQg
-aXQgd29ya3MgYXMgZXhwZWN0ZWQ6DQoNCnZpcnRtZS16bnM6LyAjIG1rZnMgLXQgYnRyZnMgL2Rl
-di9udm1lMG4xdmlydG1lLXpuczovICMgbWtmcyAtdCBidHJmcyAvZGV2L252bWUwbjENCmJ0cmZz
-LXByb2dzIHY2LjkNClNlZSBodHRwczovL2J0cmZzLnJlYWR0aGVkb2NzLmlvIGZvciBtb3JlIGlu
-Zm9ybWF0aW9uLg0KDQpab25lZDogL2Rldi9udm1lMG4xOiBob3N0LW1hbmFnZWQgZGV2aWNlIGRl
-dGVjdGVkLCBzZXR0aW5nIHpvbmVkIGZlYXR1cmUNClJlc2V0dGluZyBkZXZpY2Ugem9uZXMgL2Rl
-di9udm1lMG4xICg4MCB6b25lcykgLi4uDQpOT1RFOiBzZXZlcmFsIGRlZmF1bHQgc2V0dGluZ3Mg
-aGF2ZSBjaGFuZ2VkIGluIHZlcnNpb24gNS4xNSwgcGxlYXNlIG1ha2Ugc3VyZQ0KICAgICAgIHRo
-aXMgZG9lcyBub3QgYWZmZWN0IHlvdXIgZGVwbG95bWVudHM6DQogICAgICAgLSBEVVAgZm9yIG1l
-dGFkYXRhICgtbSBkdXApDQogICAgICAgLSBlbmFibGVkIG5vLWhvbGVzICgtTyBuby1ob2xlcykN
-CiAgICAgICAtIGVuYWJsZWQgZnJlZS1zcGFjZS10cmVlICgtUiBmcmVlLXNwYWNlLXRyZWUpDQoN
-CkxhYmVsOiAgICAgICAgICAgICAgKG51bGwpDQpVVUlEOiAgICAgICAgICAgICAgIGUzMDExYzFj
-LTllMzEtNDM0MC04ZDdhLTE3ZGU5NTNkMTYyMw0KTm9kZSBzaXplOiAgICAgICAgICAxNjM4NA0K
-U2VjdG9yIHNpemU6ICAgICAgICA0MDk2ICAgICAgICAoQ1BVIHBhZ2Ugc2l6ZTogNDA5NikNCkZp
-bGVzeXN0ZW0gc2l6ZTogICAgMTAuMDBHaUINCkJsb2NrIGdyb3VwIHByb2ZpbGVzOg0KICAgRGF0
-YTogICAgICAgICAgICAgc2luZ2xlICAgICAgICAgIDEyOC4wME1pQg0KICAgTWV0YWRhdGE6ICAg
-ICAgICAgRFVQICAgICAgICAgICAgIDEyOC4wME1pQg0KICAgU3lzdGVtOiAgICAgICAgICAgRFVQ
-ICAgICAgICAgICAgIDEyOC4wME1pQg0KU1NEIGRldGVjdGVkOiAgICAgICB5ZXMNClpvbmVkIGRl
-dmljZTogICAgICAgeWVzDQogICBab25lIHNpemU6ICAgICAgICAxMjguMDBNaUINCkZlYXR1cmVz
-OiAgICAgICAgICAgZXh0cmVmLCBza2lubnktbWV0YWRhdGEsIG5vLWhvbGVzLCBmcmVlLXNwYWNl
-LXRyZWUsIHpvbmVkDQpDaGVja3N1bTogICAgICAgICAgIGNyYzMyYw0KTnVtYmVyIG9mIGRldmlj
-ZXM6ICAxDQpEZXZpY2VzOg0KICAgIElEICAgICAgICBTSVpFICBaT05FUyAgUEFUSA0KICAgICAx
-ICAgIDEwLjAwR2lCICAgICA4MCAgL2Rldi9udm1lMG4xDQoNCnZpcnRtZS16bnM6LyAjIG1vdW50
-IC9kZXYvbnZtZTBuMSAvbW50DQpbICAgMTMuMzk4OTA3XSBCVFJGUzogZGV2aWNlIGZzaWQgZTMw
-MTFjMWMtOWUzMS00MzQwLThkN2EtMTdkZTk1M2QxNjIzIGRldmlkIDEgdHJhbnNpZCA2IC9kZXYv
-bnZtZTBuMSAoMjU5OjEpIHNjYW5uZWQgYnkgbW91bnQgKDIwMikNClsgICAxMy40MDA1NjZdIEJU
-UkZTIGluZm8gKGRldmljZSBudm1lMG4xKTogZmlyc3QgbW91bnQgb2YgZmlsZXN5c3RlbSBlMzAx
-MWMxYy05ZTMxLTQzNDAtOGQ3YS0xN2RlOTUzZDE2MjMNClsgICAxMy40MDA3NTNdIEJUUkZTIGlu
-Zm8gKGRldmljZSBudm1lMG4xKTogdXNpbmcgY3JjMzJjIChjcmMzMmMteDg2KSBjaGVja3N1bSBh
-bGdvcml0aG0NClsgICAxMy40MDA5MzddIEJUUkZTIGluZm8gKGRldmljZSBudm1lMG4xKTogdXNp
-bmcgZnJlZS1zcGFjZS10cmVlDQpbICAgMTMuNDA0NTAzXSBCVFJGUyBpbmZvIChkZXZpY2UgbnZt
-ZTBuMSk6IGhvc3QtbWFuYWdlZCB6b25lZCBibG9jayBkZXZpY2UgL2Rldi9udm1lMG4xLCA4MCB6
-b25lcyBvZiAxMzQyMTc3MjggYnl0ZXMNClsgICAxMy40MDQ3NTJdIEJUUkZTIGluZm8gKGRldmlj
-ZSBudm1lMG4xKTogem9uZWQ6IGFzeW5jIGRpc2NhcmQgaWdub3JlZCBhbmQgZGlzYWJsZWQgZm9y
-IHpvbmVkIG1vZGUNClsgICAxMy40MDQ5MzRdIEJUUkZTIGluZm8gKGRldmljZSBudm1lMG4xKTog
-em9uZWQgbW9kZSBlbmFibGVkIHdpdGggem9uZSBzaXplIDEzNDIxNzcyOA0KWyAgIDEzLjQwNjM2
-MF0gQlRSRlMgaW5mbyAoZGV2aWNlIG52bWUwbjEpOiBjaGVja2luZyBVVUlEIHRyZWUNCnZpcnRt
-ZS16bnM6LyAjIGRkIGlmPS9kZXYvdXJhbmRvbSBvZj0vbW50L2RhdGEgYnM9NGsgY291bnQ9MzIw
-MDANCjMyMDAwKzAgcmVjb3JkcyBpbg0KMzIwMDArMCByZWNvcmRzIG91dA0KMTMxMDcyMDAwIGJ5
-dGVzICgxMzEgTUIsIDEyNSBNaUIpIGNvcGllZCwgMS41MTE2NiBzLCA4Ni43IE1CL3MNCnZpcnRt
-ZS16bnM6LyAjIGJ0cmZzIGRldmljZSBhZGQgL2Rldi9udm1lMW4xIC9tbnQNClJlc2V0dGluZyBk
-ZXZpY2Ugem9uZXMgL2Rldi9udm1lMW4xICg4MCB6b25lcykgLi4uDQpbICAgMjEuODM1Mjk3XSBC
-VFJGUyBpbmZvIChkZXZpY2UgbnZtZTBuMSk6IGhvc3QtbWFuYWdlZCB6b25lZCBibG9jayBkZXZp
-Y2UgL2Rldi9udm1lMW4xLCA4MCB6b25lcyBvZiAxMzQyMTc3MjggYnl0ZXMNClsgICAyMS44NDI2
-NzldIEJUUkZTIGluZm8gKGRldmljZSBudm1lMG4xKTogZGlzayBhZGRlZCAvZGV2L252bWUxbjEN
-CnZpcnRtZS16bnM6LyAjIGJ0cmZzIGJhbGFuY2Ugc3RhcnQgLW1jb252ZXJ0PXJhaWQxIC9tbnQv
-DQpbICAgMjkuNDc4NTIxXSBCVFJGUyBpbmZvIChkZXZpY2UgbnZtZTBuMSk6IGJhbGFuY2U6IHN0
-YXJ0IC1tY29udmVydD1yYWlkMSAtc2NvbnZlcnQ9cmFpZDENClsgICAyOS40ODA5NzddIEJUUkZT
-IGluZm8gKGRldmljZSBudm1lMG4xKTogcmVsb2NhdGluZyBibG9jayBncm91cCA4MDUzMDYzNjgg
-ZmxhZ3MgbWV0YWRhdGF8ZHVwDQpbICAgMjkuNTU5MDY1XSBCVFJGUyBpbmZvIChkZXZpY2UgbnZt
-ZTBuMSk6IGZvdW5kIDMgZXh0ZW50cywgc3RhZ2U6IG1vdmUgZGF0YSBleHRlbnRzDQpbICAgMjku
-NjcxMTY1XSBCVFJGUyBpbmZvIChkZXZpY2UgbnZtZTBuMSk6IHJlbG9jYXRpbmcgYmxvY2sgZ3Jv
-dXAgNjcxMDg4NjQwIGZsYWdzIHN5c3RlbXxkdXANClsgICAyOS42OTA0MzhdIEJUUkZTIGluZm8g
-KGRldmljZSBudm1lMG4xKTogYmFsYW5jZTogZW5kZWQgd2l0aCBzdGF0dXM6IDANCkRvbmUsIGhh
-ZCB0byByZWxvY2F0ZSAyIG91dCBvZiAzIGNodW5rcw0KDQpUaGFua3MsDQoJSm9oYW5uZXMNCg0K
-PiBUaGlzIG9jY3VycmVkIG9uIGEgdm9sdW1lIHdpdGggdHdvIEhDNjUwIGRyaXZlcy4gQWZ0ZXIg
-dGhlIGVycm9yDQo+IGFwcGVhcmVkLCBJIGF0dGVtcHRlZCB0byB1bm1vdW50IHRoZSB2b2x1bWUs
-IHdoaWNoIHRyaWdnZXJlZCBhbm90aGVyDQo+IHdhcm5pbmcgYW5kIGxlZnQgdGhlIHVtb3VudCBj
-b21tYW5kIGluIGEgRCBzdGF0ZS4gQSBmb3JjZWQgcmVib290DQo+IHJlc3VsdGVkIGluIHRoZSBz
-YW1lIGJhbGFuY2UgZXJyb3IgYW5kIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZQ0KPiBpbW1lZGlh
-dGVseSB1cG9uIHRoZSBhdXRvbWF0aWMgcmVzdW1wdGlvbiBvZiB0aGUgYmFsYW5jZSBvcGVyYXRp
-b24uDQo+IA0KPiBUbyByZXN0b3JlIHRoZSB2b2x1bWUgdG8gYSBmdW5jdGlvbmFsIHN0YXRlLCBJ
-IHVzZWQgc2tpcF9iYWxhbmNlIHRvDQo+IGNhbmNlbCB0aGUgYmFsYW5jZSBvcGVyYXRpb24gYW5k
-IHJldmVydGVkIHRoZSBtZXRhZGF0YSBwcm9maWxlIGJhY2sgdG8NCj4gRFVQLiBIb3dldmVyLCB0
-aGUgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIHN1Z2dlc3RzIGEgcG90ZW50aWFsIGJ1ZyBpbg0K
-PiBCdHJmcy9ab25lZC4NCj4gDQo+IFRoZSBmdWxsIGRtZXNnIGxvZ3MgZm9yIHRoZSAyIGJvb3Rz
-IGFyZSBhdmFpbGFibGUgaGVyZToNCj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20va2FydWJvbmly
-dS8zYzljMTJiMDZjMDM5ZTc3YWVlM2QxYTgxOGY3YmNhMA0KDQpBcyBmYXIgYXMgSSBzZWUgdGhp
-cyBpcyBhIHN0b2NrIEZlZG9yYSA0MSBrZXJuZWwsIGlzIGl0Pw0KDQo+IA0KPiBTeXN0ZW0gZGV0
-YWlsczoNCj4gS2VybmVsOiA2LjEzLjUtMjAwLmZjNDEueDg2XzY0DQo+IE91dC1vZi10cmVlIG1v
-ZHVsZXM6IG52aWRpYS1vcGVuIChvdXQtb2YtdHJlZSkNCj4gDQo+IFBsZWFzZSBsZXQgbWUga25v
-dyBpZiBhbnkgZnVydGhlciBpbmZvcm1hdGlvbiBpcyBuZWVkZWQgdG8gZGlhZ25vc2UgdGhpcyBp
-c3N1ZS4NCj4gDQo+IEJlc3QsDQo+IFFpeXUNCj4gDQoNCg==
+On Mon, Mar 10, 2025 at 12:21:10PM +0100, Peter Zijlstra wrote:
+> On Thu, Jan 26, 2023 at 09:38:35AM -0800, Boqun Feng wrote:
+> 
+> > *	warn but not turn off the lockdep: the lock holding chain is
+> > 	only a cache for what lock holding combination lockdep has ever
+> > 	see, we also record the dependency in the graph. Without the
+> > 	lock holding chain, lockdep can still work but just slower.
+> 
+> Quite a bit slower, but yeah you can give it a try.
+> 
+> > *	allow dynmaic memory allocation in lockdep: I think this might
+> > 	be OK since we have lockdep_recursion to avoid lockdep code ->
+> > 	mm code -> lockdep code -> mm code ... deadlock. But maybe I'm
+> > 	missing something. And even we allow it, the use of memory
+> > 	doesn't change, you will still need that amout of memory to
+> > 	track lock holding chains.
+> 
+> I'm not sure what you're proposing, we cannot allocate from the
+> __lock_acquire context, which is where you establish the new chain and
+> find you're out of storage.
+> 
+
+Hmm.. I think what was in my mind is that we keep some unused memory
+pool (say, one page), and whenever we use up the chain caches, we get
+memory from that pool (in __lock_acquire()), and then at the end of
+__lock_acquire(), we try to allocate the memory and put it in the pool.
+
+I should probably try it myself, but let's look into "avoid skilly
+pattern" first.
+
+> I suppose you're thinking about doing the above, skipping caching the
+> chain and then trying a re-alloc asynchronously?
+> 
+> Anyway, even if we get that to work, we really should keep an eye out
+> for silly patterns. Yes, the ever growing pool of locks means that per
+> combinatorics we'll have more chains, we still should avoid silly.
+> 
+> 
+> Notably, looking at my lockdep_chains just now, I notice daft stuff
+> like:
+> 
+> irq_context: 0
+> [ffffffff849642f0] &pmus_srcu
+> 
+> irq_context: 0
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff849642f0] &pmus_srcu
+> 
+> irq_context: 0
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff832177a8] pmc_reserve_mutex
+> 
+> irq_context: 0
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff832177a8] pmc_reserve_mutex
+> [ffffffff83320ac0] fs_reclaim
+> 
+> irq_context: 0
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff849642f0] &pmus_srcu
+> [ffffffff832177a8] pmc_reserve_mutex
+> [ffffffff83320ac0] fs_reclaim
+> [ffffffff833238c0] mmu_notifier_invalidate_range_start
+> 
+> 
+> Similarly:
+> 
+> irq_context: softirq
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff849c0801] slock-AF_INET/1
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff84957a60] rcu_read_lock_bh
+> [ffffffff849c38e0] dev->qdisc_tx_busylock ?: &qdisc_tx_busylock
+> [ffff888103bdf290] &sch->root_lock_key#3
+> 
+> and:
+> 
+> irq_context: 0
+> [ffffffff83393d18] &inode->i_sb->s_type->i_mutex_dir_key
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff84957a70] rcu_read_lock
+> [ffffffff83ec00c0] &pool->lock
+> [ffffffff83ebf240] &p->pi_lock
+> [ffffffff83ec2a80] &rq->__lock
+> [ffffffff849587b0] &____s->seqcount
+> 
+> and:
+> 
+> irq_context: 0
+> [ffff888106344b38] (wq_completion)usb_hub_wq
+> [ffffffff849b7700] (work_completion)(&hub->events)
+> [ffffffff83ec6070] &dev->mutex
+> [ffffffff83ec6070] &dev->mutex
+> [ffffffff83ec6070] &dev->mutex
+> [ffffffff83ec6070] &dev->mutex
+> [ffffffff83438d68] dquirks_lock
+> 
+> All get extra chains because of the arguably pointless duplication in
+> held locks.
+> 
+> 
+> 
+> Also, WTF is up with this lock name: :-)
+> 
+> irq_context: softirq
+> [ffffffff84965400] &(({ do { const void *__vpp_verify = (typeof((&vmstat_work) + 0))((void *)0); (void)__vpp_verify; } while (0); ({ unsigned long __ptr; __asm__ ("" : "=r"(__ptr) : "0"((typeof(*((&vmstat_work))) *)(( unsigned long)((&vmstat_work))))); (typeof((typeof(*((&vmstat_work))) *)(( unsigned long)((&vmstat_work))))) (__ptr + (((__per_cpu_offset[(cpu)])))); }); }))->timer
+> 
+
+This comes from the INIT_DEFERREABLE_WORK() in start_shepherd_timer()
+;-)
+
+> 
+> 
+> It might make sense to collapse the rcu locks and count them at the
+> first instance, instead of tracking them all on the held stack, hmm?
+> 
+> Something a little like the below. I suppose the only problem here is
+> that we might miss the wait_type check, although I suppose we muck stuff
+> around a bit more.
+> 
+
+
+No reason we cannot move the check_wait_context() before nesting
+handling, right?
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 4470680f0226..67c0a68eee6b 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5129,28 +5129,6 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+        if (DEBUG_LOCKS_WARN_ON(depth >= MAX_LOCK_DEPTH))
+                return 0;
+
+-       class_idx = class - lock_classes;
+-
+-       if (depth && !sync) {
+-               /* we're holding locks and the new held lock is not a sync */
+-               hlock = curr->held_locks + depth - 1;
+-               if (hlock->class_idx == class_idx && nest_lock) {
+-                       if (!references)
+-                               references++;
+-
+-                       if (!hlock->references)
+-                               hlock->references++;
+-
+-                       hlock->references += references;
+-
+-                       /* Overflow */
+-                       if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
+-                               return 0;
+-
+-                       return 2;
+-               }
+-       }
+-
+        hlock = curr->held_locks + depth;
+        /*
+         * Plain impossible, we just registered it and checked it weren't no
+@@ -5178,6 +5156,28 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+        if (check_wait_context(curr, hlock))
+                return 0;
+
++       class_idx = class - lock_classes;
++
++       if (depth && !sync) {
++               /* we're holding locks and the new held lock is not a sync */
++               hlock = curr->held_locks + depth - 1;
++               if (hlock->class_idx == class_idx && nest_lock) {
++                       if (!references)
++                               references++;
++
++                       if (!hlock->references)
++                               hlock->references++;
++
++                       hlock->references += references;
++
++                       /* Overflow */
++                       if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
++                               return 0;
++
++                       return 2;
++               }
++       }
++
+        /* Initialize the lock usage bit */
+        if (!mark_usage(curr, hlock, check))
+                return 0;
+
+
+Regards,
+Boqun
+
+> This isn't going to fix any big amount of resource usage; but all little
+> bits help, right :-)
+> 
+> ---
+> diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+> index 9f361d3ab9d9..a9849fea263b 100644
+> --- a/include/linux/lockdep_types.h
+> +++ b/include/linux/lockdep_types.h
+> @@ -81,6 +81,7 @@ struct lock_class_key {
+>  
+>  extern struct lock_class_key __lockdep_no_validate__;
+>  extern struct lock_class_key __lockdep_no_track__;
+> +extern struct lockdep_map    __lockdep_default_nest__;
+>  
+>  struct lock_trace;
+>  
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 48e5c03df1dd..2c6b3b0da4f1 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -334,12 +334,12 @@ extern struct lockdep_map rcu_callback_map;
+>  
+>  static inline void rcu_lock_acquire(struct lockdep_map *map)
+>  {
+> -	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+> +	lock_acquire(map, 0, 0, 2, 0, &__lockdep_default_nest__, _THIS_IP_);
+>  }
+>  
+>  static inline void rcu_try_lock_acquire(struct lockdep_map *map)
+>  {
+> -	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
+> +	lock_acquire(map, 0, 1, 2, 0, &__lockdep_default_nest__, _THIS_IP_);
+>  }
+>  
+>  static inline void rcu_lock_release(struct lockdep_map *map)
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index d7ba46e74f58..bcfba95fe14d 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -161,7 +161,7 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+>  /* Annotates a srcu_read_lock() */
+>  static inline void srcu_lock_acquire(struct lockdep_map *map)
+>  {
+> -	lock_map_acquire_read(map);
+> +	lock_acquire(map, 0, 0, 2, 0, &__lockdep_default_nest__, _THIS_IP_);
+>  }
+>  
+>  /* Annotates a srcu_read_lock() */
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index b15757e63626..d0c5799763cd 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -5003,6 +5003,9 @@ EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
+>  struct lock_class_key __lockdep_no_track__;
+>  EXPORT_SYMBOL_GPL(__lockdep_no_track__);
+>  
+> +struct lockdep_map __lockdep_default_nest__ = { .name = "__lockdep_default_nest__" };
+> +EXPORT_SYMBOL_GPL(__lockdep_default_nest__);
+> +
+>  #ifdef CONFIG_PROVE_LOCKING
+>  void lockdep_set_lock_cmp_fn(struct lockdep_map *lock, lock_cmp_fn cmp_fn,
+>  			     lock_print_fn print_fn)
+> @@ -5067,6 +5070,9 @@ print_lock_nested_lock_not_held(struct task_struct *curr,
+>  
+>  static int __lock_is_held(const struct lockdep_map *lock, int read);
+>  
+> +static struct held_lock *find_held_lock(struct task_struct *curr,
+> +					struct lockdep_map *lock,
+> +					unsigned int depth, int *idx);
+>  /*
+>   * This gets called for every mutex_lock*()/spin_lock*() operation.
+>   * We maintain the dependency maps and validate the locking attempt:
+> @@ -5099,6 +5105,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>  	if (!prove_locking || lock->key == &__lockdep_no_validate__) {
+>  		check = 0;
+>  		lockevent_inc(lockdep_nocheck);
+> +		nest_lock = &__lockdep_default_nest__;
+>  	}
+>  
+>  	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
+> @@ -5138,10 +5145,16 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>  
+>  	class_idx = class - lock_classes;
+>  
+> -	if (depth && !sync) {
+> -		/* we're holding locks and the new held lock is not a sync */
+> -		hlock = curr->held_locks + depth - 1;
+> -		if (hlock->class_idx == class_idx && nest_lock) {
+> +	if (nest_lock && depth && !sync) {
+> +		if (nest_lock == &__lockdep_default_nest__) {
+> +			hlock = find_held_lock(curr, lock, depth, NULL);
+> +		} else {
+> +			hlock = curr->held_locks + depth - 1;
+> +			if (hlock->class_idx != class_idx)
+> +				hlock = NULL;
+> +		}
+> +
+> +		if (hlock) {
+>  			if (!references)
+>  				references++;
+>  
+> @@ -5222,7 +5235,9 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>  	}
+>  	chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
+>  
+> -	if (nest_lock && !__lock_is_held(nest_lock, -1)) {
+> +	if (nest_lock &&
+> +	    nest_lock != &__lockdep_default_nest__ &&
+> +	    !__lock_is_held(nest_lock, -1)) {
+>  		print_lock_nested_lock_not_held(curr, hlock);
+>  		return 0;
+>  	}
+> @@ -5366,7 +5381,8 @@ static struct held_lock *find_held_lock(struct task_struct *curr,
+>  	}
+>  
+>  out:
+> -	*idx = i;
+> +	if (idx)
+> +		*idx = i;
+>  	return ret;
+>  }
+>  
 
