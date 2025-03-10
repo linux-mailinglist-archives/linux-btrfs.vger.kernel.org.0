@@ -1,138 +1,124 @@
-Return-Path: <linux-btrfs+bounces-12143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3CDA59582
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 14:01:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D491A598FA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 16:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6516516698A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 13:01:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE5AA1882866
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 15:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F35228CB0;
-	Mon, 10 Mar 2025 13:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DFA22D4DC;
+	Mon, 10 Mar 2025 14:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BkTT+UTi"
+	dkim=pass (2048-bit key) header.d=kitchen-colors.com header.i=@kitchen-colors.com header.b="FeBRPA5V"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728A470808;
-	Mon, 10 Mar 2025 13:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B0E22A4EF
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 14:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741611704; cv=none; b=Zb4NBPxLqwxreuyhm855uwhLN/8stpZaK1SwtEAOxsCyOXdij7vKShA7c+P/7LhlRuh/K9w7YAn5Dlre0ReqQauY8oc9KjWuqglnyEhnci8uFSKsu8lGMm9Y+sa92BsiPVEpDKuq2TEbHWoEBFLog3sWsFo3Kh200jzPDcY5k14=
+	t=1741618477; cv=none; b=l04b2hEQ7GnCX81uRV7Ht55oY2NOZ9B1O8EiR2tov67hR8qk8x1vNNFfwZinJGT7W1r2FDilQ3OotYVbavlCba/nBu+/SC27Qls7CcOunshYvrXATUYh28kVMSVm+aPYNeKzfE6bJVJVKNTAfeEd2GnmaUBJlks9iD3urmw6s7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741611704; c=relaxed/simple;
-	bh=cx5jg6nX41FB/+wMNez+RBf6N+I2hCOHCQWIPO57sdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hm1t4buBNiQCcZ3a9AcAomqyPcxbzTFj+L838pS1HPqltSyAgRp7uZX4Wt+ITOqZjp9okbLjsyFNUsN8Y+lqga8MbMVxg2mgIlDGugGMpsUQjAZa+k4SNoDduQRwd2vIndXFkD+Dw0nQ/IKDYMw5e7RT4sv/RTMRNPPn8tF8Lxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BkTT+UTi; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=P0Q5nncTlu8w0yyFGKHNI1d6KN3TELLcBWcGd04Z8eM=; b=BkTT+UTi0LpF5BtfBQLZeicRoV
-	kGofT2EB8HhWThCg//q5VoeE8QUBonw3zlqq7k9FUcuPh77vaORPsAnmtwW/no/L3+19tXy8UCXYw
-	TJdNFEYJUvzAtLNN5EiqNaHYIpTc33t61GUTm9NCCnslNYTlgm/xqNcpcLDQOieGhTIsFziIm6Sv4
-	vRwTw9kQ7Y9t7ESfM9B+FLd9lC4DgQJ7PU1gdXNV3yvy0cI3SZFHErQjz6/+oCx2sBSUHUL8dt0bj
-	rLKbX4958ZCVsYHnoKXly0Uaq/BMR454R/8HKlYrIzX1DxTDwd4EzWnhD5Wmdndz6SuXg2CMaqcWB
-	f//LyNRg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1trclC-00000004i1J-2OzM;
-	Mon, 10 Mar 2025 13:01:35 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 23CE03006C0; Mon, 10 Mar 2025 14:01:34 +0100 (CET)
-Date: Mon, 10 Mar 2025 14:01:34 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Chris Murphy <lists@colorremedies.com>
-Cc: Waiman Long <longman@redhat.com>,
-	=?utf-8?B?0JzQuNGF0LDQuNC7INCT0LDQstGA0LjQu9C+0LI=?= <mikhail.v.gavrilov@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, David Sterba <dsterba@suse.cz>,
-	Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-Message-ID: <20250310130134.GS31462@noisy.programming.kicks-ass.net>
-References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
- <20220726164250.GE13489@twin.jikos.cz>
- <CABXGCsN1rzCoYiB-vN5grzsMdvgm1qv2jnWn0enXq5R-wke8Eg@mail.gmail.com>
- <20230125171517.GV11562@twin.jikos.cz>
- <CABXGCsOD7jVGYkFFG-nM9BgNq_7c16yU08EBfaUc6+iNsX338g@mail.gmail.com>
- <Y9K6m5USnON/19GT@boqun-archlinux>
- <CABXGCsMD6nAPpF34c6oMK47kHUQqADQPUCWrxyY7WFiKi1qPNg@mail.gmail.com>
- <a8992f62-06e6-b183-3ab5-8118343efb3f@redhat.com>
- <7e48c1ec-c653-484e-88fb-69f3deb40b1d@app.fastmail.com>
- <20250310090811.GQ16878@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1741618477; c=relaxed/simple;
+	bh=l0lkFicF7MtFJ8k45THRMauIL0Gf+hoDXi0EUeX5pRw=;
+	h=Content-Type:Message-ID:From:To:Subject:Date:MIME-Version; b=cSfXAz8yvEYHdLcSlnLRf6MLW4VGY2JAReDUXqll4jRPCFEtnOO7D91y+/DXmW2vCYAN+Xsu6uAWGNY5SEQF5EfQZQBW2MlM2kOlqNIOku9u3nRHLK2zYDjowD9PakhA46XEWCiJGqM7+OS0gRNsWsRTS0oCkeUanIg51j4St1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kitchen-colors.com; spf=pass smtp.mailfrom=kitchen-colors.com; dkim=pass (2048-bit key) header.d=kitchen-colors.com header.i=@kitchen-colors.com header.b=FeBRPA5V; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kitchen-colors.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kitchen-colors.com
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7be49f6b331so449075285a.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kitchen-colors.com; s=google; t=1741618474; x=1742223274; darn=vger.kernel.org;
+        h=mime-version:date:content-transfer-encoding:subject:to:from
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=l0lkFicF7MtFJ8k45THRMauIL0Gf+hoDXi0EUeX5pRw=;
+        b=FeBRPA5V7M211cPw7h9KUIbdygk3rf831ALcg5A5U/LHIPWv8T92budCf6hUObzZLt
+         EUkKzzk8Z9NkdJbJ7k3INb9yLKjQAprkiyNfnyD9XtdPi8EPoTlWCLognB+2mdALrlOc
+         A8coefHJjqwuR7J1m4GjQh7npPzuwO46PdFzoRoK0bgLsZ5JRkWVwjf+TOTeixEzXMCh
+         ofOoVJTMpNg9zwc/epJCTOnNazLABbToLPwutQOKg9HvL1xmzhQbhQE5qs+cYu7VbDw8
+         +ww6MIPcqj9Hp6o0AA1fsEp0xwZvvFkSXVqPxbEv8Z4oiDlGGec25u2X9SXmSdITbG30
+         c5+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741618474; x=1742223274;
+        h=mime-version:date:content-transfer-encoding:subject:to:from
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l0lkFicF7MtFJ8k45THRMauIL0Gf+hoDXi0EUeX5pRw=;
+        b=GML1N3e/VLpspLLNxFWUJUhH1BemtAVAu6iSuFPuBVzMCufkIMuyCFVCbbU+rv7tw8
+         qyQuQlgVYMCta8CA8Oow3FpyUJsFTYvNy1gXHsdwg1gntIRXrrPT04oogKkuVBt/Ivkl
+         7Ktt4MWHt2XaigS8FloE95rzVZPPmdMxlENKvla/TptNyk0DGOaBeHowkgIHhcYumQRm
+         rOdNUIlbeIOd9nFg2AZhdvQ9bDulv3S4B3QZiPmHBtAdbwSx4B/4O03sAfNXrO4i5Lmk
+         BjSzPZ3ccwUZJ1cuXhUB8aK5zqZ4daNEnfZB10/Qo83tM9sNr6U0E2swUn+OjfyrXaAO
+         JTvw==
+X-Gm-Message-State: AOJu0YwkvU1CqVYbSjahKC+QiF4Jyx8gMp2xRHwYRMtuNkTavGRs3HPg
+	cCy0fJgjzs2+uXyO2GX5nCrTQhNJXDhu01i9ej/TzwWLfviCNHb+24u29hEU4ytlx/rpfZY3/XM
+	t
+X-Gm-Gg: ASbGncszmFgBmOa8nKKKW6UHH+kauoeXV+rqGEkbzvrQh2IO1H+jbWV/172i1M2jqiT
+	e5WnEoaoVnEac+DidR5zGh/j5h/+VnEVtbktkqPwt7W2IRPjClcc1SKGV85v747O4YSxL1se/nk
+	GeiYvksyrI96Hx8givXrZ7M8CxktzZs2wXEcmFnnP0hgk5BbV+631Ci30o9HukiOAfKUJJTyoi9
+	DDKRYAH4Y9BJ5XMgh+GEQUdHBXwu5FGex3eNarfhZ2y7jsGc5kCrDpgDFAPPrU313JhQcFqb0KG
+	2IQ0EtnRVJi7osv7QdTSYImWxlUwf/3NOnE0nmhaa3KsbzgwMfMTm4xWD1Y0Iu+XYtGv+6vopEm
+	5v82nVmkwNd6mDNAYGNyl0YHYN0mWJiN/ng/wUV8FXvo4J032V0nEDqyqbHHHPmJv+AK0MJ4mL8
+	Q=
+X-Google-Smtp-Source: AGHT+IEwJ5TiijfMYw9f433khLFZRCR04v4Yb4Oj6B+d0Kqxawti6U4tCHqorPXHMmuTqkBUWaQSWw==
+X-Received: by 2002:a05:620a:439e:b0:7c5:5768:40ac with SMTP id af79cd13be357-7c557684925mr385547785a.30.1741618474209;
+        Mon, 10 Mar 2025 07:54:34 -0700 (PDT)
+Received: from 848a1ad2-a9c5-455b-8cb4-4521425b9553.local (ec2-44-192-109-171.compute-1.amazonaws.com. [44.192.109.171])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c553a1e421sm190959885a.116.2025.03.10.07.54.33
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Mar 2025 07:54:33 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Message-ID: <848a1ad2-a9c5-455b-8cb4-4521425b9553@kitchen-colors.com>
+From: Mark Stephenson <service@kitchen-colors.com>
+To: linux-btrfs@vger.kernel.org
+Subject: Tangible offerings Deliver vger
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 10 Mar 2025 14:54:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250310090811.GQ16878@noisy.programming.kicks-ass.net>
 
-On Mon, Mar 10, 2025 at 10:08:11AM +0100, Peter Zijlstra wrote:
-> On Thu, Jan 26, 2023 at 10:37:56PM -0500, Chris Murphy wrote:
-> > 
-> > 
-> > On Thu, Jan 26, 2023, at 7:20 PM, Waiman Long wrote:
-> > > On 1/26/23 17:42, Mikhail Gavrilov wrote:
-> > >>> I'm not sure whether these options are better than just increasing the
-> > >>> number, maybe to unblock your ASAP, you can try make it 30 and make sure
-> > >>> you have large enough memory to test.
-> > >> About just to increase the LOCKDEP_CHAINS_BITS by 1. Where should this
-> > >> be done? In vanilla kernel on kernel.org? In a specific distribution?
-> > >> or the user must rebuild the kernel himself? Maybe increase
-> > >> LOCKDEP_CHAINS_BITS by 1 is most reliable solution, but it difficult
-> > >> to distribute to end users because the meaning of using packaged
-> > >> distributions is lost (user should change LOCKDEP_CHAINS_BITS in
-> > >> config and rebuild the kernel by yourself).
-> > >
-> > > Note that lockdep is typically only enabled in a debug kernel shipped by 
-> > > a distro because of the high performance overhead. The non-debug kernel 
-> > > doesn't have lockdep enabled. When LOCKDEP_CHAINS_BITS isn't big enough 
-> > > when testing on the debug kernel, you can file a ticket to the distro 
-> > > asking for an increase in CONFIG_LOCKDEP_CHAIN_BITS. Or you can build 
-> > > your own debug kernel with a bigger CONFIG_LOCKDEP_CHAIN_BITS.
-> > 
-> > Fedora bumped CONFIG_LOCKDEP_CHAINS_BITS=17 to 18 just 6 months ago for debug kernels.
-> > https://gitlab.com/cki-project/kernel-ark/-/merge_requests/1921
-> > 
-> > If 19 the recommended value I don't mind sending an MR for it. But if
-> > the idea is we're going to be back here talking about bumping it to 20
-> > in six months, I'd like to avoid that.
-> 
-> Please all, also look at the lockdep_chains output for these kernels
-> that need bumping this number and check if there's a particularly
-> 'silly' annotation.
-> 
-> Notably, things like giving each CPU their own lock class for a double
-> lock yields O(n^2) chains, while using a single class with 1 subclass
-> for the double nesting results in O(1) chains.
-> 
-> We've had some needlessly expensive annotations like this in the past,
-> and now with dyhamic classes this is even easier.
-> 
-> So before bumping the number, check if there's something btrfs related
-> that can be done better/different wrt annotations to reduce the number
-> of lock chains.
+Hey vger ,
 
-So s_umount_key is having 40 instances; and I realize we have these per
-filesystem lock types for a reason, but 40, how does my measly test box
-end up with _40_ filesystems.
+=C2=A0 I hope all is well with you! I am Mark Stephenson part =
+of the SAKUTO KNIVES JP. We are known for crafting superior-quality =
+Damascus Chef Knives.=C2=A0
 
-Now, even though cross-filesystem locking isn't common (rebind/overlay
-etc?) this does mean most of the file system lock chains are times 40.
-
-I also have 80 instances of kn->active, and 31 x->wait.
+We've been following vger, for quite some time=
+, and We're always astounded by the engaging and informative content you =
+post every time.=C2=A0
 
 
+Driven by the desire to team up, We are eager to =
+present a first-class Damascus Kitchen Knife =C2=A0( Charge at 199. 99) as =
+a gesture of thanks for a deserving bac klink.
+
+
+Here's a beneficial =
+proposition: We'd love to send you a high-quality Damascus Chef Knife =
+Without any cost.
+
+
+
+We present a thoroughly detailed article ( authored by=
+ our team members high-quality content ) that has overcome five A I =
+Auditing tools and Previously unreleased .
+
+
+If it captures your interest, =
+please reply with your shipping address, and we'll be delighted to send =
+you( vger ) the knife and the content for review.=C2=A0
+
+
+Respectfully ,
+Mark Stephenson
 
