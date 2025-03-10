@@ -1,183 +1,214 @@
-Return-Path: <linux-btrfs+bounces-12165-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12166-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA51A5AD9B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 00:31:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 176C4A5AF9B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 00:51:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94E77174561
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 23:31:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4895D171496
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 23:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE40221730;
-	Mon, 10 Mar 2025 23:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40080221F20;
+	Mon, 10 Mar 2025 23:51:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="MYNZiAdy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yaqnIHl2"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WZFs6eNm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF56199FBA
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 23:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7CE1E0E0A
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 23:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741649510; cv=none; b=Qr9P2+3zAneJDiOfsoH5RQe60zJmDtsN4eo0VcTz6nHDaG3Luf/br3+sfokJqJmPOHxsZ6iHOzrxkW/j+PJ+NtwEkIFnyxxKbbG34lGKSwxkw7pp9OVpULI2cBRLCvfvJPOXKQDpTdaitiIhMY5Y7yQAsI8NZPjWhVkt5ehq6p4=
+	t=1741650695; cv=none; b=dGoStsGcLUzc581AUuYr7Ur/lkTTYt1Zv2OOtMVZdtxAOMmlkOWNsKHGyfA4PjulmOLAbyqZPp5pY1hsKIT2b3UHjgtY4T+wJaWiQd5yz0hoelcWVpUpPtrzZw7pVdymXrV3jByq7Q6ZWeF5BVr0iDDUYVvnPq//UPvM1yhNKlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741649510; c=relaxed/simple;
-	bh=KwHLyyjNlS1blywuyogrTPBEr6fiU/GxDsw4/ihLAfs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HhLdb4N2JZ97HFhgKLjvpHAETKF33X4et9b4cVw7dMkIpci+SbMK0udJVs9ap/2doJjYPu5JIbxXxZFT6iUFQVznQFUDYC75oJBrtVmn4xvVEGbMJDxQoyealcAEFiOYm9+l/wp/aYU7sB+pZQq5tLnuuyZ9afR/cDSpE6O2aq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=MYNZiAdy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yaqnIHl2; arc=none smtp.client-ip=202.12.124.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 8DFB6254026D;
-	Mon, 10 Mar 2025 19:31:47 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Mon, 10 Mar 2025 19:31:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1741649507; x=1741735907; bh=ghUMQLk26Q
-	+QQD6CasYy1U91HSX7aTuFN7onQMYfGq0=; b=MYNZiAdyhc7xHDQyR0OLPqi9de
-	2455tb/6hoB9R3xE4+VvyCBPvHg46JmOyRX9MDrNe58bdRpvqKlVSyNDUL3KsLP0
-	4AQ3RdfRL/gtDfbqcE8/9jP2mRRiz7A/PH9mNIQCnxIcoHgKXK4l54Psj6XS5FKK
-	P3mPQykbyg4qiM4KUxEj/y5IbROKhfFfxY8s99im3NZ2DEtgSuNgLBR4224oE4sr
-	6S6OggR+sa6fA7Mwt6/sLz40Uz5AhOUvUUKpEpKq8HkJhqOB2aU9lQ6rDW1idJKM
-	QRY1OJS5S7lOBJnCJAid8wNj3NHz6gEOKcP2BAnuk7u+13iCKIQ40NpDWBjw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1741649507; x=1741735907; bh=ghUMQLk26Q+QQD6CasYy1U91HSX7aTuFN7o
-	nQMYfGq0=; b=yaqnIHl23tuhfzVX9hNghghlsJTECDBp40bG1avhWCw2TISdvnT
-	U6A6r2WW4ZTqwL4GCeA0NobCC8SSQXbDe+i6ONTR6fFsthxKD9Iwlhjtpl5EpMlN
-	0D8GbsWORJpzg7wwHJVjS9sdXiGCWwfnHlE7fqxWjXUcS/DQIgWXHJ9jie3ORMIb
-	sw6FPK9BGC5lTPcLrdvlQwnN2YwW0fsl7abnsteVWjjwayIAWLNTE7NQA2E16ofn
-	h4gIiMJ8ipkjEVAHO2AKa9aCfs8YDPbEC6l5egQuyKpmpXsL84g/v75qCfcNpXne
-	uaeaesn2b5u6jmHorWu1dUJLDRQwDIg0HYw==
-X-ME-Sender: <xms:Y3bPZ3UlLM_IIwhi1TatXXmA9fjynhzhEFyCi7KKRMiEb294MatnlA>
-    <xme:Y3bPZ_ksRSWFJhMwrdRytNKQyRlnzmaaYPrP5EJIB2XzD3NnWGFyopbm4KWlYuKmG
-    67xfLGk2_G6A4v3RJs>
-X-ME-Received: <xmr:Y3bPZzY0yF8BzbPG4jqK3mXp65buW23YnxYgVeRjpWNSXBR2Y7Kz5fqz9p3qI4Wqff2i_dO7ifpJ0i7pG387UEsmW18>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduvddtieejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
-    vdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
-    enucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedu
-    gfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoh
-    eplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:Y3bPZyUr0uHmm-bsvAxEvhS3wKZNSDG2CXmoPzqYEFnWsRNzmaIC1A>
-    <xmx:Y3bPZxlhnxExAqJkw5SLhAsU5Xavzq4gGoiZ8GUnG4etsHajWyKXLQ>
-    <xmx:Y3bPZ_dpC2SBxJsRhZ1Wfy4-7MLWEaHRaO1KioleDVhhcsYRrwxe6g>
-    <xmx:Y3bPZ7GZYS5SmJrG6Wa3PrPCdt5d5JErhqMSus6EKp7jwKuciHc11g>
-    <xmx:Y3bPZ2wYQo9aQHC4FYSuFq66qxt2jakB_V1kCeUJYmhSs8dBz6CAdle8>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 10 Mar 2025 19:31:46 -0400 (EDT)
-Date: Mon, 10 Mar 2025 16:32:35 -0700
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] btrfs: prepare for larger folios support
-Message-ID: <20250310233235.GB967114@zen.localdomain>
-References: <cover.1741591823.git.wqu@suse.com>
+	s=arc-20240116; t=1741650695; c=relaxed/simple;
+	bh=tBKvt3eNNCb3DwCXCAmh6XRTKlmQ2kMocZXza6+jwUc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BiBLKI5663Nm2/3PlzEMULXDw3LvI7wAQkrND4wx0G6e4BfBdVSWs+WYubuNvObugXTy2yXhn40MUId5QIMvl9jC3W/mF4gbBju8Q9m57c3b1pWWOPSJG/CvZJOipjM+tVKCgy/Qjq2CimW8s4Tp4G2M7TFRtjhoQhWUvsRnhCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WZFs6eNm; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-388cae9eb9fso2319313f8f.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 16:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1741650691; x=1742255491; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=GzYrvwfCJFcKIM+U/oVRSUvtK/KYHHPu3QoU+61gfz8=;
+        b=WZFs6eNmtDI4lOJN5a3fKHmlReaceLM5REVn4DuihQ+RrGAFwjCstMH4tFVBTZLz5F
+         pxx65RSbx7buy+bDhjWhE2Fu3ebU7eMIls0Ipj4qEfYseOoBuhjGmPMzJDGl5SFrEC5Y
+         Yaudjp/S86DHU7GxuHEqpHdhSAiQ9nrHJL5/Y6FTlqt2iLZbCCllBwK50jbCxu7LXP4N
+         f42WQAy3dvlSNNlcyHGcb43QrYuU0+7ntbq1/G5xgjAhIInCRnfO1gLMQ7vDaGs7hEmS
+         eTA9btHJnrDB1FqlITWlYC04BZIgLuJk3ZZ3sR3KNLMhmpe5bDOm1AkC5hS/f9vrtVOE
+         2qpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741650691; x=1742255491;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GzYrvwfCJFcKIM+U/oVRSUvtK/KYHHPu3QoU+61gfz8=;
+        b=VOnxUj094/Gf8bTyO20GbluuCFlwV3dozh4WbEQBspSoKXRASnbQQIXnFhajRoyJmC
+         jgOipp3c3NAx9WyhiDd4tGSkfMuYEqyRp4zSJl9Wuk1z3yfJgmBTDUlbYRWgBt8DYlfB
+         kwkJCItB6hS9HD2or+Y83yUIEYpr22rAenPgpnXvcvWea2nh7J8cFIvNGc2bjEjBMopo
+         rqERoaXU34ULfFprSyqFkgDGQQVtLNpWMz9Qft3xwGIJRFM8lonEr9KfX2jh5j1/ladm
+         QHAXXsW5JYX0pBrEiLqv0o3rrntiuunhgyPe75Q3slgDdKjJgWQkE904DiLrAyZUf5bC
+         V0qQ==
+X-Gm-Message-State: AOJu0Yw8SRiHjmwrMMQ2G0jHH0j8IHbFlAlg3l3scTiZXHhBbeZ5VBSI
+	R3ExeqE9ku0d7CSMm1zs6uhdKTCLrVBwai338ONbT2oL99KVd0KgioyytPzD14vPBtE3rKR6wdy
+	f
+X-Gm-Gg: ASbGncsgA3y/tH8EVxOXfbIlc+lmJyx6BSJxXzwOqh5TRhQE+NAJZIODKFHsoUIIPGB
+	Zw+COFtfva4ItSfR0GkU4jSIL1v/mhygeuJ+txWO0SrX3Tql1X4yIuCM11xhI8uSrK2MJUvZa7E
+	mHjy3f+eiU3WbpS5kdUedcCD2qg5pbzvfOJRcVGAt2ZOXiOOyevXIWRo6scXppK/kiNF9LnbLYq
+	E7GIQYETuDElYy2yz1MXVDF3bygn4dBnPSWVx+9MS0MTWA6/9ekmVNKh7QW4Yr0W91Xh8/vjjnN
+	NL0wqcP7XwGDCZ2/PTip/mFssoaRrAWO0AAL7GaYJvQFjigbBIEECCsXYgLivoqOD60cfX7UeRh
+	o09Leb+M=
+X-Google-Smtp-Source: AGHT+IGs0XZ5VtZyN3qK0gGpgMKv7tA+U1bQ1lP1Bj13Ub3+aEa4PT33ShTJyoEtnOP/6eFPHdsXgA==
+X-Received: by 2002:a05:6000:1a8e:b0:390:d6ab:6c49 with SMTP id ffacd0b85a97d-39132da9221mr11329656f8f.35.1741650691021;
+        Mon, 10 Mar 2025 16:51:31 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410a91db3sm84667905ad.170.2025.03.10.16.51.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Mar 2025 16:51:30 -0700 (PDT)
+Message-ID: <78f107a0-0feb-45e2-afa8-2fe854cd70e5@suse.com>
+Date: Tue, 11 Mar 2025 10:21:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1741591823.git.wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] btrfs: prepare extent_io.c for future larger folio
+ support
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1741591823.git.wqu@suse.com>
+ <657d28be4aebee9d3b40e7e34b0c1b75fbbf5da6.1741591823.git.wqu@suse.com>
+ <20250310232750.GA967114@zen.localdomain>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250310232750.GA967114@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 10, 2025 at 06:05:56PM +1030, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Split the subpage.[ch] modification into 3 patches
 
-I found the way you split it to be a little confusing, honestly. I would
-have preferred splitting it by operation (alloc_subpage, is_subpage,
-etc..), rather than a basically incorrect prep patch and then a sed patch
-on the subpage file.
 
-You already iterated on this, so I absolutely don't want to hold
-anything up on this observation, haha. If it's something others agree
-on, I wouldn't mind seeing it before the patches go in.
+在 2025/3/11 09:57, Boris Burkov 写道:
+[...]
+>> @@ -2503,13 +2503,18 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+>>   		 * code is just in case, but shouldn't actually be run.
+>>   		 */
+>>   		if (IS_ERR(folio)) {
+>> +			cur_end = min(round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1, end);
+>> +			cur_len = cur_end + 1 - cur;
+> 
+> Curious: is this guess based on PAGE_SIZE more correct than using 1 as
+> num_bytes? How much more correct? :)
 
-I asked a question on patch 5 that I think is interesting, but please
-feel free to add:
-Reviewed-by: Boris Burkov <boris@bur.io>
+Filemap (page cache) itself is mostly an xarray using page index.
 
-> - Rebased the latest for-next branch
->   Now all dependency are in for-next.
+That's why filemap_get_folio() only accepts a page index, not a bytenr.
+
+Using length 1 will just waste a lot of CPU (PAGE_SIZE times) trying to 
+get the same missing folio at the same index.
+
 > 
-> This means:
+> Probably better question: what is the behavior for the range
+> [PAGE_SIZE, folio_size(folio)] should that filemap_get_folio have
+> returned properly?
+
+Depends on the range of extent_write_locked_range().
+
+If the range covers [PAGE_SIZE, folio_size(folio)], we just submit the 
+write in one go, thus improving the performance.
+
+
+> If it truly can never happen AND we can't handle
+> it correctly, is handling it "sort of correctly" a good idea?
+
+So far I think it should not happen, but this is only called by the 
+compressed write path when compression failed, which is not a super hot 
+path.
+Thus I tend to keep it as-is for now.
+
+The future plan is to change how we submit compressed write.
+Instead of the more-or-less cursed async extent (just check how many 
+rabbits I have to pull out of the hat for subpage block-perfect 
+compression), we will submit the write no different than any other writes.
+
+And the real compression is handled with one extra layer (like RAID56, 
+but not exactly the same) on that bbio.
+
+Then we can get rid of the extent_write_locked_range() completely, thus 
+no more such weird handling.
+
+Thanks,
+Qu
+
 > 
-> - Our subpage routine should check against the folio size other than
->   PAGE_SIZE
-> 
-> - Make functions handling filemap folios to use folio_size() other than
->   PAGE_SIZE
-> 
->   The most common paths are:
->   * Buffered reads/writes
->   * Uncompressed folio writeback
->     Already handled pretty well
-> 
->   * Compressed read
->   * Compressed write
->     To take full advantage of larger folios, we should use folio_iter
->     other than bvec_iter.
->     This will be a dedicated patchset, and the existing bvec_iter can
->     still handle larger folios.
-> 
->   Internal usages can still use page sized folios, or even pages,
->   including:
->   * Encoded reads/writes
->   * Compressed folios
->   * RAID56 internal pages
->   * Scrub internal pages
-> 
-> This patchset will handle the above mentioned points by:
-> 
-> - Prepare the subpage routine to handle larger folios
->   This will introduce a small overhead, as all checks are against folio
->   sizes, even on x86_64 we can no longer skip subpage completely.
-> 
->   This is done in the first patch.
-> 
-> - Convert straightforward PAGE_SIZE users to use folio_size()
->   This is done in the remaining patches.
-> 
-> Currently this patchset is not a exhaustive conversion, I'm pretty sure
-> there are other complex situations which can cause problems.
-> Those problems can only be exposed and fixed after switching on the
-> experimental larger folios support later.
-> 
-> Qu Wenruo (6):
->   btrfs: subpage: make btrfs_is_subpage() check against a folio
->   btrfs: add a @fsize parameter to btrfs_alloc_subpage()
->   btrfs: replace PAGE_SIZE with folio_size for subpage.[ch]
->   btrfs: prepare btrfs_launcher_folio() for larger folios support
->   btrfs: prepare extent_io.c for future larger folio support
->   btrfs: prepare btrfs_page_mkwrite() for larger folios
-> 
->  fs/btrfs/extent_io.c | 49 ++++++++++++++++++++++++--------------------
->  fs/btrfs/file.c      | 19 +++++++++--------
->  fs/btrfs/inode.c     |  4 ++--
->  fs/btrfs/subpage.c   | 38 +++++++++++++++++-----------------
->  fs/btrfs/subpage.h   | 16 +++++++--------
->  5 files changed, 66 insertions(+), 60 deletions(-)
-> 
-> -- 
-> 2.48.1
-> 
+>>   			btrfs_mark_ordered_io_finished(BTRFS_I(inode), NULL,
+>>   						       cur, cur_len, false);
+>>   			mapping_set_error(mapping, PTR_ERR(folio));
+>> -			cur = cur_end + 1;
+>> +			cur = cur_end;
+>>   			continue;
+>>   		}
+>>   
+>> +		cur_end = min(folio_pos(folio) + folio_size(folio) - 1, end);
+>> +		cur_len = cur_end + 1 - cur;
+>> +
+>>   		ASSERT(folio_test_locked(folio));
+>>   		if (pages_dirty && folio != locked_folio)
+>>   			ASSERT(folio_test_dirty(folio));
+>> @@ -2621,7 +2626,7 @@ static bool try_release_extent_state(struct extent_io_tree *tree,
+>>   				     struct folio *folio)
+>>   {
+>>   	u64 start = folio_pos(folio);
+>> -	u64 end = start + PAGE_SIZE - 1;
+>> +	u64 end = start + folio_size(folio) - 1;
+>>   	bool ret;
+>>   
+>>   	if (test_range_bit_exists(tree, start, end, EXTENT_LOCKED)) {
+>> @@ -2659,7 +2664,7 @@ static bool try_release_extent_state(struct extent_io_tree *tree,
+>>   bool try_release_extent_mapping(struct folio *folio, gfp_t mask)
+>>   {
+>>   	u64 start = folio_pos(folio);
+>> -	u64 end = start + PAGE_SIZE - 1;
+>> +	u64 end = start + folio_size(folio) - 1;
+>>   	struct btrfs_inode *inode = folio_to_inode(folio);
+>>   	struct extent_io_tree *io_tree = &inode->io_tree;
+>>   
+>> -- 
+>> 2.48.1
+>>
+
 
