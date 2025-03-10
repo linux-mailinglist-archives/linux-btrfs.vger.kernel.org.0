@@ -1,100 +1,101 @@
-Return-Path: <linux-btrfs+bounces-12154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12155-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAD3EA5A3DF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 20:36:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE366A5A418
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 20:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40BB318920A4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 19:36:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEF4D174B72
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 19:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70FC2309B3;
-	Mon, 10 Mar 2025 19:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9051DDA31;
+	Mon, 10 Mar 2025 19:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4fW+L1a";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gl+Bqyt3";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4fW+L1a";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gl+Bqyt3"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zU76sN/l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EzqxHBWM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zU76sN/l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EzqxHBWM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F34F1CAA60
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 19:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79BE1D90C8
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 19:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741635357; cv=none; b=S3gk+hiGStcdscQrBnKgW6uSD1AZGMs7zp7GrOMpYdR6JLsjuBIdYnmvDn21F5y2s7piSxdZT2fSMmnK19OOtjRWTc+cX+QBDGEmc4tYrSvlikE25IT5A+mCLtj/jPEkclSadHfFrpBhPopL/xSzegxBTg6yFEvPemrZL/tRRh8=
+	t=1741636315; cv=none; b=ereJZgaM+rGXrPfQQ8/Cufc6X1cxl0TKk7YnDv34luPkuPRv4IVzBzzlul5hemjVfKYSfmoBxCRZrSRL1avJYW3K0E8ladlaTHTJR5JNn/Y+ZW5X3EyQ3RUFTnsTz3jRIsiZvK/fnDfoicVO9mvpEljOeqwGGNB8WvwVcIAOQKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741635357; c=relaxed/simple;
-	bh=lWxfXyT0umllSKgbENh/9Va997DS7wY9xvwKSVUsLK4=;
+	s=arc-20240116; t=1741636315; c=relaxed/simple;
+	bh=X++XNym9y251kHo8ISsAx9+Ar76fz/JQwRWv5ZbmXWY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qhpJDq86ftk5Vrv87yMQFOSn49P/wOQQW+rx67SOR/HmxGjMHu1pTQkd4Jc3HBTK1R0wmushmWCA18GqDzgQXtvV/AC4TOoaDdCOs0puPlOwzooK6yVrRMtx1KUyP+dovKtadvKGZuB2RFjJU0xqUTUNdjMeU9DBZmb9owW/Ryw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4fW+L1a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gl+Bqyt3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4fW+L1a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gl+Bqyt3; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=QvTZN18NdgPAL6WpXURnJWPXJ7ODqfM0iZTe2EvPDSA7h0qwwcx+mDYyMNOn9dYMH4l6rTF9d5GhcoeZ++plwgJZM74anFzPc8w2vDVr3LIfXvl4rWgQpJEi+298LN2eA9Ekjlkq6a409NywHycKlROvXi8sV0uFQ6T9nuaztW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zU76sN/l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EzqxHBWM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zU76sN/l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EzqxHBWM; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BF4601F387;
-	Mon, 10 Mar 2025 19:35:53 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1C4961F387;
+	Mon, 10 Mar 2025 19:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741635353;
+	t=1741636312;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cTApaEDLiNDn3LU2MUCO+kIN5P/aTj1B+771wX/k2Bs=;
-	b=N4fW+L1adR8N+cEz1qOjc0wlejIDofK55HIqG7jLXu21cglSzkhms4MyZUEi4TbTDbbUd/
-	36jKmezIvuIsMSosAxFSHnCIBBhVRJbPWlCOhN9nxHcyIK1GImrdk+rzHj1Yw1m3YH1dpu
-	WFeAb3K72Cdu/aBYhbLX36eeQasYVf8=
+	bh=0o3BNJD5l/e2Fj9P+S6shkMKliyy2iLPudeeAvFjnFU=;
+	b=zU76sN/lLaU4E/WQg5tkvhrjmfUCbHaNwqmD/O75dBFuLOk8PaMrttCgnRwHl6PL9z2/Xj
+	YkUPGGZU1s8AkeJreCx/GIG3XjLxyEvTFusGs5J3lrEAZSEpU++/VpJjpTxFBRBZIdDhfp
+	k6qu6VlIvDA6nyiklck1Mu2F8FgLUmg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741635353;
+	s=susede2_ed25519; t=1741636312;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cTApaEDLiNDn3LU2MUCO+kIN5P/aTj1B+771wX/k2Bs=;
-	b=Gl+Bqyt34DtQo1EOfVOpnYt3K/ZJlo6mOh+Jm3idjsQCLO36qnK7w6QKexqEJZy46JoE8l
-	o4tgvKGR4SteVfAQ==
+	bh=0o3BNJD5l/e2Fj9P+S6shkMKliyy2iLPudeeAvFjnFU=;
+	b=EzqxHBWMGGymemYUceQVZztgwLeGry6ZVqW1eQGikqVCxQ7xEwXcrIlEWaA5oscbI6GDIO
+	PMwA4IWtwEpWtaBQ==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741635353;
+	t=1741636312;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cTApaEDLiNDn3LU2MUCO+kIN5P/aTj1B+771wX/k2Bs=;
-	b=N4fW+L1adR8N+cEz1qOjc0wlejIDofK55HIqG7jLXu21cglSzkhms4MyZUEi4TbTDbbUd/
-	36jKmezIvuIsMSosAxFSHnCIBBhVRJbPWlCOhN9nxHcyIK1GImrdk+rzHj1Yw1m3YH1dpu
-	WFeAb3K72Cdu/aBYhbLX36eeQasYVf8=
+	bh=0o3BNJD5l/e2Fj9P+S6shkMKliyy2iLPudeeAvFjnFU=;
+	b=zU76sN/lLaU4E/WQg5tkvhrjmfUCbHaNwqmD/O75dBFuLOk8PaMrttCgnRwHl6PL9z2/Xj
+	YkUPGGZU1s8AkeJreCx/GIG3XjLxyEvTFusGs5J3lrEAZSEpU++/VpJjpTxFBRBZIdDhfp
+	k6qu6VlIvDA6nyiklck1Mu2F8FgLUmg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741635353;
+	s=susede2_ed25519; t=1741636312;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cTApaEDLiNDn3LU2MUCO+kIN5P/aTj1B+771wX/k2Bs=;
-	b=Gl+Bqyt34DtQo1EOfVOpnYt3K/ZJlo6mOh+Jm3idjsQCLO36qnK7w6QKexqEJZy46JoE8l
-	o4tgvKGR4SteVfAQ==
+	bh=0o3BNJD5l/e2Fj9P+S6shkMKliyy2iLPudeeAvFjnFU=;
+	b=EzqxHBWMGGymemYUceQVZztgwLeGry6ZVqW1eQGikqVCxQ7xEwXcrIlEWaA5oscbI6GDIO
+	PMwA4IWtwEpWtaBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B5A71399F;
-	Mon, 10 Mar 2025 19:35:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 002FF1399F;
+	Mon, 10 Mar 2025 19:51:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RWC7JRk/z2eFFgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 10 Mar 2025 19:35:53 +0000
-Date: Mon, 10 Mar 2025 20:35:48 +0100
+	id HSJcO9dCz2fTGgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 10 Mar 2025 19:51:51 +0000
+Date: Mon, 10 Mar 2025 20:51:50 +0100
 From: David Sterba <dsterba@suse.cz>
 To: Sun YangKai <sunk67188@gmail.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs: improve readability in search_ioctl()
-Message-ID: <20250310193548.GC32661@twin.jikos.cz>
+Subject: Re: [PATCH 2/3] btrfs: remove unnecessary 'found_key' local variable
+ in btrfs_search_forward()
+Message-ID: <20250310195150.GD32661@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <20250309075820.30999-1-sunk67188@gmail.com>
- <20250309075820.30999-2-sunk67188@gmail.com>
+ <20250309075820.30999-3-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,14 +104,14 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250309075820.30999-2-sunk67188@gmail.com>
+In-Reply-To: <20250309075820.30999-3-sunk67188@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-0.999];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
 	MIME_GOOD(-0.10)[text/plain];
 	FREEMAIL_TO(0.00)[gmail.com];
 	RCVD_TLS_ALL(0.00)[];
@@ -132,75 +133,94 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 X-Spam-Score: -4.00
 X-Spam-Flag: NO
 
-On Sun, Mar 09, 2025 at 03:57:59PM +0800, Sun YangKai wrote:
-> This commit addresses two code issues in the search_ioctl() function:
+On Sun, Mar 09, 2025 at 03:58:00PM +0800, Sun YangKai wrote:
+> The 'found_key' variable was only used to temporarily store a key value
 
-Please avoid the phrases "This commit" or "This patch". Also the
-readability is a general goal, in this case it can be more specific,
-like simplifying the return values.
+In the changelog text it's ok to use quoting but not in the subject, due
+to the special characters.
 
-> 1. Move the assignment of ret = -EFAULT to within the error condition
->    check in fault_in_subpage_writeable(). The previous placement outside
->    the condition could lead to the error value being overwritten by
->    subsequent assignments, cause unnecessary assignments.
+> before copying it to 'min_key' at the end of the function when returning
+> success (ret=0).
 > 
-> 2. Simplify loop exit logic by removing redundant `goto`.
->    The original code used `goto err` to bypass post-loop processing after
->    handling errors from `btrfs_search_forward()`. However, the loop's
->    termination naturally falls through to the post-loop section, which
->    already handles `ret` values. Replacing `goto err` with `break`
->    eliminates redundant control flow, consolidates error handling, and
->    makes the loop's exit conditions explicit.
+> This commit optimizes the code by:
+> 1. Eliminating the intermediate 'found_key' variable
+> 2. Directly populating 'min_key' at the exact loop exit points where
+>    ret=0 is set
+> 3. Removing the final memcpy operation in the return path
 > 
-> The changes ensure proper error propagation and make the loop's exit
-> conditions clearer while maintaining functional equivalence.
+> This change improves code clarity by:
+> - Removing redundant variable usage
+> - Simplifying the success path logic
+> - Reducing memory operations
 > 
+> The found key value is now stored directly into the destination 'min_key'
+> structure at the point of discovery, maintaining identical functionality
+> while:
+> - Eliminating an unnecessary memory copy
+> - Reducing code complexity
+
+I think the text is overexplaining, you can keep it to the point what
+the cleanup does and that it does not change the logic but does not need
+to mention general statements.
+
 > Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 > ---
->  fs/btrfs/ioctl.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
+>  fs/btrfs/ctree.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 6c18bad53cd3..bef158a1260b 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1642,21 +1642,20 @@ static noinline int search_ioctl(struct inode *inode,
->  	key.offset = sk->min_offset;
->  
->  	while (1) {
-> -		ret = -EFAULT;
->  		/*
->  		 * Ensure that the whole user buffer is faulted in at sub-page
->  		 * granularity, otherwise the loop may live-lock.
->  		 */
->  		if (fault_in_subpage_writeable(ubuf + sk_offset,
-> -					       *buf_size - sk_offset))
-> +					       *buf_size - sk_offset)) {
-> +			ret = -EFAULT;
->  			break;
-> +		}
->  
->  		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-> -		if (ret != 0) {
-> -			if (ret > 0)
-> -				ret = 0;
-> -			goto err;
-> -		}
-> +		if (ret)
-> +			break;
-> +
->  		ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
->  				 &sk_offset, &num_found);
->  		btrfs_release_path(path);
-> @@ -1666,7 +1665,7 @@ static noinline int search_ioctl(struct inode *inode,
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 3dc5a35dd19b..1dc59dc3b708 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -4608,7 +4608,6 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+>  			 u64 min_trans)
+>  {
+>  	struct extent_buffer *cur;
+> -	struct btrfs_key found_key;
+>  	int slot;
+>  	int sret;
+>  	u32 nritems;
+> @@ -4644,7 +4643,8 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+>  				goto find_next_key;
+>  			ret = 0;
+>  			path->slots[level] = slot;
+> -			btrfs_item_key_to_cpu(cur, &found_key, slot);
+> +			/* save our key for returning back */
+
+If you're moving a comment please also fix it so it conforms to the
+preferred style, it's a sentence, so capital first letter and ended by a
+period. For old code like that's it's a rare opportunity to do it so it
+ought to be done.
+
+> +			btrfs_item_key_to_cpu(cur, min_key, slot);
+>  			goto out;
+>  		}
+>  		if (sret && slot > 0)
+> @@ -4679,11 +4679,11 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+>  				goto out;
+>  			}
+>  		}
+> -		/* save our key for returning back */
+> -		btrfs_node_key_to_cpu(cur, &found_key, slot);
+>  		path->slots[level] = slot;
+>  		if (level == path->lowest_level) {
+>  			ret = 0;
+> +			/* save our key for returning back */
+> +			btrfs_node_key_to_cpu(cur, min_key, slot);
+>  			goto out;
+>  		}
+>  		cur = btrfs_read_node_slot(cur, slot);
+> @@ -4702,7 +4702,6 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+>  	path->keep_locks = keep_locks;
+>  	if (ret == 0) {
+>  		btrfs_unlock_up_safe(path, path->lowest_level + 1);
+> -		memcpy(min_key, &found_key, sizeof(found_key));
 >  	}
->  	if (ret > 0)
->  		ret = 0;
-> -err:
-> +
->  	sk->nr_items = num_found;
->  	btrfs_put_root(root);
->  	btrfs_free_path(path);
+
+Single statement 'if' should not enclose the statements in { }
+
+>  	return ret;
+>  }
 > -- 
 > 2.48.1
 > 
