@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-12126-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12125-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05AFAA58D00
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 08:36:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 964B8A58CFF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 08:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40E4D3AA154
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 07:36:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C65F516A68F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 07:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBE3221541;
-	Mon, 10 Mar 2025 07:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DEC221715;
+	Mon, 10 Mar 2025 07:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MnoMJHMP";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MnoMJHMP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FgXA24j6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FgXA24j6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58382206B7
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152E82206B7
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741592191; cv=none; b=idL3uSmnOrkvNReNj2Mn5u5yzGJzXuRRQtckqmm7oC730uCaycY2I2zNdZsWY5kWQlLbw98O5dNgvV/hmUFkxSPBzdBwMmSv5vU2IPjrlhFhV+eoIo4DrOzKtU52fYsaLrHppAl3f8adOPyv4RtpSyIjJyzTklQ3AjYQCpGwgFY=
+	t=1741592188; cv=none; b=YuEMXYovq1BJhK1SulPSJqyvU+Qq/AvF0Nuj6J7R2AlaenYsAHRXP9yR6rNIycMF5/eYH4CNWPwFPB+l04c7soD6CedrXbts7iYsq1cb9YCj7tZdmGOFYZael2W1/bIFvqcIcZaVFczBelPdIlRBJAzWZ1tF12kc8mIwAFwgchU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741592191; c=relaxed/simple;
-	bh=H1g3tNOY8eplRnzBmfd+w0u7EHi488ZOUTe2sfHaook=;
+	s=arc-20240116; t=1741592188; c=relaxed/simple;
+	bh=89BjmmEhvQRbBtb1HyzwqPFSyXZvdZqG+Ee5t2XfwLE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pDeXnaU1Gr/B5lqF9FoFQmy1xx9ZHMpGW+IFj8VHsxgxMq2kAlXA7faYfQLExYzpdsb9orovqXuBegbbYjdEpMI/u0nz+4K30jICiHSQEBBaEseCmTthHtdxqNlBz2ypJQAfrn0BX6y89FqHifn5KKcXTwe6gPuEvA9ONyqFFOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MnoMJHMP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MnoMJHMP; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=utcd3VwzgPJvDV1S7Cd+eTTWfodZ3mQmZ85iz/OwjCcfgj2Qf8prcBsgEBZKpGA7gYPRi1SgyaViTSGBZ1pumnjEo9iHN1PHLXrySIzJ9r/wNtZRk0FyRU86dZOcaZcqxfIJaaz3+xqXCjxv4iIOam9aH7Nw8u334aT1EP+1PmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FgXA24j6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FgXA24j6; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 89A281F445
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:22 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CE35921187
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741592182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1741592183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZrIRJet+Bllj3F7DbtbsTKCKsO/g5DHNoq0ovgLXZgU=;
-	b=MnoMJHMPp8dwYCwOgsfg0hABxTU1VXc1LH0+n4yk8iWcB0LzWlPZ5gPXTm/7/rfS2ihGXh
-	iWcBsGeuGqHo6pR6CalT+ln/tXeGmf8zTvu0YXL+kS93cXFGClQvOKrhgT5cDhOvALT8Lr
-	B3T4vnvBgj6q91DLwddFYus+yYGGLyM=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=MnoMJHMP
+	bh=cUTm8WIOT9Y/QTRDHRtLHlFOtxXoFC9SyCGu6IqZyB8=;
+	b=FgXA24j6qQIr2uGFZCQnKM5++GzOWkKLFq7Fh/mhoHFsk485LO/ddjqn6qTthOVxV3pSM8
+	qu56glz4+LSFLAPGSSk+vgg6KEoLvky8IbRx+lzJYpYMcR1BeU3SIxYsEcNw9NSLOdkS8B
+	crhZ+vPGlTu6x538gLpb40RgFS/tsKo=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=FgXA24j6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741592182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1741592183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZrIRJet+Bllj3F7DbtbsTKCKsO/g5DHNoq0ovgLXZgU=;
-	b=MnoMJHMPp8dwYCwOgsfg0hABxTU1VXc1LH0+n4yk8iWcB0LzWlPZ5gPXTm/7/rfS2ihGXh
-	iWcBsGeuGqHo6pR6CalT+ln/tXeGmf8zTvu0YXL+kS93cXFGClQvOKrhgT5cDhOvALT8Lr
-	B3T4vnvBgj6q91DLwddFYus+yYGGLyM=
+	bh=cUTm8WIOT9Y/QTRDHRtLHlFOtxXoFC9SyCGu6IqZyB8=;
+	b=FgXA24j6qQIr2uGFZCQnKM5++GzOWkKLFq7Fh/mhoHFsk485LO/ddjqn6qTthOVxV3pSM8
+	qu56glz4+LSFLAPGSSk+vgg6KEoLvky8IbRx+lzJYpYMcR1BeU3SIxYsEcNw9NSLOdkS8B
+	crhZ+vPGlTu6x538gLpb40RgFS/tsKo=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDEB413A70
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:21 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0DF5913A70
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KMQ6H3WWzmfpMAAAD6G6ig
+	id aHjRL3aWzmfpMAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:21 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 07:36:22 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/6] btrfs: subpage: make btrfs_is_subpage() check against a folio
-Date: Mon, 10 Mar 2025 18:05:57 +1030
-Message-ID: <574505287e817a69b060ce056fbfdaf8cf81b7c5.1741591823.git.wqu@suse.com>
+Subject: [PATCH 2/6] btrfs: add a @fsize parameter to btrfs_alloc_subpage()
+Date: Mon, 10 Mar 2025 18:05:58 +1030
+Message-ID: <b99b96a2099d9d2150909b93b7ccf1d220dbc168.1741591823.git.wqu@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1741591823.git.wqu@suse.com>
 References: <cover.1741591823.git.wqu@suse.com>
@@ -84,16 +84,15 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 89A281F445
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: CE35921187
+X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
@@ -104,258 +103,93 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-To support larger data folios, we can no longer assume every filemap
-folio is page sized.
+Since we can no longer assume page sized folio for data filemap folios,
+allow btrfs_alloc_subpage() to accept a new parameter, @fsize,
+indicating the folio size.
 
-So btrfs_is_subpage() check must be done against a folio.
-
-Thankfully for metadata folios, we have the full control and ensure a
-larger folio will not be larger than nodesize, so
-btrfs_meta_is_subpage() doesn't need this change.
+This doesn't follow the regular behavior of passing a folio directly,
+because this function is shared by both data and metadata folios, and
+for metadata folios we have extra allocation policy to ensure no larger
+folios whose sizes are larger than nodesize (unless it's page sized).
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 14 +++++++-------
- fs/btrfs/inode.c     |  2 +-
- fs/btrfs/subpage.c   | 24 ++++++++++++------------
- fs/btrfs/subpage.h   | 12 ++++++------
- 4 files changed, 26 insertions(+), 26 deletions(-)
+ fs/btrfs/extent_io.c | 2 +-
+ fs/btrfs/subpage.c   | 8 ++++----
+ fs/btrfs/subpage.h   | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a78ff093ea37..d2a7472f28b6 100644
+index d2a7472f28b6..337d2bed98d9 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -432,7 +432,7 @@ static void end_folio_read(struct folio *folio, bool uptodate, u64 start, u32 le
- 	else
- 		btrfs_folio_clear_uptodate(fs_info, folio, start, len);
- 
--	if (!btrfs_is_subpage(fs_info, folio->mapping))
-+	if (!btrfs_is_subpage(fs_info, folio))
- 		folio_unlock(folio);
- 	else
- 		btrfs_folio_end_lock(fs_info, folio, start, len);
-@@ -488,7 +488,7 @@ static void end_bbio_data_write(struct btrfs_bio *bbio)
- static void begin_folio_read(struct btrfs_fs_info *fs_info, struct folio *folio)
- {
- 	ASSERT(folio_test_locked(folio));
--	if (!btrfs_is_subpage(fs_info, folio->mapping))
-+	if (!btrfs_is_subpage(fs_info, folio))
- 		return;
- 
- 	ASSERT(folio_test_private(folio));
-@@ -870,7 +870,7 @@ int set_folio_extent_mapped(struct folio *folio)
- 
- 	fs_info = folio_to_fs_info(folio);
- 
--	if (btrfs_is_subpage(fs_info, folio->mapping))
-+	if (btrfs_is_subpage(fs_info, folio))
- 		return btrfs_attach_subpage(fs_info, folio, BTRFS_SUBPAGE_DATA);
- 
- 	folio_attach_private(folio, (void *)EXTENT_FOLIO_PRIVATE);
-@@ -887,7 +887,7 @@ void clear_folio_extent_mapped(struct folio *folio)
- 		return;
- 
- 	fs_info = folio_to_fs_info(folio);
--	if (btrfs_is_subpage(fs_info, folio->mapping))
-+	if (btrfs_is_subpage(fs_info, folio))
- 		return btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_DATA);
- 
- 	folio_detach_private(folio);
-@@ -1331,7 +1331,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- {
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(&inode->vfs_inode);
- 	struct writeback_control *wbc = bio_ctrl->wbc;
--	const bool is_subpage = btrfs_is_subpage(fs_info, folio->mapping);
-+	const bool is_subpage = btrfs_is_subpage(fs_info, folio);
- 	const u64 page_start = folio_pos(folio);
- 	const u64 page_end = page_start + folio_size(folio) - 1;
- 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
-@@ -1359,7 +1359,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 	int bit;
- 
- 	/* Save the dirty bitmap as our submission bitmap will be a subset of it. */
--	if (btrfs_is_subpage(fs_info, inode->vfs_inode.i_mapping)) {
-+	if (btrfs_is_subpage(fs_info, folio)) {
- 		ASSERT(blocks_per_folio > 1);
- 		btrfs_get_subpage_dirty_bitmap(fs_info, folio, &bio_ctrl->submit_bitmap);
- 	} else {
-@@ -2411,7 +2411,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
- 			 * regular submission.
- 			 */
- 			if (wbc->sync_mode != WB_SYNC_NONE ||
--			    btrfs_is_subpage(inode_to_fs_info(inode), mapping)) {
-+			    btrfs_is_subpage(inode_to_fs_info(inode), folio)) {
- 				if (folio_test_writeback(folio))
- 					submit_write_bio(bio_ctrl, 0);
- 				folio_wait_writeback(folio);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e7e6accbaf6c..1af72f77f820 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7283,7 +7283,7 @@ static void wait_subpage_spinlock(struct folio *folio)
- 	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
- 	struct btrfs_subpage *subpage;
- 
--	if (!btrfs_is_subpage(fs_info, folio->mapping))
-+	if (!btrfs_is_subpage(fs_info, folio))
- 		return;
- 
- 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+@@ -3257,7 +3257,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	 * manually if we exit earlier.
+ 	 */
+ 	if (btrfs_meta_is_subpage(fs_info)) {
+-		prealloc = btrfs_alloc_subpage(fs_info, BTRFS_SUBPAGE_METADATA);
++		prealloc = btrfs_alloc_subpage(fs_info, PAGE_SIZE, BTRFS_SUBPAGE_METADATA);
+ 		if (IS_ERR(prealloc)) {
+ 			ret = PTR_ERR(prealloc);
+ 			goto out;
 diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index d7e70525f4fb..1392b4eaa1f9 100644
+index 1392b4eaa1f9..6e776c3bd873 100644
 --- a/fs/btrfs/subpage.c
 +++ b/fs/btrfs/subpage.c
-@@ -83,7 +83,7 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
- 		return 0;
- 	if (type == BTRFS_SUBPAGE_METADATA && !btrfs_meta_is_subpage(fs_info))
- 		return 0;
--	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio->mapping))
-+	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio))
+@@ -86,7 +86,7 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
+ 	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio))
  		return 0;
  
- 	subpage = btrfs_alloc_subpage(fs_info, type);
-@@ -104,7 +104,7 @@ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *fol
- 		return;
- 	if (type == BTRFS_SUBPAGE_METADATA && !btrfs_meta_is_subpage(fs_info))
- 		return;
--	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio->mapping))
-+	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio))
- 		return;
+-	subpage = btrfs_alloc_subpage(fs_info, type);
++	subpage = btrfs_alloc_subpage(fs_info, folio_size(folio), type);
+ 	if (IS_ERR(subpage))
+ 		return  PTR_ERR(subpage);
  
- 	subpage = folio_detach_private(folio);
-@@ -286,7 +286,7 @@ void btrfs_folio_end_lock(const struct btrfs_fs_info *fs_info,
+@@ -113,16 +113,16 @@ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *fol
+ }
  
- 	ASSERT(folio_test_locked(folio));
+ struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
+-					  enum btrfs_subpage_type type)
++				size_t fsize, enum btrfs_subpage_type type)
+ {
+ 	struct btrfs_subpage *ret;
+ 	unsigned int real_size;
  
--	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio->mapping)) {
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio)) {
- 		folio_unlock(folio);
- 		return;
- 	}
-@@ -320,7 +320,7 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
- 	int cleared = 0;
- 	int bit;
+-	ASSERT(fs_info->sectorsize < PAGE_SIZE);
++	ASSERT(fs_info->sectorsize < fsize);
  
--	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
-+	if (!btrfs_is_subpage(fs_info, folio)) {
- 		folio_unlock(folio);
- 		return;
- 	}
-@@ -572,7 +572,7 @@ void btrfs_folio_set_##name(const struct btrfs_fs_info *fs_info,	\
- 			    struct folio *folio, u64 start, u32 len)	\
- {									\
- 	if (unlikely(!fs_info) ||					\
--	    !btrfs_is_subpage(fs_info, folio->mapping)) {		\
-+	    !btrfs_is_subpage(fs_info, folio)) {			\
- 		folio_set_func(folio);					\
- 		return;							\
- 	}								\
-@@ -582,7 +582,7 @@ void btrfs_folio_clear_##name(const struct btrfs_fs_info *fs_info,	\
- 			      struct folio *folio, u64 start, u32 len)	\
- {									\
- 	if (unlikely(!fs_info) ||					\
--	    !btrfs_is_subpage(fs_info, folio->mapping)) {		\
-+	    !btrfs_is_subpage(fs_info, folio)) {			\
- 		folio_clear_func(folio);				\
- 		return;							\
- 	}								\
-@@ -592,7 +592,7 @@ bool btrfs_folio_test_##name(const struct btrfs_fs_info *fs_info,	\
- 			     struct folio *folio, u64 start, u32 len)	\
- {									\
- 	if (unlikely(!fs_info) ||					\
--	    !btrfs_is_subpage(fs_info, folio->mapping))			\
-+	    !btrfs_is_subpage(fs_info, folio))				\
- 		return folio_test_func(folio);				\
- 	return btrfs_subpage_test_##name(fs_info, folio, start, len);	\
- }									\
-@@ -600,7 +600,7 @@ void btrfs_folio_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
- 				  struct folio *folio, u64 start, u32 len) \
- {									\
- 	if (unlikely(!fs_info) ||					\
--	    !btrfs_is_subpage(fs_info, folio->mapping)) {		\
-+	    !btrfs_is_subpage(fs_info, folio)) {			\
- 		folio_set_func(folio);					\
- 		return;							\
- 	}								\
-@@ -611,7 +611,7 @@ void btrfs_folio_clamp_clear_##name(const struct btrfs_fs_info *fs_info, \
- 				    struct folio *folio, u64 start, u32 len) \
- {									\
- 	if (unlikely(!fs_info) ||					\
--	    !btrfs_is_subpage(fs_info, folio->mapping)) {		\
-+	    !btrfs_is_subpage(fs_info, folio)) {			\
- 		folio_clear_func(folio);				\
- 		return;							\
- 	}								\
-@@ -622,7 +622,7 @@ bool btrfs_folio_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
- 				   struct folio *folio, u64 start, u32 len) \
- {									\
- 	if (unlikely(!fs_info) ||					\
--	    !btrfs_is_subpage(fs_info, folio->mapping))			\
-+	    !btrfs_is_subpage(fs_info, folio))				\
- 		return folio_test_func(folio);				\
- 	btrfs_subpage_clamp_range(folio, &start, &len);			\
- 	return btrfs_subpage_test_##name(fs_info, folio, start, len);	\
-@@ -700,7 +700,7 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
- 	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
- 		return;
- 
--	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
-+	if (!btrfs_is_subpage(fs_info, folio)) {
- 		ASSERT(!folio_test_dirty(folio));
- 		return;
- 	}
-@@ -735,7 +735,7 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
- 	int ret;
- 
- 	ASSERT(folio_test_locked(folio));
--	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio->mapping))
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio))
- 		return;
- 
- 	subpage = folio_get_private(folio);
+ 	real_size = struct_size(ret, bitmaps,
+ 			BITS_TO_LONGS(btrfs_bitmap_nr_max *
+-				      (PAGE_SIZE >> fs_info->sectorsize_bits)));
++				      (fsize >> fs_info->sectorsize_bits)));
+ 	ret = kzalloc(real_size, GFP_NOFS);
+ 	if (!ret)
+ 		return ERR_PTR(-ENOMEM);
 diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 9d1ad6c7c6bd..baa23258e7fa 100644
+index baa23258e7fa..083390e76d13 100644
 --- a/fs/btrfs/subpage.h
 +++ b/fs/btrfs/subpage.h
-@@ -85,10 +85,10 @@ static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *fs_info)
- 	return fs_info->nodesize < PAGE_SIZE;
- }
- static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
--				    struct address_space *mapping)
-+				    struct folio *folio)
- {
--	if (mapping && mapping->host)
--		ASSERT(is_data_inode(BTRFS_I(mapping->host)));
-+	if (folio->mapping && folio->mapping->host)
-+		ASSERT(is_data_inode(BTRFS_I(folio->mapping->host)));
- 	return fs_info->sectorsize < PAGE_SIZE;
- }
- #else
-@@ -97,10 +97,10 @@ static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *fs_info)
- 	return false;
- }
- static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
--				    struct address_space *mapping)
-+				    struct folio *folio)
- {
--	if (mapping && mapping->host)
--		ASSERT(is_data_inode(BTRFS_I(mapping->host)));
-+	if (folio->mapping && folio->mapping->host)
-+		ASSERT(is_data_inode(BTRFS_I(folio->mapping->host)));
- 	return false;
- }
- #endif
+@@ -112,7 +112,7 @@ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *fol
+ 
+ /* Allocate additional data where page represents more than one sector */
+ struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
+-					  enum btrfs_subpage_type type);
++				size_t fsize, enum btrfs_subpage_type type);
+ void btrfs_free_subpage(struct btrfs_subpage *subpage);
+ 
+ void btrfs_folio_inc_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *folio);
 -- 
 2.48.1
 
