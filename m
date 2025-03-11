@@ -1,188 +1,136 @@
-Return-Path: <linux-btrfs+bounces-12176-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E166A5B723
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 04:10:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F134A5B9A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 08:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD9CC7A6BD5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 03:09:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1494F189490B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 07:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB45D1E98ED;
-	Tue, 11 Mar 2025 03:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EEFF222572;
+	Tue, 11 Mar 2025 07:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ngnT8Luy";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ngnT8Luy"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=pj.opensuse@gmx.com header.b="GSFJugUU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B88566A
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 03:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9B72206B1
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 07:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741662624; cv=none; b=ufBVSVxVHjH6TWmKrvU5wRl6PJNDllJF+o9Ba+hpkoSEX2Qp7nZHZug+EBnWd3BC0ubXEVYii76liHo9LOsmzCjnbkLOvDuTX4VfktQf6xzLaDfQoYFRAaZUT0nFH6mONK87hlu3v8+iKHlNej8XQcPxtGYHBBaED4D0E0/Hoi8=
+	t=1741677446; cv=none; b=f6mqMy/WrflvbArvJzvbK4PRheU/DQ/xJSmzt3T1fOFVE0KWfCK6dkUNzHuwd5KPrsPxz8ZqYe2zwoXr3Ce8LThXxbIFGZ+yO7DsWHpbFljbMV9/fBsz4cGrZVObITaLUByKvSyRtdyXY33Nu4GyFqHI+3/Ymzgv8T9haFzILVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741662624; c=relaxed/simple;
-	bh=BUYP2/avv2M+DgA4iS1mHyjQ3HzxG4q6/jaAyCTLWxE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DiIA/u4KQf5eoWcLjFkE0kjtRD6PzmncX+5r2skB7rZL8aCZtHJibH2gaxDT2DMuf7wvjBeUEwUvoQ8zs6bxbgj2L+91hADkPD/Fml9AAopErpaeXdx40317phHgFldQPcMl702uL/42R/gPzUnCX1Zv0fqKGNSIVDN9Cd02ZXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ngnT8Luy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ngnT8Luy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DA4851F38A
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 03:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741662619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Djt9mpxhs2PRsxlJPoON0HILRK/1NQxXFfO8s7nSqD8=;
-	b=ngnT8Luygr6r2y+IT+cvLrZ9jOXyYTRhKv6utzfMTQ76ozkzaYPmJBkURykGG5c8ZAB/V2
-	3H8YaHgvh0/vcY8c17JX7A3g6gbmQu3pDWc6/Kj/AmMBWc84aY9UmCuf6g2Pl6D1hlouFl
-	N1xFJA4tDlwyujHSD5wNQWhC5a79YZY=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741662619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Djt9mpxhs2PRsxlJPoON0HILRK/1NQxXFfO8s7nSqD8=;
-	b=ngnT8Luygr6r2y+IT+cvLrZ9jOXyYTRhKv6utzfMTQ76ozkzaYPmJBkURykGG5c8ZAB/V2
-	3H8YaHgvh0/vcY8c17JX7A3g6gbmQu3pDWc6/Kj/AmMBWc84aY9UmCuf6g2Pl6D1hlouFl
-	N1xFJA4tDlwyujHSD5wNQWhC5a79YZY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC12A13874
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 03:10:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dPcOHZqpz2erCgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 03:10:18 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3] btrfs: add extra warning if delayed iput is added when it's not allowed
-Date: Tue, 11 Mar 2025 13:39:56 +1030
-Message-ID: <c9858984b0807f758c8f1f5f64c1ec95c78930b2.1741662594.git.wqu@suse.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1741677446; c=relaxed/simple;
+	bh=pRU7j+YVSrkLcbqOmQCCtXWaPcy9vnP/rX4cVzGfZao=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=quTutjioOB3768IfKWgAT7rMy/RVU/tqyYxCPCYA/PHN5jxp7RQFHovHabkMOOd4S1upP93lKC0q6oQgKygvhfDP9Uf16lba5VsjF2NPrJmgo5+QKDJ1Z/1zJOIEAjyUIdxuP+u7ceLw59aS/5xcXjn4mUu+WAyHvtVZlhFgUmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=pj.opensuse@gmx.com header.b=GSFJugUU; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1741677442; x=1742282242; i=pj.opensuse@gmx.com;
+	bh=pRU7j+YVSrkLcbqOmQCCtXWaPcy9vnP/rX4cVzGfZao=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=GSFJugUUf+PRccJYuBf+ui+6ExFRe6HFEKMjB/Swv7z9alcXWe13AqKfJrE5gbCs
+	 19JnhbIUWyzFFSqUrD9UF5+TwlBKwIvJ856dY9Q1fEg/l9XAouw3vyYCrT25YzQ/l
+	 L7RKQ28p1EfbheC1lHBvVo+P52frNmc4NCTjEwLfIKD5L1Wim/lAjXpQqq/yV2/7z
+	 UUUPfWnMgi/TJSpPDVk1wK6YVHTQXeYvWmkHPK7NoXSCJo6z3EHhlUUkqN5T5zcAg
+	 k4K7pxy4gE0+A7+HG6ORuiPwl8qXhuQ5yHEBLbwN91pKkm6O9DAom3pdXdx5TE5h2
+	 m5z52XowH+bRyj7gaA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.6] ([75.168.208.110]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlTC-1tPgKS0L1K-00lV2I for
+ <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 08:17:22 +0100
+Message-ID: <469ea2a1-c53a-46b5-a32c-9a69d60c4ce1@gmx.com>
+Date: Tue, 11 Mar 2025 02:17:15 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
+User-Agent: Mozilla Thunderbird
+To: linux-btrfs@vger.kernel.org
+Content-Language: en-US
+From: -pj <pj.opensuse@gmx.com>
+Subject: btrfs filesystem mounting failure (bad superblock):
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:S37bEgcNcvuz2yjrtI8AHJ27kUZtUunb7/+N2e01gWqSg/MwDoI
+ hZmjl8hH8lLXfjyQ17xGqEUdMAA2BIWyLpT1a//wuIosD4VgJqsYfgXDjAC8T0Tr3tw/oOD
+ yiBFyQMmiXfDtNiPxtOGCH1GdFSG1BQedjx8OAsWC70/8E02KEOfiiCbekQ/GSkMexw6467
+ jHWUmtysQBbjc3hIq++rg==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:/t7ZWal6M7M=;rdw/DT1dFrd6aPn5HSef4odxr4c
+ CaP6Mttm9z8vSgI5SJu9pX4+Fjcqf7E2vqa3Jqq5+fzc15JeLRY07AVJifX934LqUhgu280Di
+ hpYY5lCo6UaYozhRg9cWD5pvk6guWNvf2HwsZxHAyZ15vRA5Jy4X9hIgwgnm4azShnhlgk5Ti
+ xVF0WPG4hDX6sHkIKRnOpFadLm5ifp5/pIqpeIcEpx7/dEpBcoRIV9eqmLa2Kkn9VwM9+/L8s
+ IBRU6BJ4b5ZB3hMH/2zwGfOQOgeoGj/SoG4tZ0Onaa2za609PajH5p92xVB/rQPaW1LfIvazZ
+ Gl0l4d+LAUTeUAok2oTd1e6JSfTxQ1TQeP/2+9K527ElCQA6LXTWlJzBTWhlM57TsPwU84+R1
+ WfAmKlU6uU/uP0/XcOWenDJKS5K+e6d74BB0rvLBS6vUN/E5Z9Ngwn+VIxJQeDUHqworQfdGV
+ GeDRYCoqlHgx9q8/Zg2R3XVs8rE6XB9w5m1aooh//2Inpc60jwa4uDuvGmUe1BV8/EBNbAPRE
+ nj6xf2H/mCVfwpEGpnQY0VXFaVNzLCCH4MBTtEMXJc5EkbTAhOkob7/9+C6nluj68jesFSFoJ
+ lhT09R+rxVNdfxTG6gOe59/D1la2P7+b/Akcjl7XOIGL2otr4f3u7JRBhHNBKkdNtqwZSUq/A
+ YnbVhbjbCmxnqzHrVPP8Mwt2/+kSx0sBkMdmCHSOqLgAtyT4dLBG+sNJRPHyDzVsLmyH1GpET
+ ialeIeq09YG+5x6BMRwenblx2oJA4AMZnmE4iuVnQRRqbvBdxj9VhVvHLAUbSEXjNfZYe6l0S
+ pfZqRSuLZY7jwdDOKFUXHZEEQqpiEIxECrFgMBGl1KrpqoqWxGpyKBVZZ5t4tk/2JX3G945+X
+ pFafPFs0rAN6vX7qD/8bSLUZndP5y4kv4qu+7qzqn22CsLTY1uW/7OW26+WIOuD2gQE8WqQUr
+ 3oa1ZLbltIepXr9r5Q0G34lo/TpRCV0Ad05Z0XVeawSfm5y//RkYAwyKIfiPYLSJfUFd6tQGp
+ CPrPtYqRqrdTIxLMxYpFWK9t6xy2HrkRjhimfhLjgZHGvdXk8mRQ7mH0QXx4YqHreOBuSMXWL
+ c8r5NEykN9b1viTfBQ3Ft4ZYv+3FQmNy1aUShWMOXAyxTQC1uJvj8cFCKnwergkvxG+42zEUl
+ mzq77ZAA4mEcMoQUGhQuNe2tAZ9LcYUsfE4cSIh0/pzUd/hLj2aNjcMVWJd4/b9BIAAWipAVi
+ MCPxi/P4+5Y4Iu5nLGFoRatQQ0rA2/GWBZeG00tki1FbDxHIl54T95PNPqjfrhU0g4oKHzZuX
+ paXoHEQwTCixFR50uOU+3Tw0Io9tqaQ2+8GG8qbCjenpiQj1sk2DNHOJeERucK4LaO2Cyl8Dg
+ SaVUOv6fkmJ4dQD2whevFyFMiQEVJ4ZtTU02ZSwFuJYH7evFFiR71Xa1KL
 
-Since I have triggered the ASSERT() on the delayed iput too many times,
-now is the time to add some extra debug warnings for delayed iput.
+Original question on openSUSE Support Mailing List:
+https://lists.opensuse.org/archives/list/support@lists.opensuse.org/thread=
+/7KCP6RUP2PDN3ZBVHQTUVI764ZIRJRNE/
 
-All delayed iputs should be queued after all ordered extents finish
-their IO and all involved workqueues are flushed.
+Hi, yesterday I used the machine here. I organized trash can, read
+articles and decided to suspend machine and go to sleep.
 
-Thus after the btrfs_run_delayed_iputs() inside close_ctree(), there
-should be no more delayed puts added.
+Today I wokeup machine and inside KDE are errors of kioworker not able
+to write to file. I powercycled the machine and it is unable to reach
+graphical target instead it reaches emergency mode. I attempted to roll
+back snapshot with no success.
 
-So introduce a new BTRFS_FS_STATE_NO_DELAYED_IPUT, set after the above
-mentioned timing.
-And all btrfs_add_delayed_iput() will check that flag and give a
-WARN_ON_ONCE() for debug builds.
+I attempted to use openSUSE Rescue CD and perform chroot and there is
+failure at step: 'mount -a' with many messages related to 'bad superblock'=
+.
 
-And since we're here, remove the btrfs_run_delayed_iputs() call inside
-btrfs_error_commit_super().
-As that function will only wait for ordered extents to finish their IO,
-delayed iputs will only be added when those ordered extents all finished
-and removed from io tree, this is only ensured after the workqueue
-flush.
+How to proceed with this situation if possible?
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v3:
-- Rebased to the latest for-next
-  Which has the removal of btrfs_run_delayed_iputs() from
-  btrfs_error_commit_super() in the previous patch.
+SystemD journal is here > https://termbin.com/pjhd
+dmesg is here > https://termbin.com/w4jh
 
-- Make the WARN_ON_ONCE() unconditional in btrfs_add_delayed_iput()
+[ 9.572877] [ T852] BTRFS info (device dm-1): balance: resume -dusage=3D5
 
-v2:
-- Set the new flag early
-- Make the new flag unconditional except the WARN_ON_ONCE() check
-- Remove the btrfs_run_delayed_iputs() inside btrfs_error_commit_super()
----
- fs/btrfs/disk-io.c | 2 ++
- fs/btrfs/fs.h      | 3 +++
- fs/btrfs/inode.c   | 1 +
- 3 files changed, 6 insertions(+)
+Using openSUSE Rescue CD I passed the following commands:
+# mount -t btrfs -o skip_balance /dev/mapper/system-root /mnt
+# btrfs balance cancel /mnt
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0afd3c0f2fab..56e55f7a0f24 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4397,6 +4397,8 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	/* Ordered extents for free space inodes. */
- 	btrfs_flush_workqueue(fs_info->endio_freespace_worker);
- 	btrfs_run_delayed_iputs(fs_info);
-+	/* There should be no more workload to generate new delayed iputs. */
-+	set_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->fs_state);
- 
- 	cancel_work_sync(&fs_info->async_reclaim_work);
- 	cancel_work_sync(&fs_info->async_data_reclaim_work);
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index c799dfba5ebd..5a346d4a4b91 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -117,6 +117,9 @@ enum {
- 	/* Indicates there was an error cleaning up a log tree. */
- 	BTRFS_FS_STATE_LOG_CLEANUP_ERROR,
- 
-+	/* No more delayed iput can be queued. */
-+	BTRFS_FS_STATE_NO_DELAYED_IPUT,
-+
- 	BTRFS_FS_STATE_COUNT
- };
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e7e6accbaf6c..5c0a41c32dab 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3438,6 +3438,7 @@ void btrfs_add_delayed_iput(struct btrfs_inode *inode)
- 	if (atomic_add_unless(&inode->vfs_inode.i_count, -1, 1))
- 		return;
- 
-+	WARN_ON_ONCE(test_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->fs_state));
- 	atomic_inc(&fs_info->nr_delayed_iputs);
- 	/*
- 	 * Need to be irq safe here because we can be called from either an irq
--- 
-2.48.1
+The machine is able to boot into OS now. How to proceed if anything to
+correct the initial issue?
+
+Run "btrfs check" on the unmounted filesystem. Better to use Tumbleweed
+which has more recent version.
+
+I ran Tumbleweed System Rescue from bootable iso of downloaded snapshot
+of today.
+
+I took a picture of the btrfs check output for review >
+https://paste.opensuse.org/pastes/c6b44a4e7ec3
+
+Can you please tell me why this happened? Is there something left that
+needs to be resolved in order to fix the problem?
+
+-Regards
 
 
