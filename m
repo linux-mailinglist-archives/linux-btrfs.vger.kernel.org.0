@@ -1,197 +1,174 @@
-Return-Path: <linux-btrfs+bounces-12208-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12209-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44DB9A5D1CE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 22:34:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 869E3A5D207
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 22:53:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C15401895AD3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 21:34:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EAEF3B14ED
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 21:53:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BF5264634;
-	Tue, 11 Mar 2025 21:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEC3264A7D;
+	Tue, 11 Mar 2025 21:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="W0qs5/as"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YTuPi7/j";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RI0+Aodt";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YTuPi7/j";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RI0+Aodt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF546263881
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 21:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A5B22173D
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 21:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741728840; cv=none; b=F8qJ5d/JeYMybBAxLwaqH1Ru8d20ns4iO9FA7LgUozHmyLEeaLXPrk4athLW6pOuIQ6ErJkE/a5YEOunsCJPWPJvn8Eedrwco3LNtVmlBmlGCbRrJ9kdFVUarUBQ5F6iHyJRqx87mXxVDUivrz6vaY0JlcrqIb9x+o717QKU7qI=
+	t=1741730025; cv=none; b=SYn/52emXtY0yoTgQ6UoaWJspnYjR+7fJmlFy+C0FgUdWbhqh0FuLYYrGsTl824rGVTyeOlqKbLIYw36uHtNbAaX1LR41dDavNaV/DGCGx/u3JfaNbeYYPJyvqspuhpBawyVMtUv38iB7MINdMtW9/ioe70GHNrERu5hPsD6Slg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741728840; c=relaxed/simple;
-	bh=SXRfasQionXXN/w+od+kVyxwXfM0lb/oW6nHLSs7WN4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CWdTKt4VPJOpxZoj5v7opaY5Nezknhq2+Zuu8dGWFAFdiNg78dfOxJ5D4Of9jHx0Fb2VcOTjsJLaOjQMHy5eD0fb13IYuNHv1cFaGD+Mgdij6uQVT6p+GXgt4cIXiUgLmuXUt85Pp0l1F3woW+BDFlv3nVSQ6e8Gsbf7+6cL7s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=W0qs5/as; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3911748893aso3618081f8f.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 14:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741728836; x=1742333636; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=fZJ28s51tBxYWxu34w0CzvB59LAgctctG+pggF1wkYE=;
-        b=W0qs5/asNZgTvsqmNM2cM88OhpT4eupLPCPNKWJl/VArqmjM3f02EzCxmWntaM4gwF
-         XTBriKAmnOwxVSBojvf3nLazOF6SNFwWhRJBhp7iMFhuoCijXxzRUQcAv394eV6Xg0T7
-         v0v2BlXB0q7zQ/UPwg/9+orZPAZwxmm3RHFPOnWLPf5TIcln4OiGgIoyWTl8Ijxapz8h
-         PBWpjOhmWnNTpIp5buFcEuRxCKpbPAtN4Zm6cKIjSxxD92BuB60pNsvwj2czn+OsQ4s9
-         KO7RwoGD+wfdxJ0UjeDCOnABZYC+uyncmjCakh7yx9VTodpvw8okf1ICGXZSw5vtktwZ
-         o60g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741728836; x=1742333636;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fZJ28s51tBxYWxu34w0CzvB59LAgctctG+pggF1wkYE=;
-        b=ZRfMl9iV9xwl59dnFCG7ZCWBK8c2Ria6JYb6CreV/i3PKLiznBtxKKHoUkdY6Othn4
-         eEeV5JP0vhTCeJPOqsZMlHKPJC0dcPs/nEblSasfXOeTNIWvrLwQwsoCuyrT5MyruJUP
-         8a24bNXiRTajXRZPYx6BbC4IwfQYrtgbMaxyPKn9ekAqU1ByspMtodEZ+hXwPCYc10+f
-         +vgzh+Hlk3E7fZskY66QL5r2KST6ri+7mrjl9XGO+b44YROVH3DV2yLchJEMpS6WFgpk
-         zl9FRfbVDlkaAhMJVAmPWrts4EXYwo51wlZbdcyTi77iMoynsOdLdqBf0HWHGGkpaVxo
-         YrGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWqTYLbwNQjbWzF6Nw0de6/+1EP/0MpTS+eMOTlyPAh2TYscyuWDOQZSJVI5IgOBvl/eFuP0Ikns4yQNg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVQJPj1js7VBWHglZ+WyEMdtPdLheW+FZ0M6CWs6MY1XaQo62J
-	WlHwH6WSTiUUtnwxG6Kp083lfNfoFRvIym+GUe5Bs/zgv0DXmY4TUv8Qpua8aVc=
-X-Gm-Gg: ASbGncsIzcFZiEBVa13vZww0ijHOCxrGj7959kQxjFj6aavb6Po8eqIFBwzSlJPdp7g
-	T+YGBPvmXnHY1xYuAGN9Jr2A8xpHFnkPXkqP4oVXv4BhrtPZpIJCBAVGzn87vOrwk0gXFNV/lFL
-	DEJrYjIz0YxR61JBATWc7Bdq+UvfJyvXGzqiBRB3utzX4m6U0dq0GGs6NKzhon+UaUaAfd3Inc4
-	p0h1UupnTXXb8CpEEN7MezJTUD92ypY+fhwB2g0j4OLyFyThyJu+yzzq2nsTpfpmsY4ygiQp9aP
-	L2DqLBuQ5kNV8M64a8facsCQcUgHdJbdlzInowVxqZY0b7ynayhXfEIw/Jt4nFdf/42hbJ3B
-X-Google-Smtp-Source: AGHT+IHCeeMW1z/x559dlW8prJY7oETbKnUkz/bXmMzj+tTLLhIloDaKAWxQboKfIdP5BfSzL9aASg==
-X-Received: by 2002:a5d:6d8c:0:b0:391:952:c728 with SMTP id ffacd0b85a97d-39132d77544mr12633864f8f.4.1741728835925;
-        Tue, 11 Mar 2025 14:33:55 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-301191cb007sm69809a91.46.2025.03.11.14.33.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Mar 2025 14:33:55 -0700 (PDT)
-Message-ID: <79b4dc8d-560a-462b-a664-16b109d6b0f6@suse.com>
-Date: Wed, 12 Mar 2025 08:03:51 +1030
+	s=arc-20240116; t=1741730025; c=relaxed/simple;
+	bh=H3dCXMHH1pfMpQTPWCgbH8+hwpoparHcnLxG2fzR/v8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t2r8lMh8BLi/28C0HDl1RjQyHZVvfYTRhE6EWmXA+mmZzpbKdg95UehSS1/gGCN9AOCmJTSX+JqpNCqEK0+bzZDy+kVJytxkoRNnBt8d1jDODLyoDCzgsfWJqTwaR4ZE9ZJuvbfnDri0/ox2LinkeCgnOiBKQsdHmEAAxhN4Y/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YTuPi7/j; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RI0+Aodt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YTuPi7/j; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RI0+Aodt; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B097E21180;
+	Tue, 11 Mar 2025 21:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1741730021;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BOL8lX/s0a3zi81+F7IrmxoAND+rJpaLpc/2P4Cst1Q=;
+	b=YTuPi7/jUL2K3HqkxsF3DTw38atHEcx4fI8Qe1REDc8Z4l6Kl8l+TLjMGFHFXWZGdFNC9p
+	/sF9IAEW8pGdEsrwbjrdqD2a62ZPE1/24YihERKHVpCMogyj2fuWFd1PZlZAYLJsPRaKcC
+	5aj4E2j/fzWIcnfk4SZCkbgKgygZXUw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1741730021;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BOL8lX/s0a3zi81+F7IrmxoAND+rJpaLpc/2P4Cst1Q=;
+	b=RI0+AodtcVibbgadAI0agtofI6rwjyxVMLTlT+G0gc5d7B5Ddv3JwtNpcCH/wTzkdWIPWg
+	CGBFG/BH5zAssOBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1741730021;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BOL8lX/s0a3zi81+F7IrmxoAND+rJpaLpc/2P4Cst1Q=;
+	b=YTuPi7/jUL2K3HqkxsF3DTw38atHEcx4fI8Qe1REDc8Z4l6Kl8l+TLjMGFHFXWZGdFNC9p
+	/sF9IAEW8pGdEsrwbjrdqD2a62ZPE1/24YihERKHVpCMogyj2fuWFd1PZlZAYLJsPRaKcC
+	5aj4E2j/fzWIcnfk4SZCkbgKgygZXUw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1741730021;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BOL8lX/s0a3zi81+F7IrmxoAND+rJpaLpc/2P4Cst1Q=;
+	b=RI0+AodtcVibbgadAI0agtofI6rwjyxVMLTlT+G0gc5d7B5Ddv3JwtNpcCH/wTzkdWIPWg
+	CGBFG/BH5zAssOBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 98F7C134A0;
+	Tue, 11 Mar 2025 21:53:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5/TNJOWw0GdKWgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 11 Mar 2025 21:53:41 +0000
+Date: Tue, 11 Mar 2025 22:53:36 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: fi defrag: allow passing compression levels
+Message-ID: <20250311215336.GM32661@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250304172712.573328-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: add slack space for mkfs --shrink
-To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <fbe3a75e21a89d8fb3013c55468de7fd03b5027e.1741651032.git.loemra.dev@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <fbe3a75e21a89d8fb3013c55468de7fd03b5027e.1741651032.git.loemra.dev@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250304172712.573328-1-neelx@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-
-
-在 2025/3/11 10:40, Leo Martins 写道:
-> This patch adds an optional argument to the 'mkfs --shrink' option
-> allowing users to specify slack when shrinking the filesystem.
-> Previously if you wanted to use --shrink and include extra space in the
-> filesystem you would need to use btrfs resize, however, this requires
-> mounting the filesystem which requires CAP_SYS_ADMIN.
+On Tue, Mar 04, 2025 at 06:27:12PM +0100, Daniel Vacek wrote:
+> zlib and zstd compression methods support using compression levels.
+> Enable defrag to pass them to kernel.
 > 
-> The new syntax is:
-> mkfs.btrfs --shrink[=SLACK SIZE]
-> 
-> Where [SLACK SIZE] is an optional argument specifying the desired
-> slack size. If not provided, the default slack size is 0.
-> 
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> Signed-off-by: Daniel Vacek <neelx@suse.com>
 
-David has already commented on the UI part, thus I'll only focus on the 
-implementation details.
+Added to devel, with some adjustments, thanks. We'll also need a test,
+that can fail if the kernel does not support the levels. The github CI
+is 6.8 so we won't be able to test it there completely.
 
-[..]
->   
->   int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
-> -			 bool shrink_file_size)
-> +			 bool shrink_file_size, u64 slack_size)
->   {
->   	u64 new_size;
->   	struct btrfs_device *device;
-> @@ -1948,14 +1948,23 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
->   		return ret;
->   	}
->   
-> +	device = list_entry(fs_info->fs_devices->devices.next,
-> +			   struct btrfs_device, dev_list);
-> +
-> +	new_size += slack_size;
-> +	if (new_size > device->total_bytes) {
-> +		warning("fs size with slack: %llu (%s) is larger than device size: %llu (%s)\n"
-> +			"         consider decreasing slack size or increasing device size",
-> +			new_size, pretty_size(new_size), device->total_bytes,
-> +			pretty_size(device->total_bytes));
-> +	}
-> +
->   	if (!IS_ALIGNED(new_size, fs_info->sectorsize)) {
->   		error("shrunk filesystem size %llu not aligned to %u",
->   				new_size, fs_info->sectorsize);
->   		return -EUCLEAN;
->   	}
+> +		case 'L':
+> +			/*
+> +			 * Do not enforce any limits here, kernel will do itself
+> +			 * based on what's supported by the running version.
+> +			 * Just clip to the s8 type of the API.
 
-If the slack value is not aligned to the fs block size (sector size) it 
-will trigger the error here.
-And since the new size is based on the older size with the slack, it's 
-better to do an extra check on the slack_size itself, so that the end 
-user will be properly notified if the unaligned value is introduced by 
-the slack.
+I'm not sure this is a good practice, we know what are the level ranges
+so the validation should be done here as well even if kernel will check
+them as well. I'll keep it like that for now but may change it
+eventually.
 
-Thanks,
-Qu
+> +			 */
+> +			compress_level = atoi(optarg);
+> +			if (compress_level < -128)
+> +				compress_level = -128;
+> +			else if (compress_level > 127)
+> +				compress_level = 127;
+> +			break;
 
->   
-> -	device = list_entry(fs_info->fs_devices->devices.next,
-> -			   struct btrfs_device, dev_list);
->   	ret = set_device_size(fs_info, device, new_size);
->   	if (ret < 0)
->   		return ret;
-> diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-> index b32fda5b..1eee3824 100644
-> --- a/mkfs/rootdir.h
-> +++ b/mkfs/rootdir.h
-> @@ -52,6 +52,6 @@ int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *trans, const char *source_dir
->   u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_dev_size,
->   			u64 meta_profile, u64 data_profile);
->   int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
-> -			 bool shrink_file_size);
-> +			 bool shrink_file_size, u64 slack_size);
->   
->   #endif
+> --- a/libbtrfs/ioctl.h
+> +++ b/libbtrfs/ioctl.h
+> @@ -398,6 +398,7 @@ struct btrfs_ioctl_clone_range_args {
+>  /* flags for the defrag range ioctl */
+>  #define BTRFS_DEFRAG_RANGE_COMPRESS 1
+>  #define BTRFS_DEFRAG_RANGE_START_IO 2
+> +#define BTRFS_DEFRAG_RANGE_COMPRESS_LEVEL 4
 
+I've removed this, libbtrfs is frozen, deprecated and should not be
+used, so there are no feature/API updates.
+
+>  #define BTRFS_SAME_DATA_DIFFERS	1
+>  /* For extent-same ioctl */
 
