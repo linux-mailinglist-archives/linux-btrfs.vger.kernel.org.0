@@ -1,106 +1,119 @@
-Return-Path: <linux-btrfs+bounces-12198-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 339D8A5CB02
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 17:39:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84DD1A5CB66
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 17:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6924116BE82
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 16:39:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D66777AB3C3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 16:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD4626039A;
-	Tue, 11 Mar 2025 16:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10E3261596;
+	Tue, 11 Mar 2025 16:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="PL/7PmIH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BEbZEv/Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548D625B69D
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 16:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21D6260A21
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 16:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741711185; cv=none; b=rJAPmI5mQEQdy6cKUoe40bP7HNK5jqQDUw+ypGscL9Bg6p81bULfN/S/L+/ilBBAyGDsdlAT17L49DMTSWiYOLslFxIDoejwoUWAPqzzQ2cJit2XMOQ88QlV0WHAIosVMiiUUERjsMN0wLeAmllAqu53PQzuvNJON25Xan1nqjg=
+	t=1741712081; cv=none; b=AFM9l2xNFg5u9Q5AEdZB72IcxcqiKt4tfZGp9pXO7qSM6lihWL6x5RHITp3pLQlrAKfoRtWHta0cS01eTskDr56mO+dlmnbzLG06WfgXsuJvBLcBAPJJE8PhWerAhApAjgbbSVanxkpAYyjqtxOWJeqyn9nzxYB8eyc4aDakeYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741711185; c=relaxed/simple;
-	bh=KXb58SUDetRsbP10toTzsNEUBHmhdMigHyRW8ciymAs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IGRfwFlyUMCuUpa1nQQRAqly3duiSdpddUW24Zk2odaMkxpPTpi1Fvc+ryL+TNQEse+MqW+5aIe0D9uUiWyN12u3IiI2GzLlS84J6+nDKb8pql4XH0i2a1C7HH2uJu2HrdAjZR8pNIKg/lcqVivPc6Yd/ovkQphjE89RQfg8Cvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=PL/7PmIH; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 52BGQ9GH002202
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 09:39:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=Rl+WOQuXbDSEfjVX+bibgsP
-	Oy5dOxOyGMK2ecKT92To=; b=PL/7PmIHQXQ9bWE6H1wiFFBtc06nu+HEJBCft8T
-	hVMulipP6VqY9QedTaPR2A2IvArt6N65rq4r2fn7IyYkcN0tdvuPGwq7nWQSmOXl
-	Dvj4YxkWqdyR6ChPdDM2zrTBk2b+8rjx7cG0bcvA4SJiOtFnjpdnIZKAZhJ8RVPl
-	fS7I=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 45ab0pwbdu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 09:39:41 -0700 (PDT)
-Received: from twshared40462.17.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.14; Tue, 11 Mar 2025 16:39:38 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id EF48BC7EF246; Tue, 11 Mar 2025 16:39:35 +0000 (GMT)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>, Qu Wenruo <wqu@suse.com>
-Subject: [PATCH] btrfs: don't clobber ret in btrfs_validate_super()
-Date: Tue, 11 Mar 2025 16:39:25 +0000
-Message-ID: <20250311163931.1021554-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1741712081; c=relaxed/simple;
+	bh=i5kOh3BxqjAblQrjCy6JxXEO+/UiggBVXYXUSd5XwJA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HjAc+7L5H2hGHNGOqyG7MGzGV4cEwv9l+cXR1iQBlxUTFaPZyLcaGmIqbTxPXoxyvbzw3BWeCbS0pYjt449kwhNyzSBk8TTAW6BJ/22KX+v3M1FkUMGqBnnkvsvSDOY5Udk68DNfoVlknWgmf3HQ0vfkWJLA4jgwiwGVCRHc+O8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BEbZEv/Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC6BC4CEEF
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 16:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741712080;
+	bh=i5kOh3BxqjAblQrjCy6JxXEO+/UiggBVXYXUSd5XwJA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BEbZEv/Ypq1xz+NFxrfH76N/oOdXz0zf7WROu+NhUiJEsfef9R7OUc7/q2phxThv3
+	 NFDD5rokf07n5HDDSmFhaWSl2YQhEyJ+/WUGePKsRkPa1Njh6McbjOmycNy3EZf0PN
+	 zR3t2RVpsZAgFBVObTHe7ty8dnMZ1DTqNODYilyzGShEcCSqaM7bzcZig4J9X3Tapf
+	 x8OxbJKskZUbJU9LrAvR+4Yc4d2bZms5jZ62aRoNFY6Lx2Z82qZfFJdcId/AIX+VA3
+	 9Ggsox/efit0U3IlC51p8pKLK56jB9z+Q97V8m8aHOaNY87XFfWRD7/8jnSGqbn0ZR
+	 FB8o33tIy671w==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-aaf900cc7fbso1174598066b.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 09:54:40 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw6QjB4gJ7eVg88Zwwc0FsN5Yq+MrOt0k7J+4+AZg7TTtENOpGD
+	GqX2gG1qWVGel4Kn5f5Yto6zjFDXd/f/U7UQUP4RMg24hAgNwFymV78b7tbF2uC2P3pWBWaUGWK
+	iOSVUIYnQGg9rQCuLtFEZn9yANqo=
+X-Google-Smtp-Source: AGHT+IHl0DvT6vPMjZyyATxnm1XZIRhkLcA3sTZ50poLKRQ50KoTZW/8HMNLLWmvuS/h0dFJPu9Uzi8s2xCnoAhQGIc=
+X-Received: by 2002:a17:907:7e97:b0:ac2:7bd9:b2f with SMTP id
+ a640c23a62f3a-ac2b9db5b66mr537712166b.9.1741712079014; Tue, 11 Mar 2025
+ 09:54:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250311163931.1021554-1-maharmstone@fb.com>
+In-Reply-To: <20250311163931.1021554-1-maharmstone@fb.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 11 Mar 2025 16:54:02 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5aMFgD_p5vE_9jkLN=-vMK-qQinZPaR1d1GUN5iTYjgA@mail.gmail.com>
+X-Gm-Features: AQ5f1JrOCOr56J19cYrpvPsbC-IHP-7KqdwolvNXoCu7y54Ik4jW1cBxqG_ak7c
+Message-ID: <CAL3q7H5aMFgD_p5vE_9jkLN=-vMK-qQinZPaR1d1GUN5iTYjgA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: don't clobber ret in btrfs_validate_super()
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 5vT5l4cqYNgOzwDWsOz6sAXqcV0ZG4mo
-X-Proofpoint-ORIG-GUID: 5vT5l4cqYNgOzwDWsOz6sAXqcV0ZG4mo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-11_04,2025-03-11_02,2024-11-22_01
 
-Commit 2a9bb78cfd36 introduces a call to validate_sys_chunk_array() in
-btrfs_validate_super(), which clobbers the value of ret set earlier.
-This has the effect of negating the validity checks done earlier, making
-it so btrfs could potentially try to mount invalid filesystems.
-
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-Cc: Qu Wenruo <wqu@suse.com>
-Fixes: 2a9bb78cfd36 ("btrfs: validate system chunk array at btrfs_validat=
+On Tue, Mar 11, 2025 at 4:39=E2=80=AFPM Mark Harmstone <maharmstone@fb.com>=
+ wrote:
+>
+> Commit 2a9bb78cfd36 introduces a call to validate_sys_chunk_array() in
+> btrfs_validate_super(), which clobbers the value of ret set earlier.
+> This has the effect of negating the validity checks done earlier, making
+> it so btrfs could potentially try to mount invalid filesystems.
+>
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> Cc: Qu Wenruo <wqu@suse.com>
+> Fixes: 2a9bb78cfd36 ("btrfs: validate system chunk array at btrfs_validat=
 e_super()")
----
- fs/btrfs/disk-io.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0afd3c0f2fab..4421c946a53c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2562,6 +2562,9 @@ int btrfs_validate_super(const struct btrfs_fs_info=
+> ---
+>  fs/btrfs/disk-io.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 0afd3c0f2fab..4421c946a53c 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2562,6 +2562,9 @@ int btrfs_validate_super(const struct btrfs_fs_info=
  *fs_info,
- 		ret =3D -EINVAL;
- 	}
-=20
-+	if (ret)
-+		return ret;
-+
- 	ret =3D validate_sys_chunk_array(fs_info, sb);
-=20
- 	/*
---=20
-2.45.3
+>                 ret =3D -EINVAL;
+>         }
+>
+> +       if (ret)
+> +               return ret;
+> +
+>         ret =3D validate_sys_chunk_array(fs_info, sb);
 
+While this fixes the problem, the function is structured in a way that
+is easy to get into this sort of issue.
+Rather than set 'ret' to -EINVAL every time some check fails and then
+continue, I'd rather have it return -EINVAL immediately.
+
+Anyway, this fixes a bug, so:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+>
+>         /*
+> --
+> 2.45.3
+>
+>
 
