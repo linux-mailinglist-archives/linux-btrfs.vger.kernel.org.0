@@ -1,222 +1,214 @@
-Return-Path: <linux-btrfs+bounces-12167-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2881CA5B012
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 00:56:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B79DA5B18C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 01:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B130F18902EC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Mar 2025 23:56:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2E4D3AE30F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 00:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4844D2222B6;
-	Mon, 10 Mar 2025 23:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B88D259C;
+	Tue, 11 Mar 2025 00:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="k0FICVzA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B/AG2Ked"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f67.google.com (mail-oa1-f67.google.com [209.85.160.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506001922C0
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 23:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD6C29A1
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 00:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741650980; cv=none; b=oNAwoPnJJQVDCwHIULe28oLnynEoSjAQY57rV9MsKnBcAp3VM7Ikq4ZZKcHYi+XLDpNTUqb79R6ojtFhwLlQbn+T0JVt2TJqgDT0XCVa/H6ncN7BwyaPjy0MAobmbOt+wioVy3Pzu9IshWXsVyeTYXCDMcfn7GyiuN5nf/y8SUw=
+	t=1741651843; cv=none; b=kQiYELAmu7k+IBfqTv2C0WLbeVhzdZZ2lP6onAMWRi+4mbLWA7LYwUCjMLhep7lV9WWVHD3dDGiOGDTLU64Jgvdk7dqirXFnp0IRjhjYNU3QzEMhqd/zHInF8/f2eSo/njKnP8GYzligok+Cy6rXZbdte52TeZfkwh6fLTTIYxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741650980; c=relaxed/simple;
-	bh=5ocYZL6lIA1XN/fclPKm41pG/Bm3MBeWAWt3naQFj/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dvUD1+mcevDWFTibDDMU/rsYVgc/y1VVPIbGpRm/nEIGMsRICpY4TRuAnZ6IJQGk5KYKVmpjnb/kfYtTWccEEZyxolKMuLm1iI9/sN7uevrI80/mXK9jEOF8Bc5mfIk17greKJIR3Im161Biqo/PplAFuRnXHzZxEdNU1j15Ops=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=k0FICVzA; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1741650976; x=1742255776; i=quwenruo.btrfs@gmx.com;
-	bh=p6IuBY9206EPpmvgFYditBY6OZ2hMzydktY6K0zhdFg=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=k0FICVzAhNld6981GWv6HACTvzF3MPgW3C9D6NPY4qJWbzEkNbJQGyTCz0+YHaty
-	 HNkfohmIpqc74H+9mftNgSCWpV/qJFULx8oD1NwEIaWzkLXhJyYMvPih+Fk7oH+Ih
-	 oVX59vlhzr8M+luczV//naPayRkyOE2+vjqmgVD9RAQXx5IgUApPpKCATc5lJIDvh
-	 X/jwdBuOSp2/C2YfXRU8XFhEXmBSGumHufiY1ygqu08GVxgfBEAP8CO94Y3cqnjNO
-	 6YTbht3B4/xqenycmJhDlb1HgxZeoxHkr9PUa1IXce25EC2ZP5yyMe2+s2I38Xx4b
-	 llEp6Km21RSVrI1Zeg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MS3ir-1tfrAi3KXr-00VD2M; Tue, 11
- Mar 2025 00:56:16 +0100
-Message-ID: <f9f19507-f33d-4db3-afda-ac39363c7db0@gmx.com>
-Date: Tue, 11 Mar 2025 10:26:13 +1030
+	s=arc-20240116; t=1741651843; c=relaxed/simple;
+	bh=tr+465YhIRpYcne3cRQM8ubxyUZhRsWvoCwvbYTAEA8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=JtvuIC8ZRBq7uK4YHqEyP8U3gABmImXBKTYwdhS58gzoLBB0kl/mXUqJEjU/1xL3P9iorZ1Ut8/E3fEcnm+qLmmZjWO8MZKGQMXf2YTpP8Wnke3NFz9DZsex9spbjg9H2fZYE0vFSXUxSSxegRHvYUSf2Bdu8hRagRmi+iB7MuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B/AG2Ked; arc=none smtp.client-ip=209.85.160.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f67.google.com with SMTP id 586e51a60fabf-2bcbfad2f8cso2632452fac.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Mar 2025 17:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741651840; x=1742256640; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gCgP9/j4M8HG6wodfa/ZuJIWqoF9N7Q57g3IJH4WlhQ=;
+        b=B/AG2KedUXgBRizkAae4f+4AGqxIkjIIZPrTAICpFDuycbdHJwQ0DNqR6s6gTXeiUd
+         SoGXC3iTXge3VgwpoKSFP1y+OYJrdzueZIKqfiXiJ2ypzu7huw0DI7rVG/wEK50C2qad
+         ShEwsueLjLWK5Sc37oCgSncCSj0Uqyrk/MqFW3dvizB9zRuJFO8NhqqN5sSlJgyL5c1P
+         eZkUgSuS8c1D3hnlTwsdnQKG44c/HcsIT17wkeCuyWf9sIomz4KPvRnnOrih+haGe2dO
+         K8PE1aAP5OCsGQm4VCQfnKMNACHbuYK1oz7akaRkzuTBxcEvet0BH6mCp5IOWK2tpiYC
+         Dyvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741651840; x=1742256640;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gCgP9/j4M8HG6wodfa/ZuJIWqoF9N7Q57g3IJH4WlhQ=;
+        b=lTWWkjnKgN5qG7LKmq8l9GWQFz3iYl+mNz5qr1ohsKUC1vlF0vsmip6dJ0wmX7Z737
+         owpKsU0N9x2lMzPfThE2OeuheNd9CfeqQPtH0uysOK7aRomUmrmPrABHtHP66jZ0+KjP
+         KTnrnbJ9pSfckqZMRYSbJRKod8mqwwvChCbZiY/W8Ogjjy0SPkIfAXy6S3heDHIWuMBO
+         mAaUAMqQVQtrmn31GFSIonrAYpi1Mob8j5vNAaCIPeBweQuYMgdJIWon4cU8RHn3dIna
+         RjKZRCX8iQJlQ/jvg1CoBk9wQVmwd07MqI+uRv1LRwm4/i/vq1IwUUI5s/U0ysMfzSZI
+         FjEA==
+X-Gm-Message-State: AOJu0YyHqip3QHwHeDp8wBkehxbR9B9TW1Yy1JpGu9XTIGfJz/u38s08
+	UC2hg7p0BJC7Q2l8bLKqtdvH3FsVlVUADGkQgz1E2TtE0NgJapylqdzrTqYO
+X-Gm-Gg: ASbGncuSqjKptULYg9s3IeuLejQHlR+1GLsfOlxHezTyx2a/Udi8LKBwHOfrJXjLaOC
+	gWxwbcimIbmYapi2OZFbRgXd4CGKRtz11/UMuhnWM5EtxjJaUGHmlFR6T+H8LGBDZrtSTTfEc3M
+	14uMlqqgI9QH/NgCsUQgnjqkY7NPLODi0YH8rjo1vR70/S+WnR7j4L2I31uZQUp6QKVy/dSfNLn
+	r0P/8nK6FRC5+9Sj1SQs2+o7VJWIaVbyh4Qotzh60pSPx8Yt7L+lFpVPgL+RQ28o3PPuGPpFDjl
+	inaAGVXyYJ/HIEVx2iN+qcgZSjnyXli7G/U4CljAiUWfeDkf7A==
+X-Google-Smtp-Source: AGHT+IGeKzDdppWQ7jjboUJbqEFgOHuhsqg7r7sI2miMp3S4k/uJlMIOVzb4gW+S5gP35uOZf+6gKQ==
+X-Received: by 2002:a05:6870:6c06:b0:296:e491:b244 with SMTP id 586e51a60fabf-2c261386d55mr7794474fac.32.1741651839785;
+        Mon, 10 Mar 2025 17:10:39 -0700 (PDT)
+Received: from localhost ([2a03:2880:11ff:7::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-72a45cd470asm1469937a34.55.2025.03.10.17.10.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Mar 2025 17:10:38 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs-progs: add slack space for mkfs --shrink
+Date: Mon, 10 Mar 2025 17:10:31 -0700
+Message-ID: <fbe3a75e21a89d8fb3013c55468de7fd03b5027e.1741651032.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] btrfs: prepare for larger folios support
-To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1741591823.git.wqu@suse.com>
- <20250310233235.GB967114@zen.localdomain>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250310233235.GB967114@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EMbHdsNRg0D9kbgJdKjdbZNd1+1KmNBJy0a78VOyhCLLE5L3KjX
- 56kL0qJJ8dVe0PiQsqJMsr56l5OCucQWWsboHigOqX2aeynV8WhjpuO2lCE+Mt495jDQdYo
- Tz/M5ZlOYBe8S8ZnFGCLHOC78hN5QDscGe9HkaQTrBFMSihKh52JRY7g6f4JgdTrOizTaQG
- DNNdDzNZdo9TvjZu8siaw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:eyymiQvcqqw=;JexELREe4+LctwzXSTIx1S3JXT8
- bK3XDH1x5kNty6WPvqUYUuR8PYSZSXPcRgORyPPpQNv0NRHmIsiPGB3aWc0tmYEiXKiXk5iTI
- dxkqfG8MO/tnnHgsK9Ld57+f3ze4oRX6F8M6bgJoj6Sn+zTUPBpovZPyXEsNMB+aAEqzN/hLC
- OlADfNmyAZgCrRDxDGvrLdA5UDVRTKAQ2ctEPh+OsW/BTOpzAVEubbJ1B9vpM0vGLpap4rCSl
- ky3v3nroif245X1yiEvLMKCpXP30j6cziTXIJ+019SPZ56JPW9JUSWYzZKn+tzX4jvJ4UMFem
- V4csvsf5VgP+Mz7JGahG9M95B98pXoUk1gb54Nk+P1xSlzvSfdOeK1bzlW6QUijqS2f2Fnnjo
- sVlHDsyR1eUp0wZdiTj6wmOMisbL/YwvaOzIeuTB2RcLJo/hIgxti+Q4mNaQEo+iZrZvr0cDi
- Spdpl/n9HS9KNEveO10PCj2ZM3OnmkpD/heRnd0uw7LTlpIcfH1H4QHpCYWBNingrnYkGlIHh
- BdtlChQj9UYigkqWTGBBrBUuQnX9H6MQkHdM90xcxrO76rpzoTlDVc5qX536VrFEaigcNqzIs
- of8mrf9M6GIrG0bErLyk2HouDIYwGZ9T/Wm8lx8mFNN3fpBhYNeSM9sJgq0LHXvEKYK7ZWQMR
- +11cl9Crz+06apXsVu+FLOACs4MER1bAL0Ps8v+ClfhigATSRq8KAMfelrhLfac3KkK+IrxZ3
- D6wmzcB6OljSljVnJ0QZ1O1wrCFlxd5K7KR6GzBUQF+UE9gPAF+ecVFR9gwX57sbUj6ommNLL
- tfqNcIzULMrQzGOBgCMQhu3jtCEoWXtbM1AF17q3ZAOElgAgdzHQSC25NaPnTOf5aRQ4/CRFU
- cFe4PDpzYmK28jerWF2cPQ8yiq3RC29wh3f7rQAr2aRoFkcXQ03QNqsNRgNzZGEHLTdXn3qu8
- nhvfYAhfrNfKvQjmdC1ehpatE+21R90ACUlLdGvkBxczQrMrDp9DonkNXHyhw5DGDtOBvAoSM
- wvoW8xrIODk7n6UixGB2Tp8fgC/+j2ZSqtnAC11kq40uAF3b8BMZeTUdtIUXd8Eb22dNVtckf
- n2KgfzV2GqzZTF/epbqbhE3M6Fmv8bdor8c5GRGSvK7DErbYobBHj+BORQ3LWB6uYnRsc55uS
- 5IVrEM+pltdjXkQB+HsdvSN2McUrBILUxsC3kIyfQ6DatG8tEQct7Ndh/VTs7Tlc7BjAsooi9
- KGv+CzgZrLEWlgKg4WUehQy6XZivV6HkJ8/WEESqaEK0CRvOSlvpgt7oWo5f9vcJuI4/QbtTI
- EXYbZzoSDKqo61eGik+7nK2Hbff1EX6HdDEctvxShwTPG+kki9mMcpsVZTUUHpKR09Lu4gMKI
- k/6cQpZ+qmT5wFva14I8x6/BLvpO2o3DbzCOU=
+Content-Transfer-Encoding: 8bit
 
+This patch adds an optional argument to the 'mkfs --shrink' option
+allowing users to specify slack when shrinking the filesystem.
+Previously if you wanted to use --shrink and include extra space in the
+filesystem you would need to use btrfs resize, however, this requires
+mounting the filesystem which requires CAP_SYS_ADMIN.
 
+The new syntax is:
+mkfs.btrfs --shrink[=SLACK SIZE]
 
-=E5=9C=A8 2025/3/11 10:02, Boris Burkov =E5=86=99=E9=81=93:
-> On Mon, Mar 10, 2025 at 06:05:56PM +1030, Qu Wenruo wrote:
->> [CHANGELOG]
->> v2:
->> - Split the subpage.[ch] modification into 3 patches
->
-> I found the way you split it to be a little confusing, honestly. I would
-> have preferred splitting it by operation (alloc_subpage, is_subpage,
-> etc..), rather than a basically incorrect prep patch and then a sed patc=
-h
-> on the subpage file.
+Where [SLACK SIZE] is an optional argument specifying the desired
+slack size. If not provided, the default slack size is 0.
 
-That's why I initially merge the first 3 patches into one.
+Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+---
+ mkfs/main.c    | 15 +++++++++++----
+ mkfs/rootdir.c | 15 ++++++++++++---
+ mkfs/rootdir.h |  2 +-
+ 3 files changed, 24 insertions(+), 8 deletions(-)
 
-If anyone else has some preference on the split, I'm pretty happy to follo=
-w.
-
->
-> You already iterated on this, so I absolutely don't want to hold
-> anything up on this observation, haha. If it's something others agree
-> on, I wouldn't mind seeing it before the patches go in.
->
-> I asked a question on patch 5 that I think is interesting, but please
-> feel free to add:
-> Reviewed-by: Boris Burkov <boris@bur.io>
-
-Thanks for the review,
-Qu
-
->
->> - Rebased the latest for-next branch
->>    Now all dependency are in for-next.
->>
->> This means:
->>
->> - Our subpage routine should check against the folio size other than
->>    PAGE_SIZE
->>
->> - Make functions handling filemap folios to use folio_size() other than
->>    PAGE_SIZE
->>
->>    The most common paths are:
->>    * Buffered reads/writes
->>    * Uncompressed folio writeback
->>      Already handled pretty well
->>
->>    * Compressed read
->>    * Compressed write
->>      To take full advantage of larger folios, we should use folio_iter
->>      other than bvec_iter.
->>      This will be a dedicated patchset, and the existing bvec_iter can
->>      still handle larger folios.
->>
->>    Internal usages can still use page sized folios, or even pages,
->>    including:
->>    * Encoded reads/writes
->>    * Compressed folios
->>    * RAID56 internal pages
->>    * Scrub internal pages
->>
->> This patchset will handle the above mentioned points by:
->>
->> - Prepare the subpage routine to handle larger folios
->>    This will introduce a small overhead, as all checks are against foli=
-o
->>    sizes, even on x86_64 we can no longer skip subpage completely.
->>
->>    This is done in the first patch.
->>
->> - Convert straightforward PAGE_SIZE users to use folio_size()
->>    This is done in the remaining patches.
->>
->> Currently this patchset is not a exhaustive conversion, I'm pretty sure
->> there are other complex situations which can cause problems.
->> Those problems can only be exposed and fixed after switching on the
->> experimental larger folios support later.
->>
->> Qu Wenruo (6):
->>    btrfs: subpage: make btrfs_is_subpage() check against a folio
->>    btrfs: add a @fsize parameter to btrfs_alloc_subpage()
->>    btrfs: replace PAGE_SIZE with folio_size for subpage.[ch]
->>    btrfs: prepare btrfs_launcher_folio() for larger folios support
->>    btrfs: prepare extent_io.c for future larger folio support
->>    btrfs: prepare btrfs_page_mkwrite() for larger folios
->>
->>   fs/btrfs/extent_io.c | 49 ++++++++++++++++++++++++-------------------=
--
->>   fs/btrfs/file.c      | 19 +++++++++--------
->>   fs/btrfs/inode.c     |  4 ++--
->>   fs/btrfs/subpage.c   | 38 +++++++++++++++++-----------------
->>   fs/btrfs/subpage.h   | 16 +++++++--------
->>   5 files changed, 66 insertions(+), 60 deletions(-)
->>
->> --
->> 2.48.1
->>
->
+diff --git a/mkfs/main.c b/mkfs/main.c
+index dc73de47..11a5a4a9 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -460,7 +460,7 @@ static const char * const mkfs_usage[] = {
+ 	OPTLINE("", "- ro - create the subvolume as read-only"),
+ 	OPTLINE("", "- default - the SUBDIR will be a subvolume and also set as default (can be specified only once)"),
+ 	OPTLINE("", "- default-ro - like 'default' and is created as read-only subvolume (can be specified only once)"),
+-	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to minimal size"),
++	OPTLINE("--shrink[=SLACK SIZE]", "(with --rootdir) shrink the filled filesystem to minimal size, optionally include extra slack space after shrinking (default 0)"),
+ 	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
+ 	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
+ 	"",
+@@ -1176,6 +1176,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	u64 source_dir_size = 0;
+ 	u64 min_dev_size;
+ 	u64 shrink_size;
++	u64 shrink_slack_size = 0;
+ 	int device_count = 0;
+ 	int saved_optind;
+ 	pthread_t *t_prepare = NULL;
+@@ -1246,7 +1247,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 				GETOPT_VAL_DEVICE_UUID },
+ 			{ "quiet", 0, NULL, 'q' },
+ 			{ "verbose", 0, NULL, 'v' },
+-			{ "shrink", no_argument, NULL, GETOPT_VAL_SHRINK },
++			{ "shrink", optional_argument, NULL, GETOPT_VAL_SHRINK },
+ 			{ "compress", required_argument, NULL,
+ 				GETOPT_VAL_COMPRESS },
+ #if EXPERIMENTAL
+@@ -1381,6 +1382,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 				strncpy_null(dev_uuid, optarg, BTRFS_UUID_UNPARSED_SIZE);
+ 				break;
+ 			case GETOPT_VAL_SHRINK:
++				shrink_slack_size = optarg == NULL ? 0 : arg_strtou64_with_suffix(optarg);
+ 				shrink_rootdir = true;
+ 				break;
+ 			case GETOPT_VAL_CHECKSUM:
+@@ -2107,9 +2109,14 @@ raid_groups:
+ 		}
+ 
+ 		if (shrink_rootdir) {
+-			pr_verbose(LOG_DEFAULT, "  Shrink:           yes\n");
++			pr_verbose(
++				LOG_DEFAULT,
++				"  Shrink:           yes          (slack size: %s)\n",
++				pretty_size(shrink_slack_size));
+ 			ret = btrfs_mkfs_shrink_fs(fs_info, &shrink_size,
+-						   shrink_rootdir);
++						   shrink_rootdir,
++						   shrink_slack_size);
++
+ 			if (ret < 0) {
+ 				errno = -ret;
+ 				error("error while shrinking filesystem: %m");
+diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+index 19273947..176e6528 100644
+--- a/mkfs/rootdir.c
++++ b/mkfs/rootdir.c
+@@ -1924,7 +1924,7 @@ err:
+ }
+ 
+ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
+-			 bool shrink_file_size)
++			 bool shrink_file_size, u64 slack_size)
+ {
+ 	u64 new_size;
+ 	struct btrfs_device *device;
+@@ -1948,14 +1948,23 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
+ 		return ret;
+ 	}
+ 
++	device = list_entry(fs_info->fs_devices->devices.next,
++			   struct btrfs_device, dev_list);
++
++	new_size += slack_size;
++	if (new_size > device->total_bytes) {
++		warning("fs size with slack: %llu (%s) is larger than device size: %llu (%s)\n"
++			"         consider decreasing slack size or increasing device size",
++			new_size, pretty_size(new_size), device->total_bytes,
++			pretty_size(device->total_bytes));
++	}
++
+ 	if (!IS_ALIGNED(new_size, fs_info->sectorsize)) {
+ 		error("shrunk filesystem size %llu not aligned to %u",
+ 				new_size, fs_info->sectorsize);
+ 		return -EUCLEAN;
+ 	}
+ 
+-	device = list_entry(fs_info->fs_devices->devices.next,
+-			   struct btrfs_device, dev_list);
+ 	ret = set_device_size(fs_info, device, new_size);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
+index b32fda5b..1eee3824 100644
+--- a/mkfs/rootdir.h
++++ b/mkfs/rootdir.h
+@@ -52,6 +52,6 @@ int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *trans, const char *source_dir
+ u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_dev_size,
+ 			u64 meta_profile, u64 data_profile);
+ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
+-			 bool shrink_file_size);
++			 bool shrink_file_size, u64 slack_size);
+ 
+ #endif
+-- 
+2.47.1
 
 
