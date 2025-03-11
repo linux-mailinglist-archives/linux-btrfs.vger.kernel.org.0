@@ -1,124 +1,216 @@
-Return-Path: <linux-btrfs+bounces-12194-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12195-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A29AA5C3E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 15:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37AC2A5C8B5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 16:47:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E14B3B4C24
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 14:34:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5992F3B2771
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 15:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851CE1BB6BA;
-	Tue, 11 Mar 2025 14:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2529E25F7B5;
+	Tue, 11 Mar 2025 15:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d4TLOOnN"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WddZQcYD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42ABC78F47
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 14:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6224025EFBB;
+	Tue, 11 Mar 2025 15:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741703687; cv=none; b=VVm6BYfUBrFQ+An2ZtBq/yzmbJG2dXvS4SMVnEU/j63vJh08V75lOZ+R+944NsW7G68MvPNDDgj2IYMlv99P1v9oJ3dnvQWsSVcawMgAeUPhb6IwErzd56ZO22cXX7YEtCBGHoGnIKLsdjPheUaSipTMJXL+1VmdMD5uTY+CHUA=
+	t=1741707639; cv=none; b=srmPhDZ4Ll3xAK9+MgKxPUmkPcL6zZXHrzwJur7Nc+c9Q8AB70QCvT4dtUEHxI/9AxUcj2MtdJV6h2G9kuzDuZa5br8mx0FB4T4bs2m9LfmDEf4ilstvGkvBRFIH73mT3c9WHRmVu+rhSiL9AAsnQq35goH/464AUfRsrj9q+uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741703687; c=relaxed/simple;
-	bh=uyKevI7F7LiQn1cOyt+NLp8A8t/XT6984hxJ6lTMsaI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=farhDhYJTQSOvD7wsLstoqd+A4e3uLgp54WPN1w1jl9OvJiIkrAhAF6/aHCdQclrVjoUmVwy/luLJlZE+0izT+t82Fjn+52nlyPO1OxIMeAH3iN1eCFIDbCQKdnDF9Qy9pcqwt+dBYWyirVrQIMBUXxWDi62xxVfxSL6F2hPvAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d4TLOOnN; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so33107095e9.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 07:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741703684; x=1742308484; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uyKevI7F7LiQn1cOyt+NLp8A8t/XT6984hxJ6lTMsaI=;
-        b=d4TLOOnNvKD13gqA3tIdYpy3KUdt5LQUKnIb/erMHmLq72PGi19sQfQevSAT26rFqC
-         qSAKeZFk2C7UbSN4Oeb6XmL+hgQ4ut8SGABivoGQgHPv9X9Pu6Lk5U/Rp6hOnxIXL+6n
-         suql0yHvBBRdhBCB5knpyYlUwlixsAkWxIsJ3r1Me9Hymb81tZyckp2wKqoksM9/oDvJ
-         UIkzNyc9RXJpTV4dPz1vsu/IDgqF2J+lCYvN4apYObJBpJvrPr0l5owlVfPSUM+dEUkJ
-         aL1+FnPMc6+OXj2VKoNm0ESXEilPi5aPJgYhucGNGtSntXpz44SRy04yenLE24zbow/m
-         3ULg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741703684; x=1742308484;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uyKevI7F7LiQn1cOyt+NLp8A8t/XT6984hxJ6lTMsaI=;
-        b=bDfhaWomEcWA6yWAr8AaeYkIJrd//BUKHnNYCaSNKCkFYRTiR1/FMM9XpO+QivcxkG
-         7pX4BzGZ1ded9R/M2bOz0V5a26lVRlXQTPQ5CdV3sm8Ri9ma80izCjrmUTh2gdzFIRAG
-         wqA6jOxv5/kTwGoUH53scCPxXXjLbEz5Tbh1Rc35FnRLvKme5CB8d2Zz6VRsknL09vsS
-         3CBP6BnpyNCIBfepEhGmSKvVnQyjAj7IrqDtli2/lNbPSRR99DH7JtcuZqrg0FiidNyS
-         42EUtZSHuWy5jthvrbmljZNI62V6BfE+fXJveUHp0BK8BC7EvIlZPDkeLqZU5MWSk0pm
-         8m3w==
-X-Gm-Message-State: AOJu0Yz3zq9KyoXBzzGKV6XdRxXfLNtkDdtk5HNSxMe2tvFWpNxxU1HR
-	MelFNH/doUwhHjV+FuKc6RVvHB2ZKP/Ik4z8ZerqeSVwSUNkIYsTicaiQAZ0UY0FoF+LrSsC1Wu
-	kBNKY2ejMk2Bk5dkjqPbcEEYOgFk00mKC+Ws=
-X-Gm-Gg: ASbGncsRVGVyrR/zZykWVU9AfrSvPIkdT5xdGBLb1RCrqnlTPm1GPloOOQOWer7Y+yh
-	WDxUOAJB2npSkwrxKlTuDDdldcKexheIB/n+3HcuTGRRxH2B+RzSq3cglfFg54eZ7ZG5Eip7RZr
-	QXitPWAu24Rmbptr1NvHAIag==
-X-Google-Smtp-Source: AGHT+IGcZpBmAl4yUfeobqYFf3ZT+1JrxfTYZbdufQtD9xw10J64HmtIFDYTJZGHAiHcmzb+7QON05c36yy2Dwzb+MU=
-X-Received: by 2002:a05:600c:3b93:b0:43c:e70d:4504 with SMTP id
- 5b1f17b1804b1-43ce70d47damr92793405e9.19.1741703684189; Tue, 11 Mar 2025
- 07:34:44 -0700 (PDT)
+	s=arc-20240116; t=1741707639; c=relaxed/simple;
+	bh=xf7M6BVFT8DAFcq/gg+MR74qJuXyUAQ6IqEImiReHu4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RuojwaOs+SBAF+5qTBIJwMyPw1k47vc+rTOE5oIMN1gfAbtUZAOYKJ+RhXx89Ppilsn8WJSiE98orp/zKHFDre7waW8HRnhlZmRJlO3u7es9tswaHSli0p3o8pZ8PQgKVVBAwrHmeahJHLpLUiIOEokqS4TfY46bpqzofTMiJqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WddZQcYD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE6B8C4CEEA;
+	Tue, 11 Mar 2025 15:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1741707639;
+	bh=xf7M6BVFT8DAFcq/gg+MR74qJuXyUAQ6IqEImiReHu4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=WddZQcYDyCJ1Y3/gxML0klq5GVp0lzHsK8JCDIbJJLQx9xcyUD4fLQNC/UpctiVxu
+	 dtLFVq4lZemJDAbxnbLbynHzF7jU5EDAqzfp03E9s1cdU79G/Ty0J+5HL+Elct0kvN
+	 N55ZcKnBCdQRKhgADLFD9ty6RbRaK/UVR0hehThM=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	pk <pkoroau@gmail.com>,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 5.10 458/462] btrfs: bring back the incorrectly removed extent buffer lock recursion support
+Date: Tue, 11 Mar 2025 16:02:04 +0100
+Message-ID: <20250311145816.419610146@linuxfoundation.org>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250311145758.343076290@linuxfoundation.org>
+References: <20250311145758.343076290@linuxfoundation.org>
+User-Agent: quilt/0.68
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAB_b4sBhDe3tscz=duVyhc9hNE+gu=B8CrgLO152uMyanR8BEA@mail.gmail.com>
- <7addae55-e0a4-40c4-b4b5-279d4eb91fd4@wdc.com> <CAB_b4sAba_AtdQfM+23LhnL_F038wuE677DZx-1T_Q1TH6rtMg@mail.gmail.com>
- <CAB_b4sCNenuqK79ce7ijSDQzXgLAq8jEe98z4P6_UqAz-OvhEQ@mail.gmail.com> <88371447-4d78-491c-9d86-ee2ad444c50d@wdc.com>
-In-Reply-To: <88371447-4d78-491c-9d86-ee2ad444c50d@wdc.com>
-From: =?UTF-8?B?6KW/5pyo6YeO576w5Z+6?= <yanqiyu01@gmail.com>
-Date: Tue, 11 Mar 2025 22:34:32 +0800
-X-Gm-Features: AQ5f1JpL411GCP-VONugcRDOnu3IERt6NNIp2pd2y9orkMmGsW6Hpl47EAOysVs
-Message-ID: <CAB_b4sAgb370vOS3OVp2Vx6W+9iLUrCUvfRwVx9WtWbFOXPQsg@mail.gmail.com>
-Subject: Re: [bug report] NULL pointer dereference after a balance error on
- zoned device
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Naohiro Aota <Naohiro.Aota@wdc.com>, 
-	WenRuo Qu <wqu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Johannes Thumshirn <Johannes.Thumshirn@wdc.com> =E4=BA=8E2025=E5=B9=B43=E6=
-=9C=8811=E6=97=A5=E5=91=A8=E4=BA=8C 19:59=E5=86=99=E9=81=93=EF=BC=9A
-> Not finding a metadata space_info is just broken. Even not having the
-> ->space_info pointer not set in a block_group is a big red warning sign
-> that cannot happen.
->
-> As per the code you quoted above, there's even an ASSERT() catching if
-> the space_info is NULL (but CONFIG_BTRFS_ASSERT usually is not enabled
-> in release configurations).
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
-No, I mean that btrfs_add_new_free_space is called before:
-cache->space_info =3D btrfs_find_space_info(fs_info, cache->flags);
-in btrfs_make_block_group()
+------------------
 
-And the stack trace for the null deref contains
+From: Filipe Manana <fdmanana@suse.com>
 
-? __btrfs_add_free_space_zoned.isra.0+0x61/0x1a0
-btrfs_add_free_space_async_trimmed+0x34/0x40
-btrfs_add_new_free_space+0x107/0x120 <- Notice this call
-btrfs_make_block_group+0x104/0x2b0
+Commit 51b03b7473a0 ("btrfs: locking: remove the recursion handling code")
+from the 5.10.233 stable tree removed the support for extent buffer lock
+recursion, but we need that code because in 5.10.x we load the free space
+cache synchronously - while modifying the extent tree and holding a write
+lock on some extent buffer, we may need to load the free space cache,
+which requires acquiring read locks on the extent tree and therefore
+result in a deadlock in case we need to read lock an extent buffer we had
+write locked while modifying the extent tree.
 
-In __btrfs_add_free_space_zoned, cache->space_info is accessed, which
-appears to happen before it is initialized by btrfs_find_space_info().
-Unless there is another code path that allocates and then deallocates
-cache->space_info, this seems to be the direct cause of the null
-pointer dereference.
+Backporting that commit from Linus' tree is therefore wrong, and was done
+so in order to backport upstream commit 97e86631bccd ("btrfs: don't set
+lock_owner when locking extent buffer for reading"). However we should
+have instead had the commit adapted to the 5.10 stable tree instead.
 
-The open question is why this issue doesn=E2=80=99t occur on other systems.
-Possible reasons could be:
- - I have missed other places where cache->space_info is set.
- - The condition if (!initial) in __btrfs_add_free_space_zoned might
-be difficult to satisfy.
+Note that the backport of that dependency is ok only for stable trees
+5.11+, because in those tree the space cache loading code is not
+synchronous anymore, so there is no need to have the lock recursion
+and indeed there are no users of the extent buffer lock recursion
+support. In other words, the backport is only valid for kernel releases
+that have the asynchrounous free space cache loading support, which
+was introduced in kernel 5.11 with commit e747853cae3a ("btrfs: load
+free space cache asynchronously").
+
+This was causing deadlocks and reported by a user (see below Link tag).
+
+So revert commit 51b03b7473a0 ("btrfs: locking: remove the recursion
+handling code") while not undoing what commit d5a30a6117ea ("btrfs: don't
+set lock_owner when locking extent buffer for reading") from the 5.10.x
+stable tree did.
+
+Reported-by: pk <pkoroau@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/CAMNwjEKH6znTHE5hMc5er2dFs5ypw4Szx6TMDMb0H76yFq5DGQ@mail.gmail.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/btrfs/locking.c |   68 +++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 64 insertions(+), 4 deletions(-)
+
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -25,18 +25,43 @@
+  * - reader/reader sharing
+  * - try-lock semantics for readers and writers
+  *
+- * The rwsem implementation does opportunistic spinning which reduces number of
+- * times the locking task needs to sleep.
++ * Additionally we need one level nesting recursion, see below. The rwsem
++ * implementation does opportunistic spinning which reduces number of times the
++ * locking task needs to sleep.
++ *
++ *
++ * Lock recursion
++ * --------------
++ *
++ * A write operation on a tree might indirectly start a look up on the same
++ * tree.  This can happen when btrfs_cow_block locks the tree and needs to
++ * lookup free extents.
++ *
++ * btrfs_cow_block
++ *   ..
++ *   alloc_tree_block_no_bg_flush
++ *     btrfs_alloc_tree_block
++ *       btrfs_reserve_extent
++ *         ..
++ *         load_free_space_cache
++ *           ..
++ *           btrfs_lookup_file_extent
++ *             btrfs_search_slot
++ *
+  */
+ 
+ /*
+  * __btrfs_tree_read_lock - lock extent buffer for read
+  * @eb:		the eb to be locked
+  * @nest:	the nesting level to be used for lockdep
+- * @recurse:	unused
++ * @recurse:	if this lock is able to be recursed
+  *
+  * This takes the read lock on the extent buffer, using the specified nesting
+  * level for lockdep purposes.
++ *
++ * If you specify recurse = true, then we will allow this to be taken if we
++ * currently own the lock already.  This should only be used in specific
++ * usecases, and the subsequent unlock will not change the state of the lock.
+  */
+ void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest,
+ 			    bool recurse)
+@@ -46,7 +71,31 @@ void __btrfs_tree_read_lock(struct exten
+ 	if (trace_btrfs_tree_read_lock_enabled())
+ 		start_ns = ktime_get_ns();
+ 
++	if (unlikely(recurse)) {
++		/* First see if we can grab the lock outright */
++		if (down_read_trylock(&eb->lock))
++			goto out;
++
++		/*
++		 * Ok still doesn't necessarily mean we are already holding the
++		 * lock, check the owner.
++		 */
++		if (eb->lock_owner != current->pid) {
++			down_read_nested(&eb->lock, nest);
++			goto out;
++		}
++
++		/*
++		 * Ok we have actually recursed, but we should only be recursing
++		 * once, so blow up if we're already recursed, otherwise set
++		 * ->lock_recursed and carry on.
++		 */
++		BUG_ON(eb->lock_recursed);
++		eb->lock_recursed = true;
++		goto out;
++	}
+ 	down_read_nested(&eb->lock, nest);
++out:
+ 	trace_btrfs_tree_read_lock(eb, start_ns);
+ }
+ 
+@@ -85,11 +134,22 @@ int btrfs_try_tree_write_lock(struct ext
+ }
+ 
+ /*
+- * Release read lock.
++ * Release read lock.  If the read lock was recursed then the lock stays in the
++ * original state that it was before it was recursively locked.
+  */
+ void btrfs_tree_read_unlock(struct extent_buffer *eb)
+ {
+ 	trace_btrfs_tree_read_unlock(eb);
++	/*
++	 * if we're nested, we have the write lock.  No new locking
++	 * is needed as long as we are the lock owner.
++	 * The write unlock will do a barrier for us, and the lock_recursed
++	 * field only matters to the lock owner.
++	 */
++	if (eb->lock_recursed && current->pid == eb->lock_owner) {
++		eb->lock_recursed = false;
++		return;
++	}
+ 	up_read(&eb->lock);
+ }
+ 
+
+
 
