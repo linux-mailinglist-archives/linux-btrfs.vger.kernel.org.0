@@ -1,173 +1,178 @@
-Return-Path: <linux-btrfs+bounces-12185-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F173A5BF10
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 12:33:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9213EA5BF2C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 12:36:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF613175E03
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 11:33:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D52AE7A97D5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 11:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE908252913;
-	Tue, 11 Mar 2025 11:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC68C253B59;
+	Tue, 11 Mar 2025 11:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aPtBhHVG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MsPC129y"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005422343C5
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91D0221F11
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741692782; cv=none; b=TL4Mia3Z7YzeyUWIsl3iu/LBHANZz3Emi9TbHwPeqNT0kf3SPg0DypGSh+jTW0XgW/VW9CydgOvanmCwQ61EcUVx3HjAQgsO9FY+Id8Mv5RxqFWehiJZ+A5K9i/QYggnbPiugLjHEsDEZLDxXqPanq8SnW3BobTgVQM7lLVEV5A=
+	t=1741692974; cv=none; b=V3uXSMyjwIPbZmUiOlpwnzGPpRRb5tGpBxHwSNEBdAEZ84T1U87tbeWf10/O5aWRt/N9knpfKbrdPWqQxwRiYE3oqWqqSyDth6uegAwRFpz9fIi/bbmruy3555Y+nO8AIShRYRc2wlbg6SNqOJhYsTpnew1hjVjyyM/KmPsYuWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741692782; c=relaxed/simple;
-	bh=d7kMtjcuyWSTsRslqMghpiWivDlRDjgU4JgVCGCdwmA=;
+	s=arc-20240116; t=1741692974; c=relaxed/simple;
+	bh=nshFTs5u656Hbx7P6/Wz8dctF81cjeb7YrDZ7gJk2wA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R2fxZPnVsh9N5GVjMcI8XiTAFUffVYy8aOGbSGLUghihGKBohg352u9cX58JDhHRmixdeHU3XTSNWUDyKBClutKeFNek4fJUY0HpsQu50RdBgovscjqWtQBEQz/CY7M0KACY805P61dOe8dtKoNLAHB8dkzHv7HksXI63o/b+ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aPtBhHVG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE16C4CEEE
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:33:01 +0000 (UTC)
+	 To:Cc:Content-Type; b=DqrtrEF7w5QfWV00sI/h2mOlZ+jVg71av0SsW5lXHUADYyD63TPIzP4vnLJZNwqCyi7qUYiGwWzcYDr6ASolAyp50S7bxkEXkGN+mRW/1b/DzajU8OxDXAPybOivxPcyRtZkQtaMIRpRRvj1wyRXBbAhYNm1uZRb+hbZ8J/xzNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MsPC129y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538E5C4CEEB
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741692781;
-	bh=d7kMtjcuyWSTsRslqMghpiWivDlRDjgU4JgVCGCdwmA=;
+	s=k20201202; t=1741692973;
+	bh=nshFTs5u656Hbx7P6/Wz8dctF81cjeb7YrDZ7gJk2wA=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aPtBhHVG+u+QEVAXs7dy0+oOflr2d+8+TBp0p/dI7W7ASsxU60u3Bw5ptiNR3idUR
-	 oRpxBxTj6AC1KHoQ/TRgzaoWLHo1sgZWQ/YzWNZ9FEVZgrEvV0aiOJGm1XBUHL+MgW
-	 1fxyArT1PEmpGwY1EylaGswe/3yKg2KTWWNovQYoURNuTunoefMAuR8yKOJW2wUeej
-	 8zuX+lcgnZ4//Dei+KvDb0lh8puAmrP73jUeGeBOoNA8gg/L4KIi/NNN++hrE2nW41
-	 xTZ90WzNV9e2QTtayoaq0HC2ezI+xqscZnwXd7i5OC2NMmRVKADSnCApSka4505vyB
-	 daYFK9T8AzK1g==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ac2af2f15d1so220457366b.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 04:33:01 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzMF7CVTEEuVHCV4HIlvDC8E16VqRe/iRkhZV3nmQdgEOirETfj
-	tVJPclPfuvJNutyVqJS1itZGHKzg70K4laNHqnUSVHnwSAc73+tJbkxsUj4RtGMdPQZKqqMmHgA
-	Wf2CvzLquK1Wj2BNM/Zd8gXWefek=
-X-Google-Smtp-Source: AGHT+IEcOxWWxoPUmatNF/gBLIjHy1GJ6iwd0fwpX66XKXr9vQPgiW55/+dgJhunkvnuLOvhpYMMcNjTxnzXoj7tbyQ=
-X-Received: by 2002:a17:907:158a:b0:abf:fb78:673a with SMTP id
- a640c23a62f3a-ac2b9e1e390mr313399966b.29.1741692779804; Tue, 11 Mar 2025
- 04:32:59 -0700 (PDT)
+	b=MsPC129ybWZyRKYDevz4xQMKfE/Hm0cI7JK0X6loWMQ5c95+F9yY/frsjFfGMRU21
+	 sU9HwOnPlYXV8Ulw2BHu9aPBuu4zDw1DQsC4cz953U1QrCc8Uc3u8oSW+D5Hs6svaQ
+	 GMK3gN/mNX47oHURX12apIJQLEH9q/ouD2ycSnPOZbEWBOnyFpUzWiireb25jetAfo
+	 CDGaWR+mrUYCOGzqU6KN/cezeQug3f/HvUm9VODz7SerpO92iDMSFa1CEW7XqG5Ffd
+	 UUQO8OcZ+aiUu2FK3AxZNHpYioCpLR1/EVR3/lu2FxlqgHK8zebMGDibIOZxkq+zW5
+	 1Zlfd43n4M9sQ==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ac298c8fa50so320483366b.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 04:36:13 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyfNkJ8SGUdD+MUq9veResKQKhwHNqG0lDH4YbDXwzqJrZwAhjQ
+	Gk8uHf24iCNG6Mw2H+tdkcWVLM8qOIIcVzK9p03FmsWRRsMFTHapFYEbC7g3vaToneAvAi1V4pd
+	blLI0slRZO05A1ZTEIURuHFRFYfU=
+X-Google-Smtp-Source: AGHT+IGMJ074EdwvJkjANKkhx0UmnPWu8R3VZiEj2Q/vw+oKLwlcE5ZU3wh3PsqWil/BP7aVqCX/Mhb/tXuV+iD1OuY=
+X-Received: by 2002:a05:6402:2546:b0:5e4:d2c9:456c with SMTP id
+ 4fb4d7f45d1cf-5e5e24688c6mr38765920a12.22.1741692971795; Tue, 11 Mar 2025
+ 04:36:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <c9858984b0807f758c8f1f5f64c1ec95c78930b2.1741662594.git.wqu@suse.com>
-In-Reply-To: <c9858984b0807f758c8f1f5f64c1ec95c78930b2.1741662594.git.wqu@suse.com>
+References: <cover.1741636986.git.boris@bur.io> <35f34b992427ea8a8c888d3e183b9ea024d1dfcc.1741636986.git.boris@bur.io>
+In-Reply-To: <35f34b992427ea8a8c888d3e183b9ea024d1dfcc.1741636986.git.boris@bur.io>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 11 Mar 2025 11:32:23 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7w7QRmVC_LYwKTCCpGbfJkd-XjYv8jzd0jSFQ=2tJ=hw@mail.gmail.com>
-X-Gm-Features: AQ5f1JpTP4QVHLVL4bvyqu6Nfg2RPFyokAacq29CR1IUl-w0ouZwJzB0nl9lLKs
-Message-ID: <CAL3q7H7w7QRmVC_LYwKTCCpGbfJkd-XjYv8jzd0jSFQ=2tJ=hw@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: add extra warning if delayed iput is added when
- it's not allowed
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Date: Tue, 11 Mar 2025 11:35:35 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4=+-tuMRDy8Of5_PraiaPOi8ehUvFMJ4Hg8dtFNmf8YA@mail.gmail.com>
+X-Gm-Features: AQ5f1JqtqjsY-Pqcpj6oSSVjyWWALvHnYUNSk_yO2F4ft6bUwjxzBdwn7XcA7TU
+Message-ID: <CAL3q7H4=+-tuMRDy8Of5_PraiaPOi8ehUvFMJ4Hg8dtFNmf8YA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] btrfs: harden bg->bg_list against list_del races
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 11, 2025 at 3:10=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+On Mon, Mar 10, 2025 at 8:06=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
 >
-> Since I have triggered the ASSERT() on the delayed iput too many times,
-> now is the time to add some extra debug warnings for delayed iput.
+> As far as I can tell, these calls of list_del_init on bg_list can not
+> run concurrently with btrfs_mark_bg_unused or btrfs_mark_bg_to_reclaim,
+> as they are in transaction error paths and situations where the block
+> group is readonly.
 >
-> All delayed iputs should be queued after all ordered extents finish
-> their IO and all involved workqueues are flushed.
+> However, if there is any chance at all of racing with mark_bg_unused,
+> or a different future user of bg_list, better to be safe than sorry.
 >
-> Thus after the btrfs_run_delayed_iputs() inside close_ctree(), there
-> should be no more delayed puts added.
+> Otherwise we risk the following interleaving (bg_list refcount in parens)
 >
-> So introduce a new BTRFS_FS_STATE_NO_DELAYED_IPUT, set after the above
-> mentioned timing.
-> And all btrfs_add_delayed_iput() will check that flag and give a
-> WARN_ON_ONCE() for debug builds.
+> T1 (some random op)                       T2 (btrfs_mark_bg_unused)
+>                                         !list_empty(&bg->bg_list); (1)
+> list_del_init(&bg->bg_list); (1)
+>                                         list_move_tail (1)
+> btrfs_put_block_group (0)
+>                                         btrfs_delete_unused_bgs
+>                                              bg =3D list_first_entry
+>                                              list_del_init(&bg->bg_list);
+>                                              btrfs_put_block_group(bg); (=
+-1)
 >
-> And since we're here, remove the btrfs_run_delayed_iputs() call inside
-> btrfs_error_commit_super().
-> As that function will only wait for ordered extents to finish their IO,
-> delayed iputs will only be added when those ordered extents all finished
-> and removed from io tree, this is only ensured after the workqueue
-> flush.
-
-This last paragraph is no longer valid, as that part of the change was
-moved to another patch.
-Don't forget to delete it when committing to for-next.
-
-Otherwise:
+> Ultimately, this results in a broken ref count that hits zero one deref
+> early and the real final deref underflows the refcount, resulting in a WA=
+RNING.
+>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks.
+Looks good now, thanks.
 
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
-> Changelog:
-> v3:
-> - Rebased to the latest for-next
->   Which has the removal of btrfs_run_delayed_iputs() from
->   btrfs_error_commit_super() in the previous patch.
+>  fs/btrfs/extent-tree.c |  8 ++++++++
+>  fs/btrfs/transaction.c | 12 ++++++++++++
+>  2 files changed, 20 insertions(+)
 >
-> - Make the WARN_ON_ONCE() unconditional in btrfs_add_delayed_iput()
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 5de1a1293c93..5ead2f4976e4 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2868,7 +2868,15 @@ int btrfs_finish_extent_commit(struct btrfs_trans_=
+handle *trans)
+>                                                    block_group->length,
+>                                                    &trimmed);
 >
-> v2:
-> - Set the new flag early
-> - Make the new flag unconditional except the WARN_ON_ONCE() check
-> - Remove the btrfs_run_delayed_iputs() inside btrfs_error_commit_super()
-> ---
->  fs/btrfs/disk-io.c | 2 ++
->  fs/btrfs/fs.h      | 3 +++
->  fs/btrfs/inode.c   | 1 +
->  3 files changed, 6 insertions(+)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 0afd3c0f2fab..56e55f7a0f24 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4397,6 +4397,8 @@ void __cold close_ctree(struct btrfs_fs_info *fs_in=
-fo)
->         /* Ordered extents for free space inodes. */
->         btrfs_flush_workqueue(fs_info->endio_freespace_worker);
->         btrfs_run_delayed_iputs(fs_info);
-> +       /* There should be no more workload to generate new delayed iputs=
-. */
-> +       set_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->fs_state);
->
->         cancel_work_sync(&fs_info->async_reclaim_work);
->         cancel_work_sync(&fs_info->async_data_reclaim_work);
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index c799dfba5ebd..5a346d4a4b91 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -117,6 +117,9 @@ enum {
->         /* Indicates there was an error cleaning up a log tree. */
->         BTRFS_FS_STATE_LOG_CLEANUP_ERROR,
->
-> +       /* No more delayed iput can be queued. */
-> +       BTRFS_FS_STATE_NO_DELAYED_IPUT,
+> +               /*
+> +                * Not strictly necessary to lock, as the block_group sho=
+uld be
+> +                * read-only from btrfs_delete_unused_bgs.
+> +                */
+> +               ASSERT(block_group->ro);
+> +               spin_lock(&fs_info->unused_bgs_lock);
+>                 list_del_init(&block_group->bg_list);
+> +               spin_unlock(&fs_info->unused_bgs_lock);
 > +
->         BTRFS_FS_STATE_COUNT
->  };
+>                 btrfs_unfreeze_block_group(block_group);
+>                 btrfs_put_block_group(block_group);
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index e7e6accbaf6c..5c0a41c32dab 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3438,6 +3438,7 @@ void btrfs_add_delayed_iput(struct btrfs_inode *ino=
-de)
->         if (atomic_add_unless(&inode->vfs_inode.i_count, -1, 1))
->                 return;
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index db8fe291d010..470dfc3a1a5c 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -160,7 +160,13 @@ void btrfs_put_transaction(struct btrfs_transaction =
+*transaction)
+>                         cache =3D list_first_entry(&transaction->deleted_=
+bgs,
+>                                                  struct btrfs_block_group=
+,
+>                                                  bg_list);
+> +                       /*
+> +                        * Not strictly necessary to lock, as no other ta=
+sk will be using a
+> +                        * block_group on the deleted_bgs list during a t=
+ransaction abort.
+> +                        */
+> +                       spin_lock(&transaction->fs_info->unused_bgs_lock)=
+;
+>                         list_del_init(&cache->bg_list);
+> +                       spin_unlock(&transaction->fs_info->unused_bgs_loc=
+k);
+>                         btrfs_unfreeze_block_group(cache);
+>                         btrfs_put_block_group(cache);
+>                 }
+> @@ -2096,7 +2102,13 @@ static void btrfs_cleanup_pending_block_groups(str=
+uct btrfs_trans_handle *trans)
 >
-> +       WARN_ON_ONCE(test_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->f=
-s_state));
->         atomic_inc(&fs_info->nr_delayed_iputs);
->         /*
->          * Need to be irq safe here because we can be called from either =
-an irq
+>         list_for_each_entry_safe(block_group, tmp, &trans->new_bgs, bg_li=
+st) {
+>                 btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
+> +               /*
+> +               * Not strictly necessary to lock, as no other task will b=
+e using a
+> +               * block_group on the new_bgs list during a transaction ab=
+ort.
+> +               */
+> +              spin_lock(&fs_info->unused_bgs_lock);
+>                 list_del_init(&block_group->bg_list);
+> +              spin_unlock(&fs_info->unused_bgs_lock);
+>         }
+>  }
+>
 > --
 > 2.48.1
 >
