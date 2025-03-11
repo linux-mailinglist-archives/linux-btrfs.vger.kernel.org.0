@@ -1,82 +1,86 @@
-Return-Path: <linux-btrfs+bounces-12179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12180-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E50C7A5BA94
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 09:13:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4231A5BA95
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 09:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C268189657E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 08:13:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ABD2165C33
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 08:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8591E8F6C;
-	Tue, 11 Mar 2025 08:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4701F12F2;
+	Tue, 11 Mar 2025 08:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bfGDqRrD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kvJVA+Ej"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B9C1E32DB
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 08:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785CF1E32DB
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 08:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741680816; cv=none; b=GGUp0MrCUs0XUSWzgxl/hpTmKuzS67CU728v4tcWNmlBjj/mxhpPXJX5PPmckQbybWS0iAn5Nat+QzDSNmf6Jc9fEbx9y53hhysowKojxjOawoHFr0Wc1/vXQ+5ZcW2Gy403oNR106EE+xJXIgB3A+4b/1t1lTIdsBH/OCB+ykE=
+	t=1741680829; cv=none; b=SyQtqnT7Gm6BrYHN8KElhFGkeDewkOlnhmOa/Id4IarHuaD6qJjzNii/n/YwEYNJwLos94DwUfTVXEEwb5q92MiSCmP/3+KQZHJ9Khaj1Nm20xMJHnMeehyHcOL7XpWUB4QCZZTmR5WL2Hf+vyKB50RePxizDOhbdFcZLFfuEmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741680816; c=relaxed/simple;
-	bh=daqW0VKi0K98mu0yWDPqAJ87b+Oj2un/jb4H1ajcJ8w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nNODRFqF+bnRGMzzdjrnZpY+8ePZ/aBl2/i0+UElPhMe1hIvbbDabNXERAn0XgW9UmizPZ22Hhka3j0zq8mTLiNpHSph5x0oCI0gcIELOPh33aQW+/UXWOmnC0AGR/MavD7pYz6eb6CEBbtz1Jj+WJ55s3sVysUD8Y2thHtvayY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bfGDqRrD; arc=none smtp.client-ip=209.85.214.195
+	s=arc-20240116; t=1741680829; c=relaxed/simple;
+	bh=cHC+BguhzMGWYnga3bnKS8YCrhT9Z7to7R4FqFIK+ug=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CRyhdTXQyG35sszAEJmbvrtrCgBtIO5N4nMpuVOV8PifPvcmlv5B8szL2DGN+Qiy0GkupZjfKMLEUzgkJekFgH5OjUvQcUGvtMvA6U1JC0q4SWWNl4RvP5tToQnuXd+J4EDMokNJcQMb0ZW2lMJdJfyw1CvKV+Wxb/mgt8p5QQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kvJVA+Ej; arc=none smtp.client-ip=209.85.214.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2241c95619eso10455975ad.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 01:13:35 -0700 (PDT)
+Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-21f8f3bd828so8939195ad.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 01:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741680814; x=1742285614; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sd8PipucDVa12HFWCqZo5TLn+S4WKtBHXzWDZ3CsLaw=;
-        b=bfGDqRrDdOY2tbLssugzDjEqeRu26CP0FtIPSvG6Gzv4jP2MrnrErV2DI9cPCPynrX
-         evRdgKmmMjihcTuzraMKfRKXZUEcnFLKgmomvs5U/TYv5ORHBew7v+3OwBs+Lzxd7+cC
-         55qAXDH9W2CTKq1y1SZA7QxmauhugoPccilLoKE3193d+tZ/zve28KVxt2LTEQ6MsAXg
-         9KPSPYfXZdC6MuVv3ZgdGtL4+gF2MK33x3dH8Tl8jRgQBggZQ1xZ2VPMdwkzuOOuNejP
-         ZEE3Pq6ME3264h7jvsVJjYjoYnV5aJiBSm7V8/2I8qeboBrAR4r0UevewXziOk5bSEVb
-         I/Ow==
+        d=gmail.com; s=20230601; t=1741680827; x=1742285627; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0DYXgPFTGeFHRK2gpJRR2tyVYVqDrLbyU27Ojr815Bk=;
+        b=kvJVA+Ej3F98fK5xPkJqf7l/LIsZXRRTf8J8t6e8yLtpJeRehPIrW1jcLqI8RatqiO
+         2JMLTxV5CC3BDtz5gqSHIjQTA4wudbcoBQx5ilGetLJ4U23WnFh08m5QRdl8INEJuTsE
+         pXhibPkSZzID3Z5eSt9UPs66tlsvN3FHBMRxZsV9GG2vLuL5fk938q5SPF3VvKqQf9bk
+         UCTQDfxbdaxv38JKojdLmlnO4sq5y3aOOmM/+a1ekU35mEkh5IJqid4fpbrLPlt47LoW
+         UhrkSGxTyqCdninpX+YWwn8W29ezCa7gZu8O9Iq6Kr0HI794k/eDbShCpTqXYI0LRJLr
+         32HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741680814; x=1742285614;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Sd8PipucDVa12HFWCqZo5TLn+S4WKtBHXzWDZ3CsLaw=;
-        b=qU58KmzV8aPp37z73SLoY/uRJb8ILT4fnm6Voiy32fGfQ6AC2cO6nM2+SBhD9wES4C
-         BE9ZkFZkkQmtBfpvPBxlYDivxrtuPajX1rCceVqGAqWisvn34nCel7e0w5xN8IWa4YsB
-         GSaxdyHuxCSuTogAigXMhG9u1tqYw17842z/UJw9LCTxEq3Vabpg7irjeq13lCLfHcln
-         tWX8aAH3jLo4ntmFzJKC1ZCnrcAbQ1YpQZIFAyZ63tRhBGCY6Zbv16IpR12Qa9CHneah
-         SOS5bIzFLxrAgdmQsoM6V6zKZCA8Z2uPPNY6ubLvYEM0cELfMbAcCs+wWIL4BAI6HJH/
-         S/iQ==
-X-Gm-Message-State: AOJu0YywruDAob/28bRG5tvndv8bGSPY7X6o4++fMcmTwa3mtemkg4el
-	uI7w6BuXPgdmF25KAKShbkoKN79Wk2A0o7oR8FBGyYoLu/9+9H1afipKRkMe5x/XgA==
-X-Gm-Gg: ASbGncu1rzTSlE+XovARBm3xnPbvlZkj7OqqzR02VQVUPmwOuxyRRziIM3bQf8NJO6a
-	pXUqEHkXTxIqmsoBGc0jrkdAMNpUp4pndAtxA71Gmf+oD7PIry2+s0vV0JwDZG2fOfgtBoWOyvG
-	Vxo/4Dkga/Wq/TTVUFyl9dLbt21n/tLIou1X9W74JNYDQypOgdrjYg9vQScOipFKxhoW4rmi/0w
-	XVF1w5vXnzHJwe2fNzVGLbfxi+9dDLlq2OuWUXKXFtMYABllRrnG+77tAgVWnVAMyPsZc7BUqLS
-	0/WfUm+gPw3pM5J5TggMGKGBIRM60axQgJ4mj11895d3VGlVsmv55jC+iQ==
-X-Google-Smtp-Source: AGHT+IEmpABZzJimA5cCvxqsXxa2NyskrNDQhFdXTTMho8nZ4fP01XDyVs/axdLSebVVkQh1ajh/mA==
-X-Received: by 2002:a17:902:ec8d:b0:220:dae5:34b5 with SMTP id d9443c01a7336-2259327fd08mr13289615ad.7.1741680814368;
-        Tue, 11 Mar 2025 01:13:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1741680827; x=1742285627;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0DYXgPFTGeFHRK2gpJRR2tyVYVqDrLbyU27Ojr815Bk=;
+        b=DA3XNa0sTWdaR/+iZMWOfOuSYnf2dCcacd4k3ToYsVRM46Ydnsy+u397/XIX3oHnZN
+         WRdLll+6lBm7hi6Q8YTGWygWm/70h9QhHll2ax7Ateoqjzxdx1n24Pt8bbB6PagvzLtz
+         tIwQVU7we3RK6WkTyswPgEGKs9ZcHEdhgoge1GpKtyX01QOZRArvmtsG1a9/qnE1uhnf
+         C6U2sSc3ByJyhvxzMoFaCZjp3bjsr9tCdmBGNDR50VCzvB5y6BE1DYzS9xhALxxn2Lq4
+         cCVEI+iv9dWbsLsvjUwJzw/CldR+D5fDJl6A3ACgSe15gr8OGUEKHWEj2oHAhwuTpEfw
+         nJOQ==
+X-Gm-Message-State: AOJu0Ywhpb2HY3qd7xSs0in+HMIqFbGTut7tvUMrStSz9vAN0Atpn6Ze
+	+9fI5zsweHECO3WFvrWt/m3URROdR8tJkcq6S8FmG3oHCwh9SK8eyGCMP+KLQxYl1Q==
+X-Gm-Gg: ASbGncukRjs7RnuvPHgCPqtIRIX7GjNhK2DpwzdcnZyT+J5kkTmWHGtkHQM9H3/I8/u
+	2SlcgZTt/Fnaz9Al9NM6xQ+j+53tH6UtrcKxdRj4aprM/OxLHhFAwDcM+i3WNhQMU07tuxhpXVV
+	fBhARKd6kzGq9rUro9IEPRXl0diqszskeiz5Hb+HCFyyuAJj/gqq40ZtnkLSM9TQaGiNm3WmMjG
+	tsWwuH8Cf2I+yye7l0ch7KtvRapPH4EoI5fKn7v5TT/ayKHgLFSQVKiiX2XHXCeL5c3esjjrVMS
+	qszLZN1+vL/kXzGQUY+6J0gTePQLYKYuMnlZNQboDpbKj98=
+X-Google-Smtp-Source: AGHT+IHGf2WZv2sT6HR3hS3lBxcyTjpT7kYkgvUCXPH2S5JRHarayfR4KcIEdJPxrWNDyI1pwEpUPA==
+X-Received: by 2002:a17:902:d48d:b0:220:e98e:4f17 with SMTP id d9443c01a7336-22541ea9638mr69207655ad.2.1741680827418;
+        Tue, 11 Mar 2025 01:13:47 -0700 (PDT)
 Received: from SaltyKitkat.. ([198.176.54.118])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410aa5cdbsm91203635ad.230.2025.03.11.01.13.31
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410aa5cdbsm91203635ad.230.2025.03.11.01.13.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 01:13:34 -0700 (PDT)
+        Tue, 11 Mar 2025 01:13:47 -0700 (PDT)
 From: Sun YangKai <sunk67188@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.cz>,
 	Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH v2 0/3] btrfs: random code cleanup
-Date: Tue, 11 Mar 2025 16:13:11 +0800
-Message-ID: <20250311081317.13860-1-sunk67188@gmail.com>
+Subject: [PATCH v2 1/3] btrfs: simplify the return value handling in search_ioctl()
+Date: Tue, 11 Mar 2025 16:13:12 +0800
+Message-ID: <20250311081317.13860-2-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250311081317.13860-1-sunk67188@gmail.com>
+References: <20250311081317.13860-1-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -85,31 +89,68 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These patches are not intended to change any behavior of current code.
-Just trying to make the codes easier to read, and, maybe, perform better.
-I'm working on btrfs_search_forward(), trying to improve it and fix some
-misbehaviors. And I'll send some patches that will change the behavior of
-the code later.
+1. Move the assignment of ret = -EFAULT to within the error condition
+   check in fault_in_subpage_writeable(). The previous placement outside
+   the condition could lead to the error value being overwritten by
+   subsequent assignments, cause unnecessary assignments.
 
-I'm new to the maillist, trying to read the implements, and improve it from
-my perspective.
-If you have any feedback or questions, please let me know :)
+2. Simplify loop exit logic by removing redundant `goto`.
+   The original code used `goto err` to bypass post-loop processing after
+   handling errors from `btrfs_search_forward()`. However, the loop's
+   termination naturally falls through to the post-loop section, which
+   already handles `ret` values. Replacing `goto err` with `break`
+   eliminates redundant control flow, consolidates error handling, and
+   makes the loop's exit conditions explicit.
 
---
-Changelog
-v2:
-- Improve the commit messages advised by David Sterba
-- Fix some code style issues advised by David Sterba
+The changes ensure proper error propagation and make the loop's exit
+conditions clearer while maintaining functional equivalence.
 
-Sun YangKai (3):
-  btrfs: simplify the return value handling in search_ioctl()
-  btrfs: remove the unnecessary local variable in btrfs_search_forward()
-  btrfs: avoid redundant slot assignment in btrfs_search_forward()
-
- fs/btrfs/ctree.c | 15 ++++++---------
+Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+---
  fs/btrfs/ioctl.c | 15 +++++++--------
- 2 files changed, 13 insertions(+), 17 deletions(-)
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 6c18bad53cd3..bef158a1260b 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1642,21 +1642,20 @@ static noinline int search_ioctl(struct inode *inode,
+ 	key.offset = sk->min_offset;
+ 
+ 	while (1) {
+-		ret = -EFAULT;
+ 		/*
+ 		 * Ensure that the whole user buffer is faulted in at sub-page
+ 		 * granularity, otherwise the loop may live-lock.
+ 		 */
+ 		if (fault_in_subpage_writeable(ubuf + sk_offset,
+-					       *buf_size - sk_offset))
++					       *buf_size - sk_offset)) {
++			ret = -EFAULT;
+ 			break;
++		}
+ 
+ 		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+-		if (ret != 0) {
+-			if (ret > 0)
+-				ret = 0;
+-			goto err;
+-		}
++		if (ret)
++			break;
++
+ 		ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
+ 				 &sk_offset, &num_found);
+ 		btrfs_release_path(path);
+@@ -1666,7 +1665,7 @@ static noinline int search_ioctl(struct inode *inode,
+ 	}
+ 	if (ret > 0)
+ 		ret = 0;
+-err:
++
+ 	sk->nr_items = num_found;
+ 	btrfs_put_root(root);
+ 	btrfs_free_path(path);
 -- 
 2.48.1
 
