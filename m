@@ -1,180 +1,121 @@
-Return-Path: <linux-btrfs+bounces-12186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9213EA5BF2C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 12:36:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0681A5BF67
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 12:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D52AE7A97D5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 11:35:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C91E175F45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 11:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC68C253B59;
-	Tue, 11 Mar 2025 11:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2857254AE5;
+	Tue, 11 Mar 2025 11:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MsPC129y"
+	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="unUYzyFL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91D0221F11
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD75253F3B
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741692974; cv=none; b=V3uXSMyjwIPbZmUiOlpwnzGPpRRb5tGpBxHwSNEBdAEZ84T1U87tbeWf10/O5aWRt/N9knpfKbrdPWqQxwRiYE3oqWqqSyDth6uegAwRFpz9fIi/bbmruy3555Y+nO8AIShRYRc2wlbg6SNqOJhYsTpnew1hjVjyyM/KmPsYuWY=
+	t=1741693321; cv=none; b=stzZ43VJSOzxgXMhzzI5dkTb5SgH8k0lxtTGUX9QNmkb6V9IdHkm4gaZOqKiDI6H8bd92H2atWQjZEy7ni0whIMYx2snrMoYgk9acSe7VsvyfJWvduOhcQjKiJZy7CydjpvQG+VCxjUl7GdDPln6Bks0uyiv4ECU1HoWlJaUii4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741692974; c=relaxed/simple;
-	bh=nshFTs5u656Hbx7P6/Wz8dctF81cjeb7YrDZ7gJk2wA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DqrtrEF7w5QfWV00sI/h2mOlZ+jVg71av0SsW5lXHUADYyD63TPIzP4vnLJZNwqCyi7qUYiGwWzcYDr6ASolAyp50S7bxkEXkGN+mRW/1b/DzajU8OxDXAPybOivxPcyRtZkQtaMIRpRRvj1wyRXBbAhYNm1uZRb+hbZ8J/xzNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MsPC129y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538E5C4CEEB
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 11:36:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741692973;
-	bh=nshFTs5u656Hbx7P6/Wz8dctF81cjeb7YrDZ7gJk2wA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MsPC129ybWZyRKYDevz4xQMKfE/Hm0cI7JK0X6loWMQ5c95+F9yY/frsjFfGMRU21
-	 sU9HwOnPlYXV8Ulw2BHu9aPBuu4zDw1DQsC4cz953U1QrCc8Uc3u8oSW+D5Hs6svaQ
-	 GMK3gN/mNX47oHURX12apIJQLEH9q/ouD2ycSnPOZbEWBOnyFpUzWiireb25jetAfo
-	 CDGaWR+mrUYCOGzqU6KN/cezeQug3f/HvUm9VODz7SerpO92iDMSFa1CEW7XqG5Ffd
-	 UUQO8OcZ+aiUu2FK3AxZNHpYioCpLR1/EVR3/lu2FxlqgHK8zebMGDibIOZxkq+zW5
-	 1Zlfd43n4M9sQ==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ac298c8fa50so320483366b.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 04:36:13 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyfNkJ8SGUdD+MUq9veResKQKhwHNqG0lDH4YbDXwzqJrZwAhjQ
-	Gk8uHf24iCNG6Mw2H+tdkcWVLM8qOIIcVzK9p03FmsWRRsMFTHapFYEbC7g3vaToneAvAi1V4pd
-	blLI0slRZO05A1ZTEIURuHFRFYfU=
-X-Google-Smtp-Source: AGHT+IGMJ074EdwvJkjANKkhx0UmnPWu8R3VZiEj2Q/vw+oKLwlcE5ZU3wh3PsqWil/BP7aVqCX/Mhb/tXuV+iD1OuY=
-X-Received: by 2002:a05:6402:2546:b0:5e4:d2c9:456c with SMTP id
- 4fb4d7f45d1cf-5e5e24688c6mr38765920a12.22.1741692971795; Tue, 11 Mar 2025
- 04:36:11 -0700 (PDT)
+	s=arc-20240116; t=1741693321; c=relaxed/simple;
+	bh=K8h1Ag3DTU1iuA899SLvbmD6xwY/+vHzivqVPw6SPEM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W8ZEwP8lYcNGmex0n+Qs7OabUuwOsX0UWMTBZpQX+nEaDlJYGTyFemVBwCiWoJ4q7kOAgpIRqI1MxWhSYiU/Dyx8SvFmh9CabjsI+lg5nFWuK0Y58BQtH7Vh4IfQTdaqMWMTHjjm5rpvLxZyUrsrX6qwUF5asqjVUb9rOsGMpM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=unUYzyFL; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2fea47bcb51so11210281a91.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 04:41:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1741693319; x=1742298119; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MA/dse0ICF/ii1I0pjbS4LieVE/QLWT9sr4+LkG47XY=;
+        b=unUYzyFLfxsUKi65f6JV68/phAuaun5DAq4nRLNY3GBNX3VhPQIZwyL84Vp7whAP5n
+         TIP433csQRbgPoelnoGfzMkjGM9YXWV6DDm4bFL3z+O/yc5aeMM9VtWE1mpY11Dkysx2
+         Evc04+/GbuuZNuRxGWEAE9I71R5uLyiJiSL55/ofVfceLJWfa9p2q2tuw8hRoV7tT1QD
+         hE1jL3/n2Vx0Yl1Cf7b5I/BrBvB2xjERMli8EXwnL/939fRyYY8GQAVwSDSi63XuTd7X
+         LVT5wqm5aERC1V2yvvdvviJJvmigOjqj/N4xhW+tIR0FtCNgzmIj2dEZy7zd+4snJZeo
+         ilQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741693319; x=1742298119;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MA/dse0ICF/ii1I0pjbS4LieVE/QLWT9sr4+LkG47XY=;
+        b=oY8EG3CvSIw9t+fRBwJvz0O4x1jYjavJMXNmTmVYxi7kfn+mmHd7EyVc7T/ZgBl13u
+         yxgxtyMAtLCcXu4ga9ch24c+/YKw049D/lIYhAop3wM6P5l6joiQvQUJaUz5UPu+XQU6
+         WmqIZYZ5Zvgzd4OFSmNDE3SLFonR7K0G8ztqa4iiOMUKlpUPKc7in6GtxrkoYdXkzs16
+         Mu0nJfuh2vfJ6RYKf3MF0DspHJA/jtBvzp+wROhHX5lX7f595xYwqk3psIaJMgaCyvoS
+         irBYK8/t8f2XOmGWsk0b4+UDORRhrVOvk4UCMXAwM1pEQo9g5u82WTv1YZJ7kyyEv9Tu
+         hesw==
+X-Forwarded-Encrypted: i=1; AJvYcCUEmD+v1SXTUPyfqIffPIr00Z9DbBSafDaNlQ8Dnm+V+0pKIkGk43Hmq4zQSttUnFcinV0sfHFW3Mi8fw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzA6CPznsKfAB07rFgOuwqEALXWXeDMXteRKnDqsUzADOPvm7sG
+	bgR2ZO8joFZzYMG2AiPGNda65S17pAOOaX4Q+8vtSfjtvTxLhhsN6pZM/uNZYOE=
+X-Gm-Gg: ASbGncsa8KVMTslamAnifwboQwI5P/b6NwtF8s5pKIBMGZXpUxYmBxpfujUWufQd82X
+	xlDxGX0oeH4LtdhYqv9NI9rFYGLFFPsvxHeXcNnxIjR2XQupIdhEY5XqlpfY1htPnQrHncecwmt
+	RcUFc/wnAxD7a3cfprZXbRdfB8qXTllEBP9WplQV017QIoAImLz+i2uR37hNYSm9b6cdj92xeyO
+	h+YxOgDSOYh5Qurzi9ssClo4mUjgDVdoSxssSOF/7xoCeV9DV+Y2nv3F9uOuK+3jsBEvjdvqYF8
+	nBIjCeti9VfbAW8Lm0w4RlBgdR0YNXfnYoW3DjtY2LfoIJ+FA3Vx1onoNj33H9BGtgSYVQDGYan
+	e50ci
+X-Google-Smtp-Source: AGHT+IFzE9A1jtPzwbrU7Qxi5WrE/iLJ1gwUE4+oXkgzZWgtb2kVGpHneIlCN7fSLf3qIQvdqoqg9w==
+X-Received: by 2002:a17:90b:3147:b0:2ff:58a4:9db5 with SMTP id 98e67ed59e1d1-2ff7cf480e9mr24563107a91.30.1741693319056;
+        Tue, 11 Mar 2025 04:41:59 -0700 (PDT)
+Received: from sidong.sidong.yang.office.furiosa.vpn ([221.148.76.1])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff4e7ff8cfsm11647817a91.37.2025.03.11.04.41.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Mar 2025 04:41:58 -0700 (PDT)
+From: Sidong Yang <sidong.yang@furiosa.ai>
+To: Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: Sidong Yang <sidong.yang@furiosa.ai>,
+	io-uring@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH 0/2] introduce io_uring_cmd_import_fixed_vec
+Date: Tue, 11 Mar 2025 11:40:40 +0000
+Message-ID: <20250311114053.216359-1-sidong.yang@furiosa.ai>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1741636986.git.boris@bur.io> <35f34b992427ea8a8c888d3e183b9ea024d1dfcc.1741636986.git.boris@bur.io>
-In-Reply-To: <35f34b992427ea8a8c888d3e183b9ea024d1dfcc.1741636986.git.boris@bur.io>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 11 Mar 2025 11:35:35 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4=+-tuMRDy8Of5_PraiaPOi8ehUvFMJ4Hg8dtFNmf8YA@mail.gmail.com>
-X-Gm-Features: AQ5f1JqtqjsY-Pqcpj6oSSVjyWWALvHnYUNSk_yO2F4ft6bUwjxzBdwn7XcA7TU
-Message-ID: <CAL3q7H4=+-tuMRDy8Of5_PraiaPOi8ehUvFMJ4Hg8dtFNmf8YA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] btrfs: harden bg->bg_list against list_del races
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 10, 2025 at 8:06=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> As far as I can tell, these calls of list_del_init on bg_list can not
-> run concurrently with btrfs_mark_bg_unused or btrfs_mark_bg_to_reclaim,
-> as they are in transaction error paths and situations where the block
-> group is readonly.
->
-> However, if there is any chance at all of racing with mark_bg_unused,
-> or a different future user of bg_list, better to be safe than sorry.
->
-> Otherwise we risk the following interleaving (bg_list refcount in parens)
->
-> T1 (some random op)                       T2 (btrfs_mark_bg_unused)
->                                         !list_empty(&bg->bg_list); (1)
-> list_del_init(&bg->bg_list); (1)
->                                         list_move_tail (1)
-> btrfs_put_block_group (0)
->                                         btrfs_delete_unused_bgs
->                                              bg =3D list_first_entry
->                                              list_del_init(&bg->bg_list);
->                                              btrfs_put_block_group(bg); (=
--1)
->
-> Ultimately, this results in a broken ref count that hits zero one deref
-> early and the real final deref underflows the refcount, resulting in a WA=
-RNING.
->
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: Boris Burkov <boris@bur.io>
+This patche series introduce io_uring_cmd_import_vec. With this function,
+Multiple fixed buffer could be used in uring cmd. It's vectored version
+for io_uring_cmd_import_fixed(). Also this patch series includes a usage
+for new api for encoded read in btrfs by using uring cmd.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Sidong Yang (2):
+  io_uring: cmd: introduce io_uring_cmd_import_fixed_vec
+  btrfs: ioctl: use registered buffer for IORING_URING_CMD_FIXED
 
-Looks good now, thanks.
+ fs/btrfs/ioctl.c             | 26 +++++++++++++++++++++-----
+ include/linux/io_uring/cmd.h | 14 ++++++++++++++
+ io_uring/uring_cmd.c         | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 64 insertions(+), 5 deletions(-)
 
-> ---
->  fs/btrfs/extent-tree.c |  8 ++++++++
->  fs/btrfs/transaction.c | 12 ++++++++++++
->  2 files changed, 20 insertions(+)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 5de1a1293c93..5ead2f4976e4 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2868,7 +2868,15 @@ int btrfs_finish_extent_commit(struct btrfs_trans_=
-handle *trans)
->                                                    block_group->length,
->                                                    &trimmed);
->
-> +               /*
-> +                * Not strictly necessary to lock, as the block_group sho=
-uld be
-> +                * read-only from btrfs_delete_unused_bgs.
-> +                */
-> +               ASSERT(block_group->ro);
-> +               spin_lock(&fs_info->unused_bgs_lock);
->                 list_del_init(&block_group->bg_list);
-> +               spin_unlock(&fs_info->unused_bgs_lock);
-> +
->                 btrfs_unfreeze_block_group(block_group);
->                 btrfs_put_block_group(block_group);
->
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index db8fe291d010..470dfc3a1a5c 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -160,7 +160,13 @@ void btrfs_put_transaction(struct btrfs_transaction =
-*transaction)
->                         cache =3D list_first_entry(&transaction->deleted_=
-bgs,
->                                                  struct btrfs_block_group=
-,
->                                                  bg_list);
-> +                       /*
-> +                        * Not strictly necessary to lock, as no other ta=
-sk will be using a
-> +                        * block_group on the deleted_bgs list during a t=
-ransaction abort.
-> +                        */
-> +                       spin_lock(&transaction->fs_info->unused_bgs_lock)=
-;
->                         list_del_init(&cache->bg_list);
-> +                       spin_unlock(&transaction->fs_info->unused_bgs_loc=
-k);
->                         btrfs_unfreeze_block_group(cache);
->                         btrfs_put_block_group(cache);
->                 }
-> @@ -2096,7 +2102,13 @@ static void btrfs_cleanup_pending_block_groups(str=
-uct btrfs_trans_handle *trans)
->
->         list_for_each_entry_safe(block_group, tmp, &trans->new_bgs, bg_li=
-st) {
->                 btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
-> +               /*
-> +               * Not strictly necessary to lock, as no other task will b=
-e using a
-> +               * block_group on the new_bgs list during a transaction ab=
-ort.
-> +               */
-> +              spin_lock(&fs_info->unused_bgs_lock);
->                 list_del_init(&block_group->bg_list);
-> +              spin_unlock(&fs_info->unused_bgs_lock);
->         }
->  }
->
-> --
-> 2.48.1
->
->
+---
+
+Recently, I've found that io_import_reg_vec() was added for io-uring. I think
+it could be used for io-uring cmd. I've tested for btrfs encoded read and it
+works. But it seems that there is no performance improvements and I'll keep
+find why.
+
+If there is no need to use fixed buffer for btrfs, I think it's good to use
+for nvme.
+
+2.43.0
+
 
