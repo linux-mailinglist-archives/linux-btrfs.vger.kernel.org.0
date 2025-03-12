@@ -1,190 +1,98 @@
-Return-Path: <linux-btrfs+bounces-12210-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12211-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BD3A5D2CC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 23:55:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B9DEA5D40B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Mar 2025 02:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C81D189D136
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Mar 2025 22:56:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF5CB3A8FE0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Mar 2025 01:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0460523536A;
-	Tue, 11 Mar 2025 22:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2947B13A3F7;
+	Wed, 12 Mar 2025 01:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jYtoE6uI";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jR9e7HS/";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jYtoE6uI";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jR9e7HS/"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BC+3wf+O"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D0A1E832A
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Mar 2025 22:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A504D288BA;
+	Wed, 12 Mar 2025 01:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741733732; cv=none; b=f5jnwVrKMu2UbODvkMX9F7DGSwQ8tdb7eJYtHJurt3g2ueeFs+c/I7/p6PDynmMqN8IDL7sKUSKyHPp64iQFlgadYpHYuEG9B75QUQfj582Pp2t65SoRgyHVvGNetYcVuV6fvUmhpNS/wdNDDJ6bgoOAV/UjOrn4/mTWG43Q2yU=
+	t=1741743142; cv=none; b=pVCmg9VmPM6PI4fH3oogyief0lGnOzsVg1K41LkfqFCUdALed2yerpzO/kcfv5jzfcJZwgRgi5oWTjFtWPQPtldxdjprXqCJJlq3W6wEA9mfIhG82kjF6mmhgd6ixGhGH6LvPUEEaNyK1cP/4IXj5SXapB2vA2kzCMUABBuIlOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741733732; c=relaxed/simple;
-	bh=xEcI83u0PhS5nHJHrflERHHZF3yAAWOjkPzYpwfzNeE=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=POYOh2ePhd6I02DR8P9X7SDxlPDl6B0SpCVZjSoeRmPe5rEQlygODU/zRx9FdmgK0SWnV480EsyZv+h2GfP1XOxxj/OuphHdd9BNvF96fIRDvZbO1prOuDSpGSJYMn6rc7wR/A64zUXv3hagWjSwUb/TiWpcCq5Xufb8QNPAf0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jYtoE6uI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jR9e7HS/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jYtoE6uI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jR9e7HS/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 225FA1F388;
-	Tue, 11 Mar 2025 22:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1741733728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ab13EvIK2DPk+TBDxxWWO5yYyOOgqUiN0tHfZ4wqv0g=;
-	b=jYtoE6uIP2QmHhlIevBJBy94LG/dhVBif5XAHK02z7vMO1n1PR7yXi+ccMMo1XZ3ZPUQ0G
-	hMSYEN7fZzB1vqcZbeZdivDAZmrB06jnJFlEM9HeDbQYBny9TG1I5PfYZWQvNUAjeUmjhi
-	coztQJYmMIrhjK+Edi1yDiuULs3R618=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1741733728;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ab13EvIK2DPk+TBDxxWWO5yYyOOgqUiN0tHfZ4wqv0g=;
-	b=jR9e7HS/sosD5H1RhhkjMoj2AuTPAQpY8bmxSIybhptRMzYQt3Fpxhu8Q9h1mc63D+eBky
-	sIuBv7xJik9Rq6DQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=jYtoE6uI;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="jR9e7HS/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1741733728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ab13EvIK2DPk+TBDxxWWO5yYyOOgqUiN0tHfZ4wqv0g=;
-	b=jYtoE6uIP2QmHhlIevBJBy94LG/dhVBif5XAHK02z7vMO1n1PR7yXi+ccMMo1XZ3ZPUQ0G
-	hMSYEN7fZzB1vqcZbeZdivDAZmrB06jnJFlEM9HeDbQYBny9TG1I5PfYZWQvNUAjeUmjhi
-	coztQJYmMIrhjK+Edi1yDiuULs3R618=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1741733728;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ab13EvIK2DPk+TBDxxWWO5yYyOOgqUiN0tHfZ4wqv0g=;
-	b=jR9e7HS/sosD5H1RhhkjMoj2AuTPAQpY8bmxSIybhptRMzYQt3Fpxhu8Q9h1mc63D+eBky
-	sIuBv7xJik9Rq6DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15FD9132CB;
-	Tue, 11 Mar 2025 22:55:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ADdaLlG/0GevaQAAD6G6ig
-	(envelope-from <neilb@suse.de>); Tue, 11 Mar 2025 22:55:13 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	s=arc-20240116; t=1741743142; c=relaxed/simple;
+	bh=3HXkPpjaDv2Fk/dyHKIX6r2EqAVaGb2JhvF5jc/ID4o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C7n0VdRwR7L3lv0lKPI5/K2y5CLVSLe9fFO4PuWJADtnEpkbrTKfqgE1wEgCZUu1URrDW2DYDVYm3ZCwrNtTTmwxakZdjSHOkIToW5G4/SD2sw/dHXEPZBiB4MtIaRmeh6hn7fn8BBCzoHmIREVABo1/G1G+R9p0+Ar4rm09kb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BC+3wf+O; arc=none smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1741743140; x=1773279140;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3HXkPpjaDv2Fk/dyHKIX6r2EqAVaGb2JhvF5jc/ID4o=;
+  b=BC+3wf+OTIhO1+8J7AfyiDv2/Q4AoKAwl/usZhnJxvTG32aG96WitGt0
+   RhARlGRq9fIe8Dji4NCXjVeLGLwAiAnETJQn5gXJA2Khbgl8LYWAiD2+Z
+   /xZcegvEQX/oJrBLZVSpd5HBJm0W/18Km+r6lMlxJp4V5AWlRgO5V3weS
+   N8g620+fgs7C7eQJWSiggBI4TeT0qbG6zONXD6xa0CdpExNGZhHSF3xPg
+   SSQFQ82EQU+KsfRriwqUVXIywm73Xc0oMVotaEofZ0ITtDY5XCV+xbXPM
+   Gx8KkXQpnkh10OcqR1O1aAct4Dcm8HDcPLTboZx+ehB9smRbs8Jq6w1mF
+   g==;
+X-CSE-ConnectionGUID: TAR9BIrLQ6ulYCi3L9atig==
+X-CSE-MsgGUID: b89OwsL9TPSMEVMfsennqA==
+X-IronPort-AV: E=Sophos;i="6.14,240,1736784000"; 
+   d="scan'208";a="48299246"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Mar 2025 09:32:17 +0800
+IronPort-SDR: 67d0d64b_qGd0lW4z24BudC5FxuTU8VRxGGjuqZFyCyWyuxUg/sN7E0I
+ NVbA8MQrueADWsT13kUzHoxoE57kpl7PukSBx5w==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Mar 2025 17:33:16 -0700
+WDCIronportException: Internal
+Received: from hy1cl13.ad.shared (HELO naota-xeon..) ([10.224.109.64])
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Mar 2025 18:32:17 -0700
+From: Naohiro Aota <naohiro.aota@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: dlemoal@kernel.org,
+	axboe@kernel.dk,
+	linux-block@vger.kernel.org,
+	Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/2] btrfs: zoned: skip reporting zone for new block group
+Date: Wed, 12 Mar 2025 10:31:02 +0900
+Message-ID: <cover.1741596325.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Gao Xiang" <hsiangkao@linux.alibaba.com>
-Cc: "Yunsheng Lin" <linyunsheng@huawei.com>,
- "Yunsheng Lin" <yunshenglin0825@gmail.com>,
- "Dave Chinner" <david@fromorbit.com>, "Yishai Hadas" <yishaih@nvidia.com>,
- "Jason Gunthorpe" <jgg@ziepe.ca>,
- "Shameer Kolothum" <shameerali.kolothum.thodi@huawei.com>,
- "Kevin Tian" <kevin.tian@intel.com>,
- "Alex Williamson" <alex.williamson@redhat.com>, "Chris Mason" <clm@fb.com>,
- "Josef Bacik" <josef@toxicpanda.com>, "David Sterba" <dsterba@suse.com>,
- "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
- "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
- "Sandeep Dhavale" <dhavale@google.com>, "Carlos Maiolino" <cem@kernel.org>,
- "Darrick J. Wong" <djwong@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Jesper Dangaard Brouer" <hawk@kernel.org>,
- "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
- "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
- "Simon Horman" <horms@kernel.org>, "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>,
- "Jeff Layton" <jlayton@kernel.org>, "Olga Kornievskaia" <okorniev@redhat.com>,
- "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
- "Luiz Capitulino" <luizcap@redhat.com>,
- "Mel Gorman" <mgorman@techsingularity.net>, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-xfs@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
- linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v2] mm: alloc_pages_bulk: remove assumption of populating
- only NULL elements
-In-reply-to: <316d62c1-0e56-4b11-aacf-86235fba808d@linux.alibaba.com>
-References: <>, <316d62c1-0e56-4b11-aacf-86235fba808d@linux.alibaba.com>
-Date: Wed, 12 Mar 2025 09:55:10 +1100
-Message-id: <174173371062.33508.12685894810362310394@noble.neil.brown.name>
-X-Rspamd-Queue-Id: 225FA1F388
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[45];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[huawei.com,gmail.com,fromorbit.com,nvidia.com,ziepe.ca,intel.com,redhat.com,fb.com,toxicpanda.com,suse.com,kernel.org,linux.alibaba.com,google.com,linux-foundation.org,linaro.org,davemloft.net,oracle.com,talpey.com,techsingularity.net,vger.kernel.org,lists.linux.dev,lists.ozlabs.org,kvack.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DKIM_TRACE(0.00)[suse.de:+];
-	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn),to_ip_from(RLodizb9et8yqpuyyezexhwnjp)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Mon, 10 Mar 2025, Gao Xiang wrote:
-> 
->   - Your new api covers narrow cases compared to the existing
->     api, although all in-tree callers may be converted
->     properly, but it increases mental burden of all users.
->     And maybe complicate future potential users again which
->     really have to "check NULL elements in the middle of page
->     bulk allocating" again.
+Newly created block group should reside on empty zones, whose write pointer
+should always be 0. Also, we can load the zone capacity from the block
+layer. So, we don't need to REPORT_ZONE to load the info.
 
-I think that the current API adds a mental burden for most users.  For
-most users, their code would be much cleaner if the interface accepted
-an uninitialised array with length, and were told how many pages had
-been stored in that array.
+The reporting zone on a new block group is not only unnecessary, but also
+can cause a deadlock. When one process do a report zones and another
+process freezes the block device, the report zones side cannot allocate
+a tag because the freeze is already started. This can thus result in new
+block group creation to hang forever, blocking the write path.
 
-A (very) few users benefit from the complexity.  So having two
-interfaces, one simple and one full-featured, makes sense.
+Naohiro Aota (2):
+  block: introduce zone capacity helper
+  btrfs: zoned: skip reporting zone for new block group
 
-Thanks,
-NeilBrown
+ fs/btrfs/zoned.c       | 18 ++++++++++++++++--
+ include/linux/blkdev.h | 21 +++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 2 deletions(-)
+
+-- 
+2.48.1
+
 
