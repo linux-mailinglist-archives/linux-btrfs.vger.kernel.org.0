@@ -1,76 +1,76 @@
-Return-Path: <linux-btrfs+bounces-12234-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12235-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5B2CA5DD59
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Mar 2025 14:07:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEE3A5DD71
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Mar 2025 14:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3AF317C2A8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Mar 2025 13:07:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B75D1893B8C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Mar 2025 13:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E9A245015;
-	Wed, 12 Mar 2025 13:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318B22459C3;
+	Wed, 12 Mar 2025 13:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="nlpvLYg6"
+	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="o3NkZ7ex"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37ED1DB124
-	for <linux-btrfs@vger.kernel.org>; Wed, 12 Mar 2025 13:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF3824291F
+	for <linux-btrfs@vger.kernel.org>; Wed, 12 Mar 2025 13:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741784818; cv=none; b=vDFYjwUoRvXXAk16Yji/43KRif7Edqipech9m9MeiF3vG4NKzRQeQbWasoIXlj+RTRM9+KSnE5n8ZvfXOKxMq3rumDRUVnNQza1YTBsGfnF7N/+genhhMowuGzWoAZ5JTB1mjyMsWiGpUq0Lv16zyEQE6mXclbSFEsnQLURA3xo=
+	t=1741784981; cv=none; b=gstxgcTKiyjgithcp3rpKBoZGHPwCZbwbkROzW8M3IIj2yt6jh3997eGFAMBlNQAbH38O+Psf0xrfufA5hVvuKw9sLgybZavpgNxKTFlO9tw9ddiWKWc97gPzIB4U8dOzK1MhTITggOPZjwHSo7His/GGaTMhyny05pZlHBv1Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741784818; c=relaxed/simple;
+	s=arc-20240116; t=1741784981; c=relaxed/simple;
 	bh=Vv8RYYNN32jkVSIlC3HEqjsVMtw6rjCGH2BUjDQtq4w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XnrGyQf77mN2qGJV/s0Dwo9DSV9I6nKL37L4wB8kXJ/pvTAvXelqrfaV0DTJMReGGZ6bUnw+O7ZcPJQTVnIc8O3kgk9fGixXgnA7iZlg+tPlKGedE/6tzh63iw5pD8g3l39uldzrmW0o1ZfJDdAZiYhq00UR0w57etdxcMvgdRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=nlpvLYg6; arc=none smtp.client-ip=209.85.214.170
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IZFnwGnmQA3h4EeyK6Rtcl5kQM738D3KMpjVfDW5U9WBtKhlffWI9IIV92fKv+9mCylqQJPRPXc4/SNOB+6tRqOf+Z6Ncw/7yCgrinx8oOxi5sVrzLNRJuO1PqgTvjpBQmWR1faePcONmniEsVypkvZKiX7AzH2Hhm4EH0qTTs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=o3NkZ7ex; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-224171d6826so34158865ad.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Mar 2025 06:06:56 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-223959039f4so133104845ad.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Mar 2025 06:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1741784816; x=1742389616; darn=vger.kernel.org;
+        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1741784979; x=1742389779; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=DjzZK8IYtDnC7MfW99ZbF8PngYp+A/NXbbGv9fyWHAs=;
-        b=nlpvLYg6WRGtMArxzvLvRaDRKJp+d5jFAdwXbOo0jDaBkWH3dUz19QRuRXz/J3AOc/
-         lDLxDCQzZlL2NcyH8Rnclx0jt0n6GrFIEk0R+222qgCAkVwc5QStAisXJH0C2wcDS4l0
-         OanfFEdGkNlLVg0sJ7PhOnoMMZhK+wAHigV6dNZ8duBS1xnQcCkAxNjHH8/g6jh8dzVi
-         8SDQhpF5AFk+7xXcBjyFQyQYoJrjZAHMk9SWNfdBdTWkkzTcV+P59n7DjQbAErySeDIv
-         1PjVpt+pS1beV6Lgn0+sDF70C5o6I1it3QJz1KjaSfPLyUQooTN1zwRScf8HelI0dUwf
-         ipbw==
+        b=o3NkZ7ex9okIONmJbBbPVyagkm2/DybIppMTlcDYqE1R7MxbQVxdEFheKsJvKguIvk
+         FuXZ666QwzfbosnzS2v7m9LKjuCbCZXZtFuVYthZFMQXZL4vPp9wFkkSPfpMGOPyiEzD
+         AUuosU4RmcImdlEcMNK3NE62Qcfxmk1Eexc/vtJqd/Klce7s7StREDACzlY8pDz7GNAm
+         PShJYSK/93f45LjiaWyAqhXLxgM26hjDGgsL6yCX6T0owV9Y328/k2p4AMk4p27QZlxn
+         +NvGztp6cLz3s02x+9FpJ51Asm1E66fECGwVeaH0EdKKfzp4TTqnx9v8ulBZGG4GB0V5
+         v1QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741784816; x=1742389616;
+        d=1e100.net; s=20230601; t=1741784979; x=1742389779;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=DjzZK8IYtDnC7MfW99ZbF8PngYp+A/NXbbGv9fyWHAs=;
-        b=mZ74Mtb1nHsVg8C5TMfl3+V473vTufiucpBMnWXtxuedyA/GyOwraMMiV3PuPwAcPY
-         uTZt3+u5iiIl5YphJ1FTa44mPwFP9mbNWlH8HtNtn+lREhhVDdSuoohqSeHzfS5AgokM
-         Yf+ah62jce+CqQ/nKNd3d8t+6cLLugh8D5o1VqKF510pA2AHzN7Uy63bAEpQTL7G/gNN
-         jYRwCIEKVDUuFLr9Ia2FmGB24JLM9fmKHYPFnw5YeI1KGygtd10HW+1FS4uQScPOafxC
-         0pmekV25IbCTZcPOiT1l7nc8asA56/dqFf6W0KGz6rNPwkFj22OXJ5JqvwXmtf/HB0wE
-         7XbA==
-X-Forwarded-Encrypted: i=1; AJvYcCXwTIKMKygnGZnJna+qLW5gmQGqmFsmgAvL023Q3S1GTX5xmFt3Lt3koAZLNGrQ4DJtj7fDOM2ibYq/QQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjuAaWNJg6I8U27fvFF2MzEzZ6JYITBeVHmEKkA6y+mOmOZQN9
-	Yad6BQupvZVh9Omer3I31Ql+/e5vfMEIEcM2Q2ww1Ew0MHs9LFJJy4Hb6Pnx6TY=
-X-Gm-Gg: ASbGncss/YrMfPhmOccy9FHSiM+MWP8/zA5CP2L9pOBj5L+ePTnuMlhCwK/WAZTBKwa
-	+lc5mu6ZBTC7Bvp1qcRPfaEOcBrm12hdskS0QHmAx+ezhZedoO+/lXh7lqw/BHbZ5wMgWBMByUw
-	xNSbKg3i7iMlPWaIGhpYTyVtPnko/VrdQWND/cQs1j/8LPG8KHKakIx9W3n+d7oi/V4Adtq5+1I
-	lFkyHS+icgyQ8x/bp8zbUAZjpOlvyhRfdItdVYsmKa8klgn/wdIOC3Gy039z1g+N13r+WpFaYDc
-	K1bSKj8RMSTEhth8AM9O+C3pJuvL/3yUN7rhSJPp34y34VQ2lrQAoxrD78D/doyIfSIsOkoAhJU
-	Zh/gh
-X-Google-Smtp-Source: AGHT+IFamjSNfNQnwjC1H9gJyAaC00Hj63Guc4XKOhRigG44Fv7J/0RmFyGsrfXvYamATdRL+j5vPw==
-X-Received: by 2002:a17:903:283:b0:21f:74ec:1ff0 with SMTP id d9443c01a7336-22428ab7961mr347898355ad.32.1741784816077;
-        Wed, 12 Mar 2025 06:06:56 -0700 (PDT)
+        b=F68KE5QYFBPJoivjFXysUnx8VgHp3+HzITPlya0x5xPxQgkD1AvF4qkxVFLZ+FUf/w
+         HZJcIwRwvrTAk8jdSoaDBcYfPOZjVjejQTZtZOxpyf9YD2hVmp+SIgMqyjuxYBiwuBSt
+         l5MFspbl8LhVWqINjh8iIZYGwZl/WooQMRG0YV1rakdWfl4tiz4wn8v/0Tdpb+6hrTDi
+         BajWi+41Tu7nit50y1xvVCSHq3BjcykwbrcYOAu+fzj2u7HQwIq8pXmYDIjNPnkIoP8A
+         h6vvj3adBDaFwwL8DPMVbNmBfsD630hJyMCk+4Yl6EpiPf43LVDkUBLJICgHJai96szh
+         rw7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXidCu1QlWoosrIbjPlxAUtWGne4e1vWD5JK5BkZIGPzAC1VsytE6bzle9s7zkCULgTB1H4mDmVHhz4XA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAicZG0ccMJ6rA+aA2mYDYU6y26+GJEd1O4M7+KMYWvznPqegu
+	GaWVLStdShGt2gWIgcySaTGZk/+eAmevbEgSwXC91xA82Vn7VD7VGtZUlOF/PTM=
+X-Gm-Gg: ASbGnctccIj9I8fwCVgy281EeSDXY75xP+92Y1FeYJ7YaQkh9Gc4YsWlo9F16iMKRT5
+	irtcn17TxX9UjgPL5P+DYP7bEDkUyGjmk6XOBqGl2I8W7VwSFMLpZg/cEKmJM19pWy1s524a92B
+	hEBQbS5rZpTFYrBsDGQPMy0m6msP9c7kYn5RBwVgO7qOZZVzzfs8QzSUIctYg4ClynYn4DWmRCQ
+	meu6+6Wno2MAvzKoCnmj5e3jGbq6YAwq5yMtwG01LipEKwSFx83ePo/du+AwIUgCmM1mdk0zBe2
+	oa1zo89RRbyR0RVjMQlwl3v/HZCtPa4YJ+xuqRAdFEK1LD8VXICFoY+sxofMsiWYwhXusUSe71G
+	4FRnR
+X-Google-Smtp-Source: AGHT+IEw/moyxYqrtJLyuuYhHY0pdrsP5qeyzccAp7ltN9DQfF3V5SgWTYBCiqpn4Sv+xnF5QXan6A==
+X-Received: by 2002:a05:6a21:648f:b0:1f5:70af:a32a with SMTP id adf61e73a8af0-1f570afa5a2mr24970418637.32.1741784979399;
+        Wed, 12 Mar 2025 06:09:39 -0700 (PDT)
 Received: from sidong.sidong.yang.office.furiosa.vpn ([61.83.209.48])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410a7fc55sm115418185ad.138.2025.03.12.06.06.53
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af5053a85c2sm9432299a12.10.2025.03.12.06.09.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Mar 2025 06:06:55 -0700 (PDT)
+        Wed, 12 Mar 2025 06:09:39 -0700 (PDT)
 From: Sidong Yang <sidong.yang@furiosa.ai>
 To: Jens Axboe <axboe@kernel.dk>,
 	Pavel Begunkov <asml.silence@gmail.com>,
@@ -81,8 +81,8 @@ Cc: Sidong Yang <sidong.yang@furiosa.ai>,
 	linux-kernel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org
 Subject: [RFC PATCH v2 0/2] introduce io_uring_cmd_import_fixed_vec
-Date: Wed, 12 Mar 2025 13:04:49 +0000
-Message-ID: <20250312130455.11323-1-sidong.yang@furiosa.ai>
+Date: Wed, 12 Mar 2025 13:09:20 +0000
+Message-ID: <20250312130924.11402-1-sidong.yang@furiosa.ai>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
