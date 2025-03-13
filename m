@@ -1,108 +1,77 @@
-Return-Path: <linux-btrfs+bounces-12268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A60DCA5F9A1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 16:21:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2E66A5FEA5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 18:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABF1B7A6B52
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 15:20:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A414D19C1941
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 17:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCF1268C57;
-	Thu, 13 Mar 2025 15:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9521E9907;
+	Thu, 13 Mar 2025 17:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ol3uw45m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PNuu9BUr"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C4F260366
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 15:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E111E573B
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 17:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741879288; cv=none; b=lvmNk4O+Sm4R6zBQJZuXxJq/sez1mdO3pR7ekklw3JtPBgeeGnzJTkxJEDjl99HnrSqSRMonmNn1Am3vOK1OmFz53QkTiMhDUPM1j1GTYRqJhq7uD0B3dhbSEdhhcw16IstTNIG6V2as40pmaTwfnaH3V8MleINr+gEfrXw4KR4=
+	t=1741888541; cv=none; b=IGE/rHJU7NrC57IRpKbHius1hy1EHJL3LGkKTGopXILEHIAHfXzhjySLMDT2O48X9KMomRMdteKez6Q1aTSkMbmq/Rm0M9bjTSMtCMzvq1XZ+NMeDKtBbV1NK7JdigsJik+JJdlGjKeoD4oUyrn/h+hq6aALCgG/OBOsnLKphV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741879288; c=relaxed/simple;
-	bh=FaCoLSkRrmZGi/+QcxDjFXhzLFWwjq+8guAOQLswCeY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AMbJaIioq5MKHt+1BrzhwZK6IhNY3bDnGRMV69CeoVi8G33Eqj9F+bjnzg1Pcf+nHRG3Hd/IXUDYZz78kKOzOZEWMhIxLOelciLQJiQibeAdZP+poVDx5+ZLixWDG+IqHiLDf8AKNLd7ZfzRy8zTFG+OtSByp4rlllWMgUiLd7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ol3uw45m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43B89C4CEDD;
-	Thu, 13 Mar 2025 15:21:27 +0000 (UTC)
+	s=arc-20240116; t=1741888541; c=relaxed/simple;
+	bh=Cb+mVLaT9PQrLQjPNtLVOhfOfMf5HhIUMkzZZnRnf/E=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=eAw28QwXqox7Q8mmw50TlfHg8zNlk3dqbXBxjytMT0fcRxoGYyYhygpMw0NtEf2/NKwP1jDBp4kbSONcJoL3RDDDNAAaJ4vUuV623AubT7Fk64nhompMmenB90UCOnTayaCwP24wa8pq6tUvWf4eqYilqz1VZX2erMlPBJKrhVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PNuu9BUr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20668C4CEDD
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 17:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741879288;
-	bh=FaCoLSkRrmZGi/+QcxDjFXhzLFWwjq+8guAOQLswCeY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ol3uw45m2FPj4HYXQYtqC+yyvily58jVTAK6mx8/gQTmogoj5JT8kOJEM6vydlcgX
-	 3/0JiQYw9n8KqLym/zzPgMmYw5+WlLAMpeSCLt6Rf0TEVkcr0oNExIqbXw6/oIuIh0
-	 aLyVp/TvEm4wsArAOEwkoRXlP7g9n5IGZFl676Rmeza+gojHTVD7KuOooA2QbQZjJe
-	 Ho3hP+R4Jwr66ZsQQkpNmT81hRVD3tfZGMG0Mv/UtXCSq4E47mJ2YkQ7ffcGgxPfqc
-	 liY5jvt5dwRMvw4SXVrES425xU3dvm/3x7DUjaoSg+Zw3uuDyQmv880EsaX9dIERVE
-	 q3LXrrMndzICw==
-Date: Thu, 13 Mar 2025 16:21:24 +0100
-From: Nathan Chancellor <nathan@kernel.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] btrfs: prepare for larger folios support
-Message-ID: <20250313152124.GA2420634@ax162>
-References: <cover.1741591823.git.wqu@suse.com>
- <20250312134455.GN32661@twin.jikos.cz>
+	s=k20201202; t=1741888540;
+	bh=Cb+mVLaT9PQrLQjPNtLVOhfOfMf5HhIUMkzZZnRnf/E=;
+	h=From:To:Subject:Date:From;
+	b=PNuu9BUrgb8w6uWxrkRZfuQqgERcyXWstw4ZKcsm9kLf+KSLL9Y1gp3Gchwgqha4M
+	 kLWNaO4Ht2GXs/vYQKWMWS/EDJHYCvbjdNhXVPTsVkbhwyYEjFAfxkxf1+Xy8gsVzL
+	 u5PSm/GBlun4z1iObXtQ8Yt+5cAZsODKmOU5tD8mfJ/eibO3+kqjUs0qdipO8VCUWr
+	 7VKOpHt+Jy3YJaaO42jGRIkFLnBAXPjQPQ0fzfpUpTGiECV/ZJYkD0HcyLbquww4O8
+	 d9nFUUpg5oX7yM1ovdLZ42TVdYjXJ5oiId6ETmf6Zp90xu+xAA/HFrBfIeKu7i8e+c
+	 1MmT7rclBOGBA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/7] btrfs: some cleanups and minor optimization for log trees
+Date: Thu, 13 Mar 2025 17:55:30 +0000
+Message-Id: <cover.1741887949.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250312134455.GN32661@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 12, 2025 at 02:44:55PM +0100, David Sterba wrote:
-> On Mon, Mar 10, 2025 at 06:05:56PM +1030, Qu Wenruo wrote:
-> > [CHANGELOG]
-> > v2:
-> > - Split the subpage.[ch] modification into 3 patches
-> > - Rebased the latest for-next branch
-> >   Now all dependency are in for-next.
-> 
-> Please add the series to for-next, I haven't found anything that would
-> need fixups or another resend so we cant get it to 6.15 queue. Thanks.
+From: Filipe Manana <fdmanana@suse.com>
 
-This series is still broken for 32-bit targets as reported two weeks ago:
+A series of cleanups, simplifications and a minor optimization related to
+log replay and inode logging. Details in the change logs.
 
-https://lore.kernel.org/202502211908.aCcQQyEY-lkp@intel.com/
-https://lore.kernel.org/20250225184136.GA1679809@ax162/
+Filipe Manana (7):
+  btrfs: avoid unnecessary memory allocation and copy at overwrite_item()
+  btrfs: use variables to store extent buffer and slot at overwrite_item()
+  btrfs: update outdated comment for overwrite_item()
+  btrfs: use memcmp_extent_buffer() at replay_one_extent()
+  btrfs: remove redundant else statement from btrfs_log_inode_parent()
+  btrfs: simplify condition for logging new dentries at btrfs_log_inode_parent()
+  btrfs: remove end_no_trans label from btrfs_log_inode_parent()
 
-$ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- mrproper allmodconfig fs/btrfs/extent_io.o
-In file included from <command-line>:
-fs/btrfs/extent_io.c: In function 'extent_write_locked_range':
-include/linux/compiler_types.h:557:45: error: call to '__compiletime_assert_802' declared with attribute error: min(folio_pos(folio) + folio_size(folio) - 1, end) signedness error
-  557 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |                                             ^
-include/linux/compiler_types.h:538:25: note: in definition of macro '__compiletime_assert'
-  538 |                         prefix ## suffix();                             \
-      |                         ^~~~~~
-include/linux/compiler_types.h:557:9: note: in expansion of macro '_compiletime_assert'
-  557 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |         ^~~~~~~~~~~~~~~~~~~
-include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-include/linux/minmax.h:93:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-   93 |         BUILD_BUG_ON_MSG(!__types_ok(ux, uy),           \
-      |         ^~~~~~~~~~~~~~~~
-include/linux/minmax.h:98:9: note: in expansion of macro '__careful_cmp_once'
-   98 |         __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
-      |         ^~~~~~~~~~~~~~~~~~
-include/linux/minmax.h:105:25: note: in expansion of macro '__careful_cmp'
-  105 | #define min(x, y)       __careful_cmp(min, x, y)
-      |                         ^~~~~~~~~~~~~
-fs/btrfs/extent_io.c:2472:27: note: in expansion of macro 'min'
- 2472 |                 cur_end = min(folio_pos(folio) + folio_size(folio) - 1, end);
-      |                           ^~~
+ fs/btrfs/tree-log.c | 125 +++++++++++++++++++-------------------------
+ 1 file changed, 53 insertions(+), 72 deletions(-)
 
-Cheers,
-Nathan
+-- 
+2.45.2
+
 
