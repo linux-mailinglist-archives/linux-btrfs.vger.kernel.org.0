@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-12273-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12274-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD2CFA5FEA9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 18:56:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC33DA5FEAA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 18:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 308843BBAB8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 17:55:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37D7F17A79C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 17:56:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF64C1EE03C;
-	Thu, 13 Mar 2025 17:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32E01DB13E;
+	Thu, 13 Mar 2025 17:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GOIIkjGd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbEOPkBJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438AA1EDA32
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 17:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3686C1EE7A8
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 17:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741888545; cv=none; b=EkU8RihNB2xG2cDeq5F8dhzDrr8A4V45rFjfKahJyO2B9ZR9H+R3nyDV0/wBCUVM5D75xSd00TVLiIeLXxHmUBGhp8h2sonefNooHM1uzWVnBkIOGQSl6XKsaTM84OgzSGbkeYUJ0dWWbpfiqLtzqzqTPhMUKBpvp6k2Zl1v12Y=
+	t=1741888546; cv=none; b=tgcT+ZyO5maZisfShyvTdhtX+AA6L3djj4O7rM9jYXxDAMA3QePx9uSIMGJEn1B1kJoZj9ucI/Zyg7aKf5ApIKauSwSjgTA7JS/w0UodL9H7Ww3HuRiVoLp4KD2qWtApTa+4+RbPu2bdxeI4piW122/tbaDd11wGTje/M248/pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741888545; c=relaxed/simple;
-	bh=gRBuMwKWovCkPNcPV1bwatuEGULqlmDYuBJOz+l18go=;
+	s=arc-20240116; t=1741888546; c=relaxed/simple;
+	bh=6E7elXrNShAsXcmlKp8m0C7bfMznDt0njsegam2R7MM=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JJ3IAKY9DtJsasSVw0D4c7Ix/HS5GRKBlY+4la4K1nZ/Ih/+rI4qXfozeefH1IGSyfqtWb2JFwYqBgWfiTQTYscgULWH6YW31lF5VkdQo2WWLT5W9zKyLO90nPtE/44918JF9/Vo6+dRqeKMkItvkGaYhgRmMq16OtVEtpGqlDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GOIIkjGd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32140C4CEE3
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 17:55:44 +0000 (UTC)
+	 MIME-Version; b=YJ/uzDue/E3SsGpiE50/E+sFKrEAKZYldz5YQTCDIeNrAY5F3foqczeRcvLr0Agj8QFuJGxeIn1CoXVf+FvDwWYQhuyiF3D0WDAxxMdAwN94gvf0nRhItMjmuBi3AtVlswZqRP+5VPKn+jREwzdikcK5vtwhGqfkBMRoTgSTKc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bbEOPkBJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33758C4CEDD
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 17:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741888544;
-	bh=gRBuMwKWovCkPNcPV1bwatuEGULqlmDYuBJOz+l18go=;
+	s=k20201202; t=1741888545;
+	bh=6E7elXrNShAsXcmlKp8m0C7bfMznDt0njsegam2R7MM=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=GOIIkjGdYKyilXwI5pe/o09Xarw0bj01hKCcB5Vyg0npl89gjVdx1GiKdMGW4ipAC
-	 cEofmJo7s3HPzFmvC+ESTgOHI/I5DT3PBus3OimKMDzoZv1/svnDLErI+ZznGhqOPy
-	 gCh6OuElyU2v4VKsenM5C9gFuvwPqMzKeo1JHtx9wYWNOrW9nqQJ35hzZ5ABRmzJAN
-	 N6P6aknTfzWjNqFnhMEXIpoXlzbyfbrdNO1ZBYacUgES2yEISM569YvfFH+uYQ3K3p
-	 5N5R1Vk1EX5UkjNTawB+pIc56GpqwIEWL9i7UrsbbCqpvJmWpM6b3/Wmv1cVBkGyP9
-	 OXf6es7TST9qQ==
+	b=bbEOPkBJ5JI2Yw8wm0EfMLauY5oxIK3IscnX8DO9nCRsgY60SY/nSW43+Al+/jHCE
+	 8xlnzMg7jrDbnMw8diKpV9YCi18osxe0xcm1ADDJDrv3Oda5fD4KiCCvL+UNPlgbZO
+	 3ZKJyABw/7ojvatMsllftb6f9B0nw3KLtjuep/LepF8VspgoW/d09erkQ0kzGKkLmw
+	 LFEc1ab/l5CGvWNZJjJMHW+2v2F5ETRZcOv9/gdXCzZU80bBttJHKb3A1FWC6VXRdl
+	 mKtvzhPBPXYbTFe1cYJ00aiLls3JnkrZJoT27LTrN+yW5GW4lLJ4k2/gQvqqw4tXH3
+	 /VRUg6+NaY/BA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/7] btrfs: use memcmp_extent_buffer() at replay_one_extent()
-Date: Thu, 13 Mar 2025 17:55:34 +0000
-Message-Id: <d9aa316344b6c8c1e4a244ad1c46f3308a83890d.1741887950.git.fdmanana@suse.com>
+Subject: [PATCH 5/7] btrfs: remove redundant else statement from btrfs_log_inode_parent()
+Date: Thu, 13 Mar 2025 17:55:35 +0000
+Message-Id: <a11e11d7590be613434fb90a29dc6d4affce9463.1741887950.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1741887949.git.fdmanana@suse.com>
 References: <cover.1741887949.git.fdmanana@suse.com>
@@ -59,54 +59,42 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of using memcmp(), which requires copying both file extent items
-from each extent buffer into a local buffer, use memcmp_extent_buffer() so
-that we only need to copy one of the file extent items and directly use
-the extent buffer of the other file extent item for the comparison.
+If we don't need to log new directory dentries, there's no point in having
+an else branch just to set 'ret' to zero, as it's already zero because
+everytime it gets a non-zero value we jump into one of the exit labels.
 
-This reduces code size, saves one memory copy and reduces stack usage.
+So remove it, which reduces source code size and the module text size.
+
+Before this change:
+
+  $ size fs/btrfs/btrfs.ko
+     text	   data	    bss	    dec	    hex	filename
+  1813855	 163737	  16920	1994512	 1e6f10	fs/btrfs/btrfs.ko
+
+After this change:
+
+  $ size fs/btrfs/btrfs.ko
+     text	   data	    bss	    dec	    hex	filename
+  1813807	 163737	  16920	1994464	 1e6ee0	fs/btrfs/btrfs.ko
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ fs/btrfs/tree-log.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 889b388c3708..7e0339f5fb6b 100644
+index 7e0339f5fb6b..6c59c581ebe4 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -688,25 +688,18 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
- 	if (ret == 0 &&
- 	    (found_type == BTRFS_FILE_EXTENT_REG ||
- 	     found_type == BTRFS_FILE_EXTENT_PREALLOC)) {
--		struct btrfs_file_extent_item cmp1;
--		struct btrfs_file_extent_item cmp2;
--		struct btrfs_file_extent_item *existing;
--		struct extent_buffer *leaf;
--
--		leaf = path->nodes[0];
--		existing = btrfs_item_ptr(leaf, path->slots[0],
--					  struct btrfs_file_extent_item);
-+		struct btrfs_file_extent_item existing;
-+		unsigned long ptr;
+@@ -7146,8 +7146,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
  
--		read_extent_buffer(eb, &cmp1, (unsigned long)item,
--				   sizeof(cmp1));
--		read_extent_buffer(leaf, &cmp2, (unsigned long)existing,
--				   sizeof(cmp2));
-+		ptr = btrfs_item_ptr_offset(path->nodes[0], path->slots[0]);
-+		read_extent_buffer(path->nodes[0], &existing, ptr, sizeof(existing));
- 
- 		/*
- 		 * we already have a pointer to this exact extent,
- 		 * we don't have to do anything
- 		 */
--		if (memcmp(&cmp1, &cmp2, sizeof(cmp1)) == 0) {
-+		if (memcmp_extent_buffer(eb, &existing, (unsigned long)item,
-+					 sizeof(existing)) == 0) {
- 			btrfs_release_path(path);
- 			goto out;
- 		}
+ 	if (log_dentries)
+ 		ret = log_new_dir_dentries(trans, inode, ctx);
+-	else
+-		ret = 0;
+ end_trans:
+ 	if (ret < 0) {
+ 		btrfs_set_log_full_commit(trans);
 -- 
 2.45.2
 
