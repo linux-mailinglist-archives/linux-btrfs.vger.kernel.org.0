@@ -1,155 +1,180 @@
-Return-Path: <linux-btrfs+bounces-12265-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12266-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B29A5F7DB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 15:21:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D281EA5F94F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 16:13:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 756C919C3541
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 14:21:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB9363BBA9E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 15:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08702267F49;
-	Thu, 13 Mar 2025 14:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E562686AE;
+	Thu, 13 Mar 2025 15:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="PzHs8stW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiFT2Kuf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF01E267B78
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 14:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1939A22612
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 15:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741875698; cv=none; b=jv70oVEzsx3GHcDVS34dCIvV+eD+dacgyUs+hW/pTewGIsTD7vbRiRPjfCNKBTcnaFdR+VbJahb0iRnznW+0u4nNfAaBOwodvdI/fD/hCTTmHzKl6EdZk7BAp4RPwDYnb8ngvV1iQS2qf+KiWioRZVUKMvz6Kc448QmjXJwt2Zc=
+	t=1741878785; cv=none; b=LozeqRPBQcqiXCU2BNwYIjU+ml+lP+wzrSD6XQ9qhDaKv0oKMPervhJLWFy011vCfYxNoMbs2UFLDxw5njszR3PZJg4rXBlRAThp1dVVTrivP8Nzm6hnhlS+qynVI6xdlsjRFCngFbpvNK97JZi77rrvK0Gxi9oY3udzOribNm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741875698; c=relaxed/simple;
-	bh=WpvnsUzxl6gpZMtFBMkL0WHekJbk8BwBrLg5RdPfqlQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HVPpTNzXreifhdLcc4TRR6FFVBKSXHO9RKwpMyM9/2KmoYRKA0/kIctt5wN5EfH/FS/QP7EwTk7TFDh5vFT+5n9kMRUvO29sG+YFl39PZqa1jOVAK4zG3ex41uPIEzkEpiQ8MY9RlGz2Wp2MJC3qsgsRbuGAfimfXqcGe+9diUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=PzHs8stW; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-22580c9ee0aso18759925ad.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 07:21:36 -0700 (PDT)
+	s=arc-20240116; t=1741878785; c=relaxed/simple;
+	bh=GAmFLiMxeemEoTyyXjCBqaYhEPX69NJktrvBspXoLLM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=JpR4SMWaxde/f00+uRS79YtBZpz4O1lEREekMZ50dW11ZAmnyKao/iWLj8GRkxqilAWEL+Le7VrTXOuCTBlxjf063G2Pltw3iatCQdROx46XHjX5+V/J7STZ2OvNqnQ/7yIsidB4h3M/+6wNsWBeNUBo2CqLbv3KKO8kYAkdUqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiFT2Kuf; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2241053582dso28088665ad.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 08:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1741875696; x=1742480496; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=L0tetsoKa2ISM18bfiufTSiFquhBJtIAvJUABcLWCV4=;
-        b=PzHs8stWv3CkhdJNpveHIyT2gRaaww2ivWO3szaAoNnaXW3VZqM5ipx/kVvRF3dAaH
-         /544wV2IdaBd1jtbzHqClaBAuzz0cbTG77luMTeMzuZV8+Pt90x8A1hqlLMWUcHSnhJV
-         36gjVMJy9TW2tBrBszvnHx4ax4OiFXTfSjUW3hGsN+Ip6zpgirewI7yen0E6EURXrd1W
-         +mUwZwLsI1hL6E0wZNrFRXeUmgVS8zjP4gHJl3kjRftGqVqIgOn0NRabM7ASFDmiakdz
-         ZqsAGAZpWubw/WAgMqcTjkpv24CBEX1jI9J6O6w4xhTZUVTfsN1A5uoZ+0JAABaZeGbH
-         Godw==
+        d=gmail.com; s=20230601; t=1741878783; x=1742483583; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yP/uljw5n/tInpzPGlrCHqW6VfgeloOJzAwiAENlw40=;
+        b=hiFT2Kuf5XvZH+GHTuMZbmpOYzGSmF4oAqYicgkzo+ktezPDJsuqHvYv3KJTTP71DA
+         t7byUYmS3aLtnigz8wjaUCQTlC/+fJWPgVpS+2jzdF8oSyi7nO42RlnIqzNgzPG7SLtD
+         48iGqVDoeTTgnRynkSyrUy0bicQ0O83ZZ+DjGdM5ecf5fVvsyVd9832WxPBROOxIugf7
+         /S+LySAIQwERqt8ybaOJMKF3+Rd1+zfWaO+771hCOjgzNhkGGgTxyjb5F2pjS0/Ffvkw
+         Nx8DmQlw2gUkx+05vcRpHUuSF4YK5h8TiDSpRDe+zernQsHiMEjhESxOU3SwPcyqfnHY
+         oRmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741875696; x=1742480496;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L0tetsoKa2ISM18bfiufTSiFquhBJtIAvJUABcLWCV4=;
-        b=ZjNWEFnwGCJBAWbYpn0utA1B+t7Ih1KHeKNiTJxvrecGQQ1pF68n2rqxS2bva1B6dZ
-         WeHrGYAokxy1j4PJ58P6j5yRjpVZJmWYMKy8wJsTMurTHSQ6T7udP3JG1BglNfJAbDM3
-         4JShsTjxb6beJmYSpiGN6CeoNn5cAwEO8kdIaaeSyWBJnGaW6yOZl4ejHJNwOhwMtXnP
-         xVfDKVt3nIWdXs7Zu+KsM+fSkSr91A898P05u4PPR99HnFttCFOaUGsXlDi+zYUznMi8
-         hTIp06lFIxANoZjv0U9ZF7iun2mPs/DFZ9oEMH4BDw2ABkYBvt9LBBWxid22TojJntaA
-         Y6TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVEIg9+lOIwENqrdBnlPjKoVZfVpKV66hzyNPs/lmHdxbsNdMfiZ7Q+05XRavpSYJtN0f3m6MlKcAk6cg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFeIYV5u6y9XQU/bS+in8qG6FZeWU9yN8EQe6QuYuBgV1bHT58
-	YjC+WuoIbMRqdvREAKF300PHdZBS7EIPGK+XffMc6VhFDm/s/BvEldKP44HDRpk=
-X-Gm-Gg: ASbGncsCIfdhYMJLqtOtX7Euh+gvCX8J/5VCR/tG2O5JHdmSVI/Fm2WD9jnYINhdS+I
-	QleB8G9o7KD6IJYnlMtozy2jMpwLKVWU+7+LEdkRkKvk1h3YXxw4QC9GH7bnbmxSO5JTgSkB+Ap
-	agYTgs0HzIhhA1f+p5EdBxVeiO/GXv5vixadxSblht7V3WSnMwOx735xHzrlz5BtnblPhYlyXbh
-	nlrpwzyyKcKrp/leZ96L0fM9K91kXrfmo+CZoBjCfHlgB7QWKoGaEUsO6hSx1awCkUsocrQdVWO
-	V4b/kh1zqLqG3Wl4xnuBBpZia/6ez5N6O2tIQDr5jN2GulDtGXwC99mMvkRkmXYXWm8tNMzvFWW
-	rIQIh5A==
-X-Google-Smtp-Source: AGHT+IFrm0PyIULGxF7uMa1YAcLldt1ymHl/9crA3Otf7vM1iRhdF/1Q7ffqxaW5uccJLGntcMfu/A==
-X-Received: by 2002:a17:903:283:b0:223:fbc7:25f4 with SMTP id d9443c01a7336-2242888bfe4mr406203255ad.14.1741875696042;
-        Thu, 13 Mar 2025 07:21:36 -0700 (PDT)
-Received: from sidongui-MacBookPro.local ([61.83.209.48])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c6bbe77csm13577465ad.194.2025.03.13.07.21.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 07:21:35 -0700 (PDT)
-Date: Thu, 13 Mar 2025 23:21:31 +0900
-From: Sidong Yang <sidong.yang@furiosa.ai>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Pavel Begunkov <asml.silence@gmail.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/2] introduce io_uring_cmd_import_fixed_vec
-Message-ID: <Z9Lp60B4o2Y3AzhD@sidongui-MacBookPro.local>
-References: <20250312142326.11660-1-sidong.yang@furiosa.ai>
- <7a4217ce-1251-452c-8570-fb36e811b234@gmail.com>
- <Z9K2-mU3lrlRiV6s@sidongui-MacBookPro.local>
- <95529e8f-ac4d-4530-94fa-488372489100@gmail.com>
- <fd3264c8-02be-4634-bab2-2ad00a40a1b7@gmail.com>
- <Z9Lj8s-pTTEJhMOn@sidongui-MacBookPro.local>
- <ab277f0b-fdf6-4f20-9fe0-0e0a1ebcc906@kernel.dk>
+        d=1e100.net; s=20230601; t=1741878783; x=1742483583;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yP/uljw5n/tInpzPGlrCHqW6VfgeloOJzAwiAENlw40=;
+        b=t975jSnla6TrqG0XIYXnx68vlgmeBAOmnK1zwSzuKzLh4eyAr2uTY4bDpsoImz7U5G
+         xoCDA0xscUM0RMwq6jwhLLNBnb1c1uxwypiICJ7Okaxbc9aYO+l+tzgVPWtRCIzWamld
+         qsgcnDSqKWuPoEzZnlg8YJsVRKA8e6eeoZZpRx+P3D1ntz3WBKeEE7bK9BXz1cqlSTjL
+         Q6EsG0KZ3gZy45NkBBtfYNHhbc96fRvFxbA6HXMQrwKv0YUXg1RKnpp7CdEM0zE5OACA
+         B84qJS4/bkg9Wp+2h9X2etlR+43f6K5R1mPlychNx8fuKrt7mz5EUJywnU+13uoJgElV
+         hkcA==
+X-Gm-Message-State: AOJu0Yy2+tVK2uHMUXFjWMayETjyXKsUfnZ3jHhCgOz7xJYOy7Acu0hC
+	Me4vKs3LQll30wSMeHN/mKhPhZkzlYyscmJ0J7BRLwOhiN8JPYwP
+X-Gm-Gg: ASbGnct4pVUbLj/8ImrbH2Qkvhs698NWVz/StCfLaemonk+Y2R+vf1YR9GjMwfi+RUY
+	bJcTDfvMJAb+JDIbyu3ST+tkgAyKPjhPUB0iSyaJdrSKowI/FLqGC0+fDYXYrRhiKlKLySQFbIU
+	fVLu5sl8VHqOCq4RMZ/X7zRXFoHaHK5oF3Bj2ARRfK8eLlYeMOg8eGl/opIhd0MzRSdxOm55hsP
+	4vWnOgbyNbPnpeFeTXMHmEG9E+2klAAwh4tI5u5JgGIdEGRlQxaoataKfpFZRdIwatLfMOMpQaS
+	5xJF/NU0KVJRAiHYFEPLSsEBDN7Rk5EmB+o3oiVaRvzD0uk=
+X-Google-Smtp-Source: AGHT+IE8+9hyC96JomprVHSlJcBaeuahajCnQQLytBjvtQsgc5vyuLLjO73hlf1OsK38n7eSQ2HsHQ==
+X-Received: by 2002:a17:902:e80f:b0:21f:1202:f2f5 with SMTP id d9443c01a7336-2242887b595mr337473435ad.8.1741878782962;
+        Thu, 13 Mar 2025 08:13:02 -0700 (PDT)
+Received: from [0.0.0.0] ([144.24.8.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737115293f6sm1488646b3a.14.2025.03.13.08.12.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Mar 2025 08:13:02 -0700 (PDT)
+Message-ID: <cf28bffc-0a2d-481b-bb2c-17a66f113b39@gmail.com>
+Date: Thu, 13 Mar 2025 23:12:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab277f0b-fdf6-4f20-9fe0-0e0a1ebcc906@kernel.dk>
+User-Agent: Mozilla Thunderbird Beta
+From: =?UTF-8?B?6KW/5pyo6YeO576w5Z+6?= <yanqiyu01@gmail.com>
+Subject: Re: [bug report] NULL pointer dereference after a balance error on
+ zoned device
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ Naohiro Aota <Naohiro.Aota@wdc.com>, WenRuo Qu <wqu@suse.com>
+References: <CAB_b4sBhDe3tscz=duVyhc9hNE+gu=B8CrgLO152uMyanR8BEA@mail.gmail.com>
+ <7addae55-e0a4-40c4-b4b5-279d4eb91fd4@wdc.com>
+ <CAB_b4sAba_AtdQfM+23LhnL_F038wuE677DZx-1T_Q1TH6rtMg@mail.gmail.com>
+ <CAB_b4sCNenuqK79ce7ijSDQzXgLAq8jEe98z4P6_UqAz-OvhEQ@mail.gmail.com>
+ <88371447-4d78-491c-9d86-ee2ad444c50d@wdc.com>
+ <CAB_b4sAgb370vOS3OVp2Vx6W+9iLUrCUvfRwVx9WtWbFOXPQsg@mail.gmail.com>
+ <6ab5accb-de28-4d79-92c4-1d3b085fbb08@wdc.com>
+ <76e81f2c-17fb-4c11-b1c4-0b4c18b080b5@wdc.com>
+ <CAB_b4sBkBOMCpbsf4hmC+wnL9FiH3vk70mq+QrZEAbb8Jfw=jw@mail.gmail.com>
+ <4b15f181-8e28-4c8c-b86a-780315d5cc7a@wdc.com>
+ <4463e487-b260-47f4-a7b7-285ebf987967@wdc.com>
+Content-Language: en-US
+In-Reply-To: <4463e487-b260-47f4-a7b7-285ebf987967@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 13, 2025 at 08:01:15AM -0600, Jens Axboe wrote:
-> On 3/13/25 7:56 AM, Sidong Yang wrote:
-> > On Thu, Mar 13, 2025 at 01:17:44PM +0000, Pavel Begunkov wrote:
-> >> On 3/13/25 13:15, Pavel Begunkov wrote:
-> >>> On 3/13/25 10:44, Sidong Yang wrote:
-> >>>> On Thu, Mar 13, 2025 at 08:57:45AM +0000, Pavel Begunkov wrote:
-> >>>>> On 3/12/25 14:23, Sidong Yang wrote:
-> >>>>>> This patche series introduce io_uring_cmd_import_vec. With this function,
-> >>>>>> Multiple fixed buffer could be used in uring cmd. It's vectored version
-> >>>>>> for io_uring_cmd_import_fixed(). Also this patch series includes a usage
-> >>>>>> for new api for encoded read in btrfs by using uring cmd.
-> >>>>>
-> >>>>> Pretty much same thing, we're still left with 2 allocations in the
-> >>>>> hot path. What I think we can do here is to add caching on the
-> >>>>> io_uring side as we do with rw / net, but that would be invisible
-> >>>>> for cmd drivers. And that cache can be reused for normal iovec imports.
-> >>>>>
-> >>>>> https://github.com/isilence/linux.git regvec-import-cmd
-> >>>>> (link for convenience)
-> >>>>> https://github.com/isilence/linux/tree/regvec-import-cmd
-> >>>>>
-> >>>>> Not really target tested, no btrfs, not any other user, just an idea.
-> >>>>> There are 4 patches, but the top 3 are of interest.
-> >>>>
-> >>>> Thanks, I justed checked the commits now. I think cache is good to resolve
-> >>>> this without allocation if cache hit. Let me reimpl this idea and test it
-> >>>> for btrfs.
-> >>>
-> >>> Sure, you can just base on top of that branch, hashes might be
-> >>> different but it's identical to the base it should be on. Your
-> >>> v2 didn't have some more recent merged patches.
-> >>
-> >> Jens' for-6.15/io_uring-reg-vec specifically, but for-next likely
-> >> has it merged.
-> > 
-> > Yes, there is commits about io_uring-reg-vec in Jens' for-next. I'll
-> > make v3 based on the branch.
-> 
-> Basing patches on that is fine, just never base branches on it. My
-> for-next branch is just a merge point for _everything_ that's queued for
-> the next release, io_uring and block related. The right branch to base
-> on for this case would be for-6.15/io_uring-reg-vec, which is also in my
-> for-next branch.
+在 2025/3/13 21:18, Johannes Thumshirn 写道:
+> Good news, I could recreate the bug by manually moving the WPs of a
+> null_blk device between adding it to the FS and balancing.
+Manually adjusting the WPs of a null_blk device between adding it to the 
+filesystem and balancing does seem to simulate the scenario where power 
+loss causes Btrfs' assumed WPs to differ from the actual values stored 
+on disk.
 
-Agreed, for-6.15/io_uring-reg-vec is the right base branch for this. 
+If data has already been written to the zones and the WPs are updated 
+accordingly, but metadata changes related to block groups are lost due 
+to power loss, then the behavior in btrfs_load_block_group_zone_info 
+seems reasonable. Marking the entire zone as full and treating the space 
+as unusable allows the balance/reclaim process to handle the inconsistency.
 
-Thanks,
-Sidong
-> 
-> This is more of a FYI than anything, as you're not doing a pull request.
-> Using for-next for patches is fine.
-> 
-> -- 
-> Jens Axboe
+The next question is how to fix this issue. A potential solution might 
+be to simply reorder the function calls, ensuring that 
+|btrfs_find_space_info| is always executed before 
+|btrfs_add_new_free_space| (and this should always be the case because 
+|btrfs_add_new_free_space calls __btrfs_add_free_space_zoned that 
+potentially uses the |block_group->space_info). This might be enough to 
+prevent the nullptr deref.
+
+Best,
+Qiyu
+>
+> For the record, here's the reproducer that works for me:
+>
+> #!/bin/sh
+>
+> set -e
+>
+> CFS=$(findmnt -t configfs -f | awk '/^\// { print $1 }')
+>
+> # Create 2 zoned null_block devices
+> pushd $CFS/nullb/
+> for dev in nullb1 nullb2; do
+>           mkdir $dev
+>           pushd $dev
+>           echo 128 > zone_capacity
+>           echo 128 > zone_size
+>           echo 1 > memory_backed
+>           echo 1 > zoned
+>           echo 10240 > size
+>           echo 1 > power
+>           popd
+> done
+> popd
+>
+> DEV1=/dev/nullb1
+> DEV2=/dev/nullb2
+>
+> # Create a FS on nullb1 and mount it
+> mkfs -t btrfs $DEV1
+> mount $DEV1 /mnt
+>
+> # Write data to it
+> dd if=/dev/zero of=/mnt/test bs=128k count=1024 status=progress
+>
+> # Add device two to the FS
+> btrfs device add $DEV2 /mnt
+>
+> # Move write pointers of all empty zones by 4k to simulate write pointer
+> # mismatch.
+> # 'blkzone report' reports the zone numbers in sectors so we need to convert
+> # it to bytes first. Afterwards we need to convert it to 4k blocks for dd.
+> for zone in $(blkzone report $DEV2 | awk '/em/ { print $2 }' | sed 's/,//');
+> do
+>           zone=$(($zone / 8))
+>           dd if=/dev/zero of=$DEV2 seek=$zone bs=4k status=progress \
+>                   oflag=direct count=1
+> done
+>
+> btrfs balance start -mconvert=raid1 /mnt
+>
+
 
