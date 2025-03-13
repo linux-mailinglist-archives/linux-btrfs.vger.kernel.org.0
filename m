@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-12248-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4AB8A5EA7F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 05:21:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01BA7A5EA80
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 05:21:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F6B3B4F25
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 04:21:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11F7D3B526F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 04:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4263E13C81B;
-	Thu, 13 Mar 2025 04:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A24F13BAF1;
+	Thu, 13 Mar 2025 04:21:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u9QXvtsf";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u9QXvtsf"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="okN9gfC0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="okN9gfC0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74562B9A8
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298EF2B9A8
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741839679; cv=none; b=VgZQpXltjuh5qXOCibwSIRg0QOJUs501ejWz2TfPEDG6Ph5e0wAFVbsg8TyXGgfeMnt1+SzxFJNx17F6eDv36fkLZQDBrhdWGCsWlLg+BouoW0gkRMh8WuSPDt3BTvWD95dUY0bRiJRYnQDcIMU7jaXrzkweOs5YMWjg+up81iA=
+	t=1741839685; cv=none; b=hDKBphOJaYJny+agOH3z5Q7OI+rvQfqsOqcFrVCQJiUJo5gy3Eb9U4egtuwW88ZBURJvG5zyEPGYbvapunGJYTxifIRg5l5cAw/9oXG+UbQYUWWycqQudiYLWQLjIFPkaFjIs6A0og7992g2NIpJQIb55RvZrGEkx6SAvuXjPY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741839679; c=relaxed/simple;
-	bh=WRtsT7xbXvJcuhozplsrE//2lZmfudzPux+r5N82oUM=;
+	s=arc-20240116; t=1741839685; c=relaxed/simple;
+	bh=KwAeuuDDeURhc1uduX+W4X6LwLA+hS0JrfZDqW/I6BE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GrUB6wGUIXSPEJSr3IkfeZCqkcwTezQMfd5aSh/x2umQ72I5VQ2CdlOApxpLgUYmkIXSdBu6I3Um9iCtU4c0GBjmBObLlzfk37B4ic5zw0AYcAVh3i9HClt3aHWO3I/1Rrmag6FKMRPRe1pFxC4JTKZZB4qfPcMSqF2WddKUY8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u9QXvtsf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u9QXvtsf; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=eDwKsSvgPxErAuOGCcGhnYW5qo65ar9Pn0cCHaxs7vpQsrdVK1++jsJkzmlnjhY6YPKRYkYSttcixxNAftD7q/yYaXMo3unaC9tzTEkH3FwSQl8hfZcxmlGDo2NSFeUzFr4vc8dDj9JDF9oydw5n0oPgYQZ4v6Ru6JyyovvdtXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=okN9gfC0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=okN9gfC0; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E78A92118F
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:08 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3776721190
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741839668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1741839670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zoexVNuKJdevg89qearFpOJV+jILdlLudBwDcK1VE28=;
-	b=u9QXvtsfHUZEv9YyuDwOIMYF0kXf+avCpzUJzGnE74JTH+ihRXVJ6i1FtoT2ufntPvl02s
-	cXXy5/J56wYo6EGOENGYb1wOEyVPx1SJgCShTsK0nT9c8AkmwZ9l2pCFBpT8q2n4+uC5yx
-	4J7IAdhzKP069gxmBeN658ZeyejCBoM=
+	bh=mE9jrU/uLZfaGt8hL7BPeV+adQSNsYm65uG0ApJgfQM=;
+	b=okN9gfC0GgfCG5kDKqPIum74WwOAvohzs15nOeGHYZT53XbGKJ4CPlLjgnZcNny14addiN
+	PrzQ/o8Ezy9QseZTDuu7Z+5ddk2S3CThIE/YuO/gfx2+N1YpLHw/jwReAAi4PBwhTYu7+5
+	vDoa3jur5/Pwj+L8jQzjaFdQXF3H4BA=
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=okN9gfC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1741839668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1741839670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zoexVNuKJdevg89qearFpOJV+jILdlLudBwDcK1VE28=;
-	b=u9QXvtsfHUZEv9YyuDwOIMYF0kXf+avCpzUJzGnE74JTH+ihRXVJ6i1FtoT2ufntPvl02s
-	cXXy5/J56wYo6EGOENGYb1wOEyVPx1SJgCShTsK0nT9c8AkmwZ9l2pCFBpT8q2n4+uC5yx
-	4J7IAdhzKP069gxmBeN658ZeyejCBoM=
+	bh=mE9jrU/uLZfaGt8hL7BPeV+adQSNsYm65uG0ApJgfQM=;
+	b=okN9gfC0GgfCG5kDKqPIum74WwOAvohzs15nOeGHYZT53XbGKJ4CPlLjgnZcNny14addiN
+	PrzQ/o8Ezy9QseZTDuu7Z+5ddk2S3CThIE/YuO/gfx2+N1YpLHw/jwReAAi4PBwhTYu7+5
+	vDoa3jur5/Pwj+L8jQzjaFdQXF3H4BA=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2826113797
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:07 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6B54513797
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sH08NjNd0mcrYQAAD6G6ig
+	id GCgKCzVd0mcrYQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:07 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 04:21:09 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/7] btrfs: send: remove the again label inside put_file_data()
-Date: Thu, 13 Mar 2025 14:50:43 +1030
-Message-ID: <ab9bc3e04e0344667b72edff9127e3fece6c4ab6.1741839616.git.wqu@suse.com>
+Subject: [PATCH 2/7] btrfs: send: prepare put_file_data() for larger data folios
+Date: Thu, 13 Mar 2025 14:50:44 +1030
+Message-ID: <75668be54f15f044d412fb946ed845345c8698bc.1741839616.git.wqu@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1741839616.git.wqu@suse.com>
 References: <cover.1741839616.git.wqu@suse.com>
@@ -84,59 +84,112 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Queue-Id: 3776721190
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
+	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-The again label is not really necessary and can be replaced by a simple
-continue.
+Currently the function put_file_data() can only accept page sized folio.
+
+However the function itself is not that complex, it's just copying data
+from filemap folio into send buffer.
+
+So make it support larger data folios by:
+
+- Change the loop to use file offset instead of page index
+
+- Calculate @pg_offset and @cur_len after getting the folio
+
+- Remove the "WARN_ON(folio_order(folio));" line
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/send.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/send.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 0c8c58c4f29b..43c29295f477 100644
+index 43c29295f477..4df07dfe326f 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -5280,7 +5280,6 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
- 		unsigned cur_len = min_t(unsigned, len,
- 					 PAGE_SIZE - pg_offset);
+@@ -5263,10 +5263,9 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ {
+ 	struct btrfs_root *root = sctx->send_root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+-	struct folio *folio;
+-	pgoff_t index = offset >> PAGE_SHIFT;
+-	pgoff_t last_index;
+-	unsigned pg_offset = offset_in_page(offset);
++	u64 cur = offset;
++	const u64 end = offset + len;
++	const pgoff_t last_index = (end - 1) >> PAGE_SHIFT;
+ 	struct address_space *mapping = sctx->cur_inode->i_mapping;
+ 	int ret;
  
--again:
+@@ -5274,11 +5273,11 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ 	if (ret)
+ 		return ret;
+ 
+-	last_index = (offset + len - 1) >> PAGE_SHIFT;
+-
+-	while (index <= last_index) {
+-		unsigned cur_len = min_t(unsigned, len,
+-					 PAGE_SIZE - pg_offset);
++	while (cur < end) {
++		pgoff_t index = cur >> PAGE_SHIFT;
++		unsigned int cur_len;
++		unsigned int pg_offset;
++		struct folio *folio;
+ 
  		folio = filemap_lock_folio(mapping, index);
  		if (IS_ERR(folio)) {
- 			page_cache_sync_readahead(mapping,
-@@ -5316,7 +5315,7 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
- 			if (folio->mapping != mapping) {
- 				folio_unlock(folio);
- 				folio_put(folio);
--				goto again;
-+				continue;
+@@ -5292,8 +5291,9 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ 				break;
  			}
  		}
+-
+-		WARN_ON(folio_order(folio));
++		pg_offset = offset_in_folio(folio, cur);
++		cur_len = min_t(unsigned int, end - cur,
++				folio_size(folio) - pg_offset);
+ 
+ 		if (folio_test_readahead(folio))
+ 			page_cache_async_readahead(mapping, &sctx->ra, NULL, folio,
+@@ -5323,9 +5323,7 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ 				  pg_offset, cur_len);
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+-		index++;
+-		pg_offset = 0;
+-		len -= cur_len;
++		cur += cur_len;
+ 		sctx->send_size += cur_len;
+ 	}
  
 -- 
 2.48.1
