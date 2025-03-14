@@ -1,194 +1,186 @@
-Return-Path: <linux-btrfs+bounces-12279-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12280-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 816F2A602FD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 21:50:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8308CA60E62
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Mar 2025 11:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33F16189283F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Mar 2025 20:51:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 111B617EC05
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Mar 2025 10:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6691F4703;
-	Thu, 13 Mar 2025 20:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6CB71F4178;
+	Fri, 14 Mar 2025 10:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="IvCb7ztb"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qtP+rdUB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE701F4631
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Mar 2025 20:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5770B1F153C
+	for <linux-btrfs@vger.kernel.org>; Fri, 14 Mar 2025 10:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741899051; cv=none; b=ONewu7uOt3A5v8xKmYFIJ6rEhGpdMAFNhWIn2Vr5ZFuPYrtpcvn/tURXmizuJwPO6PoQyhG9gaPr6sV1aOawiXUJnfQ/7iON52sGRLmK6RuHRqgZ8F7kH3EfH+AaB/+wKCHu5xTp8E7YdM3jjB/0Sv3Tk2aSOZ/C0NNhBdzSZyg=
+	t=1741947086; cv=none; b=FgPEA05RUcr5iiXd6DICjop3RB5KRELLJBfganHKmUnereYxAbQDtYeIjvU4t/IjzuMX2Ox1wmWba+Wuzj6rxflpwdGPBinqemk8O29LEc6j3+5b8UJaXDrGkIn1sBsqf8b8wjg54EIBCRVeVv7+BZtczT9dKVLk5bPPEJAK6mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741899051; c=relaxed/simple;
-	bh=kU1otMD3UpaPLHgxm2JtPm83lHrkfDR2eFZQ0x7Ai5k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Dc50zjTOiwC2nrV1+Q2cLvp1l5loN4dxIoMNogkBeo3EqBDwZK1sqeAdTJcqndv/k5wYGH1nlvT+QOcVgVLtNfXMKONGSi5MeFF+uNWz8lWdXbHZ1dVMityqmRb/uHnuuJAF7o+fE0P76kT7wnpKX5/FCr6JIBahpqY7HE/Osoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=IvCb7ztb; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1741899046; x=1742503846; i=quwenruo.btrfs@gmx.com;
-	bh=3Nbs6de5cPt1zy2QBHsGbKVd7j2Ze5Sm3Zu61Tcd3GI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=IvCb7ztb2njgbTUa6p9u6yUVMj/JOFFhYWlSBnye9KRU1Y8TGra7opm/M+1V1E3k
-	 Z9CCCLsaDw6DGlOxmpkawf6GrejXuPB31d5ck3CaIZNzCA5sCI7syALu0C5AIuUDB
-	 yDsylwqDM5JXaXyDJ+B0hLM/ULTkPcHLni+0ZuOS7Ii3IS8Gv+m89Kfyvb82iUUdL
-	 pGPubZBlkhGKIGwlBpTGGUMe2ZV0utnduyv2im2pwpDSENN8a97yAlYa/AF88hiaL
-	 +wkRdkRK89ZwqJzQeoX0WD+/fWzSFpAG+qPSU0YGiZ7UY/Sh8VVDcRE4WcvEegzaW
-	 OMvoF8xTzaTdwPxReA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUXtY-1tjzpG0Z7Y-00Nbsi; Thu, 13
- Mar 2025 21:50:46 +0100
-Message-ID: <a7d67638-88bd-440d-88a2-3dfcb3c46726@gmx.com>
-Date: Fri, 14 Mar 2025 07:20:41 +1030
+	s=arc-20240116; t=1741947086; c=relaxed/simple;
+	bh=suGdQPy5QLIQ4vhB5PXHyue88p+JC9ZMB03duic7Nu4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HJJZkRk7eXTuKfqalz5g7kOS7ivdHXnzw8owrV4OX5GSA1vkfyYg3czbTnevOJ4EFnzo9diPVj2YN84TKvnLMHh8wPZhXpoWeEUBj3gJIMnGWg4NIFZRrS1YDbCjlMoDE3en/Y+pVXGzDrRkzivIgFs4x1Y8+pEoZNPXXV7gHM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qtP+rdUB; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-38a25d4b9d4so1097617f8f.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Mar 2025 03:11:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1741947083; x=1742551883; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=72XOoU+a+zvQwQenWEJ9eKHjOKCMg7gntKJ82ZCC5Ok=;
+        b=qtP+rdUBk5kAkyK7MKhtLxE55ZZkD98nJfAX9/PG6evvCVVOMsp9uYvhTFJxYjxad9
+         RWQnN7EiamoG7GY48FGHZ1aHDkt/2MIUUANHNislAAsUNFAWgH6sESC7WD4pHSeJ0bK1
+         YCImYrqDC1Pu1mDORRkTl/VaVmuAHPjK8wkByWc5DKuGmJmJMGkaMCBCH53jr+eVGMoX
+         Q/qluCVP3CbvUmvzrzeOKdu9P0a4/ixwnfqZiSTPnOFsFh89VmnVZr6ay1NCq4gETq75
+         bjW2BgC4oJcFsWDnJmLh7ih7XZccoPMsCpwhsjFaOjThEowq+nI/+DyR3N7Gu2y6Htee
+         HtmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741947083; x=1742551883;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=72XOoU+a+zvQwQenWEJ9eKHjOKCMg7gntKJ82ZCC5Ok=;
+        b=KTUaPrSV5P4kv/UK4hc+7S6td7NASgN8u/+ao+as06AZ/h7QtEX2wiPtojE59VFUja
+         iHYGyEpcubYEtIjzQcbUFew0gddUoH4Nz1z8on2ZqPsYUe1bygGcuFwU8jVtPfP62Kd/
+         /r691HJ+DYYPwvBTTuOitRVzOi1I4L/kj4miHKYshQWZ6kRJ3WS3Ao59jYcESF7TuRqz
+         I6a4sMcR4uGP6wEvudfa9jecHgjaR+gEwbT1wbWsBgm9X02SuuA14kAuSmBhPiprCrwz
+         TFUbQqUiJFwGkt2odkRw5J988avuK5kuZLpAUo+nNtCwNUY28IcOI4NA0p9a+xhF4egt
+         KGPQ==
+X-Gm-Message-State: AOJu0Yzc5xCTtubNXQvd26I1y4ovCjoXUWECzWbepwupZX7RWfyOU/xO
+	7g3TvVdessbyA+s9kyttPG+1qnMV0++DDPrjHIwG+7FN13spVfDJplakNZBIBO5yykuJgpBvAt2
+	m
+X-Gm-Gg: ASbGncus9rqMrd2Awdh8zFbKyEkErAKBlitkNhVvJ+Wp1qnZEQYxzSOed4nQbivru9O
+	4IQmL/Td3+BfVrMW2VfOArsFqMj7uRU0+L3BcRe3DtZbX4woywJS88mA9jdt/Cy+2Pn6Fs1/ICp
+	7UXXhE9U0Y6ucfd7gFkXVduVGC0YVRJG4SP/oRVuGtB7aqPZJG4v3xUf0F3ErYwkEc4q2GbaFtS
+	NxAAM8Pj0fbZ+mfnXQy/twWNrdcUT6Ykd6KYrCmbBgEHvh4uEWwTKWI/XsfyflxMbDb7Q333Xe7
+	PMyFpy+evte/JlUH5+vSOk7xT7Vd/HfhCZL+bVHXRCQrQUvbKA==
+X-Google-Smtp-Source: AGHT+IHtRpzV13EVRb1tr4XQrT5CtvKwHos3ajSsjBBD6MQ0AAAS/CIHFXlHSTNROSTyjPY22W7LSg==
+X-Received: by 2002:a5d:5f47:0:b0:391:2e0f:efec with SMTP id ffacd0b85a97d-3971ddd6136mr2407398f8f.7.1741947082696;
+        Fri, 14 Mar 2025 03:11:22 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-43d1fe60d37sm12512795e9.27.2025.03.14.03.11.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Mar 2025 03:11:22 -0700 (PDT)
+Date: Fri, 14 Mar 2025 13:11:18 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Filipe Manana <fdmanana@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: [bug report] btrfs: make btrfs_iget() return a btrfs inode instead
+Message-ID: <dac006d7-406b-4985-9a08-0d0a7a744e0d@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] btrfs: prepare for larger folios support
-To: Nathan Chancellor <nathan@kernel.org>, David Sterba <dsterba@suse.cz>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1741591823.git.wqu@suse.com>
- <20250312134455.GN32661@twin.jikos.cz> <20250313152124.GA2420634@ax162>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250313152124.GA2420634@ax162>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pZkRaaIdhST39EDjhxQttt7IWnHNl6es4x1e/tEne/fDoIX7sHp
- 0uHY7JyQDSeHxKAoudLPbZtCADl8iNist2y4VL3cFqgr+8vgUjVnKplt4lJ+mUugOMWmv+B
- cwiJ/Yk+bR5I1nwOqUn/CQmdFRjMjscdeisgOQHmcn+I54RBu4bt22m4eIOXA54bCtxwkjx
- KdR7MVr9NcxnRP9bJt9HA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:E5kq0pVxiOY=;OTuoitHcbuvUzUE8qzXuuhMCWWE
- ZpSBbtwXNIOUNGxgNoE2GGRENieox0GHHywdJSGXuoFdokp4553Gzd1YwMPUPLWHA+aJGUYJx
- xR6Cl2xX+XWbkjzltbaZJdFm3BQMQGOBzeTHSeKXtfZ37RSIMHdulgeX4AcyqxS2lRMP7jQf1
- hRX1HnmE0pT+XnIwgcUbcl+7gMrLGNVYJoatOUlLf2qLkhzUtZGWH/rCD3LljhITmQUOVLWhx
- OnB2rB8FC88CxYYtSKQeyLr0XhGUQYT8p3U9NBf2fKzAdthOePJzNkoMFSqpzITOsu0apo7RJ
- LohZTQL3g6o+yiIeQXfdCQW5KAyQZgUAZardaEHn74HB1d3UQsO7/y4JMNjP8zepHegoqR8Q/
- 7BDYprFG5E7h3Aw61Gi2m6uwbhW0p6f0N3NyoSR/hGE63XYVCvb3jnbLEEQ4F39Y67aUzg9Gv
- 6PUb2FUvF3jZZDbUdG3qCGtAZC8wJO7BJVtRzQ+lvdTaDmcg1zEyR//RnLQldEh4pOGq996hd
- NYOMf8iH5Fx0PoYDo3KMhSeCJoTmbQ6fCBzLej7V71URjKDDsVFLwGQ3G/2gM+ebGYXna27uJ
- DGOxsFRNlSjHcTgdTjulJ8NCNAGu4WBErUep5pSkjGnveyBkFJzgkjlazg+TsJYA5nEErc/bw
- EVx3fVauHiIfTP2HZTid7Yl5c1K8T1HSzSzTS4pkfVh+ehhWAje7CUPyKbVvGbY0JDbr2Hx1p
- B7TqRSFayuzgcegNrIjt+33xLhLxmUsUT+LAohJLL7L6A3c7xY8/ZXrASr+Y5FCb91enoZ6Xx
- PeBoRZZ7b/EBW78IkmFXxQnlRbTOcYPK6LoaHenz0tuqL7JTVaqF37UQR743B1EE94V1yKwE4
- 9F9K2bG143dtoGB6mFQLGw6BocjPOMgWviaowYg6FYDdJzYm/UTifKCmjEdxJ4OIQrMyk31pJ
- FkP5iXdHXmobqxw86CpV+wv/vUcvqYWJSladhRa0cZApn+2bhYrn08fa//pwSQ1Qqi1IMjYP1
- JogGXfzMGCpI9DPFj8ndaqkp7RH3GzSOTl8GtkiHJ6Iy7rCxTNhxB1JEwlbpUiv1QTkBv/y/R
- OSUC4l0Pi039mgY0OUlFU3It+HZqMhAbIARvlHSxROpZJDhVjl63bc5nW/GnUyUckTkUywbib
- F8eanc9EeHlPC+Hyh/pgo3v+Oa8w6Dce6LFUoh4B8xc0MMvb9gkZ6tuHhlanAy1y90OQG6oW6
- /Ff6zKNmRfCXxVBJeQETUZu1XRAfBaGsuSiGWqnk35KLdTQ1oSn/uU1ca8qhtySfkLMYC2aos
- F0UKI0sV4ONKd9dhRV+XEOyqp7ioushsxXuQO4xmvQQoa2jrIkzL+0sULBgsRGf3F/cvsfgDe
- 7jDNCJpwh3h7q7CS8dXQO3849foT7fnGoq1+qF/ZHELEPJLI8U9rbMH5hTPJMKdAYycY/YBsF
- HQVBtPA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hello Filipe Manana,
 
+Commit 991961deef25 ("btrfs: make btrfs_iget() return a btrfs inode
+instead") from Mar 7, 2025 (linux-next), leads to the following
+Smatch static checker warning:
 
-=E5=9C=A8 2025/3/14 01:51, Nathan Chancellor =E5=86=99=E9=81=93:
-> On Wed, Mar 12, 2025 at 02:44:55PM +0100, David Sterba wrote:
->> On Mon, Mar 10, 2025 at 06:05:56PM +1030, Qu Wenruo wrote:
->>> [CHANGELOG]
->>> v2:
->>> - Split the subpage.[ch] modification into 3 patches
->>> - Rebased the latest for-next branch
->>>    Now all dependency are in for-next.
->>
->> Please add the series to for-next, I haven't found anything that would
->> need fixups or another resend so we cant get it to 6.15 queue. Thanks.
->
-> This series is still broken for 32-bit targets as reported two weeks ago=
-:
+	fs/btrfs/export.c:222 btrfs_get_parent()
+	error: double free of 'path' (line 217)
 
-Now fixed in for-next branch.
+fs/btrfs/export.c
+    146 struct dentry *btrfs_get_parent(struct dentry *child)
+    147 {
+    148         struct btrfs_inode *dir = BTRFS_I(d_inode(child));
+    149         struct btrfs_inode *inode;
+    150         struct btrfs_root *root = dir->root;
+    151         struct btrfs_fs_info *fs_info = root->fs_info;
+    152         struct btrfs_path *path;
+    153         struct extent_buffer *leaf;
+    154         struct btrfs_root_ref *ref;
+    155         struct btrfs_key key;
+    156         struct btrfs_key found_key;
+    157         int ret;
+    158 
+    159         path = btrfs_alloc_path();
+    160         if (!path)
+    161                 return ERR_PTR(-ENOMEM);
+    162 
+    163         if (btrfs_ino(dir) == BTRFS_FIRST_FREE_OBJECTID) {
+    164                 key.objectid = btrfs_root_id(root);
+    165                 key.type = BTRFS_ROOT_BACKREF_KEY;
+    166                 key.offset = (u64)-1;
+    167                 root = fs_info->tree_root;
+    168         } else {
+    169                 key.objectid = btrfs_ino(dir);
+    170                 key.type = BTRFS_INODE_REF_KEY;
+    171                 key.offset = (u64)-1;
+    172         }
+    173 
+    174         ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+    175         if (ret < 0)
+    176                 goto fail;
+    177         if (ret == 0) {
+    178                 /*
+    179                  * Key with offset of -1 found, there would have to exist an
+    180                  * inode with such number or a root with such id.
+    181                  */
+    182                 ret = -EUCLEAN;
+    183                 goto fail;
+    184         }
+    185 
+    186         if (path->slots[0] == 0) {
+    187                 ret = -ENOENT;
+    188                 goto fail;
+    189         }
+    190 
+    191         path->slots[0]--;
+    192         leaf = path->nodes[0];
+    193 
+    194         btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+    195         if (found_key.objectid != key.objectid || found_key.type != key.type) {
+    196                 ret = -ENOENT;
+    197                 goto fail;
+    198         }
+    199 
+    200         if (found_key.type == BTRFS_ROOT_BACKREF_KEY) {
+    201                 ref = btrfs_item_ptr(leaf, path->slots[0],
+    202                                      struct btrfs_root_ref);
+    203                 key.objectid = btrfs_root_ref_dirid(leaf, ref);
+    204         } else {
+    205                 key.objectid = found_key.offset;
+    206         }
+    207         btrfs_free_path(path);
+                                ^^^^
 
-Thanks,
-Qu>
-> https://lore.kernel.org/202502211908.aCcQQyEY-lkp@intel.com/
-> https://lore.kernel.org/20250225184136.GA1679809@ax162/
->
-> $ make -skj"$(nproc)" ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabi- mrpr=
-oper allmodconfig fs/btrfs/extent_io.o
-> In file included from <command-line>:
-> fs/btrfs/extent_io.c: In function 'extent_write_locked_range':
-> include/linux/compiler_types.h:557:45: error: call to '__compiletime_ass=
-ert_802' declared with attribute error: min(folio_pos(folio) + folio_size(=
-folio) - 1, end) signedness error
->    557 |         _compiletime_assert(condition, msg, __compiletime_asser=
-t_, __COUNTER__)
->        |                                             ^
-> include/linux/compiler_types.h:538:25: note: in definition of macro '__c=
-ompiletime_assert'
->    538 |                         prefix ## suffix();                    =
-         \
->        |                         ^~~~~~
-> include/linux/compiler_types.h:557:9: note: in expansion of macro '_comp=
-iletime_assert'
->    557 |         _compiletime_assert(condition, msg, __compiletime_asser=
-t_, __COUNTER__)
->        |         ^~~~~~~~~~~~~~~~~~~
-> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletim=
-e_assert'
->     39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond),=
- msg)
->        |                                     ^~~~~~~~~~~~~~~~~~
-> include/linux/minmax.h:93:9: note: in expansion of macro 'BUILD_BUG_ON_M=
-SG'
->     93 |         BUILD_BUG_ON_MSG(!__types_ok(ux, uy),           \
->        |         ^~~~~~~~~~~~~~~~
-> include/linux/minmax.h:98:9: note: in expansion of macro '__careful_cmp_=
-once'
->     98 |         __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_=
-ID(y_))
->        |         ^~~~~~~~~~~~~~~~~~
-> include/linux/minmax.h:105:25: note: in expansion of macro '__careful_cm=
-p'
->    105 | #define min(x, y)       __careful_cmp(min, x, y)
->        |                         ^~~~~~~~~~~~~
-> fs/btrfs/extent_io.c:2472:27: note: in expansion of macro 'min'
->   2472 |                 cur_end =3D min(folio_pos(folio) + folio_size(f=
-olio) - 1, end);
->        |                           ^~~
->
-> Cheers,
-> Nathan
->
+    208 
+    209         if (found_key.type == BTRFS_ROOT_BACKREF_KEY) {
+    210                 return btrfs_get_dentry(fs_info->sb, key.objectid,
+    211                                         found_key.offset, 0);
+    212         }
+    213 
+    214         inode = btrfs_iget(key.objectid, root);
+    215         if (IS_ERR(inode)) {
+    216                 ret = PTR_ERR(inode);
+    217                 goto fail;
+                        ^^^^^^^^^
 
+    218         }
+    219 
+    220         return d_obtain_alias(&inode->vfs_inode);
+    221 fail:
+--> 222         btrfs_free_path(path);
+                                ^^^^
+
+    223         return ERR_PTR(ret);
+    224 }
+
+regards,
+dan carpenter
 
