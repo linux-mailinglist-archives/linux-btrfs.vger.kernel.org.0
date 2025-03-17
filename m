@@ -1,74 +1,73 @@
-Return-Path: <linux-btrfs+bounces-12338-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA45CA65502
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 16:06:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF1AA6550B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 16:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C6F1729CA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 15:04:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90722177499
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 15:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7F02459E5;
-	Mon, 17 Mar 2025 15:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725FB2459E6;
+	Mon, 17 Mar 2025 15:05:11 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FAEC21C194
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 15:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F12E24502E;
+	Mon, 17 Mar 2025 15:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742223859; cv=none; b=p1PZWzFqHLjxsHIWdZUXn1aBwajcM//fGA/TohJGpy4zFzEG/DZ7jdxMDXCg1Oq8vvZaG+QUDaabz6MH4a2+PoZ0gl35ClK3ya8kEvb9OUoNatj5Q5zr5vy2QSGesO5l9QyOdqxYvZb42oOFy+2zk4zOltX0XPIB9apFW9dxE6g=
+	t=1742223911; cv=none; b=Kv66IndyouWhDdrOnM/Hjj1hjyXZ9U5MfDyguPyBXjLOnlT15vXSs27PfV67GzGoKW8IC0lipzS5ZLtHejpJ3mFutOs9rae4MP3Dh/Faqk35fbwtHdHKs36ko+217EOQrrkLlKjNkNBZ3HlusuS4EQKNGMHqRjKsDrjDsV0REDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742223859; c=relaxed/simple;
-	bh=q04Db7S4eldjnUNNiBO5smfMPJwCaCK7T9PDmCqsJZw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Kt4guYkjxAOdrE6lO0wSXlM7GGOpaDnnkIaPsfhmY9vpz+bPST7CLi7CmafoUxm8wbsNN/nLIqCzCbxnuldRNRzTkqslTpEhoZLrt8+WdZzUj9fOIB/cWcJku6o+Nfb37Cqj23TiyS7kkXWrthcpJt3kpsitV+YmkyUNihghpxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1742223911; c=relaxed/simple;
+	bh=HvkaUYAwSGQRmxN6FtdFYwAB0gAYl9xsLWmS5BcPCdA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jP3MlkRYsKml8oYu/MWpoRS8Q4s3bD/KXRgdDk8nGhieCZU4bQTfHkBmxNReznmP2jLtSUHVUJ/Xu4SxdLB97l+QS8gSNnatHUKcTmES1/hkxutwecmLHJ55Uar5AuvYciHkNPuJWLfZSiCQE93aGsidiLRThgYKlqeatMuh4hE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3965c995151so3073753f8f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 08:04:17 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4394a823036so21391185e9.0;
+        Mon, 17 Mar 2025 08:05:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742223856; x=1742828656;
+        d=1e100.net; s=20230601; t=1742223908; x=1742828708;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ASQe8lDOQ23qUVHhcC6JJtQXzS0YiCy9PrUwvQzUClE=;
-        b=nArUD5sIWi5dsjoh3FuvMVPmeVLfFyHE0HWC/TI8FWcM4lp4gVaCA1n2TGrXrLvizy
-         qD98XScaKxtlxO/iID0GYq8we3xw692SXT/T99yKwRrZg9Nqdm2k4g/ugSeTxLgzumXD
-         KrKkjVkrvN8qLWJTEuU88+dt5CrjNUqZV1x6u5l2cORiNXvmOYs7S4Aczf6nNqdeh2u2
-         s3OVoZCOhaNZtJs6LFLJ6QOmjVfv67mftYlO7ltgISEBWfgyS7RmrGXmZFNCOzhhqEk5
-         7j9lTlJmm4ukfpjrqAzLKxnHb3sQqrNOpnhWJVBLlVmqOgTqCXzCyAuXrpvX3O/+RCdP
-         zBAA==
-X-Gm-Message-State: AOJu0YwaidzAFzOIgvLv5u758vEnUdzV9K68vcsZ55vLtaVSooluRiKx
-	Ph/Sc5epm6ByLYdI7tl/QjW3I5pZtJj7BjozYHt3rnaQuz0z2fug6tlyIw==
-X-Gm-Gg: ASbGncurzY8WFffQW0xFMsMYXxQ9klxfH4QffN/7m+SZbSEmdetkw/5bUCDj7kUem89
-	W8XEaEd+43dM4Cia9llDTrPO7okrb0QPLxll44k756UWtjODz57+Akx3tXjkOwpY8Ot18XKXk7Q
-	2tWirscW0svZp13Hy/IUpmrChVBFYx4T72+D82l80yudWCV6zmsCwNUup9OVui4rJ+5BlyLEAXM
-	YLGrZI2y/Sz1numUNaJZmQUyr2XK+TMH+dNxjiKh4sOsmQYwBtNbav79MRwgwnBuvZXxlB42Bit
-	98Vu/lDXqRjuN+7Nxz+zFNos1xFvun1SNIENJdNEG/SoBVQVWMYgsmr/dSAAOnyILYFfaJrxJ5A
-	pq6RPr5Zy6U4vfjfFLMrOgQQQ9r4=
-X-Google-Smtp-Source: AGHT+IG/to55uIEr1IgMhzfbjImPdAbJEUTw4T8JTU7p4R/JNpO+Y7rmyeaABaBkhSKtQwCLRhNSZg==
-X-Received: by 2002:adf:9bc4:0:b0:391:4052:a232 with SMTP id ffacd0b85a97d-3971f7f9ac2mr11224767f8f.55.1742223855319;
-        Mon, 17 Mar 2025 08:04:15 -0700 (PDT)
+        bh=nQJo0MSVxymkRoO3RuSNUYe6CS6mZn3UMc5QXp0Go4c=;
+        b=EYCzODQjOYInBKWft0A24t8QcQ/RrmOAmXcbdZ1wdYbyQm5kymM8DaGyNictRtSe2C
+         H1M29W4imzHiyp10ZRJckttWbGBoN/1tABr5a2wOxQhaqCEeyyIVehS6sJkNFUNVXyLi
+         hIZLeW6jJMlfaYrzlQUTL0bJehry2si0LhGYE4P7eXUYDHagYJHqYHiLBDJJEWyBTgaj
+         t16WUKcH308Us8C8FsNB0rvrt715zEPj8RIK9mOw5/o4HN6J3kVDvP2g5s6idL9um+9E
+         s8D0vzyLksQSrE8BNo5/YQ909VoLkeJUwkbuKb7I9j3acFx+eDsmLZYcljxZBzbGXcPf
+         /DuQ==
+X-Gm-Message-State: AOJu0YwXD7PHHmAJC1SCHM7WWJkr/bUUOLxhJBl1OIh9rdYmgWwBWu5x
+	esFUNsc7HuUrjRaEtuoSGow/skYr6of9E4917Owf4jToCJhvKqgZVousNA==
+X-Gm-Gg: ASbGncvRYmFYdjhAmgmHdg4j9FqtyVdXb7Xhpc6+QMsVUfWv38OHGOViprkoQj2XS4F
+	LkNcdn2jsqopoiJkZECQZ0CDetZMd/GFRXaC/insefOpG/vw+4Tq6CXu5PNvFjVMt2DNVBRtaHd
+	7G1xJWyKdipLnZoEXZMTySgPDGH1M6IRydIHpJuUU6IJpaPxbzhxvQBgY/+AOD+Y3No2gJ6dreb
+	SPVqu6hNEp7IDfzMHC2GwmRs4+x/UEbJ5WKQXJzJlgZXU5612/0ckRdtCN+epAfX1qWnirRZ2FZ
+	J+N1e46rOsz0I/LHdH701Wdeyn7cewQ4RQRKF3Awzo+o8zU7IhjkYOBPCL/DgICnnhut8GxVIj2
+	7GN4+vP85MVgank5vXFUKsTtDayA=
+X-Google-Smtp-Source: AGHT+IF07X1WQI3MqDaD9RUJM0G/CdW5lmjus5Nd5H0ABOWrzfBkxFuNpooI8H2zYDLA69rJzszD1w==
+X-Received: by 2002:a05:600c:c10:b0:43c:f78d:82eb with SMTP id 5b1f17b1804b1-43d3897bc38mr1913885e9.15.1742223907209;
+        Mon, 17 Mar 2025 08:05:07 -0700 (PDT)
 Received: from nuc.fritz.box (p200300f6f71d1000fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71d:1000:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d1fe60d37sm107025355e9.27.2025.03.17.08.04.14
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d1ffc3e72sm106724595e9.18.2025.03.17.08.05.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Mar 2025 08:04:14 -0700 (PDT)
+        Mon, 17 Mar 2025 08:05:06 -0700 (PDT)
 From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: Damien Le Moal <dlemoal@kernel.org>,
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Anand Jain <anand.jain@oracle.com>,
+	Zorro Lang <zlang@redhat.com>,
 	Naohiro Aota <naohiro.aota@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	=?UTF-8?q?=E8=A5=BF=E6=9C=A8=E9=87=8E=E7=BE=B0=E5=9F=BA?= <yanqiyu01@gmail.com>
-Subject: [PATCH] btrfs: zoned: return EIO on RAID1 block group write pointer mismatch
-Date: Mon, 17 Mar 2025 16:04:01 +0100
-Message-ID: <f6c1c74599f51626bd2b804705425f68e5544bfe.1742223756.git.jth@kernel.org>
+	Damien Le Moal <dlemoal@kernel.org>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] fstests: btrfs: zoned: verify RAID conversion with write pointer mismatch
+Date: Mon, 17 Mar 2025 16:04:58 +0100
+Message-ID: <5c6dcd33d98c4d79630748381b2aa3880fd156ac.1742223870.git.jth@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -76,142 +75,106 @@ List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-There was a bug report about a NULL pointer dereference in
-__btrfs_add_free_space_zoned() that ultimately happens because a
-conversion from the default metadata profile DUP to a RAID1 profile on two
-disks.
+Recently we had a bug report about a kernel crash that happened when the
+user was converting a filesystem to use RAID1 for metadata, but for some
+reason the device's write pointers got out of sync.
 
-The stacktrace has the following signature:
+Test this scenario by manually injecting de-synchronized write pointer
+positions and then running conversion to a metadata RAID1 filesystem.
 
-   BTRFS error (device sdc): zoned: write pointer offset mismatch of zones in raid1 profile
-   BUG: kernel NULL pointer dereference, address: 0000000000000058
-   #PF: supervisor read access in kernel mode
-   #PF: error_code(0x0000) - not-present page
-   PGD 0 P4D 0
-   Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
-   RIP: 0010:__btrfs_add_free_space_zoned.isra.0+0x61/0x1a0
-   RSP: 0018:ffffa236b6f3f6d0 EFLAGS: 00010246
-   RAX: 0000000000000000 RBX: ffff96c8132f3400 RCX: 0000000000000001
-   RDX: 0000000010000000 RSI: 0000000000000000 RDI: ffff96c8132f3410
-   RBP: 0000000010000000 R08: 0000000000000003 R09: 0000000000000000
-   R10: 0000000000000000 R11: 00000000ffffffff R12: 0000000000000000
-   R13: ffff96c758f65a40 R14: 0000000000000001 R15: 000011aac0000000
-   FS: 00007fdab1cb2900(0000) GS:ffff96e60ca00000(0000) knlGS:0000000000000000
-   CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: 0000000000000058 CR3: 00000001a05ae000 CR4: 0000000000350ef0
-   Call Trace:
-   <TASK>
-   ? __die_body.cold+0x19/0x27
-   ? page_fault_oops+0x15c/0x2f0
-   ? exc_page_fault+0x7e/0x180
-   ? asm_exc_page_fault+0x26/0x30
-   ? __btrfs_add_free_space_zoned.isra.0+0x61/0x1a0
-   btrfs_add_free_space_async_trimmed+0x34/0x40
-   btrfs_add_new_free_space+0x107/0x120
-   btrfs_make_block_group+0x104/0x2b0
-   btrfs_create_chunk+0x977/0xf20
-   btrfs_chunk_alloc+0x174/0x510
-   ? srso_return_thunk+0x5/0x5f
-   btrfs_inc_block_group_ro+0x1b1/0x230
-   btrfs_relocate_block_group+0x9e/0x410
-   btrfs_relocate_chunk+0x3f/0x130
-   btrfs_balance+0x8ac/0x12b0
-   ? srso_return_thunk+0x5/0x5f
-   ? srso_return_thunk+0x5/0x5f
-   ? __kmalloc_cache_noprof+0x14c/0x3e0
-   btrfs_ioctl+0x2686/0x2a80
-   ? srso_return_thunk+0x5/0x5f
-   ? ioctl_has_perm.constprop.0.isra.0+0xd2/0x120
-   __x64_sys_ioctl+0x97/0xc0
-   do_syscall_64+0x82/0x160
-   ? srso_return_thunk+0x5/0x5f
-   ? __memcg_slab_free_hook+0x11a/0x170
-   ? srso_return_thunk+0x5/0x5f
-   ? kmem_cache_free+0x3f0/0x450
-   ? srso_return_thunk+0x5/0x5f
-   ? srso_return_thunk+0x5/0x5f
-   ? syscall_exit_to_user_mode+0x10/0x210
-   ? srso_return_thunk+0x5/0x5f
-   ? do_syscall_64+0x8e/0x160
-   ? sysfs_emit+0xaf/0xc0
-   ? srso_return_thunk+0x5/0x5f
-   ? srso_return_thunk+0x5/0x5f
-   ? seq_read_iter+0x207/0x460
-   ? srso_return_thunk+0x5/0x5f
-   ? vfs_read+0x29c/0x370
-   ? srso_return_thunk+0x5/0x5f
-   ? srso_return_thunk+0x5/0x5f
-   ? syscall_exit_to_user_mode+0x10/0x210
-   ? srso_return_thunk+0x5/0x5f
-   ? do_syscall_64+0x8e/0x160
-   ? srso_return_thunk+0x5/0x5f
-   ? exc_page_fault+0x7e/0x180
-   entry_SYSCALL_64_after_hwframe+0x76/0x7e
-   RIP: 0033:0x7fdab1e0ca6d
-   RSP: 002b:00007ffeb2b60c80 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-   RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fdab1e0ca6d
-   RDX: 00007ffeb2b60d80 RSI: 00000000c4009420 RDI: 0000000000000003
-   RBP: 00007ffeb2b60cd0 R08: 0000000000000000 R09: 0000000000000013
-   R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-   R13: 00007ffeb2b6343b R14: 00007ffeb2b60d80 R15: 0000000000000001
-   </TASK>
-   CR2: 0000000000000058
-   ---[ end trace 0000000000000000 ]---
+In the testcase also repair the broken filesystem and check if both system
+and metadata block groups are back to the default 'DUP' profile
+afterwards.
 
-The 1st line is the most interesting here:
-
- BTRFS error (device sdc): zoned: write pointer offset mismatch of zones in raid1 profile
-
-When a RAID1 block-group is created and a write pointer mismatch between
-the disks in the RAID set is detected, btrfs sets the alloc_offset to the
-length of the block group marking it as full. Afterwards the code expects
-that a balance operation will evacuate the data in this block-group and
-repair the problems.
-
-But before this is possible, the new space of this block-group will be
-accounted in the free space cache. But in __btrfs_add_free_space_zoned()
-it is being checked if it is a initial creation of a block group and if
-not a reclaim decision will be made. But the decision if a block-group's
-free space accounting is done for an initial creation depends on if the
-size of the added free space is the whole length of the block-group and
-the allocation offset is 0.
-
-But as btrfs_load_block_group_zone_info() sets the allocation offset to
-the zone capacity (i.e. marking the block-group as full) this initial
-decision is not met, and the space_info pointer in the 'struct
-btrfs_block_group' has not yet been assigned.
-
-Fail creation of the block group and rely on manual user intervention to
-re-balance the filesystem.
-
-Afterwards the filesystem can be unmounted, mounted in degraded mode and
-the missing device can be removed after a full balance of the filesystem.
-
-Fixes: b1934cd60695 ("btrfs: zoned: handle broken write pointer on zones")
 Link: https://lore.kernel.org/linux-btrfs/CAB_b4sBhDe3tscz=duVyhc9hNE+gu=B8CrgLO152uMyanR8BEA@mail.gmail.com/
-Reported-by: 西木野羰基 <yanqiyu01@gmail.com>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/zoned.c | 1 -
- 1 file changed, 1 deletion(-)
+ tests/btrfs/329     | 61 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/329.out |  3 +++
+ 2 files changed, 64 insertions(+)
+ create mode 100755 tests/btrfs/329
+ create mode 100644 tests/btrfs/329.out
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index fb8b8b29c169..7c502192cd6b 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1659,7 +1659,6 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
- 		 * stripe.
- 		 */
- 		cache->alloc_offset = cache->zone_capacity;
--		ret = 0;
- 	}
- 
- out:
+diff --git a/tests/btrfs/329 b/tests/btrfs/329
+new file mode 100755
+index 000000000000..441be133e230
+--- /dev/null
++++ b/tests/btrfs/329
+@@ -0,0 +1,61 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 Western Digital Corporation.  All Rights Reserved.
++#
++# FS QA Test 329
++#
++# what am I here for?
++#
++. ./common/preamble
++_begin_fstest zone quick volume
++
++. ./common/filter
++
++_fixed_by_kernel_commit XXXXXXXXXXXX \
++	"btrfs: zoned: return EIO on RAID1 block group write pointer mismatch"
++
++_require_scratch_dev_pool 2
++declare -a devs="( $SCRATCH_DEV_POOL )"
++_require_zoned_device ${devs[0]}
++_require_zoned_device ${devs[1]}
++_require_command "$BLKZONE_PROG" blkzone
++
++_scratch_mkfs >> $seqres.full 2>&1
++_scratch_mount
++
++# Write some data to the FS to dirty it
++dd if=/dev/zero of=$SCRATCH_MNT/test bs=128k count=1024 >> $seqres.full 2>&1
++
++# Add device two to the FS
++$BTRFS_UTIL_PROG device add ${devs[1]} $SCRATCH_MNT >> $seqres.full 2>&1
++
++# Move write pointers of all empty zones by 4k to simulate write pointer
++# mismatch.
++# 'blkzone report' reports the zone numbers in sectors so we need to convert
++# it to bytes first. Afterwards we need to convert it to 4k blocks for dd.
++zones=$($BLKZONE_PROG report ${devs[1]} | $AWK_PROG '/em/ { print $2 }' |\
++	sed 's/,//')
++for zone in $zones;
++do
++	zone=$(($zone / 8))
++	dd if=/dev/zero of=${devs[1]} seek=$zone bs=4k oflag=direct \
++		count=1 >> $seqres.full 2>&1
++done
++
++# expected to fail
++$BTRFS_UTIL_PROG balance start -mconvert=raid1 $SCRATCH_MNT \
++	>> $seqres.full 2>&1
++
++_scratch_unmount
++
++$MOUNT_PROG -t btrfs -odegraded ${devs[0]} $SCRATCH_MNT
++
++$BTRFS_UTIL_PROG device remove --force missing $SCRATCH_MNT >> $seqres.full 2>&1
++$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT >> $seqres.full 2>&1
++
++# Check that both System and Metadata are back to the DUP profile
++$BTRFS_UTIL_PROG filesystem df /mnt/scratch/ |\
++	grep -o -e "System, DUP" -e "Metadata, DUP"
++
++status=0
++exit
+diff --git a/tests/btrfs/329.out b/tests/btrfs/329.out
+new file mode 100644
+index 000000000000..eab11130981d
+--- /dev/null
++++ b/tests/btrfs/329.out
+@@ -0,0 +1,3 @@
++QA output created by 329
++System, DUP
++Metadata, DUP
 -- 
 2.43.0
 
