@@ -1,230 +1,183 @@
-Return-Path: <linux-btrfs+bounces-12311-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05D78A634BD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Mar 2025 09:50:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA8CA642FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 08:11:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43DF11704AB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Mar 2025 08:50:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89C327A279A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 07:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A6A19CC37;
-	Sun, 16 Mar 2025 08:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715DC21A45C;
+	Mon, 17 Mar 2025 07:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="FrU5Z/Ve"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XqnOzTU7";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lkpKBRHw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2FA155C87
-	for <linux-btrfs@vger.kernel.org>; Sun, 16 Mar 2025 08:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A814A1C6FF3
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742115005; cv=none; b=U1hQS+DAZ0EpgVusEz2g+GHqQ29sM/C9mYMHAHbn21OJfgtbelSJkzKKaMC6YKpFg+HVnr6DcG9P7sKGw6u3r1d/UTzCRWSbZ9whdTPj30OHzA33n7962x78P/tQZU3/7ft8bksgH77scnG/1a4L8I3dh1eunlmENFb7sr8lhbY=
+	t=1742195491; cv=none; b=rpXad+e+JYY8UyeXnW6u9svcf50xF5A/VoquWB4OCxTJ9dNd0K7ErBeB0swqZsw7Rpg9ckaFrcyAglsacBwem+6mvRAVT9lWn91lmugUpu3eK1RkHOONlEMpd1z3yn7PUGBnLbN1usV0yPXQtixisCL2dl9Mf/TTn4c/gNZ3OuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742115005; c=relaxed/simple;
-	bh=MlPySl3ACm5OC8MT1lGjuC4BtV8C3P3CkbQqd9j9HqI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nnrt5iNz+Yg7qaZfr+/TkOesvNYVH4UA4m1X7tOnMVAsh9ZoE3nYpS6/cTBkEu6gGgInr9XBg9WrfUXLVUThdhT5HOQFpA6mr4c4YN6TOxB5pr5cHFb1nhdF5UDusp3kuJBv820mUn8IEWMWZ0Xp1t24HqqQV6GWyA1xKP0hfAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=FrU5Z/Ve; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2240b4de12bso10908945ad.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Mar 2025 01:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1742115002; x=1742719802; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=soOsMjUDX0L3z68pN83CLYXGQKPqqXJHBRzUH/+iQu4=;
-        b=FrU5Z/Ve4KI2EJ5dpYWsk+rRaYpNJii8NKRM/FOkVFL56m5v4V/LXT6hZ7Z/5jmH7b
-         CqWGqqRIymLu+1lUIFkJ7+tkUm3maYzbsjN8VGcmxSFhWq5Y5LlRfN4/Pa2+emh3Bf2I
-         6arc1LUM6ABEzHBev6naLyPISV3l4hqRXpM7uDLX3dvCwBrynGgihqc91EW5ImUR8kgf
-         iM4Z4Rm5wsvGTm2ylupZjwKLcGZGoRNFfAZXaM7GVXIUFVD8mTAlW2y8mJ2QwsE26m8y
-         cdOBkwN88PGyXHtHXjid/joZGEnLqiyUSFfs8sKHcwyRfUYHwnRKxP86PIoOEPWtvG4M
-         LNtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742115002; x=1742719802;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=soOsMjUDX0L3z68pN83CLYXGQKPqqXJHBRzUH/+iQu4=;
-        b=LwPV4svOltLDcbR2rOgh6lUR33r232LrWdEFctuhZIrXjDG7oeWZP6Bf5REDmOcN9+
-         PpvRfii9MRE4ijeTqrgTCavRlfDbpklLe7JZmN+wxksP4kuYzwxtflgKqDRNg2z59vEj
-         KJ4MoYwlQZ1IStCqhuOhf0l/LkoaLJ7MVpRu5AeuNahPu6fPwnBq9MZEYaFu5ODmisyq
-         zD5x5oLyiDqsavBeQxgubivyCJh6NFGgJlWK97PtgJpH+nR+niv3q/iRt2+ZFb7ckLBL
-         nnVPlsWsafNesJ2WbNN5FkldikYhAd6VhP21u2Ork6B156ubpNq/nUdP2kwPNfmot0gw
-         c1Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCUskPoag+oI4uSwoS6k2Fuf/soz4Sav8cZYCASitK3jzVkH4sYMTT7NI1W2Q7Nx8C4SIQAyQsSxm/wdvQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw04qfUDg5iwrSG5YUW70iV5O8ZoLIK31pHVeT5ED6UQNknO8cp
-	UH+PIXNY4DwICU6IhgHrRjBHbFOBCBARDV4xqXsilNM3Ae/ZLMrUcqNjEezCk7o=
-X-Gm-Gg: ASbGncsUpgYB/t9lfFDGHiIDez8n8DBUBsJgFlh1mA9XLjl2Sy5BKQ8XkEWslTaNeJl
-	FNmwF1UWbeSCg9MSUOOqNV1ntcnLeQMZfbhxKc0kL4DW2Q8vBfo2u5272fiJb+AfoA3gW2G8Urz
-	OnhYuH2UmYpbm0kQvhbJxP6AUxoWlztnqM70LoMtlrcaw0p6Kr3HD8b2tvjqDaGXXwk185+IyLU
-	CK2sMxAyrjbkXgaVeKgZywe29PmD95RY3Wvbc+eXZ+OFXHfytsaMGaGuLH4lg1qY9S3h5Vy15OQ
-	qu0pXD06e+D5q+khRVyMj4LT7U0Vee/vOUQyNHUsxKR55aXIbuXz1MuVu4ooxdfw4SYVLRu1+h8
-	K2X850A==
-X-Google-Smtp-Source: AGHT+IEzVK5LsPCPJLOxGzZJMLs0Hpz7cAwlexEXo204aa6yKZYCWEHtDLdFcGmAFiv30Ov47TIhNg==
-X-Received: by 2002:a17:902:f693:b0:21d:3bd7:afdd with SMTP id d9443c01a7336-225e0868050mr111601535ad.0.1742115001911;
-        Sun, 16 Mar 2025 01:50:01 -0700 (PDT)
-Received: from sidongui-MacBookPro.local ([61.83.209.48])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-301539ed069sm3896109a91.17.2025.03.16.01.49.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Mar 2025 01:50:01 -0700 (PDT)
-Date: Sun, 16 Mar 2025 17:49:51 +0900
-From: Sidong Yang <sidong.yang@furiosa.ai>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH v3 1/3] io-uring/cmd: add iou_vec field for
- io_uring_cmd
-Message-ID: <Z9aQr9iUJecNdPQ4@sidongui-MacBookPro.local>
-References: <20250315172319.16770-1-sidong.yang@furiosa.ai>
- <20250315172319.16770-2-sidong.yang@furiosa.ai>
- <da0445a9-1fb4-4b75-b939-b38ce976205f@gmail.com>
- <Z9aFgKTUmcx-YCMf@sidongui-MacBookPro.local>
+	s=arc-20240116; t=1742195491; c=relaxed/simple;
+	bh=knWpqEPtXG5jfVPA+bKo7YhlOZw3WyzJf1OaTga/0Io=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ItlrrclwcUjRozQiNHdoI6TJ72r03KlU2Sw7C5aaaNbt6hyc734OiHcom/RMYbZz+1IwZDKHX5+hY+1BS2hzxJEC0ocSncv5LzeFyEiclTPM72JGn2cKijBu2L9ihckFn7hHVKOghWb6bPlPV/YQICJu+pBTQjqADIF/514gxEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XqnOzTU7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lkpKBRHw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DA6BB220D1
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1742195482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=WYWkj7HexIF9OlUtrHGN6C8Nl0VLLEuGicFQv8+Puug=;
+	b=XqnOzTU7Hd+mU+qoMreYNZn8pA1aK3hNzqz+Bznk+BQ+Ybfj4Xn2wwbRqUOjdzZJMRQOor
+	U2MZ49pXFDeZ9yDfPBYcsRlZ2tT4ELoQ4GUDctmsD16XDWpuKSMoxeGVbTcs9cKFwHlOdy
+	EmJVp8+55U4ui3+sJ+cJ5NQyMws7WJI=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1742195480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=WYWkj7HexIF9OlUtrHGN6C8Nl0VLLEuGicFQv8+Puug=;
+	b=lkpKBRHwIwQpQNkWW01XTm+NIqMwpLK33DzkPPmFOdZxZhGhp4x99BxaDIYqnQexA+T+KE
+	2APceo4lNH912Zwf1QnQ18W14e1J2BY/QZEA0QB1lNnvUYNr+hMahnA5VG0rnENiPoMn3r
+	zuLHrRU7RsAXbgXwtktS7ww6D3rJyVQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D849139D2
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +DykMxfL12e1YwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:19 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/9] btrfs: remove ASSERT()s for folio_order() and folio_test_large()
+Date: Mon, 17 Mar 2025 17:40:45 +1030
+Message-ID: <cover.1742195085.git.wqu@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z9aFgKTUmcx-YCMf@sidongui-MacBookPro.local>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Sun, Mar 16, 2025 at 05:02:19PM +0900, Sidong Yang wrote:
-> On Sun, Mar 16, 2025 at 07:24:32AM +0000, Pavel Begunkov wrote:
-> > On 3/15/25 17:23, Sidong Yang wrote:
-> > > This patch adds iou_vec field for io_uring_cmd. Also it needs to be
-> > > cleanup for cache. It could be used in uring cmd api that imports
-> > > multiple fixed buffers.
-> > 
-> > Sidong, I think you accidentially erased my authorship over the
-> > patch. The only difference I see is that you rebased it and dropped
-> > prep patches by placing iou_vec into struct io_uring_cmd_data. And
-> > the prep patch was mandatory, once something is exported there is
-> > a good chance it gets [ab]used, and iou_vec is not ready for it.
-> 
-> Yes, First I thought it's not mandatory for this function. But it seems that
-> it's needed. I see that your patch hides all fields in io_uring_cmd_data but
-> op_data needed to be accessable for btrfs cmd. And I'll take a look for the
-> code referencing sqes in io_uring_cmd_data. Let me add the commit for next
-> version v4.
+[CHANGELOG]
+v3:
+- Prepare btrfs_end_repair_bio() to support larger folios
+  Unfortunately folio_iter structure is way too large compared to
+  bvec_iter, thus it's not a good idea to convert bbio::saved_iter to
+  folio_iter.
 
-I've just realized that your commit don't need to be modified. It's okay to
-cast async_data to io_uring_cmd_data. 
+  Thankfully it's not that complex to grab the folio from a bio_vec.
 
-Thanks,
-Sidong
-> 
-> Thanks,
-> Sidong
-> 
-> > 
-> > 
-> > > Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
-> > > ---
-> > >   include/linux/io_uring/cmd.h |  1 +
-> > >   io_uring/io_uring.c          |  2 +-
-> > >   io_uring/opdef.c             |  1 +
-> > >   io_uring/uring_cmd.c         | 20 ++++++++++++++++++++
-> > >   io_uring/uring_cmd.h         |  3 +++
-> > >   5 files changed, 26 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/linux/io_uring/cmd.h b/include/linux/io_uring/cmd.h
-> > > index 598cacda4aa3..74b9f0aec229 100644
-> > > --- a/include/linux/io_uring/cmd.h
-> > > +++ b/include/linux/io_uring/cmd.h
-> > > @@ -22,6 +22,7 @@ struct io_uring_cmd {
-> > >   struct io_uring_cmd_data {
-> > >   	void			*op_data;
-> > >   	struct io_uring_sqe	sqes[2];
-> > > +	struct iou_vec		iou_vec;
-> > >   };
-> > >   static inline const void *io_uring_sqe_cmd(const struct io_uring_sqe *sqe)
-> > > diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-> > > index 5ff30a7092ed..55334fa53abf 100644
-> > > --- a/io_uring/io_uring.c
-> > > +++ b/io_uring/io_uring.c
-> > > @@ -289,7 +289,7 @@ static void io_free_alloc_caches(struct io_ring_ctx *ctx)
-> > >   	io_alloc_cache_free(&ctx->apoll_cache, kfree);
-> > >   	io_alloc_cache_free(&ctx->netmsg_cache, io_netmsg_cache_free);
-> > >   	io_alloc_cache_free(&ctx->rw_cache, io_rw_cache_free);
-> > > -	io_alloc_cache_free(&ctx->uring_cache, kfree);
-> > > +	io_alloc_cache_free(&ctx->uring_cache, io_cmd_cache_free);
-> > >   	io_alloc_cache_free(&ctx->msg_cache, kfree);
-> > >   	io_futex_cache_free(ctx);
-> > >   	io_rsrc_cache_free(ctx);
-> > > diff --git a/io_uring/opdef.c b/io_uring/opdef.c
-> > > index 7fd173197b1e..e275180c2077 100644
-> > > --- a/io_uring/opdef.c
-> > > +++ b/io_uring/opdef.c
-> > > @@ -755,6 +755,7 @@ const struct io_cold_def io_cold_defs[] = {
-> > >   	},
-> > >   	[IORING_OP_URING_CMD] = {
-> > >   		.name			= "URING_CMD",
-> > > +		.cleanup		= io_uring_cmd_cleanup,
-> > >   	},
-> > >   	[IORING_OP_SEND_ZC] = {
-> > >   		.name			= "SEND_ZC",
-> > > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > > index de39b602aa82..315c603cfdd4 100644
-> > > --- a/io_uring/uring_cmd.c
-> > > +++ b/io_uring/uring_cmd.c
-> > > @@ -28,6 +28,13 @@ static void io_req_uring_cleanup(struct io_kiocb *req, unsigned int issue_flags)
-> > >   	if (issue_flags & IO_URING_F_UNLOCKED)
-> > >   		return;
-> > > +
-> > > +	req->flags &= ~REQ_F_NEED_CLEANUP;
-> > > +
-> > > +	io_alloc_cache_vec_kasan(&cache->iou_vec);
-> > > +	if (cache->iou_vec.nr > IO_VEC_CACHE_SOFT_CAP)
-> > > +		io_vec_free(&cache->iou_vec);
-> > > +
-> > >   	if (io_alloc_cache_put(&req->ctx->uring_cache, cache)) {
-> > >   		ioucmd->sqe = NULL;
-> > >   		req->async_data = NULL;
-> > > @@ -35,6 +42,11 @@ static void io_req_uring_cleanup(struct io_kiocb *req, unsigned int issue_flags)
-> > >   	}
-> > >   }
-> > > +void io_uring_cmd_cleanup(struct io_kiocb *req)
-> > > +{
-> > > +	io_req_uring_cleanup(req, 0);
-> > > +}
-> > > +
-> > >   bool io_uring_try_cancel_uring_cmd(struct io_ring_ctx *ctx,
-> > >   				   struct io_uring_task *tctx, bool cancel_all)
-> > >   {
-> > > @@ -339,3 +351,11 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
-> > >   #endif
-> > > +
-> > > +void io_cmd_cache_free(const void *entry)
-> > > +{
-> > > +	struct io_uring_cmd_data *cache = (struct io_uring_cmd_data *)entry;
-> > > +
-> > > +	io_vec_free(&cache->iou_vec);
-> > > +	kfree(cache);
-> > > +}
-> > > diff --git a/io_uring/uring_cmd.h b/io_uring/uring_cmd.h
-> > > index f6837ee0955b..d2b9c1522e22 100644
-> > > --- a/io_uring/uring_cmd.h
-> > > +++ b/io_uring/uring_cmd.h
-> > > @@ -1,7 +1,10 @@
-> > >   // SPDX-License-Identifier: GPL-2.0
-> > > +#include <linux/io_uring_types.h>
-> > >   int io_uring_cmd(struct io_kiocb *req, unsigned int issue_flags);
-> > >   int io_uring_cmd_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
-> > > +void io_uring_cmd_cleanup(struct io_kiocb *req);
-> > >   bool io_uring_try_cancel_uring_cmd(struct io_ring_ctx *ctx,
-> > >   				   struct io_uring_task *tctx, bool cancel_all);
-> > > +void io_cmd_cache_free(const void *entry);
-> > 
-> > -- 
-> > Pavel Begunkov
-> > 
+- Add a new patch to prepare defrag for larger data folios
+
+v2:
+- Update the commit message for the first patch
+
+There are quite some ASSERT()s checking folio_order() or
+folio_test_large() on data folios.
+
+They are the blockage for the incoming larger data folios.
+
+This series will remove most of them, with the following exceptions
+which are not a blockage for larger data folios.
+
+- wait_dev_supers() and write_dev_supers()
+  They are folios from block device cache, will not be affected by our
+  larger data folios support.
+
+- relocation_one_folio()
+  It's about data relocation inode, and we can disable larger data folios
+  for such special inode easily.
+
+- btrfs_attach_subpage()
+  The folio_test_large() is only for metadata, just change it to be a
+  metadata specific check.
+
+The first patch is just a small cleanup for send, exposed during the
+removal of ASSERT()s.
+
+The conversion for defrag is only tested to not break the existing
+subpage and regular cases.
+The full tests can only be done with larger data folios support enabled.
+
+Although there is one real blockage before enabling larger data folios:
+
+- btrfs_buffered_write()
+  Currnetly we always reserved space first, then grab the folio.
+  This makes it impossible to support variable sized folios.
+
+  We have to align the behavior to iomap, which grab the folio first
+  then determine the reserved space according to the folio size.
+
+  This will touch the core function of btrfs and can not be hidden
+  behind experimental flags.
+  Thus that change will be a dedicated one and needs a lot of
+  reviews/tests.
+
+Qu Wenruo (9):
+  btrfs: send: remove the again label inside put_file_data()
+  btrfs: send: prepare put_file_data() for larger data folios
+  btrfs: prepare btrfs_page_mkwrite() for larger data folios
+  btrfs: prepare prepare_one_folio() for larger data folios
+  btrfs: prepare end_bbio_data_write() for larger data folios
+  btrfs: subpage: prepare for larger data folios
+  btrfs: zlib: prepare copy_data_into_buffer() for larger data folios
+  btrfs: prepare btrfs_end_repair_bio() for larger data folios
+  btrfs: enable larger data folios support for defrag
+
+ fs/btrfs/bio.c       | 28 ++++++++++++-----
+ fs/btrfs/defrag.c    | 72 ++++++++++++++++++++++++++------------------
+ fs/btrfs/extent_io.c |  3 --
+ fs/btrfs/file.c      |  6 +---
+ fs/btrfs/send.c      | 29 ++++++++----------
+ fs/btrfs/subpage.c   |  6 ++--
+ fs/btrfs/zlib.c      |  2 --
+ 7 files changed, 79 insertions(+), 67 deletions(-)
+
+-- 
+2.48.1
+
 
