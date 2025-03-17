@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-12320-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12321-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A1DFA64308
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 08:12:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58C95A64306
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 08:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5B2F3A7561
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 07:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5845E168684
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 07:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F7E21ABAB;
-	Mon, 17 Mar 2025 07:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF68721ABB8;
+	Mon, 17 Mar 2025 07:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u4nz0C/p";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u4nz0C/p"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZqsZpDih";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZqsZpDih"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5269A18A6B5
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4F91C6FF3
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742195518; cv=none; b=VWq0sR8zDbQLscy7h0hfwnxsAN1IMAoMEMF/Dq+BIY5Rhs4u4JTdfC/uZNZHjJHMOkEY3wHxRst9ExgO6lAui/4Y3D3Wmp/mB082otkQtkKIleBX7vLNmk1+k8b/fmxiCjQwe3975qG2ALzurr8SoU4uV79CtqNc9o4lCPuVdfY=
+	t=1742195525; cv=none; b=bkzg6pkExslW03+a/KDWds8FrUq3pg6pn48gU3NIKb9PX7MifNykxSywaTfzm8ApS0CtrTqKfYYGNTkni8j78KtlgyQj3EBi7jMhZiNt82A0ioTZPKbMMnZV2tSl78JAtreRyphXL04xjPi9uK5RutGwZzZwYwMZ4ENKkpAT3vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742195518; c=relaxed/simple;
-	bh=fV39FIZBHcLoysOcEHA/fNtbn1s1mlpDtFc3Eo+jfyo=;
+	s=arc-20240116; t=1742195525; c=relaxed/simple;
+	bh=GEN3iJkWeDvE/KSQxPiVSF1LRJQphDfycxGUh2NOZUg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F6ja4/0ObOVmgGxQd6j0xUn0QVn+ftLM+S3IvUvwCZ4LS4Ebd9VkhCYU1DpwMOx1sNhwg8QFF2FC33f+zTQNp8pc67IbrIpmwrBiIwR6K/X3hBh7u+h7gq8PvLrUp1YrwjkDYDYzOHU1E3EndvIi2skXXTgPj5aeIkCok+065Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u4nz0C/p; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u4nz0C/p; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=SQy2g0HrovkKDUs+dQ4Y0knlq3W/GK5bAp3yG5+cempnZ1lPyhGMeREYKpISZWDXITgqMtd34rPr0n+DEwV1dG+KstYxpaiQT6p9fizNzxr9/UEhoAGslIIwo2KOp+liTXYgHVLXWJCNJ5TDeYywqq8cOybYy/Gwzt2Vb4a34/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZqsZpDih; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZqsZpDih; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4DF712212C
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:28 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 900AD2212E
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1742195488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1742195489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JC3ZrLumjXEUxKYQAcQV/R5RberFyv50JmwDwX9aZy8=;
-	b=u4nz0C/ptWSmFQHTo9tYfHBtbaEzsZpyBr/49dhWA15Ck8NTTLOdzvT+vW5CsIoNO1oQWc
-	dmMwJy9RG+l4onDFFk4Eeod13K2tZWR0D161pTqLzSjdQNHBw5hp1ryOdkIsHLRQB/lZE0
-	IImHWa2a5FegIEAJm4YoufqW4G7HcTI=
+	bh=hjRDK+DEmvOJ6nnT06bW82e6DneaDQkEOgvkFEgxBIA=;
+	b=ZqsZpDihG905MESX6nIexJViByUTUxSMXOrv9QaP0LFgQL5YiYYe5OKXGowaBLkEdJ5Xm1
+	o90uJuXdUcyMJsKTJEhqxVScfiCV+Vi6j3O5R64vl111i5u/q8ZvzZpYOxhjVyLSxsadW0
+	kQU6q5RzOTkHsQI3gvXcqwUPkL/RNdM=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="u4nz0C/p"
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ZqsZpDih
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1742195488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1742195489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JC3ZrLumjXEUxKYQAcQV/R5RberFyv50JmwDwX9aZy8=;
-	b=u4nz0C/ptWSmFQHTo9tYfHBtbaEzsZpyBr/49dhWA15Ck8NTTLOdzvT+vW5CsIoNO1oQWc
-	dmMwJy9RG+l4onDFFk4Eeod13K2tZWR0D161pTqLzSjdQNHBw5hp1ryOdkIsHLRQB/lZE0
-	IImHWa2a5FegIEAJm4YoufqW4G7HcTI=
+	bh=hjRDK+DEmvOJ6nnT06bW82e6DneaDQkEOgvkFEgxBIA=;
+	b=ZqsZpDihG905MESX6nIexJViByUTUxSMXOrv9QaP0LFgQL5YiYYe5OKXGowaBLkEdJ5Xm1
+	o90uJuXdUcyMJsKTJEhqxVScfiCV+Vi6j3O5R64vl111i5u/q8ZvzZpYOxhjVyLSxsadW0
+	kQU6q5RzOTkHsQI3gvXcqwUPkL/RNdM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8913C139D2
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0D2F139D2
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kPDfEh/L12e1YwAAD6G6ig
+	id 0HV7ICDL12e1YwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:27 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 07:11:28 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 6/9] btrfs: subpage: prepare for larger data folios
-Date: Mon, 17 Mar 2025 17:40:51 +1030
-Message-ID: <a2b3545fb1e81fc4ebe488d638621191fd5f1a69.1742195085.git.wqu@suse.com>
+Subject: [PATCH v3 7/9] btrfs: zlib: prepare copy_data_into_buffer() for larger data folios
+Date: Mon, 17 Mar 2025 17:40:52 +1030
+Message-ID: <00571e99924d303e96fcef9b914f35489e009ea3.1742195085.git.wqu@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1742195085.git.wqu@suse.com>
 References: <cover.1742195085.git.wqu@suse.com>
@@ -84,7 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4DF712212C
+X-Rspamd-Queue-Id: 900AD2212E
 X-Spam-Score: -3.01
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.01 / 50.00];
@@ -113,53 +113,32 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-The subpage handling code has two locations not supporting larger
-folios:
-
-- btrfs_attach_subpage()
-  Which is doing a metadata specific ASSERT() check.
-
-  But for the future larger data folios support, that check is too
-  generic.
-  Since it's metadata specific, only check the ASSERT() for metadata.
-
-- btrfs_subpage_assert()
-  Just remove the "ASSERT(folio_order(folio) == 0)" check.
+The function itself is already taking larger folios into consideration,
+just remove the ASSERT(!folio_test_large()) line.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/subpage.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/btrfs/zlib.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 834161f35a00..bf7fd50ab9ec 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -69,7 +69,8 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
- 	struct btrfs_subpage *subpage;
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index 3a7d136f57b4..b32aa05b288e 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -120,8 +120,6 @@ static int copy_data_into_buffer(struct address_space *mapping,
+ 		ret = btrfs_compress_filemap_get_folio(mapping, cur, &folio);
+ 		if (ret < 0)
+ 			return ret;
+-		/* No larger folio support yet. */
+-		ASSERT(!folio_test_large(folio));
  
- 	/* For metadata we don't support larger folio yet. */
--	ASSERT(!folio_test_large(folio));
-+	if (type == BTRFS_SUBPAGE_METADATA)
-+		ASSERT(!folio_test_large(folio));
- 
- 	/*
- 	 * We have cases like a dummy extent buffer page, which is not mapped
-@@ -181,9 +182,6 @@ void btrfs_folio_dec_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *
- static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, u64 start, u32 len)
- {
--	/* For subpage support, the folio must be single page. */
--	ASSERT(folio_order(folio) == 0);
--
- 	/* Basic checks */
- 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
- 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+ 		offset = offset_in_folio(folio, cur);
+ 		copy_length = min(folio_size(folio) - offset,
 -- 
 2.48.1
 
