@@ -1,210 +1,147 @@
-Return-Path: <linux-btrfs+bounces-12382-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12383-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BA0A6776E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 16:15:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC73A6783A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 16:47:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86BCE17D437
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 15:15:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96852423F21
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 15:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1031F20E703;
-	Tue, 18 Mar 2025 15:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D0D20FA98;
+	Tue, 18 Mar 2025 15:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EHYZo6z8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y2erpn03";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aD+k5uso";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y2erpn03";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aD+k5uso"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D8F20E6EC;
-	Tue, 18 Mar 2025 15:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F3E20E709
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 15:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742310904; cv=none; b=poRnaSBLB4sG74teBowo50ITn5lGvQ3f5ZwgHOtBjTrs1+8sW1fFnisImI6i3Mnm5voM++TvlR6uDZerNmP+qAY/M+zIoH87Y1OCKG2fa2nmb/otk+igN8qj4xkyDUhtiF/72SSovJNZwaKIWLnSPXeKV9ic8G3rwYlybBF8DR8=
+	t=1742312761; cv=none; b=o2sigdZf8YGKqlTM7+NySXSVCVg82QsT8WvxtS7dG6tpMB1K2c/h25Yb4KvmZnjX4CEjVRmTrWQFZcE0K5ccf5QkZ6Hqi9N/D4NeK2P9L63apngZOiXYp2a1p2I5eIBWIpRR/J8jagNTguJYMSoWAhWkZi+xcCYAE9fZ8ZQdAxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742310904; c=relaxed/simple;
-	bh=iwsIAoH8sW9n9h/dVijf9JsO8LC4GQP+Z3P3Vfx1HX8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TngeqU1erIXTMIXaYArmOsdb8qCUMJKJ4xX/xRJt4kAut6J5Ytu5r8TT27PuhpUOCZveweJzCEzrK8AkH+4RSWV2Omrngh5IZF/1dAxs+b/9qXE7EBhyaO/knBZ/G0ghd5H7Y7QGJVS5nrOYvUkQNXH42ULLMny8zbGbdfi4//U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EHYZo6z8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E63BC4CEF7;
-	Tue, 18 Mar 2025 15:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742310904;
-	bh=iwsIAoH8sW9n9h/dVijf9JsO8LC4GQP+Z3P3Vfx1HX8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=EHYZo6z8tEno2nuqEy7Ikau0arXRFLWCzhmskeMXhJULh/74V2txe4U5YKsYFRmim
-	 ubFNoiBnEljRxEJzEEv52cWmI5+jwGpbtZMKTfhla2TPXinxBGpsLHAUkSJffDHXdI
-	 IrI0GQRWyO6yEBDnOh0x+p1OrMYzoqkCJm+bP/Z+g6JwBd+qrs4zMBs/hPDNIfnaSP
-	 kfGXyhTXqUKmTEcmZf4PREuuSLnXeyZMTT9PFFtOuUP2UuAyL6lZyJ3sravHyRN7x+
-	 QmA/umsKJwl6yxiQ6IxHtZhyx6K18+7X4Dw74md9hesjhKf7QxeC39x6NQlqT4wJ9A
-	 14pUYuEQ+VSDA==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5e4d50ed90aso7166579a12.0;
-        Tue, 18 Mar 2025 08:15:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUEXqrEYGq9juTPklWcN4PrpdoJuCmU6Qv/hhTu4OZrGGREtcFVaOmJtoVoeOhC9c/4XF8UBwx7I5pq9kQ=@vger.kernel.org, AJvYcCVh7MBf5wFZ9TUTxDRaIxSd3h0UrjbJoqnyGgsKG7T08OGYJkDdA0ErUjzDLt7yfjhKKvWFAini@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPFpAlq2aCrzAnSH4N5PocFfej9PsOaKKBG9yEKaK4EUeqfDej
-	8xqS7fu6nF809M/IX6FZH29zYevEsOlRL79MUbpcjgCGyX6T0Ts5JvKZ4HJcHUTTdtqL0Ogkgvq
-	+nuWVHKB1J9Uj124sQjg7j9SgYw0=
-X-Google-Smtp-Source: AGHT+IH0+d45XGwR/BWMVTK3Macga04jxT38NSNCNg8Q0ck/p+oFF8A7BmDss/GNxCtQNUhB7r4wJf0nAI5pmW40Pxo=
-X-Received: by 2002:a17:907:9495:b0:abe:c81a:985d with SMTP id
- a640c23a62f3a-ac3304d6112mr1498964666b.48.1742310902618; Tue, 18 Mar 2025
- 08:15:02 -0700 (PDT)
+	s=arc-20240116; t=1742312761; c=relaxed/simple;
+	bh=5F4ABLoAYJ7GDp5Q7yv2d6UrCUrlDm/5VuzurFmJqpE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N8rBjhpbpAROZ4aRFITwQtT9eF0TaaQf/jWupsTjHeWh8kApymreq6rm/p/elrCEZf8fgU/ULAVQzPcNeJ7glgMqlOKvHNd0gYITJG3DKWrRdmb+N8MXqh3vQBbQ0kPT5cyRg8D8C3juqcAKxyRtm/rln1bMf+8I/gLc3ZluJTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y2erpn03; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aD+k5uso; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y2erpn03; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aD+k5uso; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1D9DA211FB;
+	Tue, 18 Mar 2025 15:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742312754;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5F4ABLoAYJ7GDp5Q7yv2d6UrCUrlDm/5VuzurFmJqpE=;
+	b=Y2erpn03MlPeTTroNuwhE1I11r4RJi46Us8tbmiA/nM+kzcFWrfEvgPSeAEgCN0vT8zt/u
+	ENDdRL8vJZh4WTyXQag4IPtgxReWTBdwpeofydRbRiL+ORw2fQ1Q76/v04M5p2xDlrWuQJ
+	UKHHKTunYvIZKACFhdpRjTcZHqsQias=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742312754;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5F4ABLoAYJ7GDp5Q7yv2d6UrCUrlDm/5VuzurFmJqpE=;
+	b=aD+k5uso0ly6SZN8sJonr+YWrTqTVamhLvdK2IHd6I74NYj1EFdkUvZOra7lBSEJ/uhVG6
+	PuCvG5eI5rkpfHAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742312754;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5F4ABLoAYJ7GDp5Q7yv2d6UrCUrlDm/5VuzurFmJqpE=;
+	b=Y2erpn03MlPeTTroNuwhE1I11r4RJi46Us8tbmiA/nM+kzcFWrfEvgPSeAEgCN0vT8zt/u
+	ENDdRL8vJZh4WTyXQag4IPtgxReWTBdwpeofydRbRiL+ORw2fQ1Q76/v04M5p2xDlrWuQJ
+	UKHHKTunYvIZKACFhdpRjTcZHqsQias=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742312754;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5F4ABLoAYJ7GDp5Q7yv2d6UrCUrlDm/5VuzurFmJqpE=;
+	b=aD+k5uso0ly6SZN8sJonr+YWrTqTVamhLvdK2IHd6I74NYj1EFdkUvZOra7lBSEJ/uhVG6
+	PuCvG5eI5rkpfHAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ECA5B139D2;
+	Tue, 18 Mar 2025 15:45:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BnIJOTGV2Wd+KAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 18 Mar 2025 15:45:53 +0000
+Date: Tue, 18 Mar 2025 16:45:52 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove EXTENT_BUFFER_IN_TREE flag
+Message-ID: <20250318154552.GE32661@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250318095440.436685-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <05f928908a7949fb1787680176840b5ab23fde0b.1742303818.git.jth@kernel.org>
-In-Reply-To: <05f928908a7949fb1787680176840b5ab23fde0b.1742303818.git.jth@kernel.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 18 Mar 2025 15:14:24 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7JKsaME+Kvtn0U+8Sc=B3M_8-dSSNcTyopA60bpa3SQQ@mail.gmail.com>
-X-Gm-Features: AQ5f1Jqe92zqQV_j5JVLgZgxeUxfVm7hIspJejTFRYvfyRWzwJek-MSCeW4lU6s
-Message-ID: <CAL3q7H7JKsaME+Kvtn0U+8Sc=B3M_8-dSSNcTyopA60bpa3SQQ@mail.gmail.com>
-Subject: Re: [PATCH v3] fstests: btrfs: zoned: verify RAID conversion with
- write pointer mismatch
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: Zorro Lang <zlang@redhat.com>, Anand Jain <anand.jain@oracle.com>, 
-	Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250318095440.436685-1-neelx@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -8.00
+X-Spamd-Result: default: False [-8.00 / 50.00];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Mar 18, 2025 at 1:17=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
- wrote:
->
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Recently we had a bug report about a kernel crash that happened when the
-> user was converting a filesystem to use RAID1 for metadata, but for some
-> reason the device's write pointers got out of sync.
->
-> Test this scenario by manually injecting de-synchronized write pointer
-> positions and then running conversion to a metadata RAID1 filesystem.
->
-> In the testcase also repair the broken filesystem and check if both syste=
-m
-> and metadata block groups are back to the default 'DUP' profile
-> afterwards.
->
-> Link: https://lore.kernel.org/linux-btrfs/CAB_b4sBhDe3tscz=3DduVyhc9hNE+g=
-u=3DB8CrgLO152uMyanR8BEA@mail.gmail.com/
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Tue, Mar 18, 2025 at 10:54:38AM +0100, Daniel Vacek wrote:
+> This flag is set after inserting the eb to the buffer tree and cleared on
+> it's removal. But it does not bring any added value. Just kill it for good.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Would be good to add the reference to commit that added the bit,
+34b41acec1ccc0 ("Btrfs: use a bit to track if we're in the radix tree")
+and wanted to make use of it, faa2dbf004e89e ("Btrfs: add sanity tests
+for new qgroup accounting code"). And both are 10+ years old.
 
-Looks good now, thanks.
+> Signed-off-by: Daniel Vacek <neelx@suse.com>
 
->
-> ---
-> Changes to v2:
-> - Filter SCRATCH_MNT in golden output
-> Changes to v1:
-> - Add test description
-> - Don't redirect stderr to $seqres.full
-> - Use xfs_io instead of dd
-> - Use $SCRATCH_MNT instead of hardcoded mount path
-> - Check that 1st balance command actually fails as it's supposed to
-> ---
->  tests/btrfs/329     | 62 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/329.out |  7 +++++
->  2 files changed, 69 insertions(+)
->  create mode 100755 tests/btrfs/329
->  create mode 100644 tests/btrfs/329.out
->
-> diff --git a/tests/btrfs/329 b/tests/btrfs/329
-> new file mode 100755
-> index 000000000000..5496866ac325
-> --- /dev/null
-> +++ b/tests/btrfs/329
-> @@ -0,0 +1,62 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 Western Digital Corporation.  All Rights Reserved.
-> +#
-> +# FS QA Test 329
-> +#
-> +# Regression test for a kernel crash when converting a zoned BTRFS from
-> +# metadata DUP to RAID1 and one of the devices has a non 0 write pointer
-> +# position in the target zone.
-> +#
-> +. ./common/preamble
-> +_begin_fstest zone quick volume
-> +
-> +. ./common/filter
-> +
-> +_fixed_by_kernel_commit XXXXXXXXXXXX \
-> +       "btrfs: zoned: return EIO on RAID1 block group write pointer mism=
-atch"
-> +
-> +_require_scratch_dev_pool 2
-> +declare -a devs=3D"( $SCRATCH_DEV_POOL )"
-> +_require_zoned_device ${devs[0]}
-> +_require_zoned_device ${devs[1]}
-> +_require_command "$BLKZONE_PROG" blkzone
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +# Write some data to the FS to dirty it
-> +$XFS_IO_PROG -fc "pwrite 0 128M" $SCRATCH_MNT/test | _filter_xfs_io
-> +
-> +# Add device two to the FS
-> +$BTRFS_UTIL_PROG device add ${devs[1]} $SCRATCH_MNT >> $seqres.full
-> +
-> +# Move write pointers of all empty zones by 4k to simulate write pointer
-> +# mismatch.
-> +zones=3D$($BLKZONE_PROG report ${devs[1]} | $AWK_PROG '/em/ { print $2 }=
-' |\
-> +       sed 's/,//')
-> +for zone in $zones;
-> +do
-> +       # We have to ignore the output here, as a) we don't know the numb=
-er of
-> +       # zones that have dirtied and b) if we run over the maximal numbe=
-r of
-> +       # active zones, xfs_io will output errors, both we don't care.
-> +       $XFS_IO_PROG -fdc "pwrite $(($zone << 9)) 4096" ${devs[1]} > /dev=
-/null 2>&1
-> +done
-> +
-> +# expected to fail
-> +$BTRFS_UTIL_PROG balance start -mconvert=3Draid1 $SCRATCH_MNT 2>&1 |\
-> +       _filter_scratch
-> +
-> +_scratch_unmount
-> +
-> +$MOUNT_PROG -t btrfs -odegraded ${devs[0]} $SCRATCH_MNT
-> +
-> +$BTRFS_UTIL_PROG device remove --force missing $SCRATCH_MNT >> $seqres.f=
-ull
-> +$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT >> $seqres.fu=
-ll
-> +
-> +# Check that both System and Metadata are back to the DUP profile
-> +$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT |\
-> +       grep -o -e "System, DUP" -e "Metadata, DUP"
-> +
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/329.out b/tests/btrfs/329.out
-> new file mode 100644
-> index 000000000000..e47a2a6ff04b
-> --- /dev/null
-> +++ b/tests/btrfs/329.out
-> @@ -0,0 +1,7 @@
-> +QA output created by 329
-> +wrote 134217728/134217728 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +ERROR: error during balancing 'SCRATCH_MNT': Input/output error
-> +There may be more info in syslog - try dmesg | tail
-> +System, DUP
-> +Metadata, DUP
-> --
-> 2.43.0
->
->
+Reviewed-by: David Sterba <dsterba@suse.com>
 
