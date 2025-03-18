@@ -1,183 +1,184 @@
-Return-Path: <linux-btrfs+bounces-12345-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6FACA662DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 00:47:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F86CA6643C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 01:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 089431745D9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Mar 2025 23:47:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F23E18992E9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 00:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0249320469E;
-	Mon, 17 Mar 2025 23:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C82F7E105;
+	Tue, 18 Mar 2025 00:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="sceQ2aVQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YrTHUm6K"
+	dkim=pass (1024-bit key) header.d=furiosa.ai header.i=@furiosa.ai header.b="XQvplfzX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E9379D2
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 23:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D854857C93
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 00:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742255270; cv=none; b=GKYjSAezh/NvtDT1+rgqTWFaR+cs+LIPFJ/TsJQas8ipBBj4VxuxpVeY+0Zz0Jk2CAZkq1S6D/QKN5CEVGgsr2e3t3MxJGNZGc5ZQijoUabEitM5hYrGEnPzrqqmDPTiiHbWitJcLzKdGBwMB0YIwpcBQAYsesf5yR4i8T+vkWk=
+	t=1742259072; cv=none; b=SaEqXrtSKhjodSH7jV3R/xRjZ2ocorXvcdXtkFUikrrpkmdu6AuYWBsAGqJQusSYt7sMtlyacMLkSvRUxXeAefWi5bThkYd/S0yYEC02xBqK7c5PhthlUXsRu73ysAfNF2bo2MZymsUPOeSkK0khAm5QTscyNxCJ/cF3BWPK2gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742255270; c=relaxed/simple;
-	bh=w4OWfTA01pMbXMUV1wI05QXkKx341Chn14Bm1evIbhI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=E6DH/w3TOkQvRqn9gdTvAtG+jpmam183bKG/M/K7n3GnK9GvimDMYrKVkGT2ZqoJ4E3FzTV64dlsiJsvFUSrXY8mFBIrKHpGTHjZgSr++USQUJITu+mTw0DZR0FPDJbaTOzvJk34f3twGWM0Hsmzc15wuYR5ivWQOvFBWichyRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=sceQ2aVQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YrTHUm6K; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id ECDBC11401EF;
-	Mon, 17 Mar 2025 19:47:46 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 17 Mar 2025 19:47:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1742255266; x=1742341666; bh=NooX6fGY2gwol8CaAhcZ2
-	p/IvdxOblOanSEQMcyflgc=; b=sceQ2aVQnWesGZR8R64PVrDeAKO9hTiTD/R3q
-	4FTNr3lnOZ/aqcnVw0bWiCGPVk2YRUXpJc35OXj51ZiHWTWjnqPrnSD5gkvf3wZR
-	WG3TtEfN7x+oBl/gqWYDL0hYmNhvoAWvyKw/ej51oEU3+nbh0fgLBdv7PFGLBUaz
-	OqDTICZd/rDkdUNAlcKV0d6uLmNbz+Krvp7j0NFGFaHLM/ZSOKUcDgsWEIzKPaoV
-	Leve8O3CtXccp0O0P3EOSmPUNjHDrYj2g94FJwdFmjkihwGZMBF1TMOYE4A+65Mr
-	ynN6NjE8DBRvABs+wMhK7zyYUKkTcy7SAG/0HBBjFHPc+OLjw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1742255266; x=1742341666; bh=NooX6fGY2gwol8CaAhcZ2p/IvdxOblOanSE
-	QMcyflgc=; b=YrTHUm6KeRMT+1QySxGz0WGAQrC2Xo0vPnZbJP7vC3nrHhh//X9
-	8imLF2R/a0L/ED0VY2Vd/ACOvrHgcEym+Y2geIsSvFUpkPUPwoVnw3SluP8Og3St
-	GlluTkuEPxUpJUbi+5TWCFbxqxngS+hCpNdGXC3NpMqyuLe/J73ulPAK6RC2x0ou
-	MjSkRx1FRExcmTYSsu06+DxFHl4/wtXPtGudqjpKTZP2zBTM2raKw9SuKKP6bAvb
-	JM142n3nSDuop3Yr/l7EtkZqf8r8nrvGd/hBLyhR7hncuM+nmy0X8t0zGHPjzwb2
-	AYi9EH8+MRWtJKFJrSV4YbRk5Zeknz+SzZQ==
-X-ME-Sender: <xms:orTYZ0LFVJrNdV8e3amImVaLRd_3SmwARRFWDcUG-MQ8JL17Jo2zEg>
-    <xme:orTYZ0JlHzyUwa8XdDxxLVhfYy6NEDhZTa3jgvNN60R7WgiZtQueLuNs3QgufXgXn
-    nGWjtwEm1dWzYUFPbM>
-X-ME-Received: <xmr:orTYZ0vBj1rCsBbCbUIvdTJf0FN8BcQlLBcCo9lX-o-Uh5jzUDdxVGZ05l8CtXQbZ4ZIhH-E2kRb3gD1ta7wYPiQvTAKC2e7Kw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedtkeelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceo
-    sghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeetgeegfeehkefgudffgf
-    elteeigedtjeeihfehudeiiefgfedugfefueekhfduheenucffohhmrghinhepghhithhh
-    uhgsrdgtohhmpdhruhhnrdhshhdpkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhn
-    sggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuh
-    igqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhn
-    vghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:orTYZxYb5jYL-FVF2yAJ9_Mi1phui5mgalgMIfrG8dKtu9OlBlbWZQ>
-    <xmx:orTYZ7YQ22SOxb2qVRwuyyLkCfMJvJCEy7M_CYIbieNBAanM9OQ4gw>
-    <xmx:orTYZ9A9-H6hpPoGOxbJKPg2l3mLQXP81ScphTZMKowYSDIn-661PQ>
-    <xmx:orTYZxbDmOUv38u_8JANcl58l1M7Z6DlX5aZ8ctn8tONlXNyL3z2fA>
-    <xmx:orTYZ6k-t0DcdGGnEewVqyUUVA2O1FbWVTEIL0x4Nsy5zmFSC7thk3uF>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 17 Mar 2025 19:47:46 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: fix broken drop_caches on extent_buffer folios
-Date: Mon, 17 Mar 2025 16:47:38 -0700
-Message-ID: <1c50d284270034703a5c99a42799ff77de871934.1742255123.git.boris@bur.io>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1742259072; c=relaxed/simple;
+	bh=FhDT6Ht4uOnAjRnAHtxZUZhftn3nLJ2mhdwA/rIdKqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nrzE4bNPiHQBBOYsAG6Al+RPYO0Q0OpGNXdshhIFIiJ92hpZZ7VUaklXR/za/xIvfSjD7cmWKqTdGoCwmGsDdSSr5yxMDRlwVQPgCxjxKb5AylFI/H+4EFOVlOlN59hhECkWGkIjNAN/OSq5hJyiy2BNnhGEpJbcshwAd5FVLnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (1024-bit key) header.d=furiosa.ai header.i=@furiosa.ai header.b=XQvplfzX; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=furiosa.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-223fd89d036so99978165ad.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Mar 2025 17:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=furiosa.ai; s=google; t=1742259070; x=1742863870; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=U/GqRqFocBuzF9Eb/f/joYEbo/0mtodFRieL+22DCbs=;
+        b=XQvplfzXSdtr34ongeYiAJ/wo4zOYZOAmw7kYFk2wZUyODDHhkUo9bA+UNzqbJcOSF
+         7tgRZEcuteivw0ehMX6iZ7xSkEffqJ45Dcrr7bHkvaBtClmg31hfVSu0niLZHhLSp0AC
+         WtCVUH6kL98Kj9VbvQfrs0eA5sFrKZenvo72s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742259070; x=1742863870;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U/GqRqFocBuzF9Eb/f/joYEbo/0mtodFRieL+22DCbs=;
+        b=Qh60BRbx84NdHs5mB5YMrZg9+a7YhAv7jC5cpBPuCoRwn2x3PlhsOrr4MCNPi97/co
+         Ljduhk/UbRlilPEfKLvif7XicUsZi3dtGCp3vftLBZu2caezDFvmFhlNakhRb25aj6DX
+         YRzr1TkDQRtDROSTjOB+gFuqf+0TWee1FmVAXbNSZtqMXSB0z9XxHZ7W8akxgIxyjxCl
+         NWkTP48Hy6E/6TTRZJalX2Y4i+d3rOWFTgqYBNzQi4JH6uGmB4/u7Hal7gICXGrskcak
+         phBnNxttc48v6PspsPEdrBkytp5b6UJMRZK752X+y2TAhZb5sexAFyZOAS0287bSEkwq
+         1WNw==
+X-Forwarded-Encrypted: i=1; AJvYcCWoU0KnCgBPBgWNaVG9F1hAIC4W2ytDdzSZwdaeMSkz1Grb1eH6M8jH6Att16fs9Kf5/3u5SyGiJq7WUA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGGXZjfkFHXMara1gLER2SFGLbCLfTyAgEQef0YP++XI1TdoYo
+	vA2VUrgy/UMcYuL0rjbArANiHMb+DxEzUTI+6FOHFIma52cIHUE/f1bRaG376zI=
+X-Gm-Gg: ASbGncvQ7U+S8Inpo8vQ6TKgAvaahXXISzpRkIszU5XQLJ8cEwXBYA6D+FKpDN0PXzP
+	2OnRzYSxDZQGisYEkXZCJ5vADyU04hUQGXMG3cOOCKgwhETcJzvWhwbxXzIzT/POzdtVRYtgLKh
+	HD3gImXVpW601W29M7f9OvTMh9EOFYgano5EjAqyMqdMgyWdBylPU4epTLbtU5e+MMjHRbtxAof
+	luQjhNi3qqZSmyGTdPDpRQKEtpAp+xOaLcCrnT2YquTB/9QccE8suRyEl7Q2B3Znnv3X3xLz4l+
+	kk1AKzdyx47AsZginz53rqB5LA7d13y1jteBg5LA4g+xZHBoJkHDKlsXiJXa/xpvLQXH3kX4JWl
+	V
+X-Google-Smtp-Source: AGHT+IFCTe5n82yUGpowrbpfL0mcn1Bw7/SjhqpalmHXGc+c3b40e/vG3uqcukMNwusAsrCQ70GyTw==
+X-Received: by 2002:a17:902:d54f:b0:215:9bc2:42ec with SMTP id d9443c01a7336-225e0b14fb5mr171079355ad.47.1742259070107;
+        Mon, 17 Mar 2025 17:51:10 -0700 (PDT)
+Received: from sidongui-MacBookPro.local ([221.148.76.1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c6ba6ca3sm82072255ad.134.2025.03.17.17.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Mar 2025 17:51:09 -0700 (PDT)
+Date: Tue, 18 Mar 2025 09:51:05 +0900
+From: Sidong Yang <sidong.yang@furiosa.ai>
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org
+Subject: Re: [RFC PATCH v4 4/5] btrfs: ioctl: introduce
+ btrfs_uring_import_iovec()
+Message-ID: <Z9jDeU8flCI3SWgZ@sidongui-MacBookPro.local>
+References: <20250317135742.4331-1-sidong.yang@furiosa.ai>
+ <20250317135742.4331-5-sidong.yang@furiosa.ai>
+ <CADUfDZoR+L8za5h6-Q=EL-7bRekBt03CeARE48EjMr18S6gvww@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADUfDZoR+L8za5h6-Q=EL-7bRekBt03CeARE48EjMr18S6gvww@mail.gmail.com>
 
-The (correct) commit
-e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inode_page()")
-replaced the page_mapped(page) check with a refcount check. However,
-this refcount check does not work as expected with drop_caches for
-btrfs's metadata pages.
+On Mon, Mar 17, 2025 at 08:37:04AM -0700, Caleb Sander Mateos wrote:
+> On Mon, Mar 17, 2025 at 7:00 AM Sidong Yang <sidong.yang@furiosa.ai> wrote:
+> >
+> > This patch introduces btrfs_uring_import_iovec(). In encoded read/write
+> > with uring cmd, it uses import_iovec without supporting fixed buffer.
+> > btrfs_using_import_iovec() could use fixed buffer if cmd flags has
+> > IORING_URING_CMD_FIXED.
+> >
+> > Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
+> > ---
+> >  fs/btrfs/ioctl.c | 32 ++++++++++++++++++++++++--------
+> >  1 file changed, 24 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > index 6c18bad53cd3..a7b52fd99059 100644
+> > --- a/fs/btrfs/ioctl.c
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -4802,6 +4802,28 @@ struct btrfs_uring_encoded_data {
+> >         struct iov_iter iter;
+> >  };
+> >
+> > +static int btrfs_uring_import_iovec(struct io_uring_cmd *cmd,
+> > +                                   unsigned int issue_flags, int rw)
+> > +{
+> > +       struct btrfs_uring_encoded_data *data =
+> > +               io_uring_cmd_get_async_data(cmd)->op_data;
+> > +       int ret;
+> > +
+> > +       if (cmd && (cmd->flags & IORING_URING_CMD_FIXED)) {
+> > +               data->iov = NULL;
+> > +               ret = io_uring_cmd_import_fixed_vec(cmd, data->args.iov,
+> > +                                                   data->args.iovcnt,
+> > +                                                   ITER_DEST, issue_flags,
+> 
+> Why ITER_DEST instead of rw?
 
-Btrfs has a per-sb metadata inode with cached pages, and when not in
-active use by btrfs, they have a refcount of 3. One from the initial
-call to alloc_pages, one (nr_pages == 1) from filemap_add_folio, and one
-from folio_attach_private. We would expect such pages to get dropped by
-drop_caches. However, drop_caches calls into mapping_evict_folio via
-mapping_try_invalidate which gets a reference on the folio with
-find_lock_entries(). As a result, these pages have a refcount of 4, and
-fail this check.
+Oh, it's a mistake. It should be rw.
 
-For what it's worth, such pages do get reclaimed under memory pressure,
-so I would say that while this behavior is surprising, it is not really
-dangerously broken.
+Thanks,
+Sidong
 
-The following script produces such pages and uses drgn to further
-analyze the state of the folios at various stages in the lifecycle
-including drop_caches and memory pressure.
-https://github.com/boryas/scripts/blob/main/sh/strand-meta/run.sh
-
-When I asked the mm folks about the expected refcount in this case, I
-was told that the correct thing to do is to donate the refcount from the
-original allocation to the page cache after inserting it.
-https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
-
-Therefore, attempt to fix this by adding a put_folio() to the critical
-spot in alloc_extent_buffer where we are sure that we have really
-allocated and attached new pages.
-
-Since detach_extent_buffer_folio() has relatively complex logic w.r.t.
-early exits and whether or not it actually calls folio_detach_private(),
-the easiest way to ensure we don't incur a UAF in that function is to
-wrap it in a buffer refcount so that the private reference cannot be the
-last one.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/extent_io.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7abe6ca5b38ff..207fa2d0de472 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2823,9 +2823,13 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
- 		if (!folio)
- 			continue;
- 
-+		/*
-+		 * Avoid accidentally putting the last refcount during
-+		 * detach_extent_buffer_folio() with an extra
-+		 * folio_get()/folio_put() pair as a buffer.
-+		 */
-+		folio_get(folio);
- 		detach_extent_buffer_folio(eb, folio);
--
--		/* One for when we allocated the folio. */
- 		folio_put(folio);
- 	}
- }
-@@ -3370,8 +3374,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	 * btree_release_folio will correctly detect that a page belongs to a
- 	 * live buffer and won't free them prematurely.
- 	 */
--	for (int i = 0; i < num_extent_folios(eb); i++)
-+	for (int i = 0; i < num_extent_folios(eb); i++) {
- 		folio_unlock(eb->folios[i]);
-+		/*
-+		 * A folio that has been added to an address_space mapping
-+		 * should not continue holding the refcount from its original
-+		 * allocation indefinitely.
-+		 */
-+		folio_put(eb->folios[i]);
-+	}
- 	return eb;
- 
- out:
--- 
-2.47.1
-
+> 
+> Best,
+> Caleb
+> 
+> > +                                                   &data->iter);
+> > +       } else {
+> > +               data->iov = data->iovstack;
+> > +               ret = import_iovec(rw, data->args.iov, data->args.iovcnt,
+> > +                                  ARRAY_SIZE(data->iovstack), &data->iov,
+> > +                                  &data->iter);
+> > +       }
+> > +       return ret;
+> > +}
+> > +
+> >  static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  {
+> >         size_t copy_end_kernel = offsetofend(struct btrfs_ioctl_encoded_io_args, flags);
+> > @@ -4874,10 +4896,7 @@ static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue
+> >                         goto out_acct;
+> >                 }
+> >
+> > -               data->iov = data->iovstack;
+> > -               ret = import_iovec(ITER_DEST, data->args.iov, data->args.iovcnt,
+> > -                                  ARRAY_SIZE(data->iovstack), &data->iov,
+> > -                                  &data->iter);
+> > +               ret = btrfs_uring_import_iovec(cmd, issue_flags, ITER_DEST);
+> >                 if (ret < 0)
+> >                         goto out_acct;
+> >
+> > @@ -5022,10 +5041,7 @@ static int btrfs_uring_encoded_write(struct io_uring_cmd *cmd, unsigned int issu
+> >                 if (data->args.len > data->args.unencoded_len - data->args.unencoded_offset)
+> >                         goto out_acct;
+> >
+> > -               data->iov = data->iovstack;
+> > -               ret = import_iovec(ITER_SOURCE, data->args.iov, data->args.iovcnt,
+> > -                                  ARRAY_SIZE(data->iovstack), &data->iov,
+> > -                                  &data->iter);
+> > +               ret = btrfs_uring_import_iovec(cmd, issue_flags, ITER_SOURCE);
+> >                 if (ret < 0)
+> >                         goto out_acct;
+> >
+> > --
+> > 2.43.0
+> >
+> >
 
