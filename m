@@ -1,105 +1,93 @@
-Return-Path: <linux-btrfs+bounces-12385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460ADA67882
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 16:57:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0FBA6789B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 17:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5919189E187
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 15:57:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F9EF3B6B04
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 16:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108302101A1;
-	Tue, 18 Mar 2025 15:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="J/egp7Hp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695E2210185;
+	Tue, 18 Mar 2025 16:00:22 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F5120F091
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 15:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9408B20E6EC
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 16:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742313430; cv=none; b=kOHPKAt2Qg4tXWMlEsQ73y6eYvDel50++5pq4g5un7M3uf4BuSYhsLmGizPBX+sy3vLEYCyEBtB9yOpns38XXT5WFtC8o873i8ckJC9hYCo6CDzIh+AhU8Shnlx+ykVrSs+07LnRpnJLPyZ4kgHuh1jU2ANlKRKR90xd+6I4wKg=
+	t=1742313622; cv=none; b=UPRB8wajcoQRQM6w4uVBxez0lxc1BHqPgeQuqbQjQOxyczt3qHs9PHOokSqqBwI1ylFUZjexI9MVNzhLmPZSoEpjn8/lc8xyivIZPN0cii+9LGR+SesG5BhVsEud49fbjkLsGJH72p9qhQyYnC9sJmPJe9jZl/iebSlr3UHkW70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742313430; c=relaxed/simple;
-	bh=qE+oCHNXK3IYdZS80/ne+0xIKx4Qq3GX4ciXz0SCb7g=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BCDvpR95P6ByVkKfhLaDyIWMEkH64JRtCbTaxgVqnQT17bogSvV5dSGXLTgp6LvsuJYeC/DPLFKFo6/iU/dVpr96IsLBq7ld8w2RTFtCFW0n323g4dIRaDzh6+ORajWIb3mLddymuGIxJ26RCltjYG8WCas8Ji5scaP8Q41A0jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=J/egp7Hp; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52IFpQPd030530
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 08:57:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=facebook; bh=TAqBdAwEjJgdR+gTZ+rwh0S
-	2R7TIP88zKuB5rH+pkK4=; b=J/egp7HpDSBSow0mGyRkInK2LYymGIoFBX6D4QR
-	MFz7jlqfMWD7JP3J5lH2pK33eZg//omjCkmpBdiUIHNoMZ7mx8O0KeJHHa2Y5W7g
-	396Pe33xvdT7g+7K1AAn+YPPKTCjVc5T2jBAcKZh1bTZdPqhX9mQ8v61AVZrQLv5
-	I7o0=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 45f3pyv3rw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 08:57:07 -0700 (PDT)
-Received: from twshared32179.32.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.14; Tue, 18 Mar 2025 15:57:06 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id CA628CC6245D; Tue, 18 Mar 2025 15:56:59 +0000 (GMT)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH] btrfs: remove call to btrfs_delete_unused_bgs() in close_ctree()
-Date: Tue, 18 Mar 2025 15:56:56 +0000
-Message-ID: <20250318155659.160150-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1742313622; c=relaxed/simple;
+	bh=qfMZojHGQ7hMeNGHUlk4JiGvsujlrj9fFIjKj/xLexQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AZYjw1fBMa/YwgbJ8KSyYp9Lv6QTARJ1yY8EnonOl4nDHOSDXmE9Zh+qof/XRMvNpsdYTQHcnzxfxAIq8Eyssy/lATkiLpjoNqtXiNLYYmeDDzI84iOw3MIsV1kovib5REi5i6W7XQu0pmyaerHWI4y/aAO5V2yQ8mx8LlUfabw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CBD5F21A68;
+	Tue, 18 Mar 2025 16:00:18 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B77721379A;
+	Tue, 18 Mar 2025 16:00:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wmeTLJKY2WfTLQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 18 Mar 2025 16:00:18 +0000
+Date: Tue, 18 Mar 2025 17:00:17 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove EXTENT_BUFFER_IN_TREE flag
+Message-ID: <20250318160017.GF32661@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250318095440.436685-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: N5DfjhVHRFziZM9fXLQZkqHJdXk961tI
-X-Proofpoint-GUID: N5DfjhVHRFziZM9fXLQZkqHJdXk961tI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-18_07,2025-03-17_03,2024-11-22_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250318095440.436685-1-neelx@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: CBD5F21A68
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 
-btrfs_delete_unused_bgs() returns early if the filesystem is closing, so =
-the
-call in close_ctree() will always do nothing.
+On Tue, Mar 18, 2025 at 10:54:38AM +0100, Daniel Vacek wrote:
+> This flag is set after inserting the eb to the buffer tree and cleared on
+> it's removal. But it does not bring any added value. Just kill it for good.
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
- fs/btrfs/disk-io.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 1a916716cefe..7c114d5d0f77 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4412,12 +4412,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_i=
-nfo)
- 	btrfs_discard_cleanup(fs_info);
-=20
- 	if (!sb_rdonly(fs_info->sb)) {
--		/*
--		 * The cleaner kthread is stopped, so do one final pass over
--		 * unused block groups.
--		 */
--		btrfs_delete_unused_bgs(fs_info);
--
- 		/*
- 		 * There might be existing delayed inode workers still running
- 		 * and holding an empty delayed inode item. We must wait for
---=20
-2.48.1
-
+I na similar way the flag EXTENT_BUFFER_READ_ERR is unused (was removed
+in eb/io rework in 046b562b20a5cf ("btrfs: use a separate end_io handler
+for read_extent_buffer").
 
