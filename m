@@ -1,357 +1,220 @@
-Return-Path: <linux-btrfs+bounces-12349-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12350-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC88A66477
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 02:01:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3DCA664FA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 02:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C43E6189E863
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 01:00:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FECF3B1A39
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 01:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88C82B9A9;
-	Tue, 18 Mar 2025 01:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D09146A72;
+	Tue, 18 Mar 2025 01:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="FRABVnnM"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="dZg3mdHS";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="dlfXGFtD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA3614A639;
-	Tue, 18 Mar 2025 01:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742259606; cv=none; b=JejgbwnRl119GL1eX+SnUbJhXbwTOO/iLTMQQd3f27CtwChVRy4PEjhVqj+0gat9+fnCIfffxr8sjd06m0dklda2Qv9WG/3Bs33oEuk9TQ09E/uHn5WzDmWeKTRgSKef9C+teHNOemSDc5dP7qkT399TxH4nFQcNyhYEqVMTy2E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742259606; c=relaxed/simple;
-	bh=OrfNzc/vx1Xocyt9uqERUGo/LMrzWNQLDoXVXrEooLw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ut1JUJdBDkXOZ9EBCLWnWD+HGzJBsAe3gb/50mggK0peEKAZfhGhGOex0qGhUWToVlLHSOqp3Tdpalj+2zso+t6VBF9Sikydn77YJw4Hz47+BWRpaJxMRVq/QUWHKNyEvdfVur7H/uUQDu6LF3D7bHtL/cJdGHo/iHPxwwnWGpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=FRABVnnM; arc=none smtp.client-ip=68.232.141.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814385695
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 01:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742261241; cv=fail; b=ID/PNjJjxnS2dn3gU17mFfy0PthtaN/it1+2YZKb7NFg1QN4FdRAORY1DpDsTLqVczb49MBOdWDY66UIygOh9Qc8Wsny4aLb4H9Ud7vrGTBRbSisWhrchudKDehEn+n2tsdgkGrtSd3n7Ps7l67rHXrtw/KnFgllDdE4mlk1Xlw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742261241; c=relaxed/simple;
+	bh=kbiVBA6rIGvrAxd+v22I3vgcSFScp0Ekp4iQ8XOdHrs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=eFwyyPrjqTXiCnjnn7bEZCLFE6jOgsP4G7Ek+9tX3tFWlbwJNgi4TO3wZakDEkMieLkyc+zIM4MTTTaxqoYo2VqL7TFMMWyu2VwVn9HBmcd9rDekCeOFcDTEQsOpf3jBsshYKkDMt4pX5VYMH3jrmqVkbzV3X/6TvpkiNF0QeFQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=dZg3mdHS; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=dlfXGFtD; arc=fail smtp.client-ip=216.71.154.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1742259603; x=1773795603;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OrfNzc/vx1Xocyt9uqERUGo/LMrzWNQLDoXVXrEooLw=;
-  b=FRABVnnMbKcCCtvmBIfnr8AYNDLLsSs96OrNZuOFaQbr7tdLnje4w2PF
-   iLAyH9EiFfkM5d1tgbSbQfpn6lxPEh5krmnfiGZIlH3UUTTGnV4i6qXEd
-   AsP0LzF8z6k+0QXygdAjFHfwpDQrM8gqyGskQ5/eRdB9KwFotwdgpueZ2
-   4oXDM3ZgJsR4QoqstxI8hAT8yzY76ZHMbT6NsDIEOjNED2qs3GAdNC0lT
-   20QeeewbLL+TkaR1J8HgpeFQ3rMLEE9SDMb9vF8fFGLxTLL9RglX+rJXI
-   wij8LAVwJE4xiIOLLHHsuZuD5PWNnd8yKUBF48sFwnWrZ7c4jDeujMvEB
-   A==;
-X-CSE-ConnectionGUID: HV9EBIjCSUWX3iuTpBp4jw==
-X-CSE-MsgGUID: ska8y6o1QcaoeoEF414gJA==
+  t=1742261239; x=1773797239;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=kbiVBA6rIGvrAxd+v22I3vgcSFScp0Ekp4iQ8XOdHrs=;
+  b=dZg3mdHSdqQJNWJfLCY1QDQLcyQp4OTAY64QK8Ruk03E03rohDb56fiy
+   OFF0epiiKOwNVi/fYfD0dBJbES6QqkIOrigT0SB1f7EbfQ5Y2faVaW3nx
+   +NjSZnHWGSrvDtSXW8sLcqvY9DI0QPsoMhsdGdnLVQjFbqECYNJ7hpFyY
+   a48vOy/gPfaoQNdFVvRDStjpAaU53jV4/O/Cyj8+1QC1Pcopb2o019WM4
+   5CjNe+oDkjqeQ/AiDZW89GQirjsncB0X3B5Q/WUwZNpgEKscmANssSfEi
+   3MExYHw49UYhmjgPU3Cvapvs8gzC2BOCu44xDorsJzh5ynfnZKf5mWpOZ
+   w==;
+X-CSE-ConnectionGUID: RT5qv4/xQL2UrOKceO3iMg==
+X-CSE-MsgGUID: +O2EVYJcRKeJDPO4EKvHbw==
 X-IronPort-AV: E=Sophos;i="6.14,255,1736784000"; 
-   d="scan'208";a="52645840"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Mar 2025 08:59:58 +0800
-IronPort-SDR: 67d8b7b1_bYgK8EvqmJHZ8MXcssImeIEyfrSWc5zdjtkKdwsRVdMXJZv
- aTAXqDjdCrTk9dnWboBR80PJzO7WMZaWaaZtTVw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Mar 2025 17:00:49 -0700
-WDCIronportException: Internal
-Received: from 5cg21468mp.ad.shared (HELO naota-xeon..) ([10.224.109.129])
-  by uls-op-cesaip02.wdc.com with ESMTP; 17 Mar 2025 17:59:58 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: dlemoal@kernel.org,
-	axboe@kernel.dk,
-	linux-block@vger.kernel.org,
-	hch@infradead.org,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH v2 2/2] btrfs: zoned: skip reporting zone for new block group
-Date: Tue, 18 Mar 2025 09:59:42 +0900
-Message-ID: <36a2b5616d275feaae315d0c34ac07481bd77cab.1742259006.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1742259006.git.naohiro.aota@wdc.com>
-References: <cover.1742259006.git.naohiro.aota@wdc.com>
+   d="scan'208";a="51541065"
+Received: from mail-westcentralusazlp17010001.outbound.protection.outlook.com (HELO CY4PR05CU001.outbound.protection.outlook.com) ([40.93.6.1])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Mar 2025 09:27:11 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=t3iSZ4fNpC9DIXSa4dQvET14+5tCHY89g+hvO5yvRi4UNlE4nQmD7hyGFzDx7lVOYsEfnm9bIm1fRuwsyfgsIan4PplNMxhB+IaB8EMAxhVK5/+CzC95YATloPFwtrnmZlpenXl2cepEvFuWVeYKLo2SOgHDJBTvMceZ/ksrQAZaE7yZ1XkuX5AUzZiQIj47SeC8uIag8bIDDm/UW0Qy+S1DTBsQzKJDAzSHBAo3ZK/9FDfhJT1Xn3NxUMLFBBtvV9V8t2yhT1dglvJt6xFUOT8MALwyNqQdSj8ItbkVWs3MLTLZOkX368zLy406sXW+bklphT8qUx2uyBcXCH4xuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kbiVBA6rIGvrAxd+v22I3vgcSFScp0Ekp4iQ8XOdHrs=;
+ b=hlZwaq9AdIjjidW28LWUDj5NAsB4AqLy4qKYokzQo5Am5HXe9ebmeeKfyfZ/0FrtM6UyeZGqagdfkiNi464GoW5vXZBV7VYFg6hN4Q3FTWcrHJ9DUdBlyrVqXVTefTgZS0kgwWlnV6KqcTP4pzhfpSkeNvIJg8TzazKKm0cX2u4eoJcd4g0KvKn+KOdMSJJ/+Mz8savPVPwdKT1qs/hS9O9+heo9J7YAphys/5XEUtqQugZiptpAlq2Yzmzlm1QaMGUPl0r1yD49L5NfsBj1vBoR5LYIcVTaaJOQ9JDOSY06pNQhN+H02G8+LOWpNO4lSArSOW7C3PVebqn3s+PGsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kbiVBA6rIGvrAxd+v22I3vgcSFScp0Ekp4iQ8XOdHrs=;
+ b=dlfXGFtDuY6y2jhmbduDDecmj93EXMJAi3k50rpDoAHxpHPdbax7PWxKcLoGfOXzcTc6GC0JK4lXflvlQY2v+2jhGXkVYjiHE7dmJ9GjbO5rJdUc/zjPQaD2aT6k42+fAE0GEV0/IzlTVWu2QboWwY9uGYO6ajPxiqgeS09bNx8=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by SJ0PR04MB7168.namprd04.prod.outlook.com (2603:10b6:a03:297::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Tue, 18 Mar
+ 2025 01:27:10 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::5266:472:a4e5:a9c2]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::5266:472:a4e5:a9c2%5]) with mapi id 15.20.8534.031; Tue, 18 Mar 2025
+ 01:27:10 +0000
+From: Naohiro Aota <Naohiro.Aota@wdc.com>
+To: Johannes Thumshirn <jth@kernel.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+CC: Naohiro Aota <Naohiro.Aota@wdc.com>, Damien Le Moal <dlemoal@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 0/2] btrfs: zoned: fix zone management on degraded
+ filesystems
+Thread-Topic: [PATCH 0/2] btrfs: zoned: fix zone management on degraded
+ filesystems
+Thread-Index: AQHbly9CpjU2y1g9oUmmq0hGkTvnXbN4GyiA
+Date: Tue, 18 Mar 2025 01:27:09 +0000
+Message-ID: <D8J01N6OQH6L.DGSU6515XFTD@wdc.com>
+References: <cover.1742210138.git.jth@kernel.org>
+In-Reply-To: <cover.1742210138.git.jth@kernel.org>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: aerc 0.20.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|SJ0PR04MB7168:EE_
+x-ms-office365-filtering-correlation-id: 153647a4-ee0b-4980-02a6-08dd65bc00e2
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?SCtDQS9lYVNTR3QyK1h0ZXRncFNOUEg2VzdzeDBOU2NHbTh3SnBnZDZjNzB4?=
+ =?utf-8?B?djZERm9vdkdhYTFxTmhRb3YrN0krc3N1UWsrTnN1cldsNmIvS3B0R3UzaEJy?=
+ =?utf-8?B?ZENIWWNBVXZCT01XaytZU3RwQTYrYnNoWENDeXl5VWpjVjZ5MHp4VHpNRzZa?=
+ =?utf-8?B?cThFZ3cwMzJlUzNhSHBoWE5KcTZqNlJUR1B2WkdGN1JRaW5ubUt6OGdxL2Rp?=
+ =?utf-8?B?WFVVRU9xOHEyNlZPRjNpNzgrUW5KdFVxcEdKNm9EV1ZWajRkdDl5VXd4M2lM?=
+ =?utf-8?B?VGliK2tkMTVLMGJ5U1o3V1JRQ3V1aEpSUkp6VWRGb1VwUzFvdzMvNXJqdDAr?=
+ =?utf-8?B?U3RVcE45VGx4elB3R3hsRnRvZWk5SDZnTkdReTJyV1d2RDlnM3d6YVNPQk16?=
+ =?utf-8?B?RU9VWFQ3KzZwTDM0R1NvUHNlWFlOeFAwMWdHMGpJRHVYV3F3SHYvanJXUnY0?=
+ =?utf-8?B?QnlNMEJ2MTU5U1hVOW1NUWlXdGpDbXFacG5LaGZDSDJvL2JoRVNxWUJueldZ?=
+ =?utf-8?B?TWoydHVUSzRxZUxkRTh0cUF3b280a09SYWlKak5xRmRySjJqRGtueTRIK2hP?=
+ =?utf-8?B?SDRlRTZsNXVqUSswQjZwSTdmYyt2ZEk2WFFpQkFxSC9Xa2U0WkZzUGNQZTJZ?=
+ =?utf-8?B?Kzl6RDRLUjB2aWNUVHZxS003Vk4xcGFwd0tuaGtkRkhXaGc4WnRjVE9SaW5N?=
+ =?utf-8?B?ZjB5aTBURThvdDQxYU9rQlh0a2ZCTG1zenhXZ2xKRlNWN3FIUkozT2dPaDhj?=
+ =?utf-8?B?aUk2ZUNaSEVJVXBmeDJpS0Rab3RaaWZFdkdiek9BdmZOYloraUhXTXU2aXlL?=
+ =?utf-8?B?djg1cWF5M0RxS21BdlpjMDBTOC9JUCt6c3JIbGNaN3JCOUVWb09kZmRXeS9D?=
+ =?utf-8?B?L1VHbUNjTzJ0UW5IaEdYakd2dTNMWXl5TE4za3JhRlZnanRIMm4rZUJWbzc4?=
+ =?utf-8?B?djUwSDhkeUp1OUpQY0xMamg0ZFc5MnUxc2hZMG1mUHdQeWlHbzIzU3EyWTZv?=
+ =?utf-8?B?cWdXZkVPSEwvcldXd2NaSnlxcHBrYksycjVaQjVSQVRpd29xaEZpREd5UUZE?=
+ =?utf-8?B?LzYvdkFJSXdXQVpSeXdPaVM2cjA3VDY3U2JLZVM1RVpVSjVHdDh0bUd0a29F?=
+ =?utf-8?B?RjNVVmN3R2ZuOGRaUytyamtyK2o5NGs0MXoraitDa0JWbHRzeE85UHhNRmJ4?=
+ =?utf-8?B?V3R5VDI5dWlBWkI2RUpGZUZWSEM2QnRwVVRoMlZpaDExOVNFSURKekdmV200?=
+ =?utf-8?B?TDNPTEl2RXlSRUc3czhnT3gwcHFuejZtdVFzRkZPWitUTE9IV09adGwrMDFT?=
+ =?utf-8?B?UWoxTG5MQ05PYjZpU1k2dmRhYnh6NXFBdmdtMHh6a09semdDeUxHam53ZVJD?=
+ =?utf-8?B?ek1sL1BiQ0R3bjZ0T2l0V3BzQkNpTExNN1J2UHdCTzIxWDRyVkZwOUxnZGhv?=
+ =?utf-8?B?cjVkUCtlNWc1SzNwUnp6ZTdiRlBRTTBFYnhiQWlSNGNNaHErZnMwRUZsazBn?=
+ =?utf-8?B?V2V1NXVKSUsxQngxN045T0oxUWhWVmhxTjBLNW1CSHlTYzRVR2R6OENMTmM3?=
+ =?utf-8?B?Q2ZrNGl1c2V1VC9KTmcwMGxKZUpHLzIrWVZHbEUzcTIwdXMvSUg2UDJXbW9S?=
+ =?utf-8?B?QVV0Zkk1NTJTd0RTb0tVOEthWStLTWowMURHb0VIZFhscTJrVGlaZTJHM2NM?=
+ =?utf-8?B?RW9yb2ROeXlIQk12cnp6YkRlTUYwOEkyK0g4bTJkK05nQ2hteVN5QzJPMGJp?=
+ =?utf-8?B?YnRnYUhQS2NlSzZZVDNBbVBBT2lpWm1XVE5BS1htdkZiMGg1VzhVbGFDUTRx?=
+ =?utf-8?B?NGoxQ0kyUkZZSFpmaCtMRWFZSVdyVmZXMlYyYnVlQi9hQjNHQTN2OWE2R1Vv?=
+ =?utf-8?B?Ymxzb2FEL3dRYUd2QTYwRmdYWS9jN2txN3Nzd3ZQZDFqZ1lCdWdjbnBzVFhH?=
+ =?utf-8?Q?0p7G4mi2pxFnFdbiafy2v4wUl7lr76kM?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?U1lLcEpicE1GdThxUVZmcVFVNnAvVy9ia042ckZ0b1BFRWhrM25aUUwvL2Ew?=
+ =?utf-8?B?Tk9vUDBlbVBwUjhoVHZ2K3BtaThkcmxqTy94aERZZDZLaVR5UmMyeGxzdUJU?=
+ =?utf-8?B?L3FIc3ZvVFhOayt2WmJZWVVLWDZMT0FWYWRMRWduTzg2VklRVTc1ZzR5YVpZ?=
+ =?utf-8?B?bThFSnp4OTN2UDFsMGNmdjNHdnZ3YkFqRGZUWWhVL3dCWHlSdy9BUHRzSGIz?=
+ =?utf-8?B?M2hpRXJmVWVWSHhzVWNxVVNFUFZOdm96dVRyR0tPb2VwdHRHRUk5emQ1eDdV?=
+ =?utf-8?B?Nm5pdU5Pbm5RT2ZVakJpWmNkK2N1bThQYmRwbmYvSkF2V3hxQndxVWwwRUh3?=
+ =?utf-8?B?RTRUZDlIeWpDQ3JKdTVlZjlPMVN0VzZMYnNkWDlnNnMxd2FvVWppZmtqbVpP?=
+ =?utf-8?B?ZjNUUU9JdnZDbnZkdlBTSTJKT2VPMGhpeVUzOFZHVVF2Rmt5L3ltbFI5MDNZ?=
+ =?utf-8?B?ZE9GeGdQakwzMDNPSUJ5U0c0eTBlVFo4dWFHS3I2aHBMcUprR0tXUXpxdkZz?=
+ =?utf-8?B?SDgwcXRwbktvSVl3MVhHNHZ1dkZJY2ltMFB3N3B0enZISWI2amVOL25BK1k5?=
+ =?utf-8?B?ZHVTTTR0anpvT01QNVdDWkR1THdKZVd0TVZzTUVHbGl4eC80dkUxVHQyc0NV?=
+ =?utf-8?B?K1hJMlpvM3psNDRVaWNRckZUb25WT1ZWNkxGQjZvRXhUOVNEcTIrMWtWNmtH?=
+ =?utf-8?B?VXZwaFE5aWNEY3NSS01GTWtaRWRDR1lRSk9ScHRmelhBekoxOXl0ci94bGJj?=
+ =?utf-8?B?OExxZzRPNnRZZHNUZ2F0Uzdmb0JNdzBDbVRyKzlMbStqZ1Y1R1ZIcGhmU2d5?=
+ =?utf-8?B?Q0EvcURwRWZxSTkvSjk2eFJhQ2hRU2dJd25xVUFabzJrQWRCcG1XRW14cm1r?=
+ =?utf-8?B?ZGxNc2ZDWHdCTytzU0VCZjJoMWRCQ1N4N21ZRXVWYkFJVnhDM3F1bjlUbi9D?=
+ =?utf-8?B?Q09VbGpTbE1kMzFTa1ZSZ21LK3BxQXdMZVF1aFBEZ1orVVZaTk5kbmhxaGND?=
+ =?utf-8?B?NkwrYmswTlZjc21sSmhiUXNPdjZIL3VtYm84aVBOYlhBeWhSSTliR01rWjlD?=
+ =?utf-8?B?QTM3em9FYTB4ejBWd3gxL0VxOE5qcXlHc2Y3dmhuM1pqMjVlQ09XazV2a3FH?=
+ =?utf-8?B?cU9MY0ExajRpK0dCZm9JYzFFMVpZSzVGSlBDU0RzQzd4eGpiMmwyRHVrY1FH?=
+ =?utf-8?B?NmFMenNwczY3U3NDUGtsT3haeHl2NjR1V2VVVmUra1pMY2Z4WkFrVWNTNFUv?=
+ =?utf-8?B?eUh5NmE4MG1wVzNWeDRPa28xWDJTeWlSV1ZMQ3QvRGxyTFFibG5CSVVQbVlJ?=
+ =?utf-8?B?bC9nYlQvMXRtQkZRZUtpOXlSNWRjZnhLbW1aYlhac3RnUFVEdTBCMWdpTWRm?=
+ =?utf-8?B?Q0czdTN2Vk1BR21EYUNoVnZJSVIwNDV1SW0zMG9mRGxFNnRUSk51WEtOK2xk?=
+ =?utf-8?B?SW1nWk5wU2FBNnJ3N2JqemQyYStiVXR3Tmo1Nk1sazBURCs2dkJDcmYwVFZn?=
+ =?utf-8?B?eEx1VlhXcXF5V0tUM1VOMVIwbkt0NmkrNlJhcEROL3BNSWdEMi9WQVJaQmNR?=
+ =?utf-8?B?aEV4SzNLMWZLWVkxRlF2anNhUytqdDVnQkhWNnF5dGMvazVNZ0I3UTZMa29U?=
+ =?utf-8?B?TkFLMjlidXFVamhwR3VqYlNkK0Qya1c3bTErVkQ4aTNJNTBvUDk3eUp5ZXdu?=
+ =?utf-8?B?bjdwZHR0YVFjdUpRM3liNDNrSkRIUEp3NFlPWHNVMjN1NTNaNllmV2FGTjRw?=
+ =?utf-8?B?WWJ6OXpRTHFOZGphbDl2T0pSd2NqWk9wSCsvVjdlb2VpQStGRXNNN1JEcHNz?=
+ =?utf-8?B?RitQcGNpZ2tBUXY1YkRLRDl1TGhIMzZiUU9FNzFyeGRPUVNDanFuYWJldmVN?=
+ =?utf-8?B?Vm40YkNWK2N2UHVkWHVQeG9BY0lWajdxZitDOENpV2J6L05KdnBZOGRhbStD?=
+ =?utf-8?B?M2piLzc0TVN2TlZ3eUp1ejVsYjY0ZllTSElUYnkxM3Y2QVF0eTJzczlVNytY?=
+ =?utf-8?B?YkdGNytpdDVzd3BaZFpINzhBTUswdDEwVHNLaWtVUWx6UWNPcDA1STNkUEk0?=
+ =?utf-8?B?THVPRkZTT2QwMS81aitneVdhQkJrcElkeTR5S1U2aWtPZ2hFd2lRR08vS1JW?=
+ =?utf-8?B?Z0xka2xMY1hDMi9EdDJIZzJhU2Y1cXk2dnZpUlpHQnF5YmtMeHJabE9BTjAy?=
+ =?utf-8?B?elE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D23EFDF54F93D4429B88BBA327A95DCE@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	H6AnlwqIrJkAWxCBv/iNyGK2bsDm+KtO1aPuJFscmKKMY+PaqMu5LvDcx87nfMtFth6iPvhDPKaM2/KSwK0ytvV6ReEQ8KCJ8El7Scc1Rqsi4bvGMdJ6KvWgm1O5BhA10jf6JSQIK1MjmddOWeZPcaTNo+MPqjFnqIJbvDnd/b2vsdWwS9QA+z8MhckngjRHNVRdazZN5y+2J4tjYMYteo0CSjeKmrDsbzwXpONKDUzLkqgUtqlhPeOBy+ePk6qffmar+yxOkH+U10oGsUXPMYiZK4WR/BwEZSuH5P4/zJUAUsxCbW3Zs5QTnCC5DwHAcK4zBc7IXW4q11YRw2ivnN9SeeEH6U9ba8eWRykui17OYLEYZGxphEGcsYJJ7kW5k1e1Trne7cTerwYQ11dISGHelIh0Xy/FDPTiFqctKFPuryBK29t7Re1+mclCD3fEypwbzRncSRqDftJLUUcK+PtvqJt5jLXjjwW+eV0zb+0CTFdbzjJ4IAzvWT3ytZWorUcqOY1vmm9Mf1ueS+i1RIdmbdGIGpOLlyRL94UUK6v8Z69QgNAN5KgHJRVQWPBXrg+tuL5X3C7M0bk+Uvu6rvBaDtd30FlK0qwk2QxciTAgcoLbD7JC+8SlMtNtjXX6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 153647a4-ee0b-4980-02a6-08dd65bc00e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2025 01:27:09.9332
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VguPTTlcxA614E/vycE6LoUqK2zAGY9gbNm39SqxEs4c186Pni3OuWU9FN6rV3FC6HSgLUWJHIP46ViEzopf6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7168
 
-There is a potential deadlock if we do report zones in an IO context, detailed
-in below lockdep report. When one process do a report zones and another process
-freezes the block device, the report zones side cannot allocate a tag because
-the freeze is already started. This can thus result in new block group creation
-to hang forever, blocking the write path.
-
-Thankfully, a new block group should be created on empty zones. So, reporting
-the zones is not necessary and we can set the write pointer = 0 and load the
-zone capacity from the block layer using bdev_zone_capacity() helper.
-
- ======================================================
- WARNING: possible circular locking dependency detected
- 6.14.0-rc1 #252 Not tainted
- ------------------------------------------------------
- modprobe/1110 is trying to acquire lock:
- ffff888100ac83e0 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: __flush_work+0x38f/0xb60
-
- but task is already holding lock:
- ffff8881205b6f20 (&q->q_usage_counter(queue)#16){++++}-{0:0}, at: sd_remove+0x85/0x130
-
- which lock already depends on the new lock.
-
- the existing dependency chain (in reverse order) is:
-
- -> #3 (&q->q_usage_counter(queue)#16){++++}-{0:0}:
-        blk_queue_enter+0x3d9/0x500
-        blk_mq_alloc_request+0x47d/0x8e0
-        scsi_execute_cmd+0x14f/0xb80
-        sd_zbc_do_report_zones+0x1c1/0x470
-        sd_zbc_report_zones+0x362/0xd60
-        blkdev_report_zones+0x1b1/0x2e0
-        btrfs_get_dev_zones+0x215/0x7e0 [btrfs]
-        btrfs_load_block_group_zone_info+0x6d2/0x2c10 [btrfs]
-        btrfs_make_block_group+0x36b/0x870 [btrfs]
-        btrfs_create_chunk+0x147d/0x2320 [btrfs]
-        btrfs_chunk_alloc+0x2ce/0xcf0 [btrfs]
-        start_transaction+0xce6/0x1620 [btrfs]
-        btrfs_uuid_scan_kthread+0x4ee/0x5b0 [btrfs]
-        kthread+0x39d/0x750
-        ret_from_fork+0x30/0x70
-        ret_from_fork_asm+0x1a/0x30
-
- -> #2 (&fs_info->dev_replace.rwsem){++++}-{4:4}:
-        down_read+0x9b/0x470
-        btrfs_map_block+0x2ce/0x2ce0 [btrfs]
-        btrfs_submit_chunk+0x2d4/0x16c0 [btrfs]
-        btrfs_submit_bbio+0x16/0x30 [btrfs]
-        btree_write_cache_pages+0xb5a/0xf90 [btrfs]
-        do_writepages+0x17f/0x7b0
-        __writeback_single_inode+0x114/0xb00
-        writeback_sb_inodes+0x52b/0xe00
-        wb_writeback+0x1a7/0x800
-        wb_workfn+0x12a/0xbd0
-        process_one_work+0x85a/0x1460
-        worker_thread+0x5e2/0xfc0
-        kthread+0x39d/0x750
-        ret_from_fork+0x30/0x70
-        ret_from_fork_asm+0x1a/0x30
-
- -> #1 (&fs_info->zoned_meta_io_lock){+.+.}-{4:4}:
-        __mutex_lock+0x1aa/0x1360
-        btree_write_cache_pages+0x252/0xf90 [btrfs]
-        do_writepages+0x17f/0x7b0
-        __writeback_single_inode+0x114/0xb00
-        writeback_sb_inodes+0x52b/0xe00
-        wb_writeback+0x1a7/0x800
-        wb_workfn+0x12a/0xbd0
-        process_one_work+0x85a/0x1460
-        worker_thread+0x5e2/0xfc0
-        kthread+0x39d/0x750
-        ret_from_fork+0x30/0x70
-        ret_from_fork_asm+0x1a/0x30
-
- -> #0 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}:
-        __lock_acquire+0x2f52/0x5ea0
-        lock_acquire+0x1b1/0x540
-        __flush_work+0x3ac/0xb60
-        wb_shutdown+0x15b/0x1f0
-        bdi_unregister+0x172/0x5b0
-        del_gendisk+0x841/0xa20
-        sd_remove+0x85/0x130
-        device_release_driver_internal+0x368/0x520
-        bus_remove_device+0x1f1/0x3f0
-        device_del+0x3bd/0x9c0
-        __scsi_remove_device+0x272/0x340
-        scsi_forget_host+0xf7/0x170
-        scsi_remove_host+0xd2/0x2a0
-        sdebug_driver_remove+0x52/0x2f0 [scsi_debug]
-        device_release_driver_internal+0x368/0x520
-        bus_remove_device+0x1f1/0x3f0
-        device_del+0x3bd/0x9c0
-        device_unregister+0x13/0xa0
-        sdebug_do_remove_host+0x1fb/0x290 [scsi_debug]
-        scsi_debug_exit+0x17/0x70 [scsi_debug]
-        __do_sys_delete_module.isra.0+0x321/0x520
-        do_syscall_64+0x93/0x180
-        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
- other info that might help us debug this:
-
- Chain exists of:
-   (work_completion)(&(&wb->dwork)->work) --> &fs_info->dev_replace.rwsem --> &q->q_usage_counter(queue)#16
-
-  Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(&q->q_usage_counter(queue)#16);
-                                lock(&fs_info->dev_replace.rwsem);
-                                lock(&q->q_usage_counter(queue)#16);
-   lock((work_completion)(&(&wb->dwork)->work));
-
-  *** DEADLOCK ***
-
- 5 locks held by modprobe/1110:
-  #0: ffff88811f7bc108 (&dev->mutex){....}-{4:4}, at: device_release_driver_internal+0x8f/0x520
-  #1: ffff8881022ee0e0 (&shost->scan_mutex){+.+.}-{4:4}, at: scsi_remove_host+0x20/0x2a0
-  #2: ffff88811b4c4378 (&dev->mutex){....}-{4:4}, at: device_release_driver_internal+0x8f/0x520
-  #3: ffff8881205b6f20 (&q->q_usage_counter(queue)#16){++++}-{0:0}, at: sd_remove+0x85/0x130
-  #4: ffffffffa3284360 (rcu_read_lock){....}-{1:3}, at: __flush_work+0xda/0xb60
-
- stack backtrace:
- CPU: 0 UID: 0 PID: 1110 Comm: modprobe Not tainted 6.14.0-rc1 #252
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-3.fc41 04/01/2014
- Call Trace:
-  <TASK>
-  dump_stack_lvl+0x6a/0x90
-  print_circular_bug.cold+0x1e0/0x274
-  check_noncircular+0x306/0x3f0
-  ? __pfx_check_noncircular+0x10/0x10
-  ? mark_lock+0xf5/0x1650
-  ? __pfx_check_irq_usage+0x10/0x10
-  ? lockdep_lock+0xca/0x1c0
-  ? __pfx_lockdep_lock+0x10/0x10
-  __lock_acquire+0x2f52/0x5ea0
-  ? __pfx___lock_acquire+0x10/0x10
-  ? __pfx_mark_lock+0x10/0x10
-  lock_acquire+0x1b1/0x540
-  ? __flush_work+0x38f/0xb60
-  ? __pfx_lock_acquire+0x10/0x10
-  ? __pfx_lock_release+0x10/0x10
-  ? mark_held_locks+0x94/0xe0
-  ? __flush_work+0x38f/0xb60
-  __flush_work+0x3ac/0xb60
-  ? __flush_work+0x38f/0xb60
-  ? __pfx_mark_lock+0x10/0x10
-  ? __pfx___flush_work+0x10/0x10
-  ? __pfx_wq_barrier_func+0x10/0x10
-  ? __pfx___might_resched+0x10/0x10
-  ? mark_held_locks+0x94/0xe0
-  wb_shutdown+0x15b/0x1f0
-  bdi_unregister+0x172/0x5b0
-  ? __pfx_bdi_unregister+0x10/0x10
-  ? up_write+0x1ba/0x510
-  del_gendisk+0x841/0xa20
-  ? __pfx_del_gendisk+0x10/0x10
-  ? _raw_spin_unlock_irqrestore+0x35/0x60
-  ? __pm_runtime_resume+0x79/0x110
-  sd_remove+0x85/0x130
-  device_release_driver_internal+0x368/0x520
-  ? kobject_put+0x5d/0x4a0
-  bus_remove_device+0x1f1/0x3f0
-  device_del+0x3bd/0x9c0
-  ? __pfx_device_del+0x10/0x10
-  __scsi_remove_device+0x272/0x340
-  scsi_forget_host+0xf7/0x170
-  scsi_remove_host+0xd2/0x2a0
-  sdebug_driver_remove+0x52/0x2f0 [scsi_debug]
-  ? kernfs_remove_by_name_ns+0xc0/0xf0
-  device_release_driver_internal+0x368/0x520
-  ? kobject_put+0x5d/0x4a0
-  bus_remove_device+0x1f1/0x3f0
-  device_del+0x3bd/0x9c0
-  ? __pfx_device_del+0x10/0x10
-  ? __pfx___mutex_unlock_slowpath+0x10/0x10
-  device_unregister+0x13/0xa0
-  sdebug_do_remove_host+0x1fb/0x290 [scsi_debug]
-  scsi_debug_exit+0x17/0x70 [scsi_debug]
-  __do_sys_delete_module.isra.0+0x321/0x520
-  ? __pfx___do_sys_delete_module.isra.0+0x10/0x10
-  ? __pfx_slab_free_after_rcu_debug+0x10/0x10
-  ? kasan_save_stack+0x2c/0x50
-  ? kasan_record_aux_stack+0xa3/0xb0
-  ? __call_rcu_common.constprop.0+0xc4/0xfb0
-  ? kmem_cache_free+0x3a0/0x590
-  ? __x64_sys_close+0x78/0xd0
-  do_syscall_64+0x93/0x180
-  ? lock_is_held_type+0xd5/0x130
-  ? __call_rcu_common.constprop.0+0x3c0/0xfb0
-  ? lockdep_hardirqs_on+0x78/0x100
-  ? __call_rcu_common.constprop.0+0x3c0/0xfb0
-  ? __pfx___call_rcu_common.constprop.0+0x10/0x10
-  ? kmem_cache_free+0x3a0/0x590
-  ? lockdep_hardirqs_on_prepare+0x16d/0x400
-  ? do_syscall_64+0x9f/0x180
-  ? lockdep_hardirqs_on+0x78/0x100
-  ? do_syscall_64+0x9f/0x180
-  ? __pfx___x64_sys_openat+0x10/0x10
-  ? lockdep_hardirqs_on_prepare+0x16d/0x400
-  ? do_syscall_64+0x9f/0x180
-  ? lockdep_hardirqs_on+0x78/0x100
-  ? do_syscall_64+0x9f/0x180
-  entry_SYSCALL_64_after_hwframe+0x76/0x7e
- RIP: 0033:0x7f436712b68b
- Code: 73 01 c3 48 8b 0d 8d a7 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 5d a7 0c 00 f7 d8 64 89 01 48
- RSP: 002b:00007ffe9f1a8658 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
- RAX: ffffffffffffffda RBX: 00005559b367fd80 RCX: 00007f436712b68b
- RDX: 0000000000000000 RSI: 0000000000000800 RDI: 00005559b367fde8
- RBP: 00007ffe9f1a8680 R08: 1999999999999999 R09: 0000000000000000
- R10: 00007f43671a5fe0 R11: 0000000000000206 R12: 0000000000000000
- R13: 00007ffe9f1a86b0 R14: 0000000000000000 R15: 0000000000000000
-  </TASK>
-
-Reported-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-CC: stable@vger.kernel.org # 6.13+
----
- fs/btrfs/zoned.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 4956baf8220a..6c730f6bce10 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1277,7 +1277,7 @@ struct zone_info {
- 
- static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 				struct zone_info *info, unsigned long *active,
--				struct btrfs_chunk_map *map)
-+				struct btrfs_chunk_map *map, bool new)
- {
- 	struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
- 	struct btrfs_device *device;
-@@ -1307,6 +1307,8 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 		return 0;
- 	}
- 
-+	ASSERT(!new || btrfs_dev_is_empty_zone(device, info->physical));
-+
- 	/* This zone will be used for allocation, so mark this zone non-empty. */
- 	btrfs_dev_clear_zone_empty(device, info->physical);
- 
-@@ -1319,6 +1321,18 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 	 * to determine the allocation offset within the zone.
- 	 */
- 	WARN_ON(!IS_ALIGNED(info->physical, fs_info->zone_size));
-+
-+	if (new) {
-+		sector_t capacity;
-+
-+		capacity = bdev_zone_capacity(device->bdev, info->physical >> SECTOR_SHIFT);
-+		up_read(&dev_replace->rwsem);
-+		info->alloc_offset = 0;
-+		info->capacity = capacity << SECTOR_SHIFT;
-+
-+		return 0;
-+	}
-+
- 	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_get_dev_zone(device, info->physical, &zone);
- 	memalloc_nofs_restore(nofs_flag);
-@@ -1588,7 +1602,7 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
- 	}
- 
- 	for (i = 0; i < map->num_stripes; i++) {
--		ret = btrfs_load_zone_info(fs_info, i, &zone_info[i], active, map);
-+		ret = btrfs_load_zone_info(fs_info, i, &zone_info[i], active, map, new);
- 		if (ret)
- 			goto out;
- 
--- 
-2.49.0
-
+T24gTW9uIE1hciAxNywgMjAyNSBhdCA4OjI0IFBNIEpTVCwgSm9oYW5uZXMgVGh1bXNoaXJuIHdy
+b3RlOg0KPiBUd28gZml4ZXMgYXJvdW5kIFpPTkUgRklOSVNIIGFuZCBaT05FIEFDVElWQVRFIGZv
+ciBtdWx0aSBkZXZpY2UgZmlsZXN5c3RlbXMgaW4NCj4gZGVncmFkZWQgbW9kZS4NCj4NCj4gQm90
+aCB0aW1lcyB3ZSdyZSBkZXJlZmVyZW5jaW5nIHRoZSBidHJmc19kZXZpY2U6OnpvbmVfaW5mbyBw
+b2ludGVyIHdpdGhvdXQNCj4gcHJpb3IgY2hlY2tpbmcgaWYgdGhlIGRldmljZSBpcyBwcmVzZW50
+Lg0KDQpBdCBmaXJzdCwgSSB0aG91Z2h0LCB3ZSBzaG91bGQgbm90IHdyaXRlIGludG8gYSBibG9j
+ayBncm91cCBjb250YWluaW5nIGENCm1pc3NpbmcgZGV2aWNlLiBCdXQsIHllYWgsIGluIHRoZSBk
+ZWdyYWRlZCBtb2RlLCB3ZSBhcmUgYWxsb3dlZCB0byBtYWtlDQp1bi1zeW5jZWQgd3JpdGluZy4N
+Cg0KU28sIGZvciB0aGUgc2VyaWVzDQoNClJldmlld2VkLWJ5OiBOYW9oaXJvIEFvdGEgPG5hb2hp
+cm8uYW90YUB3ZGMuY29tPg0KDQo+DQo+IEpvaGFubmVzIFRodW1zaGlybiAoMik6DQo+ICAgYnRy
+ZnM6IHpvbmVkOiBmaXggem9uZSBhY3RpdmF0aW9uIHdpdGggbWlzc2luZyBkZXZpY2VzDQo+ICAg
+YnRyZnM6IHpvbmVkOiBmaXggem9uZSBmaW5pc2hpbmcgd2l0aCBtaXNzaW5nIGRldmljZXMNCj4N
+Cj4gIGZzL2J0cmZzL3pvbmVkLmMgfCA2ICsrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5z
+ZXJ0aW9ucygrKQ0K
 
