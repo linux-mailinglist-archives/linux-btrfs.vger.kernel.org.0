@@ -1,161 +1,87 @@
-Return-Path: <linux-btrfs+bounces-12361-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12362-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53798A66CEC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 08:56:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEDB5A66CFB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 08:58:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EF817ADEBE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 07:55:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA12E3AC92D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Mar 2025 07:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 685BC1F0987;
-	Tue, 18 Mar 2025 07:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6F41EF373;
+	Tue, 18 Mar 2025 07:58:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=furiosa.ai header.i=@furiosa.ai header.b="J/7qt6eg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJKGrPfW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CE51DF727
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 07:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2521C3BE2;
+	Tue, 18 Mar 2025 07:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742284555; cv=none; b=XgivQy3ZFBY0oDQFOjkmQwUTq9b/15VWtakqbSlhbM+DZFn+CsN4rnGeGvxq39mddjceINs96iEJjt1RldHK6ET5kHz8KE8wNYlXmCrhKUVgEI0zbyiGN8garVpw0lxR8maYdXZsLh1IozpJ8CH2UXHj1IhuRUR50/ce+BZN2BI=
+	t=1742284695; cv=none; b=Oc61iIHXA3IPDA0tzVROxqRgl8X5SMgI3Vi6dlO1FdnP21V0T1JXICft88WFRVjS/0eqJu3FVERAgCgXXHsla63qVzFi3EMT31vxqZDmyeqwlIedhg6HsW/5LIpNptIKuT0p4YEwO67UhSMBEUZl+5UWHpjRX0r7rD6tMxfbvB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742284555; c=relaxed/simple;
-	bh=N+vhNC0jMyh202u4Nzngi+/YScqdgkuR1GpsqEXNxTk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RC+nKjvtnyMVJTXLk11tsRV/GEIl1Ny/H50GnDUrB+ttm+VRMqcu7RGaf2nc04Kk9rH6WNRhRTpKCNI5ksuFOCnJ1rwJ0JY4enbhqepxN5W0VQDbl9u0oYxKBZXR5qvZgAmJwx2ObLBzzbuT2EIv7xG+UcA5asezdWK4KVrSUkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (1024-bit key) header.d=furiosa.ai header.i=@furiosa.ai header.b=J/7qt6eg; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=furiosa.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-225df540edcso70801195ad.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Mar 2025 00:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=furiosa.ai; s=google; t=1742284553; x=1742889353; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AWqw/1YNqpsUiTasqbG4aqWj2NMVBNVnLiGA9t51nRU=;
-        b=J/7qt6egEm8xpLU14Nfwpl4aCF+YBSLKG2siRAZg+zTk9E6g8PpB0hbAyrNJjDJjlE
-         WFTRj0nXHIDOBY6t37Qb6IQgVk5QIBxDbSv9JIUqp+g2EWQbRhWf8UK1+vI95U2QC7x7
-         f4fWS1VkpAqm0veTij9zd1ghlaaSu/R0ont/k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742284553; x=1742889353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AWqw/1YNqpsUiTasqbG4aqWj2NMVBNVnLiGA9t51nRU=;
-        b=bFl71Cs8iZ0DM/kcDllqcJsj8zGnc1GBroAPXs3L8wvN8GBQW1UwPLJc2o8t31tuyJ
-         86U2rDWxXPLDVoCsthdvYsj/Bx9bYw/DgjgeKebSJWfjjUJ9eOR175iRGES32hhxoLhx
-         eijYU6Hea7aLL7Mnt1geBMdVtP36MCBmW8c262rb9mq2IJyTEsJhKY7E7eQn2OvsCF2A
-         qTiE7+VAC3am3d/+svpBm+uUo/z6Xx9co0uyophRNO7nDKTbEDobGfaUfsv/dJJLls+F
-         WQ+R4tR6hlYAlyED76v6VgWnC15/+6IibaFnJpIMwEk6O+7/7memnYJVg1gB2iLC2Mlo
-         l4Kw==
-X-Forwarded-Encrypted: i=1; AJvYcCWk00BE8h7UkYi8J4uC2VCTpwD+kvFsZ50OJTlkzOLJK6i5yxkQat1rO8vEML7vhk7pSRjsXZoW/mIbGQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLYFM0i3SKY4Djiir7FZfShLwTKjFbmJtmL7cO2OSgrlttCJPm
-	ktem77zxWJvcfUq0j2nUJmryBPekU8Pp7Eviim1+QZE+vf4HPnlu/vxQC7hS5jpSk6QN7BlwsNZ
-	f
-X-Gm-Gg: ASbGncu21KMwiukgbueNifn0dd58x0lSmcYy3ygrmkH0LMoNLA/HeaIHRvZbZRULvmZ
-	pAN8bjF6wPIJToGcVhgSAzShWCv/5L0iCZJEQ5EGLwAAx8Acwi7yyTZjbz/SwUx8HQGmJhgUo2n
-	RKJIbq056V5wilLAIpaevTr7Fekm4C8M4CgMkSepXRu0JNMSUYzQOwzTPzOWhPkrhEAhpC5lLFj
-	Pg+lhxMnCEgW3utWMh874Juw4mBIpCYs9hJBravaNNDIk0mSyi7GJI6ubgPozenMyuCgIAEqsz1
-	GQ/y5OajMvdZb1oyzGziutq1yHgJpXSAWdS3XfSrFvu7eDh61WMtS96xxmhOEEtPWKvPP0u7aYo
-	k
-X-Google-Smtp-Source: AGHT+IGLSujM6CyWqFOh57z55RWygpWHWUeBFLDSwNoV+Z1DhMnmwP9sY/TJGMmFDBV3BlyR8M6DEQ==
-X-Received: by 2002:a05:6a00:4fc3:b0:736:b3cb:5db with SMTP id d2e1a72fcca58-73757a53663mr3191488b3a.11.1742284553335;
-        Tue, 18 Mar 2025 00:55:53 -0700 (PDT)
-Received: from sidongui-MacBookPro.local ([221.148.76.1])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7371169c3desm8846112b3a.155.2025.03.18.00.55.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 00:55:52 -0700 (PDT)
-Date: Tue, 18 Mar 2025 16:55:43 +0900
-From: Sidong Yang <sidong.yang@furiosa.ai>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH v4 4/5] btrfs: ioctl: introduce
- btrfs_uring_import_iovec()
-Message-ID: <Z9km_8ai2zq86JKI@sidongui-MacBookPro.local>
-References: <20250317135742.4331-1-sidong.yang@furiosa.ai>
- <20250317135742.4331-5-sidong.yang@furiosa.ai>
- <3a883e1e-d822-4c89-a7b0-f8802b8cc261@kernel.dk>
- <Z9jTYWAvcWJNyaIN@sidongui-MacBookPro.local>
- <566c700c-d3d5-4899-8de1-87092e76310c@gmail.com>
+	s=arc-20240116; t=1742284695; c=relaxed/simple;
+	bh=YjofbzV5kQWyOHs5wb9gCPfHPvabjzxNIU+uECnh/2U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WRnkdwXruX3esSCTuBi7QIV3+W/GFfmDYThp7fa6FNGYSV2YSWFrM2JkIsOOOA1Q54t0nlJbBfbC48gMWZj+dasfSmeVqnWGxYIQIpVzSi5mLdJ0tzMnyY5BV+bKgZrTwvCWqJw7lgbapkn+CYMBIZtJFYu2PoCEsBE4W5cnqRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJKGrPfW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1CE2C4CEDD;
+	Tue, 18 Mar 2025 07:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742284695;
+	bh=YjofbzV5kQWyOHs5wb9gCPfHPvabjzxNIU+uECnh/2U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bJKGrPfWMJBg5UFLSG1QcZqHA31Qery7kty9Iro05WyxeTIuNg+E6QyePVGGsjbhY
+	 gdTC+IPNUF1MEumB4AoZq6jUHE8bdJBs/KFwQt5AmIEfYO5G4kfyWbItbMhHRK5nFm
+	 wmlGEUPsy7ywn71yvi03E58vGu/ul1kwgIpVh6+AV77ItEqW99Vd1B708rWHPom2Fu
+	 1oWYHlg7QHc8/YMO0+jjZNaGmtGTtUdMFrz3WS4HmIxSi1n5tETkR8uuxLhr+B5spe
+	 1ffIOaksa5t13SPuFvvnldKfeodYdOjQuF9PXIhNwdBtYAquZ/XOSS2mSUywhfU3HS
+	 T6UUGu3JCVxGQ==
+Message-ID: <b527143b-6528-4817-9f48-9ee7ab874989@kernel.org>
+Date: Tue, 18 Mar 2025 16:57:45 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <566c700c-d3d5-4899-8de1-87092e76310c@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] block: introduce zone capacity helper
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+ axboe@kernel.dk, linux-block@vger.kernel.org
+References: <cover.1742259006.git.naohiro.aota@wdc.com>
+ <e0fa06613d4f39f85a64c75e5b4413ccfd725c4b.1742259006.git.naohiro.aota@wdc.com>
+ <2a641d02-1d59-4e0b-9dcc-defb64548d1b@kernel.org>
+ <Z9kKfpY0E-phdJ5G@infradead.org>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <Z9kKfpY0E-phdJ5G@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 18, 2025 at 07:25:51AM +0000, Pavel Begunkov wrote:
-> On 3/18/25 01:58, Sidong Yang wrote:
-> > On Mon, Mar 17, 2025 at 09:40:05AM -0600, Jens Axboe wrote:
-> > > On 3/17/25 7:57 AM, Sidong Yang wrote:
-> > > > This patch introduces btrfs_uring_import_iovec(). In encoded read/write
-> > > > with uring cmd, it uses import_iovec without supporting fixed buffer.
-> > > > btrfs_using_import_iovec() could use fixed buffer if cmd flags has
-> > > > IORING_URING_CMD_FIXED.
-> > > > 
-> > > > Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
-> > > > ---
-> > > >   fs/btrfs/ioctl.c | 32 ++++++++++++++++++++++++--------
-> > > >   1 file changed, 24 insertions(+), 8 deletions(-)
-> > > > 
-> > > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > > > index 6c18bad53cd3..a7b52fd99059 100644
-> > > > --- a/fs/btrfs/ioctl.c
-> > > > +++ b/fs/btrfs/ioctl.c
-> > > > @@ -4802,6 +4802,28 @@ struct btrfs_uring_encoded_data {
-> > > >   	struct iov_iter iter;
-> > > >   };
-> > > > +static int btrfs_uring_import_iovec(struct io_uring_cmd *cmd,
-> > > > +				    unsigned int issue_flags, int rw)
-> > > > +{
-> > > > +	struct btrfs_uring_encoded_data *data =
-> > > > +		io_uring_cmd_get_async_data(cmd)->op_data;
-> > > > +	int ret;
-> > > > +
-> > > > +	if (cmd && (cmd->flags & IORING_URING_CMD_FIXED)) {
-> > > > +		data->iov = NULL;
-> > > > +		ret = io_uring_cmd_import_fixed_vec(cmd, data->args.iov,
-> > > > +						    data->args.iovcnt,
-> > > > +						    ITER_DEST, issue_flags,
-> > > > +						    &data->iter);
-> > > > +	} else {
-> > > > +		data->iov = data->iovstack;
-> > > > +		ret = import_iovec(rw, data->args.iov, data->args.iovcnt,
-> > > > +				   ARRAY_SIZE(data->iovstack), &data->iov,
-> > > > +				   &data->iter);
-> > > > +	}
-> > > > +	return ret;
-> > > > +}
-> > > 
-> > > How can 'cmd' be NULL here?
-> > 
-> > It seems that there is no checkes for 'cmd' before and it works same as before.
-> > But I think it's better to add a check in function start for safety.
+On 3/18/25 2:54 PM, Christoph Hellwig wrote:
+> On Tue, Mar 18, 2025 at 02:14:29PM +0900, Damien Le Moal wrote:
+>> @pos is not the start of the zone, so this should be:
+>>
+>>  * disk_zone_capacity - returns the capacity of the zone containing @sect
+>>
+>> And rename pos to sect.
 > 
-> The check goes two lines after you already dereferenced it, and it
-> seems to be called from io_uring cmd specific code. The null check
-> only adds to confusion.
+> While we're nitpicking:  sect is a bit weird, the block layer usually
+> spells it out as sectors (sect sounds too close to the german word for
+> sparkling wine anyway :))
 
-You mean 'cmd' already dereferenced for async_data. Is it okay to just delete code
-checking 'cmd' like below?
+Given that this is not a number of sectors, "sector" would be the right name
+then :)
 
-if (cmd->flags & IORING_URING_CMD_FIXED) {
 
-Thanks,
-Sidong
-
-> 
-> -- 
-> Pavel Begunkov
-> 
+-- 
+Damien Le Moal
+Western Digital Research
 
