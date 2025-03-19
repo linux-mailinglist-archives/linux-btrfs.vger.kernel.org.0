@@ -1,85 +1,53 @@
-Return-Path: <linux-btrfs+bounces-12421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12422-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F8E8A68BA3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 12:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09A59A68C8C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 13:13:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65EC04640D2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 11:25:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5F2717FE85
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 12:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDD9255E4E;
-	Wed, 19 Mar 2025 11:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BE7255E38;
+	Wed, 19 Mar 2025 12:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=furiosa.ai header.i=@furiosa.ai header.b="aUBE+dtp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qdYYXYvw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C93254AFE
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 11:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF41255229;
+	Wed, 19 Mar 2025 12:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742383457; cv=none; b=SpUvFu7SziELBZq4VJ7Ml9K+ZeN23zRxyMBna3Fjox/BOWmaqPtAG51GsVJwiM1nb3l6yyO8ACE8SwHiOjyiJqkliqr99MyuURpUOXXme+cKuJe31/3uJrJLC7wRyKxKtPBe9PS5OU8nHJmc/wG/FzAIHTFE2Ay5sKyidOG+a9w=
+	t=1742386416; cv=none; b=ZFEddpPy+6313pgHvtukzWfzKdykZFumI4JmL1e2zQDxmsz9sMpZXjpme72bPS0N1oZorFHEYVxe16dAs4SPW6jtWQsk21MIrk/4bZmp7oS676TcZnPpNrnyGNSDr9vnq0LyagjHsE9CxIfjgSMI0nwmJo4Wy7GbKbZM2dyBFoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742383457; c=relaxed/simple;
-	bh=vKkl9RE5EwEBFLtLPUlfSUx26PfPlZrX+Blb5dbT/C0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ig5f9d6DJ3CVbwlMj+0fahNV2NEUynurbvS1sMcDO8BWtt5s/76tPwUqMDIDDZO8MBMhbUh8Y4bYzKjuFFdCDTUB0HWlafTZTONkBzFWKeJx5gAI9TyXpADZNXKOhRrYQf1J3VkV1Yqq40E5ACsabASszI8jmh4409kkKov2v2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (1024-bit key) header.d=furiosa.ai header.i=@furiosa.ai header.b=aUBE+dtp; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=furiosa.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-224171d6826so37308875ad.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 04:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=furiosa.ai; s=google; t=1742383455; x=1742988255; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XZvnuJrKt9TGuvAge2fzG7AvTvxdXtsSJqic522bGGA=;
-        b=aUBE+dtpGvUlRQwt4d8VdA5uptO68I5pFyPKrCfXoY6NbDN70a0Op9CjuMrWhOtUN6
-         inEY1+976vbuLP3lM1XPKSr7jtVopyungZJ86CQKyM3o+OmGuYMMCGWYe9qMnFAR3OBb
-         MSda/TSodFJzqsC+8m3KvrJodWq2tKHA94Cbw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742383455; x=1742988255;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XZvnuJrKt9TGuvAge2fzG7AvTvxdXtsSJqic522bGGA=;
-        b=TxigzsMHEfDYGioRetoUCCmByXqzmlOBkf5Fv9fYotc/+ZFsvmtzFsB7w1LydN+Usd
-         wxk9xlk6BpfJ8w5Wm8w9E1NvqyexLlKkbaiwROZUIWojaX7Lwv3aQKbgzCLtJzrwjLyt
-         SBzGNdeOkoq0vkD++kAwqDMq9VoJn20TH48PrRFlw8pHclWD9zQuyX5+IK1hAearPQPS
-         ij+LPFcoNw4C1em435E1gQEVRt7iw02H7CS9M5YJHfH7v60sKyFDsv2hK5M5IKh4PUye
-         JY2n6dPMG7nIf/jcoMej+xfvTH7oY1SR04G1rCMyjyiIxnt3z3fypIIeA2ShF1rQewpn
-         LfZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2nYb62WXjlYoeStpqNeSMNCXPV5grysS8XZxupZOZGl6dCWf4G6YG6fm1uIKjheNn7j694DKMt3RwLA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxd4dDrQ9YnpU+R/MfL9adLhjs9AS1o1JOxkAUFYL8ywtaqRGJe
-	esr2L4shSU/cfmscSJ+RqeXFVuYzcVdXhcPOm6GP339W34F0HlkMLw8R7er2Meu4uG+fbHXi2MR
-	1
-X-Gm-Gg: ASbGnctF8oP6Z/EgZ128qWUvuD+yX9bZ1NFKYcJvrIXADVuGiJZoVR1ks9twXvKj65z
-	Na7nGZxm4l/wTRlWtlCyLbQ7FamR1f2nzONRNnxdhVE5AHBv3iMM9Sf2OccH1InClMPYS/d1Tkm
-	eMIFRjMnIOQy9uI3CT2U+IOtUl9RDdiBDMRXbGO+VYv41rsc45g9G0TNyALyoUE/+YvLlwImE4o
-	Fs8p63uFpyoByAYcAHnc4ffgcTzEkSrKTzTvBvqEsH+dVuB7+AgneitFrRm4B04DbDfp/QF3Qo7
-	xgQO2ExPnD/yf7crQl7V4CkGKYK8B3Kj6dsDoPBNlXrNF95P5clYka9JqXzgFOpgDG1A/xAx8K+
-	HD+PqC//ja4quMlU=
-X-Google-Smtp-Source: AGHT+IHhLaPon9yGAlr+vvdISzeAeLbAmh8UYYNWjbtERsSGvsF20JUu0H7aaQVQFG458JsbhtpC6Q==
-X-Received: by 2002:a17:902:eb81:b0:224:1781:a947 with SMTP id d9443c01a7336-226499280d0mr43847995ad.21.1742383454604;
-        Wed, 19 Mar 2025 04:24:14 -0700 (PDT)
-Received: from sidong.sidong.yang.office.furiosa.vpn ([61.83.209.48])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c6ba6d5dsm111605955ad.153.2025.03.19.04.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 04:24:14 -0700 (PDT)
-From: Sidong Yang <sidong.yang@furiosa.ai>
-To: Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Cc: Mark Harmstone <maharmstone@meta.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sidong Yang <sidong.yang@furiosa.ai>
-Subject: [PATCH 1/1] btrfs: ioctl: don't free iov when -EAGAIN in uring encoded read
-Date: Wed, 19 Mar 2025 11:24:01 +0000
-Message-ID: <20250319112401.22316-1-sidong.yang@furiosa.ai>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1742386416; c=relaxed/simple;
+	bh=tKvjDXay4kDdnP2nTDaxUlvCdTkuZ24dO+VQ4nktrsE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NdiPqVRSetauET8yDK6tRT3U9JrHwoGV+AsEjZzoGUmjBaK+GRC6DFFYXO5RZpqQ4Ti0pxpW/sd5uMcBfeE4Fw1+g5dswa5EmTmmtxy6idLejAyi72Me96RvG0uxRkeRLcr8u1+xINazVrx8VHFNRcyrEkfccnHNObvLfXro0fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qdYYXYvw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E91C4CEE9;
+	Wed, 19 Mar 2025 12:13:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742386416;
+	bh=tKvjDXay4kDdnP2nTDaxUlvCdTkuZ24dO+VQ4nktrsE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qdYYXYvwzAHv8uAXcUC0H3kv5NlxYAlgAhUYqIH4v2TksuidHP1BKDhFtDMmNEk/l
+	 gRy4ek5r3IoNga0pmenuAWF4eusjk1g3bc+ZdmHWAO0eHyLuaT6gZvXkJFtSma98Nu
+	 jh+SWvX65NWk9s4UxKdiahCJQVhHtVanaDxPJV+M3YDa1MUlVlBgbAc1hMzKt2V5wz
+	 +zFMb3z1Da6bKqG6EW+FYtHFDQ2K3zuPqv43/V9TSUtCiTf2ZSjfFqdacMa6MzqUhT
+	 vQKLZ3+p6KA8QTDb2p6+mUvo8tqMuoUq5zUe585mEu5k1Ud+jo5guNo6+vd6ei0FGN
+	 rHlnSt47yqu7w==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs/058: fix test to actually have an open tmpfile during the send operation
+Date: Wed, 19 Mar 2025 12:13:28 +0000
+Message-ID: <f2f3902ab7603f82751a9729cc8f1b406c5cbf98.1742386250.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -88,33 +56,88 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch fixes a bug on encoded_read. In btrfs_uring_encoded_read(),
-btrfs_encoded_read could return -EAGAIN when receiving requests concurrently.
-And data->iov goes to out_free and it freed and return -EAGAIN. io-uring
-subsystem would call it again and it doesn't reset data. And data->iov
-freed and iov_iter reference it. iov_iter would be used in
-btrfs_uring_read_finished() and could be raise memory bug.
+From: Filipe Manana <fdmanana@suse.com>
 
-Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
+The test's goal is to exercise a send operation while there's a tmpfile in
+the snapshot, but that doesn't happen since the background xfs_io process
+that created the tmpfile ends up exiting before we create the snapshot, so
+the snapshot nevers gets a tmpfile.
+
+Fix this by using a different approach, with a fifo and tailing it to the
+stdin of a background xfs_io process and then writing to the fifo to
+create the tmpfile. This keeps the xfs_io process running with the tmpfile
+open while we snapshot and run the send operation.
+
+While at it also add code to verify we have the tmpfile (an orphan inode
+item) in the snapshot's tree.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ioctl.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tests/btrfs/058 | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index c44e6ce6e5f5..b556db9e7cc4 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4924,6 +4924,9 @@ static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue
+diff --git a/tests/btrfs/058 b/tests/btrfs/058
+index 7bc4af5b..3bb0ed21 100755
+--- a/tests/btrfs/058
++++ b/tests/btrfs/058
+@@ -21,6 +21,7 @@ _cleanup()
+ {
+ 	if [ ! -z $XFS_IO_PID ]; then
+ 		kill $XFS_IO_PID > /dev/null 2>&1
++		wait
+ 	fi
+ 	rm -fr $tmp
+ }
+@@ -29,18 +30,22 @@ _cleanup()
  
- 	ret = btrfs_encoded_read(&kiocb, &data->iter, &data->args, &cached_state,
- 				 &disk_bytenr, &disk_io_size);
+ _require_scratch
+ _require_xfs_io_command "-T"
++_require_mknod
++_require_btrfs_command inspect-internal dump-tree
+ 
+ _scratch_mkfs >/dev/null 2>&1
+ _scratch_mount
+ 
++mkfifo $SCRATCH_MNT/fifo
 +
-+	if (ret == -EAGAIN)
-+		goto out_acct;
- 	if (ret < 0 && ret != -EIOCBQUEUED)
- 		goto out_free;
+ # Create a tmpfile file, write some data to it and leave it open, so that our
+ # main subvolume has an orphan inode item.
+-$XFS_IO_PROG -T $SCRATCH_MNT >>$seqres.full 2>&1 < <(
+-	echo "pwrite 0 65536"
+-	read
+-) &
++tail -f $SCRATCH_MNT/fifo | $XFS_IO_PROG >>$seqres.full &
+ XFS_IO_PID=$!
  
++echo "open -T $SCRATCH_MNT" > $SCRATCH_MNT/fifo
++echo "pwrite 0 64K" > $SCRATCH_MNT/fifo
++
+ # Give it some time to the xfs_io process to create the tmpfile.
+ sleep 3
+ 
+@@ -48,6 +53,21 @@ sleep 3
+ # The send operation used to fail with -ESTALE due to the presence of the
+ # orphan inode.
+ _btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap
++
++snap_id=$(_btrfs_get_subvolid $SCRATCH_MNT mysnap)
++# Inode numbers are sequential, so our tmpfile's inode number is the number of
++# the fifo's inode plus 1.
++ino=$(( $(stat -c %i $SCRATCH_MNT/fifo) + 1 ))
++
++# Verify that we indeed have the tmpfile in the snapshot tree.
++$BTRFS_UTIL_PROG inspect-internal dump-tree -t $snap_id $SCRATCH_DEV | \
++	grep -q "(ORPHAN ORPHAN_ITEM $ino)"
++if [ $? -ne 0 ]; then
++	echo "orphan item for tmpfile not found in the snapshot tree!"
++	echo -e "snapshot tree dump is:\n"
++	$BTRFS_UTIL_PROG inspect-internal dump-tree -t $snap_id $SCRATCH_DEV
++fi
++
+ _btrfs send -f /dev/null $SCRATCH_MNT/mysnap
+ 
+ status=0
 -- 
-2.43.0
+2.45.2
 
 
