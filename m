@@ -1,157 +1,187 @@
-Return-Path: <linux-btrfs+bounces-12431-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12432-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE014A6976C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 19:06:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8A2A69773
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 19:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF4B016D3E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 18:04:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3D5C175842
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 18:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1B4207DF9;
-	Wed, 19 Mar 2025 18:04:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7740919006F;
+	Wed, 19 Mar 2025 18:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1cnlvPbH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="O54E8pkD";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1cnlvPbH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="O54E8pkD"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Mt8saeKe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD4E18D63E
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 18:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EE91C1F02
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 18:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742407461; cv=none; b=MXsiAvXtPHqQPGeZHO+eLCIikHpAsvYSt7nXUwUnxq1Q+yaqJPZ8gHq6+GTXzP3oefablhxc2lel/Mquo+v+mE6XiRM6HwgvxsWfV+4t4ul0XdJY1NXIHkM8aQdkWt19EjVoXTrtsiaI1BYs7r4VnOc+QOFV6SXP25Ua2HphmZ8=
+	t=1742407599; cv=none; b=aH2A9RGmLMCDkXAoOyRbFvTECxvpnm7WpSadi1wqqMagdyfHu/mWNMK/2Niw3ZLVM75irAHi6T1SCiEkaZulzll4r5n8s1hgi8s7CR0sPm7SaZQ7r1ktCBst5QvVSwF8LyRblf2BFCL5xx/l6EwSYMt7K14W13/9p8PJOyHmRuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742407461; c=relaxed/simple;
-	bh=2pzqCOahNSULXjdHNCdM8s/C3iaoZv8ZOdgXFYu6n88=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B7X0wXZ3jVkpCYAwERT0XTBgP1NRQfQqFZ829s166bNbB3OWnpuGg8dN86HGVRRcRvURLcU9TDaSap+ErRKtsLDQxSJp8z47JRTmTTJpYlalXfSoe5BjvrZkSIFanwliiOhsAu9QVqxZX5TxioaCE9cOBaYsIGRAaJAclMNLbyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1cnlvPbH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=O54E8pkD; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1cnlvPbH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=O54E8pkD; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F23812120D;
-	Wed, 19 Mar 2025 18:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1742407458;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OK8MKDKvNk4m60cK8RjEe33phTavyjXdJ3CyZZA+vM0=;
-	b=1cnlvPbH/b3SHfViRXIR1MWDj3HfUyjslW6fFqajvl3bL9/REiwzTEhIKsMAhFplGZRdsB
-	QTZtnIlS9zCi8F6zzMetI+Whe4iuwXI9QSYPDpyqzGpLnoGMC8f/Y40IOQXZic2FWIoFmo
-	nsSlGK6nJMN6ekM6eSv51YosbtsWBuU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1742407458;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OK8MKDKvNk4m60cK8RjEe33phTavyjXdJ3CyZZA+vM0=;
-	b=O54E8pkDqdeZc+w1TgSlnJm7aOiJ1oy5wB2wTfhPwHn6M6OcckjLozDbdU+1zuOyjhm9PA
-	QpFlIEMmYLBCHhCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1cnlvPbH;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=O54E8pkD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1742407458;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OK8MKDKvNk4m60cK8RjEe33phTavyjXdJ3CyZZA+vM0=;
-	b=1cnlvPbH/b3SHfViRXIR1MWDj3HfUyjslW6fFqajvl3bL9/REiwzTEhIKsMAhFplGZRdsB
-	QTZtnIlS9zCi8F6zzMetI+Whe4iuwXI9QSYPDpyqzGpLnoGMC8f/Y40IOQXZic2FWIoFmo
-	nsSlGK6nJMN6ekM6eSv51YosbtsWBuU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1742407458;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OK8MKDKvNk4m60cK8RjEe33phTavyjXdJ3CyZZA+vM0=;
-	b=O54E8pkDqdeZc+w1TgSlnJm7aOiJ1oy5wB2wTfhPwHn6M6OcckjLozDbdU+1zuOyjhm9PA
-	QpFlIEMmYLBCHhCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6FAC13726;
-	Wed, 19 Mar 2025 18:04:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id k6csNCEH22egewAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 19 Mar 2025 18:04:17 +0000
-Date: Wed, 19 Mar 2025 19:04:16 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Sidong Yang <sidong.yang@furiosa.ai>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Mark Harmstone <maharmstone@meta.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] btrfs: ioctl: don't free iov when -EAGAIN in uring
- encoded read
-Message-ID: <20250319180416.GL32661@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250319112401.22316-1-sidong.yang@furiosa.ai>
+	s=arc-20240116; t=1742407599; c=relaxed/simple;
+	bh=G6iHZgQIholcAW90us3ob4KynXMLkF5xSbRKYF29/C0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=A+MsgbDZkT23WNmMUi7jtSjr6+dxWKQUcD+OQPmTuKMPi5Zt4A8RgfPuXQ6rf7L33QllhCN0WnBMjk4GLYc5Amud5kBazHxP0B8cljEdjsgPvDh6jDYGsTGJTTezx9WfQozDLdSGI6QpBn+5JJtOedlKhrToVHzT9Ev6bRghE3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Mt8saeKe; arc=none smtp.client-ip=203.254.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20250319180634epoutp047b4b05d7079711deed20f4a523a7a44f~uRnmjCisl1215912159epoutp04d
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 18:06:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20250319180634epoutp047b4b05d7079711deed20f4a523a7a44f~uRnmjCisl1215912159epoutp04d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1742407594;
+	bh=r+OZ0dZjRdagPeJioXzbnIj1AKfJy9OpWi/BR3HcRpc=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=Mt8saeKeErG5R1xYmueL6B2f16sgH+Q2vcAjLX/Rllbf+0RbnX+QuV9YPwy3JBzq4
+	 1+haMKLx7WCIlnLOvVlwyEt1w/MQ9b7n8/soLReOZ67Ww+XXHddpfUKeJbuy0GwwOa
+	 JJDNCXh0qBA09dPuPsag8tMuKCoU2Ngd77ZKvFOg=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+	20250319180633epcas5p37fdb720f28677dc579821d1b4f820966~uRnmEC2MM1969719697epcas5p32;
+	Wed, 19 Mar 2025 18:06:33 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.178]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4ZHxVH4ZWnz4x9Pv; Wed, 19 Mar
+	2025 18:06:31 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	50.5D.19956.7A70BD76; Thu, 20 Mar 2025 03:06:31 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+	20250319180631epcas5p47dbbc86eb8982b6cb230ab33dfd43aa0~uRnj33X9u1744817448epcas5p4N;
+	Wed, 19 Mar 2025 18:06:31 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20250319180631epsmtrp176ea9c1c70e9a2b5756a793717c5e402~uRnj3F3l21334513345epsmtrp1G;
+	Wed, 19 Mar 2025 18:06:31 +0000 (GMT)
+X-AuditID: b6c32a4b-fe9f470000004df4-d5-67db07a78a2b
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	4F.EC.18729.6A70BD76; Thu, 20 Mar 2025 03:06:31 +0900 (KST)
+Received: from [107.122.11.51] (unknown [107.122.11.51]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20250319180629epsmtip27f2b0f464fbd09d8727b5ef0ca773742~uRniVqTrs2457824578epsmtip25;
+	Wed, 19 Mar 2025 18:06:29 +0000 (GMT)
+Message-ID: <435cf6be-98e7-4b8b-ae42-e074091de991@samsung.com>
+Date: Wed, 19 Mar 2025 23:36:28 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250319112401.22316-1-sidong.yang@furiosa.ai>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: F23812120D
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LSF/MM/BPF TOPIC] File system checksum offload
+To: "hch@infradead.org" <hch@infradead.org>
+Cc: Qu Wenruo <wqu@suse.com>, Johannes Thumshirn
+	<Johannes.Thumshirn@wdc.com>, Theodore Ts'o <tytso@mit.edu>,
+	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>
+Content-Language: en-US
+From: Kanchan Joshi <joshi.k@samsung.com>
+In-Reply-To: <Z9kpyh_8RH5irL96@infradead.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCJsWRmVeSWpSXmKPExsWy7bCmhu5y9tvpBn9uy1qcnrCIyeJv1z0m
+	iz8PDS323tK2uPR4BbvFnr0nWSzmL3vKbrHv9V5mi9aen+wWa9Z9ZHfg8ti8Qstj85J6j8k3
+	ljN6NJ05yuyxfstVFo8JmzeyenzeJOfRfqCbKYAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON45
+	3tTMwFDX0NLCXEkhLzE31VbJxSdA1y0zB+hAJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmt
+	UmpBSk6BSYFecWJucWleul5eaomVoYGBkSlQYUJ2xtSbfxkLtvNWrG69z9zA+I2ri5GTQ0LA
+	RGLuy6UsXYxcHEICuxklVvw+yASSEBL4xCix9akpROIbo8Tn59dZYTqmrtoO1bGXUaLtxQUm
+	COctUEfDZbAqXgE7iZ27zoLZLAKqEk+WLGKGiAtKnJz5hAXEFhWQl7h/awY7iC0sYCPRvesQ
+	WxcjB4eIgLbE4sd1IDOZBT4wS7Q92wx2ErOAuMStJ/OZQGrYBDQlLkwuBQlzCuhKbHl+kBGi
+	RF5i+9s5zCC9EgI7OCQm3twBdbWLxK+P19ggbGGJV8e3sEPYUhIv+9ug7GyJB48esEDYNRI7
+	NvdB9dpLNPy5wQqylxlo7/pd+hC7+CR6fz8BO0dCgFeio00IolpR4t6kp1Cd4hIPZyyBsj0k
+	9k94ywgJqjMsEpvfnWSbwKgwCylUZiH5chaSd2YhbF7AyLKKUTK1oDg3PbXYtMA4L7UcHt/J
+	+bmbGMHJV8t7B+OjBx/0DjEycTAeYpTgYFYS4XV/cj1diDclsbIqtSg/vqg0J7X4EKMpMHom
+	MkuJJucD039eSbyhiaWBiZmZmYmlsZmhkjhv886WdCGB9MSS1OzU1ILUIpg+Jg5OqQYmg+2L
+	6pxbDzC/3Sd5Nn6N7EX+a2alxpud3Mp/SdpZ5V59Ne2ql+APiZ93vyc1LrNwj57NyxTwbOvN
+	2L1NdSvyP8uZviw6u5BXMeLE9/31Ux5e/fj6zWTLLRpsG1dM+iDovtp6aVjzypCUKzXybKdt
+	/+fq1vyWDPooIi5woN/kkUy97enOaxqcKoail740cPn6HXg3cf/85xUzz4Q3fXBivi/H+ePd
+	Nu6/CTEvDs9pNNNlnPM36aTMg3mbAzZ8zAmb+H/rLpdGXtFvdpYZm36Ef2bkn85/7/W+A7u5
+	PaV8fB7JHZnDfPvIqvymxozsc7Z2UiXzrkZnPVdsCDEUl2dP5/NJtW/+yGl1+GjGxJ6JSizF
+	GYmGWsxFxYkATfiznkcEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIIsWRmVeSWpSXmKPExsWy7bCSvO5y9tvpBs3HmCxOT1jEZPG36x6T
+	xZ+HhhZ7b2lbXHq8gt1iz96TLBbzlz1lt9j3ei+zRWvPT3aLNes+sjtweWxeoeWxeUm9x+Qb
+	yxk9ms4cZfZYv+Uqi8eEzRtZPT5vkvNoP9DNFMARxWWTkpqTWZZapG+XwJUx9eZfxoLtvBWr
+	W+8zNzB+4+pi5OSQEDCRmLpqO0sXIxeHkMBuRolDv68xQSTEJZqv/WCHsIUlVv57zg5R9JpR
+	4uDabSwgCV4BO4mdu86ygtgsAqoST5YsYoaIC0qcnPkErEZUQF7i/q0ZYIOEBWwkuncdYuti
+	5OAQEdCWWPy4DmQms8AHZomlW18wQyw4wyKxvG8aG0gDM9AVt57MZwJpYBPQlLgwuRQkzCmg
+	K7Hl+UFGiBIzia6tXVC2vMT2t3OYJzAKzUJyxiwkk2YhaZmFpGUBI8sqRsnUguLc9NxiwwLD
+	vNRyveLE3OLSvHS95PzcTYzgWNPS3MG4fdUHvUOMTByMhxglOJiVRHjdn1xPF+JNSaysSi3K
+	jy8qzUktPsQozcGiJM4r/qI3RUggPbEkNTs1tSC1CCbLxMEp1cC0rt3H9EagrTpb1ofsx3cf
+	3eiYsTL+ZPXiFyH8Uiny8avzXn/czVTxfYdEi4H/6o/zP3yZvH3qn1/BJ05xpb1ZN1/rYbK9
+	cYiB7SONJXXHNtWvvv/s6DvOmp/N3auOKXtv99zatyXs5LaG7afyPs0qz7hbdSE4bcaS+oK2
+	yP0HfvOY6fEoLl4z/5qD/vGbjE/frLVavubv8ljT7reGG5z/dJr//jVHcxVP6Czx5uoph47z
+	7/lodHbCLLmO3wskt60KSdznwrpRdKqv+t6n75sNaxtlwy6xNTsZnGHKWSzRqq9icTno5fo3
+	ee4PRVuMn67z+WY6ufSRh7rPq0ui+7YduLi81ovflbn/ubaph504hxJLcUaioRZzUXEiAOXN
+	lTYkAwAA
+X-CMS-MailID: 20250319180631epcas5p47dbbc86eb8982b6cb230ab33dfd43aa0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20250318080742epcas5p31b31b3024d6f7d9d150c8a7c2db4dffd
+References: <20250130091545.66573-1-joshi.k@samsung.com>
+	<20250130142857.GB401886@mit.edu>
+	<97f402bc-4029-48d4-bd03-80af5b799d04@samsung.com>
+	<b8790a76-fd4e-49b6-bc08-44e5c3bf348a@wdc.com>
+	<Z6B2oq_aAaeL9rBE@infradead.org>
+	<bb516f19-a6b3-4c6b-89f9-928d46b66e2a@wdc.com>
+	<eaec853d-eda6-4ee9-abb6-e2fa32f54f5c@suse.com>
+	<cfe11af2-44c5-43a7-9114-72471a615de7@samsung.com>
+	<Z6GivxxFWFZhN7jD@infradead.org>
+	<edde46e9-403b-4ddf-bd73-abe95446590c@samsung.com>
+	<CGME20250318080742epcas5p31b31b3024d6f7d9d150c8a7c2db4dffd@epcas5p3.samsung.com>
+	<Z9kpyh_8RH5irL96@infradead.org>
 
-On Wed, Mar 19, 2025 at 11:24:01AM +0000, Sidong Yang wrote:
-> This patch fixes a bug on encoded_read. In btrfs_uring_encoded_read(),
-> btrfs_encoded_read could return -EAGAIN when receiving requests concurrently.
-> And data->iov goes to out_free and it freed and return -EAGAIN. io-uring
-> subsystem would call it again and it doesn't reset data. And data->iov
-> freed and iov_iter reference it. iov_iter would be used in
-> btrfs_uring_read_finished() and could be raise memory bug.
+On 3/18/2025 1:37 PM, hch@infradead.org wrote:
+> On Tue, Mar 18, 2025 at 12:36:44PM +0530, Kanchan Joshi wrote:
+>> Right, I'm not saying that protection is getting better. Just that any
+>> offload is about trusting someone else with the job. We have other
+>> instances like atomic-writes, copy, write-zeroes, write-same etc.
 > 
-> Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
+> So wahst is the use case for it? 
 
-Thanks, added to for-next, with a bit updated changelog and added stable
-tag for 6.13.
+I tried to describe that in the cover letter of the PoC:
+https://lore.kernel.org/linux-btrfs/20250129140207.22718-1-joshi.k@samsung.com/
+
+
+  What is the "thread" model you are
+> trying to protect against (where thread here is borrowed from the
+> security world and implies data corruption caught by checksums).
+
+Seems you meant threat model. That was not on my mind for this series, 
+but sure, we don't boost integrity with offload.
+
+>>
+>>> IFF using PRACT is an acceptable level of protection just running
+>>> NODATASUM and disabling PI generation/verification in the block
+>>> layer using the current sysfs attributes (or an in-kernel interface
+>>> for that) to force the driver to set PRACT will do exactly the same
+>>> thing.
+>>
+>> I had considered but that can't work because:
+>>
+>> - the sysfs attributes operate at block-device level for all read or all
+>> write operations. That's not flexible for policies such "do something
+>> for some writes/reads but not for others" which can translate to "do
+>> checksum offload for FS data, but keep things as is for FS meta" or
+>> other combinations.
+> 
+> Well, we can easily do the using a per-I/O flag
+
+Right, a per-I/O flag (named REQ_INTEGRITY_OFFLOAD) is what I did in the 
+patch:
+https://lore.kernel.org/linux-btrfs/20250129140207.22718-2-joshi.k@samsung.com/
 
