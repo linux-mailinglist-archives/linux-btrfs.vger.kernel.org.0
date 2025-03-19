@@ -1,129 +1,176 @@
-Return-Path: <linux-btrfs+bounces-12427-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12428-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5385CA69379
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 16:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06736A695E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 18:08:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67E8D3B4BED
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 15:27:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 868043A7D9A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Mar 2025 17:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4046F1CD1E0;
-	Wed, 19 Mar 2025 15:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264F41E9904;
+	Wed, 19 Mar 2025 17:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="BAlQhS7D"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xc8YmfTE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MR4mcUKd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xc8YmfTE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MR4mcUKd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24211C5D79
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 15:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7CA1E130F
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 17:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742398061; cv=none; b=qBRxE5wl9S28c5tVvMmo3Flx7MVmv03sjXyxJNdi6Q4bRYBNFJxeU2NbWF7RPaek33Q7rTqDNntxbw9Vrx4YTIG6QHmeKoz8QdFU1y+OOmSQfLFzUFAxFmc4Dkpoocm7SaQj0rQJUIDSz0RsIdJLenJ+0+5mThYlXmgfCtN3JhE=
+	t=1742404039; cv=none; b=a3jGxp+Ng4CJVnVAJD5y8MmEA6qnXM+q6hfRPqKnjEEGI5F4V8DOnV1Mr1whZuYg+FAxqZXkK6+ALr1pWSqiY0i2IzQCPQpIEZDeOAPYsYOIpfB2tBuFdIx7C9Qy+NidTgQDHwMAAeeHrtcIv+nqVFnCye8eW0sGyIA0GQMw13A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742398061; c=relaxed/simple;
-	bh=ajFWxYn7pN6VZQbZWugpPVNdvdOMkJjRACF7eJSLLoc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=LET/OX5SYF7lmrzWlIUgyq+JOTWU5QbU2l2wZveJfdV37O8ehQDkLh+4pBUWYK1u+/M7mmzYpdYQ602/LAXDztPQTOZdUgg4VOqtMz/cC43dTOVqFMYhJ7la5AiIn0L5EBypMe0Kq+QZkTXRXJPrE4MeONNYjpHa78rvgqMKNZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=BAlQhS7D; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-85b4277d0fbso248657339f.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Mar 2025 08:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1742398059; x=1743002859; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z5XI8XP6pizbR2wnq7L2d99WOMcynVJcs75IPIYppQw=;
-        b=BAlQhS7Dm6zPUORdWPqzZAXL4vAe7RWxABO+yL2EaBDL0JJ1KyEU97HN+xd3VYQq7q
-         UUrTdBc2vI5g9hGbfrlD3oNi5fAvBBCTEt8S/h5a5/KtSsHLYoQYk0qZbzvBxfOQwH44
-         vuREk4d0UvEEtqXO+ARRk55UwIfS3X2dBWq8AqzWUkEjKIs/9dDjhKniXVrc9uRzSyfk
-         jlHoGi2w+bxJU3R6bpy75gVbfTppX3CzMfygwyFtAGMW5sAYrBv3X2DTQ8Aam7dKLgE8
-         zUBv+UcTB19ZCG0p0ZC4A+N13Ioj9ze+4SOqRQ7m3FaJ31s2oYsVq3jTMbzPP91Y11F9
-         Gqqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742398059; x=1743002859;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z5XI8XP6pizbR2wnq7L2d99WOMcynVJcs75IPIYppQw=;
-        b=je9XtIc5cIeYXwPzEQFRqDnqSD0zbvNAnlLQiY/ppDaY1hCx3PPePpONq4bFqk/Pgz
-         y9akpXOm6KdsQAVy+jvh3rqFmnLdvSQ1vRDM7eeDdVQW3LkMPMYN0fI50/0afcqbFse5
-         1PxjtNjc3U5m963be5p7ZqxvfCbF+Ivy93KIKJPQjPutsP8mScw2yeNNbApOEw5mJMDB
-         3or9n2x9amY5t2CFlqvuDCFZwJly2QYbuz7tlbv0glHkJnsFSbM5eQ4t9acY/4k1hvUJ
-         SXOaY9gz+cSPZyfyECIewUs7xX2H1h0HTCHhgDI7azB3pZpXyf6VtlsacAsI50P67192
-         PrBQ==
-X-Gm-Message-State: AOJu0YzbtAbOmfWG4Em4CztCXn+3r7chSU6cq9LbMDMuiLxHMimKblQn
-	vt9NwNakae/xqR18d9FrmEvSy0zAGRb3vqt7T4cy9cKEdToQMrfzBnV5ImHwbp4=
-X-Gm-Gg: ASbGncvz8Gnsffy27wnm7eM+g13sxOGymkvTokJXjtmIoAJ8LNyFUBazPsKXSNA/UJY
-	8S3OzZy16L5FAoUlSh0eCX1fUbu/mrXwFLkgXm3VHEzlvxjBX5nsS92trSUnFUrsXTHxLJu0Bkc
-	GnXFHyaWZggjU39yA7s2IHB/VHqpC/pJP0OYuzmcw/WPwN7D7kxvU9jVkdGtG7qfEKVKpgeoTm2
-	emWHwiFHUHCKuLJIOk2BllqMxtaH7EJNMw2Set5MKHAl9O1DJE2n4oN9paZ/jrpYlD8N8PfOwzN
-	OFgXASKKfgAPJzfsjEeGd0KyfVI/S6/0WAq9HZkA
-X-Google-Smtp-Source: AGHT+IFGYzlq+PPNSs3OrQmXqUnxT0HIdylQ9a9U94OGg+zbDXr0tA1fKwH39YYPMJPyqHijFNyP3Q==
-X-Received: by 2002:a05:6602:3816:b0:85d:b26e:e194 with SMTP id ca18e2360f4ac-85e137e2951mr401062139f.7.1742398058991;
-        Wed, 19 Mar 2025 08:27:38 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-85db87797dcsm309098739f.18.2025.03.19.08.27.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Mar 2025 08:27:38 -0700 (PDT)
-Message-ID: <f78c156e-8712-4239-b17f-d917be03226a@kernel.dk>
-Date: Wed, 19 Mar 2025 09:27:37 -0600
+	s=arc-20240116; t=1742404039; c=relaxed/simple;
+	bh=V3EXe5YM5pIJp1J0uwLE9NgVLI8KbcXJ9nKjpbfFdlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JiHMYRpXY2PdUJpL2kbr+0bYaVoFUFtIxnqm9WHYoKftHEQuJcaSn3HWEyVH9eX6233ulUDPnSH8lng++1V8Z7QqyqDXvl1rDeRaHDKyad3eB8njmqNrSfNHEV8KeSYo1/PejzjiL43+1Lioeicw+2N2WCuy5S3WCe4ixZJsUmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xc8YmfTE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MR4mcUKd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xc8YmfTE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MR4mcUKd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 067411FD96;
+	Wed, 19 Mar 2025 17:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742404036;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7XDC4SfHDNBOwpQe1A7tca/PZWgtJvOp4dCJtUB3U50=;
+	b=xc8YmfTElVaNE5jumisiUkuZ0Y3FjKYIdXFipM0gXOFtl7M/fwQAtF+X6uk33BrMqU2wHl
+	/KzcNus4pPatYkAfbKs46w9lMrVui63XUDJ7K9aXHu2WOozx7lrYuV+IXsJu2VlhxS4XyU
+	u4glZ6dWYbxZOJEu7CnWFfbA6D7Hd50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742404036;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7XDC4SfHDNBOwpQe1A7tca/PZWgtJvOp4dCJtUB3U50=;
+	b=MR4mcUKdz4mwrlLwN42TP2CKa5xpxybAgZD3hl7BnF9ft0NbrVNzoFrHmuUd50i7+2k/l6
+	SRZ7FW9DmCT4WhCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742404036;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7XDC4SfHDNBOwpQe1A7tca/PZWgtJvOp4dCJtUB3U50=;
+	b=xc8YmfTElVaNE5jumisiUkuZ0Y3FjKYIdXFipM0gXOFtl7M/fwQAtF+X6uk33BrMqU2wHl
+	/KzcNus4pPatYkAfbKs46w9lMrVui63XUDJ7K9aXHu2WOozx7lrYuV+IXsJu2VlhxS4XyU
+	u4glZ6dWYbxZOJEu7CnWFfbA6D7Hd50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742404036;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7XDC4SfHDNBOwpQe1A7tca/PZWgtJvOp4dCJtUB3U50=;
+	b=MR4mcUKdz4mwrlLwN42TP2CKa5xpxybAgZD3hl7BnF9ft0NbrVNzoFrHmuUd50i7+2k/l6
+	SRZ7FW9DmCT4WhCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D18B013A2C;
+	Wed, 19 Mar 2025 17:07:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CbinMsP52mcQagAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 19 Mar 2025 17:07:15 +0000
+Date: Wed, 19 Mar 2025 18:07:10 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Sidong Yang <sidong.yang@furiosa.ai>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Subject: Re: (subset) [RFC PATCH v5 0/5] introduce
+ io_uring_cmd_import_fixed_vec
+Message-ID: <20250319170710.GK32661@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250319061251.21452-1-sidong.yang@furiosa.ai>
+ <174239798984.85082.13872425373891225169.b4-ty@kernel.dk>
+ <f78c156e-8712-4239-b17f-d917be03226a@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: (subset) [RFC PATCH v5 0/5] introduce
- io_uring_cmd_import_fixed_vec
-From: Jens Axboe <axboe@kernel.dk>
-To: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Sidong Yang <sidong.yang@furiosa.ai>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org
-References: <20250319061251.21452-1-sidong.yang@furiosa.ai>
- <174239798984.85082.13872425373891225169.b4-ty@kernel.dk>
-Content-Language: en-US
-In-Reply-To: <174239798984.85082.13872425373891225169.b4-ty@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f78c156e-8712-4239-b17f-d917be03226a@kernel.dk>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -2.50
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:replyto];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[toxicpanda.com,suse.com,gmail.com,furiosa.ai,vger.kernel.org];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 3/19/25 9:26 AM, Jens Axboe wrote:
+On Wed, Mar 19, 2025 at 09:27:37AM -0600, Jens Axboe wrote:
+> On 3/19/25 9:26 AM, Jens Axboe wrote:
+> > 
+> > On Wed, 19 Mar 2025 06:12:46 +0000, Sidong Yang wrote:
+> >> This patche series introduce io_uring_cmd_import_vec. With this function,
+> >> Multiple fixed buffer could be used in uring cmd. It's vectored version
+> >> for io_uring_cmd_import_fixed(). Also this patch series includes a usage
+> >> for new api for encoded read/write in btrfs by using uring cmd.
+> >>
+> >> There was approximately 10 percent of performance improvements through benchmark.
+> >> The benchmark code is in
+> >> https://github.com/SidongYang/btrfs-encoded-io-test/blob/main/main.c
+> >>
+> >> [...]
+> > 
+> > Applied, thanks!
+> > 
+> > [1/5] io_uring: rename the data cmd cache
+> >       commit: 575e7b0629d4bd485517c40ff20676180476f5f9
+> > [2/5] io_uring/cmd: don't expose entire cmd async data
+> >       commit: 5f14404bfa245a156915ee44c827edc56655b067
+> > [3/5] io_uring/cmd: add iovec cache for commands
+> >       commit: fe549edab6c3b7995b58450e31232566b383a249
+> > [4/5] io_uring/cmd: introduce io_uring_cmd_import_fixed_vec
+> >       commit: b24cb04c1e072ecd859a98b2e4258ca8fe8d2d4d
 > 
-> On Wed, 19 Mar 2025 06:12:46 +0000, Sidong Yang wrote:
->> This patche series introduce io_uring_cmd_import_vec. With this function,
->> Multiple fixed buffer could be used in uring cmd. It's vectored version
->> for io_uring_cmd_import_fixed(). Also this patch series includes a usage
->> for new api for encoded read/write in btrfs by using uring cmd.
->>
->> There was approximately 10 percent of performance improvements through benchmark.
->> The benchmark code is in
->> https://github.com/SidongYang/btrfs-encoded-io-test/blob/main/main.c
->>
->> [...]
-> 
-> Applied, thanks!
-> 
-> [1/5] io_uring: rename the data cmd cache
->       commit: 575e7b0629d4bd485517c40ff20676180476f5f9
-> [2/5] io_uring/cmd: don't expose entire cmd async data
->       commit: 5f14404bfa245a156915ee44c827edc56655b067
-> [3/5] io_uring/cmd: add iovec cache for commands
->       commit: fe549edab6c3b7995b58450e31232566b383a249
-> [4/5] io_uring/cmd: introduce io_uring_cmd_import_fixed_vec
->       commit: b24cb04c1e072ecd859a98b2e4258ca8fe8d2d4d
+> 1-4 look pretty straight forward to me - I'll be happy to queue the
+> btrfs one as well if the btrfs people are happy with it, just didn't
+> want to assume anything here.
 
-1-4 look pretty straight forward to me - I'll be happy to queue the
-btrfs one as well if the btrfs people are happy with it, just didn't
-want to assume anything here.
-
--- 
-Jens Axboe
-
+For 6.15 is too late so it makes more sense to take it through the btrfs
+patches targetting 6.16.
 
