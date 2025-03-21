@@ -1,150 +1,174 @@
-Return-Path: <linux-btrfs+bounces-12471-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12472-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11850A6B2AC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 02:37:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54548A6B5D1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 09:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D75AE3AD404
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 01:37:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB4FC7A2852
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 08:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59051DF754;
-	Fri, 21 Mar 2025 01:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112F51EF370;
+	Fri, 21 Mar 2025 08:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="FabnZBuY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6451DC184
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 01:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE7717C210;
+	Fri, 21 Mar 2025 08:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742521045; cv=none; b=k8523rDmM/yDazfTF/WGgpyU8dfS2Auas+dT5Ewg0tpFkfmCOb9p1VkUsGnn7MvYeoL82nT3xZC9yVpM3bA+olXt3ToLSNVJNNyY9TP2ipg9P3JR+1F4H3Ezu92fqJ/qQPULzlV64GsUlH35rl9pXykckmeRwPlTwef64eypRQY=
+	t=1742544760; cv=none; b=M6M1QGOLISNa0nmLDAlKaBgodXG7Lvb8algVLTOe5/8YRueInEXezk04phutdr3ecjqYd64LBo/3mh8ZLMPxodH+QFamlveUgYy2cYYEE9Bp/C8lC9IHz75WrktxZ/0/dTlhIO8PSUhQmtJDpg5TNNctZmpGB3p/uvfXgW4Fu58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742521045; c=relaxed/simple;
-	bh=ZqEUfoapnhYuCDQD1EXqUT+qYSYTYNhFIkYMUC/eofM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WxGTRzrx8H2griU+tIDNggqkERRfpcLufLFmoxEuH0k31mf7AtC+Ea87jo8pehmEtMSACu74K6V4Ylw4kQqzxpdCOPIpQLAIWAeAWdghqNdI7ohrOac3qV0gA2yYb0Ea46vBUZoIjsU1zKKmGw7uCImP2muoh08qdUwj2se2LIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d2a40e470fso11897555ab.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Mar 2025 18:37:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742521041; x=1743125841;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jszjkOJjwLi/7v5PVoBHAtfeBojk/KDRvfGZp3lZaI0=;
-        b=FkKugakVkme3GruQdKU/E7rhF8AXB+Qhb6GXXT5Cbaj2XF3fDsQtLDdbtETi8axbe6
-         PPN2skzVLVWfiYoeBZA9VZwd57ZoPrQwrITp9uzQ/CZerDfchc5DLQO00k1p/s3srJcA
-         CkNBtvZ+aln502Bo9fVyzz56U7ZsiObvCf+OvaliRx/jiKC5JJvbGvs0MHHOnPRBLUHx
-         Gd2eEmPplEWAZt5XuYPiydfjsah6NFCSbEgLZ+8ZV8mOqd7qy8ghhQ6nmmwtxZwPvr96
-         SO7Unq4CPF8Mf29HzT+WOclzHy/4sBzIBXRzxZHLS4l9JQ6WvToyCGOgNafIjyLdcHP9
-         fegQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUL9sGd3k/kKkYGOunT90MUN8nTdJiwrJkr8H5rLTrS1cJpvjyOemlFiTgrEeOBdJuXUn0eg+buns+AIQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3RaCPj4m72kcqmDZYzm1LhPS+JLlMVD5ZxKUE0dY/F3N+nMuk
-	ealHKf6xNgmpZ2PQzVDr/lfDBJLd6FxewemdrYfEX6cSf5zYfXCIy1+CZeZXhmVwVY1jQSSHcwn
-	y5GhMmvpH0eSCRe4P3UzTGPOqSpNifw5biL2gY89mJL2XvUEjBmcT/44=
-X-Google-Smtp-Source: AGHT+IEmA5c/370Wds6/1PBW62vPq4kqKjtEJ1jSiHef+/wKd4O0x7JlFsZi9O0opxZ+LXcx18cd4bWV3i25hJwcBygNUZHoy4Br
+	s=arc-20240116; t=1742544760; c=relaxed/simple;
+	bh=wGfzEWPpygiK1wyV0x3JeeyT7tKy9VOPiDSFvpNIzAs=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=lpd4lnvIIH8K13vkAsVRdJA7Z/z1m4UMpH3qm69EQD7jk7MywCnW1cbDPqzSN07wjzv+/JaoE5s98oFTUX91+b8EFI4POdwfSy+WwkARfZyCllY3Xh4Vd5r41GMH+kJgryDLryBGNcxO4YtA6hjTjPoUIFtQYDVxBNGu+ifmE84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=FabnZBuY; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1742544751; x=1743149551; i=quwenruo.btrfs@gmx.com;
+	bh=+ijUDGEw6Fvvl6L6SrQh/GH8G3Na7UQFyI4Vx8TYCH4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=FabnZBuYPpw+vQiCkRrASWdu5qioFUAhzoFS9w6/3WKXJA1ghcqyFJOo5usRqTTq
+	 ahe4PEZyOhhfzcr8ScgLyoDatT2Uaw1B5D+DZSpvTaoAHZfOCdoNPZoFHsnh1DGa1
+	 kj13vjYQ5wZzvVORhtyuirk/Mj9axCbDCotZqs/UL6Rpi8PQBeBwiS2LVHuVd+h9o
+	 VdsQv27Dn6rWHxSGB4sxpdp0wFuy5wBTpLk1b2HNdcy0VYJHqNNeq0QlS0TmxSpTi
+	 wruRhPFJamh5Q6Qcj6Sr8EJygR5EeT2bHyyX/IwlI2bnnlEhyZ7XBE1vbnJTbskWk
+	 /O/OgClBK2rX1Lhjkw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9Wyy-1tq1BR0sse-009FsO; Fri, 21
+ Mar 2025 09:12:29 +0100
+Message-ID: <1f7da968-4a4c-4d3e-8014-5c2e89d65faa@gmx.com>
+Date: Fri, 21 Mar 2025 18:42:25 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d8d:b0:3d1:79a1:5b85 with SMTP id
- e9e14a558f8ab-3d59618603fmr20984395ab.21.1742521041545; Thu, 20 Mar 2025
- 18:37:21 -0700 (PDT)
-Date: Thu, 20 Mar 2025 18:37:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67dcc2d1.050a0220.31a16b.0017.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in add_to_free_space_tree (2)
-From: syzbot <syzbot+a6563a38d2eeb6e42942@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ linux-xfs@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ Christian Brauner <brauner@kernel.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Iomap buffered write short copy handling (with full folio uptodate)
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wMBm8PcAtXEO62IRgnlAgFed2UyQ34c5wROvD+U3mdEbELu1rT9
+ k+ji0sTZHT4PzZVdG091NcRVYxROT7bt1GD++XoZ6c7T4/N2yASZG5Dqs6k2uu4U73j3Ghu
+ OKkqIif8Sr/lOxHzDR+xBCfGbC5jtJ3nsT+gUsMJVI/LhGyP+1+xurxEZykCgj0ykHR7miP
+ ZA9TVKv9+G3uatgVsNwTw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:9AcLx2fmiCM=;CuZoKZvrrzEqWu1sLHmgJlk15cU
+ wFxc//+ILoXp+yEtArhoYFLuN+LsifBcFauEHeIttlEoATxqTFVxJ480EVh1ffa8MBfQ4o6G5
+ CrW549OV0PNURpOqYhTu2lKjhMVQIAuzTztcOvLD6rWpXn9GfyUHlol6Cl+5v/9OCcxAWG6IJ
+ 0dVMDnYlAQ9QLq7H/e0tJTSTa8I0i2X2IkKtN8w/Ckshmk4OeSrh/0COUhx9wJLTdnC7lrQ0p
+ Lbhq5YicMwODe6zDgd00GUk6mfraxSU3QsvonaF9FzDYvBT0m2c+oRdQLaHKwpjXxpyQ+Gm6q
+ M8o+9zKMHN8r6LHv96600xwZhGocmkI05RojO2NmG1d8y0+vpRJTHN/L0hlscyzO+x1YrziOC
+ eN6Ce3Ka/529Kd+peOPLrE62yipuBPsKYjxqaMke9vtmrR7BY2cocWKdKduHxQBsde6uEeCNT
+ UM/8tKtCHHEIjhQw7YvYe+N/1a/pv20w//hUnoyZxONtPnNilFM5+DGABgzpIr7uM5TmB2ozo
+ //P0yRqtx84WlCq5SlEifQZDEp/e/c78xEPzjKnULc4Z/ng/pRqbSEpq1tvyVSEkjGocCg8jD
+ t7jIxhS2EpI3Tc+8Z+NkzVZCUivdcdbQSHkGFoKodH3j5yScFnLVRpDYYkSOnfI21oDTDWIWq
+ oXgSUYbvjwUXww52ZSRBRtIqqm8k+qLLpAJsNCzcIzG7Bcoud19OdSZjs+wNgNZyMiIc33hnI
+ 7J3AzvLYSG+82y38o0tp2zxlBteNcN9cOPdUouk3fSDvm4X65pmiSiiP0xgiW9y23TPzKb4Hs
+ oPtfcFgbT80R6AClHZSMccjv+0xd8LYFsmnf6rdN96yk9Gkz5u8TM9jgoPD0/ATn3/gT4sA7J
+ 7djBfrMXNvVstgNDX6dE69pOqBTgUCTNvd7wmc+QhBEk97zw9yKWY80aEGnv52odQ/4u0afSZ
+ JqAU/JCGv0YRj3Okbvw0Aqs54SmZrvx/YFODGqBJlQYFC8mL//JLNx3syrM+Yl9HgLRUp7+3L
+ L8yfpl6uu9P4F1lvogQrn/gkJaOlJ4y89F7B5Iqt1X97Wg+bLLIShrmXXLCQcRATDCaPlN4de
+ r4/gfFjmlfPOJgetDuXKeFVJMYrPAP5aFB6RBeEkZmgP+P37h2ksOfsTiMlc0rSH8iyWfb8iG
+ Yn+RJHiCYHIJ6LPQ2xlDxNQI9n8zNlUfop7xwzoz2l8u8gJWJp8W27DwFzgm8ax0vnVwcAF1D
+ NaoTn2jjm6DV6PO8EnkZhiWSu7e7DdlTl6T3gZdHonXutR/gJTfcXzJp67n6EX7ygWTulR1Gz
+ BsW2TvdszXZQVaMhv3q28UzHF+89doz8zpd8yAH/eIxGvrdwatJAWdNPrN5nhZ2jPST37h0bE
+ qA4N6etWM9NMrG/GO0F8BLOhBx6IV4U2gPszRDrbf+USSd3qLtyAOf+jIud31wpl3lnKYchPB
+ M0WSJxBQ46Mv+VRgarQkhILT1ZkE=
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+I'm wondering if the current iomap short copy handler can handle the
+following case correctly:
 
-HEAD commit:    d1275e99d1c4 Merge tag 'media/v6.14-3' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17139e54580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=67fb5d057adc2bbe
-dashboard link: https://syzkaller.appspot.com/bug?extid=a6563a38d2eeb6e42942
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+The fs block size is 4K, page size is 4K, the buffered write is into
+file range [0, 4K), the fs is always doing data COW.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The folio at file offset 0 is already uptodate, and the folio size is
+also 4K.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d183442a7ac1/disk-d1275e99.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8c36f255b468/vmlinux-d1275e99.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f6a9840cb963/bzImage-d1275e99.xz
+- ops->iomap_begin() got called for the range [0, 4K) from iomap_iter()
+   The fs reserved space of one block of data, and some extra metadata
+   space.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a6563a38d2eeb6e42942@syzkaller.appspotmail.com
+- copy_folio_from_iter_atomic() only copied 1K bytes
 
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -28)
-WARNING: CPU: 1 PID: 3016 at fs/btrfs/free-space-tree.c:1052 add_to_free_space_tree+0x2e7/0x320 fs/btrfs/free-space-tree.c:1052
-Modules linked in:
-CPU: 1 UID: 0 PID: 3016 Comm: kworker/u8:7 Not tainted 6.14.0-rc6-syzkaller-00263-gd1275e99d1c4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-Workqueue: events_unbound btrfs_async_reclaim_metadata_space
-RIP: 0010:add_to_free_space_tree+0x2e7/0x320 fs/btrfs/free-space-tree.c:1052
-Code: 4e 6e 8c 48 89 dd 89 ea e8 16 02 1f fd e9 33 ff ff ff e8 dc 2b b9 fd 90 48 c7 c7 00 4e 6e 8c 48 89 dd 89 ee e8 2a e7 78 fd 90 <0f> 0b 90 90 e9 12 ff ff ff e8 bb 2b b9 fd 48 c7 c7 80 4d 6e 8c 48
-RSP: 0018:ffffc9000c5b6e50 EFLAGS: 00010246
-RAX: 98d2a73c3254fc00 RBX: 00000000ffffffe4 RCX: ffff8880309dbc00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 00000000ffffffe4 R08: ffffffff81819d62 R09: fffffbfff1d3a69c
-R10: dffffc0000000000 R11: fffffbfff1d3a69c R12: 0000000000000000
-R13: ffff88805a6c3060 R14: 1ffff1100b4d860c R15: ffff88805a6c3000
-FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055bdbb5c3ff0 CR3: 0000000061b4c000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_free_extent_accounting fs/btrfs/extent-tree.c:2969 [inline]
- __btrfs_free_extent+0x1ce9/0x3980 fs/btrfs/extent-tree.c:3338
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1976 [inline]
- __btrfs_run_delayed_refs+0xf9f/0x40f0 fs/btrfs/extent-tree.c:2046
- btrfs_run_delayed_refs+0xe3/0x2f0 fs/btrfs/extent-tree.c:2158
- commit_cowonly_roots+0x66b/0x860 fs/btrfs/transaction.c:1373
- btrfs_commit_transaction+0xfe4/0x3760 fs/btrfs/transaction.c:2446
- flush_space+0x529/0xd30 fs/btrfs/space-info.c:842
- btrfs_async_reclaim_metadata_space+0x178/0x3b0 fs/btrfs/space-info.c:1120
- process_one_work kernel/workqueue.c:3238 [inline]
- process_scheduled_works+0xabe/0x18e0 kernel/workqueue.c:3319
- worker_thread+0x870/0xd30 kernel/workqueue.c:3400
- kthread+0x7a9/0x920 kernel/kthread.c:464
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:148
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
+- iomap_write_end() returned true
+   Since the folio is already uptodate, we can handle the short copy.
+   The folio is marked dirty and uptodate.
 
+- __iomap_put_folio() unlocked and put the folio
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+- Now a writeback was triggered for that folio at file offset 0
+   The folio got properly written to disk.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+   But remember we have only reserved one block of data space, and that
+   reserved space is consumed by this writeback.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+   What's worse is, the fs can even do a snapshot of that involved inode,
+   so that the current copy of that 1K short-written block will not be
+   freed.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+- copy_folio_from_iter_atomic() copied the remaining 3K bytes
+   All these happens inside the do {} while () loop of
+   iomap_write_iter(), thus no iomap_begin() callback can be triggered to
+   allocate extra space.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+- __iomap_put_folio() unlocked and put the folio 0 again.
 
-If you want to undo deduplication, reply with:
-#syz undup
+- Now a writeback got started for that folio at file offset 0 again
+   This requires another free data block from the fs.
+
+In that case, iomap_begin() only reserved one block of data.
+But in the end, we wrote 2 blocks of data due to short copy.
+
+I'm wondering what's the proper handling of short copy during buffered
+write.
+
+Is there any special locking I missed preventing the folio from being
+written back halfway?
+Or is it just too hard to trigger such case in the real world?
+
+Thanks,
+Qu
 
