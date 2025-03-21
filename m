@@ -1,138 +1,242 @@
-Return-Path: <linux-btrfs+bounces-12483-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12484-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FAA4A6B9B5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 12:17:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37DECA6BA39
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 13:01:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9466188F44D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 11:17:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F52E3B56FB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 12:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F9C1F09A8;
-	Fri, 21 Mar 2025 11:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A05B22256E;
+	Fri, 21 Mar 2025 12:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="yMIVhXf5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRAx5MTo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013EC1F03C1
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 11:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD64186250
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 12:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742555839; cv=none; b=NuBf8RaXKa1+Y9m8n6FrUQOuHgnxIS449PjaxdaQPTTM8r8UEpi3QAA0fK/rMVXiT3FwySNIid1ddQgsTSAsoLF0vAAG8KoLbDH2EtEmtFHUInUdN+0jLW7nx91PWGtxwq22dH8cSJvtF87S+3SF3NVud8sXq02dTNzz2TTwGUM=
+	t=1742558457; cv=none; b=cS0L69vSydzN41lM96f9dd2mRmMl3Cchqqwb1iDDsL0MZ49nwaahKLGJmEimgHzeMIe4HbbAh+cqdM/PRB6gNVnFFPmfrypCm5am7B1HoSV9Uz14adsk4YXJCzrSB+6EJqz+I0qzOAJ3IsWxLF86+ua9ZFi/FDzBWXTzg9hf/5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742555839; c=relaxed/simple;
-	bh=m2vc6ZJ6JSH7alaxCXpXJz+S+m3RfjPoDbd/zOWr3bo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nBJFUd1yIB1LeVj6mIyYGeRGv0FRYh9mru4BmSnMlZOaUB5knd7wZ0ISAvgQTcHERvIM3AJXWq701fuhVtdakeXNf9wvDoV/8NoPDOXzZfONvTdl/W8IuDEuBVcAqxZYOhy38BGsw8OwV+lGuf//ieaJ3XCnYm0llvYN13tTgrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=yMIVhXf5; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-85ae4dc67e5so93553739f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 04:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1742555837; x=1743160637; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=59LLzW7ToEBWUOpkdwZSTFFdcnkJr66vbvUK+dy5Qmk=;
-        b=yMIVhXf5Mqo0ShzlMSrLXH6x1Nw8VmuZ9KYMVOt2NxSaRM0Gxn1aIxizXWYQoDV9zN
-         PGxZqsAYKFXHUkas/DChYcxMgMLKYV8kvbJZZZqA0+yhTFhFxzG11ipFt+q+nogS7ON4
-         Qa4/Jfc9bdNyGCsMHNYzle4Kl6vbKm6il2Mo4Qg8h0mu2ZetP2I8lWM4ybBqQIxy1uRI
-         wme/cqL3NANjczAY0ejYgJNj+3ro5tD4vIeKpw/x1L2ope5wirAimi4/e++xYOfwEsJ8
-         1I35Af6oBXry9iOgHAmzr/UrOwSS3mu8Yu44lphJUF2dYr0uOFhYVLBbzn9bqW3SA+IP
-         wlUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742555837; x=1743160637;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=59LLzW7ToEBWUOpkdwZSTFFdcnkJr66vbvUK+dy5Qmk=;
-        b=ATxbkxGloteKNBvMXCfbnzCZulL4ekF71VZnYKTOd7tkqRJVC3gQon/aro63gNNg93
-         hgl2m7ZC0nH84/39HNHAETCoVCUiaSq5T7u+oAGLXZIMrrsVOUJDFLUNtL/FnuJO6Vec
-         URrHxDPwKKt4hnM9hC1tW3IuOy/DL8F2kcsM4PtqLqeTktkfLeaMT22y1Pao9wnkaB/u
-         TVnqLSWFh9xhT45Js2EnmQhC+m/h9F1oDfB4fbvq/C/33u3CvUAnD6nKb0L0ZtIEISZU
-         3lR1AB7hV52cyXaoi88Okr+3l45HRWombowMsKAp0O2H3v9MKrMrH+9EaKCsNvLLK6Q1
-         bBRg==
-X-Forwarded-Encrypted: i=1; AJvYcCWliBXiAvSWFyp4H/sbxNjJ1LzZBJctXIj5mtaht7nxP6jP3FqCxw2YaRbcs7ao9HFd7909SQQsDvC44g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFYsPCDK2hzqKiidNnObtLjPDXdBmgY432dYnA/rFCe3KukF0T
-	5A469NIkUxr7AZEbKYhCmmSgFl9NuSPn6ajc49CJB32qx7XB2/bLeFud2joU6rg=
-X-Gm-Gg: ASbGncvvjmMBCn0lGV6EFXyHpbjBnh/nieydGmZF5qEAiwJvc+nNeLVvxTZteDFYhQI
-	SrvjK0dR8aNXV7qYUgjrwSq46HIauNGFcNqPyVcGmZRk1dSzgMisxSIqQASTQ6KyLmuZSn3X7gA
-	KSxYZ+JwjmkXa8Ovq4ijcMCL6M13lOAhLUMdZfXG9DUbJykPGrwuLeqeF8HvW713eVTiiwq9VPO
-	NqqTZeKLw6rtlDRP2ECGL0EnpNQSJMiTCW8G+4VqlUMIhPBnd5FtkbPeH1hmsLzm5Yars8lm2VP
-	7OGvjbxG1RGSD6UxYG7A6kfKcPKkP6h8ygdfVJ9fQA==
-X-Google-Smtp-Source: AGHT+IFjSZ3fb43kry5hTLE5e6mSs3SJ1Pz758OOHDAPWAP28kapByaxuk0gb0pJL8JPkKgr4JClUA==
-X-Received: by 2002:a05:6602:1356:b0:85d:b7a3:b850 with SMTP id ca18e2360f4ac-85e2ca55c90mr318446239f.5.1742555836923;
-        Fri, 21 Mar 2025 04:17:16 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4f2cbdb3ae2sm382359173.5.2025.03.21.04.17.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Mar 2025 04:17:16 -0700 (PDT)
-Message-ID: <812ae44c-28e9-40a8-a6f0-b9517c55e513@kernel.dk>
-Date: Fri, 21 Mar 2025 05:17:15 -0600
+	s=arc-20240116; t=1742558457; c=relaxed/simple;
+	bh=kZRq5jaeZacSsiWdH0hr2BfQXJA7kgwbX6lMhWXFToo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jh8Yg3Adq+KOOv+rWhiQ95xvdJSpeApDoVf2Z1B9XN32sqNGFzQ7f/VkC2jPDUVl2/ONEzwK9/kxWYDb9RFXLTuuPef69s7htFEA4CJuJ/tA5MgjYmFSUYIfdVoVv+s6OGEdCp5KygBJeG4zZxqDRDn4Bykii1yISYUog5lE5UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kRAx5MTo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5090EC4CEE3
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 12:00:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742558457;
+	bh=kZRq5jaeZacSsiWdH0hr2BfQXJA7kgwbX6lMhWXFToo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kRAx5MTo/wp1KcF59sztPCpja8axQDPiWvoaTMp6VmYeEZ89Bpu7h1ftBCsT/NXRm
+	 0/xZ8D1DRZ7n01Ha0g+Gh+zKPb8F86ypXoNzbhQNMTf0Q8bPmOtbXty454l4RmaKsN
+	 hMET6NJX35GR6jp0B5MY/W2OIRLxhgcmfb3uH7qjm716zIu/SRx11wCjls5OyeC27s
+	 daJs5EECBpfH8W/+qTEubQ+/xObiu6pSFkFQ61rh21ETuiHCeMU2kQiM6OgrCgas5V
+	 8f+UOUQl5lnz3vcV8RzLf6tpugopVBbUBb2Xxz+ZAsH/txhFtnZCfanI5t+LNg6nNu
+	 mstmEwM4bFHkQ==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e6c18e2c7dso3341574a12.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 05:00:57 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyN9Z/R9LRLtkscolt6jgiwlWXXEsoe+MlvOgP4WR1loQC8vk4F
+	KBTBrsDM6ytvXcNmACQ5zD2JiSyHZ7ue3MM2ej89UOFeALwUkIzyHjeoxFIkrMtgKbv9WurXyxs
+	517IzsE5WwrF6/H7BMcSuduP+sJ8=
+X-Google-Smtp-Source: AGHT+IHlSVuTy1XyqfaoqUQD6sFVWkfLeDS41qgIXp2wY0VHyqtp2h/ybFKyYOcNYVDn1+NWvV9l/DceFMiAjEULtog=
+X-Received: by 2002:a17:907:1c11:b0:ac3:ed52:2c4c with SMTP id
+ a640c23a62f3a-ac3f24d5cd3mr336576166b.37.1742558455740; Fri, 21 Mar 2025
+ 05:00:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 5/5] btrfs: ioctl: introduce
- btrfs_uring_import_iovec()
-To: Pavel Begunkov <asml.silence@gmail.com>,
- Sidong Yang <sidong.yang@furiosa.ai>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org
-References: <20250319061251.21452-1-sidong.yang@furiosa.ai>
- <20250319061251.21452-6-sidong.yang@furiosa.ai>
- <14f5b4bc-e189-4b18-9fe6-a98c91e96d3d@gmail.com>
- <Z9xAFpS-9CNF3Jiv@sidongui-MacBookPro.local>
- <c9a3c5bb-06ca-48ee-9c04-d4de07eb5860@gmail.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <c9a3c5bb-06ca-48ee-9c04-d4de07eb5860@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <cover.1742443383.git.wqu@suse.com> <66698e7eb0589e818eec555abc3b04969dcb48f1.1742443383.git.wqu@suse.com>
+In-Reply-To: <66698e7eb0589e818eec555abc3b04969dcb48f1.1742443383.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 21 Mar 2025 12:00:18 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7TN7tEuGqS-vsCawUvmLSaDsXWfQZzPjecXmD8mnk-kA@mail.gmail.com>
+X-Gm-Features: AQ5f1JoTCPUfc-68D6rumEGI2L_6fmCZcKLSqZ52L2C-edugflfOcOzVus7rO_8
+Message-ID: <CAL3q7H7TN7tEuGqS-vsCawUvmLSaDsXWfQZzPjecXmD8mnk-kA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] btrfs: remove force_page_uptodate variable from btrfs_buffered_write()
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/21/25 4:28 AM, Pavel Begunkov wrote:
-> On 3/20/25 16:19, Sidong Yang wrote:
->> On Thu, Mar 20, 2025 at 12:01:42PM +0000, Pavel Begunkov wrote:
->>> On 3/19/25 06:12, Sidong Yang wrote:
->>>> This patch introduces btrfs_uring_import_iovec(). In encoded read/write
->>>> with uring cmd, it uses import_iovec without supporting fixed buffer.
->>>> btrfs_using_import_iovec() could use fixed buffer if cmd flags has
->>>> IORING_URING_CMD_FIXED.
->>>
->>> Looks fine to me. The only comment, it appears btrfs silently ignored
->>> IORING_URING_CMD_FIXED before, so theoretically it changes the uapi.
->>> It should be fine, but maybe we should sneak in and backport a patch
->>> refusing the flag for older kernels?
->>
->> I think it's okay to leave the old version as it is. Making it to refuse
->> the flag could break user application.
-> 
-> Just as this patch breaks it. The cmd is new and quite specific, likely
-> nobody would notice the change. As it currently stands, the fixed buffer
-> version of the cmd is going to succeed in 99% of cases on older kernels
-> because we're still passing an iovec in, but that's only until someone
-> plays remapping games after a registration and gets bizarre results.
-> 
-> It's up to btrfs folks how they want to handle that, either try to fix
-> it now, or have a chance someone will be surprised in the future. My
-> recommendation would be the former one.
+On Thu, Mar 20, 2025 at 5:36=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Commit c87c299776e4 ("btrfs: make buffered write to copy one page a
+> time") changed how the variable @force_page_uptodate is updated.
+>
+> Before that commit the variable is only initialized to false at the
+> beginning of the function, and after hitting a short copy, the next
+> retry on the same folio will force the foilio to be read from the disk.
 
-I'd strongly recommend that the btrfs side check for valid flags and
-error it. It's a new enough addition that this should not be a concern,
-and silently ignoring (currently) unsupported flags rather than erroring
-them is a mistake.
+foilio -> folio
 
-Sidong, please do send a patch for that so it can go into 6.13 stable
-and 6.14 to avoid any confusion in this area in the future.
+>
+> But after the commit, the variable is always updated to false for each
 
--- 
-Jens Axboe
+I think saying "is always initialized to false at the beginning of the
+loop's scope" is more clear.
+When you say updated it gives the idea it was declared in an outer
+scope, but that's not the case anymore.
+
+> iteration, causing prepare_one_folio() never to get a true value passed
+> in.
+>
+> The change in behavior is not a huge deal, it only makes a difference
+> on how we handle short copies:
+>
+> Old: Allow the buffer to be split
+>
+>      The first short copy will be rejected, that's the same for both
+>      cases.
+>
+>      But for the next retry, we require the folio to be read from disk.
+>
+>      Then even if we hit a short copy again, since the folio is already
+>      uptodate, we do not need to handle partial uptodate range, and can
+>      continue, marking the short copied range as dirty and continue.
+>
+>      This will split the buffer write into the folio as two buffered
+>      writes.
+>
+> New: Do not allow the buffer to be split
+>
+>      The first short copy will be rejected, that's the same for both
+>      cases.
+>
+>      For the next retry, we do nothing special, thus if the short copy
+>      happened again, we reject it again, until either the short copy is
+>      gone, or we failed to fault in the buffer.
+>
+>      This will mean the buffer write into the folio will either fail or
+>      success, no split will happen.
+>
+> To me, either solution is fine, but the newer one makes it simpler and
+> requires no special handling, so I prefer that solution.
+
+Ok so this explanation of different behaviour is something that should
+have been in the change log of commit c87c299776e4 ("btrfs: make
+buffered write to copy one page a time").
+
+With the new behaviour, when folios larger than 1 page are supported,
+I wonder if we don't risk looping over the same subrange many times,
+in case we keep needing to faultin due to memory pressure.
+
+>
+> And since @force_page_uptodate is always false when passed into
+> prepare_one_folio(), we can just remove the variable.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Anyway, this change looks good, and at least with the typo fixed:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> ---
+>  fs/btrfs/file.c | 19 ++++++-------------
+>  1 file changed, 6 insertions(+), 13 deletions(-)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index c2648858772a..b7eb1f0164bb 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -800,7 +800,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_hand=
+le *trans,
+>   * On success return a locked folio and 0
+>   */
+>  static int prepare_uptodate_folio(struct inode *inode, struct folio *fol=
+io, u64 pos,
+> -                                 u64 len, bool force_uptodate)
+> +                                 u64 len)
+>  {
+>         u64 clamp_start =3D max_t(u64, pos, folio_pos(folio));
+>         u64 clamp_end =3D min_t(u64, pos + len, folio_pos(folio) + folio_=
+size(folio));
+> @@ -810,8 +810,7 @@ static int prepare_uptodate_folio(struct inode *inode=
+, struct folio *folio, u64
+>         if (folio_test_uptodate(folio))
+>                 return 0;
+>
+> -       if (!force_uptodate &&
+> -           IS_ALIGNED(clamp_start, blocksize) &&
+> +       if (IS_ALIGNED(clamp_start, blocksize) &&
+>             IS_ALIGNED(clamp_end, blocksize))
+>                 return 0;
+>
+> @@ -858,7 +857,7 @@ static gfp_t get_prepare_gfp_flags(struct inode *inod=
+e, bool nowait)
+>   */
+>  static noinline int prepare_one_folio(struct inode *inode, struct folio =
+**folio_ret,
+>                                       loff_t pos, size_t write_bytes,
+> -                                     bool force_uptodate, bool nowait)
+> +                                     bool nowait)
+>  {
+>         unsigned long index =3D pos >> PAGE_SHIFT;
+>         gfp_t mask =3D get_prepare_gfp_flags(inode, nowait);
+> @@ -881,7 +880,7 @@ static noinline int prepare_one_folio(struct inode *i=
+node, struct folio **folio_
+>                 folio_put(folio);
+>                 return ret;
+>         }
+> -       ret =3D prepare_uptodate_folio(inode, folio, pos, write_bytes, fo=
+rce_uptodate);
+> +       ret =3D prepare_uptodate_folio(inode, folio, pos, write_bytes);
+>         if (ret) {
+>                 /* The folio is already unlocked. */
+>                 folio_put(folio);
+> @@ -1127,7 +1126,6 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, st=
+ruct iov_iter *i)
+>                 size_t num_sectors;
+>                 struct folio *folio =3D NULL;
+>                 int extents_locked;
+> -               bool force_page_uptodate =3D false;
+>
+>                 /*
+>                  * Fault pages before locking them in prepare_one_folio()
+> @@ -1196,8 +1194,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, st=
+ruct iov_iter *i)
+>                         break;
+>                 }
+>
+> -               ret =3D prepare_one_folio(inode, &folio, pos, write_bytes=
+,
+> -                                       force_page_uptodate, false);
+> +               ret =3D prepare_one_folio(inode, &folio, pos, write_bytes=
+, false);
+>                 if (ret) {
+>                         btrfs_delalloc_release_extents(BTRFS_I(inode),
+>                                                        reserve_bytes);
+> @@ -1240,12 +1237,8 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, s=
+truct iov_iter *i)
+>                                         fs_info->sectorsize);
+>                 dirty_sectors =3D BTRFS_BYTES_TO_BLKS(fs_info, dirty_sect=
+ors);
+>
+> -               if (copied =3D=3D 0) {
+> -                       force_page_uptodate =3D true;
+> +               if (copied =3D=3D 0)
+>                         dirty_sectors =3D 0;
+> -               } else {
+> -                       force_page_uptodate =3D false;
+> -               }
+>
+>                 if (num_sectors > dirty_sectors) {
+>                         /* release everything except the sectors we dirti=
+ed */
+> --
+> 2.49.0
+>
+>
 
