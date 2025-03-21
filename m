@@ -1,129 +1,195 @@
-Return-Path: <linux-btrfs+bounces-12480-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8771CA6B8C5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 11:27:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756AEA6B997
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 12:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 015B34817C7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 10:27:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32B8E3BD74A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Mar 2025 11:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F52204F85;
-	Fri, 21 Mar 2025 10:27:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94511F4199;
+	Fri, 21 Mar 2025 11:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZVH63ge"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQr7S9Yl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA16F20B20A;
-	Fri, 21 Mar 2025 10:27:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F147C1F17EB
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 11:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742552843; cv=none; b=EUjjOfW4wevXKR9LYU1zLp0lyJqpTWiWJKvsPSixvFeXv4FstJfw8Mq6dh5/KhFyiKHdMafG2Hxl8BUAXTMfcY6yQa+mJTfLFYqVBEoq9LT74usjKId7sxlI2JoaLDeyWVA6a2+YuQIWckXDfsgUPEtM+OtiLHvYtvbeJt71YDg=
+	t=1742555338; cv=none; b=POJ5fOfyMPaRmJMf8DwFD6Ms0+cf8rgus6Wv0J43Sm72hl+LBDp/I29Q321QDKbK22xsLgG1EdSPwM4x803Lq2m9XvqkJs9wvEfkGBk/oChWGL/WlEhi+dllGzykEk7ropE2qZu06eFAL/Fcqp439d00sgtXoPhPKchZ+kCtHqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742552843; c=relaxed/simple;
-	bh=imUR6PLo95tiJzxLNzsMyiDnmu7u6xwtSjqyOg7ZicY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GADwDNrr0zX1BcbWpO3Bt8SfzNobaxAenpgBqGVsRChboHC5rFYsEaTApPdcGc9rqswdrWV6f/XVt/PtotCsLdh5es5Y1GjwCO9MIZ3ICBGvmkeml9GMQvdvLakYCBgwES2bIkmQm4GwDYaFICQD6Vps4LqV0artLICF1Kv+7Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DZVH63ge; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ac345bd8e13so322097166b.0;
-        Fri, 21 Mar 2025 03:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742552840; x=1743157640; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MzyjBm2EYqeQrBTSgKit4AgE1JZmqApLPAOxaryRyV8=;
-        b=DZVH63gejHW+STCeLzhNUZU97lly/vqWLsBWK8KvquPOlnDJhnRUdSum+wQmzUQjF6
-         iNOswy+NM9Cy1IfGq/3yuKB/wId++ku2o8/9TpeaBc7GzAo0fCFxW4QjVnogQ2tyl5Ue
-         vtpVHXeQuJZnuny+eaRRVQeGcD/PCvYI/yc82CECr5Hi/8WyDRhc+gvleiDLXIHuyse4
-         KnMWTUTIBZIhrt3Wr9wYG3L6ho0YRH1JMhSyhCxQeCIX2jrF9EXmo/q2Zwu4pBznvEJn
-         9kfxAJKMHbpPqsmktmWPHKto4AA3+3W44uEB2j///t9eXEcihYJM15jgMmV2HSaCQgcy
-         cE+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742552840; x=1743157640;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MzyjBm2EYqeQrBTSgKit4AgE1JZmqApLPAOxaryRyV8=;
-        b=tC6m5ZzAwtpCDbTZi1rT3/lehvlftgHHZqrN6MrT46GenFCCISVw6S7OmWfKrt4f24
-         TB5ENPKXJF9kN/Wg6Bho7mQ3iSytOWCFvFBNADfNUwZmKIQ0f7b+V46GnBzvFlOa5BXv
-         Rb8/nT9TGQQujPKYRc9h49XzMevmkoM+rWnOj9RJEB2QNzxHfjr/ckZkjMwPqd6SqBF3
-         BhNpWaNRfplMpmDgVT01TM4615p6rz+wFcI3LqhFxk0v6BYMIThlZ2XYw6IA7ygwT/up
-         g9MiCJkik0nilaNwmT0WBYKigVm5EBnve8SPZUXLmZcEnBiz2D3DNC6sLZt8rzG5BNOZ
-         g5XA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWSAJJ87B6EV2Zmr+9ba1Ek/BRSdSFdshLOjs3CqEUP5yipCM33F8qYZ1sP80v7R53ILvAEQEUVQ==@vger.kernel.org, AJvYcCWvzhWWisWTd04htKzQxKkDOzShwtWs5muMP8YXV9k1TAbLGSgrPmwCjJbr/eON6bc3tY7uZJ0MWemeOjY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIlL0qZXiVNyhYx302HwudIALqCJgVMTeVvkLEa/5TkQ/AO2KW
-	OH8Co5dJKQSllKCXRmMasN8LPOu10dflxV8mOa1wyabX4NoJnpq/
-X-Gm-Gg: ASbGnct1kE50DH8M+eb+j9dxSlGRcqZf1aoVGd5X1/euzxhlR6bMqB9DwOJogRUm0ke
-	aX4mrlIDX5mi6dbfSoI5NnEFXKpf0acA/wW0r+pdBHAoddSsej/EQFc0A+1txmvazhVo1YLxOkk
-	XUfNDO1LfLSmxeQCQ+d3jDX9YCdgL1Yl3DwLQa0p0CYFu8OF1S8otrC2y4jilPdR2b9D4tnleMa
-	57FUxhoJC0n6wYn2zxnFGuUbr2Af+TspykPE3NsVYtLOg/FFVndRLvnRitgb/fMABbitcx+jCHG
-	swkjrALPx7eDvgNuV8TRM/mWYU+6HXa7hS2dThio690Edg3g7UZFyQ==
-X-Google-Smtp-Source: AGHT+IHor5hxivejUzn4LpCJTPWXVRlk3laGsP9D+83u93hHqavWD/kc43hNyq+9V2w6U72DLejjPA==
-X-Received: by 2002:a17:907:3f24:b0:ac0:b05:f0c0 with SMTP id a640c23a62f3a-ac3f20d767fmr230447866b.1.1742552839950;
-        Fri, 21 Mar 2025 03:27:19 -0700 (PDT)
-Received: from [192.168.8.100] ([85.255.236.254])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efb658f9sm123644366b.120.2025.03.21.03.27.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Mar 2025 03:27:19 -0700 (PDT)
-Message-ID: <c9a3c5bb-06ca-48ee-9c04-d4de07eb5860@gmail.com>
-Date: Fri, 21 Mar 2025 10:28:14 +0000
+	s=arc-20240116; t=1742555338; c=relaxed/simple;
+	bh=iF1SMSERzCD+2RFS4oebaqlmnCPHq1cRRNqdOKs6bag=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=OJyR6V0fHontxbtAvs9qLAwi9Q/09I0aU1cP7XyAO9ECxOezLjEfM6dSNqPzJMzbGVE8osweCns4vYwQy5ImvpKdEmKf7vjQenGzv39U2rosrqRd2CWpjLjzaYcvWbDBgLMHeulCzMBsoL3W1EeP+YPDBhJXabmC0OdHxgLlO6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQr7S9Yl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3E25C4CEE3
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Mar 2025 11:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742555337;
+	bh=iF1SMSERzCD+2RFS4oebaqlmnCPHq1cRRNqdOKs6bag=;
+	h=From:To:Subject:Date:From;
+	b=cQr7S9Yl6WD63BhU6iNuV16N0u86CYtiA7PR+/vt09gw5TR3HRr3z4d9oZLtJgldp
+	 NvPm5km8NDIW4UHh9W3O7LkuYYoHKQo+WSBZvkA4IPyeEP0sfgxz+hbn9C/sZp3QQv
+	 4rXSWY3HreMe8DZ4gZW2hUAnMfeM5/UUlm0wH2fQ9r4G0axBOOrqb/EC58qUB0oaKV
+	 WIPGFZFpOyxkRlUnvdYzcx8d6VUSLfqyyHI0RSlysN6J9OEHjAc/GW1bhSoCj90fHm
+	 MIBel2Ll8S+pG6tg/XRM1qpRgZmyFZdJ7dY9XIi8TDRFdamd9NuWdRk5JTFt+gZCrv
+	 j4b/MymU4al5g==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix fsync of files with no hard links not persisting deletion
+Date: Fri, 21 Mar 2025 11:08:53 +0000
+Message-Id: <5b44edaf3e472a234a13e8cf2dd8c96f35970996.1742490795.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 5/5] btrfs: ioctl: introduce
- btrfs_uring_import_iovec()
-To: Sidong Yang <sidong.yang@furiosa.ai>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
- io-uring@vger.kernel.org
-References: <20250319061251.21452-1-sidong.yang@furiosa.ai>
- <20250319061251.21452-6-sidong.yang@furiosa.ai>
- <14f5b4bc-e189-4b18-9fe6-a98c91e96d3d@gmail.com>
- <Z9xAFpS-9CNF3Jiv@sidongui-MacBookPro.local>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <Z9xAFpS-9CNF3Jiv@sidongui-MacBookPro.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/20/25 16:19, Sidong Yang wrote:
-> On Thu, Mar 20, 2025 at 12:01:42PM +0000, Pavel Begunkov wrote:
->> On 3/19/25 06:12, Sidong Yang wrote:
->>> This patch introduces btrfs_uring_import_iovec(). In encoded read/write
->>> with uring cmd, it uses import_iovec without supporting fixed buffer.
->>> btrfs_using_import_iovec() could use fixed buffer if cmd flags has
->>> IORING_URING_CMD_FIXED.
->>
->> Looks fine to me. The only comment, it appears btrfs silently ignored
->> IORING_URING_CMD_FIXED before, so theoretically it changes the uapi.
->> It should be fine, but maybe we should sneak in and backport a patch
->> refusing the flag for older kernels?
-> 
-> I think it's okay to leave the old version as it is. Making it to refuse
-> the flag could break user application.
+From: Filipe Manana <fdmanana@suse.com>
 
-Just as this patch breaks it. The cmd is new and quite specific, likely
-nobody would notice the change. As it currently stands, the fixed buffer
-version of the cmd is going to succeed in 99% of cases on older kernels
-because we're still passing an iovec in, but that's only until someone
-plays remapping games after a registration and gets bizarre results.
+If we fsync a file (or directory) that has no more hard links, because
+while a process had a file descriptor open on it, the file's last hard
+link was removed and then the process did an fsync against the file
+descriptor, after a power failure or crash the file still exists after
+replaying the log.
 
-It's up to btrfs folks how they want to handle that, either try to fix
-it now, or have a chance someone will be surprised in the future. My
-recommendation would be the former one.
+This behaviour is incorrect since once an inode has no more hard links
+it's not accessible anymore and we insert an orphan item into its
+subvolume's tree so that the deletion of all its items is not missed in
+case of a power failure or crash.
 
+So after log replay the file shouldn't exist anymore, which is also the
+behaviour on ext4, xfs, f2fs and other filesystems.
+
+Fix this by not ignoring inodes with zero hard links at
+btrfs_log_inode_parent() and by comitting an inode's delayed inode when
+we are not doing a fast fsync (either BTRFS_INODE_COPY_EVERYTHING or
+BTRFS_INODE_NEEDS_FULL_SYNC is set in the inode's runtime flags). This
+last step is necessary because when removing the last hard link we don't
+delete the corresponding ref (or extref) item, instead we record the
+change in the inode's delayed inode with the BTRFS_DELAYED_NODE_DEL_IREF
+flag, so that when the delayed inode is committed we delete the ref/extref
+item from the inode's subvolume tree - otherwise the logging code will log
+the last hard link and therefore upon log replay the inode is not deleted.
+
+The base code for a fstests test case that reproduces this bug is the
+following:
+
+   . ./common/dmflakey
+
+   _require_scratch
+   _require_dm_target flakey
+   _require_mknod
+
+   _scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
+   _require_metadata_journaling $SCRATCH_DEV
+   _init_flakey
+   _mount_flakey
+
+   touch $SCRATCH_MNT/foo
+
+   # Commit the current transaction and persist the file.
+   _scratch_sync
+
+   # A fifo to communicate with a background xfs_io process that will
+   # fsync the file after we deleted its hard link while it's open by
+   # xfs_io.
+   mkfifo $SCRATCH_MNT/fifo
+
+   tail -f $SCRATCH_MNT/fifo | \
+        $XFS_IO_PROG $SCRATCH_MNT/foo >>$seqres.full &
+   XFS_IO_PID=$!
+
+   # Give some time for the xfs_io process to open a file descriptor for
+   # the file.
+   sleep 1
+
+   # Now while the file is open by the xfs_io process, delete its only
+   # hard link.
+   rm -f $SCRATCH_MNT/foo
+
+   # Now that it has no more hard links, make the xfs_io process fsync it.
+   echo "fsync" > $SCRATCH_MNT/fifo
+
+   # Terminate the xfs_io process so that we can unmount.
+   echo "quit" > $SCRATCH_MNT/fifo
+   wait $XFS_IO_PID
+   unset XFS_IO_PID
+
+   # Simulate a power failure and then mount again the filesystem to
+   # replay the journal/log.
+   _flakey_drop_and_remount
+
+   # We don't expect the file to exist anymore, since it was fsynced when
+   # it had no more hard links.
+   [ -f $SCRATCH_MNT/foo ] && echo "file foo still exists"
+
+   _unmount_flakey
+
+   # success, all done
+   echo "Silence is golden"
+   status=0
+   exit
+
+A test case for fstests will be submitted soon.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 90dc094cfa5e..f5af11565b87 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6583,6 +6583,19 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 		btrfs_log_get_delayed_items(inode, &delayed_ins_list,
+ 					    &delayed_del_list);
+ 
++	/*
++	 * If we are fsyncing a file with 0 hard links, then commit the delayed
++	 * inode because the last inode ref (or extref) item may still be in the
++	 * subvolume tree and if we log it the file will still exist after a log
++	 * replay. So commit the delayed inode to delete that last ref and we
++	 * skip logging it.
++	 */
++	if (inode->vfs_inode.i_nlink == 0) {
++		ret = btrfs_commit_inode_delayed_inode(inode);
++		if (ret)
++			goto out_unlock;
++	}
++
+ 	ret = copy_inode_items_to_log(trans, inode, &min_key, &max_key,
+ 				      path, dst_path, logged_isize,
+ 				      inode_only, ctx,
+@@ -7051,14 +7064,9 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ 	if (btrfs_root_generation(&root->root_item) == trans->transid)
+ 		return BTRFS_LOG_FORCE_COMMIT;
+ 
+-	/*
+-	 * Skip already logged inodes or inodes corresponding to tmpfiles
+-	 * (since logging them is pointless, a link count of 0 means they
+-	 * will never be accessible).
+-	 */
+-	if ((btrfs_inode_in_log(inode, trans->transid) &&
+-	     list_empty(&ctx->ordered_extents)) ||
+-	    inode->vfs_inode.i_nlink == 0)
++	/* Skip already logged inodes and without new extents. */
++	if (btrfs_inode_in_log(inode, trans->transid) &&
++	    list_empty(&ctx->ordered_extents))
+ 		return BTRFS_NO_LOG_SYNC;
+ 
+ 	ret = start_log_trans(trans, root, ctx);
 -- 
-Pavel Begunkov
+2.45.2
 
 
