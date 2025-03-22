@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-12502-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12503-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CF9A6CCC1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 22:37:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35C5A6CCFE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 23:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514A917388B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 21:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BFEB188E550
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 22:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EDB1EF38A;
-	Sat, 22 Mar 2025 21:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6971EB192;
+	Sat, 22 Mar 2025 22:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="amEjkhC4"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RjIX4CEx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A241DE2DC
-	for <linux-btrfs@vger.kernel.org>; Sat, 22 Mar 2025 21:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFEB1DE4C2
+	for <linux-btrfs@vger.kernel.org>; Sat, 22 Mar 2025 22:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742679425; cv=none; b=OiBhQtxaIWicOnhc87ZQG5ufOkDcxOj0dpYgdmIsi3wO+ao25E//NNqHGb7autnH6I4g11hL3DNKc4DEhyHBTBYO+qMs7yp7yMgXLt95+Ikjk5obzYo5Ls4RGxDCxyHvycBgMWFcBi54x7efpeGsAYSLZIS+SKiD8As23AQqNsY=
+	t=1742682003; cv=none; b=R9DkR1t8gDiDzJP/ZHm9kHi5u3qaUhoFIk7xrMWcJWxdTIg1Mmd9JTChQFSc+hoBLFkz39BxTFxBlGlf8yAAkryPCE2+8h/QdxmxeRCbBb5VsOJduj9srSaD5e0QlxEvmK1px1tkQnx4b+vVa6FTvHbV3yVl4No7nKzc2OpTeFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742679425; c=relaxed/simple;
-	bh=EKIy4vZO8pX4qUg6zB83WZ6HoxHDKquPAnCzSLW5U4Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SBzizYVQJsym9kdHa3Wnvxl0qA+oAOfRO6t8221942OBCzxwTt4/VmpJYGibFFsQ/xZ2njM/TLU5/DKapXuVrlpRl/QOIib/E4tLR59q/gCqleD/P8+lUtu3fjdOgNDLc0bht5ii6uRyC21guLw8DYFvAook137drkRjVIzalDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=amEjkhC4; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1742682003; c=relaxed/simple;
+	bh=zZzg6iFOR/Lf3MZEw6pwDCvAaMgq9KASW4XtfWb85KA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gqg4CKGLZ87QCNqRpecWFEoVCvKGj5t58YuJvH7ogj6tntmMDYjsT+BnH/s3XxoXFyC3mlhCwyHYvdqrb7D5qm2NUlb15pUS5iCsCDzsbpDrkgo0yWlUN/D6hAhm3uIwqnCik0HT8vRGwEH8xf6nu0VvBhvI8iivYoJGoXzsR/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RjIX4CEx; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1742679420; x=1743284220; i=quwenruo.btrfs@gmx.com;
-	bh=7egBh8mgRY8gbUZc/YX54UxEYMsIbiyNk3edx27XXOw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1742681999; x=1743286799; i=quwenruo.btrfs@gmx.com;
+	bh=2i/lbtXh/JQHxHQSPYARTaWDSXSYEnr3gAS4SJIKcUE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=amEjkhC443PG1B3+0b6i/E38zHtbAobFz9hQBj/nm5+EFbGnHLJok/FTi87HCNAN
-	 XChENA98lVlQjRITo10Tbwt226V7FR7kjoQevTJL1PieOCgNRPU7Ns8Mtf+K6x8D5
-	 aHuv9yESaFdd6LPpUsU7uoUA+zLizhQDlG2Gfsrp/seXi1OL1qOfjYBNtrSyfHv6A
-	 bZ1UXQQq/ka7nctQ7mVEJRZIIXBtQQMky586fkTeWsFdtVYnbEyJozIUFqoqQm+Zr
-	 0jFS0e7R5NC37m9vuQ7Nk5ceqVZXeC91i57GnflZrWrioSFGDHAfDhtO0/acGmh3B
-	 Ium7dsXStb3owCjhFA==
+	b=RjIX4CExRWZtnJTjoNtmrTndkN/AQfePlE6QpCs+7/kCKZk6TAs6lU4R7yDkhXDL
+	 wrpWmOtp/pkxuoUXzBaF/Vx8FsQ3yhbJ/2W1i18de2lTX2AccxVDm6B1jaTc72wjJ
+	 aYG5Iaun5qEhwT1WEfdX9GLOpt6o/9SojRCpXiIe5gtgqe7/NjQ66r8FsPwTZDWmB
+	 FVgo5TfoHe5lCD1dzdaoJDeOKRVMb/H3w9u9Z685YmDd/d7rEmkxVyoNMYo1JQJnS
+	 10RNTusXzB7y+WiSt7cGsHaNeWNL+PQ9RdkFNfBP/sG8cz2XDHAsUZbxu6EKQGXnl
+	 Jz2yDPYz6ay35FuD6A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1ps8-1tttb93kUa-00Gy6z; Sat, 22
- Mar 2025 22:37:00 +0100
-Message-ID: <81b64f4f-59dc-4ca1-81de-2b77cf38cd3e@gmx.com>
-Date: Sun, 23 Mar 2025 08:06:56 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N33ET-1tAiZv3Spx-00xUMq; Sat, 22
+ Mar 2025 23:19:59 +0100
+Message-ID: <0146825e-a1b1-4789-b4f5-a0894347babe@gmx.com>
+Date: Sun, 23 Mar 2025 08:49:54 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS error count 754 after reboot on Debian kernel 6.12.17
-To: russell@coker.com.au, linux-btrfs@vger.kernel.org
-References: <3349404.aeNJFYEL58@xev>
+Subject: Re: [PATCH 2/2] btrfs: kill EXTENT_FOLIO_PRIVATE
+To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc: linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>,
+ wqu@suse.com
+References: <cover.1741631234.git.rgoldwyn@suse.com>
+ <9ebfbb2024c3c4bfb334a37cde0ecb0c4e26ee5c.1741631234.git.rgoldwyn@suse.com>
+ <20250312140807.GO32661@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,100 +91,97 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <3349404.aeNJFYEL58@xev>
+In-Reply-To: <20250312140807.GO32661@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7CDpluI/eAbFl0G7R3Yxm3BaFSvRpO+ZRUTD/oTxk9odafaXKdO
- tdig1tw0O/dgQkMe8bFd4OM02Jm7wOKHBm6aRggORiN7U4CZLMra8f5PlzzvKOHsk3ZsrzJ
- g3cI6630Xq4SGzW/tHOFDh0orsReuYz/pf0+Yg6AEZtruz56CeKckkpafb7f1ME4nA44Jlv
- QmpT9vnf4DLTmOfGmiBBQ==
+X-Provags-ID: V03:K1:i4W3TB18/XB59oFQob2YaB+uduPQ5pZfXNEgcCVCcka5HcedLM5
+ FMZDKizXbTu0WpncDsBEbYGX8tmfGehWGgMjqPykoJmlgaItkyeak7gwHfdne256VwprQx8
+ 40wg20abl0C2bcrK/lCeYxxaSrvNyBYTBASCSadV1/gf/CUTbpRJ7Jq2hFuBWlvb7LYl2Ro
+ S6RxDCNQ9DIz8SLxHywvA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:vSTKMj6Z37c=;9nGCBkenrwBQ0bat/00hf6Y8MAN
- l85dX40xJUMP+XY9KymhCf4+efgKICX7MW1TvZ/rX2r+lW/ztDHDA25o4nzTX5oxAx7Giplok
- Co8HMbX1gFew6XW/xWziB97gW2thgGKLPwxiJdmPD6UuSYoPjegOFtPZemzdMdLZSJBXyrfVd
- CNgCcnPDT4QpIwe/3QH5djxyERkL44EIagbxb1NB4nfvqYCcYuPngo+rdQ6L1lOFWnnXyzEBk
- PeD96CrBZEx/YtBZtstlWoqz5aqrljpBkPcWPpF0ooh/LXqiPhS0OhUaEdWFfiKDkkISTXf1j
- yF3T+77H8o1wW0eKCiooU0aEk1V2LO3Yqpf45xU+pD/BftyRqDr9l92Y6h+t6+6DeIJqEID9x
- 5Se1gkotWr/9CXTLnvthzz6r4GsHuZjSZjWQYitYruEund8UHocKpsHzqf3LS64WI5q2vEWev
- euWC7imU4IXPoJ/NA4C9KAOxPZEcAiGzEetO3ErmDX5CLNwoN8gtSOyn8TFOx0yeOflQeKiYK
- lnyvpv1hpADN1eMjcTQBxQ+JcXxfJlNewMElIlo/Z/Nh1wDajKACjGBYe3KZE76DxDhSdoMeP
- UBSsuxE3Vdf4sb6Sy+484E0BNM4z1CSVhvWxYQCqyTg2ps5l+mtgu5ZcMl8gVsUb/B6dzHJ1j
- 2D0jzeTTspIiwJLDaGBpS8BFxB8NpH/iPP1XiwMLEwdxLbXquXGwq2RHMMzPS1uqNUC6CErfG
- rf7GrPCsLHQRdMr/yfApOfjz3ItCCIQIo7knk1/diZRklVQneoER+rof44mZ50cng0+LynOsI
- wGB7zHlqI2q9HJJkKP+calPX/IPW8LETLmoYbNnGkR3e4mo8JfFWFALhliTZwTQfztovpu6Ts
- c7VFz4Z8X9hcbwGcFDHS5ADW9HpEhdPsCbDysmG72IE5R/HeP+SSE6kh2MjTaha6l41Z2U1Md
- Uj06G020aplpoFMSASpgOdkEgIHOES5s5XprV9qbaLEpIwGYgVQB+byMlWYwFGN/f/i1MF3IB
- aqLb1fEtccirDxwooPVMBf+tiduBAzhsB2f6LqjGJJ0VxceIpYdL4qSuPxrdQ5jl8zKu3tbmw
- 4mYouEeVM+jAB/tGhGlOvZ3XnkgbjfaBso7VQBRwhG06rM0/y3Wz/kIOxOAExcg7ebNOGWwyG
- Lqeo+RifqgymK4NpiLfKBSsTNGcMoZW/zKOB/upPeryLc8Mfg0+59rPBcAPlULFomJJq5jeeZ
- Kg/Sl4EiDceYKarFRA6KS1s8enbFgacq065f0gLH7dfhjrJuoddLLWod8AHRQTNzG5FQVkbxt
- KRs2M/rM505qo0svFfw8zHqLziUZbD0u1mF9NagugVYtuOdwJO/TcbNmf5rkg0PUh4qB8MRVn
- PEiJ2RjHOK9GcenRcXUGEuyn/MmFNPKW1atcLgRMtLg8uhluIKyo8TQOFCRm6X8lJUy8bfV6i
- EsEbBlg==
+UI-OutboundReport: notjunk:1;M01:P0:Q5gd47P+ONU=;MgJK6KYU7C9KeTkHTip+xHC5V0s
+ 0GMElcp/7XwMrQh6xmhWf0ysJb5VTBdBwjQbzhmAQedwI/AWDw8g0zOL7AkXPy2mTNjpbmI2s
+ 3HgTQOLJpK9LfdBNjrCtQwRGPtExTrSQ6pUUyS5qH3nBKFTaveqFmTQz5TZLt1q7N+fIAy33w
+ ESOfguLim2dGQLHAnsrfhBSIfKd6dTK6DcWhwpLrAkk/Niz7Ilagb0l1jJgoUiJhsNnoovDLk
+ ZDpg9I0l8lGaRwSH3wWn8brcpBZdp8YxRrv0ZSwn8f4j04/41Klbperwjy/A5wEQ08G9JBNwb
+ g7oAFmRqrsmrQ+UofzpWasWwyHqAvi0v7X1nAycXZCO5gLhV8+xnJOVE6JhRfgx2mLbls3/yl
+ fbOZB2glLDrP/6v0mFWXX1eLRJzDdPoRz7YK2zT+bS6nJjaLFredBm1pn+sSr4tjS/g4G7aez
+ JFpE2qEG+HqaZKQlqrWIQE9YJKtY1j0Rp0YCbHPdKb+A181gu5OIuN0XUqj0xVBNFHv3qCqon
+ Iv0qxjkA97WnwMkiqzj2ak5Wai0YEfDqcnFFHgz53KesgPmVrPnlKkJSzNR2Crb7Ipd775xa1
+ UoeUUpk1PaJyBiwf6iWqf6M/H91jzIvImfdV89UQuGAl7X6Zx9fUs0W+memC1q8EaUzRbih+i
+ eJhvZcpRD5CcxxdMAkKA+wy/UulXEQryaOSwhKVG6M662bihLQeVgRaBJxGzKj2l6Dmh3ncrs
+ HrQu7cn6yCgI5bSR7fXyhv9zpWYjimVikOt2ufbR0lx1dkDSwclfc9FmGk9GyHUHmstiY7uOV
+ +y3VPcTF+6EF1UZxapMHKKK3mxlOd5fcLC8euAWe5Z2GYCch/yN0LI3Wx7I+J4jhih99vrs2N
+ /B+XYfKI+eCWXcIjgglZAnOJ59KLssKzCt3uZuvMf0kXAdMnNFvzETRAL7/6E3pPVtolO81T4
+ MHNhj8+0QjTiZUJdAPaEHTowqgHzgG0yeLLpuF8PL7bl6JusI0qL08w6Dayaxqnk9it8/gbkT
+ FGdUUW4NcjujGWbWu3rvJGnQgBEQ0/qvx7eSBwCV6ZtF3OpRVsG2IEdx1zx7X9LTUdXqKl+tM
+ 8c6X1s+HsSp1/wMHC6L9/1lQtSZHEHvaYD8e7DwqNVADx/e5pgLUZCYT4RlRSYZZaPBJ+vlLH
+ ccbWm0fRm2pfJx//FoUxs0eUNd7cAQu2Z7xQMbVvZBMytSsD1o+8ajQDqladnFRQsUXPjveBy
+ 6B+OdA505c20rpQIKajkIluZwpCUUJZvaqjmwIrsy09kQKzCCbvAHBFXqaDZ/xhnwGxCz7icc
+ dPP8AJq8G2t2CNMoKWEviYDpB05HFGi5WGKoBMgvjSQDxt0ls9iGW7TjH/EUnYVW7sNOY43ma
+ iqwmSBJMg8M2GueSqHcSVoqhcpw+VhQz0gT40VTYFSUzBFfDRAQae8OCAYuOly24L+ejhtLsF
+ adhEflb7rq7EaN86VUGwr8wJdbtg=
 
 
 
-=E5=9C=A8 2025/3/23 00:14, Russell Coker =E5=86=99=E9=81=93:
-> [/dev/sdd1].write_io_errs    753
-> [/dev/sdd1].read_io_errs     1
+=E5=9C=A8 2025/3/13 00:38, David Sterba =E5=86=99=E9=81=93:
+> On Mon, Mar 10, 2025 at 03:29:07PM -0400, Goldwyn Rodrigues wrote:
+>> @@ -1731,30 +1711,7 @@ static int extent_writepage(struct folio *folio,=
+ struct btrfs_bio_ctrl *bio_ctrl
+>>   	 */
+>>   	bio_ctrl->submit_bitmap =3D (unsigned long)-1;
+>>
+>> -	/*
+>> -	 * If the page is dirty but without private set, it's marked dirty
+>> -	 * without informing the fs.
+>> -	 * Nowadays that is a bug, since the introduction of
+>> -	 * pin_user_pages*().
+>> -	 *
+>> -	 * So here we check if the page has private set to rule out such
+>> -	 * case.
+>> -	 * But we also have a long history of relying on the COW fixup,
+>> -	 * so here we only enable this check for experimental builds until
+>> -	 * we're sure it's safe.
+>> -	 */
+>> -	if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL) &&
+>> -	    unlikely(!folio_test_private(folio))) {
+>> -		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+>> -		btrfs_err_rl(fs_info,
+>> -	"root %lld ino %llu folio %llu is marked dirty without notifying the =
+fs",
+>> -			     inode->root->root_key.objectid,
+>> -			     btrfs_ino(inode), folio_pos(folio));
+>> -		ret =3D -EUCLEAN;
+>> -		goto done;
+>> -	}
+>> -
+>> -	ret =3D set_folio_extent_mapped(folio);
+>> +	ret =3D btrfs_set_folio_subpage(folio);
 >
-> I have a test system which has a strange problem where the BTRFS error c=
-ount
-> on one device (out of four) goes to 754 after a reboot.
-
-Mind to provide the full dmesg just in case?
-
-It's better to cover the initial device removal/add to be extra safe.
-
+> The removed part is from a recent patch "btrfs: reject out-of-band dirty
+> folios during writeback" to make sure we don't really need the fixup
+> worker. So with the rework to remove EXTENT_FOLIO_PRIVATE it's changing
+> the logic a again. I'm not sure we should do both in one release, merely
+> from the point of caution and making 2 changes at once.
 >
-> There are no BTRFS errors in the kernel message log after booting up.  T=
-here
-> are no log entries in /var/log/kern.log about BTRFS issues.  When I look=
- at
-> the console as it's shutting down I don't see any errors being logged, s=
-o
-> either there are no errors logged or there are 753 errors logged in the =
-final
-> split second before power off or reboot so that I don't even see them.
+> I can keep the 2 patches in misc-next and move them to for-next once the
+> 6.15 pull request is out so you don't have to track them yourself.
 >
-> This is repeatable and it's 754 every time.
+> Also question to Qu, if you think the risk is minimal we can take both
+> changes now.
 >
-> After I get the error I remove the device from the array and add it agai=
-n.
 
-How did you do the removal and add?
+BTW, it looks like this series seems to cause subpage cases to crash,
+reported from IBM guys:
 
-"btrfs device remove" then "btrfs device add"? Or just power the machine
-down and physically add/remove the device?
+https://lore.kernel.org/linux-btrfs/87h63ms7gk.fsf@gmail.com/
 
-In the later case it won't reset the internal error count inside btrfs.
+Meanwhile our current for-next no longer crashes as these two are removed.
 
->  I
-> can run it for days without problem with data being written to that devi=
-ce and
-> read from it without error.
->
-> But when I reboot it says 754 errors.  When I swapped that device with a=
-nother
-> one in a different drive bay the same device has errors and the other de=
-vice
-> doesn't.  So it's not related to the drive bay it's related to the SSD.
-
-Again, how did you do the swap?
-
->
-> The system is a Dell PowerEdge T630.
->
-> The SSD could have a fault, but if so why does it only show up on reboot=
- and
-> why 754 errors every time?
->
-The error counters are stored inside the fs, it records all the history
-errors a device hit in the past.
-
-You need to inform btrfs by either proper btrfs device removal/add, or
-make btrfs to zero the counters.
+So I'm afraid there are still some conflicts between this and subpage case=
+s.
 
 Thanks,
 Qu
+
 
