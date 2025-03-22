@@ -1,248 +1,186 @@
-Return-Path: <linux-btrfs+bounces-12501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12502-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E19D5A6CC6A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 21:41:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4CF9A6CCC1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 22:37:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42F27175B35
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 20:41:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514A917388B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Mar 2025 21:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F085E23535D;
-	Sat, 22 Mar 2025 20:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EDB1EF38A;
+	Sat, 22 Mar 2025 21:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MQRQDNRY"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="amEjkhC4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406FD175A5;
-	Sat, 22 Mar 2025 20:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A241DE2DC
+	for <linux-btrfs@vger.kernel.org>; Sat, 22 Mar 2025 21:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742676052; cv=none; b=O1lRN96t9EFAug+ATFxtj4rZUxKQieZ6rSyRCE2JzhTDpq+ZkPR2lU53J+48fxOn3IlaXq6Qp2MshDCQVXYioH07tZX4daEH6P2f/Rt8gNXF+zmTmh3SHrDFTbjllObXRWY8+v3JE3MjF3u7ZIHSRA6lpuMT0YsdMAtKx3WTvew=
+	t=1742679425; cv=none; b=OiBhQtxaIWicOnhc87ZQG5ufOkDcxOj0dpYgdmIsi3wO+ao25E//NNqHGb7autnH6I4g11hL3DNKc4DEhyHBTBYO+qMs7yp7yMgXLt95+Ikjk5obzYo5Ls4RGxDCxyHvycBgMWFcBi54x7efpeGsAYSLZIS+SKiD8As23AQqNsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742676052; c=relaxed/simple;
-	bh=UfUFWsJ5jBjhbf4MCsH0L52QhkLYbES12tT77c+TWpc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dJcxyTZ2kfQKESq5gWbU+Z+vG776jzNdI9mOUZ7mZk+Ft+h0qEVSOzpdpBYnRgxzIjRnfV8GdjGv6c89+cVa0czBbZXJOezJtuMGkmqovi3K0+QeQsM4Oj8o0qpZAUk+AbIVHQqVf0LImK5JZaOAwfAEAL9Vl5sVolsVXQCPdKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MQRQDNRY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E8A7C4CEDD;
-	Sat, 22 Mar 2025 20:40:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742676052;
-	bh=UfUFWsJ5jBjhbf4MCsH0L52QhkLYbES12tT77c+TWpc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MQRQDNRYpCuXuWrjNNgjPx8Y/B7b7hsvGKWgR81XGd6e/LIxJjUbE36uGxmaG8u4a
-	 gBogoPzMAYeHF1EgCzSSzruCoOOL3Vlj91HA46yTifxUtayBnQLzsl+YQNN3xOjnm4
-	 /Ga4Y+Ip+OUlU87q2qkwWZwZAL8OMar3DXnEwOciMMHVoFXjeQnM8AOvn7QDwEVtcA
-	 CNghflcASmA1dit44jNVZvdP4Jwk1f8uS5AmsOacHQE01PG9HOTVQcI2ejWIatrch6
-	 bWujwKLcEyJbMf3IrKeDpnjpYe7H1Oz2qAHYMWmQXhzP5HH/ghE3AicuDIustlg8yk
-	 loBFTFvEd+I0g==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ac25d2b2354so524828966b.1;
-        Sat, 22 Mar 2025 13:40:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV5UxKo/F4peSlmkAmi0wgioR26kPyEYRB9nyixyx1y9VI/xCtUUGuue7ZQ46G2j/zkB/vtQkFYRFnEYA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5I70jYR20QT1EjVmI/wK+Yl4omtWn+Zp022Ux1z1fXeLlbwHB
-	lZL44jayizFtXfSgR1axGS35F/FGIc3IaDDZvCQACxqazp0H647FXcxZwZgTw+b1ize0By+sYrD
-	g+wupbgxFBevxZkgRMGxmZMguZ88=
-X-Google-Smtp-Source: AGHT+IE9OH+yRKES+Z45S1HEQptfW5/+3DsTjDt7S3ee1kfwsY8VOVB1g2L4kWKUVRhMluaeV5BQ2+Oui7pckwYaEeI=
-X-Received: by 2002:a17:907:9482:b0:ac3:10e3:7fa5 with SMTP id
- a640c23a62f3a-ac3f20f51cbmr661144566b.21.1742676050590; Sat, 22 Mar 2025
- 13:40:50 -0700 (PDT)
+	s=arc-20240116; t=1742679425; c=relaxed/simple;
+	bh=EKIy4vZO8pX4qUg6zB83WZ6HoxHDKquPAnCzSLW5U4Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SBzizYVQJsym9kdHa3Wnvxl0qA+oAOfRO6t8221942OBCzxwTt4/VmpJYGibFFsQ/xZ2njM/TLU5/DKapXuVrlpRl/QOIib/E4tLR59q/gCqleD/P8+lUtu3fjdOgNDLc0bht5ii6uRyC21guLw8DYFvAook137drkRjVIzalDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=amEjkhC4; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1742679420; x=1743284220; i=quwenruo.btrfs@gmx.com;
+	bh=7egBh8mgRY8gbUZc/YX54UxEYMsIbiyNk3edx27XXOw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=amEjkhC443PG1B3+0b6i/E38zHtbAobFz9hQBj/nm5+EFbGnHLJok/FTi87HCNAN
+	 XChENA98lVlQjRITo10Tbwt226V7FR7kjoQevTJL1PieOCgNRPU7Ns8Mtf+K6x8D5
+	 aHuv9yESaFdd6LPpUsU7uoUA+zLizhQDlG2Gfsrp/seXi1OL1qOfjYBNtrSyfHv6A
+	 bZ1UXQQq/ka7nctQ7mVEJRZIIXBtQQMky586fkTeWsFdtVYnbEyJozIUFqoqQm+Zr
+	 0jFS0e7R5NC37m9vuQ7Nk5ceqVZXeC91i57GnflZrWrioSFGDHAfDhtO0/acGmh3B
+	 Ium7dsXStb3owCjhFA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1ps8-1tttb93kUa-00Gy6z; Sat, 22
+ Mar 2025 22:37:00 +0100
+Message-ID: <81b64f4f-59dc-4ca1-81de-2b77cf38cd3e@gmx.com>
+Date: Sun, 23 Mar 2025 08:06:56 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3476019b76d6df3ce6eb364aeb1a2725b8fb4846.1742555101.git.fdmanana@suse.com>
- <CAPjX3Fc4J=OnzrG9b8K=nbtLJjP38N_QFy6AQrxpEsv8bzvSnw@mail.gmail.com>
-In-Reply-To: <CAPjX3Fc4J=OnzrG9b8K=nbtLJjP38N_QFy6AQrxpEsv8bzvSnw@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sat, 22 Mar 2025 20:40:13 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6oCfDv8MQ5tBQovS319BF20z-7+qsXTteOC+5Hf34ZAw@mail.gmail.com>
-X-Gm-Features: AQ5f1Jq2_1yDnxywvk39w0oIV4Kgsv27YHuXeVG1NU-NVXua63y1BaREfjxkGBU
-Message-ID: <CAL3q7H6oCfDv8MQ5tBQovS319BF20z-7+qsXTteOC+5Hf34ZAw@mail.gmail.com>
-Subject: Re: [PATCH] generic: test fsync of file with no more hard links
-To: Daniel Vacek <neelx@suse.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: BTRFS error count 754 after reboot on Debian kernel 6.12.17
+To: russell@coker.com.au, linux-btrfs@vger.kernel.org
+References: <3349404.aeNJFYEL58@xev>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <3349404.aeNJFYEL58@xev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7CDpluI/eAbFl0G7R3Yxm3BaFSvRpO+ZRUTD/oTxk9odafaXKdO
+ tdig1tw0O/dgQkMe8bFd4OM02Jm7wOKHBm6aRggORiN7U4CZLMra8f5PlzzvKOHsk3ZsrzJ
+ g3cI6630Xq4SGzW/tHOFDh0orsReuYz/pf0+Yg6AEZtruz56CeKckkpafb7f1ME4nA44Jlv
+ QmpT9vnf4DLTmOfGmiBBQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:vSTKMj6Z37c=;9nGCBkenrwBQ0bat/00hf6Y8MAN
+ l85dX40xJUMP+XY9KymhCf4+efgKICX7MW1TvZ/rX2r+lW/ztDHDA25o4nzTX5oxAx7Giplok
+ Co8HMbX1gFew6XW/xWziB97gW2thgGKLPwxiJdmPD6UuSYoPjegOFtPZemzdMdLZSJBXyrfVd
+ CNgCcnPDT4QpIwe/3QH5djxyERkL44EIagbxb1NB4nfvqYCcYuPngo+rdQ6L1lOFWnnXyzEBk
+ PeD96CrBZEx/YtBZtstlWoqz5aqrljpBkPcWPpF0ooh/LXqiPhS0OhUaEdWFfiKDkkISTXf1j
+ yF3T+77H8o1wW0eKCiooU0aEk1V2LO3Yqpf45xU+pD/BftyRqDr9l92Y6h+t6+6DeIJqEID9x
+ 5Se1gkotWr/9CXTLnvthzz6r4GsHuZjSZjWQYitYruEund8UHocKpsHzqf3LS64WI5q2vEWev
+ euWC7imU4IXPoJ/NA4C9KAOxPZEcAiGzEetO3ErmDX5CLNwoN8gtSOyn8TFOx0yeOflQeKiYK
+ lnyvpv1hpADN1eMjcTQBxQ+JcXxfJlNewMElIlo/Z/Nh1wDajKACjGBYe3KZE76DxDhSdoMeP
+ UBSsuxE3Vdf4sb6Sy+484E0BNM4z1CSVhvWxYQCqyTg2ps5l+mtgu5ZcMl8gVsUb/B6dzHJ1j
+ 2D0jzeTTspIiwJLDaGBpS8BFxB8NpH/iPP1XiwMLEwdxLbXquXGwq2RHMMzPS1uqNUC6CErfG
+ rf7GrPCsLHQRdMr/yfApOfjz3ItCCIQIo7knk1/diZRklVQneoER+rof44mZ50cng0+LynOsI
+ wGB7zHlqI2q9HJJkKP+calPX/IPW8LETLmoYbNnGkR3e4mo8JfFWFALhliTZwTQfztovpu6Ts
+ c7VFz4Z8X9hcbwGcFDHS5ADW9HpEhdPsCbDysmG72IE5R/HeP+SSE6kh2MjTaha6l41Z2U1Md
+ Uj06G020aplpoFMSASpgOdkEgIHOES5s5XprV9qbaLEpIwGYgVQB+byMlWYwFGN/f/i1MF3IB
+ aqLb1fEtccirDxwooPVMBf+tiduBAzhsB2f6LqjGJJ0VxceIpYdL4qSuPxrdQ5jl8zKu3tbmw
+ 4mYouEeVM+jAB/tGhGlOvZ3XnkgbjfaBso7VQBRwhG06rM0/y3Wz/kIOxOAExcg7ebNOGWwyG
+ Lqeo+RifqgymK4NpiLfKBSsTNGcMoZW/zKOB/upPeryLc8Mfg0+59rPBcAPlULFomJJq5jeeZ
+ Kg/Sl4EiDceYKarFRA6KS1s8enbFgacq065f0gLH7dfhjrJuoddLLWod8AHRQTNzG5FQVkbxt
+ KRs2M/rM505qo0svFfw8zHqLziUZbD0u1mF9NagugVYtuOdwJO/TcbNmf5rkg0PUh4qB8MRVn
+ PEiJ2RjHOK9GcenRcXUGEuyn/MmFNPKW1atcLgRMtLg8uhluIKyo8TQOFCRm6X8lJUy8bfV6i
+ EsEbBlg==
 
-On Fri, Mar 21, 2025 at 11:22=E2=80=AFPM Daniel Vacek <neelx@suse.com> wrot=
-e:
->
-> On Fri, 21 Mar 2025 at 12:10, <fdmanana@kernel.org> wrote:
-> >
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Test that if we fsync a file that has no more hard links, power fail an=
-d
-> > then mount the filesystem, after the journal/log is replayed, the file
-> > doesn't exists anymore.
-> >
-> > This exercises a bug recently found and fixed by the following patch fo=
-r
-> > the linux kernel:
-> >
-> >    btrfs: fix fsync of files with no hard links not persisting deletion
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  tests/generic/764     | 78 +++++++++++++++++++++++++++++++++++++++++++
-> >  tests/generic/764.out |  2 ++
-> >  2 files changed, 80 insertions(+)
-> >  create mode 100755 tests/generic/764
-> >  create mode 100644 tests/generic/764.out
-> >
-> > diff --git a/tests/generic/764 b/tests/generic/764
-> > new file mode 100755
-> > index 00000000..57d21095
-> > --- /dev/null
-> > +++ b/tests/generic/764
-> > @@ -0,0 +1,78 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
-> > +#
-> > +# FS QA Test 764
-> > +#
-> > +# Test that if we fsync a file that has no more hard links, power fail=
- and then
-> > +# mount the filesystem, after the journal/log is replayed, the file do=
-esn't
-> > +# exists anymore.
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick log
-> > +
-> > +_cleanup()
-> > +{
-> > +       if [ ! -z $XFS_IO_PID ]; then
-> > +               kill $XFS_IO_PID > /dev/null 2>&1
-> > +               wait $XFS_IO_PID > /dev/null 2>&1
-> > +       fi
-> > +       _cleanup_flakey
-> > +       cd /
-> > +       rm -r -f $tmp.*
-> > +}
-> > +
-> > +. ./common/dmflakey
-> > +
-> > +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> > +       "btrfs: fix fsync of files with no hard links not persisting de=
-letion"
-> > +
-> > +_require_scratch
-> > +_require_dm_target flakey
-> > +_require_mknod
-> > +
-> > +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> > +_require_metadata_journaling $SCRATCH_DEV
-> > +_init_flakey
-> > +_mount_flakey
-> > +
-> > +touch $SCRATCH_MNT/foo
-> > +
-> > +# Commit the current transaction and persist the file.
-> > +_scratch_sync
-> > +
-> > +# A fifo to communicate with a background xfs_io process that will fsy=
-nc the
-> > +# file after we deleted its hard link while it's open by xfs_io.
-> > +mkfifo $SCRATCH_MNT/fifo
->
-> After creating the pipe you can "exec 3<>$SCRATCH_MNT/fifo" (and
-> eventually unlink) ...
 
-Yes, I'm aware of exec.
-Have used it in other tests written years ago, like btrfs/168,
-btrfs/233, and others.
+
+=E5=9C=A8 2025/3/23 00:14, Russell Coker =E5=86=99=E9=81=93:
+> [/dev/sdd1].write_io_errs    753
+> [/dev/sdd1].read_io_errs     1
+>
+> I have a test system which has a strange problem where the BTRFS error c=
+ount
+> on one device (out of four) goes to 754 after a reboot.
+
+Mind to provide the full dmesg just in case?
+
+It's better to cover the initial device removal/add to be extra safe.
 
 >
-> > +
-> > +tail -f $SCRATCH_MNT/fifo | $XFS_IO_PROG $SCRATCH_MNT/foo >>$seqres.fu=
-ll &
+> There are no BTRFS errors in the kernel message log after booting up.  T=
+here
+> are no log entries in /var/log/kern.log about BTRFS issues.  When I look=
+ at
+> the console as it's shutting down I don't see any errors being logged, s=
+o
+> either there are no errors logged or there are 753 errors logged in the =
+final
+> split second before power off or reboot so that I don't even see them.
 >
-> ... and then simply "$XFS_IO_PROG $SCRATCH_MNT/foo <&3 >>$seqres.full &"
-
-That's arguably more cryptic and not so easy to read.
-
-The approach I chose was exactly due to being a lot simpler to read
-and less cryptic.
-
-The goal is to make the test as easy to read as possible, and not to
-show off technical skills with bash.
-
+> This is repeatable and it's 754 every time.
 >
-> > +XFS_IO_PID=3D$!
-> > +
-> > +# Give some time for the xfs_io process to open a file descriptor for =
-the file.
-> > +sleep 1
-> > +
-> > +# Now while the file is open by the xfs_io process, delete its only ha=
-rd link.
-> > +rm -f $SCRATCH_MNT/foo
-> > +
-> > +# Now that it has no more hard links, make the xfs_io process fsync it=
-.
-> > +echo "fsync" > $SCRATCH_MNT/fifo
+> After I get the error I remove the device from the array and add it agai=
+n.
+
+How did you do the removal and add?
+
+"btrfs device remove" then "btrfs device add"? Or just power the machine
+down and physically add/remove the device?
+
+In the later case it won't reset the internal error count inside btrfs.
+
+>  I
+> can run it for days without problem with data being written to that devi=
+ce and
+> read from it without error.
 >
-> No need for the quotes. But won't hurt either if that's more readable for=
- you.
+> But when I reboot it says 754 errors.  When I swapped that device with a=
+nother
+> one in a different drive bay the same device has errors and the other de=
+vice
+> doesn't.  So it's not related to the drive bay it's related to the SSD.
 
-Yes, I'm aware they're not needed. I like to use them however, for the
-syntax highlighting I get with my editor.
-
->
-> Moreover with the above you can also "echo fsync >&3".
-
-Yes.
-Again, I prefer the much more straightforward to read approach of
-explicitly redirecting to the fifo.
-
-Thanks.
+Again, how did you do the swap?
 
 >
-> > +
-> > +# Terminate the xfs_io process so that we can unmount.
-> > +echo "quit" > $SCRATCH_MNT/fifo
+> The system is a Dell PowerEdge T630.
 >
-> ...
+> The SSD could have a fault, but if so why does it only show up on reboot=
+ and
+> why 754 errors every time?
 >
-> > +wait $XFS_IO_PID
-> > +unset XFS_IO_PID
-> > +
-> > +# Simulate a power failure and then mount again the filesystem to repl=
-ay the
-> > +# journal/log.
-> > +_flakey_drop_and_remount
-> > +
-> > +# We don't expect the file to exist anymore, since it was fsynced when=
- it had no
-> > +# more hard links.
-> > +[ -f $SCRATCH_MNT/foo ] && echo "file foo still exists"
-> > +
-> > +_unmount_flakey
-> > +
-> > +# success, all done
-> > +echo "Silence is golden"
-> > +status=3D0
-> > +exit
-> > diff --git a/tests/generic/764.out b/tests/generic/764.out
-> > new file mode 100644
-> > index 00000000..bb58e5b8
-> > --- /dev/null
-> > +++ b/tests/generic/764.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 764
-> > +Silence is golden
-> > --
-> > 2.45.2
-> >
-> >
+The error counters are stored inside the fs, it records all the history
+errors a device hit in the past.
+
+You need to inform btrfs by either proper btrfs device removal/add, or
+make btrfs to zero the counters.
+
+Thanks,
+Qu
 
