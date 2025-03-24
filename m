@@ -1,230 +1,259 @@
-Return-Path: <linux-btrfs+bounces-12510-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12511-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F867A6D528
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 08:35:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA251A6D55D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 08:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1227A165900
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 07:35:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41BA9167F63
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 07:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39F22512E6;
-	Mon, 24 Mar 2025 07:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA6B18DB34;
+	Mon, 24 Mar 2025 07:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ie5HGhp4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E48250BF0;
-	Mon, 24 Mar 2025 07:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742801709; cv=none; b=KsnXPO5iatWhSrtHbcfVFzmrLFvFGxNXH8TEEmAHyFAhil2cofpkleftxlHeRgrkfOTsEY4weOBzecFtq3m+OvyjIc7NciycjQqU+OGEVr4kLOtHP07Jhn1GrsoJvxS35Q/XzZ5HTPw/bdrrFKzCR9vdxICe07kmCSXGnUAOEUg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742801709; c=relaxed/simple;
-	bh=kNdkIG9UPAH3v2U1o048RTeCISVVguBVoM06LHnz1Ds=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g5kpUmyvsyykNfuC2UQHzLFnbdRvqfGzwL7rNKL0lWNo2yf70LJVBok8JenV6175KyCcTkmNxMluYMdVvUjiszF+TEyj9z6iRF9uSUjHryse+PlFLs50H99UxBPSQW+6awq6ovDIKX5F7TNGgaqO7dM3SzFPrw1N3k8WsfiVTt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52O60OUf018528;
-	Mon, 24 Mar 2025 00:34:59 -0700
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45hrg41mrd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Mon, 24 Mar 2025 00:34:58 -0700 (PDT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.43; Mon, 24 Mar 2025 00:34:57 -0700
-Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.43 via Frontend Transport; Mon, 24 Mar 2025 00:34:55 -0700
-From: <jianqi.ren.cn@windriver.com>
-To: <stable@vger.kernel.org>
-CC: <patches@lists.linux.dev>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <jianqi.ren.cn@windriver.com>,
-        <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
-        <linux-btrfs@vger.kernel.org>, <llfamsec@gmail.com>, <wqu@suse.com>
-Subject: [PATCH 6.6.y] btrfs: make sure that WRITTEN is set on all metadata blocks
-Date: Mon, 24 Mar 2025 15:34:54 +0800
-Message-ID: <20250324073454.3796450-1-jianqi.ren.cn@windriver.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3016725C6FB
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Mar 2025 07:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742802351; cv=fail; b=MK3jxMo+ncLYz2CSwlGfnDFhEje8nFFAnscXXEPMNi2O6E20qEVGJnakfyj4fYQ0ZWbDK9FqXewmElA0BfiF1JGT6aEFn+R55IHC6HOv0Q9zR8EVcI6bKHBWJVaXOyWMfLaeB4J2eHlmV5HfXO+UwdwLYn8jUqtjAML/NDVo1iY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742802351; c=relaxed/simple;
+	bh=mvNJYTQ7aHiNFHg2RcRz3eifjlvxkmPt3Q8NEQnF1Ao=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=JeEAyFXpvrfbIyX+2OXZ2C91D6Wmc+jXZGHIKfcszB4/YZ2DYPssZjkiNyUWMPor1FvAxcRUjNF4WMx/i2ppkOBMQM492FKHuneeujvsAiDx86CAWI8/nNtcbp554tC6g8+KryaDJMbQ1tBO7wi/VK0L16FUUZCdwhyN/F8NZes=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ie5HGhp4; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1742802350; x=1774338350;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=mvNJYTQ7aHiNFHg2RcRz3eifjlvxkmPt3Q8NEQnF1Ao=;
+  b=Ie5HGhp4nTTWz7sGrsC++LjJW/9BxIBLipkmkTCcdbOk6X3KpbNRkeAM
+   +xooPYXfnNZfQPWIBjvcR6sXr9DBOqc15q6IaxGsAfCEup+qKkH7gXVtB
+   3r9Nzq8ER5JbqTsYhqwjMiufGUFTAuAzl1QFjTT6I4N+vYbD/T04BxvZa
+   naK9a0y6E9h5uInErLIu/fYuzBEjZ+fSLu0TBj6P3WYNMH7JMv4znMHdy
+   YSdn4/T8CY6n+COaR8UpELp9hfvklkhgBSU8Eu3taDgJC3odw8tAM+ym3
+   qV2yXb6LMue+aHDbRdraZlEgcH1fMqbgxgKjP+mCi95ye9Noi6gUbvWHQ
+   w==;
+X-CSE-ConnectionGUID: vVzp7eUwS9i01Uw8TBFmlg==
+X-CSE-MsgGUID: 58nC6zFSQASxkV8+twCdAQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11382"; a="47646914"
+X-IronPort-AV: E=Sophos;i="6.14,271,1736841600"; 
+   d="scan'208";a="47646914"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2025 00:45:49 -0700
+X-CSE-ConnectionGUID: eWZDoIE5T2Sh+/o3oEMbBw==
+X-CSE-MsgGUID: Cd2dPZneTRSqaR1tahNW6A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,271,1736841600"; 
+   d="scan'208";a="129074006"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2025 00:45:48 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Mon, 24 Mar 2025 00:45:47 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Mon, 24 Mar 2025 00:45:47 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.45) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Mon, 24 Mar 2025 00:45:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IzyGSCLPE2Tm89iiBkOchdxlg67jxozqgYvmiLPttXd7r4FjWmJ9CZgxrQX3Cc2Zw7TeWqnLM/hHr6JnkGVO9kOE9hexSNpKk5l8mncsgIcUDpQ/HPxrL//8RledK9TiR/EQ3Vf/yTxh1pUtAgxaeoxmsEKR6pEI8JuhZ3evtwr1W3qNoaJvcp6kUvGbgmKHlNyQlJpMZowue9+zUf8GI7rUeu/aq8AAeDwariwtNTgbiVFTnn83TtaD1yy5DTkvMDO0qGA1/HlRPpExqgKtN9364OZjZTX7F3BXxwSD3eYU2GHGYCf8wC2o8mJiOoGTo/Oy/1ASSLGN1pGttfKmrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=896EwZk6HrJxQ3PRl7J9NFgLJYxuVc7I7tf5MvmT7VI=;
+ b=P+5iuDtVqYwEFy8KgPhMd1Jw95fvawl+wIBUyc10A9nEdiSG70Yhc3TPEkjBjmsZ8XFPnnSvzw3a5BEekrFWe+o8ZyNoSwMCXZLgQ3fYv2CYkuKPG8CaemKrKds1Ijre1qks9mSezByvMyi2m8aLxfuKS952x+2WJtefKtQoMvgpGZpdhV7OuZBtCLzujTWxJQogol8g4fZsSQGhz/19hjWZaoJMNHIMCktYIa8picxe+5vj0/tOvGgQzlQcK6aLMwchGQ4317CQx16DLGA/HOm1i1Zira6zPvSKkP+NiRBHKZ8DrptcAtPHjdnSr7AvRxPAtrK+WhPJ/Jq/OwYTWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by DM6PR11MB4738.namprd11.prod.outlook.com (2603:10b6:5:2a3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.42; Mon, 24 Mar
+ 2025 07:45:40 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%4]) with mapi id 15.20.8534.040; Mon, 24 Mar 2025
+ 07:45:40 +0000
+Date: Mon, 24 Mar 2025 15:45:31 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Qu Wenruo <wqu@suse.com>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, David Sterba
+	<dsterba@suse.com>, Christoph Hellwig <hch@infradead.org>, Filipe Manana
+	<fdmanana@suse.com>, <linux-btrfs@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: [linux-next:master] [btrfs]  968f19c5b1: xfstests.btrfs.226.fail
+Message-ID: <202503241538.dbc17bf9-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SI2PR01CA0040.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::14) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=HZwUTjE8 c=1 sm=1 tr=0 ts=67e10b22 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=gEA-OUY-moF3Uf1y:21 a=Vs1iUdzkB0EA:10 a=maIFttP_AAAA:8 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
- a=t7CeM3EgAAAA:8 a=xqbIuppjPMaPyYIW3jgA:9 a=qR24C9TJY6iBuJVj_x8Y:22 a=WzC6qhA0u3u7Ye7llzcV:22 a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-GUID: XKmDfec6X6tV-aNjrxe3Hfm0-dMsJgX6
-X-Proofpoint-ORIG-GUID: XKmDfec6X6tV-aNjrxe3Hfm0-dMsJgX6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-24_03,2025-03-21_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0 adultscore=0
- clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
- definitions=main-2503240054
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DM6PR11MB4738:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8e73aa8c-9271-4bfc-9950-08dd6aa7df97
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Yyf1waTLwHYf6IbXbofQ44nmVaydi/fKEIjW0dKV+21L2UwKsalScDl0HqCu?=
+ =?us-ascii?Q?HLBBDB7bdx4ghdjFzH1ahgaPIWS+aDgomQDswIwleQCHMgVkP6VT0OhznrRZ?=
+ =?us-ascii?Q?eK/xm/7MZ+DAmmkqZ0HM+Zx2dp7JgHW3hFBAqUGr6v/ED27jCRiYbwqRcozU?=
+ =?us-ascii?Q?nGkSewZtkRkymC2ZLdiWj67qwyvzy/6fAXxsXEYwmHG2TM4QASrvK4N8RKAL?=
+ =?us-ascii?Q?8Y4qNPpdKIArJUmC+9S2I8eM2G2q8w5aGZbctJDnuypo2fzt4P8MfzoNzuUq?=
+ =?us-ascii?Q?59GxJBZMKVvfOlhbAJ93V6o3ZmgmyNTIgXEaZJIQciB0KeWljyPbuO3ConoH?=
+ =?us-ascii?Q?4oCdhwjqgMGXBG1V0lFltfV0DrYp71wGOtK/yE97H5AtFdhp8kjeijnd6o/f?=
+ =?us-ascii?Q?D+gPn2FV9CMxnYMe5GBTRDT53XPEJibWXXwUKsIZyWGhLPF8iEOKkOHdj7uB?=
+ =?us-ascii?Q?wF4nITz5QTiQD54HZMzgL522lOAhTfRL6h7v2KPost3lEyBZiaMZFwXE9Yqu?=
+ =?us-ascii?Q?J4gtzbp0xlF7/lYAoh8CmrL9S0Ek9hTYchWXeW9D2IZnHua10m2UAc7azSlS?=
+ =?us-ascii?Q?w1oEaIj9oMNVztH7jpbWOmJEXwOJbdsOzC4IcuSUpZz0ByVP7PPzMlhlrhak?=
+ =?us-ascii?Q?ryIwZejONRexBcAqlXVL/1Gspx+BXfRQggDnQBLesJnuK0SZQlhhR7CZ1kRe?=
+ =?us-ascii?Q?Oyy/g1ZD/moA/vtUnovtbx/oBIh2I0Vv04muQK8ybKCViFc1BLOa8XQTsbyQ?=
+ =?us-ascii?Q?egveQr/qTpMtVooK+iboBSG7E9wtThjHuIvk1T7SBUk6WXoQHVOSVMcJy/Iq?=
+ =?us-ascii?Q?05J3Qm67RKJpdqtrEQGlXnNJ8ad5F1DU/bUjJJGPHrf7D6NIZpTCcSKcPJl4?=
+ =?us-ascii?Q?BaDJ8i3LowjZ34FdysyfBFec3qo9fn5skvilf4y1yVsuAm9P8JUQ8Z56uY7t?=
+ =?us-ascii?Q?CthbMROpScc/tePKzrhtZNAyHlmHkcPwJSbl9fX8BaVU5M31vQ1XqL2a2h2E?=
+ =?us-ascii?Q?1AyHrVGsH+MU6//7H97H5jAePT1oxqgJHKN9WQp7XyXgNggaBRuRa4CEXYCV?=
+ =?us-ascii?Q?cFU9nhX5Zx2ey4M/gkZk3UWpHgjoBW3Qs3U6U/Egnpyu1AON8LlejfL9d7mY?=
+ =?us-ascii?Q?ZEZeMOVT4x+d5mm/leVjQe1K/2fAEhh932PhQhWZV0e65bxDgdMCHK/j8+nl?=
+ =?us-ascii?Q?uGyeORjUq4TdG1D3HYhfm7v10T+hMx3vHOpq6mMA2TKAVH/7C5XgtiSY5CE2?=
+ =?us-ascii?Q?kTbQgrkNHjvT0E3DpWq6H9PaX10IhF9e88zqxhTfUnhGkJvUSNTxFkHj2kYh?=
+ =?us-ascii?Q?WXwbQsn7595H7dAy1GgjPkU6uGYKq4ag7yKqRzIxcOQGRA=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZBl/eaiP6t/Ip+N7LRIjT55mej1eHpZn6ajecj7FmAABSNm6eo+bMNri7TzP?=
+ =?us-ascii?Q?nMy+B2j2JhHFIdCKEVehysL+V4EOcCWnyw/JtKw+VyV8JLsZauxIWggQCRZP?=
+ =?us-ascii?Q?LtX3H/Ka1V5MsXcYE6qTxgMWJHVTUDGdqrFhhTT6EMF4eZikiPryXCWSnPJj?=
+ =?us-ascii?Q?t34QkYBFapnCU3GbZtCH89JMtqIkJrCZ+nLOOWzMwapcjgRy3gNRl3+fN4d0?=
+ =?us-ascii?Q?nHkx6JV8DF/oIKbfwwnLptKORZLduhQ8EZka4UNHnLi6FxyIkTNVBwiKIVSo?=
+ =?us-ascii?Q?2SQoLxqpch70UZmuIaqNQcmCr5hm/p1Ut/W01U+HtHb+pKi8pGs10j2xKCoQ?=
+ =?us-ascii?Q?ogMOhc2iTmSfirq9I3CuY7x1vVcecjJsJRkus0loPnhAuph8sS3ZYsTmmLMO?=
+ =?us-ascii?Q?U1unB8JdGHssHauutxDUEO9bTyjz/z1P92ZGI+/hCmWxN/zbUdV6abUs9UEF?=
+ =?us-ascii?Q?Kegk6pL2aSHg7FIOtDUhxvydvWuucoh0YJUgn1nqr17Tkq3EM6y/wWvbvSKw?=
+ =?us-ascii?Q?EzRI6F16zSQXgShtroiBpIMuLfximxVn3t+xONXeVKsyB9kSWpZrya33I/De?=
+ =?us-ascii?Q?zEL+uzlwA6K61/qLbxOxr85xirdHmm4OCnml6yBOUxSCqc95gR3hZs/1e2uR?=
+ =?us-ascii?Q?Laot6pLObwMRyzRCmeUCwcXpKVXHdjNKlUx3dxq3n8zpPVcI6eDT/PFZIXZO?=
+ =?us-ascii?Q?fD3+KbXhiwlTcBLjK/j9hk+ZcQwpvrHahKwb/9M0kGmC1V5pvvC7wjyblrqu?=
+ =?us-ascii?Q?qzzTjsLG1srrZzWJVOo/d0doH5Mq+BcdX507kR3CcV1rw/koERfMiP7TENRM?=
+ =?us-ascii?Q?kiOT1OK8BL2Xc4/E2BX3LCHsrMrUfIZml12JXQMWtljoBap2nL6yiTFNJlhC?=
+ =?us-ascii?Q?Qu9r37rx0h60k625E7vlZ+NOwjklRMf/Um+jjrdcUJzZ1sLlv5mU7sm8G3fh?=
+ =?us-ascii?Q?2dAmnmeCeWPwjNFDFNvqwqWLbfDeA/EeMAmYqwsn3dsElxZdIHUh1STYOf6Y?=
+ =?us-ascii?Q?8oDrPQXz4HHqRSQYxK2BlRn3cxHxPDWixQl7zVrG/5BhfrI8onn79k288WbQ?=
+ =?us-ascii?Q?6M/+vUojsvWAn3caMW+y9UVZI32XYNIeSf3MDXDWTp+RlwoMqwcXAURBsjfT?=
+ =?us-ascii?Q?S6q9zvxnt0sJkHEf6ccQXKI2TC3biQQX6H+rOG00BqHhk+VGaAuRpzOYJ7BK?=
+ =?us-ascii?Q?+yQm4Xn3NE/v+R7IfKqSaX82J+n3o0ZJ7v0uCUAs+Tz/9yyEHvfNAfBT5XMe?=
+ =?us-ascii?Q?TmjcLv9andbJUoO6eIbTbpXVhEIAj11nXQPm1KbEoy+zZKFH/MAPADAVm3Ic?=
+ =?us-ascii?Q?599THUc/BTb4ftHl+x4tXTHzGsIee3pbOBrsEJQltp88xNswRlMiofvDivum?=
+ =?us-ascii?Q?xjln2MQvg+wlRPIec7sigOcYLPEtEQGY6n36025EOW7K802DlFzNZDcxx0IG?=
+ =?us-ascii?Q?mRS1GI/TFGZOWdpwdb273kbHMDPlvdckC2uDHPCAvA1QP923WiA7M6IwXTbu?=
+ =?us-ascii?Q?LG01njZHv1tk3ys4xEezvg/xh0y8ZcY+POTeCRSMVNCxjv+8bJo6lAKFWa6Z?=
+ =?us-ascii?Q?6CY7iIvV+ud6wzPD3W/tZqi9vqdk7mXok6h7EAw0HuVo6Jgrz+vxGnkk0cvv?=
+ =?us-ascii?Q?MQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e73aa8c-9271-4bfc-9950-08dd6aa7df97
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2025 07:45:40.0842
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LuRpeiyipiJ4Ysl7bb/x9iIlbz61i8VZgcpwSHL+p6m5iEnjtzpnm7mCUlRH2JdNeR/FQbT9q5wlblbUY2RyRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4738
+X-OriginatorOrg: intel.com
 
-From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit e03418abde871314e1a3a550f4c8afb7b89cb273 ]
 
-We previously would call btrfs_check_leaf() if we had the check
-integrity code enabled, which meant that we could only run the extended
-leaf checks if we had WRITTEN set on the header flags.
+Hello,
 
-This leaves a gap in our checking, because we could end up with
-corruption on disk where WRITTEN isn't set on the leaf, and then the
-extended leaf checks don't get run which we rely on to validate all of
-the item pointers to make sure we don't access memory outside of the
-extent buffer.
+kernel test robot noticed "xfstests.btrfs.226.fail" on:
 
-However, since 732fab95abe2 ("btrfs: check-integrity: remove
-CONFIG_BTRFS_FS_CHECK_INTEGRITY option") we no longer call
-btrfs_check_leaf() from btrfs_mark_buffer_dirty(), which means we only
-ever call it on blocks that are being written out, and thus have WRITTEN
-set, or that are being read in, which should have WRITTEN set.
+commit: 968f19c5b1b7d5595423b0ac0020cc18dfed8cb5 ("btrfs: always fallback to buffered write if the inode requires checksum")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 
-Add checks to make sure we have WRITTEN set appropriately, and then make
-sure __btrfs_check_leaf() always does the item checking.  This will
-protect us from file systems that have been corrupted and no longer have
-WRITTEN set on some of the blocks.
+[test failed on linux-next/master 9388ec571cb1adba59d1cded2300eeb11827679c]
 
-This was hit on a crafted image tweaking the WRITTEN bit and reported by
-KASAN as out-of-bound access in the eb accessors. The example is a dir
-item at the end of an eb.
+in testcase: xfstests
+version: xfstests-x86_64-8467552f-1_20241215
+with following parameters:
 
-  [2.042] BTRFS warning (device loop1): bad eb member start: ptr 0x3fff start 30572544 member offset 16410 size 2
-  [2.040] general protection fault, probably for non-canonical address 0xe0009d1000000003: 0000 [#1] PREEMPT SMP KASAN NOPTI
-  [2.537] KASAN: maybe wild-memory-access in range [0x0005088000000018-0x000508800000001f]
-  [2.729] CPU: 0 PID: 2587 Comm: mount Not tainted 6.8.2 #1
-  [2.729] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-  [2.621] RIP: 0010:btrfs_get_16+0x34b/0x6d0
-  [2.621] RSP: 0018:ffff88810871fab8 EFLAGS: 00000206
-  [2.621] RAX: 0000a11000000003 RBX: ffff888104ff8720 RCX: ffff88811b2288c0
-  [2.621] RDX: dffffc0000000000 RSI: ffffffff81dd8aca RDI: ffff88810871f748
-  [2.621] RBP: 000000000000401a R08: 0000000000000001 R09: ffffed10210e3ee9
-  [2.621] R10: ffff88810871f74f R11: 205d323430333737 R12: 000000000000001a
-  [2.621] R13: 000508800000001a R14: 1ffff110210e3f5d R15: ffffffff850011e8
-  [2.621] FS:  00007f56ea275840(0000) GS:ffff88811b200000(0000) knlGS:0000000000000000
-  [2.621] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [2.621] CR2: 00007febd13b75c0 CR3: 000000010bb50000 CR4: 00000000000006f0
-  [2.621] Call Trace:
-  [2.621]  <TASK>
-  [2.621]  ? show_regs+0x74/0x80
-  [2.621]  ? die_addr+0x46/0xc0
-  [2.621]  ? exc_general_protection+0x161/0x2a0
-  [2.621]  ? asm_exc_general_protection+0x26/0x30
-  [2.621]  ? btrfs_get_16+0x33a/0x6d0
-  [2.621]  ? btrfs_get_16+0x34b/0x6d0
-  [2.621]  ? btrfs_get_16+0x33a/0x6d0
-  [2.621]  ? __pfx_btrfs_get_16+0x10/0x10
-  [2.621]  ? __pfx_mutex_unlock+0x10/0x10
-  [2.621]  btrfs_match_dir_item_name+0x101/0x1a0
-  [2.621]  btrfs_lookup_dir_item+0x1f3/0x280
-  [2.621]  ? __pfx_btrfs_lookup_dir_item+0x10/0x10
-  [2.621]  btrfs_get_tree+0xd25/0x1910
+	disk: 6HDD
+	fs: btrfs
+	test: btrfs-226
 
-Reported-by: lei lu <llfamsec@gmail.com>
-CC: stable@vger.kernel.org # 6.7+
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ copy more details from report ]
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
-Signed-off-by: He Zhe <zhe.he@windriver.com>
----
-Verified the build test
----
- fs/btrfs/tree-checker.c | 30 +++++++++++++++---------------
- fs/btrfs/tree-checker.h |  1 +
- 2 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 53c74010140e..6d16506bbdc0 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1889,6 +1889,11 @@ enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
- 		return BTRFS_TREE_BLOCK_INVALID_LEVEL;
- 	}
- 
-+	if (unlikely(!btrfs_header_flag(leaf, BTRFS_HEADER_FLAG_WRITTEN))) {
-+		generic_err(leaf, 0, "invalid flag for leaf, WRITTEN not set");
-+		return BTRFS_TREE_BLOCK_WRITTEN_NOT_SET;
-+	}
-+
- 	/*
- 	 * Extent buffers from a relocation tree have a owner field that
- 	 * corresponds to the subvolume tree they are based on. So just from an
-@@ -1950,6 +1955,7 @@ enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
- 	for (slot = 0; slot < nritems; slot++) {
- 		u32 item_end_expected;
- 		u64 item_data_end;
-+		enum btrfs_tree_block_status ret;
- 
- 		btrfs_item_key_to_cpu(leaf, &key, slot);
- 
-@@ -2005,21 +2011,10 @@ enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
- 			return BTRFS_TREE_BLOCK_INVALID_OFFSETS;
- 		}
- 
--		/*
--		 * We only want to do this if WRITTEN is set, otherwise the leaf
--		 * may be in some intermediate state and won't appear valid.
--		 */
--		if (btrfs_header_flag(leaf, BTRFS_HEADER_FLAG_WRITTEN)) {
--			enum btrfs_tree_block_status ret;
--
--			/*
--			 * Check if the item size and content meet other
--			 * criteria
--			 */
--			ret = check_leaf_item(leaf, &key, slot, &prev_key);
--			if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
--				return ret;
--		}
-+		/* Check if the item size and content meet other criteria. */
-+		ret = check_leaf_item(leaf, &key, slot, &prev_key);
-+		if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
-+			return ret;
- 
- 		prev_key.objectid = key.objectid;
- 		prev_key.type = key.type;
-@@ -2049,6 +2044,11 @@ enum btrfs_tree_block_status __btrfs_check_node(struct extent_buffer *node)
- 	int level = btrfs_header_level(node);
- 	u64 bytenr;
- 
-+	if (unlikely(!btrfs_header_flag(node, BTRFS_HEADER_FLAG_WRITTEN))) {
-+		generic_err(node, 0, "invalid flag for node, WRITTEN not set");
-+		return BTRFS_TREE_BLOCK_WRITTEN_NOT_SET;
-+	}
-+
- 	if (unlikely(level <= 0 || level >= BTRFS_MAX_LEVEL)) {
- 		generic_err(node, 0,
- 			"invalid level for node, have %d expect [1, %d]",
-diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
-index 3c2a02a72f64..43f2ceb78f34 100644
---- a/fs/btrfs/tree-checker.h
-+++ b/fs/btrfs/tree-checker.h
-@@ -51,6 +51,7 @@ enum btrfs_tree_block_status {
- 	BTRFS_TREE_BLOCK_INVALID_BLOCKPTR,
- 	BTRFS_TREE_BLOCK_INVALID_ITEM,
- 	BTRFS_TREE_BLOCK_INVALID_OWNER,
-+	BTRFS_TREE_BLOCK_WRITTEN_NOT_SET,
- };
- 
- /*
+
+config: x86_64-rhel-9.4-func
+compiler: gcc-12
+test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz (Haswell) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202503241538.dbc17bf9-lkp@intel.com
+
+2025-03-22 11:44:50 export TEST_DIR=/fs/sdb1
+2025-03-22 11:44:50 export TEST_DEV=/dev/sdb1
+2025-03-22 11:44:50 export FSTYP=btrfs
+2025-03-22 11:44:50 export SCRATCH_MNT=/fs/scratch
+2025-03-22 11:44:50 mkdir /fs/scratch -p
+2025-03-22 11:44:50 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
+2025-03-22 11:44:50 echo btrfs/226
+2025-03-22 11:44:50 ./check btrfs/226
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 lkp-hsw-d01 6.14.0-rc7-00005-g968f19c5b1b7 #1 SMP PREEMPT_DYNAMIC Sat Mar 22 19:24:48 CST 2025
+MKFS_OPTIONS  -- /dev/sdb2
+MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
+
+btrfs/226       - output mismatch (see /lkp/benchmarks/xfstests/results//btrfs/226.out.bad)
+    --- tests/btrfs/226.out	2024-12-15 06:14:52.000000000 +0000
+    +++ /lkp/benchmarks/xfstests/results//btrfs/226.out.bad	2025-03-22 11:44:56.303230706 +0000
+    @@ -39,14 +39,11 @@
+     Testing write against prealloc extent at eof
+     wrote 65536/65536 bytes at offset 0
+     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    -wrote 65536/65536 bytes at offset 65536
+    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    +pwrite: Resource temporarily unavailable
+     File after write:
+    ...
+    (Run 'diff -u /lkp/benchmarks/xfstests/tests/btrfs/226.out /lkp/benchmarks/xfstests/results//btrfs/226.out.bad'  to see the entire diff)
+Ran: btrfs/226
+Failures: btrfs/226
+Failed 1 of 1 tests
+
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20250324/202503241538.dbc17bf9-lkp@intel.com
+
+
+
 -- 
-2.25.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
