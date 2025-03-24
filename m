@@ -1,315 +1,230 @@
-Return-Path: <linux-btrfs+bounces-12509-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12510-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B68AA6D457
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 07:33:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F867A6D528
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 08:35:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138BF7A5DC6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 06:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1227A165900
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 07:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA0719F12D;
-	Mon, 24 Mar 2025 06:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="M9K118b9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39F22512E6;
+	Mon, 24 Mar 2025 07:35:09 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F59119F111
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Mar 2025 06:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E48250BF0;
+	Mon, 24 Mar 2025 07:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742797930; cv=none; b=QWbzZuvfcZnvFLgrXsmBUlI0cAbsvBSwms/rhWm+x/UrE0IDpKvSlk3WlvJPZToQL7sc0bkcT0i9IRIXnHV33BjA7TbyjmXAKMPOJRjeUdXKmDVxtdcwd+tNS3i5zWstx//JVUR9VPQF0UYGLdM/MUsY6dLWVM6p6qlAAWCHNTQ=
+	t=1742801709; cv=none; b=KsnXPO5iatWhSrtHbcfVFzmrLFvFGxNXH8TEEmAHyFAhil2cofpkleftxlHeRgrkfOTsEY4weOBzecFtq3m+OvyjIc7NciycjQqU+OGEVr4kLOtHP07Jhn1GrsoJvxS35Q/XzZ5HTPw/bdrrFKzCR9vdxICe07kmCSXGnUAOEUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742797930; c=relaxed/simple;
-	bh=EHBEoDzF00/31D95eVsKYWLxl0H0+xQvwwiBIaEkRBM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=ZKMOOMSLqNF6isGwxaGuc9DbnE/dfC2OS+xWuiF1kCFEEXm2+O0nvjVFmmzkDbXEsswTrNu4pIps5jAjr0eBzWWE6ooiEWNgsk/2fw+dAlWOsoHNDE9eXqcZabY/RHqkSPwGlN5FH32JyWQvWd7OQcPPLvyNz1UmDMf6rV8bl74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=M9K118b9; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39129fc51f8so3169345f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Mar 2025 23:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1742797926; x=1743402726; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pqie7HCAD51+pQa38Vs9kqa6hR7XJMjbClr4B+0EadI=;
-        b=M9K118b9CfPlt/MdpM3plXFAhfoyauU2RRtfXp1Us7hnSibUx4ejarbgbiwKYVVRdi
-         UZ1lCXrPw2I9BI+roPQPWQQGtC+4bIljwPBr7YQAPxOIwoG2WymUwTwZSQ5sfPhZC+5b
-         bEZp8Tg+Q2UDbe2h0uRTuR8AbLmA0YwMR+BjabF5xoC1/s59D9hdbDmKGZGkowqhi11m
-         q3lc2GMuyqqKPwXwEcycHaqEHdI8+0fJFAg9mEGyR3dvvo9qzknpcjLKrVNYVD/D8Joo
-         kwHHf7yrNBul7gWhL+Twrz/C6ApJPp7X6/kMz/0/nC0DbP3rwvnI6Cl9SqR8bmzNbNdu
-         BA8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742797926; x=1743402726;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pqie7HCAD51+pQa38Vs9kqa6hR7XJMjbClr4B+0EadI=;
-        b=CK0mEYrdnaVgnCVHMRp6T5dOrhZRE1USmBOupL6hXVBnwIm4++E2UevFWUj9Svqg31
-         Z9t7wdOntBu495tpCuAx7OonULc4D5tHmfWbtgWz6n/wIaKfmATl2F9qJbB85UOwbH9/
-         Zm6BZaVSECGESPgJ0f0tIUpeKO8ZYbz5znd6v593A+2MtTOw1QxtEuuSZ+6rrrUhUNOA
-         fMOrqgP80LuosYK3JzM8Ph6fORpARqGumMcRUsCMZrWMafYvIrl2EXsWVCjoItdnRJCU
-         ing2UZuybZV3JS2Cco7x2D4ZNeCYrpTAfWcBt9jyg1OfjXaSE3twaCx0cbj1AH4J7uYm
-         6Vfw==
-X-Gm-Message-State: AOJu0YyGBp+HBwjP1VQ4lOpBD+R6XNANw1CYWGlE7p36MqMmQXkg9cbM
-	q0CWTKdlyQ7hZGcLjdMJ7KFqvFCDnCpcbWXItFnx470tKfyc8wKKAop+6r2wg4R6gESibOKDTXP
-	N
-X-Gm-Gg: ASbGncsrKyfvzgksE9mA1PIMX40x/pZt2KCW2iRgslu6xzO3ytz9Ycea0/zT7VNz62O
-	MVIOpNbuwe6qVPVzxEpqnCgB4jlGs7V0Jx5/laC0HEtHhzkWV4XQpYrBEVLHcnM/IoK9HuRmnY+
-	wU6e5E/ic1uUwYUeUgPXLM5+fdf2MdeJgw5Z8ywFl66yk/CtmWaJRZql6E8LdO0IaZbb2XqKHfR
-	IjQ7G9X+JgiIpD8rMA+lwJJWenFkOimUtJeFwMNiJrM8TgraEH1Togl+rjfnbEXtOKW4BKSktF8
-	zoCeZgkOibYSk0HwfPM4922JbWZFSy35iH39dh++RnDB5rkGe5WdCtlpANDRNtSdYqMF/Qn2
-X-Google-Smtp-Source: AGHT+IHyiiPytH5iTwVwcglxiKcBk3A6ZVzuv2HFM1L+MmdT8PX7LxA+n7O5MLFRLFfqrQ2lpzns5A==
-X-Received: by 2002:a05:6000:4027:b0:391:241d:a13e with SMTP id ffacd0b85a97d-3997f9405famr10493572f8f.48.1742797925585;
-        Sun, 23 Mar 2025 23:32:05 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73907b36bfasm6835591b3a.2.2025.03.23.23.32.04
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Mar 2025 23:32:05 -0700 (PDT)
-Message-ID: <c821b371-de96-4174-83f4-0d3e75e518f3@suse.com>
-Date: Mon, 24 Mar 2025 17:02:01 +1030
+	s=arc-20240116; t=1742801709; c=relaxed/simple;
+	bh=kNdkIG9UPAH3v2U1o048RTeCISVVguBVoM06LHnz1Ds=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g5kpUmyvsyykNfuC2UQHzLFnbdRvqfGzwL7rNKL0lWNo2yf70LJVBok8JenV6175KyCcTkmNxMluYMdVvUjiszF+TEyj9z6iRF9uSUjHryse+PlFLs50H99UxBPSQW+6awq6ovDIKX5F7TNGgaqO7dM3SzFPrw1N3k8WsfiVTt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52O60OUf018528;
+	Mon, 24 Mar 2025 00:34:59 -0700
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45hrg41mrd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 24 Mar 2025 00:34:58 -0700 (PDT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.43; Mon, 24 Mar 2025 00:34:57 -0700
+Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.43 via Frontend Transport; Mon, 24 Mar 2025 00:34:55 -0700
+From: <jianqi.ren.cn@windriver.com>
+To: <stable@vger.kernel.org>
+CC: <patches@lists.linux.dev>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <jianqi.ren.cn@windriver.com>,
+        <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <linux-btrfs@vger.kernel.org>, <llfamsec@gmail.com>, <wqu@suse.com>
+Subject: [PATCH 6.6.y] btrfs: make sure that WRITTEN is set on all metadata blocks
+Date: Mon, 24 Mar 2025 15:34:54 +0800
+Message-ID: <20250324073454.3796450-1-jianqi.ren.cn@windriver.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: simplify the reserved space handling inside
- copy_one_range()
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <dd15d8ede1b17f86d2be14390c3927b1633b1a72.1742776906.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <dd15d8ede1b17f86d2be14390c3927b1633b1a72.1742776906.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=HZwUTjE8 c=1 sm=1 tr=0 ts=67e10b22 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=gEA-OUY-moF3Uf1y:21 a=Vs1iUdzkB0EA:10 a=maIFttP_AAAA:8 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
+ a=t7CeM3EgAAAA:8 a=xqbIuppjPMaPyYIW3jgA:9 a=qR24C9TJY6iBuJVj_x8Y:22 a=WzC6qhA0u3u7Ye7llzcV:22 a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-GUID: XKmDfec6X6tV-aNjrxe3Hfm0-dMsJgX6
+X-Proofpoint-ORIG-GUID: XKmDfec6X6tV-aNjrxe3Hfm0-dMsJgX6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-24_03,2025-03-21_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0 adultscore=0
+ clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
+ definitions=main-2503240054
 
+From: Josef Bacik <josef@toxicpanda.com>
 
+[ Upstream commit e03418abde871314e1a3a550f4c8afb7b89cb273 ]
 
-在 2025/3/24 11:11, Qu Wenruo 写道:
-> Inside that function we have the following variables all involved to
-> help handling the reserved space:
-> 
-> - block_offset
-> - reserve_bytes
-> - dirty_blocks
-> - num_blocks
-> - release_bytes
-> 
-> Many of them (block_offset, dirty_blocks, num_blocks) are only utilized
-> once or twice as a temporary variables.
-> 
-> Furthermore the variable @release_bytes are utilized for two different
-> operations:
-> 
-> - As a temporary variable to release exceed range if a short copy
->    happened
->    And after a short-copy, the @release_bytes will be immediately
->    re-calculated to cancel the change such temporary usage.
-> 
-> - As a variables to record the length that will be released
-> 
-> To fix all those unnecessary variables along with the inconsistent
-> variable usage:
-> 
-> - Introduce @reserved_start and @reserved_len variable
->    Both are utilized to track the current reserved range (block aligned).
-> 
-> - Use above variables to calculate the range which needs to be shrunk
->    When a short copy happened, we need to shrink the reserved space
->    beyond the last block.
-> 
->    The range to be released is always [@last_block, @reserved_start +
->    @reserved_len), and the new @reserved_len will always be
->    @last_block - @reserved_start.
->    (@last_block is the exclusive block aligned file offset).
-> 
-> - Remove the five variables we no longer need
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/file.c | 71 ++++++++++++++++++++++---------------------------
->   1 file changed, 32 insertions(+), 39 deletions(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index b72fc00bc2f6..4d83962ec8d6 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1164,15 +1164,13 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
->   {
->   	struct btrfs_fs_info *fs_info = inode->root->fs_info;
->   	struct extent_state *cached_state = NULL;
-> -	const size_t block_offset = start & (fs_info->sectorsize - 1);
-> +	const u32 blocksize = fs_info->sectorsize;
->   	size_t write_bytes = min(iov_iter_count(i), PAGE_SIZE - offset_in_page(start));
-> -	size_t reserve_bytes;
->   	size_t copied;
-> -	size_t dirty_blocks;
-> -	size_t num_blocks;
->   	struct folio *folio = NULL;
-> -	u64 release_bytes;
->   	int extents_locked;
-> +	const u64 reserved_start = round_down(start, blocksize);
-> +	u64 reserved_len;
->   	u64 lockstart;
->   	u64 lockend;
->   	bool only_release_metadata = false;
-> @@ -1190,23 +1188,22 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
->   			    &only_release_metadata);
->   	if (ret < 0)
->   		return ret;
-> -	reserve_bytes = ret;
-> -	release_bytes = reserve_bytes;
-> +	reserved_len = ret;
->   
->   again:
->   	ret = balance_dirty_pages_ratelimited_flags(inode->vfs_inode.i_mapping,
->   						    bdp_flags);
->   	if (ret) {
-> -		btrfs_delalloc_release_extents(inode, reserve_bytes);
-> -		release_space(inode, *data_reserved, start, release_bytes,
-> +		btrfs_delalloc_release_extents(inode, reserved_len);
-> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
->   			      only_release_metadata);
->   		return ret;
->   	}
->   
->   	ret = prepare_one_folio(&inode->vfs_inode, &folio, start, write_bytes, false);
->   	if (ret) {
-> -		btrfs_delalloc_release_extents(inode, reserve_bytes);
-> -		release_space(inode, *data_reserved, start, release_bytes,
-> +		btrfs_delalloc_release_extents(inode, reserved_len);
-> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
->   			      only_release_metadata);
->   		return ret;
->   	}
-> @@ -1217,8 +1214,8 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
->   		if (!nowait && extents_locked == -EAGAIN)
->   			goto again;
->   
-> -		btrfs_delalloc_release_extents(inode, reserve_bytes);
-> -		release_space(inode, *data_reserved, start, release_bytes,
-> +		btrfs_delalloc_release_extents(inode, reserved_len);
-> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
->   			      only_release_metadata);
->   		ret = extents_locked;
->   		return ret;
-> @@ -1235,36 +1232,32 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
->   	 * sure they don't happen by forcing retry this copy.
->   	 */
->   	if (unlikely(copied < write_bytes)) {
-> +		u64 last_block;
-> +		u64 release_len;
-> +
->   		if (!folio_test_uptodate(folio)) {
->   			iov_iter_revert(i, copied);
->   			copied = 0;
->   		}
-> +
-> +		if (copied == 0)
-> +			last_block = round_down(start, blocksize);
+We previously would call btrfs_check_leaf() if we had the check
+integrity code enabled, which meant that we could only run the extended
+leaf checks if we had WRITTEN set on the header flags.
 
-This changed the release range for short-copy.
+This leaves a gap in our checking, because we could end up with
+corruption on disk where WRITTEN isn't set on the leaf, and then the
+extended leaf checks don't get run which we rely on to validate all of
+the item pointers to make sure we don't access memory outside of the
+extent buffer.
 
-Originally for a zero-copied case, we only release from round_up(start, 
-blocksize) to the end.
+However, since 732fab95abe2 ("btrfs: check-integrity: remove
+CONFIG_BTRFS_FS_CHECK_INTEGRITY option") we no longer call
+btrfs_check_leaf() from btrfs_mark_buffer_dirty(), which means we only
+ever call it on blocks that are being written out, and thus have WRITTEN
+set, or that are being read in, which should have WRITTEN set.
 
-And the current block is later released by that "release_bytes = 
-round_up(copied + block_offset, fs_info->sectorsize);" line.
+Add checks to make sure we have WRITTEN set appropriately, and then make
+sure __btrfs_check_leaf() always does the item checking.  This will
+protect us from file systems that have been corrupted and no longer have
+WRITTEN set on some of the blocks.
 
-But now we release every range in one go.
+This was hit on a crafted image tweaking the WRITTEN bit and reported by
+KASAN as out-of-bound access in the eb accessors. The example is a dir
+item at the end of an eb.
 
-Normally this should be fine, but later btrfs_delalloc_release_extents() 
-itself can not handle zero length properly.
+  [2.042] BTRFS warning (device loop1): bad eb member start: ptr 0x3fff start 30572544 member offset 16410 size 2
+  [2.040] general protection fault, probably for non-canonical address 0xe0009d1000000003: 0000 [#1] PREEMPT SMP KASAN NOPTI
+  [2.537] KASAN: maybe wild-memory-access in range [0x0005088000000018-0x000508800000001f]
+  [2.729] CPU: 0 PID: 2587 Comm: mount Not tainted 6.8.2 #1
+  [2.729] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+  [2.621] RIP: 0010:btrfs_get_16+0x34b/0x6d0
+  [2.621] RSP: 0018:ffff88810871fab8 EFLAGS: 00000206
+  [2.621] RAX: 0000a11000000003 RBX: ffff888104ff8720 RCX: ffff88811b2288c0
+  [2.621] RDX: dffffc0000000000 RSI: ffffffff81dd8aca RDI: ffff88810871f748
+  [2.621] RBP: 000000000000401a R08: 0000000000000001 R09: ffffed10210e3ee9
+  [2.621] R10: ffff88810871f74f R11: 205d323430333737 R12: 000000000000001a
+  [2.621] R13: 000508800000001a R14: 1ffff110210e3f5d R15: ffffffff850011e8
+  [2.621] FS:  00007f56ea275840(0000) GS:ffff88811b200000(0000) knlGS:0000000000000000
+  [2.621] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [2.621] CR2: 00007febd13b75c0 CR3: 000000010bb50000 CR4: 00000000000006f0
+  [2.621] Call Trace:
+  [2.621]  <TASK>
+  [2.621]  ? show_regs+0x74/0x80
+  [2.621]  ? die_addr+0x46/0xc0
+  [2.621]  ? exc_general_protection+0x161/0x2a0
+  [2.621]  ? asm_exc_general_protection+0x26/0x30
+  [2.621]  ? btrfs_get_16+0x33a/0x6d0
+  [2.621]  ? btrfs_get_16+0x34b/0x6d0
+  [2.621]  ? btrfs_get_16+0x33a/0x6d0
+  [2.621]  ? __pfx_btrfs_get_16+0x10/0x10
+  [2.621]  ? __pfx_mutex_unlock+0x10/0x10
+  [2.621]  btrfs_match_dir_item_name+0x101/0x1a0
+  [2.621]  btrfs_lookup_dir_item+0x1f3/0x280
+  [2.621]  ? __pfx_btrfs_lookup_dir_item+0x10/0x10
+  [2.621]  btrfs_get_tree+0xd25/0x1910
 
+Reported-by: lei lu <llfamsec@gmail.com>
+CC: stable@vger.kernel.org # 6.7+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+[ copy more details from report ]
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+---
+Verified the build test
+---
+ fs/btrfs/tree-checker.c | 30 +++++++++++++++---------------
+ fs/btrfs/tree-checker.h |  1 +
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
-So the fix is pretty simple, just skip the 
-btrfs_delalloc_release_extents() call if our reserved_len is already.
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 53c74010140e..6d16506bbdc0 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -1889,6 +1889,11 @@ enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
+ 		return BTRFS_TREE_BLOCK_INVALID_LEVEL;
+ 	}
+ 
++	if (unlikely(!btrfs_header_flag(leaf, BTRFS_HEADER_FLAG_WRITTEN))) {
++		generic_err(leaf, 0, "invalid flag for leaf, WRITTEN not set");
++		return BTRFS_TREE_BLOCK_WRITTEN_NOT_SET;
++	}
++
+ 	/*
+ 	 * Extent buffers from a relocation tree have a owner field that
+ 	 * corresponds to the subvolume tree they are based on. So just from an
+@@ -1950,6 +1955,7 @@ enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
+ 	for (slot = 0; slot < nritems; slot++) {
+ 		u32 item_end_expected;
+ 		u64 item_data_end;
++		enum btrfs_tree_block_status ret;
+ 
+ 		btrfs_item_key_to_cpu(leaf, &key, slot);
+ 
+@@ -2005,21 +2011,10 @@ enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
+ 			return BTRFS_TREE_BLOCK_INVALID_OFFSETS;
+ 		}
+ 
+-		/*
+-		 * We only want to do this if WRITTEN is set, otherwise the leaf
+-		 * may be in some intermediate state and won't appear valid.
+-		 */
+-		if (btrfs_header_flag(leaf, BTRFS_HEADER_FLAG_WRITTEN)) {
+-			enum btrfs_tree_block_status ret;
+-
+-			/*
+-			 * Check if the item size and content meet other
+-			 * criteria
+-			 */
+-			ret = check_leaf_item(leaf, &key, slot, &prev_key);
+-			if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
+-				return ret;
+-		}
++		/* Check if the item size and content meet other criteria. */
++		ret = check_leaf_item(leaf, &key, slot, &prev_key);
++		if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
++			return ret;
+ 
+ 		prev_key.objectid = key.objectid;
+ 		prev_key.type = key.type;
+@@ -2049,6 +2044,11 @@ enum btrfs_tree_block_status __btrfs_check_node(struct extent_buffer *node)
+ 	int level = btrfs_header_level(node);
+ 	u64 bytenr;
+ 
++	if (unlikely(!btrfs_header_flag(node, BTRFS_HEADER_FLAG_WRITTEN))) {
++		generic_err(node, 0, "invalid flag for node, WRITTEN not set");
++		return BTRFS_TREE_BLOCK_WRITTEN_NOT_SET;
++	}
++
+ 	if (unlikely(level <= 0 || level >= BTRFS_MAX_LEVEL)) {
+ 		generic_err(node, 0,
+ 			"invalid level for node, have %d expect [1, %d]",
+diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+index 3c2a02a72f64..43f2ceb78f34 100644
+--- a/fs/btrfs/tree-checker.h
++++ b/fs/btrfs/tree-checker.h
+@@ -51,6 +51,7 @@ enum btrfs_tree_block_status {
+ 	BTRFS_TREE_BLOCK_INVALID_BLOCKPTR,
+ 	BTRFS_TREE_BLOCK_INVALID_ITEM,
+ 	BTRFS_TREE_BLOCK_INVALID_OWNER,
++	BTRFS_TREE_BLOCK_WRITTEN_NOT_SET,
+ };
+ 
+ /*
+-- 
+2.25.1
 
-Thanks,
-Qu> +
-> +		/*
-> +		 * Since we got a short copy, release the reserved bytes
-> +		 * byond the last block.
-> +		 */
-> +		if (only_release_metadata)
-> +			btrfs_delalloc_release_metadata(inode, release_len, true);
-> +		else
-> +			btrfs_delalloc_release_space(inode, *data_reserved,
-> +					last_block, release_len, true);
-> +		reserved_len = last_block - reserved_start;
->   	}
->   
-> -	num_blocks = BTRFS_BYTES_TO_BLKS(fs_info, reserve_bytes);
-> -	dirty_blocks = round_up(copied + block_offset, fs_info->sectorsize);
-> -	dirty_blocks = BTRFS_BYTES_TO_BLKS(fs_info, dirty_blocks);
-> -
-> -	if (copied == 0)
-> -		dirty_blocks = 0;
-> -
-> -	if (num_blocks > dirty_blocks) {
-> -		/* Release everything except the sectors we dirtied. */
-> -		release_bytes -= dirty_blocks << fs_info->sectorsize_bits;
-> -		if (only_release_metadata) {
-> -			btrfs_delalloc_release_metadata(inode,
-> -						release_bytes, true);
-> -		} else {
-> -			const u64 release_start = round_up(start + copied,
-> -							   fs_info->sectorsize);
-> -
-> -			btrfs_delalloc_release_space(inode,
-> -					*data_reserved, release_start,
-> -					release_bytes, true);
-> -		}
-> -	}
-> -	release_bytes = round_up(copied + block_offset, fs_info->sectorsize);
-> -
->   	ret = btrfs_dirty_folio(inode, folio, start, copied,
->   				&cached_state, only_release_metadata);
->   	/*
-> @@ -1280,10 +1273,10 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
->   	else
->   		free_extent_state(cached_state);
->   
-> -	btrfs_delalloc_release_extents(inode, reserve_bytes);
-> +	btrfs_delalloc_release_extents(inode, reserved_len);
->   	if (ret) {
->   		btrfs_drop_folio(fs_info, folio, start, copied);
-> -		release_space(inode, *data_reserved, start, release_bytes,
-> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
->   			      only_release_metadata);
->   		return ret;
->   	}
 
