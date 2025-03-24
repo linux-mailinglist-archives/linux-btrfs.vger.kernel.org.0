@@ -1,142 +1,146 @@
-Return-Path: <linux-btrfs+bounces-12516-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12517-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3498A6E23A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 19:24:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40801A6E321
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 20:12:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEC2C16B9DA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 18:24:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B71C11686EA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Mar 2025 19:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A50972641C8;
-	Mon, 24 Mar 2025 18:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3B0266F1A;
+	Mon, 24 Mar 2025 19:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="K1s7nFSA"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b="UkfDQItU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C470E2641F6
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Mar 2025 18:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35A478F24
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Mar 2025 19:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742840646; cv=none; b=NXVSaniMBaPkK1l1Xd3uekqedCiekYeNeQoqo33hWMLKG0EkwN4XqcE47OUAuu1wtTfifZyCoUMJ01WjBzYKedFNTv4+mHIucklWpPWDbaJGfIsqGJ0bgWujBC5mhkjiPGA7XT1mQ6aRYN7754jVN4xElt2ESvTH5nxobnCGB/U=
+	t=1742843555; cv=none; b=CyN34LWIOZhvBfLPEY+J1jc7gyQlfgW9SSxxAf5DEz2v1Rm+AO1gp8QDbuvtTMs/f8YHaO9T+T58FCcXp65BWMCyhxxTCPZ3AZhcks9TDtujTXXtu22uNacDCMsK4ohjaksizGkuDfVmLb8fCUh6rEcko64iT85Yxdfvk6mBx3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742840646; c=relaxed/simple;
-	bh=4U0WQcrZi6HYfJ1j4+6EycXdAaOcov7zh2HYlp3xSxM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SeKHH0ABmrZgLDFTBPFIC/DVxVe0cdzkguCqkseboaJYHm3aIaezViBLxMgDEzmevpCWkQSVweyICjj6LV0K1x41F4qLWp4GIS1lNayIC8faXCXgWh58+Cg/Tvog4igFFtz8jo2qwm4121oCjux9ZH8svwRxo0oIOreDefw2eaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=K1s7nFSA; arc=none smtp.client-ip=46.36.37.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
-Received: from wiesinger.com (wiesinger.com [84.112.177.114])
-	by vps01.wiesinger.com (Postfix) with ESMTPS id 8D1239F285;
-	Mon, 24 Mar 2025 19:18:34 +0100 (CET)
-Received: from [192.168.0.63] ([192.168.0.63])
-	(authenticated bits=0)
-	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 52OIITwk604678
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Mon, 24 Mar 2025 19:18:33 +0100
-DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 52OIITwk604678
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
-	s=default; t=1742840313;
-	bh=8/OlFc+BYZIAJfGurJhaQFAzh3jO1tJm7x6HybTPiNM=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=K1s7nFSArvokqfpRpuXbIyPxpemPt8D5AyrO5IcMIRnFrXW8/M5IsUPxnoAPoLKY9
-	 TQqQlzBnMhew93v1fuaA5587BGNxA5s7l4vYuSxNo/y3wrd24MqZ+b3sx+hwZRTDAI
-	 qNXEtstIPeJGo50icjYA/az0yM4cSVuhJbudtzkywOrtOj5ZLedUlK0fBUqL1Yr32F
-	 MsGhKDuinK6Dlt8+mvmkT/iPdcx0bk1FicWUHNYcIAm1H3YdhdHeTU1ibKHdQyLrQc
-	 FzPv4Pjv07X/jmVKBNWcQXJgHjCMYwp05gzCCudM5WdrSEbM+MQfsqL1Ec+tUwoCPl
-	 D/JVQFVJS22FpBUCcML5C6uzNlPKzGGowRTg2nAorINej+KZyhsy97CZ1rnO1xQv06
-	 Jig3qfR+UVe1VDgJPT0SRmuinaf9Odo2JC7jqkhrzFermxAAW3nwcQ3F8KfDD6gHDb
-	 cXz7cnSwV9WZ6ve6RVu5oPW2Ke2oqakZKe0efITL01Rrsml8GvPuBZgoYODv0GdmEl
-	 yWoEVmht6RRYxSk47k8d61bncdv0ioTBrAbUxgTtON6m4X75XnnhJFYpPS5tColGaY
-	 Zley0TuB29lbVuE/oAyshENNm2zwiXGa634wH4FxtkYfFOllsRq1bMB0IIcE9zWWaQ
-	 A1rTP9fs/rLywUPscvjaVSmI=
-Message-ID: <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
-Date: Mon, 24 Mar 2025 19:18:29 +0100
+	s=arc-20240116; t=1742843555; c=relaxed/simple;
+	bh=dVy7nNaJLD8mqi+COsCCdY6R4mKDKvNzz8lgJSQHyJw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=jIzVdJa4ruNE1j26mAf+R8aTuG3Yb9qwoT2rO9RCYZ/V/n4nGxNc1Wb7QSGTJmTinPXBMSeUs8uSUYwUA60SrkCSpDWj1VMdKgDCzR3eWqJU97nQmBxOarWQkr6YvOh6HkD1CsdPs6aYg2Hkw35ym+GSZXFmJfn2WCoCI9HhEyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b=UkfDQItU; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1742843487; x=1743448287; i=jimis@gmx.net;
+	bh=dVy7nNaJLD8mqi+COsCCdY6R4mKDKvNzz8lgJSQHyJw=;
+	h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=UkfDQItUCR8cqT8ldH7dKiHIHuvR8E0/+gqIk2jdp4ByinVyPHd17nsCvVBNXx2a
+	 biQ3cLdX2JTzAGszEdxHb3Vu7h54YOTbibqSweUibgV8wd670EWk+UvQeic5rHR2U
+	 l1/Z0c3SalHWS6orw/kill5XtCdmkCv6rJnmUgRlMlsbydlrxZOnKCUMPpdqL3W/4
+	 Bfw3jCymzYIUYHbPce4Eud8lrhoxOxWxrTGdZFMEC6Qe6LH+RjRqRjgqMr6QU2W3A
+	 NXRWRXIh7EE8ZQvDGXsdQXNybyc69/A7awvnjl9G4mjnJPd2vsPPzwMA4MJPjByC0
+	 mMA3DqiUgDtegzxCfg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.9.70.81] ([185.55.106.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M5fIQ-1u3ws11eV0-00FAFJ; Mon, 24
+ Mar 2025 20:11:27 +0100
+Date: Mon, 24 Mar 2025 20:11:26 +0100 (CET)
+From: Dimitrios Apostolou <jimis@gmx.net>
+To: Gerhard Wiesinger <lists@wiesinger.com>
+cc: linux-btrfs@vger.kernel.org
+Subject: Re: mount compress=zstd leaves files uncompressed, that used to
+ compress well with before
+In-Reply-To: <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
+Message-ID: <3ecd06ed-a1f1-595d-a7ce-c1018bc15baf@gmx.net>
+References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net> <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net> <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Windows)
-Subject: Re: mount compress=zstd leaves files uncompressed, that used to
- compress well with before
-Content-Language: en-US
-To: Dimitrios Apostolou <jimis@gmx.net>, linux-btrfs@vger.kernel.org
-References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net>
- <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net>
-From: Gerhard Wiesinger <lists@wiesinger.com>
-In-Reply-To: <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Provags-ID: V03:K1:lesC1rakB4C2OCV6IMzg+vQBnM4g2BVXtHzbfyU3IpSAZOWnrwP
+ TfUehnj7aMDgFqrO5kICrd88Av1C/Uqa67gGEX0QL6hoelwH97wI3ztrYGso+nt+hDA0b1a
+ 9H0PG4iVUDIqRd5Xn3/nFZD3ogIyvp2/uLCoJgpiwkjLVmYmZpVoxEsorxTSpncqpxb/Rg/
+ MvHJOqf0OePKDystPG/rA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:AvAz9RV31GY=;gmpYa5M3FpBcBJOGIDZS6snQQu9
+ YoYNWyr04o8uDntaHibnlRo+pNfJUU9di4FL8OTY8gzU7bKqI9DnEwW4zmeO8K1MQ+Wl/eLSO
+ nJFke/tPxe8ZgmTtFO1chi5EYiWVVEccUnYNc572hbBQTlh3eAs3Rs+MOyQruYnWhQJPsPSzV
+ QickGq7WsJ7Ijn2VBsTxgV3l0DdSsDoamxmAbAY3x9ivCiKjQzo03yyUucXdP9Fo/KHYiHCVr
+ cCCfeQAWThMHGeAEMt2ULHRIfpqgiBFi4pIgw149uZz8ze2kuOIjgEsWEhamckTasN0VycuBh
+ W1ZnyTQ/6TIR3G1ozdme7EgQ+pJt1MaFEYqkieLgxaK0eGxsmSccFJpDW8Olc8UZ7vXZWw7r/
+ bNAbp26YOHNFoCEieCGHqfCf3hOZEioo87V79kah9wcHKOLlkeuUcDbZa9KUOHtBZDkYpZU+6
+ +ysLVJ8/9S5B5zCm/DCFcADppZGOf08/MH8uaqb7cEQjTXcDvs2czeHTFSXZm5DPdSAGFK5Yf
+ UGNKMvifW7Qx475DuXq6VXgG5PaJNXkHoprT8B14NKt8KjhsV+8HTWDXConRBIVWaVJfFmPAr
+ 0Us9JK7Mx9xKHxu1z8R7H0bsSlIMsFZu8vqmyOmmSefHPLPqcuX7qvtS9y8q5AKT3BPVzO6wi
+ eS3j5SNWbF3NE7ABQ+oDyIeaBrmMiX+aBDO7w/Av0sHZIPxmSm4LKWFbIm5KdCoIs/y1vCqzU
+ gLwDDbH0sLHccJpIxtjTmV12MpESfk4NyuHZU+uoqIJvAJ+1dRfDmBcHuRo9BYHvEwzDMds/k
+ bq++yCYKzFpaeL1sM70++WQ9n/30eUQM5I3+FavMkBmOzEgjtGF5Pny+gp7c7IPW2dtdFRO6r
+ u+39kYGFoPLQL0nSeQ4HJbu61w0Q2PyVvVnGuj66j6eKeTNguHPUgR/+Ade4WLEZuKX7KXfK/
+ RTjjvzLHjTeArSn+3NkQc7n90dHtpn74LgiJtzjKu2CY5J4eVjiFg2mxR+q2lYit3+MCs6dY+
+ fb/GC0FWBaRszyZ2p0YZJ9PMfON37GTGBm1cd++nIeTST/8PAW1Nm7oHJL2rfHCYXuilnPo0f
+ 6ne4q2jWPPvY+pz2yvuruzz76ye8gbbpGc7yk0F9oAnV78Zf/GFJ9jM6uL3BKmu6fv5iQVe1u
+ 8PS/MAQbXH/YtnipXvXJrWEk44hKdBTnmcBsw6Zj2oGFOf1qC+OB2NjKguEwHSd1SGhOkfaht
+ JTPo61iU+NMWfC8QdWT6FWFwP/5X2/XOBZdcxTA3BAFxlk8xGtw1o0rv6L4bDvywGEcDauADP
+ cGmhc4iekZHKfsfVzwNJFfjT4XKB+w2EwZ96QT8Qxz0rf2C2mbYVcnFB4KUaWVehI7jjRaTIz
+ 7nozPPihOeYWqMf8HpPupP+FhTVpI8rwe2HERaJnC5Vfv5rnVTSEgaDkKIgx5lgiKem4/Oz5f
+ AgjT2f1HlPdve8WQk+AhtGM26bqratFmTa8Qkvkq4OmdTuwSlY+cmKXT+4on5h4nJaiBlOQ==
+Content-Transfer-Encoding: quoted-printable
 
-Hello Dimitris,
+On Mon, 24 Mar 2025, Gerhard Wiesinger wrote:
 
-It's a known bug I also ran into, see the disucssion here:
-https://lore.kernel.org/all/b7995589-35a4-4595-baea-1dcdf1011d68@wiesinger.com/T/
-(It can't be easily fixed)
+> Hello Dimitris,
+>
+> It's a known bug I also ran into, see the disucssion here:
+> https://lore.kernel.org/all/b7995589-35a4-4595-baea-1dcdf1011d68@wiesing=
+er.com/T/
+> (It can't be easily fixed)
 
-There is also another issue with BTRFS:
-https://lore.kernel.org/linux-bcachefs/kgdutihyy6durmrtqi5dfk7lhl2duzm4wnf6mlyneiuphf3cck@fxulfyg2ugjf/T/
+Thank you Gerhard, it seems we are facing the same issue.
+It's a pity I read that force-compress does not fix the issue.
 
-I guess you always had the issue but you didn't notice it.
+This "preallocation" mentioned in the thread, how is it achieved in the
+application level? Is it with posix_fallocate()? If so, I definitely see
+it happening in PostgreSQL:
 
-Therefore I moved to ZFS as a BTRFS replacement. PostgreSQL works also 
-fine there.
+https://github.com/postgres/postgres/blob/0e3e0ec06b995f6809f315752cbf5ff6=
+7902e095/src/backend/storage/smgr/md.c#L575
 
-Ciao,
-Gerhard
+Relevant commit:
 
-On 24.03.2025 15:14, Dimitrios Apostolou wrote:
-> I keep seeing the same odd behaviour. The database files are not being
-> compressed despite having compress=zstd:3 in the mount options. When I
-> issue a defragment -czstd command, everything gets compacted very well.
-> And then as files are being modified by the database, uncompressed 
-> extents
-> start appearing again.
->
-> This did not happen before. So has something changed between kernels 5.15
-> and 6.11 regarding how btrfs detects if a file is compressible?
->
-> How can I debug this further?
->
-> Thanks,
-> Dimitris
->
->
->
->
-> On Wed, 19 Mar 2025, Dimitrios Apostolou wrote:
->
->> Hello list,
->>
->> has something changed lately in how btrfs discovers if a file is
->> compressible?
->>
->> I am moving a database (pgdump|pgrestore) from and to a compressed
->> (compress=zstd:3) filesystem.  And while on the old host (kernel 
->> 5.15) all
->> the database files were highly compressed with almost 8:1 ratio, 
->> while doing
->> pg_restore on the new host (kernel 6.11 with newly created btrfs 
->> filesystem)
->> I notice (using compsize) that most files are being written 
->> uncompressed.
->>
->> I have to issue a defragment -czstd command to fix the situation, and 
->> I'm
->> contemplating whether I should change the mount option to 
->> compress-force.
->>
->> Thanks in advance,
->> Dimitris
->>
->
->
+https://github.com/postgres/postgres/commit/4d330a61bb1969df31f2cebfe1ba9d=
+1d004346d8
 
+I can see this code was introduced in PostgreSQL 16.
+
+Maybe a workaround is to recompile with -UHAVE_POSIX_FALLOCATE.
+
+> I guess you always had the issue but you didn't notice it.
+
+I definitely didn't have it with PostgreSQL 15 on Linux 5.15 (Ubuntu
+22.04), I don't know for sure if I see it after upgraded to PostgreSQL 16,
+but I see the issue with PostgreSQL 17 on Linux 6.11 (HWE kernel in Ubuntu
+24.04).
+
+I see in your message that you are on Linux 6.5, but what is your
+PostgreSQL version?
+
+> There is also another issue with BTRFS:
+> https://lore.kernel.org/linux-bcachefs/kgdutihyy6durmrtqi5dfk7lhl2duzm4w=
+nf6mlyneiuphf3cck@fxulfyg2ugjf/T/
+
+And then there is the issue of abysmal performance for buffered read(8KB)
+from compressed files:
+
+https://www.spinics.net/lists/linux-btrfs/msg137200.html
+
+
+Thanks,
+Dimitris
 
