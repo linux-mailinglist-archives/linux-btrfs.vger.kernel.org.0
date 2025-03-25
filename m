@@ -1,161 +1,148 @@
-Return-Path: <linux-btrfs+bounces-12583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12584-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41899A70BB2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Mar 2025 21:42:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11110A70C35
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Mar 2025 22:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07AD13B3F86
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Mar 2025 20:41:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB7F1894AB4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Mar 2025 21:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766B7266B63;
-	Tue, 25 Mar 2025 20:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607EF269B07;
+	Tue, 25 Mar 2025 21:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KdHO2J00"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Ud03FdN5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A20219D086
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Mar 2025 20:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B69F204681;
+	Tue, 25 Mar 2025 21:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742935312; cv=none; b=HTksKIvV0B5mmlxjYjy1xg9+ds8+jYdN2whr2deWZL3kEm7zTDz2zDHWmKbGyiWhHqeCknoWKxqR3YstWeLlvHIweLDnSqo6rSBxOLvzR20AYgurS5yQaAqFJS0bRY6ANjIIYavNLn6XzqpWm3rw03gu8RQPxoIOHxbZ/p2FZEo=
+	t=1742938622; cv=none; b=Bn061EvlS/GJJdwPkpqoM7ermZ2YJ7fpwGLMjF3vFnu+MAfD+6ZxE5X/gjXVTrClXntuNxCLlHKyFYRE8sMdNa+Jw3bA1bzXwy1rRyyhbCNsjsL/Pw33jP+pDK1NUWSk+GSJW+gDxzc/byJS4bHoMPMDnjGnpudILSUXJLKFufY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742935312; c=relaxed/simple;
-	bh=GCAhGVtueceq1ubCUXU7aIifbCxnCpAKEuI8oUAtt/U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o2vezoab98SC8cXmtSqRyL/H2gemQXw5uSRTU1u4/riqtedPBPiIOPUSbZ6HTarq/MlOy9Efsd50olq3tBtaX9Ks4rFYRwIn7C/oDvsmf2q/RLg6jR3cUqqOVAP4y3TE8bKB3tb4gS2yCqpWvmY3PTDWyFXL5iyv6TWmxzNyrlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KdHO2J00; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e5e8274a74so9372246a12.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Mar 2025 13:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1742935309; x=1743540109; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=K52xAWNW5IEkY2W6yv56tbrXz/O78EY3OFwe6Kmcp1A=;
-        b=KdHO2J00TAe4cgySGHdLO47Aqso/bC/fKKMo8P2q/ImYFczI0grhq/U4sPkIJUmEDy
-         wjtClJSVXHJ1pOD8LMyYg2X7mAznVxjHKeIPF32qWD8ufaiPjjOCh68DkC/zxqiOwzLy
-         ZF3akULDuXPyv9SoRnB6XsiGX4HBqH9K1Kblw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742935309; x=1743540109;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K52xAWNW5IEkY2W6yv56tbrXz/O78EY3OFwe6Kmcp1A=;
-        b=qPL2NwnFDwanVjw6mbf5xUQE0ibyn3/LhMQIRR7OSa8khzYM8cWTeE4joT0kyAkNDJ
-         tQ37kQz+7kNEJFclaqvqjT0eb+mcv1koTkHY1d59C3hWZ9/7zJKzBzgKkhkc6htKyeYX
-         FZFbrInrUEoM43pu+CaBDmorj5eEJC9S1f4PBmVeNwVYqsS9uwzaLVkjWXoXKmHsZwLj
-         J393BrW8rMWI3YPgxuLEz3clreG9NdtRS96kazikUdG5Vi4c3H47/+b31igUECHxj77T
-         Z+EJlzMY6IsA/1EoF25YBEi/8P2oax1o/NlxgVmeu+zh+t/lhs8GZVlvfqsOhWCNSrsY
-         rAyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWUfH9g4DVVLLmEPMxkXHHeT4xX0XiVb02NLKj/5W6pg/no3/Fu6iq29Q+4GDV9RQ56XHvCejog0tImuQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGtG7ZwWqJFT8aT6NiG7QCIR2D/Gqtt3kqUEhGKoHutkZOkYbT
-	Qgkq2AiNPS9rfcKpmOSxUq1b2J1mMwdZRDip7UMcvKk+HXD21GspjXSFCAcDPzrvZqz2xUDimgV
-	+Ppw=
-X-Gm-Gg: ASbGncv5BdC89dPfSOrZBL3QWarvbfZyqgEUsOuki3l0K9t6Qi6zcILf6xqxshDiK0P
-	xI54Upas1jmvxyG9mIpGBM3mgJwoXdIGChR3adHSKSNXAEsVjXtbaWb0taYgwdKv0aaFvE11WL/
-	w15oVCh8Nv9ZAXXtquqLTuJwmTF4mMEID0KPKGYdoZfh86tYNvlWHBYSkzTdQhEcquyE9klRSVS
-	3LNgyIMY9N78nrI02yHygL833q3LgKJim2VW+ilqxkFSYSzW6D/2PkbwZHJYxD6aJYOvt9Ql3Iq
-	LIPqRVSHeZ2VpnQ0MXEWxGYEAF/3VOdQD09f09CWgS6kcZ1sOovvrnn+K+tMMSq6mLRjNqngdft
-	6thWq9TDPLZ3usmEnmhw=
-X-Google-Smtp-Source: AGHT+IExUY2Xu2pO1XsPN6urn6h2DY9k4pni2E0Jwy1OnYRu2jWucx8rmEAjIQ6Pmc5j8t+ffYnx/Q==
-X-Received: by 2002:a17:907:7e5e:b0:ac6:b811:e65b with SMTP id a640c23a62f3a-ac6b812299bmr613524666b.36.1742935308786;
-        Tue, 25 Mar 2025 13:41:48 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efd3aab3sm890884866b.156.2025.03.25.13.41.48
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Mar 2025 13:41:48 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-abf3d64849dso989642066b.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Mar 2025 13:41:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUVne/0zZ3n7tvphCkMloFUPaqFJj67lImxQxhy2qBBybZVFnaay86samCVVLZUSqgF8/G7MfBnDfuzPQ==@vger.kernel.org
-X-Received: by 2002:a17:907:95a4:b0:ac3:48e4:f8bc with SMTP id
- a640c23a62f3a-ac3f27fd3b3mr1859596466b.48.1742935307883; Tue, 25 Mar 2025
- 13:41:47 -0700 (PDT)
+	s=arc-20240116; t=1742938622; c=relaxed/simple;
+	bh=XrCQgHsazAWNmsAjdOGeRNECHe56NRDgQiVXAlNIA8I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A06XmKwB87glsMKbK3/XBlIVlhYmhNh3VG9E7MImq4nbb6aDWy1GBn5dvOP3QQHpTvD8uAiCCcKTloiawkN5JxGpZmm5jxh0ETtQmEdsed/MzS5m9R/QOpbk25dsm/fRI9Zl8MvzdMbfaX5OOBBiCmi051+zsBkksrihKaytwy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Ud03FdN5; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1742938618; x=1743543418; i=quwenruo.btrfs@gmx.com;
+	bh=SHLL++eIm94Fj/7szCHRTOJz5FFQFiM4Q8AjsWZo9pc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Ud03FdN5gZhWfcoVkkd0l2vzgbQyGcbFxY/YY8Tsg8uUQBYcVtFvNP/S9U1eAQuo
+	 KGkZ9Ad1uqhfCC9lHi9pwJ/FKm6du4Iv2DcqbI4b4FxxsrbAhL4rerttevnGCusg9
+	 3rwwZqRxW886mxb0eQ+SDl8b7JDM0nsxW6IuYtKLocVphyTpESmnFJ/lugszHhdxu
+	 2e0r/8XBvP1s+eGCZA1R6XfbWvwGLtcSrJLp8msPl2mSy2tMEEGMKqIi5gHF9tj1H
+	 y/r5ZwVYmOU5FoqNoxvHUOdOKGIEnPXbm02mt86sct9FCOkFxFzx4JeYe5h5u4ePI
+	 V8Qh7LRiQbqQr3riIw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbkp-1tlSks2hFT-00UUZW; Tue, 25
+ Mar 2025 22:36:58 +0100
+Message-ID: <f32db2c5-fe4b-4152-ae36-f48175e7e64c@gmx.com>
+Date: Wed, 26 Mar 2025 08:06:52 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250325121624.523258-1-guoren@kernel.org> <20250325121624.523258-2-guoren@kernel.org>
-In-Reply-To: <20250325121624.523258-2-guoren@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 25 Mar 2025 13:41:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiVgTJpSxrQbEi28pUOmuWXrox45vV9kPhe9q5CcRxEbw@mail.gmail.com>
-X-Gm-Features: AQ5f1JpwFc7ifwGuAhyrs4E5qPgHx1McCR38KFycRhkLFRMKTveHrmoaWi4zba4
-Message-ID: <CAHk-=wiVgTJpSxrQbEi28pUOmuWXrox45vV9kPhe9q5CcRxEbw@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 01/43] rv64ilp32_abi: uapi: Reuse lp64 ABI interface
-To: guoren@kernel.org
-Cc: arnd@arndb.de, gregkh@linuxfoundation.org, paul.walmsley@sifive.com, 
-	palmer@dabbelt.com, anup@brainfault.org, atishp@atishpatra.org, 
-	oleg@redhat.com, kees@kernel.org, tglx@linutronix.de, will@kernel.org, 
-	mark.rutland@arm.com, brauner@kernel.org, akpm@linux-foundation.org, 
-	rostedt@goodmis.org, edumazet@google.com, unicorn_wang@outlook.com, 
-	inochiama@outlook.com, gaohan@iscas.ac.cn, shihua@iscas.ac.cn, 
-	jiawei@iscas.ac.cn, wuwei2016@iscas.ac.cn, drew@pdp7.com, 
-	prabhakar.mahadev-lad.rj@bp.renesas.com, ctsai390@andestech.com, 
-	wefu@redhat.com, kuba@kernel.org, pabeni@redhat.com, josef@toxicpanda.com, 
-	dsterba@suse.com, mingo@redhat.com, peterz@infradead.org, 
-	boqun.feng@gmail.com, xiao.w.wang@intel.com, qingfang.deng@siflower.com.cn, 
-	leobras@redhat.com, jszhang@kernel.org, conor.dooley@microchip.com, 
-	samuel.holland@sifive.com, yongxuan.wang@sifive.com, 
-	luxu.kernel@bytedance.com, david@redhat.com, ruanjinjie@huawei.com, 
-	cuiyunhui@bytedance.com, wangkefeng.wang@huawei.com, qiaozhe@iscas.ac.cn, 
-	ardb@kernel.org, ast@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, maple-tree@lists.infradead.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-atm-general@lists.sourceforge.net, linux-btrfs@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-	linux-nfs@vger.kernel.org, linux-sctp@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: extent buffer flags cleanup
+To: Daniel Vacek <neelx@suse.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250325163139.878473-1-neelx@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20250325163139.878473-1-neelx@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QH67u+gVQysItDeOf4gf9KUpxk+QgxBiDEpVfbrweylQU2GwMuv
+ q8D2dxCVOFiQ4EX5c025fxyUY7FR1kkSJ79lpZojhF19F43afC4pRvxMHHAVj9YjQZoutFc
+ 2TsA+L+RnTPUpcjTBniyadecniR7iLtSBot1PVkMo7kjkn2IPUg9rV7GtJ3j/3F7OEU3Q+L
+ sUfOA/7tObS3xBlk1ra4g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:C2+wMa6lgAo=;XW5qhPTP/6SqconQD4p+zrOYK5u
+ WZPx4P62saODNclGeNlCNKPRUZVYC1PHl/NSXOdh3NDe9KweXwuFsztFR8D1MU8ElmxCigNMY
+ rbM8fW971ugbKT8/5zPhFf6Gay3hn0xROZKWyaCQ+cYoTrI9Fqtvg9a63ExG6lo94quTI8S7g
+ 1Bn4C+vTfFR7/NgT7qMaOvbkFZf0Qk+xgLs65ij1PyXkDvS6ZC1UORGttPvxzL2kJp/yfAN7N
+ fG+JDCcsn11OnPMUg7ZCyx2cZM4NRVNyHZsECee0ucUS7XgZN4LAHQkdshOPmBCkS6twi+V/p
+ Uekrkg+/8Ub/JjOGVcH6Hb/tlfALKNKUjDbxM47YTnw7HF0K9C+JmPR3McU/RMfzbKQi+POj7
+ e8jfTJAkqMS/x7+lGuCUELiOv+Ym/9LqDnWhMO2yK3aH6vslZZv2b9l4Dy9xHgIqn8NKayNoq
+ pm7drHSdB6vv5TAjUnjmYjRBptkqfrb5nhtTvWBIXOHHgUStTiXPJn/t0C+ArSyyFrbzyBpOl
+ nHXewroZ2rYmtTmTGxHCSGcl27jvbi95gBJFk/pLQ48eRm3DL/S1QYSHsdwOPTERBApLS/rbe
+ ZIgqs8dT2VJ9aDkeAuHMNwb6IHihxVjZdD89JbdSO1wk9kwVF+kfa5dixPY7YO1KqZDczddhe
+ 5sLS6L9TbecHpK4gOSRWR6k1yd00vyPnacwjwAmUCxOALjWSFqqO7XlqYMio/ox1nQ8KArAth
+ v1QCzydq6tLCpW0wzOqZ4G+VfasBNCcs8yMykq/VINpMk/ZbR/tHkKKXzZMDuVWc0+5+Luvd3
+ kw0GnXkjaOktV8Bu7M4Ki3O3rdGrslrG5jmm6pB5zwzwBFRY9HHrsoI5+Em5UWFXhReL0iZ5F
+ JQSqTmbI1K3l0QZLtR9uRkOP4VMJEReYJ4STF1U+OFEamhgoRZTN4bochq1kKEP85mjcdLwB3
+ /ik83yG/HH65gzCQ2uvV3nQCgVwI2Cqsoyh9nUKULIcCrR5tnSBRn04TFtuNW03JNp7UKxBPI
+ 1ECIrbiE0aZHPRQBgy0XXSdqj8FevwZ1qBCBAbhQEiTXzKEtnNGmBt7c5yJRUPAaTCeYaN1Y0
+ FpAJbYUXa/1OsVjzeKaCLZpLq6slqA2xKShM/wpnyvXOON9LQooU1S0T1nuea9M9yZf6qR6PA
+ blQGeDTYm2O+Lp6JjDQCCGqjoZ7o58rQd2PBgg0hy5R5NaEApYFu0s6p+vySYDFfyMi5c6ze2
+ QhQpa8SYn4ta684b1LXUYlROPLbws11ks3Nd3aGBPBwYgXI2swGr1ODmJ83yvIs5JMeLn6gOO
+ mHoSICYrV36Pq6PfZG/plY2fuWot7tGhQJDbIldD0lZJBCiWcj5qj0GaaEjqYmOuQ26BkpAYJ
+ 8TVC0a5R9HSDBLxPcMOa5SCa9KdmqcTRMlW9r42aM6IEyuVCTQwRU3zlffFEVTvZIRvRPi826
+ hXKcOgg==
 
-On Tue, 25 Mar 2025 at 05:17, <guoren@kernel.org> wrote:
+
+
+=E5=9C=A8 2025/3/26 03:01, Daniel Vacek =E5=86=99=E9=81=93:
+> There are a few leftover extent buffer flags not being meaningfully used
+> anymore for some time. Simply clean them up.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+
 >
-> The rv64ilp32 abi kernel accommodates the lp64 abi userspace and
-> leverages the lp64 abi Linux interface. Hence, unify the
-> BITS_PER_LONG = 32 memory layout to match BITS_PER_LONG = 64.
+> Daniel Vacek (3):
+>    btrfs: cleanup EXTENT_BUFFER_READ_ERR flag
+>    btrfs: cleanup EXTENT_BUFFER_READAHEAD flag
+>    btrfs: cleanup EXTENT_BUFFER_CORRUPT flag
+>
+>   fs/btrfs/disk-io.c     | 11 ++---------
+>   fs/btrfs/extent-tree.c |  6 ------
+>   fs/btrfs/extent_io.c   |  7 ++-----
+>   fs/btrfs/extent_io.h   |  5 -----
+>   4 files changed, 4 insertions(+), 25 deletions(-)
+>
 
-No.
-
-This isn't happening.
-
-You can't do crazy things in the RISC-V code and then expect the rest
-of the kernel to just go "ok, we'll do crazy things".
-
-We're not doing crazy __riscv_xlen hackery with random structures
-containing 64-bit values that the kernel then only looks at the low 32
-bits. That's wrong on *so* many levels.
-
-I'm willing to say "big-endian is dead", but I'm not willing to accept
-this kind of crazy hackery.
-
-Not today, not ever.
-
-If you want to run a ilp32 kernel on 64-bit hardware (and support
-64-bit ABI just in a 32-bit virtual memory size), I would suggest you
-
- (a) treat the kernel as natively 32-bit (obviously you can then tell
-the compiler to use the rv64 instructions, which I presume you're
-already doing - I didn't look)
-
- (b) look at making the compat stuff do the conversion the "wrong way".
-
-And btw, that (b) implies *not* just ignoring the high bits. If
-user-space gives 64-bit pointer, you don't just treat it as a 32-bit
-one by dropping the high bits. You add some logic to convert it to an
-invalid pointer so that user space gets -EFAULT.
-
-            Linus
 
