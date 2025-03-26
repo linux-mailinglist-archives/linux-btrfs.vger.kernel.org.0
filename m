@@ -1,273 +1,141 @@
-Return-Path: <linux-btrfs+bounces-12591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12592-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C99BA7162F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 13:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0390EA71655
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 13:17:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 995C5170793
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 12:05:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DE87170186
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 12:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44B21DBB03;
-	Wed, 26 Mar 2025 12:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFEE1DED5F;
+	Wed, 26 Mar 2025 12:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PXeEq7wa"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b="E3KChqIM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A300139566
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Mar 2025 12:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839F920311
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Mar 2025 12:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742990734; cv=none; b=B7PydyjLAoqWrU1F1Wt1YLeH97AixXRTRgWWPJ3zUEnhB3/rx4bu1bLH1YUVeAbaAMIJHaXLGZp5ql9fpcPAOv4/7986RTMsoJnqtUsQh0BZe84x2vbCjSDcSKRtmgw+qUUzu0ELJ/licEqg4sGvmooU5QPL1IXZnkTpCno5xCA=
+	t=1742991424; cv=none; b=jHjSpfw7UjGkw2ZE0WQVXuNOZR3RQRLsSNwGYJGu/UZBuiYScrLDk1ONFUJaGjJt3OSK9B4eskVa0S97LAFmHURndXhc5PjhCAwHLGJqdKphpI27btsKl+6i/gBmTFDxywIVoNaRpY74CIQvRxjp8LuROU4DKEeb1Zrri+/M9zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742990734; c=relaxed/simple;
-	bh=PfhfPkkjoPkyRt3ydh6MeWgP/k7XjaNWiRrCYeWgXpE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kQUvTd62y8/9bAtOoKD72fBxWfPRZyo05kxJ77ZhyEbPy9N2O4FiM7k4+arR2J9EoqksN4f/uqv7MGh4i6iGy0MZD3Wf4Tr5qQAtp+ot4PYwBbyskYlySLDXhZC91SGszNmDEqzjhk4u+pCLn+oegsG8mY8se7PNupRi4VRpaWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PXeEq7wa; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742990731;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5705i4IMdIYl7RREK9RAzszYsX2FKNdvOH1MiONcLqU=;
-	b=PXeEq7wa2jAjQrZ4fg5mGkzpVJJCJdm45Kp9NO5xRtbLvMcuiiCQNcpmo23Gn309LlrPRV
-	k5enkBc9KNHFIVyQcTBMz1IozK/ZtjIx52CQJr2VpLNUoi4HonQJB6E7SFs0D83xGcCdgx
-	cKCAIwZTZJOH4MvGOXcBiJrA+TH2MCs=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-9SqlXTr8OAeiszEQJM802Q-1; Wed, 26 Mar 2025 08:05:27 -0400
-X-MC-Unique: 9SqlXTr8OAeiszEQJM802Q-1
-X-Mimecast-MFC-AGG-ID: 9SqlXTr8OAeiszEQJM802Q_1742990727
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2ff6af1e264so19147494a91.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Mar 2025 05:05:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742990726; x=1743595526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5705i4IMdIYl7RREK9RAzszYsX2FKNdvOH1MiONcLqU=;
-        b=pKpEaqeyz7Lpgod3oK9e9urC6NoAEI7RYE23gIRzuDeX03HScz3/mTxaqz6QayhEWU
-         j16R0L1oDoGxq/yA6Zh5Mxi10zy4o7qZ2AnDU+aD7fIzVcgxhPLAJn80K/UtHK7bqDX8
-         a6VYB56G1/d9u6z2GpntScWvpKazRwyA5FucdTwiRHpXFbl83QA1jVE83XdV3XYuJLbE
-         wTry8mRaV8rqpKLTqVWMcyywIhnzFO27pitCenLp7+BKErLzrLYQ/rinOQ76boKWF+gM
-         owVk0sSmsYAVUUH+eE/L05aNyiPDQHU2a37ZksEIoOxQd7TYeT6kxEJEkK04ijURgWbP
-         QG3w==
-X-Forwarded-Encrypted: i=1; AJvYcCW4QOE5KCQPs8D4z55/2Fp6d2nbdQiovfB4NNTiRM9Agc7ikfVyouQBvPUqNCPwcvSwRZ7lQ5Id5rlLzA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpyAfpK0KDNChEeUipfNUnZuNXFErpW7QxdBdOv9Z9HCu7/F5z
-	Wk1iFDirQbxoZRXhBy8fWfOH3P9QlIXi9MehbuUrj727j1EU/ZijUKCS/ZG7yx8ntUD3vLDFrFX
-	OEn4v0bvDW6vvpmWK1kLTgU0piKxhUQ988rqyHOWFiVAG6FNPD6odx1cBCGdDqjHROGUwDPo=
-X-Gm-Gg: ASbGncuwI2G/vtVVRY+B08xrhmCUdFvSMtOsLgikNcag3KqpN5UhWwJ8ShPvgJYq3Q8
-	q5w5890sGyCNIr0VwBm6gWLmx8vBUpmWhiKdSU9BM3XemQFYP8pxF5Bw2DmTc/Tppw/N4hJRJ30
-	eOzwXV4TZgUVSqqocHXGoE8T1DynhjXAxVX0Ff0xgRpXmQw9AJtbmRhuaZwWCa63K3EFmx43v40
-	7xyeIRV8PmJYbC3Vih0iBSN8L7Ebb5V8JTHv0cjILNNxlJkekrPMvRWZgBEL9F9ju2xQKGJtOts
-	XwoN6zEmc+OiFsWbwyD2oOwJYbnt1gpdE4jeNPvrGU62DEis/3INtsIh
-X-Received: by 2002:a17:90b:38c7:b0:2ff:5c4e:5acd with SMTP id 98e67ed59e1d1-3030ff08ddcmr28681844a91.35.1742990726376;
-        Wed, 26 Mar 2025 05:05:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGhneHesdbOtXw4gniFcK86cM2C0IYwALL+FtTJ9JYKmF2/lxfNv147QapG1PkzO8dAtrpX8Q==
-X-Received: by 2002:a17:90b:38c7:b0:2ff:5c4e:5acd with SMTP id 98e67ed59e1d1-3030ff08ddcmr28681808a91.35.1742990725843;
-        Wed, 26 Mar 2025 05:05:25 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3030f60b919sm12175624a91.27.2025.03.26.05.05.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Mar 2025 05:05:25 -0700 (PDT)
-Date: Wed, 26 Mar 2025 20:05:22 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v2] generic: test fsync of file with no more hard links
-Message-ID: <20250326120522.5uzi3otqe4lhozvv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <9a9c54e662293fb01591c256dd32243b1a149fe2.1742905343.git.fdmanana@suse.com>
+	s=arc-20240116; t=1742991424; c=relaxed/simple;
+	bh=js6aCO1aTwYb1EhmpWmhGPAXiY0eQ2rcKyv8QyVQqQE=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=XlM28VTlJ6i0ZG42GuHuCLzof3uq/FrGJlbG6a2UM988X53+qMe4IPjfc/u7bIzrKw/B4zheI7A4tja6Cs6TZd6xrri3VXVJQmPkwpSJvDTLVUKhyYu2j3JP1T6EgrWFraCM7S9IxKSyX6NVu4xlIw8g+YhXWFl5402HzLF2K1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b=E3KChqIM; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1742991352; x=1743596152; i=jimis@gmx.net;
+	bh=5cOJjDLS1t1CukGA1iPJjoF2+Vsq3uYbXeFXNmxQ7J4=;
+	h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=E3KChqIMam9oB6xBg/wodK/i2KQmtpM8rdpPljFG2yZ1aiL67l/nUcQ0kzIsv1KR
+	 ZrhGrs16TQ8EXaeLrfPiEVaxzEHnyju/cfk8lC8xq8tqnsoIJ/WSoVmqpuJ6k/+1x
+	 MD63kj88VqGCsK1IPULpSj9FDQfPq+V5qD/QxLsCr0xYnXiml0LdDx65x7fIgEM1k
+	 aIlEKmKHB48JUCh5GH8PbkH/6CnxG3rWeqiM4rMvefpmx6LO7RPpaYprzeRCg9lmR
+	 g8Ne9jyxVAJ9oh1uMNf06EjVIC7MghjYC6EU4heJILzfA8DE4PGjeE5CyeX0ClJk3
+	 kv7foQx9tgTPBDr9Jg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.9.70.81] ([185.55.106.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1tTrD10NoZ-00jQZi; Wed, 26
+ Mar 2025 13:15:52 +0100
+Date: Wed, 26 Mar 2025 13:15:47 +0100 (CET)
+From: Dimitrios Apostolou <jimis@gmx.net>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+cc: Gerhard Wiesinger <lists@wiesinger.com>, linux-btrfs@vger.kernel.org
+Subject: Re: mount compress=zstd leaves files uncompressed, that used to
+ compress well with before
+In-Reply-To: <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
+Message-ID: <2858a386-0e8c-51a6-0d8a-ace78eced584@gmx.net>
+References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net> <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net> <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a9c54e662293fb01591c256dd32243b1a149fe2.1742905343.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Provags-ID: V03:K1:uDzpwtGv16lzYn/+IfwGDHpacxcu2FhPQf+8MIOo1C00OEaLtII
+ jToVNH2XdObR+CViXclC7p4UeunUHXNKfnePLI8vdopy8YFW28A+JRPfim68jSG9dk50XyQ
+ pm43S55EtNRR/GkGPlVT17ZxDGn1r94FmKssJemvaYb4uKznoc+4oam6B+Mmf6DKZLsyIEE
+ v28bhdGIkCB6jWxdTAUVQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ezshGa4zvIA=;AmUjvUmy4d1gqFta6HBcjECl3VQ
+ dCXMbxwkD+DXHWA+i9O7CsPsAKlhQchv/9qOQM6AzUDzj4ambkxNZ9klUJm8s8H1LR9e8kj8b
+ 1he7JduxBEnZ+03Ul+QBY/HcA43p9uIVvcD54Y9oS3oSrUyrmvU4IFYUwIaj3IVWjNXKUPgQq
+ os1VYnPSuqAGC2hhmYKo1MBe+H/pX4rdAP97oMYMhurdwknYvywa4S4M+zVnrJvjQX4B+08jo
+ d+3elyl1Bg4uePA0QDsaTJ970KAntr/do/rysqH7zTH3D/asxMPRJrKmuj/yCkp72kr7qNQ6R
+ SkjrBJD9WKMjb+KCF6wu3S9QR4xsE6WX67VmXR0XUOF/hpuCrZOzCraKfioIg5nEjqTM0h/F4
+ hc+SqKVJ1y+mUx6QgQqNvv231v4dBfIvOst1guKmv8pR7wFJCao2Y2dwUj2PfL837ZbVckbZV
+ TCjCRNEaGFByPQ/8l67LgEPb9xM4MyHNUeJqEgGyIBFKtJabbewxR8OTrshPyKUQy+Vx/qgmS
+ /Ehc8EXVm16TGpwb3RE4Xl6dQ89wGxMWBJZOSy8U8Zfv3evRMD2X4BDo8pR6ki1l9fs+RN4Wa
+ QIUiB7kEAz9BY3XxvrtsE6Jchp0jRFs+dZBsU6HPkncXWZ1T2r2YqFVDO+wfvX6o9fD0LUIrP
+ J72R/y+7+rCFY2pZmJAigCVem7hAK120TUQjC7jWCZkXpUTK4ftz8GAbuYajNxQH3kcd7bKbj
+ g3/lT7CSWAvaLGh4Yl0PQ8A2yZZSb+Ht3+XtEDCWNs9wi7JZa40Q8uqNP9ShXsxtcxUX38ebi
+ 8otTS3+yxnEvTy5EmZ7mgSzA17wJFJ+1WhNerPI5ZAuciNIA2t8WxcUIlzNgxhM6MouT+YQ4l
+ wZxibMqAEvU4FcjPaHu+Oip3x7tOJbyOA3978B+AELaI0wYaz1QEbX3IQTVULnQ12l7/T7oDb
+ IIdCb3F5z+HjpeXkym2sdVchqi658I+hfpXRkDdhXMI9wWBhGJx5Rdsc4xqtwPha+yWkHTsOo
+ U9KT0WhyoZF9iVm3sqE71qRoz/vbyXSjJ9/Wi/2XTADNPVyAd4U3t1nW1SxpRvEsO+piOv4MR
+ t0Hhwua7hrP0zpex8zNveELN/cH5LqpFGO+FUgwyveWQaf2H3RO7QcKXxGBBfXiIb8Uc0TMsH
+ o5ZEO8xr9+ORTgSkF10iETICZFp+fgLZ7uKFtA9NJ0llSoahFiKiAYm3TLOwDMgSkyUjAOaUG
+ eDv06M4Iqk2EPnoDjLs0Dm7Bn8dVNIGL+ZWnt+BfA8C1w7cTUo30NBqaQT0ooYa4zeJtk1kd0
+ Ylc/GFMNtMxEABWQHbPTQh2camH3NINW6oC9CpFgFErRE/H8zoROwJ4yqxi3Z8cpXK6d636JB
+ NPV7KyHCAgPe+Wzf7+OZ0Y5D0OMfIdOfaQNzC6Arkn/Ywc32hZ+ohu3x2dIJPzCgeux0Wg3nu
+ 9nK1RRA==
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 25, 2025 at 12:24:40PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Test that if we fsync a file that has no more hard links, power fail and
-> then mount the filesystem, after the journal/log is replayed, the file
-> doesn't exists anymore.
-> 
-> This exercises a bug recently found and fixed by the following patch for
-> the linux kernel:
-> 
->    btrfs: fix fsync of files with no hard links not persisting deletion
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
-> 
-> V2: Use the src/multi_open_unlink.c program with added options to sync
->     filesystem after creating files and fsync files after the unlink.
+CC'ing Qu Wenruo from this thread
 
-This version is good to me,
+On Mon, 24 Mar 2025, Gerhard Wiesinger wrote:
+>
+> It's a known bug I also ran into, see the disucssion here:
+> https://lore.kernel.org/all/b7995589-35a4-4595-baea-1dcdf1011d68@wiesing=
+er.com/T/
+> (It can't be easily fixed)
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+Hi Qu, reading this thread I understand that posix_fallocate() ends up
+leaving files uncompressed forever in btrfs, regardless of mount options.
+I see this in PostgreSQL that recently started using posix_fallocate().
 
-If no more review points this week, I'll merge it this week.
+You gave some information on why the solution is hard:
+> There is a long existing problem with compression with preallocation.
+>
+> One easy example is, if we go compression for the preallocated range,
+> what we do with the gap (compressed size is always smaller than the real
+> size).
+>
+> If we leave the gap, then the read performance can be even worse, as now
+> we have to read several small extents with gaps between them, vs a large
+> contig read.
 
-Thanks,
-Zorro
+Can't the solution/workaround be way more simple, or stupid even?
 
-> 
->  src/multi_open_unlink.c | 24 ++++++++++++++++++--
->  tests/generic/764       | 50 +++++++++++++++++++++++++++++++++++++++++
->  tests/generic/764.out   |  2 ++
->  3 files changed, 74 insertions(+), 2 deletions(-)
->  create mode 100755 tests/generic/764
->  create mode 100644 tests/generic/764.out
-> 
-> diff --git a/src/multi_open_unlink.c b/src/multi_open_unlink.c
-> index c221d39e..fb054e87 100644
-> --- a/src/multi_open_unlink.c
-> +++ b/src/multi_open_unlink.c
-> @@ -28,7 +28,7 @@
->  void
->  usage(char *prog)
->  {
-> -	fprintf(stderr, "Usage: %s [-e num-eas] [-f path_prefix] [-n num_files] [-s sleep_time] [-v ea-valuesize] \n", prog);
-> +	fprintf(stderr, "Usage: %s [-e num-eas] [-f path_prefix] [-F] [-n num_files] [-s sleep_time] [-S] [-v ea-valuesize] \n", prog);
->  	exit(1);
->  }
->  
-> @@ -44,8 +44,10 @@ main(int argc, char *argv[])
->  	int value_size = MAX_VALUELEN;
->  	int fd = -1;
->  	int i,j,c;
-> +	int fsync_files = 0;
-> +	int sync_fs = 0;
->  
-> -	while ((c = getopt(argc, argv, "e:f:n:s:v:")) != EOF) {
-> +	while ((c = getopt(argc, argv, "e:f:Fn:s:Sv:")) != EOF) {
->  		switch (c) {
->  			case 'e':   /* create eas */
->  				num_eas = atoi(optarg);
-> @@ -53,12 +55,18 @@ main(int argc, char *argv[])
->  			case 'f':   /* file prefix */
->  				given_path = optarg;
->  				break;
-> +			case 'F':   /* fsync files after unlink */
-> +				fsync_files = 1;
-> +				break;
->  			case 'n':   /* number of files */
->  				num_files = atoi(optarg);
->  				break;
->  			case 's':   /* sleep time */
->  				sleep_time = atoi(optarg);
->  				break;
-> +			case 'S':   /* sync fs after creating files */
-> +				sync_fs = 1;
-> +				break;
->  			case 'v':  /* value size on eas */
->  				value_size = atoi(optarg);
->  				break;
-> @@ -83,6 +91,12 @@ main(int argc, char *argv[])
->  			return 1;
->  		}
->  
-> +		if (sync_fs && syncfs(fd) == -1) {
-> +			fprintf(stderr, "%s: failed to sync filesystem: %s\n",
-> +				prog, strerror(errno));
-> +			return 1;
-> +		}
-> +
->  		/* set the EAs */
->  		for (j = 0; j < num_eas; j++) {
->  			int sts;
-> @@ -111,6 +125,12 @@ main(int argc, char *argv[])
->  				prog, path, strerror(errno));
->  			return 1;
->  		}
-> +
-> +		if (fsync_files && fsync(fd) == -1) {
-> +			fprintf(stderr, "%s: failed to fsync \"%s\": %s\n",
-> +				prog, path, strerror(errno));
-> +			return 1;
-> +		}
->  	}
->  
->  	sleep(sleep_time);
-> diff --git a/tests/generic/764 b/tests/generic/764
-> new file mode 100755
-> index 00000000..1b21bc02
-> --- /dev/null
-> +++ b/tests/generic/764
-> @@ -0,0 +1,50 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
-> +#
-> +# FS QA Test 764
-> +#
-> +# Test that if we fsync a file that has no more hard links, power fail and then
-> +# mount the filesystem, after the journal/log is replayed, the file doesn't
-> +# exists anymore.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick log
-> +
-> +_cleanup()
-> +{
-> +	_cleanup_flakey
-> +	cd /
-> +	rm -r -f $tmp.*
-> +}
-> +
-> +. ./common/dmflakey
-> +
-> +[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"btrfs: fix fsync of files with no hard links not persisting deletion"
-> +
-> +_require_scratch
-> +_require_dm_target flakey
-> +_require_test_program "multi_open_unlink"
-> +
-> +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> +_require_metadata_journaling $SCRATCH_DEV
-> +_init_flakey
-> +_mount_flakey
-> +
-> +mkdir $SCRATCH_MNT/testdir
-> +$here/src/multi_open_unlink -f $SCRATCH_MNT/testdir/foo -F -S -n 1 -s 0
-> +
-> +# Simulate a power failure and then mount again the filesystem to replay the
-> +# journal/log.
-> +_flakey_drop_and_remount
-> +
-> +# We don't expect the file to exist anymore, since it was fsynced when it had no
-> +# more hard links.
-> +ls $SCRATCH_MNT/testdir
-> +
-> +_unmount_flakey
-> +
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/generic/764.out b/tests/generic/764.out
-> new file mode 100644
-> index 00000000..bb58e5b8
-> --- /dev/null
-> +++ b/tests/generic/764.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 764
-> +Silence is golden
-> -- 
-> 2.45.2
-> 
-> 
+* Either have fallocate(2) return EOPNOTSUPP on a force-compress
+   filesystem, and leave the work-around to userspace,
 
+* or fill up the holes with compressed zeros, basically implementing the
+   work-around in kernelspace. I suspect this would be very cheap in a
+   deduplicating filesystem like btrfs, since all the zero-filled
+   compressed extents are essentially identical.
+
+
+In any case, I think this should be documented in the btrfs documentation
+about compression, [1] it would have saved me time. I can try to submit a
+patch if you point me to the docs repo. Any other known cases where
+compression is unexpectedly skipped?
+
+[1] https://btrfs.readthedocs.io/en/latest/Compression.html
+
+
+Thank you in advance,
+Dimitris
 
