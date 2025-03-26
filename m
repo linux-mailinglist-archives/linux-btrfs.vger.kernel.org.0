@@ -1,204 +1,339 @@
-Return-Path: <linux-btrfs+bounces-12586-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12587-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE37A71062
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 07:08:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08DF4A7107E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 07:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C61CF1899F8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 06:08:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F33C43AC409
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Mar 2025 06:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5211E1917F9;
-	Wed, 26 Mar 2025 06:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC898189916;
+	Wed, 26 Mar 2025 06:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nco888oV"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="W+cZedty"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E484161310;
-	Wed, 26 Mar 2025 06:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FFD176AC8
+	for <linux-btrfs@vger.kernel.org>; Wed, 26 Mar 2025 06:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742969282; cv=none; b=domLtPSzT0iHWoIhcDXwCm3Tew+dJRTFFj+eAvcLDaC/T0jxBgCN8BhGEPIBQjBWzufcp3MG/MdnDc74KEiUlvD9d3WT/m8sHb3+0gcAGug9KxjqeKxEqr2ZpDcSZCqvJDRPG68xzRWndbgBMnXjerw6KMLCKCFz2E98Hr+cu94=
+	t=1742969967; cv=none; b=sORij9RtxFV/7nfDSg3oL/J/JggiC19JzuAluREugUZbZozODPt9JmYffAvfqwoSBnEf6Hj1JXqA0ubWBHaOWF0vBMDILu2HV4fTvd1NpQlOh0CnzOgpjzwPppLm1Ef8V7ozCC4O6Y1HRMEzhGmUe2UUHoGUI+gZibLWlA7tWMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742969282; c=relaxed/simple;
-	bh=17ilzGvreeHm226kkfQPsyEFUeLiEMTwZ00oVMu8jpY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W48BeqGsZ1t2fUTAFQgCKXQAJ2D2lsLPkia/1cEjjgkwUj1AtGXhZAh1J3pzEbi7BmbP0oCB6bkBZLaLOo1eDGFGtfruvav4HfVS0f4ntMYrBHUkByzROm8nICeEV4vSMYiZWGRtrTJfYo59dvB0+s1193+xM5VWnkmkVcMOa2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nco888oV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A181C4CEE8;
-	Wed, 26 Mar 2025 06:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742969281;
-	bh=17ilzGvreeHm226kkfQPsyEFUeLiEMTwZ00oVMu8jpY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Nco888oVkpWvjjpmwWCThvxb1AtfGv+uxSw1N4XjTkec3DRuVqc8KPvc5gyVt3uyU
-	 IV7JpaJMp0N1G9bNlo7QCS6M3AKZni7g3eSBUqYTCiax5dYr0YNhkTLa/iLtyFs7Wv
-	 HtMjo1vjIyvsz1Ery/OFJdGpHbx7zWh4Jt/U+jmcfT2/psOB/aVWJLouBgMnlcLXxi
-	 iQ6JWvJv52TlmS30JjLarPhhTiwvQVU+efwiS9Qj/9tY8Xh5NXnQExI9PhYTcscXed
-	 SkD/3WaA4QEW7XPf0f3AnBRtjzDT5qFOrBTZk3J5UH2yTDn5Ts9Hsd2ScdykbJt4y0
-	 tZfx12/Kj/UNA==
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43d04ea9d9aso29092765e9.3;
-        Tue, 25 Mar 2025 23:08:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU9kzT6BA6N6h87+Q5LlLgA6p87ybvkMC/+e6djgPiK1RymMroREloorw/Bntec6btNgNgetZU17M232IILkfIymvwb@vger.kernel.org, AJvYcCUVbdDsIGoZW4wbdqY4ExqKrN3GTpoOcnacZnfw+W/I8chaKcML5lVDxfc3oGE8dDMoIYxX+HsgFQJR@vger.kernel.org, AJvYcCUWFLdwe7lwdhY4QVROCbCYd3X5Z75wXRkc7rXh8Bb3MOQ/iX5hTefzd/uDQlQ6heWvo5SUOXpw+VWsHlw=@vger.kernel.org, AJvYcCUWVjZ3XPlrA7jPuJO8ObPIUkTqtojM3OAsLCv2ThaZeZOa1bWTc73BR2xmka/oT7upCfxC+jsXFSr6zaE7eBTa@vger.kernel.org, AJvYcCUXji1jIuFBG6161oCJDbIuWuOxiDghQbqsLh62XdF9sHT+YbtdOoFZu+cG3tZhdnYCFbqShie1ZbHRKorn@vger.kernel.org, AJvYcCVSSdzgOS1NRSOcHWRW3oVXx0h0/oTMccv6aez6FZny6stDw6CTkFz16OVdZUpx7iH9sYfKcWMkV0Ax+JE=@vger.kernel.org, AJvYcCW8dLA624cklmFoAEYOpSyGC8lEOBINpemT7x+eOHFqcBFx5qmqTxSclGVFBbZXyGf3D6cWYlO1@vger.kernel.org, AJvYcCWKmmi1flBpuF3G+U6llD8mK4tVWwRfZArstzUSyuicvzdNx/JjMVVaJ8ZqbXd8rYRL2W39AqTX47KJ@vger.kernel.org, AJvYcCWSFXTNbfuLsPiAFx9hNmQ2Rg5+J9l6zBhAUzyqM62EWaWk/3MROgU9CLU+f1wcdGmfUskw@vger.kernel.org, AJvYcCWg5lo1ykuKBd9P8pLYG73yQb1q
- Njce0a/X3l4B+PcuIo7oZNsbWAvO38qA2S93fa4Bxpc=@vger.kernel.org, AJvYcCWlW/LFGElA26cSvMh5T2iUC4aAUqhgQ2QFusESKPKBIoSskwH7jjFtNn9AlU/HjDY29U9R7RCVPuU4hq4U@vger.kernel.org, AJvYcCWpjFEH9caShLPBc82kAI+KcbKOGDEvIR1UJ8N80RNns+V3DB54VBhnQC2CH3K/TuWHpgLgRxggi+yyD3TKPYAbig==@vger.kernel.org, AJvYcCWtl9TLsEYQyGtNQXjn0maTH/39t12gRR0DG7xVAuerstxRSuTXmZ7FmUZ5K/hJzy0QWx6YoMbaSmoRO38=@vger.kernel.org, AJvYcCXNYiqJuDYuZM0K38V1+gcnPcGpq6UDCwA6IKtUjBX8cI6qw6s5sDNduZy7vb9yLVFrjlZK1B2O5CDPPg==@vger.kernel.org, AJvYcCXR7x5G2gD1h/by+2WZSf7P5ZBqK431BkanWVf5fhQeAzIc9Y9w7R3OijTuglyPQCrUOszHGUjqsPfl6Lzn@vger.kernel.org, AJvYcCXYSHeE+0Gt8yLx89rxydHM8RwlmmB7Ygw17ELraN10jyl64fQFCh3sGcg9m1dsYd4+e/o/lz98rnrMFQ==@vger.kernel.org, AJvYcCXoo9sNwuUeUMHbqZtyAOo6Tw2gCN+1pRzUcCsAz7zyyPaEAF1/2sN/2RPsAIeBnbSfhMxzckn0o0f4EfWAXw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrNvgQ4sY2SyaFmXOIzWsOqjvA8XC9s2ct7PrwYX2cHCUovBuT
-	k+97K0wcz6PnrXIJRcnet1ccY9x+uRY0ikHO2UpmBuzyAj8und5YCwGZXKddIlDKJxJ3kg/rHL+
-	dDJ2u5APrOBCm+5G8XtZIcjUdNy4=
-X-Google-Smtp-Source: AGHT+IEuIFNoPjN0AZZplDS08UZSXPKtCbe3v92zS/QV8r4A1uiHzUqZnFSHaB3urAWjtmc7YALAB9tDHWY70m3ocVw=
-X-Received: by 2002:a05:6000:1fa7:b0:390:e5c6:920 with SMTP id
- ffacd0b85a97d-3997f9008c2mr16208871f8f.3.1742969279888; Tue, 25 Mar 2025
- 23:07:59 -0700 (PDT)
+	s=arc-20240116; t=1742969967; c=relaxed/simple;
+	bh=ZDoYtZypwCnUqbIX7sKFYgsl1PK6UM8wHQnJjEMJ6WA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=O0bJTUme1To48QaRa4pGyP+jZUa8h6x0J8tiVACl7YmD1Vu+WL9pEPfE2Gax98SxYmIogU+2sk0kw4nj2//v2hD0vFSlC1r82t1gmF1C1fcSQ5HIZHLoX6N11tV3pKOqiDSyikRF9qKH5TLPNG0Y8zU7yWCs1bj7hDo2mE8ARHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=W+cZedty; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3914bc3e01aso3667635f8f.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Mar 2025 23:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1742969962; x=1743574762; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yusxF91Wc3ISU7OaL86oTRMlkH4j2TEqKd8t8qa8hQI=;
+        b=W+cZedtyoGPlX2sG+Oq+EoBjPAGnzT150htrNTRmzTdn7GtlFfmn+cnWWZgJPlDxIB
+         p/cvU++KmX86PmhGo8xgPDmOrMmw0xVIQet6+oDwQE8ctbz54wAIezcl4KWnsR/UDS85
+         5f0O7GTQkx2JtGo3HZM5AEu28x9ok+7StY5wHc/ktrtF7ejLNW68KiLGV0aLMRm+wV2I
+         v/E86yqncEvd1fCTkqiQxUziS2CZzDvTKbo7rdAgCXYEkZWN1woaiM+knVDd8DA7ncFI
+         Zg30c70JvXDE7wvpBvUf9qJpzu6cBA2h8boie0PAo81cg9WbB/w2eoVqGCY6OHJlPFZg
+         x6dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742969962; x=1743574762;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yusxF91Wc3ISU7OaL86oTRMlkH4j2TEqKd8t8qa8hQI=;
+        b=iCpQiSdxZkWCm9yBMMSAuJ8lwGg3xy8952DxDa378m6fEj8/6TP7mirnb+r259HXRg
+         Kb8+o3b/C7Uy3dQwrqAx1aQgyzDlEiRZiYOe7SZG8LkHe1E1mOqfQjbrk92cjPIiO70/
+         ZPmFi5Irx9P1HQd0Q4JjalQSKzSLEOICJZxzIYeo5pnbi3eOY6i3G6Nq46pzatPUgOiM
+         AqeHIsDvaWPrmiLmNVJRX/bIkC1weGuuD08cI/3Waw0wPThZqtTM0/yt3V3iPGNGRA+Y
+         yWw6LVyXaRTTjQDytC49xRGjbIYMQQ8dkJcQgjbZjVVKSswbiz1nV1kQ4oTckm7xX4Zq
+         z0Mw==
+X-Gm-Message-State: AOJu0Yw3YIfzrQbKvAFFlQRz0pSpzgkPvRBf5O+bmbmDuhT6eut6OE8x
+	dkJGHF8f57wnWSTScOZGM/HO//yq9eKveTYb8da9+ghBVjUptdDxdse7OWHZe+Q/1oP+7eVtmdh
+	2
+X-Gm-Gg: ASbGncstNusqOc2QZAhmH5B8pPx1WuZc44NQ2ElgVeGJqXFj2PwXOTllShn/9beSU7c
+	Dg5VAlfcLvcb2sr0Wvk7N/2+J3nuEmHJg+vDRpxIERfBVmdFEs0S1MTyJGseKjU30xvt8Ljuu6Y
+	Zd2fWyc+WKoHFkjaY++KHACfMxK6gp2tasQU7JV+suS9BV0nMujCgGztCRoWtlWL3Y81dbA1pxP
+	x63v4KyEcOgTQ2a+JtzQCOyX2ntvSbTuER5eoiuBPACZBKSur2d4QU/eYCj9U0TQCV30qkE0fVo
+	rHI6bLnFLLY8n6v/I4s6jKpzfbCmIhT9PJ+4nd7PJ5enFnTXdAlTeHh86W88+obWEKKWJmts
+X-Google-Smtp-Source: AGHT+IFW0Unf+TVRfb6/noYdKkYLi/r8bhnO51aMSmw6qVHLGDvGRLqL+6d7vxAuXcJLzThFDYdTsQ==
+X-Received: by 2002:a05:6000:2ce:b0:38f:483f:8319 with SMTP id ffacd0b85a97d-3997f93c36emr21229719f8f.51.1742969961943;
+        Tue, 25 Mar 2025 23:19:21 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7390611c950sm11654667b3a.104.2025.03.25.23.19.20
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Mar 2025 23:19:21 -0700 (PDT)
+Message-ID: <95bc9f53-93c9-4a93-a892-62ec5519bfb0@suse.com>
+Date: Wed, 26 Mar 2025 16:49:18 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250325121624.523258-1-guoren@kernel.org> <20250325122640.GK36322@noisy.programming.kicks-ass.net>
- <db3c9923-8800-4ed3-a352-4ee9ef79c0b7@app.fastmail.com>
-In-Reply-To: <db3c9923-8800-4ed3-a352-4ee9ef79c0b7@app.fastmail.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Wed, 26 Mar 2025 14:07:47 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSHpZMyUk+8HL0=bevCd4XZYRAkrPM600qLPCKxG+bfrg@mail.gmail.com>
-X-Gm-Features: AQ5f1JqPvj-l64SFz6C-IoAkuirA5RSoM_MAB1hbvMnwwKSuwLAnDrMsa14MaDw
-Message-ID: <CAJF2gTSHpZMyUk+8HL0=bevCd4XZYRAkrPM600qLPCKxG+bfrg@mail.gmail.com>
-Subject: Re: [RFC PATCH V3 00/43] rv64ilp32_abi: Build CONFIG_64BIT
- kernel-self with ILP32 ABI
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Peter Zijlstra <peterz@infradead.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, Oleg Nesterov <oleg@redhat.com>, Kees Cook <kees@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Christian Brauner <brauner@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Eric Dumazet <edumazet@google.com>, Chen Wang <unicorn_wang@outlook.com>, 
-	Inochi Amaoto <inochiama@outlook.com>, gaohan@iscas.ac.cn, shihua@iscas.ac.cn, 
-	jiawei@iscas.ac.cn, wuwei2016@iscas.ac.cn, Drew Fustini <drew@pdp7.com>, 
-	"Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>, ctsai390@andestech.com, 
-	wefu@redhat.com, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Ingo Molnar <mingo@redhat.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Xiao W Wang <xiao.w.wang@intel.com>, 
-	qingfang.deng@siflower.com.cn, Leonardo Bras <leobras@redhat.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, "Conor.Dooley" <conor.dooley@microchip.com>, 
-	Samuel Holland <samuel.holland@sifive.com>, yongxuan.wang@sifive.com, 
-	Xu Lu <luxu.kernel@bytedance.com>, David Hildenbrand <david@redhat.com>, 
-	Ruan Jinjie <ruanjinjie@huawei.com>, Yunhui Cui <cuiyunhui@bytedance.com>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, qiaozhe@iscas.ac.cn, 
-	Ard Biesheuvel <ardb@kernel.org>, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Linux-Arch <linux-arch@vger.kernel.org>, maple-tree@lists.infradead.org, 
-	linux-trace-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>, 
-	linux-atm-general@lists.sourceforge.net, linux-btrfs@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-	linux-nfs@vger.kernel.org, linux-sctp@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] btrfs: simplify the reserved space handling inside
+ copy_one_range()
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <75e2c5599917601879ad120425376d54e95cb49c.1742889641.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <75e2c5599917601879ad120425376d54e95cb49c.1742889641.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 25, 2025 at 9:18=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
-:
->
-> On Tue, Mar 25, 2025, at 13:26, Peter Zijlstra wrote:
-> > On Tue, Mar 25, 2025 at 08:15:41AM -0400, guoren@kernel.org wrote:
-> >> From: "Guo Ren (Alibaba DAMO Academy)" <guoren@kernel.org>
-> >>
-> >> Since 2001, the CONFIG_64BIT kernel has been built with the LP64 ABI,
-> >> but this patchset allows the CONFIG_64BIT kernel to use an ILP32 ABI
-> >
-> > Please, don't do this. This adds a significant maintenance burden on al=
-l
-> > of us.
->
-> It would be easier to this with CONFIG_64BIT disabled and continue
-> treating CONFIG_64BIT to be the same as BITS_PER_LONG=3D64, but I still
-> think it's fundamentally a bad idea to support this in mainline
-> kernels in any variation, other than supporting regular 32-bit
-> compat mode tasks on a regular 64-bit kernel.
->
-> >> The patchset targets RISC-V and is built on the RV64ILP32 ABI, which
-> >> was introduced into RISC-V's psABI in January 2025 [1]. This patchset
-> >> equips an rv64ilp32-abi kernel with all the functionalities of a
-> >> traditional lp64-abi kernel, yet restricts the address space to 2GiB.
-> >> Hence, the rv64ilp32-abi kernel simultaneously supports lp64-abi
-> >> userspace and ilp32-abi (compat) userspace, the same as the
-> >> traditional lp64-abi kernel.
->
-> You declare the syscall ABI to be the native 64-bit ABI, but this
-> is fundamentally not true because a many uapi structures are
-> defined in terms of 'long' or pointer values, in particular in
-> the ioctl call.
 
-I modified uapi with
-void __user *msg_name;
-->
-union {void __user *msg_name; u64 __msg_name;};
-to make native 64-bit ABI.
 
-I would look at compat stuff instead of using __riscv_xlen macro.
+在 2025/3/25 18:31, Qu Wenruo 写道:
+> Inside that function we have the following variables all involved to
+> help handling the reserved space:
+> 
+> - block_offset
+> - reserve_bytes
+> - dirty_blocks
+> - num_blocks
+> - release_bytes
+> 
+> Many of them (block_offset, dirty_blocks, num_blocks) are only utilized
+> once or twice as a temporary variables.
+> 
+> Furthermore the variable @release_bytes are utilized for two different
+> operations:
+> 
+> - As a temporary variable to release exceed range if a short copy
+>    happened
+>    And after a short-copy, the @release_bytes will be immediately
+>    re-calculated to cancel the change such temporary usage.
+> 
+> - As a variables to record the length that will be released
+> 
+> And there is even a bug in the short-copy handling:
+> 
+> - btrfs_delalloc_release_extents() is not called for short-copy
+>    Which looks like a bug from the very beginning, affecting both
+>    zero byte copied and partial copied cases.
+>    This can lead to rare generic/027 kernel warnings for subpage block
+>    size.
+> 
+> To fix all those unnecessary variables along with the inconsistent
+> variable usage:
+> 
+> - Introduce @reserved_start and @reserved_len variable
+>    Both are utilized to track the current reserved range (block aligned).
+> 
+> - Use above variables to calculate the range which needs to be shrunk
+>    When a short copy happened, we need to shrink the reserved space
+>    beyond the last block.
+> 
+> - Handle zero byte copied case and return immediately
+>    Not all functions are handling 0 length correct, and to be extra safe,
+>    just manually do the cleanup and exit.
+> 
+> - Call btrfs_delalloc_release_extents() for short-copy cases
+>    This also fixes a bug in the original code that it doesn't call
+>    btrfs_delalloc_release_extents() to release the ranges beyond
+>    the last block.
+> 
+> - Remove the five variables we no longer need
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v3:
+> - Do cleanup and return directly if no byte is copied
+> 
+> - Call btrfs_delalloc_release_extents() when short copy happened
+>    Which is not done in the original code.
+> 
+> v2:
+> - Fix a bug that can be triggered by generic/027 with subpage block size
+>    The fix is to keep the old behavior that the first block will only be
+>    released by btrfs_delalloc_release_extents() after
+>    btrfs_dirty_folio().
+> ---
+>   fs/btrfs/file.c | 79 ++++++++++++++++++++++++++-----------------------
+>   1 file changed, 42 insertions(+), 37 deletions(-)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index b72fc00bc2f6..0b637e61fdee 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1164,15 +1164,13 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
+>   {
+>   	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+>   	struct extent_state *cached_state = NULL;
+> -	const size_t block_offset = start & (fs_info->sectorsize - 1);
+> +	const u32 blocksize = fs_info->sectorsize;
+>   	size_t write_bytes = min(iov_iter_count(i), PAGE_SIZE - offset_in_page(start));
+> -	size_t reserve_bytes;
+>   	size_t copied;
+> -	size_t dirty_blocks;
+> -	size_t num_blocks;
+>   	struct folio *folio = NULL;
+> -	u64 release_bytes;
+>   	int extents_locked;
+> +	const u64 reserved_start = round_down(start, blocksize);
+> +	u64 reserved_len;
+>   	u64 lockstart;
+>   	u64 lockend;
+>   	bool only_release_metadata = false;
+> @@ -1190,23 +1188,25 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
+>   			    &only_release_metadata);
+>   	if (ret < 0)
+>   		return ret;
+> -	reserve_bytes = ret;
+> -	release_bytes = reserve_bytes;
+> +	reserved_len = ret;
+> +	/* The write range must be inside the reserved range. */
+> +	ASSERT(start >= reserved_start);
+> +	ASSERT(start + write_bytes <= reserved_start + reserved_len);
+>   
+>   again:
+>   	ret = balance_dirty_pages_ratelimited_flags(inode->vfs_inode.i_mapping,
+>   						    bdp_flags);
+>   	if (ret) {
+> -		btrfs_delalloc_release_extents(inode, reserve_bytes);
+> -		release_space(inode, *data_reserved, start, release_bytes,
+> +		btrfs_delalloc_release_extents(inode, reserved_len);
+> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
+>   			      only_release_metadata);
+>   		return ret;
+>   	}
+>   
+>   	ret = prepare_one_folio(&inode->vfs_inode, &folio, start, write_bytes, false);
+>   	if (ret) {
+> -		btrfs_delalloc_release_extents(inode, reserve_bytes);
+> -		release_space(inode, *data_reserved, start, release_bytes,
+> +		btrfs_delalloc_release_extents(inode, reserved_len);
+> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
+>   			      only_release_metadata);
+>   		return ret;
+>   	}
+> @@ -1217,8 +1217,8 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
+>   		if (!nowait && extents_locked == -EAGAIN)
+>   			goto again;
+>   
+> -		btrfs_delalloc_release_extents(inode, reserve_bytes);
+> -		release_space(inode, *data_reserved, start, release_bytes,
+> +		btrfs_delalloc_release_extents(inode, reserved_len);
+> +		release_space(inode, *data_reserved, reserved_start, reserved_len,
+>   			      only_release_metadata);
+>   		ret = extents_locked;
+>   		return ret;
+> @@ -1235,35 +1235,40 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
+>   	 * sure they don't happen by forcing retry this copy.
+>   	 */
+>   	if (unlikely(copied < write_bytes)) {
+> +		u64 last_block;
+> +		u64 release_len;
+> +
+>   		if (!folio_test_uptodate(folio)) {
+>   			iov_iter_revert(i, copied);
+>   			copied = 0;
+>   		}
+> -	}
+>   
+> -	num_blocks = BTRFS_BYTES_TO_BLKS(fs_info, reserve_bytes);
+> -	dirty_blocks = round_up(copied + block_offset, fs_info->sectorsize);
+> -	dirty_blocks = BTRFS_BYTES_TO_BLKS(fs_info, dirty_blocks);
+> -
+> -	if (copied == 0)
+> -		dirty_blocks = 0;
+> -
+> -	if (num_blocks > dirty_blocks) {
+> -		/* Release everything except the sectors we dirtied. */
+> -		release_bytes -= dirty_blocks << fs_info->sectorsize_bits;
+> -		if (only_release_metadata) {
+> -			btrfs_delalloc_release_metadata(inode,
+> -						release_bytes, true);
+> -		} else {
+> -			const u64 release_start = round_up(start + copied,
+> -							   fs_info->sectorsize);
+> -
+> -			btrfs_delalloc_release_space(inode,
+> -					*data_reserved, release_start,
+> -					release_bytes, true);
+> +		if (copied == 0) {
+> +			btrfs_drop_folio(fs_info, folio, start, copied);
+> +			if (extents_locked)
+> +				unlock_extent(&inode->io_tree, lockstart, lockend,
+> +				      &cached_state);
+> +			else
+> +				free_extent_state(cached_state);
+> +			btrfs_delalloc_release_extents(inode, reserved_len);
+> +			release_space(inode, *data_reserved, reserved_start,
+> +				      reserved_len, only_release_metadata);
+> +			return 0;
+>   		}
+> +
+> +		/* Release space beyond the last block and continue. */
+> +		last_block = round_up(start + copied, blocksize);
+> +		release_len = reserved_start + reserved_len - last_block;
+> +		btrfs_delalloc_release_extents(inode, release_len);
 
-> This might work for an rv64ilp32 userspace that
-> uses the same headers and the same types, but you explicitly
-> say that the goal is to run native rv64 or compat rv32 tasks,
-> not rv64ilp32 (thanks!).
+This is incorrect.
 
-It's not for rv64ilp32-abi userspace, no rv64ilp32-abi userspace
-introduced in the patch set.
-It's for native lp64-abi.
+The behavior of btrfs_delalloc_release_extents() is never as accurate as 
+things like qgroup reserved space.
+And it can not handle reserved space shrinking in this case.
 
-Let's discuss this in the first patch thread:
-uapi: Reuse lp64 ABI interface
+It is only purely based on the @num_bytes, and it is always calculated 
+based on the maximum extent size.
 
->
-> As far as I can tell, there is no way to rectify this design flaw
-> other than to drop support for 64-bit userspace and only support
-> regular rv32 userspace. I'm also skeptical that supporting rv64
-> userspace helps in practice other than for testing, since
-> generally most memory overhead is in userspace rather than the
-> kernel, and there is much more to gain from shrinking the larger
-> userspace by running rv32 compat mode binaries on a 64-bit kernel
-> than the other way round.
+So for our current code, btrfs_delalloc_release_extents() will always 
+decrease the outstand extent by one.
 
-The lp64-abi userspace rootfs works fine in this patch set, which
-proves the technique is valid. But the modification on uapi is raw,
-and I'm looking at compat stuff.
+Thus if we do the following pattern, it will cause problems:
 
-Supporting lp64-abi userspace is essential because riscv lp64-abi and
-ilp32-abi userspace are hybrid deployments when the target is
-ilp32-abi userspace. The lp64-abi provides a good supplement to
-ilp32-abi which eases the development.
+	btrfs_delalloc_reserve_metadata(reserved_start, reserved_len);
+	btrfs_delalloc_release_extent(reserved_len - SZ_4K);
+	btrfs_delalloc_release_extent(SZ_4K);
 
->
-> If you remove the CONFIG_64BIT changes that Peter mentioned and
-> the support for ilp64 userland from your series, you end up
-> with a kernel that is very similar to a native rv32 kernel
-> but executes as rv64ilp32 and runs rv32 userspace. I don't have
-> any objections to that approach, and the same thing has come
-> up on arm64 as a possible idea as well, but I don't know if
-> that actually brings any notable advantage over an rv32 kernel.
->
-> Are there CPUs that can run rv64 kernels and rv32 userspace
-> but not rv32 kernels, similar to what we have on Arm Cortex-A76
-> and Cortex-A510?
+Thus the original code is correct, we should only call 
+btrfs_delalloc_release_extent() once after the space is reserved.
 
-Yes, there is, and it only supports rv32 userspace, not rv32 kernel.
-https://www.xrvm.com/product/xuantie/C908
+I'd better find a proper way to make btrfs_delalloc_release_extent() as 
+good as the qgroup rsv space.
 
-Here are the products:
-https://developer.canaan-creative.com/k230_canmv/en/dev/userguide/boards/ca=
-nmv_k230d.html
-http://riscv.org/ecosystem-news/2024/07/unpacking-the-canmv-k230-risc-v-boa=
-rd/
+As for large data folios, we have to over-reserve before grabbing the 
+folio, then release the exceeding part before doing the copy.
 
---=20
-Best Regards
- Guo Ren
+Thanks,
+Qu
+
+
 
