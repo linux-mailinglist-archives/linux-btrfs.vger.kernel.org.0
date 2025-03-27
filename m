@@ -1,259 +1,164 @@
-Return-Path: <linux-btrfs+bounces-12613-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12614-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B613EA73697
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 17:20:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C58AA736A4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 17:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D187A1896710
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 16:19:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29E99189AFE3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 16:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EE42AF1C;
-	Thu, 27 Mar 2025 16:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AAA6323D;
+	Thu, 27 Mar 2025 16:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GlC3IfgY";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GlC3IfgY"
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="kOYAPj8Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A93C4C6E
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 16:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64304192B8C
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 16:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743092365; cv=none; b=XsYyTe7VhA8m+Td50MJiWxsMUS2e3v4EOR0dsXaQb0ntvX8WeC/vxtWGEMlchKRcInchWbQiI3iisBuRShzGEpjlLHsoVZ4SMgMJSCvx3kcG4LwuqJ/JeOwl4Is/GFlQZJ7ihJeggT5opKdpBQFGV2TlAFY7Qq8UlEkjUdhnfIM=
+	t=1743092414; cv=none; b=W8kvv0lWPLK/yeqrOacDyfLq55uzcrO+EcGAwg3BBsuch20a2wJN1ki0BZIZh4jMut3vZ3kxFHypeczF817LunN52O6EXfQkGE9tWV44jFMHw1sz/pLMQ6E73b9LWT7YJZMBrRCsGGcaQ+DamxkTcKfOCIJUe5eGNpcbisW1Jbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743092365; c=relaxed/simple;
-	bh=UUWt/8IC7UKjgNFgfEdPHNDLGtsN8G3Wh4k0tPnABVg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J6uSlBscAeKbwPmmrGvngYJHmO8q4qDuteVACsAxud3maS93bbsTwdAMn2HqcGT/3IL8qQklnqlU4kNJxcIAkfxuRiu65ghXHqiGMRVjfZxAwNOxzLNoJRDwhayIUiRbjyPp0b5jpiuV2fF/7vXSzKdxbzz0FfM1FowTsGAFAfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GlC3IfgY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GlC3IfgY; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7FE93211B1;
-	Thu, 27 Mar 2025 16:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1743092361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=CBtlf7pUannc3oE0AgaGm4FgOou8MMWLuTqnCaXG3mA=;
-	b=GlC3IfgYQb2jXcadHn2Val/OCiJwf147M6mz58nYL5Q8Rr9tdQUgpMY77On5SrmVRZ8Zkq
-	Sy/KveyywNIqLTbOftEzaqC6VGtUHKSzv+oo73WgsV+tS58CU0dL12entpo4HYLJ8p6J3X
-	Qrbq8r4EF/sovmOvow94SBdJRZ8Uq7g=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1743092361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=CBtlf7pUannc3oE0AgaGm4FgOou8MMWLuTqnCaXG3mA=;
-	b=GlC3IfgYQb2jXcadHn2Val/OCiJwf147M6mz58nYL5Q8Rr9tdQUgpMY77On5SrmVRZ8Zkq
-	Sy/KveyywNIqLTbOftEzaqC6VGtUHKSzv+oo73WgsV+tS58CU0dL12entpo4HYLJ8p6J3X
-	Qrbq8r4EF/sovmOvow94SBdJRZ8Uq7g=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7947D139D4;
-	Thu, 27 Mar 2025 16:19:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XFGWHYl65WfKBgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Thu, 27 Mar 2025 16:19:21 +0000
-From: David Sterba <dsterba@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: use rb_entry_safe() where possible to simplify code
-Date: Thu, 27 Mar 2025 17:19:18 +0100
-Message-ID: <20250327161918.1406913-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1743092414; c=relaxed/simple;
+	bh=d7ElXG12q67ts9hPo9D4cCi81eQhC4QyN/csAlxbkk8=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=DA99Nw5NNFKroq+bZq/9dQfffZBBhtg/uVfvxkzRW7lf99C2RBwV5guYj38Xu802JHhKeoEA8yuVXntpIxncze++yxtlyBBpoE8b4ud2U7ZbY8Ulfy6Q7KMLhYGfa16gaSUnZBsUGBZ+UsMEoKloH8u4Nwk1o+Mu7JuySpX4Cac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=kOYAPj8Z; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-225477548e1so25295305ad.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 09:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1743092410; x=1743697210; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hQcfqS6ONRy4v+VAuw1r1bUFP3B6ufIgzXQvK3yZp0M=;
+        b=kOYAPj8ZAlZLOFNhrs9mchTgodx5+USr5guYG8Kx5M0JP8ixbwK1esti7rpswrGb06
+         rZ8bzKVq45I+F4VCYLj8Uyzv45ccDb4WFH942uFTDyknzHTy0czdcynotfuRLD2wg5js
+         9s1l+cPdq9QnkCuoEXgL6Mm+Oiy+oFZf5Yo4i+Q7RKiBePhd2E17Wv2UbwxAi5DtKxTB
+         JsVtgXqlomwNDp5h8fp8aMZdPPnYqZCWtkFo/vCEykJ/kRXGKYKXo+g3PrjhCX/nSS1t
+         FI5ZCmh2PQ14BKCflq1wX58jeyx9oUNg0aEAG1kI4tifINMvDnXCesxjzWtQG7O/35PI
+         ZZxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743092410; x=1743697210;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hQcfqS6ONRy4v+VAuw1r1bUFP3B6ufIgzXQvK3yZp0M=;
+        b=g/1nyzhPLc6SlqvNnqr1SCNaqkQA38RuPsQ1sgXCYLiYGBek+yU06ac9wLzTxBrOlk
+         2puhc2SbZ3QYzJ1DSJNV9Zk6PKF8+/gD6ATEq6Mn3LPR1SgL02+Gl57+upUNoq5QRzak
+         Egm/Rm8qbcVE3FTZ4/TAnMtyJOOvVWRUz3Qq72n1Kh553m5a9IzAcz2teJ5vREWh4TVP
+         1LDDf/JbG9Vi66piKlrkvMTjLzRxMtHrKhaKIvUKTUWRgOH2CwjI8DJey70S++MJCU0E
+         EFUFC+cxDpwqjMUU6rPxksgpN+qsd5yk0G5Dx7T/Jx7GGplNMtfQ40ohPfcnJKQUZhYK
+         JJbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhyTdXQZwd7jYjx5XR6Fuibeno9aGF3hKelLbiSCJkmWMJR6HmtxV7fK3h8tJoalJ/4KKgfbo06UPC8g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/VA1ZSw6k/NTTAEZnqURbPy+IfGyZjsaZemAiplFIXF5gHNXy
+	+UYfcQe56JGhbCQYoAE8CJlizomvqfbDL5UZNQk8iS/FqmyWADvCjc5Ad48wquY=
+X-Gm-Gg: ASbGncs8Gal0ZArZexhxjC4So23VA+ot6IoBdWLBupGs6aaWn87j+qQedI/MHIupTDz
+	lTSw/0dQSAGUi/G9el1UWB7EAYJd7/efS2cvWrO96FZOW1usM0sFnVWwf95UtNK4eZJvX6XuMF2
+	6K+V1q9YDRfAZ/65LEgKLb/I0ii3e+U5I3YhbxyWAQeQwIO6Z6kx9mao6jedeQzdNJdGE2jzt74
+	5eIgiEtqk4nCrsTXcSzobzCXDDrbRWnab3lmVxj1lZgH9NrIqYsHqRktbvifhU+OX/xYpBjMLxE
+	XgZy+pHF1V2wvBdxDCJyuPd1fLqCpU738V8rLg==
+X-Google-Smtp-Source: AGHT+IGhXmi8JOjZOP3Ikj3wo/1uBU9qt49Ql5SLHckRbeVG8HWYg9iWFYIxA94kzN1K7mL9F21TaQ==
+X-Received: by 2002:a17:903:22d2:b0:223:4816:3e9e with SMTP id d9443c01a7336-22804857854mr57168615ad.13.1743092410377;
+        Thu, 27 Mar 2025 09:20:10 -0700 (PDT)
+Received: from localhost ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7390618e4b6sm14534202b3a.180.2025.03.27.09.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Mar 2025 09:20:09 -0700 (PDT)
+Date: Thu, 27 Mar 2025 09:20:09 -0700 (PDT)
+X-Google-Original-Date: Thu, 27 Mar 2025 09:20:00 PDT (-0700)
+Subject:     Re: [RFC PATCH V3 00/43] rv64ilp32_abi: Build CONFIG_64BIT kernel-self with ILP32 ABI
+In-Reply-To: <svu4xdeo7a7ve3vorvgbkjxzrqmqk5oztgtfpbg556wjw4x7vc@yg4esoipmt7g>
+CC: david@redhat.com, peterz@infradead.org, guoren@kernel.org,
+  Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>,
+  Linus Torvalds <torvalds@linux-foundation.org>, Paul Walmsley <paul.walmsley@sifive.com>, anup@brainfault.org,
+  atishp@atishpatra.org, oleg@redhat.com, kees@kernel.org, tglx@linutronix.de,
+  Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, brauner@kernel.org,
+  akpm@linux-foundation.org, rostedt@goodmis.org, edumazet@google.com, unicorn_wang@outlook.com,
+  inochiama@outlook.com, gaohan@iscas.ac.cn, shihua@iscas.ac.cn, jiawei@iscas.ac.cn,
+  wuwei2016@iscas.ac.cn, drew@pdp7.com, prabhakar.mahadev-lad.rj@bp.renesas.com, ctsai390@andestech.com,
+  wefu@redhat.com, kuba@kernel.org, pabeni@redhat.com, josef@toxicpanda.com, dsterba@suse.com,
+  mingo@redhat.com, boqun.feng@gmail.com, xiao.w.wang@intel.com, qingfang.deng@siflower.com.cn,
+  leobras@redhat.com, jszhang@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+  samuel.holland@sifive.com, yongxuan.wang@sifive.com, luxu.kernel@bytedance.com, ruanjinjie@huawei.com,
+  cuiyunhui@bytedance.com, wangkefeng.wang@huawei.com, qiaozhe@iscas.ac.cn,
+  Ard Biesheuvel <ardb@kernel.org>, ast@kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+  kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-mm@kvack.org,
+  linux-crypto@vger.kernel.org, bpf@vger.kernel.org, linux-input@vger.kernel.org,
+  linux-perf-users@vger.kernel.org, linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+  linux-arch@vger.kernel.org, maple-tree@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+  netdev@vger.kernel.org, linux-atm-general@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
+  netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-nfs@vger.kernel.org, linux-sctp@vger.kernel.org,
+  linux-usb@vger.kernel.org, linux-media@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: Liam.Howlett@oracle.com
+Message-ID: <mhng-e8248074-b79c-42f6-986f-9993851b6be2@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	ARC_NA(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
 
-Simplify conditionally reading an rb_entry(), there's the
-rb_entry_safe() helper that checks the node pointer for NULL so we don't
-have to write it explicitly.
+On Tue, 25 Mar 2025 12:23:39 PDT (-0700), Liam.Howlett@oracle.com wrote:
+> * David Hildenbrand <david@redhat.com> [250325 14:52]:
+>> On 25.03.25 13:26, Peter Zijlstra wrote:
+>> > On Tue, Mar 25, 2025 at 08:15:41AM -0400, guoren@kernel.org wrote:
+>> > > From: "Guo Ren (Alibaba DAMO Academy)" <guoren@kernel.org>
+>> > >
+>> > > Since 2001, the CONFIG_64BIT kernel has been built with the LP64 ABI,
+>> > > but this patchset allows the CONFIG_64BIT kernel to use an ILP32 ABI
+>> >
+>> > I'm thinking you're going to be finding a metric ton of assumptions
+>> > about 'unsigned long' being 64bit when 64BIT=y throughout the kernel.
+>> >
+>> > I know of a couple of places where 64BIT will result in different math
+>> > such that a 32bit 'unsigned long' will trivially overflow.
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/defrag.c         |  5 +----
- fs/btrfs/delayed-inode.c  | 27 ++++++---------------------
- fs/btrfs/delayed-ref.c    |  7 ++-----
- fs/btrfs/extent-io-tree.c | 10 ++--------
- fs/btrfs/extent_map.c     |  8 ++++----
- 5 files changed, 15 insertions(+), 42 deletions(-)
+Ya, I write code that assumes "unsigned long" is the size of a register 
+pretty regularly.
 
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 8195e5fe355b00..11d27a9c5bd34d 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -191,10 +191,7 @@ static struct inode_defrag *btrfs_pick_defrag_inode(
- 
- 	if (parent && compare_inode_defrag(&tmp, entry) > 0) {
- 		parent = rb_next(parent);
--		if (parent)
--			entry = rb_entry(parent, struct inode_defrag, rb_node);
--		else
--			entry = NULL;
-+		entry = rb_entry_safe(parent, struct inode_defrag, rb_node);
- 	}
- out:
- 	if (entry)
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 3f1551d8a5c68b..c49bf8f2889dda 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -454,40 +454,25 @@ static void btrfs_release_delayed_item(struct btrfs_delayed_item *item)
- static struct btrfs_delayed_item *__btrfs_first_delayed_insertion_item(
- 					struct btrfs_delayed_node *delayed_node)
- {
--	struct rb_node *p;
--	struct btrfs_delayed_item *item = NULL;
-+	struct rb_node *p = rb_first_cached(&delayed_node->ins_root);
- 
--	p = rb_first_cached(&delayed_node->ins_root);
--	if (p)
--		item = rb_entry(p, struct btrfs_delayed_item, rb_node);
--
--	return item;
-+	return rb_entry_safe(p, struct btrfs_delayed_item, rb_node);
- }
- 
- static struct btrfs_delayed_item *__btrfs_first_delayed_deletion_item(
- 					struct btrfs_delayed_node *delayed_node)
- {
--	struct rb_node *p;
--	struct btrfs_delayed_item *item = NULL;
-+	struct rb_node *p = rb_first_cached(&delayed_node->del_root);
- 
--	p = rb_first_cached(&delayed_node->del_root);
--	if (p)
--		item = rb_entry(p, struct btrfs_delayed_item, rb_node);
--
--	return item;
-+	return rb_entry_safe(p, struct btrfs_delayed_item, rb_node);
- }
- 
- static struct btrfs_delayed_item *__btrfs_next_delayed_item(
- 						struct btrfs_delayed_item *item)
- {
--	struct rb_node *p;
--	struct btrfs_delayed_item *next = NULL;
-+	struct rb_node *p = rb_next(&item->rb_node);
- 
--	p = rb_next(&item->rb_node);
--	if (p)
--		next = rb_entry(p, struct btrfs_delayed_item, rb_node);
--
--	return next;
-+	return rb_entry_safe(p, struct btrfs_delayed_item, rb_node);
- }
- 
- static int btrfs_delayed_item_reserve_metadata(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 98c5b61dabe88c..343a452a9f9fa5 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -331,12 +331,9 @@ static struct btrfs_delayed_ref_node* tree_insert(struct rb_root_cached *root,
- 		struct btrfs_delayed_ref_node *ins)
- {
- 	struct rb_node *node = &ins->ref_node;
--	struct rb_node *exist;
-+	struct rb_node *exist = rb_find_add_cached(node, root, cmp_refs_node);
- 
--	exist = rb_find_add_cached(node, root, cmp_refs_node);
--	if (exist)
--		return rb_entry(exist, struct btrfs_delayed_ref_node, ref_node);
--	return NULL;
-+	return rb_entry_safe(exist, struct btrfs_delayed_ref_node, ref_node);
- }
- 
- static struct btrfs_delayed_ref_head *find_first_ref_head(
-diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index 13de6af279e526..db7503a91b3151 100644
---- a/fs/btrfs/extent-io-tree.c
-+++ b/fs/btrfs/extent-io-tree.c
-@@ -222,20 +222,14 @@ static inline struct extent_state *next_state(struct extent_state *state)
- {
- 	struct rb_node *next = rb_next(&state->rb_node);
- 
--	if (next)
--		return rb_entry(next, struct extent_state, rb_node);
--	else
--		return NULL;
-+	return rb_entry_safe(next, struct extent_state, rb_node);
- }
- 
- static inline struct extent_state *prev_state(struct extent_state *state)
- {
- 	struct rb_node *next = rb_prev(&state->rb_node);
- 
--	if (next)
--		return rb_entry(next, struct extent_state, rb_node);
--	else
--		return NULL;
-+	return rb_entry_safe(next, struct extent_state, rb_node);
- }
- 
- /*
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 7f46abbd6311b2..d62c36a0b7ba41 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -361,8 +361,8 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
- 
- 	if (em->start != 0) {
- 		rb = rb_prev(&em->rb_node);
--		if (rb)
--			merge = rb_entry(rb, struct extent_map, rb_node);
-+		merge = rb_entry_safe(rb, struct extent_map, rb_node);
-+
- 		if (rb && can_merge_extent_map(merge) && mergeable_maps(merge, em)) {
- 			em->start = merge->start;
- 			em->len += merge->len;
-@@ -379,8 +379,8 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
- 	}
- 
- 	rb = rb_next(&em->rb_node);
--	if (rb)
--		merge = rb_entry(rb, struct extent_map, rb_node);
-+	merge = rb_entry_safe(rb, struct extent_map, rb_node);
-+
- 	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
- 		em->len += merge->len;
- 		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
--- 
-2.48.1
+>> >
+>> > Please, don't do this. This adds a significant maintenance burden on all
+>> > of us.
+>> >
+>>
+>> Fully agreed.
+>
+> I would go further and say I do not want this to go in.
 
+Seems reasonable to me, and I think it's also been the general sentiment 
+when this stuff comes up.  This specific implementation seems 
+particularly clunky, but I agree that it's going to be painful to do 
+this sort of thing.
+
+> The open ended maintenance burden is not worth extending hardware life
+> of a board with 16mb of ram (If I understand your 2023 LPC slides
+> correctly).
+
+We can already run full 32-bit kernels on 64-bit hardware.  The hardware 
+needs to support configurable XLEN, but there's systems out there that 
+do already.
+
+It's not like any of the existing RISC-V stuff ships in meaningful 
+volumes.  So I think it's fine to just say that vendors who want tiny 
+memories should build hardware that plays nice with those constraints, 
+and vendors who build hardware that doesn't make any sense get to pick 
+up the pieces.
+
+I get RISC-V is where people go to have crazy ideas, but there's got to 
+be a line somewhere...
+
+>
+> Thank you,
+> Liam
 
