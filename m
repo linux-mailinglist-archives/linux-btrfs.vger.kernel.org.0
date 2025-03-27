@@ -1,100 +1,101 @@
-Return-Path: <linux-btrfs+bounces-12617-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FBA6A7374B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 17:49:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB469A73759
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 17:52:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9743917C9AC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 16:47:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D1AE188DA23
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 16:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D94218845;
-	Thu, 27 Mar 2025 16:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA0A217F31;
+	Thu, 27 Mar 2025 16:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zPiIuju2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eRha0hIp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GX4c4SMx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S/rMTKti"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQ6SnpOb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9QjFB6bV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQ6SnpOb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9QjFB6bV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C518A21772D
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 16:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747EA1E868
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 16:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743094038; cv=none; b=KahKyuG4/jKVygn5SJSGSVEdB2jLgRRZ976ivSYltNPNpulb1ztp/tmr7Q0AN8j478jbMUv6MCqYhkVMY5RFG3ESoUIcqXpXHnGVMrCvoScbThdqFn3pf8hKWZ+oQLDJMbOZBGLzczKhEDMqoMmgDCKw/XwELwv5N1vjWjdpp40=
+	t=1743094223; cv=none; b=HOgtSFQlpgHqxEh76M5up2k+ye4n8MPx0XNecKHqrUwkfI4RPBrVmHJL2IgGW6l7EuvAM8aqYikNkrJAgp3UkWfM7KiLhVoOp/sWyIZlBLoJQRRgV2qxeYB3H9xnkSIB6xhysJ/PjdOtFRtXyOJM9K+Xe7zIgXItnOtNvm2VDns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743094038; c=relaxed/simple;
-	bh=DssOTLSU9TvVd/mitWvxMi9XblAqcRuLrYwM3amyqRo=;
+	s=arc-20240116; t=1743094223; c=relaxed/simple;
+	bh=xBjMOWj0GbxqZAnmS+1QjAL3LMn2x4KqGeAmLBda02Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ugpiicSYkTrRuwUfxiVmJNAZMFxmCgCkuAbDIpkzCp7zfyj3bHn/oHy3pffMK4u9ddnRTayGu+DRh0dMkuQYSgnmpRFo+LGiCfvlk6dMhOshya+YjdTZluofdA6xVbqajwKLzdufQdZmb2UFC4iKL5csydqwMWVMaQgxQ9OSILY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zPiIuju2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eRha0hIp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GX4c4SMx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S/rMTKti; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=rTo+iGh3I0MllrpF/PDqY/Zo7eBuWIWortO2Vg+xZImjvnMUgKFKP44ATvL92oG+QWc2imeIOS5wavvPcyugv5jmtNjZyXOWABsM7H6LL7zK3poG8Ms+qqzsTI8gv3YfyUdmhefEtof1xcRKGwZ7FuhTrhHw0M6QCth2TsmckHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQ6SnpOb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9QjFB6bV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQ6SnpOb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9QjFB6bV; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EC5F41F456;
-	Thu, 27 Mar 2025 16:47:14 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 876222118E;
+	Thu, 27 Mar 2025 16:50:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743094035;
+	t=1743094219;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s85Dp0ahrXbhxU0NWMAlikd1ZByabHMk7dlCf01/RTM=;
-	b=zPiIuju2ZoPgocBCrn1yPByKk01stU5VYBxhhf0JDPBeyfLTRm0vGNQYa6V1YQh4um3wdr
-	WPwzMTe3jmzgE4dVWT0/kZVkARDIB5KnEmEYpfb+5NwKL6hJSdY85VYrWR5XkbnBv6pRWH
-	nLzk4ZS5C+ples0h6hDh16cAbCsY1co=
+	bh=CMN1IdePprnmgpiupDCx6jwvXU7R6hnalDPDGRt9id8=;
+	b=ZQ6SnpObN/OkBkcToWghdgnrVwHj8ZUWYhqTF0l+iiAzrRuUYTWKRrKRUy8t3VmVTsKct2
+	wE/9Q9HeMw7QPaub01fB2S2nwzGjVky9kmdN7T+1eXt7UkJEC+fINqAgNoNVmheodp2UJx
+	kUoC3dMESXJxW5ohAyS769OufRJVqZk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743094035;
+	s=susede2_ed25519; t=1743094219;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s85Dp0ahrXbhxU0NWMAlikd1ZByabHMk7dlCf01/RTM=;
-	b=eRha0hIpbUd5IVfQ5ZUdgG0Ef8ZBaP42hseXS2yw8c99+hqv2KHqUarrs6JRaBBSO9U9cL
-	oTiZ/5MaQGx45UAQ==
-Authentication-Results: smtp-out2.suse.de;
+	bh=CMN1IdePprnmgpiupDCx6jwvXU7R6hnalDPDGRt9id8=;
+	b=9QjFB6bV/Lv8VNeOppwv/tyavpMjT4KJC3FuFopVy9Tcm7RSg2PvHWq2wSLpDv1rR1azag
+	Hqw1pcixUZbA7RBg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743094034;
+	t=1743094219;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s85Dp0ahrXbhxU0NWMAlikd1ZByabHMk7dlCf01/RTM=;
-	b=GX4c4SMxQ7Yx7v1ZPegYJm/ECT4hwBjuNT9vg6pWHXxdRufJQugrcFhsy374fiOZkm4zrj
-	9iZ5iKWerJjpGe1lGtBVKQMSU9KvMjE/3rVdEZpjEnrwC7aOtajmsjg70p4qNwGEfLp+b0
-	Gl3l/+4LumFG1hjBmOVnaQQwikQ0aOg=
+	bh=CMN1IdePprnmgpiupDCx6jwvXU7R6hnalDPDGRt9id8=;
+	b=ZQ6SnpObN/OkBkcToWghdgnrVwHj8ZUWYhqTF0l+iiAzrRuUYTWKRrKRUy8t3VmVTsKct2
+	wE/9Q9HeMw7QPaub01fB2S2nwzGjVky9kmdN7T+1eXt7UkJEC+fINqAgNoNVmheodp2UJx
+	kUoC3dMESXJxW5ohAyS769OufRJVqZk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743094034;
+	s=susede2_ed25519; t=1743094219;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s85Dp0ahrXbhxU0NWMAlikd1ZByabHMk7dlCf01/RTM=;
-	b=S/rMTKtiEzAyTfKA6OGT5zYYQPVkXKbXdP/H3rq9vPJdCRVCDQmhN8dncFR1DpeYAz3UIO
-	NvYlX9DeQFVaObDg==
+	bh=CMN1IdePprnmgpiupDCx6jwvXU7R6hnalDPDGRt9id8=;
+	b=9QjFB6bV/Lv8VNeOppwv/tyavpMjT4KJC3FuFopVy9Tcm7RSg2PvHWq2wSLpDv1rR1azag
+	Hqw1pcixUZbA7RBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3EAF139D4;
-	Thu, 27 Mar 2025 16:47:14 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74893139D4;
+	Thu, 27 Mar 2025 16:50:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9/s1MxKB5WdXDwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 27 Mar 2025 16:47:14 +0000
-Date: Thu, 27 Mar 2025 17:47:13 +0100
+	id ZNFDHMuB5WcpEAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 27 Mar 2025 16:50:19 +0000
+Date: Thu, 27 Mar 2025 17:50:10 +0100
 From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: refactor btrfs_buffered_write() for the
- incoming large data folios
-Message-ID: <20250327164713.GV32661@twin.jikos.cz>
+Subject: Re: [PATCH 4/4] btrfs: extract the main loop of
+ btrfs_buffered_write() into a helper
+Message-ID: <20250327165010.GW32661@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1742443383.git.wqu@suse.com>
+ <4710798bb9d917697384db6abbae75ac8a5ab6cf.1742443383.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,14 +104,14 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1742443383.git.wqu@suse.com>
+In-Reply-To: <4710798bb9d917697384db6abbae75ac8a5ab6cf.1742443383.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
+X-Spam-Level: 
 X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
 	MIME_GOOD(-0.10)[text/plain];
 	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -124,54 +125,46 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 	FROM_HAS_DN(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,suse.com:email];
 	RCVD_COUNT_TWO(0.00)[2];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Thu, Mar 20, 2025 at 04:04:07PM +1030, Qu Wenruo wrote:
-> The function btrfs_buffered_write() is implementing all the complex
-> heavy-lifting work inside a huge while () loop, which makes later large
-> data folios work much harder.
+On Thu, Mar 20, 2025 at 04:04:11PM +1030, Qu Wenruo wrote:
+> Inside the main loop of btrfs_buffered_write() we are doing a lot of
+> heavy lift work inside a while () loop.
 > 
-> The first patch is a patch that already submitted to the mailing list
-> recently, but all later reworks depends on that patch, thus it is
-> included in the series.
+> This makes it pretty hard to read, extract the content into a helper,
+> copy_one_range() to do the heavy lift work.
 > 
-> The core of the whole series is to introduce a helper function,
-> copy_one_range() to do the buffer copy into one single folio.
+> This has no functional change, but with some minor variable renames,
+> e.g. rename all "sector" into "block".
 > 
-> Patch 2 is a preparation that moves the error cleanup into the main loop,
-> so we do not have dedicated out-of-loop cleanup.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/file.c | 292 ++++++++++++++++++++++++------------------------
+>  1 file changed, 147 insertions(+), 145 deletions(-)
 > 
-> Patch 3 is another preparation that extract the space reservation code
-> into a helper, make the final refactor patch a little more smaller.
-> 
-> And patch 4 is the main dish, with all the refactoring happening inside
-> it.
-> 
-> Qu Wenruo (4):
->   btrfs: remove force_page_uptodate variable from btrfs_buffered_write()
->   btrfs: cleanup the reserved space inside the loop of
->     btrfs_buffered_write()
->   btrfs: extract the space reservation code from btrfs_buffered_write()
->   btrfs: extract the main loop of btrfs_buffered_write() into a helper
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 99580ef906a6..21b90ed3e0e4 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1153,21 +1153,161 @@ static ssize_t reserve_space(struct btrfs_inode *inode,
+>  	return reserve_bytes;
+>  }
+>  
+> +/*
+> + * Do the heavy lift work to copy one range into one folio of the page cache.
+> + *
+> + * Return >=0 for the number of bytes copied. (Return 0 means no byte is copied,
+> + * caller should retry the same range again).
+> + * Return <0 for error.
+> + */
+> +static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *i,
 
-I'm looking at the committed patches in for-next and there are still too
-many whitespace and formatting issues, atop those pointed out in the
-mail discussion. It's probably because the code moved and inherited the
-formatting but this is one of the oportunities to fix it in the final
-version.
-
-I fixed what I saw, but plase try to reformat the code according to the
-best pratices. No big deal if something slips, I'd rather you focus on
-the code than on formattig but in this patchset it looked like a
-systematic error.
-
-In case of factoring out code and moving it around I suggest to do it in
-two steps, first move the code, make sure it's correct etc, commit, and
-then open the changed code in editor in diff mode. If you're using
-fugitive.vim the command ":Gdiff HEAD^" clearly shows the changed code
-and doing the styling and formatting pass is quite easy.
+'struct iov_iter *i'  was probably copied from btrfs_buffered_write()
+prototype bug uh naming 'i' such parameter is quite an anti-pattern.
+I've renamed it to 'iter', and will fix the other one too so it does not
+get accidentally copied somewhere else.
 
