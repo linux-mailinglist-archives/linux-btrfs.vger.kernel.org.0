@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-12626-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12627-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6155CA73F40
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 21:21:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D467A73F7F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 21:49:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFAED1666BF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 20:21:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DBB43BCE35
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Mar 2025 20:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9AD1C8FD6;
-	Thu, 27 Mar 2025 20:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CB1C84AE;
+	Thu, 27 Mar 2025 20:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="IwFkrI76"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ltOR+tXe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4DB28EC
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 20:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74CB717A2F5
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Mar 2025 20:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743106911; cv=none; b=tUauB5urEyXR7ZqXkwG+I8WFM0eMI8o8UYEiBnOEIxUaBvQOsYQyz198vEzVTe7q6MSLG8S1nRhGjSBJX4+INlLLERnXCt02C93lwR8/bVK9DekHco7u8WwzyemZZ9CXFGxkgWr4C8DxDeorMNW0egnXz2VvpQCA2FJQnmh+e4Q=
+	t=1743108467; cv=none; b=Mh/JPIyYGi3SopGBGpPU4y5CTYSO57piACmECyeGWHXkJxCiV8QVUWLX4UtomtvYQ2/boee6qUK22nvwJv8o/R85LlCf7M2zdsb+Ed0S3RpPd21Uj/m30kX4xkxv4fV4AUm6K4MAKiXcE5+7x27PyZsO4IDYMCmuT40Fc1StWNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743106911; c=relaxed/simple;
-	bh=nS6L8muEuA93YjQSqqZ4Z3e5eIbLxTQkNQFAz6SAk9M=;
+	s=arc-20240116; t=1743108467; c=relaxed/simple;
+	bh=aEgctEAP5Qw+p1u3wXAGZ1l2o0GwwfGQUfEh7zoBTCg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bmmhJt57kbbosMK5hP/BjjlveyoDmDUZwAxHs9cS3mc4FJUYARSYKuLersq0tM+Ah6KhsHEZAXCoWXYptdqR1LG9ZyV3iDy3M/rGuoaXYjwMwijUbTSIFq/FCblbe+TJmqWmZrIAhjsRSv65wvCW1P9rEVtuW5R7Fh7/SCC2MEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=IwFkrI76; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=cyl3WUMtmutfZHxeqj1xmE54HkFZTWrZSGy4QAb5WImfiKwr1UE5w3M2mQY8jDXhk8TMQIaiD2d+HFkL58Sxz9lTZ8KCzszSetHv81xh+fV9uP7hnSk1lKd1Il0pKYYSG9fO+hqvGdmwxck+/KBGH+xT6WedIplrGjWD/btwi3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ltOR+tXe; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1743106906; x=1743711706; i=quwenruo.btrfs@gmx.com;
-	bh=i+JEdJK6y4Ssu4Tc9CM5HE8c+XPYB1QfRZsl17fkl+o=;
+	s=s31663417; t=1743108463; x=1743713263; i=quwenruo.btrfs@gmx.com;
+	bh=mJ0rJad29A1Mp5ut+ngBGh2kv6Bk9j+fAdZZLa/bXSw=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=IwFkrI76YRlxbnyM/j3wFUaswIF9SCAijdx3vCWzQFX7cCuxhuduvnP8Ixoy3b9i
-	 ONTfiNWu1Auykhmw77JqbT2tl2jS++M66c5r7snlq+21t89IcGRrS3T3h/3Shm2gM
-	 jT4TeATHPLEKmY/Y4Ex51ll4aKDSx21ml2BE9fGMi+f+Y1ctOyp+D5rY3ydy+yhTe
-	 RScPMIun6ebJn8Ab1nl8GJ8ea5U3AZrt3a5yjoqDv4peVza33t7krNFlj8EW0xr7C
-	 8X6oHuKJ5PyIpdkStyU+sTSJE9kLuAzK7i1rO6ZtZKy2nLpjmpwVdVucO5A83ht/6
-	 xqliuNOy43/rdS9brw==
+	b=ltOR+tXe3WujkxPsE07wvlxtuIlfAlHY95SVMf/WW3HZVcjawhpCOuw4q5MbK2jW
+	 JruUs6oEeXTZVx8mGMDjktymvkEgGoveiH6ZQVhy/VE7MNuFkU4ks51ydHF6mn3ol
+	 4+wI1+wZEB8c8kKqwoYn/XcY6Suul/vo2HG7cmzMp3AfOgdQ3XepxZqSgt1hP+VLc
+	 ZiZjajJyFP8WoGNaFqd6t27NC9bcJjDQ9fJyU86WYzO3dQ/LyFhdvnQv3xofX7E+t
+	 5jYKQpaKF+6cIgEBEMGYu8853RaJF+UmjddiGwuYkx/DwPAu70VBGJKF2xXNYBPA5
+	 gOLqkPn8mdFf7rZ0Fw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3bSt-1syTG505S7-00wwg9; Thu, 27
- Mar 2025 21:21:46 +0100
-Message-ID: <b9f7b83d-5efa-4906-9df3-a27f399162fb@gmx.com>
-Date: Fri, 28 Mar 2025 06:51:42 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7sDq-1u2q5c3aVO-0014OY; Thu, 27
+ Mar 2025 21:47:43 +0100
+Message-ID: <0ca94ef9-7626-48e5-8417-0c1efa4d6832@gmx.com>
+Date: Fri, 28 Mar 2025 07:17:39 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,16 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: mount compress=zstd leaves files uncompressed, that used to
- compress well with before
-To: Dimitrios Apostolou <jimis@gmx.net>
-Cc: Gerhard Wiesinger <lists@wiesinger.com>, linux-btrfs@vger.kernel.org
-References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net>
- <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net>
- <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
- <2858a386-0e8c-51a6-0d8a-ace78eced584@gmx.net>
- <2b33bf94-ec1d-4825-834d-67f4083ea306@gmx.com>
- <ba2a850f-6697-7555-baa4-32bc6bf62f81@gmx.net>
+Subject: Re: [PATCH 0/4] btrfs: refactor btrfs_buffered_write() for the
+ incoming large data folios
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1742443383.git.wqu@suse.com>
+ <20250327164713.GV32661@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -94,187 +90,106 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <ba2a850f-6697-7555-baa4-32bc6bf62f81@gmx.net>
+In-Reply-To: <20250327164713.GV32661@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xfVjMB86GcGnR+warsOthY+gHVufsTQWeJZsHZsXL5dd9GEaktZ
- FnteGoHgO0VQ/cnY23GtuI00/RKOMmd1XkTq0E9Gn7EyhO5iz3ODiTTReQ0eZ7CKak3hi+B
- XesHTRKRQCIgLCOvTiAhAtjhYaxHJ81c9PNI6uV2LTNCATXfSr0cCKwhtZ1Hm1sCQ53pHpe
- W69SOZOb9hm38Udl3MLEA==
+X-Provags-ID: V03:K1:hsZwlOT3VcrOjMdUAIqFo1KE2MDonBahNFS07/o5MV6CUzkjLQ8
+ olrLClHJcKsrOEYwohtNEdHxq99oq+DM6jVFAVh7VUFiR+L3OPK4Ymhs+6Vzizc8yN0mbX3
+ UdHPRcNBFsTWlJJmug/MVRy0BpYTfpIQ7XWCyBVRO2az4bclv20xhacdWiXEGATaE3qNOxQ
+ UGBnSWyK3s074gasP+ImQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:J0wMEw5CdM8=;DrALo+/xf+pcBzsgWN+fAv0xv72
- Eayxtcw1etvnN0/tM+FQFMZPKk0Udu0tNEwlQ/OBs/tzygQBLGccEDmtVPdxg1jiYHAGj+EFs
- t7lLuoK2z9dXZguJNs8HCpT+vXnE95m9s+4JXT5sCVCvgOW6e1GsuwVlTuu59TeTGfPC2f34f
- uU0jx+VB2zXVYjX77IgIewY2eBjT+sgT7bg9FhaqovuCzqhqEVjd7iA6hdGsQL3A9ov0TZL2t
- ECn+uPJBxOHUMu/osrrvMk3yreZUvW+P6UZ7Z2guqw7kDhERpT1OiNgfzWzw06Y+jRaIv8JyP
- MiaApsczDoaXpnTbA02sR8DViu6VQtP+zlvm4enn6hLr994/I7X44qML2tiuhkhJtM3qgIO3M
- RZ7nHzesj80GnKQTXYooY8VskHqabfVAKIGog+JtLtHserBby/+67ysMp1JPHK4UJcY/bYOQb
- +C/Rd2RGoH/N0hMS2eDbvrSqaxn9baoZ40f5JZchNxkmjgyHv7gYG+Zy2iQVtGCHd4pYmZ7PX
- oV905bOAUJLSGVigJAKt2zpSoiF2FQQgYwIKBOQrcJOx/byhI2p752BUHNBTUbYBYUdWYouL3
- Z2J1hHmslq/elC+Y7I0Fe4VqitvCD+YaJrspsAZOqTcGNBqfYg/eUN8M+ENyeSnMQ32PNaPa5
- W2y25gFQDfCQJHGmCmGX0iznw5Sw358X9hHF0mynMoec+Lqf9Ba/1l4OhC9jK/f+CDE2KPmsP
- v5oi6Hz/A94Y0Pw2RMUIc0Zlc5xfqQXNFoDFUEqVqeBJyBfAL9SODP6YaBUM8OCwC/fR0hQkn
- 1VCUU8r6FZujGQg4oSoMOzzMm+xXJd2Kh+7lkHceNf0w8cIBbwaUYI1sok9XdgBLtyjWHD3Zk
- AT6tiSPQrXXtUYO48UO2tFdr/QmJZjjWugiwav91yOkMaWNyum7ksl07HktgIMR8j+6t3odg3
- 2WyqWqfNpWf+VI0JIrpB9/sZdGprxVPK003J4BTZtSEuJIl8m+NXwkp5tpWntU9QhHjVapm4Y
- 7Tc4oh4OOR4B4vSxuhOBjzmkmPwRCsYv7e9w9FxlloBdQRMTQ2xDTxqYCBQ7glwy6wEyiV7bl
- h60Xfm3ijHIiKeJeGeDYWjjTs88mU7QIYXBPK5T1g5HuYpKVblo66EUDs9tn7ms2gthm4dkqY
- v3lEjv0vz+vwLgWNINZVqNXAktrj53r25gs7CKdbfCxr9Xw4AXEV508RNakMVfnWxAhLUnzAw
- j/pI1l7n72SbRJ/oJWSOGNCOOwI5Dwx+qFRD3Elg/LWofgPjw/QXqynfNOcsVP7qVn0oeCjnQ
- ipvPFjXL+zMcbIsUfw7QcrpcawkUxbblM80Z+d9XvpkkCQw6eJWHHgkILB6G9QGJNsFEeY8nl
- 9cHt1YTJvzgtkXTV2nnT13PgsXNzU2Z1R3jh9zwgQrBsHbDQwCKBrJFGNgUZHR3QKfRhAtOYW
- kJ5xqz94OGf3LaBrdLWhIz8ILhFtNdjpeVKVVfBh+n+RJ20b+ehihFmh3yWdfNcydcTZCiA==
+UI-OutboundReport: notjunk:1;M01:P0:aY6zRSpJexg=;X2j1LYdkUHQCZLoT6SJftoazGaA
+ 4xYcxEJWOuaDKLOZSvkP8KmXky51icZOu13EU6NoHWcbTvtPuNd1lAaQjAOoijsKOTb7tcX8H
+ TXiuid8eqv/Z5rl6eBTAtU5isL9WMBQQPbIpRBfqVtStXcJxP0WyKUay3m+qxIWzv/5KP200z
+ sryuAMC7JT6ylfOTc5nfXHINehGTrnBzE5+oyUK0gXVuOn+e/CGZXQThlSnL5b1vHaTOZ/p46
+ bSLiGcF/fXxG9QTcvsxJb/uNAv3Y6As1EC/bk00S+tPljCGFNw6tcz0/FeH9In17voYXBri9J
+ 5nRUNYpIJVGFgJj+JdYm2j6Vw1xcUXU1HsIig84w7UaQmf+6qcZQfHl5BZRIt3zi9PgEP/ick
+ 9qjW043UcsAtH0lBrxuHxA69F82GojAVdYvsHdlmnymFZ1tD1Btu5LSLV0UrB9I079ofcMDK5
+ zWdXQyow0LPTi7+xEVpQskFAdx4cp3nT/yAITLt7IteUqaIMYkMYxd/OJoH9hrK9u1673By0Y
+ U7R6E7xJmbIWX7JMgav2gQitEzFRK+cwSerw4mT11d+OSObnLkvX6gU63ALSifQ1g0wC9bzZ+
+ tNldJwxLPpdIUuCevv8CuP+/ZfRWySh0hyv8uI0Dw26qpZfo0fao7mZD+EMRhowXWGklZ9UXK
+ UfXeVVYqx9NdXVWWJ5jq6bhtQN0/30kf0LYAwidSPAVxDW4he/i/SjVlKdh5pOMXPKtxw6Me0
+ +q1pI7wfdrDppITWJSav2b3Ez1aLKTaBo298xEHgDiE8OLL2Uww5Q7e2WbcPvs/jjbEzfG4TP
+ B9b6/wnhkYpeVBrDmD0VTKVo8gN3JtK/K4ng6PoEXvw1WMJ1onngipbm74nCGtu+blQFUOE1D
+ 06BiX2LBqpFwiXMPCfRDEcYyv5lVrBvzyGTt7SJSZse1alhqaY95n2uxQJFnwlW7+bVNsZn5C
+ 8IZMWHodsPXUNw0M5taxP84lV0PKqvMJcFMXfNjMQHGk8aZQdPo7O+L2KAjsKypH3kTJ9s8YC
+ Ggoud75xk4kuUGI+Kz1gennt3GjRhd/7yyXCq6kRLjXd6ofZ4BipK8M7UvUbRxUtjK+41cx57
+ n7/9OvfQH/+IFRhHDrJaRhRQGLrrMtFYXRaCnaWYzUD3Q5RiV9wlhUM/YHb2x1dnrZ6BeHJo0
+ 1e0p1K3LUpjYype4FTh/vixO1d7hFXomYmsELq3Y2il92VtQ83VUCQgbaHc2klXu6RQt6fc0O
+ PBGlFpoEYqpvP92g48B7v4hsUQ1pl22rVqV3DKaq/8wCgAAQjMlShrqhHZDr1xH8itxow6/D8
+ 7s1dHzOizw2/lGefZbCeYzzt/x8cdq3MnAZZbGQW8dBkBbsa4heQkV5dd1fHe3f8rXI2hEnQs
+ tpv+ThTBYWOdUAkrzgL8nqB4gzr29O7aSCZq4YTP+RInoHZuw46VypDHqJT13Zr8ldLRDzaav
+ BOg42Jx0bgkG7pkY1YahmFdS1U84=
 
 
 
-=E5=9C=A8 2025/3/28 00:10, Dimitrios Apostolou =E5=86=99=E9=81=93:
-> On Thu, 27 Mar 2025, Qu Wenruo wrote:
+=E5=9C=A8 2025/3/28 03:17, David Sterba =E5=86=99=E9=81=93:
+> On Thu, Mar 20, 2025 at 04:04:07PM +1030, Qu Wenruo wrote:
+>> The function btrfs_buffered_write() is implementing all the complex
+>> heavy-lifting work inside a huge while () loop, which makes later large
+>> data folios work much harder.
 >>
->> =E5=9C=A8 2025/3/26 22:45, Dimitrios Apostolou =E5=86=99=E9=81=93:
->>>
->>> =C2=A0Can't the solution/workaround be way more simple, or stupid even=
-?
->>>
->>> =C2=A0* Either have fallocate(2) return EOPNOTSUPP on a force-compress
->>> =C2=A0 =C2=A0 filesystem, and leave the work-around to userspace,
+>> The first patch is a patch that already submitted to the mailing list
+>> recently, but all later reworks depends on that patch, thus it is
+>> included in the series.
 >>
->> Unfortunately fallocate has higher priority, not vise-verse.
+>> The core of the whole series is to introduce a helper function,
+>> copy_one_range() to do the buffer copy into one single folio.
 >>
->> In most cases, compression is a good to have feature, but even with
->> force-compression, we can still have cases that won't be compressed.
->
-> Do you know of other cases besides fallocate?
-
-/dev/urandom or something similar, those kind of data will result the
-compressed data to be larger than the original, and btrfs will abort
-compression no matter the mount option.
-
->
+>> Patch 2 is a preparation that moves the error cleanup into the main loo=
+p,
+>> so we do not have dedicated out-of-loop cleanup.
 >>
->> On the other hand, all major upstream fses have support for fallocate,
->> and although I understand preallocation is no longer as simple as
->> non-COW filesystems, not supporting it would still be a big surprise to
->> a lot of user space tools.
->
-> I checked what openzfs does, and here is an excerpt from the commit
-> message that added support for fallocate:
->
->  =C2=A0 Since ZFS does COW and snapshows, preallocating blocks for a fil=
-e
->  =C2=A0 cannot guarantee that writes to the file will not run out of spa=
-ce.
->  =C2=A0 Instead, make a best-effort attempt to check that at least enoug=
-h
->  =C2=A0 space is currently available in the pool (12% margin), then crea=
-te
->  =C2=A0 a sparse file of the requested size and continue on with life.
->
-> The whole commit with some discussion is at [1], while a long issue
-> discussing alternative is at [2].
->
-> [1]=C2=A0 https://github.com/openzfs/zfs/pull/10408
-> [2]=C2=A0 https://github.com/openzfs/zfs/issues/326
->
-> It could be the solution for btrfs too, to just check if such space plus=
- a
-> margin is available and return a sparse file. We lie to userspace about
-> guaranteeing that write() can't fail, but as you mentioned, we are alrea=
-dy
-> lying:
-
-In that case, I'd prefer to return EOPNOTSUPP for fallocate, not even
-try to emulate the behavior like ZFS.
-
-At least we have one more fs showing how bad fallocate is on a COW fs.
-
->
->> Not that easily either. Fallocate itself should mean the next write int=
-o
->> the fallocated range will not fail with ENOSPC.
+>> Patch 3 is another preparation that extract the space reservation code
+>> into a helper, make the final refactor patch a little more smaller.
 >>
->> Although that assumption itself is no longer correct on btrfs, (e.g.
->> fallocate, then snapshot).
->
-> Anyway,
->
+>> And patch 4 is the main dish, with all the refactoring happening inside
+>> it.
 >>
->> Although emotionally I agree with you. Fallocation on btrfs is just
->> looking for extra problems, and if I have the final call, I will be mor=
-e
->> than happier to nuke fallocation support.
+>> Qu Wenruo (4):
+>>    btrfs: remove force_page_uptodate variable from btrfs_buffered_write=
+()
+>>    btrfs: cleanup the reserved space inside the loop of
+>>      btrfs_buffered_write()
+>>    btrfs: extract the space reservation code from btrfs_buffered_write(=
+)
+>>    btrfs: extract the main loop of btrfs_buffered_write() into a helper
 >
->  From a purist's perspective I also find EOPNOTSUPP as the best solution=
-.
+> I'm looking at the committed patches in for-next and there are still too
+> many whitespace and formatting issues, atop those pointed out in the
+> mail discussion. It's probably because the code moved and inherited the
+> formatting but this is one of the oportunities to fix it in the final
+> version.
 >
-> * Better for the kernel: no complicated workarounds, no lies to userspac=
-e
+> I fixed what I saw, but plase try to reformat the code according to the
+> best pratices. No big deal if something slips, I'd rather you focus on
+> the code than on formattig but in this patchset it looked like a
+> systematic error.
 >
-> * Better for the application: it gets to know that there are no guarante=
-es
->  =C2=A0 on space allocation
+> In case of factoring out code and moving it around I suggest to do it in
+> two steps, first move the code, make sure it's correct etc, commit, and
+> then open the changed code in editor in diff mode. If you're using
+> fugitive.vim the command ":Gdiff HEAD^" clearly shows the changed code
+> and doing the styling and formatting pass is quite easy.
 >
-> * Better for the admin: the files get compressed as the mount options
->  =C2=A0 mandate
->
-> The only disadvantage I see is breaking the applications that don't
-> implement fallback code to {posix_,}fallocate() returning
-> EOPNOTSUPP/EINVAL.
-> I have to ask here, is posix_fallocate() mandated by some standard?
-> If not, it's an application bug.
+This is a little weird, IIRC the workflow hooks should detect those
+whitespace errors at commit time, e.g:
 
-Nope, it's not a hard requirement, in fact some older fses (still
-supported upstream) are not supporting fallocate at all.
+$ git commit  -a --amend
+ERROR:TRAILING_WHITESPACE: trailing whitespace
+#9: FILE: fs/btrfs/file.c:2207:
++^I$
 
-E.g. Ext2 doesn't support fallocate.
+total: 1 errors, 0 warnings, 7 lines checked
+Checkpatch found errors, would you like to fix them up? (Yn)
 
-But suddenly dropping one feature which we originally support, is a
-little concerning.
+But it was never triggered at any of the code move.
 
->
-> Maybe the best tradeoff is to add a mount option fallocate=3Doff.
+I know I missed a lot of style changes when moving the code, but I
+didn't expect any whitespace errors.
 
-That will be feasible.
-
-I can try push that direction after you have updated the docs.
-
-
->
->>
->>>
->>> =C2=A0* or fill up the holes with compressed zeros, basically implemen=
-ting
->>> the
->>> =C2=A0 =C2=A0 work-around in kernelspace. I suspect this would be very=
- cheap in a
->>> =C2=A0 =C2=A0 deduplicating filesystem like btrfs, since all the zero-=
-filled
->>> =C2=A0 =C2=A0 compressed extents are essentially identical.
->>
->>
->> But doing compressed zeros means we got nothing from the old
->> preallocation behavior, and still waste space on holes.
->
-> I might be misunderstanding the terminology. I thought a "hole" is one
-> block or extent of zeros. If that's one block referenced (deduplicated)
-> multiple times, then there is no space wasted, right? It's just a lie:
-> btrfs allocated no space for the hole.
-
-Oh, in that case, a hole really means a hole, there is no space taken on
-disk, and all the zero are just filled at read time.
-
-Thus there is no compressed or non-compressed hole, it's really a hole,
-void.
-
-And in that case I guess you mean making fallocate fallback to hole
-punching (for unallocated range).
-
-Which is still not as good as EOPNOTSUPP IHMO.
+Mind to provide some examples where the git hooks didn't catch them?
 
 Thanks,
 Qu
-
->
->
-> Thank you,
-> Dimitris
 
