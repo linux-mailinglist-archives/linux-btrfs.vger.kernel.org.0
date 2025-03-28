@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-12667-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2207FA7521F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Mar 2025 22:36:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75548A75244
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Mar 2025 23:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD9FF3A956C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Mar 2025 21:36:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D096170F7F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Mar 2025 22:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844BA1EB5F6;
-	Fri, 28 Mar 2025 21:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C801D63FA;
+	Fri, 28 Mar 2025 22:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="c0OrRQ0H"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cRcO8dX3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743111A0BF1
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Mar 2025 21:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1345C145B24
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Mar 2025 22:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743197780; cv=none; b=YlKS3BKYDY2RgQ2U3IkY4JJdGqn3N2PEWJ0tyUXFPgH9uj+Pc09d1rtFTuR5aest7ClyQ3GHwY/oKF03anlJUq743KmcOoziac2/IhZLD+BaYejFmb9rvZakB3imEasDhlWRI4gL5cNu680Vt9HNlxje1g89FKcpIEfeAedPH4Y=
+	t=1743199487; cv=none; b=HNvzR6Mu+S/LWu9VDGbi2djW2GHFOjaOt/4QzceB5cEcpORSIlIYfZEmUMzkAd11CBDI96KevJuZkn3Wywi8/0LJI/22Lj7rP58d5LhS8S+4geBhLtjteT2bRv/snazmoHHD4B95oBHwQT9zk/5IfHxj3Z4vfZakn//fskdYwwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743197780; c=relaxed/simple;
-	bh=3DpJ3dssCTXfYvgrnii/pIwPJ5KSPKHbZYWYN3BntpQ=;
+	s=arc-20240116; t=1743199487; c=relaxed/simple;
+	bh=ldd/6K4guePy/iKcCsFVhsQHxolOtY+W4nk8wKC++Ss=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jLdHrYfiHm4yoVHWZjSYZAiVzNddkUYaYJz0K0vpeVOUw9WykXXsc6dDpyAB3iCLAdVWKyTF0B8IPqiEZIK0br56Rb6uxjlB8OZNjPkwY+Dti2tTlUv6hLEM2UJuweK0+00uDfZLrqdNmvDbgLJQVL6DmXMmGpgYsztKMUAqj/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=c0OrRQ0H; arc=none smtp.client-ip=209.85.221.42
+	 In-Reply-To:Content-Type; b=S/tPD5LvaBLA0e9fQ3Ancx3RDBPP1N0Q5jE8GejPmDMUBh1HHShABWYhwLH5NAEkebduGJ+ANvSsTn7qhZmpSuNclFAtBSaNL3dWQmHgiovEJOkjTAqIB8mEywvV9stUaYnII6c9uyRyuLDe0oJIE8JqWiH64lOVbOQ7diNVN70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cRcO8dX3; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-39149bccb69so2338566f8f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Mar 2025 14:36:18 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-394780e98easo1585058f8f.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Mar 2025 15:04:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1743197777; x=1743802577; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1743199483; x=1743804283; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nmevhfTNDzBM/ZC/adn0T62gDZSW4C9orc1wYIF5bns=;
-        b=c0OrRQ0HqsUDZdOfS4BvdO/j1lGBrfLvqBvG1WO8oiBZiFcVP23CeaZ2JKYRqx3yzG
-         z/PK3HIYOx7qpilBX547LualjONTzmEuxXaLGp4hCwbryeDdBquB180APl98vfoQ6uiM
-         7wTaowFArjziiJfin6KCWOGLR/zTTorMsr/M8cpOBI7ZJ1C0M7GW6q29I0GstEwE8+CO
-         wjdpW4/Wl+LB4jEkMhxvz6mGffcrOEydH6zaqNsbSe61dTUW2aJYmYBNodfXNHCv7ZHL
-         greU/X33LNt8eIbzDVcYOt485paVh2wndOyXgIQHEDKNtDefkqYmio0ju6kWyEJ4rrV6
-         5pCg==
+        bh=blomsD3SwHXsSK3bfYyfC0xzZp/66ru7MTqNKHGQ4A4=;
+        b=cRcO8dX38DzBFLxILKNrOkt0O682vb4WmCQZLproGbLn3KDfbJWoEhTV8c1WFd1jBa
+         L0vgw06cPoPP3HeaaVCCjTzPPu38xd55r/VLPSuRpdTAE2hsWt8Bxrs+rizemOytqsef
+         XrOLtNtmuxEKHFrUIFUnZ7bIN0aWSe19W52w2ysVsBGDEon2n3ganP1en+skX2vwGI8e
+         2lf9gWDKSXOvMBESEoc0ywbKptmNMQxGhaaddHlpcuq+skEZkNatANYkObQJq4IeA0Ya
+         gyRIC0ullsFrO13khs5hZSSC5VcamyF3RtWJe3YPBTl98Geldmit+K5uyAR6HcRUvmAj
+         PFOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743197777; x=1743802577;
+        d=1e100.net; s=20230601; t=1743199483; x=1743804283;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nmevhfTNDzBM/ZC/adn0T62gDZSW4C9orc1wYIF5bns=;
-        b=bYj6VzcZs92NbQBc3KyA3rWznjMZzxkw3rSuF8HB1qfj9EJeOKJdP+4tBGzf02KTI1
-         LfeyeToNi+ZAtwrdWRx5GNhEWY71guwOe/K14yvJYiZgJRD42MYrNI4OEjf4jse1wPTy
-         +7952hxoDCp4g+dI/C5Av8XyhVrH9Jbg5ZmZwBLYPDHoyN3csxYXcItVPCRRuuqZ9P/U
-         6i6Hg0VbQu5NIlgp00sJyc1eqlm49Rg7cuhf/XostwRD+erFP3CMF2El3x7OI4HUOE+V
-         IpUuxl2OUIO8IDNWj4qooK/F1NaBoAc2ML0XpTWxhzF797/er2IFWrYcCBLjLZbbd+5S
-         2HxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU7OHogU5yaJPEREJG8P5Rfn0ivbKau3af7UDLx23VopeMcJo1cwQv0sAce9uH6xX7MCXIy+JYuczr8LQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWmPxo4qwIk7RYdTGIvNAGAjNUg1zPB5bffobIdy2BOefNyZYd
-	facleJL05mmwMjuuG0iYKZx49gAvCK4JDRARm/P+oDyiS60Holo6NHzeNqFjYDA=
-X-Gm-Gg: ASbGnctLT1HcfkFbb5dE5YLGMvPq3fNtysKfL7PzVx4aYkAyXOUSdQwaHhM58FXoJBo
-	eoWHP7r6MukIu6gYZwKO5R0u7+KLmi60tuTm9+4c1RpO6SZtGh2RWLLHzh1OjoiJ/tSlX8l04Mi
-	bmNevLTI5Ulx7fHI9putpWMJUX86JeIk1aC3Oe/V+/Sc0Y30zZ0Q4fH+qWcrLyqxz830g2Z5RsX
-	SGO55eMrFEKSxzZCCuCdeFyICxWMwohyUO+F8eWRTrmW92lQR7sdKcIJnSIDmkdW/PzzS8l+kvQ
-	SgmAoHHB4uhTR1yOHXNL/HU8DFE16a/T47Db5VwEb5fWgbmvGtBi6FhSnb1iCDHXp0rLss8B
-X-Google-Smtp-Source: AGHT+IHlRHbwRz2wWRwkaFwXutCTVQ4Wvm+6MXtxeruh9Y/k2nLySUcvuEJ4RfXN3lnsJ3xQtNWLJA==
-X-Received: by 2002:a5d:6d04:0:b0:39a:c9cb:8296 with SMTP id ffacd0b85a97d-39c120e3b2amr588826f8f.22.1743197776449;
-        Fri, 28 Mar 2025 14:36:16 -0700 (PDT)
+        bh=blomsD3SwHXsSK3bfYyfC0xzZp/66ru7MTqNKHGQ4A4=;
+        b=Ms6whxd+4T5scNFqTXcTkZyom86AGOiDP6M7oq8V+hRVKltrLz/nmBgRerIIYfRN1K
+         rH9TCUcBuV/JQWKmmJwmbv5dd2Hq1m0poO/kPjkbGgM1Dr0MBAzjvbWTylt76UTtlcL2
+         BnBoqUakhpw2vI1PRR+Ed86k3JATBDVPS5Jpx2bMD3nmse9CfU6keQ/v6FUkB1MOuElG
+         m4KfgnbtCUYgKds5NHR7hlyrMpD6ohr5xLBegGC6Fv5zrQHf5CIJoxGyXr1wK8IfWM2N
+         GFNfkWn7MF1+VpUpGI+WXV+bcBbGljJhzuejvUxCAtRL/J2sz2HRpSUAs+8KBvC94xEA
+         oJbQ==
+X-Gm-Message-State: AOJu0YzUiVrQ8EFHpYeVRBegheALW8gYJPMXVCm7Z9tb4ebWA/FoB+qv
+	x3Wh5K8Q6f2UJxgsOa+j3IS28CmO9kkf4F9itkPwlCxoxHuaBiy3GdeRrxQzzoI=
+X-Gm-Gg: ASbGncvPHgJpYAUyhzzMs0bTTjnyBqenXGfs+X2TFqXjfSWWukkn/I6cAxRsxN91y38
+	GUyeUD3TxSXs/rb3u3sDbhlLdYwIUqI+Wxnn/SPRqQxqmdg1+VXn3RH0Jt3NL78DjWhuDpIFfmK
+	GQ5GcPHEYJqMeU9SamK72Xr832sC1x9R7+L6LAWaPd7URJAiLzRfzDm67mfgfQAqGDwyH4qLjSD
+	bvaz5V9AquFS3KiZ7O1yRwUap9/Fm1tdtxd0aRoZyDaA3yc6P3TfeuwOBq0W2vc+jw3Exqk56hq
+	+ZH1/T7r9uolNJ7pSxrPfh63CJPUxnezgjKVlmcFeQ6MNCT70i3poIdTI/w3r4ONdQ7Lq7v7JG9
+	ZTfU8M6k=
+X-Google-Smtp-Source: AGHT+IHzrmz1O2AYgM7502bSxLtT+4j3QZHCN11VqfdC9ehOyaJOHfR5nPPg921OEwGhOj4uh7JJCg==
+X-Received: by 2002:a5d:584a:0:b0:391:ab2:9e71 with SMTP id ffacd0b85a97d-39c120dec0dmr657697f8f.20.1743199483021;
+        Fri, 28 Mar 2025 15:04:43 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291eedc988sm23840665ad.59.2025.03.28.14.36.13
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739710d075csm2323994b3a.165.2025.03.28.15.04.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Mar 2025 14:36:15 -0700 (PDT)
-Message-ID: <bdb78088-9986-4995-aac6-6f26dc56f0a7@suse.com>
-Date: Sat, 29 Mar 2025 08:06:11 +1030
+        Fri, 28 Mar 2025 15:04:42 -0700 (PDT)
+Message-ID: <6cbfbb9a-c3da-4aa4-b719-1295ff3d18eb@suse.com>
+Date: Sat, 29 Mar 2025 08:34:38 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,12 +82,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Btrfs updates for 6.15
-To: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.cz>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1742834133.git.dsterba@suse.com>
- <20250328132751.GA1379678@perftesting> <20250328173644.GG32661@twin.jikos.cz>
- <20250328193927.GA1393046@perftesting>
+Subject: Re: [PATCH 0/4] btrfs: refactor btrfs_buffered_write() for the
+ incoming large data folios
+To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1742443383.git.wqu@suse.com>
+ <20250327164713.GV32661@twin.jikos.cz>
+ <0ca94ef9-7626-48e5-8417-0c1efa4d6832@gmx.com>
+ <20250328191207.GI32661@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -114,104 +116,167 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250328193927.GA1393046@perftesting>
+In-Reply-To: <20250328191207.GI32661@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/3/29 06:09, Josef Bacik 写道:
-> On Fri, Mar 28, 2025 at 06:36:44PM +0100, David Sterba wrote:
->> On Fri, Mar 28, 2025 at 09:27:51AM -0400, Josef Bacik wrote:
->>> On Mon, Mar 24, 2025 at 05:37:51PM +0100, David Sterba wrote:
->>>> Hi,
+在 2025/3/29 05:42, David Sterba 写道:
+> On Fri, Mar 28, 2025 at 07:17:39AM +1030, Qu Wenruo wrote:
+>> 在 2025/3/28 03:17, David Sterba 写道:
+>>> On Thu, Mar 20, 2025 at 04:04:07PM +1030, Qu Wenruo wrote:
+>>>> The function btrfs_buffered_write() is implementing all the complex
+>>>> heavy-lifting work inside a huge while () loop, which makes later large
+>>>> data folios work much harder.
 >>>>
->>>> please pull the following btrfs updates, thanks.
+>>>> The first patch is a patch that already submitted to the mailing list
+>>>> recently, but all later reworks depends on that patch, thus it is
+>>>> included in the series.
 >>>>
->>>> User visible changes:
+>>>> The core of the whole series is to introduce a helper function,
+>>>> copy_one_range() to do the buffer copy into one single folio.
 >>>>
->>>> - fall back to buffered write if direct io is done on a file that requires
->>>>    checksums
+>>>> Patch 2 is a preparation that moves the error cleanup into the main loop,
+>>>> so we do not have dedicated out-of-loop cleanup.
+>>>>
+>>>> Patch 3 is another preparation that extract the space reservation code
+>>>> into a helper, make the final refactor patch a little more smaller.
+>>>>
+>>>> And patch 4 is the main dish, with all the refactoring happening inside
+>>>> it.
+>>>>
+>>>> Qu Wenruo (4):
+>>>>     btrfs: remove force_page_uptodate variable from btrfs_buffered_write()
+>>>>     btrfs: cleanup the reserved space inside the loop of
+>>>>       btrfs_buffered_write()
+>>>>     btrfs: extract the space reservation code from btrfs_buffered_write()
+>>>>     btrfs: extract the main loop of btrfs_buffered_write() into a helper
 >>>
->>> <trimming the everybody linux-btrfs from the cc list>
+>>> I'm looking at the committed patches in for-next and there are still too
+>>> many whitespace and formatting issues, atop those pointed out in the
+>>> mail discussion. It's probably because the code moved and inherited the
+>>> formatting but this is one of the oportunities to fix it in the final
+>>> version.
 >>>
->>> What?  We use this constantly in a bunch of places to avoid page cache overhead,
->>> it's perfectly legitimate to do DIO to a file that requires checksums.  Does the
->>> vm case mess this up?  Absolutely, but that's why we say use NOCOW for that
->>> case.  We've always had this behavior, we've always been clear that if you break
->>> it you buy it.  This is a huge regression for a pretty significant use case.
-
-BTW, it's not clear, it's not in the documents (until recently, along 
-with this change), and no one is really explaining that to end users 
-until now.
-
-If you're a experienced fs/mm developer, sure it's obvious, but most 
-users (millions of VM users who choose to use none cache mode) are not 
-so experienced.
-
-Future more, a lot of such VM users are just trying to reduce page cache 
-memory usage, not so about the zero-copy performance.
-And the buffered fallback should still make a lot of sense for them, and 
-still allow working data checksum (which they may care more than the 
-performance).
-
+>>> I fixed what I saw, but plase try to reformat the code according to the
+>>> best pratices. No big deal if something slips, I'd rather you focus on
+>>> the code than on formattig but in this patchset it looked like a
+>>> systematic error.
+>>>
+>>> In case of factoring out code and moving it around I suggest to do it in
+>>> two steps, first move the code, make sure it's correct etc, commit, and
+>>> then open the changed code in editor in diff mode. If you're using
+>>> fugitive.vim the command ":Gdiff HEAD^" clearly shows the changed code
+>>> and doing the styling and formatting pass is quite easy.
+>>>
+>> This is a little weird, IIRC the workflow hooks should detect those
+>> whitespace errors at commit time, e.g:
 >>
->> The patch has been up for like 2 months and you could have said "don't
->> because reasons" any time before the pull request. Now we're left with a
->> revert, or other alternatives making the use cases working.
+>> $ git commit  -a --amend
+>> ERROR:TRAILING_WHITESPACE: trailing whitespace
+>> #9: FILE: fs/btrfs/file.c:2207:
+>> +^I$
+>>
+>> total: 1 errors, 0 warnings, 7 lines checked
+>> Checkpatch found errors, would you like to fix them up? (Yn)
+>>
+>> But it was never triggered at any of the code move.
+>>
+>> I know I missed a lot of style changes when moving the code, but I
+>> didn't expect any whitespace errors.
+>>
+>> Mind to provide some examples where the git hooks didn't catch them?
 > 
-> Boris told me about this and I forgot.  I took everybody off the CC list because
-> I don't want to revert it, in fact generally speaking I'd love to never have
-> these style of bug reports again.
+> I don't use the git hooks for checks so I'll copy it from the patches:
 > 
-> But it is a pretty significant change.  Are we ok going forward saying you don't
-> get O_DIRECT unless you want NOCOW?
+> https://lore.kernel.org/linux-btrfs/b0bd320dba85d72a34a4f7e5ba6b6c42caedbe41.1742443383.git.wqu@suse.com/
+> 
+> @@ -1074,6 +1074,27 @@ int btrfs_write_check(struct kiocb *iocb, size_t count)
+>   	return 0;
+>   }
+>   
+> +static void release_space(struct btrfs_inode *inode,
+> +			  struct extent_changeset *data_reserved,
+> +			  u64 start, u64 len,
+> +			  bool only_release_metadata)
+> +{
+> +	const struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +
+> +	if (!len)
+> +		return;
+> +
+> +	if (only_release_metadata) {
+> +		btrfs_check_nocow_unlock(inode);
+> +		btrfs_delalloc_release_metadata(inode, len, true);
+> +	} else {
+> +		btrfs_delalloc_release_space(inode,
+> +				data_reserved,
+> +				round_down(start, fs_info->sectorsize),
+> +				len, true);
+> +	}
+> +}
+> ---
+> 
+> The parameters of btrfs_delalloc_release_space(), matching its origin:
+> 
+> -	if (release_bytes) {
+> -		if (only_release_metadata) {
+> -			btrfs_check_nocow_unlock(BTRFS_I(inode));
+> -			btrfs_delalloc_release_metadata(BTRFS_I(inode),
+> -					release_bytes, true);
+> -		} else {
+> -			btrfs_delalloc_release_space(BTRFS_I(inode),
+> -					data_reserved,
+> -					round_down(pos, fs_info->sectorsize),
+> -					release_bytes, true);
+> -		}
+> -	}
+> ---
+> 
+> Maybe the checks ignore possible whitespace adjustments in moved code,
+> e.g. comparing the - and + change literally and not taking the new
+> location into account.
 
-Despite NOCOW, there are still other things (like alignment) can make 
-O_DIRECT to fall back buffered, without even letting the users know.
+Sorry, I just compared the patch and the commit inside for-next branch, 
+but I didn't see any white-space related changes.
 
-And it is always fs specific on whether it choose to fall buffered or 
-return -EINVAL.
+Only the fs_info grabbing is moved into the else branch inside 
+release_space(), and moving the indent of parameter to align with the 
+'(' for btrfs_delalloc_release_space().
 
-So in the first place there is never any guarantee that O_DIRECT always 
-results in zero-copy writes.
-
-> Should we maybe allow for users to indicate
-> they're not dumb and can be trusted to do O_DIRECT properly? I just think this
-> opens us up to a lot more uncomfortable conversations than the other behavior.
-
-For whatever reason, no matter dumb users or not, all operations through 
-a fs should not lead to data/metadata corruption, no matter if it's real 
-corruption or just false csum mismatch.
-(Not to mention it's not easy to fix the csum mismatch either)
-
-If dumb programs can still corrupt the fs, then it's a bug in the fs.
-
-To me, this is very straightforward, and the priority should be obvious.
+If by white-space, you mean strict indent for all parameters, that's not 
+(and I guess it will never) be implemented by check-patch.pl.
 
 > 
-> I personally think this is better, if it's been sitting there for 2 months then
-> hooray we're in agreement. But I'm also worried it'll come back to bite us.
+> Basically the same pattern in https://lore.kernel.org/linux-btrfs/522bfb923444f08b2c68c51a05cb5ca8b3ac7a77.1742443383.git.wqu@suse.com/
 
-I'd say, let it bite.
+The same indent pattern you modified.
 
-If it's some performance critical use cases, I believe the developer 
-should be reasonable enough to be persuaded (either choose perf and go 
-NODATASUM, or choose datacsum and accept the perf drop).
+Personally speaking, I do not think the indent alignment to '(' should 
+be mandatory.
 
-If it's newbie level usages, they shouldn't even notice any difference, 
-except the fact btrfs no longer corrupts their files.
+The indent different is small, won't change the reader's ability to know 
+it's a parameter, and there are both types of indent usages across the 
+filesystems.
 
-Even if it really bites in the future, I doubt it will be any worse.
+To be honest, aligning to '(' will only make future function rename 
+harder, thus I prefer fixed tab indent other than strong alignment.
 
-On the other hand, the data csum mismatch for VM images are already 
-biting us for too long, and it's really damaging the reputation of Btrfs.
+But if you insist, I can follow it in the future, but since it's not 
+included in checkpatch.pl, there will be missing ones here and there.
+
+Although I really prefer to not have such a mandatory alignment 
+requirement, to reduce the burden on you and all other developers.
 
 Thanks,
 Qu
 
-> Thanks,
 > 
-> Josef
+> code moved to reserve_space() from btrfs_buffered_write(), parameters passed to
+> btrfs_free_reserved_data_space().
+> 
+> I remember fixing more code like this, but hopefully the two examples would be
+> sufficient to test the hook checks.
 
 
