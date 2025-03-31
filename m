@@ -1,182 +1,218 @@
-Return-Path: <linux-btrfs+bounces-12696-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12697-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC5BA76FEF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 23:10:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17A97A76FF8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 23:14:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D69613AA18E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 21:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66C261671C2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 21:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1938721B9D9;
-	Mon, 31 Mar 2025 21:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED7321C184;
+	Mon, 31 Mar 2025 21:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uuPUSl3f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ySeR+uMF";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uuPUSl3f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ySeR+uMF"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="q8FbJJ2U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF36E211A0D
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 21:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FCF7080D;
+	Mon, 31 Mar 2025 21:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743455446; cv=none; b=sDJBCLPPu9K7BgZ9iKeDFI2O4pFZQlJqo8bb8g42XoC+jSjBcPzFM6saCuxzMy8vjXDKvnpTVNAAxWfAJ7B5SEKPTYHcETXBpxLtqglbYrgasijpzCEkQJ52cjMptqOHgfkZ1QY2BBXZLIOgtd6XpYoAc136fgSYj8eG3CTli+Q=
+	t=1743455651; cv=none; b=BSZ1208/A9zqRx0tM7TEzeY84mbudY8fA+hXfXpv1zxAEgWqsRPna8NX6JPiXbvy8dsmWvHjQKkd66HC5oc/AFxfZ/aZbu9kelSKGRz/JfaVGCAIZeriMOZttux2Da5qFw+eeyz2GQrUiyKwb5u1Mi8//PKYoit44LPfjBQ2Ux4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743455446; c=relaxed/simple;
-	bh=CXAjLWLS+ZqhwyjOvFjTyS+AFIv0YDbu+2c/kZ4EpiY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CeUpZJ64ysLSR492Cn7W3nzW4WJVhPgfyiloh25PNwtcSAfExPzoLmaQXUbsbCJwj+2dG7U9P21+vUlnBRUthdw+BCYb2zfH/pRYILe2TvETdr8OEa90EwVIYnTTGv7N3oe5H0/aLOB6TUosO/cPpKlyRQMjh0LIfXnaqCxGl6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uuPUSl3f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ySeR+uMF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uuPUSl3f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ySeR+uMF; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5CC55211EB;
-	Mon, 31 Mar 2025 21:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743455442;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LB8Bnx+lg9m+XmIAQJ5BLaUyxOdjCVKpspwLhTMVsKw=;
-	b=uuPUSl3fHPXiAMponw6WggJ3MrXfnLX3qYvbGKrufU2jE0mSRw5kgClSD/mmVMBqXO6dgR
-	kFsZClumUTrriQ7WZl9grDNo1x26NyEroxuGRYDl4y+prl3+D3FVRkNGL4vGijUyJ8um1+
-	awAUaC0HsHtUMw1BFDrf63tGzHRlwsc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743455442;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LB8Bnx+lg9m+XmIAQJ5BLaUyxOdjCVKpspwLhTMVsKw=;
-	b=ySeR+uMFFv4FVGjOf+ZC5H2UvYaSZhQwBVwG9XV32kThK3fk1fe4o3gMz3AsF8HexhlMGi
-	EuvzBLL9VlqiqXCw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uuPUSl3f;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ySeR+uMF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743455442;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LB8Bnx+lg9m+XmIAQJ5BLaUyxOdjCVKpspwLhTMVsKw=;
-	b=uuPUSl3fHPXiAMponw6WggJ3MrXfnLX3qYvbGKrufU2jE0mSRw5kgClSD/mmVMBqXO6dgR
-	kFsZClumUTrriQ7WZl9grDNo1x26NyEroxuGRYDl4y+prl3+D3FVRkNGL4vGijUyJ8um1+
-	awAUaC0HsHtUMw1BFDrf63tGzHRlwsc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743455442;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LB8Bnx+lg9m+XmIAQJ5BLaUyxOdjCVKpspwLhTMVsKw=;
-	b=ySeR+uMFFv4FVGjOf+ZC5H2UvYaSZhQwBVwG9XV32kThK3fk1fe4o3gMz3AsF8HexhlMGi
-	EuvzBLL9VlqiqXCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43BF1139A1;
-	Mon, 31 Mar 2025 21:10:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VfUGENIE62ebLwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 31 Mar 2025 21:10:42 +0000
-Date: Mon, 31 Mar 2025 23:10:39 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: David Sterba <dsterba@suse.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: use rb_entry_safe() where possible to simplify
- code
-Message-ID: <20250331211039.GK32661@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250327161918.1406913-1-dsterba@suse.com>
- <55112570-95ed-4a63-9f30-7d041cd8e72c@wdc.com>
+	s=arc-20240116; t=1743455651; c=relaxed/simple;
+	bh=hMQSMUh44erp4N8q6IyW/OEe5dQ0e24JRgxyticPm3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YGEiwruhNqHfxmBrQyI8wgGpZU9a4a++039TGEAQp45/weYN6hJ/UMfaJAsK9fPYaDvRWsYUNBsm+VUt+IR2wBiSNU8xFiYoDWG/Qd8H92QhiP6LpfbFTl68LJN/3BV14IdrK+yAHIHX8vqwEpTrHkjkiCD6SQx6xIhVzRsMDuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=q8FbJJ2U; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1743455646; x=1744060446; i=quwenruo.btrfs@gmx.com;
+	bh=Uso56pb8SuJXJToitq1Sfh07PwWrBACFK0dG374DTk4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=q8FbJJ2UfY4cmIwgU9PRtc2lIKi8FKBWD62DAPlGgVSBvUTVLksPbKi8y/oBT/OF
+	 /MvjYtWEC1fjqoIjWAEbRLAZuSgdChXIT3Hr/bckyaYfmFfC2K08Wv9dU5yehAsl1
+	 1bwI9pWFJ20+8Q+72BR3726k2bBkmga+u9SPbbSZ12I7JU62+NwaowHeNVNbBbG/l
+	 dvdNDAqGk/bQLT5mQiyUtCBXj455y+PiwWadCkAmzPot4xFlTerbHtIkJ3jKub6iu
+	 MGPdTruiGoX59x1xUqFnepJs/3SdRd4jxx9AECzdcAu0VBkKKQZ+D+Fk2qQhUlIDp
+	 6RaC731SSpv0Ofh0Zg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWigq-1tbIAA03lA-00LO1K; Mon, 31
+ Mar 2025 23:14:06 +0200
+Message-ID: <b1437d32-8c85-4e5d-9c68-76938dcf6573@gmx.com>
+Date: Tue, 1 Apr 2025 07:44:01 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55112570-95ed-4a63-9f30-7d041cd8e72c@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 5CC55211EB
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: zstd: add `zstd-fast` alias mount option for fast
+ modes
+To: Daniel Vacek <neelx@suse.com>, Qu Wenruo <wqu@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250331082347.1407151-1-neelx@suse.com>
+ <2a759601-aebf-4d28-8649-ca4b1b3e755c@suse.com>
+ <CAPjX3Fdru3v6vezwzgSgkBcQ28uYvjsEquWHBHPFGNFOE8arjQ@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <CAPjX3Fdru3v6vezwzgSgkBcQ28uYvjsEquWHBHPFGNFOE8arjQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Wyx1ID2SLyDtKGYljXxoQ4MsjwjnTHtepavDI4MKCE8h/yCJYEP
+ TKJsHqtwjUlf9+ZyGRMEua1vyg7u8allsbi/G6M1naWFvewEAbkDdmq4xJhiraZCjfh/pdk
+ xaAXxHCFJfB1d8tO0qA5RKSqr50gsmqnE3yB2BTqqW8fwGSw/rj0KAqPUYMAWrovuAXPZNa
+ qC1ixGSzS8V63L0doP47Q==
 X-Spam-Flag: NO
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:GUz/ptwjjPw=;LCFY6SXiqxR/zNFzbS/PXjWpnTh
+ bkQdCjL3vos4cMu1EONFTcf7sU8CLI0EXpaGXjTgNLEPscIRPdAH4rZw/tQFzazfRTri0uzCs
+ aVhphBdmG24PryrKr7CeFd/JyYVYq9sxxwoxR2zinSP4vNjWYE5wOl5JgtR8uJGih8TbZgnuv
+ QaK13KqAOYjI7yCPWStdkzdc8Uqv8yl6SvZ4x9gef9Jd9kGro/xsexGzKnW/ZqYNXXTUFtZJi
+ m5ll0n2dxsUI2UKTXOxKk58Bg4B6R5q3tUBDTUOJIgkHksJkNjG+SQxh062moyNeWbl/HcuXU
+ hRDKnXNEd9GXyohBik7fw1TZdgAFb40SKhJzWOvXwexuJXiNbOFdvaEAvCoVPjxA6N240Lrjw
+ tYQsxPFSFlab3N1bWh9B0W2uB/60e3ulikbLKH+H7hmP9NsW87XH4l+S7gimu/0e3M93NXlR7
+ 5mqXGcbFoCQ1RTIZ7xwZ38JhWlOrpCImVHVljlFwGHZWwcPYQmI5I6+yEodl6Po6RCY2X2j/D
+ /iaXPqeZ4yL95Gvpx5YOmWiqak6NSxZiB2tvmRhmI56aQW1oq8rXj0DOPCobbX8wpbNB00qUo
+ zLztBPRauFEieidjpoiH8lAP8Zpovy52ZczwfIuWEQh5JZsvFogubCDpNs3cR2VX//pvYz43Q
+ UUfFMn/UFaanU8CZWS8Tf+agyG4edJuuwjY1qmIpPpvRoCsYaypfgA7HjF38oooQv04sfPVcq
+ 3vAMY2diNonG0b/Nbx0krkV0xfgWKXIe5WezTbTkgk/bWrnnnwDZDBNhk4a8HIQqJC3v8FGO7
+ EuVDI1HcKQhcjnaWhYZXB3TFUxzgkicVL1X7qYVfEOCQwWtyAPfggAB2srokgVbbKVLycXwnA
+ DaApJNh+rL5ufD23br3ryvQJGQFAAOA5VvIerw++etZGxuaHi+Z1cpYECITk2IfqJ9Eo+9P+c
+ Xpu+Xzi3M4dxZdr1mKV7wWf2Dcp+B04PvozoJWsrYG7mkfWPHK8f/yP3zRSFkHLTCmE8fjo5i
+ GPNsFF6jaysjgI9Me+v8W3J6mJ3PuNj+zWqIJzS9cpaIRXLGsoAjeRNbZFZk3okV0LEMkQeTa
+ U3MOiZmMSfQfgKIpcEuybXgd7HcWuMudc1LpKPE6QMKv8AbKfN4CHOeIEn0AS1rZ/hG/q1+xs
+ ZMtDPdRlCBDuhhZLKWk+Zgz5BfCZ/XMzJWktkSeWthbQerbeCxjC4q48nxihqNMdSzvbe0Jf7
+ 0w3G2qN2OrJrwNMuuJY4JKGWaBMYpdBFpZBqi/IpbaMD2LWla7txnhkIPPwnh0JIOSH4/OaJ9
+ 1wOTnHeW2l6FB3j0bugRPDYwgBhV9Jq0B+P861bN3+YJC1bTe1T0nOBm8t0RZ6B5VnTJj256v
+ Poukc5u5FsMzDfVarDQ82VcXIfeB4RCc6ORhe1Z/GBaeCgQ7VffrQFTd+yJWlKHo0puUkVqCE
+ KKXrIfg==
 
-On Mon, Mar 31, 2025 at 03:36:15PM +0000, Johannes Thumshirn wrote:
-> On 27.03.25 17:19, David Sterba wrote:
-> > diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> > index 7f46abbd6311b2..d62c36a0b7ba41 100644
-> > --- a/fs/btrfs/extent_map.c
-> > +++ b/fs/btrfs/extent_map.c
-> > @@ -361,8 +361,8 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
-> >   
-> >   	if (em->start != 0) {
-> >   		rb = rb_prev(&em->rb_node);
-> > -		if (rb)
-> > -			merge = rb_entry(rb, struct extent_map, rb_node);
-> > +		merge = rb_entry_safe(rb, struct extent_map, rb_node);
-> > +
-> >   		if (rb && can_merge_extent_map(merge) && mergeable_maps(merge, em)) {
-> >   			em->start = merge->start;
-> >   			em->len += merge->len;
-> > @@ -379,8 +379,8 @@ static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
-> >   	}
-> >   
-> >   	rb = rb_next(&em->rb_node);
-> > -	if (rb)
-> > -		merge = rb_entry(rb, struct extent_map, rb_node);
-> > +	merge = rb_entry_safe(rb, struct extent_map, rb_node);
-> > +
-> >   	if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge)) {
-> >   		em->len += merge->len;
-> >   		if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
-> 
-> 
-> Nothing to do with your patch, but how does this even work? If 'merge' 
-> is NULL we pass it into can_merge_extent_map() which does not check if 
-> it is NULL and goes ahead and dereferences ->flags right in the beginning.
 
-If merge is NULL then rb was NULL and is checked in the 'if' before
-passing it to can_merge_extent_map().
+
+=E5=9C=A8 2025/3/31 20:36, Daniel Vacek =E5=86=99=E9=81=93:
+[...]
+>>>                        btrfs_set_opt(ctx->mount_opt, COMPRESS);
+>>>                        btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+>>>                        btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+>>> +             } else if (strncmp(param->string, "zstd-fast", 9) =3D=3D=
+ 0) {
+>>> +                     ctx->compress_type =3D BTRFS_COMPRESS_ZSTD;
+>>> +                     ctx->compress_level =3D
+>>> +                             -btrfs_compress_str2level(BTRFS_COMPRESS=
+_ZSTD,
+>>> +                                                       param->string =
++ 9
+>>
+>> Can we just use some temporary variable to save the return value of
+>> btrfs_compress_str2level()?
+>
+> I don't see any added value. Isn't `ctx->compress_level` temporary
+> enough at this point? Note that the FS is not mounted yet so there's
+> no other consumer of `ctx`.
+>
+> Or did you mean just for readability?
+
+Doing all the same checks and flipping the sign of ctx->compress_level
+is already cursed to me.
+
+Isn't something like this easier to understand?
+
+	level =3D btrfs_compress_str2level();
+	if (level > 0)
+		ctx->compress_level =3D -level;
+	else
+		ctx->compress_level =3D level;
+
+>
+>> );
+>>> +                     if (ctx->compress_level > 0)
+>>> +                             ctx->compress_level =3D -ctx->compress_l=
+evel;
+>>
+>> This also means, if we pass something like "compress=3Dzstd-fast:-9", i=
+t
+>> will still set the level to the correct -9.
+>>
+>> Not some weird double negative, which is good.
+>>
+>> But I'm also wondering, should we even allow minus value for "zstd-fast=
+".
+>
+> It was meant as a safety in a sense that `s/zstd:-/zstd-fast:-/` still
+> works the same. Hence it defines that "fast level -3 <=3D=3D=3D> fast le=
+vel
+> 3" (which is still level -3 in internal zstd representation).
+> So if you mounted `compress=3Dzstd-fast:-9` it's understood you actually
+> meant `compress=3Dzstd-fast:9` in the same way as if you did
+> `compress=3Dzstd:-9`.
+>
+> I thought this was solid. Or would you rather bail out with -EINVAL?
+
+I prefer to bail out with -EINVAL, but it's only my personal choice.
+
+You'd better wait for feedbacks from other people.
+
+Thanks,
+Qu>
+>>> +                     btrfs_set_opt(ctx->mount_opt, COMPRESS);
+>>> +                     btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+>>> +                     btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+>>>                } else if (strncmp(param->string, "zstd", 4) =3D=3D 0) =
+{
+>>>                        ctx->compress_type =3D BTRFS_COMPRESS_ZSTD;
+>>>                        ctx->compress_level =3D
+>>
+>> Another thing is, if we want to prefer using zstd-fast:9 other than
+>> zstd:-9, should we also change our compress handling in
+>> btrfs_show_options() to show zstd-fast:9 instead?
+>
+> At this point it's not about preference but about compatibility. I
+> actually tested changing this but as a side-effect it also had an
+> influence on `btrfs.compression` xattr (our `compression` property)
+> which is rather an incompatible on-disk format change. Hence I falled
+> back keeping it simple. Showing `zstd:-9` is still a valid output.
+>
+> --nX
+>
+>> Thanks,
+>> Qu
+>
+
 
