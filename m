@@ -1,227 +1,277 @@
-Return-Path: <linux-btrfs+bounces-12694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12695-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1CDBA76B12
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 17:47:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3EBA76B9D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 18:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F24D3B6950
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 15:40:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0791A1669CB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 16:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3083021C9EA;
-	Mon, 31 Mar 2025 15:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FF2214216;
+	Mon, 31 Mar 2025 16:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Vg8T8Wd7";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="yvmID6RX"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="p2wV6V4l";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Nr40HmVr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8714C1DF748
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 15:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743435389; cv=fail; b=YmvbOHPGohuBf3y89dWpw6ggBu0v+v2pSAPEvXfnbJZbWDmNTbfkTOYLaaIsP2JUKc9ksmvxbqY2mNy2LAr1oa8xymvBgzTu96DQxq/2WqRDHrHLRc9yWKdpaXNokdiowNpmrpTsW5Lq2MrK79pQ0VXvwEJIQYR6aAzTZ67H/zI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743435389; c=relaxed/simple;
-	bh=oz2Y01PFzqzxlXZZuItWvAY6nfVpef4U7gJdEHjRTBg=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ONcbHVjmUrURA7eMPO6IyboiS3SgkaFa8gjoRVTKrMXCHtbBCM00WJ01oL9NWqfoNbYjtv31lpAoEzm5gIaHjOLtLsEG9xc9SivzuNAUw3GoopQV6CUlil5u1qpcqjfCTlAkLit10Z5+bAm74SRgYMFUt56YwFgOhsg+NeoNto0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Vg8T8Wd7; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=yvmID6RX; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1743435387; x=1774971387;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=oz2Y01PFzqzxlXZZuItWvAY6nfVpef4U7gJdEHjRTBg=;
-  b=Vg8T8Wd7qGA3uLCXZMQFj86MuhFCzHJyNB5Vvl2fHGDo8Ry/O3xmgf8Z
-   EAhac2zrfLBRp8sLjcJux+gwRg3sYMvuWOfPggTA/+Zwa/gCUDPOuJqAO
-   jemgs/ajsxj/IidkLEC52Lp/RRK2LT+HIQJEPON4LlWr13IQHbziboGdM
-   dIR8JANMzQWS45tVKslDYYl5HFY+/02vKFnOSPwy0S/qPwu6Nuqvf4ben
-   cUyMvELF8TXLI5NEHe93C3e3RSDEqBcE/2AB3yH7L15DbkxZZ6OS+EH3e
-   GxniH6kjOGa8XhJwG8IDhTozfPMSB6ABcNAwI0rvlpMJpcit21hDclJa1
-   A==;
-X-CSE-ConnectionGUID: 5cwFxteaSOy5cORJ4RZ7Pw==
-X-CSE-MsgGUID: JVG/F3k2TCu3sEks9UNlgA==
-X-IronPort-AV: E=Sophos;i="6.14,290,1736784000"; 
-   d="scan'208";a="65563716"
-Received: from mail-centralusazlp17010000.outbound.protection.outlook.com (HELO DM1PR04CU001.outbound.protection.outlook.com) ([40.93.13.0])
-  by ob1.hgst.iphmx.com with ESMTP; 31 Mar 2025 23:36:18 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xLOubEQkaSZ6VJpMr8IdLzNT2CtInEe6+3lLZvgKcRoTxrdeLTy6Y23gUaeep0+05sk4URqYPktUconWYFGyfF3BTQIAjm4vokxh3GAvLahpN8hGI3h45ok+IVWTkCUbb57DL8J3Kyysq1LBAbDq/W8wB+QdEZDHu3q/+Ezvif+cWNzNwR8wPZnos4OvJvcP+uNZk24LMyB8kBrVLyIDRBmul9WofTsodL2eN1RId673eDoeCdbQ+vvI9b6XntogqQmEeFNRx52k6umNQ0gB/vcQPHOF4/u+1ONGq+iskDG/1ldBPXU+R3ggO5gtxozT6do6didF1T3zN55oWKONgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oz2Y01PFzqzxlXZZuItWvAY6nfVpef4U7gJdEHjRTBg=;
- b=V+j7dMXwJS5F8f565jqJAIh993mtSpemdkSpi39MH5snYZ5eRRxBs0dyAICoo6cwbv9l66vrqaK/VNd1kkT4YwAWMXoZzOaP9zhUagfzM4J9Od2shlQ4sAPZPkxPW2DXQJwwXZU2XCH3SyFCfh3pRIu2FTF4puzh+kD3tJIx1fmA90m7DExs07+4/funblevYLxhQpjgS+/rRMilbjGYM3G3wMpz/yNeKQqCw5iHO2Bc/NCFyrQUU+0TDYEWeqn8vK2vfuL34ijFi4/HDNgIMFSKXpCIEuEWujOJjzSgDMXkg9k95EuFKWi6xjhJGM4BsNRpuEcacYu8M+XdseclTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oz2Y01PFzqzxlXZZuItWvAY6nfVpef4U7gJdEHjRTBg=;
- b=yvmID6RX6tgIfG5Vt1o96Ki86xpIUjlM7fMErBXYQq7xyX9NXIN1/7Z8myTxFNYYndwrdCAks78lxHGnZ1WBCGJkRy22gXMq8KuGEuAw+cuvvuyvkYKvOBElRsJv6rMvsyoDDN82U7OavOQ5SD2CvCRk/oNeRvQlIxqUFzCaO6s=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BL3PR04MB8107.namprd04.prod.outlook.com (2603:10b6:208:34a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Mon, 31 Mar
- 2025 15:36:16 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8534.045; Mon, 31 Mar 2025
- 15:36:15 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: David Sterba <dsterba@suse.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: use rb_entry_safe() where possible to simplify
- code
-Thread-Topic: [PATCH] btrfs: use rb_entry_safe() where possible to simplify
- code
-Thread-Index: AQHbnzQOj+drIlLSaEGBsKX389DMYLONZt6A
-Date: Mon, 31 Mar 2025 15:36:15 +0000
-Message-ID: <55112570-95ed-4a63-9f30-7d041cd8e72c@wdc.com>
-References: <20250327161918.1406913-1-dsterba@suse.com>
-In-Reply-To: <20250327161918.1406913-1-dsterba@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BL3PR04MB8107:EE_
-x-ms-office365-filtering-correlation-id: 4e4958c8-e27b-4ee3-63dd-08dd7069c637
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?b0x1OWxjNkFHbEM5WWpwQkJ6dlhwNkFuSWF3SExCQjhtblorejdXSzd0UEZB?=
- =?utf-8?B?c3BUbWgxdXRwYkVzZi9CbTd5eTc2eEd5ekdsUERVdjlrankwS2V1ZS9zMGEr?=
- =?utf-8?B?eHBSMnA5N0ZWV1FlN09YbUJxNmEyTGlWKzhNalZvSXFhTTUvTjBzeGNQWWVx?=
- =?utf-8?B?VCtjcC84QnArN0t2Wk1JeVlPQjdCNGt4K21vdWViL2dJamlXaVVQTHBNaGlj?=
- =?utf-8?B?dTdYT1k4OXJ5SEt6RlVvT1hSaWZjZU11TGg0SExBM0YzR090TytIeW5hZlRU?=
- =?utf-8?B?akFmSmh2RG9TaVFJRkhqazluNlIzcDkza0h6ZUVuSENHTEdIdmFjK1NIUGVx?=
- =?utf-8?B?eWNsTWZJM3lhNFU5RVgrNUpUZmdJQm5qNE1pSWx5WGxZNnZXWC92Z3JwUGsx?=
- =?utf-8?B?RVJEdTNzdTVhT1B0S0RCTjZjVVExNnpoNG5sUFlJVGpyYXIyYTZvOE10K2Rz?=
- =?utf-8?B?MWh2cjBqdzV3Q3dqaEVpbnQwV3IySEZqS2VhcWNualEzREwwSllCcXNIU1ho?=
- =?utf-8?B?NUloVmVaUzVGTGYwd2hqMkNzVTJ6MDF0c0hYa21BZm5COUpXZ1kyUXVMUFht?=
- =?utf-8?B?M1QxYWZLeDRTT0t6NXlCdW82Q2FRWmFYZHFVN0s2Z09OS05RbWZIUWZuWHNo?=
- =?utf-8?B?K1R1N3hHbUVtanVEaVRHNU9IZVg3aVR0RU95bUhkeXZWUWduSVBGZ3JaLzdP?=
- =?utf-8?B?TVQ1c3c4VWljd0RZZFZ5dEtvT0tBK1g0UENiRW9oUUZ6U1BaRU1uMENIaTNa?=
- =?utf-8?B?dkR4c2RxcHdsc1o1ZlJaZDYwWnNHYlVZdEdqS1VJMXVGQnVIN2JYWU9MdEFK?=
- =?utf-8?B?VW96TktxNXVUeGVaeWltMTd1anI0ZmUwVHgvMnk5RERJRVdQaWlFVXZvYXhM?=
- =?utf-8?B?SE1Ja2FlU2hkbzV0RlhTeTE2THpaczlDVXRNZWo1eTBvTWlKZTdzVERSQUxC?=
- =?utf-8?B?Zlg3QjhQUUxkd29CL3RWa2xZMVZxQTZick96UWlmZVVMamk4clJsWk5jQlhO?=
- =?utf-8?B?T2tjSzZ2bnBQY01qSWlndWNHZno2dlZPUWFyaXVXaFRBd1E1ME9MVkQvcmRM?=
- =?utf-8?B?MjNSQXp3MCs0VWlTM2p0aXg3NzFKL2NBNTRoVTdMdEY3SWhKbkxYNmZzTWNi?=
- =?utf-8?B?L29HSWxqbFlISk9EVjIzVUx5N0M2NHNjN1JFNGZXcFAyNkVTQlBnSlI0R0dC?=
- =?utf-8?B?SEJnTXJQQU96WGZrZVdJUTlqWkFLeDVjY0prYlEzVVRuWkJsdXh3T3pPZDJx?=
- =?utf-8?B?U2huZGVNMGdlSXduenZLbzN0YlhRc0l3MUZidExXb0RkOG83bHdXV1htVDRF?=
- =?utf-8?B?NGhHVElTZHFsMkl3a0VyTy8vSXN6LzNEVDdEZE56Zm9NYmZzTjRLNzhBbDlr?=
- =?utf-8?B?SEkxc3psS3Z6Zy9DdXRWQk9jRXp3RHc2STNIR0FMZlBxcXZicW1pUVpuTjNl?=
- =?utf-8?B?dDVJanJqdUpiYndoc282eFlMUVRqcUk2Q2FjVjFSdFVlNWJBdHpFbmR1aDBR?=
- =?utf-8?B?SUF5QkUyR21BTE1KS2RXUWUxalVxSUVlTVBVZWcrZ0FaNVJHcGQ5Q3FNaHlL?=
- =?utf-8?B?VnBnd0xSbmNuVzNyMWxvTHJIaG4yOVBPb01SM0FURUpPUUtoZFB6TzBHTXRh?=
- =?utf-8?B?SmpEYTg1QjE1bCt2SHh0cjVXejNjOEhRNmJZNzVFT2NVMnh4MUxFeDJvNkxS?=
- =?utf-8?B?bEJFTFNPSkNpdzhWcllXa1lwWDFFck1NVXdMdS9tcHRhRUFQa243Wm5pTU54?=
- =?utf-8?B?eGlWNU9nbVdWMEpNVHBZMjZpdFNUTlJ2VWJvdS9tQVFmdm5zK08ybkc0MEJR?=
- =?utf-8?B?N0NYdFlhcGloSUJTTkpDcW5BdXJ6elF0UDJuNThseFNPMCtYcnIzZk1ndmZX?=
- =?utf-8?B?VVk2UDRDMloyeVBTcFJoUUdSRlhXc3QxR3NEWVl1YUg2RXFUTEJBdWVBRXl2?=
- =?utf-8?Q?+DrurpVLfuCKqy3BoslRSGUqSfMBZ42m?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?Y2RJSTI1NkZuOXh6MUVIL21XOFh4dVc5dU9zUC9yMTE3NnZuVlYrWDYxWkVB?=
- =?utf-8?B?K1BTTUZtVWVOWVhqWEhXRXlIbzJuM0xJRW5kb05XaEJzK1RzL21NUitQeUhT?=
- =?utf-8?B?SllmL1VpNTBLQUc3YWllN0RJRW1PbE4xTlA3dy9UU2RZK2NBUndFL3h0K09j?=
- =?utf-8?B?aEdKbG1sN1ZYejk1MHl3eDFUcVAyZFJmdlF3MGNSMWVLOTcwVUF4dXpOTllq?=
- =?utf-8?B?Y2hKaUYzWHpBaGhUbnVIdlJFL3lObCtjQWloZHdDYWZNSXBXekNmdy9oNTB6?=
- =?utf-8?B?Y2lWQVBrVTM2RmRWRlVHYkRvY2IraDFjdVNXYURMcFNLYkwwZmhtWVBVOFlr?=
- =?utf-8?B?cllDRW9OaFRiMGhEelZ6cjF4RTN2VXpRMTJhQ3BFTGVtcWdLeXI1L3JTdncy?=
- =?utf-8?B?dFBKbE16aXR2T0ZTZndXcGx2di9Ed1dSd0g3MG95UC9zM1l1RU5WaGV2Z3N3?=
- =?utf-8?B?Sk1ZMzNFMS9ncWo0bWJtWjNzWDBsZEVPblFybGluT3ZlUlFsZFdzOHhjNlFi?=
- =?utf-8?B?V1FpczNWM3U2SmVQaUVIV3VxeDJLaXBrY0hYMDBubWd1MkJGM2xxUlJjd1VT?=
- =?utf-8?B?MEZINkxpc0x3SElhdUtkOHZtY21YL0c0VHlyVnVvb3RCS24wY0JSdzZlQ3RW?=
- =?utf-8?B?UEFTSVYxbHhrMXdMelVlK2p3RGtTcW41dWhKblh6Z2V3UTk4SXp1QVg2Uy9W?=
- =?utf-8?B?c0FUY2ZHcGN6Q01OZXBzTjJ0S2VUNlpmQjJDN29CbUFCaUE3NTlMNDAyU2pk?=
- =?utf-8?B?VUJZbFlsMkRmRm5zTkFPSzVHR2hoSVB2LzhJSVBYMG5QQ0Zjb0xjUkd1Mlpa?=
- =?utf-8?B?VnArVjV0YWtIbFFKU2FiTXJyUTAxK28zQmxJK3lRdDdTbzBqYzF6SDFmUUxw?=
- =?utf-8?B?UmZ4eWcvYXJ2Y0NsNEtKbERXaWh6eUZVWWhNTWdyUW92WTRVVmNwS2lsZWpK?=
- =?utf-8?B?Q3BiOHFwUDBHTjg3S1RWSVVWdFU4djlXTGJFRWw0ekhRWXkwaHE2RUs4THoz?=
- =?utf-8?B?ODVHdEo1Y0NnMXczM3Q2a0RJbEdlelE5Z0Vob0hjLzA0UE5jbks2aUdML0ha?=
- =?utf-8?B?cG5JbkdZWjVDY05xWVphSVduRUJaL2lnbmZjS0tRR3J2QWNDMk5yUEllZVdN?=
- =?utf-8?B?eitDOEZEd0RVekhCS1FtdEtDRUFSZjFoOGc2aXpKdkdaR1hGblNycEpkb3dB?=
- =?utf-8?B?ZmxhZWR4cURGNHlLSnBFQVRpVEN4WldDNEdPQnBLbUgrcUpVNjJFK1ZkbCtx?=
- =?utf-8?B?RHUxTCt5cWp5b0FmbmFrUHBvd2g0alRMYVkwKzhsUGRZQS9GRS9oSkw4Y3o5?=
- =?utf-8?B?UHpybFAzYWRCSjNYOHZnVTIvYm82SW9OUnNsNWZ4eXIwWFRUOUpvMW1tNXZE?=
- =?utf-8?B?Uys0Q0JtcWttNjBCUlgyYlZ6Nkd4MlFKcEhvdnhTSE92RW9xWkVLU3QrTlVX?=
- =?utf-8?B?MTVTaGdYOGw4RzlWcXVzMlNPQ2k1aUMwYmNOWGhEL216T1Byd3kzeTY5R0Zq?=
- =?utf-8?B?R0NURjYxeUFPc3FGZmVEMXY1THN4U0tRZ0hRVVpjTGZ4cGdESHJOeXZrS3ZE?=
- =?utf-8?B?ZlV1T3Rja1RYVHp3TnVnYUtpcU12NVUxc2NSNnBYOHhNa2kyL3AyOHZDaEVa?=
- =?utf-8?B?eWJ4bVBTOEZRNno3Rkk0RCs3amNiUTB4SjVCbTdVR1NOUXg1MmZqUHJCeTNK?=
- =?utf-8?B?TFZkTG5QSGVFcVlNSEdMK1BkSlpYdHd3cW0xZGVFUjFML3Y0OGx0MlNIQzNR?=
- =?utf-8?B?b0FSY2ZJRUI5dWNZZjF3eCtnUERsb2gwd0lOY0c5VE52a2hTZEFYZkJCZ0RI?=
- =?utf-8?B?dndvUE53N1YrQko4bDhvMi8zRTZLRVMydS9hYjJBME1mUy9Ma2lYaVJaZmRv?=
- =?utf-8?B?WGRCTkhQQUs2UkdpWktLR2hJbXVxcStOWmQxbHFoakJKbEtCdXgzN2hUbkZK?=
- =?utf-8?B?eXltci9BTVZTM29BQXRKRXZCM2hTRmdsZjBXRzhmT2NIc1A5NUJaTlZhZW5N?=
- =?utf-8?B?dmtQNHlzSHZxTTlvanBteVZvNVJwZkxiT0pySmlabzM4YVVPN250Z0FuODVX?=
- =?utf-8?B?d3pTSTdRdEhZU1NaQkxmdFBjK0hlZ2xJSExqaWttUEd1ZThXT0hhVHNRUnoz?=
- =?utf-8?B?aS9JMDh1VkltS1BiOGd3ZFlKdFNiNE1pdmJhQ2xqZ0FUdCtYQVNFaG9PSnV0?=
- =?utf-8?B?R1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7E06D116BB879E43AE0B07C5E54CC28B@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 050C21DF75A
+	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 16:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743437350; cv=none; b=giRhftpxId/G4Reeotacop8chDldLRqybONEc9EHVJzvEWHhoHNsl8JkNtyNTBCuZ8fXWNtSyujXoArGS+CGB89fGbQihzZKNQPrDDRutxNh2w0ANaPoQ1Q/wJm9o1GxJ6eFMMRSA4xX4DtmHvDqZH2/xLwYP4ZGRuteOyfJONs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743437350; c=relaxed/simple;
+	bh=o8denoa4GraVyAzL7BPuiZjJpvQbpHDmZorNXdtRk7w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a9aJ8lfZkda/V65yET4yKFX7cADTLgO5Byoqnk3q5vbXlJnWVdH2RytO3dqvYvfieu7QFCdpwWZh0qzNkjhcQbSAIXWOqoqMfHVMAjgohJGLk7coc9u0YyOeER1L9fYj41h/3t2BMEvHlwYeIiRr9HyRlXO5EP5BDTQLwN9VRKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=p2wV6V4l; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Nr40HmVr; arc=none smtp.client-ip=202.12.124.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfout.stl.internal (Postfix) with ESMTP id DF79711400C6;
+	Mon, 31 Mar 2025 12:09:06 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-07.internal (MEProxy); Mon, 31 Mar 2025 12:09:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1743437346;
+	 x=1743523746; bh=H4Ei9i7hjeDN7R+O8h4t2rcitDeakJd9c/Ap/I5ejYo=; b=
+	p2wV6V4lmMKneUd/u0ujCi6wkZSF7TlnaEc7kozJfyCUst+s/3xSyh7zIMyUEjsr
+	B7jo/j3D34GCeEhF2C15uAITV6zLNJfk3x0PfTD79EtDCt0jrenWPfLRbZc0uUud
+	ItO0eZF5MT2T7J+iWwhhtP9KferBJUiBWrmn8Qy6KgkNH3SxHYYOTx9DUDhSc6qX
+	Q9LQvsFHBg/S4cGLLuTrlhMfrWW4UewFo14kUYJF4xhc7uSyrFefcyBnOYR00oSp
+	HgSBMMsdlAiTHPhcI7ZkQFT5VihZ8hg85sHPfxehl8grZmqtB1EEnhVjLNALioti
+	tlD3BzLaVzcptTJdaR6t5Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1743437346; x=
+	1743523746; bh=H4Ei9i7hjeDN7R+O8h4t2rcitDeakJd9c/Ap/I5ejYo=; b=N
+	r40HmVrtX50UIJKZVHcSRFF2uu6obC4OdN313bz7rj4Diqext0aLzTW9RWjzRnYc
+	qNJr9/E7jGpVn3h00RmQZIZgD0+YwFnNIcTqt9RmLIPMQ7gZDDeg6Oha2pz/tN7Y
+	lf8AmSDdFwA/I5TqHSGVZE90OBISt1MKqcggpnzM8eRSRKTEGj3Tp84SW9cWIkZ7
+	xh/BEfQyxjUzdoYvt4BN/eDuUiyPumpTwWuZ1G2kJSRLgvQgMhz+eWai/9yDkeMp
+	hyz3KRdLnJqSp/peh+hdrCerwT9D7ZO/H8lEARMWIIqhYgQowVqxIthuR5ojXCt2
+	HTkl+Buch9fXVSMgLnm5g==
+X-ME-Sender: <xms:Ir7qZ_W3pJ5zjOZ7KmegYmDz20pLcCUW1txtKsVLSVwggSX-Mw348A>
+    <xme:Ir7qZ3mNOt1uZ5WL68kFJNBbQedMl2SblB2E5YVAL1G6jI3UYUR7JwTc5bh9GRLNK
+    7ygES7KZvaLKN30nio>
+X-ME-Received: <xmr:Ir7qZ7ZK9R1QJUHW1oo7utXpJ6HdPHr5vhh-T601eDzpD8zQozEREZ79amJtpcVYQNZLhVfxVFSHsvh7XiRQhWbqdRk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukedtfeeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddt
+    tdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioh
+    eqnecuggftrfgrthhtvghrnheptdehudeuvdekvddvieektdegieehvdekffeivdevheeg
+    ieevuefhudekvdduheejnecuffhomhgrihhnpehgihhthhhusgdrtghomhdprhhunhdrsh
+    hhpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedpmh
+    houggvpehsmhhtphhouhhtpdhrtghpthhtohepfhgumhgrnhgrnhgrsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrd
+    horhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:Ir7qZ6W_OxtyzI48FDv-7mLhlel2tNrgex9h_9bt_pdwbZv7rMNLZA>
+    <xmx:Ir7qZ5mb_kQZ8ERFY0Dd5Q5X6DBeXlM9uUWyCwPR9V0B5RRFoEXyHQ>
+    <xmx:Ir7qZ3dSJsAXGsJxH827I3u3e1whxV804-dn40kbEcyrhLCnYTetrQ>
+    <xmx:Ir7qZzGYueinHywMHuETeYkInDBqmcqNii4GXxmyunkUYNQS5N-dMA>
+    <xmx:Ir7qZ_jvA0y-aZ-oCSL9ltwrQpz6gbXhSx1OaAk3uW5RHvfTkQCPHLdV>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 31 Mar 2025 12:09:06 -0400 (EDT)
+Date: Mon, 31 Mar 2025 09:09:52 -0700
+From: Boris Burkov <boris@bur.io>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: fix broken drop_caches on extent_buffer folios
+Message-ID: <20250331160952.GA2625072@zen.localdomain>
+References: <1c50d284270034703a5c99a42799ff77de871934.1742255123.git.boris@bur.io>
+ <CAL3q7H7TjsBzTrCrJ5ibOsBj1LyuJB7ZHUnKXyjr31pqm4bzXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	cY/8ri4G+5pfiITp2YPtJuo+6tL+ry9ugaTQ9WocA+X34xYxVTs+xivzLdU9k6N/Rj8WD+1hXB9bkjU89Zhw9DX9mdSgNpFI366yCkggl/bmZumsKLY/iIWnKjcXjvRlotKflM8bGdThnKBnALoDjyHcfuauDXXbmDwSOlEH7rAM4+00FEdYVAu7y2f98MBh8snXAOZ7ZHuloIYtl1P4XFVNWMgHlBQ+k8z4LYM+qZTuf17kWvGu7EyrjttKvUwrOwsEX2nkzEuC255PZm7T9vP5eH24OTNWdOPA7zEhVKv8Do+yyYrzkYsqosEqqWAbc4AHXUUsfXxX2E7hg+5E2Hz33qij9pR5DxDc/bVIQqZfwNmTDE8eum9sb8qfK0WtQ0ZbCF2iY00pJfhH/fwyAYQ8b26qrLvBV14ZTohUDMhpk/xFBFW6fQJXk8E8VAQ56CnreL+oqANLMByfiKHVIfHbOmkvo9VKvpb/ZucnjttbYl9LIUV3fTIS8KU2vMWZGRnqszl79uYYXzwfgK+LnFFq74QL31deVMC7aNOjM4aHC7pBc1wGGpzP0efVI+SaOg4kt8th2eHy5BIto8XVACuRWh7RSQQjUEHkM3UKx7IvyFJladom2UvB9KrEmIKA
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e4958c8-e27b-4ee3-63dd-08dd7069c637
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2025 15:36:15.5410
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bphLxgPf3xhyqG3AqAfA0qEAquLmbgrbup8X6FQ+dZukw/OkSwz1MWibfjHf9wiuTZjLCE+ypgPzEyjnTK2mC3iqfac3W9b/5Kw1Q4KNT+E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR04MB8107
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H7TjsBzTrCrJ5ibOsBj1LyuJB7ZHUnKXyjr31pqm4bzXw@mail.gmail.com>
 
-T24gMjcuMDMuMjUgMTc6MTksIERhdmlkIFN0ZXJiYSB3cm90ZToNCj4gZGlmZiAtLWdpdCBhL2Zz
-L2J0cmZzL2V4dGVudF9tYXAuYyBiL2ZzL2J0cmZzL2V4dGVudF9tYXAuYw0KPiBpbmRleCA3ZjQ2
-YWJiZDYzMTFiMi4uZDYyYzM2YTBiN2JhNDEgMTAwNjQ0DQo+IC0tLSBhL2ZzL2J0cmZzL2V4dGVu
-dF9tYXAuYw0KPiArKysgYi9mcy9idHJmcy9leHRlbnRfbWFwLmMNCj4gQEAgLTM2MSw4ICszNjEs
-OCBAQCBzdGF0aWMgdm9pZCB0cnlfbWVyZ2VfbWFwKHN0cnVjdCBidHJmc19pbm9kZSAqaW5vZGUs
-IHN0cnVjdCBleHRlbnRfbWFwICplbSkNCj4gICANCj4gICAJaWYgKGVtLT5zdGFydCAhPSAwKSB7
-DQo+ICAgCQlyYiA9IHJiX3ByZXYoJmVtLT5yYl9ub2RlKTsNCj4gLQkJaWYgKHJiKQ0KPiAtCQkJ
-bWVyZ2UgPSByYl9lbnRyeShyYiwgc3RydWN0IGV4dGVudF9tYXAsIHJiX25vZGUpOw0KPiArCQlt
-ZXJnZSA9IHJiX2VudHJ5X3NhZmUocmIsIHN0cnVjdCBleHRlbnRfbWFwLCByYl9ub2RlKTsNCj4g
-Kw0KPiAgIAkJaWYgKHJiICYmIGNhbl9tZXJnZV9leHRlbnRfbWFwKG1lcmdlKSAmJiBtZXJnZWFi
-bGVfbWFwcyhtZXJnZSwgZW0pKSB7DQo+ICAgCQkJZW0tPnN0YXJ0ID0gbWVyZ2UtPnN0YXJ0Ow0K
-PiAgIAkJCWVtLT5sZW4gKz0gbWVyZ2UtPmxlbjsNCj4gQEAgLTM3OSw4ICszNzksOCBAQCBzdGF0
-aWMgdm9pZCB0cnlfbWVyZ2VfbWFwKHN0cnVjdCBidHJmc19pbm9kZSAqaW5vZGUsIHN0cnVjdCBl
-eHRlbnRfbWFwICplbSkNCj4gICAJfQ0KPiAgIA0KPiAgIAlyYiA9IHJiX25leHQoJmVtLT5yYl9u
-b2RlKTsNCj4gLQlpZiAocmIpDQo+IC0JCW1lcmdlID0gcmJfZW50cnkocmIsIHN0cnVjdCBleHRl
-bnRfbWFwLCByYl9ub2RlKTsNCj4gKwltZXJnZSA9IHJiX2VudHJ5X3NhZmUocmIsIHN0cnVjdCBl
-eHRlbnRfbWFwLCByYl9ub2RlKTsNCj4gKw0KPiAgIAlpZiAocmIgJiYgY2FuX21lcmdlX2V4dGVu
-dF9tYXAobWVyZ2UpICYmIG1lcmdlYWJsZV9tYXBzKGVtLCBtZXJnZSkpIHsNCj4gICAJCWVtLT5s
-ZW4gKz0gbWVyZ2UtPmxlbjsNCj4gICAJCWlmIChlbS0+ZGlza19ieXRlbnIgPCBFWFRFTlRfTUFQ
-X0xBU1RfQllURSkNCg0KDQpOb3RoaW5nIHRvIGRvIHdpdGggeW91ciBwYXRjaCwgYnV0IGhvdyBk
-b2VzIHRoaXMgZXZlbiB3b3JrPyBJZiAnbWVyZ2UnIA0KaXMgTlVMTCB3ZSBwYXNzIGl0IGludG8g
-Y2FuX21lcmdlX2V4dGVudF9tYXAoKSB3aGljaCBkb2VzIG5vdCBjaGVjayBpZiANCml0IGlzIE5V
-TEwgYW5kIGdvZXMgYWhlYWQgYW5kIGRlcmVmZXJlbmNlcyAtPmZsYWdzIHJpZ2h0IGluIHRoZSBi
-ZWdpbm5pbmcuDQo=
+On Mon, Mar 31, 2025 at 12:33:38PM +0000, Filipe Manana wrote:
+> On Mon, Mar 17, 2025 at 11:47 PM Boris Burkov <boris@bur.io> wrote:
+> >
+> > The (correct) commit
+> > e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inode_page()")
+> > replaced the page_mapped(page) check with a refcount check. However,
+> > this refcount check does not work as expected with drop_caches for
+> > btrfs's metadata pages.
+> >
+> > Btrfs has a per-sb metadata inode with cached pages, and when not in
+> > active use by btrfs, they have a refcount of 3. One from the initial
+> > call to alloc_pages, one (nr_pages == 1) from filemap_add_folio, and one
+> > from folio_attach_private. We would expect such pages to get dropped by
+> > drop_caches. However, drop_caches calls into mapping_evict_folio via
+> > mapping_try_invalidate which gets a reference on the folio with
+> > find_lock_entries(). As a result, these pages have a refcount of 4, and
+> > fail this check.
+> >
+> > For what it's worth, such pages do get reclaimed under memory pressure,
+> > so I would say that while this behavior is surprising, it is not really
+> > dangerously broken.
+> >
+> > The following script produces such pages and uses drgn to further
+> > analyze the state of the folios at various stages in the lifecycle
+> > including drop_caches and memory pressure.
+> > https://github.com/boryas/scripts/blob/main/sh/strand-meta/run.sh
+> 
+> Not sure if it's a good thing to add URLs not as permanent as lore and
+> kernel.org...
+> I would place the script in the change log itself.
+> 
+
+Good call, will do so in the future!
+I guess kernel.org needs a pastebin too ;)
+
+> >
+> > When I asked the mm folks about the expected refcount in this case, I
+> > was told that the correct thing to do is to donate the refcount from the
+> > original allocation to the page cache after inserting it.
+> > https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
+> >
+> > Therefore, attempt to fix this by adding a put_folio() to the critical
+> > spot in alloc_extent_buffer where we are sure that we have really
+> > allocated and attached new pages.
+> >
+> > Since detach_extent_buffer_folio() has relatively complex logic w.r.t.
+> > early exits and whether or not it actually calls folio_detach_private(),
+> > the easiest way to ensure we don't incur a UAF in that function is to
+> > wrap it in a buffer refcount so that the private reference cannot be the
+> > last one.
+> >
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  fs/btrfs/extent_io.c | 17 ++++++++++++++---
+> >  1 file changed, 14 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index 7abe6ca5b38ff..207fa2d0de472 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -2823,9 +2823,13 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
+> >                 if (!folio)
+> >                         continue;
+> >
+> > +               /*
+> > +                * Avoid accidentally putting the last refcount during
+> > +                * detach_extent_buffer_folio() with an extra
+> > +                * folio_get()/folio_put() pair as a buffer.
+> > +                */
+> > +               folio_get(folio);
+> >                 detach_extent_buffer_folio(eb, folio);
+> > -
+> > -               /* One for when we allocated the folio. */
+> >                 folio_put(folio);
+> 
+> Instead of adding this defensive get/put pair, we could simply change
+> detach_extent_buffer_folio():
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 19f21540475d..7183ae731288 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2768,6 +2768,7 @@ static bool folio_range_has_eb(struct folio *folio)
+>  static void detach_extent_buffer_folio(const struct extent_buffer
+> *eb, struct folio *folio)
+>  {
+>         struct btrfs_fs_info *fs_info = eb->fs_info;
+> +       struct address_space *mapping = folio->mapping;
+>         const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
+> 
+>         /*
+> @@ -2775,11 +2776,11 @@ static void detach_extent_buffer_folio(const
+> struct extent_buffer *eb, struct fo
+>          * be done under the i_private_lock.
+>          */
+>         if (mapped)
+> -               spin_lock(&folio->mapping->i_private_lock);
+> +               spin_lock(&mapping->i_private_lock);
+> 
+>         if (!folio_test_private(folio)) {
+>                 if (mapped)
+> -                       spin_unlock(&folio->mapping->i_private_lock);
+> +                       spin_unlock(&mapping->i_private_lock);
+>                 return;
+>         }
+> 
+> @@ -2799,7 +2800,7 @@ static void detach_extent_buffer_folio(const
+> struct extent_buffer *eb, struct fo
+>                         folio_detach_private(folio);
+>                 }
+>                 if (mapped)
+> -                       spin_unlock(&folio->mapping->i_private_lock);
+> +                       spin_unlock(&mapping->i_private_lock);
+>                 return;
+>         }
+> 
+> @@ -2822,7 +2823,7 @@ static void detach_extent_buffer_folio(const
+> struct extent_buffer *eb, struct fo
+>         if (!folio_range_has_eb(folio))
+>                 btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
+> 
+> -       spin_unlock(&folio->mapping->i_private_lock);
+> +       spin_unlock(&mapping->i_private_lock);
+>  }
+> 
+>  /* Release all folios attached to the extent buffer */
+> 
+> It even makes the detach_extent_buffer_folio() code less verbose.
+> 
+> Either way:
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> Thanks.
+> 
+> >         }
+> >  }
+
+That's a neat way of fixing it. I still think that having a folio
+pointer passed into the function that could be dead halfway through
+the function feels dangerous.
+
+If we can prove that the private is always the last reference, then we
+can comment that the variable is dead after any path with a folio_put.
+
+Because we call this from paths where we are removing the extent_buffer,
+maybe we can actually be pretty sure the folio refcount is always going
+to 0?
+
+> > @@ -3370,8 +3374,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+> >          * btree_release_folio will correctly detect that a page belongs to a
+> >          * live buffer and won't free them prematurely.
+> >          */
+> > -       for (int i = 0; i < num_extent_folios(eb); i++)
+> > +       for (int i = 0; i < num_extent_folios(eb); i++) {
+> >                 folio_unlock(eb->folios[i]);
+> > +               /*
+> > +                * A folio that has been added to an address_space mapping
+> > +                * should not continue holding the refcount from its original
+> > +                * allocation indefinitely.
+> > +                */
+> > +               folio_put(eb->folios[i]);
+> > +       }
+> >         return eb;
+> >
+> >  out:
+> > --
+> > 2.47.1
+> >
+> >
 
