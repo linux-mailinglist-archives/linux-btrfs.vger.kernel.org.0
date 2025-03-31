@@ -1,234 +1,280 @@
-Return-Path: <linux-btrfs+bounces-12687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47759A76613
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 14:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E3D6A766A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 15:15:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 304453ACC73
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 12:34:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E60B3A838C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 13:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F375B1E5B78;
-	Mon, 31 Mar 2025 12:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D379B1E8353;
+	Mon, 31 Mar 2025 13:15:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJ8x31zf"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I+E8liG6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A561D799D
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 12:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8616E13B59B
+	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 13:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743424458; cv=none; b=rIy34jTMl/d+VNeZDHKqZVG+04ykyx7gu0VvXwp8iNZgLH5032uUD6+6rCVNnsWOP05zcQVJkSSvAtOVc1N9yN6Xx+GJp8Cixmumi5h2ol97XIsyb/8dlCiBHmSHEef2S2sl36MvSvwh4ZhuFxocQ/IyVsENEOYS4286ZiG9XxU=
+	t=1743426933; cv=none; b=PkP8OmiFLwYE4cloqC5UEGuoVGj1NG09PmyrLDn+oe8sW/5GNSy2vU8geFEDIVGvjLZ5BPvNqjRb7r+rqO749eFHb3+yXVcRgBBg3DJItQfIeo/QJGXsnav+pG8XAgy0h+g3BpOYUrOOY2A3cjVGQIbdS20iun41tsL68721NpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743424458; c=relaxed/simple;
-	bh=JbXMrm13OAENFBMdfCeQyilap+G0kWnShZRW4aZ6r/E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GzxxWdUFh8PtlS5qTHBnqpw1GUiIFjaiMhcZPAjA478oCh0h7NqbOy24aAfZ43pslMCAC3Wh1vmXiuU3FWihOUBmqKvVfuZbxIrvSgwdLHAD+/7bvnRAxIKCUbaotWOmb1f/5j7TIipyqUEI4NkQb226dQ+m9Ratt2wTWes7Y08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJ8x31zf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE291C4CEE5
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 12:34:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743424456;
-	bh=JbXMrm13OAENFBMdfCeQyilap+G0kWnShZRW4aZ6r/E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GJ8x31zfTAJDbN5oWJron/JqgOT7iS3D+uFpVp3HaX7DyZqZNfaC8VwZyypA+azda
-	 GFyi5OofloE16WYTe3OIhY7phRc7+p7yRsi//anIgbiUslc9ncHaQMpfa6Na6rK9zM
-	 MtBbJ8yK7cm37vCgbxcKvdIQ9trxmcpYmdZhwnS2NyzABfIswc2/Bs0JHGE1DEFeuE
-	 B6hs8qrtsMbMFpi2YVioZiAJXU+UQJJ9kW5Reivj/xqc/TRxcWCj8WLYzlM7VElvLf
-	 1TgCp2UvmmT6mCN36iY3hkc2mhpW5pxM12a20JTXkD1vjHIVdvDFpMD0MWx6YrmR7G
-	 d0CbdEnj9w+dA==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ac2af2f15d1so576864566b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 05:34:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwDydqyxI7wBuuv+z3kDA1vpPFRHQlGjnFLAksRWjtpKHHpvd7j
-	Y0RR0tCCCNPCf3Dpc9rpQuiv1k0nxdUQ21/fetvNByYfZonVPOsVxO0OLUemq8AoumkrWfKMvu3
-	GxOqDVTcwAXxvyMZb2MARoQDYo1k=
-X-Google-Smtp-Source: AGHT+IFSfn0WHr4ZbuMQg9hMVZY893Gm0rF8OKorhWhiaFTo9Re1RSY5oA2ClYwD+DGQuwQ8sV2+tCQSeQzCkgvDXwE=
-X-Received: by 2002:a17:907:7250:b0:abc:b96:7bd2 with SMTP id
- a640c23a62f3a-ac738975e17mr835979066b.11.1743424455308; Mon, 31 Mar 2025
- 05:34:15 -0700 (PDT)
+	s=arc-20240116; t=1743426933; c=relaxed/simple;
+	bh=KSWjcdg4h5QoHP7C/GCWplToljF2To+s22/BFx4tcvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fJH9Kp8zppS1rUqww80kiV9A4B/a+ak682zMV2KqvzvJyLTNHPI1CviD0BpZceBJkuXxG9vDDWC1PiEl0U6uuQvZOOqOg18B/uIS88PcBH3AuFMQT4nmHCugHNssAxrDFAZxi4R8g3QPkpAUBKky1EXkWUOboN20kIcM8RfaN24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I+E8liG6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743426930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Gf+E1T41Dq18PBLvBV2qCLbFdmC3AI2Uqj5f6N41ons=;
+	b=I+E8liG6kXGKzpD41gfCPC80Um7DxX9dPGygGp71L9sBe528/z/7JoGVvBjtEyIwpS9nDs
+	OEsCt1iEvN/mx4x8Qo0UtrHIiH1q0aiCZFnBGrtL0/uREUs8+/HPVj5Z6zSeqt3Q4E7OyJ
+	p3e0JOkS6YKfwtz9oSH9Q60prBc/iV4=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-298-SHS_BBE0MkuJsQ29TAjjlA-1; Mon, 31 Mar 2025 09:15:28 -0400
+X-MC-Unique: SHS_BBE0MkuJsQ29TAjjlA-1
+X-Mimecast-MFC-AGG-ID: SHS_BBE0MkuJsQ29TAjjlA_1743426928
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2254bdd4982so113345235ad.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 06:15:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743426927; x=1744031727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gf+E1T41Dq18PBLvBV2qCLbFdmC3AI2Uqj5f6N41ons=;
+        b=dPrzf/SpTyvM5sKAbc2PvQOeV2nZiYcZ6D1ee555wFZDFwyFz3m7qdgXdGYkInu2bY
+         5trF7Q28Ph6/8duuetem5QeSFE2OJcxohZBxYT07L0bXh3aaPdFoR3VfuVlCiZvP5kSn
+         2V8g5s1cHTijkWKyIiVdZYazptzgrAr++1ndMcRO+2boFpSF6kMz88zPLxCz4P4mT2lR
+         PnR//iPVh4ba7sWhNYst1UI7IiBmU9AraeICAi3tsgdp9iU+6rVF/vo7iQO6Zds34MIg
+         KTTOoi8zh7U7RPp9qoqvxcsP79sMBBZb3soOXcfksK4iDSdMmi4RJF6KDMObIeh2NH3N
+         9AmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWCuZnnIVQWjiEW6V3wfwuMIHUdGP/mqFl0hFkVAO/4yG5ch5X2UNXo3bXVbyhd5PVR/o0vhaiWEF8haw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBpg5GOuwChukyuTFTGYQ/CX+kPyvSDb4zYhjHGxU2YbUjhcW0
+	QCvek8JXaex7tOkyz4TCQ2e3/jC8Ls8Dfc4UNQd194ElIyNdSCYRvBjN3joVNBD/mimCzQ+Z5zG
+	srFQ3RpANdWkAmo4NLJyMr+WLpOzX73YnjpmgzKMMTvwIK9ah2K/oEeN1y4n9
+X-Gm-Gg: ASbGncsFGsluFtAvbTeT4WmfbN3qBWi577ay7L2rBpP0gdGcPZuQHw5si0q8OwfyIei
+	YsovbCCQ4yez7OAgxGDqJyag0GQNMqKji6DTS3WicGOdSPlzscfS/8TRUiKHSxGqiORYYXq1qfD
+	Xsf6VR9jJVA9gxcu5MP9SxulvjvDLKQZjUZMaSrE08waO76hk/YWNOVWwoj2N9G3cOS+qHx3ERK
+	G97QNsUOBgIyzstMFyb6Q2quZPJolC9fgVHyemLvk0R2eHeAsnQS9Gd7jF7aP+trNvJPK3kV5b6
+	yPtTFrKUJkQbzOzpnkdZxV2Fu34NhdVyQflj7Un/CpaF6ID0ZM/gqDEi
+X-Received: by 2002:a05:6a00:3cc1:b0:736:6043:69f9 with SMTP id d2e1a72fcca58-7398042a634mr10656972b3a.19.1743426927432;
+        Mon, 31 Mar 2025 06:15:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEY1oFKQl5vXjRjDpIAWkxF6I4Sg+XHiii6oqAgMjCpAl/v3ccVFaD2n6+GuxApQ/YxmskYvg==
+X-Received: by 2002:a05:6a00:3cc1:b0:736:6043:69f9 with SMTP id d2e1a72fcca58-7398042a634mr10656936b3a.19.1743426927003;
+        Mon, 31 Mar 2025 06:15:27 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739710cbd88sm6826076b3a.157.2025.03.31.06.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Mar 2025 06:15:26 -0700 (PDT)
+Date: Mon, 31 Mar 2025 21:15:23 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/5] fstests: common/rc: add sysfs argument
+ verification helpers
+Message-ID: <20250331131523.gk5mnb3jagdsc5xi@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1740721626.git.anand.jain@oracle.com>
+ <4c40bdaf996d9b04c2bd8423815d52d930ee32a2.1740721626.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1c50d284270034703a5c99a42799ff77de871934.1742255123.git.boris@bur.io>
-In-Reply-To: <1c50d284270034703a5c99a42799ff77de871934.1742255123.git.boris@bur.io>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 31 Mar 2025 12:33:38 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7TjsBzTrCrJ5ibOsBj1LyuJB7ZHUnKXyjr31pqm4bzXw@mail.gmail.com>
-X-Gm-Features: AQ5f1Jq6fdTAwd80M9LAj41kRiW5YqVOl4JF7N2OoUoUv4L3Kud-VaKWUthQ6jY
-Message-ID: <CAL3q7H7TjsBzTrCrJ5ibOsBj1LyuJB7ZHUnKXyjr31pqm4bzXw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix broken drop_caches on extent_buffer folios
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c40bdaf996d9b04c2bd8423815d52d930ee32a2.1740721626.git.anand.jain@oracle.com>
 
-On Mon, Mar 17, 2025 at 11:47=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> The (correct) commit
-> e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inod=
-e_page()")
-> replaced the page_mapped(page) check with a refcount check. However,
-> this refcount check does not work as expected with drop_caches for
-> btrfs's metadata pages.
->
-> Btrfs has a per-sb metadata inode with cached pages, and when not in
-> active use by btrfs, they have a refcount of 3. One from the initial
-> call to alloc_pages, one (nr_pages =3D=3D 1) from filemap_add_folio, and =
-one
-> from folio_attach_private. We would expect such pages to get dropped by
-> drop_caches. However, drop_caches calls into mapping_evict_folio via
-> mapping_try_invalidate which gets a reference on the folio with
-> find_lock_entries(). As a result, these pages have a refcount of 4, and
-> fail this check.
->
-> For what it's worth, such pages do get reclaimed under memory pressure,
-> so I would say that while this behavior is surprising, it is not really
-> dangerously broken.
->
-> The following script produces such pages and uses drgn to further
-> analyze the state of the folios at various stages in the lifecycle
-> including drop_caches and memory pressure.
-> https://github.com/boryas/scripts/blob/main/sh/strand-meta/run.sh
-
-Not sure if it's a good thing to add URLs not as permanent as lore and
-kernel.org...
-I would place the script in the change log itself.
-
->
-> When I asked the mm folks about the expected refcount in this case, I
-> was told that the correct thing to do is to donate the refcount from the
-> original allocation to the page cache after inserting it.
-> https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
->
-> Therefore, attempt to fix this by adding a put_folio() to the critical
-> spot in alloc_extent_buffer where we are sure that we have really
-> allocated and attached new pages.
->
-> Since detach_extent_buffer_folio() has relatively complex logic w.r.t.
-> early exits and whether or not it actually calls folio_detach_private(),
-> the easiest way to ensure we don't incur a UAF in that function is to
-> wrap it in a buffer refcount so that the private reference cannot be the
-> last one.
->
-> Signed-off-by: Boris Burkov <boris@bur.io>
+On Fri, Feb 28, 2025 at 01:55:21PM +0800, Anand Jain wrote:
+> Introduce `verify_sysfs_syntax()` and `_require_fs_sysfs_attr_policy()` to verify
+> whether a sysfs attribute rejects invalid input arguments during writes.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  fs/btrfs/extent_io.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 7abe6ca5b38ff..207fa2d0de472 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2823,9 +2823,13 @@ static void btrfs_release_extent_buffer_folios(con=
-st struct extent_buffer *eb)
->                 if (!folio)
->                         continue;
->
-> +               /*
-> +                * Avoid accidentally putting the last refcount during
-> +                * detach_extent_buffer_folio() with an extra
-> +                * folio_get()/folio_put() pair as a buffer.
-> +                */
-> +               folio_get(folio);
->                 detach_extent_buffer_folio(eb, folio);
-> -
-> -               /* One for when we allocated the folio. */
->                 folio_put(folio);
 
-Instead of adding this defensive get/put pair, we could simply change
-detach_extent_buffer_folio():
+The subject is "common/rc: ...", but this patch isn't about common/rc.
+So feel free to remove the "/rc", or use "/sysfs".
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 19f21540475d..7183ae731288 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2768,6 +2768,7 @@ static bool folio_range_has_eb(struct folio *folio)
- static void detach_extent_buffer_folio(const struct extent_buffer
-*eb, struct folio *folio)
- {
-        struct btrfs_fs_info *fs_info =3D eb->fs_info;
-+       struct address_space *mapping =3D folio->mapping;
-        const bool mapped =3D !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags=
-);
+>  common/sysfs | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 142 insertions(+)
+>  create mode 100644 common/sysfs
+> 
+> diff --git a/common/sysfs b/common/sysfs
+> new file mode 100644
+> index 000000000000..1362a1261dfc
+> --- /dev/null
+> +++ b/common/sysfs
+> @@ -0,0 +1,142 @@
+> +##/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0+
+> +# Copyright (c) 2025 Oracle.  All Rights Reserved.
+> +#
+> +# Common/sysfs file for the sysfs related helper functions.
+> +
+> +# Test for the existence of a policy at /sys/fs/$FSTYP/$DEV/$ATTR
+> +#
+> +# All arguments are necessary, and in this order:
+> +#  - dev: device name, e.g. $SCRATCH_DEV
+> +#  - attr: path name under /sys/fs/$FSTYP/$dev
+> +#  - policy: policy within /sys/fs/$FSTYP/$dev
+> +#
+> +# Usage example:
+> +#   _has_fs_sysfs_attr_policy /dev/mapper/scratch-dev read_policy round-robin
+> +_has_fs_sysfs_attr_policy()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	local policy=$3
+> +
+> +	if [ ! -b "$dev" -o -z "$attr" -o -z "$policy" ]; then
+> +		_fail \
+> +	     "Usage: _has_fs_sysfs_attr_policy <mounted_device> <attr> <policy>"
+> +	fi
+> +
+> +	local dname=$(_fs_sysfs_dname $dev)
+> +	test -e /sys/fs/${FSTYP}/${dname}/${attr}
+> +
+> +	cat /sys/fs/${FSTYP}/${dname}/${attr} | grep -q ${policy}
+> +}
+> +
+> +# Require the existence of a sysfs entry at /sys/fs/$FSTYP/$DEV/$ATTR
+> +# and value in it contains $policy
+> +# All arguments are necessary, and in this order:
+> +#  - dev: device name, e.g. $SCRATCH_DEV
+> +#  - attr: path name under /sys/fs/$FSTYP/$dev
+> +#  - policy: mentioned in /sys/fs/$FSTYP/$dev/$attr
+> +#
+> +# Usage example:
+> +#   _require_fs_sysfs_attr_policy /dev/mapper/scratch-dev read_policy round-robin
+> +_require_fs_sysfs_attr_policy()
+> +{
+> +	_has_fs_sysfs_attr_policy "$@" && return
+> +
+> +	local dev=$1
+> +	local attr=$2
+> +	local policy=$3
+> +	local dname=$(_fs_sysfs_dname $dev)
+> +
+> +	_notrun "This test requires /sys/fs/${FSTYP}/${dname}/${attr} ${policy}"
+> +}
+> +
+> +set_sysfs_policy()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	shift
+> +	shift
+> +	local policy=$@
+> +
+> +	_set_fs_sysfs_attr $dev $attr ${policy}
+> +
+> +	case "$FSTYP" in
+> +	btrfs)
+> +		_get_fs_sysfs_attr $dev $attr | grep -q "[${policy}]"
+> +		if [[ $? != 0 ]]; then
+> +			echo "Setting sysfs $attr $policy failed"
+> +		fi
+> +		;;
+> +	*)
+> +		_fail \
+> +"sysfs syntax verification for '${attr}' '${policy}' for '${FSTYP}' is not implemented"
+> +		;;
+> +	esac
+> +}
+> +
+> +set_sysfs_policy_must_fail()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	shift
+> +	shift
+> +	local policy=$@
+> +
+> +	_set_fs_sysfs_attr $dev $attr ${policy} | _filter_sysfs_error \
+> +							   | tee -a $seqres.full
+> +}
+> +
+> +# Verify sysfs attribute rejects invalid input.
+> +# Usage syntax:
+> +#   verify_sysfs_syntax <$dev> <$attr> <$policy> [$value]
+> +# Examples:
+> +#   verify_sysfs_syntax $TEST_DEV read_policy pid
+> +#   verify_sysfs_syntax $TEST_DEV read_policy round-robin 4k
+> +# Note:
+> +#  Process must call . ./common/filter
+> +verify_sysfs_syntax()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	local policy=$3
+> +	local value=$4
+> +
+> +	# Do this in the test case so that we know its prerequisites.
+> +	# '_require_fs_sysfs_attr_policy $TEST_DEV $attr $policy'
+> +
+> +	# Test policy specified wrongly. Must fail.
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy $policy'"
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy t'"
+> +	set_sysfs_policy_must_fail $dev $attr "' '"
+> +	set_sysfs_policy_must_fail $dev $attr "'${policy} n'"
+> +	set_sysfs_policy_must_fail $dev $attr "'n ${policy}'"
+> +	set_sysfs_policy_must_fail $dev $attr "' ${policy}'"
+> +	set_sysfs_policy_must_fail $dev $attr "' ${policy} '"
+> +	set_sysfs_policy_must_fail $dev $attr "'${policy} '"
+> +	set_sysfs_policy_must_fail $dev $attr _${policy}
+> +	set_sysfs_policy_must_fail $dev $attr ${policy}_
+> +	set_sysfs_policy_must_fail $dev $attr _${policy}_
+> +	set_sysfs_policy_must_fail $dev $attr ${policy}:
+> +	# Test policy longer than 32 chars fails stable.
+> +	set_sysfs_policy_must_fail $dev $attr 'jfdkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjffjfjfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+> +
+> +	# Test policy specified correctly. Must pass.
+> +	set_sysfs_policy $dev $attr $policy
+> +
+> +	# If the policy has no value return
+> +	if [[ -z $value ]]; then
+> +		return
+> +	fi
+> +
+> +	# Test value specified wrongly. Must fail.
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy: $value'"
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy:$value '"
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy:$value typo'"
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy:${value}typo'"
+> +	set_sysfs_policy_must_fail $dev $attr "'$policy :$value'"
+> +
+> +	# Test policy and value all specified correctly. Must pass.
+> +	set_sysfs_policy $dev $attr $policy:$value
+> +}
+> +
 
-        /*
-@@ -2775,11 +2776,11 @@ static void detach_extent_buffer_folio(const
-struct extent_buffer *eb, struct fo
-         * be done under the i_private_lock.
-         */
-        if (mapped)
--               spin_lock(&folio->mapping->i_private_lock);
-+               spin_lock(&mapping->i_private_lock);
+I got this warning:
+Applying: fstests: common/rc: add sysfs argument verification helpers
+.git/rebase-apply/patch:153: new blank line at EOF.
++
+warning: 1 line adds whitespace errors.
 
-        if (!folio_test_private(folio)) {
-                if (mapped)
--                       spin_unlock(&folio->mapping->i_private_lock);
-+                       spin_unlock(&mapping->i_private_lock);
-                return;
-        }
+Other looks good to me,
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-@@ -2799,7 +2800,7 @@ static void detach_extent_buffer_folio(const
-struct extent_buffer *eb, struct fo
-                        folio_detach_private(folio);
-                }
-                if (mapped)
--                       spin_unlock(&folio->mapping->i_private_lock);
-+                       spin_unlock(&mapping->i_private_lock);
-                return;
-        }
+Thanks,
+Zorro
 
-@@ -2822,7 +2823,7 @@ static void detach_extent_buffer_folio(const
-struct extent_buffer *eb, struct fo
-        if (!folio_range_has_eb(folio))
-                btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA=
-);
+> -- 
+> 2.47.0
+> 
+> 
 
--       spin_unlock(&folio->mapping->i_private_lock);
-+       spin_unlock(&mapping->i_private_lock);
- }
-
- /* Release all folios attached to the extent buffer */
-
-It even makes the detach_extent_buffer_folio() code less verbose.
-
-Either way:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
->         }
->  }
-> @@ -3370,8 +3374,15 @@ struct extent_buffer *alloc_extent_buffer(struct b=
-trfs_fs_info *fs_info,
->          * btree_release_folio will correctly detect that a page belongs =
-to a
->          * live buffer and won't free them prematurely.
->          */
-> -       for (int i =3D 0; i < num_extent_folios(eb); i++)
-> +       for (int i =3D 0; i < num_extent_folios(eb); i++) {
->                 folio_unlock(eb->folios[i]);
-> +               /*
-> +                * A folio that has been added to an address_space mappin=
-g
-> +                * should not continue holding the refcount from its orig=
-inal
-> +                * allocation indefinitely.
-> +                */
-> +               folio_put(eb->folios[i]);
-> +       }
->         return eb;
->
->  out:
-> --
-> 2.47.1
->
->
 
