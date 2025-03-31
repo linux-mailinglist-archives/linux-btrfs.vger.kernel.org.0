@@ -1,56 +1,54 @@
-Return-Path: <linux-btrfs+bounces-12679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6034A75E69
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 06:47:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A60A76121
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 10:15:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1AD7188927C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 04:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9791167960
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 08:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A0615383A;
-	Mon, 31 Mar 2025 04:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A821DC997;
+	Mon, 31 Mar 2025 08:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GFKIASMY"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rn6gP9Tr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7BFFA92E
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 04:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFA0157A5A;
+	Mon, 31 Mar 2025 08:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743396465; cv=none; b=pJmet6lLg0b2WbuX0bK9fUn4w2f/kacwNs+uFpuYDAE6a7GYPNEKI+GHLF+W53DkNVSnowpwMzwGT9ybIaZe0O/1Ac0DTRo2/bSvibhoagb4hEvlV+2Gu1I1zrVEa75D9YUg7LW7m15lbonOSIheoC2W6huyabQnlbEoJrTo1w0=
+	t=1743408919; cv=none; b=eL/ug6rFNneyuLbXx29QJZ0kkFA0927ziRgf2+glVzFRtrk0wyLsVe/2da9LFlVUV4toyLHcnaf4WBEXotZfLTsdG0PhW2Of4s20QamZmPlDv4MTaN6WNKFAQOFWe6RfAQ/eNIxWw4x1UmETsUZvY4iETtnQCSmcVS+fZV751qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743396465; c=relaxed/simple;
-	bh=G/68kBKnnr6/yvUjt3xwhzajaKiK8PegXWV9vk5JDOE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rsGXwBYobI80lOg1zhX1wyzr2+dtzsG5ouIwXbp5BAgrk5Z8Cpt51T1r2T3LOoR+tD11pr6teNfKmlQVRrEL+OjANW8mEfGrbpzpXcqZ6+ISxtRKZoAfa0brKu23rmXvQQS3Tgt8Om1lnpiP108ZoTEcx2/5/SN2LyPNegR3cvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GFKIASMY; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1743408919; c=relaxed/simple;
+	bh=/K1LqsVggHmL0UhIvJIi4z7UtHYa7X4m1Mt1UAfv840=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=ijFZDtLLWLE2/hbZkTR3J8vJBVZSH2T1cEH73LpTT7s1A9nKTiwdqpEa/2sJ2iJ8v6aULzPKg2pPVFoeolTsnwtpwzcvYYQnDPpAiAnHBCKCYfLThRta06bnZExhmtrdJFJ4cemX2jOZZ2OiArC6zEEfOalZwjxNFBZjA1/4u/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rn6gP9Tr; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1743396459; x=1744001259; i=quwenruo.btrfs@gmx.com;
-	bh=alJwxsusiMXi6lKKAZu1YGu39CrykS5xdzJIFKOmt88=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=GFKIASMY82PbqJEDctCRD78qF/u17uVm4UX/trFM6AJCUuvwLigkLzHktEZBFn3x
-	 BzUYWPV7lKF0Ql7TVPf6b29z3zAnkeiqJV4Ll+6+ecu6xZQF5Op4i1+GgzHcIOL0l
-	 61TdB81BV7JJ0hM2KXBmoEYifYMmhtTd+QJklOXWYNnqcwkpFuoJ8OqUU+AYBaWEW
-	 GNlxEROHivwAxzB6FxhOY5XEOSBn5BmF9mpH42KUwGL9zqYVz982b6jld3KDg1g5Y
-	 bEtFa/pLrZvj4f1gOhZ8ru/2iWMrbmeomtDt1/HvzR00Fl7b4UDpatoiBn0e7Oyfa
-	 Xn7RyfWPio+Zf5zSgQ==
+	s=s31663417; t=1743408914; x=1744013714; i=quwenruo.btrfs@gmx.com;
+	bh=6+9wgwyWz1ODyntJIKBnB7YG1IaQT7gJbMSQb5t6zjc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=rn6gP9Tray5TjP+E67J2mSKMkVfYYt+GRk5uMfa4EHdCRZdew1Qa+pehbSdrw5LQ
+	 x0LJssO0r30FUqtvWT9vRmYgAtph9jKtZ1E8TRRqnnzj2xN18gM+rXKCAZGyLrecf
+	 nfN0IPtvjkr068lqqxVr8IRqLb5ylbeuIcF2HAHT3cJXYX6nB0UToqfn+iZJZMtKR
+	 SCDu7sq5tNRXMr3fhq6R78nlAhrSl/3qi4LKtpUOqBrjNDTfKxMkmqC7DsNGREh9+
+	 Gea1FToDFLCrmEHyndwzdWrctYj8sQXPGEbgul7uzEpLPIoQ8oAzKT3BaidAqrBs9
+	 0/ckWM5nGCX8RB6pVQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3bX1-1szTuj3DW7-014ZUz; Mon, 31
- Mar 2025 06:47:39 +0200
-Message-ID: <e9b76101-d14b-43ed-bd9c-97a5978f4d59@gmx.com>
-Date: Mon, 31 Mar 2025 15:17:35 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5wPb-1u15yL0c6F-002zPq; Mon, 31
+ Mar 2025 10:15:14 +0200
+Message-ID: <17517804-1c6b-4b96-a608-8c3d80e5f6dd@gmx.com>
+Date: Mon, 31 Mar 2025 18:45:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +56,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/9] btrfs: remove ASSERT()s for folio_order() and
- folio_test_large()
-To: dsterba@suse.cz
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1742195085.git.wqu@suse.com>
- <20250317135502.GW32661@twin.jikos.cz> <20250317151312.GZ32661@twin.jikos.cz>
 Content-Language: en-US
+To: Linux Memory Management List <linux-mm@kvack.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ linux-fsdevel@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -90,75 +85,76 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250317151312.GZ32661@twin.jikos.cz>
+Subject: Proper way to copy de-compressed data into a bio, in folio style?
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XlHSskgPdNa5Noy99lX/dZdypgVve3p0Ooc/U1t6Ul0FsLBj2l0
- WlvfZ+unNfvd6ZlHI2+980FPlEhd2Vqxj3DxLkJvQ6BjfmCioui7ImDmEMKrCm9oEbJ87OE
- YYuSvUIC5imeBtq6wyuI0Tv9WNCi7CaYWPC6vFrxlIg82w8Q2NRv6HAPtO8ypzJV15wR+/j
- 6lwwkkWo5Vs14U6BeC9Tw==
+X-Provags-ID: V03:K1:Pa4eZ9t2BG9WOipM89ch+BIP1XwXRZchgff3EFxuT5AXR4Okz5q
+ jJFfpZO1Jx92mLwuXcbayJXYbzeBthY2ITTzDFwpJAXZ8mHdbt9ULRdhbaU+gUcUvz2rb8A
+ MimQ6d+dZ66eE7Lt6puoXE7i0LPJU8GcYoUSjA2bK63RaCo4Va9KD7uo/ORs+4mRn+CdTDO
+ B7PH3rU65lNdEvYhmCAuA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:amxZFCQhcKI=;0FN+cGulXUHvI8kn0BWsuUF80Io
- TSC0MgEw5Lc2NaU1agil+MAggcZK8YsKgeJ/WKAnuTOY9XQ0wRA2nez8bWV/BP2yrxUwsc/8i
- lTq0vSZFmXJ2rSMD+3wU7dmnRQv/VdtPp5QSBrMcSVig/6u0BJFF0R4FVTqL51ZUsC84/VOcK
- 9CmkLS+uOwePBkxAvL/3kRYMJa905Dy2fes/QxWOlRy0uRIJWU7e1IxOeZCkhBoV3CIY1HNrJ
- LFRlXBVMu2P7I2wkfoZKrDghh41BX6/vQ4rtUz0EPaGGAwh9bJkkAWrxu4ulhSgQa8+VvaMY2
- b0yH2UpDy+mzC9dz3Puy7hhrVMdi1z3IGpWZrn3hMuZklItKjpu/cZrLWeFl76RvJ6biGZsuF
- 1jOL2CE4RRKrg43svK4ZeFeSvVdv+1RHzXw67crDd1TbXdXg5rvnguUXKiue53n/3IBWFvA84
- wWrAE5a35+pB0hhedFDJQHD+x5ej+fHVVN2Dol4kQHAuouYRj/AI6OQ8vH/+VoDZ+g820m88M
- O7sn5x55LYvJWAQ7DH7AfS4JXWVLyyRGecTVwPvuQRWq/N71s3CqoE6saZUjzjWZDJK0PIimZ
- QvuN/pS9A7FsU0hgzl+t7ZboP8yUIDrOHM3yOa5H2+pbFaexFopYpZHdHeClqKdoy8jeWPcjy
- n9dJOkFNDPFEb6ZP4rcmRT99WZ28tmKxUsEfeetK4f3UsscRdrvLCRchMzJ7joWnz3nmYZ7S3
- MJ1loYE0tM/ZEkpDeGscPTXLDDurhjNtKWAdWQYTvr2bHyd7REwl5bMLg7mPV3IP+W/Aia9x0
- tCNO+Nkc1iGTcXBue8DoBtwUpVtXEe9pcivIv+/UTZL1kr5CaUJTmAKlTCE9GQrcqLIM1C3j2
- OoBOJdM0u+lbYnUCk/VqyHRN8nESaKrxbQrlmbHA2y5oHZCCEyw96qa9aHQmbti1gBA/eZI1r
- uRCaJfxVRKlM9M5zRVfBOPH9MbeHU6ISR5uh45bHmLl7Jz9h8ucELWILtSv8T44nFmkP8Qp17
- xeRiW3D8L0GY1KjHAQDCc8h+UW/htn6CMOp1WkXaSH92gcgkRY520LI8CPIe7Zd2+o4FfsVeK
- nmRrI//Yx6UibCvo/Tx6/G8Ija5ep+9ThrwVJO5xroHeQKb9p78Riiz58K+KgiHzHx25AckwA
- Q/VaUZ0mNpA7rVzl3g85P51Hfqw0pAKsq+ndEYfIFWHBUPv4Vr1bSs2r+8qhvDIvwwzz8vG7i
- nHrXEXCpmwHroIIY8pdUn3qRA6DEnWYxHC8MlKfa0GRgQvW8xddUhaAVQYaw/QZ86f5bT//XT
- 0w0duDjy7lgpEmNzCa4BPsoFmOkjd/K3Y7FoVaJuRN16O/PerSueSH7aIfuidr7UKj7fJpnH0
- 8W/4xAR+VAYVxPn4+YD4J3ApTMXr0+D7/yGSc766odaMABUaT38kJ9f11ooWZbq+5CrMk0zxG
- TW0wiZIR+aG8qV1ID6OMbnm1Ysu8=
+UI-OutboundReport: notjunk:1;M01:P0:3VKqjzBD2Qw=;v70ybC2+N2w66XEpL5vQYf0gqu9
+ agtAhwOgsibrjNR6MjyLDxxbu31pLTIQC5Mza+hmRTPk199PseFSxZ1/HMKyP5C08C9cgGHk2
+ 5joFU8ohOPnqR9T8BF6SIh9WyclM3Uh8TRdA25JcaEl4V6fpbNGA73/zHQwC8VqK/C5Un/slC
+ ARmZiKmlAfnwG0eMNR14pgsWPnv0jQVSLBb2CusvJAImXwaf1Zy+aWI9im94HLDspu/tWsW2K
+ pbYr4210lee3VdHRDh55/bLRwb5Ek9EbUsDqV0vf/2clphLKM6TbEb3FfprK9ZIK0C1OzRKjj
+ korKmp8PNz3P1UglynGWk9NjaibiBnNXxo9Lqz+C+H7gaxKJoL0CSgc98Qj7DxjGY1vvVqtEW
+ wzeeTym0kJYtpvQ6ojj+uJMadokPWP6H7i6/6PnBKxXaIFzRG/EmGpBQc0eNi3x9flWelC+Al
+ lVyokOjOHgUvMOZNKQVQO3EmaWQHOhQN3ZTYuSpqovJixVo0N+CI7/SwHxEKcSphHyu2PqQnW
+ eTkcAOCgKv2oPTedSNmtPi/dq2gK0qbCRyLjJeL1fYd9FF7zLFSQ9pkb9nNWzu2QTmxlv1G+o
+ 3jt7RsUkVSPgq1bdXUO+A5y5vA0TDvqCrNy5609Pj29M/KxU35NiiMQ19484dQBTNTAKIOyds
+ Nic1GQ00+E9crER3fKIoExEqgXLXrVHlh9G0mYns2ZLPF38Rggn9CHDUQH9zF0+GNnLZxjzwT
+ 3Tp37wvq0KAHf6k9fe0OFoq+qqC5jAtnqoS2Kaa7p2bGaTs+YmNkMcj2GDaGSqCqQ4u9sESzy
+ w4ySrWo2w+KvkJ/jSnm2BbvVwfPaLc3d+bVyN1dRFbJlZQMMlx/ehVGqRscep4++5fI85Mx87
+ vmDTbToj1faqrnL82m264aVZDZ0wKaF+aEwtvONB+ZPjyu/tj+zz20jHoktuzC5nXYh7eqzzO
+ YYPNIFp3dk5AqElYB1PaAEeLJcXYHIyqvBR9DWfXdCvtr9ojwumTVSCy2USjnJnCvYnnXUXkQ
+ vUQnO6qbIDSrb+IayO7ChgGXZALLoqarZH3j5wMRMLWsSiuGP8/jue5+6sQHL1liYPwyhJ3zr
+ 3bSYKQwEbfD07xXyirnlBh4UUdQhJT+wCZhRn2ttrw7a0B0uJcmmLn0ydeDsUQcvrAkz5nLkr
+ BoKVSDVHSXafD2al9EU2vrEsduDDFdUGU838fIY/Ub7BPrd2rBJeqmbs0u0PaqiEAy0j//yWm
+ 6H90CfjNhW7Hh3EnslGmUpIX0g1sQdLJ4kbJgxPORC8yrz72ge7S1qpxHLzgvlqivLCH+VhBF
+ mGlj3Rsa9up2N7czkgPBYOuWaLt10ub0TnBoxxqSJLsUXt4DdiMhW/FI0i90RdC/q/Oy2gRk0
+ Ca5UVdz55weef3osq9UxX6bwqdm3k0IemziT3AdNLS5ZvDgqh9C24cUts7brY/G081+Z56s8Y
+ qLnAsxA==
+
+Hi,
+
+The seemingly easy question has some very interesting extra requirements:
+
+1. The bio contains contig file map folios
+    The folios may be large.
+    So page_offset() on bv_page (using single-page bvec) is no longer
+    reliable, one has to call page_pgoff() instead.
+
+2. The data may not cover the bio range
+    So we need some range comparison and skip if the data range doesn't
+    cover the bio range.
+
+3. The bio may have been advanced
+    E.g. previous de-compressed range has been copied, but the remaining
+    part still needs to be fulfilled.
+
+    And we need to use the bv_page's file offset to calculate the real
+    beginning of the range to copy.
+
+The current btrfs code is doing single page bvec iteration, and handling
+point 2 and 3 well.
+(btrfs_decompress_buf2page() in fs/btrfs/compression.c)
+
+Point 1 was not causing problem until the incoming large data folio
+support, and can be easily fixed with page_pgoff() convertion.
 
 
+But since we're here, I'm also wondering can we do it better with a
+folio or multi-page bvec way?
 
-=E5=9C=A8 2025/3/18 01:43, David Sterba =E5=86=99=E9=81=93:
-> On Mon, Mar 17, 2025 at 02:55:02PM +0100, David Sterba wrote:
->> On Mon, Mar 17, 2025 at 05:40:45PM +1030, Qu Wenruo wrote:
->>> [CHANGELOG]
->>> v3:
->>> - Prepare btrfs_end_repair_bio() to support larger folios
->>>    Unfortunately folio_iter structure is way too large compared to
->>>    bvec_iter, thus it's not a good idea to convert bbio::saved_iter to
->>>    folio_iter.
->>>
->>>    Thankfully it's not that complex to grab the folio from a bio_vec.
->>>
->>> - Add a new patch to prepare defrag for larger data folios
->>
->> I was not expecting v3 as the series was in for-next so I did some edit=
-s
-> [...]
->
-> Scratch that, this is not the same series.
->
+The current folio bio iteration helper can only start from the beginning
+of a bio (bio_for_each_folio_all() and bio_first_folio()), thus it's not
+a good fit for point 3.
 
-BTW, any extra commends needs to be addressed? (E.g. should I merge them
-all into a single patch?)
-
-I notice several small comment conflicts ("larger folio -> large
-folio"), but is very easy to resolve (local branch updated).
-
-There is a newer series that is already mostly reviewed:
-
-https://lore.kernel.org/linux-btrfs/cover.1743239672.git.wqu@suse.com/
-
-That relies on this series, and I'm already doing some basic (fsstress
-runs) large folio tests now.
-
-So I'm wondering can I push the series now, or should I continue waiting
-for extra reviews?
+On the other hand, I'm having some internal code to convert a bio_vec
+into a folio and offset inside the folio already.
+Thus I'm wondering can we provide something like bio_for_each_folio()?
+Or is it too niche that only certain fs can benefit from?
 
 Thanks,
 Qu
