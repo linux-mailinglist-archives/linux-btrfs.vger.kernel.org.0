@@ -1,262 +1,234 @@
-Return-Path: <linux-btrfs+bounces-12686-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CADCDA76531
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 13:51:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47759A76613
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 14:35:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E76EE188B283
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 11:51:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 304453ACC73
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Mar 2025 12:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195F91E260A;
-	Mon, 31 Mar 2025 11:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F375B1E5B78;
+	Mon, 31 Mar 2025 12:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaBa+geq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJ8x31zf"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD7C3FFD
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 11:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A561D799D
+	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 12:34:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743421862; cv=none; b=vGlH+IiG2yZcv0qywaXK0tLKj2+JaRA8DteR+8pUlDfG0mUsfvND9m1Dbfa8Rx11+TCfGZSvcjXDw24q8MNTOvlxMDDvoGLgOAksiRJXkGyNk80leJLmFoRxPHs28LZ04yjf5uoCIwZpBA/CEcpzKazWy+2FJIi7ecQC5fjZGJI=
+	t=1743424458; cv=none; b=rIy34jTMl/d+VNeZDHKqZVG+04ykyx7gu0VvXwp8iNZgLH5032uUD6+6rCVNnsWOP05zcQVJkSSvAtOVc1N9yN6Xx+GJp8Cixmumi5h2ol97XIsyb/8dlCiBHmSHEef2S2sl36MvSvwh4ZhuFxocQ/IyVsENEOYS4286ZiG9XxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743421862; c=relaxed/simple;
-	bh=XjdU3Q9HGLSWkjqFmUt+QPPkToO5oRd+XqjZBAVIySw=;
+	s=arc-20240116; t=1743424458; c=relaxed/simple;
+	bh=JbXMrm13OAENFBMdfCeQyilap+G0kWnShZRW4aZ6r/E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aJCpJ66d9QrDdfTPKyWoyWHl10xQvFgCPmPa4MIxWdC9wzbXKzbztACyIT2SBShQf4Ic/JGJ3Gynl/bmdeHycy16yk1RI+VGnA7J+qiyKPeCimNm+ZjQSQv+7ll18XZlfWyMzWyL65FlY7zHg8cX9sM4Rvc5NXudnSKq5mmITUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaBa+geq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF491C4CEE5
-	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 11:51:01 +0000 (UTC)
+	 To:Cc:Content-Type; b=GzxxWdUFh8PtlS5qTHBnqpw1GUiIFjaiMhcZPAjA478oCh0h7NqbOy24aAfZ43pslMCAC3Wh1vmXiuU3FWihOUBmqKvVfuZbxIrvSgwdLHAD+/7bvnRAxIKCUbaotWOmb1f/5j7TIipyqUEI4NkQb226dQ+m9Ratt2wTWes7Y08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJ8x31zf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE291C4CEE5
+	for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 12:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743421861;
-	bh=XjdU3Q9HGLSWkjqFmUt+QPPkToO5oRd+XqjZBAVIySw=;
+	s=k20201202; t=1743424456;
+	bh=JbXMrm13OAENFBMdfCeQyilap+G0kWnShZRW4aZ6r/E=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aaBa+geqgX9gAn/2EpKJUHs/+E4o9V/n0X7JlDInmUNPBrDCS8j9nOKzs1GUcMp8c
-	 aKvaaa7uHxgTH/qS5W79XETDcgu6Uw++rS6hz9oepYd5c8lh69Omjo7RyGcyUtp+bE
-	 qKs8KzLVB++SmQiAXaKGDULqHn48W/Ovfb9nF98qi4pBdZWy321swJlvGF6kxiwl7t
-	 f05pOBQalm4Q0xUK45C/AsPxifPFFlV/XNtn5Ode562pyL75Viw39/xqIjFs6SCXj2
-	 5Lm97Wak1IxN2PfyBILaIMVNIfcjZkwRFtUQgJNN5/rjtUBS3B6bk1GFkfqkrArPXk
-	 Y3OGhC+idfsIQ==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aaecf50578eso762189266b.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 04:51:01 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyxkK4CnRsjjLFBmkhQn24LbxIrbEQSoTfSasScAKH1H0SJoIhR
-	49GNvN5FM6+zq4gAgNN0gEdGrDu0bkPoKx1bYQsgb+whibZe1ObH7KccC2meNv2CZQT/j95WCyp
-	IYJKkBxP1usm6LmpZ3QEgMWz1/wc=
-X-Google-Smtp-Source: AGHT+IEJ0PKvdd5s9Dbpgk657dm0+6BuiwLQmzmOk79h69Fa0TZQMQZZgojI+4IrNsELYOdjPuakqxdFS2G/mIYIPfM=
-X-Received: by 2002:a17:907:7fa5:b0:ac4:16a:1863 with SMTP id
- a640c23a62f3a-ac738a50991mr785610766b.26.1743421860303; Mon, 31 Mar 2025
- 04:51:00 -0700 (PDT)
+	b=GJ8x31zfTAJDbN5oWJron/JqgOT7iS3D+uFpVp3HaX7DyZqZNfaC8VwZyypA+azda
+	 GFyi5OofloE16WYTe3OIhY7phRc7+p7yRsi//anIgbiUslc9ncHaQMpfa6Na6rK9zM
+	 MtBbJ8yK7cm37vCgbxcKvdIQ9trxmcpYmdZhwnS2NyzABfIswc2/Bs0JHGE1DEFeuE
+	 B6hs8qrtsMbMFpi2YVioZiAJXU+UQJJ9kW5Reivj/xqc/TRxcWCj8WLYzlM7VElvLf
+	 1TgCp2UvmmT6mCN36iY3hkc2mhpW5pxM12a20JTXkD1vjHIVdvDFpMD0MWx6YrmR7G
+	 d0CbdEnj9w+dA==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ac2af2f15d1so576864566b.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Mar 2025 05:34:16 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwDydqyxI7wBuuv+z3kDA1vpPFRHQlGjnFLAksRWjtpKHHpvd7j
+	Y0RR0tCCCNPCf3Dpc9rpQuiv1k0nxdUQ21/fetvNByYfZonVPOsVxO0OLUemq8AoumkrWfKMvu3
+	GxOqDVTcwAXxvyMZb2MARoQDYo1k=
+X-Google-Smtp-Source: AGHT+IFSfn0WHr4ZbuMQg9hMVZY893Gm0rF8OKorhWhiaFTo9Re1RSY5oA2ClYwD+DGQuwQ8sV2+tCQSeQzCkgvDXwE=
+X-Received: by 2002:a17:907:7250:b0:abc:b96:7bd2 with SMTP id
+ a640c23a62f3a-ac738975e17mr835979066b.11.1743424455308; Mon, 31 Mar 2025
+ 05:34:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1743239672.git.wqu@suse.com> <86cc5b6bd21e489ea6838b01bb0948c0a19b2cb5.1743239672.git.wqu@suse.com>
-In-Reply-To: <86cc5b6bd21e489ea6838b01bb0948c0a19b2cb5.1743239672.git.wqu@suse.com>
+References: <1c50d284270034703a5c99a42799ff77de871934.1742255123.git.boris@bur.io>
+In-Reply-To: <1c50d284270034703a5c99a42799ff77de871934.1742255123.git.boris@bur.io>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 31 Mar 2025 11:50:23 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5oaA67Ube5jekmstXh=80RY3UMWs9gkbA8BwK6-bWN_Q@mail.gmail.com>
-X-Gm-Features: AQ5f1Jqo26FiPJvzsXJCCQUx7JUlHIHjSpoj8PT9ZTSgJcRDEGROtfB9MfPAA2w
-Message-ID: <CAL3q7H5oaA67Ube5jekmstXh=80RY3UMWs9gkbA8BwK6-bWN_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] btrfs: prepare btrfs_punch_hole_lock_range() for
- large data folios
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Date: Mon, 31 Mar 2025 12:33:38 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7TjsBzTrCrJ5ibOsBj1LyuJB7ZHUnKXyjr31pqm4bzXw@mail.gmail.com>
+X-Gm-Features: AQ5f1Jq6fdTAwd80M9LAj41kRiW5YqVOl4JF7N2OoUoUv4L3Kud-VaKWUthQ6jY
+Message-ID: <CAL3q7H7TjsBzTrCrJ5ibOsBj1LyuJB7ZHUnKXyjr31pqm4bzXw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix broken drop_caches on extent_buffer folios
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 29, 2025 at 9:20=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+On Mon, Mar 17, 2025 at 11:47=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
 >
-> The function btrfs_punch_hole_lock_range() needs to make sure there is
-> no other folio in the range, thus it goes with filemap_range_has_page(),
-> which works pretty fine.
+> The (correct) commit
+> e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inod=
+e_page()")
+> replaced the page_mapped(page) check with a refcount check. However,
+> this refcount check does not work as expected with drop_caches for
+> btrfs's metadata pages.
 >
-> But if we have large folios, under the following case
-> filemap_range_has_page() will always return true, forcing
-> btrfs_punch_hole_lock_range() to do a very time consuming busy loop:
+> Btrfs has a per-sb metadata inode with cached pages, and when not in
+> active use by btrfs, they have a refcount of 3. One from the initial
+> call to alloc_pages, one (nr_pages =3D=3D 1) from filemap_add_folio, and =
+one
+> from folio_attach_private. We would expect such pages to get dropped by
+> drop_caches. However, drop_caches calls into mapping_evict_folio via
+> mapping_try_invalidate which gets a reference on the folio with
+> find_lock_entries(). As a result, these pages have a refcount of 4, and
+> fail this check.
 >
->         start                            end
->         |                                |
->   |//|//|//|//|  |  |  |  |  |  |  |  |//|//|
->    \         /                         \   /
->     Folio A                            Folio B
+> For what it's worth, such pages do get reclaimed under memory pressure,
+> so I would say that while this behavior is surprising, it is not really
+> dangerously broken.
 >
-> In above case, folio A and B contain our start/end indexes, and there
-> are no other folios in the range.
-> Thus we do not need to retry inside btrfs_punch_hole_lock_range().
+> The following script produces such pages and uses drgn to further
+> analyze the state of the folios at various stages in the lifecycle
+> including drop_caches and memory pressure.
+> https://github.com/boryas/scripts/blob/main/sh/strand-meta/run.sh
+
+Not sure if it's a good thing to add URLs not as permanent as lore and
+kernel.org...
+I would place the script in the change log itself.
+
 >
-> To prepare for large data folios, introduce a helper,
-> check_range_has_page(), which will:
+> When I asked the mm folks about the expected refcount in this case, I
+> was told that the correct thing to do is to donate the refcount from the
+> original allocation to the page cache after inserting it.
+> https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
 >
-> - Shrink the search range towards page boundaries
->   If the rounded down end (exclusive, otherwise it can underflow when @en=
-d
->   is inside the folio at file offset 0) is no larger than the rounded up
->   start, it means the range contains no other pages other than the ones
->   covering @start and @end.
+> Therefore, attempt to fix this by adding a put_folio() to the critical
+> spot in alloc_extent_buffer where we are sure that we have really
+> allocated and attached new pages.
 >
->   Can return false directly in that case.
+> Since detach_extent_buffer_folio() has relatively complex logic w.r.t.
+> early exits and whether or not it actually calls folio_detach_private(),
+> the easiest way to ensure we don't incur a UAF in that function is to
+> wrap it in a buffer refcount so that the private reference cannot be the
+> last one.
 >
-> - Grab all the folios inside the range
->
-> - Skip any large folios that cover the start and end indexes
->
-> - If any other folios are found return true
->
-> - Otherwise return false
->
-> This new helper is going to handle both large folios and regular ones.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
->  fs/btrfs/file.c | 69 +++++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 58 insertions(+), 11 deletions(-)
+>  fs/btrfs/extent_io.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
 >
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index a7afc55bab2a..bd0bb7aea99d 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2159,11 +2159,29 @@ static int find_first_non_hole(struct btrfs_inode=
- *inode, u64 *start, u64 *len)
->         return ret;
->  }
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 7abe6ca5b38ff..207fa2d0de472 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2823,9 +2823,13 @@ static void btrfs_release_extent_buffer_folios(con=
+st struct extent_buffer *eb)
+>                 if (!folio)
+>                         continue;
 >
-> -static void btrfs_punch_hole_lock_range(struct inode *inode,
-> -                                       const u64 lockstart,
-> -                                       const u64 lockend,
-> -                                       struct extent_state **cached_stat=
-e)
-> +/*
-> + * The helper to check if there is no folio in the range.
-> + *
-> + * We can not utilized filemap_range_has_page() in a filemap with large =
-folios
-> + * as we can hit the following false positive:
-> + *
-> + *        start                            end
-> + *        |                                |
-> + *  |//|//|//|//|  |  |  |  |  |  |  |  |//|//|
-> + *   \         /                         \   /
-> + *    Folio A                            Folio B
-> + *
-> + * That large folio A and B cover the start and end indexes.
-> + * In that case filemap_range_has_page() will always return true, but th=
-e above
-> + * case is fine for btrfs_punch_hole_lock_range() usage.
-> + *
-> + * So here we only ensure that no other folios is in the range, excludin=
-g the
-> + * head/tail large folio.
-> + */
-> +static bool check_range_has_page(struct inode *inode, u64 start, u64 end=
-)
->  {
-> +       struct folio_batch fbatch;
-> +       bool ret =3D false;
->         /*
->          * For subpage case, if the range is not at page boundary, we cou=
-ld
->          * have pages at the leading/tailing part of the range.
-> @@ -2174,17 +2192,47 @@ static void btrfs_punch_hole_lock_range(struct in=
-ode *inode,
->          *
->          * And do not decrease page_lockend right now, as it can be 0.
->          */
-> -       const u64 page_lockstart =3D round_up(lockstart, PAGE_SIZE);
-> -       const u64 page_lockend =3D round_down(lockend + 1, PAGE_SIZE);
-> +       const u64 page_lockstart =3D round_up(start, PAGE_SIZE);
-> +       const u64 page_lockend =3D round_down(end+ 1, PAGE_SIZE);
+> +               /*
+> +                * Avoid accidentally putting the last refcount during
+> +                * detach_extent_buffer_folio() with an extra
+> +                * folio_get()/folio_put() pair as a buffer.
+> +                */
+> +               folio_get(folio);
+>                 detach_extent_buffer_folio(eb, folio);
+> -
+> -               /* One for when we allocated the folio. */
+>                 folio_put(folio);
 
-Missing space between 'end' and '+ 1'.
+Instead of adding this defensive get/put pair, we could simply change
+detach_extent_buffer_folio():
 
-> +       const pgoff_t start_index =3D page_lockstart >> PAGE_SHIFT;
-> +       const pgoff_t end_index =3D (page_lockend - 1) >> PAGE_SHIFT;
-> +       pgoff_t tmp =3D start_index;
-> +       int found_folios;
->
-> +       /* The same page or adjacent pages. */
-> +       if (page_lockend <=3D page_lockstart)
-> +               return false;
-> +
-> +       folio_batch_init(&fbatch);
-> +       found_folios =3D filemap_get_folios(inode->i_mapping, &tmp, end_i=
-ndex,
-> +                                         &fbatch);
-> +       for (int i =3D 0; i < found_folios; i++) {
-> +               struct folio *folio =3D fbatch.folios[i];
-> +
-> +               /* A large folio begins before the start. Not a target. *=
-/
-> +               if (folio->index < start_index)
-> +                       continue;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 19f21540475d..7183ae731288 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2768,6 +2768,7 @@ static bool folio_range_has_eb(struct folio *folio)
+ static void detach_extent_buffer_folio(const struct extent_buffer
+*eb, struct folio *folio)
+ {
+        struct btrfs_fs_info *fs_info =3D eb->fs_info;
++       struct address_space *mapping =3D folio->mapping;
+        const bool mapped =3D !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags=
+);
 
-We passed start_index (via tmp) to filemap_get_folios(). Isn't the
-function supposed to return folios only at an index >=3D start_index?
-It's what the documentation says and the implementation seems to
-behave that way too.
+        /*
+@@ -2775,11 +2776,11 @@ static void detach_extent_buffer_folio(const
+struct extent_buffer *eb, struct fo
+         * be done under the i_private_lock.
+         */
+        if (mapped)
+-               spin_lock(&folio->mapping->i_private_lock);
++               spin_lock(&mapping->i_private_lock);
 
-Removing that we could also use start_index to pass to
-filemap_get_folios(), making it non-const, and remove the tmp
-variable.
+        if (!folio_test_private(folio)) {
+                if (mapped)
+-                       spin_unlock(&folio->mapping->i_private_lock);
++                       spin_unlock(&mapping->i_private_lock);
+                return;
+        }
 
-Either way it looks good and that's a minor thing:
+@@ -2799,7 +2800,7 @@ static void detach_extent_buffer_folio(const
+struct extent_buffer *eb, struct fo
+                        folio_detach_private(folio);
+                }
+                if (mapped)
+-                       spin_unlock(&folio->mapping->i_private_lock);
++                       spin_unlock(&mapping->i_private_lock);
+                return;
+        }
+
+@@ -2822,7 +2823,7 @@ static void detach_extent_buffer_folio(const
+struct extent_buffer *eb, struct fo
+        if (!folio_range_has_eb(folio))
+                btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA=
+);
+
+-       spin_unlock(&folio->mapping->i_private_lock);
++       spin_unlock(&mapping->i_private_lock);
+ }
+
+ /* Release all folios attached to the extent buffer */
+
+It even makes the detach_extent_buffer_folio() code less verbose.
+
+Either way:
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 Thanks.
 
-> +               /* A large folio extends beyond the end. Not a target. */
-> +               if (folio->index + folio_nr_pages(folio) > end_index)
-> +                       continue;
-> +               /* A folio doesn't cover the head/tail index. Found a tar=
-get. */
-> +               ret =3D true;
-> +               break;
+>         }
+>  }
+> @@ -3370,8 +3374,15 @@ struct extent_buffer *alloc_extent_buffer(struct b=
+trfs_fs_info *fs_info,
+>          * btree_release_folio will correctly detect that a page belongs =
+to a
+>          * live buffer and won't free them prematurely.
+>          */
+> -       for (int i =3D 0; i < num_extent_folios(eb); i++)
+> +       for (int i =3D 0; i < num_extent_folios(eb); i++) {
+>                 folio_unlock(eb->folios[i]);
+> +               /*
+> +                * A folio that has been added to an address_space mappin=
+g
+> +                * should not continue holding the refcount from its orig=
+inal
+> +                * allocation indefinitely.
+> +                */
+> +               folio_put(eb->folios[i]);
 > +       }
-> +       folio_batch_release(&fbatch);
-> +       return ret;
-> +}
-> +
-> +static void btrfs_punch_hole_lock_range(struct inode *inode,
-> +                                       const u64 lockstart,
-> +                                       const u64 lockend,
-> +                                       struct extent_state **cached_stat=
-e)
-> +{
->         while (1) {
->                 truncate_pagecache_range(inode, lockstart, lockend);
+>         return eb;
 >
->                 lock_extent(&BTRFS_I(inode)->io_tree, lockstart, lockend,
->                             cached_state);
-> -               /* The same page or adjacent pages. */
-> -               if (page_lockend <=3D page_lockstart)
-> -                       break;
->                 /*
->                  * We can't have ordered extents in the range, nor dirty/=
-writeback
->                  * pages, because we have locked the inode's VFS lock in =
-exclusive
-> @@ -2195,8 +2243,7 @@ static void btrfs_punch_hole_lock_range(struct inod=
-e *inode,
->                  * locking the range check if we have pages in the range,=
- and if
->                  * we do, unlock the range and retry.
->                  */
-> -               if (!filemap_range_has_page(inode->i_mapping, page_lockst=
-art,
-> -                                           page_lockend - 1))
-> +               if (!check_range_has_page(inode, lockstart, lockend))
->                         break;
->
->                 unlock_extent(&BTRFS_I(inode)->io_tree, lockstart, locken=
-d,
+>  out:
 > --
-> 2.49.0
+> 2.47.1
 >
 >
 
