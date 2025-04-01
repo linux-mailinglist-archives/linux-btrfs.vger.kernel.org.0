@@ -1,199 +1,295 @@
-Return-Path: <linux-btrfs+bounces-12715-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12716-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 428A4A775A0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 09:51:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C44A9A77892
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 12:14:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59D3C188B753
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 07:51:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D9537A37CD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 10:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EA71E8320;
-	Tue,  1 Apr 2025 07:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD3A1F03DE;
+	Tue,  1 Apr 2025 10:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aW2EdjjM";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aW2EdjjM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4zx3R8F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF892D05E
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 07:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416C31E5B8B
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 10:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743493870; cv=none; b=bdexvCgwqkrtcHm0DbqgrXVZVgl/eM2kLB74R1F5cbjZtgPfYaa9ACDBmJZ0FK1d04iCf3pobSvTyBhkFKHEWQC0Djq1gegS+ZPkPmt6EOBQYSRww2ZBnAWQZHSXn5e1VyB8pTG4j26OY4dBDFVI3UnARLCVaDPn/OOhUPDk5MM=
+	t=1743502463; cv=none; b=IjHi9nk1i+cBEUNyeadB9XK5HiReOeFEeQY8JSHM7lyy9zFmR1zb/QBzC9HHCjaMHjgXXU0r8SQNucS9RsOSei7IFwtIxwY/0ax2lENKl7v1bi2OnTP6zjRyva2iP+ySrqyl68FdfZG1tF6ANp6cln5I7LlUg+LmILrR2hYN7LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743493870; c=relaxed/simple;
-	bh=tBHGu9Cb4sFRJMJwOpy5Y8a0SfXlOGBmeasqIjzADUE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M/sESoPrDTx1XG8EbP6oKWTcrH9uoRJmlCILw+uZrg8PCTW4shofNch2EuPu8zI7J+0aK825dAFKA3PvneeVGGkJDTilL1dBIH2epNqYWny4cOL5MtOE6Vx2X71ceBcr4hthb4uDBGRWk0vWPTBpBNqmgS5MO7KO/kwi9LzIzos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aW2EdjjM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aW2EdjjM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C3082211E5
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 07:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1743493854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8FGpj7Hb+w1Qr6+LxmeVvAC4ZqtVUTYNds0m/tr/MHg=;
-	b=aW2EdjjMa94DjYhYHy/WBSYYmSnRK5E1TefUcnh1aVxL1Do6T56LTrwUkzcAGyXa7xCNXi
-	B9od+4wFoUU/ll9BYd5kzh3MKPdOjyNI4CLmfclLk7ccHE8EAXrUYU/MqB5ySMH0kjLz20
-	g/YUAaYJazMvnkghCqfyX8afPAzn5sY=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=aW2EdjjM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1743493854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8FGpj7Hb+w1Qr6+LxmeVvAC4ZqtVUTYNds0m/tr/MHg=;
-	b=aW2EdjjMa94DjYhYHy/WBSYYmSnRK5E1TefUcnh1aVxL1Do6T56LTrwUkzcAGyXa7xCNXi
-	B9od+4wFoUU/ll9BYd5kzh3MKPdOjyNI4CLmfclLk7ccHE8EAXrUYU/MqB5ySMH0kjLz20
-	g/YUAaYJazMvnkghCqfyX8afPAzn5sY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 08FF3138A5
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 07:50:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aHUWL92a62egXAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 01 Apr 2025 07:50:53 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: fix the file offset calculation inside btrfs_decompress_buf2page()
-Date: Tue,  1 Apr 2025 18:20:29 +1030
-Message-ID: <235ae192f8d1f9b525aa00a27fd476e2979ada1b.1743493507.git.wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1743493507.git.wqu@suse.com>
-References: <cover.1743493507.git.wqu@suse.com>
+	s=arc-20240116; t=1743502463; c=relaxed/simple;
+	bh=c1knKrr3xXou87jLazbVSwWhB0y4zy3GYu/a9AbIRFQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l3LBIfWE3rQEdIGCz76hnDmgXjLVstZ9R88M90e8iUecfElubsB0OiG28Jt4GfC8tOfFYSYQDYrYlRbqjbSDM2uFsEImPMGodQFc/piYkpGBM0jnRk2DKMRyHNLqPNxnw/uyAOKuxfSqXfyfIlnP+9Gv8UMrjTXI9eaI2XhhRpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L4zx3R8F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7D50C4CEE8
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 10:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743502462;
+	bh=c1knKrr3xXou87jLazbVSwWhB0y4zy3GYu/a9AbIRFQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=L4zx3R8F5B+OoYIjoNa68m353QISmzJZWqUT26Qd7o6mBELGeELK5uykTlLgbBzS0
+	 M/gAlequU6rkLwEaWm/O7Q+K3VvoPxBJzcOwqmtg+Q7oPp5fcNmN8QSpfjcUUfBwsG
+	 nuKxPxqnaQFdrQS5XtcnM6x4qdk6/XFJ974AW2STDbSyRI+XjOs520QejIBTNcvMb5
+	 9H6ULW6m6eRwasElAlCPNPWyHoSXpOanlQlgSjGYvKFCzlwX27Kw0I/a2qNxzkazIs
+	 K9yTuqrxR7FRRLPKvPqWii/PkacZZwkZoK0iDvWWOVFJLeTb0+uzUJliNXlCujO0yF
+	 XUKR0Qzql//EQ==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e5e34f4e89so10157409a12.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Apr 2025 03:14:22 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy4XvUkZ+Q+HCYES/K7BnlidgDFhV3hspR3XPiePBSrPOxXzAVw
+	yee0HO41glBB7bLsDmiQkBFmsfeSTDqB/6yWPfuVmLcUJkpB/+Ys3fql0tCMTwTPGPcjW66SyR3
+	cyEgYcokF9QDVrL8JdtgUeZN1J40=
+X-Google-Smtp-Source: AGHT+IFbHOEAE8vKrWHg+kPsKctSk2+p31Oyxf5z5zUfufMMEt13FuG+4gvnyWRPGvNfhEAiL3GOd3jWFsAtratVGdI=
+X-Received: by 2002:a17:907:869e:b0:abf:749f:f719 with SMTP id
+ a640c23a62f3a-ac73898d4b7mr1310506866b.7.1743502461165; Tue, 01 Apr 2025
+ 03:14:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C3082211E5
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+References: <cover.1743004734.git.fdmanana@suse.com> <c20733c28d02562ff09bfff6739b01b5f710bed7.1743004734.git.fdmanana@suse.com>
+ <20250331223907.GL32661@twin.jikos.cz>
+In-Reply-To: <20250331223907.GL32661@twin.jikos.cz>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 1 Apr 2025 10:13:44 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5MXGyt4=mnGnaGNEy_dy2PV_9qg8yND1Xbt1sFD7JLLA@mail.gmail.com>
+X-Gm-Features: AQ5f1JqumKx4042N1tkvOOR8yQbvISSKhBsHriUZ_nGzHDQNbttm1UBsEOoOQRk
+Message-ID: <CAL3q7H5MXGyt4=mnGnaGNEy_dy2PV_9qg8yND1Xbt1sFD7JLLA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] btrfs: allow folios to be released while ordered
+ extent is finishing
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[BUG WITH EXPERIMENTAL LARGE FOLIOS]
-When testing the experimental large data folio support with compression,
-there are several ASSERT()s triggered from btrfs_decompress_buf2page()
-when running fsstress with compress=zstd mount option:
+On Mon, Mar 31, 2025 at 11:39=E2=80=AFPM David Sterba <dsterba@suse.cz> wro=
+te:
+>
+> On Thu, Mar 27, 2025 at 04:13:51PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > When the release_folio callback (from struct address_space_operations) =
+is
+> > invoked we don't allow the folio to be released if its range is current=
+ly
+> > locked in the inode's io_tree, as it may indicate the folio may be need=
+ed
+> > by the task that locked the range.
+> >
+> > However if the range is locked because an ordered extent is finishing,
+> > then we can safely allow the folio to be released because ordered exten=
+t
+> > completion doesn't need to use the folio at all.
+> >
+> > When we are under memory pressure, the kernel starts writeback of dirty
+> > pages (folios) with the goal of releasing the pages from the page cache
+> > after writeback completes, however this often is not possible on btrfs
+> > because:
+> >
+> >   * Once the writeback completes we queue the ordered extent completion=
+;
+> >
+> >   * Once the ordered extent completion starts, we lock the range in the
+> >     inode's io_tree (at btrfs_finish_one_ordered());
+> >
+> >   * If the release_folio callback is called while the folio's range is
+> >     locked in the inode's io_tree, we don't allow the folio to be
+> >     released, so the kernel has to try to release memory elsewhere,
+> >     which may result in triggering more writeback or releasing other
+> >     pages from the page cache which may be more useful to have around
+> >     for applications.
+> >
+> > In contrast, when the release_folio callback is invoked after writeback
+> > finishes and before ordered extent completion starts or locks the range=
+,
+> > we allow the folio to be released, as well as when the release_folio
+> > callback is invoked after ordered extent completion unlocks the range.
+> >
+> > Improve on this by detecting if the range is locked for ordered extent
+> > completion and if it is, allow the folio to be released. This detection
+> > is achieved by adding a new extent flag in the io_tree that is set when
+> > the range is locked during ordered extent completion.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  fs/btrfs/extent-io-tree.c | 22 +++++++++++++++++
+> >  fs/btrfs/extent-io-tree.h |  6 +++++
+> >  fs/btrfs/extent_io.c      | 52 +++++++++++++++++++++------------------
+> >  fs/btrfs/inode.c          |  6 +++--
+> >  4 files changed, 60 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+> > index 13de6af279e5..14510a71a8fd 100644
+> > --- a/fs/btrfs/extent-io-tree.c
+> > +++ b/fs/btrfs/extent-io-tree.c
+> > @@ -1752,6 +1752,28 @@ bool test_range_bit_exists(struct extent_io_tree=
+ *tree, u64 start, u64 end, u32
+> >       return bitset;
+> >  }
+> >
+> > +void get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u=
+32 *bits)
+> > +{
+> > +     struct extent_state *state;
+> > +
+> > +     *bits =3D 0;
+> > +
+> > +     spin_lock(&tree->lock);
+> > +     state =3D tree_search(tree, start);
+> > +     while (state) {
+> > +             if (state->start > end)
+> > +                     break;
+> > +
+> > +             *bits |=3D state->state;
+> > +
+> > +             if (state->end >=3D end)
+> > +                     break;
+> > +
+> > +             state =3D next_state(state);
+> > +     }
+> > +     spin_unlock(&tree->lock);
+> > +}
+> > +
+> >  /*
+> >   * Check if the whole range [@start,@end) contains the single @bit set=
+.
+> >   */
+> > diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+> > index 6ffef1cd37c1..e49f24151167 100644
+> > --- a/fs/btrfs/extent-io-tree.h
+> > +++ b/fs/btrfs/extent-io-tree.h
+> > @@ -38,6 +38,11 @@ enum {
+> >        * that is left for the ordered extent completion.
+> >        */
+> >       ENUM_BIT(EXTENT_DELALLOC_NEW),
+> > +     /*
+> > +      * Mark that a range is being locked for finishing an ordered ext=
+ent.
+> > +      * Used together with EXTENT_LOCKED.
+> > +      */
+> > +     ENUM_BIT(EXTENT_FINISHING_ORDERED),
+> >       /*
+> >        * When an ordered extent successfully completes for a region mar=
+ked as
+> >        * a new delalloc range, use this flag when clearing a new delall=
+oc
+> > @@ -166,6 +171,7 @@ void free_extent_state(struct extent_state *state);
+> >  bool test_range_bit(struct extent_io_tree *tree, u64 start, u64 end, u=
+32 bit,
+> >                   struct extent_state *cached_state);
+> >  bool test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64=
+ end, u32 bit);
+> > +void get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u=
+32 *bits);
+> >  int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u=
+64 end,
+> >                            u32 bits, struct extent_changeset *changeset=
+);
+> >  int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end=
+,
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index a11b22fcd154..6b9a80f9e0f5 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -2627,33 +2627,37 @@ static bool try_release_extent_state(struct ext=
+ent_io_tree *tree,
+> >  {
+> >       u64 start =3D folio_pos(folio);
+> >       u64 end =3D start + folio_size(folio) - 1;
+> > -     bool ret;
+> > +     u32 range_bits;
+> > +     u32 clear_bits;
+> > +     int ret;
+> >
+> > -     if (test_range_bit_exists(tree, start, end, EXTENT_LOCKED)) {
+> > -             ret =3D false;
+> > -     } else {
+> > -             u32 clear_bits =3D ~(EXTENT_LOCKED | EXTENT_NODATASUM |
+> > -                                EXTENT_DELALLOC_NEW | EXTENT_CTLBITS |
+> > -                                EXTENT_QGROUP_RESERVED);
+> > -             int ret2;
+> > +     get_range_bits(tree, start, end, &range_bits);
+>
+> There's a difference how much of the tree is traversed,
+> test_range_bit_exists() stops on first occurence of EXTENT_LOCKED (a
+> single bit), get_range_bits() unconditionally explores the whole tree.
 
-- ASSERT(copy_len) from btrfs_decompress_buf2page()
-- VM_BUG_ON(offset + len > PAGE_SIZE) from memcpy_to_page()
+The whole tree?
+The folio's range, unless there are no records in the tree outside the
+folio's range, in which case it is a very small tree.
 
-[CAUSE]
-Inside btrfs_decompress_buf2page(), we need to grab the file offset from
-the current bvec.bv_page, to check if we even need to copy data into the
-bio.
+But it's not a problem for several reasons:
 
-And since we're using single page bvec, and no large folio, every page
-inside the folio should have its index properly setup.
+1) When a range is not under IO or locked, there's typically no state
+record in the tree;
 
-But when large folios are involved, only the first page (aka, the head
-page) of a large folio has its index properly initialized.
+2) If a range is under delalloc or writeback, we don't even get to
+this function - we exit early in btrfs_release_folio() if the folio is
+dirty or under writeback;
 
-The other pages inside the large folio will not have their indexes
-properly initialized.
+3) The IO is folio size based (whether single page or multi page in
+the near future), so it's unlikely to find more than one state record
+for the range - correct me if you know of cases where we'll get more
+than one.
 
-Thus the page_offset() call inside btrfs_decompress_buf2page() will
-result garbage, and completely screw up the @copy_len calculation.
+4) For bit ranges other than EXTENT_LOCKED, extent state records are
+merged, so even for very uncommon scenarios it's unlikely to find more
+than 1 state record for the folio's range.
 
-[FIX]
-Instead of using page->index directly, go with page_pgoff(), which can
-handle non-head pages correctly.
+So traversing the whole range is far from being a bottleneck or
+causing more lock contention, even if there are multiple state records
+- we already had to traverse the whole range with
+test_range_bit_exists() when the folio's range is not locked.
 
-So introduce a helper, file_offset_from_bvec(), to get the file offset
-from a single page bio_vec, so the copy_len calculation can be done
-correctly.
+>
+> >
+> > -             /*
+> > -              * At this point we can safely clear everything except th=
+e
+> > -              * locked bit, the nodatasum bit and the delalloc new bit=
+.
+> > -              * The delalloc new bit will be cleared by ordered extent
+> > -              * completion.
+> > -              */
+> > -             ret2 =3D __clear_extent_bit(tree, start, end, clear_bits,=
+ NULL, NULL);
+> > +     /*
+> > +      * We can release the folio if it's locked only for ordered exten=
+t
+> > +      * completion, since that doesn't require using the folio.
+> > +      */
+> > +     if ((range_bits & EXTENT_LOCKED) &&
+> > +         !(range_bits & EXTENT_FINISHING_ORDERED))
+>
+> Here we need to know that LOCKED exists and FINISHING_ORDERED does not
+> exist in the range. This can be proven when the whole tree is traversed,
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/compression.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+I still don't get why you say the whole tree.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index e7f8ee5d48a4..cb954f9bc332 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -1137,6 +1137,22 @@ void __cold btrfs_exit_compress(void)
- 	bioset_exit(&btrfs_compressed_bioset);
- }
- 
-+/*
-+ * The bvec is a single page bvec from a bio that contains folios from a filemap.
-+ *
-+ * Since the folios may be large one, and if the bv_page is not a head page of
-+ * a large folio, then page->index is unreliable.
-+ *
-+ * Thus we need this helper to grab the proper file offset.
-+ */
-+static u64 file_offset_from_bvec(const struct bio_vec *bvec)
-+{
-+	const struct page *page = bvec->bv_page;
-+	const struct folio *folio = page_folio(page);
-+
-+	return (page_pgoff(folio, page) << PAGE_SHIFT) + bvec->bv_offset;
-+}
-+
- /*
-  * Copy decompressed data from working buffer to pages.
-  *
-@@ -1188,7 +1204,7 @@ int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
- 		 * cb->start may underflow, but subtracting that value can still
- 		 * give us correct offset inside the full decompressed extent.
- 		 */
--		bvec_offset = page_offset(bvec.bv_page) + bvec.bv_offset - cb->start;
-+		bvec_offset = file_offset_from_bvec(&bvec) - cb->start;
- 
- 		/* Haven't reached the bvec range, exit */
- 		if (decompressed + buf_len <= bvec_offset)
--- 
-2.49.0
+> but could be in some cases be reduced to
+>
+>         if (test_range_bit_exists(..., LOCKED) &&
+>             !test_range_bit_exists(, FINISHING_ORDERED))
+>
+> where in some percent of cases the whole tree won't be traversed (and
+> the lock held for a shorter time). This depends on the runtime what
+> combinations of the locks exist, it's possible than in the average case
+> the whole tree would be traversed anyway, and get_range_bits() is OK.
 
+I don't see what specific cases you are talking about, correct me if
+any of the things I'd said above is wrong and we can have a lot of
+extent state records in the folio's range.
+But even if we do, it's the same behaviour as for
+test_range_bit_exists() when the range is not locked.
+
+Thanks.
 
