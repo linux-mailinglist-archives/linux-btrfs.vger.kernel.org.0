@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-12722-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12723-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C19BA77EF6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 17:31:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A18A77EF7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 17:31:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1CA53B08F5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 15:30:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8164416CFEC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 15:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8142420AF8E;
-	Tue,  1 Apr 2025 15:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F16520B80C;
+	Tue,  1 Apr 2025 15:30:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKJjcXrc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LVG1dbET"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DE32054E1
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A604520AF93
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743521398; cv=none; b=UbAX/0w8HDF1VIUnpY4Jo3LB1kT9WmwsKLi8Z2dqaie96ysBtyfrldJ9HsVtYTeb4DLlR/+uyBPp8+rtv1psLuRV+PoMYpuiiTL/xpDvJ5s/iDHOfqkGqkPAtqKfg5WJSRlWbJpdCG/6+ZQqUH/aYQRzkpUIM7TfO60y5Yfoudc=
+	t=1743521399; cv=none; b=V1RtygX+1CSmr4M42BPEaI4ULpIeCrmWZfmiyv5vwxUHkKcTvBbN/KYdRXSa1XZ+SCHXa5zk7rLxz2pTt3Mrc2Z6NJ/ibmfKUJ1RlJ6qW4kuwA1ufn0FefKwzeBWlIf2iL3ZTeI+yWJ6LtPC/VfVrhImR4+ukM2BSgD1No/JU3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743521398; c=relaxed/simple;
-	bh=7LI6uFwYWYntxxhlwUtzuaRXHgbgZK8MiQMY7OaK/XM=;
+	s=arc-20240116; t=1743521399; c=relaxed/simple;
+	bh=7wbYbugg6ZYVpEkA4oDYqRdd9oPIjzp6f2iMz/klY+A=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CTD8u4tedxG/RTDWwqMTnpc5B1XqQy6EMoPVg2IaBJMvugfekifCnDfeCQwjQNlNbDvBKakM5N6dG0BuIZObXGdrfvqQyMxmt5cKWgMhIcwpDsGz9wMRwoJmVwK4vnDnKK/19e7BGZGHP79l8zjsxp6i43QPR0CuiOqMemsQlXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKJjcXrc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1FC5C4CEE8
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:29:57 +0000 (UTC)
+	 MIME-Version; b=TwFJHzu2T9xAYWGLzFKxxq5fUhLVdmkgsR6AY65MbTO9yww+kEVBRTPBV1v9oanmiRE9MPBWc/bB1gWyiNVAd2fU3v1M0yNe5XkJiOtpJl0BaVvEPbOme/6DfkoeLb8R3T/La44N5hLQ+51ZPYKp56jZH8BrKCznJ8PA2fv/Bw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LVG1dbET; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02D49C4CEE8
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743521398;
-	bh=7LI6uFwYWYntxxhlwUtzuaRXHgbgZK8MiQMY7OaK/XM=;
+	s=k20201202; t=1743521399;
+	bh=7wbYbugg6ZYVpEkA4oDYqRdd9oPIjzp6f2iMz/klY+A=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=FKJjcXrcMqsNr57xRnBXpwrJ8LCtgSigrqIifxMuIuQ3jU7Kptk19XasFuam+auaR
-	 7eUOs88Xk8hMxG5mXqTUCPJGvR6N2TxvmtFtTaXiYVN7Zsph6/tEKEzeC3O/q2MJ3q
-	 8v/KiWlYwII8oezzqLQBJRDUSAAkdw54azOpTaz30HYCLv1lQxcaky515Nly9Z10dI
-	 Y7znuRPgmZIUgGUNpgW2wR87h+1xlTslQK9kRTKyQxV//KoHXON79cYYHJIDXbh62d
-	 ghiDki5F4wosj3e1x50a/sKgrKL+auAXsfQ5O+6Wwvb+r5Ra70s5RynmR+b8mxf7P/
-	 y0AZsHtjtG3DA==
+	b=LVG1dbETp9ihcSTWbixiS3AD4wtDq4cnLruMZa33PbP3nkYQKaLllIDToMBBHdaOe
+	 9Kfbo3bO8YsWbyu4/EU657w1VC7obzkZuu8pwG8lcrU2T7fezS+rd+ILs/rNHQ1ilo
+	 BHenAJOehEin/lFMExW7xMe9jBfcMi8tK+8lrf6/jd6EZ5Z4tmRVCoYu2G0zFmQi+1
+	 E1MG6H2DCbXHGVtq0+Yr2JICtwWAmmAVJCyJTV6zKp0NtZrGbxbKlXGmka8XButYsA
+	 FXn/zXPNonmftkPmiKDpSzyzEBd/dQQCw5dOB+86aRCzAuLcXKO0DbwN3bg/tAZ/2f
+	 GPmqtFe0mMWWA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/4] btrfs: use clear_extent_bit() at try_release_extent_state()
-Date: Tue,  1 Apr 2025 16:29:51 +0100
-Message-Id: <c98bc026af2049be1c7db471651d3f36a5513ec4.1743521098.git.fdmanana@suse.com>
+Subject: [PATCH v2 2/4] btrfs: use clear_extent_bits() at chunk_map_device_clear_bits()
+Date: Tue,  1 Apr 2025 16:29:52 +0100
+Message-Id: <f220d4520f6eef59436eed674af6b8327062842c.1743521098.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1743521098.git.fdmanana@suse.com>
 References: <cover.1743521098.git.fdmanana@suse.com>
@@ -59,27 +59,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of using __clear_extent_bit() we can use clear_extent_bit() since
-we pass a NULL value for the changeset argument.
+Instead of using __clear_extent_bit() we can use clear_extent_bits() since
+we pass a NULL value for the cached and changeset arguments.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/volumes.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 19f21540475d..50b74531b745 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2651,7 +2651,7 @@ static bool try_release_extent_state(struct extent_io_tree *tree,
- 	 * nodatasum, delalloc new and finishing ordered bits. The delalloc new
- 	 * bit will be cleared by ordered extent completion.
- 	 */
--	ret2 = __clear_extent_bit(tree, start, end, clear_bits, &cached_state, NULL);
-+	ret2 = clear_extent_bit(tree, start, end, clear_bits, &cached_state);
- 	/*
- 	 * If clear_extent_bit failed for enomem reasons, we can't allow the
- 	 * release to continue.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c8c21c55be53..784d5a15ef29 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5508,10 +5508,9 @@ static void chunk_map_device_clear_bits(struct btrfs_chunk_map *map, unsigned in
+ 		struct btrfs_io_stripe *stripe = &map->stripes[i];
+ 		struct btrfs_device *device = stripe->dev;
+ 
+-		__clear_extent_bit(&device->alloc_state, stripe->physical,
+-				   stripe->physical + map->stripe_size - 1,
+-				   bits | EXTENT_NOWAIT,
+-				   NULL, NULL);
++		clear_extent_bits(&device->alloc_state, stripe->physical,
++				  stripe->physical + map->stripe_size - 1,
++				  bits | EXTENT_NOWAIT);
+ 	}
+ }
+ 
 -- 
 2.45.2
 
