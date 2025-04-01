@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-12725-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F29A77EF2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 17:30:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92387A77EF9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 17:31:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB7C07A3ED6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 15:29:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D398E3AFDCD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 15:30:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BE820B819;
-	Tue,  1 Apr 2025 15:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2C320C00F;
+	Tue,  1 Apr 2025 15:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eZ0S3XCU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LMmYa7CY"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E91E20AF9A
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD6120AF9C
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743521401; cv=none; b=mb84Q45nLgpWN13+/rAF9VNjPH1j9+K2DgO7is5gRvI0Tm9Hbsb/Rp8ENAaK8VQDIyo7VX0VUQBnGKGza1rLQd8k0tcBnp/4TLoAqXdJk5V8WimFeShMqWSaFk774i25uD7uwsDSX89+cnaI/nKjcOltJMNGqWAo1Tk7XSb91hA=
+	t=1743521402; cv=none; b=CXriR/4kOusgc/zQiu22nQywx3HtYS/l2+6zpdvpMi2rpoTyg/UcJVhVL9qVzjJu6rs1sHsXk4G8FD1PvdXtoMPb7jnQv0GcPjsPpVqtGZ5ckRU1kkuVucwemwiSvVHFpLs197XTQSd1zpz7qsEJ/Wqm2H09ROD/yHS68AQtOQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743521401; c=relaxed/simple;
-	bh=yvZKDBlzp1G5+LwhBSkslc8fSzVM2lgfFuUGMCeIzuY=;
+	s=arc-20240116; t=1743521402; c=relaxed/simple;
+	bh=MFnql+bSP4O26kxVBWK3934LoboUHc7LIgldAXvi49k=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ETyWV++tXMm4iAOhMzwA+YoFnr+s7sNXnGGg/6qqt7AYEBPuhh/Cep3BD6c6Yo5aUvJV5PurWuiOjuvt2MCWhUa22meRf7JGhhj7x9q3gln5axS3kbr8hxSgVRQWBCnUHzEK8NBMjgC+qNx/W/GKLwu5LmgrlbSa6us8btDQl5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eZ0S3XCU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07CC4C4CEE5
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:29:59 +0000 (UTC)
+	 MIME-Version; b=dwrmQci88NmHpLe8rxSP63Alz3zp/Eu5uTY7ALmYmxhvFJB1HWhZ7jthXF1eRdjfENkNa8n1UQLRSIg3TWX5ZT5GP63FqqZIlWYgYrH2pLcYUsdWKBNLCIEEwQJz4/onKsu6x5bWllWqpPknBfBUhQDmWVrj9eqQRNF0Dn7lRcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LMmYa7CY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C298C4CEE8
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743521400;
-	bh=yvZKDBlzp1G5+LwhBSkslc8fSzVM2lgfFuUGMCeIzuY=;
+	s=k20201202; t=1743521401;
+	bh=MFnql+bSP4O26kxVBWK3934LoboUHc7LIgldAXvi49k=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=eZ0S3XCUKuP50BRyVFHMt29ostgoED2ii7u+gkq2dZATXoY9hNSyfUG24wmyYDLZt
-	 fIGruaUNrWewJKzfI0mLiOhkkX8yUtmvinh5BaL7bb4b8PjIq0G6Fg41ReDCGqN94W
-	 5gljzAotVFHckPNq9PkAxj08xHzWxi563UU6mgR4aLLJodLU266dCXdR9E7SDJuvKI
-	 rvCV9Ov80Qgb/SsYRV083HKfC/ETqaH4S/8LyQ69g4Wv1xqGgjSjvODnrcheEJsusb
-	 5O/M0GXmmPbgrpn0W7LtavJeGm2r8pSXfCgNI66swg07csyf73AHdwsHhcgyrZEUYV
-	 BlVwuicMIctZQ==
+	b=LMmYa7CYxjrbZJ7ZgDBIt49/TA+mI8xn3R5CkLuBTPMNeJEbDuxSJ6tg+ZGSBjyeD
+	 5VK4sdPRRcmUaIsP3K/MrhMnA7USr3Q24ExeBVBxQrtEPOxOUi/PsMf+Xg8NGH0Voy
+	 vXz51s8G0w1OzCrBAMg9B0flHBG54K7wb3kz7rmq+Vd1YDIS0O3Mb9aRtl9AXvek+n
+	 smwxB1ZyRS3zwPRDJxDk/SZDTVjJdqZzY9T9pzjijYI0yeyGleaaBL7r5UUHbvkIF/
+	 bz0JfliEessi7EpVq64RfRFO9uf29SZZ7KCBSbKNKMBKO5SbBxwsK/KWa/fNUN1smK
+	 +MiioHmuuFJvg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/4] btrfs: use clear_extent_bits() instead of clear_extent_bit() where possible
-Date: Tue,  1 Apr 2025 16:29:53 +0100
-Message-Id: <20bbc920db163134d7dea30023532f1f9e97e4c7.1743521098.git.fdmanana@suse.com>
+Subject: [PATCH v2 4/4] btrfs: simplify last record detection at test_range_bit_exists()
+Date: Tue,  1 Apr 2025 16:29:54 +0100
+Message-Id: <9ee50767c1bbb59d408c2df7d6e0a4e1635289cf.1743521098.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1743521098.git.fdmanana@suse.com>
 References: <cover.1743521098.git.fdmanana@suse.com>
@@ -59,103 +59,57 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Several places are using clear_extent_bit() and passing a NULL value for
-the 'cached' argument, which is pointless as they can use instead
-clear_extent_bits().
+Instead of keeping track of the minimum start offset of the next record
+and detecting overflow everytime we update that offset to be the sum of
+current record's end offset plus one, we can simply exit when the current
+record ends at or beyond our end offset and forget about updating the
+start offset on every iteration and testing for it at the top of the loop.
+This makes both the source code and assembly code simpler, more efficient
+and shorter (reducing the object text size).
+
+Also remove the pointless initializion to NULL of the state variable, as
+we don't use it before the first assignment to it. This may help avoid
+some warnings with clang tools such as the one reported/fixed by commit
+966de47ff0c9 ("btrfs: remove redundant initialization of variables in
+log_new_ancestors").
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c             |  3 +--
- fs/btrfs/reflink.c           |  5 ++---
- fs/btrfs/tests/inode-tests.c | 24 ++++++++++++------------
- 3 files changed, 15 insertions(+), 17 deletions(-)
+ fs/btrfs/extent-io-tree.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 95d29b9282ba..836dca07a06f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1753,8 +1753,7 @@ static int fallback_to_cow(struct btrfs_inode *inode,
- 		spin_unlock(&sinfo->lock);
+diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+index 7ae24a533404..293cb354259d 100644
+--- a/fs/btrfs/extent-io-tree.c
++++ b/fs/btrfs/extent-io-tree.c
+@@ -1726,14 +1726,14 @@ u64 count_range_bits(struct extent_io_tree *tree,
+  */
+ bool test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32 bit)
+ {
+-	struct extent_state *state = NULL;
++	struct extent_state *state;
+ 	bool bitset = false;
  
- 		if (count > 0)
--			clear_extent_bit(io_tree, start, end, EXTENT_NORESERVE,
--					 NULL);
-+			clear_extent_bits(io_tree, start, end, EXTENT_NORESERVE);
+ 	ASSERT(is_power_of_2(bit));
+ 
+ 	spin_lock(&tree->lock);
+ 	state = tree_search(tree, start);
+-	while (state && start <= end) {
++	while (state) {
+ 		if (state->start > end)
+ 			break;
+ 
+@@ -1742,9 +1742,7 @@ bool test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32
+ 			break;
+ 		}
+ 
+-		/* If state->end is (u64)-1, start will overflow to 0 */
+-		start = state->end + 1;
+-		if (start > end || start == 0)
++		if (state->end >= end)
+ 			break;
+ 		state = next_state(state);
  	}
- 	unlock_extent(io_tree, start, end, &cached_state);
- 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 15c296cb4dac..09e40a2fdcf0 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -95,9 +95,8 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
- 	if (ret < 0)
- 		goto out_unlock;
- 
--	clear_extent_bit(&inode->io_tree, file_offset, range_end,
--			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG,
--			 NULL);
-+	clear_extent_bits(&inode->io_tree, file_offset, range_end,
-+			  EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG);
- 	ret = btrfs_set_extent_delalloc(inode, file_offset, range_end, 0, NULL);
- 	if (ret)
- 		goto out_unlock;
-diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
-index 8142a84129b6..09ba6e279d24 100644
---- a/fs/btrfs/tests/inode-tests.c
-+++ b/fs/btrfs/tests/inode-tests.c
-@@ -949,10 +949,10 @@ static int test_extent_accounting(u32 sectorsize, u32 nodesize)
- 	}
- 
- 	/* [BTRFS_MAX_EXTENT_SIZE/2][sectorsize HOLE][the rest] */
--	ret = clear_extent_bit(&BTRFS_I(inode)->io_tree,
--			       BTRFS_MAX_EXTENT_SIZE >> 1,
--			       (BTRFS_MAX_EXTENT_SIZE >> 1) + sectorsize - 1,
--			       EXTENT_DELALLOC | EXTENT_DELALLOC_NEW, NULL);
-+	ret = clear_extent_bits(&BTRFS_I(inode)->io_tree,
-+				BTRFS_MAX_EXTENT_SIZE >> 1,
-+				(BTRFS_MAX_EXTENT_SIZE >> 1) + sectorsize - 1,
-+				EXTENT_DELALLOC | EXTENT_DELALLOC_NEW);
- 	if (ret) {
- 		test_err("clear_extent_bit returned %d", ret);
- 		goto out;
-@@ -1016,10 +1016,10 @@ static int test_extent_accounting(u32 sectorsize, u32 nodesize)
- 	}
- 
- 	/* [BTRFS_MAX_EXTENT_SIZE+4k][4K HOLE][BTRFS_MAX_EXTENT_SIZE+4k] */
--	ret = clear_extent_bit(&BTRFS_I(inode)->io_tree,
--			       BTRFS_MAX_EXTENT_SIZE + sectorsize,
--			       BTRFS_MAX_EXTENT_SIZE + 2 * sectorsize - 1,
--			       EXTENT_DELALLOC | EXTENT_DELALLOC_NEW, NULL);
-+	ret = clear_extent_bits(&BTRFS_I(inode)->io_tree,
-+				BTRFS_MAX_EXTENT_SIZE + sectorsize,
-+				BTRFS_MAX_EXTENT_SIZE + 2 * sectorsize - 1,
-+				EXTENT_DELALLOC | EXTENT_DELALLOC_NEW);
- 	if (ret) {
- 		test_err("clear_extent_bit returned %d", ret);
- 		goto out;
-@@ -1050,8 +1050,8 @@ static int test_extent_accounting(u32 sectorsize, u32 nodesize)
- 	}
- 
- 	/* Empty */
--	ret = clear_extent_bit(&BTRFS_I(inode)->io_tree, 0, (u64)-1,
--			       EXTENT_DELALLOC | EXTENT_DELALLOC_NEW, NULL);
-+	ret = clear_extent_bits(&BTRFS_I(inode)->io_tree, 0, (u64)-1,
-+				EXTENT_DELALLOC | EXTENT_DELALLOC_NEW);
- 	if (ret) {
- 		test_err("clear_extent_bit returned %d", ret);
- 		goto out;
-@@ -1065,8 +1065,8 @@ static int test_extent_accounting(u32 sectorsize, u32 nodesize)
- 	ret = 0;
- out:
- 	if (ret)
--		clear_extent_bit(&BTRFS_I(inode)->io_tree, 0, (u64)-1,
--				 EXTENT_DELALLOC | EXTENT_DELALLOC_NEW, NULL);
-+		clear_extent_bits(&BTRFS_I(inode)->io_tree, 0, (u64)-1,
-+				  EXTENT_DELALLOC | EXTENT_DELALLOC_NEW);
- 	iput(inode);
- 	btrfs_free_dummy_root(root);
- 	btrfs_free_dummy_fs_info(fs_info);
 -- 
 2.45.2
 
