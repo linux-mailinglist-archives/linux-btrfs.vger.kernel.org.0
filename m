@@ -1,167 +1,133 @@
-Return-Path: <linux-btrfs+bounces-12729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C52A77F82
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 17:51:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 683A8A77FC0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 18:01:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F22EC7A214E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 15:50:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59870163B36
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Apr 2025 16:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0EF420DD49;
-	Tue,  1 Apr 2025 15:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB26F20469A;
+	Tue,  1 Apr 2025 16:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LNhvzseJ"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="SGaxMz/y";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nnGjhsgd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EEE20C01C
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA321CAA62
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 16:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743522611; cv=none; b=lh046aiyxE0rVCubFUNn4MuSXiW6khRQSAPv3l+CDlM7xAEKPbXOeHT98nO9TYIIOxXMeimZTqGytGS/7rcuK5NeY4/aWWFbOCOYNGQE0lIBiEYxXBjGyMe7tWjznzI6e0LAhHYZvkGMzexGZgacnPsNQv/zEs2ppdpJf2sXvno=
+	t=1743523258; cv=none; b=XEmdw6OsMrVIIM4mVXHNmQVQmT3bYouQ5bFoOOvh2NuuLxsUPO4ldY+lp/wml1amo29vElsF2aBSMW95vlbtxGi/BhVfNNE4/tTPxsvSLjpXb5l7YLhU6GJfgk2NBfOb4hdYT4I9/DqT10UScL/TuJWY8sGgYD7BGJxYTm0n6h4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743522611; c=relaxed/simple;
-	bh=hTgBX6wC0pgrZgI2knmAPLU+sze3makKMjXt8vO5bCo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EaiznPKKQu/+6ZDpQWhEGN1GYcwDi/TkM/HmYzN3B4lPXqF/MXqctW7MwhgpGWPvlfB/RqtCH5Czgb6hOccQT3ZPUxluRSW9t7V46Q6A2WwpVPEJselb3Zn/5/4SChTvmZ3F/AUuCwb7UITRRallDwhyz/YGk1Mvni5ZD8+P0Ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LNhvzseJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C01C4CEEA
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Apr 2025 15:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743522610;
-	bh=hTgBX6wC0pgrZgI2knmAPLU+sze3makKMjXt8vO5bCo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LNhvzseJVAXbXvvdxO/8ivZAgU63RdDWHWkYvD88+oybZJLwczBBmX9WRce/1y+0g
-	 rR/t6Y7nRzmDHKyJ9BTpjCpf1q6CNOZH+CtHOgwuS5eQUCMxvg0OHL4Mg0AE1vAiOF
-	 4XPhcoAiY/kHOHizVCRtFi9wQ8dDznacnkWloG3/E8ombUQ9QF4BdR4QUDIb2KdFY2
-	 pHcPxZbFYZyTgwKqzWTjF+Prpx0g57j+2zwzQiiSFUw37HQ0t/jTSeSXqxdQ7LGnf8
-	 qWeVYzjJc3HinyLA4O4CwghbTBmIcF6a0akEZHXgHjupKEnYDgYAzuzOkjJiPmQDca
-	 W+C2n4Sj7k+7w==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac3eb3fdd2eso1054950166b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Apr 2025 08:50:10 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy92xX3E9lsBuQRTQ7AURTfaKMsZB4EUyy4a0VPCMVWjUgOc0lm
-	Vp1NvrEwkmmxhzXgZWGch4trEjRCW6tf+xkWfJyNitzhzthYHjTpje7P2R/+XdRt6KzVIwTqCTs
-	8HLfcVpBV9NhDLVV1GarIkdsk89s=
-X-Google-Smtp-Source: AGHT+IHwqyJ+a9/AN3qpjQ5mQ12KdhSn7dOzR90WG7THIBbLA8XjXWxhXACHHA/IFxoP4Q3Nk/rjkTN23LTBb5JvNwI=
-X-Received: by 2002:a17:907:720b:b0:ac7:364b:7ec6 with SMTP id
- a640c23a62f3a-ac7826c8598mr403120666b.0.1743522609126; Tue, 01 Apr 2025
- 08:50:09 -0700 (PDT)
+	s=arc-20240116; t=1743523258; c=relaxed/simple;
+	bh=WwvhzloBISebKvFdt1A0uHt9B+0wWmIefUp8wVuvyeg=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=YWW8zl4jOF2cqOiSTmU4QmZZscv8YwioZ75ogzdhA31iiTAxfzWOM9CWALzGrKSJS/TNS3ta0tgJYEtatx6wmZtCi6sgWSOJZ5jxMFQYM9+l5RHpczfJL08CIz452hnhfY3o3lb2mQ/Qty6jzRMRt8BB+DouKLqmlReFvXAYlHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=SGaxMz/y; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nnGjhsgd; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id B7D2A1140267;
+	Tue,  1 Apr 2025 12:00:54 -0400 (EDT)
+Received: from phl-imap-12 ([10.202.2.86])
+  by phl-compute-11.internal (MEProxy); Tue, 01 Apr 2025 12:00:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm2; t=1743523254; x=1743609654; bh=3xeRDnNLFhZGZoNhmSzBr
+	ZD57i++sCFGzTNsA7Hxz8w=; b=SGaxMz/yaRHlo6kcXW+cFCkic7s8A2qw9vMah
+	5liZjiNTDZv18mYqORKd23QwYZAGf33OnaAb5XCYW2z9xUwgwfY2qBcRccGpyewh
+	5VKvHbd2/mJjkJk+4xctBm2rzqvQ4/YbO/ElCBauloTMI/Hfibc5tRojveK3Jg08
+	3ROjqoweZpN5o1I1sYWCvOSFVicnnuSxoftkhw2jjbcFdgPB0lL9052DYfRb8skU
+	70WyWCuLd5Yu0n2OTO9IrKEQnqD8LCfTZrLM0Lpf3oxhEpgujw5b0ewrR0U1GKtf
+	pwJkoOFEZwOO4ZlCaAa7DR7XxMa2iH6xsWtcJDGUFOw+fhYWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm2; t=1743523254; x=1743609654; bh=3
+	xeRDnNLFhZGZoNhmSzBrZD57i++sCFGzTNsA7Hxz8w=; b=nnGjhsgdNxjsJ/sZj
+	D3KIQ9nqj0MwMjph7Voy5oGK27DAHbufUN7G5qAtaoI1BINtg4QW41ioJymzlIiq
+	0SFX+gyNZSzTkE6vVZTBLG7tje4gtzxj64kiwuN32s1+iAphBkp5jkLdJTgeDrci
+	LGq/qI0EI3Ym4jInPU1TNY9uCr2gVqJK8bfaoGyKKbVOi3jnfimL/4h159fBUvcL
+	iVWNWuGEagNHTe1CVKhewPs6e86rKXAiro8ce8TWQn8G/lm/KJ4bzqwwym0j9QCR
+	GoAe/Q30qe+3mpFAA6h5W5gMoIiu7OAGvHlxLiTuLFPHM3kk0kgNtTD70AY9gD0N
+	r0hPw==
+X-ME-Sender: <xms:tQ3sZ2G_KKon9XzvhVzG5ot2M-B6zyliP_la8cyOg1v36XJ4pc2HXw>
+    <xme:tQ3sZ3W-rOIej3UfcsKPCJnQj7mLu1m3LvssaARR7TncqsCyeoQXPe0tstk9Zcgbh
+    qbhoeNQPudXD8nJCaM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeefvddtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepofggfffhvffkjghfufgtgfesthejredtredt
+    tdenucfhrhhomhepfdevhhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorh
+    hrvghmvgguihgvshdrtghomheqnecuggftrfgrthhtvghrnhepteefudehkeehgeekhfdv
+    gefhjedvveeuhfdtgfejgfevieeviedvfedvhfevvdegnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheplhhishhtshestgholhhorhhrvghmvggu
+    ihgvshdrtghomhdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtg
+    hpthhtoheprhhushhsvghllhestghokhgvrhdrtghomhdrrghupdhrtghpthhtoheplhhi
+    nhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:tQ3sZwKO5rdKWKRB3SqWR7Ot1dOROuvsmeW35nYrtcGGqFeYxRm2Xw>
+    <xmx:tQ3sZwGve1uarintC0qYIh3BywkZZK0GOUZWm90SW5uYvmv_JFgEfA>
+    <xmx:tQ3sZ8UtFIKruOifsq50q2tMLNWnLZ7FHgvKCiSPGPBomeX6mYFFQw>
+    <xmx:tQ3sZzMXOQxg35Z3K6BjFSj7hUpYTTIzX08OgZEgJvftqm6nJxuPog>
+    <xmx:tg3sZ3c5H6IQwrFpdEN2So0fdnW2-BKzraBD-sWlxWxgkXvRprQ9yhtK>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 92DFC1C20066; Tue,  1 Apr 2025 12:00:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1743493507.git.wqu@suse.com> <235ae192f8d1f9b525aa00a27fd476e2979ada1b.1743493507.git.wqu@suse.com>
-In-Reply-To: <235ae192f8d1f9b525aa00a27fd476e2979ada1b.1743493507.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 1 Apr 2025 15:49:32 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5dyAOgxi_ocsL_wXaaLYgMPtTtWNamkRniMxURyNKnxg@mail.gmail.com>
-X-Gm-Features: AQ5f1JpAh1B4lQmmVhLzlaykvbpMkAPRhbImR2968K7FhCe1zDEevcfHHjbVKqc
-Message-ID: <CAL3q7H5dyAOgxi_ocsL_wXaaLYgMPtTtWNamkRniMxURyNKnxg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] btrfs: fix the file offset calculation inside btrfs_decompress_buf2page()
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 1, 2025 at 8:51=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG WITH EXPERIMENTAL LARGE FOLIOS]
-> When testing the experimental large data folio support with compression,
-> there are several ASSERT()s triggered from btrfs_decompress_buf2page()
-> when running fsstress with compress=3Dzstd mount option:
->
-> - ASSERT(copy_len) from btrfs_decompress_buf2page()
-> - VM_BUG_ON(offset + len > PAGE_SIZE) from memcpy_to_page()
->
-> [CAUSE]
-> Inside btrfs_decompress_buf2page(), we need to grab the file offset from
-> the current bvec.bv_page, to check if we even need to copy data into the
-> bio.
->
-> And since we're using single page bvec, and no large folio, every page
-> inside the folio should have its index properly setup.
->
-> But when large folios are involved, only the first page (aka, the head
-> page) of a large folio has its index properly initialized.
->
-> The other pages inside the large folio will not have their indexes
-> properly initialized.
->
-> Thus the page_offset() call inside btrfs_decompress_buf2page() will
-> result garbage, and completely screw up the @copy_len calculation.
->
-> [FIX]
-> Instead of using page->index directly, go with page_pgoff(), which can
-> handle non-head pages correctly.
->
-> So introduce a helper, file_offset_from_bvec(), to get the file offset
-> from a single page bio_vec, so the copy_len calculation can be done
-> correctly.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/compression.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index e7f8ee5d48a4..cb954f9bc332 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -1137,6 +1137,22 @@ void __cold btrfs_exit_compress(void)
->         bioset_exit(&btrfs_compressed_bioset);
->  }
->
-> +/*
-> + * The bvec is a single page bvec from a bio that contains folios from a=
- filemap.
-> + *
-> + * Since the folios may be large one, and if the bv_page is not a head p=
-age of
-
-folios -> folio
-large -> a large
-
-Otherwise it looks good, thanks.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+X-ThreadId: T94110d4a53b0169f
+Date: Tue, 01 Apr 2025 12:00:33 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Russell Coker" <russell@coker.com.au>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <7b155ed6-da59-4560-9e2f-1ffa0143d84b@app.fastmail.com>
+In-Reply-To: <3682098.taCxCBeP46@cupcakke>
+References: <3349404.aeNJFYEL58@xev>
+ <834224db-bd52-41ee-bce4-599cf12183c2@app.fastmail.com>
+ <3682098.taCxCBeP46@cupcakke>
+Subject: Re: BTRFS error count 754 after reboot on Debian kernel 6.12.17
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
 
-> + * a large folio, then page->index is unreliable.
-> + *
-> + * Thus we need this helper to grab the proper file offset.
-> + */
-> +static u64 file_offset_from_bvec(const struct bio_vec *bvec)
-> +{
-> +       const struct page *page =3D bvec->bv_page;
-> +       const struct folio *folio =3D page_folio(page);
-> +
-> +       return (page_pgoff(folio, page) << PAGE_SHIFT) + bvec->bv_offset;
-> +}
-> +
->  /*
->   * Copy decompressed data from working buffer to pages.
->   *
-> @@ -1188,7 +1204,7 @@ int btrfs_decompress_buf2page(const char *buf, u32 =
-buf_len,
->                  * cb->start may underflow, but subtracting that value ca=
-n still
->                  * give us correct offset inside the full decompressed ex=
-tent.
->                  */
-> -               bvec_offset =3D page_offset(bvec.bv_page) + bvec.bv_offse=
-t - cb->start;
-> +               bvec_offset =3D file_offset_from_bvec(&bvec) - cb->start;
+
+On Tue, Apr 1, 2025, at 1:18 AM, Russell Coker wrote:
+> On Tuesday, 1 April 2025 15:04:20 AEDT Chris Murphy wrote:
+>> These are likely old errors. You'd need to check old logs to see when the
+>> write errors occurred. These statistics are just a counter. You can reset
+>> them with `btrfs dev stats -z` and they'll go back to zero.
+>> 
+>> It's simple counter. It could be 754 errors seen one time. Or it could be `1
+>> error seen 754 times. Or any combination of multiple errors multiple times
+>> adding up to 754 errors.
 >
->                 /* Haven't reached the bvec range, exit */
->                 if (decompressed + buf_len <=3D bvec_offset)
-> --
-> 2.49.0
->
->
+> Is "btrfs dev stats -z" covered by removing the device from the set and adding 
+> it again?  If so I did that but it kept recurring.  The fact that the error 
+> count was there in the first place wasn't the unexpected thing, it was the 
+> fact that it kept coming back and had no log entries about it.
+
+Removing it with a `btrfs` command? Or physically disconnecting and reconnecting?
+
+The statistics are per device, persistently stored in the device b-tree which is metadata block group. So this metadata could be on any device in a multiple device Btrfs, not necessarily on the device that produced the errors.
+
+I'd like to think upon `btrfs device remove` or `btrfs replace` the device's stats are also removed from dev tree. But I haven' tested it, and I'm not sure what the code says should happen.
+
+
+-- 
+Chris Murphy
 
