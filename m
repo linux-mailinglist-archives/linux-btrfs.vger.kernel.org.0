@@ -1,63 +1,61 @@
-Return-Path: <linux-btrfs+bounces-12772-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12773-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33C90A7ABC3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 21:26:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30109A7AC80
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 21:42:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C58F4188DA33
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 19:25:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3AF53A3C79
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 19:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9495E267715;
-	Thu,  3 Apr 2025 19:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96533278152;
+	Thu,  3 Apr 2025 19:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A26jYcGU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="So8d/LoI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC8E2676FE;
-	Thu,  3 Apr 2025 19:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBA5278142;
+	Thu,  3 Apr 2025 19:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743707132; cv=none; b=F4CfvVRHv8n3hXRFmD3bJk4T4YvTeKbZROl34/vPgygW/ydrpYNv1YfYuq27a7k9ej9xjmOEyuA/0+wmJcamXHmPijCYRciQIxgpwa1crXvSaBGy+KGVcLA/3+6cY57s4U9lHrr39+F22Yq1IHMva4Np5GL8kf9uFcwrCn7vOyI=
+	t=1743707243; cv=none; b=XPJyM65Oz5T6cX2dVPT3gSCsHfxU8hC1PBtHFu4GOwwRyTEsW4TKygKj87ASuiJv7qr60zV0lr6/PYILRypGM2JY/ev7Bd8Yxi7EDHLq5CtBzt0ps1+D2vjuYGGaUlHg/wflxF3ZtJUdxoQGwcjoPA4JKqZKp0Xis/VMaDr0XCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743707132; c=relaxed/simple;
-	bh=zt5igv9MTGiNl0AapQuX7uxADFwXI+02OPUa1CK0BRs=;
+	s=arc-20240116; t=1743707243; c=relaxed/simple;
+	bh=GdXOen1ihE09fy/AEyi+vlQQ4gspoKz8l61oKQhpuHA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ETQjQXMLev10ZddzdaZ6eB9/1lRycYAl4X2h5Dvx61ugvaz83qAkiVTnjdXLB05g10tjOklwgBA3HSJbnCgSVaNa4r4/jBHLsy2pxI4cw4DGko6czFVZ0rY87rnGIoMg9YWqv02tqDdANWG1rXAfz7TejtzYvIgmeEg7dOKT33w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A26jYcGU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DDB3C4CEE9;
-	Thu,  3 Apr 2025 19:05:31 +0000 (UTC)
+	 MIME-Version; b=YzwQATE/nMpzltw70RuESe17yFRYZ+nM/AxkW2KAu6C+xd9gMqJu8VcU7Xhw3Lqp774w52W/5LTf8xSD95uZ7G8u7Y78LZs60koAZGw5oqaFe0qb+LDUFIE8CIcCkZSJBrmqtU5kF3mHLVejDWINoUFjhU5y2cqw0Zhi96rPlvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=So8d/LoI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C43D2C4CEE3;
+	Thu,  3 Apr 2025 19:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743707132;
-	bh=zt5igv9MTGiNl0AapQuX7uxADFwXI+02OPUa1CK0BRs=;
+	s=k20201202; t=1743707243;
+	bh=GdXOen1ihE09fy/AEyi+vlQQ4gspoKz8l61oKQhpuHA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A26jYcGUnhOFGN9m1TPI/wIxouivFRKRpW1FiVnuc+tuV/WLHZZGb2HxeoNgtY8MQ
-	 pHRAtoJxKnNK1stR2kFotPCc8vwLF5GHU5VBVaCaMhRHFbaRZIMHILg47tgYmkkkeH
-	 gwcY12PZSxH9q8kMpz6OqfDKGvmLkXkpkommLFpERLrUh7P6NWNHUr1QiQfemKsesA
-	 HUKFkUhyNfNw9b7T9tsbC06WXlC29QZXOTIBZJKf4ZAHZ+cJYpxj+FhsSVyxC8NeN8
-	 YFrtaQdiABZ1bnqNAoLAE4J1wH3Emtn89jn5xkAi/8GNt01VCEb2fF6N7IQq+kM/XS
-	 Qc3uq/mdDeBYA==
+	b=So8d/LoIoahzYAR+gsKbz6xRopkAIgAFQBqmLsnVtHCfZ1zP5UCtAmUG3q3mwT7kk
+	 iRaDDAHdVLqE1LfRSxWxJDAbGQsNg/DZQkawT448/l3y4d/PjcT/KFMQ2VSjyxhppE
+	 w3Nn1AyN4WhvwUQ7P5gSeqBRWBwuiicG0CcQ5Ylddyf5ujxHZk+Mi8mb9Z46lZ90ia
+	 Mf1hm0FkpyINNTq26x48XH13+Jupukg3MIoavPmLg1WzKOWQiqzjs27kpzUHhIxvML
+	 gmS4qdFj8OtAI+Ll4AQrNC0Lo6nGXsynUIM4Wh/6yb71rQEKdBsIiek+VSXEYsfQ7l
+	 7r4Z4tzBF5slw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>,
-	Qu Wenruo <wqu@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
+Cc: Qu Wenruo <wqu@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.13 37/49] btrfs: harden block_group::bg_list against list_del() races
-Date: Thu,  3 Apr 2025 15:03:56 -0400
-Message-Id: <20250403190408.2676344-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 36/47] btrfs: reject out-of-band dirty folios during writeback
+Date: Thu,  3 Apr 2025 15:05:44 -0400
+Message-Id: <20250403190555.2677001-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250403190408.2676344-1-sashal@kernel.org>
-References: <20250403190408.2676344-1-sashal@kernel.org>
+In-Reply-To: <20250403190555.2677001-1-sashal@kernel.org>
+References: <20250403190555.2677001-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -66,99 +64,159 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.13.9
+X-stable-base: Linux 6.12.21
 Content-Transfer-Encoding: 8bit
 
-From: Boris Burkov <boris@bur.io>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 7511e29cf1355b2c47d0effb39e463119913e2f6 ]
+[ Upstream commit 7ca3e84980ef6484a5c6f004aa180b61ce0c37d9 ]
 
-As far as I can tell, these calls of list_del_init() on bg_list cannot
-run concurrently with btrfs_mark_bg_unused() or btrfs_mark_bg_to_reclaim(),
-as they are in transaction error paths and situations where the block
-group is readonly.
+[OUT-OF-BAND DIRTY FOLIOS]
+An out-of-band folio means the folio is marked dirty but without
+notifying the filesystem.
 
-However, if there is any chance at all of racing with mark_bg_unused(),
-or a different future user of bg_list, better to be safe than sorry.
+This can lead to various problems, not limited to:
 
-Otherwise we risk the following interleaving (bg_list refcount in parens)
+- No folio::private to track per block status
 
-T1 (some random op)                       T2 (btrfs_mark_bg_unused)
-                                        !list_empty(&bg->bg_list); (1)
-list_del_init(&bg->bg_list); (1)
-                                        list_move_tail (1)
-btrfs_put_block_group (0)
-                                        btrfs_delete_unused_bgs
-                                             bg = list_first_entry
-                                             list_del_init(&bg->bg_list);
-                                             btrfs_put_block_group(bg); (-1)
+- No proper space reserved for such a dirty folio
 
-Ultimately, this results in a broken ref count that hits zero one deref
-early and the real final deref underflows the refcount, resulting in a WARNING.
+[HISTORY IN BTRFS]
+This used to be a problem related to get_user_page(), but with the
+introduction of pin_user_pages*(), we should no longer hit such
+case anymore.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
+In btrfs, we have a long history of catching such out-of-band dirty
+folios by:
+
+- Mark the folio ordered during delayed allocation
+
+- Check the folio ordered flag during writeback
+  If the folio has no ordered flag, it means it doesn't go through
+  delayed allocation, thus it's definitely an out-of-band
+  one.
+
+  If we got one, we go through COW fixup, which will re-dirty the folio
+  with proper handling in another workqueue.
+
+[PROBLEMS OF COW-FIXUP]
+Such workaround is a blockage for us to migrate to iomap (it requires
+extra flags to trace if a folio is dirtied by the fs or not) and I'd
+argue it's not data checksum safe, since if a folio can be marked dirty
+without informing the fs, the content can also change at any time.
+
+But with the introduction of pin_user_pages*() during v5.8 merge
+window, such out-of-band dirty folio such be treated as a bug.
+Ext4 has treated such case by warning and erroring out even before
+pin_user_pages*().
+
+Furthermore, there are already proofs that such folio ordered flag
+tracking can be screwed up by incorrect error handling, check the commit
+messages of the following commits:
+
+ 06f364284794 ("btrfs: do proper folio cleanup when cow_file_range() failed")
+ c2b47df81c8e ("btrfs: do proper folio cleanup when run_delalloc_nocow() failed")
+
+[FIXES]
+Unlike btrfs, ext4 and xfs (iomap) never bother handling such
+out-of-band dirty folios.
+
+- Ext4 just warns and errors out
+- Iomap always follows the folio/block dirty flags
+
+And there is nothing really COW specific, xfs also supports COW too.
+
+Here we take one step towards ext4 by doing warning and erroring out.
+But since the cow fixup thing is introduced from the beginning, we keep
+the old behavior for non-experimental builds, and only do the new warning
+for experimental builds before we're 100% sure and remove cow fixup.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent-tree.c |  8 ++++++++
- fs/btrfs/transaction.c | 12 ++++++++++++
- 2 files changed, 20 insertions(+)
+ fs/btrfs/extent_io.c | 28 +++++++++++++++++++++++++++-
+ fs/btrfs/inode.c     | 15 +++++++++++++++
+ 2 files changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 3c6f7fecbb9aa..840e7959b0772 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2873,7 +2873,15 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 						   block_group->length,
- 						   &trimmed);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 6551fb003eed2..9d0630b683c6c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1440,12 +1440,14 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+ 	       start + len <= folio_start + folio_size(folio));
  
-+		/*
-+		 * Not strictly necessary to lock, as the block_group should be
-+		 * read-only from btrfs_delete_unused_bgs().
-+		 */
-+		ASSERT(block_group->ro);
-+		spin_lock(&fs_info->unused_bgs_lock);
- 		list_del_init(&block_group->bg_list);
-+		spin_unlock(&fs_info->unused_bgs_lock);
+ 	ret = btrfs_writepage_cow_fixup(folio);
+-	if (ret) {
++	if (ret == -EAGAIN) {
+ 		/* Fixup worker will requeue */
+ 		folio_redirty_for_writepage(bio_ctrl->wbc, folio);
+ 		folio_unlock(folio);
+ 		return 1;
+ 	}
++	if (ret < 0)
++		return ret;
+ 
+ 	for (cur = start; cur < start + len; cur += fs_info->sectorsize)
+ 		set_bit((cur - folio_start) >> fs_info->sectorsize_bits, &range_bitmap);
+@@ -1549,6 +1551,30 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+ 	 * The proper bitmap can only be initialized until writepage_delalloc().
+ 	 */
+ 	bio_ctrl->submit_bitmap = (unsigned long)-1;
 +
- 		btrfs_unfreeze_block_group(block_group);
- 		btrfs_put_block_group(block_group);
++	/*
++	 * If the page is dirty but without private set, it's marked dirty
++	 * without informing the fs.
++	 * Nowadays that is a bug, since the introduction of
++	 * pin_user_pages*().
++	 *
++	 * So here we check if the page has private set to rule out such
++	 * case.
++	 * But we also have a long history of relying on the COW fixup,
++	 * so here we only enable this check for experimental builds until
++	 * we're sure it's safe.
++	 */
++	if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL) &&
++	    unlikely(!folio_test_private(folio))) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err_rl(fs_info,
++	"root %lld ino %llu folio %llu is marked dirty without notifying the fs",
++			     inode->root->root_key.objectid,
++			     btrfs_ino(inode), folio_pos(folio));
++		ret = -EUCLEAN;
++		goto done;
++	}
++
+ 	ret = set_folio_extent_mapped(folio);
+ 	if (ret < 0)
+ 		goto done;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 5b842276573e8..e144fd477028b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2945,6 +2945,21 @@ int btrfs_writepage_cow_fixup(struct folio *folio)
+ 	if (folio_test_ordered(folio))
+ 		return 0;
  
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 914a22cc950b5..7c789b4b946b3 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -160,7 +160,13 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
- 			cache = list_first_entry(&transaction->deleted_bgs,
- 						 struct btrfs_block_group,
- 						 bg_list);
-+			/*
-+			 * Not strictly necessary to lock, as no other task will be using a
-+			 * block_group on the deleted_bgs list during a transaction abort.
-+			 */
-+			spin_lock(&transaction->fs_info->unused_bgs_lock);
- 			list_del_init(&cache->bg_list);
-+			spin_unlock(&transaction->fs_info->unused_bgs_lock);
- 			btrfs_unfreeze_block_group(cache);
- 			btrfs_put_block_group(cache);
- 		}
-@@ -2097,7 +2103,13 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
- 
-        list_for_each_entry_safe(block_group, tmp, &trans->new_bgs, bg_list) {
-                btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
-+		/*
-+		* Not strictly necessary to lock, as no other task will be using a
-+		* block_group on the new_bgs list during a transaction abort.
-+		*/
-+	       spin_lock(&fs_info->unused_bgs_lock);
-                list_del_init(&block_group->bg_list);
-+	       spin_unlock(&fs_info->unused_bgs_lock);
-        }
- }
- 
++	/*
++	 * For experimental build, we error out instead of EAGAIN.
++	 *
++	 * We should not hit such out-of-band dirty folios anymore.
++	 */
++	if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL)) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err_rl(fs_info,
++	"root %lld ino %llu folio %llu is marked dirty without notifying the fs",
++			     BTRFS_I(inode)->root->root_key.objectid,
++			     btrfs_ino(BTRFS_I(inode)),
++			     folio_pos(folio));
++		return -EUCLEAN;
++	}
++
+ 	/*
+ 	 * folio_checked is set below when we create a fixup worker for this
+ 	 * folio, don't try to create another one if we're already
 -- 
 2.39.5
 
