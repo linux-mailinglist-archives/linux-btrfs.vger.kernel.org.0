@@ -1,165 +1,151 @@
-Return-Path: <linux-btrfs+bounces-12774-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12775-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2047A7AC74
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 21:41:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B702A7AFC1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 22:59:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC99F1897BF3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 19:38:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B2754411AE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 20:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAD9278176;
-	Thu,  3 Apr 2025 19:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E3E266B7B;
+	Thu,  3 Apr 2025 19:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujzLlqHS"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FNRkzoPU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KEXPSI5u";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FNRkzoPU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KEXPSI5u"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17D8278164;
-	Thu,  3 Apr 2025 19:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDFA257425
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Apr 2025 19:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743707246; cv=none; b=ciSAz0Kn2QZfP/qasGcgLkVLCn+impxfJzDMqugX4OzrxOirSvVF27FDj29BdL6n405IUEyA/117NhS0CXXUhNqj+btAkX20D0GF4/CSR8kyvK19Rjp+oOyMG1DjBxbqePCoSAAfth9IiTuCFmg2RdNM9x1C4FKCL6gyC1nAE5o=
+	t=1743709042; cv=none; b=EFIpe6WOkw7S2pVEJNiJu82IGEtvKv6xQzD1rgjwGLVVfxSKiUAMcoyJTTCDr1VPDtG9Buh96dSaWtXBf1bArrgMXcGrkHBn3Bf2JYSFzTRkZAUOQAHz4Umg8QfQJYzk0FBEHB6+NV5/Hp/q4BMG+eeMQPlBDqs4qr1nprZaefo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743707246; c=relaxed/simple;
-	bh=3eq0tPXL1h9eC6EMJSMjoVWRKw2DRrBiuK8P9WrVduU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fbP2CAgLs8+GGH+pxGICJvaggJVzwiY0astfDOYdI5KfgO+iS1zeFBJaq/Nvdk/mcfFskyLvpScOLig0B6Wk29j4Yp7WK2peW7elbzUT13866YqiBKO/EwFT+Lf8yyk0sIKSOMuRn2+VfxeZ9oo5Hcdg66CAMT5WlQ0j0QyJorA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujzLlqHS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F6B6C4CEE3;
-	Thu,  3 Apr 2025 19:07:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743707245;
-	bh=3eq0tPXL1h9eC6EMJSMjoVWRKw2DRrBiuK8P9WrVduU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ujzLlqHSUurElwLfyK6+FWxRP6xUlN6KLJi1U3aWzaT1lcW6C2xfDuAtRQx7JqPsY
-	 QPnX+jCjAjQRd/p+X6VhjCGHLTI0jT1SpNWkOmBWAY5xne5NH+6Z33WfxwUtkZKaPe
-	 fdDkX9w8nmCQYsoI18IZGPzcDyTCz+Frgdgd5/n/BinULtzz5d1JxYjhh7JHyhY6BF
-	 mHfZ6sj4L+C8jtzEfiSQi/E9kRkTMom+CYooq4EGG7G1suGdmYD3Msazc67SJP7L0m
-	 KfHWZ+HfJu2hWUi4HohEWTwmOsCt/rKQYgrFlq8KhUztd+Y3SQRtHQQkR2CGtLIjsW
-	 7NDdW3dutKhZA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>,
-	Qu Wenruo <wqu@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 37/47] btrfs: harden block_group::bg_list against list_del() races
-Date: Thu,  3 Apr 2025 15:05:45 -0400
-Message-Id: <20250403190555.2677001-37-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250403190555.2677001-1-sashal@kernel.org>
-References: <20250403190555.2677001-1-sashal@kernel.org>
+	s=arc-20240116; t=1743709042; c=relaxed/simple;
+	bh=d8lUFtnuGU+qKcG7YT8E43JldZggmy6jQX82o4cd0E0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lSibXbMd4NqLCmjePEKAMy5i9gQYWAfLs5OtT0ilyopwtlp9yuP6mMBuLgA1d9WV+3O0K/5ZkdHayzTkFPQ+Trpnu/HhiGjP36qUyAl+ojvd1sfIDXB9WFNBk6n/fXgkokwH31sjlapr3+2uFHjFecvB0zEAv3zNGZbbEgHkKOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FNRkzoPU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KEXPSI5u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FNRkzoPU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KEXPSI5u; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 18CE01F385;
+	Thu,  3 Apr 2025 19:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743709039;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MqOifOutKdpPWL1O1YO1fHxka0WSdoG+BFgX/u/Y4l4=;
+	b=FNRkzoPUoeZOudQ6kfPQr49REeWXpnbkT1OYUSHODcrdkdI15vbV0FzUxtoQDQ1378Qzoa
+	me36bUVgtCjZWGyahkmHmoLUdIdcexxPVnoeWFtChIeNyp2f4Co4ZC38IirqjANVYdn5wi
+	ryN9zo4Yn9JF4xv6/PI6/Iul/T8z1K4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743709039;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MqOifOutKdpPWL1O1YO1fHxka0WSdoG+BFgX/u/Y4l4=;
+	b=KEXPSI5uAZACSHiqHKqsN0w7swQ21WDX9zzSed/ZaVWx7pHTjDpBoxPcaIPr+PKn9/djfY
+	lD3/FPzSaQn0gpCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FNRkzoPU;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KEXPSI5u
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743709039;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MqOifOutKdpPWL1O1YO1fHxka0WSdoG+BFgX/u/Y4l4=;
+	b=FNRkzoPUoeZOudQ6kfPQr49REeWXpnbkT1OYUSHODcrdkdI15vbV0FzUxtoQDQ1378Qzoa
+	me36bUVgtCjZWGyahkmHmoLUdIdcexxPVnoeWFtChIeNyp2f4Co4ZC38IirqjANVYdn5wi
+	ryN9zo4Yn9JF4xv6/PI6/Iul/T8z1K4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743709039;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MqOifOutKdpPWL1O1YO1fHxka0WSdoG+BFgX/u/Y4l4=;
+	b=KEXPSI5uAZACSHiqHKqsN0w7swQ21WDX9zzSed/ZaVWx7pHTjDpBoxPcaIPr+PKn9/djfY
+	lD3/FPzSaQn0gpCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F336F13A2C;
+	Thu,  3 Apr 2025 19:37:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bxoDO27j7mdnMQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 03 Apr 2025 19:37:18 +0000
+Date: Thu, 3 Apr 2025 21:37:17 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+	clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.14 40/54] btrfs: reject out-of-band dirty
+ folios during writeback
+Message-ID: <20250403193717.GS32661@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250403190209.2675485-1-sashal@kernel.org>
+ <20250403190209.2675485-40-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.21
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250403190209.2675485-40-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 18CE01F385
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-From: Boris Burkov <boris@bur.io>
+On Thu, Apr 03, 2025 at 03:01:55PM -0400, Sasha Levin wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> [ Upstream commit 7ca3e84980ef6484a5c6f004aa180b61ce0c37d9 ]
 
-[ Upstream commit 7511e29cf1355b2c47d0effb39e463119913e2f6 ]
-
-As far as I can tell, these calls of list_del_init() on bg_list cannot
-run concurrently with btrfs_mark_bg_unused() or btrfs_mark_bg_to_reclaim(),
-as they are in transaction error paths and situations where the block
-group is readonly.
-
-However, if there is any chance at all of racing with mark_bg_unused(),
-or a different future user of bg_list, better to be safe than sorry.
-
-Otherwise we risk the following interleaving (bg_list refcount in parens)
-
-T1 (some random op)                       T2 (btrfs_mark_bg_unused)
-                                        !list_empty(&bg->bg_list); (1)
-list_del_init(&bg->bg_list); (1)
-                                        list_move_tail (1)
-btrfs_put_block_group (0)
-                                        btrfs_delete_unused_bgs
-                                             bg = list_first_entry
-                                             list_del_init(&bg->bg_list);
-                                             btrfs_put_block_group(bg); (-1)
-
-Ultimately, this results in a broken ref count that hits zero one deref
-early and the real final deref underflows the refcount, resulting in a WARNING.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/extent-tree.c |  8 ++++++++
- fs/btrfs/transaction.c | 12 ++++++++++++
- 2 files changed, 20 insertions(+)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f3e93ba7ec97f..4ceffbef32987 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2897,7 +2897,15 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 						   block_group->length,
- 						   &trimmed);
- 
-+		/*
-+		 * Not strictly necessary to lock, as the block_group should be
-+		 * read-only from btrfs_delete_unused_bgs().
-+		 */
-+		ASSERT(block_group->ro);
-+		spin_lock(&fs_info->unused_bgs_lock);
- 		list_del_init(&block_group->bg_list);
-+		spin_unlock(&fs_info->unused_bgs_lock);
-+
- 		btrfs_unfreeze_block_group(block_group);
- 		btrfs_put_block_group(block_group);
- 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 82dd9ee89fbc5..24806e19c7c41 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -161,7 +161,13 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
- 			cache = list_first_entry(&transaction->deleted_bgs,
- 						 struct btrfs_block_group,
- 						 bg_list);
-+			/*
-+			 * Not strictly necessary to lock, as no other task will be using a
-+			 * block_group on the deleted_bgs list during a transaction abort.
-+			 */
-+			spin_lock(&transaction->fs_info->unused_bgs_lock);
- 			list_del_init(&cache->bg_list);
-+			spin_unlock(&transaction->fs_info->unused_bgs_lock);
- 			btrfs_unfreeze_block_group(cache);
- 			btrfs_put_block_group(cache);
- 		}
-@@ -2099,7 +2105,13 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
- 
-        list_for_each_entry_safe(block_group, tmp, &trans->new_bgs, bg_list) {
-                btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
-+		/*
-+		* Not strictly necessary to lock, as no other task will be using a
-+		* block_group on the new_bgs list during a transaction abort.
-+		*/
-+	       spin_lock(&fs_info->unused_bgs_lock);
-                list_del_init(&block_group->bg_list);
-+	       spin_unlock(&fs_info->unused_bgs_lock);
-        }
- }
- 
--- 
-2.39.5
-
+Please drop this commit from all stable branches, it's relevant only for
+testing.
 
