@@ -1,202 +1,237 @@
-Return-Path: <linux-btrfs+bounces-12782-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12783-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA10A7B20B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 00:31:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD5AA7B53B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 02:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05591894FB8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Apr 2025 22:31:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5D8A7A1A1B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 00:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AD81A5B82;
-	Thu,  3 Apr 2025 22:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD11726AD0;
+	Fri,  4 Apr 2025 00:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iesmariamoliner-com.20230601.gappssmtp.com header.i=@iesmariamoliner-com.20230601.gappssmtp.com header.b="Pz/K0/HC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JrbAM/zx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BC92E62BE
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Apr 2025 22:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996CDDDC1;
+	Fri,  4 Apr 2025 00:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743719457; cv=none; b=JWoWl6yrYTt5dotl+7FTwwC7h1lX1/NcNG6r6E/EmMVvzxB6sDyiFCNi7U2miBZF8ApiiOSBHTXbugQAJLhpEJ8g4bkh+YoDQ0mBTbjAVE/C+ETEKoX6pe2MsBfdUpW8UzJnAx/KF5aK6tSL8YfnbiowMDOykSJ69cpB3glTsVc=
+	t=1743727838; cv=none; b=Xvwn3V39d+r9xdbWgVAS2HXATuiliqjJN/N6lXcZfaAjM9yHqGImkkYcjZQvcIlRNJ5D1Ws7ca7pkr3S3lqevstuDDO7/HM1p1E5LdyPr/4jmWDh96SkdMsmmhAhxDjZA3oTKLwyeDtkXGN7v5HxiO+6MwNUWWKp0q6RV7K0RII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743719457; c=relaxed/simple;
-	bh=kMH0ngLcpTJ1LFkOjTA49kC7UZbeeKrkVNnXwktqkj0=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=buW34NDV16i1MMYQZcyx+QsKS/WK0kkpcGXFV7fCV6/UyEg+a+bxUDrG6YTw5zj+er7JwqHelbFX7lnKIEWIELgCik3922AYPMFBFXDWy44MvRGjG7sAACsFP9W2KByqKvy+3oi1L7sSuFFBLCrkzRMG+cln8TKacP4w2GcTgMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iesmariamoliner.com; spf=none smtp.mailfrom=iesmariamoliner.com; dkim=pass (2048-bit key) header.d=iesmariamoliner-com.20230601.gappssmtp.com header.i=@iesmariamoliner-com.20230601.gappssmtp.com header.b=Pz/K0/HC; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iesmariamoliner.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=iesmariamoliner.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4394a823036so13359125e9.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Apr 2025 15:30:54 -0700 (PDT)
+	s=arc-20240116; t=1743727838; c=relaxed/simple;
+	bh=vZ5YULQyvjC5q48q2CCUQGCyh+cCXf4h7GLErHvCGvA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zl3E+4B32KAGRZFy6xjAZddT8/7pq+wm8waBzvNKDg+79wV7YYK0qwULt6FKGBn41hAOpQp2kuBUYVbGy2bHa9cQnwapONYxOIEug+3u1wnrpueIHmy53otJaAWjryq88vUwCcd5asTYnr8VSV10QueH58qdNym6/hrqWHAf+4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JrbAM/zx; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ff694d2d4dso1313145a91.0;
+        Thu, 03 Apr 2025 17:50:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iesmariamoliner-com.20230601.gappssmtp.com; s=20230601; t=1743719452; x=1744324252; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GtBmsT+ITpoz2XDc0zZkTnGLpJI2/srSkJNA9pqb5Vw=;
-        b=Pz/K0/HCwZKeCOhXgGk4aD+sbwKAYDsx+/m0i/U7jUvqyZCyXwGQb1HoK+xHergA1t
-         +xBak1KFdviTxaBefdrmzLMZ6qF6blKJb0vdB345RBhWuTQv+ztMiDzwrKq3pM0pQzmT
-         ao+td0h5luwld+AOY65UlgDjg4ETmz20H9r1QWXq0AF8JUIzVDMSFIVa4HVtOwzK5YW4
-         KAqaZVDWzpmYbi3D1/YqHr0c7niLxnzqqAvncOECiVjAX83CTlvVx6PL/xF7B3c/IFuu
-         yj4ftEiu6oMgKZFBZ71+KPYwhZ4L2xFTJDoGyuYTN+/5j0+Ka5VVunhHe0rrO/BVUl2I
-         2h8A==
+        d=gmail.com; s=20230601; t=1743727836; x=1744332636; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Th78P7lLc34hMpgoaKVJWgxxETQOSCyPOGjwMuTxpqE=;
+        b=JrbAM/zx8DypVGPDXixKQrrH31jZ4Cf5D8qCxGvXJA6kBFQL7skK5mYc8VUDohwHx8
+         4xOaMfeNzq69YsfP4jN/gpkSiX13CDKgolvdKWIWTgS+GaqKC5g39gwuS2Vna+6e6i73
+         XY13kT7bwwXNsrTEbIL2NQjy0LRYiZp5yKc8wJQPuJqU4/wD7B6FhyW5ChNDterKoTRr
+         CBJHqaCsZb3D7lQhtznJdkPrwdhUD3LA2EJAenh4RM3FtNnPRhK/4YqWU8Qk4FIWBZjf
+         ZLV5iFd6g3yBTHQyYB8S8RFUrBJqRMXyCCfXRJrPFey+SDweyQyGbukaA+8Ns2LFF73b
+         uePw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743719452; x=1744324252;
-        h=to:subject:message-id:date:from:reply-to:mime-version
+        d=1e100.net; s=20230601; t=1743727836; x=1744332636;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GtBmsT+ITpoz2XDc0zZkTnGLpJI2/srSkJNA9pqb5Vw=;
-        b=itiXVF1K11RP4Y04l5zZHjV3euxI3P+J8RPCvT71jdZtYKFaY5qTIhvB5okONJkt0t
-         pjCaWp+J+H4JDpjTYquB9WjOkCbdfuHOwEKhrCjQmGJvJ8AhALAOgE/EUTshKBcNf9u9
-         S2rWC+J3xDIx0QLPctVlc4q/zfJuKWpglILciIVl8R+xRu4uils6f3DEOz/xVwkkBv+5
-         ZDE9kv9mZbQknH/JO7js9qtxpjyAqkW8FFHL2edcXZecY/qk4cO040CgZF5mQWGwc7CM
-         WdMnSs5TR2JLrJGl1Q35OmaDll7RC7MlIqJzTffc9cNp8XgaJg0YtEXLwGv/dW/Q/HHe
-         NFZQ==
-X-Gm-Message-State: AOJu0YxkG6wzIGrn2mm9l5esqo7q0sX8LLhXPLDcXPFEa1Tz9enHskH2
-	NreMi0mKur+uXFWRqhKAKEavi2zL26TBW7V7beGBiectNITiIFSOtvymt0L+DDWvrrSzgZWgFB4
-	4+BAAnGi145NXGW5f4d8xTJLJU9qLuR7kvbGddeDvha/BJVKJ0g4DLg==
-X-Gm-Gg: ASbGncuHdARhPgaePtfqUjkUImW1kZ80DRHGt7Pl4iSDZQWCCrtSqZscmrq9myAFwCX
-	q6bbJVnQ4Cfpi2BprDtsGhhI55bwoHG5pmds3grzZ3ioKLr3df0rk0JeOMgtBuHTUmAkCiZ4LCd
-	bxBR7riFGQYb12K6kdCjMUEck=
-X-Google-Smtp-Source: AGHT+IFGn5rtzzVkUIMucTEZMRs3C6MX3sIzf2gWvFfHuzjBmLye1PA2Fxf5EitM048XJz/cn0GY3Tf2S9cPx//1vzI=
-X-Received: by 2002:a05:600c:34c3:b0:43e:b027:479a with SMTP id
- 5b1f17b1804b1-43ecf8eb71emr7805215e9.16.1743719452625; Thu, 03 Apr 2025
- 15:30:52 -0700 (PDT)
+        bh=Th78P7lLc34hMpgoaKVJWgxxETQOSCyPOGjwMuTxpqE=;
+        b=O9DQCRx1Tp++0cCtQtBSw9y4h0H52ZRxlBlrVguwiwud9Yz0ggMMsy5pFqF45ghEp2
+         nv4YcOzr6NmcaAJlPiMMD9mor3iqZcfnpNkGZoipW09YX8KAjEP7g7w/xmB5JxXaKnet
+         YhwdMoT3cjMQHhYyKu2x7igjy/kO5eOj5Gjc/h/igZPxnXjPLTrp3VBVSOqDFAARaUov
+         2ytJns9YPzOZ3+hUz/gUaxX23nsfjLIe13l0P8eFbNWisZXcXT+hHdTwC2z2j4wq4Saw
+         dI/mAT6ts5DFkhnflGzaPOG+cWrCZgNhBdtS/1CPAgbtttoUhviUqGHCSACV2zNyw/4F
+         Cwrg==
+X-Forwarded-Encrypted: i=1; AJvYcCUv2NIBfYyvD5CwYtJ5LxPzAV3dL72LLWKnqneFiUbse1lN858cldYmlT5tNAD6nW3M8pd3fOlXKSBB/ZFwaQ==@vger.kernel.org, AJvYcCVcub+vFdTN5D/ogU3QPq+5GYZCirg987tMuaKxBL5ZxMfiJmMlx1/2iN537Aze9uWFLNAcpY7xxwGfvA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8NooH9gPLayhqgJ00IkGkgcnEpaXY2xPBZ5JjzUqmYQi1KMI1
+	EA2Abjdsgm0TdoDB1XAXCBoYyD1cK45FpBHP0lcuNJrVshx9xXnO
+X-Gm-Gg: ASbGncvAQcq95BM91/kxXNzos273frwQGQJSBcx9P0g4HO+hLUNJ3VIpJBVB0q86yzE
+	ndmv6sSLxfSewzfNN4qL5FkZjPHveV9kzvA0cknFqUPd+vwkm+/hY2ExPo4mto5+t2Ldw3UKOzH
+	5B/dGTpH0OTliUiFXXf7kBai33MQm6/WwAvJYaQh0xr/JdMfoNzNeBVBQZAYmm586QRgRSueKRA
+	BlQiVXFKKoXO2w31UeuZWRwvPnxCGcJR2Fk8woEWBe3tNriSVTLwRlldIryjbdUGYyXeq/T3B/L
+	ykI8EYrWwrAlBTQZNsbce8px3GpX0FpjgzFgQ4nWQZjlvbI/vk6L51NIdtYL6b92lRyMpBPmXe4
+	+
+X-Google-Smtp-Source: AGHT+IE0OK+ZG86CXfS8cxl7/u4OcTyr0/sVE0W60caXee3AGQFNLpQ/eKk0mGeHGmFqwPk/RLsUqQ==
+X-Received: by 2002:a17:90b:5188:b0:2ea:5dea:eb0a with SMTP id 98e67ed59e1d1-306a60e4ac0mr894543a91.4.1743727835579;
+        Thu, 03 Apr 2025 17:50:35 -0700 (PDT)
+Received: from fedora (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3057ca8768fsm2391935a91.27.2025.04.03.17.50.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Apr 2025 17:50:34 -0700 (PDT)
+Date: Thu, 3 Apr 2025 17:50:31 -0700
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>,
+	vivek.kasireddy@intel.com,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: Large folios and filemap_get_folios_contig()
+Message-ID: <Z-8s1-kiIDkzgRbc@fedora>
+References: <b714e4de-2583-4035-b829-72cfb5eb6fc6@gmx.com>
+ <Z-6ApNtjw9yvAGc4@casper.infradead.org>
+ <59539c02-d353-4811-bcbe-080b408f445e@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: fperal@elemariamoliner.com
-From: =?UTF-8?Q?Fernando_Peral_P=C3=A9rez?= <fperal@iesmariamoliner.com>
-Date: Fri, 4 Apr 2025 00:30:40 +0200
-X-Gm-Features: ATxdqUFHZOPQVQn4kv8xs3oZywWl-VkcKX2HavWggLL2tZ_GS4bpSCl3_uf15I4
-Message-ID: <CA+n7ozwhzdWs=KaBQh2miNwPwYxqBi+MEb807kddGNUZAOyNEA@mail.gmail.com>
-Subject: A lot of errors in btrfscheck. Can fix it?
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-
-Opensuse leap 15.6 with btrfs in /dev/nvme0n1p1
-
-one day fs remounts RO.  I reboot the system and all works and i
-forgot about it.  Then some days after it happen again... and again,
-and once each 1-2 days.
-
-I boot with last opensuse tumbleweed rescue system and run
-btrfs check /dev/nvme0n1p1  > btrfserrors.log 2>&1
-file size is 7MB (72000+ lines)
-This is an extract
-[1/8] checking log skipped (none written)
-[2/8] checking root items
-[3/8] checking extents
-parent transid verify failed on 49450893312 wanted 349472898974925 found 820429
-parent transid verify failed on 49450893312 wanted 349472898974925 found 820429
-Ignoring transid failure
-[4/8] checking free space cache
-[5/8] checking fs roots
-parent transid verify failed on 49450893312 wanted 349472898974925 found 820429
-Ignoring transid failure
-Wrong generation of child node/leaf, wanted: 820429, have: 349472898974925
-root 257 inode 1166865 errors 2000, link count wrong
-    unresolved ref dir 1170056 index 2 namelen 67 name
-ec7bf949b9cad15eef70da5f245585a86d2536f7a2d49d7a3ced9350602846.file
-filetype 1 errors 0
-    unresolved ref dir 7725226 index 1199 namelen 43 name
-io.github.hermitdemschoenenleben.linien.png filetype 0 errors 3, no
-dir item, no dir index
-root 257 inode 1166870 errors 2000, link count wrong
-    unresolved ref dir 1170058 index 2 namelen 67 name
-0e92b47654522ed38b741cdcc185a0133b4d65e5faddacfb10e6f2b902207d.file
-filetype 1 errors 0
-    unresolved ref dir 7725225 index 250 namelen 31 name
-com.github.Johnn3y.Forklift.png filetype 0 errors 3, no dir item, no
-dir index
-root 257 inode 1166892 errors 2000, link count wrong
-.....................................
-root 257 inode 7939338 errors 2001, no inode item, link count wrong
-    unresolved ref dir 4041 index 394716 namelen 7 name cookies
-filetype 1 errors 4, no inode ref
-ERROR: errors found in fs roots
-Opening filesystem to check...
-Checking filesystem on /dev/nvme0n1p1
-UUID: 5b000355-3a1a-49f5-8005-f10668008aa7
-found 870830170112 bytes used, error(s) found
-total csum bytes: 820812476
-total tree bytes: 4743823360
-total fs tree bytes: 3497558016
-total extent tree bytes: 250986496
-btree space waste bytes: 815189067
-file data blocks allocated: 2167978672128
- referenced 927826583552
+Content-Type: multipart/mixed; boundary="jdO5iHBsjAZEVpV9"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <59539c02-d353-4811-bcbe-080b408f445e@suse.com>
 
 
+--jdO5iHBsjAZEVpV9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-I run memtest, no errors
+On Fri, Apr 04, 2025 at 07:46:59AM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/4/3 23:05, Matthew Wilcox 写道:
+> > On Thu, Apr 03, 2025 at 08:06:53PM +1030, Qu Wenruo wrote:
+> > > Recently I hit a bug when developing the large folios support for btrfs.
+> > > 
+> > > That we call filemap_get_folios_contig(), then lock each returned folio.
+> > > (We also have a case where we unlock each returned folio)
+> > > 
+> > > However since a large folio can be returned several times in the batch,
+> > > this obviously makes a deadlock, as btrfs is trying to lock the same
+> > > folio more than once.
+> > 
+> > Sorry, what?  A large folio should only be returned once.  xas_next()
+> > moves to the next folio.  How is it possible that
+> > filemap_get_folios_contig() returns the same folio more than once?
+> 
+> But that's exactly what I got from filemap_get_folios_contig():
+> 
+> lock_delalloc_folios: r/i=5/260 locked_folio=720896(65536) start=782336
+> end=819199(36864)
+> lock_delalloc_folios: r/i=5/260 found_folios=1
+> lock_delalloc_folios: r/i=5/260 i=0 folio=720896(65536)
+> lock_delalloc_folios: r/i=5/260 found_folios=8
+> lock_delalloc_folios: r/i=5/260 i=0 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=1 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=2 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=3 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=4 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=5 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=6 folio=786432(262144)
+> lock_delalloc_folios: r/i=5/260 i=7 folio=786432(262144)
+> 
+> r/i is the root and inode number from btrfs, and you can completely ignore
+> it.
+> 
+> @locked_folio is the folio we're already holding a lock, the value inside
+> the brackets is the folio size.
+> 
+> @start and @end is the range we're searching for, the value inside the
+> brackets is the search range length.
+> 
+> The first iteration returns the current locked folio, and since the range
+> inside that folio is only 4K, thus it's only returned once.
+> 
+> The next 8 slots are all inside the same large folio at 786432, resulting
+> duplicated entries.
+> 
+> > 
+> > > Then I looked into the caller of filemap_get_folios_contig() inside
+> > > mm/gup, and it indeed does the correct skip.
+> > 
+> > ... that code looks wrong to me.
+> 
+> It looks like it's xas_find() is doing the correct skip by calling
+> xas_next_offset() -> xas_move_index() to skip the next one.
+> 
+> But the filemap_get_folios_contig() only calls xas_next() by increasing the
+> index, not really skip to the next folio.
+> 
+> Although I can be totally wrong as I'm not familiar with the xarray
+> internals at all.
 
-I make a copy of the whole disk dd if=/dev/nvme0n1p1 of=/dev/sdd  bs=4M
-I mount the /dev/nvme0n1p1 in /mnt and subvolume @/home  in /mnt/home
-and make a full copy of home with tar without any error
-I then unmount /mnt/home and mount ALL other subvolume /mnt/var,
-/mnt/root, /mnt/srv, etc.
-I then copy it to a disk with rsync:
+Thanks for bringing this to my attention, it looks like this is due to a
+mistake during my folio conversion for this function. The xas_next()
+call tries to go to the next index, but if that index is part of a
+multi-index entry things get awkward if we don't manually account for the
+index shift of a large folio (which I missed).
 
-rsync -aAX /mnt/ /backup/
-it reports some errors, but not a lot
+Can you please try out this attached patch and see if it gets rid of
+the duplicate problem?
 
-[root@sysrescue ~]# rsync -aAX /mnt/ /backup/
-rsync: [sender] read errors mapping
-"/mnt/opt/microchip/mplabx/v5.50/packs/Microchip/PIC32MZ-EF_DFP/1.3.58/include/proc/p32mz2048efh064.h":
-Input/output error (5)
-rsync: [sender] read errors mapping
-"/mnt/opt/microchip/mplabx/v5.50/packs/Microchip/PIC32MZ-EF_DFP/1.3.58/include/proc/p32mz2048efh064.h":
-Input/output error (5)
-ERROR: opt/microchip/mplabx/v5.50/packs/Microchip/PIC32MZ-EF_DFP/1.3.58/include/proc/p32mz2048efh064.h
-failed verification -- update discarded.
-rsync: [sender] readlink_stat("/mnt/var/lib/alternatives/mount.ntfs")
-failed: Input/output error (5)
-rsync: [sender]
-readlink_stat("/mnt/var/lib/snapd/assertions/asserts-v0/account/dNg0tVCIPlftwxSamh1bJuJlbeF4414o")
-failed: Structure needs cleaning (117)
-rsync: [sender]
-readlink_stat("/mnt/var/lib/snapd/assertions/asserts-v0/snap-declaration/16/Lf1MF6tizzusVuA6l13ETyH5VDXxwA0D/active")
-failed: Structure needs cleaning (117)
-rsync: [sender]
-readlink_stat("/mnt/var/lib/snapd/assertions/asserts-v0/snap-revision/oQEyGl1uWD-Tctr0xuXX24wViUD-V_0tCFa_dACaoDuhxeAjar-l7SlwZaALO3Ld")
-failed: Input/output error (5)
-rsync: [sender]
-readlink_stat("/mnt/var/lib/snapd/assertions/asserts-v0/snap-revision/eJvirrJxorOL8M-jSZUg3HD7KCHGtcXw3IP6AyJ_fjqQ00dcsr-GsGuhxlxXcipT")
-failed: Input/output error (5)
-rsync: [sender]
-readlink_stat("/mnt/var/lib/snapd/assertions/asserts-v0/snap-revision/SuT7J1UFhL0alAb5kruCjalw_pvlskVQGfJ6aVT7wkOH7TGtFNfMSo3SDBL86HVl")
-failed: Structure needs cleaning (117)
-rsync: [sender]
-readlink_stat("/mnt/var/lib/snapd/assertions/asserts-v0/snap-revision/uMr0AjQBhdqMO35XzAEYGdQ_OaR2FJfA3Vv68p3H_pEiMHQ_uBWB4K-dUBKlDy3U")
-failed: Structure needs cleaning (117)
-rsync: [sender] readlink_stat("/mnt/var/log/messages-20240625.xz")
-failed: Input/output error (5)
-rsync: [sender] readlink_stat("/mnt/var/log/messages-20240709.xz")
-failed: Structure needs cleaning (117)
-rsync: [sender] readlink_stat("/mnt/var/spool/cups/c00624") failed:
-Input/output error (5)
-rsync: [sender] readlink_stat("/mnt/var/spool/cups/c00625") failed:
-Structure needs cleaning (117)
-rsync: [sender] readlink_stat("/mnt/var/spool/cups/c00626") failed:
-Structure needs cleaning (117)
-rsync: [sender] readlink_stat("/mnt/var/spool/cups/c00627") failed:
-Structure needs cleaning (117)
-rsync error: some files/attrs were not transferred (see previous
-errors) (code 23) at main.c(1330) [sender=v3.2.3]
+> However I totally agree the duplicated behavior (and the extra handling of
+> duplicated entries) looks very wrong.
+> 
+> Thanks,
+> Qu
+
+--jdO5iHBsjAZEVpV9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename=0001-Fix-filemap_get_folios_contig-returning-batches-of-i.patch
+
+From 91e8353cee38b1624fc13587f6db5058d764d983 Mon Sep 17 00:00:00 2001
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Date: Thu, 3 Apr 2025 16:54:17 -0700
+Subject: [PATCH] Fix filemap_get_folios_contig returning batches of identical
+ folios
+
+filemap_get_folios_contig() is supposed to return distinct folios
+found within [start, end]. Large folios in the Xarray become multi-index
+entries. xas_next() can iterate through the sub-indexes before finding
+a sibling entry and breaking out of the loop.
+
+This can result in a returned folio_batch containing an indeterminate
+number of duplicate folios, which forces the callers to skeptically
+handle the returned batch. This is inefficient and incurs a large
+maintenance overhead.
+
+We can fix this by calling xas_advance() after we have successfully
+adding a folio to the batch to ensure our Xarray is positioned such that
+it will correctly find the next folio - similar to
+filemap_get_read_batch().
+
+Fixes: 35b471467f88 ("filemap: add filemap_get_folios_contig()")
+Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/filemap.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index cc69f174f76b..bc7b28dfba3c 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2233,6 +2233,7 @@ unsigned filemap_get_folios_contig(struct address_space *mapping,
+ 			*start = folio->index + nr;
+ 			goto out;
+ 		}
++		xas_advance(&xas, folio_next_index(folio) - 1);
+ 		continue;
+ put_folio:
+ 		folio_put(folio);
+-- 
+2.48.1
 
 
-
-
-My questions
-
-Can the fs be fixed?
-Can the copies I have done be reliables?
-
-Thanks in advance.
+--jdO5iHBsjAZEVpV9--
 
