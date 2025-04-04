@@ -1,59 +1,61 @@
-Return-Path: <linux-btrfs+bounces-12792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ECFFA7B79B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 08:12:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B162A7B7A9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 08:16:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F1B1733B0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 06:12:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05CD63B470C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 06:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6860F17A2FF;
-	Fri,  4 Apr 2025 06:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679C31862BB;
+	Fri,  4 Apr 2025 06:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="07J0PH7j"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nmuSjNdY"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD906101F2;
-	Fri,  4 Apr 2025 06:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC4F2E62B3;
+	Fri,  4 Apr 2025 06:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743747131; cv=none; b=FqNNqZGY72/BOwV8nvNqZR+8dKA8+RIcmaIlhE2qvNEUkvZYFmLyzvsKjIlwzOEHKCFilPxBDcEFcJ6BxC13eMx17v+Udu0blMf/29JnPcjvt0HwmEdMhV2Uyo+NwNDPNyl7EIwp1g51CPKGZb0if0wfjQTzxhSaCop63qmXlec=
+	t=1743747389; cv=none; b=ZNSkF/NTgllZZVf/vz8fuxKYZ8oQRXg8FqY9PQtZlTl5837IF3XSI1NAD5ZsLZ9NrgPJm1brsPOqWxPzQnQYf6jfU7RMkfbIvh29mMJYdaqMCpcQVlduL9nVIxY1Bot7pMgIW3GKExCGL3laeoPYSNPpgTYWjNb54Z5yu7q5lf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743747131; c=relaxed/simple;
-	bh=4VR7RFfNBRmJEmEOy2a0WW5MIh7heXFUkSABGT9e7SI=;
+	s=arc-20240116; t=1743747389; c=relaxed/simple;
+	bh=82IomvH91OcZamePfDiiuV/noh/a9CS2f8nbNKLAVHo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TBFXDfQTmxsbM5rCOWnEFmnm6rN0qs1FdLcNyyeuWzf0tasjblchkyo/oZD29oZZyfNYG7LURibpo7lTryU8SlSMIdiggdKcyLgpWWtIGV0OvomgGAVoC1CBXIogZH9H8NDFJDAutpLgTFiwfZd4yL5LkX4gYbRENm+ugM4lgD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=07J0PH7j; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=HX4v91r4B4O5BjeXwqDzVTNE2Mhrhagq/5QZOkNycFzbyuxD/9Fpaawwuqcu0HiTBvo1WehlXLC9bQLsrnRHDlh0hPPyUaSUob7cgP/+n1HvVZM33ZVXaTDt5D4T0W7FlYWqlYqaKs2Css9BzsjCO8NlySVEA2d4BaChltXcdAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nmuSjNdY; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ule5b3tDr3T/7IRuYvVluy+OwIJNqk5T9gj+TpXMj0c=; b=07J0PH7jVhkDC4dlr4jn2yoyVD
-	xrKxd6k4L7Ae7Zu/Q2CCtO9FSNiMu7K1CIO+08ljtUD9Lzcu0ujiXluosHDmc/wXfKL96/+fg0iaw
-	5asMqnfTaB7VELwUfXLJ8J1rwxGzKV7Mwo2QcFIVzjzfURrwoDAiX6Hpu+YUeAw8bV/SsTAGkSsdY
-	mQt4n0ttc+JDMfAOFM1nlMDJcmLyFvIgZ7DWdQLg1bbWRbO6q53l6RoLWVNmmUQYppreUs3AYB41R
-	ZbN2Y5GW08sH4Rkur7oSElzLVOZfY6Rz/xnVzLKEP64Xqm1gQbw4OwPaFcAWyPTz5Ln4jJe54UeYC
-	ycN3ZqZw==;
+	bh=V3rmCXxbDuUkBXJXOeoQph2X01YdsX01VESps6gyXrQ=; b=nmuSjNdYwLsK1QnUOfYvyHPNQU
+	YMDfcxnM+crPwUw5v3H9Fcdgj3D/W5yXdykGC63/quFDMGYYchzScvie/4npdnknSspTLJVDs1ZMs
+	6uc7jZRPHvox9zooE54UGPBMJNZa7RMseuZq3OQ38Jc8i6oe/98+AgUQ/+F802NRgzKuEYpzLnzFW
+	l+bqS/ymopZVeYcT8oTNz8IZQB5rrCmWFY/mNnKmFUi/rPvseD8eXTc9z+SgEFDg0KVR1X4Z7gHqe
+	34cV8WfAiWUx6HgXcr81YMsGoU0/q/Fl9xzNdwOm2WL/YPLYwO0EzcvX+no2MQtq2RXEgBVJOEf/o
+	zZr9cPYQ==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0aHV-0000000AqSx-0qaE;
-	Fri, 04 Apr 2025 06:11:57 +0000
-Date: Thu, 3 Apr 2025 23:11:57 -0700
+	id 1u0aLk-0000000Aqud-3LLu;
+	Fri, 04 Apr 2025 06:16:20 +0000
+Date: Thu, 3 Apr 2025 23:16:20 -0700
 From: Christoph Hellwig <hch@infradead.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: Zorro Lang <zlang@redhat.com>, Anand Jain <anand.jain@oracle.com>,
-	fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [GIT PULL] fstests: btrfs changes for for-next staged-20250328
-Message-ID: <Z-94LaTObhgZT2Rq@infradead.org>
-References: <20250328012637.23744-1-anand.jain@oracle.com>
- <20250328020312.psokbxpz5untmeey@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <20250328180213.GH32661@twin.jikos.cz>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Proper way to copy de-compressed data into a bio, in folio style?
+Message-ID: <Z-95NPq_JCQb84XZ@infradead.org>
+References: <17517804-1c6b-4b96-a608-8c3d80e5f6dd@gmx.com>
+ <Z-7I9hOcGzQMV3hq@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -62,16 +64,39 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250328180213.GH32661@twin.jikos.cz>
+In-Reply-To: <Z-7I9hOcGzQMV3hq@casper.infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Fri, Mar 28, 2025 at 07:02:13PM +0100, David Sterba wrote:
-> Maintainers should be allowed to push their patches without RVB, that's
-> where the role and status adds value.
+On Thu, Apr 03, 2025 at 06:44:22PM +0100, Matthew Wilcox wrote:
+> > On the other hand, I'm having some internal code to convert a bio_vec
+> > into a folio and offset inside the folio already.
+> > Thus I'm wondering can we provide something like bio_for_each_folio()?
+> > Or is it too niche that only certain fs can benefit from?
+> 
+> I don't understand your requirements. but doing something different that
+> fills in a folio_iter along the lines of bio_for_each_folio_all()
+> would make sense.
+>
 
-Hell no.  Stop beeing so weirdly entitlted, that absolutely does not
-help to get you anywhere.  If you are so proud of your role and status
-use that to nudge someone into reviewing the patches insted.
+Looking at btrfs_decompress_buf2page it uses bio_iter_iovec, which is
+the building block use by bio_for_each_segment to build segments, that
+is bvecs that are constrained to PAGE_SIZE boundaries.  In this for
+a good reason as it then wants to copy into them with a single kmap
+mapping.
 
-Why the f**k do we wven have to discuss these basics?
+This means that bv_offset is always less than PAGE_SIZE for these
+generated bio_vecs.
+
+In the short run I'd suggest to just keep using the existing open-coded
+bio_for_each_segment-like loop so that each iteration covers a PAGE_SIZE
+granularity chunk.  Just stop messing th the bvec fields directly and
+use bvec_kmap_local to map the destination and do a plain memcpy into
+that instead of using memcpy_to_page.
+
+In the long run it would be great to just rewrite the low-level
+decompressors to work on an iov_iter as output and remove the need
+for the extra data copy entirely, but if that can't happen we'll
+just need for figure out how we can do useful kmaps larger than
+PAGE_SIZE or stop allowing highmem pages for btrfs and then switch to
+a folio based iterator.
 
