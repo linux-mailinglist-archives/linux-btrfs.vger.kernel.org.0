@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-12808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 538D4A7C5BA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 23:44:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 619A3A7C5C6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 23:51:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 932023B30EC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 21:44:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DCCE188F3A7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 21:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78EF21930A;
-	Fri,  4 Apr 2025 21:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD68E1A4E98;
+	Fri,  4 Apr 2025 21:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OE3WG1T+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Nn6ke+Wp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872DF18BC3B
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 21:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5EF2E62A3
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 21:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743803070; cv=none; b=QV0YS7WvCy99T1JvN/BRqDLRKn76W5q0Ah/ILhfcpuwZ+Gh+FRFnkPLS+Mlyj9Wf28WoSUGBI7grnQ7SfRqrtmLDgq6ODFMpgy0MjYgr55btVsVVWhAe+mqn6dgAY2UGXbPJYcnkfXGqYRbq44x4g005e1wxjv4/dEjK9anaq9Y=
+	t=1743803485; cv=none; b=Lrm4miS8hfRn1rCMhHTVXtjjIB7ouvuSZcn/baEWIh8lxOgT+yLdRfvnS4gIF1Qrttr07KB0DHFHL3o+ikq32IcGIjO4XCI3Kqs/JKgd36zQmfluM0rgcX/4t7IMWUKf8liWk4k6szbTeEBMTBa4Hh+Vtk7Dl7+dnRUn9caTuYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743803070; c=relaxed/simple;
-	bh=tu2z3RyxJ1GqLPf8Bok+0DZk6lUz6XRXS5hvzdkKAso=;
+	s=arc-20240116; t=1743803485; c=relaxed/simple;
+	bh=HTI6LTib7AFiPV2d9kz5edwmk8rkY7W/4Eonqr3dup8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CdjPGVs7vm8tfaNDnlDG0E8TSGbn3+5QBa3+1YkgAN3TEWuJt7bd2qr0D6+Wgju7mfvaJQFqDb/xL5jE90XCwYHsSdxjo95HQVYoXM7PKGkxPrV7+hj6U00loE+FOcBAUUN78otymPlrpCQerN4nutKgFglDw4+15EaeilAZB2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OE3WG1T+; arc=none smtp.client-ip=209.85.128.51
+	 In-Reply-To:Content-Type; b=PMsOX8SB4S9MC3EazvsLKr+0QNmjvv8o4U9sc8qX9IehR3mguEoJIIs9BJ3NqdXYPPdKtpt+M7rvoDH/7Zs8Gjgd8RXDLE9PGOkDIB/jaAAFybKZxPFGIURbkmV7cpUK5a8Le6WFgL5xF5QqMS5/LpqeNzJKfDPlryrRs2TA3wA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Nn6ke+Wp; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43edecbfb94so4551975e9.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 04 Apr 2025 14:44:27 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43cf848528aso19629695e9.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Apr 2025 14:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1743803066; x=1744407866; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1743803481; x=1744408281; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ImpQo54y9mYidRFSCAcvQo+B6QGgRjuvPFPSFjQ7vMc=;
-        b=OE3WG1T+1RQl26rJG5hB/dcdAqFfX9i7B9BiZUzmJ1TfoJsRjYqTFAsBi90NQB3HIV
-         eXzQUSOQ/TRKszQBb4Voh9D7LMIwmbXLHB9EgwEDSFiOAPYQutWZdKpZ/Gy4R/vsTj5n
-         TehXs7lEzU1g6qX+mp4mhVlGdepsEXGL5EBgMWPfBCCYL/qhy58bnvNPXu3qGnjzPP8Y
-         xhJ47NMlkMS460pu1dnM8nevcLQ62m+Uf6gnyrRPyW7YFKrUAG90U9oUBGsJNtiFiCbe
-         DR9qJNN3Fmu5g/HBtoRA7WjLV9gYlXxEplmvne1tdcNRPB6FlaNNXmUTz+8mSyxE40aO
-         go3Q==
+        bh=OUoTYp5OKRMGChdKlkKcOWhf0w7hdOWIEyoFff+cBsk=;
+        b=Nn6ke+WpF+ae+YO8shhliGxaIuYQ0Pe7xYZFT7SsnVqnwNpBYfKL8lIkNDtbxo8Syt
+         8POupqJdInLV9P3mu6F9PXYN6p/q1tnX5mioWt+LCzSSialyaRC/IOUUlroZbX/SEB6Z
+         R6AggNjO/iZ1mxVPszRB5jel5LTTCX30B7PB4u1Pu8kPjSyeMME4wTwi17rGnTUBtVoo
+         0T5E4LiU0B41hRjC3YHBEROcAIlY1JDeF8OkfNBGw1JqLa35e5CGbO4IBIDno9AKK8eh
+         iGBUWdcT3bH3/z8vOXZg9fVfF0t8sdtdbapwc1U+nH3hQCt3NUAWyCHELz4eX0wYUXyU
+         bsKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743803066; x=1744407866;
+        d=1e100.net; s=20230601; t=1743803481; x=1744408281;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ImpQo54y9mYidRFSCAcvQo+B6QGgRjuvPFPSFjQ7vMc=;
-        b=Bxk/ai6ivrtsaTR68yQFexkYegcKPjpZznof40hn8ViTuL2uCtdvGOgzYT3RNmT3F3
-         tcIfoRiW4wtoqC9VXI5BliVfQuWeS0GwGjk5uyYLgH7JYvDz35CVuV119OmesgUQFhB0
-         1KKqVzymUVIVl8QdC1CycfAlu5TVKss5sdkfq0X6thXAlwAlKaLD496TdMbwC3YFxkr6
-         CHhkhBy5EL33xHv77jnSFwZF4Fr63gkPRPx6K5KABSu7Y+++RvJce5TBKnVuQR6am5n9
-         CmXvfKrEsDOktjEupXDvTj2BK6ryuzklWrmNYGVTpQ6HEWjsYO3UL32p1wl5V+xHq6pt
-         yXCQ==
-X-Gm-Message-State: AOJu0YzrWrvE/ceqFI0BvKOeCtJffAM5ZTMpoQAxfJVAkoAvccnXUHMY
-	fkubMnU/zWkac27J9X7cBzcCSpIFemCnNlLQISbs1a8xN4G6HhS0QpS0tDIaxeSJdAReYfO5RdO
-	F
-X-Gm-Gg: ASbGncswbbr9oXZ4fOfCXDYjPFeEgie6fwkzF5jiJ3ZmvIUJzW/S5xf2XEOnIzOrcm6
-	637oaaoSNNe+qfZ+wxDT3jwWsJteq6oeMJuZR01qpTElIeca8paz9/xV3hoNWABTCWN8sxAOZWz
-	zifYbFkl242O+KH/+0gwA8sH84WzE6iJacodNOUW9ohzOT0sxZdtE6n+2N21nosyJ1LoJCDbBuR
-	owFF3HxBnK2+O4MKyAhrRTigLYmdtvaozgWSkElW2kjge3T4cuH32uZhq7ctoiiZwo69KEX9o7F
-	dGAYpAh8h/oO3Bqx0qRz0/QlJCt+vBMTYWwY78RyGVsJOg4zKe5QTumds+8uDbY1ydMGW4kY
-X-Google-Smtp-Source: AGHT+IGjKrv13wA8ubhyfEXFCx7+qqCrHjtWvRMOUXNQMXjzC9x3ca0JcWPSJehmETZk3InZkJKgGw==
-X-Received: by 2002:adf:9cc4:0:b0:39c:1257:cd41 with SMTP id ffacd0b85a97d-39d14764ce2mr2770279f8f.59.1743803065620;
-        Fri, 04 Apr 2025 14:44:25 -0700 (PDT)
+        bh=OUoTYp5OKRMGChdKlkKcOWhf0w7hdOWIEyoFff+cBsk=;
+        b=CIpfDrDMVUeJiiXcg/pvePYfV0ZLTnSdf7lTn7izb6I/BjLDTZj2V7HBI+daeGYf+3
+         uYaECg+2rFdZXmorWLlrRluQKIidMV/nrOCDFZVkW0GWNVdNwwYNsIhivp2/dLAIDGXz
+         TF1SpBIrRaEJ6rQ7voAaNtczkKVikfc+0UkFmA5eFQLYiZhKC9eKqLliuw0QvMVsat/z
+         mbb/DCn74m6AaDltWlNb26kuFwYNB8bpsMYcaSL2zUtC9GJG0KEJMDszgURq5flzCZfv
+         nc56FF2f0sPpnSSDmfEufoZeYazkVFF1gPLxVH6o9JBIg7UJ9N5SkRECLKJqMdfzeGBA
+         IEZQ==
+X-Gm-Message-State: AOJu0YyPFrjj8NfTuMKTt2OlvOluTiw8kA2+4hOs/cV0IdLscXCfmEvb
+	GE/utdWiYl5+FpGilaLGnQ/FR6I8uFxcFT47fQlbcpRfM6FywZrMlUe8zlWrynD8ixa43wySlgB
+	d
+X-Gm-Gg: ASbGncsBnPIXGrq89feddnOrDptrIXa31Dwyo4j5YqWUFw+x/iKcxCvN6T9HqfZpC3s
+	bO/mWqEkL+04OI0C8NTN1z8IbzeiAnmqUYcT7Mh1e/i3KAu8Kq4vb9ioQVgEyGtF07V014ACm7k
+	VTrSqIkrR3l2/irJqQkMwKRO076t6rXmd8DIhaUBy4SjnPZhFDuvQirC0XoouyojRSEtV4xjZu/
+	xXPFMSWYQpSdMAD22K+ll3wdPvEt08x+r/b2+kyfBlisy21d94095paEP5DFVfBVQ5Pv2/2OgYI
+	3q3PCqj0RCKyaXCnSNLpq7zR0GVaQUi+RRYoHv2Dq8jdmGqJbO02xY69NMnASNbPp/MjY5vy
+X-Google-Smtp-Source: AGHT+IGmOhYyasOI5O1+J/XrQSeYghjnzcDWZv+1Of6+UnQw4eBHo3cPSjl4PnxKEwZFSVF1gsommA==
+X-Received: by 2002:a05:6000:2909:b0:39a:c80b:8283 with SMTP id ffacd0b85a97d-39d6fc7c97emr587161f8f.31.1743803480558;
+        Fri, 04 Apr 2025 14:51:20 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739d97d2f2csm3929268b3a.29.2025.04.04.14.44.23
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739d97ee5bdsm3931444b3a.49.2025.04.04.14.51.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Apr 2025 14:44:25 -0700 (PDT)
-Message-ID: <dc2618d9-0ff8-40f1-b5e7-93644fbbe17c@suse.com>
-Date: Sat, 5 Apr 2025 08:14:20 +1030
+        Fri, 04 Apr 2025 14:51:20 -0700 (PDT)
+Message-ID: <caa57242-1971-46f9-a2f9-dceb19ab7b4f@suse.com>
+Date: Sat, 5 Apr 2025 08:21:16 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,13 +82,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] btrfs: remove unnecessary early exits in delalloc
- folio lock and unlock
+Subject: Re: [PATCH 3/3] btrfs: get rid of filemap_get_folios_contig() calls
 To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org
 References: <cover.1743731232.git.wqu@suse.com>
- <39d3966f896f04c3003eb9a954ce84ff33d51345.1743731232.git.wqu@suse.com>
- <CAL3q7H5vSyG3zpCZ5hbPT8aR2-xODazLwcKhWGhJYUUMLTus1w@mail.gmail.com>
+ <577429c985d01407c27141db4015c50d8ba7c746.1743731232.git.wqu@suse.com>
+ <CAL3q7H4AZZtCe6FXwAwaoKL7JNtnoLfu3BimKQ1KRZUNuezkwQ@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -115,103 +114,146 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL3q7H5vSyG3zpCZ5hbPT8aR2-xODazLwcKhWGhJYUUMLTus1w@mail.gmail.com>
+In-Reply-To: <CAL3q7H4AZZtCe6FXwAwaoKL7JNtnoLfu3BimKQ1KRZUNuezkwQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/4/5 02:34, Filipe Manana 写道:
+在 2025/4/5 03:08, Filipe Manana 写道:
 > On Fri, Apr 4, 2025 at 2:48 AM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> Inside function unlock_delalloc_folio() and lock_delalloc_folios(), we
-> 
-> function -> functions
-> 
->> have the following early exist:
-> 
-> exist -> exit
-> 
+>> With large folios, filemap_get_folios_contig() can return duplicated
+>> folios, for example:
 >>
->>          if (index == locked_folio->index && end_index == index)
->>                  return;
+>>          704K                     768K                             1M
+>>          |<-- 64K sized folio --->|<------- 256K sized folio ----->|
+>>                                |          |
+>>                                764K       800K
 >>
->> This allows us to exist early if the range are inside the same locked
-> 
-> exist -> exit
-> the range are inside -> the range is inside
-> 
->> folio.
+>> If we call lock_delalloc_folios() with range [762K, 800K) on above
+>> layout with locked folio at 704K, we will hit the following sequence:
 >>
->> But even without the above early check, the existing code can handle it
->> well, as both __process_folios_contig() and lock_delalloc_folios() will
->> skip any folio page lock/unlock if it's on the locked folio.
+>> 1. filemap_get_folios_contig() returned 1 for range [764K, 768K)
+>>     As this is a folio boundary.
 >>
->> Just remove those unnecessary early exits.
+>>     The returned folio will be folio at 704K.
+>>
+>>     Since the folio is already locked, we will not lock the folio.
+>>
+>> 2. filemap_get_folios_contig() returned 8 for range [768K, 800K)
+>>     All the entries are the same folio at 768K.
+>>
+>> 3. We lock folio 768K for the slot 0 of the fbatch
+>>
+>> 4. We lock folio 768K for the slot 1 of the fbatch
+>>     We deadlock, as we have already locked the same folio at step 3.
+>>
+>> The filemap_get_folios_contig() behavior is definitely not ideal, but on
+>> the other hand, we do not really need the filemap_get_folios_contig()
+>> call either.
+>>
+>> The current filemap_get_folios() is already good enough, and we require
+>> no strong contiguous requirement either, we only need the returned folios
+>> contiguous at file map level (aka, their folio file offsets are contiguous).
 > 
-> It looks good to me from a functional point of view.
-> 
-> But without this early exits there's a bit of work done, from function
-> calls to initializing and releasing folio batches, calling
-> filemap_get_folios_contig()  which
-> will search the mapping's xarray and always grab one folio and add it
-> to the batch, etc.
-> 
-> It's not uncommon to do IO on a range not spanning more than one
-> folio, especially when supporting large folios, which will be more
-> likely.
-> I understand the goal here is to remove some code, but this code is
-> cheaper compared to all that unnecessary overhead.
-> 
-> Have you considered that?
+> This paragraph is confusing.
+> This says filemap_get_folios() provides contiguous results in the
+> sense that the file offset of each folio is greater than the previous
+> ones (the folios in the batch are ordered by file offsets).
+> But then what is the kind of contiguous results that
+> filemap_get_folios_contig() provides? How different is it? Is it that
+> the batch doesn't get "holes" - i.e. a folio's start always matches
+> the end of the previous one +1?
 
-Yes, but the main reason here is the usage of (folio->index == index) check.
+ From my understanding, filemap_get_folios_contig() returns physically 
+contiguous pages/folios.
 
-With  large folios, such check is no longer reliable anyway, and 
-initially I thought to just change it to folio_contains(), but it turns 
-out that is not really needed either.
+And the hole handling is always the caller's responsibility, no matter 
+if it's the _contig() version or not.
 
-So that's the main reason to get rid this of these early exits.
+Thus for filemap_get_folios_contig(), and the above two large folios 
+cases, as long as the two large folios are not physically contiguous, 
+the call returns the first folio, then the next call it returns the next 
+folio.
+
+Not returning both in one go, and this behavior is not that useful to us 
+either.
+
+
+And talking about holes, due to the _contig() behavior itself, if we hit 
+a hole the function will definitely return, but between different calls 
+caller should check the folio's position between calls, to make sure no 
+holes is between two filemap_get_folios_contig() calls.
+
+Of course, no caller is really doing that, thus another reason why we do 
+not need the filemap_get_folios_contig() call.
 
 Thanks,
-Qu
-
+Qu>
+>>
+>> So get rid of the cursed filemap_get_folios_contig() and use regular
+>> filemap_get_folios() instead, this will fix the above deadlock for large
+>> folios.
+> 
+> I think it's worth adding in this changelog that it is known that
+> filemap_get_folios_contig() has a bug and there's a pending fix for
+> it, adding links to the thread you started and the respective fix:
+> 
+> https://lore.kernel.org/linux-btrfs/b714e4de-2583-4035-b829-72cfb5eb6fc6@gmx.com/
+> https://lore.kernel.org/linux-btrfs/Z-8s1-kiIDkzgRbc@fedora/
+> 
+> Anyway, it seems good, so with those small changes:
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 > 
 > Thanks.
 > 
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->>   fs/btrfs/extent_io.c | 8 --------
->>   1 file changed, 8 deletions(-)
+>>   fs/btrfs/extent_io.c             | 6 ++----
+>>   fs/btrfs/tests/extent-io-tests.c | 3 +--
+>>   2 files changed, 3 insertions(+), 6 deletions(-)
 >>
 >> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 8b29eeac3884..013268f70621 100644
+>> index f0d51f6ed951..986bda2eff1c 100644
 >> --- a/fs/btrfs/extent_io.c
 >> +++ b/fs/btrfs/extent_io.c
->> @@ -224,12 +224,7 @@ static noinline void unlock_delalloc_folio(const struct inode *inode,
->>                                             const struct folio *locked_folio,
->>                                             u64 start, u64 end)
->>   {
->> -       unsigned long index = start >> PAGE_SHIFT;
->> -       unsigned long end_index = end >> PAGE_SHIFT;
->> -
->>          ASSERT(locked_folio);
->> -       if (index == locked_folio->index && end_index == index)
->> -               return;
+>> @@ -207,8 +207,7 @@ static void __process_folios_contig(struct address_space *mapping,
+>>          while (index <= end_index) {
+>>                  int found_folios;
 >>
->>          __process_folios_contig(inode->i_mapping, locked_folio, start, end,
->>                                  PAGE_UNLOCK);
->> @@ -246,9 +241,6 @@ static noinline int lock_delalloc_folios(struct inode *inode,
->>          u64 processed_end = start;
->>          struct folio_batch fbatch;
+>> -               found_folios = filemap_get_folios_contig(mapping, &index,
+>> -                               end_index, &fbatch);
+>> +               found_folios = filemap_get_folios(mapping, &index, end_index, &fbatch);
+>>                  for (i = 0; i < found_folios; i++) {
+>>                          struct folio *folio = fbatch.folios[i];
 >>
->> -       if (index == locked_folio->index && index == end_index)
->> -               return 0;
->> -
->>          folio_batch_init(&fbatch);
+>> @@ -245,8 +244,7 @@ static noinline int lock_delalloc_folios(struct inode *inode,
 >>          while (index <= end_index) {
 >>                  unsigned int found_folios, i;
+>>
+>> -               found_folios = filemap_get_folios_contig(mapping, &index,
+>> -                               end_index, &fbatch);
+>> +               found_folios = filemap_get_folios(mapping, &index, end_index, &fbatch);
+>>                  if (found_folios == 0)
+>>                          goto out;
+>>
+>> diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+>> index 74aca7180a5a..e762eca8a99f 100644
+>> --- a/fs/btrfs/tests/extent-io-tests.c
+>> +++ b/fs/btrfs/tests/extent-io-tests.c
+>> @@ -32,8 +32,7 @@ static noinline int process_page_range(struct inode *inode, u64 start, u64 end,
+>>          folio_batch_init(&fbatch);
+>>
+>>          while (index <= end_index) {
+>> -               ret = filemap_get_folios_contig(inode->i_mapping, &index,
+>> -                               end_index, &fbatch);
+>> +               ret = filemap_get_folios(inode->i_mapping, &index, end_index, &fbatch);
+>>                  for (i = 0; i < ret; i++) {
+>>                          struct folio *folio = fbatch.folios[i];
+>>
 >> --
 >> 2.49.0
 >>
