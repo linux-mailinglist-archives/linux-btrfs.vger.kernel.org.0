@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-12787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12786-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 137B0A7B5A1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 03:48:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 857ECA7B5A0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 03:48:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8C9D179016
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 01:48:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3571189A024
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 01:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065C8339A8;
-	Fri,  4 Apr 2025 01:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB63C42077;
+	Fri,  4 Apr 2025 01:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XhQZaHt3";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XhQZaHt3"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uZkUyp88";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uZkUyp88"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757D62E62B6
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 01:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6F079D0
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 01:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743731293; cv=none; b=V35YNcZP3hxbsXxHq/H8yvQoXZlBBmRK9IbEbTDRKFDSutmAX4nQLmwnvSjVpR9c1kCycT85i1TeoT2zX4LWyPqP2vkDZvqP5Wd70Z/Mu+A41yS8/pAGjspN6HilZf4dUeoKGJgP50R/sIErxzDnGc0e7SwUHNJA6QRTnloD8vc=
+	t=1743731288; cv=none; b=q+7rhTMtme21LUkzoD49FxgqQGhwuWAWOIkr8RtSqQeWa2ROH047bLm5ReqpFeVdha0K+sqfQnjB8qQNss9k68scSKbiOrGU07KOaX2orGqpddrupZCZSqZuN9J+xpw6pTrhlMYuK1O0UCRXdNrrUHUmpl19bMBIJQcPikp23tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743731293; c=relaxed/simple;
-	bh=k9cijWStmcO2oB4fFUjCpZgrBsoZYiG2VlYfkMjBpu8=;
+	s=arc-20240116; t=1743731288; c=relaxed/simple;
+	bh=7AKgjl9lpYwTAfMIYsYrpCqznIFnoiJPfwSpoU4cQC0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tp2Mb1bW6Nkx5eh8E7TwReiJYDAPNhcCcRMhfMizrVPqApXSm4XEmCXPmNKRtk44n3cTm+aRVKJ50KEhLKfZ/PmOVf7DegjrQhLXqvHfLdJ9/KXArwp5u9dMy6Mi4xKxcs/e7iVtlDmLyygybHA5wp8Ii8t6MdXbfAdIDskHoS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XhQZaHt3; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XhQZaHt3; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=dslmj40yjccdl94GWgVhpbv+9PbC+unFRXAd28KvyxeHPICiBUecyxMD50VHAjY61qE59l5gjmF8TJl36mUYCTu3qiHBJVpOiSQ8NRATP4Qp1ffQO4mwfHrE+nYbu0BfLIKA0DP1ZvsJ12bzLyzRsI2v1vwwD1LJ2nc2cnI14Ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uZkUyp88; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uZkUyp88; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7014221190
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 01:48:02 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B3A4E1F387
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 01:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1743731282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1743731283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=LwpnCyumCHU0ZpQzS/a8ZRBmbWyutSoOfbSZ7Y+vCVs=;
-	b=XhQZaHt3zzhPXKakob93OL0BWsHZCx28BUX15WwSg2EauLhr2sjn1Ubf44af+B+FK6VG5n
-	AqPPes8ZZMuOzyNi4jq1hqI9uer0466h0z+ZUktbAZ1FbyM8kze5embC5H/WlWOkfOZJlu
-	pdxJoG8Xn3DqxZplY6PGX/UcviTil6I=
-Authentication-Results: smtp-out1.suse.de;
+	bh=9xvToc+0scTpjmbCcTjtRgS5DN5JVjv7MxxdFFB56ko=;
+	b=uZkUyp88FLv0q9P/G4C9mfS9GYpmL61Pgq01GvL1wvSZfeB3W7MjCVzJKaR3B+o10YCoX8
+	YK/UagjQDNHXZ/Z7Y1gTnLhtaWC8ViYRSU3Fb0doYRAX3+laO2l+uTRHgS/pyO6sOzhf6P
+	TUjYi4j2lQAL4x6KNRSsysxI/B+JGWU=
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1743731282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1743731283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=LwpnCyumCHU0ZpQzS/a8ZRBmbWyutSoOfbSZ7Y+vCVs=;
-	b=XhQZaHt3zzhPXKakob93OL0BWsHZCx28BUX15WwSg2EauLhr2sjn1Ubf44af+B+FK6VG5n
-	AqPPes8ZZMuOzyNi4jq1hqI9uer0466h0z+ZUktbAZ1FbyM8kze5embC5H/WlWOkfOZJlu
-	pdxJoG8Xn3DqxZplY6PGX/UcviTil6I=
+	bh=9xvToc+0scTpjmbCcTjtRgS5DN5JVjv7MxxdFFB56ko=;
+	b=uZkUyp88FLv0q9P/G4C9mfS9GYpmL61Pgq01GvL1wvSZfeB3W7MjCVzJKaR3B+o10YCoX8
+	YK/UagjQDNHXZ/Z7Y1gTnLhtaWC8ViYRSU3Fb0doYRAX3+laO2l+uTRHgS/pyO6sOzhf6P
+	TUjYi4j2lQAL4x6KNRSsysxI/B+JGWU=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A451C134C7
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 01:48:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7A7C134C7
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 01:48:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mGn0GFE672dIDwAAD6G6ig
+	id CDZcKVI672dIDwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 04 Apr 2025 01:48:01 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 04 Apr 2025 01:48:02 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: remove unnecessary early exits in delalloc folio lock and unlock
-Date: Fri,  4 Apr 2025 12:17:40 +1030
-Message-ID: <39d3966f896f04c3003eb9a954ce84ff33d51345.1743731232.git.wqu@suse.com>
+Subject: [PATCH 2/3] btrfs: use folio_contains() for EOF detection
+Date: Fri,  4 Apr 2025 12:17:41 +1030
+Message-ID: <6a71b4597a65114b646032648129558fe6bef38d.1743731232.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1743731232.git.wqu@suse.com>
 References: <cover.1743731232.git.wqu@suse.com>
@@ -108,53 +108,85 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 X-Spam-Score: -2.80
 X-Spam-Flag: NO
 
-Inside function unlock_delalloc_folio() and lock_delalloc_folios(), we
-have the following early exist:
+Currently we use the following pattern to detect if the folio contains
+the end of a file:
 
-	if (index == locked_folio->index && end_index == index)
-		return;
+	if (folio->index == end_index)
+		folio_zero_range();
 
-This allows us to exist early if the range are inside the same locked
-folio.
+But that only works if the folio is page sized.
 
-But even without the above early check, the existing code can handle it
-well, as both __process_folios_contig() and lock_delalloc_folios() will
-skip any folio page lock/unlock if it's on the locked folio.
+For the following case, it will not work and leave the range beyond EOF
+uninitialized:
 
-Just remove those unnecessary early exits.
+  The page size is 4K, and the fs block size is also 4K.
+
+	16K        20K       24K
+        |          |     |   |
+	                 |
+                         EOF at 22K
+
+And we have a large folio sized 8K at file offset 16K.
+
+In that case, the old "folio->index == end_index" will not work, thus
+we the range [22K, 24K) will not be zeroed out.
+
+Fix the following call sites which use the above pattern:
+
+- add_ra_bio_pages()
+
+- extent_writepage()
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 8 --------
- 1 file changed, 8 deletions(-)
+ fs/btrfs/compression.c | 2 +-
+ fs/btrfs/extent_io.c   | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index cb954f9bc332..7aa63681f92a 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -523,7 +523,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+ 		free_extent_map(em);
+ 		unlock_extent(tree, cur, page_end, NULL);
+ 
+-		if (folio->index == end_index) {
++		if (folio_contains(folio, end_index)) {
+ 			size_t zero_offset = offset_in_folio(folio, isize);
+ 
+ 			if (zero_offset) {
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8b29eeac3884..013268f70621 100644
+index 013268f70621..f0d51f6ed951 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -224,12 +224,7 @@ static noinline void unlock_delalloc_folio(const struct inode *inode,
- 					   const struct folio *locked_folio,
+@@ -221,7 +221,7 @@ static void __process_folios_contig(struct address_space *mapping,
+ }
+ 
+ static noinline void unlock_delalloc_folio(const struct inode *inode,
+-					   const struct folio *locked_folio,
++					   struct folio *locked_folio,
  					   u64 start, u64 end)
  {
--	unsigned long index = start >> PAGE_SHIFT;
--	unsigned long end_index = end >> PAGE_SHIFT;
--
  	ASSERT(locked_folio);
--	if (index == locked_folio->index && end_index == index)
--		return;
+@@ -231,7 +231,7 @@ static noinline void unlock_delalloc_folio(const struct inode *inode,
+ }
  
- 	__process_folios_contig(inode->i_mapping, locked_folio, start, end,
- 				PAGE_UNLOCK);
-@@ -246,9 +241,6 @@ static noinline int lock_delalloc_folios(struct inode *inode,
- 	u64 processed_end = start;
- 	struct folio_batch fbatch;
+ static noinline int lock_delalloc_folios(struct inode *inode,
+-					 const struct folio *locked_folio,
++					 struct folio *locked_folio,
+ 					 u64 start, u64 end)
+ {
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+@@ -1711,7 +1711,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+ 		return 0;
+ 	}
  
--	if (index == locked_folio->index && index == end_index)
--		return 0;
--
- 	folio_batch_init(&fbatch);
- 	while (index <= end_index) {
- 		unsigned int found_folios, i;
+-	if (folio->index == end_index)
++	if (folio_contains(folio, end_index))
+ 		folio_zero_range(folio, pg_offset, folio_size(folio) - pg_offset);
+ 
+ 	/*
 -- 
 2.49.0
 
