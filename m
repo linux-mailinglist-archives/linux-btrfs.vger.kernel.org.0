@@ -1,56 +1,80 @@
-Return-Path: <linux-btrfs+bounces-12807-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB78A7C5B7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 23:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 538D4A7C5BA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 23:44:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FDF93BA0D4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 21:41:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 932023B30EC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 21:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B976B218ABA;
-	Fri,  4 Apr 2025 21:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78EF21930A;
+	Fri,  4 Apr 2025 21:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PWynbpQO"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OE3WG1T+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC72182BC
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 21:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872DF18BC3B
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 21:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743802897; cv=none; b=CLqj14qD0YDvxaVGVUN+okkEbYqMphw8snvki6b0OdOW+oN0WHV/VQ5UJoOGb60Ml+Ss/0nHWU1vh33RuYAT6mCngyxLJG7hrszWiI0xcUWQ75+EerUL5AOSp9D8jrZFuVGdghaQbvCWofBBks2RyXi5KLzJ2ixjdMBh4Gzq66E=
+	t=1743803070; cv=none; b=QV0YS7WvCy99T1JvN/BRqDLRKn76W5q0Ah/ILhfcpuwZ+Gh+FRFnkPLS+Mlyj9Wf28WoSUGBI7grnQ7SfRqrtmLDgq6ODFMpgy0MjYgr55btVsVVWhAe+mqn6dgAY2UGXbPJYcnkfXGqYRbq44x4g005e1wxjv4/dEjK9anaq9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743802897; c=relaxed/simple;
-	bh=bhEGOvo9rHSkW3Q0cn3jMgVm8jC67TdcgM8Vg8vStA0=;
+	s=arc-20240116; t=1743803070; c=relaxed/simple;
+	bh=tu2z3RyxJ1GqLPf8Bok+0DZk6lUz6XRXS5hvzdkKAso=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f+UEL8Nej4O2hbSPCHtnA14fXeMz/pbQ/T1Fnyxif0RiVTzpTwrZsXOjRAU+a76IuY646j/3K7+1RQ0QdVvJoCs1glmYn7Rmbzo5E306AVcc8YhCifjPJuzrY/dsXPOo5IdL2XbNBQfIxPeOkCzShjhdMJ3N/v0lGoGBDwlxOsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=PWynbpQO; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1743802892; x=1744407692; i=quwenruo.btrfs@gmx.com;
-	bh=bhEGOvo9rHSkW3Q0cn3jMgVm8jC67TdcgM8Vg8vStA0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=PWynbpQOVc7eElj7lOnIRF55iO4xWax7AEhN93cJyT9Hqs/YSPmWuRa2paVD8WV6
-	 CtqL8utWdVKQvfe+HJwkmjjQoJboOxD+btHdT7XB/gQIIIBWO+OZPsTlcNWM7OhS3
-	 1x3TfsSAul9uLCQWa03xYGPG4f7fa/pU2Na7uugHi31Chb6+RUWew4X+uFCPDtk6H
-	 PrxbFO3E7qz3LWqN7v8NLJxi20i2P2Wpo2bKMqFvNUwifwrADv4zfw08069ohB3qF
-	 1X/4MARtwUaWNmVZ5Cw6g7VLsIbI3OafekA+gtnsFcAaXsdUD5n78/T9xMd/fhmOI
-	 pz4FJOSF8T3lJiq44w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wll-1t3oKA46zh-0106qd; Fri, 04
- Apr 2025 23:41:32 +0200
-Message-ID: <29339223-1c02-4617-9013-66f4c1754d7a@gmx.com>
-Date: Sat, 5 Apr 2025 08:11:29 +1030
+	 In-Reply-To:Content-Type; b=CdjPGVs7vm8tfaNDnlDG0E8TSGbn3+5QBa3+1YkgAN3TEWuJt7bd2qr0D6+Wgju7mfvaJQFqDb/xL5jE90XCwYHsSdxjo95HQVYoXM7PKGkxPrV7+hj6U00loE+FOcBAUUN78otymPlrpCQerN4nutKgFglDw4+15EaeilAZB2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OE3WG1T+; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43edecbfb94so4551975e9.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Apr 2025 14:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1743803066; x=1744407866; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ImpQo54y9mYidRFSCAcvQo+B6QGgRjuvPFPSFjQ7vMc=;
+        b=OE3WG1T+1RQl26rJG5hB/dcdAqFfX9i7B9BiZUzmJ1TfoJsRjYqTFAsBi90NQB3HIV
+         eXzQUSOQ/TRKszQBb4Voh9D7LMIwmbXLHB9EgwEDSFiOAPYQutWZdKpZ/Gy4R/vsTj5n
+         TehXs7lEzU1g6qX+mp4mhVlGdepsEXGL5EBgMWPfBCCYL/qhy58bnvNPXu3qGnjzPP8Y
+         xhJ47NMlkMS460pu1dnM8nevcLQ62m+Uf6gnyrRPyW7YFKrUAG90U9oUBGsJNtiFiCbe
+         DR9qJNN3Fmu5g/HBtoRA7WjLV9gYlXxEplmvne1tdcNRPB6FlaNNXmUTz+8mSyxE40aO
+         go3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743803066; x=1744407866;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ImpQo54y9mYidRFSCAcvQo+B6QGgRjuvPFPSFjQ7vMc=;
+        b=Bxk/ai6ivrtsaTR68yQFexkYegcKPjpZznof40hn8ViTuL2uCtdvGOgzYT3RNmT3F3
+         tcIfoRiW4wtoqC9VXI5BliVfQuWeS0GwGjk5uyYLgH7JYvDz35CVuV119OmesgUQFhB0
+         1KKqVzymUVIVl8QdC1CycfAlu5TVKss5sdkfq0X6thXAlwAlKaLD496TdMbwC3YFxkr6
+         CHhkhBy5EL33xHv77jnSFwZF4Fr63gkPRPx6K5KABSu7Y+++RvJce5TBKnVuQR6am5n9
+         CmXvfKrEsDOktjEupXDvTj2BK6ryuzklWrmNYGVTpQ6HEWjsYO3UL32p1wl5V+xHq6pt
+         yXCQ==
+X-Gm-Message-State: AOJu0YzrWrvE/ceqFI0BvKOeCtJffAM5ZTMpoQAxfJVAkoAvccnXUHMY
+	fkubMnU/zWkac27J9X7cBzcCSpIFemCnNlLQISbs1a8xN4G6HhS0QpS0tDIaxeSJdAReYfO5RdO
+	F
+X-Gm-Gg: ASbGncswbbr9oXZ4fOfCXDYjPFeEgie6fwkzF5jiJ3ZmvIUJzW/S5xf2XEOnIzOrcm6
+	637oaaoSNNe+qfZ+wxDT3jwWsJteq6oeMJuZR01qpTElIeca8paz9/xV3hoNWABTCWN8sxAOZWz
+	zifYbFkl242O+KH/+0gwA8sH84WzE6iJacodNOUW9ohzOT0sxZdtE6n+2N21nosyJ1LoJCDbBuR
+	owFF3HxBnK2+O4MKyAhrRTigLYmdtvaozgWSkElW2kjge3T4cuH32uZhq7ctoiiZwo69KEX9o7F
+	dGAYpAh8h/oO3Bqx0qRz0/QlJCt+vBMTYWwY78RyGVsJOg4zKe5QTumds+8uDbY1ydMGW4kY
+X-Google-Smtp-Source: AGHT+IGjKrv13wA8ubhyfEXFCx7+qqCrHjtWvRMOUXNQMXjzC9x3ca0JcWPSJehmETZk3InZkJKgGw==
+X-Received: by 2002:adf:9cc4:0:b0:39c:1257:cd41 with SMTP id ffacd0b85a97d-39d14764ce2mr2770279f8f.59.1743803065620;
+        Fri, 04 Apr 2025 14:44:25 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739d97d2f2csm3929268b3a.29.2025.04.04.14.44.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Apr 2025 14:44:25 -0700 (PDT)
+Message-ID: <dc2618d9-0ff8-40f1-b5e7-93644fbbe17c@suse.com>
+Date: Sat, 5 Apr 2025 08:14:20 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,110 +82,139 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: mount compress=zstd leaves files uncompressed, that used to
- compress well with before
-To: Dimitrios Apostolou <jimis@gmx.net>
+Subject: Re: [PATCH 1/3] btrfs: remove unnecessary early exits in delalloc
+ folio lock and unlock
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org
-References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net>
- <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net>
- <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
- <2858a386-0e8c-51a6-0d8a-ace78eced584@gmx.net>
- <2b33bf94-ec1d-4825-834d-67f4083ea306@gmx.com>
- <ba2a850f-6697-7555-baa4-32bc6bf62f81@gmx.net>
- <b9f7b83d-5efa-4906-9df3-a27f399162fb@gmx.com>
- <d6abe471-8144-3f13-1002-d55cf7d3e672@gmx.net>
- <939a6f4a-837b-4613-8761-b03f8d4809ea@gmx.com>
- <b338d808-f691-9969-9e48-d4a9f0363af3@gmx.net>
- <61996eb1-de0d-4d9c-b1cc-b24145985d38@gmx.com>
- <5c7978e6-ba04-9aaf-e32c-788f1607254a@gmx.net>
+References: <cover.1743731232.git.wqu@suse.com>
+ <39d3966f896f04c3003eb9a954ce84ff33d51345.1743731232.git.wqu@suse.com>
+ <CAL3q7H5vSyG3zpCZ5hbPT8aR2-xODazLwcKhWGhJYUUMLTus1w@mail.gmail.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <5c7978e6-ba04-9aaf-e32c-788f1607254a@gmx.net>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <CAL3q7H5vSyG3zpCZ5hbPT8aR2-xODazLwcKhWGhJYUUMLTus1w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sO1bfzIf80Uh1p9hdm+0pd2zeWRUjv1JFJu7CAOkyxNIpm20k8Z
- nnynl+kdrX9JSBb3lbxhbq7nNzxU5suLTIWgpA8QTVJtne73uznNgEVF4qiZzmRk5Ao0ncO
- 4jaToR+Wmy2rrjUCnXmRVFcrKrWPE0uhyRA/wwrD5lAhZmN6KaMfGtuA031AmoZirUUnHVd
- YxFPyKZqPwpw9FjERz1ZA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:qkDgRrL7YNU=;XIA/EN5P9t9uTCayhbu+KNOtF4f
- oHkkdw1yJMKJ7Ub3I1s13qAnxORkuUuMwXz8W1rvx665kVDxAitHB5l0GIIKvFeht7/5Zc6gj
- e+q65/PT8z/VxcVyc/nPjWF2ab4FEPvFROV4Fh/U/Z6OE4/QjCe/jjUG7vlZG2lp+58kANsIw
- kKlhEb109ljLRCHCVkyR6evy/XdrhAF3ZHSrVBp+OPXXZUhrQ8A8dCS7KvhB9xsrJ7HwjRato
- rOdtxk5ZJBi1dWQo6yWKg1Wbw3d1dY12qw52oIthC4nAH9ZnZ6PzyLtQ+w3IoAPs2YBvHQGXk
- 1X0fq4xTYvVfwK8iVzvuv4kA+3b2QLQs3EgrbIEUloqtzvCP8ys/3KZbAPUfx9j+UGGOhxw95
- ib6a2Fap6+570gebkVJydOHKSrfx7q5FUbSYkMB71mf991i1wrObSlA0hgkdVkgH6v2bQ5Sab
- ufbJMdAK/btWdQtdYtiT1A+IRsiIt5C4neWg2TivrVHfP43alilRL7yzzg0lTdeh/Cy9nL65T
- iXv4kvmNjFJKfCu2msKple+XkR/rSGLLvJBl8P5+Z3N1hJqZKS8BeQebUYOCky7SAONlLr0cy
- DEEg2tnIvqarvv14+Uo8rBgDkLyRZSJaiTaSGtyCWih4pQHwDlIw3JmUHrbm7henPVFeyQ3NR
- IOFuhSDzUzw0SUeb358QCVsujfdkzYKvEaQmCG3u+2Cvxt4VjKok8UrCddaY1TCpeREXe3wxI
- D5mj8yfOUFGm64vYncPl/d5JeVM4lHcgvLeLYAWLPlvuojw6xbEzi7roa7yD7zcx1uYR+NhMg
- Nl55KSu/qrV6dGer5Q0fgxy1lGyrA2cBalQuXvmtk5FiVfzeEBEGS+YOJ8uqgSvTmvFOqThCE
- r5kNFD/V36M+OznHB+nJw7EhcfnpFQYyf6SNJWtLlVCEekhyB/8ob6+jPWgwhJIRMS3auRVgQ
- x56lIO52AxTQ/sdF/2VW+ISU35ZIzP2SZGdUQrfuDlhwo0dqjO/IAuZBHQ1tIA6B3yDNWWAk5
- Frh60SA7+I5IAODqx6sxpYbzk0VDz1aQDDupbiJRKPbKWRQUFaDJVkgXwzYJ+fJ/z8cJ2h+pF
- PA10uP3Lh8hkYM34oAfyiQpowDqBVLDakVWOFr/J12objwXKSfhDYhkInJvYn+2IJMfIFuzou
- V5+2kRVAD1rPqVkUagiSMP/qc1m43p4vIAO0n+cvBiTxvr/vTBQtz009qeFaNLZH2KvD6H+y4
- 0JmcIJv0S6pjBZJu6H2p1QaW67NqdCO5qnJ0z39nWbVNIEl/3dChNRA/Xsyu8LnTxxMTIqp5D
- BkYUWPx+EiTW/Rvqc8+FTCaIalbBoCAjYDywsUAVBWtTRRIi8HvMDqXMdMQU8olK1NLSd0nJH
- aKms7yOYA2uoDnopotWhgFZQMfb8HwvRNQfX0tZGn63/htmUcBakSRoxp7I5w/cc3au7EZc36
- r7cwT1A==
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/4/5 03:47, Dimitrios Apostolou =E5=86=99=E9=81=93:
-> On Fri, 4 Apr 2025, Qu Wenruo wrote:
+在 2025/4/5 02:34, Filipe Manana 写道:
+> On Fri, Apr 4, 2025 at 2:48 AM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> Looks good to me.
+>> Inside function unlock_delalloc_folio() and lock_delalloc_folios(), we
+> 
+> function -> functions
+> 
+>> have the following early exist:
+> 
+> exist -> exit
+> 
 >>
->> Feel free to submit a github PR or both patches to the mailing list for
->> more review.
->
-> Forgive my ignorance but I thought I did what was needed. I notice now
-> that maybe the subject is wrong. Do I just send an email with the same
-> attachments and [PATCH] in the subject?
+>>          if (index == locked_folio->index && end_index == index)
+>>                  return;
+>>
+>> This allows us to exist early if the range are inside the same locked
+> 
+> exist -> exit
+> the range are inside -> the range is inside
+> 
+>> folio.
+>>
+>> But even without the above early check, the existing code can handle it
+>> well, as both __process_folios_contig() and lock_delalloc_folios() will
+>> skip any folio page lock/unlock if it's on the locked folio.
+>>
+>> Just remove those unnecessary early exits.
+> 
+> It looks good to me from a functional point of view.
+> 
+> But without this early exits there's a bit of work done, from function
+> calls to initializing and releasing folio batches, calling
+> filemap_get_folios_contig()  which
+> will search the mapping's xarray and always grab one folio and add it
+> to the batch, etc.
+> 
+> It's not uncommon to do IO on a range not spanning more than one
+> folio, especially when supporting large folios, which will be more
+> likely.
+> I understand the goal here is to remove some code, but this code is
+> cheaper compared to all that unnecessary overhead.
+> 
+> Have you considered that?
 
-Oh I mean using git-send-email to send the patches to the mailing list,
-that's the common way we do the review in the mailing list.
+Yes, but the main reason here is the usage of (folio->index == index) check.
 
-Some examples:
+With  large folios, such check is no longer reliable anyway, and 
+initially I thought to just change it to folio_contains(), but it turns 
+out that is not really needed either.
 
-https://lore.kernel.org/linux-btrfs/cover.1740542229.git.wqu@suse.com/
-
-Although it means you have to setup your mail box to allow SMTP access.
-
-Thus the other solution is to send a PR through github.
+So that's the main reason to get rid this of these early exits.
 
 Thanks,
 Qu
 
->
-> Thanks,
-> Dimitris
->
+> 
+> Thanks.
+> 
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/extent_io.c | 8 --------
+>>   1 file changed, 8 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 8b29eeac3884..013268f70621 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -224,12 +224,7 @@ static noinline void unlock_delalloc_folio(const struct inode *inode,
+>>                                             const struct folio *locked_folio,
+>>                                             u64 start, u64 end)
+>>   {
+>> -       unsigned long index = start >> PAGE_SHIFT;
+>> -       unsigned long end_index = end >> PAGE_SHIFT;
+>> -
+>>          ASSERT(locked_folio);
+>> -       if (index == locked_folio->index && end_index == index)
+>> -               return;
+>>
+>>          __process_folios_contig(inode->i_mapping, locked_folio, start, end,
+>>                                  PAGE_UNLOCK);
+>> @@ -246,9 +241,6 @@ static noinline int lock_delalloc_folios(struct inode *inode,
+>>          u64 processed_end = start;
+>>          struct folio_batch fbatch;
+>>
+>> -       if (index == locked_folio->index && index == end_index)
+>> -               return 0;
+>> -
+>>          folio_batch_init(&fbatch);
+>>          while (index <= end_index) {
+>>                  unsigned int found_folios, i;
+>> --
+>> 2.49.0
+>>
+>>
 
 
