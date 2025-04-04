@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-12805-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12806-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200F4A7C58E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 23:32:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C27DA7C599
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 23:37:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E366B170280
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 21:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96DB8189564A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 21:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A6A1DFD83;
-	Fri,  4 Apr 2025 21:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7365621507F;
+	Fri,  4 Apr 2025 21:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="CcS1zIyX"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="nNc2AyZJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BDE19047A
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 21:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6468514831E
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 21:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743802326; cv=none; b=Ja/eMkTaUjMOvq3kPbzwUhPFGoZsYKHCz49ELTJjDYvyYQ/M/kzQ0gB23aB7htP/USFY2wrR3KRIgzGWRQvOaMYAlCLZ4HwUhlc8IQ9sus0giiUMpD7ugYPpCE9SrM6tuG77NpVBCkXIi+tD3URauKn9FHaBxKrDRHaPkQ0JVVs=
+	t=1743802652; cv=none; b=Dz4rglhf6kA2XDcCuWrtn/ba76XuxxI0u6mV1fpf0BsDt5xdNmD1940VuVWlAykhavrOjk/uBftBIcuHz57nt51hrdYyYLma0DbT2kYzmZkd8slY7jq9KlLe+/QHAhVjq5JBk2zYlMTClSCMSxSbSI22KPKugN+CEae4+P+R71E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743802326; c=relaxed/simple;
-	bh=ytegULpMPOQuNVuzZ4Dx2zyZFUtfZQ8TqI2Eh05i1Qk=;
+	s=arc-20240116; t=1743802652; c=relaxed/simple;
+	bh=N6JHxTxEwGZ9KY1+ci53kRcuq/17F8GFhHCU06i7rGM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KXrRnWs668mtHLPYS0I1e/rfefUZF4Ggv4TW4Pp5t9u9yMLbdnVkM3Kz1rSb2MPxp+0RS/ps4OMkusTR7AAVD3s+ajk4fuNx7XACJqPAZkwjcMXl06VstrQce9Pjq8dYV3pQYun/rmetLMa9JvL5oVKzMjWpD1Fj1zXDrpDwkF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=CcS1zIyX; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=CV2gWtb9fsULQAU1IUVOf2xLR789GbKDDeB8vhKUO9mw+hx0DeNekFB741tt8jvIUuhiLbFcD2b9Tj1X/OldAaxcw10tUC/cGYscp/Oxh/NZD1P17bc5gXUdvQQL15YnroX3BPjPC/QvlWLc7YeKqGbHw1KJnQbiJukiIwsHfX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=nNc2AyZJ; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1743802321; x=1744407121; i=quwenruo.btrfs@gmx.com;
-	bh=eeZrtL7iqzt7wtOgIRecD9MreUUBoQGeSWOJ296bO5k=;
+	s=s31663417; t=1743802648; x=1744407448; i=quwenruo.btrfs@gmx.com;
+	bh=N6JHxTxEwGZ9KY1+ci53kRcuq/17F8GFhHCU06i7rGM=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=CcS1zIyXkCE+Ka4TPess7aIG97nDPeBoEmHDB2HlDVnyWEC5HnEW1gFsHt8OsVvy
-	 +ib8I3aQQxdEF9878x/UI2HIwAS4P36XljBe4o2QJPgL3VExPBxDn3ykBoKRl9TW0
-	 6UzUOPaihGWxhEVVFhodwrBisob4XMNRhTLSyJp1kU/SYjZDtppEN6MMQ1u7UGXJI
-	 dgfrr5I8r4adBdSd17AIr3eVPKbbFcd8ixseql+98lJ2tnUqaZYSP1vqI0GHGVwY/
-	 Ri6vuNSzSg2ylJj22SBamCd1VFVPuri9A5bCX2ZiQv/xXV2dYxW8bVXuFQhBA1dcT
-	 KywoJcO6y7GL2hOzEg==
+	b=nNc2AyZJ8obyW/8ml1OtKKbpgX8CftQQsrCjlakLI0JbpsSyXPT+hyRlXDkphU+3
+	 pyXZTCQJIwDG94WJ5Bc0G6YdhfSyDVpR8T5sTXjxtPTY7YDx3qKI4fjRW8WBO9Ae2
+	 cHYsLNOtVlPJ9syNZZ3QrwwDlrzSZPVNMwwxf9p8C8/Fxnm+GZMIVyxH/ta0NY0Us
+	 UihBGLMbdM8NaRVbt4FpQfBJ5F7wpdWI2UC4BZdFyf69yVqIvCFPmzjSacKvia494
+	 IQIz5vmVvZJt+oHcvjtkv59pP9otIwWuhAarBqoBtPP+cyRGb5AYYdtiqYZqy06kr
+	 Cm846/8zDhFIXVdU7w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mt79F-1tCYJ60NUf-00tOlI; Fri, 04
- Apr 2025 23:32:01 +0200
-Message-ID: <4c0e8f42-d704-4839-a218-848ff21c9cad@gmx.com>
-Date: Sat, 5 Apr 2025 08:01:58 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3siG-1t1KDv3s8m-0121gP; Fri, 04
+ Apr 2025 23:37:28 +0200
+Message-ID: <7798ba7e-74f3-4ee3-abf3-da2fcc68802c@gmx.com>
+Date: Sat, 5 Apr 2025 08:07:25 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Tree-checker unlikely annotations, error code updates
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1743790644.git.dsterba@suse.com>
+Subject: Re: A lot of errors in btrfscheck. Can fix it?
+To: Fernando Peral <fperal@iesmariamoliner.com>, linux-btrfs@vger.kernel.org
+References: <CA+n7ozwhzdWs=KaBQh2miNwPwYxqBi+MEb807kddGNUZAOyNEA@mail.gmail.com>
+ <ad298eab-b9c9-4954-beb7-fc09b238ed23@gmx.com>
+ <2992e93d-ebab-4e00-ae9c-58bcbaecf690@iesmariamoliner.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,50 +89,128 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <cover.1743790644.git.dsterba@suse.com>
+In-Reply-To: <2992e93d-ebab-4e00-ae9c-58bcbaecf690@iesmariamoliner.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:o7D7pae6n2L9ncbDMKfDVbFUHY47cEgnuoL+7xCuy6/Z253CsGf
- zStDbq6CohmVPE9nSbHQuSGVMz+oScNXFYKA5GS3hTZ+hMHub37/v20zb/QDGxb70OIQ605
- 2VbwVlR3WO2hdwXe/008NKwlrF3CQETXuRtN/lkdWZbTesI5Ji3HzLHN6ebYF5V9oJV5kyh
- B3sggHu0PGaUXHwQgS9oA==
+X-Provags-ID: V03:K1:NN72x/XZms8k8bQRS2rL02+DP+MVPOosVTw+EBJvv9jg9sTGFFC
+ z0DGXT2yl7o2KbIh8E5Mj34pzLMtWTVDbX5YTSC+7SlTc+boIlD7U896gts4Bhi5GucX8M6
+ u3XzlxzTUH91uNGGdWqloAukdk4GAk9pvQmuAMVZOW83OKg3f4DCcwrl9dhMFpvnU5rsKze
+ lq7Q4yPNn7qc6ETZTuwug==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:P4ivPm7YKzg=;6gbBxc5vSzdk2cs/CuUuQx4/jyD
- TZNlySdJMjIMqB6udlG4+wsKqgSr7Qt+yWuKJJuSMYyq4aNZnW/HYZWZsfHQ8kDlNYGTwNHce
- W8X1CpeSE8fqE1Yi8hm+5VeWO1HHDlAD3MPrEImgpvz/ojmYWKB5CjSTfXJNHS4OFRgJ9dg3p
- H2WPNZud1WeWqEwdeWBftoA1lEbBdiy+FzIvF0KfzqhXJmZJLT+r3my9AIjY1sIsKY4iBndjb
- +562FNIAO0qhHZ6HmS+9sy2sLnB1EjBwem6qixLrHB476ocpM7kQqaPGny1h6uToD8Voy7H1K
- Gt5xt4XQgeM06NqzoFJ2OfoZdhZCWv75pkab1aVvkb4XT93HuLg3EBnpgSaUM+U/IsWLQlYea
- 7qCOiRQRibQn5c+B9rTV+QgNH+pRA+s4IgvOIyhmsJmjll860MWDwKKZPyT7xzxyL77mF5doG
- ld650bry11jH2wDq2shSD3AQg2C+fkeWhOIBWXl718ocEYIxBdDE+t88TG0tLrFoeGC6esTSX
- NqMXgWjDidbQTMXHTVy96I2VLURloWNjeHPGBK4nfbILIFmH36Yc6tbdxQJOlMwlsIRSOkULC
- 4BtsfTX99NjTTPSbLxaFHyy+eszX6OhVTNR53+ZmUrCDA3hZXOPu5WYA9k1j+ZoJJc9EyQRSF
- +AXx+u2EUhA/EWD3hmEoO4COfIq9JUE3B2tnBJFVkMq4oMSIoVqS8HxdEvu4t6cckX6+tRuJs
- XfDnhCW2QwKYIr929U/mWyparBj/Yn49f1mcf6rEnD5n1ddG6sUhCZSd3wJk8Qc5NX2u+5mkE
- e6gC0jziE5tHiyw08zEywQPb+WAPd8dfKUzVZSmy7DD4022S9Top5A5ITwQ5CBVh55+otyNTL
- gb6v774ZHmgB635E2ltjZT2LtprLogDeXkXBD0pQrSZGMx4nAL4eC8m8UFOkPCxKP5D3OewwY
- pgPB+Z+sRiJYHhxtEdDPTKadK8o7TuZKH2vbHiU8SOr9czGDS1dPiCXEecjUZ1JX8i88AMlFL
- aIqEX6v8LKczUgw6SlNUmnUjKavUAkoFuTR50MMabz589Vz6ZmzROw3nBxb6X4nDbJ8W81bJG
- a8sFRzh2/Rq38f+B0BiwLv4otI/St8NrL0CrUyQBvnDV5PVzwSRoNJmfoOEjM08YdrS5IiQu/
- 3HDco0y2mVkPgl+SZrkGFbgiA3e3beLP2Rncubz2nSPJWnvSd1xtxAQjxqsCgfi5oXTXBFB2N
- cCX0vmVEV1lyUF358KoQ5AiKXhYDAyREOojTS2iYgq4e1gGU7PnjlHi6vnuYzU8Ze24MhWj7r
- zztSAdq28Sg8ITANuEF1iGpUeH3w6+BGhO0Mt87Vu6C4GddmMTFDv57MMZmItGoTc4r7Bm6ou
- Ev5eXlIZFVrSCi9dQK6CIWIiXmdHRVDEbIGi3fzJ/JSKQPOK6ZIIL8/Bcu6/+vCH8oIy0u7YS
- 15kZ4Uw==
+UI-OutboundReport: notjunk:1;M01:P0:NkjdYNVl244=;LfXsD+mk/Cdfnpau+TNm70moHKF
+ TCLycRGpl9wWW//bcBVz4Ge7W2SLmBSQi+WB/Zm127M+MIB4IMfCrvJJEMGBzj2/+us3AI9AW
+ CcY+mTvsCX2hI1jVGeFm3/fmreZ67gi5V+45HIQegIeZ62ar5SS2hPNLK2R61RnjTGLb2vJyw
+ ONEiXGBYUo6MZxhYm1x7gIrUJCIdB0pQusMDKXlmBBRX/V97fpKxMmNkTQYadrksBhfN1doVt
+ cZS4Aw4C09qv22uekU8epguYf2iKahJ7zlddfdL6znsJcvcHSdHoqTKQp4Ftp7rZgOEKqCKqn
+ CKwbS9CxZQs9kkKxk9JyVLqSd7pmVkTQw2bpsffF+k9Ta8mKsR/ZEoIysdjOGk/1YvRL/X3qN
+ Qk0p5+ZVTUZCr2QdUEiESvipozn8AkcllTi9XDZPmZXb4M2KO412Btl62rwvsw49ijivMjTqL
+ t9kBpbE1jLhfDps+SVChS7J74C4RC2emsxjZdESxsRj+Un+feWXMpL0li2OvWjk2/Xei76FVj
+ BSppMqe2+Mvy6gU77YCo3mHQzJ9rAWweao8oDWBrWcj5dqjGw0acf4zMtOtcT8KicK5tSohpd
+ LRR2rjp4oAjjIGB1hOY8eq06unWVSCIVcmiozjA8ADf4ROUJcAp/uwDJJuiRmI9Inj+7/UFC0
+ PWZd6bH5LD33VQ8i+Y52Rh/I31BmcA5xEQ9zsyvR3rry4IRlPeG3ZXmRDIx1mWu075gLgQ+MI
+ 4oW1vDf7rcd4Lcn5q38jtPYynzIPp1BzHzL7SfPmbQJmxzrg8JqcZ9JyhKpEgHeH5y8KQwszg
+ vWbLH783gjqzsXJgbLbBbgGf/AhphuNxh7uI64w7QDLwycqoC9Dlzw8Ph91XTJHsEbJjS1Ou2
+ JNdP2EM24/qkTrB+AR99Y6zb7ou9Q7wooAX0I1Vic9UbktzvdKAv/hlgQ8smbtTo4Vepe6Pcg
+ shr8gJTKSssboLNw5nABUgXSllNd2Vo5bbXBh/RHunBespf9U9OOjR0Woh8cHxS6IDc2KlUvB
+ cR+sCpiftIgOojnoB+i52fW15K+XTVUPgZ4GDGjmmn1MmmPMfY5jFgZFcl5N8VYQo5PBr28m7
+ qPnjOdhBQCoBB5/Kv7If3X1dPVhKTlBBfSvQhgrc/HYxMEEbffW4UgGcWo2z381iZebUlvs4L
+ t1DGK4Jnh+hxfUxjGwLYUkGBkzdRcpUy2RC1k8UNaNL9zgHTPA8MMMXZQm9bgjHFFPD7tT8FY
+ yE8UkUZ1jnh7xcm5ghlIO/oCf0568dV1oKrxOtcWGgRKqeEPnAe4QDftH/weviOOZmiJyKWMx
+ qD5wQERd6gRa9WEta/MmG+r8+1JfrHfpXwA/BJuuUx1LEGmVKH1YnHfThrLC+MdEaTwEpJZB4
+ T+/S/Yh8wb3WJ6YJHcFamQxjPMFl5RDekk3RjTL7GPsfVsjYS8YDkZqjC53WT3iCNRbzzuLjG
+ fBCnpyw==
 
 
 
-=E5=9C=A8 2025/4/5 04:49, David Sterba =E5=86=99=E9=81=93:
-> David Sterba (2):
->    btrfs: tree-checker: more unlikely annotations
->    btrfs: tree-checker: adjust error code for header level check
+=E5=9C=A8 2025/4/4 19:58, Fernando Peral =E5=86=99=E9=81=93:
+> On 4/4/25 09:54, Qu Wenruo wrote:
+>>
+>>
+>> =E5=9C=A8 2025/4/4 09:00, Fernando Peral P=C3=A9rez =E5=86=99=E9=81=93:
+>>> Opensuse leap 15.6 with btrfs in /dev/nvme0n1p1
+>>>
+>>> one day fs remounts RO.
+>>
+>> The first time you hit RO the dmesg is the most helpful.
+>>
+>>> =C2=A0I reboot the system and all works and i
+>>> forgot about it.=C2=A0 Then some days after it happen again... and aga=
+in,
+>>> and once each 1-2 days.
+>>>
+>>> I boot with last opensuse tumbleweed rescue system and run
+>>> btrfs check /dev/nvme0n1p1=C2=A0 > btrfserrors.log 2>&1
+>>> file size is 7MB (72000+ lines)
+>>> This is an extract
+>>> [1/8] checking log skipped (none written)
+>>> [2/8] checking root items
+>>> [3/8] checking extents
+>>> parent transid verify failed on 49450893312 wanted 349472898974925
+>>> found 820429
+>>> parent transid verify failed on 49450893312 wanted 349472898974925
+>>> found 820429
+>>
+>> Although you have ran memtest, the pattern still looks like some memory
+>> corruption at runtime:
+>>
+>> hex(349472898974925) =3D 0x13dd8000084cd
+>> hex(820429)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =3D 0=
+x00000000c84cd
+>>
+>> BTW, the 349472898974925 value looks too large for a transid, thus it
+>> may be the corrupted one.
+>>
+>>
+>> Not sure why but the lowest 2 bytes matches, maybe an indication of
+>> random memory range corruption.
+>>
+>> There used to be a known bug related to amd_sfh driver which causes
+>> runtime kernel memory corruption.
+>>
+>> But it should not affect the openssue kernel AFAIK.
+>>
+>> So I have no idea what can cause this, especially when you have ran
+>> memtest already.
+>>
+>> [...]
+>>> My questions
+>>>
+>>> Can the fs be fixed?
+>>
+>> Nope.
+>>
+>>> Can the copies I have done be reliables?
+>>
+>> From the fsck, at least csum tree is not corrupted, thus the recovered
+>> one should have csum verified.
+>>
+>> So yes.
+>>
+>> Thanks,
+>> Qu>
+>>> Thanks in advance.
+>>>
+>>
+>>
+>>
+> I had the memtest running about 2 hours (two full passes).
 >
->   fs/btrfs/tree-checker.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
+> You say it seems memory error. Then it can have been caused by a "one-
+> time" memory error (or one time whatever error) or must I search for
+> some fault in my hardware?
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Kernel modules have full access to all the pages, and can corrupt the
+memory if there are some bugs. Just like the amd_sfh example I mentioned.
+
+In that case, it's possible.
+
+But that can also be exposed by memtester, which runs as a user space
+program, mlocks tons of pages and tests those locked pages.
+This exposes all those pages to the same kernel you're running, thus if
+it's really some bad kernel modules, with enough runs it should expose the=
+m.
 
 Thanks,
 Qu
+
 
