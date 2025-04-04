@@ -1,56 +1,80 @@
-Return-Path: <linux-btrfs+bounces-12789-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12790-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12112A7B6BF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 06:05:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA102A7B6CF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 06:15:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC7F23B8167
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 04:04:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A3D7178E83
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 04:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA5E2770B;
-	Fri,  4 Apr 2025 04:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E0D182BC;
+	Fri,  4 Apr 2025 04:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Jy1EWukf"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FRo7Yr8n"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD5F3C38
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 04:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 144382AF10
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 04:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743739507; cv=none; b=UeYXPkCFhIdAX1+Zw2VHFugYRs3X8CzGFR7UL+1hL3x/7e3HxkfVZ4gur+bPowj4I6Z9nIZjtQc+9f5HvX4cleUwKVbYEIdgaOqWjT+rBfOqRGpoAQ5h9EwIDI5ts5T2ERQxHsOYorRWaaLcRwwwSsKfZUSxkLkrCscJzq3kuT8=
+	t=1743740142; cv=none; b=FH6910pFT75RoxW+PvKmTsDpYkeftYVWrgiQIU+dfYUoLn1hSxtms2EcCOe5sBsQ7P/RPu18eWP9xQSvGvEWCMNUW1P660ECIphsbgqU7zOn+oaKX/YFbfcSCqavN8Cyfg8ql6GWHGm/euxZmRBxh9w+xSjpFTPhiMOe4OEGcD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743739507; c=relaxed/simple;
-	bh=Yj7gDx1lTU/gxjDuiiSGjQSmoQchUTnUXVTetHqNxwk=;
+	s=arc-20240116; t=1743740142; c=relaxed/simple;
+	bh=rem28ueMjIYFo/KFIOhnA7Jg70Bn1mUvrfoP48UTum4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BhbBnWvH9/xcbHXMolZ+KmC17JuNLxA+TDnk6q2RGDS7CJvL6kFv/aNRrm3klQs80Pie++bOETb1RuH6G4kgRZlwx+etnsDqpYPRMcN+hF86RJuPwBTln3DCNI55c028RhfjnBpc7ubyAqXSqbmkV5CXi02E/8mRM0sPEnNovQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Jy1EWukf; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1743739440; x=1744344240; i=quwenruo.btrfs@gmx.com;
-	bh=Yj7gDx1lTU/gxjDuiiSGjQSmoQchUTnUXVTetHqNxwk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Jy1EWukfZK98w+rEF111uRvCmXlX+ujCco5whY/7u2Rh9I/WrDkl+9e65xEd43uI
-	 mT+BxMTGBlfo8MIJM9KUGyCUyQoV9pmFKuSr/jLPpKVjdA6HKSD/j+m14wYZ3dj73
-	 L+32IdxjoMNUWBrTiIFgz+UBR2Yw/pyrUIvTDRi26j6JhdAQkdlnFxq8urPwVubS5
-	 PQZHMTiU3+66h6SHxq3AR/nSRkaNh9E/7kLSiowBVJ7X2r8LehM6HVHnzhZa+ycXV
-	 P6XQhMAaII7zVPA5gRydWRTQRvjxBGXJ9+2iazx1/CdlTShUTq7nY6NWd2byK81Jz
-	 PG2++zjAjIrCU6Vnyg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M1HZo-1txn7t2Xpy-0095ki; Fri, 04
- Apr 2025 06:04:00 +0200
-Message-ID: <61996eb1-de0d-4d9c-b1cc-b24145985d38@gmx.com>
-Date: Fri, 4 Apr 2025 14:33:56 +1030
+	 In-Reply-To:Content-Type; b=UHJFpp+RoqYclHu8+/lalb1BXc1cOgw4FJQAHIKrtyCnbEfGgWk232Nmd0ucw+R/yqudZLFH0KgE37zSJnXCE1Aob555dCqjuB6jH///NqXnUbwCc1Lvgun9F1waYiatYz+vHTFmMVUygzk06u29M0eyzNoTAWWrWbHQPS8CJJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FRo7Yr8n; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3912fdddf8fso1683003f8f.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Apr 2025 21:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1743740138; x=1744344938; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z3n5AiVvOUUkMjG/cgjmZt7WKb4qY8zTDshKKmJlFos=;
+        b=FRo7Yr8nbc3j1JnFBgGYZBM7AsnIbcZO7BR/k4Mj00seclxt991O0344ifkvglPPIM
+         zjUIEpQM7enqEXJTG4hSVZpB6igbYrFAZrgpJHd4pcE0VzqDJXPQ51dHgHMWzh9KazOa
+         3Gg1JCrVZ91fpTYdq//huKJ/kazfh6LDU+KPhChb0c8NvChrIxw3o3p3qZzAbI+B1tg3
+         Dh9KxDrp99MgWk1LTYOpZEjlTzOTqP4dx7msDvvc9gXbQaOz2HJfDIo/VB0oA+mjoxKA
+         666bcpRc2sDI1P/VjriWLEEX10BoYBa32EPSRT3csrx42jGacnuNi/5t4a22Pe+haV/9
+         1tRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743740138; x=1744344938;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z3n5AiVvOUUkMjG/cgjmZt7WKb4qY8zTDshKKmJlFos=;
+        b=Fa/ju+RIbWHa7YEkYKYlKSEME8rkTTLF2E74TWhSTPIN7RqlKM3wWJLJr/P1+ReRgZ
+         I2MSfWamrN7xu2o6Kfg7SuhhmVB2/JTAFQEDDI7NwjcoR5HYu2fkCCWhr/b4BCSiDUfm
+         R7YTtK96tlqUBiZucBMexBQvBA/jsXLnKX4O350R1gZKfga0CGND+CQ1UACp3xy95JTr
+         gPGzUIdhYUhEUzgD0SnhpxIqQDtT8Hwcjqa1CkPNwapMNtl2vOQ0E18BSbw8hdGGkg8+
+         jIOmzm5sczRpA9v2MOdPNMsdYxmRsMLMrBaP2NwSM2Goz1YitHBUpWx+P2Lepk70iUch
+         DNJg==
+X-Forwarded-Encrypted: i=1; AJvYcCWT9fT2aZ/qXMwiO6mFSPzIAWCEe9fkF0me2w04PUi4Tto2M2K4u8eLWeaqxAeKTjBEcO+dnWGO/QPydg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzY5cha5KlO5KQnD7QgkhJYJbGTJUcCqVwV/DtpecInkmBb8R2z
+	Y8f+vZBsZP5oSnFyBe2364YxQ9ESBhyEmMx7Dq38iVrUVLYPX6SZ47Iqbn1X3l4=
+X-Gm-Gg: ASbGncswpmN5nffuxAvrU58r4c14euAG2XLV/kuzK+fSi5yLv7NXM5HyeWuq/eFSQYS
+	jYKmJS5V9BWD7kBiZ89fGTlVyo57Udzph716cXp3NKuLUGGR/VdDaazov69d43fCCdxezfGGYvN
+	zZah1om7Mlb/Gph6vMz8NStSdEhmxr8/Z2VC8iNSBJ2IjIYvGBvUrKY1H8MH4G7YbQKyHMtQlPC
+	yCVkTt0yU1rYKeRjYScgSA8YLqseSgjvQre8qImkNGlks1N+Xf9va55el8lmj2ugercY+6WiHzE
+	el/XYfrvrhQ4DXkbr8GrQFPHrZ/TfeO0SymUtv3VrzptHBpHk+29CsVAg+Xhi0dF36pK9rOM
+X-Google-Smtp-Source: AGHT+IE7U2iAkNipH9A2jU55/5LO2X+FYLeN7GAyPLKHn9jLmMXYLc9cXnz/fYJ/8UlGlZyVhJnl/g==
+X-Received: by 2002:a05:6000:2211:b0:391:952:c74a with SMTP id ffacd0b85a97d-39c2e610f88mr5174550f8f.8.1743740138059;
+        Thu, 03 Apr 2025 21:15:38 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22978662508sm22702955ad.139.2025.04.03.21.15.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Apr 2025 21:15:37 -0700 (PDT)
+Message-ID: <c4d317ed-859c-4ee0-bdbe-e92f4cd7fb95@suse.com>
+Date: Fri, 4 Apr 2025 14:45:32 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,93 +82,86 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: mount compress=zstd leaves files uncompressed, that used to
- compress well with before
-To: Dimitrios Apostolou <jimis@gmx.net>
-Cc: Gerhard Wiesinger <lists@wiesinger.com>, linux-btrfs@vger.kernel.org
-References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net>
- <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net>
- <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com>
- <2858a386-0e8c-51a6-0d8a-ace78eced584@gmx.net>
- <2b33bf94-ec1d-4825-834d-67f4083ea306@gmx.com>
- <ba2a850f-6697-7555-baa4-32bc6bf62f81@gmx.net>
- <b9f7b83d-5efa-4906-9df3-a27f399162fb@gmx.com>
- <d6abe471-8144-3f13-1002-d55cf7d3e672@gmx.net>
- <939a6f4a-837b-4613-8761-b03f8d4809ea@gmx.com>
- <b338d808-f691-9969-9e48-d4a9f0363af3@gmx.net>
+Subject: Re: Large folios and filemap_get_folios_contig()
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>, vivek.kasireddy@intel.com,
+ Andrew Morton <akpm@linux-foundation.org>
+References: <b714e4de-2583-4035-b829-72cfb5eb6fc6@gmx.com>
+ <Z-6ApNtjw9yvAGc4@casper.infradead.org>
+ <59539c02-d353-4811-bcbe-080b408f445e@suse.com> <Z-8s1-kiIDkzgRbc@fedora>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <b338d808-f691-9969-9e48-d4a9f0363af3@gmx.net>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <Z-8s1-kiIDkzgRbc@fedora>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uH/O1GHV73nOjaI2MA28tczx2bOHoA+9qMFF4dZPB7RH3nNZgei
- KggsDgTB/w+2RJ1mv5uztABLXNbcFtWycdQpzXSaw3i7c1qxvVBzIuwWJJLiyUReGyrtp1Q
- 8RhoOGsGfGl6ifHG3ZXHVBfZ0TIG58IMfJkxwKxNuA2GT5mDgrA6Evd+gD6/ynuoYZU+M6L
- OYKhF/alo2wc1AFQ0qJWQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:nYlx53tS1MU=;BYrqya9YNJ8o6Uq4NCdomz5yzJr
- PyvQm6AuCUtx9SMMA1VNBDQ3CEYl+F+73ZbkzZy6S3tl25W2A/WK4zDFTmHYkyRhZpZJs4OPW
- M/ypW68PiHMOvRfuhxX05kcMyMYi2h+TJW5hTuUWOP7zbWaRwDuNtms0uaCkv1S4I6QqgtP7g
- QxgCsCIuvg2qfp/e4jIT/j/x8MdzqqLM/D6lwRn9z3xq08ERpFicRUgS45smTri7XETXxsN2Y
- CwAERx6H0/EbgtPTMU0uY7rOiGVyC8dtliVI5j5hjXdsCQHgM32f/NEkGPfyxfa6Y6c1ZZrGC
- I3R/c2SgZDxBZg4v7kXxnRkI1jBu7tm+k0p3gEKWQP1G64FIuh1PBOQVHaLjYtUF3U5wY13aG
- pNoGOhpYJmiJmrdK1e5On34OKpXLQVa1jVINw6Eh1aeGtWS+LRznqOdEiDBkjsmw/54broibA
- iWS3ziiMzupojSJV805D7fQzNHCGd1OyH5ESQtN00LwwVeLHQtT+w1Goy8QJnE/IhenmoFywu
- 2GOxXUqnFJ+S9ofnJLLvwU9qcXfq58cmhTZpRS4SDjrTUM6MZR6k7JA24nYfVoRRF9BcDbzzI
- qj30SRYmeGNe4d0/c+qEdtuIBGLEg0MeSPqxa+YVFSg/822NlNwueVW3RAdRgRjAsKrvsL0OB
- IchHzwTbqXEOFuc2hccVAMIZpJjBz9FDdg1LQynjRsM87l3YUEl7DNaPcEtC9QZJf/N3UMv9n
- TNdB0oc304zkGzaSDs6VArcmSV4+GvEd7LA1uxv7m5c0Cigjk/pM9HoFxfblbQi4E7fLoIMOZ
- o8Z+Lq43uOGs/kZ9JWbL6ctGEmpWXW0FewEtFoPo4hFsz2PW11NBk5ePG2uql47fbe9BpeipB
- ZOqj6NlXpcBjzacn9rt7D+lYkyViG3wluLRnHk0nIMmn39rlk2wDbBCIqylu5kEkR/I3XviUg
- MLK8zgBNE625HzIy/EkYyGFmQGMP0+bWfUai8jnVLlRryAgl9RgzlNZZ2ew1UoDBZFxy4KsKx
- NmStMbn4i66EeQr1oMx9TVjZiY86jrq2IkhmFdx3sotH0cl5EAhc8+BqvVed1Wep8Yj+5XWQs
- SToBXbaanN6TaAM+tYUenjC5ZBzHFQ6se2oUn/eKeGPNaOvbBQSl5BMr4H7MWrfsNHLMBjfUi
- Fo6sdnf/zd/8oaU0MtWlNmj2INRx4whSFzzJkvV/bCnuQ54Sn+nSdwq/DVQcuqEEdea8NkItL
- 0HWMBenz0C95Y8Ww6jhzPSgBqLMEfn+Xn/3TD3B469RdLSHcdJ5H/VJ6q8jF3nY8MdpknZ8ny
- 61vZK1oRSvCbQx+Idjt4S1+9Zksn4ftGQH2p/BJVYiDFKaqHTIdEDMS2c0UWVJxKqRpmfv1Ga
- onNA8V8P/8a0N7+YEffcrxtdrC6NYAtTsigpxxAls21dBD/20Yhr2tSDtIQICynEChg8hGv/1
- 3sGPi8jxH0Es67inb25DwEZJRlb4=
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/4/4 11:53, Dimitrios Apostolou =E5=86=99=E9=81=93:
-> Thanks for the feedback, please see the attached patches. I decided to
-> omit some details. I also include another simple patch clarifying that
-> compress-force might end up writing uncompressed blocks.
+在 2025/4/4 11:20, Vishal Moola (Oracle) 写道:
+> On Fri, Apr 04, 2025 at 07:46:59AM +1030, Qu Wenruo wrote:
+>>
+[...]
+>>>> Then I looked into the caller of filemap_get_folios_contig() inside
+>>>> mm/gup, and it indeed does the correct skip.
+>>>
+>>> ... that code looks wrong to me.
+>>
+>> It looks like it's xas_find() is doing the correct skip by calling
+>> xas_next_offset() -> xas_move_index() to skip the next one.
+>>
+>> But the filemap_get_folios_contig() only calls xas_next() by increasing the
+>> index, not really skip to the next folio.
+>>
+>> Although I can be totally wrong as I'm not familiar with the xarray
+>> internals at all.
+> 
+> Thanks for bringing this to my attention, it looks like this is due to a
+> mistake during my folio conversion for this function. The xas_next()
+> call tries to go to the next index, but if that index is part of a
+> multi-index entry things get awkward if we don't manually account for the
+> index shift of a large folio (which I missed).
+> 
+> Can you please try out this attached patch and see if it gets rid of
+> the duplicate problem?
 
-Looks good to me.
+My reproducer no longer hang and the trace events indeed shows only one 
+folio returned.
 
-Feel free to submit a github PR or both patches to the mailing list for
-more review.
-
-Thanks,
+Thanks for the quick fix,
 Qu
 
->
-> Thanks,
-> Dimitris
+> 
+>> However I totally agree the duplicated behavior (and the extra handling of
+>> duplicated entries) looks very wrong.
+>>
+>> Thanks,
+>> Qu
+
 
