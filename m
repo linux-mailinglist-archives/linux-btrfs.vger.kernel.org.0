@@ -1,111 +1,149 @@
-Return-Path: <linux-btrfs+bounces-12800-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12801-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDBBFA7C242
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 19:17:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC616A7C2D0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 19:49:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 409877A6E84
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 17:16:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88FD17A9697
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Apr 2025 17:48:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404FE20E01B;
-	Fri,  4 Apr 2025 17:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8586821C9E3;
+	Fri,  4 Apr 2025 17:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b="WaqgvHh2"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GKJ5wKN5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="emgHoltP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GKJ5wKN5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="emgHoltP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45171D9A79
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 17:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1CC1FF5F3
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Apr 2025 17:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743787057; cv=none; b=pqVWUxrPvXHPZfXbw1Ty6pSNrHAkx67tgOErfU+zyVXd01VB05QCFxRUNlOksmeHaxc7fObcpnI8VxBZlThFee/fG2ivfbUt4MsEmZWbjl5koC34QZHOecmQApiJUwwnO8jphpwCG5d+IfSDBUep8lRD0AMy0ht8Ib5oiGZ+A/U=
+	t=1743788925; cv=none; b=hwSq0y344sOkE0vh+T4VguK78OYPM76fIijDHVCI7VZuNZaZ9EfneXEMWkeMRqmyDdsHslmAJQ7NmHvj5UPYy5tHdqiAUPYNeENswrN4bQyixAIMBWZ0R4vd4+baGtDxYPOmiv1FYokexQHcTHFqilSmRkfjC72ohobRIp1L/+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743787057; c=relaxed/simple;
-	bh=Sm8Uz9+CxFokI5O1lpb8XokPQyRH9AWSVr1+qRcSwlA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=X0Q9zrHJRRyDqB3oXa9LbVcXPSh0uafKgtyh3bqTLiY5xWJEIPbe1SxvaYYMstB7opb2jm26N8ETD6+eGERoSxdZr2cFeeLLo0QM8VKoQvElhLWeT0/k6LsCDFMnKLvxxCcunNUAo8w8h1ZxJ/4KJzM/lrvIcTI1baaZEFzgx+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b=WaqgvHh2; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1743787052; x=1744391852; i=jimis@gmx.net;
-	bh=Sm8Uz9+CxFokI5O1lpb8XokPQyRH9AWSVr1+qRcSwlA=;
-	h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=WaqgvHh2h9QE1Ez3zGaip5n4FMMpvzmqYFX7n/4RjksnJPx3IofdfiKfvEnJHwqu
-	 A/YDVkSZleWX9wNfOgoxWDSZ8aOkFvXaA5HuA6m1KQIEgcyQk/evvEchuJ23fml/Z
-	 Olt5EPiYsifEmAebZfBAFXjYs0YuPoSDVbFax2J4G9UakPgzjDkGJamwm4YvtnYq5
-	 isC66OzAbM8giCFn4IdE2GXRxYWSBag0Tq5fEggaT5dL89/p77hJ47Jw7LxV3yZS1
-	 Y27jdjpQZB+XlNLPXUJY+cWSJXZp/aaNnxyt1todiaQun8SNJcAk6jaiZXYDvY3tr
-	 GP3YXaUNkaneWAK69w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.9.70.81] ([185.55.106.54]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N2V0H-1t5Ws72j5L-00rjGm; Fri, 04
- Apr 2025 19:17:32 +0200
-Date: Fri, 4 Apr 2025 19:17:31 +0200 (CEST)
-From: Dimitrios Apostolou <jimis@gmx.net>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-cc: linux-btrfs@vger.kernel.org
-Subject: Re: mount compress=zstd leaves files uncompressed, that used to
- compress well with before
-In-Reply-To: <61996eb1-de0d-4d9c-b1cc-b24145985d38@gmx.com>
-Message-ID: <5c7978e6-ba04-9aaf-e32c-788f1607254a@gmx.net>
-References: <2f70d8f3-2a68-1498-a6ce-63a11f3520e3@gmx.net> <d1c2f041-f4f5-9dad-511c-117ed8704565@gmx.net> <8aaba46c-f6d5-4f3a-a029-f564b8a6a9ff@wiesinger.com> <2858a386-0e8c-51a6-0d8a-ace78eced584@gmx.net> <2b33bf94-ec1d-4825-834d-67f4083ea306@gmx.com>
- <ba2a850f-6697-7555-baa4-32bc6bf62f81@gmx.net> <b9f7b83d-5efa-4906-9df3-a27f399162fb@gmx.com> <d6abe471-8144-3f13-1002-d55cf7d3e672@gmx.net> <939a6f4a-837b-4613-8761-b03f8d4809ea@gmx.com> <b338d808-f691-9969-9e48-d4a9f0363af3@gmx.net>
- <61996eb1-de0d-4d9c-b1cc-b24145985d38@gmx.com>
+	s=arc-20240116; t=1743788925; c=relaxed/simple;
+	bh=qAA04ieFu7c+/UqP+v96dzsOQtrUzJHp44lUtGlhDr0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RH7AgcEP0GQTowhnQvQXlQw/JzkWBEZ+yodu1FmMzx0Kx1FWKHZhqsKRp+5NTKh1HMSrAAFHjwpLUkUpH5KxY4P+lCuzwF7kLhedmsh/8/fV5IiWGTxeMyFre3ybgPCCDVnoiJkMljbQzsDrJ/wmoXb3ArMSX4iLAOqSC0hvYOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GKJ5wKN5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=emgHoltP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GKJ5wKN5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=emgHoltP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D9C2211B3;
+	Fri,  4 Apr 2025 17:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743788922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oRaUNvCOpk/WgdU3pPpyhzBJjknNkACnCgBpEzgYvKk=;
+	b=GKJ5wKN5RIZGJ8xvZbmLwPMB/s2+Nuz0UzfsnlzR773oneu6Ecl08fsw1EMNrEV5/zRcLm
+	NlttL0gJ0X0J9EMGcS05hVHBbP0pOJK7wTvmS0NOowTEyfJVQWI+4QJsrdFdakxbFWDNH3
+	xWyGs0vrcvqSI9OX1XilQzmUvy7kgRE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743788922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oRaUNvCOpk/WgdU3pPpyhzBJjknNkACnCgBpEzgYvKk=;
+	b=emgHoltPpyPt2bdSr0gSV4cb+b5naSHBzozcEFSYK1zOiEL3yAAPmwLVDhTG6l/NlHc42g
+	Yt7ufcszX+3O0bCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GKJ5wKN5;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=emgHoltP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743788922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oRaUNvCOpk/WgdU3pPpyhzBJjknNkACnCgBpEzgYvKk=;
+	b=GKJ5wKN5RIZGJ8xvZbmLwPMB/s2+Nuz0UzfsnlzR773oneu6Ecl08fsw1EMNrEV5/zRcLm
+	NlttL0gJ0X0J9EMGcS05hVHBbP0pOJK7wTvmS0NOowTEyfJVQWI+4QJsrdFdakxbFWDNH3
+	xWyGs0vrcvqSI9OX1XilQzmUvy7kgRE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743788922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oRaUNvCOpk/WgdU3pPpyhzBJjknNkACnCgBpEzgYvKk=;
+	b=emgHoltPpyPt2bdSr0gSV4cb+b5naSHBzozcEFSYK1zOiEL3yAAPmwLVDhTG6l/NlHc42g
+	Yt7ufcszX+3O0bCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F33371364F;
+	Fri,  4 Apr 2025 17:48:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rb4jO3kb8GfPJwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 04 Apr 2025 17:48:41 +0000
+Date: Fri, 4 Apr 2025 19:48:36 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: tracepoints: use btrfs_root_id() to get the id of
+ a root
+Message-ID: <20250404174836.GX32661@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <acef2fc25f3912f7cb105e45d4d63a3a096c2eb6.1743762625.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Provags-ID: V03:K1:WBrkO60lhi+RWeSV4dYoFsEmkEQFbzEfqSWa72P/M3Hk5yqDj+p
- lZPAdAXoHrmxkJ/pDBRwtyqBblsTRFeBxfwL8pP34C+mFxZXb/PEXhvSHHK1UKwKK+mcoDX
- FV5IW6KeEAcn63f8vSQXgL+lpwNnvY9ksbYLMfmvSfsRmmlKRIpo7zTRA/bkf7ARTpHSeM7
- V6qN+elMpQNWf0bJBwbcQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acef2fc25f3912f7cb105e45d4d63a3a096c2eb6.1743762625.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 0D9C2211B3
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rUkTkVcW5JI=;iSu/Yoy+vibbNytPSoUQddA2PVc
- xL9+0W+JNXwrgoHrpo1CLSDi1JJiMswm/R9hfacZ7Nw28oUoWqvYyxra2letaQK39LgJaHNL1
- Xnqd91UTYn1A65bnSW8N482PjcsMPgnlAF40tRT/ytvVd2GrCyVOe21IhHkaj9J9He2S71y8S
- lL5Waxh12StzQUfPFsJzwrNLBEuGhzMfQlFgQBP2CSrikG8psQPsNwugDjuTiDoul/mRW4Rv1
- +2tcEQSoeCDc4FSYUXXK/JI502AOIJHtZL9byBdDsOtIrE9WRZFgAloH4RgYCB4eeZW7K8Q9U
- 7Il7eOTiLoXl5ndMEFYIinWtENA3KL4PLIw9nYNwTDNTBD5xVNzN1i9ONhfd0fHyD5dIKItaM
- /vVSY/TrW0Dws97IwVi8oaR90txRvdbh87+WV9AWMd9Ve6OcoxrI5XX0K4MR04JZtyF8i2FYb
- tBBW5idZtOkshLgg4fCSJSax4ei8Z/dIWG4K5osTcbrIAzn9u/xb0yOZfUF52Cr/3IRrttD69
- n/NcwDLGeQaCb7k/pDOkXZYl9fDHrb2in15CCsId+OCL1lGk8DeT0M4NxFIP2uTSCoWHrPn0Y
- 6EoIChLhauxFLNREiyvzwewnKgOtW1q5ugfttzx/YAJlMPpVOefA1+G5QaMzRZyUZ+h37sLib
- Ua3ASJ1BdGSAh/IjV52IXpcYBifxIgH9SBK1/0IXJxTKUAuMSryDKH9kQBGwDl1aFlSg2rBYQ
- TthwI9KBiHtdS1CBCe/wtL1FJpWRU7UUa6iQGOm5WLyeytg3uygSYpZ3/1OlySV3Mh1WS4O6O
- X6VPsM4TsOQxfRusB6pBiQef7QYn++JXX1bqZEnYABJ/nDkrUhbY6YxkGwXPa8vwRfpTu3oOf
- vSOYhhC9yzENCY4k+Z4cDlFpzBxZqkFZwGs/JU21iUQ8+CCVKZtfYeQvURirIonaxnariHlZI
- RJLrjofThXzmd9wYkv/+HGW6+rvl3skxIYXTwy6ZQt9svnHRW8KMGaelv/OZLqCqZxoaNt2F0
- MVYrx6RWvX8L31xhKHRflEvXtlmDb2QXWJS1S7qm9OLeJ9j+ugnaOewnE3bWdKVueNO6mNg0Z
- ZTjSAP3gScUgwRzD+B/ZIOVmapxhUVP/Qfce9EJQG6Ew+EOzUOHLYvH9pRWO0BnxQSgINy5iD
- q+2r0t7x6rFcgHvc0v1lHsEVa1jnj/HNDIxnp+q3xLiJpfaaLXjw++svX62Yk55/Zzd31lQTI
- kHouuKtOAT+0JwKpdqTjc2Wsu152tD0srjrCZTOxB+6kiV9EnxRxXUuj6FdphkSHzYbOrAu8T
- nT4V9aSsrQpvfC8FcqUqw18qF3sQ0IYBcVMUQCHGK3XxM6bazL0ZsPLaJVKYZKkPy0aqma/9l
- pdKvEbRetbLFqfwU4X6+YqKK3VmRyik7nkLiM3q0KXzQQXwXu9kK8gpM/tL/U93TMUInleFys
- 0/JK26w==
-Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: 
 
-On Fri, 4 Apr 2025, Qu Wenruo wrote:
->
-> Looks good to me.
->
-> Feel free to submit a github PR or both patches to the mailing list for
-> more review.
+On Fri, Apr 04, 2025 at 11:31:05AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Instead of open coding btrfs_root_id() to get the ID of a root, use the
+> helper in the tracepoints, which also makes the code less verbose.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Forgive my ignorance but I thought I did what was needed. I notice now
-that maybe the subject is wrong. Do I just send an email with the same
-attachments and [PATCH] in the subject?
-
-Thanks,
-Dimitris
+Reviewed-by: David Sterba <dsterba@suse.com>
 
