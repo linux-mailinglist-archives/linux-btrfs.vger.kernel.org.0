@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-12850-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12851-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00393A7E8B8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 19:44:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88601A7E8C4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 19:45:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E33444024D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 17:40:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64F753BEB93
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 17:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0959E253F03;
-	Mon,  7 Apr 2025 17:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86515253F0D;
+	Mon,  7 Apr 2025 17:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8MA/GwP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="atgpo/zf"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFB8253B71
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC754253F06
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744047399; cv=none; b=XYd96rVAd6M06r4DmI/8GAawz/wK23dS40EAnexjOO52i0W0oBaIVwqoly2Q+jg4nJXpWPFH7cy7s8ilaTxEDJF7fyMvKpO2JQgQyfu4W7OBxO1OrOooKTEO6Mzlqt/Mt5oWY1pEczQjBMc699+r3hurOFRx+Xm9rdrXkVZFOV4=
+	t=1744047400; cv=none; b=haeVcP/5LQ7FW/JNUyJ1PE7W/41OkO9E3kEOe5U+CvQzHYfduvGo28xzO1KEz+6Q0GRyiUSsAH0cJJNKSFJXcBnt7ZGobg6W9mruBPe5oGo6ZWmeGrB5pvgebjBJjgLq3GUxmKtwojxoeyaQIq/GC0m+oQqK2kW8bzoOvi2V/6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744047399; c=relaxed/simple;
-	bh=NU6+RVsRnEEd8/T+N2BxYouKBPYZG93j6NxmPgjHNkw=;
+	s=arc-20240116; t=1744047400; c=relaxed/simple;
+	bh=nTseM5QWh3ZUYBO0VxksLYOHE44ykn922+QEreyhW7g=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hfKbmgIPqasRPQbEeJwOQKuaL7Fvyi4Ub8dt5y8efEcj35sFqu5Hv4u+doreiVT063lGEcS6J8HmyX42yiLbGpQv1/FrFwb81K3R6ehXRfilNo+wFtKHZanehffeCjgvJ49lxDLmt+tXouz5+HvkK8REHCJblWBXJstfgon533g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8MA/GwP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B191C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:38 +0000 (UTC)
+	 MIME-Version; b=PniSogtm3vFZAv9fwvNZmhKsEdMAE3ajJRvItSmvCgQWldK7ZlhcVAxsVv/XEvxqLj7VZ1lDghk52luCl8YhwbO4LVI+qb5QUVQAkc6LTYJNag44bx6lCST5Uy8QAxuGeJvWLvzis+79s76XujA8bt+ni2AH3HNlnxeRRApSmyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=atgpo/zf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C72C4CEDD
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744047399;
-	bh=NU6+RVsRnEEd8/T+N2BxYouKBPYZG93j6NxmPgjHNkw=;
+	s=k20201202; t=1744047400;
+	bh=nTseM5QWh3ZUYBO0VxksLYOHE44ykn922+QEreyhW7g=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=X8MA/GwP5rJkI3ACMarpI9wzmIZOwrrEF7FQ4BLFBetVMrWDh/T4U0aWhJQXq75GY
-	 3ghTD1/YUjyyH8VXMlOog/2ZK9yeMiA3o35hpYFqlgrfsSNH8k2Po4WEewv3h7bhQ3
-	 6ToI1fHmLDyAoejeVGMXav2X61dTok2Flo9SAZ2l+LBuD5EqbzG5OwDhgef6TCFilt
-	 EUVZF0TQu6UR5fHJgcp2BVbkkKcMiPJiZVuhANY/GocjI/AvtlC+Xh4hvziUInYz6/
-	 WflA3L7go2BxzQpJnaMGjyH96BenK5JtChrPwg7b55+0DzUdXU1SRgwdcBV4TGnFvQ
-	 r3DK4aRU5zNlQ==
+	b=atgpo/zfQghELfwpbAL34t9nx+97ItwaSVQnlskHE/brDvH97euIcqMa7hT16BJEE
+	 1Qt3wEFFKWbZrfbQGOrDmjbNk4o7OSp2065FVgoDvdImtvZqYqFk9aayJDl5EkmstK
+	 1mEdFnPygVhNfD5i2xwUS4h2lntq3ks2oS1jN6eCqM7QAeTXui6gxUCNvooL3UcK0t
+	 XnrP3i/84WgD7ykcYM0G3FDAl2noqu3ZTYkOPZXZB4SsGjxoEMPqvu3PwT0aOR4mLn
+	 bWEfbJgXd55YOJL4mHU9wB4ve1sit2Jc6AmTsoOgmNZjbuIDVzkbI/jTfcEPtor3Sr
+	 qyLidkYUnunmg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/16] btrfs: rename the functions to count, test and get bit ranges in io trees
-Date: Mon,  7 Apr 2025 18:36:19 +0100
-Message-Id: <c6f1a1df5d4aa215fd06195fa80e987c13ad7044.1744046765.git.fdmanana@suse.com>
+Subject: [PATCH 13/16] btrfs: rename free_extent_state() to include a btrfs prefix
+Date: Mon,  7 Apr 2025 18:36:20 +0100
+Message-Id: <2e16b0eb178186d2b286ba5f75742fdcecab1d4f.1744046765.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1744046765.git.fdmanana@suse.com>
 References: <cover.1744046765.git.fdmanana@suse.com>
@@ -59,234 +59,311 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-These functions are exported so they should have a 'btrfs_' prefix by
-convention, to make it clear they are btrfs specific and to avoid
-collisions with functions from elsewhere in the kernel.
+This is an exported function so it should have a 'btrfs_' prefix by
+convention, to make it clear it's btrfs specific and to avoid collisions
+with functions from elsewhere in the kernel.
 
-So add a 'btrfs_' prefix to their names to make it clear they are from
-btrfs.
+Rename the function to add 'btrfs_' prefix to it.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/defrag.c         |  4 ++--
- fs/btrfs/extent-io-tree.c | 18 +++++++++---------
- fs/btrfs/extent-io-tree.h | 18 +++++++++---------
- fs/btrfs/extent_io.c      | 10 +++++-----
- fs/btrfs/file.c           |  8 ++++----
- fs/btrfs/inode.c          | 13 +++++++------
- fs/btrfs/relocation.c     |  4 ++--
- 7 files changed, 38 insertions(+), 37 deletions(-)
+ fs/btrfs/dev-replace.c    |  2 +-
+ fs/btrfs/disk-io.c        |  2 +-
+ fs/btrfs/extent-io-tree.c | 30 +++++++++++++++---------------
+ fs/btrfs/extent-io-tree.h |  2 +-
+ fs/btrfs/extent-tree.c    |  2 +-
+ fs/btrfs/extent_io.c      |  6 +++---
+ fs/btrfs/fiemap.c         |  2 +-
+ fs/btrfs/file.c           |  6 +++---
+ fs/btrfs/transaction.c    |  4 ++--
+ 9 files changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 587f2504a570..d56815a685be 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -1024,8 +1024,8 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		 *    very likely resulting in a larger extent after writeback is
- 		 *    triggered (except in a case of free space fragmentation).
- 		 */
--		if (test_range_bit_exists(&inode->io_tree, cur, cur + range_len - 1,
--					  EXTENT_DELALLOC))
-+		if (btrfs_test_range_bit_exists(&inode->io_tree, cur, cur + range_len - 1,
-+						EXTENT_DELALLOC))
- 			goto next;
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 55608ac8dbe0..483e71e09181 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -804,7 +804,7 @@ static int btrfs_set_target_alloc_state(struct btrfs_device *srcdev,
+ 		start = found_end + 1;
+ 	}
  
- 		/*
+-	free_extent_state(cached_state);
++	btrfs_free_extent_state(cached_state);
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f90f74d8b137..aaf29b0ddf98 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4734,7 +4734,7 @@ static void btrfs_destroy_pinned_extent(struct btrfs_fs_info *fs_info,
+ 		}
+ 
+ 		btrfs_clear_extent_dirty(unpin, start, end, &cached_state);
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
+ 		btrfs_error_unpin_extent_range(fs_info, start, end);
+ 		mutex_unlock(&fs_info->unused_bg_unpin_mutex);
+ 		cond_resched();
 diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index 4b9f18a12154..835a9463f687 100644
+index 835a9463f687..6317004f36c4 100644
 --- a/fs/btrfs/extent-io-tree.c
 +++ b/fs/btrfs/extent-io-tree.c
-@@ -1612,10 +1612,10 @@ void btrfs_find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
-  * all given bits set. If the returned number of bytes is greater than zero
-  * then @start is updated with the offset of the first byte with the bits set.
-  */
--u64 count_range_bits(struct extent_io_tree *tree,
--		     u64 *start, u64 search_end, u64 max_bytes,
--		     u32 bits, int contig,
--		     struct extent_state **cached_state)
-+u64 btrfs_count_range_bits(struct extent_io_tree *tree,
-+			   u64 *start, u64 search_end, u64 max_bytes,
-+			   u32 bits, int contig,
-+			   struct extent_state **cached_state)
- {
- 	struct extent_state *state = NULL;
- 	struct extent_state *cached;
-@@ -1700,7 +1700,7 @@ u64 count_range_bits(struct extent_io_tree *tree,
- /*
-  * Check if the single @bit exists in the given range.
-  */
--bool test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32 bit)
-+bool btrfs_test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32 bit)
- {
- 	struct extent_state *state;
- 	bool bitset = false;
-@@ -1726,8 +1726,8 @@ bool test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32
- 	return bitset;
+@@ -130,7 +130,7 @@ void btrfs_extent_io_tree_release(struct extent_io_tree *tree)
+ 		 * (see wait_extent_bit()).
+ 		 */
+ 		ASSERT(!waitqueue_active(&state->wq));
+-		free_extent_state(state);
++		btrfs_free_extent_state(state);
+ 		cond_resched_lock(&tree->lock);
+ 	}
+ 	/*
+@@ -170,7 +170,7 @@ static struct extent_state *alloc_extent_state_atomic(struct extent_state *preal
+ 	return prealloc;
  }
  
--void get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u32 *bits,
--		    struct extent_state **cached_state)
-+void btrfs_get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u32 *bits,
-+			  struct extent_state **cached_state)
+-void free_extent_state(struct extent_state *state)
++void btrfs_free_extent_state(struct extent_state *state)
  {
- 	struct extent_state *state;
+ 	if (!state)
+ 		return;
+@@ -349,7 +349,7 @@ static void merge_prev_state(struct extent_io_tree *tree, struct extent_state *s
+ 		state->start = prev->start;
+ 		rb_erase(&prev->rb_node, &tree->state);
+ 		RB_CLEAR_NODE(&prev->rb_node);
+-		free_extent_state(prev);
++		btrfs_free_extent_state(prev);
+ 	}
+ }
  
-@@ -1763,8 +1763,8 @@ void get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u32 *bits,
- /*
-  * Check if the whole range [@start,@end) contains the single @bit set.
-  */
--bool test_range_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bit,
--		    struct extent_state *cached)
-+bool btrfs_test_range_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bit,
-+			  struct extent_state *cached)
- {
- 	struct extent_state *state;
- 	bool bitset = true;
+@@ -364,7 +364,7 @@ static void merge_next_state(struct extent_io_tree *tree, struct extent_state *s
+ 		state->end = next->end;
+ 		rb_erase(&next->rb_node, &tree->state);
+ 		RB_CLEAR_NODE(&next->rb_node);
+-		free_extent_state(next);
++		btrfs_free_extent_state(next);
+ 	}
+ }
+ 
+@@ -526,7 +526,7 @@ static int split_state(struct extent_io_tree *tree, struct extent_state *orig,
+ 		} else if (prealloc->end > entry->end) {
+ 			node = &(*node)->rb_right;
+ 		} else {
+-			free_extent_state(prealloc);
++			btrfs_free_extent_state(prealloc);
+ 			return -EEXIST;
+ 		}
+ 	}
+@@ -566,7 +566,7 @@ static struct extent_state *clear_state_bit(struct extent_io_tree *tree,
+ 		if (extent_state_in_tree(state)) {
+ 			rb_erase(&state->rb_node, &tree->state);
+ 			RB_CLEAR_NODE(&state->rb_node);
+-			free_extent_state(state);
++			btrfs_free_extent_state(state);
+ 		} else {
+ 			WARN_ON(1);
+ 		}
+@@ -652,7 +652,7 @@ int btrfs_clear_extent_bit_changeset(struct extent_io_tree *tree, u64 start, u64
+ 			goto hit_next;
+ 		}
+ 		if (clear)
+-			free_extent_state(cached);
++			btrfs_free_extent_state(cached);
+ 	}
+ 
+ 	/* This search will find the extents that end after our range starts. */
+@@ -744,7 +744,7 @@ int btrfs_clear_extent_bit_changeset(struct extent_io_tree *tree, u64 start, u64
+ out:
+ 	spin_unlock(&tree->lock);
+ 	if (prealloc)
+-		free_extent_state(prealloc);
++		btrfs_free_extent_state(prealloc);
+ 
+ 	return 0;
+ 
+@@ -796,7 +796,7 @@ static void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 			schedule();
+ 			spin_lock(&tree->lock);
+ 			finish_wait(&state->wq, &wait);
+-			free_extent_state(state);
++			btrfs_free_extent_state(state);
+ 			goto again;
+ 		}
+ 		start = state->end + 1;
+@@ -814,7 +814,7 @@ static void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 	if (cached_state && *cached_state) {
+ 		state = *cached_state;
+ 		*cached_state = NULL;
+-		free_extent_state(state);
++		btrfs_free_extent_state(state);
+ 	}
+ 	spin_unlock(&tree->lock);
+ }
+@@ -890,13 +890,13 @@ bool btrfs_find_first_extent_bit(struct extent_io_tree *tree, u64 start,
+ 			 * again. If we haven't found any, clear as well since
+ 			 * it's now useless.
+ 			 */
+-			free_extent_state(*cached_state);
++			btrfs_free_extent_state(*cached_state);
+ 			*cached_state = NULL;
+ 			if (state)
+ 				goto got_it;
+ 			goto out;
+ 		}
+-		free_extent_state(*cached_state);
++		btrfs_free_extent_state(*cached_state);
+ 		*cached_state = NULL;
+ 	}
+ 
+@@ -1249,7 +1249,7 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ out:
+ 	spin_unlock(&tree->lock);
+ 	if (prealloc)
+-		free_extent_state(prealloc);
++		btrfs_free_extent_state(prealloc);
+ 
+ 	return ret;
+ 
+@@ -1474,7 +1474,7 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ out:
+ 	spin_unlock(&tree->lock);
+ 	if (prealloc)
+-		free_extent_state(prealloc);
++		btrfs_free_extent_state(prealloc);
+ 
+ 	return ret;
+ }
+@@ -1686,7 +1686,7 @@ u64 btrfs_count_range_bits(struct extent_io_tree *tree,
+ 	}
+ 
+ 	if (cached_state) {
+-		free_extent_state(*cached_state);
++		btrfs_free_extent_state(*cached_state);
+ 		*cached_state = state;
+ 		if (state)
+ 			refcount_inc(&state->refs);
 diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index 85eeee4ac613..2f5e27d96acd 100644
+index 2f5e27d96acd..238732b23e93 100644
 --- a/fs/btrfs/extent-io-tree.h
 +++ b/fs/btrfs/extent-io-tree.h
-@@ -160,17 +160,17 @@ static inline bool btrfs_try_lock_extent(struct extent_io_tree *tree, u64 start,
- int __init extent_state_init_cachep(void);
- void __cold extent_state_free_cachep(void);
+@@ -165,7 +165,7 @@ u64 btrfs_count_range_bits(struct extent_io_tree *tree,
+ 			   u64 max_bytes, u32 bits, int contig,
+ 			   struct extent_state **cached_state);
  
--u64 count_range_bits(struct extent_io_tree *tree,
--		     u64 *start, u64 search_end,
--		     u64 max_bytes, u32 bits, int contig,
--		     struct extent_state **cached_state);
-+u64 btrfs_count_range_bits(struct extent_io_tree *tree,
-+			   u64 *start, u64 search_end,
-+			   u64 max_bytes, u32 bits, int contig,
-+			   struct extent_state **cached_state);
+-void free_extent_state(struct extent_state *state);
++void btrfs_free_extent_state(struct extent_state *state);
+ bool btrfs_test_range_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bit,
+ 			  struct extent_state *cached_state);
+ bool btrfs_test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32 bit);
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 7ca5cfaccbfd..266a159fe5bb 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2843,7 +2843,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
+ 		ret = unpin_extent_range(fs_info, start, end, true);
+ 		BUG_ON(ret);
+ 		mutex_unlock(&fs_info->unused_bg_unpin_mutex);
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
+ 		cond_resched();
+ 	}
  
- void free_extent_state(struct extent_state *state);
--bool test_range_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bit,
--		    struct extent_state *cached_state);
--bool test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32 bit);
--void get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u32 *bits,
--		    struct extent_state **cached_state);
-+bool btrfs_test_range_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bit,
-+			  struct extent_state *cached_state);
-+bool btrfs_test_range_bit_exists(struct extent_io_tree *tree, u64 start, u64 end, u32 bit);
-+void btrfs_get_range_bits(struct extent_io_tree *tree, u64 start, u64 end, u32 *bits,
-+			  struct extent_state **cached_state);
- int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 			     u32 bits, struct extent_changeset *changeset);
- int btrfs_clear_extent_bit_changeset(struct extent_io_tree *tree, u64 start, u64 end,
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 679f07390bb8..617e08946dd5 100644
+index 617e08946dd5..86c6c1b1677b 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -372,8 +372,8 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
- 	btrfs_lock_extent(tree, delalloc_start, delalloc_end, &cached_state);
+@@ -330,7 +330,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
  
- 	/* then test to make sure it is all still delalloc */
--	ret = test_range_bit(tree, delalloc_start, delalloc_end,
--			     EXTENT_DELALLOC, cached_state);
-+	ret = btrfs_test_range_bit(tree, delalloc_start, delalloc_end,
-+				   EXTENT_DELALLOC, cached_state);
+ 		/* @delalloc_end can be -1, never go beyond @orig_end */
+ 		*end = min(delalloc_end, orig_end);
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
+ 		return false;
+ 	}
  
- 	btrfs_unlock_extent(tree, delalloc_start, delalloc_end, &cached_state);
- 	if (!ret) {
-@@ -2620,7 +2620,7 @@ static bool try_release_extent_state(struct extent_io_tree *tree,
- 	bool ret = false;
- 	int ret2;
+@@ -356,7 +356,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ 		/* some of the folios are gone, lets avoid looping by
+ 		 * shortening the size of the delalloc range we're searching
+ 		 */
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
+ 		cached_state = NULL;
+ 		if (!loops) {
+ 			max_bytes = PAGE_SIZE;
+@@ -2646,7 +2646,7 @@ static bool try_release_extent_state(struct extent_io_tree *tree,
+ 	if (ret2 == 0)
+ 		ret = true;
+ out:
+-	free_extent_state(cached_state);
++	btrfs_free_extent_state(cached_state);
  
--	get_range_bits(tree, start, end, &range_bits, &cached_state);
-+	btrfs_get_range_bits(tree, start, end, &range_bits, &cached_state);
+ 	return ret;
+ }
+diff --git a/fs/btrfs/fiemap.c b/fs/btrfs/fiemap.c
+index ba65a4821c44..43bf0979fd53 100644
+--- a/fs/btrfs/fiemap.c
++++ b/fs/btrfs/fiemap.c
+@@ -871,7 +871,7 @@ static int extent_fiemap(struct btrfs_inode *inode,
  
- 	/*
- 	 * We can release the folio if it's locked only for ordered extent
-@@ -2680,8 +2680,8 @@ bool try_release_extent_mapping(struct folio *folio, gfp_t mask)
- 			free_extent_map(em);
- 			break;
- 		}
--		if (test_range_bit_exists(io_tree, em->start,
--					  extent_map_end(em) - 1, EXTENT_LOCKED))
-+		if (btrfs_test_range_bit_exists(io_tree, em->start,
-+						extent_map_end(em) - 1, EXTENT_LOCKED))
- 			goto next;
- 		/*
- 		 * If it's not in the list of modified extents, used by a fast
+ 	ret = emit_last_fiemap_cache(fieinfo, &cache);
+ out:
+-	free_extent_state(delalloc_cached_state);
++	btrfs_free_extent_state(delalloc_cached_state);
+ 	kfree(cache.entries);
+ 	btrfs_free_backref_share_ctx(backref_ctx);
+ 	return ret;
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 630343d8b0e7..ec644840fa49 100644
+index ec644840fa49..57c5d12a0ff3 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -3254,10 +3254,10 @@ static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start, u64 end
- 		if (inode->delalloc_bytes > 0) {
- 			spin_unlock(&inode->lock);
- 			*delalloc_start_ret = start;
--			delalloc_len = count_range_bits(&inode->io_tree,
--							delalloc_start_ret, end,
--							len, EXTENT_DELALLOC, 1,
--							cached_state);
-+			delalloc_len = btrfs_count_range_bits(&inode->io_tree,
-+							      delalloc_start_ret, end,
-+							      len, EXTENT_DELALLOC, 1,
-+							      cached_state);
- 		} else {
- 			spin_unlock(&inode->lock);
- 		}
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index bf1f4821b8db..9c32465dcf9b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1738,8 +1738,8 @@ static int fallback_to_cow(struct btrfs_inode *inode,
- 	 * when starting writeback.
- 	 */
- 	btrfs_lock_extent(io_tree, start, end, &cached_state);
--	count = count_range_bits(io_tree, &range_start, end, range_bytes,
--				 EXTENT_NORESERVE, 0, NULL);
-+	count = btrfs_count_range_bits(io_tree, &range_start, end, range_bytes,
-+				       EXTENT_NORESERVE, 0, NULL);
- 	if (count > 0 || is_space_ino || is_reloc_ino) {
- 		u64 bytes = count;
- 		struct btrfs_fs_info *fs_info = inode->root->fs_info;
-@@ -2310,7 +2310,7 @@ static bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
- {
- 	if (inode->flags & (BTRFS_INODE_NODATACOW | BTRFS_INODE_PREALLOC)) {
- 		if (inode->defrag_bytes &&
--		    test_range_bit_exists(&inode->io_tree, start, end, EXTENT_DEFRAG))
-+		    btrfs_test_range_bit_exists(&inode->io_tree, start, end, EXTENT_DEFRAG))
- 			return false;
- 		return true;
+@@ -1290,7 +1290,7 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *iter,
+ 				btrfs_unlock_extent(&inode->io_tree, lockstart, lockend,
+ 						    &cached_state);
+ 			else
+-				free_extent_state(cached_state);
++				btrfs_free_extent_state(cached_state);
+ 			btrfs_delalloc_release_extents(inode, reserved_len);
+ 			release_space(inode, *data_reserved, reserved_start, reserved_len,
+ 				      only_release_metadata);
+@@ -1319,7 +1319,7 @@ static int copy_one_range(struct btrfs_inode *inode, struct iov_iter *iter,
+ 	if (extents_locked)
+ 		btrfs_unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 	else
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
+ 
+ 	btrfs_delalloc_release_extents(inode, reserved_len);
+ 	if (ret) {
+@@ -1471,7 +1471,7 @@ int btrfs_release_file(struct inode *inode, struct file *filp)
+ 
+ 	if (private) {
+ 		kfree(private->filldir_buf);
+-		free_extent_state(private->llseek_cached_state);
++		btrfs_free_extent_state(private->llseek_cached_state);
+ 		kfree(private);
+ 		filp->private_data = NULL;
  	}
-@@ -3378,8 +3378,8 @@ bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
- 		return true;
- 
- 	if (btrfs_is_data_reloc_root(inode->root) &&
--	    test_range_bit(&inode->io_tree, file_offset, end, EXTENT_NODATASUM,
--			   NULL)) {
-+	    btrfs_test_range_bit(&inode->io_tree, file_offset, end, EXTENT_NODATASUM,
-+				 NULL)) {
- 		/* Skip the range without csum for data reloc inode */
- 		btrfs_clear_extent_bits(&inode->io_tree, file_offset, end,
- 					EXTENT_NODATASUM);
-@@ -7154,7 +7154,8 @@ noinline int can_nocow_extent(struct btrfs_inode *inode, u64 offset, u64 *len,
- 
- 		range_end = round_up(offset + nocow_args.file_extent.num_bytes,
- 				     root->fs_info->sectorsize) - 1;
--		ret = test_range_bit_exists(io_tree, offset, range_end, EXTENT_DELALLOC);
-+		ret = btrfs_test_range_bit_exists(io_tree, offset, range_end,
-+						  EXTENT_DELALLOC);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index c640e80d2a20..ad6a7a25b9d9 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1156,7 +1156,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+ 			ret = filemap_fdatawrite_range(mapping, start, end);
+ 		if (!ret && wait_writeback)
+ 			ret = filemap_fdatawait_range(mapping, start, end);
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
  		if (ret)
- 			return -EAGAIN;
- 	}
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 0a5a48aa58cc..4bfc5403cf17 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2409,8 +2409,8 @@ static int tree_block_processed(u64 bytenr, struct reloc_control *rc)
- {
- 	u32 blocksize = rc->extent_root->fs_info->nodesize;
- 
--	if (test_range_bit(&rc->processed_blocks, bytenr,
--			   bytenr + blocksize - 1, EXTENT_DIRTY, NULL))
-+	if (btrfs_test_range_bit(&rc->processed_blocks, bytenr,
-+				 bytenr + blocksize - 1, EXTENT_DIRTY, NULL))
- 		return 1;
- 	return 0;
- }
+ 			break;
+ 		cached_state = NULL;
+@@ -1197,7 +1197,7 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
+ 			ret = 0;
+ 		if (!ret)
+ 			ret = filemap_fdatawait_range(mapping, start, end);
+-		free_extent_state(cached_state);
++		btrfs_free_extent_state(cached_state);
+ 		if (ret)
+ 			break;
+ 		cached_state = NULL;
 -- 
 2.45.2
 
