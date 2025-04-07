@@ -1,51 +1,54 @@
-Return-Path: <linux-btrfs+bounces-12838-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12839-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6CFEA7E8B1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 19:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFF0CA7E8B3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 19:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A074189E5A8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 17:40:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 051F91893C39
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Apr 2025 17:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B481521ADAB;
-	Mon,  7 Apr 2025 17:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA52227599;
+	Mon,  7 Apr 2025 17:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ksgxBO3D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lq8F6KMZ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0447D20A5D6
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E13921ADC2
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744047387; cv=none; b=qb4Z8WYkPXWYqOIfaIi8bLNxP5fHW/5Ck3v6OxKbspIPJ9Fq9rc3T1WTcgI6dpRMIud7OMSTcK6yxUHTg6yUOMWGTypiMwuIP+YkTbDrHCuHtq1nE0FJN1hutSeDDG5wx86js1O0jjYQ6Q/iLTfU8B6wFBltBlPwoi24sSPj87Y=
+	t=1744047388; cv=none; b=S1W8HDlOT+wdpKnBDk9QscJ+6qiIa/wphgFrdkpNsCDupIz7LPpkzyd3XT22y8/NdgWCAxnYDHcm0PuOUHATeDxcTU16bxUjkJ08qQfXff5Oerjzgl3wsj69xHgE4vMssg6XusiyIxCk0WIMud5ZU4gibp4iYY7n+RNhlMcn800=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744047387; c=relaxed/simple;
-	bh=CDA5jfrrEV6kuK3LcY3YjEVVSFn6OfHHdzJF4FwtqvY=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=sencJF6GopE7+ccu8U28uV0wstrfSBwZQysZwoWcatOq00I2Qw5Rd8YuoyeNCUBVZn9ydvhrPHBwh9raAly/ABc215W1cQvm5yU6Ro86O1s0IZq0XfJSPC3qQsBf2+20HuB2tTw9+9Xs4kK6ujQ0Ek2kKvcDjG86EGy+elx/Fw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ksgxBO3D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D96F3C4CEDD
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:25 +0000 (UTC)
+	s=arc-20240116; t=1744047388; c=relaxed/simple;
+	bh=BifU0Evu7nYaMCsKFAMeXKiUFp9PFIu0AK6mrJCeLs4=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=JLkmAp1GsTiuNCUeFcE98E1uywm8DoAEDsIHaJszs8iOWAkDGY1WiTak+Lf2K2xIE1mOIGACAMosqFvqFNyo/IcKpbn16uqrsmIZH5Ij33CqoIZov1OoPpdO8n2ZuZ4m8GG9f4bz2C4UJMdjLYD3Y0mk1zFapwmQG64O0/E2izk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lq8F6KMZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E45EAC4CEE7
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Apr 2025 17:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744047386;
-	bh=CDA5jfrrEV6kuK3LcY3YjEVVSFn6OfHHdzJF4FwtqvY=;
-	h=From:To:Subject:Date:From;
-	b=ksgxBO3DL6GH5rP8nX89csfv+3vqiHcRC53RXlnjeG6Z3VWECFNvOybGa/BOismJ1
-	 xb5SqTPKzzWigGBiFSS6Rae2VghwO7rq5UqTY0NHneGzAxWC/FtScsdvJBeXbd7VUu
-	 LUlVkJT7640hsY6H9VkxisdGfYMyIV3EZsfcVye2SOJ0Nqcic5aJJgDJ8WKSf1bOBy
-	 eiqiS5LTja7h6Qz+S2PnVsmbE6FS2oW1Dw8Jxe8WzrZ/T2TrGtek30wa+A4lzeXxEH
-	 je+hmUqzo5IOVKZKC5gYBn1YYaiVwo/EkHiJARgedDVo2ksZkUnO4qYkg8P2oZ2Yks
-	 1JoJKdgXuGgsQ==
+	s=k20201202; t=1744047387;
+	bh=BifU0Evu7nYaMCsKFAMeXKiUFp9PFIu0AK6mrJCeLs4=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=lq8F6KMZ4tScKCtfMth94Xa+tlcNdg7hvRxxyg6tuzJQzqn8ePijXk9WexHSiE7DZ
+	 EsImuP3kWLdUPvqSZZsXZtUpwNhmBzPCMDMgl/upSNZOXvcJ4UMoFxs7cf/52eBYMI
+	 I5gvqCZR+JjSlPlosphiHbBQB5klupk0I10NSv9s5TXlV6xJzMJIfIOiGt2fDrZhZ3
+	 zgq3tp3EK6m5YgLHyNy968lHzfGIH32aeSTUXSi/HvLyBUZjvWPD4nMFzXL6ndNKQa
+	 9iCKUXIaFJUfaHgXDKKNGfK1xNeY0n6JuV1pWaIm0Cw6PUhLgA3yB5d3prd9Z8mSD9
+	 KH7Kzjbt5JxXA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 00/16] btrfs: some cleanups for extent-io-tree (mostly renames)
-Date: Mon,  7 Apr 2025 18:36:07 +0100
-Message-Id: <cover.1744046765.git.fdmanana@suse.com>
+Subject: [PATCH 01/16] btrfs: remove extent_io_tree_to_inode() and is_inode_io_tree()
+Date: Mon,  7 Apr 2025 18:36:08 +0100
+Message-Id: <ff5526066ce19b76e1b2b596813d480138e86699.1744046765.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1744046765.git.fdmanana@suse.com>
+References: <cover.1744046765.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,70 +59,157 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-These are mostly to rename exported functions so that they have a 'btrfs_'
-prefix and follow coding style, to avoid potential clashes in the future
-with other kernel functions defined elsewhere outside btrfs. As more
-functions are added to extent-io-tree.h, there's a tendency to follow the
-existing style and not add a 'btrfs_' prefix for consistency with the
-other function names, so as time passes we get more exported functions
-that don't follow the coding style by missing a 'btrfs_' prefix. I'm in
-the process of adding another new exported function to extent-io-tree.h
-and found my self unconfortable adding a 'btrfs_' prefix to it while the
-other exported functions don't have one.
+These functions aren't used outside extent-io-tree.c, but yet one of them
+(extent_io_tree_to_inode()) is unnecessarily exported in the header.
 
-I tried to split the rename into several and more reasonably sized patches
-to make it easier to review and also because a few do a bit more than
-simply renaming, but with notes in the change logs.
+Furthermore their single use is in a pattern like this:
 
-Filipe Manana (16):
-  btrfs: remove extent_io_tree_to_inode() and is_inode_io_tree()
-  btrfs: add btrfs prefix to trace events for extent state alloc and free
-  btrfs: add btrfs prefix to main lock, try lock and unlock extent functions
-  btrfs: add btrfs prefix to dio lock and unlock extent functions
-  btrfs: rename __lock_extent() and __try_lock_extent()
-  btrfs: rename the functions to clear bits for an extent range
-  btrfs: rename set_extent_bit() to include a btrfs prefix
-  btrfs: rename the functions to search for bits in extent ranges
-  btrfs: rename the functions to get inode and fs_info from an extent io tree
-  btrfs: directly grab inode at __btrfs_debug_check_extent_io_range()
-  btrfs: rename the functions to init and release an extent io tree
-  btrfs: rename the functions to count, test and get bit ranges in io trees
-  btrfs: rename free_extent_state() to include a btrfs prefix
-  btrfs: rename remaining exported functions from extent-io-tree.h
-  btrfs: remove double underscore prefix from __set_extent_bit()
-  btrfs: make btrfs_find_contiguous_extent_bit() return bool instead of int
+    if (is_inode_io_tree(tree))
+        foo(extent_io_tree_to_inode(tree), ...);
 
- fs/btrfs/block-group.c           |  34 ++---
- fs/btrfs/compression.c           |   6 +-
- fs/btrfs/defrag.c                |  36 ++---
- fs/btrfs/dev-replace.c           |  12 +-
- fs/btrfs/direct-io.c             |  38 +++---
- fs/btrfs/disk-io.c               |  35 ++---
- fs/btrfs/extent-io-tree.c        | 218 ++++++++++++++-----------------
- fs/btrfs/extent-io-tree.h        | 155 +++++++++++-----------
- fs/btrfs/extent-tree.c           |  38 +++---
- fs/btrfs/extent_io.c             |  40 +++---
- fs/btrfs/extent_map.c            |   4 +-
- fs/btrfs/fiemap.c                |   6 +-
- fs/btrfs/file-item.c             |  22 ++--
- fs/btrfs/file.c                  |  87 ++++++------
- fs/btrfs/free-space-cache.c      |  36 ++---
- fs/btrfs/inode.c                 | 167 +++++++++++------------
- fs/btrfs/ioctl.c                 |   8 +-
- fs/btrfs/ordered-data.c          |   8 +-
- fs/btrfs/qgroup.c                |  30 +++--
- fs/btrfs/reflink.c               |  12 +-
- fs/btrfs/relocation.c            |  61 ++++-----
- fs/btrfs/super.c                 |   4 +-
- fs/btrfs/tests/btrfs-tests.c     |   4 +-
- fs/btrfs/tests/extent-io-tests.c |  54 ++++----
- fs/btrfs/tests/inode-tests.c     |  24 ++--
- fs/btrfs/transaction.c           |  34 ++---
- fs/btrfs/tree-log.c              |  12 +-
- fs/btrfs/volumes.c               |  28 ++--
- include/trace/events/btrfs.h     |  16 +--
- 29 files changed, 607 insertions(+), 622 deletions(-)
+So we're effectively unnecessarily adding more indirection, checking
+twice if tree->owner == IO_TREE_INODE_IO before getting the inode and
+doing a non-inline function call to get tree->inode.
 
+Simplify this by removing these helper functions and instead doing
+thing like this:
+
+   if (tree->owner == IO_TREE_INODE_IO)
+       foo(tree->inode, ...);
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/extent-io-tree.c | 55 ++++++++++++---------------------------
+ fs/btrfs/extent-io-tree.h |  1 -
+ 2 files changed, 16 insertions(+), 40 deletions(-)
+
+diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+index d833ab2d69a1..40da61cf3f0e 100644
+--- a/fs/btrfs/extent-io-tree.c
++++ b/fs/btrfs/extent-io-tree.c
+@@ -80,23 +80,6 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
+ #define btrfs_debug_check_extent_io_range(c, s, e)	do {} while (0)
+ #endif
+ 
+-
+-/*
+- * The only tree allowed to set the inode is IO_TREE_INODE_IO.
+- */
+-static bool is_inode_io_tree(const struct extent_io_tree *tree)
+-{
+-	return tree->owner == IO_TREE_INODE_IO;
+-}
+-
+-/* Return the inode if it's valid for the given tree, otherwise NULL. */
+-struct btrfs_inode *extent_io_tree_to_inode(struct extent_io_tree *tree)
+-{
+-	if (tree->owner == IO_TREE_INODE_IO)
+-		return tree->inode;
+-	return NULL;
+-}
+-
+ /* Read-only access to the inode. */
+ const struct btrfs_inode *extent_io_tree_to_inode_const(const struct extent_io_tree *tree)
+ {
+@@ -362,9 +345,8 @@ static void merge_prev_state(struct extent_io_tree *tree, struct extent_state *s
+ 
+ 	prev = prev_state(state);
+ 	if (prev && prev->end == state->start - 1 && prev->state == state->state) {
+-		if (is_inode_io_tree(tree))
+-			btrfs_merge_delalloc_extent(extent_io_tree_to_inode(tree),
+-						    state, prev);
++		if (tree->owner == IO_TREE_INODE_IO)
++			btrfs_merge_delalloc_extent(tree->inode, state, prev);
+ 		state->start = prev->start;
+ 		rb_erase(&prev->rb_node, &tree->state);
+ 		RB_CLEAR_NODE(&prev->rb_node);
+@@ -378,9 +360,8 @@ static void merge_next_state(struct extent_io_tree *tree, struct extent_state *s
+ 
+ 	next = next_state(state);
+ 	if (next && next->start == state->end + 1 && next->state == state->state) {
+-		if (is_inode_io_tree(tree))
+-			btrfs_merge_delalloc_extent(extent_io_tree_to_inode(tree),
+-						    state, next);
++		if (tree->owner == IO_TREE_INODE_IO)
++			btrfs_merge_delalloc_extent(tree->inode, state, next);
+ 		state->end = next->end;
+ 		rb_erase(&next->rb_node, &tree->state);
+ 		RB_CLEAR_NODE(&next->rb_node);
+@@ -413,8 +394,8 @@ static void set_state_bits(struct extent_io_tree *tree,
+ 	u32 bits_to_set = bits & ~EXTENT_CTLBITS;
+ 	int ret;
+ 
+-	if (is_inode_io_tree(tree))
+-		btrfs_set_delalloc_extent(extent_io_tree_to_inode(tree), state, bits);
++	if (tree->owner == IO_TREE_INODE_IO)
++		btrfs_set_delalloc_extent(tree->inode, state, bits);
+ 
+ 	ret = add_extent_changeset(state, bits_to_set, changeset, 1);
+ 	BUG_ON(ret < 0);
+@@ -459,10 +440,9 @@ static struct extent_state *insert_state(struct extent_io_tree *tree,
+ 		if (state->end < entry->start) {
+ 			if (try_merge && end == entry->start &&
+ 			    state->state == entry->state) {
+-				if (is_inode_io_tree(tree))
+-					btrfs_merge_delalloc_extent(
+-							extent_io_tree_to_inode(tree),
+-							state, entry);
++				if (tree->owner == IO_TREE_INODE_IO)
++					btrfs_merge_delalloc_extent(tree->inode,
++								    state, entry);
+ 				entry->start = state->start;
+ 				merge_prev_state(tree, entry);
+ 				state->state = 0;
+@@ -472,10 +452,9 @@ static struct extent_state *insert_state(struct extent_io_tree *tree,
+ 		} else if (state->end > entry->end) {
+ 			if (try_merge && entry->end == start &&
+ 			    state->state == entry->state) {
+-				if (is_inode_io_tree(tree))
+-					btrfs_merge_delalloc_extent(
+-							extent_io_tree_to_inode(tree),
+-							state, entry);
++				if (tree->owner == IO_TREE_INODE_IO)
++					btrfs_merge_delalloc_extent(tree->inode,
++								    state, entry);
+ 				entry->end = state->end;
+ 				merge_next_state(tree, entry);
+ 				state->state = 0;
+@@ -527,9 +506,8 @@ static int split_state(struct extent_io_tree *tree, struct extent_state *orig,
+ 	struct rb_node *parent = NULL;
+ 	struct rb_node **node;
+ 
+-	if (is_inode_io_tree(tree))
+-		btrfs_split_delalloc_extent(extent_io_tree_to_inode(tree), orig,
+-					    split);
++	if (tree->owner == IO_TREE_INODE_IO)
++		btrfs_split_delalloc_extent(tree->inode, orig, split);
+ 
+ 	prealloc->start = orig->start;
+ 	prealloc->end = split - 1;
+@@ -576,9 +554,8 @@ static struct extent_state *clear_state_bit(struct extent_io_tree *tree,
+ 	u32 bits_to_clear = bits & ~EXTENT_CTLBITS;
+ 	int ret;
+ 
+-	if (is_inode_io_tree(tree))
+-		btrfs_clear_delalloc_extent(extent_io_tree_to_inode(tree), state,
+-					    bits);
++	if (tree->owner == IO_TREE_INODE_IO)
++		btrfs_clear_delalloc_extent(tree->inode, state, bits);
+ 
+ 	ret = add_extent_changeset(state, bits_to_clear, changeset, 0);
+ 	BUG_ON(ret < 0);
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index 6dfe8b097d93..bdcb18324516 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -134,7 +134,6 @@ struct extent_state {
+ #endif
+ };
+ 
+-struct btrfs_inode *extent_io_tree_to_inode(struct extent_io_tree *tree);
+ const struct btrfs_inode *extent_io_tree_to_inode_const(const struct extent_io_tree *tree);
+ const struct btrfs_fs_info *extent_io_tree_to_fs_info(const struct extent_io_tree *tree);
+ 
 -- 
 2.45.2
 
