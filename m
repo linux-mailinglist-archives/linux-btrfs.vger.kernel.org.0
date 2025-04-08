@@ -1,109 +1,107 @@
-Return-Path: <linux-btrfs+bounces-12894-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12895-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E768A8191C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 01:04:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61AC9A8192E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 01:12:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 050704A59C8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Apr 2025 23:04:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D5AA4A7C70
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Apr 2025 23:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188692566E3;
-	Tue,  8 Apr 2025 23:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE062561DC;
+	Tue,  8 Apr 2025 23:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="no0B6VPN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hJhGDO5g";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="no0B6VPN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hJhGDO5g"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ROHckuH+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OUIySyB4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ROHckuH+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OUIySyB4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370264A21
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Apr 2025 23:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B344A21
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Apr 2025 23:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744153464; cv=none; b=DbGhIWLPf37Nztl6epDemwflz8flBj6IlFAeYHXElr4G2IkzmOraFf2OQC0ZxCwTPUJInnfp1TZk9lIVd4/YvzEWrixiS1o7/cpaMSunKxzuG9D9rENNysfuJsSnIoU/Gq9Ip4BSSDxVQ65vAhABUcUoUv0um6dv94+wCRgWNiI=
+	t=1744153951; cv=none; b=od0Ia8frMRhCLeT+5FPu7Kq89QX+xJY5dx5fVkJNtlg4U2vxlBUTEpM3vGsxXAUfeWB+Q80ROwF5c00tNlpzDVYCAQlmd9Ha0pnBMk6bo6bYOzT0qnhAf87C7nhfG6Ny6EszQF9caBZ86sIJHG68n5RrPgYeJDBnEVP8Amg9awo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744153464; c=relaxed/simple;
-	bh=8M1iiJZQRDrcVnqVkPeB9/eTKvjAsIunlPP0Y9HcMUs=;
+	s=arc-20240116; t=1744153951; c=relaxed/simple;
+	bh=qJbvIPZHt5nxV5TaDGqJz4lbOD38dYQ0GSVA9S8EmdU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dBhwLAltz7qmNgBo1r+yqe3nQo4GDeg1AwqjhpgY1G4x4S3vYgudxqXfRFUTCHSywLwux/pn2TxjzlunDbnWV1uCcy512fyWARGluZ0Zm7LSnkOLUduAgajc2cEFcYKM32sCQHcbq03+LKh7y1pHbSC7QI1OjUwjEsQXzA+gRIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=no0B6VPN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hJhGDO5g; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=no0B6VPN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hJhGDO5g; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=olAgGKr0pTjFQDIH7aompmEP6R/sm3XEWBR9RXvKCo+lpCLcZAdVwiDm8OAaTYyozskdkLa5HE1/JhuMP/CYop4tuK9uHxgw5vnEWdSywsy2WvEHB1DOxWlWpjrIU0PDVhqtaUlj4kVIYKk7xP9UH8E1dKDBL3rZHQU9UrwCcdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ROHckuH+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OUIySyB4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ROHckuH+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OUIySyB4; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 167231F388;
-	Tue,  8 Apr 2025 23:04:19 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C05631F388;
+	Tue,  8 Apr 2025 23:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744153459;
+	t=1744153947;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ddDhDPHtf83+cV6fc6aRjZlYyArVwbGtUWtBxQhaKUg=;
-	b=no0B6VPNtWdCVeLFR9nC/MABpHThr7qRSB7fjldP0XhKZw6zg8rsH4p/j5Wp7GiBRA6Uhi
-	Nd5qA13XHnrguURo85+KxY+43DKXOuUxWm93aeo3Wj+966hIDNWtkVQrkdT5oeXnawEt69
-	WIHH8lU1+0YSlk8dg/S0Av0mK6hiDXc=
+	bh=Ul4hW6+DAIMX8wPtIHgLzEj+JKcL5OgpopVmxsjIMTw=;
+	b=ROHckuH+uhMyfBNmRtRRNSOElaeoc6u4vYms1UL8ZRp0h6/6GSAGS7WLtCaajwyCJKo8lB
+	nmKCF9EwoC0o+P5Eyn3ILssp/7r3Ynmm9nGA1RF2Fdk4pDBx4vvLt9ZVqNDhaUnsXpcFe1
+	gAoOezLzTXG+RUEQA1rehjkyLONOzcE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744153459;
+	s=susede2_ed25519; t=1744153947;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ddDhDPHtf83+cV6fc6aRjZlYyArVwbGtUWtBxQhaKUg=;
-	b=hJhGDO5g++UigA5dGImSofGRbK8xI0t+W8TFZsy5fYpuyDRZZkTeo7AcXJH2vMhvIAmZTh
-	xXWYACLb8A0CVdCw==
+	bh=Ul4hW6+DAIMX8wPtIHgLzEj+JKcL5OgpopVmxsjIMTw=;
+	b=OUIySyB4jkj1oniOYAYEpxooKXK9Qgw5q4QEhyXoRSjwNOeqrFlub7lMIZMWif3Ysbwcwz
+	3s7weoYiKD08//BQ==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=no0B6VPN;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hJhGDO5g
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ROHckuH+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OUIySyB4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744153459;
+	t=1744153947;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ddDhDPHtf83+cV6fc6aRjZlYyArVwbGtUWtBxQhaKUg=;
-	b=no0B6VPNtWdCVeLFR9nC/MABpHThr7qRSB7fjldP0XhKZw6zg8rsH4p/j5Wp7GiBRA6Uhi
-	Nd5qA13XHnrguURo85+KxY+43DKXOuUxWm93aeo3Wj+966hIDNWtkVQrkdT5oeXnawEt69
-	WIHH8lU1+0YSlk8dg/S0Av0mK6hiDXc=
+	bh=Ul4hW6+DAIMX8wPtIHgLzEj+JKcL5OgpopVmxsjIMTw=;
+	b=ROHckuH+uhMyfBNmRtRRNSOElaeoc6u4vYms1UL8ZRp0h6/6GSAGS7WLtCaajwyCJKo8lB
+	nmKCF9EwoC0o+P5Eyn3ILssp/7r3Ynmm9nGA1RF2Fdk4pDBx4vvLt9ZVqNDhaUnsXpcFe1
+	gAoOezLzTXG+RUEQA1rehjkyLONOzcE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744153459;
+	s=susede2_ed25519; t=1744153947;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ddDhDPHtf83+cV6fc6aRjZlYyArVwbGtUWtBxQhaKUg=;
-	b=hJhGDO5g++UigA5dGImSofGRbK8xI0t+W8TFZsy5fYpuyDRZZkTeo7AcXJH2vMhvIAmZTh
-	xXWYACLb8A0CVdCw==
+	bh=Ul4hW6+DAIMX8wPtIHgLzEj+JKcL5OgpopVmxsjIMTw=;
+	b=OUIySyB4jkj1oniOYAYEpxooKXK9Qgw5q4QEhyXoRSjwNOeqrFlub7lMIZMWif3Ysbwcwz
+	3s7weoYiKD08//BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DE3C913691;
-	Tue,  8 Apr 2025 23:04:18 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 97A6F13691;
+	Tue,  8 Apr 2025 23:12:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qAi3NXKr9Wc5UwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 08 Apr 2025 23:04:18 +0000
-Date: Wed, 9 Apr 2025 01:04:13 +0200
+	id N8q8JFut9WcdVQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 08 Apr 2025 23:12:27 +0000
+Date: Wed, 9 Apr 2025 01:12:26 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Yangtao Li <frank.li@vivo.com>, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] btrfs: Fix transaction abort during failure in
- del_balance_item()
-Message-ID: <20250408230413.GE13292@twin.jikos.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/3] btrfs: use folio_contains() for EOF detection
+Message-ID: <20250408231226.GF13292@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20250408122933.121056-1-frank.li@vivo.com>
- <20250408122933.121056-4-frank.li@vivo.com>
- <CAL3q7H7BS6juCS0eRdo6sqM4jzeMMi1o=huG38wgKYumD7qmmw@mail.gmail.com>
+References: <cover.1743731232.git.wqu@suse.com>
+ <6a71b4597a65114b646032648129558fe6bef38d.1743731232.git.wqu@suse.com>
+ <20250407183912.GB32661@twin.jikos.cz>
+ <313da654-15aa-437a-847d-e125e83df977@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -113,9 +111,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7BS6juCS0eRdo6sqM4jzeMMi1o=huG38wgKYumD7qmmw@mail.gmail.com>
+In-Reply-To: <313da654-15aa-437a-847d-e125e83df977@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 167231F388
+X-Rspamd-Queue-Id: C05631F388
 X-Spam-Score: -4.21
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.21 / 50.00];
@@ -126,86 +124,105 @@ X-Spamd-Result: default: False [-4.21 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vivo.com:email];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MIME_TRACE(0.00)[0:+];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_TO(0.00)[gmx.com];
+	ARC_NA(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Tue, Apr 08, 2025 at 03:53:04PM +0100, Filipe Manana wrote:
-> On Tue, Apr 8, 2025 at 1:19 PM Yangtao Li <frank.li@vivo.com> wrote:
+On Tue, Apr 08, 2025 at 07:28:58AM +0930, Qu Wenruo wrote:
+> 在 2025/4/8 04:09, David Sterba 写道:
+> > On Fri, Apr 04, 2025 at 12:17:41PM +1030, Qu Wenruo wrote:
+> >> Currently we use the following pattern to detect if the folio contains
+> >> the end of a file:
+> >>
+> >> 	if (folio->index == end_index)
+> >> 		folio_zero_range();
+> >>
+> >> But that only works if the folio is page sized.
+> >>
+> >> For the following case, it will not work and leave the range beyond EOF
+> >> uninitialized:
+> >>
+> >>    The page size is 4K, and the fs block size is also 4K.
+> >>
+> >> 	16K        20K       24K
+> >>          |          |     |   |
+> >> 	                 |
+> >>                           EOF at 22K
+> >>
+> >> And we have a large folio sized 8K at file offset 16K.
+> >>
+> >> In that case, the old "folio->index == end_index" will not work, thus
+> >> we the range [22K, 24K) will not be zeroed out.
+> >>
+> >> Fix the following call sites which use the above pattern:
+> >>
+> >> - add_ra_bio_pages()
+> >>
+> >> - extent_writepage()
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >>   fs/btrfs/compression.c | 2 +-
+> >>   fs/btrfs/extent_io.c   | 6 +++---
+> >>   2 files changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> >> index cb954f9bc332..7aa63681f92a 100644
+> >> --- a/fs/btrfs/compression.c
+> >> +++ b/fs/btrfs/compression.c
+> >> @@ -523,7 +523,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+> >>   		free_extent_map(em);
+> >>   		unlock_extent(tree, cur, page_end, NULL);
+> >>
+> >> -		if (folio->index == end_index) {
+> >> +		if (folio_contains(folio, end_index)) {
+> >>   			size_t zero_offset = offset_in_folio(folio, isize);
+> >>
+> >>   			if (zero_offset) {
+> >> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> >> index 013268f70621..f0d51f6ed951 100644
+> >> --- a/fs/btrfs/extent_io.c
+> >> +++ b/fs/btrfs/extent_io.c
+> >> @@ -221,7 +221,7 @@ static void __process_folios_contig(struct address_space *mapping,
+> >>   }
+> >>
+> >>   static noinline void unlock_delalloc_folio(const struct inode *inode,
+> >> -					   const struct folio *locked_folio,
+> >> +					   struct folio *locked_folio,
 > >
-> > Handle errors by adding explicit btrfs_abort_transaction
-> > and btrfs_end_transaction calls.
+> > I'm not happy to see removing const from the parameters as it's quite
+> > tedious to find them. Here it's not necessary as it's still not changing
+> > the folio, only required because folio API is not const-clean,
+> > folio_contains() in particular.
+> >
 > 
-> Again, like in the previous patch, why?
-> This provides no reason at all why we should abort.
-> And the same comment below.
-> 
-> >
-> > Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> > ---
-> >  fs/btrfs/volumes.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index 347c475028e0..23739d18d833 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -3777,7 +3777,7 @@ static int del_balance_item(struct btrfs_fs_info *fs_info)
-> >         struct btrfs_trans_handle *trans;
-> >         BTRFS_PATH_AUTO_FREE(path);
-> >         struct btrfs_key key;
-> > -       int ret, err;
-> > +       int ret;
-> >
-> >         path = btrfs_alloc_path();
-> >         if (!path)
-> > @@ -3800,10 +3800,13 @@ static int del_balance_item(struct btrfs_fs_info *fs_info)
-> >         }
-> >
-> >         ret = btrfs_del_item(trans, root, path);
-> > +       if (ret)
-> > +               goto out;
-> > +
-> > +       return btrfs_commit_transaction(trans);
-> >  out:
-> > -       err = btrfs_commit_transaction(trans);
-> > -       if (err && !ret)
-> > -               ret = err;
-> > +       btrfs_abort_transaction(trans, ret);
-> > +       btrfs_end_transaction(trans);
-> 
-> A transaction abort will turn the fs into RO mode, and it's meant to
-> be used when we can't proceed with changes to the fs after we did
-> partial changes, to avoid leaving things in an inconsistent state.
-> Here we don't abort because we haven't done any changes before using
-> the transaction handle, so an abort is pointless and will turn the fs
-> into RO mode unnecessarily.
+> Yes, I'm not happy with that either, and I'm planning to constify the
+> parameters for those helpers in a dedicated series.
 
-The del_balance_item() case seems to be unique, there's only one caller
-reset_balance_state() that calls btrfs_handle_fs_error() in case of an
-error. This is almost the same as a transaction abort, but
-del_balance_item() may be called from various contexts.
-
-The error handling may be improved here, e.g. some callers may care
-about the actual error of del_balance_item/reset_balance_state, but
-rather a hard transaction abort it could be better to handle it more
-gracefully for operations that are restartable, like return an EAGAIN.
+Thanks, but don't let it distract you from the more important folio
+changes. I noticed there are missing consts in the page API too, like
+page_offset() or the folio/page boundary like folio_pos() or
+folio_pgoff(). This is can wait, my comment was more like a note to self
+to have a look later.
 
