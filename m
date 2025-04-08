@@ -1,132 +1,146 @@
-Return-Path: <linux-btrfs+bounces-12869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B6CA80ED9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Apr 2025 16:50:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F63A80EF6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Apr 2025 16:55:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 396D1173BFF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Apr 2025 14:48:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C61188C4B0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Apr 2025 14:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52BA221D88;
-	Tue,  8 Apr 2025 14:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14DE2206B8;
+	Tue,  8 Apr 2025 14:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hi94VhYa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DWihu77d"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2CA1E492D;
-	Tue,  8 Apr 2025 14:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE40F20CCD8;
+	Tue,  8 Apr 2025 14:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744123676; cv=none; b=eEnWaTiJaVBxy42iFPwjUcfnOrbB6Lst8ODfJ8XK32ouD/K+rWzXbJPyEL8eW5P8ctmAollYaplsArlJrbxdAZKuraUDVqxgeHPX3MpXM/3RoR1cYwQkNCsY9ud9Ru4du31kTLRF0SzibilwcW5XspE+P3wBAm63FmF8PC8SS2o=
+	t=1744123873; cv=none; b=PgcmWrW7B5dDleuYOZgbhoCvoL0/rS1Dbg4Ix5VZM7/CBd4IR2fOU6zdVMcd0kNc5TZnp/SwpcGBFgNcagMCYpXTRfV+bCTpkE5KUE8KTf7RPlh4tpajGLd3Mdot7LI2UmjWLujzpm2TFYeMzUv4bxED83IEdzjgl1FMN34PFmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744123676; c=relaxed/simple;
-	bh=usQhtcH6jA5FdQGsV4FOYvB1Efo86g26nJbuRYtXQUI=;
+	s=arc-20240116; t=1744123873; c=relaxed/simple;
+	bh=DOqP7PC9/CSNxfy0CTzHFxtwwycinrGKWx3ZrNUpVhE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VzA8m9KOY5ACGvcnwrswYzsq7qoiMVKhP+Rz+rC/WAO3iYTYBFtofC/SxIpd2mbq8X8VWg4VUC9EEU1EhGz9xw792oVlFSYz9jn0yf8Z9yNmJ0nScjAtmEmZYyYPwvCUqB98RvlcLe7pTMV2q2K2qdYwEsZV6C+WcQCCDMIR1TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hi94VhYa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2A4CC4CEEC;
-	Tue,  8 Apr 2025 14:47:55 +0000 (UTC)
+	 To:Cc:Content-Type; b=YZIQ7eC7RqWl+2AD386yfrG1zE3jOGAlRvLKNw3+a0mnELXLWOWrBczavsVQac1dTLOtqYsAu8Vzxxctr/VU2wJFIG5mwD3/kdzf4tfRjRYsQSVZjUlLrmmoS82TEL4eiiyaPjymBu8LmlFyGTb40yZ+OM5XxuVPuS2iGC/b7TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DWihu77d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66745C4AF09;
+	Tue,  8 Apr 2025 14:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744123675;
-	bh=usQhtcH6jA5FdQGsV4FOYvB1Efo86g26nJbuRYtXQUI=;
+	s=k20201202; t=1744123872;
+	bh=DOqP7PC9/CSNxfy0CTzHFxtwwycinrGKWx3ZrNUpVhE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hi94VhYaSB4nc+NnNOCdvIwuggGNziI7EfCyGD54XDel2LGw6SC0j5AsCBx8leLJk
-	 ZyqW5W1vSpYuT4H+x/W1Wr0J7YN+WoKNHgMGoSgynm5p8nZX59aFoLa+SxCOtfsGzn
-	 bTZPH1KCh/HhnsYQV929dCqiNiW3t74JBgSyPWH0wzHDvjYrCJ5z+tsUP4ALdEaB4a
-	 3PMIWhk7OUFNwKWvsX4WoIl7KKYpfuYBLxl4fJiU4auUqthZ2DxQBCbFx39etEjV4A
-	 Zn1rNWz/HeWmm2dWIBNmrwbOAMEC4k24em+zVrI/87WgCPo11f3X8ae/RssxkRr+0q
-	 Br3wNq9VZCTbA==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9ebdfso117017a12.3;
-        Tue, 08 Apr 2025 07:47:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU3i9R05Jf7UdOwj79XBBX52aUM888EZeYgCs0XnzA8kv8QPjgslO+kNdlmHco3bWK3dVgSBnu9YGlsa+Hy@vger.kernel.org, AJvYcCUEN59s0iNQv30AXEOmXdGIPHoifYv8bzAeY0dOrwk3PbbJY1F2bnI8buHqDl8HPWrEPUfMz1tEXR0v/g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT0H2xapToIls680QUzzqFzjCorJqNyO0Dq5nOiYh/Hd/yx3sT
-	9mTV6Lm3rey/+LDFUxoJ0+HPOOkDHUrvIzhYTMxvwBUjbTBrRt9EraOUtKB8xDTDxecFx13ySKn
-	hZIVhtuXlDsn6hGrVadr/BYhRq08=
-X-Google-Smtp-Source: AGHT+IFKarbmy5vtxCDZ6llpj67T/aMPampQuo8nCcWFOkuuQHMKMENxG4s8H5HL0UtxEjm2ZPz23AhuJCBfwkMJ+Aw=
-X-Received: by 2002:a17:907:6d20:b0:ac3:446f:20cb with SMTP id
- a640c23a62f3a-ac7d1b280ccmr1578532566b.43.1744123674230; Tue, 08 Apr 2025
- 07:47:54 -0700 (PDT)
+	b=DWihu77diMO7llC4OkgLsMjWI5AeoqVzAzMi1/6AddBKf28/waPOzjsEVP7tO6p/m
+	 huhjLJIdEVR0a9PYyJXn/OGSH2WNaDzrG3gNwh+sHjJMUaxN2jfcKe1nL4CIdO3OzE
+	 E6sKd9MYw2xjzR5VyKMc5bfcXy0dqZwTCxuw9hk7M6BokbSmhrfh1RSnHpUE5axLX5
+	 dKaI3E2iM/zWInmk4VDDTnVubpm7PF1NgJxQ93q3lklIOH3jU6yxzmgoZR9FLiaA7V
+	 BWQWIdvGpp9comNUgGkfWUr7IUx4fEZbTWVdo1WI78NrxUCwUHMTjzJUDD5NPCizEK
+	 d204DkW4wO1Sw==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5e8be1c6ff8so10504264a12.1;
+        Tue, 08 Apr 2025 07:51:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUEpXnUiDlzCNNFSY40DRocgk4a3WLLX25jf+sTA3o4aIWyQSszhw13fZboYCXmQPZUsW2P+bgABPtoFg==@vger.kernel.org, AJvYcCUTilhAdc9DhAL7P5WkBf0BBIw5azrrO0WYHjDr7NgdE/NMhEwIYvP+tupbxqYr+ZAYz0Mpshl1EwToSngD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyln+V4ZdhnuGEE9rlW1yghW4lJqYRt9LQPGTFGHWbxv/4qC1PG
+	ekU7o/1bbbFRJ1ufCEVmpcDT0XoyzMkh1TVY7OsGqs3pEAWr/Z2J5uBw4tpAZvQfT8tdYki6VlF
+	Ej4GMjKbJCzq4T+1CzcCgfIwKmEw=
+X-Google-Smtp-Source: AGHT+IHyOTHcUgbR5sI3csnlG+ZrE4vBezaZ5/r0WwtZIV0n3hWOrhVqf8Jcvj1Tm6qdgRS0W/lR3uBg+dkSgBvD8U0=
+X-Received: by 2002:a17:907:d91:b0:ac1:e2be:bab8 with SMTP id
+ a640c23a62f3a-ac7d6d52781mr1151445266b.26.1744123870927; Tue, 08 Apr 2025
+ 07:51:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250408122933.121056-1-frank.li@vivo.com> <20250408122933.121056-2-frank.li@vivo.com>
-In-Reply-To: <20250408122933.121056-2-frank.li@vivo.com>
+References: <20250408122933.121056-1-frank.li@vivo.com> <20250408122933.121056-3-frank.li@vivo.com>
+In-Reply-To: <20250408122933.121056-3-frank.li@vivo.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 8 Apr 2025 15:47:15 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5NxJkSz9FSarixZjpVvTibO6ugYrGB3AFZJAuoWT_BMQ@mail.gmail.com>
-X-Gm-Features: ATxdqUF92VfmLSVi8DchQVkVvDfweGaKkPYkwybaD2shvY6fzx7LI1WeAMCSwhk
-Message-ID: <CAL3q7H5NxJkSz9FSarixZjpVvTibO6ugYrGB3AFZJAuoWT_BMQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] btrfs: use BTRFS_PATH_AUTO_FREE in del_balance_item()
+Date: Tue, 8 Apr 2025 15:50:33 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7crVYyQrffLWO6Fr8QpFS2B0BjURqrpTYDYbX3ki0imA@mail.gmail.com>
+X-Gm-Features: ATxdqUGVhAP8P4HMOZyfWKhfVmxvqYNpgxPoMH5VGQXuQ7gjTeg-GxSSbDwgWuA
+Message-ID: <CAL3q7H7crVYyQrffLWO6Fr8QpFS2B0BjURqrpTYDYbX3ki0imA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] btrfs: Fix transaction abort during failure in insert_balance_item()
 To: Yangtao Li <frank.li@vivo.com>
 Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
 	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 8, 2025 at 1:18=E2=80=AFPM Yangtao Li <frank.li@vivo.com> wrote=
+On Tue, Apr 8, 2025 at 1:22=E2=80=AFPM Yangtao Li <frank.li@vivo.com> wrote=
 :
 >
-> All cleanup paths lead to btrfs_path_free so we can define path with the
-> automatic free callback.
+> Handle insert_empty_item errors by adding explicit
+> btrfs_abort_transaction/btrfs_end_transaction calls.
+
+But why should we do it?
+More below.
+
 >
 > Signed-off-by: Yangtao Li <frank.li@vivo.com>
 > ---
->  fs/btrfs/volumes.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>  fs/btrfs/volumes.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index a962efaec4ea..375d92720e17 100644
+> index 375d92720e17..347c475028e0 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -3775,7 +3775,7 @@ static int del_balance_item(struct btrfs_fs_info *f=
-s_info)
->  {
->         struct btrfs_root *root =3D fs_info->tree_root;
->         struct btrfs_trans_handle *trans;
-> -       struct btrfs_path *path;
-> +       BTRFS_PATH_AUTO_FREE(path);
+> @@ -3733,7 +3733,7 @@ static int insert_balance_item(struct btrfs_fs_info=
+ *fs_info,
+>         BTRFS_PATH_AUTO_FREE(path);
+>         struct extent_buffer *leaf;
 >         struct btrfs_key key;
->         int ret, err;
+> -       int ret, err;
+> +       int ret;
 >
-> @@ -3784,10 +3784,8 @@ static int del_balance_item(struct btrfs_fs_info *=
-fs_info)
->                 return -ENOMEM;
+>         path =3D btrfs_alloc_path();
+>         if (!path)
+> @@ -3749,8 +3749,11 @@ static int insert_balance_item(struct btrfs_fs_inf=
+o *fs_info,
 >
->         trans =3D btrfs_start_transaction_fallback_global_rsv(root, 0);
-> -       if (IS_ERR(trans)) {
-> -               btrfs_free_path(path);
-> +       if (IS_ERR(trans))
->                 return PTR_ERR(trans);
-> -       }
->
->         key.objectid =3D BTRFS_BALANCE_OBJECTID;
->         key.type =3D BTRFS_TEMPORARY_ITEM_KEY;
-> @@ -3803,7 +3801,6 @@ static int del_balance_item(struct btrfs_fs_info *f=
-s_info)
->
->         ret =3D btrfs_del_item(trans, root, path);
->  out:
-> -       btrfs_free_path(path);
->         err =3D btrfs_commit_transaction(trans);
+>         ret =3D btrfs_insert_empty_item(trans, root, path, &key,
+>                                       sizeof(*item));
+> -       if (ret)
+> -               goto out;
+> +       if (ret) {
+> +               btrfs_abort_transaction(trans, ret);
+> +               btrfs_end_transaction(trans);
 
-Exactly the same comment as for the previous patch -
-https://lore.kernel.org/linux-btrfs/CAL3q7H6ysGxpXs8P9iPY-Y1KNKPggGSFHR_tMv=
--34Q+Qf6PZTQ@mail.gmail.com/
-This can result in a deadlock.
+A transaction abort will turn the fs into RO mode, and it's meant to
+be used when we can't proceed with changes to the fs after we did
+partial changes, to avoid leaving things in an inconsistent state.
+Here we don't abort because we haven't done any changes before using
+the transaction handle, so an abort is pointless and will turn the fs
+into RO mode unnecessarily.
 
 Thanks.
 
-
->         if (err && !ret)
->                 ret =3D err;
+> +               return ret;
+> +       }
+>
+>         leaf =3D path->nodes[0];
+>         item =3D btrfs_item_ptr(leaf, path->slots[0], struct btrfs_balanc=
+e_item);
+> @@ -3764,11 +3767,8 @@ static int insert_balance_item(struct btrfs_fs_inf=
+o *fs_info,
+>         btrfs_cpu_balance_args_to_disk(&disk_bargs, &bctl->sys);
+>         btrfs_set_balance_sys(leaf, item, &disk_bargs);
+>         btrfs_set_balance_flags(leaf, item, bctl->flags);
+> -out:
+> -       err =3D btrfs_commit_transaction(trans);
+> -       if (err && !ret)
+> -               ret =3D err;
+> -       return ret;
+> +
+> +       return btrfs_commit_transaction(trans);
+>  }
+>
+>  static int del_balance_item(struct btrfs_fs_info *fs_info)
 > --
 > 2.39.0
 >
