@@ -1,138 +1,181 @@
-Return-Path: <linux-btrfs+bounces-12908-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 386FAA82174
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 11:58:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1654A82197
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 12:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C457C1760D2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 09:57:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D348A1709F1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 10:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AC225D53C;
-	Wed,  9 Apr 2025 09:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9C025D536;
+	Wed,  9 Apr 2025 10:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eO+jJmF7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azcBWgc1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFCF2459FF
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Apr 2025 09:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9989F1D79BE;
+	Wed,  9 Apr 2025 10:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744192654; cv=none; b=t+N694hXoI6lZRUURq2Vq2gelQ/4giIn1d7vD7oSCBwNsRFbW1fRl1yVZ2+pigKfKAg9sIVeRKk1A5IJ/kptVN+MXYmqSzblx9eSdqremH2qptoxP5lmhaeKpXgaGv7E0JO7NNkYPIaR/5/aS5x3hCnflxJNOpptb97uW/cAQE8=
+	t=1744192867; cv=none; b=qAKFDULiObnunYlzaOfirkoCFsyWKHsf1BwaTw3KR8VtH0LIDNmebBaVIOcDeqC/Hl4MPBCaIvNFTPAOx+3/dRfGs9iSz7/U1UTEEcYJdhqnf/MeIbsMqBqusqbFu8UPJ8eY2uG7eHhRdQnawk9ug5tubiOxJS8H1Qvwidzt9pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744192654; c=relaxed/simple;
-	bh=f2YFhv/ay2EqQEIbM88ALqTA/Zc3CAZO57aacN3cWzA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NK4Y2bZJLoT25qOV+b7qkSSDc8RjGbM6ej3IwSVq5zqAIisgttQ9ZGYJtaQTsOmsFVhofaGKrxWOhtPNPAR3CjOzywDYMQpkotu4VrwzI5/tTYc4xjHfiSW/zkg+XxdsUbs5ryiZhwyme4fFiMD/prIIA+ESbQON7HuFpSe0yqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eO+jJmF7; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744192651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tO6W1d2djr/RGcRIDDdM1RhDN/5g3ZrQRAfMmDhaVSk=;
-	b=eO+jJmF7Uqa3A5wBBPwQc6Jszao7JYfYs220xriiQOyDCAglyYJXQbl6mnKE55pFD7lZ5G
-	XFw+XRav0ZW42rWMFGM3jdvgVsYaMPl92wpo/fI2nCXMAi//D5KtYs7SCL4YG+0Yck9p3v
-	VOZS+X1E+HB1HowQ5AXdoBVG5PebzGg=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-504-B96FlI7PMZ-C79QKDJ6nJA-1; Wed, 09 Apr 2025 05:57:30 -0400
-X-MC-Unique: B96FlI7PMZ-C79QKDJ6nJA-1
-X-Mimecast-MFC-AGG-ID: B96FlI7PMZ-C79QKDJ6nJA_1744192649
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2ff6167e9ccso8387108a91.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Apr 2025 02:57:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744192649; x=1744797449;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tO6W1d2djr/RGcRIDDdM1RhDN/5g3ZrQRAfMmDhaVSk=;
-        b=TiKdaJ2Vn04Yzfp4FdFbLfojuC+GHfhlTfGSgvAbUpP4xdSR159y/rH03eZF50Lp4B
-         fKAWlZU43Axj4tM0hAb7PCfxDDL/Sesqx62UdmisnNBGvuyODJiijUCcMR/ltvzX5jB/
-         Wgt/O2C+yBWcLO5la88M43Ijs521ObcAeh5qvCEHDMn8f9NZSsuErGTAPIpaqcrMzMZ0
-         MLUMU8uyWq01aFc32b9K+Y7BLDd3sGuKgzPix6hes9XCgswov6FpUSMPp5XCqPjd3S+d
-         z2aGDAgGY02Tun2nY07OtcTM80rW+3x36HhIkHcKZFAcEswb5hgOU1MTkUc5hN0BZLgK
-         L4+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVKj9jNP0Mt24PxbREzUZp106Fp4zvAsLb6yuLz3v2hWJSH0sYDXMXlQypx24QllolmNr+5nI89HBcXzg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWk7Ilot56uKOWLAd8mWrUo0YoiD1JFcx3G1UVSFYc76uyyKOO
-	7No92rkgzamK5IcqyUv1MfjUfHVxrfasP4fDE143Pm0UU8N6nQ68r5Sx/z4BjeCbcXXpWY/ZXZa
-	uyvZ4V9v/831pIjdQjDMJsiq8ztDdWi0mxX0Bd2GhLjnE4/J+E500/Z0WNHE0
-X-Gm-Gg: ASbGncuBLGPpSk3Nkj+6aRbiSBcuBaCL2wDD9N+crOeJcvVPOA+2beFBbGXEpd53IEC
-	FmrZG+eDd9ZNPHvZDuTFXHuXB+umx1GE3SpcW8yCUC/fUl9n5zg6pzsZ7ThCVOxTaqSji5T4DLw
-	8Yzv3+Iw+PoG6ywE2ksigcpIJ47cyEVYPF/n29v9PpaRP9ydTHfOnax1ou1hkRoVFd+gBnX2P4S
-	Kp773Zm63F0RTJOKME/f1zGUbm7scbXsbX0rYgNTbbp9qosYUxT0gDMAaKQmIzKqefdLd+KqJC2
-	4AyZjTj3GuWcUUy+W/EcdpYdJiOfFfjRINaL8+kJTqd0Ek5ZToR7
-X-Received: by 2002:a17:90b:5252:b0:2ee:fa0c:cebc with SMTP id 98e67ed59e1d1-306dbbb366bmr3398413a91.20.1744192649123;
-        Wed, 09 Apr 2025 02:57:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEeejyU4fN7LUlJTruuiNultjp6mPjR1EWLUt8OgHgRdXRC+qeoifN/IyA2JHuU3AgxDAb3IQ==
-X-Received: by 2002:a17:90b:5252:b0:2ee:fa0c:cebc with SMTP id 98e67ed59e1d1-306dbbb366bmr3398401a91.20.1744192648886;
-        Wed, 09 Apr 2025 02:57:28 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306df401ab2sm1070707a91.48.2025.04.09.02.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 02:57:28 -0700 (PDT)
-Date: Wed, 9 Apr 2025 17:57:25 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, djwong@kernel.org
-Subject: Re: [PATCH v6 2/6] fstests: check: fix unset seqres in run_section()
-Message-ID: <20250409095725.xumxhw54igwapuue@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1744183008.git.anand.jain@oracle.com>
- <12a741fc7606f1b1e13524b9ee745456feade656.1744183008.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1744192867; c=relaxed/simple;
+	bh=aaoSNuqVQs2wREEbSG0PEFNmz0B9YoRLzkQISElEe00=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h/1UZz8AdHNzED+0Q2O/ip4CocYDeCfKww8K5K7HV0HtcL6iEoTh2bmu9fSVmv1ENtG7XBMOm0qXQdmZobCWyxTmN+gnP44tRtPT6BrKONACPd/c46iCj6p48bmfqIuZPxIqVynmcnwj9WsroJpc59LdLTm0/kD+Gp5xaJHawaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azcBWgc1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11AE0C4CEE3;
+	Wed,  9 Apr 2025 10:01:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744192867;
+	bh=aaoSNuqVQs2wREEbSG0PEFNmz0B9YoRLzkQISElEe00=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=azcBWgc1dE/VMs7yH+MDdHJ6mOjwElzORaOR7Pco7L75Fwchen86RIr50Qwsofm04
+	 ZAHVSjWZ4HSQR3dlHj9Ri0z9CjpG5MW09Ld8qEQtCMQMHCW1oyz++pOsw3SfWTnZWA
+	 XI3QZNmD4Rv7U49mX894GTGEbF+q/LdPuH5MNZqae7zGqYAsmTsW49DTKbAGmR0HmF
+	 3ZmLTBODEqrXMpJ5ZhuMhUC+sMIuHCkvs0WYK3e7PejwuSEpJhML4PlMH9qwD/Gu/j
+	 8rwFJVRPLWgKbWpCCgYsuwIOPRXyMYAwUR1M12uXxcYiI0A+NKkeVVflnjFZIAuMbp
+	 ROSbzKKUiTUcA==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ac25520a289so1150695966b.3;
+        Wed, 09 Apr 2025 03:01:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUKV2ZIDsNLrNFXyXadP9aMAahlwd5OP1WZhwpwCVEm6PKRq+WdwfXXZyqI8IXt5bypvUUfhfSXV71bLg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBX85rdNQcyzM2VSl0mk8sKfhhU64+4tNOkvZqrC4MYDEHwgTf
+	gY3wsNdxyPvbgvZIv2SFEAmBnYKQXxQaXL0D5MUFmiCClS2hzBwZd+EqCFlTs7X0PiHUNmA6DqH
+	o1Nq/0KVb+W+6c4WWyc89oyAHFHs=
+X-Google-Smtp-Source: AGHT+IH9pMfiS9RV/8UfF99mLuxU1yOHCshqaJnrrxhE8i6CJleH2faj16Fix1Z5kYPzqtluX8PqhMpLybfyeaD3+qk=
+X-Received: by 2002:a17:907:6e8e:b0:ac7:1350:e878 with SMTP id
+ a640c23a62f3a-aca9b73abadmr227606066b.46.1744192865598; Wed, 09 Apr 2025
+ 03:01:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12a741fc7606f1b1e13524b9ee745456feade656.1744183008.git.anand.jain@oracle.com>
+References: <cfb8c19533ac3c764edc1fe62b7fde75e76579a4.1743137470.git.anand.jain@oracle.com>
+In-Reply-To: <cfb8c19533ac3c764edc1fe62b7fde75e76579a4.1743137470.git.anand.jain@oracle.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 9 Apr 2025 11:00:28 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7nx9D_CQhWXNGjBcZ6We+B3qmsGdpbG_p0qdCHM-dpfA@mail.gmail.com>
+X-Gm-Features: ATxdqUHL2CR1zAVV2En8TQh4rlkhznSQ1bcNg9Mv5gxljs_HZhPx7ucbvxkGHjI
+Message-ID: <CAL3q7H7nx9D_CQhWXNGjBcZ6We+B3qmsGdpbG_p0qdCHM-dpfA@mail.gmail.com>
+Subject: Re: [PATCH v2] fstests: add btrfs standard configuration
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 09, 2025 at 03:43:14PM +0800, Anand Jain wrote:
-> Ensure seqres is set early in run_section().
-> 
+On Fri, Mar 28, 2025 at 4:52=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
+wrote:
+>
+> Here's a standard configuration for quick, regular checks, commonly used
+> during development to verify Btrfs.
+>
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  check | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/check b/check
-> index 32890470a020..16f695e9d75c 100755
-> --- a/check
-> +++ b/check
-> @@ -804,6 +804,7 @@ function run_section()
->  
->  	seq="check.$$"
->  	check="$RESULT_BASE/check"
-> +	seqres="$check"
+> v2:
+> - Renamed config file to `configs/btrfs-devel.config`
+> - global section renamed to `generic-config`
+> - Section names now use hyphens
+> - Added `RECREATE_TEST_DEV=3Dtrue`
+> - Removed `MKFS_OPTIONS=3D"--nodiscard"` from `generic-config`
+>
+>  .gitignore                 |  2 ++
+>  configs/btrfs-devel.config | 40 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+>  create mode 100644 configs/btrfs-devel.config
+>
+> diff --git a/.gitignore b/.gitignore
+> index 4fd817243dca..9a9351644278 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -44,6 +44,8 @@ tags
+>
+>  # custom config files
+>  /configs/*.config
+> +# Do not ignore the btrfs devel config for testing
+> +!/configs/btrfs-devel.config
+>
+>  # ltp/ binaries
+>  /ltp/aio-stress
+> diff --git a/configs/btrfs-devel.config b/configs/btrfs-devel.config
+> new file mode 100644
+> index 000000000000..3a07b731abd9
+> --- /dev/null
+> +++ b/configs/btrfs-devel.config
+> @@ -0,0 +1,40 @@
+> +# Modify as required
+> +[generic-config]
+> +TEST_DIR=3D/mnt/test
+> +TEST_DEV=3D/dev/sda
+> +SCRATCH_MNT=3D/mnt/scratch
+> +SCRATCH_DEV_POOL=3D"/dev/sdb /dev/sdc /dev/sdd /dev/sde"
+> +LOGWRITES_DEV=3D/dev/sdf
+> +RECREATE_TEST_DEV=3Dtrue
 
-The "seqres" even might be used earlier than that. If your rootfs is readonly,
-you'll see that.
+All these mount paths and device paths are far from "standard" as the
+changelog suggests.
+It's certainly different for me.
 
-Thanks,
-Zorro
+Plus this isn't sufficient for some tests that need more devices in the poo=
+l:
 
->  
->  	# don't leave old full output behind on a clean run
->  	rm -f $check.full
-> @@ -849,7 +850,6 @@ function run_section()
->  	  fi
->  	fi
->  
-> -	seqres="$check"
->  	_check_test_fs
->  
->  	loop_status=()	# track rerun-on-failure state
-> -- 
+btrfs/292 needs 6
+btrfs/294 needs 8
+
+I'm also seeing RECREATE_TEST_DEV=3Dtrue for the first time. Why is this ne=
+eded?
+
+> +
+> +[btrfs-compress]
+> +MKFS_OPTIONS=3D"--nodiscard"
+> +MOUNT_OPTIONS=3D"-o compress"
+> +
+> +[btrfs-holes-spacecache]
+> +MKFS_OPTIONS=3D"--nodiscard -O ^no-holes,^free-space-tree"
+> +MOUNT_OPTIONS=3D" "
+> +
+> +[btrfs-holes-spacecache-compress]
+> +MKFS_OPTIONS=3D"--nodiscard -O ^no-holes,^free-space-tree"
+> +MOUNT_OPTIONS=3D"-o compress"
+> +
+> +[btrfs-block-group-tree]
+> +MKFS_OPTIONS=3D"--nodiscard -O block-group-tree"
+> +MOUNT_OPTIONS=3D" "
+> +
+> +[btrfs-raid-stripe-tree]
+> +MKFS_OPTIONS=3D"--nodiscard -O raid-stripe-tree"
+> +MOUNT_OPTIONS=3D" "
+> +
+> +[btrfs-squota]
+> +MKFS_OPTIONS=3D"--nodiscard -O squota"
+> +MOUNT_OPTIONS=3D" "
+> +
+> +[btrfs-subpage-normal]
+> +MKFS_OPTIONS=3D"--nodiscard --nodesize 4k --sectorsize 4k"
+> +MOUNT_OPTIONS=3D" "
+> +
+> +[btrfs-subpage-compress]
+> +MKFS_OPTIONS=3D"--nodiscard --nodesize 4k --sectorsize 4k"
+> +MOUNT_OPTIONS=3D"-o compress"
+
+Why the --nodiscard?
+I don't use it in my setups, doing the discard doesn't cause any
+significant slowdown for me using 100G devices with qmu (raw type and
+with discard support), and it's good to the discard.
+
+So I think this is far from standard as you claim in the changelog and
+won't fit everybody. It certainly doesn't for me.
+
+Thanks.
+
+> --
 > 2.47.0
-> 
-
+>
+>
 
