@@ -1,213 +1,347 @@
-Return-Path: <linux-btrfs+bounces-12924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83D14A82515
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 14:40:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBDBAA82C88
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 18:34:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E85193B4D0C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 12:38:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59312189738B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 16:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A681D261579;
-	Wed,  9 Apr 2025 12:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF3D26E14A;
+	Wed,  9 Apr 2025 16:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="EgpyHlRH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6WaxS2W"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sg2apc01on2043.outbound.protection.outlook.com [40.107.215.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 276F825FA09;
-	Wed,  9 Apr 2025 12:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744202286; cv=fail; b=S14/1bhbVhfpGTtkA4ZN2DMuknjxtGIxy5n78d81KkuJJx0O70qEFdmF84x2ToXZ/XzXW1yAnvUd4qXsbA0D89Qqr9s44a/VS7E0aSr2tNIMVeJkQT248gSXnHZtgGHRv9Q9QYlYHPPoB5X+1QYCu+ODVdrOyNVDRqtWBmyGZAw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744202286; c=relaxed/simple;
-	bh=HRBbsxpeTUbwtJ/oQeprfFgQYbdVJh/CcT167Vf8cJE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BCZGMK/kRafIg08YmH6244BnYIxakqinVAfkocDxpJNiTMDzYL+70U16gvqsBFj9o3AE3ePfqcdjzA0gP6vblLUN7eqheC68iVapTSckfrMY0FKZmouXcBnYq2kU1ofcMyMal3v8Syf4AFv3/ojhAqRW0E/DBIL45NlHwI5+llU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=EgpyHlRH; arc=fail smtp.client-ip=40.107.215.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=U4c+e4b0AbLdbZ5fW1Y8CegnQMOt5RzA4RSL9E2ZUoIwnNOMXREpG6bzCVGGrddWItEFUxxzfnzJJ5siQNucozCkyrlzDQMa/kFsoltJSLKs6O5rJERkonUiegMOxtknMf/+4NJgrzExUouviNqpOSNIwXPLbrT12kPl9nwiXyYSq3V020+IJmasfr7gOSO0w/4gQ4/7D1LPxY/4hhDIm/9ENZK04++XSQtqjvRh4C+tMycZ8CLRixL1e8dex414mukeus0vFMQBvWFPZwUrIW6mmHvlGG5SZeuaAxBthwhXVqdaJWjOpb4pB88htpCW/j2yYDMafTYwUf6OBo1iWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ktzkkkczXjFu6M15fVmXX44kWVA63ZjvEf5VZltISYQ=;
- b=D6dU5SbVq+STeqAwg91+rsh1hcdTnHNUOBe21eFCAR5d3AeMLFbGP1sjUMOD+VE9tittryqCfV7do/cNEyWGlajxdN2UASJi7irc+mE/mD2BiYg/50j8IdEuydNzk8TQPpdtokC6pP85PUOX17cCrtIUiHEkQ0Qztyp5VwUvLdAyqLRnck12NwlYRqeIWfrzY82FoOBDKdqQqBeIFWIti7AJJfJtfpAANwmAbEVNAR8wHRJEwNBkjqCsYKQpK5H4KUIuPrFdqGOVp+HaXRfjveDvoFWG2SqEF3Xyvq868fV5mPsZhdQpnRWw1QaizOGOxGoqKSRJjwGUZAMXZMsj5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ktzkkkczXjFu6M15fVmXX44kWVA63ZjvEf5VZltISYQ=;
- b=EgpyHlRHWSrC0chYRNTdqryUWOABS42V6/w4aTIfktb6HtnYrjsJ5KH/4JnDStsZrRZbnRviJ5fxG3Td+qqEEJLJV/4xDyM9q2CaeIGFvoPT4YW+Zetf8DajTivreJdVZlolaH7MBXzNF6P2ST+CUQQcpHCuF5ZjVAGHVc9/UUwCDOsgCu8HXbXbyofybg3ojcM2B7vDMcbF1A/DIgV9s1bJge49d6jQu/g/btc+lTPOsEzz0Hw3FaKdp6v1f3J6F9UeaDF7WWoFHNk/eBXLcA8ezv/Cjb6+qp77aDDkNpPAiScoXFZ3B6v4o8aGWqU4vvGAErMhsHhjiK+VvPZNYg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by TYSPR06MB6292.apcprd06.prod.outlook.com (2603:1096:400:42d::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8606.34; Wed, 9 Apr
- 2025 12:37:58 +0000
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::8c74:6703:81f7:9535]) by SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::8c74:6703:81f7:9535%6]) with mapi id 15.20.8606.033; Wed, 9 Apr 2025
- 12:37:58 +0000
-From: Yangtao Li <frank.li@vivo.com>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yangtao Li <frank.li@vivo.com>
-Subject: [PATCH 2/2] btrfs: convert to mutex guard in btrfs_ioctl_balance_progress()
-Date: Wed,  9 Apr 2025 06:57:23 -0600
-Message-Id: <20250409125724.145597-2-frank.li@vivo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250409125724.145597-1-frank.li@vivo.com>
-References: <20250409125724.145597-1-frank.li@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGXP274CA0006.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::18)
- To SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F601C5F23
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Apr 2025 16:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744216314; cv=none; b=AbX+C4vGAdP5ZtOflPhE5/v39Jg9/yeO1ss1wLXebGLbPmHyLR8xeku+szWJiep79U4j1dIpD4I1+rmCdbm3iRQpzwgkFVIdqSTHDnD/+t14e9NRf4SdD7g2YNrtvkLnUzKp12c7VsiGlnlCOipvPPjtgz1F0tmy72SkpZPyJRc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744216314; c=relaxed/simple;
+	bh=m0S23YdybXEorI1XM83WCmwrBidGPv6/ktbgJsXfTAU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DNt1S8C91R5zDNXtQG32iHnD7PUHRIt4BLlpDueKRcTv4sY2l+jZFsd4eG84oeAF2eTJc55v22J5hERd/0aDsVx6kY6IxoKOMvoTaKS2BGch/SYvUL9EE/N21zzD0DMO1XxAlRz9KhgsecHasdLvHs8XQpU25SB/xBKxS+Vx/rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C6WaxS2W; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6ecfbf1c7cbso117448686d6.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Apr 2025 09:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744216311; x=1744821111; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EjCHKbcItcz3NX6Ya94sukZuUS9nd8G9Rf/5OtuyRYg=;
+        b=C6WaxS2W0bA5bx58oS0/1LH4pH67GaLuG5EJThGw2nPTaUJs9AYeA9Z6LofAKljltH
+         inZpBMd2WghYJdP7ZCgX7OLoMChheGBsptEvC9thO6wgFTCmeKJ9IaaWDWDaEecN4LmA
+         cNvvAEvuCmQsy2mzbhQTFW6Ah4G1vNJbM+SjgqtR+1sHI0rIfbZrqmj2/VmavJre3Gs9
+         qpsDE5/I238FeMI3gklACQDMcPgkYRFrGfRM14qqj5RmiKI/EXdAHD4L0nCcWXStPY9z
+         5xgl2BAQ//xH9wByG/cm4BgQ9gH8BuWLufVm4InITwQSCW5K0TQbKp/K74Ms48JsWb1J
+         ZYFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744216311; x=1744821111;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EjCHKbcItcz3NX6Ya94sukZuUS9nd8G9Rf/5OtuyRYg=;
+        b=rYZ0q1G7k5ny8i5Em3sWlTgTSSOBibpuih4fP8K4JaeHNKmywG51orMmVu7+Z46lxc
+         v6Oje7JYovoB/RVnK22TxCqG8bIoUKCB3h0SsDIAlif8tZGLicIKRAX1UZbwyHZnypl2
+         JhBSu/fxNeUdQPkA/XyzF+LNNmkcLDHNTST8nyHCizHZVi8cJB+BcYV/OCr7v4ugsgJj
+         g8pkpBYID9w/8Ez1/l0vh3KoNFlIKZTddkG5LkNqvZdJVyZxX+LU+Sg+mbRxpjvwMPId
+         wxogz4zNV6ajm9GnPgistGaR223TY2MktszZrkbm1BZ+Bx/5BbMHX2jl/4mAIGdYN50X
+         8Abg==
+X-Gm-Message-State: AOJu0YzDJEk0JrAP3SSGZSZi+s3S4u0UzwBv5hSh4ZreD74LBPZ6IV/B
+	R83P4d8jNpGBKt07hjt6CgC+BGi0SRWuIsKhRBPFOkkTLhY+/X12SsiGjw9F+5U/tTDJu2icBF7
+	uIHlnJEYoZAwOPlvwyl2C/7dgrrE=
+X-Gm-Gg: ASbGnct/uo5v3HC+hcY/6ZhJmvUUNCkXq5B7XhfqrjgqWEi45FCfVZSQJ98zDH5SoI4
+	/W2yTIaCdwMd/43+Orv+fWN49+AyYJJ4y4HJa0lZ9KlAWiIXwBSPRp8KqirW+9Tk3bnD14YYlgv
+	wObbjZ6KM3RWR3dmvmCNENlcMCWk14aBChN8O72yTcHLB9D2VKguA41NJHMpW45fCE1g==
+X-Google-Smtp-Source: AGHT+IHxPFw378MfWhkAJLJwKiHlJV+nzsorkNeAsqx+ZM905zq6F0ivC9X/sjkWOLTS6FpW0LgDJPPNtdmrLFkOAiQ=
+X-Received: by 2002:a05:6214:202d:b0:6ed:1659:76b0 with SMTP id
+ 6a1803df08f44-6f0dd77b4c1mr43338476d6.20.1744216310953; Wed, 09 Apr 2025
+ 09:31:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|TYSPR06MB6292:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4490a780-d8b1-4b4c-f89d-08dd77635bc5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|52116014|376014|366016|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?DiI+QkDWLMC/FuIAYV3UM5x7t9kXeXpPJu/zeOqDkpk6KGu4srQ3vKhUn6cB?=
- =?us-ascii?Q?6k/G6mSAMZ2x15jzFkGLHylSOwsjbCeDD7DP1FAsaZM3XMa3yruJGpkn1YEw?=
- =?us-ascii?Q?g4+Eg5YromAJcsMg2qVAla/NOg/tqkyMAxsljrqzGdWfR9t9OocGswx9l6Vy?=
- =?us-ascii?Q?1avxOZMDQQDizHNGobeEaeTh4ogeaOGWtbjT/B5munpDw7Xi9fjXm6RA3wRF?=
- =?us-ascii?Q?ikRY3OYEfbrOYAotk5CrF1NKQfOwfrsr4Jd3zjvT06b2SKReomlQm38ArN69?=
- =?us-ascii?Q?zeUTnx14FWDR8MXKAsVtS8WXK8qzPQT4QRZirikNX+2jURQCZh838vlNDqXH?=
- =?us-ascii?Q?DNIPmOrwqG5pqFRtnQxvPZKHMokrAMjeSIfQrPwCve7M4qNIa6eO4d50qETp?=
- =?us-ascii?Q?xFZxPni4xeH1wcxMH5YSa7ywG9unagbdZCwpaExWPM6QmxDO/+zDJLJXZzCR?=
- =?us-ascii?Q?hN9qGvZdq4C8LjNMG+La4eWMnt1jVpERsDECiHUiN4SLW9I844K7tZtDFD5G?=
- =?us-ascii?Q?WqBCwbaa4NfMbNGEGyEkPvunmzH1w7GuvWVOwUol2YcEYXB4bmFPltxwBVEq?=
- =?us-ascii?Q?7J9UJ68BjEE35ljNnZtU7ovW4sh2vYwqRyToUHZnNGTRGAc1+7p44Sh0bjB6?=
- =?us-ascii?Q?TC2vZlY3KnszlW8FPyA+h7BxgE3F5IEVwdaN6qxL8n02ykpMlkAWCODoDnED?=
- =?us-ascii?Q?SmSwmEwgSdw0sktovTl3ekKAMIdfE9JZlkQP0QqzctC8fc4NJb4f3Zmprx67?=
- =?us-ascii?Q?Rqin4sH/p2gj+RB0EhBHKbUmUrO2b62e10PijpGR9/kQMsiZG6eP/7vqe4vZ?=
- =?us-ascii?Q?it225WVP4iS0ZjUq63WvGLzQ2fahiH+HYYID8G2Qpn9uoTMtg+eOI4YFy1mm?=
- =?us-ascii?Q?78l97guutXxL3n7O7xz4n32nSMUbRB4Q8vLgTxk5D+WFrvE/fgO1wZz31Ywo?=
- =?us-ascii?Q?nvzd3Hoh9/DEgjW0ppcbpRNiZbRqEEi0ws4hflvntDyLXVnCuSc2G78JO/+z?=
- =?us-ascii?Q?6Kaw96uVHjcc6Wv6cFu06JM0DTpjeaSm2dkpdtjVR0xlHHFpCJ1a9vMYHaKA?=
- =?us-ascii?Q?Be7zLdJGE6B6iuK+v9aX3USgk/GbyMdg6OKJIKDfZOl4SiD09lghGG4ucQv9?=
- =?us-ascii?Q?Gbas6VKsrE4hSXPAW20e0lK81/2YW0i/sW10KC1ntiFzj7oMFJmpo5XBK/6s?=
- =?us-ascii?Q?J3bfDhTCBc0Q8jBmoQTKhEz3Sy8Y2X/XbZcPWwkBWz+QkUWnzy2auV3G7Ic7?=
- =?us-ascii?Q?3/AGYZzxykWeNV8p/tNLHz7aj8eQiHqgPV8vAjcPGLBiedH1daRxBRR3rXvz?=
- =?us-ascii?Q?YmsQZUv9ysp8ARy9qtnogstQF7IH+30hFg+TJqPpdUcs2txY+KvjzzVjXMui?=
- =?us-ascii?Q?OVYAlFH8B6TRtQOL5PgZ7yEg7VeqP++XFdNUye+Di8Ga4bz/kMp3Y/3+HG/I?=
- =?us-ascii?Q?eUu4omTEAnvpHFhB5169o8RzR29wIodQ?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(52116014)(376014)(366016)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?0i4y/3lG+4701SM0MtODPP+LZ8YDdWuhwf07r8+Kgf/G7AWIwbFmNAgYuCGT?=
- =?us-ascii?Q?fTm7571fvD9CfT0rf3NWlYf677B3BdVe7NIKKSlBbNZCCy2MWn8eiTu2AiF5?=
- =?us-ascii?Q?WTjrJsBp5fvUJZA1fgsKkuu1JnLlz/X2d/SMQfBRziJmIf3BF7e8tmHhGZtt?=
- =?us-ascii?Q?jPUccFQ9nHN9yc6ZTr02qNUXAZjzTbM5D1he6MX/ZYbXo1OoHPxybVF42tmF?=
- =?us-ascii?Q?yBcgWItkSkrY0XDZwazTuNmXuyUhvFtK/FTFmdUQDybsI5FUNUKKj+KKQIMJ?=
- =?us-ascii?Q?rGbfTpTmB5lTIFWtNy/vOngw8pxxpkBG4xEvJXfbmCd7tPeWI3C8jQ9N584J?=
- =?us-ascii?Q?2h9Xnt/OoQoEzXpAwR9cqeevm7EZB/CajWne3nP7w2u3cFLy6Zqo9DuXefZ6?=
- =?us-ascii?Q?T3NaBlZlsMCC6ptBEVShPp4qgPjDbGyapQ7dxkkhFS+SnRQ7PCsqKzrUbmae?=
- =?us-ascii?Q?fQBU8uatsMvloSaRgVzZIB/9AGInriMHEuz/6ywOiR0WTFrzqakbTrqFawfy?=
- =?us-ascii?Q?/MwZ7m9HOeeq35VUzqhqnaWjZWiMMPXPp1/iqCa8f3zEX09SGTd8p+nGGVHc?=
- =?us-ascii?Q?rbqHqJOY07vVtbf96vtbNpDUfeQmRftxh94CAgqhOYfQ34jvR2z+TaXxDA7z?=
- =?us-ascii?Q?F2Dp74ZceGwGz1ELsKWLwu2xcm6xMdWIzP9mmgwx0Sc7h3WA/p91QArhQ0q5?=
- =?us-ascii?Q?+oNrvrMGCPO2bDGQaFBBEA7xE9U+fn+wRMQZOB0vwf63s2D/JEbi6NqeuPCS?=
- =?us-ascii?Q?jdRY4s99C6o/wa+AkA0bhqW2IEJ4gOCGTOnQbSgaA3ih7oYo0HwJH1MTYsI3?=
- =?us-ascii?Q?Gx3lUHUWtf8A4R5ugCp5dk0dTVgJfucHQBoepPFBaCW1tfBFIsHmgakRYGYU?=
- =?us-ascii?Q?0dTdWol2/+gFW6ai9HmGa3LP4Jwj2CujQVL5Q5TXaCv4CD2hY6QEKofKxWqY?=
- =?us-ascii?Q?hK1aTJfBgCFlLzIB+o+VfQgbFAnB/fD4RlIhkUL+ee/HX+7K3yc7yRq3ZDn8?=
- =?us-ascii?Q?OLfGp1PONC8/BFNbPPSSc61Q4PJMnwx/WKG/S0oR840YjbmL0/Gsm6sUQSe2?=
- =?us-ascii?Q?KP9UMUF3JbwYWVWoZE71VZNaEpKRba5VLxVdvl4ylalUJmvEWrvZLYsXGbGr?=
- =?us-ascii?Q?a1fxf8PO844kY81VeK1/ar+qyxABUnPqFgWuOVXYo/KGw/qBkWvAzSB6pubi?=
- =?us-ascii?Q?9RLTeGLT0MK6Hg2QxCRjitF2u+RYgitZA2aqVw1a2xmFyXUqAnirf/pOTceh?=
- =?us-ascii?Q?W1IP/7RzIRezkLSyYyRd0tfqObHq8GswltFEA5t8FMLR9Az4NDbhfC7Ivi9+?=
- =?us-ascii?Q?3EUKxyclrfhN/nFSI+9RigWiOEw1J9Lxs5w5ZvnhNVj7Og1dMPBvfCrFJHVq?=
- =?us-ascii?Q?kSIkB6QwqsCXTC4NpK2XkIzmlgfnFCaR0QHZpYW6tIF7EjlNYCqquAv2hAPw?=
- =?us-ascii?Q?+47CMQ0u/xs4+G6oaDEI6SQ8OuROoXJdTiH8SeqRwdpOK4dBdR2jSgBsVPu6?=
- =?us-ascii?Q?zCXvkbuOCB5zdAju/EFRRZmkI3afXQ8xSnD9VkRfHS+AkWRSdBUmO/nIGQRY?=
- =?us-ascii?Q?iWBq3t9jY7XvCUsrC2pE7HnFJ6L5F5iS4s1og7vU?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4490a780-d8b1-4b4c-f89d-08dd77635bc5
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2025 12:37:58.4023
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C0aOf10PoGdNwFtt7lUSMt+sXiS+Q8C8UGo7sNx1UvJvE9iqHMGAgNEFj0892UHU8KGpCOrEUKAso5I7ROA16g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6292
+References: <cover.1735748715.git.anand.jain@oracle.com>
+In-Reply-To: <cover.1735748715.git.anand.jain@oracle.com>
+From: Kai Krakow <hurikhan77+btrfs@gmail.com>
+Date: Wed, 9 Apr 2025 18:31:24 +0200
+X-Gm-Features: ATxdqUG2cx1I5hJrD-IPzBi_ubBbL_HMxjObAwkC2oJd10r4VKlj92RREyMBmMU
+Message-ID: <CAMthOuMzzURcyMjbv49rkpzqc-PSPa76VkQG+FRCt0e9x_NQCA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/10] raid1 balancing methods
+To: Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, Naohiro.Aota@wdc.com, 
+	wqu@suse.com, hrx@bupt.moe, waxhead@dirtcellar.net
+Content-Type: text/plain; charset="UTF-8"
 
-To simplify handling, use the guard helper to let the compiler care for
-unlocking.
+Hi Anand!
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- fs/btrfs/ioctl.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+Am Mi., 1. Jan. 2025 um 19:10 Uhr schrieb Anand Jain <anand.jain@oracle.com>:
+>
+> v5:
+> Fixes based on review comments:
+>   . Rewrite `btrfs_read_policy_to_enum()` using `sysfs_match_string()`
+>     and `strncpy()`.
+>   . Rewrite the round-robin method based on read counts.
+>   . Fix the smatch indentation warning.
+>  - Change the default minimum contiguous device read size for round-robin
+>    from 256K to 192K, as the latter performs slightly better.
+>  - Introduce a framework to track filesystem read counts. (New patch)
+>  - Reran defrag performance numbers
+>       $ xfs_io -f -d -c 'pwrite -S 0xab 0 1000000000' /btrfs/P6B
+>       $ time -p btrfs filesystem defrag -r -f -c /btrfs
+>
+> |         | Time  | Read I/O Count  | gain  |
+> |         | Real  | devid1 | devid2 | w-PID |
+> |---------|-------|--------|--------|-------|
+> | pid     | 11.14s| 3808   | 0      |  -    |
+> | rotation|       |        |        |       |
+> |   196608|  6.54s| 2532   | 1276   | 41.29%|
+> |   262144|  8.42s| 1907   | 1901   | 24.41%|
+> | devid:1 | 10.95s| 3807   | 0      | 1.70% |
+>
+> v4:
+> Fixes based on review comments:
+>   3/10: Use == 0 to check strlen(str); drop dynamic alloc for %param.
+>   4/10: Add __maybe_unused for %value_str in btrfs_read_policy_to_enum().
+>         Return int instead of enum btrfs_read_policy.
+>   5/10: Fix change-log (: is part of optional [ ]).
+>         Wrap btrfs_read_policy_name[] with ifdef for new methods.
+>         Use IS_ALIGNED() for sector-size alignment check.
+>         Roundup misaligned %value.
+>         Use named constants: BTRFS_DEFAULT_RR_MIN_CONTIGUOUS_READ, BTRFS_RAID1_MAX_MIRRORS.
+>         Mark %s1 and %s2 in btrfs_cmp_devid() as const.
+>         Add comments to btrfs_read_rr();
+>         Use loop-local %i. Add space around /.
+>         Use >> for sector-size division.
+>         Prefix %min_contiguous_read with rr.
+>   7/10: Move experimental to the top of the feature list.
+>         Use experiment=on. Skip printing when off.
+>
+> v3:
+> 1. Removed the latency-based RAID1 balancing patch. (Per David's review)
+> 2. Renamed "rotation" to "round-robin" and set the per-set
+>    min_contiguous_read to 256k. (Per David's review)
+> 3. Added raid1-balancing module configuration for fstests testing.
+>    raid1-balancing can now be configured through both module load
+>    parameters and sysfs.
+>
+> The logic of individual methods remains unchanged, and performance metrics
+> are consistent with v2.
+>
+> -----
+> v2:
+> 1. Move new features to CONFIG_BTRFS_EXPERIMENTAL instead of CONFIG_BTRFS_DEBUG.
+> 2. Correct the typo from %est_wait to %best_wait.
+> 3. Initialize %best_wait to U64_MAX and remove the check for 0.
+> 4. Implement rotation with a minimum contiguous read threshold before
+>    switching to the next stripe. Configure this, using:
+>
+>         echo rotation:[min_contiguous_read] > /sys/fs/btrfs/<uuid>/read_policy
+>
+>    The default value is the sector size, and the min_contiguous_read
+>    value must be a multiple of the sector size.
+>
+> 5. Tested FIO random read/write and defrag compression workloads with
+>    min_contiguous_read set to sector size, 192k, and 256k.
+>
+>    RAID1 balancing method rotation is better for multi-process workloads
+>    such as fio and also single-process workload such as defragmentation.
+>
+>      $ fio --filename=/btrfs/foo --size=5Gi --direct=1 --rw=randrw --bs=4k \
+>         --ioengine=libaio --iodepth=256 --runtime=120 --numjobs=4 \
+>         --time_based --group_reporting --name=iops-test-job --eta-newline=1
+>
+>
+> |         |            |            | Read I/O count  |
+> |         | Read       | Write      | devid1 | devid2 |
+> |---------|------------|------------|--------|--------|
+> | pid     | 20.3MiB/s  | 20.5MiB/s  | 313895 | 313895 |
+> | rotation|            |            |        |        |
+> |     4096| 20.4MiB/s  | 20.5MiB/s  | 313895 | 313895 |
+> |   196608| 20.2MiB/s  | 20.2MiB/s  | 310152 | 310175 |
+> |   262144| 20.3MiB/s  | 20.4MiB/s  | 312180 | 312191 |
+> |  latency| 18.4MiB/s  | 18.4MiB/s  | 272980 | 291683 |
+> | devid:1 | 14.8MiB/s  | 14.9MiB/s  | 456376 | 0      |
+>
+>    rotation RAID1 balancing technique performs more than 2x better for
+>    single-process defrag.
+>
+>       $ time -p btrfs filesystem defrag -r -f -c /btrfs
+>
+>
+> |         | Time  | Read I/O Count  |
+> |         | Real  | devid1 | devid2 |
+> |---------|-------|--------|--------|
+> | pid     | 18.00s| 3800   | 0      |
+> | rotation|       |        |        |
+> |     4096|  8.95s| 1900   | 1901   |
+> |   196608|  8.50s| 1881   | 1919   |
+> |   262144|  8.80s| 1881   | 1919   |
+> | latency | 17.18s| 3800   | 0      |
+> | devid:2 | 17.48s| 0      | 3800   |
+>
+> Rotation keeps all devices active, and for now, the Rotation RAID1
+> balancing method is preferable as default. More workload testing is
+> needed while the code is EXPERIMENTAL.
+> While Latency is better during the failing/unstable block layer transport.
+> As of now these two techniques, are needed to be further independently
+> tested with different worloads, and in the long term we should be merge
+> these technique to a unified heuristic.
+>
+> Rotation keeps all devices active, and for now, the Rotation RAID1
+> balancing method should be the default. More workload testing is needed
+> while the code is EXPERIMENTAL.
+>
+> Latency is smarter with unstable block layer transport.
+>
+> Both techniques need independent testing across workloads, with the goal of
+> eventually merging them into a unified approach? for the long term.
+>
+> Devid is a hands-on approach, provides manual or user-space script control.
+>
+> These RAID1 balancing methods are tunable via the sysfs knob.
+> The mount -o option and btrfs properties are under consideration.
+>
+> Thx.
+>
+> --------- original v1 ------------
+>
+> The RAID1-balancing methods helps distribute read I/O across devices, and
+> this patch introduces three balancing methods: rotation, latency, and
+> devid. These methods are enabled under the `CONFIG_BTRFS_DEBUG` config
+> option and are on top of the previously added
+> `/sys/fs/btrfs/<UUID>/read_policy` interface to configure the desired
+> RAID1 read balancing method.
+>
+> I've tested these patches using fio and filesystem defragmentation
+> workloads on a two-device RAID1 setup (with both data and metadata
+> mirrored across identical devices). I tracked device read counts by
+> extracting stats from `/sys/devices/<..>/stat` for each device. Below is
+> a summary of the results, with each result the average of three
+> iterations.
+>
+> A typical generic random rw workload:
+>
+> $ fio --filename=/btrfs/foo --size=10Gi --direct=1 --rw=randrw --bs=4k \
+>   --ioengine=libaio --iodepth=256 --runtime=120 --numjobs=4 --time_based \
+>   --group_reporting --name=iops-test-job --eta-newline=1
+>
+> |         |            |            | Read I/O count  |
+> |         | Read       | Write      | devid1 | devid2 |
+> |---------|------------|------------|--------|--------|
+> | pid     | 29.4MiB/s  | 29.5MiB/s  | 456548 | 447975 |
+> | rotation| 29.3MiB/s  | 29.3MiB/s  | 450105 | 450055 |
+> | latency | 21.9MiB/s  | 21.9MiB/s  | 672387 | 0      |
+> | devid:1 | 22.0MiB/s  | 22.0MiB/s  | 674788 | 0      |
+>
+> Defragmentation with compression workload:
+>
+> $ xfs_io -f -d -c 'pwrite -S 0xab 0 1G' /btrfs/foo
+> $ sync
+> $ echo 3 > /proc/sys/vm/drop_caches
+> $ btrfs filesystem defrag -f -c /btrfs/foo
+>
+> |         | Time  | Read I/O Count  |
+> |         | Real  | devid1 | devid2 |
+> |---------|-------|--------|--------|
+> | pid     | 21.61s| 3810   | 0      |
+> | rotation| 11.55s| 1905   | 1905   |
+> | latency | 20.99s| 0      | 3810   |
+> | devid:2 | 21.41s| 0      | 3810   |
+>
+> . The PID-based balancing method works well for the generic random rw fio
+>   workload.
+> . The rotation method is ideal when you want to keep both devices active,
+>   and it boosts performance in sequential defragmentation scenarios.
+> . The latency-based method work well when we have mixed device types or
+>   when one device experiences intermittent I/O failures the latency
+>   increases and it automatically picks the other device for further Read
+>   IOs.
+> . The devid method is a more hands-on approach, useful for diagnosing and
+>   testing RAID1 mirror synchronizations.
+>
+> Anand Jain (10):
+>   btrfs: initialize fs_devices->fs_info earlier
+>   btrfs: simplify output formatting in btrfs_read_policy_show
+>   btrfs: add btrfs_read_policy_to_enum helper and refactor read policy
+>     store
+>   btrfs: handle value associated with raid1 balancing parameter
+>   btrfs: add read count tracking for filesystem stats
+>   btrfs: introduce RAID1 round-robin read balancing
+>   btrfs: add RAID1 preferred read device
+>   btrfs: expose experimental mode in module information
+>   btrfs: enable RAID1 balancing configuration via modprobe parameter
+>   btrfs: modload to print RAID1 balancing status
+>
+>  fs/btrfs/bio.c     |   8 +++
+>  fs/btrfs/disk-io.c |   4 ++
+>  fs/btrfs/super.c   |  18 +++++
+>  fs/btrfs/sysfs.c   | 168 ++++++++++++++++++++++++++++++++++++++++-----
+>  fs/btrfs/sysfs.h   |   5 ++
+>  fs/btrfs/volumes.c | 115 ++++++++++++++++++++++++++++++-
+>  fs/btrfs/volumes.h |  22 +++++-
+>  7 files changed, 317 insertions(+), 23 deletions(-)
+>
+> --
+> 2.47.0
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 7cec105a4cb0..1d8c28aa84d2 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3620,22 +3620,19 @@ static long btrfs_ioctl_balance_progress(struct btrfs_fs_info *fs_info,
- 					 void __user *arg)
- {
- 	struct btrfs_ioctl_balance_args *bargs;
--	int ret = 0;
-+	int ret;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	mutex_lock(&fs_info->balance_mutex);
--	if (!fs_info->balance_ctl) {
--		ret = -ENOTCONN;
--		goto out;
--	}
-+	guard(mutex)(&fs_info->balance_mutex);
-+
-+	if (!fs_info->balance_ctl)
-+		return -ENOTCONN;
- 
- 	bargs = kzalloc(sizeof(*bargs), GFP_KERNEL);
--	if (!bargs) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!bargs)
-+		return -ENOMEM;
- 
- 	btrfs_update_ioctl_balance_args(fs_info, bargs);
- 
-@@ -3643,8 +3640,7 @@ static long btrfs_ioctl_balance_progress(struct btrfs_fs_info *fs_info,
- 		ret = -EFAULT;
- 
- 	kfree(bargs);
--out:
--	mutex_unlock(&fs_info->balance_mutex);
-+
- 	return ret;
- }
- 
--- 
-2.39.0
+I've backported your patches to my LTS kernel to experiment with it a
+bit. I've also included the latency-based policy for that reason.
+Here's what I currently got:
+https://github.com/kakra/linux/pull/36
 
+I've added an idea to use a hybrid policy which combines round-robin
+and latency into one combined policy. But it seems like over time, it
+will just acts like round-robin. This is probably because the average
+latency is calculated over the full history of requests. I think using
+an EMA (exponential moving average) with an alpha of 1/8 or 1/16 could
+work better. But this would require to sample each bio individually
+and add fields to the device structs. Something like this:
+
+s64 current_ema = atomic64_read(&device->avg_latency_ema);
+s64 difference = (s64)current_latency - current_ema; // important:
+signed difference!
+s64 new_ema = current_ema + (difference >> N); // N = 3 or 4 (alpha 1/8 or 1/16)
+atomic64_cmpxchg(&device->avg_latency_ema, current_ema, new_ema);
+
+What do you think?
+
+I'm currently not posting my patch series here because
+
+(a) it's based/backported on LTS
+(b) I'm not yet very familiar with doing that on the mailing list
+(c) the code is not ready and contains some duplication
+
+I hope that's okay.
+
+So far, both the latency and round-robin policies work well in my
+setup. The latency policy actually filters out a low-end desktop HDD
+which is quite slow (according to fio) for individual short requests
+and long sequential reading (acts more like 5400rpm in that case) but
+is actually not that bad for typical random IO with larger block sizes
+(actually competes well with my other 7200rpm disks). Combined with
+bcache, this automatically optimizes the fastest disks into the cache,
+avoiding the slower ones when using the latency policy.
+
+Overall, loading times in some applications with random but massive IO
+thus seem faster with the latency policy while sequential IO is faster
+with the round-robin policy.
+
+I think the hybrid approach could fit both scenarios but it currently
+suffers from not adapting well to changes in IO patterns - which EMA
+could solve.
+
+Thanks
+Kai
 
