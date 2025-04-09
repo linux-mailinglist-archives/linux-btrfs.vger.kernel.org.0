@@ -1,181 +1,271 @@
-Return-Path: <linux-btrfs+bounces-12909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12910-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1654A82197
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 12:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D4ECA821FA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 12:23:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D348A1709F1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 10:01:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E6B3462FE6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 10:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9C025D536;
-	Wed,  9 Apr 2025 10:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A3F25DAE3;
+	Wed,  9 Apr 2025 10:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azcBWgc1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b38jAnl2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9989F1D79BE;
-	Wed,  9 Apr 2025 10:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292B725D91A
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Apr 2025 10:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744192867; cv=none; b=qAKFDULiObnunYlzaOfirkoCFsyWKHsf1BwaTw3KR8VtH0LIDNmebBaVIOcDeqC/Hl4MPBCaIvNFTPAOx+3/dRfGs9iSz7/U1UTEEcYJdhqnf/MeIbsMqBqusqbFu8UPJ8eY2uG7eHhRdQnawk9ug5tubiOxJS8H1Qvwidzt9pA=
+	t=1744194129; cv=none; b=aZqnGgaBpdhoWI5p2C7iewRkcBscJA7RLa4Rqtun/0gjWq3aK9Hxvgm+VOH/b7BliyhcBbmj2Br7vJlVmUA6j4vVneKkcp09fWxoF9SBwdAXYNSr3tcknbpVmEekKCONwxTrePU35sHkaReOAnu7PyKGeZMjguv09/F+Xsqn1AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744192867; c=relaxed/simple;
-	bh=aaoSNuqVQs2wREEbSG0PEFNmz0B9YoRLzkQISElEe00=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h/1UZz8AdHNzED+0Q2O/ip4CocYDeCfKww8K5K7HV0HtcL6iEoTh2bmu9fSVmv1ENtG7XBMOm0qXQdmZobCWyxTmN+gnP44tRtPT6BrKONACPd/c46iCj6p48bmfqIuZPxIqVynmcnwj9WsroJpc59LdLTm0/kD+Gp5xaJHawaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azcBWgc1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11AE0C4CEE3;
-	Wed,  9 Apr 2025 10:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744192867;
-	bh=aaoSNuqVQs2wREEbSG0PEFNmz0B9YoRLzkQISElEe00=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=azcBWgc1dE/VMs7yH+MDdHJ6mOjwElzORaOR7Pco7L75Fwchen86RIr50Qwsofm04
-	 ZAHVSjWZ4HSQR3dlHj9Ri0z9CjpG5MW09Ld8qEQtCMQMHCW1oyz++pOsw3SfWTnZWA
-	 XI3QZNmD4Rv7U49mX894GTGEbF+q/LdPuH5MNZqae7zGqYAsmTsW49DTKbAGmR0HmF
-	 3ZmLTBODEqrXMpJ5ZhuMhUC+sMIuHCkvs0WYK3e7PejwuSEpJhML4PlMH9qwD/Gu/j
-	 8rwFJVRPLWgKbWpCCgYsuwIOPRXyMYAwUR1M12uXxcYiI0A+NKkeVVflnjFZIAuMbp
-	 ROSbzKKUiTUcA==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ac25520a289so1150695966b.3;
-        Wed, 09 Apr 2025 03:01:06 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUKV2ZIDsNLrNFXyXadP9aMAahlwd5OP1WZhwpwCVEm6PKRq+WdwfXXZyqI8IXt5bypvUUfhfSXV71bLg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBX85rdNQcyzM2VSl0mk8sKfhhU64+4tNOkvZqrC4MYDEHwgTf
-	gY3wsNdxyPvbgvZIv2SFEAmBnYKQXxQaXL0D5MUFmiCClS2hzBwZd+EqCFlTs7X0PiHUNmA6DqH
-	o1Nq/0KVb+W+6c4WWyc89oyAHFHs=
-X-Google-Smtp-Source: AGHT+IH9pMfiS9RV/8UfF99mLuxU1yOHCshqaJnrrxhE8i6CJleH2faj16Fix1Z5kYPzqtluX8PqhMpLybfyeaD3+qk=
-X-Received: by 2002:a17:907:6e8e:b0:ac7:1350:e878 with SMTP id
- a640c23a62f3a-aca9b73abadmr227606066b.46.1744192865598; Wed, 09 Apr 2025
- 03:01:05 -0700 (PDT)
+	s=arc-20240116; t=1744194129; c=relaxed/simple;
+	bh=Z9VexToz3nnp1JDveeL9jqmixKmDtFR4TwslIbZ/nBA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gW4mjfxL9zK83U0qGpN/zewRQ40B5X+kDtB8AC3Za0CNooxbMy0NMh7Si87GUDBAat/ZMAyoogNEb1IMFJ4eBvvxDXH5TvoQe9MR3ukuAoE9M6rzXqD8osw7e9o6+7tMG1awVoB9E8f15noCo+AWsYc0ska76h9pRmKE70uOBI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b38jAnl2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744194126;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L+m2i/iot7yXQKtdJqxZABg1r8ZEYHkst+29VFgjEFE=;
+	b=b38jAnl2TOBsAv693WpeF4Uff7QYJhZp1cqc+OE43sYWHFhP8gUkErQAWxF20tOcMogJSa
+	ofR1uA3Wit29vGFnZOH2gmmylHayfQkR0ayzFRr98QqD5XCMPVM66lBpPyj8UlvN6dcj8E
+	N00V7/e0xxrQ11XJArSpmyqvosA2XKk=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-7-fACl3derMmuDplQ6L_rdRw-1; Wed, 09 Apr 2025 06:22:05 -0400
+X-MC-Unique: fACl3derMmuDplQ6L_rdRw-1
+X-Mimecast-MFC-AGG-ID: fACl3derMmuDplQ6L_rdRw_1744194124
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-7398d70abbfso9155903b3a.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Apr 2025 03:22:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744194124; x=1744798924;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L+m2i/iot7yXQKtdJqxZABg1r8ZEYHkst+29VFgjEFE=;
+        b=F9h1sBzi0cCvGM4eXiSt6AF3reyYWMhyAOxX4K2h6gBUVUXnPL7bABUFoXtuJN4b+8
+         j+ygwSCrSowDoBf67TCNG6foVKPk1ky3FhILB0rzlZ8EkSZX6Pz1BCHY5isqsNsgjMAl
+         jjhkdnfdFR/uVSMXvp4FjLYoX5ZCLjq6IJVaUNrn4WKd7o/88/1YhDZNzHW2d+V4rJ2x
+         +936FYJkgygPTBUl1s/ObYgeoju8Y+fo3Z0UjGdvxFu34mUU20ASnwiRnlyAowWn7ZD5
+         CDmQKl5DPSHCvKZw5Vk4OJXJ6Z2LOi5H7Ecgc0A8JabSyLXXbykur8xKVJ3Y5KcYAQlc
+         e+HQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAiHZRgcanYCzO27P6mdkydtHCLmEuw8DvfYHqFrIg2/7+32Gj1KDTkq/CBLkcMLM8U4dUzKNQlVYQ9A==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzt5rxj/isvfeznxATuzq6A1EEn0y3AHli2Phu2Z0AuugXtJeMh
+	9vfdD/mEMY1PUNIo1HkE4rRRzP47Gj9FWqj/At6LauNvs6o2d2r5FfKjorIWmID6JfAZSgAhUrt
+	mY186ceEp/QarlndI4PZ9gvmYNIRfcAB5EWEQR7bGSnzjA5tM1FknrqhaxSnn
+X-Gm-Gg: ASbGnct9oeDEowjinV5ib+p+e81UiifLupKQPwYnzJb0e/ixm1ZIAgqm1SWsh68VINK
+	ihhGLQ21mNlega/zGI9GzvnPwVE6V7V8cqnLrrupPiEHhzmBu/uiIPUxXNg2LEWDBxJ56QHND67
+	0JIsKjSi+Ct0T9LaCG1k91uTpRbvQ2PwYV4aZhWJMPDgZOa4K6YbI6FNUSKFPwUHBWbvbmJNdHW
+	uQlrghRd5Kv4KY5bOIfEvXvxg0cpUtMHNmdJZHcSnT3eRHeB4WEdg4EptL/4bzJPSiDXDsVOSHv
+	xkE6eLezZyMMObTBaSsM7tL+1fiXkUN3fxIltuCN8DVFn/EzWfkU
+X-Received: by 2002:a05:6a00:22cd:b0:736:a8db:93b8 with SMTP id d2e1a72fcca58-73bae4929eamr3217489b3a.3.1744194123790;
+        Wed, 09 Apr 2025 03:22:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFoDfu+ZzZqe3WtTFV94/EyNEg2vjFHg5Cu6poDHKBuYa7KT1JnR1u5MVOwp3qYbch9BoWTeA==
+X-Received: by 2002:a05:6a00:22cd:b0:736:a8db:93b8 with SMTP id d2e1a72fcca58-73bae4929eamr3217456b3a.3.1744194123272;
+        Wed, 09 Apr 2025 03:22:03 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1d487e1sm960380b3a.54.2025.04.09.03.22.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Apr 2025 03:22:02 -0700 (PDT)
+Date: Wed, 9 Apr 2025 18:21:59 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, djwong@kernel.org
+Subject: Re: [PATCH v6 4/6] fstests: common/sysfs: add new file sysfs and
+ helpers
+Message-ID: <20250409102159.567xsmwrjfkqqb4k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1744183008.git.anand.jain@oracle.com>
+ <10810a81ce8a15a95d3b4653f65ef2b0d57c442b.1744183008.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cfb8c19533ac3c764edc1fe62b7fde75e76579a4.1743137470.git.anand.jain@oracle.com>
-In-Reply-To: <cfb8c19533ac3c764edc1fe62b7fde75e76579a4.1743137470.git.anand.jain@oracle.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 9 Apr 2025 11:00:28 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7nx9D_CQhWXNGjBcZ6We+B3qmsGdpbG_p0qdCHM-dpfA@mail.gmail.com>
-X-Gm-Features: ATxdqUHL2CR1zAVV2En8TQh4rlkhznSQ1bcNg9Mv5gxljs_HZhPx7ucbvxkGHjI
-Message-ID: <CAL3q7H7nx9D_CQhWXNGjBcZ6We+B3qmsGdpbG_p0qdCHM-dpfA@mail.gmail.com>
-Subject: Re: [PATCH v2] fstests: add btrfs standard configuration
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10810a81ce8a15a95d3b4653f65ef2b0d57c442b.1744183008.git.anand.jain@oracle.com>
 
-On Fri, Mar 28, 2025 at 4:52=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
-wrote:
->
-> Here's a standard configuration for quick, regular checks, commonly used
-> during development to verify Btrfs.
->
+On Wed, Apr 09, 2025 at 03:43:16PM +0800, Anand Jain wrote:
+> Introduce `verify_sysfs_syntax()` and `_require_fs_sysfs_attr_policy()`
+> to verify whether a sysfs attribute rejects invalid input arguments
+> during writes.
+> 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
-> v2:
-> - Renamed config file to `configs/btrfs-devel.config`
-> - global section renamed to `generic-config`
-> - Section names now use hyphens
-> - Added `RECREATE_TEST_DEV=3Dtrue`
-> - Removed `MKFS_OPTIONS=3D"--nodiscard"` from `generic-config`
->
->  .gitignore                 |  2 ++
->  configs/btrfs-devel.config | 40 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 42 insertions(+)
->  create mode 100644 configs/btrfs-devel.config
->
-> diff --git a/.gitignore b/.gitignore
-> index 4fd817243dca..9a9351644278 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -44,6 +44,8 @@ tags
->
->  # custom config files
->  /configs/*.config
-> +# Do not ignore the btrfs devel config for testing
-> +!/configs/btrfs-devel.config
->
->  # ltp/ binaries
->  /ltp/aio-stress
-> diff --git a/configs/btrfs-devel.config b/configs/btrfs-devel.config
+
+This version is good to me,
+
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+>  common/sysfs | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+>  create mode 100644 common/sysfs
+> 
+> diff --git a/common/sysfs b/common/sysfs
 > new file mode 100644
-> index 000000000000..3a07b731abd9
+> index 000000000000..16d4b482f9e9
 > --- /dev/null
-> +++ b/configs/btrfs-devel.config
-> @@ -0,0 +1,40 @@
-> +# Modify as required
-> +[generic-config]
-> +TEST_DIR=3D/mnt/test
-> +TEST_DEV=3D/dev/sda
-> +SCRATCH_MNT=3D/mnt/scratch
-> +SCRATCH_DEV_POOL=3D"/dev/sdb /dev/sdc /dev/sdd /dev/sde"
-> +LOGWRITES_DEV=3D/dev/sdf
-> +RECREATE_TEST_DEV=3Dtrue
-
-All these mount paths and device paths are far from "standard" as the
-changelog suggests.
-It's certainly different for me.
-
-Plus this isn't sufficient for some tests that need more devices in the poo=
-l:
-
-btrfs/292 needs 6
-btrfs/294 needs 8
-
-I'm also seeing RECREATE_TEST_DEV=3Dtrue for the first time. Why is this ne=
-eded?
-
+> +++ b/common/sysfs
+> @@ -0,0 +1,145 @@
+> +##/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0+
+> +# Copyright (c) 2025 Oracle.  All Rights Reserved.
+> +#
+> +# Common/sysfs file for the sysfs related helper functions.
 > +
-> +[btrfs-compress]
-> +MKFS_OPTIONS=3D"--nodiscard"
-> +MOUNT_OPTIONS=3D"-o compress"
+> +# Test for the existence of a policy at /sys/fs/$FSTYP/$DEV/$ATTR
+> +#
+> +# All arguments are necessary, and in this order:
+> +#  - dev: device name, e.g. $SCRATCH_DEV
+> +#  - attr: path name under /sys/fs/$FSTYP/$dev
+> +#  - policy: policy within /sys/fs/$FSTYP/$dev
+> +#
+> +# Usage example:
+> +#   _has_fs_sysfs_attr_policy /dev/mapper/scratch-dev read_policy round-robin
+> +_has_fs_sysfs_attr_policy()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	local policy=$3
 > +
-> +[btrfs-holes-spacecache]
-> +MKFS_OPTIONS=3D"--nodiscard -O ^no-holes,^free-space-tree"
-> +MOUNT_OPTIONS=3D" "
+> +	if [ ! -b "$dev" -o -z "$attr" -o -z "$policy" ]; then
+> +		_fail \
+> +	     "Usage: _has_fs_sysfs_attr_policy <mounted_device> <attr> <policy>"
+> +	fi
 > +
-> +[btrfs-holes-spacecache-compress]
-> +MKFS_OPTIONS=3D"--nodiscard -O ^no-holes,^free-space-tree"
-> +MOUNT_OPTIONS=3D"-o compress"
+> +	local dname=$(_fs_sysfs_dname $dev)
+> +	if ! test -e /sys/fs/${FSTYP}/${dname}/${attr}; then
+> +		return 1
+> +	fi
 > +
-> +[btrfs-block-group-tree]
-> +MKFS_OPTIONS=3D"--nodiscard -O block-group-tree"
-> +MOUNT_OPTIONS=3D" "
+> +	cat /sys/fs/${FSTYP}/${dname}/${attr} | grep -q ${policy}
+> +}
 > +
-> +[btrfs-raid-stripe-tree]
-> +MKFS_OPTIONS=3D"--nodiscard -O raid-stripe-tree"
-> +MOUNT_OPTIONS=3D" "
+> +# Require the existence of a sysfs entry at /sys/fs/$FSTYP/$DEV/$ATTR
+> +# and value in it contains $policy
+> +# All arguments are necessary, and in this order:
+> +#  - dev: device name, e.g. $SCRATCH_DEV
+> +#  - attr: path name under /sys/fs/$FSTYP/$dev
+> +#  - policy: mentioned in /sys/fs/$FSTYP/$dev/$attr
+> +#
+> +# Usage example:
+> +#   _require_fs_sysfs_attr_policy /dev/mapper/scratch-dev read_policy round-robin
+> +_require_fs_sysfs_attr_policy()
+> +{
+> +	_has_fs_sysfs_attr_policy "$@" && return
 > +
-> +[btrfs-squota]
-> +MKFS_OPTIONS=3D"--nodiscard -O squota"
-> +MOUNT_OPTIONS=3D" "
+> +	local dev=$1
+> +	local attr=$2
+> +	local policy=$3
+> +	local dname=$(_fs_sysfs_dname $dev)
 > +
-> +[btrfs-subpage-normal]
-> +MKFS_OPTIONS=3D"--nodiscard --nodesize 4k --sectorsize 4k"
-> +MOUNT_OPTIONS=3D" "
+> +	_notrun "This test requires /sys/fs/${FSTYP}/${dname}/${attr} ${policy}"
+> +}
 > +
-> +[btrfs-subpage-compress]
-> +MKFS_OPTIONS=3D"--nodiscard --nodesize 4k --sectorsize 4k"
-> +MOUNT_OPTIONS=3D"-o compress"
-
-Why the --nodiscard?
-I don't use it in my setups, doing the discard doesn't cause any
-significant slowdown for me using 100G devices with qmu (raw type and
-with discard support), and it's good to the discard.
-
-So I think this is far from standard as you claim in the changelog and
-won't fit everybody. It certainly doesn't for me.
-
-Thanks.
-
-> --
+> +_set_sysfs_policy()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	shift
+> +	shift
+> +	local policy=$@
+> +
+> +	_set_fs_sysfs_attr $dev $attr ${policy}
+> +
+> +	case "$FSTYP" in
+> +	btrfs)
+> +		_get_fs_sysfs_attr $dev $attr | grep -q "[${policy}]"
+> +		if [[ $? != 0 ]]; then
+> +			echo "Setting sysfs $attr $policy failed"
+> +		fi
+> +		;;
+> +	*)
+> +		_fail \
+> +"sysfs syntax verification for '${attr}' '${policy}' for '${FSTYP}' is not implemented"
+> +		;;
+> +	esac
+> +}
+> +
+> +_set_sysfs_policy_must_fail()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	shift
+> +	shift
+> +	local policy=$@
+> +
+> +	_set_fs_sysfs_attr $dev $attr ${policy} | _filter_sysfs_error \
+> +							   | tee -a $seqres.full
+> +}
+> +
+> +# Verify sysfs attribute rejects invalid input.
+> +# Usage syntax:
+> +#   _verify_sysfs_syntax <$dev> <$attr> <$policy> [$value]
+> +# Examples:
+> +#   _verify_sysfs_syntax $TEST_DEV read_policy pid
+> +#   _verify_sysfs_syntax $TEST_DEV read_policy round-robin 4k
+> +# Note:
+> +#  Testcase must include
+> +#      . ./common/filter
+> +# Prerequisite checks are kept outside this function
+> +# to make them clear to the test case, rather than hiding
+> +# them deep inside another function.
+> +#      _require_fs_sysfs_attr_policy $TEST_DEV $attr $policy
+> +_verify_sysfs_syntax()
+> +{
+> +	local dev=$1
+> +	local attr=$2
+> +	local policy=$3
+> +	local value=$4
+> +
+> +	# Test policy specified wrongly. Must fail.
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy $policy'"
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy t'"
+> +	_set_sysfs_policy_must_fail $dev $attr "' '"
+> +	_set_sysfs_policy_must_fail $dev $attr "'${policy} n'"
+> +	_set_sysfs_policy_must_fail $dev $attr "'n ${policy}'"
+> +	_set_sysfs_policy_must_fail $dev $attr "' ${policy}'"
+> +	_set_sysfs_policy_must_fail $dev $attr "' ${policy} '"
+> +	_set_sysfs_policy_must_fail $dev $attr "'${policy} '"
+> +	_set_sysfs_policy_must_fail $dev $attr _${policy}
+> +	_set_sysfs_policy_must_fail $dev $attr ${policy}_
+> +	_set_sysfs_policy_must_fail $dev $attr _${policy}_
+> +	_set_sysfs_policy_must_fail $dev $attr ${policy}:
+> +	# Test policy longer than 32 chars fails stable.
+> +	_set_sysfs_policy_must_fail $dev $attr 'jfdkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjffjfjfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+> +
+> +	# Test policy specified correctly. Must pass.
+> +	_set_sysfs_policy $dev $attr $policy
+> +
+> +	# If the policy has no value return
+> +	if [[ -z $value ]]; then
+> +		return
+> +	fi
+> +
+> +	# Test value specified wrongly. Must fail.
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy: $value'"
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy:$value '"
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy:$value typo'"
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy:${value}typo'"
+> +	_set_sysfs_policy_must_fail $dev $attr "'$policy :$value'"
+> +
+> +	# Test policy and value all specified correctly. Must pass.
+> +	_set_sysfs_policy $dev $attr $policy:$value
+> +}
+> -- 
 > 2.47.0
->
->
+> 
+
 
