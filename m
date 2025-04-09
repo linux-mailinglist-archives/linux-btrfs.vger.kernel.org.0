@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-12915-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12916-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAAF8A82325
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 13:11:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBDCEA82326
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 13:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBE7F1BA629C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 11:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78D891BA647B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Apr 2025 11:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F5FA25DB13;
-	Wed,  9 Apr 2025 11:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01DE25D53C;
+	Wed,  9 Apr 2025 11:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZTV/5wBU"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WETctSuM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355D925D53F
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Apr 2025 11:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31C625D53F
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Apr 2025 11:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744197065; cv=none; b=m8fjeptSq97WvpewNXs/oa4CltsiUdP53uVtdn9w0QOMEHWrG8Cx5hnrc3O8uVQfXSlaKosPb/3oeB7VQW16pH/ZBVdoti0R8GSZshC0hliI/TwUw0AKEOOLX+6rubustg3xCyosgM/jS+KrpQZjQc2t04u0PaA0zOk/KzFV/uU=
+	t=1744197068; cv=none; b=R93TBJZn5TxQdsQKZWU9g9wG0FGIYBNbRhXyEgEw1EVDcrE0m8gQNYcMkhyxtNv+T8C5zhO+P4r+BzhRUuk/q75LGGWK/hTT+CNnk6dr/Nn7W0Ho/0TWHY6ID8+oBbYjUxHT7+LfkBn582UQYa+yCLl10BvzuGqh+aS2rHFMX1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744197065; c=relaxed/simple;
-	bh=v1gYgagkCPcDqpaHsyJP43fQyWpmD8ll4D9vaR/0TK4=;
+	s=arc-20240116; t=1744197068; c=relaxed/simple;
+	bh=pqJJ+r/ZiVLTPLkpqDhVxSzIlepvPMoKGmykym/O8vo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OoFGOprwZIngjtb55e8Zv6VpyvZy4RdIAOw5jSMCkyF7MAnygIPgByFj0wowV9oCCBJETIKHKLSJLY+6s2P7sA87S2S4SLJaM4wh7rP0g4z0ok18BjLMCQuUldU0Zpd7czUpfe+ODmN0gvc3B3vK3O8iu3ejZXdlIB6nGqAurns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZTV/5wBU; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=S8knWO2n8PpFWvbMtAsQSRcTuWGYv/sEVCxDxb7JydgqDdsok9wT50oc3DU5mgmTQlImO6VREqwYjUEkt3dqSJzGNLL6fOhSiUCVxOpp84VIrZqsVkyaToTa1qumfbUkZg/DEgA0GLLBRHhV/LIq+0OApd38W3uhtDufdMA4ZVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WETctSuM; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=GFZyyeuiTlSJ00Ar9J+XxphqmRT4l1uhBCS9xQ8Tho4=; b=ZTV/5wBURH3PPWF/bdCNR/dvMZ
-	qEj/dFG29FxkkKvSCXPUt6BuDMpDhilG8OMyf7DQcwyq+Hd9B3BPrKXBDKXASgZGqvpObK3gSef0M
-	AhZODRGcONYEstdFekURGePzx9br6KWiUHUTyCYLep4ePROAK7P3DacG4+/R9eE8fspH1mQMpz5T5
-	Q7M+rgNGwLErELpAdYePqDpB3vZHNgJBqg5Xi5WgxsW8P6HA94LdkewnTdbsO2CZ9QFextijtxnCr
-	nmaqBvvhvQfC1LiR5cxbMJBz8F/p/8dd3HJn8tDfJtlC2rUSRJwPpzk1j8wAtzUv5icNd7dun24TG
-	ismMXmoA==;
+	bh=kEUuj+OtHCfTkoZ3g5qvqntUY4zXty4hm79iNIM53Sw=; b=WETctSuMAbORDTvOYWncFcVDtJ
+	rOwWC/AK48r00hmivivgovZokgT9osZZSgu61npjXbGo5T1xeFzhOgWUV6LrteHOAW3d+F3YMsZOE
+	zgMRJtaMFdCRLRRzuUrQ0T/Re1i3VWQdqJQWiEblcz39qAIZ7XmCyakuMEyRLQU46I72Edz64PjTf
+	7FppYR76rOgjLqFr1t9usit4+KrYE09j+1qi0usKLm0COitISC2/lcPj7k4ftUvfKIRlwa9UMdyeD
+	StoRrUHye/EN+GmG0fBrCpr/VeDhycjOqAw+liMY9SreBCAp4pH3si1xBBjHywEtB3JVzUcfJtEYH
+	qgRQscUQ==;
 Received: from 2a02-8389-2341-5b80-08b8-afb4-7bb0-fe1c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:8b8:afb4:7bb0:fe1c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2TKh-00000006x2Y-206e;
-	Wed, 09 Apr 2025 11:11:03 +0000
+	id 1u2TKj-00000006x2x-3FiB;
+	Wed, 09 Apr 2025 11:11:06 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/8] btrfs: track the next file offset in struct btrfs_bio_ctrl
-Date: Wed,  9 Apr 2025 13:10:36 +0200
-Message-ID: <20250409111055.3640328-3-hch@lst.de>
+Subject: [PATCH 3/8] btrfs: pass a physical address to btrfs_repair_io_failure
+Date: Wed,  9 Apr 2025 13:10:37 +0200
+Message-ID: <20250409111055.3640328-4-hch@lst.de>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250409111055.3640328-1-hch@lst.de>
 References: <20250409111055.3640328-1-hch@lst.de>
@@ -63,116 +63,82 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Stop poking into bio implementation details and recalculating the pos
-from the folio over and over and instead just track then end of the
-current bio in logical file offsets in the btrfs_bio_ctrl.
+This avoid stepping into bvec internals or complicated folio to
+page offset calculations.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+ fs/btrfs/bio.c     | 9 ++++-----
+ fs/btrfs/bio.h     | 3 +--
+ fs/btrfs/disk-io.c | 7 ++++---
+ 3 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 193736b07a0b..36db23f7a6bb 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -96,6 +96,7 @@ void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info)
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 8c2eee1f1878..10f31ee1e8c0 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -192,7 +192,7 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
+ 		btrfs_repair_io_failure(fs_info, btrfs_ino(inode),
+ 				  repair_bbio->file_offset, fs_info->sectorsize,
+ 				  repair_bbio->saved_iter.bi_sector << SECTOR_SHIFT,
+-				  page_folio(bv->bv_page), bv->bv_offset, mirror);
++				  bvec_phys(bv), mirror);
+ 	} while (mirror != fbio->bbio->mirror_num);
+ 
+ done:
+@@ -803,8 +803,8 @@ void btrfs_submit_bbio(struct btrfs_bio *bbio, int mirror_num)
+  * freeing the bio.
   */
- struct btrfs_bio_ctrl {
- 	struct btrfs_bio *bbio;
-+	loff_t next_file_offset; /* last byte contained in bbio + 1 */
- 	enum btrfs_compression_type compress_type;
- 	u32 len_to_oe_boundary;
- 	blk_opf_t opf;
-@@ -643,13 +644,10 @@ static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
- }
- 
- static bool btrfs_bio_is_contig(struct btrfs_bio_ctrl *bio_ctrl,
--				struct folio *folio, u64 disk_bytenr,
--				unsigned int pg_offset)
-+				u64 disk_bytenr, loff_t file_offset)
+ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+-			    u64 length, u64 logical, struct folio *folio,
+-			    unsigned int folio_offset, int mirror_num)
++			    u64 length, u64 logical, phys_addr_t paddr,
++			    int mirror_num)
  {
- 	struct bio *bio = &bio_ctrl->bbio->bio;
--	struct bio_vec *bvec = bio_last_bvec_all(bio);
- 	const sector_t sector = disk_bytenr >> SECTOR_SHIFT;
--	struct folio *bv_folio = page_folio(bvec->bv_page);
+ 	struct btrfs_io_stripe smap = { 0 };
+ 	struct bio_vec bvec;
+@@ -835,8 +835,7 @@ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
  
- 	if (bio_ctrl->compress_type != BTRFS_COMPRESS_NONE) {
- 		/*
-@@ -660,19 +658,11 @@ static bool btrfs_bio_is_contig(struct btrfs_bio_ctrl *bio_ctrl,
+ 	bio_init(&bio, smap.dev->bdev, &bvec, 1, REQ_OP_WRITE | REQ_SYNC);
+ 	bio.bi_iter.bi_sector = smap.physical >> SECTOR_SHIFT;
+-	ret = bio_add_folio(&bio, folio, length, folio_offset);
+-	ASSERT(ret);
++	__bio_add_page(&bio, phys_to_page(paddr), length, offset_in_page(paddr));
+ 	ret = submit_bio_wait(&bio);
+ 	if (ret) {
+ 		/* try to remap that extent elsewhere? */
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index e2fe16074ad6..dc2eb43b7097 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -110,7 +110,6 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status);
+ void btrfs_submit_bbio(struct btrfs_bio *bbio, int mirror_num);
+ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_replace);
+ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+-			    u64 length, u64 logical, struct folio *folio,
+-			    unsigned int folio_offset, int mirror_num);
++			    u64 length, u64 logical, phys_addr_t paddr, int mirror_num);
+ 
+ #endif
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 3dd555db3d32..7cd1a7a775ed 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -193,10 +193,11 @@ static int btrfs_repair_eb_io_failure(const struct extent_buffer *eb,
+ 		u64 end = min_t(u64, eb->start + eb->len,
+ 				folio_pos(folio) + eb->folio_size);
+ 		u32 len = end - start;
++		phys_addr_t paddr = PFN_PHYS(folio_pfn(folio)) +
++				    offset_in_folio(folio, start);
+ 
+-		ret = btrfs_repair_io_failure(fs_info, 0, start, len,
+-					      start, folio, offset_in_folio(folio, start),
+-					      mirror_num);
++		ret = btrfs_repair_io_failure(fs_info, 0, start, len, start,
++					      paddr, mirror_num);
+ 		if (ret)
+ 			break;
  	}
- 
- 	/*
--	 * The contig check requires the following conditions to be met:
--	 *
--	 * 1) The folios are belonging to the same inode
--	 *    This is implied by the call chain.
--	 *
--	 * 2) The range has adjacent logical bytenr
--	 *
--	 * 3) The range has adjacent file offset
--	 *    This is required for the usage of btrfs_bio->file_offset.
-+	 * To merge into a bio both the disk sector and the logical offset in
-+	 * the file need to be contiguous.
- 	 */
--	return bio_end_sector(bio) == sector &&
--		folio_pos(bv_folio) + bvec->bv_offset + bvec->bv_len ==
--		folio_pos(folio) + pg_offset;
-+	return bio_ctrl->next_file_offset == file_offset &&
-+		bio_end_sector(bio) == sector;
- }
- 
- static void alloc_new_bio(struct btrfs_inode *inode,
-@@ -690,6 +680,7 @@ static void alloc_new_bio(struct btrfs_inode *inode,
- 	bbio->file_offset = file_offset;
- 	bio_ctrl->bbio = bbio;
- 	bio_ctrl->len_to_oe_boundary = U32_MAX;
-+	bio_ctrl->next_file_offset = file_offset;
- 
- 	/* Limit data write bios to the ordered boundary. */
- 	if (bio_ctrl->wbc) {
-@@ -731,12 +722,13 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
- 			       size_t size, unsigned long pg_offset)
- {
- 	struct btrfs_inode *inode = folio_to_inode(folio);
-+	loff_t file_offset = folio_pos(folio) + pg_offset;
- 
- 	ASSERT(pg_offset + size <= folio_size(folio));
- 	ASSERT(bio_ctrl->end_io_func);
- 
- 	if (bio_ctrl->bbio &&
--	    !btrfs_bio_is_contig(bio_ctrl, folio, disk_bytenr, pg_offset))
-+	    !btrfs_bio_is_contig(bio_ctrl, disk_bytenr, file_offset))
- 		submit_one_bio(bio_ctrl);
- 
- 	do {
-@@ -745,7 +737,7 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
- 		/* Allocate new bio if needed */
- 		if (!bio_ctrl->bbio) {
- 			alloc_new_bio(inode, bio_ctrl, disk_bytenr,
--				      folio_pos(folio) + pg_offset);
-+				      file_offset);
- 		}
- 
- 		/* Cap to the current ordered extent boundary if there is one. */
-@@ -760,14 +752,15 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
- 			submit_one_bio(bio_ctrl);
- 			continue;
- 		}
-+		bio_ctrl->next_file_offset += len;
- 
- 		if (bio_ctrl->wbc)
--			wbc_account_cgroup_owner(bio_ctrl->wbc, folio,
--						 len);
-+			wbc_account_cgroup_owner(bio_ctrl->wbc, folio, len);
- 
- 		size -= len;
- 		pg_offset += len;
- 		disk_bytenr += len;
-+		file_offset += len;
- 
- 		/*
- 		 * len_to_oe_boundary defaults to U32_MAX, which isn't folio or
 -- 
 2.47.2
 
