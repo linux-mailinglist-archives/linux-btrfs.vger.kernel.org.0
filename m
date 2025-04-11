@@ -1,133 +1,159 @@
-Return-Path: <linux-btrfs+bounces-12958-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12959-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D76A86063
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Apr 2025 16:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 387F0A8624D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Apr 2025 17:50:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 920DE1BC238B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Apr 2025 14:18:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C35CB1BA1893
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Apr 2025 15:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60199202F9A;
-	Fri, 11 Apr 2025 14:17:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2B920E03F;
+	Fri, 11 Apr 2025 15:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="B6JjTZE7"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=olstad.com header.i=@olstad.com header.b="Cvvp3FnP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450D01F91F6
-	for <linux-btrfs@vger.kernel.org>; Fri, 11 Apr 2025 14:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4ED82572
+	for <linux-btrfs@vger.kernel.org>; Fri, 11 Apr 2025 15:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744381074; cv=none; b=IhXI0xkMSvSppXL/dqjTliyZM2v8M4uds+Z5Hq1yWdRJMBLEJ+/XpM8h8ZkmFmovHVqR4fwNghvZUpxxc8HOJ04TIZHXg2dL/2LqTN/+X/0UVLKUxJiOYE6xolI9ZGCLMHsAAK+IU6IBNw3hHi0WcyMfre7QT0hyqoSdZNuRe0c=
+	t=1744386521; cv=none; b=t1Vk6tHkuHMqGb0cEgEPpHnG2+1b/dHkajKRW4p/khXO9m3Zt5zuuo/VWXGM8vks+dMnwB6jXzYSzbYpU6by4TyGZl8UIY3CZ7w/eFPZT31O7cezoowi8PcwtXksDkRTwMzhC7lOyEOWwUpNXf+8mCBg2HeNFdmNH1rOh9d4aqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744381074; c=relaxed/simple;
-	bh=H62hDkZOBjg3DErlwm1FGkIlvr4b9YKyzMshgw7FFGg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Px5qQ9reC1wY82pLh3vRZIFpkkZQfxaP58hEr3Lqw2m+lpPg0p2eefFRNRcZSZxcYwGfTJQGI9kogrMho8exZ16IePrmRKNVypMbeYccxvXMAnNUt8jrHfrgRStbd1+iC/GM8IwLIGE9lj9A2kK5ANDnP64hISmEBAAhUHMiYHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=B6JjTZE7; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ac298c8fa50so330922566b.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Apr 2025 07:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1744381069; x=1744985869; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oTqsSsP6q8mOn8ZNBlshDwf0wAfiYlzPvzrbYj6Dpj0=;
-        b=B6JjTZE7YZgtAKcQIiEeuS1GQn28g5rutKg+ytuZ1cl1ODFe51PEzTGkLL/Ju9Vn4t
-         PRuSMJ0iGVH7k/X2Pms6vV9+bcoan7+grZLiKxChLlCpLD2Ehc9BLfySGVApToNClF5Z
-         KxZ59NK/ND3Rs0ATQ8UWXMgVKxpHHBk0wdm/L05n2LZCrTZfyUXEH5EvhsYQK4F+ruhB
-         uFUzTCagtj/uTPErvksQcFO2LPhkkOEdXSni03AKC8B9Pl80/IzN8AAx2Gcq0Mzwxrdl
-         S/Y682QI0G6ZsXSrBd98OB72Uu3vZmpN1hDvJr9PpFcmqyC+2l5Cqfk5jVmIq4GnQ/Ny
-         heUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744381069; x=1744985869;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oTqsSsP6q8mOn8ZNBlshDwf0wAfiYlzPvzrbYj6Dpj0=;
-        b=HL0CRsY3ez4B75z9cYiEuPdirMV2+3YwT8QGRobvU7v74wmDrM/JAh+oqpPABbFnkB
-         JFN8O+/W0tUulNA2quWjoVQ0G0cB2S0VVfNpIPFBn3t+nrqYLS/vV66JL8b577I4HAvJ
-         Ke8+Dk7zKMoIunziKHseOPxP6PT3aon0QObLWnBa03pGBvwfPQJSbJ2PRCTUt6uQ72/9
-         CrixKaboOMVuLzHql5lHrUYTpKevBCvHpQ+G4cuLUCFCIECWdM7mR2UzrVvU1WvifBhd
-         iHc9S1TfU/rtUnBHmtjrWMmxjAM9OG+kNprvFWCNoca2iE5NIUkn8Vk7PBFnXE1N72e2
-         Hb5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWpcNT/aFHY6DWRzoEsHh3MvqDbJ1TjE37P3tz6bu4zfEoI926I0N+kygZQhomRw4G1DHcFOcxLXgbFIg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcVsDpGb3ClGd+ebHjWq1hZX5vZfitbuIqwhJLiaWc5opxKDsj
-	jXugT98Y1LV6FwAr8vhVL8bozjVNgncFpU7KFVbNISiRzTm4vvhcttKDKY+2zQ/Nri9kZ7vgik0
-	Lw8SBJyTlDUXekGVE814vjCxbrS0e1Sfb2U49Hw==
-X-Gm-Gg: ASbGncuoQcO4mt9yEOOTl1S2LDkzHm2RjD9Ky78NS9Ufv/UWKgHBg3d5Bv7csnUhpgx
-	3J6JKZHJAW4zahXKj8JhFHs79U3sUbLONwxmy8Ffzz8SunpjGgP9u+pJotyO81a5CGwFYXFVzK3
-	nwAkFYUvBx0VYHvmymDjnU
-X-Google-Smtp-Source: AGHT+IEY8cLHC7dDvBg77RvvSDDvI4LLGaIX3QkmIM0yIkHyN6pRf0ULJgjqYOmJ4HljtZuv4Durn+nqnhJRPnU6ykg=
-X-Received: by 2002:a17:906:cec5:b0:aca:d63b:3ebe with SMTP id
- a640c23a62f3a-acad63b4519mr193412566b.21.1744381069560; Fri, 11 Apr 2025
- 07:17:49 -0700 (PDT)
+	s=arc-20240116; t=1744386521; c=relaxed/simple;
+	bh=43XrR95bv9HUHkFVwmP2wC/D6xMTCdpbtJ5Lk89xsN0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=N73pGPwUiM9hKZy7cCedqwKdc3WDWVWQFUtUvBx1EnXMwdv6rnmkdedJSW8ULm1K900FsX0pU4wfmQ/z0+xB5jMXOfXY00IhiTsy0H+NbhizGReqipZpIxQDIiNRpHOzxsCaqRSlTASFILA288XKKxK7dXWyEI2nWzBj/VE1Z1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=olstad.com; spf=pass smtp.mailfrom=olstad.com; dkim=pass (2048-bit key) header.d=olstad.com header.i=@olstad.com header.b=Cvvp3FnP; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=olstad.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=olstad.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=olstad.com;
+	s=ds202407; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+	List-Owner:List-Archive; bh=cFipaOkSM/somI9HyFHj8aS3wkrf+nuCqyOaBeF66NA=; b=C
+	vvp3FnPcIXeWNPItHe7qPYMejb4PmgQUH/gIDdTeYBZcEaitGTah8LZj6/OSPdMeT432O7kkUpOTE
+	+a2iaYOzS0QPSNt8WDKDqDAFWZvIoTrrtTwHkj2HUnABLMPqaQ656fsjSq+LuCbS8nqAdMqE/Qam1
+	TBBk5bRkEGfnmta9GbxEr23OdhIBS7h7M+H0iROBdM5plcREpCQWIOguplCKecMWmZfenWGZ0pDLs
+	jHOOCjH0EwEo727AAw6Bnirsxbi9olR8OMlfsCyK62KrqnUAynsDov1kCYF1YvSZSUxkrxzaT4Bw4
+	BGjXB/OBusnsjWduyflUVVkblPsdgUbuQ==;
+Received: from smtp
+	by smtp.domeneshop.no with esmtpsa (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	id 1u3GcJ-00Avnx-5b
+	for linux-btrfs@vger.kernel.org;
+	Fri, 11 Apr 2025 17:48:31 +0200
+Date: Fri, 11 Apr 2025 17:48:30 +0200
+From: Kai Stian Olstad <btrfs+list@olstad.com>
+To: linux-btrfs@vger.kernel.org
+Subject: How to fix "BTRFS error (device dm-3): error writing primary super
+ block to device 1"?
+Message-ID: <n2evrtemnyldsra4jh3442h36v2tgi4pem5p7ramknkkabkooe@fre6ayihkaie>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250411034425.173648-1-frank.li@vivo.com>
-In-Reply-To: <20250411034425.173648-1-frank.li@vivo.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 11 Apr 2025 16:17:38 +0200
-X-Gm-Features: ATxdqUG88XaY8FJODqlLgLrNhPx5KOZKPJlXSpwqM9rMRoPUo2MrGKKgpFmjhLk
-Message-ID: <CAPjX3Fe34HVF2JUi2DEyxqShFhadxy7M7F6xTA_yVn5ywHMBhQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: use BTRFS_PATH_AUTO_FREE in btrfs_truncate_inode_items()
-To: Yangtao Li <frank.li@vivo.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-On Fri, 11 Apr 2025 at 05:25, Yangtao Li <frank.li@vivo.com> wrote:
->
-> All cleanup paths lead to btrfs_path_free so we can define path with the
-> automatic free callback.
->
-> And David Sterba point out that:
->         We may still find cases worth converting, the typical pattern is
->         btrfs_path_alloc() somewhere near top of the function and
->         btrfs_free_path() called right before a return.
->
-> So let's convert it.
->
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  fs/btrfs/inode-item.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Kubuntu 24.04
+Kernel 6.8.0-57-generic
 
-And what about the other functions in that file? We could even get rid
-of two allocations passing the path from ..._inode_ref() to
-..._inode_extref().
+2 day ago I got a sector error on one of the BTRFS disk
 
-> diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-> index 3530de0618c8..c9d37f6bb099 100644
-> --- a/fs/btrfs/inode-item.c
-> +++ b/fs/btrfs/inode-item.c
-> @@ -456,7 +456,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
->                                struct btrfs_truncate_control *control)
->  {
->         struct btrfs_fs_info *fs_info = root->fs_info;
-> -       struct btrfs_path *path;
-> +       BTRFS_PATH_AUTO_FREE(path);
->         struct extent_buffer *leaf;
->         struct btrfs_file_extent_item *fi;
->         struct btrfs_key key;
-> @@ -743,6 +743,5 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
->         if (!ret && control->last_size > new_size)
->                 control->last_size = new_size;
->
-> -       btrfs_free_path(path);
->         return ret;
->  }
-> --
-> 2.39.0
->
->
+$ journalctl -k -S 2025-04-09 | grep -A 20 mpt3sas_cm0
+Apr 09 03:16:26 cb kernel: mpt3sas_cm0: log_info(0x31080000): originator(PL), code(0x08), sub_code(0x0000)
+Apr 09 03:16:26 cb kernel: mpt3sas_cm0: log_info(0x31080000): originator(PL), code(0x08), sub_code(0x0000)
+Apr 09 03:16:26 cb kernel: sd 4:0:1:0: [sdd] tag#5552 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=6s
+Apr 09 03:16:26 cb kernel: sd 4:0:1:0: [sdd] tag#5552 Sense Key : Illegal Request [current]
+Apr 09 03:16:26 cb kernel: sd 4:0:1:0: [sdd] tag#5552 Add. Sense: Logical block address out of range
+Apr 09 03:16:26 cb kernel: sd 4:0:1:0: [sdd] tag#5552 CDB: Write(16) 8a 08 00 00 00 00 00 00 10 80 00 00 00 08 00 00
+Apr 09 03:16:26 cb kernel: critical target error, dev sdd, sector 4224 op 0x1:(WRITE) flags 0x23800 phys_seg 1 prio class 0
+Apr 09 03:16:26 cb kernel: BTRFS warning (device dm-3): lost page write due to IO error on /dev/mapper/cdisk20 (-121)
+Apr 09 03:16:26 cb kernel: BTRFS error (device dm-3): bdev /dev/mapper/cdisk20 errs: wr 2, rd 1, flush 0, corrupt 0, gen 0
+Apr 09 03:16:26 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:02 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:02 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:02 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:02 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:08 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:10 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:10 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:27 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+Apr 09 03:17:58 cb kernel: BTRFS error (device dm-3): error writing primary super block to device 1
+
+And after that I constantly get "error writing primary super block to device
+1". Tried to run "btrfs scrub status /data" but that didn't help
+
+$ sudo btrfs scrub status /data
+UUID:             6554e692-6c1c-4a69-8ff8-cb5615fb9200
+Scrub started:    Thu Apr 10 19:40:56 2025
+Status:           finished
+Duration:         18:54:46
+Total to scrub:   25.08TiB
+Rate:             386.23MiB/s (some device limits set)
+Error summary:    no errors found
+
+/dev/sdd is /dev/mapper/cdisk20, it's running LUKS on top off sdd.
+
+Does anyone know how to fix this?
+
+
+Some output that might be useful:
+
+$ sudo btrfs filesystem usage /data
+Overall:
+     Device size:                  29.11TiB
+     Device allocated:             25.09TiB
+     Device unallocated:            4.01TiB
+     Device missing:                  0.00B
+     Device slack:                    0.00B
+     Used:                         25.08TiB
+     Free (estimated):              2.01TiB      (min: 2.01TiB)
+     Free (statfs, df):             2.01TiB
+     Data ratio:                       2.00
+     Metadata ratio:                   2.00
+     Global reserve:              512.00MiB      (used: 0.00B)
+     Multiple profiles:                  no
+
+Data,RAID1: Size:12.52TiB, Used:12.52TiB (99.96%)
+    /dev/mapper/cdisk20     4.45TiB
+    /dev/mapper/cdisk21     4.45TiB
+    /dev/mapper/cdisk22     8.08TiB
+    /dev/mapper/cdisk23     8.08TiB
+
+Metadata,RAID1: Size:23.03GiB, Used:19.93GiB (86.56%)
+    /dev/mapper/cdisk20     8.03GiB
+    /dev/mapper/cdisk21     8.03GiB
+    /dev/mapper/cdisk22    15.00GiB
+    /dev/mapper/cdisk23    15.00GiB
+
+System,RAID1: Size:64.00MiB, Used:1.80MiB (2.81%)
+    /dev/mapper/cdisk22    64.00MiB
+    /dev/mapper/cdisk23    64.00MiB
+
+Unallocated:
+    /dev/mapper/cdisk20     1.00TiB
+    /dev/mapper/cdisk21     1.00TiB
+    /dev/mapper/cdisk22     1.00TiB
+    /dev/mapper/cdisk23     1.00TiB
+
+
+$ sudo btrfs device stats /data | grep -v " 0$"
+[/dev/mapper/cdisk20].write_io_errs    2
+[/dev/mapper/cdisk20].read_io_errs     1
+[/dev/mapper/cdisk21].write_io_errs    1
+[/dev/mapper/cdisk21].read_io_errs     1
+
+
+-- 
+Kai Stian Olstad
 
