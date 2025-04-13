@@ -1,152 +1,91 @@
-Return-Path: <linux-btrfs+bounces-12967-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12968-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21475A86ECA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Apr 2025 20:35:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2F9A87086
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Apr 2025 06:08:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B04F27B2078
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Apr 2025 18:34:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60B35460EF9
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Apr 2025 04:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA06F21018F;
-	Sat, 12 Apr 2025 18:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61FD3146A60;
+	Sun, 13 Apr 2025 04:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b="kKUVsq34"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from wiki.archlinuxcn.org (wiki.archlinuxcn.org [104.245.9.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C964714AD20
-	for <linux-btrfs@vger.kernel.org>; Sat, 12 Apr 2025 18:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1659322A;
+	Sun, 13 Apr 2025 04:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.9.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744482935; cv=none; b=UcIc/f2wxSnRFODAmCAr2AUw9/sN+yJ2P7swcRsKxRH0xFxXgt+r/oAm2gryovyETA7c84AA2Pqfiveaf0wJNeuXItF+DgwSZzL2hWI+YmulzuczHG7HFNrS0IDG/O0KNpMCXfshYt3K95LuF5FgY2yIanh5BT4VI1ejm9MxKpw=
+	t=1744517270; cv=none; b=OA3j/oob21QXt632Qc+MDO9dhnk8Xn2eyNadw9YwdfgvodxlEH9jCl7JoWge+xzofgzrwjtGJ8nPJxjBJldREDvZncvtbZ8cAlFx31PjZU5QShGnzAReflm/9agR/ZhvDlE9kCEF3Ya4NITU6i4LEai+5okjQKKx8A2Uf+rqPEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744482935; c=relaxed/simple;
-	bh=af8eVjl9yGFlCgpz9LDN1kDvxHgDQlRa1khJ1UO3MCA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PtyCBApPmi9ok4lLn+SsJdwJiaHpyfQDvTU3Z18pwIgbb69+xxOdHyp7xp1xVnkexGMl3b5JH2zZplBC37jTnImCr3EePf+NRd7ysiSq+8mBJPtLVDB5UL9O3Nq47Hc85HwBiJGFQSxUHqiQ6XOxtNTbcGEV+7YuNUsdBhSQ0DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-232.elisa-laajakaista.fi [88.113.26.232])
-	by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-	id e93b71c8-17cc-11f0-8e9d-005056bdfda7;
-	Sat, 12 Apr 2025 21:35:30 +0300 (EEST)
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Sat, 12 Apr 2025 21:35:30 +0300
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: make btrfs_truncate_block() zero folio range
- for certain subpage corner cases
-Message-ID: <Z_qycnlLXbCgd7uF@surfacebook.localdomain>
-References: <cover.1744344865.git.wqu@suse.com>
- <d66c922e591b3a57a230ca357b9085fe6ae53812.1744344865.git.wqu@suse.com>
+	s=arc-20240116; t=1744517270; c=relaxed/simple;
+	bh=xEz793w2M0kSImdcADaQSBCkIeRk63K3BR/qu/F3SEI=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=Ibvl8mj+6rEiTF0BAjiT77VpJz4K4/qpVyU/szOp8NMsim7osidmqt/u7IgG5HvYI7KglNJqiBpiXmi+3zeKP+/6EP9WvDtwl6zvtB0oRNhPSPRbtUOVFor/GOaJ6SljtkLM2Fdz3EkTvogf6PqPGFD65LjFPCNcbQCbe+Xi8/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org; spf=pass smtp.mailfrom=archlinuxcn.org; dkim=pass (2048-bit key) header.d=archlinuxcn.org header.i=@archlinuxcn.org header.b=kKUVsq34; arc=none smtp.client-ip=104.245.9.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=archlinuxcn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinuxcn.org
+DKIM-Signature: a=rsa-sha256; bh=v0PyADkNvrOo96Mgb/IdXo5AW/uvVk3HKxrReDz3oFw=;
+ c=relaxed/relaxed; d=archlinuxcn.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@archlinuxcn.org; s=default; t=1744517251; v=1; x=1744949251;
+ b=kKUVsq34RF3aJ+3fgDtEVCk7tqlO245HSpfQBJd48VVxpekJKiPkq6z2yjK9FSVzmYuwwgzP
+ f3OxK494RKwO77Mx7nnAfhP4HQVJpDI+KHrXWHLboNEYW2QacWTCcLbKR/8fugonEbcpXOlaRY5
+ ChE010Ud/Qg07r4hd41dV6ajq9hXMVk2KC8vH6fGKlfZrDwUpdSx28GpDjCIrsOzcPJfL6pGQQW
+ pX+/Tn0bV59bb0GegJ1QW9X6XZ3sk6Wdw8gG8W3xg6Hy9MilL8rde5MMrwNFb2VDNtPXO8AE0Eq
+ 4zO/i+VczMLe0+bqDri/8t+EbRdU2p+nMaOJd4dSr4VlA==
+Received: by wiki.archlinuxcn.org (envelope-sender
+ <integral@archlinuxcn.org>) with ESMTPS id e161c20b; Sun, 13 Apr 2025
+ 12:07:31 +0800
+Message-ID: <8c2e5d04-dbda-4b12-992e-34f0e70c7218@archlinuxcn.org>
+Date: Sun, 13 Apr 2025 12:07:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d66c922e591b3a57a230ca357b9085fe6ae53812.1744344865.git.wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Integral <integral@archlinuxcn.org>
+Subject: Maybe we can set default zstd compression level to 1 when SSD
+ detected?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Fri, Apr 11, 2025 at 02:44:01PM +0930, Qu Wenruo kirjoitti:
-> [BUG]
-> For the following fsx -e 1 run, the btrfs still fails the run on 64K
-> page size with 4K fs block size:
-> 
-> READ BAD DATA: offset = 0x26b3a, size = 0xfafa, fname = /mnt/btrfs/junk
-> OFFSET      GOOD    BAD     RANGE
-> 0x26b3a     0x0000  0x15b4  0x0
-> operation# (mod 256) for the bad data may be 21
+Hi,
 
-[...]
 
-> +static int zero_range_folio(struct btrfs_inode *inode, loff_t from, loff_t end,
-> +			    u64 orig_start, u64 orig_end,
-> +			    enum btrfs_truncate_where where)
-> +{
-> +	const u32 blocksize = inode->root->fs_info->sectorsize;
-> +	struct address_space *mapping = inode->vfs_inode.i_mapping;
-> +	struct extent_io_tree *io_tree = &inode->io_tree;
-> +	struct extent_state *cached_state = NULL;
-> +	struct btrfs_ordered_extent *ordered;
-> +	pgoff_t index = (where == BTRFS_TRUNCATE_HEAD_BLOCK) ?
-> +			(from >> PAGE_SHIFT) : (end >> PAGE_SHIFT);
+When SSD is detected, maybe we can set default zstd compression level to 1.
 
-You want to use PFN_*() macros from the pfn.h perhaps?
 
-> +	struct folio *folio;
-> +	u64 block_start;
-> +	u64 block_end;
-> +	u64 clamp_start;
-> +	u64 clamp_end;
-> +	int ret = 0;
-> +
-> +	/*
-> +	 * The target head/tail block is already block aligned.
-> +	 * If block size >= PAGE_SIZE, meaning it's impossible to mmap a
-> +	 * page containing anything other than the target block.
-> +	 */
-> +	if (blocksize >= PAGE_SIZE)
-> +		return 0;
-> +again:
-> +	folio = filemap_lock_folio(mapping, index);
-> +	/* No folio present. */
-> +	if (IS_ERR(folio))
-> +		return 0;
-> +
-> +	if (!folio_test_uptodate(folio)) {
-> +		ret = btrfs_read_folio(NULL, folio);
-> +		folio_lock(folio);
-> +		if (folio->mapping != mapping) {
-> +			folio_unlock(folio);
-> +			folio_put(folio);
-> +			goto again;
-> +		}
-> +		if (!folio_test_uptodate(folio)) {
-> +			ret = -EIO;
-> +			goto out_unlock;
-> +		}
-> +	}
-> +	folio_wait_writeback(folio);
-> +
-> +	clamp_start = max_t(u64, folio_pos(folio), orig_start);
-> +	clamp_end = min_t(u64, folio_pos(folio) + folio_size(folio) - 1,
-> +			  orig_end);
+Current default compression level for zstd is 3, which is not optimal 
+for SSDs.
 
-You probably wanted clamp() ?
+This GitHub Gist [1] can serve as a reference.
 
-> +	block_start = round_down(clamp_start, block_size);
-> +	block_end = round_up(clamp_end + 1, block_size) - 1;
 
-LKP rightfully complains, I believe you want to use ALIGN*() macros instead.
+An example is Fedora Workstation [2], which uses `zstd:1` as default
 
-> +	lock_extent(io_tree, block_start, block_end, &cached_state);
-> +	ordered = btrfs_lookup_ordered_range(inode, block_start, block_end + 1 - block_end);
-> +	if (ordered) {
-> +		unlock_extent(io_tree, block_start, block_end, &cached_state);
-> +		folio_unlock(folio);
-> +		folio_put(folio);
-> +		btrfs_start_ordered_extent(ordered);
-> +		btrfs_put_ordered_extent(ordered);
-> +		goto again;
-> +	}
-> +	folio_zero_range(folio, clamp_start - folio_pos(folio),
-> +			 clamp_end - clamp_start + 1);
-> +	unlock_extent(io_tree, block_start, block_end, &cached_state);
-> +
-> +out_unlock:
-> +	folio_unlock(folio);
-> +	folio_put(folio);
-> +	return ret;
-> +}
+compression option.
 
--- 
-With Best Regards,
-Andy Shevchenko
 
+[1] Link: 
+https://gist.github.com/braindevices/fde49c6a8f6b9aaf563fb977562aafec
+
+[2] Link: https://fedoraproject.org/wiki/Changes/BtrfsTransparentCompression
+
+
+Sincerely,
+
+Integral
 
 
