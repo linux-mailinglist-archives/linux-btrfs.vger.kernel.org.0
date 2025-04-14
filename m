@@ -1,106 +1,176 @@
-Return-Path: <linux-btrfs+bounces-12982-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8252BA8797B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 09:54:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74205A87BCA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 11:23:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF7F2188E5D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 07:54:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B17173025
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 09:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381FF2580F9;
-	Mon, 14 Apr 2025 07:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B3825F964;
+	Mon, 14 Apr 2025 09:23:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="FyTQ36Wy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PFAoR7Ek";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Prcl1iwK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zxKvh6lM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tHz5QMMA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.synology.com (mail.synology.com [211.23.38.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD531684AE
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 07:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF8825D906
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 09:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744617242; cv=none; b=fNQvcEgRsZ77yVaLTV1F8z/ZuHth4qwSsVqs0M18IEdTJlpQLDCo/NenfAIi91WNfwVUOcQrC7WWXUrlEj1rvUzuJtVLfsgTxllpck5PnBzfMq9MT/mPm7rQsS5arW3NsdpNLRJaIAJwNDw9/HGraDxlmru3IqmlsXbmbGCALW8=
+	t=1744622582; cv=none; b=b76Tg2mnpdkIOQ5mux3vboYQ+y1g82oqgkEGkjaOO+XqwDcbZk1An5DSNnAehBJD6DsOTB+MEgWpl6T564szsLi+2RGM2u53UsvyBff4tRRTSx0yvy4Q2uq1oerlQNoGtf6Z9fp42D83EE1Ex7ZONooKCHgtsiCZS1P/iabcVnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744617242; c=relaxed/simple;
-	bh=gI03sqIqT7+VvfK4eW3qNLvontYhbWQFU1+hGu8cek4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lU3X3cqXDG2WqP3OJRUjExRxd2q0iqg+G0wotpSsAFO+MJdxIyVZBHmhYh2UQCTEcQFgF3Xl4R68UYNfOAcY47+hSHn7Rw5tQCYvDJAREGNNJXCjthfL+Qdsou6R+52vDqCoiNID1Ann6jtOvu+gHHbzWqFAkBJYuEijXVxB9ME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=FyTQ36Wy; arc=none smtp.client-ip=211.23.38.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
-Received: from 11212-DT-014.. (unknown [10.17.40.185])
-	by mail.synology.com (Postfix) with ESMTPA id 4ZbfW26PWQz9lqp8r;
-	Mon, 14 Apr 2025 15:46:38 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-	t=1744616799; bh=gI03sqIqT7+VvfK4eW3qNLvontYhbWQFU1+hGu8cek4=;
-	h=From:To:Cc:Subject:Date;
-	b=FyTQ36Wy5/lYD8UErmeNxfUFsSMjoUF3HrzfHyAFLfBfvOr3v+4BpnsIHrGn7BO7w
-	 RZ67RzupHheU9lf8MgiG7mWmNWMw4MQNl9CzKrcf6btUy1boSLRbfCiFqiKok3vOGi
-	 qNrfIqhi8ljn03MW25SkhkWDR1r4uQjuBHi0yvjM=
-From: davechen <davechen@synology.com>
-To: linux-btrfs@vger.kernel.org,
-	dsterba@suse.com
-Cc: cccheng@synology.com,
-	robbieko@synology.com,
-	davechen@synology.com
-Subject: [PATCH] btrfs: fix COW handling in run_delalloc_nocow function
-Date: Mon, 14 Apr 2025 15:46:10 +0800
-Message-ID: <20250414074610.2475801-1-davechen@synology.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1744622582; c=relaxed/simple;
+	bh=xnCc7LUdCE8A0jAetS5WlNpM1cLLzzzYqwEDyHMWkD0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r3reU+Zj3BCWUJCmHBnwRvk9stRuS9bgyQH6+77ZQIEUzNVeTxn6m6PWpF5XTUvRPc6kBGsSsOFKqP0Ldaz0IV2aaGJGsEGj3nyX2/51daKfmRPkEC4WHH8u1tvjDhO2Qf7q8VbWPz5JyDEcQkg5egJ/CdECdouxKWS1Ch8XAzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PFAoR7Ek; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Prcl1iwK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zxKvh6lM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tHz5QMMA; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5853A2125D;
+	Mon, 14 Apr 2025 09:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1744622578;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTJ2sT8ir4Gfn1MTTn6LhWi1R6St8alGrdGiGAdMgLg=;
+	b=PFAoR7Ek0yy6zm05Efw1DG7iNMKzXoOMdUIswbk+bimpGO5kAxL5tbwu/CLS9V6QfX/5OI
+	Q99+YGnGcgW0AOtRs5ndOE7oHzgEgtrMaRGMrsTfSglMBQjtQ/1GkK7ludn+xTehJTzUa1
+	3IOSV7IKDxG22h1E9eitimY5nhZ9l98=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1744622578;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTJ2sT8ir4Gfn1MTTn6LhWi1R6St8alGrdGiGAdMgLg=;
+	b=Prcl1iwKct5UEhVTw0+5YwBdMzJ3v9ofwQPxV1yYXGc5dyNt6/zUPPGSN4mZbKBTxKAs9l
+	aZqTNShSXLj3trCQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zxKvh6lM;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tHz5QMMA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1744622577;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTJ2sT8ir4Gfn1MTTn6LhWi1R6St8alGrdGiGAdMgLg=;
+	b=zxKvh6lMdtNRaakbbadbPmIZ3J9qbkgki0pYzHKV7q5r3xT3werS80Vrz+AQvKbsOjbIs4
+	YsAmq+uKn3oDFkV8bKwfbVl4u/q7pw2VYqYYXrp1FJdAR0DA/AcnJFh0N2TcpL2WjpV3IS
+	6vROV6hQaunpkYlbfivTZnZtlQGWXJY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1744622577;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTJ2sT8ir4Gfn1MTTn6LhWi1R6St8alGrdGiGAdMgLg=;
+	b=tHz5QMMApoC++KogAIvXz+VrZovgm5mj5aFxNuVX3TN7AMfZ7y77m/knPafb6ealWlH2t2
+	EGRaG+dlbZB2P4CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37583136A7;
+	Mon, 14 Apr 2025 09:22:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VkIoDfHT/Gc6MQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 14 Apr 2025 09:22:57 +0000
+Date: Mon, 14 Apr 2025 11:22:52 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Daniel Vacek <neelx@suse.com>
+Cc: Yangtao Li <frank.li@vivo.com>, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: use BTRFS_PATH_AUTO_FREE in
+ btrfs_truncate_inode_items()
+Message-ID: <20250414092251.GB16750@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250411034425.173648-1-frank.li@vivo.com>
+ <CAPjX3Fe34HVF2JUi2DEyxqShFhadxy7M7F6xTA_yVn5ywHMBhQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Synology-Virus-Status: no
-X-Synology-MCP-Status: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Spam-Flag: no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPjX3Fe34HVF2JUi2DEyxqShFhadxy7M7F6xTA_yVn5ywHMBhQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 5853A2125D
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-In run_delalloc_nocow(), when the found btrfs_key's offset > cur_offset,
-it indicates a gap between he current processing region and
-the next file extent. The original code would directly jump to
-the "must_cow" label, which implicitly increments the slot and
-forces a fallback to COW. This behavior might skip an extent item and
-result in an overestimated COW fallback range.
+On Fri, Apr 11, 2025 at 04:17:38PM +0200, Daniel Vacek wrote:
+> On Fri, 11 Apr 2025 at 05:25, Yangtao Li <frank.li@vivo.com> wrote:
+> >
+> > All cleanup paths lead to btrfs_path_free so we can define path with the
+> > automatic free callback.
+> >
+> > And David Sterba point out that:
+> >         We may still find cases worth converting, the typical pattern is
+> >         btrfs_path_alloc() somewhere near top of the function and
+> >         btrfs_free_path() called right before a return.
+> >
+> > So let's convert it.
+> >
+> > Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> > ---
+> >  fs/btrfs/inode-item.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> And what about the other functions in that file? We could even get rid
+> of two allocations passing the path from ..._inode_ref() to
+> ..._inode_extref().
 
-This patch modifies the logic so that when a gap is detected:
-  - If no COW range is already being recorded (cow_start is unset),
-    cow_start is set to cur_offset.
-  - cur_offset is then advanced to the beginning of the next
-    extent (extent_end).
-  - Instead of jumping to "must_cow", control flows directly to
-    "next_slot" so that the same extent item can be reexamined properly.
+If you mean to pass the path object from btrfs_del_inode_ref() to
+btrfs_del_inode_extref() yeah this looks like a good optimization and
+reducing the allocations (and potential failures).
 
-The change ensures that we accurately account for the extent gap and
-avoid accidentally extending the range that needs to fallback to COW.
-
-Signed-off-by: Dave Chen <davechen@synology.com>
----
- fs/btrfs/inode.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5b842276573e..58457bdf984d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2160,7 +2160,10 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		if (found_key.offset > cur_offset) {
- 			extent_end = found_key.offset;
- 			extent_type = 0;
--			goto must_cow;
-+			if (cow_start == (u64)-1)
-+				cow_start = cur_offset;
-+			cur_offset = extent_end;
-+			goto next_slot;
- 		}
- 
- 		/*
--- 
-2.43.0
-
+The other cases in the "..._inode_ref" is btrfs_insert_inode_ref() ->
+btrfs_insert_inode_extref().
 
