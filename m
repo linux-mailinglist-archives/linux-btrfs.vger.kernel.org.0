@@ -1,167 +1,193 @@
-Return-Path: <linux-btrfs+bounces-12979-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12980-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30D1A87793
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 07:53:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61727A87840
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 08:53:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CF90189102C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 05:53:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D73573AF5F6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 06:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6AB31A2387;
-	Mon, 14 Apr 2025 05:53:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05301B4227;
+	Mon, 14 Apr 2025 06:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="N9Vrkb5k"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DsNgH2Vm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFBB25776
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 05:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A8B1B0434
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 06:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744610006; cv=none; b=GuEgtk1bBhQ4FKHcPfBAVO6VH8HQ5nQGHoGz0R7XI7hgC911jKkFdWtbdn8zPM2b+OPVdlsrIq4jUmjT24yMRL478cs+Yt+oyJ4S0kyT7IXcPt5SjsaPIi0Hvqnz3LGz1mWHqyUOZRYyyZQiusHSd4rmgbiN32eb+CTRW9tlxYk=
+	t=1744613618; cv=none; b=FcyTT9OrikC8406R+6E4kwcn6hpVq3mNJv1bpdf0pWLW1vVZiCL8l3BMTAmFdP3bsB1/hjulIqGbWUlDQGHEr2K0/p92Pg2KnsPKzkVdrI3tsDcsRViHPdbmB+GYXsPbLk8675Cv71sf8QEtjjF9V4p6ySYaZdT7PIdEVkPsCKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744610006; c=relaxed/simple;
-	bh=qPd6q3HEiVg7761A30SfSf2x4hwDGfgcwzLtyGnQ4Xw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rw2MmM2N2mWw2WcuQbVHM0MMKX1B5CP5uSxafvAegRd57EuSGgeySNqgPp7KhHRfFk1uaqKzGXROw1vcQqVF6Afr+k+CCkSS132sG2CXIeW37nUowk41bZ2jGL0wqNUb5y8umenHpdem41PGWtqHIErSAVQBx3F3H/cfPdTTqCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=N9Vrkb5k; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1744609999; x=1745214799; i=quwenruo.btrfs@gmx.com;
-	bh=qPd6q3HEiVg7761A30SfSf2x4hwDGfgcwzLtyGnQ4Xw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=N9Vrkb5klkk1eRFYaxNZQDn7kKUhgJRYAUaIHJ0uWHwX3LIvYQ9sEp58B69TRiAC
-	 Y39PQu9lZK+RPV4hGcQtEaCKO5LQyWEr963fMcT0lGJ/muuXOKeALRNjAxsjHmNi9
-	 sKxGOhIv/ljEHlFAf+ujuCZ0OATCsLW+YIYiFKOY0pZppNTYb6m8wDCsUXVxhKOJ1
-	 naSdOCYgCArN8uQ14EqXgRKAI29eDWiae6Xi1/BsTb34zrrA4G6MGC0slPTZeA+Du
-	 2p3DYW1M9PULprxJzBxgwJJXT5J4wXB+PlksV2MWAocMJ/zIoGKLO4v6oF6FDSHp2
-	 5wPTnSaMwAWylykAGA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mf0BM-1tOqKT076A-00o4Fy; Mon, 14
- Apr 2025 07:53:19 +0200
-Message-ID: <50303c5f-4778-49c5-8118-8fecc218c509@gmx.com>
-Date: Mon, 14 Apr 2025 15:23:16 +0930
+	s=arc-20240116; t=1744613618; c=relaxed/simple;
+	bh=Agoq23bDUAXqo9AaPPRQFYVTVNaPa5Zc5OdDh/SbrY8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mze5XaqxNyGxU8lpK/LF5broMpatJgA9cEBkvrPM5CRMjWbLeJ+CPcopl1pQdUmuprcnODGOOD2x/xvXLICu7fg5HUZfR8b68K2XroTAGBRny4JIwTAkHHL0/oy7pLvOnXHfUGpRtd/MnTHfY/7r1os45BRnM7rYV9CF2Klc8qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DsNgH2Vm; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac2a81e41e3so716282366b.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Apr 2025 23:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1744613613; x=1745218413; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EQbNREGYurDkVhqmrR2KiVmvUT/jocZ+TY4xPaBX+u4=;
+        b=DsNgH2VmcqbrylbmwMb3S9C/JplqP6gTFpVD2w0rQpKjQ/lrkew+P4fSRm+ddCRKZ6
+         ny71qUnb3C4podJaR9nr6eQyrpilHyyeMTuvVvLnk6Fan1mfXcmdHJxv6llZ4PUBQp0z
+         gQarS9gTENjfZ4tKGn0QFYQ6bBRT3SzBOqvAi0CaSTdfWcPRSgqL5vesfwcZfvspYRa+
+         Cx6TL18rBQUFqTVDJOSlhbnLYxufKzPd7HTjXC/B/RO14QQcJWkVuTabJzvM3oXVie1V
+         vGWNG6Vt1zGqqAJcg5Z8Y0A2tMzBn6ujkpkW6ouD8TDqCcyJpK+qQsQaDw83sX0CjpjL
+         ZdKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744613613; x=1745218413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EQbNREGYurDkVhqmrR2KiVmvUT/jocZ+TY4xPaBX+u4=;
+        b=tvPV3x/d0UP/hbkQnLVM8QM8LOhA+8ZfqcFOoMDop6vvIm5+1xXPQfUeBUH2z7xpDZ
+         g9RrnccXQr2CtWbDbVmb60hF9V3X5V9JWP91fEGSQrht6vJEyo2dsFmH6xjlSDROqTaW
+         J4VjXyEM6BBDSf7Vba3FvGiQ0as0ozjZKyCaC/DQ74TwZTCLj6XkbcLOEM1gU5c66VIL
+         ghenRN49ldm9quOHVC/R9MF9E730Q4JlrKiPZoDjuOdhdDazJdkfAvBWBVVKipguzM+/
+         yiQ60FQdbNndXfzEjo554zhwZmaC6EKlyWmP83lojmk821g/m2wXS64pnut1pQB5H36E
+         G9cA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPjOlWqEY4JAkReGU4bkRujxsa0hhjxlJlfgDHSUBBkIFe9q4EdyFe1v+9n5OJeiivRLKcTR2MWKItNQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqgOu4riu5bAYXaVukQ24X1W45tFyUP9HJHZ7rFBXH+OXezF7E
+	YnHtFstmtvfAyPPpm18gfOD5NRUHhaQt66st1eNHUGLXrw7zcvJV7voMXVc9lFDcFzivNU5rXz9
+	rnBGIs9oHBr7JBByn3wg8m7MJjxcCpPkPOXn4iQ==
+X-Gm-Gg: ASbGnct3/A+XIW/TBYYPiUowTiQxdfkhmX/W9TIyhIufosbY24W3od7XVU3/SP5iy2b
+	fEyImE+Vp6un7Kt0NSjp6jReGDAvsVdlVBuLFWK7xj8p+4j/5RAUmargF8bKwcnCgTpqekxw+X0
+	12PHIMD30BjP8U6NzlkdbGxgMbBYJSCAk=
+X-Google-Smtp-Source: AGHT+IH4trRZYgVHR0ualPPj/jVwcxdOfEGnoWxbXqXWi2EIvLcKnEFRknYx4vOWQBhOcyoslaT+/L7G3bzJKKzGRY8=
+X-Received: by 2002:a17:907:9810:b0:aca:b720:f158 with SMTP id
+ a640c23a62f3a-acad348a128mr1012156166b.13.1744613612720; Sun, 13 Apr 2025
+ 23:53:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [xfstests generic/619] hang on aarch64 with btrfs
-To: Zorro Lang <zlang@redhat.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20250413125349.w5jxnnphr7wliib5@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <17cd9240-99eb-49e1-8843-0a80a18f8ac2@suse.com>
- <20250414042322.ehea2rb5g5bo34zq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <31bd0214-955a-49a9-a4ae-f102044fcbdc@gmx.com>
- <20250414052259.ldxjeiamj2l23bwc@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250414052259.ldxjeiamj2l23bwc@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20250331082347.1407151-1-neelx@suse.com> <2a759601-aebf-4d28-8649-ca4b1b3e755c@suse.com>
+ <CAPjX3Fdru3v6vezwzgSgkBcQ28uYvjsEquWHBHPFGNFOE8arjQ@mail.gmail.com>
+ <b1437d32-8c85-4e5d-9c68-76938dcf6573@gmx.com> <20250331225705.GN32661@twin.jikos.cz>
+ <CAPjX3FfVgmmqbT2O0mg9YyMnNf3z7mN5ShnXiN1cL9P=4iUrTg@mail.gmail.com>
+In-Reply-To: <CAPjX3FfVgmmqbT2O0mg9YyMnNf3z7mN5ShnXiN1cL9P=4iUrTg@mail.gmail.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Mon, 14 Apr 2025 08:53:21 +0200
+X-Gm-Features: ATxdqUHak9AiMMSwlhClElvAYjPSN7_Sx5iFmhNZVEvfe4TE6-tM8bxa8iRg7XI
+Message-ID: <CAPjX3FfOJMFC8cXCqLa2yS1qSYmhu5cjV__+7xVRFGuKu=RqiA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: zstd: add `zstd-fast` alias mount option for fast modes
+To: dsterba@suse.cz
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>, 
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lSSVe4coD9FthVvlooJcMgI3H93mo+hWijpOQAOeLw36FsSFkmD
- +UeEJksfndrkdzo/xKDwWBrYl756kXDwwoWWr9XxzxYzSeUdPIGpAFVNfT/ro8IyO2m7L8z
- 8usHnhrUF3UZ/Szr3FHS0cR0YPklo6Q4IPdoPpTwvOOYqNzKI1aYcXIRFqXqQb7U3lTHN9c
- i0T1u3MOLsqJtvHkycXdg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:1chhupQ/Bzw=;KtsHphN70pNEVLxof+jlj1BJA3P
- GY/4iMc1Wu+bU51Z5KiKf3zRReEHKPga8MJ1/K8k/yP33HfkNaiU9PWqud8dxtWKQTViseXNx
- KAB0awkVpEGcLD5mXc2beAJ4RxXoKFXx4q3JIHWx86vVUUhGFMtLdRQS2Y4nccknF2L19YXQ7
- wOAe0fEwydAw+0vzj2Q2IfkkP6pvmdydTYkLVPTXfLSJKxJEmFlA5VfqMjTrxV5cXIouRWwzk
- DcLzI/VJxZNKAsfbM+LTZ/WFCjVGp1Zmdh9me80ZdbrqYAcDeb8nL18UQvNO/VB4tDYxqsqwo
- hDVKn/HOu162r6tZI3DyP9s3Gmueh3XmtHyrU2/q+pe2jA9EIUq2XEv0dYWzlJTA4otoZ60ym
- 503DI137bSJlTpb2VZGKE0ubVjFno3lDbJa+jjKeuyCEeFEttafl5k1M+kAHenZSv3D05RS75
- mksdRJfKm9AuMecF/X0mpjqKT5D2jWLTHy6iX3fKliFyX2GuDOUOXMTbHlvPhVSONTEOmNTYU
- xJ80+P05JCc/Tagx2bfbV/2+ovO4BmbXCDn6pvsoQN7kJuPgRInv5G3aq8lp1F8iNedU9WIq8
- Yaa7/RONoO2AwL8HqsXWvHPVhwQ9CXgTYWNZ1MWlqBlrex5klaeZKFKLyp+NQJcqqbYRjX5AH
- bjsTXq3el6/npCDH/dbqggwtM8NZAUmjn32O/3CPozg4ywyJ/T6PNixT68ZjwG7vEoogKYDfg
- eK0w3JnxUJQhaE4v6Qc8eJP6veKqBUfgAArkeOyjvPAAfgFigYlKUILvVT+Nwek/GKoaumPWu
- uPQq+89CfvJkdiv4Q3SJtxyFA1TNUTZ8iC78lNXbhEmocNiC56xoZqJ8zma6ov2FLLcmeC30/
- QNXDvNsGWbl70WTrN5hxoXWVmw78dwU6vFBgcfiLgJonAP1ZYmkKqqxx8Zp3BwH7Vjx7DrExx
- Q75YBHmCKoHtpsrrOSOWXxw8IOcKICFIe9UohDDSLMuQav1awIJIn2aLSzG6/UZNZYOJlV6A8
- OGQF7Mo9elidiSvFzauxW4dZDibaN8Rwq9P0poSTrxG2AODrxhgbZZGjV6fRxfyb46gCMhKaN
- abn+Y/b+M/yBugXrw4BK0IkNqT+ojwTKTNitaReaSqP4feWA55EYm12Oejqwl1+kr5HWRIB3H
- 4JO3IGI5vJKbISzseCAN0FXTUWNcQAFsfkcK1RiB1WebmmnCxlCtu1XrAez4Enwwrqr/SuF5e
- 2D1EFefzVbbrMzU4ybjMkjZo5wL/lKMNjb0dFi4TYOtMyxuelIRpeXuRq7arUmZfWY/698S77
- lRb5jQ1PBCNj3Sq2K9LPLOO6PJj01n43qX13ka+I1N2GfmTY9TgasW5ySAb3/gnCAEmbF8oQg
- X/TfZfbJ8e5TauSQf7PDUnG2KpbttQJT+LPpa46kq5Swo2lvIIOMQix/1UqedcM0G1MdRLw02
- ZGU2Jpg==
 
-
-
-=E5=9C=A8 2025/4/14 14:52, Zorro Lang =E5=86=99=E9=81=93:
-> On Mon, Apr 14, 2025 at 02:09:59PM +0930, Qu Wenruo wrote:
-[...]
->> Meanwhile if you can reproduce it, the early "sysrq-w" call traces will
->> definitely help us a lot.
+On Wed, 2 Apr 2025 at 16:31, Daniel Vacek <neelx@suse.com> wrote:
 >
-> How "early" do you need? I can add "echo w > /proc/sysrq-trigger" to gen=
-eric/619
-> source code, just not sure where do you need?
-
-As long as there is no obvious activity shown in top or similar commands.
-I'm afraid this requires some manual interaction to do the dump.
-
+> On Tue, 1 Apr 2025 at 00:57, David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Tue, Apr 01, 2025 at 07:44:01AM +1030, Qu Wenruo wrote:
+> > >
+> > >
+> > > =E5=9C=A8 2025/3/31 20:36, Daniel Vacek =E5=86=99=E9=81=93:
+> > > [...]
+> > > >>>                        btrfs_set_opt(ctx->mount_opt, COMPRESS);
+> > > >>>                        btrfs_clear_opt(ctx->mount_opt, NODATACOW)=
+;
+> > > >>>                        btrfs_clear_opt(ctx->mount_opt, NODATASUM)=
+;
+> > > >>> +             } else if (strncmp(param->string, "zstd-fast", 9) =
+=3D=3D 0) {
+> > > >>> +                     ctx->compress_type =3D BTRFS_COMPRESS_ZSTD;
+> > > >>> +                     ctx->compress_level =3D
+> > > >>> +                             -btrfs_compress_str2level(BTRFS_COM=
+PRESS_ZSTD,
+> > > >>> +                                                       param->st=
+ring + 9
+> > > >>
+> > > >> Can we just use some temporary variable to save the return value o=
+f
+> > > >> btrfs_compress_str2level()?
+> > > >
+> > > > I don't see any added value. Isn't `ctx->compress_level` temporary
+> > > > enough at this point? Note that the FS is not mounted yet so there'=
+s
+> > > > no other consumer of `ctx`.
+> > > >
+> > > > Or did you mean just for readability?
+> > >
+> > > Doing all the same checks and flipping the sign of ctx->compress_leve=
+l
+> > > is already cursed to me.
+> > >
+> > > Isn't something like this easier to understand?
+> > >
+> > >       level =3D btrfs_compress_str2level();
+> > >       if (level > 0)
+> > >               ctx->compress_level =3D -level;
+> > >       else
+> > >               ctx->compress_level =3D level;
+> > >
+> > > >
+> > > >> );
+> > > >>> +                     if (ctx->compress_level > 0)
+> > > >>> +                             ctx->compress_level =3D -ctx->compr=
+ess_level;
+> > > >>
+> > > >> This also means, if we pass something like "compress=3Dzstd-fast:-=
+9", it
+> > > >> will still set the level to the correct -9.
+> > > >>
+> > > >> Not some weird double negative, which is good.
+> > > >>
+> > > >> But I'm also wondering, should we even allow minus value for "zstd=
+-fast".
+> > > >
+> > > > It was meant as a safety in a sense that `s/zstd:-/zstd-fast:-/` st=
+ill
+> > > > works the same. Hence it defines that "fast level -3 <=3D=3D=3D> fa=
+st level
+> > > > 3" (which is still level -3 in internal zstd representation).
+> > > > So if you mounted `compress=3Dzstd-fast:-9` it's understood you act=
+ually
+> > > > meant `compress=3Dzstd-fast:9` in the same way as if you did
+> > > > `compress=3Dzstd:-9`.
+> > > >
+> > > > I thought this was solid. Or would you rather bail out with -EINVAL=
+?
+> > >
+> > > I prefer to bail out with -EINVAL, but it's only my personal choice.
+> >
+> > I tend to agree with you, the idea for the alias was based on feedback
+> > that upstream zstd calls the levels fast, not by the negative numbers.
+> > So I think we stick to the zstd: and zstd-fast: prefixes followed only
+> > by the positive numbers.
 >
->>
->> BTW, you can use attachment instead of pasting all the config into the =
-mail.
+> I'd still opt for keeping full range and functionality including
+> negative levels using the plain `zstd:N` option and having the other
+> just as an additional alias (for maybe being a bit nicer to some
+> humans, but not a big deal really and a matter of preference).
+> Checking the official documentation, it still mentions "negative
+> compression levels" being the fast option.
 >
-> Oh, I heard some mail lists don't like attachment, not sure if that's tr=
-ue :)
+> https://facebook.github.io/zstd/
+> https://facebook.github.io/zstd/zstd_manual.html
+>
+> The deprecation part looks like just some gossip. It looks more about
+> the cli tool api and we are defining a kernel mount api - perfectly
+> unrelated.
 
-It's true, but at least the btrfs list accepts some attachments, and
-since I'm also in the To: list, at least I can share the attachment to
-all btrfs developers if they need.
+Any feedback, Dave? I tend to drop this ida of `zstd-fast` alias.
 
-Thanks,
-Qu
-
->
-> Thanks,
-> Zorro
->
->>
->> Thanks,
->> Qu
->>
->
->
-
+> > We can make this change before 6.15 final so it's not in any released
+> > kernel and we don't have to deal with compatibility.
 
