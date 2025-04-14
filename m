@@ -1,155 +1,167 @@
-Return-Path: <linux-btrfs+bounces-13005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13004-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F35AA88BF8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 21:09:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6276A88BF4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 21:08:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC777177476
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 19:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02F3F189ADC2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 19:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CF028BABD;
-	Mon, 14 Apr 2025 19:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D7728BABD;
+	Mon, 14 Apr 2025 19:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="a/pnzI+4"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="PdVdeXP2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3103A1990C7
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 19:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AD87E9
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 19:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744657780; cv=none; b=t2b/tXHnEszxGuoUjAIm+/b9e5VMRgZDlZMR7ufUmca8sajNePcacUnBSw/xX4pSIWL0Fhvs4fOvUJ4g1OQLa0FCJslZiib4FANJz6M5M4cqAXzMdamnp9TxMwVHPuuImqe2uWFebHCjzoIg1eI58G4k0D2ESlGBMeXtiwTkzV0=
+	t=1744657707; cv=none; b=PYgUjLuPmdR0O798A2cnqSPuBkVvTDyMSGRkqYNn46Ohn1ADNfS8ImouPVfpNGMshB66mgICHIZO4hyAR9bIV/Kxhv2FLvZjpbamyc4w1nljMrrxy342RmJwM84DiH5EevAvOBdKBz/vBD8+mWUdn520EAZ+bnbWyn+5RAXSg+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744657780; c=relaxed/simple;
-	bh=Blx4GhHhEs9ZCMWxGuyOEQxQNl0Arj4Ursl9vMsC/CM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ieTdWPe68HCwI5GsRvvaOCxphesyNZdMDV+m+nqGP/R2Px2RQYlRuo+gBu45/cPm388NbcJedZdKcEdflSX/gjZmxMqss97SpuLtW5zg8COKj4z44o079dUOICbzQ9ExYB3ewU+fAcKLk8oJ02TSdeNxeJX5qoJfib1ptZemEkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=a/pnzI+4; arc=none smtp.client-ip=213.209.10.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPSA
-	id 4P8yuAHElrFho4P8zuhE7s; Mon, 14 Apr 2025 21:06:58 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1744657618; bh=Xxd1RustZcMlrjWV1SE1/FaNA6/yjvPoGvd9nAcXaqM=;
-	h=From;
-	b=a/pnzI+4YdLNx7+4kCAai38X8/bWMGYD66wEDzDmlTNdCCMDSEPjlraVdfBho1Bol
-	 jMGJ3e/p6VQeeIhUYDQULR3tJA19O6lQVe9dYJIv802MASbZGQCttPuzPyJmNEohTB
-	 SnqfbfGYhPH7mfXF3XEGlmfHTih6EQRzYVBCFnJ6+hz6Lcp4SxRVqArskwQVh8XPuo
-	 F+QHI4S0P0C0aH3FRi9cltNOgo72mKgODoracQY8XQ38UXizQOXJlXgNK0dYajydhz
-	 pBrtSrZYRqXyjbyA7Fz53EQz2qYvMZBQr2gYa7vtaXJueIgs+PPCXLp0qvjgeanH2C
-	 +KCNys2lqdpag==
-X-CNFS-Analysis: v=2.4 cv=UPIWHzfy c=1 sm=1 tr=0 ts=67fd5cd2 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=2Le3lMjJWC0ys_BYqFoA:9 a=QEXdDO2ut3YA:10
-Message-ID: <93a7fd2e-d667-4b9c-b2b9-dc4f05e7055d@inwind.it>
-Date: Mon, 14 Apr 2025 21:06:56 +0200
+	s=arc-20240116; t=1744657707; c=relaxed/simple;
+	bh=3aagCQrXhl/MNZAH77UCJOuTXZmHO9aKEGMGwqxQF4g=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=FNdgTgM3cCYD4Eqk0jcTVPmof47JA4HEaWn0CMg57RYpRJ2kQbheVxsH+9sgBGHE1S9qPfb6ky98G/tULzOBjacAFXc6u5myKUGundmkeuR80rhxb9+vpO/Ynh8X1NhEYisxtXNS91+8PFxh8hqDreqaErzn22v+4x+f9VNj4qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=PdVdeXP2; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6ff1e375a47so43055617b3.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 12:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1744657704; x=1745262504; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrOaiCPjh32k0UW8/1LJ7UGycuyuFYRgZQnj8W95tZ4=;
+        b=PdVdeXP2pu6+8wLAS7O4NYg+54PdnMIsIb/pSpyWEc4iAUyZW0gAJOvOKjHUyWG0TP
+         jvQplYFoHuXHgAM2svdYIKUaA0U00Mlj6J9wgFuHbx+uFab0GYs3NVxduxwDY0sgybZP
+         KYM0cBSgDo0vCzJEdCwyi7Tp3Gleo9tfRySC7KwCaHKRhxYKq8ed8+Q0/l69jOQSDN+M
+         jV/2q3PC5jxtcQKBCUyfkyTd9WrQY6r1tTz8bhae3Ffams1IrJS0iw/Uws7MJlaEFp3Z
+         1un+runbw6AHnpLGNzX+/w4I7QXIpczelasw/0hJLDE9izhvXdVicpTgwxqm33IEhv5q
+         F6WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744657704; x=1745262504;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrOaiCPjh32k0UW8/1LJ7UGycuyuFYRgZQnj8W95tZ4=;
+        b=QFGt2h9qlQ9q2sgzYooZoCPpUtx6IadLSAi8y2wGA2QZ8etcnikf6lX+bUBiilgXN3
+         a6IAUB5X8DOGbr7cFgNQbJXXMpwwoekfBN3v65pxyeZYkC9l8AC+qX575vJnOTyAH7YQ
+         hofqiZtnDkJRRee5OxJgOCAgi7uNFcyR4HlrDUxSsM1k3QNdtR6qD8QzvjMnuwEun3sK
+         Y1ANN5BIS8tq67ActIWgr+xH3xR+KFQCK+16CnQ3vLRPOEz1a4nZIFjsUe5FWj5adyWp
+         WznuYeONrmkb7P48tYRH9p455nEqHRvCvXuObkb/k6ISuFSdq4D3WkBkh1cquIBp5So8
+         sdoQ==
+X-Gm-Message-State: AOJu0YwHiQFnGXe31a65zTGu7ej8aAEuaye6tLKOMPRpVDjFi/sCYqK6
+	kCGHYSIxMdV81TR9U4frFQtSwjXaJ/I7dX/EeWLxpPNkIulYBxmZ+IxoQESmTaz54nW9NoXDh1L
+	c
+X-Gm-Gg: ASbGncs/k6MR28Atd0xUHcsxzIBalcI+8F5yhmZlzKfs7dGoGXfD6004TpUCDEoTaZY
+	CbjpfpvY/ByRcpkBkws/Rvgkt86pQqwsuOxhlOBf5Ijiy/wkbdQqDKSlZGbFiNas3QlkmtCEu1y
+	xtN848Qj7mX1Dx2s3JUHCVRerXLKjIa9/ahazWgF20UcnHtaUXmV6zE9+y8mYS3rspch2xsNPzR
+	xjhwqx+QcQgwPqR6IDuBgYIB+RUg9D9VEb75LQYH0QDwVa0IEfI73D0RHrVKBWJriwjmzTnMLcJ
+	FPYVXD5J1BZNp8kzmN9PmQ6VaLTWCM2HlwawTje2WaUSwqlpQ2cTFy48EZw8oFYeJbTSoI16XNo
+	AIWpMjhUM2LTp
+X-Google-Smtp-Source: AGHT+IEcNp4mK8rmKue21TWPtApbpSfF5vFBrcVgXQsw4KJrHJ2ScACa5Yhlfr4NBtBqI6RUKNcRzQ==
+X-Received: by 2002:a05:690c:660a:b0:703:b278:db3b with SMTP id 00721157ae682-70559aab9f4mr219935357b3.30.1744657703553;
+        Mon, 14 Apr 2025 12:08:23 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7053e130ba6sm32977327b3.49.2025.04.14.12.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Apr 2025 12:08:22 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: adjust subpage bit start based on sectorsize
+Date: Mon, 14 Apr 2025 15:08:16 -0400
+Message-ID: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1744657692.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: P.S. Re: Odd snapshot subvolume
-To: Nicholas D Steeves <sten@debian.org>
-Cc: "Brian J. Murrell" <brian@interlinx.bc.ca>, linux-btrfs@vger.kernel.org
-References: <dea3861ab4b85f2dffc5bbc9864b290f03c430f4.camel@interlinx.bc.ca>
- <87friais1a.fsf@navis.mail-host-address-is-not-set>
- <87cydeirkl.fsf@navis.mail-host-address-is-not-set>
- <72d7150b-4e0b-4e15-bd3f-ab410be4a767@libero.it>
- <87tt6q1tn3.fsf@navis.mail-host-address-is-not-set>
-Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <87tt6q1tn3.fsf@navis.mail-host-address-is-not-set>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCw/k7K2EMYPNxaKUkSt0GQ8KwSyTNgqwSR/blLrn4tCkLk9DnqCKQ6SGDl6J9CDNFh+tTDIOEgNdzle/cPhQSmbD0VpPdNMKTEqswtX1RKQuKl42xrh
- 5GacQ40ZjlGMaa5KQsRsu4k9gi9turPjdOd/a1ugcQZbCXpDRVj01NdemizA/I3xDFxkQMh2e+R9BzgkbgczvQ2y32bGib0Msv4yLYgCOfA7hpyF5hM6b3+t
- 0N+Qi+UTlUyo+7xJTBAfdA==
+Content-Transfer-Encoding: 8bit
 
-On 14/04/2025 20.32, Nicholas D Steeves wrote:
-> Of course 'subvolume show' gets subvolume UUID, 'filesystem show' gets
-> filesystem UUID, and this is too complicated.  Yes, it's logical, once
-> one understands btrfs, but multiple of my colleagues have looked at
-> stuff like this, thrown up their arms, and exclaimed things to the
-> effect of "I have more important things to think about".
+When running machines with 64k page size and a 16k nodesize we started
+seeing tree log corruption in production.  This turned out to be because
+we were not writing out dirty blocks sometimes, so this in fact affects
+all metadata writes.
 
-:-)
+When writing out a subpage EB we scan the subpage bitmap for a dirty
+range.  If the range isn't dirty we do
 
-> To encourage btrfs adoption I think we need to do better.  After
-> considering alternatives, I wonder if there is anything simpler/better
-> than
-> 
->    # findmnt -n -o SOURCE /foo | cut -d[ -f1
-> 
-> to get the device suitable for mounting -o subvolid=5 | subvol=/ ?  Ie:
-> "Just let me see everything with as little fuss as possible. Make it
-> simple!", without relying on fstab.
+bit_start++;
 
-Below a bit simpler command options set
+to move onto the next bit.  The problem is the bitmap is based on the
+number of sectors that an EB has.  So in this case, we have a 64k
+pagesize, 16k nodesize, but a 4k sectorsize.  This means our bitmap is 4
+bits for every node.  With a 64k page size we end up with 4 nodes per
+page.
 
-     # findmnt -n -v -o SOURCE /foo
+To make this easier this is how everything looks
 
-However I have to point out that this is not a specific BTRFS problem. See below
+[0         16k       32k       48k     ] logical address
+[0         4         8         12      ] radix tree offset
+[               64k page               ] folio
+[ 16k eb ][ 16k eb ][ 16k eb ][ 16k eb ] extent buffers
+[ | | | |  | | | |   | | | |   | | | | ] bitmap
 
-	ghigo@venice:/tmp/test$ mkdir t
-	ghigo@venice:/tmp/test$ mkdir t2
-	ghigo@venice:/tmp/test$ truncate -s 1G disk.img
-	ghigo@venice:/tmp/test$ sudo losetup -f disk.img
-	ghigo@venice:/tmp/test$ sudo mkfs.ext4 /dev/loop0
-	ghigo@venice:/tmp/test$ sudo mount /dev/loop0 t/
-	ghigo@venice:/tmp/test$ sudo touch t/a
-	ghigo@venice:/tmp/test$ sudo mkdir t/b
-	ghigo@venice:/tmp/test$ sudo touch t/b/c
-	ghigo@venice:/tmp/test$ sudo mount -o X-mount.subdir=b /dev/loop0 t2
+Now we use all of our addressing based on fs_info->sectorsize_bits, so
+as you can see the above our 16k eb->start turns into radix entry 4.
 
-	ghigo@venice:/tmp/test$ ls t2/
-	c
+When we find a dirty range for our eb, we correctly do bit_start +=
+sectors_per_node, because if we start at bit 0, the next bit for the
+next eb is 4, to correspond to eb->start 16k.
 
-	ghigo@venice:/tmp/test$ findmnt t2/
-	TARGET       SOURCE         FSTYPE OPTIONS
-	/tmp/test/t2 /dev/loop0[/b] ext4   rw,relatime
+However if our range is clean, we will do bit_start++, which will now
+put us offset from our radix tree entries.
 
-	ghigo@venice:/tmp/test$ findmnt -n -o FSTYPE,SOURCE t2/
-	ext4 /dev/loop0[/b]
+In our case, assume that the first time we check the bitmap the block is
+not dirty, we increment bit_start so now it == 1, and then we loop
+around and check again.  This time it is dirty, and we go to find that
+start using the following equation
 
-For *any* filesystem, it is possible to mount a subdir of a filesystem as root.
-BTRFS subvolume has some special properties (e.g. it is a "barrier" for the snapshot).
-However the possibility to be mounted is not one of these BTRFS special properties.
+start = folio_start + bit_start * fs_info->sectorsize;
 
-If you want to know which subvolume is mounted, you have to look to the "subvol"
-option in the mount command. However even a sub directory of a subvole can be mounted
+so in the case above, eb->start 0 is now dirty, and we calculate start
+as
 
+0 + 1 * fs_info->sectorsize = 4096
+4096 >> 12 = 1
 
-	ghigo@venice:/tmp/test$ sudo mount -o X-mount.subdir=b,subvol=/subb /dev/loop1 t5
-	ghigo@venice:/tmp/test$ findmnt t5
-	TARGET       SOURCE              FSTYPE OPTIONS
-	/tmp/test/t5 /dev/loop1[/subb/b] btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/subb
+Now we're looking up the radix tree for 1, and we won't find an eb.
+What's worse is now we're using bit_start == 1, so we do bit_start +=
+sectors_per_node, which is now 5.  If that eb is dirty we will run into
+the same thing, we will look at an offset that is not populated in the
+radix tree, and now we're skipping the writeout of dirty extent buffers.
 
-This to say that event for the common case "findmnt -n -v -o SOURCE <path>" may be
-overkilling, there are some corner case where it is needed. To understand the situation I suggest to use
+The best fix for this is to not use sectorsize_bits to address nodes,
+but that's a larger change.  Since this is a fs corruption problem fix
+it simply by always using sectors_per_node to increment the start bit.
 
-	ghigo@venice:/tmp/test$ findmnt -o FSTYPE,FSROOT,SOURCE -v t5
-	FSTYPE FSROOT  SOURCE
-	btrfs  /subb/b /dev/loop
+Fixes: c4aec299fa8f ("btrfs: introduce submit_eb_subpage() to submit a subpage metadata page")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-> 
-> Cheers,
-> Nicholas
-> 
-
-Ciao
-Goffredo
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 5f08615b334f..6cfd286b8bbc 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2034,7 +2034,7 @@ static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
+ 			      subpage->bitmaps)) {
+ 			spin_unlock_irqrestore(&subpage->lock, flags);
+ 			spin_unlock(&folio->mapping->i_private_lock);
+-			bit_start++;
++			bit_start += sectors_per_node;
+ 			continue;
+ 		}
+ 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.48.1
+
 
