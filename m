@@ -1,80 +1,56 @@
-Return-Path: <linux-btrfs+bounces-12974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4A59A875FD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 05:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 330DBA87641
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 05:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BABDA16E6B5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 03:05:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26AAE16DD96
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 03:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E6817A31C;
-	Mon, 14 Apr 2025 03:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF3C1865EB;
+	Mon, 14 Apr 2025 03:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PuyAC4eQ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hXGLz45v"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42314430
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 03:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB1563CF
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 03:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744599901; cv=none; b=hbYy7Vjev2Vhe95vlE9qzCBOp+0ZmlfD8o7QHzCM872/ALrf4g08L4809GTN/BcIxTKVor5kEloZmwnznLZfV7nDXkbV6LWLaDUu6+BXQaO6dM70i6eIC+8XaDcpVaSOOsGyjmrGt24GBWhbkYaDZ0IGrZ+XGu3tMhZS45k412I=
+	t=1744601851; cv=none; b=Avvpm2ROfcswGcoM6netpSEIDcPdKyEwiOUtWswA/FiOiXcL1saP4ThjXBzxSRyJJXvO1me9eg+4aSsWZT39t2MRSPzRqxX/abLX9k/wHNqqSuLqLTgWQ5eG+uvoA4qVtq8zQYMuz2bxtxrWLi1xeL+TKqMb/EleLxU7STie7dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744599901; c=relaxed/simple;
-	bh=RT79FGs/6QVxd6/xcvDQhFlDozVMezEuFjHEK+DHKR0=;
+	s=arc-20240116; t=1744601851; c=relaxed/simple;
+	bh=fnIWa/lxjGz+Tc56zT1mb67VxtZyfIjG07CmsrAqCS0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UG5WqytqPk0UPQo/cgMfwk97uaZA1HeYQ4aSZyfish0ojblJxwJyL0fuDkKNgO26ZWH4UAzOFkedzhTmyfGBnxEcHs4Yoi3qTZXy5p7bUI4fvc1Iniha2wkuKPIk22Oe2RmRY9yqw8J105Ole2az9BUmTs0D3Nc2doHP1wr8fyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PuyAC4eQ; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-39c31e4c3e5so2343985f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Apr 2025 20:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1744599897; x=1745204697; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYwZUTPh1pC6HO84cJijBRttMIYJOUyFnwnf2EsiIy0=;
-        b=PuyAC4eQhWgIMtX/i4VFyqbb5I/3FVSTNKt4rOm0CGVkml+9eji3VcFEz+iALZaBQT
-         DjTXZ1+bLKVNq40r8GsJlUzvX43g2HfYcSOihqqAm5WfClTnrYpx+5kRQGhdLgDumLKs
-         kO1X3tYj/4bGJBsqlSgC4mylPNCARJa2tKWxRSOjkvRPHnMfX5QkNsPxi9YLQBbwE88y
-         hDx0CaRnaAO/0Qa3f/tY04XZBt9Q0IGpaKfKN/C8ae+kVIbeP2Q5y/jCVXqeXBUDPjy7
-         4yPLfe++M0bgyN3swdRQ35jgj2ff/a1xsGYlN/MN5QWOSPo6JI+p33T8upl9nqrq8I5H
-         286Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744599897; x=1745204697;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qYwZUTPh1pC6HO84cJijBRttMIYJOUyFnwnf2EsiIy0=;
-        b=leB7BehjvXjT812Kv9u3MP6LxERuq/SRitkiDKwBTQg1R8ZQhXJJqynW8Ca1Cmox+B
-         Pvd8YsM4vjnR10me73KgviCb6o+sITNwH28fDY3gYPHZtTFOc2vglzXLBVk7O2rfYmGG
-         UAHKQkG6hkkdpvTtcBgvYF7s3dVekr3bg5SI/vi4z6+LAccUHIyf/a1oCKgNAitbrPJr
-         1StHTlHiIHU5SnoJoMeRRPsKF1cItXOYDWlAQw99A3bfSvNk9uMf27l64/ob1it/mEab
-         yo1ZZTcFesqu00i0lnkz6UalOMAF0nYM6qAbJ3OmpBbjS/+lKBFebPxA2cO4NbK8WhhI
-         kO+w==
-X-Gm-Message-State: AOJu0YznlfYNTj+DK4tXMxsqxcE3epbqdxdJxMnao/FMR7+vfk8LF8Cr
-	f7YZ578FB/okjjkwtFEwuDCW3VeETmH3hogqenvEpveU0DYEJzgSNo0K/iCHGUw=
-X-Gm-Gg: ASbGncs3QuV7Akg6i3FT3TN9b2pKzQvFNjdhhiaDfACu905srQR8ezRF7agbfzFCeus
-	nhlfuM+hf8lg82Sosj0z7iyIlbo2dpJspgJUaIrqGgd1I5IHu51dMKXY4cIF2Mz6S21q5mDNiWJ
-	mL9VpjUchMyWGssIZGezxufOP+EERIhi1uw52pfo63s4p9sTcfdrAVB0GMH6CyALl/qwoy/gEBj
-	pCOrWau9yLkbGcyjDLNHF1WKj2EbJPGZoC61IjrT97h6DZVeexvYti/F2ggc5P0tvjX4nNbLlqL
-	CPaZUx63jB79d9pjEH8QyZu7FdDZHlDaw6/dQM0nSeG9L+nC6M33/ElbPSyLcuSbjF+U16/ZERE
-	QTG0=
-X-Google-Smtp-Source: AGHT+IGst7bb25xXKPyZwcLUBNSXbrenwHCq56U972+ufWAmOegl8354yd5fqeyRqNBFZTaYjc9T9w==
-X-Received: by 2002:a5d:64e3:0:b0:39c:1a86:e473 with SMTP id ffacd0b85a97d-39eaaecbde2mr9071046f8f.56.1744599896679;
-        Sun, 13 Apr 2025 20:04:56 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7b62922sm89363805ad.51.2025.04.13.20.04.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Apr 2025 20:04:56 -0700 (PDT)
-Message-ID: <63e2eafc-1004-4c12-9d90-39377b0071f3@suse.com>
-Date: Mon, 14 Apr 2025 12:34:52 +0930
+	 In-Reply-To:Content-Type; b=k0xlf1Hm/kMFessRWVXUHJpwfhyhesmtFBSLKRhbirzso8z1K3Y+JuttzJAfMMFBHUiA/+EuVgaC0TJhJCx/EhR0UbNDcE438X8XH+sA+xcUX60jPgG5JaqVm5m/H2rSFTXb4uofqTqGhC9qeYCzBSM+7yklNp4EhZg3iNwQcXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hXGLz45v; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1744601846; x=1745206646; i=quwenruo.btrfs@gmx.com;
+	bh=fnIWa/lxjGz+Tc56zT1mb67VxtZyfIjG07CmsrAqCS0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=hXGLz45vLkUsxGxZVUvaPXzkHec6jmp8UaEHR6fJ0N/JuRY4nt9QuXQ2SaVWdI+2
+	 13iT8qsE+oWOqGWvLxqIGW7Fa2Ffm49FXU+5R+OUanWZVc/zA2NpgXD5t4SFFgRuM
+	 4FbhO7KfyjrQvUeh05WRIqKzF++G+291YItl9IAdXA5uLEwzCHx/cBAyjZoJ1PyHb
+	 Jo7Wrq3v72Zp/1twagsA0wPHG30NObyU3S+Bfk/meY00W3cTGDfD+9gxdpqw+sck3
+	 DxC56h5agON4frBRmXM0E1KPpUE6VHITzFfiAiRpenOTJs7oiFOOLbnQ1EJCcpHMf
+	 tJfM9aJ617L8Z4/IPQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MG9gE-1tnjgY00Pk-006MGt; Mon, 14
+ Apr 2025 05:37:26 +0200
+Message-ID: <d6e721ab-a600-4eea-9436-d043447067ed@gmx.com>
+Date: Mon, 14 Apr 2025 13:07:23 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,88 +58,229 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/8] btrfs: store a kernel virtual address in struct
- sector_ptr
-To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/2] btrfs: make btrfs_truncate_block() zero folio range
+ for certain subpage corner cases
+To: Andy Shevchenko <andy.shevchenko@gmail.com>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <20250409111055.3640328-1-hch@lst.de>
- <20250409111055.3640328-7-hch@lst.de>
- <0b3a6b18-ab19-4997-86dc-fd269b7b61da@suse.com>
- <20250410053413.GC30044@lst.de>
+References: <cover.1744344865.git.wqu@suse.com>
+ <d66c922e591b3a57a230ca357b9085fe6ae53812.1744344865.git.wqu@suse.com>
+ <Z_qycnlLXbCgd7uF@surfacebook.localdomain>
+ <37e556c8-d7a4-4d65-81d7-44821d92603e@gmx.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250410053413.GC30044@lst.de>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <37e556c8-d7a4-4d65-81d7-44821d92603e@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:P+0oAiRoZyh+ImPiz/ZuaCVav4qV48lQ8eTMpwbgE7AkvK6MSru
+ TvcW9i1A9R9Pds45y6r2GI9XokxnCWPrVVHzx7KQr/Z33VJZ1VxOCswhu9GWVXuv5ZNHHmJ
+ exEkoRjVnZUIS0QQMdZ1OBcspGNLsUjeA4fmrp4PbOL24cROomTYPaB/caVQQ2z5PcEOdRf
+ EXxXj1ej2LVkqTHC+p5AQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:XzYrAYUfxYk=;UQmQ5miv7QygNfSNnmyUcNEgIh5
+ tVk6b6SoFYFYt4FS75HfbVnzEjfMT8Zjekk4as+p8XCDDTbwchcHYkSzR/jSgDl2DSxuEJIBK
+ t5MaE55l2O0VQ3k3f4XkoGwZTa+jsF+jL/8rhv5mde0NGT+NWaWITiKBZPdUDUgHBMwblTlvl
+ loY0wDdIu5iNEqtLH+Mri5nFL8ztNBpzTLNZfhIPZlOKzsFlqBjLrfDii6Bin9jWja09K28ti
+ akAyBVKsrg1xRVQw7fr9AHA3jr47XYyBslLnrIgmh5q/ThjEpskd9AiV8LfIzr7MQxh3mgX6H
+ DfxCMxT4cCsVlfOe7JRaRKgfAhEV8jNjYtKBuUXJ9ZMl81XTe39c4E+OvVKkz46ghtuheS+lF
+ F1VIaSBkXcSW9SkYjvGZjoKzWArTH25xoM+j/fghdQvffCSuBhfmlATUY+ZSZxFnM5ZvRDyTz
+ SPM77p7UmFZYsht0Ix3854e3EsMligBywH5VMT/o9LlGgg3yHexf2Fky8uxu+zLhm1gzhl6lx
+ 3PcxpGOCBx/CQ3enSCSyrlQ6opyJsD2E4YKZioTFefKEYV+zy7YynT9whjuHJDo2osojZwZhq
+ x4TZ82wn0HdxLlDId3QwQQszYyWfrUa9ucX2U8943UKyxrFh1WMx3PFhaHgg8FKSCOcNGk9s8
+ vAepy+3XBLASdtZrHEsNJMb/E16IHSvD+ohI8oE9CQMLNLnTSNMrH5x/M6CYGNtELaKYRJJMJ
+ YlaYMvikkH3n4R82eWnWUgokwG5+FrKfzp5jTcoQJW/pXTNf6d8qcwoycMq+PpAA95fD+3VjV
+ 0nUV6zSmVYTLWrGzqVmvUZZTgwt7ncB/Xa2jwpsiJh19flbLXvYh9MeVjKRlXYu/1kCu8PXgP
+ v1HOpMMlpjPjNjbpwvX40XXa1+Y3ly4tEJJoKeKY1cHA//gYCdermInfOJQ5D79lRd05f90B7
+ P0hBq3bsgG8fKgRaxivQbBedQdrmQjC9lBjIJzpjfe01dOeh+896EJFUDOcEEYanaTaIlCn3i
+ 5Ysg//IYBywEJ+9oqp167JKfDwn8ewBrR4X/BvHay6ufwBGxdsbX8YU5Y51H+jskS5EsqcuF6
+ /XqmAw4XduU5ZWbCXBUfZOsEsiNSEZKzQ1nUgdKq+yt5Er7Cfp2l1fwnyJzjHw4EVAQVT4qnP
+ Gr9R+MJLj7W31aRgclzVf6UrSmgkPC2xO9zELDmrVCDX+4ei0Ejl6I28UIeTX48SezusV0smZ
+ 2Q/JklcMkELmmtRE9OGxnkcpqXwJkG0fqvzjFHoeMDGINBmYX9k9D1pZkFlOT7lHcgrbLYCas
+ YopQ3+EwJvcW1QjEt22Gvkl85jb+6ZYeJFl/WhioewxRZy3GRyqmf94J764f142dKIcNauwE0
+ i/qVzTu+WA1urgDJGClQLprvZYtpFHx8/FaE70lsWSpoRI/BVoBa6TBe00dQLyDntVVCpkx2H
+ 0tDd1YQ==
 
 
 
-在 2025/4/10 15:04, Christoph Hellwig 写道:
-> On Thu, Apr 10, 2025 at 08:04:25AM +0930, Qu Wenruo wrote:
->> 在 2025/4/9 20:40, Christoph Hellwig 写道:
->>> All data pointed to by struct sector_ptr is non-highmem kernel memory.
->>> Simplify the code by using a void pointer instead of a page + offset
->>> pair and dropping all the kmap calls.
+=E5=9C=A8 2025/4/14 10:50, Qu Wenruo =E5=86=99=E9=81=93:
+>
+>
+> =E5=9C=A8 2025/4/13 04:05, Andy Shevchenko =E5=86=99=E9=81=93:
+>> Fri, Apr 11, 2025 at 02:44:01PM +0930, Qu Wenruo kirjoitti:
+>>> [BUG]
+>>> For the following fsx -e 1 run, the btrfs still fails the run on 64K
+>>> page size with 4K fs block size:
+>>>
+>>> READ BAD DATA: offset =3D 0x26b3a, size =3D 0xfafa, fname =3D /mnt/btr=
+fs/junk
+>>> OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GOOD=C2=A0=C2=A0=C2=A0 BAD=C2=A0=
+=C2=A0=C2=A0=C2=A0 RANGE
+>>> 0x26b3a=C2=A0=C2=A0=C2=A0=C2=A0 0x0000=C2=A0 0x15b4=C2=A0 0x0
+>>> operation# (mod 256) for the bad data may be 21
 >>
->> But the higher level bio from btrfs filemaps can have highmem pages.
+>> [...]
 >>
->> That's why we keep the kmap/kunmap.
-> 
-> Where do filemap pages come into the raid code?   As far as I can see
-> they are always copied, and the memory is only allocated in the raid
-> code.  As seen in this code we have two direct allocations that I
-> convered to __get_free_page, and one case that uses the bulk page
-> allocator where I use page_address.  Or did I miss something?
+>>> +static int zero_range_folio(struct btrfs_inode *inode, loff_t from,
+>>> loff_t end,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 u64 orig_start, u64 orig_end,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 enum btrfs_truncate_where where)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 const u32 blocksize =3D inode->root->fs_info->sect=
+orsize;
+>>> +=C2=A0=C2=A0=C2=A0 struct address_space *mapping =3D inode->vfs_inode=
+.i_mapping;
+>>> +=C2=A0=C2=A0=C2=A0 struct extent_io_tree *io_tree =3D &inode->io_tree=
+;
+>>> +=C2=A0=C2=A0=C2=A0 struct extent_state *cached_state =3D NULL;
+>>> +=C2=A0=C2=A0=C2=A0 struct btrfs_ordered_extent *ordered;
+>>> +=C2=A0=C2=A0=C2=A0 pgoff_t index =3D (where =3D=3D BTRFS_TRUNCATE_HEA=
+D_BLOCK) ?
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (f=
+rom >> PAGE_SHIFT) : (end >> PAGE_SHIFT);
+>>
+>> You want to use PFN_*() macros from the pfn.h perhaps?
+>>
+>>> +=C2=A0=C2=A0=C2=A0 struct folio *folio;
+>>> +=C2=A0=C2=A0=C2=A0 u64 block_start;
+>>> +=C2=A0=C2=A0=C2=A0 u64 block_end;
+>>> +=C2=A0=C2=A0=C2=A0 u64 clamp_start;
+>>> +=C2=A0=C2=A0=C2=A0 u64 clamp_end;
+>>> +=C2=A0=C2=A0=C2=A0 int ret =3D 0;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 /*
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * The target head/tail block is already bloc=
+k aligned.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * If block size >=3D PAGE_SIZE, meaning it's=
+ impossible to mmap a
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * page containing anything other than the ta=
+rget block.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> +=C2=A0=C2=A0=C2=A0 if (blocksize >=3D PAGE_SIZE)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> +again:
+>>> +=C2=A0=C2=A0=C2=A0 folio =3D filemap_lock_folio(mapping, index);
+>>> +=C2=A0=C2=A0=C2=A0 /* No folio present. */
+>>> +=C2=A0=C2=A0=C2=A0 if (IS_ERR(folio))
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 if (!folio_test_uptodate(folio)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_read_folio(N=
+ULL, folio);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 folio_lock(folio);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (folio->mapping !=3D ma=
+pping) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fo=
+lio_unlock(folio);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fo=
+lio_put(folio);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 go=
+to again;
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!folio_test_uptodate(f=
+olio)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+t =3D -EIO;
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 go=
+to out_unlock;
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>> +=C2=A0=C2=A0=C2=A0 folio_wait_writeback(folio);
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 clamp_start =3D max_t(u64, folio_pos(folio), orig_=
+start);
+>>> +=C2=A0=C2=A0=C2=A0 clamp_end =3D min_t(u64, folio_pos(folio) + folio_=
+size(folio) - 1,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 orig_end);
+>>
+>> You probably wanted clamp() ?
+>
+> Thanks a lot for the help!
+>
+> It's way more readable than the open-coded one.
+>
+>>
+>>> +=C2=A0=C2=A0=C2=A0 block_start =3D round_down(clamp_start, block_size=
+);
+>>> +=C2=A0=C2=A0=C2=A0 block_end =3D round_up(clamp_end + 1, block_size) =
+- 1;
+>>
+>> LKP rightfully complains, I believe you want to use ALIGN*() macros
+>> instead.
+>
+> Personally speaking I really want to explicitly show whether it's
+> rounding up or down.
+>
+> And unfortunately the ALIGN() itself doesn't show that (meanwhile the
+> ALIGN_DOWN() is pretty fine).
+>
+> Can I just do a forced conversion on the @blocksize to fix the warning?
 
-The function sector_in_rbio() can force to use the sector_ptr in 
-bio_sectors, and by default we use bio_sectors first.
-
-Thus all the kmap/kunmap pairs are needed for call sites that is 
-grabbing the sector through sector_in_rbio().
-
-This includes:
-
-- generate_pq_vertical()
-- rmw_assemble_write_bios()
-- verify_one_sector() for READ_REBUILD
-- recovery_vertical() for READ_REBUILD
-
-So I'm afraid we still need the kmap/kunmap for now.
-
-> 
->> Or is there a way to set the filemap to no use any highmem pages?
-> 
-> You can restrict the allocation of a mapping to avoid highmem using
-> mapping_set_gfp_mask().  But that would not help with direct I/O IFF
-> user pages came into this code.
-
-Fine, my dream of getting rid of highmem inside btrfs is still really a 
-dream...
+Nevermind, it's a typo, it should be "blocksize" not "block_size", the
+latter is a different function defined in blkdev.h.
 
 Thanks,
 Qu
+
+>
+> Thanks,
+> Qu
+>
+>>
+>>> +=C2=A0=C2=A0=C2=A0 lock_extent(io_tree, block_start, block_end, &cach=
+ed_state);
+>>> +=C2=A0=C2=A0=C2=A0 ordered =3D btrfs_lookup_ordered_range(inode, bloc=
+k_start,
+>>> block_end + 1 - block_end);
+>>> +=C2=A0=C2=A0=C2=A0 if (ordered) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unlock_extent(io_tree, blo=
+ck_start, block_end, &cached_state);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 folio_unlock(folio);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 folio_put(folio);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_start_ordered_extent=
+(ordered);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_put_ordered_extent(o=
+rdered);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto again;
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>> +=C2=A0=C2=A0=C2=A0 folio_zero_range(folio, clamp_start - folio_pos(fo=
+lio),
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 clamp_end - clamp_start + 1);
+>>> +=C2=A0=C2=A0=C2=A0 unlock_extent(io_tree, block_start, block_end, &ca=
+ched_state);
+>>> +
+>>> +out_unlock:
+>>> +=C2=A0=C2=A0=C2=A0 folio_unlock(folio);
+>>> +=C2=A0=C2=A0=C2=A0 folio_put(folio);
+>>> +=C2=A0=C2=A0=C2=A0 return ret;
+>>> +}
+>>
+>
+
 
