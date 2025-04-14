@@ -1,55 +1,79 @@
-Return-Path: <linux-btrfs+bounces-13012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13013-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BA9A88F30
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 00:37:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27921A88FDF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 00:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B1713B305F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 22:37:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EE921895531
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 22:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49A51F3BBB;
-	Mon, 14 Apr 2025 22:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC971F3BBB;
+	Mon, 14 Apr 2025 22:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mjNyXwM7"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Mwwsp0vM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E21E1DB128
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 22:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635E31BC07B
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 22:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744670243; cv=none; b=kPCVo/uDNMjpJGl5bW/eP6EZgKxBbS2hQZUzU1GQ3NX4mKqsmDN2LrGu15RoTNVuRrnWoFL+c2yvNdEizrboJtvcQOHiv+lvhwm43UXJ+PqwfYsVmtSF3uAmgei3x+KC2+d4c19nlyV9LWIP1aIpAaBspLojSCj4VdRi12bBITY=
+	t=1744671519; cv=none; b=XLy23icq/ys/m1QDtSBVQEfR1QMrbUz2TaE2QjaL3O2rAHEcolZ9ARtg9NofJFKg/nLeo2YDro+1M/haQlaNvI9AH4rz5sD6YlrlRT1Z1VUzbxjYFSQ1kX33h7DSIjooOPRJ55P8P5aZej/QkIzxw3xNz1sFgLOVYtxmd8ZSVpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744670243; c=relaxed/simple;
-	bh=LLV288hS27rlGUHA4et5VQ74nP52Kd63VRywyhSwRMg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=BwSJIyU8TRtaS0Ea50hRUIl1fuQ9O4niisxhwsl+X9b4qmi71QbpXDTpgfEeJEyNlA4tTiDLObSlKxB5MQ+zbnZiFe+q2w7v1VRnOJnemCMx/+FYxTpSABdPK7G3ifRc40xGSSrZYHi5ohEm3wfSDD4kW2u8cEUZbAYRTq+wjak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mjNyXwM7; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1744670231; x=1745275031; i=quwenruo.btrfs@gmx.com;
-	bh=xqj+h2/guYd1OKrrrMeKe3FUJdBYyVhFRJgHakliKiY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
-	 References:In-Reply-To:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=mjNyXwM7ZTzqL+Rq8owKgk34fCcyTwboT9wVNZ+2LCjOoJSECF11nP0ibQsenNK7
-	 UISxC7bXf8it6r2shDZjeDqOjIAtRNxxVsXlgHPA2vFYSIstcLrBnxaJcKu8XhEUJ
-	 3CmJlS9M2gZq2dspL25pdnXVwdsj21RdGe8KDaRwzFT8Rr8whEz0oyaZig+t1Rjgb
-	 Cx8FxfwsnJiDYAF2CtlKQ3heukHTs7m6RGwBsTOR5cvVd9P2nbbFZe9Q9kp10xzXj
-	 7erEkpdqbPJ2VcQh5yqzndUGv4HN1Ek2N2J0a7LnApghuIaAtSAK9sWWPIitwm3a3
-	 0IMnXBS/hefxDjTreg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2O6Y-1u1h0L1Ypq-001iEH; Tue, 15
- Apr 2025 00:37:11 +0200
-Message-ID: <27440332-2afb-4fb8-9ebe-d36c8c33a89a@gmx.com>
-Date: Tue, 15 Apr 2025 08:07:08 +0930
+	s=arc-20240116; t=1744671519; c=relaxed/simple;
+	bh=x7qc/eea8+0f4XIGqceOFTZsLgwDisQVjSHfVPuCC+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AKYwwjRU/NrhpsojMWH4rD5o7j8i7fd/mSZ4YTLZbN5doWJVbEYLXmD9FCqzzxTYm567WoAalodEXqH95bnDc3gUjKQxND0v95BgLFCU6Yw0mTTB5GAtn8QrxqPz9XtvCq2zc3ZvDv5XvDvmOde6CiiBmtRewo9em8+9G5ZMPkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Mwwsp0vM; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43d2d952eb1so39561905e9.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 15:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1744671513; x=1745276313; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=piyvJ4PCWe/bUdBotnMVnqLsKc9VV98h66ZmWh/+rlQ=;
+        b=Mwwsp0vM7ehSdk4BLx9PaXunEZLRFg6BLx4kMz4UwhdxxRwrfrTDuHd87Fwds0zsMu
+         JDy63z1UlxWeNf31ZDAMUCN3Uf0yj8JO1x5bmcsT2VUCeJk+jhAwMBq8IEXMSwkcizag
+         uF75sLyWRPB2mixvbwgiZfNGthL6CqFqJI+11BJvsrgluOd8R1sCYaxqEGl8emqIGXo7
+         O5PgwLlA3v7/Dpc5aAkGCeFl7RdpJ3cPrdKD5+R5xqb7PEL+6khDg9m9InXrKm71TFs2
+         Gn/ddLIcQoEEEvej2RKI77Ik+K3am8+cp8AAL/JxzoROFFJX/tkbXwWRgQ04v+lL5wbT
+         mS/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744671513; x=1745276313;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=piyvJ4PCWe/bUdBotnMVnqLsKc9VV98h66ZmWh/+rlQ=;
+        b=RbIQbrW8TUXMp6fEg3DC21FAgLJn9dDWuBOcJFBHYwmJ3Q5bx/F7FOYHPgTnHyzX1+
+         7nnte5qzW/xT9+0ZZlr+6F54jpi49668N4OtNdZagIiN14hdWtF1n3xvmISNx++86hA3
+         Cjar1Clw88JXzlT9oEXzB+8BeXA5jOtxJFioEC9Z5ZNWYi17a16SOLDOmcRy1Wude6r6
+         2S/B2kszm04W0pnKk+JzNADk1AQFAUtwJBxyaiXuxDM/3t7eIJjUA5YuUwJ0PpVdjd/B
+         gUXWeIVAvUOtzQXkHgx7TabjypdqQGUOMrDeUpmGYtaErQajEKovVJFT/QoiJXqVjiUl
+         tKXw==
+X-Gm-Message-State: AOJu0Yy1GtvmTv7lGm09KT3ES+kNsueiHsIRbKaJrEKrpJ59IGTcHTcC
+	p144GnCdx9RYdcDaosWg/y1apHvpPmV6g/Ka+e0VimzXG5KGePH4dKkN79DtUcw=
+X-Gm-Gg: ASbGncvP9cjG5GDUr2fYBqTXBUmCvMSU+MpCIyic0m4aEcdvnORcEXqiBd9XE2GiiUj
+	mO5+10ltLyHQcN5sTUglMc4CPZMdD1rFcdblJtj2W9UleDgIEtDqaB3QGByr+gfc9gccZMUppOV
+	N1img8YYjTlG8GvUIJo6Qy/rWn395VWCCCNmOeA2M3Mzu2ySZ48D9P/zst0daoAGDrazM98vOkj
+	t63WFtR3w+4LtoHW+GBjDloWC4Mus45lrtesP9KO0oB2oXssU0gxpkZKNeckPSjJ48NNeey4PIY
+	6Z51VWLCpJ+6qjSF4SLxE8ykknEV3tnLKYAecHhcZCDAvlSNki7WrA2N/Wjh2rT1xD0c
+X-Google-Smtp-Source: AGHT+IFNojUUlDXqi7y8FEmhZ//AFSsMIsqjkvOEMAIYPe0st48iH1G9tePiCWjQaQiPjx8dRH90Xw==
+X-Received: by 2002:a05:6000:2283:b0:399:7f2b:8531 with SMTP id ffacd0b85a97d-39eaaebc752mr9998775f8f.38.1744671513344;
+        Mon, 14 Apr 2025 15:58:33 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd2198a7esm7201538b3a.31.2025.04.14.15.58.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Apr 2025 15:58:32 -0700 (PDT)
+Message-ID: <d5826f39-da49-44be-ac3d-9e697ce54793@suse.com>
+Date: Tue, 15 Apr 2025 08:28:29 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -57,235 +81,222 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: adjust subpage bit start based on sectorsize
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1744657692.git.josef@toxicpanda.com>
- <7e863b3c-6efc-459b-ae25-cf87734dc38f@gmx.com>
+Subject: Re: [PATCH 1/2] btrfs: prepare btrfs_end_repair_bio() for larger data
+ folios
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1744005845.git.wqu@suse.com>
+ <f679cbeedbb0132cc657b4db7a1d3d70ff2261f0.1744005845.git.wqu@suse.com>
+ <CAL3q7H7x+cH6gAjuyO2pW=An6NkJwm_TCbGzVVygLHvvwzfz+g@mail.gmail.com>
 Content-Language: en-US
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <7e863b3c-6efc-459b-ae25-cf87734dc38f@gmx.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <CAL3q7H7x+cH6gAjuyO2pW=An6NkJwm_TCbGzVVygLHvvwzfz+g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:032vDbrCWvJhUBhMsQ4TLT7R0kgbo7ALVWfAqbnFHpuEjRLNVZj
- V1Tkrc2LgixuFVqCbDgM9Ez0nYW/aqKeMNO1hbtUju/2hPW5W6IavLt4XvfiqGBGWZxLhrL
- EE1PbucaLAYsgSQTH97KgZlsiTRwujXisZjf4121Z6o30qxEXD8pGgJyyRX362jr0/JLmXl
- 0XgjcQquR+g+Wy0bIU0tw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:73Y5G+E/YaE=;YsyWbR2gJmjnYUI1WW9OWD0jivq
- EQjHal96p5gwEdbmGYbMuE9lRePQdIUcq+lUVcFmc1XMgKAPGGdjImRBInympvP9FiLt0jm15
- ljb3Ylz5E8VLIVUUJVT0pthHQZjR28oEidEK1OwvboooQyCPy4syz0nD7Rtvp5NIlctcs/nRW
- a2TJggCkoozVPPtvhPCj9F1aOvGZy36vNMKPtIfP8N3gpZjNk51cXCr04cWbBsaEdb2rsMJVS
- 2R8zbN3R2TDWj5O4dtZWbjHElTLseePSpsHMdu95I/mK0jzK9mqB0pUbApR+pHmLOUgMrNAU6
- 3HGkfFiNzhnXfsuqZOBaK3Ug4E1P/SNRUHrbSQcaD1sDlPWOpvniUyf7T4a/f6N8z3+aIfF8c
- u5LjTUmV3MQ4Oflch3A1GEzMKkGgrKtRVJYCxAQAtYBkHmJRpOkI/ytVFN/dZDSkAV7dSH3Hv
- AbeAA2OcrvRlaN84Prjj5vq2XZkBdlYOo6hmWhn3kIJXtyVHUBbZfbwONcDGDjK3WBiN6fUIw
- ShVh3nKR4unnz7DkSi2Uhy8hfKIfxMVMnXPC0sW9ZzpAEnP0c7SxQZh1rb5JcPZBD7ov9LbGn
- ylTh0Rb08J1oOm38Lk75Q09KanVsJNVjlso+lMD6l068OOG+pqwn3S5w013C/DymgRh53cQMl
- xfGwhHQPuoBRiDzUXGuDRY+UK8KeQYlAPA5o69T/+A1QcAC1f2nGSoBLx+EHZDBz+6pmKJptH
- oxxxX4y44tnLmO76EeKL87bf/lZHGKwsOk+WIojorRgR3feQ20pPtVA/hy50hSPu/QbNbkW1Y
- 8+R7+tJFsZBq4Ov0/XR2utGD5JBCiM7AZCoAGdO5lUu10jGyzZxipHDhbTzkESjeZKve1yYmg
- gAw7Y0aL6c3xxTAKG/rZCsEF3F2RECOcf5XAugvxtcYnWdYZynwsMqvwP0ZqoTPVkGVieemxj
- au70gFhL+uQgNnUcA2kjLpNCo0LQLn/oYdYxyH3w2DOnZqAscsrhS3ObrzsX2C3WMjEuZTkqw
- XviqR2Yyte5VwQFDOn5Dr5RSklbF1nHUjU7rBQl3135IW2NL093NBbsZZYgEjkv4axOEfKNRv
- R5IbdTtT5cdpG8t8vQR2CBByf6EmkIFfVap9KLK8jHvdlWXprV8BfBKfzk8oKTMJAvNafYdai
- tXz3PlIO8j7etmXS4oP6v3EZVoTGKbhRjccZi+cbShOOQgXJL5DA26M0C5HIKnizajERCCVGm
- xQ+DAVNm3c+KiZ2Dx3DfFAchXjDxwDYvmWNj5OGT2dSKtz4Zf4qBaHDu6Y/lH5cm2mlcFyiSg
- QXHpMUvukCOVm4twkjW9U0tj6M1ip/HM4Ja7PXE9h38YGaXs4B3svOtcUCsN9BdDoc2WQxrBe
- klG23IZY0lEfM6LEwC2dzPOh9I27GWdXW/EHcAGiFFSBFnpLUcJ5QHh/fIMs+D//aC8bilebq
- Yk0GzMg==
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/4/15 07:38, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2025/4/15 04:38, Josef Bacik =E5=86=99=E9=81=93:
->> When running machines with 64k page size and a 16k nodesize we started
->> seeing tree log corruption in production.=C2=A0 This turned out to be b=
-ecause
->> we were not writing out dirty blocks sometimes, so this in fact affects
->> all metadata writes.
+在 2025/4/14 23:55, Filipe Manana 写道:
+> On Mon, Apr 7, 2025 at 7:09 AM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> When writing out a subpage EB we scan the subpage bitmap for a dirty
->> range.=C2=A0 If the range isn't dirty we do
+>> The function btrfs_end_repair_bio() has an ASSERT() making sure the
+>> folio is page sized.
 >>
->> bit_start++;
+>> The reason is mostly related to the fact that later we pass a folio and
+>> its offset into btrfs_repair_io_failure().
+>> If we have larger folios passed in, later calculation of the folio and
+>> its offset can go wrong, as we have extra offset to the bv_page.
 >>
->> to move onto the next bit.=C2=A0 The problem is the bitmap is based on =
-the
->> number of sectors that an EB has.=C2=A0 So in this case, we have a 64k
->> pagesize, 16k nodesize, but a 4k sectorsize.=C2=A0 This means our bitma=
-p is 4
->> bits for every node.=C2=A0 With a 64k page size we end up with 4 nodes =
-per
->> page.
+>> Change the behavior by:
 >>
->> To make this easier this is how everything looks
+>> - Doing a proper folio grab
+>>    Instead of just page_folio(bv_page), we should get the real page (as the
+>>    bv_offset can be larger than page size), then call page_folio().
 >>
->> [0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16k=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 32k=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 48k=C2=A0=C2=
-=A0=C2=A0=C2=A0 ] logical address
->> [0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 12=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ] radix tree offset
->> [=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 64k page=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ] folio
->> [ 16k eb ][ 16k eb ][ 16k eb ][ 16k eb ] extent buffers
->> [ | | | |=C2=A0 | | | |=C2=A0=C2=A0 | | | |=C2=A0=C2=A0 | | | | ] bitma=
-p
+>> - Do extra folio offset calculation
 >>
->> Now we use all of our addressing based on fs_info->sectorsize_bits, so
->> as you can see the above our 16k eb->start turns into radix entry 4.
+>>                       real_page
+>>     bv_page           |   bv_offset (10K)
+>>     |                 |   |
+>>     v                 v   v
+>>     |        |        |       |
+>>     |<- F1 ->|<--- Folio 2 -->|
+>>              | result off |
 >>
->> When we find a dirty range for our eb, we correctly do bit_start +=3D
->> sectors_per_node, because if we start at bit 0, the next bit for the
->> next eb is 4, to correspond to eb->start 16k.
+>>     '|' is page boundary.
 >>
->> However if our range is clean, we will do bit_start++, which will now
->> put us offset from our radix tree entries.
+>>     The folio is the one containing that real_page.
+>>     We want the real offset inside that folio.
 >>
->> In our case, assume that the first time we check the bitmap the block i=
-s
->> not dirty, we increment bit_start so now it =3D=3D 1, and then we loop
->> around and check again.=C2=A0 This time it is dirty, and we go to find =
-that
->> start using the following equation
+>>     The result offset we want is of two parts:
+>>     - the offset of the real page to the folio page
+> 
+> "to the folio page", this is confusing for me. Isn't it the offset of
+> the page inside the folio?
+> I.e. "the offset of the real page inside the folio"
+
+That's correct.
+
+> 
+> Also, this terminology "real page", does it come from somewhere?
+> Aren't all pages "real"?
+
+The "real" part is compared to bv_page, which is not really the page 
+we're working on if the bvec is a multi-page one.
+
+> 
+>>     - the offset inside that real page
 >>
->> start =3D folio_start + bit_start * fs_info->sectorsize;
+>>     We can not use offset_in_folio() which will give an incorrect result.
+>>     (2K instead of 6K, as folio 1 has a different order)
+> 
+> I don't think anyone can understand where that 2K and 6K come from.
+> The diagram doesn't mention how many pages per folio (folio order),
+> page sizes, and file offset of each folio.
+> So mentioning that 2K and 6K without all the relevant information,
+> make it useless and confusing IMO.
+> 
 >>
->> so in the case above, eb->start 0 is now dirty, and we calculate start
->> as
+>> With these changes, now btrfs_end_repair_bio() is able to handle not
+>> only large folios, but also multi-page bio vectors.
 >>
->> 0 + 1 * fs_info->sectorsize =3D 4096
->> 4096 >> 12 =3D 1
->>
->> Now we're looking up the radix tree for 1, and we won't find an eb.
->> What's worse is now we're using bit_start =3D=3D 1, so we do bit_start =
-+=3D
->> sectors_per_node, which is now 5.=C2=A0 If that eb is dirty we will run=
- into
->> the same thing, we will look at an offset that is not populated in the
->> radix tree, and now we're skipping the writeout of dirty extent buffers=
-.
->>
->> The best fix for this is to not use sectorsize_bits to address nodes,
->> but that's a larger change.=C2=A0 Since this is a fs corruption problem=
- fix
->> it simply by always using sectors_per_node to increment the start bit.
->>
->> Fixes: c4aec299fa8f ("btrfs: introduce submit_eb_subpage() to submit a
->> subpage metadata page")
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->> =C2=A0 fs/btrfs/extent_io.c | 2 +-
->> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
+>>   fs/btrfs/bio.c | 61 ++++++++++++++++++++++++++++++++++++++++++++------
+>>   1 file changed, 54 insertions(+), 7 deletions(-)
 >>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 5f08615b334f..6cfd286b8bbc 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -2034,7 +2034,7 @@ static int submit_eb_subpage(struct folio
->> *folio, struct writeback_control *wbc)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subpage->bitmaps)) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 spin_unlock_irqrestore(&subpage->lock, flags);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 spin_unlock(&folio->mapping->i_private_lock);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit=
-_start++;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit=
-_start +=3D sectors_per_node;
->
-> The problem is, we can not ensure all extent buffers are nodesize aligne=
-d.
->
-> If we have an eb whose bytenr is only block aligned but not node size
-> aligned, this will lead to the same problem.
->
-> We need an extra check to reject tree blocks which are not node size
-> aligned, which is another big change and not suitable for a quick fix.
->
->
-> Can we do a gang radix tree lookup for the involved ranges that can
-> cover the block, then increase bit_start to the end of the found eb
-> instead?
+>> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+>> index 8c2eee1f1878..3140aa19aadc 100644
+>> --- a/fs/btrfs/bio.c
+>> +++ b/fs/btrfs/bio.c
+>> @@ -156,6 +156,58 @@ static void btrfs_repair_done(struct btrfs_failed_bio *fbio)
+>>          }
+>>   }
+>>
+>> +/*
+>> + * Since a single bio_vec can merge multiple physically contiguous pages
+>> + * into one bio_vec entry, we can have the following case:
+>> + *
+>> + * bv_page             bv_offset
+>> + * v                   v
+>> + * |    |    |   |   |   |   |
+>> + *
+>> + * In that case we need to grab the real page where bv_offset is at.
+>> + */
+>> +static struct page *bio_vec_get_real_page(const struct bio_vec *bv)
+>> +{
+>> +       return bv->bv_page + (bv->bv_offset >> PAGE_SHIFT);
+>> +}
+>> +static struct folio *bio_vec_get_folio(const struct bio_vec *bv)
+> 
+> Please add a blank line between function delcarations.
+> 
+>> +{
+>> +       return page_folio(bio_vec_get_real_page(bv));
+>> +}
+>> +
+>> +static unsigned long bio_vec_get_folio_offset(const struct bio_vec *bv)
+>> +{
+>> +       const struct page *real_page = bio_vec_get_real_page(bv);
+>> +       const struct folio *folio = page_folio(real_page);
+>> +
+>> +       /*
+>> +        * The following ASCII chart is to show how the calculation is done.
+>> +        *
+>> +        *                   real_page
+>> +        * bv_page           |   bv_offset (10K)
+>> +        * |                 |   |
+>> +        * v                 v   v
+>> +        * |        |        |       |
+>> +        * |<- F1 ->|<--- Folio 2 -->|
+>> +        *          | result off |
+>> +        *
+>> +        * '|' is page boundary.
+>> +        *
+>> +        * The folio is the one containing that real_page.
+>> +        * We want the real offset inside that folio.
+>> +        *
+>> +        * The result offset we want is of two parts:
+>> +        * - the offset of the real page to the folio page
+>> +        * - the offset inside that real page
+>> +        *
+>> +        * We can not use offset_in_folio() which will give an incorrect result.
+>> +        * (2K instead of 6K, as folio 1 has a different order)
+> 
+> Same comment here, as this is copied from the change log.
+> 
+> Codewise this looks good to me, but those comments and terminology
+> ("real page") make it confusing IMO.
 
-In fact, I think it's better to fix both this and the missing eb write
-bugs together in one go.
-
-With something like this:
-
-static int find_subpage_dirty_subpage(struct folio *folio)
-{
-	struct extent_buffer *gang[BTRFS_MAX_EB_SIZE/MIN_BLOCKSIZE];
-	struct extent_buffer *ret =3D NULL;
-
-	rcu_read_lock()
-	ret =3D radix_tree_gang_lookup();
-	for (int i =3D 0; i < ret; i++) {
-		if (eb && atomic_inc_not_zero(&eb->refs)) {
-			if (!test_bit(EXTENT_BUFFER_DIRTY) {
-				atomic_dec(&eb->refs);
-				continue;
-			}
-			ret =3D eb;
-			break;
-		}
-	}
-	rcu_read_unlock()
-	return ret;
-}
-
-And make submit_eb_subpage() no longer relies on subpage dirty bitmap,
-but above helper to grab any dirty ebs.
-
-By this, we fix both bugs by:
-
-- No more bitmap search
-   So no increment mismatch, and can still handle unaligned one (as long
-   as they don't cross page boundary).
-
-- No more missing writeback
-   As the gang lookup is always for the whole folio, and we always test
-   eb dirty flags, we should always catch dirty ebs in the folio.
+Although this patch will be dropped, as Christoph's physical address 
+solution is simpler overall, and he is not happy with us poking with the 
+bvec internals.
 
 Thanks,
 Qu
 
->
-> Thanks,
-> Qu
->
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 continue;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->
+> 
+> Thanks.
+> 
+>> +        */
+>> +       ASSERT(&folio->page <= real_page);
+>> +       return (folio_page_idx(folio, real_page) << PAGE_SHIFT) +
+>> +               offset_in_page(bv->bv_offset);
+>> +}
+>> +
+>>   static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
+>>                                   struct btrfs_device *dev)
+>>   {
+>> @@ -165,12 +217,6 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
+>>          struct bio_vec *bv = bio_first_bvec_all(&repair_bbio->bio);
+>>          int mirror = repair_bbio->mirror_num;
+>>
+>> -       /*
+>> -        * We can only trigger this for data bio, which doesn't support larger
+>> -        * folios yet.
+>> -        */
+>> -       ASSERT(folio_order(page_folio(bv->bv_page)) == 0);
+>> -
+>>          if (repair_bbio->bio.bi_status ||
+>>              !btrfs_data_csum_ok(repair_bbio, dev, 0, bv)) {
+>>                  bio_reset(&repair_bbio->bio, NULL, REQ_OP_READ);
+>> @@ -192,7 +238,8 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
+>>                  btrfs_repair_io_failure(fs_info, btrfs_ino(inode),
+>>                                    repair_bbio->file_offset, fs_info->sectorsize,
+>>                                    repair_bbio->saved_iter.bi_sector << SECTOR_SHIFT,
+>> -                                 page_folio(bv->bv_page), bv->bv_offset, mirror);
+>> +                                 bio_vec_get_folio(bv), bio_vec_get_folio_offset(bv),
+>> +                                 mirror);
+>>          } while (mirror != fbio->bbio->mirror_num);
+>>
+>>   done:
+>> --
+>> 2.49.0
+>>
+>>
 
 
