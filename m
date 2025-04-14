@@ -1,302 +1,338 @@
-Return-Path: <linux-btrfs+bounces-13013-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13014-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27921A88FDF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 00:58:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C070CA89029
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 01:27:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EE921895531
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 22:58:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69D953ACF8F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 23:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC971F3BBB;
-	Mon, 14 Apr 2025 22:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F711FDA89;
+	Mon, 14 Apr 2025 23:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Mwwsp0vM"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="prGhA5Nb";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="prGhA5Nb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635E31BC07B
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 22:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB541DE3BB
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 23:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744671519; cv=none; b=XLy23icq/ys/m1QDtSBVQEfR1QMrbUz2TaE2QjaL3O2rAHEcolZ9ARtg9NofJFKg/nLeo2YDro+1M/haQlaNvI9AH4rz5sD6YlrlRT1Z1VUzbxjYFSQ1kX33h7DSIjooOPRJ55P8P5aZej/QkIzxw3xNz1sFgLOVYtxmd8ZSVpE=
+	t=1744673215; cv=none; b=XNbT3idcjPv/zv1D1V3b7pthgLobYaqPoKfm752vdeUsmkPZygsHjPLnTOnL8KGhd/7pRUS7azlXvyEPWkm9FL9KGfx1HufqvzrMXKHtWpPufZezBSTl3gOPgcQQ4cczFcoCR3eE/gtbtMpv8nOqDc0v1L7mro3rxIWMMPnHOVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744671519; c=relaxed/simple;
-	bh=x7qc/eea8+0f4XIGqceOFTZsLgwDisQVjSHfVPuCC+k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AKYwwjRU/NrhpsojMWH4rD5o7j8i7fd/mSZ4YTLZbN5doWJVbEYLXmD9FCqzzxTYm567WoAalodEXqH95bnDc3gUjKQxND0v95BgLFCU6Yw0mTTB5GAtn8QrxqPz9XtvCq2zc3ZvDv5XvDvmOde6CiiBmtRewo9em8+9G5ZMPkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Mwwsp0vM; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1744673215; c=relaxed/simple;
+	bh=9Qsqa7f0ijHMpJNCnzVrD10k+9URmLLklIMiifmlMRE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G8TlqwftIOOL5Cvsr1STWdyDvPw/KRwan1J6QT+xGx2Si4MYXuvDE/9nNSdma1kkpacauIyd2xUXfAumcf0Yq8ijUUJ+WAyt73tTH8xr+npcYV1dEjbeHwjVC66J6VZaneHHXcKX1n8NiYvHPnredHQtx5lspo6ScUDdPr40VNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=prGhA5Nb; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=prGhA5Nb; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43d2d952eb1so39561905e9.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 15:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1744671513; x=1745276313; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=piyvJ4PCWe/bUdBotnMVnqLsKc9VV98h66ZmWh/+rlQ=;
-        b=Mwwsp0vM7ehSdk4BLx9PaXunEZLRFg6BLx4kMz4UwhdxxRwrfrTDuHd87Fwds0zsMu
-         JDy63z1UlxWeNf31ZDAMUCN3Uf0yj8JO1x5bmcsT2VUCeJk+jhAwMBq8IEXMSwkcizag
-         uF75sLyWRPB2mixvbwgiZfNGthL6CqFqJI+11BJvsrgluOd8R1sCYaxqEGl8emqIGXo7
-         O5PgwLlA3v7/Dpc5aAkGCeFl7RdpJ3cPrdKD5+R5xqb7PEL+6khDg9m9InXrKm71TFs2
-         Gn/ddLIcQoEEEvej2RKI77Ik+K3am8+cp8AAL/JxzoROFFJX/tkbXwWRgQ04v+lL5wbT
-         mS/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744671513; x=1745276313;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=piyvJ4PCWe/bUdBotnMVnqLsKc9VV98h66ZmWh/+rlQ=;
-        b=RbIQbrW8TUXMp6fEg3DC21FAgLJn9dDWuBOcJFBHYwmJ3Q5bx/F7FOYHPgTnHyzX1+
-         7nnte5qzW/xT9+0ZZlr+6F54jpi49668N4OtNdZagIiN14hdWtF1n3xvmISNx++86hA3
-         Cjar1Clw88JXzlT9oEXzB+8BeXA5jOtxJFioEC9Z5ZNWYi17a16SOLDOmcRy1Wude6r6
-         2S/B2kszm04W0pnKk+JzNADk1AQFAUtwJBxyaiXuxDM/3t7eIJjUA5YuUwJ0PpVdjd/B
-         gUXWeIVAvUOtzQXkHgx7TabjypdqQGUOMrDeUpmGYtaErQajEKovVJFT/QoiJXqVjiUl
-         tKXw==
-X-Gm-Message-State: AOJu0Yy1GtvmTv7lGm09KT3ES+kNsueiHsIRbKaJrEKrpJ59IGTcHTcC
-	p144GnCdx9RYdcDaosWg/y1apHvpPmV6g/Ka+e0VimzXG5KGePH4dKkN79DtUcw=
-X-Gm-Gg: ASbGncvP9cjG5GDUr2fYBqTXBUmCvMSU+MpCIyic0m4aEcdvnORcEXqiBd9XE2GiiUj
-	mO5+10ltLyHQcN5sTUglMc4CPZMdD1rFcdblJtj2W9UleDgIEtDqaB3QGByr+gfc9gccZMUppOV
-	N1img8YYjTlG8GvUIJo6Qy/rWn395VWCCCNmOeA2M3Mzu2ySZ48D9P/zst0daoAGDrazM98vOkj
-	t63WFtR3w+4LtoHW+GBjDloWC4Mus45lrtesP9KO0oB2oXssU0gxpkZKNeckPSjJ48NNeey4PIY
-	6Z51VWLCpJ+6qjSF4SLxE8ykknEV3tnLKYAecHhcZCDAvlSNki7WrA2N/Wjh2rT1xD0c
-X-Google-Smtp-Source: AGHT+IFNojUUlDXqi7y8FEmhZ//AFSsMIsqjkvOEMAIYPe0st48iH1G9tePiCWjQaQiPjx8dRH90Xw==
-X-Received: by 2002:a05:6000:2283:b0:399:7f2b:8531 with SMTP id ffacd0b85a97d-39eaaebc752mr9998775f8f.38.1744671513344;
-        Mon, 14 Apr 2025 15:58:33 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd2198a7esm7201538b3a.31.2025.04.14.15.58.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Apr 2025 15:58:32 -0700 (PDT)
-Message-ID: <d5826f39-da49-44be-ac3d-9e697ce54793@suse.com>
-Date: Tue, 15 Apr 2025 08:28:29 +0930
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 859B721181;
+	Mon, 14 Apr 2025 23:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1744673210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gp+OGA7rIsd0a+kQDzco/nbk8Otn8qlJESVF8FlBvkA=;
+	b=prGhA5NbOjARiKGWSDgDgi6MwSIFQ5GjoomKOkeXFkRWEBveyf0OWNns/HFmV8QfGmMLE0
+	XOdh01WbdgwYV8yaYI55S9z5XLZ3f9RImr+2xq42feThRFToEPMBPriRU1NyOK70Jr6RHG
+	VtnZ8lorfviyyYqWJLHPlczOHzuI6HA=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1744673210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gp+OGA7rIsd0a+kQDzco/nbk8Otn8qlJESVF8FlBvkA=;
+	b=prGhA5NbOjARiKGWSDgDgi6MwSIFQ5GjoomKOkeXFkRWEBveyf0OWNns/HFmV8QfGmMLE0
+	XOdh01WbdgwYV8yaYI55S9z5XLZ3f9RImr+2xq42feThRFToEPMBPriRU1NyOK70Jr6RHG
+	VtnZ8lorfviyyYqWJLHPlczOHzuI6HA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88298136A7;
+	Mon, 14 Apr 2025 23:26:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pPmcErmZ/WcHKgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 14 Apr 2025 23:26:49 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] btrfs: enable large data folios support for defrag
+Date: Tue, 15 Apr 2025 08:56:27 +0930
+Message-ID: <07782555babf6ff62d3e12eac3b24c930e3fd224.1744673127.git.wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: prepare btrfs_end_repair_bio() for larger data
- folios
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1744005845.git.wqu@suse.com>
- <f679cbeedbb0132cc657b4db7a1d3d70ff2261f0.1744005845.git.wqu@suse.com>
- <CAL3q7H7x+cH6gAjuyO2pW=An6NkJwm_TCbGzVVygLHvvwzfz+g@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL3q7H7x+cH6gAjuyO2pW=An6NkJwm_TCbGzVVygLHvvwzfz+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
+Currently we reject large folios for defrag gracefully, but the
+implementation itself is already mostly large folios compatible.
 
+There are several parts of defrag in btrfs:
 
-在 2025/4/14 23:55, Filipe Manana 写道:
-> On Mon, Apr 7, 2025 at 7:09 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> The function btrfs_end_repair_bio() has an ASSERT() making sure the
->> folio is page sized.
->>
->> The reason is mostly related to the fact that later we pass a folio and
->> its offset into btrfs_repair_io_failure().
->> If we have larger folios passed in, later calculation of the folio and
->> its offset can go wrong, as we have extra offset to the bv_page.
->>
->> Change the behavior by:
->>
->> - Doing a proper folio grab
->>    Instead of just page_folio(bv_page), we should get the real page (as the
->>    bv_offset can be larger than page size), then call page_folio().
->>
->> - Do extra folio offset calculation
->>
->>                       real_page
->>     bv_page           |   bv_offset (10K)
->>     |                 |   |
->>     v                 v   v
->>     |        |        |       |
->>     |<- F1 ->|<--- Folio 2 -->|
->>              | result off |
->>
->>     '|' is page boundary.
->>
->>     The folio is the one containing that real_page.
->>     We want the real offset inside that folio.
->>
->>     The result offset we want is of two parts:
->>     - the offset of the real page to the folio page
-> 
-> "to the folio page", this is confusing for me. Isn't it the offset of
-> the page inside the folio?
-> I.e. "the offset of the real page inside the folio"
+- Extent map checking
+  Aka, defrag_collect_targets(), which prepares a list of target ranges
+  that should be defragged.
 
-That's correct.
+  This part is completely folio unrelated, thus it doesn't care about
+  the folio size.
 
-> 
-> Also, this terminology "real page", does it come from somewhere?
-> Aren't all pages "real"?
+- Target folio preparation
+  Aka, defrag_prepare_one_folio(), which lock and read (if needed) the
+  target folio.
 
-The "real" part is compared to bv_page, which is not really the page 
-we're working on if the bvec is a multi-page one.
+  Since folio read and lock are already supporting large folios, this
+  part needs only minor changes.
 
-> 
->>     - the offset inside that real page
->>
->>     We can not use offset_in_folio() which will give an incorrect result.
->>     (2K instead of 6K, as folio 1 has a different order)
-> 
-> I don't think anyone can understand where that 2K and 6K come from.
-> The diagram doesn't mention how many pages per folio (folio order),
-> page sizes, and file offset of each folio.
-> So mentioning that 2K and 6K without all the relevant information,
-> make it useless and confusing IMO.
-> 
->>
->> With these changes, now btrfs_end_repair_bio() is able to handle not
->> only large folios, but also multi-page bio vectors.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/bio.c | 61 ++++++++++++++++++++++++++++++++++++++++++++------
->>   1 file changed, 54 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
->> index 8c2eee1f1878..3140aa19aadc 100644
->> --- a/fs/btrfs/bio.c
->> +++ b/fs/btrfs/bio.c
->> @@ -156,6 +156,58 @@ static void btrfs_repair_done(struct btrfs_failed_bio *fbio)
->>          }
->>   }
->>
->> +/*
->> + * Since a single bio_vec can merge multiple physically contiguous pages
->> + * into one bio_vec entry, we can have the following case:
->> + *
->> + * bv_page             bv_offset
->> + * v                   v
->> + * |    |    |   |   |   |   |
->> + *
->> + * In that case we need to grab the real page where bv_offset is at.
->> + */
->> +static struct page *bio_vec_get_real_page(const struct bio_vec *bv)
->> +{
->> +       return bv->bv_page + (bv->bv_offset >> PAGE_SHIFT);
->> +}
->> +static struct folio *bio_vec_get_folio(const struct bio_vec *bv)
-> 
-> Please add a blank line between function delcarations.
-> 
->> +{
->> +       return page_folio(bio_vec_get_real_page(bv));
->> +}
->> +
->> +static unsigned long bio_vec_get_folio_offset(const struct bio_vec *bv)
->> +{
->> +       const struct page *real_page = bio_vec_get_real_page(bv);
->> +       const struct folio *folio = page_folio(real_page);
->> +
->> +       /*
->> +        * The following ASCII chart is to show how the calculation is done.
->> +        *
->> +        *                   real_page
->> +        * bv_page           |   bv_offset (10K)
->> +        * |                 |   |
->> +        * v                 v   v
->> +        * |        |        |       |
->> +        * |<- F1 ->|<--- Folio 2 -->|
->> +        *          | result off |
->> +        *
->> +        * '|' is page boundary.
->> +        *
->> +        * The folio is the one containing that real_page.
->> +        * We want the real offset inside that folio.
->> +        *
->> +        * The result offset we want is of two parts:
->> +        * - the offset of the real page to the folio page
->> +        * - the offset inside that real page
->> +        *
->> +        * We can not use offset_in_folio() which will give an incorrect result.
->> +        * (2K instead of 6K, as folio 1 has a different order)
-> 
-> Same comment here, as this is copied from the change log.
-> 
-> Codewise this looks good to me, but those comments and terminology
-> ("real page") make it confusing IMO.
+- Redirty the target range of the folio
+  This is already done in a way supporting large folios.
 
-Although this patch will be dropped, as Christoph's physical address 
-solution is simpler overall, and he is not happy with us poking with the 
-bvec internals.
+So it's pretty straightforward to enable large folios for defrag:
 
-Thanks,
-Qu
+- Do not reject large folios for experimental builds
+  This affects the large folio check inside defrag_prepare_one_folio().
 
-> 
-> Thanks.
-> 
->> +        */
->> +       ASSERT(&folio->page <= real_page);
->> +       return (folio_page_idx(folio, real_page) << PAGE_SHIFT) +
->> +               offset_in_page(bv->bv_offset);
->> +}
->> +
->>   static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
->>                                   struct btrfs_device *dev)
->>   {
->> @@ -165,12 +217,6 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
->>          struct bio_vec *bv = bio_first_bvec_all(&repair_bbio->bio);
->>          int mirror = repair_bbio->mirror_num;
->>
->> -       /*
->> -        * We can only trigger this for data bio, which doesn't support larger
->> -        * folios yet.
->> -        */
->> -       ASSERT(folio_order(page_folio(bv->bv_page)) == 0);
->> -
->>          if (repair_bbio->bio.bi_status ||
->>              !btrfs_data_csum_ok(repair_bbio, dev, 0, bv)) {
->>                  bio_reset(&repair_bbio->bio, NULL, REQ_OP_READ);
->> @@ -192,7 +238,8 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
->>                  btrfs_repair_io_failure(fs_info, btrfs_ino(inode),
->>                                    repair_bbio->file_offset, fs_info->sectorsize,
->>                                    repair_bbio->saved_iter.bi_sector << SECTOR_SHIFT,
->> -                                 page_folio(bv->bv_page), bv->bv_offset, mirror);
->> +                                 bio_vec_get_folio(bv), bio_vec_get_folio_offset(bv),
->> +                                 mirror);
->>          } while (mirror != fbio->bbio->mirror_num);
->>
->>   done:
->> --
->> 2.49.0
->>
->>
+- Wait for ordered extents of the whole folio in
+  defrag_prepare_one_folio()
+
+- Lock the whole extent range for all involved folios in
+  defrag_one_range()
+
+- Allow the folios[] array to be partially empty
+  Since we can have large folios, folios[] will not always be full.
+
+  This affects:
+  * How to allocate folios in defrag_one_range()
+    Now we can not use page index, but use the end position of the folio
+    as an iterator.
+
+  * How to free the folios[] array
+    If we hit an empty slot, it means we have large folios and already
+    hit the end of the array.
+
+  * How to mark the range dirty
+    Instead of use page index directly, we have to go through each
+    folio, and check if the folio covers the defrag target inside
+    defrag_one_locked_target().
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Rebased to the latest for-next
+  Some minor renames around the io tree locking.
+- Fix various grammar and newline problems
+- Declare local variable @i inside the for loop
+- Do proper range checks inside defrag_one_locked_target()
+  As btrfs_folio_clamp_*() helpers can not handle case where the range
+  is beyond the folio.
+  The helpers can only handle cases there the range is before the folio.
+---
+ fs/btrfs/defrag.c | 79 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 48 insertions(+), 31 deletions(-)
+
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index 9dfdf29f54a0..fb59cb8f51e9 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -854,13 +854,14 @@ static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t
+ {
+ 	struct address_space *mapping = inode->vfs_inode.i_mapping;
+ 	gfp_t mask = btrfs_alloc_write_mask(mapping);
+-	u64 page_start = (u64)index << PAGE_SHIFT;
+-	u64 page_end = page_start + PAGE_SIZE - 1;
++	u64 folio_start;
++	u64 folio_end;
+ 	struct extent_state *cached_state = NULL;
+ 	struct folio *folio;
+ 	int ret;
+ 
+ again:
++	/* TODO: Add order fgp order flags when large folios are fully enabled. */
+ 	folio = __filemap_get_folio(mapping, index,
+ 				    FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
+ 	if (IS_ERR(folio))
+@@ -868,13 +869,16 @@ static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t
+ 
+ 	/*
+ 	 * Since we can defragment files opened read-only, we can encounter
+-	 * transparent huge pages here (see CONFIG_READ_ONLY_THP_FOR_FS). We
+-	 * can't do I/O using huge pages yet, so return an error for now.
++	 * transparent huge pages here (see CONFIG_READ_ONLY_THP_FOR_FS).
++	 *
++	 * The IO for such large folios is not fully tested, thus return
++	 * an error to reject such folios unless it's an experimental build.
++	 *
+ 	 * Filesystem transparent huge pages are typically only used for
+ 	 * executables that explicitly enable them, so this isn't very
+ 	 * restrictive.
+ 	 */
+-	if (folio_test_large(folio)) {
++	if (!IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL) && folio_test_large(folio)) {
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+ 		return ERR_PTR(-ETXTBSY);
+@@ -887,13 +891,17 @@ static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t
+ 		return ERR_PTR(ret);
+ 	}
+ 
++	folio_start = folio_pos(folio);
++	folio_end = folio_pos(folio) + folio_size(folio) - 1;
+ 	/* Wait for any existing ordered extent in the range */
+ 	while (1) {
+ 		struct btrfs_ordered_extent *ordered;
+ 
+-		btrfs_lock_extent(&inode->io_tree, page_start, page_end, &cached_state);
+-		ordered = btrfs_lookup_ordered_range(inode, page_start, PAGE_SIZE);
+-		btrfs_unlock_extent(&inode->io_tree, page_start, page_end,
++		btrfs_lock_extent(&inode->io_tree, folio_start, folio_end,
++				  &cached_state);
++		ordered = btrfs_lookup_ordered_range(inode, folio_start,
++						     folio_size(folio));
++		btrfs_unlock_extent(&inode->io_tree, folio_start, folio_end,
+ 				    &cached_state);
+ 		if (!ordered)
+ 			break;
+@@ -1159,13 +1167,7 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
+ 	struct extent_changeset *data_reserved = NULL;
+ 	const u64 start = target->start;
+ 	const u64 len = target->len;
+-	unsigned long last_index = (start + len - 1) >> PAGE_SHIFT;
+-	unsigned long start_index = start >> PAGE_SHIFT;
+-	unsigned long first_index = folios[0]->index;
+ 	int ret = 0;
+-	int i;
+-
+-	ASSERT(last_index - first_index + 1 <= nr_pages);
+ 
+ 	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, start, len);
+ 	if (ret < 0)
+@@ -1176,10 +1178,20 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
+ 	btrfs_set_extent_bit(&inode->io_tree, start, start + len - 1,
+ 			     EXTENT_DELALLOC | EXTENT_DEFRAG, cached_state);
+ 
+-	/* Update the page status */
+-	for (i = start_index - first_index; i <= last_index - first_index; i++) {
+-		folio_clear_checked(folios[i]);
+-		btrfs_folio_clamp_set_dirty(fs_info, folios[i], start, len);
++	/*
++	 * Update the page status.
++	 * Due to possible larger folios, we have to check all folios one by one.
++	 */
++	for (int i = 0; i < nr_pages && folios[i]; i++) {
++		struct folio *folio = folios[i];
++
++		if (!folio)
++			break;
++		if (start >= folio_pos(folio) + folio_size(folio) ||
++		    start + len <= folio_pos(folio))
++			continue;
++		btrfs_folio_clamp_clear_checked(fs_info, folio, start, len);
++		btrfs_folio_clamp_set_dirty(fs_info, folio, start, len);
+ 	}
+ 	btrfs_delalloc_release_extents(inode, len);
+ 	extent_changeset_free(data_reserved);
+@@ -1197,11 +1209,10 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
+ 	LIST_HEAD(target_list);
+ 	struct folio **folios;
+ 	const u32 sectorsize = inode->root->fs_info->sectorsize;
+-	u64 last_index = (start + len - 1) >> PAGE_SHIFT;
+-	u64 start_index = start >> PAGE_SHIFT;
+-	unsigned int nr_pages = last_index - start_index + 1;
++	u64 cur = start;
++	const unsigned int nr_pages = ((start + len - 1) >> PAGE_SHIFT) -
++				      (start >> PAGE_SHIFT) + 1;
+ 	int ret = 0;
+-	int i;
+ 
+ 	ASSERT(nr_pages <= CLUSTER_SIZE / PAGE_SIZE);
+ 	ASSERT(IS_ALIGNED(start, sectorsize) && IS_ALIGNED(len, sectorsize));
+@@ -1211,20 +1222,25 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
+ 		return -ENOMEM;
+ 
+ 	/* Prepare all pages */
+-	for (i = 0; i < nr_pages; i++) {
+-		folios[i] = defrag_prepare_one_folio(inode, start_index + i);
++	for (int i = 0; cur < start + len && i < nr_pages; i++) {
++		folios[i] = defrag_prepare_one_folio(inode, cur >> PAGE_SHIFT);
+ 		if (IS_ERR(folios[i])) {
+ 			ret = PTR_ERR(folios[i]);
+-			nr_pages = i;
++			folios[i] = NULL;
+ 			goto free_folios;
+ 		}
++		cur = folio_pos(folios[i]) + folio_size(folios[i]);
+ 	}
+-	for (i = 0; i < nr_pages; i++)
++	for (int i = 0; i < nr_pages; i++) {
++		if (!folios[i])
++			break;
+ 		folio_wait_writeback(folios[i]);
++	}
+ 
++	/* We should got at least one folio. */
++	ASSERT(folios[0]);
+ 	/* Lock the pages range */
+-	btrfs_lock_extent(&inode->io_tree, start_index << PAGE_SHIFT,
+-			  (last_index << PAGE_SHIFT) + PAGE_SIZE - 1,
++	btrfs_lock_extent(&inode->io_tree, folio_pos(folios[0]), cur - 1,
+ 			  &cached_state);
+ 	/*
+ 	 * Now we have a consistent view about the extent map, re-check
+@@ -1251,11 +1267,12 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
+ 		kfree(entry);
+ 	}
+ unlock_extent:
+-	btrfs_unlock_extent(&inode->io_tree, start_index << PAGE_SHIFT,
+-			    (last_index << PAGE_SHIFT) + PAGE_SIZE - 1,
++	btrfs_unlock_extent(&inode->io_tree, folio_pos(folios[0]), cur - 1,
+ 			    &cached_state);
+ free_folios:
+-	for (i = 0; i < nr_pages; i++) {
++	for (int i = 0; i < nr_pages; i++) {
++		if (!folios[i])
++			break;
+ 		folio_unlock(folios[i]);
+ 		folio_put(folios[i]);
+ 	}
+-- 
+2.49.0
 
 
