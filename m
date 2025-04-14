@@ -1,172 +1,167 @@
-Return-Path: <linux-btrfs+bounces-12978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12979-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D120A87734
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 07:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E30D1A87793
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 07:53:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45306188D902
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 05:23:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CF90189102C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 05:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BD91A0BE0;
-	Mon, 14 Apr 2025 05:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6AB31A2387;
+	Mon, 14 Apr 2025 05:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i7V+wLqP"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="N9Vrkb5k"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F40A7E9
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 05:23:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFBB25776
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 05:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744608192; cv=none; b=FRE55NmtBqh14PH6Fqoj6WMASR+snMwuENHLFaQYMEBT28f1ZAH8zpT1k4N2mu5ktgeMX2r6TeO4HN45s9tDWPTK3GTNZSd1ZeHLR5rSEeVVXn5fuVLRAtlcKY5ahCr81oJ3zPa8RGge6NmamW6r5G+OUwImEm2nvYpt5oRDf+4=
+	t=1744610006; cv=none; b=GuEgtk1bBhQ4FKHcPfBAVO6VH8HQ5nQGHoGz0R7XI7hgC911jKkFdWtbdn8zPM2b+OPVdlsrIq4jUmjT24yMRL478cs+Yt+oyJ4S0kyT7IXcPt5SjsaPIi0Hvqnz3LGz1mWHqyUOZRYyyZQiusHSd4rmgbiN32eb+CTRW9tlxYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744608192; c=relaxed/simple;
-	bh=0Byl6qpqj4TRR7ajTVv/QePynAzOm2YDyHX2hjG8gcM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mgmBcKa9hSB6zp/E5C8BEe/V+ZL5T5P0359c8qYlJGNofR3yil2BtgJPeLCKIEnJF127nPKySkC+s+ltpQYPvkW5ZqCWihGofzEuM6TotJrg0gF89T5iqhJwzZazsl5Vxn5SgcMXN6QXnxzuRMGH7uwhzIqMxK4osyUTAOJDlj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i7V+wLqP; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744608188;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3gF2teFVfGAxFn8r+dTFnUpErSC9eX1TYiVavCB7Zkc=;
-	b=i7V+wLqP9WW5pRRHV4kKfXeEJKXZmsEDuKb4ZKsEgWxwEn0kaoC6jAzVUm6TWYYj5qsQWw
-	5DS0tw87+O6pkxn7I58MrjreYJIkUs+jvqufPbJ0j2yDBQWkPaRyTJz//If3VTbRphi9aC
-	9GCIX7AXijxIAzx+Gy2J4TtVUhkZSlk=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-564-7GbVCdezNziJnxugrFIVKA-1; Mon, 14 Apr 2025 01:23:06 -0400
-X-MC-Unique: 7GbVCdezNziJnxugrFIVKA-1
-X-Mimecast-MFC-AGG-ID: 7GbVCdezNziJnxugrFIVKA_1744608185
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-af91ea9e884so1985624a12.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Apr 2025 22:23:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744608185; x=1745212985;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3gF2teFVfGAxFn8r+dTFnUpErSC9eX1TYiVavCB7Zkc=;
-        b=oVdgGZx1Ku4RLDdcCTe+Nv3F2OHGUkVUSBhfA41TMu4KnE/HvKzpVHWFwv0Kk8At4w
-         Gim+/TByrvoGuBQYQSkxqIQ+zUrMbgTcApYAvDZiLDUpZnsImgFxGnJ3YCnfo6TYlnuG
-         xAYj8YkKy2md4LS/tkhLQTC0rIQZrE5p6VlTS47aijweCe0Er/ILsRd4XIF0GXnuNvu+
-         VACsO47907uSQ9p7P1/jdRbZZz7dMrT7a24AYTt2+iTBWwt+3996V9MHhOK5LxmN9xKf
-         dz06+SM9IlIsJLpJ8YUlBTp6tpfOC+dDHfWNP74TT0L8+b8M5ScSdjcetyRVjV9b+gKo
-         6NRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUMEnPn8nU0w4A1KVEycDJu61hMGN1WWlhNf8K56/h/KhKnsI0ExeAkoTIeq+x5MuIw2l34SzzfzPyByw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR17gZOx4OrTxguNPVNDT/BSKwpF0oXN0DClzhlA7lAtKz9p4d
-	LThzQ2rwWAFOn70a3wiR6t9p94vkUV14+4PKxrfFzukXX4WzqH9jK8b9MNqarPDXdUh23UddwWf
-	XgwIv0R3cYy+5aJgvnnuHTO9o6buuFfdqgE0ExDMKw97ZHnfbXDaFC61yNNFaNwVhEa/ZEZM=
-X-Gm-Gg: ASbGnct6AgxUuT+0Pc58VoQZpSpKoGEXqWXaDe7OY9G1nESc80Qn2ZU0QLq0GT/aVct
-	01T1K55cdVx/knTqWEDL7IpHxuPGlsTn2EbVfrcv8tGyefIl2HXxuVGDTGPn1G9ajK9/EbdRKnF
-	rWmf/qBoNWbsU21mePpyfVAt5y1NtT+RaL7UqDxzkk+uEpbesFULb/OCVH7tOlNcLFMlHEap9Wd
-	XL1xFtwCZMhKjhQ/+NzkVf6z7DzeJneBh8LEbbnA2nPpDGZLHNiMzEUYJ66/Epaw95hheCKrbjo
-	e5pokqMenxQ5nxunwBiwajnP14Rua/NmL0b6B9MDxO674l8xxp70
-X-Received: by 2002:a17:90b:5744:b0:2f1:2e10:8160 with SMTP id 98e67ed59e1d1-30823672b84mr16575195a91.11.1744608184996;
-        Sun, 13 Apr 2025 22:23:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGr3qtP0FLxev6e9FnRB7hnYTsjV+SgtTG5oQjHTMLHSiKGOmsMRs3FqyMJYe9JyPPEWp+54Q==
-X-Received: by 2002:a17:90b:5744:b0:2f1:2e10:8160 with SMTP id 98e67ed59e1d1-30823672b84mr16575175a91.11.1744608184618;
-        Sun, 13 Apr 2025 22:23:04 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306df06a71fsm10245136a91.8.2025.04.13.22.23.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Apr 2025 22:23:04 -0700 (PDT)
-Date: Mon, 14 Apr 2025 13:22:59 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [xfstests generic/619] hang on aarch64 with btrfs
-Message-ID: <20250414052259.ldxjeiamj2l23bwc@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20250413125349.w5jxnnphr7wliib5@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <17cd9240-99eb-49e1-8843-0a80a18f8ac2@suse.com>
- <20250414042322.ehea2rb5g5bo34zq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <31bd0214-955a-49a9-a4ae-f102044fcbdc@gmx.com>
+	s=arc-20240116; t=1744610006; c=relaxed/simple;
+	bh=qPd6q3HEiVg7761A30SfSf2x4hwDGfgcwzLtyGnQ4Xw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rw2MmM2N2mWw2WcuQbVHM0MMKX1B5CP5uSxafvAegRd57EuSGgeySNqgPp7KhHRfFk1uaqKzGXROw1vcQqVF6Afr+k+CCkSS132sG2CXIeW37nUowk41bZ2jGL0wqNUb5y8umenHpdem41PGWtqHIErSAVQBx3F3H/cfPdTTqCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=N9Vrkb5k; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1744609999; x=1745214799; i=quwenruo.btrfs@gmx.com;
+	bh=qPd6q3HEiVg7761A30SfSf2x4hwDGfgcwzLtyGnQ4Xw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=N9Vrkb5klkk1eRFYaxNZQDn7kKUhgJRYAUaIHJ0uWHwX3LIvYQ9sEp58B69TRiAC
+	 Y39PQu9lZK+RPV4hGcQtEaCKO5LQyWEr963fMcT0lGJ/muuXOKeALRNjAxsjHmNi9
+	 sKxGOhIv/ljEHlFAf+ujuCZ0OATCsLW+YIYiFKOY0pZppNTYb6m8wDCsUXVxhKOJ1
+	 naSdOCYgCArN8uQ14EqXgRKAI29eDWiae6Xi1/BsTb34zrrA4G6MGC0slPTZeA+Du
+	 2p3DYW1M9PULprxJzBxgwJJXT5J4wXB+PlksV2MWAocMJ/zIoGKLO4v6oF6FDSHp2
+	 5wPTnSaMwAWylykAGA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mf0BM-1tOqKT076A-00o4Fy; Mon, 14
+ Apr 2025 07:53:19 +0200
+Message-ID: <50303c5f-4778-49c5-8118-8fecc218c509@gmx.com>
+Date: Mon, 14 Apr 2025 15:23:16 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <31bd0214-955a-49a9-a4ae-f102044fcbdc@gmx.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [xfstests generic/619] hang on aarch64 with btrfs
+To: Zorro Lang <zlang@redhat.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20250413125349.w5jxnnphr7wliib5@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <17cd9240-99eb-49e1-8843-0a80a18f8ac2@suse.com>
+ <20250414042322.ehea2rb5g5bo34zq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <31bd0214-955a-49a9-a4ae-f102044fcbdc@gmx.com>
+ <20250414052259.ldxjeiamj2l23bwc@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20250414052259.ldxjeiamj2l23bwc@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lSSVe4coD9FthVvlooJcMgI3H93mo+hWijpOQAOeLw36FsSFkmD
+ +UeEJksfndrkdzo/xKDwWBrYl756kXDwwoWWr9XxzxYzSeUdPIGpAFVNfT/ro8IyO2m7L8z
+ 8usHnhrUF3UZ/Szr3FHS0cR0YPklo6Q4IPdoPpTwvOOYqNzKI1aYcXIRFqXqQb7U3lTHN9c
+ i0T1u3MOLsqJtvHkycXdg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:1chhupQ/Bzw=;KtsHphN70pNEVLxof+jlj1BJA3P
+ GY/4iMc1Wu+bU51Z5KiKf3zRReEHKPga8MJ1/K8k/yP33HfkNaiU9PWqud8dxtWKQTViseXNx
+ KAB0awkVpEGcLD5mXc2beAJ4RxXoKFXx4q3JIHWx86vVUUhGFMtLdRQS2Y4nccknF2L19YXQ7
+ wOAe0fEwydAw+0vzj2Q2IfkkP6pvmdydTYkLVPTXfLSJKxJEmFlA5VfqMjTrxV5cXIouRWwzk
+ DcLzI/VJxZNKAsfbM+LTZ/WFCjVGp1Zmdh9me80ZdbrqYAcDeb8nL18UQvNO/VB4tDYxqsqwo
+ hDVKn/HOu162r6tZI3DyP9s3Gmueh3XmtHyrU2/q+pe2jA9EIUq2XEv0dYWzlJTA4otoZ60ym
+ 503DI137bSJlTpb2VZGKE0ubVjFno3lDbJa+jjKeuyCEeFEttafl5k1M+kAHenZSv3D05RS75
+ mksdRJfKm9AuMecF/X0mpjqKT5D2jWLTHy6iX3fKliFyX2GuDOUOXMTbHlvPhVSONTEOmNTYU
+ xJ80+P05JCc/Tagx2bfbV/2+ovO4BmbXCDn6pvsoQN7kJuPgRInv5G3aq8lp1F8iNedU9WIq8
+ Yaa7/RONoO2AwL8HqsXWvHPVhwQ9CXgTYWNZ1MWlqBlrex5klaeZKFKLyp+NQJcqqbYRjX5AH
+ bjsTXq3el6/npCDH/dbqggwtM8NZAUmjn32O/3CPozg4ywyJ/T6PNixT68ZjwG7vEoogKYDfg
+ eK0w3JnxUJQhaE4v6Qc8eJP6veKqBUfgAArkeOyjvPAAfgFigYlKUILvVT+Nwek/GKoaumPWu
+ uPQq+89CfvJkdiv4Q3SJtxyFA1TNUTZ8iC78lNXbhEmocNiC56xoZqJ8zma6ov2FLLcmeC30/
+ QNXDvNsGWbl70WTrN5hxoXWVmw78dwU6vFBgcfiLgJonAP1ZYmkKqqxx8Zp3BwH7Vjx7DrExx
+ Q75YBHmCKoHtpsrrOSOWXxw8IOcKICFIe9UohDDSLMuQav1awIJIn2aLSzG6/UZNZYOJlV6A8
+ OGQF7Mo9elidiSvFzauxW4dZDibaN8Rwq9P0poSTrxG2AODrxhgbZZGjV6fRxfyb46gCMhKaN
+ abn+Y/b+M/yBugXrw4BK0IkNqT+ojwTKTNitaReaSqP4feWA55EYm12Oejqwl1+kr5HWRIB3H
+ 4JO3IGI5vJKbISzseCAN0FXTUWNcQAFsfkcK1RiB1WebmmnCxlCtu1XrAez4Enwwrqr/SuF5e
+ 2D1EFefzVbbrMzU4ybjMkjZo5wL/lKMNjb0dFi4TYOtMyxuelIRpeXuRq7arUmZfWY/698S77
+ lRb5jQ1PBCNj3Sq2K9LPLOO6PJj01n43qX13ka+I1N2GfmTY9TgasW5ySAb3/gnCAEmbF8oQg
+ X/TfZfbJ8e5TauSQf7PDUnG2KpbttQJT+LPpa46kq5Swo2lvIIOMQix/1UqedcM0G1MdRLw02
+ ZGU2Jpg==
 
-On Mon, Apr 14, 2025 at 02:09:59PM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/4/14 13:53, Zorro Lang 写道:
-> > On Mon, Apr 14, 2025 at 10:05:21AM +0930, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > 在 2025/4/13 22:23, Zorro Lang 写道:
-> > > > Hi,
-> > > > 
-> > > > Recently I ran fstests on aarch64 with btrfs (default options), then I the test
-> > > > was always blocked on generic/619:
-> > > >     FSTYP         -- btrfs
-> > > >     PLATFORM      -- Linux/aarch64 nvidia-grace-hopper-02 6.15.0-rc1+ #1 SMP PREEMPT_DYNAMIC Sun Apr 13 01:44:03 EDT 2025
-> > > 
-> > > Mind to provide the kernel config? Especially the page size.
-> > > 
-> > > I guess since you're running on nvidia SoCs, they are pushing 64K page size
-> > > already.
-> > > 
-> > > At least on my aarch64 (our for-next branch, based on v6.14-rc7), I didn't
-> > > hit any hang here.
-> > > Neither any hang in my older runs on aarch64.
-> > > 
-> > > And my test is done with 64K page size and default mkfs options (4K fs block
-> > > size, 16K node size).
-> > 
-> > Hi Qu,
-> > 
-> > Thanks for looking into it. Although aarch64 supports 64k page size, but my
-> > test kernel was built with CONFIG_ARM64_4K_PAGES=y, so
-> >    # getconf PAGE_SIZE
-> >    4096
-> >    #blockdev --getsz --getss --getpbsz /dev/sda6
-> >    20971520
-> >    512
-> >    512
-> > 
-> 
-> Now this means it's no different than x86_64, at least for the page size.
-> 
-> > The whole config file is large, I paste it at the end of this email (hope it's
-> > not out of the size limitation:)
-> 
-> I'll try to reproduce it on aarch64 with 4K page size.
 
-Thanks, I'll keep testing on latest mainline linux, to check if this issue
-is still there.
 
-> 
-> Meanwhile if you can reproduce it, the early "sysrq-w" call traces will
-> definitely help us a lot.
+=E5=9C=A8 2025/4/14 14:52, Zorro Lang =E5=86=99=E9=81=93:
+> On Mon, Apr 14, 2025 at 02:09:59PM +0930, Qu Wenruo wrote:
+[...]
+>> Meanwhile if you can reproduce it, the early "sysrq-w" call traces will
+>> definitely help us a lot.
+>
+> How "early" do you need? I can add "echo w > /proc/sysrq-trigger" to gen=
+eric/619
+> source code, just not sure where do you need?
 
-How "early" do you need? I can add "echo w > /proc/sysrq-trigger" to generic/619
-source code, just not sure where do you need?
+As long as there is no obvious activity shown in top or similar commands.
+I'm afraid this requires some manual interaction to do the dump.
 
-> 
-> BTW, you can use attachment instead of pasting all the config into the mail.
+>
+>>
+>> BTW, you can use attachment instead of pasting all the config into the =
+mail.
+>
+> Oh, I heard some mail lists don't like attachment, not sure if that's tr=
+ue :)
 
-Oh, I heard some mail lists don't like attachment, not sure if that's true :)
+It's true, but at least the btrfs list accepts some attachments, and
+since I'm also in the To: list, at least I can share the attachment to
+all btrfs developers if they need.
 
 Thanks,
-Zorro
+Qu
 
-> 
+>
 > Thanks,
-> Qu
-> 
+> Zorro
+>
+>>
+>> Thanks,
+>> Qu
+>>
+>
+>
 
 
