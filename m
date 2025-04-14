@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13010-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13011-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90017A88E23
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 23:45:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 795E9A88EE1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 00:09:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C57F11898477
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 21:46:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC038189B7CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 22:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6711F3B8A;
-	Mon, 14 Apr 2025 21:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624411EEA4A;
+	Mon, 14 Apr 2025 22:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="B1RceNSn"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TcbMN2DI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BDF1F30C4
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 21:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E795E1F4184
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 22:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744667150; cv=none; b=LBAhp3Vo0eEMHg0NfItjGDaAr8rArAUhw7AtoK9TOIRCzQNzGKGv7px6mmG3c6ebCHWWLWxllGSs384QDLlGFx0244J6vymuHLbVwj/nckZ961MhrZNN3pgeQBRh3OiVCZs0IZwTat8UiFYKWuvUdJLtHEjMXW2hZMO8zH2ud3U=
+	t=1744668521; cv=none; b=Vasfc2CbtbBl5hCnMDSetYEnxvNQzuIdKjVB4dp5Uma3b83IrukccOLD+YFnCNiLBoTYzmO1V8nbZmf7v+cmZSI8RnDbYGQ54c7Fzq971HMKbffMYp+kj3rSQqF50sAd67kUClnLFM9tP3K7PVfKTHhPosRU9zZq1k10f7elyOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744667150; c=relaxed/simple;
-	bh=9Wfaj8YUCfPcuz4680kf6S/JqXbtleSPcsTBz7MnfAk=;
+	s=arc-20240116; t=1744668521; c=relaxed/simple;
+	bh=jT3BpS1mHMKobac2xgR0wUILFs31fDLkGF1Py8GRWDA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=V29J/9HZwIped1tMZeJhJ/j5djmw1KEsp6i9uTYo52mruIBzrH4pDhITR+AXyAN0GMUMkGY8h7KHDAK/6nP5XukwBL0LlbvvsbwhQ5R+FvxBiK7HQ8CegKpSE6Si1HDM/SUqvjnoOewXitZa7OfvxPquCVy5K5pAyzBCnBJemz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=B1RceNSn; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=Ag1iz7QxozL85QpPyezGNIkwohPuujVa1zYbdUxOiCH0K3R9qmOa1XAqtPe7iQ36FnaSDzxuEnXDngkXvIXEJBlzxr67JoCyl24x4ZGrnV9FLH9nGx9qFg90cdaoXIgwKXAKWkviBjRo6IbTrIWdvLyz/x6w0K48broqyfoz29k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TcbMN2DI; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1744667146; x=1745271946; i=quwenruo.btrfs@gmx.com;
-	bh=NCdmsJhenSd2GQE9G838MEakIHm/162hsIdeb0cRh9s=;
+	s=s31663417; t=1744668513; x=1745273313; i=quwenruo.btrfs@gmx.com;
+	bh=VHsZlhZT2TikVQ33fKXycu5VzIhH1QQcJRSagyR6ygE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=B1RceNSn1HONO9oWzcvxtpPZ8si+bJHoqEkSScxE+5h+hFd9FVV26QhnZ4q4ub3K
-	 dD2MT+NOdk6Ueez+WvhpDCexgoy6oGstBtDIO0YOWgIjRczSzkOkIfNUruRUhbKtK
-	 e9xV/UqaAUWWf4OEFhRJ/r3f2N/g3G8+RqQ5f3qdmPgcod8iH+Nz1pA9c34VPBUFC
-	 0QaXBfsuXOhNX1Vmv/i1aYVkOGX3P0ElfT2TCnzJDvtOnaLRzsJUaIPH3dhFG1P1S
-	 G3gPXBNnkz5GpIKIoIzG2G12xCD+lEOELTyyyucPQ/SXvWQ6esV24w6gbloFtxndE
-	 CBO0Nhh25n/eidKYjA==
+	b=TcbMN2DI1B78IfN5E4OP8Qv+0hdHTsq5suZGxkSQVLtPUO1LyO/402xDGy6hKb0m
+	 eiiUy4HEuQRt/rRJkhfvzAad/qJswf0mtgGGrsvBb52lIMmmmNBKYUV2WIs1XTsXb
+	 Ln53A113mmAZeIYKfgSFOVe3GBc6/iqktN4nx2n1jrJb9dn69ktKYzLxqlMPMwfYK
+	 3tzwgJTluD3RYzBJFfHF8/lVx67Jkjq3rc46aSb/DgtEB/mBK4bTmSwVVkMCngnt3
+	 /YsllicrKx3+yGTKkrUxGAgc0Qh3uMk9tjmlWpBOeTJ6zmTcYrFKkxglihlZW+Nuo
+	 u5j3XBUXRAZBwCiibw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8GMq-1t0Qsj1zKi-017wYM; Mon, 14
- Apr 2025 23:45:45 +0200
-Message-ID: <e13cf6fa-edd2-454f-8635-da8559b97ccc@gmx.com>
-Date: Tue, 15 Apr 2025 07:15:42 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCbIx-1tvxNz2jAJ-00CWjG; Tue, 15
+ Apr 2025 00:08:33 +0200
+Message-ID: <7e863b3c-6efc-459b-ae25-cf87734dc38f@gmx.com>
+Date: Tue, 15 Apr 2025 07:38:29 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix race in subpage sync writeback handling
+Subject: Re: [PATCH] btrfs: adjust subpage bit start based on sectorsize
 To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
-References: <ff2b56ecb70e4db53de11a019530c768a24f48f1.1744659146.git.josef@toxicpanda.com>
+References: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1744657692.git.josef@toxicpanda.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,153 +88,134 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <ff2b56ecb70e4db53de11a019530c768a24f48f1.1744659146.git.josef@toxicpanda.com>
+In-Reply-To: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1744657692.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0wXJsJh5pcJQYJ2gE6w3JYFZ4u0UFe/50/fvpUeBLFOrLSJwQsL
- 6NpXAb1BCyC1wrkxCQz868Cv7ulbJk53gXyfmhkecA6ZSOZQp085vtvw56OwoUql1mdWLgN
- wlCUdZRsyEI0yh8yaFjcrCbEG9ll2rRHqGNAybrpzxPBMj4TIU0C0YqO6rsgEPff0VFuMAx
- wRtexshIjeSlugzhnOLGQ==
+X-Provags-ID: V03:K1:i/Ki0lJe1njPiG0+iq+LYOj+zZ7pLGAHP3BJrP3ahVDubxor7Cg
+ x6uwXrjOeR3Ch8rcibXDDBnDhRtcXemeI0nPT5aM0r6dy2cELQt7kMIqvl7Rf7kVS9cUptV
+ O7yGrjpq3F/HTpY0cg9V4zXxkT8Sai3w7RoLJJm7UKuat364UQziSBgBDGx1m3sVsV25t2O
+ Ya1rsOLMK451DtSg81+Cw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:p9TD5YX0zF4=;A6RV+NYqU4/JBnuIop1FwkoF10e
- SOZIfJSiNjALExmykn34lQ54ne0cZR+EiwnRlWMCL1BW3lTJmZMF4SfluvLWF8opjTyEb8SiV
- tvIDkSB8msGLUm7FD3VbGouZZrVaduyGdNX476vJtAElnzTEgl3Uee9px/2vzO/T+YGoX3jP2
- YMxRH2O68gdBlWR5+SGIkvr9CUh0HkmF5UiJ789qJf6qvTAuPJLtN7imaXx6864kBmLn/7VFq
- ldMQGEZyfvDwDcDnodIjqSSFGe78h3XLfcswBWZQWnlNsl0ToFVFOHdHetXPx0k1AtgcPWtyt
- V6U1W2ccsIyENAbGx4Wt9X8ViOEOLUzxxtVNgqt4WXXjDM5gB/Fkip+nSKyKfIJpsUG1dMorg
- tiKrQ/i7mCpSDaGZKOQ8fz+cL2yjytlnWatu4jqPZg0ZkHD7PHA29JM5Eqp98n+SoepiAVMvc
- r4+Tra51GKwb643oSmGQciyW5nmICQ/+4SQpSNKTTKnCCRbFOCLj/OSbna1cug9sduNedzonP
- nZ2HKyaHHsewg3cgrk2Ejm0us7ThNBCCDplJAp2M4hoNPl+OHsZNkh5mOCUMT5RZESDqkanuk
- CDODJfd+wlNM4FUyb46JKJGNOCsSMbT6sBxSvTqergaJMlmCwQDe9pXZv+r/m80O/d/rsVhCL
- /Bk1P2uxrhDhU/veiR51ueYRotpy8ipXhVArul4S0qOgB1m8emIFDyyE7khv58k0X6VeUcjU1
- 2fVEJubSbvPjHQipPcucH/j179BKHXWNpHULzLJ7EXhEmjuJjQ55LWWkUzloKlcxO9IdZ0KaW
- OGSiG525wjUHEHOFj4QRMcc9+o7rWnRYVoOCkaTjG1O1ivG37081ybwJ0DNKlc9k87kjLLsje
- dLYlgS15rIUbOB/O3pIoiDF/NvdMOfsosgdHZM3583y8/eeuoZfmWTGXrtvK3oV1PyXQpLHnR
- A2rzl/gIYSNf5lDe+PljppMzzc3wii8cETsghs7Rc8oIAqWYFr8nfjbhzGuo9Gplo5DRIaweV
- rusVTA8viU1K0FDXnZuiYwnb/swor1g9ZELClhyxYKzYbc4AdhBMZhIB7uDt/tfmMFbSEQpiS
- X/R5Q720/oMVZONsPmWt035uBFUwfGoKg9YlJt+c88yrTQmGpNzK2cxjclclVZ1yQbw1iCa1q
- 9CvGe/A8N7Sf7FFDzXuCzgm2xNlAdtHLZ1wo2/ERZ5piRtIFxAA9GmiNBOT3YhNoNytC2ibyy
- 77TcZfMeRv6xuCGlGZo33hL7tgJI2hKy2S+oT3wAAIbLax6FmyeT7INHcJXCHOoiuaMYPN3no
- EBwWwyM8XdjBdCs/i1npsdZI63PGfUOdF76/w0sK1r2Bh4+C/1n4k0RAePICM5AwuIv/OQlxD
- eYUPf1mgpvQ+5IvRl0cB3n53qqfrlNi64B2PhbpN08gwcJhBFlnVT//WRFTuyiYMoejxeqL3A
- jrYA9pA==
+UI-OutboundReport: notjunk:1;M01:P0:MdsGbGqumqE=;tnvP6R989SxdC3Wr395nfqh+fgb
+ jKzTBOgpVu9SODl2lhoNfCsts0kQhcr2R97HdQbjYxS/q3uny8jnIZeR0FHJtpvvQWOkRadxW
+ s9n6sHZ0+rYpOBgrZVJkC5Wqxe5ga7jnPYLv+iVNoTLV2XBu/K3Ew44SG8WmQFq6TDt+CQ4d/
+ JubKRuHVydBLpGCp6tlZ3WkEUuyKc5wFFlcY/HGfAcIjDQK8FR+qJGW1UQ4sgo5jPKqOJBtJW
+ rgtdw3VDYWbHNX/YogBuTWynzkj0WkHk/Agi+f8NijtvXo/9lvSR4cf8EeAPkGT+rQm94ocOl
+ 3s44QUl/YqlasJUG05PqdbX85r/6L82JkSlJYfWGwRFD2u5T097jy841AFpBU50SJoi9vTtm8
+ nhbXtW7cmaQZgZ+G+NM3GbwM26aL3dhC46f59Wmmp1sxRdHIzC5RlfgVITkbqx2A92yKODSuK
+ 1yWsmvhVgHLBt4obuKY3VxBvJvvh4i8vYGnfIvJ/jIymIvCO4phW3Hc8qVEQ69DNwtGCYv6Tk
+ TyLOfKU6FOyJIy+RzwNqm5iDklTe0rxu2K+IbEFGPtoQ2volfxtxJbJSOstLt/6QV04pGfEIe
+ b/NfokDcK0Z0qgp2SGNMhRqEpslcWBui5E/VXzXzQ1pz0oLd87AMbI1qRLopj18s2CkITXazz
+ yv+7mzbBtaIp8LaH6cItkyPlkp9Wf452q1j0xHZp+fUvNr7z4Cf5yIC7d543cNz2EcELTooII
+ yVSaw8oixMiNEqd2qqI20f8j4RNyndmHTmd2Fb/BQ0ERfOd8yt9tlcm85HEHUyu6gjYL3ZLKE
+ bXQiMQuHR/SYIjIed4bzalooY3Mm1oICms71oel14ABdzezHjrigTxZiYY+qhljw2kgUdcjpq
+ x628CaRB7FbGpSqqJ1Vg4tYLqVNEXQSId64/IIWhLhBOwf/FkaDDDxEcx1qLAdMzl/9Q/tNkw
+ 8fNIT9/kBQhBW2d1PHPDnktw9Op+SDxWFGPmWip+qkvDH1EQ2udEm4vhFZJdZADyYs7SC8o2A
+ fBwnTBRQEnK30TxuATKL7lm7OZ36wgalOgcfdPOkwOTw7/wgF6tlzosbKWxbufPEmu/UN7cCJ
+ YXD/mWnJ98LsSnBmkTD9G0rKRmmshv+Etwhbsv4xtBgjYX8NFFHVAWA4X7l2T03n/9kd3cJ4b
+ ZLmr3IluuTiQsBWf3e71y3bNBVN5Uo69F3gNfUnh4i4JJSKIBOCXEm5OlG2gLyQAqHnJ3lbgz
+ 9WkmYk0CA+0fyFTM6/YS+aRZV49Q0kYAOSkls+nsQEMBZWnKFpfcIOtWpwTKzr2wfzlCuo4ou
+ Z0L2s59R9V6tIdashf+ZQ39SCo+GpTlM4z5zeVceEoHfI9DvUyF+2Yj8J8ZtvwZ/lWt+ACCbh
+ YhV5oKTYBRDkn/xSbFR79UcUoCXk2KQr4U0cjERMykoEAAkoSjLx3AQt1tYy9lT3Y9kzDDrOi
+ hLunG2Q==
 
 
 
-=E5=9C=A8 2025/4/15 05:02, Josef Bacik =E5=86=99=E9=81=93:
-> While debugging a fs corruption with subpage we noticed a potential race
-> in how we do tagging for writeback.  Boris came up with the following
-> diagram to describe the race potential
+=E5=9C=A8 2025/4/15 04:38, Josef Bacik =E5=86=99=E9=81=93:
+> When running machines with 64k page size and a 16k nodesize we started
+> seeing tree log corruption in production.  This turned out to be because
+> we were not writing out dirty blocks sometimes, so this in fact affects
+> all metadata writes.
 >=20
-> EB1                                                       EB2
-> btree_write_cache_pages
->    tag_pages_for_writeback
->    filemap_get_folios_tag(TOWRITE)
->    submit_eb_page
->      submit_eb_subpage
->        for eb in folio:
->          write_one_eb
->                                                            set_extent_bu=
-ffer_dirty
->                                                            btrfs_meta_fo=
-lio_set_dirty
->                                                            ...
->                                                            filemap_fdata=
-write_range
->                                                              btree_write=
-_cache_pages
->                                                              tag_pages_f=
-or_writeback
->            folio_lock
->            btrfs_meta_folio_clear_dirty
->            btrfs_meta_folio_set_writeback // clear TOWRITE
->            folio_unlock
->                                                              filemap_get=
-_folios_tag(TOWRITE) //missed
+> When writing out a subpage EB we scan the subpage bitmap for a dirty
+> range.  If the range isn't dirty we do
 >=20
-> The problem here is that we'll call folio_start_writeback() the first
-> time we initiate writeback on one extent buffer, if we happened to dirty
-> the extent buffer behind the one we were currently writing in the first
-> task, and race in as described above, we would miss the TOWRITE tag as
-> it would have been cleared, and we will never initiate writeback on that
-> EB.
+> bit_start++;
 >=20
-> This is kind of complicated for us, the best thing to do here is to
-> simply leave the TOWRITE tag in place, and only clear it if we aren't
-> dirty after we finish processing all the eb's in the folio.
+> to move onto the next bit.  The problem is the bitmap is based on the
+> number of sectors that an EB has.  So in this case, we have a 64k
+> pagesize, 16k nodesize, but a 4k sectorsize.  This means our bitmap is 4
+> bits for every node.  With a 64k page size we end up with 4 nodes per
+> page.
+>=20
+> To make this easier this is how everything looks
+>=20
+> [0         16k       32k       48k     ] logical address
+> [0         4         8         12      ] radix tree offset
+> [               64k page               ] folio
+> [ 16k eb ][ 16k eb ][ 16k eb ][ 16k eb ] extent buffers
+> [ | | | |  | | | |   | | | |   | | | | ] bitmap
+>=20
+> Now we use all of our addressing based on fs_info->sectorsize_bits, so
+> as you can see the above our 16k eb->start turns into radix entry 4.
+>=20
+> When we find a dirty range for our eb, we correctly do bit_start +=3D
+> sectors_per_node, because if we start at bit 0, the next bit for the
+> next eb is 4, to correspond to eb->start 16k.
+>=20
+> However if our range is clean, we will do bit_start++, which will now
+> put us offset from our radix tree entries.
+>=20
+> In our case, assume that the first time we check the bitmap the block is
+> not dirty, we increment bit_start so now it =3D=3D 1, and then we loop
+> around and check again.  This time it is dirty, and we go to find that
+> start using the following equation
+>=20
+> start =3D folio_start + bit_start * fs_info->sectorsize;
+>=20
+> so in the case above, eb->start 0 is now dirty, and we calculate start
+> as
+>=20
+> 0 + 1 * fs_info->sectorsize =3D 4096
+> 4096 >> 12 =3D 1
+>=20
+> Now we're looking up the radix tree for 1, and we won't find an eb.
+> What's worse is now we're using bit_start =3D=3D 1, so we do bit_start +=
+=3D
+> sectors_per_node, which is now 5.  If that eb is dirty we will run into
+> the same thing, we will look at an offset that is not populated in the
+> radix tree, and now we're skipping the writeout of dirty extent buffers.
+>=20
+> The best fix for this is to not use sectorsize_bits to address nodes,
+> but that's a larger change.  Since this is a fs corruption problem fix
+> it simply by always using sectors_per_node to increment the start bit.
 >=20
 > Fixes: c4aec299fa8f ("btrfs: introduce submit_eb_subpage() to submit a s=
 ubpage metadata page")
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->   fs/btrfs/extent_io.c | 23 +++++++++++++++++++++++
->   fs/btrfs/subpage.c   |  2 +-
->   2 files changed, 24 insertions(+), 1 deletion(-)
+>   fs/btrfs/extent_io.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 6cfd286b8bbc..5d09a47c1c28 100644
+> index 5f08615b334f..6cfd286b8bbc 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -2063,6 +2063,29 @@ static int submit_eb_subpage(struct folio *folio,=
- struct writeback_control *wbc)
->   		}
->   		free_extent_buffer(eb);
->   	}
-> +	/*
-> +	 * Normally folio_start_writeback() will clear TAG_TOWRITE, but for
-> +	 * subpage we use __folio_start_writeback(folio, true), which keeps it
-> +	 * from clearing TOWRITE.  This is because we walk the bitmap and
-> +	 * process each eb one at a time, and then locking the folio when we
-> +	 * process the eb.  We could have somebody dirty behind us, and then
-> +	 * subsequently mark this range as TOWRITE.  In that case we must not
-> +	 * clear TOWRITE or we will skip writing back the dirty folio.
-> +	 *
-> +	 * So here lock the folio, if it is clean we know we are done with it,
-> +	 * and we can clear TOWRITE.
-> +	 */
-> +	folio_lock(folio);
-> +	if (!folio_test_dirty(folio)) {
-> +		XA_STATE(xas, &folio->mapping->i_pages, folio_index(folio));
-> +		unsigned long flags;
-> +
-> +		xas_lock_irqsave(&xas, flags);
-> +		xas_load(&xas);
-> +		xas_clear_mark(&xas, PAGECACHE_TAG_TOWRITE);
-> +		xas_unlock_irqrestore(&xas, flags);
-> +	}
-> +	folio_unlock(folio);
->   	return submitted;
->   }
->  =20
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index d4f019233493..53140a9dad9d 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -454,7 +454,7 @@ void btrfs_subpage_set_writeback(const struct btrfs_=
-fs_info *fs_info,
->   	spin_lock_irqsave(&subpage->lock, flags);
->   	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bi=
-ts);
->   	if (!folio_test_writeback(folio))
-> -		folio_start_writeback(folio);
-> +		__folio_start_writeback(folio, true);
+> @@ -2034,7 +2034,7 @@ static int submit_eb_subpage(struct folio *folio, =
+struct writeback_control *wbc)
+>   			      subpage->bitmaps)) {
+>   			spin_unlock_irqrestore(&subpage->lock, flags);
+>   			spin_unlock(&folio->mapping->i_private_lock);
+> -			bit_start++;
+> +			bit_start +=3D sectors_per_node;
 
-This looks a little dangerous to me, as for data writeback we rely on=20
-folio_start_writeback() to clear the TOWRITE tag before this change.
+The problem is, we can not ensure all extent buffers are nodesize aligned.
 
-Can we do a test on the dirty bitmap and only call clear TOWRITE tag=20
-when there is no dirty blocks?
+If we have an eb whose bytenr is only block aligned but not node size=20
+aligned, this will lead to the same problem.
 
-(This also means, we must clear the folio dirty before start writeback,=20
-there are some exceptions that needs to be addressed)
+We need an extra check to reject tree blocks which are not node size=20
+aligned, which is another big change and not suitable for a quick fix.
 
-By that, we do not need the manual tag handling in submit_eb_subpage().
+
+Can we do a gang radix tree lookup for the involved ranges that can=20
+cover the block, then increase bit_start to the end of the found eb instea=
+d?
 
 Thanks,
 Qu
 
->   	spin_unlock_irqrestore(&subpage->lock, flags);
->   }
+>   			continue;
+>   		}
 >  =20
-
 
