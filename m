@@ -1,137 +1,221 @@
-Return-Path: <linux-btrfs+bounces-13002-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13003-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 697DCA88B57
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 20:35:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6785FA88BE5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 21:03:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF9DB176A9D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 18:34:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C466D3B4ADB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 19:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFB82949FF;
-	Mon, 14 Apr 2025 18:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A6B28BAB5;
+	Mon, 14 Apr 2025 19:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="KM+OUBSD"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z46D+z74";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iyReO/R8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z46D+z74";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iyReO/R8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC1428E61F
-	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 18:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC232820BB
+	for <linux-btrfs@vger.kernel.org>; Mon, 14 Apr 2025 19:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744655550; cv=none; b=IKp9XQ0v5Lzx/cbZWGHvCyXhTJctuSoqMScs3HSTAoDGnGORKNNOHNm9avMScqnNG3zeaWNE3wwU6TprHFRrh67wZObhbCd/MiN82EbpW3aXcGni3WJVOHXyoMJk2Sc7fH95DX9vHGS8mc93UizHS7QeIc2T71j7rDElV2758VE=
+	t=1744657412; cv=none; b=DebpyW2S2K7SiJINzpGdVF7j55yrOsIUXlUB/XVBcmWb7MX2kTUraqCp4jyYB+cg8Ljs1q//jAWd5BOdGxqMxDTO+QUAqmPlDPxISJmw6fHkJ1rMQs7qWl6o0nD6FMNIbBrgEJgr/Qfh9YLGlBvdW/H+exagStynPlWcEX/2eQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744655550; c=relaxed/simple;
-	bh=48vQzwMouV+57+4bD0wF4EKBr465DeOVOqg7VR/KuVM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=l1odNNTdjnwx5OsD60DKWdbtZ9LQgTdoig5z2uT5LRklUgSRGilBMYsgpGoyqTMLxI/MMI/LRBJ924lchyV+WyQCCqRO3HdPvK+lT5p73+KPPYI6+oWq/XANLD7/wOmi+LQKqYASZs1Tr8U990sLzobnC8Br3plVtoYG3P2bG24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=KM+OUBSD; arc=none smtp.client-ip=82.195.75.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:Content-Type:MIME-Version:Message-ID:
-	Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=v45/UskLFObqJtpFMkbzySSGVAHvij3jg9dTFuq8zr0=; b=KM+OUBSDTPOdc1yC9RA0tzKhno
-	W+n4NkfhstnCgqrCgc8FmdwI+HSl+9Fhu1tDwbNKE6DFXdy43UE8msGdhXYFPno51Mm5/FiQlF1v6
-	b4eDCQpGsWWDs1qad4IjKEnm2urSJ3gmd+z4rO5Pgab/A2LPZfrU9kBiVls90DdYCP701RDoCpbmZ
-	I3RI/4xhLoeBUs5wT3x8MDQNTH8SS9mS6SgGvrLJUUoA2C3Wqn+DEj3hdh87ZClfVU9rJ+psI6DRp
-	AIYXtbnv2lxJLzDDlcjiWqPPBP5RM7Jtqz2yIYH2EZrgbGULAFCNbMV50SUgBvi6gq+VcAlOWMGuh
-	CDzpRYqA==;
-Received: from authenticated user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.94.2)
-	(envelope-from <sten@debian.org>)
-	id 1u4ObY-003Fqb-RF; Mon, 14 Apr 2025 18:32:25 +0000
-From: Nicholas D Steeves <sten@debian.org>
-To: kreijack@inwind.it
-Cc: "Brian J. Murrell" <brian@interlinx.bc.ca>, linux-btrfs@vger.kernel.org
-Subject: Re: P.S. Re: Odd snapshot subvolume
-In-Reply-To: <72d7150b-4e0b-4e15-bd3f-ab410be4a767@libero.it>
-References: <dea3861ab4b85f2dffc5bbc9864b290f03c430f4.camel@interlinx.bc.ca>
- <87friais1a.fsf@navis.mail-host-address-is-not-set>
- <87cydeirkl.fsf@navis.mail-host-address-is-not-set>
- <72d7150b-4e0b-4e15-bd3f-ab410be4a767@libero.it>
-Date: Mon, 14 Apr 2025 14:32:16 -0400
-Message-ID: <87tt6q1tn3.fsf@navis.mail-host-address-is-not-set>
+	s=arc-20240116; t=1744657412; c=relaxed/simple;
+	bh=zq+Ja4QSGlRpVAaQiNMkrU7ZKwvVSWJgWhPdSB222zo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rphEsa2duHmeI+teOXUfivsl0wKdmeHFqCKXvi4YQcXKtEbguHCA4+POpm3wATjwlfFWeGvFEHy1mz+jxsEl9zgvHEofa9ttuLP+0Z6wjZVDaX/Mq4GBM2xWsmgW9EbMvMOpolMrirKcrnLC/qCn59jCOn+RRdJFg74gQ5JIJ1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z46D+z74; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iyReO/R8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z46D+z74; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iyReO/R8; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 52D7A1F74D;
+	Mon, 14 Apr 2025 19:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1744657403;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WhyLp5Z/xL9J2ArNZxj+5ArhmYPFvUg0sB0dunk0Ck=;
+	b=Z46D+z74SZP4jRLEaDQl73iIS/ter4DcrURR27rVowmB62lSTuAtkes50KFEi737qu+6nN
+	0VaR6+HxOw4R4qMaXu8mXYeYMMm+ZxJ9yRBfEDMrf2+VxLeZV59DBbnyLym0lewrYV7yO6
+	FRC9SHIPh/3usfzdY3N0r56lN25mNPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1744657403;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WhyLp5Z/xL9J2ArNZxj+5ArhmYPFvUg0sB0dunk0Ck=;
+	b=iyReO/R8FvqA7jGMmxx9HRKUJYlZyPlLR1Z43owEq/4qt7+jfcfQRZXqJ3LTLprfzuyRDe
+	j0sjA0ptHbf6PNDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1744657403;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WhyLp5Z/xL9J2ArNZxj+5ArhmYPFvUg0sB0dunk0Ck=;
+	b=Z46D+z74SZP4jRLEaDQl73iIS/ter4DcrURR27rVowmB62lSTuAtkes50KFEi737qu+6nN
+	0VaR6+HxOw4R4qMaXu8mXYeYMMm+ZxJ9yRBfEDMrf2+VxLeZV59DBbnyLym0lewrYV7yO6
+	FRC9SHIPh/3usfzdY3N0r56lN25mNPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1744657403;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WhyLp5Z/xL9J2ArNZxj+5ArhmYPFvUg0sB0dunk0Ck=;
+	b=iyReO/R8FvqA7jGMmxx9HRKUJYlZyPlLR1Z43owEq/4qt7+jfcfQRZXqJ3LTLprfzuyRDe
+	j0sjA0ptHbf6PNDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BBB71336F;
+	Mon, 14 Apr 2025 19:03:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5zh6Cvtb/WetXQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 14 Apr 2025 19:03:23 +0000
+Date: Mon, 14 Apr 2025 21:03:21 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Yangtao Li <frank.li@vivo.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: reuse exit helper in btrfs_bioset_init()
+Message-ID: <20250414190321.GF16750@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250414124401.739723-1-frank.li@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Debian-User: sten
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250414124401.739723-1-frank.li@vivo.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 14, 2025 at 06:44:01AM -0600, Yangtao Li wrote:
+> As David Sterba said before:
+> 
+>   This is partially duplicating btrfs_delayed_ref_exit(), I'd rather reuse
+>   the exit helper.
+> 
+>   I've checked if this can be done elsewhere, seems that there's only one
+>   other case btrfs_bioset_init(), which is partially duplicating
+>   btrfs_bioset_exit(). All other init/exit functions are trivial and
+>   allocate one structure. So if you want to do that cleanup, please update
+>   btrfs_bioset_init() to the preferred pattern. Thanks.
 
-Goffredo Baroncelli <kreijack@libero.it> writes:
+Please write the changelogs as standalone text without the references or
+copied text from some suggestions.
 
-> On 14/04/2025 19.24, Nicholas D Steeves wrote:
->> P.S.
->>=20
->> Nicholas D Steeves <sten@debian.org> writes:
->>=20
->>>> just remove it?
->>>
->>>    # mkdir -p /btrfs-admin
->>>    # mount -o subvolid=3D5 /dev/disk/by-uuid/c08a988c-ddd5-164e-b01e-51=
-ac26bf018b /btrfs-admin
->>=20
->> Oops!  This /\ is wrong, because btrfs subvolume show / returns the
->> filesystem UUID, and the command above uses the disk UUID.
->
-> I have to correct you: "btrfs sub show" shows the *SUBVOLUME* uuid, where
-> /dev/disk/by-uuid/XXXX refers to the *FILESYSTEM* uuid.
-> Apart that, it is correct that you can't take the UUID from "btrfs sub sh=
-ow"
-> to mount a filesystem. You need the UUID from "btrfs fi show"
+Mentions, credits or Suggested-by make most sense if there's some
+groundbreaking idea implemented and not mentioning the author would be
+percieved as stealing it. Otherwise, suggestions are part of the
+review process and should be transformed into useful text in the
+changelog.
 
-Of course 'subvolume show' gets subvolume UUID, 'filesystem show' gets
-filesystem UUID, and this is too complicated.  Yes, it's logical, once
-one understands btrfs, but multiple of my colleagues have looked at
-stuff like this, thrown up their arms, and exclaimed things to the
-effect of "I have more important things to think about".
+> So let's convert it.
+> 
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>  fs/btrfs/bio.c | 30 +++++++++++++-----------------
+>  1 file changed, 13 insertions(+), 17 deletions(-)
+> 
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 8c2eee1f1878..f6f84837d62b 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -892,6 +892,14 @@ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_
+>  	btrfs_bio_end_io(bbio, errno_to_blk_status(ret));
+>  }
+>  
+> +void __cold btrfs_bioset_exit(void)
+> +{
+> +	mempool_exit(&btrfs_failed_bio_pool);
+> +	bioset_exit(&btrfs_repair_bioset);
+> +	bioset_exit(&btrfs_clone_bioset);
+> +	bioset_exit(&btrfs_bioset);
+> +}
 
-To encourage btrfs adoption I think we need to do better.  After
-considering alternatives, I wonder if there is anything simpler/better
-than
+This function is public and you don't need to move it.
 
-  # findmnt -n -o SOURCE /foo | cut -d[ -f1
-
-to get the device suitable for mounting -o subvolid=3D5 | subvol=3D/ ?  Ie:
-"Just let me see everything with as little fuss as possible. Make it
-simple!", without relying on fstab.
-
-Cheers,
-Nicholas
-
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJEBAEBCgAuFiEE4qYmHjkArtfNxmcIWogwR199EGEFAmf9VLAQHHN0ZW5AZGVi
-aWFuLm9yZwAKCRBaiDBHX30QYQm2D/9Mcpu35SJ5n1p1BOkK1C2oOEWA7RQ34+Zj
-0miB7crp56g9a+QzsmPa+gIQkdDabcijD+jzRaSMgH1L4VWJfsB67DvzgeHnQU19
-Qa7noWVPZ2UOjhXES78WlQZhsJLTtpjZiO4MenD4yvw28L5FFLpzNj+FoEteMMFg
-B+ZDiY0ylR6AqFLmwPaNNfir7MSlcjJzjJc6GeTO6BllIgCkE1uXymO4ZbKr6FdI
-LO3qvuv3boqh/HsjP7daMavZSghIc1eDV43lLowT5RIyZ28voaKOsA2+ayghqoXz
-hdYZI9KPqaostamb3Sw0k5LD8Vc3p40rJ2IbDJhX/ROTajgI/zcapSZqrsfo6sqC
-8l2cE03uxdodiRQ9lddDZYFPAXb4emQN7xX4GG9c6+nUN57zT3Ru5zVdR4ns4LVT
-PX+6rkQqr0cPbi2koQUTkgpwA4+l68p2ZOU8IZbdDIUrtVXk3i/3gH43hcF0q6Z+
-BvRy1IjPNR57eDZ90dECefB4Qv99N5Qfba9yLkUyeyYJuQ0o+RrAMeG24e998IhI
-7+uXt3B5JL/expWGEj24kQ/3btpcFBcL8Z8JM1tdqsHiO0otv8e1rKB7JNIYbWqL
-ZCgFt+ez6XJY2apyKWxKXgVxdYBQ+MzZodMsKJFhDViYrcx/t9k0fhvVtAoW+XhV
-J00yeSjAVQ==
-=SazR
------END PGP SIGNATURE-----
---=-=-=--
+> +
+>  int __init btrfs_bioset_init(void)
+>  {
+>  	if (bioset_init(&btrfs_bioset, BIO_POOL_SIZE,
+> @@ -900,29 +908,17 @@ int __init btrfs_bioset_init(void)
+>  		return -ENOMEM;
+>  	if (bioset_init(&btrfs_clone_bioset, BIO_POOL_SIZE,
+>  			offsetof(struct btrfs_bio, bio), 0))
+> -		goto out_free_bioset;
+> +		goto out;
+>  	if (bioset_init(&btrfs_repair_bioset, BIO_POOL_SIZE,
+>  			offsetof(struct btrfs_bio, bio),
+>  			BIOSET_NEED_BVECS))
+> -		goto out_free_clone_bioset;
+> +		goto out;
+>  	if (mempool_init_kmalloc_pool(&btrfs_failed_bio_pool, BIO_POOL_SIZE,
+>  				      sizeof(struct btrfs_failed_bio)))
+> -		goto out_free_repair_bioset;
+> +		goto out;
+>  	return 0;
+>  
+> -out_free_repair_bioset:
+> -	bioset_exit(&btrfs_repair_bioset);
+> -out_free_clone_bioset:
+> -	bioset_exit(&btrfs_clone_bioset);
+> -out_free_bioset:
+> -	bioset_exit(&btrfs_bioset);
+> +out:
+> +	btrfs_bioset_exit();
+>  	return -ENOMEM;
+>  }
+> -
+> -void __cold btrfs_bioset_exit(void)
+> -{
+> -	mempool_exit(&btrfs_failed_bio_pool);
+> -	bioset_exit(&btrfs_repair_bioset);
+> -	bioset_exit(&btrfs_clone_bioset);
+> -	bioset_exit(&btrfs_bioset);
+> -}
+> -- 
+> 2.39.0
+> 
 
