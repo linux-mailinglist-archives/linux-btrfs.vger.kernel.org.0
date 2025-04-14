@@ -1,512 +1,231 @@
-Return-Path: <linux-btrfs+bounces-12987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-12988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20B8DA88030
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 14:15:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00047A88052
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 14:24:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAB19188EDD6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 12:15:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 670E7177268
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Apr 2025 12:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174A32BE7C1;
-	Mon, 14 Apr 2025 12:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBE529CB3F;
+	Mon, 14 Apr 2025 12:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="o94q2w6w"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11011019.outbound.protection.outlook.com [52.101.129.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B8818A6A9;
-	Mon, 14 Apr 2025 12:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744632903; cv=none; b=mJWPPgjajJspBsTXHLqdvkrmuDu3lN5+lZ2V9kQrE5swyNYOsmd9INWb+61465hOk4bRLSfYT7zlJnQ/uVSO0OY1p3yjsgNXMR/x93gDDQCvhBzVhQx9tLQO6mSQnz+NnIcUz5PaKli/5DxiKtIIu85Fbou1OBnOAijsytY+njk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744632903; c=relaxed/simple;
-	bh=Vh1XYNk1Pgd7/7fao+EL3a14mR2DGRdB6cj8+UPIOGo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G4uKOiLzo4yqERVkdYJ0lVShA+qJsmQimRBLHjF1RhhF3r73sbgDmM5VRAbWDgbX9IRXJEkrF/U8ChGQCpWvr4Z3cnTJWrbcvNd4mW8u9B704mFWOlTSpsRlWsQVytLCquKVhADzoAwzHatNZydj+re0SYIKXc9KmgDpRyum0CU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ZbmTN4kPBz27hSp;
-	Mon, 14 Apr 2025 20:15:36 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3309B140257;
-	Mon, 14 Apr 2025 20:14:55 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 14 Apr 2025 20:14:54 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Yishai Hadas
-	<yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shameer Kolothum
-	<shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>, Chris Mason <clm@fb.com>, Josef
- Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Gao Xiang
-	<xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>,
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
- Brown <neilb@suse.de>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo
-	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jesper Dangaard Brouer
-	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
-	<horms@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
-	<anna@kernel.org>
-CC: Yunsheng Lin <linyunsheng@huawei.com>, Luiz Capitulino
-	<luizcap@redhat.com>, Mel Gorman <mgorman@techsingularity.net>,
-	<kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<virtualization@lists.linux.dev>, <linux-btrfs@vger.kernel.org>,
-	<linux-erofs@lists.ozlabs.org>, <linux-mm@kvack.org>,
-	<linux-nfs@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: [PATCH v3] mm: alloc_pages_bulk: support both simple and full-featured API
-Date: Mon, 14 Apr 2025 20:08:11 +0800
-Message-ID: <20250414120819.3053967-1-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.30.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C301E505;
+	Mon, 14 Apr 2025 12:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.129.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744633475; cv=fail; b=X+ILAOaEqvGA84U+/ev5T9rTcy2fGVUVN1yw+s5VgJarTj2gJU2l8EHGNfdvxdAh6H7My2KbKVTEi0w99jCYXzTKg7TPjxOat/VQvhxwUDNkY4+iJiasdoJSd7Q1H4fKJcCZPw0u59YTwbo0M6rwJVNXFQ0C7VTu++DDNd/YjBw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744633475; c=relaxed/simple;
+	bh=zxSq5QHp0MAk/toP0kSYknsb20OtKOcip37MvS6xBpo=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=eKTH6r7q2J//LTRC0VUTGCwUAS4QOLO+7bXwcDuJ1XeGAGaWBAMQ7b2S8bly0UxvjFRuYkCEkFNsrX2aParlswCZMfYW/LKFca+lPE98ef/yN0C7+JpbPaoCBexSisIFR12oyIWBhNU9X8LbuquK4Okq/IpjppC2rKn2GTCtK3c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=o94q2w6w; arc=fail smtp.client-ip=52.101.129.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=FZU6aZx6X96hu+jQYtgT7g1xY5m1Xfs4QZ6JDrU/aGY8/9mb8zZhOdiQ3YD3SDcFdzDIsQ751Hj8AHIqaBu/4tSzVuu/Z5yvrlwV9pDUnbZGaE4AUPTDqiwoVuknA2Qdn9GqwrhPYTe8nZczY0DfZ9UvCK5uNOY/x1rkw7cLhw1Q5nsi9LzegpoGye5AZucQY5S+0xzKs0ojdO1KHS/8rSKb+sBelC+ie3xk/s6MzGOeMCzaEgNmQwxSDbdA2NXiGM0JuEArBSU7nb8FtKWbjAuRgeRJUpTI/0V3+2MYFAn9koXbraeqMtJzVHixbbIJzqalmZzIlubz2AYBKcYGtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IQsym7/tp3W+AKySrYNBVGZPvZkWRUeoLGSamGcALQU=;
+ b=zLvEb57hKIyCZVatwLrUkM4xellEYXw9tm2Hs4g3QtJitm0D4HzsOF1XMQcrKTcTLq17qEehkocrIEelfqXbLvux/PH6ilYyLtCchxcHEeWc+G0TUg+XR2+QLhHDvCmpklC2+vZDf4fYj2wp0NDmIENZILqrQqZi1zjIya3pRRJdmvN/dnLVK2gOBNsnkUQVw5LeSWMrUR3bAySKSJ4wSeMJ3Cfqb86+3a6WDpEs/oolRq4yDBRQe9b046T7zyK6eVU32K7KHMOAE7ds9ekvYBk+s/y13/spgoZOiPLRDVq+fQ9CaLiilxvmiIVmo/Z0+W303znPPgX3s5xUBMc3wA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IQsym7/tp3W+AKySrYNBVGZPvZkWRUeoLGSamGcALQU=;
+ b=o94q2w6wK9I74NBc5r6VH2biRDt+cht8K2KruaCm2Q39kvITRfmtICqWFKYdjAy+/MELpWThf2rGGdBzMvxPRfw/VBYq0GW9TBbq50dBeQRlkVq9GDq5RYudHoBKVEx11/J2S6ERw5my3u1UHjE0pZkFUy8+UVHLyuEppn6I2RA1prPjL+fnfdiEvq0BCBGwzO3kOa/7h4qYGxnR2pDSQfVLflBkIdMUROlFptvRRAcwtwjpUWVvL3H7WByMNYq7XZOA/P7TBO2sMkzSabnNA3WPLplaJsoXr1wmvG9kgK7akipigOptVqdUmDtxR2FwfVI82fyh8MXJKZekw0ph6w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+ by KL1PR06MB6321.apcprd06.prod.outlook.com (2603:1096:820:e0::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.29; Mon, 14 Apr
+ 2025 12:24:26 +0000
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::8c74:6703:81f7:9535]) by SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::8c74:6703:81f7:9535%6]) with mapi id 15.20.8632.030; Mon, 14 Apr 2025
+ 12:24:23 +0000
+From: Yangtao Li <frank.li@vivo.com>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH] btrfs: reuse exit helper in btrfs_bioset_init()
+Date: Mon, 14 Apr 2025 06:44:01 -0600
+Message-Id: <20250414124401.739723-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR01CA0027.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::7) To SEZPR06MB5269.apcprd06.prod.outlook.com
+ (2603:1096:101:78::6)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|KL1PR06MB6321:EE_
+X-MS-Office365-Filtering-Correlation-Id: b683baf3-6e05-4469-7ef8-08dd7b4f49f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|366016|52116014|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?3QhqNqqfgbEtgtTpd92TPx8qFL7lC+71O3mOwKIFGBTH08efdCaVynnpF3O6?=
+ =?us-ascii?Q?+pv9Um2jDpA/KqKIf/e8mpzTJnpBgO31qlmCvzwQxCzQfGvh8CN1jurBi3wy?=
+ =?us-ascii?Q?ed9tnlxB+B62rBpXE0bX/nrB0Cub8MgroLJTME0YTCxIO2JFUv9HwUJuDjxv?=
+ =?us-ascii?Q?Ix5f4AAlDuX38IHMakKn+pPqcmTHv4GRX8tfFHNGWiB4LeEiKeHymSheCQsU?=
+ =?us-ascii?Q?YPqPtrU94ItnlOVzZks2PedKqAqSlTFwUUSAvmN3EGNPQ9o4LsV0RPY0R8zL?=
+ =?us-ascii?Q?U7yAVYVf9UGdzIzbaTH/gckMMUJD83AcJVtpMOi2XSdMSjXkcm0+ZwTkNc/h?=
+ =?us-ascii?Q?vO8enPPdtQLQrviGz706ztycjjLgE4MfwB3yK0BiFbmb2msG6NRjWLNYg5lm?=
+ =?us-ascii?Q?RiROzkLlzhF4JN1xY9mWH5Vkl7cLu8xS8UwXawChd1d+elKW0q4YUIF761Ir?=
+ =?us-ascii?Q?OR9bDWuzNEHCjslbqx13JAjJuZ9YNngKlLiDXEzVecoKNYCVY0AY771+23Kd?=
+ =?us-ascii?Q?+dx/hJDkuDFktHFfMZDGIG+1klKF03hVcelJ507TphZnpUgo9KSB8rXy9T0x?=
+ =?us-ascii?Q?LDpSk1dX/Ch3vfjiy6TmMCyCqhc98D19doGG+UIv+UAVHvUmkewT/QmlPKTl?=
+ =?us-ascii?Q?2rJfqlXOiO/J1hj3Fg5+10JqaSbEMfLHZu23OjZCANRVDoV4h0eplhACFil5?=
+ =?us-ascii?Q?uUCBJp9mDP/6UaLSbItutnJarsW92qKhBXgshzEGGs1dOvdJol0FNZjdtAA8?=
+ =?us-ascii?Q?JLwL4Ve/2VIElFoNEj0gcJCiI9fLM8LmbzpPjY096OsxwZSEnrhfK36cvN6p?=
+ =?us-ascii?Q?bgntAJV3Pt3MrLb2tRQ6dQwhoL7eLYG4y4DWSRKMGjjpzGtNRSCdNNR4CHSO?=
+ =?us-ascii?Q?LHC3hmXY/Rf08R3J9yTexRKE5L2AjdMl7HQuN6UQoCyZHf0n1ZBOecYtDXvW?=
+ =?us-ascii?Q?XvPtYqTA8rUj5aP2i8BXzduErC+HpbclIXbQCYndJrL0iZANdz6A4cPOhFsF?=
+ =?us-ascii?Q?9Ecv5/aA6CrANbI9n6xtqNVcc/oJ3LuWoNyI6Vv6/S/IPc7kzt1sO5B73CmG?=
+ =?us-ascii?Q?tIOSi3ctJYcA5lxQBGiTD1w/QEd4bQ7HDTtgyq9ge34rVz+SntZV90EttPJp?=
+ =?us-ascii?Q?hMHPcs3nCka01gpfdZMY7nuJ2QajlNCrtyl7eL7wLiV7uDQWEeAa5ncLJnlM?=
+ =?us-ascii?Q?NldonVaRBYMnAWDpi6v52+CUq7h4ZT+skpjgdlr2QJghQNapVm1nw7FmDZbS?=
+ =?us-ascii?Q?VaGxAcrnGKKub71mnbLXKFEwt2fvdlB/Qb/ORJLrqR6Whnfap0VaChClg4NP?=
+ =?us-ascii?Q?NVZINjuL8YkRC3CSDuqvWtKasIuA2F4q/L/xo41bLbLvUfEi7LH+iFiyQfqx?=
+ =?us-ascii?Q?/pN1Msovubj+msDXDzVjXRWRhQkOVhjLUvtXHmf7KUX94Hen9n6MsT5JIAPc?=
+ =?us-ascii?Q?8ZFk4MkD/xuz2ANEUI9AdmPGtVaIkm5jNaqTCkm1ZRW8O9IPGTuAvw=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(52116014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?xagh9xFnldemUwhx+xOgwZgMS620qWvVxgfYVwUaafl+eeXhZ/K8PQ0nDT5Q?=
+ =?us-ascii?Q?jDkqRKu3a7FQRJFmJOCBUo1L50jLZ5t6xaGYNT4GDFjQONbcBrS2YxGm6Xv4?=
+ =?us-ascii?Q?lvKZcccK6XngQhWVXI7sCOgQ6srTR6psfiIs6Sh3R1lKZh1xBvDjykX/IQLf?=
+ =?us-ascii?Q?ZmbKp2HnwYORnJRQWEOlPgtCCec6MzsAtqfEkcaYgVRLbg9lF3LhjQ/HZATZ?=
+ =?us-ascii?Q?JrL7biSjqA4dK6NB8eOx/m7cs8en6sBhYXDcf4qZtuPBUD6qdqt8rFLIeW0n?=
+ =?us-ascii?Q?42iTWj58newsk/HboQtxZ3hfL8i2mlQnamyM0R2rdwEpf178D3JC5gZBisfe?=
+ =?us-ascii?Q?WPA9N2YWqFNnW+jR/ZyhtzZr5MfCsjpBnP3IIRd8KA3nCeV+xkD5iYJVvWW0?=
+ =?us-ascii?Q?oDMyyz8Wy462waRJydFixbyilUgrFj62CpOvtyL8pNz9TK0TH0DuB4oR1Dnr?=
+ =?us-ascii?Q?v1Yr6bCiieM+FF0SPNXaoFltA6GTMiVfFY+2Tij6lHIZ6yE2FIqZqRrZo21G?=
+ =?us-ascii?Q?sPd7XCFvKjLlfVOjAjg/jWZDt86F9U5lMzUNYMCjl1MHE1+eb1ekWZ3sKolL?=
+ =?us-ascii?Q?rwzUcR4/8M/kp+hZqhWNeyH1sL45/lxuLsQgE1bOrXGaEfZ5In94E2MufoOX?=
+ =?us-ascii?Q?YFjzlHuSnBpKAzjDiKtad78SUe14u86fxinaOZ+cHciqo4UOIjcihvbY3Fjj?=
+ =?us-ascii?Q?7cjr8VsF08UH29Jk5LQbyOAvhuLCx0CYBDkkzj6MbvRS3b0W01UCZz/P0wBO?=
+ =?us-ascii?Q?ffHJBxNaETQSs9lxsBPeNfwWKRBMZL7eHi/kJcAcCwFcXFwxjpcoL/no1H19?=
+ =?us-ascii?Q?ZNOsie0gnSgG2zlf/6PuQO3yXarzeeBg1bf2Q0DrTTzpjW8crq9UauevjJ6u?=
+ =?us-ascii?Q?ZGX+QOTig6edcfl+3MdNZCC3BPgFfLuTeYN6pI/XvciR862riuJ6UlVgrGaT?=
+ =?us-ascii?Q?+vHx2Khopjx6wxfEOuKtTXGmFwWpFIQ54FWl1+AJO/Wwif0hpQE6eaTSBrBw?=
+ =?us-ascii?Q?sYysU/oOADFcGvRcHC4NcNePosD7Mw9IvoletKau4LPvNdIh4Gr74ZYTmDNq?=
+ =?us-ascii?Q?05C70nf+s5vUUaA2igy/qD6O9ApD000e9QitJqdUccMVqSmxxeyCRXvaJ4Ws?=
+ =?us-ascii?Q?PDl6sUV+Ig/U1bp8c+9Qo1WCMZb4+WWsuaY4KzOTsgCunGOyI7AOXqIXSoiP?=
+ =?us-ascii?Q?RdfGWzxVXlzYnsek3ULIqZzrDNpbN9EV5fkx+n9KBmzix+bLi6a1VEvSHB9V?=
+ =?us-ascii?Q?3DwsAg1bmcKeye17JOrLG/EC8ZCFbo8alnWWGRqryVQS+dl9GZnEjvrwjJIY?=
+ =?us-ascii?Q?03jJcFv+/KtYI5aRS8zmQJe//VNvr42fkUzaF+UHL3sc98P3cjxQxNUUs3Yw?=
+ =?us-ascii?Q?dzyYQOhcwJwGwiW7olKKN6/Eg1VbbvSVlgtuNm9CtaKg57t8B4SfjEhrrWBe?=
+ =?us-ascii?Q?9pyCcnyyQZK1aDPraxn0cjMdAgvQ8x0fsGy5hr9p5PhLFqz1JGtzx0LRI0lX?=
+ =?us-ascii?Q?97YbUjQkWQdLIR7d7wNU8tAmCiU+Z5ayje/j1cMun2uvBDBp1N75WKKtSAce?=
+ =?us-ascii?Q?BoVTB0um5eNxxIog28ggdj7FgvLyP6ZKNrkJ9dHI?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b683baf3-6e05-4469-7ef8-08dd7b4f49f7
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2025 12:24:23.3183
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zgq+vYadRBGWPKFDFnRv3F31mYpiZWVKKsBp1cfwInulKKgms0c+Wy1feR+cLJwurYn+uRg8g0UG5cZsyhHGmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6321
 
-As mentioned in [1], it seems odd to check NULL elements in
-the middle of page bulk allocating, and it seems caller can
-do a better job of bulk allocating pages into a whole array
-sequentially without checking NULL elements first before
-doing the page bulk allocation for most of existing users
-by passing 'page_array + allocated' and 'nr_pages - allocated'
-when calling subsequent page bulk alloc API so that NULL
-checking can be avoided, see the pattern in mm/mempolicy.c.
+As David Sterba said before:
 
-Through analyzing of existing bulk allocation API users, it
-seems only the fs users are depending on the assumption of
-populating only NULL elements, see:
-commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
-commit d6db47e571dc ("erofs: do not use pagepool in z_erofs_gbuf_growsize()")
-commit f6e70aab9dfe ("SUNRPC: refresh rq_pages using a bulk page allocator")
-commit 88e4d41a264d ("SUNRPC: Use __alloc_bulk_pages() in svc_init_buffer()")
+  This is partially duplicating btrfs_delayed_ref_exit(), I'd rather reuse
+  the exit helper.
 
-The current API adds a mental burden for most users. For most
-users, their code would be much cleaner if the interface accepts
-an uninitialised array with length, and were told how many pages
-had been stored in that array, so support one simple and one
-full-featured to meet the above different use cases as below:
-- alloc_pages_bulk() would be given an uninitialised array of page
-  pointers and a required count and would return the number of
-  pages that were allocated.
-- alloc_pages_bulk_refill() would be given an initialised array
-  of page pointers some of which might be NULL. It would attempt
-  to allocate pages for the non-NULL pointers, return 0 if all
-  pages are allocated, -EAGAIN if at least one page allocated,
-  ok to try again immediately or -ENOMEM if don't bother trying
-  again soon, which provides a more consistent semantics than the
-  current API as mentioned in [2], at the cost of the pages might
-  be getting re-ordered to make the implementation simpler.
+  I've checked if this can be done elsewhere, seems that there's only one
+  other case btrfs_bioset_init(), which is partially duplicating
+  btrfs_bioset_exit(). All other init/exit functions are trivial and
+  allocate one structure. So if you want to do that cleanup, please update
+  btrfs_bioset_init() to the preferred pattern. Thanks.
 
-Change the existing fs users to use the full-featured API, except
-for the one for svc_init_buffer() in net/sunrpc/svc.c. Other
-existing callers can use the simple API as they seems to be passing
-all NULL elements via memset, kzalloc, etc, only remove unnecessary
-memset for existing users calling the simple API in this patch.
+So let's convert it.
 
-The test result for xfstests full test:
-Before this patch:
-btrfs/default: 1061 tests, 3 failures, 290 skipped, 13152 seconds
-  Failures: btrfs/012 btrfs/226
-  Flaky: generic/301: 60% (3/5)
-Totals: 1073 tests, 290 skipped, 13 failures, 0 errors, 12540s
-
-nfs/loopback: 530 tests, 3 failures, 392 skipped, 3942 seconds
-  Failures: generic/464 generic/551
-  Flaky: generic/650: 40% (2/5)
-Totals: 542 tests, 392 skipped, 12 failures, 0 errors, 3799s
-
-After this patch:
-btrfs/default: 1061 tests, 2 failures, 290 skipped, 13446 seconds
-  Failures: btrfs/012 btrfs/226
-Totals: 1069 tests, 290 skipped, 10 failures, 0 errors, 12853s
-
-nfs/loopback: 530 tests, 3 failures, 392 skipped, 4103 seconds
-  Failures: generic/464 generic/551
-  Flaky: generic/650: 60% (3/5)
-Totals: 542 tests, 392 skipped, 13 failures, 0 errors, 3933s
-
-The stress test also suggest there is no regression for the erofs
-too.
-
-Using the simple API also enable the caller to not zero the array
-before calling the page bulk allocating API, which has about 1~2 ns
-performance improvement for time_bench_page_pool03_slow() test case
-of page_pool in a x86 vm system, this reduces some performance impact
-of fixing the DMA API misuse problem in [3], performance improves
-from 87.886 ns to 86.429 ns.
-
-Also a temporary patch to enable the using of full-featured API in
-page_pool suggests that the new full-featured API doesn't seem to have
-noticeable performance impact for the existing users, like SUNRPC, btrfs
-and erofs.
-
-1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
-2. https://lore.kernel.org/all/180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com/
-3. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
-CC: Jesper Dangaard Brouer <hawk@kernel.org>
-CC: Luiz Capitulino <luizcap@redhat.com>
-CC: Mel Gorman <mgorman@techsingularity.net>
-Suggested-by: Neil Brown <neilb@suse.de>
-Acked-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
 ---
-V3:
-1. Provide both simple and full-featured API as suggested by NeilBrown.
-2. Do the fs testing as suggested in V2.
+ fs/btrfs/bio.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-V2:
-1. Drop RFC tag.
-2. Fix a compile error for xfs.
-3. Defragmemt the page_array for SUNRPC and btrfs.
----
- drivers/vfio/pci/mlx5/cmd.c       |  2 --
- drivers/vfio/pci/virtio/migrate.c |  2 --
- fs/btrfs/extent_io.c              | 21 +++++++++---------
- fs/erofs/zutil.c                  | 11 +++++----
- include/linux/gfp.h               | 37 +++++++++++++++++++++++++++++++
- include/trace/events/sunrpc.h     | 12 +++++-----
- kernel/bpf/arena.c                |  1 -
- mm/page_alloc.c                   | 32 +++++---------------------
- net/core/page_pool.c              |  3 ---
- net/sunrpc/svc_xprt.c             | 12 ++++++----
- 10 files changed, 72 insertions(+), 61 deletions(-)
-
-diff --git a/drivers/vfio/pci/mlx5/cmd.c b/drivers/vfio/pci/mlx5/cmd.c
-index 11eda6b207f1..fb094527715f 100644
---- a/drivers/vfio/pci/mlx5/cmd.c
-+++ b/drivers/vfio/pci/mlx5/cmd.c
-@@ -446,8 +446,6 @@ static int mlx5vf_add_migration_pages(struct mlx5_vhca_data_buffer *buf,
- 		if (ret)
- 			goto err_append;
- 		buf->allocated_length += filled * PAGE_SIZE;
--		/* clean input for another bulk allocation */
--		memset(page_list, 0, filled * sizeof(*page_list));
- 		to_fill = min_t(unsigned int, to_alloc,
- 				PAGE_SIZE / sizeof(*page_list));
- 	} while (to_alloc > 0);
-diff --git a/drivers/vfio/pci/virtio/migrate.c b/drivers/vfio/pci/virtio/migrate.c
-index ba92bb4e9af9..9f003a237dec 100644
---- a/drivers/vfio/pci/virtio/migrate.c
-+++ b/drivers/vfio/pci/virtio/migrate.c
-@@ -91,8 +91,6 @@ static int virtiovf_add_migration_pages(struct virtiovf_data_buffer *buf,
- 		if (ret)
- 			goto err_append;
- 		buf->allocated_length += filled * PAGE_SIZE;
--		/* clean input for another bulk allocation */
--		memset(page_list, 0, filled * sizeof(*page_list));
- 		to_fill = min_t(unsigned int, to_alloc,
- 				PAGE_SIZE / sizeof(*page_list));
- 	} while (to_alloc > 0);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 197f5e51c474..51ef15703900 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -623,21 +623,22 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
- 			   bool nofail)
- {
- 	const gfp_t gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
--	unsigned int allocated;
--
--	for (allocated = 0; allocated < nr_pages;) {
--		unsigned int last = allocated;
-+	int ret;
- 
--		allocated = alloc_pages_bulk(gfp, nr_pages, page_array);
--		if (unlikely(allocated == last)) {
-+	do {
-+		ret = alloc_pages_bulk_refill(gfp, nr_pages, page_array);
-+		if (unlikely(ret == -ENOMEM)) {
- 			/* No progress, fail and do cleanup. */
--			for (int i = 0; i < allocated; i++) {
--				__free_page(page_array[i]);
--				page_array[i] = NULL;
-+			for (int i = 0; i < nr_pages; i++) {
-+				if (page_array[i]) {
-+					__free_page(page_array[i]);
-+					page_array[i] = NULL;
-+				}
- 			}
- 			return -ENOMEM;
- 		}
--	}
-+	} while (ret == -EAGAIN);
-+
- 	return 0;
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 8c2eee1f1878..f6f84837d62b 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -892,6 +892,14 @@ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_
+ 	btrfs_bio_end_io(bbio, errno_to_blk_status(ret));
  }
  
-diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
-index 55ff2ab5128e..6ce11a8a261c 100644
---- a/fs/erofs/zutil.c
-+++ b/fs/erofs/zutil.c
-@@ -68,7 +68,7 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
- 	struct page **tmp_pages = NULL;
- 	struct z_erofs_gbuf *gbuf;
- 	void *ptr, *old_ptr;
--	int last, i, j;
-+	int ret, i, j;
- 
- 	mutex_lock(&gbuf_resize_mutex);
- 	/* avoid shrinking gbufs, since no idea how many fses rely on */
-@@ -86,12 +86,11 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
- 		for (j = 0; j < gbuf->nrpages; ++j)
- 			tmp_pages[j] = gbuf->pages[j];
- 		do {
--			last = j;
--			j = alloc_pages_bulk(GFP_KERNEL, nrpages,
--					     tmp_pages);
--			if (last == j)
-+			ret = alloc_pages_bulk_refill(GFP_KERNEL, nrpages,
-+						      tmp_pages);
-+			if (ret == -ENOMEM)
- 				goto out;
--		} while (j != nrpages);
-+		} while (ret == -EAGAIN);
- 
- 		ptr = vmap(tmp_pages, nrpages, VM_MAP, PAGE_KERNEL);
- 		if (!ptr)
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index c9fa6309c903..cf6100981fd6 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -244,6 +244,43 @@ unsigned long alloc_pages_bulk_mempolicy_noprof(gfp_t gfp,
- #define alloc_pages_bulk(_gfp, _nr_pages, _page_array)		\
- 	__alloc_pages_bulk(_gfp, numa_mem_id(), NULL, _nr_pages, _page_array)
- 
-+/*
-+ * alloc_pages_bulk_refill_noprof - Refill order-0 pages to an array
-+ * @gfp: GFP flags for the allocation when refilling
-+ * @nr_pages: The size of refilling array
-+ * @page_array: The array to refill order-0 pages
-+ *
-+ * Note that only NULL elements are populated with pages and the pages might
-+ * get re-ordered.
-+ *
-+ * Return 0 if all pages are refilled, -EAGAIN if at least one page is refilled,
-+ * ok to try again immediately or -ENOMEM if no page is refilled and don't
-+ * bother trying again soon.
-+ */
-+static inline int alloc_pages_bulk_refill_noprof(gfp_t gfp, int nr_pages,
-+						 struct page **page_array)
++void __cold btrfs_bioset_exit(void)
 +{
-+	int allocated = 0, i;
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		if (page_array[i]) {
-+			swap(page_array[allocated], page_array[i]);
-+			allocated++;
-+		}
-+	}
-+
-+	i = alloc_pages_bulk_noprof(gfp, numa_mem_id(), NULL,
-+				    nr_pages - allocated,
-+				    page_array + allocated);
-+	if (likely(allocated + i == nr_pages))
-+		return 0;
-+
-+	return i ? -EAGAIN : -ENOMEM;
++	mempool_exit(&btrfs_failed_bio_pool);
++	bioset_exit(&btrfs_repair_bioset);
++	bioset_exit(&btrfs_clone_bioset);
++	bioset_exit(&btrfs_bioset);
 +}
 +
-+#define alloc_pages_bulk_refill(...)				\
-+	alloc_hooks(alloc_pages_bulk_refill_noprof(__VA_ARGS__))
-+
- static inline unsigned long
- alloc_pages_bulk_node_noprof(gfp_t gfp, int nid, unsigned long nr_pages,
- 				   struct page **page_array)
-diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
-index 5d331383047b..cb8899f1cbdc 100644
---- a/include/trace/events/sunrpc.h
-+++ b/include/trace/events/sunrpc.h
-@@ -2143,23 +2143,23 @@ TRACE_EVENT(svc_wake_up,
- TRACE_EVENT(svc_alloc_arg_err,
- 	TP_PROTO(
- 		unsigned int requested,
--		unsigned int allocated
-+		int ret
- 	),
- 
--	TP_ARGS(requested, allocated),
-+	TP_ARGS(requested, ret),
- 
- 	TP_STRUCT__entry(
- 		__field(unsigned int, requested)
--		__field(unsigned int, allocated)
-+		__field(int, ret)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->requested = requested;
--		__entry->allocated = allocated;
-+		__entry->ret = ret;
- 	),
- 
--	TP_printk("requested=%u allocated=%u",
--		__entry->requested, __entry->allocated)
-+	TP_printk("requested=%u ret=%d",
-+		__entry->requested, __entry->ret)
- );
- 
- DECLARE_EVENT_CLASS(svc_deferred_event,
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 0d56cea71602..9022c4440814 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -445,7 +445,6 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
- 			return 0;
- 	}
- 
--	/* zeroing is needed, since alloc_pages_bulk() only fills in non-zero entries */
- 	pages = kvcalloc(page_cnt, sizeof(struct page *), GFP_KERNEL);
- 	if (!pages)
- 		return 0;
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d7cfcfa2b077..59a4fe23e62a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4784,9 +4784,6 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-  * This is a batched version of the page allocator that attempts to
-  * allocate nr_pages quickly. Pages are added to the page_array.
-  *
-- * Note that only NULL elements are populated with pages and nr_pages
-- * is the maximum number of pages that will be stored in the array.
-- *
-  * Returns the number of pages in the array.
-  */
- unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
-@@ -4802,29 +4799,18 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
- 	struct alloc_context ac;
- 	gfp_t alloc_gfp;
- 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
--	int nr_populated = 0, nr_account = 0;
--
--	/*
--	 * Skip populated array elements to determine if any pages need
--	 * to be allocated before disabling IRQs.
--	 */
--	while (nr_populated < nr_pages && page_array[nr_populated])
--		nr_populated++;
-+	int nr_populated = 0;
- 
- 	/* No pages requested? */
- 	if (unlikely(nr_pages <= 0))
- 		goto out;
- 
--	/* Already populated array? */
--	if (unlikely(nr_pages - nr_populated == 0))
--		goto out;
--
- 	/* Bulk allocator does not support memcg accounting. */
- 	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT))
- 		goto failed;
- 
- 	/* Use the single page allocator for one page. */
--	if (nr_pages - nr_populated == 1)
-+	if (nr_pages == 1)
- 		goto failed;
- 
- #ifdef CONFIG_PAGE_OWNER
-@@ -4896,24 +4882,16 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
- 	/* Attempt the batch allocation */
- 	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
- 	while (nr_populated < nr_pages) {
--
--		/* Skip existing pages */
--		if (page_array[nr_populated]) {
--			nr_populated++;
--			continue;
--		}
--
- 		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
- 		if (unlikely(!page)) {
- 			/* Try and allocate at least one page */
--			if (!nr_account) {
-+			if (!nr_populated) {
- 				pcp_spin_unlock(pcp);
- 				goto failed_irq;
- 			}
- 			break;
- 		}
--		nr_account++;
- 
- 		prep_new_page(page, 0, gfp, 0);
- 		set_page_refcounted(page);
-@@ -4923,8 +4901,8 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
- 	pcp_spin_unlock(pcp);
- 	pcp_trylock_finish(UP_flags);
- 
--	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
--	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_account);
-+	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_populated);
-+	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_populated);
- 
- out:
- 	return nr_populated;
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 7745ad924ae2..2431d2f6d610 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -541,9 +541,6 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
- 	if (unlikely(pool->alloc.count > 0))
- 		return pool->alloc.cache[--pool->alloc.count];
- 
--	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk */
--	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
--
- 	nr_pages = alloc_pages_bulk_node(gfp, pool->p.nid, bulk,
- 					 (struct page **)pool->alloc.cache);
- 	if (unlikely(!nr_pages))
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index ae25405d8bd2..1191686fc0af 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -653,7 +653,8 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
+ int __init btrfs_bioset_init(void)
  {
- 	struct svc_serv *serv = rqstp->rq_server;
- 	struct xdr_buf *arg = &rqstp->rq_arg;
--	unsigned long pages, filled, ret;
-+	unsigned long pages;
-+	int ret;
+ 	if (bioset_init(&btrfs_bioset, BIO_POOL_SIZE,
+@@ -900,29 +908,17 @@ int __init btrfs_bioset_init(void)
+ 		return -ENOMEM;
+ 	if (bioset_init(&btrfs_clone_bioset, BIO_POOL_SIZE,
+ 			offsetof(struct btrfs_bio, bio), 0))
+-		goto out_free_bioset;
++		goto out;
+ 	if (bioset_init(&btrfs_repair_bioset, BIO_POOL_SIZE,
+ 			offsetof(struct btrfs_bio, bio),
+ 			BIOSET_NEED_BVECS))
+-		goto out_free_clone_bioset;
++		goto out;
+ 	if (mempool_init_kmalloc_pool(&btrfs_failed_bio_pool, BIO_POOL_SIZE,
+ 				      sizeof(struct btrfs_failed_bio)))
+-		goto out_free_repair_bioset;
++		goto out;
+ 	return 0;
  
- 	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
- 	if (pages > RPCSVC_MAXPAGES) {
-@@ -663,9 +664,12 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
- 		pages = RPCSVC_MAXPAGES;
- 	}
- 
--	for (filled = 0; filled < pages; filled = ret) {
--		ret = alloc_pages_bulk(GFP_KERNEL, pages, rqstp->rq_pages);
--		if (ret > filled)
-+	while (true) {
-+		ret = alloc_pages_bulk_refill(GFP_KERNEL, pages, rqstp->rq_pages);
-+		if (!ret)
-+			break;
-+
-+		if (ret == -EAGAIN)
- 			/* Made progress, don't sleep yet */
- 			continue;
- 
+-out_free_repair_bioset:
+-	bioset_exit(&btrfs_repair_bioset);
+-out_free_clone_bioset:
+-	bioset_exit(&btrfs_clone_bioset);
+-out_free_bioset:
+-	bioset_exit(&btrfs_bioset);
++out:
++	btrfs_bioset_exit();
+ 	return -ENOMEM;
+ }
+-
+-void __cold btrfs_bioset_exit(void)
+-{
+-	mempool_exit(&btrfs_failed_bio_pool);
+-	bioset_exit(&btrfs_repair_bioset);
+-	bioset_exit(&btrfs_clone_bioset);
+-	bioset_exit(&btrfs_bioset);
+-}
 -- 
-2.33.0
+2.39.0
 
 
