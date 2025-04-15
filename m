@@ -1,60 +1,61 @@
-Return-Path: <linux-btrfs+bounces-13017-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13018-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E9DBA8927E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 05:19:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D97B1A8927F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 05:19:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 217AD7A5E65
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 03:18:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD02189C4FE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 03:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B99420ADE6;
-	Tue, 15 Apr 2025 03:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C0F2135C9;
+	Tue, 15 Apr 2025 03:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="lCEKe4qa"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="HB5SYn1g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11011008.outbound.protection.outlook.com [52.101.129.8])
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2052.outbound.protection.outlook.com [40.107.117.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B132DFA41;
-	Tue, 15 Apr 2025 03:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.129.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299BB13EFE3;
+	Tue, 15 Apr 2025 03:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744687162; cv=fail; b=WGLNsptU0in0gSWgPQZYBtsvD6BbzqCxN+913EjT/v8w7QZatO6coiepdsBXVulmJB/26pm2NKynFSHRwchY/BBbU6uiQB1UqBBU3lKl56PHMFhPSjUZm2UUCxXJ2krgGLBIBVTB3L5Xv0fRMQK4jFRj35BXmcbG317C18gzFsM=
+	t=1744687163; cv=fail; b=P6RTFJ9aty9eFruYWYJToHp+FI6zIkhisWIO3Z4dE4ClBrnuGldUpfG4KqfWWxGxGDnMlFO4epHUR3Ux0p7mW+NBy4XK9lS6T7vxXZ8pYd/hijQqSwZ9GO2RZahjUnPDiLO5sBOPmORjS8FNg2uqTE8BO1SNQtALz4zkZPf47Cg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744687162; c=relaxed/simple;
-	bh=lhsM8FBGq3WwS+s39CCV3mCr2QKfVHftUKqnfxwuLB4=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=R7Ed4kxDrl8Vhrjy/rk2ktWizWaJ+PES001g6EtWX6Rgx5aELDI84JNLtD+lTynRD8qOckuCFofVxOWdnPaHkXiO7LRQaGbIrXYyNxLLLl6xTVeswdcS1Jc56wV70SnbDu7fzCU6k4KcgQMHUhq5422+yhw9jDzgssBiA4cmJwA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=lCEKe4qa; arc=fail smtp.client-ip=52.101.129.8
+	s=arc-20240116; t=1744687163; c=relaxed/simple;
+	bh=q0b4M3TTTy68KtFXlchvcknYh/oVESYWR1jXRy+2kOs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cTrIvk5SI8BcVtsDGn+4iRzVqGcLcsLS+NaZ+eHciN2h7IYWusdX/SU5NxqOEaqf5TEVktN0vCaq8AGQVopn/wZJk3MqHWhFrIKGehwaJd7Jb9NNQupEhaFKjjpeE5cZlMBV/ODCKEiKnPaCqvhmbfJS+DfS+79AX8ewJ3zGiNs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=HB5SYn1g; arc=fail smtp.client-ip=40.107.117.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mXl0kDsn2rJnBAukirXTcRUQi3PhATUClbpuSH73rVy4TWnmZ9UOrUtTf/tmNXAWKBBSR7eW01VYRnhl7zmq28BDMwIqAeexNm/ZZw38YdAZ5UmlNdAM2pg3rN1hmpJn2xnFVhrolcT1Cv2Tuang43npdYU9+gQIq6+rUwJ5caK7KayVIvjR+VcAXJoeyfMvuBN9b6lGSKygVlZvyZIIb3/ySN796QR/hL3NsUu+sVCeb8Dnv8iwOvOdjZGZR+FvKTmiH/83MPJPZk5am88GifW0A8AXKOaiA0bjypJHp5v7/R0/sg7Ps6iOBo5Agn1mnyXwogYg3n/CPJTHr+EirA==
+ b=IrU4tn+B7onDv3TiXchnr0870BTwabnUywosofWL0Qy+VEYprC/o234qSwinmmtAdpInEH4G2XFpoyxk2C0mw54s9G4lWJGW+0x7gPT0aiFW9IVHspxW/D1IWNWwp9CSQAM3qgcOgyymL5ADxlboZmbXJXfe3B+933O3b6MHs2O82tUJctw/Bma9kmtf0TLc+Q4mL3bzgJNGV0fiBbwn3dnTxJeOdbmlrkK3LBRa6YGu9sDe+ko2qSVA/bvAcC0D4zyvpQlgflPwBmuy3lo2Hg0dmqrFz364JFxo+pavDaJZqJBhWbZ2EwlNrJSjdgt65iJqL8GunbPKubdkA0YTvg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KlHMmETapy01h596qhm417/EdFir6kaB06CqLT90rm4=;
- b=CZ+SdBmn27gB7ruGzrTJKBOZ4PFo9mq97YBf5+h6qcUjRoFcXasPWiwG5KDQS02JC5kxmls9/OFTZkNntqNTXach4e/ppcqiuY8HvxoL2+LL1QDVyTaV8g4dVfLvKLLka3mKf8NNNmP4zg4KNfvMh8fpLPL4s29TgpEhiflKemqp1f8T5ciAXy7tG0537C+5tuuNlohMiT1DmiLM0542JwcrqNxuJgC1o+yZuLB62odiFz3dnH3eSLqyruY+0hFJQ41C8UWnxMSXZYdJQ1t6slL+R8AjNlkJDZAwc4qIzitApEym+uRvUt6mFYCsYzyg4NvzLG532dg0ar50S03rgA==
+ bh=oo4i8JaJgfJ85ybghD5Dw0dqlaoOBccGvljggKm8gGU=;
+ b=BYG+a8jasrmv90cKrsO/snkBeUXFYOJ0gW7TvSX4/ZK3YXPn4hFbLb5iOGUOMoeLiu/8U5fw8T+k1+qh74nqf6TuZEWyKnXB57USwI1qoBZZemCZMfGBgjrdMM0+3h3p9iNLUGTx+R7SStd3uqtmMXlWWSoPZahZp5dWv4BJEYzW85Ga8QqWEPd2XraoikhmcLTVuBl4W29K9T/DKu38pfM5XErLA5FkLZmvaW8Ec8rtmpzBuE4OjRKrMD8iAHYVQ2LCdg06T9kLaFtrWCPalr/Pm8k+V8S203kQAzkWRxDBetwziDAHeR8u3v88NVsm5rv8B7AjwqwRXY2GYpRwIg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KlHMmETapy01h596qhm417/EdFir6kaB06CqLT90rm4=;
- b=lCEKe4qaBaAi/QDKBQStNAHzV6d1uLzdIcqr4nqGOYnx0mTO7E8eBHNw3s4sRYbFoo1cM0ZMyGYb8VKmJADT/of2lZJVTFVZribrFZg1yBPvNFgDM4wQ+uqedN/TTKtoUD7G2720A6yojEEAy9SO/mYE1dL0Jxagf3PqS5dwwgUqoInzool2Gmk2NCEa2LfT/C2XMd1B2C39tc6PQqN/Op2HvOb8WNQ9zZQNzjjvUenSkIbmMvKNCGBQbs2FEWYvLKImDtojuZ7QfN/1k/GzGADHPZ9n9TVpZFWTHaHdmnz6LTBayBcFBrAkMJPbEL+zbUDOMpJw4yHkcLbzokvA4A==
+ bh=oo4i8JaJgfJ85ybghD5Dw0dqlaoOBccGvljggKm8gGU=;
+ b=HB5SYn1gfMqMSd5MmCz8kP1YXIVowMR/gll/fz1hruW7lHOETl8a0spKrH69Tc8M8bZ6pWxbNEgydH/VrZPRelzykN7G0X+pa4fExHD+BCCi8/v3i7wlXHfPww3rx2s+5NBRUtjvcyDjvLiHPaaxQWEuHdtvi3+pc28VeYrA6ib4SEFVA0l8oAmR+ldTsnM6486wF3w9cjiTLNtI8MTRI4cSaEsoZ/MB9ybugfgmk5Z99Lcxl88nc+XgJF/Kt98reNRc7emwiUIbqZYWEnJqd2wq/ONpXuegX9KRArqQ34bNw3QghJ73YfJJYK4NQVM3kd9sFFxDnrLOgtW7RH1huw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by JH0PR06MB6319.apcprd06.prod.outlook.com (2603:1096:990:b::8) with
+ by JH0PR06MB7106.apcprd06.prod.outlook.com (2603:1096:990:9c::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8606.36; Tue, 15 Apr
- 2025 03:19:16 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8606.35; Tue, 15 Apr
+ 2025 03:19:17 +0000
 Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
  ([fe80::8c74:6703:81f7:9535]) by SEZPR06MB5269.apcprd06.prod.outlook.com
  ([fe80::8c74:6703:81f7:9535%6]) with mapi id 15.20.8632.030; Tue, 15 Apr 2025
- 03:19:15 +0000
+ 03:19:17 +0000
 From: Yangtao Li <frank.li@vivo.com>
 To: clm@fb.com,
 	josef@toxicpanda.com,
@@ -63,10 +64,12 @@ Cc: linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yangtao Li <frank.li@vivo.com>,
 	Daniel Vacek <neelx@suse.com>
-Subject: [PATCH 1/3] btrfs: get rid of path allocation in btrfs_del_inode_extref()
-Date: Mon, 14 Apr 2025 21:38:52 -0600
-Message-Id: <20250415033854.848776-1-frank.li@vivo.com>
+Subject: [PATCH 2/3] btrfs: get rid of path allocation in btrfs_insert_inode_extref()
+Date: Mon, 14 Apr 2025 21:38:53 -0600
+Message-Id: <20250415033854.848776-2-frank.li@vivo.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250415033854.848776-1-frank.li@vivo.com>
+References: <20250415033854.848776-1-frank.li@vivo.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SI2PR01CA0052.apcprd01.prod.exchangelabs.com
@@ -79,83 +82,83 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|JH0PR06MB6319:EE_
-X-MS-Office365-Filtering-Correlation-Id: d286270f-3d55-4486-f3cb-08dd7bcc4d01
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|JH0PR06MB7106:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b977857-0f14-4deb-9985-08dd7bcc4e62
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|52116014|376014|366016|1800799024|38350700014;
+	BCL:0;ARA:13230040|366016|52116014|376014|1800799024|38350700014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?iMwRybCQ3j1j5szdoCNTMaGHscPwAVjMVnG+pabDVDUvDx9971BlobhSWM0S?=
- =?us-ascii?Q?XXyZn1LWP2yjT82gNrH0Ipe8+6VuUufSDL4YhJJrzVQvUYsiijQgPOmllJEY?=
- =?us-ascii?Q?iARlsgm+VND3pJ+DQ2kvfFTdAjUqDVxnMTzDRXXck7d5mVy6VHWL1D+baTE9?=
- =?us-ascii?Q?BR25Z3NaQbk1MNRN1j/42Tkzc6QbmpZnGIa2pFQYvKXz442+XwZ5trn+bm7D?=
- =?us-ascii?Q?bo/ZgwWRqDs494HNMBGlaIyCcxz8tRAWyoSda6rjBI1r65aLMvyheACyFTbM?=
- =?us-ascii?Q?nrDObASYqBym9E3z6Mt1I+DdixOS7rOgF1rWaRw9YuAuGntRdFfFOLdB4MxF?=
- =?us-ascii?Q?zpyE0fOg3Kdp4YwXwsZ251cRt9obytbh8MuGAQrxX6n6CV5haNjnqHUoyhqz?=
- =?us-ascii?Q?BPBBiPVYNt6nX/rmPYfPHkemoPiegz/2g/JRioxPJm4X0ZxPH+don93N4JcN?=
- =?us-ascii?Q?a5QEd2yx5gc0EHTolTZ8qlEJh3L6thzuRYMbY2m7G3V2PoFOdPwIHVEN6BKQ?=
- =?us-ascii?Q?vaM6PPBV8uUWjZvV0zB6B0OVhVhhod0qtsRAw0B+aDYu8UvEH1+8couDbh39?=
- =?us-ascii?Q?xtKFW1ebcti5jZyUe2TDneunfFTw2x6RQzORlIeGmD8IRakQWHRMN4+Af/qe?=
- =?us-ascii?Q?PRWnDL1roP5d88/4rSfue10Ji2hvvJsG/fYffzA74UxXuaHjsQFBsdl215XZ?=
- =?us-ascii?Q?dBnTgSX0WTWL/ANjwsQEL0hzarUDQ7xTZJ5VBW0gEjcb7kQwb+zMewK8AQYA?=
- =?us-ascii?Q?vYJGCIsqK7d+QatLg3q7CbJUKzraYw9uaXhZKBW3wAjGPUYKOMfvR8KM69dT?=
- =?us-ascii?Q?iy8e04/4M0Ah5/L6dT4jRUJt1SvCdknMjr7SRsg7wsW8b/FZX935JVWHmOT9?=
- =?us-ascii?Q?4k3rauN4s3bgkkbWipsoBxer0ZbVF+5tAaMVnmIieIBVkLtUBY2aaU6C7SPl?=
- =?us-ascii?Q?mmCBGldmyedCeEy8jHfi+blG/bzMx4iy+Z9O8vcC5Er1waJMLBqLmq/PNZB7?=
- =?us-ascii?Q?Ldb0xkAAPxr7lIxgBmgWFt8+SFIF2z9qaLpLvh3TQSH4rgPASeQJ50TXjxca?=
- =?us-ascii?Q?dInq3gWZbAwf+ip68GBocp0m4SM4ZsbYV6I5nHHjbiLhvYaKOnghZS2ZXJmz?=
- =?us-ascii?Q?VNptad/z6fUq7b+fWbIANLHmV2q3wNpmG3xXhOALzj+GeGKDS5mU33Kxp+4s?=
- =?us-ascii?Q?Jq36p3fw22PYDxfMNoa9GkqNwJ/iNUf84VS7Kq411aK3aFiV+o97nlF/PBcT?=
- =?us-ascii?Q?sdpbI68K8IFa26Yp0/tIq3ob1jv1XSza3OqAlSiE1EZpJk8lU4AvjlvG5Xg7?=
- =?us-ascii?Q?37jOkU1LxVdKjUwuVHm5tvqKDwTlpacCMp+xd+deBj/p64y36AL2xTX0u+De?=
- =?us-ascii?Q?HbrP8kAwUzoFX4kG5eKxtHylDw8HC4clz/UolJp4MpsI2zXzCIg7PGgs7b9J?=
- =?us-ascii?Q?uhztDzrhlamXPMk4re4W0KRPsmjk+YDOtUCvu3+/qCeCX+iE3unDWA=3D=3D?=
+	=?us-ascii?Q?ZNgGydi+5frkhm9KeGAWh9zH1dSBhex7gm1fi3ZRFMlWJ+Ticm51myJfWqpX?=
+ =?us-ascii?Q?KoJPnJ73OiRuJ4JGKK9BYwHhse3Ttg1pikLuYXfKxoBXcAGJ3b1pD0fuKWOz?=
+ =?us-ascii?Q?L5Boy96GHBdhb7LCS0rsdjs/d+heOJwLUkTrJAB1pYjhvlEG20/97Iq0lI2K?=
+ =?us-ascii?Q?FJduOdfV33QsChE+U3J/uc0VxrXgb4A+9sxnNQBj/5X56XBPBYPeHzSgxMq7?=
+ =?us-ascii?Q?7hDUZ1dzGjd1yD60UJSgWRB0KkqwBx6MSLrrH4LwIMPKJWoN99HiMFixld9N?=
+ =?us-ascii?Q?icIKo41FG88XcyuIB/YtFw6ntvShoXxl8nZ167qdP/EZO96lc0Pj5P5f7vup?=
+ =?us-ascii?Q?8Jz2LJpItKC/t/IcVIt90twCYwisqEBHiYHTu47yXx2/N1NfAiw/iIgljPAd?=
+ =?us-ascii?Q?JijsgRGDNxL78dR20Eld2dzWwIXQY+IC851iKcnCqR3uQMXTc7GVef0eIXKI?=
+ =?us-ascii?Q?aq1f33AzSl6VTG4XCrqP5L+mJrI306tc84dJl2aDh46A1a+Gj0w7ogQFlx+i?=
+ =?us-ascii?Q?c1dXAajd6dxmxZNcOSKcG8HQLeQV7BaIAqSLJ5kAsNdUSv1+tKu+Q+WLqpnI?=
+ =?us-ascii?Q?J+xurzPD24hLAghSDTRJTBtTey/oM+w5UtAg+dWP5CBqQDliTNklIdph4g63?=
+ =?us-ascii?Q?pOfIr2jo47/Un2D7QOO6K08fzMXsyxYqARAT4C2h4VFdCkTHs8bPI82yUzLQ?=
+ =?us-ascii?Q?VKjk1vs3KYCLR4aq62nucWzCe4IN86xeFymrc5OAt9a28hp6w378LBIIKptn?=
+ =?us-ascii?Q?MHFRGRqk50pdwF82Mtw3uBhdiQjS6NHIjVRCkSEGkQdrbKNYA1qwuW5K6tO2?=
+ =?us-ascii?Q?jB+SnO7Z1TqQU7lCrhq/97qphhxYZwJeotYB+wYCgecyaW8rP26eS5Et1faq?=
+ =?us-ascii?Q?2gjY6fgkDEWxYmLTU7jcaAvy2H8cLrWZEsyqX+0LE+pCcxB91dT8M6gb8xz9?=
+ =?us-ascii?Q?SW/QjBtExd0RURGrsz0RiahUt7ZFuZBx7jKTXD+YHq2p0y3F7Ma7sqbYG6Ev?=
+ =?us-ascii?Q?fG9NcZxBRGCSaysgg11s2tTxAU4EU8A08rWXlwtimhPX+BO2PfYWI5I6NV17?=
+ =?us-ascii?Q?yVY5eIDkUYBwjaiibXZj8L25Bh9/dddnCBfir3Uyz0/mujAygxGVRGt+zt6j?=
+ =?us-ascii?Q?fPzR0Qlq+LZ7cy/IaHgiduroOD2XqUVpYGwziFxdkiBhEl2p8c/BQROOKzUv?=
+ =?us-ascii?Q?3Ec73iSMr5OqY8P0C04L7rRIePUU38M2D08/qcY03L40HVbGeCFZhqXNu/Kc?=
+ =?us-ascii?Q?kEkVfh5ndHMsxpG60jyR9wXYjS4KPyEG0LgH2dFPtCu+3/eaq5VL2Y6BeIcz?=
+ =?us-ascii?Q?PMcjXjxiJpohiT8A8v1B20T9edkn8azy9Jzjy+ySsbV2FGujU+d0kyLzLitX?=
+ =?us-ascii?Q?i2SUDeLx31KPjEsXN/a87KNCH/eMYxtiqomY7FLU0q+IQN2wJbsNQiVB64r8?=
+ =?us-ascii?Q?BP0cu3jW5eSlfBW+00tQ2krZkPuECeD8n8zU69AcUn8cspICctkqFg=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(376014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(52116014)(376014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?o67qlsTCkJnmjmlepvbXfg6B0fdX56BvDQAcI8/d4pdDLncBLVMdn2WOxFxD?=
- =?us-ascii?Q?2PEMWvZ2xFoP/fs1Kk1+RC5I5tUCY4NksTkLxdv1BNur/atviSDuNQMcnl2+?=
- =?us-ascii?Q?+3ue29DtjaOg0spfX5JaGA/ea4wxStj96SpZoi+hViqv2MjNGRW4ZKVC07dV?=
- =?us-ascii?Q?edeVW/fVfvxpMH5O0436JVJyrvpu6KyBxht0QLW7n8i63iJdkkn6AAtqQyI2?=
- =?us-ascii?Q?qZ0TSnTD/Xcvnl5Ir5TWf9SM8ZgIjBmfppVqh9dImpslSsVkYFiaJUs0YJa6?=
- =?us-ascii?Q?PEMgBuEWYv915TczKh67RhlHFEXvKxCHxAgu/eBa6veJjXry6Fu1le/y9r3H?=
- =?us-ascii?Q?qHsmWhyts9DbwnV/PN6QjlMGMopt+3LrHok4H6VEbmDICqYXoYdQEl8/kpCj?=
- =?us-ascii?Q?ZHsrOGX90HEjbIGcCjTk8lRrS2d/12bQeNd302114k32/1ajtGJ8L7jIatOa?=
- =?us-ascii?Q?k/CCUHyjHQtfsabWKDUKCzEopRCfcKOCORoQJmIqwH3W8b509l6PecYGY9n/?=
- =?us-ascii?Q?YGmlN1r30C2dZv4cN9u5Q5doGgl6bYhRxjnMP00Mu/lVSA5P8rIg/okjQF2e?=
- =?us-ascii?Q?iEX9bXyMmk6tJuFrv9SIVL3JHAE2r9GPFWTZ0JMsz/7SdmOsd3VBqxaiaPID?=
- =?us-ascii?Q?0KIwrx3xOy7nt8g/qEvAY8Y3AJ539DKre4Lxv0sZbYH3uuK40x9+MbRqa/SV?=
- =?us-ascii?Q?VKK4roT6NXcQoZOM7VunYaFPmpUeWOUdAetsKNE6EjQ2VVJVQx6A+FkbY2AA?=
- =?us-ascii?Q?B6him/HU6gqEWr0LX+x+kSo5KFBk5CxX8ZIbsMQFWwZiS0bi6ERjhC6LFUyt?=
- =?us-ascii?Q?WYMQopq4Pfc0CDml56TJlJxI7xQ39FqsT5wx8fqSmDEnxlhADeWOEg0i2HYb?=
- =?us-ascii?Q?qFNrYphuzCj2hQtdQjS8t1W0VSI8BoT0ZgWrONWbm0JlFNwoCe2NOPaLLrqt?=
- =?us-ascii?Q?k2xQ4jMcNCuTU9eQ1AmXRSBF+MugeqOtk8GbeGRg38ssd2flrRcC+kqVpjeb?=
- =?us-ascii?Q?edwZoMTZ/LUqJwC1Rydsvv8hpeIvQgPasNvf8vyeaB9v8r2nvMc3IPudtOLQ?=
- =?us-ascii?Q?B3qZRN/EdhgA029yJCKjocNroefocAdbUI0L2SVpTOYjiw34h0eJAlyj+S5n?=
- =?us-ascii?Q?ed2ulOT5EQam+Ioin8k6a+4QnEfe3cRMYtYD7jG3QzpKqJ+LH+j8fr9YPFft?=
- =?us-ascii?Q?6Z8oZn2c9Fyq9SFRGjP+2oM8r8VDo7STZq+w7/FrF2Gj9i8P52/XvZzHzXYM?=
- =?us-ascii?Q?8o4x/g2mUjRHNcl+7FAWYlJDIxyRNo0hDyte6mHu1DeWsN7iR+lhS35tOSFX?=
- =?us-ascii?Q?zRmrX8v0nhNnWe2QlATCoxoW1tlVT1pOPy2u4bcad7Tmpd3NUWMh+el18O7x?=
- =?us-ascii?Q?ltYuJ7Z2L5pZlb3nKwboJ6WWKwT8Cl+pe1d2PFpcL7jqTPBfmhDp4xQGz0tX?=
- =?us-ascii?Q?rx5V3rsxIuCZ/lusocHn5++vZUuf45uM9Tuj4xN68z34L0DpjyAY8PA1dAqH?=
- =?us-ascii?Q?gt6aWq4Gm7axmHOwhn95wG8Abk1A5iuCXKTh5H27aBTVEptpiJx/R+wamMVw?=
- =?us-ascii?Q?a8PwMK+0pNt7cVZfV+A6FOs28RfBA7APwKfDOxFh?=
+	=?us-ascii?Q?mLpkB0lGif5Snx9y3fhrhipbLF894IzDUia7+DvHNoSf/ThiHFZZZBtO0bwA?=
+ =?us-ascii?Q?dwwYCCV/TdiH/b/ltvXdfn6u6HurrTWaQ+8tIGocNb8XjlxOrsg2Gl5RYTMf?=
+ =?us-ascii?Q?We689SWxxUnYx3W/MXbO9yzXN1GmLztNP5V40GD5/jZSRlac18fCnGl7vJJ5?=
+ =?us-ascii?Q?aAw9rshXO8gV1pujWb68mMAIYdyaje2fbVMy563uhBkoHwHyUsrhFl5UpG8H?=
+ =?us-ascii?Q?jQzFAxsidJBJBHWQcNAC7Bqx94qEvhM12YzC8pEPZJMeI9GQXRHIgaImgua1?=
+ =?us-ascii?Q?YMHi4eF3NIHMgjU88x6QSkalqG3Z2oWQkT5X6Y5UgXiHaUr2ZpJpab84odS7?=
+ =?us-ascii?Q?byLrpuKubEEycqzy/Uwjn50HI8OZRem90WOF9eneIDPDGhAFcAK7iMoPaa2Z?=
+ =?us-ascii?Q?vOdxSGd7W0Vw5Y0u54J56QZgmosG3z6jDlHfC8eUjpkrcbw2uB/lCbpUc2/K?=
+ =?us-ascii?Q?OawskppfIi5pJtIkIKSHJHctcvwPxMouumXAZfDUF2aMwscm8nxYm6wugJBo?=
+ =?us-ascii?Q?gNOvIX++qJtgky0uy8oOZ6w/85kHUeyviLvOwDTffeMH3R7zPW0jiHZQD2JA?=
+ =?us-ascii?Q?Kg6AuDMhUwLLVpTenLsLi8E9hU//dQjsQQhTbi45YM8GeSAyLdWaluOy8H9H?=
+ =?us-ascii?Q?LfZSNnpwp4xq3ZVyS9x0Pnx31yKqRkq8gcobQ7J57x39C3/Fv/GhPryshvXl?=
+ =?us-ascii?Q?n+vYvz34nnJvlR98oWIVstIxnqwGvqdtFb2PVPe2OuRHF5ykgnM0eWHDhq5m?=
+ =?us-ascii?Q?UZXcgvnvO2vjdulswW9UhDIPC3JUF7CcyA4WMtfOywknPSBQyIdcFaZaLeVI?=
+ =?us-ascii?Q?SSHHu0RIsBMzbIM2NjOLFSqTCxu2gDWkCmCvtDQnbLkGAUht7G9IUaeXnkoV?=
+ =?us-ascii?Q?Ue9yPv5hdLrxpnpFr+o6jNgrBjjCk0yYZLbJMUiChJYJNwyz+PgrO7wxumPP?=
+ =?us-ascii?Q?eQTPifjyi9FOcrhmy/FQmnT+EnCFIeO64Mb8NvDV4lMuXa9/sjzfng5du/uN?=
+ =?us-ascii?Q?AxxHA0UqQOq2Qnsfwr6lRbza8n40XTMZWzZZrvIt6p8f8xBdtkqrqUMUjpHk?=
+ =?us-ascii?Q?VQN7Zt6+QcChaL3sQ7CUjLazznopnOGhpAA3tHq1bKJ4Ch2TNJkxRQXVh3Yq?=
+ =?us-ascii?Q?jqCcL0NMCa1Mix4GUoEOmK+n3YiUbMdYOgtkIwY4eKgStrXA+eV4M0O17a43?=
+ =?us-ascii?Q?nx2iPsyjis50AGKXdsrdrswrycYWCLKch+VMYzHnilvV0E5gEB8gSMW93tF8?=
+ =?us-ascii?Q?Nsg4d8pGRkznfzS+ZV5FlwCUuWbNauseNjF/dh0hjTVRJga2YWKuDfvidabx?=
+ =?us-ascii?Q?HoCHZBPtfjlUL9zlRQm8ABI3fPcdcqqnVp+GO6g5gShWY3J1CHHNNHehkuIP?=
+ =?us-ascii?Q?9T0kdGOVaVMU7kricD0LgpCVNywbuq5ymYQls+AtfyiUz1f5wAj8KpIIn0hR?=
+ =?us-ascii?Q?CxOHu/M5qt8Evw1cpgQkHnPtsFYdsc6T6/1mogxjhUEWtKATc3DjylWkrqfr?=
+ =?us-ascii?Q?PP/g6NNKyva4oFDcBPc+A1h0Wt4Mpn7joK/gM1FpkvjmKQD4DDKpg6PXcjy4?=
+ =?us-ascii?Q?1G2ZLUvm/eEfUCY5oP1LfbQUAptsn1XvtWix5sY3?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d286270f-3d55-4486-f3cb-08dd7bcc4d01
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b977857-0f14-4deb-9985-08dd7bcc4e62
 X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2025 03:19:15.5786
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2025 03:19:17.7607
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NDZNdE4YFz3ml1wC8LtMLRXVh8WAnO2bfOFjID7P2VLg7yPwQpyaEGhRHUCEqMvEM97WgZmjZTa2tBK/71QtMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6319
+X-MS-Exchange-CrossTenant-UserPrincipalName: MMpiHgiiqPuIg+LAmJtib0LFUbWDAGqgDqjmCtTaxQTnNsYuCPNKe5/t6IhPdgD/bwJqGzUOLI2RUv+U8XGi2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB7106
 
-Pass path objects from btrfs_del_inode_ref() to
-btrfs_del_inode_extref(), which reducing path allocations
+Pass path objects from btrfs_insert_inode_ref() to
+btrfs_insert_inode_extref(), which reducing path allocations
 and potential failures.
 
 BTW convert to use BTRFS_PATH_AUTO_FREE macro.
@@ -163,27 +166,30 @@ BTW convert to use BTRFS_PATH_AUTO_FREE macro.
 Suggested-by: Daniel Vacek <neelx@suse.com>
 Signed-off-by: Yangtao Li <frank.li@vivo.com>
 ---
- fs/btrfs/inode-item.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+ fs/btrfs/inode-item.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-index 3530de0618c8..693cd47668eb 100644
+index 693cd47668eb..ff775dfbe6b7 100644
 --- a/fs/btrfs/inode-item.c
 +++ b/fs/btrfs/inode-item.c
-@@ -105,11 +105,11 @@ btrfs_lookup_inode_extref(struct btrfs_trans_handle *trans,
- 
- static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
- 				  struct btrfs_root *root,
-+				  struct btrfs_path *path,
- 				  const struct fscrypt_str *name,
- 				  u64 inode_objectid, u64 ref_objectid,
- 				  u64 *index)
- {
+@@ -243,6 +243,7 @@ int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
+  */
+ static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
+ 				     struct btrfs_root *root,
++				     struct btrfs_path *path,
+ 				     const struct fscrypt_str *name,
+ 				     u64 inode_objectid, u64 ref_objectid,
+ 				     u64 index)
+@@ -251,7 +252,6 @@ static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 	int ins_len = name->len + sizeof(*extref);
+ 	unsigned long ptr;
 -	struct btrfs_path *path;
  	struct btrfs_key key;
- 	struct btrfs_inode_extref *extref;
  	struct extent_buffer *leaf;
-@@ -123,15 +123,11 @@ static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
+ 
+@@ -259,10 +259,6 @@ static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
  	key.type = BTRFS_INODE_EXTREF_KEY;
  	key.offset = btrfs_extref_hash(ref_objectid, name->name, name->len);
  
@@ -191,73 +197,64 @@ index 3530de0618c8..693cd47668eb 100644
 -	if (!path)
 -		return -ENOMEM;
 -
- 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 	if (ret > 0)
- 		ret = -ENOENT;
+ 	ret = btrfs_insert_empty_item(trans, root, path, &key,
+ 				      ins_len);
+ 	if (ret == -EEXIST) {
+@@ -270,13 +266,13 @@ static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
+ 						   path->slots[0],
+ 						   ref_objectid,
+ 						   name))
+-			goto out;
++			return ret;
+ 
+ 		btrfs_extend_item(trans, path, ins_len);
+ 		ret = 0;
+ 	}
  	if (ret < 0)
 -		goto out;
 +		return ret;
  
- 	/*
- 	 * Sanity check - did we find the right item for this name?
-@@ -142,8 +138,7 @@ static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
- 						ref_objectid, name);
- 	if (!extref) {
- 		btrfs_abort_transaction(trans, -ENOENT);
--		ret = -ENOENT;
--		goto out;
-+		return -ENOENT;
- 	}
- 
  	leaf = path->nodes[0];
-@@ -156,8 +151,7 @@ static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
- 		 * Common case only one ref in the item, remove the
- 		 * whole item.
- 		 */
--		ret = btrfs_del_item(trans, root, path);
--		goto out;
-+		return btrfs_del_item(trans, root, path);
- 	}
+ 	ptr = (unsigned long)btrfs_item_ptr(leaf, path->slots[0], char);
+@@ -289,9 +285,8 @@ static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
  
- 	ptr = (unsigned long)extref;
-@@ -168,17 +162,14 @@ static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
- 
- 	btrfs_truncate_item(trans, path, item_size - del_len, 1);
- 
+ 	ptr = (unsigned long)&extref->name;
+ 	write_extent_buffer(path->nodes[0], name->name, ptr, name->len);
 -out:
 -	btrfs_free_path(path);
--
 -	return ret;
++
 +	return 0;
  }
  
- int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
- 			struct btrfs_root *root, const struct fscrypt_str *name,
- 			u64 inode_objectid, u64 ref_objectid, u64 *index)
+ /* Will return 0, -ENOMEM, -EMLINK, or -EEXIST or anything from the CoW path */
+@@ -300,7 +295,7 @@ int btrfs_insert_inode_ref(struct btrfs_trans_handle *trans,
+ 			   u64 inode_objectid, u64 ref_objectid, u64 index)
  {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
 -	struct btrfs_path *path;
 +	BTRFS_PATH_AUTO_FREE(path);
  	struct btrfs_key key;
  	struct btrfs_inode_ref *ref;
- 	struct extent_buffer *leaf;
-@@ -230,7 +221,7 @@ int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
- 			      item_size - (ptr + sub_item_len - item_start));
- 	btrfs_truncate_item(trans, path, item_size - sub_item_len, 1);
+ 	unsigned long ptr;
+@@ -353,7 +348,7 @@ int btrfs_insert_inode_ref(struct btrfs_trans_handle *trans,
+ 	}
+ 	write_extent_buffer(path->nodes[0], name->name, ptr, name->len);
  out:
 -	btrfs_free_path(path);
 +	btrfs_release_path(path);
  
- 	if (search_ext_refs) {
- 		/*
-@@ -238,7 +229,7 @@ int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
- 		 * name in our ref array. Find and remove the extended
- 		 * inode ref then.
- 		 */
--		return btrfs_del_inode_extref(trans, root, name,
-+		return btrfs_del_inode_extref(trans, root, path, name,
- 					      inode_objectid, ref_objectid, index);
+ 	if (ret == -EMLINK) {
+ 		struct btrfs_super_block *disk_super = fs_info->super_copy;
+@@ -361,7 +356,7 @@ int btrfs_insert_inode_ref(struct btrfs_trans_handle *trans,
+ 		 * add an extended ref. */
+ 		if (btrfs_super_incompat_flags(disk_super)
+ 		    & BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
+-			ret = btrfs_insert_inode_extref(trans, root, name,
++			ret = btrfs_insert_inode_extref(trans, root, path, name,
+ 							inode_objectid,
+ 							ref_objectid, index);
  	}
- 
 -- 
 2.39.0
 
