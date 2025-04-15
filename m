@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13050-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13051-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5CB4A8AC50
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 01:49:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5656EA8AC52
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 01:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABB4544098B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 23:49:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E1FB190210E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 23:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B347B2D8DAD;
-	Tue, 15 Apr 2025 23:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36C52D8DD5;
+	Tue, 15 Apr 2025 23:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="WbAnDP3G"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UkS4HE3p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06929129A78
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Apr 2025 23:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55296129A78
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Apr 2025 23:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744760989; cv=none; b=P66Q/ilqoxzOQIywM4DorfUZx6I9jSaoDNqEXSrV886+2qjDf4wTR4brwH0Q8VSupn9uMa7NlN0VrFedk/MdJkyMnBMx+iPQfqlCQyM+XDwLuPWg09eG7ghXDdWLrqs9hYjLQ9IbbGr6NpQqPMf3OT8hJdBruZ8E9qpFIVkMAX0=
+	t=1744761201; cv=none; b=WxLHLwiGMXPO/STmfe1xr5hiXbzCt2QT5vnqOO03iB/alz42Df5/ztH9too9a1S173VG6kb2XLlofvy+Hi/Se1eCmkuRmdTM+79Iw6bwUAcUR2ZXcsFAsVE9kMZSgTy4cqzurQfAzxVMIkhE8Mom3auOQ85lNPNL0hovG+Fijf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744760989; c=relaxed/simple;
-	bh=h/T1LY2W1CSLu73BYQfU2u3QHrAvIgR793B+sIj52uM=;
+	s=arc-20240116; t=1744761201; c=relaxed/simple;
+	bh=fzE/KQjC2+5JpFhQADCKTK41+sxTnjNHomfbWA+GD7M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Js+HFVcwAvTefa441SRkHMiYmpK0O14uAgWM2GgSiGoPnEse8R2jJ8Ky7XpQH8RqDWPagpjc8+dh3phqinWpwlDNuJtzI+rOwc5uPtgsB/klHNeKvXGHBJNN5LRINko0XtRGHF8iamnuKgrfV/nm4iOLpTARITHhhfAVDitjcFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=WbAnDP3G; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=fCYTzU2sBhnNMq3mUjnv1XzFSO5u+cEkKGmCuizfalrPciZDr2jbNqPUDoCiO05PX5szOrR6n4KyS8rAYAtlQ9skgAOUCQFMEBlR6Qzi+4RrUH/NHEvUXIALe3pC7DVkaGHYthgtwXgrBmAgUrSVQp09TcZ+aZmKmnaAyMqOCVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=UkS4HE3p; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1744760981; x=1745365781; i=quwenruo.btrfs@gmx.com;
-	bh=I6Wu02Rv+c9JV0NxdcATy0RBe+G/nvpps66O94yeTYQ=;
+	s=s31663417; t=1744761193; x=1745365993; i=quwenruo.btrfs@gmx.com;
+	bh=OJ7gVo329VZoj5TFY9UFxTXNsVn0cpD/bDYk5vcbwUA=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=WbAnDP3GHpYx1cC4410eBfqalrIU4hDrcqCZXRFgy87G3ddn4S1SF4U4rtlwMOLI
-	 BWLKL5B7dusptljUYmQs12QEY1+mCEfz7ElVzqWYHX4S3Q4iWSzK44+0ITDrg+GzG
-	 JzMX7IfGEqKGs9x1t5m4pJf7PiaLgfjSglMtqgBjowrfvZ9Ca26uEh0qALc44Cf/I
-	 zyTpiQP+9AKKV043TxvH7909PEBX1rz6xgbPvYHCL5DL6+5mFOcNkR4rmKvJA7MKI
-	 SyPxMVk2SatAdrIgvE8A7gXPGJNXQO58juqzLdBKzX99w2l7LQCR4liaRtmUqwl+K
-	 r7BS+4WIon/R9vuK7Q==
+	b=UkS4HE3pSBImvAlTiyQJqYZXXtXOW8DjYkniFHsUnsPP9YExlHV2v2kXA0BefGLd
+	 T3yajAiZ++yWZ8yV63HDtKpRvAsE7XqOUdgoWyCQEkoRUO5Y3YchkM1ZuTsBbE7sj
+	 LZy9kJ12lbDHpCR1f6QiTW3PfAf8F4lZAuifXHkoZf82wGvJV2YmBmJ1JBKyFFXZE
+	 RJqQ47KZIey4KWbtAJ9HbmKuXPsaBj+fZgMAPFYRCyFtwgANsEdl5Q8yNLqi9vmGi
+	 owd1Bwsud9h2yn1ssBwMcaqbue7NulkAsD9cfJUXpuPlO9PP8AyocXagWcNjN18PJ
+	 6UeH9WyHpfw7Yykq7w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mof57-1tGKw00oSf-00lTYq; Wed, 16
- Apr 2025 01:49:41 +0200
-Message-ID: <7ad4df86-866e-40ce-89a1-48f3c49aeeea@gmx.com>
-Date: Wed, 16 Apr 2025 09:19:37 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGQnF-1toZjZ49Tp-00EB2V; Wed, 16
+ Apr 2025 01:53:13 +0200
+Message-ID: <e137c120-4d7b-447e-84cf-b08783cbd878@gmx.com>
+Date: Wed, 16 Apr 2025 09:23:10 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,13 +59,11 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: adjust subpage bit start based on sectorsize
-To: Boris Burkov <boris@bur.io>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1744657692.git.josef@toxicpanda.com>
  <7e863b3c-6efc-459b-ae25-cf87734dc38f@gmx.com>
- <27440332-2afb-4fb8-9ebe-d36c8c33a89a@gmx.com>
- <20250415161647.GA2164022@zen.localdomain>
+ <20250415172344.GB2701859@perftesting>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,208 +90,119 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250415161647.GA2164022@zen.localdomain>
+In-Reply-To: <20250415172344.GB2701859@perftesting>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:baZLoLD0Fyjp2gUqKWQ7YSYV6yY7gOwKF6qi8XcJblLQ1r4o+Oi
- edT2KHrGRxFl0I4WmrmMGFUzYyWjg05RjFVC0iVf2022AyZ1DqkV/j9u82jsuRQvYyz4ubY
- bPVDnAEC/TCiP08ARBzKoKWWxtHeCtm0MkE2hcB5vp97DZ88RwOd9C/vx1xjeZUalUC+AO/
- Cid8NkYlt2YZNVhqRj3ng==
+X-Provags-ID: V03:K1:tjfAzq3gjHpkZzbAD3JQgXw9a+/gSXXtMe03Was0rhI+LGX62DN
+ U48xvFnWdCcS+jDnQa/lGT3WfyETn7JJUJRlY/83p5cEMCRmiyO0Q6DAVD1Vw16kx1j5rOl
+ SN05sgW0vo8QleZS/ufKNvAgLTSFSacmvRUs1oTytZrd+mjEY+3JN+dt9nvjV6GlJCfzf5f
+ b+aH+rUWUMv9s7xDEsWmg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6wwD/AAwaTQ=;c5CLkfEiW1kZs7DOeLhO2EK46lg
- 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
- VWdzWbgW76PY4xPQVS9P9RS8DZ4vqXc=
+UI-OutboundReport: notjunk:1;M01:P0:Tk9iV92Fecw=;7eaxi7Kd6Jtf0QK32RC5trH0tME
+ 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
+ a1RZ4cLFCqAValudCr3GQsAeLaFzWlY=
 
 
 
-=E5=9C=A8 2025/4/16 01:46, Boris Burkov =E5=86=99=E9=81=93:
-> On Tue, Apr 15, 2025 at 08:07:08AM +0930, Qu Wenruo wrote:
+=E5=9C=A8 2025/4/16 02:53, Josef Bacik =E5=86=99=E9=81=93:
+> On Tue, Apr 15, 2025 at 07:38:29AM +0930, Qu Wenruo wrote:
+>>
+>>
 [...]
->>>
->>> The problem is, we can not ensure all extent buffers are nodesize alig=
-ned.
->>>
+>> The problem is, we can not ensure all extent buffers are nodesize align=
+ed.
+>>
+>> If we have an eb whose bytenr is only block aligned but not node size
+>> aligned, this will lead to the same problem.
+>>
+>> We need an extra check to reject tree blocks which are not node size
+>> aligned, which is another big change and not suitable for a quick fix.
 >=20
-> In theory because the allocator can do whatever it wants, or in practice
-> because of mixed block groups? It seems to me that in practice without
-> mixed block groups they ought to always be aligned.
+> We already have this.
 
-Because we may have some old converted btrfs, whose allocater may not=20
-ensure nodesize aligned bytenr.
+The checks inside check_eb_alignment() only ensure the subpage eb will=20
+not cross page boundary, not strong nodesize alignment:
 
-For subpage we can still support non-aligned tree blocks as long as they=
-=20
-do not cross boundary.
+         if (fs_info->nodesize < PAGE_SIZE &&
+             offset_in_page(start) + fs_info->nodesize > PAGE_SIZE) {
+                 btrfs_err(fs_info,
+                 "tree block crosses page boundary, start %llu nodesize %u=
+",
+                           start, fs_info->nodesize);
+                 return true;
+         }
 
-I know this is over-complicated and prefer to reject them all, but such=20
-a change will need quite some time to reach end users.
+In fact, it even allows such unaligned tree blocks, but with some warnings=
+:
 
->=20
->>> If we have an eb whose bytenr is only block aligned but not node size
->>> aligned, this will lead to the same problem.
->>>
->=20
-> But then the existing code for the non error path is broken, right?
-> How was this intended to work? Is there any correct way to loop over the
-> ebs in a folio when nodesize < pagesize? Your proposed gang lookup?
->=20
-> I guess to put my question a different way, was it intentional to mix
-> the increment size in the two codepaths in this function?
-
-Yes, that's intended, consider the following case:
-
-32K page size, 16K node size.
-
-0    4K     8K    16K    20K    24K     28K      32K
-|           |///////////////////|                |
-
-In above case, for offset 0 and 4K, we didn't find any dirty block, and=20
-skip to next block.
-
-For 8K, we found an eb, submit it, and jump to 24K, and that's the=20
-expected behavior.
-
-But on the other hand, if at offset 0 we increase the offset by 16K, we=20
-will never be able to grab the eb at 8K.
-
-I know this is creepy, but I really do not have any better solution than=
-=20
-two different increment sizes at that time.
-
-But for now, I believe the gang lookup should be way more accurate and=20
-safer.
-
->=20
->>> We need an extra check to reject tree blocks which are not node size
->>> aligned, which is another big change and not suitable for a quick fix.
->>>
->>>
->>> Can we do a gang radix tree lookup for the involved ranges that can
->>> cover the block, then increase bit_start to the end of the found eb
->>> instead?
->>
->> In fact, I think it's better to fix both this and the missing eb write
->> bugs together in one go.
->>
->> With something like this:
->>
->> static int find_subpage_dirty_subpage(struct folio *folio)
->> {
->> 	struct extent_buffer *gang[BTRFS_MAX_EB_SIZE/MIN_BLOCKSIZE];
->> 	struct extent_buffer *ret =3D NULL;
->>
->> 	rcu_read_lock()
->> 	ret =3D radix_tree_gang_lookup();
->> 	for (int i =3D 0; i < ret; i++) {
->> 		if (eb && atomic_inc_not_zero(&eb->refs)) {
->> 			if (!test_bit(EXTENT_BUFFER_DIRTY) {
->> 				atomic_dec(&eb->refs);
->> 				continue;
->> 			}
->> 			ret =3D eb;
->> 			break;
->> 		}
->> 	}
->> 	rcu_read_unlock()
->> 	return ret;
->> }
->>
->> And make submit_eb_subpage() no longer relies on subpage dirty bitmap,
->> but above helper to grab any dirty ebs.
->>
->> By this, we fix both bugs by:
->>
->> - No more bitmap search
->>    So no increment mismatch, and can still handle unaligned one (as lon=
-g
->>    as they don't cross page boundary).
->>
->> - No more missing writeback
->>    As the gang lookup is always for the whole folio, and we always test
->>    eb dirty flags, we should always catch dirty ebs in the folio.
->=20
-> I don't see why this is the case. The race Josef fixed is quite narrow
-> but is fundamentally based on the TOWRITE mark getting cleared mid
-> subpage iteration.
->=20
-> If all we do is change subpage bitmap to this gang lookup, but still
-> clear the TOWRITE tag whenever the folio has the first eb call
-> meta_folio_set_writeback(), then it is possible for other threads to
-> come in and dirty a different eb, write it back, tag it TOWRITE, then
-> lose the tag before doing the tagged lookup for TOWRITE folios.
-
-The point here is, we ensure all dirty ebs inside the folio will be=20
-submitted (maybe except for error paths).
-
-E.g. if there is initially one dirty eb, we do gang lookup, submit that=20
-one (which clears the TOWRITE tag of the folio).
-Then we will still do another gang lookup.
-
-If a new eb in the folio is dirtied before that, we will found it and=20
-submit it.
-
-The gang lookup solution is to ensure, we only exit submit_eb_subpage()=20
-with no dirty ebs in the folio.
+         if (!IS_ALIGNED(start, fs_info->nodesize) &&
+             !test_and_set_bit(BTRFS_FS_UNALIGNED_TREE_BLOCK,=20
+&fs_info->flags)) {
+                 btrfs_warn(fs_info,
+"tree block not nodesize aligned, start %llu nodesize %u, can be=20
+resolved by a full metadata balance",
+                               start, fs_info->nodesize);
+         }
 
 Thanks,
 Qu
 
 >=20
-> Thanks,
-> Boris
+>>
+>>
+>> Can we do a gang radix tree lookup for the involved ranges that can cov=
+er
+>> the block, then increase bit_start to the end of the found eb instead?
 >=20
->>
->> Thanks,
->> Qu
->>
->>>
->>> Thanks,
->>> Qu
->>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 continue;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>
->>
+> That's a followup patch that I'm testing now.  I've started with the sim=
+plest
+> fix so that they can be pulled back to all the affected kernels, and the=
+n I'm
+> following up with much more invasive changes to make these problems go a=
+way in
+> general.  Thanks,
 >=20
+> Josef
+>=20
+
 
