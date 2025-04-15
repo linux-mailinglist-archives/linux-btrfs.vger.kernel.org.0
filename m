@@ -1,204 +1,194 @@
-Return-Path: <linux-btrfs+bounces-13021-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13023-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBA68A89291
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 05:34:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C81D0A89384
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 07:51:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 092B17A9569
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 03:33:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA95C16DE39
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 05:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF20215F7F;
-	Tue, 15 Apr 2025 03:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="AG4APbiI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4079C274648;
+	Tue, 15 Apr 2025 05:51:41 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11011052.outbound.protection.outlook.com [52.101.129.52])
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A18211A23;
-	Tue, 15 Apr 2025 03:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.129.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744688048; cv=fail; b=qpulmjJUkSbF3c5dYzUJ6XZxhyTbBSBbezExAujqiMKZk4Iw9rfxDrmpm345rA+0l/J64D3Pufm1C9g5yb1foKeE8/T+Htl4acy0GGpYTAN07uXRY12ocWXwq0k/ZLO6auNR4u/jX/+V25FTF3tSYfReXQ0lX9Ya6MMd5V9SZYo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744688048; c=relaxed/simple;
-	bh=fNMNsVcL3RHIKXZYJGc+Bu8OkdM6F/ffpgbx7NnE7Dg=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=mvN7Ty6T9ZVztNvfjc+nWAd/gwDCBOvbrnkeIfVG1YuYURq8EoxuggYI/vctCugobGVRtP3k/Ifefxinb/gdSvFykddIrgJukT3URKl3OiTyCbyGmF9q4xz6DytGk7kK+p5U0YCZDmyECKyLlPicNVkToQWLHyO/gwQlVgB5aHc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=AG4APbiI; arc=fail smtp.client-ip=52.101.129.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rbhiUScEKRf5hJXz+NRcCGYiC213j/MfQxFJ9qpYHGQfmYNzp3VkXpk8p9E+0vBqIcyTLgUMdBhnsw/OEY99iO0FcHSTDr0wvsoqzII8v3AX4aKfgou6Lx4LrHNNucBdSEafWDt/VIBUtvfqabn8R7Zc5NsCxG/+Sv+3LcVUF0Br6ynxCnYGGjepLtyzy3BdCjqCFhd+Xen2dKM7WYpuRnpu30PbD1BxWngGZjUnljKTEwx0a+4wRFRSVcHI5xXoFvwcaY9ja2Wv9oQz1/+RYTYl3NEezFq8RZaecK6E6+Kb19nyo3mqrf+rZ7Y57V+6Bx1V55ERxB2n/zl4MjaaQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uZJ+Eedx1TPMxcJCGMfSxJ8xlIW96pIpsYTr86s0gEk=;
- b=zQ7anB8MbXiOOR5T9BAJLpXjvyjtqIPPZk8za8q1woaguY39rot/DvsCltCl34Mnfuk4aVxRo4w6Z6XPtE9isoK9a5VNzpfBd1zysXQzXteSuR1PB7TqBQ0cJAKKVYwvl+lk4kzai14/XsC3sbfkOa7lrPoMPw2HajyeIp+DB7GBHqMGXNNZCyHyH0SJSW3mRSFFbZSKI9KzF68Iu4Sz9doRhhNKovW8k1mCDa72C/XiWXWIyfBdkw0OYnIlr7QArLKyEgheAfQDCrPrAXW7T6p7kJ/JlBbSslLi4tW1OlgrcZ2VJygO1O2cXePSZf7qlUT4SeKE6xik4gRiz11Fzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uZJ+Eedx1TPMxcJCGMfSxJ8xlIW96pIpsYTr86s0gEk=;
- b=AG4APbiIwvi3x7cvfddaz+xmAEcVueY5UaETF5NKgQ89eom4IPwS95fRWcNZ7T1NRNW6tGo90fTzY2zyej6iZAS5AEJL6TB8OsNgKPPQUsLE1k6ADJnLncjyEV94AqIctzco4luHpwlUBcAVFsRwcHy8BN3VUnq84LlPo8N1Syt21BGVf6+2I8T06sa2PLH11cjC/+6kKdT2LelRQjnnZg2/Sy24u1gq5rXv8UJZkO2fuk4bX3Opj+63ldDJWkPcjwW5r34XyEpo/5BxUmsG81XmLh2FdUw2ZoAif6FraeH6Dzy7HV9H47X0OAKdWLCXd1DASRLlPYtF6scbXu4djw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by JH0PR06MB7032.apcprd06.prod.outlook.com (2603:1096:990:70::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.27; Tue, 15 Apr
- 2025 03:34:01 +0000
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::8c74:6703:81f7:9535]) by SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::8c74:6703:81f7:9535%6]) with mapi id 15.20.8632.030; Tue, 15 Apr 2025
- 03:34:01 +0000
-From: Yangtao Li <frank.li@vivo.com>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yangtao Li <frank.li@vivo.com>
-Subject: [PATCH v3] btrfs: reuse exit helper in btrfs_bioset_init()
-Date: Mon, 14 Apr 2025 21:53:40 -0600
-Message-Id: <20250415035340.851288-1-frank.li@vivo.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D6D2DFA3B;
+	Tue, 15 Apr 2025 05:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744696300; cv=none; b=QXewIDYgo/BSZ4OiibWx6cnh1mqmxinnABTJSU2V5/RApBhE6x7ArU+QA5aJ+aDulH1A+O45M1l21ExAKMEX7E8PrUHv1JeTbojhO9vzQRbwlH7PiytAYtlIgpuKvASB5x51LTb071v3ZiHn2YMmzHKQ54+Co/DL/1s0FrHaVh4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744696300; c=relaxed/simple;
+	bh=AJ999c1D441C8UFFblcx+0Neha6Iw51QzretZKKKXIM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MR9WhoCBiNz2PhcE6zhAt0tBMFJHj3a/4yLhicZTe0CHqHg19GMABJnldhHAgP2nnQZSY0wPEt4iPCT4ICjGJwgq5a/eGm7O+iGGI3kFv5W2sUPAC1UC7xbv+fCKnyUuoLwThASYbQZ0XuDvy4BM1hGacYsSrKwOreSxTjijAkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53F3RuFo029893;
+	Mon, 14 Apr 2025 22:51:28 -0700
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45ykf3jrfv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 14 Apr 2025 22:51:28 -0700 (PDT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.43; Mon, 14 Apr 2025 22:51:27 -0700
+Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.43 via Frontend Transport; Mon, 14 Apr 2025 22:51:24 -0700
+From: <jianqi.ren.cn@windriver.com>
+To: <stable@vger.kernel.org>
+CC: <patches@lists.linux.dev>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <jianqi.ren.cn@windriver.com>,
+        <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <terrelln@fb.com>, <linux-btrfs@vger.kernel.org>, <wqu@suse.com>,
+        <boris@bur.io>
+Subject: [PATCH 6.6.y] btrfs: fix qgroup reserve leaks in cow_file_range
+Date: Tue, 15 Apr 2025 13:51:23 +0800
+Message-ID: <20250415055123.3683832-1-jianqi.ren.cn@windriver.com>
 X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR02CA0047.apcprd02.prod.outlook.com
- (2603:1096:4:196::14) To SEZPR06MB5269.apcprd06.prod.outlook.com
- (2603:1096:101:78::6)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|JH0PR06MB7032:EE_
-X-MS-Office365-Filtering-Correlation-Id: e00835c1-6d5f-4d58-830b-08dd7bce5ceb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|52116014|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?hoViOWhwpSoKsW7Yy4xk5LlBVPDVP62f2s8CztpdDLHp1EWrT5bJNkG/rlnk?=
- =?us-ascii?Q?YyO2q72GkwiAdTWriMmrYhgMj8spVXaub0HP11OuYRviooUu5xzFqU/Red/m?=
- =?us-ascii?Q?g0xDFIiMQ/xi3Z4zM0EwQ/0nZDPEOaZxIDlHApFBS730jCxE5w48Ez7HyO7W?=
- =?us-ascii?Q?617Yvq44XGQFh+ahRP/mPdVN927l32ER35bDqnaBm6387GwFr2CFJ6dRwAUA?=
- =?us-ascii?Q?pJuwMQgOKNlKoXxeJgZVfbISA9z9yxnK/c9QRestsGYS2Wa9d/MyMWF9X/Sw?=
- =?us-ascii?Q?eI/m79rI0sC/5tgx2uUVObXdkTr4H2sjDI2HEEEKbHA+s/JkyVr8fdOR2Id1?=
- =?us-ascii?Q?v4++QKM9LHuLXH3WpV3kvTj9Z6P2dKRaQ+zHejha42Rd1kXTjv0XrpwrgP65?=
- =?us-ascii?Q?rfdsHDG8CxOiG1n1Az9XPQeen1Ukiqnv63Lj8p4z6y/kCLFxiRfDqYlisVJA?=
- =?us-ascii?Q?wTy9NZocdJ5xYyBvYKLqaBObO2ahvkqyri/yvcyTHop7Bh4I23mIHg9sKUk/?=
- =?us-ascii?Q?n9l95eRoEkwNTm2CcFVFOl6hNFXFHLVRdcDUewTbx59llZG4807TNa7qdCnw?=
- =?us-ascii?Q?m7DHUGsKsJDTgtUPLYjHPwz6mNqM/ctybluM+cK6LwSn0bFG6ftFKpaGco4h?=
- =?us-ascii?Q?+t+rg/+epOOuUoS4hwG2hEjJcDLemHktTKLEp6G9QYk6ZlaObXHuZG5kp3Rz?=
- =?us-ascii?Q?j4qr7I4KpOwN5HMMpzxOHlBkbzrJwodfppqcGT0p+4GknIM/i9pJhHxh2rKg?=
- =?us-ascii?Q?E0+5C+NdH8Sqf1E1LcCgQ5JlNZ8V7Dce0y+Rrl59kz/mNjnDd04kQ5OIZukY?=
- =?us-ascii?Q?PwDGVlILamTYlU/486hFYJ//15J4seLcelGuknkSq2JYi7+efeDdBzXSWA6B?=
- =?us-ascii?Q?ScqZsFxavvk9ZEKqfk86nX+AXZNDIK3Ge9wvP6KB9GXAgvCyqQ0aHTcOc/gq?=
- =?us-ascii?Q?Gbl79y6NxDSGp6hdCGsnHrF2Hb4uX/OaDnEWuWAs/NzpnDs8VAxdYerlTbbD?=
- =?us-ascii?Q?UX1Adm/Bplr1sKo4p/yXPDXANlZM+Hnt32BFXmaMV30jAKZ4a4DZKiAV8wIa?=
- =?us-ascii?Q?OGXqze5sEI1vDoMlJ1tnlVDqTAaKLByK2DtC0MQLyNW0CYIwyjZlGMX3jtEs?=
- =?us-ascii?Q?XBaJZwTqa0ro3ex3gNr+1DJmgriYSvdMkuxRvhvA2ZbhFqaan2/UfupVDcCf?=
- =?us-ascii?Q?Y0RJgVn6qY1wog6PugCgpPiAUbU60AR5AnK9sZC25Rcht/g6OJtVk35iXNYh?=
- =?us-ascii?Q?VybJqefePbMz0i+wxl+fmz/a/5byvIg0bAcDmSNTjd49iZidh2eM51aBCdbk?=
- =?us-ascii?Q?jeOahygk8nNkzNsNgQ9u8kPAZmL6LEeXgiS7s7rrrbjjbI7TXONDvqgrKmc4?=
- =?us-ascii?Q?jzLPXYgB4CjqZ/TGd4illFE0C/gm25ul/L0ZeilhEejfj1sWnI3zF6F+5tZE?=
- =?us-ascii?Q?Uq0gzHZiKtW1lFjWbNhR7EhrODFkP223ECI6Be/TsecpjpiIgtEIaQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(52116014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rvZERgf2q63vc7fCZdAh8wm8AYvyMuuDVz+KRNwhJPKdK3+zn8O/ddc2L6bw?=
- =?us-ascii?Q?uojA3SVep2WQwV/e8Hzdo/wRkd94HoGdL6wWdyPPykKJL8fNLURHB6RD8Ukd?=
- =?us-ascii?Q?x20WM8klo4h0K1WaT4LFVE0WJ4rh0UeQ0EMGCP23jVPNyNTD2F/g/WDr+a86?=
- =?us-ascii?Q?lrs4Fq0N7+1X8jNaw9e/RgKvea2fcUb2LSKb6f/RKjkvUv8UjSOFe1YswdsO?=
- =?us-ascii?Q?mvZS2prSIIY+tkpfSbjWKq56NIciMDF3J1sqRHwmsp7Kw3ac7N+09+meBDfX?=
- =?us-ascii?Q?nSoP92cUM76rmzotP8nJ88kon+VMsT9mvxu64s2FLt62E7txyWjJ7XiFOTe3?=
- =?us-ascii?Q?xjnZkotvv8eB2PBP5+6ibykhSEn08gdKkfrjlwc4FtRlJQFKNG5lmHIvGhWA?=
- =?us-ascii?Q?yeCm8MtGrPdQeERXQSJIA5nre0EN9Tah9kZKgjvmNmqUcLgBogBFOcf1o2So?=
- =?us-ascii?Q?RSwrDydfkgdViy8ZHrKNkrYZWbJwu+Xor4/8kkc1grM2ql35W+PSze0eLHFx?=
- =?us-ascii?Q?uk0K28d7PwzFwQ3IT1cVKev5ItKuSEVHqFJTS7IKiKHHjwjVvvXeuQDOjfjs?=
- =?us-ascii?Q?UxexqM/U732HRXc3lR1j76ERkyaLODst5MS1qsUtvquRSp3lgZVp6qDztDqL?=
- =?us-ascii?Q?ikWGLpTgaYw9u7gqWZMI/E6V4GoHT/j6kiDzmNYxrG3ZCAUXvIw6H8Z0ZvM5?=
- =?us-ascii?Q?FFoZIkvlxuUnuHQW+7V9fBkHPqf79NsDfo3vRsrXqDOPSnQEcXEkotdkWr5H?=
- =?us-ascii?Q?F2A6YnSIJwzD3UxnR22FJXsi84vjt1M/euElx5anj+y2oiclFVeU5wEihIPj?=
- =?us-ascii?Q?3DPEzud2nEwgU+3FPI8HKxNTcFNgMaFBs9pxLrE38DAm7pwrcU0fwV0dXktM?=
- =?us-ascii?Q?nIcsUR8acVGKcmniRQEUEgRjlbIVQqelmdh2j80zv6HO+/bIC7dsI5ovhzVb?=
- =?us-ascii?Q?UwT6ZtRWuGnSV2x0U/+jWLGD7+3lWonfR4tebKcik/6Zoe03DyDpu6g3VVMs?=
- =?us-ascii?Q?pIffnJq24meDHPN5KIIpdXmpXGlcKRr91lBeLwSyPGaYcbowjT8er23wOOg2?=
- =?us-ascii?Q?ExU/g0dMiDtTSCzs00+Y6TnbWUDfN1m6lC95U3PAH0Lupx9c5xf2U46vRskI?=
- =?us-ascii?Q?CWth2DoSVs43QRSbU+rJx3cPwV6cjgw762r0FWJ/0yARWocowzJZvmuWacOy?=
- =?us-ascii?Q?5Ls3nMcwpYs0W0+St6pf8vUlXtL70s/VRpkm9wyWRjYtkKkg2+lEB/FYP1G3?=
- =?us-ascii?Q?XeDJN6Tk+boq6RLQHOJbhH57Rqnj4yZQxvI9nmYedVDhdvdobk+zvP0sETid?=
- =?us-ascii?Q?YKINaaMyeOFDOaa2nF6BKuldEro3TOBkaJwKf9M22SG37nAYkL/09amIqZzv?=
- =?us-ascii?Q?vOmor+mVBeVPQIV7JhsC7HTmYK36RwkaPrdVEnfH8fn2HdG0U9G+68U80bGq?=
- =?us-ascii?Q?JKqXlFVyqclfAAYC1+O9iHdEbemg1duYujZVLa68j2hU6SX6XBrc2y50PMLY?=
- =?us-ascii?Q?/qb7hPX2dIY0Rt9u4aP0hJ1csHefixXT/d0Uz4Rugp6/QJ0OB/Lb/dgUr7pK?=
- =?us-ascii?Q?kMbXbt2eLoBHFolsGscIsMO9qafctZfs2p14SXYd?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e00835c1-6d5f-4d58-830b-08dd7bce5ceb
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2025 03:34:01.1507
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yQXAsg/hGVHdSFxpUF9uR9vdkkSbOItv4OyuRG1UwSjghGMcA+GIu+/X+/X9n3vYhUqSWwDp2gKwzCmUxGTcBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB7032
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: quG9Gffnetfmx-6X2hzqefuMn5H3DPvw
+X-Authority-Analysis: v=2.4 cv=Wd0Ma1hX c=1 sm=1 tr=0 ts=67fdf3e0 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=XR8D0OoHHMoA:10 a=iox4zFpeAAAA:8 a=t7CeM3EgAAAA:8 a=oSb3yfUiBPKWAvThIHwA:9 a=WzC6qhA0u3u7Ye7llzcV:22
+ a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-GUID: quG9Gffnetfmx-6X2hzqefuMn5H3DPvw
+X-Sensitive_Customer_Information: Yes
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-15_01,2025-04-10_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 clxscore=1011
+ impostorscore=0 suspectscore=0 malwarescore=0 adultscore=0 phishscore=0
+ mlxlogscore=775 mlxscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
+ definitions=main-2504150038
 
-Use btrfs_bioset_exit() instead, which is the preferred patttern in btrfs.
+From: Boris Burkov <boris@bur.io>
 
-Suggested-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
+[ Upstream commit 30479f31d44d47ed00ae0c7453d9b253537005b2 ]
+
+In the buffered write path, the dirty page owns the qgroup reserve until
+it creates an ordered_extent.
+
+Therefore, any errors that occur before the ordered_extent is created
+must free that reservation, or else the space is leaked. The fstest
+generic/475 exercises various IO error paths, and is able to trigger
+errors in cow_file_range where we fail to get to allocating the ordered
+extent. Note that because we *do* clear delalloc, we are likely to
+remove the inode from the delalloc list, so the inodes/pages to not have
+invalidate/launder called on them in the commit abort path.
+
+This results in failures at the unmount stage of the test that look like:
+
+  BTRFS: error (device dm-8 state EA) in cleanup_transaction:2018: errno=-5 IO failure
+  BTRFS: error (device dm-8 state EA) in btrfs_replace_file_extents:2416: errno=-5 IO failure
+  BTRFS warning (device dm-8 state EA): qgroup 0/5 has unreleased space, type 0 rsv 28672
+  ------------[ cut here ]------------
+  WARNING: CPU: 3 PID: 22588 at fs/btrfs/disk-io.c:4333 close_ctree+0x222/0x4d0 [btrfs]
+  Modules linked in: btrfs blake2b_generic libcrc32c xor zstd_compress raid6_pq
+  CPU: 3 PID: 22588 Comm: umount Kdump: loaded Tainted: G W          6.10.0-rc7-gab56fde445b8 #21
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+  RIP: 0010:close_ctree+0x222/0x4d0 [btrfs]
+  RSP: 0018:ffffb4465283be00 EFLAGS: 00010202
+  RAX: 0000000000000001 RBX: ffffa1a1818e1000 RCX: 0000000000000001
+  RDX: 0000000000000000 RSI: ffffb4465283bbe0 RDI: ffffa1a19374fcb8
+  RBP: ffffa1a1818e13c0 R08: 0000000100028b16 R09: 0000000000000000
+  R10: 0000000000000003 R11: 0000000000000003 R12: ffffa1a18ad7972c
+  R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+  FS:  00007f9168312b80(0000) GS:ffffa1a4afcc0000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f91683c9140 CR3: 000000010acaa000 CR4: 00000000000006f0
+  Call Trace:
+   <TASK>
+   ? close_ctree+0x222/0x4d0 [btrfs]
+   ? __warn.cold+0x8e/0xea
+   ? close_ctree+0x222/0x4d0 [btrfs]
+   ? report_bug+0xff/0x140
+   ? handle_bug+0x3b/0x70
+   ? exc_invalid_op+0x17/0x70
+   ? asm_exc_invalid_op+0x1a/0x20
+   ? close_ctree+0x222/0x4d0 [btrfs]
+   generic_shutdown_super+0x70/0x160
+   kill_anon_super+0x11/0x40
+   btrfs_kill_super+0x11/0x20 [btrfs]
+   deactivate_locked_super+0x2e/0xa0
+   cleanup_mnt+0xb5/0x150
+   task_work_run+0x57/0x80
+   syscall_exit_to_user_mode+0x121/0x130
+   do_syscall_64+0xab/0x1a0
+   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+  RIP: 0033:0x7f916847a887
+  ---[ end trace 0000000000000000 ]---
+  BTRFS error (device dm-8 state EA): qgroup reserved space leaked
+
+Cases 2 and 3 in the out_reserve path both pertain to this type of leak
+and must free the reserved qgroup data. Because it is already an error
+path, I opted not to handle the possible errors in
+btrfs_free_qgroup_data.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
+Signed-off-by: David Sterba <dsterba@suse.com>
+[Minor conflict resolved due to code context change.]
+Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
+Signed-off-by: He Zhe <zhe.he@windriver.com>
 ---
-v3:
--add Suggested-by
-v2:
--update commit msg
--cancel reorder btrfs_bioset_exit()
- fs/btrfs/bio.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+Verified the build test
+---
+ fs/btrfs/inode.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 8c2eee1f1878..f602dda99af0 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -900,22 +900,18 @@ int __init btrfs_bioset_init(void)
- 		return -ENOMEM;
- 	if (bioset_init(&btrfs_clone_bioset, BIO_POOL_SIZE,
- 			offsetof(struct btrfs_bio, bio), 0))
--		goto out_free_bioset;
-+		goto out;
- 	if (bioset_init(&btrfs_repair_bioset, BIO_POOL_SIZE,
- 			offsetof(struct btrfs_bio, bio),
- 			BIOSET_NEED_BVECS))
--		goto out_free_clone_bioset;
-+		goto out;
- 	if (mempool_init_kmalloc_pool(&btrfs_failed_bio_pool, BIO_POOL_SIZE,
- 				      sizeof(struct btrfs_failed_bio)))
--		goto out_free_repair_bioset;
-+		goto out;
- 	return 0;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index cedffa567a75..fc127182067b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1546,6 +1546,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 					     locked_page,
+ 					     clear_bits,
+ 					     page_ops);
++		btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size, NULL);
+ 		start += cur_alloc_size;
+ 	}
  
--out_free_repair_bioset:
--	bioset_exit(&btrfs_repair_bioset);
--out_free_clone_bioset:
--	bioset_exit(&btrfs_clone_bioset);
--out_free_bioset:
--	bioset_exit(&btrfs_bioset);
-+out:
-+	btrfs_bioset_exit();
- 	return -ENOMEM;
+@@ -1559,6 +1560,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		clear_bits |= EXTENT_CLEAR_DATA_RESV;
+ 		extent_clear_unlock_delalloc(inode, start, end, locked_page,
+ 					     clear_bits, page_ops);
++		btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size, NULL);
+ 	}
+ 	return ret;
  }
- 
+@@ -2222,13 +2224,15 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	 */
+ 	if (cow_start != (u64)-1)
+ 		cur_offset = cow_start;
+-	if (cur_offset < end)
++	if (cur_offset < end) {
+ 		extent_clear_unlock_delalloc(inode, cur_offset, end,
+ 					     locked_page, EXTENT_LOCKED |
+ 					     EXTENT_DELALLOC | EXTENT_DEFRAG |
+ 					     EXTENT_DO_ACCOUNTING, PAGE_UNLOCK |
+ 					     PAGE_START_WRITEBACK |
+ 					     PAGE_END_WRITEBACK);
++		btrfs_qgroup_free_data(inode, NULL, cur_offset, end - cur_offset + 1, NULL);
++	}
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
 -- 
-2.39.0
+2.34.1
 
 
