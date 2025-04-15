@@ -1,56 +1,46 @@
-Return-Path: <linux-btrfs+bounces-13031-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13032-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF41A897BD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 11:18:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4232EA89E7A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 14:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3660A1891017
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 09:17:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 465C317F79A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Apr 2025 12:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA7B2820AA;
-	Tue, 15 Apr 2025 09:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lJ8uWvmz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35584296D29;
+	Tue, 15 Apr 2025 12:45:36 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484BC27B4F5;
-	Tue, 15 Apr 2025 09:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BBE22F01;
+	Tue, 15 Apr 2025 12:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744708640; cv=none; b=ngpjXj+Ae3p3QNDeUT05e8flQzI7jxQtKwZEngLUDqCmWf1/ygO2DBKKnAHXwMQIPSqid1G2oCB20jpzE8TfSjZOSsutxxU9OnwyYXv45835kgoAeBtIGTQeyZvBShggt9E5jITeFDo4OZlEcZ+GClNdkXnVQgQc004JnT+VwHk=
+	t=1744721135; cv=none; b=k6Jv4qJlj/MS2pLlC5OXiy3zxpZ/GMsVEbCYaIFlHPkVembEYIh3k2JYKL+uS3lzfNFWa6gjdRTCtdKPITKePTrTPaHxd8OoDi8NUgmLiLD24I/GPa4rh6dCj8hFhYDnPCRAtaRNos26ItgJghFgxF2fSRYrIr1MboICrGe5LcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744708640; c=relaxed/simple;
-	bh=/Z6Vnn+qWI+21lnQkuUK+7Nswud+sktGjAVWAnSCZ5Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nI4xuc+K5LZdo6GNGrTfeUeY56hGCcmqyi73NMJcy2s2izlBkmFYK0BXjwAKv/gp5kbl5tVQsFpLhDSezMZ4lXJ9+DeSjWi5V4kdYmAHW34Pe5/Z/oZ2HY1jGDXZF1p1eDQbJpk8HinURbbWtYVqr+dsZ6aMEynfx/PfB8qHETo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lJ8uWvmz; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1744708612; x=1745313412; i=quwenruo.btrfs@gmx.com;
-	bh=E8m44XUDiZ8rmpdGVKtUxtqM66u9YgxFJM/5gTCVYPY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=lJ8uWvmztbzLU+nNiA7oIMNmiZ65Ja+LYaKNS7aMy+LFXjy3qQAGEqnoZlJX5MUh
-	 jO7UpvuKP8jjhifD5hWXfL6uprlVZO9K2kKcA0lq5AVDewHgu2/G9g3Jv7DiO9k1s
-	 U1541gPBJBJPp6TcgRtCBZcVc1YkFjw0TpKyMOrewnRxgDX/cLK2DzVlXg/b+4x7R
-	 M5K3wuO8zd1WIU5oQwLvpak/AtpMQCmKYIkHUsKOzrvNxcFj4AXFdRxClaWVL8ImL
-	 2nwMqcWJ7soQWan4D2rGumvaz1EkPkuk742VQwXsD35AG396aVVQhhzUvF+74CruT
-	 aMGEVsLufdCqEw9xsQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQv8x-1thKXE4C19-00QF05; Tue, 15
- Apr 2025 11:16:52 +0200
-Message-ID: <2e158208-4914-4bfb-984a-0d35e8b93225@gmx.com>
-Date: Tue, 15 Apr 2025 18:46:48 +0930
+	s=arc-20240116; t=1744721135; c=relaxed/simple;
+	bh=E5XQcw4IEaB0LKYRVD7ZDLH2kh1PfwrDrSF+4CKaanw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DGsijTsC2fBPEP2QGzcylRWKtPJpNFCAVqonJXR2YlUvg0iTmktJBv7Xbqd8VEPvs8J7fgbu9zyBv8XyNcbq+no5o0lOeD5OrYjfI6id9B1KE/ZTveWWkbarE3kFYPkHzRZg1aj0XpIJdURkCcDZWCk/MkL+clG8YUEc9OwMbKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ZcP374bdHz1R7gs;
+	Tue, 15 Apr 2025 20:43:31 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id D4EBE1A016C;
+	Tue, 15 Apr 2025 20:45:27 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 15 Apr 2025 20:45:27 +0800
+Message-ID: <28772dbe-1ae9-4ff7-91ef-c45d174b88d6@huawei.com>
+Date: Tue, 15 Apr 2025 20:45:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,98 +48,189 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: remove BTRFS_REF_LAST from btrfs_ref_type
-To: =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>, "clm@fb.com" <clm@fb.com>,
- "josef@toxicpanda.com" <josef@toxicpanda.com>,
- "dsterba@suse.com" <dsterba@suse.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20250415083808.893050-1-frank.li@vivo.com>
- <472ae717-5494-44ae-973a-85249a65d289@gmx.com>
- <SEZPR06MB52691756B32BA90DBE82BDFDE8B22@SEZPR06MB5269.apcprd06.prod.outlook.com>
+Subject: Re: [PATCH v3] mm: alloc_pages_bulk: support both simple and
+ full-featured API
+To: Chuck Lever <chuck.lever@oracle.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Yishai Hadas <yishaih@nvidia.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Shameer Kolothum
+	<shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>, Chris Mason <clm@fb.com>, Josef
+ Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Gao Xiang
+	<xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
+ Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+	<mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+	<horms@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
+	<anna@kernel.org>
+CC: Luiz Capitulino <luizcap@redhat.com>, Mel Gorman
+	<mgorman@techsingularity.net>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+	<linux-mm@kvack.org>, <linux-nfs@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+References: <20250414120819.3053967-1-linyunsheng@huawei.com>
+ <18713073-342e-48b2-9864-24004445e234@oracle.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <SEZPR06MB52691756B32BA90DBE82BDFDE8B22@SEZPR06MB5269.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:D6zxEJdb73VG9FWcLNJ7JFeRbdERziL59ko9inq5fb4VNDDDMV+
- zXSpGkkGpCSJr18UWKo+8VYooiJZnvIZJ8WUpsQGImPx0/e7JwJl4WwFqtakDpCbVjtF5md
- T2sYC7MXp1fnRqsAcnwULCIOPPudam9AuqPJpSZ2HQwgoRVYsH85wdQ/ciGVYEw5Zt2bfIp
- p4wiefKvRtAj8JA3JSIaA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Mh5kB+Mczr4=;8zYrTSiqDlmduS55hGEieOqfpKx
- GIB/yrp96GCGjc273RVBh+zaDWMcKS1ToteMw/q3w2rPsbnDI28r7VobZCcl9bbBhjaHrCL1y
- 1AY5lFYVgu2qUZu0p8uIhna9NBUUy3WuMtQ4BTScaolCsxIEISKTHRazSvce6jXlQVEwKV2kT
- vwokWJesMny45SYHnIOfLzjxrpwxOSA1zJChEXnWHY2PDJCzQxL35ZlMaF8R6moN7+PwvF32k
- 9haLOMUY8l37kvye9CF8mOWBb0Ar+XPqkyMsjqZ1vwbPEIolb3Bk82GuJ5iPiPz0xwj6m2nuL
- 5DkvM+Bss64rYedKuRPLC5HCpK3xSsObiADteO6L5EC9WtxwFcdjJ63bVcLHJ7sg3x611LTtC
- AlQs8IQxmXqrHcNOeVYo2DmV95VbFovSXj9EFbqpXaOB2eGXbKXB9/7n8/BwoXSUCqp5IFpMY
- OqxaBey9gethsfQ2/LOvAayWxN778DucKB6JuJ3iht/03RyTS6piWKFFxwWg6f1xPr96lZ1Ww
- VYKOWZkhbekf1saXg9Du5KoLxzCHj0zrgi7xvsPWp1HGTEzkLjnaFo/bfFii0mQiR7fw6semy
- 3HV8RJ23x4iVVYK7Uh2S3anHL1t9NxbZwjvPt4b4s/wvFs+0ej4kdybCQ6tyfT/V+5phWxpSY
- t5/up5ypYPjzHAYVyFbH3g6+iFtQOwsUxEi4Yjp2ShpQDCryxnsgbxbqg95LMNoK+uKZeF4qr
- itH5qUw4GRGzfI843I8u5b02UsMnzFSuA35g/MDkJH2PLNzc84g6hnTGg11wSLcaC/A2zQnCg
- c0U+CHRIVuyYCdgHvID3FyKgDxFx3X3ZVSZKEUugi2JZM8UFuwQjA6+EHtnuaS/wpDfgrxkIi
- wgTkrEyaSnw5BN194HCw/dk7a1L7KBv3MSuI4H1mWc1nu+PDmixJePdlCr3ZGJysaznWxrU+l
- AE4WWFpyzLuOB+JyHt25caVCc8/vlNyOrEODGrtVbeXtZordh1yyogZcbaUdBcp7qdeRjqnEu
- WqB9nx0OXLWpIoojdL2RaoqpBtMm1Fs9cnDCGsUyMOWsRfCvwK2jCm1LbDWqXkJ4KmK0Nz8V1
- mO5tdzNOiR1Xdt2H99MzFeDaA2hgGCIzXRth/b6D0586Y/gSRpVdNQbutTxucw7kSqCadtmI0
- sHHuWrWL03GXdnhB92Ae0TzxV9ZBworK7MuGhMby0XfbL4uaVZZXry0c11KVgpOAFqCvk7Py7
- TN09v7QseI9Vdhqm9TKLQqX1+za+AtfVVfiNhMNbm39YsCugDuiW+/vSSo4hMmItrMHCJM+VI
- n62AZSg62yy/VZtWUYVn/yJDOY7r7vX7eezbYVQ66Nzhs9a+BJTcxUJz8R7emXT+/1BAn0+4N
- Les/O+w4lHlda9snB4s9bvXzOeq6ERv2gdCwsqDj/6W+UEGYjgd9VYewtgktCwP+4xBXPwUE6
- HLhInog==
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <18713073-342e-48b2-9864-24004445e234@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
+On 2025/4/15 1:39, Chuck Lever wrote:
+> On 4/14/25 8:08 AM, Yunsheng Lin wrote:
+>> As mentioned in [1], it seems odd to check NULL elements in
+>> the middle of page bulk allocating, and it seems caller can
+>> do a better job of bulk allocating pages into a whole array
+>> sequentially without checking NULL elements first before
+>> doing the page bulk allocation for most of existing users
+>> by passing 'page_array + allocated' and 'nr_pages - allocated'
+>> when calling subsequent page bulk alloc API so that NULL
+>> checking can be avoided, see the pattern in mm/mempolicy.c.
+>>
+>> Through analyzing of existing bulk allocation API users, it
+>> seems only the fs users are depending on the assumption of
+>> populating only NULL elements, see:
+>> commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
+>> commit d6db47e571dc ("erofs: do not use pagepool in z_erofs_gbuf_growsize()")
+>> commit f6e70aab9dfe ("SUNRPC: refresh rq_pages using a bulk page allocator")
+>> commit 88e4d41a264d ("SUNRPC: Use __alloc_bulk_pages() in svc_init_buffer()")
+>>
+>> The current API adds a mental burden for most users. For most
+>> users, their code would be much cleaner if the interface accepts
+>> an uninitialised array with length, and were told how many pages
+>> had been stored in that array, so support one simple and one
+>> full-featured to meet the above different use cases as below:
+>> - alloc_pages_bulk() would be given an uninitialised array of page
+>>   pointers and a required count and would return the number of
+>>   pages that were allocated.
+>> - alloc_pages_bulk_refill() would be given an initialised array
+>>   of page pointers some of which might be NULL. It would attempt
+>>   to allocate pages for the non-NULL pointers, return 0 if all
+>>   pages are allocated, -EAGAIN if at least one page allocated,
+>>   ok to try again immediately or -ENOMEM if don't bother trying
+>>   again soon, which provides a more consistent semantics than the
+>>   current API as mentioned in [2], at the cost of the pages might
+>>   be getting re-ordered to make the implementation simpler.
+>>
+>> Change the existing fs users to use the full-featured API, except
+>> for the one for svc_init_buffer() in net/sunrpc/svc.c. Other
+>> existing callers can use the simple API as they seems to be passing
+>> all NULL elements via memset, kzalloc, etc, only remove unnecessary
+>> memset for existing users calling the simple API in this patch.
+>>
+>> The test result for xfstests full test:
+>> Before this patch:
+>> btrfs/default: 1061 tests, 3 failures, 290 skipped, 13152 seconds
+>>   Failures: btrfs/012 btrfs/226
+>>   Flaky: generic/301: 60% (3/5)
+>> Totals: 1073 tests, 290 skipped, 13 failures, 0 errors, 12540s
+>>
+>> nfs/loopback: 530 tests, 3 failures, 392 skipped, 3942 seconds
+>>   Failures: generic/464 generic/551
+>>   Flaky: generic/650: 40% (2/5)
+>> Totals: 542 tests, 392 skipped, 12 failures, 0 errors, 3799s
+>>
+>> After this patch:
+>> btrfs/default: 1061 tests, 2 failures, 290 skipped, 13446 seconds
+>>   Failures: btrfs/012 btrfs/226
+>> Totals: 1069 tests, 290 skipped, 10 failures, 0 errors, 12853s
+>>
+>> nfs/loopback: 530 tests, 3 failures, 392 skipped, 4103 seconds
+>>   Failures: generic/464 generic/551
+>>   Flaky: generic/650: 60% (3/5)
+>> Totals: 542 tests, 392 skipped, 13 failures, 0 errors, 3933s
+> 
+> Hi -
+> 
+> The "after" run for NFS took longer, and not by a little bit. Can you
+> explain the difference?
 
+Ah, I overlooked the difference as I was not looking to have a performance
+comparasion using xfstest full test due to possible noise, so the above test
+might be done with other job like kernel compiling behind the scenes as it
+was tested with the same machine where I was doing some kernel compiling.
 
-=E5=9C=A8 2025/4/15 18:26, =E6=9D=8E=E6=89=AC=E9=9F=AC =E5=86=99=E9=81=93:
->> History please.
->
-> Did you mean change commit msg to below?
->
-> 	Commit b28b1f0ce44c ("btrfs: delayed-ref: Introduce better documented d=
-elayed ref structures") introduce BTRFS_REF_LAST but never use it,
-> 	So let's remove it.
+And I used a temporary patch to enable the using of full-featured API in
+page_pool to test if the full-featured API will cause performance regression
+for the existing users in fs as mentioned at the end of commit log.
 
-It's the common practice to leave a last entry for sanity checks.
+> 
+> You can expunge the flakey test (generic/650) to help make the results
+> more directly comparable. 650 is a CPU hot-plugging test.
 
-But since it's not utilized for anything, I'm fine to remove it.
+I retested in a newer and more powerful machine without obvious heavy job
+behind the scenes based on linux-next-20250411, and the flakey test seems
+gone too.
 
->
->> The _LAST or _NR suffix can be utilized to do sanity checks, and this i=
-s not part of the on-disk format.
->
-> IIRC, delayed ref belongs to the extent tree memory kv cache.
->
->> And if this exposed by some automatic tools, please also mention it.
->
-> I'm just looking at this code.
->
-> Thx,
-> Yangtao
+before:
+-------------------- Summary report
+KERNEL:    kernel 6.15.0-rc1-next-20250411-xfstests #369 SMP PREEMPT_DYNAMIC Tue Apr 15 16:17:08 CST 2025 x86_64
+CMDLINE:   full
+CPUS:      2
+MEM:       1972.54
 
+nfs/loopback: 539 tests, 4 failures, 400 skipped, 2364 seconds
+  Failures: generic/169 generic/363 generic/464 generic/551
+Totals: 555 tests, 400 skipped, 20 failures, 0 errors, 2205s
+
+after:
+-------------------- Summary report
+KERNEL:    kernel 6.15.0-rc1-next-20250411-xfstests-00001-g316d17a7f7bb #370 SMP PREEMPT_DYNAMIC Tue Apr 15 19:57:48 CST 2025 x86_64
+CMDLINE:   full
+CPUS:      2
+MEM:       1972.54
+
+nfs/loopback: 539 tests, 4 failures, 400 skipped, 2327 seconds
+  Failures: generic/169 generic/363 generic/464 generic/551
+Totals: 555 tests, 400 skipped, 20 failures, 0 errors, 2148s
+
+> 
+> 
+>> The stress test also suggest there is no regression for the erofs
+>> too.
+>>
+>> Using the simple API also enable the caller to not zero the array
+>> before calling the page bulk allocating API, which has about 1~2 ns
+>> performance improvement for time_bench_page_pool03_slow() test case
+>> of page_pool in a x86 vm system, this reduces some performance impact
+>> of fixing the DMA API misuse problem in [3], performance improves
+>> from 87.886 ns to 86.429 ns.
+>>
+>> Also a temporary patch to enable the using of full-featured API in
+>> page_pool suggests that the new full-featured API doesn't seem to have
+>> noticeable performance impact for the existing users, like SUNRPC, btrfs
+>> and erofs.
+>>
+>> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
+>> 2. https://lore.kernel.org/all/180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com/
+>> 3. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
+>> CC: Jesper Dangaard Brouer <hawk@kernel.org>
+>> CC: Luiz Capitulino <luizcap@redhat.com>
+>> CC: Mel Gorman <mgorman@techsingularity.net>
+>> Suggested-by: Neil Brown <neilb@suse.de>
+>> Acked-by: Jeff Layton <jlayton@kernel.org>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>> V3:
+>> 1. Provide both simple and full-featured API as suggested by NeilBrown.
+>> 2. Do the fs testing as suggested in V2.
+>>
+>> V2:
+>> 1. Drop RFC tag.
+>> 2. Fix a compile error for xfs.
+>> 3. Defragmemt the page_array for SUNRPC and btrfs.
 
