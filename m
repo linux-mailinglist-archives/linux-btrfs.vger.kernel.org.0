@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-13080-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBD2A90678
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 16:31:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D74B7A90676
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 16:31:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAD66189B96A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 14:29:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 324971898FD1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 14:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862F51EE032;
-	Wed, 16 Apr 2025 14:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781A51EDA23;
+	Wed, 16 Apr 2025 14:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="JONb/SR5"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BvBXPEv4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A835C1DA2E5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480A41DDA31
 	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 14:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744813718; cv=none; b=p1ZZsDkUrglH8lvDmwNcx99LtMIuQ/1snwJMLbcJeOCdECEaZHvkG2gFZOHlSMKVrAJcjLoxRPrHn99HBZbC9MKyTwtWMN0yuwJwWz6xuH4qOuYFalBrA/Q4cxjGTzbfMjvbzjhMVOCBzjg88jnCX8l06WE8Eoqt7GtisB9dTwQ=
+	t=1744813717; cv=none; b=X3Zh4iP7wQsIRTNM7nKl1uQrXTic3uLQ6nMKMXVThJrDtkpBsT3lUsu6ppV01F6i12tYRCb+aLAzt3NOH8Nl0LMREhwB0v2dwPeCCiPGpAwwUuJSK02qwjxLXXx20kKfOe3bQpSodKSUMnWbNsDFPZ7hQ/C65sVPlK3kiPvKJPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744813718; c=relaxed/simple;
-	bh=SzSGoxamWDY402w6GyCgok8UEOwwuH7LjcUAxc9lxTo=;
+	s=arc-20240116; t=1744813717; c=relaxed/simple;
+	bh=/pz5QIt977haPHt4u/HdU+p4ARPhasKV2YRKEe/vTr0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lfaZshHL6S7ktSLeC3kNTMHBwCocJEn0l3MYDN1oKWcrqrgGgCrC2V4u8UG/1klNrUmZd2p5WH0PLK7xArFnD53D9S00zqDp8EY37FH7G+n6ilaUBFkog7KrAkpdgWmN1sLyZpCs3h8iMkdxu7y+/BHEMftu1WVbS1+2jzOr1rY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=JONb/SR5; arc=none smtp.client-ip=216.71.154.45
+	 MIME-Version; b=aq1m6XdbIHMpE+p6k19v/YtE/k97n43Rj0xsOGBoDlFnE5gnZ4ybAgrLvGT0vrfQUkcMY+Q16LZezdgHnKwIitA/AZUvzm7h+dcRDPzRNoeVf58iE8w4EC0NXqGbbiZ7uKWpUIKOv5aGMCz+fZZ5XOPqCGMoDK3hM0O2EAc9g4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BvBXPEv4; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1744813715; x=1776349715;
+  t=1744813716; x=1776349716;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=SzSGoxamWDY402w6GyCgok8UEOwwuH7LjcUAxc9lxTo=;
-  b=JONb/SR5pcy9SWRiBHXWypSM01gVIAwpCZa2tUqwgROD5nov97340104
-   eiMtIX+EjHFNETguNKwllvXhCe6lwbt5trDKaX7SWP7IYaYKHlpILyamg
-   Hyn9lAUgrCPj0rVIkZHscXnsFLhJzwmSON82l8nFL5yF/BgbZNaJPRHbG
-   ydyjXDmiWQLHHUJlYtco/8+TmtgAFf4HVZtw/6yyLya6CXYgCaK9D7v82
-   s/enGXYFJGWCweCNyDvyIumROke0Ok1R57AZFaFl7txJMcBB44GALYMbF
-   sz7lb+3ZorU5RN2IuvkiSjARpjywoIULjE8gqUmp6eyRgy6tcZ5x7rKis
-   A==;
-X-CSE-ConnectionGUID: 5nriC3SRRYmQzxxo9a9fEQ==
-X-CSE-MsgGUID: flx/9Bb5RZWPDXme/el07w==
+  bh=/pz5QIt977haPHt4u/HdU+p4ARPhasKV2YRKEe/vTr0=;
+  b=BvBXPEv4Ozc0E7mIHnckKbdlR/TX1bpSZJh7XXS7ACHQ5fnTjWb9VBYb
+   GNDBNSB4luv7cv/TOiOf38UpQ/LrvVj02JnDvQScQzVrZB2gDWLTgGFDy
+   bz6PqX0+piWT6ba4TFQrcLO42fvUZ0yx8vHBvUQS8CWVto7thCuJmglX9
+   pBDiwAKbT+30HNqzPyirxF/XZEQmH+vGKQWy8QYJa17dL0y9T8HTcvh+O
+   azKPDrQFNhdQArl0pqipL+/yQEFtNMvbNYWB0MsK3gHcrNh35A7YdaRYI
+   ZCWOUMBnHBSyusGO41AFGLWeCTNZhgu4wlkw/QGD4BHLmLIpofMV9UAAw
+   g==;
+X-CSE-ConnectionGUID: yn3OdADNSDycXsoyb+2j1Q==
+X-CSE-MsgGUID: MZ0NjrJlQKiZgtyA1aZRsg==
 X-IronPort-AV: E=Sophos;i="6.15,216,1739808000"; 
-   d="scan'208";a="81484519"
+   d="scan'208";a="81484520"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2025 22:28:28 +0800
-IronPort-SDR: 67ffb07e_4w+u/dNRTh0/wAIgZNfbf0EIFeIn6XQrDh72XH2FekwyXre
- aOvl9OM0pH24oS+xlr3A0jmQO8Agm4XUIGtmF+Q==
+  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2025 22:28:29 +0800
+IronPort-SDR: 67ffb07f_ybGX+8q9U/CrSsWK84hCwY4qj6lLpJM5uv46h465YcH1Gfc
+ TMFCZ0PZ2OMBh2e63BWcgiunAOVm+smD7/MbDtg==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2025 06:28:31 -0700
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2025 06:28:32 -0700
 WDCIronportException: Internal
 Received: from 5cg2075gjp.ad.shared (HELO naota-xeon..) ([10.224.104.89])
-  by uls-op-cesaip01.wdc.com with ESMTP; 16 Apr 2025 07:28:27 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Apr 2025 07:28:28 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 02/13] btrfs: take struct btrfs_inode in btrfs_free_reserved_data_space_noquota
-Date: Wed, 16 Apr 2025 23:28:07 +0900
-Message-ID: <a41a96db95c25fd695a3fc576998169922209778.1744813603.git.naohiro.aota@wdc.com>
+Subject: [PATCH v3 03/13] btrfs: factor out init_space_info()
+Date: Wed, 16 Apr 2025 23:28:08 +0900
+Message-ID: <75d34a6de9baa6d5aa98f43e184906beb66e649c.1744813603.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1744813603.git.naohiro.aota@wdc.com>
 References: <cover.1744813603.git.naohiro.aota@wdc.com>
@@ -75,103 +75,62 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As well as the last patch, take struct btrfs_inode in the function and let
-it distinguish which data space it is working on in a later patch. There is
-no functional change with this commit.
+Factor out initialization of the space_info struct, which is used in a
+later patch. There is no functional change.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/delalloc-space.c | 7 ++++---
- fs/btrfs/delalloc-space.h | 3 +--
- fs/btrfs/inode.c          | 4 ++--
- fs/btrfs/relocation.c     | 3 +--
- 4 files changed, 8 insertions(+), 9 deletions(-)
+ fs/btrfs/space-info.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index c7181779b013..a18895255af9 100644
---- a/fs/btrfs/delalloc-space.c
-+++ b/fs/btrfs/delalloc-space.c
-@@ -151,7 +151,7 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
- 	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
- 	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
- 	if (ret < 0) {
--		btrfs_free_reserved_data_space_noquota(fs_info, len);
-+		btrfs_free_reserved_data_space_noquota(inode, len);
- 		extent_changeset_free(*reserved);
- 		*reserved = NULL;
- 	} else {
-@@ -168,9 +168,10 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
-  * which we can't sleep and is sure it won't affect qgroup reserved space.
-  * Like clear_bit_hook().
-  */
--void btrfs_free_reserved_data_space_noquota(struct btrfs_fs_info *fs_info,
-+void btrfs_free_reserved_data_space_noquota(struct btrfs_inode *inode,
- 					    u64 len)
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 3bb7246f40fa..7334ffa67a86 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -234,19 +234,11 @@ void btrfs_update_space_info_chunk_size(struct btrfs_space_info *space_info,
+ 	WRITE_ONCE(space_info->chunk_size, chunk_size);
+ }
+ 
+-static int create_space_info(struct btrfs_fs_info *info, u64 flags)
++static void init_space_info(struct btrfs_fs_info *info,
++			    struct btrfs_space_info *space_info, u64 flags)
  {
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_space_info *data_sinfo;
+-
+-	struct btrfs_space_info *space_info;
+-	int i;
+-	int ret;
+-
+-	space_info = kzalloc(sizeof(*space_info), GFP_NOFS);
+-	if (!space_info)
+-		return -ENOMEM;
+-
+ 	space_info->fs_info = info;
+-	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
++	for (int i = 0; i < BTRFS_NR_RAID_TYPES; i++)
+ 		INIT_LIST_HEAD(&space_info->block_groups[i]);
+ 	init_rwsem(&space_info->groups_sem);
+ 	spin_lock_init(&space_info->lock);
+@@ -260,6 +252,19 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
  
- 	ASSERT(IS_ALIGNED(len, fs_info->sectorsize));
-@@ -196,7 +197,7 @@ void btrfs_free_reserved_data_space(struct btrfs_inode *inode,
- 	      round_down(start, fs_info->sectorsize);
- 	start = round_down(start, fs_info->sectorsize);
+ 	if (btrfs_is_zoned(info))
+ 		space_info->bg_reclaim_threshold = BTRFS_DEFAULT_ZONED_RECLAIM_THRESH;
++}
++
++static int create_space_info(struct btrfs_fs_info *info, u64 flags)
++{
++
++	struct btrfs_space_info *space_info;
++	int ret;
++
++	space_info = kzalloc(sizeof(*space_info), GFP_NOFS);
++	if (!space_info)
++		return -ENOMEM;
++
++	init_space_info(info, space_info, flags);
  
--	btrfs_free_reserved_data_space_noquota(fs_info, len);
-+	btrfs_free_reserved_data_space_noquota(inode, len);
- 	btrfs_qgroup_free_data(inode, reserved, start, len, NULL);
- }
- 
-diff --git a/fs/btrfs/delalloc-space.h b/fs/btrfs/delalloc-space.h
-index 069005959479..6119c0d3f883 100644
---- a/fs/btrfs/delalloc-space.h
-+++ b/fs/btrfs/delalloc-space.h
-@@ -18,8 +18,7 @@ void btrfs_free_reserved_data_space(struct btrfs_inode *inode,
- void btrfs_delalloc_release_space(struct btrfs_inode *inode,
- 				  struct extent_changeset *reserved,
- 				  u64 start, u64 len, bool qgroup_free);
--void btrfs_free_reserved_data_space_noquota(struct btrfs_fs_info *fs_info,
--					    u64 len);
-+void btrfs_free_reserved_data_space_noquota(struct btrfs_inode *inode, u64 len);
- void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
- 				     bool qgroup_free);
- int btrfs_delalloc_reserve_space(struct btrfs_inode *inode,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 868ec20ef805..652dd9c5ec82 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2591,7 +2591,7 @@ void btrfs_clear_delalloc_extent(struct btrfs_inode *inode,
- 		    !btrfs_is_free_space_inode(inode) &&
- 		    !(state->state & EXTENT_NORESERVE) &&
- 		    (bits & EXTENT_CLEAR_DATA_RESV))
--			btrfs_free_reserved_data_space_noquota(fs_info, len);
-+			btrfs_free_reserved_data_space_noquota(inode, len);
- 
- 		percpu_counter_add_batch(&fs_info->delalloc_bytes, -len,
- 					 fs_info->delalloc_batch);
-@@ -9718,7 +9718,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- 	 * bytes_may_use.
- 	 */
- 	if (!extent_reserved)
--		btrfs_free_reserved_data_space_noquota(fs_info, disk_num_bytes);
-+		btrfs_free_reserved_data_space_noquota(inode, disk_num_bytes);
- out_unlock:
- 	btrfs_unlock_extent(io_tree, start, end, &cached_state);
- out_folios:
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 6ba9fcb53c33..6f4d9ffa404e 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2749,8 +2749,7 @@ static noinline_for_stack int prealloc_file_extent_cluster(struct reloc_control
- 	btrfs_inode_unlock(inode, 0);
- 
- 	if (cur_offset < prealloc_end)
--		btrfs_free_reserved_data_space_noquota(inode->root->fs_info,
--					       prealloc_end + 1 - cur_offset);
-+		btrfs_free_reserved_data_space_noquota(inode, prealloc_end + 1 - cur_offset);
- 	return ret;
- }
- 
+ 	ret = btrfs_sysfs_add_space_info_type(info, space_info);
+ 	if (ret)
 -- 
 2.49.0
 
