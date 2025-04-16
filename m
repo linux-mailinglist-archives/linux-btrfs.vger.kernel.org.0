@@ -1,298 +1,299 @@
-Return-Path: <linux-btrfs+bounces-13059-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13061-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDEFEA8B46E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 10:54:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2EEA8B48E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 10:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF7A17A80E0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 08:53:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59F8E7A7F1A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 08:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C3C232379;
-	Wed, 16 Apr 2025 08:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF0323371A;
+	Wed, 16 Apr 2025 08:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gl9ECdGq";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gl9ECdGq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DRYch43J"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E5F230BFC
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3707A225A3C;
+	Wed, 16 Apr 2025 08:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744793675; cv=none; b=Prky0cfio+0MXty4lMy53M+WKQVtndZclMMDP2ZBMZ3O0sX1sNgl+McFi72sSJLldivAIDVWKBJDuRfqy4XSYc4AVaRnH5ApRDDxgr6lRpygVEutMieAW5tc+6bAonCiO7bjiEuTY44l+b0ZcWzctbIvef78OV6EOPhl9XGpU1Y=
+	t=1744793947; cv=none; b=YIwBOjK1++B3i0Pcp3Ma4dmoJs4Oul88MjQmLZFa1vtAjtlyXsn+Lw/7L6uEVxABNv9LnEljdA3voaB/fAzr+0Oo1Ya9U6ezPVnVvaU684vjRizQFr+i3qg6vBNh/rGtrW49OKff2MFCySA/Lh5fMt0czvtuLMZ8PqGnyuDCjC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744793675; c=relaxed/simple;
-	bh=0dTrOK0o7KdSocxapoxDy075CufTGTtWr5e5x8qwlmE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qz8ijslNwe5+J29O6EUsmEhtwzmsTz86g4JmZdDE9EWN9E1I1prqg1dxyIedAGIGa1yFPszTSzIfFb03qooW9w3gKUdTn721EyM1taRBh9bXm2gTQg6kRsF3APBFDExhUX6w8b7z9KeVAqJ9oA+Rs76PzzKXtri4WRAZ5xcoRgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gl9ECdGq; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gl9ECdGq; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3AF972118E
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1744793671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S2XijWhd4piwDZBZ6i5y9x2QR+KREGLRNu5NHlf2iLs=;
-	b=gl9ECdGq1MPK5IwxBOL2LjiXgLyIqhoFZgVYJ8BQERag1AB+2GPJhLxr8cAHfgN9Vq6ENr
-	RasaakWZ8BUrx8RekSU5GbjG2ZJcWmLHq++41Z3ZMjzN+vvyQa6+bJG70Kk8AehhcrglLU
-	zD4P59RELHCxTKkJiZWBNhYh9mUNktk=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1744793671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S2XijWhd4piwDZBZ6i5y9x2QR+KREGLRNu5NHlf2iLs=;
-	b=gl9ECdGq1MPK5IwxBOL2LjiXgLyIqhoFZgVYJ8BQERag1AB+2GPJhLxr8cAHfgN9Vq6ENr
-	RasaakWZ8BUrx8RekSU5GbjG2ZJcWmLHq++41Z3ZMjzN+vvyQa6+bJG70Kk8AehhcrglLU
-	zD4P59RELHCxTKkJiZWBNhYh9mUNktk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C69813976
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MCoJC0Zw/2fOZwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:30 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 2/2] btrfs: make btrfs_truncate_block() zero folio range for certain subpage corner cases
-Date: Wed, 16 Apr 2025 18:24:09 +0930
-Message-ID: <aef2bcd3eea5b4ecbaa1d1846899780c54d46231.1744793549.git.wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1744793549.git.wqu@suse.com>
-References: <cover.1744793549.git.wqu@suse.com>
+	s=arc-20240116; t=1744793947; c=relaxed/simple;
+	bh=77xW6ec/3xetSN3QR6t4CyQOSb2vev0hWUmFBPKE0h0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qHVZjLz3XRwmN+MoFbX5JUNyQAs5NfzsQTvXogx4u4hyK3W0r9hcpO0Zq0lik71OUKU4wvd5/9PoiRg4yonVSIGY8UxTcV4wLnkwjhzAyDfWYOw++I13gTMTJhKo/62owiayDo2h5AQUmnSv7L5cq6TUd9l7XatTK5poDjeza40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DRYch43J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9B1C4CEE9;
+	Wed, 16 Apr 2025 08:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744793946;
+	bh=77xW6ec/3xetSN3QR6t4CyQOSb2vev0hWUmFBPKE0h0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=DRYch43JfrtxLkNNirV3qsCFwtVmH6wq4hQb6gqemVjMiCFrnZD5gKr8wkSK+ZO1r
+	 xIsKHpnpQcJrm2C+18cvV/Wmy1yEo8vROGW6gLGw3FTGxsazg7nAvk58Bx198jNeRh
+	 ro+uat9eroZiwX51hHtnY8xmkOxxxVHBGofVBwdbR2/O0CJKZf1W1QZi0mRUKp3d+9
+	 pEYbtdArN8J7k+mGHCY7C18c90qfhkezcQo+kV5384Q+k9K/ZxJa9yxiVxyQ17dL34
+	 Lf77L5u554W3Shk+ZaSUbOxZxTYcNQ4hpEmHvB6y9OGLuNDrl3fqZBLRva7uoXGRas
+	 FKknFYEdfS7Hw==
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ac25d2b2354so1016682466b.1;
+        Wed, 16 Apr 2025 01:59:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVb7ygBLc1azSPrx8jzN3ctjULt8TuzieyxljeLxMrO59GPfIVAZcw8oSDbdDTm+FyFfZ/Q6szEnuQD2A==@vger.kernel.org, AJvYcCWv0vISWM/IZy95SdvPzwafQjw1vsTStjbeUOh9+2rz8ptYh85Ts/Kozm9g2R+GTU8bGt0JyxfXXJCwHZqj@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmrFoIOOHQq+ud3lIi2oV7NA5WLv/QCVT5uWKftooZVhlEeX06
+	ZPyHY751BRa7QXa5vlEb/j4CQ2Z4rbs+NgwB2KsMBvwrJXtEVkPQ4EZhUPX9QPyKPiAt5kuRslq
+	jFaQtBtDXH7zbMAT7JIF0F6u77is=
+X-Google-Smtp-Source: AGHT+IGi4ezCFNC3plR942u9UfIy85h5LUDj8N7Ruqh/16Nr4wLj8mZR+xHrC+Fnht5lykqvALoY8MoT+kwHy84EOxo=
+X-Received: by 2002:a17:907:6e87:b0:acb:34b1:4442 with SMTP id
+ a640c23a62f3a-acb42b8eb83mr90200666b.48.1744793945147; Wed, 16 Apr 2025
+ 01:59:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+References: <67febb14.050a0220.186b78.000a.GAE@google.com>
+In-Reply-To: <67febb14.050a0220.186b78.000a.GAE@google.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 16 Apr 2025 09:58:28 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6DJfaN7iXcT9yuOFWeycRHJHjZhDigFwUALyMXaBjnwg@mail.gmail.com>
+X-Gm-Features: ATxdqUEozPAdF2l_9huJxRbgzTH7OkJJUqZN5jNtqV1JWEIzJpBOo6IrbcsNosQ
+Message-ID: <CAL3q7H6DJfaN7iXcT9yuOFWeycRHJHjZhDigFwUALyMXaBjnwg@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] general protection fault in btrfs_relocate_block_group
+To: syzbot <syzbot+9b6689eb2b9692c761ea@syzkaller.appspotmail.com>
+Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[BUG]
-For the following fsx -e 1 run, the btrfs still fails the run on 64K
-page size with 4K fs block size:
+On Tue, Apr 15, 2025 at 9:01=E2=80=AFPM syzbot
+<syzbot+9b6689eb2b9692c761ea@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    1a1d569a75f3 Merge tag 'edac_urgent_for_v6.15_rc3' of git=
+:..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D10f9247058000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Da972ee73c2fcf=
+8ca
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9b6689eb2b9692c=
+761ea
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7=
+feb34a89c2a/non_bootable_disk-1a1d569a.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/3cbccbd209b5/vmlinu=
+x-1a1d569a.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/2957e37f5adf/b=
+zImage-1a1d569a.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+9b6689eb2b9692c761ea@syzkaller.appspotmail.com
+>
+> loop0: detected capacity change from 0 to 32768
+> BTRFS: device fsid e417788f-7a09-42b2-9266-8ddc5d5d35d2 devid 1 transid 8=
+ /dev/loop0 (7:0) scanned by syz.0.0 (5328)
+> BTRFS info (device loop0): first mount of filesystem e417788f-7a09-42b2-9=
+266-8ddc5d5d35d2
+> BTRFS info (device loop0): using xxhash64 (xxhash64-generic) checksum alg=
+orithm
+> BTRFS info (device loop0): disk space caching is enabled
+> BTRFS warning (device loop0): space cache v1 is being deprecated and will=
+ be removed in a future release, please use -o space_cache=3Dv2
+> BTRFS info (device loop0): rebuilding free space tree
+> BTRFS info (device loop0): disabling free space tree
+> BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE=
+_TREE (0x1)
+> BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE=
+_TREE_VALID (0x2)
+> BTRFS info (device loop0): balance: start -d -m
+> FAULT_INJECTION: forcing a failure.
+> name failslab, interval 1, probability 0, space 0, times 1
+> CPU: 0 UID: 0 PID: 5328 Comm: syz.0.0 Not tainted 6.15.0-rc2-syzkaller-00=
+042-g1a1d569a75f3 #0 PREEMPT(full)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.=
+16.3-2~bpo12+1 04/01/2014
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+>  fail_dump lib/fault-inject.c:73 [inline]
+>  should_fail_ex+0x424/0x570 lib/fault-inject.c:174
+>  should_failslab+0xac/0x100 mm/failslab.c:46
+>  slab_pre_alloc_hook mm/slub.c:4104 [inline]
+>  slab_alloc_node mm/slub.c:4180 [inline]
+>  kmem_cache_alloc_noprof+0x78/0x390 mm/slub.c:4207
+>  add_delayed_ref+0x1a0/0x1e90 fs/btrfs/delayed-ref.c:1007
+>  btrfs_free_tree_block+0x361/0xd10 fs/btrfs/extent-tree.c:3434
+>  btrfs_force_cow_block+0xf6c/0x2010 fs/btrfs/ctree.c:555
+>  btrfs_cow_block+0x377/0x840 fs/btrfs/ctree.c:688
+>  btrfs_search_slot+0xc12/0x31c0 fs/btrfs/ctree.c:2088
+>  btrfs_insert_empty_items+0x9c/0x1a0 fs/btrfs/ctree.c:4287
+>  btrfs_insert_empty_item fs/btrfs/ctree.h:673 [inline]
+>  btrfs_insert_empty_inode+0x1de/0x2f0 fs/btrfs/inode-item.c:391
+>  __insert_orphan_inode fs/btrfs/relocation.c:3714 [inline]
+>  create_reloc_inode+0x408/0xa50 fs/btrfs/relocation.c:3785
+>  btrfs_relocate_block_group+0x554/0xd80 fs/btrfs/relocation.c:3991
+>  btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3511
+>  __btrfs_balance+0x1a93/0x25e0 fs/btrfs/volumes.c:4292
+>  btrfs_balance+0xbde/0x10c0 fs/btrfs/volumes.c:4669
+>  btrfs_ioctl_balance+0x3f5/0x660 fs/btrfs/ioctl.c:3586
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:906 [inline]
+>  __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:892
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f830078d169
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f83016c0038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f83009a5fa0 RCX: 00007f830078d169
+> RDX: 0000200000000440 RSI: 00000000c4009420 RDI: 0000000000000003
+> RBP: 00007f83016c0090 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+> R13: 0000000000000000 R14: 00007f83009a5fa0 R15: 00007ffc9409cc88
+>  </TASK>
+> BTRFS error (device loop0 state A): Transaction aborted (error -12)
+> BTRFS: error (device loop0 state A) in btrfs_force_cow_block:560: errno=
+=3D-12 Out of memory
+> BTRFS info (device loop0 state EA): forced readonly
+> BTRFS info (device loop0 state EA): relocating block group 6881280 flags =
+data|metadata
+> Oops: general protection fault, probably for non-canonical address 0xdfff=
+fc000000008c: 0000 [#1] SMP KASAN NOPTI
+> KASAN: null-ptr-deref in range [0x0000000000000460-0x0000000000000467]
+> CPU: 0 UID: 0 PID: 5328 Comm: syz.0.0 Not tainted 6.15.0-rc2-syzkaller-00=
+042-g1a1d569a75f3 #0 PREEMPT(full)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.=
+16.3-2~bpo12+1 04/01/2014
+> RIP: 0010:iput+0x3b/0xa50 fs/inode.c:1914
+> Code: 38 49 89 fe e8 f6 ef 7b ff 4d 85 f6 0f 84 8c 03 00 00 49 bd 00 00 0=
+0 00 00 fc ff df 4d 8d be d0 00 00 00 4c 89 fb 48 c1 eb 03 <42> 0f b6 04 2b=
+ 84 c0 0f 85 c4 08 00 00 48 89 5c 24 10 41 8b 1f bd
+> RSP: 0018:ffffc9000d0879c0 EFLAGS: 00010203
+> RAX: ffffffff8247653a RBX: 000000000000008c RCX: ffff888000cb2440
+> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000394
+> RBP: ffff888053019010 R08: ffff888052a5a80b R09: 1ffff1100a54b501
+> R10: dffffc0000000000 R11: ffffed100a54b502 R12: ffff888052a4c000
+> R13: dffffc0000000000 R14: 0000000000000394 R15: 0000000000000464
+> FS:  00007f83016c06c0(0000) GS:ffff88808c593000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f830169efd8 CR3: 0000000034ce6000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  btrfs_relocate_block_group+0xb86/0xd80 fs/btrfs/relocation.c:4052
+>  btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3511
+>  __btrfs_balance+0x1a93/0x25e0 fs/btrfs/volumes.c:4292
+>  btrfs_balance+0xbde/0x10c0 fs/btrfs/volumes.c:4669
+>  btrfs_ioctl_balance+0x3f5/0x660 fs/btrfs/ioctl.c:3586
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:906 [inline]
+>  __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:892
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-READ BAD DATA: offset = 0x26b3a, size = 0xfafa, fname = /mnt/btrfs/junk
-OFFSET      GOOD    BAD     RANGE
-0x26b3a     0x0000  0x15b4  0x0
-operation# (mod 256) for the bad data may be 21
-[...]
-LOG DUMP (28 total operations):
-1(  1 mod 256): SKIPPED (no operation)
-2(  2 mod 256): SKIPPED (no operation)
-3(  3 mod 256): SKIPPED (no operation)
-4(  4 mod 256): SKIPPED (no operation)
-5(  5 mod 256): WRITE    0x1ea90 thru 0x285e0	(0x9b51 bytes) HOLE
-6(  6 mod 256): ZERO     0x1b1a8 thru 0x20bd4	(0x5a2d bytes)
-7(  7 mod 256): FALLOC   0x22b1a thru 0x272fa	(0x47e0 bytes) INTERIOR
-8(  8 mod 256): WRITE    0x741d thru 0x13522	(0xc106 bytes)
-9(  9 mod 256): MAPWRITE 0x73ee thru 0xdeeb	(0x6afe bytes)
-10( 10 mod 256): FALLOC   0xb719 thru 0xb994	(0x27b bytes) INTERIOR
-11( 11 mod 256): COPY 0x15ed8 thru 0x18be1	(0x2d0a bytes) to 0x25f6e thru 0x28c77
-12( 12 mod 256): ZERO     0x1615e thru 0x1770e	(0x15b1 bytes)
-13( 13 mod 256): SKIPPED (no operation)
-14( 14 mod 256): DEDUPE 0x20000 thru 0x27fff	(0x8000 bytes) to 0x1000 thru 0x8fff
-15( 15 mod 256): SKIPPED (no operation)
-16( 16 mod 256): CLONE 0xa000 thru 0xffff	(0x6000 bytes) to 0x36000 thru 0x3bfff
-17( 17 mod 256): ZERO     0x14adc thru 0x1b78a	(0x6caf bytes)
-18( 18 mod 256): TRUNCATE DOWN	from 0x3c000 to 0x1e2e3	******WWWW
-19( 19 mod 256): CLONE 0x4000 thru 0x11fff	(0xe000 bytes) to 0x16000 thru 0x23fff
-20( 20 mod 256): FALLOC   0x311e1 thru 0x3681b	(0x563a bytes) PAST_EOF
-21( 21 mod 256): FALLOC   0x351c5 thru 0x40000	(0xae3b bytes) EXTENDING
-22( 22 mod 256): WRITE    0x920 thru 0x7e51	(0x7532 bytes)
-23( 23 mod 256): COPY 0x2b58 thru 0xc508	(0x99b1 bytes) to 0x117b1 thru 0x1b161
-24( 24 mod 256): TRUNCATE DOWN	from 0x40000 to 0x3c9a5
-25( 25 mod 256): SKIPPED (no operation)
-26( 26 mod 256): MAPWRITE 0x25020 thru 0x26b06	(0x1ae7 bytes)
-27( 27 mod 256): SKIPPED (no operation)
-28( 28 mod 256): READ     0x26b3a thru 0x36633	(0xfafa bytes)	***RRRR***
+This seems to have the same cause as:
 
-[CAUSE]
-The involved operations are:
+https://lore.kernel.org/linux-btrfs/67f14ee9.050a0220.0a13.023e.GAE@google.=
+com/
 
- fallocating to largest ever: 0x40000
- 21 pollute_eof	0x24000 thru	0x2ffff	(0xc000 bytes)
- 21 falloc	from 0x351c5 to 0x40000 (0xae3b bytes)
- 28 read	0x26b3a thru	0x36633	(0xfafa bytes)
+For which there's a fix on the btrfs mailing list and btrfs' github
+repo (for-next branch):
 
-At operation #21 a pollute_eof is done, by memory mappaed write into
-range [0x24000, 0x2ffff).
-At this stage, the inode size is 0x24000, which is block aligned.
+https://lore.kernel.org/linux-btrfs/9ac220a55a540ad22f7cb198856b689079f3e8c=
+6.1743875430.git.fdmanana@suse.com/
 
-Then fallocate happens, and since it's expanding the inode, it will call
-btrfs_truncate_block() to truncate any unaligned range.
 
-But since the inode size is already block aligned,
-btrfs_truncate_block() does nothing and exit.
 
-However remember the folio at 0x20000 has some range polluted already,
-although they will not be written back to disk, it still affects the
-page cache, resulting the later operation #28 to read out the polluted
-value.
-
-[FIX]
-Instead of early exit from btrfs_truncate_block() if the range is
-already block aligned, do extra filio zeroing if the fs block size is
-smaller than the page size.
-
-This is to address exactly the above case where memory mapped write can
-still leave some garbage beyond EOF.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 88 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0700a161b80e..2136289da5be 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4777,6 +4777,80 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	return ret;
- }
- 
-+/*
-+ * A helper to zero out all blocks inside range [@orig_start, @orig_end) of
-+ * the target folio.
-+ * The target folio is the one containing the head or tail block of the range
-+ * [@from, @end].
-+ *
-+ * This is a special case for fs block size < page size, where even if the range
-+ * [from, end] is already block aligned, we can still have blocks beyond EOF being
-+ * polluted by memory mapped write.
-+ */
-+static int zero_range_folio(struct btrfs_inode *inode, u64 from, u64 end,
-+			    u64 orig_start, u64 orig_end,
-+			    enum btrfs_truncate_where where)
-+{
-+	const u32 blocksize = inode->root->fs_info->sectorsize;
-+	struct address_space *mapping = inode->vfs_inode.i_mapping;
-+	struct extent_io_tree *io_tree = &inode->io_tree;
-+	struct extent_state *cached_state = NULL;
-+	struct btrfs_ordered_extent *ordered;
-+	pgoff_t index = (where == BTRFS_TRUNCATE_HEAD_BLOCK) ?
-+			(from >> PAGE_SHIFT) : (end >> PAGE_SHIFT);
-+	struct folio *folio;
-+	u64 block_start;
-+	u64 block_end;
-+	u64 clamp_start;
-+	u64 clamp_end;
-+	int ret = 0;
-+
-+again:
-+	folio = filemap_lock_folio(mapping, index);
-+	/* No folio present. */
-+	if (IS_ERR(folio))
-+		return 0;
-+
-+	if (!folio_test_uptodate(folio)) {
-+		ret = btrfs_read_folio(NULL, folio);
-+		folio_lock(folio);
-+		if (folio->mapping != mapping) {
-+			folio_unlock(folio);
-+			folio_put(folio);
-+			goto again;
-+		}
-+		if (!folio_test_uptodate(folio)) {
-+			ret = -EIO;
-+			goto out_unlock;
-+		}
-+	}
-+	folio_wait_writeback(folio);
-+
-+	clamp_start = max_t(u64, folio_pos(folio), orig_start);
-+	clamp_end = min_t(u64, folio_pos(folio) + folio_size(folio) - 1,
-+			  orig_end);
-+	block_start = round_down(clamp_start, blocksize);
-+	block_end = round_up(clamp_end + 1, blocksize) - 1;
-+	lock_extent(io_tree, block_start, block_end, &cached_state);
-+	ordered = btrfs_lookup_ordered_range(inode, block_start, block_end + 1 - block_end);
-+	if (ordered) {
-+		unlock_extent(io_tree, block_start, block_end, &cached_state);
-+		folio_unlock(folio);
-+		folio_put(folio);
-+		btrfs_start_ordered_extent(ordered);
-+		btrfs_put_ordered_extent(ordered);
-+		goto again;
-+	}
-+	folio_zero_range(folio, clamp_start - folio_pos(folio),
-+			 clamp_end - clamp_start + 1);
-+	unlock_extent(io_tree, block_start, block_end, &cached_state);
-+
-+out_unlock:
-+	folio_unlock(folio);
-+	folio_put(folio);
-+	return ret;
-+}
-+
- /*
-  * Read, zero a chunk and write a block.
-  *
-@@ -4818,8 +4892,20 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t end,
- 	if (end == (loff_t)-1)
- 		ASSERT(where == BTRFS_TRUNCATE_HEAD_BLOCK);
- 
--	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize))
--		goto out;
-+	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize)) {
-+		/*
-+		 * The target head/tail range is already block aligned.
-+		 * If block size >= PAGE_SIZE, meaning it's impossible to mmap a
-+		 * page containing anything other than the target block.
-+		 * So we can safely exit.
-+		 *
-+		 * Otherwise we still need to zero out the range inside the folio
-+		 * to avoid memory mapped write to pollute beyond EOF.
-+		 */
-+		if (blocksize >= PAGE_SIZE)
-+			return 0;
-+		return zero_range_folio(inode, from, end, orig_start, orig_end, where);
-+	}
- 
- 	if (where == BTRFS_TRUNCATE_HEAD_BLOCK)
- 		block_start = round_down(from, blocksize);
--- 
-2.49.0
-
+> RIP: 0033:0x7f830078d169
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f83016c0038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f83009a5fa0 RCX: 00007f830078d169
+> RDX: 0000200000000440 RSI: 00000000c4009420 RDI: 0000000000000003
+> RBP: 00007f83016c0090 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+> R13: 0000000000000000 R14: 00007f83009a5fa0 R15: 00007ffc9409cc88
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:iput+0x3b/0xa50 fs/inode.c:1914
+> Code: 38 49 89 fe e8 f6 ef 7b ff 4d 85 f6 0f 84 8c 03 00 00 49 bd 00 00 0=
+0 00 00 fc ff df 4d 8d be d0 00 00 00 4c 89 fb 48 c1 eb 03 <42> 0f b6 04 2b=
+ 84 c0 0f 85 c4 08 00 00 48 89 5c 24 10 41 8b 1f bd
+> RSP: 0018:ffffc9000d0879c0 EFLAGS: 00010203
+> RAX: ffffffff8247653a RBX: 000000000000008c RCX: ffff888000cb2440
+> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000394
+> RBP: ffff888053019010 R08: ffff888052a5a80b R09: 1ffff1100a54b501
+> R10: dffffc0000000000 R11: ffffed100a54b502 R12: ffff888052a4c000
+> R13: dffffc0000000000 R14: 0000000000000394 R15: 0000000000000464
+> FS:  00007f83016c06c0(0000) GS:ffff88808c593000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f830167dfd8 CR3: 0000000034ce6000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess), 1 bytes skipped:
+>    0:   49 89 fe                mov    %rdi,%r14
+>    3:   e8 f6 ef 7b ff          call   0xff7beffe
+>    8:   4d 85 f6                test   %r14,%r14
+>    b:   0f 84 8c 03 00 00       je     0x39d
+>   11:   49 bd 00 00 00 00 00    movabs $0xdffffc0000000000,%r13
+>   18:   fc ff df
+>   1b:   4d 8d be d0 00 00 00    lea    0xd0(%r14),%r15
+>   22:   4c 89 fb                mov    %r15,%rbx
+>   25:   48 c1 eb 03             shr    $0x3,%rbx
+> * 29:   42 0f b6 04 2b          movzbl (%rbx,%r13,1),%eax <-- trapping in=
+struction
+>   2e:   84 c0                   test   %al,%al
+>   30:   0f 85 c4 08 00 00       jne    0x8fa
+>   36:   48 89 5c 24 10          mov    %rbx,0x10(%rsp)
+>   3b:   41 8b 1f                mov    (%r15),%ebx
+>   3e:   bd                      .byte 0xbd
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+>
 
