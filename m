@@ -1,591 +1,231 @@
-Return-Path: <linux-btrfs+bounces-13110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D928A90E03
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 23:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BFE6A90E6F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 00:08:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6944944254F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 21:50:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EAF017E3EF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 22:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1DF23315B;
-	Wed, 16 Apr 2025 21:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02758235C1D;
+	Wed, 16 Apr 2025 22:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="mEJGJudW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HSc/DpXf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A3323537B
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 21:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA13946F
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 22:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744840240; cv=none; b=UsTFuI5JCcK1BGW7SxZBXKUKqpE1JLvu6yg9TwMUfgxHlF0VyzXodtCvg6ohvDYjZNqG2t4R9ZLyaEl7nUp6XuthB67czw9mh3DCfnyGgzRiOgR/PIhlOmVU/lqpzvEG7sy1pwHUrlk/TIlrwUtSGFdrovmMWWGIgNcnppQL8+U=
+	t=1744841277; cv=none; b=cmhCEJAcKg2pveiuXXGsoIax+jRdFB7Fq0Q6xYH2/VLem0bT7mHFOHBDgY/8yRMl2OJDO/juqQ5eWNgKmMzOeRoUhjSw3vTISKTlCxcZsKNjeFrCkCxlONmohPN2LeFjHojTYh/ameD48lDEGoQwEW4kYTpfoapOGc4KivlHTR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744840240; c=relaxed/simple;
-	bh=aO/BPEswyHqwac6mLtoPy5Z3X4e/Ec3ORCQWyBaBHwk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sNK41EcSQvcGbDl0CISwKAvh9rXccfG5FZyRGfNoK3Egtoq1xBaeh7Etabr0iP2T3HCWxL5RmmJLBXIzDc8AtXLWDqNLxX7dREewpAhQFX97UHplF5V+rshFImQkugxs76ZHoJt58gn7NGMzjDG4khoeBeWMcfnpHFCQ6TJmjDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=mEJGJudW; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6fedefb1c9cso780387b3.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 14:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1744840236; x=1745445036; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zflA4EVisdpuiU28rJ7f0dQVMzul4Jr7VRwItdMuUOI=;
-        b=mEJGJudW6egJhCw6V0sLCzOOVQDT5uqtukZK0YXlf9tu1IuuzeMJIuSF07PCDYQX8A
-         F8D23U8u+grO6jWMUpivyQE0g2n6uH1KRCRqkNiINyqZ5g9R6l5lqGJrv/MDmiTLveoP
-         DNOiCnQ2CqNgXbvrYTsJhT+sSwL7l0dAsR9hvJJKFR09xvZ7jyRSHgTDTMEh9PaNscX6
-         3tPzL1g5Blv0tl85sJhCmOmLpGJSQzB218Zpv9YBEHu1YEXQEUKSYVDKMAlfD7b12XFB
-         kWvqy8HwszgW2bwxTb0B/cUYYpo6xI00Cak92REtFWPj9jnyZ+1ECy8fgNTwuOTgZG6C
-         lPVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744840236; x=1745445036;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zflA4EVisdpuiU28rJ7f0dQVMzul4Jr7VRwItdMuUOI=;
-        b=TRqPTZlxEUVwWF0d0HBTVS2IKyr4KD83LzOvmChKZYQ1mP7Nuffy5usb9ORFSe8ee2
-         1Um7g0L/qT8H/6/ap8vaODw6YhsvsBbP2ekK6/tGsMjGh9Y9UDLlph5xWFlKfv4xOabE
-         iio+8XkaQxhpnLcjpW4fFXbqU3lT5c8QEXAYY5zVndLgX16r3uQ8WkYj5cU749hllX5T
-         rm06sPl67pcLe02AWKiBxT5z4eVfiUdy3umkFsl76iTBFmtKBmYnucFXOC9ob9CYNjd4
-         653AHq3EY01030TdoSh8A0C0scJgRzo0sQPflxGqbU915jjLnu5woQHp1p8uG9lG0lEe
-         CZKg==
-X-Gm-Message-State: AOJu0Yw06iMC1vZFnDsGqrcdiqiXwidN+0BuFvvB3lfhplReLKWaqGhh
-	tzCgWXI1g+qkIltDlhspcdzFiXtIHO4bhtNrkwNExjQUAtRlKOkqzaXc4srM3zSM2m3VUPD5bQw
-	SN2o=
-X-Gm-Gg: ASbGncvFcix81keXIUl1iL8sLkzGAcQpPFdeN0QurHBfy2B+Fg3P8M/2qZFJKQzRHep
-	d/gzFqkp8tTkSIa6pzz0KN4vr7JZH04ZG4WaySDCiMd5vodOB7hB1Sr0lb+I2vPOUOzySSlTFm7
-	dZoN9lDwszjMo9wMEZGIqchEojtsd8NE6ue1EFV3UHrmABVtFLpFAiMrrxA9hF3jfKD/wBsw+yL
-	Lrx/eQjRprqacPpEvAHCYbX7NkEF43/HUtHwRVoK9Eosg8q/1zYiTxdT0xUnY0bOZ2rnlceVCCV
-	sRUDw+1TP1iJCE4+WriDGU+35rdJKgplx8br547jz08ksaPxvZSdYw8tQ8LNn/UK8JNTx1UAFko
-	aFA==
-X-Google-Smtp-Source: AGHT+IGZLwjBmAaYxmlYaSMc8p5cGphRnAENt0JuAHoDK+Xkkbshy5NHoW81VskkiHN7LOELsHmazg==
-X-Received: by 2002:a05:690c:3707:b0:703:afd6:42b8 with SMTP id 00721157ae682-706b32d8396mr53699567b3.19.1744840235620;
-        Wed, 16 Apr 2025 14:50:35 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-7053e3a1b88sm43258077b3.117.2025.04.16.14.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 14:50:34 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v2 3/3] btrfs: use buffer radix for extent buffer writeback operations
-Date: Wed, 16 Apr 2025 17:50:25 -0400
-Message-ID: <306c71cc0374fe1a08e97e25f83a99c360494dd8.1744840038.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1744840038.git.josef@toxicpanda.com>
-References: <cover.1744840038.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1744841277; c=relaxed/simple;
+	bh=qPn+pvlPH9q5HUbGpMZ7mt5AbJgBfMqHqCQXpSSs8L8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iFxMz+YqK/VfvCcZZ7T5nKdDwsqYh6AQO0FkYEnx1xB/q1aOARyc2wU4qeFNP6KzPi6/FrGOsEVOJpqg5N4ohGoBLydoBQgrCWoN6+OUfX13/pfX9pO57e+++ojm09nOzHcW9E3NQxu3817UBsEAhoW8iu+9jGe/8czeYqnBdcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HSc/DpXf; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1744841269; x=1745446069; i=quwenruo.btrfs@gmx.com;
+	bh=Np5FkcaMOjYOkCq9gYwzm+wX6iH3PV/J9T3S0+GhIHY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=HSc/DpXfbqAmsnzwaf9W37gS4cPr+Wc9pS6WlUJEBIXYbsa+7jDeXH/zDxT9hV1n
+	 zOPVICoASkyXb9t+e2QhyFzyO/Re/X388H7LIb3wSNGaDAkcB7ssRImSUsQ0JHAG0
+	 km8bUd7qhNOSbQrOKIdvvihxhvU3d/s/5pMb6WbgCce+khCCenF9X4UhM6F0pywCE
+	 ZrqWn3IVAe+5nfbZQ8T+hYops9THuepVSFTqJvA2p8NZjddIQUlyBWCCP6QTQhfxI
+	 EfSqtwIa4FAAKHB2KQAzM6RtNIXJQWcahbpq+9RdFDEn9yWyL+wqYX6RBz0ugCISN
+	 fVRoBD5VQ5/HWCe6EQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPXd2-1uRo8c3HXe-00TNy1; Thu, 17
+ Apr 2025 00:07:49 +0200
+Message-ID: <3c2772a2-f41f-44c0-acc3-989c77d39943@gmx.com>
+Date: Thu, 17 Apr 2025 07:37:45 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: adjust subpage bit start based on sectorsize
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+References: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1744657692.git.josef@toxicpanda.com>
+ <7e863b3c-6efc-459b-ae25-cf87734dc38f@gmx.com>
+ <27440332-2afb-4fb8-9ebe-d36c8c33a89a@gmx.com>
+ <20250415161647.GA2164022@zen.localdomain>
+ <7ad4df86-866e-40ce-89a1-48f3c49aeeea@gmx.com>
+ <20250416141646.GA2778901@perftesting>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20250416141646.GA2778901@perftesting>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:M+Nk8Z6vVVigwqfy0oko3sBikXsJXVZTTwwsNuVeFt7eXa+RhPe
+ nng5mvy9AO+efosecyxQVOTCh5X1LT245El3icoJPcbyumkivSddijxWxxEPwFXcX2Q3Rjh
+ xN+ucqGWjqK5Ll6heJR6LYIFvaJn293SduK/Q4PwSHT7vvN6p3HrUmbsjWpn3o3cfzI7rDE
+ gXC088MK3M3/gjSiV0eWg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:9CZzVxeIz0c=;AJ6ENOcOhmgIVl9V0wyBP7Ry60e
+ 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
+ uVblGwfvmA==
 
-Currently we have this ugly back and forth with the btree writeback
-where we find the folio, find the eb associated with that folio, and
-then attempt to writeback.  This results in two different paths for
-subpage eb's and >= pagesize eb's.
 
-Clean this up by adding our own infrastructure around looking up tag'ed
-eb's and writing the eb's out directly.  This allows us to unify the
-subpage and >= pagesize IO paths, resulting in a much cleaner writeback
-path for extent buffers.
 
-I ran this through fsperf on a VM with 8 CPUs and 16gib of ram.  I used
-smallfiles100k, but reduced the files to 1k to make it run faster, the
-results are as follows, with the statistically significant improvements
-marked with *, there were no regressions.  fsperf was run with -n 10 for
-both runs, so the baseline is the average 10 runs and the test is the
-average of 10 runs.
+=E5=9C=A8 2025/4/16 23:46, Josef Bacik =E5=86=99=E9=81=93:
+> On Wed, Apr 16, 2025 at 09:19:37AM +0930, Qu Wenruo wrote:
+>>
+>>
+>> =E5=9C=A8 2025/4/16 01:46, Boris Burkov =E5=86=99=E9=81=93:
+>>> On Tue, Apr 15, 2025 at 08:07:08AM +0930, Qu Wenruo wrote:
+>> [...]
+>>>>>
+>>>>> The problem is, we can not ensure all extent buffers are nodesize al=
+igned.
+>>>>>
+>>>
+>>> In theory because the allocator can do whatever it wants, or in practi=
+ce
+>>> because of mixed block groups? It seems to me that in practice without
+>>> mixed block groups they ought to always be aligned.
+>>
+>> Because we may have some old converted btrfs, whose allocater may not e=
+nsure
+>> nodesize aligned bytenr.
+>>
+>> For subpage we can still support non-aligned tree blocks as long as the=
+y do
+>> not cross boundary.
+>>
+>> I know this is over-complicated and prefer to reject them all, but such=
+ a
+>> change will need quite some time to reach end users.
+>>
+>>>
+>>>>> If we have an eb whose bytenr is only block aligned but not node siz=
+e
+>>>>> aligned, this will lead to the same problem.
+>>>>>
+>>>
+>>> But then the existing code for the non error path is broken, right?
+>>> How was this intended to work? Is there any correct way to loop over t=
+he
+>>> ebs in a folio when nodesize < pagesize? Your proposed gang lookup?
+>>>
+>>> I guess to put my question a different way, was it intentional to mix
+>>> the increment size in the two codepaths in this function?
+>>
+>> Yes, that's intended, consider the following case:
+>>
+>> 32K page size, 16K node size.
+>>
+>> 0    4K     8K    16K    20K    24K     28K      32K
+>> |           |///////////////////|                |
+>>
+>> In above case, for offset 0 and 4K, we didn't find any dirty block, and=
+ skip
+>> to next block.
+>>
+>> For 8K, we found an eb, submit it, and jump to 24K, and that's the expe=
+cted
+>> behavior.
+>>
+>> But on the other hand, if at offset 0 we increase the offset by 16K, we=
+ will
+>> never be able to grab the eb at 8K.
+>=20
+> Right, but this can't actually happen can it?  I mean it could happen th=
+e first
+> eb, but as soon as we allocate eb->start 24k we would fail check_eb_alig=
+nment()
+> because it straddles a folio and then the fs would flipe RO.  So I don't=
+ think
+> this is a problem in general.  Thanks,
 
-smallfiles100k results
-      metric           baseline       current        stdev            diff
-================================================================================
-avg_commit_ms               68.58         58.44          3.35   -14.79% *
-commits                    270.60        254.70         16.24    -5.88%
-dev_read_iops                  48            48             0     0.00%
-dev_read_kbytes              1044          1044             0     0.00%
-dev_write_iops          866117.90     850028.10      14292.20    -1.86%
-dev_write_kbytes      10939976.40   10605701.20     351330.32    -3.06%
-elapsed                     49.30            33          1.64   -33.06% *
-end_state_mount_ns    41251498.80   35773220.70    2531205.32   -13.28% *
-end_state_umount_ns      1.90e+09      1.50e+09   14186226.85   -21.38% *
-max_commit_ms                 139        111.60          9.72   -19.71% *
-sys_cpu                      4.90          3.86          0.88   -21.29%
-write_bw_bytes        42935768.20   64318451.10    1609415.05    49.80% *
-write_clat_ns_mean      366431.69     243202.60      14161.98   -33.63% *
-write_clat_ns_p50        49203.20         20992        264.40   -57.34% *
-write_clat_ns_p99          827392     653721.60      65904.74   -20.99% *
-write_io_kbytes           2035940       2035940             0     0.00%
-write_iops               10482.37      15702.75        392.92    49.80% *
-write_lat_ns_max         1.01e+08      90516129    3910102.06   -10.29% *
-write_lat_ns_mean       366556.19     243308.48      14154.51   -33.62% *
+Yep, that's totally true.
 
-As you can see we get about a 33% decrease runtime, with a 50%
-throughput increase, which is pretty significant.
+Thus I'm fine to reject such ebs now.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent_io.c   | 344 ++++++++++++++++++++---------------------
- fs/btrfs/extent_io.h   |   1 +
- fs/btrfs/transaction.c |   5 +-
- 3 files changed, 173 insertions(+), 177 deletions(-)
+Thanks,
+Qu
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index dfed1157ebe1..2503fc1f704b 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1926,6 +1926,117 @@ static void buffer_xarray_clear_mark(const struct extent_buffer *eb,
- 	xas_unlock_irqrestore(&xas, flags);
- }
- 
-+static void buffer_xarray_tag_for_writeback(struct btrfs_fs_info *fs_info,
-+					    unsigned long start, unsigned long end)
-+{
-+	XA_STATE(xas, &fs_info->buffer_xarray, start);
-+	unsigned int tagged = 0;
-+	void *eb;
-+
-+	xas_lock_irq(&xas);
-+	xas_for_each_marked(&xas, eb, end, PAGECACHE_TAG_DIRTY) {
-+		xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
-+		if (++tagged % XA_CHECK_SCHED)
-+			continue;
-+		xas_pause(&xas);
-+		xas_unlock_irq(&xas);
-+		cond_resched();
-+		xas_lock_irq(&xas);
-+	}
-+	xas_unlock_irq(&xas);
-+}
-+
-+struct eb_batch {
-+	unsigned int nr;
-+	unsigned int cur;
-+	struct extent_buffer *ebs[PAGEVEC_SIZE];
-+};
-+
-+static inline bool eb_batch_add(struct eb_batch *batch,
-+			       struct extent_buffer *eb)
-+{
-+	batch->ebs[batch->nr++] = eb;
-+	return (batch->nr < PAGEVEC_SIZE);
-+}
-+
-+static inline void eb_batch_init(struct eb_batch *batch)
-+{
-+	batch->nr = 0;
-+	batch->cur = 0;
-+}
-+
-+static inline unsigned int eb_batch_count(struct eb_batch *batch)
-+{
-+	return batch->nr;
-+}
-+
-+static inline struct extent_buffer *eb_batch_next(struct eb_batch *batch)
-+{
-+	if (batch->cur >= batch->nr)
-+		return NULL;
-+	return batch->ebs[batch->cur++];
-+}
-+
-+static inline void eb_batch_release(struct eb_batch *batch)
-+{
-+	for (unsigned int i = 0; i < batch->nr; i++)
-+		free_extent_buffer(batch->ebs[i]);
-+	eb_batch_init(batch);
-+}
-+
-+static inline struct extent_buffer *find_get_eb(struct xa_state *xas, unsigned long max,
-+						xa_mark_t mark)
-+{
-+	struct extent_buffer *eb;
-+
-+retry:
-+	eb = xas_find_marked(xas, max, mark);
-+
-+	if (xas_retry(xas, eb))
-+		goto retry;
-+
-+	if (!eb)
-+		return NULL;
-+
-+	if (!atomic_inc_not_zero(&eb->refs))
-+		goto reset;
-+
-+	if (unlikely(eb != xas_reload(xas))) {
-+		free_extent_buffer(eb);
-+		goto reset;
-+	}
-+
-+	return eb;
-+reset:
-+	xas_reset(xas);
-+	goto retry;
-+}
-+
-+static unsigned int buffer_xarray_get_ebs_tag(struct btrfs_fs_info *fs_info,
-+					      unsigned long *start,
-+					      unsigned long end, xa_mark_t tag,
-+					      struct eb_batch *batch)
-+{
-+	XA_STATE(xas, &fs_info->buffer_xarray, *start);
-+	struct extent_buffer *eb;
-+
-+	rcu_read_lock();
-+	while ((eb = find_get_eb(&xas, end, tag)) != NULL) {
-+		if (!eb_batch_add(batch, eb)) {
-+			*start = (eb->start + eb->len) >> fs_info->sectorsize_bits;
-+			goto out;
-+		}
-+	}
-+	if (end == (unsigned long)-1)
-+		*start = (unsigned long)-1;
-+	else
-+		*start = end + 1;
-+out:
-+	rcu_read_unlock();
-+
-+	return eb_batch_count(batch);
-+}
-+
- /*
-  * The endio specific version which won't touch any unsafe spinlock in endio
-  * context.
-@@ -2031,163 +2142,37 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
- }
- 
- /*
-- * Submit one subpage btree page.
-+ * Wait for all eb writeback in the given range to finish.
-  *
-- * The main difference to submit_eb_page() is:
-- * - Page locking
-- *   For subpage, we don't rely on page locking at all.
-- *
-- * - Flush write bio
-- *   We only flush bio if we may be unable to fit current extent buffers into
-- *   current bio.
-- *
-- * Return >=0 for the number of submitted extent buffers.
-- * Return <0 for fatal error.
-+ * @fs_info:	the fs_info for this file system
-+ * @start:	the offset of the range to start waiting on writeback
-+ * @end:	the end of the range, inclusive. This is meant to be used in
-+ *		conjuction with wait_marked_extents, so this will usually be
-+ *		the_next_eb->start - 1.
-  */
--static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
-+void btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start, u64 end)
- {
--	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
--	int submitted = 0;
--	u64 folio_start = folio_pos(folio);
--	int bit_start = 0;
--	int sectors_per_node = fs_info->nodesize >> fs_info->sectorsize_bits;
--	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
-+	struct eb_batch batch;
-+	unsigned long start_index = start >> fs_info->sectorsize_bits;
-+	unsigned long end_index = end >> fs_info->sectorsize_bits;
- 
--	/* Lock and write each dirty extent buffers in the range */
--	while (bit_start < blocks_per_folio) {
--		struct btrfs_subpage *subpage = folio_get_private(folio);
-+	eb_batch_init(&batch);
-+	while (start_index <= end_index) {
- 		struct extent_buffer *eb;
--		unsigned long flags;
--		u64 start;
-+		unsigned int nr_ebs;
- 
--		/*
--		 * Take private lock to ensure the subpage won't be detached
--		 * in the meantime.
--		 */
--		spin_lock(&folio->mapping->i_private_lock);
--		if (!folio_test_private(folio)) {
--			spin_unlock(&folio->mapping->i_private_lock);
-+		nr_ebs = buffer_xarray_get_ebs_tag(fs_info, &start_index,
-+						   end_index,
-+						   PAGECACHE_TAG_WRITEBACK,
-+						   &batch);
-+		if (!nr_ebs)
- 			break;
--		}
--		spin_lock_irqsave(&subpage->lock, flags);
--		if (!test_bit(bit_start + btrfs_bitmap_nr_dirty * blocks_per_folio,
--			      subpage->bitmaps)) {
--			spin_unlock_irqrestore(&subpage->lock, flags);
--			spin_unlock(&folio->mapping->i_private_lock);
--			bit_start += sectors_per_node;
--			continue;
--		}
- 
--		start = folio_start + bit_start * fs_info->sectorsize;
--		bit_start += sectors_per_node;
--
--		/*
--		 * Here we just want to grab the eb without touching extra
--		 * spin locks, so call find_extent_buffer_nolock().
--		 */
--		eb = find_extent_buffer_nolock(fs_info, start);
--		spin_unlock_irqrestore(&subpage->lock, flags);
--		spin_unlock(&folio->mapping->i_private_lock);
--
--		/*
--		 * The eb has already reached 0 refs thus find_extent_buffer()
--		 * doesn't return it. We don't need to write back such eb
--		 * anyway.
--		 */
--		if (!eb)
--			continue;
--
--		if (lock_extent_buffer_for_io(eb, wbc)) {
--			write_one_eb(eb, wbc);
--			submitted++;
--		}
--		free_extent_buffer(eb);
-+		while ((eb = eb_batch_next(&batch)) != NULL)
-+			wait_on_extent_buffer_writeback(eb);
-+		eb_batch_release(&batch);
-+		cond_resched();
- 	}
--	return submitted;
--}
--
--/*
-- * Submit all page(s) of one extent buffer.
-- *
-- * @page:	the page of one extent buffer
-- * @eb_context:	to determine if we need to submit this page, if current page
-- *		belongs to this eb, we don't need to submit
-- *
-- * The caller should pass each page in their bytenr order, and here we use
-- * @eb_context to determine if we have submitted pages of one extent buffer.
-- *
-- * If we have, we just skip until we hit a new page that doesn't belong to
-- * current @eb_context.
-- *
-- * If not, we submit all the page(s) of the extent buffer.
-- *
-- * Return >0 if we have submitted the extent buffer successfully.
-- * Return 0 if we don't need to submit the page, as it's already submitted by
-- * previous call.
-- * Return <0 for fatal error.
-- */
--static int submit_eb_page(struct folio *folio, struct btrfs_eb_write_context *ctx)
--{
--	struct writeback_control *wbc = ctx->wbc;
--	struct address_space *mapping = folio->mapping;
--	struct extent_buffer *eb;
--	int ret;
--
--	if (!folio_test_private(folio))
--		return 0;
--
--	if (btrfs_meta_is_subpage(folio_to_fs_info(folio)))
--		return submit_eb_subpage(folio, wbc);
--
--	spin_lock(&mapping->i_private_lock);
--	if (!folio_test_private(folio)) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--
--	eb = folio_get_private(folio);
--
--	/*
--	 * Shouldn't happen and normally this would be a BUG_ON but no point
--	 * crashing the machine for something we can survive anyway.
--	 */
--	if (WARN_ON(!eb)) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--
--	if (eb == ctx->eb) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--	ret = atomic_inc_not_zero(&eb->refs);
--	spin_unlock(&mapping->i_private_lock);
--	if (!ret)
--		return 0;
--
--	ctx->eb = eb;
--
--	ret = btrfs_check_meta_write_pointer(eb->fs_info, ctx);
--	if (ret) {
--		if (ret == -EBUSY)
--			ret = 0;
--		free_extent_buffer(eb);
--		return ret;
--	}
--
--	if (!lock_extent_buffer_for_io(eb, wbc)) {
--		free_extent_buffer(eb);
--		return 0;
--	}
--	/* Implies write in zoned mode. */
--	if (ctx->zoned_bg) {
--		/* Mark the last eb in the block group. */
--		btrfs_schedule_zone_finish_bg(ctx->zoned_bg, eb);
--		ctx->zoned_bg->meta_write_pointer += eb->len;
--	}
--	write_one_eb(eb, wbc);
--	free_extent_buffer(eb);
--	return 1;
- }
- 
- int btree_write_cache_pages(struct address_space *mapping,
-@@ -2198,25 +2183,27 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	int ret = 0;
- 	int done = 0;
- 	int nr_to_write_done = 0;
--	struct folio_batch fbatch;
--	unsigned int nr_folios;
--	pgoff_t index;
--	pgoff_t end;		/* Inclusive */
-+	struct eb_batch batch;
-+	unsigned int nr_ebs;
-+	unsigned long index;
-+	unsigned long end;
- 	int scanned = 0;
- 	xa_mark_t tag;
- 
--	folio_batch_init(&fbatch);
-+	eb_batch_init(&batch);
- 	if (wbc->range_cyclic) {
--		index = mapping->writeback_index; /* Start from prev offset */
-+		index = (mapping->writeback_index << PAGE_SHIFT) >> fs_info->sectorsize_bits;
- 		end = -1;
-+
- 		/*
- 		 * Start from the beginning does not need to cycle over the
- 		 * range, mark it as scanned.
- 		 */
- 		scanned = (index == 0);
- 	} else {
--		index = wbc->range_start >> PAGE_SHIFT;
--		end = wbc->range_end >> PAGE_SHIFT;
-+		index = wbc->range_start >> fs_info->sectorsize_bits;
-+		end = wbc->range_end >> fs_info->sectorsize_bits;
-+
- 		scanned = 1;
- 	}
- 	if (wbc->sync_mode == WB_SYNC_ALL)
-@@ -2226,31 +2213,40 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	btrfs_zoned_meta_io_lock(fs_info);
- retry:
- 	if (wbc->sync_mode == WB_SYNC_ALL)
--		tag_pages_for_writeback(mapping, index, end);
-+		buffer_xarray_tag_for_writeback(fs_info, index, end);
- 	while (!done && !nr_to_write_done && (index <= end) &&
--	       (nr_folios = filemap_get_folios_tag(mapping, &index, end,
--					    tag, &fbatch))) {
--		unsigned i;
-+	       (nr_ebs = buffer_xarray_get_ebs_tag(fs_info, &index, end, tag,
-+						   &batch))) {
-+		struct extent_buffer *eb;
- 
--		for (i = 0; i < nr_folios; i++) {
--			struct folio *folio = fbatch.folios[i];
-+		while ((eb = eb_batch_next(&batch)) != NULL) {
-+			ctx.eb = eb;
- 
--			ret = submit_eb_page(folio, &ctx);
--			if (ret == 0)
-+			ret = btrfs_check_meta_write_pointer(eb->fs_info, &ctx);
-+			if (ret) {
-+				if (ret == -EBUSY)
-+					ret = 0;
-+				if (ret) {
-+					done = 1;
-+					break;
-+				}
-+				free_extent_buffer(eb);
- 				continue;
--			if (ret < 0) {
--				done = 1;
--				break;
- 			}
- 
--			/*
--			 * the filesystem may choose to bump up nr_to_write.
--			 * We have to make sure to honor the new nr_to_write
--			 * at any time
--			 */
--			nr_to_write_done = wbc->nr_to_write <= 0;
-+			if (!lock_extent_buffer_for_io(eb, wbc))
-+				continue;
-+
-+			/* Implies write in zoned mode. */
-+			if (ctx.zoned_bg) {
-+				/* Mark the last eb in the block group. */
-+				btrfs_schedule_zone_finish_bg(ctx.zoned_bg, eb);
-+				ctx.zoned_bg->meta_write_pointer += eb->len;
-+			}
-+			write_one_eb(eb, wbc);
- 		}
--		folio_batch_release(&fbatch);
-+		nr_to_write_done = wbc->nr_to_write <= 0;
-+		eb_batch_release(&batch);
- 		cond_resched();
- 	}
- 	if (!scanned && !done) {
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index b344162f790c..4f0cf5b0d38f 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -240,6 +240,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
- int btrfs_writepages(struct address_space *mapping, struct writeback_control *wbc);
- int btree_write_cache_pages(struct address_space *mapping,
- 			    struct writeback_control *wbc);
-+void btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start, u64 end);
- void btrfs_readahead(struct readahead_control *rac);
- int set_folio_extent_mapped(struct folio *folio);
- void clear_folio_extent_mapped(struct folio *folio);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 39e48bf610a1..b72ac8b70e0e 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1155,7 +1155,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- 		if (!ret)
- 			ret = filemap_fdatawrite_range(mapping, start, end);
- 		if (!ret && wait_writeback)
--			ret = filemap_fdatawait_range(mapping, start, end);
-+			btree_wait_writeback_range(fs_info, start, end);
- 		btrfs_free_extent_state(cached_state);
- 		if (ret)
- 			break;
-@@ -1175,7 +1175,6 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 				       struct extent_io_tree *dirty_pages)
- {
--	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct extent_state *cached_state = NULL;
- 	u64 start = 0;
- 	u64 end;
-@@ -1196,7 +1195,7 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 		if (ret == -ENOMEM)
- 			ret = 0;
- 		if (!ret)
--			ret = filemap_fdatawait_range(mapping, start, end);
-+			btree_wait_writeback_range(fs_info, start, end);
- 		btrfs_free_extent_state(cached_state);
- 		if (ret)
- 			break;
--- 
-2.48.1
+>=20
+> Josef
 
 
