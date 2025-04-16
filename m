@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-13078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13079-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74B7A90676
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 16:31:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E71CA90665
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 16:29:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 324971898FD1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 14:29:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16511744C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 14:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781A51EDA23;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9291EF39B;
 	Wed, 16 Apr 2025 14:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BvBXPEv4"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="nIXMTTAr"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480A41DDA31
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 14:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED971DED4A
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 14:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744813717; cv=none; b=X3Zh4iP7wQsIRTNM7nKl1uQrXTic3uLQ6nMKMXVThJrDtkpBsT3lUsu6ppV01F6i12tYRCb+aLAzt3NOH8Nl0LMREhwB0v2dwPeCCiPGpAwwUuJSK02qwjxLXXx20kKfOe3bQpSodKSUMnWbNsDFPZ7hQ/C65sVPlK3kiPvKJPk=
+	t=1744813718; cv=none; b=se56HdhEn6CEH93wME+t8Mw98/4w7PjmcWE5rWzrjGrrmNjLkT9CHLKdfg1N0WPeW3DjXe4bjbzqc4wif/A4pbS36TVdUwX7CMm0tDcXN6uwvOXSwkwgMx8ukcHMufVYNe/Pxwa/lCcif8V38FP3NAcVYDLJQBf5EnJhYlhI6Lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744813717; c=relaxed/simple;
-	bh=/pz5QIt977haPHt4u/HdU+p4ARPhasKV2YRKEe/vTr0=;
+	s=arc-20240116; t=1744813718; c=relaxed/simple;
+	bh=1WOFkZFChn4tMIum2aOJxBG3IglU3PprRyVo+8t3a+c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aq1m6XdbIHMpE+p6k19v/YtE/k97n43Rj0xsOGBoDlFnE5gnZ4ybAgrLvGT0vrfQUkcMY+Q16LZezdgHnKwIitA/AZUvzm7h+dcRDPzRNoeVf58iE8w4EC0NXqGbbiZ7uKWpUIKOv5aGMCz+fZZ5XOPqCGMoDK3hM0O2EAc9g4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BvBXPEv4; arc=none smtp.client-ip=216.71.154.45
+	 MIME-Version; b=D3dtV7z8RIGGVKSJDUJhVuOAlL5Jtvb75O/HbUZFe6mUPYDICg5myK3YTiohWdBHs5dYw7nmosF71pSzYPtkOcRfS9n1HBM9yjbyuAVVZoA2D3qkhEU9ZYPf344CzFOVdpWHwwyOpVSSCf4arMymkwWd9gKScpiQTdEL79tcBKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=nIXMTTAr; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,34 +36,34 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1744813716; x=1776349716;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/pz5QIt977haPHt4u/HdU+p4ARPhasKV2YRKEe/vTr0=;
-  b=BvBXPEv4Ozc0E7mIHnckKbdlR/TX1bpSZJh7XXS7ACHQ5fnTjWb9VBYb
-   GNDBNSB4luv7cv/TOiOf38UpQ/LrvVj02JnDvQScQzVrZB2gDWLTgGFDy
-   bz6PqX0+piWT6ba4TFQrcLO42fvUZ0yx8vHBvUQS8CWVto7thCuJmglX9
-   pBDiwAKbT+30HNqzPyirxF/XZEQmH+vGKQWy8QYJa17dL0y9T8HTcvh+O
-   azKPDrQFNhdQArl0pqipL+/yQEFtNMvbNYWB0MsK3gHcrNh35A7YdaRYI
-   ZCWOUMBnHBSyusGO41AFGLWeCTNZhgu4wlkw/QGD4BHLmLIpofMV9UAAw
+  bh=1WOFkZFChn4tMIum2aOJxBG3IglU3PprRyVo+8t3a+c=;
+  b=nIXMTTArrApslfBJy21hKbAzrociEcmlRWM+l84BdLRYUZ1yj08Rr9aj
+   gE61Yhl6IJ+QiXEtj4NnevBA2x46/8zyKzuoQSTaw5SGTuLQjswScIcu9
+   isastZn14F4WgvNs1OBzdfgz4M55fB+LAgwmoz/DMy2GbufIKKp7iS+Dp
+   XC2k7M9PDbJUxwG2u+PJVPPhos8/Nllj2z36dcSkxoHqbDYXRynbl69Kn
+   NTF27gUSnxsVGBi75WBwoVVZ1dwqyS63rWbKjZ2BuO9LnYxB/gXPQE9WV
+   or5GQNAt7AVxnIfJBs2x/8n74N/0935TW3Sl4cDfThCoiTItQ50WhJUgz
    g==;
-X-CSE-ConnectionGUID: yn3OdADNSDycXsoyb+2j1Q==
-X-CSE-MsgGUID: MZ0NjrJlQKiZgtyA1aZRsg==
+X-CSE-ConnectionGUID: pANJXq9OTGuIwppqTNUafw==
+X-CSE-MsgGUID: KtWSJ9S+QcenY7CGYgYiWQ==
 X-IronPort-AV: E=Sophos;i="6.15,216,1739808000"; 
-   d="scan'208";a="81484520"
+   d="scan'208";a="81484521"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2025 22:28:29 +0800
-IronPort-SDR: 67ffb07f_ybGX+8q9U/CrSsWK84hCwY4qj6lLpJM5uv46h465YcH1Gfc
- TMFCZ0PZ2OMBh2e63BWcgiunAOVm+smD7/MbDtg==
+  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2025 22:28:30 +0800
+IronPort-SDR: 67ffb080_UmWMfTQgtsPB2pW/FtKkAKml0pZ8fVJOTtXODtegSw4GVuf
+ vxUNiUwP/wYzpx/W40qwCShZYPYL6oBAgUq2EZw==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2025 06:28:32 -0700
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2025 06:28:33 -0700
 WDCIronportException: Internal
 Received: from 5cg2075gjp.ad.shared (HELO naota-xeon..) ([10.224.104.89])
-  by uls-op-cesaip01.wdc.com with ESMTP; 16 Apr 2025 07:28:28 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Apr 2025 07:28:29 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 03/13] btrfs: factor out init_space_info()
-Date: Wed, 16 Apr 2025 23:28:08 +0900
-Message-ID: <75d34a6de9baa6d5aa98f43e184906beb66e649c.1744813603.git.naohiro.aota@wdc.com>
+Subject: [PATCH v3 04/13] btrfs: spin out do_async_reclaim_{data,metadata}_space()
+Date: Wed, 16 Apr 2025 23:28:09 +0900
+Message-ID: <65daa5055b3769c8c4078137cfae990b222c1107.1744813603.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1744813603.git.naohiro.aota@wdc.com>
 References: <cover.1744813603.git.naohiro.aota@wdc.com>
@@ -75,62 +75,104 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Factor out initialization of the space_info struct, which is used in a
-later patch. There is no functional change.
+Factor out the main part of btrfs_async_reclaim_data_space() to
+do_async_reclaim_data_space(), so it can take data space_info parameter it
+is working on. Do the same for metadata. There is no functional change.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/space-info.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ fs/btrfs/space-info.c | 45 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 3bb7246f40fa..7334ffa67a86 100644
+index 7334ffa67a86..d6d33ab754ba 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -234,19 +234,11 @@ void btrfs_update_space_info_chunk_size(struct btrfs_space_info *space_info,
- 	WRITE_ONCE(space_info->chunk_size, chunk_size);
+@@ -1088,23 +1088,15 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+ 	return (tickets_id != space_info->tickets_id);
  }
  
--static int create_space_info(struct btrfs_fs_info *info, u64 flags)
-+static void init_space_info(struct btrfs_fs_info *info,
-+			    struct btrfs_space_info *space_info, u64 flags)
+-/*
+- * This is for normal flushers, we can wait all goddamned day if we want to.  We
+- * will loop and continuously try to flush as long as we are making progress.
+- * We count progress as clearing off tickets each time we have to loop.
+- */
+-static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
++static void do_async_reclaim_metadata_space(struct btrfs_space_info *space_info)
  {
--
+-	struct btrfs_fs_info *fs_info;
 -	struct btrfs_space_info *space_info;
--	int i;
--	int ret;
--
--	space_info = kzalloc(sizeof(*space_info), GFP_NOFS);
--	if (!space_info)
--		return -ENOMEM;
--
- 	space_info->fs_info = info;
--	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
-+	for (int i = 0; i < BTRFS_NR_RAID_TYPES; i++)
- 		INIT_LIST_HEAD(&space_info->block_groups[i]);
- 	init_rwsem(&space_info->groups_sem);
- 	spin_lock_init(&space_info->lock);
-@@ -260,6 +252,19 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
++	struct btrfs_fs_info *fs_info = space_info->fs_info;
+ 	u64 to_reclaim;
+ 	enum btrfs_flush_state flush_state;
+ 	int commit_cycles = 0;
+ 	u64 last_tickets_id;
+ 	enum btrfs_flush_state final_state;
  
- 	if (btrfs_is_zoned(info))
- 		space_info->bg_reclaim_threshold = BTRFS_DEFAULT_ZONED_RECLAIM_THRESH;
+-	fs_info = container_of(work, struct btrfs_fs_info, async_reclaim_work);
+-	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
+ 	if (btrfs_is_zoned(fs_info))
+ 		final_state = RESET_ZONES;
+ 	else
+@@ -1178,6 +1170,21 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
+ 	} while (flush_state <= final_state);
+ }
+ 
++/*
++ * This is for normal flushers, we can wait all goddamned day if we want to.  We
++ * will loop and continuously try to flush as long as we are making progress.
++ * We count progress as clearing off tickets each time we have to loop.
++ */
++static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
++{
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_space_info *space_info;
++
++	fs_info = container_of(work, struct btrfs_fs_info, async_reclaim_work);
++	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
++	do_async_reclaim_metadata_space(space_info);
 +}
 +
-+static int create_space_info(struct btrfs_fs_info *info, u64 flags)
-+{
-+
-+	struct btrfs_space_info *space_info;
-+	int ret;
-+
-+	space_info = kzalloc(sizeof(*space_info), GFP_NOFS);
-+	if (!space_info)
-+		return -ENOMEM;
-+
-+	init_space_info(info, space_info, flags);
+ /*
+  * This handles pre-flushing of metadata space before we get to the point that
+  * we need to start blocking threads on tickets.  The logic here is different
+@@ -1323,16 +1330,12 @@ static const enum btrfs_flush_state data_flush_states[] = {
+ 	ALLOC_CHUNK_FORCE,
+ };
  
- 	ret = btrfs_sysfs_add_space_info_type(info, space_info);
- 	if (ret)
+-static void btrfs_async_reclaim_data_space(struct work_struct *work)
++static void do_async_reclaim_data_space(struct btrfs_space_info *space_info)
+ {
+-	struct btrfs_fs_info *fs_info;
+-	struct btrfs_space_info *space_info;
++	struct btrfs_fs_info *fs_info = space_info->fs_info;
+ 	u64 last_tickets_id;
+ 	enum btrfs_flush_state flush_state = 0;
+ 
+-	fs_info = container_of(work, struct btrfs_fs_info, async_data_reclaim_work);
+-	space_info = fs_info->data_sinfo;
+-
+ 	spin_lock(&space_info->lock);
+ 	if (list_empty(&space_info->tickets)) {
+ 		space_info->flush = 0;
+@@ -1400,6 +1403,16 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
+ 	spin_unlock(&space_info->lock);
+ }
+ 
++static void btrfs_async_reclaim_data_space(struct work_struct *work)
++{
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_space_info *space_info;
++
++	fs_info = container_of(work, struct btrfs_fs_info, async_data_reclaim_work);
++	space_info = fs_info->data_sinfo;
++	do_async_reclaim_data_space(space_info);
++}
++
+ void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
+ {
+ 	INIT_WORK(&fs_info->async_reclaim_work, btrfs_async_reclaim_metadata_space);
 -- 
 2.49.0
 
