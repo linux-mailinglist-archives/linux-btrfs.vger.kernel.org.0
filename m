@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-13087-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13088-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAA3A9066E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 16:30:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B71CA9068E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 16:35:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01B0516F930
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 14:29:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD90C8A6532
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 14:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A071FF7DD;
-	Wed, 16 Apr 2025 14:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2458F1FDE01;
+	Wed, 16 Apr 2025 14:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="nofnYlyG"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="HKUonaj4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE971FDE01
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3DE21FDE12
 	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 14:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744813723; cv=none; b=EjNTz+4ZdcCimtugWJOnLTifyJpxNWFld03vOiCQ66XsRlXqMESxcwPnDZ4sRYlNjll8vbdcpLdG/BoV1uUALM08GLaeIiRHkvhocstEkyTx++52rNftp/ir4J60VhQ5JBuoHXfgm6u6vllLCLS9gzyiF/6S7bQNq1vbbiJ+6FI=
+	t=1744813723; cv=none; b=hCEzFge/a2uSLJj9CC+ZxKCYgsCGlWhMlhKxZEK8xfE5NBLCehUwmQZRa6IR3y1oCPQhaW+ewKxt/GRCW4GPfkGwOhobCSpeIjLtnvA2m7nPOavJYByM4LAEUQaQCl3dPHFVBHAzpvSVIWrxtkFJAlciyZFF+cOc1JdZraQqnSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1744813723; c=relaxed/simple;
-	bh=ULMSqJUJE/JQekeiM4lAHJyRNTu+vI9qN/9eYCz4Ttk=;
+	bh=UBfgXN6gBLlaw65UBgmlXeVKmrb3MPa206NgHYolr+A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t9/xw4DdVZrqRNWXkDqYPsl7vB/FTAd83w0o5l2MDDcrrRqNBp8Dai2SuKUHh3pG1nV55J2/CXGw/X5Jaz5LH1jNohIuQWfCDluBTn/W9owrqNu6c8qrvDFATzreTfaEuifzT4OkkbJ3chnjmGctXKcW7rBz5EUb/hu4htGL/BA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=nofnYlyG; arc=none smtp.client-ip=216.71.154.45
+	 MIME-Version; b=qdnVBPqZKMTedlZIF8rpFk/9tdT3iibfuyuL/TdzVHgcg1wSZMnccq1bZ+d50ixtKMApAS6NYgY1pvdII4+cdDBUTFWA9XTbeEB9wjw5d07IsR+fyexuViu6wumLPqtGrORX8R+UmvA26Tms1H8lksGyLZ8NsUqtShVcwcR2Fwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=HKUonaj4; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,33 +36,34 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1744813721; x=1776349721;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ULMSqJUJE/JQekeiM4lAHJyRNTu+vI9qN/9eYCz4Ttk=;
-  b=nofnYlyGiPXTRwyZwGLjbvH4AKGzacw/iM9CR2k+FqL2el5wJcFAacX9
-   CWE3dJPWTY5gsIQIAov66L2s0iZYV/3R+VjqSdWxOHcDqRmvCb566m66y
-   7IA7IheJv0MjO4vcDKGIK7YNpMqisredNsFF5eTU25MsPfllkC4gDA3HK
-   jnsxlGj23xXVYjkD0rT+4mpo3YzYQhgC8Yt3wg48RawVVERSNjqndju3f
-   kwt7g2DTfZl0y6K4cpSdf0XLGSAh8VchWhtVkUatunhw+RhuahTAPAz1S
-   ufSw5BA35qSzRDO1v7oXx50a3LiD21H557g+YBSRIBeDB62/KesE5fxdH
-   A==;
-X-CSE-ConnectionGUID: 6i23ydGtT5epuHCbgRiwxQ==
-X-CSE-MsgGUID: XLVyCOtISKWNn1r+GVuntg==
+  bh=UBfgXN6gBLlaw65UBgmlXeVKmrb3MPa206NgHYolr+A=;
+  b=HKUonaj4oyuAi1muEgWXMsF/E+Zu4qZfR074U4nCNOf3NIQVx8FQ6u+I
+   Ux6OzxcXreu0KarY8htLzpDpPKC6UpZulbd/2SZAbpCax7a2V4Xi4EyHw
+   eeLu66ZfIMvZG2XDpz1Wa/qJeegqC6JByIQkJOzQMs+ckD9SAXK0o02Eq
+   Y2ZSfGoTJSmXaVS/SKq9qcSKg6hxYp27SDvj7F1SLvCUJoOCG7lBfz5Oc
+   ZHu4uWrQ5UQyeFBZU0qJI0fiB2EeH1d656YMs1t+3cqNtJ2mSJt3C+SUG
+   VpzaGpmFRAci2NhH3ohepM+MeGv1UU1uvGmE0u1oES0vCLVLgJmRwJxMR
+   w==;
+X-CSE-ConnectionGUID: jXMxEkEYQWOdYgdGsU5V7Q==
+X-CSE-MsgGUID: B+cUkyUaSc2gvatRYrfVyw==
 X-IronPort-AV: E=Sophos;i="6.15,216,1739808000"; 
-   d="scan'208";a="81484533"
+   d="scan'208";a="81484534"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
   by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2025 22:28:36 +0800
-IronPort-SDR: 67ffb086_1tfnqVMb0ptj1l59jppRRZVl728zm/HRHLagdqKURs7aU8i
- I6lrY7+v/kWeU9PeWqScKdYCR3+DOf39FCbG8xg==
+IronPort-SDR: 67ffb087_GFxkiMpUzigolI/mO+HDI5gh8NvvJhvOumb8mid+3HyCBPs
+ 8O92SxCvHlFQ29B5jJ/I0CNp4g1WEfFJ3RmOm8w==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2025 06:28:38 -0700
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2025 06:28:39 -0700
 WDCIronportException: Internal
 Received: from 5cg2075gjp.ad.shared (HELO naota-xeon..) ([10.224.104.89])
-  by uls-op-cesaip01.wdc.com with ESMTP; 16 Apr 2025 07:28:35 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Apr 2025 07:28:36 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v3 11/13] btrfs: use proper data space_info
-Date: Wed, 16 Apr 2025 23:28:16 +0900
-Message-ID: <653405a025836e4938d3276e69d3015e6b038a0a.1744813603.git.naohiro.aota@wdc.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 12/13] btrfs: add block_rsv for treelog
+Date: Wed, 16 Apr 2025 23:28:17 +0900
+Message-ID: <3a317ad692057695d49cd8428ed660f551eb759b.1744813603.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1744813603.git.naohiro.aota@wdc.com>
 References: <cover.1744813603.git.naohiro.aota@wdc.com>
@@ -74,66 +75,91 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that, we have data sub-space for the zoned mode. This commit tweaks
-some space_info functions to use proper space_info for a file.
+We need to add a dedicated block_rsv for tree-log, because the block_rsv
+serves for a tree node allocation in btrfs_alloc_tree_block(). Currently,
+tree-log tree uses fs_info->empty_block_rsv, which is shared across trees
+and points to the normal metadata space_info. Instead, we add a dedicated
+block_rsv and that block_rsv can use the dedicated sub-space_info.
+
+Currently, we use the dedicated block_rsv only for the zoned mode, but it
+might be somewhat useful for the regular btrfs too.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/delalloc-space.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ fs/btrfs/block-rsv.c | 12 ++++++++++++
+ fs/btrfs/block-rsv.h |  1 +
+ fs/btrfs/disk-io.c   |  1 +
+ fs/btrfs/fs.h        |  2 ++
+ 4 files changed, 16 insertions(+)
 
-diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index a18895255af9..f7927657e036 100644
---- a/fs/btrfs/delalloc-space.c
-+++ b/fs/btrfs/delalloc-space.c
-@@ -111,6 +111,15 @@
-  *  making error handling and cleanup easier.
-  */
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 3f3608299c0b..680b395b32ad 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -418,6 +418,12 @@ void btrfs_init_root_block_rsv(struct btrfs_root *root)
+ 	case BTRFS_CHUNK_TREE_OBJECTID:
+ 		root->block_rsv = &fs_info->chunk_block_rsv;
+ 		break;
++	case BTRFS_TREE_LOG_OBJECTID:
++		if (btrfs_is_zoned(fs_info))
++			root->block_rsv = &fs_info->treelog_rsv;
++		else
++			root->block_rsv = NULL;
++		break;
+ 	default:
+ 		root->block_rsv = NULL;
+ 		break;
+@@ -438,6 +444,12 @@ void btrfs_init_global_block_rsv(struct btrfs_fs_info *fs_info)
+ 	fs_info->delayed_block_rsv.space_info = space_info;
+ 	fs_info->delayed_refs_rsv.space_info = space_info;
  
-+static inline struct btrfs_space_info *data_sinfo_for_inode(const struct btrfs_inode *inode)
-+{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	/* The treelog_rsv uses a dedicated space_info on the zoned mode. */
++	if (!btrfs_is_zoned(fs_info))
++		fs_info->treelog_rsv.space_info = space_info;
++	else
++		fs_info->treelog_rsv.space_info = space_info->sub_group[SUB_GROUP_METADATA_TREELOG];
 +
-+	if (btrfs_is_zoned(fs_info) && btrfs_is_data_reloc_root(inode->root))
-+		return fs_info->data_sinfo->sub_group[SUB_GROUP_DATA_RELOC];
-+	return fs_info->data_sinfo;
-+}
-+
- int btrfs_alloc_data_chunk_ondemand(const struct btrfs_inode *inode, u64 bytes)
- {
- 	struct btrfs_root *root = inode->root;
-@@ -123,7 +132,7 @@ int btrfs_alloc_data_chunk_ondemand(const struct btrfs_inode *inode, u64 bytes)
- 	if (btrfs_is_free_space_inode(inode))
- 		flush = BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE;
- 
--	return btrfs_reserve_data_bytes(fs_info->data_sinfo, bytes, flush);
-+	return btrfs_reserve_data_bytes(data_sinfo_for_inode(inode), bytes, flush);
+ 	btrfs_update_global_block_rsv(fs_info);
  }
  
- int btrfs_check_data_free_space(struct btrfs_inode *inode,
-@@ -144,7 +153,7 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
- 	else if (btrfs_is_free_space_inode(inode))
- 		flush = BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE;
+diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
+index d12b1fac5c74..79ae9d05cd91 100644
+--- a/fs/btrfs/block-rsv.h
++++ b/fs/btrfs/block-rsv.h
+@@ -24,6 +24,7 @@ enum btrfs_rsv_type {
+ 	BTRFS_BLOCK_RSV_CHUNK,
+ 	BTRFS_BLOCK_RSV_DELOPS,
+ 	BTRFS_BLOCK_RSV_DELREFS,
++	BTRFS_BLOCK_RSV_TREELOG,
+ 	BTRFS_BLOCK_RSV_EMPTY,
+ 	BTRFS_BLOCK_RSV_TEMP,
+ };
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 59da809b7d57..88dbda24ad46 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2822,6 +2822,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+ 			     BTRFS_BLOCK_RSV_GLOBAL);
+ 	btrfs_init_block_rsv(&fs_info->trans_block_rsv, BTRFS_BLOCK_RSV_TRANS);
+ 	btrfs_init_block_rsv(&fs_info->chunk_block_rsv, BTRFS_BLOCK_RSV_CHUNK);
++	btrfs_init_block_rsv(&fs_info->treelog_rsv, BTRFS_BLOCK_RSV_TREELOG);
+ 	btrfs_init_block_rsv(&fs_info->empty_block_rsv, BTRFS_BLOCK_RSV_EMPTY);
+ 	btrfs_init_block_rsv(&fs_info->delayed_block_rsv,
+ 			     BTRFS_BLOCK_RSV_DELOPS);
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index bcca43046064..0d5af9732a3c 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -471,6 +471,8 @@ struct btrfs_fs_info {
+ 	struct btrfs_block_rsv delayed_block_rsv;
+ 	/* Block reservation for delayed refs */
+ 	struct btrfs_block_rsv delayed_refs_rsv;
++	/* Block reservation for treelog tree */
++	struct btrfs_block_rsv treelog_rsv;
  
--	ret = btrfs_reserve_data_bytes(fs_info->data_sinfo, len, flush);
-+	ret = btrfs_reserve_data_bytes(data_sinfo_for_inode(inode), len, flush);
- 	if (ret < 0)
- 		return ret;
+ 	struct btrfs_block_rsv empty_block_rsv;
  
-@@ -172,12 +181,10 @@ void btrfs_free_reserved_data_space_noquota(struct btrfs_inode *inode,
- 					    u64 len)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
--	struct btrfs_space_info *data_sinfo;
- 
- 	ASSERT(IS_ALIGNED(len, fs_info->sectorsize));
- 
--	data_sinfo = fs_info->data_sinfo;
--	btrfs_space_info_free_bytes_may_use(data_sinfo, len);
-+	btrfs_space_info_free_bytes_may_use(data_sinfo_for_inode(inode), len);
- }
- 
- /*
 -- 
 2.49.0
 
