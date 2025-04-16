@@ -1,90 +1,151 @@
-Return-Path: <linux-btrfs+bounces-13104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CCE6A90C73
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 21:39:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF77A90C78
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 21:41:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2888C1898805
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 19:39:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFF1D3B9CA2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 19:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180ED22538F;
-	Wed, 16 Apr 2025 19:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58EF2253EE;
+	Wed, 16 Apr 2025 19:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tz4U6K0w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1CU0cv3"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D3D1E1C29;
-	Wed, 16 Apr 2025 19:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2344E224894;
+	Wed, 16 Apr 2025 19:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744832364; cv=none; b=UTFzyLZkrcr2G8obKChutRSP6+JmEONo515tDcN6rEqlAy/yEXp0AtNKU8znhz2tfwn9N6xooXgrH22LphYmfIwLkXEusQYZzZiePwP2VRhINJucYpejzoail/3j+DrqxyG0AJXul9Lvfi59aKQARxQ+/a3adkhqCkcJzrkVkFk=
+	t=1744832495; cv=none; b=vABE4yvCj3FhWOuPYbooPthGUfM2l7zur1R0E+bQKc0njozMpeVUF9k0uXuM37a0b9zrS1mep+BiVzxLrZUgNR1fR/Y94ffA5JuUjZS3nMbZzTvnaxdwDEJQuaUbrSSUz9vGIeMCPDqWimLJ85M2sNF2bmKbm9Atj+QCfCj5YFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744832364; c=relaxed/simple;
-	bh=GKcGNyHGasxdRxMei5YuDEFeVxkBmIq6kKeZnapvDhs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H13S8uTXfLwNNzlt3lWkRBfyiW/XvAHVIVJ741ai83Lcuxn5cKIU0jJC0b+uDRRio04QUkQFvL+Es+9IVbSvIjuuE6525WXT+2op1r8CxbTKELQRCiIPTY0Aye0fmINx8wR07qm87RH/qtGJ07Q8Fcx1IX1mxtIOlbtsmPqBLko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tz4U6K0w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97767C4CEE4;
-	Wed, 16 Apr 2025 19:39:23 +0000 (UTC)
+	s=arc-20240116; t=1744832495; c=relaxed/simple;
+	bh=rmmU8DVE2D232s4Grqwa87/AQMyhUhLBZFcdHIL8y6Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B8mfp/jz1Ila1zjB/RNPHM0jKatwMTqVcrsS5ahzkRiFfFqRJTxK+yCGzbXs7NUFgcmAL7jK+ikZspW7PqA3sbm0uWVyya71E2CcOHTtQcOrYSKJEeoHLM5lkTswFsSgGszw2vTrfrqQ/C17KJqH8IZrs3kW/DGSDPpgAEHdL/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1CU0cv3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 973FBC4CEEC;
+	Wed, 16 Apr 2025 19:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744832363;
-	bh=GKcGNyHGasxdRxMei5YuDEFeVxkBmIq6kKeZnapvDhs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tz4U6K0wGRsmiB18U3TSwopTiXRtFDWGz1PBuPGwvVJEJVeXzbvSl2cDX8G4qDz8h
-	 4mA9/nQRG/RWl6IaZZtSkfqUSdowb8g9CIuVLeJba9yEdysA5vL5CgXEojPfjbY9Zz
-	 qka5ayg3we0xLWGfR4SXh8ANaEhwQqyp+kKeId0uhKYCjrbefYz5O3c3t3yW7D12qI
-	 1526j61q9f12ahp8s6lJAbw441uHudja632A26LIzm/ZX7ylmjyWMjrrCd1gC8SnVT
-	 r3esVJajvF7CmuZgNg8pdemq50Q4446bj0RzKpH2kYtanZ0UNW6Mb8JzXr3fShBQiY
-	 OcAhcmVl2CTKg==
-Date: Wed, 16 Apr 2025 12:39:22 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Boris Burkov <boris@bur.io>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	kdevops@lists.linux.dev
-Subject: Re: btrfs v6.15-rc2 baseline
-Message-ID: <aAAHagHUl1wvAurW@bombadil.infradead.org>
-References: <Z__4Fu6VsCVDFKkO@bombadil.infradead.org>
- <20250416191253.GA3231475@zen.localdomain>
+	s=k20201202; t=1744832493;
+	bh=rmmU8DVE2D232s4Grqwa87/AQMyhUhLBZFcdHIL8y6Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=M1CU0cv3LvBNE9z/Yc2FX8HmZVEw6+6VcHYheF+OtcAspQDMz54hYzxIKWZvwthRo
+	 YT1EsO+WZi7BtRyHfkvTG0FKUDnj9lJwT5n0aIRL7Wthsq0lg2YYVTFoQ1meg+1Ima
+	 3TNlsfxUHGK1eiRBfKqoNzQpr1PI8xnwC3XALDeLdyMVCs8u6YVi52YBwDpAU9wUqZ
+	 nAHcQHAh5akG+JLkjXR8TxZQE4Ii8dVXDP1uTHng361Q3EZji9Qik0wctWROzkomu0
+	 Li6ZAWT29QPG/T2U+3K41jTI1Xnjax8vkfD5Tk0vVTWw8BmViUegb6QRhXh6nahaQs
+	 4dJO4kmWhKA4A==
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ac2aeada833so13879866b.0;
+        Wed, 16 Apr 2025 12:41:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVNZpC9ovb3DDG2QHdEGEXuminCnBtpmlMjz8GMp8F0Yu9Vnb/TTN948eliPuIqK2al5TyejZ2BC5GxLg==@vger.kernel.org, AJvYcCXPu6keCHMhytuDYBGr/x8kxCrBf3DQVIlOShlh2Rla3rzCHT73diyXiMHQ0tFcbRCYEUXp/lI+2+zj6hk3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4jcTew8QTOHiIRkGFAX2rAhNvwBUJ4263xdFBYW4kuRxG5Bhd
+	BL4rYrCbB/ZA1WY+4pkj3SIIDycKDIwSAwQLxNKa6FL3vjXV1acOtRFvLk2TOkntJ9fgJbtJKME
+	3qRWYFU23AJaA1hYZkwW93IOlLL8=
+X-Google-Smtp-Source: AGHT+IEgaa/lF0B29FUztngMKiosbNE8d6mYtZEseWvSqOPDgclr+4nqD0zjKMj3ce/uu47GWIitbbPs25Ap3GHoykY=
+X-Received: by 2002:a17:907:1c0f:b0:acb:3719:3011 with SMTP id
+ a640c23a62f3a-acb5b44ed5emr4653366b.9.1744832492096; Wed, 16 Apr 2025
+ 12:41:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250416191253.GA3231475@zen.localdomain>
+References: <20250415033854.848776-1-frank.li@vivo.com> <3353953.aeNJFYEL58@saltykitkat>
+ <20250415155637.GG16750@suse.cz> <SEZPR06MB5269DCFA737F179B0F552B01E8BD2@SEZPR06MB5269.apcprd06.prod.outlook.com>
+ <CAL3q7H7z_iVmeuRNXQvvZseB9ntSDz9_tUTXB0KvrcsSQVJb9w@mail.gmail.com> <20250416191111.GC13877@suse.cz>
+In-Reply-To: <20250416191111.GC13877@suse.cz>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 16 Apr 2025 20:40:54 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4_vNoKokn213rY2Q0MNkDLWSk7XRBqJLxfiw1ikRGM7Q@mail.gmail.com>
+X-Gm-Features: ATxdqUGFLnuNhPUgUv0nT_paFBRUcDj_6lgiv8IK1W8lqC_R5oeLvBTUezr2lF0
+Message-ID: <CAL3q7H4_vNoKokn213rY2Q0MNkDLWSk7XRBqJLxfiw1ikRGM7Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] btrfs: get rid of path allocation in btrfs_del_inode_extref()
+To: dsterba@suse.cz
+Cc: =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>, 
+	Sun YangKai <sunk67188@gmail.com>, "clm@fb.com" <clm@fb.com>, "dsterba@suse.com" <dsterba@suse.com>, 
+	"josef@toxicpanda.com" <josef@toxicpanda.com>, 
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "neelx@suse.com" <neelx@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 16, 2025 at 12:12:53PM -0700, Boris Burkov wrote:
-> >  - Do you want results for each rc release posted to the mailing list?
-> 
-> I am still getting a hang of how to get at the results, so in my
-> opinion, sharing an easily digestible update with releases would be
-> helpful.
+On Wed, Apr 16, 2025 at 8:11=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Wed, Apr 16, 2025 at 02:37:33PM +0100, Filipe Manana wrote:
+> > On Wed, Apr 16, 2025 at 2:24=E2=80=AFPM =E6=9D=8E=E6=89=AC=E9=9F=AC <fr=
+ank.li@vivo.com> wrote:
+> > >
+> > >
+> > >
+> > > > Also a good point, the path should be in a pristine state, as if it=
+ were just allocated. Releasing paths in other functions may want to keep t=
+he bits but in this case we're crossing a function boundary and the same as=
+sumptions may not be the same.
+> > >
+> > > > Release resets the ->nodes, so what's left is from ->slots until th=
+e the end of the structure. And a helper for that would be desirable rather=
+ than opencoding that.
+> > >
+> > > IIUC, use btrfs_reset_path instead of btrfs_release_path?
+> > >
+> > > noinline void btrfs_reset_path(struct btrfs_path *p)
+> > > {
+> > >         int i;
+> > >
+> > >         for (i =3D 0; i < BTRFS_MAX_LEVEL; i++) {
+> > >                 if (!p->nodes[i])
+> > >                         continue;
+> > >                 if (p->locks[i])
+> > >                         btrfs_tree_unlock_rw(p->nodes[i], p->locks[i]=
+);
+> > >                 free_extent_buffer(p->nodes[i]);
+> > >         }
+> > >         memset(p, 0, sizeof(struct btrfs_path));
+> > > }
+> > >
+> > > BTW, I have seen released paths being passed across functions in some=
+ other paths.
+> > >
+> > > Should these also be changed to reset paths, or should these flags be=
+ cleared in the release path?
+> >
+> > Please don't complicate things unnecessarily.
+> > The patch is fine, all that needs to be done is to call
+> > btrfs_release_path() before passing the path to
+> > btrfs_del_inode_extref(), which resets nodes, slots and locks.
+>
+> But this leaves the bits set, btrfs_insert_inode_ref() sets
+> path->skip_release_on_error, this should be reset. In this case it may
+> not be significant but I'd rather make the path reusing pattern correct
+> from the beginning.
+>
+> My idea was to add only
+>
+> btrfs_reset_path() {
+>         memset(p, 0, sizeof(struct btrfs_path));
+> }
+>
+> and use it in conection with btrfs_release_path() only in case it's
+> optimizing the allocation.
 
-Great. Well so, essentially this is ready to be automated because the
-results below were exctracted from a git commit on kdevops-results-archive,
-and so we could simply just have it email the list per tag, if we wanted
-that.
+Honestly I don't like adding yet another function to do such "reset" thing.
 
-Then, do we want fs-next tested too?
+Leaving path->skip_release_on_error is perfectly fine in this scenario.
+If that bothers anyone so much, just set path->skip_release_on_error
+to 0 after calling btrfs_release_path() and before passing the path to
+btrfs_insert_inode_extref().
 
-> I'm surprised to see every profile that mentions holes/noholes has
-> hundreds of matching errors, while others that don't explicitly
-> configure them are fine. There are only two options, so you would think
-> that either "holes" or "noholes" would behave the same as
-> simple/fspace/etc..
-> 
-> It could be a good exercise for me to learn about the tooling to look
-> into what's going on...
-
-Great, happy to help answer any questions you might have.
-
-  Luis
+This is the sort of optimization that is not worth spending this much
+time and adding new APIs - freeing and allocating a path shortly after
+is almost always fast as we're using a slab, plus this is a rarely hit
+use case - having to use extrefs, meaning we have a very large number
+of inode refs.
 
