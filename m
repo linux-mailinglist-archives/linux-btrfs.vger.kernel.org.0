@@ -1,214 +1,183 @@
-Return-Path: <linux-btrfs+bounces-13057-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13058-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E6D4A8B3CE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 10:29:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FDFA8B46D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 10:54:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57AB43A84A6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 08:28:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9EAF17D6DE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Apr 2025 08:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCC222F155;
-	Wed, 16 Apr 2025 08:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B681231A42;
+	Wed, 16 Apr 2025 08:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ifx4SRJI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rwIa/3/P";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="b7RuNZ1I";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uGxW/h45"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZsAZ8QmD";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZsAZ8QmD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E315122D787
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C70A5227
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744792122; cv=none; b=UkrMF0s/yNBwVTdxhltl2fAm/SrnxAy9ee5CftOamNyC2nuMa3SrXVFVZ3n94GYdv0v0814EXYaX6+TKigZPv4uJp6VQTxv0XPEpM9pVYJP1Exj9OrHYqd2H2QK6DIkkA1YfHqB5IStG6EN2cmChJ4sKjn+0+ClwH9iHzNkBmwA=
+	t=1744793672; cv=none; b=Qfg0/leX3dUytTTEKDGZ2+TiPMfmYzshjlKjMFJ78KYOdPSXIc+3Z0pNl7WY0LIWkZBeMa4RfLXl5GlmzpJ32ww+qy72wKIPjeR2yN7KluWCay6S9yk9eIWyD4UqzIuSBM5lQebnVvO8wcic75xQXG183LI25m6b8JjJ4Vkugic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744792122; c=relaxed/simple;
-	bh=389oqVU09k6/+vNeLjbwQAT/38yRQL+8QVKDK+IgkUI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JnKIgiAx0makPra4cSrl1LschOgUjFUvDh8AJ9YrhrvEMB3F8Q/0a5ME+wyD2Y1L58P8fqOKKsFpNGIeR2FGtPxp2L9cA5Ikhp2jJjw0ASz9xiWRVFnIfm9GHk1uJkWuJYuCtSLJkqJ/DX9LE0aKpINgM2H9W5lMyQvTlDyJLc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ifx4SRJI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rwIa/3/P; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=b7RuNZ1I; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uGxW/h45; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1744793672; c=relaxed/simple;
+	bh=D7XnOs4saGbq1kPtmcGSIQbJgEeOEINZbqlISOiic6s=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=MigcNL7Ddey9hT738xdMjwSoGE59svuKzp6+F16H8mybddcCkNpoVLJme74vHAqMrTPJ9gil+YK7NA41exGtkhtzZv78sKQzubTMjbwfnTLYGdBXV/Ep2YmkgzTuHEeH3D2BuE2FKRMnp8hu9TlcuibQj9EgSt5gqGoAn3UpTgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZsAZ8QmD; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZsAZ8QmD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D98EC2118F;
-	Wed, 16 Apr 2025 08:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744792113;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2MuZw90YNkNYbnkouBAS90gtgKDps4LiIp8MEB2R8aM=;
-	b=Ifx4SRJIWLerNIueEKfuGBMKOBKOM1AYS/h/ZXZa27CYoe980e/xL2uaOirOKo+siXDWau
-	EmYHn1HKaxgustSYm3DCvTyDfuKqymtMT0+YMj7F+F1KA8KavuD4hldGtwrj3fQabXw4fY
-	wim6ftWUmmZ+XIH/u/otOU7dhdF4mbc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744792113;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2MuZw90YNkNYbnkouBAS90gtgKDps4LiIp8MEB2R8aM=;
-	b=rwIa/3/PQQCL+uZ/PrQijWI181xbSonFHnXLKzwX3VgHLssFcI2afWM9wjyMuu/FjnxP5u
-	4Y6nRDuwdS8mJQBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=b7RuNZ1I;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="uGxW/h45"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744792112;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2MuZw90YNkNYbnkouBAS90gtgKDps4LiIp8MEB2R8aM=;
-	b=b7RuNZ1Iphr38e6WAGd0RhKryzZHKhha04amU4ZCYNk+pFvTkaew6ePjQHU/daUZiw0rfx
-	wtWcXhhvfwc4ET7PYnVvFwF7qIxWCqUbWCBhblnB+kFJSB5wwdFkchtappiEP3HCTRttXF
-	m4j12rmeepaIVCKrbPBeEurBar2atTg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744792112;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2MuZw90YNkNYbnkouBAS90gtgKDps4LiIp8MEB2R8aM=;
-	b=uGxW/h451t1qZ6PyLeujiLH2n3VjXoauFf1u8gsMg4ukgMCcas/wl6AYk0iYAu5fLEbYzY
-	JU8Jm1m9KPr4+7DA==
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A6AB71F7B3
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1744793668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8z73XpTO3UwrMmi8SNCow6oeTQEmknvEaET8eOZ3GUU=;
+	b=ZsAZ8QmDw+HRYzw9NjWghKS+PY/WL0pXwneLrggBHpj9JXWAW0pVeVcAZTJqKIV42NcvvB
+	QeEzw/e0DMWDCQbqOKB+rw51pBbWOtX61Jo1OsAm5rrP1qovqqqURj2kJJu9RZI8I/cKpe
+	e3iSni6xClhoWMlUX8UetdImM8sEqtk=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1744793668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8z73XpTO3UwrMmi8SNCow6oeTQEmknvEaET8eOZ3GUU=;
+	b=ZsAZ8QmDw+HRYzw9NjWghKS+PY/WL0pXwneLrggBHpj9JXWAW0pVeVcAZTJqKIV42NcvvB
+	QeEzw/e0DMWDCQbqOKB+rw51pBbWOtX61Jo1OsAm5rrP1qovqqqURj2kJJu9RZI8I/cKpe
+	e3iSni6xClhoWMlUX8UetdImM8sEqtk=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8219139A1;
-	Wed, 16 Apr 2025 08:28:32 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD31813976
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pzHELDBq/2dvXwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 16 Apr 2025 08:28:32 +0000
-Date: Wed, 16 Apr 2025 10:28:31 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: make btrfs_truncate_block() zero folio range
- for certain subpage corner cases
-Message-ID: <20250416082831.GA13877@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1744344865.git.wqu@suse.com>
- <d66c922e591b3a57a230ca357b9085fe6ae53812.1744344865.git.wqu@suse.com>
- <Z_qycnlLXbCgd7uF@surfacebook.localdomain>
- <37e556c8-d7a4-4d65-81d7-44821d92603e@gmx.com>
- <CAHp75VdyLRQrnByZtPPL2sn9ucGWVkyZu-kBvZvvpr4P_tOTpw@mail.gmail.com>
- <20250415181841.GN16750@twin.jikos.cz>
- <CAHp75Vf3Z=qQPKkALhCbSSCd9VYiYYZ4xVJ9aT=sYKW7tbPd2A@mail.gmail.com>
- <408fff7f-00a9-41ec-91e6-168dcffb2de6@gmx.com>
- <CAHp75VdJoPKoYu=fOZYPV6Cd+rgcWVM9_NDJ-Gyu3O33tS447w@mail.gmail.com>
+	id +TecIkNw/2fOZwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Apr 2025 08:54:27 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/2] btrfs: fix corner cases for subpage generic/363 failures
+Date: Wed, 16 Apr 2025 18:24:07 +0930
+Message-ID: <cover.1744793549.git.wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdJoPKoYu=fOZYPV6Cd+rgcWVM9_NDJ-Gyu3O33tS447w@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: D98EC2118F
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.71 / 50.00];
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmx.com,suse.com,vger.kernel.org];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,imap1.dmz-prg2.suse.org:helo];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -2.71
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, Apr 16, 2025 at 08:57:40AM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 16, 2025 at 2:57 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > 在 2025/4/16 03:51, Andy Shevchenko 写道:
-> > > On Tue, Apr 15, 2025 at 9:18 PM David Sterba <dsterba@suse.cz> wrote:
-> > >> On Mon, Apr 14, 2025 at 01:40:11PM +0300, Andy Shevchenko wrote:
-> > >>> On Mon, Apr 14, 2025 at 4:20 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > >>>> 在 2025/4/13 04:05, Andy Shevchenko 写道:
-> > >>>>> Fri, Apr 11, 2025 at 02:44:01PM +0930, Qu Wenruo kirjoitti:
-> 
-> [...]
-> 
-> > >>>>>> +    block_start = round_down(clamp_start, block_size);
-> > >>>>>> +    block_end = round_up(clamp_end + 1, block_size) - 1;
-> > >>>>>
-> > >>>>> LKP rightfully complains, I believe you want to use ALIGN*() macros instead.
-> > >>>>
-> > >>>> Personally speaking I really want to explicitly show whether it's
-> > >>>> rounding up or down.
-> > >>>>
-> > >>>> And unfortunately the ALIGN() itself doesn't show that (meanwhile the
-> > >>>> ALIGN_DOWN() is pretty fine).
-> > >>>>
-> > >>>> Can I just do a forced conversion on the @blocksize to fix the warning?
-> > >>>
-> > >>> ALIGN*() are for pointers, the round_*() are for integers. So, please
-> > >>> use ALIGN*().
-> > >>
-> > >> clamp_start and blocksize are integers and there's a lot of use of ALIGN
-> > >> with integers too. There's no documentation saying it should be used for
-> > >> pointers, I can see PTR_ALIGN that does the explicit cast to unsigned
-> > >> logn and then passes it to ALIGN (as integer).
-> > >
-> > > Yes, because the unsigned long is natural holder for the addresses and
-> > > due to some APIs use it instead of pointers (for whatever reasons) the
-> > > PTR_ALIGN() does that. But you see the difference? round_*() expect
-> > > _the same_ types of the arguments, while ALIGN*() do not. That is what
-> > > makes it so.
-> > >
-> > >> Historically in the btrfs code the use of ALIGN and round_* is basically
-> > >> 50/50 so we don't have a consistent style, although we'd like to. As the
-> > >> round_up and round_down are clear I'd rather keep using them in new
-> > >> code.
-> > >
-> > > And how do you suggest avoiding the warning, please?
-> >
-> > By fixing the typo, @block_size -> @blocksize.
-> 
-> Ah, if it's that simple, of course, round_*() is okay to go.
-> My only worries are about explicit castings to "fix" such a warning.
+[CHANGELOG]
+v3:
+- Fix a typo where @block_size should @blocksize.
+  There is a global function, block_size(), thus this typo will cause
+  type conflicts inside round_down()/round_up().
 
-Both ALIGN and round_* seem to be fine with different types, there are
-the tricks with masking lower bits and the alignment is explicitly cast
-to the target type. Most offten we have u64 as target type and u32 as
-the alignment.
+v2:
+- Fix a conversion bug in the first patch that leads to generic/008
+  failure on x86_64
+  The range is passed incorrectly and caused btrfs_truncate_block() to
+  incorrectly skip an unaligned range.
+
+Test case generic/363 always fail on subpage (fs block fs < page size)
+btrfses, there are mostly two kinds of problems here:
+
+All examples are based on 64K page size and 4K fs block size.
+
+1) EOF is polluted and btrfs_truncate_block() only zeros the block that
+   needs to be written back
+
+   
+   0                           32K                           64K
+   |                           |              |GGGGGGGGGGGGGG|
+                                              50K EOF
+   The original file is 50K sized (not 4K aligned), and fsx polluted the
+   range beyond EOF through memory mapped write.
+   And since memory mapped write is page based, and our page size is
+   larger than block size, the page range [0, 64K) covere blocks beyond
+   EOF.
+
+   Those polluted range will not be written back, but will still affect
+   our page cache.
+
+   Then some operation happens to expand the inode to size 64K.
+
+   In that case btrfs_truncate_block() is called to trim the block
+   [48K, 52K), and that block will be marked dirty for written back.
+
+   But the range [52K, 64K) is untouched at all, left the garbage
+   hanging there, triggering `fsx -e 1` failure.
+
+   Fix this case by force btrfs_truncate_block() to zeroing any involved
+   blocks. (Meanwhile still only one block [48K, 52K) will be written
+   back)
+
+2) EOF is polluted and the original size is block aligned so
+   btrfs_truncate_block() does nothing
+
+   0                           32K                           64K
+   |                           |                |GGGGGGGGGGGG|
+                                                52K EOF
+
+   Mostly the same as case 1, but this time since the inode size is
+   block aligned, btrfs_truncate_block() will do nothing.
+
+   Leaving the garbage range [52K, 64K) untouched and fail `fsx -e 1`
+   runs.
+
+   Fix this case by force btrfs_truncate_block() to zeroing any involved
+   blocks when the btrfs is subpage and the range is aligned.
+   This will not cause any new dirty blocks, but purely zeroing out EOF
+   to pass `fsx -e 1` runs.
+
+
+
+Qu Wenruo (2):
+  btrfs: make btrfs_truncate_block() to zero involved blocks in a folio
+  btrfs: make btrfs_truncate_block() zero folio range for certain
+    subpage corner cases
+
+ fs/btrfs/btrfs_inode.h |  10 ++-
+ fs/btrfs/file.c        |  37 ++++++----
+ fs/btrfs/inode.c       | 153 ++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 162 insertions(+), 38 deletions(-)
+
+-- 
+2.49.0
+
 
