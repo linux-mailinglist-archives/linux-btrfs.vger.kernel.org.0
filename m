@@ -1,228 +1,185 @@
-Return-Path: <linux-btrfs+bounces-13150-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13151-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 891F3A92DDD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 01:15:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C204FA92E6D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 01:41:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91C8E448098
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 23:15:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 304BF1B617A3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 23:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA40C214813;
-	Thu, 17 Apr 2025 23:15:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1429D22256E;
+	Thu, 17 Apr 2025 23:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ATLWMah5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="feCjMcKB"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eErxZBTY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8987E18BC0C
-	for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 23:15:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF962206A9
+	for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 23:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744931740; cv=none; b=NhTbcwnqvvTCDk174U+X2Rzrw3IsOhq6BWHuWEAP5eEJIPxxrPkJi//G4HJTyYkRfNM32a3EjyU38yevdJINDcjZkvOt6rhCL0lpv/XtOSB4nmaFaFQRfpTecS7iRxZR/GxzbLc8nd5MFbmodeYY5EX+fNK9ev780jGvOp9Nyno=
+	t=1744933296; cv=none; b=k7NoYXNCy4Dkbw/cczyHUvfwG6IpFZZAnwGHJr3LvmD7NCQCDho/2GEZmTDJe3/c/PWWY1hZytG60o3aEACrF0DHsDWkyOOIM7/h3WEePvPOYvUiWUhzCd4LoSmoODdukptRrt+q33m0HMMHhfH82d3GuYT1WjjAAiXhgsxZQz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744931740; c=relaxed/simple;
-	bh=796A8lKayBmYTRY9Tb8rAkscH1dnuWUnXQramwOoGPE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Xtc4CGN2kIi3vtG8ZQ7dqgVG1SK7xlxkw7R6Q4ElIjycmJZinW1y/Dq7t29xzGmU7h0MK9x9odjvdui1B6TWBW74Z5XaI/kamOsaWE95tvFEVJw645yhuG79wV4oEl3iOu7p8QBXXEhgfv4U1oehQteCm4S+N5Hc6vaPrzg1/T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ATLWMah5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=feCjMcKB; arc=none smtp.client-ip=202.12.124.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.stl.internal (Postfix) with ESMTP id 7992211400D1;
-	Thu, 17 Apr 2025 19:15:36 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Thu, 17 Apr 2025 19:15:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1744931736; x=1745018136; bh=jAhTPPZ3HZiqabawQCgns
-	Nhabm7aljr9d9vT5dg136g=; b=ATLWMah5/drZSsrQtMqc71m0jor3dCBT8+70b
-	2KQ22PKl7O/5Laz3GvI3J8t7/wrjEtibODIAcS9KxGjqEKE/GzJqAndgCsoliXx/
-	cMHQ3fuC3e3NMK4PFT7Re9cuWDdefvBf947e+zFW8d4XduB6TZkejoQkesCkGGCS
-	Z1OAOZ3o42g3WNbQ93arWZLgXxLEhwkfXVYDJRoOAxzgYt6LSms5q96klveezFoc
-	OpDPkWWm/ufrSJ27TvhrZY0+XXLRqObCS8e26jgHG5S6Z9kmLJTB+jDOhvvtFVhb
-	RdiZS4tIKo/vZxuTUmY8j9L8STy30owhN8T4dy7O7N/p12wtA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1744931736; x=1745018136; bh=jAhTPPZ3HZiqabawQCgnsNhabm7aljr9d9v
-	T5dg136g=; b=feCjMcKBv6QPdIAK6u4+DnL+dEUmuxz6re8EccuBM4iNFVXRJIM
-	k/9g0sXCpN604navgI/a9gGsT8elHbfNcjVhvj8/8dsMQcNLmN1ofA+wkQfSm4Pz
-	PDLyu6Q2IIYu2uX3CzfZu24DMbX8tIrg0o0MXyIor+WZwFPZIEaoNHK5+aLSQpRP
-	1lszBUsveeW4POSEMmB9lkpucFB/KbUnzKxNwkSztm9WK+ULuKzNMpEFWTZIfDvq
-	b/dWOIowNKdSTAspQI6iM2Uz5ggbQAmfqiqCfuepwZ1GT3Cfmbyo9fWkHYD7fFZt
-	c49Wilh/DhwkYEdvRFHcNkZfsP/GQDjXG0Q==
-X-ME-Sender: <xms:l4sBaN2-VONbge1AgK4pQyLrIHoxVUkuYToFkYPfhoGE4gu98VDprg>
-    <xme:l4sBaEHuQdABDYAD5m3-ktHHKVsbs6cNiihgDK2l6XCBCb2ykc5w13Io-xXJfXc9q
-    n-uS-6MVWm4h5cew94>
-X-ME-Received: <xmr:l4sBaN4vbeGuuUF97rGkXJt9OgdtA8IL7KgcnS6QM8rgKH_HCcy_jVRR8JSN5MbQxUd_V3XpD0Zkxw6gvWA0E0eC3fk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvfedtheehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceo
-    sghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeeiledtfffhhfdvtdefge
-    dvieetleeijeejiedthfefgeekheevheekjeelkeegkeenucffohhmrghinhepkhgvrhhn
-    vghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhm
-    thhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:l4sBaK1BCv600iaE3vtuFVkCiQixXMSCqgn9NaF4UbSO6C6uHA00lA>
-    <xmx:l4sBaAEpHy86tmlL-6xSVwqA1ZPuCmQ6jcAAzq7XA9ZHVYVw387HKw>
-    <xmx:l4sBaL_37TpEVWushGFoVuxHB5gRjlT2oYz3ARAL-EMNbwDUUcGW-A>
-    <xmx:l4sBaNmnmVyss9bkbKhjC-z2jovA9UX-Yad9CEq2IufIR4ZUyNv9cA>
-    <xmx:mIsBaDYhRH8TKh-DUz2SgApCm3eBaKEVbAz_GjuRNY1TgPjjPhPtybdH>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Apr 2025 19:15:35 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v2] btrfs: fix broken drop_caches on extent_buffer folios
-Date: Thu, 17 Apr 2025 16:16:40 -0700
-Message-ID: <f5a3cbb2f51851dc55ff51647a214f912d6d5043.1744931654.git.boris@bur.io>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1744933296; c=relaxed/simple;
+	bh=g6Q4J6OyBtyv3Oc7wbrZKb6qADczPo4yxoSqVG+RFN0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=WlerML3WlHri7SUT1BH7YRfoWjzxO2/F4+898en7TqhIqzg7bP5QPaJGlaNu6bXshC7MBMDatV3cSLckqLPXgV5lDSutMQ5ChzrU7V+dCfoPZ9COg5RGRElShDq3WE9nrXAm4BA0CIiT64OKFusxeyekN46Ns+eYjhHEgFoIYcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eErxZBTY; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-39ee5ac4321so1226596f8f.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 16:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1744933292; x=1745538092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=8U+kudIz/j8NCJHl9nRYYX9HPI/uXGEfaXUi5QbR2nU=;
+        b=eErxZBTY2u1qPJj4dPyVdX8SHrXp3VfYcSkDSDyHsnG/5fg5+2nigBcsLuYZ0nRMNL
+         grCnbUBl5SabcSq7zs2AmZCakCQnuDgMtmB4FOprJzZbb2SPrWo9YYUhrfvvs/mHEUG7
+         Yl6b3AqxF1ktGc8D+uezaJdLuwJPosSAis9kR4ftQLEQnQpW0xsgrTqUc1Aavaz4VRUj
+         YwKcsivfFdBbc6IEpmEBlDNca65IReqhxdLfjP0t9+6oL8xtKYONqs4tSyuhKjztTFYd
+         0D8vX+KdolHHRMhwDqDiyAtAGodsvaO8WDnZLnnTGcC5vfiCIJP1z0wjEJ46ET7usSMM
+         dsPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744933292; x=1745538092;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8U+kudIz/j8NCJHl9nRYYX9HPI/uXGEfaXUi5QbR2nU=;
+        b=qT9MX6bEHNURvWfV/eE4Scrxl56BXjZkPMmeMMEwP1nH87agrdyEeFHYmMlR8Qqxsz
+         28upswH1tVFcsOsgHSAgHbUl4VwqIwRUjmo7Fv0rXqhs++QskypPhN4ZZ9BzLhrBd0n+
+         9NWUiYTDVIKm73CEr0VyF68H8pwpPhGCTLMsbyWHUpEDyq82unTjzAD29E+TVXnOdg+9
+         H+Oye/dhA5X0Q5pLXmhxzuUs5zeAzU47sPKclX2XiA+MnoGnxJaE/WbcEsKMnO1c4cjI
+         OGelU2c1tKCvGy9dP7Dlfc1xBM4KUZluoyXAgIlRdChUSWL+wN0JnfAhyx1RSak0UFOz
+         MolQ==
+X-Gm-Message-State: AOJu0Yzj2EIk2FlbmdgE7rq0iQZm20r/iizWyXA+vGIJ4q3/kufsp1A2
+	XcxCly3gaM58MSG+XHMxjE20UglTozJloaNqnHt/ZlP2oUSkRW2W7V37l3KdKJJFKJni90dQLX4
+	J
+X-Gm-Gg: ASbGncu4eueR8k3oc+OPFck5/Qyy0cJPaMJoEvMybpSA6ftJfIZ1kgcB9mSGKWxnAty
+	tsEfzXHMLNTpIh0nedK31QD2fy125dJh1jbDsDTO+HDdIehqcYWgSvjahs7B2kMb4y+SXLrYkSv
+	qiPa7Qhx+m24p2CsS4OH/TsjxnlDZ1qewkhy2U11naQN/ReidjXdrjZUAphw6ur4RG1myFf6Q7Y
+	gLWG/dCYyup+C3eXImU8/HdYpA4ILBUd2Bw835oETwrbELMi6SFb1bfyv2i0FYAttMOt/jsgjYJ
+	N3Ebw0p+TH9dm2vQTJPyKs5oJZiQRqFzzxkRjjagretYIhiRVr8tVVi3zffV0PtqrUok
+X-Google-Smtp-Source: AGHT+IGs6Or8Sbn+hexjFcBQNzQfRYZaR6FVX393OSNIbJ50rIimxI5Wtktv4sUhFAqf0iCjYdDLhg==
+X-Received: by 2002:a05:6000:4201:b0:38d:d371:e04d with SMTP id ffacd0b85a97d-39efba608e1mr483148f8f.34.1744933291825;
+        Thu, 17 Apr 2025 16:41:31 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3087e05e0basm18772a91.44.2025.04.17.16.41.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Apr 2025 16:41:31 -0700 (PDT)
+Message-ID: <9f322b27-ae8a-4042-8eda-68e241734012@suse.com>
+Date: Fri, 18 Apr 2025 09:11:27 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/8] btrfs: store a kernel virtual address in struct
+ sector_ptr
+From: Qu Wenruo <wqu@suse.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-btrfs@vger.kernel.org
+References: <20250409111055.3640328-1-hch@lst.de>
+ <20250409111055.3640328-7-hch@lst.de>
+ <0b3a6b18-ab19-4997-86dc-fd269b7b61da@suse.com>
+ <20250410053413.GC30044@lst.de>
+ <63e2eafc-1004-4c12-9d90-39377b0071f3@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <63e2eafc-1004-4c12-9d90-39377b0071f3@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The (correct) commit
-e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inode_page()")
-replaced the page_mapped(page) check with a refcount check. However,
-this refcount check does not work as expected with drop_caches for
-btrfs's metadata pages.
 
-Btrfs has a per-sb metadata inode with cached pages, and when not in
-active use by btrfs, they have a refcount of 3. One from the initial
-call to alloc_pages, one (nr_pages == 1) from filemap_add_folio, and one
-from folio_attach_private. We would expect such pages to get dropped by
-drop_caches. However, drop_caches calls into mapping_evict_folio via
-mapping_try_invalidate which gets a reference on the folio with
-find_lock_entries(). As a result, these pages have a refcount of 4, and
-fail this check.
 
-For what it's worth, such pages do get reclaimed under memory pressure,
-so I would say that while this behavior is surprising, it is not really
-dangerously broken.
+在 2025/4/14 12:34, Qu Wenruo 写道:
+> 
+> 
+> 在 2025/4/10 15:04, Christoph Hellwig 写道:
+>> On Thu, Apr 10, 2025 at 08:04:25AM +0930, Qu Wenruo wrote:
+>>> 在 2025/4/9 20:40, Christoph Hellwig 写道:
+>>>> All data pointed to by struct sector_ptr is non-highmem kernel memory.
+>>>> Simplify the code by using a void pointer instead of a page + offset
+>>>> pair and dropping all the kmap calls.
+>>>
+>>> But the higher level bio from btrfs filemaps can have highmem pages.
+>>>
+>>> That's why we keep the kmap/kunmap.
+>>
+>> Where do filemap pages come into the raid code?   As far as I can see
+>> they are always copied, and the memory is only allocated in the raid
+>> code.  As seen in this code we have two direct allocations that I
+>> convered to __get_free_page, and one case that uses the bulk page
+>> allocator where I use page_address.  Or did I miss something?
+> 
+> The function sector_in_rbio() can force to use the sector_ptr in 
+> bio_sectors, and by default we use bio_sectors first.
+> 
+> Thus all the kmap/kunmap pairs are needed for call sites that is 
+> grabbing the sector through sector_in_rbio().
+> 
+> This includes:
+> 
+> - generate_pq_vertical()
+> - rmw_assemble_write_bios()
+> - verify_one_sector() for READ_REBUILD
+> - recovery_vertical() for READ_REBUILD
+> 
+> So I'm afraid we still need the kmap/kunmap for now.
 
-When I asked the mm folks about the expected refcount in this case, I
-was told that the correct thing to do is to donate the refcount from the
-original allocation to the page cache after inserting it.
-https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
+Most of the series still looks very good to me, for this problem I'll 
+changed it to use physical addresses, and keep the kmap/kunmap instead.
 
-Therefore, attempt to fix this by adding a put_folio() to the critical
-spot in alloc_extent_buffer where we are sure that we have really
-allocated and attached new pages. We must also adjust
-folio_detach_private to properly handle being the last reference to the
-folio and not do a UAF after folio_detach_private().
+When the modified series is properly tested on PAE systems I'll send out 
+the refreshed version for review.
 
-Finally, extent_buffers allocated by clone_extent_buffer() and
-alloc_dummy_extent_buffer() are unmapped, so this transfer of ownership
-from allocation to insertion in the mapping does not apply to them.
-Therefore, they still need a folio_put() as before.
+Thanks,
+Qu
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-Changelog:
-v2:
-* Used Filipe's suggestion to simplify detach_extent_buffer_folio and
-  lose the extra folio_get()/folio_put() pair
-* Noticed a memory leak causing failures in fstests on smaller vms.
-  Fixed a bug where I was missing a folio_put() for ebs that never got
-  their folios added to the mapping.
-
- fs/btrfs/extent_io.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5f08615b334f..90499124b8a5 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2752,6 +2752,7 @@ static bool folio_range_has_eb(struct folio *folio)
- static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct folio *folio)
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	struct address_space *mapping = folio->mapping;
- 	const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
- 
- 	/*
-@@ -2759,11 +2760,11 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
- 	 * be done under the i_private_lock.
- 	 */
- 	if (mapped)
--		spin_lock(&folio->mapping->i_private_lock);
-+		spin_lock(&mapping->i_private_lock);
- 
- 	if (!folio_test_private(folio)) {
- 		if (mapped)
--			spin_unlock(&folio->mapping->i_private_lock);
-+			spin_unlock(&mapping->i_private_lock);
- 		return;
- 	}
- 
-@@ -2783,7 +2784,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
- 			folio_detach_private(folio);
- 		}
- 		if (mapped)
--			spin_unlock(&folio->mapping->i_private_lock);
-+			spin_unlock(&mapping->i_private_lock);
- 		return;
- 	}
- 
-@@ -2806,7 +2807,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
- 	if (!folio_range_has_eb(folio))
- 		btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
- 
--	spin_unlock(&folio->mapping->i_private_lock);
-+	spin_unlock(&mapping->i_private_lock);
- }
- 
- /* Release all folios attached to the extent buffer */
-@@ -2821,9 +2822,13 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
- 			continue;
- 
- 		detach_extent_buffer_folio(eb, folio);
--
--		/* One for when we allocated the folio. */
--		folio_put(folio);
-+		/*
-+		 * We only release the allocated refcount for mapped extent_buffer
-+		 * folios. If the folio is unmapped, we have to release its allocated
-+		 * refcount here.
-+		 */
-+		if (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags))
-+			folio_put(folio);
- 	}
- }
- 
-@@ -3365,8 +3370,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	 * btree_release_folio will correctly detect that a page belongs to a
- 	 * live buffer and won't free them prematurely.
- 	 */
--	for (int i = 0; i < num_extent_folios(eb); i++)
-+	for (int i = 0; i < num_extent_folios(eb); i++) {
- 		folio_unlock(eb->folios[i]);
-+		/*
-+		 * A folio that has been added to an address_space mapping
-+		 * should not continue holding the refcount from its original
-+		 * allocation indefinitely.
-+		 */
-+		folio_put(eb->folios[i]);
-+	}
- 	return eb;
- 
- out:
--- 
-2.49.0
+> 
+>>
+>>> Or is there a way to set the filemap to no use any highmem pages?
+>>
+>> You can restrict the allocation of a mapping to avoid highmem using
+>> mapping_set_gfp_mask().  But that would not help with direct I/O IFF
+>> user pages came into this code.
+> 
+> Fine, my dream of getting rid of highmem inside btrfs is still really a 
+> dream...
+> 
+> Thanks,
+> Qu
+> 
 
 
