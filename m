@@ -1,85 +1,86 @@
-Return-Path: <linux-btrfs+bounces-13134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13135-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46090A91CA5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 14:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3CEA91CCD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 14:49:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16BB55A5458
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 12:44:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6187C3B7FC7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Apr 2025 12:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E1B2475E8;
-	Thu, 17 Apr 2025 12:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E4E17A313;
+	Thu, 17 Apr 2025 12:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="x5A4yZzW"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="J4LbPrb6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713C6433A4
-	for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 12:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30FC78F5E
+	for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 12:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744893881; cv=none; b=L++OkUaUYUa8cRjCvpxvkUnTocKvoOMA0MThxeeDakL4I0I6XD8choGhwA7KeIBcMSKtwkQNSfekUx3cSZY6ZfnOnuD01C63rg60ZMBs3tYrpEGhmpjby2a6mC1jL+UlkW0O+wInlgyCfgB7A3ygvYIHYMnQndH/d0PWDzIIjFs=
+	t=1744894089; cv=none; b=VIWirasKtTNt4rXmqMeLKzR4B3Gfcebt80UmoQA+LCE6RvxN3/O9KzBmqMd3LVSNIxUyus8xhVVpdPjcEsDMSWKJWQkm23pEOZTZwEU6Er0jLj/eezGbV5s6Og0aB09pVd6PxWzkKgR6b3kZl6VuGH/boSYufvi8fSRiW4pfPas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744893881; c=relaxed/simple;
-	bh=Ijba8Gfh1CAL6jPEaqJi6kcbMtLEyxCUgLGjdNoxc7I=;
+	s=arc-20240116; t=1744894089; c=relaxed/simple;
+	bh=7iDg860OLcCyX3Y05HDXikBtP1iDAlfubRmUOrFAhY8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q5WhKY5JDpX1OuUcyVa0XIW8gNQUhwUbdWJua7EcsBfUatgGuzbXoYedN2zbUK5DGlZzh3r+Oik3+fn89ruOWKEV3v8luTWcdS7BnPq/NTUe+ko139RmcLjXDI7+41SkBU90GZPvcPmkF94hydzH09HJobPIHRYXk04cIQ7cGxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=x5A4yZzW; arc=none smtp.client-ip=209.85.128.175
+	 Content-Type:Content-Disposition:In-Reply-To; b=DWqD/UoCr62eUC40WBpKXlTqihC+IBHvFOc+g+wlzH61havZ0HzDSuLWq+7Y6/bPwZDzcQcZhoMFK5dOWvQwlCE0hU/ID7phy3CBTkxKJ0dN5PzJvkn6Ei9qdikD+oIbUfuhr8WOuczsg8q8GAdLpkY72hERfMY9/iB2vl//BQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=J4LbPrb6; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-70433283ba7so6329547b3.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 05:44:40 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e6e50418da6so743919276.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Apr 2025 05:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1744893879; x=1745498679; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1744894087; x=1745498887; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H6TCgzGPlIfi2c6d0uorXWCXwamB2BmtIKr1ncgT25U=;
-        b=x5A4yZzWGvYQa9HvqAmxpEIi0Mit8WDpYrcFDSUUliUgk4Wrwmrzo4it0m7wNc9Qq/
-         TWizT5usZkSXC8LNA75k3wNGHP+BLBThp1bPe55TI1pnxiMLzrY6KG1+r//2+CXeXMoz
-         5D5yk/7ag/nDpGmwe3t+XmIqWFexcvyFFprEVsArhl1HuLntqY7NSnWjH3qLZ+flnY71
-         c/8cBLjEUfQP6sQMEWUMCMlfHTPCAcEcOLrUqleR0QtOMLz5dVWvXdY9rzdl+OFI9IKb
-         1htZDfaa+9h/PzGB6b+GinMcLnzskRhqKkm6ybSFLgZp+QRxR4+E3m1OCCLEbTSC+DnI
-         /DxQ==
+        bh=PQDfXWTBhh25iJCD88OMBYfvQOO/9ewWXf4UbyOuyqE=;
+        b=J4LbPrb6ELOxMWolM3B75EQB8WGdRVa789UckmeYaSBlrtzTsne9or7VanWNLb9nXV
+         awmjszFdOKmzmQ1HGLDkMpT91DxQwWLEJeT+HqxEBNus4Aja+6BD2iwJJP3zcwp6nZDx
+         y4xP7GomMMPHXI6g/SwDkCTHXQL35mG0opC9mdtLzRSDjnfydzflO0+yfxwTJy6ncMUN
+         BAKIJAe7pqOm3OqL47FhbBvF6y1TSu5BgB40FiIUtd0mz5ItyUWVKWBWFBUit66+8eUZ
+         4YJVd5Q70elyRc7gbGKFyh7DnXrhp+sjMC3BHp5c8v1NJPubQNRAPYHuox2XJXvPu6O2
+         mOHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744893879; x=1745498679;
+        d=1e100.net; s=20230601; t=1744894087; x=1745498887;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H6TCgzGPlIfi2c6d0uorXWCXwamB2BmtIKr1ncgT25U=;
-        b=afsoEvlRp57KRkk4mXcXU7Ni8/6wkU8DMowTj/K50YzlJTxmKs7z/4TVvpqE1TgO+g
-         OoSLOCi1iv0Kb4GlyKc9qOTBdXk64Ze2rXcIgbR68bisINgQUWkwWotytbw1eekMnLGp
-         661DmawXDZok5EhJslmYjcMHY+3GaDUIwZ5XVAT8yu2joYGGIMyJqsCsMpACRPNBwOHF
-         +Y0IFnkp/o4qZXLnWehYdTarMyDpH2vB4uHSE8TqkZvsn1QoqQSBhm1VAo1bo/AttzVA
-         45uU0BRwb0FT8+d8t112Pbas07mAFK0/dTq6c7KLJ272PxZrAc4JxwsbYu6XtQdiTqA2
-         7rVw==
-X-Gm-Message-State: AOJu0Yyr/YZWe1RukWGMUJv+xXVqI7aofk+R0hrWUKzUK2ixJMPvHaWL
-	43qlvj4hoZQ8GCQwjZB3Ry2LXssIUPUttUe0+TJB0SO6dR1GTlKkXMqeRwQAZOz9CT1m8d0MPJF
-	I
-X-Gm-Gg: ASbGncsWImNzEljlJRYv7TDPV27DlCK42bJagXUOxyPzfQ6GA7++v6Pkv1gTsqEDEGB
-	Y8FUFq2KcLSptV7mYpzmcYs9WjAtKa5mnFpkAHbOZgeb1HS6CsoCLls+IHZFofkY/P+RFeHF34u
-	pJq7nnbZ3vM5TW72MRXcRnw8AQQAboLyeImGdKPmgGBrWnzX0d3aCw7TRqEU70g3ie6ccreYCFd
-	UHQKQzT6+0KJyLti5JFzWGezE91HP37+F2fV+E4L2yqfmsjRskQipzC8IIJf4zX6BQqDeWocGT2
-	kxuEXnz76iWOkN7GPMS2auZ1hByC/cpzlgf+LJGIybdxnpSf+F+z02kH5aHZiQPA+RLLb8EiQP3
-	POA==
-X-Google-Smtp-Source: AGHT+IEeY6JZ/RL6fQ03sMMPcOGVmaIlin0RTasQdnefvALw9aqTRvUCb/ZoWTR/Xw0uhi/Jc7xDAQ==
-X-Received: by 2002:a05:690c:6a11:b0:6fd:318b:9acf with SMTP id 00721157ae682-706b338c5e2mr82787977b3.38.1744893879257;
-        Thu, 17 Apr 2025 05:44:39 -0700 (PDT)
+        bh=PQDfXWTBhh25iJCD88OMBYfvQOO/9ewWXf4UbyOuyqE=;
+        b=iAiJZ9TKvGZ7Ce6bakmQ+19u5lyAfcKSKnZ+tjk134ebeHm1qi49OXUrPMCwYg41tY
+         dsr4e7kBo0C3K89mX8f0ja3GhoNRIrADa4sPIEUMqnz2NHP+HLmjrtr3DdqG1MRzXc0t
+         0HNsuCU6G/XCVmRlkCXDnUq7O2RmbQTsU6qcIggmntOwgmZQBjU9VCVxo0wF++bMqDrk
+         qksouv1kzmH7+EwSKNyxVIjAlcqyIBtXTicrUUj2rOAs9IQfc4M2Kt9t4RVzD5pylv/H
+         Ann7VbgEyTD/Pj26tsUbX12gqBcQM0rEsPxcxIzpiqvhd90izA0ON/l1lNyDfFWAkH77
+         mGQw==
+X-Gm-Message-State: AOJu0YxaL2W62mIn7DpnA7RvjbMYp6B5+NwT1zTWf51Gkvr9x0a3znbl
+	KjJXJXXeoLCy6GeJOpEIVw8Y4rG30KtsIlCgIwaG9g3E5DooA/8TtUODjuHBMTlFsyHA6qOUOxG
+	b
+X-Gm-Gg: ASbGncu5uaot+cUfYMqZgG/KkSCs2Qt9qPwTpg3vog6BzvNBo840JiFsbo9HMEJS5Zh
+	mFA0oP3KaPIvO3gBw0jf8FTu7jm+/VHH/dq3/u3PsOQOfOUyEQ/ZlAR4A68vfm6SPnWKsF2IoF1
+	u9j4fsyKAhhsyGnjUOan5zBrr5NvxFH7DjxFP5AfCgikX8e/7sZRCU5BXrcoH79u06bPr0fFB76
+	JRi3wlqlS2c/fiqFyYVUbxaHqamhrCjGNfF50oM7OpIwVL9Ivm+suNZVWunWfp+/zm2MuzYpil5
+	eNFOC5ILwL0p6hf49wJzYofh5HtjUXkueb0NmXmHxZ5Ba9qKG4vv5FaZa8/qeipaWfD2rNlNw3V
+	W6Hc5tnKzjS/D
+X-Google-Smtp-Source: AGHT+IGlH6gufHLoup6uyoToXnCLDm8s8plB4v/jXxnZVFIwKpFvePSDNdBKjhdl2VT/KJ9BtVE0hQ==
+X-Received: by 2002:a05:6902:2584:b0:e6d:e8d4:680b with SMTP id 3f1490d57ef6-e727575a1c4mr8094474276.6.1744894086747;
+        Thu, 17 Apr 2025 05:48:06 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-7053e0ec54dsm46743167b3.5.2025.04.17.05.44.38
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e72758ed845sm666228276.18.2025.04.17.05.48.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Apr 2025 05:44:38 -0700 (PDT)
-Date: Thu, 17 Apr 2025 08:44:37 -0400
+        Thu, 17 Apr 2025 05:48:05 -0700 (PDT)
+Date: Thu, 17 Apr 2025 08:48:04 -0400
 From: Josef Bacik <josef@toxicpanda.com>
 To: Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 09/13] btrfs: introduce tree-log sub-space_info
-Message-ID: <20250417124437.GD3574107@perftesting>
+Cc: linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH v3 12/13] btrfs: add block_rsv for treelog
+Message-ID: <20250417124804.GE3574107@perftesting>
 References: <cover.1744813603.git.naohiro.aota@wdc.com>
- <e5339b5616f1b4b7ee7625f86fa392bc49d2fc0d.1744813603.git.naohiro.aota@wdc.com>
+ <3a317ad692057695d49cd8428ed660f551eb759b.1744813603.git.naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -88,45 +89,20 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5339b5616f1b4b7ee7625f86fa392bc49d2fc0d.1744813603.git.naohiro.aota@wdc.com>
+In-Reply-To: <3a317ad692057695d49cd8428ed660f551eb759b.1744813603.git.naohiro.aota@wdc.com>
 
-On Wed, Apr 16, 2025 at 11:28:14PM +0900, Naohiro Aota wrote:
-> This commit introduces the tree-log sub-space_info, which is sub-space of
-> metadata space_info and dedicated for tree-log node allocation.
+On Wed, Apr 16, 2025 at 11:28:17PM +0900, Naohiro Aota wrote:
+> We need to add a dedicated block_rsv for tree-log, because the block_rsv
+> serves for a tree node allocation in btrfs_alloc_tree_block(). Currently,
+> tree-log tree uses fs_info->empty_block_rsv, which is shared across trees
+> and points to the normal metadata space_info. Instead, we add a dedicated
+> block_rsv and that block_rsv can use the dedicated sub-space_info.
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  fs/btrfs/space-info.c |  4 ++++
->  fs/btrfs/space-info.h |  1 +
->  fs/btrfs/sysfs.c      | 10 +++++++++-
->  3 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 37e55298c082..4b2343a3a009 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -292,6 +292,10 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
->  		if (flags & BTRFS_BLOCK_GROUP_DATA)
->  			ret = create_space_info_sub_group(space_info, flags,
->  							  SUB_GROUP_DATA_RELOC);
-> +		else if (flags & BTRFS_BLOCK_GROUP_METADATA)
-> +			ret = create_space_info_sub_group(space_info, flags,
-> +							  SUB_GROUP_METADATA_TREELOG);
-> +
->  		if (ret == -ENOMEM)
->  			return ret;
->  		ASSERT(!ret);
-> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-> index 64641885babd..1aadf88e5789 100644
-> --- a/fs/btrfs/space-info.h
-> +++ b/fs/btrfs/space-info.h
-> @@ -100,6 +100,7 @@ enum btrfs_flush_state {
->  
->  enum btrfs_space_info_sub_group {
->  	SUB_GROUP_DATA_RELOC = 0,
-> +	SUB_GROUP_METADATA_TREELOG = 0,
+> Currently, we use the dedicated block_rsv only for the zoned mode, but it
+> might be somewhat useful for the regular btrfs too.
 
-This will mess up since they have the same value now.  Thanks,
+We can just use the treelog_rsv for this too, it'll give the same behavior as
+the empty_rsv, so just do that and it'll make this cleaner.  Thanks,
 
 Josef
 
