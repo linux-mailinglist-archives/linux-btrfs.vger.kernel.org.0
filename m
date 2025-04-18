@@ -1,591 +1,322 @@
-Return-Path: <linux-btrfs+bounces-13164-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13165-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94717A93828
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 15:57:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E14A93A48
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 18:03:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB622465911
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 13:57:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D8313BE130
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 16:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A32142E67;
-	Fri, 18 Apr 2025 13:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1AA2144D3;
+	Fri, 18 Apr 2025 16:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="oms21tpS"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="GNvc6kHc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="q5l/Yvh2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252E7141987
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Apr 2025 13:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366002147E3
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Apr 2025 16:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744984658; cv=none; b=cu6CD0WkKfhW25EK7OIw3CSax8ZxLKe/DrbHALymn+F+YC3fwCM8JZKlfRpQXndLJVncba9xcc8bq0+59lqeR/xedvKTX066V3bYP4BEIqUhcDJwBJVX81Y5wsafJ/9OVBWZnuPuNcq827nfBtuAHQHZg2D8yq4yXG4CV3m4L8c=
+	t=1744992221; cv=none; b=EkOZRvB/xYtxBHXnKBRESHgYl2iPDxQVE8C0q7nLrT2i4zlu+Z3NItWB0HEWhJcCMZVuzDlAaCq9chrJd1xLJO/sA5dhqH83/fcLMMYyUkYTenwKnriagLAX6yMhsOOH5Ild4wQuUpPIBcWPAaik4iYH4cptBU9kV5LV77sjwYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744984658; c=relaxed/simple;
-	bh=/3pfs0nzK+m+R1DjY+InhlAm7TZB87GSw/NKieNqj5k=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GD2JrHt+R2dDk9UMF+GaIR1wUy/wG/nkF+POKqCvwdWA1yVgRQyPTVLEhvi863phljUO7jAmTPgrkIWAAQLHF4qKnNUHvyDoCAhaY4z0qN0RaitQWdBv2CFLjyTaoN2/qh7yUn35EkMycU+bofW4mh73wAQW/56V46SyGOoVWiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=oms21tpS; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e7270e0edf5so1792403276.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Apr 2025 06:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1744984654; x=1745589454; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pOIUXC/JSqD5u7FJMUZoWntsB2kqudDzYLrI9sTAs2Y=;
-        b=oms21tpSE9BxbUjcANzTe905Kav6Gt13qtGyviU6KvQm0AQZ29pB7ZpAA2CQy4Xfsl
-         yoXpEoVwd5bqrjcoe4uxsVqNMCU0Ej40b6jXksDwLWcoYMPYBIFckueUhg41SthjR26k
-         oWYEehBs1o9I/tOkuT+10UmXA8gRHPVDIvdjDpBNA9HddQzhUJ1A5VC2LTLobK2873k5
-         SgNRmPNr9jJs9T3u3zo4rF5FHQ/n4ok7hw8Tv7Bm2yapOqSknbwJjB5tTxVpjJI1ogWM
-         AIUv07onWGdoq47aHwDTKpiGtrltjLT4sTLHuBR5dXnLzciQ07suWbFN+DvGIRdXoNZL
-         oj6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744984654; x=1745589454;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pOIUXC/JSqD5u7FJMUZoWntsB2kqudDzYLrI9sTAs2Y=;
-        b=GAEdsrQg9POVLi2/JKO1KcDA4/EGg0NdtpMorqpSNpz/vs5zDqNDvHJiHaIcPAj9dx
-         isU5Z5zWvLzDwlFDqd4Y61mk8ZOLEmcurWeikjvPjDFORDMUmyEw2i1c0J9LJTEw8lrR
-         pIRVzQxsuQLA89t1Wqqk+cggbHrF5Kl5VwPujFzpYVlB6+6EbiPLHUeIPmgv9bLGEnup
-         s6YhRV47qbrYXRGvjOxJaC9E0l/BaUlDLMe42WwsmU1oSg2OZXdrNLpdm9yaUndLLFZ6
-         pvln/e6C+AIHVEKtCviRNthEOedNI8nnaEVzgLALkf9TtdeQpWe9vhDZnPzvWMY2rMjE
-         I5NA==
-X-Gm-Message-State: AOJu0Ywah5D4BfWVhz1GUG4PuUCl0d0pZNduISCgjawpSrWPbfWoGY5T
-	W16H5UP28xyX6LWn/fdfBMfdrQNrMQjMOG1Z1EH9rhLGoHmcfqIxn1Z1jVRrbvzXd5lUAGnzOHN
-	s
-X-Gm-Gg: ASbGncs7yx2UMVCKKG5A9weRDaQFW9cu9Xa2Td1jy8q8fjGRp9aZlADwJGec2PFaCI6
-	diWaFewNOJ0Z1OnS81k4tScH/6acYrH7ffNyTPWPGLRwpVqCcKH9cT2uNcX2BgSL2YLIL096l+9
-	ws75KRYpgM/Me430fFurqlABG7yErOG+xPDMy6hJcOzEHdtHehIcsYSI4vUfOlNIIkWVYv1y3r9
-	VjmGImLPuWhX4GfqwO3VAJgSu/qTiRIvQpqmahldHnvParau8XJrXUfbSsK5NF3OImEWhiNq3Tc
-	7kcAHsKpnVQxEBiQiaxKdavkwVLIRKOUC/0X4XfJbUCflcARvi4LfhOPUi/1CHwVAA6pw/YDyG8
-	gRg==
-X-Google-Smtp-Source: AGHT+IFFIyeQy+gI1rS0gZJSbAxELDngD+2m0rNX8Pxgbk+B8b7cZ5jbg2yQguT4wDYXKDC7zVDpuA==
-X-Received: by 2002:a05:6902:2b8d:b0:e6d:f320:7825 with SMTP id 3f1490d57ef6-e7297d8f355mr3433585276.3.1744984654473;
-        Fri, 18 Apr 2025 06:57:34 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e72959f4877sm447731276.52.2025.04.18.06.57.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Apr 2025 06:57:33 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
+	s=arc-20240116; t=1744992221; c=relaxed/simple;
+	bh=8r+laSByp3GXUbYnxHM7MrxdB4QdkDC4W5zgp5eYQno=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UykBbBzm0n3wbopb1MD1pNe8N3QBkTGCtHwRi9bieduSGvzzoX1oBMs7+IYzv7PwZBsPt2xBwKDF24HA7+vDLNcmDfmvEo2sBTUBiClCuICnJNmhNjstYZdQ0gCRbOQvpQf3F3P+27PszBqfvm+bQiZp+8tEKmxjz+zy7VIgwmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=GNvc6kHc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=q5l/Yvh2; arc=none smtp.client-ip=202.12.124.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id DFD2F25401A2;
+	Fri, 18 Apr 2025 12:03:36 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Fri, 18 Apr 2025 12:03:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1744992216;
+	 x=1745078616; bh=wswOV2p1FH6hmzKNZHLV94dDGvM/61e7eUvcjE3i87k=; b=
+	GNvc6kHcVAIvVWZoa0R88lNmML9D9Mo0TiphfoTy8iOYS0bG3KJhVEkpipZoAunE
+	DcpdwpqlmxnbZqWoYvOErq8v4AYCbmXILFQwAHcplwZZWlQoBXcZW8DhIRAQ4MuX
+	SPH7007Ik4/ROEuymReTWg1sMkUhOWmS22nVLpqsSMRyPquOF4mB8XaIUOnN7r9P
+	gYnIS/qeaOOX0w/S0VkCh0qiiZqVjGyxZ1JENl1ZYkMgVXThdYs+BWGIHzBxlxHY
+	I3aq1fyWBhqr580tf9LiNy01U9OUI/hLyKLjLoDo3sfeUcgbHN3PFZKAROJb7mbs
+	lwAVSGMZ46clCLx4kSbx+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1744992216; x=
+	1745078616; bh=wswOV2p1FH6hmzKNZHLV94dDGvM/61e7eUvcjE3i87k=; b=q
+	5l/Yvh2HkvM5VdOVuNvt819Me9DZHRc0Owzyr/N5qggLwcLR63W77ZPKMs9u7IqL
+	IlHF9of7VMNmArUWpTuAiWnw6MMlQc/Ps//uoMU+KdV5JYC5+xNYKq0fSolxbtI6
+	krgQUBmopwnyyKTCEf9hVtdq8Vln9E+INZ3jL6xKmciYAR9QiEGOafDpRyY24AgA
+	HEo/MdFTVSeLQhGQKB/VFWPR1kOeYagk//KSvRGQL8WvAn3YkH0X7g1Y/GDgfSVG
+	H64OQFYIX/Y28dPUWhmA0eEMx7EhP2Pw2XqCpxmn4Vmfy2tiwEXkZDPYVCd1EKCA
+	nnNzcMCDgfMcoiH6DUSVA==
+X-ME-Sender: <xms:2HcCaDyGvf9YyjZS5YagyD-0lRLR3nVfeFOtenJ6E7QubFH2RH5F_w>
+    <xme:2HcCaLQrkjljrD_6mlY9d9Yvmkn3pmqDE-0gulLEBYjosoc1ROE2Doe_LTTQmV0fh
+    FA_6x4zu58WF2zF0k8>
+X-ME-Received: <xmr:2HcCaNWr0C8MBaDkSym0d53u2dvx-7W72YtwPrAMMs6BlwSkc7pDPWtQQuFBgomzDANjeQJIgCw9xmJ4wqqis4Z6FPk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvfedvheekucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddt
+    tdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioh
+    eqnecuggftrfgrthhtvghrnhephefhudehgfekhedufedvtefgteelueeigfefhfefgeej
+    keefhefhgfekjefhvdehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhr
+    rdhiohdpnhgspghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    epfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvlhigsehs
+    uhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrh
+    hnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:2HcCaNjzeTnlsxko23gWst3QrCbLTIQrGngzC-UvI7pFg7ExFcUFDg>
+    <xmx:2HcCaFCnZGHxmVB6JGIQJk6VUTHO2xIC_SMkVAzvOezJx_srL6--SQ>
+    <xmx:2HcCaGK50wTUWrcn1RGB9A9i9V8vaG566O4ERA_WU0npXC3DHvZO7w>
+    <xmx:2HcCaECMqZtSGuamQd4udk4zLI5o1ddnqPfeXX3Y47vFfYmFdUsP7g>
+    <xmx:2HcCaFj4slTTmJyFgYxnQesKbyxhiJmxQS-rItEIcxTR58_1pZjO8IIu>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 18 Apr 2025 12:03:35 -0400 (EDT)
+Date: Fri, 18 Apr 2025 09:04:50 -0700
+From: Boris Burkov <boris@bur.io>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Daniel Vacek <neelx@suse.com>, linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v3 3/3] btrfs: use buffer radix for extent buffer writeback operations
-Date: Fri, 18 Apr 2025 09:57:23 -0400
-Message-ID: <cd0f8b9b2ab02a3c0a5fc30596cc5f2b9c7ea349.1744984487.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1744984487.git.josef@toxicpanda.com>
-References: <cover.1744984487.git.josef@toxicpanda.com>
+Subject: Re: [PATCH v2] btrfs: fix broken drop_caches on extent_buffer folios
+Message-ID: <20250418160450.GA2669173@zen.localdomain>
+References: <f5a3cbb2f51851dc55ff51647a214f912d6d5043.1744931654.git.boris@bur.io>
+ <CAPjX3Fc9YAmfKGdNrQK=Zsv6NVERUnK9Fxg=7Z4vCBrimEjyVg@mail.gmail.com>
+ <CAL3q7H7JAeT3C_+SULVRdZA6XsnHpoZD_je6dEKzj+K53KVgWg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H7JAeT3C_+SULVRdZA6XsnHpoZD_je6dEKzj+K53KVgWg@mail.gmail.com>
 
-Currently we have this ugly back and forth with the btree writeback
-where we find the folio, find the eb associated with that folio, and
-then attempt to writeback.  This results in two different paths for
-subpage eb's and >= pagesize eb's.
+On Fri, Apr 18, 2025 at 11:49:50AM +0100, Filipe Manana wrote:
+> On Fri, Apr 18, 2025 at 10:24 AM Daniel Vacek <neelx@suse.com> wrote:
+> >
+> > On Fri, 18 Apr 2025 at 01:15, Boris Burkov <boris@bur.io> wrote:
+> > >
+> > > The (correct) commit
+> > > e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inode_page()")
+> > > replaced the page_mapped(page) check with a refcount check. However,
+> > > this refcount check does not work as expected with drop_caches for
+> > > btrfs's metadata pages.
+> > >
+> > > Btrfs has a per-sb metadata inode with cached pages, and when not in
+> > > active use by btrfs, they have a refcount of 3. One from the initial
+> > > call to alloc_pages, one (nr_pages == 1) from filemap_add_folio, and one
+> > > from folio_attach_private. We would expect such pages to get dropped by
+> > > drop_caches. However, drop_caches calls into mapping_evict_folio via
+> > > mapping_try_invalidate which gets a reference on the folio with
+> > > find_lock_entries(). As a result, these pages have a refcount of 4, and
+> > > fail this check.
+> > >
+> > > For what it's worth, such pages do get reclaimed under memory pressure,
+> > > so I would say that while this behavior is surprising, it is not really
+> > > dangerously broken.
+> > >
+> > > When I asked the mm folks about the expected refcount in this case, I
+> > > was told that the correct thing to do is to donate the refcount from the
+> > > original allocation to the page cache after inserting it.
+> > > https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
+> > >
+> > > Therefore, attempt to fix this by adding a put_folio() to the critical
+> > > spot in alloc_extent_buffer where we are sure that we have really
+> > > allocated and attached new pages. We must also adjust
+> > > folio_detach_private to properly handle being the last reference to the
+> > > folio and not do a UAF after folio_detach_private().
+> > >
+> > > Finally, extent_buffers allocated by clone_extent_buffer() and
+> > > alloc_dummy_extent_buffer() are unmapped, so this transfer of ownership
+> > > from allocation to insertion in the mapping does not apply to them.
+> > > Therefore, they still need a folio_put() as before.
+> > >
+> > > Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > > ---
+> > > Changelog:
+> > > v2:
+> > > * Used Filipe's suggestion to simplify detach_extent_buffer_folio and
+> > >   lose the extra folio_get()/folio_put() pair
+> > > * Noticed a memory leak causing failures in fstests on smaller vms.
+> > >   Fixed a bug where I was missing a folio_put() for ebs that never got
+> > >   their folios added to the mapping.
+> > >
+> > >  fs/btrfs/extent_io.c | 28 ++++++++++++++++++++--------
+> > >  1 file changed, 20 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > > index 5f08615b334f..90499124b8a5 100644
+> > > --- a/fs/btrfs/extent_io.c
+> > > +++ b/fs/btrfs/extent_io.c
+> > > @@ -2752,6 +2752,7 @@ static bool folio_range_has_eb(struct folio *folio)
+> > >  static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct folio *folio)
+> > >  {
+> > >         struct btrfs_fs_info *fs_info = eb->fs_info;
+> > > +       struct address_space *mapping = folio->mapping;
+> > >         const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
+> > >
+> > >         /*
+> > > @@ -2759,11 +2760,11 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
+> > >          * be done under the i_private_lock.
+> > >          */
+> > >         if (mapped)
+> > > -               spin_lock(&folio->mapping->i_private_lock);
+> > > +               spin_lock(&mapping->i_private_lock);
+> > >
+> > >         if (!folio_test_private(folio)) {
+> > >                 if (mapped)
+> > > -                       spin_unlock(&folio->mapping->i_private_lock);
+> > > +                       spin_unlock(&mapping->i_private_lock);
+> > >                 return;
+> > >         }
+> > >
+> > > @@ -2783,7 +2784,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
+> > >                         folio_detach_private(folio);
+> > >                 }
+> > >                 if (mapped)
+> > > -                       spin_unlock(&folio->mapping->i_private_lock);
+> > > +                       spin_unlock(&mapping->i_private_lock);
+> > >                 return;
+> > >         }
+> > >
+> > > @@ -2806,7 +2807,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
+> > >         if (!folio_range_has_eb(folio))
+> > >                 btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
+> > >
+> > > -       spin_unlock(&folio->mapping->i_private_lock);
+> > > +       spin_unlock(&mapping->i_private_lock);
+> > >  }
+> > >
+> > >  /* Release all folios attached to the extent buffer */
+> > > @@ -2821,9 +2822,13 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
+> > >                         continue;
+> > >
+> > >                 detach_extent_buffer_folio(eb, folio);
+> > > -
+> > > -               /* One for when we allocated the folio. */
+> > > -               folio_put(folio);
+> >
+> > So far so good, but...
+> >
+> > > +               /*
+> > > +                * We only release the allocated refcount for mapped extent_buffer
+> > > +                * folios. If the folio is unmapped, we have to release its allocated
+> > > +                * refcount here.
+> > > +                */
+> > > +               if (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags))
+> > > +                       folio_put(folio);
+> >
+> > ...is this really correct? I'd do rather this instead:
+> 
+> Yes, it is correct. It does deal with cloned extent buffers, where we
+> need the extra put since we didn't do it after attaching the folio to
+> it.
+> Alternatively we could probably do the put after the attach at
+> btrfs_clone_extent_buffer(), just like for regular extent buffers, and
+> get rid of this special casing.
+> 
 
-Clean this up by adding our own infrastructure around looking up tag'ed
-eb's and writing the eb's out directly.  This allows us to unify the
-subpage and >= pagesize IO paths, resulting in a much cleaner writeback
-path for extent buffers.
+I didn't do it this way originally because I was hewing to the model
+that we were donating the allocated refcount to the mapping when
+inserting it (modeled after readahead) and I did not have a
+corresponding model for these ebs which are not added to an
+address_space.
 
-I ran this through fsperf on a VM with 8 CPUs and 16gib of ram.  I used
-smallfiles100k, but reduced the files to 1k to make it run faster, the
-results are as follows, with the statistically significant improvements
-marked with *, there were no regressions.  fsperf was run with -n 10 for
-both runs, so the baseline is the average 10 runs and the test is the
-average of 10 runs.
+I agree that your proposal results in simpler code so I will run it
+through fstests as well. It's difficult to predict if there are any
+negative side effects to these eb folios having one lower ref count
+at steady state. It _seems_ like it ought to be fine :)
 
-smallfiles100k results
-      metric           baseline       current        stdev            diff
-================================================================================
-avg_commit_ms               68.58         58.44          3.35   -14.79% *
-commits                    270.60        254.70         16.24    -5.88%
-dev_read_iops                  48            48             0     0.00%
-dev_read_kbytes              1044          1044             0     0.00%
-dev_write_iops          866117.90     850028.10      14292.20    -1.86%
-dev_write_kbytes      10939976.40   10605701.20     351330.32    -3.06%
-elapsed                     49.30            33          1.64   -33.06% *
-end_state_mount_ns    41251498.80   35773220.70    2531205.32   -13.28% *
-end_state_umount_ns      1.90e+09      1.50e+09   14186226.85   -21.38% *
-max_commit_ms                 139        111.60          9.72   -19.71% *
-sys_cpu                      4.90          3.86          0.88   -21.29%
-write_bw_bytes        42935768.20   64318451.10    1609415.05    49.80% *
-write_clat_ns_mean      366431.69     243202.60      14161.98   -33.63% *
-write_clat_ns_p50        49203.20         20992        264.40   -57.34% *
-write_clat_ns_p99          827392     653721.60      65904.74   -20.99% *
-write_io_kbytes           2035940       2035940             0     0.00%
-write_iops               10482.37      15702.75        392.92    49.80% *
-write_lat_ns_max         1.01e+08      90516129    3910102.06   -10.29% *
-write_lat_ns_mean       366556.19     243308.48      14154.51   -33.62% *
+Thanks to both of you for the review,
+Boris
 
-As you can see we get about a 33% decrease runtime, with a 50%
-throughput increase, which is pretty significant.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent_io.c   | 344 ++++++++++++++++++++---------------------
- fs/btrfs/extent_io.h   |   1 +
- fs/btrfs/transaction.c |   5 +-
- 3 files changed, 173 insertions(+), 177 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ef6df7bcef5d..080409e068e9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1926,6 +1926,117 @@ static void buffer_tree_clear_mark(const struct extent_buffer *eb,
- 	xas_unlock_irqrestore(&xas, flags);
- }
- 
-+static void buffer_tree_tag_for_writeback(struct btrfs_fs_info *fs_info,
-+					    unsigned long start, unsigned long end)
-+{
-+	XA_STATE(xas, &fs_info->buffer_tree, start);
-+	unsigned int tagged = 0;
-+	void *eb;
-+
-+	xas_lock_irq(&xas);
-+	xas_for_each_marked(&xas, eb, end, PAGECACHE_TAG_DIRTY) {
-+		xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
-+		if (++tagged % XA_CHECK_SCHED)
-+			continue;
-+		xas_pause(&xas);
-+		xas_unlock_irq(&xas);
-+		cond_resched();
-+		xas_lock_irq(&xas);
-+	}
-+	xas_unlock_irq(&xas);
-+}
-+
-+struct eb_batch {
-+	unsigned int nr;
-+	unsigned int cur;
-+	struct extent_buffer *ebs[PAGEVEC_SIZE];
-+};
-+
-+static inline bool eb_batch_add(struct eb_batch *batch,
-+			       struct extent_buffer *eb)
-+{
-+	batch->ebs[batch->nr++] = eb;
-+	return (batch->nr < PAGEVEC_SIZE);
-+}
-+
-+static inline void eb_batch_init(struct eb_batch *batch)
-+{
-+	batch->nr = 0;
-+	batch->cur = 0;
-+}
-+
-+static inline unsigned int eb_batch_count(struct eb_batch *batch)
-+{
-+	return batch->nr;
-+}
-+
-+static inline struct extent_buffer *eb_batch_next(struct eb_batch *batch)
-+{
-+	if (batch->cur >= batch->nr)
-+		return NULL;
-+	return batch->ebs[batch->cur++];
-+}
-+
-+static inline void eb_batch_release(struct eb_batch *batch)
-+{
-+	for (unsigned int i = 0; i < batch->nr; i++)
-+		free_extent_buffer(batch->ebs[i]);
-+	eb_batch_init(batch);
-+}
-+
-+static inline struct extent_buffer *find_get_eb(struct xa_state *xas, unsigned long max,
-+						xa_mark_t mark)
-+{
-+	struct extent_buffer *eb;
-+
-+retry:
-+	eb = xas_find_marked(xas, max, mark);
-+
-+	if (xas_retry(xas, eb))
-+		goto retry;
-+
-+	if (!eb)
-+		return NULL;
-+
-+	if (!atomic_inc_not_zero(&eb->refs))
-+		goto reset;
-+
-+	if (unlikely(eb != xas_reload(xas))) {
-+		free_extent_buffer(eb);
-+		goto reset;
-+	}
-+
-+	return eb;
-+reset:
-+	xas_reset(xas);
-+	goto retry;
-+}
-+
-+static unsigned int buffer_tree_get_ebs_tag(struct btrfs_fs_info *fs_info,
-+					    unsigned long *start,
-+					    unsigned long end, xa_mark_t tag,
-+					    struct eb_batch *batch)
-+{
-+	XA_STATE(xas, &fs_info->buffer_tree, *start);
-+	struct extent_buffer *eb;
-+
-+	rcu_read_lock();
-+	while ((eb = find_get_eb(&xas, end, tag)) != NULL) {
-+		if (!eb_batch_add(batch, eb)) {
-+			*start = (eb->start + eb->len) >> fs_info->sectorsize_bits;
-+			goto out;
-+		}
-+	}
-+	if (end == (unsigned long)-1)
-+		*start = (unsigned long)-1;
-+	else
-+		*start = end + 1;
-+out:
-+	rcu_read_unlock();
-+
-+	return eb_batch_count(batch);
-+}
-+
- /*
-  * The endio specific version which won't touch any unsafe spinlock in endio
-  * context.
-@@ -2031,163 +2142,37 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
- }
- 
- /*
-- * Submit one subpage btree page.
-+ * Wait for all eb writeback in the given range to finish.
-  *
-- * The main difference to submit_eb_page() is:
-- * - Page locking
-- *   For subpage, we don't rely on page locking at all.
-- *
-- * - Flush write bio
-- *   We only flush bio if we may be unable to fit current extent buffers into
-- *   current bio.
-- *
-- * Return >=0 for the number of submitted extent buffers.
-- * Return <0 for fatal error.
-+ * @fs_info:	the fs_info for this file system
-+ * @start:	the offset of the range to start waiting on writeback
-+ * @end:	the end of the range, inclusive. This is meant to be used in
-+ *		conjuction with wait_marked_extents, so this will usually be
-+ *		the_next_eb->start - 1.
-  */
--static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
-+void btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start, u64 end)
- {
--	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
--	int submitted = 0;
--	u64 folio_start = folio_pos(folio);
--	int bit_start = 0;
--	int sectors_per_node = fs_info->nodesize >> fs_info->sectorsize_bits;
--	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
-+	struct eb_batch batch;
-+	unsigned long start_index = start >> fs_info->sectorsize_bits;
-+	unsigned long end_index = end >> fs_info->sectorsize_bits;
- 
--	/* Lock and write each dirty extent buffers in the range */
--	while (bit_start < blocks_per_folio) {
--		struct btrfs_subpage *subpage = folio_get_private(folio);
-+	eb_batch_init(&batch);
-+	while (start_index <= end_index) {
- 		struct extent_buffer *eb;
--		unsigned long flags;
--		u64 start;
-+		unsigned int nr_ebs;
- 
--		/*
--		 * Take private lock to ensure the subpage won't be detached
--		 * in the meantime.
--		 */
--		spin_lock(&folio->mapping->i_private_lock);
--		if (!folio_test_private(folio)) {
--			spin_unlock(&folio->mapping->i_private_lock);
-+		nr_ebs = buffer_tree_get_ebs_tag(fs_info, &start_index,
-+						 end_index,
-+						 PAGECACHE_TAG_WRITEBACK,
-+						 &batch);
-+		if (!nr_ebs)
- 			break;
--		}
--		spin_lock_irqsave(&subpage->lock, flags);
--		if (!test_bit(bit_start + btrfs_bitmap_nr_dirty * blocks_per_folio,
--			      subpage->bitmaps)) {
--			spin_unlock_irqrestore(&subpage->lock, flags);
--			spin_unlock(&folio->mapping->i_private_lock);
--			bit_start += sectors_per_node;
--			continue;
--		}
- 
--		start = folio_start + bit_start * fs_info->sectorsize;
--		bit_start += sectors_per_node;
--
--		/*
--		 * Here we just want to grab the eb without touching extra
--		 * spin locks, so call find_extent_buffer_nolock().
--		 */
--		eb = find_extent_buffer_nolock(fs_info, start);
--		spin_unlock_irqrestore(&subpage->lock, flags);
--		spin_unlock(&folio->mapping->i_private_lock);
--
--		/*
--		 * The eb has already reached 0 refs thus find_extent_buffer()
--		 * doesn't return it. We don't need to write back such eb
--		 * anyway.
--		 */
--		if (!eb)
--			continue;
--
--		if (lock_extent_buffer_for_io(eb, wbc)) {
--			write_one_eb(eb, wbc);
--			submitted++;
--		}
--		free_extent_buffer(eb);
-+		while ((eb = eb_batch_next(&batch)) != NULL)
-+			wait_on_extent_buffer_writeback(eb);
-+		eb_batch_release(&batch);
-+		cond_resched();
- 	}
--	return submitted;
--}
--
--/*
-- * Submit all page(s) of one extent buffer.
-- *
-- * @page:	the page of one extent buffer
-- * @eb_context:	to determine if we need to submit this page, if current page
-- *		belongs to this eb, we don't need to submit
-- *
-- * The caller should pass each page in their bytenr order, and here we use
-- * @eb_context to determine if we have submitted pages of one extent buffer.
-- *
-- * If we have, we just skip until we hit a new page that doesn't belong to
-- * current @eb_context.
-- *
-- * If not, we submit all the page(s) of the extent buffer.
-- *
-- * Return >0 if we have submitted the extent buffer successfully.
-- * Return 0 if we don't need to submit the page, as it's already submitted by
-- * previous call.
-- * Return <0 for fatal error.
-- */
--static int submit_eb_page(struct folio *folio, struct btrfs_eb_write_context *ctx)
--{
--	struct writeback_control *wbc = ctx->wbc;
--	struct address_space *mapping = folio->mapping;
--	struct extent_buffer *eb;
--	int ret;
--
--	if (!folio_test_private(folio))
--		return 0;
--
--	if (btrfs_meta_is_subpage(folio_to_fs_info(folio)))
--		return submit_eb_subpage(folio, wbc);
--
--	spin_lock(&mapping->i_private_lock);
--	if (!folio_test_private(folio)) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--
--	eb = folio_get_private(folio);
--
--	/*
--	 * Shouldn't happen and normally this would be a BUG_ON but no point
--	 * crashing the machine for something we can survive anyway.
--	 */
--	if (WARN_ON(!eb)) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--
--	if (eb == ctx->eb) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--	ret = atomic_inc_not_zero(&eb->refs);
--	spin_unlock(&mapping->i_private_lock);
--	if (!ret)
--		return 0;
--
--	ctx->eb = eb;
--
--	ret = btrfs_check_meta_write_pointer(eb->fs_info, ctx);
--	if (ret) {
--		if (ret == -EBUSY)
--			ret = 0;
--		free_extent_buffer(eb);
--		return ret;
--	}
--
--	if (!lock_extent_buffer_for_io(eb, wbc)) {
--		free_extent_buffer(eb);
--		return 0;
--	}
--	/* Implies write in zoned mode. */
--	if (ctx->zoned_bg) {
--		/* Mark the last eb in the block group. */
--		btrfs_schedule_zone_finish_bg(ctx->zoned_bg, eb);
--		ctx->zoned_bg->meta_write_pointer += eb->len;
--	}
--	write_one_eb(eb, wbc);
--	free_extent_buffer(eb);
--	return 1;
- }
- 
- int btree_write_cache_pages(struct address_space *mapping,
-@@ -2198,25 +2183,27 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	int ret = 0;
- 	int done = 0;
- 	int nr_to_write_done = 0;
--	struct folio_batch fbatch;
--	unsigned int nr_folios;
--	pgoff_t index;
--	pgoff_t end;		/* Inclusive */
-+	struct eb_batch batch;
-+	unsigned int nr_ebs;
-+	unsigned long index;
-+	unsigned long end;
- 	int scanned = 0;
- 	xa_mark_t tag;
- 
--	folio_batch_init(&fbatch);
-+	eb_batch_init(&batch);
- 	if (wbc->range_cyclic) {
--		index = mapping->writeback_index; /* Start from prev offset */
-+		index = (mapping->writeback_index << PAGE_SHIFT) >> fs_info->sectorsize_bits;
- 		end = -1;
-+
- 		/*
- 		 * Start from the beginning does not need to cycle over the
- 		 * range, mark it as scanned.
- 		 */
- 		scanned = (index == 0);
- 	} else {
--		index = wbc->range_start >> PAGE_SHIFT;
--		end = wbc->range_end >> PAGE_SHIFT;
-+		index = wbc->range_start >> fs_info->sectorsize_bits;
-+		end = wbc->range_end >> fs_info->sectorsize_bits;
-+
- 		scanned = 1;
- 	}
- 	if (wbc->sync_mode == WB_SYNC_ALL)
-@@ -2226,31 +2213,40 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	btrfs_zoned_meta_io_lock(fs_info);
- retry:
- 	if (wbc->sync_mode == WB_SYNC_ALL)
--		tag_pages_for_writeback(mapping, index, end);
-+		buffer_tree_tag_for_writeback(fs_info, index, end);
- 	while (!done && !nr_to_write_done && (index <= end) &&
--	       (nr_folios = filemap_get_folios_tag(mapping, &index, end,
--					    tag, &fbatch))) {
--		unsigned i;
-+	       (nr_ebs = buffer_tree_get_ebs_tag(fs_info, &index, end, tag,
-+						 &batch))) {
-+		struct extent_buffer *eb;
- 
--		for (i = 0; i < nr_folios; i++) {
--			struct folio *folio = fbatch.folios[i];
-+		while ((eb = eb_batch_next(&batch)) != NULL) {
-+			ctx.eb = eb;
- 
--			ret = submit_eb_page(folio, &ctx);
--			if (ret == 0)
-+			ret = btrfs_check_meta_write_pointer(eb->fs_info, &ctx);
-+			if (ret) {
-+				if (ret == -EBUSY)
-+					ret = 0;
-+				if (ret) {
-+					done = 1;
-+					break;
-+				}
-+				free_extent_buffer(eb);
- 				continue;
--			if (ret < 0) {
--				done = 1;
--				break;
- 			}
- 
--			/*
--			 * the filesystem may choose to bump up nr_to_write.
--			 * We have to make sure to honor the new nr_to_write
--			 * at any time
--			 */
--			nr_to_write_done = wbc->nr_to_write <= 0;
-+			if (!lock_extent_buffer_for_io(eb, wbc))
-+				continue;
-+
-+			/* Implies write in zoned mode. */
-+			if (ctx.zoned_bg) {
-+				/* Mark the last eb in the block group. */
-+				btrfs_schedule_zone_finish_bg(ctx.zoned_bg, eb);
-+				ctx.zoned_bg->meta_write_pointer += eb->len;
-+			}
-+			write_one_eb(eb, wbc);
- 		}
--		folio_batch_release(&fbatch);
-+		nr_to_write_done = wbc->nr_to_write <= 0;
-+		eb_batch_release(&batch);
- 		cond_resched();
- 	}
- 	if (!scanned && !done) {
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index b344162f790c..4f0cf5b0d38f 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -240,6 +240,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
- int btrfs_writepages(struct address_space *mapping, struct writeback_control *wbc);
- int btree_write_cache_pages(struct address_space *mapping,
- 			    struct writeback_control *wbc);
-+void btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start, u64 end);
- void btrfs_readahead(struct readahead_control *rac);
- int set_folio_extent_mapped(struct folio *folio);
- void clear_folio_extent_mapped(struct folio *folio);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 39e48bf610a1..b72ac8b70e0e 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1155,7 +1155,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- 		if (!ret)
- 			ret = filemap_fdatawrite_range(mapping, start, end);
- 		if (!ret && wait_writeback)
--			ret = filemap_fdatawait_range(mapping, start, end);
-+			btree_wait_writeback_range(fs_info, start, end);
- 		btrfs_free_extent_state(cached_state);
- 		if (ret)
- 			break;
-@@ -1175,7 +1175,6 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 				       struct extent_io_tree *dirty_pages)
- {
--	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct extent_state *cached_state = NULL;
- 	u64 start = 0;
- 	u64 end;
-@@ -1196,7 +1195,7 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 		if (ret == -ENOMEM)
- 			ret = 0;
- 		if (!ret)
--			ret = filemap_fdatawait_range(mapping, start, end);
-+			btree_wait_writeback_range(fs_info, start, end);
- 		btrfs_free_extent_state(cached_state);
- 		if (ret)
- 			break;
--- 
-2.48.1
-
+> >
+> > @@ -3393,22 +3393,21 @@ struct extent_buffer
+> > *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+> >          * case.  If we left eb->folios[i] populated in the subpage case we'd
+> >          * double put our reference and be super sad.
+> >          */
+> > -       for (int i = 0; i < attached; i++) {
+> > -               ASSERT(eb->folios[i]);
+> > -               detach_extent_buffer_folio(eb, eb->folios[i]);
+> > +       for (int i = 0; i < num_extent_folios(eb); i++) {
+> > +               if (i < attached) {
+> > +                       ASSERT(eb->folios[i]);
+> > +                       detach_extent_buffer_folio(eb, eb->folios[i]);
+> > +               } else if (!eb->folios[i])
+> > +                       continue;
+> >                 folio_unlock(eb->folios[i]);
+> >                 folio_put(eb->folios[i]);
+> >                 eb->folios[i] = NULL;
+> >
+> > And perhaps `struct folio *folio = eb->folios[i];` first and substitute.
+> >
+> > Or is this unrelated and we need both?
+> 
+> This is unrelated.
+> What you're trying to do here is to simplify the error path of the
+> allocation of a regular extent buffer.
+> Nothing to do with Boris' fix, and out of the scope of the fix.
+> 
+> >
+> > And honestly, IMO, there's no reason to set the EXTENT_BUFFER_UNMAPPED
+> > at all after this loop as it's just going to be freed.
+> >
+> >         }
+> > -       /*
+> > -        * Now all pages of that extent buffer is unmapped, set UNMAPPED flag,
+> > -        * so it can be cleaned up without utilizing folio->mapping.
+> > -        */
+> > -       set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
+> > -
+> >         btrfs_release_extent_buffer(eb);
+> > +
+> >         if (ret < 0)
+> >                 return ERR_PTR(ret);
+> > +
+> >         ASSERT(existing_eb);
+> >         return existing_eb;
+> >  }
+> >
+> > >         }
+> > >  }
+> > >
+> > > @@ -3365,8 +3370,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+> > >          * btree_release_folio will correctly detect that a page belongs to a
+> > >          * live buffer and won't free them prematurely.
+> > >          */
+> > > -       for (int i = 0; i < num_extent_folios(eb); i++)
+> > > +       for (int i = 0; i < num_extent_folios(eb); i++) {
+> > >                 folio_unlock(eb->folios[i]);
+> > > +               /*
+> > > +                * A folio that has been added to an address_space mapping
+> > > +                * should not continue holding the refcount from its original
+> > > +                * allocation indefinitely.
+> > > +                */
+> > > +               folio_put(eb->folios[i]);
+> > > +       }
+> > >         return eb;
+> > >
+> > >  out:
+> > > --
+> > > 2.49.0
+> > >
+> > >
+> >
 
