@@ -1,322 +1,195 @@
-Return-Path: <linux-btrfs+bounces-13165-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13166-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75E14A93A48
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 18:03:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD551A93B23
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 18:41:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D8313BE130
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 16:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B66E189EB22
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Apr 2025 16:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1AA2144D3;
-	Fri, 18 Apr 2025 16:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D09221558;
+	Fri, 18 Apr 2025 16:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="GNvc6kHc";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="q5l/Yvh2"
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="uPi2By4j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366002147E3
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Apr 2025 16:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2313B224231
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Apr 2025 16:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744992221; cv=none; b=EkOZRvB/xYtxBHXnKBRESHgYl2iPDxQVE8C0q7nLrT2i4zlu+Z3NItWB0HEWhJcCMZVuzDlAaCq9chrJd1xLJO/sA5dhqH83/fcLMMYyUkYTenwKnriagLAX6yMhsOOH5Ild4wQuUpPIBcWPAaik4iYH4cptBU9kV5LV77sjwYE=
+	t=1744994333; cv=none; b=PYzW8D5zMlpgWPsipER96qI1NE1LITm9C5U8BD2Ln7hiGlnrs9F1Ngp86R1V+HgWF8y2MumnbTqJd0pAFoPI0rshfdC1RG/KhdhlNrfDY/3Q+W6WjWymhVbLETDUlR9X0FD36lDA74T824+hRbKYIDLHjq1Kdv5Oh0QTpE3Mvpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744992221; c=relaxed/simple;
-	bh=8r+laSByp3GXUbYnxHM7MrxdB4QdkDC4W5zgp5eYQno=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UykBbBzm0n3wbopb1MD1pNe8N3QBkTGCtHwRi9bieduSGvzzoX1oBMs7+IYzv7PwZBsPt2xBwKDF24HA7+vDLNcmDfmvEo2sBTUBiClCuICnJNmhNjstYZdQ0gCRbOQvpQf3F3P+27PszBqfvm+bQiZp+8tEKmxjz+zy7VIgwmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=GNvc6kHc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=q5l/Yvh2; arc=none smtp.client-ip=202.12.124.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id DFD2F25401A2;
-	Fri, 18 Apr 2025 12:03:36 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Fri, 18 Apr 2025 12:03:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1744992216;
-	 x=1745078616; bh=wswOV2p1FH6hmzKNZHLV94dDGvM/61e7eUvcjE3i87k=; b=
-	GNvc6kHcVAIvVWZoa0R88lNmML9D9Mo0TiphfoTy8iOYS0bG3KJhVEkpipZoAunE
-	DcpdwpqlmxnbZqWoYvOErq8v4AYCbmXILFQwAHcplwZZWlQoBXcZW8DhIRAQ4MuX
-	SPH7007Ik4/ROEuymReTWg1sMkUhOWmS22nVLpqsSMRyPquOF4mB8XaIUOnN7r9P
-	gYnIS/qeaOOX0w/S0VkCh0qiiZqVjGyxZ1JENl1ZYkMgVXThdYs+BWGIHzBxlxHY
-	I3aq1fyWBhqr580tf9LiNy01U9OUI/hLyKLjLoDo3sfeUcgbHN3PFZKAROJb7mbs
-	lwAVSGMZ46clCLx4kSbx+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1744992216; x=
-	1745078616; bh=wswOV2p1FH6hmzKNZHLV94dDGvM/61e7eUvcjE3i87k=; b=q
-	5l/Yvh2HkvM5VdOVuNvt819Me9DZHRc0Owzyr/N5qggLwcLR63W77ZPKMs9u7IqL
-	IlHF9of7VMNmArUWpTuAiWnw6MMlQc/Ps//uoMU+KdV5JYC5+xNYKq0fSolxbtI6
-	krgQUBmopwnyyKTCEf9hVtdq8Vln9E+INZ3jL6xKmciYAR9QiEGOafDpRyY24AgA
-	HEo/MdFTVSeLQhGQKB/VFWPR1kOeYagk//KSvRGQL8WvAn3YkH0X7g1Y/GDgfSVG
-	H64OQFYIX/Y28dPUWhmA0eEMx7EhP2Pw2XqCpxmn4Vmfy2tiwEXkZDPYVCd1EKCA
-	nnNzcMCDgfMcoiH6DUSVA==
-X-ME-Sender: <xms:2HcCaDyGvf9YyjZS5YagyD-0lRLR3nVfeFOtenJ6E7QubFH2RH5F_w>
-    <xme:2HcCaLQrkjljrD_6mlY9d9Yvmkn3pmqDE-0gulLEBYjosoc1ROE2Doe_LTTQmV0fh
-    FA_6x4zu58WF2zF0k8>
-X-ME-Received: <xmr:2HcCaNWr0C8MBaDkSym0d53u2dvx-7W72YtwPrAMMs6BlwSkc7pDPWtQQuFBgomzDANjeQJIgCw9xmJ4wqqis4Z6FPk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvfedvheekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddt
-    tdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioh
-    eqnecuggftrfgrthhtvghrnhephefhudehgfekhedufedvtefgteelueeigfefhfefgeej
-    keefhefhgfekjefhvdehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhr
-    rdhiohdpnhgspghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    epfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvlhigsehs
-    uhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:2HcCaNjzeTnlsxko23gWst3QrCbLTIQrGngzC-UvI7pFg7ExFcUFDg>
-    <xmx:2HcCaFCnZGHxmVB6JGIQJk6VUTHO2xIC_SMkVAzvOezJx_srL6--SQ>
-    <xmx:2HcCaGK50wTUWrcn1RGB9A9i9V8vaG566O4ERA_WU0npXC3DHvZO7w>
-    <xmx:2HcCaECMqZtSGuamQd4udk4zLI5o1ddnqPfeXX3Y47vFfYmFdUsP7g>
-    <xmx:2HcCaFj4slTTmJyFgYxnQesKbyxhiJmxQS-rItEIcxTR58_1pZjO8IIu>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Apr 2025 12:03:35 -0400 (EDT)
-Date: Fri, 18 Apr 2025 09:04:50 -0700
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Daniel Vacek <neelx@suse.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs: fix broken drop_caches on extent_buffer folios
-Message-ID: <20250418160450.GA2669173@zen.localdomain>
-References: <f5a3cbb2f51851dc55ff51647a214f912d6d5043.1744931654.git.boris@bur.io>
- <CAPjX3Fc9YAmfKGdNrQK=Zsv6NVERUnK9Fxg=7Z4vCBrimEjyVg@mail.gmail.com>
- <CAL3q7H7JAeT3C_+SULVRdZA6XsnHpoZD_je6dEKzj+K53KVgWg@mail.gmail.com>
+	s=arc-20240116; t=1744994333; c=relaxed/simple;
+	bh=270JPJGGjY7IPgmfewe28hrxl/Ritzcxa5nGiJd0c20=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oaBGjkBUmwOugfvWxjp/lpJhEfl/+3tjMOfrF7SPqe8KUcdM6lB+ACjzQjZTGfZvJyYqLONX6CwR7c1eWrw4fBVv830+eizWSYZX0mkvT4JZLhLVYrEKYSUcq5YJX9x+QxPkvodMQjnNI3Ef5Bm9pNeJZ2WmMAkKdsEEWdtrQp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=uPi2By4j; arc=none smtp.client-ip=213.209.10.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPSA
+	id 5ojhumumhrFho5ojiu1mFk; Fri, 18 Apr 2025 18:38:42 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1744994322; bh=U8LXjbi8hjg2a133vJ10rfnK/xhkjqUqm2yf3dBVSbk=;
+	h=From;
+	b=uPi2By4jH5X8u4yuOnFu+CRhg2dcbL2HQtkucO6Y1mB7L8ttBB9LTXNGf7qM0P9b/
+	 dsTmuOyYs5z+QPLgWBZszJewHevODv4h6dYNgaDUi+8um5MpKZVXO5UWgyvLvjdpYG
+	 qf59DTEQ+5K12PxV0OhaTTCC3iFn5nml/TlS8tfBZyKb6x5FHqbHW/NXZie8UJuGVF
+	 a7hLDyW7HzzrL8bmfa7XoSO/Mf750GmMRUgFp2vjhwEkC4aLjOeBAXAeWuIxsIgBPi
+	 UXbixyuyl4vmz29Zz0ATeHRzjKnv/ccfJef00JDhu27jd8UritKBaUnHz5IRgd78Wb
+	 YAXcFOPrkwEOg==
+X-CNFS-Analysis: v=2.4 cv=UPIWHzfy c=1 sm=1 tr=0 ts=68028012 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=zykuF6jACpLkSlqT_k0A:9 a=QEXdDO2ut3YA:10
+Message-ID: <e76520ca-a9e6-4bd4-bb25-30849f946e20@inwind.it>
+Date: Fri, 18 Apr 2025 18:38:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7JAeT3C_+SULVRdZA6XsnHpoZD_je6dEKzj+K53KVgWg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: P.S. Re: Odd snapshot subvolume
+To: Nicholas D Steeves <sten@debian.org>
+Cc: "Brian J. Murrell" <brian@interlinx.bc.ca>, linux-btrfs@vger.kernel.org
+References: <dea3861ab4b85f2dffc5bbc9864b290f03c430f4.camel@interlinx.bc.ca>
+ <87friais1a.fsf@navis.mail-host-address-is-not-set>
+ <87cydeirkl.fsf@navis.mail-host-address-is-not-set>
+ <72d7150b-4e0b-4e15-bd3f-ab410be4a767@libero.it>
+ <87tt6q1tn3.fsf@navis.mail-host-address-is-not-set>
+ <93a7fd2e-d667-4b9c-b2b9-dc4f05e7055d@inwind.it>
+ <87y0vy32lh.fsf@navis.mail-host-address-is-not-set>
+Content-Language: en-US
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <87y0vy32lh.fsf@navis.mail-host-address-is-not-set>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLOdggbK+zOBrT6OzwRrOoZ3igE0eix/l6X0P4kDQJGZlPGXsl3zkuCAMpenPziJKoBhkdb8CjzZQFtXZjxC+B1IjgnbfC9ey5POTTTFXc3weYiwHXqS
+ dpYe7hOedVVGcnShPJkf+PINVLajNMVYAv9hMwOC7h3bORBNxfMyK/d+ywy8yj6nxtxvW0kun3ZeBGvEl0ixk+HPHvahXJ0+fGVxfIisBufCifOkheePEkRz
+ o5i4bLNOKVSIfdUJikwHQA==
 
-On Fri, Apr 18, 2025 at 11:49:50AM +0100, Filipe Manana wrote:
-> On Fri, Apr 18, 2025 at 10:24 AM Daniel Vacek <neelx@suse.com> wrote:
-> >
-> > On Fri, 18 Apr 2025 at 01:15, Boris Burkov <boris@bur.io> wrote:
-> > >
-> > > The (correct) commit
-> > > e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inode_page()")
-> > > replaced the page_mapped(page) check with a refcount check. However,
-> > > this refcount check does not work as expected with drop_caches for
-> > > btrfs's metadata pages.
-> > >
-> > > Btrfs has a per-sb metadata inode with cached pages, and when not in
-> > > active use by btrfs, they have a refcount of 3. One from the initial
-> > > call to alloc_pages, one (nr_pages == 1) from filemap_add_folio, and one
-> > > from folio_attach_private. We would expect such pages to get dropped by
-> > > drop_caches. However, drop_caches calls into mapping_evict_folio via
-> > > mapping_try_invalidate which gets a reference on the folio with
-> > > find_lock_entries(). As a result, these pages have a refcount of 4, and
-> > > fail this check.
-> > >
-> > > For what it's worth, such pages do get reclaimed under memory pressure,
-> > > so I would say that while this behavior is surprising, it is not really
-> > > dangerously broken.
-> > >
-> > > When I asked the mm folks about the expected refcount in this case, I
-> > > was told that the correct thing to do is to donate the refcount from the
-> > > original allocation to the page cache after inserting it.
-> > > https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
-> > >
-> > > Therefore, attempt to fix this by adding a put_folio() to the critical
-> > > spot in alloc_extent_buffer where we are sure that we have really
-> > > allocated and attached new pages. We must also adjust
-> > > folio_detach_private to properly handle being the last reference to the
-> > > folio and not do a UAF after folio_detach_private().
-> > >
-> > > Finally, extent_buffers allocated by clone_extent_buffer() and
-> > > alloc_dummy_extent_buffer() are unmapped, so this transfer of ownership
-> > > from allocation to insertion in the mapping does not apply to them.
-> > > Therefore, they still need a folio_put() as before.
-> > >
-> > > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > ---
-> > > Changelog:
-> > > v2:
-> > > * Used Filipe's suggestion to simplify detach_extent_buffer_folio and
-> > >   lose the extra folio_get()/folio_put() pair
-> > > * Noticed a memory leak causing failures in fstests on smaller vms.
-> > >   Fixed a bug where I was missing a folio_put() for ebs that never got
-> > >   their folios added to the mapping.
-> > >
-> > >  fs/btrfs/extent_io.c | 28 ++++++++++++++++++++--------
-> > >  1 file changed, 20 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > > index 5f08615b334f..90499124b8a5 100644
-> > > --- a/fs/btrfs/extent_io.c
-> > > +++ b/fs/btrfs/extent_io.c
-> > > @@ -2752,6 +2752,7 @@ static bool folio_range_has_eb(struct folio *folio)
-> > >  static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct folio *folio)
-> > >  {
-> > >         struct btrfs_fs_info *fs_info = eb->fs_info;
-> > > +       struct address_space *mapping = folio->mapping;
-> > >         const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-> > >
-> > >         /*
-> > > @@ -2759,11 +2760,11 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> > >          * be done under the i_private_lock.
-> > >          */
-> > >         if (mapped)
-> > > -               spin_lock(&folio->mapping->i_private_lock);
-> > > +               spin_lock(&mapping->i_private_lock);
-> > >
-> > >         if (!folio_test_private(folio)) {
-> > >                 if (mapped)
-> > > -                       spin_unlock(&folio->mapping->i_private_lock);
-> > > +                       spin_unlock(&mapping->i_private_lock);
-> > >                 return;
-> > >         }
-> > >
-> > > @@ -2783,7 +2784,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> > >                         folio_detach_private(folio);
-> > >                 }
-> > >                 if (mapped)
-> > > -                       spin_unlock(&folio->mapping->i_private_lock);
-> > > +                       spin_unlock(&mapping->i_private_lock);
-> > >                 return;
-> > >         }
-> > >
-> > > @@ -2806,7 +2807,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> > >         if (!folio_range_has_eb(folio))
-> > >                 btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
-> > >
-> > > -       spin_unlock(&folio->mapping->i_private_lock);
-> > > +       spin_unlock(&mapping->i_private_lock);
-> > >  }
-> > >
-> > >  /* Release all folios attached to the extent buffer */
-> > > @@ -2821,9 +2822,13 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
-> > >                         continue;
-> > >
-> > >                 detach_extent_buffer_folio(eb, folio);
-> > > -
-> > > -               /* One for when we allocated the folio. */
-> > > -               folio_put(folio);
-> >
-> > So far so good, but...
-> >
-> > > +               /*
-> > > +                * We only release the allocated refcount for mapped extent_buffer
-> > > +                * folios. If the folio is unmapped, we have to release its allocated
-> > > +                * refcount here.
-> > > +                */
-> > > +               if (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags))
-> > > +                       folio_put(folio);
-> >
-> > ...is this really correct? I'd do rather this instead:
+On 17/04/2025 23.22, Nicholas D Steeves wrote:
+> Hi Goffredo,
 > 
-> Yes, it is correct. It does deal with cloned extent buffers, where we
-> need the extra put since we didn't do it after attaching the folio to
-> it.
-> Alternatively we could probably do the put after the attach at
-> btrfs_clone_extent_buffer(), just like for regular extent buffers, and
-> get rid of this special casing.
+> Goffredo Baroncelli <kreijack@inwind.it> writes:
 > 
-
-I didn't do it this way originally because I was hewing to the model
-that we were donating the allocated refcount to the mapping when
-inserting it (modeled after readahead) and I did not have a
-corresponding model for these ebs which are not added to an
-address_space.
-
-I agree that your proposal results in simpler code so I will run it
-through fstests as well. It's difficult to predict if there are any
-negative side effects to these eb folios having one lower ref count
-at steady state. It _seems_ like it ought to be fine :)
-
-Thanks to both of you for the review,
-Boris
-
-> >
-> > @@ -3393,22 +3393,21 @@ struct extent_buffer
-> > *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> >          * case.  If we left eb->folios[i] populated in the subpage case we'd
-> >          * double put our reference and be super sad.
-> >          */
-> > -       for (int i = 0; i < attached; i++) {
-> > -               ASSERT(eb->folios[i]);
-> > -               detach_extent_buffer_folio(eb, eb->folios[i]);
-> > +       for (int i = 0; i < num_extent_folios(eb); i++) {
-> > +               if (i < attached) {
-> > +                       ASSERT(eb->folios[i]);
-> > +                       detach_extent_buffer_folio(eb, eb->folios[i]);
-> > +               } else if (!eb->folios[i])
-> > +                       continue;
-> >                 folio_unlock(eb->folios[i]);
-> >                 folio_put(eb->folios[i]);
-> >                 eb->folios[i] = NULL;
-> >
-> > And perhaps `struct folio *folio = eb->folios[i];` first and substitute.
-> >
-> > Or is this unrelated and we need both?
+>> On 14/04/2025 20.32, Nicholas D Steeves wrote:
+>>> To encourage btrfs adoption I think we need to do better.  After
+>>> considering alternatives, I wonder if there is anything simpler/better
+>>> than
+>>>
+>>>     # findmnt -n -o SOURCE /foo | cut -d[ -f1
+>>>
+>>> to get the device suitable for mounting -o subvolid=5 | subvol=/ ?  Ie:
+>>> "Just let me see everything with as little fuss as possible. Make it
+>>> simple!", without relying on fstab.
+>>
+>> Below a bit simpler command options set
+>>
+>>       # findmnt -n -v -o SOURCE /foo
 > 
-> This is unrelated.
-> What you're trying to do here is to simplify the error path of the
-> allocation of a regular extent buffer.
-> Nothing to do with Boris' fix, and out of the scope of the fix.
+> Oh, nice!  I guess it's been a while since I've read the fine manual.
+> Findmnt has a very, hmm...unique...definition of the "-v" option.
 > 
-> >
-> > And honestly, IMO, there's no reason to set the EXTENT_BUFFER_UNMAPPED
-> > at all after this loop as it's just going to be freed.
-> >
-> >         }
-> > -       /*
-> > -        * Now all pages of that extent buffer is unmapped, set UNMAPPED flag,
-> > -        * so it can be cleaned up without utilizing folio->mapping.
-> > -        */
-> > -       set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-> > -
-> >         btrfs_release_extent_buffer(eb);
-> > +
-> >         if (ret < 0)
-> >                 return ERR_PTR(ret);
-> > +
-> >         ASSERT(existing_eb);
-> >         return existing_eb;
-> >  }
-> >
-> > >         }
-> > >  }
-> > >
-> > > @@ -3365,8 +3370,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> > >          * btree_release_folio will correctly detect that a page belongs to a
-> > >          * live buffer and won't free them prematurely.
-> > >          */
-> > > -       for (int i = 0; i < num_extent_folios(eb); i++)
-> > > +       for (int i = 0; i < num_extent_folios(eb); i++) {
-> > >                 folio_unlock(eb->folios[i]);
-> > > +               /*
-> > > +                * A folio that has been added to an address_space mapping
-> > > +                * should not continue holding the refcount from its original
-> > > +                * allocation indefinitely.
-> > > +                */
-> > > +               folio_put(eb->folios[i]);
-> > > +       }
-> > >         return eb;
-> > >
-> > >  out:
-> > > --
-> > > 2.49.0
-> > >
-> > >
-> >
+>> However I have to point out that this is not a specific BTRFS problem. See below
+>>
+> [snip reproducer (see previous email)]
+>> 	ghigo@venice:/tmp/test$ sudo mount -o X-mount.subdir=b /dev/loop0 t2
+>>
+>> 	ghigo@venice:/tmp/test$ ls t2/
+>> 	c
+>>
+>> 	ghigo@venice:/tmp/test$ findmnt t2/
+>> 	TARGET       SOURCE         FSTYPE OPTIONS
+>> 	/tmp/test/t2 /dev/loop0[/b] ext4   rw,relatime
+>>
+>> 	ghigo@venice:/tmp/test$ findmnt -n -o FSTYPE,SOURCE t2/
+>> 	ext4 /dev/loop0[/b]
+>>
+>> For *any* filesystem, it is possible to mount a subdir of a filesystem as root.
+>> BTRFS subvolume has some special properties (e.g. it is a "barrier" for the snapshot).
+>> However the possibility to be mounted is not one of these BTRFS special properties.
+> 
+> Ouf, so the complexity has now become a generalised feature?
+> 
+>> If you want to know which subvolume is mounted, you have to look to the "subvol"
+>> option in the mount command. However even a sub directory of a subvole can be mounted
+>>
+>>
+>> 	ghigo@venice:/tmp/test$ sudo mount -o X-mount.subdir=b,subvol=/subb /dev/loop1 t5
+>> 	ghigo@venice:/tmp/test$ findmnt t5
+>> 	TARGET       SOURCE              FSTYPE OPTIONS
+>> 	/tmp/test/t5 /dev/loop1[/subb/b] btrfs  rw,relatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/subb
+>>
+>> This to say that event for the common case "findmnt -n -v -o SOURCE <path>" may be
+>> overkilling, there are some corner case where it is needed. To understand the situation I suggest to use
+>>
+>> 	ghigo@venice:/tmp/test$ findmnt -o FSTYPE,FSROOT,SOURCE -v t5
+>> 	FSTYPE FSROOT  SOURCE
+>> 	btrfs  /subb/b /dev/loop
+> 
+> Why would someone do this, and what are the circumstances where it would
+> be required to spend resources engaging such complexity? 
+
+It allows to have multiple root. E.g. you can install different distro
+on the same filesystem in different sub-directories. And you can mount
+a directory as root easily passing X-mount.subdir.
+
+Of course this flexibility, means that you now have to track not only:
+- source device
+- mount point
+
+but also:
+
+- source directory as root
+
+If you think to this model, you can ignore the btrfs subvolume concept
+entirely if you don't need the snapshots.
+
+I have to point out that the root of this complexity/flexibility is in the possibility
+to mount a path to another mount point. In fact if you do:
+
+	# mount /dev/sda1 /path1
+	# mount --bind /path1/subdir /mnt/other
+
+you have
+
+	# findmnt -o FSTYPE,FSROOT,SOURCE -v /mnt/other
+	FSTYPE FSROOT  SOURCE
+	ext4  /subdir  /dev/sda1
+
+	(the example above was from my memory, so expect few typo)
+
+And this is *not* filesystem dependent.
+
+> I honestly
+> feel like I'd be triggered into "nope, nope, nope, it's not a good use
+> of time to deal with this" if a team member did this!  That's one of the
+> reasons I want to document the simplest, overkilling, corner-case
+> mitigating workaround ;)
+
+If you don't use {mount --bind,mount -o X-mount.subdir, mount -o subvol=},
+you can live as this complexity doesn't exist. If you want to mount a
+"btrfs subvolume", you have to track this somewhere, and thus the
+complexity.
+
+> 
+> Thank you,
+> Nicholas
+
+Ciao
+Goffredo
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
