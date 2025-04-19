@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-13177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14272A94214
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Apr 2025 09:18:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C105FA94215
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Apr 2025 09:18:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FDC419E2783
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Apr 2025 07:18:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EED087A4FFF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Apr 2025 07:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AB5199E89;
-	Sat, 19 Apr 2025 07:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D37B19CC20;
+	Sat, 19 Apr 2025 07:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nmwoylvL";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fUAygM1f"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c1XcJOam";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c1XcJOam"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E39142659
-	for <linux-btrfs@vger.kernel.org>; Sat, 19 Apr 2025 07:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B7935893
+	for <linux-btrfs@vger.kernel.org>; Sat, 19 Apr 2025 07:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745047090; cv=none; b=cvCfnahyZho87k44rVLlvyjrok6qNB9EpFSdk7jY2ZThELMEL/PsQj/DhsC6/oDyanrTYq78XtoLMtcYltrBLBDCq9dy8jrlUS2CLhsV8xhJ88kjLlHb0zgGtTL/ueMjVx42Idm99kGC7t0ID2rRcRr0yWZDLsntETApstS/22Q=
+	t=1745047097; cv=none; b=hb+DEIUIpOZhI//EQm76PgFIwPqqaBmH+KQx8C4T7Qhf/f04Y12O+cBWmv84OdPRCBHLa+CzOLr6VIlINcZH8VUOZbsmZ5eEF46Xo9eoT85NpP8hv0ikz+K7dfchKMC+sOKL7JB5vD3eMlnd+enZDRENJXL1V3SUVYKrLQy9u3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745047090; c=relaxed/simple;
-	bh=qlXX7ybIJ+rhackkXQM3M1JQPL9Y5osLIY7fJYdOjUI=;
+	s=arc-20240116; t=1745047097; c=relaxed/simple;
+	bh=/xTYWEDVtfGBdiDdQgFYTHcJQ82O5lgtM/UgSYPuLxo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=szYBYs6BHc/24LBy4gH/lbrwIhjW0WSWwGFOlAPPN4j4A/T69+4nBWNjCJ5D/XSoOoDJl47o56Y9jJDS4qbptxGnxGPqFkA0BdBN0t/FvjXbe97iTwI3MN+69z68USGbx3gbOzrMh1Ej1lKn45fseLBbtwA3NZcm+OlWoWDS72c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nmwoylvL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fUAygM1f; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=d5DXwudeW7zgxHgBTvj6Eq8N14fCmWl+kq8X6PgcJiNlH2Rqy9q/W3+uHzTcBf36zFTs1eGHnrWykSA03W2yTYdpSEW3bCODrmlV+TmH5jdkmU5x174u1rSCe47/S5SOkZEJY16lu6cbl2gQ2UcmjLZL7FqSAeHlC0r1xZbZ9TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c1XcJOam; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c1XcJOam; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 172C52120C;
-	Sat, 19 Apr 2025 07:17:48 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BCE9A2120F;
+	Sat, 19 Apr 2025 07:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
 	t=1745047069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U9FCRTRnudGir1/vI4Pz9ow1MXCs1L0y78PId3OoMmM=;
-	b=nmwoylvL3r6ZN4HtR0FYfNPDpPYaVy5p+crR1DlWkNHUGZuy4mD5WxGeDV8EqR8ggkf2fC
-	Czzy5mtI06w4ObXQbCucBFAUzfEgdPBENR+EovNW970XKJoF/Xibtcdfj0o9QB3vp1j4Os
-	gKMqzt3At2zW3y3Brv3Hz2lDwyEynl4=
+	bh=j+GLoDA3BQ2J9VhwNTwRMKEdltKTFVOGahyh33vLDq8=;
+	b=c1XcJOamMgA10EV66u/zlgf+NzRVL+xJkEKOWTEyWRSo7DlDxPaPbd/A6rryapPUydOkSf
+	IB/UsKUfgh6T/E8+O+YJFCV3RnzQE6El9PJev3Q/E+SbNWbGbbFhDD9TYcUh72pe1/s5yk
+	5OllQ+NFq9PsA/RvSYWz66KEIKjfKjE=
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=c1XcJOam
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745047068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1745047069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U9FCRTRnudGir1/vI4Pz9ow1MXCs1L0y78PId3OoMmM=;
-	b=fUAygM1fQbzf6bY1+3+GoNOIjnNmCi2SOs7qK65dc60gdNARb+8zIrASzs5cdIo8YWxu+0
-	vJwAviH38fZyjGxAg8MLfejONNY5Tp+yLz5eMqUzMfVNebCXKi292otJrHpvHwprp1Cavb
-	6ZJqJRVXgo7maeGy9lH18yx9Iaog1do=
+	bh=j+GLoDA3BQ2J9VhwNTwRMKEdltKTFVOGahyh33vLDq8=;
+	b=c1XcJOamMgA10EV66u/zlgf+NzRVL+xJkEKOWTEyWRSo7DlDxPaPbd/A6rryapPUydOkSf
+	IB/UsKUfgh6T/E8+O+YJFCV3RnzQE6El9PJev3Q/E+SbNWbGbbFhDD9TYcUh72pe1/s5yk
+	5OllQ+NFq9PsA/RvSYWz66KEIKjfKjE=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D961813942;
-	Sat, 19 Apr 2025 07:17:46 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8800713A79;
+	Sat, 19 Apr 2025 07:17:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UADyJhpOA2jSSQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sat, 19 Apr 2025 07:17:46 +0000
+	id oCcHExxOA2jSSQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sat, 19 Apr 2025 07:17:48 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	fstests@vger.kernel.org
 Cc: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 6/8] btrfs: raid56: store a physical address in structure sector_ptr
-Date: Sat, 19 Apr 2025 16:47:13 +0930
-Message-ID: <03dbeaa8ac424885402a6590e393a15d5ae67c82.1745024799.git.wqu@suse.com>
+Subject: [PATCH v2 7/8] btrfs: scrub: use virtual addresses directly
+Date: Sat, 19 Apr 2025 16:47:14 +0930
+Message-ID: <e0050f1ffef5f17cde772f40f18056f5af90a60e.1745024799.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1745024799.git.wqu@suse.com>
 References: <cover.1745024799.git.wqu@suse.com>
@@ -85,422 +85,270 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Queue-Id: BCE9A2120F
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.com:dkim,suse.com:mid,suse.com:email];
 	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,lst.de:email];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
 From: Christoph Hellwig <hch@lst.de>
 
-Instead of using a @page + @pg_offset pair inside sector_ptr structure,
-use a single physical address instead.
+Instead of the old @page and @page_offset pair inside scrub, here we can
+directly use the virtual address for a sector.
 
-This allows us to grab both the page and offset from a single u64 value.
-Although we still need an extra bool value, @has_paddr, to distinguish
-if the sector is properly mapped (as the 0 physical address is totally
-valid).
+This has the following benefit:
 
-This change doesn't change the size of structure sector_ptr, but reduces
-the parameters of several functions.
+- Simplified parameters
+  A single @kaddr will repair @page and @page_offset.
 
+- No more unnecessary kmap/kunmap calls
+  Since all pages utilized by scrub is allocated by scrub, and no
+  highmem is allowed, we do not need to do any kmap/kunmap.
+
+  And add an ASSERT() inside the new scrub_stripe_get_kaddr() to
+  catch any unexpected highmem page.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-[ Use physical addresses instead to handle highmem. ]
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 158 +++++++++++++++++++++++++---------------------
- 1 file changed, 86 insertions(+), 72 deletions(-)
+ fs/btrfs/scrub.c | 94 ++++++++++++++++++++----------------------------
+ 1 file changed, 38 insertions(+), 56 deletions(-)
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index b0938eff908e..f196682e40f1 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -134,14 +134,17 @@ struct btrfs_stripe_hash_table {
- };
- 
- /*
-- * A bvec like structure to present a sector inside a page.
-- *
-- * Unlike bvec we don't need bvlen, as it's fixed to sectorsize.
-+ * A structure to present a sector inside a page, the length is fixed to
-+ * sectorsize;
-  */
- struct sector_ptr {
--	struct page *page;
--	unsigned int pgoff:24;
--	unsigned int uptodate:8;
-+	/*
-+	 * Blocks from the bio list can still be highmem.
-+	 * So here we use physical address to present a page and the offset inside it.
-+	 */
-+	phys_addr_t paddr;
-+	bool has_paddr;
-+	bool uptodate;
- };
- 
- static void rmw_rbio_work(struct work_struct *work);
-@@ -233,6 +236,14 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
- 	return 0;
- }
- 
-+static void memcpy_sectors(const struct sector_ptr *dst,
-+			   const struct sector_ptr *src, u32 blocksize)
-+{
-+	memcpy_page(phys_to_page(dst->paddr), offset_in_page(dst->paddr),
-+		    phys_to_page(src->paddr), offset_in_page(src->paddr),
-+		    blocksize);
-+}
-+
- /*
-  * caching an rbio means to copy anything from the
-  * bio_sectors array into the stripe_pages array.  We
-@@ -253,7 +264,7 @@ static void cache_rbio_pages(struct btrfs_raid_bio *rbio)
- 
- 	for (i = 0; i < rbio->nr_sectors; i++) {
- 		/* Some range not covered by bio (partial write), skip it */
--		if (!rbio->bio_sectors[i].page) {
-+		if (!rbio->bio_sectors[i].has_paddr) {
- 			/*
- 			 * Even if the sector is not covered by bio, if it is
- 			 * a data sector it should still be uptodate as it is
-@@ -264,12 +275,8 @@ static void cache_rbio_pages(struct btrfs_raid_bio *rbio)
- 			continue;
- 		}
- 
--		ASSERT(rbio->stripe_sectors[i].page);
--		memcpy_page(rbio->stripe_sectors[i].page,
--			    rbio->stripe_sectors[i].pgoff,
--			    rbio->bio_sectors[i].page,
--			    rbio->bio_sectors[i].pgoff,
--			    rbio->bioc->fs_info->sectorsize);
-+		memcpy_sectors(&rbio->stripe_sectors[i], &rbio->bio_sectors[i],
-+				rbio->bioc->fs_info->sectorsize);
- 		rbio->stripe_sectors[i].uptodate = 1;
- 	}
- 	set_bit(RBIO_CACHE_READY_BIT, &rbio->flags);
-@@ -326,8 +333,13 @@ static void index_stripe_sectors(struct btrfs_raid_bio *rbio)
- 		int page_index = offset >> PAGE_SHIFT;
- 
- 		ASSERT(page_index < rbio->nr_pages);
--		rbio->stripe_sectors[i].page = rbio->stripe_pages[page_index];
--		rbio->stripe_sectors[i].pgoff = offset_in_page(offset);
-+		if (!rbio->stripe_pages[page_index])
-+			continue;
-+
-+		rbio->stripe_sectors[i].has_paddr = true;
-+		rbio->stripe_sectors[i].paddr =
-+			page_to_phys(rbio->stripe_pages[page_index]) +
-+			offset_in_page(offset);
- 	}
- }
- 
-@@ -962,9 +974,9 @@ static struct sector_ptr *sector_in_rbio(struct btrfs_raid_bio *rbio,
- 
- 	spin_lock(&rbio->bio_list_lock);
- 	sector = &rbio->bio_sectors[index];
--	if (sector->page || bio_list_only) {
-+	if (sector->has_paddr || bio_list_only) {
- 		/* Don't return sector without a valid page pointer */
--		if (!sector->page)
-+		if (!sector->has_paddr)
- 			sector = NULL;
- 		spin_unlock(&rbio->bio_list_lock);
- 		return sector;
-@@ -1142,7 +1154,7 @@ static int rbio_add_io_sector(struct btrfs_raid_bio *rbio,
- 			   rbio, stripe_nr);
- 	ASSERT_RBIO_SECTOR(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors,
- 			   rbio, sector_nr);
--	ASSERT(sector->page);
-+	ASSERT(sector->has_paddr);
- 
- 	stripe = &rbio->bioc->stripes[stripe_nr];
- 	disk_start = stripe->physical + sector_nr * sectorsize;
-@@ -1173,8 +1185,8 @@ static int rbio_add_io_sector(struct btrfs_raid_bio *rbio,
- 		 */
- 		if (last_end == disk_start && !last->bi_status &&
- 		    last->bi_bdev == stripe->dev->bdev) {
--			ret = bio_add_page(last, sector->page, sectorsize,
--					   sector->pgoff);
-+			ret = bio_add_page(last, phys_to_page(sector->paddr),
-+					   sectorsize, offset_in_page(sector->paddr));
- 			if (ret == sectorsize)
- 				return 0;
- 		}
-@@ -1187,7 +1199,8 @@ static int rbio_add_io_sector(struct btrfs_raid_bio *rbio,
- 	bio->bi_iter.bi_sector = disk_start >> SECTOR_SHIFT;
- 	bio->bi_private = rbio;
- 
--	__bio_add_page(bio, sector->page, sectorsize, sector->pgoff);
-+	__bio_add_page(bio, phys_to_page(sector->paddr), sectorsize,
-+		       offset_in_page(sector->paddr));
- 	bio_list_add(bio_list, bio);
- 	return 0;
- }
-@@ -1204,10 +1217,8 @@ static void index_one_bio(struct btrfs_raid_bio *rbio, struct bio *bio)
- 		struct sector_ptr *sector = &rbio->bio_sectors[index];
- 		struct bio_vec bv = bio_iter_iovec(bio, iter);
- 
--		sector->page = bv.bv_page;
--		sector->pgoff = bv.bv_offset;
--		ASSERT(sector->pgoff < PAGE_SIZE);
--
-+		sector->has_paddr = true;
-+		sector->paddr = bvec_phys(&bv);
- 		bio_advance_iter_single(bio, &iter, sectorsize);
- 		offset += sectorsize;
- 	}
-@@ -1287,6 +1298,15 @@ static void assert_rbio(struct btrfs_raid_bio *rbio)
- 	ASSERT_RBIO(rbio->nr_data < rbio->real_stripes, rbio);
- }
- 
-+static inline void *kmap_local_sector(const struct sector_ptr *sector)
-+{
-+	/* The sector pointer must has a page mapped to it. */
-+	ASSERT(sector->has_paddr);
-+
-+	return kmap_local_page(phys_to_page(sector->paddr)) +
-+	       offset_in_page(sector->paddr);
-+}
-+
- /* Generate PQ for one vertical stripe. */
- static void generate_pq_vertical(struct btrfs_raid_bio *rbio, int sectornr)
- {
-@@ -1299,14 +1319,13 @@ static void generate_pq_vertical(struct btrfs_raid_bio *rbio, int sectornr)
- 	/* First collect one sector from each data stripe */
- 	for (stripe = 0; stripe < rbio->nr_data; stripe++) {
- 		sector = sector_in_rbio(rbio, stripe, sectornr, 0);
--		pointers[stripe] = kmap_local_page(sector->page) +
--				   sector->pgoff;
-+		pointers[stripe] = kmap_local_sector(sector);
- 	}
- 
- 	/* Then add the parity stripe */
- 	sector = rbio_pstripe_sector(rbio, sectornr);
- 	sector->uptodate = 1;
--	pointers[stripe++] = kmap_local_page(sector->page) + sector->pgoff;
-+	pointers[stripe++] = kmap_local_sector(sector);
- 
- 	if (has_qstripe) {
- 		/*
-@@ -1315,8 +1334,7 @@ static void generate_pq_vertical(struct btrfs_raid_bio *rbio, int sectornr)
- 		 */
- 		sector = rbio_qstripe_sector(rbio, sectornr);
- 		sector->uptodate = 1;
--		pointers[stripe++] = kmap_local_page(sector->page) +
--				     sector->pgoff;
-+		pointers[stripe++] = kmap_local_sector(sector);
- 
- 		assert_rbio(rbio);
- 		raid6_call.gen_syndrome(rbio->real_stripes, sectorsize,
-@@ -1475,15 +1493,14 @@ static void set_rbio_range_error(struct btrfs_raid_bio *rbio, struct bio *bio)
-  * stripe_pages[], thus we need to locate the sector.
-  */
- static struct sector_ptr *find_stripe_sector(struct btrfs_raid_bio *rbio,
--					     struct page *page,
--					     unsigned int pgoff)
-+					     phys_addr_t paddr)
- {
- 	int i;
- 
- 	for (i = 0; i < rbio->nr_sectors; i++) {
- 		struct sector_ptr *sector = &rbio->stripe_sectors[i];
- 
--		if (sector->page == page && sector->pgoff == pgoff)
-+		if (sector->has_paddr && sector->paddr == paddr)
- 			return sector;
- 	}
- 	return NULL;
-@@ -1503,11 +1520,11 @@ static void set_bio_pages_uptodate(struct btrfs_raid_bio *rbio, struct bio *bio)
- 
- 	bio_for_each_segment_all(bvec, bio, iter_all) {
- 		struct sector_ptr *sector;
--		int pgoff;
-+		phys_addr_t paddr = bvec_phys(bvec);
-+		int off;
- 
--		for (pgoff = bvec->bv_offset; pgoff - bvec->bv_offset < bvec->bv_len;
--		     pgoff += sectorsize) {
--			sector = find_stripe_sector(rbio, bvec->bv_page, pgoff);
-+		for (off = 0; off < bvec->bv_len; off += sectorsize) {
-+			sector = find_stripe_sector(rbio, paddr + off);
- 			ASSERT(sector);
- 			if (sector)
- 				sector->uptodate = 1;
-@@ -1517,17 +1534,14 @@ static void set_bio_pages_uptodate(struct btrfs_raid_bio *rbio, struct bio *bio)
- 
- static int get_bio_sector_nr(struct btrfs_raid_bio *rbio, struct bio *bio)
- {
--	struct bio_vec *bv = bio_first_bvec_all(bio);
-+	phys_addr_t bvec_paddr = bvec_phys(bio_first_bvec_all(bio));
- 	int i;
- 
- 	for (i = 0; i < rbio->nr_sectors; i++) {
--		struct sector_ptr *sector;
--
--		sector = &rbio->stripe_sectors[i];
--		if (sector->page == bv->bv_page && sector->pgoff == bv->bv_offset)
-+		if (rbio->stripe_sectors[i].paddr == bvec_paddr)
- 			break;
--		sector = &rbio->bio_sectors[i];
--		if (sector->page == bv->bv_page && sector->pgoff == bv->bv_offset)
-+		if (rbio->bio_sectors[i].has_paddr &&
-+		    rbio->bio_sectors[i].paddr == bvec_paddr)
- 			break;
- 	}
- 	ASSERT(i < rbio->nr_sectors);
-@@ -1788,10 +1802,10 @@ static int verify_one_sector(struct btrfs_raid_bio *rbio,
- {
- 	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
- 	struct sector_ptr *sector;
--	u8 csum_buf[BTRFS_CSUM_SIZE];
--	u8 *csum_expected;
- 	void *kaddr;
- 	int ret;
-+	u8 csum_buf[BTRFS_CSUM_SIZE];
-+	u8 *csum_expected;
- 
- 	if (!rbio->csum_bitmap || !rbio->csum_buf)
- 		return 0;
-@@ -1809,12 +1823,10 @@ static int verify_one_sector(struct btrfs_raid_bio *rbio,
- 		sector = rbio_stripe_sector(rbio, stripe_nr, sector_nr);
- 	}
- 
--	ASSERT(sector->page);
--
--	kaddr = kmap_local_page(sector->page) + sector->pgoff;
- 	csum_expected = rbio->csum_buf +
- 			(stripe_nr * rbio->stripe_nsectors + sector_nr) *
- 			fs_info->csum_size;
-+	kaddr = kmap_local_sector(sector);
- 	ret = btrfs_check_sector_csum(fs_info, kaddr, csum_buf, csum_expected);
- 	kunmap_local(kaddr);
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 49021765c17b..4ff3465c430c 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -579,20 +579,16 @@ static int fill_writer_pointer_gap(struct scrub_ctx *sctx, u64 physical)
  	return ret;
-@@ -1873,9 +1885,7 @@ static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
- 		} else {
- 			sector = rbio_stripe_sector(rbio, stripe_nr, sector_nr);
- 		}
--		ASSERT(sector->page);
--		pointers[stripe_nr] = kmap_local_page(sector->page) +
--				   sector->pgoff;
-+		pointers[stripe_nr] = kmap_local_sector(sector);
- 		unmap_array[stripe_nr] = pointers[stripe_nr];
- 	}
+ }
  
-@@ -2327,7 +2337,7 @@ static bool need_read_stripe_sectors(struct btrfs_raid_bio *rbio)
- 		 * thus this rbio can not be cached one, as cached one must
- 		 * have all its data sectors present and uptodate.
- 		 */
--		if (!sector->page || !sector->uptodate)
-+		if (!sector->has_paddr || !sector->uptodate)
- 			return true;
- 	}
- 	return false;
-@@ -2517,6 +2527,7 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio)
- 	int stripe;
- 	int sectornr;
- 	bool has_qstripe;
-+	struct page *page;
- 	struct sector_ptr p_sector = { 0 };
- 	struct sector_ptr q_sector = { 0 };
- 	struct bio_list bio_list;
-@@ -2548,29 +2559,34 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio)
+-static struct page *scrub_stripe_get_page(struct scrub_stripe *stripe, int sector_nr)
++static void *scrub_stripe_get_kaddr(struct scrub_stripe *stripe, int sector_nr)
+ {
+ 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+-	int page_index = (sector_nr << fs_info->sectorsize_bits) >> PAGE_SHIFT;
++	u32 offset = sector_nr << fs_info->sectorsize_bits;
++	const struct page *page = stripe->pages[offset >> PAGE_SHIFT];
+ 
+-	return stripe->pages[page_index];
+-}
+-
+-static unsigned int scrub_stripe_get_page_offset(struct scrub_stripe *stripe,
+-						 int sector_nr)
+-{
+-	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+-
+-	return offset_in_page(sector_nr << fs_info->sectorsize_bits);
++	/* stripe->pages[] is allocated by us and no highmem is allowed. */
++	ASSERT(!PageHighMem(page));
++	ASSERT(page);
++	return page_address(page) + offset_in_page(offset);
+ }
+ 
+ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
+@@ -600,19 +596,17 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
+ 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+ 	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
+ 	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
+-	const struct page *first_page = scrub_stripe_get_page(stripe, sector_nr);
+-	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, sector_nr);
++	void *first_kaddr = scrub_stripe_get_kaddr(stripe, sector_nr);
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	u8 on_disk_csum[BTRFS_CSUM_SIZE];
+ 	u8 calculated_csum[BTRFS_CSUM_SIZE];
+-	struct btrfs_header *header;
++	struct btrfs_header *header = first_kaddr;
+ 
+ 	/*
+ 	 * Here we don't have a good way to attach the pages (and subpages)
+ 	 * to a dummy extent buffer, thus we have to directly grab the members
+ 	 * from pages.
  	 */
- 	clear_bit(RBIO_CACHE_READY_BIT, &rbio->flags);
+-	header = (struct btrfs_header *)(page_address(first_page) + first_off);
+ 	memcpy(on_disk_csum, header->csum, fs_info->csum_size);
  
--	p_sector.page = alloc_page(GFP_NOFS);
--	if (!p_sector.page)
-+	page = alloc_page(GFP_NOFS);
-+	if (!page)
- 		return -ENOMEM;
--	p_sector.pgoff = 0;
-+	p_sector.has_paddr = true;
-+	p_sector.paddr = page_to_phys(page);
- 	p_sector.uptodate = 1;
-+	page = NULL;
+ 	if (logical != btrfs_stack_header_bytenr(header)) {
+@@ -648,14 +642,11 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
+ 	/* Now check tree block csum. */
+ 	shash->tfm = fs_info->csum_shash;
+ 	crypto_shash_init(shash);
+-	crypto_shash_update(shash, page_address(first_page) + first_off +
+-			    BTRFS_CSUM_SIZE, fs_info->sectorsize - BTRFS_CSUM_SIZE);
++	crypto_shash_update(shash, first_kaddr + BTRFS_CSUM_SIZE,
++			fs_info->sectorsize - BTRFS_CSUM_SIZE);
  
- 	if (has_qstripe) {
- 		/* RAID6, allocate and map temp space for the Q stripe */
--		q_sector.page = alloc_page(GFP_NOFS);
--		if (!q_sector.page) {
--			__free_page(p_sector.page);
--			p_sector.page = NULL;
-+		page = alloc_page(GFP_NOFS);
-+		if (!page) {
-+			__free_page(phys_to_page(p_sector.paddr));
-+			p_sector.has_paddr = false;
- 			return -ENOMEM;
+ 	for (int i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
+-		struct page *page = scrub_stripe_get_page(stripe, i);
+-		unsigned int page_off = scrub_stripe_get_page_offset(stripe, i);
+-
+-		crypto_shash_update(shash, page_address(page) + page_off,
++		crypto_shash_update(shash, scrub_stripe_get_kaddr(stripe, i),
+ 				    fs_info->sectorsize);
+ 	}
+ 
+@@ -691,10 +682,8 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
+ 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+ 	struct scrub_sector_verification *sector = &stripe->sectors[sector_nr];
+ 	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
+-	struct page *page = scrub_stripe_get_page(stripe, sector_nr);
+-	unsigned int pgoff = scrub_stripe_get_page_offset(stripe, sector_nr);
++	void *kaddr = scrub_stripe_get_kaddr(stripe, sector_nr);
+ 	u8 csum_buf[BTRFS_CSUM_SIZE];
+-	void *kaddr;
+ 	int ret;
+ 
+ 	ASSERT(sector_nr >= 0 && sector_nr < stripe->nr_sectors);
+@@ -738,9 +727,7 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
+ 		return;
+ 	}
+ 
+-	kaddr = kmap_local_page(page) + pgoff;
+ 	ret = btrfs_check_sector_csum(fs_info, kaddr, csum_buf, sector->csum);
+-	kunmap_local(kaddr);
+ 	if (ret < 0) {
+ 		set_bit(sector_nr, &stripe->csum_error_bitmap);
+ 		set_bit(sector_nr, &stripe->error_bitmap);
+@@ -769,8 +756,7 @@ static int calc_sector_number(struct scrub_stripe *stripe, struct bio_vec *first
+ 	int i;
+ 
+ 	for (i = 0; i < stripe->nr_sectors; i++) {
+-		if (scrub_stripe_get_page(stripe, i) == first_bvec->bv_page &&
+-		    scrub_stripe_get_page_offset(stripe, i) == first_bvec->bv_offset)
++		if (scrub_stripe_get_kaddr(stripe, i) == bvec_virt(first_bvec))
+ 			break;
+ 	}
+ 	ASSERT(i < stripe->nr_sectors);
+@@ -817,6 +803,25 @@ static int calc_next_mirror(int mirror, int num_copies)
+ 	return (mirror + 1 > num_copies) ? 1 : mirror + 1;
+ }
+ 
++static void scrub_bio_add_sector(struct btrfs_bio *bbio,
++		struct scrub_stripe *stripe, int sector_nr)
++{
++	void *kaddr = scrub_stripe_get_kaddr(stripe, sector_nr);
++	int ret;
++
++	ret = bio_add_page(&bbio->bio, virt_to_page(kaddr),
++			   bbio->fs_info->sectorsize, offset_in_page(kaddr));
++	/*
++	 * Caller should ensure the bbio has enough size.
++	 * And we can not use __bio_add_page(), which doesn't do any merge.
++	 *
++	 * Meanwhile for scrub_submit_initial_read() we fully rely on the merge
++	 * to create the minimal amount of bio vectors, for fs block size < page
++	 * size cases.
++	 */
++	ASSERT(ret == bbio->fs_info->sectorsize);
++}
++
+ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
+ 					    int mirror, int blocksize, bool wait)
+ {
+@@ -829,13 +834,6 @@ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
+ 	ASSERT(atomic_read(&stripe->pending_io) == 0);
+ 
+ 	for_each_set_bit(i, &old_error_bitmap, stripe->nr_sectors) {
+-		struct page *page;
+-		int pgoff;
+-		int ret;
+-
+-		page = scrub_stripe_get_page(stripe, i);
+-		pgoff = scrub_stripe_get_page_offset(stripe, i);
+-
+ 		/* The current sector cannot be merged, submit the bio. */
+ 		if (bbio && ((i > 0 && !test_bit(i - 1, &stripe->error_bitmap)) ||
+ 			     bbio->bio.bi_iter.bi_size >= blocksize)) {
+@@ -854,8 +852,7 @@ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
+ 				(i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
  		}
--		q_sector.pgoff = 0;
-+		q_sector.has_paddr = true;
-+		q_sector.paddr = page_to_phys(page);
- 		q_sector.uptodate = 1;
--		pointers[rbio->real_stripes - 1] = kmap_local_page(q_sector.page);
-+		page = NULL;
-+		pointers[rbio->real_stripes - 1] =
-+			kmap_local_sector(&q_sector);
+ 
+-		ret = bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
+-		ASSERT(ret == fs_info->sectorsize);
++		scrub_bio_add_sector(bbio, stripe, i);
  	}
+ 	if (bbio) {
+ 		ASSERT(bbio->bio.bi_iter.bi_size);
+@@ -1202,10 +1199,6 @@ static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *str
+ 	int sector_nr;
  
- 	bitmap_clear(rbio->error_bitmap, 0, rbio->nr_sectors);
+ 	for_each_set_bit(sector_nr, &write_bitmap, stripe->nr_sectors) {
+-		struct page *page = scrub_stripe_get_page(stripe, sector_nr);
+-		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, sector_nr);
+-		int ret;
+-
+ 		/* We should only writeback sectors covered by an extent. */
+ 		ASSERT(test_bit(sector_nr, &stripe->extent_sector_bitmap));
  
- 	/* Map the parity stripe just once */
--	pointers[nr_data] = kmap_local_page(p_sector.page);
-+	pointers[nr_data] = kmap_local_sector(&p_sector);
+@@ -1221,8 +1214,7 @@ static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *str
+ 				(sector_nr << fs_info->sectorsize_bits)) >>
+ 				SECTOR_SHIFT;
+ 		}
+-		ret = bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
+-		ASSERT(ret == fs_info->sectorsize);
++		scrub_bio_add_sector(bbio, stripe, sector_nr);
+ 	}
+ 	if (bbio)
+ 		scrub_submit_write_bio(sctx, stripe, bbio, dev_replace);
+@@ -1675,9 +1667,6 @@ static void scrub_submit_extent_sector_read(struct scrub_stripe *stripe)
+ 	atomic_inc(&stripe->pending_io);
  
- 	for_each_set_bit(sectornr, &rbio->dbitmap, rbio->stripe_nsectors) {
- 		struct sector_ptr *sector;
-@@ -2579,8 +2595,7 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio)
- 		/* first collect one page from each data stripe */
- 		for (stripe = 0; stripe < nr_data; stripe++) {
- 			sector = sector_in_rbio(rbio, stripe, sectornr, 0);
--			pointers[stripe] = kmap_local_page(sector->page) +
--					   sector->pgoff;
-+			pointers[stripe] = kmap_local_sector(sector);
+ 	for_each_set_bit(i, &stripe->extent_sector_bitmap, stripe->nr_sectors) {
+-		struct page *page = scrub_stripe_get_page(stripe, i);
+-		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, i);
+-
+ 		/* We're beyond the chunk boundary, no need to read anymore. */
+ 		if (i >= nr_sectors)
+ 			break;
+@@ -1730,7 +1719,7 @@ static void scrub_submit_extent_sector_read(struct scrub_stripe *stripe)
+ 			bbio->bio.bi_iter.bi_sector = logical >> SECTOR_SHIFT;
  		}
  
- 		if (has_qstripe) {
-@@ -2596,7 +2611,7 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio)
- 
- 		/* Check scrubbing parity and repair it */
- 		sector = rbio_stripe_sector(rbio, rbio->scrubp, sectornr);
--		parity = kmap_local_page(sector->page) + sector->pgoff;
-+		parity = kmap_local_sector(sector);
- 		if (memcmp(parity, pointers[rbio->scrubp], sectorsize) != 0)
- 			memcpy(parity, pointers[rbio->scrubp], sectorsize);
- 		else
-@@ -2609,12 +2624,11 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio)
+-		__bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
++		scrub_bio_add_sector(bbio, stripe, i);
  	}
  
- 	kunmap_local(pointers[nr_data]);
--	__free_page(p_sector.page);
--	p_sector.page = NULL;
--	if (q_sector.page) {
--		kunmap_local(pointers[rbio->real_stripes - 1]);
--		__free_page(q_sector.page);
--		q_sector.page = NULL;
-+	__free_page(phys_to_page(p_sector.paddr));
-+	p_sector.has_paddr = false;
-+	if (q_sector.has_paddr) {
-+		__free_page(phys_to_page(q_sector.paddr));
-+		q_sector.has_paddr = false;
- 	}
+ 	if (bbio) {
+@@ -1768,15 +1757,8 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
+ 
+ 	bbio->bio.bi_iter.bi_sector = stripe->logical >> SECTOR_SHIFT;
+ 	/* Read the whole range inside the chunk boundary. */
+-	for (unsigned int cur = 0; cur < nr_sectors; cur++) {
+-		struct page *page = scrub_stripe_get_page(stripe, cur);
+-		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, cur);
+-		int ret;
+-
+-		ret = bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
+-		/* We should have allocated enough bio vectors. */
+-		ASSERT(ret == fs_info->sectorsize);
+-	}
++	for (unsigned int cur = 0; cur < nr_sectors; cur++)
++		scrub_bio_add_sector(bbio, stripe, cur);
+ 	atomic_inc(&stripe->pending_io);
  
  	/*
 -- 
