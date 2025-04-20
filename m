@@ -1,143 +1,160 @@
-Return-Path: <linux-btrfs+bounces-13179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13180-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3D26A946CA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 08:02:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED480A94746
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 10:38:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2AD173D51
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 06:02:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08B38169F09
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 08:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB4A19580B;
-	Sun, 20 Apr 2025 06:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B4241E411D;
+	Sun, 20 Apr 2025 08:38:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZ9sYzuL"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="X7fntLqk";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="X7fntLqk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0311373;
-	Sun, 20 Apr 2025 06:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2CF19D080
+	for <linux-btrfs@vger.kernel.org>; Sun, 20 Apr 2025 08:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745128943; cv=none; b=n3+dxsZ0ABfRQLJHP1X+JrND+9iWQJcJwDbi0iSwDBfjFiccH8dobv7ptXjkNr1qOxH05opct5e24k6nVNJznbhT2QyxeOhwxZs6ciii8ysz5UoN0g2mr9Po8IyG1u5vk1DHeUPGah77YSskSuNymYs069NxZ6avf2ClVpqT1xE=
+	t=1745138328; cv=none; b=Khhp4LG5AfJfoiSxw8Y7Qou05f5MNszz+SIgU/C25ROhMqKBT6jaF/FnmGZQbNmGbQy3EaAQd+wWfT8onKTj+GzlPC1NXNXl8//kmSTz/mTa+Ia72QIV/KVSha0Fwi2vvzE1WWun/V4Gv4GYJ6W9Iup548CuI914v1PlRGSyrYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745128943; c=relaxed/simple;
-	bh=JSuUGNtyFzLs94xKHQ9qkBmn7WHYHV2YFBeq7vqHugM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W/Z3q/bt9TJ+mjZAJ1vSM3QCmkREz9cfr/F7+fsj61LxQOJotxgvK+EO5g+ZWPSUgb5zivo4/eL92NEBGzTcTPUX1DC+rpmVFLMmIH9vL82PYlZoVIFnxEw1xe1p8SvG0vIHDppIjWHleI5LvaArsGBJ0l9fHvvAT3wiYGaRbAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZ9sYzuL; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5e5deb6482cso7539500a12.1;
-        Sat, 19 Apr 2025 23:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745128939; x=1745733739; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JSuUGNtyFzLs94xKHQ9qkBmn7WHYHV2YFBeq7vqHugM=;
-        b=hZ9sYzuLJVkEJvqyanCBHzCTDh1S3gZ5qfxB9rP/i8e93ZfiWm9NIOdcucxr/IATEM
-         8WYrVCuUXo+K21EsmZWgZgtp/+Ortmy8yWvpZjPvMIMSWER9EBcNWYxsvYrM6Th34v6G
-         k5Cs8RKXP6RfLpbh9UuJrPElUFA2K9xq7/LmKkpyMas9ytONN2v4g7Az3d/I1fAmMRWv
-         NAdzItEuxe/AtodBkK3+4keIIsF61ixtP1ueIFnXig7kH6GoxM0ky2Pud94TSOXZnJnj
-         aL7DiWsqwqerGCw+RFX50Pg/F0FxYZxIro24e88nEFbCgdkWg0TANZYp85RkKKXoJiJP
-         H3xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745128939; x=1745733739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JSuUGNtyFzLs94xKHQ9qkBmn7WHYHV2YFBeq7vqHugM=;
-        b=bnpxYe4g6oNDh1M+twSQ93h1EU62YAmnN7kiNwkKHfEqvjLgMc1t0a8Dq29Ot+fkid
-         sEDEn3YYDTJBImbwCg1W0CIOMWw1P7DLUOtEmHKpgAhCFjjyN3+hteEwTaZMQsTvDal8
-         +PtejmlLYhx6BPS8xOMGNmo8x9zRYV7seYUKV8fTaN2yG3HkeHBVUO7/0gdGYzTWxzxT
-         to6vCHYWqMyjEQj8NrDWo+aR5U3WbBZY5Amw0OkpihsSlr9iztIxJUJNNB18HYvgN/Bi
-         avvVcBFrpGorc4s/owzJ5o9p41YnAZ83H8AzIWaELAluHvD6D+jhETsOmpg0gSNb6GRw
-         9oCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUiqK+9YNVzbLnQXdJRLuQcnLthayoxV8sHyVonMWooX7gOOLfiuOMcreK9XM+DZhWAavt7qFN056hCOg==@vger.kernel.org, AJvYcCWCIbezdPtJ+YEMysJkeNvs1oyLADPWVkM1sfKB862/Cv9ia/Zk4kcPiga//pkkuftEiRwNj89ckrD9IXHy@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsSN6FynVtVEqJ336p0s8c/XHPBlKosLoyrBZSsoc8OidKORRt
-	11//Fwk2Fmg18lsqRA5OjB/W4EWgDziLbswDCVmYyODQb1VDT1Uufn7sEzmDaU0Px656ToMaadQ
-	qf0IuijLXkGDCl4rn4i7Vlga9f5M=
-X-Gm-Gg: ASbGnctQBYtTcbTn+dKhXAfj2Ey3YsXtdpGUDqsx4O4IaCKVXYE7LGAdAXN6KS0iShv
-	bZ5TlsOGGUcu1PcJppS2JgnpUbBfyNjFTJxFUZ46q+tSJ55ckZPq+3Jyt08tM7zky5iyLGZSnwg
-	Cdr5VZ6FY5oSc+YYVMMwd86w==
-X-Google-Smtp-Source: AGHT+IGFv/JgCy2eATFnZ4b3gX6YDtd0QNoBpyDm4hIE+rVuB7SJ/Au8ExHV6bc4mATOD3QaDLTtRCODnM51svpN+J8=
-X-Received: by 2002:a17:907:9494:b0:ac3:8895:2775 with SMTP id
- a640c23a62f3a-acb7516cafamr819560166b.13.1745128939141; Sat, 19 Apr 2025
- 23:02:19 -0700 (PDT)
+	s=arc-20240116; t=1745138328; c=relaxed/simple;
+	bh=7SacXj0ppJHrd3JqbZ3wcg5uhpKyxM6dtqOh2hLXuKg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mW1Ed/WcB/9Fktv9tqXMrwLDslvKCfp/X24RQLSZCo+/MQGU6i8l65GKqaO0UkSuLV3QPZqCNYzsQcrE8/Oq2MUe/m52EaurFI4JGhQzq+ahjl3qD7d6Wyoh2WrO2A9yh5gbgegpiarUXNQ7CG5OUi2fIa9u0me3fWkHKTU3zh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=X7fntLqk; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=X7fntLqk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7292F1F388;
+	Sun, 20 Apr 2025 08:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745138324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wwIJfCHL2yx0A2NlFBraGo4Z2wQTFJNk1UyTGy00cU0=;
+	b=X7fntLqklFcD63rAjyI6xOeIHsej8eSV5Xd1mehJEoR0pAkq/71FK9PmX3U66ic4X4i/gX
+	gZxJyBjEtjD26NZ0QfAcoEzQ/2F4JECmhCHq5yHuzSeByEsv7N0UFgZjhFd9K5lrwypby1
+	Lzm53/onn6RUSd78HRvvdFapRPWY+QA=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745138324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wwIJfCHL2yx0A2NlFBraGo4Z2wQTFJNk1UyTGy00cU0=;
+	b=X7fntLqklFcD63rAjyI6xOeIHsej8eSV5Xd1mehJEoR0pAkq/71FK9PmX3U66ic4X4i/gX
+	gZxJyBjEtjD26NZ0QfAcoEzQ/2F4JECmhCHq5yHuzSeByEsv7N0UFgZjhFd9K5lrwypby1
+	Lzm53/onn6RUSd78HRvvdFapRPWY+QA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 79235137CF;
+	Sun, 20 Apr 2025 08:38:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lFJeD5OyBGgrIAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sun, 20 Apr 2025 08:38:43 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] fstests: btrfs/253: fix false alert due to _set_fs_sysfs_attr changes
+Date: Sun, 20 Apr 2025 18:08:17 +0930
+Message-ID: <20250420083817.231610-1-wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8c2e5d04-dbda-4b12-992e-34f0e70c7218@archlinuxcn.org> <20250416100634.GB13877@suse.cz>
-In-Reply-To: <20250416100634.GB13877@suse.cz>
-From: Neal Gompa <ngompa13@gmail.com>
-Date: Sun, 20 Apr 2025 02:01:42 -0400
-X-Gm-Features: ATxdqUHssIgA0M7EWOXFt3QMDHaFXDeQig5SM5zPj-sl1VdEAeGdqIVStWPPmxw
-Message-ID: <CAEg-Je88eTaqMpVK-b92HHQgdEK0bF=RysOVcyVWRUpeOsbp-Q@mail.gmail.com>
-Subject: Re: Maybe we can set default zstd compression level to 1 when SSD detected?
-To: dsterba@suse.cz
-Cc: Integral <integral@archlinuxcn.org>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, Apr 16, 2025 at 6:06=E2=80=AFAM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Sun, Apr 13, 2025 at 12:07:26PM +0800, Integral wrote:
-> > Hi,
-> >
-> > When SSD is detected, maybe we can set default zstd compression level t=
-o 1.
-> >
-> > Current default compression level for zstd is 3, which is not optimal
-> > for SSDs.
-> >
-> > This GitHub Gist [1] can serve as a reference.
->
-> Well, while the linked gist is thorough I don't see that zstd:1 clearly
-> wins against zstd:3. The compression brings overhead (more extents, CPU
-> cost) so the preferred criteria should be space savings. The runtimes of
-> read and write seem to be roughly the same.
->
-> I haven't found any description or classification of the input data
-> (other than known to be incompressible). This is an important factor.
->
-> > An example is Fedora Workstation [2], which uses `zstd:1` as default
-> > compression option.
-> >
-> > [1] Link:
-> > https://gist.github.com/braindevices/fde49c6a8f6b9aaf563fb977562aafec
-> >
-> > [2] Link: https://fedoraproject.org/wiki/Changes/BtrfsTransparentCompre=
-ssion
->
-> Unfortunately the Fedora evaluation disqualifies itself because it uses
-> /dev/urandom (practically incompressible) and /dev/zero (trivially
-> compressible). I would not select the default based on that benchmark
-> for the wole distro, it's IMHO flawed or incomplete at best.
->
+[FALSE FAILURE]
+Test btrfs/253 now fails like the following:
 
-You didn't read it properly. There were two factors being tested:
-compression ratio and CPU load.
+btrfs/253 2s ... - output mismatch (see ~/xfstests/results//btrfs/253.out.bad)
+    --- tests/btrfs/253.out	2022-05-11 11:25:30.753333331 +0930
+    +++ ~/xfstests/results//btrfs/253.out.bad	2025-04-20 17:28:39.139180394 +0930
+    @@ -5,6 +5,7 @@
+     Calculate request size so last memory allocation cannot be completely fullfilled.
+     Third allocation.
+     Force allocation of system block type must fail.
+    +./common/rc: line 5213: echo: write error: No space left on device
+     Verify first allocation.
+     Verify second allocation.
+     Verify third allocation.
+    ...
+    (Run 'diff -u ~/xfstests/tests/btrfs/253.out ~/xfstests/results//btrfs/253.out.bad'  to see the entire diff)
 
-The compression ratio was tested with a typical Fedora install and
-produced different rates of compression based on the different
-compression levels selected. The /dev/urandom and /dev/zero tests were
-for testing the CPU load at different extremes across those levels.
+[CAUSE]
+Since commit 0a9011ae6a36 ("fstests: common/rc: set_fs_sysfs_attr:
+redirect errors to stdout") the function _set_fs_sysfs_attr() always
+output everything into stdout, thus the stderr redirection makes no
+sense anymore.
 
-There was not enough gain to warrant zstd:2 or zstd:3 for the
-increased CPU load on average or at the extremes.
+And the expected failure will cause output difference and fail the test.
 
+[FIX]
+Instead of the useless re-direct of stderr, save the stdout and check if
+it contains the word "error" to determine if it failed.
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Fixes: 0a9011ae6a36 ("fstests: common/rc: set_fs_sysfs_attr: redirect errors to stdout")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/253 | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/tests/btrfs/253 b/tests/btrfs/253
+index adbc6bfb..ad69dfe1 100755
+--- a/tests/btrfs/253
++++ b/tests/btrfs/253
+@@ -228,7 +228,12 @@ alloc_size "Data" FOURTH_DATA_SIZE_MB
+ # Force chunk allocation of system block type must fail.
+ #
+ echo "Force allocation of system block type must fail."
+-_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/system/force_chunk_alloc 1 2>/dev/null
++output=$(_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/system/force_chunk_alloc 1)
++
++if ! echo "$output" | grep -q "error" ; then
++	echo "Force allocation succeeded unexpectedly."
++	echo "$output" >> $seqres.full
++fi
+ 
+ #
+ # Verification of initial allocation.
+-- 
+2.47.1
+
 
