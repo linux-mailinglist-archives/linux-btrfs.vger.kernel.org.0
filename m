@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-13181-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13182-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D19A9477F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 12:54:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACFCBA949BB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 23:46:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9FF5161D15
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 10:54:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AE093AF226
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Apr 2025 21:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6481E25ED;
-	Sun, 20 Apr 2025 10:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592291D86E8;
+	Sun, 20 Apr 2025 21:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Tba7xBNP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LlC+R6n4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B7BF1BD4F7
-	for <linux-btrfs@vger.kernel.org>; Sun, 20 Apr 2025 10:54:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56BE1A23AF
+	for <linux-btrfs@vger.kernel.org>; Sun, 20 Apr 2025 21:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745146462; cv=none; b=A3gexWE35+mJ9jWHtU0SDuJxyDeAqxUtPk+18IOY9aptaFn0/arqVhtbUXMw4CSANt4oHTb4Ln+UfQYA+3JmlflKAU9PnCZsacsKFlrF+11nEXkIGW7KtPkrUArThvnCLlwR2EkwwLcu+sg9Sl+vF1wmHUDpuybgH2Y1L5ZhDMM=
+	t=1745185553; cv=none; b=vEID4GlQVEXbBTKID2XQBSArxVgbJUX34SZ1MDgxbjOspZBSy6NqlwNB9U7vYt9jus6XR+HvX03pfyFjQ564ysB83yf6SDf4R9nezf1E/+cJfPLjSnvsKh407i5qvNSgLDKsfv1+otLwgEJ4FYbewLPwevEeFziWuDVGig6S7G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745146462; c=relaxed/simple;
-	bh=PcazFpMljLR8flxaIh4AF3YdRz2pWRyr9u/RdAAwJlI=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=vAJafPv1Rrk7hHUPl4zx/koShlMJzZdwXzEuMlzs2XL5sOnwIgUtO4A3NYVi1sA042vkAHaNVQfIJaE43ITzAkM56kFVJyfCpKS2+k7S/L9x8A+bTT0Ie13TorG+sfGoVvbtHMWwRMKbu83z//PxQkd8oPjtvZQCcDstIk3VR1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Tba7xBNP; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-39ee5ac4321so3238029f8f.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Apr 2025 03:54:18 -0700 (PDT)
+	s=arc-20240116; t=1745185553; c=relaxed/simple;
+	bh=Uc9Q0cAfj6iJvFzBvKtP4wk+lx5h3ywqCX+aTbIvqi4=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=q1+H9/DTBMldJlaAQ36aRqRX+C4dqlT1xJOyDzz5eg6pqw2bkWL9UP0Wtc6CT0A9cVmnAnH8wx8ky4xQjVHYWK96hHQ74CNSPbx3G6uT/sODtStkEKVkFMeLiafnXoKuQCpMVs1V0pWE73Xuy0HxKdvz5FyJQHD8XIa/ZZSvTGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LlC+R6n4; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aaecf50578eso519467666b.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Apr 2025 14:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745146457; x=1745751257; darn=vger.kernel.org;
-        h=content-transfer-encoding:autocrypt:subject:from:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ms1sE6rGGS2GW+DPE380k9vWnvdN6p9fSn3ixqOZYpI=;
-        b=Tba7xBNPJiiwPsw5xFmZFnitK2oW/Cl5pX6SRflrEz9+A2xQhjzLrszfvHuLsin8pm
-         ldk6qvK8i9v7Kje8vJoe4k9hJPzEA6o4iUohG36I3SA55vvVR40m7zfO4ihB1NiARXvV
-         96WO80qibJaGdctzwUOjgE+/HbFJM+MaVQlxl3PwpX3MU/PEvlsVtX7feoM9ELCDpBu/
-         unzCh5D+Xpt6uQr+QazWRqd5+FwHZp90EeUMO3li2bQcWYboNZpHS6NaMqFyDGOG4g6t
-         nzMyiH6Bk1f0fNmlfeMPtZKWzJP9aeBrN18emgAtGATOXCTagzxzPKmC7748rTCg0Hob
-         SxJQ==
+        d=gmail.com; s=20230601; t=1745185550; x=1745790350; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dqIdb6QBcj9LHoO4IpJCQtusRUAC9L2d/BK02Bac0lk=;
+        b=LlC+R6n4rn3ygos7uAKMEG1i3XzfiA0E5grqIDvGoeMMpbg//f9BM7hs1+8Tv4VVsd
+         g31/ym7j35HdIvWezd53wMn4OpG8a1Ik6CUcAVW+MdOIrlEpGOKZmBoe1hLBvm85CWaj
+         JXzwr1VkgJ5Q1hwASrvg17DMmZ4Sfx6Y/V4phB2pjekNFWf50kOrcWr3ZdcGyNZBcDBY
+         o7q04FJBrAP085r0VknTwxfb3p0RF4GIBjQwigXZqKybBYH3Rk3IXBJ1pvrLga+dqjRZ
+         GLNWErLjX4zeutHl95XlUCAtIbqcLp1cfxa3nHcbiiQrfh+TCSS45zbHjdq8koxCRyWG
+         UBDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745146457; x=1745751257;
-        h=content-transfer-encoding:autocrypt:subject:from:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ms1sE6rGGS2GW+DPE380k9vWnvdN6p9fSn3ixqOZYpI=;
-        b=exyO2zvGPrOKqG45up0Wyrs77Gr9n+he34fk6K5R3+7AQV7zC96W1xEhMuzQfDoG1q
-         OUBsjvxu9n0ynWDk9IwGNbu1q+Nm28/SIbx6fQYhLcAhc+MerFhgR+f2OCcVj4tfvujy
-         0oPcfkMsS/CidbKGFTYjVS1VSeI0P1yfrNqMOFsLLKVj3FXEEbJe1e3IPUB5uYGExSm7
-         k41QBw1TjHZQoVis02UnX/S2/IKO9U4/gV+azjAKrPuqNARHD4rf7KWLBjOcJ2MQUVrK
-         Uo/PeMB6zQpdy9wPBGLdWA5LUdM7rBhq2np41NdB9VT7ZXUKwVfBm4gXQm0cfPHjX1e5
-         mIrg==
-X-Forwarded-Encrypted: i=1; AJvYcCX48veXo8K76U4i2VrY9GjFbZJ6Helr+1yCSxkprGgGS/ULkytWBS+UOhb6x7kxSPkcJc4R/RnlfyJlPg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxM6bBUX+Y0Zy94q3plOARkbhUadtnRb27zLgFCC/K2J0AfNtzd
-	Sr/v3hoabwHO0eSg/IJY5ODBtOh1KwPP5F3r6sUtnDFbUOBLosO/m7SQPFUuS5reP5tLyfShySc
-	j
-X-Gm-Gg: ASbGncs9197f86o+VItGmPOPemhrSlJUU7Cw7dA4qsuTy6XcLdCCXEcv3LEZkF2ai5i
-	Nu0NlDFq1p6s6xLZguqlBTfM7Z3DtbkH7GYqf3CymOAjUDwtL3+pBRRtnbyZkcKkSbYEu708HHn
-	kWgBrIGs2vqYVSOZ6NasGoYdk17UVwxuAX4Macf5yQ/kTqiQkD9jwQMGqs/0MAg+q/gHeW+RzIn
-	QdF6RfZhyGtNtHF80VWhNdCBA4cLZNXWIKPCuxGyU6WV2gvFn7f/4hCzxIZSpUgeSBYvL1m8/Oe
-	lB3hZxVYBGiUP2GAi/R6iFxvhVlm+CNPXR/KHoQT/wkjzQskjMXue2h+RPFbe2aFgBFg
-X-Google-Smtp-Source: AGHT+IHJpusqLKfYt4HNrrl5xanVjDSvKTtFa9c2tQRFlaNdATw6IaLVQKOWIfTXgkxBOfdme5gs3g==
-X-Received: by 2002:a05:6000:4201:b0:38d:d371:e04d with SMTP id ffacd0b85a97d-39efba608e1mr5964095f8f.34.1745146456481;
-        Sun, 20 Apr 2025 03:54:16 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbfab289asm4527999b3a.153.2025.04.20.03.54.14
+        d=1e100.net; s=20230601; t=1745185550; x=1745790350;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dqIdb6QBcj9LHoO4IpJCQtusRUAC9L2d/BK02Bac0lk=;
+        b=TJylbmVSD1elGdaBsDsPQzC66+Khi4Rwlpf6wQ/gxLJVCvOsrtGvO9ieifNahN5ST3
+         XicJ/jycwnlWTCtuecw+wdagNvF0VcS83CKhfj7zXQjapRzDNIVmyEjytqgDgCBWHYSM
+         IFWETx8UJ0zXlJ90LkOkBS04Q/Hyu7P66FzRWxVbSacPFtGtWdl+oio0omnXgk4yOkVD
+         Flxg3dBnV/swzTviLtDM38hhOufOjxBKKRS9dzRZggEvNnbtVjqc5S7SmHzPl5J2IkDn
+         XzAEUcvE+L8GpM8Gjo1939IyEi8avDRZ8ROu8v9lVsn/NC4w6fqJY3OZZLSQ+T/7R47U
+         HJiQ==
+X-Gm-Message-State: AOJu0YwatG0OFtyi21C0ohjIzN3WK0XWryTq70D3gZGKwDaJe2aJm5iy
+	m0qY5z6ZeOxcygDSQzUpRH7kZo2tcvpvvwuoGXS3YlCNJyH7f9CSke8aF0iU
+X-Gm-Gg: ASbGncsrh3/AY8XaXAeqCKZKjfDLjyCgtApw6EWDzoVR1fg6foLDWE1WcrtLBkCJUiq
+	gtB1U5UwhJY3vIw/+MAG/R2vae2VIBC5m97C7BD5bBqq/NZG66Th5suoXY+qBNlKW3pfOoKLbtQ
+	SQHPaiPcOztL8zmeEr4eyoGF+xZ1ELvBYlyTjhsuKdtkEim2EBhdAVBPmJfF23UVR2wNQFCyz4X
+	nZTybKNhj79Rrq8pXh0EE2INS41HPy2FY02CdUlZkTpIZif0vokfcPRIpdpWlyhAuAaf+e09jDk
+	tgsZal/XJ6dl7zVx9TH0UIq/ymB7xezxJ7zTIE9qprJB08KtmqPLgZcyWHYyCOhE3Meqdq/JP5I
+	M3/G3u92Eq2r40jLBjk5pkyuKjy1zr4FBPbpLxigoGy2/BE2r8Bn1khwGcw==
+X-Google-Smtp-Source: AGHT+IFUPufLjxRp6pyODqRNj9QIbaPrCAOp0ixJJBNHEQJ7emmUNomDN+gYVYHnm0+l7bldXmf5AQ==
+X-Received: by 2002:a17:907:2d0d:b0:acb:4f46:9d18 with SMTP id a640c23a62f3a-acb74af251dmr878562366b.3.1745185549603;
+        Sun, 20 Apr 2025 14:45:49 -0700 (PDT)
+Received: from ?IPV6:2a02:a466:68ed:1:7713:a41a:3b55:383? (2a02-a466-68ed-1-7713-a41a-3b55-383.fixed6.kpn.net. [2a02:a466:68ed:1:7713:a41a:3b55:383])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6ec424f1sm429179666b.38.2025.04.20.14.45.49
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Apr 2025 03:54:15 -0700 (PDT)
-Message-ID: <d6c22895-b3b5-454e-b889-9d0bd148e2fb@suse.com>
-Date: Sun, 20 Apr 2025 20:24:12 +0930
+        Sun, 20 Apr 2025 14:45:49 -0700 (PDT)
+Message-ID: <669c174e-5835-471f-9065-279a7da8f190@gmail.com>
+Date: Sun, 20 Apr 2025 23:45:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,106 +82,147 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To: Linux Memory Management List <linux-mm@kvack.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-From: Qu Wenruo <wqu@suse.com>
-Subject: Sleep inside atomic for aarch64, triggered by generic/482
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+To: linux-btrfs@vger.kernel.org
+From: Ferry Toth <fntoth@gmail.com>
+Subject: Errors on newly created file system
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+The following is originally done by Yocto's bitbake, but when I try 
+manually it reproduces.
 
-Recently I hit two dmesg reports from generic/482, on aarch64 64K page 
-size with 4K fs block size.
+I create a new fs on  a file using -r as ordinary user, then btrfs check 
+the file (before or after mounting makes no difference), also as an 
+ordinary user.
 
-The involved warning looks like this:
+The fs has 1000's of errors, I cut most because it seems the same type 
+of errors. The files system is unrepaired bootable, but can be repaired 
+using --repair, in which 1000's of files are moved to lost+found.
 
-117645.139610] BTRFS info (device dm-13): using free-space-tree
-[117645.146707] BTRFS info (device dm-13): start tree-log replay
-[117645.158598] BTRFS info (device dm-13): last unmount of filesystem 
-214efad4-5c63-49b6-ad29-f09c4966de33
-[117645.322288] BUG: sleeping function called from invalid context at 
-mm/util.c:743
-[117645.322312] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 
-46, name: kcompactd0
-[117645.322325] preempt_count: 1, expected: 0
-[117645.322329] RCU nest depth: 0, expected: 0
-[117645.322338] CPU: 3 UID: 0 PID: 46 Comm: kcompactd0 Tainted: G 
-W  OE       6.15.0-rc2-custom+ #116 PREEMPT(voluntary)
-[117645.322343] Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-[117645.322345] Hardware name: QEMU KVM Virtual Machine, BIOS unknown 
-2/2/2022
-[117645.322347] Call trace:
-[117645.322349]  show_stack+0x34/0x98 (C)
-[117645.322360]  dump_stack_lvl+0x60/0x80
-[117645.322366]  dump_stack+0x18/0x24
-[117645.322370]  __might_resched+0x130/0x168
-[117645.322375]  folio_mc_copy+0x54/0xa8
-[117645.322382]  __migrate_folio.isra.0+0x5c/0x1f8
-[117645.322387]  __buffer_migrate_folio+0x28c/0x2a0
-[117645.322391]  buffer_migrate_folio_norefs+0x1c/0x30
-[117645.322395]  move_to_new_folio+0x94/0x2c0
-[117645.322398]  migrate_pages_batch+0x7e4/0xd10
-[117645.322402]  migrate_pages_sync+0x88/0x240
-[117645.322405]  migrate_pages+0x4d0/0x660
-[117645.322409]  compact_zone+0x454/0x718
-[117645.322414]  compact_node+0xa4/0x1b8
-[117645.322418]  kcompactd+0x300/0x458
-[117645.322421]  kthread+0x11c/0x140
-[117645.322426]  ret_from_fork+0x10/0x20
-[117645.400370] BTRFS: device fsid 214efad4-5c63-49b6-ad29-f09c4966de33 
-devid 1 transid 31 /dev/mapper/thin-vol.482 (253:13) scanned by mount 
-(924470)
-[117645.404282] BTRFS info (device dm-13): first mount of filesystem 
-214efad4-5c63-49b6-ad29-f09c4966de33
+The below was mkfs on a non-existing file, but writing to 16GB dduped 
+file (rootfs is 1.4GB) makes no difference. Neither does dropping 
+--shrink, -m or -n.
 
-Again this has no btrfs involved in the call trace.
+Also, writing the file to an actual disk and then check the disk gives 
+the same errors.
 
-This looks exactly like the report here:
+What could this be?
 
-https://lore.kernel.org/linux-mm/67f6e11f.050a0220.25d1c8.000b.GAE@google.com/
+ferry@delfion:~/tmp/edison/edison-scarthgap$ mkfs.btrfs -n 4096 --shrink 
+-M -v -r 
+/home/ferry/tmp/edison-intel/my/edison-morty/out/linux64/build/tmp/work/edison-poky-linux/edison-image/1.0/rootfs 
+edison-image-edison.rootfs.btrfs
+btrfs-progs v6.6.3
+See https://btrfs.readthedocs.io for more information.
 
-However there are something new here:
+ERROR: zoned: unable to stat edison-image-edison.rootfs.btrfs
+NOTE: several default settings have changed in version 5.15, please make 
+sure
+       this does not affect your deployments:
+       - DUP for metadata (-m dup)
+       - enabled no-holes (-O no-holes)
+       - enabled free-space-tree (-R free-space-tree)
 
-- The target fs is btrfs, no large folio support yet
-   At least the branch I'm testing (based on v6.15-rc2) doesn't support
-   folio.
+Rootdir from: 
+/home/ferry/tmp/edison-intel/my/edison-morty/out/linux64/build/tmp/work/edison-poky-linux/edison-image/1.0/rootfs
+   Shrink:           yes
+Label:              (null)
+UUID:               c2ecfaca-168a-401b-a12a-e73694d7485a
+Node size:          4096
+Sector size:        4096
+Filesystem size:    1.43GiB
+Block group profiles:
+   Data+Metadata:    single            1.42GiB
+   System:           single            4.00MiB
+SSD detected:       no
+Zoned device:       no
+Incompat features:  mixed-bg, extref, skinny-metadata, no-holes, 
+free-space-tree
+Runtime features:   free-space-tree
+Checksum:           crc32c
+Number of devices:  1
+Devices:
+    ID        SIZE  PATH
+     1     1.43GiB  edison-image-edison.rootfs.btrfs
 
-   Furthermore since it's btrfs, there is no buffer_head usage involved.
-   (But the rootfs is indeed ext4)
+ferry@delfion:~/tmp/edison/edison-scarthgap$ btrfs check 
+edison-image-edison.rootfs.btrfs
+Opening filesystem to check...
+Checking filesystem on edison-image-edison.rootfs.btrfs
+UUID: c2ecfaca-168a-401b-a12a-e73694d7485a
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+root 5 inode 252551099 errors 2000, link count wrong
+         unresolved ref dir 260778488 index 2 namelen 11 name 
+COPYING.MIT filetype 1 errors 0
+root 5 inode 252551611 errors 2000, link count wrong
+         unresolved ref dir 260775820 index 79 namelen 18 name 
+generic_Apache-2.0 filetype 1 errors 0
+root 5 inode 252575069 errors 2000, link count wrong
+         unresolved ref dir 260777976 index 3 namelen 10 name recipeinfo 
+filetype 1 errors 0
+root 5 inode 252575538 errors 2000, link count wrong
+         unresolved ref dir 260778506 index 3 namelen 10 name recipeinfo 
+filetype 1 errors 0
+root 5 inode 252577241 errors 2000, link count wrong
+         unresolved ref dir 260777972 index 3 namelen 10 name recipeinfo 
+filetype 1 errors 0
+root 5 inode 256713617 errors 2000, link count wrong
+         unresolved ref dir 260776096 index 3 namelen 12 name 
+GPL-2.0-only filetype 1 errors 0
+root 5 inode 256713619 errors 2000, link count wrong
+         unresolved ref dir 260776096 index 5 namelen 13 name 
+LGPL-2.1-only filetype 1 errors 0
+root 5 inode 256713620 errors 2000, link count wrong
+         unresolved ref dir 260776096 index 6 namelen 10 name recipeinfo 
+filetype 1 errors 0
+root 5 inode 256730804 errors 2000, link count wrong
+         unresolved ref dir 260777541 index 3 namelen 7 name COPYING 
+filetype 1 errors 0
+         unresolved ref dir 260777543 index 3 namelen 7 name COPYING 
+filetype 1 errors 0
+root 5 inode 256730805 errors 2000, link count wrong
+         unresolved ref dir 260777541 index 4 namelen 11 name 
+COPYING.LIB filetype 1 errors 0
+         unresolved ref dir 260777543 index 4 namelen 11 name 
+COPYING.LIB filetype 1 errors 0
+root 5 inode 256730806 errors 2000, link count wrong
+         unresolved ref dir 260777541 index 5 namelen 15 name 
+COPYING.RUNTIME filetype 1 errors 0
+         unresolved ref dir 260777543 index 5 namelen 15 name 
+COPYING.RUNTIME filetype 1 errors 0
+root 5 inode 256730807 errors 2000, link count wrong
+         unresolved ref dir 260777541 index 6 namelen 8 name COPYING3 
+filetype 1 errors 0
+         unresolved ref dir 260777543 index 6 namelen 8 name COPYING3 
+filetype 1 errors 0
+root 5 inode 256730808 errors 2000, link count wrong
+         unresolved ref dir 260777541 index 7 namelen 12 name 
+COPYING3.LIB filetype 1 errors 0
+         unresolved ref dir 260777543 index 7 namelen 12 name 
+COPYING3.LIB filetype 1 errors 0
 
-- Arm64 64K page size with 4K block size
-   It's less common than x86_64.
+...
 
-Fortunately I can reproduce the bug reliable, it takes around 3~10 runs 
-to hit it.
+         unresolved ref dir 260777434 index 4 namelen 10 name recipeinfo 
+filetype 1 errors 0
+         unresolved ref dir 260777436 index 4 namelen 10 name recipeinfo 
+filetype 1 errors 0
+         unresolved ref dir 260777438 index 4 namelen 10 name recipeinfo 
+filetype 1 errors 0
+root 5 inode 260775819 errors 2000, link count wrong
+         unresolved ref dir 260775820 index 2 namelen 16 name 
+license.manifest filetype 1 errors 0
+ERROR: errors found in fs roots
+found 1061572608 bytes used, error(s) found
+total csum bytes: 990472
+total tree bytes: 47329280
+total fs tree bytes: 44457984
+total extent tree bytes: 1511424
+btree space waste bytes: 11573386
+file data blocks allocated: 1014243328
+  referenced 1014243328
 
-Hope this report would help a little.
-
-Thanks,
-Qu
 
