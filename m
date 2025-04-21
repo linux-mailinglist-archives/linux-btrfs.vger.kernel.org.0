@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0254DA95705
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 22:13:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F401DA9571B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 22:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E69F93A6B55
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 20:12:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 298A3165656
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 20:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370531EFFA3;
-	Mon, 21 Apr 2025 20:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10021EFF92;
+	Mon, 21 Apr 2025 20:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LefJY4Gf"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="j8jkJBSB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2F319F12D;
-	Mon, 21 Apr 2025 20:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7040D10F1;
+	Mon, 21 Apr 2025 20:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745266376; cv=none; b=uPfqGsEb1MjZ6ACJ1fzSfjodc4SUpXPQnUF8yHoqXuA5XW4ubmOJlgD4PJHThmyxlYYykIRYuF33NwnS5QY/zaIHvAHn8mL+107ojSpEEXzyvgSg8Iw9z/xWfIdebrvhJauTTgvucJMNiMjvyR/WJY+ayehcg86RiPBtKiOGwzg=
+	t=1745266639; cv=none; b=DQYoTWH1JYQNr14vbs8XD/sRhLAErEYOehtNasa2i1pO+ztYPndicBbbWfpt5H+Vp1xOlXxQ7oj+4eJzu7wwBc/KarFFBycDaIX4SgG+DYdrOS0fwAgQLMWwSEn4Q2IXf+yBvrP84CWdFPoPQjmterp6ZILOdcvaVHM4ptxUNZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745266376; c=relaxed/simple;
-	bh=HqMx7zMToJ/PhryrEWssLhFhMlxyMymuvXXy8mbKOnE=;
+	s=arc-20240116; t=1745266639; c=relaxed/simple;
+	bh=Q/JAEWtzrgPzsySDi9rjzrBEpzZN8sRk3LTMHNObWBo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EFIY8YL0PI+7Nimk1fq1hr5v6YgRgKETu+Rv4B67jmwvrofKByaZc/M3oqxx2XnEHpP+eW6TwUvW3w1jvrzygFimTM4I++CUtjIym1vjGW98MmmhtCSME+QqKCldcPUqVfLrUws8yUYFOQw3FEGVB24ehDkIFWGpqYIyEgiPlCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LefJY4Gf; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=uX+MdZQdrCddwCZs5cQtYkennU2RrfBy9RCvVI1ofPLXOat3PaytzEA3V5/F3mIy1hvdaiqkdAnS46gOPjvNs9sDs+16y5nILinCD1ERSQsQlectzVFXlztSbYy9si04QgttW5pSMjVinGk5RRBeQ8cZGekD7wYWqL/Yzzxsh4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=j8jkJBSB; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1745266369; x=1745871169; i=quwenruo.btrfs@gmx.com;
-	bh=qLY5eVn2v/9BK9n2cGKTxL5O17xb7q/3MUD00up0+Zo=;
+	s=s31663417; t=1745266630; x=1745871430; i=quwenruo.btrfs@gmx.com;
+	bh=fQW7XXs8y5xosVijb4GUfpe4+jqmCK2wYk1FWoenksQ=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=LefJY4GfCYmE8XgWAMiPJ99xZeKTpaMGICD+RQwobj2CQkiZOcO4rsVTNPImROYO
-	 xb62s1JQ2VBGKK1aSbX0MJpteZKrMa2EHtjNMRlKQtzZzUaSMlo+AGvVKK2S8QblU
-	 l/uzGpmd5Ax358XJhjGjrtd16xkX3LDBl/d1UJg+LZ7XnObTksGS4y+CyXu5/c87k
-	 +f95HEY1M9vFACE2PIjRLFRwoOZqxFgtrLj+QM5wztZn4Zl7JuNqFkukrxtivr/CX
-	 ReJoR2qDKs2idiUFtEugceTqqMHd3u8imqhauiQLlAZ5CWyJ1SRkm3b4oqZ+r+2vt
-	 PTJNSmNiiQ0/RVclZg==
+	b=j8jkJBSBK7HwC1PHLYxBrelMUb+Qp0kN6WrQBgM/taSRJmiEHTDenkDopp6vD9jr
+	 ekr75KO1r0cAWfyt+XD6Y006eOKxRXdNMCSdrPxo7QVXfVRj9W5yYmP1hWgqzhc7/
+	 x1zrA3GWJ4Yn8sqQNw3RDf5hpq+WoyZtUZZ5/u/LyKX7i8wtOsdIFHXo0YQoOi3h2
+	 af36CjeUBWb66dfafeahQIRhyYrpP2ajVB8+cP0SxL/RRTMQy/sx6QJW2j8iiE16i
+	 3joLXcTlCcChcSR9YHe6Y4AOQqg4clO/PZnVXBr6hlLZx3Iwg3n2kSqXubq4gB2ge
+	 gBdkmh94osuZ5RaQSA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbox-1uUyXz21cp-00Nchg; Mon, 21
- Apr 2025 22:12:48 +0200
-Message-ID: <367f977b-9c74-486f-9a27-75a8a7ea50ef@gmx.com>
-Date: Tue, 22 Apr 2025 05:42:44 +0930
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5mGB-1vCncs3mQ7-013gkQ; Mon, 21
+ Apr 2025 22:17:10 +0200
+Message-ID: <1ffd7ba1-8e81-4dbc-8ff0-a2c376b7ffed@gmx.com>
+Date: Tue, 22 Apr 2025 05:47:04 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: fix the resource leak issue in btrfs_iget()
-To: Penglei Jiang <superman.xpt@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9e7babf0-310f-40cd-9935-36ef2cebb63f@gmx.com>
- <20250421154029.2399-1-superman.xpt@gmail.com>
+Subject: Re: [PATCH] btrfs: adjust subpage bit start based on sectorsize
+To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+Cc: stable@vger.kernel.org, Boris Burkov <boris@bur.io>
+References: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1745242535.git.josef@toxicpanda.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,99 +89,162 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250421154029.2399-1-superman.xpt@gmail.com>
+In-Reply-To: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1745242535.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oiL3W3g0AvHZ2KU53FmaLvL1Mr23HxBqr7fVrjw75KeXZS9nrCM
- lD5gzBiDJF8MjXgOSvOGtQMPvoABfvuhkCmBcXqvt9dXxfrgeoUXzoKQBg7985rsBME63mV
- cynBW/P+7cOV2xv9W4H7j+VRDA+3XveU0tYUa9tWzj6b+Uq7WF8HBsj2Q+U2zK3WbmS0B/3
- /z4nMqCd2WjSbQQk7IZgw==
+X-Provags-ID: V03:K1:mtjcZoFgNu4X0avslzADnN8jG68cAo58LSq6lwUYbswNspUKw2I
+ YwpT/fpl6fgpCJhLFI10bfsTQjwiKKfkFQkPipl6pcvAkyduR5rNMFegQ80KpyzyJMuq3p9
+ tmxl1AfQ0XH658MbwdPFu451emdIaa9buA3ssQs6xdQawk2RXHiQ+73S33EgHKa4lp575v1
+ CGNdppF23tFN/UVZPNZ4w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:o1zKeE896Y4=;SsAtNpGgjfpwcvuqzTNQC56nh6B
- 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
- w==
+UI-OutboundReport: notjunk:1;M01:P0:MvaGr4aeg/w=;20wsCWRxriNW1pxtrjoOCjiqD/6
+ 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
 
 
 
-=E5=9C=A8 2025/4/22 01:10, Penglei Jiang =E5=86=99=E9=81=93:
-> When btrfs_iget() returns an error, it does not use iget_failed() to mar=
-k
-> and release the inode. Now, we add the missing iget_failed() call.
+=E5=9C=A8 2025/4/21 23:07, Josef Bacik =E5=86=99=E9=81=93:
+> When running machines with 64k page size and a 16k nodesize we started
+> seeing tree log corruption in production.  This turned out to be because
+> we were not writing out dirty blocks sometimes, so this in fact affects
+> all metadata writes.
 >=20
-> Fixes: 7c855e16ab72 ("btrfs: remove conditional path allocation in btrfs=
-_read_locked_inode()")
-> Reported-by: Penglei Jiang <superman.xpt@gmail.com>
-> Signed-off-by: Penglei Jiang <superman.xpt@gmail.com>
-> ---
-> V1 -> V2: Fixed the issue with multiple calls to btrfs_iget()
-
-Looks good to me.
+> When writing out a subpage EB we scan the subpage bitmap for a dirty
+> range.  If the range isn't dirty we do
+>=20
+> bit_start++;
+>=20
+> to move onto the next bit.  The problem is the bitmap is based on the
+> number of sectors that an EB has.  So in this case, we have a 64k
+> pagesize, 16k nodesize, but a 4k sectorsize.  This means our bitmap is 4
+> bits for every node.  With a 64k page size we end up with 4 nodes per
+> page.
+>=20
+> To make this easier this is how everything looks
+>=20
+> [0         16k       32k       48k     ] logical address
+> [0         4         8         12      ] radix tree offset
+> [               64k page               ] folio
+> [ 16k eb ][ 16k eb ][ 16k eb ][ 16k eb ] extent buffers
+> [ | | | |  | | | |   | | | |   | | | | ] bitmap
+>=20
+> Now we use all of our addressing based on fs_info->sectorsize_bits, so
+> as you can see the above our 16k eb->start turns into radix entry 4.
+>=20
+> When we find a dirty range for our eb, we correctly do bit_start +=3D
+> sectors_per_node, because if we start at bit 0, the next bit for the
+> next eb is 4, to correspond to eb->start 16k.
+>=20
+> However if our range is clean, we will do bit_start++, which will now
+> put us offset from our radix tree entries.
+>=20
+> In our case, assume that the first time we check the bitmap the block is
+> not dirty, we increment bit_start so now it =3D=3D 1, and then we loop
+> around and check again.  This time it is dirty, and we go to find that
+> start using the following equation
+>=20
+> start =3D folio_start + bit_start * fs_info->sectorsize;
+>=20
+> so in the case above, eb->start 0 is now dirty, and we calculate start
+> as
+>=20
+> 0 + 1 * fs_info->sectorsize =3D 4096
+> 4096 >> 12 =3D 1
+>=20
+> Now we're looking up the radix tree for 1, and we won't find an eb.
+> What's worse is now we're using bit_start =3D=3D 1, so we do bit_start +=
+=3D
+> sectors_per_node, which is now 5.  If that eb is dirty we will run into
+> the same thing, we will look at an offset that is not populated in the
+> radix tree, and now we're skipping the writeout of dirty extent buffers.
+>=20
+> The best fix for this is to not use sectorsize_bits to address nodes,
+> but that's a larger change.  Since this is a fs corruption problem fix
+> it simply by always using sectors_per_node to increment the start bit.
+>=20
+> cc: stable@vger.kernel.org
+> Fixes: c4aec299fa8f ("btrfs: introduce submit_eb_subpage() to submit a s=
+ubpage metadata page")
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Although I'm still a little concerned about unaligned tree blocks, but=20
+in practice there should be rarely any converted btrfs from v4.6 era=20
+that doesn't get a full balance and still be utilized.
+
+So let's get the fix done and backported first, then reject unaligned=20
+tree blocks completely.
 
 Thanks,
 Qu
 
+> ---
+> - Further testing indicated that the page tagging theoretical race isn't=
+ getting
+>    hit in practice, so we're going to limit the "hotfix" to this specifi=
+c patch,
+>    and then send subsequent patches to address the other issues we're hi=
+tting. My
+>    simplify metadata writebback patches are the more wholistic fix.
 >=20
->   fs/btrfs/inode.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+>   fs/btrfs/extent_io.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index cc67d1a2d611..1cbf92ca748d 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5681,8 +5681,10 @@ struct btrfs_inode *btrfs_iget(u64 ino, struct bt=
-rfs_root *root)
->   		return inode;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 5f08615b334f..6cfd286b8bbc 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2034,7 +2034,7 @@ static int submit_eb_subpage(struct folio *folio, =
+struct writeback_control *wbc)
+>   			      subpage->bitmaps)) {
+>   			spin_unlock_irqrestore(&subpage->lock, flags);
+>   			spin_unlock(&folio->mapping->i_private_lock);
+> -			bit_start++;
+> +			bit_start +=3D sectors_per_node;
+>   			continue;
+>   		}
 >  =20
->   	path =3D btrfs_alloc_path();
-> -	if (!path)
-> +	if (!path) {
-> +		iget_failed(&inode->vfs_inode);
->   		return ERR_PTR(-ENOMEM);
-> +	}
->  =20
->   	ret =3D btrfs_read_locked_inode(inode, path);
->   	btrfs_free_path(path);
+
 
