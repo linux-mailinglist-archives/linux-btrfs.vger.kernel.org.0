@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13198-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1884A95702
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 22:10:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0254DA95705
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 22:13:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93FB7189327A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 20:10:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E69F93A6B55
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 20:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906501EFFA5;
-	Mon, 21 Apr 2025 20:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370531EFFA3;
+	Mon, 21 Apr 2025 20:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="U2JcM9mQ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LefJY4Gf"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385C41EF37C
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Apr 2025 20:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2F319F12D;
+	Mon, 21 Apr 2025 20:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745266203; cv=none; b=b7rCogPb5vSkDR2ARs9squPXGCixUU9DE+UYnzlyeYDHkJf+oof5q1fRWE4hd9c+IHISJydDdI+ZCeRUXZprWhWlJDSp/EDRT/DJ9hkNEiKEdzvUyKvTGxVqFH180v2zOgGQJ5WwVpmadagJcHyyhGMySv9dpy2iWs0oWaMvq1g=
+	t=1745266376; cv=none; b=uPfqGsEb1MjZ6ACJ1fzSfjodc4SUpXPQnUF8yHoqXuA5XW4ubmOJlgD4PJHThmyxlYYykIRYuF33NwnS5QY/zaIHvAHn8mL+107ojSpEEXzyvgSg8Iw9z/xWfIdebrvhJauTTgvucJMNiMjvyR/WJY+ayehcg86RiPBtKiOGwzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745266203; c=relaxed/simple;
-	bh=kDjDGz9QkXGmwlsTo5EqvNzV2ih1ZV6XJSjl4/JwitQ=;
+	s=arc-20240116; t=1745266376; c=relaxed/simple;
+	bh=HqMx7zMToJ/PhryrEWssLhFhMlxyMymuvXXy8mbKOnE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tC9/+xlNJnM1L7WZyX4TiZp2ihHM0suKtlZ+canQh57j2s9cqrZuowRSfjrILn305Euts5Z6gXzqzACkXms6Nj3pKSD9vvkhiBPW0DVRYO9RYmezCvAr7IPuaKxxUraah2SW/U+d/K1HzsGMEhl5/ui39vhWzMwo5DywsZ/+Yuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=U2JcM9mQ; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=EFIY8YL0PI+7Nimk1fq1hr5v6YgRgKETu+Rv4B67jmwvrofKByaZc/M3oqxx2XnEHpP+eW6TwUvW3w1jvrzygFimTM4I++CUtjIym1vjGW98MmmhtCSME+QqKCldcPUqVfLrUws8yUYFOQw3FEGVB24ehDkIFWGpqYIyEgiPlCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LefJY4Gf; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1745266198; x=1745870998; i=quwenruo.btrfs@gmx.com;
-	bh=c2ysJKvMYXh3n9lguqLFRHjFe5iq9ZVwWkZ53S6B164=;
+	s=s31663417; t=1745266369; x=1745871169; i=quwenruo.btrfs@gmx.com;
+	bh=qLY5eVn2v/9BK9n2cGKTxL5O17xb7q/3MUD00up0+Zo=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=U2JcM9mQScpI2YeKNmBeiITeyFIlge3qhRHCVMpaVAsvefnIsM8Qj5/4Q6NW8QcP
-	 L6kTVbI5KyJBH1dJV98OdaHgnGubpXLoLe8J5nQcwEaX0pTS33syuztyfWnq4NKCJ
-	 YXWMaBqkxw4Ns2E8Mcrfx9uitjm+K0W3j8o4CDk97RGhCk/6zYiFNmAnQt4IbeDGG
-	 Gcy9iXuM+QFoIopZ5vxWYxfNJKIi0l85jpq3vwWBENWeQz3h8hSkntTIqnCygxZC5
-	 /ceeWLg21/aPWDp8k6I+MN40z1BUZiHHP87IImrW7FTkeK0m/lrhV9Kom/JKpDq/a
-	 tE0Pf9itkz3R49XdAg==
+	b=LefJY4GfCYmE8XgWAMiPJ99xZeKTpaMGICD+RQwobj2CQkiZOcO4rsVTNPImROYO
+	 xb62s1JQ2VBGKK1aSbX0MJpteZKrMa2EHtjNMRlKQtzZzUaSMlo+AGvVKK2S8QblU
+	 l/uzGpmd5Ax358XJhjGjrtd16xkX3LDBl/d1UJg+LZ7XnObTksGS4y+CyXu5/c87k
+	 +f95HEY1M9vFACE2PIjRLFRwoOZqxFgtrLj+QM5wztZn4Zl7JuNqFkukrxtivr/CX
+	 ReJoR2qDKs2idiUFtEugceTqqMHd3u8imqhauiQLlAZ5CWyJ1SRkm3b4oqZ+r+2vt
+	 PTJNSmNiiQ0/RVclZg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Ml6m4-1upt8b3I68-00iY5M; Mon, 21
- Apr 2025 22:09:58 +0200
-Message-ID: <c1c4d0a9-05bb-4c60-ae64-8c1ee9223cc0@gmx.com>
-Date: Tue, 22 Apr 2025 05:39:52 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbox-1uUyXz21cp-00Nchg; Mon, 21
+ Apr 2025 22:12:48 +0200
+Message-ID: <367f977b-9c74-486f-9a27-75a8a7ea50ef@gmx.com>
+Date: Tue, 22 Apr 2025 05:42:44 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Sleep inside atomic for aarch64, triggered by generic/482
-To: "Darrick J. Wong" <djwong@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <d6c22895-b3b5-454e-b889-9d0bd148e2fb@suse.com>
- <20250421172906.GA25651@frogsfrogsfrogs>
+Subject: Re: [PATCH v2] btrfs: fix the resource leak issue in btrfs_iget()
+To: Penglei Jiang <superman.xpt@gmail.com>
+Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <9e7babf0-310f-40cd-9935-36ef2cebb63f@gmx.com>
+ <20250421154029.2399-1-superman.xpt@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,166 +90,99 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250421172906.GA25651@frogsfrogsfrogs>
+In-Reply-To: <20250421154029.2399-1-superman.xpt@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:M9ZrvY9oRvkaA+b9yNu6x2zqqVz558bw90L9tLkUrDH9jPk3PTO
- +/2S1T22WYY+NcwgYL48L0xvfnJP9yQNKkJSJv20zxtPluZlhgy5GOjQP9UOgrjqlEEJTJz
- 1jDOQYwU1lxXlkf2A1C8LfXn0cF1qpvUZFlh4LMDKrDHP8+p1XGqud0jovy0Bi9dOPmWN9Q
- iVcMC36tmsh6VcVyQd4Fw==
+X-Provags-ID: V03:K1:oiL3W3g0AvHZ2KU53FmaLvL1Mr23HxBqr7fVrjw75KeXZS9nrCM
+ lD5gzBiDJF8MjXgOSvOGtQMPvoABfvuhkCmBcXqvt9dXxfrgeoUXzoKQBg7985rsBME63mV
+ cynBW/P+7cOV2xv9W4H7j+VRDA+3XveU0tYUa9tWzj6b+Uq7WF8HBsj2Q+U2zK3WbmS0B/3
+ /z4nMqCd2WjSbQQk7IZgw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:A8s+4SayVyk=;q0ZlivBuMzGeczdDQ/DzVsewMf8
- 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
+UI-OutboundReport: notjunk:1;M01:P0:o1zKeE896Y4=;SsAtNpGgjfpwcvuqzTNQC56nh6B
+ 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
+ w==
 
 
 
-=E5=9C=A8 2025/4/22 02:59, Darrick J. Wong =E5=86=99=E9=81=93:
-> On Sun, Apr 20, 2025 at 08:24:12PM +0930, Qu Wenruo wrote:
->> Hi,
->>
->> Recently I hit two dmesg reports from generic/482, on aarch64 64K page =
-size
->> with 4K fs block size.
->>
->> The involved warning looks like this:
->>
->> 117645.139610] BTRFS info (device dm-13): using free-space-tree
->> [117645.146707] BTRFS info (device dm-13): start tree-log replay
->> [117645.158598] BTRFS info (device dm-13): last unmount of filesystem
->> 214efad4-5c63-49b6-ad29-f09c4966de33
->> [117645.322288] BUG: sleeping function called from invalid context at
->> mm/util.c:743
->> [117645.322312] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: =
-46,
->> name: kcompactd0
->> [117645.322325] preempt_count: 1, expected: 0
->> [117645.322329] RCU nest depth: 0, expected: 0
->> [117645.322338] CPU: 3 UID: 0 PID: 46 Comm: kcompactd0 Tainted: G W  OE
->> 6.15.0-rc2-custom+ #116 PREEMPT(voluntary)
->> [117645.322343] Tainted: [W]=3DWARN, [O]=3DOOT_MODULE, [E]=3DUNSIGNED_M=
-ODULE
->> [117645.322345] Hardware name: QEMU KVM Virtual Machine, BIOS unknown
->> 2/2/2022
->> [117645.322347] Call trace:
->> [117645.322349]  show_stack+0x34/0x98 (C)
->> [117645.322360]  dump_stack_lvl+0x60/0x80
->> [117645.322366]  dump_stack+0x18/0x24
->> [117645.322370]  __might_resched+0x130/0x168
->> [117645.322375]  folio_mc_copy+0x54/0xa8
->> [117645.322382]  __migrate_folio.isra.0+0x5c/0x1f8
->> [117645.322387]  __buffer_migrate_folio+0x28c/0x2a0
->> [117645.322391]  buffer_migrate_folio_norefs+0x1c/0x30
->> [117645.322395]  move_to_new_folio+0x94/0x2c0
->> [117645.322398]  migrate_pages_batch+0x7e4/0xd10
->> [117645.322402]  migrate_pages_sync+0x88/0x240
->> [117645.322405]  migrate_pages+0x4d0/0x660
->> [117645.322409]  compact_zone+0x454/0x718
->> [117645.322414]  compact_node+0xa4/0x1b8
->> [117645.322418]  kcompactd+0x300/0x458
->> [117645.322421]  kthread+0x11c/0x140
->> [117645.322426]  ret_from_fork+0x10/0x20
->> [117645.400370] BTRFS: device fsid 214efad4-5c63-49b6-ad29-f09c4966de33
->> devid 1 transid 31 /dev/mapper/thin-vol.482 (253:13) scanned by mount
->> (924470)
->> [117645.404282] BTRFS info (device dm-13): first mount of filesystem
->> 214efad4-5c63-49b6-ad29-f09c4966de33
->>
->> Again this has no btrfs involved in the call trace.
->>
->> This looks exactly like the report here:
->>
->> https://lore.kernel.org/linux-mm/67f6e11f.050a0220.25d1c8.000b.GAE@goog=
-le.com/
->>
->> However there are something new here:
->>
->> - The target fs is btrfs, no large folio support yet
->>    At least the branch I'm testing (based on v6.15-rc2) doesn't support
->>    folio.
->>
->>    Furthermore since it's btrfs, there is no buffer_head usage involved=
-.
->>    (But the rootfs is indeed ext4)
+=E5=9C=A8 2025/4/22 01:10, Penglei Jiang =E5=86=99=E9=81=93:
+> When btrfs_iget() returns an error, it does not use iget_failed() to mar=
+k
+> and release the inode. Now, we add the missing iget_failed() call.
 >=20
-> Doesn't matter; the block device can create large folios in its page
-> cache and blkid reading the bdev can create buffer heads.
->=20
-> willy's workaround in:
-> https://lore.kernel.org/linux-fsdevel/Z_VwF1MA-R7MgDVG@casper.infradead.=
-org/
+> Fixes: 7c855e16ab72 ("btrfs: remove conditional path allocation in btrfs=
+_read_locked_inode()")
+> Reported-by: Penglei Jiang <superman.xpt@gmail.com>
+> Signed-off-by: Penglei Jiang <superman.xpt@gmail.com>
+> ---
+> V1 -> V2: Fixed the issue with multiple calls to btrfs_iget()
 
-Thanks a lot for the info.
+Looks good to me.
 
-However this also makes me wonder, what if the block size of the block=20
-device eventually go larger than page size?
-
-E.g. I know some vendors (samsumg?) are pushing for larger block size,=20
-with that the minimal order will still be larger than page size.
-
-Thus I guess we can not avoid it anyway?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
 >=20
-> works enough to make this go away.
+>   fs/btrfs/inode.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 >=20
-> --D
->=20
->>
->> - Arm64 64K page size with 4K block size
->>    It's less common than x86_64.
->>
->> Fortunately I can reproduce the bug reliable, it takes around 3~10 runs=
- to
->> hit it.
->>
->> Hope this report would help a little.
->> Thanks,
->> Qu
->>
->=20
-
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index cc67d1a2d611..1cbf92ca748d 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -5681,8 +5681,10 @@ struct btrfs_inode *btrfs_iget(u64 ino, struct bt=
+rfs_root *root)
+>   		return inode;
+>  =20
+>   	path =3D btrfs_alloc_path();
+> -	if (!path)
+> +	if (!path) {
+> +		iget_failed(&inode->vfs_inode);
+>   		return ERR_PTR(-ENOMEM);
+> +	}
+>  =20
+>   	ret =3D btrfs_read_locked_inode(inode, path);
+>   	btrfs_free_path(path);
 
