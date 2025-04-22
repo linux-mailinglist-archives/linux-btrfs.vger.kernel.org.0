@@ -1,164 +1,241 @@
-Return-Path: <linux-btrfs+bounces-13202-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 088B2A95CCB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 06:10:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F69A9601C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 09:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D4433AC5DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 04:09:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45B737A244B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 07:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629451A83FB;
-	Tue, 22 Apr 2025 04:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922D023314A;
+	Tue, 22 Apr 2025 07:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GULxeQfJ"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="MKP7rnP9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11011053.outbound.protection.outlook.com [52.101.129.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E29F194124
-	for <linux-btrfs@vger.kernel.org>; Tue, 22 Apr 2025 04:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745294954; cv=none; b=m+nURG+DH72h48jk3YJeyeOVQP6K0mJ8ZSvxEWKGrDgn72BnqBsieCUZu/Sq7y8gVAoQOBhesxh3cmJ79iWIQuXRPcfOIsDvxXlTdwLcgJxAB4qixgumuugYHdZ7o4wre5eS0VSQ/KJiIfuAHS8kMvgoOYffqMbLOCKSRhBVZew=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745294954; c=relaxed/simple;
-	bh=qooPPh7Sc4jDHmLmciL2D/TBKbArEcvN1N6OKR0BkSc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qn/2e53RlT7tk3kNbZE54Hc6sc4RF+Q061MKUvuMUfsaFEOyJBcLJrYJ7H9pyWnMb9RvHiVD5dbYeeM6QHF4we3PZ90xsuYS0s/BKsDuGqGKF4AqqR5n8lZ/QIrdAUrHFV9AK3YwdMpzfO697cJpxIm2ZeIzZNwKoApbEcfRhqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GULxeQfJ; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5ec9d24acfbso9981470a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Apr 2025 21:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745294951; x=1745899751; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7UyT32oNdvI0B7CJmPYL80eqMQ3ZYwskCys7aLnpU8o=;
-        b=GULxeQfJzytvUxAApg2DyGMnjp+IvcvYz1UizmWEAjpixnvz6EDEanBecToO4URAHK
-         s4XbR67/ZxpGLOVyU1CZElEA6VV6EsaQqiB6AeyCT6yBM6tY5Fyv9OOkU/h6BLFo1lhu
-         bE6s21CFo5uhbn8sAliwoI21y/k1uPRPqyNIPsrcP7/jUQN3zlwCABOCzdYNNQgGAkHO
-         6jYcT9hvDUMTapdNzLLQua17ICruHm740JT0T5hkVDowUNpIdpe1LUcJcNmFi0kalKWP
-         mE5gBGk7h5u8UW1BKrCdkmrYJTSJeJtILuoCfhNhDiD6UW/GXm2imDs97zNOu7x/PhXc
-         P/JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745294951; x=1745899751;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7UyT32oNdvI0B7CJmPYL80eqMQ3ZYwskCys7aLnpU8o=;
-        b=fVYnTxlIfD7HCYNCf//dmDICLEBoV9NtmliRxTPTmefQwuZ58y1nC/cPODr//A1Bgn
-         sWq8fDWh74PhhrYf8JTyAIaiBGQ/vqr0KqAtpWwWRtZubYhnMtA6I2/emiX31hi6RgNH
-         t5pp/l3eG7SpK4Mi7e/e9aDwaHeAA6/YGO6MUw9QL5ZFqPhwfSddRrl41r1VIfs6nstq
-         e42Evi0k6ild4tf/1xq5vjTZGZsN2Z+w+3xzgAhjn42hFoh+amyCK6A6pjwgOzOb0AEk
-         7+9vMUjorD0op+0AI03nOZkJ/onDgvRAGno9crGSag+ORtaae0nfODH4vhfclZUe2xUA
-         VjRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVWUONasoSxAs1w/FCwf/KlPzyhXf5LZQgyWBT3rUE2DL6j6S7Hmtn0hRX44T7l08IjdL//aYJmRL/+Vg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywr5Mj4+avw3auClLJwJBuZ25JjAMHbvmXaEwiZ70N2VpFQIRbj
-	15uWE3wE0wFC/qmMJk5OfoGXU6vqpg+69S/LtU+Xy1g0/z5kytRb4FstgopBYZA=
-X-Gm-Gg: ASbGncum0ZsuW3CJwUuLkxKL3bcqj2pXbZWc1JMsg+pYOiQvR4W3dTf97ZwVK4jp8Wl
-	JlEL88Qmre77RSVUKfNNHRTTDCyATvaX9KtmP2LU7c0odSvbptm+8EG+9TiwWmmxJHenr92ahf4
-	zkWX2c8fS9pDh137JSK19tvUXa/FhyGzJRSFLeKC1tlXxGpYc5g+7UQs56tNLCZt7IqkLI5B8AD
-	hnE+JLwu6as3l6eqUXc4Y6fouKytlMIJbzPgVSiCPpkPweOZqvgG9fHYfgdmlR8KFYzzRrJRoNw
-	bzMMrXyr3MmYJ7DQjknKIDd5Lnq9MBbCEue71QXhpxgyK+bXTyk3k567ts8ZSAu6IzsI
-X-Google-Smtp-Source: AGHT+IHW+g0qw3gBtPQ/2pE0/fL0ihaAK6vaQaOak5PgSUwLDfg0R/nPaOQqt4C7h1YtIBSkKRbolw==
-X-Received: by 2002:a17:907:3d9f:b0:aca:c67d:eac0 with SMTP id a640c23a62f3a-acb6e91e47fmr1536497866b.0.1745294950805;
-        Mon, 21 Apr 2025 21:09:10 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbfa58754sm7806905b3a.107.2025.04.21.21.09.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Apr 2025 21:09:10 -0700 (PDT)
-Message-ID: <9f4851b9-b226-4639-abf3-a7fb650214d3@suse.com>
-Date: Tue, 22 Apr 2025 13:39:05 +0930
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3391EF094;
+	Tue, 22 Apr 2025 07:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.129.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745308529; cv=fail; b=EHdZDpn9QhURupNZ9K6iMqkJsHgQBjLXVMKrnOoFwP3o2/sWwpf3grFZiG5xw+cA20lbM1tRucTmoAvYjpWepblByTbX9Ab6XHVNRNy8FLz7A3AF00Qv6aA//i4iQ7FJOWWAHERy2ecoJ9fzyUq1g8aXEtpI+uf0U1TgUcKwYMA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745308529; c=relaxed/simple;
+	bh=w4kaNL/HJIZoPTNgAkr9ps/QhMr90WZpBwr8a0sRplk=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=YZHpiCfcwxdIbp4bNqX4dm3MH5QajH90Wsq7zmSxTwi3FTOLf00qxSzrEYKR1dMmPkMIPEMIK/qGjlTr5tAwpM37Wi2M6lXdz1yluwEx0ndl13KGuc801Nb/f8w/V8eZ/28bAD81HlgzDmlSNfOHIaDde1T13oTj90GREcG4Z9k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=MKP7rnP9; arc=fail smtp.client-ip=52.101.129.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=tF8+HM4oY5t8WRitH7egaURMSECFabxzkllsgE9w5VuOgnGLXiFRIMKc2ZJUM9LL783I6vCsvlXuY4j2LIs6pz0Ss9oMc8z0Ak4Scl8uu05iF//Lvq7nQs2ss6OfGA0PHyeWmOI0FgpQKfpX1bN0UiEQ53kZShkEDRg1URKGk6IG98oXzfjewiZsjik9yHKfM1U3+Mw3N67x68+4wjdS1NqO544qiGNDhadS8nrKx61tDWY63q9IiHGRHvyQ6+0+MJ/kt+Wib7G6KOgKwi0gKEea5uwLTyf4D1TkIvga32gZOZrmhBYXrXifGl3XNLzuWOgX2y9Iiw9CZ6FblGwHHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OJdvy2dDC4oFyCSPnpMqHmUXiBOsyEsE/Lc5Su1R34w=;
+ b=YpSPDWsG14UAYps/x+jyM/l76jQo9/Uyj70i0sklPgH1nDEI4xhU3s4Ur22uNKokgcn4RwEx/dPd5fFYtanIAQr5yUm3nWbCqiJLcnJy8+KtmCGPs5Asox8URVG8Cf/cNz+2MIqT59YBtwatdtdeOdammEFYxtJsGLeo9jlmpmsaYBUDyYjuDX7FpYY60mjel6ldBVu+NiVCqRUA1t9DejDFXw84L8mO0WXConiMiVZLISI8Sk4FJeVDOXDQTKD2w9Qx/0FtlGjeZK9IoAjTYoHqat7KukN5JFmF8kTkpWYQbqI2hpT/2CSExip3XGYJwl9biOVRyRXGfCFYJNfDuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OJdvy2dDC4oFyCSPnpMqHmUXiBOsyEsE/Lc5Su1R34w=;
+ b=MKP7rnP9k1IcNdKdS24c+gwa9Wv2HcaMVOgqduMIrnchFO0YAbb0zDUQvNGvjXr6mM0w3O815/DUUBuGQzl3iEP2NMEvY71ALkwMzUYf1FEf2bGEphPsk8Wh8HEYzIuhUoWTRURQxb6p93lMH8BMjM0/koQ2q5yocTrSRL1/TBmkuIzDaAv/qDflT6hRbdcmezfkAefH3tDuEwIVITWbkEGrNZOcSMLu1IpJsuu52m0Eqb/GETtjhQxg4jtf9yHe/C6AargU98WrtXHxqbE1N9ehuYk+Q+sq8pCkQBJWs35s+OYGQOeA1IqBPrsP27WdVSkEotA3AnuIPYkw5law1A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+ by TY0PR06MB5684.apcprd06.prod.outlook.com (2603:1096:400:272::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8655.35; Tue, 22 Apr
+ 2025 07:55:19 +0000
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::8c74:6703:81f7:9535]) by SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::8c74:6703:81f7:9535%6]) with mapi id 15.20.8655.031; Tue, 22 Apr 2025
+ 07:55:18 +0000
+From: Yangtao Li <frank.li@vivo.com>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH 01/13] btrfs: update btrfs_insert_inode_defrag to to use rb helper
+Date: Tue, 22 Apr 2025 02:14:52 -0600
+Message-Id: <20250422081504.1998809-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2P153CA0029.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:190::16) To SEZPR06MB5269.apcprd06.prod.outlook.com
+ (2603:1096:101:78::6)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: fix the resource leak issue in btrfs_iget()
-To: Penglei Jiang <superman.xpt@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9e7babf0-310f-40cd-9935-36ef2cebb63f@gmx.com>
- <20250421154029.2399-1-superman.xpt@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250421154029.2399-1-superman.xpt@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|TY0PR06MB5684:EE_
+X-MS-Office365-Filtering-Correlation-Id: 94e77c56-6c68-428a-1801-08dd817305e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|52116014|366016|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?+6iYY29WxWx1CcpGdSezCRQH/mqELmRLlfsqz5vFPlTuYcfdoy6R7YlmMjy7?=
+ =?us-ascii?Q?AP4HTFuvVE1SByEOWriYWsb06dICSiG3BK5KV1k1gyL045ohOdJw9oTQhl6Q?=
+ =?us-ascii?Q?1Z//2e8nO4hGI/oPbDM981ySofNheFiwv1kNQz/g5+UOwIJsx8rbXj6AvRmu?=
+ =?us-ascii?Q?oCaVm5hVey18y8ggxB8QBurfxyutW3rAEnc2qQEgLqgrHDg2z6MvF5e7AxtG?=
+ =?us-ascii?Q?9VaZGn8SfPZP7h/F1lNoZxKJVJPrsNPWxYKNIE9dh/Q/DASMgqRAeAtN/lGt?=
+ =?us-ascii?Q?sbSoasrI0cfySIRiCFg2rODOf4Mpy6Kb7tUcml5MJ1EcQDohMzmecUDV+3dy?=
+ =?us-ascii?Q?555Eu3jW5qxJlfb9Tm0gPFPLcBCVBzYPUbkZZZEY0H2mxU453Qt0V0Lwv7iQ?=
+ =?us-ascii?Q?L3e7spjlh8Z7DYHMlGTYe9j7twnOoy+9mNJtXF4kqjI5FWnwdnwcZFLrY+LX?=
+ =?us-ascii?Q?PbBp+quq1H4UNgi27ueTpFDe5Tq/iEiKY5oSgW4Oy13WWUjTYyyoPktSxV75?=
+ =?us-ascii?Q?yrKMUpTWZcQUsa7GnsUvEc/GIDy/9ywWobVeSNV9eSb+98J5bZcdgqWy9b+l?=
+ =?us-ascii?Q?Ns0k6DHBQjuBdeWxU+LdRrkQ0VdgYIyDmY9qhVKrR9DAOYYnYDXHtx5vj5mA?=
+ =?us-ascii?Q?5wCOvwDYVdXVKM6ITGB5uCcDnaFVPuOJ/ZDoUN9evKiafQQcHnSdTzrkA13/?=
+ =?us-ascii?Q?8REqd8SiD6dvl+coL1JL0/caVi4ARvOtdXnOak3BPb9kAgzf6eVgTgmgEYX/?=
+ =?us-ascii?Q?hAAhaqniYn/V+Vv/iYSnj8k/IFlTP5go3/r+1m2oi3MAYZZo+Y8/bVctm5Eh?=
+ =?us-ascii?Q?SjDr726MaBOo0aaMdtbD9Vs7YAiYRDWiLuGGzMGlmoI0+/bS5vLLRK+paUCL?=
+ =?us-ascii?Q?wRZ6mhUKm3ZGLQS9o5OcOGCDfhRc5YXU/OMnAXDOLMEBAd5cu4BdLMJ1x9B8?=
+ =?us-ascii?Q?fIRd+R0zLS0bsl3/CNubF6oZlheyBHtIbtKuaf3YG6IolxrGytTC6SZR0zPU?=
+ =?us-ascii?Q?X5fTo52W4zqskWTT9tVBd5rUKiZv6XZFa76HF9nIqCN114sDN5goSAYKnuEG?=
+ =?us-ascii?Q?/9knfIWA2DvzbgdFAMR3pVMVuISQW9mx6lBmqJ+4tTiYII8/L8SbuSpc0bwW?=
+ =?us-ascii?Q?/Ca42nRm7A3L97VyZ2HYIFAtcPoPhiopvy81Uu79LEQ3phqtx+WH0NqmTUnL?=
+ =?us-ascii?Q?OyHggaz4+Rkor/6XJuZNLS+dAbh2TqI5rNvwR9MHaCfns5Bdut/FhUMIaA96?=
+ =?us-ascii?Q?3pbQgGL4gJaCAoBiJcJ72Klsnxx9xFfLn8ntcAswWQ5U0eQGEP+66Luh1gWN?=
+ =?us-ascii?Q?f6pqVMd/Ml+6cyvSMeyT+As5e8xwmXC8VRekxncJB2vBL6H5nzX2YegpEGTB?=
+ =?us-ascii?Q?XEr+BF9GY+ofzt3xD35+p492Sa6r0M4IJ1zj2Jtajm9DEbzgd6BlO0UF+Nzn?=
+ =?us-ascii?Q?LhsWKCPzgsiktjNsBjR1FntJzfUUoyV6qwEvCut1H+X89hpxc2APoA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?8d1eqIIW7BBSZLXJ/CcQJDbAFgi+jO0D2rsBISvSrF+bQvISrYhyMWNJjx43?=
+ =?us-ascii?Q?XnHxs3EaPPqo6fynTYp7eEX4Y0E3yoCGEow0pBuHmI+NjahJuOvJWAyZ4h/S?=
+ =?us-ascii?Q?atLFapGPhQ+YCPCDapAbVqctaTkVQhqpy/ycguDMepTo9HZwWut1xyZfEElN?=
+ =?us-ascii?Q?iOY4PJ+D6N3dfx19Acw16kctooEgU/MBGNgyzYj4AX7vC02FKOVuGY2K3rar?=
+ =?us-ascii?Q?ArUzgFOjuZBokvOtzzEOCrVq7KTiHqhQLyR++losjGi25srfQtUcWzfeqPd6?=
+ =?us-ascii?Q?qM7VJtJuWz/ZYrqaOtg62SrTbk6YrB19HbkiEy9jTPY751T4maQp1mcamE1f?=
+ =?us-ascii?Q?xeVgz0zHWPyILl+3Eu+wim7MqcON71KBpWB6u2+ESn/i+XCOwHa317yXTtau?=
+ =?us-ascii?Q?nSP5yhxLqDO1Y55XfDryMDSF7NeAScYuQVOc17LEC5nrm8rQMcZ9c9yG6YTQ?=
+ =?us-ascii?Q?HeFpoLAdDJa2bseXL/4IYLAokQi9vA6YApN9C96PdBZddqH3vNsOhw+1ziel?=
+ =?us-ascii?Q?1EIKim5MqMmCNoxY2a6J2VKRRJVTOr9ZUQzpQtpu8Brp0f2UkmCX01Tl+Ap0?=
+ =?us-ascii?Q?8C/5+AN+eFwntf8x8KHt3wipSMSgJx81vI3wKt6r84NdL8Qo9vbk5Re6bfd/?=
+ =?us-ascii?Q?yo1x3UyiqollSh3K3jtUFCvwISc2qOMceDoqQuYE+49TsWKf+Ic4/74DIJqw?=
+ =?us-ascii?Q?VaS5WgVv+9kmu+QfMRwf0R3uj+RYoSEMIVyvTsX5jm4tMbD1ubaeGuNL6QB6?=
+ =?us-ascii?Q?AbpbBjrpngG/axEN42uPW4o1gxxBKpYI6l+kk969huO3RZytWSjNJb3BvDcz?=
+ =?us-ascii?Q?PQfKDKFI4hG9vpKM+Tut9zboXi+twT84h5AWeAiTFi2SkcvIbSHua+NcIxQA?=
+ =?us-ascii?Q?qOFxGK9h6RBFEOF08rIJ+ZuuMsRxtNwAXQHLiWtqIceptCDSqUtoYV9m1pyZ?=
+ =?us-ascii?Q?27aY7AoEsQT3SSiMLwWGflLw+i2qwEpHk2TCykZY9GK4XmFnmDuBNMl5kugU?=
+ =?us-ascii?Q?bIHg4ZiXzZhsY9Gpt5hd6WcGB3alIciFxyTgHtBmXcnu873CT7cHmtD3JAMU?=
+ =?us-ascii?Q?LyAZVtUrvE9GKvhxbkBmxjIgW2HhcJSg4bJZy+NJFz4rUmqeozbi16Xa2Vtd?=
+ =?us-ascii?Q?4JC5g3BNxOvkVdyuJ3C50oGLswAhpSf6IGTv1weE8wloS47DdNLB18KdYNjI?=
+ =?us-ascii?Q?p90bRP7/E6eM+gtqPh6pyIfFV+K4JA5sJaMDgnUbkahrdSnHqRFH0PrQOV6h?=
+ =?us-ascii?Q?JoVRNPjkLhY9+CD6af5t/WW7w5LXobLxCNJsIUA/Pa279Ea2ZHRgwOpWImPz?=
+ =?us-ascii?Q?Z4KvQKELJu/hmJvFbCU7djY0le1D2tVaitM0buVKzMbcSsLfOHo9ZllOmKOE?=
+ =?us-ascii?Q?pP3FikoEcPCaimO5wvxKQ2EhPtiPoWOqysijECAn+TZE32teaStPT2Uc1G7Q?=
+ =?us-ascii?Q?4ZfGEulcEsqoAHTz2Lkmvjl9GTPtP6byuYFs+GxTHgWe3rIInyYZ3w+rWLja?=
+ =?us-ascii?Q?wXmP7idLZw9l7vRIzDIqaILwC4NI/6E+IhSnABCvk+YFJFDMcH46oE5+OHWl?=
+ =?us-ascii?Q?I/zvWpdX9AKVm/WR4blpLuHo7n8IQU3ZatpWDOF0?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94e77c56-6c68-428a-1801-08dd817305e3
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2025 07:55:18.2963
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pkU0c+uaRm+uQvvFSbfaRlAYVbdCCJZv0ah2OvkS3K5FCZ/y2H5T0aIESmXd3KFvl457tyxeFgJGE0/IvHUZyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5684
 
+Update btrfs_insert_inode_defrag() to use rb_find_add().
 
+Suggested-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+---
+ fs/btrfs/defrag.c | 52 +++++++++++++++++++++++------------------------
+ 1 file changed, 25 insertions(+), 27 deletions(-)
 
-在 2025/4/22 01:10, Penglei Jiang 写道:
-> When btrfs_iget() returns an error, it does not use iget_failed() to mark
-> and release the inode. Now, we add the missing iget_failed() call.
-> 
-> Fixes: 7c855e16ab72 ("btrfs: remove conditional path allocation in btrfs_read_locked_inode()")
-> Reported-by: Penglei Jiang <superman.xpt@gmail.com>
-> Signed-off-by: Penglei Jiang <superman.xpt@gmail.com>
-
-Now pushed to for-next branch, with some updates on the commit message.
-
-https://github.com/btrfs/linux/commit/cfcd9ed0108925c8071e27e6d5a300adb74c1839
-
-Appreciate your bug report and fix. It would be even better if plan to 
-continue your contribution to btrfs.
-
-Thanks,
-Qu
-
-> ---
-> V1 -> V2: Fixed the issue with multiple calls to btrfs_iget()
-> 
->   fs/btrfs/inode.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index cc67d1a2d611..1cbf92ca748d 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5681,8 +5681,10 @@ struct btrfs_inode *btrfs_iget(u64 ino, struct btrfs_root *root)
->   		return inode;
->   
->   	path = btrfs_alloc_path();
-> -	if (!path)
-> +	if (!path) {
-> +		iget_failed(&inode->vfs_inode);
->   		return ERR_PTR(-ENOMEM);
-> +	}
->   
->   	ret = btrfs_read_locked_inode(inode, path);
->   	btrfs_free_path(path);
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index d4310d93f532..d908bce0b8a1 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -60,6 +60,16 @@ static int compare_inode_defrag(const struct inode_defrag *defrag1,
+ 		return 0;
+ }
+ 
++static int inode_defrag_cmp(struct rb_node *new, const struct rb_node *exist)
++{
++	const struct inode_defrag *new_defrag =
++		rb_entry(new, struct inode_defrag, rb_node);
++	const struct inode_defrag *exist_defrag =
++		rb_entry(exist, struct inode_defrag, rb_node);
++
++	return compare_inode_defrag(new_defrag, exist_defrag);
++}
++
+ /*
+  * Insert a record for an inode into the defrag tree.  The lock must be held
+  * already.
+@@ -71,37 +81,25 @@ static int btrfs_insert_inode_defrag(struct btrfs_inode *inode,
+ 				     struct inode_defrag *defrag)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct inode_defrag *entry;
+-	struct rb_node **p;
+-	struct rb_node *parent = NULL;
+-	int ret;
++	struct rb_node *exist;
+ 
+-	p = &fs_info->defrag_inodes.rb_node;
+-	while (*p) {
+-		parent = *p;
+-		entry = rb_entry(parent, struct inode_defrag, rb_node);
++	exist = rb_find_add(&defrag->rb_node, &fs_info->defrag_inodes, inode_defrag_cmp);
++	if (exist) {
++		struct inode_defrag *entry;
+ 
+-		ret = compare_inode_defrag(defrag, entry);
+-		if (ret < 0)
+-			p = &parent->rb_left;
+-		else if (ret > 0)
+-			p = &parent->rb_right;
+-		else {
+-			/*
+-			 * If we're reinserting an entry for an old defrag run,
+-			 * make sure to lower the transid of our existing
+-			 * record.
+-			 */
+-			if (defrag->transid < entry->transid)
+-				entry->transid = defrag->transid;
+-			entry->extent_thresh = min(defrag->extent_thresh,
+-						   entry->extent_thresh);
+-			return -EEXIST;
+-		}
++		entry = rb_entry(exist, struct inode_defrag, rb_node);
++		/*
++		 * If we're reinserting an entry for an old defrag run,
++		 * make sure to lower the transid of our existing
++		 * record.
++		 */
++		if (defrag->transid < entry->transid)
++			entry->transid = defrag->transid;
++		entry->extent_thresh = min(defrag->extent_thresh,
++					   entry->extent_thresh);
++		return -EEXIST;
+ 	}
+ 	set_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags);
+-	rb_link_node(&defrag->rb_node, parent, p);
+-	rb_insert_color(&defrag->rb_node, &fs_info->defrag_inodes);
+ 	return 0;
+ }
+ 
+-- 
+2.39.0
 
 
