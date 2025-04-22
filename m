@@ -1,250 +1,174 @@
-Return-Path: <linux-btrfs+bounces-13200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13201-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F401DA9571B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 22:17:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26184A95A50
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 03:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 298A3165656
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Apr 2025 20:17:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 080453B5827
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 01:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10021EFF92;
-	Mon, 21 Apr 2025 20:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A269316CD33;
+	Tue, 22 Apr 2025 01:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="j8jkJBSB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DvzbOgIA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7040D10F1;
-	Mon, 21 Apr 2025 20:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C31335C7
+	for <linux-btrfs@vger.kernel.org>; Tue, 22 Apr 2025 01:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745266639; cv=none; b=DQYoTWH1JYQNr14vbs8XD/sRhLAErEYOehtNasa2i1pO+ztYPndicBbbWfpt5H+Vp1xOlXxQ7oj+4eJzu7wwBc/KarFFBycDaIX4SgG+DYdrOS0fwAgQLMWwSEn4Q2IXf+yBvrP84CWdFPoPQjmterp6ZILOdcvaVHM4ptxUNZQ=
+	t=1745284213; cv=none; b=gY67T+Pak8uAQZXMP6o6Sf/Qp5OQgN7zvtgpkVtVpipkniSpDREzjHr72C4g+4QIC+CvnClWXGJKv4sqyzLVd51UgdlOahy9RFqaM3wdO0aUZWPT7b/eMnU6lRr/v/ntz2EGvEgoT+B43MwgjYHOdYF/R2qWMPwAAeWfXLFyXeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745266639; c=relaxed/simple;
-	bh=Q/JAEWtzrgPzsySDi9rjzrBEpzZN8sRk3LTMHNObWBo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uX+MdZQdrCddwCZs5cQtYkennU2RrfBy9RCvVI1ofPLXOat3PaytzEA3V5/F3mIy1hvdaiqkdAnS46gOPjvNs9sDs+16y5nILinCD1ERSQsQlectzVFXlztSbYy9si04QgttW5pSMjVinGk5RRBeQ8cZGekD7wYWqL/Yzzxsh4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=j8jkJBSB; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1745266630; x=1745871430; i=quwenruo.btrfs@gmx.com;
-	bh=fQW7XXs8y5xosVijb4GUfpe4+jqmCK2wYk1FWoenksQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=j8jkJBSBK7HwC1PHLYxBrelMUb+Qp0kN6WrQBgM/taSRJmiEHTDenkDopp6vD9jr
-	 ekr75KO1r0cAWfyt+XD6Y006eOKxRXdNMCSdrPxo7QVXfVRj9W5yYmP1hWgqzhc7/
-	 x1zrA3GWJ4Yn8sqQNw3RDf5hpq+WoyZtUZZ5/u/LyKX7i8wtOsdIFHXo0YQoOi3h2
-	 af36CjeUBWb66dfafeahQIRhyYrpP2ajVB8+cP0SxL/RRTMQy/sx6QJW2j8iiE16i
-	 3joLXcTlCcChcSR9YHe6Y4AOQqg4clO/PZnVXBr6hlLZx3Iwg3n2kSqXubq4gB2ge
-	 gBdkmh94osuZ5RaQSA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5mGB-1vCncs3mQ7-013gkQ; Mon, 21
- Apr 2025 22:17:10 +0200
-Message-ID: <1ffd7ba1-8e81-4dbc-8ff0-a2c376b7ffed@gmx.com>
-Date: Tue, 22 Apr 2025 05:47:04 +0930
+	s=arc-20240116; t=1745284213; c=relaxed/simple;
+	bh=8OZiz7tyZcHobvQlRKTrHf9V5AWyFQifBuHADFLti4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dlMPa1+XxdSeoDyCn3Hf7P+dlqze3zjqDMf0tpjgbLaLEhujouO1/M8SxwXunz2T8bGD0Y5jVKPhi+xb6wc5jg74UHSW0zoA0cpmUo1EHl8EwSRfNybwi1h1W8sYkwxuO4EakgPcOnwf269yvq0sgz2s0UzX57WO8OG5tM/OCNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DvzbOgIA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F912C4CEE4;
+	Tue, 22 Apr 2025 01:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745284212;
+	bh=8OZiz7tyZcHobvQlRKTrHf9V5AWyFQifBuHADFLti4k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DvzbOgIAozgBcANensyzkc5u+JO1Zr2nPOqp3ZQoZVUoi+JAuVQYAVLsRDX0vGMme
+	 nKkCpwREejUz9h2Sy/EEgHAM5bghWfJup22DR+0gXMJRAGKtUIh+ux7eexTHR/5J6x
+	 S7TL0IwkL37TD6WeI8vW1Ip8qorknw+KDSmTyWuMbhM6UqTmCkb4xRYTi1KqWWGYJE
+	 z6B7d/i3YcITYxUw0ZKBu5E4GNZnfz9o6PSQmUqPvrrMvKfAP3oiVpUb+61JjBibLV
+	 csqnueHnFq0tlPVfkYhycxZg91TOIYJp24o2xIKZ/bCtJULMqyipGV4rTM49lIGUaK
+	 7yEJ35vZTXfsw==
+Date: Mon, 21 Apr 2025 18:10:11 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Sleep inside atomic for aarch64, triggered by generic/482
+Message-ID: <20250422011011.GH25700@frogsfrogsfrogs>
+References: <d6c22895-b3b5-454e-b889-9d0bd148e2fb@suse.com>
+ <20250421172906.GA25651@frogsfrogsfrogs>
+ <c1c4d0a9-05bb-4c60-ae64-8c1ee9223cc0@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: adjust subpage bit start based on sectorsize
-To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-Cc: stable@vger.kernel.org, Boris Burkov <boris@bur.io>
-References: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1745242535.git.josef@toxicpanda.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <0914bad6138d2cfafc9cfe762bd06c1883ceb9d2.1745242535.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mtjcZoFgNu4X0avslzADnN8jG68cAo58LSq6lwUYbswNspUKw2I
- YwpT/fpl6fgpCJhLFI10bfsTQjwiKKfkFQkPipl6pcvAkyduR5rNMFegQ80KpyzyJMuq3p9
- tmxl1AfQ0XH658MbwdPFu451emdIaa9buA3ssQs6xdQawk2RXHiQ+73S33EgHKa4lp575v1
- CGNdppF23tFN/UVZPNZ4w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MvaGr4aeg/w=;20wsCWRxriNW1pxtrjoOCjiqD/6
- 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
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1c4d0a9-05bb-4c60-ae64-8c1ee9223cc0@gmx.com>
 
+On Tue, Apr 22, 2025 at 05:39:52AM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/4/22 02:59, Darrick J. Wong 写道:
+> > On Sun, Apr 20, 2025 at 08:24:12PM +0930, Qu Wenruo wrote:
+> > > Hi,
+> > > 
+> > > Recently I hit two dmesg reports from generic/482, on aarch64 64K page size
+> > > with 4K fs block size.
+> > > 
+> > > The involved warning looks like this:
+> > > 
+> > > 117645.139610] BTRFS info (device dm-13): using free-space-tree
+> > > [117645.146707] BTRFS info (device dm-13): start tree-log replay
+> > > [117645.158598] BTRFS info (device dm-13): last unmount of filesystem
+> > > 214efad4-5c63-49b6-ad29-f09c4966de33
+> > > [117645.322288] BUG: sleeping function called from invalid context at
+> > > mm/util.c:743
+> > > [117645.322312] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 46,
+> > > name: kcompactd0
+> > > [117645.322325] preempt_count: 1, expected: 0
+> > > [117645.322329] RCU nest depth: 0, expected: 0
+> > > [117645.322338] CPU: 3 UID: 0 PID: 46 Comm: kcompactd0 Tainted: G W  OE
+> > > 6.15.0-rc2-custom+ #116 PREEMPT(voluntary)
+> > > [117645.322343] Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+> > > [117645.322345] Hardware name: QEMU KVM Virtual Machine, BIOS unknown
+> > > 2/2/2022
+> > > [117645.322347] Call trace:
+> > > [117645.322349]  show_stack+0x34/0x98 (C)
+> > > [117645.322360]  dump_stack_lvl+0x60/0x80
+> > > [117645.322366]  dump_stack+0x18/0x24
+> > > [117645.322370]  __might_resched+0x130/0x168
+> > > [117645.322375]  folio_mc_copy+0x54/0xa8
+> > > [117645.322382]  __migrate_folio.isra.0+0x5c/0x1f8
+> > > [117645.322387]  __buffer_migrate_folio+0x28c/0x2a0
+> > > [117645.322391]  buffer_migrate_folio_norefs+0x1c/0x30
+> > > [117645.322395]  move_to_new_folio+0x94/0x2c0
+> > > [117645.322398]  migrate_pages_batch+0x7e4/0xd10
+> > > [117645.322402]  migrate_pages_sync+0x88/0x240
+> > > [117645.322405]  migrate_pages+0x4d0/0x660
+> > > [117645.322409]  compact_zone+0x454/0x718
+> > > [117645.322414]  compact_node+0xa4/0x1b8
+> > > [117645.322418]  kcompactd+0x300/0x458
+> > > [117645.322421]  kthread+0x11c/0x140
+> > > [117645.322426]  ret_from_fork+0x10/0x20
+> > > [117645.400370] BTRFS: device fsid 214efad4-5c63-49b6-ad29-f09c4966de33
+> > > devid 1 transid 31 /dev/mapper/thin-vol.482 (253:13) scanned by mount
+> > > (924470)
+> > > [117645.404282] BTRFS info (device dm-13): first mount of filesystem
+> > > 214efad4-5c63-49b6-ad29-f09c4966de33
+> > > 
+> > > Again this has no btrfs involved in the call trace.
+> > > 
+> > > This looks exactly like the report here:
+> > > 
+> > > https://lore.kernel.org/linux-mm/67f6e11f.050a0220.25d1c8.000b.GAE@google.com/
+> > > 
+> > > However there are something new here:
+> > > 
+> > > - The target fs is btrfs, no large folio support yet
+> > >    At least the branch I'm testing (based on v6.15-rc2) doesn't support
+> > >    folio.
+> > > 
+> > >    Furthermore since it's btrfs, there is no buffer_head usage involved.
+> > >    (But the rootfs is indeed ext4)
+> > 
+> > Doesn't matter; the block device can create large folios in its page
+> > cache and blkid reading the bdev can create buffer heads.
+> > 
+> > willy's workaround in:
+> > https://lore.kernel.org/linux-fsdevel/Z_VwF1MA-R7MgDVG@casper.infradead.org/
+> 
+> Thanks a lot for the info.
+> 
+> However this also makes me wonder, what if the block size of the block
+> device eventually go larger than page size?
+> 
+> E.g. I know some vendors (samsumg?) are pushing for larger block size, with
+> that the minimal order will still be larger than page size.
+> 
+> Thus I guess we can not avoid it anyway?
 
+Yeah.  I think willy thinks this is an implementation bug in readahead,
+so it'll probably get fixed sooner or later.
 
-=E5=9C=A8 2025/4/21 23:07, Josef Bacik =E5=86=99=E9=81=93:
-> When running machines with 64k page size and a 16k nodesize we started
-> seeing tree log corruption in production.  This turned out to be because
-> we were not writing out dirty blocks sometimes, so this in fact affects
-> all metadata writes.
->=20
-> When writing out a subpage EB we scan the subpage bitmap for a dirty
-> range.  If the range isn't dirty we do
->=20
-> bit_start++;
->=20
-> to move onto the next bit.  The problem is the bitmap is based on the
-> number of sectors that an EB has.  So in this case, we have a 64k
-> pagesize, 16k nodesize, but a 4k sectorsize.  This means our bitmap is 4
-> bits for every node.  With a 64k page size we end up with 4 nodes per
-> page.
->=20
-> To make this easier this is how everything looks
->=20
-> [0         16k       32k       48k     ] logical address
-> [0         4         8         12      ] radix tree offset
-> [               64k page               ] folio
-> [ 16k eb ][ 16k eb ][ 16k eb ][ 16k eb ] extent buffers
-> [ | | | |  | | | |   | | | |   | | | | ] bitmap
->=20
-> Now we use all of our addressing based on fs_info->sectorsize_bits, so
-> as you can see the above our 16k eb->start turns into radix entry 4.
->=20
-> When we find a dirty range for our eb, we correctly do bit_start +=3D
-> sectors_per_node, because if we start at bit 0, the next bit for the
-> next eb is 4, to correspond to eb->start 16k.
->=20
-> However if our range is clean, we will do bit_start++, which will now
-> put us offset from our radix tree entries.
->=20
-> In our case, assume that the first time we check the bitmap the block is
-> not dirty, we increment bit_start so now it =3D=3D 1, and then we loop
-> around and check again.  This time it is dirty, and we go to find that
-> start using the following equation
->=20
-> start =3D folio_start + bit_start * fs_info->sectorsize;
->=20
-> so in the case above, eb->start 0 is now dirty, and we calculate start
-> as
->=20
-> 0 + 1 * fs_info->sectorsize =3D 4096
-> 4096 >> 12 =3D 1
->=20
-> Now we're looking up the radix tree for 1, and we won't find an eb.
-> What's worse is now we're using bit_start =3D=3D 1, so we do bit_start +=
-=3D
-> sectors_per_node, which is now 5.  If that eb is dirty we will run into
-> the same thing, we will look at an offset that is not populated in the
-> radix tree, and now we're skipping the writeout of dirty extent buffers.
->=20
-> The best fix for this is to not use sectorsize_bits to address nodes,
-> but that's a larger change.  Since this is a fs corruption problem fix
-> it simply by always using sectors_per_node to increment the start bit.
->=20
-> cc: stable@vger.kernel.org
-> Fixes: c4aec299fa8f ("btrfs: introduce submit_eb_subpage() to submit a s=
-ubpage metadata page")
-> Reviewed-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+--D
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Although I'm still a little concerned about unaligned tree blocks, but=20
-in practice there should be rarely any converted btrfs from v4.6 era=20
-that doesn't get a full balance and still be utilized.
-
-So let's get the fix done and backported first, then reject unaligned=20
-tree blocks completely.
-
-Thanks,
-Qu
-
-> ---
-> - Further testing indicated that the page tagging theoretical race isn't=
- getting
->    hit in practice, so we're going to limit the "hotfix" to this specifi=
-c patch,
->    and then send subsequent patches to address the other issues we're hi=
-tting. My
->    simplify metadata writebback patches are the more wholistic fix.
->=20
->   fs/btrfs/extent_io.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 5f08615b334f..6cfd286b8bbc 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2034,7 +2034,7 @@ static int submit_eb_subpage(struct folio *folio, =
-struct writeback_control *wbc)
->   			      subpage->bitmaps)) {
->   			spin_unlock_irqrestore(&subpage->lock, flags);
->   			spin_unlock(&folio->mapping->i_private_lock);
-> -			bit_start++;
-> +			bit_start +=3D sectors_per_node;
->   			continue;
->   		}
->  =20
-
+> Thanks,
+> Qu
+> 
+> > 
+> > works enough to make this go away.
+> > 
+> > --D
+> > 
+> > > 
+> > > - Arm64 64K page size with 4K block size
+> > >    It's less common than x86_64.
+> > > 
+> > > Fortunately I can reproduce the bug reliable, it takes around 3~10 runs to
+> > > hit it.
+> > > 
+> > > Hope this report would help a little.
+> > > Thanks,
+> > > Qu
+> > > 
+> > 
+> 
 
