@@ -1,293 +1,142 @@
-Return-Path: <linux-btrfs+bounces-13245-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13246-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 153F7A97065
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 17:21:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C95A97115
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 17:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 999117A7C72
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 15:20:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1174C3AE244
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Apr 2025 15:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77B228936D;
-	Tue, 22 Apr 2025 15:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3FD253F1F;
+	Tue, 22 Apr 2025 15:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="iRDpigns";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vn+I37hq"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CXz2boSn";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CXz2boSn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3515328EA5E
-	for <linux-btrfs@vger.kernel.org>; Tue, 22 Apr 2025 15:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF29328F928
+	for <linux-btrfs@vger.kernel.org>; Tue, 22 Apr 2025 15:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745335296; cv=none; b=ifsoWeX+kaSnpK1IfcnyqBii81Z+RymPAQ0ie07Pxl1nsq2E+wiy8FcDiKqsRCRMPre12RqdDC413Ny7tRMC2J4xdj98/yvvmSpHHHXkeyanmWn5v4+tvgJ1fB/xktT9YfJaCyg/80WTpcHdDfUqs9ak9LICuLC9URkZaGQ+AJ8=
+	t=1745335946; cv=none; b=ZQeEjt/P03CWRmII/+jprLz89pYZqVh5XFCnzGG7iSrKz5e65T3JXfOGbl0aNF5LyPuUpnqVTBqCDbm9ZKRoDPIGEPVsJtORmg3BF579XRA0r2kPlh3yplEC6wceren6hkuCW2vdg4D+vBhzcUZvhfpKIkj6Yfhb9od2vv6mPJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745335296; c=relaxed/simple;
-	bh=xhLUF+HgIbS57WvrZH6yo5OIDSvQmocVyXIW7i8SW7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tIwmQGhOqpkNCZHdxy6g1VJxktbHYsLQZCKVckBnQTuh38Vg00T53hZulWvZbL96nziXbWK153hmHJzUKoWDjYpbZVl13MOwHvERE1HjgU2rnyTR+M2QNU4O6bG6lGCETJpcZGue6X2Nl1BWN9gxTs/8N4MdU/QzI7Wo4f6p7cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=iRDpigns; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vn+I37hq; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.phl.internal (Postfix) with ESMTP id 310941380131;
-	Tue, 22 Apr 2025 11:21:32 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Tue, 22 Apr 2025 11:21:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1745335292;
-	 x=1745421692; bh=lz101UqeFMU2RQdKvmt2iSmAZH1+2lXhVsE9S67/25A=; b=
-	iRDpigns0XRnPMqT1NEEYVX6R8Edi8fJvJfaOeBqM1krdIqg8G8P0loSHqpOrG7b
-	n9q6fi336lLkOT8mB4vo+0LC+/ls8cORmrSNG0T+56iP1cq4aj9XFWZyeVuTNVbj
-	tkdyvYh95YO931hJhrroCiKtkKepjDUVVgrnr2a0mtsZIgpq8FRoUv9NTsy6oSf+
-	NlQSYtcZvkBh4yckSjrgmxodM6l2BuY+TZN+/t2YD5PH48g75FBd3XQlCNM8UOEz
-	6nIhkKqYrRJ8dkR1k0Mo/bi33qA3BzP33sZB1A1yXo/q6OEpmoWSj0zdOP47tKN+
-	cg8JjIkeB6Yr0SeR5EYs9w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1745335292; x=
-	1745421692; bh=lz101UqeFMU2RQdKvmt2iSmAZH1+2lXhVsE9S67/25A=; b=v
-	n+I37hq6eL+jNVdwqzKigwfcf65LY7IJrHvXqo2OH7EAIOHq7Fr0HOP6XHd/k/er
-	mI02guEn6SlHHBsJUtoybS6HMqBQ+IwSG5BXPaaCFqyxd3uWfDeXQH0/SX9y4Vbn
-	AIda4/t0auAS833MmOlXQxeu1eklcK3aO91YDiG7z07N2IRGDNnppo1LrG9y3T6t
-	yygSZVo38SuHccmOsZyPH6ga/Pp5trIMLSOjQ/0ox3NYeRKmy6Yc7jXKipeuwnBn
-	RSdJggUAsAlrIyb/RIXz00n4SHYCVNhnNxUkn01m30N0eqi5Saflcmr+5WXhrsSr
-	nXvSL6zmT+pquuKp6Tbkg==
-X-ME-Sender: <xms:-7MHaOJ_5m9zEog3tQP1vdFIeSZRkJ1SGHFHyXJN3Gcx6LyTmXQwrw>
-    <xme:-7MHaGKbV-Rpo4wpB0XEcHdTJtMttxBYJbowIHXosy2I0CxKKdRsxd9e8cxnY6x3E
-    XIEksyO_pyISk1_EDc>
-X-ME-Received: <xmr:-7MHaOuMnyDrRCIW75isigiDaIY_72yRyvQgHHCS-G8P9vwvV0xJWWAUHuD41kvfqSLAvJ7syoZ2bxI4Gt6ZVPNQnJaeENwyhQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeegtdekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddt
-    tdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioh
-    eqnecuggftrfgrthhtvghrnhephefhudehgfekhedufedvtefgteelueeigfefhfefgeej
-    keefhefhgfekjefhvdehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhr
-    rdhiohdpnhgspghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    epfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvlhigsehs
-    uhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:_LMHaDaOETQyWWwrRgjszI4JBYrsiHGtBO0gIrtHBO4j3nr7orrejQ>
-    <xmx:_LMHaFbVSRu20NNK5GN47EGxBDwk5Y0pM9nrIlhxECL48doycrVC9Q>
-    <xmx:_LMHaPC1SbTpR6mp98Ttj_ReQnv5dLmEhrkeoBT38f1ObGldnelPXg>
-    <xmx:_LMHaLaotUhc5dYdUGThaZaeQP690-IIW-SbVpUSFWgjudICUTdlTA>
-    <xmx:_LMHaA46mTpKr4RbpWQo_pUzJFbAQJPnXSHU-DBg5JKoPHGy4W-br4Wl>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 22 Apr 2025 11:21:31 -0400 (EDT)
-Date: Tue, 22 Apr 2025 08:21:27 -0700
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Daniel Vacek <neelx@suse.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH v3] btrfs: fix broken drop_caches on extent_buffer folios
-Message-ID: <aAez9zXls1JxjVvR@devvm12410.ftw0.facebook.com>
-References: <9441faad18d711ba7bccd2818e6762df0e948761.1745000301.git.boris@bur.io>
- <CAPjX3FfxxbMN2hEO1TnKV9cSrYUZfdYNBogQFtKFdtgTebCXog@mail.gmail.com>
- <CAL3q7H6y2i_15DAjQOpYUdR4A0dLZRWUWQDOFyZ=FPOnGjAFOA@mail.gmail.com>
+	s=arc-20240116; t=1745335946; c=relaxed/simple;
+	bh=QYzuJNjKtc2ozfuStdBSyJhApTX0W4zhSB0TsNQOlaM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h8xA/l3E7UELDLZtd3sjtgXIjE0iGXzOP/CvdTmFF2oMaWbfSvMbHWWlzs8O1X3ocIXzxVawhni6MSfeGiph/wxxONMfKFVlfk9R8hUKnsLngLOEvzYgj982SCbYYjVAqg0dmljt29x7eTePi0/j+JcisHBooDoR8aEhEqi0As4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CXz2boSn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CXz2boSn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CF87621171;
+	Tue, 22 Apr 2025 15:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745335942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=q961XA6JUZSkA9YYhFhieYWZp0MCB4zIFCB0B7q2dJ4=;
+	b=CXz2boSnUJt2dEHAqSgHpdX0Zoayq20R714OEp5uji9I4gDtNyWoZKxaWEu574QsTLrFHQ
+	52OPX+//vQY7tKOl9YDWY+hRvrNbaKc3u8sgCPgpUvWT4o5XdNdtLcTDs5o/n7SrvcNixD
+	7eMHU+jbvy935UhjGWbDYpPH/Fj5yfU=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745335942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=q961XA6JUZSkA9YYhFhieYWZp0MCB4zIFCB0B7q2dJ4=;
+	b=CXz2boSnUJt2dEHAqSgHpdX0Zoayq20R714OEp5uji9I4gDtNyWoZKxaWEu574QsTLrFHQ
+	52OPX+//vQY7tKOl9YDWY+hRvrNbaKc3u8sgCPgpUvWT4o5XdNdtLcTDs5o/n7SrvcNixD
+	7eMHU+jbvy935UhjGWbDYpPH/Fj5yfU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C8D90139D5;
+	Tue, 22 Apr 2025 15:32:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RtUCMYa2B2igYAAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 22 Apr 2025 15:32:22 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: remove unused btrfs_io_stripe::length
+Date: Tue, 22 Apr 2025 17:32:17 +0200
+Message-ID: <20250422153217.256995-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H6y2i_15DAjQOpYUdR4A0dLZRWUWQDOFyZ=FPOnGjAFOA@mail.gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-On Tue, Apr 22, 2025 at 11:21:46AM +0100, Filipe Manana wrote:
-> On Tue, Apr 22, 2025 at 10:24 AM Daniel Vacek <neelx@suse.com> wrote:
-> >
-> > On Fri, 18 Apr 2025 at 20:24, Boris Burkov <boris@bur.io> wrote:
-> > >
-> > > The (correct) commit
-> > > e41c81d0d30e ("mm/truncate: Replace page_mapped() call in invalidate_inode_page()")
-> > > replaced the page_mapped(page) check with a refcount check. However,
-> > > this refcount check does not work as expected with drop_caches for
-> > > btrfs's metadata pages.
-> > >
-> > > Btrfs has a per-sb metadata inode with cached pages, and when not in
-> > > active use by btrfs, they have a refcount of 3. One from the initial
-> > > call to alloc_pages, one (nr_pages == 1) from filemap_add_folio, and one
-> > > from folio_attach_private. We would expect such pages to get dropped by
-> > > drop_caches. However, drop_caches calls into mapping_evict_folio via
-> > > mapping_try_invalidate which gets a reference on the folio with
-> > > find_lock_entries(). As a result, these pages have a refcount of 4, and
-> > > fail this check.
-> > >
-> > > For what it's worth, such pages do get reclaimed under memory pressure,
-> > > so I would say that while this behavior is surprising, it is not really
-> > > dangerously broken.
-> > >
-> > > When I asked the mm folks about the expected refcount in this case, I
-> > > was told that the correct thing to do is to donate the refcount from the
-> > > original allocation to the page cache after inserting it.
-> > > https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
-> > >
-> > > Therefore, attempt to fix this by adding a put_folio() to the critical
-> > > spot in alloc_extent_buffer where we are sure that we have really
-> > > allocated and attached new pages. We must also adjust
-> > > folio_detach_private to properly handle being the last reference to the
-> > > folio and not do a UAF after folio_detach_private().
-> > >
-> > > Finally, extent_buffers allocated by clone_extent_buffer() and
-> > > alloc_dummy_extent_buffer() are unmapped, so this transfer of ownership
-> > > from allocation to insertion in the mapping does not apply to them.
-> > > However, we can still folio_put() them safely once they are finished
-> > > being allocated and have called folio_attach_private().
-> > >
-> > > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > ---
-> > > Changelog:
-> > > v3:
-> > > * call folio_put() before using extent_buffers allocated with
-> > >   clone_extent_buffer() and alloc_dummy_extent_buffer() to get rid of
-> > >   the UNMAPPED exception in btrfs_release_extent_buffer_folios().
-> > > v2:
-> > > * Used Filipe's suggestion to simplify detach_extent_buffer_folio and
-> > >   lose the extra folio_get()/folio_put() pair
-> > > * Noticed a memory leak causing failures in fstests on smaller vms.
-> > >   Fixed a bug where I was missing a folio_put() for ebs that never got
-> > >   their folios added to the mapping.
-> > >
-> > >
-> > >  fs/btrfs/extent_io.c | 24 ++++++++++++++++--------
-> > >  1 file changed, 16 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > > index 5f08615b334f..a6c74c1957ff 100644
-> > > --- a/fs/btrfs/extent_io.c
-> > > +++ b/fs/btrfs/extent_io.c
-> > > @@ -2752,6 +2752,7 @@ static bool folio_range_has_eb(struct folio *folio)
-> > >  static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct folio *folio)
-> > >  {
-> > >         struct btrfs_fs_info *fs_info = eb->fs_info;
-> > > +       struct address_space *mapping = folio->mapping;
-> > >         const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-> > >
-> > >         /*
-> > > @@ -2759,11 +2760,11 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> > >          * be done under the i_private_lock.
-> > >          */
-> > >         if (mapped)
-> > > -               spin_lock(&folio->mapping->i_private_lock);
-> > > +               spin_lock(&mapping->i_private_lock);
-> > >
-> > >         if (!folio_test_private(folio)) {
-> > >                 if (mapped)
-> > > -                       spin_unlock(&folio->mapping->i_private_lock);
-> > > +                       spin_unlock(&mapping->i_private_lock);
-> > >                 return;
-> > >         }
-> > >
-> > > @@ -2783,7 +2784,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> > >                         folio_detach_private(folio);
-> > >                 }
-> > >                 if (mapped)
-> > > -                       spin_unlock(&folio->mapping->i_private_lock);
-> > > +                       spin_unlock(&mapping->i_private_lock);
-> > >                 return;
-> > >         }
-> > >
-> > > @@ -2806,7 +2807,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> > >         if (!folio_range_has_eb(folio))
-> > >                 btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
-> > >
-> > > -       spin_unlock(&folio->mapping->i_private_lock);
-> > > +       spin_unlock(&mapping->i_private_lock);
-> > >  }
-> > >
-> > >  /* Release all folios attached to the extent buffer */
-> > > @@ -2821,9 +2822,6 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
-> > >                         continue;
-> > >
-> > >                 detach_extent_buffer_folio(eb, folio);
-> > > -
-> > > -               /* One for when we allocated the folio. */
-> > > -               folio_put(folio);
-> > >         }
-> > >  }
-> > >
-> > > @@ -2889,6 +2887,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
-> > >                         return NULL;
-> > >                 }
-> > >                 WARN_ON(folio_test_dirty(folio));
-> > > +               folio_put(folio);
-> >
-> > Would this cause double puts in case the second iteration of the loop
-> > fails to attach?
-> 
-> Nop, because a folio_put() was removed from
-> btrfs_release_extent_buffer_folios() in this patch.
-> But this introduces a leak here in case attach_extent_buffer_folio()
-> returns an error, since we will miss a folio_put() for all the folios
-> we haven't attached.
-> 
-> So this folio_put() should be done in a subsequent loop, and ideally
-> have a comment similar to the one added to alloc_extent_buffer() in
-> this patch.
+First added (but not effectively used) in 02c372e1f016e5 ("btrfs: add
+support for inserting raid stripe extents"). The structure is
+initialized to zeros so the only use in btrfs_insert_one_raid_extent()
 
-I'll send a patch to make the proper error handling.
+    u64 length = bioc->stripes[i].length;
+    struct btrfs_raid_stride *raid_stride = &stripe_extent->strides[i];
 
-> 
-> Boris btw, I see you kept my Review tag in v2 and v3, yet the patches
-> changed in non-trivial ways.
-> A Review tag is meant to be preserved only in case of trivial changes
-> like fixing typos for example or exclusively applying suggestions from
-> a reviewer.
+    if (length == 0)
+            length = bioc->size;
 
-My mistake. I wanted to your honor your existing review work, not steal it,
-but I will be sure to remove it for any non-trivial changes after review in
-the future, as you should not be accountable for bugs you didn't review.
+the 'if' always happens.
 
-> 
-> >
-> > Other than that, it looks good to me.
-> >
-> > >         }
-> > >         copy_extent_buffer_full(new, src);
-> > >         set_extent_buffer_uptodate(new);
-> > > @@ -2915,6 +2914,8 @@ struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
-> > >                 if (ret < 0)
-> > >                         goto out_detach;
-> > >         }
-> > > +       for (int i = 0; i < num_extent_folios(eb); i++)
-> > > +               folio_put(eb->folios[i]);
-> > >
-> > >         set_extent_buffer_uptodate(eb);
-> > >         btrfs_set_header_nritems(eb, 0);
-> > > @@ -3365,8 +3366,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> > >          * btree_release_folio will correctly detect that a page belongs to a
-> > >          * live buffer and won't free them prematurely.
-> > >          */
-> > > -       for (int i = 0; i < num_extent_folios(eb); i++)
-> > > +       for (int i = 0; i < num_extent_folios(eb); i++) {
-> > >                 folio_unlock(eb->folios[i]);
-> > > +               /*
-> > > +                * A folio that has been added to an address_space mapping
-> > > +                * should not continue holding the refcount from its original
-> > > +                * allocation indefinitely.
-> > > +                */
-> > > +               folio_put(eb->folios[i]);
-> > > +       }
-> > >         return eb;
-> > >
-> > >  out:
-> > > --
-> > > 2.49.0
-> > >
-> > >
-> >
+Last use in 4016358e852861 ("btrfs: remove unused variable length in
+btrfs_insert_one_raid_extent()") was an obvious cleanup. It seems to be
+safe to remove, raid-stripe-tree works without using it since 6.6.
+
+This was found by tool https://github.com/jirislaby/clang-struct .
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/volumes.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 0e793b9776d677..d06d2d8713f87f 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -473,7 +473,6 @@ struct btrfs_io_stripe {
+ 	struct btrfs_device *dev;
+ 	/* Block mapping. */
+ 	u64 physical;
+-	u64 length;
+ 	bool rst_search_commit_root;
+ 	/* For the endio handler. */
+ 	struct btrfs_io_context *bioc;
+-- 
+2.49.0
+
 
