@@ -1,64 +1,100 @@
-Return-Path: <linux-btrfs+bounces-13293-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13294-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96306A987A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 12:38:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8AC3A98889
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 13:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D630E444921
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 10:38:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30B735A36B6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 11:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD8426D4CE;
-	Wed, 23 Apr 2025 10:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACF826FA54;
+	Wed, 23 Apr 2025 11:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NZlBfTS0"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RqvIYQKR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5UG9LcV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RqvIYQKR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5UG9LcV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DA626C39E
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:37:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A3C26E14D
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 11:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745404681; cv=none; b=NgsgN7/JQKkP3jtb6INFCy29PRy7hP92H0ZNzHJ15p2Xu6jW5HXvxjp3MWCJWfaefMAFYVOAU2qsnzElAY+ZlctTG0K0uwToYISNMvS92aIbby37ZNlXU3LHNVkLty01y66fQTre8Chb2neURp5z7I3SrilFmiphlnNmkbANXgg=
+	t=1745407629; cv=none; b=Z/waUVe4AFmVKUsxvMvGNx+ppoIBnVWb2Xcrjon7Kc/F4LpE8JrRYTiGWV0yju++556/rxLOcASRQ/Hg1SvJYwYMqNLMU1i/g59DGfwkC0D8Y/isFziZSaPo3wj54243CRG4m8in00gIx7EDeb0UIBuyNpU1S9zKq8GbTBx87bA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745404681; c=relaxed/simple;
-	bh=H4yB2VqdHW5Mx37gnKyyS6SHLyLBKUckwyP7mf95yYE=;
+	s=arc-20240116; t=1745407629; c=relaxed/simple;
+	bh=LNa7JaJRIJWELbKW0sjW2lWpgbk7eYk7o6DSDUT7JPo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D7MOElLGwU+2HoocaVz6E7NG3GnGd2uZtydKboN0qbltb4lN/j6QhbaYTOfYW9waUUtbeHAJk94HtPWmJCW5gV0OPiCJug34CYpSjTSjETYxuA5fZtu6x8xdKNfyjN3qIyS/gL1GvTFzVXGb9P/dt4Gj9l/McAF6xQ6xNLTR4Yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NZlBfTS0; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 23 Apr 2025 06:37:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745404666;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=okPmT9XpcbvthwCna7z1YxssLoYrL9U2BpRaNF9z8gfUZ5KbLz0n++2LgB1WixiTY0omCA/EEqiOv655/9TILppKYRzmg8ygszIdHL5ZO0PrmA04w0027smLpnJ1LalQ/dygxCvES9LQ7wSXegauq6tfjdXoTIn8n2ua9CtkVa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RqvIYQKR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5UG9LcV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RqvIYQKR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5UG9LcV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 626182119E;
+	Wed, 23 Apr 2025 11:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745407624;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=h1X705brQVpSptGLrhJRMpaEPjNIn6bUE+IhmWlVE2o=;
-	b=NZlBfTS0IpoVJRDdMvVxxcB/Lpwrab9NO5G3uKZDmuyi8mzIO86I/PUXd88XgzTuZn49ST
-	gLriQ//WfXAV/lq3WsPhVF0GKJr+Bfeylib4vQvVxRXxFayAYBivCT7jC8OAWmtGBUIn4/
-	DcUPlLzvzWL7UaMq94B3xWZYQRWCxS4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>, 
-	Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Carlos Maiolino <cem@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <jth@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Pavel Machek <pavel@kernel.org>, linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: add more bio helper
-Message-ID: <sl4oibdxpjygqfpy6llq237zuckz7ym4fmzcfvxn2raofr37a5@hvevbcgm5trn>
-References: <20250422142628.1553523-1-hch@lst.de>
- <jetduw7zshrmp4gl7zfpwqjweycwesxiod7xvtnxqwqekgtvdf@idwnvfzvhgik>
- <20250423093621.GA2578@lst.de>
+	bh=SKxqyghgouOWHn3k4E3LoAAn994mgcpwA61IAsEW5So=;
+	b=RqvIYQKR4D4oEfF9Y+7Guf8JVAV2+XvCYTLnoWwpLkBPSquT6fzQ0sfB358Ml1KVisUaxn
+	5Xdzb7gJlPK41Qjr8CyH47S5W8xpttn9QAa53VHyJ2f7i/ZIRPH0jX4md7CcoHm05sXuB3
+	ZKYIXF5ypB4tk3y2J3qRRelm09qgMSg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745407624;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SKxqyghgouOWHn3k4E3LoAAn994mgcpwA61IAsEW5So=;
+	b=f5UG9LcVCIf7cFMfjO2n+AP+f3mcSxlT8HUqtydwjuWTfVc7r1IhVp65BTWHod23j8BqZR
+	Lrc9UCjSJJ+op/BQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745407624;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SKxqyghgouOWHn3k4E3LoAAn994mgcpwA61IAsEW5So=;
+	b=RqvIYQKR4D4oEfF9Y+7Guf8JVAV2+XvCYTLnoWwpLkBPSquT6fzQ0sfB358Ml1KVisUaxn
+	5Xdzb7gJlPK41Qjr8CyH47S5W8xpttn9QAa53VHyJ2f7i/ZIRPH0jX4md7CcoHm05sXuB3
+	ZKYIXF5ypB4tk3y2J3qRRelm09qgMSg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745407624;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SKxqyghgouOWHn3k4E3LoAAn994mgcpwA61IAsEW5So=;
+	b=f5UG9LcVCIf7cFMfjO2n+AP+f3mcSxlT8HUqtydwjuWTfVc7r1IhVp65BTWHod23j8BqZR
+	Lrc9UCjSJJ+op/BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C44D13A3D;
+	Wed, 23 Apr 2025 11:27:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BpMPCojOCGjGMQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 23 Apr 2025 11:27:04 +0000
+Date: Wed, 23 Apr 2025 13:26:58 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: subpage: reject tree blocks which are not node
+ size aligned
+Message-ID: <20250423112658.GH3659@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <91dc04836a16638e97df7cd50aad462b20400a47.1745391961.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -67,69 +103,86 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250423093621.GA2578@lst.de>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <91dc04836a16638e97df7cd50aad462b20400a47.1745391961.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-8.00 / 50.00];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -8.00
+X-Spam-Flag: NO
 
-On Wed, Apr 23, 2025 at 11:36:21AM +0200, Christoph Hellwig wrote:
-> On Tue, Apr 22, 2025 at 10:47:03AM -0400, Kent Overstreet wrote:
-> > On Tue, Apr 22, 2025 at 04:26:01PM +0200, Christoph Hellwig wrote:
-> > > Hi all,
-> > > 
-> > > this series adds more block layer helpers to remove boilerplate code when
-> > > adding memory to a bio or to even do the entire synchronous I/O.
-> > > 
-> > > The main aim is to avoid having to convert to a struct page in the caller
-> > > when adding kernel direct mapping or vmalloc memory.
-> > 
-> > have you seen (bch,bch2)_bio_map?
+On Wed, Apr 23, 2025 at 04:36:14PM +0930, Qu Wenruo wrote:
+> When btrfs subpage support (fs block < page size) is introduced, a subpage
+> btrfs will only reject tree blocks which cross page boundaries.
 > 
-> Now I have.
+> This used to be a compromise to simplify the tree block handling and
+> still allows subpage cases to read some old converted btrfses which do
+> not have proper chunk alignment done.
 > 
-> > 
-> > it's a nicer interface than your bio_add_vmalloc(), and also handles the
-> > if (is_vmalloc_addr())
+> But in practice, if we have the following unaligned tree block on a 64K
+> page sized system:
 > 
-> Can you explain how it's nicer?
+>   0                           32K           44K             60K  64K
+>   |                                         |///////////////|    |
 > 
-> For use with non-vmalloc memory it does a lot of extra work
-> and generates less optimal bios using more vecs than required, but
-> maybe that wasn't the point?
+> Although btrfs has no problem reading the tree block at [44K, 60K), if
+> extent allocator is allocating another tree block, it may choose the
+> range [60K, 74K), as extent allocator has no awareness if it's a subpage
+> metadata request.
 > 
-> For vmalloc it might also build suboptimal bios when using large vmalloc
-> mappings due to the lack of merging, but I don't think anyone does I/O to
-> those yet.
+> Then we got -EINVAL from the following sequence:
 > 
-> It lacks a API description and it or the callers miss handling for VIVT
-> caches, maybe because of that.
+>  btrfs_alloc_tree_block()
+>  |- btrfs_reserve_extent()
+>  |  Which returned range [60K, 74K)
+>  |- btrfs_init_new_buffer()
+>     |- btrfs_find_create_tree_block()
+>        |- alloc_extent_buffer()
+>           |- check_eb_alignment()
+> 	     Which returned -EINVAL, because the range crosses the page
+> 	     boundary.
 > 
-> Besides optimizing the direct map case that always needs just one vec
-> that is also one of the reasons why I want the callers to know about
-> vmalloc vs non-vmalloc memory.
+> This situation will not solve itself and should mostly mark the fs
+> read-only.
+> 
+> Thankfully we didn't really get such reports in the real world because:
+> 
+> - The original unaligned tree block is only caused by older
+>   btrfs-convert
+>   It's before the btrfs-convert rework done in v4.6, where converted
+>   btrfs can have metadata block groups which are not aligned to
+>   node size nor stripe size (64K).
+> 
+>   But after btrfs-progs v4.6, all chunks allocated will be stripe (64K)
+>   aligned, thus no more such problem.
+> 
+> Considering how old the fix is (v4.x), meanwhile subpage support for
+> btrfs is only introduced in v5.15, it should be safe to reject those
+> unaligned tree blocks.
 
-Sure, that code predates multipage bvecs - the interface is what I was
-referring to.
+I hope so, 4.6 was almost 10 years ago.
 
-> It also don't support bio chaining or error handling and requires a
-> single bio that is guaranteed to fit the required number of vectors.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Why would bio chaining ever be required? The caller allocates both the
-buf and the bio, I've never seen an instance where you'd want that; just
-allocate a bio with the correct number of vecs, which your
-bio_vmalloc_max_vecs() helps with.
-
-> OTOH for callers where that applies it would be nice to have a
-> helper that loops over bio_add_vmalloc.  I actually had one initially,
-> but given that I only found two obvious users I dropped it for now.
-> If we get more we can add one.
-
-The "abstract over vmalloc and normal physically contigious allocations"
-bit that bch2_bio_map() does is the important part.
-
-It's not uncommon to prefer physically contiguous allocations but have a
-vmalloc fallback; bcachefs does, and  xfs does with a clever "try the
-big allocation if it's cheap, fall back to vmalloc to avoid waiting on
-compaction" that I might steal.
-
-is_vmalloc_addr() is also cheap, it's just a pointer comparison (and it
-really should be changed to a static inline).
+Reviewed-by: David Sterba <dsterba@suse.com>
 
