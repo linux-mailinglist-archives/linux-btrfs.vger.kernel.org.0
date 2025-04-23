@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-13344-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13345-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BC0A99AB0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 23:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B9FA99AB1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 23:27:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1419C461284
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 21:27:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9266F461453
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 21:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4F4264FBA;
-	Wed, 23 Apr 2025 21:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C6124468F;
+	Wed, 23 Apr 2025 21:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EllK7yC5";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Wl2Gx/ix"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iyeq+91y";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iyeq+91y"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009C1171A1
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE6120126A
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745443620; cv=none; b=fyN6JUZzbZpbmOxaORtcMKnSOHRQ+DVj2lyHK/Jd03zsvPc12+k6mitPSJTrfLSgMgC1ZhauJX+AH8WTqd0ypvbwiY2kkIg/UsMJrluXAZ1vjY6MqllPuMwM7j/57jAzuK7Qk2s2iIzg3zduOti9y/PwzT7p8hJTHuFCIJ7XexQ=
+	t=1745443628; cv=none; b=NPqYnLRKrPD+kbvQjtOeeByZ/njDijriDlqmqXWqes6dZRKrpApzLNjdNuK/Kx4jRk2l8uuZBlNe7jMFyg8VkBb2qnwpnIppxQFp1OPn2Jqqz9JBp5yURORNCjSII/Z6t4Op75OwArlXY8y6iCYp//tga+rgtwvUWEBuvCKOY/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745443620; c=relaxed/simple;
-	bh=MSEkah4LuqOxYh2UIqGjp9AHPT9N+r2/KMTXTehRkgQ=;
+	s=arc-20240116; t=1745443628; c=relaxed/simple;
+	bh=EvXX0vYgNBOPeRYGy9ju5AsBDUlodiXqIkaoN7pSpdI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=besRP4GFukFwafqdpOKvV9yIoZyyQe8XR1ITeDtN1KncYk1yrMjKXSrH3u+yEhbabeTeJe7H0gF9h29QYLn8aixus5V27QGLGkrb5mf5t4rLG8pSAWpnecMcbfRJTNvgQkan43+M4zBmGA3qALXtb92h2TTLmgcm6cxLISTnlb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EllK7yC5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Wl2Gx/ix; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=SO+XLjoBZYARfP3fJKH70+sN2ajbrdYPjLLWtZzrHmdxwvimNQpNzcgZJHj5wkmzN/EBv/50arbhjYOrafuOrj0b9bktL9XEHBQpE98c0SpHW6Ybyf5pL3DjDywsfTy6W3Abb/c8N6cJwnG30mTKY+T/ZSKUZkc+PRcyPklxkaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iyeq+91y; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iyeq+91y; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C708F2116D
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:55 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 00FD62116F
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745443616; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1745443617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D3VCXfG0WiiHZKSyXJRvFesVKQAr5KhzRDa4GDR6y9M=;
-	b=EllK7yC5P0KnyQp5fQ2OrRGdX5f53gschE8Nr5wyA0VpGxKM7OLaqIlFPXRf9vxV1hhkyG
-	/8P4R3mD6L0V0oO+4df9v0KW1c/tOLQSn0S5hTjmJ7M449DZoBONXdO9lslgeudGXH3Iq1
-	zk8ARezZt0aP+r2Bcld7/WiGU3+MefY=
+	bh=tkBtyF+1aZuU3SrDfoKDxUNA0Saopy9CNvodHY0rekY=;
+	b=iyeq+91yhpWkDhmUpwqZ0M7t36j1VsFPWeYl0+b0dCeh9FMMOLcpDotVwmvKMbL5uHuH6m
+	1TXzjb340TWxkmJT3V2q5U6AqamicV0oYb3nfN8eIJxhpCEEzKxSmvR3jEJ90vC5HBq9q3
+	dfaEsxGzAdh3qcqBHEM3NMhXij8TZUM=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="Wl2Gx/ix"
+	dkim=pass header.d=suse.com header.s=susede1 header.b=iyeq+91y
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745443615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1745443617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D3VCXfG0WiiHZKSyXJRvFesVKQAr5KhzRDa4GDR6y9M=;
-	b=Wl2Gx/ixcATBIgEYfvRG1R5kbBYOCcug0gZulc33gXWawvcHMRizDg4bFJyqhUfgnJHh8M
-	RFLH0PjyrH+F1iNEBoyGej6R4oJrKRJDBIp19G8CdF6x5yU6pL1CJKeHRwXH0FAlcV8MAU
-	d3ecgpi6nPVHUfg/nVPUduGOIBKnV6Y=
+	bh=tkBtyF+1aZuU3SrDfoKDxUNA0Saopy9CNvodHY0rekY=;
+	b=iyeq+91yhpWkDhmUpwqZ0M7t36j1VsFPWeYl0+b0dCeh9FMMOLcpDotVwmvKMbL5uHuH6m
+	1TXzjb340TWxkmJT3V2q5U6AqamicV0oYb3nfN8eIJxhpCEEzKxSmvR3jEJ90vC5HBq9q3
+	dfaEsxGzAdh3qcqBHEM3NMhXij8TZUM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05C3213A3D
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:54 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37A0013A3D
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AF/lLh5bCWhCYAAAD6G6ig
+	id sFoPOx9bCWhCYAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:54 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:55 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 1/2] btrfs: make btrfs_truncate_block() to zero involved blocks in a folio
-Date: Thu, 24 Apr 2025 06:56:31 +0930
-Message-ID: <0bf58569b1f5ea0d7c2e086f07088e9093b274f3.1745443508.git.wqu@suse.com>
+Subject: [PATCH v4 2/2] btrfs: make btrfs_truncate_block() zero folio range for certain subpage corner cases
+Date: Thu, 24 Apr 2025 06:56:32 +0930
+Message-ID: <50e41f048f26b5b58f55b25c045e5dfe94a8dcfd.1745443508.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1745443508.git.wqu@suse.com>
 References: <cover.1745443508.git.wqu@suse.com>
@@ -84,9 +84,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C708F2116D
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 00FD62116F
+X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -96,349 +95,212 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
+	MIME_TRACE(0.00)[0:+];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
 	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+];
 	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	TO_DN_NONE(0.00)[];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
-X-Spam-Level: 
 
 [BUG]
-The following fsx sequence will fail on btrfs with 64K page size and 4K
-fs block size:
+For the following fsx -e 1 run, the btrfs still fails the run on 64K
+page size with 4K fs block size:
 
- #fsx -d -e 1 -N 4 $mnt/junk -S 36386
- READ BAD DATA: offset = 0xe9ba, size = 0x6dd5, fname = /mnt/btrfs/junk
- OFFSET      GOOD    BAD     RANGE
- 0xe9ba      0x0000  0x03ac  0x0
- operation# (mod 256) for the bad data may be 3
- ...
- LOG DUMP (4 total operations):
- 1(  1 mod 256): WRITE    0x6c62 thru 0x1147d	(0xa81c bytes) HOLE	***WWWW
- 2(  2 mod 256): TRUNCATE DOWN	from 0x1147e to 0x5448	******WWWW
- 3(  3 mod 256): ZERO     0x1c7aa thru 0x28fe2	(0xc839 bytes)
- 4(  4 mod 256): MAPREAD  0xe9ba thru 0x1578e	(0x6dd5 bytes)	***RRRR***
+READ BAD DATA: offset = 0x26b3a, size = 0xfafa, fname = /mnt/btrfs/junk
+OFFSET      GOOD    BAD     RANGE
+0x26b3a     0x0000  0x15b4  0x0
+operation# (mod 256) for the bad data may be 21
+[...]
+LOG DUMP (28 total operations):
+1(  1 mod 256): SKIPPED (no operation)
+2(  2 mod 256): SKIPPED (no operation)
+3(  3 mod 256): SKIPPED (no operation)
+4(  4 mod 256): SKIPPED (no operation)
+5(  5 mod 256): WRITE    0x1ea90 thru 0x285e0	(0x9b51 bytes) HOLE
+6(  6 mod 256): ZERO     0x1b1a8 thru 0x20bd4	(0x5a2d bytes)
+7(  7 mod 256): FALLOC   0x22b1a thru 0x272fa	(0x47e0 bytes) INTERIOR
+8(  8 mod 256): WRITE    0x741d thru 0x13522	(0xc106 bytes)
+9(  9 mod 256): MAPWRITE 0x73ee thru 0xdeeb	(0x6afe bytes)
+10( 10 mod 256): FALLOC   0xb719 thru 0xb994	(0x27b bytes) INTERIOR
+11( 11 mod 256): COPY 0x15ed8 thru 0x18be1	(0x2d0a bytes) to 0x25f6e thru 0x28c77
+12( 12 mod 256): ZERO     0x1615e thru 0x1770e	(0x15b1 bytes)
+13( 13 mod 256): SKIPPED (no operation)
+14( 14 mod 256): DEDUPE 0x20000 thru 0x27fff	(0x8000 bytes) to 0x1000 thru 0x8fff
+15( 15 mod 256): SKIPPED (no operation)
+16( 16 mod 256): CLONE 0xa000 thru 0xffff	(0x6000 bytes) to 0x36000 thru 0x3bfff
+17( 17 mod 256): ZERO     0x14adc thru 0x1b78a	(0x6caf bytes)
+18( 18 mod 256): TRUNCATE DOWN	from 0x3c000 to 0x1e2e3	******WWWW
+19( 19 mod 256): CLONE 0x4000 thru 0x11fff	(0xe000 bytes) to 0x16000 thru 0x23fff
+20( 20 mod 256): FALLOC   0x311e1 thru 0x3681b	(0x563a bytes) PAST_EOF
+21( 21 mod 256): FALLOC   0x351c5 thru 0x40000	(0xae3b bytes) EXTENDING
+22( 22 mod 256): WRITE    0x920 thru 0x7e51	(0x7532 bytes)
+23( 23 mod 256): COPY 0x2b58 thru 0xc508	(0x99b1 bytes) to 0x117b1 thru 0x1b161
+24( 24 mod 256): TRUNCATE DOWN	from 0x40000 to 0x3c9a5
+25( 25 mod 256): SKIPPED (no operation)
+26( 26 mod 256): MAPWRITE 0x25020 thru 0x26b06	(0x1ae7 bytes)
+27( 27 mod 256): SKIPPED (no operation)
+28( 28 mod 256): READ     0x26b3a thru 0x36633	(0xfafa bytes)	***RRRR***
 
 [CAUSE]
-Only 2 operations are really involved in this case:
+The involved operations are:
 
- 3 pollute_eof	0x5448 thru	0xffff	(0xabb8 bytes)
- 3 zero	from 0x1c7aa to 0x28fe3, (0xc839 bytes)
- 4 mapread	0xe9ba thru	0x1578e	(0x6dd5 bytes)
+ fallocating to largest ever: 0x40000
+ 21 pollute_eof	0x24000 thru	0x2ffff	(0xc000 bytes)
+ 21 falloc	from 0x351c5 to 0x40000 (0xae3b bytes)
+ 28 read	0x26b3a thru	0x36633	(0xfafa bytes)
 
-At operation 3, fsx pollutes beyond EOF, that is done by mmap()
-and write into that mmap() range beyondd EOF.
+At operation #21 a pollute_eof is done, by memory mappaed write into
+range [0x24000, 0x2ffff).
+At this stage, the inode size is 0x24000, which is block aligned.
 
-Such write will fill the range beyond EOF, but it will never reach disk
-as ranges beyond EOF will not be marked dirty nor uptodate.
+Then fallocate happens, and since it's expanding the inode, it will call
+btrfs_truncate_block() to truncate any unaligned range.
 
-Then we zero_range for [0x1c7aa, 0x28fe3], and since the range is beyond
-our isize (which was 0x5448), we should zero out any range beyond
-EOF (0x5448).
+But since the inode size is already block aligned,
+btrfs_truncate_block() does nothing and exit.
 
-During btrfs_zero_range(), we call btrfs_truncate_block() to dirty the
-unaligned head block.
-But that function only really zero out the block at [0x5000, 0x5fff], it
-doesn't bother any range other that that block, since those range will
-not be marked dirty nor written back.
-
-So the range [0x6000, 0xffff] is still polluted, and later mapread()
-will return the poisoned value.
-
-Such behavior is only exposed when page size is larger than fs block
-btrfs, as for block size == page size case the block is exactly one
-page, and fsx only checks exactly one page at EOF.
+However remember the folio at 0x20000 has some range polluted already,
+although they will not be written back to disk, it still affects the
+page cache, resulting the later operation #28 to read out the polluted
+value.
 
 [FIX]
-Enhance btrfs_truncate_block() by:
+Instead of early exit from btrfs_truncate_block() if the range is
+already block aligned, do extra filio zeroing if the fs block size is
+smaller than the page size.
 
-- Force callers to pass a @start/@end combination
-  So that there will be no 0 length passed in.
-
-- Rename the @front parameter to an enum
-  And make it matches the @start/@end parameter better by using
-  TRUNCATE_HEAD_BLOCK and TRUNCATE_TAIL_BLOCK instead.
-
-- Pass the original unmodified range into btrfs_truncate_block()
-  There are several call sites inside btrfs_zero_range() and
-  btrfs_punch_hole() where we pass part of the original range for
-  truncating.
-
-  This hides the original range which can lead to under or over
-  truncating.
-  Thus we have to pass the original zero/punch range.
-
-- Make btrfs_truncate_block() to zero any involved blocks inside the folio
-  Since we have the original range, we know exactly which range inside
-  the folio that should be zeroed.
-
-  It may cover other blocks other than the one with data space reserved,
-  but that's fine, the zeroed range will not be written back anyway.
+This is to address exactly the above case where memory mapped write can
+still leave some garbage beyond EOF.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/btrfs_inode.h | 10 +++++--
- fs/btrfs/file.c        | 37 ++++++++++++++++--------
- fs/btrfs/inode.c       | 65 +++++++++++++++++++++++++++---------------
- 3 files changed, 75 insertions(+), 37 deletions(-)
+ fs/btrfs/inode.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 88 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 61fad5423b6a..17b04702562a 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -565,8 +565,14 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
- 		   struct btrfs_inode *parent_inode, struct btrfs_inode *inode,
- 		   const struct fscrypt_str *name, int add_backref, u64 index);
- int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry);
--int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
--			 int front);
-+
-+enum btrfs_truncate_where {
-+	BTRFS_TRUNCATE_HEAD_BLOCK,
-+	BTRFS_TRUNCATE_TAIL_BLOCK,
-+};
-+int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t end,
-+			 u64 orig_start, u64 orig_end,
-+			 enum btrfs_truncate_where where);
- 
- int btrfs_start_delalloc_snapshot(struct btrfs_root *root, bool in_reclaim_context);
- int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, long nr,
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index e688587329de..23f8f25d617b 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2614,7 +2614,8 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 	u64 lockend;
- 	u64 tail_start;
- 	u64 tail_len;
--	u64 orig_start = offset;
-+	const u64 orig_start = offset;
-+	const u64 orig_end = offset + len - 1;
- 	int ret = 0;
- 	bool same_block;
- 	u64 ino_size;
-@@ -2656,8 +2657,9 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 	if (same_block && len < fs_info->sectorsize) {
- 		if (offset < ino_size) {
- 			truncated_block = true;
--			ret = btrfs_truncate_block(BTRFS_I(inode), offset, len,
--						   0);
-+			ret = btrfs_truncate_block(BTRFS_I(inode), offset, offset + len - 1,
-+						   orig_start, orig_end,
-+						   BTRFS_TRUNCATE_HEAD_BLOCK);
- 		} else {
- 			ret = 0;
- 		}
-@@ -2667,7 +2669,9 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 	/* zero back part of the first block */
- 	if (offset < ino_size) {
- 		truncated_block = true;
--		ret = btrfs_truncate_block(BTRFS_I(inode), offset, 0, 0);
-+		ret = btrfs_truncate_block(BTRFS_I(inode), offset, -1,
-+					   orig_start, orig_end,
-+					   BTRFS_TRUNCATE_HEAD_BLOCK);
- 		if (ret) {
- 			btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
- 			return ret;
-@@ -2704,8 +2708,9 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- 			if (tail_start + tail_len < ino_size) {
- 				truncated_block = true;
- 				ret = btrfs_truncate_block(BTRFS_I(inode),
--							tail_start + tail_len,
--							0, 1);
-+						tail_start, tail_start + tail_len - 1,
-+						orig_start, orig_end,
-+						BTRFS_TRUNCATE_TAIL_BLOCK);
- 				if (ret)
- 					goto out_only_mutex;
- 			}
-@@ -2873,6 +2878,8 @@ static int btrfs_zero_range(struct inode *inode,
- 	int ret;
- 	u64 alloc_hint = 0;
- 	const u64 sectorsize = fs_info->sectorsize;
-+	const u64 orig_start = offset;
-+	const u64 orig_end = offset + len - 1;
- 	u64 alloc_start = round_down(offset, sectorsize);
- 	u64 alloc_end = round_up(offset + len, sectorsize);
- 	u64 bytes_to_reserve = 0;
-@@ -2935,8 +2942,9 @@ static int btrfs_zero_range(struct inode *inode,
- 		}
- 		if (len < sectorsize && em->disk_bytenr != EXTENT_MAP_HOLE) {
- 			btrfs_free_extent_map(em);
--			ret = btrfs_truncate_block(BTRFS_I(inode), offset, len,
--						   0);
-+			ret = btrfs_truncate_block(BTRFS_I(inode), offset, offset + len - 1,
-+						   orig_start, orig_end,
-+						   BTRFS_TRUNCATE_HEAD_BLOCK);
- 			if (!ret)
- 				ret = btrfs_fallocate_update_isize(inode,
- 								   offset + len,
-@@ -2967,7 +2975,9 @@ static int btrfs_zero_range(struct inode *inode,
- 			alloc_start = round_down(offset, sectorsize);
- 			ret = 0;
- 		} else if (ret == RANGE_BOUNDARY_WRITTEN_EXTENT) {
--			ret = btrfs_truncate_block(BTRFS_I(inode), offset, 0, 0);
-+			ret = btrfs_truncate_block(BTRFS_I(inode), offset, -1,
-+						   orig_start, orig_end,
-+						   BTRFS_TRUNCATE_HEAD_BLOCK);
- 			if (ret)
- 				goto out;
- 		} else {
-@@ -2984,8 +2994,9 @@ static int btrfs_zero_range(struct inode *inode,
- 			alloc_end = round_up(offset + len, sectorsize);
- 			ret = 0;
- 		} else if (ret == RANGE_BOUNDARY_WRITTEN_EXTENT) {
--			ret = btrfs_truncate_block(BTRFS_I(inode), offset + len,
--						   0, 1);
-+			ret = btrfs_truncate_block(BTRFS_I(inode), offset, offset + len - 1,
-+						   orig_start, orig_end,
-+						   BTRFS_TRUNCATE_TAIL_BLOCK);
- 			if (ret)
- 				goto out;
- 		} else {
-@@ -3105,7 +3116,9 @@ static long btrfs_fallocate(struct file *file, int mode,
- 		 * need to zero out the end of the block if i_size lands in the
- 		 * middle of a block.
- 		 */
--		ret = btrfs_truncate_block(BTRFS_I(inode), inode->i_size, 0, 0);
-+		ret = btrfs_truncate_block(BTRFS_I(inode), inode->i_size, -1,
-+					   inode->i_size, -1,
-+					   BTRFS_TRUNCATE_HEAD_BLOCK);
- 		if (ret)
- 			goto out;
- 	}
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 538a9ec86abc..6f910c056819 100644
+index 6f910c056819..23cd03716e57 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -4765,15 +4765,16 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
-  *
-  * @inode - inode that we're zeroing
-  * @from - the offset to start zeroing
-- * @len - the length to zero, 0 to zero the entire range respective to the
-- *	offset
-- * @front - zero up to the offset instead of from the offset on
-+ * @end - the inclusive end to finish zeroing, can be -1 meaning truncating
-+ *	  everything beyond @from.
-+ * @where - Head or tail block to truncate.
-  *
-  * This will find the block for the "from" offset and cow the block and zero the
-  * part we want to zero.  This is used with truncate and hole punching.
-  */
--int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
--			 int front)
-+int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t end,
-+			 u64 orig_start, u64 orig_end,
-+			 enum btrfs_truncate_where where)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct address_space *mapping = inode->vfs_inode.i_mapping;
-@@ -4783,20 +4784,30 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 	struct extent_changeset *data_reserved = NULL;
- 	bool only_release_metadata = false;
- 	u32 blocksize = fs_info->sectorsize;
--	pgoff_t index = from >> PAGE_SHIFT;
--	unsigned offset = from & (blocksize - 1);
+@@ -4760,6 +4760,80 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
+ 	return ret;
+ }
+ 
++/*
++ * A helper to zero out all blocks inside range [@orig_start, @orig_end) of
++ * the target folio.
++ * The target folio is the one containing the head or tail block of the range
++ * [@from, @end].
++ *
++ * This is a special case for fs block size < page size, where even if the range
++ * [from, end] is already block aligned, we can still have blocks beyond EOF being
++ * polluted by memory mapped write.
++ */
++static int zero_range_folio(struct btrfs_inode *inode, u64 from, u64 end,
++			    u64 orig_start, u64 orig_end,
++			    enum btrfs_truncate_where where)
++{
++	const u32 blocksize = inode->root->fs_info->sectorsize;
++	struct address_space *mapping = inode->vfs_inode.i_mapping;
++	struct extent_io_tree *io_tree = &inode->io_tree;
++	struct extent_state *cached_state = NULL;
++	struct btrfs_ordered_extent *ordered;
 +	pgoff_t index = (where == BTRFS_TRUNCATE_HEAD_BLOCK) ?
 +			(from >> PAGE_SHIFT) : (end >> PAGE_SHIFT);
- 	struct folio *folio;
- 	gfp_t mask = btrfs_alloc_write_mask(mapping);
- 	size_t write_bytes = blocksize;
- 	int ret = 0;
- 	u64 block_start;
- 	u64 block_end;
++	struct folio *folio;
++	u64 block_start;
++	u64 block_end;
 +	u64 clamp_start;
 +	u64 clamp_end;
- 
--	if (IS_ALIGNED(offset, blocksize) &&
--	    (!len || IS_ALIGNED(len, blocksize)))
-+	ASSERT(where == BTRFS_TRUNCATE_HEAD_BLOCK ||
-+	       where == BTRFS_TRUNCATE_TAIL_BLOCK);
++	int ret = 0;
 +
-+	if (end == (loff_t)-1)
-+		ASSERT(where == BTRFS_TRUNCATE_HEAD_BLOCK);
++again:
++	folio = filemap_lock_folio(mapping, index);
++	/* No folio present. */
++	if (IS_ERR(folio))
++		return 0;
 +
-+	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize))
- 		goto out;
- 
--	block_start = round_down(from, blocksize);
-+	if (where == BTRFS_TRUNCATE_HEAD_BLOCK)
-+		block_start = round_down(from, blocksize);
-+	else
-+		block_start = round_down(end, blocksize);
- 	block_end = block_start + blocksize - 1;
- 
- 	ret = btrfs_check_data_free_space(inode, &data_reserved, block_start,
-@@ -4876,17 +4887,22 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 		goto out_unlock;
- 	}
- 
--	if (offset != blocksize) {
--		if (!len)
--			len = blocksize - offset;
--		if (front)
--			folio_zero_range(folio, block_start - folio_pos(folio),
--					 offset);
--		else
--			folio_zero_range(folio,
--					 (block_start - folio_pos(folio)) + offset,
--					 len);
--	}
-+	/*
-+	 * Although we have only reserved space for the one block, we still should
-+	 * zero out all blocks in the original range.
-+	 * The remaining blocks normally are already holes thus no need to zero again,
-+	 * but it's possible for fs block size < page size cases to have memory mapped
-+	 * writes to pollute ranges beyond EOF.
-+	 *
-+	 * In that case although the polluted blocks beyond EOF will not reach disk,
-+	 * it still affects our page cache.
-+	 */
++	if (!folio_test_uptodate(folio)) {
++		ret = btrfs_read_folio(NULL, folio);
++		folio_lock(folio);
++		if (folio->mapping != mapping) {
++			folio_unlock(folio);
++			folio_put(folio);
++			goto again;
++		}
++		if (!folio_test_uptodate(folio)) {
++			ret = -EIO;
++			goto out_unlock;
++		}
++	}
++	folio_wait_writeback(folio);
++
 +	clamp_start = max_t(u64, folio_pos(folio), orig_start);
 +	clamp_end = min_t(u64, folio_pos(folio) + folio_size(folio) - 1,
 +			  orig_end);
++	block_start = round_down(clamp_start, blocksize);
++	block_end = round_up(clamp_end + 1, blocksize) - 1;
++	lock_extent(io_tree, block_start, block_end, &cached_state);
++	ordered = btrfs_lookup_ordered_range(inode, block_start, block_end + 1 - block_end);
++	if (ordered) {
++		unlock_extent(io_tree, block_start, block_end, &cached_state);
++		folio_unlock(folio);
++		folio_put(folio);
++		btrfs_start_ordered_extent(ordered);
++		btrfs_put_ordered_extent(ordered);
++		goto again;
++	}
 +	folio_zero_range(folio, clamp_start - folio_pos(folio),
 +			 clamp_end - clamp_start + 1);
++	unlock_extent(io_tree, block_start, block_end, &cached_state);
 +
- 	btrfs_folio_clear_checked(fs_info, folio, block_start,
- 				  block_end + 1 - block_start);
- 	btrfs_folio_set_dirty(fs_info, folio, block_start,
-@@ -4988,7 +5004,8 @@ int btrfs_cont_expand(struct btrfs_inode *inode, loff_t oldsize, loff_t size)
- 	 * rest of the block before we expand the i_size, otherwise we could
- 	 * expose stale data.
- 	 */
--	ret = btrfs_truncate_block(inode, oldsize, 0, 0);
-+	ret = btrfs_truncate_block(inode, oldsize, -1, oldsize, -1,
-+				   BTRFS_TRUNCATE_HEAD_BLOCK);
- 	if (ret)
- 		return ret;
++out_unlock:
++	folio_unlock(folio);
++	folio_put(folio);
++	return ret;
++}
++
+ /*
+  * Read, zero a chunk and write a block.
+  *
+@@ -4801,8 +4875,20 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t end,
+ 	if (end == (loff_t)-1)
+ 		ASSERT(where == BTRFS_TRUNCATE_HEAD_BLOCK);
  
-@@ -7623,7 +7640,9 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
- 		btrfs_end_transaction(trans);
- 		btrfs_btree_balance_dirty(fs_info);
+-	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize))
+-		goto out;
++	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize)) {
++		/*
++		 * The target head/tail range is already block aligned.
++		 * If block size >= PAGE_SIZE, meaning it's impossible to mmap a
++		 * page containing anything other than the target block.
++		 * So we can safely exit.
++		 *
++		 * Otherwise we still need to zero out the range inside the folio
++		 * to avoid memory mapped write to pollute beyond EOF.
++		 */
++		if (blocksize >= PAGE_SIZE)
++			return 0;
++		return zero_range_folio(inode, from, end, orig_start, orig_end, where);
++	}
  
--		ret = btrfs_truncate_block(inode, inode->vfs_inode.i_size, 0, 0);
-+		ret = btrfs_truncate_block(inode, inode->vfs_inode.i_size, -1,
-+					   inode->vfs_inode.i_size, -1,
-+					   BTRFS_TRUNCATE_HEAD_BLOCK);
- 		if (ret)
- 			goto out;
- 		trans = btrfs_start_transaction(root, 1);
+ 	if (where == BTRFS_TRUNCATE_HEAD_BLOCK)
+ 		block_start = round_down(from, blocksize);
 -- 
 2.49.0
 
