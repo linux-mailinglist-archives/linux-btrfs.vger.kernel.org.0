@@ -1,164 +1,210 @@
-Return-Path: <linux-btrfs+bounces-13289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13290-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 194EBA9869E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 11:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3057A9873E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 12:25:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6B44177AF2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 09:59:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D427C442C9A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 10:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4510026772E;
-	Wed, 23 Apr 2025 09:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61493267720;
+	Wed, 23 Apr 2025 10:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YJePJHWx"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="No9OPx16";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="No9OPx16"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C39E24166B
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 09:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634D71F4C8C
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745402353; cv=none; b=rfznMQ3Zo8kBtUNgtCB9IW/699WG9fLQiOfQ+zvPjOM0mzrpUjv4j1H20twnKkOJQJ6G9L3FJMQV3cZ7mKD1hRG6U1mFn1I/uY9POr4dZ48H68m6EAVJ3fgk67bxbX7EwjjokPzdfTIJl3XNhV76UDKStbZnVyhp6MK4B++q9XY=
+	t=1745403905; cv=none; b=nceKHKgnA23f299Cf54kc/ORs6d9hK7/DPt2DLCZZeG+43QWs+TUQOwL8SWOEiHg7GMOMo1H1J2Nv21aV2Zor9XB3fInhgrZJ8QBX958iUs8QwM9QKS+BRJ7GJB0W1qRgF6648MFNv04vvK0cYrhvjZgGluIngZkZRkLZyp/xOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745402353; c=relaxed/simple;
-	bh=0CiPL5WEXEIJw+kxPu0f6F4ItVvgMBwlxGUF85waX2A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rk3pWP4CIuiqN9ktlNkHP7COLI9ORMXPox5GU7fII0VReoRhUhvtt8KKQI1i5TTAjL2YajXZkyNT8UbyYmbR5LFoT/pnehQw5TPJBFQpc1FiniA2vSn3geg7hsCaiaKm43gMfypwklLeLb0p1a+1Hb8g2vDc9dFhEnwBFo9jVlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YJePJHWx; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1745403905; c=relaxed/simple;
+	bh=GXHFpcS2j9C0tNqvFx43rO1NLkKzU2tl4CnNlrVyJ9g=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=I9J/vJPeOA1ZXs/6fVYXyWopDUooJkeLi9ezq4Y5ARgnem/MwyvGlDnucIaVfTCitYcNJ+FFNC0hRBXxtTkd3BBhKRXLIc8ttccXspgsXo290KeEkeYjS3ywlITab9P/F6mAHrv5gbzuHP76yGxd0uqvdTanxLVkRgf6xCgoMLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=No9OPx16; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=No9OPx16; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac25520a289so813000366b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 02:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745402350; x=1746007150; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yUeZRj/zZ2ONVqjLiPNAcppJ2cQUlyShZe9TAmdB+wo=;
-        b=YJePJHWxuTcG8DSzmAF/zIGBCiEL4hGZ2IhD236oW3X64b9zkukZCaaprRcYLz5aU5
-         +EkLeejrXjauq+1h5gXUL/GvhoQOmt3WSM5LSHvRrnenEcJf9sOfef3ZMqUjd4U9Rxhw
-         D3MnSaKy2IKa9aYp4j7J43wAAlF4zSr6K4dUp8SE/xs8PK3TQl4qDy2PMqzWsBHtKqCr
-         PWFCMwHwZXSlgstUkt7PWEtlQ9EdIzvfMIWJPwYZHRmOrHkftWC50pukLvCZ5xx14Qhj
-         v/p/1TBTsoQkaF34aibkJHTcpVlRpcO8VmypsgcPznS2YzNEJSziafI/G0bP8tbtsOPv
-         0TxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745402350; x=1746007150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yUeZRj/zZ2ONVqjLiPNAcppJ2cQUlyShZe9TAmdB+wo=;
-        b=PSvL0QFnTM9qcJDAn4oWmlKmqDzGyegFGwNEJ4ErdOxot912gzAjggeS4inl2D3Gy/
-         6N43RdmG5pHzZhIenYmV583/r4R1CXY9fwi2MQWEwq532tRsxAUNq+7OFodf08O2ohXz
-         +QuWawgprgAPjV9bqwDGo32jUQl5o82aMTHQrbtK7exS9adUS5p+WDE8AlCWJ593p6U7
-         MACPmQI/GaArWNvtMrq7u9jQKwWHuPE30dkoy6M5pjKK0tcCaxkelOkHj4A1qpgb/bDU
-         7zO3rrTEEDSQDK8lCYMAsn9oKtVqb+hZpBazagW27kYazpBWexF4Qz8XhoO+ce8GOgGm
-         NdbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcSsSEZRHkho8c/69rUs23vXVpWzxJHDKACs+ZnL7nlTUi7X7wCzZIKKomnrzFASZX5bAL8SYSxOMouQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxttrfAlJ+NgJEbW0Bxwgta6NxKI+yz5IArFAYD+7MUjz4gDPk3
-	wkIdLGAOn67JxBSlIah3pwNKj0vkhE55bp+5hCdlIkbbjbWr7yRIivYG7y2Rw+kApKSucJ8VaA+
-	8R+dnCVgfTqsObONwvJEvhxt46seUKJTdi3MPpQ==
-X-Gm-Gg: ASbGncs7+y0kNqovYHQgt/Y2IlzaAzkQygUJAmvdW/CICkyjj5tJRhHL/vX28OHcm1o
-	sradpBHQvb+ZDDEszffI2GLfpyFpk2GM6YIMt+ATCTAsriQZCAVYfr0KSJVblEixHb9cpIjzujs
-	lBr+kGwsrkFNJNflBDzF37
-X-Google-Smtp-Source: AGHT+IEfJIOq6PpViVZntMAYxqQT9hb8IZS/Kw+/z79+/jBSekGm/D61mLq5WCt9qsSzlLbCd68PyjgJrbOtsNTWh3E=
-X-Received: by 2002:a17:906:ef0e:b0:ac8:1798:c2e7 with SMTP id
- a640c23a62f3a-acb74d8313amr1935478966b.41.1745402349786; Wed, 23 Apr 2025
- 02:59:09 -0700 (PDT)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 76E452117F
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745403901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=sXe66ISMmmjRomqCuyd8ZDDU1Ac/16lHgWUVCoY6ZBc=;
+	b=No9OPx1621DqLF6vjCEaNKOHwjAOw4Waq2d7uHcnA6llUgEaD6UnmTlZb/tUOY/TaQc1D3
+	4TZAOosABMf4LdasOC3+VWEkFj3utcwWfrXUbEv5rIi2rtxVEE4r7hhLIfvadyiFcS6fem
+	Mi4HBWMiNUQCUd7CMLuaem6ajV+6uRg=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745403901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=sXe66ISMmmjRomqCuyd8ZDDU1Ac/16lHgWUVCoY6ZBc=;
+	b=No9OPx1621DqLF6vjCEaNKOHwjAOw4Waq2d7uHcnA6llUgEaD6UnmTlZb/tUOY/TaQc1D3
+	4TZAOosABMf4LdasOC3+VWEkFj3utcwWfrXUbEv5rIi2rtxVEE4r7hhLIfvadyiFcS6fem
+	Mi4HBWMiNUQCUd7CMLuaem6ajV+6uRg=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE03E13691
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:25:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id awNoHPy/CGiKHgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:25:00 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: enable experimental large data folio support
+Date: Wed, 23 Apr 2025 19:54:42 +0930
+Message-ID: <676154e5415d8d15499fb8c02b0eabbb1c6cef26.1745403878.git.wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250423080940.4025020-1-neelx@suse.com> <CAL3q7H7A_OnTQviZpCgzrGUFe1K=VfMiWXaba56E3ucPHnVkNg@mail.gmail.com>
- <CAPjX3Fdor0TgkQtb2meJD4PFerOQV1Qcjs5HEyBCt5TNt8-vsA@mail.gmail.com> <CAL3q7H7g3xvs8TnSsYwaBP1n_EyRn1eC6SgeMP41G7BT=VZ2-A@mail.gmail.com>
-In-Reply-To: <CAL3q7H7g3xvs8TnSsYwaBP1n_EyRn1eC6SgeMP41G7BT=VZ2-A@mail.gmail.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 23 Apr 2025 11:58:57 +0200
-X-Gm-Features: ATxdqUFRj1_ZF5gUhGpIkRBitM3OA1UsB5IThJag95jwC9GGk-DxPyDzvsiVd3c
-Message-ID: <CAPjX3FcVq3FTBxmQkr3QZR3GL6AG7DkKH1SeZ5hQ1JXBN=fo=g@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fiemap: make the assert more explicit after
- handling the error cases
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, 23 Apr 2025 at 11:55, Filipe Manana <fdmanana@kernel.org> wrote:
->
-> On Wed, Apr 23, 2025 at 10:48=E2=80=AFAM Daniel Vacek <neelx@suse.com> wr=
-ote:
-> >
-> > On Wed, 23 Apr 2025 at 11:04, Filipe Manana <fdmanana@kernel.org> wrote=
-:
-> > >
-> > > On Wed, Apr 23, 2025 at 9:10=E2=80=AFAM Daniel Vacek <neelx@suse.com>=
- wrote:
-> > > >
-> > > > Let's not assert the errors and clearly state the expected result o=
-nly
-> > > > after eventual error handling. It makes a bit more sense this way.
-> > >
-> > > It doesn't make more sense to me...
-> > > I prefer to assert expected results right after the function call.
-> >
-> > Oh well, if an error is expected then I get it. Is an error likely
-> > here?
->
-> The assertion serves to state what is never expected, and not what is
-> likely or unlikely.
-> It's about stating that an exact match shouldn't happen, i.e. ret =3D=3D =
-0.
->
-> We do this sort of asserts in many places, and I find it more clear this =
-way.
+With all the preparation patches already merged, it's pretty easy to
+enable large data folios:
 
-I see. Forget it then.
+- Remove the ASSERT() on folio size in btrfs_end_repair_bio()
 
-Thanks.
+- Add a helper to properly set the max folio order
+  Currently due to several call sites are fetching the bitmap content
+  directly into an unsigned long, we can only support BITS_PER_LONG
+  blocks for each bitmap.
 
-> > I understood the comment says there can't be a file extent item
-> > at offset (u64)-1 which implies a strict return value of 1 and not an
-> > error or something >1. So that's why. And it's still quite after the
-> > function call.
-> >
-> > But I'm happy to scratch it if you don't like it.
-> >
-> > > Thanks.
-> > >
-> > > >
-> > > > Signed-off-by: Daniel Vacek <neelx@suse.com>
-> > > > ---
-> > > >  fs/btrfs/fiemap.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/fs/btrfs/fiemap.c b/fs/btrfs/fiemap.c
-> > > > index b80c07ad8c5e7..034f832e10c1a 100644
-> > > > --- a/fs/btrfs/fiemap.c
-> > > > +++ b/fs/btrfs/fiemap.c
-> > > > @@ -568,10 +568,10 @@ static int fiemap_find_last_extent_offset(str=
-uct btrfs_inode *inode,
-> > > >          * there might be preallocation past i_size.
-> > > >          */
-> > > >         ret =3D btrfs_lookup_file_extent(NULL, root, path, ino, (u6=
-4)-1, 0);
-> > > > -       /* There can't be a file extent item at offset (u64)-1 */
-> > > > -       ASSERT(ret !=3D 0);
-> > > >         if (ret < 0)
-> > > >                 return ret;
-> > > > +       /* There can't be a file extent item at offset (u64)-1 */
-> > > > +       ASSERT(ret =3D=3D 1);
-> > > >
-> > > >         /*
-> > > >          * For a non-existing key, btrfs_search_slot() always leave=
-s us at a
-> > > > --
-> > > > 2.47.2
-> > > >
-> > > >
+- Call the helper when reading/creating an inode
+
+The support has the following limits:
+
+- No large folios for data reloc inode
+  The relocation code still requires page sized folio.
+  But it's not that hot nor common compared to regular buffered ios.
+
+  Will be improved in the future.
+
+- Requires CONFIG_BTRFS_EXPERIMENTAL
+
+Unfortunately I do not have a physical machine for performance test, but
+if everything goes like XFS/EXT4, it should mostly bring single digits
+percentage performance improvement in the real world.
+
+Although I believe there are still quite some optimizations to be done,
+let's focus on testing the current large data folio support first.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/bio.c         |  6 ------
+ fs/btrfs/btrfs_inode.h | 18 ++++++++++++++++++
+ fs/btrfs/inode.c       |  2 ++
+ 3 files changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index a3ee9a976f6f..d60586a8d48b 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -165,12 +165,6 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
+ 	struct bio_vec *bv = bio_first_bvec_all(&repair_bbio->bio);
+ 	int mirror = repair_bbio->mirror_num;
+ 
+-	/*
+-	 * We can only trigger this for data bio, which doesn't support larger
+-	 * folios yet.
+-	 */
+-	ASSERT(folio_order(page_folio(bv->bv_page)) == 0);
+-
+ 	if (repair_bbio->bio.bi_status ||
+ 	    !btrfs_data_csum_ok(repair_bbio, dev, 0, bv)) {
+ 		bio_reset(&repair_bbio->bio, NULL, REQ_OP_READ);
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index a5ebd2b9e242..61fad5423b6a 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -525,6 +525,24 @@ static inline void btrfs_update_inode_mapping_flags(struct btrfs_inode *inode)
+ 		mapping_set_stable_writes(inode->vfs_inode.i_mapping);
+ }
+ 
++static inline void btrfs_set_inode_mapping_order(struct btrfs_inode *inode)
++{
++	const struct btrfs_fs_info *fs_info = inode->root->fs_info;
++
++	/* Metadata inode should not reach here. */
++	ASSERT(is_data_inode(inode));
++
++	/* For data reloc inode, it still requires page sized folio. */
++	if (unlikely(btrfs_root_id(inode->root) == BTRFS_DATA_RELOC_TREE_OBJECTID))
++		return;
++
++	/* We only allows BITS_PER_LONGS blocks for each bitmap. */
++#ifdef CONFIG_BTRFS_EXPERIMENTAL
++	mapping_set_folio_order_range(inode->vfs_inode.i_mapping, 0,
++			ilog2(((BITS_PER_LONG << fs_info->sectorsize_bits) >> PAGE_SHIFT)));
++#endif
++}
++
+ /* Array of bytes with variable length, hexadecimal format 0x1234 */
+ #define CSUM_FMT				"0x%*phN"
+ #define CSUM_FMT_VALUE(size, bytes)		size, bytes
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a88aa23cdbb6..538a9ec86abc 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3930,6 +3930,7 @@ static int btrfs_read_locked_inode(struct btrfs_inode *inode, struct btrfs_path
+ 	btrfs_inode_split_flags(btrfs_inode_flags(leaf, inode_item),
+ 				&inode->flags, &inode->ro_flags);
+ 	btrfs_update_inode_mapping_flags(inode);
++	btrfs_set_inode_mapping_order(inode);
+ 
+ cache_index:
+ 	/*
+@@ -6343,6 +6344,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+ 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATACOW |
+ 				BTRFS_INODE_NODATASUM;
+ 		btrfs_update_inode_mapping_flags(BTRFS_I(inode));
++		btrfs_set_inode_mapping_order(BTRFS_I(inode));
+ 	}
+ 
+ 	ret = btrfs_insert_inode_locked(inode);
+-- 
+2.49.0
+
 
