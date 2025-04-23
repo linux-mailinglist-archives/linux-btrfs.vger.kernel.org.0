@@ -1,115 +1,168 @@
-Return-Path: <linux-btrfs+bounces-13269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 809D0A97CF7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 04:45:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74FF9A97EAA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 08:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EC493BFECE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 02:44:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AECAA7ADDA2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 06:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AD8265CD0;
-	Wed, 23 Apr 2025 02:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833CD1C8631;
+	Wed, 23 Apr 2025 06:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="O9vmPPbJ"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CmTl5vO3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="j3xXW7/z";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CmTl5vO3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="j3xXW7/z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FAC265CAD
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 02:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779D31C6FF4
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 06:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745376272; cv=none; b=pK/jaUtue7q14uR5n/h08NlDsCs/ZQgGkWA2NbXbHbYfdekt35u2k3rqmbLyK647Qx1IwMffpJtKFPqJ9zMUk6zN8KvWzVHq8uojvqDJfbQEzpQezkzE0NtaO8NdYdAFblZrGad8zHNKqxIokuciPJyfhG4CvhyakYlrQMav+Tc=
+	t=1745388360; cv=none; b=jUIqbl73MG3YnSQ0F71xSNBWGt1YJ49wecoImvCn3Eo4csZsxXEbp7Q0oa+lWT2O2lYIS6jE6BTDP6W/TDpUtFwIWPVwB3Cn203lUzz2+NI/FJhstXS0lvaaROfUZIHq7kgj9m5AVbe88/W7MSBumJ7h/XTAHyyVM2pFVh6Z2gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745376272; c=relaxed/simple;
-	bh=BQAz1lqZ9/UWozD5xiwBRRlpawMPG3E6/DUqFo9gaVc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oGU5FqpBsOr7/thcLV0ssArofuv8sWO6+i7yTXH1iErIIYGb/+EtiUwNPCpsPST6iSPjT0k8kL2p5XWReg2mID4c3k/EDthljvVUKJkR3EqYYXMnm+MJFfN5QyrPl873Dra4GN1sRMCycQUHUkmMt517AgnMVElQZLO9IAKECsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=O9vmPPbJ; arc=none smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1745376270; x=1776912270;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BQAz1lqZ9/UWozD5xiwBRRlpawMPG3E6/DUqFo9gaVc=;
-  b=O9vmPPbJn1/FEtObcE/U2+Wd9HRHliVlon2VWekEdJdEYxyhdqrWBV+k
-   loCoF8AGgNWdQiNGryJn7DCX36mnBfGaqfiUMR7otOoddszcsTzJcH15/
-   km96T+EU++j/eN8wt7g/UraVCJTbD5d6/N4a1iuQMt5w+uqW7Jkjh3/E9
-   iXAnF2+maxsdCK8hP/JDFEdhbNEoaKZz7ZSQn6OVk3a7Hq8dbSV2yFwLQ
-   nALhoyKw2Ra7l6n30lB3ygLEKZXl7GWrN/MbD7qZDDf1WoG2lT+28lGWE
-   KFN6PwFWZ07i2QOqy0sUi35Sit5Eo6YTnD9T+NNBXCafcoC6Jkd4UdeBp
-   Q==;
-X-CSE-ConnectionGUID: RO8CbBSWRKuitTYciruyOg==
-X-CSE-MsgGUID: x9FMFnueTjubCTKLiUBT1Q==
-X-IronPort-AV: E=Sophos;i="6.15,232,1739808000"; 
-   d="scan'208";a="83011854"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Apr 2025 10:44:27 +0800
-IronPort-SDR: 680845f2_AGqYbOh8fdqGcLVjIvT/RJPbxg/pco1T75+9TN2WOYDF7jx
- aE767tistuzBUXVeIfnPn8heqUoWpQyBP+ImcCQ==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Apr 2025 18:44:18 -0700
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon..) ([10.224.173.39])
-  by uls-op-cesaip02.wdc.com with ESMTP; 22 Apr 2025 19:44:27 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v4 13/13] btrfs: reclaim from sub-space space_info
-Date: Wed, 23 Apr 2025 11:43:53 +0900
-Message-ID: <e8f33a754e5d47d031e0056158df93756a11b5c5.1745375070.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1745375070.git.naohiro.aota@wdc.com>
-References: <cover.1745375070.git.naohiro.aota@wdc.com>
+	s=arc-20240116; t=1745388360; c=relaxed/simple;
+	bh=GYzMHLcAsVWzyWn3po2G26RuijsKguDyw9DQZzgjWQw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ed+m3OFmWc9H2ro9upMWjb87LEaVTKaAVTB8IygDCh6Wg6Uq0fDOPq3v/7aIAkRWKoBmUIwykki0py1ww4pcLhWWuGbQQQ06wqfgklVHs2GC6k1Uyac98uCvfad3ANbrxfak1iiLYOSLv9vS9K1o1/C0HqizEydPlegYrMW+fIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CmTl5vO3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=j3xXW7/z; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CmTl5vO3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=j3xXW7/z; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 80BB31F38D;
+	Wed, 23 Apr 2025 06:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1745388356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pkzb5x8KFVWrmch90shf5Lt4wD8+BB40ntGSkZkdBzM=;
+	b=CmTl5vO3dxQW9RSc/336cz1fh0uZ+Kg4+K0acCigDMBg7VpjlT1RpgXh92XW4kfTNn91C5
+	uQs9nCX/ydFdhjGKL+NUu0cGeS1KnpljFLnJGs4d6AXx4r9VlTYUNy1JGOBcq7FOVBIXar
+	yPLguBBogvP0MHmmKTwxOuAH54lvusE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1745388356;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pkzb5x8KFVWrmch90shf5Lt4wD8+BB40ntGSkZkdBzM=;
+	b=j3xXW7/z2Ton30OQVWplDQcCwDFad7mIt5H3jpq1faEPWa5W6V3y5/IstHTl4Fm64MXxbz
+	P6Ugc0vJJODcabBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1745388356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pkzb5x8KFVWrmch90shf5Lt4wD8+BB40ntGSkZkdBzM=;
+	b=CmTl5vO3dxQW9RSc/336cz1fh0uZ+Kg4+K0acCigDMBg7VpjlT1RpgXh92XW4kfTNn91C5
+	uQs9nCX/ydFdhjGKL+NUu0cGeS1KnpljFLnJGs4d6AXx4r9VlTYUNy1JGOBcq7FOVBIXar
+	yPLguBBogvP0MHmmKTwxOuAH54lvusE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1745388356;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pkzb5x8KFVWrmch90shf5Lt4wD8+BB40ntGSkZkdBzM=;
+	b=j3xXW7/z2Ton30OQVWplDQcCwDFad7mIt5H3jpq1faEPWa5W6V3y5/IstHTl4Fm64MXxbz
+	P6Ugc0vJJODcabBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8588E13691;
+	Wed, 23 Apr 2025 06:05:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iZOvHkODCGi+SwAAD6G6ig
+	(envelope-from <hare@suse.de>); Wed, 23 Apr 2025 06:05:55 +0000
+Message-ID: <8ec98935-fac7-44d1-a9ba-d5d8688bcf4a@suse.de>
+Date: Wed, 23 Apr 2025 08:05:55 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/17] block: add a bio_add_virt_nofail helper
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+ Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Andreas Gruenbacher <agruenba@redhat.com>,
+ Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
+ Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
+ linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20250422142628.1553523-1-hch@lst.de>
+ <20250422142628.1553523-2-hch@lst.de>
+Content-Language: en-US
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20250422142628.1553523-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RL4dj9zzjoqkf1d3y4dfoejhya)];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.de:mid,suse.de:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Modify btrfs_async_{data,metadata}_reclaim() to run the reclaim process on
-the sub-spaces as well.
+On 4/22/25 16:26, Christoph Hellwig wrote:
+> Add a helper to add a directly mapped kernel virtual address to a
+> bio so that callers don't have to convert to pages or folios.
+> 
+> For now only the _nofail variant is provided as that is what all the
+> obvious callers want.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   include/linux/bio.h | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/space-info.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Cheers,
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 1205588b6234..867092de09d1 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1223,6 +1223,10 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 	fs_info = container_of(work, struct btrfs_fs_info, async_reclaim_work);
- 	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
- 	do_async_reclaim_metadata_space(space_info);
-+	for (int i = 0; i < BTRFS_SPACE_INFO_SUB_GROUP_MAX; i++) {
-+		if (space_info->sub_group[i])
-+			do_async_reclaim_metadata_space(space_info->sub_group[i]);
-+	}
- }
- 
- /*
-@@ -1451,6 +1455,9 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 	fs_info = container_of(work, struct btrfs_fs_info, async_data_reclaim_work);
- 	space_info = fs_info->data_sinfo;
- 	do_async_reclaim_data_space(space_info);
-+	for (int i = 0; i < BTRFS_SPACE_INFO_SUB_GROUP_MAX; i++)
-+		if (space_info->sub_group[i])
-+			do_async_reclaim_data_space(space_info->sub_group[i]);
- }
- 
- void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
+Hannes
 -- 
-2.49.0
-
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
