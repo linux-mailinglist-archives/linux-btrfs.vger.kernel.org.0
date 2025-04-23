@@ -1,655 +1,648 @@
-Return-Path: <linux-btrfs+bounces-13335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13337-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55B24A99470
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 18:14:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBAAA99499
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 18:18:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D03B81BC3C4B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 16:07:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D62F11BC6635
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 16:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2CE28EA43;
-	Wed, 23 Apr 2025 16:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1dMW8zu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133612857C5;
+	Wed, 23 Apr 2025 16:08:02 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailfilter06-out21.webhostingserver.nl (mailfilter06-out21.webhostingserver.nl [141.138.168.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842F9264A94
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 16:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745424050; cv=none; b=emeCM/sDr4tmQGrAEuL3/2Orkj/mKKggMeQIuyttsQ7CfBy3L2WSXlZt5TfyruriFiiUbjjv83UBouaqgMciVurGaKywfBgJ/nnujVQgqfWcA3X4/qrSr962xMbYXXehJADfIH2zPf8mv/v6Aqh7dDDZjlk09mSdM/PWMVxRBqA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745424050; c=relaxed/simple;
-	bh=I/1F2D1xvlw4rTy5Rj41rA7XjJA7MM7RkjJU7KafH3I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d2deBOvwS7NesOe6h02JRGcgrpjUan8wcU7YvJ14LoaGWjdqUkX38tY9PcNf/Umt8o5RZRVLe2LsSucG1OEyKX6XH/eRRFkBD+akGinTp8/sMrWT4kArU+h7iXUpdyYuGb3doRZw3QIJvqjn/ZTtaD1Ih+atox8S2Ep0qGW6AS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1dMW8zu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC564C4CEEA
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 16:00:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745424050;
-	bh=I/1F2D1xvlw4rTy5Rj41rA7XjJA7MM7RkjJU7KafH3I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=l1dMW8zuvTD+tnA1B+AfpOfJFDAIwnNLL9OOPcvldPZydJvINaspuQHjfn/De6sen
-	 w9zOx95iEpJQ1snnRkZ22RHRkmFBPt8ofO/QPeQLq5Pdt3y2b7Za5b20SDr2kKJsgx
-	 Iy4YPaoNBLYdPf/pGtvgFmuGCr3rhDXERSwYmslnlOTPDYbnj53jn0t3s7VnKwtuyA
-	 PiIMT2c7GBTJ+lhsNJMT8JaQuXW21F+R/Lu6a9MfelIKN6dt70rdcmNKq0o2IA+IZe
-	 2kbjIJ6eSYR681HKLAwGjIuGRcK7vOMfoXLfNLoMn69Kh4X23p3J2mlK28oDz/r4om
-	 fyIJmc+ea/aeA==
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac28e66c0e1so6066466b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 09:00:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwUfBUCJAWi/yc+b/Lou9mszBBxIb4jilviOyLvegkB+uaDiJ1F
-	n+r+8w8CC+nmO8zONPqJNIej7JLRYTlefCwViQ4Ur43/6V5QxYEOMdcCvYT7X4S11gwTbfQsWS3
-	3UMNufqVpaykD4zP4hk0uvS1YP68=
-X-Google-Smtp-Source: AGHT+IFQ3wGzSiNylEsmr8R7kZzEWsaXKNh0YB9pVEOqX5Jnsp6zacp9dykjaBm4ghZupZqnnAFcfBASg22S5iJVHJE=
-X-Received: by 2002:a17:906:c10f:b0:ac6:f6e2:7703 with SMTP id
- a640c23a62f3a-acb74ad2854mr1639677766b.8.1745424048359; Wed, 23 Apr 2025
- 09:00:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDA527B4EE
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 16:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=141.138.168.87
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745424480; cv=pass; b=jGNQBfVuhQ3rYWlXgQojlhrv5GhIYEGRuhae4vNbCyeYQreLYFmccN6FtcNhYNARO2qefZrTIp0fhVTEzt4RarInyUYvJbBfyLKLHhBDIPI95k9ZLHwG0NBwxFrvfRm9Fgz+7a8yqd+ie5QvPJKriQCwjVXDUbTGdqm1I6ayf/w=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745424480; c=relaxed/simple;
+	bh=lunTwmJkHEIi9/6UGz2wQMisHChqfja335Ic8YJ3hNE=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fsZ6oOPCy3LLQCaRHEXX6tK5sNWvcxpVWLAZmPGvP7wb8iW1mPO98bLd4JwIzie3TCYuWbaDMs6+QwHv2gJgOkhCVgSSIsPukLCbouC+O4yh9mOkxt2hMwkq6cU3J3IZtNuFbgnb1ofdpE7x9NzMjpNrYHvWnFeQJq1X1I+UdWc=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=pass smtp.client-ip=141.138.168.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+ARC-Seal: i=2; a=rsa-sha256; t=1745424409; cv=pass;
+	d=webhostingserver.nl; s=whs1;
+	b=NZZy5xP88dERHCNkkeiKKIJRrD0UPtKoP4viqVixR5sF6q+FfTrhzpuHbsyuS7wJwku/EDo/KNbj2
+	 0DhotuAq0g5sz2N525zlJM//XEED3Qc/plFzNB6ZXh3s4tio5HEu7imqiFAahbITv1Fe8tGR7s91YE
+	 Uxh/NY1kPY2qaKAKeMWdC9WuljHRStpFk6kFWM0x2wqjbT9f0RS9owtv2V4tzZSbtsqJjzBLjaU1WG
+	 SjTdgk3Xvg2fjr6ut75u3NmQAHjv5rlcDfc6M1TLI1sO0W73VOVkRjrJyZLTOcarX1Zz1tKEEz7pDW
+	 KDUcM5A1EBArcWVxPUlTqjH+/azP2CA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed;
+	d=webhostingserver.nl; s=whs1;
+	h=content-type:mime-version:references:in-reply-to:message-id:date:subject:to:
+	 from:from;
+	bh=Nl69xl8vbHQjBaPnM83chyemx8CdnAw4GM+m+f5Lt0A=;
+	b=f3UXebP8xnA5kf1ZLKkx89BQ05uRw+9qWsowPWHqfk8u6Z66G8I8mDfkgb+yVPUyuFRUnDfmhGyaW
+	 nbu+SFdNVHjnGVKMy63rEinsx9Bw5YPfu4wcKvSLvbTdxhFrtekCiIx1uFDzDnp8mlAecVDfPjeZP1
+	 IQ0QZNpV4bvDQ/aQdpiaP/2AdylngWQiUguG57pR9mTBXgQS1rBd/80nIhWq6Dcfg7Kp2A2GGH+7dD
+	 NH4HxtwErQebVKuvzK7u05Xjyfmf2bAcMnZ8akR4VDTGenciPc2yhs5Mvn0z7Tq0fMpcccFIQjhSv/
+	 gS7m0aAnewd5Z2nDogiYQSggAaq8HKQ==
+ARC-Authentication-Results: i=2; mailfilter06.webhostingserver.nl;
+	spf=softfail smtp.mailfrom=gmail.com smtp.remote-ip=141.138.168.154;
+	dmarc=fail header.from=gmail.com;
+	arc=pass header.oldest-pass=0;
+X-Halon-ID: f5006913-205c-11f0-8839-001a4a4cb958
+Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
+	by mailfilter06.webhostingserver.nl (Halon) with ESMTPSA
+	id f5006913-205c-11f0-8839-001a4a4cb958;
+	Wed, 23 Apr 2025 18:06:46 +0200 (CEST)
+ARC-Seal: i=1; cv=none; a=rsa-sha256; d=webhostingserver.nl; s=whs1; t=1745424406;
+	 b=kihDPNOa05xm97SfOxvd2PCXPEYRccgDZrvu/J1pVGb415NcB6A8Ce7GUX+dpzemGbjUWO3g8t
+	  XJDUlyHFd8xvdSoZR3g7QVZ2E3Vme8B1enjMf8ziSN2cI7kMdtRK/rlNfwofSmyo03a4kbz/nh
+	  aa3SdM1Bur7cWkDzKxfxIqpKzEwFvcfD0DALqWqxQjwgR/2DPt+fBfFo37kUFEeosGDuJ6PAxe
+	  SdFoNvjKlm44u+dIel+s4+7UWl8EzlFNqqC4e6pBRf7zejQIDqZQB0elXY5Jl+J9IXdqjktjXE
+	  BqdbjKsjwOYQM/utlVDEqpcHtWmcEs0Uyp0mS1H9ksHOIA==;
+ARC-Authentication-Results: i=1; webhostingserver.nl; smtp.remote-ip=178.250.146.69;
+	iprev=pass (cust-178-250-146-69.breedbanddelft.nl) smtp.remote-ip=178.250.146.69;
+	auth=pass (PLAIN) smtp.auth=ferry.toth@elsinga.info;
+	spf=softfail smtp.mailfrom=gmail.com;
+	dmarc=skipped header.from=gmail.com;
+	arc=none
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed; d=webhostingserver.nl; s=whs1; t=1745424406;
+	bh=lunTwmJkHEIi9/6UGz2wQMisHChqfja335Ic8YJ3hNE=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:
+	  From;
+	b=XsSHJXLQSETj5B5ymQYqIzPUWOdY2IaNtuEw+xgZBy0OkmRqFp+2rc54X1gTJ3SUKETiEVMhn9
+	  EXyFgPBbGZZpI8CgdJf2q0V5UopIya4eAYJlIHfx/S969iRIpzsjpLmNOLkeYdnjaJL+bRku0U
+	  RfxVfoQOLVf2oa24QmZjKI8RrdrcYJEgaD5Wl2y9pFNBOk+LhEavoItOA6Cl4VVdVFy4kX5cM/
+	  mth1gm45XDRa9UMEg7pFiUdg3qRTzHt38wpVUBXgzoo+ius7rqX7F+4jfe/JHbqIhk1E84VqQy
+	  ZcZGP2YtRWNToOU0CiZMrM7Fc+6Q4EXBoqa1PqVAbcP3ew==;
+Authentication-Results: webhostingserver.nl;
+	iprev=pass (cust-178-250-146-69.breedbanddelft.nl) smtp.remote-ip=178.250.146.69;
+	auth=pass (PLAIN) smtp.auth=ferry.toth@elsinga.info;
+	spf=softfail smtp.mailfrom=gmail.com;
+	dmarc=skipped header.from=gmail.com;
+	arc=none
+Received: from cust-178-250-146-69.breedbanddelft.nl ([178.250.146.69] helo=smtp)
+	by s198.webhostingserver.nl with esmtpa (Exim 4.98.2)
+	(envelope-from <fntoth@gmail.com>)
+	id 1u7ccY-0000000EN6S-2h8q;
+	Wed, 23 Apr 2025 18:06:46 +0200
+From: Ferry Toth <fntoth@gmail.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+ Qu Wenruo <wqu@suse.com>
+Subject: Re: Errors on newly created file system
+Date: Wed, 23 Apr 2025 18:06:42 +0200
+Message-ID: <2366963.X513TT2pbd@ferry-quad>
+In-Reply-To: <aee691cc-4536-40a7-8d98-b31040e0b1d6@suse.com>
+References:
+ <669c174e-5835-471f-9065-279a7da8f190@gmail.com>
+ <cdf268c1-b031-488e-a2f3-d68cc88f4d16@gmail.com>
+ <aee691cc-4536-40a7-8d98-b31040e0b1d6@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1744984487.git.josef@toxicpanda.com> <cd0f8b9b2ab02a3c0a5fc30596cc5f2b9c7ea349.1744984487.git.josef@toxicpanda.com>
-In-Reply-To: <cd0f8b9b2ab02a3c0a5fc30596cc5f2b9c7ea349.1744984487.git.josef@toxicpanda.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 23 Apr 2025 17:00:11 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H64_fPGY6M9oOLY6E_HGKQDKANUTqJHz6PzXOw3H206eQ@mail.gmail.com>
-X-Gm-Features: ATxdqUHZqXdNir_mvNi9yUYd4PUw0apEvjt8cbcGzUvgrDorA8U_d-cMj41TuhI
-Message-ID: <CAL3q7H64_fPGY6M9oOLY6E_HGKQDKANUTqJHz6PzXOw3H206eQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] btrfs: use buffer radix for extent buffer
- writeback operations
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="nextPart3162908.4XsnlVU6TS";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+
+--nextPart3162908.4XsnlVU6TS
+Content-Type: multipart/alternative; boundary="nextPart2810006.C4sosBPzcN";
+ protected-headers="v1"
+Content-Transfer-Encoding: 7Bit
+From: Ferry Toth <fntoth@gmail.com>
+Subject: Re: Errors on newly created file system
+Date: Wed, 23 Apr 2025 18:06:42 +0200
+Message-ID: <2366963.X513TT2pbd@ferry-quad>
+In-Reply-To: <aee691cc-4536-40a7-8d98-b31040e0b1d6@suse.com>
+MIME-Version: 1.0
+
+This is a multi-part message in MIME format.
+
+--nextPart2810006.C4sosBPzcN
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 18, 2025 at 2:58=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> Currently we have this ugly back and forth with the btree writeback
-> where we find the folio, find the eb associated with that folio, and
-> then attempt to writeback.  This results in two different paths for
-> subpage eb's and >=3D pagesize eb's.
->
-> Clean this up by adding our own infrastructure around looking up tag'ed
-> eb's and writing the eb's out directly.  This allows us to unify the
-> subpage and >=3D pagesize IO paths, resulting in a much cleaner writeback
-> path for extent buffers.
->
-> I ran this through fsperf on a VM with 8 CPUs and 16gib of ram.  I used
-> smallfiles100k, but reduced the files to 1k to make it run faster, the
-> results are as follows, with the statistically significant improvements
-> marked with *, there were no regressions.  fsperf was run with -n 10 for
-> both runs, so the baseline is the average 10 runs and the test is the
-> average of 10 runs.
->
-> smallfiles100k results
->       metric           baseline       current        stdev            dif=
-f
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> avg_commit_ms               68.58         58.44          3.35   -14.79% *
-> commits                    270.60        254.70         16.24    -5.88%
-> dev_read_iops                  48            48             0     0.00%
-> dev_read_kbytes              1044          1044             0     0.00%
-> dev_write_iops          866117.90     850028.10      14292.20    -1.86%
-> dev_write_kbytes      10939976.40   10605701.20     351330.32    -3.06%
-> elapsed                     49.30            33          1.64   -33.06% *
-> end_state_mount_ns    41251498.80   35773220.70    2531205.32   -13.28% *
-> end_state_umount_ns      1.90e+09      1.50e+09   14186226.85   -21.38% *
-> max_commit_ms                 139        111.60          9.72   -19.71% *
-> sys_cpu                      4.90          3.86          0.88   -21.29%
-> write_bw_bytes        42935768.20   64318451.10    1609415.05    49.80% *
-> write_clat_ns_mean      366431.69     243202.60      14161.98   -33.63% *
-> write_clat_ns_p50        49203.20         20992        264.40   -57.34% *
-> write_clat_ns_p99          827392     653721.60      65904.74   -20.99% *
-> write_io_kbytes           2035940       2035940             0     0.00%
-> write_iops               10482.37      15702.75        392.92    49.80% *
-> write_lat_ns_max         1.01e+08      90516129    3910102.06   -10.29% *
-> write_lat_ns_mean       366556.19     243308.48      14154.51   -33.62% *
->
-> As you can see we get about a 33% decrease runtime, with a 50%
-> throughput increase, which is pretty significant.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/extent_io.c   | 344 ++++++++++++++++++++---------------------
->  fs/btrfs/extent_io.h   |   1 +
->  fs/btrfs/transaction.c |   5 +-
->  3 files changed, 173 insertions(+), 177 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index ef6df7bcef5d..080409e068e9 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1926,6 +1926,117 @@ static void buffer_tree_clear_mark(const struct e=
-xtent_buffer *eb,
->         xas_unlock_irqrestore(&xas, flags);
->  }
->
-> +static void buffer_tree_tag_for_writeback(struct btrfs_fs_info *fs_info,
-> +                                           unsigned long start, unsigned=
- long end)
-> +{
-> +       XA_STATE(xas, &fs_info->buffer_tree, start);
-> +       unsigned int tagged =3D 0;
-> +       void *eb;
-> +
-> +       xas_lock_irq(&xas);
-> +       xas_for_each_marked(&xas, eb, end, PAGECACHE_TAG_DIRTY) {
-> +               xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
-> +               if (++tagged % XA_CHECK_SCHED)
-> +                       continue;
-> +               xas_pause(&xas);
-> +               xas_unlock_irq(&xas);
-> +               cond_resched();
-> +               xas_lock_irq(&xas);
-> +       }
-> +       xas_unlock_irq(&xas);
-> +}
-> +
-> +struct eb_batch {
-> +       unsigned int nr;
-> +       unsigned int cur;
-> +       struct extent_buffer *ebs[PAGEVEC_SIZE];
-> +};
-> +
-> +static inline bool eb_batch_add(struct eb_batch *batch,
-> +                              struct extent_buffer *eb)
+Op woensdag 23 april 2025 00:00:36 CEST schreef Qu Wenruo:
+>=20
+> =E5=9C=A8 2025/4/23 07:02, Ferry Toth =E5=86=99=E9=81=93:
+> > Hi,
+> >=20
+> > Op 21-04-2025 om 00:00 schreef Qu Wenruo:
+> >>
+> >>
+> >> =E5=9C=A8 2025/4/21 07:15, Ferry Toth =E5=86=99=E9=81=93:
+> >>> The following is originally done by Yocto's bitbake, but when I try=20
+> >>> manually it reproduces.
+> >>>
+> >>> I create a new fs on  a file using -r as ordinary user, then btrfs=20
+> >>> check the file (before or after mounting makes no difference), also=20
+> >>> as an ordinary user.
+> >>>
+> >>> The fs has 1000's of errors, I cut most because it seems the same=20
+> >>> type of errors. The files system is unrepaired bootable, but can be=20
+> >>> repaired using --repair, in which 1000's of files are moved to=20
+> >>> lost+found.
+> >>>
+> >>> The below was mkfs on a non-existing file, but writing to 16GB dduped=
+=20
+> >>> file (rootfs is 1.4GB) makes no difference. Neither does dropping --=
+=20
+> >>> shrink, -m or -n.
+> >>>
+> >>> Also, writing the file to an actual disk and then check the disk=20
+> >>> gives the same errors.
+> >>>
+> >>> What could this be?
+> >>>
+> >>> ferry@delfion:~/tmp/edison/edison-scarthgap$ mkfs.btrfs -n 4096 --=20
+> >>> shrink -M -v -r /home/ferry/tmp/edison-intel/my/edison-morty/out/=20
+> >>> linux64/build/ tmp/work/edison-poky-linux/edison-image/1.0/rootfs=20
+> >>> edison-image- edison.rootfs.btrfs
+> >>> btrfs-progs v6.6.3
+> >>> See https://btrfs.readthedocs.io for more information.
+> >>>
+> >>> ERROR: zoned: unable to stat edison-image-edison.rootfs.btrfs
+> >>> NOTE: several default settings have changed in version 5.15, please=20
+> >>> make sure
+> >>>        this does not affect your deployments:
+> >>>        - DUP for metadata (-m dup)
+> >>>        - enabled no-holes (-O no-holes)
+> >>>        - enabled free-space-tree (-R free-space-tree)
+> >>>
+> >>> Rootdir from: /home/ferry/tmp/edison-intel/my/edison-morty/out/=20
+> >>> linux64/ build/tmp/work/edison-poky-linux/edison-image/1.0/rootfs
+> >>>    Shrink:           yes
+> >>> Label:              (null)
+> >>> UUID:               c2ecfaca-168a-401b-a12a-e73694d7485a
+> >>> Node size:          4096
+> >>> Sector size:        4096
+> >>> Filesystem size:    1.43GiB
+> >>> Block group profiles:
+> >>>    Data+Metadata:    single            1.42GiB
+> >>>    System:           single            4.00MiB
+> >>> SSD detected:       no
+> >>> Zoned device:       no
+> >>> Incompat features:  mixed-bg, extref, skinny-metadata, no-holes,=20
+> >>> free- space-tree
+> >>> Runtime features:   free-space-tree
+> >>> Checksum:           crc32c
+> >>> Number of devices:  1
+> >>> Devices:
+> >>>     ID        SIZE  PATH
+> >>>      1     1.43GiB  edison-image-edison.rootfs.btrfs
+> >>>
+> >>> ferry@delfion:~/tmp/edison/edison-scarthgap$ btrfs check edison-=20
+> >>> image- edison.rootfs.btrfs
+> >>> Opening filesystem to check...
+> >>> Checking filesystem on edison-image-edison.rootfs.btrfs
+> >>> UUID: c2ecfaca-168a-401b-a12a-e73694d7485a
+> >>> [1/7] checking root items
+> >>> [2/7] checking extents
+> >>> [3/7] checking free space tree
+> >>> [4/7] checking fs roots
+> >>> root 5 inode 252551099 errors 2000, link count wrong
+> >>>          unresolved ref dir 260778488 index 2 namelen 11 name=20
+> >>> COPYING.MIT filetype 1 errors 0
+> >>
+> >> Looks like exactly the nlink bugs related to --rootdir option.
+> >>
+> >> And that's fixed in v6.10 first, by the commit c6464d3f99ed ("btrfs-=20
+> >> progs: mkfs: rework how we traverse rootdir"), then further improved=20
+> >> in v6.12 with the commit ef1157473372 ("btrfs-progs: mkfs: add hard=20
+> >> link support for --rootdir").
+> >>
+> >>
+> >> So in short, if the directory contains hardlinks out of the directory,=
+=20
+> >> then you have to use btrfs-progs newer than v6.12.
+> >=20
+> > Hi Qu I am confirming v6.12 resolves this issue. Afaik Yocto uses=20
+> > reflinks. I'm guessing that generates the same issue?
+>=20
+> Reflink should not cause the problem, shared extents (reflinks) are not=20
+> longer shared inside the new btrfs.
+>=20
+> E.g. if two inodes shares the same data extent, it will be created as=20
+> two data extents, one for each inode.
+> Thus it will cause extra space usage.
+>=20
+>=20
+> It's only the hard links causing problems, as older progs directly uses=20
+> the st_nlink reported from the host fs, but it's very possible that,=20
+> some hard links are not inside the rootdir, thus causing missing nlinks=20
+> inside the created btrfs.
+>=20
+> >=20
+> > As a work around for people on Ubuntu Noble (20.04 LTS) with btrfs-prog=
+s=20
+> > version 6.6.3-1.1build2, installing the package from Plucky (no other=20
+> > dependencies) with version 6.12-1build1 solves this issue.
+>=20
+> Sorry we didn't notice the bug early enough, thus the fixes are only=20
+> landed into v6.12, and we do not maintain backports for older progs.
 
-No need for line splitting.
+I never noticed either, while I was in a very good position to do so.
 
-> +{
-> +       batch->ebs[batch->nr++] =3D eb;
-> +       return (batch->nr < PAGEVEC_SIZE);
-> +}
-> +
-> +static inline void eb_batch_init(struct eb_batch *batch)
-> +{
-> +       batch->nr =3D 0;
-> +       batch->cur =3D 0;
-> +}
-> +
-> +static inline unsigned int eb_batch_count(struct eb_batch *batch)
-> +{
-> +       return batch->nr;
-> +}
+Times when I noticed filesystem errors I attributed these to unstable kerne=
+l crash. Which was probably true, never noticed errors at T0 until now.
 
-Since this is so simple and it's not a kernel library we can get rid
-of this helper and just check ->nr directly.
+> Thus I'm afraid Yocto or similar projects have to require a much newer=20
+> progs instead.
 
-> +
-> +static inline struct extent_buffer *eb_batch_next(struct eb_batch *batch=
-)
-> +{
-> +       if (batch->cur >=3D batch->nr)
-> +               return NULL;
-> +       return batch->ebs[batch->cur++];
-> +}
-> +
-> +static inline void eb_batch_release(struct eb_batch *batch)
-> +{
-> +       for (unsigned int i =3D 0; i < batch->nr; i++)
-> +               free_extent_buffer(batch->ebs[i]);
-> +       eb_batch_init(batch);
-> +}
-> +
-> +static inline struct extent_buffer *find_get_eb(struct xa_state *xas, un=
-signed long max,
-> +                                               xa_mark_t mark)
-> +{
-> +       struct extent_buffer *eb;
-> +
-> +retry:
-> +       eb =3D xas_find_marked(xas, max, mark);
-> +
-> +       if (xas_retry(xas, eb))
-> +               goto retry;
-> +
-> +       if (!eb)
-> +               return NULL;
-> +
-> +       if (!atomic_inc_not_zero(&eb->refs))
-> +               goto reset;
-> +
-> +       if (unlikely(eb !=3D xas_reload(xas))) {
-> +               free_extent_buffer(eb);
-> +               goto reset;
-> +       }
-> +
-> +       return eb;
-> +reset:
-> +       xas_reset(xas);
-> +       goto retry;
-> +}
-> +
-> +static unsigned int buffer_tree_get_ebs_tag(struct btrfs_fs_info *fs_inf=
-o,
-> +                                           unsigned long *start,
-> +                                           unsigned long end, xa_mark_t =
-tag,
-> +                                           struct eb_batch *batch)
-> +{
-> +       XA_STATE(xas, &fs_info->buffer_tree, *start);
-> +       struct extent_buffer *eb;
-> +
-> +       rcu_read_lock();
-> +       while ((eb =3D find_get_eb(&xas, end, tag)) !=3D NULL) {
-> +               if (!eb_batch_add(batch, eb)) {
-> +                       *start =3D (eb->start + eb->len) >> fs_info->sect=
-orsize_bits;
-> +                       goto out;
-> +               }
-> +       }
-> +       if (end =3D=3D (unsigned long)-1)
-> +               *start =3D (unsigned long)-1;
+Yes that is the workaround below. You can copy the newer =E2=80=9Drecipe=E2=
+=80=9D and that overrides the older one. Of course goes all the way and bri=
+ngs in new headers which can break dependencies (btrfs-compsize in this cas=
+e).
 
-ULONG_MAX
+> Thanks,
+> Qu
+>=20
+> >=20
+> > Yocto users on Scarthgap (5.0 LTS) with version 6.7.1 may copy the=20
+> > recipe meta/recipes-devtools/btrfs-tools/btrfs-tools_6.13.bb from=20
+> > walnascar or 6.14 from master. If they are building additional tools=20
+> > that use headers from this package like btrfs-compsize these may break.
+> >> Thanks,
+> >> Qu
 
-> +       else
-> +               *start =3D end + 1;
-> +out:
-> +       rcu_read_unlock();
-> +
-> +       return eb_batch_count(batch);
-> +}
-> +
->  /*
->   * The endio specific version which won't touch any unsafe spinlock in e=
-ndio
->   * context.
-> @@ -2031,163 +2142,37 @@ static noinline_for_stack void write_one_eb(stru=
-ct extent_buffer *eb,
->  }
->
->  /*
-> - * Submit one subpage btree page.
-> + * Wait for all eb writeback in the given range to finish.
->   *
-> - * The main difference to submit_eb_page() is:
-> - * - Page locking
-> - *   For subpage, we don't rely on page locking at all.
-> - *
-> - * - Flush write bio
-> - *   We only flush bio if we may be unable to fit current extent buffers=
- into
-> - *   current bio.
-> - *
-> - * Return >=3D0 for the number of submitted extent buffers.
-> - * Return <0 for fatal error.
-> + * @fs_info:   the fs_info for this file system
-> + * @start:     the offset of the range to start waiting on writeback
-> + * @end:       the end of the range, inclusive. This is meant to be used=
- in
-> + *             conjuction with wait_marked_extents, so this will usually=
- be
-> + *             the_next_eb->start - 1.
+While here, am I right that we can not generate the rootfs with compression=
+ on?
 
-Can we make all sentences start with a capitalized word and end with
-punctuation?
-Some are, others not, and it's mixed.
+Reason I ask is, Yocto of course builds the rootfs and than has mkfs.btrfs =
+create the image. But it runs as unprivileged user, so can not do mount.
+And then can not do defrag.
 
->   */
-> -static int submit_eb_subpage(struct folio *folio, struct writeback_contr=
-ol *wbc)
-> +void btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start=
-, u64 end)
+> >=20
+> >=20
+>=20
+>=20
 
-Exported functions should have a "btrfs_" prefix.
 
-With those minor things:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+--nextPart2810006.C4sosBPzcN
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="UTF-8"
 
-Thanks.
+<html>
+<head>
+<meta http-equiv=3D"content-type" content=3D"text/html; charset=3DUTF-8">
+</head>
+<body><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">Op woensdag 23 april 2025 00:00:36 CEST schreef Qu Wenruo:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; =E5=9C=A8 2025/4/23 07:02, Ferry Toth =E5=86=99=E9=81=93:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; Hi,</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; Op 21-04-2025 om 00:00 schreef Qu Wenruo:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; =E5=9C=A8 2025/4/21 07:15, Ferry Toth =E5=86=99=E9=81=93:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; The following is originally done by Yocto's bitbake, but whe=
+n I try </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; manually it reproduces.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; I create a new fs on=C2=A0 a file using -r as ordinary user,=
+ then btrfs </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; check the file (before or after mounting makes no difference=
+), also </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; as an ordinary user.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; The fs has 1000's of errors, I cut most because it seems the=
+ same </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; type of errors. The files system is unrepaired bootable, but=
+ can be </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; repaired using --repair, in which 1000's of files are moved =
+to </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; lost+found.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; The below was mkfs on a non-existing file, but writing to 16=
+GB dduped </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; file (rootfs is 1.4GB) makes no difference. Neither does dro=
+pping -- </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; shrink, -m or -n.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Also, writing the file to an actual disk and then check the =
+disk </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; gives the same errors.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; What could this be?</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; ferry@delfion:~/tmp/edison/edison-scarthgap$ mkfs.btrfs -n 4=
+096 -- </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; shrink -M -v -r /home/ferry/tmp/edison-intel/my/edison-morty=
+/out/ </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; linux64/build/ tmp/work/edison-poky-linux/edison-image/1.0/r=
+ootfs </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; edison-image- edison.rootfs.btrfs</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; btrfs-progs v6.6.3</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; See https://btrfs.readthedocs.io for more information.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; ERROR: zoned: unable to stat edison-image-edison.rootfs.btrf=
+s</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; NOTE: several default settings have changed in version 5.15,=
+ please </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; make sure</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 this does not affect yo=
+ur deployments:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - DUP for metadata (-m =
+dup)</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - enabled no-holes (-O =
+no-holes)</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - enabled free-space-tr=
+ee (-R free-space-tree)</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Rootdir from: /home/ferry/tmp/edison-intel/my/edison-morty/o=
+ut/ </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; linux64/ build/tmp/work/edison-poky-linux/edison-image/1.0/r=
+ootfs</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0 Shrink:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 yes</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Label:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 (null)</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c2ecfaca-168a-401b-a12a-e73694d7485a</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Node size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 4096</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Sector size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096<=
+/p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Filesystem size:=C2=A0=C2=A0=C2=A0 1.43GiB</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Block group profiles:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0 Data+Metadata:=C2=A0=C2=A0=C2=A0 single=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.42GiB</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0 System:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 single=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 4.00MiB</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; SSD detected:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Zoned device:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Incompat features:=C2=A0 mixed-bg, extref, skinny-metadata, =
+no-holes, </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; free- space-tree</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Runtime features:=C2=A0=C2=A0 free-space-tree</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Checksum:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 crc32c</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Number of devices:=C2=A0 1</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Devices:</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0 ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 SIZE=C2=A0 PATH</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0 1.43GiB=
+=C2=A0 edison-image-edison.rootfs.btrfs</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; ferry@delfion:~/tmp/edison/edison-scarthgap$ btrfs check edi=
+son- </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; image- edison.rootfs.btrfs</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Opening filesystem to check...</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; Checking filesystem on edison-image-edison.rootfs.btrfs</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; UUID: c2ecfaca-168a-401b-a12a-e73694d7485a</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; [1/7] checking root items</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; [2/7] checking extents</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; [3/7] checking free space tree</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; [4/7] checking fs roots</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; root 5 inode 252551099 errors 2000, link count wrong</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved =
+ref dir 260778488 index 2 namelen 11 name </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;&gt; COPYING.MIT filetype 1 errors 0</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; Looks like exactly the nlink bugs related to --rootdir option.</=
+p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; And that's fixed in v6.10 first, by the commit c6464d3f99ed (&qu=
+ot;btrfs- </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; progs: mkfs: rework how we traverse rootdir&quot;), then further=
+ improved </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; in v6.12 with the commit ef1157473372 (&quot;btrfs-progs: mkfs: =
+add hard </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; link support for --rootdir&quot;).</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt;</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; So in short, if the directory contains hardlinks out of the dire=
+ctory, </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; then you have to use btrfs-progs newer than v6.12.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; Hi Qu I am confirming v6.12 resolves this issue. Afaik Yocto uses </=
+p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; reflinks. I'm guessing that generates the same issue?</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; Reflink should not cause the problem, shared extents (reflinks) are not <=
+/p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; longer shared inside the new btrfs.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; E.g. if two inodes shares the same data extent, it will be created as </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; two data extents, one for each inode.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; Thus it will cause extra space usage.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; It's only the hard links causing problems, as older progs directly uses <=
+/p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; the st_nlink reported from the host fs, but it's very possible that, </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; some hard links are not inside the rootdir, thus causing missing nlinks <=
+/p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; inside the created btrfs.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; As a work around for people on Ubuntu Noble (20.04 LTS) with btrfs-p=
+rogs </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; version 6.6.3-1.1build2, installing the package from Plucky (no othe=
+r </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; dependencies) with version 6.12-1build1 solves this issue.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; Sorry we didn't notice the bug early enough, thus the fixes are only </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; landed into v6.12, and we do not maintain backports for older progs.</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">I never noticed either, while I was in a very good position to do so.</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">Times when I noticed filesystem errors I attributed these to unstable ke=
+rnel crash. Which was probably true, never noticed errors at T0 until now.<=
+/p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">&gt; Thus I'm afraid Yocto or similar projects have to require a much ne=
+wer </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; progs instead.</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">Yes that is the workaround below. You can copy the newer =E2=80=9Drecipe=
+=E2=80=9D and that overrides the older one. Of course goes all the way and =
+brings in new headers which can break dependencies (btrfs-compsize in this =
+case).</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">&gt; Thanks,</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; Qu</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; Yocto users on Scarthgap (5.0 LTS) with version 6.7.1 may copy the <=
+/p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; recipe meta/recipes-devtools/btrfs-tools/btrfs-tools_6.13.bb from </=
+p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; walnascar or 6.14 from master. If they are building additional tools=
+ </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; that use headers from this package like btrfs-compsize these may bre=
+ak.</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; Thanks,</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt;&gt; Qu</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">While here, am I right that we can not generate the rootfs with compress=
+ion on?</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">Reason I ask is, Yocto of course builds the rootfs and than has mkfs.btr=
+fs create the image. But it runs as unprivileged user, so can not do mount.=
+</p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">And=
+ then can not do defrag.</p>
+<br /><p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0=
+;">&gt; &gt; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; &gt; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<p style=3D"margin-top:0;margin-bottom:0;margin-left:0;margin-right:0;">&gt=
+; </p>
+<br /><br /></body>
+</html>
+--nextPart2810006.C4sosBPzcN--
 
->  {
-> -       struct btrfs_fs_info *fs_info =3D folio_to_fs_info(folio);
-> -       int submitted =3D 0;
-> -       u64 folio_start =3D folio_pos(folio);
-> -       int bit_start =3D 0;
-> -       int sectors_per_node =3D fs_info->nodesize >> fs_info->sectorsize=
-_bits;
-> -       const unsigned int blocks_per_folio =3D btrfs_blocks_per_folio(fs=
-_info, folio);
-> +       struct eb_batch batch;
-> +       unsigned long start_index =3D start >> fs_info->sectorsize_bits;
-> +       unsigned long end_index =3D end >> fs_info->sectorsize_bits;
->
-> -       /* Lock and write each dirty extent buffers in the range */
-> -       while (bit_start < blocks_per_folio) {
-> -               struct btrfs_subpage *subpage =3D folio_get_private(folio=
-);
-> +       eb_batch_init(&batch);
-> +       while (start_index <=3D end_index) {
->                 struct extent_buffer *eb;
-> -               unsigned long flags;
-> -               u64 start;
-> +               unsigned int nr_ebs;
->
-> -               /*
-> -                * Take private lock to ensure the subpage won't be detac=
-hed
-> -                * in the meantime.
-> -                */
-> -               spin_lock(&folio->mapping->i_private_lock);
-> -               if (!folio_test_private(folio)) {
-> -                       spin_unlock(&folio->mapping->i_private_lock);
-> +               nr_ebs =3D buffer_tree_get_ebs_tag(fs_info, &start_index,
-> +                                                end_index,
-> +                                                PAGECACHE_TAG_WRITEBACK,
-> +                                                &batch);
-> +               if (!nr_ebs)
->                         break;
-> -               }
-> -               spin_lock_irqsave(&subpage->lock, flags);
-> -               if (!test_bit(bit_start + btrfs_bitmap_nr_dirty * blocks_=
-per_folio,
-> -                             subpage->bitmaps)) {
-> -                       spin_unlock_irqrestore(&subpage->lock, flags);
-> -                       spin_unlock(&folio->mapping->i_private_lock);
-> -                       bit_start +=3D sectors_per_node;
-> -                       continue;
-> -               }
->
-> -               start =3D folio_start + bit_start * fs_info->sectorsize;
-> -               bit_start +=3D sectors_per_node;
-> -
-> -               /*
-> -                * Here we just want to grab the eb without touching extr=
-a
-> -                * spin locks, so call find_extent_buffer_nolock().
-> -                */
-> -               eb =3D find_extent_buffer_nolock(fs_info, start);
-> -               spin_unlock_irqrestore(&subpage->lock, flags);
-> -               spin_unlock(&folio->mapping->i_private_lock);
-> -
-> -               /*
-> -                * The eb has already reached 0 refs thus find_extent_buf=
-fer()
-> -                * doesn't return it. We don't need to write back such eb
-> -                * anyway.
-> -                */
-> -               if (!eb)
-> -                       continue;
-> -
-> -               if (lock_extent_buffer_for_io(eb, wbc)) {
-> -                       write_one_eb(eb, wbc);
-> -                       submitted++;
-> -               }
-> -               free_extent_buffer(eb);
-> +               while ((eb =3D eb_batch_next(&batch)) !=3D NULL)
-> +                       wait_on_extent_buffer_writeback(eb);
-> +               eb_batch_release(&batch);
-> +               cond_resched();
->         }
-> -       return submitted;
-> -}
-> -
-> -/*
-> - * Submit all page(s) of one extent buffer.
-> - *
-> - * @page:      the page of one extent buffer
-> - * @eb_context:        to determine if we need to submit this page, if c=
-urrent page
-> - *             belongs to this eb, we don't need to submit
-> - *
-> - * The caller should pass each page in their bytenr order, and here we u=
-se
-> - * @eb_context to determine if we have submitted pages of one extent buf=
-fer.
-> - *
-> - * If we have, we just skip until we hit a new page that doesn't belong =
-to
-> - * current @eb_context.
-> - *
-> - * If not, we submit all the page(s) of the extent buffer.
-> - *
-> - * Return >0 if we have submitted the extent buffer successfully.
-> - * Return 0 if we don't need to submit the page, as it's already submitt=
-ed by
-> - * previous call.
-> - * Return <0 for fatal error.
-> - */
-> -static int submit_eb_page(struct folio *folio, struct btrfs_eb_write_con=
-text *ctx)
-> -{
-> -       struct writeback_control *wbc =3D ctx->wbc;
-> -       struct address_space *mapping =3D folio->mapping;
-> -       struct extent_buffer *eb;
-> -       int ret;
-> -
-> -       if (!folio_test_private(folio))
-> -               return 0;
-> -
-> -       if (btrfs_meta_is_subpage(folio_to_fs_info(folio)))
-> -               return submit_eb_subpage(folio, wbc);
-> -
-> -       spin_lock(&mapping->i_private_lock);
-> -       if (!folio_test_private(folio)) {
-> -               spin_unlock(&mapping->i_private_lock);
-> -               return 0;
-> -       }
-> -
-> -       eb =3D folio_get_private(folio);
-> -
-> -       /*
-> -        * Shouldn't happen and normally this would be a BUG_ON but no po=
-int
-> -        * crashing the machine for something we can survive anyway.
-> -        */
-> -       if (WARN_ON(!eb)) {
-> -               spin_unlock(&mapping->i_private_lock);
-> -               return 0;
-> -       }
-> -
-> -       if (eb =3D=3D ctx->eb) {
-> -               spin_unlock(&mapping->i_private_lock);
-> -               return 0;
-> -       }
-> -       ret =3D atomic_inc_not_zero(&eb->refs);
-> -       spin_unlock(&mapping->i_private_lock);
-> -       if (!ret)
-> -               return 0;
-> -
-> -       ctx->eb =3D eb;
-> -
-> -       ret =3D btrfs_check_meta_write_pointer(eb->fs_info, ctx);
-> -       if (ret) {
-> -               if (ret =3D=3D -EBUSY)
-> -                       ret =3D 0;
-> -               free_extent_buffer(eb);
-> -               return ret;
-> -       }
-> -
-> -       if (!lock_extent_buffer_for_io(eb, wbc)) {
-> -               free_extent_buffer(eb);
-> -               return 0;
-> -       }
-> -       /* Implies write in zoned mode. */
-> -       if (ctx->zoned_bg) {
-> -               /* Mark the last eb in the block group. */
-> -               btrfs_schedule_zone_finish_bg(ctx->zoned_bg, eb);
-> -               ctx->zoned_bg->meta_write_pointer +=3D eb->len;
-> -       }
-> -       write_one_eb(eb, wbc);
-> -       free_extent_buffer(eb);
-> -       return 1;
->  }
->
->  int btree_write_cache_pages(struct address_space *mapping,
-> @@ -2198,25 +2183,27 @@ int btree_write_cache_pages(struct address_space =
-*mapping,
->         int ret =3D 0;
->         int done =3D 0;
->         int nr_to_write_done =3D 0;
-> -       struct folio_batch fbatch;
-> -       unsigned int nr_folios;
-> -       pgoff_t index;
-> -       pgoff_t end;            /* Inclusive */
-> +       struct eb_batch batch;
-> +       unsigned int nr_ebs;
-> +       unsigned long index;
-> +       unsigned long end;
->         int scanned =3D 0;
->         xa_mark_t tag;
->
-> -       folio_batch_init(&fbatch);
-> +       eb_batch_init(&batch);
->         if (wbc->range_cyclic) {
-> -               index =3D mapping->writeback_index; /* Start from prev of=
-fset */
-> +               index =3D (mapping->writeback_index << PAGE_SHIFT) >> fs_=
-info->sectorsize_bits;
->                 end =3D -1;
-> +
->                 /*
->                  * Start from the beginning does not need to cycle over t=
-he
->                  * range, mark it as scanned.
->                  */
->                 scanned =3D (index =3D=3D 0);
->         } else {
-> -               index =3D wbc->range_start >> PAGE_SHIFT;
-> -               end =3D wbc->range_end >> PAGE_SHIFT;
-> +               index =3D wbc->range_start >> fs_info->sectorsize_bits;
-> +               end =3D wbc->range_end >> fs_info->sectorsize_bits;
-> +
->                 scanned =3D 1;
->         }
->         if (wbc->sync_mode =3D=3D WB_SYNC_ALL)
-> @@ -2226,31 +2213,40 @@ int btree_write_cache_pages(struct address_space =
-*mapping,
->         btrfs_zoned_meta_io_lock(fs_info);
->  retry:
->         if (wbc->sync_mode =3D=3D WB_SYNC_ALL)
-> -               tag_pages_for_writeback(mapping, index, end);
-> +               buffer_tree_tag_for_writeback(fs_info, index, end);
->         while (!done && !nr_to_write_done && (index <=3D end) &&
-> -              (nr_folios =3D filemap_get_folios_tag(mapping, &index, end=
-,
-> -                                           tag, &fbatch))) {
-> -               unsigned i;
-> +              (nr_ebs =3D buffer_tree_get_ebs_tag(fs_info, &index, end, =
-tag,
-> +                                                &batch))) {
-> +               struct extent_buffer *eb;
->
-> -               for (i =3D 0; i < nr_folios; i++) {
-> -                       struct folio *folio =3D fbatch.folios[i];
-> +               while ((eb =3D eb_batch_next(&batch)) !=3D NULL) {
-> +                       ctx.eb =3D eb;
->
-> -                       ret =3D submit_eb_page(folio, &ctx);
-> -                       if (ret =3D=3D 0)
-> +                       ret =3D btrfs_check_meta_write_pointer(eb->fs_inf=
-o, &ctx);
-> +                       if (ret) {
-> +                               if (ret =3D=3D -EBUSY)
-> +                                       ret =3D 0;
-> +                               if (ret) {
-> +                                       done =3D 1;
-> +                                       break;
-> +                               }
-> +                               free_extent_buffer(eb);
->                                 continue;
-> -                       if (ret < 0) {
-> -                               done =3D 1;
-> -                               break;
->                         }
->
-> -                       /*
-> -                        * the filesystem may choose to bump up nr_to_wri=
-te.
-> -                        * We have to make sure to honor the new nr_to_wr=
-ite
-> -                        * at any time
-> -                        */
-> -                       nr_to_write_done =3D wbc->nr_to_write <=3D 0;
-> +                       if (!lock_extent_buffer_for_io(eb, wbc))
-> +                               continue;
-> +
-> +                       /* Implies write in zoned mode. */
-> +                       if (ctx.zoned_bg) {
-> +                               /* Mark the last eb in the block group. *=
-/
-> +                               btrfs_schedule_zone_finish_bg(ctx.zoned_b=
-g, eb);
-> +                               ctx.zoned_bg->meta_write_pointer +=3D eb-=
->len;
-> +                       }
-> +                       write_one_eb(eb, wbc);
->                 }
-> -               folio_batch_release(&fbatch);
-> +               nr_to_write_done =3D wbc->nr_to_write <=3D 0;
-> +               eb_batch_release(&batch);
->                 cond_resched();
->         }
->         if (!scanned && !done) {
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index b344162f790c..4f0cf5b0d38f 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -240,6 +240,7 @@ void extent_write_locked_range(struct inode *inode, c=
-onst struct folio *locked_f
->  int btrfs_writepages(struct address_space *mapping, struct writeback_con=
-trol *wbc);
->  int btree_write_cache_pages(struct address_space *mapping,
->                             struct writeback_control *wbc);
-> +void btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start=
-, u64 end);
->  void btrfs_readahead(struct readahead_control *rac);
->  int set_folio_extent_mapped(struct folio *folio);
->  void clear_folio_extent_mapped(struct folio *folio);
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 39e48bf610a1..b72ac8b70e0e 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -1155,7 +1155,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info=
- *fs_info,
->                 if (!ret)
->                         ret =3D filemap_fdatawrite_range(mapping, start, =
-end);
->                 if (!ret && wait_writeback)
-> -                       ret =3D filemap_fdatawait_range(mapping, start, e=
-nd);
-> +                       btree_wait_writeback_range(fs_info, start, end);
->                 btrfs_free_extent_state(cached_state);
->                 if (ret)
->                         break;
-> @@ -1175,7 +1175,6 @@ int btrfs_write_marked_extents(struct btrfs_fs_info=
- *fs_info,
->  static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
->                                        struct extent_io_tree *dirty_pages=
-)
->  {
-> -       struct address_space *mapping =3D fs_info->btree_inode->i_mapping=
-;
->         struct extent_state *cached_state =3D NULL;
->         u64 start =3D 0;
->         u64 end;
-> @@ -1196,7 +1195,7 @@ static int __btrfs_wait_marked_extents(struct btrfs=
-_fs_info *fs_info,
->                 if (ret =3D=3D -ENOMEM)
->                         ret =3D 0;
->                 if (!ret)
-> -                       ret =3D filemap_fdatawait_range(mapping, start, e=
-nd);
-> +                       btree_wait_writeback_range(fs_info, start, end);
->                 btrfs_free_extent_state(cached_state);
->                 if (ret)
->                         break;
-> --
-> 2.48.1
->
->
+--nextPart3162908.4XsnlVU6TS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEqR7zuEuxfQFO1Tt5OB30JY3rOi0FAmgJEBIACgkQOB30JY3r
+Oi0SIQgAjIhMy/RIEg/MoqN+sUM6v/h97SbW8rrzDdKmUGia6/5XZKcOx15tWkMp
+wzUs55kngd46XbQ5FlbFPWAuTydp+FYEFprdxX2jXvHo4mdZYSTDVT1JRJraT6hV
+MmFMQsS++EekYbF6TWVO0qjL/hE/YcGR0pKXCU9jwfpDtiYCbwlp0P6ysuPBAxcF
+G73F33odhEviwasKgxPBFoaLNTxn5yNMqQu/Aw9rBuHYm72IYJ2Kok7kiXiuXVU3
+b9t6UdB5tCWtR3klg5jTF4zU9dABBh/6BvsJfGLcoW+s3Lwbh15ocdgHJJOSKOdU
+vVdCTxlAnSXpi4mXFl9FgSXWQyH67w==
+=3hmV
+-----END PGP SIGNATURE-----
+
+--nextPart3162908.4XsnlVU6TS--
+
+
+
 
