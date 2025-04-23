@@ -1,99 +1,99 @@
-Return-Path: <linux-btrfs+bounces-13291-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F84A98740
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 12:25:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2313FA9874F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 12:29:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F56B7ADC9D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 10:24:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54E32443B36
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 10:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1003826AAA3;
-	Wed, 23 Apr 2025 10:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFFD267F45;
+	Wed, 23 Apr 2025 10:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0lUV5j0E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5NIdPMkN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0lUV5j0E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5NIdPMkN"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="np10QHAt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0+a/QD5l";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="np10QHAt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0+a/QD5l"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9EB2CCC9
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA3B1F2C45
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 10:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745403911; cv=none; b=LyvVYigy4uBO7j6Z1m92RvtgvzvZj8SQGQO/QRgeH5Jzdjmr5S+/nGCI6yeB8UdAeim0imAJa15QzFmIElIXOPoVW8Hr8+zbCziD6yLQNit8HY/EhPYY+3zprIrJGkJuYTZdWVwTgwccayCkouvVTnmvItKsuDJpDnKlN+iMNXM=
+	t=1745404176; cv=none; b=LCWJvdFRPl9wFQvQj23RKNfxRozfqNU3zwo8K7CTHnARcc/bE380LvMTPcGSKQH7iVtJT0R05ncmaTOBfWCCwLU+dPHlD2XAxbd5tTJ003ID/m/rdxYj7kNIZPyQel7P5hGFwLAH67Td00NtCZlZhLLD8j0i03Q+vDD5h0j7IDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745403911; c=relaxed/simple;
-	bh=qyMkWK+sPdMVIOXMfZpFO4LD2Aq4i2GdL0fwi+BqaLg=;
+	s=arc-20240116; t=1745404176; c=relaxed/simple;
+	bh=4Rq/Gmlehpk/AKr8lWH+o1utdeFgmGjl3cShUrUXn5w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EYxOc0cU1UqR2Ojc8Ux6m9AfodF3AfwTiHprc9j+pAue5aQXL4rlp+eAmfSY9L3Dya+1YMyNfOQs1oyw97Nkf7Lvn7bDeKuxqCibvWNi/kWwgdHV1a+2TNQXHvFX8rWXyeo1watOM2FU+Gk/OYy7xzIfbMIYHhhRD32Px8hrqB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0lUV5j0E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5NIdPMkN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0lUV5j0E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5NIdPMkN; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=e+rugXqlRaC5aUGUg7Fty4Dre1dNkvsWfAz6tWNtKnW3DzAL/+A01o+QUJwbBiLsmGO0ctBX2wUdfToGzldjuFbuEP1Nl0c/V4caOOCtkPWT9RtdfGiAoMAqpqFTLRDP1h4iWrbVTlqKr9/DYpXvJ5GGqHzPrmlB2JSXusjGBDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=np10QHAt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0+a/QD5l; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=np10QHAt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0+a/QD5l; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 202D4211B3;
-	Wed, 23 Apr 2025 10:25:03 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BAEBE1F38E;
+	Wed, 23 Apr 2025 10:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745403903;
+	t=1745404166;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OqRWoiMXyjVCtLafUlamSnRS5uDHbLML3XPsSi6pyMg=;
-	b=0lUV5j0E4kugl029GZcRPb/uKvtddCntdFy+9cUNjZ9QAcGQ9otFJzSK3522y3KslznDZ8
-	Iw+FoJuETyRt96f3JruaEIi/pacN3ybZIjGj++8G/9oodY3sq/eiRnHLi0LvemVqQHHVDw
-	M1ijwwHmCoS4TwCQgLq0+UG+lfyqWcU=
+	bh=eyPfh9WBuQEiVfWgDNclL0FrZScn/rQD0SlbJwshX10=;
+	b=np10QHAtl1Ns6Y5rxp7bP0jK478S3x/34VkpICh4+WTyfDUkp6V8/ETIIikm7hGPFVx+Iu
+	9PH5g0FJm2I5zgONsbitWla1QJt7fjfvfTMLI8VnN5CnHf6n4clEK048133xGSFbvjGBrm
+	qTrD0Rw62qlyFQY1xEekiDDJdRsE7ZY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745403903;
+	s=susede2_ed25519; t=1745404166;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OqRWoiMXyjVCtLafUlamSnRS5uDHbLML3XPsSi6pyMg=;
-	b=5NIdPMkN1kIhYaUfaMiv+Nv06zHVPDr5Sa5Pv6WKKbQCkNDZGMZ8fsic6EE1bl9LPiVkoP
-	jd9+Prz4+16svTDg==
-Authentication-Results: smtp-out1.suse.de;
+	bh=eyPfh9WBuQEiVfWgDNclL0FrZScn/rQD0SlbJwshX10=;
+	b=0+a/QD5lcL10KxA6LS5/Eurx2PlVoYICV2z70Ow7ATB8ITAnRgKNIZ6+bUEhjQM9DgVx9w
+	LE90xX9kCWnS8sDA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745403903;
+	t=1745404166;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OqRWoiMXyjVCtLafUlamSnRS5uDHbLML3XPsSi6pyMg=;
-	b=0lUV5j0E4kugl029GZcRPb/uKvtddCntdFy+9cUNjZ9QAcGQ9otFJzSK3522y3KslznDZ8
-	Iw+FoJuETyRt96f3JruaEIi/pacN3ybZIjGj++8G/9oodY3sq/eiRnHLi0LvemVqQHHVDw
-	M1ijwwHmCoS4TwCQgLq0+UG+lfyqWcU=
+	bh=eyPfh9WBuQEiVfWgDNclL0FrZScn/rQD0SlbJwshX10=;
+	b=np10QHAtl1Ns6Y5rxp7bP0jK478S3x/34VkpICh4+WTyfDUkp6V8/ETIIikm7hGPFVx+Iu
+	9PH5g0FJm2I5zgONsbitWla1QJt7fjfvfTMLI8VnN5CnHf6n4clEK048133xGSFbvjGBrm
+	qTrD0Rw62qlyFQY1xEekiDDJdRsE7ZY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745403903;
+	s=susede2_ed25519; t=1745404166;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OqRWoiMXyjVCtLafUlamSnRS5uDHbLML3XPsSi6pyMg=;
-	b=5NIdPMkN1kIhYaUfaMiv+Nv06zHVPDr5Sa5Pv6WKKbQCkNDZGMZ8fsic6EE1bl9LPiVkoP
-	jd9+Prz4+16svTDg==
+	bh=eyPfh9WBuQEiVfWgDNclL0FrZScn/rQD0SlbJwshX10=;
+	b=0+a/QD5lcL10KxA6LS5/Eurx2PlVoYICV2z70Ow7ATB8ITAnRgKNIZ6+bUEhjQM9DgVx9w
+	LE90xX9kCWnS8sDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0538613691;
-	Wed, 23 Apr 2025 10:25:03 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A726413691;
+	Wed, 23 Apr 2025 10:29:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0xYTAf+/CGiWHgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 23 Apr 2025 10:25:03 +0000
-Date: Wed, 23 Apr 2025 12:24:46 +0200
+	id vDmTKAbBCGjDHwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 23 Apr 2025 10:29:26 +0000
+Date: Wed, 23 Apr 2025 12:29:25 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Daniel Vacek <neelx@suse.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
 	David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
 	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] btrfs: harden parsing of compress mount option
-Message-ID: <20250423102446.GF3659@twin.jikos.cz>
+Message-ID: <20250423102925.GG3659@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <20250423073329.4021878-1-neelx@suse.com>
 Precedence: bulk
@@ -152,12 +152,15 @@ On Wed, Apr 23, 2025 at 09:33:28AM +0200, Daniel Vacek wrote:
 > +		} else if (strncmp(param->string, "zlib", 4) == 0 &&
 > +				(param->string[4] == ':' ||
 > +				 param->string[4] == ',' ||
-
-Can there be ',' in the string? The option parser splits the options at
-exactly that so it won't be part of the string, so just ':' or 0.
-
 > +				 param->string[4] == '\0')) {
 >  			ctx->compress_type = BTRFS_COMPRESS_ZLIB;
 >  			ctx->compress_level =
 >  				btrfs_compress_str2level(BTRFS_COMPRESS_ZLIB,
+
+With more checks the block under the Opt_compress* has grown beyond what
+I'd consider reasonable. It would be good to factor it out to a helper,
+pass the param->string and context.
+
+Extending with more checks will be easier, we can also validate the
+negative levels or other garbage in the string.
 
