@@ -1,196 +1,149 @@
-Return-Path: <linux-btrfs+bounces-13341-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBD9A995D1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 18:54:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B99A99769
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 20:02:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04212188DC80
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 16:54:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 479844687B8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 18:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DE2289359;
-	Wed, 23 Apr 2025 16:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9FB288C95;
+	Wed, 23 Apr 2025 18:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="F9Cefw7V";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="F9Cefw7V"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WKzXkeLy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D25EEAB
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 16:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BE88F40;
+	Wed, 23 Apr 2025 18:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745427268; cv=none; b=FrB7LGUkdNXBdvqo+3n5EV7r2FJQXtiD1NpMiaKtLUglCDYVpqk/C/m1WOgehRDKQoktPSVYXVtddZMzifTWsiv1/B2VKqPIIERxQCxv5X67zvr/0XmB6ZK+as0F+KQzVbHp3AqEBg2HiiLHL+ZSrDc8F4bBiZmiZWYnuAyptW8=
+	t=1745431344; cv=none; b=joCX8SncRnyWqc0WtwyOcT8BQXOF6DZcYpDsx2K9H+QQtiWOvsWhl/90KhsnG0jbPe7N1XaIIzI1He1bXtWI5JdejneTwIJ4AiuTDF0mNpXGrGLbBvrdy6MaHzRBM0Mjp8khKEy/32WTfev1zPwGER54AWmRg9YezQBtk0zpwHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745427268; c=relaxed/simple;
-	bh=3or1X7h0nR3tqEbK1CDDmUyjB+e2Vu3fgtN+YZd/Y/k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RVnp2RVuaOQjSKgIcu0v073b0Fgdj3A3NW00ii5W7MH1SixvGlNnIPj34Lc9YLl7CFN/8W2foHI/HedqIoGAZ1xtVezcafAvj7PYwJDccYhoB2JCJ1ALmaw7CpAxu9InPJYZDDoxD/fxMEYCNFDyKx0DxxYDPbidXbnPDzk+rz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=F9Cefw7V; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=F9Cefw7V; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BBD2821188;
-	Wed, 23 Apr 2025 16:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745427259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1745431344; c=relaxed/simple;
+	bh=BSV2S5axVk3jR2Dj4hy0PRdYG9l3BhCOacRqX+is/5o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ueX93QKMJeiOFeyvvMkLeLm17+wCyZ+nNcYLEgjZF+8wby3hODSleoBYpDBx89npiZ48ow+ExzDORlf1+q8fiJ3an3jprCHWYMITQirJ6/krkn/wTm7KOpWwh2BD7rE/ja1frTHwmfaVH/tRVKBiDag4siiMApOdmPKIq0giUEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WKzXkeLy; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 23 Apr 2025 14:02:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745431337;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qBYJcASoe9y0oeS1gTncDxWkIRGpcs7jvkEK7qqbgyw=;
-	b=F9Cefw7V18Wi+RoQ/DCXoedICvcDP8aXLk4yhgwUjG8cueQ2eoLAh9FO3PJPBX2QpZiAIP
-	elXbLhut2hKrbk3WEMxwoiF7IWVEuCeHfLSWJy6DWg2dSq9BHpBu+p02qHzFifGXFhbIaX
-	KLtCPj5CBeli8M/2w1AFN+XsIVE8FM8=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745427259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBYJcASoe9y0oeS1gTncDxWkIRGpcs7jvkEK7qqbgyw=;
-	b=F9Cefw7V18Wi+RoQ/DCXoedICvcDP8aXLk4yhgwUjG8cueQ2eoLAh9FO3PJPBX2QpZiAIP
-	elXbLhut2hKrbk3WEMxwoiF7IWVEuCeHfLSWJy6DWg2dSq9BHpBu+p02qHzFifGXFhbIaX
-	KLtCPj5CBeli8M/2w1AFN+XsIVE8FM8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3A2313A3D;
-	Wed, 23 Apr 2025 16:54:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NpvYKzsbCWhSGQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 23 Apr 2025 16:54:19 +0000
-From: David Sterba <dsterba@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 3/3] btrfs: reformat comments in acls_after_inode_item()
-Date: Wed, 23 Apr 2025 18:53:59 +0200
-Message-ID: <8f6470c838cb98fd83136e3285af6afd8b8f293b.1745426584.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1745426584.git.dsterba@suse.com>
-References: <cover.1745426584.git.dsterba@suse.com>
+	bh=8BS6PilBZgvTDPZhVhVWu7ww97sBPTJLkhr1PmWiCpA=;
+	b=WKzXkeLyNYDwk/eCKuYZUCO+ERfNfkrsogpUfK8yviZk5KF8v/jUkJdnJU+r8oZr+ubgz5
+	x6V9oP+fLmYCwLsnSZd82pB9eEkKHjvuhiG4VRWZPCOzP6wYwxgwjmy1iiuNhSzk9iSRcj
+	k8plvwA+ho8NM7aL2D7SLNCO8wUepbA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>, 
+	Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, 
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	Andreas Gruenbacher <agruenba@redhat.com>, Carlos Maiolino <cem@kernel.org>, 
+	Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
+	Johannes Thumshirn <jth@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Pavel Machek <pavel@kernel.org>, linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
+	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: add more bio helper
+Message-ID: <q53k4x5nshvr2zatrgyhygxouv7ijyepe6cj2pfooemi6gbu4y@lpxxcvozazzu>
+References: <20250422142628.1553523-1-hch@lst.de>
+ <jetduw7zshrmp4gl7zfpwqjweycwesxiod7xvtnxqwqekgtvdf@idwnvfzvhgik>
+ <20250423093621.GA2578@lst.de>
+ <sl4oibdxpjygqfpy6llq237zuckz7ym4fmzcfvxn2raofr37a5@hvevbcgm5trn>
+ <20250423160733.GA656@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250423160733.GA656@lst.de>
+X-Migadu-Flow: FLOW_OUT
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/inode.c | 37 +++++++++++++++++++++++--------------
- 1 file changed, 23 insertions(+), 14 deletions(-)
+On Wed, Apr 23, 2025 at 06:07:33PM +0200, Christoph Hellwig wrote:
+> On Wed, Apr 23, 2025 at 06:37:41AM -0400, Kent Overstreet wrote:
+> > > It also don't support bio chaining or error handling and requires a
+> > > single bio that is guaranteed to fit the required number of vectors.
+> > 
+> > Why would bio chaining ever be required? The caller allocates both the
+> > buf and the bio, I've never seen an instance where you'd want that; just
+> > allocate a bio with the correct number of vecs, which your
+> > bio_vmalloc_max_vecs() helps with.
+> 
+> If you go beyond 1MB I/O for vmalloc you need it because a single
+> bio can't hold enough page size chunks.  That is unless you want
+> to use your own allocation for it and call bio_init which has various
+> other downsides.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e3bbe348ac91e2..e18967a14d6419 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3721,10 +3721,14 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- }
- 
- /*
-- * very simple check to peek ahead in the leaf looking for xattrs.  If we
-- * don't find any xattrs, we know there can't be any acls.
-+ * Look ahead in the leaf for xattrs. If we don't find any then we know there
-+ * can be any ACLs.
-  *
-- * slot is the slot the inode is in, objectid is the objectid of the inode
-+ * @leaf:       the eb leaf where to search
-+ * @slot:       the slot the inode is in
-+ * @objectid:   the objectid of the inode
-+ *
-+ * Retrun true if there is a xattr, false otherwise.
-  */
- static noinline bool acls_after_inode_item(struct extent_buffer *leaf,
- 					   int slot, u64 objectid,
-@@ -3748,11 +3752,11 @@ static noinline bool acls_after_inode_item(struct extent_buffer *leaf,
- 	while (slot < nritems) {
- 		btrfs_item_key_to_cpu(leaf, &found_key, slot);
- 
--		/* we found a different objectid, there must not be acls */
-+		/* We found a different objectid, there must be no ACLs. */
- 		if (found_key.objectid != objectid)
- 			return false;
- 
--		/* we found an xattr, assume we've got an acl */
-+		/* We found an xattr, assume we've got an ACL. */
- 		if (found_key.type == BTRFS_XATTR_ITEM_KEY) {
- 			if (*first_xattr_slot == -1)
- 				*first_xattr_slot = slot;
-@@ -3762,8 +3766,8 @@ static noinline bool acls_after_inode_item(struct extent_buffer *leaf,
- 		}
- 
- 		/*
--		 * we found a key greater than an xattr key, there can't
--		 * be any acls later on
-+		 * We found a key greater than an xattr key, there can't be any
-+		 * ACLs later on.
- 		 */
- 		if (found_key.type > BTRFS_XATTR_ITEM_KEY)
- 			return false;
-@@ -3772,17 +3776,22 @@ static noinline bool acls_after_inode_item(struct extent_buffer *leaf,
- 		scanned++;
- 
- 		/*
--		 * it goes inode, inode backrefs, xattrs, extents,
--		 * so if there are a ton of hard links to an inode there can
--		 * be a lot of backrefs.  Don't waste time searching too hard,
--		 * this is just an optimization
-+		 * The item order goes like:
-+		 * - inode
-+		 * - inode backrefs
-+		 * - xattrs
-+		 * - extents,
-+		 *
-+		 * so if there are lots of hard links to an inode there can be
-+		 * a lot of backrefs.  Don't waste time searching too hard,
-+		 * this is just an optimization.
- 		 */
- 		if (scanned >= 8)
- 			break;
- 	}
--	/* we hit the end of the leaf before we found an xattr or
--	 * something larger than an xattr.  We have to assume the inode
--	 * has acls
-+	/*
-+	 * We hit the end of the leaf before we found an xattr or something
-+	 * larger than an xattr.  We have to assume the inode has ACLs.
- 	 */
- 	if (*first_xattr_slot == -1)
- 		*first_xattr_slot = slot;
--- 
-2.49.0
+Allocating your own bio doesn't allow you to safely exceed the
+BIO_MAX_VECS limit - there's places in the io path that need to bounce,
+and they all use biosets.
 
+That may be an issue even for non vmalloc bios, unless everything that
+bounces has been converted to bounce to a folio of the same order.
+
+> > The "abstract over vmalloc and normal physically contigious allocations"
+> > bit that bch2_bio_map() does is the important part.
+> > 
+> > It's not uncommon to prefer physically contiguous allocations but have a
+> > vmalloc fallback; bcachefs does, and  xfs does with a clever "try the
+> > big allocation if it's cheap, fall back to vmalloc to avoid waiting on
+> > compaction" that I might steal.
+> > 
+> > is_vmalloc_addr() is also cheap, it's just a pointer comparison (and it
+> > really should be changed to a static inline).
+> 
+> The problem with transparent vmalloc handling is that it's not possible.
+> The magic handling for virtually indexed caches can be hidden on the
+> submission side, but the completion side also needs to call
+> invalidate_kernel_vmap_range for reads.  Requiring the caller to know
+> they deal vmalloc is a way to at least keep that on the radar.
+
+yeesh, that's a landmine.
+
+having a separate bio_add_vmalloc as a hint is still a really bad
+"solution", unfortunately. And since this is something we don't have
+sanitizers or debug code for, and it only shows up on some archs -
+that's nasty.
+
+> The other benefit is that by forcing different calls it is much
+> easier to pick the optimal number of bvecs (1) for the non-vmalloc
+> path, although that is of course also possible without it.
+
+Your bio_vmalloc_max_vecs() could trivially handle both vmalloc and non
+vmalloc addresses.
+
+> Not for a purely synchronous helper we could handle both, but so far
+> I've not seen anything but the xfs log recovery code that needs it,
+> and we'd probably get into needing to pass a bio_set to avoid
+> deadlock when used deeper in the stack, etc.  I can look into that
+> if we have more than a single user, but for now it doesn't seem
+> worth it.
+
+bcache and bcachefs btree buffers can also be vmalloc backed. Possibly
+also the prio_set path in bcache, for reading/writing bucket gens, but
+I'd have to check.
+
+> Having a common helper for vmalloc and the kernel direct mapping
+> is actually how I started, but then I ran into all the issues with
+> it and with the extremely simple helpers for the direct mapping
+> which are used a lot, and the more complicated version for vmalloc
+> which just has a few users instead.
+
+*nod*
+
+What else did you run into? invalidate_kernel_vmap_range() seems like
+the only problematic one, given that is_vmalloc_addr() is cheap.
 
