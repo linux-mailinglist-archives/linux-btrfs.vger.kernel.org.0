@@ -1,149 +1,186 @@
-Return-Path: <linux-btrfs+bounces-13342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B99A99769
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 20:02:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99020A99AAF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 23:27:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 479844687B8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 18:02:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5122F3B4F0C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Apr 2025 21:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9FB288C95;
-	Wed, 23 Apr 2025 18:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457442561A3;
+	Wed, 23 Apr 2025 21:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WKzXkeLy"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tKhO1rwT";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tKhO1rwT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BE88F40;
-	Wed, 23 Apr 2025 18:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836ED1F4171
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745431344; cv=none; b=joCX8SncRnyWqc0WtwyOcT8BQXOF6DZcYpDsx2K9H+QQtiWOvsWhl/90KhsnG0jbPe7N1XaIIzI1He1bXtWI5JdejneTwIJ4AiuTDF0mNpXGrGLbBvrdy6MaHzRBM0Mjp8khKEy/32WTfev1zPwGER54AWmRg9YezQBtk0zpwHM=
+	t=1745443618; cv=none; b=AILdbIBSU8GZPwa/m3PfuFWT8hUKlrOfk8eLQU94AKuUexblSdw9yJYNXgCgtce1ph9Rd4Z6imIJxUP6p97UhZj+m/mpy9zaTz+SSpxXn88JEdwxw8zBxtiCvhHR9E987S7fmkNpoRRcio0kKtDzvglKYztYpSUu+ASjRwjz9V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745431344; c=relaxed/simple;
-	bh=BSV2S5axVk3jR2Dj4hy0PRdYG9l3BhCOacRqX+is/5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ueX93QKMJeiOFeyvvMkLeLm17+wCyZ+nNcYLEgjZF+8wby3hODSleoBYpDBx89npiZ48ow+ExzDORlf1+q8fiJ3an3jprCHWYMITQirJ6/krkn/wTm7KOpWwh2BD7rE/ja1frTHwmfaVH/tRVKBiDag4siiMApOdmPKIq0giUEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WKzXkeLy; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 23 Apr 2025 14:02:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745431337;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8BS6PilBZgvTDPZhVhVWu7ww97sBPTJLkhr1PmWiCpA=;
-	b=WKzXkeLyNYDwk/eCKuYZUCO+ERfNfkrsogpUfK8yviZk5KF8v/jUkJdnJU+r8oZr+ubgz5
-	x6V9oP+fLmYCwLsnSZd82pB9eEkKHjvuhiG4VRWZPCOzP6wYwxgwjmy1iiuNhSzk9iSRcj
-	k8plvwA+ho8NM7aL2D7SLNCO8wUepbA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>, 
-	Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Carlos Maiolino <cem@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <jth@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Pavel Machek <pavel@kernel.org>, linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: add more bio helper
-Message-ID: <q53k4x5nshvr2zatrgyhygxouv7ijyepe6cj2pfooemi6gbu4y@lpxxcvozazzu>
-References: <20250422142628.1553523-1-hch@lst.de>
- <jetduw7zshrmp4gl7zfpwqjweycwesxiod7xvtnxqwqekgtvdf@idwnvfzvhgik>
- <20250423093621.GA2578@lst.de>
- <sl4oibdxpjygqfpy6llq237zuckz7ym4fmzcfvxn2raofr37a5@hvevbcgm5trn>
- <20250423160733.GA656@lst.de>
+	s=arc-20240116; t=1745443618; c=relaxed/simple;
+	bh=v0Rz9aVRD5qsKJyIISZyyivvStskz/KozSfrPVsoOmo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=sf/H8cyRhtijUzl6BvxqJLpsYrYroH2kLIh6v8/aEOiFH2KT50MSdibGwY3/ru4+HUad2vJSdTLkSCek2Mc6RjlBqTkMKVCxUHiitVjEQP5sqHARE4a3qtUxoqGMpLQb28w+SbCrYITYnW1Z48UUMWUmVLsGUl9pNbqim/jWBCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tKhO1rwT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tKhO1rwT; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 972CD1F38D
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745443614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=17GqvBZJhUq/9Z5/658WrFUOPTJyBsgiCR3ju72PviE=;
+	b=tKhO1rwT0c8rXli/WkqZcli41GgoHqIBIklUnNAIA1PX0oN+8Nic4hIIu+0/Z3+r6RHUj3
+	i96rjcEm7dge/RidMWr8lgXXxwKausHMu4CI2ca0bGOejAc7d7zCA4hOKimrl+jhMGWP+q
+	UE42Mb5v5Wop+zv7bk7kyovgin7fOWc=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745443614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=17GqvBZJhUq/9Z5/658WrFUOPTJyBsgiCR3ju72PviE=;
+	b=tKhO1rwT0c8rXli/WkqZcli41GgoHqIBIklUnNAIA1PX0oN+8Nic4hIIu+0/Z3+r6RHUj3
+	i96rjcEm7dge/RidMWr8lgXXxwKausHMu4CI2ca0bGOejAc7d7zCA4hOKimrl+jhMGWP+q
+	UE42Mb5v5Wop+zv7bk7kyovgin7fOWc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC60A13A3D
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 1+xjIx1bCWhCYAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Apr 2025 21:26:53 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v4 0/2] btrfs: fix corner cases for subpage generic/363 failures
+Date: Thu, 24 Apr 2025 06:56:30 +0930
+Message-ID: <cover.1745443508.git.wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250423160733.GA656@lst.de>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-On Wed, Apr 23, 2025 at 06:07:33PM +0200, Christoph Hellwig wrote:
-> On Wed, Apr 23, 2025 at 06:37:41AM -0400, Kent Overstreet wrote:
-> > > It also don't support bio chaining or error handling and requires a
-> > > single bio that is guaranteed to fit the required number of vectors.
-> > 
-> > Why would bio chaining ever be required? The caller allocates both the
-> > buf and the bio, I've never seen an instance where you'd want that; just
-> > allocate a bio with the correct number of vecs, which your
-> > bio_vmalloc_max_vecs() helps with.
-> 
-> If you go beyond 1MB I/O for vmalloc you need it because a single
-> bio can't hold enough page size chunks.  That is unless you want
-> to use your own allocation for it and call bio_init which has various
-> other downsides.
+[CHANGELOG]
+v4:
+- Rebased to the latest for-next branch
+  btrfs_free_extent_map() renames cause a minor conflict in the first
+  patch.
 
-Allocating your own bio doesn't allow you to safely exceed the
-BIO_MAX_VECS limit - there's places in the io path that need to bounce,
-and they all use biosets.
+v3:
+- Fix a typo where @block_size should @blocksize.
+  There is a global function, block_size(), thus this typo will cause
+  type conflicts inside round_down()/round_up().
 
-That may be an issue even for non vmalloc bios, unless everything that
-bounces has been converted to bounce to a folio of the same order.
+v2:
+- Fix a conversion bug in the first patch that leads to generic/008
+  failure on x86_64
+  The range is passed incorrectly and caused btrfs_truncate_block() to
+  incorrectly skip an unaligned range.
 
-> > The "abstract over vmalloc and normal physically contigious allocations"
-> > bit that bch2_bio_map() does is the important part.
-> > 
-> > It's not uncommon to prefer physically contiguous allocations but have a
-> > vmalloc fallback; bcachefs does, and  xfs does with a clever "try the
-> > big allocation if it's cheap, fall back to vmalloc to avoid waiting on
-> > compaction" that I might steal.
-> > 
-> > is_vmalloc_addr() is also cheap, it's just a pointer comparison (and it
-> > really should be changed to a static inline).
-> 
-> The problem with transparent vmalloc handling is that it's not possible.
-> The magic handling for virtually indexed caches can be hidden on the
-> submission side, but the completion side also needs to call
-> invalidate_kernel_vmap_range for reads.  Requiring the caller to know
-> they deal vmalloc is a way to at least keep that on the radar.
+Test case generic/363 always fail on subpage (fs block fs < page size)
+btrfses, there are mostly two kinds of problems here:
 
-yeesh, that's a landmine.
+All examples are based on 64K page size and 4K fs block size.
 
-having a separate bio_add_vmalloc as a hint is still a really bad
-"solution", unfortunately. And since this is something we don't have
-sanitizers or debug code for, and it only shows up on some archs -
-that's nasty.
+1) EOF is polluted and btrfs_truncate_block() only zeros the block that
+   needs to be written back
 
-> The other benefit is that by forcing different calls it is much
-> easier to pick the optimal number of bvecs (1) for the non-vmalloc
-> path, although that is of course also possible without it.
+   
+   0                           32K                           64K
+   |                           |              |GGGGGGGGGGGGGG|
+                                              50K EOF
+   The original file is 50K sized (not 4K aligned), and fsx polluted the
+   range beyond EOF through memory mapped write.
+   And since memory mapped write is page based, and our page size is
+   larger than block size, the page range [0, 64K) covere blocks beyond
+   EOF.
 
-Your bio_vmalloc_max_vecs() could trivially handle both vmalloc and non
-vmalloc addresses.
+   Those polluted range will not be written back, but will still affect
+   our page cache.
 
-> Not for a purely synchronous helper we could handle both, but so far
-> I've not seen anything but the xfs log recovery code that needs it,
-> and we'd probably get into needing to pass a bio_set to avoid
-> deadlock when used deeper in the stack, etc.  I can look into that
-> if we have more than a single user, but for now it doesn't seem
-> worth it.
+   Then some operation happens to expand the inode to size 64K.
 
-bcache and bcachefs btree buffers can also be vmalloc backed. Possibly
-also the prio_set path in bcache, for reading/writing bucket gens, but
-I'd have to check.
+   In that case btrfs_truncate_block() is called to trim the block
+   [48K, 52K), and that block will be marked dirty for written back.
 
-> Having a common helper for vmalloc and the kernel direct mapping
-> is actually how I started, but then I ran into all the issues with
-> it and with the extremely simple helpers for the direct mapping
-> which are used a lot, and the more complicated version for vmalloc
-> which just has a few users instead.
+   But the range [52K, 64K) is untouched at all, left the garbage
+   hanging there, triggering `fsx -e 1` failure.
 
-*nod*
+   Fix this case by force btrfs_truncate_block() to zeroing any involved
+   blocks. (Meanwhile still only one block [48K, 52K) will be written
+   back)
 
-What else did you run into? invalidate_kernel_vmap_range() seems like
-the only problematic one, given that is_vmalloc_addr() is cheap.
+2) EOF is polluted and the original size is block aligned so
+   btrfs_truncate_block() does nothing
+
+   0                           32K                           64K
+   |                           |                |GGGGGGGGGGGG|
+                                                52K EOF
+
+   Mostly the same as case 1, but this time since the inode size is
+   block aligned, btrfs_truncate_block() will do nothing.
+
+   Leaving the garbage range [52K, 64K) untouched and fail `fsx -e 1`
+   runs.
+
+   Fix this case by force btrfs_truncate_block() to zeroing any involved
+   blocks when the btrfs is subpage and the range is aligned.
+   This will not cause any new dirty blocks, but purely zeroing out EOF
+   to pass `fsx -e 1` runs.
+
+Qu Wenruo (2):
+  btrfs: make btrfs_truncate_block() to zero involved blocks in a folio
+  btrfs: make btrfs_truncate_block() zero folio range for certain
+    subpage corner cases
+
+ fs/btrfs/btrfs_inode.h |  10 ++-
+ fs/btrfs/file.c        |  37 ++++++----
+ fs/btrfs/inode.c       | 153 ++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 162 insertions(+), 38 deletions(-)
+
+-- 
+2.49.0
+
 
