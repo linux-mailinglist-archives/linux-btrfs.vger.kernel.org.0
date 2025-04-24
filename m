@@ -1,153 +1,214 @@
-Return-Path: <linux-btrfs+bounces-13404-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13405-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A78A6A9B9C5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 23:18:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0188A9BA34
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 23:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C379188DAB4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 21:18:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABA711B64E20
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 21:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5461FDA9B;
-	Thu, 24 Apr 2025 21:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09F028136E;
+	Thu, 24 Apr 2025 21:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cdOPfiJq"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="XjQBXjG9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mnd5vz1Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7392221FA6
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 21:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3932F1B040B
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 21:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745529406; cv=none; b=fYxoq/EnQVU/+3ZfGNkGTcGfXbvbuE8ip2Q497feT6RmY4U2Iqg37RmwhyzfiC3yQoWt+DngTCsWnyQiLKL1gJtE6YMiLri0FkujRvi294wTwVrGFP/315yMwL3dij6GLQAdk0fdqA0jrnT450umcOUoSX68iGwVR29jPDIG26g=
+	t=1745531676; cv=none; b=jElF298chI85ZbL8QGvUZVMPydmMyTFSNQTX1EpsyflkGAN+dcEilhk7PkCiT70x47cRtqvJJAiKMM67mH1gul7bImfx7Pxh9gU0nLtDo5GOK6/X91XfE/07zd/QuEluN0sKzlE5x87eV5RUkDjS566Zm8PtAuXKfEddhCJ3Eb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745529406; c=relaxed/simple;
-	bh=bnt5nO4SdpVehjJxRT5bbjTTDnK+IEwuqee1jXoLlVk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tg7hfkrPegwzwUIqbFIMLSE09JYz0DCQm9Sd0aZ2XGotwDAh5uFpexM/gcQxCm0QVQZ7KcBYuRGcfddVPgvzN5teU6Gh/43gSCtGeuQ82lupqqcpaNovw91mCPQ6PV6xSZvD0TBemEEfP+pcmAu/dlWVuiEXf4baBWIT1XdNqkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cdOPfiJq; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aca99fc253bso236744066b.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 14:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745529403; x=1746134203; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qNbY4kvUlrhcrOJmuhtWFAK9+W1SuydVUvxDgtcGDZo=;
-        b=cdOPfiJqxeX4MkAq6pQNDjIUUCLfgMyf7LDzFHmpgTDRBTNsZGFM+rfEiGxqTw1DCY
-         LeRvVLer23V0baPERpRTB2ULMf5g9wN6osThtcDiRHHznJhKAuZZPt2DZHOwcBtl983v
-         PwYMFk4NfZVrzgGUF2/RExhSxFCpR/stdyBXIAWWB9Ad3HfAuvqcY068+VfEw6VlwxW1
-         0fG7LQBgNvDCLfpc1eVYHUseJVvL/jCeYcRWtVYyxt4fJSAkcJrkvrM1qTOYzuQE8ap/
-         60GVW3XMLUHHZhLSQPV5zmEU1IEu/kUdpyrI+EL9bgrQO39rzGkTBvfpcAd5TNEjMqBd
-         9EyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745529403; x=1746134203;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qNbY4kvUlrhcrOJmuhtWFAK9+W1SuydVUvxDgtcGDZo=;
-        b=LMKmla/OjowGik0h7Q3LnaeCgIW2XCc8m7+v/LMSGiSgNeqEkmwUVpu+qjxpPH8dy+
-         B/V9hpFIeKZn5trUCgQBqDJnW6Rl7Nsz0asab5hlK/Kqyqlc/pLjqtmJ+oYaTU2aScwv
-         zjUUvMZDfndqwPoMHKf+CBitMROjEGzksb0zEc3Z/gLDAmxT1T5JZoBE4pSmzGPojPtf
-         l3aMoTtNo/kmKPeUzhUO+Po7OHb3HY2x0A3/cUVlZKsIvmwVbv7Fq+vDgoC11Aq8buvT
-         Fqp3U6z9qlM8oV06QsVGJqr8JHa6cfsfouJGlxrVZwBpQWk6iJkWitdi/KZN0P5nNXsX
-         8GIg==
-X-Forwarded-Encrypted: i=1; AJvYcCW/5KqT2Rerte/l2ThAwAQi0q2YRDjex2p61RXJEOQSpkM0FMJ+SVGOMKfth7+KfG5rYZ9b8ivJ+vh7WQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yynq6jTuoxu0H0GOT+wnfP1YwGUq9wTPPmG33laXHtFWpJ/iIf0
-	OF+zaBQ1b3yWYJBS3CYbVy714W0KobQy4vcqqNslHvU1LRQbpDKH
-X-Gm-Gg: ASbGncvxr9t3rPxQBvORNxe4dQu9s7vdvUObswz7RoMKAEF9vyV7GXRbBH8ktnKDHLh
-	Ix7HR5gOSLKus0by7etKyL0ffDCi9RQ3bvb3RCL3dMVO0eebo/Ep8suuVZMxRXq68k60kQHxB7k
-	rpIqxSm0s7EzKADLpShJoo1pBE/UB67gMu6sjKSycPLB+SIvu+zk3QkAL1ywSDYqoPN1S+dePxy
-	DpbofViyFMgOWtlwsjcQDHqW/Q5olsJs/UF1XDrndL6JnYZ7RUKYSxzA/2ogOOVLRaG83gJh2Jy
-	tWB1ESWYeKdWVpGNePYu0KDJPtgsan9fnWUv6uPBK37tZ3uqcghAzc7hSYk1TjKeno+1boeFXqh
-	tzygIdhyBIgZ+kGDb4qhJHG3DQZ5n9Rfw7vQE0j7AAyTY+4x/vwkPDsx4p9afww==
-X-Google-Smtp-Source: AGHT+IGcoHsjiPxE83r3e1tXr2skjdd1ZR2QRbnCEk1bFtQcNRDY6YBl/WC59SdzPi55O1O0B6dwBA==
-X-Received: by 2002:a17:907:781:b0:aca:cad6:458e with SMTP id a640c23a62f3a-ace713c2584mr2440366b.43.1745529402766;
-        Thu, 24 Apr 2025 14:16:42 -0700 (PDT)
-Received: from ?IPV6:2a02:a466:68ed:1:e82f:dba5:732c:3d0a? (2a02-a466-68ed-1-e82f-dba5-732c-3d0a.fixed6.kpn.net. [2a02:a466:68ed:1:e82f:dba5:732c:3d0a])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6e41c491sm22667466b.34.2025.04.24.14.16.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Apr 2025 14:16:42 -0700 (PDT)
-Message-ID: <a0c57ce5-84f0-4534-9d34-d2bd0d305882@gmail.com>
-Date: Thu, 24 Apr 2025 23:16:41 +0200
+	s=arc-20240116; t=1745531676; c=relaxed/simple;
+	bh=zSi3sXGG1LghAEb9F1tGCz+i4y70rcMA/2wvkRcW7Vc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=c+Efo1rjUHIgxYVxKnKVhLNHxlg+B5NRgOhOMmppycMEKT6Nc0L7meAfXc60k7OZE3MQjzh8EXv7q8IEmN3M8M56y7K1tn5YkimLqk+kWMR57HBDJzwb3HirqEzzvs82kJmhde6W4fJBpZZyXO1LGe3FGU8dTga8rZ3VqwFVeuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=XjQBXjG9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mnd5vz1Y; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfout.phl.internal (Postfix) with ESMTP id 1739913801BC;
+	Thu, 24 Apr 2025 17:54:33 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Thu, 24 Apr 2025 17:54:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1745531673; x=1745618073; bh=7HroRxyrtVY47XyYcvAjX
+	uqUQdCk6DjYKB1PEFtHeGg=; b=XjQBXjG97Zlqg1/66u5pKQZ4vmD4ZLtyskUus
+	KZg1yHGt64NktCfd7OECklOt6UaHM7a1hF9MpeHafsVorx+KG3mbCBqkzR1kWD4c
+	mp0AvkCUs2hhKvF2qawgcXr7HGHIRIJzjjpqoSSHIUrYDZkm6wvtgXy5Z3gL48Qc
+	VpySy+KrkYfLjjiwRIcHMZzqiunvo2QsVArMdB4E8nSgeo/6zTppb10eTQgmCIHy
+	LfQFCgfkdsRdKy08NR3a49PxeDFI1ds688YuGbnqX1KqVztO6FKTE0FbtmgY7NF8
+	mLU3Wjafm12DdDh1M3C54N9nqQIKh7d9gfJj3PB7aPkdaKZlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1745531673; x=1745618073; bh=7HroRxyrtVY47XyYcvAjXuqUQdCk6DjYKB1
+	PEFtHeGg=; b=mnd5vz1YyRzYGoz+Ede1fs9Pg/gIVDOVT8Go0MFw0Wia1HAC0Bw
+	g9D1mIA0H3e2X6FJDVQRdQjv4zHAGjRye03HvWnVZ+3fCbM1d0bX2mrqjwZJ7CKZ
+	QPOu/b02FcvWZxwaa3r5rGapJD28ECYYeoHQGml2R1gm041wpXEOQZJZx6ZC4Fd1
+	Wtg8Byw2YmGu6aOyNzvI8kgAn5WSG1cFu2lMZDlCFU96HE6xyhKCSXn8USY2jv+9
+	dw8MFizqXyuhFLs+udK6HVI3jTsJL6cQpP+2TiXXlU9zvGQ4weY8TyXxVPW89pQH
+	P3ytoP1usAiV3VvddJ6xaKbCb3xsPw1SqNg==
+X-ME-Sender: <xms:GLMKaMEorGM1qLg78kmmYcuorOL5179-WJpMG_1TUnxzmskb0Nu_gQ>
+    <xme:GLMKaFXczFS_IAlYj3nj1alTrMIRwyyWtYvOmO9AH4che6qEtoUHQpw3dJiMvtE80
+    rKYKrLOxHJ9fgsbr3E>
+X-ME-Received: <xmr:GLMKaGKG6vQIY4Zng8r9KGXOUSeUAWLDKn_and8BAIBYkm1qJ5K2TpCxiDPTM86RCinsPjDszHFDDsK4bhBWV3rart4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvhedtiedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceo
+    sghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelff
+    evleeifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspg
+    hrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidq
+    sghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlh
+    dqthgvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:GLMKaOGv0h9vVWSgjFgX1xApa4v_yO8dkLScQK0e2pK2U7VbGG6paQ>
+    <xmx:GLMKaCXNaFTIWTqrgH__A0ehBmLBF0oJN8a4VsaE6niNTVx0b6OdHA>
+    <xmx:GLMKaBMz8c1s_xE9lF8XXAj2O3cnn_vY6oJSDrw-Rm67gnF8En-boQ>
+    <xmx:GLMKaJ1it2Wg7Z21MUTdSDAhSRti2mYVWdkndyh4oh43wrX0Q-7iyA>
+    <xmx:GbMKaFll4bdvetBS-beppun7-Pb-8q8c-BLrjwfct4vMbfCal9MBesHs>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 24 Apr 2025 17:54:32 -0400 (EDT)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: fix folio leak in btrfs_clone_extent_buffer()
+Date: Thu, 24 Apr 2025 14:55:29 -0700
+Message-ID: <3a03310eda52461869be5711dc712f295c190b83.1745531701.git.boris@bur.io>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Errors on newly created file system
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
- Qu Wenruo <wqu@suse.com>
-References: <669c174e-5835-471f-9065-279a7da8f190@gmail.com>
- <2366963.X513TT2pbd@ferry-quad>
- <b2ac7b22-ab50-4eb4-a90a-0d110407ba36@gmx.com>
- <3309589.KRxA6XjA2N@ferry-quad>
- <d98ffb69-195b-4c07-ac56-8ae1f811af32@gmail.com>
- <f32bd559-71c7-4d45-9af4-47a913eca63d@gmx.com>
-Content-Language: en-US
-From: Ferry Toth <fntoth@gmail.com>
-In-Reply-To: <f32bd559-71c7-4d45-9af4-47a913eca63d@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Op 24-04-2025 om 22:49 schreef Qu Wenruo:
-> 
-> 
-> 在 2025/4/25 05:41, Ferry Toth 写道:
->> Hi
->>
-> [...]
->>>
->>>
->>> Except with newer mkfs.btrfs (I tested using 6.13) the files are 
->>> owned by the unprivileged user.
->>>
->>>
->>> The result is, the image will not boot correctly.
->>>
->>>
->> I found more about this issue here
->>
->> https://lore.kernel.org/yocto/ 
->> tRtu.1740682678597454399.5171@lists.yoctoproject.org/T/ 
->> #m5de0afa17d2c0f640e86ffe67e0d74aea467fd5b
->>
-> Thanks for the report.
-> 
-> Just want to be sure, with pseudo emulating root environment, how does 
-> it handle the file uid/gid?
-> 
-> Mkfs.btrfs uses the uid/gid reported from stat() system calls, thus if 
-> pseudo doesn't change uid/gid reported from stat(), mkfs.btrfs will just 
-> follow the result.
+If btrfs_clone_extent_buffer() hits an error halfway through attaching
+the folios, it will not call folio_put() on its folios.
 
-The change in mkfs.btrfs is reportedly:
-"The important change is that previously mkfs.btrfs was
-using lstat syscall to get file stats, but then it switched to nftw libc
-function to do the same. Pseudo[3] however doesn't support this call -
-it "knows" that it exists (at least nftw64), but there seems to be no
-implementation."
+Unify its error handling behavior with alloc_dummy_extent_buffer() under
+a new function 'cleanup_extent_buffer_folios()'
 
-So, as I understand, pseudo would hook into stats call, lookup in 
-database and change uid/gid accordingly. But now there is only a stub.
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/extent_io.c | 55 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 35 insertions(+), 20 deletions(-)
 
-Right now I am trying a patch for pseudo that implements nftw64. It 
-triggers a rebuild for half my image, so that will takes another hour or 
-so. I'll let you know how that goes.
-
-This particular problem does seem to be more pseudo related.
-
-> I guess it's possible for us to implement an idmap-like solution, but 
-> I'd like to know how pseudo works first.
-> 
-> Thanks,
-> Qu
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 152bf042eb0f..99f03cad997f 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2829,6 +2829,22 @@ static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info
+ 	return eb;
+ }
+ 
++/*
++ * Detach folios and folio_put() them.
++ *
++ * For use in eb allocation error cleanup paths, as btrfs_release_extent_buffer()
++ * does not call folio_put().
++ */
++static void cleanup_extent_buffer_folios(struct extent_buffer *eb)
++{
++	for (int i = 0; i < num_extent_folios(eb); i++) {
++		ASSERT(eb->folios[i]);
++		detach_extent_buffer_folio(eb, eb->folios[i]);
++		folio_put(eb->folios[i]);
++		eb->folios[i] = NULL;
++	}
++}
++
+ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ {
+ 	struct extent_buffer *new;
+@@ -2846,26 +2862,30 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+ 
+ 	ret = alloc_eb_folio_array(new, false);
+-	if (ret) {
+-		btrfs_release_extent_buffer(new);
+-		return NULL;
+-	}
++	if (ret)
++		goto release_eb;
+ 
+ 	for (int i = 0; i < num_extent_folios(src); i++) {
+ 		struct folio *folio = new->folios[i];
+ 
+ 		ret = attach_extent_buffer_folio(new, folio, NULL);
+-		if (ret < 0) {
+-			btrfs_release_extent_buffer(new);
+-			return NULL;
+-		}
++		if (ret < 0)
++			goto cleanup_folios;
+ 		WARN_ON(folio_test_dirty(folio));
+-		folio_put(folio);
+ 	}
++	for (int i = 0; i < num_extent_folios(src); i++)
++		folio_put(new->folios[i]);
++
+ 	copy_extent_buffer_full(new, src);
+ 	set_extent_buffer_uptodate(new);
+ 
+ 	return new;
++
++cleanup_folios:
++	cleanup_extent_buffer_folios(new);
++release_eb:
++	btrfs_release_extent_buffer(new);
++	return NULL;
+ }
+ 
+ struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -2880,12 +2900,12 @@ struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+ 
+ 	ret = alloc_eb_folio_array(eb, false);
+ 	if (ret)
+-		goto out;
++		goto release_eb;
+ 
+ 	for (int i = 0; i < num_extent_folios(eb); i++) {
+ 		ret = attach_extent_buffer_folio(eb, eb->folios[i], NULL);
+ 		if (ret < 0)
+-			goto out_detach;
++			goto cleanup_folios;
+ 	}
+ 	for (int i = 0; i < num_extent_folios(eb); i++)
+ 		folio_put(eb->folios[i]);
+@@ -2896,15 +2916,10 @@ struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+ 
+ 	return eb;
+ 
+-out_detach:
+-	for (int i = 0; i < num_extent_folios(eb); i++) {
+-		if (eb->folios[i]) {
+-			detach_extent_buffer_folio(eb, eb->folios[i]);
+-			folio_put(eb->folios[i]);
+-		}
+-	}
+-out:
+-	kmem_cache_free(extent_buffer_cache, eb);
++cleanup_folios:
++	cleanup_extent_buffer_folios(eb);
++release_eb:
++	btrfs_release_extent_buffer(eb);
+ 	return NULL;
+ }
+ 
+-- 
+2.49.0
 
 
