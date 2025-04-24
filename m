@@ -1,79 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13401-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAF66A9B8DC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 22:12:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B4EA9B968
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 22:49:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E698C4A3864
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 20:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8833D17E145
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 20:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BB0200B9B;
-	Thu, 24 Apr 2025 20:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFB426A0FF;
+	Thu, 24 Apr 2025 20:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jl9w5AqV"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HVep5Kca"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A431FF5E3
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 20:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60569222578
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 20:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745525503; cv=none; b=kaSyAB5bc7MwgN5sYRdorxnTmiPbZGWccGvDiS6gETJruHANhO7naFcDJkXxjqm/gYfwi81/knc/J/QsW5/AXDo3LJdCF4qTSnHhu293k9KuxoyP+oQemtQURT2RI9Gx8zLeKWXQ1P7LEq9QZIgaFZsJUCBQglrxXT9KeEhsS/g=
+	t=1745527766; cv=none; b=IE8n5Xe6PwzJE43QOhgAglOpfegROC1ypC15TT70+ku2jpU9sjHYM/rEHVwXSePcwArfoSKfEM4b/YqH7GiVMCzFUstN+I7Zo9xK5fZt5s1nRZDAfCD13q6XiRSOS4RMfXNxGlDnIInQXEdCQVWjycsCc/Tgf0lP4aOAVgpW+3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745525503; c=relaxed/simple;
-	bh=JQDgE0zdnIVsy36KD+VqdkNzTeXDEdCJeJwAPKR4JRs=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=TYzsoq45GA4p17ht+w4k90eaCcmyYYE6/EVpgeN2DDDZh9p5Jjm8+siTUL0a6jgvE5m9KxBlloYWRrsqnqHMfkkLfD1cROosxZOaKxQII4Sbu98Zz2eHxKPoIwH+Jztt3vE0wia0Qcg66WdOoHuypXzq2w2LSCa4bwkRk87WEME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jl9w5AqV; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e8be1bdb7bso2404521a12.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 13:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745525499; x=1746130299; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ki3L7U3UJMBKE50yPdgVdncMMsaGSi8NQcrvx68+WNo=;
-        b=jl9w5AqVWTeoA/17XmMPF+SUePQcOTX+6OwvbWigYEkR4Ib47hVxLlUZ6UqZfjL+2f
-         zNTMqqE2ybuocPTk4EbX+0w5FmBjBjApChXZs0Idw7dwHm+YNfsdHzDEmFyQNuVnKmgW
-         Ti6EJL7IAffdixYrJRvOCEnx6EnUBaUcfq/aZQmq4DDWwn05EO3mm3x0EXmI2hBjg7Lp
-         6EExsaFsa2EJ7J9PgNv/LTZqUijzCs6hVifmyL3M+5M1tj+IXodN1XfZA072pPVH6siX
-         BKTFwWTJU4eipAmpS9fPm3jl36k2qace4FrD+gR1S4Bzqrg3hXq/MtZ3+Tp46yQdWYqZ
-         Q6DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745525499; x=1746130299;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ki3L7U3UJMBKE50yPdgVdncMMsaGSi8NQcrvx68+WNo=;
-        b=VDitUdoZHtAmVRVH4BAQty7St2GBiRq9FBpqrg5964m5rdgFendADnSVFEHiLHmuco
-         TeIslpB+4Sqr6dO4+3y4JF6xmuLuemr4gjfx688JrvVskrrXWTlzEYLDRP5JbrU+oq9e
-         flERZyisYaZCpHsPPAHLVuOcCLY+Ysr/fL6cveckshHZel6SGAEahUSQQkC25ljbqe6t
-         n7Fudf3Ph4qTIxjbphihlAG6VU2ZdES4MzLGVnWqqqCEbRdceS/bLhNWyhIk5CAIhf6Y
-         XY3yr8p7SeFJS7Fdfr46uWrYk+QI+VtLqYhkSMlf9eqlV25PzkJXP497xV4OE2EcT02y
-         Lojw==
-X-Gm-Message-State: AOJu0YyUYzI4Texp/kVJPz+HMX/hHSXSMHsoMc7gel0DSIFIgPerH0LO
-	+DNsPGJXxWKgeRZEARXZGW8jga8PPaBOcxRByI2ObgQDaRxsKqBf44XSGQ==
-X-Gm-Gg: ASbGncvEQfAb2E13SQiJ6SWWwVF+zenRPc3XhsQXQ00WxkHvyc1G+btiokBW1/VTh4k
-	NuCZM7Qjn5zjIabwdfY86yD5d6YhjsMt7V6Jljb2CTH52WQPUA17JsOuv5EoSs2eGqTSY8DMqKA
-	nKZZwdVoUR4/k1BshXKb8qbfzWIEb5q8FqgDKXlx+YlYt1iuV3eRJwwCnD09/4O1MQgC580pH3x
-	B9daWWisV+YKVyudhQo7+XxVcutq0jS4sAaY25WQH4UU7clzCv3FuM5NL9LhMeiul4mdYCZIB/p
-	zKyOgAZykmBOjYyvh0qVmiIDkLTu04ucU+wbArIOdiley+fZF46kzndK/emxJcrvf+E/arETv/o
-	Pa2MCv84BholBtAZ9lmhF3D7ld3QYPgNwUxCwQvEiEXuIo+uMhLIOUUOfXj4SY8Kz4jC+rZ5L
-X-Google-Smtp-Source: AGHT+IEQNPb5F67uNsyIbT0uPYGDiUyzJDMPyIV4AwxuO2GQM0wvhCmpsobC91CQ6PJG62f6A4j1Aw==
-X-Received: by 2002:a05:6402:1ecd:b0:5eb:9673:feb with SMTP id 4fb4d7f45d1cf-5f6df233455mr3613223a12.25.1745525498669;
-        Thu, 24 Apr 2025 13:11:38 -0700 (PDT)
-Received: from ?IPV6:2a02:a466:68ed:1:e82f:dba5:732c:3d0a? (2a02-a466-68ed-1-e82f-dba5-732c-3d0a.fixed6.kpn.net. [2a02:a466:68ed:1:e82f:dba5:732c:3d0a])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f70354638bsm122018a12.63.2025.04.24.13.11.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Apr 2025 13:11:38 -0700 (PDT)
-Message-ID: <d98ffb69-195b-4c07-ac56-8ae1f811af32@gmail.com>
-Date: Thu, 24 Apr 2025 22:11:37 +0200
+	s=arc-20240116; t=1745527766; c=relaxed/simple;
+	bh=atDIOiCAn/cBtDZuRrN+z6JNyy/v1CN+VKOXP3karwE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=a6Fhatk5e+vQMf/wVMQDNXTnBUh2QY24qZOqlyRXB79/tfeIbFZ2BHWTB+im5KhjoVdyxdC+boUPWl2iU6AxnI8E8QuI6/tibfRs8Olj5sg84NtgZJdXps0XTU/GX4mLYjqtR2GmSkcppqPMrMIrHi0jVJ5qMq4jPvWZQQWIfF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HVep5Kca; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1745527761; x=1746132561; i=quwenruo.btrfs@gmx.com;
+	bh=atDIOiCAn/cBtDZuRrN+z6JNyy/v1CN+VKOXP3karwE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=HVep5KcavQpuWvl/bmtTPijKLss5XkRkJw+vf4pNpKptEc1M6MJCXQWOoMf5x7T9
+	 7Ojkf5YbEKHE3xcYcSf+MqBjDnxLpA++KWDbWxJPI79wmzOmKYjc4Gkb5/tJv3a9s
+	 ZGINVzdLeIZ1h6ZIF6JOsE0YKZnBpiVLJ0XAvpr0wFgBOfv7JcVeZ2QrBYXJT7ZGL
+	 6SYvSyTy+J8iAGHAIoZsBT16693lSJ634aadznBIGDC6kBymiKhI7yYIHZQOccqkb
+	 I11Qcmb6Q0hlGQWES7Ebz9hrO7leyPlLW45lEOKu0H6JRVUsOK9DuydLIoSo4EvFY
+	 HFw6Zqo8NB4R9xjPJQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fii-1v5MAi2wXI-011Jt5; Thu, 24
+ Apr 2025 22:49:21 +0200
+Message-ID: <f32bd559-71c7-4d45-9af4-47a913eca63d@gmx.com>
+Date: Fri, 25 Apr 2025 06:19:17 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,183 +59,126 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: Errors on newly created file system
-From: Ferry Toth <fntoth@gmail.com>
-To: linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
- Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Ferry Toth <fntoth@gmail.com>, linux-btrfs@vger.kernel.org,
+ Qu Wenruo <wqu@suse.com>
 References: <669c174e-5835-471f-9065-279a7da8f190@gmail.com>
  <2366963.X513TT2pbd@ferry-quad>
  <b2ac7b22-ab50-4eb4-a90a-0d110407ba36@gmx.com>
  <3309589.KRxA6XjA2N@ferry-quad>
+ <d98ffb69-195b-4c07-ac56-8ae1f811af32@gmail.com>
 Content-Language: en-US
-In-Reply-To: <3309589.KRxA6XjA2N@ferry-quad>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <d98ffb69-195b-4c07-ac56-8ae1f811af32@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bBfB4jfSsEn45gyfbLpxtehKM6hMIAviXny39RcAWHrXJHdoBfL
+ o31PWGosIW8gmn5wE65Er5Z2RF1/whyfOy7mJp6oE0RFaSMQwcQ+8RzVTBFghBv57iGzk+o
+ lAp6q7h9rU/cwAoFh/K60KKZSiYgoCdZVqEj8IOZQpA0OBmPd48rCizMz5NRtYToJWEeyH8
+ esHKiUON4lRemkAoqQjbQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:nbNCKEC0Ja0=;bPcNIu1nMNNKV2QxP8pigal9Yg1
+ 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
 
-Hi
 
-Op 24-04-2025 om 13:31 schreef Ferry Toth:
->
-> Op donderdag 24 april 2025 01:24:23 CEST schreef Qu Wenruo:
->
-> >
->
-> > 在 2025/4/24 01:36, Ferry Toth 写道:
->
-> > > Op woensdag 23 april 2025 00:00:36 CEST schreef Qu Wenruo:
->
-> > >
->
-> > [...]
->
-> >
->
-> > >
->
-> > >  > > Yocto users on Scarthgap (5.0 LTS) with version 6.7.1 may 
-> copy the
->
-> > >
->
-> > >  > > recipe meta/recipes-devtools/btrfs-tools/btrfs-tools_6.13.bb from
->
-> > >
->
-> > >  > > walnascar or 6.14 from master. If they are building 
-> additional tools
->
-> > >
->
-> > >  > > that use headers from this package like btrfs-compsize these 
-> may break.
->
-> > >
->
-> > >  > >> Thanks,
->
-> > >
->
-> > >  > >> Qu
->
-> > >
->
-> > >
->
-> > > While here, am I right that we can not generate the rootfs with
->
-> > > compression on?
->
-> > >
->
-> > >
->
-> > > Reason I ask is, Yocto of course builds the rootfs and than has
->
-> > > mkfs.btrfs create the image. But it runs as unprivileged user, so can
->
-> > > not do mount.
->
-> > >
->
-> > > And then can not do defrag.
->
-> >
->
-> > We have this feature recently thanks to Mark!
->
-> >
->
-> > In the latest release v6.13, there is a new option "--compress" 
-> added to
->
-> > mkfs.btrfs, which must be used with "--rootdir".
->
-> >
->
-> > And the result is exactly what you expected, mkfs.btrfs will try to
->
-> > compress the file extents at runtime.
->
-> > For uncompressible data, it will detect at the beginning and 
-> fallback to
->
-> > uncompressed data instead, exactly like the kernel.
->
->
-> That is great, thanks!
->
->
-> > But considering how new this feature this, it will be appreciated if
->
-> > Yocto guys can do some extra testing to make sure nothing is broken.
->
-> > (Normally a btrfs check after the mkfs will be good enough)
->
-> >
->
->
-> I will test this.
->
->
-> In the meanwhile I found another problem (and I am not the first it 
-> seems see
->
-> /https://stackoverflow.com/questions/79475262/yocto-root-filesystem-ownership-issue/79590289#79590289/ 
-> <https://stackoverflow.com/questions/79475262/yocto-root-filesystem-ownership-issue/79590289#79590289>)
->
->
-> Yocto uses pseudo to fake root ownership. Even though the directory to 
-> be copied into the new fs is owned by an unprivileged user inside the 
-> btrfs image the files are owned by root, when created by mkfs.ext4 and 
-> mkfs.btrfs.
->
->
-> Except with newer mkfs.btrfs (I tested using 6.13) the files are owned 
-> by the unprivileged user.
->
->
-> The result is, the image will not boot correctly.
->
->
-I found more about this issue here
 
-https://lore.kernel.org/yocto/tRtu.1740682678597454399.5171@lists.yoctoproject.org/T/#m5de0afa17d2c0f640e86ffe67e0d74aea467fd5b
+=E5=9C=A8 2025/4/25 05:41, Ferry Toth =E5=86=99=E9=81=93:
+> Hi
+>=20
+[...]
+>>
+>>
+>> Except with newer mkfs.btrfs (I tested using 6.13) the files are owned=
+=20
+>> by the unprivileged user.
+>>
+>>
+>> The result is, the image will not boot correctly.
+>>
+>>
+> I found more about this issue here
+>=20
+> https://lore.kernel.org/yocto/=20
+> tRtu.1740682678597454399.5171@lists.yoctoproject.org/T/=20
+> #m5de0afa17d2c0f640e86ffe67e0d74aea467fd5b
+>=20
+Thanks for the report.
 
-> > Thanks,
->
-> > Qu
->
-> >
->
-> >
->
-> > >
->
-> > >
->
-> > >  > >
->
-> > >
->
-> > >  > >
->
-> > >
->
-> > >  >
->
-> > >
->
-> > >  >
->
-> > >
->
-> > >
->
-> > >
->
-> >
->
-> >
->
->
->
+Just want to be sure, with pseudo emulating root environment, how does=20
+it handle the file uid/gid?
+
+Mkfs.btrfs uses the uid/gid reported from stat() system calls, thus if=20
+pseudo doesn't change uid/gid reported from stat(), mkfs.btrfs will just=
+=20
+follow the result.
+
+I guess it's possible for us to implement an idmap-like solution, but=20
+I'd like to know how pseudo works first.
+
+Thanks,
+Qu
 
