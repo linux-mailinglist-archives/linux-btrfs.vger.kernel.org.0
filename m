@@ -1,144 +1,166 @@
-Return-Path: <linux-btrfs+bounces-13388-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13389-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF534A9ACB9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 14:01:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B8FA9ADD0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 14:45:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3897B442BA7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 12:01:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95FA63A5EBB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 12:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FC022B8C6;
-	Thu, 24 Apr 2025 12:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F7D27A918;
+	Thu, 24 Apr 2025 12:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u9gRpvYC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GHJf/lX5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9CC22A4D6
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 12:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8322701AA
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 12:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745496102; cv=none; b=jjcnBxAhHa0JRH1ucp2dWatZEGdqsDktpgogOAplHeeCnNB6S2QkMDlLQ0pHy/Ifo//WvgkD1cKT7PiZkW9rciqgIdmy6sbO0hWL7YZO6j9pdf6gmn/R5DfGS+s3Wo7wDw0AJA0E/cdAdOxEChFcQFpocQwliXi3BF0S8o/KgHs=
+	t=1745498722; cv=none; b=c4rjLyCsmLeYMJrC4x+m9uW3Ji4C9idWmdAZKW0Q4TR7B2lN1vq6EzF5zf0HuF6CNTxCpGTrwu+5TzhGR94EnRE9irWTEkrx3+oC1waoevHcyv1DyxdRDOvKK++JV0FphXB7fQX2OusV3+rMB5E0GNGiL6yDuHFi1CsU5PR3Ghw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745496102; c=relaxed/simple;
-	bh=RDRKZeNKN55umrzQ5oGHsI+0KYc+ooDByqGf/CbRS4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HBdtnJqRVSz3UwEAaLb63DsuKTq/HGPrrlvenDcEaXVlFvoSeZ8xJgxSzjsLzRchyXFKjLscFHmpLdKq9YZUogDOrnYxQC2UqivZoZEy81A3tBoV1MM1tjuDTbJuxTNUpUiZoHHLYCBwFS2V3Ut4PNEFU1EyrwbgTgQU3LXTlsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u9gRpvYC; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 24 Apr 2025 08:01:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745496087;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T2MMeEmusMY/E/i/SQKbyFaL7BU6CcGYmFZRFD2drdA=;
-	b=u9gRpvYCA7IkAb0B4poNcSjWcfnEIwKuPsuUltPGgb8dOqhtvOFUuqTpBE1musH7/BVP9b
-	38vbULDjl6NCX/pmhSnebe2rg3ejQKWdffXIWBn1CsORMSUQcA3dgQXk9yIE8/M4BAoo1k
-	1DBuUEL/zkkYq7EeqOTzQe9EbZUJZTQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>, 
-	Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Carlos Maiolino <cem@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <jth@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Pavel Machek <pavel@kernel.org>, linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: add more bio helper
-Message-ID: <anc2qstnukiwtskc4pd3kqajfswm3dzljxwa3awrxjs7mzppoc@nziz3h4ilqpd>
-References: <20250422142628.1553523-1-hch@lst.de>
- <jetduw7zshrmp4gl7zfpwqjweycwesxiod7xvtnxqwqekgtvdf@idwnvfzvhgik>
- <20250423093621.GA2578@lst.de>
- <sl4oibdxpjygqfpy6llq237zuckz7ym4fmzcfvxn2raofr37a5@hvevbcgm5trn>
- <20250423160733.GA656@lst.de>
- <q53k4x5nshvr2zatrgyhygxouv7ijyepe6cj2pfooemi6gbu4y@lpxxcvozazzu>
- <20250424083740.GA24723@lst.de>
+	s=arc-20240116; t=1745498722; c=relaxed/simple;
+	bh=1c1lx8Aun3m4hXx1rB74sfE8dbD+aeEU+Q/Y7ipxJdw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OAQLcUmlKaoJkpxSAPkwtcR0sD2roP7QcSlUlNrqHb/sHqkziSUZ5NQzPXcpghgD0P2UGqlyg96AXC928vv6cChkHhg4llWLoPYVMtb9OyyJo9DitKYuoQ7TqCL50dT0VCbDdveSNgHohMAYMH1QASF2Ovd2mO4O+7C6SwZMSBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GHJf/lX5; arc=none smtp.client-ip=209.85.210.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-73de140046eso116159b3a.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 05:45:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745498720; x=1746103520; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YwpFu9Vm+qKRhH+ZClP3Ui+2afjZkwchqv7H+tiyZec=;
+        b=GHJf/lX5ffMgiBKjMBdcYq7YualduWzLjP1x1LoFfIWMsSMr79qhZQ8QE/8gYQBqF7
+         q2hL0yBlLfGaF/ZnKrmB1DvICEdYGrku1fp3xg+xZPM3PVRTYMR7oa71sj4dPEMcapU8
+         FWHn6cqug+0W1TKXqcFxuHyzOk0DYi1BYAMx632XQp63kAHAXl7/J8Pxpm+IfyUAAvM5
+         cMU3qOqxGrdcTdetMTiL3TgBgo4pSDI+0A341N8JP6nv4WOR3OuozO1NT0oSaC48S0+E
+         zeR4Aat4C/K3k3NUjohBaBhHVQcjvpzIUmtrQyVCoRkNheRFN8TNClLierw2YqlqbGoO
+         TogA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745498720; x=1746103520;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YwpFu9Vm+qKRhH+ZClP3Ui+2afjZkwchqv7H+tiyZec=;
+        b=E26q3E/sMCZhW6l35c8WT1WcB2CPnP6XycMXk8djPjGP6AN7Lu0X8MAn0hFW1Exx+h
+         k5P4at70H9RNnq+qZQGJVFGfDakfZlrMOhLotSDfk9bwkr/9GjO8hUjYuKQ1Qn5lMHeL
+         deRll9T3KjdGhoe6DJIkONFi1O64YtlRhzl1Fw3tRV66jxY948ZtcH5xKSBxt+0NHCZ8
+         bQSzUUkTtymya7BYN+E3FZeeyGndV3xz/wpQTGI8w8z2mOCbb38ydPeb47ziMymjj4gU
+         FlyOADLmG421gqp0wDQGg7QZWRrLhTMWCWHfCDxXWsTEXSzijGoA8QC42hNCFfO0ysJT
+         vCGA==
+X-Gm-Message-State: AOJu0YwUi6F8w8dHmH8qIcZd30jE2zOEHbiQEaQe0l8QOn1tsox86iTW
+	6mmmJY/niMddxidZ6Ukuy4u3l3EZTi7NHpfEL/RfJcOhCOVIZ1UBQNU+MARz4cAQqg==
+X-Gm-Gg: ASbGncvHjNMwe5pC5KfEDmoO3gzTjjDsMaPirvJxes+7KkegmkBPYRVGjO+G8ZMzFkL
+	lI/g4ff2K4kPCUIg0rVi4L7dqcOSkANm1YslY7Ey5EG6jVXnqpNSFKBaQSG3TZPCGgQzsHCYSjv
+	9nBKKHV2kLhxknc3qoHlYjZLdsIPxrJ3reYPhtN9Fhzk5anB98e16LzJyyY7SkjwdbYz2OUs4a2
+	xKMrNa9Yr2eccNxdCSTGmw0Zhg+ON0MXVIUk7RvqeIsQy1nmQ8f55gtceqMavh6zukuicMbSI/+
+	1V80+LTxu7QkePugqKrwxLqA7OkxkYnzVEvUMMX90xkBct/mRvYFjDwjuJGt+LGTsTBZuDGbDUC
+	xlJ5ydEw=
+X-Google-Smtp-Source: AGHT+IEqNXPGjOPm6FNvEFZKPv0fBEaAVheeZA82ohYscs3j8H56HeLduUpbGgKJJy3lCT9Qnc9+Kw==
+X-Received: by 2002:a05:6a21:6e41:b0:1ee:e16a:cfa0 with SMTP id adf61e73a8af0-20444f4150fmr1485874637.9.1745498719629;
+        Thu, 24 Apr 2025 05:45:19 -0700 (PDT)
+Received: from saltykitkat.localnet (tk2-227-23497.vs.sakura.ne.jp. [160.16.103.251])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b15f76f45bcsm1097375a12.13.2025.04.24.05.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Apr 2025 05:45:19 -0700 (PDT)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: sunk67188@gmail.com
+Subject: Sharing my faster compsize implementation
+Date: Thu, 24 Apr 2025 20:45:15 +0800
+Message-ID: <2235418.irdbgypaU6@saltykitkat>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250424083740.GA24723@lst.de>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Apr 24, 2025 at 10:37:40AM +0200, Christoph Hellwig wrote:
-> On Wed, Apr 23, 2025 at 02:02:11PM -0400, Kent Overstreet wrote:
-> > Allocating your own bio doesn't allow you to safely exceed the
-> > BIO_MAX_VECS limit - there's places in the io path that need to bounce,
-> > and they all use biosets.
-> 
-> Yes.  Another reason not to do it, which I don't want to anyway.
-> 
-> But we do have a few places that do it like squashs which we need to
-> weed out.  And/or finally kill the bounce bufferingreal, which is long
-> overdue.
-> 
-> > That may be an issue even for non vmalloc bios, unless everything that
-> > bounces has been converted to bounce to a folio of the same order.
-> 
-> Anything that actually hits the bounce buffering is going to
-> cause problems because it hasn't kept up with the evolution of
-> the block layer, and is basically not used for anything relevant.
+I love compsize a lot. However, It is a little slow for me. So I'm trying to 
+write a faster compsize implementation, just for my use case, which gets a 
+great speedup by both reducing syscalls and multi-threading.
 
-It's not just block/bounce.c that does bouncing, though.
+I'm sharing this in case it might be of interest to others in the community. 
+All feedback and questions are welcome. The project is on
+https://github.com/SaltyKitkat/xsz
 
-e.g. bcache has to bounce on a cache miss that will be written to the
-cache - we don't want to wait for the write to the backing device to
-complete before returning the read completion, and we can't write to the
-backing device with the original buffer if it was mapped to userspace.
+And followings are the performance comparison on my machine.
 
-I'm pretty sure I've seen bouncing in dm and maybe md as well, but it's
-been years.
+On a SATA SSD device, with some snapshots for backing up, and some large media 
+files.
+Cache is cleared before each run.
+```
+$ sudo time ./xsz -j1 /mnt/1
+Processed 5663444 files, 1097233 regular extents (3859780 refs), 3459956 
+inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       95%      827G         865G         1.3T
+none       100%      811G         811G         1.1T
+zstd        29%       15G          54G         192G
+4.27user 37.46system 1:14.13elapsed 56%CPU (0avgtext+0avgdata 
+31420maxresident)k
+5060832inputs+0outputs (0major+46434minor)pagefaults 0swaps
 
-> > > The problem with transparent vmalloc handling is that it's not possible.
-> > > The magic handling for virtually indexed caches can be hidden on the
-> > > submission side, but the completion side also needs to call
-> > > invalidate_kernel_vmap_range for reads.  Requiring the caller to know
-> > > they deal vmalloc is a way to at least keep that on the radar.
-> > 
-> > yeesh, that's a landmine.
-> > 
-> > having a separate bio_add_vmalloc as a hint is still a really bad
-> > "solution", unfortunately. And since this is something we don't have
-> > sanitizers or debug code for, and it only shows up on some archs -
-> > that's nasty.
-> 
-> Well, we can't do it in the block stack because that doesn't have the
-> vmalloc address available.  So the caller has to do it, and having a
-> very visible sign is the best we can do.  Yes, signs aren't the
-> best cure for landmines, but they are better than nothing.
+$ sudo time ./xsz -j4 /mnt/1
+Processed 5663444 files, 1097233 regular extents (3859780 refs), 3459956 
+inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       95%      827G         865G         1.3T
+none       100%      811G         811G         1.1T
+zstd        29%       15G          54G         192G
+4.89user 37.88system 0:20.42elapsed 209%CPU (0avgtext+0avgdata 
+35820maxresident)k
+5060832inputs+0outputs (0major+79430minor)pagefaults 0swaps
 
-Given that only a few architectures need it, maybe sticking the vmalloc
-address in struct bio is something we should think about.
+$ sudo time compsize /mnt/1
+Processed 5663444 files, 1097233 regular extents (3859780 refs), 3459956 
+inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       95%      827G         865G         1.3T
+none       100%      811G         811G         1.1T
+zstd        29%       15G          54G         192G
+3.72user 72.98system 1:50.07elapsed 69%CPU (0avgtext+0avgdata 
+80132maxresident)k
+5254008inputs+0outputs (1major+24967minor)pagefaults 0swaps
+```
 
-Obviously not worth it if only 2-3 codepaths need it, but if vmalloc
-fallbacks become more common it's something to think about.
+On a HDD device, with a lot of small files, and some program files.
 
-> > > Not for a purely synchronous helper we could handle both, but so far
-> > > I've not seen anything but the xfs log recovery code that needs it,
-> > > and we'd probably get into needing to pass a bio_set to avoid
-> > > deadlock when used deeper in the stack, etc.  I can look into that
-> > > if we have more than a single user, but for now it doesn't seem
-> > > worth it.
-> > 
-> > bcache and bcachefs btree buffers can also be vmalloc backed. Possibly
-> > also the prio_set path in bcache, for reading/writing bucket gens, but
-> > I'd have to check.
-> 
-> But do you do synchronous I/O, i.e. using sumit_bio_wait on them?
+Cache is cleared before each run.
+```
+$ sudo time ./xsz -j1 /mnt/guest
+Processed 393486 files, 215207 regular extents (215207 refs), 178308 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL      100%       29G          29G          29G
+none       100%       29G          29G          29G
+0.37user 3.47system 1:07.54elapsed 5%CPU (0avgtext+0avgdata 5436maxresident)k
+830912inputs+0outputs (0major+7825minor)pagefaults 0swaps
 
-Most btree node reads are synchronous, but not when we're prefetching.
+$ sudo time ./xsz -j4 /mnt/guest
+Processed 393486 files, 215207 regular extents (215207 refs), 178308 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL      100%       29G          29G          29G
+none       100%       29G          29G          29G
+0.40user 3.97system 0:57.72elapsed 7%CPU (0avgtext+0avgdata 8064maxresident)k
+830912inputs+0outputs (0major+5093minor)pagefaults 0swaps
+
+$ sudo time compsize /mnt/guest
+Processed 393486 files, 215207 regular extents (215207 refs), 178308 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL      100%       29G          29G          29G
+none       100%       29G          29G          29G
+0.42user 9.45system 2:49.78elapsed 5%CPU (0avgtext+0avgdata 12648maxresident)k
+954080inputs+0outputs (0major+2990minor)pagefaults 0swaps
+```
+
+
 
