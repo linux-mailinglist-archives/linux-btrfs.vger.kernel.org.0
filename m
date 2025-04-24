@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13349-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13350-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62BE7A99D5A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 02:54:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A62A99D6E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 02:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B9A4446C85
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 00:54:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAAD319467C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 00:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0AE60DCF;
-	Thu, 24 Apr 2025 00:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4FE6A8D2;
+	Thu, 24 Apr 2025 00:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jhTZJwKC"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="pbKYIFS0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EBF7F9
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 00:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACD17F9
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 00:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745456071; cv=none; b=tLce2uDWWgOLEXv9SqV/Uhs2jnXYDfX9DvmHKxeLglAsrJ+zNHnJSCmzvBbnNbj5bZ5Th4kUiV1mZAo4Xa982xCRNCFiTO5frzebd75Ns5Tycy3Zd4/oJ+aX++fmN0m/9dlsBtVj3FZdcKoNAP9ABfyHK3yrY3+cPQw1tNeSDoU=
+	t=1745456199; cv=none; b=WBF+dI1SGgDKiRHnzz9ChhMXH2QjvDlvWetBkuvqhubzCVX+t3k3OxnbnbsS/X1KH4LYZ35biz8yaSrJkoVw+CY3Su87+gtlcKaYz+tL0lG8xlWJql4ABKULepOll2bEKiENr8jr7AZXJp8yPy1m5WJD054iEK1arf3Z1ZVLZUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745456071; c=relaxed/simple;
-	bh=mduoo1E7sL7HaG84/Gvagcr8lsnBVwszzAcA9fAeQ9o=;
+	s=arc-20240116; t=1745456199; c=relaxed/simple;
+	bh=H5UUSTRcIt4omKSiXibAejrMpWRo5q2nAIBpEg8D7WA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=In0RnMp3stFPxMzWoA3BNf4mpUTWJgzQRdWCdARNK6gxa7kCpQbHSEku9TEyaFqIfgLP5JHh5SXCGRAQLP6fId3JLHjxnPDXu4X5GT44BWyl1PVtEERAQ3z7QViz+mQukDzxJ1ahEKQ1xGj41xP2mC5cq6D/JgPwSPTukxXvLwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jhTZJwKC; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=lJXxeAW8HyVryGV6wEl1TPkfPbrY2vlAsi4kjw0cK6kQq0lXmiINryZ3fT2f5AY1016Si2Irr56pNRJVqHdQvsrBlfgnkRfl7z43MVIgeC9nYdzwJuzzeR4thCF1OAkgM1u3snKjEB6Ft/jUXXYOnxwF3K2Jh+vBX4ckAIc6O1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=pbKYIFS0; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1745456066; x=1746060866; i=quwenruo.btrfs@gmx.com;
-	bh=IYSVUFBwaGx5GPZM9lceAUDaqQFc186KgE0pM0PpyDc=;
+	s=s31663417; t=1745456194; x=1746060994; i=quwenruo.btrfs@gmx.com;
+	bh=pCC23PBQJAHQql9KZ38kE+UXzUHeNg39BpsbYICkxJ4=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=jhTZJwKCqcsqk+rSFbFY7mbE3uiyyzuKPwk5xgBaP/NVNDz2KNwcxcoLjE2OTVxH
-	 bKl+Z8FxbOoxU01oSvHTpOb4gIY+qwE7GZ7oI/Rjw4Fuy55d2/DZhcjfPjjua2J9S
-	 bhrfK8DFe55TQPHz9g8MD3EBCtZLGw+ar9zLbEOHtEQ6JshSt9lYLDaIHRSr/vDWn
-	 yyWCuJc+e04Ea5bA11p95YUTShtkU4r9aKD9E03u5yZj9go2QUhbpTfLBuggoDST2
-	 psa4XND/VYBQqhIId1ZeMcIKQont0qWvUSBNU5OSUVtgjcePQZPTH3JooDqBazrCn
-	 xgj83iQQJS0vQFuViw==
+	b=pbKYIFS0BiWRJoGhTYwHgJhWVCZpbOJRtFN9KrXx2ys7Qg4kHhWNKcXECmupswYt
+	 v6g/KoCBHcTqEhUnW6YP0HH4/ypuMe2/F/wWpAc4tJ92St2qY5z3rW0bqqBQKr1Zo
+	 RwtavY1w/RcDa1pOLmEjIj7bM3focnYrQ9sy8qQ2t1DCymm/iDFjhDeNjlZuCF+0z
+	 WkKZX/BdxRxbPZfobWzC8GYU37jqJLzW7aaZvrVmNu8thOie4HAmonR2UdiCCBhrZ
+	 0Av5IUf56mfpCTpNtzOmZ2v+RibJ0VwTz3DRAfvnGRq/2eYh5l/gw2hGL+p2KD7vO
+	 FM2ANoZbT5uIjIBR0g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mg6Zq-1ukfux2T0w-00deGc; Thu, 24
- Apr 2025 02:54:26 +0200
-Message-ID: <c01585b5-cca2-47b7-8798-a1ac8fb20de3@gmx.com>
-Date: Thu, 24 Apr 2025 10:24:22 +0930
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwQTF-1uzIyz3MZB-00vQfB; Thu, 24
+ Apr 2025 02:56:34 +0200
+Message-ID: <49198456-c710-4a48-adaf-6d0b5267c3c1@gmx.com>
+Date: Thu, 24 Apr 2025 10:26:28 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] btrfs: make btrfs_truncate_block() to zero
- involved blocks in a folio
+Subject: Re: [PATCH v4 2/2] btrfs: make btrfs_truncate_block() zero folio
+ range for certain subpage corner cases
 To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <0bf58569b1f5ea0d7c2e086f07088e9093b274f3.1745443508.git.wqu@suse.com>
- <aAmCU2BDFmEmX0mv@devvm12410.ftw0.facebook.com>
+References: <50e41f048f26b5b58f55b25c045e5dfe94a8dcfd.1745443508.git.wqu@suse.com>
+ <aAmFYrptBXjufdg5@devvm12410.ftw0.facebook.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,218 +90,139 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <aAmCU2BDFmEmX0mv@devvm12410.ftw0.facebook.com>
+In-Reply-To: <aAmFYrptBXjufdg5@devvm12410.ftw0.facebook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DoSNDhuouiQm35tml32iImTP30fnAgpATNgVP+QyOLf5csEnQ+8
- Yd+1yIe4b8rLOr6TR/SIUKc9K5OIdsLP2WL+er026uGq19tq94Hw/MM/BSdRk3JbD3MtvVq
- 3pL3Oxj3b/h/yoDYG9E/KGrP2ODfd7DI9A7ltovebUA5+obnpQ4L39go4swRxEVZy5BBX+B
- GRN8jaG9rxkSVz8PP+CuA==
+X-Provags-ID: V03:K1:c0i07REd60VFdCGumP/15k/pcyjGL+ETeGYHn+4ZHFq6hK+/URU
+ /or2K7dsIAbLOnfU/u4xQRrm1LM8iFEX+Ek7SKAo9k+DCob6uTv9QQ7TRchjOO4oyUTe7L8
+ fZnjs1R19+Dhwh6nWZAWi30AgPmw/UIrVvRYarcBKft2EtlwgQAXKyz7JnuqA+X+KLYotCf
+ d7wRiDdFFunTobGjuim6A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iEpYuB+OhPE=;Qlvxz4pKRyjtLNHEXkq2DOKplJW
- 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
- wMAa2hGCnGUquCuc+6PgZ4=
+UI-OutboundReport: notjunk:1;M01:P0:4vamcwor+wo=;oWZXgtGaD4mQKJ9JrevmT0ulbxI
+ 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
+ n59wicBKYSkIA=
 
 
 
-=E5=9C=A8 2025/4/24 09:44, Boris Burkov =E5=86=99=E9=81=93:
-> On Thu, Apr 24, 2025 at 06:56:31AM +0930, Qu Wenruo wrote:
+=E5=9C=A8 2025/4/24 09:57, Boris Burkov =E5=86=99=E9=81=93:
+> On Thu, Apr 24, 2025 at 06:56:32AM +0930, Qu Wenruo wrote:
 [...]
->> Such behavior is only exposed when page size is larger than fs block
->> btrfs, as for block size =3D=3D page size case the block is exactly one
->> page, and fsx only checks exactly one page at EOF.
+>> +/*
+>> + * A helper to zero out all blocks inside range [@orig_start, @orig_en=
+d) of
+>> + * the target folio.
+>> + * The target folio is the one containing the head or tail block of th=
+e range
+>> + * [@from, @end].
+>> + *
+>> + * This is a special case for fs block size < page size, where even if=
+ the range
+>> + * [from, end] is already block aligned, we can still have blocks beyo=
+nd EOF being
+>> + * polluted by memory mapped write.
+>> + */
 >=20
-> This wording struck me as a little weird. What fsx does and doesn't
-> check shouldn't really matter, compared to the expected/desired behavior
-> of the various APIs.
+> This function name is basically the same as folio_zero_range which
+> behaves very differently. I think it needs a name that captures the fact
+> that it is a special case for btrfs_truncate_block
 
-Sure, I'll remove the fsx part.
+What about btrfs_truncate_block_zero_range()?
 
+[...]
+>> +	folio_wait_writeback(folio);
 >=20
-> Other than that, very nice debug and thanks for the clear explanation.
->=20
->>
->> [FIX]
->> Enhance btrfs_truncate_block() by:
->>
->> - Force callers to pass a @start/@end combination
->>    So that there will be no 0 length passed in.
->>
->> - Rename the @front parameter to an enum
->>    And make it matches the @start/@end parameter better by using
->>    TRUNCATE_HEAD_BLOCK and TRUNCATE_TAIL_BLOCK instead.
->=20
-> Do I understand that you are not just renaming front to an enum, but
-> changing the meaning to be selecting a block to do the dirty/writeback
-> thing on? That is not really as clear as it could be from the commit
-> message/comments.
+> This lock/read/wait pattern is the same as in btrfs_truncate_block and I
+> think could benefit from being lifted into a function.
 
-The original code is hiding the block selection by doing all it by the=20
-caller.
-
-E.g. If we have something like this:
-
-
-     0       4K      8K     12K     16K
-     |   |///|///////|//////|///|   |
-         2K                     14K
-
-The original code do the truncation by calling with @from =3D 2K, @front =
-=3D=20
-false, and @from=3D14K, @front =3D true.
-
-But that only handles the block at range [0, 4k) and [12K, 16K), on a=20
-64K page, it will not tell exact range we can zero.
-
-If we just zero everything past 2K until page end, then the contents at=20
-[14K, 64K) will be zeroed incorrectly.
-
-Thus we need the correct range we're really trunacting, to avoid=20
-over/under zeroing.
-
-
-Normally with the full truncating range passed in, we still need to know=
-=20
-what exact block we're truncating, because for each range there are=20
-always the heading and tailing blocks.
-
-
-
-But since you're already mentioning this, it looks like the old @from is=
-=20
-still a better solution, and since we're already passing the original=20
-range into the function, we should be able to detect just based on @from=
-=20
-and original ranges.
-
-E.g. for above case, if we want to truncate [2k, 4K), we can just pass
-@from =3D 2K, @range =3D [2K, 14K).
-
-And if we want to trunacte [12K, 14K), pass @from =3D 14K, range=3D[2K, 14=
-K).
+Sure, will do that.
 
 >=20
->>
->> - Pass the original unmodified range into btrfs_truncate_block()
->>    There are several call sites inside btrfs_zero_range() and
->>    btrfs_punch_hole() where we pass part of the original range for
->>    truncating.
->=20
-> The definition of "original range" is very murky to me. It seems
-> specific to the hole punching code (and maybe some of the other
-> callsites).
-
-Yes, it's specific to hole punching and zero range, which all modify=20
-their internal cursors.
-
-But if we go the above purposal, using the full range to replace @front=20
-parameter, it may be a little easier to understand.
-
->> @@ -2656,8 +2657,9 @@ static int btrfs_punch_hole(struct file *file, lo=
-ff_t offset, loff_t len)
->=20
-> (not visible in the formatted patch) but there is a comment just above
-> this change about how we don't need to truncate past EOF. Can you check
-> it and update it if it is wrong now?
-
-Indeed I need to update that part to mention the mmap write cases.
-
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index 538a9ec86abc..6f910c056819 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -4765,15 +4765,16 @@ static int btrfs_rmdir(struct inode *dir, struc=
-t dentry *dentry)
+>> +
+>> +	clamp_start =3D max_t(u64, folio_pos(folio), orig_start);
+>> +	clamp_end =3D min_t(u64, folio_pos(folio) + folio_size(folio) - 1,
+>> +			  orig_end);
+>> +	block_start =3D round_down(clamp_start, blocksize);
+>> +	block_end =3D round_up(clamp_end + 1, blocksize) - 1;
+>> +	lock_extent(io_tree, block_start, block_end, &cached_state);
+>> +	ordered =3D btrfs_lookup_ordered_range(inode, block_start, block_end =
++ 1 - block_end);
+>> +	if (ordered) {
+>> +		unlock_extent(io_tree, block_start, block_end, &cached_state);
+>> +		folio_unlock(folio);
+>> +		folio_put(folio);
+>> +		btrfs_start_ordered_extent(ordered);
+>> +		btrfs_put_ordered_extent(ordered);
+>> +		goto again;
+>> +	}
+>> +	folio_zero_range(folio, clamp_start - folio_pos(folio),
+>> +			 clamp_end - clamp_start + 1);
+>> +	unlock_extent(io_tree, block_start, block_end, &cached_state);
+>> +
+>> +out_unlock:
+>> +	folio_unlock(folio);
+>> +	folio_put(folio);
+>> +	return ret;
+>> +}
+>> +
+>>   /*
+>>    * Read, zero a chunk and write a block.
 >>    *
->>    * @inode - inode that we're zeroing
->>    * @from - the offset to start zeroing
->> - * @len - the length to zero, 0 to zero the entire range respective to=
- the
->> - *	offset
->=20
-> orig_start/orig_end are missing. This adds to the confusion about their
-> definition/semantics I mentioned above.
->=20
-> More generally, I think this change is a huge change to the semantics of
-> this function, which used to operate on only a block but now operates on
-> a range. I think that merits a full rewrite of the doc to fully
-> represent what the new interface is.
-
-Will do that.
-
-
+>> @@ -4801,8 +4875,20 @@ int btrfs_truncate_block(struct btrfs_inode *ino=
+de, loff_t from, loff_t end,
+>>   	if (end =3D=3D (loff_t)-1)
+>>   		ASSERT(where =3D=3D BTRFS_TRUNCATE_HEAD_BLOCK);
 >>  =20
->> -	block_start =3D round_down(from, blocksize);
->> +	if (where =3D=3D BTRFS_TRUNCATE_HEAD_BLOCK)
->> +		block_start =3D round_down(from, blocksize);
->> +	else
->> +		block_start =3D round_down(end, blocksize);
+>> -	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize))
+>> -		goto out;
+>> +	if (IS_ALIGNED(from, blocksize) && IS_ALIGNED(end + 1, blocksize)) {
 >=20
-> I don't think I get why we would want to change which block we are doing
-> the cow stuff to, if the main focus is zeroing the full original range.
-E.g. We want to truncate range [2K, 6K], it covers two blocks:
+> Does this need to depend on `where` now or is it still necessary to
+> check both?
 
-        0           2K          4K         6K         8K
-        |           |//////////////////////|          |
-
-If we're handling the HEAD block, aka for block [0, 4K), the block start=
-=20
-should be round_down(2K).
-
-If we're handling the tail block, aka for block [4k, 8k), the block=20
-start should be round_down(6K).
-
-The original code move the handling to the caller, but I believe the new=
-=20
-purposed parameters can handle it a little easier.
-
->=20
-> Apologies if I am being dense on that :)
-
-No worries, that's more or less expected because I already know the new=20
-parameters are very ugly, just can not come up a better one at the time=20
-of writing.
+No, that's the beauty of passing the original range we want to truncate.
+It always works no matter @where.
 
 Thanks,
 Qu
