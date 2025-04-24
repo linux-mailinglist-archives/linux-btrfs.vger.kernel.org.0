@@ -1,173 +1,178 @@
-Return-Path: <linux-btrfs+bounces-13393-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13394-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4C99A9B649
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 20:23:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A054A9B665
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 20:33:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AD649A64B6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 18:22:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FF10926DF9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 18:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4F328934E;
-	Thu, 24 Apr 2025 18:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100E22900B8;
+	Thu, 24 Apr 2025 18:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="v0xyQ8VL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AB66wB8Y"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="tys7ksps"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f194.google.com (mail-qk1-f194.google.com [209.85.222.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371BA28F501;
-	Thu, 24 Apr 2025 18:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E8028F92A
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 18:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745518854; cv=none; b=M37zYwUShO4gvZBlP/SWWnu7VFZxt2TkpchsVvBagjCbQ6amXgljsKiaYK6EJzNt4dl8WKQCAf1SHEhrWPrfkAKXP1MkJLAJQeMAxKnabjXrMGzuN9H8QpGFw1HToXrT/BSBSt0E+t+NX1LrzilAMgYkKSov2q95Nz0OCL7dSQU=
+	t=1745519588; cv=none; b=jzXiFUsodqgCVY9w4sIINamdhYx490H/LdBFnm3mcOgbFulHE3pkmrMo835VPxPGLC53MzaLpe5Mact7wygdzxlTndrkOafjwAxMKWAAL2UJMZO58wlPF/k5f0tPPe4KM7dSSU5s/1r6Z3MZGQOLR/K/5sJXnKLB1YZAiujMpZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745518854; c=relaxed/simple;
-	bh=w9XDNMrQy6uyNf+fQzmb40l49o55digRyTVAV/Fqo3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tgwJ7pCtenYOWfJl0gAXlX/n8zzXlPu7NfR8+s8cCCkQe/kCtnx3eS1LpGt6CtVoBxwnJgucm+u5dF2qJiixIn4iRwua/xbV8+uYUEiA9/wrLTGhpOGnfTnFr1Zl59qg7GQCB7cx/aXVEBQwysOQ2Yv0BGV5mbcZ/gDBWY0uCWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=v0xyQ8VL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AB66wB8Y; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 2D757114020A;
-	Thu, 24 Apr 2025 14:20:50 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Thu, 24 Apr 2025 14:20:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1745518850; x=1745605250; bh=fvsfPHcxgY
-	3gYTa61n0of+zF8tOmo18oblg3QLtTipI=; b=v0xyQ8VLf1IZ3BBdoqyP4uuvs4
-	3rvtCOYLKLkkwqAADlLZInY+2eTbWhAzjvInDyhZJw4Gb+3KC0OTvJBdox/twHkM
-	dS0pxcPp+yzJ1GXZm+CaNc7/zPSgSRgM9jRaosHyl9h8afv0XgTxP0z9x9Q30w5i
-	TJH6NXGrExdZnfbCVtNcBwJ2REiZdcRgR/NTQM63S6ox2XH/kBNyITBacEtzi6W+
-	lj0gv8VNprEVT3z74glt4QKSLyW+zCEoW0h47UdoOzn1fjFYlct8W9tNhgSFEDUA
-	UbJUSbz77u9MCcoL3gh4a6YgORFPqszl0XSFYg2qaaHBRGcqCLGcLNk7YwfA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1745518850; x=1745605250; bh=fvsfPHcxgY3gYTa61n0of+zF8tOmo18oblg
-	3QLtTipI=; b=AB66wB8YEJSuUpGrFO9MAfljK6WXIllJt8uu+0QycpbuQOj8ar+
-	kbODKGbzRWPAT0LZPoTyjl3a7B7oZZijHWEjCv7wfOgAXQgUTsJ0xfAcfxJj+tO2
-	2cMmbE8/Jwob5C5bY6B6H1y+hseR8V4oASVBknmqrB1KADaSFCdr7rWxOmjRLhvD
-	zVAWDmDHpm8VERXwLtbCp0TxfSSoaWczpv9fIx4ZTwPFqTsPwRWO6HuGcqwoHmCR
-	Wt1C7MDf8zZoI4hvQhnUGQKu5WPHGrlYujmuvAKUSwCvK50iGYlNLscbOjlB1k9B
-	DutGZkQPp/yzuUh9RLREDBCst7+p96bS4Tw==
-X-ME-Sender: <xms:AYEKaO3XVCXrvq0Y2Og3Gn-JHiSvCLLTqGRhTma9Aw0l1VJu1R6NxA>
-    <xme:AYEKaBH6kPsJrAwu07wvtXS1tsu0zu7ay8crZXWBq6x0N-yOYkxeOTXuglrr8BojL
-    rbRZqW6Iz-ArK9qVxg>
-X-ME-Received: <xmr:AYEKaG4XcprbNeT1utelHjl9DekxbOW2gJkBJ4b_broiSKNZqQebH2lTGFUHnwzwvjrIgLjhtzhBg477GAJ8vCimBWc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvhedtudejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
-    vdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
-    enucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedu
-    gfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepiedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepnhgvvghlgiesshhushgvrdgtohhmpdhrtghpth
-    htoheptghlmhesfhgsrdgtohhmpdhrtghpthhtohepjhhoshgvfhesthhogihitghprghn
-    uggrrdgtohhmpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtohhmpdhrtghpth
-    htoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
-    thhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:AYEKaP057IWn8oQqVigoUR3ahBYe4a0lD42DJ0Pd8JliWvCkq8ud0A>
-    <xmx:AYEKaBHDLVksfTeVIpX1LfFPxrerKmMHhUqGYX-pezSJTiV1CgHBrA>
-    <xmx:AYEKaI_wTygI967yCCQGr5TD4WdyFhvhMnXe_nWRXPnOdDgxsY9o9g>
-    <xmx:AYEKaGl4mzSXYSxKxI3s50dxwLWcW0U9eqm-tI_ozrnFxgo0sytXSA>
-    <xmx:AoEKaJc_JU53PK2jqzFRgRFu1eVNC0Y039EIsN8Fi0eZiKBhjize_KoZ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 24 Apr 2025 14:20:49 -0400 (EDT)
-Date: Thu, 24 Apr 2025 11:21:54 -0700
-From: Boris Burkov <boris@bur.io>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: put all allocated extent buffer folios in
- failure case
-Message-ID: <20250424182154.GB3340135@zen.localdomain>
-References: <20250422125701.3939257-1-neelx@suse.com>
- <20250424150809.4170099-1-neelx@suse.com>
+	s=arc-20240116; t=1745519588; c=relaxed/simple;
+	bh=u6lPGeLFg1uKD9A02hlxkdJcJS0zf+3u/wHEIMzi6/8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=dxGonz2S4gWKecyqiyn6ZaStXNicErM1vd25PUlvkxz/U+UkZcLfpMVoiAk95gncWuiN8mjfYUyKaQRFEnxX2eIOscUQ18lyKVliZSvAeQAowMn+yhx/GsfACTlHdYro3TGoIV+qRPjhpEo2mAFcX6Yj4L3f62sKliwNodqQ0Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=tys7ksps; arc=none smtp.client-ip=209.85.222.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qk1-f194.google.com with SMTP id af79cd13be357-7c0e135e953so152607685a.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 11:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1745519584; x=1746124384; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZpVTwcNvKQquf7yzNcXi09etrZnxbzK5LTIJcXa+VyI=;
+        b=tys7kspsRPbpMaEMqA7lDkeMd156HMt86sc8EfxPCw5tOkJYQWNSWJG2JevDG/Uo1i
+         0LkADDypgLZlBczQB5mjpT1ESfImTBdZAWUSrMojPGRRtAvITLEDZ1HySvnb5ChiWK0z
+         zkPUskWCJjja4amSmx9egFnajm8qshNOLqbvChJNkikzvaTeHqMyminCwhLooSjbtrZg
+         ncjui9HGiFN723yTlWR9haPu3lkJjqwsCi98CJAkOyT2CA2pVGQ9tYZ1MbFUo7Iz484a
+         Hyy+5b0vzRc2ZTeBrIwikrtZmOjTzuKNKiu7Cc5wZEbiUshTxZVf+jkjh7evAsvvYddZ
+         z31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745519584; x=1746124384;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZpVTwcNvKQquf7yzNcXi09etrZnxbzK5LTIJcXa+VyI=;
+        b=OcBGStCGIn5+PxD7SoKbFwt0YU8znCTKJ6zmWctG/7iar5E1c6F6JFZJJENFINa+F2
+         tlsa5a7KMYR8IFGZRRTfOXc+KqR2A9gLS0F7DGFa8WI/XxZLU6vIXRlVF6a8RxamZvix
+         e1yXAEdWnTsb0sPAtrah25L6iLJpA4c/dD5BgePUFf9DLRRVqniBMkm8LU4b9xmaDIBs
+         JEiyWCR8gtG3oXw/xprSXTrbXNy8ivjLVWBtr18tJxjcWHIijHVjnbbxvd4WGeRsY/DK
+         h4VBgyRizRUbilKTldnW27uFWAh7gYm9MNYeaA0/SPT4y24oYS672KQHYyyDp1OYX08U
+         l9lQ==
+X-Gm-Message-State: AOJu0YzgipDUyUgtnh6argWLkV0MFTNkJ+4zHCxalzGTmeYiW838e7FD
+	NgNjt3hOZV840jfrXwKVa5HhtzoTvdSK88gBHEWidIz4qvJ+Oi0oNI8Yl/ChnuJ1IxcyaXDhRtJ
+	6w84nBJeO
+X-Gm-Gg: ASbGncvBixoZWrNHJK86kz8Vi3xHBqxAQ0wjPhlU1OJuKQY64IvXkgm2ezSS4Zm9phP
+	HOgKxpruvMEXj5qdH5CPrkKVJW6V0kjVGnd1Y/pM4koshwpRUoqNJKxf4pZNPOralmjApWrh9Sh
+	jEZ7LxHliQk94tZ/6M0AKf/dtIBRo1xQhullwR4inxgEzNsCRF2mnSKxqcRal34IBPbbhJvqM2B
+	4T2jK2Hh1YjbRjW2o4sdt46HKV0hQa0vZmU8xfH3xItGEpP/d4iuPGOMSt0iWaeviaaMEcxrrtV
+	CfH2uWJL63yFl9kL1z8+d365+YevzYtyrxco9Jj/R99+y25u0Fpn3PsuY+RzusCz5J6uRCdUdzq
+	2+qNa85sb/zuY
+X-Google-Smtp-Source: AGHT+IGDgF3UPOkwajMPXv9Lu8WQicJO5CFgIQorMXv0gQfX+c3aJiE40HseamgmxWE47xBUWLO1fA==
+X-Received: by 2002:a05:620a:258e:b0:7c7:a6c1:71bc with SMTP id af79cd13be357-7c956f44e8cmr630484785a.43.1745519584208;
+        Thu, 24 Apr 2025 11:33:04 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c958cdc62bsm118470685a.55.2025.04.24.11.33.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Apr 2025 11:33:03 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v4 0/3] btrfs: simplify extent buffer writeback
+Date: Thu, 24 Apr 2025 14:32:55 -0400
+Message-ID: <cover.1745519463.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250424150809.4170099-1-neelx@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 24, 2025 at 05:08:08PM +0200, Daniel Vacek wrote:
-> When attaching a folio fails, for example if another one is already mapped,
-> we need to put all newly allocated folios. And as a consequence we do not
-> need to flag the eb UNMAPPED anymore.
-> 
-> Signed-off-by: Daniel Vacek <neelx@suse.com>
+v1: https://lore.kernel.org/all/cover.1744822090.git.josef@toxicpanda.com/
+v2: https://lore.kernel.org/all/cover.1744840038.git.josef@toxicpanda.com/
+v3: https://lore.kernel.org/all/cover.1744984487.git.josef@toxicpanda.com/
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+v3->v4:
+- Adressed the various comments from Filipe.
+- Added more comments to the more subtle xarray usages to help explain what's
+  going on.
 
-> ---
->  fs/btrfs/extent_io.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 197f5e51c4744..7023dd527d3e7 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3385,30 +3385,26 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->  	 * we'll lookup the folio for that index, and grab that EB.  We do not
->  	 * want that to grab this eb, as we're getting ready to free it.  So we
->  	 * have to detach it first and then unlock it.
-> -	 *
-> -	 * We have to drop our reference and NULL it out here because in the
-> -	 * subpage case detaching does a btrfs_folio_dec_eb_refs() for our eb.
-> -	 * Below when we call btrfs_release_extent_buffer() we will call
-> -	 * detach_extent_buffer_folio() on our remaining pages in the !subpage
-> -	 * case.  If we left eb->folios[i] populated in the subpage case we'd
-> -	 * double put our reference and be super sad.
->  	 */
-> -	for (int i = 0; i < attached; i++) {
-> -		ASSERT(eb->folios[i]);
-> -		detach_extent_buffer_folio(eb, eb->folios[i]);
-> -		folio_unlock(eb->folios[i]);
-> -		folio_put(eb->folios[i]);
-> +	for (int i = 0; i < num_extent_pages(eb); i++) {
-> +		struct folio *folio = eb->folios[i];
-> +
-> +		if (i < attached) {
-> +			ASSERT(folio);
-> +			detach_extent_buffer_folio(eb, folio);
-> +			folio_unlock(folio);
-> +		} else if (!folio)
-> +			continue;
-> +
-> +		ASSERT(!folio_test_private(folio));
-> +		folio_put(folio);
->  		eb->folios[i] = NULL;
->  	}
-> -	/*
-> -	 * Now all pages of that extent buffer is unmapped, set UNMAPPED flag,
-> -	 * so it can be cleaned up without utilizing folio->mapping.
-> -	 */
-> -	set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-> -
->  	btrfs_release_extent_buffer(eb);
-> +
->  	if (ret < 0)
->  		return ERR_PTR(ret);
-> +
->  	ASSERT(existing_eb);
->  	return existing_eb;
->  }
-> -- 
-> 2.47.2
-> 
+v2->v3:
+- Fixed a where I didn't use xa_unlock_irq(), per Daniel's review.
+- Changed the name of the radix tree to buffer_tree, per Daniel's review.
+
+v1->v2:
+- Even though xarray underpins radix tree, it doesn't quite work the same so you
+  can't use the xarray functions directly, so added a patch to convert the
+  buffer_radix to buffer_xarray.
+
+--- Original email ---
+
+Hello,
+
+We currently have two different paths for writing out extent buffers, a subpage
+path and a normal path.  This has resulted in subtle bugs with subpage code that
+took us a while to figure out.  Additionally we have this complex interaction of
+get folio, find eb, see if we already started writing that eb out, write out the
+eb.
+
+We already have a radix tree for our extent buffers, so we can use that
+similarly to how pagecache uses the radix tree.  Tag the buffers with DIRTY when
+they're dirty, and WRITEBACK when we start writing them out.
+
+The unfortunate part is we have to re-implement folio_batch for extent buffers,
+so that's where most of the new code comes from.  The good part is we are now
+down to a single path for writing out extent buffers, it's way simpler, and in
+fact quite a bit faster now that we don't have all of these folio->eb
+transitions to deal with.
+
+I ran this through fsperf on a VM with 8 CPUs and 16gib of ram.  I used
+smallfiles100k, but reduced the files to 1k to make it run faster, the
+results are as follows, with the statistically significant improvements
+marked with *, there were no regressions.  fsperf was run with -n 10 for
+both runs, so the baseline is the average 10 runs and the test is the
+average of 10 runs.
+
+smallfiles100k results
+      metric           baseline       current        stdev            diff
+================================================================================
+avg_commit_ms               68.58         58.44          3.35   -14.79% *
+commits                    270.60        254.70         16.24    -5.88%
+dev_read_iops                  48            48             0     0.00%
+dev_read_kbytes              1044          1044             0     0.00%
+dev_write_iops          866117.90     850028.10      14292.20    -1.86%
+dev_write_kbytes      10939976.40   10605701.20     351330.32    -3.06%
+elapsed                     49.30            33          1.64   -33.06% *
+end_state_mount_ns    41251498.80   35773220.70    2531205.32   -13.28% *
+end_state_umount_ns      1.90e+09      1.50e+09   14186226.85   -21.38% *
+max_commit_ms                 139        111.60          9.72   -19.71% *
+sys_cpu                      4.90          3.86          0.88   -21.29%
+write_bw_bytes        42935768.20   64318451.10    1609415.05    49.80% *
+write_clat_ns_mean      366431.69     243202.60      14161.98   -33.63% *
+write_clat_ns_p50        49203.20         20992        264.40   -57.34% *
+write_clat_ns_p99          827392     653721.60      65904.74   -20.99% *
+write_io_kbytes           2035940       2035940             0     0.00%
+write_iops               10482.37      15702.75        392.92    49.80% *
+write_lat_ns_max         1.01e+08      90516129    3910102.06   -10.29% *
+write_lat_ns_mean       366556.19     243308.48      14154.51   -33.62% *
+
+As you can see we get about a 33% decrease runtime, with a 50%
+throughput increase, which is pretty significant.  Thanks,
+
+Josef
+
+Josef Bacik (3):
+  btrfs: convert the buffer_radix to an xarray
+  btrfs: set DIRTY and WRITEBACK tags on the buffer_tree
+  btrfs: use buffer radix for extent buffer writeback operations
+
+ fs/btrfs/disk-io.c           |  15 +-
+ fs/btrfs/extent_io.c         | 588 ++++++++++++++++++-----------------
+ fs/btrfs/extent_io.h         |   2 +
+ fs/btrfs/fs.h                |   4 +-
+ fs/btrfs/tests/btrfs-tests.c |  28 +-
+ fs/btrfs/transaction.c       |   5 +-
+ fs/btrfs/zoned.c             |  16 +-
+ 7 files changed, 331 insertions(+), 327 deletions(-)
+
+-- 
+2.48.1
+
 
