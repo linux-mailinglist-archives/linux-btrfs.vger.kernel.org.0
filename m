@@ -1,59 +1,103 @@
-Return-Path: <linux-btrfs+bounces-13385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A721FA9AB8F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 13:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B740EA9AB82
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 13:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C39EB16C0E2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 11:18:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2E1516DBC6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 11:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 016AA21FF58;
-	Thu, 24 Apr 2025 11:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE59221FA5;
+	Thu, 24 Apr 2025 11:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PMzkod5j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail02.kasm.eu (46-227-67-101.static.obenetwork.net [46.227.67.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55975433A8;
-	Thu, 24 Apr 2025 11:18:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.227.67.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75865433A8;
+	Thu, 24 Apr 2025 11:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745493527; cv=none; b=emUIriaa4cIg6r8gXLaOJ1Q+ozDwIw+QTxb45j2yvwJbBVAJBw8CiQlJ+Ep893QJypc2BQV5sfrZfZ4mgRJe9ltfr8xemz2Ty07VA1wS0pyeeqb+ZgTluMyqrSPJ/C5jGTggsxUM8TLSzGLhUOLoJpn6rxfi9uqxEt8QrTAmQeE=
+	t=1745493332; cv=none; b=IKHi0gkDJLbchJ3TFJRIryRn51nSw2mtfk71WRDug9yp2cI3IlQPCrsF6ImEuOPtGBPvm++SgF7nzfSVio7WO976n/zrMcrwamwJNGysHt6kyqFSzyEJaZxFcVhAEoWw4sqIrfVN3O1rtTgbD3ERAL/alo7nFUbWFLjq8XbzeDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745493527; c=relaxed/simple;
-	bh=ekE0ZbF7HchSaI7Hsg8+7FKm0dcQ4wPgAkIQWQRZPUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bNhNvgRpk7Hi1aBdRe4mWTRVa3/HiDLRl+XD0lg8M4qtHGj7dHHukmmgB6M8NMYI2eOG/X9nZXWLdQOyd64g6qFvlZFoet/e1G4SY9Hnnc4rYUw818CASF1hLu8inJENOcpMw0OYkqm4XbwnOsaPGEBmf8XpCfCN3qUMk/aRvnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=kasm.eu; arc=none smtp.client-ip=46.227.67.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kasm.eu
-Received: from localhost (soda.int.kasm.eu [IPv6:2001:678:a5c:1202:4fb5:f16a:579c:6dcb])
-	by mail02.kasm.eu (Postfix) with UTF8SMTPSA id 2382B258FEA;
-	Thu, 24 Apr 2025 13:09:09 +0200 (CEST)
-Date: Thu, 24 Apr 2025 13:09:08 +0200
-From: Klara Modin <klarasmodin@gmail.com>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: unlock all extent buffer folios in failure case
-Message-ID: <hd2uf7odgxxuadeym76nlsvsfxr5mvfveenaqv7rqwy2jyaan6@ts6gf2wpujsk>
-References: <20250422125701.3939257-1-neelx@suse.com>
+	s=arc-20240116; t=1745493332; c=relaxed/simple;
+	bh=FIjCxRymn2ZVWtIbhaAHlowtOR5zJeaT77QsXtMswDA=;
+	h=Content-Type:Message-ID:Date:MIME-Version:From:Subject:References:
+	 To:Cc:In-Reply-To; b=SRwv4AEsPwjdxstOmlWcb91KuxbJ5i2AILCRXgxarY0oJpObQKoxr9Wrh9X/8H7+9PLvva0AbtDdNT9ycrTiOCM0HKSYD2AXNrn7alYCCiQoky/l78KZWPP8BGAsY0fXAwB+J8fLHnD42oIhajruahMQXv2R0u4ulqB6BMXaSeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PMzkod5j; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-3105ef2a06cso9348831fa.2;
+        Thu, 24 Apr 2025 04:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745493327; x=1746098127; darn=vger.kernel.org;
+        h=in-reply-to:cc:to:content-language:references:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mhe+R2jlrq9Kvp9G6LoSTJLI3ooFFtytwVIeP7SCvwk=;
+        b=PMzkod5jAjyPJq/ShtN1biqDCZiCOgD0ZYRjqBA5vp+RzIokpgqhbTNNlnJR4Ou/I0
+         basR9omsl0/ROk4w7bVD7vqhzS9FfFedwJHbxxV8niET61TG9+bpki3uKu5YP5QbfWw/
+         a3mH5B6posrGzjEeoUWjg9vcIj8LvV8JKW/uO1KB/T9A4qRv071NSnQKHawulNlg2hNi
+         xo80YvpdpXbDcBmVOT/1ga7NPq/rJTCePRSbsvlzrChqBLuUsbdYFAGZPIW0th1dG3Vq
+         q4OB4wxMtUVQrNkswZN2TJUEJIHZWiTtseYfIwv2z6VIErRaMV7MyEc5uKwKy3I30srh
+         otwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745493327; x=1746098127;
+        h=in-reply-to:cc:to:content-language:references:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Mhe+R2jlrq9Kvp9G6LoSTJLI3ooFFtytwVIeP7SCvwk=;
+        b=CqlA/SC819t93GDF8s4Yra7U2I/bxor2WxaUSVUM593FaieKglRCxn1O1Bj8ulSkdd
+         hOfcAyWoHhqbQB8Vsg8V0ze400dBX0ul7vZq3001j1VdKy3XE2KbZzbwXSfYTAcoX3rB
+         4xRd+MAQDGAiRCS+JUDzHrQgL5ryANcLIHrbxVq95xLF7jr6hDk+tlOvK/nYyIA14GhP
+         ad4pD4M+kY8uNf2SA3HYkgOBGf1b4ZbxtIMtnyjdOh1csWJrNvmU/szYWiBCiDNSfO8Q
+         ZjkLPWx3QgcZiFFirkiY1KFK1upP1WpB/lKxovuK1LyH/jA/Y6zg3n2QP8xcpxi4fbbU
+         B5iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVALOp1KB4paaEQ0UE/81AixesGPntPskFZ8Ziae79WUFRpe9grJI+7TgRgn5sdRlOjRbH3NqnoyOiHCw==@vger.kernel.org, AJvYcCVkKvSTiqLj3FVs/DnOgBMGGYzRMP3ZJx7MO+UcHwStaYJlcasxAgwmpZBzwW1ttVB6fQmGmVPtjFE4A4sq@vger.kernel.org
+X-Gm-Message-State: AOJu0YyK1gdpsm55dUKRLzL/GXALc45QfauE2mKcLy5JufuoY530KEzU
+	1kvpnh20V7BWbYLCIdQBTYQkyGso//eqiQzPc6ONJ/AykuyOB55M
+X-Gm-Gg: ASbGncuPQtIT9V4I/4+PFho/3OYf5TGlnXnE5toPaOFjJuwXTb7dnI+y13xr+IjNbE1
+	Y1jBJFZyk8G6I4gxwzuyu0nYUgaswHd042WmyIHlpxZYNg8EjeTSDjB0mngBP3n37hPyZkzUF00
+	q491zi8x7cvX8KHftfgN3aM+IDO+ek7A2s4LGZr75AVnR+i3tncKFebnHLygEYrcvr6g+eUJX/i
+	J+fInC1RREN/tgybp7eUxPbutuYjYN+CohxquCVSGcRwDl63qoUQx3AIILHF44cYMk5FAbrLL3e
+	koDQleYCccAvFmw7mY3APr8AMgWe4ROntjrh+uRQSPERGUxgfCUmSUdlo4CrfBzHULB5iUAOJiZ
+	k7t8MshOXw+us99V1sU4xxGTh0iKXfHG+/sjL
+X-Google-Smtp-Source: AGHT+IHT5+DWXRwyTRV4h3lKUimMrzxScTmMgn+sK89fhmIq9HzDCJuzzgwvZMVROv3mtS9OohQlVQ==
+X-Received: by 2002:a2e:a54a:0:b0:30b:b987:b6a7 with SMTP id 38308e7fff4ca-3179bf53cdemr7840281fa.0.1745493326678;
+        Thu, 24 Apr 2025 04:15:26 -0700 (PDT)
+Received: from ?IPV6:2001:678:a5c:1202:4fb5:f16a:579c:6dcb? (soda.int.kasm.eu. [2001:678:a5c:1202:4fb5:f16a:579c:6dcb])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-317cf659e59sm2274151fa.3.2025.04.24.04.15.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Apr 2025 04:15:25 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------zbCVdSmrtX8bpVgkZY3FFuEX"
+Message-ID: <6268df0f-e7a5-4b4f-84d0-082f5767f6d7@gmail.com>
+Date: Thu, 24 Apr 2025 13:15:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="koaaeedw2koeke7b"
-Content-Disposition: inline
-In-Reply-To: <20250422125701.3939257-1-neelx@suse.com>
+User-Agent: Mozilla Thunderbird
+From: Klara Modin <klarasmodin@gmail.com>
+Subject: [PATCH] btrfs: unlock all extent buffer folios in failure case
+References: <hd2uf7odgxxuadeym76nlsvsfxr5mvfveenaqv7rqwy2jyaan6@ts6gf2wpujsk>
+Content-Language: en-US, sv-SE
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <hd2uf7odgxxuadeym76nlsvsfxr5mvfveenaqv7rqwy2jyaan6@ts6gf2wpujsk>
 
+This is a multi-part message in MIME format.
+--------------zbCVdSmrtX8bpVgkZY3FFuEX
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---koaaeedw2koeke7b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
 Hi,
 
@@ -69,7 +113,7 @@ to this commit. Reverting it resolves the issue for me (did not bisect).
 
 Please let me know if there's anything else you need.
 
-Regrads,
+Regards,
 Klara Modin
 
 BUG: kernel NULL pointer dereference, address: 0000000000000000
@@ -78,45 +122,52 @@ nct6683 nct6683.2592: NCT6687D EC firmware version 1.0 build 05/07/20
 #PF: error_code(0x0000) - not-present page
 PGD 0 P4D 0
 Oops: Oops: 0000 [#1] SMP NOPTI
-CPU: 19 UID: 0 PID: 1138 Comm: (udev-worker) Not tainted 6.15.0-rc3-next-20250424 #474 PREEMPTLAZY
-Hardware name: Micro-Star International Co., Ltd. MS-7C91/MAG B550 TOMAHAWK (MS-7C91), BIOS A.G0 03/12/2024
-RIP: 0010:alloc_extent_buffer (arch/x86/include/asm/bitops.h:206 arch/x86/include/asm/bitops.h:238 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/page-flags.h:860 include/linux/page-flags.h:881 include/linux/mm.h:994 fs/btrfs/extent_io.h:290 fs/btrfs/extent_io.c:3360) 
-Code: ad 8f cb ff f0 ff 4b 34 0f 84 9a 01 00 00 4b c7 84 f4 a8 00 00 00 00 00 00 00 41 8b 74 24 08 49 8b 8c 24 a8 00 00 00 41 ff c5 <48> 8b 01 a8 40 74 0b 80 79 40 00 b8 01 00 00 00 75 0d 89 f0 ba 01
+CPU: 19 UID: 0 PID: 1138 Comm: (udev-worker) Not tainted 
+6.15.0-rc3-next-20250424 #474 PREEMPTLAZY
+Hardware name: Micro-Star International Co., Ltd. MS-7C91/MAG B550 
+TOMAHAWK (MS-7C91), BIOS A.G0 03/12/2024
+RIP: 0010:alloc_extent_buffer (arch/x86/include/asm/bitops.h:206 
+arch/x86/include/asm/bitops.h:238 
+include/asm-generic/bitops/instrumented-non-atomic.h:142 
+include/linux/page-flags.h:860 include/linux/page-flags.h:881 
+include/linux/mm.h:994 fs/btrfs/extent_io.h:290 
+fs/btrfs/extent_io.c:3360) Code: ad 8f cb ff f0 ff 4b 34 0f 84 9a 01 00 
+00 4b c7 84 f4 a8 00 00 00 00 00 00 00 41 8b 74 24 08 49 8b 8c 24 a8 00 
+00 00 41 ff c5 <48> 8b 01 a8 40 74 0b 80 79 40 00 b8 01 00 00 00 75 0d 
+89 f0 ba 01
 All code
 ========
-   0:	ad                   	lods   %ds:(%rsi),%eax
-   1:	8f                   	(bad)
-   2:	cb                   	lret
-   3:	ff f0                	push   %rax
-   5:	ff 4b 34             	decl   0x34(%rbx)
-   8:	0f 84 9a 01 00 00    	je     0x1a8
-   e:	4b c7 84 f4 a8 00 00 	movq   $0x0,0xa8(%r12,%r14,8)
-  15:	00 00 00 00 00 
-  1a:	41 8b 74 24 08       	mov    0x8(%r12),%esi
-  1f:	49 8b 8c 24 a8 00 00 	mov    0xa8(%r12),%rcx
-  26:	00 
-  27:	41 ff c5             	inc    %r13d
-  2a:*	48 8b 01             	mov    (%rcx),%rax		<-- trapping instruction
-  2d:	a8 40                	test   $0x40,%al
-  2f:	74 0b                	je     0x3c
-  31:	80 79 40 00          	cmpb   $0x0,0x40(%rcx)
-  35:	b8 01 00 00 00       	mov    $0x1,%eax
-  3a:	75 0d                	jne    0x49
-  3c:	89 f0                	mov    %esi,%eax
-  3e:	ba                   	.byte 0xba
-  3f:	01                   	.byte 0x1
+    0:	ad                   	lods   %ds:(%rsi),%eax
+    1:	8f                   	(bad)
+    2:	cb                   	lret
+    3:	ff f0                	push   %rax
+    5:	ff 4b 34             	decl   0x34(%rbx)
+    8:	0f 84 9a 01 00 00    	je     0x1a8
+    e:	4b c7 84 f4 a8 00 00 	movq   $0x0,0xa8(%r12,%r14,8)
+   15:	00 00 00 00 00   1a:	41 8b 74 24 08       	mov    0x8(%r12),%esi
+   1f:	49 8b 8c 24 a8 00 00 	mov    0xa8(%r12),%rcx
+   26:	00   27:	41 ff c5             	inc    %r13d
+   2a:*	48 8b 01             	mov    (%rcx),%rax		<-- trapping instruction
+   2d:	a8 40                	test   $0x40,%al
+   2f:	74 0b                	je     0x3c
+   31:	80 79 40 00          	cmpb   $0x0,0x40(%rcx)
+   35:	b8 01 00 00 00       	mov    $0x1,%eax
+   3a:	75 0d                	jne    0x49
+   3c:	89 f0                	mov    %esi,%eax
+   3e:	ba                   	.byte 0xba
+   3f:	01                   	.byte 0x1
 
 Code starting with the faulting instruction
 ===========================================
-   0:	48 8b 01             	mov    (%rcx),%rax
-   3:	a8 40                	test   $0x40,%al
-   5:	74 0b                	je     0x12
-   7:	80 79 40 00          	cmpb   $0x0,0x40(%rcx)
-   b:	b8 01 00 00 00       	mov    $0x1,%eax
-  10:	75 0d                	jne    0x1f
-  12:	89 f0                	mov    %esi,%eax
-  14:	ba                   	.byte 0xba
-  15:	01                   	.byte 0x1
+    0:	48 8b 01             	mov    (%rcx),%rax
+    3:	a8 40                	test   $0x40,%al
+    5:	74 0b                	je     0x12
+    7:	80 79 40 00          	cmpb   $0x0,0x40(%rcx)
+    b:	b8 01 00 00 00       	mov    $0x1,%eax
+   10:	75 0d                	jne    0x1f
+   12:	89 f0                	mov    %esi,%eax
+   14:	ba                   	.byte 0xba
+   15:	01                   	.byte 0x1
 RSP: 0018:ffffac790119b740 EFLAGS: 00010202
 RAX: 0000000000000013 RBX: fffff9cd44725bc0 RCX: 0000000000000000
 RDX: 00000000000003a4 RSI: 0000000000004000 RDI: ffff95ca3efd3040
@@ -127,83 +178,89 @@ FS:  00007fd880dad840(0000) GS:ffff95caa9f0e000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
 CR2: 0000000000000000 CR3: 0000000108412000 CR4: 0000000000350ef0
 Call Trace:
- <TASK>
-read_block_for_search (fs/btrfs/ctree.c:1533) 
-btrfs_search_slot (fs/btrfs/ctree.c:2173 (discriminator 1)) 
-? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
-? mempool_alloc_noprof (mm/mempool.c:402) 
-btrfs_lookup_csum (fs/btrfs/file-item.c:249) 
-? btrfs_csum_root (fs/btrfs/disk-io.c:828) 
-btrfs_lookup_bio_sums (fs/btrfs/file-item.c:312 (discriminator 1) fs/btrfs/file-item.c:406 (discriminator 1)) 
-btrfs_submit_chunk (fs/btrfs/bio.c:717) 
-? btrfs_clear_extent_bit_changeset (fs/btrfs/extent-io-tree.c:751) 
-? srso_untrain_ret (arch/x86/lib/retpoline.S:209) 
-? btrfs_clear_extent_bit_changeset (fs/btrfs/extent-io-tree.c:751) 
-btrfs_submit_bbio (fs/btrfs/bio.c:791 (discriminator 2)) 
-submit_one_bio (fs/btrfs/extent_io.c:132) 
-btrfs_readahead (fs/btrfs/extent_io.c:2535) 
-? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
-? __pfx_end_bbio_data_read (fs/btrfs/extent_io.c:502) 
-read_pages (include/linux/pagemap.h:1400 include/linux/pagemap.h:1426 mm/readahead.c:162) 
-page_cache_ra_unbounded (include/linux/fs.h:933 mm/readahead.c:298) 
-filemap_get_pages (mm/filemap.c:2592) 
-? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
-? dput (fs/dcache.c:858 fs/dcache.c:896) 
-? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
-filemap_read (mm/filemap.c:2702) 
-? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
-? do_filp_open (fs/namei.c:4074 (discriminator 2)) 
-? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
-? __pfx_page_put_link (fs/namei.c:5454) 
-? kmem_cache_alloc_noprof (arch/x86/include/asm/jump_label.h:46 include/linux/memcontrol.h:1696 mm/slub.c:2190 mm/slub.c:4174 mm/slub.c:4213 mm/slub.c:4220) 
-vfs_read (fs/read_write.c:489 fs/read_write.c:570) 
-ksys_read (fs/read_write.c:714) 
-do_syscall_64 (arch/x86/entry/syscall_64.c:63 (discriminator 1) arch/x86/entry/syscall_64.c:94 (discriminator 1)) 
-entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130) 
-RIP: 0033:0x7fd880694207
-Code: 00 49 89 d0 48 89 fa 4c 89 df e8 74 b8 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 16 5b c3 0f 1f 40 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 e2 e8 23 ff ff ff
+  <TASK>
+read_block_for_search (fs/btrfs/ctree.c:1533) btrfs_search_slot 
+(fs/btrfs/ctree.c:2173 (discriminator 1)) ? srso_return_thunk 
+(arch/x86/lib/retpoline.S:224) ? mempool_alloc_noprof (mm/mempool.c:402) 
+btrfs_lookup_csum (fs/btrfs/file-item.c:249) ? btrfs_csum_root 
+(fs/btrfs/disk-io.c:828) btrfs_lookup_bio_sums (fs/btrfs/file-item.c:312 
+(discriminator 1) fs/btrfs/file-item.c:406 (discriminator 1)) 
+btrfs_submit_chunk (fs/btrfs/bio.c:717) ? 
+btrfs_clear_extent_bit_changeset (fs/btrfs/extent-io-tree.c:751) ? 
+srso_untrain_ret (arch/x86/lib/retpoline.S:209) ? 
+btrfs_clear_extent_bit_changeset (fs/btrfs/extent-io-tree.c:751) 
+btrfs_submit_bbio (fs/btrfs/bio.c:791 (discriminator 2)) submit_one_bio 
+(fs/btrfs/extent_io.c:132) btrfs_readahead (fs/btrfs/extent_io.c:2535) ? 
+srso_return_thunk (arch/x86/lib/retpoline.S:224) ? 
+__pfx_end_bbio_data_read (fs/btrfs/extent_io.c:502) read_pages 
+(include/linux/pagemap.h:1400 include/linux/pagemap.h:1426 
+mm/readahead.c:162) page_cache_ra_unbounded (include/linux/fs.h:933 
+mm/readahead.c:298) filemap_get_pages (mm/filemap.c:2592) ? 
+srso_return_thunk (arch/x86/lib/retpoline.S:224) ? dput (fs/dcache.c:858 
+fs/dcache.c:896) ? srso_return_thunk (arch/x86/lib/retpoline.S:224) 
+filemap_read (mm/filemap.c:2702) ? srso_return_thunk 
+(arch/x86/lib/retpoline.S:224) ? do_filp_open (fs/namei.c:4074 
+(discriminator 2)) ? srso_return_thunk (arch/x86/lib/retpoline.S:224) ? 
+__pfx_page_put_link (fs/namei.c:5454) ? kmem_cache_alloc_noprof 
+(arch/x86/include/asm/jump_label.h:46 include/linux/memcontrol.h:1696 
+mm/slub.c:2190 mm/slub.c:4174 mm/slub.c:4213 mm/slub.c:4220) vfs_read 
+(fs/read_write.c:489 fs/read_write.c:570) ksys_read 
+(fs/read_write.c:714) do_syscall_64 (arch/x86/entry/syscall_64.c:63 
+(discriminator 1) arch/x86/entry/syscall_64.c:94 (discriminator 1)) 
+entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130) RIP: 
+0033:0x7fd880694207
+Code: 00 49 89 d0 48 89 fa 4c 89 df e8 74 b8 00 00 8b 93 08 03 00 00 59 
+5e 48 83 f8 fc 74 16 5b c3 0f 1f 40 00 48 8b 44 24 10 0f 05 <5b> c3 0f 
+1f 80 00 00 00 00 83 e2 39 83 fa 08 75 e2 e8 23 ff ff ff
 All code
 ========
-   0:	00 49 89             	add    %cl,-0x77(%rcx)
-   3:	d0 48 89             	rorb   $1,-0x77(%rax)
-   6:	fa                   	cli
-   7:	4c 89 df             	mov    %r11,%rdi
-   a:	e8 74 b8 00 00       	call   0xb883
-   f:	8b 93 08 03 00 00    	mov    0x308(%rbx),%edx
-  15:	59                   	pop    %rcx
-  16:	5e                   	pop    %rsi
-  17:	48 83 f8 fc          	cmp    $0xfffffffffffffffc,%rax
-  1b:	74 16                	je     0x33
-  1d:	5b                   	pop    %rbx
-  1e:	c3                   	ret
-  1f:	0f 1f 40 00          	nopl   0x0(%rax)
-  23:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
-  28:	0f 05                	syscall
-  2a:*	5b                   	pop    %rbx		<-- trapping instruction
-  2b:	c3                   	ret
-  2c:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-  33:	83 e2 39             	and    $0x39,%edx
-  36:	83 fa 08             	cmp    $0x8,%edx
-  39:	75 e2                	jne    0x1d
-  3b:	e8 23 ff ff ff       	call   0xffffffffffffff63
+    0:	00 49 89             	add    %cl,-0x77(%rcx)
+    3:	d0 48 89             	rorb   $1,-0x77(%rax)
+    6:	fa                   	cli
+    7:	4c 89 df             	mov    %r11,%rdi
+    a:	e8 74 b8 00 00       	call   0xb883
+    f:	8b 93 08 03 00 00    	mov    0x308(%rbx),%edx
+   15:	59                   	pop    %rcx
+   16:	5e                   	pop    %rsi
+   17:	48 83 f8 fc          	cmp    $0xfffffffffffffffc,%rax
+   1b:	74 16                	je     0x33
+   1d:	5b                   	pop    %rbx
+   1e:	c3                   	ret
+   1f:	0f 1f 40 00          	nopl   0x0(%rax)
+   23:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+   28:	0f 05                	syscall
+   2a:*	5b                   	pop    %rbx		<-- trapping instruction
+   2b:	c3                   	ret
+   2c:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+   33:	83 e2 39             	and    $0x39,%edx
+   36:	83 fa 08             	cmp    $0x8,%edx
+   39:	75 e2                	jne    0x1d
+   3b:	e8 23 ff ff ff       	call   0xffffffffffffff63
 
 Code starting with the faulting instruction
 ===========================================
-   0:	5b                   	pop    %rbx
-   1:	c3                   	ret
-   2:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-   9:	83 e2 39             	and    $0x39,%edx
-   c:	83 fa 08             	cmp    $0x8,%edx
-   f:	75 e2                	jne    0xfffffffffffffff3
-  11:	e8 23 ff ff ff       	call   0xffffffffffffff39
+    0:	5b                   	pop    %rbx
+    1:	c3                   	ret
+    2:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+    9:	83 e2 39             	and    $0x39,%edx
+    c:	83 fa 08             	cmp    $0x8,%edx
+    f:	75 e2                	jne    0xfffffffffffffff3
+   11:	e8 23 ff ff ff       	call   0xffffffffffffff39
 RSP: 002b:00007ffc7372ce60 EFLAGS: 00000202 ORIG_RAX: 0000000000000000
 RAX: ffffffffffffffda RBX: 00007fd880dad840 RCX: 00007fd880694207
 RDX: 0000000000000006 RSI: 00007ffc7372cf01 RDI: 0000000000000049
 RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
 R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffc7372cf01
 R13: 00007ffc7372cf01 R14: 0000000000000049 R15: 00007ffc7372cf01
- </TASK>
-Modules linked in: drm_exec btbcm iwlwifi(+) nct6683 gpu_sched snd_hwdep msi_ec(-) drm_suballoc_helper evdev kvm ee1004 bluetooth battery joydev mac_hid snd_hda_core video irqbypass cfg80211 drm_panel_backlight_quirks ghash_clmulni_intel snd_pcm cec sha512_ssse3 sp5100_tco sha256_ssse3 drm_buddy snd_timer sha1_ssse3 watchdog drm_display_helper ccp snd tpm_crb aesni_intel rfkill soundcore pcspkr tpm_tis tpm_tis_core i2c_piix4 k10temp i2c_smbus tpm libaescfb ecdh_generic gpio_amdpt ecc gpio_generic button wmi
+  </TASK>
+Modules linked in: drm_exec btbcm iwlwifi(+) nct6683 gpu_sched snd_hwdep 
+msi_ec(-) drm_suballoc_helper evdev kvm ee1004 bluetooth battery joydev 
+mac_hid snd_hda_core video irqbypass cfg80211 drm_panel_backlight_quirks 
+ghash_clmulni_intel snd_pcm cec sha512_ssse3 sp5100_tco sha256_ssse3 
+drm_buddy snd_timer sha1_ssse3 watchdog drm_display_helper ccp snd 
+tpm_crb aesni_intel rfkill soundcore pcspkr tpm_tis tpm_tis_core 
+i2c_piix4 k10temp i2c_smbus tpm libaescfb ecdh_generic gpio_amdpt ecc 
+gpio_generic button wmi
 CR2: 0000000000000000
 ---[ end trace 0000000000000000 ]---
 
@@ -264,8 +321,8 @@ CR2: 0000000000000000
 > 2.47.2
 > 
 
---koaaeedw2koeke7b
-Content-Type: application/gzip
+--------------zbCVdSmrtX8bpVgkZY3FFuEX
+Content-Type: application/gzip; name="btrfs_oops3_decoded.gz"
 Content-Disposition: attachment; filename="btrfs_oops3_decoded.gz"
 Content-Transfer-Encoding: base64
 
@@ -622,9 +679,8 @@ RQJhVNM8pU0bW00+LkxorlVDL0Kp2bZ8XJ7n48KIcd/+FHxcSUEvsgkfFyYs8YCr8XHlISbe
 OsJyfMd8XBg2HFp9u+PjwmYkiWXbkI/rV4BbZ6hd8nGdTc7oqeHu+LiwKRgWRNX5uHYDHxc2
 paCDJkU+Lr5SJLZZwsct5+Hu/bK/Fol7O5/8mwz3DvZbOO5PCcdFkzAkqrUejovfRXROsxIc
 9z8rJWFT8KoBAA==
-
---koaaeedw2koeke7b
-Content-Type: application/gzip
+--------------zbCVdSmrtX8bpVgkZY3FFuEX
+Content-Type: application/gzip; name="config.gz"
 Content-Disposition: attachment; filename="config.gz"
 Content-Transfer-Encoding: base64
 
@@ -1466,5 +1522,5 @@ x+kKBJJ8qZgCY8yQnueNgEUnFQBMJfJrGNjMVzFy8nAoIKn1eO81Ox8abaHz/XjfagbkWruq
 Wr1xVBUGPMjZJGxE1zl0kM7fWO6EF7biohxxGvJaVaMtTnBoM7qBSmXe3oQl2u38DwjxGahZ
 +wIA
 
---koaaeedw2koeke7b--
+--------------zbCVdSmrtX8bpVgkZY3FFuEX--
 
