@@ -1,70 +1,70 @@
-Return-Path: <linux-btrfs+bounces-13407-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13408-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADEBA9BB37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 01:24:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ACA7A9BB51
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 01:30:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDCD51BA4599
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 23:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7FD79268F8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 23:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0B228BAB6;
-	Thu, 24 Apr 2025 23:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BC328B4F2;
+	Thu, 24 Apr 2025 23:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="g44RX/Nf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hpuDb+H/"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="YwWAcZXj";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X2B6GA05"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00DC21CC68
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 23:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17FC1F463E
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 23:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745537060; cv=none; b=eQ73FSw3nkyxdsBjigKrPyNCt7UOTH2b1hFSJB2YRuSCsy4n4Ih8qBZZD0RPvegzmRJ4ua6exT1m/TiXC+wVHZpBSTBDcBFdcSYOKXhAbMQry12khITLM7Di2NVOA2norjnaffA3xoZf5NC+UKKXbYGjFVczw2GMkIWRPQdStkU=
+	t=1745537419; cv=none; b=SMeLusw7EO5gIw0TxiKaiTNr9uZ5KqBz+gkGXy62mujj7b12oTRSr6EBsuMney9TGFVbrvksPQP7hZgFaYBoHhvo+Hk9C8FZCuNkzRxMNYWSmNLr08J9zRq1DGeodNNDaycOjU+gfP1luddUpcQEBQu9GynfOqsC1IpmuGp4T/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745537060; c=relaxed/simple;
-	bh=UdbjTx6rPNEd8WmxJCzKj7wS5VIYxP94jWJGY/+mJMo=;
+	s=arc-20240116; t=1745537419; c=relaxed/simple;
+	bh=eKYDbIID1krZB/k7C1pJsXVTx88I+BOGYy3wzMVedGA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MD3+fVZRfy+3YefeeSe0gaPT0BgAJEAUVAv3mZGHTnEUWeDp3qOj42RR4I2nk9lDcvVeNHHNOutJ121HIIo3BoYZ02gPUblcDrHIPk+jvvnzeXtsbfR1YZFkWSBqwKYGGfqo1s5dVxREOTnY8B5mNS+oLV1RrvYA/BjtHy+EBf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=g44RX/Nf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hpuDb+H/; arc=none smtp.client-ip=103.168.172.144
+	 Content-Type:Content-Disposition:In-Reply-To; b=TsIgTI6R5P7wIQFGre3tAbcR9gcp+Fv6u5ESIOWRMiRG0ZO6DRf0dC+863o8OCuvD18dgcEWiiZMrz+BbneZpVOw5yxA2eXh/xwBg77B+HkeWKn4PyyNUKjDpgE138mfc7aDIvmG7b7rTdb7nirq5xxq2DvP46o4rg8dhYpTx5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=YwWAcZXj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=X2B6GA05; arc=none smtp.client-ip=103.168.172.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfout.phl.internal (Postfix) with ESMTP id AB74C1380210;
-	Thu, 24 Apr 2025 19:24:15 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Thu, 24 Apr 2025 19:24:15 -0400
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id B565C1380201;
+	Thu, 24 Apr 2025 19:30:13 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Thu, 24 Apr 2025 19:30:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-transfer-encoding:content-type:content-type:date:date
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1745537055;
-	 x=1745623455; bh=eljRg4aYVplxvq+wGnNur1FAm2LC1Vrn/RVMZ2SYx3U=; b=
-	g44RX/Nfng3H66j7IBg+7gsPaN720hpXzLKt0D4PZeLV6btFCY3tJCJlDeQcaQnR
-	ePzJcxfrDRAMRHvkLAAyXVzrxGKMorS2saYoYpd/+O/uH5NwQBNkg9JvX92GWKmU
-	81jo/tle6LyfaHY7skYp7aRdheAR+PhzgMtbMoeKXUpyM23HVtKEWgRev3N5Gpiq
-	w+KgLJ/+ykmKk33EFFJN60YYz7ja1QUIcYgINX0HIZTsjom9Xg/HEUrsFHMFdIml
-	uCf1ZNJWaMjtWQ+Du6H3cwWIHV9wvN12rQORYccm1xWcx+d15HXU3l3IpX5lzIp+
-	6Wdei++x0iVy+1HNko7N9Q==
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1745537413;
+	 x=1745623813; bh=eV8fD3xRMU9eiTCzCaOABbsHykC4+MpkNfiT2YxsbtQ=; b=
+	YwWAcZXj41fOlZEELxQdrP0FJeQAHejUTPYBYXMH35TwT/yhOsD6Dy65zJWZUpxN
+	7K1VzvGvBgyNdyuN/ttha47VaVAoAmCfzT8PZZrRpXqCIzMIxwq2OPgyxI6KJBg1
+	JvLW4fd1K7++uhWkUuLgnjSNTCeiX8P5LNAhMCp9d5F09uGc2Rfii4rnjw7+C18I
+	tJ9iYuSRhTsEDJ3s33tY8Ssv1yIvx0UpEEBtk0paLIJY3Xd3EH4k0EbxGkn6BYPz
+	Ngb5Yu7uIhZJ0JYMHhtAwUk6gjWxzRL8YKsYqNOnM+QrlP2XqqqJ24BS/uEXMDbS
+	QSvVQ3AxxspThDkzsASpnw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1745537055; x=
-	1745623455; bh=eljRg4aYVplxvq+wGnNur1FAm2LC1Vrn/RVMZ2SYx3U=; b=h
-	puDb+H/TDicA2Oh44PM/92DPP+weOTfo8l+XZzFCbv20eE1wKzqRKXshhnYCQIBC
-	IUBM61HAh0IioTZA6py34e+QbOHs7Dfw5vtWNbTxEfnIqtWFxRTMAfVXpB6FPsxx
-	58ePcuBTP89zBfrsFcpAa4/apPWmlT3Eb6FWq56CtVJxgirjSSj4MhuOcP2Ud53D
-	85ieE1XlLv2kbhKTD1E1AbK3aQ2R8j7rm49AUOmK2s0dIY6j+iZT16QaYVPWB64m
-	2nrZhhX8o5mBiEYkpQ35wLk+BXwlnMkSeIwWUQqCXQPAfIcTwOWjAN7rX4Qxsu3u
-	coKN2PR0DjT7FbK3QJl2g==
-X-ME-Sender: <xms:H8gKaKQavygVgQxOU3qMo2Rf3flRApMGCC3pHG5HTVSrV-JoZ9PKXg>
-    <xme:H8gKaPzLcxphyDWwUj3HvLzq3eb7HoSKXomTzjPTNsiinw-lmHmWXDURSlemTSnBO
-    WxC22BLXQ_w2YMaejE>
-X-ME-Received: <xmr:H8gKaH2aQthvZPZQjvybbCd3PcVJW2furWYi-XbwmD1ovTjXoyO1hiRhjoHj35lB8djIIy6RivabN6yNnjTCbcIjEhQ>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1745537413; x=
+	1745623813; bh=eV8fD3xRMU9eiTCzCaOABbsHykC4+MpkNfiT2YxsbtQ=; b=X
+	2B6GA05fnWYY6sjruZqEJJoBSTeycVESx3iNMYZTTrRijK3LU7NAf+FueYAhurKV
+	jS5RBKYA7hOgAlEy84oBUnnff/ocZyS4jbWxK2Xk+KofhZtYTJl62k4fEXT9MIb+
+	zwV4GofLDO5ND+ja4JmMvf0PHKoVaIOr/25OkcUqpiJZc8AUCqTLRt3Liwv3WYnK
+	6HuF+v1JIwnZajADALqdZWDDM2N33K3kQ0ryPsodvvwtlA3tVe8v/0W44nMv4Vuh
+	aDVOk+ZKbXY6vAIzC+OjnHb0xulw9G3b4ioOrGPCo385BIu9NqIjRFLqgJUrQfBp
+	bT4kei/4KQyNxprvBP1sg==
+X-ME-Sender: <xms:hckKaKK0v2TchEzyqPwCORJ5N5R0gL7lmUrt3E2QZ_c1MrgvCCzYGA>
+    <xme:hckKaCKRN2vTmNWi4iD4X2YMgyCs51VD5JQ0_bJ8HzdQa_axW8ziIIg_mnrOjSkgR
+    uEodbJ1vx_XJPpedTg>
+X-ME-Received: <xmr:hckKaKuvxdGipcchoUQU2n2iD3OzuHMxVmap7XfZnn-aKs7s7isiRoytj7EKO4S-GBmnYcNdNatHG1QKuBGv8jvZb9Y>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvhedtjeejucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
@@ -76,20 +76,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvhedtjeejucetufdote
     vgepshhmthhpohhuthdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtth
     hopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
     ohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:H8gKaGCBRwEyo0RmFT65W1DVliOKEB0g3fhfDxckPl2LLsL-3JlGPw>
-    <xmx:H8gKaDgacooutMP6e5ieVirZ02bLcDwGrXKv_0DZwoXC0xg5KC5w4Q>
-    <xmx:H8gKaCoWqrKfWpsTsQLwRY-nbRPf3K5ndYzN2I-lsamFKJZh74D8QA>
-    <xmx:H8gKaGi9qi-W6--fmNUan6afwJzX_rMwE4bpZaWGq9QPLlb583qszQ>
-    <xmx:H8gKaMRmAixuaTmqslHDxls-T3e4WYN4hU4bZOMxuYlDy4s8jZLu5CbT>
+X-ME-Proxy: <xmx:hckKaPbZhm1No99zWw1myF4ITTlXP3ANIU41z04THdEcb531WuzX4w>
+    <xmx:hckKaBaWSUk3JED6TsRHG7Yuztne1-EUA3mYLys9Fx9d9FGX9wnEYg>
+    <xmx:hckKaLBHW0JosXaVpsHa7y8Lyp0b62w8lDjGlMYJkRv52Z03o3_HMA>
+    <xmx:hckKaHY3I2xsg2KzRjBCMj-OGglVn0IE3y6yNlQo_BEW8pO61tG34Q>
+    <xmx:hckKaBpf88o7PkKr_PU6ng6SgUn_4hPcfqdz5yJRA7H1femgywyQ71Yz>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 24 Apr 2025 19:24:14 -0400 (EDT)
-Date: Thu, 24 Apr 2025 16:25:19 -0700
+ 24 Apr 2025 19:30:13 -0400 (EDT)
+Date: Thu, 24 Apr 2025 16:31:17 -0700
 From: Boris Burkov <boris@bur.io>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Subject: Re: [PATCH] btrfs: fix folio leak in btrfs_clone_extent_buffer()
-Message-ID: <20250424232519.GA321466@zen.localdomain>
+Message-ID: <20250424233117.GA350350@zen.localdomain>
 References: <3a03310eda52461869be5711dc712f295c190b83.1745531701.git.boris@bur.io>
  <9b32db21-e116-4eb5-9a54-7cc23a737523@suse.com>
 Precedence: bulk
@@ -137,39 +137,42 @@ On Fri, Apr 25, 2025 at 08:11:34AM +0930, Qu Wenruo wrote:
 > 
 > What if we hit error attaching the first folio?
 > 
-
-I believe that attaching the folios is not relevant to whether or not
-they are NULL.
-
-eb->folios is filled out by alloc_eb_folio_array() which returns 0 only
-if it allocates all the needed folios and sets them in the eb array.
-
-And we don't call cleanup_extent_buffer_folios() from paths where
-alloc_eb_folio_array() failed, we jump straight to the release_eb label
-in those cases.
-
-This is further supported by the calls to attach_extent_buffer_folio()
-assuming eb->folios[i] is non NULL. Finally, I don't see any logic in
-attach_extent_buffer_folio() that would set eb->folios[i] to NULL.
-
-If you agree with this analysis, I can document this more explicitly
-than just the ASSERT as a pre-condition of this cleanup function?
-
-Alternatively, I was thinking of a no-functional-change followup of
-making folio_put() an optional step in
-btrfs_release_extent_buffer_folios() so that it can not call folio_put()
-during normal ref count driven frees but to call it in these cleanup
-paths.
-
 > In that case eb->folios[0] is still NULL, while num_extent_folios() will
 > call folio_order() on NULL.
+
+I don't believe this is correct.
+
+Whether or not eb->folios are NULL is determined by
+alloc_eb_folio_array(), which sets them all to non-NULL if it succeeds.
+And we only call cleanup_extent_buffer_folios() in paths where
+alloc_eb_folio_array() succeeded, otherwise we jump to
+btrfs_release_extent_buffer().
+
+I also don't see anything in btrfs_extent_buffer_folio() that would set
+the folio to NULL on error. Furthermore, that loop also assumes the
+folios are non-NULL.
+
+If you agree with my analysis, would you like me to add more
+documentation of this pre-condition of cleanup_extent_buffer_folios()
+beyond just the ASSERT(eb->folios[i])?
+
 > 
 > I think we need to enhance num_extent_folios() to handle ebs without any
 > attached folios.
-
-Not a bad idea! Return 0 if eb->folios[0] is NULL?
-
 > 
+
+That's a cool idea! Make it return 0 if eb->folios[0] is NULL?
+
+I was also thinking of making a refactor to make
+btrfs_release_extent_buffer plumb through a variable that decides
+whether or not we do the folio_put() (basically for normal calls vs.
+these cleanup paths) and get rid of cleanup_extent_buffer_folio() at the
+cost of a weird parameter in btrfs_release_extent_buffer. Curious what
+you think of that idea.
+
+Thanks for the review,
+Boris
+
 > > +		ASSERT(eb->folios[i]);
 > 
 > And even if the first folio is properly attached, we can still have an eb
@@ -182,10 +185,6 @@ Not a bad idea! Return 0 if eb->folios[0] is NULL?
 > 
 > Thanks,
 > Qu
-
-Thanks for the review,
-Boris
-
 > 
 > > +		detach_extent_buffer_folio(eb, eb->folios[i]);
 > > +		folio_put(eb->folios[i]);
