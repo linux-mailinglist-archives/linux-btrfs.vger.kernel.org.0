@@ -1,201 +1,188 @@
-Return-Path: <linux-btrfs+bounces-13356-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13357-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB6AA9A0D8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 08:06:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F521A9A0DF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 08:07:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEA1F194480E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 06:07:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39CF6194548E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Apr 2025 06:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9051D1DDA1B;
-	Thu, 24 Apr 2025 06:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958601DF27E;
+	Thu, 24 Apr 2025 06:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qxSWNqiF";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qxSWNqiF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+4zHtGA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810891B043E
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Apr 2025 06:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4C61C5F07;
+	Thu, 24 Apr 2025 06:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745474799; cv=none; b=sfDLyGuTa2EyuSieF4lYQV8GmBSjuLII1cwW5PySb3D5B1QDwCxGB1CmWvXC/vRqE+hBFCigab9S/fZnEADXx8ln1K6IgjKtLxOmJ/W13Ph3EIW892wzXATGPUch1I8l5LerOhwvEMEHueQOp1Yl8nmziwmfHJAlbskoOXLXzXE=
+	t=1745474810; cv=none; b=V9TIKHmUOODiRjYyktEh7W+wp5TGexorgU565xHdBlZtqLldtzI+sPT3CYmaTYiZjbqjxWBuDTFje8RQnb45zhobDLCrVSP3yi64bk/5c8aFc5DRlhKjq17ANdn51mNY969UBDVRzRLwrWIHK0rvZaVnymRNlTSDpuhDXH45PI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745474799; c=relaxed/simple;
-	bh=/cMDIczxFpyd1UElTwiBmQ+5L4E6hxErREUbnzbyxc4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DIZvk1Jw3QKOIafLzItIc7i1tp+W3Z4yFthebT7xoFJ99UX3/ykCvw/oNCk0YFQtIM9JaVjJLJ50OTI0pS0TJRE2QSBOndrcObAmkBY+WyF9Bz3j7G6Lr49BRTxftJyNsk6hJcTZmuLjdjWvBAsq5OipTU2SN1RILVNfQaf0ifc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qxSWNqiF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qxSWNqiF; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 44D9D210F9;
-	Thu, 24 Apr 2025 06:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745474795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GIo9TBe0g0RntxsYpQuKbiIUi+SG2CAW8MQOEj5SGRA=;
-	b=qxSWNqiFvqN6kmvfGGAh18yKtgjPTUUYQQk6Q5ie7IswZxCGMiQxHFNUFQJqdL2/l0fCUA
-	x67c51UCSPbW8Ixutmoi+2UnR6D3SyH05Jh6sDwKsUf3+vDUVjKWQcw/Xe4HTcamseRkun
-	CeBTF7eQ+AQ37S40/cBFLO6xbWbKREY=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=qxSWNqiF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745474795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GIo9TBe0g0RntxsYpQuKbiIUi+SG2CAW8MQOEj5SGRA=;
-	b=qxSWNqiFvqN6kmvfGGAh18yKtgjPTUUYQQk6Q5ie7IswZxCGMiQxHFNUFQJqdL2/l0fCUA
-	x67c51UCSPbW8Ixutmoi+2UnR6D3SyH05Jh6sDwKsUf3+vDUVjKWQcw/Xe4HTcamseRkun
-	CeBTF7eQ+AQ37S40/cBFLO6xbWbKREY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 479081393C;
-	Thu, 24 Apr 2025 06:06:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zI2WAurUCWioXgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 24 Apr 2025 06:06:34 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: btrfs/315: fix golden output mismatch caused by newer util-linux
-Date: Thu, 24 Apr 2025 15:36:08 +0930
-Message-ID: <20250424060608.251847-1-wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1745474810; c=relaxed/simple;
+	bh=WGK9E7/qaLTf787QCZsaNhWUfFJ8XGt+6uy2r0LT8Og=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bp0sD4CVXDvgXR+JxWRJ7wEZlSkL2I1InYX6fE9aaCpStmju991itJBXlMUT7Mwaow7lxstPshQIxitg17ln2Z/WLp9W7hNht6+7Otii/1WOJP0D/feCRAkXGxftIMxnxAqQQAj+WRwaLAhsANDMtAVu3mIrlcNeTHs50j1+6DA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+4zHtGA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D79CC4CEE3;
+	Thu, 24 Apr 2025 06:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745474810;
+	bh=WGK9E7/qaLTf787QCZsaNhWUfFJ8XGt+6uy2r0LT8Og=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=E+4zHtGAwh2YipSe0jaYUgQ5H6OYyWEwKBjrcpWRICjFaAu7dJ9Ogb3J+uMOdRku8
+	 IuciCbR2YacS6raxRq50hZlEfDQ962/ts8yv4RwVJaFoOZZ7pcXOVx7ZVJVUZcWwE/
+	 eMO32ScbVm7F292ufsS9GQWV8JRzesehXUYL2rb1XjCj1rO6fMpFg1SNzgCb6vliOR
+	 RZsP8CteQ0Rv7N2NoyDFAszSt6vcAgekOceEeeAOIapdL580FGv5fF/l0gW1i/T0wY
+	 NQPwdyD6g0n1MdPaVvad3o1lS1Z4ZV5gWBKAc5pPTMwUoddkJXfonpCS3EqscOd2gn
+	 V3Oh+HruZVAxA==
+Message-ID: <3f860c62-6285-4462-b3de-932fa2888168@kernel.org>
+Date: Thu, 24 Apr 2025 15:06:45 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 44D9D210F9
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/17] block: add a bio_add_vmalloc helper
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+ Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Andreas Gruenbacher <agruenba@redhat.com>,
+ Carlos Maiolino <cem@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>,
+ Johannes Thumshirn <jth@kernel.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
+ linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20250422142628.1553523-1-hch@lst.de>
+ <20250422142628.1553523-4-hch@lst.de>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20250422142628.1553523-4-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-[BUG]
-With util-linux v2.41.0 and newer, test case btrfs/315 will fail like
-the following:
+On 4/22/25 23:26, Christoph Hellwig wrote:
+> Add a helper to add a vmalloc region to a bio, abstracting away the
+> vmalloc addresses from the underlying pages.  Also add a helper to
+> calculate how many segments need to be allocated for a vmalloc region.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/bio.c         | 27 +++++++++++++++++++++++++++
+>  include/linux/bio.h | 17 +++++++++++++++++
+>  2 files changed, 44 insertions(+)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index a6a867a432cf..3cc93bbdeeb9 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -1058,6 +1058,33 @@ bool bio_add_folio(struct bio *bio, struct folio *folio, size_t len,
+>  }
+>  EXPORT_SYMBOL(bio_add_folio);
+>  
+> +/**
+> + * bio_add_vmalloc - add a vmalloc region to a bio
+> + * @bio: destination bio
+> + * @vaddr: virtual address to add
+> + * @len: total length of the data to add
 
-btrfs/315 1s ... - output mismatch (see /home/adam/xfstests-dev/results//btrfs/315.out.bad)
-    --- tests/btrfs/315.out	2025-04-24 15:31:28.684112371 +0930
-    +++ /home/adam/xfstests-dev/results//btrfs/315.out.bad	2025-04-24 15:31:31.854883557 +0930
-    @@ -1,7 +1,7 @@
-     QA output created by 315
-     ---- seed_device_must_fail ----
-     mount: SCRATCH_MNT: WARNING: source write-protected, mounted read-only.
-    -mount: TEST_DIR/315/tempfsid_mnt:  system call failed: File exists.
-    +mount: TEST_DIR/315/tempfsid_mnt: () failed: File exists.
-     ---- device_add_must_fail ----
-     wrote 9000/9000 bytes at offset 0
+Nit: to be consistent in the wording...
 
-[CAUSE]
+ * @vaddr: address of the vmalloc region to add
+ * @len: total length of the vmalloc region to add
 
-With util-linux v2.41.0, the mount failure error message changed to the following:
+> + *
+> + * Add the data at @vaddr to @bio and return how much was added.  This can an
 
-  mount: /mnt/test/315/tempfsid_mnt: fsconfig() failed: File exists.
+s/an/and
 
-Thus the existing filter only striped the "fsconfig" part, leaving the
-"()" without changing it to " system call".
+or may be simply:
 
-[FIX]
-The existing filter on error message is doomed from day one.
-I'm fed up with the stupid catch-up game depending on util-linux, so
-let's just stripe everything between "mount" and " failed", just leaving
-the golden output to:
+This may be less than the amount originally asked.
 
-  mount failed: File exists.
+> + * usually is less than the amount originally asked.  Returns 0 if no data could
+> + * be added to the bio.
+> + *
+> + * This helper calls flush_kernel_vmap_range() for the range added.  For reads,
+> + * the caller still needs to manually call invalidate_kernel_vmap_range() in
+> + * the completion handler.
+> + */
+> +unsigned int bio_add_vmalloc(struct bio *bio, void *vaddr, unsigned len)
+> +{
+> +	unsigned int offset = offset_in_page(vaddr);
+> +
+> +	len = min(len, PAGE_SIZE - offset);
+> +	if (bio_add_page(bio, vmalloc_to_page(vaddr), len, offset) < len)
+> +		return 0;
+> +	if (op_is_write(bio_op(bio)))
+> +		flush_kernel_vmap_range(vaddr, len);
+> +	return len;
+> +}
+> +EXPORT_SYMBOL_GPL(bio_add_vmalloc);
+> +
+>  void __bio_release_pages(struct bio *bio, bool mark_dirty)
+>  {
+>  	struct folio_iter fi;
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index 17a10220c57d..c4069422fd0a 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -433,6 +433,23 @@ static inline void bio_add_virt_nofail(struct bio *bio, void *vaddr,
+>  	__bio_add_page(bio, virt_to_page(vaddr), len, offset_in_page(vaddr));
+>  }
+>  
+> +/**
+> + * bio_vmalloc_max_vecs - number of segments needed to map vmalloc data
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/315     | 14 +++++++++-----
- tests/btrfs/315.out |  2 +-
- 2 files changed, 10 insertions(+), 6 deletions(-)
+Nit: number of BIO segments needed to add a vmalloc-ed region to a BIO ?
 
-diff --git a/tests/btrfs/315 b/tests/btrfs/315
-index e6589abe..9b5bc789 100755
---- a/tests/btrfs/315
-+++ b/tests/btrfs/315
-@@ -30,9 +30,8 @@ tempfsid_mnt=$TEST_DIR/$seq/tempfsid_mnt
- 
- _filter_mount_error()
- {
--	# There are two different errors that occur at the output when
--	# mounting fails; as shown below, pick out the common part. And,
--	# remove the dmesg line.
-+	# There are different errors that occur at the output when
-+	# mounting fails:
- 
- 	# mount: <mnt-point>: mount(2) system call failed: File exists.
- 
-@@ -41,10 +40,15 @@ _filter_mount_error()
- 
- 	# For util-linux v2.4 and later:
- 	# mount: <mountpoint>: mount system call failed: File exists.
-+	#
-+	# For util-linux v2.41 and later:
-+	# mount: <mountpoint>: fsconfig() failed: File exists.
-+	#
-+	# Instead of playing the stupid catchup game, removed everything
-+	# between ":" and "failed:".
- 
- 	grep -v dmesg | _filter_test_dir | \
--		sed -e "s/mount(2)\|fsconfig//g" \
--		    -e "s/mount\( system call failed:\)/\1/"
-+		sed -e "s/: TEST_DIR\/315\/tempfsid_mnt: .* failed:/ failed:/g"
- }
- 
- seed_device_must_fail()
-diff --git a/tests/btrfs/315.out b/tests/btrfs/315.out
-index 3ea7a35a..fb493e90 100644
---- a/tests/btrfs/315.out
-+++ b/tests/btrfs/315.out
-@@ -1,7 +1,7 @@
- QA output created by 315
- ---- seed_device_must_fail ----
- mount: SCRATCH_MNT: WARNING: source write-protected, mounted read-only.
--mount: TEST_DIR/315/tempfsid_mnt:  system call failed: File exists.
-+mount failed: File exists.
- ---- device_add_must_fail ----
- wrote 9000/9000 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> + * @vaddr: address to map
+> + * @len: length to map
+
+Nit:
+
+ * @vaddr: address of the vmalloc region to add
+ * @len: total length of the vmalloc region to add
+
+> + *
+> + * Calculate how many bio segments need to be allocated to map the vmalloc/vmap
+
+s/to map/to add ?
+
+> + * range in [@addr:@len].  This could be an overestimation if the vmalloc area
+> + * is backed by large folios.
+> + */
+> +static inline unsigned int bio_vmalloc_max_vecs(void *vaddr, unsigned int len)
+> +{
+> +	return DIV_ROUND_UP(offset_in_page(vaddr) + len, PAGE_SIZE);
+> +}
+> +
+> +unsigned int __must_check bio_add_vmalloc(struct bio *bio, void *vaddr,
+> +		unsigned len);
+> +
+>  int submit_bio_wait(struct bio *bio);
+>  int bdev_rw_virt(struct block_device *bdev, sector_t sector, void *data,
+>  		size_t len, enum req_op op);
+
+Other than these wording nits, looks OK to me.
+
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+
+
 -- 
-2.49.0
-
+Damien Le Moal
+Western Digital Research
 
