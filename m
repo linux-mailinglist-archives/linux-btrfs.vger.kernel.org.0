@@ -1,146 +1,221 @@
-Return-Path: <linux-btrfs+bounces-13411-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13412-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 986EDA9BFAC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 09:24:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9BF4A9C323
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 11:19:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 149553A9A14
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 07:24:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C838C1BA3347
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 09:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3768322DF91;
-	Fri, 25 Apr 2025 07:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E282343BE;
+	Fri, 25 Apr 2025 09:19:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cBPyKQbE";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cBPyKQbE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0qIZ/fy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89781F4CAC
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 07:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076181D63CF
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 09:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745565869; cv=none; b=Qqfuqf3D+6HKZU/Mcl7tj6ZmjeyOHTOciksU3gkx7ml7V7BU4lo9W2uPji/IabB6zoGOHNaIsARhOe6QnMSe+ohuLfeOI2R/JaFaEeKRNBFrT1uY379TvWQ6m/bLvyqcYYPkecbjNiB0cGT84pPnOwyGKrS33DI95YYKlR/kVHI=
+	t=1745572757; cv=none; b=mtjvEmpB9JGGyYhH9LO7ohbVBAyYjO59wNQ2c7j7VJ3gL25A6qOL6GGksD8D3UrUJtb9YaN+nOBjDNYePamJAFm2QqNpYaNIEF4TTuDOKrzeEiJzToX/WzDxILVnyrayn2hPyJPrNJxKuBkZVpY8gqw7lFVOChuyOt0hCWzBbN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745565869; c=relaxed/simple;
-	bh=jtMg5avLmNq08dx5MIn9AAqzj5O59LTOfT07aatcj5Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=emlpUFxnu+by0G2cBWkaC1XzCNOpUuWGIxYYSkpVgggyegsb4wSNnpDYUXr+tNu6khhIGa11xsbAKKWcbWEglnqgcyzkHTrpgxXcV9/Bij+zfepR1EsudqqhFJ9imM+alB1NbuOfuoY8xQYUlw3lZ1BSC9H/LP7gYQYOu82A2ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cBPyKQbE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cBPyKQbE; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AA1571F38C;
-	Fri, 25 Apr 2025 07:24:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745565865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=HkKwnWomWBsjN0jjbqpwbwTR7RSwLivqmv0zAlY5UMk=;
-	b=cBPyKQbEQZfCTleWSNKT85c6UgHotWvRAaZf+uoclpxMfQ3w4ME2fH3crWtWqQrOPLXI6s
-	qb6r4kabAIH1j1VoeXBqDB9IOe895FUL84heYrJAYYT9q+IoTKlXjEPcogdK0oK2RJDgHC
-	m9N4RQikAUCDqUWk7IQw5ZohGtgHAbU=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=cBPyKQbE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1745565865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=HkKwnWomWBsjN0jjbqpwbwTR7RSwLivqmv0zAlY5UMk=;
-	b=cBPyKQbEQZfCTleWSNKT85c6UgHotWvRAaZf+uoclpxMfQ3w4ME2fH3crWtWqQrOPLXI6s
-	qb6r4kabAIH1j1VoeXBqDB9IOe895FUL84heYrJAYYT9q+IoTKlXjEPcogdK0oK2RJDgHC
-	m9N4RQikAUCDqUWk7IQw5ZohGtgHAbU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 93A2B13A79;
-	Fri, 25 Apr 2025 07:24:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bapPI6k4C2hqbQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Fri, 25 Apr 2025 07:24:25 +0000
-From: Daniel Vacek <neelx@suse.com>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Cc: Daniel Vacek <neelx@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: get rid of goto in alloc_test_extent_buffer()
-Date: Fri, 25 Apr 2025 09:23:57 +0200
-Message-ID: <20250425072358.51788-1-neelx@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1745572757; c=relaxed/simple;
+	bh=A1qJt2Jg860VqeCHkTTNyQHo+e/fyhmEGtx+4G0UXaY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=At2PRw44if33Dv3MqtME/hmgzuZf/cGC6XWwZZZOwDBSoAt69TkVsAYE2/L8Z95wworeluNUp1ch4l/dkarNzI5WKqF26zi1C3lYeSZObFbU0rx9NQCaOgW60i3ufqliMjtjaX9DpngeJonvGjXWxsWYzS0dd9ZbdenXwmMZptk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0qIZ/fy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4757C4CEEA
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 09:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745572756;
+	bh=A1qJt2Jg860VqeCHkTTNyQHo+e/fyhmEGtx+4G0UXaY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=M0qIZ/fya4uXqOon0EQuzZ/3QrwwVaqubVvAkOD/TgLBwEleKLCmRkmGWEX9FLvQH
+	 mPY9d5e3NaZIObbw61v8Q/VT1XBGeX26lkwPrwmuXZ0s/nkPchUb2mErNPAwqi240b
+	 Qbkv2ymkCtwGucq7w+gD2jjngHAa4an8UF8Z02N1BTjXMPrB8JbSsgkCyjeg2RfPCJ
+	 TCzrXKn+MsK7nKpKfzd1FpdvQFaNchh/CMtnQnsA8eTOjRr5a/tSVbzhFJ7fmZR58k
+	 NXmhh7SNKfOl0Yd8c+dEN+36iu/9ezC9RYPRaZRp5wqcngXkUF8m0IT0tsn5/y/61D
+	 oYdJmjuqyKjSg==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ace3b03c043so309943266b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 02:19:16 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz/AeHOVL2z3fBivpnsYU+T6OtH++NDjqQArwzn+Rub+5KGREUb
+	UBG3Twwt+n+8c+pQkJ7anWzK/MVgDNoMtL/QpGXk/Pqkd7bdR05sN6k4MBkI28/G0+Vnx/c1hHV
+	TcGETA9mpo/c+VAw58acOwQY9eVc=
+X-Google-Smtp-Source: AGHT+IE79qFxytDWdS8RtiyvqfGCfxEMIAVaJaZ0/bZM46lvzJHFP/79VhiUWDdF9BHtYqVkXRUfoXnmVOqKx7Qhzao=
+X-Received: by 2002:a17:907:d22:b0:ac6:fcdd:5a97 with SMTP id
+ a640c23a62f3a-ace71399b7emr158361166b.48.1745572755223; Fri, 25 Apr 2025
+ 02:19:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: AA1571F38C
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+References: <3a03310eda52461869be5711dc712f295c190b83.1745531701.git.boris@bur.io>
+In-Reply-To: <3a03310eda52461869be5711dc712f295c190b83.1745531701.git.boris@bur.io>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 25 Apr 2025 10:18:38 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H60DfC0+ysf_Yw7bBOaDExPqpRU4==xHz4pYxHt3k-woQ@mail.gmail.com>
+X-Gm-Features: ATxdqUGUu2Af9AnhIYJ5y1QF6bS9KsGCqYvl-v_Py_M7gG4LA19KXdxjCK5rt5Y
+Message-ID: <CAL3q7H60DfC0+ysf_Yw7bBOaDExPqpRU4==xHz4pYxHt3k-woQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix folio leak in btrfs_clone_extent_buffer()
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The `free_eb` label is used only once. Simplify by moving the code inplace.
+On Thu, Apr 24, 2025 at 10:54=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> If btrfs_clone_extent_buffer() hits an error halfway through attaching
+> the folios, it will not call folio_put() on its folios.
+>
+> Unify its error handling behavior with alloc_dummy_extent_buffer() under
+> a new function 'cleanup_extent_buffer_folios()'
 
-Signed-off-by: Daniel Vacek <neelx@suse.com>
----
- fs/btrfs/extent_io.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+So this misses any indication that this fixes a bug introduced by:
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ea38c73d4bc5f..20cdddd924852 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3004,15 +3004,13 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- 			goto again;
- 		}
- 		xa_unlock_irq(&fs_info->buffer_tree);
--		goto free_eb;
-+		btrfs_release_extent_buffer(eb);
-+		return exists;
- 	}
- 	xa_unlock_irq(&fs_info->buffer_tree);
- 	check_buffer_tree_ref(eb);
- 
- 	return eb;
--free_eb:
--	btrfs_release_extent_buffer(eb);
--	return exists;
- #else
- 	/* Stub to avoid linker error when compiled with optimizations turned off. */
- 	return NULL;
--- 
-2.47.2
+"btrfs: fix broken drop_caches on extent buffer folios"
 
+With a subject and description like this, it's almost sure this patch
+will be automatically picked for stable backports, and if it gets
+backported it will break things unless that other patch is backported
+too.
+
+Also, since the bug was introduced by the other patch and it's not yet
+in Linus' tree, it would be better to update that patch with this
+one's content.
+That's normally what we do - I know both patches are already in
+github's for-next (I didn't even get a chance to review this one since
+it all happened during my evening), and it's ok to rebase and squash
+patches.
+
+For the record:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+>
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/extent_io.c | 55 ++++++++++++++++++++++++++++----------------
+>  1 file changed, 35 insertions(+), 20 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 152bf042eb0f..99f03cad997f 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2829,6 +2829,22 @@ static struct extent_buffer *__alloc_extent_buffer=
+(struct btrfs_fs_info *fs_info
+>         return eb;
+>  }
+>
+> +/*
+> + * Detach folios and folio_put() them.
+> + *
+> + * For use in eb allocation error cleanup paths, as btrfs_release_extent=
+_buffer()
+> + * does not call folio_put().
+> + */
+> +static void cleanup_extent_buffer_folios(struct extent_buffer *eb)
+> +{
+> +       for (int i =3D 0; i < num_extent_folios(eb); i++) {
+> +               ASSERT(eb->folios[i]);
+> +               detach_extent_buffer_folio(eb, eb->folios[i]);
+> +               folio_put(eb->folios[i]);
+> +               eb->folios[i] =3D NULL;
+> +       }
+> +}
+> +
+>  struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buff=
+er *src)
+>  {
+>         struct extent_buffer *new;
+> @@ -2846,26 +2862,30 @@ struct extent_buffer *btrfs_clone_extent_buffer(c=
+onst struct extent_buffer *src)
+>         set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+>
+>         ret =3D alloc_eb_folio_array(new, false);
+> -       if (ret) {
+> -               btrfs_release_extent_buffer(new);
+> -               return NULL;
+> -       }
+> +       if (ret)
+> +               goto release_eb;
+>
+>         for (int i =3D 0; i < num_extent_folios(src); i++) {
+>                 struct folio *folio =3D new->folios[i];
+>
+>                 ret =3D attach_extent_buffer_folio(new, folio, NULL);
+> -               if (ret < 0) {
+> -                       btrfs_release_extent_buffer(new);
+> -                       return NULL;
+> -               }
+> +               if (ret < 0)
+> +                       goto cleanup_folios;
+>                 WARN_ON(folio_test_dirty(folio));
+> -               folio_put(folio);
+>         }
+> +       for (int i =3D 0; i < num_extent_folios(src); i++)
+> +               folio_put(new->folios[i]);
+> +
+>         copy_extent_buffer_full(new, src);
+>         set_extent_buffer_uptodate(new);
+>
+>         return new;
+> +
+> +cleanup_folios:
+> +       cleanup_extent_buffer_folios(new);
+> +release_eb:
+> +       btrfs_release_extent_buffer(new);
+> +       return NULL;
+>  }
+>
+>  struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs=
+_info,
+> @@ -2880,12 +2900,12 @@ struct extent_buffer *alloc_dummy_extent_buffer(s=
+truct btrfs_fs_info *fs_info,
+>
+>         ret =3D alloc_eb_folio_array(eb, false);
+>         if (ret)
+> -               goto out;
+> +               goto release_eb;
+>
+>         for (int i =3D 0; i < num_extent_folios(eb); i++) {
+>                 ret =3D attach_extent_buffer_folio(eb, eb->folios[i], NUL=
+L);
+>                 if (ret < 0)
+> -                       goto out_detach;
+> +                       goto cleanup_folios;
+>         }
+>         for (int i =3D 0; i < num_extent_folios(eb); i++)
+>                 folio_put(eb->folios[i]);
+> @@ -2896,15 +2916,10 @@ struct extent_buffer *alloc_dummy_extent_buffer(s=
+truct btrfs_fs_info *fs_info,
+>
+>         return eb;
+>
+> -out_detach:
+> -       for (int i =3D 0; i < num_extent_folios(eb); i++) {
+> -               if (eb->folios[i]) {
+> -                       detach_extent_buffer_folio(eb, eb->folios[i]);
+> -                       folio_put(eb->folios[i]);
+> -               }
+> -       }
+> -out:
+> -       kmem_cache_free(extent_buffer_cache, eb);
+> +cleanup_folios:
+> +       cleanup_extent_buffer_folios(eb);
+> +release_eb:
+> +       btrfs_release_extent_buffer(eb);
+>         return NULL;
+>  }
+>
+> --
+> 2.49.0
+>
+>
 
