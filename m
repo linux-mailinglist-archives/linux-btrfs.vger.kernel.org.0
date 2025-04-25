@@ -1,91 +1,74 @@
-Return-Path: <linux-btrfs+bounces-13432-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13433-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA9EA9D4AB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 23:57:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642A3A9D5A6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 00:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 828EF1BC66BD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 21:58:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A44874C5C53
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 22:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73CB22687A;
-	Fri, 25 Apr 2025 21:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12992951D0;
+	Fri, 25 Apr 2025 22:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Iqr+ZPnk";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KAwCyEwG"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MX6UfvR6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MX6UfvR6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3F32192F3
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 21:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95BA01A3145
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 22:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745618270; cv=none; b=C5/uj5wYXDUSO5iVv+iR2n8DrS8aXPx2JlKR17nrkvPncnbrRkKU2BsZGf48ARwX4Ye1p1n+m9GAKNDfGqnTnCZCjvpHSUdcD8iVH0mOZyqMnxRxDzTpip3LfKAh/GLcTrQL4iHSypAbcdpFdMJxtA8m19c6ev427tnKGTScVuQ=
+	t=1745620649; cv=none; b=CbJTvP53cTxrYJ3uueJStN/eak5xfF0SWRBy8IuXBCv8jG9CIGiC8CwuLubRIEGtK5ZXFTkMAg47RQBdhqOiVXvgFEPHYrSmv8MDYA56Z3k6F6kFe/UveQTRRX3PnEaXyv2fIjlfaB1ItFafk1WEXMR5HS6zJwLFXAWk7chpyPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745618270; c=relaxed/simple;
-	bh=nmPW5nzJzp+5rflE/JfKTQVawre9buedalMh38TQvbU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=iJlaTcdagkU4K5CypM+20eP6axdSJy6vWFJzwk5A/FoLeu4RzoXoi5m0hPuZXdPZTVJ8qlLa1Z4hBxQ+DZSLuMW9CmNlapIUGgGa6pMnMhkoUrJwE4m5I3Hwf/ngAe+mrq0sN8OxpqfkUZWv2aRpI3mtQZoI+QNf1RuyuJaK3iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Iqr+ZPnk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KAwCyEwG; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id D9D301140092;
-	Fri, 25 Apr 2025 17:57:45 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-08.internal (MEProxy); Fri, 25 Apr 2025 17:57:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1745618265; x=1745704665; bh=hi8cilIRzrqFqyCjErjic
-	BILyg270zB2h8a5IBcPWHk=; b=Iqr+ZPnkG1zLoOsZw06X4D8BaDyJBXAzLz1tH
-	c7MFFQIXIRAeglHw2Xocs2BiGbPEIs++BD41ZJ69olP4ifY031m0ONUBL7TUDOkv
-	dtx8g091nyXZYb89KAO3ODovzwbjlF8Cnll0bmGJkQafoO8tpWwbF9QTCcj+ro2Z
-	sfAg0104r7Lul5pnbOwQO0PFvhqRzBDB6XlbWk6W9yKfaQwHr+zrFGuQ4X1m4wMi
-	JWTAHMh5Y2GYAr7eZKo9ReHRNaJMPvWWk0EEAPWn/PYX/jTGxpWjuj45DtFxrSiF
-	ABL/9hLJNlcYMK/USd8Z59nDcmyenz5rlMWQ7vdGF+Mndr+iw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1745618265; x=1745704665; bh=hi8cilIRzrqFqyCjErjicBILyg270zB2h8a
-	5IBcPWHk=; b=KAwCyEwGMXPcVQu9sRilkjnh+YjTw/wWC+PVt/NVx/8TSXWum4h
-	XHXHAVAEHLDzOpsLs/o8AwjbAKA0xqUsZPGsvysl0/PwJs+MpXQl7VOw7mB9XEIA
-	cFP+pyVPJqK5tjNyNvRwVU/NAJ6Pso58+2bn2E2I2m/+Txf4hY60l1jtSqRJ3gLF
-	2GavdQ8xQs/nZ8uGpvRWdSxNCZhFHmhs72qQvHKgLwH/AgroRYah7/4obefwZ6w3
-	v1a13lnnFxQ2pVm2I5/0KJ7vdgTsKF19SoHNl3w7aoDdmOLrtNOnsYZaSSa4K/LV
-	DH8pUiLJZm/XaGebmhgmen0xHpB5VbuFKSg==
-X-ME-Sender: <xms:WQUMaNPxw8QBZUWB13kfMDObyOiHtkPVzucBaWzTIbuNNOYX2IhFXA>
-    <xme:WQUMaP-kKwMMdzFKiZd_DVafKBocodQ7NCZ8p32pzeYWg6x0n_R2MjhsrJVtge4v7
-    kyENsjMzn8oI8MSVTs>
-X-ME-Received: <xmr:WQUMaMSyRsRseamLS9cVEWTpLyLMjIgCrkZXF_lQzeIcfoHyZ4NgVZBHnTZ2QgqOWjXMjOmHSVgQm2JcBeRvBr43LEU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvheefgeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceo
-    sghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelff
-    evleeifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspg
-    hrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidq
-    sghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlh
-    dqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:WQUMaJuhSSCMFp2-beOB8MjaLoLBupLCaixxqximGomM4CSuI8KfHA>
-    <xmx:WQUMaFfVsocsm06JP3jQrxvsCNN1M5jwYmcKYSxVLFSb8Fm0Z6bE8g>
-    <xmx:WQUMaF2c6xFef6QT64jlWiGoNhnnP9k7-Rh8nym5o32-kUUyR2xMGw>
-    <xmx:WQUMaB-zJo77yzrHpewHD_7i6Op4pOHHt_N4R-a8f3js3YWSnB8iNQ>
-    <xmx:WQUMaIywwhJvPv6NAa1pkS4HpETNI-Py0wzHG-VQr57nMbU_FZrJvxAC>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 25 Apr 2025 17:57:45 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: handle empty eb->folios in num_extent_folios()
-Date: Fri, 25 Apr 2025 14:58:38 -0700
-Message-ID: <a17705cfccb9cb49d48c393fd0f46bdb4281b556.1745618308.git.boris@bur.io>
+	s=arc-20240116; t=1745620649; c=relaxed/simple;
+	bh=ujKiF/ffwrHJSM+LFoEP72XgRWKFRn/O38O6MyM3qTI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=OuZcemUC29nOkVuKxIKxxBoMt/RDUz7tVrVa1PDRRQYc5t6ew/V9DmACV8sTZjl2+hA2N1s9XwmFUGxmxOiIOOhdId0heulNefXxkF9JbioF15zobFIF10QerfRYeKAOLBEGOUzMzC5/S7TdaM69NoHrnpvwA8l9ZP8W25/42j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MX6UfvR6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MX6UfvR6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6D4CB1F399
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 22:37:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745620644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=+4ktLtGnBo4z4EyRgUUhp9xdKNmjccT5hp6wrcSD7zs=;
+	b=MX6UfvR6I5jUIpbIVxecLXN/l8m7KHh8sh9WkdYkEBGnUu2mr7ZIc7i+gKp57cncDIgbj0
+	h5uaj0Rqb1Jqostke6a0ym28THMntttF1nGsj5wviiXePxlCFtB1M8qEyPO8fctZLv5EaF
+	eFErETO8cPDJywLIOOX9xpz48HsIsII=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=MX6UfvR6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1745620644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=+4ktLtGnBo4z4EyRgUUhp9xdKNmjccT5hp6wrcSD7zs=;
+	b=MX6UfvR6I5jUIpbIVxecLXN/l8m7KHh8sh9WkdYkEBGnUu2mr7ZIc7i+gKp57cncDIgbj0
+	h5uaj0Rqb1Jqostke6a0ym28THMntttF1nGsj5wviiXePxlCFtB1M8qEyPO8fctZLv5EaF
+	eFErETO8cPDJywLIOOX9xpz48HsIsII=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99EE31398F
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 22:37:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kt+hFaMODGgYWQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 22:37:23 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v5 0/2] btrfs: fix beyond EOF truncation for subpage generic/363 failures
+Date: Sat, 26 Apr 2025 08:06:48 +0930
+Message-ID: <cover.1745619801.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -94,30 +77,151 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 6D4CB1F399
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-num_extent_folios() unconditionally calls folio_order() on
-eb->folios[0]. If that is NULL this will be a segfault. It is reasonable
-for it to return 0 as the number of folios in the eb when the first
-entry is NULL, so do that instead.
+[CHANGELOG]
+v5:
+- Shrink the parameter list for btrfs_truncate_block()
+  Remove the @front and @len, instead passing a new pair of @start/@end,
+  so that we can determine if @from is in the head or tail block,
+  thus no need for @front.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/extent_io.h | 2 ++
- 1 file changed, 2 insertions(+)
+  This will give callers more freedom (a little too much),
+  e.g. for the following zero range/hole punch case:
 
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 9915fcb5db02..e8b92340b65a 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -292,6 +292,8 @@ static inline int __pure num_extent_pages(const struct extent_buffer *eb)
-  */
- static inline int __pure num_extent_folios(const struct extent_buffer *eb)
- {
-+	if (!eb->folios[0])
-+		return 0;
- 	if (folio_order(eb->folios[0]))
- 		return 1;
- 	return num_extent_pages(eb);
+    Page size is 64K, fs block size is 4K.
+    Truncation range is [6K, 58K).
+
+    0        8K                32K                  56K      64K
+    |      |/|//////////////////////////////////////|/|      |
+           6K                                         58K
+
+    To truncate the first block to zero out range [6K, 8K),
+    caller can pass @from = 6K, @start = 6K, @end = 58K - 1.
+    In fact, any @from inside range [6K, 8K) will work.
+
+    To truncate the last block to zero out range [56K, 58K),
+    caller can pass @from=58K - 1, @start = 6K, @end = 58K -1.
+    Any @from inside range [56K, 58K) will also work.
+
+    Furthermore, if aligned @from is passed in, e.g. 8K,
+    btrfs_truncate_block() will detect that there is nothing to do,
+    and exit properly.
+
+- Only do the extra zeroing if we're truncating beyond EOF
+  Especially for the recent large folios support, we can do a lot of
+  unnecessary zeroing for a very large folio.
+
+- Remove the lock-wait-retry loop if we're doing aligned truncation
+  beyond EOF
+  Since it's already EOF, there is no need to wait for the OE anyway.
+
+v4:
+- Rebased to the latest for-next branch
+  btrfs_free_extent_map() renames cause a minor conflict in the first
+  patch.
+
+v3:
+- Fix a typo where @block_size should @blocksize.
+  There is a global function, block_size(), thus this typo will cause
+  type conflicts inside round_down()/round_up().
+
+v2:
+- Fix a conversion bug in the first patch that leads to generic/008
+  failure on x86_64
+  The range is passed incorrectly and caused btrfs_truncate_block() to
+  incorrectly skip an unaligned range.
+
+Test case generic/363 always fail on subpage (fs block fs < page size)
+btrfses, there are mostly two kinds of problems here:
+
+All examples are based on 64K page size and 4K fs block size.
+
+1) EOF is polluted and btrfs_truncate_block() only zeros the block that
+   needs to be written back
+
+   
+   0                           32K                           64K
+   |                           |              |GGGGGGGGGGGGGG|
+                                              50K EOF
+   The original file is 50K sized (not 4K aligned), and fsx polluted the
+   range beyond EOF through memory mapped write.
+   And since memory mapped write is page based, and our page size is
+   larger than block size, the page range [0, 64K) covere blocks beyond
+   EOF.
+
+   Those polluted range will not be written back, but will still affect
+   our page cache.
+
+   Then some operation happens to expand the inode to size 64K.
+
+   In that case btrfs_truncate_block() is called to trim the block
+   [48K, 52K), and that block will be marked dirty for written back.
+
+   But the range [52K, 64K) is untouched at all, left the garbage
+   hanging there, triggering `fsx -e 1` failure.
+
+   Fix this case by force btrfs_truncate_block() to zeroing any involved
+   blocks. (Meanwhile still only one block [48K, 52K) will be written
+   back)
+
+2) EOF is polluted and the original size is block aligned so
+   btrfs_truncate_block() does nothing
+
+   0                           32K                           64K
+   |                           |                |GGGGGGGGGGGG|
+                                                52K EOF
+
+   Mostly the same as case 1, but this time since the inode size is
+   block aligned, btrfs_truncate_block() will do nothing.
+
+   Leaving the garbage range [52K, 64K) untouched and fail `fsx -e 1`
+   runs.
+
+   Fix this case by force btrfs_truncate_block() to zeroing any involved
+   blocks when the btrfs is subpage and the range is aligned.
+   This will not cause any new dirty blocks, but purely zeroing out EOF
+   to pass `fsx -e 1` runs.
+
+Qu Wenruo (2):
+  btrfs: handle unaligned EOF truncation correctly for subpage cases
+  btrfs: handle aligned EOF truncation correctly for subpage cases
+
+ fs/btrfs/btrfs_inode.h |   3 +-
+ fs/btrfs/file.c        |  34 ++++-----
+ fs/btrfs/inode.c       | 152 ++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 147 insertions(+), 42 deletions(-)
+
 -- 
 2.49.0
 
