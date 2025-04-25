@@ -1,61 +1,59 @@
-Return-Path: <linux-btrfs+bounces-13421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13422-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7C99A9CA8A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 15:38:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC86A9CA89
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 15:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33EC43A9917
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 13:35:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 926031B80E36
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 13:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A62C24A06D;
-	Fri, 25 Apr 2025 13:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921192522B5;
+	Fri, 25 Apr 2025 13:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="M80CKTdp"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="H1GNp05i"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE1042A9B
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9078B101DE
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745588147; cv=none; b=SVEJrHN9hWF4a9Av/wo1ZiMbZQCZpTZSAt08lN+KxUFN8O1mvq+BPhYx1QPo7EneTxZ14Ra1OTnYI80EZcJBdLePMHB+/dYmtfMmYD7WGYf7SM3P9U4TcbKOBsP5qE7mswGh65LKIdHRDrNvNSidQDpALNWAQE5k/dxw9hxOpPc=
+	t=1745588286; cv=none; b=OztMOpqwYvjYM+3iw8GbuGJf/sW5jzRtMTalIAuiVGkJlBo01fxo7840xtkUdamlpH5TA+3YH7F7LoEG6eRlBbRd3vSzsa+3C56z+qb4O6FNPvuvXo8VirrElXBSf+FmOlhlsz0n51EJdiinxxh/lYUylgEZFcSwfKKNuBjNAvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745588147; c=relaxed/simple;
-	bh=P6HXRmZgk2tecSQfPRg7xgJ0srtZ0XAJ6Dp/UIpX6dw=;
+	s=arc-20240116; t=1745588286; c=relaxed/simple;
+	bh=C6ffzFXC3CdMt6mHiX0gruJ9kVRvsAs2mBksS+m5hUg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ST1bMj6sM1ZDPBngVl8g3DZf3XtWh/BVD6oQsaezP3agLLI1K42mWA9JWmEkMLfWnQYbAQdxLzkE3hbyKOduazMWTmQrG5/0iYsKAV8QNZZ0Lc5L7YG0P9QnGBWnc7oV0qgN2xarlr4QG4Rp3//Anf1/YGhwU9AE0fh9TUkewgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=M80CKTdp; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=kXUoz09NE+6KkqCZ7LyM5qBQIaq5mXHQMnY6TDtqb79eX1ipVgoe1gbooApr9v8xFG6TbZlFUO6sfppl/0l0hvtAISUQlFD58Jay181E9Se8jLCzgs3pZp3u72yyxB9KZNuGSfchIeYRrnS5CVT7v4oxz4T7Ln8x3QS6ICz4y7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=H1GNp05i; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=OrbZf4kqBTcLh+fyOuJx+UhBaNKPNsorgaJqaQqHbm8=; b=M80CKTdpZymC/yrYrubvJDKlMX
-	UYVYqRm7wrfFTyBP45ACxG8nYpDt5KomK5lhDptpDHG+GbKomlMReDm4LfphTuxylYQ+faHAZa5lc
-	H6y/xOHKN+VsuNQ9MEzZTC6qqkhAZuyS+iU1nUeCy+7yj0UOWbd83vl39QmzyODsjuI95LELNBCcu
-	UWTbz/D9ClGLcT5DKCDWOhDaeBuGQXtlYleQKlrGaTtVpm6Gm8oNkydKTWbw9WEOvAgDhSzzkiq9w
-	Q1wiyN9VPTi/cDsp2o61B+nq5UGQGmf8WliR9VPAEZn0ljV08oEA61haF2c+id7S51grkP4nmZvDM
-	NxT4og9Q==;
+	bh=lvzRfSCBBdnETr/ud2MQjELWBSzxODMmCTpJTVzSm88=; b=H1GNp05irbMmLUtjRLmyAuF/LI
+	R8izf+PF6ISNiXX4o22M6s2AjtQaM6oHSEy444spKuAhQbRIZMcMxDeSyFqio167/hroCgbsUwwZG
+	n6QMj+VfR6OdTi3VSIbI56XtybEltpKH01c1GjZoQg/3mZlMNKCSwKTj6X6KQ1gtuQZxC4K9R1uq3
+	U39otvLbWBOBRyhxkeMNqZc+naNUvEepoxsuu2VsQ5hWAHZtbpAklv5tEKk1k5kVeF0Eir/zJwGAP
+	/di92SAyhYmUrPrmvjeWWcOv/COtc30+UH5lvYeXPLETUHBJ+xGxmeozWo3VkNZYSz8s0Xj7Wtevp
+	p7rMSR9w==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8JDT-0000000HJ4w-2dKN;
-	Fri, 25 Apr 2025 13:35:43 +0000
-Date: Fri, 25 Apr 2025 06:35:43 -0700
+	id 1u8JFl-0000000HJQR-0ptg;
+	Fri, 25 Apr 2025 13:38:05 +0000
+Date: Fri, 25 Apr 2025 06:38:05 -0700
 From: Christoph Hellwig <hch@infradead.org>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH v3 1/3] btrfs: convert the buffer_radix to an xarray
-Message-ID: <aAuPr5r1AT-uT4B5@infradead.org>
-References: <cover.1744984487.git.josef@toxicpanda.com>
- <bb6d4199948b4822a837fd2b9716fbb660e2ada6.1744984487.git.josef@toxicpanda.com>
- <CAL3q7H4Y0r7rLbNEv-QdN7_tCHh4grh2XJez=qD2nO-DTFs4ug@mail.gmail.com>
- <20250424154719.GA311510@perftesting>
- <CAL3q7H6Nbar_o0GVGuTr5BVmCRsDUgAJfnOz-hSi5OEi86jejg@mail.gmail.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/12] Cleanups of blk_status_t use
+Message-ID: <aAuQPY8dxXPSpTIg@infradead.org>
+References: <cover.1745422901.git.dsterba@suse.com>
+ <1142ff0f-4296-4877-b8b6-1be2f78ff9ad@gmx.com>
+ <20250424060959.GI3659@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,18 +62,24 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H6Nbar_o0GVGuTr5BVmCRsDUgAJfnOz-hSi5OEi86jejg@mail.gmail.com>
+In-Reply-To: <20250424060959.GI3659@twin.jikos.cz>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Thu, Apr 24, 2025 at 05:07:29PM +0100, Filipe Manana wrote:
-> > Because we have to do the atomic_inc_not_zero() under the rcu_lock(), so we have
-> > have to open code the retry logic.
+On Thu, Apr 24, 2025 at 08:09:59AM +0200, David Sterba wrote:
+> There already is forced type for the non-zero values
 > 
-> Sure, but xa_load() can still be called while we are under the rcu
-> read section, can't it?
+> https://elixir.bootlin.com/linux/v6.14.3/source/include/linux/blk_types.h#L96
+> typedef u8 __bitwise blk_status_t;
+> typedef u16 blk_short_t;
+> #define	BLK_STS_OK 0
+> #define BLK_STS_NOTSUPP		((__force blk_status_t)1)
+> #define BLK_STS_TIMEOUT		((__force blk_status_t)2)
+> #define BLK_STS_NOSPC		((__force blk_status_t)3)
+> ...
+> 
+> and from what I've seen there were no type mismatches.
 
-Yes, and that's the usual pattern.  The double rcu critical section
-still irks me, but willy correctly says that it can't really matter
-for performance given how cheap it is.
+Note that you'll need to run sparse to perform __bitwise checking, it
+is not supported by gcc or clang.
 
 
