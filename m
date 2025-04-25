@@ -1,93 +1,61 @@
-Return-Path: <linux-btrfs+bounces-13420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44BAA9CA22
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 15:25:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C99A9CA8A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 15:38:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0FCD1BA19E7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 13:25:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33EC43A9917
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Apr 2025 13:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2692D24E4DD;
-	Fri, 25 Apr 2025 13:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A62C24A06D;
+	Fri, 25 Apr 2025 13:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0TACscoj";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="++HHT8H0";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rpy+zGx+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0aBYiO3w"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="M80CKTdp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9674678F2D
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE1042A9B
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745587512; cv=none; b=tzQ9/jYs0vcpZx5XUh5yDDCeFQR/t84Z76beRnkAqhdlUP4nRIu3x/Kjegca5mTe1PjuFsUIAc9BSo/Cc9HbJwXSLxkKgj+FqGtMzh9if4yHnQPPRi+Yzvf7gpRyfezTVw+xriidi521wTj0vn3U5L0N18UZuK2UJCKa2AIhl2w=
+	t=1745588147; cv=none; b=SVEJrHN9hWF4a9Av/wo1ZiMbZQCZpTZSAt08lN+KxUFN8O1mvq+BPhYx1QPo7EneTxZ14Ra1OTnYI80EZcJBdLePMHB+/dYmtfMmYD7WGYf7SM3P9U4TcbKOBsP5qE7mswGh65LKIdHRDrNvNSidQDpALNWAQE5k/dxw9hxOpPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745587512; c=relaxed/simple;
-	bh=AHY1afDRMiQMGSHDeDL2aVizBRdVCHQwscWI+kfKYsQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=i2ukEWj/h5ZZlLeA1U0M3I5mUY43lnH5a3SPtQyc34nKrQr9VG33H/xX5VukALDPxuUgZxGpnOV3wkepgC+Ibho8EPS9ILaSxIn8sEzl2xmWCQa617HmuzkHxb+zpQLccjVEGhzuuFTHoDapJC93RYcX123mJXxxG75e3jMwmls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0TACscoj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=++HHT8H0; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rpy+zGx+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0aBYiO3w; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A0D1F1F394
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1745587508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=Uzic46MJmwmX4XoR4BFsOACwBWuqspICaYUFrZXe+gI=;
-	b=0TACscojYPb840xm7wrZ0cBeq+/S/W67p1iwv1d053cvGjxqX4wBwnnhdmC5Dh3R+uhtyg
-	TGrfu3eIGo5mWUKrrvHl/eti1SeBUwJP4KD+GmKuvuWxkDYJwnA6K/bQckGkSWUsUyNM4j
-	AaZmarUGdqGkMiUQuJGJMxLZdOGEOlo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1745587508;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=Uzic46MJmwmX4XoR4BFsOACwBWuqspICaYUFrZXe+gI=;
-	b=++HHT8H0OxqsDG2FBFQgpweZCqXgHSQxjEWCt8n0+YigMusFrUv9OROgGDtB03AFhPJLVm
-	cZ1BKU5d1JbPOXAg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=rpy+zGx+;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=0aBYiO3w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1745587507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=Uzic46MJmwmX4XoR4BFsOACwBWuqspICaYUFrZXe+gI=;
-	b=rpy+zGx+K7VmjFjJZ1NxQmk9r4/rYqa3WpKwYrYfHJrouE5RczzUEIdelgyPx7MmmX44Kt
-	OTHM7hqkRErvBqYkyh0KuOORwOftb6CzUQKSyHXRP/cfjOmqOiHl18c31KMengmsB3OGbO
-	WovTe6TpV7b+diMItrttAXAxRG53LRI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1745587507;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=Uzic46MJmwmX4XoR4BFsOACwBWuqspICaYUFrZXe+gI=;
-	b=0aBYiO3w+sqOaz9STyFBfILljasOvyhr7DrLfSovcZEkPkpJl1aHEDn1uferAjDkkz2t4Z
-	RB9OtZwnAevyffDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6740C1388F
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:25:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id e0cZEzONC2hGUwAAD6G6ig
-	(envelope-from <rgoldwyn@suse.de>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 13:25:07 +0000
-Date: Fri, 25 Apr 2025 09:25:06 -0400
-From: Goldwyn Rodrigues <rgoldwyn@suse.de>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: correct the order of prelim_ref arguments in
- btrfs__prelim_ref
-Message-ID: <xkizy4mfcknvikvddixci24oplxxnmu2enwx6sbxqqa4czrzzy@omjt5fi4rmym>
+	s=arc-20240116; t=1745588147; c=relaxed/simple;
+	bh=P6HXRmZgk2tecSQfPRg7xgJ0srtZ0XAJ6Dp/UIpX6dw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ST1bMj6sM1ZDPBngVl8g3DZf3XtWh/BVD6oQsaezP3agLLI1K42mWA9JWmEkMLfWnQYbAQdxLzkE3hbyKOduazMWTmQrG5/0iYsKAV8QNZZ0Lc5L7YG0P9QnGBWnc7oV0qgN2xarlr4QG4Rp3//Anf1/YGhwU9AE0fh9TUkewgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=M80CKTdp; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=OrbZf4kqBTcLh+fyOuJx+UhBaNKPNsorgaJqaQqHbm8=; b=M80CKTdpZymC/yrYrubvJDKlMX
+	UYVYqRm7wrfFTyBP45ACxG8nYpDt5KomK5lhDptpDHG+GbKomlMReDm4LfphTuxylYQ+faHAZa5lc
+	H6y/xOHKN+VsuNQ9MEzZTC6qqkhAZuyS+iU1nUeCy+7yj0UOWbd83vl39QmzyODsjuI95LELNBCcu
+	UWTbz/D9ClGLcT5DKCDWOhDaeBuGQXtlYleQKlrGaTtVpm6Gm8oNkydKTWbw9WEOvAgDhSzzkiq9w
+	Q1wiyN9VPTi/cDsp2o61B+nq5UGQGmf8WliR9VPAEZn0ljV08oEA61haF2c+id7S51grkP4nmZvDM
+	NxT4og9Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u8JDT-0000000HJ4w-2dKN;
+	Fri, 25 Apr 2025 13:35:43 +0000
+Date: Fri, 25 Apr 2025 06:35:43 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: Re: [PATCH v3 1/3] btrfs: convert the buffer_radix to an xarray
+Message-ID: <aAuPr5r1AT-uT4B5@infradead.org>
+References: <cover.1744984487.git.josef@toxicpanda.com>
+ <bb6d4199948b4822a837fd2b9716fbb660e2ada6.1744984487.git.josef@toxicpanda.com>
+ <CAL3q7H4Y0r7rLbNEv-QdN7_tCHh4grh2XJez=qD2nO-DTFs4ug@mail.gmail.com>
+ <20250424154719.GA311510@perftesting>
+ <CAL3q7H6Nbar_o0GVGuTr5BVmCRsDUgAJfnOz-hSi5OEi86jejg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -96,107 +64,18 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Rspamd-Queue-Id: A0D1F1F394
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:dkim,qemu.org:url]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
+In-Reply-To: <CAL3q7H6Nbar_o0GVGuTr5BVmCRsDUgAJfnOz-hSi5OEi86jejg@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-btrfs_prelim_ref() calls the old and new reference variables in the
-incorrect order. This causes a NULL pointer dereference because oldref
-is passed as NULL to trace_btrfs_prelim_ref_insert(). 
+On Thu, Apr 24, 2025 at 05:07:29PM +0100, Filipe Manana wrote:
+> > Because we have to do the atomic_inc_not_zero() under the rcu_lock(), so we have
+> > have to open code the retry logic.
+> 
+> Sure, but xa_load() can still be called while we are under the rcu
+> read section, can't it?
 
-Note, trace_btrfs_prelim_ref_insert() is being called with newref as
-oldref (and oldref as NULL) on purpose in order to print out
-the values of newref.
+Yes, and that's the usual pattern.  The double rcu critical section
+still irks me, but willy correctly says that it can't really matter
+for performance given how cheap it is.
 
-To reproduce:
-echo 1 > /sys/kernel/debug/tracing/events/btrfs/btrfs_prelim_ref_insert/enable
-
-Perform some writeback operations.
-
-Backtrace:
-BUG: kernel NULL pointer dereference, address: 0000000000000018
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 115949067 P4D 115949067 PUD 11594a067 PMD 0 
- Oops: Oops: 0000 [#1] SMP NOPTI
- CPU: 1 UID: 0 PID: 1188 Comm: fsstress Not tainted 6.15.0-rc2-tester+ #47 PREEMPT(voluntary)  7ca2cef72d5e9c600f0c7718adb6462de8149622
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.3-2-gc13ff2cd-prebuilt.qemu.org 04/01/2014
- RIP: 0010:trace_event_raw_event_btrfs__prelim_ref+0x72/0x130
- Code: e8 43 81 9f ff 48 85 c0 74 78 4d 85 e4 0f 84 8f 00 00 00 49 8b 94 24 c0 06 00 00 48 8b 0a 48 89 48 08 48 8b 52 08 48 89 50 10 <49> 8b 55 18 48 89 50 18 49 8b 55 20 48 89 50 20 41 0f b6 55 28 88
- RSP: 0018:ffffce44820077a0 EFLAGS: 00010286
- RAX: ffff8c6b403f9014 RBX: ffff8c6b55825730 RCX: 304994edf9cf506b
- RDX: d8b11eb7f0fdb699 RSI: ffff8c6b403f9010 RDI: ffff8c6b403f9010
- RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000010
- R10: 00000000ffffffff R11: 0000000000000000 R12: ffff8c6b4e8fb000
- R13: 0000000000000000 R14: ffffce44820077a8 R15: ffff8c6b4abd1540
- FS:  00007f4dc6813740(0000) GS:ffff8c6c1d378000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000018 CR3: 000000010eb42000 CR4: 0000000000750ef0
- PKRU: 55555554
- Call Trace:
-  <TASK>
-  prelim_ref_insert+0x1c1/0x270
-  find_parent_nodes+0x12a6/0x1ee0
-  ? __entry_text_end+0x101f06/0x101f09
-  ? srso_alias_return_thunk+0x5/0xfbef5
-  ? srso_alias_return_thunk+0x5/0xfbef5
-  ? srso_alias_return_thunk+0x5/0xfbef5
-  ? srso_alias_return_thunk+0x5/0xfbef5
-  btrfs_is_data_extent_shared+0x167/0x640
-  ? fiemap_process_hole+0xd0/0x2c0
-  extent_fiemap+0xa5c/0xbc0
-  ? __entry_text_end+0x101f05/0x101f09
-  btrfs_fiemap+0x7e/0xd0
-  do_vfs_ioctl+0x425/0x9d0
-  __x64_sys_ioctl+0x75/0xc0
-
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 848485d16587..bebc252db865 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -1923,7 +1923,7 @@ DECLARE_EVENT_CLASS(btrfs__prelim_ref,
- 	TP_PROTO(const struct btrfs_fs_info *fs_info,
- 		 const struct prelim_ref *oldref,
- 		 const struct prelim_ref *newref, u64 tree_size),
--	TP_ARGS(fs_info, newref, oldref, tree_size),
-+	TP_ARGS(fs_info, oldref, newref, tree_size),
- 
- 	TP_STRUCT__entry_btrfs(
- 		__field(	u64,  root_id		)
-
--- 
-Goldwyn
 
