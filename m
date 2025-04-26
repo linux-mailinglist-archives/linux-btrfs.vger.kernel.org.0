@@ -1,143 +1,192 @@
-Return-Path: <linux-btrfs+bounces-13441-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFFBA9D8E5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 08:56:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD34CA9D988
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 11:05:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8940D1C00CBC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 06:56:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3524A0604
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 09:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2103913D891;
-	Sat, 26 Apr 2025 06:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9292367A1;
+	Sat, 26 Apr 2025 09:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="j3Y50Rlo"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b="KpEbTjlK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C3F1DDC1E
-	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 06:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CCC7A13A
+	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 09:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745650541; cv=none; b=in+qrud+H7n4zLL4xZcqPMG3Im5aocHx4cVAWpCB/kUKSEBdBtw/IcHndFUUS+HOgAoOQELkC3Ee4QEeD1bYplUerCSS/LGloUJdXiowJzqq+p26KZh+6L1M409le++KG3ncN31DNc/rV34C6c4R3krYPSGn9fJxfOgQH5PItBk=
+	t=1745658313; cv=none; b=pEAYL4dID4nH6kbFkenCehNHZWSuikQAPMoSKV16qWzpYgGs8IYG222zee2dwQYGmOaQsmJe6y3UVhuUQtfDZvpo7/2sUj3YmNj/7EWKUDerPZ5j66Je5YHbGi6tPAGFcHqp5ys/5sBJ6keESr70kmJnLZYM+646Ihydo7U74+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745650541; c=relaxed/simple;
-	bh=YtEkNTHUG+n5iHo3EXZNJ4qo4UYkQllu7HZAWLn/jqI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VPRxaNNVGhHEX7EjLGGdjjfZzNAnbpe0aON8ZCEm2ouDxCbl8rKunQhu3tUkJSkpri4fv8PCGL9JG0dq7EzF0B39m0+Hz/C9Q2CPJEQaYFIbzbwLWUH9THA0cap3YhRdefFp1ngOhIrVdO6qiftHxgtK+AZtA8nV1jN6BBaq6wM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=j3Y50Rlo; arc=none smtp.client-ip=35.89.44.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
-	by cmsmtp with ESMTPS
-	id 8SxiuR4lrWuHK8ZRpuzoPy; Sat, 26 Apr 2025 06:55:37 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id 8ZRoud3X7Rlrs8ZRpuc2PB; Sat, 26 Apr 2025 06:55:37 +0000
-X-Authority-Analysis: v=2.4 cv=Qamtvdbv c=1 sm=1 tr=0 ts=680c8369
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=efVMuJ2jJG67FGuSm7J3ww==:17
- a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=7T7KSl7uo7wA:10 a=VwQbUJbxAAAA:8
- a=FOH2dFAWAAAA:8 a=maIFttP_AAAA:8 a=iox4zFpeAAAA:8 a=MCMyBeqthVF3y6c2b0kA:9
- a=QEXdDO2ut3YA:10 a=qR24C9TJY6iBuJVj_x8Y:22 a=WzC6qhA0u3u7Ye7llzcV:22
- a=Xt_RvD8W3m28Mn_h3AK8:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=kBkRlnDp5Hdmm2yE73zuDnhdBvqAkeMGF98g6gosTXE=; b=j3Y50Rlou93+yINb2qrM0pNoFE
-	SWsdOKVHichB/jZPJ3XljpzTaseSD+mWbf7y2BRVv5WlhXOIfBUij8SFDuviGBheErbtcnDW0W8uV
-	zd+vcRtEdrs6w5NEnAdecsR0ydByiaCXCYd6dwIHnP/Kxy48FgZbYEz4/ioPfbY1Vzw622YNXwOrj
-	TEaMlA0ewMXlr6MeUmPXW//lqYu671uX7Ren3XtaC/cGu8jnVa6REO8nEKl4sOxExT7LtJ1jyDfje
-	1/LQUoISw7Y5FVqb0DvC9/eJUKsSn2uum6oDDJ6DnnVt22H6syAqHMLaa/ZG2v5zSWHWG5g1ZcUrX
-	RHwK7Y+g==;
-Received: from [177.238.17.151] (port=30278 helo=[192.168.0.103])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1u8ZRn-000000000fQ-3dXR;
-	Sat, 26 Apr 2025 01:55:36 -0500
-Message-ID: <4dd1e595-21c2-4a6c-a7b9-e7c945d3a7a2@embeddedor.com>
-Date: Sat, 26 Apr 2025 00:55:21 -0600
+	s=arc-20240116; t=1745658313; c=relaxed/simple;
+	bh=P66RQZA9kMWm5tzE4nHl81bWEZm66ERDlaZ2+EwW0YA=;
+	h=Message-ID:Subject:From:To:Content-Type:Date:MIME-Version; b=VObvMFVtrIGb+rly1gV4KWrlaiJbRVf4GQoWVf+vNExt7KuTJU1iFQQYHNZs5oDQK+187mFs8WysaaWrnsoWUjHbCmVOr3e5y0lKO2XccltSY3SzumvIzn3brheVhcj5xe6M5Jlt2P34eTUDnbxN3KLJAscKoeL9Isbn/8Fph2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b=KpEbTjlK; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1745658308; x=1746263108; i=massimo.b@gmx.net;
+	bh=P66RQZA9kMWm5tzE4nHl81bWEZm66ERDlaZ2+EwW0YA=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Content-Type:
+	 Content-Transfer-Encoding:Date:MIME-Version:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=KpEbTjlKZCgSPJLDRaXsNGtaKvz2yCxcP16YaujzSmiV1TJhziru1As1wiBinfIw
+	 h9WAyaygqh7cUih4H4uT/eJu59QkljgX/0IoJzKTzI+gJK1Zis0TAb+TDOHvAPOxF
+	 Y6lWSrhh0s5LqzYjIKIegU7dPHUrX0lBgQp6xEYycV3ATLLPmMlN2h/QTsNJce/fU
+	 YUDCX8a0RObCfeJ5weNTqXP9hBSmRSCT3Qe1xAkZmgEfthU4v8uBdYrNBZyWcsg5c
+	 g2XJkiGCRsSIQY9aIFn5qwEiTZLa7Njk/Epybdmxx4/RQdF9lyrDdCXcYZVBgVsEA
+	 V9JUQanw8ZIf1NtOAw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from gentoo ([95.112.121.96]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mg6Zq-1ujLT82sJy-00deJJ; Sat, 26
+ Apr 2025 11:05:08 +0200
+Message-ID: <180daac980bec43d45d0e6fa4f9e1d14fb126de1.camel@gmx.net>
+Subject: bad tree block start, how to repair
+From: "Massimo B." <massimo.b@gmx.net>
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
+Face:
+ iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 26 Apr 2025 08:27:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: compression: Adjust cb->compressed_folios
- allocation type
-To: Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20250426062328.work.065-kees@kernel.org>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20250426062328.work.065-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 177.238.17.151
-X-Source-L: No
-X-Exim-ID: 1u8ZRn-000000000fQ-3dXR
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.0.103]) [177.238.17.151]:30278
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFbgonxrFVkWTi1+H06WyrrGXslK92UjkWEooqCO6Njkyog78082GmmtmfddSmFh40DK4gJ3xIBYVRpdCh2b2TmmNnnfxJmTfTdWifK1kYmNVZxC3/7w
- nXktdchcVw4URSDoh3L8Yeak0lFGmzKy0C59QIXMaQXyNLwCDon6KKzFJ9YwtKFGpxUIy08uEKay1vzjGLdupBe1nxtZE6TM29aO97WVs5IHFGQ1g3HvfYL+
+User-Agent: Evolution 3.52.4 
+X-Provags-ID: V03:K1:8Mxlv1+Hld2MkH5W4Q89suu8oB3y8av/7f+QGA9EOpjqq4AMYS0
+ mTJHIGxbdOeZnwbzbW4A6NtruLbiuVsxwNU/lyHJNF5vUx4jqv8jR+9mZ50XUz2lITRr0Sb
+ GeU76eKLc5vqovswNqIE0kyMdZCMgfsztrnAx8e03JhNW1KuQ0E1XGbK7im6BvND8LZNh0f
+ kMgBP6Na1c4Nzb1s+uRlA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:m6rTOKi+kOo=;+i7cmB3c6VqtF2eAGtqQkKWp6ya
+ 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
+ wuPxA9BEjZztVlLiy4SZC6IZUO4iV/A=
 
+Hi,
 
+I have a btrfs on LUKS on a NVMe disk inside USB enclosure.
+I send all different snapshots from different machines to this btrfs via bt=
+rbk and I'm doing a lot of bees.
 
-On 26/04/25 00:23, Kees Cook wrote:
-> In preparation for making the kmalloc family of allocators type aware,
-> we need to make sure that the returned type from the allocation matches
-> the type of the variable being assigned. (Before, the allocator would
-> always return "void *", which can be implicitly cast to any pointer type.)
-> 
-> The assigned type is "struct folio **" but the returned type will be
-> "struct page **". These are the same allocation size (pointer size), but
-> the types don't match. Adjust the allocation type to match the assignment.
-> 
-> Signed-off-by: Kees Cook <kees@kernel.org>
-> ---
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: <linux-btrfs@vger.kernel.org>
-> ---
->   fs/btrfs/compression.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index e7f8ee5d48a4..7f11ef559be6 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -606,7 +606,7 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
->   	free_extent_map(em);
->   
->   	cb->nr_folios = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
-> -	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct page *), GFP_NOFS);
-> +	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct folio *), GFP_NOFS);
+Is there any chance to repair?
 
-Why not `sizeof(*cb->compressed_folios)` as in other patches? :)
+From syslog:
 
--Gustavo
+[kernel] [10370.573757] BTRFS error (device dm-1): bad tree block start, mi=
+rror 1 want 2564600332288 have 4363494421962462810
+[kernel] [10370.574024] BTRFS error (device dm-1): bad tree block start, mi=
+rror 2 want 2564600332288 have 12261462772841064395
+[kernel] [10370.597214] BTRFS error (device dm-1): bad tree block start, mi=
+rror 1 want 2564600332288 have 4363494421962462810
+[kernel] [10370.597390] BTRFS error (device dm-1): bad tree block start, mi=
+rror 2 want 2564600332288 have 12261462772841064395
+[kernel] [10379.866453] BTRFS error (device dm-1): bad tree block start, mi=
+rror 1 want 2564600332288 have 4363494421962462810
+[kernel] [10379.866632] BTRFS error (device dm-1): bad tree block start, mi=
+rror 2 want 2564600332288 have 12261462772841064395
+[kernel] [10379.866675] BTRFS error (device dm-1 state A): Transaction abor=
+ted (error -5)
+[kernel] [10379.866678] BTRFS: error (device dm-1 state A) in add_to_free_s=
+pace_tree:1057: errno=3D-5 IO failure
+[kernel] [10379.866680] BTRFS info (device dm-1 state EA): forced readonly
+[kernel] [10379.866682] BTRFS: error (device dm-1 state EA) in do_free_exte=
+nt_accounting:2994: errno=3D-5 IO failure
+[kernel] [10379.866683] BTRFS error (device dm-1 state EA): failed to run d=
+elayed ref for logical 2564165648384 num_bytes 16384 type 176 action 2 ref_=
+mod 1: -5
+[kernel] [10379.866686] BTRFS: error (device dm-1 state EA) in btrfs_run_de=
+layed_refs:2215: errno=3D-5 IO failure
+[kernel] [10379.866851] BTRFS info (device dm-1 state EA): last unmount of =
+filesystem .....
+
+# btrfs check /dev/mapper/mobiledata_crypt=20
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/mobiledata_crypt
+UUID: 8fefabb7-11a7-4e12-8ee6-dc8f1529f8e5
+[1/8] checking log skipped (none written)
+[2/8] checking root items
+[3/8] checking extents
+checksum verify failed on 2564600332288 wanted 0x98e25cd6 found 0xbab4624d
+checksum verify failed on 2564600332288 wanted 0xc04b5087 found 0xc3757de0
+checksum verify failed on 2564600332288 wanted 0x98e25cd6 found 0xbab4624d
+bad tree block 2564600332288, bytenr mismatch, want=3D2564600332288, have=
+=3D4363494421962462810
+owner ref check failed [2564600332288 16384]
+ERROR: errors found in extent allocation tree or chunk allocation
+[4/8] checking free space tree
+checksum verify failed on 2564600332288 wanted 0x98e25cd6 found 0xbab4624d
+checksum verify failed on 2564600332288 wanted 0xc04b5087 found 0xc3757de0
+checksum verify failed on 2564600332288 wanted 0x98e25cd6 found 0xbab4624d
+bad tree block 2564600332288, bytenr mismatch, want=3D2564600332288, have=
+=3D4363494421962462810
+could not load free space tree: Input/output error
+checksum verify failed on 2564600332288 wanted 0x98e25cd6 found 0xbab4624d
+checksum verify failed on 2564600332288 wanted 0xc04b5087 found 0xc3757de0
+checksum verify failed on 2564600332288 wanted 0x98e25cd6 found 0xbab4624d
+bad tree block 2564600332288, bytenr mismatch, want=3D2564600332288, have=
+=3D4363494421962462810
+could not load free space tree: Input/output error
+[5/8] checking fs roots
+[6/8] checking only csums items (without verifying data)
+[7/8] checking root refs
+[8/8] checking quota groups skipped (not enabled on this FS)
+found 1978635726935 bytes used, error(s) found
+total csum bytes: 1785865480
+total tree bytes: 157852188672
+total fs tree bytes: 136425439232
+total extent tree bytes: 19102629888
+btree space waste bytes: 29931988767
+file data blocks allocated: 96097451388928
+ referenced 29948246061056
 
 
