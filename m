@@ -1,199 +1,146 @@
-Return-Path: <linux-btrfs+bounces-13444-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13445-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09183A9DC44
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 18:40:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89F38A9DD24
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 22:42:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92FCF7B0064
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 16:39:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3A22465A53
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 20:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E648A25C82F;
-	Sat, 26 Apr 2025 16:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1E81F5825;
+	Sat, 26 Apr 2025 20:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0Qdae0M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RfRGxfoB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341CA6FC5
-	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 16:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B091A256E
+	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 20:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745685604; cv=none; b=iFXmLas/ndHIV+5HC547Hger7kOviNv80fyLz3ElM2D7vzde5Lu0ZhZamn8Ou5DYropTDflz3wHfGw8XfJse6mvb9o9M48+aYVdct52rRXb6zTg3xpLYLg+z69L6qj4RZGUkmnr8/saAx1rgN1Wd5HsR2GDRMwK1fzasOTrFCaE=
+	t=1745700145; cv=none; b=AhKSsUrp9ILSsxJ0ExHa7+hiFSugDIvYKYSSHlKbz3IVRAkIqT1n0uqe3f41G5DyFR6gLP/fcPGIcS3O0nX+8/XaTS7WbIze1WLNA+gV3CaWqasPH9uw5FvE0tUMKWfcQ6Eifymu0ANh9q/XeoN1CZ56Vv6kY7dweSS1aRX3Obc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745685604; c=relaxed/simple;
-	bh=StEF7Ak9ZicB5nCEpQSdOulrmQseWzNzBFEqWvGGrXY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QDa00QtdjDhX7NbS558P/6KZoQghEpXisXUZLDPmcNyaBaZO+RfDDNRXbnIxmwH581VnOaxC+AbDMaQ7YFsbPRnIVtX4bPR1fYiaFEx9gtbX3r2rsRpu1nV6xrNrecGEo5u/m9lRfUSy7rr2EAZhSNao6NjOEy4CyHagNkggiRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b0Qdae0M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07503C4CEEC
-	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 16:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745685604;
-	bh=StEF7Ak9ZicB5nCEpQSdOulrmQseWzNzBFEqWvGGrXY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=b0Qdae0MyV7GiE3MyZrGm54Cc+tBQm9yjcwZEEqdZ+5ndEWvYNnmbVVSDESyRGyGU
-	 d8idvMGEmsnb1r4MK0OT4e9dH5mmI9V9EYjsc1h/JwB1SN+Liqu9aJ4StQ8T9qTs+d
-	 iaNxNCYWXG8XDInbWNmSvyZ3B/SF80cXGQT1uuinBXaaGZkyEOk0PPq+bio8T96i8C
-	 e/A7TjvDAuuMoWnzqlzZg6KDPWEbcp7y8/aFeoJmedJJI0kk2kaBUmTjlVlbsOsSA5
-	 kvfP4tNxeC5eTftz2nUF2MNSR8msMWA3Bia2NdWXH7VVUyhZsCzJv687Mapo2r28Bv
-	 miqLK+jvBGc6A==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ac25d2b2354so485164166b.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 09:40:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU62+/rrVxG3NtWiCs0HnpAY5deOeAl448dsJvi/kbkvURU9huET52RwRRxAylhcoNLlulf5oLH/n5A2g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6S1wB7+GTEekQe2qmuDxtuOD6tXfSyeXlAiEC8v0Fw0nC8kH/
-	Mle3a48qNx5znqkgUTZ5UN7dW47/kIoU6qhw9qms6jOhCZpqjVpmZFmgGQ1VrqQucTEKz0+fHNT
-	n/Tb5PmTIyTHIqFqa78aw11/CqVM=
-X-Google-Smtp-Source: AGHT+IF7W6hwNVUHhNQCLlXNK7VPa/flNRc23UrArSSKt4AEbDybte9UhYocjyGUP/yNDMQWcbHwhclcL6fm7yjncXY=
-X-Received: by 2002:a17:906:6a23:b0:aca:e33d:48af with SMTP id
- a640c23a62f3a-ace7144ae9dmr595337766b.61.1745685602555; Sat, 26 Apr 2025
- 09:40:02 -0700 (PDT)
+	s=arc-20240116; t=1745700145; c=relaxed/simple;
+	bh=P8MqfKApKNTrxMY8092hEwpuDAis6zjKtQGlD9MSgVw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=XrPBAlPZkEziXNX7Rhx3fD2uOdee5kMIpoFsMr2EU0qr/17x70tJlPOoqExrlSi8fkVIPfh87q6weMt0vuqeBWXwzhSq4A9u14E8X03MmNPGdTfB4W68D8Zo1vl/oYnXy0pboXn1pGfaI+dxZTgWDaQOFrfkjsKDI1TP+ZPICWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RfRGxfoB; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5e8be1c6ff8so5723033a12.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 13:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745700142; x=1746304942; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=GpfBA8z6WVRRSDTtryNafg9P/JhHVrgIh2NslRYR8tE=;
+        b=RfRGxfoBy0yuRF0iYVKIrZqhx7BmqGw46ZSX27jbxSGHBiRV/PAJQZfPCI62mumKgy
+         pm8wLCwZzMvnR7QJo+E5hctlncxwvCTWPIJJYFRlBAYl/9pbDnTU7sR154gM8N24Yfga
+         ig8hwIN+fe8CyKGKyyRQTBQ8hNJENYEcHCpP2ycmqJwgylR4qY3yULI/EXF5iBOcSgdy
+         wnivVBXUD8SAPfeTFJoBZi5ekadGxwCKNlzNIuAXir2ZxjxvSrUQVrZR811h4Z8YJeT+
+         mYhQva5R7R+zmVm3Mk9tYGbb6+CPbkR3ZMoybI0/vAoU5NwlPtQmqbEy2bqbwj2n5esw
+         JM1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745700142; x=1746304942;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GpfBA8z6WVRRSDTtryNafg9P/JhHVrgIh2NslRYR8tE=;
+        b=gluiGMzLb8fd6Vdw3tg7RxJX6H0pKq5zdBHO8Mt7oed1BkcQAJ7pxkp+fNRSlEFkQH
+         224u7g4O1qnAOSJqdyqUHI25SBjiTkI1xoysQa8ny4Ws/roQ+A8HlSX4hsW1YIruqIqW
+         czoVVTu3HNZ+o3viLNurnoPYkojCLH+1qoc27KaZtOXARDmest7bNX0VDfnb9xjllzJw
+         n2krrT7hLE55cIZytj5Wv20QfN9V1bPRTdYrt7+3HlOJRm35UAtlsI5+Y61jpdttXjy9
+         mdXBqs5SPoAfWtYIQ5S9Yw6D83tUvz9rrWPZrxZ6+X1uk1PDljtvQ01nS8LdycePwYM/
+         vlZw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/IqP9yhwCftURmvCUsbuqwY586R4KpPCIjPbZJAM95e/FVM05AFszPGR/6/kPio54ud3Olm/k6U8pFw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLQuKilN4sSJNb9NFbzVLKME190qEDm68XDNLLVr+20+cMDR3v
+	jSkMKXwiPhp8+Vpx413AKXEwiCi+5lJV2uRBRGADJd3UAvaIBnMe
+X-Gm-Gg: ASbGncv2BAUTU8REgzHBRp8x3hisA7aWELg2HxPB8UzClUkYwkASm4VLeyk32dGEhVX
+	m4KMSpt2CF++NgFhiU33SYoNd8/G6CTCPXmRqxdYbczyCHvCc7rDnrnPualDesdtbABSYflOgyx
+	/G4fFN5W053/Xz+5zSGAm2eWqHX8xmTECGqq/1NvAz7IyuuTl5f0SICgSpJK0gHlQc1y/00Cgdw
+	DnNt3oOno42gnpcvblSWAhQvNhQC1RO89ExsdAY9nRxv5luemGikYaLlYp0eG4kjKtRRkeXFDsc
+	QKe/ejAZAK6OFMrf/0UP8UCqvQBPrJTucH8g2K/8IafBagmUANi7MWn4v8ldC0Ut/DNpSbFDRqI
+	/HzG8cLD5lFXZ+0utfoYCAjA1tW7HAupjEdaJ/ud1td9EiDE+CRYNGNh8/m8yinR2iCIc
+X-Google-Smtp-Source: AGHT+IGvhpC6a2G/lN1n+3ww94UvgjjoKd3LzyixzmNY3uDs7ak6q7lpoHbPMDnku0G/+16NStQyQQ==
+X-Received: by 2002:a17:907:948b:b0:ac2:6910:a12f with SMTP id a640c23a62f3a-ace7133c7f5mr605628466b.46.1745700141379;
+        Sat, 26 Apr 2025 13:42:21 -0700 (PDT)
+Received: from ?IPV6:2a02:a466:68ed:1:b4b9:d84:88d0:f6eb? (2a02-a466-68ed-1-b4b9-d84-88d0-f6eb.fixed6.kpn.net. [2a02:a466:68ed:1:b4b9:d84:88d0:f6eb])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6ed704bdsm340670166b.148.2025.04.26.13.42.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Apr 2025 13:42:21 -0700 (PDT)
+Message-ID: <4012f82a-191b-4023-9079-0dde92eff242@gmail.com>
+Date: Sat, 26 Apr 2025 22:42:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3a03310eda52461869be5711dc712f295c190b83.1745531701.git.boris@bur.io>
- <CAL3q7H60DfC0+ysf_Yw7bBOaDExPqpRU4==xHz4pYxHt3k-woQ@mail.gmail.com>
- <20250425115813.GE31681@suse.cz> <20250425153943.GA1567505@zen.localdomain>
-In-Reply-To: <20250425153943.GA1567505@zen.localdomain>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sat, 26 Apr 2025 17:39:25 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5+uAE5HtY0JEz=3dcV7PNUVu-5h+mWpbHwYXY8U3=2sQ@mail.gmail.com>
-X-Gm-Features: ATxdqUEb0-nSQ-tO7ImRRpR0d6eQi6ZUnAWyedAD92P0JyK54rqm3NhWhncilZQ
-Message-ID: <CAL3q7H5+uAE5HtY0JEz=3dcV7PNUVu-5h+mWpbHwYXY8U3=2sQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix folio leak in btrfs_clone_extent_buffer()
-To: Boris Burkov <boris@bur.io>
-Cc: David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Errors on newly created file system
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+ Qu Wenruo <wqu@suse.com>
+References: <669c174e-5835-471f-9065-279a7da8f190@gmail.com>
+ <cdf268c1-b031-488e-a2f3-d68cc88f4d16@gmail.com>
+ <aee691cc-4536-40a7-8d98-b31040e0b1d6@suse.com>
+ <2366963.X513TT2pbd@ferry-quad>
+ <b2ac7b22-ab50-4eb4-a90a-0d110407ba36@gmx.com>
+Content-Language: en-US
+From: Ferry Toth <fntoth@gmail.com>
+In-Reply-To: <b2ac7b22-ab50-4eb4-a90a-0d110407ba36@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 25, 2025 at 4:38=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Fri, Apr 25, 2025 at 01:58:13PM +0200, David Sterba wrote:
-> > On Fri, Apr 25, 2025 at 10:18:38AM +0100, Filipe Manana wrote:
-> > > On Thu, Apr 24, 2025 at 10:54=E2=80=AFPM Boris Burkov <boris@bur.io> =
-wrote:
-> > > >
-> > > > If btrfs_clone_extent_buffer() hits an error halfway through attach=
-ing
-> > > > the folios, it will not call folio_put() on its folios.
-> > > >
-> > > > Unify its error handling behavior with alloc_dummy_extent_buffer() =
-under
-> > > > a new function 'cleanup_extent_buffer_folios()'
-> > >
-> > > So this misses any indication that this fixes a bug introduced by:
-> > >
-> > > "btrfs: fix broken drop_caches on extent buffer folios"
-> >
-> > Thanks for noticing, this was not obvious.
-> >
-> > > With a subject and description like this, it's almost sure this patch
-> > > will be automatically picked for stable backports, and if it gets
-> > > backported it will break things unless that other patch is backported
-> > > too.
->
-> Oops.
-> I was trying to *avoid* it getting backported by ommitting the Fixes:
-> tag. I should have just squashed them together as you guys say. I was
-> worried it might be confusing with Daniel also making related changes,
-> but it should have been fine anyway.
->
-> Speaking of which, I believe his patch
-> "btrfs: put all allocated extent buffer folios in failure case"
-> also fixes a leak from my first patch, for folios that are past the
-> attached counter in the fail case, so that needs the Fixes: tag too.
->
-> > >
-> > > Also, since the bug was introduced by the other patch and it's not ye=
-t
-> > > in Linus' tree, it would be better to update that patch with this
-> > > one's content.
-> > > That's normally what we do - I know both patches are already in
-> > > github's for-next (I didn't even get a chance to review this one sinc=
-e
-> > > it all happened during my evening), and it's ok to rebase and squash
-> > > patches.
->
-> Copy
->
-> >
-> > Agreed, as long as the a buggy patch is in for-next there shuld be no
-> > need for a fixup unless the branch is frozen for merge window.
-> >
-> > Also non-trivial patches should not be pushed to for-next too quickly,
-> > exactly to give people chance to have a look. For trivial, clearly
-> > correct or non-code updates I would not care much if it's applied
-> > without much delay.
->
-> Apologies. How long should I leave a fix on the list without pushing it?
+Op 24-04-2025 om 01:24 schreef Qu Wenruo:
+> 在 2025/4/24 01:36, Ferry Toth 写道:
+>> Op woensdag 23 april 2025 00:00:36 CEST schreef Qu Wenruo:
 
-Well we don't have it defined and it was never needed, we always used
-some sort of good common sense.
+>> While here, am I right that we can not generate the rootfs with 
+>> compression on?
+>>
+>>
+>> Reason I ask is, Yocto of course builds the rootfs and than has 
+>> mkfs.btrfs create the image. But it runs as unprivileged user, so can 
+>> not do mount.
+>>
+>> And then can not do defrag.
+> 
+> We have this feature recently thanks to Mark!
+> 
+> In the latest release v6.13, there is a new option "--compress" added to 
+> mkfs.btrfs, which must be used with "--rootdir".
 
-In this case, my reasoning is:
+I built 6.14 while configuring with --enable-lzo
 
-1) It's a bug fix that resulted from the reviews from me and Daniel
-for the v3 of a previous patch you sent,
-    which was merged before we could review since there's a Review tag
-from me that applied to v1 only but you carried it to v2 and v3 even
-after making a substantial change to v1:
+Configure says:
+	zstd support:       no
+	lzo support:        yes
 
-    https://lore.kernel.org/linux-btrfs/9441faad18d711ba7bccd2818e6762df0e9=
-48761.1745000301.git.boris@bur.io/
+Finally running mkfs.btrfs with --compress lzo
 
-2) I would expect that you would give a chance for me and Daniel to
-take a look at it, since this was a follow up to that other patch we
-were reviewing.
-    But you sent the patch during our evening, and since Qu reviewed
-it shortly after, you pushed it right away to for-next, just in a
-period of a few hours, before me or Daniel could look at it.
-    Remember we are in Europe, several hours apart from your timezone,
-we sleep and do other things as well :)
+I get:
+-EXPERIMENTAL -INJECT -STATIC -LZO -ZSTD -UDEV +FSVERITY -ZONED 
+CRYPTO=builtin
 
-3) Also it wasn't a super critical fix, no urgency to push it so
-quickly to for-next since it affected only for-next and for an error
-scenario that isn't common (not breaking fstests runs for every one
-for example).
+And
+ERROR: lzo support not compiled in
 
-This wasn't fixed in a v4 of the former patch because it seems to me
-you had this idea that once a patch lands in for-next we can't change
-it or drop it...
-So if there was a problem with this one too, when I (or Daniel) had a
-chance to review, would you follow up with yet another patch on top in
-case it introduced a regression too?
+Strangely: when I run with --compress zlib and I check the resulting 
+image with btrfs-compsize it says:
 
-Mistakes happen and that's fine, I'm not blaming you for that, and I
-don't mind reviewing 2, 3, 10 or more patches if needed, just pointing
-out that there's absolutely no need to rush like you did here...
+Processed 8969984 files, 2574779 regular extents (6008702 refs), 5007593 
+inline.
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       91%      532G         582G         820G
+none       100%      489G         489G         575G
+zlib        38%      350M         902M         926M
+lzo         46%       42G          92G         243G
+prealloc   100%       99M          99M         678M
 
-It wasn't a super critical fix, no urgency to push it so quickly to
-for-next since it affected only for-next and for an error scenario
-that isn't common, plus as mentioned before it would be nice to give a
-chance for previous reviewers to look at the patch before getting
-merged.
-
-> I did get a non-trivial review (as in he didn't just blindly stamp it)
-> from Qu.
->
-> Shall I leave it up for ~24 hours or until review from one of you two in
-> the future? Or since Filipe noticed the bug in the first place, wait for
-> his review in this particular case? For me, getting things off my plate
-> makes it less likely I will get pulled away from finishing them, which
-> is why I wanted to push it while I was focused on it and felt done. If
-> that's inappropriate, that's totally fine by me, just saying.
->
-> Sorry for making this a headache with the buggy initial fix and churny
-> followups.
-
-That is fine, it happens to everyone from time to time.
-Just allow for a chance for previous reviewers to look at a patch,
-remembering there is this annoying thing called time zones (evidence
-the Earth is not flat) and we may not be able to review things
-immediately.
+Seems like it tries lzo anyway and is mixed up about support not built in.
 
