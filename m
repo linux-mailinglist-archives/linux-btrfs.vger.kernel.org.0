@@ -1,81 +1,68 @@
-Return-Path: <linux-btrfs+bounces-13440-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13441-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDD4DA9D863
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 08:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFFBA9D8E5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 08:56:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E81E81BC743C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 06:28:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8940D1C00CBC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 06:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EEE01D5161;
-	Sat, 26 Apr 2025 06:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2103913D891;
+	Sat, 26 Apr 2025 06:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OY82lwqS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="j3Y50Rlo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6E04414
-	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 06:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C3F1DDC1E
+	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 06:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745648896; cv=none; b=pa565xKUPPjrP+Vw90TnJW5fnTNeUsC0NfXxkTwK7/kc5RdFh0ieNLFtqi2+9uhta0vMj7D7yKPVH8pq2IUi0S39PRlKjCSxREAd7xBUbYNWOAPhaPYLJDJ+Ucg1aRR+/gz3on9KouJqmbtH6vVJDBaQILxxYyU6NhNBvuPvLlg=
+	t=1745650541; cv=none; b=in+qrud+H7n4zLL4xZcqPMG3Im5aocHx4cVAWpCB/kUKSEBdBtw/IcHndFUUS+HOgAoOQELkC3Ee4QEeD1bYplUerCSS/LGloUJdXiowJzqq+p26KZh+6L1M409le++KG3ncN31DNc/rV34C6c4R3krYPSGn9fJxfOgQH5PItBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745648896; c=relaxed/simple;
-	bh=iLSvSZrpExHs6iGtLUUAugyRIjzInghTCIhpfN7xuNY=;
+	s=arc-20240116; t=1745650541; c=relaxed/simple;
+	bh=YtEkNTHUG+n5iHo3EXZNJ4qo4UYkQllu7HZAWLn/jqI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IK0eh+S901XLftCoIcAnRRJ80F2prL01+djINBZiWDD1wZukwVEwBiZoy0zk5kGxZAl3G4Ukeb3Gadb0dsQjxTYB5j64zU9eAH8pouKUXpkrmhMkbfwXR7xNc+d0I3Zz2ihtsWIM5JPtAEbJqgI1FKkSd4QFo466FPzvjYOtDzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OY82lwqS; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-acae7e7587dso468981066b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 23:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745648892; x=1746253692; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xv4tKOaC/Hpdjay7QKa+hiaqSaXkzeRpeVA+weQIJVQ=;
-        b=OY82lwqSylwAvBqdaUaQ43jXRcdI36jfT35lHHcV7x3MvFV2ExlEJnEszOsjRu8tcC
-         ElwM0WBy/l5iDYu+19cB67sB57JntwuQ7AcileGLA3jHciUQ56lpOrX6Wc/d+yQo86mE
-         TBItgY+558mfOTNiFcYo+8fIE0XJMjRe3nzJIspoN6z5VtyYda14xw9AehrC6Iotri5j
-         z47h2oRmWCdHpSGf0JqkXV2WXCi2fbrWCXdisdTKHmjqSdaDzdOpqoejhVLnjt2DChTl
-         Tp6IY5MfgiMiw4coB0ydAba1fhMASIOlrTRHNLdOBXcTPiL6fMdLmrCzB6vRStRXG6mu
-         x9KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745648892; x=1746253692;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xv4tKOaC/Hpdjay7QKa+hiaqSaXkzeRpeVA+weQIJVQ=;
-        b=E4f8Us0ZWWRmC81TPJ1MYhM4PcKadlPUUFFfMSAv0bvJgkTvHkdLKXcV0Lz0G0+RO/
-         ZMri40hw3ZvvCl1dqgoXMv/yf40IQXGSxcUzIIR/Fdl27schH/MzWN0oqVmpoUlxaF4I
-         bP2gEpI1BV1ebyhcyEAIEA7zrh9gSG5qY3utvMctyoNY1oDqbiiJ8j5Xy88IRyIdwfgP
-         s8HZEQ/M97sA8iDMSITShBbPHTo6IZMugnJwnze6AoMswtVFe7Ox80usfCiH+su/2oGE
-         eGlrlMo+T4jZqZQT7C8V5dOHFDYxhnTvl8/wLP/jhub7RpQKZbnDcpWdrLHea9JL0zbr
-         pcdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOK/hyTw7U87Jl4/nJqset1L495+XqBGXwWMAJ66y5QgUKI/2b5tSpK9JtnWt1TflPaF1waTE13u21zA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YykeB5iKoMAumyvFvKHglJrFwrj7qYinVKCpC3v9Z0okUCSfpEf
-	5u69LJr8TK5v4XDeMUklN9xUOuLjcV+AadwmrN8z6ZsUMlRCsW9tP1qVSw0H2vU0eA+6B1ae6k3
-	v
-X-Gm-Gg: ASbGncspvtneGlZC+CGUSoXk2k4UGb/GLesOaEVI19HCuem7kCdCCxNpev1qqLzjfEx
-	9/AhNi9kAbCyDfJ8wcDg+Q6TniqY6wMAN5FkEMcQl9iZrHaIVgpIGP6Yj8PWG2JoazpDA7ztJjf
-	Z3MqKbapAXIiDxX2pf1c1k14bA/5MR04EvPLrSKYcozBJ68ttEch3k24qzVnkmpg9eR6rFfU1gj
-	me+LigNg0DuQcrlbC2z7NgmhLcZYuVFhOhYpDEv+mO3PE7Hz7lgrvsmGz+BpD1kanUmYWylcrb1
-	SJjaqxzLPIW9p9F6MYyCAYlVUm9UJLXUouEmsa4NSu6CRziNoJTDjaX5D/UTbPFuHoyp
-X-Google-Smtp-Source: AGHT+IESqmurfVzpwJY+LRtMTyy9+uS5Dp4QmJ2LQdrE9JHCD+tPlEB/tEuiwBzn7LlHhYd7RH99Aw==
-X-Received: by 2002:a17:907:9492:b0:acb:b9ab:6d6f with SMTP id a640c23a62f3a-ace713a19b6mr428854466b.38.1745648892392;
-        Fri, 25 Apr 2025 23:28:12 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-309ef1475ccsm4637134a91.44.2025.04.25.23.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Apr 2025 23:28:11 -0700 (PDT)
-Message-ID: <5671cd19-6026-4bfd-946a-daffdb899e1d@suse.com>
-Date: Sat, 26 Apr 2025 15:58:06 +0930
+	 In-Reply-To:Content-Type; b=VPRxaNNVGhHEX7EjLGGdjjfZzNAnbpe0aON8ZCEm2ouDxCbl8rKunQhu3tUkJSkpri4fv8PCGL9JG0dq7EzF0B39m0+Hz/C9Q2CPJEQaYFIbzbwLWUH9THA0cap3YhRdefFp1ngOhIrVdO6qiftHxgtK+AZtA8nV1jN6BBaq6wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=j3Y50Rlo; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
+	by cmsmtp with ESMTPS
+	id 8SxiuR4lrWuHK8ZRpuzoPy; Sat, 26 Apr 2025 06:55:37 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id 8ZRoud3X7Rlrs8ZRpuc2PB; Sat, 26 Apr 2025 06:55:37 +0000
+X-Authority-Analysis: v=2.4 cv=Qamtvdbv c=1 sm=1 tr=0 ts=680c8369
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=efVMuJ2jJG67FGuSm7J3ww==:17
+ a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=7T7KSl7uo7wA:10 a=VwQbUJbxAAAA:8
+ a=FOH2dFAWAAAA:8 a=maIFttP_AAAA:8 a=iox4zFpeAAAA:8 a=MCMyBeqthVF3y6c2b0kA:9
+ a=QEXdDO2ut3YA:10 a=qR24C9TJY6iBuJVj_x8Y:22 a=WzC6qhA0u3u7Ye7llzcV:22
+ a=Xt_RvD8W3m28Mn_h3AK8:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kBkRlnDp5Hdmm2yE73zuDnhdBvqAkeMGF98g6gosTXE=; b=j3Y50Rlou93+yINb2qrM0pNoFE
+	SWsdOKVHichB/jZPJ3XljpzTaseSD+mWbf7y2BRVv5WlhXOIfBUij8SFDuviGBheErbtcnDW0W8uV
+	zd+vcRtEdrs6w5NEnAdecsR0ydByiaCXCYd6dwIHnP/Kxy48FgZbYEz4/ioPfbY1Vzw622YNXwOrj
+	TEaMlA0ewMXlr6MeUmPXW//lqYu671uX7Ren3XtaC/cGu8jnVa6REO8nEKl4sOxExT7LtJ1jyDfje
+	1/LQUoISw7Y5FVqb0DvC9/eJUKsSn2uum6oDDJ6DnnVt22H6syAqHMLaa/ZG2v5zSWHWG5g1ZcUrX
+	RHwK7Y+g==;
+Received: from [177.238.17.151] (port=30278 helo=[192.168.0.103])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1u8ZRn-000000000fQ-3dXR;
+	Sat, 26 Apr 2025 01:55:36 -0500
+Message-ID: <4dd1e595-21c2-4a6c-a7b9-e7c945d3a7a2@embeddedor.com>
+Date: Sat, 26 Apr 2025 00:55:21 -0600
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,38 +78,34 @@ Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
  linux-hardening@vger.kernel.org
 References: <20250426062328.work.065-kees@kernel.org>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 In-Reply-To: <20250426062328.work.065-kees@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 177.238.17.151
+X-Source-L: No
+X-Exim-ID: 1u8ZRn-000000000fQ-3dXR
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.0.103]) [177.238.17.151]:30278
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfFbgonxrFVkWTi1+H06WyrrGXslK92UjkWEooqCO6Njkyog78082GmmtmfddSmFh40DK4gJ3xIBYVRpdCh2b2TmmNnnfxJmTfTdWifK1kYmNVZxC3/7w
+ nXktdchcVw4URSDoh3L8Yeak0lFGmzKy0C59QIXMaQXyNLwCDon6KKzFJ9YwtKFGpxUIy08uEKay1vzjGLdupBe1nxtZE6TM29aO97WVs5IHFGQ1g3HvfYL+
 
 
 
-在 2025/4/26 15:53, Kees Cook 写道:
+On 26/04/25 00:23, Kees Cook wrote:
 > In preparation for making the kmalloc family of allocators type aware,
 > we need to make sure that the returned type from the allocation matches
 > the type of the variable being assigned. (Before, the allocator would
@@ -133,12 +116,6 @@ Content-Transfer-Encoding: 8bit
 > the types don't match. Adjust the allocation type to match the assignment.
 > 
 > Signed-off-by: Kees Cook <kees@kernel.org>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
 > ---
 > Cc: Chris Mason <clm@fb.com>
 > Cc: Josef Bacik <josef@toxicpanda.com>
@@ -158,8 +135,9 @@ Qu
 >   	cb->nr_folios = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
 > -	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct page *), GFP_NOFS);
 > +	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct folio *), GFP_NOFS);
->   	if (!cb->compressed_folios) {
->   		ret = BLK_STS_RESOURCE;
->   		goto out_free_bio;
+
+Why not `sizeof(*cb->compressed_folios)` as in other patches? :)
+
+-Gustavo
 
 
