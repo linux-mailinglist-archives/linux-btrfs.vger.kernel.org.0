@@ -1,378 +1,263 @@
-Return-Path: <linux-btrfs+bounces-13437-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13438-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E5FA9D788
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 06:28:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B322BA9D7A2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 07:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A49F4C6BE3
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 04:28:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9B0D1BC1B8B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Apr 2025 05:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07D8A1E8348;
-	Sat, 26 Apr 2025 04:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61BC19B3EE;
+	Sat, 26 Apr 2025 05:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fu7QV1p+"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ndoWS0N9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1CE42AA5
-	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 04:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2398812E5B
+	for <linux-btrfs@vger.kernel.org>; Sat, 26 Apr 2025 05:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745641715; cv=none; b=clgFsYomLiIZjCLouVwgvZ2wzPR/cZrHfhzKnqO6O1POCRPvsD9Ku1S51pqfU1/wTl04JYCaCgDWU2sCVWKnQSqMgzA5ZGrHnCzG0iAqdWkJpO6NF3xphaEzkSVpLGzaa7FK/Bb5ZSCrzVrgGxpPeLPZD56Yf/47m46G7GDfXjY=
+	t=1745644089; cv=none; b=DJMpo6cAxXqgpfmPNIP1aRodFDjVsjOLM82aL8iIAVn5Lb9jjXOIgrJzPkBlbLCfkN7pY/cJSrM9FwrPdDPP8pwUStsXqyehm727Fm3dt5o0J5DqbD+0sG6heJqmzgjkWesq8Sn5qruhd18gplRxlzYs9G8qvQjszktF/nK4eMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745641715; c=relaxed/simple;
-	bh=0A3vmoA4P6x7TFQMvem8SPNw2i48+x0d/3sQnH04BeQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=WjmFKlAKgHDoSj0kHUgfSxoR6g0HE5kwI2AN/z015N867MASF3Tn6pYv9ftCTfAyc6qQhHbWZl4L3MQaHIzmapdeIzeGiR3kq31KF6sqvzzHmOMsvqtMcdNzYri8DjZiEmZ693RKy+nZzkdIbzskkMvu75tmgaTm7XxAxU91hRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fu7QV1p+; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-2c6ed7efb1dso1790736fac.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Apr 2025 21:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745641712; x=1746246512; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+1n5cm8g15WGsD/3sLG364lxVGptQnH8EDRUFipebCs=;
-        b=Fu7QV1p+9xugQhVocYGFz92wFIWnLlfliBoHl5Cnr1aeE23NGrziI5ND9vT/L/XR83
-         WKozFzdKFtxR/UpQ81RSGkaQwmyebGvuc1PCPuk05NpXq5uBzUwJf8KVuzz2vKLw/F+z
-         hp1AnXGaSJpq2eGGQzpR7emOv+whbJFatuWpB1Zkbgay15+L+AnPenGacJsb78GzUWNx
-         H76xwHS0jWiCaH63xUg8geLDBZpzjGQmaRbZ8pn1epI3FgGxgukul7Y+WnVf8gpiqkzG
-         RGc8oJhxn1yBeOoG4H6FRlZZjpqSEOWRE5xL44viThF+DwzJbvrOpBpj24KCk/N7XFWi
-         RNFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745641712; x=1746246512;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+1n5cm8g15WGsD/3sLG364lxVGptQnH8EDRUFipebCs=;
-        b=EqfHyXG3UaCpxcN2crbmYrS2v9lqCmNfRoH6OIRpdQSK60HQ0RJZ3h6ZIQErOrk0p0
-         q4R8DfwvdPYYrf1LsuR8+9f/Lf9cqeWKlGzXOzKyI8DbVdCAt1VXAZD4xH4o9iC/PX62
-         pCMYklxMa4BYEZxXAdgj44Mvxcde2hoJSF30aeJaymdT/xMEDooiCjXz4XfZaiwkteyO
-         B1rdBCrHhCqmHD/UnjxDIvfVGoijri6lGtN39gWc08w+FQEsxPCDqMxlDImwSWFhY3dP
-         qEEUi/835GxbdTJCprxtbyC7WDo+1Zz4H84jQ6dYKWbtVL0Ifk1u1N7P1/inumsfRioh
-         XYig==
-X-Gm-Message-State: AOJu0YzBzTzZa2lvkhT5GIZKJTBAqRkwXF5WBAcVxJoVvPortzs3wAn7
-	KqZ/sDUuXBRxjRkZbHs0Sr7TqEGbPOp5aqMQ3GxhK9brK1kM33rsxkv84RDiS0Ga3yCliXqw1/a
-	LYuEutF3Q0jm2y/g/z7uR2POX6eQV5qqp2D6LKhaa
-X-Gm-Gg: ASbGnct37/p54gP4DfqsYCJKtCdztaAfI+3oyinMnStG0nQbbF0SFS3RXwuFIQbU2YY
-	3eq3qhaJbLcw/TXbai9/7ww7h3BuRyu03uBwqWah27TQolP5cwnKgcxdqCFFzePd6Pmj4UpQ5VN
-	l40TFP47SseO5WKhrb97ZHCyY=
-X-Google-Smtp-Source: AGHT+IEXLxlJI6JuMUcrXcHksuzZ4oZcg2fUMolsDCdR0lLrMdV+eT/rBqXdGbrNhvPKGDipeZ8eORHUfmw1X8HAK78=
-X-Received: by 2002:a05:6870:a78c:b0:296:a67c:d239 with SMTP id
- 586e51a60fabf-2d99d7e680emr2577198fac.12.1745641712069; Fri, 25 Apr 2025
- 21:28:32 -0700 (PDT)
+	s=arc-20240116; t=1745644089; c=relaxed/simple;
+	bh=rGAxsLQpvMufcyfjZci5cYAbtOzCs7kkERGgE0XPGeU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gXsO4zYNEAcqAdT4eJTMPJ0OYBmgOCPXX410mcaeQrnjp/y/px1VDg2zF1SOlCGX5PHs0wuqjANyjE9Rb66x12GaqFGK7xm1lfIotkgVmZWJXWYowzh+lJ8GOfQCgfLWOBEaaxUBK6U0eTibBaGWezZpgzvszccD7OiICY+7NB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ndoWS0N9; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1745644084; x=1746248884; i=quwenruo.btrfs@gmx.com;
+	bh=wyCq6bYdN+XUvOGvwZutQ93uvPGNwniI6pUhdiAwahs=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=ndoWS0N98OkWvR2RCQ5H6c97wzxYhPO2sp8EZGzc9KDAgZrLbDWdO4be7Y1Xm+sW
+	 W/BXGsEmIW/FJ4yXXJM8BF25Fp0DjlD8n+2m1k4y+28AOCOO94FaaWz1RlBh5ai+R
+	 VkFmxV0l4FmY4NF29jwN99REZq/HJt5rTv85QZsUXcSUh6bkefVkma+CTwTAwnUWZ
+	 H6ePpPNYJgPMCz9n/rAchx3tLb1HBHBqVOAORf71fDUJ1yZTbN3IC97UO8IyvMrCK
+	 dlKvg72p5srQxptOtdlxr3pzH9H/mV7Y7dYqlwWw/HYU7k6m8DSj7+oWomZy4eCux
+	 IafGXX4yzUvX6Jh1rQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWRVb-1ubs523wyZ-00WO6C; Sat, 26
+ Apr 2025 07:08:04 +0200
+Message-ID: <73137fa7-baf7-4a71-bc9e-a5d75e0de993@gmx.com>
+Date: Sat, 26 Apr 2025 14:38:01 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: =?UTF-8?B?5byg6bmP6aOe?= <jstxzpf@gmail.com>
-Date: Sat, 26 Apr 2025 12:28:19 +0800
-X-Gm-Features: ATxdqUEIQXoqx5DdjNSAZwGUeDXXju7HnlZd4GzNzfmzPd_3fJFvusuH4UQPBao
-Message-ID: <CAHefssCK98jCf6c4FRxHz9bSFgi=xA5sKgTTp4zteVxL8yWG3g@mail.gmail.com>
-Subject: Assistance Needed: Btrfs RAID1 Filesystem Unmountable Due to Chunk
- Tree and FSID Mismatch Issues
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Assistance Needed: Btrfs RAID1 Filesystem Unmountable Due to
+ Chunk Tree and FSID Mismatch Issues
+To: =?UTF-8?B?5byg6bmP6aOe?= <jstxzpf@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAHefssCK98jCf6c4FRxHz9bSFgi=xA5sKgTTp4zteVxL8yWG3g@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <CAHefssCK98jCf6c4FRxHz9bSFgi=xA5sKgTTp4zteVxL8yWG3g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fx/Bb5u8h42+5048b13HT3k3sXAqNpsWd/IlMFQxkZdv1Q9oXGt
+ NKOGYcWn1x0VyhTO26iP8jq+21WrOtGTKvsvtbFZFytUc2RcvNoWCiPPWEesXtiZxI2bRYm
+ g3WmJI3izyW8UcipDR8QJEomhnwQG8CUSgF6jYup2Uh0/kuiqiiQvQmZ01Qb7KNntXlwt+x
+ /QKAM/MJrX9QO54+XPNVQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:OZ8uaD8VSdU=;MSSg5hEoxmLR3R51sMZsfGmD2aG
+ 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
+ A==
 
-Dear Btrfs Community,
 
-I am seeking assistance with a critical issue on a Btrfs RAID1
-filesystem that has become unmountable after an interrupted `btrfstune
--u` operation. Despite extensive troubleshooting, I have been unable
-to repair or mount the filesystem, and I am hoping for guidance from
-developers or experienced users.
 
-System Details
-- Operating System: OpenEuler (based on Linux)
-- Kernel Version: 6.6.0-85.0.0.79.oe2403.x86_64
-- Btrfs Tools: btrfs-progs v6.6.3
-- Filesystem: Btrfs RAID1 on two devices (/dev/sdb1 and /dev/sdc1)
-  - Total size: 16 TiB (8 TiB per device)
-  - Used space: 5.52 TiB
-  - FSID: f7d5ddae-5499-42e7-854f-7b4c658e3930
-  - Metadata profile: RAID1
-  - Data profile: RAID1
+=E5=9C=A8 2025/4/26 13:58, =E5=BC=A0=E9=B9=8F=E9=A3=9E =E5=86=99=E9=81=93:
+> Dear Btrfs Community,
+>=20
+> I am seeking assistance with a critical issue on a Btrfs RAID1
+> filesystem that has become unmountable after an interrupted `btrfstune
+> -u` operation. Despite extensive troubleshooting, I have been unable
+> to repair or mount the filesystem, and I am hoping for guidance from
+> developers or experienced users.
+>=20
+> System Details
+> - Operating System: OpenEuler (based on Linux)
+> - Kernel Version: 6.6.0-85.0.0.79.oe2403.x86_64
+> - Btrfs Tools: btrfs-progs v6.6.3
+> - Filesystem: Btrfs RAID1 on two devices (/dev/sdb1 and /dev/sdc1)
+>    - Total size: 16 TiB (8 TiB per device)
+>    - Used space: 5.52 TiB
+>    - FSID: f7d5ddae-5499-42e7-854f-7b4c658e3930
+>    - Metadata profile: RAID1
+>    - Data profile: RAID1
+>=20
+> Problem Background
+> The issue began when I attempted to change the filesystem UUID using
+> `btrfstune -u`. The operation was interrupted (likely due to a system
+> crash or manual termination), after which the filesystem became
+> unmountable.
 
-Problem Background
-The issue began when I attempted to change the filesystem UUID using
-`btrfstune -u`. The operation was interrupted (likely due to a system
-crash or manual termination), after which the filesystem became
-unmountable. The primary errors are:
-- FSID mismatch: Metadata blocks reference an old UUID
-(fae46898-a972-4118-a2e2-5d35e8219ae0) instead of the expected UUID
-(f7d5ddae-5499-42e7-854f-7b4c658e3930).
-- Chunk tree corruption: Repeated errors indicating `Couldn't read chunk tree`.
-- Tree root corruption: Issues with the tree root at block
-17953108230144 and bad tree block at 17936955146240.
+Have you tried "btrfstune -u" again? That's the proper way to resume the=
+=20
+change.
 
-Symptoms
-- Mounting attempts (`mount -o degraded,ro`, `mount -o
-degraded,ro,recovery`, `mount -o degraded,ro,usebackuproot`) fail
-with:
-  mount: /mnt: can't read superblock on /dev/sdc1.
-- `dmesg` reports:
-  BTRFS error (device sdb1): bad fsid on logical 17936954720256 mirror 1
-  BTRFS error (device sdb1): failed to read chunk tree: -5
-  BTRFS error (device sdb1): open_ctree failed: -5
-- `btrfs check --readonly` on both devices reports:
-  bad tree block 17936955146240, fsid mismatch,
-want=f7d5ddae-5499-42e7-854f-7b4c658e3930,
-have=fae46898-a972-4118-a2e2-5d35e8219ae0
-  Couldn't read chunk tree
-  ERROR: cannot open file system
+To be honest, without resuming the uuid change, all your "attempts" are=20
+just further corrupting the fs.
 
-Steps Attempted
-I have tried the following repair and recovery steps, all of which have failed:
+Thankfully so far all tools seems to reject doing any writes, thus you=20
+still have a chance to reuse the uuid change.
 
-1. Superblock Recovery:
-   - `sudo btrfs rescue super-recover /dev/sdb1`:
-     All supers are valid, no need to recover
-   - Confirmed superblocks are intact via `btrfs inspect-internal
-dump-super -f /dev/sdb1` and `/dev/sdc1`.
+  The primary errors are:
+> - FSID mismatch: Metadata blocks reference an old UUID
+> (fae46898-a972-4118-a2e2-5d35e8219ae0) instead of the expected UUID
+> (f7d5ddae-5499-42e7-854f-7b4c658e3930).
+> - Chunk tree corruption: Repeated errors indicating `Couldn't read chunk=
+ tree`.
+> - Tree root corruption: Issues with the tree root at block
+> 17953108230144 and bad tree block at 17936955146240.
+>=20
+> Symptoms
+> - Mounting attempts (`mount -o degraded,ro`, `mount -o
+> degraded,ro,recovery`, `mount -o degraded,ro,usebackuproot`) fail
+> with:
+>    mount: /mnt: can't read superblock on /dev/sdc1.
+> - `dmesg` reports:
+>    BTRFS error (device sdb1): bad fsid on logical 17936954720256 mirror =
+1
+>    BTRFS error (device sdb1): failed to read chunk tree: -5
+>    BTRFS error (device sdb1): open_ctree failed: -5
+> - `btrfs check --readonly` on both devices reports:
+>    bad tree block 17936955146240, fsid mismatch,
+> want=3Df7d5ddae-5499-42e7-854f-7b4c658e3930,
+> have=3Dfae46898-a972-4118-a2e2-5d35e8219ae0
+>    Couldn't read chunk tree
+>    ERROR: cannot open file system
+>=20
+> Steps Attempted
+> I have tried the following repair and recovery steps, all of which have =
+failed:
+>=20
+> 1. Superblock Recovery:
+>     - `sudo btrfs rescue super-recover /dev/sdb1`:
+>       All supers are valid, no need to recover
+>     - Confirmed superblocks are intact via `btrfs inspect-internal
+> dump-super -f /dev/sdb1` and `/dev/sdc1`.
+>=20
+> 2. Chunk Tree Recovery:
+>     - `sudo btrfs rescue chunk-recover /dev/sdc1`:
+>       Scanning: DONE in dev0, DONE in dev1
+>       corrupt node: root=3D1 block=3D17953108230144, nritems too large,
+> have 2 expect range [1,0]
+>       Couldn't read tree root
+>       open with broken chunk error
+>=20
+> 3. Mount Attempts:
+>     - Tried various mount options (`degraded,ro`,
+> `degraded,ro,recovery`, `degraded,ro,usebackuproot`) on both devices.
+>     - Attempted to use backup roots listed in `btrfs inspect-internal
+> dump-super` (e.g., 18288112435200, 18288112664576, 18288112697344),
+> but the kernel does not support `usetreeroot` or `usesuper` options:
+>       BTRFS error (device sdb1): unrecognized mount option
+> 'usetreeroot=3D18288112697344'
+>=20
+> 4. Filesystem Check and Repair:
+>     - `sudo btrfs check --repair /dev/sdc1` and `/dev/sdb1`:
+>       bad tree block 17936955146240, fsid mismatch,
+> want=3Df7d5ddae-5499-42e7-854f-7b4c658e3930,
+> have=3Dfae46898-a972-4118-a2e2-5d35e8219ae0
+>       Couldn't read chunk tree
+>       ERROR: cannot open file system
+>     - `sudo btrfs check --init-csum-tree /dev/sdc1` and `/dev/sdb1`:
+>       bad tree block 17936955146240, fsid mismatch,
+> want=3Df7d5ddae-5499-42e7-854f-7b4c658e3930,
+> have=3Dfae46898-a972-4118-a2e2-5d35e8219ae0
+>       Couldn't read chunk tree
+>       ERROR: cannot open file system
+>     - `sudo btrfs check --init-extent-tree /dev/sdc1` and `/dev/sdb1`:
+>       bad tree block 17936955146240, fsid mismatch,
+> want=3Df7d5ddae-5499-42e7-854f-7b4c658e3930,
+> have=3Dfae46898-a972-4118-a2e2-5d35e8219ae0
+>       Couldn't read chunk tree
+>       ERROR: cannot open file system
 
-2. Chunk Tree Recovery:
-   - `sudo btrfs rescue chunk-recover /dev/sdc1`:
-     Scanning: DONE in dev0, DONE in dev1
-     corrupt node: root=1 block=17953108230144, nritems too large,
-have 2 expect range [1,0]
-     Couldn't read tree root
-     open with broken chunk error
+You should not try any of these command, as they can further corrupt the=
+=20
+fs making it unrecoverable.
 
-3. Mount Attempts:
-   - Tried various mount options (`degraded,ro`,
-`degraded,ro,recovery`, `degraded,ro,usebackuproot`) on both devices.
-   - Attempted to use backup roots listed in `btrfs inspect-internal
-dump-super` (e.g., 18288112435200, 18288112664576, 18288112697344),
-but the kernel does not support `usetreeroot` or `usesuper` options:
-     BTRFS error (device sdb1): unrecognized mount option
-'usetreeroot=18288112697344'
+Next time, please read the doc before doing any unsafe operations.
 
-4. Filesystem Check and Repair:
-   - `sudo btrfs check --repair /dev/sdc1` and `/dev/sdb1`:
-     bad tree block 17936955146240, fsid mismatch,
-want=f7d5ddae-5499-42e7-854f-7b4c658e3930,
-have=fae46898-a972-4118-a2e2-5d35e8219ae0
-     Couldn't read chunk tree
-     ERROR: cannot open file system
-   - `sudo btrfs check --init-csum-tree /dev/sdc1` and `/dev/sdb1`:
-     bad tree block 17936955146240, fsid mismatch,
-want=f7d5ddae-5499-42e7-854f-7b4c658e3930,
-have=fae46898-a972-4118-a2e2-5d35e8219ae0
-     Couldn't read chunk tree
-     ERROR: cannot open file system
-   - `sudo btrfs check --init-extent-tree /dev/sdc1` and `/dev/sdb1`:
-     bad tree block 17936955146240, fsid mismatch,
-want=f7d5ddae-5499-42e7-854f-7b4c658e3930,
-have=fae46898-a972-4118-a2e2-5d35e8219ae0
-     Couldn't read chunk tree
-     ERROR: cannot open file system
-
-5. Data Recovery Attempts:
-   - `sudo btrfs restore /dev/sdc1 /mnt/restore` and `sudo btrfs
-restore --ignore-errors /dev/sdc1 /mnt/restore`:
-     bad tree block 17936955146240, fsid mismatch,
-want=f7d5ddae-5499-42e7-854f-7b4c658e3930,
-have=fae46898-a972-4118-a2e2-5d35e8219ae0
-     Couldn't read chunk tree
-     Could not open root, trying backup super
-     warning, device 1 is missing
-     bad tree block 17936955146240, bytenr mismatch, want=17936955146240, have=0
-   - Tried specifying backup roots (`-r 18288112435200`, `-r
-18288112664576`, `-r 18288112697344`) with `--ignore-errors`:
-     bad tree block 17936955146240, fsid mismatch,
-want=f7d5ddae-5499-42e7-854f-7b4c658e3930,
-have=fae46898-a972-4118-a2e2-5d35e8219ae0
-     Couldn't read chunk tree
-     Could not open root, trying backup super
-     warning, device 1 is missing
-     bad tree block 17936955146240, bytenr mismatch, want=17936955146240, have=0
-
-Current Status
-- All repair attempts (`btrfs rescue`, `btrfs check --repair`,
-`--init-csum-tree`, `--init-extent-tree`) have failed to restore the
-chunk tree or tree root.
-- All recovery attempts (`btrfs restore`, including `--ignore-errors`
-and specifying backup roots) have failed due to `fsid mismatch` and
-chunk tree issues.
-- The filesystem remains unmountable, and no data has been recovered.
-- I plan to try `btrfs restore` on /dev/sdb1 with backup roots, but
-given the identical errors on both devices, I expect similar results.
-
-Questions and Requests
-1. Are there any advanced tools, patches, or experimental options in
-`btrfs-progs` that could help repair the chunk tree or address the
-`fsid mismatch`?
-2. Could the `fsid mismatch` be resolved by manually editing metadata
-blocks or forcing the filesystem to accept the expected UUID
-(f7d5ddae-5499-42e7-854f-7b4c658e3930)?
-3. Are there specific kernel configurations or newer versions of
-`btrfs-progs` that might offer additional recovery options?
-4. For `btrfs restore`, are there other options or techniques (e.g.,
-`btrfs-find-root`) to maximize data recovery? Should I try
-`btrfs-zero-log` to clear potential log tree issues?
-5. Given the RAID1 setup, is there a way to leverage both devices
-(/dev/sdb1 and /dev/sdc1) simultaneously for recovery?
-6. Any other suggestions for recovering the filesystem or extracting data?
-
-Attached Information
-- Superblock Dump (from `btrfs inspect-internal dump-super -f /dev/sdc1`):
-  superblock: bytenr=65536, device=/dev/sdc1
-  ---------------------------------------------------------
-  csum_type               0 (crc32c)
-  csum_size               4
-  csum                    0xd0eb00de [match]
-  bytenr                  65536
-  flags                   0x1
-                          ( WRITTEN )
-  magic                   _BHRfS_M [match]
-  fsid                    f7d5ddae-5499-42e7-854f-7b4c658e3930
-  metadata_uuid           00000000-0000-0000-0000-000000000000
-  label
-  generation              707761
-  root                    17953108230144
-  sys_array_size          258
-  chunk_root_generation   707001
-  root_level              1
-  chunk_root              18289175560192
-  chunk_root_level        1
-  log_root                0
-  log_root_transid (deprecated)   0
-  log_root_level          0
-  total_bytes             16003123642368
-  bytes_used              6073712148480
-  sectorsize              4096
-  nodesize                16384
-  leafsize (deprecated)   16384
-  stripesize              4096
-  root_dir                6
-  num_devices             2
-  compat_flags            0x0
-  compat_ro_flags         0x3
-                          ( FREE_SPACE_TREE |
-                            FREE_SPACE_TREE_VALID )
-  incompat_flags          0x371
-                          ( MIXED_BACKREF |
-                            COMPRESS_ZSTD |
-                            BIG_METADATA |
-                            EXTENDED_IREF |
-                            SKINNY_METADATA |
-                            NO_HOLES )
-  cache_generation        0
-  uuid_tree_generation    707761
-  dev_item.uuid           e17aa5ea-c6d6-4c5d-a154-8977b8c7a921
-  dev_item.fsid           f7d5ddae-5499-42e7-854f-7b4c658e3930 [match]
-  dev_item.type           0
-  dev_item.total_bytes    8001561821184
-  dev_item.bytes_used     6087109509120
-  dev_item.io_align       4096
-  dev_item.io_width       4096
-  dev_item.sector_size    4096
-  dev_item.devid          2
-  dev_item.dev_group      0
-  dev_item.seek_speed     0
-  dev_item.bandwidth      0
-  dev_item.generation     0
-  sys_chunk_array[2048]:
-          item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 17936954687488)
-                  length 33554432 owner 2 stripe_len 65536 type SYSTEM|DUP
-                  io_align 65536 io_width 65536 sector_size 4096
-                  num_stripes 2 sub_stripes 1
-                          stripe 0 devid 1 offset 4384126664704
-                          dev_uuid 6a1c0f64-698d-43b7-b072-95a1d586d9d9
-                          stripe 1 devid 1 offset 4384160219136
-                          dev_uuid 6a1c0f64-698d-43b7-b072-95a1d586d9d9
-          item 1 key (FIRST_CHUNK_TREE CHUNK_ITEM 18289175560192)
-                  length 33554432 owner 2 stripe_len 65536 type SYSTEM|DUP
-                  io_align 65536 io_width 65536 sector_size 4096
-                  num_stripes 2 sub_stripes 1
-                          stripe 0 devid 2 offset 6087043448832
-                          dev_uuid e17aa5ea-c6d6-4c5d-a154-8977b8c7a921
-                          stripe 1 devid 2 offset 6087077003264
-                          dev_uuid e17aa5ea-c6d6-4c5d-a154-8977b8c7a921
-  backup_roots[4]:
-          backup 0:
-                  backup_tree_root:       17953108230144  gen: 707761
-   level: 1
-                  backup_chunk_root:      18289175560192  gen: 707001
-   level: 1
-                  backup_extent_root:     17953755693056  gen: 707761
-   level: 2
-                  backup_fs_root:         18288112533504  gen: 707759
-   level: 2
-                  backup_dev_root:        17953317421056  gen: 707761
-   level: 1
-                  csum_root:      18288110616576  gen: 707758     level: 3
-                  backup_total_bytes:     16003123642368
-                  backup_bytes_used:      6073712148480
-                  backup_num_devices:     2
-          backup 1:
-                  backup_tree_root:       18288112435200  gen: 707758
-   level: 1
-                  backup_chunk_root:      18289175560192  gen: 707001
-   level: 1
-                  backup_extent_root:     18288111075328  gen: 707758
-   level: 2
-                  backup_fs_root:         18288110305280  gen: 707758
-   level: 2
-                  backup_dev_root:        18288386441216  gen: 707001
-   level: 1
-                  csum_root:      18288110616576  gen: 707758     level: 3
-                  backup_total_bytes:     16003123642368
-                  backup_bytes_used:      6073712148480
-                  backup_num_devices:     2
-          backup 2:
-                  backup_tree_root:       18288112664576  gen: 707759
-   level: 1
-                  backup_chunk_root:      18289175560192  gen: 707001
-   level: 1
-                  backup_extent_root:     18288112582656  gen: 707759
-   level: 2
-                  backup_fs_root:         18288112533504  gen: 707759
-   level: 2
-                  backup_dev_root:        18288386441216  gen: 707001
-   level: 1
-                  csum_root:      18288110616576  gen: 707758     level: 3
-                  backup_total_bytes:     16003123642368
-                  backup_bytes_used:      6073712148480
-                  backup_num_devices:     2
-          backup 3:
-                  backup_tree_root:       18288112697344  gen: 707760
-   level: 1
-                  backup_chunk_root:      18289175560192  gen: 707001
-   level: 1
-                  backup_extent_root:     18288112713728  gen: 707760
-   level: 2
-                  backup_fs_root:         18288112533504  gen: 707759
-   level: 2
-                  backup_dev_root:        18288386441216  gen: 707001
-   level: 1
-                  csum_root:      18288110616576  gen: 707758     level: 3
-                  backup_total_bytes:     16003123642368
-                  backup_bytes_used:      6073712148480
-                  backup_num_devices:     2
-
-Additional Notes
-- The filesystem contains critical data (5.52 TiB), and I have backups
-of some portions but would prefer to recover as much as possible.
-- I plan to try `btrfs restore` on /dev/sdb1 with backup roots, but
-given the identical errors, I expect similar results.
-- I am prepared to create disk images (`dd`) if needed, but this would
-require significant storage (8 TiB per device).
-- I have avoided further write operations to prevent worsening the damage.
-
-I would greatly appreciate any advice, tools, or steps to either
-repair the filesystem or maximize data recovery. Please let me know if
-additional logs or outputs (e.g., `btrfs-find-root` or
-`btrfs-zero-log`) would be helpful.
-
-Thank you for your time and expertise.
-
-Best regards,
-Zhang Pengfei
-jstxzpf@gmail.com
+Thanks,
+Qu
 
