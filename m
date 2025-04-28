@@ -1,589 +1,172 @@
-Return-Path: <linux-btrfs+bounces-13465-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13466-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17F64A9F3D9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Apr 2025 16:53:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AA8A9F3DC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Apr 2025 16:53:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62CC61A8196B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Apr 2025 14:53:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14D027A32EE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Apr 2025 14:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E790226D4DE;
-	Mon, 28 Apr 2025 14:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AFF26FD82;
+	Mon, 28 Apr 2025 14:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="JwBWdI1c"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RVpO6QOF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D1o0REJn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RVpO6QOF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D1o0REJn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4294926FDAC
-	for <linux-btrfs@vger.kernel.org>; Mon, 28 Apr 2025 14:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124AA25228B
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Apr 2025 14:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745851989; cv=none; b=F+TeI/QysZtq5Pw5ARlvE844IwcYgpFA/P/0KheZB4P0O030MPnrV7R7oMRvuqxC0bXG2dF3DBlSmaOtqaXMsM6K942heLFFEBWQkPP5smUfNK5EkJNGN4aRGF2abMZksd25cQOptGxszYRa21takX6zRsDwE+eUMxBiZdQ+rH0=
+	t=1745852022; cv=none; b=onzSenZj6uKmXIPlKDC1Hrp9S5w5E4c5SH+1g8IH1fZskFVnx+R7gt8wPwb+Mu+1tE8tRt0Vmb5LACUNhbwW4Mu17ZsprxcJZHkK7BT1lJGvkUoYlWePVILl+IaaZzioLocBMLzjpW7PnW9MO59y0e85E5/vuH7SC28lE8wK80w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745851989; c=relaxed/simple;
-	bh=M5o3RiuzBsy0R+SV239Z6A5rinFr0tVKwg5/yyEGnwQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EDXgyt3pg07qr5pUsFCY2GBFaafDX/WoKBej7MZbYMSJEOTPsiEPDVipKXIwGcYwGIPAiCj1YtoMXnw7JRFfcSyZZjRtqfQRDFIyrxlLrJOCz05s9xtGxRQM/ZHi4LDlZ6FWZ8nv04H5Chk28eByXywhl7G4w7KVd+zvmjumPnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=JwBWdI1c; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e733a6ff491so1119988276.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Apr 2025 07:53:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1745851986; x=1746456786; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cq+cJY/Jb2h4h6r7urPgE8f3KjsDw1S5faxnz5eBK70=;
-        b=JwBWdI1cIs1SbaRXEDM0orxasmGo/ZjaY4+yv6+V/pz7a3peV19r1E/G4jqU+F4j/N
-         ih0qeSx4C/Df2DD/sUz/t8lCvKbQp9RYov92bRk+h30yj98LEdu04losBJu4C2JdJL3v
-         pXao++s957mUEQ8ljpWpRHk14rtGw/WSPpppvtYH5EOAh/9dAwVU6lRQ0EQi96zOyabS
-         KpjHue8Ky3OWzgtRtStmdSYvLcBipdkx6n8S2FCiA/N9a67cupYltLbJKlhFizA6gvYJ
-         35usvVlhfxUf+Fp6mJWwV9RZvPYX85MvH6cGpaPD73lDRM/CG5FXCG1Z9kdsi0P8nNll
-         Qfuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745851986; x=1746456786;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cq+cJY/Jb2h4h6r7urPgE8f3KjsDw1S5faxnz5eBK70=;
-        b=ZUY6wN9IH+4wqhBBmqetmeDkFnGWHxzm6nXDlRCMsOGIvvAldjT/Qc2kmHQigakgNT
-         o4vg/T97aqaIPEm9t8TaXdCPWiH7aqGSxDEfWl2PFwIcggTPk5xWgUvudJcYgQFGJKZt
-         iKtoRauU74F1TrBfvCnvNGepBf5Uafy4d9h8ouDuFG+FrtyeOdoj5iwoOAKlHmqIArii
-         aSNpHUx5R3kxbjWzC5269Ilq21NVAfrtfeBeDlt86xq6pEBb6d7yBLvtZcKeeVEf7tb5
-         ShZrTNbJ0Xeyn0JyHXXP2zBlq2XP9DLjxpVu2wIQCqrcT6tJAm87LBLaKdwmMOcFW5nt
-         mFvw==
-X-Gm-Message-State: AOJu0YxRpY9m9pSM45D3GJfmGRxYpAIraRCx3h/73i5gEfzgstefPvzS
-	UfTey4S/lTYuRhP3NdAkUqS+yJGxfrPN359IxmZ7zh2bY28SzuX0iVSPx+ELxn6E5jyHsU33tau
-	9+BA=
-X-Gm-Gg: ASbGnctH2ycYegNfzwlzjEodAvz8LwoUPT1KxjvmwakI5Pk+vgM8FfGbsrYQpn8Y747
-	K0X/n2IoChF0dEN2cZ50qdWjbB3qjerzDXdoWCi1qrVWwcS1rhpl9oKxWKhGXrnTzZLrsjfYAUv
-	oPg+JkFTWYhmPUiDvgxvLofxj/AkXEEs0eu8JQ7TqMbsSBLdhVP7YoH6lH2HxmBvNhtcaswA6po
-	9SJiI0Uzg8d5tR1gjWxDgH5S5KAmZv3jk03/rrICFLp85Fp9PR/1OvfFxtboWFygBs+d7IxDb4V
-	Jh/w2YR8ZfI7pc2QEkNAJJ9w1fULtk69y8ixwN9Aau1nnfROOuLhrXHN4//EvPzALGhiwTviePh
-	Ujg==
-X-Google-Smtp-Source: AGHT+IH+Hw2WB/1ekmZHIK1g6ftAnRNC6AR3Mc/bYEZ7D/HL3a54leeJ/jwcR97Rq+TwK1gH+SeiXg==
-X-Received: by 2002:a05:6902:461a:b0:e6d:fb0f:fcbf with SMTP id 3f1490d57ef6-e732344d533mr14545070276.39.1745851985591;
-        Mon, 28 Apr 2025 07:53:05 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e732476a6f8sm1402448276.53.2025.04.28.07.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Apr 2025 07:53:05 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v5 3/3] btrfs: use buffer xarray for extent buffer writeback operations
-Date: Mon, 28 Apr 2025 10:52:57 -0400
-Message-ID: <182a186a376f40b01dea6f4cd3da9ec84b62a088.1745851722.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1745851722.git.josef@toxicpanda.com>
-References: <cover.1745851722.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1745852022; c=relaxed/simple;
+	bh=JxlQcYfB4JkkwOMMshHxgSB0Kp8XfqN5F2JOn0sDpow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MnbaSg1sf5/QwZh1mwC/MEXJ7RuJH0Q1811jeVqj7O6eo/ZY+i7OX+3Zsd2t8nyAJC+WSt3okDurJsjJk9ybRhsILWIg+BAcJ12wZFiDKU6IMCIGwDyyPF9zd16d+3Qd7w+j3oUFtuZ3Wbrk5uTIF1pNFTmsdneoTl3MvYuVLR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RVpO6QOF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D1o0REJn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RVpO6QOF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D1o0REJn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 10977211EA;
+	Mon, 28 Apr 2025 14:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745852019;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yo+zlJv77MAghdEhC5AbNoIzuGUhMmD4Iq0UW6FYePI=;
+	b=RVpO6QOF6tX7uh2U9KBh1BMVKJEHf6Tc9Gju3YXwxMIHwy4gg2wII6HI7V0Nxkb8aDcDoh
+	/2nFtT4mCoCChUUsxtdloa4pY9oh/gVqACTSkWmkd1DMAcN4mgLsO1ZQX4hA+Y+Za+ysdY
+	snqJmeyxTzfjz9DJv5RA2t/oSh3xUwE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745852019;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yo+zlJv77MAghdEhC5AbNoIzuGUhMmD4Iq0UW6FYePI=;
+	b=D1o0REJnTftnA6uJZMrJAUKUPbt+bo9YiA3NjojPG8OHNo9pYpANXKQhF1q1qRZiqLuQiV
+	iUMzCfZjBwuJYKAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RVpO6QOF;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=D1o0REJn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745852019;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yo+zlJv77MAghdEhC5AbNoIzuGUhMmD4Iq0UW6FYePI=;
+	b=RVpO6QOF6tX7uh2U9KBh1BMVKJEHf6Tc9Gju3YXwxMIHwy4gg2wII6HI7V0Nxkb8aDcDoh
+	/2nFtT4mCoCChUUsxtdloa4pY9oh/gVqACTSkWmkd1DMAcN4mgLsO1ZQX4hA+Y+Za+ysdY
+	snqJmeyxTzfjz9DJv5RA2t/oSh3xUwE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745852019;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yo+zlJv77MAghdEhC5AbNoIzuGUhMmD4Iq0UW6FYePI=;
+	b=D1o0REJnTftnA6uJZMrJAUKUPbt+bo9YiA3NjojPG8OHNo9pYpANXKQhF1q1qRZiqLuQiV
+	iUMzCfZjBwuJYKAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E8ABD13A25;
+	Mon, 28 Apr 2025 14:53:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rmmSOHKWD2jHfQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 28 Apr 2025 14:53:38 +0000
+Date: Mon, 28 Apr 2025 16:53:37 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/22] btrfs: some io tree optimizations and cleanups
+Message-ID: <20250428145337.GB7139@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1745401627.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1745401627.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 10977211EA
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-Currently we have this ugly back and forth with the btree writeback
-where we find the folio, find the eb associated with that folio, and
-then attempt to writeback.  This results in two different paths for
-subpage eb's and >= pagesize eb's.
+On Wed, Apr 23, 2025 at 03:19:40PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> An assorted set of optimizations and cleanups related to io trees.
+> Details in the change logs.
+> 
+> Filipe Manana (22):
+>   btrfs: remove duplicate error check at btrfs_clear_extent_bit_changeset()
+>   btrfs: exit after state split error at btrfs_clear_extent_bit_changeset()
+>   btrfs: add missing error return to btrfs_clear_extent_bit_changeset()
+>   btrfs: use bools for local variables at btrfs_clear_extent_bit_changeset()
+>   btrfs: avoid extra tree search at btrfs_clear_extent_bit_changeset()
+>   btrfs: simplify last record detection at btrfs_clear_extent_bit_changeset()
+>   btrfs: remove duplicate error check at btrfs_convert_extent_bit()
+>   btrfs: exit after state split error at btrfs_convert_extent_bit()
+>   btrfs: exit after state insertion failure at btrfs_convert_extent_bit()
+>   btrfs: avoid unnecessary next node searches when clearing bits from extent range
+>   btrfs: avoid repeated extent state processing when converting extent bits
+>   btrfs: avoid researching tree when converting bits in an extent range
+>   btrfs: simplify last record detection at btrfs_convert_extent_bit()
+>   btrfs: exit after state insertion failure at set_extent_bit()
+>   btrfs: exit after state split error at set_extent_bit()
+>   btrfs: simplify last record detection at set_extent_bit()
+>   btrfs: avoid repeated extent state processing when setting extent bits
+>   btrfs: avoid researching tree when setting bits in an extent range
+>   btrfs: remove unnecessary NULL checks before freeing extent state
+>   btrfs: don't BUG_ON() when unpinning extents during transaction commit
+>   btrfs: remove variable to track trimmed bytes at btrfs_finish_extent_commit()
+>   btrfs: make extent unpinning more efficient when committing transaction
 
-Clean this up by adding our own infrastructure around looking up tag'ed
-eb's and writing the eb's out directly.  This allows us to unify the
-subpage and >= pagesize IO paths, resulting in a much cleaner writeback
-path for extent buffers.
-
-I ran this through fsperf on a VM with 8 CPUs and 16gib of ram.  I used
-smallfiles100k, but reduced the files to 1k to make it run faster, the
-results are as follows, with the statistically significant improvements
-marked with *, there were no regressions.  fsperf was run with -n 10 for
-both runs, so the baseline is the average 10 runs and the test is the
-average of 10 runs.
-
-smallfiles100k results
-      metric           baseline       current        stdev            diff
-================================================================================
-avg_commit_ms               68.58         58.44          3.35   -14.79% *
-commits                    270.60        254.70         16.24    -5.88%
-dev_read_iops                  48            48             0     0.00%
-dev_read_kbytes              1044          1044             0     0.00%
-dev_write_iops          866117.90     850028.10      14292.20    -1.86%
-dev_write_kbytes      10939976.40   10605701.20     351330.32    -3.06%
-elapsed                     49.30            33          1.64   -33.06% *
-end_state_mount_ns    41251498.80   35773220.70    2531205.32   -13.28% *
-end_state_umount_ns      1.90e+09      1.50e+09   14186226.85   -21.38% *
-max_commit_ms                 139        111.60          9.72   -19.71% *
-sys_cpu                      4.90          3.86          0.88   -21.29%
-write_bw_bytes        42935768.20   64318451.10    1609415.05    49.80% *
-write_clat_ns_mean      366431.69     243202.60      14161.98   -33.63% *
-write_clat_ns_p50        49203.20         20992        264.40   -57.34% *
-write_clat_ns_p99          827392     653721.60      65904.74   -20.99% *
-write_io_kbytes           2035940       2035940             0     0.00%
-write_iops               10482.37      15702.75        392.92    49.80% *
-write_lat_ns_max         1.01e+08      90516129    3910102.06   -10.29% *
-write_lat_ns_mean       366556.19     243308.48      14154.51   -33.62% *
-
-As you can see we get about a 33% decrease runtime, with a 50%
-throughput increase, which is pretty significant.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent_io.c   | 339 ++++++++++++++++++++---------------------
- fs/btrfs/extent_io.h   |   2 +
- fs/btrfs/transaction.c |   5 +-
- 3 files changed, 169 insertions(+), 177 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index daab6373c6a4..a8f6d1530b53 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1923,6 +1923,111 @@ static void buffer_tree_clear_mark(const struct extent_buffer *eb, xa_mark_t mar
- 	xas_unlock_irqrestore(&xas, flags);
- }
- 
-+static void buffer_tree_tag_for_writeback(struct btrfs_fs_info *fs_info,
-+					    unsigned long start, unsigned long end)
-+{
-+	XA_STATE(xas, &fs_info->buffer_tree, start);
-+	unsigned int tagged = 0;
-+	void *eb;
-+
-+	xas_lock_irq(&xas);
-+	xas_for_each_marked(&xas, eb, end, PAGECACHE_TAG_DIRTY) {
-+		xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
-+		if (++tagged % XA_CHECK_SCHED)
-+			continue;
-+		xas_pause(&xas);
-+		xas_unlock_irq(&xas);
-+		cond_resched();
-+		xas_lock_irq(&xas);
-+	}
-+	xas_unlock_irq(&xas);
-+}
-+
-+struct eb_batch {
-+	unsigned int nr;
-+	unsigned int cur;
-+	struct extent_buffer *ebs[PAGEVEC_SIZE];
-+};
-+
-+static inline bool eb_batch_add(struct eb_batch *batch, struct extent_buffer *eb)
-+{
-+	batch->ebs[batch->nr++] = eb;
-+	return (batch->nr < PAGEVEC_SIZE);
-+}
-+
-+static inline void eb_batch_init(struct eb_batch *batch)
-+{
-+	batch->nr = 0;
-+	batch->cur = 0;
-+}
-+
-+static inline struct extent_buffer *eb_batch_next(struct eb_batch *batch)
-+{
-+	if (batch->cur >= batch->nr)
-+		return NULL;
-+	return batch->ebs[batch->cur++];
-+}
-+
-+static inline void eb_batch_release(struct eb_batch *batch)
-+{
-+	for (unsigned int i = 0; i < batch->nr; i++)
-+		free_extent_buffer(batch->ebs[i]);
-+	eb_batch_init(batch);
-+}
-+
-+static inline struct extent_buffer *find_get_eb(struct xa_state *xas, unsigned long max,
-+						xa_mark_t mark)
-+{
-+	struct extent_buffer *eb;
-+
-+retry:
-+	eb = xas_find_marked(xas, max, mark);
-+
-+	if (xas_retry(xas, eb))
-+		goto retry;
-+
-+	if (!eb)
-+		return NULL;
-+
-+	if (!atomic_inc_not_zero(&eb->refs))
-+		goto reset;
-+
-+	if (unlikely(eb != xas_reload(xas))) {
-+		free_extent_buffer(eb);
-+		goto reset;
-+	}
-+
-+	return eb;
-+reset:
-+	xas_reset(xas);
-+	goto retry;
-+}
-+
-+static unsigned int buffer_tree_get_ebs_tag(struct btrfs_fs_info *fs_info,
-+					    unsigned long *start,
-+					    unsigned long end, xa_mark_t tag,
-+					    struct eb_batch *batch)
-+{
-+	XA_STATE(xas, &fs_info->buffer_tree, *start);
-+	struct extent_buffer *eb;
-+
-+	rcu_read_lock();
-+	while ((eb = find_get_eb(&xas, end, tag)) != NULL) {
-+		if (!eb_batch_add(batch, eb)) {
-+			*start = (eb->start + eb->len) >> fs_info->sectorsize_bits;
-+			goto out;
-+		}
-+	}
-+	if (end == ULONG_MAX)
-+		*start = ULONG_MAX;
-+	else
-+		*start = end + 1;
-+out:
-+	rcu_read_unlock();
-+
-+	return batch->nr;
-+}
-+
- /*
-  * The endio specific version which won't touch any unsafe spinlock in endio
-  * context.
-@@ -2025,163 +2130,38 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
- }
- 
- /*
-- * Submit one subpage btree page.
-+ * Wait for all eb writeback in the given range to finish.
-  *
-- * The main difference to submit_eb_page() is:
-- * - Page locking
-- *   For subpage, we don't rely on page locking at all.
-- *
-- * - Flush write bio
-- *   We only flush bio if we may be unable to fit current extent buffers into
-- *   current bio.
-- *
-- * Return >=0 for the number of submitted extent buffers.
-- * Return <0 for fatal error.
-+ * @fs_info:	The fs_info for this file system.
-+ * @start:	The offset of the range to start waiting on writeback.
-+ * @end:	The end of the range, inclusive. This is meant to be used in
-+ *		conjuction with wait_marked_extents, so this will usually be
-+ *		the_next_eb->start - 1.
-  */
--static int submit_eb_subpage(struct folio *folio, struct writeback_control *wbc)
-+void btrfs_btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start,
-+				      u64 end)
- {
--	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
--	int submitted = 0;
--	u64 folio_start = folio_pos(folio);
--	int bit_start = 0;
--	int sectors_per_node = fs_info->nodesize >> fs_info->sectorsize_bits;
--	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
-+	struct eb_batch batch;
-+	unsigned long start_index = start >> fs_info->sectorsize_bits;
-+	unsigned long end_index = end >> fs_info->sectorsize_bits;
- 
--	/* Lock and write each dirty extent buffers in the range */
--	while (bit_start < blocks_per_folio) {
--		struct btrfs_subpage *subpage = folio_get_private(folio);
-+	eb_batch_init(&batch);
-+	while (start_index <= end_index) {
- 		struct extent_buffer *eb;
--		unsigned long flags;
--		u64 start;
-+		unsigned int nr_ebs;
- 
--		/*
--		 * Take private lock to ensure the subpage won't be detached
--		 * in the meantime.
--		 */
--		spin_lock(&folio->mapping->i_private_lock);
--		if (!folio_test_private(folio)) {
--			spin_unlock(&folio->mapping->i_private_lock);
-+		nr_ebs = buffer_tree_get_ebs_tag(fs_info, &start_index,
-+						 end_index,
-+						 PAGECACHE_TAG_WRITEBACK,
-+						 &batch);
-+		if (!nr_ebs)
- 			break;
--		}
--		spin_lock_irqsave(&subpage->lock, flags);
--		if (!test_bit(bit_start + btrfs_bitmap_nr_dirty * blocks_per_folio,
--			      subpage->bitmaps)) {
--			spin_unlock_irqrestore(&subpage->lock, flags);
--			spin_unlock(&folio->mapping->i_private_lock);
--			bit_start += sectors_per_node;
--			continue;
--		}
- 
--		start = folio_start + bit_start * fs_info->sectorsize;
--		bit_start += sectors_per_node;
--
--		/*
--		 * Here we just want to grab the eb without touching extra
--		 * spin locks, so call find_extent_buffer_nolock().
--		 */
--		eb = find_extent_buffer_nolock(fs_info, start);
--		spin_unlock_irqrestore(&subpage->lock, flags);
--		spin_unlock(&folio->mapping->i_private_lock);
--
--		/*
--		 * The eb has already reached 0 refs thus find_extent_buffer()
--		 * doesn't return it. We don't need to write back such eb
--		 * anyway.
--		 */
--		if (!eb)
--			continue;
--
--		if (lock_extent_buffer_for_io(eb, wbc)) {
--			write_one_eb(eb, wbc);
--			submitted++;
--		}
--		free_extent_buffer(eb);
-+		while ((eb = eb_batch_next(&batch)) != NULL)
-+			wait_on_extent_buffer_writeback(eb);
-+		eb_batch_release(&batch);
-+		cond_resched();
- 	}
--	return submitted;
--}
--
--/*
-- * Submit all page(s) of one extent buffer.
-- *
-- * @page:	the page of one extent buffer
-- * @eb_context:	to determine if we need to submit this page, if current page
-- *		belongs to this eb, we don't need to submit
-- *
-- * The caller should pass each page in their bytenr order, and here we use
-- * @eb_context to determine if we have submitted pages of one extent buffer.
-- *
-- * If we have, we just skip until we hit a new page that doesn't belong to
-- * current @eb_context.
-- *
-- * If not, we submit all the page(s) of the extent buffer.
-- *
-- * Return >0 if we have submitted the extent buffer successfully.
-- * Return 0 if we don't need to submit the page, as it's already submitted by
-- * previous call.
-- * Return <0 for fatal error.
-- */
--static int submit_eb_page(struct folio *folio, struct btrfs_eb_write_context *ctx)
--{
--	struct writeback_control *wbc = ctx->wbc;
--	struct address_space *mapping = folio->mapping;
--	struct extent_buffer *eb;
--	int ret;
--
--	if (!folio_test_private(folio))
--		return 0;
--
--	if (btrfs_meta_is_subpage(folio_to_fs_info(folio)))
--		return submit_eb_subpage(folio, wbc);
--
--	spin_lock(&mapping->i_private_lock);
--	if (!folio_test_private(folio)) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--
--	eb = folio_get_private(folio);
--
--	/*
--	 * Shouldn't happen and normally this would be a BUG_ON but no point
--	 * crashing the machine for something we can survive anyway.
--	 */
--	if (WARN_ON(!eb)) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--
--	if (eb == ctx->eb) {
--		spin_unlock(&mapping->i_private_lock);
--		return 0;
--	}
--	ret = atomic_inc_not_zero(&eb->refs);
--	spin_unlock(&mapping->i_private_lock);
--	if (!ret)
--		return 0;
--
--	ctx->eb = eb;
--
--	ret = btrfs_check_meta_write_pointer(eb->fs_info, ctx);
--	if (ret) {
--		if (ret == -EBUSY)
--			ret = 0;
--		free_extent_buffer(eb);
--		return ret;
--	}
--
--	if (!lock_extent_buffer_for_io(eb, wbc)) {
--		free_extent_buffer(eb);
--		return 0;
--	}
--	/* Implies write in zoned mode. */
--	if (ctx->zoned_bg) {
--		/* Mark the last eb in the block group. */
--		btrfs_schedule_zone_finish_bg(ctx->zoned_bg, eb);
--		ctx->zoned_bg->meta_write_pointer += eb->len;
--	}
--	write_one_eb(eb, wbc);
--	free_extent_buffer(eb);
--	return 1;
- }
- 
- int btree_write_cache_pages(struct address_space *mapping,
-@@ -2192,25 +2172,27 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	int ret = 0;
- 	int done = 0;
- 	int nr_to_write_done = 0;
--	struct folio_batch fbatch;
--	unsigned int nr_folios;
--	pgoff_t index;
--	pgoff_t end;		/* Inclusive */
-+	struct eb_batch batch;
-+	unsigned int nr_ebs;
-+	unsigned long index;
-+	unsigned long end;
- 	int scanned = 0;
- 	xa_mark_t tag;
- 
--	folio_batch_init(&fbatch);
-+	eb_batch_init(&batch);
- 	if (wbc->range_cyclic) {
--		index = mapping->writeback_index; /* Start from prev offset */
-+		index = (mapping->writeback_index << PAGE_SHIFT) >> fs_info->sectorsize_bits;
- 		end = -1;
-+
- 		/*
- 		 * Start from the beginning does not need to cycle over the
- 		 * range, mark it as scanned.
- 		 */
- 		scanned = (index == 0);
- 	} else {
--		index = wbc->range_start >> PAGE_SHIFT;
--		end = wbc->range_end >> PAGE_SHIFT;
-+		index = wbc->range_start >> fs_info->sectorsize_bits;
-+		end = wbc->range_end >> fs_info->sectorsize_bits;
-+
- 		scanned = 1;
- 	}
- 	if (wbc->sync_mode == WB_SYNC_ALL)
-@@ -2220,31 +2202,40 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	btrfs_zoned_meta_io_lock(fs_info);
- retry:
- 	if (wbc->sync_mode == WB_SYNC_ALL)
--		tag_pages_for_writeback(mapping, index, end);
-+		buffer_tree_tag_for_writeback(fs_info, index, end);
- 	while (!done && !nr_to_write_done && (index <= end) &&
--	       (nr_folios = filemap_get_folios_tag(mapping, &index, end,
--					    tag, &fbatch))) {
--		unsigned i;
-+	       (nr_ebs = buffer_tree_get_ebs_tag(fs_info, &index, end, tag,
-+						 &batch))) {
-+		struct extent_buffer *eb;
- 
--		for (i = 0; i < nr_folios; i++) {
--			struct folio *folio = fbatch.folios[i];
-+		while ((eb = eb_batch_next(&batch)) != NULL) {
-+			ctx.eb = eb;
- 
--			ret = submit_eb_page(folio, &ctx);
--			if (ret == 0)
-+			ret = btrfs_check_meta_write_pointer(eb->fs_info, &ctx);
-+			if (ret) {
-+				if (ret == -EBUSY)
-+					ret = 0;
-+				if (ret) {
-+					done = 1;
-+					break;
-+				}
-+				free_extent_buffer(eb);
- 				continue;
--			if (ret < 0) {
--				done = 1;
--				break;
- 			}
- 
--			/*
--			 * the filesystem may choose to bump up nr_to_write.
--			 * We have to make sure to honor the new nr_to_write
--			 * at any time
--			 */
--			nr_to_write_done = wbc->nr_to_write <= 0;
-+			if (!lock_extent_buffer_for_io(eb, wbc))
-+				continue;
-+
-+			/* Implies write in zoned mode. */
-+			if (ctx.zoned_bg) {
-+				/* Mark the last eb in the block group. */
-+				btrfs_schedule_zone_finish_bg(ctx.zoned_bg, eb);
-+				ctx.zoned_bg->meta_write_pointer += eb->len;
-+			}
-+			write_one_eb(eb, wbc);
- 		}
--		folio_batch_release(&fbatch);
-+		nr_to_write_done = wbc->nr_to_write <= 0;
-+		eb_batch_release(&batch);
- 		cond_resched();
- 	}
- 	if (!scanned && !done) {
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index b344162f790c..b7c1cd0b3c20 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -240,6 +240,8 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
- int btrfs_writepages(struct address_space *mapping, struct writeback_control *wbc);
- int btree_write_cache_pages(struct address_space *mapping,
- 			    struct writeback_control *wbc);
-+void btrfs_btree_wait_writeback_range(struct btrfs_fs_info *fs_info, u64 start,
-+				      u64 end);
- void btrfs_readahead(struct readahead_control *rac);
- int set_folio_extent_mapped(struct folio *folio);
- void clear_folio_extent_mapped(struct folio *folio);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 39e48bf610a1..a538a85ac2bd 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1155,7 +1155,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- 		if (!ret)
- 			ret = filemap_fdatawrite_range(mapping, start, end);
- 		if (!ret && wait_writeback)
--			ret = filemap_fdatawait_range(mapping, start, end);
-+			btrfs_btree_wait_writeback_range(fs_info, start, end);
- 		btrfs_free_extent_state(cached_state);
- 		if (ret)
- 			break;
-@@ -1175,7 +1175,6 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 				       struct extent_io_tree *dirty_pages)
- {
--	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct extent_state *cached_state = NULL;
- 	u64 start = 0;
- 	u64 end;
-@@ -1196,7 +1195,7 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 		if (ret == -ENOMEM)
- 			ret = 0;
- 		if (!ret)
--			ret = filemap_fdatawait_range(mapping, start, end);
-+			btrfs_btree_wait_writeback_range(fs_info, start, end);
- 		btrfs_free_extent_state(cached_state);
- 		if (ret)
- 			break;
--- 
-2.48.1
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
