@@ -1,162 +1,105 @@
-Return-Path: <linux-btrfs+bounces-13489-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13491-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5237BAA042D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Apr 2025 09:17:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F35DAA0463
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Apr 2025 09:25:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97BE07A264F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Apr 2025 07:16:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C90A8482B83
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Apr 2025 07:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17452750F6;
-	Tue, 29 Apr 2025 07:17:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BcJpIs0w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4ad7O9nc";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xa35RLPB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kyapaps8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8455D277033;
+	Tue, 29 Apr 2025 07:24:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84D41D5ABF
-	for <linux-btrfs@vger.kernel.org>; Tue, 29 Apr 2025 07:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65BA21B1A3;
+	Tue, 29 Apr 2025 07:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.51.61.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745911032; cv=none; b=ZdcmFunlvh3CyEJHiOR2bx95Uahhlv0Ge5VvCKyZlpNTy6TGSqF9ovhsQSQap3YpfHTJq9jf/jBGF0fzu8E8EwAV+HSwIk+yTWcPjWCYLJYrIOuCSjFBYSXvxa+AVMhklMhv/FSBefdVPcqPqT3bVGT5/n6BPWmRR7etJAzSsIU=
+	t=1745911447; cv=none; b=Zsw49rinSIhCqvG85TX3vhobuxRvVmfF334i72kAy8LCQcS6KrvI9CH0hbLwBHi9Jq+dCxtiQAGvncrSv71MlIPgmeWfDZqxqt7vDyaiowl8DOTbxhe6YUJOnALDqImr9XH8NUZlPcfoZqvEvpecm5+uTCjnUZ69Pugz9NEpWxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745911032; c=relaxed/simple;
-	bh=HW6eWYlMNW+IBmHBzFseixExFl18C6pvvShlnSetdts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MJNcMayO+hEX/HCFzY7ztsjpetNRrx7p43jt1qG03OOPVqJVyoy/7JyNdFNEquG4nDBsBdB9KsaCWpx2U5stx1Qlc6JApiCkisGJKiJDTUKFE7/Bm5SgNKr3awk4T0lF3e0n1VvaN1v82xtjkcWXzmk0Y23+tvwNYtYWE7HAhG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BcJpIs0w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4ad7O9nc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xa35RLPB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kyapaps8; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BD1401F7C0;
-	Tue, 29 Apr 2025 07:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745911029;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZA0v72PJAN91+9cA9aUErfA9rgA/ydzIkkI6QlthXvQ=;
-	b=BcJpIs0wXRcHyYDzsx7HU5SDwkMbIyRNyPgTtn10SFVgUVSTvKCPF/kfh0O/pPmvE17Z8v
-	tIzwnKQRk+EhXO5fevnahexoKmNO+MECjTX6KF/nFBkhMODX4Zg/6mtPR70/By5H2WhAPl
-	bhbqt/C1vgki0NlJdR6CsQilGpXesuY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745911029;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZA0v72PJAN91+9cA9aUErfA9rgA/ydzIkkI6QlthXvQ=;
-	b=4ad7O9ncAT0MfSn23L5sTNVIB6PSzDrAXL4gzDt5ct8Sx+mqzRlnifuzj7BS26+Fuvho1X
-	GjbkDdmg4Oc1LQCg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xa35RLPB;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kyapaps8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745911028;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZA0v72PJAN91+9cA9aUErfA9rgA/ydzIkkI6QlthXvQ=;
-	b=xa35RLPBQcvA/yyKMB5TGga289RysXBRSO3Usp6Dk+NPiW/qxPDL4GeG2LRtCokCGnTcpi
-	FasgHjOa8icZeVUYXnY/8X53D62blWVOtDD15XjRquQ31sfqp+GEsVxsp/mCIXwLtOFy2l
-	6k/3SJKnTxoDnrQdi8mCHI0HDBBCUi4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745911028;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZA0v72PJAN91+9cA9aUErfA9rgA/ydzIkkI6QlthXvQ=;
-	b=kyapaps8P5DsYu5oqzvf/u+nOxzZy/kIB6/CEwFg9NQyHEIdbw4Rr7etfaJAks8VZHJdi1
-	SVuu2i5GM+fc1JAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACAE71340C;
-	Tue, 29 Apr 2025 07:17:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rAfyKfR8EGjhbQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 29 Apr 2025 07:17:08 +0000
-Date: Tue, 29 Apr 2025 09:17:07 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: get rid of btrfs_read_dev_super()
-Message-ID: <20250429071707.GC18094@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1745802753.git.wqu@suse.com>
- <96a246471a1071b6cee00be2bcdbc7bc0e97787b.1745802753.git.wqu@suse.com>
+	s=arc-20240116; t=1745911447; c=relaxed/simple;
+	bh=5SLQJUzlUoUcDCh5g1aEuxv+XpKP2Kwgo3y4seB7O3I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AsMU9w9TmBTqMYGOt95iT37ft8uU/3aEFnUvXUA+D6irIPGmU/SZWN7G9QdLzDB1MKUTL7GAi/0equyd9BMbZIs2BSL+2w5W0Wfg1CA7dLqvr1fUb9kioS1DrlqHgYSbeSIJ62NSebM59SwIeEdpl5fd8+G2zwFcGg+6f6ZDROM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com; spf=pass smtp.mailfrom=inspur.com; arc=none smtp.client-ip=210.51.61.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inspur.com
+Received: from jtjnmail201609.home.langchao.com
+        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id 202504291522453646;
+        Tue, 29 Apr 2025 15:22:45 +0800
+Received: from localhost.localdomain (10.94.7.67) by
+ jtjnmail201609.home.langchao.com (10.100.2.9) with Microsoft SMTP Server id
+ 15.1.2507.39; Tue, 29 Apr 2025 15:22:46 +0800
+From: Bo Liu <liubo03@inspur.com>
+To: <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
+CC: <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Bo Liu
+	<liubo03@inspur.com>
+Subject: [PATCH] btrfs: Use refcount_t instead of atomic_t for mmap_count
+Date: Tue, 29 Apr 2025 03:20:33 -0400
+Message-ID: <20250429072033.3382-1-liubo03@inspur.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96a246471a1071b6cee00be2bcdbc7bc0e97787b.1745802753.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: BD1401F7C0
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain
+tUid: 2025429152245afd561e9c116c9f26a73e47086225e38
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 
-On Mon, Apr 28, 2025 at 10:45:52AM +0930, Qu Wenruo wrote:
-> The function is introduced by commit a512bbf855ff ("Btrfs: superblock
-> duplication") at the beginning of btrfs.
-> 
-> It leaves a comment saying we need a special mount option to read all
-> super blocks, but it's never implemented.
-> 
-> This means btrfs_read_dev_super() is always reading the first super
-> block, making all the code finding the latest super block unnecessary.
-> 
-> Just remove that function and replace all call sites with
-> btrfs_read_disk_super(bdev, 0, false).
+Use an API that resembles more the actual use of mmap_count.
+Found by cocci:
+fs/btrfs/bio.c:153:5-24: WARNING: atomic_dec_and_test variation before object free at line 155
 
-I think it's ok to remove it, overwriting the primary superblock is
-pointing to a worse problem that may not be simply fixed by starting
-from the copies. The rescue tools or check have the ability to use the
-copy and start from there.
+Signed-off-by: Bo Liu <liubo03@inspur.com>
+---
+ fs/btrfs/bio.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index a3ee9a976f6f..353c61936cd6 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -23,7 +23,7 @@ static mempool_t btrfs_failed_bio_pool;
+ struct btrfs_failed_bio {
+ 	struct btrfs_bio *bbio;
+ 	int num_copies;
+-	atomic_t repair_count;
++	refcount_t repair_count;
+ };
+ 
+ /* Is this a data path I/O that needs storage layer checksum and repair? */
+@@ -150,7 +150,7 @@ static int prev_repair_mirror(struct btrfs_failed_bio *fbio, int cur_mirror)
+ 
+ static void btrfs_repair_done(struct btrfs_failed_bio *fbio)
+ {
+-	if (atomic_dec_and_test(&fbio->repair_count)) {
++	if (refcount_dec_and_test(&fbio->repair_count)) {
+ 		btrfs_bio_end_io(fbio->bbio, fbio->bbio->bio.bi_status);
+ 		mempool_free(fbio, &btrfs_failed_bio_pool);
+ 	}
+@@ -235,10 +235,10 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
+ 		fbio = mempool_alloc(&btrfs_failed_bio_pool, GFP_NOFS);
+ 		fbio->bbio = failed_bbio;
+ 		fbio->num_copies = num_copies;
+-		atomic_set(&fbio->repair_count, 1);
++		refcount_set(&fbio->repair_count, 1);
+ 	}
+ 
+-	atomic_inc(&fbio->repair_count);
++	refcount_inc(&fbio->repair_count);
+ 
+ 	repair_bio = bio_alloc_bioset(NULL, 1, REQ_OP_READ, GFP_NOFS,
+ 				      &btrfs_repair_bioset);
+-- 
+2.31.1
+
 
