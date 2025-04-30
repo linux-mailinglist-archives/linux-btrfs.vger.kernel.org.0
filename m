@@ -1,167 +1,185 @@
-Return-Path: <linux-btrfs+bounces-13588-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13589-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12360AA5752
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 23:31:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA26AA57AF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 23:58:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 600F7505F12
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 21:30:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD7E4C6085
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 21:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD392D268B;
-	Wed, 30 Apr 2025 21:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823ED221DA2;
+	Wed, 30 Apr 2025 21:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hlKeK5R6"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bpHSzkoc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7A32D1126;
-	Wed, 30 Apr 2025 21:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D833122129D
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 21:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746048180; cv=none; b=E8m5/4lOXdQG66R9y5fnc+o0qL1et9hy7warudr5QZxLPiLTQ4MsPAiGfGXs9dsmtCdZO2h4A797FYJGQpLYtR1xitTjXdRhbl+fIwuAwiokOrkVoVHu+JsD2O3M5/TJtOCJKlW1WekU2/npqaarRxudSv8+eOPEluB5GniuZxI=
+	t=1746050326; cv=none; b=sP4ucfovFLG3xXChfZiqPievUitT0ODcQ5jeEeFAJPKKx+BYMDR5tv+MfYzydfZrJeAfGT2YBRWx6w0EE9tRDp+tSgZl8ObMvbrMH9JAcnIZLxnE1x6zzyi6K8qqtdXyuAefYI5lAtgWwIO7kL3LFtEs+FFlLkk30p4VVrqrozE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746048180; c=relaxed/simple;
-	bh=LWH2IeIHBETWvdlPK8EFEn8CgwqV7CCSowakSE/YpAI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qlVBD01XJzvvfugSAsDzDvpOahrwKDeANt+/4i8TC5jiZESOeeRVxAFdAZoNhhEYNiuUytPDaYVxPe+J4gJLiYWBf6d/66n+xZ9et47HU13YUKhb1gxADyrC5cMjZsrKoOcg+7IRtnb0rk8vKTtTF0YKciMJ5aVZGE5c8F9ffOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hlKeK5R6; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=xUb6OpV1cKOqoxjJg2NB06rtM4y9TqsotfYyIOWBJdg=; b=hlKeK5R6xaQB9XX4joAbRt/N65
-	9eyPL7ErrBQbr5/fz/5756ctrAAsSHMr2M5iYII8ppGKBLjVOcYcGUWI7WSTITAnt2zaUeFr/Vz86
-	NzKU0l5Nl9fJVNzR3JaSHGxfL0VPOdpQURCLw0t3e/9PX2yLGqSIZstrknTKmaLY4whrcJ2SasH1b
-	uAHvL/NHjPDh6o/PWdLZDF/gLZXGy2t42r+DCwh/KQ8BZpPyeIUtZp6KookUZ+r+/6PfDxymSUX2v
-	+y+542I2F2PiPXU4Yd6qiU96mMLR1cGIsvG/r+PH2/z/sSYipsHZrTtixgHaHxps3WDpWbdcfUvSH
-	lBSsUl5A==;
-Received: from [206.0.71.65] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAEtN-0000000E2kd-49Pf;
-	Wed, 30 Apr 2025 21:22:58 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Coly Li <colyli@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@kernel.org>,
-	slava@dubeyko.com,
-	glaubitz@physik.fu-berlin.de,
-	frank.li@vivo.com,
-	linux-bcache@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 19/19] hfsplus: use bdev_rw_virt in hfsplus_submit_bio
-Date: Wed, 30 Apr 2025 16:21:49 -0500
-Message-ID: <20250430212159.2865803-20-hch@lst.de>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250430212159.2865803-1-hch@lst.de>
-References: <20250430212159.2865803-1-hch@lst.de>
+	s=arc-20240116; t=1746050326; c=relaxed/simple;
+	bh=DmDqUDXb39rNnGXKQjQZrPbdivhD4PmYkho1j+hYWfk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mglOMSi2QjOJg4MsyKnRpGa8ilRGJCtDBNHnCnKAVfjv2TTalNZGghS0Pyd7N7j+2lRQOwjmvY8sjbfOUp71hMP0MLcXZ0KK9Zeq/FqUrRwQL1DtBmmq8BYWKfmxQlSr6m1x/fYDxRT8AsLeN0DAy9dI3Ppmw6u/2ukqtN/Nves=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bpHSzkoc; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39c1efbefc6so211008f8f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 14:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1746050322; x=1746655122; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=eWWrqwnLhQenGzV7KAIF5NRe8wBhEqWcnq/hVFaM2vo=;
+        b=bpHSzkoc2F2b646Fpy+rMJr3BqXjNCXYVA1tif/kMxhvoxQkD5Msl55G5Qe+btCsjJ
+         6ltZ9dfGTG5vlWYHixwNzcuE7mlsJlDQK0xmOix2zwljye/GnBIOY5SY7544cqqbI6JV
+         519jWDrcYCW5UU7vDXp4yB7mme+1fKy15BOPw6BZrBrXabWJRW26D+RRd8V4VAbxRGgQ
+         M9eAnytQGUPSo0qCy8r0C5T1AJ2LyX2a7J3A/AFRN0Upx/LhMhD+6h2HPTgWey8PVA94
+         bM1x9kMAuPQAIg2RRf7wWC/7qk+TijuFWYuoMnHsMLfF2nB6I3bxvXkkABcpbfaItffE
+         4I2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746050322; x=1746655122;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eWWrqwnLhQenGzV7KAIF5NRe8wBhEqWcnq/hVFaM2vo=;
+        b=J7loUSRmWfks1fFRHN76rXz1jP/R/6CI95Nm51zoE1UtL7seJgnfIn7Fkxazrr4DYn
+         1sUFcvqgd7vjgcMN8qRlnLAmr6mhyAQxv85zhdCnFCebNLQTBoP7NZyxBCTv1HK2wCIW
+         uQFZXMWCQMmBSIXQetcJ4S/f29GeJYePCj1/RL56yBFY9taeYJg6/oeRa0EOHnGDBPoA
+         VfZBWlETjtw5V+dtCZaDpj6B7FoO7kmhQBw/dqycVbEIEgrBzsha/o5qJiUU5loN7rDT
+         7+3adjqsIaQl8SRtd2GrWejYDbN0pk0CCMfpFuLPjnTjUHPqpxmDUwnDsFQa09pK/eKG
+         mncw==
+X-Gm-Message-State: AOJu0YyVPPU1gsQ70ITBQaHAAOTvWOtrJOQ9MeW09mPW0znbI8DdvNXC
+	2LgnuYGrJd9flvCrIl61Lh0jCYsll83LGEui/XoOKr9BiE92puyRFUE2UUJOR9w1ahSaJ5N/0iN
+	F
+X-Gm-Gg: ASbGncuOpGgiDtHLdYRu3VvqLmZbIYrH8ZlbMWfosHruh8vWUzcge9fW7cHCenwDFha
+	5K9Cl99CytvrpfKOJMd3iiN6uKzX13/SyCo4grMwRd0+jaB0EpXyygjT1w6KEg5tYC1xyOnGZtv
+	+WzOERFd1e1dYYxV67I3XJrP9kWMIekRsLUtuzu8fYWD1tGHJqRfpBhXoP3zaHgL51Re9mnMLnW
+	fZLVCGe1Hq129rgx+m97em4aylccDYyeTZu2vFnj6F8e6xr11IlPVohyuoiOfRJGx72FrFq9Y58
+	Ha+w2fh4s+eXo4Z0aAxpzhXOf0lXOFe/NOf/BCGbxP4vHExRtzrofbbvA90IX+5ilFjk
+X-Google-Smtp-Source: AGHT+IH5Eb4Jkfd6+vRTCWMdJR6L2pQC13p8tAj8m7BGPVv6+AWfwiyf94K7Td8ugHC+mjzblJg9fw==
+X-Received: by 2002:a05:6000:2ca:b0:3a0:8c46:1763 with SMTP id ffacd0b85a97d-3a092fd9094mr560237f8f.0.1746050322017;
+        Wed, 30 Apr 2025 14:58:42 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db4d77395sm127279355ad.5.2025.04.30.14.58.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Apr 2025 14:58:41 -0700 (PDT)
+Message-ID: <9d1c205f-fc6e-4503-ae91-9917f5cc2eaa@suse.com>
+Date: Thu, 1 May 2025 07:28:37 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: enable experimental large data folio support
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <676154e5415d8d15499fb8c02b0eabbb1c6cef26.1745403878.git.wqu@suse.com>
+ <20250430143035.GJ9140@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250430143035.GJ9140@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Replace the code building a bio from a kernel direct map address and
-submitting it synchronously with the bdev_rw_virt helper.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/hfsplus/wrapper.c | 46 +++++++++-----------------------------------
- 1 file changed, 9 insertions(+), 37 deletions(-)
 
-diff --git a/fs/hfsplus/wrapper.c b/fs/hfsplus/wrapper.c
-index 74801911bc1c..30cf4fe78b3d 100644
---- a/fs/hfsplus/wrapper.c
-+++ b/fs/hfsplus/wrapper.c
-@@ -48,47 +48,19 @@ struct hfsplus_wd {
- int hfsplus_submit_bio(struct super_block *sb, sector_t sector,
- 		       void *buf, void **data, blk_opf_t opf)
- {
--	const enum req_op op = opf & REQ_OP_MASK;
--	struct bio *bio;
--	int ret = 0;
--	u64 io_size;
--	loff_t start;
--	int offset;
-+	u64 io_size = hfsplus_min_io_size(sb);
-+	loff_t start = (loff_t)sector << HFSPLUS_SECTOR_SHIFT;
-+	int offset = start & (io_size - 1);
-+
-+	if ((opf & REQ_OP_MASK) != REQ_OP_WRITE && data)
-+		*data = (u8 *)buf + offset;
- 
- 	/*
--	 * Align sector to hardware sector size and find offset. We
--	 * assume that io_size is a power of two, which _should_
--	 * be true.
-+	 * Align sector to hardware sector size and find offset. We assume that
-+	 * io_size is a power of two, which _should_ be true.
- 	 */
--	io_size = hfsplus_min_io_size(sb);
--	start = (loff_t)sector << HFSPLUS_SECTOR_SHIFT;
--	offset = start & (io_size - 1);
- 	sector &= ~((io_size >> HFSPLUS_SECTOR_SHIFT) - 1);
--
--	bio = bio_alloc(sb->s_bdev, 1, opf, GFP_NOIO);
--	bio->bi_iter.bi_sector = sector;
--
--	if (op != REQ_OP_WRITE && data)
--		*data = (u8 *)buf + offset;
--
--	while (io_size > 0) {
--		unsigned int page_offset = offset_in_page(buf);
--		unsigned int len = min_t(unsigned int, PAGE_SIZE - page_offset,
--					 io_size);
--
--		ret = bio_add_page(bio, virt_to_page(buf), len, page_offset);
--		if (ret != len) {
--			ret = -EIO;
--			goto out;
--		}
--		io_size -= len;
--		buf = (u8 *)buf + len;
--	}
--
--	ret = submit_bio_wait(bio);
--out:
--	bio_put(bio);
--	return ret < 0 ? ret : 0;
-+	return bdev_rw_virt(sb->s_bdev, sector, buf, io_size, opf);
- }
- 
- static int hfsplus_read_mdb(void *bufptr, struct hfsplus_wd *wd)
--- 
-2.47.2
+在 2025/5/1 00:00, David Sterba 写道:
+> On Wed, Apr 23, 2025 at 07:54:42PM +0930, Qu Wenruo wrote:
+>> With all the preparation patches already merged, it's pretty easy to
+>> enable large data folios:
+>>
+>> - Remove the ASSERT() on folio size in btrfs_end_repair_bio()
+>>
+>> - Add a helper to properly set the max folio order
+>>    Currently due to several call sites are fetching the bitmap content
+>>    directly into an unsigned long, we can only support BITS_PER_LONG
+>>    blocks for each bitmap.
+>>
+>> - Call the helper when reading/creating an inode
+>>
+>> The support has the following limits:
+>>
+>> - No large folios for data reloc inode
+>>    The relocation code still requires page sized folio.
+>>    But it's not that hot nor common compared to regular buffered ios.
+>>
+>>    Will be improved in the future.
+>>
+>> - Requires CONFIG_BTRFS_EXPERIMENTAL
+>>
+>> Unfortunately I do not have a physical machine for performance test, but
+>> if everything goes like XFS/EXT4, it should mostly bring single digits
+>> percentage performance improvement in the real world.
+>>
+>> Although I believe there are still quite some optimizations to be done,
+>> let's focus on testing the current large data folio support first.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 
+> This is behind the experimental build we could add it now. I'm not sure
+> if this would not interfere with the xarray conversion of extent
+> buffers, that we need to get stabilized and tested too.
 
+At least all my previous runs with large folios are very boring.
+
+And in theory this is only affecting data folios, not affecting metadata 
+folios.
+
+> 
+> We'd need to have a separate way to enable/disable the large folios when
+> the experimental config. A module parameter might work best and it would
+> be just for targeted testing, so off by default.
+
+I'd prefer not go the module parameter way.
+
+Larger folios will eventually being enabled for end users, and when that 
+happened, QA guys needs to change their module parameters again just to 
+remove the no longer working one.
+
+> 
+> Alternatively we can postpone it to another development cycle and leave
+> it on by default (for experimental build).
+This one is small enough and very easy to revert.
+
+I'd prefer to give it a try. If our tests show it's really boring we can 
+continue pushing.
+
+Thanks,
+Qu
 
