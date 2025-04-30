@@ -1,132 +1,160 @@
-Return-Path: <linux-btrfs+bounces-13545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13546-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9317AAA4AC1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 14:12:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22D37AA4B30
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 14:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D6E3A66D1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 12:11:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6B141898CB0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 12:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33F225A62D;
-	Wed, 30 Apr 2025 12:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6913248F70;
+	Wed, 30 Apr 2025 12:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="hBoCpDVJ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BFhPg+sF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1BA25A331
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 12:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816AE22172B
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 12:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746014983; cv=none; b=PVtqiywisTd8lNk+gjx3/zRXEb6mSdtPwHOraEPQp0R1aNrznYklahhOM/zpImjzZJ+YlTv3W6nhfrQo/t7xttueIWKi11kkfwByJJ3LQi9HbPgu7uMEJqcLCysQ7DBHb5KRKWfOCYa+b8Rzv6ZH+TQxZLhz3pOURjxZ7RaRctI=
+	t=1746016309; cv=none; b=Fus4JnxiEQPhbv/FaupnU0f3qdxDnxw4/8MG3uKDjbLTm4NuH1vY5yHL2RPkETbp1LT0X5Hano//LevQpZ9CZuHxTlIQgowefseJACLHCXQ25tPWz/TWxIcfV/OFBU+zngJaD3CcyA16b2/TyQ+PDny561ZD/hcmeu9jxAT7nVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746014983; c=relaxed/simple;
-	bh=8KldIvPyeyrNxgTI0ZsvmXUIoixPtf61rxatBYhk6W0=;
+	s=arc-20240116; t=1746016309; c=relaxed/simple;
+	bh=rtn7yLDEvfiwEk7EUKd3nIbv4/Qh8Y2eX4nRV1S1K60=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CYwlnMK137o0nBmfxhmqWfCwqkRjLD/IBAOLfKZShwXpQJdD7rpJ5nCbL5LbqHjei06EqfVbGnqCL+19JJhOmZzoGCBUWjG+HNO63l7JGiTx2Hy9PnLWrSA84aY/r5oeocUKITxG47oVVSx9mxO0oUI6snEJqeKnahE1JKiBXCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=hBoCpDVJ; arc=none smtp.client-ip=209.85.208.54
+	 To:Cc:Content-Type; b=aYSU1Xw9YJpHA5GoGpM1A0iMWONmjZgbR+JHctNmCBI2RWe6kBlVZ4/Nt5/uW2w+AFgnqG27If/zgGx/khRlqUNXlR+k8Q7g8zHdmbXp6f/wFWmuDU27UgMWR1f/Nb0/C6JaIvxOxN0vFoLUno4rua14oBs5k/vVR6bRSkND+0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BFhPg+sF; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5e677f59438so11295937a12.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 05:09:40 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-acbb48bad09so16663866b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 05:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746014979; x=1746619779; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yomRrib/ec+S+xnoz6mogpRGq964XEY/6Terik8eUrY=;
-        b=hBoCpDVJmgXyJNqRnv5u11KkvKGC5kD5oLl6jEdhu0UB5CVSwp5S50aMwdx5yKMysv
-         lR/hdsmAtvX1XnSgZ6bWsI2l23r+RvhmZrQBn/X67aRZhy917Iu6aoKdhYk7wQBMiwat
-         RV8ibiNpOs3eKGgAI+Lh3Ru/RjkH5QZjZTqay/VNlrO1//523F0mtwS1C0o36mbIjNNV
-         +gWayRe8o+wM7qOMgANlnLl7mV0tpnX1Dh9FedwLxQ9sQRzNE7tVZLOBhhyQW4/PH0lI
-         VFKYhJDYOqU0AswwBRnjapU6GB8eMgW7bHXEiGvNEoFKo79fgYJLAdRbY8wxBPxWyD3t
-         yDBA==
+        d=suse.com; s=google; t=1746016305; x=1746621105; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQdFT3CXC+wTZfljV6k5GYo/bu5BlFIO1d2AXG/ww5k=;
+        b=BFhPg+sF6JEtKmV5CYy0bUDJqZGMP/DMle5hsfOiPPzoI07Wc8BT8SHbXgLGvN78NB
+         rRH+94WT55BdoXGZijRrE/PtE6VM0gnAdp4xGpjUWYgaiSfP3NgMbYVIWUj2vEgwmD41
+         /gg7OiuRRXg6mVKHgqhs66NpXE7VMmX/RCF1SrsI/OzH7zNJ/nSCPvVjJi3TmfIvqcyI
+         JHlXLyDoEjXVSi6hqtxh/9MOJeaV7GaRxjeUe7IPDfpz4qj8f8pI0yv+QlowVFCl2zeq
+         6SARencQMtUO3m5ly6db+ZwRvzHOy3BReYja+0R4knby4XzDOPatw8YE2kVvUvshmuyn
+         aFng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746014979; x=1746619779;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yomRrib/ec+S+xnoz6mogpRGq964XEY/6Terik8eUrY=;
-        b=k0aIs3iM5nW+PftvbNYwZlurSsLjZ0IYj67QZ9dl9oDvYS7KFiz4/erziq8nZi6oPL
-         9v7cXsxOzDYnYFJ1SlGO15OsgRWIu7+UntHf4PBtaR1cAiih8q+7C1vyDxV0Iw1Fr6QU
-         LUFTeVp5hU6Z6OeDLrrBZIr0UyONa69R0Cb4I5IwjOFYiOM7aoHuz395vW37+ndEB89A
-         73FUMpywj2WDOrhTrmuZzr80I9iBilbzjNPLN1/BZRbSPc3HbveLnve/2ULEAnCdudSe
-         yrc4ACIA2uNVwHiCFJm0q8iihlyK0gcPb/LI3myinA/53IJUPDRYAuzQN/uNohsZUQOG
-         TsMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFE+ekHebor6p0J7qJMUGvRhfc6lBer/Sn8uYCgkcH9Ze9ND63RKnzLEcHlXeTj/kgDgb+VlLhdA5HsQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBl5mh3Gtql/0I7M0c+IwyYIxfrKsxR0znZXXNd7mParRF7auM
-	W00KY3O0nJjfTsb6PpE7UzBNeen1LJ/kMqjFH5U+gi5gyzW5ljVX3wTwfgv9xrzitq84kAf1Jli
-	StJjJO43B24qLbv5Al3g18GGIwe+UEIywNyuGKo3j2pTQTwUJ
-X-Gm-Gg: ASbGncvCuoeecgvyTH2M2DnisqvSKHae/e+yKpbnK+3dfN6wyuh/QicUvirSHcf+nfz
-	LPoSkdxpKsSeVk2rAR8uXNaImaJ8bafExwirdK+rYfFtQExf4q/AtIFQCrbOd1NjedKhI6k0Y/P
-	cksCt/z+SWhp9RMBjywgFZ
-X-Google-Smtp-Source: AGHT+IF582B4BNpnAWPeBIgXyE1DCKVvQmVItfAo4T9ZANlKsGl3EhfCKe59cp3JmShenfkdYaGJGiTgLiPA+rnFf7I=
-X-Received: by 2002:a17:907:2da3:b0:ace:3a1b:d3d with SMTP id
- a640c23a62f3a-acedc57504amr337067266b.2.1746014979210; Wed, 30 Apr 2025
- 05:09:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746016305; x=1746621105;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hQdFT3CXC+wTZfljV6k5GYo/bu5BlFIO1d2AXG/ww5k=;
+        b=f/Q2r4HbzoIWemxE3p68QJU55a55TO8NnpZN2SPFyG1Ij5pq1TQVq4o8/3I1iouVjd
+         oSFMQLzdNZDa9U0z8uYNkiXvSUqRfpnWghaXZx6TdI+GFFccKwwsTj4lptQaN322Ni8M
+         V2ymnW4810ZFh2eer7yCTg4sH4FKw59cB9V0LrtEQRQsiqe+JimBBx8qqr/wYjSRaIBf
+         o7RQQaTEydg51QJAblSe2mpB2PHUY07JyjR3Uw/WW5hecEK8jDsuMvg/if3wILq0QZFg
+         pizmcA2qbcP+jERS7QEvso8ypVEardvg1B12qTuJml16MKDuOAhu9EYxvdVsSn3Vj/Zl
+         e4bw==
+X-Forwarded-Encrypted: i=1; AJvYcCWue0sTkrAXJ/+IlccXVzPsqAKYrnmYHN3XLUSB/i7lePeRBxRN5DHOd2jDr+6NyYqSSX2zSCdmuKi87g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzriFEOD38BR65U/DsDbeiJIEo21gPZ+BBtDep+S7PtTbj/aqZi
+	3360/lOkFEMoLtlK9qOqezBrckuu7sJHLsBg4qlz9eW0tqlhjq6U6r/94Xk6pYxW/ssdv4vMEnT
+	vGKUJl6PshFOwNRFGpbDOrImPN3+mVIRH1B0QEg==
+X-Gm-Gg: ASbGnct5kjw2nnU5BLHAhWf+tUx/lftgOaYBhfI7sIUDrlZlfFLMEhrFPTbwfBY6aQS
+	kz6S6fNeg9t+E0XYmw5ZFP62VtOratnQTY5ZWHvVOatTjb1RzuB06NXKrfLvXZaHlXG8V7FoSUl
+	GzfShFjqoa8LPK1ovwD/T+
+X-Google-Smtp-Source: AGHT+IGfvBwJh4zz3xEM3UjmypYEXhK/G1AKoUritCmLIeHI7FHNqa/gt+tifNrWGAKJHEQ9PLJaI4U7g+B5adalWJ4=
+X-Received: by 2002:a17:907:1b22:b0:ac2:7f28:684e with SMTP id
+ a640c23a62f3a-acee2156d04mr220073966b.6.1746016304702; Wed, 30 Apr 2025
+ 05:31:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250429151800.649010-1-neelx@suse.com> <CAL3q7H7WPE+26v1uCKa5C=BwcGpUN3OjnaPUkexPGD=mpJbkSA@mail.gmail.com>
- <CAPjX3FevwHRzyHzgLjcZ8reHtJ3isw3eREYrMvNCPLMDR=NJ4g@mail.gmail.com>
- <CAL3q7H56LC5ro+oshGaVVCV9Gvxfnz4dLaq6bwVW=t0P=tLUCg@mail.gmail.com>
- <CAPjX3Fe3BZ8OB2ZVMn58pY5E9k9j=uNAmuqM4R1tO=sPvx7-pA@mail.gmail.com>
- <CAL3q7H5Bzvew9kGXBRLJNtZm+0_eMOyrgUvC1ZK544DunAPEsA@mail.gmail.com> <aBIE28WHbC2jPkpz@fedora>
-In-Reply-To: <aBIE28WHbC2jPkpz@fedora>
+References: <20250429151800.649010-1-neelx@suse.com> <20250430080317.GF9140@twin.jikos.cz>
+ <CAPjX3FfBoU9-wYP-JC63K6y8Pzocu0z8cKvXEbjD_NjdxWO+Og@mail.gmail.com>
+In-Reply-To: <CAPjX3FfBoU9-wYP-JC63K6y8Pzocu0z8cKvXEbjD_NjdxWO+Og@mail.gmail.com>
 From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 30 Apr 2025 14:09:28 +0200
-X-Gm-Features: ATxdqUHxbZOqrlJ4zSj6vUkQey8LaW6Z-7BefegTh3VgTrkADgDumoGT3bZ8PZc
-Message-ID: <CAPjX3FctaJkUwv3ZsEfuamBhLwD5=MzoyWAotV2CN9-eJrxWZQ@mail.gmail.com>
+Date: Wed, 30 Apr 2025 14:31:33 +0200
+X-Gm-Features: ATxdqUFvNwkrZ_ZJns0Di-9O-zxMlXjm4v3Z-u9nF9TmaduaVWP58rZ50t9cRxY
+Message-ID: <CAPjX3FdpjOfu61KTnQFKdGgh4u5eVz_AwenoPVNgP_eiuka3hw@mail.gmail.com>
 Subject: Re: [PATCH] btrfs: remove extent buffer's redundant `len` member field
-To: Johannes Thumshirn <morbidrsa@gmail.com>
-Cc: Filipe Manana <fdmanana@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+To: dsterba@suse.cz
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 30 Apr 2025 at 13:09, Johannes Thumshirn <morbidrsa@gmail.com> wrot=
-e:
+On Wed, 30 Apr 2025 at 10:21, Daniel Vacek <neelx@suse.com> wrote:
 >
-> On Wed, Apr 30, 2025 at 11:26:08AM +0100, Filipe Manana wrote:
-> > On Wed, Apr 30, 2025 at 9:50=E2=80=AFAM Daniel Vacek <neelx@suse.com> w=
-rote:
-> > >
-> > > Nah, thanks again. I was not aware of that. Will keep it in mind.
-> > >
-> > > Still, it doesn't make sense to me to be honest. I mean specifically
-> > > with this example. The header file is also private to btrfs, no publi=
-c
-> > > API. Personally I wouldn't differentiate if it's a source or a header
-> > > file. The code can be freely moved around. And with the prefix the
-> > > code would end up more bloated and less readable, IMO. But let's not
-> > > start any flamewars here.
+> On Wed, 30 Apr 2025 at 10:03, David Sterba <dsterba@suse.cz> wrote:
 > >
-> > I'd disagree about less readability. Reading code that calls a
-> > function with the btrfs prefix makes it clear it's a btrfs specific
-> > function.
-> > Looking at ext4 and xfs, functions declared or defined in their
-> > headers have a "ext4_", "ext_" or "xfs_" prefix.
+> > On Tue, Apr 29, 2025 at 05:17:57PM +0200, Daniel Vacek wrote:
+> > > Even super block nowadays uses nodesize for eb->len. This is since commits
+> > >
+> > > 551561c34663 ("btrfs: don't pass nodesize to __alloc_extent_buffer()")
+> > > da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
+> > > ce3e69847e3e ("btrfs: sink parameter len to alloc_extent_buffer")
+> > > a83fffb75d09 ("btrfs: sink blocksize parameter to btrfs_find_create_tree_block")
+> > >
+> > > With these the eb->len is not really useful anymore. Let's use the nodesize
+> > > directly where applicable.
+> >
+> > I've had this patch in my local branch for some years from the times we
+> > were optimizing extent buffer size. The size on release config is 240
+> > bytes. The goal was to get it under 256 and keep it aligned.
+> >
+> > Removing eb->len does not change the structure size and leaves a hole
+> >
+> >  struct extent_buffer {
+> >         u64                        start;                /*     0     8 */
+> > -       u32                        len;                  /*     8     4 */
+> > -       u32                        folio_size;           /*    12     4 */
+> > +       u32                        folio_size;           /*     8     4 */
+> > +
+> > +       /* XXX 4 bytes hole, try to pack */
+> > +
+> >         long unsigned int          bflags;               /*    16     8 */
+> >         struct btrfs_fs_info *     fs_info;              /*    24     8 */
+> >         void *                     addr;                 /*    32     8 */
+> > @@ -5554,8 +5556,8 @@ struct extent_buffer {
+> >         struct rw_semaphore        lock;                 /*    72    40 */
+> >         struct folio *             folios[16];           /*   112   128 */
+> >
+> > -       /* size: 240, cachelines: 4, members: 14 */
+> > -       /* sum members: 238, holes: 1, sum holes: 2 */
+> > +       /* size: 240, cachelines: 4, members: 13 */
+> > +       /* sum members: 234, holes: 2, sum holes: 6 */
+> >         /* forced alignments: 1, forced holes: 1, sum forced holes: 2 */
+> >         /* last cacheline: 48 bytes */
+> >  } __attribute__((__aligned__(8)));
+> >
+> > The benefit of duplicating the length in each eb is that it's in the
+> > same cacheline as the other members that are used for offset
+> > calculations or bit manipulations.
+> >
+> > Going to the fs_info->nodesize may or may not hit a cache, also because
+> > it needs to do 2 pointer dereferences, so from that perspective I think
+> > it's making it worse.
 >
-> To add my $.02 here, it is also a matter of namespacing. There's nothing =
-more
-> anoying than having two functions with the same name in different subsyst=
-ems.
-> IIRC we did have this with the in_range() function, that is available glo=
-bally
-> and there has been a btrfs specific as well.
+> I was considering that. Since fs_info is shared for all ebs and other
+> stuff like transactions, etc. I think the cache is hot most of the
+> time and there will be hardly any performance difference observable.
+> Though without benchmarks this is just a speculation (on both sides).
+>
+> > I don't think we need to do the optimization right now, but maybe in the
+> > future if there's a need to add something to eb. Still we can use the
+> > remaining 16 bytes up to 256 without making things worse.
+>
+> This really depends on configuration. On my laptop (Debian -rt kernel)
+> the eb struct is actually 272 bytes as the rt_mutex is significantly
+> heavier than raw spin lock. And -rt is a first class citizen nowadays,
+> often used in Kubernetes deployments like 5G RAN telco, dpdk and such.
+> I think it would be nice to slim the struct below 256 bytes even there
+> if that's your aim.
 
-Yeah, I've been there. Unloading debug symbols of some module(s) from
-the debugger due to collisions/aliases. That indeed can be very
-annoying.
-
-> Byte,
->         Johannes
+Eventually we can get there by using ushort for bflags and moving
+log_index and folio_shift to fill the hole.
+Let me know what you think.
 
