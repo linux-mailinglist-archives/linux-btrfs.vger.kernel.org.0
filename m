@@ -1,61 +1,57 @@
-Return-Path: <linux-btrfs+bounces-13564-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13565-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C36AA5406
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 20:46:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F909AA5460
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 21:02:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88D251893D30
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 18:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CFA74C729C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 19:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D636D26562F;
-	Wed, 30 Apr 2025 18:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3950B265CC8;
+	Wed, 30 Apr 2025 19:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dccxPhkB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZYbsV/7d"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E20828399;
-	Wed, 30 Apr 2025 18:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723CBC148;
+	Wed, 30 Apr 2025 19:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746038766; cv=none; b=ETe8daHYGqA0UKEPa+7g/YP3r63cIN9NKcQAHZMrFdH7i2hnGO03smQ7iJ1jCffYsfZCR6NhwV/KH4xP0BbgPHP6DbM9eExcHwg8SvnR9z3QPw8WeYVgA8Jvq6p0f2fXBhVzSnCDDME2OM62Cc69oHunnZ0oo2TpoceRCLbXQbs=
+	t=1746039753; cv=none; b=tNxJ8SHjVltEKD8i8MhJMzSo9nV96UD4ARhkqMMwlGkcUZhwcKowjzl5ydWAEMHPZTL+bJn5YN3xIpj5/6jCogSmWYYv6i7NLY1D7ew0KHEL8RV/CRZ9eOOqHJXzuXPu5GnamtLTEjJYEVlEGTBl3Y5LjPim/hX9tr5/cZIW/MI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746038766; c=relaxed/simple;
-	bh=1O6KGRH/0QIrWe0dsHMNySQNbxcnTurVGj2hFZCyst8=;
+	s=arc-20240116; t=1746039753; c=relaxed/simple;
+	bh=v6OGLN/7JlkVPA3m/u0loXZ2gAuaERKROs8ylRl3wjk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UreOWHD9z8xZwe/3CfJQ+MbFOFZzfFNjrphtiA0xZ1B5PfqQroxBQSRgqakLGmdg3E/FN4gzRSrnZS2WZeWj5JJu+du9D4OUlfMbumLZDaUrcqu0STlBshKvp9fS3CG63H+cjLwSn9Z5po2tVEqHBhQ9qVvriZ0TDI18dC7oaR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dccxPhkB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C669C4CEE7;
-	Wed, 30 Apr 2025 18:46:05 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDIKgsWz4G4U3z7feozQCRURRRfOkZX4SiZ4x3niEp5qMvCe+aIVo7YPr731xYIDtuHuGUBLBCssX0lQnKFtfVyeISS5omJWisFKAMTQ7XoUMW93YJd9uJEbFk7cHbRs9yh+X/GliS2rKWKCM+vJBSbnB3xbiPd9Tld1pCs9GrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZYbsV/7d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F73C4CEE7;
+	Wed, 30 Apr 2025 19:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746038765;
-	bh=1O6KGRH/0QIrWe0dsHMNySQNbxcnTurVGj2hFZCyst8=;
+	s=k20201202; t=1746039751;
+	bh=v6OGLN/7JlkVPA3m/u0loXZ2gAuaERKROs8ylRl3wjk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dccxPhkB//3NUIpEDCVkI1xz9KngrZsorqdcU/O8PtxtutYRdvIv7oYIE0gUv+3Gf
-	 +8TlzieaWZYUdqXA6EYvFtc1zFU5l2J9Pp5D+cnGwDJFmHW72LZhsvZSdCdXT2UzGR
-	 SovcRtslzTl+6CpgeWH1hsfgMTnJsLzOGkzCcOU4AWwKoIcWuPD5Xu984hORYy1j5y
-	 JdtzuXktKYQ++05RJ7SCftgb0f+LJhNIeyLJeXuBq2G0w9hu+wK02CghtA0mAohLNM
-	 n70D0nS2WKWWQ7KC/+xGxv2QkYQx+0QkkG07MPzHC753vsHiMB70pq+L7YCf1h5Bqt
-	 VEDBaGjv3AbiQ==
-Date: Wed, 30 Apr 2025 08:46:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Junxuan Liao <ljx@cs.wisc.edu>
+	b=ZYbsV/7d9QLIUK4pfM2HYn+hr9xB1NgDiYHaUYb/43zeKkStR2udlqrEoM7h/7OWe
+	 G+z7a3AXpNT5VpSsE7EtDn1hg9TH7u/F+Z/WsYJHUEqB2SN/NEPccXVvBv6Ywxy+A5
+	 1HCgSr+YNcVHaZYPPqxR5DpktNwITESYdC+GKKEoKr5QTNnKY8ihrmxcV+N3Wof1T7
+	 3+nZAPeb3WGAbrIlO0Dg/mcjFUWa/MaOfYAxIry4HHbCAXK1AIE1isEpsULs4sJCPQ
+	 TSLcWXnJ7Lp8i9KHTZ35btlW9LeIMKV99hx5DVsWHhKbO++8xSmXjZwCSMPkKbE9WS
+	 4guLofJKfqpHQ==
+Date: Wed, 30 Apr 2025 12:02:29 -0700
+From: Kees Cook <kees@kernel.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: btrfs thread_pool_size logic out of sync with workqueue
-Message-ID: <aBJv7AuXubBDQNIq@slm.duckdns.org>
-References: <5ee9b1d7-4772-4404-b972-93b01ed1e033@cs.wisc.edu>
- <aBEWmCB5Ofr5lCp7@slm.duckdns.org>
- <476f9bf7-2cd2-4c26-b55f-b42b9fe7eafc@cs.wisc.edu>
- <aBEb3kjVKcqzNBov@slm.duckdns.org>
- <ea32d8f1-e96a-48ff-92b6-ffeb996b0823@cs.wisc.edu>
- <53a8e583-f3bf-4efc-afa5-fe9d8af287a9@cs.wisc.edu>
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] btrfs: compression: Adjust cb->compressed_folios
+ allocation type
+Message-ID: <202504301201.824ADC93A@keescook>
+References: <20250426062328.work.065-kees@kernel.org>
+ <4dd1e595-21c2-4a6c-a7b9-e7c945d3a7a2@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,25 +60,47 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53a8e583-f3bf-4efc-afa5-fe9d8af287a9@cs.wisc.edu>
+In-Reply-To: <4dd1e595-21c2-4a6c-a7b9-e7c945d3a7a2@embeddedor.com>
 
-On Tue, Apr 29, 2025 at 04:26:52PM -0500, Junxuan Liao wrote:
-> On 4/29/25 4:15 PM, Junxuan Liao wrote:
-> > So versions from 6.6 to 6.8 do have the bug, right? I guess the
-> > performance regression isn't easy to trigger so no one noticed and
-> > reported it.
+On Sat, Apr 26, 2025 at 12:55:21AM -0600, Gustavo A. R. Silva wrote:
 > 
-> My bad. I missed that it has already been reported in 2023.
-> https://lore.kernel.org/all/dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3/
+> 
+> On 26/04/25 00:23, Kees Cook wrote:
+> > In preparation for making the kmalloc family of allocators type aware,
+> > we need to make sure that the returned type from the allocation matches
+> > the type of the variable being assigned. (Before, the allocator would
+> > always return "void *", which can be implicitly cast to any pointer type.)
+> > 
+> > The assigned type is "struct folio **" but the returned type will be
+> > "struct page **". These are the same allocation size (pointer size), but
+> > the types don't match. Adjust the allocation type to match the assignment.
+> > 
+> > Signed-off-by: Kees Cook <kees@kernel.org>
+> > ---
+> > Cc: Chris Mason <clm@fb.com>
+> > Cc: Josef Bacik <josef@toxicpanda.com>
+> > Cc: David Sterba <dsterba@suse.com>
+> > Cc: <linux-btrfs@vger.kernel.org>
+> > ---
+> >   fs/btrfs/compression.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> > index e7f8ee5d48a4..7f11ef559be6 100644
+> > --- a/fs/btrfs/compression.c
+> > +++ b/fs/btrfs/compression.c
+> > @@ -606,7 +606,7 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
+> >   	free_extent_map(em);
+> >   	cb->nr_folios = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
+> > -	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct page *), GFP_NOFS);
+> > +	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct folio *), GFP_NOFS);
+> 
+> Why not `sizeof(*cb->compressed_folios)` as in other patches? :)
 
-Yeah, the changes were too invasive to backport through -stable especially
-at the time as I didn't know how well the new scheme would work. There have
-been some updates afterwards but it seemed to have held up fine, so if some
-distros wanna backport them, this should be pretty safe now. However, I
-think the window has already passed for -stable backports.
-
-Thanks.
+I generally trying to match the coding style of each instance, though
+sometimes it wasn't possible. Here, since a type is named for the
+sizeof(), I followed that style.
 
 -- 
-tejun
+Kees Cook
 
