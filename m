@@ -1,88 +1,88 @@
-Return-Path: <linux-btrfs+bounces-13567-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13568-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25ECAA568F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 23:17:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA51BAA567B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 23:08:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0375A9A370E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 21:06:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A3DD9E2C94
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 21:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3612BEC29;
-	Wed, 30 Apr 2025 21:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5A6296D2E;
+	Wed, 30 Apr 2025 21:08:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WyDlCTQw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Git5eqQi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C5F26659D
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 21:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB311CAA62
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 21:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746047273; cv=none; b=cAewpI7ZnUaIpL+HN56W1zarZieaf/bkPRdkiDCD4ZDMcxk5upSFI+bh1xSRPYng3m25WxNxlA+y2Vhm040g/a4+TWS5oX3OW+7pJ59cZUxS6q4nkcIvAjU6i1qJQNmeEuWem7NJcWc9vEQZU3kzTd6Q4SCA2oxJ/rUv9wmUXBk=
+	t=1746047311; cv=none; b=cja6ZGcIFY3rBZdu5zCMEhoWm+CMIbPaJa3K4FtXeT/pQhRbxnUsttYvp6T6bQ9PamdCNyACKkQggyt+0BeeTX2ntjsozscyNzVCksf/C1P761vJWAy2IQh7+E50WtAJ/ZIN0lGkRptTJvSP4uToEW00w4hnH2pYAS/MtUNioaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746047273; c=relaxed/simple;
-	bh=cwCs+zpkrMOPPZeQHKLa+BnlB0Xf6e58qBB1QWLZyJM=;
+	s=arc-20240116; t=1746047311; c=relaxed/simple;
+	bh=/n6J6p/kYlfXs9g3AL90pF00gHuw03vUedzRYFzCSMA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ek77z7+TFG0FE0kNb8X8xQB/BzzxMA2bPWMWDLhtRzQLGn3lBYwt37dHBN2HT6N8GjHz78XgdpYVyVPd+Ifvp7g5JXKpYMDTuI2UaEOt3fGGhusIa9GeLrrrZlpvO7e+rGemDAr80dVYDBCY4tBz6JbjXx/yYVYEJovyi6p+SMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WyDlCTQw; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=PVHOEZAthmIowOR1Wr2ZT2f4quD4is8pAlAUWpkohWSc3NW+nXGgIYahnAeit+gDBRn9I1gJGqAOBjxMqzT9/OJmN+kesAfGMGp/46QMUlBSK/qMgQA5Nrhk5RknU4WdLw17nzIRTr0qj0OOKxgrr3d+8+uId068VpXGms5F4aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Git5eqQi; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746047270;
+	s=mimecast20190719; t=1746047308;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=xCTNXStG6Jgjf/krGcp6W4D8H/hsb7gaw/+9wel0lI0=;
-	b=WyDlCTQw5R3X948Frem3SS89AvAoR3vA+TyPaUndO2ubeUmRtYIy+SPT+dUCMXNlubYKxF
-	h9Qu5qX2kQg4T3dVQHhil0eWYpFvwcOYZ9wnaOfr1VSu7LNMEOAcEK/Ogq7PCWNbjwjrBa
-	lilv6v6Khv5sTxwTne54EKuXHwLg2e0=
+	bh=Zf75Wi3ZWE/mWR/ajf5F8uvVnkwMZAW0yZvw06r6h3g=;
+	b=Git5eqQi/z2cVb7YuyCqPCYjxN1Mg5tk1PHP6KnjjrFdcyaPGpk23j417SNxHgR2yfJ8Vz
+	Et9OuUnWlIUOAAnlBpXZz1jEGFQ9CuhRdVA/ZsCdSzI7WcKGiQAKoMuiy2BNaiQwEP93wO
+	rtjbAJxgIniVNSo7C6ChNEPUQ6VC8W8=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-331-LwZPqJa1MqisBh93ut23CQ-1; Wed, 30 Apr 2025 17:07:48 -0400
-X-MC-Unique: LwZPqJa1MqisBh93ut23CQ-1
-X-Mimecast-MFC-AGG-ID: LwZPqJa1MqisBh93ut23CQ_1746047267
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-39135d31ca4so114892f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 14:07:48 -0700 (PDT)
+ us-mta-513-Rus9JUNsNR-meQ50zlu4ng-1; Wed, 30 Apr 2025 17:08:27 -0400
+X-MC-Unique: Rus9JUNsNR-meQ50zlu4ng-1
+X-Mimecast-MFC-AGG-ID: Rus9JUNsNR-meQ50zlu4ng_1746047306
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-39979ad285bso92149f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 14:08:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746047267; x=1746652067;
+        d=1e100.net; s=20230601; t=1746047306; x=1746652106;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=xCTNXStG6Jgjf/krGcp6W4D8H/hsb7gaw/+9wel0lI0=;
-        b=wj+8em7BPPWfgCaO5gnCe+xH73iwW5xDP3vPQ2C7AahmSI5sUl2QwUdcloSLniM+GE
-         zkZpyjpUwzNBICgcFGW1DURUt1fop4oZqGeC5SUZq4vbSkElyFW2O50KiKImgrrqpPrp
-         sPIyZE/hS7mdaMVCJhQTDdVRcPNJCPBFuFg5546MJQJivI2QrNDbsolTg1j8aMLI/Fdq
-         PvcBNyDu/5C4ixRr9tG4xYKWKkF0TDAUrUq+X3tui7CS3HmlXYU3tbv4M8JwVOBMd6jX
-         nL291odN/+UkNxj4tKVgEHmv1JhUTT3+mX3l3hZUfGLEquUD0N0KK22UMWEazRpFYA5l
-         vP4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVGEBsLEYPokbt07rAimw3fqv25LzLGrQkEZbLx3zlhf96MKci8+00PB/t+RhvOkyly7do4K4HNsUhGJg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxboBjobEB8EAeUmrA09xStdpuzeLsoMjal3UKK3jPXOisq4Zje
-	5Y+ajKaToDkhqR47AGem5Op4G7CiytS9zhaJhcm6/8KbyEHsFwlGGYww+Jxh5gvrQMNqzjhsxad
-	irJBft77mcRf68ErNCl1hd9AT3S9sqdXzfjSAJeuBOjGio/sFrjaP38HYqB9+
-X-Gm-Gg: ASbGncvPtI5webl107L2MFn6MykUrILOGYtKAG8KD25Bx+AL/mJmuMSdQSNNQ9Kz7XC
-	MWYpLLch/4IBzFguvW72Mwsb6tF4AbbNplqOF242ySlpPKVZack2V9OahkHB7mQESbriIMTlPgC
-	z8yDUECG7l3HawuHDbjNDUBu8TX+UAQ5BtFqnRoVWDA94xN3Pq1jcZ4+25QmlQpOxXWzqXrQWvz
-	esg/sONERnfECxEoDZOscIDiD0gRd/4L+vzsXllN0Yr0+72eE2donWnAPkckC0lJC+jUG2Txlwz
-	DQVBlubiblZIfx4XqECNFSe6C4KLTijovLrEZ398Gb7mFYfDTIS7tmxQGLghym5PXIEU4jW0Jdu
-	quQCNUZqRIjWH/vlvx2hhLv8iBbp/KcFro+fn5lU=
-X-Received: by 2002:a5d:5f8d:0:b0:39c:1401:679e with SMTP id ffacd0b85a97d-3a092cf2c0cmr868541f8f.5.1746047267113;
-        Wed, 30 Apr 2025 14:07:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEog72SutnheszftTSCfiKun8Y4HdqThvk1mAh/dfhpjZg2tbfsVDEmaiAQ0AdWogX66blQiA==
-X-Received: by 2002:a5d:5f8d:0:b0:39c:1401:679e with SMTP id ffacd0b85a97d-3a092cf2c0cmr868527f8f.5.1746047266755;
-        Wed, 30 Apr 2025 14:07:46 -0700 (PDT)
+        bh=Zf75Wi3ZWE/mWR/ajf5F8uvVnkwMZAW0yZvw06r6h3g=;
+        b=aAS+LFh6cBGwOg8yZsxoFoqvh8KX6r5gngWHMbpGLS+syC6dnQxR2eAcvLJtL5DUwD
+         dVGVWFnrkPUUbBI1i32hCrnc3FUW+TdZmpb1IUs+foi9RKOf8/SCgIO8Fnii4pAlgdnn
+         q4n86rglXdJH6g/852n/UPGJrHU8yKna36S4VW6A6sYWHbQYryNc7BSWgWEUIYqORvaT
+         uJeNisYeJnFa4IRSHsjwbxJEBtDP4m2JARHJOUnFjORc0fiRoSgxq/Xfl8fSl7FcEbhV
+         46ChxPkF3tDj+/npYhbxFzjs2YBf6wWvZz0dfhipv4R+z5WfvmlBhl7Y7+m4Tr3OjSwu
+         kYCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXtNVZCiNlx7t9GfQ+7gz/2Uf2V/XKr2hEp/Maa40Ww09dyvSAT4XCOYd4tH/vDj7fkmOjwGNwmTfR7qA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzha5KdmQWxWdw5b7LThrVANadAS22Pm5zp/5tU+1ZOfdmLrVwe
+	OdXs4vWfOXQ8y7WPU0lHB0tVKq1miTzPy0wTZdZ989HAfsdohwp02gwEWql+cWmGwzeypVK/ptg
+	4DMm82pA0+b5itVnd20VM8z35hEBaFLjpm4S2zOfM+l4AhLxtURDJYAEB8diI
+X-Gm-Gg: ASbGncujioSZNTe99+XRCOPOFh6sOU/wS2fuO793e+jVr4Ih8O+bkSIYtXMgAarZUqI
+	8zszNWZWwdYJdpumfCn1n13Ub1RK10dbbwYU/jnkKNo/SIsHFd/V3EYkvNjVjVHXjcmIOS8fotP
+	4oNNaGqPRLE+avAHnq9RpNUFh12WWGqoZhVAUoCAbhpkFlMecgVVCBh50gQlu71YoxPRoGbIEeP
+	t8IXTztQzw/ewmmUJZPDrIP2TFdSygSa27wJcDc9qDGwhKfs/UCbn6QGByoTtNRIGSU0thT3lLF
+	gydMbEnKtOJcG9AVHdi8p3g9GpDkhoNfAat29NrkZTKIPtzpBXA7v/5wf3L5/4jCngW58CfOaSu
+	iZGZASMSL1vicEgOzCukewyv5Eg+fYSypprDoPmk=
+X-Received: by 2002:a05:6000:2af:b0:3a0:8af9:f379 with SMTP id ffacd0b85a97d-3a094003b02mr12351f8f.0.1746047305832;
+        Wed, 30 Apr 2025 14:08:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFEh2kIvvrmMWEfDRj9ATD8PLw6GQnjab2hqVipDv6tY3UvlIRVoqYxbhRVvgkhSMRGShw2KQ==
+X-Received: by 2002:a05:6000:2af:b0:3a0:8af9:f379 with SMTP id ffacd0b85a97d-3a094003b02mr12334f8f.0.1746047305525;
+        Wed, 30 Apr 2025 14:08:25 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c745:a500:7f54:d66b:cf40:8ee9? (p200300cbc745a5007f54d66bcf408ee9.dip0.t-ipconnect.de. [2003:cb:c745:a500:7f54:d66b:cf40:8ee9])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a073e46869sm18003938f8f.72.2025.04.30.14.07.45
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a07a5ed2e0sm15523808f8f.39.2025.04.30.14.08.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Apr 2025 14:07:46 -0700 (PDT)
-Message-ID: <38af3e39-a639-4807-aed2-d15c956cf2cc@redhat.com>
-Date: Wed, 30 Apr 2025 23:07:45 +0200
+        Wed, 30 Apr 2025 14:08:25 -0700 (PDT)
+Message-ID: <97e55ba8-2627-47ec-9707-71b039b07d26@redhat.com>
+Date: Wed, 30 Apr 2025 23:08:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,9 +91,8 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 2/6] btrfs: drop usage of folio_index
-To: Andrew Morton <akpm@linux-foundation.org>,
- Kairui Song <kasong@tencent.com>
-Cc: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org,
+To: Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
  Matthew Wilcox <willy@infradead.org>, Hugh Dickins <hughd@google.com>,
  Chris Li <chrisl@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
  "Huang, Ying" <ying.huang@linux.alibaba.com>, Nhat Pham <nphamcs@gmail.com>,
@@ -103,7 +102,6 @@ Cc: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org,
  Qu Wenruo <wqu@suse.com>
 References: <20250430181052.55698-1-ryncsn@gmail.com>
  <20250430181052.55698-3-ryncsn@gmail.com>
- <20250430140608.6f53896a1f09d58e65dd1cc2@linux-foundation.org>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -151,24 +149,46 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20250430140608.6f53896a1f09d58e65dd1cc2@linux-foundation.org>
+In-Reply-To: <20250430181052.55698-3-ryncsn@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 30.04.25 23:06, Andrew Morton wrote:
-> On Thu,  1 May 2025 02:10:48 +0800 Kairui Song <ryncsn@gmail.com> wrote:
+On 30.04.25 20:10, Kairui Song wrote:
+> From: Kairui Song <kasong@tencent.com>
 > 
->> Cc: Chris Mason <clm@fb.com> (maintainer:BTRFS FILE SYSTEM)
->> Cc: Josef Bacik <josef@toxicpanda.com> (maintainer:BTRFS FILE SYSTEM)
->> Cc: David Sterba <dsterba@suse.com> (maintainer:BTRFS FILE SYSTEM)
+> folio_index is only needed for mixed usage of page cache and swap
+> cache, for pure page cache usage, the caller can just use
+> folio->index instead.
 > 
-> Please tell us where these extra tags came from.  Did some tool
-> generate them?
+> It can't be a swap cache folio here.  Swap mapping may only call into fs
+> through `swap_rw` but btrfs does not use that method for swap.
 > 
-> I think they're quite useful - perhaps something we could encourage.
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> Cc: Chris Mason <clm@fb.com> (maintainer:BTRFS FILE SYSTEM)
+> Cc: Josef Bacik <josef@toxicpanda.com> (maintainer:BTRFS FILE SYSTEM)
+> Cc: David Sterba <dsterba@suse.com> (maintainer:BTRFS FILE SYSTEM)
+> Cc: linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM)
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/extent_io.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 197f5e51c474..e08b50504d13 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3509,7 +3509,7 @@ static void btree_clear_folio_dirty_tag(struct folio *folio)
+>   	xa_lock_irq(&folio->mapping->i_pages);
+>   	if (!folio_test_dirty(folio))
+>   		__xa_clear_mark(&folio->mapping->i_pages,
+> -				folio_index(folio), PAGECACHE_TAG_DIRTY);
+> +				folio->index, PAGECACHE_TAG_DIRTY);
+>   	xa_unlock_irq(&folio->mapping->i_pages);
+>   }
+>   
 
-I guess that's just the get_maintainers output?
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
