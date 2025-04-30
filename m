@@ -1,160 +1,398 @@
-Return-Path: <linux-btrfs+bounces-13546-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13547-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D37AA4B30
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 14:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38891AA4B51
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 14:35:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6B141898CB0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 12:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23DF1894629
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Apr 2025 12:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6913248F70;
-	Wed, 30 Apr 2025 12:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0306C25A356;
+	Wed, 30 Apr 2025 12:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BFhPg+sF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQ7jO08c"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816AE22172B
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 12:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3301DAC95;
+	Wed, 30 Apr 2025 12:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746016309; cv=none; b=Fus4JnxiEQPhbv/FaupnU0f3qdxDnxw4/8MG3uKDjbLTm4NuH1vY5yHL2RPkETbp1LT0X5Hano//LevQpZ9CZuHxTlIQgowefseJACLHCXQ25tPWz/TWxIcfV/OFBU+zngJaD3CcyA16b2/TyQ+PDny561ZD/hcmeu9jxAT7nVk=
+	t=1746016472; cv=none; b=UdllZzKTV4I9s9cUL1wmetWAXICcoUmIiaXTFzqfdsKDMYvo8GF7I+IeS9m7G77F8Ft3eXksLD28xJ9yKpfh8qYSi4agGHgnq4sAIvnryVRLwjQ1sS0nDXuPYgmmZ7hLEVqMRojyd+DPTv4B/ZhjPPMeZiXBgvy2KspTmVmzaZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746016309; c=relaxed/simple;
-	bh=rtn7yLDEvfiwEk7EUKd3nIbv4/Qh8Y2eX4nRV1S1K60=;
+	s=arc-20240116; t=1746016472; c=relaxed/simple;
+	bh=/mZne+vIkHkY0VtHorX2T77c1BAVGzZhAC/aAgWWTco=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aYSU1Xw9YJpHA5GoGpM1A0iMWONmjZgbR+JHctNmCBI2RWe6kBlVZ4/Nt5/uW2w+AFgnqG27If/zgGx/khRlqUNXlR+k8Q7g8zHdmbXp6f/wFWmuDU27UgMWR1f/Nb0/C6JaIvxOxN0vFoLUno4rua14oBs5k/vVR6bRSkND+0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BFhPg+sF; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-acbb48bad09so16663866b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Apr 2025 05:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746016305; x=1746621105; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQdFT3CXC+wTZfljV6k5GYo/bu5BlFIO1d2AXG/ww5k=;
-        b=BFhPg+sF6JEtKmV5CYy0bUDJqZGMP/DMle5hsfOiPPzoI07Wc8BT8SHbXgLGvN78NB
-         rRH+94WT55BdoXGZijRrE/PtE6VM0gnAdp4xGpjUWYgaiSfP3NgMbYVIWUj2vEgwmD41
-         /gg7OiuRRXg6mVKHgqhs66NpXE7VMmX/RCF1SrsI/OzH7zNJ/nSCPvVjJi3TmfIvqcyI
-         JHlXLyDoEjXVSi6hqtxh/9MOJeaV7GaRxjeUe7IPDfpz4qj8f8pI0yv+QlowVFCl2zeq
-         6SARencQMtUO3m5ly6db+ZwRvzHOy3BReYja+0R4knby4XzDOPatw8YE2kVvUvshmuyn
-         aFng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746016305; x=1746621105;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hQdFT3CXC+wTZfljV6k5GYo/bu5BlFIO1d2AXG/ww5k=;
-        b=f/Q2r4HbzoIWemxE3p68QJU55a55TO8NnpZN2SPFyG1Ij5pq1TQVq4o8/3I1iouVjd
-         oSFMQLzdNZDa9U0z8uYNkiXvSUqRfpnWghaXZx6TdI+GFFccKwwsTj4lptQaN322Ni8M
-         V2ymnW4810ZFh2eer7yCTg4sH4FKw59cB9V0LrtEQRQsiqe+JimBBx8qqr/wYjSRaIBf
-         o7RQQaTEydg51QJAblSe2mpB2PHUY07JyjR3Uw/WW5hecEK8jDsuMvg/if3wILq0QZFg
-         pizmcA2qbcP+jERS7QEvso8ypVEardvg1B12qTuJml16MKDuOAhu9EYxvdVsSn3Vj/Zl
-         e4bw==
-X-Forwarded-Encrypted: i=1; AJvYcCWue0sTkrAXJ/+IlccXVzPsqAKYrnmYHN3XLUSB/i7lePeRBxRN5DHOd2jDr+6NyYqSSX2zSCdmuKi87g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzriFEOD38BR65U/DsDbeiJIEo21gPZ+BBtDep+S7PtTbj/aqZi
-	3360/lOkFEMoLtlK9qOqezBrckuu7sJHLsBg4qlz9eW0tqlhjq6U6r/94Xk6pYxW/ssdv4vMEnT
-	vGKUJl6PshFOwNRFGpbDOrImPN3+mVIRH1B0QEg==
-X-Gm-Gg: ASbGnct5kjw2nnU5BLHAhWf+tUx/lftgOaYBhfI7sIUDrlZlfFLMEhrFPTbwfBY6aQS
-	kz6S6fNeg9t+E0XYmw5ZFP62VtOratnQTY5ZWHvVOatTjb1RzuB06NXKrfLvXZaHlXG8V7FoSUl
-	GzfShFjqoa8LPK1ovwD/T+
-X-Google-Smtp-Source: AGHT+IGfvBwJh4zz3xEM3UjmypYEXhK/G1AKoUritCmLIeHI7FHNqa/gt+tifNrWGAKJHEQ9PLJaI4U7g+B5adalWJ4=
-X-Received: by 2002:a17:907:1b22:b0:ac2:7f28:684e with SMTP id
- a640c23a62f3a-acee2156d04mr220073966b.6.1746016304702; Wed, 30 Apr 2025
- 05:31:44 -0700 (PDT)
+	 To:Cc:Content-Type; b=rcP485oHP/VjAcI8SZ6AmKyOL3W+wqHZodkJjVUaxvyIkVu1NpcQHjCMt3WG61W0g8sB7Oii9S+aXkXLOWRTsM3sNdfeYZPjKMq4XjFpUx497nmlX/2pOmh+BS6yvolLi+BXAiQHMpi1i5qnmcqcZ4Mfd8yt+XJar+Baz14Q6Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQ7jO08c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A493CC4CEEC;
+	Wed, 30 Apr 2025 12:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746016471;
+	bh=/mZne+vIkHkY0VtHorX2T77c1BAVGzZhAC/aAgWWTco=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fQ7jO08cjXGdsnXMzUsHUXeCsz9zzm/A6IfrkHSqmJoykSX5qxVwBn87NFSq351iX
+	 JZp9FBJhsFesE1i+X70CNhDD3tmQt6nc10p1eGx6zALss9NnuNf7q1p37QzhbBQZz+
+	 HTW99tvZ8QXSo5JAPZYIcGbc8fzBjbBmFFnZ9uKmpFZ4ui0+TtUQXKXZmeIPBSHrAt
+	 w5rvJ/jWd0OxhLzi+r6EPj7fRU+/rXWOHtyFK3ghPwkSEsGkWuePKpCYctUrghlivE
+	 O3A6Q2YrqzzGMVHCW5YTJgrWY3DA++gmGSmqpZoTUqi7jKzP9oM5cmI7eYAuciPV7a
+	 0v+BK1F1FZs1g==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-acb415dd8faso1014209466b.2;
+        Wed, 30 Apr 2025 05:34:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUwhy7nEjGDi5DhMQLVQCRYHnx6g8Z1DItF4hEKd0BCcv+mNpAWdw6T6/xS54phvRjBMZ8hKrIgvvik9ddD@vger.kernel.org, AJvYcCXLle23+CjJrXrym/U/BMfu391l982ZrUeaWhOc6P1kMZ79URi+2wShVt6U/bXnDEfnp9sUdDy7duvhMA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxeq5nWeGQmCW2ZCgQDI8TLYYd0WqCVfcMC0jQfixTo7X/HoD04
+	Y0D0E5mdfyD3UnQw3U0o/kEh+xvp9XRH90WmpatDEEc7jyFwOhKLaFBYBQhYNMvPdPOULHOsdZ/
+	P2X2JJtrIFUhxTQFGz+EM+Poownw=
+X-Google-Smtp-Source: AGHT+IHhHwkOhrjJHW8bahSH9fqRwcXZ4y8YzVzqQAzKfieAr1yi3Gh2LduH38vYcNbiQhzWVnOLbJjLUbVp9P/85qQ=
+X-Received: by 2002:a17:907:3ea2:b0:ace:da39:7170 with SMTP id
+ a640c23a62f3a-acedc768b2fmr354786966b.55.1746016470130; Wed, 30 Apr 2025
+ 05:34:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250429151800.649010-1-neelx@suse.com> <20250430080317.GF9140@twin.jikos.cz>
- <CAPjX3FfBoU9-wYP-JC63K6y8Pzocu0z8cKvXEbjD_NjdxWO+Og@mail.gmail.com>
-In-Reply-To: <CAPjX3FfBoU9-wYP-JC63K6y8Pzocu0z8cKvXEbjD_NjdxWO+Og@mail.gmail.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 30 Apr 2025 14:31:33 +0200
-X-Gm-Features: ATxdqUFvNwkrZ_ZJns0Di-9O-zxMlXjm4v3Z-u9nF9TmaduaVWP58rZ50t9cRxY
-Message-ID: <CAPjX3FdpjOfu61KTnQFKdGgh4u5eVz_AwenoPVNgP_eiuka3hw@mail.gmail.com>
+References: <20250429151800.649010-1-neelx@suse.com> <CAL3q7H7WPE+26v1uCKa5C=BwcGpUN3OjnaPUkexPGD=mpJbkSA@mail.gmail.com>
+ <CAPjX3FevwHRzyHzgLjcZ8reHtJ3isw3eREYrMvNCPLMDR=NJ4g@mail.gmail.com>
+ <CAL3q7H56LC5ro+oshGaVVCV9Gvxfnz4dLaq6bwVW=t0P=tLUCg@mail.gmail.com>
+ <CAPjX3Fe3BZ8OB2ZVMn58pY5E9k9j=uNAmuqM4R1tO=sPvx7-pA@mail.gmail.com>
+ <CAL3q7H5Bzvew9kGXBRLJNtZm+0_eMOyrgUvC1ZK544DunAPEsA@mail.gmail.com> <CAPjX3FcDrr7D7nwh3=fyyOCxnp0iv+jeyPcGRX+gpw9zGHJ3vA@mail.gmail.com>
+In-Reply-To: <CAPjX3FcDrr7D7nwh3=fyyOCxnp0iv+jeyPcGRX+gpw9zGHJ3vA@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 30 Apr 2025 13:33:52 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5TVPG-KiwZfEmndAQh8g+CT1tMPSYcT1Omhc3om6EHEg@mail.gmail.com>
+X-Gm-Features: ATxdqUGbxifhosfNCLVh_JlNp9QQFOFY0zM2ZN362YmKLa8OEx9Cv-h_ypvBoVg
+Message-ID: <CAL3q7H5TVPG-KiwZfEmndAQh8g+CT1tMPSYcT1Omhc3om6EHEg@mail.gmail.com>
 Subject: Re: [PATCH] btrfs: remove extent buffer's redundant `len` member field
-To: dsterba@suse.cz
+To: Daniel Vacek <neelx@suse.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
 	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 30 Apr 2025 at 10:21, Daniel Vacek <neelx@suse.com> wrote:
+On Wed, Apr 30, 2025 at 1:06=E2=80=AFPM Daniel Vacek <neelx@suse.com> wrote=
+:
 >
-> On Wed, 30 Apr 2025 at 10:03, David Sterba <dsterba@suse.cz> wrote:
+> On Wed, 30 Apr 2025 at 12:26, Filipe Manana <fdmanana@kernel.org> wrote:
 > >
-> > On Tue, Apr 29, 2025 at 05:17:57PM +0200, Daniel Vacek wrote:
-> > > Even super block nowadays uses nodesize for eb->len. This is since commits
+> > On Wed, Apr 30, 2025 at 9:50=E2=80=AFAM Daniel Vacek <neelx@suse.com> w=
+rote:
 > > >
-> > > 551561c34663 ("btrfs: don't pass nodesize to __alloc_extent_buffer()")
-> > > da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
-> > > ce3e69847e3e ("btrfs: sink parameter len to alloc_extent_buffer")
-> > > a83fffb75d09 ("btrfs: sink blocksize parameter to btrfs_find_create_tree_block")
+> > > On Wed, 30 Apr 2025 at 10:34, Filipe Manana <fdmanana@kernel.org> wro=
+te:
+> > > >
+> > > > On Wed, Apr 30, 2025 at 9:26=E2=80=AFAM Daniel Vacek <neelx@suse.co=
+m> wrote:
+> > > > >
+> > > > > On Wed, 30 Apr 2025 at 10:06, Filipe Manana <fdmanana@kernel.org>=
+ wrote:
+> > > > > >
+> > > > > > On Tue, Apr 29, 2025 at 4:19=E2=80=AFPM Daniel Vacek <neelx@sus=
+e.com> wrote:
+> > > > > > >
+> > > > > > > Even super block nowadays uses nodesize for eb->len. This is =
+since commits
+> > > > > > >
+> > > > > > > 551561c34663 ("btrfs: don't pass nodesize to __alloc_extent_b=
+uffer()")
+> > > > > > > da17066c4047 ("btrfs: pull node/sector/stripe sizes out of ro=
+ot and into fs_info")
+> > > > > > > ce3e69847e3e ("btrfs: sink parameter len to alloc_extent_buff=
+er")
+> > > > > > > a83fffb75d09 ("btrfs: sink blocksize parameter to btrfs_find_=
+create_tree_block")
+> > > > > > >
+> > > > > > > With these the eb->len is not really useful anymore. Let's us=
+e the nodesize
+> > > > > > > directly where applicable.
+> > > > > > >
+> > > > > > > Signed-off-by: Daniel Vacek <neelx@suse.com>
+> > > > > > > ---
+> > > > > > > [RFC]
+> > > > > > >  * Shall the eb_len() helper better be called eb_nodesize()? =
+Or even rather
+> > > > > > >    opencoded and not used at all?
+> ...
+> > > > > > > +static inline u32 eb_len(const struct extent_buffer *eb)
+> > > > > > > +{
+> > > > > > > +       return eb->fs_info->nodesize;
+> > > > > > > +}
+> > > > > >
+> > > > > > Please always add a "btrfs_" prefix to the name of exported fun=
+ctions.
+> > > > >
+> > > > > It's static inline, not exported. But I'm happy just opencoding i=
+t
+> > > > > instead. Thanks.
+> > > >
+> > > > Exported in the sense that it's in a header and visible to any C fi=
+les
+> > > > that include it, not in the sense of being exported with
+> > > > EXPORT_SYMBOL_GPL() for example.
+> > > > This is our coding style convention:
+> > > >
+> > > > https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#f=
+unction-declarations
+> > > >
+> > > > static functions inside a C file can omit the prefix.
 > > >
-> > > With these the eb->len is not really useful anymore. Let's use the nodesize
-> > > directly where applicable.
+> > > Nah, thanks again. I was not aware of that. Will keep it in mind.
+> > >
+> > > Still, it doesn't make sense to me to be honest. I mean specifically
+> > > with this example. The header file is also private to btrfs, no publi=
+c
+> > > API. Personally I wouldn't differentiate if it's a source or a header
+> > > file. The code can be freely moved around. And with the prefix the
+> > > code would end up more bloated and less readable, IMO. But let's not
+> > > start any flamewars here.
 > >
-> > I've had this patch in my local branch for some years from the times we
-> > were optimizing extent buffer size. The size on release config is 240
-> > bytes. The goal was to get it under 256 and keep it aligned.
-> >
-> > Removing eb->len does not change the structure size and leaves a hole
-> >
-> >  struct extent_buffer {
-> >         u64                        start;                /*     0     8 */
-> > -       u32                        len;                  /*     8     4 */
-> > -       u32                        folio_size;           /*    12     4 */
-> > +       u32                        folio_size;           /*     8     4 */
-> > +
-> > +       /* XXX 4 bytes hole, try to pack */
-> > +
-> >         long unsigned int          bflags;               /*    16     8 */
-> >         struct btrfs_fs_info *     fs_info;              /*    24     8 */
-> >         void *                     addr;                 /*    32     8 */
-> > @@ -5554,8 +5556,8 @@ struct extent_buffer {
-> >         struct rw_semaphore        lock;                 /*    72    40 */
-> >         struct folio *             folios[16];           /*   112   128 */
-> >
-> > -       /* size: 240, cachelines: 4, members: 14 */
-> > -       /* sum members: 238, holes: 1, sum holes: 2 */
-> > +       /* size: 240, cachelines: 4, members: 13 */
-> > +       /* sum members: 234, holes: 2, sum holes: 6 */
-> >         /* forced alignments: 1, forced holes: 1, sum forced holes: 2 */
-> >         /* last cacheline: 48 bytes */
-> >  } __attribute__((__aligned__(8)));
-> >
-> > The benefit of duplicating the length in each eb is that it's in the
-> > same cacheline as the other members that are used for offset
-> > calculations or bit manipulations.
-> >
-> > Going to the fs_info->nodesize may or may not hit a cache, also because
-> > it needs to do 2 pointer dereferences, so from that perspective I think
-> > it's making it worse.
+> > I'd disagree about less readability. Reading code that calls a
+> > function with the btrfs prefix makes it clear it's a btrfs specific
+> > function.
+> > Looking at ext4 and xfs, functions declared or defined in their
+> > headers have a "ext4_", "ext_" or "xfs_" prefix.
 >
-> I was considering that. Since fs_info is shared for all ebs and other
-> stuff like transactions, etc. I think the cache is hot most of the
-> time and there will be hardly any performance difference observable.
-> Though without benchmarks this is just a speculation (on both sides).
+> I see. Makes sense.
+> Does this also apply to preprocessor macros? I don't see them
+> mentioned in the development notes.
+> I'm asking as I did consider using a macro which would look a bit
+> cleaner perhaps, just one line instead of four. But it would also miss
+> the type checking.
+> So I guess the naming convention should also apply to macros, right?
 >
-> > I don't think we need to do the optimization right now, but maybe in the
-> > future if there's a need to add something to eb. Still we can use the
-> > remaining 16 bytes up to 256 without making things worse.
->
-> This really depends on configuration. On my laptop (Debian -rt kernel)
-> the eb struct is actually 272 bytes as the rt_mutex is significantly
-> heavier than raw spin lock. And -rt is a first class citizen nowadays,
-> often used in Kubernetes deployments like 5G RAN telco, dpdk and such.
-> I think it would be nice to slim the struct below 256 bytes even there
-> if that's your aim.
+> Finally quickly checking I see a lot of functions like eg.
+> free_extent_buffer(), free_extent_buffer_stale() and many others
+> violating the rule. I guess we should also clean up and rename them,
+> right?
 
-Eventually we can get there by using ushort for bflags and moving
-log_index and folio_shift to fill the hole.
-Let me know what you think.
+Haven't you seen patchsets from me in the last few weeks renaming
+functions from extent-io-tree.h and extent_map.h?
+
+You'll see examples of where the prefix is missing, and this happens
+for very old code, we rename things from time to time.
+In those two cases I was motivated due to the need to add more
+functions soon, or having added some new ones not long ago, to make
+everything consistent in those headers/modules by making sure all have
+the "btrfs_" prefix.
+
+
+
+>
+> > > > > > In this case I don't think adding this helper adds any value.
+> > > > > > We can just do eb->fs_info->nodesize everywhere and in some pla=
+ces we
+> > > > > > already have fs_info in a local variable and can just do
+> > > > > > fs_info->nodesize.
+> > > > > >
+> > > > > > Thanks.
+> > > > > >
+> > > > > > > +
+> > > > > > >  /* Note: this can be used in for loops without caching the v=
+alue in a variable. */
+> > > > > > >  static inline int __pure num_extent_pages(const struct exten=
+t_buffer *eb)
+> > > > > > >  {
+> > > > > > >         /*
+> > > > > > >          * For sectorsize =3D=3D PAGE_SIZE case, since nodesi=
+ze is always aligned to
+> > > > > > > -        * sectorsize, it's just eb->len >> PAGE_SHIFT.
+> > > > > > > +        * sectorsize, it's just nodesize >> PAGE_SHIFT.
+> > > > > > >          *
+> > > > > > >          * For sectorsize < PAGE_SIZE case, we could have nod=
+esize < PAGE_SIZE,
+> > > > > > >          * thus have to ensure we get at least one page.
+> > > > > > >          */
+> > > > > > > -       return (eb->len >> PAGE_SHIFT) ?: 1;
+> > > > > > > +       return (eb_len(eb) >> PAGE_SHIFT) ?: 1;
+> > > > > > >  }
+> > > > > > >
+> > > > > > >  /*
+> > > > > > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > > > > > > index 68fac77fb95d1..6be2d56d44917 100644
+> > > > > > > --- a/fs/btrfs/ioctl.c
+> > > > > > > +++ b/fs/btrfs/ioctl.c
+> > > > > > > @@ -598,7 +598,7 @@ static noinline int create_subvol(struct =
+mnt_idmap *idmap,
+> > > > > > >         btrfs_set_root_generation(root_item, trans->transid);
+> > > > > > >         btrfs_set_root_level(root_item, 0);
+> > > > > > >         btrfs_set_root_refs(root_item, 1);
+> > > > > > > -       btrfs_set_root_used(root_item, leaf->len);
+> > > > > > > +       btrfs_set_root_used(root_item, fs_info->nodesize);
+> > > > > > >         btrfs_set_root_last_snapshot(root_item, 0);
+> > > > > > >
+> > > > > > >         btrfs_set_root_generation_v2(root_item,
+> > > > > > > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> > > > > > > index 6287e71ebad5f..5086485a4ae21 100644
+> > > > > > > --- a/fs/btrfs/relocation.c
+> > > > > > > +++ b/fs/btrfs/relocation.c
+> > > > > > > @@ -4352,7 +4352,7 @@ int btrfs_reloc_cow_block(struct btrfs_=
+trans_handle *trans,
+> > > > > > >                         mark_block_processed(rc, node);
+> > > > > > >
+> > > > > > >                 if (first_cow && level > 0)
+> > > > > > > -                       rc->nodes_relocated +=3D buf->len;
+> > > > > > > +                       rc->nodes_relocated +=3D fs_info->nod=
+esize;
+> > > > > > >         }
+> > > > > > >
+> > > > > > >         if (level =3D=3D 0 && first_cow && rc->stage =3D=3D U=
+PDATE_DATA_PTRS)
+> > > > > > > diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+> > > > > > > index d4f0192334936..711792f32e9ce 100644
+> > > > > > > --- a/fs/btrfs/subpage.c
+> > > > > > > +++ b/fs/btrfs/subpage.c
+> > > > > > > @@ -631,7 +631,7 @@ void btrfs_meta_folio_set_##name(struct f=
+olio *folio, const struct extent_buffer
+> > > > > > >                 folio_set_func(folio);                       =
+           \
+> > > > > > >                 return;                                      =
+           \
+> > > > > > >         }                                                    =
+           \
+> > > > > > > -       btrfs_subpage_set_##name(eb->fs_info, folio, eb->star=
+t, eb->len); \
+> > > > > > > +       btrfs_subpage_set_##name(eb->fs_info, folio, eb->star=
+t, eb_len(eb)); \
+> > > > > > >  }                                                           =
+           \
+> > > > > > >  void btrfs_meta_folio_clear_##name(struct folio *folio, cons=
+t struct extent_buffer *eb) \
+> > > > > > >  {                                                           =
+           \
+> > > > > > > @@ -639,13 +639,13 @@ void btrfs_meta_folio_clear_##name(stru=
+ct folio *folio, const struct extent_buff
+> > > > > > >                 folio_clear_func(folio);                     =
+           \
+> > > > > > >                 return;                                      =
+           \
+> > > > > > >         }                                                    =
+           \
+> > > > > > > -       btrfs_subpage_clear_##name(eb->fs_info, folio, eb->st=
+art, eb->len); \
+> > > > > > > +       btrfs_subpage_clear_##name(eb->fs_info, folio, eb->st=
+art, eb_len(eb)); \
+> > > > > > >  }                                                           =
+           \
+> > > > > > >  bool btrfs_meta_folio_test_##name(struct folio *folio, const=
+ struct extent_buffer *eb) \
+> > > > > > >  {                                                           =
+           \
+> > > > > > >         if (!btrfs_meta_is_subpage(eb->fs_info))             =
+           \
+> > > > > > >                 return folio_test_func(folio);               =
+           \
+> > > > > > > -       return btrfs_subpage_test_##name(eb->fs_info, folio, =
+eb->start, eb->len); \
+> > > > > > > +       return btrfs_subpage_test_##name(eb->fs_info, folio, =
+eb->start, eb_len(eb)); \
+> > > > > > >  }
+> > > > > > >  IMPLEMENT_BTRFS_PAGE_OPS(uptodate, folio_mark_uptodate, foli=
+o_clear_uptodate,
+> > > > > > >                          folio_test_uptodate);
+> > > > > > > @@ -765,7 +765,7 @@ bool btrfs_meta_folio_clear_and_test_dirt=
+y(struct folio *folio, const struct ext
+> > > > > > >                 return true;
+> > > > > > >         }
+> > > > > > >
+> > > > > > > -       last =3D btrfs_subpage_clear_and_test_dirty(eb->fs_in=
+fo, folio, eb->start, eb->len);
+> > > > > > > +       last =3D btrfs_subpage_clear_and_test_dirty(eb->fs_in=
+fo, folio, eb->start, eb_len(eb));
+> > > > > > >         if (last) {
+> > > > > > >                 folio_clear_dirty_for_io(folio);
+> > > > > > >                 return true;
+> > > > > > > diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/test=
+s/extent-io-tests.c
+> > > > > > > index 00da54f0164c9..657f8f1d9263e 100644
+> > > > > > > --- a/fs/btrfs/tests/extent-io-tests.c
+> > > > > > > +++ b/fs/btrfs/tests/extent-io-tests.c
+> > > > > > > @@ -342,7 +342,7 @@ static int check_eb_bitmap(unsigned long =
+*bitmap, struct extent_buffer *eb)
+> > > > > > >  {
+> > > > > > >         unsigned long i;
+> > > > > > >
+> > > > > > > -       for (i =3D 0; i < eb->len * BITS_PER_BYTE; i++) {
+> > > > > > > +       for (i =3D 0; i < eb_len(eb) * BITS_PER_BYTE; i++) {
+> > > > > > >                 int bit, bit1;
+> > > > > > >
+> > > > > > >                 bit =3D !!test_bit(i, bitmap);
+> > > > > > > @@ -411,7 +411,7 @@ static int test_bitmap_clear(const char *=
+name, unsigned long *bitmap,
+> > > > > > >  static int __test_eb_bitmaps(unsigned long *bitmap, struct e=
+xtent_buffer *eb)
+> > > > > > >  {
+> > > > > > >         unsigned long i, j;
+> > > > > > > -       unsigned long byte_len =3D eb->len;
+> > > > > > > +       unsigned long byte_len =3D eb_len(eb);
+> > > > > > >         u32 x;
+> > > > > > >         int ret;
+> > > > > > >
+> > > > > > > @@ -670,7 +670,7 @@ static int test_find_first_clear_extent_b=
+it(void)
+> > > > > > >  static void dump_eb_and_memory_contents(struct extent_buffer=
+ *eb, void *memory,
+> > > > > > >                                         const char *test_name=
+)
+> > > > > > >  {
+> > > > > > > -       for (int i =3D 0; i < eb->len; i++) {
+> > > > > > > +       for (int i =3D 0; i < eb_len(eb); i++) {
+> > > > > > >                 struct page *page =3D folio_page(eb->folios[i=
+ >> PAGE_SHIFT], 0);
+> > > > > > >                 void *addr =3D page_address(page) + offset_in=
+_page(i);
+> > > > > > >
+> > > > > > > @@ -686,7 +686,7 @@ static void dump_eb_and_memory_contents(s=
+truct extent_buffer *eb, void *memory,
+> > > > > > >  static int verify_eb_and_memory(struct extent_buffer *eb, vo=
+id *memory,
+> > > > > > >                                 const char *test_name)
+> > > > > > >  {
+> > > > > > > -       for (int i =3D 0; i < (eb->len >> PAGE_SHIFT); i++) {
+> > > > > > > +       for (int i =3D 0; i < (eb_len(eb) >> PAGE_SHIFT); i++=
+) {
+> > > > > > >                 void *eb_addr =3D folio_address(eb->folios[i]=
+);
+> > > > > > >
+> > > > > > >                 if (memcmp(memory + (i << PAGE_SHIFT), eb_add=
+r, PAGE_SIZE) !=3D 0) {
+> > > > > > > @@ -703,8 +703,8 @@ static int verify_eb_and_memory(struct ex=
+tent_buffer *eb, void *memory,
+> > > > > > >   */
+> > > > > > >  static void init_eb_and_memory(struct extent_buffer *eb, voi=
+d *memory)
+> > > > > > >  {
+> > > > > > > -       get_random_bytes(memory, eb->len);
+> > > > > > > -       write_extent_buffer(eb, memory, 0, eb->len);
+> > > > > > > +       get_random_bytes(memory, eb_len(eb));
+> > > > > > > +       write_extent_buffer(eb, memory, 0, eb_len(eb));
+> > > > > > >  }
+> > > > > > >
+> > > > > > >  static int test_eb_mem_ops(u32 sectorsize, u32 nodesize)
+> > > > > > > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> > > > > > > index 9d42bf2bfd746..c7a8cdd87c509 100644
+> > > > > > > --- a/fs/btrfs/zoned.c
+> > > > > > > +++ b/fs/btrfs/zoned.c
+> > > > > > > @@ -2422,7 +2422,7 @@ void btrfs_schedule_zone_finish_bg(stru=
+ct btrfs_block_group *bg,
+> > > > > > >                                    struct extent_buffer *eb)
+> > > > > > >  {
+> > > > > > >         if (!test_bit(BLOCK_GROUP_FLAG_SEQUENTIAL_ZONE, &bg->=
+runtime_flags) ||
+> > > > > > > -           eb->start + eb->len * 2 <=3D bg->start + bg->zone=
+_capacity)
+> > > > > > > +           eb->start + eb_len(eb) * 2 <=3D bg->start + bg->z=
+one_capacity)
+> > > > > > >                 return;
+> > > > > > >
+> > > > > > >         if (WARN_ON(bg->zone_finish_work.func =3D=3D btrfs_zo=
+ne_finish_endio_workfn)) {
+> > > > > > > --
+> > > > > > > 2.47.2
+> > > > > > >
+> > > > > > >
 
