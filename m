@@ -1,142 +1,205 @@
-Return-Path: <linux-btrfs+bounces-13634-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13635-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35821AA75B3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 17:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9245AA789B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 19:22:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F11C11BA2D13
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 15:10:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C27D21B6831D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 17:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7CF2571D5;
-	Fri,  2 May 2025 15:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AECA14EC60;
+	Fri,  2 May 2025 17:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Sd+njuRy"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="aPrDAEmB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BQzPFulT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A822566FA
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 15:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C294A32
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 17:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746198640; cv=none; b=VkjYlUXDjhSZJq9gU9yoAyuDt2B1tH8MiY84Tee/fboFrYfm/pToOYDURl1kmWP91Suft0nKzxwjiXfaw89kKHYpW+sOyOMloKn0qagbdqhxP1bIF+pPnlzRFQcCa9DlinisLK6v/9sQdNG89sCrqmP6bYIE04MhBwA0ffu7e3I=
+	t=1746206557; cv=none; b=c/ZSr/IBGjUKV/QgM+PUW17fCRRwtvEfZ1AE347EQlW5xMpHzkpN48Noq0Z70HnD1DN+M+kSM5ML3cmY1SaOPG1V2Tz2fYI2I6SgDlloJfsRY9EI4RMNoxDPop3/8YZ/D/eU8s/FVz+JJ+b9DCvtIHgN4sOM7w6m6u+vKNZQEbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746198640; c=relaxed/simple;
-	bh=o+WFCDYwVR+5leRGmhvc+YBGp9yqqAwhjrwRO+zO43M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GH/AaBwMaX85KxXAjm39BryL4NSsPcf6W0PG06iir50It/8Uy4W1uBfFuvfFwa5xcQZkmf93O+VZKXieA7IW/5rGJUn6SY17fcbU4GaK1GwlvbG0TTfEZPNQZ5n37Cy8EneWElz4ToTa2bQfQujFQAMUZ1HMZtfqlVYCOwwTSwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Sd+njuRy; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ace333d5f7bso381330666b.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 May 2025 08:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746198636; x=1746803436; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cb2oTzrOGvUTvFRyJiyJpHh/Rz9JDLRP7fWk6U3R36c=;
-        b=Sd+njuRylGQ52g50gKhJ7LmVOK/TNXf38GxRH5NxRjb2T6UC9Uk5/XIhOUbfXudH+f
-         +LDQdx6dh5Xi2Wqroja0ywIiIWIqnp/LXa6JpU3I0cU8lW/i1XzYGDa9cmsaBb6qHT1C
-         Ibb8YLHO5DbXnlU690VXzvoKO/kndpS2fz+CLx7XULZPzs2ySeFrJK00JNGCKz8muEgc
-         90UuRcto99SHICakIDhghkF1aIWni5oDRf/DxSePdsN5WGX/B2/GOALNdkvidgZSpS56
-         37MeHutfYhQgX7qBzXtIc/UVyoYvJkXqBt5Lgv82XRVUTNDkyev8QRDjrrympr21gIwx
-         3lNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746198636; x=1746803436;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cb2oTzrOGvUTvFRyJiyJpHh/Rz9JDLRP7fWk6U3R36c=;
-        b=Kp4C9EsNdMabNt/D0HGrHVo+e0GVXDXtZGl6zPaZ/qU6EQ8/FRY/IobRzpXuRfCsi8
-         C77v1Vj6UDHRv0cNIhRJ9SgA/c+fUDyP84CuPjkUHASbWLGrBqNmQ4dzXFX2plgLL0a6
-         IVUO4D43SUd1zmMsklU2JAdZRcV4XHouCQ9vcsLuCsM7UGWv+u8hAqsZLE6UlBDpLin+
-         bBLj+MrazDayFZCdIaHwUDsB/N+6AGKW2DWvghOv6dwLf5gJHmosKQOVvz7wuplDPUnI
-         MAK++ss6WpHHOfIuj1H59QXBD7XACabgyXlSY29WD/imisI7NX7TNChuNagctoCpVy5P
-         pgLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFPy5w4A/wnDO3Q0SIcmTIgsMufSTaHeBjpEiYZGH5xjdgLPudNuLe/nD2r00Og9HmBodFDb0cKVWenw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8gjGmuiUqzMhKWdvfQm6CTTbRoAm0TQ5ixeYi/XVrBYzqyoxm
-	uPrBAz5GIo1YI8ViOgtwjnzz6F4inQYijt780VzuHqrAWMDC96tL0j3bR4DQV+HNDvTMm/gM623
-	CeaI9VazgNOq1b4grpMa8rFr9DEWD4yt1/D14PA==
-X-Gm-Gg: ASbGnctY/EizeA1ZdXjpe1cddYedZhUcOcf8flG1vizEKXhbuAEU0fFY6AgxkxS+QKP
-	+QVoNluk+3Y6RziFf5s6ZGYOARfKKSoR4OEgHMKZo8dHPAl+ba+sVNFOpIU/bCtdSFujl96IrST
-	sCEYYY1MN86bIyYvevu5ZWarxfJ6izvgs=
-X-Google-Smtp-Source: AGHT+IFPsz43VezwgYy9eMGAtrm6JhSfTjQdF1J+TAooTgEFM8LavfReBiTALRZ1I7C5rWvx8ItM5aTodZJpYCzbNwE=
-X-Received: by 2002:a17:907:3da1:b0:acb:b267:436b with SMTP id
- a640c23a62f3a-ad17adc2c4amr388869866b.25.1746198636583; Fri, 02 May 2025
- 08:10:36 -0700 (PDT)
+	s=arc-20240116; t=1746206557; c=relaxed/simple;
+	bh=9ucMymtaHC7UkJ19Z0vrUp3UtDiNddPs/DGKOmnmMJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SZYQrR5TNr+LFvj2OSURc5Tbvlaqalfk9MBqgGnxmwooW7afiU8Lzwj9tphR6OncDn+dFtf/UY26XxBr8vASD5HjD6w3aYyUUjYqUuVio1TxQwmevyKa+mENIr2EIBV+fHhC2h087Xwq5nieucTzhDI9mwXY+dv6pXxIDgRdavE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=aPrDAEmB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=BQzPFulT; arc=none smtp.client-ip=202.12.124.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id E1D8625401BC;
+	Fri,  2 May 2025 13:22:32 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Fri, 02 May 2025 13:22:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1746206552; x=1746292952; bh=d6YlwtK2hk
+	qpKd+9LH5J7o2hjUMBhh3tIJcrISLzsL4=; b=aPrDAEmB8i3NLOuXSNmj9vEfQw
+	IBXbPiBlnWhNz/2MdpYL/J3r4/hHAGvzq1f6MxYDPO9++lL98+1v20hIEVTcOyFR
+	GwH4mSQgM6IlevExVLjbF4Tcwa69aR52LhUmQMtf0RYsMYoktqvcUm5no6KPUfWy
+	gRFfT+snYLtL34eCKYAHxxHapYf87DK/YSPoSUZdQd+RZN7y9t1lVCLPtuGSm4cX
+	8Tz56Fz2Z78bZ7X3koIJ1EUGQBrPHQyArZiD5a3zxlBQzYcyHvyFgM6/CfR7kkmK
+	CurN8T9c0I2ymQEDcRsox6BgwV47a3PPLlbqTp05HWNDzHebf7tvl/lVoFGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1746206552; x=1746292952; bh=d6YlwtK2hkqpKd+9LH5J7o2hjUMBhh3tIJc
+	rISLzsL4=; b=BQzPFulTSyjZsogik+dr0sBcDL4nntfGKh5X0QDNhrSKd99KdMt
+	el+9ErXp0FngCL+o+4IDglgANcTGHVReFY+2cYKKH5DI/rdjOmp06on4dGGK7T9a
+	AdcB/w/lUXNm+XpGdELsk4JoIftiKs792+IoPcyBZJZeWLj3w9U9doBQHBgQzbvm
+	l/5RXdoG4+clpgpZG/LoHhs8lpfQxcekEhG1GwX8VOrjCJsGUFc2l0I+/ukFVCMe
+	UQ3Qmj1nIoiVwqHOgeCAKRr1b0ozXnE4wQk3Xv2e0UisF66okKGQiUoBc1RdoJfE
+	uimC91oxPQL35IflyZMylPo1oa5YqTgeevg==
+X-ME-Sender: <xms:WP8UaF4q5tGcrfcbP-phc76HFefCI9gBHsUr3w0uD1ZKHy_5ARm_YA>
+    <xme:WP8UaC6argNGABTjLVx4WhLem8VkeKRnbKmtWFMquO2C4bOMJxVYA6ARqpgVdgN0r
+    T-nBcW7HmoQ1DOg9mA>
+X-ME-Received: <xmr:WP8UaMdRpW1YO0RPFwEr5M-qnfCQJXkXIT1dMXoQI4zqMRe0j5IQWphvzGZr4jCvVVcOggCf0ADYIMthW4OwByZ1GYU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvjeeftdegucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhf
+    fvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhho
+    vhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeelle
+    fhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopd
+    hnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughm
+    rghnrghnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfsh
+    esvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:WP8UaOIHNHEsgXm-3Y4s-2rJr4pruKrd3BsabdSxFDwru4GzP3GAag>
+    <xmx:WP8UaJIr2G69zoXfDQfXmKSUQ0gLg9r7J4MLvui4lH40EesNkh3ynQ>
+    <xmx:WP8UaHxVrrCAhmaIY6BZcDtpWGW2upEy_1fLYUO6Ai9IvHZSiEzvsQ>
+    <xmx:WP8UaFJf9aMw-qbgXbpj2_-WWBmPHXI42xI9lt8bKVwJc-nwqibdpw>
+    <xmx:WP8UaH3ZDlregiyiQCPou-Gxagn0IzpNwu9kBpdStWa9ySZRehNcqjSn>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 2 May 2025 13:22:32 -0400 (EDT)
+Date: Fri, 2 May 2025 10:23:23 -0700
+From: Boris Burkov <boris@bur.io>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: check: fix false alert on missing csum for
+ hole
+Message-ID: <20250502172323.GA1179844@zen.localdomain>
+References: <4dbd03928f8384d926aff5754199c5078fc915cb.1746194979.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1746031378.git.dsterba@suse.com> <CAPjX3FcAA=2cR4WqxFUOXZ4zYHS8hS75-ii0HPKQddgwhtr=Vg@mail.gmail.com>
- <20250502132407.GR9140@suse.cz> <CAPjX3FfMsjumdvv+BxtknhuGbXROKSioo5KGf-pj0_DafXsYkA@mail.gmail.com>
- <20250502143142.GS9140@suse.cz>
-In-Reply-To: <20250502143142.GS9140@suse.cz>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 2 May 2025 17:10:25 +0200
-X-Gm-Features: ATxdqUHhhXnRc4dTZ4sS3dyj-yTA2AS1c4PzQaq63dyjDEJDaLHL44pHPVr-J8Q
-Message-ID: <CAPjX3FcD=+HDk4te-VQ0ujRjEQo8gaR1AfqEDovFh4jnx9BJaw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Transaction aborts in free-space-tree.c
-To: dsterba@suse.cz
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4dbd03928f8384d926aff5754199c5078fc915cb.1746194979.git.fdmanana@suse.com>
 
-On Fri, 2 May 2025 at 16:31, David Sterba <dsterba@suse.cz> wrote:
->
-> On Fri, May 02, 2025 at 03:32:52PM +0200, Daniel Vacek wrote:
-> > On Fri, 2 May 2025 at 15:24, David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Fri, May 02, 2025 at 03:15:49PM +0200, Daniel Vacek wrote:
-> > > > On Wed, 30 Apr 2025 at 18:45, David Sterba <dsterba@suse.com> wrote:
-> > > > >
-> > > > > Fix the transaction abort pattern in free-space-tree, it's been there
-> > > > > from the beginning and not conforming to the pattern we use elsewhere.
-> > > > >
-> > > > > David Sterba (4):
-> > > > >   btrfs: move transaction aborts to the error site in
-> > > > >     convert_free_space_to_bitmaps()
-> > > > >   btrfs: move transaction aborts to the error site in
-> > > > >     convert_free_space_to_extents()
-> > > > >   btrfs: move transaction aborts to the error site in
-> > > > >     remove_from_free_space_tree()
-> > > > >   btrfs: move transaction aborts to the error site in
-> > > > >     add_to_free_space_tree()
-> > > > >
-> > > > >  fs/btrfs/free-space-tree.c | 48 +++++++++++++++++++++++++-------------
-> > > > >  1 file changed, 32 insertions(+), 16 deletions(-)
-> > > >
-> > > > This looks like unnecessary duplicating the code. Shall we rather go
-> > > > the other way around?
-> > >
-> > > What do you mean? There's some smilarity among the functions so yeah
-> > > the add/remove pairs can be merged to one, but this is orthogonal to the
-> > > transaction abot calls.
-> >
-> > Not that. I meant the code looks simpler without these patches. If
-> > this is the pattern used elsewhere, maybe we should rather change
-> > elsewhere to follow free-space-tree.c?
->
-> https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#error-handling-and-transaction-abort
->
-> "Please keep all transaction abort exactly at the place where they happen
-> and do not merge them to one. This pattern should be used everywhere and
-> is important when debugging because we can pinpoint the line in the code
-> from the syslog message and do not have to guess which way it got to the
-> merged call."
+On Fri, May 02, 2025 at 03:32:52PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> If we log a hole, fsync a file, partially write to the front of the hole
+> and then fsync again the file, we end up with a file extent item in the
+> log tree that represents a hole and has a disk address of 0 and an offset
+> that is greater than zero (since we trimmed the front part of the range to
+> accomodate for a file extent item of the new write).
 
-/*
- * Call btrfs_abort_transaction as early as possible when an error condition is
- * detected, that way the exact stack trace is reported for some errors.
- */
-#define btrfs_abort_transaction(trans, error)
+I ran into this last week and reached the same conclusion about the fix,
+but wasn't sure I understood how the items were created so was still
+debugging. Thanks for explaining it.
 
-Indeed, that's clever. It was not clear from the commit message why
-this pattern is preferred.
+I did notice that we have a CONFIG_BTRFS_DEBUG gated check for non-zero
+offsets in a hole in extent_map (in validate_extent_map()).
 
-Thanks for the explanation.
+I wasn't able to hit that while reproducing this issue but was curious if
+you think that check is valid?
+
+Regardless of that bit, thanks for the fix. You can add:
+
+Reviewed-by: Boris Burkov <boris@bur.io>
+
+> 
+> When this happens 'btrfs check' incorrectly reports that a csum is missing
+> like this:
+> 
+>   $ btrfs check /dev/sdc
+>   Opening filesystem to check...
+>   Checking filesystem on /dev/sdc
+>   UUID: 46a85f62-4b6e-4aab-bfdc-f08d1bae9e08
+>   [1/8] checking log
+>   ERROR: csum missing in log (root 5 inode 262 offset 5959680 address 0x5a000 length 1347584)
+>   ERROR: errors found in log
+>   [2/8] checking root items
+>   (...)
+> 
+> And in the log tree, the corresponding file extent item:
+> 
+>   $ btrfs inspect-internal dump-tree /dev/sdc
+>   (...)
+>         item 38 key (262 EXTENT_DATA 5959680) itemoff 1796 itemsize 53
+>                 generation 11 type 1 (regular)
+>                 extent data disk byte 0 nr 0
+>                 extent data offset 368640 nr 1347584 ram 1716224
+>                 extent compression 0 (none)
+>   (...)
+> 
+> This false alert happens because we sum the file extent item's offset to
+> its logical address before we attempt to skip holes at
+> check_range_csummed(), so we end up passing a non-zero logical address to
+> that function (0 + 368640), which will attempt to find a csum for that
+> invalid address and fail.
+> 
+> This type of error can be sporadically triggered by several test cases
+> from fstests such as btrfs/192 for example.
+> 
+> Fix this by skipping csum search if the file extent item's logical disk
+> address is 0 before summing the offset.
+> 
+> Fixes: 88dc309aca10 ("btrfs-progs: check: explicit holes in log tree don't get csummed")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  check/main.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/check/main.c b/check/main.c
+> index 6290c6d4..bf250c41 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -9694,10 +9694,6 @@ static int check_range_csummed(struct btrfs_root *root, u64 addr, u64 length)
+>  	u64 data_len;
+>  	int ret;
+>  
+> -	/* Explicit holes don't get csummed */
+> -	if (addr == 0)
+> -		return 0;
+> -
+>  	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -9807,12 +9803,15 @@ static int check_log_root(struct btrfs_root *root, struct cache_tree *root_cache
+>  			if (btrfs_file_extent_type(leaf, fi) != BTRFS_FILE_EXTENT_REG)
+>  				goto next;
+>  
+> +			addr = btrfs_file_extent_disk_bytenr(leaf, fi);
+> +			/* An explicit hole, skip as holes don't have csums. */
+> +			if (addr == 0)
+> +				goto next;
+> +
+>  			if (btrfs_file_extent_compression(leaf, fi)) {
+> -				addr = btrfs_file_extent_disk_bytenr(leaf, fi);
+>  				length = btrfs_file_extent_disk_num_bytes(leaf, fi);
+>  			} else {
+> -				addr = btrfs_file_extent_disk_bytenr(leaf, fi) +
+> -				       btrfs_file_extent_offset(leaf, fi);
+> +				addr += btrfs_file_extent_offset(leaf, fi);
+>  				length = btrfs_file_extent_num_bytes(leaf, fi);
+>  			}
+>  
+> -- 
+> 2.47.2
+> 
 
