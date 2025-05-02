@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-13618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13619-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3E64AA6FAA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 12:31:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E832AA6FA9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 12:31:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E28A3A2F32
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 10:31:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C3111BC7F65
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 10:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E902244686;
-	Fri,  2 May 2025 10:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B12424469A;
+	Fri,  2 May 2025 10:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pyTUBavy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YgdU4BVT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D938224467A
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02A523D29B
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746181839; cv=none; b=knp1Yhct3EZc/Mlh0J8Fvx0skZWWBZj08uZYwbmhIqXqIlZ54duI+5n0i58u+PZ1u7hdp9aK+5NsEeTlCmNopMikym70XFOq51S4FnlJvEa439wQ9c2QESIVHPOATlaFvQmFSlpJkdXmtS5Sm7GNFM/e/zyow/4ddOQ+15Yqwtc=
+	t=1746181841; cv=none; b=if7kvJFTlLoJEy6xdnrqgkILXu6k1NABV62R1nl52c1MLWA87rvqxTbgnHfgCbX98+CmHcvfBtAqF9xC9E+79x83huteez9GBIDMXkiW1PrWcLegNB9wR7wf3tnhleTvuSEDN4ifqfRFkziVNtTKquAB6pLB38MdeQqi9GVLGEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746181839; c=relaxed/simple;
-	bh=etgquxK5I0OcbstADF/AKyuniP+E5/YEV0oOlVAAvYc=;
+	s=arc-20240116; t=1746181841; c=relaxed/simple;
+	bh=yckMPublzHqrlVUpgihtQ6DLBDO8sW1eZnkokqKNCkY=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RUwV7KObt2ZKCweH7AEosKmL/XnEHEgv6Y1aszcwGH7+GaXHeFZm3U7WTcxk8PSncCoiRuvp+3dOOXOb/a0WgGTMmDswCO7Uc6wmH3XrMCxvhxFYrL+Ty4rSfYnJGoyid5ToCWI6sEePyc8Wkt3bRF/qkDwPC6vRRgi6s+qFb78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pyTUBavy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0060C4CEEB
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:38 +0000 (UTC)
+	 MIME-Version; b=pHHr5ffhfAO2gIrCo6mjvnTX+YNpKqrdmRUZhzfzt3DO0BJJL6mSQoi1/Av+LAV2zP0J5ROpbqAtLoIZfy5PCS007/0lfBxmy4guK3WK1AB6z6RFNLkrtRO7Og0YdtKsFPezsExtAOwVqpwHDVlp+Hc3Ru0carmAvdL/MFJi/uY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YgdU4BVT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3CDFC4CEEE
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746181839;
-	bh=etgquxK5I0OcbstADF/AKyuniP+E5/YEV0oOlVAAvYc=;
+	s=k20201202; t=1746181840;
+	bh=yckMPublzHqrlVUpgihtQ6DLBDO8sW1eZnkokqKNCkY=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=pyTUBavyvWfPQG+1diKQP9CDDBxnxO9334X5O5E9hHOqfzoiy2typlRElyhno9EFZ
-	 slUds/4IDRKwDQJoS8VPhTvSicqMNTivjVYAqHBWi9ooQA4E5tI0vjLm4eHk590fTk
-	 SeWt1ViRgZY86u/W7I1br5Iuv0GXNuzQNvvxK44iG9MYYQsy3PNi1qsA3roVqndP47
-	 Icjtn87YBxQldiE7yW7sW3LNzwN7bk1vKV7y/HFZeCekD5ys4NJOaq7m+ipBJ0F75k
-	 Fyz4NSSpP9XGWVTeLkfceyzOMp9zDI8meV4CKTH4T4wbdIWb2yIjX2H18uUKX9n1fe
-	 TP2+GEbPT50tw==
+	b=YgdU4BVTW03TcUFat1rHjlTuc8r5VdDdE4XZEntu/d2T77Hx43vQNPkk3KL2TnFla
+	 oNMYojORifMIVWN0c1wsVUWI42KkuqE7QXbmChLqvmUClNtgfvYw+BxBKK2YSOhitn
+	 gbSA3kBI/djI0d7pZI6Qw+0hkEurddvtpavPHWuPXFLQlJ9QhAVY1QFnTZJWQ3vRs3
+	 0T4bZ39XQuWo1zlPQUMKuR32Mm+eZIpzOud6W9CIuXqnvNKj76iNU7es30CVJQJD0c
+	 NLN+x9kkCFWecM8s08CtrcIkiysM/Depwyok8y/0Bj3M+FV5H8xe2XeKW6y8moSH4/
+	 h+WwcRaoi6wkw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/8] btrfs: simplify csum list release at btrfs_put_ordered_extent()
-Date: Fri,  2 May 2025 11:30:27 +0100
-Message-Id: <150815616088623df7425d43e1f27aa13c3989b1.1746181528.git.fdmanana@suse.com>
+Subject: [PATCH 8/8] btrfs: defrag: use list_last_entry() at defrag_collect_targets()
+Date: Fri,  2 May 2025 11:30:28 +0100
+Message-Id: <9710805966e88439eb0fe5e693fc493b2adc8fab.1746181528.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1746181528.git.fdmanana@suse.com>
 References: <cover.1746181528.git.fdmanana@suse.com>
@@ -59,50 +59,42 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of extracting each element by grabbing the list's first member in
-a local list_head variable, then extracting the csum with list_entry() and
-iterating with a while loop checking for list emptyness, use the iteration
-helper list_for_each_entry_safe(). This also removes the need to delete
-elements from the list with list_del() since the ordered extent is freed
-immediately after.
+Instead of using list_entry() against the list's prev entry, use
+list_last_entry(), which removes the need to know the last member is
+accessed through the prev list pointer and the naming makes it easier
+to reason about what we are doing.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ordered-data.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ fs/btrfs/defrag.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 6151d32704d2..ae49f87b27e8 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -607,23 +607,19 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
-  */
- void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
- {
--	struct list_head *cur;
--	struct btrfs_ordered_sum *sum;
--
- 	trace_btrfs_ordered_extent_put(entry->inode, entry);
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index 48e12c8a90a7..1831618579cb 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -1068,8 +1068,8 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 			/* Empty target list, no way to merge with last entry */
+ 			if (list_empty(target_list))
+ 				goto next;
+-			last = list_entry(target_list->prev,
+-					  struct defrag_target_range, list);
++			last = list_last_entry(target_list,
++					       struct defrag_target_range, list);
+ 			/* Not mergeable with last entry */
+ 			if (last->start + last->len != cur)
+ 				goto next;
+@@ -1087,8 +1087,8 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 		if (!list_empty(target_list)) {
+ 			struct defrag_target_range *last;
  
- 	if (refcount_dec_and_test(&entry->refs)) {
-+		struct btrfs_ordered_sum *sum;
-+		struct btrfs_ordered_sum *tmp;
-+
- 		ASSERT(list_empty(&entry->root_extent_list));
- 		ASSERT(list_empty(&entry->log_list));
- 		ASSERT(RB_EMPTY_NODE(&entry->rb_node));
- 		if (entry->inode)
- 			btrfs_add_delayed_iput(entry->inode);
--		while (!list_empty(&entry->list)) {
--			cur = entry->list.next;
--			sum = list_entry(cur, struct btrfs_ordered_sum, list);
--			list_del(&sum->list);
-+		list_for_each_entry_safe(sum, tmp, &entry->list, list)
- 			kvfree(sum);
--		}
- 		kmem_cache_free(btrfs_ordered_extent_cache, entry);
- 	}
- }
+-			last = list_entry(target_list->prev,
+-					  struct defrag_target_range, list);
++			last = list_last_entry(target_list,
++					       struct defrag_target_range, list);
+ 			ASSERT(last->start + last->len <= cur);
+ 			if (last->start + last->len == cur) {
+ 				/* Mergeable, enlarge the last entry */
 -- 
 2.47.2
 
