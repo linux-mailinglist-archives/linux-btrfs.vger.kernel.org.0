@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-13614-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13613-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82A38AA6FA4
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A132FAA6FA5
 	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 12:31:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4DFE1BC7C0F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 10:31:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EFB94A80A2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 10:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8605D242D7A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D83242D72;
 	Fri,  2 May 2025 10:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ndcf2PQk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRI5T4s4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA10723C500
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA09B6EB79
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746181835; cv=none; b=p7wcuTLa521HUPh3YpE0kd30iIrfcKDubPljULm5qXJH2O10eCfmA0Vyr0TkwdykFrPHNP1BeC/ysF3szDq0T2RlehVZunDPy0Hnl65pjaKWdhYOhk7J1SCqFrFd3tb5GsAGum5uF7sy/6e/njSo2HhfF0z1D6lkMlR07sBmWB8=
+	t=1746181835; cv=none; b=LhVpYgzVfweAfEDuW8jzzPplexbb+zQQ7UMjuUmwF1LWTy9WEbHhFgmr1kEqEseCorTHMWp/Ao1OlcWK8y1zlL1bQhAPfd9H8qoirvoJLaonV2EtJLpD3+Xzf61OwSY0SzfLyI/OQZU+CNGHjdLZAgDGoFH7QxGwi47Gw+SxsfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746181835; c=relaxed/simple;
-	bh=/FtFwF1sMIYivS9d52yZjGobz1vv74vkMPHO8GPoUVs=;
+	bh=pFwxwkxUf3orjm1ngapiN5fQbcZSUFRDqWYBeQOU5hY=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PHPuwla4FfEX9ZpMNXGlmR2RG/q9UCtXd24vIFTYjmV/PI/RpwN94pxTo/IXUzHA04+nxW5QXqswIZoNFcP2g+7pDexUzTXL1MdajqynvWiGQea7T4ArnZfCKPeRTRVHwRKryJOXj2lGFAAGmc2HQMp7u1+xLNy0fkBDG2F3k1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ndcf2PQk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC390C4CEEB
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:33 +0000 (UTC)
+	 MIME-Version; b=SxRhlBeGCZ4vdgY1lLMJPy2Ukp8V2MNddduPqpHnBeLpwDhLHpYfZMU5oTjMnX1GwU9eWsK1lWVosMY7A6Mj3+nvlm5XjtTGwJX8yhYqL51jVLBeyyN/u1hkNJIEuG77oh6CwJI8bI4f5M9P52vGyIHLXo1UFCw8U6+BCWYyFLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRI5T4s4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C01D0C4CEE4
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 10:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746181834;
-	bh=/FtFwF1sMIYivS9d52yZjGobz1vv74vkMPHO8GPoUVs=;
+	s=k20201202; t=1746181835;
+	bh=pFwxwkxUf3orjm1ngapiN5fQbcZSUFRDqWYBeQOU5hY=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Ndcf2PQkxZ0+bunP1jDSHQPFHFozIXl/jcXDE2QX6y1o4bRqCOpbIVd7u2O5FXN4v
-	 qRAmkuZbPcE1hJI/ifvF81qaDzBNFOdEVJu8aKNLPZXCStMhBnROsX8p/nZIcEgbfd
-	 PXHLsJvrOaCfsKMdJijGtwpERNBfrH+zXES58mk16ayNku9qZtbn4rnSxQQaQrQW7d
-	 yVE7ygBKeAuzc0iJbemuvfy7+3tahnbhNvEKOQx7qC4Xceq/oM7xKPKq4aLY826zjJ
-	 fbTk9g7Teg0eG3Ibasaa0wXpzUKeiJnzKDAT69EfVk+d7IClFTDB8TYbyLqq5GLDqx
-	 MOWYvWv7C1heQ==
+	b=dRI5T4s4hI6EDUdeioNtzAraDIrBZCupUQU/h7v+3MZbHIeLFdseUAkPe+G41fNyO
+	 tJQkCX4lKBNBZsJyeuQQdoPGFx0IjaxWCFMH+0uRfuSFvUc5NMqMPmYoo4RBqtFAJK
+	 OxN7XWU7SHzj+3HiDwexJ7vDKvBFhfCgpPzuvtdLZcPyZGTiQmS1uYQlN8pg1A8CJZ
+	 qIFnvm2CZ/NEuinpQUGXIgjigsG123CT84aPQJF8+eaXBjFkW/EcTDdKWQ9vwD3D3t
+	 K2gYiay9dG3Hsc7Ghr2KYtYzPVRHa2HHVdMiY2HcWYEwQ3Wj9wkxto+cEWz9K7OWdT
+	 v98092QDLz/ig==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/8] btrfs: simplify getting and extracting previous transaction at clean_pinned_extents()
-Date: Fri,  2 May 2025 11:30:22 +0100
-Message-Id: <2407e8ba35d8e3bcdc740daa101f9d36531d7dde.1746181528.git.fdmanana@suse.com>
+Subject: [PATCH 3/8] btrfs: simplify cow only root list extraction during transaction commit
+Date: Fri,  2 May 2025 11:30:23 +0100
+Message-Id: <58cf31b722e6ac42934f886b8a9d53138692b8e6.1746181528.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1746181528.git.fdmanana@suse.com>
 References: <cover.1746181528.git.fdmanana@suse.com>
@@ -59,42 +59,54 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of detecting if there is a previous transaction by comparing the
-current transaction's list prev member to the head of the transaction
-list (fs_info->trans_list), use the list_is_first() helper which contains
-that logic and the naming makes sense since a new transaction is always
-added to the end of the list fs_info->trans_list with list_add_tail().
+There's no need to keep a local variable to extract the first member of
+the list and then do a list_entry() call, we can use list_first_entry()
+instead, removing the need for the temporary variable and extracting the
+first element in a single step.
 
-We are also extracting the previous transaction with list_last_entry()
-against the transaction, which is correct but confusing because that
-function is usually meant to be used against a pointer to the start of a
-list and not a member of a list. It is easier to reason by either calling
-list_first_entry() against the list fs_info->trans_list, since we can
-never have more than two transactions in the list, or by calling
-list_prev_entry() against the transaction. So change that to use the later
-method.
+Also, there's no need to do a list_del_init() followed by list_add_tail(),
+instead we can use list_move_tail(). We are in transaction commit critical
+section where we don't need to worry about concurrency and that's why we
+don't take any locks and can use list_move_tail() (we do assert early at
+commit_cowonly_roots() that we are in the critical section, that the
+transaction's state is TRANS_STATE_COMMIT_DOING).
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/btrfs/transaction.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index e3b912d539e2..a41ca673ad1a 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1418,9 +1418,8 @@ static bool clean_pinned_extents(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index fe79d65c8635..e0256eecf176 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1326,7 +1326,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct list_head *dirty_bgs = &trans->transaction->dirty_bgs;
+ 	struct list_head *io_bgs = &trans->transaction->io_bgs;
+-	struct list_head *next;
+ 	struct extent_buffer *eb;
  	int ret;
  
- 	spin_lock(&fs_info->trans_lock);
--	if (trans->transaction->list.prev != &fs_info->trans_list) {
--		prev_trans = list_last_entry(&trans->transaction->list,
--					     struct btrfs_transaction, list);
-+	if (!list_is_first(&trans->transaction->list, &fs_info->trans_list)) {
-+		prev_trans = list_prev_entry(trans->transaction, list);
- 		refcount_inc(&prev_trans->use_count);
- 	}
- 	spin_unlock(&fs_info->trans_lock);
+@@ -1362,13 +1361,13 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
+ again:
+ 	while (!list_empty(&fs_info->dirty_cowonly_roots)) {
+ 		struct btrfs_root *root;
+-		next = fs_info->dirty_cowonly_roots.next;
+-		list_del_init(next);
+-		root = list_entry(next, struct btrfs_root, dirty_list);
++
++		root = list_first_entry(&fs_info->dirty_cowonly_roots,
++					struct btrfs_root, dirty_list);
+ 		clear_bit(BTRFS_ROOT_DIRTY, &root->state);
++		list_move_tail(&root->dirty_list,
++			       &trans->transaction->switch_commits);
+ 
+-		list_add_tail(&root->dirty_list,
+-			      &trans->transaction->switch_commits);
+ 		ret = update_cowonly_root(trans, root);
+ 		if (ret)
+ 			return ret;
 -- 
 2.47.2
 
