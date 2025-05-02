@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-13623-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13624-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50969AA7090
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 13:23:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06E4AA7123
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 14:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E53169825AF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 11:23:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81301B61565
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 12:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDC1242D95;
-	Fri,  2 May 2025 11:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D9F248F72;
+	Fri,  2 May 2025 12:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UIq+AH4A"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XHoq/QPZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C48222FF2B
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 11:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD81246775
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 12:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746185012; cv=none; b=FOSKJt8SSqAuRVvA5Jk3pjQ2xqZ443NMeqLOviPTbBCcuVB12tYlrLUVWwqJsJeMjBKoYqBnKt2BpTuspfneNnjE0bbaGUaTIaQ2+/T1cCzRy7V49ojkt7iFH5u3/Ps/4pp68b8ts6ZHV1pkLro0bbSk5Dre74idWIkMFdsJ/iM=
+	t=1746187451; cv=none; b=WbFRowA+QwRnef0PDwP5uZiBd+oHKZcYJsR7tfccHoP8o4z1aMZ7wGv01OTZgNIY7HAwJdRCQKq7BjvTDSn0f1LgjzEj1+mGwDNke99hbEuxPEZ/pCAlo5qJhVxTN0dqUwkEB3r7KazITHKy+bPfpcv9rggCfA6nofgoVqCqI7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746185012; c=relaxed/simple;
-	bh=/8HjksHxnR/LYWVqNif9GxKSelg3nmmTb3Hq2VrAvkc=;
+	s=arc-20240116; t=1746187451; c=relaxed/simple;
+	bh=k4toQUQd4GXmpTZtzVU6CEYOWMfMFzWaAitrU1KmboY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nbtdwt+/PRUtru6xb/aH5wAVnXAekRLerBMdrJ47vV4Kw2uyTGg+SxtQaCW+8J4I9LmTPjuCUZZKCVfO70bTFxLhZzHoFaZR50+eMF6wGbtvIxG3PVbWPXnuesxsbbr9Zl37oy6qw6p6ZRI0bURbiEAMGw6bQuRRceiPEXShIIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UIq+AH4A; arc=none smtp.client-ip=209.85.218.43
+	 To:Cc:Content-Type; b=WIexZC3q95uwmW1fKWQtxA+Mo9O3sgFw+sNUC4qZZqYY7YtLWSNNtmUR4GqeHju4zqIWqxSVk7sXxQz63wzTBTm7C5w7rShfMYfTbX/6mWtaI54Ce7qgI9xPiElNZe9SJjIAld+yoH2qJPYEDTWBOSppmqWg2vJqACYYRwA2ZAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XHoq/QPZ; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac345bd8e13so317458766b.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 May 2025 04:23:28 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ac2af2f15d1so242235066b.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 May 2025 05:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746185007; x=1746789807; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1746187447; x=1746792247; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kbObYtDFx1qro1bvSu2kf9oWhwh2pZ6u6GB8eCByqt4=;
-        b=UIq+AH4A3aBH1zasRm1+GKpkM+tUMuTsSCFDdCOQc7PNZmonNYmH4TX6eaH/00ziVj
-         vpQtOzeJvOn9gmkn0Gz9hbrnb0Wto5rPthd1/44Q8ivtvx2HxkMkB3cGyCaVUJq+4GuZ
-         6plsTMM85VoyI8413nii/ieaXuZ87GHGHPJCGPPK+IvjxOUBSEDd9eYLgC6FtEdVqGKU
-         adONr+vW2o+c5H1CE/aGSnnWu5oVjqcBMp7bYwD2VdZsEmmPi2zD6q0Ej8mT5/3zvb/U
-         FOh71OXDkNOA3GNP+TVG6ZBDwg/3mnF8xCVfVql5sVT7y4W7jQBox/I1lDornUvwLe8Y
-         TaKw==
+        bh=BPRPIKfVSGRq6ITejbYYVt34aehlUZuBk2QnZqFxJlA=;
+        b=XHoq/QPZRT/kAdl4Tmg2DqqDg8Ad9aMkr/jb1BOxlpICsEzUjkm5KoEcrpPv01wkKv
+         JpIIK04NlTi74lxIMUs9759cWEQF/W69teoNMs4jffv8c8/GL17xwAc9qlg6VbRJbfqU
+         fbrgQCAHSkTyhhCwUvl5fVD/UAnaPUoL0rZdlzYOweGp3+7SVItw+DO5752w2gPk+seB
+         HR5lg4Anty32d5HUaq58R6MPv4YvqCjTjkDIcpqiymOd9/GwOb7EGL7vUnYjVwWI+t4T
+         iTld+KB0oRBGRZGtOav+IYZOyf95dGiajwMR1zILH7dShY6q4TV2/ELuF28jlnZ48X0G
+         2rtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746185007; x=1746789807;
+        d=1e100.net; s=20230601; t=1746187447; x=1746792247;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kbObYtDFx1qro1bvSu2kf9oWhwh2pZ6u6GB8eCByqt4=;
-        b=Qu/3oe4/X8QZal3kEKLO5irTCXc2ayGmMeiJ9wmaZMECGEZ5ukczrpEYlm0+ByByxZ
-         iDkcbNKJQymH9d2zA88w7YxYcepZISc6Tu8Zj4Apitkg77p/505j8C0WRnabZiEot7DE
-         v4VYOyXlamoCbsSmkTL6uPAhiR2uHCCtx7hTW7g6unSncA1cf/XpCq8RjplfvZRXU6TG
-         1k0f/mEcULn4MGGvqcJwFjgzUsa6Sq5Z/B97xhoI/c+WO/vmvyEQmdPIf2LRRi9qYDwI
-         c84WNTHCpvmOrDnT7up4ofwY2rVE0vz/FjOFqrEVpF2C4XpaSmSI53iA09ii/YsYhilO
-         Gyvg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXPZu6tfpEIcepEb5Z2WsiBwlfXaGE4KL6nZlmS9Q1JfQLTbluqyThOYORBcmGfD0X+ANMiBhvbc0VCA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGpNMggar1c5AwPdANf+5mzf8d5LAwwtFVRq2tDNcL1IdHmCjf
-	nONYPfFwiwccUrXZeBFnqHvrSUIN++TiO+itzMfNOUChq1YBjoS7x78OERMT83XiHADfdvygtS/
-	YS/oYjHna/jpHD6YWrl0ojKNkgsRFbaIrUGGx3w==
-X-Gm-Gg: ASbGncv1j4gBeyrpfN4LfQ/SeP3OsU2Qy/7jWTSDNvmSmdDBdhipVpPGHXXkhs8g+Mz
-	wFDHiEQpJ+IrizMs9qz2aIkOsn2+rvM8ZFtV/vEs56sEISP9BqLbVGwyVjvk04REjAWchKQZGtF
-	JPlO88hYd96IAIiVy5QqID
-X-Google-Smtp-Source: AGHT+IGcHZhjWLByBsMxPMPruZs0xWBL5PKE+RQGiE6tacXkOtMX3cecKZVa20XY0Ly27mWWYpAz6Vbn3JDoG9Qnmag=
-X-Received: by 2002:a17:906:ba83:b0:ac7:95b5:f5d1 with SMTP id
- a640c23a62f3a-ad17af4f980mr196136366b.42.1746185006625; Fri, 02 May 2025
- 04:23:26 -0700 (PDT)
+        bh=BPRPIKfVSGRq6ITejbYYVt34aehlUZuBk2QnZqFxJlA=;
+        b=qCML00nW9bHwwxW41ZQV5zkQ76uKsWjtfY4J21CDZfRW336XGjeZUQD9B5JwDNzV6t
+         cRy1kUDGJDbfxpr68NA0Hz2izUHV00g6y2N5vMdYdcWYAngwFj/12TMFP5nXfC9SXJsx
+         L56S7Ftnedy3lXTz8Qgl+abb0ljlhgxiYHufoikzAJP54irRwaShTpJszAeW/2XEKdNG
+         9da6r87PfHHvUTu8T692u5q4eE/wTOfJD7Svz/mvrgJq1nS4c6+1nBdyfIinuXGqWMWO
+         V0NWpeFRQ87FOH1sQ3l4XOoaKmRvEHgOJvDU5eLdv+z9RDlMMAHqTVDj79xxKKZqV/OA
+         UHXA==
+X-Forwarded-Encrypted: i=1; AJvYcCWwte99lv7+qcHaHEdMGyA8xi/R83+PA+eZu8JJ7S6pzMPwyuMeATwP3Cz/wbzTr/5p/0PzHHF4igf8Rw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyu68SlVK2t/MxIwaqihJdqtACwCIP1ZEdNQtg6koSMVNdAI/BO
+	0OjQtz6aJ4iJqG1i3rdinKHQ+2aRPCmzI4bJOSslBePWr4F5uBPVzl1H1v7XiWNH3PCdZ34wmE0
+	Maq7orWGxI5rkeZERX7lpQeHeh/21mRTyCpQMxA==
+X-Gm-Gg: ASbGncvJX78fa85hzmA2WLlEIPzTdlLfWzr60v1vICuWNxKtMNyjDFiy7cIlT1DDJiv
+	xVq3wKRVpL7H59e/nhsSSGY3awv4ZuEgOz1LqhJvB8idCO7+fEyOA2n/weuYiGnKtRaisY/ZO0G
+	119tuokZCPfvfd2KPjWPQg
+X-Google-Smtp-Source: AGHT+IFexHphn+QwtEkGN0QtvusZk4g7qhyXzh59CokpzsuzOfXNl9izhrW/FeZ+1YAKnoX41c8fmxfpp5LBg3FF4pw=
+X-Received: by 2002:a17:907:c28f:b0:acb:5583:6fe4 with SMTP id
+ a640c23a62f3a-ad17ad3b23dmr269340766b.6.1746187447432; Fri, 02 May 2025
+ 05:04:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -75,101 +75,172 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250429151800.649010-1-neelx@suse.com> <20250430080317.GF9140@twin.jikos.cz>
  <CAPjX3FfBoU9-wYP-JC63K6y8Pzocu0z8cKvXEbjD_NjdxWO+Og@mail.gmail.com>
- <CAPjX3FdpjOfu61KTnQFKdGgh4u5eVz_AwenoPVNgP_eiuka3hw@mail.gmail.com> <20250502103014.GN9140@suse.cz>
-In-Reply-To: <20250502103014.GN9140@suse.cz>
+ <20250430133026.GH9140@suse.cz> <CAPjX3FdexSywSbJQfrj5pazrBRyVns3SdRCsw1VmvhrJv20bvw@mail.gmail.com>
+ <20250502105630.GO9140@suse.cz>
+In-Reply-To: <20250502105630.GO9140@suse.cz>
 From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 2 May 2025 13:23:15 +0200
-X-Gm-Features: ATxdqUFsCAE23vInO_k8SiCRrPA6hEZ9aX390SzLq56qcaA2sgLYgWUY9M-tHYY
-Message-ID: <CAPjX3FeNcwQrBofsHppQpua7e7UwbwRAKKaz0KHS9ypEfntTDA@mail.gmail.com>
+Date: Fri, 2 May 2025 14:03:55 +0200
+X-Gm-Features: ATxdqUEf1RQiTTyAISQFpziz--aYmeR-Yd3u2T6S9hrE9Iviu6ITi3lYgPSwwQY
+Message-ID: <CAPjX3Ffy2=CQP2mx9Wa3BBR54fEAcuo8ADqeTVdcAmCO7g+gmg@mail.gmail.com>
 Subject: Re: [PATCH] btrfs: remove extent buffer's redundant `len` member field
 To: dsterba@suse.cz
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
 	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2 May 2025 at 12:30, David Sterba <dsterba@suse.cz> wrote:
+On Fri, 2 May 2025 at 12:56, David Sterba <dsterba@suse.cz> wrote:
 >
-> On Wed, Apr 30, 2025 at 02:31:33PM +0200, Daniel Vacek wrote:
-> > On Wed, 30 Apr 2025 at 10:21, Daniel Vacek <neelx@suse.com> wrote:
+> On Wed, Apr 30, 2025 at 04:13:20PM +0200, Daniel Vacek wrote:
+> > On Wed, 30 Apr 2025 at 15:30, David Sterba <dsterba@suse.cz> wrote:
 > > >
-> > > On Wed, 30 Apr 2025 at 10:03, David Sterba <dsterba@suse.cz> wrote:
-> > > >
-> > > > On Tue, Apr 29, 2025 at 05:17:57PM +0200, Daniel Vacek wrote:
-> > > > > Even super block nowadays uses nodesize for eb->len. This is since commits
+> > > On Wed, Apr 30, 2025 at 10:21:18AM +0200, Daniel Vacek wrote:
+> > > > > The benefit of duplicating the length in each eb is that it's in the
+> > > > > same cacheline as the other members that are used for offset
+> > > > > calculations or bit manipulations.
 > > > > >
-> > > > > 551561c34663 ("btrfs: don't pass nodesize to __alloc_extent_buffer()")
-> > > > > da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
-> > > > > ce3e69847e3e ("btrfs: sink parameter len to alloc_extent_buffer")
-> > > > > a83fffb75d09 ("btrfs: sink blocksize parameter to btrfs_find_create_tree_block")
-> > > > >
-> > > > > With these the eb->len is not really useful anymore. Let's use the nodesize
-> > > > > directly where applicable.
+> > > > > Going to the fs_info->nodesize may or may not hit a cache, also because
+> > > > > it needs to do 2 pointer dereferences, so from that perspective I think
+> > > > > it's making it worse.
 > > > >
-> > > > I've had this patch in my local branch for some years from the times we
-> > > > were optimizing extent buffer size. The size on release config is 240
-> > > > bytes. The goal was to get it under 256 and keep it aligned.
-> > > >
-> > > > Removing eb->len does not change the structure size and leaves a hole
-> > > >
-> > > >  struct extent_buffer {
-> > > >         u64                        start;                /*     0     8 */
-> > > > -       u32                        len;                  /*     8     4 */
-> > > > -       u32                        folio_size;           /*    12     4 */
-> > > > +       u32                        folio_size;           /*     8     4 */
-> > > > +
-> > > > +       /* XXX 4 bytes hole, try to pack */
-> > > > +
-> > > >         long unsigned int          bflags;               /*    16     8 */
-> > > >         struct btrfs_fs_info *     fs_info;              /*    24     8 */
-> > > >         void *                     addr;                 /*    32     8 */
-> > > > @@ -5554,8 +5556,8 @@ struct extent_buffer {
-> > > >         struct rw_semaphore        lock;                 /*    72    40 */
-> > > >         struct folio *             folios[16];           /*   112   128 */
-> > > >
-> > > > -       /* size: 240, cachelines: 4, members: 14 */
-> > > > -       /* sum members: 238, holes: 1, sum holes: 2 */
-> > > > +       /* size: 240, cachelines: 4, members: 13 */
-> > > > +       /* sum members: 234, holes: 2, sum holes: 6 */
-> > > >         /* forced alignments: 1, forced holes: 1, sum forced holes: 2 */
-> > > >         /* last cacheline: 48 bytes */
-> > > >  } __attribute__((__aligned__(8)));
-> > > >
-> > > > The benefit of duplicating the length in each eb is that it's in the
-> > > > same cacheline as the other members that are used for offset
-> > > > calculations or bit manipulations.
-> > > >
-> > > > Going to the fs_info->nodesize may or may not hit a cache, also because
-> > > > it needs to do 2 pointer dereferences, so from that perspective I think
-> > > > it's making it worse.
+> > > > I was considering that. Since fs_info is shared for all ebs and other
+> > > > stuff like transactions, etc. I think the cache is hot most of the
+> > > > time and there will be hardly any performance difference observable.
+> > > > Though without benchmarks this is just a speculation (on both sides).
 > > >
-> > > I was considering that. Since fs_info is shared for all ebs and other
-> > > stuff like transactions, etc. I think the cache is hot most of the
-> > > time and there will be hardly any performance difference observable.
-> > > Though without benchmarks this is just a speculation (on both sides).
-> > >
-> > > > I don't think we need to do the optimization right now, but maybe in the
-> > > > future if there's a need to add something to eb. Still we can use the
-> > > > remaining 16 bytes up to 256 without making things worse.
-> > >
-> > > This really depends on configuration. On my laptop (Debian -rt kernel)
-> > > the eb struct is actually 272 bytes as the rt_mutex is significantly
-> > > heavier than raw spin lock. And -rt is a first class citizen nowadays,
-> > > often used in Kubernetes deployments like 5G RAN telco, dpdk and such.
-> > > I think it would be nice to slim the struct below 256 bytes even there
-> > > if that's your aim.
+> > > The comparison is between "always access 1 cacheline" and "hope that the
+> > > other cacheline is hot", yeah we don't have benchmarks for that but the
+> > > first access pattern is not conditional.
 > >
-> > Eventually we can get there by using ushort for bflags and moving
-> > log_index and folio_shift to fill the hole.
-> > Let me know what you think.
+> > That's quite right. Though in many places we already have fs_info
+> > anyways so it's rather accessing a cacheline in eb vs. accessing a
+> > cacheline in fs_info. In the former case it's likely a hot memory due
+> > to accessing surrounding members anyways, while in the later case is
+> > hopefully hot as it's a heavily shared resource accessed when
+> > processing other ebs or transactions.
+> > But yeah, in some places we don't have the fs_info pointer yet and two
+> > accesses are still needed.
 >
-> The bflags are atomic bits and this requires unsigned long. Also the
+> The fs_info got added to eb because it used to be passed as parameter to
+> many functions.
 
-I realized and dropped that idea. Which means we can save just 8 bytes
-on -rt and nothing on default config. Still a good win for free. I
-mean in case we end up removing the `len` field.
+Makes sense.
 
-> short int type is something we want to avoid because it's not a natural
-> type on many architectures and generates worse code. I don't think we
-> need to optimize for RT kernels, it's now part of mainline kernel but by
-> far not a common configuration.
+> > In theory fs_info could be shuffled to move nodesize to the same
+> > cacheline with buffer_tree. Would that feel better to you?
+>
+> We'd get conflicting requirements for ordering in fs_info. Right now
+> the nodesize/sectorsize/... are in once cacheline in fs_info and they're
+> often used together in many functions. Reordering it to fit eb usage
+> pattern may work but I'm not convinced we need it.
+
+I agree.
+
+> > > > > I don't think we need to do the optimization right now, but maybe in the
+> > > > > future if there's a need to add something to eb. Still we can use the
+> > > > > remaining 16 bytes up to 256 without making things worse.
+> > > >
+> > > > This really depends on configuration. On my laptop (Debian -rt kernel)
+> > > > the eb struct is actually 272 bytes as the rt_mutex is significantly
+> > > > heavier than raw spin lock. And -rt is a first class citizen nowadays,
+> > > > often used in Kubernetes deployments like 5G RAN telco, dpdk and such.
+> > > > I think it would be nice to slim the struct below 256 bytes even there
+> > > > if that's your aim.
+> > >
+> > > I configured and built RT kernel to see if it's possible to go to 256
+> > > bytes on RT and it seems yes with a big sacrifice of removing several
+> > > struct members that cache values like folio_size or folio_shift and
+> > > generating worse code.
+> > >
+> > > As 272 is a multiple of 16 it's a reasonable size and we don't need to
+> > > optimize further. The number of ebs in one slab is 30, with the non-rt
+> > > build it's 34, which sounds OK.
+> >
+> > That sounds fair. Well the 256 bytes were your argument in the first place.
+>
+> Yeah, 256 is a nice number because it aligns with cachelines on multiple
+> architectures, this is useful for splitting the structure to the "data
+> accessed together" and locking/refcounting. It's a tentative goal, we
+> used to have larger eb size due to own locking implementation but with
+> rwsems it got close/under 256.
+>
+> The current size 240 is 1/4 of cacheline shifted so it's not all clean
+> but whe have some wiggle room for adding new members or cached values,
+> like folio_size/folio_shift/addr.
+
+Sounds like we could force align to cacheline or explicitly pad to
+256B? The later could be a bit tricky though.
+
+> >
+> > Still, with this:
+> >
+> > --- a/fs/btrfs/extent_io.h
+> > +++ b/fs/btrfs/extent_io.h
+> > @@ -82,7 +82,10 @@ void __cold extent_buffer_free_cachep(void);
+> >  struct extent_buffer {
+> >         u64 start;
+> >         u32 folio_size;
+> > -       unsigned long bflags;
+> > +       u8 folio_shift;
+> > +       /* >= 0 if eb belongs to a log tree, -1 otherwise */
+> > +       s8 log_index;
+> > +       unsigned short bflags;
+>
+> This does not compile because of set_bit/clear_bit/wait_on_bit API
+> requirements.
+
+Yeah, I realized when I tried to implement it. It was just an email
+idea when sent.
+
+> >         struct btrfs_fs_info *fs_info;
+> >
+> >         /*
+> > @@ -94,9 +97,6 @@ struct extent_buffer {
+> >         spinlock_t refs_lock;
+> >         atomic_t refs;
+> >         int read_mirror;
+> > -       /* >= 0 if eb belongs to a log tree, -1 otherwise */
+> > -       s8 log_index;
+> > -       u8 folio_shift;
+> >         struct rcu_head rcu_head;
+> >
+> >         struct rw_semaphore lock;
+> >
+> > you're down to 256 even on -rt. And the great part is I don't see any
+> > sacrifices (other than accessing a cacheline in fs_info). We're only
+> > using 8 flags now, so there is still some room left for another 8 if
+> > needed in the future.
+>
+> Which means that the size on non-rt would be something like 228, roughly
+> calculating the savings and the increase due to spinloct_t going from
+> 4 -> 32 bytes. Also I'd like to see the generated assembly after the
+> suggested reordering.
+
+If I see correctly the non-rt will not change when I keep ulong
+bflags. The -rt build goes down to 264 bytes. That's a bit better for
+free but still not ideal from alignment POV.
+
+> The eb may not be perfect, I think there could be false sharing of
+> refs_lock and refs but this is a wild guess and based only on code
+
+refs_lock and refs look like they share the same cacheline in every
+case. At least on x86.
+But still, the slab object is not aligned in the first place. Luckily
+the two fields roam together.
+
+Out of curiosity, is there any past experience where this kind of
+optimizations make a difference within a filesystem code?
+I can imagine perhaps for fast devices like NVDIMM or DAX the CPU may
+become the bottleneck? Or are nowadays NVMe devices already fast
+enough to saturate the CPU?
+
+I faintly recall one issue where I debugged a CPU which could not keep
+up with handling the interrupts of finished IO on NVMe submitted by
+other CPUs. Though that was on xfs (or maybe ext4) not on btrfs. But
+that was a power-play of one against the rest as the interrupt was not
+balanced or spread to more CPUs.
+
+> observation. You may have more luck with other data structures with
+> unnecessary holes but please optimize for non-RT first.
+
+Clearly non-rt is the default and most important. No questions here.
 
