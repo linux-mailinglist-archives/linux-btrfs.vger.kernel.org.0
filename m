@@ -1,184 +1,144 @@
-Return-Path: <linux-btrfs+bounces-13632-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13633-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED9BAA7500
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 16:32:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 477ECAA7501
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 16:33:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E75C1B607F6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 14:32:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAC9D98048D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 May 2025 14:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D4D2417D4;
-	Fri,  2 May 2025 14:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A432417D4;
+	Fri,  2 May 2025 14:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zMUmMRQ/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LI3YmHyZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oWt5d3Ih";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pVZMzrvx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dh+zUPvB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB9F18E3F
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 14:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9AB3398B
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 14:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746196311; cv=none; b=UdSVczvjO8xgzCQBIeDkYa5Ek8oqktueyQAhZUPEpcL+UCaNU9fXp9SYedg2UeRNyKvvQal4TOaDTiJQzRAYKOouxqHbR7kmVZXOibLm154h03RiXgvY14wFN8oHSm/tsdYp+okkxYXdyp+YOegM6K3hCjYg3bmrcJNrZa/x80c=
+	t=1746196377; cv=none; b=qzWBI2mq+scqvqjhM0AOnDHOjl0hhH1ayQ7IZywm9wOGbUyGeHcKgtp9HWs3oL50eHL+8eUkEBZhOj8JDgbXM4b+VTgnA9QbRKrIpjEf41Xnfxgj7NDbzWXIDgB4OxMAg2ajeoJHnhg0fVFFIEMas+I3aPqQmSe9ANFY1oSgGaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746196311; c=relaxed/simple;
-	bh=0ijHQXnRC1sbg6T5iYFu2im4gF5RGEe8jQaH1h+UifQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TImUVGM2bhHObBZhmYMTCCxTxbuu3Mm8UeNI9ImfyKg2EnuejRpUjL2Lyb0G6ZlOu4vL17BehqTdMBm6niA7jpVkkmAIKD9/OmoansR6T1b0b/Ak//okGqvY96y8yuyjjy6kWr/GcAxCssXxaLP8esFoKiMLPxtw2ZHnAiCRjgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zMUmMRQ/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LI3YmHyZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oWt5d3Ih; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pVZMzrvx; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EDE5C2124E;
-	Fri,  2 May 2025 14:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746196308;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MZhE5/yH/lBZfAJ6fRKIYgF8wr6v9rQeD4LzR+3x984=;
-	b=zMUmMRQ/79wSVFDsSlpS5342YB+rzysDKCFQBxKD5jqLvupVChLxTv5u71WowbS8zX7Oea
-	kH1GiZoDLRzfFJSC8WscRUsM6iOlkf5ewnAZKiLSyj+kSJl/s+OkZr8Rk6abksOFdXi4jQ
-	SMVP/EPeA/jhS98lY23UrfGiiSunb+0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746196308;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MZhE5/yH/lBZfAJ6fRKIYgF8wr6v9rQeD4LzR+3x984=;
-	b=LI3YmHyZfiWwUf/Wwt09b4uqBHPdgXBDfNgQrRwxd9hpXfjxVQMhh6pq8p9gAh339L0CGs
-	Xa9BNqEwTy47wKCA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oWt5d3Ih;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pVZMzrvx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746196307;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MZhE5/yH/lBZfAJ6fRKIYgF8wr6v9rQeD4LzR+3x984=;
-	b=oWt5d3IhiBtvl1geH7Q06n6LHuMm0xuVn4lZH64OeZREiHjO/O1iNu9LQZ1JSMt4Y1l7mt
-	5kZ//laCymcYqv4AqlxImNFPkYNhgpDUxCaFba8KYVP43Lr9o/6y8BCbo8sC651vdyLX/n
-	2pTiT2JLS9i/MEL3LqBWdvep53xDoyk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746196307;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MZhE5/yH/lBZfAJ6fRKIYgF8wr6v9rQeD4LzR+3x984=;
-	b=pVZMzrvxNq2gmqmQ+5I69jvAlStx7wp7CcuMURlEymT4dKCLjk/ab9gLTtlGOUgSy5gzDC
-	jBO+k1DxKKR1tIBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCFBE1372E;
-	Fri,  2 May 2025 14:31:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2ui0NVPXFGibLAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 02 May 2025 14:31:47 +0000
-Date: Fri, 2 May 2025 16:31:42 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Daniel Vacek <neelx@suse.com>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] Transaction aborts in free-space-tree.c
-Message-ID: <20250502143142.GS9140@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1746031378.git.dsterba@suse.com>
- <CAPjX3FcAA=2cR4WqxFUOXZ4zYHS8hS75-ii0HPKQddgwhtr=Vg@mail.gmail.com>
- <20250502132407.GR9140@suse.cz>
- <CAPjX3FfMsjumdvv+BxtknhuGbXROKSioo5KGf-pj0_DafXsYkA@mail.gmail.com>
+	s=arc-20240116; t=1746196377; c=relaxed/simple;
+	bh=hU/pZL2Pwi0p3lAbuLMadJEXKjIw0RrbjmeNEe0diKo=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=ItOlyGmER6MlrdMDGVeK8rDN173sMdkGJSyJ0zu9SnlYhj4fmsuSsvT+tjDak4N2xDDMvv8k0QJluk2idghkbFjTolSRYHktU6KtAJ2qmKrBhAe1bFLMWxfKZQBob+ndJgI9ARpin1zgXFEaOf3sbWnU5wogDpnmAuxnCfT8zEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dh+zUPvB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01845C4CEE4
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 May 2025 14:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746196376;
+	bh=hU/pZL2Pwi0p3lAbuLMadJEXKjIw0RrbjmeNEe0diKo=;
+	h=From:To:Subject:Date:From;
+	b=Dh+zUPvByOBWyaHQEn610j+1QErnOtyzTPCwE4SuCXQH+7s7PyzMA5Ui1NIKB4Aow
+	 We9smOiQKYUP268ZQ08MbU5WbvATAeY9qmfsu1WWUA2fNrCuBK+NcpZWq9CB6FowxR
+	 BQ2n+JX/qGPowrdfdbfFTRCzXXAH5q+sEMyCGhbCsW0iAWwzaBNESJ5ZIws7OlegzD
+	 +aGmcXeXIV+SEaS/SnYTwPz+lH7EJ1l7DCh1sUtOyHCL7GF+aUB1uu7+xDYtPR1B5+
+	 UIeoJ2C9DPsPBjwChhZVrkP0Lm5NXyp2ApFSy2bHyN4RQJxsz0q7FT449ZtkbQ5CwJ
+	 yxw0DOR8eqOnA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: check: fix false alert on missing csum for hole
+Date: Fri,  2 May 2025 15:32:52 +0100
+Message-Id: <4dbd03928f8384d926aff5754199c5078fc915cb.1746194979.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPjX3FfMsjumdvv+BxtknhuGbXROKSioo5KGf-pj0_DafXsYkA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: EDE5C2124E
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:replyto,suse.cz:email,suse.com:email,btrfs.readthedocs.io:url];
-	RCPT_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 02, 2025 at 03:32:52PM +0200, Daniel Vacek wrote:
-> On Fri, 2 May 2025 at 15:24, David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Fri, May 02, 2025 at 03:15:49PM +0200, Daniel Vacek wrote:
-> > > On Wed, 30 Apr 2025 at 18:45, David Sterba <dsterba@suse.com> wrote:
-> > > >
-> > > > Fix the transaction abort pattern in free-space-tree, it's been there
-> > > > from the beginning and not conforming to the pattern we use elsewhere.
-> > > >
-> > > > David Sterba (4):
-> > > >   btrfs: move transaction aborts to the error site in
-> > > >     convert_free_space_to_bitmaps()
-> > > >   btrfs: move transaction aborts to the error site in
-> > > >     convert_free_space_to_extents()
-> > > >   btrfs: move transaction aborts to the error site in
-> > > >     remove_from_free_space_tree()
-> > > >   btrfs: move transaction aborts to the error site in
-> > > >     add_to_free_space_tree()
-> > > >
-> > > >  fs/btrfs/free-space-tree.c | 48 +++++++++++++++++++++++++-------------
-> > > >  1 file changed, 32 insertions(+), 16 deletions(-)
-> > >
-> > > This looks like unnecessary duplicating the code. Shall we rather go
-> > > the other way around?
-> >
-> > What do you mean? There's some smilarity among the functions so yeah
-> > the add/remove pairs can be merged to one, but this is orthogonal to the
-> > transaction abot calls.
-> 
-> Not that. I meant the code looks simpler without these patches. If
-> this is the pattern used elsewhere, maybe we should rather change
-> elsewhere to follow free-space-tree.c?
+From: Filipe Manana <fdmanana@suse.com>
 
-https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#error-handling-and-transaction-abort
+If we log a hole, fsync a file, partially write to the front of the hole
+and then fsync again the file, we end up with a file extent item in the
+log tree that represents a hole and has a disk address of 0 and an offset
+that is greater than zero (since we trimmed the front part of the range to
+accomodate for a file extent item of the new write).
 
-"Please keep all transaction abort exactly at the place where they happen
-and do not merge them to one. This pattern should be used everywhere and
-is important when debugging because we can pinpoint the line in the code
-from the syslog message and do not have to guess which way it got to the
-merged call."
+When this happens 'btrfs check' incorrectly reports that a csum is missing
+like this:
+
+  $ btrfs check /dev/sdc
+  Opening filesystem to check...
+  Checking filesystem on /dev/sdc
+  UUID: 46a85f62-4b6e-4aab-bfdc-f08d1bae9e08
+  [1/8] checking log
+  ERROR: csum missing in log (root 5 inode 262 offset 5959680 address 0x5a000 length 1347584)
+  ERROR: errors found in log
+  [2/8] checking root items
+  (...)
+
+And in the log tree, the corresponding file extent item:
+
+  $ btrfs inspect-internal dump-tree /dev/sdc
+  (...)
+        item 38 key (262 EXTENT_DATA 5959680) itemoff 1796 itemsize 53
+                generation 11 type 1 (regular)
+                extent data disk byte 0 nr 0
+                extent data offset 368640 nr 1347584 ram 1716224
+                extent compression 0 (none)
+  (...)
+
+This false alert happens because we sum the file extent item's offset to
+its logical address before we attempt to skip holes at
+check_range_csummed(), so we end up passing a non-zero logical address to
+that function (0 + 368640), which will attempt to find a csum for that
+invalid address and fail.
+
+This type of error can be sporadically triggered by several test cases
+from fstests such as btrfs/192 for example.
+
+Fix this by skipping csum search if the file extent item's logical disk
+address is 0 before summing the offset.
+
+Fixes: 88dc309aca10 ("btrfs-progs: check: explicit holes in log tree don't get csummed")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ check/main.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/check/main.c b/check/main.c
+index 6290c6d4..bf250c41 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -9694,10 +9694,6 @@ static int check_range_csummed(struct btrfs_root *root, u64 addr, u64 length)
+ 	u64 data_len;
+ 	int ret;
+ 
+-	/* Explicit holes don't get csummed */
+-	if (addr == 0)
+-		return 0;
+-
+ 	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+ 	if (ret < 0)
+ 		return ret;
+@@ -9807,12 +9803,15 @@ static int check_log_root(struct btrfs_root *root, struct cache_tree *root_cache
+ 			if (btrfs_file_extent_type(leaf, fi) != BTRFS_FILE_EXTENT_REG)
+ 				goto next;
+ 
++			addr = btrfs_file_extent_disk_bytenr(leaf, fi);
++			/* An explicit hole, skip as holes don't have csums. */
++			if (addr == 0)
++				goto next;
++
+ 			if (btrfs_file_extent_compression(leaf, fi)) {
+-				addr = btrfs_file_extent_disk_bytenr(leaf, fi);
+ 				length = btrfs_file_extent_disk_num_bytes(leaf, fi);
+ 			} else {
+-				addr = btrfs_file_extent_disk_bytenr(leaf, fi) +
+-				       btrfs_file_extent_offset(leaf, fi);
++				addr += btrfs_file_extent_offset(leaf, fi);
+ 				length = btrfs_file_extent_num_bytes(leaf, fi);
+ 			}
+ 
+-- 
+2.47.2
+
 
