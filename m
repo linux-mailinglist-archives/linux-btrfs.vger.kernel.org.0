@@ -1,94 +1,94 @@
-Return-Path: <linux-btrfs+bounces-13663-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB08DAA9A48
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 19:20:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A4B6AA9ACE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 19:37:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF84C189C8EE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 17:20:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AD3316ABEF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 17:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4822D26A0CA;
-	Mon,  5 May 2025 17:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322B326AAAF;
+	Mon,  5 May 2025 17:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="WQeVjkEH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="r0I7mbVK"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="co/FRYgR";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Cd3OFg4Z"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8238726B95D
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 May 2025 17:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02BA1F2BAB
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 May 2025 17:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746465615; cv=none; b=g6D6RAkTHthMBK/jxr+R7K7QIkjrkbLN682uq8fEcPK9IOL8OtYZVqDhQDz0A62h1ovfsYhFm5Bz5ZMwPG6sdWsVnRoeiRe+BjqCCzX4k93K6EIutEU4ayl7jtgJrcGrU280YqrWwxIZMuP1v22VRx8HJazTlBLrb0Dlm6u2hF4=
+	t=1746466645; cv=none; b=c4MT/qKCRWFBE+MdjXHG3h3ef6h8qQ6haKdJclzxC3SV1O3eyQ5E7uHLDVv4aRY3ljrESZ+v2QHAosSQXpoqDl7F2xxKDq6q/0r4OHr9LxF67VAz8ltUm6JXVfD9HbSONq9uXIqwKdJ7jzRnR6wJnoRl7xW4RnCLrc60jx5Ktsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746465615; c=relaxed/simple;
-	bh=bGyPtszcCXV+BHDy+R+e8OM4rGUa75gmXntc1+m7CQ4=;
+	s=arc-20240116; t=1746466645; c=relaxed/simple;
+	bh=iq5ya23deP3SrJJUOUfPI2GZ8ezKv9X9unp/WjsX5cU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P9glce69SW54YvvmFoBxdy7c/W3o+BC0aIKavCsGaDE8YjopFPlNh2A4Mov90aX1UEwZNen/cRxkD0vmo0HWS7Heq7QtmuUBE1ccK7oWCaZ+NvK1h5+8tY6ERr2CkUXO4BDoI+rjjiU65UYolDSyG+GWz8kn3bfBNNCXSO/RnD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=WQeVjkEH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=r0I7mbVK; arc=none smtp.client-ip=202.12.124.155
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y3QbnJ4sur+OB85MJzBvwE5yhiL0BIrfoCxbS790suwCQMwnRoYKEEW0IkbasWT76bMPDu/GYyN7H07ckliWwa9a2KnndCuAY5C+Yj9/b8suhZeVm6lNPTBQqvieIeYHH9vNHGWDJUJdYTUaKBmf3bLu2xRxv8t/jKYYzxsx0Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=co/FRYgR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Cd3OFg4Z; arc=none smtp.client-ip=202.12.124.155
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 8F30B2540287;
-	Mon,  5 May 2025 13:20:12 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Mon, 05 May 2025 13:20:12 -0400
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id B03BF2540269;
+	Mon,  5 May 2025 13:37:22 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Mon, 05 May 2025 13:37:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1746465612; x=1746552012; bh=Me19fn7cph
-	Mm/HRHwjCIKLpJWPMUqR4JQTI+rwVQOdc=; b=WQeVjkEHLyZpQyoVlEA/deF7ON
-	yvJqe9mNF2zq15N3fGX3lKPtVx2Yh3WLA1AQv8XTR11tvKCpazzQKJtXymWPCZn9
-	KnVnqKkcyjQStedXkm4pIOYZmk4i6iC6KwHKYjMjVBuT1sLzkZfeXv/xS+MI8EqX
-	W5kO59z78zLvWEnY5r0P7uqbfGrxSD3kWRQ61uZ/0pAoa85K+go3077MiFoyROrJ
-	63LTsfGdhPgC1LmYJjK21tX2D/X265V4ZbPdnquF7r1uvvqwxtt4+xW8wdVR35uT
-	3pjXLXlYYJYKsYKOC0xSayfSlYym8Qro4xfIowi1o0Waz1ZefnOAfXtzSj6w==
+	:subject:to:to; s=fm1; t=1746466642; x=1746553042; bh=EIYRiul2wh
+	fyjh9nyoI/M4Wy81qQ49fmvfqBCA46j9c=; b=co/FRYgRVClGhNrEERHFiZPIBd
+	+ZLwQaz7tfPo0Li04cjyPVg/a//0SUIJvFFI+sEIeP3iFHkOpWq5WgxuBusWdyA+
+	2aqVgHWrr8SUAurcsDEbOXQyIOC+ZDw+7wZPMdBvMbh3a7z1yp40I5rRSV/WFnSG
+	2XfHscIwTyuCT1UWbieMGPHfs/Q3NKK2sNnIRjty2TPSS/viifs758NRlzXLvXY7
+	vnIncsXWSjU7C5JVLkxtiL3tun/n9rvbZwlANLFM9QtZnpCdVD2phS+1nXNgcIeB
+	QpFJru8oEbn8N5vrRSHDSgs44mrDIAa7Pb2/IYPNUU5crjWkMnQ8DzXs7Ymg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1746465612; x=1746552012; bh=Me19fn7cphMm/HRHwjCIKLpJWPMUqR4JQTI
-	+rwVQOdc=; b=r0I7mbVKF6UxGd99HVIZmPtG/n506iwMGfg/p8qK4dZ8QsaivBU
-	xju6TO3bfJuUmikQWe//yAJGaywOId0LCmlLGLvsnYQd3vAulYw6xlv3A0ykVwtC
-	DU9/vHLERsS/8Bz9R9st3URkQqpGqlLbYXIKT07u3L0lrSJDX2kDkE0ytVzblsRT
-	rSwwdWd2Tra2/u3zQJPiiHC0Lypj12eP+mw6KwqnKpzfEtERGF1gZXTPmTfeJaVI
-	HZxDvDrPzdSMkP9g7+5qIshMjUd9jaULY3axeP1jA9Z4onfVcOBGJ/Gg01K3jHW9
-	RyJsiG1wNGkfpunLTu3w8FGwDTLIX2cZJVw==
-X-ME-Sender: <xms:TPMYaBpXn7Fh-as0PWcYMHHKMWzbEtHA5xu24gv0HvJRjkToH1qLFg>
-    <xme:TPMYaDqOB-leBjWF8IlYOIM2fl5gyfc1mNWwVZ280iC7ki16m-VHYgKArRvTESoLk
-    AXe_Y3vy1Xf1ySaa1w>
-X-ME-Received: <xmr:TPMYaOMC2GIWT1G4h-pf814TspcI7QYncRCHTcGnrK4wPrdcmaAUVipBs4h0Z-3VHSsWf1Jn2YXu7EiJ4yTwprP8frg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeduieekucetufdoteggodetrf
+	1746466642; x=1746553042; bh=EIYRiul2whfyjh9nyoI/M4Wy81qQ49fmvfq
+	BCA46j9c=; b=Cd3OFg4Z7k99tuQuIyLx+a4jLmjsj3whThGF927GKaqzsapDD+1
+	DNKO+N7uRcAQJZMmZtGYZ7ofR7x0FtwteA0REZwPRv64E0nAIuZA5FupZQBukWAU
+	iDoU1n6JTxnUv2/A3QccjG8F+l0rY6NijocBihrcWKPyudkQMbzS/gXjbJj9M2pi
+	Hrs+q8ZRNL387RJcqP/fU7d4OENaJ1CYB89yrVBvTHIOw/1q6+W1rc34xfc6qynA
+	qapujTjNfY+N2bu6swJk2MOIOtk3dM8AaALzSXKZVOm5K1EV8xH9apt1GK9/eP9x
+	pfR+fi8fVremQVgDtM96V+ezi3gHKdHjRRQ==
+X-ME-Sender: <xms:UvcYaKNUpz4kTsI1AMqG0tuK2UaWrqD1pG_ytTCyTfTa9dsg9GR6HA>
+    <xme:UvcYaI-Xg6tj1BbZjT3xlppgNtalJNK9iKWJQx41-_2Da6QcSqL6Tj1gCZ9rABGZ3
+    Ym6FTjQGD_N9Al_4Is>
+X-ME-Received: <xmr:UvcYaBRaZvKhXSGE9gJzRM0XUR3CLqG6BexufDBuRvTdPdiruzyYfGa34uSUa7WzL9GvdGwpfu09VvoFtazq57PCWe8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkedujedvucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhho
-    vhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeelle
-    fhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopd
-    hnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughm
-    rghnrghnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfsh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:TPMYaM6YuPC5sdMivaj1mth0PtK8IPc76UKEXvmoU62RjUYLuDYcbg>
-    <xmx:TPMYaA7oDRZYNAVhs0uaD2akD0RiKt4XnLbegZU10SwfKvmNvf86vw>
-    <xmx:TPMYaEj-NnTukY2xrhItusZJix5Zzj0AaIj5n606TPM2BuuBQEEw3w>
-    <xmx:TPMYaC6G3DBye5PBotfqJw8u2ydv_dGd4OnPmWq5XHfspTpqVMJTsw>
-    <xmx:TPMYaFmePvsJVReXnbCVmyCkInLmTYLyDlPFRe8dxUUNezg2K8e50lDw>
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
+    enucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedu
+    gfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtohhmpdhrtg
+    hpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:UvcYaKu-1dGRppBW_10O9TUoq-VqHJZM6mWJWmkFTguhA8newlB0-g>
+    <xmx:UvcYaCeVN622KWk49NCRf8Zp82jyQQKytbBrsZbBqhl8QQzWhIbNVA>
+    <xmx:UvcYaO0nhoOMSGO7HEeljass7ipwk9o3lYHwhWW2Ed2Jo7uhVBxRpQ>
+    <xmx:UvcYaG9_F09Tb32bgZfg-_PKAMIXlvg4-FejTUCjU7jU1dD5tMZI5w>
+    <xmx:UvcYaFsxcnz8yP7xZqprd7boU8UQzGcdczFmbDYn61m81z0J73zJAZp4>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 5 May 2025 13:20:11 -0400 (EDT)
-Date: Mon, 5 May 2025 10:20:58 -0700
+ 5 May 2025 13:37:22 -0400 (EDT)
+Date: Mon, 5 May 2025 10:38:08 -0700
 From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
+To: David Sterba <dsterba@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: use verbose assert at peek_discard_list()
-Message-ID: <20250505172058.GB3436025@zen.localdomain>
-References: <cover.1746460035.git.fdmanana@suse.com>
- <28f059e4718c988385c0d330c5c4663e253b60b0.1746460035.git.fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: use unsigned types for constants defined as bit
+ shifts
+Message-ID: <20250505173808.GA3450422@zen.localdomain>
+References: <20250422155541.296808-1-dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,37 +97,190 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <28f059e4718c988385c0d330c5c4663e253b60b0.1746460035.git.fdmanana@suse.com>
+In-Reply-To: <20250422155541.296808-1-dsterba@suse.com>
 
-On Mon, May 05, 2025 at 04:49:56PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Tue, Apr 22, 2025 at 05:55:41PM +0200, David Sterba wrote:
+> The unsigned type is a recommended practice (CWE-190, CWE-194) for bit
+> shifts to avoid problems with potential unwanted sign extensions.
+> Although there are no such cases in btrfs codebase, follow the
+> recommendation.
 > 
-> We now have a verbose variant of ASSERT() so that we can print the value
-> of the block group's discard_index. So use it for better problem analysis
-> in case the assertion is triggered.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
 Reviewed-by: Boris Burkov <boris@bur.io>
 > ---
->  fs/btrfs/discard.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  fs/btrfs/backref.h               |  4 ++--
+>  fs/btrfs/direct-io.c             |  4 ++--
+>  fs/btrfs/extent_io.h             |  2 +-
+>  fs/btrfs/inode.c                 | 12 ++++++------
+>  fs/btrfs/ordered-data.c          |  4 ++--
+>  fs/btrfs/raid56.c                |  5 ++---
+>  fs/btrfs/tests/extent-io-tests.c |  6 +++---
+>  fs/btrfs/zstd.c                  |  2 +-
+>  8 files changed, 19 insertions(+), 20 deletions(-)
 > 
-> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-> index de23c4b3515e..89fe85778115 100644
-> --- a/fs/btrfs/discard.c
-> +++ b/fs/btrfs/discard.c
-> @@ -256,7 +256,9 @@ static struct btrfs_block_group *peek_discard_list(
->  				 * the discard lists.
->  				 */
->  				ASSERT(block_group->discard_index !=
-> -				       BTRFS_DISCARD_INDEX_UNUSED);
-> +				       BTRFS_DISCARD_INDEX_UNUSED,
-> +				       "discard_index=%d",
-> +				       block_group->discard_index);
->  			} else {
->  				list_del_init(&block_group->discard_list);
->  				btrfs_put_block_group(block_group);
+> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+> index 74e6140312747f..953637115956b9 100644
+> --- a/fs/btrfs/backref.h
+> +++ b/fs/btrfs/backref.h
+> @@ -423,8 +423,8 @@ struct btrfs_backref_node *btrfs_backref_alloc_node(
+>  struct btrfs_backref_edge *btrfs_backref_alloc_edge(
+>  		struct btrfs_backref_cache *cache);
+>  
+> -#define		LINK_LOWER	(1 << 0)
+> -#define		LINK_UPPER	(1 << 1)
+> +#define		LINK_LOWER	(1U << 0)
+> +#define		LINK_UPPER	(1U << 1)
+>  
+>  void btrfs_backref_link_edge(struct btrfs_backref_edge *edge,
+>  			     struct btrfs_backref_node *lower,
+> diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+> index 3a03142dee099b..fde612d9b077e3 100644
+> --- a/fs/btrfs/direct-io.c
+> +++ b/fs/btrfs/direct-io.c
+> @@ -151,8 +151,8 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+>  	}
+>  
+>  	ordered = btrfs_alloc_ordered_extent(inode, start, file_extent,
+> -					     (1 << type) |
+> -					     (1 << BTRFS_ORDERED_DIRECT));
+> +					     (1U << type) |
+> +					     (1U << BTRFS_ORDERED_DIRECT));
+>  	if (IS_ERR(ordered)) {
+>  		if (em) {
+>  			btrfs_free_extent_map(em);
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index bcdb067da06d1e..b677006ab14ee6 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -67,7 +67,7 @@ enum {
+>   *    single word in a bitmap may straddle two pages in the extent buffer.
+>   */
+>  #define BIT_BYTE(nr) ((nr) / BITS_PER_BYTE)
+> -#define BYTE_MASK ((1 << BITS_PER_BYTE) - 1)
+> +#define BYTE_MASK ((1U << BITS_PER_BYTE) - 1)
+>  #define BITMAP_FIRST_BYTE_MASK(start) \
+>  	((BYTE_MASK << ((start) & (BITS_PER_BYTE - 1))) & BYTE_MASK)
+>  #define BITMAP_LAST_BYTE_MASK(nbits) \
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 652db811e5cabd..73ef9b9b2b2cd3 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -1151,7 +1151,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
+>  	btrfs_free_extent_map(em);
+>  
+>  	ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
+> -					     1 << BTRFS_ORDERED_COMPRESSED);
+> +					     1U << BTRFS_ORDERED_COMPRESSED);
+>  	if (IS_ERR(ordered)) {
+>  		btrfs_drop_extent_map_range(inode, start, end, false);
+>  		ret = PTR_ERR(ordered);
+> @@ -1396,7 +1396,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+>  		btrfs_free_extent_map(em);
+>  
+>  		ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
+> -						     1 << BTRFS_ORDERED_REGULAR);
+> +						     1U << BTRFS_ORDERED_REGULAR);
+>  		if (IS_ERR(ordered)) {
+>  			btrfs_unlock_extent(&inode->io_tree, start,
+>  					    start + cur_alloc_size - 1, &cached);
+> @@ -1976,8 +1976,8 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
+>  
+>  	ordered = btrfs_alloc_ordered_extent(inode, file_pos, &nocow_args->file_extent,
+>  					     is_prealloc
+> -					     ? (1 << BTRFS_ORDERED_PREALLOC)
+> -					     : (1 << BTRFS_ORDERED_NOCOW));
+> +					     ? (1U << BTRFS_ORDERED_PREALLOC)
+> +					     : (1U << BTRFS_ORDERED_NOCOW));
+>  	if (IS_ERR(ordered)) {
+>  		if (is_prealloc)
+>  			btrfs_drop_extent_map_range(inode, file_pos, end, false);
+> @@ -9688,8 +9688,8 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+>  	btrfs_free_extent_map(em);
+>  
+>  	ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
+> -				       (1 << BTRFS_ORDERED_ENCODED) |
+> -				       (1 << BTRFS_ORDERED_COMPRESSED));
+> +				       (1U << BTRFS_ORDERED_ENCODED) |
+> +				       (1U << BTRFS_ORDERED_COMPRESSED));
+>  	if (IS_ERR(ordered)) {
+>  		btrfs_drop_extent_map_range(inode, start, end, false);
+>  		ret = PTR_ERR(ordered);
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index b5b544712e93a3..6151d32704d2da 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -155,7 +155,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+>  	u64 qgroup_rsv = 0;
+>  
+>  	if (flags &
+> -	    ((1 << BTRFS_ORDERED_NOCOW) | (1 << BTRFS_ORDERED_PREALLOC))) {
+> +	    ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC))) {
+>  		/* For nocow write, we can release the qgroup rsv right now */
+>  		ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes, &qgroup_rsv);
+>  		if (ret < 0)
+> @@ -253,7 +253,7 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
+>   * @disk_bytenr:     Offset of extent on disk.
+>   * @disk_num_bytes:  Size of extent on disk.
+>   * @offset:          Offset into unencoded data where file data starts.
+> - * @flags:           Flags specifying type of extent (1 << BTRFS_ORDERED_*).
+> + * @flags:           Flags specifying type of extent (1U << BTRFS_ORDERED_*).
+>   * @compress_type:   Compression algorithm used for data.
+>   *
+>   * Most of these parameters correspond to &struct btrfs_file_extent_item. The
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 4657517f5480b7..06670e987f92f8 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -203,8 +203,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
+>  	struct btrfs_stripe_hash_table *x;
+>  	struct btrfs_stripe_hash *cur;
+>  	struct btrfs_stripe_hash *h;
+> -	int num_entries = 1 << BTRFS_STRIPE_HASH_TABLE_BITS;
+> -	int i;
+> +	unsigned int num_entries = 1U << BTRFS_STRIPE_HASH_TABLE_BITS;
+>  
+>  	if (info->stripe_hash_table)
+>  		return 0;
+> @@ -225,7 +224,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
+>  
+>  	h = table->table;
+>  
+> -	for (i = 0; i < num_entries; i++) {
+> +	for (unsigned int i = 0; i < num_entries; i++) {
+>  		cur = h + i;
+>  		INIT_LIST_HEAD(&cur->hash_list);
+>  		spin_lock_init(&cur->lock);
+> diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+> index b603563bd20986..d6aff41c38b165 100644
+> --- a/fs/btrfs/tests/extent-io-tests.c
+> +++ b/fs/btrfs/tests/extent-io-tests.c
+> @@ -14,9 +14,9 @@
+>  #include "../disk-io.h"
+>  #include "../btrfs_inode.h"
+>  
+> -#define PROCESS_UNLOCK		(1 << 0)
+> -#define PROCESS_RELEASE		(1 << 1)
+> -#define PROCESS_TEST_LOCKED	(1 << 2)
+> +#define PROCESS_UNLOCK		(1U << 0)
+> +#define PROCESS_RELEASE		(1U << 1)
+> +#define PROCESS_TEST_LOCKED	(1U << 2)
+>  
+>  static noinline int process_page_range(struct inode *inode, u64 start, u64 end,
+>  				       unsigned long flags)
+> diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+> index 75efca4da194c6..4a796a049b5a24 100644
+> --- a/fs/btrfs/zstd.c
+> +++ b/fs/btrfs/zstd.c
+> @@ -24,7 +24,7 @@
+>  #include "super.h"
+>  
+>  #define ZSTD_BTRFS_MAX_WINDOWLOG 17
+> -#define ZSTD_BTRFS_MAX_INPUT (1 << ZSTD_BTRFS_MAX_WINDOWLOG)
+> +#define ZSTD_BTRFS_MAX_INPUT (1U << ZSTD_BTRFS_MAX_WINDOWLOG)
+>  #define ZSTD_BTRFS_DEFAULT_LEVEL 3
+>  #define ZSTD_BTRFS_MIN_LEVEL -15
+>  #define ZSTD_BTRFS_MAX_LEVEL 15
 > -- 
-> 2.47.2
+> 2.49.0
 > 
 
