@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-13694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13695-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 868ECAAAAC1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:44:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73F1BAAABD5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 04:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 812203AD045
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:39:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED6551890749
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FB139261A;
-	Mon,  5 May 2025 23:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BC93B5B3D;
+	Mon,  5 May 2025 23:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c1dwrPTJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p4v1CglM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A2336F8B1;
-	Mon,  5 May 2025 22:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECC23984B8;
+	Mon,  5 May 2025 23:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485886; cv=none; b=Ia/4c/E4p+E1rQrbVCaV+u3kqvSGlaPr9NDYnxySResu6wVCWNLrxCNjvCD0AFG4HAK/Vl5D+dVAtCMW2f8IWqD1bgIeipu6ubt4fi7FJJqWvjEBYgtAt+kF9BRO1DJXozGxU+dPTDjM01HPxB9GyMlCXJv9LYSF4Vti6qHoiAA=
+	t=1746486449; cv=none; b=QGJEf57VIk4+UtJ4tdcw+ww2wNdHw1vrtirnc0KEvbODX2xtghRjlsbixL5hJTrsWo3ol+iJOrpH2EF1KvPHoQ4LHkquwvzLQ21iqmBB+bjV0WFDBeAPEkKMPUxwhJETqpENLMurxVmotcAy7MddQHxhMfhGgNwbDyaLP3/P0vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485886; c=relaxed/simple;
-	bh=DivLNW8QLgSVQ/DHwoC5q+PLRKVJu8HuP91Nfa/Xd0g=;
+	s=arc-20240116; t=1746486449; c=relaxed/simple;
+	bh=6K1W7Zy3vyBKZTLpth2DPhBesAHtGw1EAG+78Ae1Obo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oVzOBNHUTBmsja1pZJv7G/DrMsls8KaKRDzcR0Gbq4d2qyToA8csLzUmTz0ZahY1baSFvuFXf/wn8ONNWwZjQH5d/DWtUMeIJFF9hLd9vUgLKbZK0y94i80mB9EK3udgqOlk6Tl+DRLchUcGgFTv6JvURq9gq5MNUR9RitfVS4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c1dwrPTJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05FB4C4CEEE;
-	Mon,  5 May 2025 22:58:03 +0000 (UTC)
+	 MIME-Version; b=mZLS0/a11x0a3MTZIqNL0Y5lvNRxqqm0yGkyL0BNjQmRglfYtmboo4nVX0OCrp5wrvN35DJMpHubFEStytRwPgSN2IYEabPZir4PUtcPHd54D4WoADKsnImYOUw6guJxFMCcW8nt9uMLWDU8fAuilrgwUXSw5XYhHBTvRkNHPLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p4v1CglM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05709C4CEEE;
+	Mon,  5 May 2025 23:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485885;
-	bh=DivLNW8QLgSVQ/DHwoC5q+PLRKVJu8HuP91Nfa/Xd0g=;
+	s=k20201202; t=1746486448;
+	bh=6K1W7Zy3vyBKZTLpth2DPhBesAHtGw1EAG+78Ae1Obo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c1dwrPTJW/lHO4CsSJiNf+bcgF9Q9eypR1oDOpUpcsgb5VBBpa1rNuXpXAYEXh3BX
-	 1q6D9b/6cXb8wQiCRUMoijO163jXJ/HDbUBvV774U/okn+o05ls5Ocr00TB0459/kp
-	 h9S3GyyHwiyYlC3dBgkx4L/Fj1Kz/CtFfTvDAiMEHbSAWnXN2p4HScKpqeeCX7rvuP
-	 CzqxWB2qhTqGGfb3MS3EZQnZx8w29ht2arL1R422Bgf4PzwTmy3qiYQt501ScpterL
-	 gLTp0p0z7OQDZj97QXnKAWQygdkdv8vUNpPd/PusBSovFVlG9M5uwjjgIKQplL2Bg2
-	 ujj95/pWRGhKQ==
+	b=p4v1CglMjj9QI7XfmZmBDS1uA1qKhnSwcQ4b/Ghd0fYlelsurt0FsZU1b7niGnHE7
+	 hrimtXkpmsy9KwHklaNY4Cvy3crWR4M/Rdrthq4A2tYRPkVXDWjKtItb42jD+FftvT
+	 YohhtMV92Z4OqQhY5LHhRmAUOA1YJ7UXCCkpKnb3L21oDxVmvOzdtfdr5STWInIRRJ
+	 cqO530/uZ4lvWd1/0ZeA576goYDgju4bIV97Folz0BX6/euV3PQddQtMbYq9LDKcCv
+	 gTasmdvLLIZz+ougye/hUsm5gKb6ocECaTd1zgFaPoyqV3nQ/af+Lb96GaMejn3e2B
+	 hCwVFhX1m3hVw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
+Cc: Boris Burkov <boris@bur.io>,
+	Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
-	Qu Wenruo <wqu@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 047/294] btrfs: fix non-empty delayed iputs list on unmount due to async workers
-Date: Mon,  5 May 2025 18:52:27 -0400
-Message-Id: <20250505225634.2688578-47-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 034/212] btrfs: make btrfs_discard_workfn() block_group ref explicit
+Date: Mon,  5 May 2025 19:03:26 -0400
+Message-Id: <20250505230624.2692522-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
-References: <20250505225634.2688578-1-sashal@kernel.org>
+In-Reply-To: <20250505230624.2692522-1-sashal@kernel.org>
+References: <20250505230624.2692522-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,85 +65,107 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.89
+X-stable-base: Linux 6.1.136
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Boris Burkov <boris@bur.io>
 
-[ Upstream commit cda76788f8b0f7de3171100e3164ec1ce702292e ]
+[ Upstream commit 895c6721d310c036dcfebb5ab845822229fa35eb ]
 
-At close_ctree() after we have ran delayed iputs either explicitly through
-calling btrfs_run_delayed_iputs() or later during the call to
-btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
-delayed iputs list is empty.
+Currently, the async discard machinery owns a ref to the block_group
+when the block_group is queued on a discard list. However, to handle
+races with discard cancellation and the discard workfn, we have a
+specific logic to detect that the block_group is *currently* running in
+the workfn, to protect the workfn's usage amidst cancellation.
 
-We have (another) race where this assertion might fail because we have
-queued an async write into the fs_info->workers workqueue. Here's how it
-happens:
+As far as I can tell, this doesn't have any overt bugs (though
+finish_discard_pass() and remove_from_discard_list() racing can have a
+surprising outcome for the caller of remove_from_discard_list() in that
+it is again added at the end).
 
-1) We are submitting a data bio for an inode that is not the data
-   relocation inode, so we call btrfs_wq_submit_bio();
+But it is needlessly complicated to rely on locking and the nullity of
+discard_ctl->block_group. Simplify this significantly by just taking a
+refcount while we are in the workfn and unconditionally drop it in both
+the remove and workfn paths, regardless of if they race.
 
-2) btrfs_wq_submit_bio() submits a work for the fs_info->workers queue
-   that will run run_one_async_done();
-
-3) We enter close_ctree(), flush several work queues except
-   fs_info->workers, explicitly run delayed iputs with a call to
-   btrfs_run_delayed_iputs() and then again shortly after by calling
-   btrfs_commit_super() or btrfs_error_commit_super(), which also run
-   delayed iputs;
-
-4) run_one_async_done() is executed in the work queue, and because there
-   was an IO error (bio->bi_status is not 0) it calls btrfs_bio_end_io(),
-   which drops the final reference on the associated ordered extent by
-   calling btrfs_put_ordered_extent() - and that adds a delayed iput for
-   the inode;
-
-5) At close_ctree() we find that after stopping the cleaner and
-   transaction kthreads the delayed iputs list is not empty, failing the
-   following assertion:
-
-      ASSERT(list_empty(&fs_info->delayed_iputs));
-
-Fix this by flushing the fs_info->workers workqueue before running delayed
-iputs at close_ctree().
-
-David reported this when running generic/648, which exercises IO error
-paths by using the DM error table.
-
-Reported-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/disk-io.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ fs/btrfs/discard.c | 34 ++++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 1e1650012606e..34a30d61b470c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4341,6 +4341,19 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	 */
- 	btrfs_flush_workqueue(fs_info->delalloc_workers);
+diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+index bd9dde374e5d8..3ddd0c24a94ea 100644
+--- a/fs/btrfs/discard.c
++++ b/fs/btrfs/discard.c
+@@ -151,13 +151,7 @@ static bool remove_from_discard_list(struct btrfs_discard_ctl *discard_ctl,
+ 	block_group->discard_eligible_time = 0;
+ 	queued = !list_empty(&block_group->discard_list);
+ 	list_del_init(&block_group->discard_list);
+-	/*
+-	 * If the block group is currently running in the discard workfn, we
+-	 * don't want to deref it, since it's still being used by the workfn.
+-	 * The workfn will notice this case and deref the block group when it is
+-	 * finished.
+-	 */
+-	if (queued && !running)
++	if (queued)
+ 		btrfs_put_block_group(block_group);
  
-+	/*
-+	 * We can have ordered extents getting their last reference dropped from
-+	 * the fs_info->workers queue because for async writes for data bios we
-+	 * queue a work for that queue, at btrfs_wq_submit_bio(), that runs
-+	 * run_one_async_done() which calls btrfs_bio_end_io() in case the bio
-+	 * has an error, and that later function can do the final
-+	 * btrfs_put_ordered_extent() on the ordered extent attached to the bio,
-+	 * which adds a delayed iput for the inode. So we must flush the queue
-+	 * so that we don't have delayed iputs after committing the current
-+	 * transaction below and stopping the cleaner and transaction kthreads.
-+	 */
-+	btrfs_flush_workqueue(fs_info->workers);
-+
- 	/*
- 	 * When finishing a compressed write bio we schedule a work queue item
- 	 * to finish an ordered extent - btrfs_finish_compressed_write_work()
+ 	spin_unlock(&discard_ctl->lock);
+@@ -243,9 +237,10 @@ static struct btrfs_block_group *peek_discard_list(
+ 			block_group->discard_cursor = block_group->start;
+ 			block_group->discard_state = BTRFS_DISCARD_EXTENTS;
+ 		}
+-		discard_ctl->block_group = block_group;
+ 	}
+ 	if (block_group) {
++		btrfs_get_block_group(block_group);
++		discard_ctl->block_group = block_group;
+ 		*discard_state = block_group->discard_state;
+ 		*discard_index = block_group->discard_index;
+ 	}
+@@ -469,9 +464,20 @@ static void btrfs_discard_workfn(struct work_struct *work)
+ 
+ 	block_group = peek_discard_list(discard_ctl, &discard_state,
+ 					&discard_index, now);
+-	if (!block_group || !btrfs_run_discard_work(discard_ctl))
++	if (!block_group)
+ 		return;
++	if (!btrfs_run_discard_work(discard_ctl)) {
++		spin_lock(&discard_ctl->lock);
++		btrfs_put_block_group(block_group);
++		discard_ctl->block_group = NULL;
++		spin_unlock(&discard_ctl->lock);
++		return;
++	}
+ 	if (now < block_group->discard_eligible_time) {
++		spin_lock(&discard_ctl->lock);
++		btrfs_put_block_group(block_group);
++		discard_ctl->block_group = NULL;
++		spin_unlock(&discard_ctl->lock);
+ 		btrfs_discard_schedule_work(discard_ctl, false);
+ 		return;
+ 	}
+@@ -523,15 +529,7 @@ static void btrfs_discard_workfn(struct work_struct *work)
+ 	spin_lock(&discard_ctl->lock);
+ 	discard_ctl->prev_discard = trimmed;
+ 	discard_ctl->prev_discard_time = now;
+-	/*
+-	 * If the block group was removed from the discard list while it was
+-	 * running in this workfn, then we didn't deref it, since this function
+-	 * still owned that reference. But we set the discard_ctl->block_group
+-	 * back to NULL, so we can use that condition to know that now we need
+-	 * to deref the block_group.
+-	 */
+-	if (discard_ctl->block_group == NULL)
+-		btrfs_put_block_group(block_group);
++	btrfs_put_block_group(block_group);
+ 	discard_ctl->block_group = NULL;
+ 	__btrfs_discard_schedule_work(discard_ctl, now, false);
+ 	spin_unlock(&discard_ctl->lock);
 -- 
 2.39.5
 
