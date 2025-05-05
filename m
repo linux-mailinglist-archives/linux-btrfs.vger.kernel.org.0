@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-13685-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD079AAA8FB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:05:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 638D6AAA916
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:07:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DEDE7ACFE4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:03:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC73B1A845AB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF573582CE;
-	Mon,  5 May 2025 22:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C102989B7;
+	Mon,  5 May 2025 22:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N7vYs5vQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3vLWOBV"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9922989B7;
-	Mon,  5 May 2025 22:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA7C27D786;
+	Mon,  5 May 2025 22:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484921; cv=none; b=piJVjQmlyy8pXMBl93fGA9iy7LnHdose/j5lTb8OISqTQCmv2I3VMBB1Ou8vNUcYOSIfN8TEFNb3eZbsOnzm6ZLvP4JZm7aK1h96VWYLHjzXDMPE20PORPQ6d2TT7SKEldjTCw9MjGRDQ8v3vMGksMfXqjxJN5+cYbQCECt9iKg=
+	t=1746484923; cv=none; b=MvXKPTlXt5uubiaW9X+wFc/L3o/u37tcqmf9RZlbitJ2if8uucDH1T5akHxXekFwP7i3Xg4ybM3WZsbjhRuOtfytM+J+9POIH/09NEDNiSJRtZxSqlaHAYK8OLW+NBLD+FoF0YHS2PwPCDcyxyKCwctIpRpCKJdhfeM9U63xGBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484921; c=relaxed/simple;
-	bh=MNxvVs0vvX1B4+amaT7+cAwWGVwtUiOaAPJEUh30ELE=;
+	s=arc-20240116; t=1746484923; c=relaxed/simple;
+	bh=ikB6SErqWkThOyImGk4WEEG5UGvxZgZ7KBXa1b1k3CQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QCaja7iW9ZctK8iuvlNeSz+VIfvyAVaWznXhpBJ1GW7QR44swQWTji53yyS1QqloxZazn+D6/aDQSKu0956ygSFLmK2WB8CD57Tq0l/ZZrv8LPThVP4uiHYyAQmkEBS7IuygYvAuymR5+oW68nlcbAg4FqjVYsdgMq1iKqACezs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N7vYs5vQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48565C4CEEF;
-	Mon,  5 May 2025 22:42:00 +0000 (UTC)
+	 MIME-Version; b=Es7fEjdNIC6ffjI1KgW6Ot7zRAPzIQM2B2bOub764vBDB1yKgLE18+BIStCu38/GJaZA0AkGMFaQGmcDBN2npNvlhu2e8uGPFvxbTivy8cIL9Xa/zYZRykzrKxnympK40W7Y1AtZy6Zb2ah0pMBBb2BRbKr+vWkClzUcmTi0J2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3vLWOBV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A23CEC4CEEE;
+	Mon,  5 May 2025 22:42:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484921;
-	bh=MNxvVs0vvX1B4+amaT7+cAwWGVwtUiOaAPJEUh30ELE=;
+	s=k20201202; t=1746484922;
+	bh=ikB6SErqWkThOyImGk4WEEG5UGvxZgZ7KBXa1b1k3CQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N7vYs5vQS2L8XzbVviP19Mf+5ffPj+vR1R2fJAwZNKEeAZfxVfyDgrn6GIWJUmxPP
-	 wKcI72NCHO9wWEse2UHKaYCK0DpAzCmgZj7yxSHtggIKH+p4TRm5F7D03Pi75/4+8O
-	 ejDRa7LAH4T/v/ydhTCh8yLwaWD+86BxjnpkYQDbIfBMK8M4OEi0fHtAZ77etPyEwS
-	 Kk/kgn5l+07oiGEuGV71BOtwTH67+twhkEGMy7sTNYITinkQQBFF5XQlue70AvvGRy
-	 D2VuCLM6h5itBGiGQqWOmx6qLr+V+PNj02j3ly/Mx4Sx1wIikaiyvteBQnKyLZSLVh
-	 +prbfwkajyQyA==
+	b=l3vLWOBV+H7T4RmjrE6aQ/NsgNe/RF01rcJ6X3OO8Ln42INXR7RduN5nQ1Z0HKxBj
+	 YUNrxf8BqOIQiXAbVKdkCnikHnzC6yU+Hq+bl882olrK55/7tD/9KYWOgC+L/m6X/4
+	 dqrax+HcPBoXzm1Wli6XRUExZpMPwVxxqh185JVSibFgbEnOhwyD6Yuv0MJHyA1HhY
+	 qbttgfYQp9Z4pLUKed+sfEN2BSRyPIS/HBf+4MQscLVQnbtVhnJ8mnyT8wp2aArdGY
+	 rHVKjcb4+iVd2OugQfEaDXevZm4UMn4dG90PFG65g7Zf2BE/cakVUd4xJ1FVz/snZB
+	 OBMMqlebwgT/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Qu Wenruo <wqu@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 077/486] btrfs: prevent inline data extents read from touching blocks beyond its range
-Date: Mon,  5 May 2025 18:32:33 -0400
-Message-Id: <20250505223922.2682012-77-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 078/486] btrfs: get zone unusable bytes while holding lock at btrfs_reclaim_bgs_work()
+Date: Mon,  5 May 2025 18:32:34 -0400
+Message-Id: <20250505223922.2682012-78-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
 References: <20250505223922.2682012-1-sashal@kernel.org>
@@ -68,119 +68,65 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.26
 Content-Transfer-Encoding: 8bit
 
-From: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 1a5b5668d711d3d1ef447446beab920826decec3 ]
+[ Upstream commit 1283b8c125a83bf7a7dbe90c33d3472b6d7bf612 ]
 
-Currently reading an inline data extent will zero out the remaining
-range in the page.
+At btrfs_reclaim_bgs_work(), we are grabbing a block group's zone unusable
+bytes while not under the protection of the block group's spinlock, so
+this can trigger race reports from KCSAN (or similar tools) since that
+field is typically updated while holding the lock, such as at
+__btrfs_add_free_space_zoned() for example.
 
-This is not yet causing problems even for block size < page size
-(subpage) cases because:
+Fix this by grabbing the zone unusable bytes while we are still in the
+critical section holding the block group's spinlock, which is right above
+where we are currently grabbing it.
 
-1) An inline data extent always starts at file offset 0
-   Meaning at page read, we always read the inline extent first, before
-   any other blocks in the page. Then later blocks are properly read out
-   and re-fill the zeroed out ranges.
-
-2) Currently btrfs will read out the whole page if a buffered write is
-   not page aligned
-   So a page is either fully uptodate at buffered write time (covers the
-   whole page), or we will read out the whole page first.
-   Meaning there is nothing to lose for such an inline extent read.
-
-But it's still not ideal:
-
-- We're zeroing out the page twice
-  Once done by read_inline_extent()/uncompress_inline(), once done by
-  btrfs_do_readpage() for ranges beyond i_size.
-
-- We're touching blocks that don't belong to the inline extent
-  In the incoming patches, we can have a partial uptodate folio, of
-  which some dirty blocks can exist while the page is not fully uptodate:
-
-  The page size is 16K and block size is 4K:
-
-  0         4K        8K        12K        16K
-  |         |         |/////////|          |
-
-  And range [8K, 12K) is dirtied by a buffered write, the remaining
-  blocks are not uptodate.
-
-  If range [0, 4K) contains an inline data extent, and we try to read
-  the whole page, the current behavior will overwrite range [8K, 12K)
-  with zero and cause data loss.
-
-So to make the behavior more consistent and in preparation for future
-changes, limit the inline data extents read to only zero out the range
-inside the first block, not the whole page.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/btrfs/block-group.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3dee0565ad21a..19ed56d3638dc 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6817,6 +6817,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- {
- 	int ret;
- 	struct extent_buffer *leaf = path->nodes[0];
-+	const u32 blocksize = leaf->fs_info->sectorsize;
- 	char *tmp;
- 	size_t max_size;
- 	unsigned long inline_size;
-@@ -6833,7 +6834,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 4423d8b716a58..aa8656c8b7e7e 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1891,6 +1891,17 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 			up_write(&space_info->groups_sem);
+ 			goto next;
+ 		}
++
++		/*
++		 * Cache the zone_unusable value before turning the block group
++		 * to read only. As soon as the block group is read only it's
++		 * zone_unusable value gets moved to the block group's read-only
++		 * bytes and isn't available for calculations anymore. We also
++		 * cache it before unlocking the block group, to prevent races
++		 * (reports from KCSAN and such tools) with tasks updating it.
++		 */
++		zone_unusable = bg->zone_unusable;
++
+ 		spin_unlock(&bg->lock);
+ 		spin_unlock(&space_info->lock);
  
- 	read_extent_buffer(leaf, tmp, ptr, inline_size);
+@@ -1907,13 +1918,6 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 			goto next;
+ 		}
  
--	max_size = min_t(unsigned long, PAGE_SIZE, max_size);
-+	max_size = min_t(unsigned long, blocksize, max_size);
- 	ret = btrfs_decompress(compress_type, tmp, folio, 0, inline_size,
- 			       max_size);
- 
-@@ -6845,8 +6846,8 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- 	 * cover that region here.
- 	 */
- 
--	if (max_size < PAGE_SIZE)
--		folio_zero_range(folio, max_size, PAGE_SIZE - max_size);
-+	if (max_size < blocksize)
-+		folio_zero_range(folio, max_size, blocksize - max_size);
- 	kfree(tmp);
- 	return ret;
- }
-@@ -6854,6 +6855,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- static int read_inline_extent(struct btrfs_inode *inode, struct btrfs_path *path,
- 			      struct folio *folio)
- {
-+	const u32 blocksize = path->nodes[0]->fs_info->sectorsize;
- 	struct btrfs_file_extent_item *fi;
- 	void *kaddr;
- 	size_t copy_size;
-@@ -6868,14 +6870,14 @@ static int read_inline_extent(struct btrfs_inode *inode, struct btrfs_path *path
- 	if (btrfs_file_extent_compression(path->nodes[0], fi) != BTRFS_COMPRESS_NONE)
- 		return uncompress_inline(path, folio, fi);
- 
--	copy_size = min_t(u64, PAGE_SIZE,
-+	copy_size = min_t(u64, blocksize,
- 			  btrfs_file_extent_ram_bytes(path->nodes[0], fi));
- 	kaddr = kmap_local_folio(folio, 0);
- 	read_extent_buffer(path->nodes[0], kaddr,
- 			   btrfs_file_extent_inline_start(fi), copy_size);
- 	kunmap_local(kaddr);
--	if (copy_size < PAGE_SIZE)
--		folio_zero_range(folio, copy_size, PAGE_SIZE - copy_size);
-+	if (copy_size < blocksize)
-+		folio_zero_range(folio, copy_size, blocksize - copy_size);
- 	return 0;
- }
- 
+-		/*
+-		 * Cache the zone_unusable value before turning the block group
+-		 * to read only. As soon as the blog group is read only it's
+-		 * zone_unusable value gets moved to the block group's read-only
+-		 * bytes and isn't available for calculations anymore.
+-		 */
+-		zone_unusable = bg->zone_unusable;
+ 		ret = inc_block_group_ro(bg, 0);
+ 		up_write(&space_info->groups_sem);
+ 		if (ret < 0)
 -- 
 2.39.5
 
