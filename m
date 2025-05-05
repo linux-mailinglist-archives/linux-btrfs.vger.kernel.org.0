@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-13703-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515D0AAB04F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 05:35:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 014AFAAB2F3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 06:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C44B4C65CA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:35:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 051C13AD86F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 04:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593A828B51D;
-	Mon,  5 May 2025 23:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE79143F3AF;
+	Tue,  6 May 2025 00:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zqrypqhn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rh4z55gS"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CC62FA100;
-	Mon,  5 May 2025 23:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46E736F89A;
+	Mon,  5 May 2025 22:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746487338; cv=none; b=k0iMqZVVl17UXgfPac4SQ0aQK5uYje+qdmZETarAEWDLwOp04zj2OE+is6diiSxngqyK42UjzL/dwW7gnhsyqMwzBYLXBXwSve651Qqnd2K0Je/3/BGJUPPJUSGXf/g2MQbEDht1wMbklP+775sEm2uP3hOru4DeSR8OemAknmE=
+	t=1746485886; cv=none; b=o6N1KQ41ctDGpAOEWESM8hxIHzzdMDJlN/WdMJO2pDQn32SJcY8ntErZ0ck5MOWfzcXG33cPOd2d91184h8JVrvO2INIRVRY/wB55DTuFxQw1sc9JfZXUccTeuAEbK86K2BxixStupAS7gmH+6UWJgDUdaV6nm8dgiMbAcDH7Rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746487338; c=relaxed/simple;
-	bh=iGR/zZ+vHKPqohPSHU9sFA3QVASc8jKfflvcI/g/eUM=;
+	s=arc-20240116; t=1746485886; c=relaxed/simple;
+	bh=VtAC6sVh/dxvCU/5OQQipVHhltgVIdpnx+vOWNddpGY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tVwSZlm9e+PNlbMplvNQiR3w20KOEa+qxCLHjwpgNmQzE3Uka0j8YaskHOX5tUcWnNTo3+aDbGqeHKLwPMph0kO+K3LAer2uU8u6Wnj2DIWqH88P8PRYp/hGnz7jWlTJOxe/vSmLO2cZN8RJs01NqEAeuIp8QBSNrOhnrzRZdqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zqrypqhn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2969C4CEE4;
-	Mon,  5 May 2025 23:22:15 +0000 (UTC)
+	 MIME-Version; b=cC4M/w7d0JRND5DdBQE/3MFkqs1XdZapcw55dqk8yHQ0+7pms1eHf2M2i4uQcna9iDCrFiKr2iK0mdx5yXCCc01Ox3kn0INSwdjBA0N6q8UflZNqYoKarmbY0kjy97lqy9EbhykGh9Qym/Q2by576JUyYxT7Iq6jJuKccQwoehU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rh4z55gS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6919EC4CEED;
+	Mon,  5 May 2025 22:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487336;
-	bh=iGR/zZ+vHKPqohPSHU9sFA3QVASc8jKfflvcI/g/eUM=;
+	s=k20201202; t=1746485886;
+	bh=VtAC6sVh/dxvCU/5OQQipVHhltgVIdpnx+vOWNddpGY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZqrypqhndepzTXHAwRysf8JlfeOE38ZVvc4+MhLJy+AdhaZqy6XhhjGigjPpG/GRD
-	 FAPLb56DwRqZM6tSlblLn0Pq2ND1RIAsVhIkI9R8NQ9MsvxawgTl2vu4v/pw1RPKqr
-	 PofUFz7OBD8rFxxIgKdHfYTO6uVd8y+BdzZQNRrzba+W3jmGSL2JyrOyu6b5hES3pb
-	 YPRUTHpoxyMilECoJDVgy3aKRsU8t1LqnSBcndeoRf14LQUL5KpwLN5TR/UMVQVNo6
-	 hf/j+JrXWtJ95HuV871NF1/8lknm0/zYeyALOwJZTwp+TZcM0432HAPBFUpfQV0vdO
-	 Z+VrVSbNYkgNA==
+	b=Rh4z55gSGiyd2xVJ0wl16GfnWgJD3Nv59JaBfkPTOGO3chttIa++9nfhT7BaVRv9D
+	 ajB37XQGOA0iEitUtA9MqAAbPAnOT4oVk5edOAjOnbmNwuHzsJWz8DmJ3wl/Z2QHMu
+	 6ETr/skLdcV2uyAL0YGcOrYBNK92Czis45YQZPbc2FI/tlWWwPrMmfDfY2xCc7XDE9
+	 AFNdAHwHZa/g+tbgF+SpOzUCF4nJSuzEtO/SJiyqWI9SC5WtSHQ9vI1jJ16RR72KLI
+	 YV2AkGlTrLt0F/ielEhBtTh345IJ6HuY8CZcWZ7OmqHlJlkVYqqqzdu4kGjDQoJzPS
+	 lZ7nXMFaZjcNA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mark Harmstone <maharmstone@fb.com>,
-	Qu Wenruo <wqu@suse.com>,
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 14/79] btrfs: avoid linker error in btrfs_find_create_tree_block()
-Date: Mon,  5 May 2025 19:20:46 -0400
-Message-Id: <20250505232151.2698893-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 048/294] btrfs: get zone unusable bytes while holding lock at btrfs_reclaim_bgs_work()
+Date: Mon,  5 May 2025 18:52:28 -0400
+Message-Id: <20250505225634.2688578-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505232151.2698893-1-sashal@kernel.org>
-References: <20250505232151.2698893-1-sashal@kernel.org>
+In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
+References: <20250505225634.2688578-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,62 +65,68 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.293
+X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
-From: Mark Harmstone <maharmstone@fb.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 7ef3cbf17d2734ca66c4ed8573be45f4e461e7ee ]
+[ Upstream commit 1283b8c125a83bf7a7dbe90c33d3472b6d7bf612 ]
 
-The inline function btrfs_is_testing() is hardcoded to return 0 if
-CONFIG_BTRFS_FS_RUN_SANITY_TESTS is not set. Currently we're relying on
-the compiler optimizing out the call to alloc_test_extent_buffer() in
-btrfs_find_create_tree_block(), as it's not been defined (it's behind an
- #ifdef).
+At btrfs_reclaim_bgs_work(), we are grabbing a block group's zone unusable
+bytes while not under the protection of the block group's spinlock, so
+this can trigger race reports from KCSAN (or similar tools) since that
+field is typically updated while holding the lock, such as at
+__btrfs_add_free_space_zoned() for example.
 
-Add a stub version of alloc_test_extent_buffer() to avoid linker errors
-on non-standard optimization levels. This problem was seen on GCC 14
-with -O0 and is helps to see symbols that would be otherwise optimized
-out.
+Fix this by grabbing the zone unusable bytes while we are still in the
+critical section holding the block group's spinlock, which is right above
+where we are currently grabbing it.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 04788940afafc..64af1c7f95c24 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5134,10 +5134,10 @@ struct extent_buffer *find_extent_buffer(struct btrfs_fs_info *fs_info,
- 	return NULL;
- }
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 434cf3d5f4cf1..226e6434a58a9 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1885,6 +1885,17 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 			up_write(&space_info->groups_sem);
+ 			goto next;
+ 		}
++
++		/*
++		 * Cache the zone_unusable value before turning the block group
++		 * to read only. As soon as the block group is read only it's
++		 * zone_unusable value gets moved to the block group's read-only
++		 * bytes and isn't available for calculations anymore. We also
++		 * cache it before unlocking the block group, to prevent races
++		 * (reports from KCSAN and such tools) with tasks updating it.
++		 */
++		zone_unusable = bg->zone_unusable;
++
+ 		spin_unlock(&bg->lock);
  
--#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
- struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- 					u64 start)
- {
-+#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
- 	struct extent_buffer *eb, *exists = NULL;
- 	int ret;
+ 		/*
+@@ -1900,13 +1911,6 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 			goto next;
+ 		}
  
-@@ -5173,8 +5173,11 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- free_eb:
- 	btrfs_release_extent_buffer(eb);
- 	return exists;
--}
-+#else
-+	/* Stub to avoid linker error when compiled with optimizations turned off. */
-+	return NULL;
- #endif
-+}
- 
- struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 					  u64 start)
+-		/*
+-		 * Cache the zone_unusable value before turning the block group
+-		 * to read only. As soon as the blog group is read only it's
+-		 * zone_unusable value gets moved to the block group's read-only
+-		 * bytes and isn't available for calculations anymore.
+-		 */
+-		zone_unusable = bg->zone_unusable;
+ 		ret = inc_block_group_ro(bg, 0);
+ 		up_write(&space_info->groups_sem);
+ 		if (ret < 0)
 -- 
 2.39.5
 
